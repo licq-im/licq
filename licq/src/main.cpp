@@ -3,7 +3,6 @@
 #endif
 
 #include <signal.h>
-#include <execinfo.h>
 #include <stdlib.h>
 
 #include "licq.h"
