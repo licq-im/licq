@@ -588,9 +588,9 @@ void finish_message(ICQEvent *event)
 		gtk_text_buffer_get_end_iter(tb, &iter);
 		gtk_text_buffer_insert(tb, &iter, c->for_user, -1);
 		scroll_to_the_end(c->text);
-
-		gtk_widget_set_sensitive(c->send, TRUE);
-		toggle_close_cancel(c, 1);
 	}
+
+	gtk_widget_set_sensitive(c->send, TRUE);
+	toggle_close_cancel(c, 1);
 }
 
