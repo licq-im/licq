@@ -40,6 +40,11 @@ const char *LProto_Description()
   return szDesc;
 }
 
+unsigned long LProto_SendFuncs()
+{
+  return (PP_SEND_MSG | PP_SEND_AUTH | PP_SEND_AUTHxREQ);
+}
+
 unsigned long LProto_Capabilities()
 {
   return 0;
