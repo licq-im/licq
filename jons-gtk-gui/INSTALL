@@ -1,16 +1,14 @@
 To install the cvs version
 ==========================
 
-src/Makefile.am will need to be edited to include the proper licq header files.. I will fix this soon, but right now I'm more worried about adding more features in.
+The normal stuff: 
 
-run these commands in this order:
-aclocal
-autoheader
-autoconf
-automake
-./configure
-make
+If the directory doesn't contain a "configure" script, then please run
 
-The make file will give an error.. that's ok, just cp src/licq_gtk.so /usr/local/lib/licq and that takes care of it...  This will also be fixed when I make the configure script smarter and all that nice stuff to make it easy.
+make -f Makefile.cvs
 
-Jon
+else, just do the normal
+
+./configure; make; su -c "make install"
+
+
