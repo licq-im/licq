@@ -840,7 +840,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
-  m_fConf.ReadBool("SendRealIp", m_bSendRealIp, 0);
+  m_fConf.ReadBool("SendRealIp", m_bSendRealIp, false);
   SetCustomAutoResponse(szTemp);
 
   m_fConf.ReadStr("History", szTemp, "default");
@@ -953,6 +953,7 @@ void ICQUser::Init(unsigned long _nUin)
   SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
   SetSendServer(false);
+  SetSendRealIp(false);
   SetShowAwayMsg(false);
   SetSequence(0xFFFFFFFF);
   ClearSocketDesc();
