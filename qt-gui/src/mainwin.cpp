@@ -1493,7 +1493,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             {
               char *szRealId = 0;
               ICQUser::MakeRealId(it->ItemId(), it->ItemPPID(), szRealId);
-              if(strcmp(it->ItemId(), szRealId) == 0 && it->ItemPPID() == nPPID)
+              if(strcasecmp(szRealId, szId) == 0 && it->ItemPPID() == nPPID)
               {
                 delete it;
                 delete [] szRealId;
@@ -1523,7 +1523,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         if (i)
           szItemId = ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
         ICQUser::MakeRealId(szId, nPPID, szRealId);
-        while (i && !(i->ItemPPID() == nPPID && strcmp(szItemId, szRealId) == 0))
+        while (i && !(i->ItemPPID() == nPPID && strcasecmp(szItemId, szRealId) == 0))
         {
           i = (CUserViewItem *)i->nextSibling();
           if (i)
