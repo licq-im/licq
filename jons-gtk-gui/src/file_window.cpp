@@ -1,21 +1,41 @@
+/*
+ * Licq GTK GUI Plugin
+ *
+ * Copyright (C) 2000, Jon Keating <jonkeating@norcom2000.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 #include "licq_gtk.h"
 
 #include "icqd.h"
 #include "message.h"
 #include "user.h"
 
-void file_accept_window(ICQUser *user, CEventFile *e)
+void file_accept_window(ICQUser *user, CUserEvent *e)
 {
 	GtkWidget *accept;
 	GtkWidget *refuse;
 	GtkWidget *v_box;
 	GtkWidget *h_box;
 	GtkWidget *label;
-	struct file_accept *fa = g_new0(struct file_accept, 1);
+	struct file_accept *fa = (struct file_accept *)g_new0(struct file_accept, 1);
 	const gchar *title = g_strdup_printf("File From %s", user->GetAlias());
 
 	fa->user = user;
-	fa->e = e;
+	fa->e = (CEventFile *)e;
 
 	/* Make the window */
 	fa->window = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -28,7 +48,8 @@ void file_accept_window(ICQUser *user, CEventFile *e)
 
 	/* The label */
 	const gchar *text = g_strdup_printf("File: %s (%ld bytes)",
-					    e->Filename(), e->FileSize());
+					    ((CEventFile *)e)->Filename(),
+					    ((CEventFile *)e)->FileSize());
 	label = gtk_label_new(text);
 
 	/* Pack the label */
@@ -100,7 +121,7 @@ void refuse_file(GtkWidget *widget, struct file_accept *fa)
 
 	/* Pack it */
 	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 5);
-	
+
 	/* The button */
 	ok = gtk_button_new_with_label("OK");
 
@@ -122,7 +143,7 @@ void refuse_file(GtkWidget *widget, struct file_accept *fa)
 void refuse_ok(GtkWidget *widget, struct file_accept *fa)
 {
 	icq_daemon->icqFileTransferRefuse(fa->user->Uin(),
-		gtk_editable_get_chars(GTK_EDITABLE(fa->textbox), 0, -1),
+		(const char *)gtk_editable_get_chars(GTK_EDITABLE(fa->textbox), 0, -1),
 		fa->e->Sequence());
 
 	dialog_close(NULL, fa->window2);
