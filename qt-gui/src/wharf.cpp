@@ -107,6 +107,10 @@ void IconManager::X11Init()
 
 IconManager::~IconManager()
 {
+  // Ensure that our main window is visible when the dock gets disabled:
+  if (mainwin != NULL)
+    mainwin->show();
+
   delete wharfIcon;
   // clean up behind us the prevent segfaults
   gMainWindow->licqIcon = NULL;
