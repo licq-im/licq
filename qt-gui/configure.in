@@ -32,6 +32,8 @@ AC_PATH_PROG(PROG_SIZE,size,:)
 dnl libtool stuff
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
+LIBTOOL="$(LIBTOOL) --silent"
+AC_SUBST(LIBTOOL)
 AM_PROG_LIBTOOL
 
 dnl Checks for header files.
