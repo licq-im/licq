@@ -6,12 +6,12 @@
 # Thomas Reitelbach <tr@erdfunkstelle.de>, 2005.
 msgid ""
 msgstr ""
-"Project-Id-Version: de\n"
+"Project-Id-Version: licq\n"
 "POT-Creation-Date: 2005-03-19 12:53:39 UTC\n"
-"PO-Revision-Date: 2005-03-19 23:07+0000\n"
+"PO-Revision-Date: 2005-03-20 00:37+0000\n"
 "Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
-"Language-Team: German <kde-i18n-de@kde.org>\n"
+"Language-Team: German <licq-devel@licq.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.10\n"
 "MIME-Version: 1.0\n"
@@ -2696,7 +2696,7 @@ msgstr "Hotkey: "
 
 #: optionsdlg.cpp:1015
 msgid "OptionsDlg::I am behind a firewall"
-msgstr "Licq ist hinter einer FirewallFirewall"
+msgstr "Licq ist hinter einer Firewall"
 
 #: optionsdlg.cpp:1024
 msgid "OptionsDlg::I can receive direct connections"
