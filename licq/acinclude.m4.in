@@ -32,8 +32,11 @@ AC_DEFUN(AC_CHECK_SOCKS5,
     AC_MSG_RESULT(yes)
 
     if test "$socks_libdir" = "no"; then
-      dnl AC_CHECK_LIB(socks5, SOCKSconnect, SOCKS_LIBS="-lsocks5")
-      SOCKS_LIBS="-lsocks5"
+      SOCKS_LIBS=""
+      AC_CHECK_LIB(socks5, SOCKSinit, SOCKS_LIBS="-lsocks5")
+      if test -z "$SOCKS_LIBS"; then
+        AC_CHECK_LIB(socks, SOCKSinit, SOCKS_LIBS="-lsocks")
+      fi
     else
     	AC_MSG_CHECKING(where to look for the SOCKS5 library)
       SOCKS_LIBS="-lsocks5"
