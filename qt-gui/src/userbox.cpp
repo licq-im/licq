@@ -23,6 +23,7 @@
 #include <qkeycode.h>
 #include <qscrollbar.h>
 #include <qdragobject.h>
+#include <qstylesheet.h>
 
 #include "skin.h"
 #include "mainwin.h"
@@ -117,6 +118,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    CUserView *v = (CUserView *)listView();
    m_nStatus = u->Status();
    m_nStatusFull = u->StatusFull();
+   m_bStatusInvisible = u->StatusInvisible();
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -957,9 +959,11 @@ void CUserViewTips::maybeTip(const QPoint& c)
     QRect r(w->itemRect(item));
     if(w->header()->isVisible())
       r.moveBy(0, w->header()->height());
-    QString s = ICQUser::StatusToStatusStr(item->m_nStatus, false);
-    if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
-      s += CUserView::tr("\n<b>Today's Birthday!</b>");
+    QString s = ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible);
+    if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY) {
+      s = QStyleSheet::convertFromPlainText(s);
+      s += CUserView::tr("\n<b>Birthday Today!</b>");
+    }
     tip(r, s);
   }
 }
