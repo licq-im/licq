@@ -5,6 +5,7 @@
 #include "icqevent.h"
 #include "icqpacket.h"
 #include "log.h"
+#include "user.h"
 
 
 //-----ICQEvent::constructor----------------------------------------------------
@@ -78,9 +79,32 @@ ICQEvent::~ICQEvent(void)
 
 
 //-----ICQEvent::CompareEvent---------------------------------------------------
-bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence)
+bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence) const
 {
    return(m_nSocketDesc == sockfd && m_nSequence == _nSequence);
+}
+
+
+//=====CICQEventTag==========================================================
+CICQEventTag::CICQEventTag(const ICQEvent *e)
+    : m_nSocketDesc(e->m_nSocketDesc),
+      m_nSequence(e->m_nSequence),
+      m_nUin(e->m_nDestinationUin)
+{
+}
+
+bool CICQEventTag::Equals(const ICQEvent *e)
+{
+  if (e == NULL) return false;
+  if (m_nSocketDesc == -1)
+  {
+    if (m_nUin == 0) return (e->m_nSequence == m_nSequence);
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    m_nSocketDesc = u->SocketDesc();
+    gUserManager.DropUser(u);
+    if (m_nSocketDesc == -1) return false;
+  }
+  return (e->CompareEvent(m_nSocketDesc, m_nSequence));
 }
 
 

@@ -59,7 +59,7 @@ public:
   ICQEvent(ICQEvent *);
   ~ICQEvent(void);
 
-  bool CompareEvent(int, unsigned long);
+  bool CompareEvent(int, unsigned long) const;
 
   EConnect       m_eConnect;
   EEventResult   m_eResult;
@@ -87,15 +87,13 @@ public:
 class CICQEventTag
 {
 public:
-  CICQEventTag(int sd, unsigned long se) : m_nSocketDesc(sd), m_nSequence(se) {}
-  CICQEventTag(const ICQEvent *e) : m_nSocketDesc(e->m_nSocketDesc), m_nSequence(e->m_nSequence) {}
-  bool Equals(const ICQEvent *e)
-  {
-    return (e != NULL && e->m_nSocketDesc == m_nSocketDesc && e->m_nSequence == m_nSequence);
-  }
+  //CICQEventTag(int sd, unsigned long se) : m_nSocketDesc(sd), m_nSequence(se) {}
+  CICQEventTag(const ICQEvent *e);
+  bool Equals(const ICQEvent *e);
 protected:
   int m_nSocketDesc;
   unsigned long m_nSequence;
+  unsigned long m_nUin;
 
 friend class CICQDaemon;
 };
