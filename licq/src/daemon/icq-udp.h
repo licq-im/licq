@@ -1192,7 +1192,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     unsigned short nPort;
     packet >> nUin >> nIp >> nPort;
     nIp = PacketIpToNetworkIp(nIp);
-    gLog.Info("%sReverse tcp request from %ld.\n", nUin);
+    gLog.Info("%sReverse tcp request from %ld.\n", L_UDPxSTR, nUin);
     // May block in connect, which would suck, but for it's unlikely
     ReverseConnectToUser(nUin, nIp, nPort);
     break;
