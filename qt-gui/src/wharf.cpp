@@ -34,13 +34,18 @@
 #include "xpm/iconDigits.h"
 
 #include <stdio.h>
+#include <qpainter.h>
+#ifdef USE_KDE
+#include <kwin.h>
+#endif
 
-extern "C" {
+#include "wharf.h"
+#include "mainwin.h"
+#include "user.h"
+#include "ewidgets.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-
-}
 
 #undef Status
 #undef Bool
@@ -49,17 +54,6 @@ extern "C" {
 #undef KeyRelease
 #undef FocusIn
 #undef FocusOut
-
-#include "wharf.h"
-#include "mainwin.h"
-#include "user.h"
-#include "ewidgets.h"
-#include <qpainter.h>
-#include <qtimer.h>
-
-#ifdef USE_KDE
-#include <kwin.h>
-#endif
 
 
 /*
@@ -105,7 +99,11 @@ void IconManager::X11Init()
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
   show();
+#if QT_VERSION == 210
+  // workaround a bug in Qt 2.1beta1. is not in Qt 2.0x
+  // and Qt 2.2 doesn't even define WState_Withdrawn any more
   setWFlags(WState_Withdrawn);
+#endif
 }
 
 
