@@ -18,7 +18,9 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
   
 #if QT_VERSION >= 210
   qleAwayMsg = new QMultiLineEdit(this);
-  qleAwayMsg->setWordWrap(QMultiLineEdit::DynamicWrap);
+  // ICQ99b allows 37 chars per line, so we do the same
+  qleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWrap);
+  qleAwayMsg->setWrapColumnOrWidth(37);
   qleAwayMsg->setMinimumSize(280, 90);
 #else  
   qleAwayMsg = new MLEditWrap(true, this);
@@ -55,9 +57,10 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
 void ShowAwayMsgDlg::accept()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  
   u->setShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
-  
+
   QDialog::accept();
 }
 
