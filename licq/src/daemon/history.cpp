@@ -112,7 +112,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     //"[ C | 0000 | 0000 | 0000 | 000... ]"
     cDir = sz[2];
     // Stick some \0's in to terminate strings
-    sz[10] = sz[17] = sz[24] = '\0';
+    sz[0] = sz[10] = sz[17] = sz[24] = '\0';
     // Read out the relevant values
     nSubCommand = atoi(&sz[6]);
     nCommand = atoi(&sz[13]);
