@@ -54,6 +54,11 @@ case "$host" in
  		CPPFLAGS="$CPPFLAGS -fPIC -DPIC -D_REENTRANT"
 		echo "Setting Linux compilation options"
 		;;
+  *-*-aix*)
+    CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
+    LIBS="$LIBS -lc_r"
+    echo "Setting AIX compilation options"
+    ;;
 	*)
 		echo "Licq may not compile on this system. Good luck :-)"
 		;;
@@ -72,7 +77,8 @@ AC_CHECK_LIB(nsl, gethostbyname)
 AC_CHECK_LIB(c_r,pthread_cancel, [], [
   AC_CHECK_LIB(pthread, pthread_cancel, [], [
     AC_CHECK_LIB(thread, pthread_cancel, [], [
-      cat <<EOF;
+      AC_CHECK_LIB(pthreads, pthread_cancel, [], [
+        cat <<EOF;
 
 Please install/update your POSIX threads (pthreads) library. Updates should be
 available from either your system vendor, or, for GNU/Linux systems, go to
@@ -81,6 +87,7 @@ configured with --enable-pthread.
 
 EOF
 exit 1
+      ])
     ])
   ])
 ])
