@@ -5,10 +5,10 @@
 #include "config.h"
 #endif
 
-#include "icqd.h"
-#include "log.h"
+#include "licq_icqd.h"
+#include "licq_log.h"
 #include "window.h"
-#include "user.h"
+#include "licq_user.h"
 
 #define MAX_CON 8
 #define MAX_CMD_HISTORY 100

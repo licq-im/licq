@@ -1,6 +1,6 @@
 #include "console.h"
-#include "countrycodes.h"
-#include "languagecodes.h"
+#include "licq_countrycodes.h"
+#include "licq_languagecodes.h"
 
 
 

@@ -12,8 +12,8 @@ extern int errno
 #endif
 
 #include "console.h"
-#include "log.h"
-#include "icqd.h"
+#include "licq_log.h"
+#include "licq_icqd.h"
 #include "event_data.h"
 
 // Undefine what stupid ncurses defines as wclear(WINDOW *)

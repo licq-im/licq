@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <locale.h>
 #include "console.h"
-#include "plugin.h"
+#include "licq_plugin.h"
 
 CLicqConsole *licqConsole;
 
@@ -25,7 +25,7 @@ const char *LP_Name()
 
 const char *LP_Version()
 {
-  static const char version[] = "0.01";
+  static const char version[] = "0.20";
   return version;
 }
 
