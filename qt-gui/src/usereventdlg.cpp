@@ -1018,7 +1018,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
       {
 #ifdef QT_PROTOCOL_PLUGIN
         CEventAuthGranted *pAuth = (CEventAuthGranted *)m;
-        ICQUser *u = gUserManager.Fetchuser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
+        ICQUser *u = gUserManager.FetchUser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
 #else
         ICQUser *u = gUserManager.FetchUser( ((CEventAuthGranted *)m)->Uin(), LOCK_R);
 #endif
@@ -1032,7 +1032,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
       {
 #ifdef QT_PROTOCOL_PLUGIN
         CEventAdded *pAdd = (CEventAdded *)m;
-        ICQUser *u = gUserManager.Fetchuser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
+        ICQUser *u = gUserManager.FetchUser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
 #else
         ICQUser *u = gUserManager.FetchUser( ((CEventAdded *)m)->Uin(), LOCK_R);
 #endif
