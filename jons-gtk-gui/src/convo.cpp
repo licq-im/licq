@@ -156,21 +156,21 @@ void convo_show(struct conversation *c)
 	c->send_server = gtk_check_button_new_with_label("Send through server");
 
 	/* Send the message normal */
-	c->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
+	c->send_normal = gtk_radio_button_new_with_label(NULL, "Normal");
 
 	/* Send the message urgently */
 	c->send_urgent = gtk_radio_button_new_with_label_from_widget(
 				GTK_RADIO_BUTTON(c->send_normal),
-				"Send Urgent");
+				"Urgent");
 
 	/* Send the message to contact list */
 	c->send_list = gtk_radio_button_new_with_label_from_widget(
 				GTK_RADIO_BUTTON(c->send_normal),
-				"Send to Contact List");
+				"To Contact List");
 
 	/* Let's pack them now! */
 	gtk_box_pack_start(GTK_BOX(options_box), c->send_server,
-			   FALSE, FALSE, 0);
+			   FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(options_box), c->send_normal,
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent,

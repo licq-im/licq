@@ -101,33 +101,25 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 			 GTK_FILL, 3, 3);
 
 	/* Make send through server */
-	url->send_server = gtk_check_button_new_with_label("Send Through "
-				"Server");
+	url->send_server = gtk_check_button_new_with_label("Server");
 	gtk_table_attach(GTK_TABLE(table), url->send_server, 0, 1, 2, 3,
 			 GTK_FILL, GTK_FILL, 3, 3);
 
-	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 2, 3,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GTK_FILL, 3, 3);
-
-	/* New hbox */
-	h_box = gtk_hbox_new(FALSE, 3);
-
 	/* Normal, Urgent, or to Contact List */
-	url->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
+	url->send_normal = gtk_radio_button_new_with_label(NULL, "Normal");
 	gtk_box_pack_start(GTK_BOX(h_box), url->send_normal, FALSE, FALSE, 0);
 
 	url->send_urgent = gtk_radio_button_new_with_label_from_widget(
 				GTK_RADIO_BUTTON(url->send_normal),
-				"Send Urgent");
+				"Urgent");
 	gtk_box_pack_start(GTK_BOX(h_box), url->send_urgent, FALSE, FALSE, 0);
 
 	url->send_list = gtk_radio_button_new_with_label_from_widget(
 				GTK_RADIO_BUTTON(url->send_normal),
-				"Send to Contact List");
+				"To Contact List");
 	gtk_box_pack_start(GTK_BOX(h_box), url->send_list, FALSE, FALSE, 0);
 
-	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
+	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 2, 3,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3); 
 
