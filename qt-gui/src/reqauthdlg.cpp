@@ -34,7 +34,7 @@
 #include "licq_icqd.h"
 #include "usercodec.h"
 
-#ifdef QT_PROTOCOL_PLUGIN
+
 ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
   QWidget *parent)
   : LicqDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
@@ -86,7 +86,6 @@ ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
 
   show();
 }
-#endif
 
 ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, unsigned long nUin, QWidget *parent)
   : LicqDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
@@ -144,25 +143,16 @@ ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, unsigned long nUin, QWidget *parent)
 
 void ReqAuthDlg::ok()
 {
-#ifdef QT_PROTOCOL_PLUGIN
-  unsigned long nUin = edtUin->text().toULong();
+  char *szId = (char *)edtUin->text().ascii();
 
-  if (nUin != 0)
+  if (szId)
   {
-    QTextCodec *codec = UserCodec::codecForUIN(nUin);
-    server->icqRequestAuth(nUin, codec->fromUnicode(mleRequest->text()));
+    //TODO add a drop down list for protocol
+    QTextCodec *codec = UserCodec::codecForProtoUser(szId, LICQ_PPID);
+    server->icqRequestAuth(strtoul(szId, (char **)NULL, 10),
+      codec->fromUnicode(mleRequest->text()));
     close(true);
   }
-#else
-  unsigned long nUin = edtUin->text().toULong();
-
-  if (nUin != 0)
-  {
-    QTextCodec *codec = UserCodec::codecForUIN(nUin);
-    server->icqRequestAuth(nUin, codec->fromUnicode(mleRequest->text()));
-    close(true);
-  }
-#endif
 }
 
 #include "reqauthdlg.moc"

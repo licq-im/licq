@@ -210,11 +210,9 @@ protected:
 class CEventAdded : public CUserEvent
 {
 public:
-#ifdef PROTOCOL_PLUGIN
    CEventAdded(const char *_szId, unsigned long _nPPID, const char *_szAlias,
                const char *_szFirstName, const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-#endif
    CEventAdded(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
                const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
@@ -222,28 +220,19 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventAdded *Copy()
       {
-#ifdef PROTOCOL_PLUGIN
         CEventAdded *e = new CEventAdded(m_szId, m_nPPID, m_szAlias, m_szFirstName,
          m_szLastName, m_szEmail, m_nCommand, m_tTime, m_nFlags);
-#else
-        CEventAdded *e = new CEventAdded(m_nUin, m_szAlias, m_szFirstName,
-         m_szLastName, m_szEmail, m_nCommand, m_tTime, m_nFlags);
-#endif
         e->CopyBase(this);
         return e;
       }
    unsigned long Uin()  { return m_nUin; };
-#ifdef PROTOCOL_PLUGIN
    char *IdString()     { return m_szId; }
    unsigned long PPID() { return m_nPPID; }
-#endif
 protected:
    void CreateDescription();
    unsigned long m_nUin;
-#ifdef PROTOCOL_PLUGIN
    char *m_szId;
    unsigned long m_nPPID;
-#endif
    char *m_szAlias;
    char *m_szFirstName;
    char *m_szLastName;
@@ -256,12 +245,10 @@ protected:
 class CEventAuthRequest : public CUserEvent
 {
 public:
-#ifdef PROTOCOL_PLUGIN
    CEventAuthRequest(const char *_szId, unsigned long _nPPID, const char *_szAlias,
                      const char *_szFirstName, const char *_szLastName, const char *_szEmail,
                      const char *_szReason, unsigned short _nCommand, time_t _tTime,
                      unsigned long _nFlags);
-#endif
    CEventAuthRequest(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
                  const char *_szLastName, const char *_szEmail, const char *_szReason,
                  unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
@@ -269,30 +256,20 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventAuthRequest *Copy()
       {
-#ifdef PROTOCOL_PLUGIN
         CEventAuthRequest *e = new CEventAuthRequest(m_szId, m_nPPID,
          m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_szReason,
          m_nCommand, m_tTime, m_nFlags);
-#else
-        CEventAuthRequest *e = new CEventAuthRequest(m_nUin, m_szAlias,
-         m_szFirstName, m_szLastName, m_szEmail, m_szReason, m_nCommand,
-         m_tTime, m_nFlags);
-#endif
         e->CopyBase(this);
         return e;
       }
    unsigned long Uin()  { return m_nUin; };
-#ifdef PROTOCOL_PLUGIN
    char *IdString()     { return m_szId; }
    unsigned long PPID() { return m_nPPID; }
-#endif
 protected:
    void CreateDescription();
    unsigned long m_nUin;
-#ifdef PROTOCOL_PLUGIN
    char *m_szId;
    unsigned long m_nPPID;
-#endif
    char *m_szAlias;
    char *m_szFirstName;
    char *m_szLastName;
@@ -305,38 +282,27 @@ protected:
 class CEventAuthGranted : public CUserEvent
 {
 public:
-#ifdef PROTOCOL_PLUGIN
    CEventAuthGranted(const char *_szId, unsigned long _nPPID, const char *_szMsg,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-#endif
    CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthGranted();
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventAuthGranted *Copy()
       {
-#ifdef PROTOCOL_PLUGIN
         CEventAuthGranted *e = new CEventAuthGranted(m_szId, m_nPPID, m_szMessage,
          m_nCommand, m_tTime, m_nFlags);
-#else
-        CEventAuthGranted *e = new CEventAuthGranted(m_nUin, m_szMessage,
-         m_nCommand, m_tTime, m_nFlags);
-#endif
         e->CopyBase(this);
         return e;
       }
    unsigned long Uin()  { return m_nUin; };
-#ifdef PROTOCOL_PLUGIN
    char *IdString()     { return m_szId; }
    unsigned long PPID() { return m_nPPID; }
-#endif
 protected:
    void CreateDescription();
    unsigned long m_nUin;
-#ifdef PROTOCOL_PLUGIN
    char *m_szId;
    unsigned long m_nPPID;
-#endif
    char *m_szMessage;
 };
 
@@ -345,38 +311,27 @@ protected:
 class CEventAuthRefused : public CUserEvent
 {
 public:
-#ifdef PROTOCOL_PLUGIN
    CEventAuthRefused(const char *_szId, unsigned long _nPPID, const char *_szMsg,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-#endif
    CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRefused();
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventAuthRefused *Copy()
       {
-#ifdef PROTOCOL_PLUGIN
         CEventAuthRefused *e = new CEventAuthRefused(m_szId, m_nPPID,
          m_szMessage, m_nCommand, m_tTime, m_nFlags);
-#else
-        CEventAuthRefused *e = new CEventAuthRefused(m_nUin, m_szMessage,
-         m_nCommand, m_tTime, m_nFlags);
-#endif
         e->CopyBase(this);
         return e;
       }
    unsigned long Uin()  { return m_nUin; };
-#ifdef PROTOCOL_PLUGIN
    char *IdString()     { return m_szId; }
    unsigned long PPID() { return m_nPPID; }
-#endif
 protected:
    void CreateDescription();
    unsigned long m_nUin;
-#ifdef PROTOCOL_PLUGIN
    char *m_szId;
    unsigned long m_nPPID;
-#endif
    char *m_szMessage;
 };
 
@@ -431,30 +386,20 @@ protected:
 class CContact
 {
 public:
-#ifdef PROTOCOL_PLUGIN
   CContact(const char *s, unsigned long n, const char *a)
     {  m_szId = strdup(s); m_nPPID = n; m_szAlias = strdup(a); }
-#endif
   CContact(unsigned long n, const char *a) { m_nUin = n; m_szAlias = strdup(a); }
-#ifdef PROTCOL_PLUGIN
   ~CContact() { free(m_szAlias); free(m_szId); }
-#else
-  ~CContact() { free(m_szAlias); }
-#endif
 
   unsigned long Uin() { return m_nUin; }
   const char *Alias() { return m_szAlias; }
-#ifdef PROTOCOL_PLUGIN
   char *IdString()    { return m_szId; }
   unsigned long PPID(){ return m_nPPID; }
-#endif
 protected:
   unsigned long m_nUin;
   char *m_szAlias;
-#ifdef PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
 };
 typedef std::list<CContact *> ContactList;
 

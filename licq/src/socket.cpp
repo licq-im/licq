@@ -229,7 +229,6 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
 
 
 //-----INetSocket::constructor--------------------------------------------------
-#ifdef PROTOCOL_PLUGIN
 INetSocket::INetSocket(unsigned long _nOwner)
 {
   m_nDescriptor = -1;
@@ -239,6 +238,7 @@ INetSocket::INetSocket(unsigned long _nOwner)
     sprintf(szUin, "%lu", _nOwner);
     m_szOwnerId = strdup(szUin);
     m_nOwnerPPID = LICQ_PPID;
+    m_nOwner = _nOwner;
   }
   else
   {
@@ -264,6 +264,8 @@ INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
   else
     m_szOwnerId = 0;
   m_nOwnerPPID = _nOwnerPPID;
+  if (m_nOwnerPPID == LICQ_PPID)
+    m_nOwner = strtoul(_szOwnerId, (char **)NULL, 10);
   m_nVersion = 0;
   m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
@@ -274,22 +276,6 @@ INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
   // Initialize the mutex
   pthread_mutex_init(&mutex, NULL);
 }
-#else
-INetSocket::INetSocket(unsigned long _nOwner)
-{
-  m_nDescriptor = -1;
-  m_nOwner = _nOwner;
-  m_nVersion = 0;
-  m_nErrorType = SOCK_ERROR_none;
-  memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
-  memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
-  m_szRemoteName = NULL;
-  m_xProxy = NULL;
-
-  // Initialise the mutex
-  pthread_mutex_init(&mutex, NULL);
-}
-#endif
 
 INetSocket::~INetSocket()
 {
@@ -303,10 +289,8 @@ INetSocket::~INetSocket()
     nResult = pthread_mutex_destroy(&mutex);
   } while (nResult != 0);
 
-#ifdef PROTOCOL_PLUGIN
   if (m_szOwnerId)
     free(m_szOwnerId);
-#endif
 
   if (m_szRemoteName != NULL) free (m_szRemoteName);
 }
@@ -780,15 +764,16 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_nDescriptor = from.m_nDescriptor;
   m_sLocalAddr = from.m_sLocalAddr;
   m_sRemoteAddr = from.m_sRemoteAddr;
-#ifdef PROTOCOL_PLUGIN
+
   if (m_szOwnerId)
     free (m_szOwnerId);
   if (from.m_szOwnerId)
     m_szOwnerId = strdup(from.m_szOwnerId);
   m_nOwnerPPID = from.m_nOwnerPPID;
-#else
-  m_nOwner = from.m_nOwner;
-#endif
+
+  if (m_nOwnerPPID == LICQ_PPID)
+    m_nOwner = from.m_nOwner;
+
   m_nVersion = from.m_nVersion;
   if (from.m_p_SSL)
   {
@@ -1341,12 +1326,8 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
     return;
   }
 
-#ifdef PROTOCOL_PLUGIN
   char *szOwner = s->OwnerId() ? strdup(s->OwnerId()) : 0;
   unsigned long nPPID = s->OwnerPPID();
-#else
-  unsigned long nOwner = s->Owner();
-#endif
 
   // First remove the socket from the hash table so it won't be fetched anymore
   m_hSockets.Remove(nSd);
@@ -1362,16 +1343,13 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
 
   if (bClearUser)
   {
-#ifdef PROTOCOL_PLUGIN
     ICQUser *u = NULL;
     if (szOwner)
     {
       u = gUserManager.FetchUser(szOwner, nPPID, LOCK_W);
       free(szOwner);
     }
-#else
-    ICQUser *u = gUserManager.FetchUser(nOwner, LOCK_W);
-#endif
+    
     if (u != NULL)
     {
       u->ClearSocketDesc();

@@ -299,7 +299,8 @@ public:
 class CPU_GenericUinList : public CPU_CommonFamily
 {
 public:
-   CPU_GenericUinList(UinList &uins, unsigned short Family, unsigned short Subtype);
+   CPU_GenericUinList(const char *szId, unsigned short Family, unsigned short Subtype);
+   CPU_GenericUinList(UserStringList &, unsigned short, unsigned short);
    CPU_GenericUinList(unsigned long _nUin, unsigned short Family, unsigned short Subtype);
 };
 
@@ -325,7 +326,7 @@ public:
 class CPU_ExportToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ExportToServerList(UinList &, unsigned short);
+  CPU_ExportToServerList(UserStringList &, unsigned short);
 };
 
 //-----ExportGroupsToServerList-------------------------------------------------
@@ -551,6 +552,7 @@ public:
 class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
+  CPU_ThroughServer(const char *szId, unsigned char format, char *_sMessage);
   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned char format,
                     char *_sMessage);
 protected:

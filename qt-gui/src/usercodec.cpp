@@ -91,17 +91,17 @@ QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
   return QTextCodec::codecForLocale();
 }
 
-QTextCodec* UserCodec::codecForUIN(uint uin)
+QTextCodec *UserCodec::codecForProtoUser(const char *szId, unsigned long nPPID)
 {
   QTextCodec *codec = QTextCodec::codecForLocale();
-  
-  ICQUser *u = gUserManager.FetchUser(uin, LOCK_R);
-  if (u != NULL)
+
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u)
   {
-     codec = UserCodec::codecForICQUser(u);
-     gUserManager.DropUser(u);
+    codec = UserCodec::codecForICQUser(u);
+    gUserManager.DropUser(u);
   }
-  
+
   return codec;
 }
 
@@ -127,7 +127,7 @@ QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
     return QTextCodec::codecForName(nameForCharset(u->FontEncoding()));
 
   // return default encoding
-  return codecForUIN(u->Uin());
+  return codecForProtoUser(u->Id(), u->PPID());
 }
 
 QString UserCodec::encodingForMib(int mib)

@@ -831,16 +831,20 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   buffer->PackTLV(0x05, 0x40, data);
 #else
 
-  m_nSize += 36;
+  m_nSize += 52 + 0x10;
   InitBuffer();
-
-  char data[0x20] = { 0x09, 0x46, 0x13, 0x49, 0x4c, 0x7f, 0x11, 0xd1,
+// 49 4d ( 1 2 5)
+  char data[0x40] = { 0x09, 0x46, 0x13, 0x49, 0x4c, 0x7f, 0x11, 0xd1,
 		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
-                      0x09, 0x49, 0x13, 0x49, 0x4c, 0x7f, 0x11, 0xd1,
+                      0x09, 0x46, 0x13, 0x45, 0x4c, 0x7f, 0x11, 0xd1,
+		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
+                      0x09, 0x46, 0x13, 0x46, 0x4c, 0x7f, 0x11, 0xd1,
+		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
+                      0x09, 0x46, 0x13, 0x4d, 0x4c, 0x7f, 0x11, 0xd1,
 		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00
                     };
 
-  buffer->PackTLV(0x05, 0x20, data);
+  buffer->PackTLV(0x05, 0x40, data);
 #endif
 }
 
@@ -896,26 +900,41 @@ CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
 
 
 //-----GenericUinList-----------------------------------------------------------
-CPU_GenericUinList::CPU_GenericUinList(UinList &uins, unsigned short family, unsigned short Subtype)
+CPU_GenericUinList::CPU_GenericUinList(UserStringList &users, unsigned short family, unsigned short Subtype)
   : CPU_CommonFamily(family, Subtype)
 {
   char len[2];
   len[1] = '\0';
-  char contacts[uins.size()*13+1];
+  int nLen = 0;
+  UserStringList::iterator it;
+  for (it = users.begin(); it != users.end(); it++)
+    nLen += strlen(*it)+1;
+
+  char *contacts = new char[nLen+1];
   contacts[0] = '\0';
 
-  for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++) {
-    char uin[13];
-    uin[12] = '\0';
-    len[0] = snprintf(uin, 12, "%lu", *iter);
+  for (it = users.begin(); it != users.end(); it++) {
+    len[0] = strlen(*it);
     strcat(contacts, len);
-    strcat(contacts, uin);
+    strcat(contacts, *it);
+    free (*it);
   }
 
   m_nSize += strlen(contacts);
   InitBuffer();
 
   buffer->Pack(contacts, strlen(contacts));
+}
+
+CPU_GenericUinList::CPU_GenericUinList(const char *szId, unsigned short family, unsigned short Subtype)
+  : CPU_CommonFamily(family, Subtype)
+{
+  int n = strlen(szId);
+  m_nSize += n+1;
+  InitBuffer();
+
+  buffer->PackChar(n);
+  buffer->Pack(szId, n);
 }
 
 CPU_GenericUinList::CPU_GenericUinList(unsigned long _nUin, unsigned short family, unsigned short Subtype)
@@ -1025,6 +1044,81 @@ CPU_AckNameInfo::CPU_AckNameInfo()
 
 
 //-----ThroughServer-------------------------------------------------------
+CPU_ThroughServer::CPU_ThroughServer(const char *szId,
+																		 unsigned char msgType, char *szMessage)
+  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
+{
+	m_nSubCommand = msgType;
+
+  int msgLen = szMessage ? strlen(szMessage) : 0;
+  int nUinLen = strlen(szId);
+  unsigned short nFormat = 0;
+  int nTypeLen = 0, nTLVType = 0;
+  CBuffer tlvData;
+
+  switch (msgType)
+  {
+  case ICQ_CMDxSUB_MSG:
+  	nTypeLen = 13+msgLen;
+  	nFormat = 1;
+  	break;
+
+  case ICQ_CMDxSUB_URL:
+  case ICQ_CMDxSUB_CONTACTxLIST:
+  case ICQ_CMDxSUB_AUTHxGRANTED:
+  case ICQ_CMDxSUB_AUTHxREFUSED:
+  case ICQ_CMDxSUB_AUTHxREQUEST:
+  case ICQ_CMDxSUB_ADDEDxTOxLIST:
+  	nTypeLen = 9+msgLen;
+  	nFormat = 4;
+  	break;
+
+  default:
+  	nUinLen = nTypeLen = msgLen = 0;
+  	gLog.Warn("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
+		return;
+  }
+
+  m_nSize += 11 + nTypeLen + nUinLen + 8; // 11 all bytes pre-tlv
+	//  8 fom tlv type, tlv len, and last 4 bytes
+
+	InitBuffer();
+
+	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
+	buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
+	buffer->PackUnsignedShortBE(nFormat); // message format
+	buffer->PackChar(nUinLen);
+	buffer->Pack(szId, nUinLen);
+
+	tlvData.Create(nTypeLen);
+
+	switch (nFormat)
+	{
+	case 1:
+ 		nTLVType = 0x02;
+
+ 		tlvData.PackUnsignedLongBE(0x05010001);
+		tlvData.PackUnsignedShortBE(0x0101);
+ 		tlvData.PackChar(0x01);
+		tlvData.PackUnsignedShortBE(msgLen + 4);
+ 		tlvData.PackUnsignedLongBE(0);
+		tlvData.Pack(szMessage, msgLen);
+ 		break;
+
+	case 4:
+ 		nTLVType = 0x05;
+
+		tlvData.PackUnsignedLong(gUserManager.OwnerUin());
+		tlvData.PackChar(msgType);
+		tlvData.PackChar(0); // message flags
+		tlvData.PackLNTS(szMessage);
+ 		break;
+	}
+
+	buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
+	buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
+}
+
 CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 																		 unsigned char msgType, char *szMessage)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
@@ -1702,7 +1796,7 @@ CPU_ExportContactStart::CPU_ExportContactStart()
 }
 
 //-----ExportToServerList-------------------------------------------------------
-CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
+CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
                                                unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD)
 {
@@ -1710,16 +1804,13 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
   unsigned short m_nGSID = 0;
   int nSize = 0;
 
-  UinList::iterator i;
-  for (i = uins.begin(); i != uins.end(); i++)
+  UserStringList::iterator i;
+  for (i = users.begin(); i != users.end(); i++)
   {
-    ICQUser *pUser = gUserManager.FetchUser(*i, LOCK_R);
+    ICQUser *pUser = gUserManager.FetchUser(*i, LICQ_PPID, LOCK_R);
     if (pUser)
     {
-      char szTmp[13];
-      szTmp[12] = '\0';
-
-      nSize += snprintf(szTmp, 12, "%lu", *i);
+      nSize += strlen(*i);
       nSize += 10;
 
       char *szUnicode = gTranslator.ToUnicode(pUser->GetAlias());
@@ -1735,10 +1826,8 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
   m_nSize += nSize;
   InitBuffer();
 
-  for (i = uins.begin(); i != uins.end(); i++)
+  for (i = users.begin(); i != users.end(); i++)
   {
-    char szUin[13];
-    szUin[12] = '\0';
     int nLen;
     int nAliasSize = 0;
     char *szUnicodeName = 0;
@@ -1746,7 +1835,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
     m_nSID = gUserManager.GenerateSID();
 
     // Save the SID
-    ICQUser *u = gUserManager.FetchUser(*i, LOCK_W);
+    ICQUser *u = gUserManager.FetchUser(*i, LICQ_PPID, LOCK_W);
     switch (_nType)
     {
       case ICQ_ROSTxIGNORE: // same as ICQ_ROSTxNORMAL
@@ -1793,9 +1882,9 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
 
     SetExtraInfo(m_nGSID);
 
-    nLen = snprintf(szUin, 12, "%lu", *i);
+    nLen = strlen(*i);
     buffer->PackUnsignedShortBE(nLen);
-    buffer->Pack(szUin, nLen);
+    buffer->Pack(*i, nLen);
     buffer->PackUnsignedShortBE(m_nGSID);
     buffer->PackUnsignedShortBE(m_nSID);
     buffer->PackUnsignedShortBE(_nType);
@@ -1812,6 +1901,8 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
 
     if (szUnicodeName)
       delete [] szUnicodeName;
+      
+    free(*i);
   }
 }
 

@@ -465,7 +465,6 @@ bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
   return true;
 }
 
-#ifdef PROTOCOL_PLUGIN
 void CICQDaemon::ProtoPluginList(ProtoPluginsList &lPlugins)
 {
   lPlugins.erase(lPlugins.begin(), lPlugins.end());
@@ -527,8 +526,6 @@ char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
   pthread_mutex_unlock(&licq->mutex_protoplugins);
   return p;
 }
-
-#endif
 
 //---Version-------------------------------------------------------------------
 /*! \brief Returns the version of Licq */
@@ -881,7 +878,6 @@ void CICQDaemon::SaveUserList()
   nRet = write(fd, buff, n);
 
   unsigned short i = 1;
-#ifdef PROTOCOL_PLUGIN
   //TODO: Work with other protocols
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
@@ -893,18 +889,6 @@ void CICQDaemon::SaveUserList()
     i++;
   }
   FOR_EACH_PROTO_USER_END
-#else
-  FOR_EACH_UIN_START
-  {
-    n = sprintf(buff, "User%d = %lu\n", i, nUin);
-    nRet = write(fd, buff, n);
-    if (nRet == -1)
-      FOR_EACH_UIN_BREAK
-
-    i++;
-  }
-  FOR_EACH_UIN_END
-#endif
 
   close(fd);
 
@@ -926,8 +910,6 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
     m_nIgnoreTypes &= ~n;
 }
 
-
-#ifdef PROTOCOL_PLUGIN
 bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
                                bool bNotify)
 {
@@ -948,13 +930,12 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
 
   // this notify is for local only adds
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify)
-    icqAddUser(strtoul(szId, (char **)NULL, 10));
+    icqAddUser(szId);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID));
 
   return true;
 }
-#endif
 
 //---AddUserToList-------------------------------------------------------------
 /*! \brief Adds Uin to contact list
@@ -1035,6 +1016,16 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, _nUin));
 }
 
+void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
+{
+  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1) icqRemoveUser(szId);
+  
+  gUserManager.RemoveUser(szId, nPPID);
+  SaveUserList();
+  
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, szId,
+    nPPID));
+}
 
 //-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
@@ -1059,7 +1050,8 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   {
     u->Touch();
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_STATUS, u->Uin(), arg));
+                                    USER_STATUS, u->IdString(),
+                                    u->PPID(), arg));
   }
 }
 
@@ -1157,6 +1149,26 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 #else
   SendEvent(m_nTCPSrvSocketDesc, *packet, true);
 #endif
+}
+
+ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long nPPID,
+   CPacket *packet, CUserEvent *ue)
+{
+  // If we are already shutting down, don't start any events
+  if (m_bShuttingDown)
+  {
+    if (packet != NULL) delete packet;
+    if (ue != NULL) delete ue;
+    return NULL;
+  }
+
+  if (ue != NULL) ue->m_eDir = D_SENDER;
+  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, szId,
+    LICQ_PPID, ue);
+
+	if (e == NULL)  return NULL;
+
+  return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 }
 
 ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,
@@ -1852,8 +1864,6 @@ ICQEvent *CICQDaemon::PopPluginEvent()
   return e;
 }
 
-
-#ifdef PROTOCOL_PLUGIN
 void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
 {
   ProtoPluginsListIter iter;
@@ -1887,7 +1897,6 @@ CSignal *CICQDaemon::PopProtoSignal()
   pthread_mutex_unlock(&licq->mutex_protoplugins);
   return s;
 }
-#endif
 
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
 void CICQDaemon::CancelEvent(unsigned long t)

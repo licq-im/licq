@@ -34,7 +34,7 @@
 
 
 // -----------------------------------------------------------------------------
-#ifdef QT_PROTOCOL_PLUGIN
+
 ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   const char *szId, unsigned long nPPID, QWidget *parent)
   : LicqDialog(parent, "ShowAwayMessageDialog")
@@ -95,7 +95,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
 
   show();
 }
-#endif
 
 ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, unsigned long _nUin, QWidget *parent)
   : LicqDialog(parent, "ShowAwayMessageDialog")
@@ -160,9 +159,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
 
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
-#ifdef QT_PROTOCOL_PLUGIN
   if (m_szId) free(m_szId);
-#endif
 }
 
 
@@ -170,11 +167,7 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
 
 void ShowAwayMsgDlg::accept()
 {
-#ifdef QT_PROTOCOL_PLUGIN
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
-#else
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-#endif
   u->SetShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 
@@ -229,11 +222,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   if (isOk && (e->Command() == ICQ_CMDxTCP_START ||
                e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)))
   {
-#ifdef QT_PROTOCOL_PLUGIN
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-#else
-    ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
-#endif
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     const char *szAutoResp = (e->ExtendedAck() && !e->ExtendedAck()->Accepted())?
                               e->ExtendedAck()->Response() : u->AutoResponse();

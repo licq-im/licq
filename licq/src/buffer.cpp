@@ -369,6 +369,18 @@ char *CBuffer::UnpackString()
   return sz;
 }
 
+// Need to dlete[] returned string
+char *CBuffer::UnpackUserString()
+{
+  unsigned char nLen;
+  *this >> nLen;
+  char *sz = new char[nLen+1];
+  sz[0] = '\0';
+  for (unsigned char i = 0; i < nLen; i++) *this >> sz[i];
+  sz[nLen] = '\0';
+  return sz;
+}
+
 unsigned long CBuffer::UnpackUnsignedLong()
 {
   unsigned long n;

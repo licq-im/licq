@@ -49,14 +49,8 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 	lay->addWidget(frmBtn);
 
 	QBoxLayout *layUin = new QBoxLayout(frmUin, QBoxLayout::LeftToRight);
-#ifdef QT_PROTOCOL_PLUGIN
-	lblUin = new QLabel(tr("New User Id:"), frmUin);
+	lblUin = new QLabel(tr("New User ID:"), frmUin);
 	edtUin = new QLineEdit(frmUin);
-#else
-  lblUin = new QLabel(tr("New User UIN:"), frmUin);
-  edtUin = new QLineEdit(frmUin);
-	edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
-#endif
 	layUin->addWidget(lblUin);
 	layUin->addWidget(edtUin);
 
@@ -90,23 +84,16 @@ void AddUserDlg::show()
 
 void AddUserDlg::ok()
 {
-#ifdef QT_PROTOCOL_PLUGIN
   QString strUser = edtUin->text().latin1();
   if (!strUser.isEmpty())
   {
     //TODO Get protocol
     server->AddUserToList(strUser, LICQ_PPID);
+    //if (chkAlert->isChecked())
+    //  server->icqAlertUser(strUser);
   }
-#else
-   unsigned long nUin = edtUin->text().toULong();
-   if (nUin != 0)
-   {
-     server->AddUserToList(nUin);
-     if (chkAlert->isChecked()) // alert the user they were added
-       server->icqAlertUser(nUin);
-   }
-#endif
-   close(true);
+
+  close(true);
 }
 
 #include "adduserdlg.moc"

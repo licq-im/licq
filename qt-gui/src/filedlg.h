@@ -20,20 +20,16 @@ class CFileDlg : public QWidget
    Q_OBJECT
 public:
   CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent = 0);
-#ifdef QT_PROTOCOL_PLUGIN
   CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
     QWidget *parent = 0);
-#endif
   virtual ~CFileDlg();
 
   bool SendFiles(ConstFileList filelist, unsigned short nPort);
   bool ReceiveFiles();
 
   unsigned short LocalPort();
-#ifdef QT_PROTOCOL_PLUGIN
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-#endif
   unsigned long Uin()  { return m_nUin; };
 
 protected:
@@ -54,10 +50,8 @@ protected:
    CFileTransferManager *ftman;
 
    unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
    char *m_szId;
    unsigned long m_nPPID;
-#endif
    CICQDaemon *licqDaemon;
    QSocketNotifier *sn;
 

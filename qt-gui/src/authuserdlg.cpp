@@ -35,7 +35,6 @@
 #include "licq_icqd.h"
 #include "usercodec.h"
 
-#ifdef QT_PROTOCOL_PLUGIN
 //TODO Add drop down list of avaiable protocols
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
    bool bGrant, QWidget *parent)
@@ -112,7 +111,6 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
 
   show();
 }
-#endif
 
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
    QWidget *parent)
@@ -196,9 +194,8 @@ void AuthUserDlg::ok()
   {
     if (edtUin->text().isEmpty()) return;
     m_nUin = edtUin->text().toULong();
-  }  
+  }
 
-#ifdef QT_PROTOCOL_PLUGIN
   if (m_szId == 0) m_szId = strdup(edtUin->text().latin1());
 
   if (m_szId != 0)
@@ -211,17 +208,6 @@ void AuthUserDlg::ok()
       server->icqAuthorizeRefuse(strtoul(m_szId, (char **)NULL, 10), codec->fromUnicode(mleResponse->text()));
     close(true);
   }
-#else
-  if (m_nUin)
-  {
-    QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
-    if (m_bGrant)
-      server->icqAuthorizeGrant(m_nUin, codec->fromUnicode(mleResponse->text()));
-    else
-      server->icqAuthorizeRefuse(m_nUin, codec->fromUnicode(mleResponse->text()));
-    close(true);
-  }
-#endif
 }
 
 #include "authuserdlg.moc"

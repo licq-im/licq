@@ -28,7 +28,7 @@
 
 #include "licq_user.h"
 
-#ifdef QT_PROTOCOL_PLUGIN
+
 CRefuseDlg::CRefuseDlg(const char *szId, unsigned long nPPID, QString t,
    QWidget* parent)
    : LicqDialog(parent, "RefuseDialog", true)
@@ -60,7 +60,6 @@ CRefuseDlg::CRefuseDlg(const char *szId, unsigned long nPPID, QString t,
 
   setCaption(tr("Licq %1 Refusal").arg(t));
 }
-#endif
 
 CRefuseDlg::CRefuseDlg(unsigned long _nUin, QString t, QWidget* parent)
    : LicqDialog(parent, "RefuseDialog", true)

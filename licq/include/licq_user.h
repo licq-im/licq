@@ -15,9 +15,7 @@
 
 class TCPSocket;
 
-#ifdef PROTOCOL_PLUGIN
 #define LICQ_PPID 0x4C696371  // "Licq"
-#endif
 
 /*---------------------------------------------------------------------------
  * FOR_EACH_USER
@@ -36,7 +34,6 @@ class TCPSocket;
       pUser->Lock(x);                                    \
       {
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_USER_START(x, y)                  \
   {                                                      \
     ICQUser *pUser;                                      \
@@ -74,8 +71,6 @@ class TCPSocket;
           break;                                          \
         }
 
-#endif
-
 #define FOR_EACH_USER_END                \
       }                                  \
       pUser->Unlock();                   \
@@ -83,7 +78,6 @@ class TCPSocket;
     gUserManager.UnlockUserList();       \
   }
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_USER_END        \
         }                                \
         pUser->Unlock();                 \
@@ -91,7 +85,6 @@ class TCPSocket;
     }                                    \
     gUserManager.UnlockUserList();       \
   }
-#endif
 
 #define FOR_EACH_USER_BREAK              \
         {                                \
@@ -99,7 +92,6 @@ class TCPSocket;
           break;                         \
         }
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_USER_BREAK        \
         {                                \
           gUserManager.DropUser(pUser);  \
@@ -111,7 +103,6 @@ class TCPSocket;
           gUserManager.DropUser(pUser);  \
           continue;                      \
         }
-#endif
 
 #define FOR_EACH_USER_CONTINUE           \
         {                                \
@@ -138,7 +129,6 @@ class TCPSocket;
       nUin = (*_i_)->Uin();                              \
       {
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_ID_START(x)                       \
   {                                                      \
     char *szId;                                          \
@@ -150,7 +140,6 @@ class TCPSocket;
       {                                                  \
         szId = (*_i_)->IdString();                       \
         {
-#endif
 
 #define FOR_EACH_UIN_END                 \
       }                                  \
@@ -158,46 +147,39 @@ class TCPSocket;
     gUserManager.UnlockUserList();       \
   }
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_ID_END            \
         }                                \
       }                                  \
     }                                    \
     gUserManager.UnlockUserList();       \
   }
-#endif
 
 #define FOR_EACH_UIN_BREAK               \
         {                                \
           break;                         \
         }
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_ID_BREAK          \
         {                                \
           break;                         \
         }
-#endif
 
 #define FOR_EACH_UIN_CONTINUE            \
         {                                \
           continue;                      \
         }
 
-#ifdef PROTOCOL_PLUGIN
 #define FOR_EACH_PROTO_ID_CONTINUE       \
         {                                \
           continue;                      \
         }
-#endif
 
 typedef std::list<ICQUser *> UserList;
-#ifdef PROTOCOL_PLUGIN
 typedef std::list<class ICQOwner *> OwnerList;
-#endif
 typedef std::vector<char *> GroupList;
 typedef std::vector<unsigned short> GroupIDList;
 typedef std::list<unsigned long> UinList;
+typedef std::list<char *> UserStringList;
 typedef std::vector <class CUserEvent *> UserEventList;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
@@ -270,10 +252,8 @@ class ICQUser
 public:
   ICQUser(unsigned long id, char *filename);
   ICQUser(unsigned long id);
-#ifdef PROTOCOL_PLUGIN
   ICQUser(const char *id, unsigned long ppid, char *filename);
   ICQUser(const char *id, unsigned long ppid);
-#endif
   virtual ~ICQUser();
   void RemoveFiles();
 
@@ -414,10 +394,8 @@ public:
   unsigned short StatusToUser()         { return m_nStatusToUser; }
   bool KeepAliasOnUpdate()              { return m_bKeepAliasOnUpdate; }
   char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
-#ifdef PROTOCOL_PLUGIN
   unsigned long PPID()                  { return m_nPPID; }
   char *IdString()                      { return m_szId; }
-#endif
 
   char *usprintf(const char *szFormat, unsigned long nFlags = 0);
 
@@ -496,10 +474,8 @@ public:
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
-#ifdef PROTOCOL_PLUGIN
   void SetPPID(unsigned long n)       { m_nPPID = n; }
   void SetId(const char *s)            { SetString(&m_szId, s); SaveLicqInfo(); }
-#endif
 
   // Status
   unsigned short Status();
@@ -709,11 +685,9 @@ protected:
 
   // About Info
   char *m_szAbout;
-
-#ifdef PROTOCOL_PLUGIN
+  
   // Protocol ID
   unsigned long m_nPPID;
-#endif
 
   // Server Side ID, Group SID
   bool m_bAwaitingAuth;
@@ -740,9 +714,7 @@ class ICQOwner : public ICQUser
 {
 public:
   ICQOwner();
-#ifdef PROTOCOL_PLUGIN
   ICQOwner(const char *, unsigned long);
-#endif
   virtual ~ICQOwner();
   bool Exception()  { return m_bException; }
 
@@ -789,23 +761,19 @@ class CUserHashTable
 {
 public:
   CUserHashTable(unsigned short _nSize);
-
-#ifdef PROTOCOL_PLUGIN
+  
   // For protocol plugins
   ICQUser *Retrieve(const char *, unsigned long);
 	void Store(ICQUser *, const char *, unsigned long);
   void Remove(const char *, unsigned long);
-#endif
 
   // For ICQ (Licq way)
   ICQUser *Retrieve(unsigned long _nUin);
   void Store(ICQUser *u, unsigned long _nUin);
   void Remove(unsigned long _nUin);
 protected:
-#ifdef PROTOCOL_PLUGIN
 	// For protocol plugin
   unsigned short HashValue(const char *);
-#endif
 
   // For ICQ (Licq way)
   unsigned short HashValue(unsigned long _nUin);
@@ -825,19 +793,16 @@ public:
   ~CUserManager();
   bool Load();
   void SetOwnerUin(unsigned long _nUin);
-
-#ifdef PROTOCOL_PLUGIN
+  
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
   void AddUser(ICQUser *, const char *, unsigned long);
   void RemoveUser(const char *, unsigned long);
   ICQUser *FetchUser(const char *, unsigned long, unsigned short);
-  //void DropUser(ICQUser *);
   ICQOwner *FetchOwner(unsigned long, unsigned short);
   void DropOwner(unsigned long);
   bool IsOnList(const char *, unsigned long);
   ICQOwner *FindOwner(const char *, unsigned long);
-#endif
 
   // ICQ Protocol only (from original Licq)
   unsigned long AddUser(ICQUser *);
@@ -855,10 +820,8 @@ public:
   void UnlockGroupList();
   GroupIDList *LockGroupIDList(unsigned short);
   void UnlockGroupIDList();
-#ifdef PROTOCOL_PLUGIN
   OwnerList *LockOwnerList(unsigned short);
   void UnlockOwnerList();
-#endif
 
   bool AddGroup(char *, unsigned short = 0);
   void RemoveGroup(unsigned short);
@@ -878,6 +841,8 @@ public:
 
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
+  void AddUserToGroup(const char *, unsigned long, unsigned short);
+  void RemoveUserFromGroup(const char *, unsigned long, unsigned short);
   void SaveAllUsers();
 
   unsigned short NumUsers();
@@ -887,30 +852,18 @@ public:
   void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
-  pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_groupidlist
-#ifdef PROTOCOL_PLUGIN
-                 , mutex_ownerlist;
-#else
-  ;
-#endif
+  pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_groupidlist, mutex_ownerlist;
 
   GroupList m_vszGroups;
   UserList m_vpcUsers;
-#ifdef PROTOCOL_PLUGIN
   OwnerList m_vpcOwners;
-#endif
   GroupIDList m_vnGroupsID;
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
   unsigned short m_nDefaultGroup, m_nNewUserGroup,
                  m_nUserListLockType, m_nGroupListLockType,
-                 m_nGroupIDListLockType
-#ifdef PROTOCOL_PLUGIN
-  , m_nOwnerListLockType;
-#else
-  ;
-#endif
+                 m_nGroupIDListLockType, m_nOwnerListLockType;
   bool m_bAllowSave;
 
   friend class CICQDaemon;

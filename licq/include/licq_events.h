@@ -67,12 +67,10 @@ public:
   const char *LastName()   { return m_szLastName; }
   //! Returns the e-mail address of the search result.
   const char *Email()      { return m_szEmail; }
-#ifdef PROTOCOL_PLUGIN
   //! Retunrs the Id string
   const char *Id()         { return m_szId; }
   //! Returns the protocol plugin id
   unsigned long PPID()     { return m_nPPID; }
-#endif
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
   //! is valid when Result() is EVENT_SUCCESS.
@@ -90,12 +88,10 @@ public:
 
 protected:
   CSearchAck(unsigned long _nUin);
-#ifdef PROTOCOL_PLUGIN
   CSearchAck(const char *_szId, unsigned long _nPPID);
 
   unsigned long m_nPPID;
   char *m_szId;
-#endif
   unsigned long m_nUin;
   char *m_szAlias;
   char *m_szFirstName;
@@ -193,10 +189,14 @@ public:
   //!this was a message/url...
   unsigned long Uin()          { return m_nDestinationUin; }
 
-#ifdef PROTOCOL_PLUGIN
+  //!The user id that the event was destined for.  Only relevant if
+  //!this was a message/url...
   char *Id()                   { return m_szId; }
+  
+  //!The protocol id of the user that the event was destined for.
+  //!Only relevant if this was a message/url...
   unsigned long PPID()         { return m_nPPID; }
-#endif
+
   //!Special structure containing information relevant if this is a
   //!search event.
   CSearchAck *SearchAck()      { return m_pSearchAck; }
@@ -230,10 +230,8 @@ public:
 protected:
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
            unsigned long _nUin, CUserEvent *e);
-#ifdef PROTOCOL_PLUGIN
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
            const char *_szId, unsigned long _nPPID, CUserEvent *e);
-#endif
   ICQEvent(ICQEvent *);
 
   // Daemon only
@@ -262,10 +260,8 @@ protected:
   unsigned short m_nSubType;
   unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
-#ifdef PROTOCOL_PLUGIN
   char           *m_szId;
   unsigned long  m_nPPID;
-#endif
   CPacket        *m_pPacket;
   pthread_t      thread_send;
   bool           thread_running;
@@ -391,10 +387,8 @@ class CICQSignal
 {
 public:
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, int nArgument = 0, char *nParameters = 0);
-#ifdef PROTOCOL_PLUGIN
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
              unsigned long _nPPID, int nArgument = 0, char *nParameters = 0);
-#endif
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
 
@@ -405,26 +399,20 @@ public:
   //!UIN that the signal is related.  See signals to understand how this
   //!value is set.
   unsigned long Uin() { return m_nUin; }
-#ifdef PROTOCOL_PLUGIN
   char *Id()            { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-#endif
   int Argument() { return m_nArgument; }
   char *Parameters() { return m_szParameters; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
-#ifdef PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   int m_nArgument;
   char * m_szParameters;
 };
 
-
-#ifdef PROTOCOL_PLUGIN
 enum SIGNAL_TYPE
 {
   PROTOxLOGON = 1,
@@ -490,7 +478,5 @@ class CRemoveUserSignal : public CSignal
 public:
   CRemoveUserSignal(const char *);
 };
-
-#endif
 
 #endif

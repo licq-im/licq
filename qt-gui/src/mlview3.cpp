@@ -60,7 +60,7 @@ void MLView::append(const QString& s)
   if (strcmp(qVersion(), "3.0.0") == 0 ||
       strcmp(qVersion(), "3.0.1") == 0 ||
       strcmp(qVersion(), "3.0.2") == 0 ||
-      strcmp(qVersion(), "3.0.3") == 0 || 
+      strcmp(qVersion(), "3.0.3") == 0 ||
       strcmp(qVersion(), "3.0.4") == 0)
   {
      // Workaround --
@@ -77,22 +77,26 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
 {
   // We cannot use QStyleSheet::convertFromPlainText
   // since it has a bug in Qt 3 which causes line breaks to mix up.
-  QString text = QStyleSheet::escape(s);
+  // not used for html now QString text = QStyleSheet::escape(s);
+  QString text = s;
 
   // We must hightlight URLs at this step, before we convert
-  // linebreaks to richtext tags and such.
-  if (highlightURLs)
+  // linebreaks to richtext tags and such.  Also, check to make sure
+  // that the text is not prepared to be highlighted already (by AIM).
+  QRegExp reAHREF("<a href", false);
+  int pos = 0;
+  if (highlightURLs && (pos = text.find(reAHREF, pos)) == -1)
   {
      QRegExp reURL("(\\w+://.+)(\\s+|$)");
      reURL.setMinimal(true);
-     int pos = 0;
+     pos = 0;
      while ( (pos = text.find(reURL, pos)) != -1 ) {
         QString url = reURL.cap(1);
         QString link = QString::fromLatin1("<a href=\"") + url + QString::fromLatin1("\">") + url + QString::fromLatin1("</a>");
         text.replace(pos, url.length(), link);
         pos += reURL.matchedLength() - url.length() + link.length();
      }
-     
+
      QRegExp reMail("(mailto:)?([\\d\\w\\.\\-_]+@[\\d\\w\\.\\-_]+)(\\s+|$)");
      reMail.setMinimal(true);
      pos = 0;
@@ -102,7 +106,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
         text.replace(pos, mail.length(), link);
         pos += reMail.matchedLength() - mail.length() + link.length();
      }
-     
+
   }
 
   text.replace(QRegExp("\n"), "<br>\n");
@@ -110,16 +114,16 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
   // and convert the next characters to &nbsp;s (to preserve multiple
   // spaces).
   QRegExp longSpaces(" ([ ]+)");
-  int pos;
+  pos = 0;
   QString cap;
   while ((pos = longSpaces.search(text)) > -1)
   {
      cap = longSpaces.cap(1);
      cap.replace(QRegExp(" "), "&nbsp;");
-     text.replace(pos+1, longSpaces.matchedLength()-1, cap); 
+     text.replace(pos+1, longSpaces.matchedLength()-1, cap);
   }
   text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
-  
+
   return text;
 }
 

@@ -218,8 +218,6 @@ void AwayMsgDlg::closeEvent(QCloseEvent *e)
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
-
-#ifdef QT_PROTOCOL_PLUGIN
 CustomAwayMsgDlg::CustomAwayMsgDlg(const char *szId,
     unsigned long nPPID, QWidget *parent)
     : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
@@ -278,7 +276,6 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(const char *szId,
 
   show();
 }
-#endif
 
 CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
     : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
@@ -352,20 +349,12 @@ void CustomAwayMsgDlg::slot_ok()
   while(s[s.length()-1].isSpace())
     s.truncate(s.length()-1);
 
-#ifdef QT_PROTOCOL_PLUGIN
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
-#else
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-#endif
   if (u != NULL)
   {
     u->SetCustomAutoResponse(s.local8Bit());
     gUserManager.DropUser(u);
-#ifdef QT_PROTOCOL_PLUGIN
     CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_szId, m_nPPID);
-#else
-    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
-#endif
     gMainWindow->slot_updatedUser(&sig);
   }
   close();
@@ -374,20 +363,12 @@ void CustomAwayMsgDlg::slot_ok()
 
 void CustomAwayMsgDlg::slot_clear()
 {
-#ifdef QT_PROTOCOL_PLUGIN
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
-#else
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-#endif
   if (u != NULL)
   {
     u->ClearCustomAutoResponse();
     gUserManager.DropUser(u);
-#ifdef QT_PROTOCOL_PLUGIN
     CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_szId, m_nPPID);
-#else
-    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
-#endif
     gMainWindow->slot_updatedUser(&sig);
   }
   close();

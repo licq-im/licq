@@ -24,10 +24,8 @@ protected:
   CSignalManager *sigman;
   CInfoField *edtUser;
   QPushButton *btnOk, *btnCancel;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   unsigned long m_nUin;
 protected slots:
   void slot_ok();

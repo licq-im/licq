@@ -26,19 +26,15 @@ class CUtilityDlg : public QWidget
   Q_OBJECT
 public:
   CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server);
-#ifdef QT_PROTOCOL_PLUGIN
   CUtilityDlg(CUtility *u, const char *szId, unsigned long nPPID,
     CICQDaemon *server);
-#endif
   ~CUtilityDlg();
 protected:
   CUtility *m_xUtility;
   CICQDaemon *server;
   unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   bool m_bIntWin, m_bStdOutClosed, m_bStdErrClosed;
   CUtilityInternalWindow *intwin;
 

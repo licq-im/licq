@@ -78,17 +78,17 @@ public:
   UserEventCommon *callFunction(int fcn, unsigned long nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
-#ifdef QT_PROTOCOL_PLUGIN
   UserEventCommon *callFunction(int fcn, const char *, unsigned long);
   bool RemoveUserFromList(const char *, unsigned long, QWidget *);
-#endif
+  bool RemoveUserFromGroup(GroupType, unsigned long, const char *,
+    unsigned long, QWidget *);
+
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   void ApplyExtendedIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
   QPopupMenu *UserMenu() { return mnuUser; }
   void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
-#ifdef QT_PROTOCOL_PLUGIN
   void SetUserMenuUser(const char *s, unsigned long n)
   {
     if (m_szUserMenuId)  free(m_szUserMenuId);
@@ -96,7 +96,7 @@ public:
     m_nUserMenuPPID = n;
     m_nUserMenuUin = strtoul(s, (char **)NULL, 10);
   }
-#endif
+
   static QPixmap &iconForStatus(unsigned long FullStatus);
   static QPixmap &iconForEvent(unsigned short SubCommand);
 
@@ -152,9 +152,7 @@ public:
 
 public slots:
   void callInfoTab(int, unsigned long, bool toggle=false);
-#ifdef QT_PROTOCOL_PLUGIN
-  //void callInfoTab(int, const char *, unsigned long, bool toggle=false);
-#endif
+  void callInfoTab(int, const char *, unsigned long, bool toggle=false);
 
 public:
   // Command Tools
@@ -192,10 +190,8 @@ public:
              *mnuDebug,
              *mnuUtilities,
              *mnuMiscModes,
-             *mnuSend;
-#ifdef QT_PROTOCOL_PLUGIN
-  QPopupMenu *mnuProtocolStatus[16];
-#endif
+             *mnuSend,
+             *mnuProtocolStatus[16];
   CELabel *lblStatus, *lblMsg;
   CEButton *btnSystem;
   CEComboBox *cmbUserGroups;
@@ -216,11 +212,9 @@ public:
           pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed, pmExpanded;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
-#ifdef QT_PROTOCOL_PLUGIN
   unsigned long m_nProtoNum;
   char *m_szUserMenuId;
   unsigned long m_nUserMenuPPID;
-#endif
 
   // AutoAway
   QTimer autoAwayTimer;
@@ -239,6 +233,8 @@ public:
   void CreateUserView();
   void CreateUserFloaty(unsigned long nUin, unsigned short x = 0,
      unsigned short y = 0, unsigned short w = 0);
+  void CreateUserFloaty(const char *szId, unsigned long nPPID,
+    unsigned short x = 0, unsigned short y = 0, unsigned short w = 0);
   void initMenu();
   bool show_user(ICQUser *);
 
@@ -278,26 +274,26 @@ protected slots:
   void changeStatusManual(int index);
   void setCurrentGroupMenu(int id);
   void setCurrentGroup(int);
-  void callDefaultFunction(unsigned long _nUin);
+  void callDefaultFunction(const char *, unsigned long);
   void callDefaultFunction(QListViewItem *);
   void callOwnerFunction(int);
   void callMsgFunction();
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
-#ifdef QT_QT_PROTOCOL_PLUGIN
   //TODO
   //void callUserFunction(const char *, unsigned long);
-#endif
+  void slot_userfinished(const char *, unsigned long);
+  void slot_sendfinished(const char *, unsigned long);
+  //void slot_ui_message(const char *, unsigned long);
   void slot_userfinished(unsigned long);
   void slot_sendfinished(unsigned long);
   void slot_usermenu();
   void slot_logon();
-  void slot_ui_viewevent(unsigned long);
+  //void slot_ui_viewevent(unsigned long);
   void slot_ui_message(unsigned long);
-#ifdef QT_PROTOCOL_PLUGIN
-  //void slot_protocolPlugin(unsigned long);
-#endif
+  void slot_ui_viewevent(const char *);
+  void slot_protocolPlugin(unsigned long);
   void slot_register();
   void slot_doneregister();
   void slot_doneOptions();
@@ -314,7 +310,7 @@ protected slots:
   void popupOptionsDlg() { emit showOptionsDlg(0); };
   void showAuthUserDlg();
   void showReqAuthDlg(int);
-  void showReqAuthDlg(unsigned long nUin = 0);
+  void showReqAuthDlg(const char * = 0, unsigned long = 0);
   void showSearchUserDlg();
   void popupSystemMenu();
   void changeDebug(int);
@@ -332,6 +328,7 @@ protected slots:
   void slot_popupall();
   void slot_aboutToQuit();
   void UserInfoDlg_finished(unsigned long);
+  void UserInfoDlg_finished(const char *, unsigned long);
   void slot_doneUserEventTabDlg();
 
 signals:

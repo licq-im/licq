@@ -43,9 +43,7 @@ extern int errno;
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
-#ifdef PROTOCOL_PLUGIN
 #include "licq_protoplugind.h"
-#endif
 
 #include "licq.conf.h"
 
@@ -156,9 +154,7 @@ CLicq::CLicq()
   DEBUG_LEVEL = 0;
   licqDaemon = NULL;
   pthread_mutex_init(&mutex_plugins, NULL);
-#ifdef PROTOCOL_PLUGIN
   pthread_mutex_init(&mutex_protoplugins, NULL);
-#endif
 }
 
 bool CLicq::Init(int argc, char **argv)
@@ -673,7 +669,6 @@ void CLicq::StartPlugin(CPlugin *p)
   pthread_create( &p->thread_plugin, NULL, p->fMain_tep, licqDaemon);
 }
 
-#ifdef PROTOCOL_PLUGIN
 CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
 {
   void *handle;
@@ -803,7 +798,6 @@ void *CLicq::FindFunction(void *_pHandle, const char *_szSymbolName)
 
   return pFunc;
 }
-#endif
 
 int CLicq::Main()
 {

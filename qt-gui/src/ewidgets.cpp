@@ -516,8 +516,6 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 #endif
 
 //- Message View Widget ---------------------------------------------------------
-
-#ifdef QT_PROTOCOL_PLUGIN
 CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   CMainWindow *m, QWidget* parent, const char * name)
   : CHistoryWidget(parent, name)
@@ -542,7 +540,6 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   for (unsigned short i = 0; i < newEventList.size(); i++)
     addMsg(newEventList[i]);
 }
-#endif
 
 CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget* parent, const char * name)
 :CHistoryWidget(parent,name)
@@ -569,19 +566,14 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
 
 CMessageViewWidget::~CMessageViewWidget()
 {
-#ifdef QT_PROTOCOL_PLUGIN
   if (m_szId)
     free(m_szId);
-#endif
 }
 
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
-#ifdef QT_PROTOCOL_PLUGIN
-  if (strcmp(_e->Id(), m_szId) == 0 && _e->PPID() == m_nPPID)
-#else
-  if ( _e->Uin() == m_nUin && _e->UserEvent() )
-#endif
+  if (strcmp(_e->Id(), m_szId) == 0 && _e->PPID() == m_nPPID &&
+    _e->UserEvent())
     addMsg( _e->UserEvent() );
 }
 
@@ -595,11 +587,8 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QTextCodec *codec = QTextCodec::codecForLocale();
 
   {
-#ifdef QT_PROTOCOL_PLUGIN
+
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-#else
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-#endif
     if (u != NULL)
     {
       codec = UserCodec::codecForICQUser(u);
@@ -611,11 +600,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 
   if (e->Direction() != D_RECEIVER)
   {
-#ifdef QT_PROTOCOL_PLUING
     ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
-#else
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-#endif
     if (o != NULL)
     {
       // Don't use this codec to decode our conversation with the contact
@@ -638,7 +623,8 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
 
   // QTextEdit::append adds a paragraph break so we don't have to.
-  s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b></font>",
+  s.sprintf("<html><body><font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b></font><br>"
+            "<font color=\"%s\">%s</font></body></html>",
             color,
             e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
               (EventDescription(e) + " ").utf8().data(),
@@ -647,10 +633,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
-            contactName.utf8().data()
-           );
-  append(s);
-  s.sprintf("<font color=\"%s\">%s</font>",
+            contactName.utf8().data(),
             color,
             MLView::toRichText(messageText, true).utf8().data()
            );

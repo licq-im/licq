@@ -188,6 +188,8 @@ public:
   // Accessors
   const char *Name() { return m_szName; }
   unsigned long Uin() { return m_nUin; }
+  char *Id() { return m_szId; }
+  unsigned long PPID() { return m_nPPID; }
   unsigned short Port() { return m_nPort; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -196,9 +198,12 @@ public:
   int ColorBackGreen() { return m_nColorBackGreen; }
   int ColorBackBlue() { return m_nColorBackBlue; }
 
-  virtual ~CPChat_Color() { if (m_szName != NULL) free(m_szName); }
+  virtual ~CPChat_Color() { if (m_szName != NULL) free(m_szName); if (m_szId != NULL) free(m_szId); }
+
 protected:
   unsigned long m_nUin;
+  char *m_szId;
+  unsigned long m_nPPID;
   char *m_szName;
   unsigned short m_nPort;
   int m_nColorForeRed;
@@ -218,6 +223,7 @@ class CChatClient
 public:
   CChatClient();
   CChatClient(ICQUser *);
+  ~CChatClient() { if (m_szId) free(m_szId); }
 
   // Initialize from the handshake buffer (does not set the session
   // or port fields however)
@@ -229,6 +235,8 @@ public:
   unsigned long m_nVersion;
   unsigned short m_nPort;
   unsigned long m_nUin;
+  char *m_szId;
+  unsigned long m_nPPID;
   unsigned long m_nIp;
   unsigned long m_nIntIp;
   char m_nMode;
@@ -263,11 +271,13 @@ public:
 
   CPChat_ColorFont(CBuffer &);
 
-  virtual ~CPChat_ColorFont()  {  if (m_szName != NULL) free (m_szName); if (m_szFontFamily != NULL) free(m_szFontFamily); }
+  virtual ~CPChat_ColorFont()  {  if (m_szName != NULL) free (m_szName); if (m_szFontFamily != NULL) free(m_szFontFamily); if (m_szId != NULL) free(m_szId); }
 
   // Accessors
   const char *Name() { return m_szName; }
   unsigned long Uin() { return m_nUin; }
+  char *Id() { return m_szId; }
+  unsigned long PPID() { return m_nPPID; }
   unsigned short Session() { return m_nSession; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -289,6 +299,8 @@ public:
 
 protected:
   unsigned long m_nUin;
+  char *m_szId;
+  unsigned long m_nPPID;
   unsigned short m_nSession;
   char *m_szName;
   int m_nColorForeRed;
@@ -442,6 +454,8 @@ class CChatUser
 {
 public:
   unsigned long Uin()          { return uin; }
+  char *Id()                   { return szId; }
+  unsigned long PPID()         { return nPPID; }
   unsigned long ToKick()       { return nToKick; }
   const char *Name()           { return chatname; }
   int *ColorFg()               { return colorFore; }
@@ -457,12 +471,14 @@ public:
   bool Focus()                 { return focus; }
   bool Sleep()                 { return sleep; }
 
-  ~CChatUser() {}
+  ~CChatUser() {if (szId) free(szId);}
 
 protected:
   CChatUser();
 
   unsigned long uin;
+  char *szId;
+  unsigned long nPPID;
   unsigned long nToKick;
   char chatname[32];
   int colorFore[3], colorBack[3];
@@ -579,6 +595,8 @@ protected:
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
   unsigned long m_nUin;
+  char *m_szId;
+  unsigned long m_nPPID;
   unsigned short m_nSession;
   ChatUserList chatUsers;
   ChatUserList chatUsersClosed;

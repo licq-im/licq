@@ -58,16 +58,10 @@ public:
   virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;
   unsigned long ItemUin() const { return m_nUin; }
-#ifdef QT_PROTOCOL_PLUGIN
-  char *ItemId() const { return m_szId; }
-  unsigned long ItemPPID() const { return m_nPPID; }
-#endif
+  char *ItemId() { return m_szId; }
+  unsigned long ItemPPID() { return m_nPPID; }
   unsigned short GroupId() const { return m_nGroupId; }
-#ifdef QT_PROTOCOL_PLUGIN
-  bool isGroupItem() const { return (m_szId && m_nPPID && m_nGroupId != (unsigned short)(-1)); }
-#else
-  bool isGroupItem() const { return (m_nUin == 0 && m_nGroupId != (unsigned short)(-1)); }
-#endif
+  bool isGroupItem() const { return (!m_szId && !m_nPPID && m_nGroupId != (unsigned short)(-1)); }
   QCString  GroupName() const { return m_sGroupName; }
   void setGraphics(ICQUser *);
   unsigned short Status() const { return m_nStatus; };
@@ -86,10 +80,8 @@ protected:
   QPixmap *m_pIcon, *m_pIconStatus;
 
   unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;
   unsigned short m_nGroupId;
@@ -136,17 +128,12 @@ public:
   void AnimationAutoResponseCheck(unsigned long uin);
   void AnimationOnline(unsigned long uin);
   unsigned long MainWindowSelectedItemUin();
-#ifdef QT_PROTOCOL_PLUGIN
   void AnimationAutoResponseCheck(const char *, unsigned long);
   void AnimationOnline(const char *, unsigned long);
   bool MainWindowSelectedItemUser(char *&, unsigned long &);
-#endif
 
   static UserFloatyList* floaties;
-  static CUserView *FindFloaty(unsigned long);
-#ifdef QT_PROTOCOL_PLUGIN
   static CUserView *FindFloaty(const char *, unsigned long);
-#endif
   static void UpdateFloaties();
   virtual void setSorting( int column, bool ascending = true);
 
@@ -157,12 +144,10 @@ protected:
   int carTimerId, carCounter;
   unsigned long carUin;
   unsigned long onlUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *carId;
   char *onlId;
   unsigned long carPPID;
   unsigned long onlPPID;
-#endif
 
   QPopupMenu *mnuUser;
   CUserViewItem *barOnline, *barOffline;

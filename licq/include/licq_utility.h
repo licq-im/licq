@@ -70,9 +70,7 @@ public:
   EWinType WinType()  { return m_eWinType; }
 
   bool SetFields(unsigned long _nUin);
-#ifdef PROTOCOL_PLUGIN
   bool SetFields(const char *szId, unsigned long nPPID);
-#endif
   void SetUserFields(const std::vector<const char *> &_vszUserFields);
   void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }
   const char *FullCommand() { return m_szFullCommand; }

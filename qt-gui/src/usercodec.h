@@ -39,12 +39,9 @@ public:
   static QTextCodec * codecForICQUser(ICQUser *u);
   // Retrieves the codec for an CChatUser object
   static QTextCodec * codecForCChatUser(CChatUser *u);
-  // Helper function to retrieve the codec for an UIN
-  static QTextCodec * codecForUIN(uint uin);
-#ifdef QT_PROTOCOL_PLUGIN
   // Retrieves the codec for a proto user
   static QTextCodec * codecForProtoUser(const char *, unsigned long);
-#endif
+  
   static QString encodingForMib(int mib);
   static QString nameForEncoding(const QString &encoding);
   static QString encodingForName(const QString &descriptiveName);

@@ -263,9 +263,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
   positionChanges = 0;
-#ifdef QT_PROTOCOL_PLUGIN
   m_szUserMenuId = 0;
-#endif
 
   // Overwrite Qt's event handler
   old_handler = XSetErrorHandler(licq_xerrhandler);
@@ -533,6 +531,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("Num", nFloaties, 0);
   for (unsigned short i = 0; i < nFloaties; i++)
   {
+    //TODO for protocol plugin
     sprintf(key, "Floaty%d.Uin", i);
     licqConf.ReadNum(key, nUin, 0);
     sprintf(key, "Floaty%d.X", i);
@@ -598,15 +597,15 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
-   connect (licqSigMan, SIGNAL(signal_ui_viewevent(unsigned long)),
-            this, SLOT(slot_ui_viewevent(unsigned long)));
+//   connect (licqSigMan, SIGNAL(signal_ui_viewevent(unsigned long)),
+//            this, SLOT(slot_ui_viewevent(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_ui_message(unsigned long)),
             this, SLOT(slot_ui_message(unsigned long)));
-#ifdef QT_PROTOCOL_PLUGIN
+   connect (licqSigMan, SIGNAL(signal_ui_viewevent(const char *)),
+            this, SLOT(slot_ui_viewevent(const char *)));
    connect (licqSigMan, SIGNAL(signal_protocolPlugin(unsigned long)),
             this, SLOT(slot_protocolPlugin(unsigned long)));
-#endif
-            
+
    m_bInMiniMode = false;
    updateStatus();
    updateEvents();
@@ -637,7 +636,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    }
 
    // verify we exist
-   if (gUserManager.OwnerUin() == 0)
+   ICQOwner *owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+   bool bRegister = (owner->IdString() == NULL);
+   gUserManager.DropOwner(LICQ_PPID);
+
+   if (bRegister)
      slot_register();
    else
    {
@@ -652,9 +655,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
        gUserManager.DropOwner();
    }
 
-#ifdef QT_PROTOCOL_PLUGIN
    m_nProtoNum = 0;
-#endif
 
 #if QT_VERSION > 3
   XClassHint ClassHint;
@@ -868,6 +869,34 @@ void CMainWindow::CreateUserView()
 
 
 //-----CMainWindow::CreateUserFloaty---------------------------------------------
+void CMainWindow::CreateUserFloaty(const char *szId, unsigned long nPPID,
+   unsigned short x, unsigned short y, unsigned short w)
+{
+  if (szId == 0 || nPPID == 0) return;
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u == NULL) return;
+
+  CUserView *f = new CUserView(mnuUser);
+  connect (f, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
+
+  CUserViewItem *i = new CUserViewItem(u, f);
+
+  gUserManager.DropUser(u);
+
+  // not so good, we should allow for multiple guys in one box...
+  // perhaps use the viewport sizeHint
+  f->setFixedHeight(i->height() + f->frameWidth() * 2);
+
+  if (w != 0)
+  {
+    if (y > QApplication::desktop()->height() - 16) y = 0;
+    if (x > QApplication::desktop()->width() - 16) x = 0;
+    f->setGeometry(x, y, w, f->height());
+  }
+
+  f->show();
+}
+
 void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
    unsigned short y, unsigned short w)
 {
@@ -902,10 +931,8 @@ CMainWindow::~CMainWindow()
 {
   delete licqIcon;
   gMainWindow = NULL;
-#ifdef QT_PROTOCOL_PLUGIN
   if (m_szUserMenuId)
     free(m_szUserMenuId);
-#endif
 }
 
 
@@ -920,7 +947,7 @@ void CMainWindow::resizeEvent (QResizeEvent *)
 
   // Do this to save the new geometry
   positionChanges++;
-  
+
   // Resize the background pixmap and mask
   QPixmap *p;
   if (skin->frame.pixmap != NULL)
@@ -1085,15 +1112,26 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 
 void CMainWindow::keyPressEvent(QKeyEvent *e)
 {
+  char *szId = 0;  //must be free()'d
+  unsigned long nPPID = 0;
+  userView->MainWindowSelectedItemUser(szId, nPPID);
   unsigned long nUin = userView->MainWindowSelectedItemUin();
 
   if (e->key() == Qt::Key_Delete)
   {
-    if (nUin == 0) return;
+    if (szId == 0 || nPPID == 0)
+    {
+      if (szId) free(szId);
+      return;
+    }
     if (e->state() & ControlButton)
-      RemoveUserFromList(nUin, this);
+      RemoveUserFromList(szId, nPPID, this);
     else
-      RemoveUserFromGroup(m_nGroupType, m_nCurrentGroup, nUin, this);
+      RemoveUserFromGroup(m_nGroupType, m_nCurrentGroup, szId, nPPID, this);
+
+    if (szId)
+      free(szId);
+
     //e->accept();
     return;
   }
@@ -1123,28 +1161,28 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_V:
-      callDefaultFunction(nUin);
+      callFunction(mnuUserView, szId, nPPID);
       break;
 
     case Qt::Key_S:
-      callFunction(mnuUserSendMsg, nUin);
+      callFunction(mnuUserSendMsg, szId, nPPID);
       break;
 
     case Qt::Key_U:
-      callFunction(mnuUserSendUrl, nUin);
+      callFunction(mnuUserSendUrl, szId, nPPID);
       break;
 
     case Qt::Key_C:
-      callFunction(mnuUserSendChat, nUin);
+      callFunction(mnuUserSendChat, szId, nPPID);
       break;
 
     case Qt::Key_F:
-      callFunction(mnuUserSendFile, nUin);
+      callFunction(mnuUserSendFile, szId, nPPID);
       break;
 
     case Qt::Key_A:
-      if(nUin)
-        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
+      if (szId && nPPID)
+        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, szId, nPPID);
       break;
 
     case Qt::Key_P:
@@ -1164,7 +1202,8 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       QWidget::keyPressEvent(e);
       break;
   }
-
+  if (szId)
+    free(szId);
 }
 
 
@@ -1202,7 +1241,8 @@ inline bool CMainWindow::show_user(ICQUser *u)
 
 void CMainWindow::slot_updatedUser(CICQSignal *sig)
 {
-  unsigned long nUin = sig->Uin();
+  char *szId = sig->Id();
+  unsigned long nPPID = sig->PPID();
 
   switch(sig->SubSignal())
   {
@@ -1210,7 +1250,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
     {
       // Skip all this if it was just an away message check
       if (sig->Argument() == 0) {
-        userView->AnimationAutoResponseCheck(nUin);
+        userView->AnimationAutoResponseCheck(szId, nPPID);
         break;
       }
       // Otherwise an event was added or removed
@@ -1220,10 +1260,10 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
 
       if (m_bAutoPopup && sig->Argument() > 0)
       {
-        ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+        ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
         if (u != NULL && u->NewMessages() > 0)
         {
-          ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+          ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
           unsigned short s = o->Status();
           gUserManager.DropOwner();
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
@@ -1252,9 +1292,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             gUserManager.DropUser(u);
 
             if (bCallUserView)
-              callFunction(mnuUserView, nUin);
+              callFunction(mnuUserView, szId, nPPID);
             if (bCallSendMsg)
-              callFunction(mnuUserSendMsg, nUin);
+              callFunction(mnuUserSendMsg, szId, nPPID);
           }
           else
             gUserManager.DropUser(u);
@@ -1272,10 +1312,10 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
     case USER_STATUS:
     case USER_SECURITY:
     {
-      if (nUin == gUserManager.OwnerUin())
+      if (gUserManager.FindOwner(szId, nPPID) != NULL)
       {
         if (sig->SubSignal() == USER_STATUS || sig->SubSignal() == USER_EXT) break;
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
         m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
         gUserManager.DropOwner();
         if (caption()[0] == '*')
@@ -1284,11 +1324,12 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           setCaption(m_szCaption);
         break;
       }
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+
+      ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
       if (u == NULL)
       {
-        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid uin received: %ld\n",
-                   L_ERRORxSTR, nUin);
+        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid user received: %s\n",
+          L_ERRORxSTR, szId);
         break;
       }
       if (m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
@@ -1303,7 +1344,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
 
             while (it)
             {
-              if(it->ItemUin() == nUin)
+              if(strcmp(it->ItemId(), szId) == 0 && it->ItemPPID() == nPPID)
               {
                 delete it;
                 if (show_user(u))
@@ -1327,7 +1368,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       {
         // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-        while (i && i->ItemUin() != nUin)
+        while (i && !(i->ItemPPID() == nPPID && strcmp(i->ItemId(), szId) == 0))
           i = (CUserViewItem *)i->nextSibling();
         if (i != NULL)
         {
@@ -1344,9 +1385,11 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       }
 
       if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
-        userView->AnimationOnline(nUin);
+        userView->AnimationOnline(szId, nPPID);
+
       // Update their floaty
-      CUserView *v = CUserView::FindFloaty(nUin);
+      CUserView *v = CUserView::FindFloaty(szId, nPPID);
+
       if (v != NULL )
       {
         static_cast<CUserViewItem*>(v->firstChild())->setGraphics(u);
@@ -1379,11 +1422,11 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
     }
     case LIST_ADD:
     {
-      ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_W);
       if (u == NULL)
       {
-        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
-                   L_ERRORxSTR, sig->Uin());
+        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid user received: %s\n",
+          L_ERRORxSTR, sig->Id());
         break;
       }
 
@@ -1422,7 +1465,10 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        if(sig->Uin() > 0 && item->ItemUin() == sig->Uin()) {
+        if(sig->Id() && item->ItemId() &&
+           strcmp(sig->Id(), item->ItemId()) == 0 &&
+           sig->PPID() == item->ItemPPID())
+        {
           ++it;
           delete item;
           item = 0;
@@ -1441,7 +1487,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 #endif
         for (; it.current() != NULL; ++it)
         {
-          if ((*it)->Uin() == sig->Uin())
+          if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
           {
             it.current()->close();
             licqUserView.remove(it.current());
@@ -1458,7 +1504,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 #endif
         for(; it.current() != NULL; ++it)
         {
-          if((*it)->Uin() == sig->Uin())
+          if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
           {
             it.current()->close();
             licqUserInfo.remove(it.current());
@@ -1475,7 +1521,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 #endif
         for(; it.current() != NULL; ++it)
         {
-          if((*it)->Uin() == sig->Uin())
+          if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
           {
             it.current()->close();
             licqUserSend.remove(it.current());
@@ -1545,10 +1591,14 @@ void CMainWindow::updateUserWin()
 void CMainWindow::updateEvents()
 {
   QString szCaption;
+  unsigned short nNumOwnerEvents = 0;
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumOwnerEvents = o->NewMessages();
-  gUserManager.DropOwner();
+  FOR_EACH_OWNER_START(LOCK_R)
+  {
+    nNumOwnerEvents = pOwner->NewMessages();
+  }
+  FOR_EACH_OWNER_END
+
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
 
   lblMsg->setBold(false);
@@ -1695,6 +1745,7 @@ void CMainWindow::updateGroups()
 void CMainWindow::updateStatus()
 {
    char *theColor = skin->colors.offline;
+   //TODO show status of what protocol?
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    unsigned long status = o->Status();
    switch (status)
@@ -1735,6 +1786,7 @@ void CMainWindow::updateStatus()
 
 void CMainWindow::slot_AwayMsgDlg()
 {
+  //TODO iterate all owners that support fetching away message
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if(o != NULL) {
     showAwayMsgDlg(o->Status());
@@ -1778,6 +1830,7 @@ void CMainWindow::changeStatus(int id)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
 
+  //TODO Which protocol?
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (id == ICQ_STATUS_OFFLINE)
   {
@@ -1823,11 +1876,14 @@ void CMainWindow::changeStatus(int id)
 
 // -----------------------------------------------------------------------------
 
-void CMainWindow::callDefaultFunction(unsigned long _nUin)
+void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
 {
-  unsigned long nUin = _nUin;
-  if (nUin == 0) return;
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (_szId == 0 || _nPPID == 0) return;
+
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
+
+  if (u == 0) return;
+
   // set default function to read or send depending on whether or not
   // there are new messages
   int fcn = (u->NewMessages() == 0 ? mnuUserSendMsg : mnuUserView);
@@ -1839,7 +1895,7 @@ void CMainWindow::callDefaultFunction(unsigned long _nUin)
       if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
       {
         fcn = mnuUserSendMsg;
-	break;
+        break;
       }
   }
   gUserManager.DropUser(u);
@@ -1850,7 +1906,7 @@ void CMainWindow::callDefaultFunction(unsigned long _nUin)
     QString c = QApplication::clipboard()->text();
     if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
     {
-      UserEventCommon *ec = callFunction(mnuUserSendUrl, nUin);
+      UserEventCommon *ec = callFunction(mnuUserSendUrl, _szId, _nPPID);
       if (!ec || !ec->inherits("UserSendUrlEvent")) return;
       UserSendUrlEvent* e = static_cast<UserSendUrlEvent*>(ec);
       // Set the url
@@ -1861,7 +1917,7 @@ void CMainWindow::callDefaultFunction(unsigned long _nUin)
     }
     else if (c.left(5) == "file:" || c.left(1) == "/")
     {
-      UserEventCommon *ec = callFunction(mnuUserSendFile, nUin);
+      UserEventCommon *ec = callFunction(mnuUserSendFile, _szId, _nPPID);
       if (!ec || !ec->inherits("UserSendFileEvent")) return;
       UserSendFileEvent* e = static_cast<UserSendFileEvent*>(ec);
       // Set the file
@@ -1876,7 +1932,7 @@ void CMainWindow::callDefaultFunction(unsigned long _nUin)
     }
   }
 
-  callFunction(fcn, nUin);
+  callFunction(fcn, _szId, _nPPID);
 }
 
 void CMainWindow::callDefaultFunction(QListViewItem *i)
@@ -1884,34 +1940,34 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   if(i == NULL)
     return;
 
-#if 0
-  char *szId = ((CUserViewItem *)i)->ItemId();
-  unsigned long nPPID = ((CUserViewItem *)i)->ItemPPID();
-#else
-  callDefaultFunction(((CUserViewItem *)i)->ItemUin());
-#endif
+  callDefaultFunction(((CUserViewItem *)i)->ItemId(),
+    ((CUserViewItem *)i)->ItemPPID());
 }
 
 void CMainWindow::callOwnerFunction(int index)
 {
   if (index == OwnerMenuView)
-    callFunction(index, gUserManager.OwnerUin());
+  {
+    //TODO which owner?
+    char szUin[24];
+    sprintf(szUin, "%lu", gUserManager.OwnerUin());
+    callFunction(index, szUin, LICQ_PPID);
+  }
 
   else if (index == OwnerMenuGeneral ||
       index == OwnerMenuMore  || index == OwnerMenuWork ||
       index == OwnerMenuAbout || index == OwnerMenuLast ||
       index == OwnerMenuHistory)
-    callInfoTab(index, gUserManager.OwnerUin());
+    {
+      //TODO Which owner?
+      char szUin[24];
+      sprintf(szUin, "%lu", gUserManager.OwnerUin());
+      callInfoTab(index, szUin, LICQ_PPID);
+    }
 
   else if (index == OwnerMenuSecurity)
     (void) new SecurityDlg(licqDaemon, licqSigMan);
-/*
-  else if (index == OwnerMenuPassword)
-    (void) new PasswordDlg(licqDaemon, licqSigMan);
 
-  else if (index == OwnerMenuSavedPassword)
-    (void) new ChangePassDlg();
-*/
   else if (index == OwnerMenuRandomChat)
     (void) new CSetRandomChatGroupDlg(licqDaemon, licqSigMan);
 
@@ -1937,45 +1993,46 @@ void CMainWindow::callFileFunction (const char *_szFile)
 void CMainWindow::callMsgFunction()
 {
   // No need for code duplication
-  slot_ui_viewevent(0);
+  slot_ui_viewevent((const char *)0);
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  unsigned long nUin = m_nUserMenuUin;
+  if (m_szUserMenuId == 0 || m_nUserMenuPPID == 0) return;
 
-  if (nUin == 0) return;
+  char *szId = strdup(m_szUserMenuId); //must free
+  unsigned long nPPID = m_nUserMenuPPID;
 
   switch(index)
   {
     case mnuUserAuthorize:
     {
-      (void) new AuthUserDlg(licqDaemon, nUin, true);
+      (void) new AuthUserDlg(licqDaemon, szId, nPPID, true);
       break;
     }
     case mnuUserAuthorizeRequest:
     {
-      (void) new ReqAuthDlg(licqDaemon, nUin);
+      (void) new ReqAuthDlg(licqDaemon, szId, nPPID);
       break;
     }
     case mnuUserCheckResponse:
     {
-      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
+      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, szId, nPPID);
       break;
     }
     case mnuUserCustomAutoResponse:
     {
-      (void) new CustomAwayMsgDlg(m_nUserMenuUin);
+      (void) new CustomAwayMsgDlg(szId, nPPID);
       break;
     }
     case mnuUserFloaty:
     {
       // Check that the floaty does not already exist
-      CUserView *v = CUserView::FindFloaty(nUin);
+      CUserView *v = CUserView::FindFloaty(szId, nPPID);
       if (v == NULL)
       {
-        CreateUserFloaty(nUin);
+        CreateUserFloaty(szId, nPPID);
       }
       else
       {
@@ -1990,22 +2047,112 @@ void CMainWindow::callUserFunction(int index)
     case mnuUserWork:
     case mnuUserAbout:
     case mnuUserLast:
-      callInfoTab(index, nUin);
+      callInfoTab(index, szId, nPPID);
       break;
     case mnuUserRemoveFromList:
-      RemoveUserFromList(m_nUserMenuUin, this);
+      RemoveUserFromList(szId, nPPID, this);
       break;
 
     case mnuUserSendKey:
     {
-      (void) new KeyRequestDlg(licqSigMan, nUin);
+      (void) new KeyRequestDlg(licqSigMan, szId, nPPID);
       break;
     }
 
     default:
-      callFunction(index, nUin);
+      callFunction(index, szId, nPPID);
   }
 
+  if (szId)
+    free(szId);
+}
+
+void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
+  bool toggle)
+{
+  if(szId == 0 || nPPID == 0) return;
+
+  UserInfoDlg *f = NULL;
+#if QT_VERSION < 300
+  QListIterator<UserInfoDlg> it(licqUserInfo);
+#else
+  QPtrListIterator<UserInfoDlg> it(licqUserInfo);
+#endif
+
+  for(; it.current(); ++it)
+  {
+    if(strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+    {
+      f = *it;
+      break;
+    }
+  }
+
+  if (f)
+  {
+    int tab = UserInfoDlg::WorkInfo;
+    switch(fcn) {
+    case mnuUserHistory:
+      tab = UserInfoDlg::HistoryInfo;
+      break;
+    case mnuUserGeneral:
+      tab = UserInfoDlg::GeneralInfo;
+      break;
+    case mnuUserMore:
+      tab = UserInfoDlg::MoreInfo;
+      break;
+    case mnuUserWork:
+      tab = UserInfoDlg::WorkInfo;
+      break;
+    case mnuUserAbout:
+      tab = UserInfoDlg::AboutInfo;
+      break;
+    case mnuUserLast:
+      tab = UserInfoDlg::LastCountersInfo;
+      break;
+    }
+    if(toggle && f->isTabShown(tab))
+    {
+      delete f; // will notify us about deletion
+      return;
+    }
+    else {
+      f->show();
+      f->raise();
+    }
+  }
+  else
+  {
+    f = new UserInfoDlg(licqDaemon, licqSigMan, this, szId, nPPID);
+    connect(f, SIGNAL(finished(const char *, unsigned long)), this,
+      SLOT(UserInfoDlg_finished(const char *,unsigned long)));
+    f->show();
+    licqUserInfo.append(f);
+  }
+
+  switch(fcn)
+  {
+    case mnuUserHistory:
+      f->showTab(UserInfoDlg::HistoryInfo);
+      break;
+    case mnuUserGeneral:
+      f->showTab(UserInfoDlg::GeneralInfo);
+      break;
+    case mnuUserMore:
+      f->showTab(UserInfoDlg::MoreInfo);
+      break;
+    case mnuUserWork:
+      f->showTab(UserInfoDlg::WorkInfo);
+      break;
+    case mnuUserAbout:
+      f->showTab(UserInfoDlg::AboutInfo);
+      break;
+    case mnuUserLast:
+      f->showTab(UserInfoDlg::LastCountersInfo);
+      break;
+  }
+  f->show();
+  f->raise();
 }
 
 #ifdef QT_PROTOCOL_PLUGIN
@@ -2185,16 +2332,14 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin, bool toggle)
 }
 
 
-
-#ifdef QT_PROTOCOL_PLUGIN
 //-----CMainWindow::callICQFunction-------------------------------------------
 UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
                                            unsigned long nPPID)
 {
   if (szId == 0 || nPPID == 0) return NULL;
-  
+
   UserEventCommon *e = NULL;
-  
+
   switch (fcn)
   {
     case mnuUserView:
@@ -2204,9 +2349,10 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
 #else
       QPtrListIterator<UserViewEvent> it(licqUserView);
 #endif
-
       for (; it.current(); ++it)
-        if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID) {
+        if ((*it)->Id() && strcmp((*it)->Id(), szId) == 0 &&
+            (*it)->PPID() == nPPID)
+        {
           e = *it;
           e->show();
           if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
@@ -2236,23 +2382,54 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
         if (!m_bMsgChatView) break;
 
         for (; it.current(); ++it)
-          if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+          if ((*it)->Id() && strcmp((*it)->Id(), szId) == 0 &&
+             (*it)->PPID() == nPPID)
           {
-            e = *it;
-            e->show();
-            if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
-            {
-              e->raise();
+	      e = static_cast<UserSendCommon*>(*it);
+#if QT_VERSION >= 300
+	      if (userEventTabDlg && userEventTabDlg->tabExists(e))
+	      {
+          userEventTabDlg->show();
+          userEventTabDlg->selectTab(e);
+          userEventTabDlg->raise();
 #ifdef USE_KDE
-              KWin::setActiveWindow(e->winId());
+          KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
-            }
+	      }
+#endif
+	      else
+	      {
+          e->show();
+          if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+          {
+            e->raise();
+#ifdef USE_KDE
+            KWin::setActiveWindow(e->winId());
+#endif
+          }
+	      }
             return e;
           }
     }
   default:
     break;
   }
+
+  QWidget *parent = NULL;
+#if QT_VERSION >= 300
+  if (m_bTabbedChatting)
+  {
+    if (userEventTabDlg != NULL)
+      userEventTabDlg->raise();
+    else
+    {
+      // create the tab dialog if it does not exist
+      userEventTabDlg = new UserEventTabDlg();
+      connect(userEventTabDlg, SIGNAL(signal_done()), this, SLOT(slot_doneUserEventTabDlg()));
+    }
+    parent = userEventTabDlg;
+  }
+#endif
 
   switch (fcn)
   {
@@ -2263,61 +2440,68 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
     }
     case mnuUserSendMsg:
     {
-      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
       break;
     }
     case mnuUserSendUrl:
     {
-      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
       break;
     }
     case mnuUserSendChat:
     {
-      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
       break;
     }
     case mnuUserSendFile:
     {
-      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
       break;
     }
     case mnuUserSendContact:
     {
-      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
       break;
     }
     case mnuUserSendSms:
     {
-      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
       break;
     }
     default:
       gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
-  if(e) {
-    connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
-    e->show();
-    // there might be more than one send window open
-    // make sure we only remember one, or it will get compliated
-    if (fcn == mnuUserView)
-    {
-      //TODO 
-      slot_userfinished(strtoul(szId, (char **)NULL, 10));
-      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
-      licqUserView.append(static_cast<UserViewEvent*>(e));
-    }
-    else
-    {
-      //TODO
-      slot_sendfinished(strtoul(szId, (char **)NULL, 10));
-      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_sendfinished(unsigned long)));
-      licqUserSend.append(static_cast<UserSendCommon*>(e));
-    }
-  }
+  if (e == NULL) return NULL;
 
+  connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
+#if QT_VERSION >= 300
+  if (m_bTabbedChatting && fcn != mnuUserView)
+  {
+    userEventTabDlg->addTab(e);
+    userEventTabDlg->show();
+  }
+  else
+#endif
+    e->show();
+
+  // there might be more than one send window open
+  // make sure we only remember one, or it will get complicated
+  if (fcn == mnuUserView)
+  {
+    slot_userfinished(szId, nPPID);
+    connect(e, SIGNAL(finished(const char *, unsigned long)),
+      SLOT(slot_userfinished(const char *, unsigned long)));
+    licqUserView.append(static_cast<UserViewEvent*>(e));
+  }
+  else
+  {
+    slot_sendfinished(szId, nPPID);
+    connect(e, SIGNAL(finished(const char *, unsigned long)),
+      SLOT(slot_sendfinished(const char *, unsigned long)));
+    licqUserSend.append(static_cast<UserSendCommon*>(e));
+  }
   return e;
 }
-#endif
 
 //-----CMainWindow::callICQFunction-------------------------------------------
 UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
@@ -2392,6 +2576,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
                 userEventTabDlg->show();
                 userEventTabDlg->selectTab(e);
                 userEventTabDlg->raise();
+
 #ifdef USE_KDE
                 KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
@@ -2503,6 +2688,23 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
 
 // -----------------------------------------------------------------------------
+void CMainWindow::UserInfoDlg_finished(const char *szId, unsigned long nPPID)
+{
+#if QT_VERSION < 300
+  QListIterator<UserInfoDlg> it(licqUserInfo);
+#else
+  QPtrListIterator<UserInfoDlg> it(licqUserInfo);
+#endif
+
+  for ( ; it.current(); ++it)
+  {
+    if ((*it)->PPID() == nPPID && strcmp((*it)->Id(), szId) == 0)
+    {
+      licqUserInfo.remove(*it);
+      return;
+    }
+  }
+}
 
 void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 {
@@ -2532,6 +2734,25 @@ void CMainWindow::slot_doneUserEventTabDlg()
 #endif
 }
 
+void CMainWindow::slot_userfinished(const char *szId, unsigned long nPPID)
+{
+#if QT_VERSION < 300
+  QListIterator<UserViewEvent> it(licqUserView);
+#else
+  QPtrListIterator<UserViewEvent> it(licqUserView);
+#endif
+
+  for ( ; it.current(); ++it)
+  {
+    if ((*it)->PPID() == nPPID && (*it)->Id() &&
+       strcmp((*it)->Id(), szId) == 0)
+    {
+      licqUserView.remove(*it);
+      return;
+    }
+  }
+}
+
 void CMainWindow::slot_userfinished(unsigned long nUin)
 {
 #if QT_VERSION < 300
@@ -2550,6 +2771,21 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
   }
   //gLog.Warn("%sUser finished signal for user with no window (%ld)!\n",
   //          L_WARNxSTR, nUin);
+}
+
+void CMainWindow::slot_sendfinished(const char *szId, unsigned long nPPID)
+{
+#if QT_VERSION < 300
+  QListIterator<UserSendCommon> it(licqUserSend);
+#else
+  QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+  // go through the whole list, there might be more than
+  // one hit
+  for ( ; it.current(); ++it)
+    if ((*it)->PPID() == nPPID && (*it)->Id() &&
+        strcmp((*it)->Id(), szId) == 0)
+      licqUserSend.remove(*it);
 }
 
 void CMainWindow::slot_sendfinished(unsigned long nUin)
@@ -2587,14 +2823,15 @@ void CMainWindow::slot_logon()
 
 
 //-----CMainWindow::slot_ui_viewevent-------------------------------------------
-void CMainWindow::slot_ui_viewevent(unsigned long nUin)
+void CMainWindow::slot_ui_viewevent(const char *szId)
 {
   // Do nothing if there are no events pending
-  if (ICQUser::getNumUserEvents() == 0) return;
+  if (ICQUser::getNumUserEvents() == 0 || szId == 0) return;
 
-  if (nUin == 0)
+  if (strcmp(szId, "0") == 0)
   {
     // Do system messages first
+    //TODO Which protocol?
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
     unsigned short nNumMsg = o->NewMessages();
     gUserManager.DropOwner();
@@ -2609,33 +2846,34 @@ void CMainWindow::slot_ui_viewevent(unsigned long nUin)
     {
       if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
       {
-        nUin = pUser->Uin();
+        szId = pUser->IdString();
         t = pUser->Touched();
       }
     }
     FOR_EACH_USER_END
   }
 
-  if (nUin != 0)
+  if (szId)
   {
     if (m_bMsgChatView)
     {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      //TODO iterate protocols
+      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
         if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
         {
           gUserManager.DropUser(u);
-          callFunction(mnuUserSendMsg, nUin);
+          callFunction(mnuUserSendMsg, szId, LICQ_PPID);
           return;
         }
       }
 
       gUserManager.DropUser(u);
-      callFunction(mnuUserView, nUin);
+      callFunction(mnuUserView, szId, LICQ_PPID);
     }
     else
-      callFunction(mnuUserView, nUin);
+      callFunction(mnuUserView, szId, LICQ_PPID);
   }
 }
 
@@ -2645,7 +2883,6 @@ void CMainWindow::slot_ui_message(unsigned long nUin)
   callFunction(mnuUserSendMsg, nUin);
 }
 
-#ifdef QT_PROTOCOL_PLUIGN
 //-----slot_protocolPlugin------------------------------------------------------
 void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
 {
@@ -2710,7 +2947,6 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
 
   m_nProtoNum++;
 }
-#endif
 
 //-----slot_doneOwnerFcn--------------------------------------------------------
 void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
@@ -2748,6 +2984,22 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
   }
 }
 
+bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWidget *p)
+{
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u == NULL) return true;
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
+  QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
+                     .arg(codec->toUnicode(u->GetAlias()))
+                     .arg(u->IdString()) );
+  gUserManager.DropUser(u);
+  if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
+  {
+    licqDaemon->RemoveUserFromList(szId, nPPID);
+    return true;
+  }
+  return false;
+}
 
 #ifdef QT_PROTOCOL_PLUGIN
 bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWidget *p)
@@ -2871,6 +3123,45 @@ void CMainWindow::UserGroupToggled(int id)
     }
     }
   }
+}
+
+bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
+  const char *szId, unsigned long nPPID, QWidget *p)
+{
+  if (gtype == GROUPS_USER)
+  {
+    if (group == 0)
+      return RemoveUserFromList(szId, nPPID, p);
+    else
+    {
+      ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+      if (u == NULL) return true;
+      GroupList *g = gUserManager.LockGroupList(LOCK_R);
+      QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
+                         .arg(QString::fromLocal8Bit(u->GetAlias()))
+                         .arg(u->IdString()).arg(QString::fromLocal8Bit( (*g)[group - 1] )) );
+      gUserManager.UnlockGroupList();
+      gUserManager.DropUser(u);
+      if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
+      {
+         gUserManager.RemoveUserFromGroup(szId, nPPID, group);
+         updateUserWin();
+         return true;
+      }
+    }
+  }
+  else if (gtype == GROUPS_SYSTEM)
+  {
+    if (group == 0) return true;
+    ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
+    if (u == NULL) return true;
+    u->RemoveFromGroup(GROUPS_SYSTEM, group);
+    gUserManager.DropUser(u);
+    updateUserWin();
+    return true;
+  }
+
+  return false;
 }
 
 
@@ -4010,12 +4301,12 @@ void CMainWindow::showAuthUserDlg()
 // Wrapper for the true function, necessary to kill a Qt2 warning
 void CMainWindow::showReqAuthDlg(int nId)
 {
-  showReqAuthDlg((unsigned long)0);
+  showReqAuthDlg((char *)0, (unsigned long)0);
 }
 
-void CMainWindow::showReqAuthDlg(unsigned long nUin)
+void CMainWindow::showReqAuthDlg(const char *szId, unsigned long nPPID)
 {
-  ReqAuthDlg *reqAuthDlg =  new ReqAuthDlg(licqDaemon, nUin);
+  ReqAuthDlg *reqAuthDlg = new ReqAuthDlg(licqDaemon, szId, nPPID);
   reqAuthDlg->show();
 }
 

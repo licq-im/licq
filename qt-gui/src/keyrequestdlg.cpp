@@ -35,7 +35,6 @@
 
 
 // -----------------------------------------------------------------------------
-#ifdef QT_PROTOCOL_PLUGIN
 KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
   unsigned long nPPID, QWidget *parent)
   : LicqDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
@@ -46,8 +45,7 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
   icqEventTag = 0;
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-  QTextCodec *codec = UserCodec::codecForICQUser(u);
-  setCaption(tr("Licq - Secure Channel with %1").arg(codec->toUnicode(u->GetAlias())));
+  setCaption(tr("Licq - Secure Channel with %1").arg(u->GetAlias()));
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
@@ -119,7 +117,6 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
 
   show();
 }
-#endif
 
 KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidget *parent)
   : LicqDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
@@ -213,9 +210,7 @@ KeyRequestDlg::~KeyRequestDlg()
     gLicqDaemon->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-#ifdef QT_PROTOCOL_PLUGIN
   if (m_szId) free(m_szId);
-#endif
 }
 
 

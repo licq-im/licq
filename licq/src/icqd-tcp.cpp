@@ -28,11 +28,9 @@
 #include "licq_chat.h"
 #include "licq_filetransfer.h"
 #include "support.h"
-
-//-----ICQ::sendMessage--------------------------------------------------------
-#ifdef PROTOCOL_PLUGIN
 #include "licq_protoplugind.h"
 
+//-----ICQ::sendMessage--------------------------------------------------------
 unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPPID,
    const char *m, bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
@@ -48,7 +46,71 @@ unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPP
 
   return nRet;
 }
-#endif
+
+unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
+   bool online, unsigned short nLevel, bool bMultipleRecipients,
+   CICQColor *pColor)
+{
+  if (m == NULL) return 0;
+
+  ICQEvent *result = NULL;
+  char *mDos = NULL;
+  if (m != NULL)
+  {
+    mDos = gTranslator.NToRN(m);
+    gTranslator.ClientToServer(mDos);
+  }
+  CEventMsg *e = NULL;
+
+  unsigned long f = INT_VERSION;
+  if (online) f |= E_DIRECT;
+  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+  if (bMultipleRecipients) f |= E_MULTIxREC;
+
+	ICQUser *u;
+  if (!online) // send offline
+  {
+     e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
+     if (strlen(mDos) > MAX_MESSAGE_SIZE)
+     {
+       gLog.Warn("%sTruncating message to %d characters to send through server.\n",
+                 L_WARNxSTR, MAX_MESSAGE_SIZE);
+       mDos[MAX_MESSAGE_SIZE] = '\0';
+     }
+     result = icqSendThroughServer(szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+                                   mDos, e);
+     u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  }
+  else        // send direct
+  {
+    u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+    if (u == NULL) return 0;
+    if (u->Secure()) f |= E_ENCRYPTED;
+    e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
+    if (pColor != NULL) e->SetColor(pColor);
+    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, pColor, u);
+    gLog.Info("%sSending %smessage to %s (#%ld).\n", L_TCPxSTR,
+       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+       u->GetAlias(), -p->Sequence());
+    result = SendExpectEvent_Client(u, p, e);
+  }
+
+  if (u != NULL)
+  {
+    u->SetSendServer(!online);
+    u->SetSendLevel(nLevel);
+    gUserManager.DropUser(u);
+  }
+
+  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
+
+  if (mDos)
+    delete [] mDos;
+
+  if (result != NULL)
+    return result->EventId();
+  return 0;
+}
 
 unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients,
@@ -148,7 +210,6 @@ unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
 
 
 //-----CICQDaemon::sendUrl-----------------------------------------------------
-#ifdef PROTOCOL_PLUGIN
 unsigned long CICQDaemon::ProtoSendUrl(const char *_szId, unsigned long _nPPID,
    const char *url, const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
@@ -165,7 +226,6 @@ unsigned long CICQDaemon::ProtoSendUrl(const char *_szId, unsigned long _nPPID,
 
   return nRet;
 }
-#endif
 
 unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
@@ -320,10 +380,96 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
 
 //-----CICQDaemon::sendContactList-------------------------------------------
+unsigned long CICQDaemon::icqSendContactList(const char *szId,
+   UserStringList &users, bool online, unsigned short nLevel,
+   bool bMultipleRecipients, CICQColor *pColor)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID) != NULL) return 0;
+
+  char *m = new char[3 + users.size() * 80];
+  int p = sprintf(m, "%d%c", users.size(), char(0xFE));
+  ContactList vc;
+
+  ICQUser *u = NULL;
+  UserStringList::iterator iter;
+  for (iter = users.begin(); iter != users.end(); iter++)
+  {
+    u = gUserManager.FetchUser(*iter, LICQ_PPID, LOCK_R);
+    p += sprintf(&m[p], "%s%c%s%c", *iter, char(0xFE),
+       u == NULL ? "" : u->GetAlias(), char(0xFE));
+    vc.push_back(new CContact(*iter, LICQ_PPID, u == NULL ? "" : u->GetAlias()));
+    gUserManager.DropUser(u);
+  }
+
+  if (!online && p > MAX_MESSAGE_SIZE)
+  {
+    gLog.Warn("%sContact list too large to send through server.\n", L_WARNxSTR);
+    delete []m;
+    return 0;
+  }
+
+  CEventContactList *e = NULL;
+  ICQEvent *result = NULL;
+
+  unsigned long f = INT_VERSION;
+  if (online) f |= E_DIRECT;
+  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+  if (bMultipleRecipients) f |= E_MULTIxREC;
+
+  if (!online) // send offline
+  {
+    e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
+    result = icqSendThroughServer(szId,
+      ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+      m, e);
+    u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  }
+  else
+  {
+    u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+    if (u == NULL) return 0;
+    if (u->Secure()) f |= E_ENCRYPTED;
+    e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
+    if (pColor != NULL) e->SetColor(pColor);
+    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, u);
+    gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
+       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+       u->GetAlias(), -p->Sequence());
+    result = SendExpectEvent_Client(u, p, e);
+  }
+  if (u != NULL)
+  {
+    u->SetSendServer(!online);
+    u->SetSendLevel(nLevel);
+    gUserManager.DropUser(u);
+  }
+
+  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
+
+  delete []m;
+  if (result != NULL)
+    return result->EventId();
+  return 0;
+}
+
 unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
    UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
 {
+  UserStringList users;
+  char szUin[24];
+
+  UinList::iterator it;
+  for (it = uins.begin(); it != uins.end(); it++)
+  {
+    sprintf(szUin, "%lu", *it);
+    users.push_back(szUin);
+  }
+
+  sprintf(szUin, "%lu", nUin);
+  return icqSendContactList(szUin, users,online, nLevel, bMultipleRecipients,
+    pColor);
+#if 0
   if (nUin == gUserManager.OwnerUin()) return 0;
 
   char *m = new char[3 + uins.size() * 80];
@@ -388,6 +534,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   if (result != NULL)
     return result->EventId();
   return 0;
+#endif
 }
 
 

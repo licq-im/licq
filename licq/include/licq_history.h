@@ -14,9 +14,7 @@ public:
   CUserHistory();
   ~CUserHistory();
   void SetFile(const char *, unsigned long);
-#ifdef PROTOCOL_PLUGIN
   void SetFile(const char *, const char *, unsigned long);
-#endif
   void Append(const char *);
   bool Load(HistoryList &);
   static void Clear(HistoryList &);

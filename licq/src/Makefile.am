@@ -15,7 +15,7 @@ licq_SOURCES = licq.cpp main.cpp \
 	 file.cpp message.cpp support.c pthread_rdwr.c \
 	 onevent.cpp plugind.cpp sar.cpp languagecodes.c \
          icqd-chat.cpp sighandler.c icqd-filetransfer.cpp \
-         hebrev.c icqcolor.cpp fifo.cpp 
+         hebrev.c icqcolor.cpp fifo.cpp  protoplugind.cpp
 
 #licq_LDADD = $(top_builddir)/src/daemon/liblicq-daemon.la @SOCKS_LIBS@ 
 licq_LDADD = @SOCKS_LIBS@ 

@@ -34,6 +34,7 @@ signals:
   void signal_logon();
   void signal_logoff();
   void signal_ui_viewevent(unsigned long);
+  void signal_ui_viewevent(const char *);
   void signal_ui_message(unsigned long);
   void signal_protocolPlugin(unsigned long);
 

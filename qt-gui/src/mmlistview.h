@@ -20,17 +20,13 @@ public:
   CMMUserViewItem (ICQUser *, QListView *);
   virtual ~CMMUserViewItem();
   unsigned long Uin()  { return m_nUin; }
-#ifdef QT_PROTOCOL_PLUGIN
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-#endif
 
 protected:
   unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
 
   friend class CMMUserView;
 };
@@ -43,25 +39,19 @@ class CMMUserView : public QListView
 public:
   CMMUserView (ColumnInfos &_colInfo, bool, unsigned long, CMainWindow *,
      QWidget *parent = 0);
-#ifdef QT_PROTOCOL_PLUGIN
   CMMUserView(ColumnInfos &_colInfo, bool, char *, unsigned long,
      CMainWindow *, QWidget *parent = 0);
-#endif
   virtual ~CMMUserView();
 
   void AddUser(unsigned long);
-#ifdef QT_PROTOCOL_PLUGIN
   void AddUser(const char *, unsigned long);
-#endif
 
 protected:
   QPopupMenu *mnuMM;
   ColumnInfos colInfo;
   unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   CMainWindow *mainwin;
 
   virtual void viewportMousePressEvent(QMouseEvent *e);

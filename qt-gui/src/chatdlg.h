@@ -84,20 +84,16 @@ class ChatDlg : public QMainWindow
 public:
   ChatDlg(unsigned long _nUin, CICQDaemon *daemon, CMainWindow *m,
           QWidget *parent = 0);
-#ifdef QT_PROTOCOL_PLUGIN
   ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
           CMainWindow *m, QWidget *parent = 0);
-#endif
   virtual ~ChatDlg();
 
   bool StartAsClient(unsigned short nPort);
   bool StartAsServer();
 
   unsigned short LocalPort();
-#ifdef QT_PROTOCOL_PLUGIN
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-#endif
   unsigned long Uin()  { return m_nUin; };
 
   QString ChatClients();
@@ -132,10 +128,8 @@ protected:
   QPixmapList qPixmaps; //pixmaps are not deleted by qt destructor
 
   unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   QSocketNotifier *sn;
   bool m_bAudio;
   QTextCodec *codec;

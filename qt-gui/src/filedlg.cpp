@@ -47,7 +47,6 @@
 
 
 //-----Constructor------------------------------------------------------------
-#ifdef QT_PROTOCOL_PLUGIN
 CFileDlg::CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
   QWidget* parent)
   : QWidget(parent, "FileDialog", WDestructiveClose)
@@ -142,7 +141,6 @@ CFileDlg::CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
   #endif
 }
 
-#endif
 CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
   : QWidget(parent, "FileDialog", WDestructiveClose)
 {
@@ -355,12 +353,7 @@ void CFileDlg::slot_ft()
   char buf[32];
   read(ftman->Pipe(), buf, 32);
 
-  //TODO Fix this
-#ifdef QT_PROTOCOL_PLUGIN
-  QTextCodec *codec = UserCodec::codecForUIN(strtoul(m_szId, (char **)NULL, 10));
-#else
-  QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
-#endif
+  QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
 
   CFileTransferEvent *e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
@@ -541,7 +534,7 @@ bool CFileDlg::GetLocalFileName()
   QString f;
   bool bValid = false;
 
-  QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
+  QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
   
   // Get the local filename and open it, loop until valid or cancel
   while(!bValid)

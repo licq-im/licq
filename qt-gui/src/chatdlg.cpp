@@ -108,8 +108,6 @@ enum ChatMenu_Identifiers {
 
 
 // ---------------------------------------------------------------------------
-
-#ifdef QT_PROTOCOL_PLUGIN
 ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
                  CMainWindow *m, QWidget *parent)
   : QMainWindow(parent, "ChatDialog", WDestructiveClose)
@@ -392,7 +390,6 @@ ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
   resize(500, 475);
   show();
 }
-#endif
 
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
                  CMainWindow *m, QWidget *parent)

@@ -16,10 +16,9 @@ class ReqAuthDlg : public LicqDialog
    Q_OBJECT
 public:
    ReqAuthDlg (CICQDaemon *s, unsigned long nUin = 0, QWidget *parent = 0);
-#ifdef QT_PROTOCOL_PLUGIN
   ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
     QWidget *parent = 0);
-#endif
+
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;

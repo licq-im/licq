@@ -33,7 +33,6 @@
 #include "licq_utility.h"
 #include "licq_user.h"
 
-#ifdef QT_PROTOCOL_PLUGIN
 CUtilityDlg::CUtilityDlg(CUtility *u, const char *szId, unsigned long nPPID,
   CICQDaemon *_server)
   : QWidget(0, "UtilityDialog",  WDestructiveClose)
@@ -120,7 +119,6 @@ CUtilityDlg::CUtilityDlg(CUtility *u, const char *szId, unsigned long nPPID,
 
   show();
 }
-#endif
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   : QWidget(0, "UtilityDialog",  WDestructiveClose)
@@ -213,10 +211,8 @@ CUtilityDlg::~CUtilityDlg()
   delete intwin;
   delete snOut;
   delete snErr;
-  
-#ifdef QT_PROTOCOL_PLUGIN
+
   if (m_szId) free(m_szId);
-#endif
 }
 
 
@@ -323,11 +319,7 @@ void CUtilityDlg::slot_run()
   if (nSystemResult == -1)
   {
     lblUtility->setText(tr("Failed:"));
-#ifdef QT_PROTOCOL_PLUGIN
     m_xUtility->SetFields(m_szId, m_nPPID);
-#else
-    m_xUtility->SetFields(m_nUin);
-#endif
   }
   else
   {

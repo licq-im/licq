@@ -88,6 +88,7 @@ public:
    char *UnpackString();                // Need to delete[] returned string
    char *UnpackStringBE(char *, unsigned short);
    char *UnpackStringBE();              // Need to delete[] returned string
+   char *UnpackUserString();            // Need to delete[] returned string
    unsigned long UnpackUnsignedLong();
    unsigned long UnpackUinString();
    unsigned short UnpackUnsignedShort();

@@ -86,8 +86,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_UPDATExUSER:
     emit signal_updatedUser(s);
-    //TODO
-    if (s->Uin() == gUserManager.OwnerUin() && s->SubSignal() == USER_STATUS)
+    if (gUserManager.FindOwner(s->Id(), s->PPID()) != NULL && s->SubSignal() == USER_STATUS)
     {
       emit signal_updatedStatus();
     }
@@ -105,8 +104,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     emit signal_logoff();
     break;
   case SIGNAL_UI_VIEWEVENT:
-  //TODO
-    emit signal_ui_viewevent(s->Uin());
+    emit signal_ui_viewevent(s->Id());
     break;
   case SIGNAL_UI_MESSAGE:
   //TODO

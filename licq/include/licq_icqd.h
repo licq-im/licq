@@ -18,13 +18,9 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_user.h"
 #include "licq_plugind.h"
 #include "licq_color.h"
-
-#ifdef PROTOCOL_PLUGIN
 #include "licq_protoplugind.h"
 
 class CProtoPlugin;
-#endif
-
 class CPlugin;
 class CPacket;
 class CPacketTcp;
@@ -96,7 +92,6 @@ public:
   pthread_t *Shutdown();
   void SaveConf();
 
-#ifdef PROTOCOL_PLUGIN
   // GUI Plugins call these now
   void ProtoAddUser(const char *szId, unsigned long nPPID, bool _bAuthRequired = false);
 
@@ -105,7 +100,7 @@ public:
   unsigned long ProtoSetStatus(unsigned long nPPID, unsigned short nNewStatus);
 
   unsigned long ProtoLogon(unsigned long nPPID, unsigned short nLogonStatus);
-  
+
   void ProtoLogoff(unsigned long nPPID);
 
   unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
@@ -136,10 +131,13 @@ public:
      unsigned long nMsgID[], bool bDirect);
   void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
      unsigned long nSequence);
-#endif
 
   // TCP (user) functions
   // Message
+  unsigned long icqSendMessage(const char *szId, const char *szMessage,
+     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
+     CICQColor *pColor = NULL);
+
   unsigned long icqSendMessage(unsigned long nUin, const char *szMessage,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
@@ -148,6 +146,10 @@ public:
      const char *szDescription, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
   // Contact List
+  unsigned long icqSendContactList(const char *szId, UserStringList &users,
+     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
+     CICQColor *pColor = NULL);
+     
   unsigned long icqSendContactList(unsigned long nUin, UinList &uins,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
@@ -234,16 +236,18 @@ public:
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long, bool _bAuthReq = false);
+  void icqAddUser(const char *, bool _bAuthReq = false);
   void icqAddUserServer(unsigned long, bool);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
+  void icqRemoveUser(const char *);
   void icqRemoveGroup(const char *);
   void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
                       unsigned short _nOldGSID, unsigned short _nNewType,
                       unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(unsigned long _nUin);
-  void icqExportUsers(UinList &, unsigned short);
+  void icqExportUsers(UserStringList &, unsigned short);
   void icqExportGroups(GroupList &);
   void icqUpdateContactList();
 
@@ -266,12 +270,11 @@ public:
   void PluginDisable(int);
   bool PluginLoad(const char *, int, char **);
 
-#ifdef PROTOCOL_PLUGIN
+
   void ProtoPluginList(ProtoPluginsList &);
   bool ProtoPluginLoad(const char *);
   int RegisterProtoPlugin();
   char *ProtoPluginName(unsigned long);
-#endif
 
   void PluginUIViewEvent(unsigned long nUin) {
   	PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
@@ -294,18 +297,16 @@ public:
   unsigned short BirthdayRange() { return m_nBirthdayRange; }
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
-#ifdef PROTOCOL_PLUGIN
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true);
-#endif
-
   bool AddUserToList(unsigned long _nUin, bool bNotify = true);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
+  void RemoveUserFromList(const char *szId, unsigned long nPPID);
 
   // SMS
   unsigned long icqSendSms(const char *szNumber, const char *szMessage,
 			   unsigned long nUin);
-  
+
   // NOT MT SAFE
   const char *getUrlViewer();
   void setUrlViewer(const char *s);
@@ -341,7 +342,7 @@ public:
   void SetProxyLogin(const char *s) {  SetString(&m_szProxyLogin, s);  }
   const char *ProxyPasswd() {  return m_szProxyPasswd;  }
   void SetProxyPasswd(const char *s) {  SetString(&m_szProxyPasswd, s);  }
-  
+
   unsigned short TCPPortsLow() { return m_nTCPPortsLow; }
   unsigned short TCPPortsHigh() { return m_nTCPPortsHigh; }
   void SetTCPPorts(unsigned short p, unsigned short r);
@@ -357,10 +358,8 @@ public:
   void SetAlwaysOnlineNotify(bool);
   CICQSignal *PopPluginSignal();
   ICQEvent *PopPluginEvent();
-#ifdef PROTOCOL_PLUGIN
   CSignal *PopProtoSignal();
-#endif
-  
+
   // Server Side List functions
   bool UseServerContactList()         { return m_bUseSS; }
   void SetUseServerContactList(bool b)  { m_bUseSS = b; }
@@ -409,7 +408,7 @@ protected:
        m_bTCPEnabled,
        m_bFirewall;
   time_t m_tLogonTime;
-  
+
   // ICQ Server
   char *m_szICQServer;
   unsigned short m_nICQServerPort;
@@ -423,7 +422,7 @@ protected:
   char *m_szProxyLogin;
   char *m_szProxyPasswd;
   ProxyServer *m_xProxy;
-  
+
   // SS List
   bool m_bUseSS;
 
@@ -460,6 +459,8 @@ protected:
   void icqSendVisibleList();
   void icqSendInvisibleList();
   void icqRequestSystemMsg();
+  ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
+    CUserEvent *);
   ICQEvent* icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent* );
   void SaveUserList();
 
@@ -475,15 +476,13 @@ protected:
   void PushExtendedEvent(ICQEvent *);
   void PushPluginSignal(CICQSignal *);
   void PushPluginEvent(ICQEvent *);
-#ifdef PROTOCOL_PLUGIN
   void PushProtoSignal(CSignal *, unsigned long);
-#endif
 
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
-  ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *,
-                                   bool = false);
+  ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *, bool = false);
+  ICQEvent *SendExpectEvent_Server(const char *, unsigned long, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);

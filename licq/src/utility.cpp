@@ -212,7 +212,6 @@ bool CUtility::SetFields(unsigned long _nUin)
   return true;
 }
 
-#ifdef PROTOCOL_PLUGIN
 bool CUtility::SetFields(const char *szId, unsigned long nPPID)
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
@@ -230,7 +229,6 @@ bool CUtility::SetFields(const char *szId, unsigned long nPPID)
   gUserManager.DropUser(u);
   return true;
 }
-#endif
 
 void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
 {

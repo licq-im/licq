@@ -31,22 +31,19 @@ public:
 
   int go_message(QString);
   int go_url(QString, QString);
-  //TODO String List please
-  int go_contact(UinList &_uins);
+  int go_contact(UserStringList &_users);
+
 protected:
   QString s1, s2;
-  //TODO String list please
-  UinList *uins;
+  UserStringList *users;
 
   unsigned long m_nEventType;
   QVGroupBox *grpSending;
   QPushButton *btnCancel;
   QProgressBar *barSend;
   unsigned long m_nUin;
-#ifdef QT_PROTOCOL_PLUGIN
   char *m_szId;
   unsigned long m_nPPID;
-#endif
   CMMUserView *mmv;
   CMMUserViewItem *mmvi;
   CICQDaemon *server;
