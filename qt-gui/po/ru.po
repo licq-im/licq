@@ -3326,7 +3326,7 @@ msgid ""
 "Now please click 'Finish' to start "
 "the registration process."
 msgstr ""
-"Теперь нажмите  'Закончить' для "
+"Теперь нажмите 'Завершить' для "
 "регистрации на сервере."
 
 #: registeruser.cpp:120
