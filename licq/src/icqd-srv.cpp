@@ -1549,7 +1549,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       unsigned short nSequence = advMsg.UnpackUnsignedShort();
 
       nLen = advMsg.UnpackUnsignedShort();
-			if (nLen == 0x12) // what is this?
+			if (nLen == 0x12) // what is this, a "you're on my list" statement?
 				break;
       advMsg.incDataPosRead(nLen);
 

@@ -973,11 +973,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 {
   unsigned long nUin, theSequence, senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
-  unsigned short version, command, junkShort, newCommand, messageLen,
+  unsigned short version, command, junkShort, newCommand, messageLen, weird,
                  ackFlags, msgFlags, licqVersion;
   char licqChar, junkChar;
   bool errorOccured = false;
 
+  // only for v7,v8
+	weird = 0;
 
   CBuffer &packet = pSock->RecvBuffer();
   int sockfd = pSock->Descriptor();
@@ -1062,7 +1064,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet.UnpackChar(); // 0x02
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
-      packet.UnpackUnsignedShort(); // 0x000E
+      weird = packet.UnpackUnsignedShort(); // 0x000E
       theSequence = (signed short)packet.UnpackUnsignedShort();
       unsigned long junkLong1, junkLong2, junkLong3;
       packet >> junkLong1 >> junkLong2 >> junkLong3; // always zero
@@ -1218,15 +1220,23 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             fore = 0x000000;
           }
         }
-        packet >> licqChar >> licqVersion;
-        nMask |= licqVersion;
-        if (licqChar == 'L')
-          gLog.Info("%sMessage from %s (%ld) [Licq %s].\n", L_TCPxSTR, u->GetAlias(),
-             nUin, CUserEvent::LicqVersionToString(licqVersion));
-        else
-          gLog.Info("%sMessage from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
 
-        CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
+				// Length is 0x12 not 0x0E like usual
+				if (weird == 0x0012)
+				{
+					errorOccured = true;
+					break;
+				}
+
+				packet >> licqChar >> licqVersion;
+				nMask |= licqVersion;
+				if (licqChar == 'L')
+					gLog.Info("%sMessage from %s (%ld) [Licq %s].\n", L_TCPxSTR, u->GetAlias(),
+             nUin, CUserEvent::LicqVersionToString(licqVersion));
+				else
+					gLog.Info("%sMessage from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
+
+				CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
         e->SetColor(fore, back);
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
