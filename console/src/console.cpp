@@ -498,21 +498,19 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_USERxGETDETAILS:
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
-  case ICQ_CMDxSND_META:
   case ICQ_CMDxSND_AUTHORIZE:
   {
-    unsigned short i;
-    for (i = 1; i <= MAX_CON; i++)
-    {
-      if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
-      {
-        ProcessDoneEvent(winCon[i], e);
-        break;
-      }
-    }
-    if (i > MAX_CON)
-      gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
-                L_WARNxSTR, e->SubCommand());
+    ProcessDoneEvent(e);
+    break;
+  }
+
+  case ICQ_CMDxSND_META:
+  {
+    if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
+       e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
+      ProcessDoneSearch(e);
+    else
+      ProcessDoneEvent(e);
     break;
   }
 
@@ -543,18 +541,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_SEARCHxINFO:
   case ICQ_CMDxSND_SEARCHxUIN:
   {
-    unsigned short i;
-    for (i = 1; i <= MAX_CON; i++)
-    {
-      if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
-      {
-        ProcessDoneSearch(winCon[i], e);
-        break;
-      }
-    }
-    if (i > MAX_CON)
-      gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
-                L_WARNxSTR, e->Command());
+    ProcessDoneSearch(e);
     break;
   }
 
@@ -628,8 +615,26 @@ void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessDoneEvent
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
+void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 {
+  CWindow *win = NULL;
+
+  unsigned short i;
+  for (i = 1; i <= MAX_CON; i++)
+  {
+    if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
+    {
+      win = winCon[i];
+      break;
+    }
+  }
+  if (win == NULL)
+  {
+    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
+              L_WARNxSTR, e->SubCommand());
+    return;
+  }
+
   bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
 
   if (e == NULL)
@@ -815,11 +820,30 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
 /*---------------------------------------------------------------------------
 * CLicqConsole::ProcessDoneSearch
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessDoneSearch(CWindow *win, ICQEvent *e)
+void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
 {
-  if (e->Result() == EVENT_ACKED)
+  CWindow *win = NULL;
+
+  unsigned short i;
+  for (i = 1; i <= MAX_CON; i++)
   {
-    win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %lu\n",
+    if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
+    {
+      win = winCon[i];
+      break;
+    }
+  }
+  if (win == NULL)
+  {
+    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
+              L_WARNxSTR, e->Command());
+    return;
+  }
+
+  //if (e->Result() == EVENT_ACKED)
+  if (e->SearchAck() != NULL)
+  {
+    win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %lu %A(%Z%s%A)\n",
      COLOR_WHITE,
      e->SearchAck()->Alias(),
      A_BOLD, A_BOLD,
@@ -828,20 +852,31 @@ void CLicqConsole::ProcessDoneSearch(CWindow *win, ICQEvent *e)
      A_BOLD, A_BOLD,
      e->SearchAck()->Email(),
      A_BOLD, A_BOLD,
-     e->SearchAck()->Uin());
-    return;
+     e->SearchAck()->Uin(),
+     A_BOLD, A_BOLD,
+     e->SearchAck()->Status() == SA_ONLINE ? "online" :
+     e->SearchAck()->Status() == SA_OFFLINE ? "offline" :
+     "disabled",
+     A_BOLD);
   }
+
+  if (e->Result() == EVENT_ACKED) return;
 
   if (e->Result() == EVENT_SUCCESS)
   {
-    if (e->SearchAck()->More())
+    if (e->SearchAck() == NULL || e->SearchAck()->More() == 0)
+    {
+      win->wprintf("%A%CSearch complete.\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
+    }
+    else if (e->SearchAck()->More() == -1)
     {
       win->wprintf("%A%CSearch complete.  More users found, narrow search.\n",
        m_cColorInfo->nAttr, m_cColorInfo->nColor);
     }
-    else
+    else if (e->SearchAck()->More() > 0)
     {
-      win->wprintf("%A%CSearch complete.\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
+      win->wprintf("%A%CSearch complete.  %d more users found, narrow search.\n",
+       m_cColorInfo->nAttr, m_cColorInfo->nColor, e->SearchAck()->More());
     }
   }
   else
@@ -2358,8 +2393,11 @@ void CLicqConsole::InputSearch(int cIn)
           winMain->wprintf("%C%ASearching:\n",
                            m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
-          winMain->event = licqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
-           data->szLastName, data->szEmail);
+          /*winMain->event = licqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
+           data->szLastName, data->szEmail);*/
+          winMain->event = licqDaemon->icqSearchWhitePages(data->szFirstName,
+           data->szLastName, data->szAlias, data->szEmail, 0, 0, GENDER_UNSPECIFIED, 0, "", "", 0,
+           "", "", "", false);
           winMain->state = STATE_PENDING;
 
           return;

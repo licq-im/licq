@@ -85,8 +85,8 @@ public:
   void ProcessPipe();
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
-  void ProcessDoneEvent(CWindow *win, ICQEvent *e);
-  void ProcessDoneSearch(CWindow *win, ICQEvent *e);
+  void ProcessDoneEvent(ICQEvent *e);
+  void ProcessDoneSearch(ICQEvent *e);
   void ProcessStdin();
   void ProcessLog();
   void ProcessFile(list<CFileTransferManager *>::iterator iter);

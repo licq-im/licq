@@ -73,11 +73,26 @@ class DataSearch : public CData
 {
 public:
   DataSearch() : CData(0)
-      {  szAlias[0] = szFirstName[0] = szLastName[0] = szEmail[0] = '\0'; nState = 0; }
+      {  szAlias[0] = szFirstName[0] = szLastName[0] = szEmail[0] =
+         szCity[0] = szState[0] = szCoName[0] = szCoDept[0] = szCoPos[0] = '\0';
+         nState = nMinAge = nMaxAge = nGender = nLanguage = nCountryCode = 0;
+         bOnlineOnly = false; }
   char szAlias[80];
   char szFirstName[80];
   char szLastName[80];
   char szEmail[80];
+  unsigned short nMinAge;
+  unsigned short nMaxAge;
+  char nGender;
+  char nLanguage;
+  char szCity[80];
+  char szState[80];
+  unsigned short nCountryCode;
+  char szCoName[80];
+  char szCoDept[80];
+  char szCoPos[80];
+  bool bOnlineOnly;
+
   unsigned short nState;
 };
 
