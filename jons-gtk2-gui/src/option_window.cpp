@@ -34,6 +34,9 @@ bool flash_events;
 char timestamp_format[50];
 unsigned long auto_logon;
 bool remember_window_pos;
+unsigned long auto_away_time;
+unsigned long auto_na_time;
+unsigned long auto_offline_time;
 
 // Global variables for window position and size
 short int windowX;
@@ -494,7 +497,7 @@ void done_options(GtkWidget *widget, gpointer data)
 
 	// Save our options
 	char filename[MAX_FILENAME_LEN];
-	sprintf(filename, "%s/licq_jons-gtk2-gui.conf", BASE_DIR);
+	snprintf(filename, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, config_file());
 	CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
 	if(!licqConf.LoadFile(filename))
 		return;
@@ -538,7 +541,7 @@ void done_options(GtkWidget *widget, gpointer data)
 void save_window_pos (void)
 {
 	char filename[MAX_FILENAME_LEN];
-	sprintf (filename, "%s/licq_jons-gtk2-gui.conf", BASE_DIR);
+	snprintf (filename, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, config_file());
 	CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
 	if(!licqConf.LoadFile(filename))
 		return;
@@ -565,9 +568,11 @@ void load_options()
 	offline_color = new GdkColor;
 	away_color = new GdkColor;
 
+	char filename[MAX_FILENAME_LEN];
+	snprintf(filename, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, config_file());
+
 	CIniFile licqConf;
-	licqConf.LoadFile(g_strdup_printf("%s/licq_jons-gtk2-gui.conf",
-				          BASE_DIR));
+	licqConf.LoadFile(filename);
 	licqConf.SetSection("appearance");
 
 	gLog.Info("%sLoading Jon's GTK2 GUI configuration", L_INITxSTR);
@@ -609,6 +614,11 @@ void load_options()
 	
 	// Auto logon
 	licqConf.ReadNum("AutoLogon", auto_logon, ICQ_STATUS_OFFLINE);
+	
+	// Auto away, na, offline
+	licqConf.ReadNum("AutoAway", auto_away_time, 10);
+	licqConf.ReadNum("AutoAway", auto_na_time, 0);
+	licqConf.ReadNum("AutoAway", auto_offline_time, 0);
 }
 
 void show_on_color_dlg(GtkWidget *widget, gpointer data)
