@@ -35,8 +35,8 @@ public:
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
 
-  void ProcessUserEvent(unsigned long);
-  bool ForwardEvent(ICQUser *, CUserEvent *);
+  void ProcessUserEvent(unsigned long, unsigned long);
+  bool AutoReplyEvent(ICQUser *, CUserEvent *);
 
 };
 

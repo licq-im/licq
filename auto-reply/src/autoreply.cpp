@@ -177,7 +177,7 @@ void CLicqAutoReply::ProcessSignal(CICQSignal *s)
   {
   case SIGNAL_UPDATExUSER:
     if (s->SubSignal() == USER_EVENTS && s->Uin() != gUserManager.OwnerUin())
-      ProcessUserEvent(s->Uin());
+      ProcessUserEvent(s->Uin(), s->Argument());
     break;
   // We should never get any other signal
   case SIGNAL_UPDATExLIST:
@@ -230,41 +230,33 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqAutoReply::ProcessUserEvent(unsigned long nUin)
+void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("Invalid uin received from daemon (%ld).\n", nUin);
+    gLog.Warn("%sInvalid uin received from daemon (%ld).\n", L_AUTOREPxSTR, nUin);
     return;
   }
 
-  CUserEvent *e = NULL;
+  CUserEvent *e = u->EventPeekId(nId);
 
-  if (m_bDelete)
+  if (e == NULL)
   {
-    while (u->NewMessages() > 0)
-    {
-      // Fetch the event
-      e = u->EventPop();
-      // Forward it
-      if (!ForwardEvent(u, e)) break;
-      // Erase the event
-      delete e;
-    }
+    gLog.Warn("%sInvalid message id (%d).\n", L_AUTOREPxSTR, nId);
   }
   else
   {
-    e = u->EventPeekLast();
-    // Forward it
-    ForwardEvent(u, e);
+    bool r = AutoReplyEvent(u, e);
+    if (m_bDelete && r)
+      u->EventClearId(nId);
   }
 
   gUserManager.DropUser(u);
 }
 
 
-bool CLicqAutoReply::ForwardEvent(ICQUser *u, CUserEvent *e)
+bool CLicqAutoReply::AutoReplyEvent(ICQUser *u, CUserEvent *e)
 {
   FILE *output;
   char m_szMessage[4096];
