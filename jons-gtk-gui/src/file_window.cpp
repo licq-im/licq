@@ -479,7 +479,7 @@ void update_file_info(struct file_window *fw)
 
 	// ETA
 	int bytes_left = fw->ftman->FileSize() - fw->ftman->FilePos();
-	time_t eta = (time_t)(bytes_left / fw->ftman->BytesTransfered() / Time);
+	time_t eta = (time_t)(bytes_left / (fw->ftman->BytesTransfered() / Time));
 	gtk_entry_set_text(GTK_ENTRY(fw->eta), g_strdup_printf("%02ld:%02ld:%02ld",
 						eta / 3600, (eta % 3600) / 60, (eta % 60)));
 
