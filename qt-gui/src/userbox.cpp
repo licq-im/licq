@@ -458,9 +458,9 @@ void CUserView::setPixmaps(QPixmap *_pOnline, QPixmap *_pOffline, QPixmap *_pAwa
    CUserViewItem::s_pFFC = _pFFC;
    CUserViewItem::s_pPrivate = _pPrivate;
    CUserViewItem::s_pMessage = _pMessage;
-   CUserViewItem::s_pUrl = _pUrl;
-   CUserViewItem::s_pChat = _pChat;
-   CUserViewItem::s_pFile = _pFile;
+   CUserViewItem::s_pUrl = _pUrl->isNull() ? _pMessage : _pUrl;
+   CUserViewItem::s_pChat = _pChat->isNull() ? _pMessage :_pChat;
+   CUserViewItem::s_pFile = _pFile->isNull() ? _pMessage : _pFile;;
 }
 
 
@@ -689,12 +689,11 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
   CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
 
-#if 0
-  if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem())) {
+  if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem()))
+  {
     QTextDrag *d = new QTextDrag(QString::number(i->ItemUin()), this);
     d->dragCopy();
   }
-#endif
 }
 
 
