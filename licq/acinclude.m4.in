@@ -100,7 +100,7 @@ AC_DEFUN(AC_C_SOCKLEN_T,
   ])
 ])
 
-if test ac_cv_c_socklen_t = no; then
+if test $ac_cv_c_socklen_t = no; then
   AC_DEFINE(socklen_t, int)
 fi
 
