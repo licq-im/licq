@@ -51,7 +51,6 @@ const char *CUserEvent::LicqVersionStr(void)
 CUserEvent::~CUserEvent(void)
 {
    delete[] m_szText;
-   free (m_szDescription);
 }
 
 
@@ -108,7 +107,6 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
 
    m_szText = new char[strlen(m_szMessage) + 1];
    sprintf(m_szText, "%s", m_szMessage);
-   m_szDescription = strdup("Message");
 
 }
 
@@ -133,7 +131,6 @@ CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
    m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
    sprintf(m_szText, "File: %s (%ld bytes)\nDescription: %s", m_szFilename,
            m_nFileSize, m_szFileDescription);
-   m_szDescription = strdup("File Transfer");
 
 }
 
@@ -153,7 +150,6 @@ CEventFileCancel::CEventFileCancel(unsigned long _nSequence, time_t _tTime,
 {
    m_szText = new char[32];
    sprintf(m_szText, "Transfer cancelled.");
-   m_szDescription = strdup("File Transfer Cancel");
 
 }
 
@@ -177,7 +173,6 @@ CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
 
    m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
    sprintf(m_szText, "URL: %s\nDescription: %s", m_szUrl, m_szUrlDescription);
-   m_szDescription = strdup("URL");
 }
 
 
@@ -198,7 +193,6 @@ CEventChat::CEventChat(const char *_szReason, unsigned long _nSequence,
 
   m_szText = new char[strlen(m_szReason) + 16];
   sprintf(m_szText, "Reason: %s", m_szReason);
-  m_szDescription = strdup("Chat Request");
 
 }
 
@@ -219,7 +213,6 @@ CEventChatCancel::CEventChatCancel(unsigned long _nSequence, time_t _tTime,
 {
    m_szText = new char[32];
    sprintf(m_szText, "Request cancelled.");
-   m_szDescription = strdup("Chat Request Cancel");
 }
 
 
@@ -246,7 +239,6 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
                        strlen(_szLastName) + strlen(_szEmail) + 128];
    sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.",
            _szAlias, _szFirstName, _szLastName, _szEmail, _nUin);
-   m_szDescription = strdup("Added to Contact List");
 }
 
 
@@ -279,7 +271,6 @@ CEventAuth::CEventAuth(unsigned long _nUin, const char *_szAlias,
                        + strlen(_szReason) + 128];
    sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s",
            _szAlias, _szFirstName, _szLastName, _szEmail, _nUin, _szReason);
-   m_szDescription = strdup("Authorization Request");
 }
 
 
@@ -306,7 +297,6 @@ CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
   m_szText = new char[strlen(_szName) + strlen(_szEmail) + strlen(_szMessage) + 64];
   sprintf(m_szText, "Message from %s (%s) through web panel:\n%s",
           _szName, _szEmail, _szMessage);
-  m_szDescription = strdup("Web Panel");
 }
 
 
@@ -331,7 +321,6 @@ CEventEmailPager::CEventEmailPager(const char *_szName, char *_szEmail,
   m_szText = new char[strlen(_szName) + strlen(_szEmail) + strlen(_szMessage) + 64];
   sprintf(m_szText, "Message from %s (%s) through email pager:\n%s",
           _szName, _szEmail, _szMessage);
-  m_szDescription = strdup("Email Pager");
 }
 
 
@@ -360,7 +349,6 @@ CEventContactList::CEventContactList(vector <char *> &_vszFields,
     szEnd = &m_szText[strlen(m_szText)];
     sprintf(szEnd, "%s (%s)\n", m_vszFields[i + 1], m_vszFields[i]);
   }
-  m_szDescription = strdup("Contact List");
 
 }
 
@@ -379,7 +367,6 @@ CEventSaved::CEventSaved(unsigned short _nNumEvents)
    m_nNumEvents = _nNumEvents;
    m_szText = new char[64];
    sprintf(m_szText, "[%d unviewed messages saved in history]", m_nNumEvents);
-   m_szDescription = strdup("Saved Messages");
 }
 
 
@@ -398,7 +385,6 @@ CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
   m_szText = new char [strlen(m_szMsg) + 128];
   sprintf(m_szText, "Unknown system message (0x%04X) from %ld:\n%s\n",
           m_nSubCommand, m_nUin, m_szMsg);
-  m_szDescription = strdup("Unknown System Message");
 }
 
 

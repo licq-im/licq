@@ -34,7 +34,6 @@ public:
    void AddToHistory(ICQUser *, direction);
 
    const char *Text(void)  {  return m_szText; };
-   const char *Description(void) {  return m_szDescription; }
    const char *Time(void);
    const char *LicqVersionStr(void);
    unsigned long Sequence(void)  { return m_nSequence; }
@@ -47,8 +46,7 @@ public:
    unsigned short LicqVersion(void)  { return m_nFlags & E_LICQxVER; };
 
 protected:
-   char *m_szText,
-        *m_szDescription;
+   char *m_szText;
    unsigned short m_nCommand,
                   m_nSubCommand;
    unsigned long  m_nSequence;
@@ -66,7 +64,6 @@ public:
     : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags)
   {
     m_szText = strdup(_sz);
-    m_szDescription = strdup("BLANK");
     m_cDir = _cDir;
   }
 
