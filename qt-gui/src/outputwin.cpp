@@ -46,7 +46,11 @@ void CQtLogWindow::slot_log(int s)
 {
   char buf[4];
   read(s, buf, 1);
+#if QT_VERSION >= 210
   outputBox->append(QString(NextLogMsg()).stripWhiteSpace());
+#else
+  outputBox->append(NextLogMsg());
+#endif
   outputBox->goToEnd();
   if (NextLogType() == L_ERROR)
   {
