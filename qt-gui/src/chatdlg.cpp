@@ -489,13 +489,13 @@ void ChatDlg::chatRecv()
      {
         if (chatQueue.size() < 3) return;
         unsigned short sizeFontName, encodingFont, i;
-        sizeFontName = chatQueue[1] + chatQueue[2] << 8;
+        sizeFontName = chatQueue[1] | (chatQueue[2] << 8);
         if (chatQueue.size() < (unsigned long)(sizeFontName + 2 + 3)) return;
         char nameFont[sizeFontName];
         for (i = 0; i < sizeFontName; i++)
            nameFont[i] = chatQueue[i + 3];
-        encodingFont = chatQueue[sizeFontName + 3] +
-                       chatQueue[sizeFontName + 4] << 8;
+        encodingFont = chatQueue[sizeFontName + 3] |
+                       (chatQueue[sizeFontName + 4] << 8);
 
         // Dequeue all characters
         for (unsigned short i = 0; i < 3 + sizeFontName + 2; i++)
@@ -506,8 +506,8 @@ void ChatDlg::chatRecv()
      {
         if (chatQueue.size() < 5) return;
         unsigned long styleFont;
-        styleFont = chatQueue[1] + chatQueue[2] << 8 + chatQueue[3] << 16 +
-                    chatQueue[4] << 24;
+        styleFont = chatQueue[1] | (chatQueue[2] << 8) |
+                    (chatQueue[3] << 16) | (chatQueue[4] << 24);
         // Dequeue all characters
         for (unsigned short i = 0; i < 5; i++)
            chatQueue.pop_front();
@@ -517,8 +517,8 @@ void ChatDlg::chatRecv()
      {
         if (chatQueue.size() < 5) return;
         unsigned long sizeFont;
-        sizeFont = chatQueue[1] + chatQueue[2] << 8 + chatQueue[3] << 16 +
-                    chatQueue[4] << 24;
+        sizeFont = chatQueue[1] | (chatQueue[2] << 8) |
+                   (chatQueue[3] << 16) | (chatQueue[4] << 24);
         // Dequeue all characters
         for (unsigned short i = 0; i < 5; i++)
            chatQueue.pop_front();
