@@ -200,6 +200,7 @@ void OptionsDlg::SetupOptions()
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
+  chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
   switch(mainwin->m_nDockMode)
   {
     case DockNone:
@@ -383,6 +384,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
+  mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
 #ifndef USE_KDE
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
@@ -596,6 +598,9 @@ QWidget* OptionsDlg::new_appearance_options()
   chkAutoSendThroughServer = new QCheckBox(tr("Auto send through server"), boxMainWin);
   QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through server "
    "if direct connection fails"));
+  chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"), boxMainWin);
+  QWhatsThis::add(chkAutoSendThroughServer, tr("Lets you drag around the main window "
+   "with your mouse"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);

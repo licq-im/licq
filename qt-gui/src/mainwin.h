@@ -94,7 +94,8 @@ public:
        m_bSystemBackground,
        m_bSendFromClipboard,
        m_bAutoPosReplyWin,
-       m_bAutoSendThroughServer;
+       m_bAutoSendThroughServer,
+       m_bEnableMainwinMouseMovement;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

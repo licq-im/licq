@@ -318,6 +318,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("SendFromClipboard", m_bSendFromClipboard, true);
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
+  licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -963,9 +964,12 @@ void CMainWindow::mousePressEvent(QMouseEvent *m)
 
 void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 {
-   int deltaX = m->x() - mouseX;
-   int deltaY = m->y() - mouseY;
-   move(x() + deltaX, y() + deltaY);
+  if (m_bEnableMainwinMouseMovement)
+  {
+    int deltaX = m->x() - mouseX;
+    int deltaY = m->y() - mouseY;
+    move(x() + deltaX, y() + deltaY);
+  }
 }
 
 
@@ -2173,6 +2177,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("SendFromClipboard", m_bSendFromClipboard);
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
+  licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)
