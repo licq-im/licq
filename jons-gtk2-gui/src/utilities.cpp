@@ -55,6 +55,37 @@ convert_to_utf8(const char *input_text, const char *input_enc)
 	return g_strdup(input_text);
 }
 
+char *
+convert_from_utf8(const char *input_text, const char *output_enc)
+{
+	if (input_text == NULL)
+  	return NULL;
+  
+  if (input_text[0] == 0)
+  	return g_strdup(input_text);
+    
+  size_t len = strlen(input_text);
+
+  gsize b_in, b_out;
+	if (output_enc != NULL && *output_enc != 0 &&
+			strcasecmp(output_enc, "UTF-8") != 0)
+		return g_convert(input_text, len, 
+				output_enc, "UTF-8", &b_in, &b_out, NULL);
+	else {
+		const char *cs;
+		if (g_get_charset(&cs)) 
+      // locale is already utf8 so conversion won't help - we use 
+      // fallback character set - iso8859-1
+			return g_convert(input_text, len,  
+					"ISO8859-1", "UTF-8", &b_in, &b_out, NULL);
+		else
+			return g_convert(input_text, len, 
+					cs, "UTF-8", &b_in, &b_out, NULL);
+	}
+	
+	return g_strdup(input_text);
+}
+
 std::string
 s_convert_to_utf8(const char *input_text, const char *input_enc)
 {
