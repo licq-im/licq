@@ -446,6 +446,7 @@ extern void system_status_click(GtkWidget *, GdkEventButton *, gpointer);
 
 /* Functions in user_info_window.cpp */
 extern void list_info_user(GtkWidget *, ICQUser *);
+extern void user_info_save(GtkWidget *, struct info_user *);
 extern gboolean user_info_close(GtkWidget *, struct info_user *);
 extern void update_user_info(GtkWidget *, struct info_user *);
 extern void cancel_user_info(GtkWidget *, struct info_user *);

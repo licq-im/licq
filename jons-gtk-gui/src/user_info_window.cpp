@@ -52,6 +52,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	GtkWidget *more_box;
 	GtkWidget *work_box;
 	GtkWidget *about_box;
+	GtkWidget *save;
 	GtkWidget *close;
 	GtkWidget *notebook;
 	GtkWidget *statusbar;
@@ -386,6 +387,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_box, label);
 
 	/* The buttons */
+	save = gtk_button_new_with_label("Save");
 	iu->update = gtk_button_new_with_label("Update");
 	iu->cancel = gtk_button_new_with_label("Cancel");
 	close = gtk_button_new_with_label("Close");
@@ -394,11 +396,14 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	/* Add them a h_box */
 	h_box = gtk_hbox_new(FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->update, TRUE, TRUE, 30);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->cancel, TRUE, TRUE, 30);
-	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 30);
+	gtk_box_pack_start(GTK_BOX(h_box), save, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(h_box), iu->update, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(h_box), iu->cancel, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 10);
 
 	/* Connect the signals of the buttons */
+	gtk_signal_connect(GTK_OBJECT(save), "clicked",
+			   GTK_SIGNAL_FUNC(user_info_save), iu);
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
 			   GTK_SIGNAL_FUNC(user_info_close), iu);
 	gtk_signal_connect(GTK_OBJECT(iu->window), "destroy",
@@ -424,6 +429,15 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(iu->window), v_box);
 
 	gtk_widget_show_all(iu->window);
+}
+
+void user_info_save(GtkWidget *widget, struct info_user *iu)
+{
+	ICQUser *user = gUserManager.FetchUser(iu->user->Uin(), LOCK_W);
+	user->SetAlias(gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0,
+					      -1));
+	gUserManager.DropUser(user);
+	contact_list_refresh();
 }
 
 gboolean user_info_close(GtkWidget *widget, struct info_user *iu)
