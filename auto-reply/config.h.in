@@ -61,9 +61,6 @@
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
 
-/* Define if you have the stdc++ library (-lstdc++).  */
-#undef HAVE_LIBSTDC__
-
 /* Name of package */
 #undef PACKAGE
 
