@@ -73,6 +73,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   {
     mleAwayMsg->setText(u->AutoResponse());
     gUserManager.DropUser(u);
+    icqEventTag = NULL;
   }
   else
   {
