@@ -46,8 +46,8 @@ There are three main things each plugin must do:
     LP_Main().  This is done simply by calling CICQDaemon::Register().
     This function returns the descriptor of the pipe to listen on for
     notification of signals and events.  If a plugin exits without either
-		calling CICQDaemon::Shutdown() or receiving a shutdown signal then it
-		must call CICQDaemon::Unregister() to unregister itself.
+    calling CICQDaemon::Shutdown() or receiving a shutdown signal then it
+    must call CICQDaemon::Unregister() to unregister itself.
 
 3.  Each plugin must exit properly when it receives a PLUGIN_SHUTDOWN
     character on the notification pipe.  This simply involves calling
