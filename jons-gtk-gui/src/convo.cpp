@@ -152,16 +152,6 @@ void convo_show(struct conversation *c)
 	gtk_signal_connect(GTK_OBJECT(c->spoof_button), "toggled",
 			   GTK_SIGNAL_FUNC(spoof_button_callback), c);
 
-
-	/*****
-	gtk_widget_show(close);
-	gtk_widget_show(send);
-	gtk_widget_show(button_box);
-	gtk_widget_show(c->entry);
-	gtk_widget_show(c->text);
-	gtk_widget_show(vertical_box);
-	*****/
-
 	/* Add the main box into the window */
 	gtk_container_add(GTK_CONTAINER(c->window), vertical_box);
 	gtk_container_border_width(GTK_CONTAINER(c->window), 10);
@@ -175,7 +165,7 @@ void convo_show(struct conversation *c)
 	gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 
 	/* Don't forget the delete signal */
-	gtk_signal_connect(GTK_OBJECT(c->window), "delete_event", GTK_SIGNAL_FUNC(convo_close), NULL);
+	gtk_signal_connect(GTK_OBJECT(c->window), "destroy", GTK_SIGNAL_FUNC(dialog_close), c->window);
 
 	gtk_widget_show_all(c->window);
 }
@@ -239,14 +229,17 @@ void convo_recv(gulong uin)
 
 	CUserEvent *u_event = c->user->GetEvent(0);
 
+	const gchar *name = g_strdup_printf("%s", c->user->GetAlias());
+
 	if(u_event->SubCommand() == ICQ_CMDxSUB_MSG)
 	{
 		const gchar *message = u_event->Text();
 	
 		const gchar *for_user_m =
-	            g_strdup_printf("%s:  %s\n", c->user->GetAlias(), message);
+	            g_strdup_printf(":  %s\n", message);
 
 		gtk_text_freeze(GTK_TEXT(c->text));
+		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, name, -1);
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_m, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
  	}
