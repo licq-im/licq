@@ -38,12 +38,12 @@ distclean: clean
 
 merge: template.po
 	for i in *.po; do \
-	  $(MERGETR) $$i template.po
+	  $(MERGETR) $$i template.po \
 	done
 
 qm: merge
 	for i in *.po; do \
-	  make $$i
+	  make $$i \
 	done
 
 install: all qm
