@@ -104,7 +104,7 @@ protected:
   QSocketNotifier *sn;
   bool m_bAudio;
 
-  virtual void hideEvent(QHideEvent*);
+  virtual void hide();
 
   friend class CJoinChatDlg;
 

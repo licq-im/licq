@@ -686,12 +686,11 @@ void ChatDlg::chatClose(CChatUser *u)
 }
 
 
-void ChatDlg::hideEvent(QHideEvent*)
+void ChatDlg::hide()
 {
   chatClose(NULL);
   close(true);
 }
-
 
 
 QString ChatDlg::ChatClients()
