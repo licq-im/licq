@@ -30,7 +30,7 @@
 #include "user.h"
 
 RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
-  : QWizard(parent, name, true)
+  : QWizard(parent, name, false)
 {
   page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
                                     "You can register a new user here, or configure "

@@ -26,8 +26,12 @@ CSkin::CSkin(const char *skinname)
 
    char filename[MAX_FILENAME_LEN];
    sprintf(filename, "%s%s.skin", baseSkinDir, skinname);
-   CIniFile skinFile(INI_FxFATAL | INI_FxERROR);
-   skinFile.LoadFile(filename);
+   CIniFile skinFile(/*INI_FxFATAL | INI_FxERROR*/ INI_FxWARN);
+   if (!skinFile.LoadFile(filename))
+   {
+     SetDefaultValues();
+     return;
+   }
 
    // Frame
    skinFile.SetSection("skin");
@@ -255,6 +259,62 @@ CSkin::~CSkin(void)
   free (colors.background);
   free (colors.gridlines);
   free (colors.newuser);
+}
+
+
+void CSkin::SetDefaultValues()
+{
+  frame.pixmap = NULL;
+  frame.mask = NULL;
+  frame.border.top = 28;
+  frame.border.bottom = 80;
+  frame.border.left = 0;
+  frame.border.right = 0;
+  frame.hasMenuBar = 1;
+
+  lblStatus.rect.x1 = 5;
+  lblStatus.rect.y1 = -25;
+  lblStatus.rect.x2 = -5;
+  lblStatus.rect.y2 = -5;
+  lblStatus.color.fg = NULL;
+  lblStatus.color.bg = NULL;
+  lblStatus.frameStyle = 51;
+  lblStatus.pixmap = NULL;
+
+  btnSys.rect.x1 = 20;
+  btnSys.rect.y1 = -65;
+  btnSys.rect.x2 = 70;
+  btnSys.rect.y2 = -45;
+  btnSys.pixmapUpFocus = NULL;
+  btnSys.pixmapUpNoFocus = NULL;
+  btnSys.pixmapDown = NULL;
+  btnSys.color.fg = NULL;
+  btnSys.color.bg = NULL;
+  btnSys.caption = NULL;
+
+  lblMsg.rect.x1 = 5;
+  lblMsg.rect.y1 = -50;
+  lblMsg.rect.x2 = -5;
+  lblMsg.rect.y2 = -30;
+  lblMsg.color.fg = NULL;
+  lblMsg.color.bg = NULL;
+  lblMsg.frameStyle = 51;
+  lblMsg.pixmap = NULL;
+
+  cmbGroups.rect.x1 = 10;
+  cmbGroups.rect.y1 = -75;
+  cmbGroups.rect.x2 = -10;
+  cmbGroups.rect.y2 = -55;
+  cmbGroups.color.fg = NULL;
+  cmbGroups.color.bg = NULL;
+
+  colors.online = strdup("blue");
+  colors.away = strdup("dark green");
+  colors.offline = strdup("firebrick");
+  colors.newuser = strdup("yellow");
+  colors.background = strdup("grey76");
+  colors.gridlines = strdup("black");
+
 }
 
 

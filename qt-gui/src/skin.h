@@ -93,6 +93,9 @@ public:
    QRect borderToRect(CShapeSkin *, QPixmap *);
    int frameWidth(void);
    int frameHeight(void);
+
+protected:
+   void SetDefaultValues();
 };
 
 
