@@ -8,7 +8,7 @@ class MLEditWrap : public QMultiLineEditNew
   Q_OBJECT
 public:
   MLEditWrap (bool wordWrap, QWidget *parent=0, const char *name=0);
-  void appendNNL(const char *);
+  void appendNNL(QString s);
   void appendChar(char);
   void goToEnd(void);
   virtual void backspace(void) { QMultiLineEditNew::backspace(); }

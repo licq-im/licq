@@ -57,15 +57,17 @@ void CQtLogWindow::slot_log(int s)
   char buf[4];
   read(s, buf, 1);
 
-  outputBox->appendNNL(NextLogMsg());
+  QString str = QString::fromLocal8Bit(NextLogMsg());
+
+  outputBox->appendNNL(str);
   outputBox->goToEnd();
 
   // hardcoded limit, maybe should be user configurable?
-  if(outputBox->numLines() > 500)
+  while (outputBox->numLines() > 500)
     outputBox->removeLine(0);
 
   if (NextLogType() == L_ERROR)
-    (void) new CLicqMessageBox(NextLogMsg(), QMessageBox::Critical);
+    (void) new CLicqMessageBox(str, QMessageBox::Critical);
 
   ClearLog();
 }

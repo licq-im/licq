@@ -682,13 +682,13 @@ void ICQFunctions::showHistory()
     mleHistory->clear();
     for (HistoryListIter i = h.begin(); i != h.end(); i++)
     {
-      s.sprintf("%s -> %s: %s (%s) [%c%c%c]\n%s",
+      s.sprintf("%s -> %s: %s (%s) [%c%c%c]\n",
                 (*i)->Dir() == 'R' ? u->getAlias() : o->getAlias(),
                 (*i)->Dir() == 'R' ? o->getAlias() : u->getAlias(),
                 (*i)->Description(), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
-                (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-',
-                (*i)->Text());
-      mleHistory->append(s);
+                (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-');
+                ;
+      mleHistory->append(s + QString::fromLocal8Bit( (*i)->Text() ));
     }
   }
   gUserManager.DropOwner();

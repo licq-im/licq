@@ -13,7 +13,7 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent, const char *name)
 }
 
 
-void MLEditWrap::appendNNL(const char *s)
+void MLEditWrap::appendNNL(QString s)
 {
   if (!atEnd()) goToEnd();
   QMultiLineEditNew::insert(s);

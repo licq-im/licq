@@ -32,7 +32,7 @@ protected slots:
 class CLicqMessageBox : public QMessageBox
 {
 public:
-  CLicqMessageBox(const char *_szText, Icon icon, QWidget *q = NULL)
+  CLicqMessageBox(QString _szText, Icon icon, QWidget *q = NULL)
    : QMessageBox ("Licq", _szText, icon, Ok | Default, 0, 0, q, NULL, q == NULL ? false : true)
   { show(); }
 
