@@ -460,6 +460,7 @@ void ICQFunctions::tabSelected(const QString &tab)
      btnOk->setText(_("Ok"));
      btnSave->setText(_("Reply"));
      m_bIsOwner ? btnSave->hide() : btnSave->show();
+     msgView->triggerUpdate();
      currentTab = TAB_READ;
   }
   else if (tab == tabLabel[TAB_DETAILINFO])
@@ -542,8 +543,7 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
 void ICQFunctions::printMessage(QListViewItem *e)
 {
   CUserEvent *m = ((MsgViewItem *)e)->msg;
-  mleRead->clear();
-  mleRead->append(QString::fromLocal8Bit(m->Text()));
+  mleRead->setText(QString::fromLocal8Bit(m->Text()));
   if (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE)
   {
     switch (m->SubCommand())
@@ -945,7 +945,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         u->getStatusStr(status);
         sprintf(msg, _("%s is in %s mode:\n%s\n[Send \"urgent\" to ignore]"),
-                     u->getAlias(), status, u->getAwayMessage());
+                     u->getAlias(), status, u->AutoResponse());
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;

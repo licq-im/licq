@@ -34,6 +34,7 @@ public:
    CUserEvent *currentMsg(void);
    void markRead(short);
 protected:
+   virtual void resizeEvent(QResizeEvent *e);
    void mouseReleaseEvent(QMouseEvent *e);
 };
 

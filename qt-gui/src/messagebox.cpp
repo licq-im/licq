@@ -64,7 +64,6 @@ MsgView::MsgView (QWidget *parent = 0, const char *name = 0) : QListView(parent,
   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                         normal.mid(), normal.text(), QColor(192, 192, 192));
   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
-  //setStyle(WindowsStyle);
   setFrameStyle(QFrame::Panel | QFrame::Sunken);
 }
 
@@ -72,6 +71,13 @@ CUserEvent *MsgView::currentMsg(void)
 {
    if (currentItem() == NULL) return (NULL);
    return (((MsgViewItem *)currentItem())->msg);
+}
+
+
+void MsgView::resizeEvent(QResizeEvent *e)
+{
+  QScrollBar *s = verticalScrollBar();
+  setColumnWidth(1, width() - 240 - s->width());
 }
 
 
