@@ -623,6 +623,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   else
   {
     setBackgroundMode(PaletteBackground);
+#if QT_VERSION >= 300
+    unsetPalette();
+#endif
   }
 
   if (skin->frame.mask != NULL)
