@@ -672,12 +672,9 @@ void ICQFunctions::showHistory()
     delete []buf;
   }*/
   HistoryList h;
-  if (u->GetHistory(h) != HISTORY_OK)
-  {
+  if (!u->GetHistory(h)) {
     mleHistory->setText(_("Error loading history"));
-  }
-  else
-  {
+  } else {
     mleHistory->clear();
     QString s;
     for (HistoryListIter i = h.begin(); i != h.end(); i++)
