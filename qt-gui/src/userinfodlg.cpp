@@ -942,7 +942,7 @@ void UserInfoDlg::CreateHistory()
 
   chkHistoryReverse = new QCheckBox(tr("Rever&se"), p);
   connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(HistoryReverse(bool)));
-  chkHistoryReverse->setChecked(true);
+  chkHistoryReverse->setChecked(m_bHistoryReverse = true);
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
@@ -1166,7 +1166,7 @@ void UserInfoDlg::ShowHistory()
          break;
     }
   }
-  delete ftxt;
+  delete [] ftxt;
   if(lneFilter->text().isEmpty())
     lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
                            "[<font color=\"%2\">Sent</font>] "
