@@ -71,10 +71,12 @@ const unsigned long GROUP_VISIBLE_LIST    = 2;
 const unsigned long GROUP_INVISIBLE_LIST  = 3;
 const unsigned long GROUP_IGNORE_LIST     = 4;
 
-const unsigned short ACCEPT_IN_AWAY     = 1;
-const unsigned short ACCEPT_IN_NA       = 2;
-const unsigned short ACCEPT_IN_OCCUPIED = 4;
-const unsigned short ACCEPT_IN_DND      = 8;
+const unsigned short ACCEPT_IN_AWAY     = 0x0001;
+const unsigned short ACCEPT_IN_NA       = 0x0002;
+const unsigned short ACCEPT_IN_OCCUPIED = 0x0004;
+const unsigned short ACCEPT_IN_DND      = 0x0008;
+const unsigned short AUTO_ACCEPT_CHAT   = 0x0100;
+const unsigned short AUTO_ACCEPT_FILE   = 0x0200;
 
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -154,7 +156,8 @@ public:
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
   time_t LastOnline()                   { return m_nLastOnline; }
-  bool AutoFileAccept()                 { return m_bAutoFileAccept; }
+  bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
+  bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
   bool AcceptInAway()                   { return m_nAutoAccept & ACCEPT_IN_AWAY; }
   bool AcceptInNA()                     { return m_nAutoAccept & ACCEPT_IN_NA; }
   bool AcceptInOccupied()               { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
@@ -219,7 +222,8 @@ public:
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
-  void SetAutoFileAccept(bool s)      { m_bAutoFileAccept = s; }
+  void SetAutoChatAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_CHAT : m_nAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
+  void SetAutoFileAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_FILE : m_nAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
   void SetAcceptInAway(bool s)        { s ? m_nAutoAccept |= ACCEPT_IN_AWAY : m_nAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
   void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
   void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
@@ -330,8 +334,7 @@ protected:
        m_bOnlineNotify,
        m_bSendServer,
        m_bEnableSave,
-       m_bShowAwayMsg,
-       m_bAutoFileAccept;
+       m_bShowAwayMsg;
   unsigned short m_nStatusToUser;
   unsigned short m_nAutoAccept;
 
