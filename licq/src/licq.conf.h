@@ -1,7 +1,7 @@
 static const char LICQ_CONF[] =
 "\n"
 "[licq]\n"
-"Version = 1025\n"
+"Version = 1027\n"
 "\n"
 "[plugins]\n"
 "NumPlugins = 0\n"
