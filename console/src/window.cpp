@@ -103,14 +103,15 @@ void CWindow::wprintf(char *formatIn, ...)
    char formatOut[1024], out[1024];
    unsigned short i = 0, j = 0;
    attr_t a;
-   short p;
-   wattr_get(win, &a, &p, NULL);
+   a = wattr_get(win);
 
    va_start(argp, formatIn);
 
-   while((formatIn[i] != '%') && i < strlen(formatIn)) formatOut[j++] = formatIn[i++];
+   while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+
    formatOut[j] = '\0';
    *this << formatOut;
+
    while(i < strlen(formatIn))
    {
       j = 0;
@@ -118,29 +119,30 @@ void CWindow::wprintf(char *formatIn, ...)
       {
       case 'C':   // set color
          i++;
-         wcolor_set(win, va_arg(argp, short), NULL);
-         while((formatIn[i] != '%') && i < strlen(formatIn)) formatOut[j++] = formatIn[i++];
+         (void) va_arg(argp, short);
+//         wcolor_set(win, dummy, NULL);
+         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'A':   // more generally set attribute
          i++;
          wattron(win, va_arg(argp, long));
-         while((formatIn[i] != '%') && i < strlen(formatIn)) formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'Z':   // more generally clear attribute
          i++;
          wattroff(win, va_arg(argp, long));
-         while((formatIn[i] != '%') && i < strlen(formatIn)) formatOut[j++] = formatIn[i++];
+         while(((formatIn[i]) && formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'f': break; //can't cast a float right.
       default:
          formatOut[j++] = '%';
-         while((formatIn[i] != '%') && i < strlen(formatIn)) formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          sprintf(out, formatOut, va_arg(argp, long)); //use a double to make sure we get all of the arg (up to 64 bits).
          *this << out;
@@ -148,7 +150,7 @@ void CWindow::wprintf(char *formatIn, ...)
       }
    }
    va_end(argp);
-   wattr_set(win, a, p, NULL);
+   wattron(win, a);
 }
 
 
