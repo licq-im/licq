@@ -539,7 +539,7 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkBoldOnMsg, tr("The message info label will be bold if there are incoming messages"));
 
   l = new QVBoxLayout(l);
-  boxLocale = new QGroupBox(2, Horizontal, tr("Locale"), w);
+  boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
