@@ -181,7 +181,14 @@ void CIniFile::CloseFile()
 bool CIniFile::LoadFile(const char *_szFilename)
 {
   CloseFile();
-  m_szFilename = strdup(_szFilename);
+  if (m_szFilename && (m_szFilename != _szFilename))
+  {
+    free(m_szFilename);
+    m_szFilename = NULL;
+  }
+
+  if (m_szFilename != _szFilename)
+    m_szFilename = strdup(_szFilename);
 
   int nFD;
   if (GetFlag(INI_FxALLOWxCREATE))
