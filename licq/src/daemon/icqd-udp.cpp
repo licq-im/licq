@@ -247,6 +247,7 @@ void CICQDaemon::icqLogoff()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner();
+  PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));
 }
 
 

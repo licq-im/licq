@@ -230,9 +230,52 @@ friend class CICQDaemon;
 
 
 //=====CICQSignal============================================================
+/*---------------------------------------------------------------------------
+ * CICQSignal
+ *
+ * This class controls all asynchronous plugin notifications.  When a plugin
+ * registers with the Licq daemon it informs the daemon of what signals it
+ * is interested in.  From then on, at any time it may receive a signal
+ * from the following list.  Each signal contains the signal type, an
+ * optional sub-type, uin and signal specific argument.
+ *
+ * SIGNAL_UPDATExLIST -
+ *   Indicates that the user list has changed in some way.  The sub-type
+ *   will be one of the following.  In all cases the argument is 0.
+ *     LIST_ADD - A user was added to the list.  The UIN will be that of
+ *     the new user.
+ *     LIST_REMOVE - A user was removed from the list.  The UIN will be
+ *     that of the removed user.
+ *     LIST_ALL - The entire list has been changed.  The UIN will be 0.
+ *
+ *  SIGNAL_UPDATExUSER - The user has been modified in some way.  The UIN
+ *  is that of the relevant user, and the sub-type indicates what type of
+ *  information was changed.  In all cases except the following the argument
+ *  is 0:
+ *    USER_STATUS - Indicates that the users status has changed.  The
+ *    argument will be negative if the user went offline, positive if they
+ *    went online, and 0 if they stayed online (for example went from NA
+ *    to Away).
+ *    USER_EVENTS - Indicates that the user has received or deleted an
+ *    event (message, url...).  The argument will be the event id of the
+ *    added event, or the negative of the event id if an event was deleted.
+ *    If the user checked our auto-response then the argument will be 0.
+ *
+ *  SIGNAL_LOGON - Indicates that we have successfully logged on to the
+ *  icq network.  UIN and argument are both 0, as is the sub-type.
+ *
+ *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
+ *
+ *  SIGNAL_BIRTHDAY - Indicates that the users birthday is within the given
+ *  range of days away.  The uin is that of the user, the sub-type is 0,
+ *  and the argument is the number of days before their birthday.
+ *
+ *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
+const unsigned long SIGNAL_LOGOFF                = 0x00000008;
+const unsigned long SIGNAL_BIRTHDAY              = 0x00000010;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // User information update constants
@@ -247,8 +290,7 @@ const unsigned long USER_ABOUT                  = 8;
 
 const unsigned long LIST_ADD                     = 1;
 const unsigned long LIST_REMOVE                  = 2;
-const unsigned long LIST_REORDER                 = 3;
-const unsigned long LIST_ALL                     = 4;
+const unsigned long LIST_ALL                     = 3;
 
 
 class CICQSignal

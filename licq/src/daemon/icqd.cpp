@@ -887,23 +887,44 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
  *
  * Send a signal for each user whose birthday occurs in the next few days.
  *-------------------------------------------------------------------------*/
- /*
-void CICQDaemon::CheckBirthdays(void)
+void CICQDaemon::CheckBirthdays()
 {
   time_t t = time(NULL);
-  struct *tm = localtime(&t);
-  char nMonth, nDay;
+  struct tm *ts = localtime(&t);
+  char nMonth, nDayMin, nDayMax, nMonthNext, nDayMaxNext;
+  static const char nMonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+  nMonth = ts->tm_mon;
+  nMonthNext = nDayMaxNext = 0;
+  nDayMin = ts->tm_mday;
+  nDayMax = nDayMin + m_nBirthdayRange;
+  if (nDayMax > nMonthDays[nMonth])
+  {
+    nMonthNext = nMonth + 1;
+    if (nMonthNext == 13) nMonth = 1;
+    nDayMaxNext = nDayMax - nMonthDays[nMonth];
+    nDayMax = nMonthDays[nMonth];
+  }
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (pUser->GetBirthMonth() == nMonth && pUser->GetBirthDay() == nDay)
+    int nDays = -1;
+    if (pUser->GetBirthMonth() == nMonth && pUser->GetBirthDay() >= nDayMin &&
+         pUser->GetBirthDay() <= nDayMax)
     {
-      PushPluginSignal(new CICQSignal(SIGNAL_BIRTHDAY, 0, nUin));
+      nDays = pUser->GetBirthDay() - nDayMin;
     }
+    if (nMonthNext != 0 && pUser->GetBirthMonth() == nMonthNext &&
+         pUser->GetBirthDay() <= nDayMaxNext)
+    {
+      nDays = pUser->GetBirthDay() + (nMonthDays[nMonth] - nDayMin);
+    }
+    if (nDays >= 0)
+      PushPluginSignal(new CICQSignal(SIGNAL_BIRTHDAY, 0, pUser->Uin()));
   }
   FOR_EACH_USER_END
 }
-*/
+
 
 /*----------------------------------------------------------------------------
  * CICQDaemon::SendExpectEvent

@@ -233,6 +233,9 @@ public:
      unsigned long nRealIp, TCPSocket *sock, unsigned short nPort,
      bool bSendRealIp);
   int StartTCPServer(TCPSocket *);
+  void CheckBirthdays();
+  unsigned short BirthdayRange() { return m_nBirthdayRange; }
+  void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);
@@ -299,7 +302,8 @@ protected:
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket,
                  m_nServerSequence,
-                 m_nErrorTypes;
+                 m_nErrorTypes,
+                 m_nBirthdayRange;
   char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;
