@@ -119,19 +119,6 @@ protected:
 
 
 /* ----------------------------------------------------------------------------- */
-
-class CLogWidget : public MLEditWrap
-{
-public:
-  CLogWidget(QWidget* parent = 0, const char* name = 0);
-  virtual ~CLogWidget() {};
-
-protected:
-  virtual void paintCell(QPainter* p, int row, int col);
-};
-
-
-/* ----------------------------------------------------------------------------- */
 // If Troll wasn't so fucking lame we could implement a proper font dialog
 // but all the necessary data structures are private
 #if 0

@@ -14,6 +14,7 @@
 #include <qtextstream.h>
 
 #include "outputwin.h"
+#include "ewidgets.h"
 #include "licq_icq.h"
 
 #undef connect
@@ -121,5 +122,44 @@ void CQtLogWindow::slot_save()
   }
 
 }
+
+
+// -----------------------------------------------------------------------------
+
+CLogWidget::CLogWidget(QWidget* parent, const char* name)
+  : MLEditWrap(false, parent, true, name)
+{
+  setReadOnly(true);
+}
+
+
+// -----------------------------------------------------------------------------
+
+void CLogWidget::paintCell(QPainter* p, int row, int col)
+{
+  QColorGroup& cg = const_cast<QColorGroup&>(colorGroup());
+  QColor cgback = cg.text();
+
+  QString s;
+  int i = row;
+  while ( i >= 0 && (s = stringShown(i).mid(11, 3)) == "   ") i--;
+
+  if (s == "WRN")
+    cg.setColor(QColorGroup::Text, Qt::darkYellow);
+  else if (s == "ERR")
+    cg.setColor(QColorGroup::Text, Qt::darkRed);
+  else if (s == "PKT")
+    cg.setColor(QColorGroup::Text, Qt::darkBlue);
+  else if (s == "???")
+    cg.setColor(QColorGroup::Text, Qt::magenta);
+
+  MLEditWrap::paintCell(p, row, col);
+
+  cg.setColor(QColorGroup::Text, cgback);
+}
+
+
+
+// -----------------------------------------------------------------------------
 
 #include "outputwin.moc"

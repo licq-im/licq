@@ -1,17 +1,14 @@
 #ifndef OUTPUTWIN_H
 #define OUTPUTWIN_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <qwidget.h>
 #include <qpushbutton.h>
 #include <qsocketnotifier.h>
 
 #include "mledit.h"
-#include "ewidgets.h"
 #include "licq_log.h"
+
+class CLogWidget;
 
 //=====OutputWin============================================================
 class CQtLogWindow : public QWidget, public CPluginLog
@@ -28,6 +25,18 @@ protected slots:
   void slot_save();
 
   virtual void showEvent(QShowEvent*);
+};
+
+/* ----------------------------------------------------------------------------- */
+
+class CLogWidget : public MLEditWrap
+{
+public:
+  CLogWidget(QWidget* parent = 0, const char* name = 0);
+  virtual ~CLogWidget() {};
+
+protected:
+  virtual void paintCell(QPainter* p, int row, int col);
 };
 
 #endif
