@@ -30,7 +30,7 @@ install-data-local:
 	done
 	@for j in qt-gui/dock.*; do \
 	  echo "Installing dock theme $$j"; \
-	  $(mkinstalldirs) $(DESTOIR)$(sharedir)/$$j; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
 	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
