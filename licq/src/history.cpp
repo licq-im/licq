@@ -394,7 +394,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
 void CUserHistory::Save(const char *buf)
 {
   if (m_szFileName == NULL || buf == NULL) return;
-  int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+  int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_TRUNC, 00600);
   if (fd == -1)
   {
     gLog.Error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
@@ -421,7 +421,7 @@ void CUserHistory::Clear(HistoryList &hist)
 void CUserHistory::Append(const char *_sz)
 {
   if (m_szFileName == NULL || _sz == NULL) return;
-  int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_APPEND, 00664);
+  int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_APPEND, 00600);
   if (fd == -1)
   {
     gLog.Error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,

@@ -295,6 +295,7 @@ bool CLicq::Init(int argc, char **argv)
   fs = fopen(szConf, "w");
   if (fs != NULL)
   {
+    chmod(szConf, 00600);
     fprintf(fs, "%d\n", getpid());
     fclose(fs);
   }
@@ -987,6 +988,7 @@ bool CLicq::Install()
   // Create licq.conf
   snprintf(cmd, sizeof(cmd) - 1, "%s/licq.conf", BASE_DIR);
   FILE *f = fopen(cmd, "w");
+  chmod(cmd, 00600);
   fprintf(f, "%s", LICQ_CONF);
   fclose(f);
 

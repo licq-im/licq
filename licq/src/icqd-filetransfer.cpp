@@ -723,12 +723,12 @@ bool CFileTransferManager::StartReceivingFile(char *szFileName)
         snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%ld", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
         m_szPathName[MAX_FILENAME_LEN - 1] = '\0';
       }
-      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT | O_APPEND, 00664);
+      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT | O_APPEND, 00600);
       m_nFilePos = buf.st_size;
     }
     else
     {
-      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT, 00664);
+      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT, 00600);
       m_nFilePos = 0;
     }
     if (m_nFileDesc == -1)

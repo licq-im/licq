@@ -2,6 +2,7 @@
 #include "config.h"
 #endif
 #include <string.h>
+#include <sys/stat.h>
 
 #include "licq_sar.h"
 #include "licq_log.h"
@@ -71,6 +72,7 @@ bool CSARManager::Load()
     //          L_WARNxSTR, filename);
     // Create sar.conf
     FILE *f = fopen(filename, "w");
+    chmod(filename, 00600);
     fprintf(f, "%s", SAR_CONF);
     fclose(f);
     if (!m_fConf.ReloadFile()) return false;

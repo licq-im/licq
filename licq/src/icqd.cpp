@@ -862,7 +862,7 @@ void CICQDaemon::SaveUserList()
   strcpy(szTmpName, szFilename);
   strcat(szTmpName, suffix);
 
-  fd = open(szTmpName, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+  fd = open(szTmpName, O_WRONLY | O_CREAT | O_TRUNC, 00600);
   if (fd == -1)
   {
     // Avoid sending the message to the plugins, a race exists if we are
@@ -1097,6 +1097,7 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
   {
     fprintf(f, "Event from new user (%ld) rejected: \n%s\n--------------------\n\n",
             nUin, e->Text());
+    chmod(m_szRejectFile, 00600);
     fclose(f);
   }
   delete e;

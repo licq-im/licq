@@ -206,7 +206,7 @@ bool CIniFile::LoadFile(const char *_szFilename)
 
   int nFD;
   if (GetFlag(INI_FxALLOWxCREATE))
-    nFD = open(m_szFilename, O_RDONLY | O_CREAT, 00664);
+    nFD = open(m_szFilename, O_RDONLY | O_CREAT, 00600);
   else
     nFD = open(m_szFilename, O_RDONLY);
   if (nFD < 0)

@@ -10,6 +10,7 @@ extern int errno;
 #endif
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
 
 #include <unistd.h>
 #include "licq_log.h"
@@ -130,6 +131,8 @@ bool CLogService_File::SetLogFile(const char *_szFile, const char *_szFlags)
 {
    if (m_fLog != NULL) fclose (m_fLog);
    m_fLog = fopen(_szFile, _szFlags);
+   if (m_fLog != NULL)
+     chmod(_szFile, 00600);
    return (m_fLog != NULL);
 }
 
