@@ -81,6 +81,7 @@ public:
   void InputMessage(int cIn);
   void InputUrl(int cIn);
   void InputRemove(int cIn);
+  void InputInfo(int cIn);
   void InputAutoResponse(int cIn);
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
   char *Input_Line(char *sz, unsigned short &n, int cIn);
@@ -97,6 +98,9 @@ public:
   void PrintUsers();
   void PrintHelp();
   void PrintHistory(HistoryList &, unsigned short, unsigned short, const char *);
+  void PrintInfo_General(unsigned long);
+  void PrintInfo_More(unsigned long);
+  void PrintInfo_Work(unsigned long);
 
   void MenuHelp(char *);
   void MenuContactList(char *);

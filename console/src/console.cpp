@@ -368,6 +368,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_USERxGETDETAILS:
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
+  case ICQ_CMDxSND_META:
   {
     unsigned short i;
     for (i = 1; i <= MAX_CON; i++)
@@ -550,6 +551,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
     case ICQ_CMDxSND_USERxGETDETAILS:
     case ICQ_CMDxSND_UPDATExBASIC:
     case ICQ_CMDxSND_UPDATExDETAIL:
+    case ICQ_CMDxSND_META:
     default:
       break;
 
@@ -968,20 +970,78 @@ char *CLicqConsole::CurrentGroupName()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
 {
-  // Print the users info to the main window
+  // First put this console into edit mode
+  winMain->fProcessInput = &CLicqConsole::InputInfo;
+  winMain->state = STATE_QUERY;
+  winMain->data = new CData(nUin);
+
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-
-  PrintBoxTop("User Info", COLOR_WHITE, 50);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("Alias: %s (%ld)", u->GetAlias(), u->Uin());
-  PrintBoxRight(50);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("Status: %s", u->StatusStr());
-  PrintBoxRight(50);
-  PrintBoxBottom(50);
-
+  winMain->wprintf("%C%A"
+                   "(G)eneral Info\n"
+                   "(M)ore Info\n"
+                   "(W)ork Info\n"
+                   "(U)pdate Info\n"
+                   "for %s (%ld)? %C%Z",
+                   m_cColorQuery->nColor, m_cColorQuery->nAttr,
+                   u->GetAlias(), nUin, COLOR_WHITE, A_BOLD);
+  winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::InputInfo
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::InputInfo(int cIn)
+{
+  CData *data = (CData *)winMain->data;
+
+  winMain->wprintf("\n");
+
+  switch(winMain->state)
+  {
+    case STATE_QUERY:
+      // The input is done
+      switch(tolower(cIn))
+      {
+        case 'g':
+          PrintInfo_General(data->nUin);
+          break;
+        case 'm':
+          PrintInfo_More(data->nUin);
+          break;
+        case 'w':
+          PrintInfo_Work(data->nUin);
+          break;
+        case 'u':
+          winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
+                           m_cColorInfo->nAttr);
+          winMain->event = licqDaemon->icqRequestMetaInfo(data->nUin);
+          winMain->state = STATE_PENDING;
+          return;
+        case '\r':
+          break;
+        default:
+          winMain->wprintf("%CInvalid key.\n", COLOR_RED);
+      }
+
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+      if (winMain->data != NULL)
+      {
+        delete winMain->data;
+        winMain->data = NULL;
+      }
+      winMain->state = STATE_COMMAND;
+      break;
+
+    case STATE_PENDING:
+      break;
+
+    default:
+      winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
+  }
+
+}
+
 
 
 /*---------------------------------------------------------------------------
