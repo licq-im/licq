@@ -8,6 +8,7 @@
 #include "icqd.h"
 #include "log.h"
 #include "window.h"
+#include "user.h"
 
 #define MAX_CON 8
 
