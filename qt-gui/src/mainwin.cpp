@@ -27,6 +27,9 @@
 #include <kwin.h>
 #include <kiconloader.h>
 #include <kurl.h>
+#if KDE_VERSION >= 310
+#include <kpassivepopup.h>
+#endif
 #else
 #include <qapplication.h>
 #endif
@@ -1423,7 +1426,25 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       }
 
       if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
+      {
         userView->AnimationOnline(szId, nPPID);
+#if defined(USE_KDE) && (KDE_VERSION >= 310)
+        // User on notify list went online -> show popup at systray icon
+        if (licqIcon && u->OnlineNotify())
+        {
+          QTextCodec *codec = UserCodec::codecForICQUser(u);
+          QString alias = codec->toUnicode(u->GetAlias());
+          // Escape HTML
+          alias.replace(QChar('&'), "&amp;");
+          alias.replace(QChar('<'), "&lt;");
+          alias.replace(QChar('>'), "&gt;");
+
+          QString msg(tr("<b>%1</b> is online").arg(alias));
+          QPixmap px = iconForStatus(u->StatusFull());
+          KPassivePopup::message("Licq", msg, px, licqIcon, NULL, 4000);
+        }
+#endif
+      }
 
       // Update their floaty
       CUserView *v = CUserView::FindFloaty(szId, nPPID);

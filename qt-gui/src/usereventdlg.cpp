@@ -473,9 +473,14 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   else
     btnSecure->setPixmap(mainwin->pmSecureOff);
 
-  m_sBaseTitle = codec->toUnicode(u->GetAlias()) + " (" +
-             codec->toUnicode(u->GetFirstName()) + " " +
-             codec->toUnicode(u->GetLastName())+ ")";
+  QString tmp = codec->toUnicode(u->GetFirstName());
+  QString lastname = codec->toUnicode(u->GetLastName());
+  if ((!tmp.isEmpty()) && (!lastname.isEmpty()))
+    tmp = tmp + " " + lastname;
+  else
+    tmp = tmp + lastname;
+  if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
+  m_sBaseTitle = codec->toUnicode(u->GetAlias()) + tmp;
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
