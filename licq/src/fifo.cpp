@@ -568,7 +568,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
   {
     u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
     if (u == NULL)
-      gLog.Warn(tr("%s %s: user %s not on contact list, not retrieving"
+      gLog.Warn(tr("%s %s: user %s not on contact list, not retrieving "
                 "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
