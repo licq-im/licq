@@ -99,6 +99,7 @@ protected:
 
 protected slots:
   virtual void accept();
+  virtual void reject();
   void colEnable(bool);
   void ApplyOptions();
   void slot_selectfont();

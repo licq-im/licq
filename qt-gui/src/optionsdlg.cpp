@@ -97,6 +97,12 @@ void OptionsDlg::accept()
   close();
 }
 
+void OptionsDlg::reject()
+{
+  QDialog::reject();
+  QTimer::singleShot(0, this, SLOT(close()));
+}
+
 void OptionsDlg::slot_whatsthis()
 {
   QWhatsThis::enterWhatsThisMode();
