@@ -532,27 +532,29 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   date.setTime_t(e->Time());
   QString sd = date.time().toString();
 
-  QString n;
+  QString contactName;
   QTextCodec *codec = QTextCodec::codecForLocale();
-  ICQUser *u = NULL;
 
-  if (e->Direction() == D_RECEIVER)
   {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     if (u != NULL)
     {
       codec = UserCodec::codecForICQUser(u);
-      n = codec->toUnicode(u->GetAlias());
+      if (e->Direction() == D_RECEIVER)
+        contactName = codec->toUnicode(u->GetAlias());
       gUserManager.DropUser(u);
     }
   }
-  else
+  
+  if (e->Direction() != D_RECEIVER)
   {
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
     if (o != NULL)
     {
-      codec = UserCodec::codecForICQUser(o);
-      n = codec->toUnicode(o->GetAlias());
+      // Don't use this codec to decode our conversation with the contact
+      // since we're using the contact's encoding, not ours.
+      QTextCodec *ownerCodec = UserCodec::codecForICQUser(o);
+      contactName = ownerCodec->toUnicode(o->GetAlias());
       gUserManager.DropOwner();
     }
   }
@@ -571,7 +573,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   // seem to be buggy in Qt 3 at the time of writing.
   // This can potentially make BiDi support worser, so this string needs to be
   // rewritten to use a separate paragraph for each message when Qt gets fixed.
-  s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b><br>%s</font><br>",
+  s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b><br>%s</font>",
             color,
             e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
               (EventDescription(e) + " ").utf8().data(),
@@ -580,9 +582,15 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
-            n.utf8().data(),
+            contactName.utf8().data(),
             messageText.utf8().data()
            );
+#if QT_VERSION < 0x030005
+  // This Qt version has a bug, causing append() in QTextEdit
+  // not to add a paragraph break, so we simulate one.
+  // Yes, we don't use <p> on purpose, since <p> is buggy in those versions.
+  s += "<br><br>";
+#endif
 #else
   s.sprintf("%c%s%s [%c%c%c%c] %s:\n%s",
             (e->Direction() == D_RECEIVER) ? '\001' : '\002',
@@ -593,7 +601,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
-            n.utf8().data(),
+            contactName.utf8().data(),
             codec->toUnicode(e->Text()).utf8().data()
            );
 #endif
@@ -605,7 +613,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   GotoEnd();
 
   if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R );
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R );
     if (u != NULL) {
        u->EventClearId(e->Id());
        gUserManager.DropUser(u);
