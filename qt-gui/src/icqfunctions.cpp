@@ -264,7 +264,7 @@ void ICQFunctions::CreateSendEventTab()
   edtSpoof = new QLineEdit(box);//tabList[TAB_SEND].tab);
   hlay->addWidget(edtSpoof);
   edtSpoof->setEnabled(false);
-  edtSpoof->setValidator(new QIntValidator(1, 100000000, edtSpoof));
+  edtSpoof->setValidator(new QIntValidator(10000, 2000000000, edtSpoof));
   connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
 #else
   edtSpoof = 0;

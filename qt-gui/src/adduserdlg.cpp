@@ -38,7 +38,7 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
    lblUin->setGeometry(10, 15, 80, 20);
    edtUin = new QLineEdit(this);
    edtUin->setGeometry(100, 15, 120, 20);
-   edtUin->setValidator(new QIntValidator(0, 2147483647, edtUin));
+   edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
    chkAlert = new QCheckBox(tr("&Alert User"), this);
    chkAlert->setGeometry(10, 50, 180, 20);
    btnOk = new QPushButton("&Ok", this);

@@ -42,7 +42,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
   edtUin = new QLineEdit(this);
   edtUin->setMinimumWidth(90);
   lay->addWidget(edtUin);
-  edtUin->setValidator(new QIntValidator(100000, 2147483647, edtUin));
+  edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
   toplay->addSpacing(20);
   toplay->addStretch(2);
   lay = new QHBoxLayout(toplay);

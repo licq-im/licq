@@ -134,7 +134,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   lblUin = new QLabel(tr("UIN#:"), uin_tab);
   lay2->addWidget(lblUin);
   edtUin = new QLineEdit(uin_tab);
-  edtUin->setValidator(new QIntValidator(1000000,2000000000, this));
+  edtUin->setValidator(new QIntValidator(10000,2000000000, this));
   lay2->addWidget(edtUin);
 
   search_tab->addTab(uin_tab, tr("&Uin#"));
