@@ -47,7 +47,7 @@ public:
    CBuffer(CBuffer *);
    CBuffer(CBuffer &);
    ~CBuffer(void);
-   
+
    void add(const char &data);
    void add(const unsigned short &data);
    void add(const unsigned long &data);
@@ -64,19 +64,19 @@ public:
    CBuffer& operator >> (unsigned char &in);
    CBuffer& operator >> (unsigned short &in);
    CBuffer& operator >> (unsigned long &in);
-   
+
    char *getDataStart(void)           { return m_pDataStart; };
    char *getDataPosRead(void)         { return m_pDataPosRead; };
    char *getDataPosWrite(void)        { return m_pDataPosWrite; };
    unsigned long getDataSize(void)    { return m_pDataPosWrite - m_pDataStart; };
    unsigned long getDataMaxSize(void) { return m_nDataSize; };
-   
+
    void setDataSize(unsigned long _nDataSize)  { m_nDataSize = _nDataSize; };
    void setDataPosWrite(char *_pDataPosWrite)  { m_pDataPosWrite = _pDataPosWrite; };
    void setDataPosRead(char *_pDataPosRead)  { m_pDataPosRead = _pDataPosRead; };
    void incDataPosWrite(unsigned long c)  { m_pDataPosWrite += c; };
    void incDataPosRead(unsigned long c)  { m_pDataPosRead += c; };
-   
+
 protected:
    char *m_pDataStart,
         *m_pDataPosWrite,
