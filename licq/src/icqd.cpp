@@ -535,7 +535,9 @@ bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
   CProtoPlugin *p = licq->LoadProtoPlugin(szPlugin);
   if (p == NULL) return false;
 
+  pthread_mutex_lock(&licq->mutex_protoplugins);
   licq->StartProtoPlugin(p);
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
 
   return true;
 }
