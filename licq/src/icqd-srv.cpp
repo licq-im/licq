@@ -1228,8 +1228,21 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_lock(&mutex_runningevents);
   pthread_mutex_lock(&mutex_sendqueue_server);
   pthread_mutex_lock(&mutex_extendedevents);
-  std::list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin();
+  std::list<ICQEvent *>::iterator iter;
 
+  // Cancel all events
+  // Necessary since the end is always being modified
+  std::list<ICQEvent *>::iterator i = m_lxSendQueue_Server.end();
+  for (iter = m_lxSendQueue_Server.begin(); iter != i; iter++)
+  {
+    ICQEvent *e = *iter;
+    m_lxSendQueue_Server.erase(iter);
+    ICQEvent *cancelled = new ICQEvent(e);
+    cancelled->m_bCancelled = true;
+    m_lxSendQueue_Server.push_back(cancelled);
+  }
+
+  iter = m_lxRunningEvents.begin();
   while (iter != m_lxRunningEvents.end())
   {
     if ((*iter)->m_nSocketDesc == nSD || (*iter)->Channel() == ICQ_CHNxNEW)
@@ -1256,18 +1269,6 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
       iter++;
   }
   assert(m_lxExtendedEvents.empty());
-
-  // Cancel all events
-  std::list<ICQEvent *>::iterator i;
-  i = m_lxSendQueue_Server.end(); // Necessary since the end is always being modified
-  for (iter = m_lxSendQueue_Server.begin(); iter != i; iter++)
-  {
-    ICQEvent *e = *iter;
-    m_lxSendQueue_Server.erase(i);
-    ICQEvent *cancelled = new ICQEvent(e);
-    cancelled->m_bCancelled = true;
-    m_lxSendQueue_Server.push_back(cancelled);
-  }
 
   // Queue should be empty
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
