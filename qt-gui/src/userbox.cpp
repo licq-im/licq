@@ -943,7 +943,7 @@ void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
     if (clickedItem->ItemUin())
     {
       gMainWindow->SetUserMenuUin(clickedItem->ItemUin());
-      mnuUser->popup(viewport()->mapToGlobal(e->pos()), 1);
+      mnuUser->popup(viewport()->mapToGlobal(contentsToViewport(e->pos())), 1);
     }
   }
 }
