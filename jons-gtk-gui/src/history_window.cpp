@@ -69,7 +69,7 @@ void list_history(GtkWidget *widget, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(scroll), hist->text);
 
 	/* Pack the scrolled window */
-	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(v_box), scroll, TRUE, TRUE, 0);
 
 	/* The close button */
 	button = gtk_button_new_with_label("Close");

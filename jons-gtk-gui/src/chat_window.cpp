@@ -571,22 +571,20 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 		{
 			case CHAT_DISCONNECTION:
 			{
+				message_box(g_strdup_printf("%s closed "
+					"connection", user->Name()));
 				chat_close((gpointer)cw, 0, NULL);
 				break;
 			}
 
 			case CHAT_CONNECTION:
 			{
-				gchar *filler[1];
-				filler[0] = "";
+				gchar *filler[1]; 
+				filler[0] = user->Name();
 				
 				gtk_clist_insert(GTK_CLIST(cw->list_users),
 						 cw->chatman->ConnectedUsers(),
 						 filler);
-				gtk_clist_set_text(GTK_CLIST(cw->list_users),
-						 cw->chatman->ConnectedUsers(),
-						 0,
-						 user->Name());
 
 				if(cw->chat_user == NULL)
 				{
@@ -877,12 +875,4 @@ void chat_change_font(gpointer cw, guint action, GtkWidget *widget)
 	font_sel_dlg = gtk_font_selection_dialog_new("Licq - Select Font");
 
 	gtk_widget_show_all(font_sel_dlg);
-}
-
-void chat_pane(gpointer cw, guint action, GtkWidget *widget)
-{
-}
-
-void chat_irc(gpointer cw, guint action, GtkWidget *widget)
-{
 }

@@ -53,7 +53,7 @@ void away_msg_window(gushort status)
 	v_box = gtk_vbox_new(FALSE, 5);
 
 	/* Pack the text box into the v_box */
-	gtk_box_pack_start(GTK_BOX(v_box), away_d->text, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(v_box), away_d->text, TRUE, TRUE, 0);
 
 	/* Make the buttons now */
 	ok = gtk_button_new_with_label("OK");
@@ -144,7 +144,7 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(scroll), uaw->text_box);
 
 	/* Pack the scrolled window into the v_box */
-	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(v_box), scroll, TRUE, TRUE, 5);
 
 	/* The Show Again check button */
 	uaw->show_again = gtk_check_button_new_with_label("Show Again");
