@@ -95,49 +95,28 @@ void do_label_and_entry(GtkWidget *&, const gchar *,
 	const gchar *, GtkWidget *&, gint, gint, gboolean);
 
 void
-list_info_user_uin(GtkWidget *window, unsigned long uin);
-
-void
 list_info_user(GtkWidget *window, ICQUser *user)
 {
-  if (user != NULL)
-    list_info_user_uin(window, user->Uin());
-  else  
-    list_info_user_uin(window, 0);
-}
+	gboolean is_o;
+	if (user == 0)	{
+		user = gUserManager.FetchOwner(LOCK_R);
+		is_o = TRUE;
+	}
+  else
+		is_o = FALSE;
 
-void
-list_info_user_uin(GtkWidget *window, unsigned long uin)
-{
-	struct info_user *iu = iu_find(uin);
+	struct info_user *iu = iu_find(user->Uin());
 
 	if (iu != NULL) {
 		gtk_widget_show(iu->window);
 		return;
 	}
 
-	gboolean is_o;
-
-	ICQUser *user;
-  // Check to see if it's for the owner 
-	if (uin == 0)	{
-		user = gUserManager.FetchOwner(LOCK_R);
-		is_o = TRUE;
-	}
-  else {
-	  user = gUserManager.FetchUser(uin, LOCK_R);
-		is_o = FALSE;
-  }
-
-  if (user == NULL)
-    return;
-
-	iu = iu_new(uin);
+	iu = iu_new(user->Uin());
 	/* Take care of the e_tag_data stuff */
 	iu->etag = g_new0(struct e_tag_data, 1);
 
   iu->uin = user->Uin();
-
 
 	GtkWidget *label;
 	GtkWidget *entry;
@@ -683,7 +662,8 @@ list_info_user_uin(GtkWidget *window, unsigned long uin)
 	gtk_container_add(GTK_CONTAINER(iu->window), v_box);
 
 	gtk_widget_show_all(iu->window);
-  gUserManager.DropUser(user);
+  if (is_o)
+    gUserManager.DropUser(user);
 }
 
 void user_info_save(GtkWidget *widget, struct info_user *iu)
