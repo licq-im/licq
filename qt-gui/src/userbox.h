@@ -56,9 +56,8 @@ protected:
 
 
 //=====UserViewItem================================================================================
-class CUserViewItem : public QObject, public QListViewItem
+class CUserViewItem : public QListViewItem
 {
-  Q_OBJECT
 public:
   CUserViewItem (ICQUser *, QListView *);
   CUserViewItem (BarType, QListView *);
@@ -74,30 +73,12 @@ protected:
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon, *m_pIconStatus;
 
-  static QTimer *s_tFlash;
-  static int s_nFlashCounter;
-  static FlashType s_nFlash;
-
   unsigned long m_nUin;
   unsigned short m_nStatus;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;
   QString m_sPrefix, m_sSortKey;
 
-  static bool    s_bGridLines, s_bFontStyles, s_bSortByStatus, s_bFlashUrgent;
-  static QPixmap *s_pOnline,
-                 *s_pOffline,
-                 *s_pAway,
-                 *s_pNa,
-                 *s_pOccupied,
-                 *s_pDnd,
-                 *s_pPrivate,
-                 *s_pMessage,
-                 *s_pUrl,
-                 *s_pChat,
-                 *s_pFile,
-                 *s_pFFC,
-                 *s_pNone;
   static QColor  *s_cOnline,
                  *s_cAway,
                  *s_cOffline,
@@ -107,10 +88,6 @@ protected:
 
   friend class CUserView;
   friend class CUserViewTips;
-
-protected slots:
-  void slot_flash();
-
 };
 
 class CUserView;
@@ -120,51 +97,33 @@ typedef QVector<CUserView> UserFloatyList;
 //=====UserView===============================================================
 class CUserView : public QListView
 {
-  Q_OBJECT
 public:
-  CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
-             bool isHeader, bool _bGridLines, bool _bFontStyles,
-             bool bTransparent, bool bShowBars, bool bSortByStatus,
-             FlashType nFlash,
-             QWidget *parent = 0, const char *name = 0);
+  CUserView (QPopupMenu *m, QWidget *parent = 0, const char *name = 0);
   virtual ~CUserView();
 
   virtual void clear();
 
   virtual CUserViewItem *firstChild() { return (CUserViewItem *)QListView::firstChild(); }
 
-  void setPixmaps(QPixmap *_pOnline, QPixmap *_pOffline, QPixmap *_pAway,
-                  QPixmap *_pNa, QPixmap *_pOccupied, QPixmap *_pDnd,
-                  QPixmap *_pPrivate, QPixmap *_pFFC, QPixmap *_pMessage,
-                  QPixmap *_pUrl, QPixmap *_pChat, QPixmap *_pFile);
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines);
-
-  void setSortByStatus(bool);
   void setShowHeader(bool);
-  void setShowBars(bool);
 
   unsigned long MainWindowSelectedItemUin();
-  ColumnInfos &ColInfo()  { return colInfo; }
-
-  bool ShowBars(void)  { return m_bShowBars; }
-
-  bool getGridLines()  { return CUserViewItem::s_bGridLines; };
-  void setGridLines(bool _b)  { CUserViewItem::s_bGridLines = _b; };
-  void setFontStyles(bool _b)  { CUserViewItem::s_bFontStyles = _b; };
 
   static UserFloatyList* floaties;
   static CUserView *FindFloaty(unsigned long);
   static void UpdateFloaties();
 
 protected:
+  int m_nFlashCounter;
+  int timerId;
   QPopupMenu *mnuUser;
-  bool m_bTransparent, m_bShowBars;
   CUserViewTips *m_tips;
-  ColumnInfos colInfo;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
   int numOnline, numOffline;
+  virtual void timerEvent(QTimerEvent*);
   virtual void viewportMousePressEvent(QMouseEvent *e);
   virtual void viewportMouseReleaseEvent(QMouseEvent *e);
   virtual void viewportMouseMoveEvent(QMouseEvent * me);
@@ -175,9 +134,6 @@ protected:
   virtual void resizeEvent(QResizeEvent *);
 
   friend class CUserViewItem;
-
-protected slots:
-  void slot_flash();
 };
 
 #endif

@@ -147,13 +147,13 @@ void OptionsDlg::SetupOptions()
   setupFontName(edtEditFont, *MLEditWrap::editFont);
   ((QWidget*)edtEditFont)->setFont(*MLEditWrap::editFont, true);
 
-  chkGridLines->setChecked(mainwin->gridLines);
+  chkGridLines->setChecked(mainwin->m_bGridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
-  chkHeader->setChecked(mainwin->showHeader);
+  chkHeader->setChecked(mainwin->m_bShowHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
-  chkAutoClose->setChecked(mainwin->autoClose);
+  chkAutoClose->setChecked(mainwin->m_bAutoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
   chkFlashUrgent->setChecked(mainwin->m_nFlash >= FLASH_URGENT);
   chkFlashAll->setChecked(mainwin->m_nFlash == FLASH_ALL);
@@ -311,13 +311,13 @@ void OptionsDlg::ApplyOptions()
     f.setRawName(edtFont->text());
   qApp->setFont(f, true);
 
-  mainwin->gridLines = chkGridLines->isChecked();
+  mainwin->m_bGridLines = chkGridLines->isChecked();
   mainwin->m_bFontStyles = chkFontStyles->isChecked();
-  mainwin->showHeader = chkHeader->isChecked();
+  mainwin->m_bShowHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
   mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
   mainwin->m_bShowGroupIfNoMsg = chkShowGroupIfNoMsg->isChecked();
-  mainwin->autoClose = chkAutoClose->isChecked();
+  mainwin->m_bAutoClose = chkAutoClose->isChecked();
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
   mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();

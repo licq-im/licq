@@ -68,15 +68,36 @@ public:
   QPopupMenu *UserMenu() { return mnuUser; }
   void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
 
-  static const QPixmap& iconForStatus(unsigned long FullStatus);
-  static const QPixmap& iconForEvent(unsigned short SubCommand);
+  static QPixmap& iconForStatus(unsigned long FullStatus);
+  static QPixmap& iconForEvent(unsigned short SubCommand);
+
+  // global configuration data
+  // Toggles
+  bool m_bInMiniMode,
+       m_bGridLines,
+       m_bFontStyles,
+       m_bShowGroupIfNoMsg,
+       m_bShowHeader,
+       m_bAutoClose,
+       m_bAutoPopup,
+       m_bShowOffline,
+       m_bSortByStatus,
+       m_bShowDividers,
+       m_bAutoRaise,
+       m_bBoldOnMsg;
+
+  ColumnInfos colInfo;
+  FlashType m_nFlash;
+  CSkin *skin;
+
+public slots:
+  void callInfoTab(int, unsigned long);
 
 protected:
   // Command Tools
   CICQDaemon *licqDaemon;
   CSignalManager *licqSigMan;
   CQtLogWindow *licqLogWindow;
-  CSkin *skin;
 #ifdef USE_DOCK
   IconManager *licqIcon;
 #endif
@@ -122,7 +143,6 @@ protected:
   char *m_szIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmAuthorize;
-  ColumnInfos colInfo;
   unsigned long m_nUserMenuUin;
 
   // AutoAway
@@ -133,20 +153,6 @@ protected:
                  manualAway,
                  m_nRealHeight;
 
-  // Toggles
-  bool inMiniMode,
-       gridLines,
-       m_bFontStyles,
-       m_bShowGroupIfNoMsg,
-       showHeader,
-       autoClose,
-       m_bAutoPopup,
-       m_bShowOffline,
-       m_bSortByStatus,
-       m_bShowDividers,
-       m_bAutoRaise,
-       m_bBoldOnMsg;
-  FlashType m_nFlash;
   unsigned long m_nCurrentGroup;
   DockMode m_nDockMode;
   GroupType m_nGroupType;
@@ -168,8 +174,9 @@ protected:
 friend class WharfIcon;
 friend class IconManager_Default;
 friend class OptionsDlg;
-friend class UserEventCommon;
-friend class UserSendCommon;
+//friend class UserViewEvent;
+//friend class UserEventCommon;
+//friend class UserSendCommon;
 
 protected slots:
   void slot_removeUserFromGroup();
@@ -191,7 +198,6 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
-  void callInfoTab(int, unsigned long);
   void slot_userfinished(unsigned long);
   void slot_usermenu();
   void slot_logon();

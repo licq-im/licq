@@ -166,31 +166,22 @@ static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border b
 }
 
 
-const QPixmap& CMainWindow::iconForStatus(unsigned long Status)
+QPixmap& CMainWindow::iconForStatus(unsigned long Status)
 {
   if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE))
     return gMainWindow->pmPrivate;
 
-  switch(Status) {
-  case ICQ_STATUS_FREEFORCHAT:
-    return gMainWindow->pmFFC;
-  case ICQ_STATUS_AWAY:
-    return gMainWindow->pmAway;
-  case ICQ_STATUS_OCCUPIED:
-    return gMainWindow->pmOccupied;
-  case ICQ_STATUS_DND:
-    return gMainWindow->pmDnd;
-  case ICQ_STATUS_NA:
-    return gMainWindow->pmNa;
-  case ICQ_STATUS_OFFLINE:
-    return gMainWindow->pmOffline;
-  case ICQ_STATUS_ONLINE:
-  default:
-    return gMainWindow->pmOnline;
-  }
+  if ((unsigned short) Status == ICQ_STATUS_OFFLINE) return gMainWindow->pmOffline;
+  if (Status & ICQ_STATUS_DND) return gMainWindow->pmDnd;
+  if (Status & ICQ_STATUS_OCCUPIED) return gMainWindow->pmOccupied;
+  if (Status & ICQ_STATUS_NA) return gMainWindow->pmNa;
+  if (Status & ICQ_STATUS_AWAY) return gMainWindow->pmAway;
+  if (Status & ICQ_STATUS_FREEFORCHAT) return gMainWindow->pmFFC;
+
+  return gMainWindow->pmOnline;
 }
 
-const QPixmap& CMainWindow::iconForEvent(unsigned short SubCommand)
+QPixmap& CMainWindow::iconForEvent(unsigned short SubCommand)
 {
   switch(SubCommand)
   {
@@ -200,6 +191,12 @@ const QPixmap& CMainWindow::iconForEvent(unsigned short SubCommand)
     return gMainWindow->pmChat;
   case ICQ_CMDxSUB_FILE:
     return gMainWindow->pmFile;
+  case ICQ_CMDxSUB_CONTACTxLIST:
+    return gMainWindow->pmContact;
+  case ICQ_CMDxSUB_AUTHxREQUEST:
+  case ICQ_CMDxSUB_AUTHxREFUSED:
+  case ICQ_CMDxSUB_AUTHxGRANTED:
+    return gMainWindow->pmAuthorize;
   case ICQ_CMDxSUB_MSG:
   default:
     return gMainWindow->pmMessage;
@@ -291,9 +288,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
-  licqConf.ReadBool("GridLines", gridLines, false);
+  licqConf.ReadBool("GridLines", m_bGridLines, false);
   licqConf.ReadBool("FontStyles", m_bFontStyles, true);
-  licqConf.ReadBool("ShowHeader", showHeader, true);
+  licqConf.ReadBool("ShowHeader", m_bShowHeader, true);
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
@@ -325,7 +322,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("AutoOffline", autoOfflineTime, 0);
 
   licqConf.SetSection("functions");
-  licqConf.ReadBool("AutoClose", autoClose, true);
+  licqConf.ReadBool("AutoClose", m_bAutoClose, true);
   licqConf.ReadBool("AutoPopup", m_bAutoPopup, false);
 
   m_nCurrentGroup = gUserManager.DefaultGroup();
@@ -459,7 +456,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
 
-   inMiniMode = false;
+   m_bInMiniMode = false;
    updateStatus();
    updateEvents();
    updateGroups();
@@ -633,15 +630,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 //-----CMainWindow::CreateUserView---------------------------------------------
 void CMainWindow::CreateUserView()
 {
-  userView = new CUserView(mnuUser, colInfo, showHeader, gridLines,
-     m_bFontStyles, skin->frame.transparent, m_bShowDividers,
-     m_bSortByStatus, m_nFlash, this);
-  userView->setFrameStyle(skin->frame.frameStyle);
-  userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
-                       &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
+  userView = new CUserView(mnuUser, this);
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
-
   connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 }
 
@@ -654,9 +645,7 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
 
-  CUserView *f = new CUserView(mnuUser, colInfo, false,
-     false, m_bFontStyles, false, false, m_bSortByStatus, m_nFlash, NULL);
-  f->setFrameStyle(33);
+  CUserView *f = new CUserView(mnuUser);
   connect (f, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 
   CUserViewItem *i = new CUserViewItem(u, f);
@@ -701,7 +690,7 @@ CMainWindow::~CMainWindow()
   licqConf.WriteNum("x", n);
 	n = y() < 0 ? 0 : y();
   licqConf.WriteNum("y", n);
-  n = height() < 0 ? 0 : (inMiniMode ? m_nRealHeight : height());
+  n = height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : height());
   licqConf.WriteNum("h", n);
   n = width() < 0 ? 0 : width();
   licqConf.WriteNum("w", n);
@@ -1855,7 +1844,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("AutoOffline", autoOfflineTime);
 
   licqConf.SetSection("functions");
-  licqConf.WriteBool("AutoClose", autoClose);
+  licqConf.WriteBool("AutoClose", m_bAutoClose);
   licqConf.WriteBool("AutoPopup", m_bAutoPopup);
 
   licqConf.SetSection("appearance");
@@ -1867,10 +1856,10 @@ void CMainWindow::saveOptions()
                     (MLEditWrap::editFont == NULL ||
                      *MLEditWrap::editFont == defaultFont) ?
                      "default" : MLEditWrap::editFont->rawName().latin1());
-  licqConf.WriteBool("GridLines", gridLines);
+  licqConf.WriteBool("GridLines", m_bGridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
-  licqConf.WriteBool("ShowHeader", showHeader);
+  licqConf.WriteBool("ShowHeader", m_bShowHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
@@ -2087,7 +2076,7 @@ void CMainWindow::ToggleShowOffline()
 void CMainWindow::miniMode()
 {
 
-   if (inMiniMode)
+   if (m_bInMiniMode)
    {
       userView->show();
       setMaximumHeight(4096);
@@ -2103,8 +2092,8 @@ void CMainWindow::miniMode()
       resize(width(), newH);
       setMaximumHeight(newH);
    }
-   inMiniMode = !inMiniMode;
-   mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_MINIxMODE), inMiniMode);
+   m_bInMiniMode = !m_bInMiniMode;
+   mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_MINIxMODE), m_bInMiniMode);
 }
 
 
@@ -2351,8 +2340,6 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmContact, tr("Send &Contact List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-     userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
-                          &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();

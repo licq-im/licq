@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,11 +16,6 @@
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-
 #include <qpainter.h>
 #include <qpopupmenu.h>
 #include <qheader.h>
@@ -27,12 +23,8 @@
 #include <qscrollbar.h>
 #include <qdragobject.h>
 
-#include <stdio.h>
-#include <ctype.h>
-#ifdef HAVE_LIMITS_H
-#include <limits.h>
-#endif
-#include <math.h>
+#include "skin.h"
+#include "mainwin.h"
 #include "userbox.h"
 #include "gui-defines.h"
 #include "mainwin.h"
@@ -45,32 +37,12 @@
 
 #define FLASH_TIME 800
 
-bool    CUserViewItem::s_bGridLines = false,
-        CUserViewItem::s_bFontStyles = true,
-        CUserViewItem::s_bSortByStatus = true;
-QPixmap *CUserViewItem::s_pOnline = NULL,
-        *CUserViewItem::s_pOffline = NULL,
-        *CUserViewItem::s_pAway = NULL,
-        *CUserViewItem::s_pNa = NULL,
-        *CUserViewItem::s_pOccupied = NULL,
-        *CUserViewItem::s_pDnd = NULL,
-        *CUserViewItem::s_pPrivate = NULL,
-        *CUserViewItem::s_pMessage = NULL,
-        *CUserViewItem::s_pUrl = NULL,
-        *CUserViewItem::s_pChat = NULL,
-        *CUserViewItem::s_pFile = NULL,
-        *CUserViewItem::s_pFFC = NULL,
-        *CUserViewItem::s_pNone = NULL;
 QColor  *CUserViewItem::s_cOnline = NULL,
         *CUserViewItem::s_cAway = NULL,
         *CUserViewItem::s_cOffline = NULL,
         *CUserViewItem::s_cNew = NULL,
         *CUserViewItem::s_cBack = NULL,
         *CUserViewItem::s_cGridLines = NULL;
-QTimer *CUserViewItem::s_tFlash = NULL;
-FlashType CUserViewItem::s_nFlash = FLASH_NONE;
-int CUserViewItem::s_nFlashCounter = 0;
-
 
 //-----CUserViewItem::constructor-----------------------------------------------
 CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
@@ -138,100 +110,60 @@ void CUserViewItem::setGraphics(ICQUser *u)
    if (u->StatusOffline())
    {
      v->numOffline++;
-     if (v->barOffline == NULL && v->ShowBars() )
+     if (v->barOffline == NULL && v->parent() && gMainWindow->m_bShowDividers )
        v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
    }
    else
    {
      v->numOnline++;
-     if (v->barOnline == NULL && v->ShowBars() )
+     if (v->barOnline == NULL && v->parent() && gMainWindow->m_bShowDividers )
        v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
    }
 
    m_sPrefix = "1";
+   m_pIcon = &CMainWindow::iconForStatus(u->StatusFull());
+
    switch (m_nStatus)
    {
-   case ICQ_STATUS_FREEFORCHAT:
-      m_pIcon = s_pFFC;
-      m_cFore = s_cOnline;
-      break;
-   case ICQ_STATUS_ONLINE:
-      m_pIcon = s_pOnline;
-      m_cFore = s_cOnline;
-      break;
    case ICQ_STATUS_AWAY:
-      m_pIcon = s_pAway;
-      m_cFore = s_cAway;
-      break;
    case ICQ_STATUS_OCCUPIED:
-      m_pIcon = s_pOccupied;
-      m_cFore = s_cAway;
-      break;
    case ICQ_STATUS_DND:
-      m_pIcon = s_pDnd;
-      m_cFore = s_cAway;
-      break;
    case ICQ_STATUS_NA:
-      m_pIcon = s_pNa;
-      m_cFore = s_cAway;
-      break;
+     m_cFore = s_cAway;
+     break;
    case ICQ_STATUS_OFFLINE:
-      m_pIcon = s_pOffline;
-      m_cFore = s_cOffline;
-      m_sPrefix = "3";
-      break;
+     m_cFore = s_cOffline;
+     m_sPrefix = "3";
+     break;
+   case ICQ_STATUS_ONLINE:
+   case ICQ_STATUS_FREEFORCHAT:
    default:
-      m_pIcon = s_pOnline;
-      m_cFore = s_cOnline;
-      break;
+     m_cFore = s_cOnline;
    }
 
    if (u->StatusInvisible())
-   {
-      m_pIcon = s_pPrivate;
       m_cFore = s_cAway;
-   }
-   m_pIconStatus = m_pIcon;
 
-   // Disconnect any old flash slot
-   if (m_bUrgent)
-     disconnect(s_tFlash, SIGNAL(timeout()), this, SLOT(slot_flash()));
+   m_pIconStatus = m_pIcon;
 
    if (u->NewMessages() > 0)
    {
      m_pIcon = NULL;
+     unsigned short SubCommand = 0;
+
      for (unsigned short i = 0; i < u->NewMessages(); i++)
      {
-       switch(u->EventPeek(i)->SubCommand())
-       {
-         case ICQ_CMDxSUB_MSG:
-           if (m_pIcon == NULL)
-             m_pIcon = s_pMessage;
-           break;
-         case ICQ_CMDxSUB_URL:
-           if (m_pIcon == NULL || m_pIcon == s_pMessage)
-             m_pIcon = s_pUrl;
-           break;
-         case ICQ_CMDxSUB_CHAT:
-           if (m_pIcon == NULL || m_pIcon == s_pMessage || m_pIcon == s_pUrl)
-             m_pIcon = s_pChat;
-           break;
-         case ICQ_CMDxSUB_FILE:
-           m_pIcon = s_pFile;
-           break;
-         default:
-           m_pIcon = s_pMessage;
-           break;
-       }
+       SubCommand = QMAX(SubCommand, u->EventPeek(i)->SubCommand());
        if (u->EventPeek(i)->IsUrgent()) m_bUrgent = true;
      }
+     if(SubCommand)
+       m_pIcon = &CMainWindow::iconForEvent(SubCommand);
    }
 
-   if (u->NewMessages() > 0 && s_nFlash == FLASH_ALL || m_bUrgent && s_nFlash == FLASH_URGENT)
-   {
-     connect(s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
-     //m_tFlash->start(FLASH_TIME);
-   }
+   if (v->timerId == 0 &&
+       (u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
+       (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT))
+     v->timerId = v->startTimer(FLASH_TIME);
 
    if (u->NewUser())
       m_cFore = s_cNew;
@@ -241,7 +173,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    m_bItalic = m_bStrike = false;
    m_nWeight = QFont::Normal;
-   if (s_bFontStyles)
+   if (gMainWindow->m_bFontStyles)
    {
      if (u->OnlineNotify()) m_nWeight = QFont::DemiBold;
      if (u->InvisibleList()) m_bStrike = true;
@@ -249,14 +181,14 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
    if (u->NewMessages() > 0) m_nWeight = QFont::Bold;
 
-   for (unsigned short i = 0; i < v->colInfo.size(); i++)
+   for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
    {
-     u->usprintf(sTemp, v->colInfo[i]->m_szFormat);
+     u->usprintf(sTemp, gMainWindow->colInfo[i]->m_szFormat);
      setText(i + 1, QString::fromLocal8Bit(sTemp));
    }
 
    // Set the user tag
-   if (s_bSortByStatus)
+   if (gMainWindow->m_bSortByStatus)
      // sort STATUS_FFF like STATUS_ONLINE.
      m_sSortKey.sprintf("%04x%016lx",
        (m_nStatus == ICQ_STATUS_FREEFORCHAT) ? ICQ_STATUS_ONLINE : m_nStatus,
@@ -266,31 +198,13 @@ void CUserViewItem::setGraphics(ICQUser *u)
 }
 
 
-void CUserViewItem::slot_flash()
-{
-  if (s_nFlashCounter & 0x0001) // hide
-  {
-    setPixmap(0, *m_pIconStatus);
-  }
-  else  // show
-  {
-    if (m_pIcon != NULL) setPixmap(0, *m_pIcon);
-  }
-}
-
-void CUserView::slot_flash()
-{
-  CUserViewItem::s_nFlashCounter++;
-}
-
-
 // ---------------------------------------------------------------------------
 
 void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int column, int width, int align )
 {
   QFont newFont(p->font());
   newFont.setWeight(m_nWeight);
-  if (s_bFontStyles)
+  if (gMainWindow->m_bFontStyles)
   {
     newFont.setItalic(m_bItalic);
     newFont.setStrikeOut(m_bStrike);
@@ -304,7 +218,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   const QPixmap *pix = NULL;
 
   if (listView()->contentsHeight() < listView()->viewport()->height() &&
-      ((CUserView *)listView())->m_bTransparent)
+      listView()->parent() && gMainWindow->skin->frame.transparent )
     pix = listView()->parentWidget()->backgroundPixmap();
 
   if (pix != NULL)
@@ -368,7 +282,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   }
 
   // add line to bottom and right side
-  if (s_bGridLines && m_nUin != 0)
+  if (listView()->parent() && gMainWindow->m_bGridLines && m_nUin != 0)
   {
     p->setPen(*s_cGridLines);
     p->drawLine(0, height() - 1, width - 1, height() - 1);
@@ -380,7 +294,8 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
 {
   const QPixmap *pix = NULL;
-  if (contentsHeight() < viewport()->height() && m_bTransparent)
+  if (contentsHeight() < viewport()->height()
+      && parent() && gMainWindow->skin->frame.transparent)
     pix = parentWidget()->backgroundPixmap();
 
   if (pix != NULL)
@@ -394,6 +309,35 @@ void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
   }
 }
 
+
+void CUserView::timerEvent(QTimerEvent* e)
+{
+  CUserViewItem* it = firstChild();
+
+  if(m_nFlashCounter++ & 1) {
+    // hide
+    while(it) {
+      if(it->ItemUin())  it->setPixmap(0, *it->m_pIconStatus);
+      it = static_cast<CUserViewItem*>(it->nextSibling());
+    }
+  }
+  else {
+    // show
+    bool foundIcon = false;
+    while(it) {
+      if(it->ItemUin() && it->m_pIcon != NULL && it->m_pIcon != it->m_pIconStatus) {
+        foundIcon = true;
+        it->setPixmap(0, *it->m_pIcon);
+      }
+      it = static_cast<CUserViewItem*>(it->nextSibling());
+    }
+    // no pending messages any more, kill timer
+    if(!foundIcon) {
+      killTimer(timerId);
+      timerId = 0;
+    }
+  }
+}
 
 //-----CUserViewItem::key-------------------------------------------------------
 QString CUserViewItem::key (int column, bool ascending) const
@@ -409,60 +353,47 @@ UserFloatyList* CUserView::floaties = 0;
 
 
 //-----UserList::constructor-----------------------------------------------------------------------
-CUserView::CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
-   bool isHeader, bool _bGridLines, bool _bFontStyles,
-   bool bTransparent, bool bShowBars, bool bSortByStatus,
-   FlashType nFlash,
-   QWidget *parent, const char *name)
-   : QListView(parent, name)
+CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
+  : QListView(parent, name)
 {
-   mnuUser = m;
-   colInfo = _colInfo;
-   m_bTransparent = bTransparent;
-   m_bShowBars = bShowBars;
-   barOnline = barOffline = NULL;
-   numOnline = numOffline = 0;
+  m_nFlashCounter = 0;
+  timerId = 0;
+  mnuUser = m;
+  barOnline = barOffline = NULL;
+  numOnline = numOffline = 0;
 
-   addColumn(tr("S"), 20);
-   for (unsigned short i = 0; i < colInfo.size(); i++)
-   {
-     addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);
-     setColumnAlignment(i + 1, pow(2, colInfo[i]->m_nAlign));
-   }
+  addColumn(tr("S"), 20);
+  for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
+  {
+    addColumn(gMainWindow->colInfo[i]->m_sTitle, gMainWindow->colInfo[i]->m_nWidth);
+    setColumnAlignment(i + 1, 1 << gMainWindow->colInfo[i]->m_nAlign);
+  }
 
-   m_tips = new CUserViewTips(this);
+  m_tips = new CUserViewTips(this);
 
-   setAllColumnsShowFocus (true);
-   setSorting(0);
-   setShowHeader(isHeader);
-   setGridLines(_bGridLines);
-   setFontStyles(_bFontStyles);
+  setAllColumnsShowFocus (true);
+  setSorting(0);
 
-   if (parent != NULL)
-   {
-     CUserViewItem::s_tFlash = new QTimer(this);
-     CUserViewItem::s_nFlash = nFlash;
-     connect(CUserViewItem::s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
-     CUserViewItem::s_tFlash->start(FLASH_TIME);
-     setSortByStatus(bSortByStatus);
-   }
-   else
-   {
-     WId win = winId();
-     Display *dsp = x11Display();
-     XWMHints *hints;
-     XClassHint classhint;
-     classhint.res_name = "licq";
-     classhint.res_class = "Floaty";
-     XSetClassHint(dsp, win, &classhint);
-     hints = XGetWMHints(dsp, win);
-     hints->window_group = win;
-     hints->flags = WindowGroupHint;
-     XSetWMHints(dsp, win, hints);
-     XFree( hints );
-     floaties->resize(floaties->size()+1);
-     floaties->insert(floaties->size()-1, this);
-   }
+  if (parent != NULL)
+    setShowHeader(gMainWindow->m_bShowHeader);
+  else
+  {
+    setShowHeader(false);
+    WId win = winId();
+    Display *dsp = x11Display();
+    XWMHints *hints;
+    XClassHint classhint;
+    classhint.res_name = "licq";
+    classhint.res_class = "Floaty";
+    XSetClassHint(dsp, win, &classhint);
+    hints = XGetWMHints(dsp, win);
+    hints->window_group = win;
+    hints->flags = WindowGroupHint;
+    XSetWMHints(dsp, win, hints);
+    XFree( hints );
+    floaties->resize(floaties->size()+1);
+    floaties->insert(floaties->size()-1, this);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -521,27 +452,6 @@ void CUserView::clear()
 }
 
 
-//-----CUserView::setPixmaps----------------------------------------------------
-void CUserView::setPixmaps(QPixmap *_pOnline, QPixmap *_pOffline, QPixmap *_pAway,
-                   QPixmap *_pNa, QPixmap *_pOccupied, QPixmap *_pDnd,
-                   QPixmap *_pPrivate, QPixmap *_pFFC, QPixmap *_pMessage,
-                   QPixmap *_pUrl, QPixmap *_pChat, QPixmap *_pFile)
-{
-   CUserViewItem::s_pOnline = _pOnline;
-   CUserViewItem::s_pOffline = _pOffline;
-   CUserViewItem::s_pAway = _pAway;
-   CUserViewItem::s_pNa = _pNa;
-   CUserViewItem::s_pOccupied = _pOccupied;
-   CUserViewItem::s_pDnd = _pDnd;
-   CUserViewItem::s_pFFC = _pFFC;
-   CUserViewItem::s_pPrivate = _pPrivate;
-   CUserViewItem::s_pMessage = _pMessage;
-   CUserViewItem::s_pUrl = _pUrl->isNull() ? _pMessage : _pUrl;
-   CUserViewItem::s_pChat = _pChat->isNull() ? _pMessage :_pChat;
-   CUserViewItem::s_pFile = _pFile->isNull() ? _pMessage : _pFile;;
-}
-
-
 //-----CUserView::setColors-----------------------------------------------------
 void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
                           char *_sNew, char *_sBack, char *_sGridLines)
@@ -561,10 +471,8 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    CUserViewItem::s_cGridLines->setNamedColor(_sGridLines);
 
    QPalette pal(palette());
-   QColorGroup normal(pal.normal());
-   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
-                         normal.mid(), normal.text(), *CUserViewItem::s_cBack);
-   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+   pal.setColor(QColorGroup::Base, *CUserViewItem::s_cBack);
+   setPalette(pal);
 }
 
 
@@ -573,16 +481,6 @@ void CUserView::setShowHeader(bool isHeader)
   isHeader ? header()->show() : header()->hide();
 }
 
-void CUserView::setShowBars(bool s)
-{
-}
-
-void CUserView::setSortByStatus(bool s)
-{
-  CUserViewItem::s_bSortByStatus = s;
-}
-
-
 
 unsigned long CUserView::MainWindowSelectedItemUin()
 {
@@ -590,7 +488,6 @@ unsigned long CUserView::MainWindowSelectedItemUin()
    if (i == NULL) return (0);
    return i->ItemUin();
 }
-
 
 
 //-----CUserList::mousePressEvent---------------------------------------------
@@ -739,7 +636,7 @@ void CUserView::resizeEvent(QResizeEvent *e)
   if (newWidth <= 0)
   {
     setHScrollBarMode(Auto);
-    setColumnWidth(nNumCols - 1, colInfo[nNumCols - 2]->m_nWidth);
+    setColumnWidth(nNumCols - 1, gMainWindow->colInfo[nNumCols - 2]->m_nWidth);
   }
   else
   {
@@ -814,4 +711,3 @@ void CUserViewTips::maybeTip(const QPoint& c)
   }
 }
 
-#include "userbox.moc"
