@@ -4,7 +4,6 @@
 
 #include <unistd.h>
 
-#include <qdatetime.h>
 #include <qlayout.h>
 
 #include "outputwin.h"
