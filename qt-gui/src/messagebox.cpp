@@ -59,6 +59,7 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup &cgdefault,
   }
   QFont f(p->font());
   f.setBold(m_nEventId != -1 && msg->Direction() == D_RECEIVER);
+  f.setItalic(msg->IsUrgent());
   p->setFont(f);
 
   cg.setColor(QColorGroup::Highlight, cg.color(QColorGroup::Mid));
