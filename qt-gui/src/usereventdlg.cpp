@@ -1307,7 +1307,9 @@ bool UserSendCommon::checkSecure()
   bool send_ok = true;
   if (chkSendServer->isChecked() && ( u->Secure() || u->AutoSecure()) )
   {
-    if (!QueryUser(this, tr("Warning: Message will not be sent securely!"), tr("Send anyway"), tr("Cancel")))
+    if (!QueryUser(this, tr("Warning: Message can't be sent securely\n"
+                            "through the server!"),
+                   tr("Send anyway"), tr("Cancel")))
     {
       send_ok = false;
     }
