@@ -268,7 +268,7 @@ protected slots:
   void showOptionsDlg(int);
   void popupOptionsDlg() { emit showOptionsDlg(0); };
   void showAuthUserDlg();
-  void showReqAuthDlg();
+  void showReqAuthDlg(unsigned long nUin = 0);
   void showSearchUserDlg();
   void popupSystemMenu();
   void changeDebug(int);

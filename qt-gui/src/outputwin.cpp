@@ -15,6 +15,7 @@
 
 #include "outputwin.h"
 #include "ewidgets.h"
+#include "mainwin.h"
 #include "licq_icq.h"
 
 #undef connect

@@ -15,7 +15,7 @@ class ReqAuthDlg : public QDialog
 {
    Q_OBJECT
 public:
-   ReqAuthDlg (CICQDaemon *s, QWidget *parent = 0);
+   ReqAuthDlg (CICQDaemon *s, unsigned long nUin = 0, QWidget *parent = 0);
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;

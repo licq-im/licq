@@ -34,7 +34,7 @@
 #include "licq_icqd.h"
 #include "usercodec.h"
 
-ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, QWidget *parent)
+ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, unsigned long nUin, QWidget *parent)
   : QDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
 {
   server = s;
@@ -75,7 +75,15 @@ ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, QWidget *parent)
   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
-  edtUin->setFocus();
+  if (nUin)
+  {
+    QString strUin;
+    strUin.setNum(nUin);
+    edtUin->setText(strUin);
+    mleRequest->setFocus();
+  }
+  else
+    edtUin->setFocus();
 
   show();
 }

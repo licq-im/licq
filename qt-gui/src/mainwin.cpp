@@ -1752,6 +1752,11 @@ void CMainWindow::callUserFunction(int index)
       (void) new AuthUserDlg(licqDaemon, nUin, true);
       break;
     }
+    case mnuUserAuthorizeRequest:
+    {
+      (void) new ReqAuthDlg(licqDaemon, nUin);
+      break;
+    }
     case mnuUserCheckResponse:
     {
       (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
@@ -2951,6 +2956,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+     mnuUser->changeItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
      mnuUser->changeItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
      mnuUser->changeItem(tr("Request &Secure Channel"), mnuUserSendKey);
      CUserView::UpdateFloaties();
@@ -3102,6 +3108,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
    mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+   mnuSend->insertItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
    mnuSend->insertItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
    mnuSend->insertSeparator();
    mnuSend->insertItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
@@ -3248,9 +3255,9 @@ void CMainWindow::showAuthUserDlg()
   (void) new AuthUserDlg(licqDaemon, 0, true);
 }
 
-void CMainWindow::showReqAuthDlg()
+void CMainWindow::showReqAuthDlg(unsigned long nUin)
 {
-  ReqAuthDlg *reqAuthDlg =  new ReqAuthDlg(licqDaemon);
+  ReqAuthDlg *reqAuthDlg =  new ReqAuthDlg(licqDaemon, nUin);
   reqAuthDlg->show();
 }
 

@@ -18,6 +18,7 @@ enum UserMenu {
   mnuUserSendSms,
   mnuUserSendKey,
   mnuUserAuthorize,
+  mnuUserAuthorizeRequest,
   mnuUserCheckResponse,
   mnuUserCustomAutoResponse,
   mnuUserGeneral,
