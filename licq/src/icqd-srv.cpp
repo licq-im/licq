@@ -1545,12 +1545,12 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 
   // Mark all users as offline, this also updates the last seen
   // online field
-  FOR_EACH_USER_START(LOCK_W)
+  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     if (!pUser->StatusOffline())
       ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
-  FOR_EACH_USER_END
+  FOR_EACH_PROTO_USER_END
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
