@@ -396,7 +396,7 @@ void OptionsDlg::ApplyOptions()
   while (i < 4 && chkColEnabled[i]->isChecked())
   {
      mainwin->colInfo.push_back(new CColumnInfo(edtColTitle[i]->text(),
-                                                edtColFormat[i]->text(),
+                                                edtColFormat[i]->text().local8Bit(),
                                                 spnColWidth[i]->value(),
                                                 cmbColAlign[i]->currentItem()));
      i++;
