@@ -865,7 +865,8 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
 
   if (e->Result() == EVENT_ACKED) return;
 
-  if (e->Result() == EVENT_SUCCESS)
+  if (e->Result() == EVENT_SUCCESS && 
+      e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER)
   {
     if (e->SearchAck() == NULL || e->SearchAck()->More() == 0)
     {
