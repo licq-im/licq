@@ -210,6 +210,7 @@ void OptionsDlg::SetupOptions()
       rdbDockThemed->setEnabled(false);
       chkDockFortyEight->setEnabled(false);
       break;
+#ifndef USE_KDE
     case DockDefault:
       chkUseDock->setChecked(true);
       rdbDockDefault->setChecked(true);
@@ -231,6 +232,16 @@ void OptionsDlg::SetupOptions()
         }
       }
       break;
+#else
+    case DockDefault:
+    case DockThemed:
+      chkUseDock->setChecked(true);
+      cmbDockTheme->setEnabled(false);
+      rdbDockDefault->setEnabled(false);
+      rdbDockThemed->setEnabled(false);
+      chkDockFortyEight->setEnabled(false);
+      break;
+#endif
   }
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
@@ -686,7 +697,8 @@ QWidget* OptionsDlg::new_appearance_options()
 
 void OptionsDlg::slot_useDockToggled(bool b)
 {
-  if (!b)
+#ifndef USE_KDE
+if (!b)
   {
     cmbDockTheme->setEnabled(false);
     rdbDockDefault->setEnabled(false);
@@ -708,6 +720,7 @@ void OptionsDlg::slot_useDockToggled(bool b)
     cmbDockTheme->setEnabled(true);
     chkDockFortyEight->setEnabled(false);
   }
+#endif
 }
 
 
