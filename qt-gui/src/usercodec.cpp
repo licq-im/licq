@@ -23,10 +23,14 @@
 #include "usercodec.h"
 #include "licq_user.h"
 #include <qapplication.h>
+#include <qtextcodec.h>
 #ifdef USE_KDE
 #include <kglobal.h>
 #include <kcharsets.h>
 #endif
+
+#include "licq_user.h"
+#include "licq_chat.h"
 
 QStringList* UserCodec::m_encodings;
 
@@ -52,8 +56,8 @@ const char * UserCodec::encodings_array[][2] = {
 };
 #endif
 
-QTextCodec* UserCodec::codecForICQUser(ICQUser *u) {
-
+QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
+{
   char *preferred_encoding = u->UserEncoding();
 
   if ( preferred_encoding && *preferred_encoding ) {
@@ -61,7 +65,19 @@ QTextCodec* UserCodec::codecForICQUser(ICQUser *u) {
         return codec;
   }
 
-  // resturn default encoding
+  // return default encoding
+  return QTextCodec::codecForLocale();
+}
+
+QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
+{
+  if (ICQUser *user = gUserManager.FetchUser(u->Uin(), LOCK_R)) {
+    QTextCodec *codec = UserCodec::codecForICQUser(user);
+    gUserManager.DropUser(user);
+    return codec;
+  }
+  
+  // return default encoding
   return QTextCodec::codecForLocale();
 }
 
@@ -81,7 +97,8 @@ QStringList UserCodec::encodings()
   return ( *m_encodings );
 }
 
-void UserCodec::initializeEncodingNames() {
+void UserCodec::initializeEncodingNames()
+{
   if (!m_encodings) {
     m_encodings = new QStringList;
 #ifdef USE_KDE
@@ -94,7 +111,8 @@ void UserCodec::initializeEncodingNames() {
   }
 }
 
-QString UserCodec::encodingForName(QString descriptiveName) {
+QString UserCodec::encodingForName(QString descriptiveName)
+{
 #ifdef USE_KDE
   return KGlobal::charsets()->encodingForName(descriptiveName);
 #else
@@ -102,5 +120,3 @@ QString UserCodec::encodingForName(QString descriptiveName) {
   return descriptiveName.mid( left + 3, descriptiveName.find( " )", left ) - left - 3 );
 #endif
 }
-
-

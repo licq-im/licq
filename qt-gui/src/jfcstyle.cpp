@@ -9,7 +9,6 @@
 // as defined by Troll Tech AS of Norway and appearing in the file
 // LICENSE.QPL included in the packaging of this file.
 
-
 #include <limits.h>
 #include <qapplication.h>
 #include <qbutton.h>
@@ -26,6 +25,7 @@
 #include <qtabbar.h>
 #include <qwidget.h>
 
+#if QT_VERSION < 300
 #include "jfcstyle.h"
 
 /*!
@@ -1400,3 +1400,4 @@ void JFCStyle::setScheme( const JFCScheme& scheme )
   qApp->setStyle( new JFCStyle( scheme ) );
 }
 
+#endif

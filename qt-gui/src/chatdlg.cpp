@@ -47,13 +47,16 @@
 #include <qtextstream.h>
 #include <qwindowsstyle.h>
 #include <qmenubar.h>
+#include <qtextcodec.h>
 #ifdef USE_KDE
 #include <kfiledialog.h>
 #else
 #include <qfiledialog.h>
 #endif
+#include <qpainter.h>
 
 #include "chatdlg.h"
+#include "mainwin.h"
 #include "ewidgets.h"
 #include "mledit.h"
 #include "licq_chat.h"
@@ -62,6 +65,7 @@
 #include "licq_user.h"
 #include "licq_icqd.h"
 
+#include "usercodec.h"
 
 ChatDlgList ChatDlg::chatDlgs;
 
@@ -109,7 +113,7 @@ enum ChatMenu_Identifiers {
 // ---------------------------------------------------------------------------
 
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
-                 QWidget *parent)
+                 CMainWindow *m, QWidget *parent)
   : QMainWindow(parent, "ChatDialog", WDestructiveClose)
 {
   m_nUin = _nUin;
@@ -117,6 +121,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   licqDaemon = daemon;
   sn = NULL;
   chatUser = NULL;
+  mainwin = m;
 
   m_nMode = CHAT_PANE;
 
@@ -131,7 +136,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   setDockEnabled(Bottom, true);
   setUsesBigPixmaps(false);
 
-  // Panel mode setup
+  // Pane mode setup
   boxPane = new QGroupBox(widCentral);
   QGridLayout *play = new QGridLayout(boxPane, 5, 1, 4);
 
@@ -187,19 +192,17 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // Toolbar
   QToolBar* barChat = new QToolBar("label", this);
-  addToolBar(barChat, "ChatDialog Toolbar");
+  addToolBar(barChat, "Chat Toolbar");
   barChat->setHorizontalStretchable(false);
   barChat->setVerticalStretchable(true);
   barChat->setFixedHeight(barChat->height()+2);
-
-  barChat->addSeparator();
 
    // ### FIXME: implement laughing
    // tbtLaugh = new QToolButton(LeftArrow, barChat);
 
   QPixmap* pixIgnore = new QPixmap(chatIgnore_xpm);
   tbtIgnore = new QToolButton(*pixIgnore, tr("Ignore user settings"),
-    tr("ignores user color settings"), this, SLOT(toggleSettingsIgnore()), barChat);
+    tr("Ignores user color settings"), this, SLOT(toggleSettingsIgnore()), barChat);
   tbtIgnore->setToggleButton(true);
 
   QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
@@ -280,6 +283,36 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   cmbFontName->insertStringList(fb.families());
   barChat->setStretchableWidget(cmbFontName);
   connect(cmbFontName, SIGNAL(activated(const QString&)), SLOT(fontNameChanged(const QString&)));
+
+  barChat->addSeparator();
+
+  codec = QTextCodec::codecForLocale();
+
+  // determine the other user's preferred encoding
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u != NULL)
+  {
+    // restore prefered encoding
+    codec = UserCodec::codecForICQUser(u);
+
+    gUserManager.DropUser(u);
+  }
+
+  QString codec_name = QString::fromLatin1( codec->name() ).lower(); // TODO: determine best codec
+  QPopupMenu *popupEncoding = new QPopupMenu;
+  popupEncoding->setCheckable(true);
+  QStringList enc = UserCodec::encodings();
+  for (uint i=0; i < enc.count(); i++) {
+    popupEncoding->insertItem(enc[i], this, SLOT(slot_setEncoding(int)), 0, i);
+    if (UserCodec::encodingForName(enc[i]).lower() == codec_name)
+      popupEncoding->setItemChecked(i, true);
+  }
+
+  tbtEncoding = new QToolButton(barChat);
+  tbtEncoding->setTextLabel("Set Encoding");
+  tbtEncoding->setPopup(popupEncoding);
+  tbtEncoding->setPopupDelay(0);
+  tbtEncoding->setPixmap(mainwin->pmEncoding);
 
 //  QWidget* dummy = new QWidget(barChat);
 //  barChat->setStretchableWidget(dummy);
@@ -483,20 +516,41 @@ void ChatDlg::chatSend(QKeyEvent *e)
     case Key_Enter:
     case Key_Return:
     {
-      mleIRCRemote->append(chatname + "> " + linebuf);
-      mleIRCRemote->GotoEnd();
-      linebuf = "";
-      mleIRCLocal->clear();
-      if (m_nMode == CHAT_IRC) mlePaneLocal->insertLine("");
+      if (m_nMode == CHAT_IRC) {
+         QString text = mleIRCLocal->text();
+         if (text.right(1) == "\n") text.truncate(text.length()-1);
+         QCString encoded = codec->fromUnicode(text);
+         // send the data over the wire
+         char *c;
+         for (c = encoded.data(); *c; c++)
+            chatman->SendCharacter(*c);
+
+         // even if the pane didn't trigger the event,
+         // we need to keep it updated
+         mlePaneLocal->insertLine("");
+         // so you'll get some idea what your buddy sees (encoding-wise)
+         mleIRCRemote->append(chatname + "> " + codec->toUnicode(encoded));
+         mleIRCRemote->GotoEnd();
+
+         mleIRCLocal->clear();
+      } else {
+         // keep IRC updated anyway (encoding should be already properly represented)
+         mleIRCRemote->append(chatname + "> " + mlePaneLocal->textLine(mlePaneLocal->numLines()-1));
+      }
+      
       chatman->SendNewline();
       break;
     }
     case Key_Backspace:
     {
-      if (m_nMode == CHAT_IRC) mlePaneLocal->backspace();
-      if (linebuf.length() > 0)
-        linebuf.remove(linebuf.length() - 1, 1);
-      chatman->SendBackspace();
+      if (m_nMode == CHAT_IRC) {
+         mlePaneLocal->backspace(); // keep the pane updated
+      }
+      
+      if (m_nMode == CHAT_PANE) {
+         chatman->SendBackspace();
+      }
+
       break;
     }
     case Key_Tab:
@@ -505,9 +559,20 @@ void ChatDlg::chatSend(QKeyEvent *e)
 
     default:
     {
-      linebuf += e->text();
-      if (m_nMode == CHAT_IRC) mlePaneLocal->appendNoNewLine(e->text());
-      chatman->SendCharacter(e->text().local8Bit()[0]);
+      QCString encoded = codec->fromUnicode(e->text());
+      
+      // if in pane mode, send right away
+      if (m_nMode == CHAT_PANE) {
+         // for multibyte encodings
+         char *c;
+         for (c = encoded.data(); *c; c++)
+            chatman->SendCharacter(*c);
+      } else {
+         // if the pane is not what triggered the key press, it still needs
+         // to be updated
+         mlePaneLocal->appendNoNewLine(codec->toUnicode(encoded));
+      }
+      
       break;
     }
   }
@@ -534,7 +599,8 @@ void ChatDlg::slot_chat()
     {
       case CHAT_DISCONNECTION:
       {
-        QString n = u->Name();
+        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
+        
         if (n.isEmpty()) n.setNum(u->Uin());
         chatClose(u);
         InformUser(this, tr("%1 closed connection.").arg(n));
@@ -543,15 +609,17 @@ void ChatDlg::slot_chat()
 
       case CHAT_CONNECTION:
       {
+        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
+        
         // Add the user to the listbox
-        lstUsers->insertItem(u->Name());
+        lstUsers->insertItem(n);
         // If this is the first user, set up the remote mle
         if (chatUser == NULL)
         {
           chatUser = u;
 
-          lblRemote->setText(tr("Remote - %1").arg(u->Name()));
-          setCaption(tr("Licq - Chat %1").arg(u->Name()));
+          lblRemote->setText(tr("Remote - %1").arg(n));
+          setCaption(tr("Licq - Chat %1").arg(n));
           mlePaneRemote->setForeground(QColor(u->ColorFg()[0], u->ColorFg()[1],
              u->ColorFg()[2]));
           mlePaneRemote->setBackground(QColor(u->ColorBg()[0], u->ColorBg()[1],
@@ -579,9 +647,12 @@ void ChatDlg::slot_chat()
 
       case CHAT_NEWLINE:
       {
-        // add to irc window
-        mleIRCRemote->append(QString::fromLocal8Bit(u->Name()) + "> " + QString::fromLocal8Bit(e->Data()));
+        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
+        
+        // add to IRC box
+        mleIRCRemote->append(n + QString::fromLatin1("> ") + codec->toUnicode(e->Data()));
         mleIRCRemote->GotoEnd();
+
         if (u == chatUser)
         {
           mlePaneRemote->insertLine("");
@@ -672,7 +743,7 @@ void ChatDlg::slot_chat()
       case CHAT_CHARACTER:
       {
         if (u == chatUser)
-          mlePaneRemote->appendNoNewLine(QString::fromLocal8Bit(e->Data()));
+          mlePaneRemote->appendNoNewLine(codec->toUnicode(e->Data()));
         break;
       }
 
@@ -691,10 +762,11 @@ void ChatDlg::slot_chat()
 
 void ChatDlg::SwitchToIRCMode()
 {
+  m_nMode = CHAT_IRC;
   mnuMode->setItemChecked(mnuMode->idAt(0), false);
   mnuMode->setItemChecked(mnuMode->idAt(1), true);
   boxPane->hide();
-  mleIRCLocal->setText(linebuf);
+  mleIRCLocal->setText(mlePaneLocal->textLine(mlePaneLocal->numLines()-1));
   mleIRCLocal->GotoEnd();
   mleIRCLocal->setFocus();
   boxIRC->show();
@@ -703,6 +775,7 @@ void ChatDlg::SwitchToIRCMode()
 
 void ChatDlg::SwitchToPaneMode()
 {
+  m_nMode = CHAT_PANE;
   mnuMode->setItemChecked(mnuMode->idAt(0), true);
   mnuMode->setItemChecked(mnuMode->idAt(1), false);
   boxIRC->hide();
@@ -783,8 +856,14 @@ bool ChatDlg::slot_save()
 {
   QString t = QDateTime::currentDateTime().toString();
   t.replace(QString(" "), QString("-"));
-  QString n = tr("/%1.%2.chat").arg(chatUser == NULL ? QString::number(m_nUin) :
-     QString::fromLocal8Bit(chatUser->Name())).arg(t);
+  QString n = tr("/%1.%2.chat")
+    .arg(
+      chatUser == NULL ?
+        QString::number(m_nUin) :
+        UserCodec::codecForCChatUser(chatUser)->toUnicode(chatUser->Name())
+    )
+    .arg(t);
+    
 #ifdef USE_KDE
   QString fn = KFileDialog::getSaveFileName(QDir::homeDirPath() + n,
      QString::null, this);
@@ -828,6 +907,26 @@ unsigned short ChatDlg::LocalPort()
   return chatman->LocalPort();
 }
 
+void ChatDlg::slot_setEncoding(int encoding_index)
+{
+  QPopupMenu *popupEncoding = tbtEncoding->popup();
+  if (!popupEncoding) return;
+
+  /* uncheck all encodings */
+  for (unsigned int i=0; i<popupEncoding->count(); i++) {
+    popupEncoding->setItemChecked(popupEncoding->idAt(i), false);
+  }
+
+  /* initialize a codec according to the encoding menu's value */
+  if ((encoding_index >= 0) && ((uint)encoding_index < UserCodec::encodings().count())) {
+    codec = QTextCodec::codecForName(UserCodec::encodingForIndex((uint) encoding_index).latin1());
+
+    /* make the chosen encoding checked */
+    popupEncoding->setItemChecked(encoding_index, true);
+
+    emit encodingChanged();
+  }
+}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -883,8 +982,10 @@ void CChatWindow::keyPressEvent (QKeyEvent *e)
         e->key() != Key_Enter))
     return;
 
-  emit keyPressed(e);
+  // the order of the two is important -- on Enter, first QMultiLineEdit adds
+  // a line break, and later we clear the input line, and not vice versa
   QMultiLineEdit::keyPressEvent(e);
+  emit keyPressed(e);
 }
 
 
@@ -968,7 +1069,7 @@ void CChatWindow::setForeground(const QColor& c)
   setPalette(pal);
 }
 
-
 // -----------------------------------------------------------------------------
+
 
 #include "chatdlg.moc"

@@ -11,7 +11,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if n<ot, write to the Free Software
+    along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
@@ -37,6 +37,7 @@
 #include <qclipboard.h>
 #include <qlayout.h>
 #include <qtextview.h>
+#include <qpainter.h>
 
 #include "licqgui.h"
 #include "mainwin.h"
@@ -2786,7 +2787,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuStatus->changeItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
      mnuStatus->changeItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
      mnuUser->changeItem(pmMessage, tr("Send &Message"), mnuUserSendMsg);
-     mnuUser->changeItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
+     mnuUser->changeItem(pmUrl, tr("Send &URL"), mnuUserSendUrl);
      mnuUser->changeItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
@@ -2933,7 +2934,7 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
    mnuSend = new QPopupMenu(this);
    mnuSend->insertItem(pmMessage, tr("Send &Message"), mnuUserSendMsg);
-   mnuSend->insertItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
+   mnuSend->insertItem(pmUrl, tr("Send &URL"), mnuUserSendUrl);
    mnuSend->insertItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
    mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);

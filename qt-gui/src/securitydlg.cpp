@@ -53,10 +53,10 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
                                        "require your authorization to add you to "
                                        "their contact list."));
   chkWebAware = new QCheckBox(tr("Web Presence"), box);
-  QWhatsThis::add(chkWebAware, tr("Web presence allows users to see if you are online "
+  QWhatsThis::add(chkWebAware, tr("Web Presence allows users to see if you are online "
                                   "through your web indicator."));
   chkHideIp = new QCheckBox(tr("Hide IP"), box);
-  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
+  QWhatsThis::add(chkHideIp, tr("Hide IP stops users from seeing your IP address. It doesn't guarantee it will be hidden though."));
   blay->addWidget(chkAuthorization);
   blay->addWidget(chkWebAware);
   blay->addWidget(chkHideIp);

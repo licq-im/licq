@@ -26,6 +26,8 @@
 #include <qdragobject.h>
 #include <qstylesheet.h>
 #include <qdatetime.h>
+#include <qtextcodec.h>
+#include <qstyle.h>
 
 #include "userbox.moc"
 #include "skin.h"
@@ -444,19 +446,38 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
           w += gMainWindow->pmMessage.width() + 4;
         }
 
+        #if QT_VERSION >= 300
+        listView()->style().drawPrimitive(QStyle::PE_Separator, p,
+           QRect(w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1), height() >> 1),
+           cg);
+
+        #else
         listView()->style().drawSeparator(p,
            w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1),
            height() >> 1, cg);
+        #endif
       }
       else if (column == listView()->header()->count() - 1)
       {
+        #if QT_VERSION >= 300
+        listView()->style().drawPrimitive(QStyle::PE_Separator, p,
+           QRect(0, height() >> 1, width - 5, height() >> 1),
+           cg);
+        #else
         listView()->style().drawSeparator(p, 0, height() >> 1, width - 5,
            height() >> 1, cg);
+        #endif
       }
       else if (column > 1)
       {
+        #if QT_VERSION >= 300
+        listView()->style().drawPrimitive(QStyle::PE_Separator, p,
+           QRect(0, height() >> 1, width - 1, height() >> 1),
+           cg);
+        #else
         listView()->style().drawSeparator(p, 0, height() >> 1, width - 1,
            height() >> 1, cg);
+        #endif
       }
     }
     // If this is the first column then add some extra icons after the text
@@ -730,8 +751,10 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   }
 
   viewport()->setAcceptDrops(true);
+  #if QT_VERSION < 300
   viewport()->setBackgroundMode(NoBackground);
   setBackgroundMode(NoBackground);
+  #endif
 
 #if QT_VERSION >= 210
   setShowSortIndicator(true);
@@ -877,7 +900,11 @@ unsigned long CUserView::MainWindowSelectedItemUin()
 //-----CUserList::mousePressEvent---------------------------------------------
 void CUserView::viewportMousePressEvent(QMouseEvent *e)
 {
+  #if QT_VERSION >= 300
+  QListView::contentsMousePressEvent(e);
+  #else
   QListView::viewportMousePressEvent(e);
+  #endif
   if (e->button() == LeftButton)
   {
     mousePressPos = e->pos();
@@ -1171,7 +1198,11 @@ void CUserView::UpdateFloaties()
 void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
   CUserViewItem *i;
+  #if QT_VERSION >= 300
+  QListView::contentsMouseMoveEvent(me);
+  #else
   QListView::viewportMouseMoveEvent(me);
+  #endif
   if (parent() && (me->state() & LeftButton) && (i = (CUserViewItem *)currentItem())
       && !mousePressPos.isNull() && i->ItemUin() &&
       (QPoint(me->pos() - mousePressPos).manhattanLength() > 8))

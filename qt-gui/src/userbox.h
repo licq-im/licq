@@ -90,7 +90,7 @@ protected:
                  *s_cNew,
                  *s_cBack,
                  *s_cGridLines;
-
+                 
   friend class CUserView;
 };
 
@@ -137,6 +137,7 @@ protected:
           *pixInvisible, *pixPhone, *pixCellular;
   int numOnline, numOffline;
   virtual void timerEvent(QTimerEvent*);
+
   virtual void viewportMousePressEvent(QMouseEvent *e);
   virtual void viewportMouseReleaseEvent(QMouseEvent *e);
   virtual void viewportMouseMoveEvent(QMouseEvent * me);
@@ -148,6 +149,14 @@ protected:
 
   virtual void resizeEvent(QResizeEvent *);
   virtual void maybeTip(const QPoint&);
+
+#if QT_VERSION >= 300
+  virtual void contentsMousePressEvent(QMouseEvent *e) { viewportMousePressEvent(e); }
+  virtual void contentsMouseReleaseEvent(QMouseEvent *e) { viewportMouseReleaseEvent(e); }
+  virtual void contentsMouseMoveEvent(QMouseEvent *e) { viewportMouseMoveEvent(e); }
+  virtual void contentsDragEnterEvent(QDragEnterEvent *e) { viewportDragEnterEvent(e); }
+  virtual void contentsDropEvent(QDropEvent*e) { viewportDropEvent(e); }
+#endif
 
   friend class CUserViewItem;
 protected slots:

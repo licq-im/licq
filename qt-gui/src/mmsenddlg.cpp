@@ -7,6 +7,7 @@
 #include <qlabel.h>
 #include <qprogressbar.h>
 #include <qvgroupbox.h>
+#include <qtextcodec.h>
 
 #include <unistd.h>
 #include <stdio.h>

@@ -530,11 +530,22 @@ void OptionsDlg::ApplyOptions()
   // set up the sound stuff
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
-  const char *oemparams[7] = { edtSndMsg->text().latin1(), edtSndUrl->text().latin1(),
-   edtSndChat->text().latin1(), edtSndFile->text().latin1(),
-   edtSndNotify->text().latin1(), edtSndSysMsg->text().latin1(),
-   edtSndMsgSent->text().latin1() };
-  oem->SetParameters(edtSndPlayer->text().latin1(), oemparams);
+
+  QString txtSndPlayer = edtSndPlayer->text();
+  QString txtSndMsg = edtSndMsg->text();
+  QString txtSndUrl = edtSndUrl->text();
+  QString txtSndChat = edtSndChat->text();
+  QString txtSndFile = edtSndFile->text();
+  QString txtSndNotify = edtSndNotify->text();
+  QString txtSndSysMsg = edtSndSysMsg->text();
+  QString txtSndMsgSent = edtSndMsgSent->text();
+
+  const char *oemparams[7] = { txtSndMsg.latin1(), txtSndUrl.latin1(),
+   txtSndChat.latin1(), txtSndFile.latin1(),
+   txtSndNotify.latin1(), txtSndSysMsg.latin1(),
+   txtSndMsgSent.latin1() };
+  
+  oem->SetParameters(txtSndPlayer.latin1(), oemparams);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetEnableSave(false);
   o->SetAcceptInAway(chkOEAway->isChecked());
@@ -1046,7 +1057,7 @@ QWidget* OptionsDlg::new_status_options()
 
 QWidget* OptionsDlg::new_column_options()
 {
-  QWidget* w = new QWidget(this);
+  QWidget* w = new QWidget(this, "main");
 
   QGroupBox *grp = new QGroupBox (tr("Column Configuration"), w);
 

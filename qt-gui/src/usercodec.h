@@ -20,14 +20,15 @@
 #define USERCODEC_H
 
 #include <qobject.h>
-#include <qtextcodec.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include "licq_user.h"
+
+class QTextCodec;
+class ICQUser;
+class CChatUser;
 
 class UserCodec {
 public:
   static QTextCodec * codecForICQUser(ICQUser *u);
+  static QTextCodec * codecForCChatUser(CChatUser *u);
   static QString encodingForIndex(uint index);
   static QString encodingForName(QString descriptiveName);
 #ifndef USE_KDE

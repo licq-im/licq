@@ -22,6 +22,7 @@
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qtextcodec.h>
 
 #include "licq_icqd.h"
 #include "mledit.h"

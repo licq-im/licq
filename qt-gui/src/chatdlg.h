@@ -2,8 +2,12 @@
 #define CHATDLG_H
 
 #include <list.h>
-#include <qmainwindow.h>
 #include <qmultilineedit.h>
+
+#include <qmainwindow.h>
+#ifdef USE_KDE
+#include <kmainwindow.h>
+#endif
 
 #include <deque.h>
 
@@ -23,8 +27,10 @@ class QComboBox;
 class QCloseEvent;
 class QMouseEvent;
 class QSocketNotifier;
+class QTextCodec;
 
 class CICQDaemon;
+class CMainWindow;
 
 //=====CChatWindow===========================================================
 class CChatWindow : public QMultiLineEdit
@@ -69,7 +75,7 @@ class ChatDlg : public QMainWindow
 {
    Q_OBJECT
 public:
-  ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
+  ChatDlg(unsigned long _nUin, CICQDaemon *daemon, CMainWindow *m,
           QWidget *parent = 0);
   virtual ~ChatDlg();
 
@@ -83,6 +89,9 @@ public:
 
   static ChatDlgList chatDlgs;
 
+signals:
+  void encodingChanged();
+
 protected:
   CChatManager *chatman;
 
@@ -91,11 +100,12 @@ protected:
   QLabel *lblLocal, *lblRemote;
   QPopupMenu *mnuMode, *mnuStyle, *mnuMain, *mnuFg, *mnuBg;
   CICQDaemon *licqDaemon;
+  CMainWindow *mainwin;
   QListBox *lstUsers;
 
-  QToolButton* tbtBold, *tbtItalic, *tbtUnderline;
-  QToolButton* tbtLaugh, *tbtBeep, *tbtFg, *tbtBg;
-  QToolButton* tbtIgnore;
+  QToolButton *tbtBold, *tbtItalic, *tbtUnderline;
+  QToolButton *tbtLaugh, *tbtBeep, *tbtFg, *tbtBg;
+  QToolButton *tbtIgnore, *tbtEncoding;
 
   QString linebuf, chatname;
   QComboBox *cmbFontName, *cmbFontSize;
@@ -105,6 +115,7 @@ protected:
   unsigned long m_nUin;
   QSocketNotifier *sn;
   bool m_bAudio;
+  QTextCodec *codec;
 
   virtual void closeEvent(QCloseEvent*);
 
@@ -128,6 +139,7 @@ protected slots:
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();
+  void slot_setEncoding(int encoding_index);
 };
 
 #endif

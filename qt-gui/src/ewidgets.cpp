@@ -8,6 +8,7 @@
 #include <qpainter.h>
 #include <qbitmap.h>
 #include <qimage.h>
+#include <qtextcodec.h>
 #ifdef USE_KDE
 #include <kmessagebox.h>
 #include <qmessagebox.h>
@@ -15,6 +16,7 @@
 #include <qmessagebox.h>
 #endif
 #include <qapplication.h>
+#include <qstyle.h>
 #include <qdatetime.h>
 #include "licq_history.h"
 #include "licq_events.h"
@@ -418,6 +420,9 @@ void CInfoField::setData(const unsigned long data)
 CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
   : MLEditWrap(true, parent, true, name)
 {
+  #if QT_VERSION >= 300
+  setTextFormat(RichText);
+  #endif
   setReadOnly(true);
 };
 

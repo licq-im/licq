@@ -27,6 +27,7 @@
 #include <qkeycode.h>
 #include <qscrollbar.h>
 #include <qdragobject.h>
+#include <qtextcodec.h>
 
 #include "mmlistview.h"
 #include "gui-defines.h"

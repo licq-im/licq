@@ -35,6 +35,7 @@
 #include <qtimer.h>
 #include <qprogressbar.h>
 #include <qapplication.h>
+#include <qtextcodec.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -1023,28 +1024,30 @@ void UserInfoDlg::ShowHistory()
     if(UserInfoDlg::chkContains((*tempIter)->Text(), ftxt, flen))
     {
       d.setTime_t((*tempIter)->Time());
-      if ((*tempIter)->Direction() == D_RECEIVER)
-        s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n\n%s\n\n",
-                  '\001', EventDescription(*tempIter).utf8().data(),
-                  tr("from").utf8().data(), n.utf8().data(), '\001',
-                  d.toString().utf8().data(),
-                  (*tempIter)->IsDirect() ? 'D' : '-',
-                  (*tempIter)->IsMultiRec() ? 'M' : '-',
-                  (*tempIter)->IsUrgent() ? 'U' : '-',
-                  (*tempIter)->IsEncrypted() ? 'E' : '-',
-                  (codec->toUnicode((*tempIter)->Text())).utf8().data());
-//                  (*tempIter)->Text());
-      else
-        s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n\n%s\n\n",
-                  '\002', EventDescription(*tempIter).utf8().data(),
-                  tr("to").utf8().data(), n.utf8().data(), '\002',
-                  d.toString().utf8().data(),
-                  (*tempIter)->IsDirect() ? 'D' : '-',
-                  (*tempIter)->IsMultiRec() ? 'M' : '-',
-                  (*tempIter)->IsUrgent() ? 'U' : '-',
-                  (*tempIter)->IsEncrypted() ? 'E' : '-',
+      #if QT_VERSION >= 300
+      s.sprintf("<p><font color=\"%s\">%s<br>%s [%c%c%c%c]</font></p><p>%s</p><br>",
+                ((*tempIter)->Direction() == D_RECEIVER ? "blue" : "red"),
+                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
+                  .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(n)).utf8().data(),
+                d.toString().utf8().data(),
+                (*tempIter)->IsDirect() ? 'D' : '-',
+                (*tempIter)->IsMultiRec() ? 'M' : '-',
+                (*tempIter)->IsUrgent() ? 'U' : '-',
+                (*tempIter)->IsEncrypted() ? 'E' : '-',
+                QStyleSheet::convertFromPlainText(codec->toUnicode((*tempIter)->Text())).utf8().data());
+      #else
+      s.sprintf("%c%s\n%c%s [%c%c%c%c]\n\n%s\n\n",
+                ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
+                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
+                  .arg(EventDescription(*tempIter)).arg(n).utf8().data(),
+                ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
+                d.toString().utf8().data(),
+                (*tempIter)->IsDirect() ? 'D' : '-',
+                (*tempIter)->IsMultiRec() ? 'M' : '-',
+                (*tempIter)->IsUrgent() ? 'U' : '-',
+                (*tempIter)->IsEncrypted() ? 'E' : '-',
                 (codec->toUnicode((*tempIter)->Text())).utf8().data());
-//                  (*tempIter)->Text());
+      #endif
       st.append(s);
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);

@@ -9,12 +9,17 @@
 // as defined by Troll Tech AS of Norway and appearing in the file
 // LICENSE.QPL included in the packaging of this file.
 
+#if QT_VERSION < 300
 #ifndef JFCSTYLE_INCLUDED
 # define JFCSTYLE_INCLUDED
 
 # include <qfont.h>
 # include <qpalette.h>
 # include <qwindowsstyle.h>
+
+class QTab;
+class QTabBar;
+class QMenuItem;
 
 class JFCScheme
 {
@@ -192,3 +197,4 @@ class JFCStyle : public QWindowsStyle
 
 #endif
 
+#endif

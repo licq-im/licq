@@ -174,7 +174,10 @@ void UserEventCommon::slot_setEncoding(int encoding_index) {
     /* save prefered character set */
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
     if (u != NULL) {
+      u->SetEnableSave(false);
       u->SetUserEncoding( codec->name() );
+      u->SetEnableSave(true);
+      u->SaveLicqInfo();
       gUserManager.DropUser(u);
     }
 
@@ -683,7 +686,7 @@ void UserViewEvent::slot_btnRead2()
       btnRead2->setEnabled(false);
       btnRead3->setEnabled(false);
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
-      ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+      ChatDlg *chatDlg = new ChatDlg(m_nUin, server, mainwin);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         if (chatDlg->StartAsClient(c->Port()))
@@ -785,7 +788,7 @@ void UserViewEvent::slot_btnRead4()
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
-        ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+        ChatDlg *chatDlg = new ChatDlg(m_nUin, server, mainwin);
         if (chatDlg->StartAsClient(c->Port()))
           server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
       }
@@ -1764,7 +1767,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
     CEventChat *c = (CEventChat *)e->UserEvent();
     if (c->Port() == 0)  // If we requested a join, no need to do anything
     {
-      ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+      ChatDlg *chatDlg = new ChatDlg(m_nUin, server, mainwin);
       chatDlg->StartAsClient(e->ExtendedAck()->Port());
     }
   }

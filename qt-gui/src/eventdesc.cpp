@@ -39,7 +39,6 @@ static const char *szEventTypes[27] =
   QT_TRANSLATE_NOOP("Event","User Info")
 };
 
-
 QString EventDescription(CUserEvent *e)
 {
   QString desc;
@@ -50,7 +49,7 @@ QString EventDescription(CUserEvent *e)
   {
     desc = qApp->translate("Event", szEventTypes[e->SubCommand()]);
     if (e->IsCancelled())
-      desc += qApp->translate("Event", " (cancelled)");
+      desc += ' ' + qApp->translate("Event", "(cancelled)");
   }
   return desc;
 }
