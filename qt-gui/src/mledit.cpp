@@ -61,8 +61,10 @@ void MLEditWrap::appendNoNewLine(QString s)
 {
 #if QT_VERSION < 300
   if (!atEnd()) GotoEnd();
-#endif
   QMultiLineEdit::insert(s);
+#else
+  QMultiLineEdit::append(s);
+#endif
 }
 
 
