@@ -164,13 +164,15 @@ protected slots:
   void slot_logon();
   void slot_register();
   void slot_doneregister();
+  void slot_doneOptions();
   void slot_doneOwnerFcn(ICQEvent *);
   void saveOptions();
   void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
   void showPluginDlg();
-  void showOptionsDlg();
+  void showOptionsDlg(int);
+  void popupOptionsDlg() { emit showOptionsDlg(0); };
   void showAuthUserDlg();
   void showSearchUserDlg();
   void popupSystemMenu();

@@ -1,29 +1,31 @@
 #ifndef OPTIONSDLG_H
 #define OPTIONSDLG_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
 #include <qtabdialog.h>
-#include <qgroupbox.h>
-#include <qcheckbox.h>
-#include <qspinbox.h>
 
 #include "ewidgets.h"
 
 class CMainWindow;
 class MLEditWrap;
 
+class QLineEdit;
+class QComboBox;
+class QLabel;
+class QCheckBox;
+class QSpinBox;
+class QGroupBox;
+
 class OptionsDlg : public QTabDialog
 {
    Q_OBJECT
 friend class CMainWindow;
 public:
-   OptionsDlg (CMainWindow *, QWidget *parent = NULL, char *name = NULL);
+
+   enum tabs { ODlgAppearance, ODlgColumns, ODlgOnEvent, ODlgNetwork,
+               ODlgStatus, ODlgMiscellaneous };
+
+   OptionsDlg (CMainWindow *, tabs tab = ODlgAppearance,
+               QWidget *parent = NULL, char *name = NULL);
 
 protected:
    QWidget *tab[6];
@@ -43,9 +45,9 @@ protected:
    // appearance tab
    QWidget* new_appearance_options();
    QGroupBox *boxFont, *boxUserWin, *boxDocking, *boxLocale;
-   QLabel *lblFont, *lblFrameStyle;
-   QLineEdit *edtFont, *edtFrameStyle;
-   QPushButton *btnFont;
+   QLabel *lblFont, *lblEditFont, *lblFrameStyle;
+   QLineEdit *edtFont, *edtEditFont, *edtFrameStyle;
+   QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight, *chkTransparent;
 
@@ -82,16 +84,20 @@ protected:
    QComboBox* cmbSARgroup, *cmbSARmsg;
    MLEditWrap* edtSARtext;
 
-   virtual void hide();
+   QString fontName(const QFont& f);
+
+signals:
+  void signal_done();
 
 protected:
+  void hideEvent(QHideEvent*) { emit signal_done(); close(true); };
   void SetupOptions();
-  void ApplyOptions();
 
 protected slots:
   void colEnable(bool);
-  void slot_apply();
+  void ApplyOptions();
   void slot_selectfont();
+  void slot_selecteditfont();
   void slot_whatsthis();
   void slot_SARmsg_act(int);
   void slot_SARgroup_act(int);

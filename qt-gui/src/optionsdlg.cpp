@@ -24,13 +24,16 @@
 #include <qvbox.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qcheckbox.h>
+#include <qspinbox.h>
+#include <qfontdialog.h>
+#include <qgroupbox.h>
+#include <qwhatsthis.h>
 #ifdef USE_KDE
 #include <kapp.h>
 #else
 #include <qapplication.h>
 #endif
-#include <qfontdialog.h>
-#include <qwhatsthis.h>
 
 #include "optionsdlg.h"
 #include "translate.h"
@@ -45,8 +48,8 @@
 #include "skin.h"
 
 
-OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
-    : QTabDialog(parent, name)
+OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent, char *name)
+  : QTabDialog(parent, name)
 {
   setCaption(tr("Licq Options"));
 
@@ -55,7 +58,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   setApplyButton(tr("&Apply"));
   setCancelButton(tr("&Cancel"));
   setHelpButton(tr("&Help"));
-  connect (this, SIGNAL(applyButtonPressed()), this, SLOT(slot_apply()));
+  connect (this, SIGNAL(applyButtonPressed()), this, SLOT(ApplyOptions()));
   connect(this, SIGNAL(helpButtonPressed()), this, SLOT(slot_whatsthis()));
 
   tab[0] = new_appearance_options();
@@ -73,22 +76,9 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   addTab(tab[5], tr("Miscellaneous"));
 
   SetupOptions();
+  showPage(tab[settab]);
   show();
 }
-
-
-void OptionsDlg::slot_apply()
-{
-  ApplyOptions();
-}
-
-void OptionsDlg::hide()
-{
-  QTabDialog::hide();
-  mainwin->optionsDlg = NULL;
-  delete this;
-}
-
 
 void OptionsDlg::slot_whatsthis()
 {
@@ -136,16 +126,14 @@ void OptionsDlg::colEnable(bool isOn)
 void OptionsDlg::SetupOptions()
 {
 #ifdef USE_KDE
-  if (mainwin->defaultFont == kapp->font())
-    edtFont->setText("default");
-  else
-    edtFont->setText(kapp->font().rawName());
+  edtFont->setFont(kapp->font());
+  edtFont->setText(fontName(kapp->font()));
 #else
-  if (mainwin->defaultFont == qApp->font())
-    edtFont->setText("default");
-  else
-    edtFont->setText(qApp->font().rawName());
+  edtFont->setFont(qApp->font());
+  edtFont->setText(fontName(qApp->font()));
 #endif
+  edtEditFont->setFont(MLEditWrap::editFont);
+  edtEditFont->setText(fontName(edtEditFont->font()));
 
   chkGridLines->setChecked(mainwin->gridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
@@ -261,22 +249,13 @@ void OptionsDlg::SetupOptions()
 //-----OptionsDlg::ApplyOptions----------------------------------------------
 void OptionsDlg::ApplyOptions()
 {
-  if (strcmp(edtFont->text(), "default") == 0)
+  MLEditWrap::editFont = edtEditFont->font();
+  QFont f = edtFont->font();
 #ifdef USE_KDE
-    kapp->setFont(mainwin->defaultFont, true);
+  kapp->setFont(f, true);
 #else
-    qApp->setFont(mainwin->defaultFont, true);
+  qApp->setFont(f, true);
 #endif
-  else
-  {
-    QFont f;
-    f.setRawName(edtFont->text());
-#ifdef USE_KDE
-    kapp->setFont(f, true);
-#else
-    qApp->setFont(f, true);
-#endif
-  }
 
   mainwin->gridLines = chkGridLines->isChecked();
   mainwin->m_bFontStyles = chkFontStyles->isChecked();
@@ -382,12 +361,31 @@ void OptionsDlg::ApplyOptions()
 }
 
 
+QString OptionsDlg::fontName(const QFont& f)
+{
+  return QString(tr("%1, %2pt")).arg(f.family()).arg(f.pointSize());
+}
+
+
 void OptionsDlg::slot_selectfont()
 {
   bool fontOk;
   QFont f = QFontDialog::getFont(&fontOk, this);
-  if (fontOk)
-    edtFont->setText(f.rawName());
+  if (fontOk) {
+    edtFont->setFont(f);
+    edtFont->setText(fontName(f));
+  }
+}
+
+void OptionsDlg::slot_selecteditfont()
+{
+  bool fontOk;
+  QFont f = QFontDialog::getFont(&fontOk, this);
+  if (fontOk) {
+    edtEditFont->setFont(f);
+    setWState(WState_FontFixed);
+    edtEditFont->setText(fontName(f));
+  }
 }
 
 
@@ -396,8 +394,8 @@ void OptionsDlg::slot_selectfont()
 QWidget* OptionsDlg::new_appearance_options()
 {
   QWidget* w = new QWidget(this);
-  QBoxLayout* lay = new QHBoxLayout(w, 8);
-  QBoxLayout* l = new QVBoxLayout(lay, 8);
+  QBoxLayout* lay = new QVBoxLayout(w, 8);
+  QBoxLayout* l = new QHBoxLayout(lay, 8);
 
   boxUserWin = new QGroupBox(1, Horizontal, tr("User Window"), w);
   l->addWidget(boxUserWin);
@@ -416,6 +414,10 @@ QWidget* OptionsDlg::new_appearance_options()
   chkTransparent = new QCheckBox(tr("Transparent when possible"), boxUserWin);
   QWhatsThis::add(chkTransparent, tr("Make the user window transparent when there "
                                      "is no scroll bar"));
+  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxUserWin);
+  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
+                                   "indicate special characteristics such as "
+                                   "online notify and visible list"));
   lblFrameStyle = new QLabel(tr("Frame Style:"), boxUserWin);
   edtFrameStyle = new QLineEdit(boxUserWin);
   QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
@@ -425,32 +427,8 @@ QWidget* OptionsDlg::new_appearance_options()
                                     " + 240 (Shadow"));
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
 
-  boxDocking = new QGroupBox(1, Horizontal, tr("Docking"), w);
-  chkUseDock = new QCheckBox(tr("Use Dock Icon"), boxDocking);
-  QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
-  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), boxDocking);
-  QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
-                                        "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
-  connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
-  l->addWidget(boxDocking);
-
-  l = new QVBoxLayout(lay, 8);
-  boxFont = new QGroupBox(1, Horizontal, tr("Font"), w);
-  QWhatsThis::add(boxFont, tr("The font used for all widgets"));
-  lblFont = new QLabel(tr("Font:"), boxFont);
-  edtFont = new QLineEdit(boxFont);
-  btnFont = new QPushButton(tr("Select Font"), boxFont);
-  QWhatsThis::add(btnFont, tr("Select a font from the system list"));
-  connect(btnFont, SIGNAL(clicked()), this, SLOT(slot_selectfont()));
-
-  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxFont);
-  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
-                                   "indicate special characteristics such as "
-                                   "online notify and visible list"));
-  l->addWidget(boxFont);
-
-  boxLocale = new QGroupBox(2, Horizontal, tr("Locale"), w);
-
+  l = new QVBoxLayout(l);
+  boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
@@ -460,10 +438,6 @@ QWidget* OptionsDlg::new_appearance_options()
 
   cmbTrans = new QComboBox(false, boxLocale);
   cmbLocale = new QComboBox(false, boxLocale);
-#if QT_VERSION < 210
-  QWidget* dummy_w = new QWidget(boxLocale);
-  if (dummy_w);
-#endif
 
   QString szTransFilesDir;
   szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
@@ -496,8 +470,36 @@ QWidget* OptionsDlg::new_appearance_options()
     cmbLocale->insertItem(tr("Auto"));
     cmbLocale->insertStringList(dLocale.entryList());
   }
+#if QT_VERSION < 210
+  QWidget* dummy_w = new QWidget(boxLocale);
+  if (dummy_w);
+#endif
   l->addWidget(boxLocale);
 
+  boxDocking = new QGroupBox(1, Horizontal, tr("Docking"), w);
+  chkUseDock = new QCheckBox(tr("Use Dock Icon"), boxDocking);
+  QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
+  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), boxDocking);
+  QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
+                                        "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
+  connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
+  l->addWidget(boxDocking);
+
+  l = new QVBoxLayout(lay, 8);
+  boxFont = new QGroupBox(3, Horizontal, tr("Font"), w);
+  QWhatsThis::add(boxFont, tr("The font used for all widgets"));
+  lblFont = new QLabel(tr("Font:"), boxFont);
+  edtFont = new QLineEdit(boxFont);
+  btnFont = new QPushButton(tr("Select Font"), boxFont);
+  QWhatsThis::add(btnFont, tr("Select a font from the system list"));
+  connect(btnFont, SIGNAL(clicked()), this, SLOT(slot_selectfont()));
+
+  lblEditFont = new QLabel(tr("Edit Font:"), boxFont);
+  edtEditFont = new QLineEdit(boxFont);
+  btnEditFont = new QPushButton(tr("Select Font"), boxFont);
+  QWhatsThis::add(btnEditFont, tr("Font used in message editor etc."));
+  connect(btnEditFont, SIGNAL(clicked()), this, SLOT(slot_selecteditfont()));
+  l->addWidget(boxFont);
 
   return w;
 }
@@ -616,7 +618,6 @@ QWidget* OptionsDlg::new_network_options()
   connect(chkFirewall, SIGNAL(toggled(bool)), chkTCPEnabled, SLOT(setEnabled(bool)));
   connect(chkFirewall, SIGNAL(toggled(bool)), spnPortLow, SLOT(setEnabled(bool)));
   connect(chkFirewall, SIGNAL(toggled(bool)), spnPortHigh, SLOT(setEnabled(bool)));
-
 
   return w;
 }

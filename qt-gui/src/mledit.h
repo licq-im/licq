@@ -13,6 +13,7 @@ public:
   void goToEnd(void);
   virtual void backspace(void) { QMultiLineEditNew::backspace(); }
 
+  static QFont editFont;
 protected:
   void keyPressEvent (QKeyEvent *);
 

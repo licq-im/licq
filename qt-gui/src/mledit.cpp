@@ -2,9 +2,10 @@
 #include "config.h"
 #endif
 
+#include <qfont.h>
 #include "mledit.h"
-#include <iostream.h>
 
+QFont MLEditWrap::editFont = QFont();
 
 MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent, const char *name)
   : QMultiLineEditNew(parent, name)
@@ -14,6 +15,7 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent, const char *name)
     setWordWrap(WidgetWidth);
     setWrapPolicy(AtWhiteSpace);
   }
+  setFont(editFont);
 }
 
 

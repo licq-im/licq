@@ -210,6 +210,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   licqConf.SetSection("appearance");
   char szFont[256];
+  QFont f;
   licqConf.ReadStr("Font", szFont, "default");
 #ifdef USE_KDE
   defaultFont = kapp->font();
@@ -218,7 +219,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
   if (strcmp(szFont, "default") != 0)
   {
-    QFont f;
     f.setRawName(szFont);
 #ifdef USE_KDE
     kapp->setFont(f, true);
@@ -226,6 +226,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     qApp->setFont(f, true);
 #endif
   }
+  licqConf.ReadStr("EditFont", szFont, "default");
+  MLEditWrap::editFont = !strcmp(szFont, "default") ? qApp->font()
+    : (f.setRawName(szFont),f);
 
   licqConf.ReadBool("GridLines", gridLines, false);
   licqConf.ReadBool("FontStyles", m_bFontStyles, true);
@@ -284,6 +287,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   style = new QWindowsStyle;
   awayMsgDlg = new AwayMsgDlg;
+  connect(awayMsgDlg, SIGNAL(popupOptions(int)), this, SLOT(showOptionsDlg(int)));
   optionsDlg = NULL;
   registerUserDlg = NULL;
   m_nRealHeight = 0;
@@ -1330,6 +1334,8 @@ void CMainWindow::saveOptions()
   else
     licqConf.WriteStr("Font", qApp->font().rawName());
 #endif
+  licqConf.WriteStr("EditFont", MLEditWrap::editFont == defaultFont ?
+                    QString("default") : MLEditWrap::editFont.rawName());
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteBool("ShowHeader", showHeader);
@@ -1772,7 +1778,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("Show &Network Window"), licqLogWindow, SLOT(show()));
    mnuSystem->insertItem(tr("Use &Mini Mode"), this, SLOT(miniMode()));
    mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
-   mnuSystem->insertItem(tr("&Options..."), this, SLOT(showOptionsDlg()));
+   mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
    mnuSystem->insertSeparator();
@@ -1880,12 +1886,16 @@ void CMainWindow::showEditGrpDlg()
   d->show();
 }
 
-void CMainWindow::showOptionsDlg()
+void CMainWindow::showOptionsDlg(int tab)
 {
-  if (optionsDlg != NULL)
+  if (optionsDlg) {
     optionsDlg->raise();
-  else
-    optionsDlg = new OptionsDlg(this);
+//    optionsDlg->showTab(tab);
+  }
+  else {
+    optionsDlg = new OptionsDlg(this, (OptionsDlg::tabs) tab);
+    connect(optionsDlg, SIGNAL(signal_done()), this, SLOT(slot_doneOptions()));
+  }
 }
 
 void CMainWindow::showSkinBrowser()
@@ -1893,7 +1903,6 @@ void CMainWindow::showSkinBrowser()
   SkinBrowserDlg *d = new SkinBrowserDlg(this);
   d->show();
 }
-
 
 void CMainWindow::showPluginDlg()
 {
@@ -1905,6 +1914,10 @@ void CMainWindow::slot_doneregister()
   registerUserDlg = NULL;
 }
 
+void CMainWindow::slot_doneOptions()
+{
+  optionsDlg = NULL;
+}
 
 void CMainWindow::slot_register()
 {
@@ -1920,7 +1933,7 @@ void CMainWindow::slot_register()
     return;
   }
 
-  if (registerUserDlg != NULL)
+  if (registerUserDlg)
     registerUserDlg->raise();
   else {
     registerUserDlg = new RegisterUserDlg(licqDaemon);
