@@ -377,7 +377,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       {
         int w = p->fontMetrics().width(text(1)) + 4;
 
-        if (m_nEvents > 0)
+        if (m_nEvents > 0 && !isOpen())
         {
           p->drawPixmap(w, 0, gMainWindow->pmMessage);
           w += gMainWindow->pmMessage.width() + 4;
