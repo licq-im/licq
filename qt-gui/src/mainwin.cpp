@@ -1037,7 +1037,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       // If their box is open, kill it
       {
         QListIterator<UserViewEvent> it(licqUserView);
-        for ( ; it.current(); ++it)
+        for (; it.current() != NULL; ++it)
         {
           if ((*it)->Uin() == sig->Uin())
           {
@@ -1050,7 +1050,8 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       {
         // if their info box is open, kill it
         QListIterator<UserInfoDlg> it(licqUserInfo);
-        for( ; it.current(); ++it){
+        for(; it.current() != NULL; ++it)
+        {
           if((*it)->Uin() == sig->Uin())
           {
             delete it.current();
@@ -1437,15 +1438,24 @@ void CMainWindow::callUserFunction(int index)
   switch(index)
   {
     case mnuUserAuthorize:
-      {
-        (void) new AuthUserDlg(licqDaemon, nUin, true);
-      }
+    {
+      (void) new AuthUserDlg(licqDaemon, nUin, true);
       break;
+    }
     case mnuUserCheckResponse:
-      {
-        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
-      }
+    {
+      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
       break;
+    }
+    case mnuUserNewUser:
+    {
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (!u) return;
+      u->SetNewUser(!u->NewUser());
+      gUserManager.DropUser(u);
+      updateUserWin();
+      break;
+    }
     case mnuUserOnlineNotify:
     {
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -1517,28 +1527,33 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 {
   if(nUin == 0) return;
 
-  UserInfoDlg* f = 0;
+  UserInfoDlg *f = NULL;
   QListIterator<UserInfoDlg> it(licqUserInfo);
 
-  for( ; it.current(); ++it) {
-    if((*it)->Uin() == nUin) {
+  for(; it.current(); ++it)
+  {
+    if((*it)->Uin() == nUin)
+    {
       f = *it;
       break;
     }
   }
 
-  if(f) {
+  if (f)
+  {
     f->show();
     f->raise();
   }
-  else {
+  else
+  {
     f = new UserInfoDlg(licqDaemon, licqSigMan, this, nUin);
     connect(f, SIGNAL(finished(unsigned long)), this, SLOT(UserInfoDlg_finished(unsigned long)));
     f->show();
     licqUserInfo.append(f);
   }
 
-  switch(fcn) {
+  switch(fcn)
+  {
     case mnuUserHistory:
       f->showTab(UserInfoDlg::HistoryInfo);
       break;
@@ -2493,6 +2508,7 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
    mnuUser->insertSeparator();
+   mnuUser->insertItem(tr("New User"), mnuUserNewUser);
    mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
    mnuUser->insertItem(tr("Invisible List"), mnuUserInvisibleList);
    mnuUser->insertItem(tr("Visible List"), mnuUserVisibleList);
@@ -2535,6 +2551,7 @@ void CMainWindow::slot_usermenu()
     mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
 
+  mnuUser->setItemChecked(mnuUserNewUser, u->NewUser());
   mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
   mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
   mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());

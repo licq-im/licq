@@ -22,6 +22,7 @@ enum UserMenu {
   mnuUserWork,
   mnuUserAbout,
   mnuUserHistory,
+  mnuUserNewUser,
   mnuUserOnlineNotify,
   mnuUserInvisibleList,
   mnuUserVisibleList,
