@@ -699,6 +699,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   unsigned short version, command, junkShort, newCommand, messageLen,
                  ackFlags, msgFlags, licqVersion;
   char licqChar, junkChar;
+  bool errorOccured = false;
+
 
   CBuffer &packet = pSock->RecvBuffer();
   int sockfd = pSock->Descriptor();
@@ -981,6 +983,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           char *buf;
           gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
           delete []buf;
+          errorOccured = true;
           break;
         }
 
@@ -1033,6 +1036,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           char *buf;
           gLog.Warn("%sInvalid contact list message:\n%s\n", L_WARNxSTR, packet.print(buf));
           delete []buf;
+          errorOccured = true;
           break;
         }
 
@@ -1150,8 +1154,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       default:
       {
         char *buf;
-        gLog.Unknown("%sUnknown TCP message type (%d):\n%s\n", L_UNKNOWNxSTR,
+        gLog.Unknown("%sUnknown TCP message type (%04x):\n%s\n", L_UNKNOWNxSTR,
           newCommand, packet.print(buf));
+        errorOccured = true;
         delete []buf;
         break;
       }
@@ -1234,6 +1239,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
        break;
 
     default:
+      char *buf;
+      gLog.Unknown("%sUnknown TCP Ack subcommand (%04x):\n%s\n", L_UNKNOWNxSTR,
+                   newCommand, packet.print(buf));
+      errorOccured = true;
+      delete []buf;
       break;
     }
 
@@ -1290,6 +1300,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     else
     {
       gLog.Warn("%sAck for unknown event.\n", L_TCPxSTR);
+      errorOccured = true;
       delete pExtendedAck;
     }
     break;
@@ -1345,6 +1356,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     char *buf;
     gLog.Unknown("%sUnknown TCP packet (command 0x%04x):\n%s\n", L_UNKNOWNxSTR, command, packet.print(buf));
     delete [] buf;
+    errorOccured = true;
     break;
   }
 
@@ -1354,7 +1366,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     return false;
   }
   gUserManager.DropUser(u);
-  return true;
+  return !errorOccured;
 }
 
 
@@ -1402,10 +1414,11 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
 
   unsigned long nUin = 0;
   unsigned short nVersion = 0;
+  unsigned short nVerToUse = (nVersionMajor < ICQ_VERSION_TCP ? nVersionMajor : ICQ_VERSION_TCP);
 
-  unsigned long n = b.UnpackUnsignedLong();
-  // Test if v6
-  if (n == gUserManager.OwnerUin())
+  switch(nVerToUse) {
+  case 7:
+  case 6:
   {
     b.Reset();
     CPacketTcp_Handshake_v6 p_in(&b);
@@ -1433,31 +1446,31 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
       return false;
     }
     nVersion = 6;
-
+    break;
   }
-
-  // Test if v4
-  else if (n == 0)
+  case 5:
+  case 4:
   {
+    b.UnpackUnsignedLong(); // port number
     nUin = b.UnpackUnsignedLong();
     nVersion = 4;
+    break;
   }
-
-  // Test if v2
-  else if (n == s->RemotePort())
-  {
+  case 3:
+  case 2:
+  case 1:
+    b.UnpackUnsignedLong(); // port number
     nUin = b.UnpackUnsignedLong();
     nVersion = 2;
-  }
-
-  // What the heck is this?
-  else
+    break;
+  default:
   {
     char *buf;
-    gLog.Unknown("%sUnknown TCP handshake packet (test = %ld):\n%s\n",
-                 L_UNKNOWNxSTR, n, b.print(buf));
+    gLog.Unknown("%sUnknown TCP handshake packet :\n%s\n",
+                 L_UNKNOWNxSTR, b.print(buf));
     delete buf;
     return false;
+  }
   }
 
   s->SetOwner(nUin);
