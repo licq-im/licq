@@ -311,16 +311,6 @@ void search_user_window()
 	gtk_widget_show_all(su->window);
 }
 
-void
-change_status(GtkWidget *statusbar, const char *st_name, 
-		const char *newstatus)
-{
-	guint id = gtk_statusbar_get_context_id(
-			GTK_STATUSBAR(statusbar), st_name);
-	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), id);
-	gtk_statusbar_push(GTK_STATUSBAR(statusbar), id, newstatus);
-}
-
 void clear_callback(GtkWidget *widget, gpointer data)
 {
 	num_found_users = 0;
@@ -328,7 +318,7 @@ void clear_callback(GtkWidget *widget, gpointer data)
 			GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(su->list)));
 	gtk_list_store_clear(store);
 	gtk_widget_set_sensitive(su->clear, FALSE);
-	change_status(su->statusbar, "sta", "");
+	status_change(su->statusbar, "sta", "");
 }
 
 const char *
@@ -346,7 +336,7 @@ get_index(GtkWidget *w)
 void 
 search_callback(GtkWidget *widget, gpointer data)
 {
-	change_status(su->statusbar, "sta", "Searching, this may take awhile.");
+	status_change(su->statusbar, "sta", "Searching, this may take awhile.");
 	
 	unsigned short mins[7] = {0, 18, 23, 30, 40, 50, 60};
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
@@ -402,7 +392,7 @@ search_list_double_click(GtkWidget *widget, GdkEventButton *eb, gpointer data)
 	icq_daemon->AddUserToList(uin);
 
 	char *for_statusbar = g_strdup_printf("User (%ld) added", uin);
-	change_status(su->statusbar, "sta", for_statusbar);
+	status_change(su->statusbar, "sta", for_statusbar);
 	g_free(for_statusbar);
 }
 
@@ -426,10 +416,10 @@ void
 search_done(bool more)
 {
 	if (more)
-		change_status(su->statusbar, "sta",
+		status_change(su->statusbar, "sta",
 			"More users found, narrow your search and try again.");
 	else
-		change_status(su->statusbar, "sta",
+		status_change(su->statusbar, "sta",
 			"Search complete, double click user to add her/him.");
 }
 
@@ -488,7 +478,7 @@ search_found(CSearchAck *s)
 
 void search_failed()
 {
-	change_status(su->statusbar, "sta", "Search failed.");
+	status_change(su->statusbar, "sta", "Search failed.");
 }
 
 void 
