@@ -352,6 +352,8 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       if(column == 1)
         listView()->style().drawSeparator(p, p->fontMetrics().width(text(column)) + 4,
           height() >> 1, width-1, height() >> 1, cg);
+      else if(column > 1)
+        listView()->style().drawSeparator(p, 0, height() >> 1, width-1, height()>> 1, cg);
     }
 
     QListViewItem::paintCell(p, cg, column, width, align);
