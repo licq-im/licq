@@ -351,11 +351,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   skin->frame.transparent = bFrameTransparent;
 
   // set the icon
-#ifdef USE_KDE
-  setIconText("KLicq");
-#else
   setIconText("Licq");
-#endif
 
   // User List
    char colKey[16], colTitle[32], colFormat[32];
