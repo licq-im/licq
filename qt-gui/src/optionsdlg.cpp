@@ -324,6 +324,7 @@ void OptionsDlg::SetupOptions()
    edtSndFile->setText(oem->Parameter(ON_EVENT_FILE));
    edtSndNotify->setText(oem->Parameter(ON_EVENT_NOTIFY));
    edtSndSysMsg->setText(oem->Parameter(ON_EVENT_SYSMSG));
+   edtSndMsgSent->setText(oem->Parameter(ON_EVENT_MSGSENT));
    oem->Unlock();
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    chkOEAway->setChecked(o->AcceptInAway());
@@ -490,9 +491,10 @@ void OptionsDlg::ApplyOptions()
   // set up the sound stuff
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
-  const char *oemparams[6] = { edtSndMsg->text().latin1(), edtSndUrl->text().latin1(),
-                               edtSndChat->text().latin1(), edtSndFile->text().latin1(),
-                               edtSndNotify->text().latin1(), edtSndSysMsg->text().latin1() };
+  const char *oemparams[7] = { edtSndMsg->text().latin1(), edtSndUrl->text().latin1(),
+   edtSndChat->text().latin1(), edtSndFile->text().latin1(),
+   edtSndNotify->text().latin1(), edtSndSysMsg->text().latin1(),
+   edtSndMsgSent->text().latin1() };
   oem->SetParameters(edtSndPlayer->text().latin1(), oemparams);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetEnableSave(false);
@@ -740,6 +742,9 @@ QWidget* OptionsDlg::new_sounds_options()
   QLabel *lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
   QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
   edtSndSysMsg = new QLineEdit(boxSndEvents);
+  QLabel *lblSndMsgSent = new QLabel(tr("Message Sent:"), boxSndEvents);
+  QWhatsThis::add(lblSndMsgSent, tr("Parameter for sent messages"));
+  edtSndMsgSent = new QLineEdit(boxSndEvents);
 
   QGroupBox *boxAcceptEvents = new QGroupBox(4, Vertical, tr("Accept Modes"), w);
   lay->addWidget(boxAcceptEvents, 1);

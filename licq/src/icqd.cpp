@@ -186,6 +186,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadStr("File", szOnParams[ON_EVENT_FILE], "");
   licqConf.ReadStr("OnlineNotify", szOnParams[ON_EVENT_NOTIFY], "");
   licqConf.ReadStr("SysMsg", szOnParams[ON_EVENT_SYSMSG], "");
+  licqConf.ReadStr("MsgSent", szOnParams[ON_EVENT_MSGSENT], "");
   m_xOnEventManager.SetParameters(szOnEventCommand, (const char **)szOnParams);
   for (int i = 0; i < MAX_ON_EVENT; i++)
     delete [] szOnParams[i];
@@ -560,6 +561,7 @@ void CICQDaemon::SaveConf()
   licqConf.WriteStr("File",oem->Parameter(ON_EVENT_FILE));
   licqConf.WriteStr("OnlineNotify", oem->Parameter(ON_EVENT_NOTIFY));
   licqConf.WriteStr("SysMsg", oem->Parameter(ON_EVENT_SYSMSG));
+  licqConf.WriteStr("MsgSent", oem->Parameter(ON_EVENT_MSGSENT));
   oem->Unlock();
 
   licqConf.FlushFile();
@@ -1163,6 +1165,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     {
       e->m_pUserEvent->AddToHistory(u, D_SENDER);
       u->SetLastSentEvent();
+      m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
       gUserManager.DropUser(u);
     }
     m_sStats[STATS_EventsSent].Inc();

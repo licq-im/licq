@@ -13,7 +13,8 @@ const unsigned short ON_EVENT_CHAT = 2;
 const unsigned short ON_EVENT_FILE = 3;
 const unsigned short ON_EVENT_NOTIFY = 4;
 const unsigned short ON_EVENT_SYSMSG = 5;
-const unsigned short MAX_ON_EVENT = 6;
+const unsigned short ON_EVENT_MSGSENT = 6;
+const unsigned short MAX_ON_EVENT = 7;
 
 const unsigned short ON_EVENT_IGNORE =  0;
 const unsigned short ON_EVENT_RUN    =  1;

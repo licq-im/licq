@@ -78,7 +78,7 @@ protected:
    QCheckBox *chkOnEvents, *chkOEAway, *chkOENA, *chkOEOccupied, *chkOEDND,
       *chkAlwaysOnlineNotify;
    QLineEdit *edtSndPlayer, *edtSndMsg, *edtSndChat, *edtSndUrl,
-      *edtSndFile, *edtSndNotify, *edtSndSysMsg;
+      *edtSndFile, *edtSndNotify, *edtSndSysMsg, *edtSndMsgSent;
 
    // misc tab
    QWidget* new_misc_options();
