@@ -79,7 +79,9 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   }
   else        // send direct
   {
+printf("before lock\n");
     u = gUserManager.FetchUser(_nUin, LOCK_W);
+printf("after lock\n");
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);

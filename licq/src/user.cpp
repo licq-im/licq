@@ -332,6 +332,8 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
 {
   ICQUser *u = NULL;
 
+  if (_szId == 0 || _nPPID == 0) return u;
+
   // Check for an owner first
   u = FindOwner(_szId, _nPPID);
 

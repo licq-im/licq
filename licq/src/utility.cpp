@@ -200,6 +200,21 @@ bool CUtility::SetFields(unsigned long _nUin)
   return true;
 }
 
+#ifdef PROTOCOL_PLUGIN
+bool CUtility::SetFields(const char *szId, unsigned long nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u == NULL) return false;
+  if (m_szFullCommand != NULL) delete [] m_szFullCommand;
+  m_szFullCommand = new char[MAX_CMD_LEN];
+  u->usprintf(m_szFullCommand, m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
+  vector<CUtilityUserField *>::iterator iter;
+  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
+    (*iter)->SetFields(u);
+  gUserManager.DropUser(u);
+  return true;
+}
+#endif
 
 void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
 {

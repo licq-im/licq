@@ -22,7 +22,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #ifdef PROTOCOL_PLUGIN
 #include "licq_protoplugind.h"
 
-class CProtoPlugin
+class CProtoPlugin;
 #endif
 
 class CPlugin;
@@ -270,8 +270,9 @@ public:
   void ProtoPluginList(ProtoPluginsList &);
   bool ProtoPluginLoad(const char *);
   int RegisterProtoPlugin();
+  char *ProtoPluginName(unsigned long);
 #endif
-  
+
   void PluginUIViewEvent(unsigned long nUin) {
   	PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
   }
@@ -292,6 +293,10 @@ public:
   void CheckBirthdays(UinList &);
   unsigned short BirthdayRange() { return m_nBirthdayRange; }
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
+
+#ifdef PROTOCOL_PLUGIN
+  bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true);
+#endif
 
   bool AddUserToList(unsigned long _nUin, bool bNotify = true);
   void AddUserToList(ICQUser *);

@@ -510,6 +510,27 @@ int CICQDaemon::RegisterProtoPlugin()
 
   return p;
 }
+
+char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
+{
+  ProtoPluginsListIter it;
+  char *p = 0;
+
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  for (it = licq->list_protoplugins.begin();
+       it != licq->list_protoplugins.end();
+       it++)
+  {
+    if ((*it)->Id() == _nPPID)
+    {
+      p = (char *)(*it)->Name();
+      break;
+    }
+  }
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
+  return p;
+}
+
 #endif
 
 const char *CICQDaemon::Version()
@@ -901,6 +922,35 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
     m_nIgnoreTypes &= ~n;
 }
 
+
+#ifdef PROTOCOL_PLUGIN
+bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
+                               bool bNotify)
+{
+  // Don't add invalid uins
+  if (szId == 0 || nPPID == 0) return false;
+
+  // Don't add a user we already have
+  if (gUserManager.IsOnList(szId, nPPID))
+  {
+    gLog.Warn("%sUser %s already on contact list.\n", L_WARNxSTR, szId);
+    return false;
+  }
+
+  ICQUser *u = new ICQUser(szId, nPPID);
+  gUserManager.AddUser(u);
+  gUserManager.DropUser(u);
+  SaveUserList();
+
+  // this notify is for local only adds
+  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify)
+    icqAddUser(strtoul(szId, (char **)NULL, 10));
+
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID));
+
+  return true;
+}
+#endif
 
 /*---------------------------------------------------------------------------
  * AddUserToList

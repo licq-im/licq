@@ -71,6 +71,7 @@ class TCPSocket;
 #define FOR_EACH_OWNER_BREAK                              \
         {                                                 \
           gUserManager.DropOwner(pOwner->PPID());         \
+          break;                                          \
         }
 
 #endif
