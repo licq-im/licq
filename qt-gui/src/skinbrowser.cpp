@@ -27,7 +27,7 @@
 #include "mainwin.h"
 #include "constants.h"
 #include "log.h"
-#include "editskin.h"
+#include "editfile.h"
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const char *name)
   : QDialog(parent, name)
@@ -131,7 +131,11 @@ void SkinBrowserDlg::slot_applyicons()
 void SkinBrowserDlg::slot_editskin()
 {
   if (!lstSkins->currentItem()) return;
-  (void) new EditSkinDlg(lstSkins->currentItem()->text(0));
+  QString f;
+  f.sprintf("%sqt-gui/skin.%s/%s.skin", SHARE_DIR,
+            (const char *)lstSkins->currentItem()->text(0),
+            (const char *)lstSkins->currentItem()->text(0));
+  (void) new EditFileDlg(f);
 }
 
 #include "skinbrowser.moc"

@@ -11,26 +11,24 @@
 #include <qfile.h>
 #include <qfileinfo.h>
 
-#include "editskin.h"
+#include "editfile.h"
 #include "ewidgets.h"
 #include "constants.h"
 
 //---------------------------------------------------------------------------
 
-EditSkinDlg::EditSkinDlg(QString skin, QWidget *parent, const char *name)
-  : QWidget(parent, name)
+EditFileDlg::EditFileDlg(QString fname, QWidget *parent, const char *name)
+  : QWidget(parent, name), sFile(fname)
 {
-  setCaption(tr("Licq Skin Editor - %1").arg(skin));
-
-  sSkin = skin;
+  setCaption(tr("Licq File Editor - %1").arg(fname));
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
-  mleSkin = new QMultiLineEdit(this);
-  mleSkin->setMinimumHeight(mleSkin->frameWidth() * 2
-                            + 20 * mleSkin->fontMetrics().lineSpacing());
-  mleSkin->setMinimumWidth(mleSkin->fontMetrics().width("_") * 80);
-  top_lay->addWidget(mleSkin);
+  mleFile = new QMultiLineEdit(this);
+  mleFile->setMinimumHeight(mleFile->frameWidth() * 2
+                            + 20 * mleFile->fontMetrics().lineSpacing());
+  mleFile->setMinimumWidth(mleFile->fontMetrics().width("_") * 80);
+  top_lay->addWidget(mleFile);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
 
@@ -50,20 +48,18 @@ EditSkinDlg::EditSkinDlg(QString skin, QWidget *parent, const char *name)
 
   show();
 
-  // Load up the skin
-  sSkinConf = QString(SHARE_DIR) + QString("qt-gui/skin.") +
-              sSkin + QChar('/') + sSkin + QString(".skin");
-  QFile f(sSkinConf);
+  // Load up the file
+  QFile f(sFile);
   if (!f.open(IO_ReadOnly))
   {
-    WarnUser(this, tr("Failed to open skin configuration file:\n%1").arg(sSkinConf));
-    mleSkin->setEnabled(false);
+    WarnUser(this, tr("Failed to open file:\n%1").arg(sFile));
+    mleFile->setEnabled(false);
     btnSave->setEnabled(false);
   }
   else
   {
     QTextStream t(&f);
-    mleSkin->setText(t.read());
+    mleFile->setText(t.read());
     f.close();
     QFileInfo fi(f);
     if (!fi.isWritable())
@@ -73,29 +69,29 @@ EditSkinDlg::EditSkinDlg(QString skin, QWidget *parent, const char *name)
 
 // --------------------------------------------------------------------------
 
-void EditSkinDlg::hide()
+void EditFileDlg::hide()
 {
   QWidget::hide();
   delete this;
 }
 
 
-void EditSkinDlg::slot_save()
+void EditFileDlg::slot_save()
 {
-  QFile f(sSkinConf);
+  QFile f(sFile);
   if (!f.open(IO_WriteOnly))
   {
-    WarnUser(this, tr("Failed to open skin configuration file:\n%1").arg(sSkinConf));
-    mleSkin->setEnabled(false);
+    WarnUser(this, tr("Failed to open file:\n%1").arg(sFile));
+    mleFile->setEnabled(false);
     btnSave->setEnabled(false);
   }
   else
   {
     QTextStream t(&f);
-    t << mleSkin->text();
+    t << mleFile->text();
     f.close();
   }
 
 }
 
-#include "editskin.moc"
+#include "editfile.moc"

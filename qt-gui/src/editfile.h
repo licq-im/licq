@@ -1,5 +1,5 @@
-#ifndef EDITSKIN_H
-#define EDITSKIN_H
+#ifndef EDITFILE_H
+#define EDITFILE_H
 
 #include <qwidget.h>
 #include <qstring.h>
@@ -7,15 +7,15 @@
 class QMultiLineEdit;
 class QPushButton;
 
-class EditSkinDlg: public QWidget
+class EditFileDlg: public QWidget
 {
   Q_OBJECT
 public:
-  EditSkinDlg (QString skin, QWidget *parent = 0, const char *name = 0);
+  EditFileDlg (QString fname, QWidget *parent = 0, const char *name = 0);
   virtual void hide();
 protected:
-  QString sSkin, sSkinConf;
-  QMultiLineEdit *mleSkin;
+  QString sFile;
+  QMultiLineEdit *mleFile;
   QPushButton *btnSave, *btnClose;
 protected slots:
   void slot_save();
