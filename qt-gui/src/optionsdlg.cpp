@@ -457,6 +457,7 @@ QWidget* OptionsDlg::new_appearance_options()
   cmbLocale = new QComboBox(false, boxLocale);
 #if QT_VERSION < 210
   QWidget* dummy_w = new QWidget(boxLocale);
+  if (dummy_w);
 #endif
 
   QString szTransFilesDir;
