@@ -25,4 +25,10 @@ Url = url.xpm
 Chat = chat.xpm
 File = file.xpm
 Authorize = authorize.xpm
-
+Collapsed = collapsed.xpm
+Expanded = expanded.xpm
+Phone = phone.xpm
+Cellular = cellular.xpm
+CustomAR = customar.xpm
+Birthday = birthday.xpm
+Invisible = invisible.xpm
