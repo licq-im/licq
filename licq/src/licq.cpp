@@ -344,7 +344,7 @@ bool CLicq::Init(int argc, char **argv)
   {
     unsigned short nNumPlugins = 0;
     char szData[MAX_FILENAME_LEN];
-    if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumPlugins", nNumPlugins))
+    if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumPlugins", nNumPlugins) && nNumPlugins > 0)
     {
       for (int i = 0; i < nNumPlugins; i++)
       {
@@ -353,11 +353,13 @@ bool CLicq::Init(int argc, char **argv)
         if (LoadPlugin(szData, argc, argv) == NULL) return false;
       }
     }
-    else  // If no plugins, try qt-gui
+    else  // If no plugins, try some defaults one by one
     {
       if (LoadPlugin("qt-gui", argc, argv) == NULL)
         if (LoadPlugin("kde-gui", argc, argv) == NULL)
-          return false;
+          if (LoadPlugin("jons-gtk-gui", argc, argv) == NULL)
+            if (LoadPlugin("console", argc, argv) == NULL)
+              return false;
     }
   }
 

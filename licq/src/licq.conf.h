@@ -1,11 +1,10 @@
 static const char LICQ_CONF[] =
 "\n"
 "[licq]\n"
-"Version = 1020\n"
+"Version = 1025\n"
 "\n"
 "[plugins]\n"
-"NumPlugins = 1\n"
-"Plugin1 = qt-gui\n"
+"NumPlugins = 0\n"
 "\n"
 "[network]\n"
 "AllowNewUsers = 1\n"
