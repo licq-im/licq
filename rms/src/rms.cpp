@@ -34,7 +34,7 @@ const unsigned short CODE_LOG = 103;
 const unsigned short CODE_HELLO = 200;
 const unsigned short CODE_USERxINFO = 201;
 const unsigned short CODE_STATUS = 202;
-const unsigned short CODE_EVENTxSUCCESS = 203;
+const unsigned short CODE_RESULTxSUCCESS = 203;
 const unsigned short CODE_LISTxUSER = 204;
 const unsigned short CODE_LISTxGROUP = 205;
 const unsigned short CODE_LISTxDONE = 206;
@@ -62,6 +62,7 @@ const unsigned short STATE_COMMAND = 3;
 const unsigned short STATE_ENTERxMESSAGE = 4;
 const unsigned short STATE_ENTERxURLxDESCRIPTION = 5;
 const unsigned short STATE_ENTERxURL = 6;
+const unsigned short STATE_ENTERxAUTOxRESPONSE = 7;
 
 #define NEXT_WORD(s) while (*s != '\0' && *s == ' ') s++;
 
@@ -72,7 +73,7 @@ struct Command
   char *help;
 };
 
-static const unsigned short NUM_COMMANDS = 10;
+static const unsigned short NUM_COMMANDS = 11;
 static struct Command commands[NUM_COMMANDS] =
 {
   { "HELP", &CRMSClient::Process_HELP,
@@ -94,7 +95,9 @@ static struct Command commands[NUM_COMMANDS] =
   { "LOG", &CRMSClient::Process_LOG,
     "Dump log messages { <log types> }." },
   { "VIEW", &CRMSClient::Process_VIEW,
-    "View event { <uin> }." }
+    "View event { <uin> } (not yet implemented)." },
+  { "AR", &CRMSClient::Process_AR,
+    "Set your (or a user custom) auto response { [ <uin> ] }." }
 };
 
 
@@ -356,6 +359,7 @@ CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
 
   m_nState = STATE_UIN;
   m_nLogTypes = 0;
+  data_line_pos = 0;
 }
 
 
@@ -389,7 +393,7 @@ bool CRMSClient::ProcessEvent(ICQEvent *e)
   {
     case EVENT_ACKED:
     case EVENT_SUCCESS:
-      nCode = CODE_EVENTxSUCCESS;
+      nCode = CODE_RESULTxSUCCESS;
       szr = "done";
       break;
     case EVENT_TIMEDOUT:
@@ -444,7 +448,6 @@ int CRMSClient::Activity()
     {
       data_line[data_line_pos] = '\0';
       in++;
-
       if (StateMachine() == -1) return -1;
 
       data_line_pos = 0;
@@ -518,6 +521,12 @@ int CRMSClient::StateMachine()
     case STATE_ENTERxURL:
     {
       return Process_URL_url();
+    }
+    case STATE_ENTERxAUTOxRESPONSE:
+    {
+      if (AddLineToText())
+         return Process_AR_text();
+      break;
     }
   }
   return 0;
@@ -625,7 +634,7 @@ int CRMSClient::Process_STATUS()
     fprintf(fs, "%d [0] Logging off.\n", CODE_COMMANDxSTART);
     fflush(fs);
     licqDaemon->icqLogoff();
-    fprintf(fs, "%d [0] Event done.\n", CODE_EVENTxSUCCESS);
+    fprintf(fs, "%d [0] Event done.\n", CODE_RESULTxSUCCESS);
     return fflush(fs);
   }
 
@@ -792,7 +801,7 @@ int CRMSClient::Process_LIST()
  *     means the uin was invalid (< 10000) and the message was aborted.
  *   CODE_COMMANDxSTART
  *     < ...time... >
- *   CODE_EVENTxSUCCESS | CODE_EVENTxTIMEDOUT | CODE_EVENTxERROR
+ *   CODE_RESULTxSUCCESS | CODE_EVENTxTIMEDOUT | CODE_EVENTxERROR
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_MESSAGE()
 {
@@ -846,7 +855,7 @@ int CRMSClient::Process_MESSAGE_text()
  *     a line by itself.
  *   CODE_COMMANDxSTART
  *     < ...time... >
- *   CODE_EVENTxSUCCESS | CODE_EVENTxTIMEDOUT | CODE_EVENTxERROR
+ *   CODE_RESULTxSUCCESS | CODE_EVENTxTIMEDOUT | CODE_EVENTxERROR
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_URL()
 {
@@ -894,6 +903,71 @@ int CRMSClient::Process_URL_text()
 
   return fflush(fs);
 }
+
+
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_AR
+ *
+ * Command:
+ *     AR [ <uin> ]
+ *
+ * Response:
+ *   CODE_ENTERxTEXT | CODE_INVALIDxUIN
+ *     At which point the auto response should be entered line by line and
+ *     terminated by entering a "." on a line by itself.
+ *   CODE_RESULTxSUCCESS
+ *-------------------------------------------------------------------------*/
+int CRMSClient::Process_AR()
+{
+/*
+  if (data_arg[0] == '\0')
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    // print...
+    gUserManager.DropOwner();
+    return fflush(fs);
+  }
+*/
+  unsigned long nUin = atol(data_arg);
+
+  if (nUin != 0 && !gUserManager.IsOnList(nUin))
+  {
+    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+    return fflush(fs);
+  }
+
+  fprintf(fs, "%d Enter %sauto response, terminate with a . on a line by itself:\n",
+     CODE_ENTERxTEXT, nUin == 0 ? "" : "custom " );
+
+  m_nUin = nUin;
+  m_szText[0] = '\0';
+  m_nTextPos = 0;
+
+  m_nState = STATE_ENTERxAUTOxRESPONSE;
+  return fflush(fs);
+}
+
+int CRMSClient::Process_AR_text()
+{
+  if (m_nUin == 0)
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    o->SetAutoResponse(m_szText);
+    gUserManager.DropOwner();
+  }
+  else
+  {
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    u->SetCustomAutoResponse(m_szText);
+    gUserManager.DropUser(u);
+  }
+
+  fprintf(fs, "%d Auto response saved.\n", CODE_RESULTxSUCCESS);
+  m_nState = STATE_COMMAND;
+  return fflush(fs);
+}
+
+
 
 
 /*---------------------------------------------------------------------------

@@ -73,6 +73,7 @@ public:
   int Process_URL();
   int Process_LOG();
   int Process_VIEW();
+  int Process_AR();
 
 protected:
   TCPSocket sock;
@@ -98,6 +99,7 @@ protected:
   int Process_MESSAGE_text();
   int Process_URL_url();
   int Process_URL_text();
+  int Process_AR_text();
 
 
   static char buf[128];
