@@ -816,6 +816,14 @@ CUserView::~CUserView()
     if(floaties->size())
         floaties->resize(floaties->size()-1);
   }
+
+  delete pixCollapsed;
+  delete pixExpanded;
+  delete pixBirthday;
+  delete pixCustomAR;
+  delete pixPhone;
+  delete pixCellular;
+  delete pixInvisible;
 }
 
 
