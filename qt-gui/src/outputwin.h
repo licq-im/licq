@@ -21,7 +21,6 @@ class CQtLogWindow : public QWidget, public CPluginLog
 public:
   CQtLogWindow (QWidget *parent = 0, const char *name = 0);
 protected:
-  void resizeEvent (QResizeEvent *);
   MLEditWrap *outputBox;
   QPushButton *btnHide, *btnClear;
   QSocketNotifier *sn;

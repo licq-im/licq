@@ -16,7 +16,6 @@
 #include "log.h"
 #include "translate.h"
 #include "utility.h"
-#include "adduserdlg.h"
 #include "authuserdlg.h"
 #include "editgrp.h"
 #include "searchuserdlg.h"
@@ -817,9 +816,9 @@ void CMainWindow::changeStatusManual(int id)
 {
   int index = mnuStatus->indexOf(id);
   if (index != MNUxITEM_STATUSxINVISIBLE) manualAway = index;
+  changeStatus(index);
   if (index == 1 || index == 2 || index == 3 || index == 4)
     awayMsgDlg->show();
-  changeStatus(index);
 }
 
 
@@ -1551,7 +1550,6 @@ void CMainWindow::initMenu(void)
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
-   mnuUserAdm->insertItem(_("&Add User"), this, SLOT(showAddUserDlg()));
    mnuUserAdm->insertItem(_("S&earch for User"), this, SLOT(showSearchUserDlg()));
    mnuUserAdm->insertItem(_("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertSeparator();
@@ -1647,14 +1645,6 @@ void CMainWindow::showSearchUserDlg(void)
 {
   SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan);
   searchUserDlg->show();
-}
-
-
-void CMainWindow::showAddUserDlg(void)
-{
-  AddUserDlg *addUserDlg = new AddUserDlg(licqDaemon);
-  connect (addUserDlg, SIGNAL(signal_updatedUsers()), this, SLOT(updateUserWin()));
-  addUserDlg->show();
 }
 
 
