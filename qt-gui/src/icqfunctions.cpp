@@ -20,6 +20,8 @@
 #endif
 
 #ifdef USE_KDE
+#warning !!!! FIXME !!!!
+#include <qfiledialog.h>
 #include <kfiledialog.h>
 #else
 #include <qfiledialog.h>
@@ -1362,11 +1364,13 @@ void ICQFunctions::specialFcn(int theFcn)
     mleSend->setEnabled(true);
     if (icqEventTag != NULL) break;
 #ifdef USE_KDE
-    QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
+    // !!! FIXME !!!!
+    //QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
+    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
     QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #endif
-    QStringList::Iterator it;
+    QStringList::ConstIterator it;
     QString f;
     for( it = fl.begin(); it != fl.end(); it++ )
     {
