@@ -229,8 +229,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     qApp->setFont(f, true);
   }
   licqConf.ReadStr("EditFont", szFont, "default");
-  MLEditWrap::editFont = !strcmp(szFont, "default") ? qApp->font()
-    : (f.setRawName(szFont),f);
+  if(!strcmp(szFont, "default"))
+    f = qApp->font();
+  else
+    f.setRawName(szFont);
+  delete MLEditWrap::editFont;
+  MLEditWrap::editFont = new QFont(f);
 
   licqConf.ReadBool("GridLines", gridLines, false);
   licqConf.ReadBool("FontStyles", m_bFontStyles, true);
@@ -1426,8 +1430,10 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
                     QString("default") : qApp->font().rawName());
-  licqConf.WriteStr("EditFont", MLEditWrap::editFont == defaultFont ?
-                    QString("default") : MLEditWrap::editFont.rawName());
+  licqConf.WriteStr("EditFont",
+                    (MLEditWrap::editFont == NULL ||
+                     *MLEditWrap::editFont == defaultFont) ?
+                     QString("default") : MLEditWrap::editFont->rawName());
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteBool("ShowHeader", showHeader);
