@@ -2,12 +2,9 @@ Hints for Using Licq
 
 o  Use multiple accounts or just keep multiple user lists by using a
    different base directory by runing licq with -b.
-o  Make your favorite plugins load automatically at startup by running licq
-   with the -s switch with the relevant plugins on the command line:
-	 "licq -s -p qt-gui".  Next time you start licq it will automatically grab 
-	 those plugins again.  You can pass them command line arguments simply by 
-	 appending them to the command line (after a -- of course).  Any plugins 
-	 on the command line will be loaded first.
+o  You can pass plugins command line arguments simply by 
+	 appending them to the command line after a --.  ie
+   "licq -p qt-gui -- -g MOTIF"
 o  Use the licq_fifo file in your base directory (~/.licq) to change your
    status, your auto response, or exit licq remotely or from a script.  See
    The FAQ for details.
