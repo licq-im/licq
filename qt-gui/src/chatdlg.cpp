@@ -253,7 +253,15 @@ void ChatDlg::StateServer(int sd)
       }
 
       // Send the response
-      ChatClientList l; // no multiparty for now
+      ChatClientPList l;
+      ChatUserList::iterator iter;
+      for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+      {
+        // Skip this guys client info and anybody we haven't connected to yet
+        if ((*iter)->uin == u->uin || (*iter)->client.m_nUin == 0) continue;
+        l.push_back(&(*iter)->client);
+      }
+
       CPChat_ColorFont p_colorfont(chatname, LocalPort(), m_nSession,
          0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
          mlePaneLocal->font().pointSize(), false, false, false,
