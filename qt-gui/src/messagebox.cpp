@@ -80,7 +80,7 @@ void MsgViewItem::SetEventLine()
     QFont f = listView()->font();
     if (m_nEventId != -1) f.setBold(true);
     QFontMetrics fm(f);
-    width -= fm.width(s) + fm.width(" [...]");// + listView()->itemMargin() * 2;
+    width -= fm.width(s) + fm.width(" [...]") + listView()->itemMargin() * 2;
     unsigned short n = 0;
 
     s += " [";
