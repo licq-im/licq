@@ -826,7 +826,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
   for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
   {
-    addColumn(gMainWindow->colInfo[i]->m_sTitle, -1);//gMainWindow->colInfo[i]->m_nWidth);
+    addColumn(gMainWindow->colInfo[i]->m_sTitle, gMainWindow->colInfo[i]->m_nWidth);
     setColumnAlignment(i + 1, 1 << gMainWindow->colInfo[i]->m_nAlign);
   }
 
@@ -1248,7 +1248,7 @@ void CUserView::resizeEvent(QResizeEvent *e)
 
   unsigned short totalWidth = 0;
   unsigned short nNumCols = header()->count();
-  for (unsigned short i = 0; i < nNumCols; i++)
+  for (unsigned short i = 0; i < nNumCols - 1; i++)
     totalWidth += columnWidth(i);
 
   //QScrollBar *s = verticalScrollBar();
@@ -1257,10 +1257,12 @@ void CUserView::resizeEvent(QResizeEvent *e)
   if (newWidth <= 0)
   {
     setHScrollBarMode(Auto);
+    setColumnWidth(nNumCols - 1, gMainWindow->colInfo[nNumCols - 2]->m_nWidth);
   }
   else
   {
     setHScrollBarMode(AlwaysOff);
+    setColumnWidth(nNumCols - 1, newWidth);
   }
 }
 
@@ -1402,7 +1404,8 @@ void CUserView::itemExpanded(QListViewItem* i)
 
   gMainWindow->m_nGroupStates |= 1<<it->GroupId();
 
-  if(!gMainWindow->pmExpanded.isNull())  i->setPixmap(0, gMainWindow->pmExpanded);
+  if(!gMainWindow->pmExpanded.isNull() && it->isGroupItem())
+    i->setPixmap(0, gMainWindow->pmExpanded);
 }
 
 void CUserView::itemCollapsed(QListViewItem* i)
@@ -1412,7 +1415,8 @@ void CUserView::itemCollapsed(QListViewItem* i)
 
   gMainWindow->m_nGroupStates &= ~(1<<it->GroupId());
 
-  if(!gMainWindow->pmCollapsed.isNull())  i->setPixmap(0, gMainWindow->pmCollapsed);
+  if(!gMainWindow->pmCollapsed.isNull() && it->isGroupItem())
+    i->setPixmap(0, gMainWindow->pmCollapsed);
 }
 
 // -----------------------------------------------------------------------------
