@@ -780,6 +780,9 @@ void CSocketManager::AddSocket(INetSocket *s)
 
 void CSocketManager::CloseSocket (int _nSd, bool _bClearUser)
 {
+  // Quick check that the socket is valid
+  if (_nSd == -1) return;
+
   // Clear from the socket list
   m_sSockets.Clear(_nSd);
 
