@@ -18,12 +18,14 @@
 #include <qdir.h>
 #include <qframe.h>
 #include <qimage.h>
-#include <qpainter.h>
-#include <qpushbutton.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qpainter.h>
+#include <qpushbutton.h>
 #include <qpixmap.h>
+#include <qtoolbutton.h>
 #include <qvaluelist.h>
+#include <qwhatsthis.h>
 
 #include "editfile.h"
 #include "ewidgets.h"
@@ -71,12 +73,15 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	// Skin and Icons Box
 	QLabel *lblSkin = new QLabel(tr("S&kins:"), boxSkin);
 	cmbSkin = new QComboBox(boxSkin);
+	QWhatsThis::add(cmbSkin, tr("Use this combo box to select one of the available skins"));
 	lblSkin->setBuddy(cmbSkin);
 	QLabel *lblIcon = new QLabel(tr("&Icons:"), boxSkin);
 	cmbIcon = new QComboBox(boxSkin);
+	QWhatsThis::add(cmbIcon, tr("Use this combo box to select one of the available icon sets"));
 	lblIcon->setBuddy(cmbIcon);
 	QLabel *lblExtIcon = new QLabel(tr("E&xtended Icons:"), boxSkin);
 	cmbExtIcon = new QComboBox(boxSkin);
+	QWhatsThis::add(cmbExtIcon, tr("Use this combo box to select one of the available extended icon sets"));
 	lblExtIcon->setBuddy(cmbExtIcon);
 
 	// Preview Box
@@ -117,6 +122,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	btnOk->setDefault(true);
 	QPushButton *btnApply = new QPushButton(tr("&Apply"), frmButtons);
 	QPushButton *btnCancel = new QPushButton(tr("&Cancel"), frmButtons);
+	layButtons->addWidget(QWhatsThis::whatsThisButton(frmButtons), 0, AlignLeft);
 	layButtons->addWidget(btnEdit);
 	layButtons->addStretch();
 	layButtons->addSpacing(15);
@@ -400,11 +406,10 @@ void SkinBrowserPreviewArea::paintEvent(QPaintEvent *e)
 	p.end();
 }
 
-
 /*	\brief Renders the dynamic skin preview
  *
- *	This method renders a skin preview in realtime. This is accomplished 
- *	by creating a new Widget and applying the Skin &skinName to it. The 
+ *	This method renders a skin preview in realtime. This is accomplished
+ *	by creating a new Widget and applying the Skin &skinName to it. The
  *	widget is never shown, but instead using grabWidget() it is copied
  *	into a pixmap, which afterwards is returned to the caller.
  */
@@ -416,13 +421,13 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	CSkin *skin = NULL;
 	QMenuBar *menu = NULL;
 	CEComboBox *cmbUserGroups = NULL;
-	
+
 	QWidget w;
 	w.setFixedWidth(188); // this is (75x130) * 2.5
 	w.setFixedHeight(325);
 
 	skin = new CSkin(skinName);
-  
+
 	// Background
 	QPixmap p;
 	if (skin->frame.pixmap != NULL)
@@ -442,6 +447,13 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 #endif
 	}
 
+	// Group Combo Box
+	cmbUserGroups = new CEComboBox(false, &w);
+	cmbUserGroups->setNamedBgColor(skin->cmbGroups.color.bg);
+	cmbUserGroups->setNamedFgColor(skin->cmbGroups.color.fg);
+	cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, &w));
+	cmbUserGroups->insertItem("All Users");
+
 	// The Menu Button
 	if (!skin->frame.hasMenuBar)
 	{
@@ -451,9 +463,9 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 		}
 		else
 		{
-			btnSystem = new CEButton(new QPixmap(skin->btnSys.pixmapUpFocus), 
-															new QPixmap(skin->btnSys.pixmapUpNoFocus), 
-															new QPixmap(skin->btnSys.pixmapDown), 
+			btnSystem = new CEButton(new QPixmap(skin->btnSys.pixmapUpFocus),
+															new QPixmap(skin->btnSys.pixmapUpNoFocus),
+															new QPixmap(skin->btnSys.pixmapDown),
 															&w);
 		}
 		btnSystem->setNamedFgColor(skin->btnSys.color.fg);
@@ -482,8 +494,9 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 		lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
 	}
 #else
-		lblMsg->setBackgroundOrigin(w.WidgetOrigin);
+		lblMsg->setBackgroundOrigin(w.ParentOrigin);
 		lblMsg->setPaletteBackgroundPixmap(p);
+		lblMsg->setPixmap(QPixmap(skin->lblMsg.pixmap));
 	}
 	else if (skin->lblMsg.transparent && skin->frame.pixmap)
 	{
@@ -503,12 +516,12 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	if (skin->lblStatus.pixmap != NULL)
 	{
 #if QT_VERSION < 300
-//		lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
 		lblStatus->setBackgroundPixmap(p);
 	}
 #else
-		lblStatus->setBackgroundOrigin(w.WidgetOrigin);
+		lblStatus->setBackgroundOrigin(w.ParentOrigin);
 		lblStatus->setPaletteBackgroundPixmap(p);
+		lblStatus->setPixmap(QPixmap(skin->lblStatus.pixmap));
 	}
 	else if (skin->lblStatus.transparent && skin->frame.pixmap)
 	{
@@ -531,29 +544,25 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	char * c_newuser    = mainwin->skin->colors.newuser;
 	char * c_background = mainwin->skin->colors.background;
 	char * c_gridlines  = mainwin->skin->colors.gridlines;
-	
+
 	userView.setColors(skin->colors.online, skin->colors.away,
 											skin->colors.offline, skin->colors.newuser,
 											skin->colors.background, skin->colors.gridlines);
+	if (skin->frame.transparent)
+	{
 #if QT_VERSION < 300
 	userView.setBackgroundPixmap(p);
 #else
 	userView.setBackgroundOrigin(w.ParentOrigin);
 	userView.setPaletteBackgroundPixmap(p);
 #endif
+	}
 	userView.show();
-
-	// Group Combo Box
-	cmbUserGroups = new CEComboBox(false, &w);
-	cmbUserGroups->setNamedBgColor(skin->cmbGroups.color.bg);
-	cmbUserGroups->setNamedFgColor(skin->cmbGroups.color.fg);
-	cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, &w));
-	cmbUserGroups->insertItem("All Users");
 
 	QPixmap tmp(QPixmap::grabWidget(&w));
 	QPixmap ret;
 	ret.convertFromImage(QImage(tmp.convertToImage().smoothScale(75, 130)));
-	
+
 	// Reset origin colors
 	userView.setColors(c_online, c_away, c_offline, c_newuser, c_background, c_gridlines);
 

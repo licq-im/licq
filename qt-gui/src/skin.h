@@ -97,7 +97,6 @@ public:
    // Functions
    void AdjustForMenuBar(unsigned short n);
    QRect borderToRect(CShapeSkin *, QWidget *);
-   QRect borderToRect(CShapeSkin *, QPixmap *);
    int frameWidth(void);
    int frameHeight(void);
 

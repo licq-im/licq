@@ -391,37 +391,3 @@ QRect CSkin::borderToRect(CShapeSkin *s, QWidget *w)
 
    return (rect);
 }
-
-
-QRect CSkin::borderToRect(CShapeSkin *s, QPixmap *w)
-{
-   struct Rect *r = &s->rect;
-   QRect rect;
-
-   // X1
-   if (r->x1 >= 0)
-      rect.setX(r->x1);
-   else
-      rect.setX(w->width() + r->x1);
-
-   // Y1
-   if (r->y1 >= 0)
-      rect.setY(r->y1);
-   else
-      rect.setY(w->height() + r->y1);
-
-   // X2
-   if (r->x2 > 0)
-      rect.setWidth(r->x2 - rect.x() + 1);
-   else
-      rect.setWidth((w->width() + r->x2) - rect.x() + 1);
-
-   // Y2
-   if (r->y2 > 0)
-      rect.setHeight(r->y2 - rect.y() + 1);
-   else
-      rect.setHeight((w->height() + r->y2) - rect.y() + 1);
-
-   return (rect);
-}
-
