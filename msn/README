@@ -2,6 +2,7 @@ Currently the MSN plugin isn't that useful.  If you want to test it out there a 
 
 Edit the owner.MSN_ file and put in your correct username and password.
 Edit the licq.conf file and put this in the [owners] section:
+NumOfOwners = 2
 Owner2.Id = <username>
 Owner2.PPID = MSN_
 
