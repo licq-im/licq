@@ -1426,22 +1426,22 @@ void UserSendCommon::changeEventType(int id)
   {
 
   case UC_MESSAGE:
-    e = new UserSendMsgEvent(server, sigman, mainwin, m_szId, m_nPPID);
+    e = new UserSendMsgEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
     break;
   case UC_URL:
-    e = new UserSendUrlEvent(server, sigman, mainwin, m_szId, m_nPPID);
+    e = new UserSendUrlEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
     break;
   case UC_CHAT:
-    e = new UserSendChatEvent(server, sigman, mainwin, m_szId, m_nPPID);
+    e = new UserSendChatEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
     break;
   case UC_FILE:
-    e = new UserSendFileEvent(server, sigman, mainwin, m_szId, m_nPPID);
+    e = new UserSendFileEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
     break;
   case UC_CONTACT:
-    e = new UserSendContactEvent(server, sigman, mainwin, m_szId, m_nPPID);
+    e = new UserSendContactEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
     break;
   case UC_SMS:
-    e = new UserSendSmsEvent(server, sigman, mainwin, m_szId, m_nPPID);
+    e = new UserSendSmsEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
     break;
   default:
     assert(0);
