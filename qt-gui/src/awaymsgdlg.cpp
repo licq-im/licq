@@ -136,8 +136,12 @@ AwayMsgDlg::~AwayMsgDlg()
 
 void AwayMsgDlg::ok()
 {
+  QString s = mleAwayMsg->text();
+  while(s[s.length()-1].isSpace())
+    s.truncate(s.length()-1);
+
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetAutoResponse(mleAwayMsg->text().local8Bit());
+  o->SetAutoResponse(s.local8Bit());
   gUserManager.DropOwner();
   accept();
   close();
@@ -220,8 +224,12 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
 
 void CustomAwayMsgDlg::slot_ok()
 {
+  QString s = mleAwayMsg->text();
+  while(s[s.length()-1].isSpace())
+    s.truncate(s.length()-1);
+
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->SetCustomAutoResponse(mleAwayMsg->text().local8Bit());
+  u->SetCustomAutoResponse(s.local8Bit());
   gUserManager.DropUser(u);
   accept();
   close();
