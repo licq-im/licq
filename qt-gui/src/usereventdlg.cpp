@@ -634,15 +634,19 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 
 void UserViewEvent::generateReply()
 {
-  QString s = QString::fromLatin1("> ");
+  QString s;
 
   if (mlvRead->hasMarkedText())
-    s += mlvRead->markedText();
+    s = QString("> ") + mlvRead->markedText();
   else
     // we don't use mlvRead->text() since on Qt3 it returns rich text
-    s += m_messageText;
+    if (!m_messageText.stripWhiteSpace().isEmpty())
+      s = QString("> ") + m_messageText;
 
   s.replace(QRegExp("\n"), QString::fromLatin1("\n> "));
+  s = s.stripWhiteSpace();
+  if (!s.isEmpty())
+    s += "\n\n";
 
   sendMsg(s);
 }
