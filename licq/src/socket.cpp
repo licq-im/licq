@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /* Socket routine descriptions */
 
 #ifdef HAVE_CONFIG_H
@@ -526,10 +527,21 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_sRemoteAddr = from.m_sRemoteAddr;
   m_nOwner = from.m_nOwner;
   m_nVersion = from.m_nVersion;
-  m_pSSL = from.m_pSSL;
+  if (from.m_p_SSL)
+  {
+    pthread_mutex_lock(&from.mutex_ssl);
+
+    pthread_mutex_init(&mutex_ssl, NULL);
+    pthread_mutex_lock(&mutex_ssl);
+    m_p_SSL = from.m_p_SSL;
+    from.SecureStop();
+
+    pthread_mutex_unlock(&mutex_ssl);
+  }
+  else
+    m_p_SSL = NULL;
   ClearRecvBuffer();
   from.m_nDescriptor = -1;
-  from.m_pSSL = NULL;
   from.CloseConnection();
 }
 
@@ -782,13 +794,7 @@ bool TCPSocket::RecvPacket()
 
 TCPSocket::~TCPSocket()
 {
-  if (m_pSSL != NULL)
-  {
-#ifdef USE_OPENSSL
-    SSL_free(m_pSSL);
-#endif
-    m_pSSL = NULL;
-  }
+  SecureStop();
 }
 
 
@@ -870,8 +876,8 @@ bool TCPSocket::SecureListen()
 void TCPSocket::SecureStop()
 {
   pthread_mutex_destroy(&mutex_ssl);
-  SSL_free(m_pSSL);
-  m_pSSL = NULL;
+  if(m_pSSL) SSL_free(m_pSSL);
+  m_p_SSL = NULL;
 }
 
 #else
@@ -888,7 +894,7 @@ bool TCPSocket::SecureListen()
 
 void TCPSocket::SecureStop()
 {
-  m_pSSL = NULL;
+  m_p_SSL = NULL;
 }
 
 
