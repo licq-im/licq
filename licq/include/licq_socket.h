@@ -78,7 +78,7 @@ public:
 
 protected:
   const char *GetIDStr()  { return (m_szID); }
-  bool SetLocalAddress();
+  bool SetLocalAddress(bool bIp = true);
   void DumpPacket(CBuffer *b, direction d);
 
   int m_nDescriptor;

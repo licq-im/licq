@@ -256,7 +256,7 @@ void INetSocket::ResetSocket()
 /*-----INetSocket::SetLocalAddress------------------------------------------
  * Sets the sockaddr_in structures using data from the connected socket
  *---------------------------------------------------------------------------*/
-bool INetSocket::SetLocalAddress()
+bool INetSocket::SetLocalAddress(bool bIp)
 {
   // Setup the local structure
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
@@ -268,7 +268,7 @@ bool INetSocket::SetLocalAddress()
   }
 
   // This should never happen unless the IP stack is fucked
-  if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
+  if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY && bIp)
   {
     gLog.Warn("%sYour IP stack or SOCKS client is a piece of crap.\n"
               "%sAttempting to guess local IP.\n", L_WARNxSTR, L_BLANKxSTR);
@@ -391,7 +391,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
     return (false);
   }
 
-  //if (!SetLocalAddress()) return (false);
+  if (!SetLocalAddress(false)) return (false);
 
   if (m_nSockType == SOCK_STREAM)
     listen(m_nDescriptor, 10); // Allow 10 unprocessed connections
