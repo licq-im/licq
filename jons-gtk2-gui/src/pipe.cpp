@@ -19,7 +19,6 @@
  */
 
 #include "licq_gtk.h"
-
 #include "licq_icqd.h"
 
 #include <gtk/gtk.h>
@@ -29,158 +28,147 @@ void pipe_callback(gpointer data, gint _Pipe, GdkInputCondition condition)
 	char buf[16];
 	read(_Pipe, buf, 1);
 
-	switch(buf[0])
-	{
+	switch (buf[0]) {
 	  case 'S':   /* It's a signal */
-	  {
-		CICQSignal *s = icq_daemon->PopPluginSignal();
-		pipe_signal(s);
-		break;
-	  }
+			pipe_signal(icq_daemon->PopPluginSignal());
+			break;
 
 	  case 'E': /* It's an event */
-	  {
-		ICQEvent *e = icq_daemon->PopPluginEvent();
-		pipe_event(e);
-		break;
-	  }
+			pipe_event(icq_daemon->PopPluginEvent());
+			break;
 
 	  case 'X': /* Shutdown */
-	  {
-		gtk_main_quit();
-		break;
-	  }
+			gtk_main_quit();
+			break;
 
-	  default: /* What is it.....? */
-		g_print("Unknown signal from daemon: %c.\n", buf[0]);
+	  case '0':
+		case '1':
+			break;
+
+		default: /* What is it.....? */
+			gLog.Warn("%sUnknown notification type from daemon: %c.\n", 
+					L_WARNxSTR, buf[0]);
 	}
+}
+
+void
+update_user(CICQSignal *sig)
+{
+	if (sig->SubSignal() == USER_EVENTS) {
+		ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
+		if (u == 0) {
+			gUserManager.DropUser(u);
+			return;
+		}
+		CUserEvent *ue = u->EventPeekLast();
+		gUserManager.DropUser(u);
+
+		if(ue == 0) {
+			gUserManager.DropUser(u);
+			return;
+		}
+		else if (ue->SubCommand() == ICQ_CMDxSUB_CHAT && u->AutoChatAccept()) {
+			ue = u->EventPop();
+			gUserManager.DropUser(u);
+			chat_accept_window((CEventChat *)ue, sig->Uin(), true);
+			return;
+		}
+		else if(ue->SubCommand() == ICQ_CMDxSUB_FILE &&	u->AutoFileAccept()) {
+			ue = u->EventPop();
+			file_accept_window(u, ue, true);
+			gUserManager.DropUser(u);
+			return;
+		}
+
+		gUserManager.DropUser(u);
+		convo_recv(sig->Uin());
+	}
+	else {
+		finish_info(sig);
+
+		if (sig->Uin() == gUserManager.OwnerUin())
+			status_bar_refresh();
+	}
+	contact_list_refresh();
 }
 
 void pipe_signal(CICQSignal *sig)
 {
-	switch(sig->Signal())
-	{
-	  case SIGNAL_LOGON:
-	  {
-		status_bar_refresh();
-		contact_list_refresh();
-		break;
-	  }
-
+	switch (sig->Signal()) {
 	  case SIGNAL_UPDATExLIST:
-	  {
-		contact_list_refresh();
-		break;
-	  }
+			contact_list_refresh();
+			break;
 
 	  case SIGNAL_UPDATExUSER:
-	  {
-		if(sig->SubSignal() == USER_EVENTS)
-		{
-			ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
-			if(u == 0)
-			{
-				gUserManager.DropUser(u);
-				return;
-			}
-			CUserEvent *ue = u->EventPeekLast();
-			gUserManager.DropUser(u);
+			update_user(sig);
+			break;
+
+	  case SIGNAL_LOGON:
+			status_bar_refresh();
+			contact_list_refresh();
+			break;
+
+	  case SIGNAL_LOGOFF:
+			break;
+
+		case SIGNAL_UI_VIEWEVENT:
+		case SIGNAL_UI_MESSAGE:
+			// no clue what these do...
+			break;
 			
-			if(ue == 0)
-			{
-				gUserManager.DropUser(u);
-				return;
-			}
-			else if(ue->SubCommand() == ICQ_CMDxSUB_CHAT &&
-				u->AutoChatAccept())
-			{
-				ue = u->EventPop();
-				gUserManager.DropUser(u);
-				chat_accept_window((CEventChat *)ue, sig->Uin(),
-					true);
-				return;
-				
-			}
-			else if(ue->SubCommand() == ICQ_CMDxSUB_FILE &&
-				u->AutoFileAccept())
-			{
-				ue = u->EventPop();
-				file_accept_window(u, ue, true);
-				gUserManager.DropUser(u);
-				return;
-			}
-
-			gUserManager.DropUser(u);
-			convo_recv(sig->Uin());
-		}
-		else
-                {
-			finish_info(sig);
-
-			if (sig->Uin() == gUserManager.OwnerUin())
-				status_bar_refresh();
-		}
-
-		contact_list_refresh();
-		break;
-	  }
-
-	  case SIGNAL_LOGOFF:  break;
-
 		case SIGNAL_ADDxSERVERxLIST:
 			icq_daemon->icqRenameUser(sig->Uin());
 			break;
 			
 	  default:
-		g_print("Error: Unknown signal type: %ld.", sig->Signal());
+			gLog.Warn("%snknown signal received from the daemon: %ld", 
+					L_WARNxSTR, sig->Signal());
 	}
 
-	//delete sig;
+	delete sig;
 }
 
 void pipe_event(ICQEvent *event)
 {
-	if (event->Command() == ICQ_CMDxTCP_START) // direct connection check
-        {
+	if (event->Command() == ICQ_CMDxTCP_START) { // direct connection check
 		user_function(event);
 		delete event;
 		return;
 	}
 
-	switch(event->SNAC())
-	{
-	/* Event commands for a user */
-	case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
-	case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
-	case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
-		user_function(event);
-		break;
-
-	case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
-		if (event->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
-		    event->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
-			;
-		else if (event->SubCommand() == ICQ_CMDxSND_SYSxMSGxREQ ||
-			 event->SubCommand() == ICQ_CMDxSND_SYSxMSGxDONExACK)
-			owner_function(event);
-		else
+	switch(event->SNAC()) {
+		/* Event commands for a user */
+		case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
+		case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
+		case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
 			user_function(event);
-	
-	case ICQ_CMDxSND_LOGON:
-	case ICQ_CMDxSND_USERxLIST:
-	case ICQ_CMDxSND_REGISTERxUSER:
-		if(event->Command() != ICQ_CMDxSND_REGISTERxUSER)
-			contact_list_refresh();
-		owner_function(event);
-		break;
+			break;
 
-	case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
-	case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
-		status_bar_refresh();
-		break;
+		case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
+			if (event->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
+					event->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
+				search_result(event);
+			else if (event->SubCommand() == ICQ_CMDxSND_SYSxMSGxREQ ||
+							event->SubCommand() == ICQ_CMDxSND_SYSxMSGxDONExACK)
+				owner_function(event);
+			else
+				user_function(event);
 
-	default:
-		gLog.Warn("%sInternal Error: pipe_event(): Unknown event from daemon: 0x%08lX.\n", L_WARNxSTR, event->SNAC());
+		case ICQ_CMDxSND_LOGON:
+		case ICQ_CMDxSND_USERxLIST:
+		case ICQ_CMDxSND_REGISTERxUSER:
+			if(event->Command() != ICQ_CMDxSND_REGISTERxUSER)
+				contact_list_refresh();
+			owner_function(event);
+			break;
+
+		case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
+		case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
+			status_bar_refresh();
+			break;
+
+		default:
+			gLog.Warn("%sInternal Error: pipe_event(): Unknown event from daemon: 0x%08lX.\n", L_WARNxSTR, event->SNAC());
 	}
 
 	delete event;
