@@ -19,6 +19,7 @@
 #include "licq_events.h"
 #include "licq_log.h"
 #include "licq_chat.h"
+#include "licq_filetransfer.h"
 #include "support.h"
 
 
@@ -1159,6 +1160,8 @@ void CICQDaemon::StupidChatLinkageFix()
 {
   CChatManager *chatman = new CChatManager(NULL, 0);
   delete chatman;
+  CFileTransferManager *ftman = new CFileTransferManager(NULL, 0);
+  delete ftman;
 }
 
 

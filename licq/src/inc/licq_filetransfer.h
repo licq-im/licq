@@ -91,7 +91,8 @@ public:
   void CloseFileTransfer();
 
   unsigned short LocalPort() { return ftSock.LocalPort(); }
-  const char *Name()  { return m_szName; }
+  const char *LocalName()  { return m_szLocalName; }
+  const char *RemoteName()  { return m_szRemoteName; }
 
   //void SendCharacter(char);
   void ChangeSpeed(unsigned short);
@@ -107,14 +108,14 @@ protected:
 
   unsigned long m_nUin;
   unsigned short m_nSession, m_nSpeed, m_nState;
-  char m_szName[64];
+  char m_szLocalName[64], m_szRemoteName[64];
 
+  unsigned long m_nFilePos, m_nBatchPos, m_nBytesTransfered, m_nBatchBytesTransfered;
   unsigned short m_nCurrentFile, m_nTotalFiles;
-  unsigned long m_nFileSize, m_nBatchSize, m_nFilePos, m_nBatchPos;
-  unsigned long m_nBytesTransfered, m_nBatchBytesTransfered;
+  unsigned long m_nFileSize, m_nBatchSize;
   time_t m_nStartTime, m_nBatchStartTime;
   int m_nFileDesc;
-
+  char m_szPathName[MAX_FILENAME_LEN], m_szFileName[128];
 
   TCPSocket ftSock, ftServer;
 
@@ -123,10 +124,12 @@ protected:
   bool StartFileTransferServer();
   bool ConnectToFileServer(unsigned short nPort);
   bool ProcessPacket();
+  bool SendFilePacket();
   void PushFileTransferEvent(CFileTransferEvent *);
+  void CloseConnection();
 
-  void SendBuffer(CBuffer *);
-  void SendPacket(CPacket *);
+  bool SendBuffer(CBuffer *);
+  bool SendPacket(CPacket *);
 
 friend void *FileTransferManager_tep(void *);
 
