@@ -48,7 +48,7 @@
 
 typedef list<ICQUser *> UserList;
 typedef vector<char *> GroupList;
-typedef vector<unsigned long> UinList;
+typedef list<unsigned long> UinList;
 typedef vector <class CUserEvent *> UserEventList;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
