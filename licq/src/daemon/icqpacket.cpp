@@ -22,6 +22,12 @@ extern int errno;
 #include "log.h"
 #include "support.h"
 
+
+unsigned short ReversePort(unsigned short p)
+{
+  return ((p >> 16) & 0xFF) + ((p & 0xFF) << 16);
+}
+
 #define DEBUG_ENCRYPTION(x)
 //#define DEBUG_ENCRYPTION(x) printf x
 
@@ -401,10 +407,8 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
 {
 #if ICQ_VERSION == 2
   unsigned long nUnknown = 0x00040072;
-  char temp[10] = { 2, 0, 0, 0, 0, 0, 4, 0, 0x72, 0 };
 #elif ICQ_VERSION == 4
   unsigned long nUnknown = 0x98;
-  char temp[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0x98, 0 };
 #elif ICQ_VERSION == 5
 /* micq
   unsigned long nUnknown = 0xD5; // client does not support chat/file transfer
@@ -463,13 +467,25 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(m_nLogonStatus);
   buffer->PackUnsignedLong(m_nTcpVersion);
-#if ICQ_VERSION == 2 || ICQ_VERSION == 4
-  buffer->Pack(temp, 10);
+#if ICQ_VERSION == 2
+  buffer->PackUnsignedLong(0x00000002);
+  buffer->PackUnsignedShort(0x0000);
+  buffer->PackUnsignedShort(0x0004);
+  buffer->PackUnsignedShort(0x0072);
+#elif ICQ_VERSION == 4
+  buffer->PackUnsignedLong(0x00000000);
+  buffer->PackUnsignedShort(0x0000);
+  buffer->PackUnsignedShort(0x0000);
+  buffer->PackUnsignedShort(0x0098);
 #else
   // Unknown bits
   buffer->PackUnsignedLong(0x00000000); // always zero
-  buffer->PackUnsignedLong(0x003F0020); // totally unknown
-  //buffer->PackUnsignedLong(0x822C01EC);
+  /*buffer->PackUnsignedShort(0x0020);  // totally unknown
+    buffer->PackUnsignedShort(0x003F);*/
+  /*buffer->PackUnsignedShort(0x01EC);
+    buffer->PackUnsignedShort(0x822C);*/
+  buffer->PackUnsignedShort(0x0008);
+  buffer->PackUnsignedShort(0x0098);
   buffer->PackUnsignedLong(0x00000050); // always the same
   buffer->PackUnsignedLong(0x00000003); // always the same
   buffer->PackUnsignedLong(0x385BFAAC); // timestamp of something (build date?)
@@ -1494,9 +1510,19 @@ void CPacketChat::InitBuffer()
 
 //-----ChatColor----------------------------------------------------------------
 CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
-                           unsigned long _nColorForeground,
-                           unsigned long _nColorBackground)
+   int nColorForeRed, int nColorForeGreen, int nColorForeBlue, int nColorBackRed,
+   int nColorBackBlue, int nColorBackGreen)
 {
+  m_szName = NULL;
+  m_nPort = _nLocalPort;
+  m_nUin = gUserManager.OwnerUin();
+  m_nColorForeRed = nColorForeRed;
+  m_nColorForeGreen = nColorForeGreen;
+  m_nColorForeBlue = nColorForeBlue;
+  m_nColorBackRed = nColorBackRed;
+  m_nColorBackGreen = nColorBackGreen;
+  m_nColorBackBlue = nColorBackBlue;
+
   m_nSize = 10 + strlen(_sLocalName) + 16;
   InitBuffer();
 
@@ -1505,62 +1531,258 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackString(_sLocalName);
   buffer->PackUnsignedShort( ((_nLocalPort & 0xFF) << 8) + ((_nLocalPort >> 8) & 0xFF) );
-  buffer->PackUnsignedLong(_nColorForeground);
-  buffer->PackUnsignedLong(_nColorBackground);
+  buffer->PackChar(nColorForeBlue);
+  buffer->PackChar(nColorForeGreen);
+  buffer->PackChar(nColorForeRed);
   buffer->PackChar(0);
+  buffer->PackChar(nColorBackBlue);
+  buffer->PackChar(nColorBackGreen);
+  buffer->PackChar(nColorBackRed);
+  buffer->PackChar(0);
+  buffer->PackChar(0);
+}
 
+
+CPChat_Color::CPChat_Color(CBuffer &b)
+{
+  char buf[128];
+
+  b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  m_nUin = b.UnpackUnsignedLong();
+  m_szName = strdup(b.UnpackString(buf));
+  m_nPort = b.UnpackUnsignedShort();
+  m_nPort = (m_nPort >> 8) + (m_nPort << 8);
+  m_nColorForeBlue = (unsigned char)b.UnpackChar();
+  m_nColorForeGreen = (unsigned char)b.UnpackChar();
+  m_nColorForeRed = (unsigned char)b.UnpackChar();
+  b.UnpackChar();
+  m_nColorBackBlue = (unsigned char)b.UnpackChar();
+  m_nColorBackGreen = (unsigned char)b.UnpackChar();
+  m_nColorBackRed = (unsigned char)b.UnpackChar();
+  b.UnpackChar();
 }
 
 
 //-----ChatColorFont----------------------------------------------------------------
-CPChat_ColorFont::CPChat_ColorFont(const char *_sLocalName, unsigned short _nLocalPort,
-                                  unsigned long _nColorForeground,
-                                  unsigned long _nColorBackground,
-                                  unsigned long _nFontSize,
-                                  unsigned long _nFontFace, const char *_sFontName)
+CChatClient::CChatClient()
 {
-  m_nSize = 10 + strlen(_sLocalName) + 35 + strlen(_sFontName) + 4;
+  m_nVersion = m_nUin = m_nIp = m_nRealIp = m_nPort = m_nMode
+     = m_nSession = m_nHandshake = 0;
+}
+
+
+CChatClient::CChatClient(ICQUser *u)
+{
+  m_nVersion = u->Version();
+  m_nUin = u->Uin();
+  m_nIp = u->RealIp();
+  m_nMode = u->Mode();
+  m_nSession = 0;
+  m_nHandshake = 0x64;
+
+  // These will still need to be set
+  m_nPort = 0;
+  m_nSession = 0;
+}
+
+
+CChatClient::CChatClient(CBuffer &b)
+{
+  LoadFromBuffer(b);
+}
+
+
+bool CChatClient::LoadFromBuffer(CBuffer &b)
+{
+  m_nVersion = b.UnpackUnsignedLong();
+  m_nPort = b.UnpackUnsignedShort();
+  b.UnpackUnsignedShort();
+  m_nUin = b.UnpackUnsignedLong();
+  m_nIp = b.UnpackUnsignedLong();
+  m_nRealIp = b.UnpackUnsignedLong();
+  b.UnpackUnsignedShort();
+  m_nMode = b.UnpackChar();
+  m_nSession = b.UnpackUnsignedShort();
+  m_nHandshake = b.UnpackUnsignedLong();
+
+  return true;
+}
+
+
+bool CChatClient::LoadFromHandshake(CBuffer &b)
+{
+  //b.Reset
+
+  if ((unsigned char)b.UnpackChar() != ICQ_CMDxTCP_HANDSHAKE) return false;
+
+  m_nVersion = b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  m_nUin = b.UnpackUnsignedLong();
+  m_nIp = b.UnpackUnsignedLong();
+  m_nRealIp = b.UnpackUnsignedLong();
+  m_nMode = b.UnpackChar();
+  m_nHandshake = 0x64;
+
+  // These will still need to be set
+  m_nPort = 0;
+  m_nSession = 0;
+
+  return true;
+}
+
+
+CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLocalPort,
+   unsigned short nSession,
+   int nColorForeRed, int nColorForeGreen, int nColorForeBlue, int nColorBackRed,
+   int nColorBackBlue, int nColorBackGreen,
+   unsigned long nFontSize,
+   bool bFontBold, bool bFontItalic, bool bFontUnderline,
+   const char *szFontFamily,
+   ChatClientList &clientList)
+{
+  m_szName = NULL;
+  m_nPort = nLocalPort;
+  m_nUin = gUserManager.OwnerUin();
+  m_nColorForeRed = nColorForeRed;
+  m_nColorForeGreen = nColorForeGreen;
+  m_nColorForeBlue = nColorForeBlue;
+  m_nColorBackRed = nColorBackRed;
+  m_nColorBackGreen = nColorBackGreen;
+  m_nColorBackBlue = nColorBackBlue;
+  m_nSession = nSession;
+  m_nFontSize = nFontSize;
+  m_nFontFace = FONT_PLAIN;
+  if (bFontBold) m_nFontFace |= FONT_BOLD;
+  if (bFontItalic) m_nFontFace |= FONT_ITALIC;
+  if (bFontUnderline) m_nFontFace |= FONT_UNDERLINE;
+  m_szFontFamily = NULL;
+
+  m_nSize = 10 + strlen(szLocalName) + 35 + strlen(szFontFamily) + 4
+            + clientList.size() * (sizeof(CChatClient) + 2);
   InitBuffer();
 
   buffer->PackUnsignedLong(0x64);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
-  buffer->PackString(_sLocalName);
-  buffer->PackUnsignedLong(_nColorForeground);
-  buffer->PackUnsignedLong(_nColorBackground);
+  buffer->PackString(szLocalName);
+  buffer->PackChar(nColorForeBlue);
+  buffer->PackChar(nColorForeGreen);
+  buffer->PackChar(nColorForeRed);
+  buffer->PackChar(0);
+  buffer->PackChar(nColorBackBlue);
+  buffer->PackChar(nColorBackGreen);
+  buffer->PackChar(nColorBackRed);
+  buffer->PackChar(0);
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
-  buffer->PackUnsignedLong(_nLocalPort);
+  buffer->PackUnsignedLong(m_nPort);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
-  buffer->PackUnsignedShort(0x5A89);
-  buffer->PackUnsignedLong(_nFontSize);
-  buffer->PackUnsignedLong(_nFontFace);
-  buffer->PackString(_sFontName);
+  buffer->PackUnsignedShort(m_nSession);
+  buffer->PackUnsignedLong(m_nFontSize);
+  buffer->PackUnsignedLong(m_nFontFace);
+  buffer->PackString(szFontFamily);
   buffer->PackUnsignedShort(0x0002);
-  buffer->PackChar(0);
+  buffer->PackChar(clientList.size());
+
+  ChatClientList::iterator iter;
+  for (iter = clientList.begin(); iter != clientList.end(); iter++)
+  {
+    buffer->PackUnsignedLong(iter->m_nVersion);
+    buffer->PackUnsignedLong(iter->m_nPort);
+    buffer->PackUnsignedLong(iter->m_nUin);
+    buffer->PackUnsignedLong(iter->m_nIp);
+    buffer->PackUnsignedLong(iter->m_nRealIp);
+    buffer->PackUnsignedShort(ReversePort(iter->m_nPort));
+    buffer->PackChar(iter->m_nMode);
+    buffer->PackUnsignedShort(iter->m_nSession);
+    buffer->PackUnsignedLong(iter->m_nHandshake);
+  }
+}
+
+
+CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
+{
+  char buf[128];
+
+  b.UnpackUnsignedLong();
+  m_nUin = b.UnpackUnsignedLong();
+  m_szName = strdup(b.UnpackString(buf));
+  m_nColorForeBlue = (unsigned char)b.UnpackChar();
+  m_nColorForeGreen = (unsigned char)b.UnpackChar();
+  m_nColorForeRed = (unsigned char)b.UnpackChar();
+  b.UnpackChar();
+  m_nColorBackBlue = (unsigned char)b.UnpackChar();
+  m_nColorBackGreen = (unsigned char)b.UnpackChar();
+  m_nColorBackRed = (unsigned char)b.UnpackChar();
+  b.UnpackChar();
+
+  b.UnpackUnsignedLong();
+  m_nPort = b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  b.UnpackChar();
+  m_nSession = b.UnpackUnsignedShort();
+  m_nFontSize = b.UnpackUnsignedLong();
+  m_nFontFace = b.UnpackUnsignedLong();
+  m_szFontFamily = strdup(b.UnpackString(buf));
+  b.UnpackUnsignedShort();
+
+  // Read out client packets
+  unsigned short nc = b.UnpackChar();
+  for (unsigned short i = 0; i < nc; i++)
+  {
+    chatClients.push_back(CChatClient(b));
+  }
+
 }
 
 
 
 //-----ChatFont---------------------------------------------------------------------
-CPChat_Font::CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
-                        unsigned long _nFontFace, const char *_sFontName)
+CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
+                         unsigned long nFontSize,
+                         bool bFontBold, bool bFontItalic, bool bFontUnderline,
+                         const char *szFontFamily)
 {
-  char temp_3[3] = { 0, 0, 0 };
+  m_nPort = nLocalPort;
+  m_nSession = nSession;
+  m_nFontSize = nFontSize;
+  m_nFontFace = FONT_PLAIN;
+  if (bFontBold) m_nFontFace |= FONT_BOLD;
+  if (bFontItalic) m_nFontFace |= FONT_ITALIC;
+  if (bFontUnderline) m_nFontFace |= FONT_UNDERLINE;
+  m_szFontFamily = NULL;
 
-  m_nSize = 29 + strlen(_sFontName) + 4;
+  m_nSize = 29 + strlen(szFontFamily) + 4;
   InitBuffer();
 
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
-  buffer->PackUnsignedLong(_nLocalPort);
+  buffer->PackUnsignedLong(m_nPort);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
-  buffer->PackUnsignedShort(0x5A89);
-  buffer->PackUnsignedLong(_nFontSize);
-  buffer->PackUnsignedLong(_nFontFace);
-  buffer->PackString(_sFontName);
-  buffer->Pack(temp_3, 3);
+  buffer->PackUnsignedShort(nSession);//0x5A89);
+  buffer->PackUnsignedLong(m_nFontSize);
+  buffer->PackUnsignedLong(m_nFontFace);
+  buffer->PackString(szFontFamily);
+  buffer->PackUnsignedShort(0);
+  buffer->PackChar(0);
+}
+
+CPChat_Font::CPChat_Font(CBuffer &b)
+{
+  char buf[128];
+
+  b.UnpackUnsignedLong();
+  m_nPort = b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  b.UnpackChar();
+  m_nSession = b.UnpackUnsignedShort();
+  m_nFontSize = b.UnpackUnsignedLong();
+  m_nFontFace = b.UnpackUnsignedLong();
+  m_szFontFamily = strdup(b.UnpackString(buf));
 }
 
 

@@ -812,40 +812,164 @@ protected:
 
 
 //-----ChatColor----------------------------------------------------------------
+  /* 64 00 00 00 FD FF FF FF 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 62 3D
+     FF FF FF 00 00 00 00 00 00 */
 class CPChat_Color : public CPacketChat  // First info packet after handshake
 {
 public:
-   CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
-                unsigned long _nColorForeground, unsigned long _nColorBackground);
-   /* 64 00 00 00 FD FF FF FF 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 62 3D
-      FF FF FF 00 00 00 00 00 00 */
+  CPChat_Color(const char *szLocalName, unsigned short nLocalPort,
+               int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
+               int nColorBackRed, int nColorBackBlue, int nColorBackGreen);
+  CPChat_Color(CBuffer &);
+
+  // Accessors
+  const char *Name() { return m_szName; }
+  unsigned long Uin() { return m_nUin; }
+  unsigned short Port() { return m_nPort; }
+  int ColorForeRed() { return m_nColorForeRed; }
+  int ColorForeGreen() { return m_nColorForeGreen; }
+  int ColorForeBlue() { return m_nColorForeBlue; }
+  int ColorBackRed() { return m_nColorBackRed; }
+  int ColorBackGreen() { return m_nColorBackGreen; }
+  int ColorBackBlue() { return m_nColorBackBlue; }
+
+  virtual ~CPChat_Color() { if (m_szName != NULL) free(m_szName); }
+protected:
+  unsigned long m_nUin;
+  char *m_szName;
+  unsigned short m_nPort;
+  int m_nColorForeRed;
+  int m_nColorForeGreen;
+  int m_nColorForeBlue;
+  int m_nColorBackRed;
+  int m_nColorBackGreen;
+  int m_nColorBackBlue;
 };
 
 
+// Font constants
+const unsigned long FONT_PLAIN     = 0x00000000;
+const unsigned long FONT_BOLD      = 0x00000001;
+const unsigned long FONT_ITALIC    = 0x00000002;
+const unsigned long FONT_UNDERLINE = 0x00000004;
+
+
 //-----ChatColorFont------------------------------------------------------------
+class CChatClient
+{
+public:
+  CChatClient();
+  CChatClient(ICQUser *);
+
+  // Initialize from the handshake buffer (does not set the session
+  // or port fields however
+  bool LoadFromHandshake(CBuffer &);
+
+  unsigned long m_nVersion;
+  unsigned short m_nPort;
+  unsigned long m_nUin;
+  unsigned long m_nIp;
+  unsigned long m_nRealIp;
+  char m_nMode;
+  unsigned short m_nSession;
+  unsigned long m_nHandshake;
+
+protected:
+  CChatClient(CBuffer &);
+  bool LoadFromBuffer(CBuffer &);
+
+friend class CPChat_ColorFont;
+};
+
+typedef list<CChatClient> ChatClientList;
+
+
+/* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
+   00 00 03 00 00 00 DB 64 00 00 CF 60 AD 95 CF 60 AD 95 04 75 5A 0C 00 00
+   00 00 00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 00 */
 class CPChat_ColorFont : public CPacketChat  // Second info packet after handshake
 {
 public:
-   CPChat_ColorFont(const char *_sLocalName, unsigned short _nLocalPort,
-                    unsigned long _nColorForeground,
-                    unsigned long _nColorBackground,
-                    unsigned long _nFontSize, unsigned long _nFontFace,
-                    const char *_sFontName);
-   /* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
-      00 00 03 00 00 00 DB 64 00 00 CF 60 AD 95 CF 60 AD 95 04 75 5A 0C 00 00
-      00 00 00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 00 */
+  CPChat_ColorFont(const char *szLocalName, unsigned short nLocalPort,
+     unsigned short nSession,
+     int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
+     int nColorBackRed, int nColorBackBlue, int nColorBackGreen,
+     unsigned long nFontSize,
+     bool bFontBold, bool bFontItalic, bool bFontUnderline,
+     const char *szFontFamily,
+     ChatClientList &clientList);
+
+  CPChat_ColorFont(CBuffer &);
+
+  virtual ~CPChat_ColorFont()  {  if (m_szName != NULL) free (m_szName); if (m_szFontFamily != NULL) free(m_szFontFamily); }
+
+  // Accessors
+  const char *Name() { return m_szName; }
+  unsigned long Uin() { return m_nUin; }
+  unsigned short Session() { return m_nSession; }
+  int ColorForeRed() { return m_nColorForeRed; }
+  int ColorForeGreen() { return m_nColorForeGreen; }
+  int ColorForeBlue() { return m_nColorForeBlue; }
+  int ColorBackRed() { return m_nColorBackRed; }
+  int ColorBackGreen() { return m_nColorBackGreen; }
+  int ColorBackBlue() { return m_nColorBackBlue; }
+  unsigned short Port() { return m_nPort; }
+  unsigned long FontSize() { return m_nFontSize; }
+  bool FontBold() { return m_nFontFace & FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  const char *FontFamily() { return m_szFontFamily; }
+  ChatClientList &ChatClients()  { return chatClients; }
+
+protected:
+  unsigned long m_nUin;
+  unsigned short m_nSession;
+  char *m_szName;
+  int m_nColorForeRed;
+  int m_nColorForeGreen;
+  int m_nColorForeBlue;
+  int m_nColorBackRed;
+  int m_nColorBackGreen;
+  int m_nColorBackBlue;
+  unsigned short m_nPort;
+  unsigned long m_nFontSize;
+  unsigned long m_nFontFace;
+  char *m_szFontFamily;
+  ChatClientList chatClients;
 };
 
 
 //-----ChatFont-----------------------------------------------------------------
-class CPChat_Font : public CPacketChat  // First info packet after handshake
+/* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00
+   00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 */
+class CPChat_Font : public CPacketChat
 {
 public:
-   CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
-               unsigned long _nFontFace, const char *_sFontName);
-   /* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00
-      00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 */
+   CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
+               unsigned long nFontSize,
+               bool bFontBold, bool bFontItalic, bool bFontUnderline,
+               const char *szFontFamily);
+   CPChat_Font(CBuffer &);
+   virtual ~CPChat_Font()  { if (m_szFontFamily != NULL) free (m_szFontFamily); }
+
+  unsigned short Port() { return m_nPort; }
+  unsigned short Session() { return m_nSession; }
+  unsigned long FontSize() { return m_nFontSize; }
+  bool FontBold() { return m_nFontFace & FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  const char *FontFamily() { return m_szFontFamily; }
+
+protected:
+  unsigned short m_nPort;
+  unsigned short m_nSession;
+  unsigned long m_nFontSize;
+  unsigned long m_nFontFace;
+  char *m_szFontFamily;
 };
+
+
+
 
 //=====File=====================================================================
 class CPacketFile : public CPacket
@@ -860,26 +984,28 @@ protected:
 };
 
 //-----File_InitClient----------------------------------------------------------
+/* 00 00 00 00 00 01 00 00 00 45 78 00 00 64 00 00 00 08 00 38 35 36 32 30
+   30 30 00 */
 class CPFile_InitClient : public CPacketFile
 {
 public:
    CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
                      unsigned long _nTotalSize);
-   /* 00 00 00 00 00 01 00 00 00 45 78 00 00 64 00 00 00 08 00 38 35 36 32 30
-      30 30 00 */
 };
 
 
 //-----File_InitServer----------------------------------------------------------
+/* 01 64 00 00 00 08 00 38 35 36 32 30 30 30 00 */
 class CPFile_InitServer : public CPacketFile
 {
 public:
    CPFile_InitServer(char *_szLocalName);
-   /* 01 64 00 00 00 08 00 38 35 36 32 30 30 30 00 */
 };
 
 
 //-----File_Info---------------------------------------------------------------
+/* 02 00 0D 00 63 75 72 72 65 6E 74 2E 64 69 66 66 00 01 00 00 45 78 00 00
+   00 00 00 00 64 00 00 00 */
 class CPFile_Info : public CPacketFile
 {
 public:
@@ -895,8 +1021,6 @@ public:
 protected:
    bool m_bValid;
    int m_nError;
-   /* 02 00 0D 00 63 75 72 72 65 6E 74 2E 64 69 66 66 00 01 00 00 45 78 00 00
-      00 00 00 00 64 00 00 00 */
    char *m_szFileName;
    unsigned long m_nFileSize;
 };
