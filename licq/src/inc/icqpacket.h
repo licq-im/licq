@@ -53,6 +53,8 @@ protected:
    CPacketUdp(unsigned short _nCommand);
    void InitBuffer();
 
+   static bool s_bRegistered;
+
 #if ICQ_VERSION == 2
    unsigned short m_nVersion;
    unsigned short m_nCommand;

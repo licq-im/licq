@@ -232,6 +232,7 @@ void Encrypt_Client(CBuffer *)
 unsigned long CPacket::s_nLocalIp = 0;
 unsigned long CPacket::s_nRealIp = 0;
 char CPacket::s_nMode = MODE_DIRECT;
+bool CPacketUdp::s_bRegistered = false;
 
 //=====UDP======================================================================
 unsigned short CPacketUdp::s_nSequence = 0;
@@ -271,6 +272,7 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
   {
     case ICQ_CMDxSND_ACK:
     case ICQ_CMDxSND_LOGON:
+    case ICQ_CMDxSND_REGISTERxUSER:
     {
       m_nSequence = 0;
       m_nSubSequence = 0;
@@ -377,12 +379,13 @@ CPU_Register::CPU_Register(const char *szPasswd)
 #if ICQ_VERSION == 5
   m_nSessionId = s_nSessionId = rand() & 0x3FFFFFFF;
 #endif
-  m_nSequence = s_nSequence = rand() & 0x7FFF;
+  s_nSequence = rand() & 0x7FFF;
+  m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence = 1;
+  s_bRegistered = true;
 
   InitBuffer();
 
-  buffer->PackUnsignedShort(0x0002);
   buffer->PackString(szPasswd);
   buffer->PackUnsignedLong(0x000000A0);
   buffer->PackUnsignedLong(0x00002461);
@@ -409,13 +412,18 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
                     0x50, 0x00, 0x00, 0x00,
                     0x03, 0x00, 0x00, 0x00,
                     0x00, 0x16, 0xD6, 0x36 };
-  s_nSessionId = rand() & 0x3FFFFFFF;
-  s_nSequence = rand() & 0x7FFF;
-  s_nSubSequence = 1;
+  if (!s_bRegistered)
+  {
+    s_nSessionId = rand() & 0x3FFFFFFF;
+    s_nSequence = rand() & 0x7FFF;
+    s_nSubSequence = 1;
+    s_bRegistered = false;
+  }
   m_nSessionId = s_nSessionId;
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
 #endif
+
   if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
     s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
   s_nRealIp = NetworkIpToPacketIp(_s->LocalIp());

@@ -1108,6 +1108,19 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     break;
   }
 
+  case ICQ_CMDxRCV_REVERSExTCP:
+  {
+    if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+    unsigned long nUin, nIp;
+    unsigned short nPort;
+    packet >> nUin >> nIp >> nPort;
+    nIp = PacketIpToNetworkIp(nIp);
+    gLog.Info("%sReverse tcp request from %ld.\n", nUin);
+    // May block in connect, which would suck, but for it's unlikely
+    ReverseConnectToUser(nUin, nIp, nPort);
+    break;
+  }
+
   case ICQ_CMDxRCV_SETxOFFLINE:  // we got put offline by mirabilis for some reason
     gLog.Info("%sKicked offline by server.\n", L_UDPxSTR);
     icqRelogon();
@@ -1201,10 +1214,18 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
 #if ICQ_VERSION == 2
     unsigned short nTemp;
     packet >> nTemp >> nOwnerUin;
+#else
+    if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
 #endif
+    if (gUserManager.OwnerUin() != 0)
+    {
+      gLog.Warn("%sReceived new uin (%ld) when already have a uin (%ld).\n",
+                L_WARNxSTR, nOwnerUin, gUserManager.OwnerUin());
+      break;
+    }
     gLog.Info("%sReceived new uin: %d\n", L_UDPxSTR, nOwnerUin);
     gUserManager.SetOwnerUin(nOwnerUin);
-    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_REGISTERxUSER, 0, EVENT_SUCCESS);
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_REGISTERxUSER, 1, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
     // Logon as an ack
     CICQEventTag *t = icqLogon(ICQ_STATUS_ONLINE);

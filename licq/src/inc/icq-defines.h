@@ -34,10 +34,11 @@ const unsigned short ICQ_CMDxRCV_SYSxMSGxDONE      = 0x00E6;
 const unsigned short ICQ_CMDxRCV_ERROR             = 0x00F0;
 const unsigned short ICQ_CMDxRCV_BUSY              = 0x00FA;
 const unsigned short ICQ_CMDxRCV_SYSxMSGxONLINE    = 0x0104;
-const unsigned short ICQ_CMDxRCV_USERxINFO         = 0x0118;
-const unsigned short ICQ_CMDxRCV_USERxDETAILS      = 0x0122;
-const unsigned short ICQ_CMDxRCV_USERxINVALIDxUIN  = 0x012C;
-const unsigned short ICQ_CMDxRCV_USERxSTATUS       = 0x01A4;
+const unsigned short ICQ_CMDxRCV_USERxINFO         = 0x0118; // 280
+const unsigned short ICQ_CMDxRCV_USERxDETAILS      = 0x0122; // 290
+const unsigned short ICQ_CMDxRCV_USERxINVALIDxUIN  = 0x012C; // 300
+const unsigned short ICQ_CMDxRCV_REVERSExTCP       = 0x015E; // 350
+const unsigned short ICQ_CMDxRCV_USERxSTATUS       = 0x01A4; // 420
 #if ICQ_VERSION == 4 || ICQ_VERSION == 5
 const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x01E0; // 480
 const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x01EA; // 490

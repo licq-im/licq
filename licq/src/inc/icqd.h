@@ -262,6 +262,8 @@ protected:
 
   int ConnectToServer();
   int ConnectToUser(unsigned long);
+  int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
+                           unsigned short nPort);
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
