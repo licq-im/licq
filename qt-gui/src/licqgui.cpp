@@ -27,13 +27,13 @@
 #include <qmotifstyle.h>
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
-#include <qsgistyle.h>
 #if QT_VERSION >= 230
 #include <qinterlacestyle.h>
 #endif
 #include <qsessionmanager.h>
 #include <qaccel.h>
 #if QT_VERSION >= 220
+#include <qsgistyle.h>
 #include <qmotifplusstyle.h>
 #endif
 #include "licqgui.h"
@@ -140,8 +140,10 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = new QPlatinumStyle;
   else if (strncmp(_szStyle, "CDE", 3) == 0)
     s = new QCDEStyle;
+#if QT_VERSION >= 220
   else if (strncmp( _szStyle, "SGI", 3 ) == 0 )
     s = new QSGIStyle;
+#endif
 #if QT_VERSION >= 230
   else if (strncmp( _szStyle, "LCD", 3 ) == 0 )
     s = new QInterlaceStyle;
