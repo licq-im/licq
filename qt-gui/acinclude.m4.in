@@ -125,6 +125,7 @@ AC_DEFUN(AC_PATH_QT_INC,
         /usr/lib/qt2/include \
         /usr/lib/qt/include \
         /usr/include/qt \
+        /usr/include/qt3 \
         /usr/local/qt/include \
         /usr/local/include/qt \
         /usr/X11/include/qt \
