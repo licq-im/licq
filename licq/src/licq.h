@@ -18,13 +18,15 @@ public:
   bool Init(int argc, char **argv);
   int Main(void);
   const char *Version(void);
-  bool LoadPlugin(const char *, int, char **);
+  CPluginFunctions *LoadPlugin(const char *, int, char **);
+  void StartPlugin(CPluginFunctions *);
 protected:
   void PrintUsage(void);
   bool Install(void);
   CICQDaemon *licqDaemon;
   unsigned short m_nNextId;
   PluginsList m_vPluginFunctions;
+  pthread_mutex_t mutex_pluginfunctions;
 
 friend class CICQDaemon;
 };

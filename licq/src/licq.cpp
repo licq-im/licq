@@ -46,6 +46,7 @@ CLicq::CLicq(void)
 {
   DEBUG_LEVEL = 0;
   licqDaemon = NULL;
+  pthread_mutex_init(&mutex_pluginfunctions, NULL);
 }
 
 bool CLicq::Init(int argc, char **argv)
@@ -198,7 +199,10 @@ bool CLicq::Init(int argc, char **argv)
     if (!LoadPlugin(*iter, argc, argv)) return false;
     if (bHelp)
     {
-      (*(m_vPluginFunctions.back())->fUsage)();
+      fprintf(stderr, "Licq Plugin: %s %s\n%s\n----------\n",
+          m_vPluginFunctions.back()->Name(),
+          m_vPluginFunctions.back()->Version(),
+          (*(m_vPluginFunctions.back())->fUsage)() );
       m_vPluginFunctions.pop_back();
     }
   }
@@ -215,7 +219,7 @@ bool CLicq::Init(int argc, char **argv)
       {
         sprintf(szKey, "Plugin%d", i + 1);
         if (!licqConf.ReadStr(szKey, szData)) continue;
-        if (!LoadPlugin(szData, argc, argv)) return false;
+        if (LoadPlugin(szData, argc, argv) == NULL) return false;
       }
     }
   }
@@ -257,7 +261,7 @@ const char *CLicq::Version(void)
  *
  * Loads the given plugin using the given command line arguments.
  *---------------------------------------------------------------------------*/
-bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
+CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
 {
   void *handle;
   const char *error;
@@ -268,17 +272,15 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   if ( _szName[0] != '/' && _szName[0] != '.')
   {
     sprintf(szPlugin, "%slicq_%s.so", LIB_DIR, _szName);
-    /*if (access(szPlugin, F_OK) < 0)
-      strcpy(szPlugin, _szName);*/
   }
   else
     strcpy(szPlugin, _szName);
   handle = dlopen (szPlugin, DLOPEN_POLICY);
   if (handle == NULL)
   {
-    gLog.Error("%sUnable to load plugin (%s): %s.\n ", L_ERRORxSTR, szPlugin, dlerror());
+    gLog.Error("%sUnable to load plugin (%s): %s.\n ", L_ERRORxSTR, _szName, dlerror());
     delete p;
-    return false;
+    return NULL;
   }
 
   // LP_Name
@@ -291,7 +293,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Name() function in plugin (%s).\n",
                  L_ERRORxSTR, _szName, error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Version
@@ -304,7 +306,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Version() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Status
@@ -317,7 +319,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Status() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Description
@@ -330,7 +332,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Description() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_BuildDate
@@ -343,7 +345,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_BuildDate() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_BuildTime
@@ -356,7 +358,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_BuildTime() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Init
@@ -369,20 +371,20 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Init() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Usage
-  p->fUsage = (void (*)(void))dlsym(handle, "LP_Usage");
+  p->fUsage = (const char * (*)(void))dlsym(handle, "LP_Usage");
   if ((error = dlerror()) != NULL)
   {
-    p->fUsage = (void (*)(void))dlsym(handle, "_LP_Usage");
+    p->fUsage = (const char * (*)(void))dlsym(handle, "_LP_Usage");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Usage() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Main
@@ -395,7 +397,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Main() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Main_tep
@@ -408,7 +410,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
   // LP_Id
@@ -421,7 +423,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Id variable in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
-      return false;
+      return NULL;
     }
   }
 
@@ -429,13 +431,23 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   {
     gLog.Error("%sFailed to initialize plugin (%s).\n", L_ERRORxSTR, p->Name());
     delete p;
-    return false;
+    return NULL;
   }
 
   *p->nId = m_nNextId++;
   p->dl_handle = handle;
+  pthread_mutex_lock(&mutex_pluginfunctions);
   m_vPluginFunctions.push_back(p);
-  return true;
+  pthread_mutex_unlock(&mutex_pluginfunctions);
+  return p;
+}
+
+
+void CLicq::StartPlugin(CPluginFunctions *p)
+{
+  gLog.Info("%sStarting plugin %s (version %s).\n", L_INITxSTR, p->Name(),
+            p->Version());
+  pthread_create( &p->thread_plugin, NULL, p->fMain_tep, licqDaemon);
 }
 
 
@@ -455,11 +467,10 @@ int CLicq::Main(void)
   // Run the plugins
   pthread_cond_init(&LP_IdSignal, NULL);
   PluginsListIter iter;
+  pthread_mutex_lock(&mutex_pluginfunctions);
   for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
   {
-    gLog.Info("%sStarting plugin %s (version %s).\n", L_INITxSTR, (*iter)->Name(),
-              (*iter)->Version());
-    pthread_create( &(*iter)->thread_plugin, NULL, (*iter)->fMain_tep, licqDaemon);
+    StartPlugin(*iter);
   }
 
   gLog.ModifyService(S_STDOUT, DEBUG_LEVEL);
@@ -471,6 +482,7 @@ int CLicq::Main(void)
   while (m_vPluginFunctions.size() > 0)
   {
     pthread_mutex_lock(&LP_IdMutex);
+    pthread_mutex_unlock(&mutex_pluginfunctions);
     while (LP_Ids.size() == 0)
     {
       if (bDaemonShutdown)
@@ -486,7 +498,10 @@ int CLicq::Main(void)
     }
     nExitId = LP_Ids.front();
     LP_Ids.pop_front();
+
+    pthread_mutex_lock(&mutex_pluginfunctions);
     pthread_mutex_unlock(&LP_IdMutex);
+
     if (nExitId == 0)
     {
       bDaemonShutdown = true;
@@ -515,6 +530,7 @@ int CLicq::Main(void)
     gLog.Info("%sPlugin %s failed to exit.\n", L_WARNxSTR, (*iter)->Name());
     pthread_cancel( (*iter)->thread_plugin);
   }
+  //pthread_mutex_unlock(&mutex_pluginfunctions);
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);

@@ -252,10 +252,11 @@ bool CICQDaemon::Start(void)
  *----------------------------------------------------------------------------*/
 int CICQDaemon::RegisterPlugin(unsigned long _nSignalMask)
 {
-  pthread_mutex_lock(&mutex_plugins);
   CPlugin *p = new CPlugin(_nSignalMask);
-
   PluginsListIter it;
+  bool found = false;
+
+  pthread_mutex_lock(&licq->mutex_pluginfunctions);
   for (it = licq->m_vPluginFunctions.begin();
        it != licq->m_vPluginFunctions.end();
        it++)
@@ -263,20 +264,23 @@ int CICQDaemon::RegisterPlugin(unsigned long _nSignalMask)
     if (p->CompareThread((*it)->thread_plugin))
     {
       p->SetId((*it)->Id());
+      found = true;
       break;
     }
   }
-  if (it == licq->m_vPluginFunctions.end())
+  pthread_mutex_unlock(&licq->mutex_pluginfunctions);
+
+  if (!found)
   {
     gLog.Error("%sInvalid thread in registration attempt.\n", L_ERRORxSTR);
-    pthread_mutex_unlock(&mutex_plugins);
     delete p;
     return -1;
   }
 
+  pthread_mutex_lock(&mutex_plugins);
   m_vPlugins.push_back(p);
-  int n = p->Pipe();
   pthread_mutex_unlock(&mutex_plugins);
+  int n = p->Pipe();
   return n;
 }
 
@@ -321,6 +325,7 @@ void CICQDaemon::PluginList(PluginsList &lPlugins)
   {
     nId = (*iter)->Id();
     // Cross reference with the master list
+    pthread_mutex_lock(&licq->mutex_pluginfunctions);
     for (it = licq->m_vPluginFunctions.begin();
          it != licq->m_vPluginFunctions.end();
          it++)
@@ -331,6 +336,7 @@ void CICQDaemon::PluginList(PluginsList &lPlugins)
         break;
       }
     }
+    pthread_mutex_unlock(&licq->mutex_pluginfunctions);
   }
   pthread_mutex_unlock(&mutex_plugins);
 }
@@ -384,6 +390,24 @@ void CICQDaemon::PluginEnable(int id)
     if (id == (*iter)->Id()) (*iter)->Enable();
   }
   pthread_mutex_unlock(&mutex_plugins);
+}
+
+
+
+/*------------------------------------------------------------------------------
+ * PluginLoad
+ *
+ * Loads the given plugin.
+ *----------------------------------------------------------------------------*/
+bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
+{
+  optind = 0;
+  CPluginFunctions *p = licq->LoadPlugin(szPlugin, argc, argv);
+
+  if (p == NULL) return false;
+
+  licq->StartPlugin(p);
+  return true;
 }
 
 

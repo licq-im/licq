@@ -36,6 +36,7 @@ public:
   const char *Version(void) { return (*fVersion)(); }
   const char *Description(void) { return (*fDescription)(); }
   const char *Status(void) { return (*fStatus)(); }
+  const char *Usage(void) { return (*fUsage)(); }
   const char *BuildDate(void) { return (*fBuildDate)(); }
   const char *BuildTime(void) { return (*fBuildTime)(); }
   unsigned short Id(void)   { return *nId; }
@@ -47,7 +48,7 @@ protected:
   const char *(*fDescription)(void);
   const char *(*fBuildDate)(void);
   const char *(*fBuildTime)(void);
-  void (*fUsage)(void);
+  const char *(*fUsage)(void);
   bool (*fInit)(int, char **);
   int (*fMain)(CICQDaemon *);
   void *(*fMain_tep)(void *);
@@ -149,6 +150,7 @@ public:
   void PluginShutdown(int);
   void PluginEnable(int);
   void PluginDisable(int);
+  bool PluginLoad(const char *, int, char **);
 
   void UpdateAllUsers();
   void SwitchServer(void);

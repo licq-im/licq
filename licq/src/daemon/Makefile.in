@@ -29,7 +29,7 @@ OBJECTS	= obj/icqpacket.o obj/socket.o obj/icqd.o obj/remoteserver.o \
           obj/icqevent.o obj/buffer.o obj/user.o obj/history.o obj/utility.o \
           obj/countrycodes.o obj/log.o obj/translate.o obj/file.o \
           obj/message.o obj/support.o obj/pthread_rdwr.o obj/onevent.o \
-          obj/plugind.o obj/sar.o languagecodes.o
+          obj/plugind.o obj/sar.o obj/languagecodes.o
 
 SUFFIXES = .o .c .cpp
 
