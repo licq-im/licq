@@ -99,21 +99,25 @@ void pipe_event(ICQEvent *event)
 	/* Event commands for a user */
 	case ICQ_CMDxTCP_START:
 	case ICQ_CMDxSND_THRUxSERVER:
-	//case ICQ_CMDxSND_USERxGETINFO:
-	//case ICQ_CMDxSND_USERxGETDETAILS:
-	//case ICQ_CMDxSND_UPDATExDETAIL:
-	//case ICQ_CMDxSND_UPDATExBASIC:
+	case ICQ_CMDxSND_USERxGETINFO:
+	case ICQ_CMDxSND_USERxGETDETAILS:
+	case ICQ_CMDxSND_UPDATExDETAIL:
+	case ICQ_CMDxSND_UPDATExBASIC:
 	case ICQ_CMDxSND_META:
 		user_function(event);
 		break;
 	case ICQ_CMDxSND_USERxLIST:
-		g_print("GOT ICQ_CMDxSND_USERxLIST\n");
 		contact_list_refresh();
 		break;
 
 	case ICQ_CMDxSND_SETxSTATUS:
 	case ICQ_CMDxSND_USERxADD:
 		status_bar_refresh();
+		break;
+
+	case ICQ_CMDxSND_SEARCHxINFO:
+	case ICQ_CMDxSND_SEARCHxUIN:
+		search_result(event);
 		break;
 
 	default:

@@ -27,11 +27,15 @@
 
 #include <gtk/gtk.h>
 
+/* Definitions to be passed to the licq daemon */
 #define NAME		"GTK Plugin"
 #define PLUGIN_VERSION	"0.10"
 #define STATUS		"Running"
-#define USAGE		"None yet"
+#define USAGE		"Usage: None yet"
 #define DESCRIPTION	"GTK+ plugin for licq"
+
+/* Program used definitions */
+#define MAX_LENGTH_UIN	8
 
 /********** Structures ******************/
 
@@ -162,6 +166,20 @@ struct file_accept
 	CEventFile *e;
 	GtkWidget *window2;  /* This is for the refuse part... */
 	GtkWidget *textbox;  /* This is for the refuse part... */
+	GtkWidget *file_selection; /* This is for the accepting part */
+};
+
+struct search_user
+{
+	GtkWidget *window;
+	GtkWidget *label;
+	GtkWidget *nick_name;
+	GtkWidget *first_name;
+	GtkWidget *last_name;
+	GtkWidget *email;
+	GtkWidget *uin;
+	GtkWidget *list;
+	unsigned short sequence;
 };
 
 /******************* Global Variables ******************/
@@ -266,8 +284,9 @@ extern void check_other_event(ICQEvent *, GtkWidget *, guint &);
 
 /* Functions in file_window.cpp */
 extern void file_accept_window(ICQUser *, CUserEvent *);
-extern void refuse_file(GtkWidget *, struct file_accept *);
 extern void accept_file(GtkWidget *, struct file_accept *);
+extern void save_file(GtkWidget *, struct file_accept *);
+extern void refuse_file(GtkWidget *, struct file_accept *);
 extern void refuse_ok(GtkWidget *, struct file_accept *);
 
 
@@ -297,6 +316,18 @@ extern void more_ok_callback(GtkWidget *, struct more_window *);
 extern void pipe_callback(gpointer, gint, GdkInputCondition);
 extern void pipe_signal(CICQSignal *);
 extern void pipe_event(ICQEvent *);
+
+
+/* Functions in search_user_window.cpp */
+extern void search_user_window();
+extern void clear_callback(GtkWidget *, gpointer);
+extern void search_callback(GtkWidget *, gpointer);
+extern void search_list_double_click(GtkWidget *, GdkEventButton *, gpointer);
+extern void search_result(ICQEvent *);
+extern void search_done(char);
+extern void search_found(CSearchAck *);
+extern void search_failed();
+extern void search_close(GtkWidget *, gpointer);
 
 
 /* Functions in status.cpp */

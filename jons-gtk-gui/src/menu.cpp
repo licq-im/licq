@@ -70,17 +70,14 @@ void menu_create()
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
 	gtk_widget_show(item);
 
-	item = gtk_menu_item_new_with_label("Add a User");
-	gtk_menu_append(GTK_MENU(sub_menu), item);
-	gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(menu_system_add_user), NULL);
-	gtk_widget_show(item);
+	item = menu_new_item(sub_menu, "Add User",
+			     GTK_SIGNAL_FUNC(menu_system_add_user));
+ 
+	item = menu_new_item(sub_menu, "Authorize User",
+			     GTK_SIGNAL_FUNC(menu_system_auth_user));
 
-	item = gtk_menu_item_new_with_label("Authorize a User");
-	gtk_menu_append(GTK_MENU(sub_menu), item);
-	gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(menu_system_auth_user), NULL);
-	gtk_widget_show(item);
+	item = menu_new_item(sub_menu, "Search For User",
+			     GTK_SIGNAL_FUNC(search_user_window));
 
 	/* The rest of the menu options */
 	item = menu_new_item(menu, "Refresh",
