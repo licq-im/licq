@@ -100,6 +100,13 @@ void CELabel::setNamedBgColor(char *theColor)
    if (!c.isValid()) return;
 
    QPalette pal(palette());
+// Since Qt sucks we have to use this cheap hack instead of the documented
+// and correct way to set the color
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), c, normal.light(), normal.dark(),
+                         normal.mid(), normal.text(), normal.base());
+   pal = QPalette(newNormal, newNormal, newNormal);
+#if 0
 #if QT_VESION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Background, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Background, c);
@@ -107,6 +114,8 @@ void CELabel::setNamedBgColor(char *theColor)
    pal.setColor(QPalette::Active, QColorGroup::Background, c);
    pal.setColor(QPalette::Normal, QColorGroup::Background, c);
 #endif
+#endif
+
    setPalette(pal);
 }
 
