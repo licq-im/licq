@@ -155,8 +155,10 @@ bool CUserManager::Load()
   {
      sprintf(sGroupKey, "Group%d.name", i);
      licqConf.ReadStr(sGroupKey, sGroupName);
+     licqConf.ClearFlag( INI_FxFATAL );
      sprintf(sGroupIDKey, "Group%d.id", i);
      licqConf.ReadNum(sGroupIDKey, nID, 0);
+     licqConf.SetFlag( INI_FxFATAL );
      AddGroup(strdup(sGroupName), nID);
   }
   m_bAllowSave = true;
@@ -299,7 +301,7 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
 
     UnlockGroupList();
   }
-  
+
   return bNewGroup;
 }
 
