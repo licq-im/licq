@@ -350,9 +350,10 @@ void *MonitorSockets_tep(void *p)
             udp->ClearRecvBuffer();
             gSocketManager.DropSocket(udp);
             d->ProcessUdpPacket(b);*/
-            d->ProcessUdpPacket(udp);
+            bool r = d->ProcessUdpPacket(udp);
             udp->ClearRecvBuffer();
             gSocketManager.DropSocket(udp);
+            if (!r) d->icqRelogon();
           }
         }
 

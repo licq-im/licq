@@ -94,10 +94,6 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
 //-----icqAlertUser-------------------------------------------------------------
 void CICQDaemon::icqAlertUser(unsigned long _nUin)
 {
-  //CPU_AddUser *p = new CPU_AddUser(_nUin);
-  //gLog.Info("%sAlerting user they were added (#%d)...\n", L_UDPxSTR, p->getSequence());
-  //SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
   sprintf(sz, "%s%c%s%c%s%c%s%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
@@ -874,7 +870,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       {
         packet >> nLen;
         buf = packet.getDataPosRead() + nLen;
-        ProcessUdpPacket(udp, nLen);
+        if (!ProcessUdpPacket(udp, nLen)) return false;
         packet.setDataPosRead(buf);
       }
       break;
@@ -1481,7 +1477,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
 
     case ICQ_CMDxRCV_SETxOFFLINE:  // we got put offline by mirabilis for some reason
       gLog.Info("%sKicked offline by server.\n", L_UDPxSTR);
-      icqRelogon();
+      //icqRelogon();
+      return false;
       break;
 
     case ICQ_CMDxRCV_ACK:  // icq acknowledgement
@@ -1512,7 +1509,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
     case ICQ_CMDxRCV_ERROR:  // icq says go away
     {
       gLog.Info("%sServer says you are not logged on.\n", L_UDPxSTR);
-      icqRelogon();
+      //icqRelogon();
+      return false;
       break;
     }
 
@@ -1608,7 +1606,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       char *buf;
       gLog.Unknown("%sUnknown server command %d:\n%s\n", L_UNKNOWNxSTR,
-                   nCommand, packet.print(buf));
+         nCommand, packet.print(buf));
       delete buf;
       break;
     }
