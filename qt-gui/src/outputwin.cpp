@@ -12,7 +12,7 @@
 
 //---------------------------------------------------------------------------
 
-CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
+CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
   : QDialog(parent, name)
 {
   setCaption(tr("Licq Network Log"));
@@ -22,7 +22,7 @@ CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
   outputBox = new MLEditWrap(false, this);
   outputBox->setMinimumHeight(outputBox->frameWidth()*2
                               + 10*outputBox->fontMetrics().lineSpacing());
-  outputBox->setMinimumWidth(380);
+  outputBox->setMinimumWidth((outputBox->minimumHeight()*5)/2);
   outputBox->setReadOnly(true);
   top_lay->addWidget(outputBox);
 
