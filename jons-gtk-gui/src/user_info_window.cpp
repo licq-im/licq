@@ -496,6 +496,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 		NULL,
 		gtk_editable_get_chars(GTK_EDITABLE(iu->email1), 0, -1),
 		gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
+		NULL,
 		gtk_editable_get_chars(GTK_EDITABLE(iu->city), 0, -1),
 		gtk_editable_get_chars(GTK_EDITABLE(iu->state), 0, -1),
 		gtk_editable_get_chars(GTK_EDITABLE(iu->phone), 0, -1),
@@ -503,7 +504,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 		gtk_editable_get_chars(GTK_EDITABLE(iu->address), 0, -1),
 		NULL,
 		gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
-		0, FALSE);
+		0, false);
 	}
 
 	else

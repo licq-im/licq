@@ -275,7 +275,7 @@ void refresh_clist(GtkCList *clist, gint page)
 			{
 			user[0] = g_strdup_printf("%ld", pUser->Uin());
 			user[1] = g_strdup_printf("%s",pUser->GetAlias());
-			user[2] = pUser->GetEmail1();
+			user[2] = pUser->GetEmailPrimary();
 
 			gtk_clist_insert(clist, users, user);
 			gtk_clist_set_row_data(clist, users, (gpointer)pUser);
@@ -293,7 +293,7 @@ void refresh_clist(GtkCList *clist, gint page)
 			{
 			user[0] = g_strdup_printf("%ld", pUser->Uin());
 			user[1] = g_strdup_printf("%s",pUser->GetAlias());
-			user[2] = pUser->GetEmail1();
+			user[2] = pUser->GetEmailPrimary();
 
 			gtk_clist_insert(clist, users, user);
 			gtk_clist_set_row_data(clist, users, (gpointer)pUser);
@@ -311,7 +311,7 @@ void refresh_clist(GtkCList *clist, gint page)
 			{
 			user[0] = g_strdup_printf("%ld", pUser->Uin());
 			user[1] = g_strdup_printf("%s",pUser->GetAlias());
-			user[2] = pUser->GetEmail1();
+			user[2] = pUser->GetEmailPrimary();
 
 			gtk_clist_insert(clist, users, user);
 			gtk_clist_set_row_data(clist, users, (gpointer)pUser);
