@@ -56,10 +56,13 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	// The strings reflect what we exptect to find in the *.icons files.
 	// The result of these two lists is used to load the icons, the order of
 	// this list will be the order that the icons get rendered in the preview.
-	*lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA" << "Occupied"
-						 << "DND" << "Private" << "Message" << "Url" << "Chat" << "File"
-						 << "SMS" << "Contact" << "Authorize" << "SecureOff" << "SecureOn"
-						 << "History" << "Info";
+	*lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA"
+                   << "Occupied" << "DND" << "Private" << "Message" << "Url"
+                   << "Chat" << "File" << "SMS" << "Contact" << "Authorize"
+                   << "SecureOff" << "SecureOn" << "History" << "Info"
+                   << "MSNOnline" << "MSNOffline" << "MSNAway"
+                   << "MSNOccupied" << "MSNPrivate";
+
 	*lstAExtIcons << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
                       << "CustomAR" << "Invisible" << "Phone"
                       << "PhoneFollowMeActive" << "PhoneFollowMeBusy"
