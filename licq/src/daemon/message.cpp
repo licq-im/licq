@@ -1,3 +1,5 @@
+// -*- c-basic-offset: 2 -*-
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -537,12 +539,13 @@ void CEventEmailPager::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //====CEventContactList========================================================
-CEventContactList::CEventContactList(ContactList &cl,
+CEventContactList::CEventContactList(const ContactList &cl,
                                      unsigned short nCommand,
                                      time_t tTime, unsigned long nFlags)
   : CUserEvent(ICQ_CMDxSUB_CONTACTxLIST, nCommand, 0, tTime, nFlags)
 {
-  m_vszFields = cl;
+  for(ContactList::const_iterator it = cl.begin(); it != cl.end(); ++it)
+    m_vszFields.push_back(new CContact((*it)->Uin(), (*it)->Alias()));
 }
 
 void CEventContactList::CreateDescription()
@@ -550,12 +553,11 @@ void CEventContactList::CreateDescription()
   m_szText = new char [m_vszFields.size() * 32 + 128];
   char *szEnd = m_szText;
   szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size());
-  ContactList::iterator iter;
+  ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
   {
     szEnd += sprintf(szEnd, "%s (%ld)\n", (*iter)->Alias(), (*iter)->Uin());
   }
-
 }
 
 
@@ -571,7 +573,7 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
 {
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  ContactList::iterator iter;
+  ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
     nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n", (*iter)->Uin(), (*iter)->Alias());
   AddToHistory_Flush(u, szOut);

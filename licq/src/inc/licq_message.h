@@ -309,7 +309,7 @@ typedef list<CContact *> ContactList;
 class CEventContactList : public CUserEvent
 {
 public:
-  CEventContactList(ContactList &cl,
+  CEventContactList(const ContactList &cl,
                     unsigned short nCommand,
                     time_t tTime, unsigned long nFlags);
   virtual ~CEventContactList();
