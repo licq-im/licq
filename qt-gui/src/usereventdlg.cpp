@@ -937,6 +937,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   : UserEventCommon(s, theSigMan, m, _nUin, parent, name)
 {
   grpMR = NULL;
+  m_nCurrentType = -1;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1148,6 +1149,8 @@ void UserSendCommon::changeEventType(int id)
     QTimer::singleShot( 10, e, SLOT( show() ) );
 
     QTimer::singleShot( 100, this, SLOT( close() ) );
+
+    m_nCurrentType = id;
   }
 }
 
@@ -1173,6 +1176,7 @@ void UserSendCommon::massMessageToggled(bool b)
   else
   {
     grpMR->hide();
+    if (m_nCurrentType >= 0)  changeEventType(m_nCurrentType);
   }
 }
 
@@ -1515,6 +1519,8 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   m_sBaseTitle += tr(" - Message");
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(0);
+
+  m_nCurrentType = 0;
 }
 
 
@@ -1653,6 +1659,8 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   m_sBaseTitle += tr(" - URL");
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(1);
+
+  m_nCurrentType = 1;
 }
 
 
@@ -2025,6 +2033,8 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   m_sBaseTitle += tr(" - Contact List");
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(4);
+
+  m_nCurrentType = 4;
 }
 
 
