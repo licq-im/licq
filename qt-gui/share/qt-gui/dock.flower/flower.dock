@@ -1,0 +1,24 @@
+# Flower Dock icon theme
+# Graham Roff
+
+[background]
+NoMessages = nomsg.xpm 
+NoMessagesMask = nomsg-mask.xpm
+RegularMessages = regmsg.xpm 
+RegularMessagesMask = regmsg-mask.xpm
+SystemMessages = regmsg.xpm
+SystemMessagesMask = regmsg-mask.xpm
+BothMessages = regmsg.xpm
+BothMessagesMask = regmsg-mask.xpm
+
+#[status]
+#Mask = statusmask.xpm
+#Online = iconOnline.xpm
+#Offline = iconOffline.xpm
+#Away = iconAway.xpm
+#NA = iconNA.xpm
+#Occupied = iconOccupied.xpm
+#DND = iconDND.xpm
+#FFC = iconFFC.xpm
+#Invisible = iconInvisible.xpm
+
