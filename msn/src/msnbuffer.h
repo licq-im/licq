@@ -35,3 +35,4 @@ private:
 };
 
 #endif // __MSNBUFFER_H
+

@@ -251,6 +251,12 @@ void CMSN::ProcessSignal(CSignal *s)
       break;
     }
     
+    case PROTOxCHANGE_STATUS:
+    case PROTOxLOGOFF:
+    case PROTOxADD_USER:
+    case PROTOxREM_USER:
+      break;
+
     case PROTOxSENDxMSG:
     {
       CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
@@ -318,7 +324,6 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
 {
   char szCommand[4];
-  unsigned short nSequence;
   CMSNPacket *pReply;
   
   while (!packet->End())
@@ -405,7 +410,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       string strUser = packet->GetParameter();
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
       
-      SStartMessage *pStart;
+      SStartMessage *pStart = 0;
       StartList::iterator it;
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
@@ -417,8 +422,11 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
         }
       }
       
-      MSNSendMessage(pStart->m_szUser, pStart->m_szMsg, pStart->m_tPlugin);
-      delete pStart;
+      if (pStart)
+      {
+        MSNSendMessage(pStart->m_szUser, pStart->m_szMsg, pStart->m_tPlugin);
+        delete pStart;
+      }
     }
     else if (strCmd == "BYE")
     {
@@ -441,7 +449,6 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
 void CMSN::ProcessServerPacket(CMSNBuffer &packet)
 {
   char szCommand[4];
-  unsigned short nSequence;
   CMSNPacket *pReply;
   
   // Build the entire packet
@@ -724,7 +731,7 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
   
   if (!sock->OpenConnection())
   {
-    gLog.Error("%Connection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
     delete sock;
     return false;
   }
@@ -741,6 +748,8 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
   CMSNPacket *pReply = new CPS_MSN_SBStart(strCookie.c_str(), m_szUserName);
   string strUser(pStart->m_szUser);
   Send_SB_Packet(strUser, pReply);  
+
+  return true;
 }
 
 bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &strCookie,
@@ -764,7 +773,7 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   
   if (!sock->OpenConnection())
   {
-    gLog.Error("%Connection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
     delete sock;
     return false;
   }

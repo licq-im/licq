@@ -190,3 +190,4 @@ protected:
 };
 
 #endif // __MSNPACKET_H
+
