@@ -4130,12 +4130,12 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
    mnuUser->insertItem(tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
    mnuUser->insertSeparator();
-   mnuUser->insertItem(pmInfo, tr("&Info"), mnuUserGeneral);
-   mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
    mnuUser->insertItem(tr("Edit User Group"), mnuGroup);
-   mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Remove From List"), mnuUserRemoveFromList);
+   mnuUser->insertSeparator();
+   mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);
+   mnuUser->insertItem(pmInfo, tr("&Info"), mnuUserGeneral);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    connect (mnuUser, SIGNAL(aboutToShow()), this, SLOT(slot_usermenu()));
 }
