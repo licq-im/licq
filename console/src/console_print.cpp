@@ -89,7 +89,6 @@ void CLicqConsole::PrintPrompt(void)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::PrintStatus(void)
 {
-  static char szStatusStr[32];
   static char szMsgStr[16];
   static char szLastUser[32];
 
@@ -121,7 +120,6 @@ void CLicqConsole::PrintStatus(void)
     strcpy(szLastUser, "<None>");
 
   o = gUserManager.FetchOwner(LOCK_R);
-  o->StatusStr(szStatusStr);
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winStatus->Win(), 0, 0, ACS_HLINE, COLS);
   mvwaddch(winStatus->Win(), 0, COLS - USER_WIN_WIDTH - 1, ACS_BTEE);
@@ -131,7 +129,7 @@ void CLicqConsole::PrintStatus(void)
   winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", COLOR_YELLOW_BLUE,
                      A_BOLD, COLOR_WHITE_BLUE, o->GetAlias(), COLOR_YELLOW_BLUE,
                      COLOR_WHITE_BLUE, o->Uin(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, szStatusStr, COLOR_YELLOW_BLUE,
+                     COLOR_CYAN_BLUE, o->StatusStr(), COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE, COLOR_CYAN_BLUE,
                      szLastUser, COLOR_YELLOW_BLUE);

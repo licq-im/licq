@@ -478,11 +478,9 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
       CUserEvent *ue = e->m_xUserEvent;
       if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
       {
-        char status[32];
         u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
-        u->StatusStr(status);
         win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
-                     u->GetAlias(), status, u->AutoResponse());
+                     u->GetAlias(), u->StatusStr(), u->AutoResponse());
         gUserManager.DropUser(u);
       }
       else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)
@@ -968,14 +966,13 @@ void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
 {
   // Print the users info to the main window
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  char buf[32];
 
   PrintBoxTop("User Info", COLOR_WHITE, 50);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("Alias: %s (%ld)", u->GetAlias(), u->Uin());
   PrintBoxRight(50);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("Status: %s", u->StatusStr(buf));
+  winMain->wprintf("Status: %s", u->StatusStr());
   PrintBoxRight(50);
   PrintBoxBottom(50);
 
