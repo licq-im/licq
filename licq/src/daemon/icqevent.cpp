@@ -39,6 +39,8 @@ CExtendedAck::~CExtendedAck()
 }
 
 
+unsigned long ICQEvent::s_nNextEventId = 1;
+
 //-----ICQEvent::constructor----------------------------------------------------
 ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
                    ConnectType _eConnect, unsigned long _nUin, CUserEvent *e)
@@ -61,6 +63,10 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_nSubResult = 0;
   m_pDaemon = _pDaemon;
   thread_plugin = pthread_self();
+
+  // pthread_mutex_lock
+  m_nEventId = s_nNextEventId++;
+  // pthread_mutex_unlock
 }
 
 
@@ -68,8 +74,10 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
 ICQEvent::ICQEvent(ICQEvent *e)
 //   : m_xBuffer(e->m_xBuffer)
 {
+  m_nEventId = e->m_nEventId;
+
   // set up internal variables
-  m_pPacket = NULL; //e->m_xPacket;
+  m_pPacket = NULL;
   m_bCancelled = e->m_bCancelled;
   m_nCommand = e->m_nCommand;
   m_nSubCommand = e->m_nSubCommand;
@@ -112,11 +120,15 @@ bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence) const
    return(m_nSocketDesc == sockfd && m_nSequence == _nSequence);
 }
 
+bool ICQEvent::CompareEvent(unsigned long nEventId) const
+{
+   return(m_nEventId == nEventId);
+}
+
 
 //=====CICQEventTag==========================================================
 CICQEventTag::CICQEventTag(const ICQEvent *e)
-    : m_nSocketDesc(e->m_nSocketDesc),
-      m_nSequence(e->m_nSequence),
+    : m_nEventId(e->m_nEventId),
       m_nUin(e->m_nDestinationUin)
 {
 }
@@ -126,16 +138,7 @@ bool CICQEventTag::Equals(const ICQEvent *e)
   if (this == NULL && e == NULL) return true;
   if (this == NULL || e == NULL) return false;
 
-  if (m_nSocketDesc == -1)
-  {
-    if (m_nUin == 0) return (e->m_nSequence == m_nSequence);
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    m_nSocketDesc = u->SocketDesc();
-    gUserManager.DropUser(u);
-    if (m_nSocketDesc == -1)
-      return (m_nUin == e->m_nDestinationUin);
-  }
-  return (e->CompareEvent(m_nSocketDesc, m_nSequence));
+  return (e->CompareEvent(m_nEventId));
 }
 
 

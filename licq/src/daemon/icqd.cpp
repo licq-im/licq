@@ -792,11 +792,15 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eC
 
   ICQEvent *e = new ICQEvent(this, _nSD, packet, _eConnect, _nDestinationUin, ue);
 
+  return SendExpectEvent(e);
+}
+
+ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e)
+{
   pthread_mutex_lock(&mutex_runningevents);
   m_lxRunningEvents.push_back(e);
   pthread_mutex_unlock(&mutex_runningevents);
 
-  //DEBUG_THREADS("[SendExpectEvent] Throwing running event.\n");
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_tep, e);
   if (nResult != 0)
   {

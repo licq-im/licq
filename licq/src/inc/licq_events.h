@@ -178,6 +178,7 @@ protected:
 
   // Compare this event to another one
   bool CompareEvent(int, unsigned long) const;
+  bool CompareEvent(unsigned long) const;
 
   ConnectType    m_eConnect;
   EventResult    m_eResult;
@@ -200,6 +201,9 @@ protected:
 
   CICQDaemon    *m_pDaemon;
 
+  unsigned long  m_nEventId;
+  static unsigned long s_nNextEventId;
+
 friend class CICQDaemon;
 friend void *ProcessRunningEvent_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
@@ -219,8 +223,7 @@ public:
 protected:
   CICQEventTag(const ICQEvent *e);
 
-  int m_nSocketDesc;
-  unsigned long m_nSequence;
+  unsigned long m_nEventId;
   unsigned long m_nUin;
 
 friend class CICQDaemon;
