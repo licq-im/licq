@@ -69,7 +69,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
                    << "MSNOccupied" << "MSNPrivate";
 
 	*lstAExtIcons << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
-                      << "CustomAR" << "Invisible" << "Phone"
+                      << "CustomAR" << "Invisible" << "Typing" << "Phone"
                       << "PhoneFollowMeActive" << "PhoneFollowMeBusy"
                       << "ICQphoneActive" << "ICQphoneBusy" << "SharedFiles";
 

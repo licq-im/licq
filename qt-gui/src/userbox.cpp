@@ -225,6 +225,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_nStatus = u->Status();
    m_nStatusFull = u->StatusFull();
    m_bStatusInvisible = u->StatusInvisible();
+   m_bStatusTyping = u->GetTyping() == ICQ_TYPING_ACTIVE;
    m_nPhoneFollowMeStatus = u->PhoneFollowMeStatus();
    m_nICQphoneStatus = u->ICQphoneStatus();
    m_nSharedFilesStatus = u->SharedFilesStatus();
@@ -564,6 +565,11 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         {
           p->drawPixmap(w, 0, gMainWindow->pmSharedFiles);
           w += gMainWindow->pmSharedFiles.width() + 2;
+        }
+        if (width - w > 8 && m_bStatusTyping)
+        {
+          p->drawPixmap(w, 0, gMainWindow->pmTyping);
+          w += gMainWindow->pmTyping.width() + 2;
         }
       }
       if (width - w > 8 && m_bSecure)
@@ -1435,6 +1441,8 @@ void CUserView::maybeTip(const QPoint& c)
     
     if (item->m_nStatus != ICQ_STATUS_OFFLINE)
     {
+      if (item->m_bStatusTyping)
+        s += tr("<br>Typing&nbsp;a&nbsp;message");
       if (item->m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
         s += tr("<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Available");
       else if (item->m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)

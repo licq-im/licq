@@ -100,6 +100,7 @@
 #include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
+#include "xpm/pixTyping.xpm"
 #include "xpm/pixICQphoneActive.xpm"
 #include "xpm/pixICQphoneBusy.xpm"
 #include "xpm/pixPhoneFollowMeActive.xpm"
@@ -3719,7 +3720,12 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    if (pmInvisible.isNull())
      pmInvisible = QPixmap(pixInvisible_xpm);
  
-   
+   fIconsConf.ReadStr("Typing", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmTyping.load(sFilepath);
+   if (pmTyping.isNull())
+     pmTyping = QPixmap(pixTyping_xpm);
+     
    fIconsConf.ReadStr("ICQphoneActive", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmICQphoneActive.load(sFilepath);

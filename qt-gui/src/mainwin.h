@@ -238,7 +238,7 @@ public:
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, 
           pmSms, pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, 
           pmInfo, pmRemove, pmEncoding, pmBirthday, pmPhone, pmCellular, 
-          pmInvisible, pmCustomAR, pmCollapsed, pmExpanded, pmSearch,
+          pmInvisible, pmTyping, pmCustomAR, pmCollapsed, pmExpanded, pmSearch,
           pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
           pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
