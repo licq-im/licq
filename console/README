@@ -16,7 +16,8 @@ Remember that Licq will save the plugin being run so after running
 you want to go back to the gui, use "licq -p qt-gui" the first time at least.
 
 For help using the console, type "/help" once inside.  F1-F8 will toggle between
-8 different virtual screens, and F9 is the standard Licq log (network window).
+8 different virtual screens, PgUp/PgDown will scroll the screen, 
+and F9 is the standard Licq log (network window).
 
 Address any questions to Graham Roff <graham@licq.org>, uin 2127503.
 
