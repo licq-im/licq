@@ -28,7 +28,7 @@ else
 fi
 
 if [ -z "${VURL_HOME}" ]; then
-  URLHOME='http://www.linux.org'
+  URLHOME='http://www.licq.org'
 else
   URLHOME="${VURL_HOME}" 
 fi
@@ -51,13 +51,8 @@ else
   OPENSTRING="${URL},${OPENMODE}"
 fi
 
+# If mozilla is already running, open the URL as new tab,
+# otherwise launch a fresh copy of mozilla.
+((${MOZILLA} -remote openurl\("${OPENSTRING}"\) ) ||  (${MOZILLA} "${URL}") & ) > /dev/null 2>&1
 
-# check if mozilla is running
-if [ -z "`${MOZILLA} -remote ping\(\) >& /dev/stdout`" ]; then
-  # mozilla is running, open the URL there
-  ${MOZILLA} -remote "openurl(${OPENSTRING})" &
-else
-  # not running, open a new browser
-  ${MOZILLA} "${URL}" &
-fi
 
