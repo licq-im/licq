@@ -156,7 +156,7 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
     break;
 
   default:
-    gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event SNAC received from daemon: %d.\n",
+    gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event SNAC received from daemon: 0x%08lX.\n",
               L_WARNxSTR, e->SNAC());
     break;
   }
