@@ -773,7 +773,7 @@ void CLicqConsole::InputCommand(int cIn)
       {
         if (strncasecmp(szIn, aCommands[i].szName, strlen(szIn)) == 0)
         {
-          if (aCommands[i].fProcessTab == NULL)
+          if (!aCommands[i].fProcessTab)
             break;;
           (this->*(aCommands[i].fProcessTab))(szArg, sTabCompletion);
           bTab = true;
