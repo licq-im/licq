@@ -136,11 +136,11 @@ bool CUserHistory::Load(HistoryList &lHistory)
         GET_VALID_LINES;
         e = new CEventChat(szMsg, 0, tTime, nFlags);
       }
-      /*else
+      else
       {
         while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
-        e = new CEventChatCancel(0, tTime, nFlags);
-      }*/
+        //e = new CEventChatCancel(0, tTime, nFlags);
+      }
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -155,11 +155,11 @@ bool CUserHistory::Load(HistoryList &lHistory)
         e = new CEventFile(szFile, szMsg, nSize, 0, tTime, nFlags);
         free(szFile);
       }
-      /*else
+      else
       {
         while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
-        e = new CEventFileCancel(0, tTime, nFlags);
-      }*/
+        //e = new CEventFileCancel(0, tTime, nFlags);
+      }
       break;
     }
     case ICQ_CMDxSUB_URL:
@@ -280,6 +280,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       lHistory.push_back(e);
     }
     if (szResult == NULL) break;
+    sz[0] = '\0';
   }
 
   // Close the file
