@@ -326,7 +326,7 @@ void CEButton::setNamedBgColor(char *theColor)
 
 //-----CEComboBox---------------------------------------------------------------
 CEComboBox::CEComboBox(bool _bAppearEnabledAlways, QWidget *parent, char *name)
-   : QComboBox(parent, name)
+   : QComboBox(false, parent, name)
 {
    m_bAppearEnabledAlways = _bAppearEnabledAlways;
    if (m_bAppearEnabledAlways)

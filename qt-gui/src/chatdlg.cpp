@@ -262,7 +262,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   barChat->addSeparator();
 
-  cmbFontSize = new QComboBox(barChat);
+  cmbFontSize = new QComboBox(false, barChat);
   connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
   cmbFontSize->insertItem(QString::number(font().pointSize()));
 
@@ -271,7 +271,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
     cmbFontSize->insertItem(QString::number(sizes[i]));
 
   QFontDatabase fb;
-  cmbFontName = new QComboBox(barChat);
+  cmbFontName = new QComboBox(false, barChat);
 #if 0
   cmbFontName->setSizeLimit(15);
   QStringList sl = fb.families();
