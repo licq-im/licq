@@ -28,6 +28,7 @@ clean-local:
 merge: template
 	@for i in $(srcdir)/*.po; do \
 	  if test "$$i" != "$(srcdir)/template.po"; then \
+            echo "Merging $$i"; \
   	    $(QT_MERGETR) $$i template.po; \
 	  fi \
 	done
@@ -47,6 +48,7 @@ install-data-local:
 
 template: 
 	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_builddir)/po/template.po
+	cat addon.qt >>template.po
 
 uninstall-local:
 	-rm -f $(localedir)/*.qm

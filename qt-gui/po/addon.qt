@@ -1,0 +1,57 @@
+
+#: src/dialogs/qfontdialog.cpp:121
+msgid "QFontDialog::&Color"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:91
+msgid "QFontDialog::&Font"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:107
+msgid "QFontDialog::&Size"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:115
+msgid "QFontDialog::&Underline"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::Apply"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Cancel"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Close"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:111
+msgid "QFontDialog::Effects"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:99
+msgid "QFontDialog::Font st&yle"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::OK"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:125
+msgid "QFontDialog::Sample"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:139
+msgid "QFontDialog::Scr&ipt"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:274
+msgid "QFontDialog::Select Font"
+msgstr ""
+
+#: src/dialogs/qfontdialog.cpp:113
+msgid "QFontDialog::Stri&keout"
+msgstr ""
+
