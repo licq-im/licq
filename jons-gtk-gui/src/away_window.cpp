@@ -117,6 +117,9 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	gtk_window_set_title(GTK_WINDOW(uaw->window), title);
 	gtk_window_set_position(GTK_WINDOW(uaw->window), GTK_WIN_POS_CENTER);
 
+	gtk_signal_connect(GTK_OBJECT(uaw->window), "destroy",
+			   GTK_SIGNAL_FUNC(close_away_window), uaw);
+
 	/* Make the boxes */
 	h_box = gtk_hbox_new(FALSE, 5);
 	v_box = gtk_vbox_new(FALSE, 5);
