@@ -1243,21 +1243,19 @@ void CMainWindow::updateEvents()
 
   if (nNumOwnerEvents > 0)
   {
-    //lblMsg->setText(tr("SysMsg"));
     s = tr("SysMsg");
     l = tr("System Message");
     if (m_bBoldOnMsg) lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
+//    lblMsg->setPrependPixmap(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
   }
   else if (nNumUserEvents > 0)
   {
-    //lblMsg->setText(tr("%1 msg%2")
-    //                .arg(nNumUserEvents)
-    //                .arg(nNumUserEvents == 1 ? tr(" ") : tr("s")));
     s = tr("%1 msg%2").arg(nNumUserEvents).arg(nNumUserEvents == 1 ? tr(" ") : tr("s"));
     l = tr("%1 message%2").arg(nNumUserEvents).arg(nNumUserEvents == 1 ? tr(" ") : tr("s"));
     if (m_bBoldOnMsg) lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
+//    lblMsg->setPrependPixmap(QPixmap());
   }
   else
   {
@@ -1275,6 +1273,7 @@ void CMainWindow::updateEvents()
       l = tr("No messages");
     }
     szCaption = m_szCaption;
+//    lblMsg->setPrependPixmap(QPixmap());
   }
   if (lblMsg->fontMetrics().width(l) > lblMsg->width())
     lblMsg->setText(s);
@@ -1402,6 +1401,7 @@ void CMainWindow::updateStatus()
      mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->StatusInvisible());
 
    lblStatus->setText(o->StatusStr());
+   lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
    lblStatus->update();
 
    gUserManager.DropOwner();
@@ -2363,7 +2363,7 @@ void CMainWindow::ToggleMiniMode()
    }
    else
    {
-      userView->hide();
+      userView->QWidget::hide();
       m_nRealHeight = height();
       unsigned short newH = skin->frame.border.top + skin->frame.border.bottom;
       setMinimumHeight(newH);
