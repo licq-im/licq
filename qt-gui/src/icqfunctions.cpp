@@ -325,9 +325,9 @@ void ICQFunctions::CreateMoreInfoTab()
   if (m_bOwner)
   {
     cmbGender = new CEComboBox(true, p);
-    cmbGender->insertItem(tr("Unspecified"));
-    cmbGender->insertItem(tr("Female"));
-    cmbGender->insertItem(tr("Male"));
+    cmbGender->insertItem(tr("Unspecified"), GENDER_UNSPECIFIED);
+    cmbGender->insertItem(tr("Female"), GENDER_FEMALE);
+    cmbGender->insertItem(tr("Male"), GENDER_MALE);
     lay->addWidget(cmbGender, CR, 4);
   }
   else
