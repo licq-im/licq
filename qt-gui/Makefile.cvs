@@ -27,12 +27,6 @@ all:
 	@-rm -f config.cache config.h
 	@echo "*** Create date/time stamp"
 	@touch stamp-h.in
-	@if (`which qmake`); then \
-		echo "*** Create qt-gui.pro"; \
-		qmake -project; \
-		echo -n "TRANSLATIONS = " >> qt-gui.pro; \
-		find po -name "*.ts" -exec echo {} \\ >> qt-gui.pro ";"; \
-	fi
 	@echo "*** Finished"
 	@echo "    Don't forget to run ./configure"
 	@echo "    If you haven't done so in a while, run ./configure --help"
