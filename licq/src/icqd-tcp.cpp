@@ -64,6 +64,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
+    if (pColor != NULL) e->SetColor(pColor);
     CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info("%sSending %smessage to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
@@ -77,6 +78,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
     u->SetSendLevel(nLevel);
   }
   gUserManager.DropUser(u);
+  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   delete mDos;
   return result->EventId();
@@ -138,6 +140,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
+    if (pColor != NULL) e->SetColor(pColor);
     CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info("%sSending %sURL to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
@@ -150,6 +153,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     u->SetSendLevel(nLevel);
   }
   gUserManager.DropUser(u);
+  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   delete szDescDos;
   return result->EventId();
@@ -252,6 +256,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
+    if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
@@ -264,6 +269,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
     u->SetSendLevel(nLevel);
   }
   gUserManager.DropUser(u);
+  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   delete []m;
   return result->EventId();

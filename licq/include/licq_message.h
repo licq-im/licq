@@ -62,6 +62,7 @@ protected:
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
    void SetColor(unsigned long fore, unsigned long back)  { m_sColor.Set(fore, back); }
+   void SetColor(CICQColor *p)  { m_sColor.Set(p); }
 
    void CopyBase(CUserEvent *);
 

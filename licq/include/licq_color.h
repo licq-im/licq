@@ -6,48 +6,42 @@
 class CICQColor
 {
 public:
+  CICQColor();
 
-  unsigned long ForeRed()  {  return foreground & 0xFF; }
-  unsigned long ForeGreen() { return (foreground & 0xFF00) >> 8; }
-  unsigned long ForeBlue()  { return ( foreground & 0xFF0000) >> 16; }
-  unsigned long BackRed()  {  return background & 0xFF; }
-  unsigned long BackGreen() { return (background & 0xFF00) >> 8; }
-  unsigned long BackBlue()  { return ( background & 0xFF0000) >> 16; }
-  unsigned long Foreground()  { return foreground; }
-  unsigned long Background()  { return background; }
+  unsigned long ForeRed();
+  unsigned long ForeGreen();
+  unsigned long ForeBlue();
+  unsigned long BackRed();
+  unsigned long BackGreen();
+  unsigned long BackBlue();
 
+  unsigned long Foreground();
+  unsigned long Background();
 
-  CICQColor()
-   {
-     background = 0x00FFFFFF;
-     foreground = 0x00000000;
-   }
+  void Set(unsigned long fore, unsigned long back);
+  void Set(CICQColor *c);
+  void SetBackground(unsigned long r, unsigned long g, unsigned long b);
+  void SetForeground(unsigned long r, unsigned long g, unsigned long b);
 
-  void Set(unsigned long fore, unsigned long back)
-   {
-     foreground = fore;
-     background = back;
-   }
+  // Default colors for sending messages
+  static unsigned long DefaultForeRed();
+  static unsigned long DefaultForeGreen();
+  static unsigned long DefaultForeBlue();
+  static unsigned long DefaultBackRed();
+  static unsigned long DefaultBackGreen();
+  static unsigned long DefaultBackBlue();
 
-  void Set(CICQColor *c)
-   {
-     foreground = c->Foreground();
-     background = c->Background();
-   }
+  static unsigned long DefaultForeground();
+  static unsigned long DefaultBackground();
 
-  void SetBackground(unsigned long r, unsigned long g, unsigned long b)
-   {
-     background = (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16);
-   }
-
-  void SetForeground(unsigned long r, unsigned long g, unsigned long b)
-   {
-     foreground = (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16);
-   }
+  static void SetDefaultColors(CICQColor *c);
 
 protected:
   unsigned long foreground;
   unsigned long background;
+
+  static unsigned long default_foreground;
+  static unsigned long default_background;
 
 };
 
