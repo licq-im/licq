@@ -296,7 +296,7 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
 
   cmd[sizeof(cmd) - 1] = '\0';
 
-  snprintf(cmd, sizeof(cmd) - 1, "CONNECT %s:%d HTTP/1.1\r\nHost = %s:%d\r\n", 
+  snprintf(cmd, sizeof(cmd) - 1, "CONNECT %s:%d HTTP/1.1\r\nHost: %s:%d\r\n", 
 		_szRemoteName, _nRemotePort, _szRemoteName, _nRemotePort);
   if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
   {
