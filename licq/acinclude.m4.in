@@ -155,25 +155,31 @@ AC_DEFUN(LICQ_CHECK_OPENSSL,
       CPPFLAGS="$temp"
     fi
 
-    dnl AC_MSG_CHECKING(for the OpenSSL library)
-    temp="$LIBS"
-    if test "$openssl_libdir" != "no"; then
-      LIBS="$LIBS -L$openssl_libdir"
-    fi
-    AC_CHECK_LIB(crypto, DH_free)
-    if test "$ac_cv_lib_crypto_DH_free" = "yes"; then
-        AC_CHECK_LIB(ssl, SSL_new, WITH_OPENSSL="yes", WITH_OPENSSL="no")
-    else
-        WITH_OPENSSL="no"
-    fi
-    if test "$WITH_OPENSSL" = "no"; then
-      LIBS="$temp"
-    else
-      LIBS="-lssl $LIBS"
+    if test "$WITH_OPENSSL" = "yes"; then
+      dnl AC_MSG_CHECKING(for the OpenSSL library)
+      temp="$LIBS"
+      if test "$openssl_libdir" != "no"; then
+        LIBS="$LIBS -L$openssl_libdir"
+      fi
+      AC_CHECK_LIB(crypto, DH_free)
+      if test "$ac_cv_lib_crypto_DH_free" = "yes"; then
+          AC_CHECK_LIB(ssl, SSL_new, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+      else
+          WITH_OPENSSL="no"
+      fi
+      if test "$WITH_OPENSSL" = "no"; then
+        LIBS="$temp"
+      else
+        LIBS="-lssl $LIBS"
+      fi
     fi
 
+    AC_MSG_CHECKING(if OpenSSL support can be enabled)
     if test "$WITH_OPENSSL" = "yes"; then
       AC_DEFINE(USE_OPENSSL)
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
     fi
   fi
 ])

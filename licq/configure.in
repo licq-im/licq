@@ -177,12 +177,15 @@ else
 fi
 
 if test "$WITH_OPENSSL" = "no"; then
+  echo ""
   echo "OpenSSL support is not available.  Licq will not be able to"
-  echo "establish secure communication channels.  If you desire this"
-  echo "functionality install OpenSSL (libraries and headers) and"
+  echo "establish secure communication channels. This is not required"
+  echo "for proper function (i.e. it is optional). If you really desire this"
+  echo "functionality then install OpenSSL (libraries and headers) and"
   echo "rebuild Licq.  OpenSSL can be found at http://www.openssl.org"
-  echo "or as RPM from your local distribution site.  Note you need"
-  echo "version 0.9.4 or greater."
+  echo "or as RPM from your local distribution site."
+  echo ""
+  echo "Note you need version 0.9.5a or greater."
 else
   echo "OpenSSL secure channel support is enabled."
 fi
