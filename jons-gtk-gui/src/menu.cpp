@@ -25,7 +25,8 @@
 GtkWidget *menu;
 GtkWidget *user_list_menu;
 
-GtkWidget *menu_new_item(GtkWidget *_menu, const char *str, GtkSignalFunc s_func)
+GtkWidget *menu_new_item(GtkWidget *_menu, const char *str,
+	GtkSignalFunc s_func)
 {
 	GtkWidget *menu_item;
 	menu_item = gtk_menu_item_new_with_label(str);
@@ -48,6 +49,34 @@ GtkWidget *menu_new_item(GtkWidget *_menu, const char *str, GtkSignalFunc s_func
 				   NULL);
 	}
 
+	return menu_item;
+}
+
+GtkWidget * menu_new_item_with_pixmap(GtkWidget *_menu, const char *text,
+	GtkSignalFunc s_func, struct status_icon *icon)
+{
+	GtkWidget *h_box = gtk_hbox_new(false, 0);
+
+	GtkWidget *pixmap = gtk_pixmap_new(icon->pm, icon->bm);
+	GtkWidget *label = gtk_label_new(text);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+	gtk_box_pack_start(GTK_BOX(h_box), pixmap, false, false, 3);
+	gtk_box_pack_start(GTK_BOX(h_box), label, true, true, 0);
+
+	GtkWidget *menu_item = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(menu_item), h_box);
+
+	gtk_widget_show_all(menu_item);
+
+	gtk_menu_append(GTK_MENU(_menu), menu_item);
+
+	if(s_func)
+	{
+		gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+			s_func, NULL);
+	}
+	
 	return menu_item;
 }
 
@@ -149,7 +178,7 @@ void menu_create()
 
 void menu_system_quit(GtkWidget *blah, gpointer data)
 {
-	icq_daemon->Shutdown();
+	gtk_main_quit();
 } 
 
 void menu_system_refresh(GtkWidget *window, gpointer data)
