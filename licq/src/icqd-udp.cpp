@@ -1812,6 +1812,10 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       e->AddToHistory(NULL, D_RECEIVER);
       m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       delete[] szFields;
+
+      // See if we should send a welcome greeting
+      //...TODO
+
       break;
     }
     case ICQ_CMDxSUB_WEBxPANEL:
@@ -1994,8 +1998,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetEmail2(packet.UnpackString(szTemp));
           // Old email address
           packet.UnpackString(szTemp);
-          if (u->GetEmail1()[0] == '\0')
-            u->SetEmail1(szTemp);
+          //if (u->GetEmail1()[0] == '\0')
+          //  u->SetEmail1(szTemp);
           u->SetCity(packet.UnpackString(szTemp));
           u->SetState(packet.UnpackString(szTemp));
           u->SetPhoneNumber(packet.UnpackString(szTemp));
