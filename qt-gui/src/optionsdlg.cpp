@@ -708,7 +708,7 @@ QWidget* OptionsDlg::new_sounds_options()
   QWhatsThis::add(chkOEDND, tr("Perform OnEvent command in do not disturb mode"));
   chkAlwaysOnlineNotify = new QCheckBox(tr("Online Notify when Logging On"), boxAcceptEvents);
   QWhatsThis::add(chkAlwaysOnlineNotify, tr("Perform the online notify OnEvent "
-     " when logging on (this is different from how the Mirabilis client works"));
+     " when logging on (this is different from how the Mirabilis client works)"));
 
   //lay->addStretch(1);
 
