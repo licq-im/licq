@@ -45,16 +45,20 @@ lt_simple_compile_test_code="int some_variable = 0;"
 lt_simple_link_test_code='int main(int, char *[]) { return (0); }'
 
 # C++ compiler
-# Allow CXX to be a program name with arguments.
-set dummy $CXX
-compiler=$2
 CXX=${CXX-c++}
 
 # ltmain only uses $CC for tagged configurations so make sure $CC is set.
-set dummy $CC
 CC=${CC-"$CXX"}
 CFLAGS=${CFLAGS-"$CXXFLAGS"}
+
+# Allow CC (or CXX) to be a program name with arguments.
+set dummy $CC
+compiler=$2
 cc_basename=`$echo X"$compiler" | $Xsed -e 's%^.*/%%'`
+
+# we are optimistic. (Too optimistic if you ask me, down there we switch it
+# off again for most platforms ;) (MM)
+ld_shlibs=yes
 
 # Check if we are using GNU gcc  (taken/adapted from configure script)
 # We need to check here since "--with-gcc" is set at configure time,
@@ -120,18 +124,8 @@ fi
 echo "ltcf-cxx: with_gcc=$with_gcc ; with_gnu_ld=$with_gnu_ld"
 
 # In general, the C++ compiler should always link C++ objects.
-case $target in
-*aix3* | *aix4*)
-  # AIX just has to be different, doesn't it? :-\
-  LD=makeC++SharedLib_r
-  LDFLAGS="$LDFLAGS -p 0"
-  ;;
-*)
-  LD="$CC"
-  LDFLAGS="$LDFLAGS"
-  ;;
-esac
-
+LD="$CC"
+LDFLAGS="$LDFLAGS"
 
 # PORTME: fill in a description of your system's C++ link characteristics
 case "$host_os" in
@@ -140,8 +134,25 @@ case "$host_os" in
     ld_shlibs=no
     ;;
   aix4*)
-    # FIXME: insert proper C++ library support
-    ld_shlibs=no
+    case "$cc_basename" in
+      xlC)
+        # IBM C++ compiler (xlC).  Anything older than Visual Age C++ 5.0 probably won't work.
+        archive_cmds='$CC -qmkshrobj $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G -o $lib'
+        archive_expsym_cmds='$CC -qmkshrobj $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G ${wl}-bE:$export_symbols -o $lib'
+        ;;
+      *)
+        if test "$with_gcc" = yes; then
+          # GNU C++ compiler
+          archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G -o $lib'
+          archive_expsym_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G ${wl}-bE:$export_symbols -o $lib'
+        fi
+        ;;
+    esac
+  
+    hardcode_libdir_flag_spec='${wl}-blibpath:$libdir:/usr/lib:/lib'
+    hardcode_libdir_separator=':'
+    hardcode_direct=unsupported
+    link_all_deplibs=yes
     ;;
   chorus*)
     case "$cc_basename" in
@@ -170,30 +181,6 @@ case "$host_os" in
     ;;
   freebsd*)
     # FreeBSD uses GNU C++ and GNU ld
-    # FIXME: insert proper C++ library support
-        # GNU C++ compiler
-        if test "$with_gcc" = yes; then
-          archive_cmds='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname -o $lib'
-          archive_expsym_cmds='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
-
-          runpath_var=LD_RUN_PATH
-          hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
-          export_dynamic_flag_spec='${wl}--export-dynamic'
-
-          # ancient GNU ld didn't support --whole-archive et. al.
-          if eval "`$CC -print-prog-name=ld` --help 2>&1" | \
-                egrep 'no-whole-archive' > /dev/null; then
-            whole_archive_flag_spec="$wlarc"'--whole-archive$convenience '"$wlarc"'--no-whole-archive'
-
-          else
-            whole_archive_flag_spec=
-          fi
-
-          # Commands to make compiler produce verbose output that lists
-          # what "hidden" libraries, object files and flags are used when
-          # linking a shared library.
-          output_verbose_link_cmds='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | egrep "\-L"'
-        fi
     ;;
   hpux*)
     case "$cc_basename" in
@@ -224,8 +211,17 @@ case "$host_os" in
         output_verbose_link_cmds='templist=`($CC -b $CFLAGS -v conftest.$objext 2>&1) | egrep "\-L"`; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
         ;;
       *)
+        if test "$with_gcc" = yes && test "$with_gnu_ld" = no ; then
+	  # MM: for HP-UX and g++ -fPIC is needed to link pic objects together
+	  archive_cmds='$CC -shared -fPIC ${wl}+h ${wl}$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $lib'
+	  hardcode_libdir_flag_spec='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_separator=:
+	  hardcode_direct=yes
+	  hardcode_minus_L=yes
+	  export_dynamic_flag_spec='${wl}-E'
+	  output_verbose_link_cmds='$CC -shared -fPIC $CFLAGS -v conftest.$objext 2>&1 | egrep "\-L"'
+        fi
         if test "$with_gcc" = no ; then
-          # MM: may be also no, when with_gnu_ld=no? Let them try first
 	  # FIXME: insert proper C++ library support
           ld_shlibs=no
 	fi
@@ -241,16 +237,16 @@ case "$host_os" in
       *)
         if test "$with_gcc" = yes; then
           if test "$with_gnu_ld" = no; then
-            archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` -update_registry ${objdir}/so_locations -o $lib'
+            archive_cmds='$CC -D_LANGUAGE_C_CPLUS_PLUS -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${objdir}/so_locations -o $lib'
           else
-            archive_cmds='$LD -shared $predep_objects $libobjs $deplibs $postdep_objects $linkopts -soname $soname `test -n "$verstring" && echo -set_version $verstring` -o $lib'
+            archive_cmds='$LD -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -o $lib'
           fi
         fi
-        hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
-        hardcode_libdir_separator=:
-        link_all_deplibs=yes
         ;;
     esac
+    hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
+    hardcode_libdir_separator=:
+    link_all_deplibs=yes
     ;;
   linux*)
     case "$cc_basename" in
@@ -299,6 +295,20 @@ case "$host_os" in
         # dependencies.
         output_verbose_link_cmds='templist=`$CC -shared $CFLAGS -v conftest.$objext 2>&1 | grep "ld"`; templist=`echo $templist | sed "s/\(^.*ld.*\)\( .*ld .*$\)/\1/"`; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
         ;;
+      insure)
+        if test "$with_gcc" = yes; then
+	  # Insure++ together with gcc probably means also GNU ld
+	  # only -whole-archive isn't supported
+	  whole_archive_flag_spec=""
+	  # and we can't use -nostdlib, because bloody insure has no way to
+	  # output the linkline (-Zvm isn't working as documented), so we don't
+	  # know the depending libs. So we hope, insure gets it right anyway.
+	  archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname -o $lib'
+	  runpath_var=LD_RUN_PATH
+	  hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
+	  export_dynamic_flag_spec='${wl}--export-dynamic'
+	  output_verbose_link_cmds=""
+	fi
     esac
     ;;
   lynxos*)
@@ -532,9 +542,9 @@ case "$host_os" in
         # GNU C++ compiler with Solaris linker
         if test "$with_gcc" = yes && test "$with_gnu_ld" = no; then
           if $CC --version | egrep -v '^2\.7' > /dev/null; then
-            archive_cmds='$LD -shared -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linkopts ${wl}-h $wl$soname -o $lib'
+            archive_cmds='$LD -shared -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname -o $lib'
             archive_expsym_cmds='$echo "{ global:" > $lib.exp~cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $lib.exp~$echo "local: *; };" >> $lib.exp~
-		$LD -shared -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linkopts ${wl}-h $wl$soname~$rm $lib.exp'
+		$LD -shared -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname~$rm $lib.exp'
 
             # Commands to make compiler produce verbose output that lists
             # what "hidden" libraries, object files and flags are used when
@@ -543,9 +553,9 @@ case "$host_os" in
           else
             # g++ 2.7 appears to require `-G' NOT `-shared' on this
             # platform.
-            archive_cmds='$LD -G -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linkopts ${wl}-h $wl$soname -o $lib'
+            archive_cmds='$LD -G -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname -o $lib'
             archive_expsym_cmds='$echo "{ global:" > $lib.exp~cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $lib.exp~$echo "local: *; };" >> $lib.exp~
-		$LD -G -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linkopts ${wl}-h $wl$soname~$rm $lib.exp'
+		$LD -G -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname~$rm $lib.exp'
 
             # Commands to make compiler produce verbose output that lists
             # what "hidden" libraries, object files and flags are used when
@@ -907,3 +917,8 @@ else
 fi
 
 $rm -f confest.$objext
+
+case " $postdeps " in
+*" -lc "*) need_lc=no ;;
+*) need_lc=yes ;;
+esac

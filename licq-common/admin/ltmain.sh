@@ -55,7 +55,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4a
-TIMESTAMP=" (1.641.2.53 2000/06/13 21:52:33)"
+TIMESTAMP=" (1.641.2.77 2000/08/01 04:25:15)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -478,30 +478,44 @@ if test -z "$show_help"; then
     # if one wasn't chosen via the "--tag" command line option.
     # Only attempt this if the compiler in the base compile
     # command doesn't match the default compiler.
-    if test -n "$available_tags" && test -z "$tagname" && echo $base_compile | grep -v "^[ ]*[^ ]*$CC" > /dev/null; then
-      for z in $available_tags; do
-        if grep "^### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
-	  # Evaluate the configuration.
-	  eval "`sed -n -e '/^### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
-          if echo $base_compile | grep "^[ ]*[^ ]*$CC" > /dev/null; then
-            # The compiler in the base compile command matches
-            # the one in the tagged configuration.
-            # Assume this is the tagged configuration we want.
-            tagname=$z
-            break
+    if test -n "$available_tags" && test -z "$tagname"; then
+      case $base_compile in
+      "$CC "*) ;;
+      # Blanks in the command may have been stripped by the calling shell,
+      # but not from the CC environment variable when ltconfig was run.
+      "`$echo X$CC | $Xsed` "*) ;;
+      *)
+        for z in $available_tags; do
+          if grep "^### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
+	    # Evaluate the configuration.
+	    eval "`sed -n -e '/^### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
+            case $base_compile in
+	    "$CC "*)
+              # The compiler in the base compile command matches
+              # the one in the tagged configuration.
+              # Assume this is the tagged configuration we want.
+              tagname=$z
+              break
+              ;;
+	    "`$echo X$CC | $Xsed` "*)
+	      tagname=$z
+	      break
+	      ;;
+	    esac
           fi
+        done
+        # If $tagname still isn't set, then no tagged configuration
+        # was found and let the user know that the "--tag" command
+        # line option must be used.
+        if test -z "$tagname"; then
+          echo "$modename: unable to infer tagged configuration"
+          echo "$modename: specify a tag with \`--tag'" 1>&2
+	  exit 1
+#        else
+#          echo "$modename: using $tagname tagged configuration"
         fi
-      done
-      # If $tagname still isn't set, then no tagged configuration
-      # was found and let the user know that the "--tag" command
-      # line option must be used.
-      if test -z "$tagname"; then
-        echo "$modename: unable to infer tagged configuration"
-        echo "$modename: specify a tag with \`--tag'" 1>&2
-	exit 1
-#      else
-#        echo "$modename: using $tagname tagged configuration"
-      fi
+	;;
+      esac
     fi
 
     objname=`$echo "X$obj" | $Xsed -e 's%^.*/%%'`
@@ -543,7 +557,7 @@ if test -z "$show_help"; then
     # Calculate the filename of the output object if compiler does
     # not support -o with -c
     if test "$compiler_c_o" = no; then
-      output_obj=`$echo "X$srcfile" | $Xsed -e 's%^.*/%%' -e 's%\..*$%%'`.${objext}
+      output_obj=`$echo "X$srcfile" | $Xsed -e 's%^.*/%%' -e 's%\.[^.]*$%%'`.${objext}
       lockfile="$output_obj.lock"
       removelist="$removelist $output_obj $lockfile"
       trap "$run $rm $removelist; exit 1" 1 2 15
@@ -783,6 +797,7 @@ EOF
       ;;
     esac
     libtool_args="$nonopt"
+    base_compile="$nonopt"
     compile_command="$nonopt"
     finalize_command="$nonopt"
 
@@ -856,6 +871,7 @@ EOF
     # Go through the arguments, transforming them on the way.
     while test $# -gt 0; do
       arg="$1"
+      base_compile="$base_compile $arg"
       shift
       case "$arg" in
       *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
@@ -1032,6 +1048,17 @@ EOF
 
       -L*)
 	dir=`$echo "X$arg" | $Xsed -e 's/^-L//'`
+	case "$host" in
+	*-*-irix*)
+	  case "$dir" in
+	  ANG:[A-Za-z0-9]*)
+	    compile_command="$compile_command $arg"
+	    finalize_command="$finalize_command $arg"
+	    continue
+	  ;;
+	  esac
+	  ;;
+	esac
 	# We need an absolute path.
 	case "$dir" in
 	[\\/]* | [A-Za-z]:[\\/]*) ;;
@@ -1381,32 +1408,44 @@ EOF
     # if one wasn't chosen via the "--tag" command line option.
     # Only attempt this if the compiler in the base link
     # command doesn't match the default compiler.
-    if test -n "$available_tags" \
-       && test -z "$tagname" \
-       && echo $compile_command | grep -v "^[ ]*[^ ]*$CC" > /dev/null; then
-      for z in $available_tags; do
-        if grep "^### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
-	  # Evaluate the configuration.
-	  eval "`sed -n -e '/^### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
-          if echo $compile_command | grep "^[ ]*[^ ]*$CC" > /dev/null; then
-            # The compiler in $compile_command matches
-            # the one in the tagged configuration.
-            # Assume this is the tagged configuration we want.
-            tagname=$z
-            break
+    if test -n "$available_tags" && test -z "$tagname"; then
+      case $base_compile in
+      "$CC "*) ;;
+      # Blanks in the command may have been stripped by the calling shell,
+      # but not from the CC environment variable when ltconfig was run.
+      "`$echo X$CC | $Xsed` "*) ;;
+      *)
+        for z in $available_tags; do
+          if grep "^### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
+	    # Evaluate the configuration.
+	    eval "`sed -n -e '/^### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
+            case $base_compile in
+	    "$CC "*)
+              # The compiler in $compile_command matches
+              # the one in the tagged configuration.
+              # Assume this is the tagged configuration we want.
+              tagname=$z
+              break
+	      ;;
+	    "`$echo X$CC | $Xsed` "*)
+	      tagname=$z
+	      break
+	      ;;
+	    esac
           fi
+        done
+        # If $tagname still isn't set, then no tagged configuration
+        # was found and let the user know that the "--tag" command
+        # line option must be used.
+        if test -z "$tagname"; then
+          echo "$modename: unable to infer tagged configuration"
+          echo "$modename: specify a tag with \`--tag'" 1>&2
+	  exit 1
+#       else
+#         echo "$modename: using $tagname tagged configuration"
         fi
-      done
-      # If $tagname still isn't set, then no tagged configuration
-      # was found and let the user know that the "--tag" command
-      # line option must be used.
-      if test -z "$tagname"; then
-        echo "$modename: unable to infer tagged configuration"
-        echo "$modename: specify a tag with \`--tag'" 1>&2
-	exit 1
-#     else
-#       echo "$modename: using $tagname tagged configuration"
-      fi
+	;;
+      esac
     fi
 
     if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then
@@ -2048,7 +2087,7 @@ EOF
 	      test -n "$add" && finalize_deplibs="$add $finalize_deplibs"
 	    else
 	      test -n "$add_dir" && deplibs="$add_dir $deplibs"
-	      test -n "$add" && deplibs="$add deplibs"
+	      test -n "$add" && deplibs="$add $deplibs"
 	    fi
 	  fi
 	elif test $linkmode = prog; then
@@ -2385,7 +2424,6 @@ EOF
 
 	irix)
 	  major=`expr $current - $age + 1`
-	  versuffix="$major.$revision"
 	  verstring="sgi$major.$revision"
 
 	  # Add in all the interfaces that we are compatible with.
@@ -2395,6 +2433,10 @@ EOF
 	    loop=`expr $loop - 1`
 	    verstring="sgi$major.$iface:$verstring"
 	  done
+
+	  # Before this point, $major must not contain `.'.
+	  major=.$major
+	  versuffix="$major.$revision"
 	  ;;
 
 	linux)
@@ -2557,8 +2599,10 @@ EOF
 	    # these systems don't actually have a c library (as such)!
 	    ;;
 	  *)
-	    # Add libc to deplibs on all other systems.
-	    deplibs="$deplibs -lc"
+ 	    # Add libc to deplibs on all other systems if necessary.
+ 	    if test $build_libtool_need_lc = "yes"; then
+ 	      deplibs="$deplibs -lc"
+ 	    fi
 	    ;;
 	  esac
 	fi
@@ -3441,6 +3485,12 @@ static const void *lt_preloaded_setup() {
 	finalize_command=`$echo "X$finalize_command" | $Xsed -e "s% @SYMFILE@%%"`
       fi
 
+      # AIX runtime linking requires linking programs with -Wl,-brtl and libs with -Wl,-G
+      case "$host" in
+        *-*-aix4*) compile_command="$compile_command $wl-brtl"
+                   finalize_command="$finalize_command $wl-brtl" ;;
+      esac
+
       if test $need_relink = no || test "$build_libtool_libs" != yes; then
 	# Replace the output file specification.
 	compile_command=`$echo "X$compile_command" | $Xsed -e 's%@OUTPUT@%'"$output"'%g'`
@@ -3988,7 +4038,9 @@ relink_command=\"$relink_command\""
 
     # There may be an optional sh(1) argument at the beginning of
     # install_prog (especially on Windows NT).
-    if test "$nonopt" = "$SHELL" || test "$nonopt" = /bin/sh; then
+    if test "$nonopt" = "$SHELL" || test "$nonopt" = /bin/sh ||
+       # Allow the use of GNU shtool's install command.
+       $echo "X$nonopt" | $Xsed | grep shtool > /dev/null; then
       # Aesthetically quote it.
       arg=`$echo "X$nonopt" | $Xsed -e "$sed_quote_subst"`
       case "$arg" in

@@ -172,6 +172,7 @@ EOF
   netbsd*)
     if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
       archive_cmds='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
+      wlarc=
     else
       archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
       archive_expsym_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
@@ -218,8 +219,8 @@ EOF
 
   if test "$ld_shlibs" = yes; then
     runpath_var=LD_RUN_PATH
-    hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
-    export_dynamic_flag_spec='${wl}--export-dynamic'
+    hardcode_libdir_flag_spec="$wlarc"'--rpath '"$wlarc"'$libdir'
+    export_dynamic_flag_spec="$wlarc"'--export-dynamic'
     case $host_os in
     cygwin* | mingw*)
       # dlltool doesn't understand --whole-archive et. al.
@@ -252,38 +253,56 @@ else
     fi
     ;;
 
+  # this was the old aix4 code, Reza Arbab says, it isn't working anymore (MM)
+  #aix4*)
+  #  hardcode_libdir_flag_spec='${wl}-b ${wl}nolibpath ${wl}-b ${wl}libpath:$libdir:/usr/lib:/lib'
+  #  hardcode_libdir_separator=':'
+  #  if test "$with_gcc" = yes; then
+  #    collect2name=`${CC} -print-prog-name=collect2`
+  #    if test -f "$collect2name" && \
+  #       strings "$collect2name" | grep resolve_lib_name >/dev/null
+  #    then
+  #      # We have reworked collect2
+  #      hardcode_direct=yes
+  #    else
+  #      # We have old collect2
+  #      hardcode_direct=unsupported
+  #      # It fails to find uninstalled libraries when the uninstalled
+  #      # path is not listed in the libpath.  Setting hardcode_minus_L
+  #      # to unsupported forces relinking
+  #      hardcode_minus_L=yes
+  #      hardcode_libdir_flag_spec='-L$libdir'
+  #      hardcode_libdir_separator=
+  #    fi
+  #    shared_flag='-shared'
+  #  else
+  #    shared_flag='${wl}-bM:SRE'
+  #    hardcode_direct=yes
+  #  fi
+  #  allow_undefined_flag=' ${wl}-berok'
+  #  archive_cmds="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs $compiler_flags ${wl}-bexpall ${wl}-bnoentry${allow_undefined_flag}'
+  #  archive_expsym_cmds="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs $compiler_flags ${wl}-bE:$export_symbols ${wl}-bnoentry${allow_undefined_flag}'
+  #  case "$host_os" in aix4.[01]|aix4.[01].*)
+  #    # According to Greg Wooledge, -bexpall is only supported from AIX 4.2 on
+  #    always_export_symbols=yes ;;
+  #  esac
+  #;;                                                                         
+
   aix4*)
-    hardcode_libdir_flag_spec='${wl}-b ${wl}nolibpath ${wl}-b ${wl}libpath:$libdir:/usr/lib:/lib'
-    hardcode_libdir_separator=':'
     if test "$with_gcc" = yes; then
-      collect2name=`${CC} -print-prog-name=collect2`
-      if test -f "$collect2name" && \
-	 strings "$collect2name" | grep resolve_lib_name >/dev/null
-      then
-	# We have reworked collect2
-	hardcode_direct=yes
-      else
-	# We have old collect2
-	hardcode_direct=unsupported
-	# It fails to find uninstalled libraries when the uninstalled
-	# path is not listed in the libpath.  Setting hardcode_minus_L
-	# to unsupported forces relinking
-	hardcode_minus_L=yes
-	hardcode_libdir_flag_spec='-L$libdir'
-	hardcode_libdir_separator=
-      fi
-      shared_flag='-shared'
+      # GNU compiler
+      archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G -o $lib'
+      archive_expsym_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G ${wl}-bE:$export_symbols -o $lib'
     else
-      shared_flag='${wl}-bM:SRE'
-      hardcode_direct=yes
+      # IBM compiler (xlc).  Anything older than Visual Age C 5.0 probably won't work.
+      archive_cmds='$CC -qmkshrobj $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G -o $lib'
+      archive_expsym_cmds='$CC -qmkshrobj $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-G ${wl}-bE:$export_symbols -o $lib'
     fi
-    allow_undefined_flag=' ${wl}-berok'
-    archive_cmds="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs $compiler_flags ${wl}-bexpall ${wl}-bnoentry${allow_undefined_flag}'
-    archive_expsym_cmds="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs $compiler_flags ${wl}-bE:$export_symbols ${wl}-bnoentry${allow_undefined_flag}'
-    case "$host_os" in aix4.[01]|aix4.[01].*)
-      # According to Greg Wooledge, -bexpall is only supported from AIX 4.2 on
-      always_export_symbols=yes ;;
-    esac
+  
+    hardcode_libdir_flag_spec='${wl}-bnolibpath ${wl}-blibpath:$libdir:/usr/lib:/lib'
+    hardcode_libdir_separator=':'
+    hardcode_direct=unsupported
+    link_all_deplibs=yes
    ;;
 
   amigaos*)
@@ -519,7 +538,7 @@ fi
 
 ## Compiler Characteristics: PIC flags, static flags, etc
 if test "X${ac_cv_prog_cc_pic+set}" = Xset; then
-  echo $ac_n "(cached) $ac_c" 1>&6
+  :
 else
   ac_cv_prog_cc_pic=
   ac_cv_prog_cc_shlib=
@@ -642,4 +661,47 @@ else
   ac_cv_prog_cc_pic="$ac_cv_prog_cc_pic -DPIC"
 fi
 
-
+need_lc=yes
+if test "$enable_shared" = yes && test "$with_gcc" = yes; then
+  case "$archive_cmds" in
+  *'~'*)
+    # FIXME: we may have to deal with multi-command sequences.
+    ;;
+  '$CC '*)
+    # Test whether the compiler implicitly links with -lc since on some
+    # systems, -lgcc has to come before -lc. If gcc already passes -lc
+    # to ld, don't add -lc before -lgcc.
+    echo $ac_n "checking whether -lc should be explicitly linked in... $ac_c" 1>&6
+    if eval "test \"`echo '$''{'ac_cv_archive_cmds_needs_lc'+set}'`\" = set"; then
+      echo $ac_n "(cached) $ac_c" 1>&6
+      need_lc=$ac_cv_archive_cmds_needs_lc
+    else
+      $rm conftest*
+      echo "static int dummy;" > conftest.$ac_ext
+      if { (eval echo ltcf-c.sh:need_lc: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>conftest.err; }; then
+	# Append any warnings to the config.log.
+	cat conftest.err 1>&5
+	soname=conftest
+	lib=conftest
+	libobjs=conftest.o
+	deplibs=
+	wl=$ac_cv_prog_cc_wl
+	compiler_flags=-v
+	linker_flags=-v
+	verstring=
+	output_objdir=.
+	libname=conftest
+	allow_undefined_flag=
+	if { (eval echo ltcf-c.sh:need_lc: \"$archive_cmds\") 1>&5; (eval $archive_cmds) 2>&1 | grep " -lc " 1>&5 ; }; then
+	  need_lc=no
+	fi
+      else
+	cat conftest.err 1>&5
+      fi
+    fi
+    $rm conftest*
+    echo "$ac_t$need_lc" 1>&6
+    ;;
+  esac
+fi
+ac_cv_archive_cmds_needs_lc=$need_lc
