@@ -205,6 +205,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   bool bUseDock;
   licqConf.ReadBool("UseDock", bUseDock, false);
   licqConf.ReadBool("Dock64x48", m_bDockIcon48, false);
+  bool bHidden;
+  licqConf.ReadBool("Hidden", bHidden, false);
 
   licqConf.SetSection("startup");
   licqConf.ReadNum("Logon", m_nAutoLogon, 0);
@@ -333,14 +335,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    updateGroups();
    manualAway = 0;
 
-   show();
+   if (!bHidden) show();
 
    // automatically logon if requested in conf file
    if (m_nAutoLogon > 0)
    {
       if (m_nAutoLogon >= 10)
         mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, true);
-      
+
       switch (m_nAutoLogon % 10)
       {
       case 1: changeStatus(ICQ_STATUS_ONLINE); break;
@@ -539,6 +541,8 @@ CMainWindow::~CMainWindow(void)
   CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
   // need some more error checking here...
   licqConf.LoadFile(buf);
+  licqConf.SetSection("appearance");
+  licqConf.WriteBool("Hidden", !isVisible());
   licqConf.SetSection("geometry");
 	unsigned short n;
 	n = x() < 0 ? 0 : x();
