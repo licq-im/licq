@@ -1,4 +1,4 @@
-Licq Email Forwarder Plugin
+Licq ICQ Forwarder Plugin
 ___________________________
 
 
@@ -17,12 +17,13 @@ file appropriately.
 
 DESCRIPTION
 
-This program is an ICQ->Email forwarder.  It is a plugin for the Licq
+This program is an ICQ forwarder.  It is a plugin for the Licq
 daemon and can run either on it's own on along with an interface plugin
 (such as the Qt-gui or console plugins).
 Any events (messages, urls...) received while the plugin is enabled will
-be forwarded via standard SMTP to a given email account.  The resulting
-message will appear as follows:
+be forwarded either via standard SMTP to a given email account or via ICQ
+to a given UIN.  The resulting message will appear as follows if sent via
+email:
 
 -----------------------------------------------------------
 Date: Sat Nov 13 14:07:08 1999
@@ -46,24 +47,24 @@ chat request...) and the first 20 characters of the message.
 
 RUNNING
 
-Loading and running the plugin is simply a matter of adding a "-p email"
+Loading and running the plugin is simply a matter of adding a "-p forwarder"
 to your Licq command line arguments.  Remember that if any plugins are
 loaded from the command line then all plugins must be specified.  In other
-words if you are using the qt-gui plugin and also wish to start the email
+words if you are using the qt-gui plugin and also wish to start the forwarder 
 plugin, run:
-licq [options] -p qt-gui -p email -- [ qt-gui options ] -- [ email options ]
+licq [options] -p qt-gui -p forwarder -- [ qt-gui options ] -- [ forwarder options ]
 
-The email plugin starts in an inactive state, and must be turned on from
-the plugin interface to start forwarding email.  In this manner it can be
+The forwarder plugin starts in an inactive state, and must be turned on from
+the plugin interface to start forwarding messages.  In this manner it can be
 turned on and off without having to exit Licq.
-Optionally, or if the only plugin desired is the email forwarder, it can
+Optionally, or if the only plugin desired is the forwarder, it can
 be started enabled by using the "-e" parameter on the command line.  Remember
 that all plugin options must come after a "--" on the command line.
 The "-l <status>" option will tell the plugin to automatically log on in the
 given status at startup.  This is equivalent (and uses the same status strings as)
 the fifo command "status" (see the FAQ under FIFO).
 
-For example, to start Licq using only the email forwarder and have it start in
+For example, to start Licq using only the forwarder and have it start in
 enabled mode and logon, run:
 licq -f -p email -- -e -l online
 
@@ -75,7 +76,7 @@ log messages to a file (or device, such as /dev/tty9).
 
 CONFIGURING
 
-The plugin uses a small configuration file (~/.licq/licq_email.conf) which must
+The plugin uses a small configuration file (~/.licq/licq_forwarder.conf) which must
 be set up by hand.  A sample is included with the source, and includes help on
 the various settings.
 
