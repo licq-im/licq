@@ -244,12 +244,12 @@ void OptionsDlg::SetupOptions()
 void OptionsDlg::ApplyOptions()
 {
   QFont f(mainwin->defaultFont);
-  if(edtEditFont->text() != tr("default"))
+  if(edtEditFont->text().find(tr("default"), 0, false) != 0)
     f.setRawName(edtEditFont->text());
   MLEditWrap::editFont = f;
 
   f = mainwin->defaultFont;
-  if(edtFont->text() != tr("default"))
+  if(edtFont->text().find(tr("default"), 0, false) != 0)
     f.setRawName(edtFont->text());
   qApp->setFont(f, true);
 
