@@ -194,16 +194,12 @@ void OptionsDlg::SetupOptions()
   }
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
-  chkFirewall->setChecked(mainwin->licqDaemon->FirewallHost()[0] == '\0');
+  //chkFirewall->setChecked(mainwin->licqDaemon->FirewallHost()[0] == '\0');
   chkTCPEnabled->setChecked(mainwin->licqDaemon->TCPEnabled());
-  edtFirewallHost->setText(mainwin->licqDaemon->FirewallHost());
-  spnPortLow->setValue(mainwin->licqDaemon->TCPBasePort());
-  if (mainwin->licqDaemon->TCPBaseRange() == 0)
-    spnPortHigh->setValue(0);
-  else
-    spnPortHigh->setValue(mainwin->licqDaemon->TCPBasePort() +
-                          mainwin->licqDaemon->TCPBaseRange() - 1);
-  chkFirewall->toggle();
+  //edtFirewallHost->setText(mainwin->licqDaemon->FirewallHost());
+  spnPortLow->setValue(mainwin->licqDaemon->TCPPortsLow());
+  spnPortHigh->setValue(mainwin->licqDaemon->TCPPortsHigh());
+  //chkFirewall->toggle();
 
   cmbServers->clear();
   unsigned short i;
@@ -366,18 +362,18 @@ void OptionsDlg::ApplyOptions()
   }
 
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
-  if (chkFirewall->isChecked())
+  //if (chkFirewall->isChecked())
   {
-    mainwin->licqDaemon->SetTCPBasePort(spnPortLow->value(), spnPortHigh->value() - spnPortLow->value() + 1);
-    mainwin->licqDaemon->SetFirewallHost(edtFirewallHost->text().local8Bit());
+    mainwin->licqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
+    //mainwin->licqDaemon->SetFirewallHost(edtFirewallHost->text().local8Bit());
     mainwin->licqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
   }
-  else
+  /*else
   {
     mainwin->licqDaemon->SetTCPBasePort(0, 0);
     mainwin->licqDaemon->SetFirewallHost("");
     mainwin->licqDaemon->SetTCPEnabled(true);
-  }
+  }*/
   mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
@@ -732,31 +728,31 @@ QWidget *OptionsDlg::new_network_options()
   lay->addWidget(gbFirewall);
   gbFirewall->setTitle(tr("Firewall"));
 
-  chkFirewall = new QCheckBox(tr("I am behind a firewall/proxy"), gbFirewall);
-  QPushButton *socks = new QPushButton(tr("SOCKS5 Proxy"), gbFirewall);
-  connect(socks, SIGNAL(clicked()), this, SLOT(slot_socks()));
-  QLabel *lbl = new QLabel(tr("Firewall/Proxy Host:"), gbFirewall);
-  connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
-  edtFirewallHost = new QLineEdit(gbFirewall);
+  //chkFirewall = new QCheckBox(tr("I am behind a firewall/proxy"), gbFirewall);
+  //QPushButton *socks = new QPushButton(tr("SOCKS5 Proxy"), gbFirewall);
+  //connect(socks, SIGNAL(clicked()), this, SLOT(slot_socks()));
+  //QLabel *lbl = new QLabel(tr("Firewall/Proxy Host:"), gbFirewall);
+  //connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
+  //edtFirewallHost = new QLineEdit(gbFirewall);
   chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
   QWidget *dummy = new QWidget(gbFirewall);
   if (dummy);
-  lbl = new QLabel(tr("Port Range:"), gbFirewall);
-  connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
-  QWhatsThis::add(lbl, tr("Starting port for incoming connections."));
+  QLabel *lbl = new QLabel(tr("Port Range:"), gbFirewall);
+  //connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
+  QWhatsThis::add(lbl, tr("TCP port range for incoming connections."));
   spnPortLow = new QSpinBox(gbFirewall);
   spnPortLow->setRange(0, 0xFFFF);
   spnPortLow->setSpecialValueText(tr("Auto"));
   lbl = new QLabel(tr("\tto"), gbFirewall);
-  connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
+  //connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
   spnPortHigh = new QSpinBox(gbFirewall);
   spnPortHigh->setRange(0, 0xFFFF);
-  spnPortHigh->setSpecialValueText(tr("None"));
+  spnPortHigh->setSpecialValueText(tr("Auto"));
 
-  connect(chkFirewall, SIGNAL(toggled(bool)), edtFirewallHost, SLOT(setEnabled(bool)));
+  /*connect(chkFirewall, SIGNAL(toggled(bool)), edtFirewallHost, SLOT(setEnabled(bool)));
   connect(chkFirewall, SIGNAL(toggled(bool)), chkTCPEnabled, SLOT(setEnabled(bool)));
   connect(chkFirewall, SIGNAL(toggled(bool)), spnPortLow, SLOT(setEnabled(bool)));
-  connect(chkFirewall, SIGNAL(toggled(bool)), spnPortHigh, SLOT(setEnabled(bool)));
+  connect(chkFirewall, SIGNAL(toggled(bool)), spnPortHigh, SLOT(setEnabled(bool)));*/
 
   lay->addStretch(1);
 

@@ -35,14 +35,15 @@ protected:
 
    // network tab
    QWidget* new_network_options();
-   QLabel *lblServers, *lblDefServerPort, *lblTcpServerPort,
+   QLabel *lblServers, *lblDefServerPort,
       *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
    QComboBox *cmbServers, *cmbAutoLogon;
-   QSpinBox *spnDefServerPort, *spnTcpServerPort, *spnAutoAway, *spnAutoNa,
+   QSpinBox *spnDefServerPort, *spnAutoAway, *spnAutoNa,
       *spnAutoOffline, *spnPortLow, *spnPortHigh;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible, *chkFirewall, *chkTCPEnabled;
-   QLineEdit *edtFirewallHost;
+   QCheckBox  *chkAutoLogonInvisible, *chkTCPEnabled;
+   //*chkFirewall
+   //QLineEdit *edtFirewallHost;
 
    // appearance tab
    QWidget* new_appearance_options();
