@@ -1506,27 +1506,23 @@ bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {
   char *pcEnd = szBuffer, *pcStart;
   unsigned short i = 0;
-  bool bDone = false;
+
   // Clear the character pointers
   memset(*szSubStr, 0, nNumSubStr * sizeof(char *));
 
-  while (!bDone && i < nNumSubStr)
+  while (*pcEnd && i < nNumSubStr)
   {
      pcStart = pcEnd;
-     while (*pcEnd != '\0' && (unsigned char)*pcEnd != (unsigned char)0xFE)
-       pcEnd++;
-     if (*pcEnd == '\0')
-       bDone = true;
-     else // we are at an FE boundary
-     {
-       *pcEnd++ = '\0';
-       //if (*pcEnd == '\0') // possibly end with FE 00 instead of just 00
-       //  bDone = true;
-     }
+
+     while (*pcEnd && (unsigned char)*pcEnd != (unsigned char)0xFE)  pcEnd++;
+     if ((unsigned char)*pcEnd == (unsigned char)'\xFE')  *pcEnd++ = '\0';
+
      (*szSubStr)[i++] = pcStart;
   }
 
-  return (bDone && i == nNumSubStr);
+  while(i < nNumSubStr)  (*szSubStr)[i++] = pcEnd;
+
+  return (!*pcEnd);
 }
 
 
