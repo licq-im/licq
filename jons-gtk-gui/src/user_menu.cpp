@@ -115,6 +115,28 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 	h_box = gtk_hbox_new(FALSE, 0);
 
+	/* Normal, Urgent, or to Contact list */
+	url->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
+	url->send_urgent = gtk_radio_button_new_with_label_from_widget(
+				GTK_RADIO_BUTTON(url->send_normal),
+				"Send Urgent");
+	url->send_list = gtk_radio_button_new_with_label_from_widget(
+				GTK_RADIO_BUTTON(url->send_normal),
+				"Send to Contact List");
+
+	/* If the user is in occ or dnd mode, set the urgent button as def */
+	if(url->user->Status() == ICQ_STATUS_DND ||
+	   url->user->Status() == ICQ_STATUS_OCCUPIED)
+	       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(url->send_urgent),
+				            TRUE);
+
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_normal, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_urgent, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_list, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
+
+	h_box = gtk_hbox_new(FALSE, 0);
+
 	/* Make the buttons */
 	close = gtk_button_new_with_label("Close");
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
@@ -143,16 +165,44 @@ void url_send(GtkWidget *widget, struct send_url *url)
 	const char *url_to_send = gtk_entry_get_text(GTK_ENTRY(url->entry_u));
 	const char *desc = gtk_entry_get_text(GTK_ENTRY(url->entry_d));
 	gulong uin = 0;
+	gboolean urgent = FALSE;
 
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->spoof_button)))
 	{
 		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(url->spoof_uin), 0, -1));
 	}
 
-	m_prog->e_tag =
-		icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
-       	  (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
-	  ICQ_TCPxMSG_NORMAL, uin);
+	/* yay! no pop ups */
+	if((url->user->Status() == ICQ_STATUS_DND ||
+	    url->user->Status() == ICQ_STATUS_OCCUPIED) &&
+	    !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_list)))
+		urgent = TRUE;	
+
+	if(urgent)
+	{
+		m_prog->e_tag =
+			icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
+       	  	(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
+	  	ICQ_TCPxMSG_URGENT, uin);
+	}
+
+	/* Send to contact list */
+	else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_list)))
+	{
+		m_prog->e_tag = icq_daemon->icqSendUrl(url->user->Uin(),
+					url_to_send, desc,
+		(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
+					ICQ_TCPxMSG_LIST, uin);
+	}
+
+	else /* Just send it normally */
+	{
+		m_prog->e_tag = icq_daemon->icqSendUrl(url->user->Uin(), 
+					url_to_send, desc,
+					(!gtk_toggle_button_get_active(
+						GTK_TOGGLE_BUTTON(url->send_server))),
+					ICQ_TCPxMSG_NORMAL, uin);
+	}
 
 	gchar *temp = g_strdup_printf("URL -> %s ", url->user->GetAlias());
 	
