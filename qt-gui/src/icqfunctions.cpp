@@ -275,6 +275,7 @@ void ICQFunctions::CreateGeneralInfoTab()
   {
     cmbCountry = new CEComboBox(true, fcnTab[TAB_GENERALINFO]);
     cmbCountry->insertItem(tr("Unspecified"));
+    cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
     for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
       cmbCountry->insertItem(GetCountryByIndex(i)->szName);
     lay->addWidget(cmbCountry, CR, 1);
@@ -341,18 +342,18 @@ void ICQFunctions::CreateMoreInfoTab()
   lay->addWidget(new QLabel(tr("Birthday:"), p), ++CR, 0);
   if (m_bOwner)
   {
-    QHBoxLayout *layb = new QHBoxLayout(lay);
-    //QIntValidator *v = new QIntValidator(p);
-    layb->addWidget(new QLabel(tr("Day:"), p));
-    spnBirthDay = new QSpinBox(1, 31, 1, p);
-    layb->addWidget(spnBirthDay);
-    layb->addWidget(new QLabel(tr("Month:"), p));
-    spnBirthMonth = new QSpinBox(1, 12, 1, p);
-    layb->addWidget(spnBirthMonth);
-    layb->addWidget(new QLabel(tr("Year:"), p));
-    spnBirthYear = new QSpinBox(0, 120, 1, p);
-    layb->addWidget(spnBirthYear);
-    lay->addMultiCell(layb, CR, CR, 1, 4);
+    QHBox* w = new QHBox(p);
+    w->setSpacing(8);
+    QLabel* lblDay = new QLabel(tr(" Day:"), w);
+    lblDay->setAlignment(AlignRight | AlignVCenter | SingleLine);
+    spnBirthDay = new QSpinBox(1, 31, 1, w);
+    QLabel* lblMonth = new QLabel(tr(" Month:"), w);
+    lblMonth->setAlignment(AlignRight | AlignVCenter | SingleLine);
+    spnBirthMonth = new QSpinBox(1, 12, 1, w);
+    QLabel* lblYear = new QLabel(tr(" Year:"), w);
+    lblYear->setAlignment(AlignRight | AlignVCenter | SingleLine);
+    spnBirthYear = new QSpinBox(1900, 2020, 1, w);
+    lay->addMultiCellWidget(w, CR, CR, 1, 4);
   }
   else
   {
@@ -1648,8 +1649,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 
 ICQFunctions::~ICQFunctions()
 {
-  if (icqEventTag != NULL)
-    delete icqEventTag;
+  delete icqEventTag;
 }
 
 #include "moc/moc_icqfunctions.h"
