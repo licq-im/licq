@@ -226,6 +226,14 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   barChat->addSeparator();
 
+  cmbFontSize = new QComboBox(barChat);
+  connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
+  cmbFontSize->insertItem(QString::number(font().pointSize()));
+
+  QValueList<int> sizes = QFontDatabase::standardSizes();
+  for(unsigned i = 0; i < sizes.count(); i++)
+    cmbFontSize->insertItem(QString::number(sizes[i]));
+
   QFontDatabase fb;
   cmbFontName = new QComboBox(barChat);
   cmbFontName->setStyle(new QWindowsStyle);
@@ -237,14 +245,6 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   cmbFontName->insertStringList(fb.families());
   barChat->setStretchableWidget(cmbFontName);
   connect(cmbFontName, SIGNAL(activated(const QString&)), SLOT(fontNameChanged(const QString&)));
-
-  cmbFontSize = new QComboBox(barChat);
-  connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
-  cmbFontSize->insertItem(QString::number(font().pointSize()));
-
-  QValueList<int> sizes = QFontDatabase::standardSizes();
-  for(unsigned i = 0; i < sizes.count(); i++)
-    cmbFontSize->insertItem(QString::number(sizes[i]));
 
   QGridLayout *g = new QGridLayout(widCentral, 2, 1, 6, 4);
   g->addWidget(boxPane, 0, 0);
