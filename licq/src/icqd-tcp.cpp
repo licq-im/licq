@@ -1355,10 +1355,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         CPT_AckOpenSecureChannel p(theSequence, true, u);
         AckTCP(p, pSock);
 
-        pSock->SecureListen();
+        if (!pSock->SecureListen())
+        {
+          errorOccured = true;
+          break;
+        }
         u->SetSecure(true);
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
-
 
         gLog.Info("%sSecure channel established with %s (%ld).\n",
          L_SSLxSTR, u->GetAlias(), nUin);
@@ -1539,11 +1542,18 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             return false;
           }
 
-          gLog.Info("%sSecure channel established with %s (%ld).\n", L_SSLxSTR,
-             u->GetAlias(), nUin);
-          pSock->SecureConnect();
-          u->SetSecure(true);
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
+          if (!pSock->SecureConnect())
+          {
+            errorOccured = true;
+            e->m_eResult = EVENT_FAILED;
+          }
+          else
+          {
+            gLog.Info("%sSecure channel established with %s (%ld).\n", L_SSLxSTR,
+               u->GetAlias(), nUin);
+            u->SetSecure(true);
+            PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
+          }
         }
 
         // finish up
@@ -1552,7 +1562,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         ProcessDoneEvent(e);
 
         // get out of here now as we don't want standard ack processing
-        return true;
+        return !errorOccured;
       }
 
 

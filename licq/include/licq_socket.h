@@ -125,12 +125,13 @@ public:
 
   bool Secure() { return m_pSSL != NULL; }
 
-  void SecureConnect();
-  void SecureListen();
+  bool SecureConnect();
+  bool SecureListen();
   void SecureStop();
 
 protected:
   SSL *m_pSSL;
+  pthread_mutex_t mutex_ssl;
 };
 
 

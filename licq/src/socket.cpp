@@ -547,13 +547,17 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
 #ifdef USE_OPENSSL
   if (m_pSSL != NULL)
   {
-    int i, j;
+    int i, j = 0;
     ERR_clear_error();
-    if ((i = SSL_write(m_pSSL, pcSize, 2)) < 0)
+    pthread_mutex_lock(&mutex_ssl);
+    i = SSL_write(m_pSSL, pcSize, 2);
+    if (i < 0) j = SSL_get_error(m_pSSL, i);
+    pthread_mutex_unlock(&mutex_ssl);
+    if (i < 0)
     {
       const char *file; int line;
       unsigned long err;
-      switch (j = SSL_get_error(m_pSSL, i))
+      switch (j)
       {
         case SSL_ERROR_SSL:
           err = ERR_get_error_line(&file, &line);
@@ -567,11 +571,15 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
     }
 
     ERR_clear_error();
-    if ((i = SSL_write(m_pSSL, b->getDataStart(), b->getDataSize())) < 0)
+    pthread_mutex_lock(&mutex_ssl);
+    i = SSL_write(m_pSSL, b->getDataStart(), b->getDataSize());
+    if (i < 0) j = SSL_get_error(m_pSSL, i);
+    pthread_mutex_unlock(&mutex_ssl);
+    if (i < 0)
     {
       const char *file; int line;
       unsigned long err;
-      switch (j = SSL_get_error(m_pSSL, i))
+      switch (j)
       {
         case SSL_ERROR_SSL:
           err = ERR_get_error_line(&file, &line);
@@ -666,8 +674,11 @@ bool TCPSocket::RecvPacket()
 #ifdef USE_OPENSSL
       if (m_pSSL)
       {
+        pthread_mutex_lock(&mutex_ssl);
         nBytesReceived = SSL_read(m_pSSL, buffer, 2);
-        switch (SSL_get_error(m_pSSL, nBytesReceived))
+        int tmp = SSL_get_error(m_pSSL, nBytesReceived);
+        pthread_mutex_unlock(&mutex_ssl);
+        switch (tmp)
         {
           case SSL_ERROR_NONE:
             break;
@@ -717,8 +728,11 @@ bool TCPSocket::RecvPacket()
 #ifdef USE_OPENSSL
   if (m_pSSL != NULL)
   {
+    pthread_mutex_lock(&mutex_ssl);
     nBytesReceived = SSL_read(m_pSSL, m_xRecvBuffer.getDataPosWrite(), nBytesLeft);
-    switch (SSL_get_error(m_pSSL, nBytesReceived))
+    int tmp = SSL_get_error(m_pSSL, nBytesReceived);
+    pthread_mutex_unlock(&mutex_ssl);
+    switch (tmp)
     {
       case SSL_ERROR_NONE:
         break;
@@ -776,39 +790,83 @@ TCPSocket::~TCPSocket()
 
 #ifdef USE_OPENSSL /*-----Start of OpenSSL code----------------------------*/
 
-void TCPSocket::SecureConnect()
+bool TCPSocket::SecureConnect()
 {
+  pthread_mutex_init(&mutex_ssl, NULL);
   m_pSSL = SSL_new(gSSL_CTX);
 #ifdef SSL_DEBUG
   m_pSSL->debug = 1;
 #endif
   SSL_set_session(m_pSSL, NULL);
   SSL_set_fd(m_pSSL, m_nDescriptor);
-  SSL_connect(m_pSSL);
+  int i = SSL_connect(m_pSSL);
+  if (i < 0)
+  {
+    const char *file; int line;
+    unsigned long err;
+    int j = SSL_get_error(m_pSSL, i);
+    switch (j)
+    {
+      case SSL_ERROR_SSL:
+        err = ERR_get_error_line(&file, &line);
+        gLog.Warn("%sSSL_connect error = %lx, %s:%i\n", L_WARNxSTR, err, file, line);
+        ERR_clear_error();
+        break;
+      default:
+        gLog.Warn("%sSSL_connect error %d, SSL_%d\n", L_WARNxSTR, i, j);
+        break;
+    }
+    return false;
+  }
+  return true;
 }
 
-void TCPSocket::SecureListen()
+bool TCPSocket::SecureListen()
 {
+  pthread_mutex_init(&mutex_ssl, NULL);
+
   m_pSSL = SSL_new(gSSL_CTX);
   SSL_set_session(m_pSSL, NULL);
   SSL_set_fd(m_pSSL, m_nDescriptor);
-  SSL_accept(m_pSSL);
+  int i = SSL_accept(m_pSSL);
+  if (i < 0)
+  {
+    const char *file; int line;
+    unsigned long err;
+    int j = SSL_get_error(m_pSSL, i);
+    switch (j)
+    {
+      case SSL_ERROR_SSL:
+        err = ERR_get_error_line(&file, &line);
+        gLog.Warn("%sSSL_accept error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
+        ERR_clear_error();
+        break;
+      default:
+        gLog.Warn("%sSSL_accept error %d, SSL_%d\n", L_SSLxSTR, i, j);
+        break;
+    }
+    return false;
+  }
+  return true;
 }
 
 void TCPSocket::SecureStop()
 {
+  pthread_mutex_destroy(&mutex_ssl);
   SSL_free(m_pSSL);
   m_pSSL = NULL;
 }
 
 #else
 
-void TCPSocket::SecureConnect()
+bool TCPSocket::SecureConnect()
 {
+  return false;
 }
 
-void TCPSocket::SecureListen()
+bool TCPSocket::SecureListen()
 {
+  return false;
 }
 
 void TCPSocket::SecureStop()
