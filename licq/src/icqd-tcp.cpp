@@ -250,8 +250,20 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
   if (bServer)
   {
+    unsigned long f = INT_VERSION;
+    //flags through server are a little different
+    if (nLevel == ICQ_TCPxMSG_NORMAL)
+      nLevel = ICQ_TCPxMSG_NORMAL2;
+    else if (nLevel == ICQ_TCPxMSG_URGENT)
+    {
+      f |= E_URGENT;
+      nLevel = ICQ_TCPxMSG_URGENT2;
+    }
+    else if (nLevel == ICQ_TCPxMSG_LIST)
+      nLevel = ICQ_TCPxMSG_LIST2;
+
     CPU_FileTransfer *p = new CPU_FileTransfer(u, lFileList, szFilename,
-				szDosDesc, (u->Version() > 7));
+				szDosDesc, nLevel, (u->Version() > 7));
 
     if (!p->IsValid())
     {
@@ -261,7 +273,7 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
     else
     {
       e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-                lFileList, p->Sequence(), TIME_NOW, INT_VERSION);
+                lFileList, p->Sequence(), TIME_NOW, f);
       gLog.Info("%sSending file transfer to %s (#%ld).\n", L_SRVxSTR,
                 u->GetAlias(), -p->Sequence());
 
@@ -323,7 +335,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   for (iter = uins.begin(); iter != uins.end(); iter++)
   {
     u = gUserManager.FetchUser(*iter, LOCK_R);
-    p += sprintf(&m[p], "%ld%c%s%c", *iter, char(0xFE),
+    p += sprintf(&m[p], "%lu%c%s%c", *iter, char(0xFE),
        u == NULL ? "" : u->GetAlias(), char(0xFE));
     vc.push_back(new CContact(*iter, u == NULL ? "" : u->GetAlias()));
     gUserManager.DropUser(u);
@@ -473,9 +485,22 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 	ICQEvent *result = NULL;
 	if (bServer)
 	{
-		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos,
-                               szChatUsers, nPort, u, (u->Version() > 7));
 		f = INT_VERSION;
+    //flags through server are a little different
+    if (nLevel == ICQ_TCPxMSG_NORMAL)
+      nLevel = ICQ_TCPxMSG_NORMAL2;
+    else if (nLevel == ICQ_TCPxMSG_URGENT)
+    {
+      f |= E_URGENT;
+      nLevel = ICQ_TCPxMSG_URGENT2;
+    }
+    else if (nLevel == ICQ_TCPxMSG_LIST)
+      nLevel = ICQ_TCPxMSG_LIST2;
+
+		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos,
+                               szChatUsers, nPort, nLevel, u,
+                               (u->Version() > 7));
+
 		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
 																	 TIME_NOW, f);
 		gLog.Info("%sSending chat request to %s (#%ld).\n", L_SRVxSTR,
@@ -930,7 +955,7 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
   if (u == NULL) return false;
 
   char szAlias[64];
-  snprintf(szAlias, sizeof(szAlias), "%s (%ld)", u->GetAlias(), u->Uin());
+  snprintf(szAlias, sizeof(szAlias), "%s (%lu)", u->GetAlias(), u->Uin());
   szAlias[sizeof(szAlias) - 1] = '\0';
   unsigned long ip = u->Ip();
   unsigned long intip = u->IntIp();
@@ -1104,10 +1129,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
   CBuffer &packet = pSock->RecvBuffer();
   int sockfd = pSock->Descriptor();
-
-  // Static variables to keep track of repeating chat/file ack packets
-  // THIS IS SHIT AND NEEDS TO BE CHANGED FIXME
-  static unsigned long s_nChatUin, s_nChatSequence, s_nFileUin, s_nFileSequence;
 
   unsigned short nInVersion = pSock->Version();
 
@@ -1363,7 +1384,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4)
-          packet >> theSequence;
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         else {
           packet >> fore >> back;
           if( fore == back ) {
@@ -1420,8 +1449,18 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxTCP_READxFFCxMSG:
       case ICQ_CMDxTCP_READxAWAYxMSG:  // read away message
       {
-        if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
+        else
+          packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
         if (licqChar == 'L')
           gLog.Info("%s%s (%ld) requested auto response [Licq %s].\n", L_TCPxSTR,
@@ -1442,7 +1481,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_URL:  // url sent
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         else {
           packet >> fore >> back;
           if(fore == back)
@@ -1503,7 +1551,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_CONTACTxLIST:
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         else {
           packet >> fore >> back;
           if(fore == back) {
@@ -1568,7 +1625,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         packet.UnpackString(szChatClients, sizeof(szChatClients));
         packet.UnpackUnsignedLong(); // reversed port
         unsigned short nPort = packet.UnpackUnsignedLong();
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         if (licqChar == 'L')
@@ -1613,7 +1679,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         szFilename[nLenFilename] = '\0';
         packet >> nFileLength
                >> junkLong;
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         if (licqChar == 'L')
@@ -1842,7 +1917,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_SECURExOPEN:
       {
 #ifdef USE_OPENSSL
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         if (licqChar == 'L')
@@ -1894,7 +1978,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_SECURExCLOSE:
       {
 #ifdef USE_OPENSSL
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         if (licqChar == 'L')
@@ -1955,8 +2048,18 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxTCP_READxFFCxMSG:
       case ICQ_CMDxSUB_URL:
       case ICQ_CMDxSUB_CONTACTxLIST:
-        if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
+        else
+          packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
         break;
 
@@ -1966,20 +2069,20 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         packet.UnpackString(ul, sizeof(ul));
         packet >> nPortReversed   // port backwards
                >> nPort;    // port to connect to for chat
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
-        // only if this is the first chat ack packet do we do anything
-        if (s_nChatSequence == theSequence && s_nChatUin == nUin)
-        {
-          gUserManager.DropUser(u);
-          return true;
-        }
-        s_nChatSequence = theSequence;
-        s_nChatUin = nUin;
 
-        //pExtendedAck = new CExtendedAck (ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
         pExtendedAck = new CExtendedAck (nPort != 0, nPort, message);
         break;
       }
@@ -1994,21 +2097,21 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
          for (int i = 0; i < junkShort; i++) packet >> junkChar;
          packet >> junkLong
                 >> nPort;
-         if (nInVersion <= 4) packet >> theSequence;
+         if (nInVersion <= 4)
+         {
+           if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+           {
+             theSequence = (signed short)packet.UnpackUnsignedShort();
+           }
+           else
+             packet >> theSequence;
+         }
          packet >> licqChar >> licqVersion;
 
          // Some clients only send the first port (reversed)
          if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
-         // only if this is the first file ack packet do we do anything
-         if (s_nFileSequence == theSequence && s_nFileUin == nUin)
-         {
-           gUserManager.DropUser(u);
-           return true;
-         }
-         s_nFileSequence = theSequence;
-         s_nFileUin = nUin;
 
-         //pExtendedAck = new CExtendedAck(ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
          pExtendedAck = new CExtendedAck(nPort != 0, nPort, message);
          break;
       }
@@ -2067,7 +2170,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					if (nPort == 0)
 						nPort = nPortReversed;
 
-					pExtendedAck = new CExtendedAck(nPort != 0, nPort, szMessage);
+					pExtendedAck = new CExtendedAck(nPort != 0, nPort,
+                                message[0] != '\0' ? message : szMessage);
 					break;
 				}
 				case ICQ_CMDxSUB_CHAT:
@@ -2080,7 +2184,14 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					if (nPort == 0)
 						nPort = nPortReversed;
 
-					pExtendedAck = new CExtendedAck(true, nPort, szMessage);
+          /* this is silly, but appearantly the only way to tell if chat is
+             accepted (multiparty chat is accepted if port is 0, and rejected
+             otherwise, normal chat is accepted if the port is given and
+             rejected if it's 0) */
+          bool bAccepted = (nPort != 0 && ul[0] == '\0') ||
+                           (nPort == 0 && ul[0] != '\0');
+					pExtendedAck = new CExtendedAck(bAccepted, nPort,
+                                message[0] != '\0' ? message : szMessage);
 					break;
 				}
 				} // switch nICBMCommand
@@ -2091,7 +2202,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 #ifdef USE_OPENSSL
       case ICQ_CMDxSUB_SECURExOPEN:
       {
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         char l[32] = "";
@@ -2155,7 +2275,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
       case ICQ_CMDxSUB_SECURExCLOSE:
       {
-        if (nInVersion <= 4) packet >> theSequence;
+        if (nInVersion <= 4)
+        {
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
         packet >> licqChar >> licqVersion;
 
         char l[32] = "";
@@ -2210,7 +2339,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     if (ackFlags == ICQ_TCPxACK_REFUSE)
     {
       gLog.Info("%sRefusal from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
-      nSubResult = (newCommand == ICQ_CMDxSUB_FILE || newCommand == ICQ_CMDxSUB_CHAT) ? ICQ_TCPxACK_ACCEPT : ICQ_TCPxACK_REFUSE;
+      nSubResult = ICQ_TCPxACK_REFUSE;
     }
     else
     {
@@ -2226,11 +2355,19 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       switch(ackFlags)
       {
         case ICQ_TCPxACK_ONLINE:
-        case ICQ_TCPxACK_AWAY:
-        case ICQ_TCPxACK_NA:
           gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
             -theSequence, l);
-          nSubResult = ICQ_TCPxACK_ACCEPT;
+          if (pExtendedAck && !pExtendedAck->Accepted())
+            nSubResult = ICQ_TCPxACK_RETURN;
+          else
+            nSubResult = ICQ_TCPxACK_ACCEPT;
+          break;
+        case ICQ_TCPxACK_AWAY:
+        case ICQ_TCPxACK_NA:
+        case ICQ_TCPxACK_OCCUPIEDx2: //auto decline due to occupied mode
+          gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
+            -theSequence, l);
+          nSubResult = ICQ_TCPxACK_REFUSE;
           break;
         case ICQ_TCPxACK_OCCUPIED:
         case ICQ_TCPxACK_DND:
@@ -2282,7 +2419,17 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         gLog.Info("%sChat request from %s (%ld) cancelled.\n", L_TCPxSTR,
                  u->GetAlias(), nUin);
         if (nInVersion <= 4)
-          packet >> junkLong >> junkLong >> junkShort >> junkChar >> theSequence;
+        {
+          packet >> junkLong >> junkLong >> junkShort >> junkChar;
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
+
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
           if (u->EventPeek(i)->Sequence() == theSequence)
@@ -2298,7 +2445,17 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         gLog.Info("%sFile transfer request from %s (%ld) cancelled.\n",
                  L_TCPxSTR, u->GetAlias(), nUin);
         if (nInVersion <= 4)
-          packet >> junkLong >> junkShort >> junkChar >> junkLong >> junkLong >> theSequence;
+        {
+          packet >> junkLong >> junkShort >> junkChar >> junkLong >> junkLong;
+          if (packet.getDataPosRead() + 4 >
+                              (packet.getDataStart() + packet.getDataSize()))
+          {
+            theSequence = (signed short)packet.UnpackUnsignedShort();
+          }
+          else
+            packet >> theSequence;
+        }
+
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
           if (u->EventPeek(i)->Sequence() == theSequence)

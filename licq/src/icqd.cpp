@@ -257,6 +257,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   pthread_mutex_init(&mutex_extendedevents, NULL);
   pthread_mutex_init(&mutex_sendqueue_server, NULL);
   pthread_mutex_init(&mutex_modifyserverusers, NULL);
+  pthread_mutex_init(&mutex_cancelthread, NULL);
   pthread_cond_init(&cond_serverack, NULL);
   pthread_mutex_init(&mutex_serverack, NULL);
 }
@@ -834,10 +835,15 @@ unsigned short VersionToUse(unsigned short v_in)
   gLog.Warn("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
   return 2;*/
   unsigned short v_out = v_in < ICQ_VERSION_TCP ? v_in : ICQ_VERSION_TCP;
-  if (v_out < 2)
+  if (v_out < 2 || v_out == 5)
   {
-    gLog.Warn("%sInvalid TCP version %d.  Attempting v6.\n", L_WARNxSTR, v_out);
-    v_out = 6;
+    if (v_out == 5)
+      v_out = 4;
+    else
+      v_out = 6;
+
+    gLog.Warn("%sInvalid TCP version %d.  Attempting v%d.\n", L_WARNxSTR, v_in,
+                                                              v_out);
   }
   return v_out;
 }
@@ -890,7 +896,7 @@ void CICQDaemon::SaveUserList()
 #else
   FOR_EACH_UIN_START
   {
-    n = sprintf(buff, "User%d = %ld\n", i, nUin);
+    n = sprintf(buff, "User%d = %lu\n", i, nUin);
     nRet = write(fd, buff, n);
     if (nRet == -1)
       FOR_EACH_UIN_BREAK
@@ -966,7 +972,7 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
   // Don't add a user we already have
   if (gUserManager.IsOnList(nUin))
   {
-    gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nUin);
+    gLog.Warn("%sUser %lu already on contact list.\n", L_WARNxSTR, nUin);
     return false;
   }
 
@@ -998,7 +1004,7 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   // Don't add a user we already have
   if (gUserManager.IsOnList(nu->Uin()))
   {
-    gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nu->Uin());
+    gLog.Warn("%sUser %lu already on contact list.\n", L_WARNxSTR, nu->Uin());
     return;
   }
 
@@ -1097,7 +1103,7 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
   }
   else
   {
-    fprintf(f, "Event from new user (%ld) rejected: \n%s\n--------------------\n\n",
+    fprintf(f, "Event from new user (%lu) rejected: \n%s\n--------------------\n\n",
             nUin, e->Text());
     chmod(m_szRejectFile, 00600);
     fclose(f);
@@ -1144,7 +1150,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start server event thread (#%ld):\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to start server event thread (#%lu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     e->m_eResult = EVENT_ERROR;
   }
@@ -1154,7 +1160,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 }
 
 ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,
-   CUserEvent *ue)
+   CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
   if (m_bShuttingDown)
@@ -1169,7 +1175,27 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
 
   if (e == NULL)  return NULL;
 
-  return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+  if (bExtendedEvent) PushExtendedEvent(e);
+
+  ICQEvent *result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+
+  // if an error occured, remove the event from the extended queue as well
+  if (result == NULL && bExtendedEvent)
+  {
+    pthread_mutex_lock(&mutex_extendedevents);
+    std::list<ICQEvent *>::iterator i;
+    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
+    {
+      if (*i == e)
+      {
+        m_lxExtendedEvents.erase(i);
+        break;
+      }
+    }
+    pthread_mutex_unlock(&mutex_extendedevents);
+  }
+
+  return result;
 }
 
 
@@ -1217,7 +1243,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start event thread (#%ld):\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to start event thread (#%lu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     DoneEvent(e, EVENT_ERROR);
     if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
@@ -1338,7 +1364,9 @@ ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResu
       // Check if we should cancel a processing thread
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
       {
+        pthread_mutex_lock(&mutex_cancelthread);
         pthread_cancel(e->thread_send);
+        pthread_mutex_unlock(&mutex_cancelthread);
         e->thread_running = false;
       }
       break;
@@ -1374,7 +1402,9 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
       // Check if we should cancel a processing thread
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
       {
+        pthread_mutex_lock(&mutex_cancelthread);
         pthread_cancel(e->thread_send);
+        pthread_mutex_unlock(&mutex_cancelthread);
         e->thread_running = false;
       }
       break;
@@ -1386,7 +1416,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
     gLog.Info("doneevents: for: %p pending: \n", e);
     for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
     {
-      gLog.Info("%p Command: %d SubCommand: %d Sequence: %ld SubSequence: %d: Uin: %ld\n", *iter,
+      gLog.Info("%p Command: %d SubCommand: %d Sequence: %lu SubSequence: %d: Uin: %lu\n", *iter,
                 (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
                 (*iter)->Uin());
     }
@@ -1444,7 +1474,9 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EventResult 
       // Check if we should cancel a processing thread
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
       {
+        pthread_mutex_lock(&mutex_cancelthread);
         pthread_cancel(e->thread_send);
+        pthread_mutex_unlock(&mutex_cancelthread);
         e->thread_running = false;
       }
       break;
@@ -1475,7 +1507,9 @@ ICQEvent *CICQDaemon::DoneEvent(unsigned long tag, EventResult _eResult)
       // Check if we should cancel a processing thread
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
       {
+        pthread_mutex_lock(&mutex_cancelthread);
         pthread_cancel(e->thread_send);
+        pthread_mutex_unlock(&mutex_cancelthread);
         e->thread_running = false;
       }
       break;
@@ -1723,7 +1757,7 @@ void CICQDaemon::PushExtendedEvent(ICQEvent *e)
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
 #if 0
-  gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %ld SubSequence: %d: Uin: %ld\n", e,
+  gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %lu SubSequence: %d: Uin: %lu\n", e,
             e->Command(), e->SubCommand(), e->Sequence(), e->SubSequence(), e->Uin());
 #endif
   pthread_mutex_unlock(&mutex_extendedevents);
@@ -2027,20 +2061,18 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
   case ICQ_CMDxSUB_FILE:
   {
-    unsigned short nPortReversed, nFilenameLen;
+    unsigned short nFilenameLen, nPortReversed;
     unsigned long nFileSize;
 
     gTranslator.ServerToClient(message);
 
-    nPortReversed = packet.UnpackUnsignedShortBE();
-    packet >> nPort;
+    nPortReversed = packet.UnpackUnsignedShortBE(); /* this is garbage when
+                                                      the request is refused */
+    packet.UnpackUnsignedShort();
 
-    if (nPort == 0)
-      nPort = nPortReversed;
-
+    packet >> nFilenameLen;
     if (!bIsAck)
     {
-      packet >> nFilenameLen;
       char szFilename[nFilenameLen+1];
       for (unsigned short i = 0; i < nFilenameLen; i++)
         packet >> szFilename[i];
@@ -2055,6 +2087,10 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       nEventType = ON_EVENT_FILE;
       pEvent = e;
     }
+    else
+      packet.incDataPosRead(nFilenameLen + 4);
+
+    packet >> nPort;
 
     szType = strdup("File transfer request through server");
     break;
@@ -2097,8 +2133,29 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   case ICQ_CMDxTCP_READxFFCxMSG:
   case ICQ_CMDxTCP_READxAWAYxMSG:
   {
-    gLog.Info("%s%s (%ld) requested auto response.\n", L_SRVxSTR, u->GetAlias(),
-              u->Uin());
+    if (bIsAck)
+    {
+      if (strcmp(u->AutoResponse(), message))
+      {
+        u->SetAutoResponse(message);
+        u->SetShowAwayMsg(*message);
+        gLog.Info("%sAuto response from %s (#%lu).\n", L_SRVxSTR, u->GetAlias(),
+                  nMsgID[1]);
+      }
+      ICQEvent *e = DoneServerEvent(nMsgID[1], EVENT_ACKED);
+      if (e)
+      {
+        e->m_pExtendedAck = new CExtendedAck(true, 0, message);
+        e->m_nSubResult = ICQ_TCPxACK_RETURN;
+        ProcessDoneEvent(e);
+      }
+      else
+        gLog.Warn("%sAck for unknown event.\n", L_SRVxSTR);
+    }
+    else
+    {
+      gLog.Info("%s%s (%lu) requested auto response.\n", L_SRVxSTR,
+                u->GetAlias(), u->Uin());
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, nMsgType, true, nLevel);
@@ -2107,7 +2164,9 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     m_sStats[STATS_AutoResponseChecked].Inc();
     u->SetLastCheckedAutoResponse();
 
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->Uin()));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
+                       u->Uin()));
+    }
     return;
     
     break; // bah!
@@ -2151,8 +2210,12 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       packet >> szMessage[i];
     szMessage[nLongLen] = '\0';
 
+    /* if the auto response is non empty then this is a decline and we want
+       to show the auto response rather than our original message */
+    char *msg = (message[0] != '\0') ? message : szMessage;
+
     // recursion
-    ProcessMessage(u, packet, szMessage, nCommand, nMask, nMsgID,
+    ProcessMessage(u, packet, msg, nCommand, nMask, nMsgID,
                    nSequence, bIsAck, bNewUser);
     return;
 
@@ -2167,14 +2230,13 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   if (bIsAck)
   {
     ICQEvent *pAckEvent = DoneServerEvent(nMsgID[1], EVENT_ACKED);
-    CExtendedAck *pExtendedAck = new CExtendedAck(true, nPort,
-                                                  message);
+    CExtendedAck *pExtendedAck = new CExtendedAck(true, nPort, message);
 
     if (pAckEvent)
     {
       pAckEvent->m_pExtendedAck = pExtendedAck;
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-      gLog.Info("%s%s accepted from %s (%ld).\n", L_SRVxSTR, szType,
+      gLog.Info("%s%s accepted from %s (%lu).\n", L_SRVxSTR, szType,
                 u->GetAlias(), u->Uin());
       gUserManager.DropUser(u);
       ProcessDoneEvent(pAckEvent);
@@ -2205,18 +2267,18 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       {
         if (Ignore(IGNORE_NEWUSERS))
         {
-          gLog.Info("%s%s from new user (%ld), ignoring.\n", L_SRVxSTR,
+          gLog.Info("%s%s from new user (%lu), ignoring.\n", L_SRVxSTR,
                     szType, u->Uin());
           if (szType)  free(szType);
           RejectEvent(u->Uin(), pEvent);
           return;
         }
-        gLog.Info("%s%s from new user (%ld).\n", L_SRVxSTR, szType, u->Uin());
+        gLog.Info("%s%s from new user (%lu).\n", L_SRVxSTR, szType, u->Uin());
         AddUserToList(u);
         bNewUser = false;
       }
       else
-        gLog.Info("%s%s from %s (%ld).\n", L_SRVxSTR, szType, u->GetAlias(),
+        gLog.Info("%s%s from %s (%lu).\n", L_SRVxSTR, szType, u->GetAlias(),
                   u->Uin());
 
       if (AddUserEvent(u, pEvent))

@@ -199,8 +199,12 @@ bool CUtility::SetFields(unsigned long _nUin)
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
   if (u == NULL) return false;
   if (m_szFullCommand != NULL) delete [] m_szFullCommand;
+  char *szTmp;
+  szTmp = u->usprintf(m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
   m_szFullCommand = new char[MAX_CMD_LEN];
-  u->usprintf(m_szFullCommand, m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
+  strncpy(m_szFullCommand, szTmp, MAX_CMD_LEN);
+  m_szFullCommand[MAX_CMD_LEN - 1] = '\0';
+  free(szTmp);
   vector<CUtilityUserField *>::iterator iter;
   for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
     (*iter)->SetFields(u);
@@ -214,8 +218,12 @@ bool CUtility::SetFields(const char *szId, unsigned long nPPID)
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL) return false;
   if (m_szFullCommand != NULL) delete [] m_szFullCommand;
+  char *szTmp;
+  szTmp = u->usprintf(m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
   m_szFullCommand = new char[MAX_CMD_LEN];
-  u->usprintf(m_szFullCommand, m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
+  strncpy(m_szFullCommand, szTmp, MAX_CMD_LEN);
+  m_szFullCommand[MAX_CMD_LEN - 1] = '\0';
+  free(szTmp);
   vector<CUtilityUserField *>::iterator iter;
   for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
     (*iter)->SetFields(u);
@@ -260,8 +268,12 @@ void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
 
 bool CUtilityUserField::SetFields(ICQUser *u)
 {
+  char *szTmp;
+  szTmp = u->usprintf(m_szDefault, USPRINTF_NOFW|USPRINTF_LINEISCMD);
   m_szFullDefault = new char[MAX_CMD_LEN];
-  u->usprintf(m_szFullDefault, m_szDefault, USPRINTF_NOFW|USPRINTF_LINEISCMD);
+  strncpy(m_szFullDefault, szTmp, MAX_CMD_LEN);
+  m_szFullDefault[MAX_CMD_LEN - 1] = '\0';
+  free(szTmp);
   return true;
 }
 

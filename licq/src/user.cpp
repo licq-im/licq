@@ -250,10 +250,10 @@ bool CUserManager::Load()
      }
      if (nUserUin == 0)
      {
-       gLog.Warn("%sSkipping user %i, invalid uin %ld.\n", L_WARNxSTR, i, nUserUin);
+       gLog.Warn("%sSkipping user %i, invalid uin %lu.\n", L_WARNxSTR, i, nUserUin);
        continue;
      }
-     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
+     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%lu.uin", BASE_DIR, USER_DIR, nUserUin);
 
      u = new ICQUser(nUserUin, filename);
      u->AddToContactList();
@@ -410,6 +410,8 @@ unsigned long CUserManager::AddUser(ICQUser *pUser)
   pUser->SaveGeneralInfo();
   pUser->SaveMoreInfo();
   pUser->SaveWorkInfo();
+  pUser->SaveAboutInfo();
+  pUser->SaveExtInfo();
 
   // Store the user in the hash table
   m_hUsers.Store(pUser, nUin);
@@ -443,7 +445,7 @@ void CUserManager::RemoveUser(unsigned long _nUin)
   while (iter != m_vpcUsers.end() && u != (*iter)) iter++;
   if (iter == m_vpcUsers.end())
     gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
-              "%sUser \"%s\" (%ld) not found in vector.\n",
+              "%sUser \"%s\" (%lu) not found in vector.\n",
               L_WARNxSTR, L_BLANKxSTR, u->GetAlias(), u->Uin());
   else
     m_vpcUsers.erase(iter);
@@ -861,7 +863,7 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   ICQUser *u = FetchUser(szUin, LICQ_PPID, _nLockType);
 #else
   ICQUser *u = NULL;
@@ -873,7 +875,7 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
   {
     u->Lock(_nLockType);
     if (_nUin != u->Uin())
-      gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %ld, found %ld.\n",
+      gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %lu, found %lu.\n",
                  L_ERRORxSTR, _nUin, u->Uin());
   }
 #endif
@@ -887,7 +889,7 @@ bool CUserManager::IsOnList(unsigned long nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", nUin);
+  sprintf(szUin, "%lu", nUin);
   return IsOnList(szUin, LICQ_PPID);
 #else
   if (nUin == m_nOwnerUin) return true;
@@ -982,6 +984,8 @@ void CUserManager::SaveAllUsers()
     pUser->SaveGeneralInfo();
     pUser->SaveMoreInfo();
     pUser->SaveWorkInfo();
+    pUser->SaveAboutInfo();
+    pUser->SaveExtInfo();
   }
   FOR_EACH_USER_END
 }
@@ -1289,7 +1293,7 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   return Retrieve(szUin, LICQ_PPID);
 #else
   Lock(LOCK_R);
@@ -1323,7 +1327,7 @@ void CUserHashTable::Store(ICQUser *u, unsigned long _nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   Store(u, szUin, LICQ_PPID);
 #else
   Lock(LOCK_W);
@@ -1337,7 +1341,7 @@ void CUserHashTable::Remove(unsigned long _nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   Remove(szUin, LICQ_PPID);
 #else
   Lock(LOCK_W);
@@ -1364,7 +1368,7 @@ unsigned short CUserHashTable::HashValue(unsigned long _nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   return HashValue(szUin);
 #else
   //return _nUin % m_vlTable.size();
@@ -1436,7 +1440,7 @@ ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   Init(szUin, LICQ_PPID);
 #else
   Init(_nUin);
@@ -1458,7 +1462,7 @@ ICQUser::ICQUser(unsigned long nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", nUin);
+  sprintf(szUin, "%lu", nUin);
   Init(szUin, LICQ_PPID);
 #else
   Init(nUin);
@@ -1472,7 +1476,7 @@ ICQUser::ICQUser(unsigned long nUin)
            szUin, p);
   delete [] p;
 #else
-  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, nUin);
+  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%lu.uin", BASE_DIR, USER_DIR, nUin);
 #endif
 
   szFilename[MAX_FILENAME_LEN - 1] = '\0';
@@ -1525,7 +1529,7 @@ void ICQUser::AddToContactList()
              p, HISTORYxOLD_EXT);
     delete [] p;
 #else
-    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%lu.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
 #endif
 
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
@@ -1654,7 +1658,7 @@ void ICQUser::LoadLicqInfo()
   m_nLastCounters[LAST_SENT_EVENT] = nLast;
   m_fConf.ReadNum("LastRecv", nLast, 0);
   m_nLastCounters[LAST_RECV_EVENT] = nLast;
-  m_fConf.ReadNum("LastCheckAR", nLast, 0);
+  m_fConf.ReadNum("LastCheckedAR", nLast, 0);
   m_nLastCounters[LAST_CHECKED_AR] = nLast;
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
@@ -1810,7 +1814,7 @@ void ICQUser::RemoveFiles()
              m_szId, p, HISTORYxOLD_EXT);
     delete [] p;
 #else
-    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%lu.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
 #endif
 
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
@@ -1828,7 +1832,7 @@ void ICQUser::Init(unsigned long _nUin)
 {
 #ifdef PROTOCOL_PLUGIN
   char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
+  sprintf(szUin, "%lu", _nUin);
   Init(szUin, LICQ_PPID);
 #else
   //SetOnContactList(false);
@@ -2025,7 +2029,7 @@ void ICQUser::SetDefaults()
 {
   char szTemp[12];
   //TODO Change this
-  sprintf(szTemp, "%ld", Uin());
+  sprintf(szTemp, "%lu", Uin());
   SetAlias(szTemp);
   SetHistoryFile("default");
   SetGroups(GROUPS_SYSTEM, 0);
@@ -2171,7 +2175,7 @@ void ICQUser::SetAlias(const char *s)
       SetString(&m_szAlias, m_szId);
 #else
       char sz[12];
-      sprintf(sz, "%ld", Uin());
+      sprintf(sz, "%lu", Uin());
       SetString(&m_szAlias, sz);
 #endif
     }
@@ -2411,10 +2415,10 @@ char *ICQUser::IntIpStr(char *rbuf)
 }
 
 
-void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
+char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
 {
   bool bLeft = false;
-  unsigned short i = 0, j, nField = 0, nPos = 0;
+  unsigned long i = 0, j, nField = 0, nPos = 0;
   char szTemp[128];
   const char *sz;
 
@@ -2422,17 +2426,33 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
   bool bSecure = (_szFormat[0] == '|' && (nFlags & USPRINTF_PIPEISCMD)) ||
    (nFlags & USPRINTF_LINEISCMD);
 
-  _sz[0] = '\0';
+  unsigned long bufSize = strlen(_szFormat) + 512;
+  char *_sz = (char *)malloc(bufSize);
+#define CHECK_BUFFER                     \
+  if (nPos >= bufSize - 1)               \
+  {                                      \
+    bufSize *= 2;                        \
+    _sz = (char *)realloc(_sz, bufSize); \
+  }
+
   while(_szFormat[i] != '\0')
   {
     if (_szFormat[i] == '`')
     {
         _sz[nPos++] = '`';
+        CHECK_BUFFER;
         i++;
         while(_szFormat[i] != '`' && _szFormat[i] != '\0')
+        {
             _sz[nPos++] = _szFormat[i++];
-        _sz[nPos++] = '`';
-        i++;
+            CHECK_BUFFER;
+        }
+        if (_szFormat[i] != '\0')
+        {
+          _sz[nPos++] = _szFormat[i];
+          CHECK_BUFFER;
+          i++;
+        }
     }
     else if (_szFormat[i] == '%')
     {
@@ -2455,7 +2475,9 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         if (isdigit(_szFormat[i]))
         {
           _sz[nPos++] = _szFormat[i - 1];
+          CHECK_BUFFER;
           _sz[nPos++] = _szFormat[i++];
+          CHECK_BUFFER;
           continue;
         }
       }
@@ -2498,7 +2520,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
 #ifdef PROTOCOL_PLUGIN
           sz = IdString();
 #else
-          sprintf(szTemp, "%ld", Uin());
+          sprintf(szTemp, "%lu", Uin());
           sz = szTemp;
 #endif
           break;
@@ -2605,7 +2627,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         default:
           gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                     L_WARNxSTR, _szFormat[i]);
-          sprintf(szTemp, "%s%d%%%c", (bLeft ? "-" : ""), nField, _szFormat[i]);
+          sprintf(szTemp, "%s%lu%%%c", (bLeft ? "-" : ""), nField, _szFormat[i]);
           sz = szTemp;
           bLeft = false;
           nField = 0;
@@ -2613,19 +2635,31 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
       }
 
       // If we need to be secure, then quote the % string
-      if (bSecure) _sz[nPos++] = '\'';
+      if (bSecure)
+      {
+        _sz[nPos++] = '\'';
+        CHECK_BUFFER;
+      }
 
 // The only way to escape a ' inside a ' is to do '\'' believe it or not
-#define PACK_STRING(x)                   \
-  while(x)                               \
-  {                                      \
-    if (bSecure && sz[j] == '\'')        \
-    {                                    \
-      nPos += sprintf(_sz, "'\\''");     \
-      j++;                               \
-    }                                    \
-    else                                 \
-      _sz[nPos++] = sz[j++];             \
+#define PACK_STRING(x)                          \
+  while(x)                                      \
+  {                                             \
+    if (bSecure && sz[j] == '\'')               \
+    {                                           \
+      if (nPos >= bufSize - 5)                  \
+      {                                         \
+        bufSize *= 2;                           \
+        _sz = (char *)realloc(_sz, bufSize);    \
+      }                                         \
+      nPos += sprintf(&_sz[nPos], "'\\''");     \
+      j++;                                      \
+    }                                           \
+    else                                        \
+    {                                           \
+      _sz[nPos++] = sz[j++];                    \
+      CHECK_BUFFER;                             \
+    }                                           \
   }
 
       // Now append sz to the string using the given field width and alignment
@@ -2640,7 +2674,11 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         {
           j = 0;
           PACK_STRING(sz[j] != '\0');
-          while(j++ < nField) _sz[nPos++] = ' ';
+          while(j++ < nField)
+          {
+            _sz[nPos++] = ' ';
+            CHECK_BUFFER;
+          }
         }
         else
         {
@@ -2653,7 +2691,11 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           }
           else
           {
-            for (j = 0; j < nLen; j++) _sz[nPos++] = ' ';
+            for (j = 0; j < (unsigned long)nLen; j++)
+            {
+              _sz[nPos++] = ' ';
+              CHECK_BUFFER;
+            }
             j = 0;
             PACK_STRING(sz[j] != '\0');
           }
@@ -2661,25 +2703,34 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
       }
 
       // If we need to be secure, then quote the % string
-      if (bSecure) _sz[nPos++] = '\'';
+      if (bSecure)
+      {
+        _sz[nPos++] = '\'';
+        CHECK_BUFFER;
+      }
 
-      i++;
+      if (_szFormat[i] != '\0') i++;
     }
     else
     {
       if (_szFormat[i] == '\n')
       {
         if (nFlags & USPRINTF_NTORN)
+        {
           _sz[nPos++] = '\r';
+          CHECK_BUFFER;
+        }
         if (nFlags & USPRINTF_PIPEISCMD)
           bSecure = (_szFormat[i + 1] == '|');
       }
       _sz[nPos++] = _szFormat[i++];
+      CHECK_BUFFER;
     }
   }
   _sz[nPos] = '\0';
-}
 
+  return _sz;
+}
 
 //-----ICQUser::SaveGeneralInfo----------------------------------------------
 void ICQUser::SaveGeneralInfo()

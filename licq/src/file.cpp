@@ -675,7 +675,8 @@ bool CIniFile::ReadNum(const char *_szKey, unsigned long &data,
     return (false);
   }
 
-  data = (unsigned long)atol(szData);
+  //can't use atol because it truncates numbers over 0x7FFFFFFF
+  data = strtoul(szData, (char **)NULL, 10);
   return(true);
 }
 

@@ -179,7 +179,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   m_nState = FT_STATE_DISCONNECTED;
 
   m_szFileName[0] = m_szPathName[0] = '\0';
-  sprintf(m_szRemoteName, "%ld", m_nUin);
+  sprintf(m_szRemoteName, "%lu", m_nUin);
 
   ftmList.push_back(this);
 }
@@ -209,7 +209,7 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 
   if (szDirectory == NULL)
   {
-    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s/%ld", BASE_DIR, m_nUin);
+    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s/%lu", BASE_DIR, m_nUin);
     m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
     if (access(BASE_DIR, F_OK) < 0 && mkdir(m_szDirectory, 0700) == -1 &&
         errno != EEXIST)
@@ -701,12 +701,12 @@ bool CFileTransferManager::ProcessPacket()
 // the actual transfer begins
 bool CFileTransferManager::StartReceivingFile(char *szFileName)
 {
-  gLog.Info("%sFile Transfer: Received plugin confirmation.\n", L_ERRORxSTR);
+  gLog.Info("%sFile Transfer: Received plugin confirmation.\n", L_TCPxSTR);
       
   if (m_nState != FT_STATE_CONFIRMINGxFILE)
   {
      gLog.Warn("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n",
-        L_ERRORxSTR);
+        L_WARNxSTR);
      return false;
   }
 
@@ -728,7 +728,7 @@ bool CFileTransferManager::StartReceivingFile(char *szFileName)
     {
       if ((unsigned long)buf.st_size >= m_nFileSize)
       {
-        snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%ld", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
+        snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%lu", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
         m_szPathName[MAX_FILENAME_LEN - 1] = '\0';
       }
       m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT | O_APPEND, 00600);

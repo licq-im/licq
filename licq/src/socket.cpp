@@ -323,13 +323,13 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
   switch(d)
   {
   case D_SENDER:
-    gLog.Packet("%sPacket (%sv%ld, %ld bytes) sent:\n%s(%s:%d -> %s:%d)\n%s\n",
+    gLog.Packet("%sPacket (%sv%lu, %lu bytes) sent:\n%s(%s:%d -> %s:%d)\n%s\n",
      L_PACKETxSTR, m_szID, Version(), b->getDataSize(), L_BLANKxSTR,
      LocalIpStr(szIpL),
      LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
     break;
   case D_RECEIVER:
-     gLog.Packet("%sPacket (%sv%ld, %ld bytes) received:\n%s(%s:%d <- %s:%d)\n%s\n",
+     gLog.Packet("%sPacket (%sv%lu, %lu bytes) received:\n%s(%s:%d <- %s:%d)\n%s\n",
       L_PACKETxSTR, m_szID, Version(), b->getDataSize(), L_BLANKxSTR,
       LocalIpStr(szIpL),
       LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
@@ -345,7 +345,7 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
  *---------------------------------------------------------------------------*/
 bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort)
 {
-  if (_nRemoteIp == 0)
+  if (_nRemoteIp == 0 || _nRemotePort == 0)
   {
     m_nErrorType = SOCK_ERROR_h_errno;
     // The Remote IP could be 0 if a proxy could not resolve it.  So let's do
@@ -463,7 +463,7 @@ bool INetSocket::OpenConnection()
   else
   {
     // If no destination set then someone screwed up
-    if(m_sRemoteAddr.sin_addr.s_addr == 0)
+    if(m_sRemoteAddr.sin_addr.s_addr == 0 || ntohs(m_sRemoteAddr.sin_port) == 0)
     {
       m_nErrorType = SOCK_ERROR_internal;
       return(false);
@@ -670,7 +670,7 @@ bool SrvSocket::RecvPacket()
 {
   if (!m_xRecvBuffer.Empty())
   {
-    gLog.Error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%ld bytes).\n",
+    gLog.Error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
               L_WARNxSTR, m_xRecvBuffer.getDataSize());
     return (true);
   }
@@ -934,7 +934,7 @@ bool TCPSocket::RecvPacket()
 {
   if (m_xRecvBuffer.Full())
   {
-    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%ld bytes).\n",
+    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
               L_WARNxSTR, m_xRecvBuffer.getDataSize());
     return (true);
   }
@@ -1285,12 +1285,26 @@ unsigned short CSocketHashTable::HashValue(int _nSd)
 //=====CSocketManager===========================================================
 CSocketManager::CSocketManager() : m_hSockets(SOCKET_HASH_SIZE)
 {
+  pthread_mutex_init(&mutex, NULL);
+}
+
+CSocketManager::~CSocketManager()
+{
+  int nResult = 0;
+  do
+  {
+    pthread_mutex_lock(&mutex);
+    pthread_mutex_unlock(&mutex);
+    nResult = pthread_mutex_destroy(&mutex);
+  } while (nResult != 0);
 }
 
 INetSocket *CSocketManager::FetchSocket(int _nSd)
 {
+  pthread_mutex_lock(&mutex);
   INetSocket *s = m_hSockets.Retrieve(_nSd);
   if (s != NULL) s->Lock();
+  pthread_mutex_unlock(&mutex);
   return s;
 }
 
@@ -1314,22 +1328,30 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
   // Quick check that the socket is valid
   if (nSd == -1) return;
 
+  pthread_mutex_lock(&mutex);
+
   // Clear from the socket list
   m_sSockets.Clear(nSd);
 
   // Fetch the actual socket
-  INetSocket *s = FetchSocket(nSd);
-  if (s == NULL) return;
+  INetSocket *s = m_hSockets.Retrieve(nSd);
+  if (s == NULL)
+  {
+    pthread_mutex_unlock(&mutex);
+    return;
+  }
+
 #ifdef PROTOCOL_PLUGIN
   char *szOwner = s->OwnerId() ? strdup(s->OwnerId()) : 0;
   unsigned long nPPID = s->OwnerPPID();
 #else
   unsigned long nOwner = s->Owner();
 #endif
-  DropSocket(s);
 
   // First remove the socket from the hash table so it won't be fetched anymore
   m_hSockets.Remove(nSd);
+
+  pthread_mutex_unlock(&mutex);
 
   // Now close the connection (we don't have to lock it first, because the
   // Remove function above guarantees that no one has a lock on the socket

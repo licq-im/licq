@@ -99,16 +99,17 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   case ON_EVENT_RUN:
   {
     char *szParam = m_aszParameters[_nEvent];
-    char szFullParam[MAX_CMD_LEN] = {'\0'};
+    char *szFullParam;
     if (u != NULL)
-      u->usprintf(szFullParam, szParam, USPRINTF_LINEISCMD);
+      szFullParam = u->usprintf(szParam, USPRINTF_LINEISCMD);
     else
-      strcpy(szFullParam, szParam);
+      szFullParam = strdup(szParam);
 
     if (!strlen(szFullParam)) break;
 
     char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
     sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
+    free(szFullParam);
     system(szCmd);
     break;
   }
@@ -119,11 +120,12 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
       if (u != NULL)
       {
         char *szParam = m_aszParameters[_nEvent];
-        char szFullParam[MAX_CMD_LEN] = {'\0'};
+        char *szFullParam;
 
-        u->usprintf(szFullParam, szParam);
+        szFullParam = u->usprintf(szParam);
         gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_ONEVENT,
          _nEvent, u->Uin(),0, szFullParam));
+        free(szFullParam);
       }
     }
   }

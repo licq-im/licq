@@ -2114,7 +2114,7 @@ char *CChatManager::ClientsStr()
   {
     if (sz[0] != '\0') nPos += sprintf(&sz[nPos], ", ");
     if ((*iter)->Name()[0] == '\0')
-      nPos += sprintf(&sz[nPos], "%ld", (*iter)->Uin());
+      nPos += sprintf(&sz[nPos], "%lu", (*iter)->Uin());
     else
       nPos += sprintf(&sz[nPos], "%s", (*iter)->Name());
   }

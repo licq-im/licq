@@ -103,7 +103,7 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
   if (strncmp(_sz, "default", 7) == 0)
   {
     char temp[MAX_FILENAME_LEN];
-    snprintf(temp, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR,
+    snprintf(temp, MAX_FILENAME_LEN, "%s/%s/%lu.%s", BASE_DIR,
              HISTORY_DIR, _nUin, HISTORY_EXT);
     temp[sizeof(temp) - 1] = '\0';
     m_szFileName = strdup(temp);

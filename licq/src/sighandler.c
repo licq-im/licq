@@ -44,6 +44,9 @@ void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 void licq_signal_handler()
 {
   signal(SIGSEGV, &licq_handle_sigsegv);
+  /* writing to socket after remote disconnected causes this, ignore it, the
+     disconnection will be handled, eventually */
+  signal(SIGPIPE, SIG_IGN);
   signal(SIGCHLD, &licq_handle_sigchld);
   /*struct sigaction sa;
   memset(&sa, 0, sizeof(sa));

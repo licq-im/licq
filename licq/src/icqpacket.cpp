@@ -193,7 +193,7 @@ void Encrypt_Server(CBuffer *buffer)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted Packet (%ld bytes):\n%s\n", L_PACKETxSTR, l,
+    gLog.Packet("%sUnencrypted Packet (%lu bytes):\n%s\n", L_PACKETxSTR, l,
                 buffer->print(b));
     delete [] b;
   }
@@ -328,7 +328,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted (ICQ) TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
+    gLog.Packet("%sUnencrypted (ICQ) TCP Packet (%lu bytes):\n%s\n", L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
   }
@@ -468,7 +468,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sDecrypted (ICQ) TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
+    gLog.Packet("%sDecrypted (ICQ) TCP Packet (%lu bytes):\n%s\n", L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
   }
@@ -1222,7 +1222,7 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedShort(m_nSubCommand);
 	buffer->PackUnsignedShort(nStatus);
-	buffer->PackUnsignedShort(m_nMsgFlags ? m_nMsgFlags : 0);
+	buffer->PackUnsignedShort(m_nMsgFlags);
 	buffer->PackUnsignedShort(0x0001); // message len
 	buffer->PackChar(0); // message
 
@@ -1234,9 +1234,10 @@ void CPU_AdvancedMessage::InitBuffer()
 
 //-----ChatRequest-------------------------------------------------------------
 CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
-                                 unsigned short nPort, ICQUser *_pUser, bool bICBM)
+                                 unsigned short nPort, unsigned short nLevel,
+                                 ICQUser *_pUser, bool bICBM)
 	: CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
-												0, false, 0)
+												nLevel, false, 0)
 {
 	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
 	int nMessageLen = _szMessage ? strlen(_szMessage) : 0;
@@ -1281,8 +1282,8 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 
 //-----FileTransfer------------------------------------------------------------
 CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, ConstFileList &lFileList, 
-	const char *_szFile, const char *_szDesc, bool bICBM)
-	: CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, 0,
+	const char *_szFile, const char *_szDesc, unsigned short nLevel, bool bICBM)
+	: CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
 												false, 0),
 		CPX_FileTransfer(lFileList, _szFile)
 {
@@ -1392,10 +1393,10 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
     {
       //m_szMessage = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
       //pUser->usprintf(m_szMessage, u->CustomAutoResponse(), USPRINTF_NTORN);
-      char *cus = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
-      char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      u->usprintf(def, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      u->usprintf(cus, u->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      char *cus;
+      char *def;
+      def = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      cus = u->usprintf(u->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
       m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
       sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
       free(cus);
@@ -1403,8 +1404,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
     }
     else
     {
-      m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      u->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      m_szMessage = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
     }
   }
   else
@@ -2850,7 +2850,7 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   if (strlen(sz) > MAX_MESSAGE_SIZE)
     sz[MAX_MESSAGE_SIZE] = '\0';
   buffer->PackString(sz);
-  if (sz != NULL) free(sz);
+  if (sz != NULL) delete [] sz;
 }
 
 CPU_Meta_SetAbout::~CPU_Meta_SetAbout()
@@ -2941,7 +2941,7 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(2L);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
@@ -2959,7 +2959,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(4L);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(0x00000000);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp); // maybe should be 0
@@ -2974,15 +2974,13 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
    unsigned long nSessionId, unsigned short nLocalPort)
 {
   m_nDestinationUin = nDestinationUin;
-  m_nSessionId = nSessionId;
-  if (m_nSessionId == 0) m_nSessionId = rand();
 
   m_nSize = 44;
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  //buffer->PackUnsignedLong(0x00270006);
-  buffer->PackUnsignedLong(6L);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedShort(0x0027); //size
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort);
@@ -2991,7 +2989,12 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
-  buffer->PackUnsignedLong(m_nSessionId);
+
+  ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+  buffer->PackUnsignedLong(u->Cookie());
+  m_nSessionId = u->Cookie();
+  gUserManager.DropUser(u);
+
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
 }
@@ -3443,7 +3446,7 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
 
 //-----ReadAwayMessage----------------------------------------------------------
 CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG, "", true, false, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG, "", true, ICQ_TCPxMSG_AUTOxREPLY, _cUser)
 {
   // Properly set the subcommand to get the correct away message
   switch(_cUser->Status())
@@ -3589,7 +3592,7 @@ char *PipeInput(char *m_szMessage)
     // Find the end of the command
     for (i = 0; *sz != '\r' && *sz != '\0'; sz++)
     {
-      if (i < sizeof(szCmd)) szCmd[i++] = *sz;
+      if (i < sizeof(szCmd) - 1) szCmd[i++] = *sz;
     }
     szCmd[i] = '\0';
     // Ensure sz points to after the command and \r\n
@@ -3606,7 +3609,7 @@ char *PipeInput(char *m_szMessage)
     {
       int c;
       i = 0;
-      while (((c = fgetc(win.StdOut())) != EOF) && (i < sizeof(szCmdOutput)))
+      while (((c = fgetc(win.StdOut())) != EOF) && (i < sizeof(szCmdOutput) - 1))
       {
         szCmdOutput[i++] = c;
       }
@@ -3672,10 +3675,10 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
     {
       //m_szMessage = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
       //pUser->usprintf(m_szMessage, pUser->CustomAutoResponse(), USPRINTF_NTORN);
-      char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
-      char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      char *cus;
+      char *def;
+      def = pUser->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      cus = pUser->usprintf(pUser->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
       m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
       sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
       free(cus);
@@ -3683,8 +3686,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
     }
     else
     {
-      m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      m_szMessage = pUser->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
     }
 
   }
@@ -3931,7 +3933,7 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
 //+++++Cancel+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
                       ICQUser *_cUser)
-  : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, "", true, false, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, "", true, 0, _cUser)
 {
   m_nSequence = _nSequence;
 }

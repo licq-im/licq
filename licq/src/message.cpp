@@ -78,14 +78,14 @@ const char *CUserEvent::Text()
 
 
 
-//-----CUserEvent::LicqVersionStr-----------------------------------------------
+//-----CUserEvent::LicqVersionToString------------------------------------------
 const char *CUserEvent::LicqVersionToString(unsigned long v)
 {
   static char s_szVersion[8];
   if(v % 10)
-    sprintf(s_szVersion, "v%ld.%ld.%ld", v / 1000, (v / 10) % 100, v % 10);
+    sprintf(s_szVersion, "v%lu.%lu.%lu", v / 1000, (v / 10) % 100, v % 10);
   else
-    sprintf(s_szVersion, "v%ld.%ld", v / 1000, (v / 10) % 100);
+    sprintf(s_szVersion, "v%lu.%lu", v / 1000, (v / 10) % 100);
   return (s_szVersion);
 }
 
@@ -125,7 +125,7 @@ int AddStrWithColons(char *_szNewStr, const char *_szOldStr)
 //-----CUserEvent::AddToHistory-------------------------------------------------
 int CUserEvent::AddToHistory_Header(direction _nDir, char *szOut)
 {
-  return sprintf(szOut, "[ %c | %04d | %04d | %04d | %ld ]\n",
+  return sprintf(szOut, "[ %c | %04d | %04d | %04d | %lu ]\n",
           _nDir == D_RECEIVER ? 'R' : 'S',
           m_nSubCommand, m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime);
 }
@@ -408,9 +408,9 @@ void CEventAdded::CreateDescription()
 #else
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
                       strlen(m_szLastName) + strlen(m_szEmail) + 512];
-  //sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
+  //sprintf(m_szText, "%s (%s %s, %s), uin %lu, added you to their contact list.\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin);
-  sprintf(m_szText, "Alias: %s\nUin: %ld\nName: %s %s\nEmail: %s\n",
+  sprintf(m_szText, "Alias: %s\nUin: %lu\nName: %s %s\nEmail: %s\n",
      m_szAlias, m_nUin, m_szFirstName, m_szLastName, m_szEmail);
 #endif
 }
@@ -443,7 +443,7 @@ void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
                     strlen(m_szLastName) + strlen(m_szEmail)) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n:%s\n:%s\n:%s\n", m_nUin,
+  nPos += sprintf(&szOut[nPos], ":%lu\n:%s\n:%s\n:%s\n:%s\n", m_nUin,
                   m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
 #endif
   AddToHistory_Flush(u, szOut);
@@ -504,7 +504,7 @@ void CEventAuthRequest::CreateDescription()
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
                       + strlen(m_szReason) + strlen(m_szId) + strlen(p) + 256];
-  //sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
+  //sprintf(m_szText, "%s (%s %s, %s), uin %lu, requests authorization to add you to their contact list:\n%s\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
   int pos = sprintf(m_szText, "Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n",
      m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
@@ -513,9 +513,9 @@ void CEventAuthRequest::CreateDescription()
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
                       + strlen(m_szReason) + 256];
-  //sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
+  //sprintf(m_szText, "%s (%s %s, %s), uin %lu, requests authorization to add you to their contact list:\n%s\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
-  int pos = sprintf(m_szText, "Alias: %s\nUin: %ld\nName: %s %s\nEmail: %s\n",
+  int pos = sprintf(m_szText, "Alias: %s\nUin: %lu\nName: %s %s\nEmail: %s\n",
      m_szAlias, m_nUin, m_szFirstName, m_szLastName, m_szEmail);
 #endif
   if (m_szReason[0] != '\0')
@@ -554,7 +554,7 @@ void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
                     strlen(m_szReason)) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n:%s\n:%s\n:%s\n", m_nUin,
+  nPos += sprintf(&szOut[nPos], ":%lu\n:%s\n:%s\n:%s\n:%s\n", m_nUin,
                   m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
 #endif
   AddStrWithColons(&szOut[nPos], m_szReason);
@@ -603,7 +603,7 @@ void CEventAuthGranted::CreateDescription()
   delete [] p;
 #else
   m_szText = new char[strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, "User %ld authorized you", m_nUin);
+  int pos = sprintf(m_szText, "User %lu authorized you", m_nUin);
 #endif
   if (m_szMessage[0] != '\0')
     sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
@@ -633,7 +633,7 @@ void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
   char *szOut = new char[strlen(m_szMessage) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%ld\n", m_nUin);
+  nPos += sprintf(&szOut[nPos], ":%lu\n", m_nUin);
 #endif
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, szOut);
@@ -684,7 +684,7 @@ void CEventAuthRefused::CreateDescription()
   delete [] p;
 #else
   m_szText = new char[strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, "User %ld refused to authorize you", m_nUin);
+  int pos = sprintf(m_szText, "User %lu refused to authorize you", m_nUin);
 #endif
   if (m_szMessage[0] != '\0')
     sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
@@ -714,7 +714,7 @@ void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
   char *szOut = new char[strlen(m_szMessage) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%ld\n", m_nUin);
+  nPos += sprintf(&szOut[nPos], ":%lu\n", m_nUin);
 #endif
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, szOut);
@@ -829,7 +829,7 @@ void CEventContactList::CreateDescription()
 #ifdef PROTOCOL_PLUGIN
     szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), (*iter)->IdString());
 #else
-    szEnd += sprintf(szEnd, "%s (%ld)\n", (*iter)->Alias(), (*iter)->Uin());
+    szEnd += sprintf(szEnd, "%s (%lu)\n", (*iter)->Alias(), (*iter)->Uin());
 #endif
   }
 }
@@ -856,7 +856,7 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
       p, (*iter)->Alias());
     delete [] p;
 #else
-    nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n", (*iter)->Uin(), (*iter)->Alias());
+    nPos += sprintf(&szOut[nPos], ":%lu\n:%s\n", (*iter)->Uin(), (*iter)->Alias());
 #endif
   }
   AddToHistory_Flush(u, szOut);
@@ -1042,7 +1042,7 @@ void CEventUnknownSysMsg::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char [strlen(m_szMsg) + 128];
-  sprintf(m_szText, "Unknown system message (0x%04X) from %ld:\n%s\n",
+  sprintf(m_szText, "Unknown system message (0x%04X) from %lu:\n%s\n",
           m_nSubCommand, m_nUin, m_szMsg);
 }
 
@@ -1055,10 +1055,10 @@ CEventUnknownSysMsg::~CEventUnknownSysMsg()
 void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
 {
 /*  char *szOut = new char[strlen(m_szMsg) * 2 + 16 + EVENT_HEADER_SIZE];
-  int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %ld ]\n",
+  int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %lu ]\n",
           _nDir == D_RECEIVER ? 'R' : 'S',
           m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime);
-  nPos += sprintf(&szOut[nPos], ":%ld\n", m_nUin);
+  nPos += sprintf(&szOut[nPos], ":%lu\n", m_nUin);
   AddStrWithColons(&szOut[nPos], m_szMsg);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;*/
