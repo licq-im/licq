@@ -144,6 +144,7 @@ protected slots:
   void slot_useProxy(bool);
   void slot_useDockToggled(bool);
   void slot_useFirewall(bool);
+  void slot_usePortRange(bool b);
   void slot_ok();
 };
 
