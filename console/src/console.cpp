@@ -40,7 +40,7 @@ const struct SStatus aStatus[NUM_STATUS] =
   { "*ffc", ICQ_STATUS_FREEFORCHAT }
 };
 
-const unsigned short NUM_VARIABLES = 7;
+const unsigned short NUM_VARIABLES = 9;
 struct SVariable aVariables[NUM_VARIABLES] =
 {
   { "show_offline_users", BOOL, NULL },
@@ -49,7 +49,9 @@ struct SVariable aVariables[NUM_VARIABLES] =
   { "color_away", COLOR, NULL },
   { "color_offline", COLOR, NULL },
   { "color_group_list", COLOR, NULL },
-  { "user_format", STRING, NULL }
+  { "user_online_format", STRING, NULL },
+  { "user_away_format", STRING, NULL },
+  { "user_offline_format", STRING, NULL }
 };
 
 const unsigned short NUM_COLORMAPS = 15;
@@ -89,7 +91,9 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   m_cColorAway = &aColorMaps[0];
   m_cColorOffline = &aColorMaps[1];
   m_cColorGroupList = &aColorMaps[13];
-  strcpy(m_szUserFormat, "%-20a%18s");
+  strcpy(m_szOnlineFormat, "%-20a");
+  strcpy(m_szAwayFormat, "%-20a[%6S]");
+  strcpy(m_szOfflineFormat, "%-20a");
 
   // Set the variable data pointers
   aVariables[0].pData = &m_bShowOffline;
@@ -98,7 +102,9 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   aVariables[3].pData = &m_cColorAway;
   aVariables[4].pData = &m_cColorOffline;
   aVariables[5].pData = &m_cColorGroupList;
-  aVariables[6].pData = m_szUserFormat;
+  aVariables[6].pData = m_szOnlineFormat;
+  aVariables[7].pData = m_szAwayFormat;
+  aVariables[8].pData = m_szOfflineFormat;
 
   m_bExit = false;
 }
@@ -753,10 +759,13 @@ void CLicqConsole::UserCommand_View(unsigned long nUin)
     for (unsigned short i = 0; i < 60; i++)
       waddch(winMain->Win(), ACS_HLINE);
     waddch(winMain->Win(), '\n');
+    time_t t = e->Time();
+    char *szTime = ctime(&t);
+    szTime[16] = '\0';
     winMain->wprintf("%A%C%s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
                      COLOR_WHITE, EventDescription(e),
                      u->User() ? u->getAlias() : "Server",
-                     e->Time(), e->IsDirect() ? 'D' : '-',
+                     szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
                      A_BOLD, e->Text());
     wattron(winMain->Win(), A_BOLD);
@@ -766,15 +775,16 @@ void CLicqConsole::UserCommand_View(unsigned long nUin)
     winMain->RefreshWin();
     wattroff(winMain->Win(), A_BOLD);
     u->ClearEvent(0);
+    gUserManager.DropUser(u);
     PrintUsers();
     PrintStatus();
   }
   else
   {
+    gUserManager.DropUser(u);
     winMain->wprintf("No new events.\n");
   }
 
-  gUserManager.DropUser(u);
 }
 
 
@@ -981,6 +991,7 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
     getyx(winMain->Win(), yp, nLinePos[m_nCon]);
     *winMain << '\n';
     // Check if the line started with a '.'
+    sz[n] = '\0';
     char *szNL = strrchr(sz, '\n');
     if (szNL == NULL || *(szNL + 1) != '.')
     {
@@ -988,7 +999,6 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
       break;
     }
     // It was a dot so we are done
-    sz[n] = '\0';
     return ++szNL;
     break;
   }

@@ -253,24 +253,35 @@ void CLicqConsole::PrintUsers(void)
       }
       bOfflineUsers = true;
     }
-    pUser->usprintf(szLine, m_szUserFormat);
-    if (bOfflineUsers)
+    switch(pUser->getStatus())
     {
-      winUsers->wprintf("%A%C%c%s\n",
-                       m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
-                       m_cColorOffline->nColor,
-                       pUser->getNumMessages() > 0 ? '*' : ' ',
-                       szLine);
-    }
-    else
-    {
+    case ICQ_STATUS_ONLINE:
+      pUser->usprintf(szLine, m_szOnlineFormat);
       winUsers->wprintf("%A%C%c%s\n",
                        m_cColorOnline->bBright ? A_BOLD : A_NORMAL,
                        m_cColorOnline->nColor,
                        pUser->getNumMessages() > 0 ? '*' : ' ',
                        szLine);
+      break;
+    case ICQ_STATUS_OFFLINE:
+      pUser->usprintf(szLine, m_szOfflineFormat);
+      winUsers->wprintf("%A%C%c%s\n",
+                       m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
+                       m_cColorOffline->nColor,
+                       pUser->getNumMessages() > 0 ? '*' : ' ',
+                       szLine);
+      break;
+    default:
+      pUser->usprintf(szLine, m_szAwayFormat);
+      winUsers->wprintf("%A%C%c%s\n",
+                       m_cColorAway->bBright ? A_BOLD : A_NORMAL,
+                       m_cColorAway->nColor,
+                       pUser->getNumMessages() > 0 ? '*' : ' ',
+                       szLine);
+      break;
     }
 
+    if (i >= winUsers->Rows() - 3) FOR_EACH_USER_BREAK;
     i++;
   }
   FOR_EACH_USER_END

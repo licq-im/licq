@@ -133,9 +133,10 @@ void CLicqConsole::MenuGroup(char *_szArg)
     m_nCurrentGroup = nCurrentGroup;
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     winMain->wprintf("Switching to group %d (%s).\n", m_nCurrentGroup,
-                     (*g)[m_nCurrentGroup - 1]);
+                     m_nCurrentGroup == 0 ? "All Users" : (*g)[m_nCurrentGroup - 1]);
     gUserManager.UnlockGroupList();
     PrintStatus();
+    PrintUsers();
   }
 }
 

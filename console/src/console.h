@@ -11,7 +11,7 @@
 #include "user.h"
 
 #define MAX_CON 8
-const unsigned short USER_WIN_WIDTH = 40;
+const unsigned short USER_WIN_WIDTH = 30;
 const char L_CONSOLExSTR[] = "[CON] ";
 
 struct SColorMap
@@ -37,7 +37,9 @@ protected:
   bool m_bShowOffline, m_bShowDividers;
   const struct SColorMap *m_cColorOnline, *m_cColorOffline,
                    *m_cColorAway, *m_cColorGroupList;
-  char m_szUserFormat[128];
+  char m_szOnlineFormat[128];
+  char m_szAwayFormat[128];
+  char m_szOfflineFormat[128];
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;
