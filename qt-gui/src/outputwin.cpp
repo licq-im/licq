@@ -23,7 +23,7 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
 
   outputBox = new CLogWidget(this);
   outputBox->setMinimumHeight(outputBox->frameWidth()*2
-                              + 16*outputBox->fontMetrics().lineSpacing());
+                              + 12*outputBox->fontMetrics().lineSpacing());
   outputBox->setMinimumWidth((outputBox->minimumHeight()*3)/2);
   top_lay->addWidget(outputBox);
 
@@ -61,7 +61,7 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
 void CQtLogWindow::showEvent(QShowEvent *)
 {
   // move Cursor to the end of the QMultiLineEdit
-  outputBox->goToEnd();
+  outputBox->GotoEnd();
 }
 
 // --------------------------------------------------------------------------
@@ -73,8 +73,8 @@ void CQtLogWindow::slot_log(int s)
 
   QString str = QString::fromLocal8Bit(NextLogMsg());
 
-  outputBox->appendNNL(str);
-  outputBox->goToEnd();
+  outputBox->appendNoNewLine(str);
+  outputBox->GotoEnd();
 
   // hardcoded limit, maybe should be user configurable?
   while (outputBox->numLines() > 500)
