@@ -49,7 +49,8 @@ const char *LP_Usage(void)
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE), ignored by KDE support\n";
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE), ignored by KDE support\n"
+    " -d : start hidden (dock icon only)\n";
   return usage;
 }
 
@@ -87,6 +88,7 @@ bool LP_Init(int argc, char **argv)
   char skinName[32] = "";
   char iconsName[32] = "";
   char styleName[32] = "";
+  bool bStartHidden = false;
 
   // parse command line for arguments
   int i = 0;
@@ -106,6 +108,8 @@ bool LP_Init(int argc, char **argv)
     case 'g': // gui style
       strcpy(styleName, optarg);
       break;
+    case 'd': // dock icon
+      bStartHidden = true;
     }
   }
   if (qApp != NULL)
@@ -113,7 +117,7 @@ bool LP_Init(int argc, char **argv)
     gLog.Error("%sA Qt application is already loaded.\n%sRemove the plugin from the command line.\n", L_ERRORxSTR, L_BLANKxSTR);
     return false;
   }
-  licqQtGui = new CLicqGui(argc, argv, skinName, iconsName, styleName);
+  licqQtGui = new CLicqGui(argc, argv, bStartHidden, skinName, iconsName, styleName);
   return (licqQtGui != NULL);
 }
 
@@ -145,7 +149,7 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
 }
 
 
-CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIcons, const char *_szStyle)
+CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin, const char *_szIcons, const char *_szStyle)
 #ifdef USE_KDE
 : KApplication(argc, argv, "KLicq")
 #else
@@ -185,6 +189,7 @@ CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIc
   setStyle(style);
   m_szSkin = strdup(_szSkin);
   m_szIcons = strdup(_szIcons);
+  m_bStartHidden = bStartHidden;
 
   // Try and load a translation
   char *p;
@@ -226,7 +231,8 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
   licqSignalManager = new CSignalManager(_licqDaemon, nPipe);
   licqLogWindow = new CQtLogWindow;
   gLog.AddService(new CLogService_Plugin(licqLogWindow, L_INFO | L_WARN | L_ERROR | L_UNKNOWN));
-  licqMainWindow = new CMainWindow(_licqDaemon, licqSignalManager, licqLogWindow, m_szSkin, m_szIcons);
+  licqMainWindow = new CMainWindow(_licqDaemon, licqSignalManager, licqLogWindow,
+     m_bStartHidden, m_szSkin, m_szIcons);
 
   setMainWidget(licqMainWindow);
   licqMainWindow->show();

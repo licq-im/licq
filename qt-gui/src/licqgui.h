@@ -23,13 +23,14 @@ class CLicqGui : public QApplication
 #endif
 {
 public:
-  CLicqGui(int, char **, const char *, const char *, const char *);
+  CLicqGui(int, char **, bool, const char *, const char *, const char *);
   ~CLicqGui(void);
   int Run(CICQDaemon *);
   void Shutdown(void);
   //virtual bool x11EventFilter(XEvent *);
 protected:
   char *m_szSkin, *m_szIcons;
+  bool m_bStartHidden;
   CMainWindow *licqMainWindow;
   CSignalManager *licqSignalManager;
   CQtLogWindow *licqLogWindow;
