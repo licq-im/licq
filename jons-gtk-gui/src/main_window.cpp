@@ -72,6 +72,11 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_signal_connect(GTK_OBJECT(main_window), "delete_event",
 			   GTK_SIGNAL_FUNC(main_window_delete_event), NULL);
 
+	// After the main window has been created, but before the contact
+	// list or anything is shown, we need to make the colors and pixmaps
+	do_colors();
+	do_pixmaps();
+
 	/* Add the vertical box in */
 	vertical_box = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(main_window), vertical_box);

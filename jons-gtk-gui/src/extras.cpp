@@ -214,6 +214,14 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 		strcat(temp, "error");
 	}
 
+	else if(event->SubCommand() == ICQ_CMDxSUB_SECURExOPEN ||
+		event->SubCommand() == ICQ_CMDxSUB_SECURExCLOSE)
+	{
+		catcher = g_slist_remove(catcher, etd);
+		finish_secure(event);
+		return;
+	}
+	
 	else
 	{
 	/* Pop and then push the current text by the right event result */
@@ -365,6 +373,46 @@ void finish_random(ICQEvent *event)
 	gUserManager.DropUser(u);
 }
 
+void finish_secure(ICQEvent *event)
+{
+	struct key_request *kr = kr_find(event->Uin());
+
+	// Window isn't open.. cya
+	if(kr == NULL)
+		return;
+
+	char result[41];
+	
+	switch(event->Result())
+	{
+		case EVENT_FAILED:
+			strncpy(result,
+				"Remote client does not support OpenSSL.", 41);
+			break;
+
+		case EVENT_ERROR:
+			strncpy(result, "Could not connect to remote client.",
+				41);
+			break;
+
+		case EVENT_SUCCESS:
+			if(kr->open)
+				strncpy(result, "Secure channel established.",
+					41);
+			else
+				strncpy(result, "Secure channel closed.", 41);
+			break;
+		case EVENT_ACKED:
+		case EVENT_TIMEDOUT:
+		case EVENT_CANCELLED:
+		default:
+			break;
+	}
+
+	gtk_label_set_text(GTK_LABEL(kr->label_status), result);
+}
+
+			
 /*************** Finishing Signals *****************************/
 
 void finish_info(CICQSignal *signal)

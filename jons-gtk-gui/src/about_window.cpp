@@ -42,7 +42,6 @@ void create_about_window()
 	about_window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_position(GTK_WINDOW(about_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(about_window), "About Licq");
-	gtk_widget_set_usize(about_window, 225, 180);
 
 	// Window delete event
 	gtk_signal_connect(GTK_OBJECT(about_window), "destroy",
@@ -61,7 +60,7 @@ void create_about_window()
 		g_strdup_printf("Licq Version: %s\n"
 			 "Jon's GTK+ GUI Plugin Version: %s\n"
 			 "GTK+ Version: %d.%d.%d\nCompiled On: %s\n"
-			 "Currently Running On: %s %s [%s]\n\n"
+			 "    Currently Running On: %s %s [%s]    \n\n"
 			 "Author: Jon Keating <jon@licq.org>\n"
 			 "http://jons-gtk-gui.sourceforge.net\n\n"
 			 "%s (%ld)\n"

@@ -88,7 +88,7 @@ int LP_Main(CICQDaemon *icqdaemon)
 
 	else
 	{
-		main_window = main_window_new(title, 445, 200);	
+		main_window = main_window_new(title, 245, 160);	
 		main_window_show();
 		contact_list_refresh();
 		system_status_refresh();

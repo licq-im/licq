@@ -114,6 +114,8 @@ void pipe_signal(CICQSignal *sig)
 		break;
 	  }
 
+	  case SIGNAL_LOGOFF:  break;
+
 	  default:
 		g_print("Error: Unknown signal type: %ld.", sig->Signal());
 	}

@@ -353,6 +353,15 @@ struct random_chat
 	struct e_tag_data *etag;
 };
 
+struct key_request
+{
+	GtkWidget *window;
+	GtkWidget *label_status;
+	gboolean open;
+	ICQUser *user;
+	struct e_tag_data *etag;
+};
+
 struct e_tag_data
 {
 	GtkWidget *statusbar;
@@ -384,6 +393,9 @@ extern GSList *cnv;
 
 /* Globals in history_window.cpp */
 extern const gchar *line;
+
+/* Globals in key_requst.cpp */
+extern GSList *kr_list;
 
 /* Globals in main.cpp */
 extern GtkWidget *main_window;
@@ -487,7 +499,7 @@ extern void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
 extern struct conversation *convo_new(ICQUser *, gboolean);
 extern struct conversation *convo_find(unsigned long);
 extern void convo_show(struct conversation *);
-extern void convo_send(GtkWidget *, struct conversation *);
+extern void convo_send(GtkWidget *, gpointer);
 extern gboolean key_press_convo(GtkWidget *, GdkEventKey *, gpointer);
 extern void verify_convo_send(GtkWidget *, guint, gchar *,
 			      struct conversation *);
@@ -510,6 +522,7 @@ extern void finish_chat(ICQEvent *);
 extern void finish_file(ICQEvent *);
 extern void finish_away(ICQEvent *);
 extern void finish_random(ICQEvent *);
+extern void finish_secure(ICQEvent *);
 extern void finish_info(CICQSignal *);
 
 
@@ -537,6 +550,14 @@ extern void file_start_send(ICQEvent *);
 /* Functions in history_window.cpp */
 extern void list_history(GtkWidget *, ICQUser *);
 extern void reverse_history(GtkWidget *, struct history *);
+
+
+/* Functions in key_request.cpp */
+extern void create_key_request_window(GtkWidget *, ICQUser *);
+extern struct key_request *kr_find(gulong);
+extern struct key_request *kr_new(ICQUser *);
+extern void send_key_request(GtkWidget *, gpointer);
+extern void close_key_request(GtkWidget *, gpointer);
 
 
 /* Functions in log_window.cpp */

@@ -19,7 +19,7 @@ void registration_wizard()
 	GtkWidget *table;
 
 	/* Create the window */
-	register_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(register_window),
 			     "Licq - Registration Wizard");
 	gtk_window_set_position(GTK_WINDOW(register_window), GTK_WIN_POS_CENTER);
@@ -134,6 +134,12 @@ void wizard_ok(GtkWidget *widget, gpointer data)
 		gUserManager.DropOwner();
 
 		wizard_message(6);
+
+		main_window = main_window_new(g_strdup_printf("%ld", _uin),
+			445, 200);
+		main_window_show();
+		system_status_refresh();
+		dialog_close(NULL, register_window);
 	}
 
 	/* Registering a new user */

@@ -68,8 +68,8 @@ void contact_list_refresh()
 	/* Don't update the clist window, so we can update all the users */
 	gtk_clist_freeze(GTK_CLIST(contact_list));
 
-	do_colors(); 	/* Make the colors */
-	do_pixmaps();   /* Make the pixmap */
+//	do_colors(); 	/* Make the colors */
+//	do_pixmaps();   /* Make the pixmap */
 
 	blah[0] = "";
 	blah[1] = "";
@@ -336,15 +336,20 @@ void contact_list_click(GtkWidget *contact_list,
 		add_to_popup("Send URL", _menu,
 			     GTK_SIGNAL_FUNC(list_send_url), user);
 
-		/* Only show chat and file requests if the user is not offline */
-		if(user->Status() != ICQ_STATUS_OFFLINE)
-		{
-			add_to_popup("Send Chat Request", _menu,
-			     	     GTK_SIGNAL_FUNC(list_request_chat), user);
+		add_to_popup("Send Chat Request", _menu,
+		     	     GTK_SIGNAL_FUNC(list_request_chat), user);
 
-			add_to_popup("Send File Request", _menu,
-			             GTK_SIGNAL_FUNC(list_request_file), user);
-		}
+		add_to_popup("Send File Request", _menu,
+		             GTK_SIGNAL_FUNC(list_request_file), user);
+	
+		if(user->Secure())
+			add_to_popup("Close Secure Channel", _menu,
+				GTK_SIGNAL_FUNC(create_key_request_window),
+				user);
+		else	
+			add_to_popup("Request Secure Channel", _menu,
+				GTK_SIGNAL_FUNC(create_key_request_window),
+				user);
 
 		/* A separator */
                 separator = gtk_hseparator_new();

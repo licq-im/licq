@@ -104,7 +104,7 @@ void convo_show(struct conversation *c)
 	close = gtk_button_new_with_label("Close");
 
 	/* Set cancel to grayed out at first */
-//	gtk_widget_set_sensitive(c->cancel, FALSE);
+	//gtk_widget_set_sensitive(c->cancel, FALSE);
 
 	/* Make the boxes */
 	button_box = gtk_hbox_new(TRUE, 0);
@@ -141,7 +141,7 @@ void convo_show(struct conversation *c)
 	gtk_signal_connect(GTK_OBJECT(c->cancel), "clicked",
 			   GTK_SIGNAL_FUNC(convo_cancel), c);
 	gtk_signal_connect(GTK_OBJECT(c->send), "clicked",
-			   GTK_SIGNAL_FUNC(convo_send), c);
+			   GTK_SIGNAL_FUNC(convo_send), (gpointer)c);
 
 	gtk_box_pack_start(GTK_BOX(button_box), close, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(button_box), c->cancel, TRUE, TRUE, 5);
@@ -226,7 +226,7 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 	{
 		if(enter_sends && !(eventkey->state & GDK_SHIFT_MASK))
 		{
-			convo_send(NULL, c);
+			convo_send(NULL, (gpointer)c);
 		}
 		else if(enter_sends)
 		{
@@ -241,11 +241,14 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 	return TRUE;
 }
 
-void convo_send(GtkWidget *widget, struct conversation *c)
+void convo_send(GtkWidget *widget, gpointer _c)
 {
+	struct conversation *c = (struct conversation *)_c;
+
 	/* Set the 2 button widgets */
-//	gtk_widget_set_sensitive(c->send, FALSE);
-//	gtk_widget_set_sensitive(c->cancel, TRUE);
+	if(GTK_WIDGET_IS_SENSITIVE(c->send))
+		gtk_widget_set_sensitive(c->send, false);
+	gtk_widget_set_sensitive(c->cancel, true);
 
 	gchar *buf;
 	gchar *buf2;
@@ -314,21 +317,21 @@ void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
 	strcpy(temp, text);
 	g_strreverse(temp);
 
-	if(strncmp(temp, "en", 2) == 0)
+	if(strncmp(temp, " ...", 4) == 0)
 		return;
 
 	else
 	{
-//		gtk_widget_set_sensitive(c->send, TRUE);
-//		gtk_widget_set_sensitive(c->cancel, FALSE);
+		gtk_widget_set_sensitive(c->send, TRUE);
+		gtk_widget_set_sensitive(c->cancel, FALSE);
 	}
 }
 
 void convo_cancel(GtkWidget *widget, struct conversation *c)
 {
 	/* Set the buttons sensitivity accordingly */
-//	gtk_widget_set_sensitive(c->send, TRUE);
-//	gtk_widget_set_sensitive(c->cancel, FALSE);
+	gtk_widget_set_sensitive(c->send, TRUE);
+	gtk_widget_set_sensitive(c->cancel, FALSE);
 
 	/* Actually cancel this event */
 	icq_daemon->CancelEvent(c->etag->e_tag);

@@ -67,6 +67,8 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	gtk_window_set_title(GTK_WINDOW(rc->window), title);
 	gtk_window_set_position(GTK_WINDOW(rc->window), GTK_WIN_POS_CENTER);
 	gtk_container_add(GTK_CONTAINER(rc->window), table);
+	gtk_signal_connect(GTK_OBJECT(rc->window), "destroy",
+		GTK_SIGNAL_FUNC(cancel_request_chat), (gpointer)rc);
 
 	/*Create the scrolled window with text and attach it to the window */
 	scroll = gtk_scrolled_window_new(NULL, NULL);

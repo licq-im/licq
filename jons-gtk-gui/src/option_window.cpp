@@ -198,6 +198,9 @@ void done_options(GtkWidget *widget, gpointer data)
 
 	licqConf.FlushFile();
 	licqConf.CloseFile();
+
+	// Refresh the colors
+	do_colors();
 }
 
 // load_options() is only called if the file exists

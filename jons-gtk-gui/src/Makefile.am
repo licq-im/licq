@@ -20,6 +20,7 @@ licq_jons_gtk_gui_la_SOURCES =  about_window.cpp \
 				extras.cpp \
 				file_window.cpp \
 				history_window.cpp \
+				key_request.cpp \
 				log_window.cpp \
 				main.cpp \
 				main_window.cpp \
