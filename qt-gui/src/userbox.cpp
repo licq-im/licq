@@ -481,7 +481,7 @@ void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int 
 
       if (pix)
       {
-        QPoint pd(p.xForm(QPoint(5,0)).x(), p.xForm(QPoint(5,0)).y());
+        QPoint pd(op->xForm(QPoint(5,0)).x(), op->xForm(QPoint(5,0)).y());
         QPoint pp(listView()->mapToParent(pd));
         p.drawPixmap(5, 0, *pix, pp.x(), pp.y(), p.fontMetrics().width(sz) + 6, height());
       }
