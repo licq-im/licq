@@ -610,9 +610,6 @@ void CMainWindow::CreateUserView()
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
 
-  // Update all the floaties
-  CUserView::UpdateFloaties();
-
   connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 }
 
