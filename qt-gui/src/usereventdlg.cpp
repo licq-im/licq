@@ -137,7 +137,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   {
     nfoStatus->setData(u->StatusStr());
     if (u->NewMessages() == 0)
-      setIcon(CMainWindow::iconForStatus(u->StatusFull()));
+      setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
     else
       setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
     SetGeneralInfo(u);
@@ -553,7 +553,7 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
     {
       nfoStatus->setData(u->StatusStr());
       if (u->NewMessages() == 0)
-        setIcon(CMainWindow::iconForStatus(u->StatusFull()));
+        setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
       break;
     }
     case USER_GENERAL:
@@ -566,7 +566,7 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
     case USER_EVENTS:
     {
       if (u->NewMessages() == 0)
-        setIcon(CMainWindow::iconForStatus(u->StatusFull()));
+        setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
       else
         setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
       break;
