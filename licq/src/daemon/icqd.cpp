@@ -993,8 +993,8 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     gUserManager.DropOwner();
   }
 #if ICQ_VERSION == 5
-  else if (e->m_nCommand != ICQ_CMDxTCP_START &&
-           (e->m_eResult == EVENT_TIMEDOUT || e->m_eResult == EVENT_ERROR) )
+  else if (nCommand != ICQ_CMDxTCP_START &&
+           (eResult == EVENT_TIMEDOUT || eResult == EVENT_ERROR) )
   {
     icqRelogon();
   }
