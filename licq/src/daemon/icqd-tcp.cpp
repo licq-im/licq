@@ -992,7 +992,13 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       }
 
       default:
-         break;
+      {
+        char *buf;
+        gLog.Unknown("%sUnknown TCP message type (%d):\n%s\n", L_UNKNOWNxSTR,
+          newCommand, packet.print(buf));
+        delete []buf;
+        break;
+      }
     }
     break;
   }

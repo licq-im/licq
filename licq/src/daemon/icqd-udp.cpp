@@ -912,10 +912,19 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       realIP = PacketIpToNetworkIp(realIP);
       u->SetIpPort(userIP, userPort);
       u->SetRealIp(realIP);
-      u->SetMode(mode);
+      if (mode != MODE_DIRECT && mode != MODE_INDIRECT)
+      {
+        gLog.Unknown("%sUnknown peer-to-peer mode for %s (%ld): %d\n", L_UNKNOWNxSTR,
+           u->GetAlias(), u->Uin(), mode);
+        u->SetMode(MODE_DIRECT);
+        u->SetSendServer(false);
+      }
+      else
+      {
+        u->SetMode(mode);
+        u->SetSendServer(mode == MODE_INDIRECT);
+      }
       u->SetVersion(tcpVersion);
-      if (mode != MODE_DIRECT)
-        u->SetSendServer(true);
       ChangeUserStatus(u, newStatus);
       u->SetAutoResponse(NULL);
       if ((m_bOnlineNotifies || m_bAlwaysOnlineNotify) && u->OnlineNotify())
@@ -1206,7 +1215,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
                 u->GetAlias(), nUin, u->StatusStr());
       nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
       if (nNewStatus)
-        gLog.Warn("%sUnknown status flag: 0x%04X\n", L_WARNxSTR, nNewStatus);
+      {
+        gLog.Unknown("%sUnknown status flag for %s (%ld): 0x%04X\n",
+           L_UNKNOWNxSTR, u->GetAlias(), nUin, nNewStatus);
+      }
       gUserManager.DropUser(u);
       break;
     }
@@ -1641,11 +1653,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     {
       CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
 
-      /*// translating string with Translation Table
-      gTranslator.ServerToClient (szMessage);
-      CEventMsg *e = new CEventMsg(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                   timeSent, nMask);*/
-
       // Lock the user to add the message to their queue
       u = gUserManager.FetchUser(nUin, LOCK_W);
       if (u == NULL)
@@ -1680,24 +1687,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
         delete []buf;
         break;
       }
-
-      /*// parse the message into url and url description
-      char **szUrl = new char*[2];  // description, url
-      if (!ParseFE(szMessage, &szUrl, 2))
-      {
-        char *buf;
-        gLog.Warn("%sInvalid URL system message:\n%s\n", L_WARNxSTR,
-                  packet.print(buf));
-        delete []buf;
-        delete []szUrl;
-        break;
-      }
-
-      // translating string with Translation Table
-      gTranslator.ServerToClient (szUrl[0]);
-      CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0],
-                                   ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
-      delete[] szUrl;*/
 
       u = gUserManager.FetchUser(nUin, LOCK_W);
       if (u == NULL)
