@@ -180,7 +180,7 @@ public:
 
   void icqLogoff();
   void postLogoff(int nSD, ICQEvent *cancelledEvent);
-  void icqRelogon(bool bChangeServer = false);
+  void icqRelogon();
   unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
@@ -227,7 +227,6 @@ public:
 
   void UpdateAllUsers();
   void UpdateAllUsersInGroup(GroupType, unsigned short);
-  void SwitchServer();
   void CancelEvent(unsigned long );
   void CancelEvent(ICQEvent *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,

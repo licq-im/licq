@@ -418,13 +418,6 @@ unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
   return 0;
 }
 
-//-----NextServer---------------------------------------------------------------
-void CICQDaemon::SwitchServer()
-{
-  icqRelogon();
-}
-
-
 void CICQDaemon::icqRegister(const char *_szPasswd)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
@@ -453,7 +446,7 @@ void CICQDaemon::icqRegisterFinish()
 }
 
 //-----ICQ::icqRelogon-------------------------------------------------------
-void CICQDaemon::icqRelogon(bool bChangeServer)
+void CICQDaemon::icqRelogon()
 {
   unsigned long status;
 
@@ -1655,7 +1648,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 		// Server is going to disconnect/pause (maintainance?)
 		// lets change servers and reconnect.
 		gLog.Info("%sServer is going to disconnect/pause. Lets reconnect to another one.\n", L_SRVxSTR);
-		icqRelogon(true);
+		icqRelogon();
 		break;
 	}
 
@@ -1952,7 +1945,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       char* szMsg = 0;
       if (nEncoding == 2) // utf-8 or utf-16?
       {
-        char *szTmpMsg = 0; 
+        char *szTmpMsg = 0;
         szTmpMsg = gTranslator.FromUnicode(szMessage);
         szMsg = gTranslator.RNToN(szTmpMsg);
         delete [] szTmpMsg;
