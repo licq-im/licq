@@ -1,0 +1,12 @@
+
+all: 
+	@echo "*** Retrieving configure tests needed by configure.in"
+	@aclocal
+	@echo "*** Scanning for include statements"
+	@autoheader
+	@echo "*** Building Makefile templates"
+	@autoconf
+	@if grep "ac_kw foo" configure &>/dev/null; then perl -p -i -e "s/ac_kw foo/ac_kw int foo/" configure; fi 
+	@echo "*** Finished"
+	@echo "    Don't forget to run ./configure"
+	@echo "    If you haven't done so in a while, run ./configure --help"
