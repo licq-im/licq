@@ -32,6 +32,7 @@ class QTextView;
 class CSignalManager;
 class CQtLogWindow;
 class CSkin;
+class CEmoticons;
 class CICQDaemon;
 class ICQEvent;
 class OptionsDlg;
@@ -95,7 +96,6 @@ public:
     m_nUserMenuPPID = n;
     m_nUserMenuUin = strtoul(s, (char **)NULL, 10);
   }
-
   static QPixmap &iconForStatus(unsigned long FullStatus);
   static QPixmap &iconForEvent(unsigned short SubCommand);
 
@@ -142,6 +142,7 @@ public:
   ColumnInfos colInfo;
   FlashType m_nFlash;
   CSkin *skin;
+  CEmoticons *emoticons;
 
   unsigned long m_nCurrentGroup, m_nGroupStates;
   unsigned short m_nSortByStatus,
@@ -207,7 +208,8 @@ public:
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmSms,
           pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmEncoding,
-          pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed, pmExpanded;
+          pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed,
+	  pmExpanded;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   unsigned long m_nProtoNum;

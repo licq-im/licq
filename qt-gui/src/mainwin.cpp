@@ -80,6 +80,7 @@
 #include "wharf.h"
 #include "keyrequestdlg.h"
 #include "usercodec.h"
+#include "emoticon.h"
 
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
@@ -93,7 +94,6 @@
 #include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
-
 #include "licq_qt-gui.conf.h"
 
 extern "C" {
@@ -367,8 +367,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("showPopLastOnelin",m_bPopLastOnline, false);
   licqConf.ReadBool("showPopOnlineSince", m_bPopOnlineSince, false);
   licqConf.ReadBool("showPopIdleTime", m_bPopIdleTime, true);
-
-
+  
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
   m_nFlash = (FlashType)nFlash;
@@ -447,6 +446,16 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szExtendedIcons, extendedIconsName);
   m_szExtendedIconSet = NULL;
+
+  // Load the Emoticons
+  char szEmoticons[MAX_FILENAME_LEN];
+  licqConf.ReadStr("Emoticons", szEmoticons, "Default" );
+  QString s =  QString::fromAscii(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
+  emoticons = new CEmoticons(s.latin1());
+  if (*szEmoticons)
+     if (emoticons->SetTheme(szEmoticons) < 0)
+       gLog.Error("%s Loading emoticons theme `%s'\n", L_ERRORxSTR,
+                  szEmoticons);
 
   // Load the skin
   char szSkin[MAX_FILENAME_LEN] = "basic";
@@ -2911,6 +2920,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("ExtendedIcons", m_szExtendedIconSet);
+  licqConf.WriteStr("Emoticons", emoticons->Theme() ? emoticons->Theme() : "");
+
 #if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
                     "default" : qApp->font().toString().latin1());

@@ -73,12 +73,17 @@ void MLView::append(const QString& s)
   }
 }
 
+#include "emoticon.h"
+#include "mainwin.h" // for the CEmoticon instance
+
 QString MLView::toRichText(const QString& s, bool highlightURLs)
 {
   // We cannot use QStyleSheet::convertFromPlainText
   // since it has a bug in Qt 3 which causes line breaks to mix up.
   // not used for html now QString text = QStyleSheet::escape(s);
   QString text = s;
+
+  gMainWindow->emoticons->ParseMessage(text);
 
   // We must hightlight URLs at this step, before we convert
   // linebreaks to richtext tags and such.  Also, check to make sure
@@ -123,7 +128,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
      text.replace(pos+1, longSpaces.matchedLength()-1, cap);
   }
   text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
-
+  
   return text;
 }
 

@@ -35,6 +35,12 @@
 #include "mainwin.h"
 #include "skin.h"
 #include "skinbrowser.h"
+#include "mainwin.h" /* to get the CMainWindow::emoticons */
+#include "emoticon.h"
+
+enum {
+	MAX_HEIGHT = 170
+};
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	: LicqDialog(parent, "SkinBrowserDialog")
@@ -43,6 +49,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	pmSkin = new QPixmap();
 	lstIcons = new QValueList<QPixmap>;
 	lstExtIcons = new QValueList<QPixmap>;
+	lstEmoticons = new QValueList<QPixmap>;
 	lstAIcons = new QStringList();
 	lstAExtIcons = new QStringList();
 
@@ -76,14 +83,22 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	cmbSkin = new QComboBox(boxSkin);
 	QWhatsThis::add(cmbSkin, tr("Use this combo box to select one of the available skins"));
 	lblSkin->setBuddy(cmbSkin);
+
 	QLabel *lblIcon = new QLabel(tr("&Icons:"), boxSkin);
 	cmbIcon = new QComboBox(boxSkin);
 	QWhatsThis::add(cmbIcon, tr("Use this combo box to select one of the available icon sets"));
 	lblIcon->setBuddy(cmbIcon);
+
 	QLabel *lblExtIcon = new QLabel(tr("E&xtended Icons:"), boxSkin);
 	cmbExtIcon = new QComboBox(boxSkin);
 	QWhatsThis::add(cmbExtIcon, tr("Use this combo box to select one of the available extended icon sets"));
 	lblExtIcon->setBuddy(cmbExtIcon);
+
+	QLabel *lblEmoticons = new QLabel(tr("E&moticons"), boxSkin);
+	cmbEmoticon = new QComboBox(boxSkin);
+	QWhatsThis::add(cmbEmoticon, tr("Use this combo box to select one of "
+	                                "the available emoticon icon sets"));
+  	lblEmoticons->setBuddy(cmbEmoticon);
 
 	// Preview Box
 	QFrame *frmPrevSkin = new QFrame(boxPreview);
@@ -91,7 +106,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QLabel *lblPrevSkin = new QLabel(tr("Skin:"), frmPrevSkin);
 	lblPrevSkin->setAlignment(Qt::AlignHCenter);
 	lblPaintSkin = new QLabel(frmPrevSkin);
-	lblPaintSkin->setFixedSize(75, 130);
+	lblPaintSkin->setFixedSize(75, MAX_HEIGHT);
 	layPrevSkin->addWidget(lblPrevSkin, 0, Qt::AlignHCenter);
 	layPrevSkin->addWidget(lblPaintSkin, 0, Qt::AlignHCenter);
 	layPrevSkin->addStretch();
@@ -101,7 +116,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QLabel *lblPrevIcon = new QLabel(tr("Icons:"), frmPrevIcon);
 	lblPrevIcon->setAlignment(Qt::AlignHCenter);
 	lblPaintIcon = new SkinBrowserPreviewArea(frmPrevIcon);
-	lblPaintIcon->setFixedSize(54, 130);
+	lblPaintIcon->setFixedSize(54, MAX_HEIGHT);
 	layPrevIcon->addWidget(lblPrevIcon, 0, Qt::AlignHCenter);
 	layPrevIcon->addWidget(lblPaintIcon, 0, Qt::AlignHCenter);
 	layPrevIcon->addStretch();
@@ -111,10 +126,20 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QLabel *lblPrevExtIcon = new QLabel(tr("Extended Icons:"), frmPrevExtIcon);
 	lblPrevExtIcon->setAlignment(Qt::AlignHCenter);
 	lblPaintExtIcon = new SkinBrowserPreviewArea(frmPrevExtIcon);
-	lblPaintExtIcon->setFixedSize(54, 130);
+	lblPaintExtIcon->setFixedSize(54, MAX_HEIGHT);
 	layPrevExtIcon->addWidget(lblPrevExtIcon, 0, Qt::AlignHCenter);
 	layPrevExtIcon->addWidget(lblPaintExtIcon, 0, Qt::AlignHCenter);
 	layPrevExtIcon->addStretch();
+
+	QFrame *frmPrevEmoticon= new QFrame(boxPreview);
+	QVBoxLayout *layPrevEmoticon = new QVBoxLayout(frmPrevEmoticon);
+	QLabel *lblPrevEmoticon = new QLabel(tr("Emoticons:"), frmPrevEmoticon);
+	lblPrevEmoticon->setAlignment(Qt::AlignHCenter);
+	lblPaintEmoticon= new SkinBrowserPreviewArea(frmPrevEmoticon);
+	lblPaintEmoticon->setFixedSize(54, MAX_HEIGHT);
+	layPrevEmoticon->addWidget(lblPrevEmoticon, 0, Qt::AlignHCenter);
+	layPrevEmoticon->addWidget(lblPaintEmoticon, 0, Qt::AlignHCenter);
+	layPrevEmoticon->addStretch();
 
 	// Buttons
 	QHBoxLayout *layButtons = new QHBoxLayout(frmButtons, 8, 4);
@@ -302,6 +327,19 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 		}
 	}
 
+	CEmoticons *emoticons = gMainWindow->emoticons;
+	QStringList themes = emoticons->Themes();
+	const char *selected  = emoticons->Theme();
+	int i=0, emoticonid= 0;
+	for ( QStringList::Iterator it = themes.begin();
+	      it != themes.end(); ++it, i++ )
+	{
+		cmbEmoticon->insertItem(*it, i);
+		if (selected && !strcmp(selected, (*it).ascii() ))
+				emoticonid = i;
+	}
+	cmbEmoticon->setCurrentItem(emoticonid);
+
 	// setup connections
 	connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edtSkin()));
 	connect(btnOk, SIGNAL(clicked()), this, SLOT(slot_ok()));
@@ -310,11 +348,13 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	connect(cmbSkin, SIGNAL(highlighted(const QString &)), this, SLOT(slot_loadSkin(const QString &)));
 	connect(cmbIcon, SIGNAL(highlighted(const QString &)), this, SLOT(slot_loadIcons(const QString &)));
 	connect(cmbExtIcon, SIGNAL(highlighted(const QString &)), this, SLOT(slot_loadExtIcons(const QString &)));
+	connect(cmbEmoticon, SIGNAL(highlighted(const QString&)), this, SLOT(slot_loadEmoticons(const QString &)));
 
 	// Create initial preview
 	slot_loadSkin(cmbSkin->currentText());
 	slot_loadIcons(cmbIcon->currentText());
 	slot_loadExtIcons(cmbExtIcon->currentText());
+	slot_loadEmoticons(cmbEmoticon->currentText());
 
 	setCaption(tr("Licq Skin Browser"));
 	show();
@@ -357,6 +397,8 @@ void SkinBrowserDlg::slot_apply()
 
 	if (cmbExtIcon->currentText() != mainwin->m_szExtendedIconSet)
 		mainwin->ApplyExtendedIcons(cmbExtIcon->currentText().local8Bit());
+	if (cmbEmoticon->currentText() != mainwin->emoticons->Theme())
+		mainwin->emoticons->SetTheme(cmbEmoticon->currentText());
 }
 
 /*!	\brief Creates a new skin editor dialog
@@ -455,6 +497,36 @@ void SkinBrowserDlg::slot_loadExtIcons(const QString &extIcon)
 			lstExtIcons->append(pm);
 	}
 	lblPaintExtIcon->setPixmapList(lstExtIcons);
+}
+/*! \brief Reloads the current preview emoticons
+ *
+ *	This slot reloads all preview emoicons. It loads the complete
+ *	set of emoticons that is currently highlighted in the relevant combo
+ *	box.
+ *	If it was successful it makes these icons to be rendered in the preview.
+ */
+void SkinBrowserDlg::slot_loadEmoticons(const QString &emoticon)
+{
+	lstEmoticons->clear();
+	CEmoticons *e = gMainWindow->emoticons;
+	QStringList files = e->fileList(emoticon);
+	for (QStringList::Iterator it = files.begin(); it != files.end(); ++it)
+	{
+		QImage img = QImage(*it);
+		/* hack: SkinBrowserPreviewArea only draws the
+		 * first 16 pixels
+		 */
+		int max_area = 16;
+		QSize size = img.size();
+		if (size.isValid() &&
+		    size.width() > max_area && size.height() > max_area)
+			img = img.scale(max_area, max_area, QImage::ScaleFree);
+
+		QPixmap pm(img);
+		if (!pm.isNull())
+			lstEmoticons->append(pm);
+	}
+	lblPaintEmoticon->setPixmapList(lstEmoticons);
 }
 
 /*! \brief provide correct repainting when resizing the main widget
@@ -661,7 +733,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 
 	QPixmap tmp(QPixmap::grabWidget(&w));
 	QPixmap ret;
-	ret.convertFromImage(QImage(tmp.convertToImage().smoothScale(75, 130)));
+	ret.convertFromImage(QImage(tmp.convertToImage().smoothScale(75, MAX_HEIGHT)));
 
 	// Reset origin colors
 	userView.setColors(c_online, c_away, c_offline, c_newuser, c_background, c_gridlines);

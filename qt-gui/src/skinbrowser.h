@@ -42,12 +42,16 @@ private:
 	QComboBox *cmbIcon;
 	/*! This Combo contains all available extended icon packs */
 	QComboBox *cmbExtIcon;
+	/*! This Combo contains all available emoticons themes */
+	QComboBox *cmbEmoticon;
 	/*! This QLabel contains the skin preview pixmap (75 x 130 Pixel)*/
 	QLabel *lblPaintSkin;
 	/*! This SkinBrowserPreviewArea contains the icon pixmaps (54 x 130 Pixel)*/
 	SkinBrowserPreviewArea *lblPaintIcon;
 	/*! This SkinBrowserPreviewArea contains the extended icons pixmaps (54 x 130 Pixel)*/
 	SkinBrowserPreviewArea *lblPaintExtIcon;
+	/*! This SkinBrowserPreviewArea contains the emoticons pixmaps (54x130 Px) */
+	SkinBrowserPreviewArea *lblPaintEmoticon;
 	/*! Holds the list of possible themeable icons in normal icon sets */
 	QStringList *lstAIcons;
 	/*! Holds the list of possible themeable icons in extended icon sets */
@@ -58,6 +62,8 @@ private:
 	QValueList<QPixmap> *lstIcons;
 	/*! Stores the list of the current QPixmaps for the Extended Icons preview */
 	QValueList<QPixmap> *lstExtIcons;
+	/*! Stores the list of the current QPixmaps for the emoticons preview */
+	QValueList<QPixmap> *lstEmoticons;
 	/*! Renders a dynamic skin preview */
 	QPixmap renderSkin(const QString &skin);
 	CSkin *skin;
@@ -73,6 +79,7 @@ protected slots:
 	void slot_loadSkin(const QString &skin);
 	void slot_loadIcons(const QString &icon);
 	void slot_loadExtIcons(const QString &extIcon);
+	void slot_loadEmoticons(const QString &emoticon);
 };
 
 /*!	\brief Helper class to provide a preview area for our icons using a modified QFrame

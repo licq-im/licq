@@ -2,6 +2,7 @@
 #define GUIDEFINES_H
 
 #define QTGUI_DIR "qt-gui/"
+#define EMOTICONS_DIR "emoticons/"
 
 #define NUM_MSG_PER_HISTORY 40
 #define COLOR_SENT "blue"
