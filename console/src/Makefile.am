@@ -14,4 +14,4 @@ licq_console_la_SOURCES = console.cpp console_menu.cpp console_print.cpp \
 	console_tab.cpp main.cpp window.cpp
 
 
-licq_console_la_LDFLAGS = -s -module -avoid-version
+licq_console_la_LDFLAGS = -module -avoid-version
