@@ -8,25 +8,27 @@
 
 // Version constants
 #define ICQ_VERSION 5
+#define MODE_DIRECT 0x04
+#define MODE_INDIRECT 0x06
 const unsigned short ICQ_VERSION_TCP               = 0x0003;
 
 // UDP commands
-const unsigned short ICQ_CMDxRCV_ACK               = 0x000A;
-const unsigned short ICQ_CMDxRCV_SETxOFFLINE       = 0x0028;
-const unsigned short ICQ_CMDxRCV_NEWxUIN           = 0x0046;
-const unsigned short ICQ_CMDxRCV_HELLO             = 0x005A;
-const unsigned short ICQ_CMDxRCV_WRONGxPASSWD      = 0x0064;
-const unsigned short ICQ_CMDxRCV_USERxONLINE       = 0x006E;
-const unsigned short ICQ_CMDxRCV_USERxOFFLINE      = 0x0078;
-const unsigned short ICQ_CMDxRCV_SEARCHxFOUND      = 0x008C;
-const unsigned short ICQ_CMDxRCV_SEARCHxDONE       = 0x00A0;
+const unsigned short ICQ_CMDxRCV_ACK               = 0x000A; //  10
+const unsigned short ICQ_CMDxRCV_SETxOFFLINE       = 0x0028; //  40
+const unsigned short ICQ_CMDxRCV_NEWxUIN           = 0x0046; //  70
+const unsigned short ICQ_CMDxRCV_HELLO             = 0x005A; //  90
+const unsigned short ICQ_CMDxRCV_WRONGxPASSWD      = 0x0064; // 100
+const unsigned short ICQ_CMDxRCV_USERxONLINE       = 0x006E; // 110
+const unsigned short ICQ_CMDxRCV_USERxOFFLINE      = 0x0078; // 120
+const unsigned short ICQ_CMDxRCV_SEARCHxFOUND      = 0x008C; // 140
+const unsigned short ICQ_CMDxRCV_SEARCHxDONE       = 0x00A0; // 160
 #if ICQ_VERSION == 2
 const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x00B4; // 180
 const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x00BE; // 190
 #endif
 const unsigned short ICQ_CMDxRCV_UPDATEDxDETAIL    = 0x00C8; // 200
 const unsigned short ICQ_CMDxRCV_UPDATExDETAILxFAIL= 0x00D2; // 210
-const unsigned short ICQ_CMDxRCV_SYSxMSGxOFFLINE   = 0x00DC;
+const unsigned short ICQ_CMDxRCV_SYSxMSGxOFFLINE   = 0x00DC; // 220
 const unsigned short ICQ_CMDxRCV_SYSxMSGxDONE      = 0x00E6;
 const unsigned short ICQ_CMDxRCV_ERROR             = 0x00F0;
 const unsigned short ICQ_CMDxRCV_BUSY              = 0x00FA;
@@ -45,17 +47,17 @@ const unsigned short ICQ_CMDxRCV_MULTIxPACKET      = 0x0212; // 530
 const unsigned short ICQ_CMDxRCV_USERxLISTxDONE    = 0x021C; // 540
 const unsigned short ICQ_CMDxRCV_META              = 0x03DE; // 990
 
-const unsigned short ICQ_CMDxSND_ACK               = 0x000A; // 10
-const unsigned short ICQ_CMDxSND_THRUxSERVER       = 0x010E;
-const unsigned short ICQ_CMDxSND_PING              = 0x042E;
-const unsigned short ICQ_CMDxSND_LOGON             = 0x03E8;
-const unsigned short ICQ_CMDxSND_REGISTERxUSER     = 0x03FC;
-const unsigned short ICQ_CMDxSND_USERxLIST         = 0x0406;
-const unsigned short ICQ_CMDxSND_SEARCHxSTART      = 0x0424;
-const unsigned short ICQ_CMDxSND_LOGOFF            = 0x0438;
-const unsigned short ICQ_CMDxSND_SYSxMSGxDONExACK  = 0x0442;
-const unsigned short ICQ_CMDxSND_SYSxMSGxREQ       = 0x044C;
-const unsigned short ICQ_CMDxSND_AUTHORIZE         = 0x0456;
+const unsigned short ICQ_CMDxSND_ACK               = 0x000A; //   10
+const unsigned short ICQ_CMDxSND_THRUxSERVER       = 0x010E; //  270
+const unsigned short ICQ_CMDxSND_LOGON             = 0x03E8; // 1000
+const unsigned short ICQ_CMDxSND_REGISTERxUSER     = 0x03FC; // 1020
+const unsigned short ICQ_CMDxSND_USERxLIST         = 0x0406; // 1030
+const unsigned short ICQ_CMDxSND_SEARCHxSTART      = 0x0424; // 1060
+const unsigned short ICQ_CMDxSND_PING              = 0x042E; // 1070
+const unsigned short ICQ_CMDxSND_LOGOFF            = 0x0438; // 1080
+const unsigned short ICQ_CMDxSND_SYSxMSGxDONExACK  = 0x0442; // 1090
+const unsigned short ICQ_CMDxSND_SYSxMSGxREQ       = 0x044C; // 1100
+const unsigned short ICQ_CMDxSND_AUTHORIZE         = 0x0456; // 1110
 const unsigned short ICQ_CMDxSND_USERxGETINFO      = 0x0460; // 1120
 const unsigned short ICQ_CMDxSND_USERxGETDETAILS   = 0x046A; // 1130
 #if ICQ_VERSION == 2
@@ -67,8 +69,8 @@ const unsigned short ICQ_CMDxSND_SETxSTATUS        = 0x04D8; // 1240
 const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x050A; // 1290
 #endif
 const unsigned short ICQ_CMDxSND_UPDATExAUTH       = 0x0514; // 1300
-const unsigned short ICQ_CMDxSND_PING2             = 0x051E;
-const unsigned short ICQ_CMDxSND_USERxADD          = 0x053C;
+const unsigned short ICQ_CMDxSND_PING2             = 0x051E; // 1310
+const unsigned short ICQ_CMDxSND_USERxADD          = 0x053C; // 1340
 const unsigned short ICQ_CMDxSND_META              = 0x064A; // 1610
 const unsigned short ICQ_CMDxSND_INVISIBLExLIST    = 0x06A4; // 1700
 const unsigned short ICQ_CMDxSND_VISIBLExLIST      = 0x06AE; // 1710
