@@ -16,6 +16,7 @@ class CPacket
 {
 public:
    CBuffer *getBuffer(void)  { return buffer; };
+   virtual CBuffer *Finalize(void) { return NULL; }
 
    virtual const unsigned long  getSequence(void) = 0;
    virtual const unsigned short SubSequence(void) = 0;
@@ -39,6 +40,7 @@ class CPacketUdp : public CPacket
 public:
    virtual ~CPacketUdp(void);
 
+   virtual CBuffer *Finalize(void);
    virtual const unsigned long  getSequence(void) { return m_nSequence; }
    virtual const unsigned short SubSequence(void) { return m_nSubSequence; }
    virtual const unsigned short getCommand(void)  { return m_nCommand; }
@@ -46,7 +48,6 @@ public:
 protected:
    CPacketUdp(unsigned short _nCommand);
    void InitBuffer(void);
-   void Encrypt(void);
 
 #if ICQ_VERSION == 2
    unsigned short m_nVersion;
@@ -419,7 +420,8 @@ class CPU_Meta_SetWorkInfo : public CPacketUdp
 public:
   CPU_Meta_SetWorkInfo(const char *szCity,
                        const char *szState,
-                       const char *szFax,
+                       const char *szPhoneNumber,
+                       const char *szFaxNumber,
                        const char *szAddress,
                        const char *szName,
                        const char *szDepartment,
@@ -431,7 +433,8 @@ protected:
 
   char *m_szCity;
   char *m_szState;
-  char *m_szFax;
+  char *m_szPhoneNumber;
+  char *m_szFaxNumber;
   char *m_szAddress;
   char *m_szName;
   char *m_szDepartment;
@@ -520,6 +523,7 @@ class CPacketTcp : public CPacket
 public:
    virtual ~CPacketTcp(void);
 
+   virtual CBuffer *Finalize(void);
    virtual const unsigned long  getSequence(void)   { return m_nSequence; }
    virtual const unsigned short SubSequence(void)   { return 0; }
    virtual const unsigned short getCommand(void)    { return m_nCommand; }

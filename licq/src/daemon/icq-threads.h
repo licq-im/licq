@@ -92,8 +92,10 @@ void *ProcessRunningEvent_tep(void *p)
       if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
       pthread_exit(NULL);
     }
-    if (!s->Send(e->m_xPacket->getBuffer()))
+    CBuffer *buf = e->m_xPacket->Finalize();
+    if (!s->Send(buf))
     {
+      delete buf;
       char szErrorBuf[128];
       gLog.Warn("%sError sending event (#%d):\n%s%s.\n", L_WARNxSTR,
                 e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
@@ -102,6 +104,7 @@ void *ProcessRunningEvent_tep(void *p)
       if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
       pthread_exit(NULL);
     }
+    delete buf;
     gSocketManager.DropSocket(s);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();

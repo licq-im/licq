@@ -474,7 +474,15 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       packet >> theSequence >> licqChar >> licqVersion;
       // parse the message into url and url description
       char **szUrl = new char*[2]; // desc, url
-      ParseFE(message, &szUrl, 2);
+      if (!ParseFE(message, &szUrl, 2))
+      {
+        char *buf;
+        gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR,
+                  packet.print(buf));
+        delete []buf;
+        delete []szUrl;
+        break;
+      }
 
       // translating string with Translation Table
       gTranslator.ServerToClient(szUrl[0]);
@@ -608,7 +616,15 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       message[--i] = '\0';
       int nNumContacts = atoi(message);
       char **szFields = new char*[nNumContacts * 2 + 1];
-      ParseFE(&message[++i], &szFields, nNumContacts * 2 + 1);
+      if (!ParseFE(&message[++i], &szFields, nNumContacts * 2 + 1))
+      {
+        char *buf;
+        gLog.Warn("%sInvalid contact list message:\n%s\n", L_WARNxSTR,
+                  packet.print(buf));
+        delete []buf;
+        delete []szFields;
+        break;
+      }
 
       // Translate the aliases
       vector <char *> vszFields;

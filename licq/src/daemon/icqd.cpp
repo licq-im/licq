@@ -682,12 +682,15 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConn
  * Note that the user who owns the given socket is probably read-locked at
  * this point.
  *----------------------------------------------------------------------------*/
-void CICQDaemon::SendEvent(int _nSD, CPacket &p)
+bool CICQDaemon::SendEvent(int _nSD, CPacket &p)
 {
   INetSocket *s = gSocketManager.FetchSocket(_nSD);
-  if (s == NULL) return;
-  s->Send(p.getBuffer());
+  if (s == NULL) return false;
+  CBuffer *buf = p.Finalize();
+  s->Send(buf);
+  delete buf;
   gSocketManager.DropSocket(s);
+  return true;
 }
 
 
@@ -1087,15 +1090,15 @@ void CICQDaemon::UpdateAllUsers()
 
 
 //-----ParseFE------------------------------------------------------------------
-void CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr)
+bool CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {
    char *pcEnd = szBuffer, *pcStart;
    unsigned short i = 0;
    bool bDone = false;
    // Clear the character pointers
-   memset(*szSubStr, 0, nMaxSubStr * sizeof(char *));
+   memset(*szSubStr, 0, nNumSubStr * sizeof(char *));
 
-   while (!bDone && i < nMaxSubStr)
+   while (!bDone && i < nNumSubStr)
    {
       pcStart = pcEnd;
       while (*pcEnd != '\0' && (unsigned char)*pcEnd != (unsigned char)0xFE)
@@ -1106,7 +1109,10 @@ void CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr)
          *pcEnd++ = '\0';
       (*szSubStr)[i++] = pcStart;
    }
+
+   return (bDone && i == nNumSubStr);
 }
+
 
 unsigned long CICQDaemon::StringToStatus(char *_szStatus)
 {

@@ -108,6 +108,7 @@ public:
                                 unsigned short, char, const char *,
                                 const char *, const char *_sAbout, unsigned long);
   CICQEventTag *icqSetWorkInfo(const char *_szCity, const char *_szState,
+                           const char *_szPhone,
                            const char *_szFax, const char *_szAddress,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
@@ -213,7 +214,7 @@ protected:
   pthread_mutex_t mutex_serverack;
   unsigned short m_nServerAck;
 
-  void ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
+  bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *u, CUserEvent *e);
   void RejectEvent(unsigned long, CUserEvent *);
@@ -226,7 +227,7 @@ protected:
   void PushExtendedEvent(ICQEvent *e);
   void PushPluginSignal(CICQSignal *s);
   void PushPluginEvent(ICQEvent *e);
-  void SendEvent(int _nSD, CPacket &p);
+  bool SendEvent(int _nSD, CPacket &p);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect,
                             unsigned long _nDestinationUin, CUserEvent *e);

@@ -95,17 +95,7 @@ static unsigned char icq_check_data[256] = {
 #endif
 
 
-unsigned long CPacket::s_nLocalIp = 0;
-unsigned long CPacket::s_nRealIp = 0;
-char CPacket::s_nMode = MODE_DIRECT;
-
-//=====UDP======================================================================
-unsigned short CPacketUdp::s_nSequence = 0;
-unsigned short CPacketUdp::s_nSubSequence = 0;
-unsigned long  CPacketUdp::s_nSessionId = 0;
-
-
-void CPacketUdp::Encrypt(void)
+void Encrypt_Server(CBuffer *buffer)
 {
 #if ICQ_VERSION == 2
 // No encryption in V2
@@ -118,6 +108,7 @@ void CPacketUdp::Encrypt(void)
     delete [] b;
   }
 
+  unsigned long nCheckSum = 0;
   unsigned long l = buffer->getDataSize();
   unsigned char *buf = (unsigned char *)buffer->getDataStart();
 
@@ -132,8 +123,8 @@ void CPacketUdp::Encrypt(void)
                        ( r2 << 8 ) |
                        ( icq_check_data[r2] );
   chk2 ^= 0x00FF00FF;
-  m_nCheckSum = chk1 ^ chk2;
-  unsigned long key = l * 0x66756b65 + m_nCheckSum;
+  nCheckSum = chk1 ^ chk2;
+  unsigned long key = l * 0x66756b65 + nCheckSum;
   //printf("key: 0x%08x\n", key);
 
   unsigned long k = 0;
@@ -153,13 +144,14 @@ void CPacketUdp::Encrypt(void)
   buf[0] = 0x04;
   buf[1] = 0x00;
   // Stick in the checksum
-  buf[16] = m_nCheckSum & 0xFF;
-  buf[17] = (m_nCheckSum >> 8) & 0xFF;
-  buf[18] = (m_nCheckSum >> 16) & 0xFF;
-  buf[19] = (m_nCheckSum >> 24) & 0xFF;
+  buf[16] = nCheckSum & 0xFF;
+  buf[17] = (nCheckSum >> 8) & 0xFF;
+  buf[18] = (nCheckSum >> 16) & 0xFF;
+  buf[19] = (nCheckSum >> 24) & 0xFF;
 
 #elif ICQ_VERSION == 5
   unsigned long l = buffer->getDataSize();
+  unsigned long nCheckSum = 0;
   unsigned char *buf = (unsigned char *)buffer->getDataStart();
 
   // Make sure packet is long enough
@@ -191,8 +183,8 @@ void CPacketUdp::Encrypt(void)
                        ( icq_check_data[r2] );
   DEBUG_ENCRYPTION(("chk2: %08lX\n", chk2));
   chk2 ^= 0x00FF00FF;
-  m_nCheckSum = chk1 ^ chk2;
-  unsigned long key = l * 0x68656C6C + m_nCheckSum;
+  nCheckSum = chk1 ^ chk2;
+  unsigned long key = l * 0x68656C6C + nCheckSum;
 
   unsigned long k = 0;
   for (unsigned short i = 10; i < l; i += 4)
@@ -206,12 +198,12 @@ void CPacketUdp::Encrypt(void)
   }
 
   // Add in the checkcode
-  DEBUG_ENCRYPTION(("checksum: %08lX\n", m_nCheckSum));
-  unsigned long a1 = m_nCheckSum & 0x0000001F;
-  unsigned long a2 = m_nCheckSum & 0x03E003E0;
-  unsigned long a3 = m_nCheckSum & 0xF8000400;
-  unsigned long a4 = m_nCheckSum & 0x0000F800;
-  unsigned long a5 = m_nCheckSum & 0x041F0000;
+  DEBUG_ENCRYPTION(("checksum: %08lX\n", nCheckSum));
+  unsigned long a1 = nCheckSum & 0x0000001F;
+  unsigned long a2 = nCheckSum & 0x03E003E0;
+  unsigned long a3 = nCheckSum & 0xF8000400;
+  unsigned long a4 = nCheckSum & 0x0000F800;
+  unsigned long a5 = nCheckSum & 0x041F0000;
   a1 <<= 0x0C;
   a2 <<= 0x01;
   a3 >>= 0x0A;
@@ -227,6 +219,32 @@ void CPacketUdp::Encrypt(void)
 
 #endif
 }
+
+
+// No client encryption yet
+void Encrypt_Client(CBuffer *buffer)
+{
+}
+
+
+unsigned long CPacket::s_nLocalIp = 0;
+unsigned long CPacket::s_nRealIp = 0;
+char CPacket::s_nMode = MODE_DIRECT;
+
+//=====UDP======================================================================
+unsigned short CPacketUdp::s_nSequence = 0;
+unsigned short CPacketUdp::s_nSubSequence = 0;
+unsigned long  CPacketUdp::s_nSessionId = 0;
+
+
+CBuffer *CPacketUdp::Finalize(void)
+{
+  CBuffer *newbuf = new CBuffer(getBuffer());
+  Encrypt_Server(newbuf);
+  return newbuf;
+}
+
+
 
 
 CPacketUdp::CPacketUdp(unsigned short _nCommand)
@@ -362,8 +380,6 @@ CPU_Register::CPU_Register(const char *szPasswd)
   buffer->PackUnsignedLong(0x00002461);
   buffer->PackUnsignedLong(0x00A00000);
   buffer->PackUnsignedLong(0x00000000);
-
-  Encrypt();
 }
 
 #endif
@@ -392,7 +408,7 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
 #endif
-  s_nRealIp = LOCALHOST;
+  s_nRealIp = NetworkIpToPacketIp(_s->LocalIp());
   s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
   s_nMode = MODE_DIRECT;
   m_nLocalPort = _s->LocalPort();
@@ -423,8 +439,6 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
 #else
   buffer->Pack(temp, 20);
 #endif
-
-  Encrypt();
 }
 
 
@@ -434,7 +448,6 @@ CPU_Ack::CPU_Ack(unsigned short _nSequence) : CPacketUdp(ICQ_CMDxSND_ACK)
 {
   m_nSequence = _nSequence;
   InitBuffer();
-  Encrypt();
 }
 #elif ICQ_VERSION == 4 || ICQ_VERSION == 5
 CPU_Ack::CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence)
@@ -443,7 +456,6 @@ CPU_Ack::CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence)
   m_nSequence = _nSequence;
   m_nSubSequence = _nSubSequence;
   InitBuffer();
-  Encrypt();
 }
 #endif
 
@@ -460,8 +472,6 @@ CPU_GetUserBasicInfo::CPU_GetUserBasicInfo(unsigned long _nUserUin)
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
   buffer->PackUnsignedLong(m_nUserUin);
-
-  Encrypt();
 }
 
 
@@ -478,7 +488,6 @@ CPU_GetUserExtInfo::CPU_GetUserExtInfo(unsigned long _nUserUin)
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
   buffer->PackUnsignedLong(m_nUserUin);
-  Encrypt();
 }
 
 
@@ -492,7 +501,6 @@ CPU_AddUser::CPU_AddUser(unsigned long _nAddedUin)
   InitBuffer();
 
   buffer->PackUnsignedLong(m_nAddedUin);
-  Encrypt();
 }
 
 
@@ -504,7 +512,6 @@ CPU_Logoff::CPU_Logoff(void) : CPacketUdp(ICQ_CMDxSND_LOGOFF)
 
   buffer->PackString("B_USER_DISCONNECTED");
   buffer->PackUnsignedShort(0x0005);
-  Encrypt();
 }
 
 
@@ -519,7 +526,6 @@ CPU_ContactList::CPU_ContactList(UinList &uins)
   buffer->PackChar(uins.size());
   for (unsigned short i  = 0; i < uins.size(); i++)
     buffer->PackUnsignedLong(uins[i]);
-  Encrypt();
 }
 
 CPU_ContactList::CPU_ContactList(unsigned long _nUin)
@@ -531,7 +537,6 @@ CPU_ContactList::CPU_ContactList(unsigned long _nUin)
   buffer->PackChar(0x01);
   buffer->PackUnsignedLong(_nUin);
 
-  Encrypt();
 }
 
 
@@ -546,7 +551,6 @@ CPU_VisibleList::CPU_VisibleList(UinList &uins)
   for (unsigned short i  = 0; i < uins.size(); i++)
     buffer->PackUnsignedLong(uins[i]);
 
-  Encrypt();
 }
 
 
@@ -561,7 +565,6 @@ CPU_InvisibleList::CPU_InvisibleList(UinList &uins)
   for (unsigned short i  = 0; i < uins.size(); i++)
     buffer->PackUnsignedLong(uins[i]);
 
-  Encrypt();
 }
 
 
@@ -584,7 +587,6 @@ CPU_StartSearch::CPU_StartSearch(const char *szAlias, const char *szFirstName,
   buffer->PackString(szLastName);
   buffer->PackString(szEmail);
 
-  Encrypt();
 }
 
 
@@ -612,7 +614,6 @@ CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const char *szAlias,
   m_szEmail = buffer->PackString(szEmail);
   buffer->PackChar(m_nAuthorization);
 
-  Encrypt();
 }
 
 
@@ -656,7 +657,6 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
   m_szAbout = buffer->PackString(szAbout);
   buffer->PackUnsignedLong(m_nZipcode);
 
-  Encrypt();
 }
 
 
@@ -665,7 +665,6 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
 CPU_Ping::CPU_Ping(void) : CPacketUdp(ICQ_CMDxSND_PING)
 {
   InitBuffer();
-  Encrypt();
 }
 
 
@@ -687,7 +686,6 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nSourceUin,
   buffer->PackUnsignedShort(nSubCommand);
   buffer->PackString(szMessage);
 
-  Encrypt();
 }
 
 
@@ -700,7 +698,6 @@ CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus) : CPacketUdp(ICQ_CMDxSND
   InitBuffer();
 
   buffer->PackUnsignedLong(m_nNewStatus);
-  Encrypt();
 }
 
 //-----Authorize----------------------------------------------------------------
@@ -713,7 +710,6 @@ CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxS
 
   buffer->PackUnsignedLong(nAuthorizeUin);
   buffer->Pack(temp, 5);
-  Encrypt();
 }
 
 
@@ -721,7 +717,6 @@ CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxS
 CPU_RequestSysMsg::CPU_RequestSysMsg(void) : CPacketUdp(ICQ_CMDxSND_SYSxMSGxREQ)
 {
   InitBuffer();
-  Encrypt();
 }
 
 
@@ -732,7 +727,6 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence)
 {
   m_nSequence = _nSequence;
   InitBuffer();
-  Encrypt();
 }
 #elif ICQ_VERSION == 4
 CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _nSubSequence)
@@ -741,14 +735,12 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _
   m_nSequence = _nSequence;
   m_nSubSequence = _nSubSequence;
   InitBuffer();
-  Encrypt();
 }
 #elif ICQ_VERSION == 5
 CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(void)
   : CPacketUdp(ICQ_CMDxSND_SYSxMSGxDONExACK)
 {
   InitBuffer();
-  Encrypt();
 }
 #endif
 
@@ -806,7 +798,6 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   buffer->PackChar(m_nWebAware);
   buffer->PackChar(m_nHideEmail);
 
-  Encrypt();
 }
 
 
@@ -846,7 +837,6 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackChar(m_nLanguage2);
   buffer->PackChar(m_nLanguage3);
 
-  Encrypt();
 }
 
 
@@ -854,7 +844,8 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
 CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szCity,
     const char *szState,
-    const char *szFax,
+    const char *szPhoneNumber,
+    const char *szFaxNumber,
     const char *szAddress,
     const char *szName,
     const char *szDepartment,
@@ -863,8 +854,8 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
 {
   m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
 
-  m_nSize += strlen(szCity) + strlen(szState) +
-             strlen(szFax) + strlen(szAddress) + strlen(szName) +
+  m_nSize += strlen(szCity) + strlen(szState) + strlen(szPhoneNumber) +
+             strlen(szFaxNumber) + strlen(szAddress) + strlen(szName) +
              strlen(szDepartment) + strlen(szPosition) +
              strlen(szHomepage) + 8 + 26;
   InitBuffer();
@@ -872,17 +863,17 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szCity = buffer->PackString(szCity);
   m_szState = buffer->PackString(szState);
-  m_szFax = buffer->PackString(szFax);
+  m_szPhoneNumber = buffer->PackString(szPhoneNumber);
+  m_szFaxNumber = buffer->PackString(szFaxNumber);
   m_szAddress = buffer->PackString(szAddress);
-  buffer->PackUnsignedShort(0x0100);
+  buffer->PackUnsignedLong(0x0100);
   buffer->PackUnsignedShort(0xFFFF);
   m_szName = buffer->PackString(szName);
   m_szDepartment = buffer->PackString(szDepartment);
   m_szPosition = buffer->PackString(szPosition);
-  buffer->PackChar(0x04);
+  buffer->PackUnsignedShort(0x04);
   m_szHomepage = buffer->PackString(szHomepage);
 
-  Encrypt();
 }
 
 
@@ -898,7 +889,6 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szAbout = buffer->PackString(szAbout);
 
-  Encrypt();
 }
 
 
@@ -922,7 +912,6 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
   buffer->PackChar(m_nHideIp);
   buffer->PackChar(m_nWebAware);
 
-  Encrypt();
 }
 
 
@@ -939,7 +928,6 @@ CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long nUin)
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedLong(m_nUin);
 
-  Encrypt();
 }
 
 
@@ -976,6 +964,13 @@ void CPacketTcp_Handshake::InitBuffer(void)
 
 
 //=====PacketTcp================================================================
+CBuffer *CPacketTcp::Finalize(void)
+{
+  CBuffer *newbuf = new CBuffer(getBuffer());
+  Encrypt_Client(newbuf);
+  return newbuf;
+}
+
 CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
                       unsigned short _nSubCommand, const char *szMessage,
                       bool _bAccept, bool _bUrgent, ICQUser *user)
@@ -1391,9 +1386,9 @@ CPChat_ColorFont::CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort
   buffer->PackUnsignedLong(_nColorBackground);
   buffer->PackUnsignedLong(0x03);
   buffer->PackUnsignedLong(_nLocalPort);
-  buffer->PackUnsignedLong(LOCALHOST);
-  buffer->PackUnsignedLong(LOCALHOST);
-  buffer->PackChar(0x04);
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackUnsignedLong(s_nRealIp);
+  buffer->PackChar(s_nMode);
   buffer->PackUnsignedShort(0x5A75);
   buffer->PackUnsignedLong(_nFontSize);
   buffer->PackUnsignedLong(_nFontFace);

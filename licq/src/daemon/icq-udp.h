@@ -172,6 +172,7 @@ void CICQDaemon::icqLogoff(void)
   int nSD = m_nUDPSocketDesc;
   m_nAllowUpdateUsers = 0;
   m_nUDPSocketDesc = -1;
+  /*
   UDPSocket *s = (UDPSocket *)gSocketManager.FetchSocket(nSD);
   // if not connected then don't both logging off
   if (s != NULL)
@@ -182,6 +183,12 @@ void CICQDaemon::icqLogoff(void)
     gSocketManager.DropSocket(s);
     gSocketManager.CloseSocket(nSD);
   }
+  */
+  gLog.Info("%sLogging off.\n", L_UDPxSTR);
+  CPU_Logoff p;
+  if (SendEvent(nSD, p))
+    gSocketManager.CloseSocket(nSD);
+
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
   pthread_mutex_lock(&mutex_runningevents);
@@ -382,12 +389,13 @@ CICQEventTag *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned sho
 
 //-----icqSetWorkInfo--------------------------------------------------------
 CICQEventTag *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
+                                     const char *_szPhone,
                                      const char *_szFax, const char *_szAddress,
                                      const char *_szName, const char *_szDepartment,
                                      const char *_szPosition, const char *_szHomepage)
 {
   CPU_Meta_SetWorkInfo *p =
-    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szFax, _szAddress,
+    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szAddress,
                              _szName, _szDepartment, _szPosition, _szHomepage);
   gLog.Info("%sUpdating personal work info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
@@ -1257,7 +1265,15 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   {
     // parse the message into url and url description
     char **szUrl = new char*[2];  // description, url
-    ParseFE(szMessage, &szUrl, 2);
+    if (!ParseFE(szMessage, &szUrl, 2))
+    {
+      char *buf;
+      gLog.Warn("%sInvalid URL system message:\n%s\n", L_WARNxSTR,
+                packet.print(buf));
+      delete []buf;
+      delete []szUrl;
+      break;
+    }
 
     // translating string with Translation Table
     gTranslator.ServerToClient (szUrl[0]);
@@ -1299,15 +1315,23 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   }
   case ICQ_CMDxSUB_REQxAUTH:  // system message: authorisation request
   {
-     /* 02 00 04 01 08 00 8F 76 20 00 06 00 41 00 41 70 6F 74 68 65 6F 73 69 73
-        FE 47 72 61 68 61 6D FE 52 6F 66 66 FE 67 72 6F 66 66 40 75 77 61 74 65
-        72 6C 6F 6F 2E 63 61 FE 31 FE 50 6C 65 61 73 65 20 61 75 74 68 6F 72 69
-        7A 65 20 6D 65 2E 00 */
+    /* 02 00 04 01 08 00 8F 76 20 00 06 00 41 00 41 70 6F 74 68 65 6F 73 69 73
+       FE 47 72 61 68 61 6D FE 52 6F 66 66 FE 67 72 6F 66 66 40 75 77 61 74 65
+       72 6C 6F 6F 2E 63 61 FE 31 FE 50 6C 65 61 73 65 20 61 75 74 68 6F 72 69
+       7A 65 20 6D 65 2E 00 */
 
-     gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
+    gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
 
-     char **szFields = new char*[6];  // alias, first name, last name, email, auth, reason
-     ParseFE(szMessage, &szFields, 6);
+    char **szFields = new char*[6];  // alias, first name, last name, email, auth, reason
+    if (!ParseFE(szMessage, &szFields, 6))
+    {
+      char *buf;
+      gLog.Warn("%sInvalid authorization request system message:\n%s\n", L_WARNxSTR,
+                packet.print(buf));
+      delete []buf;
+      delete []szFields;
+      break;
+    }
 
      // translating string with Translation Table
      gTranslator.ServerToClient (szFields[0]);
@@ -1344,29 +1368,37 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   }
   case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
   {
-     gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR,
-               nUin);
+    gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR,
+              nUin);
 
-     char **szFields = new char*[5]; // alias, first name, last name, email, auth
-     ParseFE(szMessage, &szFields, 5);
+    char **szFields = new char*[5]; // alias, first name, last name, email, auth
+    if (!ParseFE(szMessage, &szFields, 5))
+    {
+      char *buf;
+      gLog.Warn("%sInvalid added to list system message:\n%s\n", L_WARNxSTR,
+                packet.print(buf));
+      delete []buf;
+      delete []szFields;
+      break;
+    }
 
-     // translating string with Translation Table
-     gTranslator.ServerToClient(szFields[0]);  // alias
-     gTranslator.ServerToClient(szFields[1]);  // first name
-     gTranslator.ServerToClient(szFields[2]);  // last name
-     gLog.Info("%s%s (%s %s), %s\n", L_UDPxSTR, szFields[0], szFields[1],
-              szFields[2], szFields[3]);
+    // translating string with Translation Table
+    gTranslator.ServerToClient(szFields[0]);  // alias
+    gTranslator.ServerToClient(szFields[1]);  // first name
+    gTranslator.ServerToClient(szFields[2]);  // last name
+    gLog.Info("%s%s (%s %s), %s\n", L_UDPxSTR, szFields[0], szFields[1],
+             szFields[2], szFields[3]);
 
-     CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
-                                      szFields[2], szFields[3],
-                                      ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
-     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-     AddUserEvent(o, e);
-     gUserManager.DropOwner();
-     e->AddToHistory(NULL, D_RECEIVER);
-     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-     delete[] szFields;
-     break;
+    CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
+                                     szFields[2], szFields[3],
+                                     ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    AddUserEvent(o, e);
+    gUserManager.DropOwner();
+    e->AddToHistory(NULL, D_RECEIVER);
+    m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+    delete[] szFields;
+    break;
   }
   case ICQ_CMDxSUB_WEBxPANEL:
   {
@@ -1377,7 +1409,15 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gLog.Info("%sMessage through web panel.\n", L_SBLANKxSTR);
 
     char **szFields = new char*[6]; // name, ?, ?, email, ?, message
-    ParseFE(szMessage, &szFields, 6);
+    if (!ParseFE(szMessage, &szFields, 6))
+    {
+      char *buf;
+      gLog.Warn("%sInvalid web panel system message:\n%s\n", L_WARNxSTR,
+                packet.print(buf));
+      delete []buf;
+      delete []szFields;
+      break;
+    }
 
     gTranslator.ServerToClient(szFields[0]);
     gTranslator.ServerToClient(szFields[5]);
@@ -1407,7 +1447,15 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gLog.Info("%sEmail pager message.\n", L_SBLANKxSTR);
 
     char **szFields = new char*[6]; // name, ?, ?, email, ?, message
-    ParseFE(szMessage, &szFields, 6);
+    if (!ParseFE(szMessage, &szFields, 6))
+    {
+      char *buf;
+      gLog.Warn("%sInvalid email pager system message:\n%s\n", L_WARNxSTR,
+                packet.print(buf));
+      delete []buf;
+      delete []szFields;
+      break;
+    }
 
     gTranslator.ServerToClient(szFields[0]);
     gTranslator.ServerToClient(szFields[5]);
@@ -1439,7 +1487,15 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     szMessage[--i] = '\0';
     int nNumContacts = atoi(szMessage);
     char **szFields = new char*[nNumContacts * 2 + 1];
-    ParseFE(&szMessage[++i], &szFields, nNumContacts * 2 + 1);
+    if (!ParseFE(&szMessage[++i], &szFields, nNumContacts * 2 + 1))
+    {
+      char *buf;
+      gLog.Warn("%sInvalid contact list system message:\n%s\n", L_WARNxSTR,
+                packet.print(buf));
+      delete []buf;
+      delete []szFields;
+      break;
+    }
 
     // Translate the aliases
     vector <char *> vszFields;
@@ -1604,7 +1660,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetLanguage2(packet.UnpackChar());
           u->SetLanguage3(packet.UnpackChar());
           u->SetEnableSave(true);
-          u->SaveWorkInfo();
+          u->SaveMoreInfo();
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                           USER_MORE, nUin));
           break;
@@ -1623,11 +1679,89 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     }
 
     case ICQ_CMDxMETA_GENERALxINFOxRSP:
-    case ICQ_CMDxMETA_MORExINFOxRSP:
-    case ICQ_CMDxMETA_WORKxINFOxRSP:
-    case ICQ_CMDxMETA_ABOUTxRSP:
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)e->m_xPacket;
+      o->SetEnableSave(false);
+      o->SetAlias(p->m_szAlias);
+      o->SetFirstName(p->m_szFirstName);
+      o->SetLastName(p->m_szLastName);
+      o->SetEmail1(p->m_szEmail1);
+      o->SetEmail2(p->m_szEmail2);
+      o->SetCity(p->m_szCity);
+      o->SetState(p->m_szState);
+      o->SetPhoneNumber(p->m_szPhoneNumber);
+      o->SetFaxNumber(p->m_szFaxNumber);
+      o->SetAddress(p->m_szAddress);
+      o->SetCellularNumber(p->m_szCellularNumber);
+      o->SetZipCode(p->m_nZipCode);
+      o->SetCountryCode(p->m_nCountryCode);
+      o->SetTimezone(p->m_nTimezone);
+      o->SetAuthorization(p->m_nAuthorization == 0);
+      o->SetHideEmail(p->m_nHideEmail == 1);
+      o->SetEnableSave(true);
+      o->SaveGeneralInfo();
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                      USER_GENERAL, o->Uin()));
+      gUserManager.DropOwner();
       e->m_nSubResult = META_DONE;
       break;
+    }
+    case ICQ_CMDxMETA_MORExINFOxRSP:
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      CPU_Meta_SetMoreInfo *p = (CPU_Meta_SetMoreInfo *)e->m_xPacket;
+      o->SetEnableSave(false);
+      o->SetAge(p->m_nAge);
+      o->SetGender(p->m_nGender);
+      o->SetHomepage(p->m_szHomepage);
+      o->SetBirthYear(p->m_nBirthYear);
+      o->SetBirthMonth(p->m_nBirthMonth);
+      o->SetBirthDay(p->m_nBirthDay);
+      o->SetLanguage1(p->m_nLanguage1);
+      o->SetLanguage2(p->m_nLanguage2);
+      o->SetLanguage3(p->m_nLanguage3);
+      o->SetEnableSave(true);
+      o->SaveMoreInfo();
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                      USER_MORE, o->Uin()));
+      gUserManager.DropOwner();
+      e->m_nSubResult = META_DONE;
+      break;
+    }
+    case ICQ_CMDxMETA_WORKxINFOxRSP:
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)e->m_xPacket;
+      o->SetEnableSave(false);
+      o->SetCompanyCity(p->m_szCity);
+      o->SetCompanyState(p->m_szState);
+      o->SetCompanyPhoneNumber(p->m_szPhoneNumber);
+      o->SetCompanyFaxNumber(p->m_szFaxNumber);
+      o->SetCompanyAddress(p->m_szAddress);
+      o->SetCompanyName(p->m_szName);
+      o->SetCompanyDepartment(p->m_szDepartment);
+      o->SetCompanyPosition(p->m_szPosition);
+      o->SetCompanyHomepage(p->m_szHomepage);
+      o->SetEnableSave(true);
+      o->SaveWorkInfo();
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                      USER_WORK, o->Uin()));
+      gUserManager.DropOwner();
+      e->m_nSubResult = META_DONE;
+      break;
+    }
+    case ICQ_CMDxMETA_ABOUTxRSP:
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)e->m_xPacket;
+      o->SetAbout(p->m_szAbout);
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                      USER_ABOUT, o->Uin()));
+      gUserManager.DropOwner();
+      e->m_nSubResult = META_DONE;
+      break;
+    }
     case ICQ_CMDxMETA_SECURITYxRSP:
     {
       /*CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_xPacket;
