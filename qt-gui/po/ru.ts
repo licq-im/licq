@@ -98,308 +98,6 @@ Do you really want to send it?</source>
         <source>&amp;No</source>
         <translation>&amp;Нет</translation>
     </message>
-    <message>
-        <source>&amp;General</source>
-        <translation>&amp;Общие</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation>Псевдоним:</translation>
-    </message>
-    <message>
-        <source>UIN:</source>
-        <translation>UIN:</translation>
-    </message>
-    <message>
-        <source>IP:</source>
-        <translation>IP:</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation>Статус:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation>Временная зона:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation>Имя:</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation>Основной EMail:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation>Дополнительный EMail:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation>Старый Email:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation>Адрес:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation>Телефон:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation>Штат:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation>Факс:</translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation>Город:</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation>Сотовый:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation>Индекс:</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation>Страна:</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Неизвестно</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation>GMT%1%1%1</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation>Неизвестно (%1)</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation>Сейчас</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation>&amp;Дополнительно</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation>Возраст:</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation>Пол:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation>Не указанно</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation>Женский</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation>Мужской</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation>Домашняя страница:</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation>День рождения:</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation>День:</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation>Месяц:</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation>Год:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation>Основной язык:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation>Второй язык:</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation>Третий язык:</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation>Требуется авторизация</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation>Авторизация не требуется</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation>&amp;Работа</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation>Отдел:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation>Должность:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation>&amp;Информация</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation>О себе:</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation>&amp;Последний раз</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation>В сети:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation>Что-либо отправлено:</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation>Что-либо принято:</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation>Проверен авто-ответ:</translation>
-    </message>
-    <message>
-        <source>Online Since:</source>
-        <translation>В сети с:</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation>Отключен</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation>&amp;История</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation>&amp;В обратном порядке</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation>&amp;Фильтр: </translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation>Ошибка загрузки файла истории: %1
-Причина: %2</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation>Извините, история запрещена для данного пользователя.</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation>сервер</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation>%1 от пользователя %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation>%1 к пользователю %2</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation>[&lt;font color=&quot;%1&quot;&gt;Принятые&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Отправленные&lt;/font&gt;] с %3 по %4 из %5</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation>[&lt;font color=&quot;%1&quot;&gt;Принятые&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Отправленные&lt;/font&gt;] %3 из %4 подходящих</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation>&amp;Обновить</translation>
-    </message>
-    <message>
-        <source>Retrieve</source>
-        <translation>Получить</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation>&amp;Сохранить</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation>&amp;Меню</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation>&amp;Следующее</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation>&amp;Назад</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation>Вы должны быть в ICQ сети для
-получения Ваших настроек.</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation>Обновляется...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation>Вы должны быть в ICQ сети для
-изменения Ваших настроек.</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation>Обновляется на сервере...</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation>ошибка</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation>выполнено</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation>ошибка</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation>время ожидания вышло</translation>
-    </message>
 </context>
 <context>
     <name>AddUserDlg</name>
@@ -1493,6 +1191,10 @@ UIN: %1
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq не в состоянии запустить браузер и открыть ссылку.
 Вам небходимо запустить браузер вручную.</translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4158,10 +3860,6 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <source>Retrieve</source>
-        <translation>Получить</translation>
-    </message>
-    <message>
         <source>&amp;Menu</source>
         <translation>&amp;Меню</translation>
     </message>
@@ -4175,289 +3873,307 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>&amp;General</source>
-        <translation type="obsolete">&amp;Общие</translation>
+        <translation>&amp;Общие</translation>
     </message>
     <message>
         <source>Alias:</source>
-        <translation type="obsolete">Псевдоним:</translation>
+        <translation>Псевдоним:</translation>
     </message>
     <message>
         <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
+        <translation>UIN:</translation>
     </message>
     <message>
         <source>IP:</source>
-        <translation type="obsolete">IP:</translation>
+        <translation>IP:</translation>
     </message>
     <message>
         <source>Status:</source>
-        <translation type="obsolete">Статус:</translation>
+        <translation>Статус:</translation>
     </message>
     <message>
         <source>Timezone:</source>
-        <translation type="obsolete">Временная зона:</translation>
+        <translation>Временная зона:</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="obsolete">Имя:</translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <source>EMail 1:</source>
-        <translation type="obsolete">Основной EMail:</translation>
+        <translation>Основной EMail:</translation>
     </message>
     <message>
         <source>EMail 2:</source>
-        <translation type="obsolete">Дополнительный EMail:</translation>
+        <translation>Дополнительный EMail:</translation>
     </message>
     <message>
         <source>Old Email:</source>
-        <translation type="obsolete">Старый Email:</translation>
+        <translation>Старый Email:</translation>
     </message>
     <message>
         <source>Address:</source>
-        <translation type="obsolete">Адрес:</translation>
+        <translation>Адрес:</translation>
     </message>
     <message>
         <source>Phone:</source>
-        <translation type="obsolete">Телефон:</translation>
+        <translation>Телефон:</translation>
     </message>
     <message>
         <source>State:</source>
-        <translation type="obsolete">Штат:</translation>
+        <translation>Штат:</translation>
     </message>
     <message>
         <source>Fax:</source>
-        <translation type="obsolete">Факс:</translation>
+        <translation>Факс:</translation>
     </message>
     <message>
         <source>City:</source>
-        <translation type="obsolete">Город:</translation>
+        <translation>Город:</translation>
     </message>
     <message>
         <source>Cellular:</source>
-        <translation type="obsolete">Сотовый:</translation>
+        <translation>Сотовый:</translation>
     </message>
     <message>
         <source>Zip:</source>
-        <translation type="obsolete">Индекс:</translation>
+        <translation>Индекс:</translation>
     </message>
     <message>
         <source>Country:</source>
-        <translation type="obsolete">Страна:</translation>
+        <translation>Страна:</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="obsolete">Неизвестно</translation>
+        <translation>Неизвестно</translation>
     </message>
     <message>
         <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
+        <translation>GMT%1%1%1</translation>
     </message>
     <message>
         <source>Unknown (%1)</source>
-        <translation type="obsolete">Неизвестно (%1)</translation>
+        <translation>Неизвестно (%1)</translation>
     </message>
     <message>
         <source>Now</source>
-        <translation type="obsolete">Сейчас</translation>
+        <translation>Сейчас</translation>
     </message>
     <message>
         <source>&amp;More</source>
-        <translation type="obsolete">&amp;Дополнительно</translation>
+        <translation>&amp;Дополнительно</translation>
     </message>
     <message>
         <source>Age:</source>
-        <translation type="obsolete">Возраст:</translation>
+        <translation>Возраст:</translation>
     </message>
     <message>
         <source>Gender:</source>
-        <translation type="obsolete">Пол:</translation>
+        <translation>Пол:</translation>
     </message>
     <message>
         <source>Unspecified</source>
-        <translation type="obsolete">Не указанно</translation>
+        <translation>Не указанно</translation>
     </message>
     <message>
         <source>Female</source>
-        <translation type="obsolete">Женский</translation>
+        <translation>Женский</translation>
     </message>
     <message>
         <source>Male</source>
-        <translation type="obsolete">Мужской</translation>
+        <translation>Мужской</translation>
     </message>
     <message>
         <source>Homepage:</source>
-        <translation type="obsolete">Домашняя страница:</translation>
+        <translation>Домашняя страница:</translation>
     </message>
     <message>
         <source>Birthday:</source>
-        <translation type="obsolete">День рождения:</translation>
+        <translation>День рождения:</translation>
     </message>
     <message>
         <source> Day:</source>
-        <translation type="obsolete">День:</translation>
+        <translation>День:</translation>
     </message>
     <message>
         <source> Month:</source>
-        <translation type="obsolete">Месяц:</translation>
+        <translation>Месяц:</translation>
     </message>
     <message>
         <source> Year:</source>
-        <translation type="obsolete">Год:</translation>
+        <translation>Год:</translation>
     </message>
     <message>
         <source>Language 1:</source>
-        <translation type="obsolete">Основной язык:</translation>
+        <translation>Основной язык:</translation>
     </message>
     <message>
         <source>Language 2:</source>
-        <translation type="obsolete">Второй язык:</translation>
+        <translation>Второй язык:</translation>
     </message>
     <message>
         <source>Language 3:</source>
-        <translation type="obsolete">Третий язык:</translation>
+        <translation>Третий язык:</translation>
     </message>
     <message>
         <source>Authorization Required</source>
-        <translation type="obsolete">Требуется авторизация</translation>
+        <translation>Требуется авторизация</translation>
     </message>
     <message>
         <source>Authorization Not Required</source>
-        <translation type="obsolete">Авторизация не требуется</translation>
+        <translation>Авторизация не требуется</translation>
     </message>
     <message>
         <source>&amp;Work</source>
-        <translation type="obsolete">&amp;Работа</translation>
+        <translation>&amp;Работа</translation>
     </message>
     <message>
         <source>Department:</source>
-        <translation type="obsolete">Отдел:</translation>
+        <translation>Отдел:</translation>
     </message>
     <message>
         <source>Position:</source>
-        <translation type="obsolete">Должность:</translation>
+        <translation>Должность:</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation type="obsolete">&amp;О себе</translation>
+        <translation>&amp;О себе</translation>
     </message>
     <message>
         <source>About:</source>
-        <translation type="obsolete">О себе:</translation>
+        <translation>О себе:</translation>
     </message>
     <message>
         <source>&amp;Last</source>
-        <translation type="obsolete">&amp;Последний раз</translation>
+        <translation>&amp;Последний раз</translation>
     </message>
     <message>
         <source>Last Online:</source>
-        <translation type="obsolete">В сети:</translation>
+        <translation>В сети:</translation>
     </message>
     <message>
         <source>Last Sent Event:</source>
-        <translation type="obsolete">Что-либо отправлено:</translation>
+        <translation>Что-либо отправлено:</translation>
     </message>
     <message>
         <source>Last Received Event:</source>
-        <translation type="obsolete">Что-либо принято:</translation>
+        <translation>Что-либо принято:</translation>
     </message>
     <message>
         <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">Проверен авто-ответ:</translation>
+        <translation>Проверен авто-ответ:</translation>
     </message>
     <message>
         <source>Online Since:</source>
-        <translation type="obsolete">В сети с:</translation>
+        <translation>В сети с:</translation>
     </message>
     <message>
         <source>Offline</source>
-        <translation type="obsolete">Отключен</translation>
+        <translation>Отключен</translation>
     </message>
     <message>
         <source>&amp;History</source>
-        <translation type="obsolete">&amp;История</translation>
+        <translation>&amp;История</translation>
     </message>
     <message>
         <source>Rever&amp;se</source>
-        <translation type="obsolete">&amp;В обратном порядке</translation>
+        <translation>&amp;В обратном порядке</translation>
     </message>
     <message>
         <source>&amp;Filter: </source>
-        <translation type="obsolete">&amp;Фильтр: </translation>
+        <translation>&amp;Фильтр: </translation>
     </message>
     <message>
         <source>Error loading history file: %1
 Description: %2</source>
-        <translation type="obsolete">Ошибка загрузки файла истории: %1
+        <translation>Ошибка загрузки файла истории: %1
 Причина: %2</translation>
     </message>
     <message>
         <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">Извините, история запрещена для данного пользователя.</translation>
+        <translation>Извините, история запрещена для данного пользователя.</translation>
     </message>
     <message>
         <source>server</source>
-        <translation type="obsolete">сервер</translation>
+        <translation>сервер</translation>
     </message>
     <message>
         <source>%1 from %2</source>
-        <translation type="obsolete">%1 от пользователя %2</translation>
+        <translation>%1 от пользователя %2</translation>
     </message>
     <message>
         <source>%1 to %2</source>
-        <translation type="obsolete">%1 к пользователю %2</translation>
+        <translation>%1 к пользователю %2</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Принятые&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Отправленные&lt;/font&gt;] с %3 по %4 из %5</translation>
+        <translation>[&lt;font color=&quot;%1&quot;&gt;Принятые&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Отправленные&lt;/font&gt;] с %3 по %4 из %5</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Принятые&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Отправленные&lt;/font&gt;] %3 из %4 подходящих</translation>
+        <translation>[&lt;font color=&quot;%1&quot;&gt;Принятые&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Отправленные&lt;/font&gt;] %3 из %4 подходящих</translation>
     </message>
     <message>
         <source>Nex&amp;t</source>
-        <translation type="obsolete">&amp;Вперед</translation>
+        <translation>&amp;Вперед</translation>
     </message>
     <message>
         <source>P&amp;rev</source>
-        <translation type="obsolete">&amp;Назад</translation>
+        <translation>&amp;Назад</translation>
     </message>
     <message>
         <source>You need to be connected to the
 ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">Вы должны быть в ICQ сети для
+        <translation>Вы должны быть в ICQ сети для
 получения Ваших настроек.</translation>
     </message>
     <message>
         <source>Updating...</source>
-        <translation type="obsolete">Обновляется...</translation>
+        <translation>Обновляется...</translation>
     </message>
     <message>
         <source>You need to be connected to the
 ICQ Network to change your settings.</source>
-        <translation type="obsolete">Вы должны быть в ICQ сети для
+        <translation>Вы должны быть в ICQ сети для
 изменения Ваших настроек.</translation>
     </message>
     <message>
         <source>Updating server...</source>
-        <translation type="obsolete">Обновляется на сервере...</translation>
+        <translation>Обновляется на сервере...</translation>
     </message>
     <message>
         <source>error</source>
-        <translation type="obsolete">ошибка</translation>
+        <translation>ошибка</translation>
     </message>
     <message>
         <source>done</source>
-        <translation type="obsolete">готово</translation>
+        <translation>готово</translation>
     </message>
     <message>
         <source>failed</source>
-        <translation type="obsolete">неудачно</translation>
+        <translation>неудачно</translation>
     </message>
     <message>
         <source>timed out</source>
-        <translation type="obsolete">время ожидания вышло</translation>
+        <translation>время ожидания вышло</translation>
+    </message>
+    <message>
+        <source>&amp;Retrieve</source>
+        <translation>&amp;Получить с сервера</translation>
+    </message>
+    <message>
+        <source>S&amp;end</source>
+        <translation>&amp;Обновить</translation>
+    </message>
+    <message>
+        <source>Keep Alias on Update</source>
+        <translation>Не обновлять псевдоним при обновлении</translation>
+    </message>
+    <message>
+        <source>Normally Licq overwrites the Alias when updating user details.
+Check this if you want to keep your changes to the Alias.</source>
+        <translation>Обычно Licq изменяет псевдоним при получении информации о пользователе с сервера.
+Эта опция не позволяет изменить псевдоним при обновлении.</translation>
     </message>
 </context>
 <context>
@@ -4489,31 +4205,6 @@ ICQ Network to change your settings.</source>
     <message>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>UserSendChatEvent</name>
-    <message>
-        <source>Multiparty: </source>
-        <translation type="obsolete">Многопользовательский:</translation>
-    </message>
-    <message>
-        <source>Invite</source>
-        <translation type="obsolete">Пригласить</translation>
-    </message>
-    <message>
-        <source> - Chat Request</source>
-        <translation type="obsolete">- Запрос чата</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Очистить</translation>
-    </message>
-    <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 отказался учавствовать в чате:
-%3</translation>
     </message>
 </context>
 <context>
@@ -4658,50 +4349,6 @@ through the server!</source>
     </message>
 </context>
 <context>
-    <name>UserSendContactEvent</name>
-    <message>
-        <source>Drag Users Here - Right Click for Options</source>
-        <translation type="obsolete">Перенесите пользователей сюда - используйте правую кнопку мыши для изменения списка</translation>
-    </message>
-    <message>
-        <source> - Contact List</source>
-        <translation type="obsolete"> - Список контактов</translation>
-    </message>
-</context>
-<context>
-    <name>UserSendFileEvent</name>
-    <message>
-        <source>File(s): </source>
-        <translation type="obsolete">Файл(ы): </translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Просмотр</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Редактировать</translation>
-    </message>
-    <message>
-        <source> - File Transfer</source>
-        <translation type="obsolete"> - Передача файла</translation>
-    </message>
-    <message>
-        <source>Select files to send</source>
-        <translation type="obsolete">Выберите файлы для отправки</translation>
-    </message>
-    <message>
-        <source>You must specify a file to transfer!</source>
-        <translation type="obsolete">Вы должны указать файл для передачи!</translation>
-    </message>
-    <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">В передаче файла к %2 отказано::
-%3</translation>
-    </message>
-</context>
-<context>
     <name>UserSendMsgEvent</name>
     <message>
         <source> - Message</source>
@@ -4720,35 +4367,6 @@ Do you really want to send it?</source>
     <message>
         <source>&amp;No</source>
         <translation>&amp;Нет</translation>
-    </message>
-</context>
-<context>
-    <name>UserSendSmsEvent</name>
-    <message>
-        <source>Phone : </source>
-        <translation type="obsolete">Телефон :</translation>
-    </message>
-    <message>
-        <source>Chars left : </source>
-        <translation type="obsolete">Осталось символов : </translation>
-    </message>
-    <message>
-        <source> - SMS</source>
-        <translation type="obsolete"> - SMS</translation>
-    </message>
-    <message>
-        <source>You didn&apos;t edit the SMS.
-Do you really want to send it?</source>
-        <translation type="obsolete">Вы не отредактировали SMS сообщение.
-Вы действительно хотите его отослать?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Да</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Нет</translation>
     </message>
 </context>
 <context>
