@@ -69,9 +69,10 @@ GtkWidget *contact_list_new(gint height, gint width)
 
 gint flash_icons(gpointer data)
 {
-	if(nToFlash < 0)
+	// If we aren't supposed to flash or there are no things to flash
+	if(!flash_events || (nToFlash < 0))
 		return -1;
-
+		
 	list<SFlash *>::iterator it;
 	for(it = FlashList.begin(); it != FlashList.end(); it++)
 	{
@@ -167,21 +168,16 @@ void contact_list_refresh()
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 				0, "!");
 
-/*			nToFlash++;
-			list<SFlash *>::iterator it;
-			for(it = FlashList.begin(); it != FlashList.end(); it++)
+			if(flash_events)
 			{
-				if((*it)->nUin != pUser->Uin())
-					(*it)->nRow++;
-			}
-*/
-			struct SFlash *flash = g_new0(struct SFlash, 1);
-			flash->nRow = ++nToFlash; 
-			flash->icon = icon;
-			flash->bFlashOn = false;
-			flash->nUin = pUser->Uin();
+				struct SFlash *flash = g_new0(struct SFlash, 1);
+				flash->nRow = ++nToFlash; 
+				flash->icon = icon;
+				flash->bFlashOn = false;
+				flash->nUin = pUser->Uin();
 
-			FlashList.push_back(flash);
+				FlashList.push_back(flash);
+			}
 
 		} 
 

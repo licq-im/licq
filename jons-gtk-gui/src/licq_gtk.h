@@ -306,6 +306,7 @@ struct options_window
 	GtkWidget *show_ignored;
 	GtkWidget *show_offline;
 	GtkWidget *enter_sends;
+	GtkWidget *flash_events;
 };
 
 struct remote_chat_request
@@ -443,6 +444,7 @@ extern GtkWidget *user_list_menu;
 extern bool show_offline_users;
 extern bool show_ignored_users;
 extern bool enter_sends;
+extern bool flash_events;
 
 /* Globals in random_chat.cpp */
 extern struct random_chat *rcw;

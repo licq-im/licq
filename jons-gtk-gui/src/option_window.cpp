@@ -28,6 +28,7 @@
 bool show_offline_users;
 bool show_ignored_users;
 bool enter_sends;
+bool flash_events;
 
 /* The "Options" selection under the menu in the main window */
 void menu_options_create()
@@ -73,6 +74,11 @@ void menu_options_create()
 	gtk_table_attach(GTK_TABLE(table), ow->enter_sends, 0, 1, 1, 2,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
+
+	// Flash events
+	ow->flash_events = gtk_check_button_new_with_label("Flash events");
+	gtk_table_attach(GTK_TABLE(table), ow->flash_events, 1, 2, 1, 2,
+		GtkAttachOptions(GTK_FILL | GTK_EXPAND), GTK_FILL, 3, 3);
 
 	/* Set the check buttons */
 	set_options(ow);
@@ -128,6 +134,21 @@ void menu_options_create()
 	gtk_table_attach(GTK_TABLE(clr_table), offline_browse, 2, 3, 1, 2,
 			 GTK_FILL, GTK_FILL, 3, 3);
 
+	// Away color label
+	label = gtk_label_new("Away Color");
+	gtk_table_attach(GTK_TABLE(clr_table), label, 0, 1, 2, 3,
+			 GTK_FILL, GTK_FILL, 3, 3);
+
+	// Offline color browse button
+	int *chg_away_color = new int;
+	*chg_away_color = 3;
+
+	GtkWidget *away_browse = gtk_button_new_with_label("Browse");
+	gtk_signal_connect(GTK_OBJECT(away_browse), "clicked",
+		GTK_SIGNAL_FUNC(show_on_color_dlg), (gpointer)chg_away_color);
+	gtk_table_attach(GTK_TABLE(clr_table), away_browse, 2, 3, 2, 3,
+		GTK_FILL, GTK_FILL, 3, 3);
+
 	label = gtk_label_new("Contact List");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
@@ -148,11 +169,13 @@ void menu_options_create()
 void set_options(struct options_window *ow)
 {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_ignored),
-				     show_ignored_users);
+		show_ignored_users);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_offline),
-				     show_offline_users);
+		show_offline_users);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->enter_sends),
-				     enter_sends);
+		enter_sends);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->flash_events),
+		flash_events);
 }
 
 void done_options(GtkWidget *widget, gpointer data)
@@ -166,6 +189,8 @@ void done_options(GtkWidget *widget, gpointer data)
 	show_ignored_users = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(ow->show_ignored));
 	enter_sends = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->enter_sends));
+	flash_events = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
+		ow->flash_events));
 	
 	gtk_widget_destroy(ow->window);
 
@@ -195,6 +220,7 @@ void done_options(GtkWidget *widget, gpointer data)
 	licqConf.WriteBool("ShowOfflineUsers", show_offline_users);
 	licqConf.WriteBool("ShowIgnoredUsres", show_ignored_users);
 	licqConf.WriteBool("EnterSends", enter_sends);
+	licqConf.WriteBool("FlashEvents", flash_events);
 
 	licqConf.FlushFile();
 	licqConf.CloseFile();
@@ -239,6 +265,7 @@ void load_options()
 	licqConf.ReadBool("ShowOfflineUsers", show_offline_users, true);
 	licqConf.ReadBool("ShowIgnoredUsers", show_ignored_users, false);
 	licqConf.ReadBool("EnterSends", enter_sends, true);
+	licqConf.ReadBool("FlashEvents", flash_events, true);
 }
 
 void show_on_color_dlg(GtkWidget *widget, gpointer data)
@@ -259,6 +286,12 @@ void show_on_color_dlg(GtkWidget *widget, gpointer data)
 		color[1] = (gdouble)offline_color->green / 65535;
 		color[2] = (gdouble)offline_color->blue / 65535;
 		color[3] = (gdouble)offline_color->pixel / 65535;
+		break;
+	case 3:
+		color[0] = (gdouble)away_color->red / 65535;
+		color[1] = (gdouble)away_color->green / 65535;
+		color[2] = (gdouble)away_color->blue / 65535;
+		color[3] = (gdouble)away_color->pixel / 65535;
 		break;
 	}
 
@@ -316,6 +349,12 @@ void color_dlg_ok(GtkWidget *widget, gpointer data)
 		offline_color->blue = (guint16)(new_color[2] * 65535.0);
 		offline_color->pixel = (gulong)new_color[3];
  		break;
+	case 3:
+		away_color->red = (guint16)(new_color[0] * 65535.0);
+		away_color->green = (guint16)(new_color[1] * 65535.0);
+		away_color->blue = (guint16)(new_color[2] * 65535.0);
+		away_color->pixel = (gulong)new_color[3];
+		break;
 	}
 
 	gtk_widget_destroy(color_dialog);

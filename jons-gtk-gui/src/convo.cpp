@@ -218,7 +218,7 @@ void convo_show(struct conversation *c)
 	gtk_widget_show_all(c->window);
 
 	// Stop the flashing if necessary
-        if(c->user->NewMessages() > 0)
+        if((c->user->NewMessages() > 0) && flash_events)
         {
                 // Stop the flashing for this user
                 nToFlash--;
@@ -242,6 +242,13 @@ void convo_show(struct conversation *c)
 				(*it)->nRow--;
 		}
         }
+
+	// Clear the flash list
+	else if((c->user->NewMessages() > 0) && !flash_events)
+	{
+		nToFlash = -1;
+		FlashList.clear();
+	}
 }
 
 gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
