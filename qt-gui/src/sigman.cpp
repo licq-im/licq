@@ -94,6 +94,8 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
   case ICQ_CMDxSND_META:
+  case ICQ_CMDxSND_RANDOMxSEARCH:
+  case ICQ_CMDxSND_SETxRANDOMxCHAT:
     emit signal_doneUserFcn(e);
     break;
 

@@ -15,7 +15,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h chatacceptdlg.h \
 	mainwin.h messagebox.h mledit.h optionsdlg.h outputwin.h passworddlg.h\
 	plugindlg.h qmultilineeditnew.h registeruser.h searchuserdlg.h \
 	securitydlg.h showawaymsgdlg.h sigman.h skin.h skinbrowser.h userbox.h\
-	utilitydlg.h wharf.h
+	utilitydlg.h wharf.h randomchatdlg.h
 
 licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	chatacceptdlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
@@ -24,7 +24,7 @@ licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	outputwin.cpp passworddlg.cpp plugindlg.cpp qmultilineeditnew.cpp \
 	registeruser.cpp searchuserdlg.cpp securitydlg.cpp showawaymsgdlg.cpp \
 	sigman.cpp skin.cpp skinbrowser.cpp userbox.cpp utilitydlg.cpp \
-	wharf.cpp
+	wharf.cpp randomchatdlg.cpp
 
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
 	-s -module -avoid-version -rpath $(libdir)
