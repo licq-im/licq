@@ -258,6 +258,10 @@ void CUtilityDlg::slot_stdout()
   {
     m_bStdOutClosed = true;
     disconnect(snOut, SIGNAL(activated(int)), this, SLOT(slot_stdout()));
+    if (snOut != NULL)
+    {
+      snOut->setEnabled(false);
+    }
     mleOut->append("--- EOF ---");
     if (m_bStdErrClosed) CloseInternalWindow();
     return;
@@ -277,6 +281,10 @@ void CUtilityDlg::slot_stderr()
   {
     m_bStdErrClosed = true;
     disconnect(snErr, SIGNAL(activated(int)), this, SLOT(slot_stderr()));
+    if (snErr != NULL)
+    {
+      snErr->setEnabled(false);
+    }
     mleErr->append("--- EOF ---");
     if (m_bStdOutClosed) CloseInternalWindow();
     return;
