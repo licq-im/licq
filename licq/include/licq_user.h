@@ -386,7 +386,7 @@ public:
   unsigned long Cookie()        { return m_nCookie; }
   void SetIpPort(unsigned long nIp, unsigned short nPort);
   void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
-  void SetCookie(unsigned long nCookie) { m_nCookie = nCookie);
+  void SetCookie(unsigned long nCookie) { m_nCookie = nCookie; }
   // Don't call these:
   int SocketDesc()          { return m_nSocketDesc; }
   void ClearSocketDesc();

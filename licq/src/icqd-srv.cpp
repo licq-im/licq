@@ -62,7 +62,7 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
 unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  if (!u) return;
+  if (!u) return 0;
   
   int nCmd;
   switch (u->Status())
