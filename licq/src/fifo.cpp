@@ -3,7 +3,7 @@
  *
  * TODO things
  *	o file transfers
- * THOUGTHS 
+ * THOUGHTS 
  *	o a flag so message, url, etc can been forced to fail if buddy is not
  *	| in the list ?
  *
@@ -67,6 +67,12 @@ static const char* const HELP_MSG =
 static const char* const HELP_URL = 
 	"\turl <buddy> <url> [<description>]\n"
 	"\t\tSend a url to the given buddy.\n";
+static const char* const HELP_SMS =
+        "\tsms <buddy> <message>\n"
+        "\tSend a SMS to the given buddy.\n";
+static const char* const HELP_SMS_NUMBER =
+        "\tsms <number> <message>\n"
+        "\tSend a SMS to the given cellular number.\n";
 static const char* const HELP_REDIRECT = 
 	"\tredirect <file>\n"
 	"\t\tRedirects stderr for\n"
@@ -286,6 +292,56 @@ fifo_url ( int argc, const char *const *argv, void *data)
 	return 0;
 }
 
+//sms <buddy> <message>
+static int fifo_sms(int argc, const char *const *argv, void *data)
+{
+  CICQDaemon *d = (CICQDaemon *) data;
+  unsigned long nUin;
+  const char *szUin = argv[1];
+
+  if (argc < 3)
+  {
+    ReportMissingParams(argv[0]);
+    return -1;
+  }
+
+  if (atouin(szUin, false, &nUin))
+  {
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+    if (u != NULL)
+    {
+      const char *szNumber = u->GetCellularNumber();
+      if (szNumber)
+        d->icqSendSms(szNumber, argv[2], nUin);
+      else
+        gLog.Error("%sUnable to send SMS to %lu, no SMS number found.\n", L_ERRORxSTR, nUin);
+
+      gUserManager.DropUser(u);
+    }
+  }
+  else
+    ReportBadBuddy(argv[0],szUin);
+
+  return 0;
+}
+
+// sms-number <number> <message>
+static int fifo_sms_number(int argc, const char *const *argv, void *data)
+{
+  CICQDaemon *d = (CICQDaemon *) data;
+
+  if (argc < 3)
+  {
+    ReportMissingParams(argv[0]);
+    return -1;
+  }
+
+  ICQUser *owner = gUserManager.FetchOwner(LOCK_R);
+  d->icqSendSms(argv[1], argv[2], owner->Uin());
+  gUserManager.DropOwner();
+  return 0;
+}
+
 // redirect <file>
 static int
 fifo_redirect ( int argc, const char *const *argv, void *data)
@@ -293,7 +349,7 @@ fifo_redirect ( int argc, const char *const *argv, void *data)
 	if( argc == 1 )
 	{	ReportMissingParams(argv[0]);
 		return -1;
-	} 
+	}
 
 	// TODO: its safe to call strerror ?
 	if ( !Redirect(argv[1]) )
@@ -331,7 +387,7 @@ fifo_adduser ( int argc, const char *const *argv, void *data)
 	{	ReportMissingParams(argv[0]);
 		return -1;
 	}
-	
+
 	if( atouin(argv[1],false,&nUin) )
 		d->AddUserToList(nUin);
 	else
@@ -454,6 +510,8 @@ static struct command_t fifocmd_table[]=
 	{"auto_response",fifo_auto_response,HELP_AUTO,	0},
 	{"message",	fifo_message,	HELP_MSG,	0},
 	{"url",		fifo_url,	HELP_URL,	0},
+	{"sms",         fifo_sms,       HELP_SMS,       0},
+	{"sms-number",  fifo_sms_number,HELP_SMS_NUMBER,0},
 	{"redirect",	fifo_redirect,	HELP_REDIRECT,	0},
 	{"debuglvl",	fifo_debuglvl,	HELP_DEBUGLVL,	0},
 	{"adduser",	fifo_adduser,	HELP_ADDUSER,	0},
@@ -550,7 +608,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
 
 	switch( index )
 	{	case CL_UNKNOWN:
-			gLog.Info("%s: `%s' Unknown fifo  command. try with help",
+			gLog.Info("%s: '%s' Unknown fifo command. Try 'help'\n",
 			          L_FIFOxSTR,argv[0]);
 			break;
 		case CL_NONE:
@@ -570,4 +628,3 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
 	
 #endif //USE_FIFO
 }
-
