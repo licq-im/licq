@@ -642,10 +642,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
       setSelected(clickedItem, true);
       setCurrentItem(clickedItem);
       if (SelectedItemUin() != 0)
-      {
-        mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? tr("Disable") : tr("Enable")));
         mnuUser->popup(mapToGlobal(e->pos()) + QPoint(4,-5), 1);
-      }
     }
   }
 }

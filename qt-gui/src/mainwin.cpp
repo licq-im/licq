@@ -669,7 +669,7 @@ CMainWindow::~CMainWindow()
   n = width() < 0 ? 0 : width();
   licqConf.WriteNum("w", n);
 
-  licqConf.SetSection("floaties");
+  /*licqConf.SetSection("floaties");
   licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
   unsigned short i = 0;
   char key[32];
@@ -685,7 +685,7 @@ CMainWindow::~CMainWindow()
     sprintf(key, "Floaty%d.W", i);
     licqConf.WriteNum(key, (unsigned short)iter->width());
     i++;
-  }
+  }*/
 
   licqConf.FlushFile();
   licqConf.CloseFile();
@@ -1723,6 +1723,23 @@ void CMainWindow::saveOptions()
      licqConf.WriteNum(key, colInfo[i - 1]->m_nAlign);
   }
 
+  licqConf.SetSection("floaties");
+  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
+  unsigned short i = 0;
+  char key[32];
+  for (; i < CUserView::floaties->size(); )
+  {
+    CUserView* iter = CUserView::floaties->at(i);
+    sprintf(key, "Floaty%d.Uin", i);
+    licqConf.WriteNum(key, iter->firstChild()->ItemUin());
+    sprintf(key, "Floaty%d.X", i);
+    licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
+    sprintf(key, "Floaty%d.Y", i);
+    licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
+    sprintf(key, "Floaty%d.W", i);
+    licqConf.WriteNum(key, (unsigned short)iter->width());
+    i++;
+  }
 
   licqConf.FlushFile();
 }
@@ -2245,7 +2262,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
    mnuSystem->insertSeparator();
-   mnuSystem->insertItem(tr("Sa&ve Options"), this, SLOT(saveOptions()));
+   mnuSystem->insertItem(tr("Sa&ve Settings"), this, SLOT(saveOptions()));
    mnuSystem->insertItem(tr("&Help"), mnuHelp);
    mnuSystem->insertItem(tr("E&xit"), this, SLOT(slot_shutdown()));
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
