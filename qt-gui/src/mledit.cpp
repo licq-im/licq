@@ -6,12 +6,15 @@
 #include <qpainter.h>
 #include "mledit.h"
 
-QFont* MLEditWrap::editFont = 0;
+
+QFont *MLEditWrap::editFont = NULL;
 
 MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const char *name)
-  : QMultiLineEditNew(parent, name)
+  : QMultiLineEdit(parent, name)
 {
-  m_doQuotes = doQuotes;
+  m_bDoQuotes = doQuotes;
+
+#if QT_VERSION >= 210
   if (wordWrap)
   {
     setWordWrap(WidgetWidth);
@@ -21,41 +24,35 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
   {
     setWordWrap(NoWrap);
   }
+#else
+  if (wordWrap)
+    fprintf(stderr, "Word wrap not supported in Qt < 2.10\n");
+#endif
 
-  if(editFont)  QWidget::setFont(*editFont, true);
+  if (editFont) QWidget::setFont(*editFont, true);
 }
 
 
-void MLEditWrap::appendNNL(QString s)
+void MLEditWrap::appendNoNewLine(QString s)
 {
-  if (!atEnd()) goToEnd();
-  QMultiLineEditNew::insert(s);
+  if (!atEnd()) GotoEnd();
+  QMultiLineEdit::insert(s);
 }
 
 
-void MLEditWrap::goToEnd(void)
+void MLEditWrap::GotoEnd(void)
 {
    setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 }
 
-
-void MLEditWrap::appendChar(char c)
-{
-  if (!atEnd()) goToEnd();
-  QMultiLineEditNew::insertChar(c);
-}
-
-
 void MLEditWrap::keyPressEvent (QKeyEvent *e)
 {
-   emit keyPressed(e);
    if ((e->state() & ControlButton) && (e->key() == Key_Return || e->key() == Key_Enter))
    {
      emit signal_CtrlEnterPressed();
      return;
    }
-
-   QMultiLineEditNew::keyPressEvent(e);
+   QMultiLineEdit::keyPressEvent(e);
 }
 
 
@@ -65,12 +62,14 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
 {
 
 #if QT_VERSION >= 210
-  if(m_doQuotes) {
+  if (m_bDoQuotes)
+  {
     QString s = stringShown(row);
     int i = (s[0] == ' ');
     bool italic = (s[i] == '>' && (s[i+1] == ' ' || s[i+1] == '>'));
 
-    if(italic ^ p->font().italic()) {
+    if (italic ^ p->font().italic())
+    {
       QFont f(p->font());
       f.setItalic(italic);
       p->setFont(f);
@@ -78,7 +77,7 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
   }
 #endif
 
-  QMultiLineEditNew::paintCell(p, row, col);
+  QMultiLineEdit::paintCell(p, row, col);
 }
 
 #include "mledit.moc"

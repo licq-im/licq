@@ -44,8 +44,8 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 
   mleAwayMsg = new MLEditWrap(true, this);
   // ICQ99b allows 37 chars per line, so we do the same
-  mleAwayMsg->setWordWrap(QMultiLineEditNew::FixedColumnWidth);
-  mleAwayMsg->setWrapColumnOrWidth(37);
+  //mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWidth);
+  //mleAwayMsg->setWrapColumnOrWidth(37);
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
 
@@ -95,7 +95,8 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   gUserManager.DropOwner();
 
   mleAwayMsg->setFocus();
-  mleAwayMsg->selectAll();
+  // Causes qt to crash when hitting key for some unknown reason
+  //mleAwayMsg->selectAll();
 
   if (!isVisible())
   {

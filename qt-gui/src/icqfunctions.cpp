@@ -1654,7 +1654,7 @@ void ICQFunctions::ShowHistory()
                       .arg(m_lHistoryList.size()));
   mleHistory->setText(st);
   if(!m_bHistoryReverse)
-    mleHistory->goToEnd();
+    mleHistory->GotoEnd();
   else
     mleHistory->setCursorPosition(0, 0);
 }
@@ -1676,7 +1676,7 @@ void ICQFunctions::generateReply()
   for (int i = 0; i < mleRead->numLines(); i++)
     mleSend->insertLine( QString("> ") + mleRead->textLine(i));
   mleSend->append("\n");
-  mleSend->goToEnd();
+  mleSend->GotoEnd();
   tabs->showPage(tabList[TAB_SEND].tab);
 }
 
@@ -1944,6 +1944,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
          nLevel, 0);
+      break;
     }
     case ICQ_CMDxSUB_URL:
     {
@@ -1953,6 +1954,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
          bOnline, nLevel, 0);
+      break;
     }
     case ICQ_CMDxSUB_CHAT:
     {
@@ -1960,6 +1962,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       m_sProgressMsg = tr("Sending chat request...");
       icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(),
          bOnline, nLevel, 0);
+      break;
     }
     case ICQ_CMDxSUB_FILE:
     {
@@ -1967,6 +1970,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       m_sProgressMsg = tr("Sending file transfer...");
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
          ue->FileDescription(), bOnline, nLevel, 0);
+      break;
     }
   }
 
