@@ -15,6 +15,8 @@ extern int errno;
 
 #include "utility.h"
 #include "log.h"
+#include "user.h"
+//#include "icq-defines.h"
 
 CUtilityManager gUtilityManager;
 

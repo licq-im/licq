@@ -7,9 +7,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <vector.h>
 
-#include "user.h"
-#include "icq-defines.h"
+class ICQUser;
 
 //=====CUtilityUserField=========================================================
 class CUtilityUserField
