@@ -297,6 +297,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
   licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
+  m_bThreadView = false;
+
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
   m_nFlash = (FlashType)nFlash;
@@ -940,9 +942,31 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                    L_ERRORxSTR, nUin);
         break;
       }
-      // Update this user if they are in the current group
-      if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+      if(m_bThreadView) {
+        CUserViewGroupItem* i = static_cast<CUserViewGroupItem*>(userView->firstChild());
+
+        while(i) {
+          CUserViewItem* it = static_cast<CUserViewItem*>(i->firstChild());
+
+          if(it && it->ItemUin() == nUin) {
+            delete it;
+            if (m_bShowOffline || !u->StatusOffline() ||
+                (!m_bShowOffline && u->NewMessages() > 0))
+              (void) new CUserViewItem(u, i);
+            break;
+          }
+          i = static_cast<CUserViewGroupItem*>(i->nextSibling());
+        }
+        if(i != NULL) {
+          if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) ||
+                !u->StatusOffline()) && (!u->IgnoreList()
+               || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
+            (void) new CUserViewItem(u, i);
+        }
+      }
+      else if(u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
+        // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
         while (i && i->ItemUin() != nUin)
           i = (CUserViewItem *)i->nextSibling();
@@ -960,14 +984,14 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
-        if(sig->Argument() == 1)
+        if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
           userView->AnimationOnline(nUin);
       }
       // Update their floaty
       CUserView *v = CUserView::FindFloaty(nUin);
-      if (v != NULL)
+      if (v != NULL )
       {
-        v->firstChild()->setGraphics(u);
+        static_cast<CUserViewItem*>(v->firstChild())->setGraphics(u);
         v->triggerUpdate();
       }
       gUserManager.DropUser(u);
@@ -1049,6 +1073,15 @@ void CMainWindow::updateUserWin()
   // set the pixmap and color for each user and add them to the view
   userView->setUpdatesEnabled(false);
   userView->clear();
+
+  if(m_bThreadView) {
+    GroupList *g = gUserManager.LockGroupList(LOCK_R);
+    for (unsigned short i = 0; i < g->size(); i++) {
+      CUserViewGroupItem* gi = new CUserViewGroupItem(i, (*g)[i], userView);
+      gi->setOpen(true);
+    }
+    gUserManager.UnlockGroupList();
+  }
   FOR_EACH_USER_START(LOCK_R)
   {
     // Only show users on the current group and not on the ignore list
@@ -1060,8 +1093,30 @@ void CMainWindow::updateUserWin()
     if (!m_bShowOffline && pUser->StatusOffline())
       FOR_EACH_USER_CONTINUE;
 
-    // Add the user to the list
-    (void) new CUserViewItem(pUser, userView);
+    if(m_bThreadView) {
+      CUserViewGroupItem* gi = static_cast<CUserViewGroupItem*>(userView->firstChild());
+
+      while(gi) {
+        if(pUser->GetInGroup(GROUPS_USER, gi->GroupId()))
+        {
+          qDebug("in name %s", gi->Name());
+          (void) new CUserViewItem(pUser, gi);
+          break;
+        }
+        if(pUser->GetInGroup(GROUPS_SYSTEM, gi->GroupId()))
+        {
+          qDebug("in name %s", gi->Name());
+          (void) new CUserViewItem(pUser, gi);
+          break;
+        }
+        qDebug("finished group %d", gi->GroupId());
+
+        gi = static_cast<CUserViewGroupItem*>(gi->nextSibling());
+      }
+    }
+    else
+      // Add the user to the list
+      (void) new CUserViewItem(pUser, userView);
   }
   FOR_EACH_USER_END
   userView->setUpdatesEnabled(true);
@@ -1341,20 +1396,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   if (fcn == mnuUserSendMsg)
   {
     QString c = QApplication::clipboard()->text();
-    if(c.toULong() >= 10000)
-    {
-      UserSendContactEvent *e = (UserSendContactEvent *)callFunction(mnuUserSendContact, nUin);
-      if(e == NULL) return;
-      ICQUser* u = gUserManager.FetchUser(c.toULong(), LOCK_R);
-      if(u != NULL) {
-        QString alias = u->GetAlias();
-        gUserManager.DropUser(u);
-        e->setContact(c.toULong(), alias);
-        QApplication::clipboard()->clear();
-        return;
-      }
-    }
-    else if (c.left(5) == "http:" || c.left(4) == "ftp:")
+    if (c.left(5) == "http:" || c.left(4) == "ftp:")
     {
       UserSendUrlEvent *e = (UserSendUrlEvent *)callFunction(mnuUserSendUrl, nUin);
       if (e == NULL) return;
@@ -1933,7 +1975,7 @@ void CMainWindow::saveOptions()
   {
     CUserView* iter = CUserView::floaties->at(i);
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteNum(key, iter->firstChild()->ItemUin());
+    licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemUin());
     sprintf(key, "Floaty%d.X", i);
     licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
@@ -2172,6 +2214,9 @@ void CMainWindow::autoAway()
     bAutoAway = false;
     return;
   }
+
+//  gLog.Info("offl %d, n/a %d, away %d idlt %d\n",
+//            bAutoOffline, bAutoNA, bAutoAway, idleTime);
 
   if ( (autoOfflineTime > 0) &&
        (unsigned long)idleTime > (unsigned long)(autoOfflineTime * 60000))

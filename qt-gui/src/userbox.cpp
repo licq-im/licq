@@ -48,14 +48,23 @@ QColor  *CUserViewItem::s_cOnline = NULL,
 
 //-----CUserViewItem::constructor-----------------------------------------------
 CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
-   : QListViewItem(parent)
+  : QListViewItem(parent)
 {
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
-  setSelectable(m_nUin != 0);
   setGraphics(_cUser);
 }
 
+
+CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewGroupItem* item)
+  : QListViewItem(item)
+{
+  qDebug("inserting item %ld in %x", _cUser->Uin(), item);
+
+  m_nUin = _cUser->Uin();
+  m_bUrgent = false;
+  setGraphics(_cUser);
+}
 
 CUserViewItem::~CUserViewItem()
 {
@@ -235,12 +244,12 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   }
   p->setFont(newFont);
 
-  bool inverse = (listView()->onlTimerId && listView()->onlUin == m_nUin &&
-                  listView()->onlCounter & 1);
+  bool onlBlink = (listView()->onlTimerId && listView()->onlUin &&
+                   listView()->onlUin == m_nUin && listView()->onlCounter & 1);
 
   QColorGroup cg(cgdefault.foreground(), cgdefault.background(),
     cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
-    inverse ? *m_cBack : *m_cFore, inverse ? *m_cFore : *m_cBack);
+    onlBlink ? *s_cOffline : *m_cFore, *m_cBack);
 
   const QPixmap *pix = NULL;
 
@@ -354,12 +363,12 @@ void CUserViewItem::drawCAROverlay(QPainter* p)
 
 void CUserView::timerEvent(QTimerEvent* e)
 {
-  CUserViewItem* it = firstChild();
+  CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
 
   if(e->timerId() == carTimerId)
   {
     // find the item
-    CUserViewItem* it = firstChild();
+    CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
 
     if(carCounter > 0) {
       while(it) {
@@ -383,7 +392,7 @@ void CUserView::timerEvent(QTimerEvent* e)
   else if(e->timerId() == onlTimerId)
   {
     // find the item
-    CUserViewItem* it = firstChild();
+    CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
 
     if(onlCounter > 0) {
       while(it) {
@@ -443,6 +452,57 @@ QString CUserViewItem::key (int column, bool ascending) const
 }
 
 
+CUserViewGroupItem::CUserViewGroupItem(unsigned short Id, const char* name, QListView* lv)
+  : QListViewItem(lv)
+{
+  setText(1, name);
+
+  m_nId = Id;
+  m_sName = strdup(name);
+}
+
+CUserViewGroupItem::~CUserViewGroupItem()
+{
+  free(m_sName);
+}
+
+QString CUserViewGroupItem::key(int column, bool ascending) const
+{
+  return QString("1") +  QListViewItem::key(column, ascending);
+}
+
+void  CUserViewGroupItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
+{
+  QListViewItem::paintCell(p, cg, column, width, align);
+
+#if 0
+  QFont newFont(p->font());
+  newFont.setBold(false);
+  newFont.setItalic(false);
+  newFont.setStrikeOut(false);
+  p->setFont(newFont);
+  int x1 = 0, x2 = width;
+  if (column == 0)
+    x1 = 5;
+  if (column == listView()->header()->count() - 1)
+    x2 = width - 5;
+  p->setPen(QPen(QColor(128, 128, 128), 1));
+  p->drawLine(x1, height() >> 1, x2, height() >> 1);
+  p->setPen(QPen(QColor(255, 255, 255), 1));
+  p->drawLine(x1, (height() >> 1) + 1, x2, (height() >> 1) + 1);
+  if (column == 1)
+  {
+    QString sz = m_sName;
+
+    p->fillRect(5, 0, p->fontMetrics().width(sz) + 6, height(), black);
+    QFont f(p->font());
+    f.setPointSize(f.pointSize() - 2);
+    p->setFont(f);
+    p->drawText(8, 0, width - 8, height(), AlignVCenter, sz);
+  }
+#endif
+}
+
 UserFloatyList* CUserView::floaties = 0;
 
 
@@ -467,7 +527,9 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
 
   viewport()->setAcceptDrops(true);
 
+  setRootIsDecorated(gMainWindow->m_bThreadView);
   setAllColumnsShowFocus (true);
+  setTreeStepSize(0);
   setSorting(0);
 
   if (parent != NULL)
@@ -528,7 +590,7 @@ CUserView *CUserView::FindFloaty(unsigned long nUin)
   unsigned int i = 0;
   for (; i<floaties->size(); i++)
   {
-    if (floaties->at(i)->firstChild()->ItemUin()== nUin)
+    if (static_cast<CUserViewItem*>(floaties->at(i)->firstChild())->ItemUin()== nUin)
         break;
   }
   if(i<floaties->size()) return floaties->at(i);
@@ -822,7 +884,7 @@ void CUserView::AnimationOnline(unsigned long uin)
     onlCounter = ((5*1000/FLASH_TIME)+1)&(-2);
     onlUin = uin;
   }
-  else if((onlCounter & 1) == 0)
+  else if((onlCounter & 1) == 0 && onlUin != uin)
   {
     // whoops, another user went online
     // we just block here the blinking for the
@@ -847,7 +909,7 @@ void CUserView::UpdateFloaties()
 {
   for (unsigned int i = 0; i<floaties->size(); i++)
   {
-    CUserViewItem* item = floaties->at(i)->firstChild();
+    CUserViewItem* item = static_cast<CUserViewItem*>(floaties->at(i)->firstChild());
     ICQUser *u = gUserManager.FetchUser(item->ItemUin(), LOCK_R);
     if (u == NULL) return;
     item->setGraphics(u);

@@ -55,11 +55,35 @@ protected:
 };
 
 
+//=====UserViewGroupItem===========================================================================
+class CUserViewGroupItem : public QListViewItem
+{
+public:
+  CUserViewGroupItem (unsigned short Id, const char* name, QListView *);
+  virtual ~CUserViewGroupItem();
+  virtual QString key(int column, bool ascending) const;
+  CUserView* listView() const { return (CUserView*) QListViewItem::listView(); }
+  unsigned short GroupId() { return m_nId; }
+  const char* Name()  { return m_sName; }
+
+protected:
+  virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
+  virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r ) { };
+
+  unsigned short m_nId;
+  char* m_sName;
+
+  friend class CUserView;
+  friend class CUserViewTips;
+};
+
+
 //=====UserViewItem================================================================================
 class CUserViewItem : public QListViewItem
 {
 public:
   CUserViewItem (ICQUser *, QListView *);
+  CUserViewItem (ICQUser *, CUserViewGroupItem* item);
   CUserViewItem (BarType, QListView *);
   virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;
@@ -108,7 +132,7 @@ public:
 
   virtual void clear();
 
-  CUserViewItem *firstChild() const { return (CUserViewItem *)QListView::firstChild(); }
+//  CUserViewItem *firstChild() const { return (CUserViewItem *)QListView::firstChild(); }
 
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines);

@@ -85,7 +85,8 @@ public:
        m_bSortByStatus,
        m_bShowDividers,
        m_bAutoRaise,
-       m_bBoldOnMsg;
+       m_bBoldOnMsg,
+       m_bThreadView;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;
