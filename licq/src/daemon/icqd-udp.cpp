@@ -1931,7 +1931,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       delete[] szFields;
       CEventContactList *e = new CEventContactList(vc, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);*/
 
-      gLog.Info("%s%s contacts.\n", L_SBLANKxSTR, e->Contacts().size());
+      gLog.Info("%s%d contacts.\n", L_SBLANKxSTR, e->Contacts().size());
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       AddUserEvent(o, e);
       gUserManager.DropOwner();
