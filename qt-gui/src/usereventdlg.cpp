@@ -522,7 +522,10 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 #if QT_VERSION < 300
   mlvRead->setText(m_messageText);
 #else
-  mlvRead->setText(MLView::toRichText(m_messageText, true));
+  // Looks like there's no other way to set color in Qt 3's RichText control
+  QString colorAttr;
+  colorAttr.sprintf(QString::fromLatin1("#%02x%02x%02x"), m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue());
+  mlvRead->setText("<font color=\"" + colorAttr + "\">" + MLView::toRichText(m_messageText, true) + "</font>");
 #endif
   mlvRead->setCursorPosition(0, 0);
 
