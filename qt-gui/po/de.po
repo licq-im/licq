@@ -6,12 +6,12 @@
 # Thomas Reitelbach <tr@erdfunkstelle.de>, 2005.
 msgid ""
 msgstr ""
-"Project-Id-Version: licq\n"
+"Project-Id-Version: de\n"
 "POT-Creation-Date: 2005-03-19 12:53:39 UTC\n"
-"PO-Revision-Date: 2005-03-19 21:06+0000\n"
-"Last-Translator: Thomas Reitelbach <thomas@licq.org>\n"
+"PO-Revision-Date: 2005-03-19 23:07+0000\n"
+"Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
-"Language-Team: German <licq-devel@licq.org>\n"
+"Language-Team: German <kde-i18n-de@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.10\n"
 "MIME-Version: 1.0\n"
@@ -122,7 +122,8 @@ msgid "AwayMsgDlg::&Select"
 msgstr "Aus&wählen"
 
 #: awaymsgdlg.cpp:23
-msgid "AwayMsgDlg::"
+msgid ""
+"AwayMsgDlg::"
 "<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
 "<ul>"
 "<li>You can include any of the % expansions (described in the main hints page).</li>"
@@ -184,7 +185,8 @@ msgstr "<h2>Tipps für das Einstellen der Auto-Antwort</h2><br><hr><br><ul><li>Si
 # "<li><tt>|if [ %u -lt 100000 ]; then echo \"Du bist etwas Besonderes\"; fi</tt>: Sinnlos, aber es zeigt, wie man ein Shellscript benutzen kann.</li></ul>"
 # "Natürlich können auch mehrere \"|\" in einer Auto-Antwort auftauchen, Befehle und normaler Text können zeilenweise gemischt werden.</li><hr><p> Für weitere Informationen besuchen Sie die Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
 #: awaymsgdlg.cpp:135
-msgid "AwayMsgDlg::"
+msgid ""
+"AwayMsgDlg::"
 "I'm currently %1, %a.\n"
 "You can leave me a message.\n"
 "(%m messages pending from you)."
@@ -677,6 +679,10 @@ msgstr "S&ystemnachrichten öffnen"
 msgid "CMainWindow::&Yes"
 msgstr "&Ja"
 
+#: mainwin.cpp:3514
+msgid "CMainWindow::(Error! No owner set)"
+msgstr "(Fehler! Kein Eigentümer eingerichtet)"
+
 #: mainwin.cpp:3531
 msgid "CMainWindow::(with KDE support)\n"
 msgstr "(mit KDE-Unterstützung)\n"
@@ -686,7 +692,8 @@ msgid "CMainWindow::<b>%1</b> is online"
 msgstr "<b>%1</b> ist online"
 
 #: mainwin.cpp:4653
-msgid "CMainWindow::"
+msgid ""
+"CMainWindow::"
 "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
 "<ul>"
 "<li>Change your status by right clicking on the status label.</li>"
@@ -749,7 +756,8 @@ msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http
 msgstr "<hr><p>Für weitere Informationen besuchen Sie bitte die Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
 
 #: mainwin.cpp:627
-msgid "CMainWindow::"
+msgid ""
+"CMainWindow::"
 "<ul>"
 "<li><tt>%a - </tt>user alias</li>"
 "<li><tt>%e - </tt>email</li>"
@@ -917,6 +925,10 @@ msgstr "Gruppen &bearbeiten"
 msgid "CMainWindow::Edit User Group"
 msgstr "&Gruppenmitgliedschaft..."
 
+#: mainwin.cpp:1426
+msgid "CMainWindow::Error! No owner set"
+msgstr "Fehler! Kein Eigentümer eingerichtet"
+
 #: mainwin.cpp:4238
 msgid "CMainWindow::Errors"
 msgstr "&Fehler"
@@ -950,7 +962,8 @@ msgid "CMainWindow::Licq is unable to start your browser and open the URL.\nYou 
 msgstr "Licq kann den Browser nicht starten um die URL zu öffnen\nSie müssen den Browser selbst starten und die URL in die Adressleiste kopieren."
 
 #: mainwin.cpp:3517
-msgid "CMainWindow::"
+msgid ""
+"CMainWindow::"
 "Licq version %1%8.\n"
 "Qt GUI plugin version %2.\n"
 "Compiled on: %7\n"
@@ -1041,13 +1054,15 @@ msgid "CMainWindow::Request &Secure Channel"
 msgstr "&Verschlüsselung aktivieren"
 
 #: mainwin.cpp:910
-msgid "CMainWindow::"
+msgid ""
+"CMainWindow::"
 "Right click - Status menu\n"
 "Double click - Set auto response"
 msgstr "Rechte Maustaste - Status setzen\nDoppelklick - Auto Antwort setzen"
 
 #: mainwin.cpp:881
-msgid "CMainWindow::"
+msgid ""
+"CMainWindow::"
 "Right click - User groups\n"
 "Double click - Show next message"
 msgstr "Rechte Maustaste - Benutzergruppen\nDoppelklick - Nächste Nachricht"
@@ -1817,19 +1832,22 @@ msgid "ChatDlg::Toggles StrikeOut font"
 msgstr "Schaltet durchgestrichenen Text ein/aus"
 
 #: chatdlg.cpp:994
-msgid "ChatDlg::"
+msgid ""
+"ChatDlg::"
 "Unable to bind to a port.\nSee Network Window "
 "for details."
 msgstr "Kann keinen Port binden.\nSiehe Netzwerkfenster für Details."
 
 #: chatdlg.cpp:1002
-msgid "ChatDlg::"
+msgid ""
+"ChatDlg::"
 "Unable to connect to the remote chat.\nSee Network "
 "Window for details."
 msgstr "Kann nicht mit Gegenstelle für Chat verbinden.\nSiehe Netzwerkfenster für Details."
 
 #: chatdlg.cpp:1010
-msgid "ChatDlg::"
+msgid ""
+"ChatDlg::"
 "Unable to create new thread.\nSee Network Window "
 "for details."
 msgstr "Kann keinen neuen Thread erzeugen.\nSiehe Netzwerkfenster für Details."
@@ -1923,7 +1941,8 @@ msgid "EditGrpDlg::All Users"
 msgstr "Alle Benutzer"
 
 #: editgrp.cpp:126
-msgid "EditGrpDlg::"
+msgid ""
+"EditGrpDlg::"
 "Are you sure you want to remove\n"
 "the group '%1'?"
 msgstr "Soll die Gruppe '%1' wirklich entfernt werden?"
@@ -2189,7 +2208,8 @@ msgid "IconManager_KDEStyle::<br><b>%1 system messages</b>"
 msgstr "<br><b>%1 Systemnachricht(en)</b>"
 
 #: wharf.cpp:730
-msgid "IconManager_KDEStyle::"
+msgid ""
+"IconManager_KDEStyle::"
 "<br>Left click - Show main window"
 "<br>Middle click - Show next message"
 "<br>Right click - System menu"
@@ -2236,7 +2256,8 @@ msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel not established.</fo
 msgstr "<font color=\"yellow\">Verschlüsselte Verbindung nicht aufgebaut.</font>\n"
 
 #: keyrequestdlg.cpp:95
-msgid "KeyRequestDlg::"
+msgid ""
+"KeyRequestDlg::"
 "Client does not support OpenSSL.\n"
 "Rebuild Licq with OpenSSL support."
 msgstr "Ihr Licq-Client unterstützt kein OpenSSL\nBitte kompilieren Sie Licq mit OpenSSL Unterstützung neu."
@@ -2262,14 +2283,16 @@ msgid "KeyRequestDlg::Requesting secure channel..."
 msgstr "Verschlüsselte Verbindung wird angefordert..."
 
 #: keyrequestdlg.cpp:37
-msgid "KeyRequestDlg::"
+msgid ""
+"KeyRequestDlg::"
 "Secure channel is established using SSL\n"
 "with Diffie-Hellman key exchange and\n"
 "the TLS version 1 protocol.\n\n"
 msgstr "Es wird eine verschlüsselte Verbindung über SSL mit\nDiffie-Hellman Schlüsseltausch und\nTLS-Protokoll Version 1 aufgebaut.\n\n"
 
 #: keyrequestdlg.cpp:50
-msgid "KeyRequestDlg::"
+msgid ""
+"KeyRequestDlg::"
 "The remote uses Licq %1, however it\n"
 "has no secure channel support compiled in.\n"
 "This probably won't work."
@@ -2280,7 +2303,8 @@ msgid "KeyRequestDlg::The remote uses Licq %1/SSL."
 msgstr "Der entfernte Benutzer verwendet Licq %1/SSL."
 
 #: keyrequestdlg.cpp:56
-msgid "KeyRequestDlg::"
+msgid ""
+"KeyRequestDlg::"
 "This only works with other Licq clients >= v0.85\n"
 "The remote doesn't seem to use such a client.\n"
 "This might not work."
@@ -2339,7 +2363,8 @@ msgid "OptionsDlg::64 x 48 Dock Icon"
 msgstr "64 x 48 Dock-Symbol"
 
 #: optionsdlg.cpp:1375
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "<b>none:</b> - Don't sort online users by Status<br>\n"
 "<b>status</b> - Sort online users by status<br>\n"
 "<b>status + last event</b> - Sort online users by status and by last event<br>\n"
@@ -2351,7 +2376,8 @@ msgstr ""
 "<b>Status + Neue Nachrichten</b> - Nach Status und der Anzahl neuer Nachrichten sortieren"
 
 #: optionsdlg.cpp:922
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "<p>Command to execute when an event is received.<br>"
 "It will be passed the relevant parameters from "
 "below.<br>Parameters can contain the following "
@@ -2436,7 +2462,8 @@ msgid "OptionsDlg::Auto Update"
 msgstr "Automatisches aktualisieren"
 
 #: optionsdlg.cpp:744
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Auto close the user function window "
 "after a succesful event"
 msgstr "Das Funktionsfenster soll nach einem erfolgreichen Ereignis automatisch geschlossen werden"
@@ -2462,25 +2489,29 @@ msgid "OptionsDlg::Automatically log on when first starting up."
 msgstr "Beim Programmstart automatisch mit diesem Status anmelden"
 
 #: optionsdlg.cpp:767
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Automatically send messages through the server "
 "if direct connection fails"
 msgstr "Falls keine direkte Verbindung möglich ist, werden Nachrichten automatisch über den Server gesendet."
 
 #: optionsdlg.cpp:1469
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Automatically update users' "
 "Phone Book and Picture."
 msgstr "Aktualisiert automatisch das auf dem Server gespeicherte Telefonbuch und Bild."
 
 #: optionsdlg.cpp:1474
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Automatically update users' "
 "Phone \"Follow Me\", File Server and ICQphone status."
 msgstr "Aktualisiert automatisch die auf dem Server gespeicherten Informationen zu \"Telefon folgen\", Dateiserver und ICQphone."
 
 #: optionsdlg.cpp:1464
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Automatically update users' server "
 "stored information."
 msgstr "Aktualisiert automatisch die vom Benutzer auf dem Server gespeicherten Informationen."
@@ -2570,7 +2601,8 @@ msgid "OptionsDlg::Determines if mass messages are ignored or not."
 msgstr "Ignoriert Massennachrichten (Nachrichten die an sehr viele Benutzer gleichzeitig verschickt wurden)"
 
 #: optionsdlg.cpp:1436
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Determines if new users are automatically added "
 "to your list or must first request authorization."
 msgstr "Sollen neue Benutzer automatisch zur Liste hinzugefügt werden oder müssen sie erst nach Autorisierung fragen?"
@@ -2600,7 +2632,8 @@ msgid "OptionsDlg::Email"
 msgstr "E-Mail"
 
 #: optionsdlg.cpp:919
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Enable running of \"Command\" when the relevant "
 "event occurs."
 msgstr "Das Ausführen von \"Befehl\" bei bestimmten Ereignissen zulassen"
@@ -2686,7 +2719,8 @@ msgid "OptionsDlg::Idle Time"
 msgstr "Leerlaufzeit"
 
 #: optionsdlg.cpp:757
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "If not checked, a user will be automatically "
 "removed from \"New User\" group when you first "
 "send an event to them"
@@ -2721,7 +2755,8 @@ msgid "OptionsDlg::Left"
 msgstr "Links"
 
 #: optionsdlg.cpp:770
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Lets you drag around the main window "
 "with your mouse"
 msgstr "Ermöglicht das Ziehen des Hauptfensters mit der Maus."
@@ -2731,7 +2766,8 @@ msgid "OptionsDlg::Licq Options"
 msgstr "Licq-Optionen"
 
 #: optionsdlg.cpp:1068
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Licq can reconnect you when you got "
 "disconnected because your Uin was used "
 "from another location. Check this if you "
@@ -2747,7 +2783,8 @@ msgid "OptionsDlg::Main Window"
 msgstr "Hauptfenster"
 
 #: optionsdlg.cpp:1334
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Make the user window transparent when there "
 "is no scroll bar"
 msgstr "Macht das Benutzer-Fenster transparent, wenn kein Rollbalken vorhanden ist. Somit scheint der Hintergrund des Hauptfensters durch."
@@ -2785,21 +2822,24 @@ msgid "OptionsDlg::Not Available"
 msgstr "Nicht verfügbar"
 
 #: optionsdlg.cpp:1243
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"away\".  Set to \"0\" "
 "to disable."
 msgstr "Anzahl der Minuten, nach denen man automatisch als 'Abwesend' markiert wird. Auf 0 setzen, um diese Funktion auszuschalten."
 
 #: optionsdlg.cpp:1249
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"not available\".  Set to \"0\" "
 "to disable."
 msgstr "Anzahl der Minuten, nach denen man automatisch als 'Nicht erreichbar' markiert wird. Auf 0 setzen, um diese Funktion auszuschalten."
 
 #: optionsdlg.cpp:1255
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically go offline.  Set to \"0\" "
 "to disable."
@@ -2858,7 +2898,8 @@ msgid "OptionsDlg::Only urgent events will blink"
 msgstr "Nur wichtige/dringende Nachrichten blinken"
 
 #: optionsdlg.cpp:747
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Open all incoming messages automatically "
 "when received if we are "
 "online (or free for chat)"
@@ -2869,7 +2910,8 @@ msgid "OptionsDlg::Options"
 msgstr "Optionen"
 
 #: optionsdlg.cpp:1352
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Override the skin setting for the frame "
 "style of the user window:\n"
 "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
@@ -2934,7 +2976,8 @@ msgid "OptionsDlg::Perform OnEvent command in occupied mode"
 msgstr "Kommando auch bei Status 'Beschäftigt' ausführen"
 
 #: optionsdlg.cpp:967
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Perform the online notify OnEvent "
 "when logging on (this is different from how the Mirabilis client works)"
 msgstr "Ausführen der Online-Benachrichtigung beim Einloggen."
@@ -2952,7 +2995,8 @@ msgid "OptionsDlg::Port Range:"
 msgstr "Portbereich:"
 
 #: optionsdlg.cpp:764
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Position a new reply window just underneath "
 "the message view window"
 msgstr "Zeigt das Antwort-Fenster möglichst in der Nähe des Nachrichten-Fensters an."
@@ -3010,7 +3054,8 @@ msgid "OptionsDlg::Select a font from the system list"
 msgstr "Schriftart für die Licq Programmfenster auswählen"
 
 #: optionsdlg.cpp:818
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
 "and a shorter 64x48 icon for use in the Gnome/KDE panel."
 msgstr "Wählt zwischen dem standard 64x64 Pixel Symbol (Windowmaker/Afterstep) und dem kürzeren 64x48 Pixel Symbol (KDE/GNOME)."
@@ -3048,7 +3093,8 @@ msgid "OptionsDlg::Show all encodings"
 msgstr "Alle Zeichensätze"
 
 #: optionsdlg.cpp:1346
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Show birthday, invisible, and custom auto response "
 "icons to the right of users in the list"
 msgstr "Erweiterte Symbole für z. B. Geburtstag, unsichtbar und spezielle Auto-Antwort in der Kontaktliste neben den Benutzernamen einblenden."
@@ -3058,7 +3104,8 @@ msgid "OptionsDlg::Show group name if no messages"
 msgstr "Gruppenname im Info-Bereich"
 
 #: optionsdlg.cpp:1331
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Show online notify users who are offline even "
 "when offline users are hidden."
 msgstr "Benutzer mit Online-Benachrichtigung immer in der Kontaktliste anzeigen, auch wenn Offline-Benutzer ausgeblendet sind."
@@ -3068,7 +3115,8 @@ msgid "OptionsDlg::Show recent messages"
 msgstr "Letzten Verlauf anzeigen"
 
 #: optionsdlg.cpp:1328
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Show the \"--online--\" and \"--offline--\" bars "
 "in the contact list"
 msgstr "Schaltet Trennlinien zwischen Online- und Offline-Benutzern in der Kontaktliste ein."
@@ -3086,7 +3134,8 @@ msgid "OptionsDlg::Show the message info label in bold font if there are incomin
 msgstr "Stellt die Schrift im Info-Bereich fett ein, wenn neue Nachrichten empfangen wurden."
 
 #: optionsdlg.cpp:741
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Show the name of the current group in the "
 "messages label when there are no new messages"
 msgstr "Name der Benutzergruppe im Info-Bereich anzeigen, während keine neuen Nachrichten vorhanden sind."
@@ -3152,7 +3201,8 @@ msgid "OptionsDlg::The command to run to start your terminal program."
 msgstr "Das Kommando zum Starten des Terminal-Programms."
 
 #: optionsdlg.cpp:1417
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "The command to run to view a URL.  Will be passed the URL "
 "as a parameter."
 msgstr "Das Kommando zum Anzeigen einer URL. Die URL wird als Parameter übergeben."
@@ -3162,7 +3212,8 @@ msgid "OptionsDlg::The fonts used"
 msgstr "Die verwendeten Schriftarten"
 
 #: optionsdlg.cpp:1282
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "The format string used to define what will "
 "appear in each column.\n"
 "The following parameters can be used:\n"
@@ -3193,7 +3244,8 @@ msgid "OptionsDlg::Transparent when possible"
 msgstr "Transparenz"
 
 #: optionsdlg.cpp:1325
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Turns on or off the display of headers above "
 "each column in the user list"
 msgstr "Schaltet die Spaltenüberschriften in der Kontaktliste ein oder aus."
@@ -3223,7 +3275,8 @@ msgid "OptionsDlg::Use authorization"
 msgstr "Passwort erforderlich"
 
 #: optionsdlg.cpp:1337
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "Use italics and bold in the user list to "
 "indicate special characteristics such as online notify and visible list"
 msgstr "Besondere Benutzereigenschaften wie 'Online-Benachrichtigung' oder 'Sichtbar' werden durch Kursiv- oder Fettdruck des Aliasnamens dargestellt"
@@ -3249,7 +3302,8 @@ msgid "OptionsDlg::Uses the freedesktop.org standard to dock a small icon into t
 msgstr "Verwendet den freedesktop.org-Standard zum Andocken eines kleinen Symbols in den Fenstermanager.  Dies funktioniert mit vielen verschiedenen Fenstermanagern."
 
 #: optionsdlg.cpp:761
-msgid "OptionsDlg::"
+msgid ""
+"OptionsDlg::"
 "When double-clicking on a user to send a message "
 "check for urls/files in the clipboard"
 msgstr "Überprüft bei Doppelklick auf einen Benutzer die Zwischenablage auf Urls/Dateien und fügt deren Inhalt automatisch in die Nachricht ein."
@@ -3335,7 +3389,8 @@ msgid "OwnerManagerDlg::D&elete"
 msgstr "&Löschen"
 
 #: ownermanagerdlg.cpp:258
-msgid "OwnerManagerDlg::"
+msgid ""
+"OwnerManagerDlg::"
 "From the Owner Manager dialog you are able to add and register "
 "your accounts.\n"
 "Currently, only one owner per protocol is supported, but this "
@@ -3353,14 +3408,16 @@ msgid "OwnerManagerDlg::Registration failed.  See network window for details."
 msgstr "Die Registrierung ist fehlgeschlagen.\nSiehe Netzwerkfenster für Details."
 
 #: ownermanagerdlg.cpp:341
-msgid "OwnerManagerDlg::"
+msgid ""
+"OwnerManagerDlg::"
 "Successfully registered, your user identification\n"
 "number (UIN) is %1.\n"
 "Now set your personal information."
 msgstr "Erfolgreich registriert. Ihre Benutzernummer (UIN) ist: %1.\nStellen Sie als nächstes bitte Ihre persönlichen Informationen ein."
 
 #: ownermanagerdlg.cpp:306
-msgid "OwnerManagerDlg::"
+msgid ""
+"OwnerManagerDlg::"
 "You are currently registered as\n"
 "UIN: %1\n"
 "Base Directory: %2\n"
@@ -3465,13 +3522,15 @@ msgid "RegisterUserDlg::Licq User Registration"
 msgstr "Licq Benutzer Registrierung"
 
 #: registeruser.cpp:111
-msgid "RegisterUserDlg::"
+msgid ""
+"RegisterUserDlg::"
 "Now please click 'Finish' to start "
 "the registration process."
 msgstr "Vielen Dank.\n\nKlicken Sie nun auf 'Fertigstellen', um den Registriervorgang zu starten."
 
 #: registeruser.cpp:105
-msgid "RegisterUserDlg::"
+msgid ""
+"RegisterUserDlg::"
 "Now please press the 'Back' button "
 "and try again."
 msgstr "Klicken Sie auf 'Zurück' um es erneut zu versuchen.\n\nAchten Sie darauf, dass Sie beide Passwörter in gleicher\nSchreibweise eingeben."
@@ -3509,7 +3568,8 @@ msgid "RegisterUserDlg::Verify:"
 msgstr "Bestätigen:"
 
 #: registeruser.cpp:25
-msgid "RegisterUserDlg::"
+msgid ""
+"RegisterUserDlg::"
 "Welcome to the Registration Wizard.\n\n"
 "You can register a new user here.\n\n"
 "Press \"Next\" to proceed."
@@ -3784,14 +3844,16 @@ msgid "SecurityDlg::Changing password failed."
 msgstr "Passwortänderung ist fehlgeschlagen."
 
 #: securitydlg.cpp:95
-msgid "SecurityDlg::"
+msgid ""
+"SecurityDlg::"
 "Determines whether regular ICQ clients "
 "require your authorization to add you to "
 "their contact list."
 msgstr "Bestimmt, ob normale ICQ-Clients Ihre Autorisierung benötigen, um Sie zur Kontaktliste hinzufügen zu können."
 
 #: securitydlg.cpp:54
-msgid "SecurityDlg::"
+msgid ""
+"SecurityDlg::"
 "Enter the UIN which you want to use.  "
 "Only available if \"Local changes only\" is "
 "checked."
@@ -3822,7 +3884,8 @@ msgid "SecurityDlg::ICQ Security Options"
 msgstr "ICQ Sicherheits-Einstellungen"
 
 #: securitydlg.cpp:64
-msgid "SecurityDlg::"
+msgid ""
+"SecurityDlg::"
 "If checked, password/UIN changes will apply"
 " only on your local computer.  Useful if "
 "your password is incorrectly saved in Licq."
@@ -3869,7 +3932,8 @@ msgid "SecurityDlg::Verify your ICQ password here."
 msgstr "Geben Sie hier Ihr ICQ-Passwort zur Bestätigung nochmal ein."
 
 #: securitydlg.cpp:99
-msgid "SecurityDlg::"
+msgid ""
+"SecurityDlg::"
 "Web Presence allows users to see if you are online "
 "through your web indicator."
 msgstr "'Web-Präsenz' ermöglicht es anderen, über die Web-Status-Abfrage zu erkennen ob Sie online sind oder nicht."
@@ -3879,7 +3943,8 @@ msgid "SecurityDlg::Web Presence"
 msgstr "Web-Präsenz"
 
 #: securitydlg.cpp:197
-msgid "SecurityDlg::"
+msgid ""
+"SecurityDlg::"
 "You need to be connected to the\n"
 "ICQ Network to change the settings."
 msgstr "Sie müssen mit dem ICQ-Netzwerk verbunden sein,\num Einstellungen ändern zu können."
@@ -4005,7 +4070,8 @@ msgid "SkinBrowserDlg::Unable to open icons file\n%1\nIconset '%2' has been disa
 msgstr "Symboldatei ließ sich nicht öffnen:\n%1\nSymbol-Paket '%2' wurde daher deaktiviert."
 
 #: skinbrowser.cpp:90
-msgid "SkinBrowserDlg::"
+msgid ""
+"SkinBrowserDlg::"
 "Use this combo box to select one of "
 "the available emoticon icon sets"
 msgstr "Benutzen Sie diese Auswahlbox, um aus den verfügbaren Emoticons auszuwählen."
@@ -4327,7 +4393,8 @@ msgid "UserInfoDlg::No"
 msgstr "Nein"
 
 #: userinfodlg.cpp:264
-msgid "UserInfoDlg::"
+msgid ""
+"UserInfoDlg::"
 "Normally Licq overwrites the Alias when updating user details.\n"
 "Check this if you want to keep your changes to the Alias."
 msgstr "Normalerweise überschreibt Licq den Alias wenn die Benutzerdaten aktualisiert werden.\nAktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verändert wird."
@@ -4445,13 +4512,15 @@ msgid "UserInfoDlg::Yes"
 msgstr "Ja"
 
 #: userinfodlg.cpp:2291
-msgid "UserInfoDlg::"
+msgid ""
+"UserInfoDlg::"
 "You need to be connected to the\n"
 "ICQ Network to change your settings."
 msgstr "Sie müssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen ändern zu können."
 
 #: userinfodlg.cpp:2208
-msgid "UserInfoDlg::"
+msgid ""
+"UserInfoDlg::"
 "You need to be connected to the\n"
 "ICQ Network to retrieve your settings."
 msgstr "Sie müssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen empfangen zu können."
@@ -4461,14 +4530,16 @@ msgid "UserInfoDlg::Zip:"
 msgstr "PLZ:"
 
 #: userinfodlg.cpp:1980
-msgid "UserInfoDlg::"
+msgid ""
+"UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
 "%3 out of %4 matches"
 msgstr "[<font color=\"%1\">Empfangen</font>] [<font color=\"%2\">Gesendet</font>] %3 von %4 Übereinstimmungen"
 
 #: userinfodlg.cpp:1972
-msgid "UserInfoDlg::"
+msgid ""
+"UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
 "%3 to %4 of %5"
@@ -4567,13 +4638,15 @@ msgid "UserSendCommon::&Send"
 msgstr "&Senden"
 
 #: usereventdlg.cpp:1682
-msgid "UserSendCommon::"
+msgid ""
+"UserSendCommon::"
 "<html><body><font color=\"green\"><b>"
 "[%1] %2 has joined the conversation.</b></font><br></body></html>"
 msgstr "<html><body><font color=\"green\"><b>[%1] %2 ist dem Chat beigetreten.</b></font><br></body></html>"
 
 #: usereventdlg.cpp:1705
-msgid "UserSendCommon::"
+msgid ""
+"UserSendCommon::"
 "<html><body><font color=\"green\"><b>"
 "[%1] %2 has left the conversation.</b></font><br></body></html>"
 msgstr "<html><body><font color=\"green\"><b>[%1] %2 hat den Chat verlassen.</b></font><br></body></html>"
@@ -4597,6 +4670,10 @@ msgstr "Direkter Versand fehlgeschlagen,\nüber Server senden?"
 #: usereventdlg.cpp:1972
 msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
 msgstr "Benutzer hierher ziehen.\nKlick mit rechter Maustaste für Einstellungen"
+
+#: usereventdlg.cpp:1516
+msgid "UserSendCommon::Error! no owner set"
+msgstr "Fehler! Kein Zugang eingerichtet"
 
 #: usereventdlg.cpp:1463
 msgid "UserSendCommon::File Transfer"
@@ -4643,7 +4720,8 @@ msgid "UserSendCommon::Urgent"
 msgstr "Dringend"
 
 #: usereventdlg.cpp:2462
-msgid "UserSendCommon::"
+msgid ""
+"UserSendCommon::"
 "Warning: Message can't be sent securely\n"
 "through the server!"
 msgstr "Warnung: Nachricht kann nicht verschlüsselt\nüber den Server gesendet werden!"
@@ -4733,7 +4811,8 @@ msgid "UserSendMsgEvent::&Yes"
 msgstr "&Ja"
 
 #: usereventdlg.cpp:2521
-msgid "UserSendMsgEvent::"
+msgid ""
+"UserSendMsgEvent::"
 "You didn't edit the message.\n"
 "Do you really want to send it?"
 msgstr "Sie haben die Nachricht nicht bearbeitet.\nWollen Sie sie wirklich senden?"
@@ -4759,7 +4838,8 @@ msgid "UserSendSmsEvent::Phone : "
 msgstr "Telefon : "
 
 #: usereventdlg.cpp:3227
-msgid "UserSendSmsEvent::"
+msgid ""
+"UserSendSmsEvent::"
 "You didn't edit the SMS.\n"
 "Do you really want to send it?"
 msgstr "Sie haben die SMS nicht bearbeitet.\nMöchten Sie sie wirklich senden?"
@@ -4869,7 +4949,8 @@ msgid "UserViewEvent::\n--------------------\nRequest was cancelled."
 msgstr " \n--------------------\nAnfrage wurde abgebrochen."
 
 #: wharf.cpp:744
-msgid "WharfIcon::"
+msgid ""
+"WharfIcon::"
 "Left click - Show main window\n"
 "Middle click - Show next message\n"
 "Right click - System menu"
@@ -4878,307 +4959,807 @@ msgstr ""
 "Mittlere Maustaste - Nächste Nachricht zeigen\n"
 "Rechte Maustaste - System-Menü"
 
-#: dialogs/qfiledialog.cpp:3560
-msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
-msgstr "%1\nDatei nicht gefunden.\nBitte Pfad und Dateiname überprüfen."
+#.
+#: QAccel::
+msgid "Ctrl"
+msgstr "Strg"
 
-#: dialogs/qfiledialog.cpp:3252
-msgid "QFileDialog::&Delete"
-msgstr "&Entfernen"
+#.
+#: QAccel::
+msgid "Alt"
+msgstr "Alt"
 
-#: dialogs/qfiledialog.cpp:3344
-msgid "QFileDialog::&No"
-msgstr "&Nein"
+# #: dialogs/qfiledialog.cpp:3560
+# msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
+# msgstr "%1\nDatei nicht gefunden.\nBitte Pfad und Dateiname überprüfen."
+# #: dialogs/qfiledialog.cpp:3252
+# msgid "QFileDialog::&Delete"
+# msgstr "&Entfernen"
+# #: dialogs/qfiledialog.cpp:3344
+# msgid "QFileDialog::&No"
+# msgstr "&Nein"
+# #: dialogs/qfiledialog.cpp:3247
+# msgid "QFileDialog::&Open"
+# msgstr "Ö&ffnen"
+# #: dialogs/qfiledialog.cpp:3251
+# msgid "QFileDialog::&Rename"
+# msgstr "&Umbenennen"
+# #: dialogs/qfiledialog.cpp:3246
+# msgid "QFileDialog::&Save"
+# msgstr "&Speichern"
+# #: dialogs/qfiledialog.cpp:3285
+# msgid "QFileDialog::&Unsorted"
+# msgstr "&Unsortiert"
+# #: dialogs/qfiledialog.cpp:3344
+# msgid "QFileDialog::&Yes"
+# msgstr "&Ja"
+# #: dialogs/qfiledialog.cpp:3342
+# msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
+# msgstr "<qt>Soll %1 \"%2\" wirklich gelöscht werden?</qt>"
+# #: dialogs/qfiledialog.cpp:1904
+# msgid "QFileDialog::All files (*)"
+# msgstr "Alle Dateien (*)"
+# #: dialogs/qfiledialog.cpp:1967
+# msgid "QFileDialog::Attributes"
+# msgstr "Attribute"
+# #: dialogs/qfiledialog.cpp:2053
+# msgid "QFileDialog::Back"
+# msgstr "Zurück"
+# #: dialogs/qfiledialog.cpp:2007
+# msgid "QFileDialog::Cancel"
+# msgstr "Abbrechen"
+# #: dialogs/qfiledialog.cpp:2079
+# msgid "QFileDialog::Create New Folder"
+# msgstr "Neuen Ordner erstellen"
+# #: dialogs/qfiledialog.cpp:1966
+# msgid "QFileDialog::Date"
+# msgstr "Datum"
+# #: dialogs/qfiledialog.cpp:3341
+# msgid "QFileDialog::Delete %1"
+# msgstr "%1 löschen"
+# #: dialogs/qfiledialog.cpp:2109
+# msgid "QFileDialog::Detail View"
+# msgstr "Detailansicht"
+# #: dialogs/qfiledialog.cpp:2235
+# msgid "QFileDialog::Dir"
+# msgstr "Ordner"
+# #: dialogs/qfiledialog.cpp:3442
+# msgid "QFileDialog::Directories"
+# msgstr "Ordner"
+# #: dialogs/qfiledialog.cpp:4388
+# msgid "QFileDialog::ERROR"
+# msgstr "FEHLER"
+# #: dialogs/qfiledialog.cpp:3560
+# msgid "QFileDialog::Error"
+# msgstr "Fehler"
+# #: dialogs/qfiledialog.cpp:2042
+# msgid "QFileDialog::File &name:"
+# msgstr "Dateiname:"
+# #: dialogs/qfiledialog.cpp:2043
+# msgid "QFileDialog::File &type:"
+# msgstr "Datei&typ:"
+# #: dialogs/qfiledialog.cpp:2234
+# msgid "QFileDialog::File"
+# msgstr "Datei"
+# #: dialogs/qfiledialog.cpp:3437
+# msgid "QFileDialog::Find Directory"
+# msgstr "Ordner suchen"
+# #: dialogs/qfiledialog.cpp:2229
+# msgid "QFileDialog::Inaccessible"
+# msgstr "Nicht zugreifbar"
+# #: dialogs/qfiledialog.cpp:2099
+# msgid "QFileDialog::List View"
+# msgstr "Listenansicht"
+# #: dialogs/qfiledialog.cpp:2041
+# msgid "QFileDialog::Look &in:"
+# msgstr "Suchen &in:"
+# #: dialogs/qfiledialog.cpp:1962
+# msgid "QFileDialog::Name"
+# msgstr "Name"
+# #: dialogs/qfiledialog.cpp:3390
+# msgid "QFileDialog::New Folder %1"
+# msgstr "Neuer Ordner %1"
+# #: dialogs/qfiledialog.cpp:3380
+# msgid "QFileDialog::New Folder 1"
+# msgstr "Neuer Ordner 1"
+# #: dialogs/qfiledialog.cpp:3385
+# msgid "QFileDialog::New Folder"
+# msgstr "Neuer Ordner"
+# #: dialogs/qfiledialog.cpp:2003
+# msgid "QFileDialog::OK"
+# msgstr "Ok"
+# #: dialogs/qfiledialog.cpp:2068
+# msgid "QFileDialog::One directory up"
+# msgstr "Einen Ordner aufwärts"
+# #: dialogs/qfiledialog.cpp:4249
+# msgid "QFileDialog::Open"
+# msgstr "Öffnen"
+# #: dialogs/qfiledialog.cpp:2131
+# msgid "QFileDialog::Preview File Contents"
+# msgstr "Vorschau des Dateiinhalts"
+# #: dialogs/qfiledialog.cpp:2120
+# msgid "QFileDialog::Preview File Info"
+# msgstr "Vorschau der Dateiinfo"
+# #: dialogs/qfiledialog.cpp:3276
+# msgid "QFileDialog::R&eload"
+# msgstr "A&ktualisieren"
+# #: dialogs/qfiledialog.cpp:2227
+# msgid "QFileDialog::Read-only"
+# msgstr "Nur-lesen"
+# #: dialogs/qfiledialog.cpp:2226
+# msgid "QFileDialog::Read-write"
+# msgstr "Lesen + Schreiben"
+# #: dialogs/qfiledialog.cpp:2699
+# msgid "QFileDialog::Save as"
+# msgstr "Speichern unter"
+# #: dialogs/qfiledialog.cpp:3536
+# msgid "QFileDialog::Save"
+# msgstr "Speichern"
+# #: dialogs/qfiledialog.cpp:3304
+# msgid "QFileDialog::Show &hidden files"
+# msgstr "Verstec&kte Dateien anzeigen"
+# #: dialogs/qfiledialog.cpp:1963
+# msgid "QFileDialog::Size"
+# msgstr "Größe"
+# #: dialogs/qfiledialog.cpp:3283
+# msgid "QFileDialog::Sort by &Date"
+# msgstr "Nach &Datum sortieren"
+# #: dialogs/qfiledialog.cpp:3280
+# msgid "QFileDialog::Sort by &Name"
+# msgstr "Nach &Name sortieren"
+# #: dialogs/qfiledialog.cpp:3282
+# msgid "QFileDialog::Sort by &Size"
+# msgstr "Nach &Größe sortieren"
+# #: dialogs/qfiledialog.cpp:3300
+# msgid "QFileDialog::Sort"
+# msgstr "Sortieren"
+# #: dialogs/qfiledialog.cpp:2236
+# msgid "QFileDialog::Special"
+# msgstr "Spezial"
+# #: dialogs/qfiledialog.cpp:2232
+# msgid "QFileDialog::Symlink to Directory"
+# msgstr "Verknüpfung auf Ordner"
+# #: dialogs/qfiledialog.cpp:2231
+# msgid "QFileDialog::Symlink to File"
+# msgstr "Verknüpfung auf Datei"
+# #: dialogs/qfiledialog.cpp:2233
+# msgid "QFileDialog::Symlink to Special"
+# msgstr "Verknüpfung auf Spezialdatei"
+# #: dialogs/qfiledialog.cpp:1965
+# msgid "QFileDialog::Type"
+# msgstr "Typ"
+# #: dialogs/qfiledialog.cpp:2228
+# msgid "QFileDialog::Write-only"
+# msgstr "Nur-Schreiben"
+# #: dialogs/qfiledialog.cpp:3336
+# msgid "QFileDialog::the directory"
+# msgstr "der Ordner"
+# #: dialogs/qfiledialog.cpp:3334
+# msgid "QFileDialog::the file"
+# msgstr "die Datei"
+# #: dialogs/qfiledialog.cpp:3338
+# msgid "QFileDialog::the symlink"
+# msgstr "der Symlink"
+# #: dialogs/qfontdialog.cpp:121
+# msgid "QFontDialog::&Color"
+# msgstr "&Farbe"
+# #: dialogs/qfontdialog.cpp:91
+# msgid "QFontDialog::&Font"
+# msgstr "&Schrift"
+# #: dialogs/qfontdialog.cpp:107
+# msgid "QFontDialog::&Size"
+# msgstr "&Größe"
+# #: dialogs/qfontdialog.cpp:115
+# msgid "QFontDialog::&Underline"
+# msgstr "&Unterstreichen"
+# #: dialogs/qfontdialog.cpp:214
+# msgid "QFontDialog::Apply"
+# msgstr "Übernehmen"
+# #: dialogs/qfontdialog.cpp:225
+# msgid "QFontDialog::Cancel"
+# msgstr "Abbrechen"
+# #: dialogs/qfontdialog.cpp:225
+# msgid "QFontDialog::Close"
+# msgstr "Schließen"
+# #: dialogs/qfontdialog.cpp:111
+# msgid "QFontDialog::Effects"
+# msgstr "Effekte"
+# #: dialogs/qfontdialog.cpp:99
+# msgid "QFontDialog::Font st&yle"
+# msgstr "Schrift&art"
+# #: dialogs/qfontdialog.cpp:214
+# msgid "QFontDialog::OK"
+# msgstr "Ok"
+# #: dialogs/qfontdialog.cpp:125
+# msgid "QFontDialog::Sample"
+# msgstr "Beispiel"
+# #: dialogs/qfontdialog.cpp:139
+# msgid "QFontDialog::Scr&ipt"
+# msgstr "S&kript"
+# #: dialogs/qfontdialog.cpp:274
+# msgid "QFontDialog::Select Font"
+# msgstr "Schrift auswählen"
+# #: dialogs/qfontdialog.cpp:113
+# msgid "QFontDialog::Stri&keout"
+# msgstr "Durchges&trichen"
+# #: dialogs/qwizard.cpp:94
+# msgid "QWizard::< Back"
+# msgstr "<- Zurück"
+# #: dialogs/qwizard.cpp:93
+# msgid "QWizard::Cancel"
+# msgstr "Abbrechen"
+# #: dialogs/qwizard.cpp:96
+# msgid "QWizard::Finish"
+# msgstr "Fertigstellen"
+# #: dialogs/qwizard.cpp:97
+# msgid "QWizard::Help"
+# msgstr "Hilfe"
+# #: dialogs/qwizard.cpp:95
+# msgid "QWizard::Next >"
+# msgstr "Weiter ->"
+#.
+#: QAccel::
+msgid "Shift"
+msgstr "Umschalt"
 
-#: dialogs/qfiledialog.cpp:3247
-msgid "QFileDialog::&Open"
-msgstr "Ö&ffnen"
+#.
+#: QAccel::
+msgid "Open URL"
+msgstr "URL öffnen"
 
-#: dialogs/qfiledialog.cpp:3251
-msgid "QFileDialog::&Rename"
-msgstr "&Umbenennen"
+#. Translate this string to the string 'LTR' in left-to-right languages or to 'RTL' in right-to-left languages (such as Hebrew and Arabic) to get proper widget layout.
+#: QApplication::
+msgid "QT_LAYOUT_DIRECTION"
+msgstr "LTR"
 
-#: dialogs/qfiledialog.cpp:3246
-msgid "QFileDialog::&Save"
-msgstr "&Speichern"
+#.
+#: QColorDialog::
+msgid "Hu&e:"
+msgstr "Farb&ton:"
 
-#: dialogs/qfiledialog.cpp:3285
-msgid "QFileDialog::&Unsorted"
-msgstr "&Unsortiert"
+#.
+#: QColorDialog::
+msgid "&Sat:"
+msgstr "&Sättigung:"
 
-#: dialogs/qfiledialog.cpp:3344
-msgid "QFileDialog::&Yes"
-msgstr "&Ja"
+#.
+#: QColorDialog::
+msgid "&Val:"
+msgstr "&Wert:"
 
-#: dialogs/qfiledialog.cpp:3342
-msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
-msgstr "<qt>Soll %1 \"%2\" wirklich gelöscht werden?</qt>"
+#.
+#: QColorDialog::
+msgid "&Red:"
+msgstr "&Rot:"
 
-#: dialogs/qfiledialog.cpp:1904
-msgid "QFileDialog::All files (*)"
+#.
+#: QColorDialog::
+msgid "&Green:"
+msgstr "&Grün:"
+
+#.
+#: QColorDialog::
+msgid "Bl&ue:"
+msgstr "&Blau:"
+
+#.
+#: QColorDialog::
+msgid "A&lpha channel:"
+msgstr "A&lpha-Kanal:"
+
+#.
+#: QColorDialog::
+msgid "&Basic colors"
+msgstr "Gr&undfarben"
+
+#.
+#: QColorDialog::
+msgid "&Custom colors"
+msgstr "&Eigene Farben"
+
+#.
+#: QColorDialog::
+msgid "&Define Custom Colors >>"
+msgstr "Eigene Farben &festlegen >>"
+
+#.
+#: QColorDialog::
+msgid "OK"
+msgstr "Ok"
+
+#.
+#: QColorDialog::
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#.
+#: QColorDialog::
+msgid "&Add to Custom Colors"
+msgstr "Zu eigenen Farben &hinzufügen"
+
+#.
+#: QColorDialog::
+msgid "Select color"
+msgstr "Farbe auswählen"
+
+#.
+#: QDialog::
+msgid "What's This?"
+msgstr "Was ist das?"
+
+#.
+#: QFileDialog::
+msgid "Copy or Move a File"
+msgstr "Kopieren oder Verschieben einer Datei"
+
+#.
+#: QFileDialog::
+msgid "Read: %1"
+msgstr "Lesen: %1"
+
+#.
+#: QFileDialog::
+msgid "Write: %1"
+msgstr "Schreiben: %1"
+
+#.
+#: QFileDialog::
+msgid "All Files (*)"
 msgstr "Alle Dateien (*)"
 
-#: dialogs/qfiledialog.cpp:1967
-msgid "QFileDialog::Attributes"
-msgstr "Attribute"
-
-#: dialogs/qfiledialog.cpp:2053
-msgid "QFileDialog::Back"
-msgstr "Zurück"
-
-#: dialogs/qfiledialog.cpp:2007
-msgid "QFileDialog::Cancel"
-msgstr "Abbrechen"
-
-#: dialogs/qfiledialog.cpp:2079
-msgid "QFileDialog::Create New Folder"
-msgstr "Neuen Ordner erstellen"
-
-#: dialogs/qfiledialog.cpp:1966
-msgid "QFileDialog::Date"
-msgstr "Datum"
-
-#: dialogs/qfiledialog.cpp:3341
-msgid "QFileDialog::Delete %1"
-msgstr "%1 löschen"
-
-#: dialogs/qfiledialog.cpp:2109
-msgid "QFileDialog::Detail View"
-msgstr "Detailansicht"
-
-#: dialogs/qfiledialog.cpp:2235
-msgid "QFileDialog::Dir"
-msgstr "Ordner"
-
-#: dialogs/qfiledialog.cpp:3442
-msgid "QFileDialog::Directories"
-msgstr "Ordner"
-
-#: dialogs/qfiledialog.cpp:4388
-msgid "QFileDialog::ERROR"
-msgstr "FEHLER"
-
-#: dialogs/qfiledialog.cpp:3560
-msgid "QFileDialog::Error"
-msgstr "Fehler"
-
-#: dialogs/qfiledialog.cpp:2042
-msgid "QFileDialog::File &name:"
-msgstr "Dateiname:"
-
-#: dialogs/qfiledialog.cpp:2043
-msgid "QFileDialog::File &type:"
-msgstr "Datei&typ:"
-
-#: dialogs/qfiledialog.cpp:2234
-msgid "QFileDialog::File"
-msgstr "Datei"
-
-#: dialogs/qfiledialog.cpp:3437
-msgid "QFileDialog::Find Directory"
-msgstr "Ordner suchen"
-
-#: dialogs/qfiledialog.cpp:2229
-msgid "QFileDialog::Inaccessible"
-msgstr "Nicht zugreifbar"
-
-#: dialogs/qfiledialog.cpp:2099
-msgid "QFileDialog::List View"
-msgstr "Listenansicht"
-
-#: dialogs/qfiledialog.cpp:2041
-msgid "QFileDialog::Look &in:"
-msgstr "Suchen &in:"
-
-#: dialogs/qfiledialog.cpp:1962
-msgid "QFileDialog::Name"
+#.
+#: QFileDialog::
+msgid "Name"
 msgstr "Name"
 
-#: dialogs/qfiledialog.cpp:3390
-msgid "QFileDialog::New Folder %1"
-msgstr "Neuer Ordner %1"
-
-#: dialogs/qfiledialog.cpp:3380
-msgid "QFileDialog::New Folder 1"
-msgstr "Neuer Ordner 1"
-
-#: dialogs/qfiledialog.cpp:3385
-msgid "QFileDialog::New Folder"
-msgstr "Neuer Ordner"
-
-#: dialogs/qfiledialog.cpp:2003
-msgid "QFileDialog::OK"
-msgstr "Ok"
-
-#: dialogs/qfiledialog.cpp:2068
-msgid "QFileDialog::One directory up"
-msgstr "Einen Ordner aufwärts"
-
-#: dialogs/qfiledialog.cpp:4249
-msgid "QFileDialog::Open"
-msgstr "Öffnen"
-
-#: dialogs/qfiledialog.cpp:2131
-msgid "QFileDialog::Preview File Contents"
-msgstr "Vorschau des Dateiinhalts"
-
-#: dialogs/qfiledialog.cpp:2120
-msgid "QFileDialog::Preview File Info"
-msgstr "Vorschau der Dateiinfo"
-
-#: dialogs/qfiledialog.cpp:3276
-msgid "QFileDialog::R&eload"
-msgstr "A&ktualisieren"
-
-#: dialogs/qfiledialog.cpp:2227
-msgid "QFileDialog::Read-only"
-msgstr "Nur-lesen"
-
-#: dialogs/qfiledialog.cpp:2226
-msgid "QFileDialog::Read-write"
-msgstr "Lesen + Schreiben"
-
-#: dialogs/qfiledialog.cpp:2699
-msgid "QFileDialog::Save as"
-msgstr "Speichern unter"
-
-#: dialogs/qfiledialog.cpp:3536
-msgid "QFileDialog::Save"
-msgstr "Speichern"
-
-#: dialogs/qfiledialog.cpp:3304
-msgid "QFileDialog::Show &hidden files"
-msgstr "Verstec&kte Dateien anzeigen"
-
-#: dialogs/qfiledialog.cpp:1963
-msgid "QFileDialog::Size"
+#.
+#: QFileDialog::
+msgid "Size"
 msgstr "Größe"
 
-#: dialogs/qfiledialog.cpp:3283
-msgid "QFileDialog::Sort by &Date"
-msgstr "Nach &Datum sortieren"
-
-#: dialogs/qfiledialog.cpp:3280
-msgid "QFileDialog::Sort by &Name"
-msgstr "Nach &Name sortieren"
-
-#: dialogs/qfiledialog.cpp:3282
-msgid "QFileDialog::Sort by &Size"
-msgstr "Nach &Größe sortieren"
-
-#: dialogs/qfiledialog.cpp:3300
-msgid "QFileDialog::Sort"
-msgstr "Sortieren"
-
-#: dialogs/qfiledialog.cpp:2236
-msgid "QFileDialog::Special"
-msgstr "Spezial"
-
-#: dialogs/qfiledialog.cpp:2232
-msgid "QFileDialog::Symlink to Directory"
-msgstr "Verknüpfung auf Ordner"
-
-#: dialogs/qfiledialog.cpp:2231
-msgid "QFileDialog::Symlink to File"
-msgstr "Verknüpfung auf Datei"
-
-#: dialogs/qfiledialog.cpp:2233
-msgid "QFileDialog::Symlink to Special"
-msgstr "Verknüpfung auf Spezialdatei"
-
-#: dialogs/qfiledialog.cpp:1965
-msgid "QFileDialog::Type"
+#.
+#: QFileDialog::
+msgid "Type"
 msgstr "Typ"
 
-#: dialogs/qfiledialog.cpp:2228
-msgid "QFileDialog::Write-only"
+#.
+#: QFileDialog::
+msgid "Date"
+msgstr "Datum"
+
+#.
+#: QFileDialog::
+msgid "Attributes"
+msgstr "Attribute"
+
+#.
+#: QFileDialog::
+msgid "Look &in:"
+msgstr "Suchen &in:"
+
+#.
+#: QFileDialog::
+msgid "File &name:"
+msgstr "Datei&name:"
+
+#.
+#: QFileDialog::
+msgid "File &type:"
+msgstr "Datei&typ:"
+
+#.
+#: QFileDialog::
+msgid "Back"
+msgstr "Zurück"
+
+#.
+#: QFileDialog::
+msgid "One directory up"
+msgstr "Ordner aufwärts"
+
+#.
+#: QFileDialog::
+msgid "Create New Folder"
+msgstr "Neuen Ordner erstellen"
+
+#.
+#: QFileDialog::
+msgid "List View"
+msgstr "Listenansicht"
+
+#.
+#: QFileDialog::
+msgid "Detail View"
+msgstr "Detailansicht"
+
+#.
+#: QFileDialog::
+msgid "Preview File Info"
+msgstr "Vorschau für Dateiinfo"
+
+#.
+#: QFileDialog::
+msgid "Preview File Contents"
+msgstr "Vorschau für Dateiinhalt"
+
+#.
+#: QFileDialog::
+msgid "Read-write"
+msgstr "Lesen-Schreiben"
+
+#.
+#: QFileDialog::
+msgid "Read-only"
+msgstr "Nur-Lesen"
+
+#.
+#: QFileDialog::
+msgid "Write-only"
 msgstr "Nur-Schreiben"
 
-#: dialogs/qfiledialog.cpp:3336
-msgid "QFileDialog::the directory"
-msgstr "der Ordner"
+#.
+#: QFileDialog::
+msgid "Inaccessible"
+msgstr "nicht zugreifbar"
 
-#: dialogs/qfiledialog.cpp:3334
-msgid "QFileDialog::the file"
+#.
+#: QFileDialog::
+msgid "Symlink to File"
+msgstr "Symbolischer Link auf Datei"
+
+#.
+#: QFileDialog::
+msgid "Symlink to Directory"
+msgstr "Symbolischer Link auf Ordner"
+
+#.
+#: QFileDialog::
+msgid "Symlink to Special"
+msgstr "Symbolischer Link auf Spezialdatei"
+
+#.
+#: QFileDialog::
+msgid "File"
+msgstr "Datei"
+
+#.
+#: QFileDialog::
+msgid "Dir"
+msgstr "Ordner"
+
+#.
+#: QFileDialog::
+msgid "Special"
+msgstr "Spezialdatei"
+
+#.
+#: QFileDialog::
+msgid "Open"
+msgstr "Öffnen"
+
+#.
+#: QFileDialog::
+msgid "Save As"
+msgstr "Speichern unter"
+
+#.
+#: QFileDialog::
+msgid "&Open"
+msgstr "&Öffnen"
+
+#.
+#: QFileDialog::
+msgid "&Save"
+msgstr "&Speichern"
+
+#.
+#: QFileDialog::
+msgid "&Rename"
+msgstr "&Umbenennen"
+
+#.
+#: QFileDialog::
+msgid "&Delete"
+msgstr "&Löschen"
+
+#.
+#: QFileDialog::
+msgid "R&eload"
+msgstr "A&ktualisieren"
+
+#.
+#: QFileDialog::
+msgid "Sort by &Name"
+msgstr "Nach &Name sortieren"
+
+#.
+#: QFileDialog::
+msgid "Sort by &Size"
+msgstr "Nach &Größe sortieren"
+
+#.
+#: QFileDialog::
+msgid "Sort by &Date"
+msgstr "Nach &Datum sortieren"
+
+#.
+#: QFileDialog::
+msgid "&Unsorted"
+msgstr "&Unsortiert"
+
+#.
+#: QFileDialog::
+msgid "Sort"
+msgstr "Sortieren"
+
+#.
+#: QFileDialog::
+msgid "Show &hidden files"
+msgstr "&Versteckte Dateien anzeigen"
+
+#.
+#: QFileDialog::
+msgid "the file"
 msgstr "die Datei"
 
-#: dialogs/qfiledialog.cpp:3338
-msgid "QFileDialog::the symlink"
-msgstr "der Symlink"
+#.
+#: QFileDialog::
+msgid "the directory"
+msgstr "der Ordner"
 
-#: dialogs/qfontdialog.cpp:121
-msgid "QFontDialog::&Color"
-msgstr "&Farbe"
+#.
+#: QFileDialog::
+msgid "the symlink"
+msgstr "der Symbolische Link"
 
-#: dialogs/qfontdialog.cpp:91
-msgid "QFontDialog::&Font"
+#.
+#: QFileDialog::
+msgid "Delete %1"
+msgstr "%1 löschen"
+
+#.
+#: QFileDialog::
+msgid "<qt>Are you sure you wish to delete %1 \"%2\"?</qt>"
+msgstr "<qt>Soll %1 \"%2\" wirklich gelöscht werden?</qt>"
+
+#.
+#: QFileDialog::
+msgid "&Yes"
+msgstr "&Ja"
+
+#.
+#: QFileDialog::
+msgid "&No"
+msgstr "&Nein"
+
+#.
+#: QFileDialog::
+msgid "New Folder 1"
+msgstr "Neuer Ordner 1"
+
+#.
+#: QFileDialog::
+msgid "New Folder"
+msgstr "Neuer Ordner"
+
+#.
+#: QFileDialog::
+msgid "New Folder %1"
+msgstr "Neuer Ordner %1"
+
+#.
+#: QFileDialog::
+msgid "Find Directory"
+msgstr "Ordner suchen"
+
+#.
+#: QFileDialog::
+msgid "Directories"
+msgstr "Ordner"
+
+#.
+#: QFileDialog::
+msgid "Save"
+msgstr "Speichern"
+
+#.
+#: QFileDialog::
+msgid "Error"
+msgstr "Fehler"
+
+#.
+#: QFileDialog::
+msgid "%1\nFile not found.\nCheck path and filename."
+msgstr "%1\nDatei nicht gefunden.\nBitte Pfad und Dateiname prüfen."
+
+#.
+#: QFileDialog::
+msgid "All Files (*.*)"
+msgstr "Alle Dateien (*.*)"
+
+#.
+#: QFileDialog::
+msgid "Open "
+msgstr "Öffnen "
+
+#.
+#: QFileDialog::
+msgid "Select a Directory"
+msgstr "Ordner wählen"
+
+#.
+#: QFileDialog::
+msgid "Directory:"
+msgstr "Ordner:"
+
+#.
+#: QFontDialog::
+msgid "&Font"
 msgstr "&Schrift"
 
-#: dialogs/qfontdialog.cpp:107
-msgid "QFontDialog::&Size"
-msgstr "&Größe"
-
-#: dialogs/qfontdialog.cpp:115
-msgid "QFontDialog::&Underline"
-msgstr "&Unterstreichen"
-
-#: dialogs/qfontdialog.cpp:214
-msgid "QFontDialog::Apply"
-msgstr "Übernehmen"
-
-#: dialogs/qfontdialog.cpp:225
-msgid "QFontDialog::Cancel"
-msgstr "Abbrechen"
-
-#: dialogs/qfontdialog.cpp:225
-msgid "QFontDialog::Close"
-msgstr "Schließen"
-
-#: dialogs/qfontdialog.cpp:111
-msgid "QFontDialog::Effects"
-msgstr "Effekte"
-
-#: dialogs/qfontdialog.cpp:99
-msgid "QFontDialog::Font st&yle"
+#.
+#: QFontDialog::
+msgid "Font st&yle"
 msgstr "Schrift&art"
 
-#: dialogs/qfontdialog.cpp:214
-msgid "QFontDialog::OK"
-msgstr "Ok"
+#.
+#: QFontDialog::
+msgid "&Size"
+msgstr "&Größe"
 
-#: dialogs/qfontdialog.cpp:125
-msgid "QFontDialog::Sample"
+#.
+#: QFontDialog::
+msgid "Effects"
+msgstr "Effekte"
+
+#.
+#: QFontDialog::
+msgid "Stri&keout"
+msgstr "&Durchgestrichen"
+
+#.
+#: QFontDialog::
+msgid "&Underline"
+msgstr "&Unterstrichen"
+
+#.
+#: QFontDialog::
+msgid "&Color"
+msgstr "&Farbe"
+
+#.
+#: QFontDialog::
+msgid "Sample"
 msgstr "Beispiel"
 
-#: dialogs/qfontdialog.cpp:139
-msgid "QFontDialog::Scr&ipt"
+#.
+#: QFontDialog::
+msgid "Scr&ipt"
 msgstr "S&kript"
 
-#: dialogs/qfontdialog.cpp:274
-msgid "QFontDialog::Select Font"
-msgstr "Schrift auswählen"
+#.
+#: QFontDialog::
+msgid "Apply"
+msgstr "Übernehmen"
 
-#: dialogs/qfontdialog.cpp:113
-msgid "QFontDialog::Stri&keout"
-msgstr "Durchges&trichen"
+#.
+#: QFontDialog::
+msgid "Close"
+msgstr "Schließen"
 
-#: dialogs/qwizard.cpp:94
-msgid "QWizard::< Back"
-msgstr "<- Zurück"
+#.
+#: QFontDialog::
+msgid "Select Font"
+msgstr "Schrift wählen"
 
-#: dialogs/qwizard.cpp:93
-msgid "QWizard::Cancel"
-msgstr "Abbrechen"
+#.
+#: QLineEdit::
+msgid "&Undo"
+msgstr "&Rückgängig"
 
-#: dialogs/qwizard.cpp:96
-msgid "QWizard::Finish"
-msgstr "Fertigstellen"
+#.
+#: QLineEdit::
+msgid "&Redo"
+msgstr "&Wiederherstellen"
 
-#: dialogs/qwizard.cpp:97
-msgid "QWizard::Help"
-msgstr "Hilfe"
+#.
+#: QLineEdit::
+msgid "Cu&t"
+msgstr "&Ausschneiden"
 
-#: dialogs/qwizard.cpp:95
-msgid "QWizard::Next >"
-msgstr "Weiter ->"
+#.
+#: QLineEdit::
+msgid "&Copy"
+msgstr "&Kopieren"
+
+#.
+#: QLineEdit::
+msgid "&Paste"
+msgstr "&Einfügen"
+
+#.
+#: QLineEdit::
+msgid "Clear"
+msgstr "Löschen"
+
+#.
+#: QLineEdit::
+msgid "Select All"
+msgstr "Alles auswählen"
+
+#.
+#: QLocalFs::
+msgid "Could not rename\n%1\nto\n%2"
+msgstr "Umbenennen fehlgeschlagen von\n%1\nzu\n%2"
+
+#.
+#: QLocalFs::
+msgid "Could not open\n%1"
+msgstr ""
+"%1\n"
+"ließ sich nicht öffnen."
+
+#.
+#: QLocalFs::
+msgid "Could not write\n%1"
+msgstr ""
+"%1\n"
+"ließ sich nicht schreiben"
+
+#.
+#: QLocalFs::
+msgid "Could not read directory\n%1"
+msgstr ""
+"Ordner konnte nicht eingelesen werden:\n"
+"%1"
+
+#.
+#: QLocalFs::
+msgid "Could not create directory\n%1"
+msgstr "Ordner ließ sich nicht erzeugen:\n%1"
+
+#.
+#: QLocalFs::
+msgid "Could not remove file or directory\n%1"
+msgstr "Ordner oder Datei konnte nicht entfernt werden:\n%1"
+
+#.
+#: QWhatsThisButton::
+msgid "What's this?"
+msgstr "Was ist das?"
+
+#.
+#: QWizard::
+msgid "< &Back"
+msgstr "< &Zurück"
+
+#.
+#: QWizard::
+msgid "&Next >"
+msgstr "&Weiter >"
+
+#.
+#: QWizard::
+msgid "&Cancel"
+msgstr "Ab&brechen"
+
+#.
+#: QWizard::
+msgid "&Finish"
+msgstr "&Fertigstellen"
+
+#.
+#: QWizard::
+msgid "&Help"
+msgstr "&Hilfe"
+
+#.
+#: QtMultiLineEdit::
+msgid "Cut"
+msgstr "Ausschneiden"
+
+#.
+#: QtMultiLineEdit::
+msgid "Paste special..."
+msgstr "Einfügen spezial..."
 
