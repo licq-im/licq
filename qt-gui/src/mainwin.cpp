@@ -299,7 +299,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             xPos, yPos, wVal, hVal);
   if (yPos > QApplication::desktop()->height() - 16) yPos = 0;
   if (xPos > QApplication::desktop()->width() - 16) xPos = 0;
-  setGeometry(xPos, yPos, wVal, hVal);
 
   // Load the icons
   licqConf.SetSection("appearance");
@@ -408,6 +407,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    updateGroups();
    manualAway = 0;
 
+   setGeometry(xPos, yPos, wVal, hVal);
    if (!bHidden) show();
 
    // automatically logon if requested in conf file
