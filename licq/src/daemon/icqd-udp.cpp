@@ -475,9 +475,11 @@ CICQEventTag *CICQDaemon::icqSetStatus(unsigned short newStatus)
   // Set the status flags
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->AddStatusFlags(newStatus);
+  bool invisible = o->StatusInvisible();
   gUserManager.DropOwner();
   CPU_SetStatus *p = new CPU_SetStatus(s);
-  gLog.Info("%sChanging status (#%ld)...\n", L_UDPxSTR, p->getSequence());
+  gLog.Info("%sChanging status to %s (#%ld)...\n", L_UDPxSTR,
+            ICQUser::StatusToStatusStr(newStatus, invisible), p->getSequence());
   m_nDesiredStatus = s;
   ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
   CICQEventTag *t = NULL;
