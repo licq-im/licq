@@ -352,11 +352,7 @@ void *MonitorSockets_tep(void *p)
     nCurrentSocket = 0;
     while (nSocketsAvailable > 0 && nCurrentSocket < l)
     {
-      if (FD_ISSET(nCurrentSocket, &f)
-/*#ifdef USE_OPENSSL
-          || FD_ISSET(nCurrentSocket, &gSSL_pending)
-#endif*/
-         )
+      if (FD_ISSET(nCurrentSocket, &f))
       {
         // New socket event ----------------------------------------------------
         if (nCurrentSocket == d->pipe_newsocket[PIPE_READ])

@@ -39,7 +39,6 @@ extern int h_errno;
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-fd_set gSSL_pending;
 SSL_CTX *gSSL_CTX;
 #endif // OpenSSL
 
@@ -767,17 +766,6 @@ bool TCPSocket::RecvPacket()
   }
 #endif
   m_xRecvBuffer.incDataPosWrite(nBytesReceived);
-
-#ifdef USE_OPENSSL
-  // Make sure we get called again for more data
-  if (m_pSSL)
-  {
-    if (SSL_pending(m_pSSL))
-      FD_SET(m_nDescriptor, &gSSL_pending);
-    else
-      FD_CLR(m_nDescriptor, &gSSL_pending);
-  }
-#endif
 
   // Print the packet if it's full
   if (m_xRecvBuffer.Full())

@@ -817,7 +817,7 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   CChatManager *cm = NULL;
 
   // Check if it's the main port
-  if (nFailedPort == tcpPort)
+  if (nFailedPort == tcpPort || nFailedPort == 0)
   {
     // Set the socket descriptor in the user if this user is on our list
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
