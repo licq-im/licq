@@ -7,7 +7,7 @@
 #endif
 
 // Version constants
-#define ICQ_VERSION 4
+#define ICQ_VERSION 5
 const unsigned short ICQ_VERSION_TCP               = 0x0003;
 
 // UDP commands
@@ -35,7 +35,7 @@ const unsigned short ICQ_CMDxRCV_USERxINFO         = 0x0118;
 const unsigned short ICQ_CMDxRCV_USERxDETAILS      = 0x0122;
 const unsigned short ICQ_CMDxRCV_USERxINVALIDxUIN  = 0x012C;
 const unsigned short ICQ_CMDxRCV_USERxSTATUS       = 0x01A4;
-#if ICQ_VERSION == 4
+#if ICQ_VERSION == 4 || ICQ_VERSION == 5
 const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x01E0; // 480
 const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x01EA; // 490
 #endif
@@ -63,28 +63,40 @@ const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x04A6; // 1190
 #endif
 const unsigned short ICQ_CMDxSND_UPDATExDETAIL     = 0x04B0; // 1200
 const unsigned short ICQ_CMDxSND_SETxSTATUS        = 0x04D8; // 1240
-#if ICQ_VERSION == 4
+#if ICQ_VERSION == 4 || ICQ_VERSION == 5
 const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x050A; // 1290
 #endif
 const unsigned short ICQ_CMDxSND_UPDATExAUTH       = 0x0514; // 1300
 const unsigned short ICQ_CMDxSND_PING2             = 0x051E;
 const unsigned short ICQ_CMDxSND_USERxADD          = 0x053C;
-const unsigned short ICQ_CMDxSND_VISIBLExLIST      = 0x06AE;
-const unsigned short ICQ_CMDxSND_INVISIBLExLIST    = 0x06A4;
 const unsigned short ICQ_CMDxSND_META              = 0x064A; // 1610
+const unsigned short ICQ_CMDxSND_INVISIBLExLIST    = 0x06A4; // 1700
+const unsigned short ICQ_CMDxSND_VISIBLExLIST      = 0x06AE; // 1710
 
-// Meta commands
-const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E8; // 1000
-const unsigned short ICQ_CMDxMETA_GENERALxINFOxRSP = 0x00C8; // 200
-const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x00D2; // 210
-const unsigned short ICQ_CMDxMETA_WORKxINFOxRSP    = 0x00D2; // 210
-const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x00DC; // 220
-const unsigned short ICQ_CMDxMETA_MORExINFOxRSP    = 0x00DC; // 220
-const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
-const unsigned short ICQ_CMDxMETA_SECURITYxRSP     = 0x00A0; // 160
-const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
+// Meta commands (response)
+const unsigned short ICQ_CMDxMETA_GENERALxINFOxRSP = 0x0064; // 100
+const unsigned short ICQ_CMDxMETA_ABOUTxRSP        = 0x0082; // 130
+//const unsigned short ICQ_CMDxMETA_MORExINFOxRSP    = 0x00  ; // ??
+//const unsigned short ICQ_CMDxMETA_WORKxINFOxRSP    = 0x00  ; // ??
+const unsigned short ICQ_CMDxMETA_SECURITYxRSP     = 0x00A0; // 160 ??
 const unsigned short ICQ_CMDxMETA_PASSWORDxRSP     = 0x00AA; // 170
+// Meta commands (user info)
+const unsigned short ICQ_CMDxMETA_GENERALxINFO     = 0x00C8; // 200
+const unsigned short ICQ_CMDxMETA_WORKxINFO        = 0x00D2; // 210
+const unsigned short ICQ_CMDxMETA_MORExINFO        = 0x00DC; // 220
+const unsigned short ICQ_CMDxMETA_ABOUT            = 0x00E6; // 230
+// Meta commands (sent)
+const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E8; // 1000
+//const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x00  ; // ??
+//const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x00  ; // ??
+const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
+const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
+const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
 const unsigned short ICQ_CMDxMETA_REQUESTxINFO     = 0x04B0; // 1200
+//const unsigned short ICQ_CMDxMETA_REQUESTxABOUT    = 0x0   ; // ??
+
+const unsigned short META_SUCCESS = 0x0A;
+const unsigned short META_FAILURE = 0x32;
 
 // TCP commands
 const unsigned short ICQ_CMDxTCP_START             = 0x07EE;
