@@ -512,8 +512,8 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
        e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
       ProcessDoneSearch(e);
-    else
-      ProcessDoneEvent(e);
+//    else
+//      ProcessDoneEvent(e);
     break;
   }
 
@@ -865,8 +865,13 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
 
   if (e->Result() == EVENT_ACKED) return;
 
-  if (e->Result() == EVENT_SUCCESS && 
-      e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER)
+  // The search is finished if it was a success and it is the last WP user
+  // found OR it was a success and it's a search by info or UIN
+  if ((e->Result() == EVENT_SUCCESS && 
+       e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER) || 
+      (e->Result() == EVENT_SUCCESS &&
+       (e->Command() == ICQ_CMDxSND_SEARCHxUIN ||
+        e->Command() == ICQ_CMDxSND_SEARCHxINFO)))
   {
     if (e->SearchAck() == NULL || e->SearchAck()->More() == 0)
     {
