@@ -2522,9 +2522,9 @@ ICQOwner::ICQOwner()
   m_fConf.SetFileName(filename);
   LoadInfo();
   m_fConf.ReadNum("Uin", m_nUin, 0);
-  m_fConf.ReadStr("Password", szTemp, "");
-  SetPassword(szTemp);
-  if (szTemp[0] == '\0' && m_nUin != 0)
+  m_fConf.ReadStr("Password", szTemp, "", false);
+  SetPassword(&szTemp[1]); // skip leading space since we didn't trim
+  if ((szTemp[0] == '\0' || szTemp[1] =='\0') && m_nUin != 0)
   {
     gLog.Error("%sNo password entered.  Edit ~/.licq/owner.uin and fill in the password field.\n",
      L_ERRORxSTR);
