@@ -1898,7 +1898,7 @@ msgstr "Запрос разговора"
 
 #: optionsdlg.cpp:564
 msgid "OptionsDlg::Check Clipboard For Urls/Files"
-msgstr ""
+msgstr "Проверять буфер обмена на \nналичие файлов/URL"
 
 #: optionsdlg.cpp:979
 msgid "OptionsDlg::Column %1"
@@ -2548,7 +2548,8 @@ msgstr ""
 msgid "OptionsDlg::"
 "When double-clicking on a user to send a message "
 "check for urls/files in the clipboard"
-msgstr ""
+msgstr "Проверять буфер обмена на наличие URL "
+"или файлов при попытке отправить сообщение пользователю."
 
 #: optionsdlg.cpp:967
 msgid "OptionsDlg::Width"
