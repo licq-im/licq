@@ -34,8 +34,14 @@
 #include "xpm/iconDigits.h"
 
 #include <stdio.h>
+
+extern "C" {
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+}
+
 #undef Status
 #undef Bool
 #undef None

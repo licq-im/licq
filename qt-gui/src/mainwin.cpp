@@ -19,12 +19,16 @@
 #include "config.h"
 #endif
 
+extern "C" {
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #ifdef USE_SCRNSAVER
 #include <X11/extensions/scrnsaver.h>
 #endif
+
+}
 
 #undef Bool
 #undef None
