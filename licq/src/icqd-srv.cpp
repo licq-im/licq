@@ -333,17 +333,6 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   return e->EventId();
 }
 
-//-----icqSearchByUin------------------------------------------------------------
-unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
-{
-   CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
-   gLog.Info("%sStarting search by UIN for user (#%ld/#%d)...\n", L_SRVxSTR,
-   	p->Sequence(), p->SubSequence());
-   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-   PushExtendedEvent(e);
-   return e->EventId();
-}
-
 //-----icqSetSecurityInfo----------------------------------------------------
 unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
@@ -354,12 +343,34 @@ unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
     return e->EventId();
 }
 
-//-----icqSearchByInfo-----------------------------------------------------------
+//-----icqSearchByUin----------------------------------------------------------
+unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
+{
+   CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
+   gLog.Info("%sStarting search by UIN for user (#%ld/#%d)...\n", L_SRVxSTR,
+   	p->Sequence(), p->SubSequence());
+   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+   PushExtendedEvent(e);
+   return e->EventId();
+}
+
+//-----icqSearchByInfo---------------------------------------------------------
 unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
 {
   CPU_SearchByInfo *p = new CPU_SearchByInfo(nick, first, last, email);
   gLog.Info("%sStarting search by info for user (#%ld/#%d)...\n", L_SRVxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
+//-----icqSearchByKeyword------------------------------------------------------
+unsigned long CICQDaemon::icqSearchByKeyword(const char *szKeyword)
+{
+  CPU_SearchByKeyword *p = new CPU_SearchByKeyword(szKeyword);
+  gLog.Info("%sStarting search by keyword for user (#%ld/#%d)...\n", L_SRVxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
   PushExtendedEvent(e);
@@ -2169,7 +2180,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       	  break;
       	}
       	
-     		e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
+     	e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
       		
       	if (e == NULL) {
       		gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
@@ -2187,8 +2198,15 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       	s->m_szFirstName = strdup(msg.UnpackString(szTemp));
       	s->m_szLastName = strdup(msg.UnpackString(szTemp));
       	s->m_szEmail = strdup(msg.UnpackString(szTemp));
-      	msg.UnpackChar(); // authorization required
-        s->m_nStatus = msg.UnpackChar();
+	msg.UnpackChar(); // authorization required
+	s->m_nStatus = msg.UnpackChar();
+	msg.UnpackChar(); // unknown
+	
+	if (e->SubCommand() == 0x5F05) {
+	  msg.UnpackChar(); // gender
+	  msg.UnpackChar(); // age
+	  msg.UnpackChar(); // unknown
+	}
 
       	// translating string with Translation Table
       	gTranslator.ServerToClient(s->m_szAlias);
@@ -2205,7 +2223,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       	if (nSubtype & 0x0008) {
       		unsigned long nMore = 0;
       		e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
-      		msg >> nMore;
+      		nMore = msg.UnpackUnsignedLong();
       		e2->m_pSearchAck->m_nMore = nMore;
       		e2->m_eResult = EVENT_SUCCESS;
       	} else {
@@ -2480,9 +2498,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
 
 	if (!multipart) {
-	    if (e != NULL)
+	    if (e != NULL) {
+		DoneEvent(e, EVENT_SUCCESS);
 		ProcessDoneEvent(e);
-	    else {
+	    } else {
 		gLog.Warn("%sResponse to unknown extended info request for %s (%ld).\n",
 		L_WARNxSTR, u->GetAlias(), nUin);
 	    }
