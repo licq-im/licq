@@ -876,7 +876,9 @@ void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
   u->AddToGroup(GROUPS_USER, _nGroup);
+  int nGSID = u->GetGSID();
   DropUser(u);
+  gLicqDaemon->icqChangeGroup(_nUin, _nGroup, nGSID);
 }
 
 
@@ -887,6 +889,7 @@ void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGro
 {
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
+  int nGSID = u->GetGSID();
   u->RemoveFromGroup(GROUPS_USER, _nGroup);
   DropUser(u);
 }
