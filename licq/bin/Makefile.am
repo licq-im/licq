@@ -10,8 +10,8 @@ install-data-local:
 	$(mkinstalldirs) $(bindir)
 	@for i in $(srcdir)/viewurl-*.sh; do \
 	  if test -f $$i; then \
-	    echo "$(INSTALL_DATA) $$i $(bindir);"; \
-	    $(INSTALL_DATA) $$i $(bindir); \
+	    echo "$(INSTALL_PROGRAM) $$i $(bindir);"; \
+	    $(INSTALL_PROGRAM) $$i $(bindir); \
 	  fi \
 	done
 
