@@ -24,6 +24,15 @@ struct SColorMap
   int nAttr;
 };
 
+struct SUser
+{
+  char szKey[32];
+  unsigned long nUin;
+  char szLine[128];
+  bool bOffline;
+  const struct SColorMap *color;
+};
+
 
 class CLicqConsole
 {
@@ -35,6 +44,7 @@ public:
 protected:
   int m_nPipe;
   bool m_bExit;
+  list <SUser *> m_lUsers;
 
   // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
@@ -64,6 +74,7 @@ public:
   void ProcessLog(void);
   char *CurrentGroupName(void);
   void SwitchToCon(unsigned short nCon);
+  void CreateUserList(void);
 
   void InputCommand(int cIn);
   void InputLogWindow(int cIn);

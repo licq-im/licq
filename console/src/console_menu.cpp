@@ -213,13 +213,6 @@ void CLicqConsole::MenuStatus(char *_szArg)
   if (bInvisible)
     nStatus |= ICQ_STATUS_FxPRIVATE;
 
-  // maintain the current extended status flags (we aren't changing any of
-  // them in this function so it's ok)
-  nStatus |= o->StatusFlags();
-
-  // disable combo box, flip pixmap...
-  //lblStatus->setEnabled(false);
-
   // call the right function
   bool b = o->StatusOffline();
   gUserManager.DropOwner();

@@ -206,6 +206,137 @@ void CLicqConsole::PrintVariable(unsigned short nVar)
 
 
 /*---------------------------------------------------------------------------
+ * CLicqConsole::CreateUserList
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::CreateUserList(void)
+{
+  unsigned short i = 0;
+  struct SUser *s = NULL;
+  list <SUser *>::iterator it;
+
+  // Clear the list
+  for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
+  {
+    delete (*it);
+  }
+#undef clear
+  m_lUsers.clear();
+
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    // Only show users on the current group and not on the ignore list
+    if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+        (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
+      FOR_EACH_USER_CONTINUE
+
+    if (!m_bShowOffline && pUser->StatusOffline() )
+    {
+      FOR_EACH_USER_CONTINUE;
+    }
+
+    s = new SUser;
+    sprintf(s->szKey, "%05u%010lu", pUser->Status(), pUser->Touched() ^ 0xFFFFFFFF);
+    s->nUin = pUser->Uin();
+    s->bOffline = pUser->StatusOffline();
+
+    switch(pUser->Status())
+    {
+    case ICQ_STATUS_ONLINE:
+      pUser->usprintf(&s->szLine[1], m_szOnlineFormat);
+      s->color = m_cColorOnline;
+      break;
+    case ICQ_STATUS_OFFLINE:
+      pUser->usprintf(&s->szLine[1], m_szOfflineFormat);
+      s->color = m_cColorOffline;
+      break;
+    default:
+      pUser->usprintf(&s->szLine[1], m_szAwayFormat);
+      s->color = m_cColorAway;
+      break;
+    }
+    if (pUser->NewUser())
+      s->color = m_cColorNew;
+    s->szLine[0] = pUser->NewMessages() > 0 ? '*' : ' ';
+
+    // Insert into the list
+    for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
+    {
+      if ( strcmp(s->szKey, (*it)->szKey) <= 0)
+      {
+        m_lUsers.insert(it, s);
+        break;
+      }
+    }
+    if (it == m_lUsers.end());
+      m_lUsers.push_back(s);
+
+    i++;
+  }
+  FOR_EACH_USER_END
+
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::PrintUsers
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::PrintUsers(void)
+{
+  unsigned short i = 0, j;
+
+  werase(winUsers->Win());
+  mvwvline(winBar->Win(), 0, 0, ACS_VLINE, LINES - 5);
+
+  bool bOfflineUsers = false;
+  for (list<SUser *>::iterator it = m_lUsers.begin();
+       it != m_lUsers.end();
+       it++)
+  {
+    if (i == 0 && m_bShowDividers && !(*it)->bOffline)
+    {
+      int yp, xp;
+      getyx(winUsers->Win(), yp, xp);
+      mvwaddch(winBar->Win(), yp, 0, ACS_LTEE);
+      for (j = 0; j < 10; j++) waddch(winUsers->Win(), ACS_HLINE);
+      winUsers->wprintf("%A%C Online ",
+            m_cColorOnline->nAttr,
+            m_cColorOnline->nColor);
+      for (j = 19; j < USER_WIN_WIDTH; j++) waddch(winUsers->Win(), ACS_HLINE);
+      waddch(winUsers->Win(), '\n');
+    }
+
+    if (!bOfflineUsers && (*it)->bOffline)
+    {
+      if (m_bShowDividers)
+      {
+        int yp, xp;
+        getyx(winUsers->Win(), yp, xp);
+        mvwaddch(winBar->Win(), yp, 0, ACS_LTEE);
+        for (j = 0; j < 10; j++) waddch(winUsers->Win(), ACS_HLINE);
+        winUsers->wprintf("%A%C Offline ",
+            m_cColorOffline->nAttr,
+            m_cColorOffline->nColor);
+        for (j = 20; j < USER_WIN_WIDTH; j++) waddch(winUsers->Win(), ACS_HLINE);
+        waddch(winUsers->Win(), '\n');
+      }
+      bOfflineUsers = true;
+    }
+    winUsers->wprintf("%A%C%s\n",
+                      (*it)->color->nAttr,
+                      (*it)->color->nColor,
+                      (*it)->szLine);
+
+    if (i >= winUsers->Rows() - 3) break;
+    i++;
+  }
+
+  winBar->RefreshWin();
+  winUsers->RefreshWin();
+
+}
+
+#if 0
+/*---------------------------------------------------------------------------
  * CLicqConsole::PrintUsers
  *-------------------------------------------------------------------------*/
 void CLicqConsole::PrintUsers(void)
@@ -290,7 +421,7 @@ void CLicqConsole::PrintUsers(void)
   winUsers->RefreshWin();
 
 }
-
+#endif
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintHelp

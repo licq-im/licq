@@ -189,6 +189,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 
   PrintStatus();
   PrintPrompt();
+  CreateUserList();
   PrintUsers();
 
   if (gUserManager.OwnerUin() == 0)
@@ -320,6 +321,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
   {
   case SIGNAL_UPDATExLIST:
     PrintStatus();
+    CreateUserList();
     PrintUsers();
     break;
   case SIGNAL_UPDATExUSER:
@@ -331,7 +333,10 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     if (u != NULL)
     {
       if (u->GetInGroup(GROUPS_USER, m_nCurrentGroup))
+      {
+        CreateUserList();
         PrintUsers();
+      }
       gUserManager.DropUser(u);
     }
     break;
@@ -399,7 +404,8 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_SYSxMSGxDONExACK:
     break;
 
-  case ICQ_CMDxSND_SEARCHxSTART:
+  case ICQ_CMDxSND_SEARCHxINFO:
+  case ICQ_CMDxSND_SEARCHxUIN:
     break;
 
   default:
@@ -1010,8 +1016,9 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     wattroff(winMain->Win(), A_BOLD);
     u->ClearEvent(0);
     gUserManager.DropUser(u);
-    PrintUsers();
-    PrintStatus();
+    //PrintUsers();
+    //PrintStatus();
+    ProcessSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, nUin));
   }
   else
   {
