@@ -84,6 +84,8 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   conf.ReadStr("Program", m_szProgram);
   conf.ReadStr("Arguments", m_szArguments, "");
   conf.ReadBool("PassMessage", m_bPassMessage, false);
+  conf.ReadBool("FailOnExitCode", m_bFailOnExitCode, false);
+  conf.ReadBool("AbortDeleteOnExitCode", m_bAbortDeleteOnExitCode, false);
   conf.CloseFile();
 
   // Log on if necessary
@@ -285,7 +287,13 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
   {
     m_szMessage[pos++] = c;
   }
-  PClose();
+  int r = 0;
+  if ((r = PClose()) != 0 && m_bFailOnExitCode)
+  {
+    gLog.Warn("%s%s returned abnormally: exit code %d\n", L_AUTOREPxSTR,
+     szCommand, r);
+    return !m_bAbortDeleteOnExitCode;
+  }
 
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
@@ -366,9 +374,10 @@ bool CLicqAutoReply::POpen(const char *cmd)
 }
 
 
-void CLicqAutoReply::PClose()
+int CLicqAutoReply::PClose()
 {
    int r, pstat;
+   struct timeval tv = { 0, 200000 };
 
    // Close the file descriptors
    if (fStdOut != NULL) fclose(fStdOut);
@@ -378,18 +387,17 @@ void CLicqAutoReply::PClose()
    // See if the child is still there
    r = waitpid(pid, &pstat, WNOHANG);
    // Return if child has exited or there was an inor
-   if (r == pid || r == -1) return;
+   if (r == pid || r == -1) goto pclose_done;
 
    // Give the process another .2 seconds to die
-   struct timeval tv = { 0, 200000 };
    select(0, NULL, NULL, NULL, &tv);
 
    // Still there?
    r = waitpid(pid, &pstat, WNOHANG);
-   if (r == pid || r == -1) return;
+   if (r == pid || r == -1) goto pclose_done;
 
    // Try and kill the process
-   if (kill(pid, SIGTERM) == -1) return;
+   if (kill(pid, SIGTERM) == -1) return -1;
 
    // Give it 1 more second to die
    tv.tv_sec = 1;
@@ -398,12 +406,18 @@ void CLicqAutoReply::PClose()
 
    // See if the child is still there
    r = waitpid(pid, &pstat, WNOHANG);
-   if (r == pid || r == -1) return;
+   if (r == pid || r == -1) goto pclose_done;
 
    // Kill the bastard
    kill(pid, SIGKILL);
    // Now he will die for sure
    waitpid(pid, &pstat, 0);
+
+pclose_done:
+
+   if (WIFEXITED(pstat)) return WEXITSTATUS(pstat);
+   return -1;
+
 }
 
 

@@ -26,7 +26,7 @@ protected:
   bool m_bExit, m_bEnabled, m_bDelete;
   char *m_szStatus;
   char m_szProgram[512], m_szArguments[512];
-  bool m_bPassMessage;
+  bool m_bPassMessage, m_bFailOnExitCode, m_bAbortDeleteOnExitCode;
 
   CICQDaemon *licqDaemon;
   TCPSocket *tcp;
@@ -40,7 +40,7 @@ public:
   bool AutoReplyEvent(unsigned long, CUserEvent *);
 
   bool POpen(const char *cmd);
-  void PClose();
+  int PClose();
 
 protected:
   int pid;
