@@ -6,11 +6,20 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/wait.h>
+#include <sys/time.h>
+#include <signal.h>
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #else
 extern int errno;
 #endif
+#ifdef HAVE_PATHS_H
+#include <paths.h>
+#else
+#define _PATH_BSHELL "/bin/sh"
+#endif
+
 
 #include "autoreply.h"
 #include "licq_log.h"
@@ -73,6 +82,8 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   conf.LoadFile(filename);
   conf.SetSection("Reply");
   conf.ReadStr("Program", m_szProgram);
+  conf.ReadStr("Arguments", m_szArguments, "");
+  conf.ReadBool("PassMessage", m_bPassMessage, false);
   conf.CloseFile();
 
   // Log on if necessary
@@ -193,6 +204,21 @@ void CLicqAutoReply::ProcessSignal(CICQSignal *s)
  *-------------------------------------------------------------------------*/
 void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 {
+  CUserEvent *user_event;
+
+  if (e->Result() != EVENT_ACKED)
+  {
+    if (e->Command() == ICQ_CMDxTCP_START &&
+        (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
+         e->SubCommand() != ICQ_CMDxSUB_FILE))
+    {
+	    user_event = e->UserEvent();
+      CICQEventTag *tag = licqDaemon->icqSendMessage(e->Uin(), user_event->Text(), false,
+        ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
+	    delete tag;
+    }
+  }
+
   delete e;
 }
 
@@ -215,7 +241,7 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
   }
   else
   {
-    bool r = AutoReplyEvent(nUin);
+    bool r = AutoReplyEvent(nUin, e);
     if (m_bDelete && r)
     {
       u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -226,10 +252,9 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 }
 
 
-bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin)
+bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
 {
-  FILE *output;
-  char m_szMessage[4096];
+  char m_szMessage[4096], szCommand[4096];
   char c;
   int pos = 0;
 
@@ -237,24 +262,38 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin)
   {
     m_szMessage[i] = '\0';
   }
-  output = popen (m_szProgram, "r");
-  if (!output)
+
+  char *buf = szCommand;
+  buf += sprintf(buf, "%s ", m_szProgram);
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  u->usprintf(buf, m_szArguments);
+  gUserManager.DropUser(u);
+
+  if (!POpen(szCommand))
   {
-    gLog.Warn("%sCould not execute %s\n", L_AUTOREPxSTR, m_szProgram);
+    gLog.Warn("%sCould not execute %s\n", L_AUTOREPxSTR, szCommand);
     return false;
   }
-  while (((c = fgetc(output)) != EOF) && (pos < 4096))
+  if (m_bPassMessage)
+  {
+    fprintf(fStdIn, "%s\n", event->Text());
+    fclose(fStdIn);
+    fStdIn = NULL;
+  }
+
+  while (((c = fgetc(fStdOut)) != EOF) && (pos < 4096))
   {
     m_szMessage[pos++] = c;
   }
-  pclose (output);
+  PClose();
+
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  CICQEventTag *tag = licqDaemon->icqSendMessage(nUin, szText, false,
-     ICQ_TCPxMSG_NORMAL);
+  CICQEventTag *tag = licqDaemon->icqSendMessage(nUin, szText, true,
+     ICQ_TCPxMSG_URGENT);
   delete []szText;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return false;
 
   if (tag == NULL)
@@ -272,4 +311,99 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin)
   delete tag;
   return tag != NULL;
 }
+
+
+
+bool CLicqAutoReply::POpen(const char *cmd)
+{
+  int pdes_out[2], pdes_in[2];
+
+  if (pipe(pdes_out) < 0) return false;
+  if (pipe(pdes_in) < 0) return false;
+
+  switch (pid = fork())
+  {
+    case -1:                        /* Error. */
+    {
+      close(pdes_out[0]);
+      close(pdes_out[1]);
+      close(pdes_in[0]);
+      close(pdes_in[1]);
+      return false;
+      /* NOTREACHED */
+    }
+    case 0:                         /* Child. */
+    {
+      if (pdes_out[1] != STDOUT_FILENO)
+      {
+        dup2(pdes_out[1], STDOUT_FILENO);
+        close(pdes_out[1]);
+      }
+      close(pdes_out[0]);
+      if (pdes_in[0] != STDIN_FILENO)
+      {
+        dup2(pdes_in[0], STDIN_FILENO);
+        close(pdes_in[0]);
+      }
+      close(pdes_in[1]);
+      execl(_PATH_BSHELL, "sh", "-c", cmd, NULL);
+      _exit(127);
+      /* NOTREACHED */
+    }
+  }
+
+  /* Parent; assume fdopen can't fail. */
+  fStdOut = fdopen(pdes_out[0], "r");
+  close(pdes_out[1]);
+  fStdIn = fdopen(pdes_in[1], "w");
+  close(pdes_in[0]);
+
+  // Set both streams to line buffered
+  setvbuf(fStdOut, (char*)NULL, _IOLBF, 0);
+  setvbuf(fStdIn, (char*)NULL, _IOLBF, 0);
+
+  return true;
+}
+
+
+void CLicqAutoReply::PClose()
+{
+   int r, pstat;
+
+   // Close the file descriptors
+   if (fStdOut != NULL) fclose(fStdOut);
+   if (fStdIn != NULL) fclose(fStdIn);
+   fStdOut = fStdIn = NULL;
+
+   // See if the child is still there
+   r = waitpid(pid, &pstat, WNOHANG);
+   // Return if child has exited or there was an inor
+   if (r == pid || r == -1) return;
+
+   // Give the process another .2 seconds to die
+   struct timeval tv = { 0, 200000 };
+   select(0, NULL, NULL, NULL, &tv);
+
+   // Still there?
+   r = waitpid(pid, &pstat, WNOHANG);
+   if (r == pid || r == -1) return;
+
+   // Try and kill the process
+   if (kill(pid, SIGTERM) == -1) return;
+
+   // Give it 1 more second to die
+   tv.tv_sec = 1;
+   tv.tv_usec = 0;
+   select(0, NULL, NULL, NULL, &tv);
+
+   // See if the child is still there
+   r = waitpid(pid, &pstat, WNOHANG);
+   if (r == pid || r == -1) return;
+
+   // Kill the bastard
+   kill(pid, SIGKILL);
+   // Now he will die for sure
+   waitpid(pid, &pstat, 0);
+}
+
 

@@ -25,7 +25,8 @@ protected:
   int m_nPipe;
   bool m_bExit, m_bEnabled, m_bDelete;
   char *m_szStatus;
-  char m_szProgram[512];
+  char m_szProgram[512], m_szArguments[512];
+  bool m_bPassMessage;
 
   CICQDaemon *licqDaemon;
   TCPSocket *tcp;
@@ -36,7 +37,15 @@ public:
   void ProcessEvent(ICQEvent *);
 
   void ProcessUserEvent(unsigned long, unsigned long);
-  bool AutoReplyEvent(unsigned long);
+  bool AutoReplyEvent(unsigned long, CUserEvent *);
+
+  bool POpen(const char *cmd);
+  void PClose();
+
+protected:
+  int pid;
+  FILE *fStdOut;
+  FILE *fStdIn;
 
 };
 
