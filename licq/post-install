@@ -1,12 +1,6 @@
 ----------------------------------------------------------------------
 Licq daemon installed successfully.
 
-Grab the licq-data package if you don't already have it.  It contains
-various extra skins and icon packs, translations, and contributed
-scripts.  In particular, get the viewurl-netscape.sh (or
-one of the other viewurl scripts) and copy it to a directory in your
-path if you want to be able to view urls from within Licq.
-
 For more help on running licq and using plugins, see doc/README.
 See HINTS for some Licq advanced features.
 
