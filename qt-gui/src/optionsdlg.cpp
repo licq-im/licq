@@ -121,14 +121,14 @@ OptionsDlg::~OptionsDlg()
 
 void OptionsDlg::accept()
 {
-  QDialog::accept();
   close();
+  QDialog::accept();
 }
 
 void OptionsDlg::reject()
 {
-  QDialog::reject();
   QTimer::singleShot(0, this, SLOT(close()));
+  QDialog::reject();
 }
 
 void OptionsDlg::colEnable(bool isOn)

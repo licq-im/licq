@@ -114,8 +114,8 @@ void AuthUserDlg::ok()
       server->icqAuthorizeGrant(nUin, mleResponse->text().local8Bit().data());
     else
       server->icqAuthorizeRefuse(nUin, mleResponse->text().local8Bit().data());
-    accept();
     close();
+    accept();
   }
 }
 

@@ -147,8 +147,8 @@ void AwayMsgDlg::ok()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetAutoResponse(s.local8Bit());
   gUserManager.DropOwner();
-  accept();
   close();
+  accept();
 }
 
 void AwayMsgDlg::reject()
@@ -242,8 +242,8 @@ void CustomAwayMsgDlg::slot_ok()
   gUserManager.DropUser(u);
   CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
   gMainWindow->slot_updatedUser(&sig);
-  accept();
   close();
+  accept();
 }
 
 
@@ -254,8 +254,8 @@ void CustomAwayMsgDlg::slot_clear()
   gUserManager.DropUser(u);
   CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
   gMainWindow->slot_updatedUser(&sig);
-  accept();
   close();
+  accept();
 }
 
 

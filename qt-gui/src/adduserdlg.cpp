@@ -69,7 +69,6 @@ void AddUserDlg::ok()
      if (chkAlert->isChecked()) // alert the user they were added
        server->icqAlertUser(nUin);
    }
-   accept();
    close(true);
 }
 
