@@ -254,18 +254,19 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
   unsigned long offset;
   unsigned long size = pkt->getDataSize();
 
-  if(version < 4)
+  if (version < 4)
     return;  // no encryption necessary.
 
-  switch(version) {
-  case 4:
-  case 5:
-    offset = 6;
-    break;
-  case 6:
-  case 7:
-  default:
-    offset = 0;
+  switch(version)
+  {
+    case 4:
+    case 5:
+      offset = 6;
+      break;
+    case 6:
+    case 7:
+    default:
+      offset = 0;
   }
 
   // calculate verification data
@@ -1254,7 +1255,7 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(0x00000002);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
@@ -1264,8 +1265,26 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 }
 
 
+CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
+{
+  m_nLocalPort = nLocalPort;
+
+  m_nSize = 26;
+  buffer = new CBuffer(m_nSize);
+
+  buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(0x00000000);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedLong(s_nLocalIp); // maybe should be 0
+  buffer->PackUnsignedLong(s_nRealIp);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedLong(m_nLocalPort);
+}
+
+
 //=====PacketTcp_Handshake======================================================
-CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nDestinationUin,
+CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
    unsigned long nSessionId)
 {
   m_nDestinationUin = nDestinationUin;
@@ -1291,7 +1310,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nDestinationUin,
 }
 
 
-CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(CBuffer *inbuf)
+CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(CBuffer *inbuf)
 {
   m_nHandshake = inbuf->UnpackChar();
   m_nVersionMajor = inbuf->UnpackUnsignedShort();
@@ -1404,7 +1423,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
 
   m_nVersion = user->ConnectionVersion();
 
-  // v4 packets are smaller then v2 so we just set the size based on a v2 packet
+  // v4,6 packets are smaller then v2 so we just set the size based on a v2 packet
   m_nSize = 18 + strlen(m_szMessage) + 25;
   buffer = NULL;
 }
@@ -1420,12 +1439,18 @@ void CPacketTcp::InitBuffer()
 {
   switch (m_nVersion)
   {
-  case 4:
-    InitBuffer_v4();
-    break;
-  case 2:
-    InitBuffer_v2();
-    break;
+    case 6:
+    case 7:
+      InitBuffer_v6();
+      break;
+    case 4:
+    case 5:
+      InitBuffer_v4();
+      break;
+    case 2:
+    case 3:
+      InitBuffer_v2();
+      break;
   }
 }
 
@@ -1433,12 +1458,18 @@ void CPacketTcp::PostBuffer()
 {
   switch (m_nVersion)
   {
-  case 4:
-    PostBuffer_v4();
-    break;
-  case 2:
-    PostBuffer_v2();
-    break;
+    case 6:
+    case 7:
+      PostBuffer_v6();
+      break;
+    case 4:
+    case 5:
+      PostBuffer_v4();
+      break;
+    case 2:
+    case 3:
+      PostBuffer_v2();
+      break;
   }
 }
 
@@ -1472,6 +1503,34 @@ void CPacketTcp::PostBuffer_v2()
 
 void CPacketTcp::InitBuffer_v4()
 {
+  buffer = new CBuffer(m_nSize + 8);
+
+  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(0x00000000);  // Checksum
+  buffer->PackUnsignedLong(m_nCommand);
+  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedShort(m_nSubCommand);
+  buffer->PackString(m_szMessage);
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackUnsignedLong(s_nRealIp);
+  m_szLocalPortOffset = buffer->getDataPosWrite();
+  buffer->PackUnsignedLong(m_nLocalPort);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedShort(m_nStatus);
+  buffer->PackUnsignedShort(m_nMsgType);
+}
+
+void CPacketTcp::PostBuffer_v4()
+{
+  buffer->PackUnsignedLong(m_nSequence);
+  buffer->PackChar('L');
+  buffer->PackUnsignedShort(INT_VERSION);
+}
+
+
+void CPacketTcp::InitBuffer_v6()
+{
   buffer = new CBuffer(m_nSize + 4);
 
   buffer->PackUnsignedLong(0); // Checksum
@@ -1489,7 +1548,7 @@ void CPacketTcp::InitBuffer_v4()
   m_szLocalPortOffset = NULL;
 }
 
-void CPacketTcp::PostBuffer_v4()
+void CPacketTcp::PostBuffer_v6()
 {
   buffer->PackChar('L');
   buffer->PackUnsignedShort(INT_VERSION);
@@ -1502,7 +1561,7 @@ CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned sh
                true, nLevel, _cUser)
 {
   InitBuffer();
-  if (m_nVersion == 4)
+  if (m_nVersion == 6)
   {
     buffer->PackUnsignedLong(0x00000000);
     buffer->PackUnsignedLong(0x00FFFFFF);
@@ -1517,7 +1576,7 @@ CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLev
                true, nLevel, _cUser)
 {
   InitBuffer();
-  if (m_nVersion == 4)
+  if (m_nVersion == 6)
   {
     buffer->PackUnsignedLong(0x00000000);
     buffer->PackUnsignedLong(0x00FFFFFF);
@@ -1533,7 +1592,7 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel,
                true, nLevel, pUser)
 {
   InitBuffer();
-  if (m_nVersion == 4)
+  if (m_nVersion == 6)
   {
     buffer->PackUnsignedLong(0x00000000);
     buffer->PackUnsignedLong(0x00FFFFFF);
@@ -1559,7 +1618,7 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
   }
 
   InitBuffer();
-  if (m_nVersion == 4)
+  if (m_nVersion == 6)
   {
     buffer->PackUnsignedLong(0xFFFFFFFF);
     buffer->PackUnsignedLong(0xFFFFFFFF);
@@ -1655,7 +1714,7 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
   : CPT_Ack(nCmd, nSequence, bAccept, nLevel, pUser)
 {
   InitBuffer();
-  if (m_nVersion == 4)
+  if (m_nVersion == 6)
   {
     buffer->PackUnsignedLong(0x00000000);
     buffer->PackUnsignedLong(0x00000000);

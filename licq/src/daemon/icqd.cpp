@@ -701,12 +701,14 @@ void CICQDaemon::SetTCPEnabled(bool b)
 }
 
 
-unsigned short VersionToUse(unsigned short v)
+unsigned short VersionToUse(unsigned short v_in)
 {
-  if (ICQ_VERSION_TCP & 4 && v & 4) return 4;
+  /*if (ICQ_VERSION_TCP & 4 && v & 4) return 4;
   if (ICQ_VERSION_TCP & 2 && v & 2) return 2;
   gLog.Warn("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
-  return 2;
+  return 2;*/
+  unsigned short v_out = v_in < ICQ_VERSION_TCP ? v_in : ICQ_VERSION_TCP;
+  return v_out;
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -135,7 +135,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
 
 bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 {
-  //b.Reset
+  b.Reset();
 
   if ((unsigned char)b.UnpackChar() != ICQ_CMDxTCP_HANDSHAKE) return false;
 
@@ -157,7 +157,29 @@ bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 
 bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
 {
-  CPacketTcp_Handshake_v4 hand(&b);
+  b.Reset();
+
+  if ((unsigned char)b.UnpackChar() != ICQ_CMDxTCP_HANDSHAKE) return false;
+
+  m_nVersion = b.UnpackUnsignedLong();
+  b.UnpackUnsignedLong();
+  m_nUin = b.UnpackUnsignedLong();
+  m_nIp = b.UnpackUnsignedLong();  // Will probably be zero...
+  m_nRealIp = b.UnpackUnsignedLong();
+  m_nMode = b.UnpackChar();
+  m_nHandshake = 0x64;
+
+  // These will still need to be set
+  m_nPort = 0;
+  m_nSession = 0;
+
+  return true;
+}
+
+
+bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
+{
+  CPacketTcp_Handshake_v6 hand(&b);
 
   m_nVersion = hand.VersionMajor();
   m_nUin = hand.SourceUin();
@@ -677,10 +699,19 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
         return false;
       }
-      if (u->sock.Version() == 2)
-        u->client.LoadFromHandshake_v2(hbuf);
-      else
-        u->client.LoadFromHandshake_v4(hbuf);
+      switch (u->sock.Version())
+      {
+        case 2:
+        case 3:
+          u->client.LoadFromHandshake_v2(hbuf);
+          break;
+        case 4:
+          u->client.LoadFromHandshake_v4(hbuf);
+          break;
+        case 6:
+          u->client.LoadFromHandshake_v6(hbuf);
+          break;
+      }
       gLog.Info("%sChat: Received handshake from %ld.\n", L_TCPxSTR, u->client.m_nUin);
       u->uin = u->client.m_nUin;
       u->state = CHAT_STATE_WAITxFORxCOLOR;

@@ -598,8 +598,18 @@ protected:
 class CPacketTcp_Handshake_v4 : public CPacketTcp_Handshake
 {
 public:
-  CPacketTcp_Handshake_v4(unsigned long nDestinationUin, unsigned long nSessionId);
-  CPacketTcp_Handshake_v4(CBuffer *);
+  CPacketTcp_Handshake_v4(unsigned long _nLocalPort);
+protected:
+  unsigned long  m_nLocalPort;
+  unsigned long  m_nLocalHost;
+};
+
+
+class CPacketTcp_Handshake_v6 : public CPacketTcp_Handshake
+{
+public:
+  CPacketTcp_Handshake_v6(unsigned long nDestinationUin, unsigned long nSessionId);
+  CPacketTcp_Handshake_v6(CBuffer *);
 
   char Handshake() { return m_nHandshake; }
   unsigned short VersionMajor() { return m_nVersionMajor; }
@@ -657,6 +667,8 @@ protected:
    void PostBuffer_v2();
    void InitBuffer_v4();
    void PostBuffer_v4();
+   void InitBuffer_v6();
+   void PostBuffer_v6();
 
    unsigned long  m_nSourceUin;
    unsigned long  m_nCommand;

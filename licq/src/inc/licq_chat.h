@@ -153,6 +153,7 @@ public:
   // or port fields however
   bool LoadFromHandshake_v2(CBuffer &);
   bool LoadFromHandshake_v4(CBuffer &);
+  bool LoadFromHandshake_v6(CBuffer &);
 
   unsigned long m_nVersion;
   unsigned short m_nPort;
