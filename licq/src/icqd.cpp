@@ -46,6 +46,10 @@ extern int errno;
 
 using namespace std;
 
+std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;
+pthread_mutex_t CICQDaemon::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  CICQDaemon::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
+
 CDaemonStats::CDaemonStats()
 {
   m_nTotal = m_nOriginal = m_nLastSaved = 0;
@@ -1140,8 +1144,11 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
 {
-  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1) icqRemoveUser(szId);
-  
+  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
+    icqRemoveUser(szId);
+  else
+    ProtoRemoveUser(szId, nPPID);
+
   gUserManager.RemoveUser(szId, nPPID);
   SaveUserList();
   
@@ -2498,7 +2505,72 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   if (szType)  free(szType);
 }
 
+bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
+{
+  bool bSuccess = false;
+  pthread_mutex_lock(&mutex_reverseconnect);
 
+  std::list<CReverseConnectToUserData *>::iterator iter;
+  for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+    iter++)
+  {
+    if ((*iter)->nId == id && (*iter)->nUin == uin)
+      break;
+  }
+
+  if (iter == m_lReverseConnect.end())
+  {
+    gLog.Warn("%sFailed to find desired connection record.\n", L_WARNxSTR);
+    goto done;
+  }
+
+  struct timespec ts;
+  ts.tv_nsec = 0;
+  //wait for 30 seconds
+  ts.tv_sec = time(NULL) + 30;
+
+  while (pthread_cond_timedwait(&cond_reverseconnect_done,
+    &mutex_reverseconnect, &ts) == 0)
+  {
+    for (iter = m_lReverseConnect.begin(); ; iter++)
+    {
+      if (iter == m_lReverseConnect.end())
+      {
+        gLog.Warn("%sSomebody else removed our connection record.\n",
+          L_WARNxSTR);
+        goto done;
+      }
+      if ((*iter)->nId == id && (*iter)->nUin == uin)
+      {
+        if ((*iter)->bFinished)
+        {
+          bSuccess = (*iter)->bSuccess;
+          delete *iter;
+          m_lReverseConnect.erase(iter);
+          goto done;
+        }
+        break;
+      }
+    }
+  }
+
+  // timed out, just remove the record
+  for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+    iter++)
+  {
+    if ((*iter)->nId == id && (*iter)->nUin == uin)
+    {
+      delete *iter;
+      m_lReverseConnect.erase(iter);
+      break;
+    }
+  }
+
+done:
+  pthread_mutex_unlock(&mutex_reverseconnect);
+  return bSuccess;
+}
+ 
 //-----ParseFE------------------------------------------------------------------
 bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {
