@@ -362,7 +362,7 @@ void OptionsDlg::setupFontName(QLineEdit* le, const QFont& font)
 {
   QString s;
   if (font == mainwin->defaultFont)
-    s = tr("default");
+    s = tr("default (%1)").arg(font.rawName());
   else
     s = font.rawName();
   le->setFont(font);
