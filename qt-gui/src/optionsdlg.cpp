@@ -263,13 +263,33 @@ void OptionsDlg::SetupOptions()
 #endif
   }
 
-  //chkFirewall->setChecked(mainwin->licqDaemon->FirewallHost()[0] == '\0');
+  edtICQServer->setText(QString(mainwin->licqDaemon->ICQServer()));
+  spnICQServerPort->setValue(mainwin->licqDaemon->ICQServerPort());
   chkTCPEnabled->setChecked(mainwin->licqDaemon->TCPEnabled());
-  //edtFirewallHost->setText(mainwin->licqDaemon->FirewallHost());
   spnPortLow->setValue(mainwin->licqDaemon->TCPPortsLow());
   spnPortHigh->setValue(mainwin->licqDaemon->TCPPortsHigh());
-  //chkFirewall->toggle();
-
+  chkProxyEnabled->setChecked(mainwin->licqDaemon->ProxyEnabled());
+  cmbProxyType->setCurrentItem(mainwin->licqDaemon->ProxyType() - 1);
+  edtProxyHost->setText(QString(mainwin->licqDaemon->ProxyHost()));
+  spnProxyPort->setValue(mainwin->licqDaemon->ProxyPort());
+  chkProxyAuthEnabled->setChecked(mainwin->licqDaemon->ProxyAuthEnabled());
+  edtProxyLogin->setText(QString(mainwin->licqDaemon->ProxyLogin()));
+  edtProxyPasswd->setText(QString(mainwin->licqDaemon->ProxyPasswd()));
+  
+  if (!mainwin->licqDaemon->ProxyEnabled())
+  {
+    cmbProxyType->setEnabled(false);
+    edtProxyHost->setEnabled(false);
+    spnProxyPort->setEnabled(false);
+    chkProxyAuthEnabled->setEnabled(false);
+    edtProxyLogin->setEnabled(false);
+    edtProxyPasswd->setEnabled(false);
+  } else if (!mainwin->licqDaemon->ProxyAuthEnabled())
+  {
+    edtProxyLogin->setEnabled(false);
+    edtProxyPasswd->setEnabled(false);
+  }
+      
   spnAutoAway->setValue(mainwin->autoAwayTime);
   spnAutoNa->setValue(mainwin->autoNATime);
   spnAutoOffline->setValue(mainwin->autoOfflineTime);
@@ -477,18 +497,18 @@ void OptionsDlg::ApplyOptions()
     mainwin->m_nDockMode = DockNone;
   }
 
-  //if (chkFirewall->isChecked())
-  {
-    mainwin->licqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
-    //mainwin->licqDaemon->SetFirewallHost(edtFirewallHost->text().local8Bit());
-    mainwin->licqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
-  }
-  /*else
-  {
-    mainwin->licqDaemon->SetTCPBasePort(0, 0);
-    mainwin->licqDaemon->SetFirewallHost("");
-    mainwin->licqDaemon->SetTCPEnabled(true);
-  }*/
+  mainwin->licqDaemon->SetICQServer(edtICQServer->text().local8Bit());
+  mainwin->licqDaemon->SetICQServerPort(spnICQServerPort->value());
+  mainwin->licqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
+  mainwin->licqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
+  mainwin->licqDaemon->SetProxyEnabled(chkProxyEnabled->isChecked());
+  mainwin->licqDaemon->SetProxyType(cmbProxyType->currentItem() + 1);
+  mainwin->licqDaemon->SetProxyHost(edtProxyHost->text().local8Bit());
+  mainwin->licqDaemon->SetProxyPort(spnProxyPort->value());
+  mainwin->licqDaemon->SetProxyAuthEnabled(chkProxyAuthEnabled->isChecked());
+  mainwin->licqDaemon->SetProxyLogin(edtProxyLogin->text().local8Bit());
+  mainwin->licqDaemon->SetProxyPasswd(edtProxyPasswd->text().local8Bit());
+  
   mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
@@ -864,66 +884,92 @@ QWidget *OptionsDlg::new_network_options()
 
   QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, w);
   lay->addWidget(gbServer);
-
   gbServer->setTitle(tr("Server settings"));
+ 
+  lblICQServer = new QLabel(tr("ICQ Server:"), gbServer);
+  edtICQServer = new QLineEdit(tr("ICQ Server:"), gbServer);
+  lblICQServerPort = new QLabel(tr("ICQ Server Port:"), gbServer);
+  spnICQServerPort = new QSpinBox(gbServer);
+  spnICQServerPort->setRange(0, 0xFFFF);
+       
 
   QGroupBox *gbFirewall = new QGroupBox(2, QGroupBox::Horizontal, w);
   lay->addWidget(gbFirewall);
   gbFirewall->setTitle(tr("Firewall"));
 
-  //chkFirewall = new QCheckBox(tr("I am behind a firewall/proxy"), gbFirewall);
-  //QPushButton *socks = new QPushButton(tr("SOCKS5 Proxy"), gbFirewall);
-  //connect(socks, SIGNAL(clicked()), this, SLOT(slot_socks()));
-  //QLabel *lbl = new QLabel(tr("Firewall/Proxy Host:"), gbFirewall);
-  //connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
-  //edtFirewallHost = new QLineEdit(gbFirewall);
   chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
-  QWidget *dummy = new QWidget(gbFirewall);
-  if (dummy);
+  new QWidget(gbFirewall);
   QLabel *lbl = new QLabel(tr("Port Range:"), gbFirewall);
-  //connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
   QWhatsThis::add(lbl, tr("TCP port range for incoming connections."));
   spnPortLow = new QSpinBox(gbFirewall);
   spnPortLow->setRange(0, 0xFFFF);
   spnPortLow->setSpecialValueText(tr("Auto"));
   lbl = new QLabel(tr("\tto"), gbFirewall);
-  //connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
   spnPortHigh = new QSpinBox(gbFirewall);
   spnPortHigh->setRange(0, 0xFFFF);
   spnPortHigh->setSpecialValueText(tr("Auto"));
 
-  /*connect(chkFirewall, SIGNAL(toggled(bool)), edtFirewallHost, SLOT(setEnabled(bool)));
-  connect(chkFirewall, SIGNAL(toggled(bool)), chkTCPEnabled, SLOT(setEnabled(bool)));
-  connect(chkFirewall, SIGNAL(toggled(bool)), spnPortLow, SLOT(setEnabled(bool)));
-  connect(chkFirewall, SIGNAL(toggled(bool)), spnPortHigh, SLOT(setEnabled(bool)));*/
+  QGroupBox *gbProxy = new QGroupBox(2, QGroupBox::Horizontal, w);
+  lay->addWidget(gbProxy);
+  gbProxy->setTitle(tr("Proxy"));
+
+  chkProxyEnabled = new QCheckBox(tr("Use proxy server"), gbProxy);
+  chkProxyEnabled->setFixedWidth(220);
+  QWidget* h = new QHBox(gbProxy);
+  lblProxyType = new QLabel(tr("Proxy Type:"), h);
+  cmbProxyType = new QComboBox(h);
+  cmbProxyType->setFixedWidth(80);
+  cmbProxyType->insertItem(tr("HTTPS"));
+
+  lblProxyHost = new QLabel(tr("Proxy Server:"), gbProxy);
+  edtProxyHost = new QLineEdit(tr("Proxy Server:"), gbProxy);
+  lblProxyPort = new QLabel(tr("Proxy Server Port:"), gbProxy);
+  spnProxyPort = new QSpinBox(gbProxy);
+  spnProxyPort->setRange(0, 0xFFFF);
+
+  chkProxyAuthEnabled = new QCheckBox(tr("Use authorization"), gbProxy);
+  chkProxyAuthEnabled->setFixedWidth(220);
+  new QWidget(gbProxy);
+  lblProxyLogin = new QLabel(tr("Username:"), gbProxy);
+  edtProxyLogin = new QLineEdit(tr("Username:"), gbProxy);
+  lblProxyPasswd = new QLabel(tr("Password:"), gbProxy);
+  edtProxyPasswd = new QLineEdit(tr("Password:"), gbProxy);
+  edtProxyPasswd->setEchoMode(QLineEdit::Password);
+
+  connect(chkProxyEnabled, SIGNAL(toggled(bool)), SLOT(slot_useProxy(bool)));
+  connect(chkProxyAuthEnabled, SIGNAL(toggled(bool)), edtProxyLogin, SLOT(setEnabled(bool)));
+  connect(chkProxyAuthEnabled, SIGNAL(toggled(bool)), edtProxyPasswd, SLOT(setEnabled(bool)));
 
   lay->addStretch(1);
 
   return w;
 }
 
-void OptionsDlg::slot_socks()
+void OptionsDlg::slot_useProxy(bool b)
 {
-  if (mainwin->licqDaemon->SocksEnabled())
+  if (b)
   {
-    const char *env = mainwin->licqDaemon->SocksServer();
-    if (env == NULL)
-      InformUser(this, tr("SOCKS5 support is built in but disabled.\n"
-                          "To enable it, set the SOCKS5_SERVER\n"
-                          "environment variable to <server>:<port>."));
-    else
-      InformUser(this, tr("SOCKS5 support is built in and enabled at\n"
-                          "\"%1\".").arg(env));
-  }
-  else
+    cmbProxyType->setEnabled(true);
+    edtProxyHost->setEnabled(true);
+    spnProxyPort->setEnabled(true);
+    chkProxyAuthEnabled->setEnabled(true);
+    if (chkProxyAuthEnabled->isChecked())
+    {
+      edtProxyLogin->setEnabled(true);
+      edtProxyPasswd->setEnabled(true);
+    }
+    spnICQServerPort->setValue(DEFAULT_SSL_PORT);
+  } else
   {
-    InformUser(this, tr("To enable socks proxy support, install NEC Socks or Dante\n"
-                        "then configure the Licq daemon with \"--enable-socks5\"."));
+    cmbProxyType->setEnabled(false);
+    edtProxyHost->setEnabled(false);
+    spnProxyPort->setEnabled(false);
+    chkProxyAuthEnabled->setEnabled(false);
+    edtProxyLogin->setEnabled(false);
+    edtProxyPasswd->setEnabled(false);
+    spnICQServerPort->setValue(DEFAULT_SERVER_PORT);
   }
-
 }
-
-// ---------------------------------------------------------------------------
 
 void OptionsDlg::slot_SARmsg_act(int n)
 {

@@ -752,7 +752,10 @@ void CICQDaemon::icqLogoff()
 
 int CICQDaemon::ConnectToLoginServer()
 {
-  int r = ConnectToServer("login.icq.com", DEFAULT_SERVER_PORT);
+  if (m_bProxyEnabled)
+    InitProxy();
+
+  int r = ConnectToServer(m_szICQServer, m_nICQServerPort);
 
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
 
@@ -762,7 +765,22 @@ int CICQDaemon::ConnectToLoginServer()
 int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 {
   SrvSocket *s = new SrvSocket(0);
-
+  
+  if (m_bProxyEnabled)
+  {
+    if (m_xProxy == NULL)
+    {
+      gLog.Warn("%sProxy server not properly configured.\n", L_ERRORxSTR);
+      delete s;
+      return (-1);
+    }
+    s->SetProxy(m_xProxy);
+  } else if (m_xProxy != NULL)
+  {
+    delete m_xProxy;
+    m_xProxy = NULL;
+  }
+  
   gLog.Info("%sResolving %s port %d...\n", L_SRVxSTR, server, port);
   if (!s->SetRemoteAddr(server, port)) {
     char buf[128];
@@ -775,7 +793,10 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
   gLog.Info("%sICQ server found at %s:%d.\n", L_SRVxSTR,
 	      s->RemoteIpStr(ipbuf), s->RemotePort());
 
-  gLog.Info("%sOpening socket to server.\n", L_SRVxSTR);
+  if (m_xProxy == NULL)
+    gLog.Info("%sOpening socket to server.\n", L_SRVxSTR);
+  else
+    gLog.Info("%sOpening socket to server via proxy.\n", L_SRVxSTR);
   if (!s->OpenConnection())
   {
     char buf[128];

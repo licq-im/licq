@@ -163,6 +163,7 @@ int INetSocket::Error()
     case SOCK_ERROR_desx: return -1;
     case SOCK_ERROR_none: return 0;
     case SOCK_ERROR_internal: return -2;
+    case SOCK_ERROR_proxy: if (m_xProxy != NULL) return m_xProxy->Error();
   }
   return 0;
 }
@@ -196,6 +197,10 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
     case SOCK_ERROR_internal:
       strncpy(buf, "Internal error", buflen);
       break;
+    case SOCK_ERROR_proxy:
+      if (m_xProxy != NULL)
+	return m_xProxy->ErrorStr(buf, buflen);
+      break;
   }
 
   return buf;
@@ -211,7 +216,9 @@ INetSocket::INetSocket(unsigned long _nOwner)
   m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
-
+  m_szRemoteName = NULL;
+  m_xProxy = NULL;
+  
   // Initialise the mutex
   pthread_mutex_init(&mutex, NULL);
 }
@@ -229,6 +236,7 @@ INetSocket::~INetSocket()
     nResult = pthread_mutex_destroy(&mutex);
   } while (nResult != 0);
 
+  if (m_szRemoteName != NULL) free (m_szRemoteName);
 }
 
 //-----INetSocket::dumpPacket---------------------------------------------------
@@ -353,46 +361,73 @@ unsigned long INetSocket::GetIpByName(const char *_szHostName)
 //-----INetSocket::OpenConnection-----------------------------------------------
 bool INetSocket::OpenConnection()
 {
-  // If no destination set then someone screwed up
-  if(m_sRemoteAddr.sin_addr.s_addr == 0)
+  if (m_xProxy != NULL)
   {
-    m_nErrorType = SOCK_ERROR_internal;
-    return(false);
-  }
+    if (!m_xProxy->OpenConnection())
+    {
+      m_nErrorType = SOCK_ERROR_proxy;
+      return(false);
+    }
 
-  if (m_nDescriptor == -1)
-    m_nDescriptor = socket(AF_INET, m_nSockType, 0);
-  if (m_nDescriptor == -1)
-  {
-    m_nErrorType = SOCK_ERROR_errno;
-    return(false);
+    bool ret;
+    if (m_szRemoteName)
+      ret = m_xProxy->OpenProxyConnection(m_szRemoteName, RemotePort());
+    else
+    {
+      char szIpR[32];
+      ret = m_xProxy->OpenProxyConnection(RemoteIpStr(szIpR), RemotePort());
+    }
+    if (!ret)
+    {
+      m_nErrorType = SOCK_ERROR_proxy;
+      return(false);
+    }
+    
+    m_nDescriptor = m_xProxy->Descriptor();
   }
+  else
+  {
+    // If no destination set then someone screwed up
+    if(m_sRemoteAddr.sin_addr.s_addr == 0)
+    {
+      m_nErrorType = SOCK_ERROR_internal;
+      return(false);
+    }
+
+    if (m_nDescriptor == -1)
+      m_nDescriptor = socket(AF_INET, m_nSockType, 0);
+    if (m_nDescriptor == -1)
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      return(false);
+    }
 
 #ifdef IP_PORTRANGE
-  int i=IP_PORTRANGE_HIGH;
-  if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
-  {
-    m_nErrorType = SOCK_ERROR_errno;
-    return(false);
-  }
+    int i=IP_PORTRANGE_HIGH;
+    if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      return(false);
+    }
 #endif
 
-  m_sRemoteAddr.sin_family = AF_INET;
+    m_sRemoteAddr.sin_family = AF_INET;
 
-  // if connect fails then call CloseConnection to clean up before returning
-  socklen_t sizeofSockaddr = sizeof(struct sockaddr);
-  if (connect(m_nDescriptor, (struct sockaddr *)&m_sRemoteAddr, sizeofSockaddr) < 0)
-  {
-    // errno has been set
-    m_nErrorType = SOCK_ERROR_errno;
-    CloseConnection();
-    return(false);
-  }
+    // if connect fails then call CloseConnection to clean up before returning
+    socklen_t sizeofSockaddr = sizeof(struct sockaddr);
+    if (connect(m_nDescriptor, (struct sockaddr *)&m_sRemoteAddr, sizeofSockaddr) < 0)
+    {
+      // errno has been set
+      m_nErrorType = SOCK_ERROR_errno;
+      CloseConnection();
+      return(false);
+    }
 
 #ifdef USE_SOCKS5
-  if (m_nSockType != SOCK_STREAM) return true;
+    if (m_nSockType != SOCK_STREAM) return true;
 #endif
-
+  }
+  
   return SetLocalAddress();
 }
 
@@ -437,6 +472,12 @@ bool INetSocket::StartServer(unsigned int _nPort)
 //-----INetSocket::SetRemoteAddr-----------------------------------------------
 bool INetSocket::SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort)
 {
+  if (m_szRemoteName != NULL) free (m_szRemoteName);
+  if (_szRemoteName != NULL)
+    m_szRemoteName = strdup(_szRemoteName);
+  else
+    m_szRemoteName = NULL;
+
   return(SetRemoteAddr(GetIpByName(_szRemoteName), _nRemotePort));
 }
 

@@ -15,6 +15,7 @@
 
 #include "pthread_rdwr.h"
 
+#include "licq_proxy.h"
 #include "licq_buffer.h"
 #include "licq_constants.h"
 
@@ -27,7 +28,8 @@ typedef enum SocketError_et_
   SOCK_ERROR_errno,
   SOCK_ERROR_h_errno,
   SOCK_ERROR_desx,
-  SOCK_ERROR_internal
+  SOCK_ERROR_internal,
+  SOCK_ERROR_proxy
 } SocketError_et;
 
 
@@ -59,6 +61,8 @@ public:
   bool SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort);
   bool SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort);
 
+  void SetProxy(ProxyServer *_xProxy) { m_xProxy = _xProxy; };
+  
   void ResetSocket();
   void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
   bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };
@@ -86,12 +90,14 @@ protected:
 
   int m_nDescriptor;
   struct sockaddr_in m_sRemoteAddr, m_sLocalAddr;
+  char *m_szRemoteName;
   CBuffer m_xRecvBuffer;
   char m_szID[4];
   int m_nSockType;
   unsigned long m_nOwner;
   unsigned short m_nVersion;
   SocketError_et m_nErrorType;
+  ProxyServer *m_xProxy;
 };
 
 

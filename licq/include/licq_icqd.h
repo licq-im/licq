@@ -27,6 +27,7 @@ class CICQEventTag;
 class TCPSocket;
 class SrvSocket;
 class INetSocket;
+class ProxyServer;
 
 const unsigned short IGNORE_MASSMSG    = 1;
 const unsigned short IGNORE_NEWUSERS   = 2;
@@ -220,16 +221,36 @@ public:
 
   bool ViewUrl(const char *url);
 
+  // ICQ Server options
+  const char *ICQServer() {  return m_szICQServer;  }
+  void SetICQServer(const char *s) {  SetString(&m_szICQServer, s);  }
+  unsigned short ICQServerPort() {  return m_nICQServerPort;  }
+  void SetICQServerPort(unsigned short p) {  m_nICQServerPort = p; }
+  
   // Firewall options
   bool TCPEnabled();
   void SetTCPEnabled(bool b);
-  const char *FirewallHost()  { return m_szFirewallHost; }
-  void SetFirewallHost(const char *);
+
+  // Proxy options
+  void InitProxy();
+  bool ProxyEnabled() {  return m_bProxyEnabled;  }
+  void SetProxyEnabled(bool b) {  m_bProxyEnabled = b;  }
+  unsigned short ProxyType() {  return m_nProxyType;  }
+  void SetProxyType(unsigned short t) {  m_nProxyType = t;  }
+  const char *ProxyHost() {  return m_szProxyHost;  }
+  void SetProxyHost(const char *s) {  SetString(&m_szProxyHost, s);  }
+  unsigned short ProxyPort() {  return m_nProxyPort;  }
+  void SetProxyPort(unsigned short p) {  m_nProxyPort = p;  }
+  bool ProxyAuthEnabled() {  return m_bProxyAuthEnabled;  }
+  void SetProxyAuthEnabled(bool b) {  m_bProxyAuthEnabled = b;  }
+  const char *ProxyLogin() {  return m_szProxyLogin;  }
+  void SetProxyLogin(const char *s) {  SetString(&m_szProxyLogin, s);  }
+  const char *ProxyPasswd() {  return m_szProxyPasswd;  }
+  void SetProxyPasswd(const char *s) {  SetString(&m_szProxyPasswd, s);  }
+  
   unsigned short TCPPortsLow() { return m_nTCPPortsLow; }
   unsigned short TCPPortsHigh() { return m_nTCPPortsHigh; }
   void SetTCPPorts(unsigned short p, unsigned short r);
-  static bool SocksEnabled();
-  const char *SocksServer()  {  return getenv("SOCKS5_SERVER"); }
   static bool CryptoEnabled();
 
   const char *Terminal();
@@ -261,8 +282,7 @@ protected:
 
   char *m_szUrlViewer,
        *m_szTerminal,
-       *m_szRejectFile,
-       *m_szFirewallHost;
+       *m_szRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
   unsigned short m_nTCPPortsLow,
@@ -280,7 +300,21 @@ protected:
        m_bOnlineNotifies,
        m_bAlwaysOnlineNotify;
   time_t m_tLogonTime;
-
+  
+  // ICQ Server
+  char *m_szICQServer;
+  unsigned short m_nICQServerPort;
+  
+  // Proxy
+  bool m_bProxyEnabled;
+  unsigned short m_nProxyType;
+  char *m_szProxyHost;
+  unsigned short m_nProxyPort;
+  bool m_bProxyAuthEnabled;
+  char *m_szProxyLogin;
+  char *m_szProxyPasswd;
+  ProxyServer *m_xProxy;
+  
   // Statistics
   void FlushStats();
   DaemonStatsList m_sStats;

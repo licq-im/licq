@@ -82,7 +82,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_bShuttingDown = false;
   m_bRegistering = false;
   m_nServerAck = 0;
-  m_szFirewallHost = NULL;
   m_bLoggingOn = false;
   m_bOnlineNotifies = true;
 
@@ -93,6 +92,15 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.SetFlags(0);
 
   licqConf.SetSection("network");
+
+  // ICQ Server
+  char szICQServer[MAX_HOSTNAME_LEN];
+  
+  licqConf.ReadStr("ICQServer", szICQServer, DEFAULT_SERVER_HOST);
+  m_szICQServer = new char[strlen(szICQServer) + 1];
+  strcpy(m_szICQServer, szICQServer);
+  licqConf.ReadNum("ICQServerPort", m_nICQServerPort, DEFAULT_SERVER_PORT);
+  
   bool bTcpEnabled;
   unsigned short nTCPPortsLow, nTCPPortsHigh;
   licqConf.ReadNum("TCPPortsLow", nTCPPortsLow, 0);
@@ -158,6 +166,24 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_szTerminal = new char[strlen(temp) + 1];
   strcpy(m_szTerminal, temp);
 
+  // Proxy
+  m_xProxy = NULL;
+  char t_str[MAX_HOSTNAME_LEN]; 
+  
+  licqConf.ReadBool("ProxyEnabled", m_bProxyEnabled, false);
+  licqConf.ReadNum("ProxyServerType", m_nProxyType, PROXY_TYPE_HTTP);
+  licqConf.ReadStr("ProxyServer", t_str, "");
+  m_szProxyHost = new char[strlen(t_str) + 1];
+  strcpy(m_szProxyHost, t_str);
+  licqConf.ReadNum("ProxyServerPort", m_nProxyPort, 0);
+  licqConf.ReadBool("ProxyAuthEnabled", m_bProxyAuthEnabled, false);
+  licqConf.ReadStr("ProxyLogin", t_str, "");
+  m_szProxyLogin = new char[strlen(t_str) + 1];
+  strcpy(m_szProxyLogin, t_str);
+  licqConf.ReadStr("ProxyPassword", t_str, "");
+  m_szProxyPasswd = new char[strlen(t_str) + 1];
+  strcpy(m_szProxyPasswd, t_str);
+  
   // -----OnEvent configuration-----
   char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
   unsigned short nOnEventCmdType;
@@ -289,14 +315,6 @@ bool CICQDaemon::Start()
   return true;
 }
 
-bool CICQDaemon::SocksEnabled()
-{
-#ifdef USE_SOCKS5
-  return true;
-#else
-  return false;
-#endif
-}
 
 /*------------------------------------------------------------------------------
  * RegisterPlugin
@@ -508,12 +526,16 @@ void CICQDaemon::SaveConf()
   if (!licqConf.LoadFile(m_szConfigFile)) return;
 
   licqConf.SetSection("network");
+  
+  // ICQ Server
+  licqConf.WriteStr("ICQServer", m_szICQServer);
+  licqConf.WriteNum("ICQServerPort", m_nICQServerPort);
+
   licqConf.WriteNum("TCPPortsLow", m_nTCPPortsLow);
   licqConf.WriteNum("TCPPortsHigh", m_nTCPPortsHigh);
   licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
-  //licqConf.WriteStr("FirewallHost", m_szFirewallHost);
   licqConf.WriteNum("ForegroundColor", CICQColor::DefaultForeground());
   licqConf.WriteNum("BackgroundColor", CICQColor::DefaultBackground());
 
@@ -537,7 +559,16 @@ void CICQDaemon::SaveConf()
     pc++;
     licqConf.WriteStr("Rejects", pc);
   }
-
+  
+  // Proxy
+  licqConf.WriteBool("ProxyEnabled", m_bProxyEnabled);
+  licqConf.WriteNum("ProxyServerType", m_nProxyType);
+  licqConf.WriteStr("ProxyServer", m_szProxyHost);
+  licqConf.WriteNum("ProxyServerPort", m_nProxyPort);
+  licqConf.WriteBool("ProxyAuthEnabled", m_bProxyAuthEnabled);
+  licqConf.WriteStr("ProxyLogin", m_szProxyLogin);
+  licqConf.WriteStr("ProxyPassword", m_szProxyPasswd);
+  
   // save the sound stuff
   licqConf.SetSection("onevent");
   COnEventManager *oem = OnEventManager();
@@ -601,15 +632,6 @@ bool CICQDaemon::ViewUrl(const char *u)
 }
 
 
-void CICQDaemon::SetFirewallHost(const char *s)
-{
-  if (s == NULL || s[0] == '\0')
-    SetString(&m_szFirewallHost, "");
-  else
-    SetString(&m_szFirewallHost, s);
-}
-
-
 int CICQDaemon::StartTCPServer(TCPSocket *s)
 {
   if (m_nTCPPortsLow == 0)
@@ -664,6 +686,44 @@ bool CICQDaemon::TCPEnabled()
 void CICQDaemon::SetTCPEnabled(bool b)
 {
   CPacket::SetMode(b ? MODE_DIRECT : MODE_INDIRECT);
+}
+
+
+void CICQDaemon::InitProxy()
+{
+  if (m_xProxy != NULL)
+  {
+    delete m_xProxy;
+    m_xProxy = NULL;
+  }
+  
+  switch (m_nProxyType)
+  {
+    case PROXY_TYPE_HTTP :
+      m_xProxy = new HTTPProxyServer();
+      break;
+    default:
+      break;
+  }
+
+  if (m_xProxy != NULL)
+  {
+    gLog.Info("%sResolving proxy server %s port %d...\n", L_INITxSTR, m_szProxyHost, m_nProxyPort);
+    if (!m_xProxy->SetProxyAddr(m_szProxyHost, m_nProxyPort)) {
+      char buf[128];
+      
+      gLog.Warn("%sUnable to resolve proxy server %s:\n%s%s.\n", L_ERRORxSTR,
+                 m_szProxyHost, L_BLANKxSTR, m_xProxy->ErrorStr(buf, 128));
+      delete m_xProxy;
+      m_xProxy = NULL;
+    }
+    
+    if (m_bProxyAuthEnabled)
+      m_xProxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
+    
+    m_xProxy->InitProxy();
+  }
+
 }
 
 

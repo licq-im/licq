@@ -54,14 +54,15 @@ protected:
    // network tab
    QWidget* new_network_options();
    QLabel *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
-   QComboBox *cmbAutoLogon;
+   QLabel *lblICQServer, *lblICQServerPort, *lblProxyType, *lblProxyHost,
+          *lblProxyPort, *lblProxyLogin, *lblProxyPasswd;
+   QComboBox *cmbAutoLogon, *cmbProxyType;
    QComboBox *cmbAutoAwayMess, *cmbAutoNAMess;
    QSpinBox *spnAutoAway, *spnAutoNa,
-      *spnAutoOffline, *spnPortLow, *spnPortHigh;
+      *spnAutoOffline, *spnPortLow, *spnPortHigh, *spnICQServerPort, *spnProxyPort;
+   QLineEdit *edtICQServer, *edtProxyHost, *edtProxyLogin, *edtProxyPasswd;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible, *chkTCPEnabled;
-   //*chkFirewall
-   //QLineEdit *edtFirewallHost;
+   QCheckBox  *chkAutoLogonInvisible, *chkTCPEnabled, *chkProxyEnabled, *chkProxyAuthEnabled;
 
    // appearance tab
    QWidget* new_appearance_options();
@@ -139,7 +140,7 @@ protected slots:
   void slot_SARmsg_act(int);
   void slot_SARgroup_act(int);
   void slot_SARsave_act();
-  void slot_socks();
+  void slot_useProxy(bool);
   void slot_useDockToggled(bool);
   void slot_ok();
 };

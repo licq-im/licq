@@ -2,7 +2,7 @@
 includedir = @includedir@/licq
 
 include_HEADERS = \
-  licq_buffer.h        licq_icq.h             \
+  licq_buffer.h        licq_icq.h            licq_proxy.h \
   licq_chat.h          licq_icqd.h           licq_sar.h \
   licq_constants.h     licq_languagecodes.h  licq_sighandler.h \
   licq_countrycodes.h  licq_log.h            licq_socket.h \
