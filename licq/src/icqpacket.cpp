@@ -1623,6 +1623,37 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   }
 }
 
+//-----Meta_SetEmailInfo------------------------------------------------------
+CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo( const char *szEmailSecondary,
+                       const char *szEmailOld)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+{
+  m_nMetaCommand = 0x0B04;
+
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szEmailSecondary) + 3 
+				 + strlen_safe(szEmailOld) + 3 + 3;
+  m_nSize += packetSize;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0x0B04); 			// subtype
+
+  gTranslator.ClientToServer((char *) szEmailSecondary);
+  gTranslator.ClientToServer((char *) szEmailOld);
+  
+  buffer->PackChar(2);
+  buffer->PackChar(0);
+  m_szEmailSecondary = buffer->PackString(szEmailSecondary);
+  buffer->PackChar(0);
+  m_szEmailOld = buffer->PackString(szEmailOld);
+}
+
 //-----Meta_SetMoreInfo------------------------------------------------------
 CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
                        char nGender,

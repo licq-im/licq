@@ -170,6 +170,7 @@ const unsigned short ICQ_CMDxMETA_GENERALxINFOxRSP = 0x0064; // 100
 const unsigned short ICQ_CMDxMETA_WORKxINFOxRSP    = 0x006E; // 110
 const unsigned short ICQ_CMDxMETA_MORExINFOxRSP    = 0x0078; // 120
 const unsigned short ICQ_CMDxMETA_ABOUTxRSP        = 0x0082; // 130
+const unsigned short ICQ_CMDxMETA_EMAILxINFOxRSP   = 0x0087; // 140
 const unsigned short ICQ_CMDxMETA_SECURITYxRSP     = 0x00A0; // 160
 const unsigned short ICQ_CMDxMETA_PASSWORDxRSP     = 0x00AA; // 170
 // Meta commands (user info)
@@ -187,6 +188,7 @@ const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E9; // 1001
 const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F2; // 1010
 const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FD; // 1020
 const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
+const unsigned short ICQ_CMDxMETA_EMAILxINFOxSET   = 0x040B; // 1040
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B1; // 1201

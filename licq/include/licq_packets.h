@@ -503,7 +503,7 @@ protected:
 
 
 
-//-----Meta_SetGeneralInfo------------------------------------------------------
+//-----Meta_SetGeneralInfo-----------------------------------------------------
 class CPU_Meta_SetGeneralInfo : public CPU_CommonFamily
 {
 public:
@@ -538,6 +538,23 @@ protected:
   unsigned short m_nCountryCode;
   char m_nTimezone;
   char m_nHideEmail;
+
+friend class CICQDaemon;
+};
+
+
+//-----Meta_SetMoreEmailInfo---------------------------------------------------
+class CPU_Meta_SetEmailInfo : public CPU_CommonFamily
+{
+public:
+  CPU_Meta_SetEmailInfo(const char *szEmailSecondary,
+                        const char *szEmailOld);
+  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+protected:
+  unsigned short m_nMetaCommand;
+
+  char *m_szEmailSecondary;
+  char *m_szEmailOld;
 
 friend class CICQDaemon;
 };

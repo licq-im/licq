@@ -152,6 +152,7 @@ public:
                               const char *szFaxNumber, const char *szAddress,
                               const char *szCellularNumber, const char *szZipCode,
                               unsigned short nCountryCode, bool bHideEmail);
+  unsigned long icqSetEmailInfo(const char *szEmailSecondary, const char *szEmailOld);
   unsigned long icqSetMoreInfo(unsigned short nAge,
                            char nGender, const char *szHomepage,
                            unsigned short nBirthYear, char nBirthMonth,

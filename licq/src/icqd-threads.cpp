@@ -51,7 +51,9 @@ void *ProcessRunningEvent_Server_tep(void *p)
     // Check again, if still -1, fail the event
     if (e->m_nSocketDesc == -1)
     {
-        gLog.Info("%sConnecting to login server failed, failing event", L_SRVxSTR);
+      gLog.Info("%sConnecting to login server failed, failing event\n", L_SRVxSTR);
+      d->m_eStatus = STATUS_OFFLINE_FORCED;
+      d->m_bLoggingOn = false;
       if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
       pthread_exit(NULL);
     }

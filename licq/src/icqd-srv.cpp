@@ -227,6 +227,20 @@ unsigned long CICQDaemon::icqSetGeneralInfo(
   return e->EventId();
 }
 
+//-----icqSetEmailInfo---------------------------------------------------------
+unsigned long CICQDaemon::icqSetEmailInfo(
+                          const char *szEmailSecondary, const char *szEmailOld)
+{
+  CPU_Meta_SetEmailInfo *p =
+    new CPU_Meta_SetEmailInfo(szEmailSecondary, szEmailOld);
+
+  gLog.Info("%sUpdating additional E-Mail info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
 //-----icqSetMoreInfo----------------------------------------------------
 unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
                               char nGender, const char *szHomepage,
@@ -1991,6 +2005,34 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     		}
     		else /* META_FAILURE */
     			gLog.Info("%sGeneral info not updated.\n", L_SRVxSTR);    	
+      } else if (nSubtype == ICQ_CMDxMETA_EMAILxINFOxRSP) {
+		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sAdditional E-Mail info updated.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_EMAILxINFOxSET;
+			CPU_Meta_SetEmailInfo *p = (CPU_Meta_SetEmailInfo *)e->m_pPacket;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+			
+    			o->SetEnableSave(false);
+			o->SetEmailSecondary( p->m_szEmailSecondary );
+			o->SetEmailOld( p->m_szEmailOld );
+
+			// translating string with Translation Table
+			gTranslator.ServerToClient(o->GetEmailSecondary());
+			gTranslator.ServerToClient(o->GetEmailOld());
+
+			// save the user infomation
+			o->SetEnableSave(true);
+			o->SaveGeneralInfo();
+    			
+			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sAdditional E-Mail info not updated.\n", L_SRVxSTR);    	
       } else if (nSubtype == ICQ_CMDxMETA_MORExINFOxRSP) {
 		if (nResult == META_SUCCESS) {
     			gLog.Info("%sMore info updated.\n", L_SRVxSTR);
@@ -2181,6 +2223,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         	gLog.Info("%sFailed to update detail info: %x.\n", L_SRVxSTR, nResult);
         	e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
         	if (e != NULL) ProcessDoneEvent(e);
+          e = NULL;
       	} else {
         	// Find the relevant event
         	e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
@@ -2283,12 +2326,12 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    for(int i = 0; i < nEmail; i++) {
 		msg.UnpackChar(); // publish email, not yet implemented
 		if(i == 0) {
-		    u->SetEmailPrimary( msg.UnpackString() );
-		    gTranslator.ServerToClient(u->GetEmailPrimary());
-		}
-		if(i == 1) {
 		    u->SetEmailSecondary( msg.UnpackString() );
 		    gTranslator.ServerToClient(u->GetEmailSecondary());
+		}
+		if(i == 1) {
+		    u->SetEmailOld( msg.UnpackString() );
+		    gTranslator.ServerToClient(u->GetEmailOld());
 		}
 	    }
 

@@ -1352,6 +1352,8 @@ void UserInfoDlg::slotUpdate()
   {
     i = cmbCountry->currentItem();
     cc = GetCountryByIndex(i)->nCode;
+    server->icqSetEmailInfo(codec->fromUnicode(nfoEmailSecondary->text()),
+			    codec->fromUnicode(nfoEmailOld->text()));
     icqEventTag = server->icqSetGeneralInfo(codec->fromUnicode(nfoAlias->text()),
                                             codec->fromUnicode(nfoFirstName->text()),
                                             codec->fromUnicode(nfoLastName->text()),
