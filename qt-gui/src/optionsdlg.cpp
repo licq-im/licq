@@ -3,16 +3,16 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- 
+
 */
 
 #ifdef HAVE_CONFIG_H
@@ -190,14 +190,8 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   // Status tab
 //  tab[4] = new QWidget(this);
 //  new_status_options();
- 
+
   tab[5] = new QWidget(this);
-  lblErrorLog = new QLabel(tr("Error Log:"), tab[5]);
-  lblErrorLog->setGeometry(10, 60, 80, 20);
-  lblErrorLog->setEnabled(false);
-  edtErrorLog = new QLineEdit(tab[5]);
-  edtErrorLog->setGeometry(100, 60, 200, 20);
-  edtErrorLog->setEnabled(false);
   lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[5]);
   lblUrlViewer->setGeometry(10, 10, 80, 20);
   QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
@@ -212,7 +206,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
                               "translating characters."));
   cmbTrans = new QComboBox(false, tab[5]);
   cmbTrans->setGeometry(100, 85, 200, 20);
-  
+
   QString szTransFilesDir;
   szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
   QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
@@ -237,12 +231,41 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
                                 "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
   connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
 
+  // Paranoia tab
+  tab[6] = new QWidget(this);
+  chkHideIp = new QCheckBox(tr("Hide IP"), tab[6]);
+  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
+
+  chkIgnoreNewUsers = new QCheckBox(tr("Ignore New Users"), tab[6]);
+  QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added "
+                                      "to your list or must first request authorization."));
+  chkIgnoreMassMsg = new QCheckBox(tr("Ignore Mass Messages"), tab[6]);
+  QWhatsThis::add(chkIgnoreMassMsg, tr("Determines if mass messages are ignored or not."));
+
+  chkIgnoreWebPanel = new QCheckBox(tr("Ignore Web Panel"), tab[6]);
+  QWhatsThis::add(chkIgnoreWebPanel, tr("Determines if web panel messages are ignored or not."));
+
+  chkIgnoreEmailPager = new QCheckBox(tr("Ignore Email Pager"), tab[6]);
+  QWhatsThis::add(chkIgnoreEmailPager, tr("Determines if email pager messages are ignored or not."));
+
+  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), tab[6]);
+  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
+                                    "through your web indicator."));
+
+  chkIgnoreNewUsers->setGeometry(10, 20, width() - 20, 20);
+  chkIgnoreMassMsg->setGeometry(10, 45, width() - 20, 20);
+  chkIgnoreWebPanel->setGeometry(10, 70, width() - 20, 20);
+  chkIgnoreEmailPager->setGeometry(10, 95, width() - 20, 20);
+  chkWebPresence->setGeometry(10, 120, width() - 20, 20);
+  chkHideIp->setGeometry(10, 145, width() - 20, 20);
+
   addTab(tab[0], tr("Appearance"));
   addTab(tab[1], tr("Columns"));
   addTab(tab[2], tr("OnEvent"));
   addTab(tab[3], tr("Network"));
 //  addTab(tab[4], tr("Status"));
   addTab(tab[5], tr("Extensions"));
+  addTab(tab[6], tr("Paranoia"));
 
   SetupOptions();
   show();
@@ -325,13 +348,12 @@ void OptionsDlg::SetupOptions()
   chkAutoClose->setChecked(mainwin->autoClose);
   chkUseDock->setChecked(mainwin->licqIcon != NULL);
   chkDockFortyEight->setChecked(mainwin->m_bDockIcon48);
-  //chkDockFortyEight->set
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
   spnTcpServerPort->setValue(mainwin->licqDaemon->getTcpServerPort());
   spnMaxUsersPerPacket->setValue(mainwin->licqDaemon->getMaxUsersPerPacket());
 
-   cmbServers->clear();
+  cmbServers->clear();
   unsigned short i;
   for (i = 0; i < mainwin->licqDaemon->icqServers.numServers(); i++)
     cmbServers->insertItem(mainwin->licqDaemon->icqServers.servers[i]->name());
@@ -345,10 +367,12 @@ void OptionsDlg::SetupOptions()
   chkHideIp->setChecked(o->getStatusHideIp());
   chkWebPresence->setChecked(o->getStatusWebPresence());
   gUserManager.DropOwner();
-  chkAllowNewUsers->setChecked(!mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
- 
+  chkIgnoreNewUsers->setChecked(mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
+  chkIgnoreMassMsg->setChecked(mainwin->licqDaemon->Ignore(IGNORE_MASSMSG));
+  chkIgnoreWebPanel->setChecked(mainwin->licqDaemon->Ignore(IGNORE_WEBPANEL));
+  chkIgnoreEmailPager->setChecked(mainwin->licqDaemon->Ignore(IGNORE_EMAILPAGER));
+
   // plugins tab
-  //optionsDlg->edtErrorLog->setText(server->getErrorLogName());
   edtUrlViewer->setText(mainwin->licqDaemon->getUrlViewer() == NULL ? "none" : mainwin->licqDaemon->getUrlViewer());
   nfoTerminal->setData(mainwin->licqDaemon->Terminal() == NULL ? "none" : mainwin->licqDaemon->Terminal());
   const char *pc = gTranslator.getMapName();
@@ -472,10 +496,12 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
   mainwin->licqDaemon->setTcpServerPort(spnTcpServerPort->value());
   mainwin->licqDaemon->setMaxUsersPerPacket(spnMaxUsersPerPacket->value());
-  mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, !chkAllowNewUsers->isChecked());
+  mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
+  mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
+  mainwin->licqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
+  mainwin->licqDaemon->SetIgnore(IGNORE_EMAILPAGER, chkIgnoreEmailPager->isChecked());
 
   // Plugin tab
-  //server->setErrorLogName((const char *)optionsDlg->edtErrorLog->text());
   mainwin->licqDaemon->setUrlViewer(edtUrlViewer->text());
   mainwin->licqDaemon->SetTerminal(nfoTerminal->text());
   if (cmbTrans->isEnabled())
@@ -587,7 +613,7 @@ void OptionsDlg::new_network_options()
 
   lblAutoLogon = new QLabel(tr("Auto Logon:"), gbAuto);
   QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
-  
+
   cmbAutoLogon = new QComboBox(gbAuto);
   cmbAutoLogon->insertItem(tr("Offline"));
   cmbAutoLogon->insertItem(tr("Online"));
@@ -615,18 +641,18 @@ void OptionsDlg::new_network_options()
   spnAutoNa = new QSpinBox(gbAuto);
   spnAutoNa->setSpecialValueText(tr("Disable"));
 
-  QGroupBox* gbGeneral = new QGroupBox(1, QGroupBox::Vertical, tab[3]);
+  /*QGroupBox* gbGeneral = new QGroupBox(1, QGroupBox::Vertical, tab[3]);
   lay->addMultiCellWidget(gbGeneral, 3, 3, 1, 3);
-  
+
   chkHideIp = new QCheckBox(tr("Hide IP"), gbGeneral);
   QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
-  chkAllowNewUsers = new QCheckBox(tr("Allow New Users"), gbGeneral);
-  
-  QWhatsThis::add(chkAllowNewUsers, tr("Determines if new users are automatically added"
+  chkIgnoreNewUsers = new QCheckBox(tr("Allow New Users"), gbGeneral);
+
+  QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added"
                                       "to your list or must first request authorization."));
   chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), gbGeneral);
   QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
-                                    "through your web indicator."));
+                                    "through your web indicator."));*/
 }
 
 // -----------------------------------------------------------------------------
@@ -635,7 +661,7 @@ void OptionsDlg::slot_SARmsg_act(int n)
 {
   if (n < 0)
     return;
-  
+
   SARList &sar = gSARManager.Fetch(cmbSARgroup->currentItem());
   edtSARtext->setText(sar[n]->AutoResponse());
   gSARManager.Drop();
@@ -657,7 +683,7 @@ void OptionsDlg::new_status_options()
   cmbSARgroup->insertItem(tr("Occupied"));
   cmbSARgroup->insertItem(tr("Do Not Disturb"));
   cmbSARgroup->insertItem(tr("Free For Chat"));
-  
+
   cmbSARmsg = new QComboBox(true, gbStatus);
   connect(cmbSARmsg, SIGNAL(activated(int)), this, SLOT(slot_SARmsg_act(int)));
   SARList &sar = gSARManager.Fetch(SAR_AWAY);

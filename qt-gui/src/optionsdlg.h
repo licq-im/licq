@@ -26,7 +26,7 @@ public:
    OptionsDlg (CMainWindow *, QWidget *parent = NULL, char *name = NULL);
 
 protected:
-   QWidget *tab[6];
+   QWidget *tab[7];
    CMainWindow *mainwin;
 
    // network tab
@@ -36,12 +36,11 @@ protected:
    QSpinBox *spnDefServerPort, *spnTcpServerPort, *spnAutoAway, *spnAutoNa,
             *spnMaxUsersPerPacket;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible, *chkWebPresence, *chkHideIp,
-       *chkAllowNewUsers;
+   QCheckBox  *chkAutoLogonInvisible;
 
    // plugin tab
-   QLabel *lblErrorLog, *lblUrlViewer, *lblTrans;
-   QLineEdit *edtErrorLog, *edtUrlViewer;
+   QLabel *lblUrlViewer, *lblTrans;
+   QLineEdit *edtUrlViewer;
    QComboBox *cmbTrans;
    CInfoField *nfoTerminal;
 
@@ -66,6 +65,11 @@ protected:
    QLineEdit *edtSndPlayer, *edtSndMsg, *edtSndChat, *edtSndUrl,
              *edtSndFile, *edtSndNotify, *edtSndSysMsg;
    QGroupBox *boxSndEvents;
+
+   // paranoia tab
+   QCheckBox *chkWebPresence, *chkHideIp, *chkIgnoreNewUsers,
+             *chkIgnoreWebPanel, *chkIgnoreMassMsg, *chkIgnoreEmailPager;
+
 
    // status tab
    QComboBox* cmbSARgroup, *cmbSARmsg;
