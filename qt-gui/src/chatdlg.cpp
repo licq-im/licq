@@ -505,7 +505,7 @@ void ChatDlg::slot_chat()
       case CHAT_NEWLINE:
       {
         // add to irc window
-        mleIRCRemote->append(QString::fromLocal8Bit(u->Name()) + "> " + e->Data());
+        mleIRCRemote->append(QString::fromLocal8Bit(u->Name()) + "> " + QString::fromLocal8Bit(e->Data()));
         mleIRCRemote->GotoEnd();
         if (u == chatUser) mlePaneRemote->insertLine("");
         break;
