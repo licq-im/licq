@@ -442,7 +442,7 @@ void *MonitorSockets_tep(void *p)
             {
               int err = tcp->Error();
               if (err == 0)
-                gLog.Info("%sConnection to %ld closed.\n", L_TCPxSTR, tcp->Owner());
+                gLog.Info("%sConnection to %ld was closed.\n", L_TCPxSTR, tcp->Owner());
               else
               {
                 char buf[128];
@@ -492,8 +492,14 @@ void *MonitorSockets_tep(void *p)
               else
                 r = d->ProcessTcpPacket(tcp);
               tcp->ClearRecvBuffer();
-              gSocketManager.DropSocket(tcp);
-              if (!r) gSocketManager.CloseSocket(nCurrentSocket);
+              if (!r)
+              {
+                gLog.Info("%sClosing connection to %ld.\n", L_TCPxSTR, tcp->Owner());
+                gSocketManager.DropSocket(tcp);
+                gSocketManager.CloseSocket(nCurrentSocket);
+              }
+              else
+                gSocketManager.DropSocket(tcp);
             }
             else
               gSocketManager.DropSocket(tcp);
