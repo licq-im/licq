@@ -57,7 +57,7 @@ Makefile.dep:
 	$(MAKE) dep
 
 clean:
-	$(RM) core obj/*.o *.core moc/moc_* licq_qt-gui.so Makefile.dep
+	$(RM) core obj/*.o *.core moc/moc_* licq_console.so Makefile.dep
 
 distclean: clean
 	$(RM) *~ Makefile tags
