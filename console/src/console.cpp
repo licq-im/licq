@@ -345,7 +345,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     PrintStatus();
     break;
   default:
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
+    gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());
     break;
   }
