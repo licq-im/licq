@@ -390,7 +390,8 @@ case "$host_os" in
     ;;
   osf4* | osf5*)
     if test "$with_gcc" = yes && test "$with_gnu_ld" = no; then
-      allow_undefined_flag=' ${wl}-expect_unresolved ${wl}\*'
+      allow_undefined_flag=' -Wl,-expect_unresolved -Wl,\*'
+      no_undefined_flag=' -Wl,-expect_unresolved -Wl,\*'
       archive_cmds='$CC -shared -nostdlib ${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-msym ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${objdir}/so_locations -o $lib'
 
       hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
@@ -423,10 +424,11 @@ case "$host_os" in
 	  ld_shlibs=no
 	  ;;
 	cxx)
-	  allow_undefined_flag=' ${wl}-expect_unresolved ${wl}\*'
-	  archive_cmds='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-msym ${wl}-soname $soname `test -n "$verstring" && echo ${wl}-set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
+	  allow_undefined_flag=' -Wl,-expect_unresolved -Wl,\*'
+	  no_undefined_flag=' -Wl,-expect_unresolved -Wl,\*'
+	  archive_cmds='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-msym ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` -update_registry ${objdir}/so_locations -o $lib'
 	  
-	  hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
+	  hardcode_libdir_flag_spec='-rpath $libdir'
 	  hardcode_libdir_separator=:
 
 	  # Commands to make compiler produce verbose output that lists
