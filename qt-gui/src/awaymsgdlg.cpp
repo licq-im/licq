@@ -151,6 +151,10 @@ void AwayMsgDlg::ok()
   close();
 }
 
+void AwayMsgDlg::reject()
+{
+  QTimer::singleShot(0, this, SLOT(close()));
+}
 
 // -----------------------------------------------------------------------------
 

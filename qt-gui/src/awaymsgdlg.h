@@ -30,6 +30,7 @@ signals:
 
 protected slots:
   void ok();
+  virtual void reject();
   void slot_selectMessage(int);
 };
 
