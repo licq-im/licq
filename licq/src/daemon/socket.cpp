@@ -315,7 +315,7 @@ bool INetSocket::OpenConnection(void)
   int i=IP_PORTRANGE_HIGH;
   if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
   {
-    m_nError = errno;
+    h_errno = -1;
     return(false);
   }
 #endif
@@ -347,7 +347,7 @@ bool INetSocket::OpenConnection(void)
 bool INetSocket::StartServer(unsigned int _nPort)
 {
   m_nDescriptor = socket(AF_INET, m_nSockType, 0);
-  if (m_nDescriptor < 0)
+  if (m_nDescriptor == -1)
   {
     // errno has been set
     h_errno = -1;
@@ -358,7 +358,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
   int i=IP_PORTRANGE_HIGH;
   if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
   {
-    m_nError = errno;
+    h_errno = -1;
     return(false);
   }
 #endif
@@ -368,8 +368,11 @@ bool INetSocket::StartServer(unsigned int _nPort)
   m_sLocalAddr.sin_family = AF_INET;
   m_sLocalAddr.sin_port = htons(_nPort);
   m_sLocalAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  if (bind(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, sizeof(sockaddr_in)) < 0)
-     return (false);
+  if (bind(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, sizeof(sockaddr_in)) == -1)
+  {
+    h_errno = -1;
+    return (false);
+  }
 
   if (!SetAddrsFromSocket(ADDR_LOCAL)) return (false);
 
