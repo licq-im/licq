@@ -49,7 +49,8 @@ GtkWidget *system_status_new(gint borderwidth)
 	return event_box;
 }
 
-void system_status_refresh()
+void 
+system_status_refresh()
 {
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 	gushort num_owner_events = owner->NewMessages();
@@ -59,34 +60,21 @@ void system_status_refresh()
 
 	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(system_status),
 						"Status");
-	if(num_owner_events > 0)
-	{
-		gtk_statusbar_pop(GTK_STATUSBAR(system_status), id);
+	gtk_statusbar_pop(GTK_STATUSBAR(system_status), id);
+	if (num_owner_events > 0)
 		gtk_statusbar_push(GTK_STATUSBAR(system_status), id, "SysMsg");
-	}
+	else if (num_user_event > 0) {
+		gchar *label;
+    if (num_user_event == 1)
+    	label = g_strdup_printf("%ld msg", num_user_event);
+    else
+    	label = g_strdup_printf("%ld msgs", num_user_event);
 
-	else if(num_user_event > 0)
-	{
-		gchar *lbl;
-
-		if(num_user_event == 1)
-			lbl = "msg";
-
-		else
-			lbl = "msgs";
-
-		const gchar *label =
-			g_strdup_printf("%ld %s", num_user_event, lbl);
-
-		gtk_statusbar_pop(GTK_STATUSBAR(system_status), id);
 		gtk_statusbar_push(GTK_STATUSBAR(system_status), id, label);
+    g_free(label);
 	}
-
 	else
-	{
-		gtk_statusbar_pop(GTK_STATUSBAR(system_status), id);
 		gtk_statusbar_push(GTK_STATUSBAR(system_status), id, "No msgs");
-	}
 
 	if (num_owner_events > 0 || num_user_event > 0)
 		licq_tray_start_flashing();
@@ -94,22 +82,22 @@ void system_status_refresh()
 		licq_tray_stop_flashing();
 }
 
-void system_status_click(GtkWidget *w, GdkEventButton *event, gpointer d)
+void 
+system_status_click(GtkWidget *w, GdkEventButton *event, gpointer d)
 {
 	/* Make sure we have a double click here */
-	if(!(event->type == GDK_2BUTTON_PRESS && event->button == 1))
+	if (event->type != GDK_2BUTTON_PRESS || event->button != 1)
 		return;
 
 	/* If no events are pending, leave */
-	if(ICQUser::getNumUserEvents() == 0)
+	if (ICQUser::getNumUserEvents() == 0)
 		return;
 
 	/* Check for system messages first */
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 	gushort owner_events = owner->NewMessages();
 
-	if(owner_events > 0)
-	{
+	if (owner_events > 0) {
 		system_message_window();
 		gUserManager.DropOwner();
 		return;

@@ -24,7 +24,8 @@
 
 #include <gtk/gtk.h>
 
-void system_message_window()
+void
+system_message_window()
 {
 	GtkWidget *button;
 	GtkWidget *scroll;
@@ -49,47 +50,45 @@ void system_message_window()
 
 	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(sm->text));
 	/* Display what type of system message it is */
-	switch(event->SubCommand())
-	{
-	case ICQ_CMDxSUB_AUTHxREQUEST:
-		gtk_text_buffer_set_text(tb,
-    					"Authorization Request\n-------------------\n\n", -1);
-		menu_system_auth_user(0, ((CEventAuthRequest *)event)->Uin());
-		break;
-	
-	case ICQ_CMDxSUB_AUTHxGRANTED:
-		gtk_text_buffer_set_text(tb,
-				"Authorization Granted\n--------------------\n\n", -1);
-		break;
+	switch (event->SubCommand()) {
+	  case ICQ_CMDxSUB_AUTHxREQUEST:
+		  gtk_text_buffer_set_text(tb,
+    					  "Authorization Request\n-------------------\n\n", -1);
+		  menu_system_auth_user(0, ((CEventAuthRequest *)event)->Uin());
+		  break;
 
-	case ICQ_CMDxSUB_AUTHxREFUSED:
-		gtk_text_buffer_set_text(tb,
-				"Authorization Refused\n--------------------\n\n", -1);
-		break;
+	  case ICQ_CMDxSUB_AUTHxGRANTED:
+		  gtk_text_buffer_set_text(tb,
+				  "Authorization Granted\n--------------------\n\n", -1);
+		  break;
 
-	case ICQ_CMDxSUB_ADDEDxTOxLIST:
-		gtk_text_buffer_set_text(tb,
-				"Added To Contact List\n-------------------\n\n", -1);
-		break;
+	  case ICQ_CMDxSUB_AUTHxREFUSED:
+		  gtk_text_buffer_set_text(tb,
+				  "Authorization Refused\n--------------------\n\n", -1);
+		  break;
 
-	case ICQ_CMDxSUB_WEBxPANEL:
-		gtk_text_buffer_set_text(tb,
-				"Web Panel\n--------\n\n", -1);
-		break;
+	  case ICQ_CMDxSUB_ADDEDxTOxLIST:
+		  gtk_text_buffer_set_text(tb,
+				  "Added To Contact List\n-------------------\n\n", -1);
+		  break;
 
-	case ICQ_CMDxSUB_EMAILxPAGER:
-		gtk_text_buffer_set_text(tb,
-				"E-mail Pager\n-----------\n\n", -1);
-		break;
+	  case ICQ_CMDxSUB_WEBxPANEL:
+		  gtk_text_buffer_set_text(tb,
+				  "Web Panel\n--------\n\n", -1);
+		  break;
 
-	default:
-		g_print("Unknown system message type\n");
+	  case ICQ_CMDxSUB_EMAILxPAGER:
+		  gtk_text_buffer_set_text(tb,
+				  "E-mail Pager\n-----------\n\n", -1);
+		  break;
+
+	  default:
+		  g_print("Unknown system message type\n");
 	}
 
 	/* Display the system message */
 	time_t time_recv = event->Time();
-	const gchar *time = g_strdup_printf("Time: %s\n",
-		ctime(&time_recv));
+	const gchar *time = g_strdup_printf("Time: %s\n",	ctime(&time_recv));
 	const gchar *message = event->Text();
 	GtkTextIter iter;
 	gtk_text_buffer_get_end_iter(tb, &iter);
