@@ -3616,15 +3616,9 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   m_fConf.ReadStr("AutoResponse", szTemp, "");
-  SetAutoResponse(szTemp);
   m_fConf.ReadNum("SSTime", (unsigned long)m_nSSTime, 0L);
   m_fConf.ReadNum("SSCount", m_nSSCount, 0);
-//   m_fConf.ReadNum("PhoneFollowMeStatus", m_nPhoneFollowMeStatus,
-//                   ICQ_PLUGIN_STATUSxINACTIVE);
-//   m_fConf.ReadNum("ICQphoneStatus", m_nICQphoneStatus,
-//                   ICQ_PLUGIN_STATUSxINACTIVE);
-//   m_fConf.ReadNum("SharedFilesStatus", m_nSharedFilesStatus,
-//                   ICQ_PLUGIN_STATUSxINACTIVE);
+  SetAutoResponse(szTemp);
 
   m_fConf.CloseFile();
 
