@@ -20,13 +20,13 @@ public:
 protected:
   CIniFile mKeysIni;
 #ifdef HAVE_LIBGPGME
-  GpgmeCtx mCtx;
+  gpgme_ctx_t mCtx;
 #endif
   char *mGPGPassphrase;
 
   void gpgmeLock();
   void gpgmeUnlock();
-  static const char *PassphraseCallback(void *, const char *, void **);
+  static gpgme_error_t PassphraseCallback(void *, const char *, const char*, int, int);
 };
 
 class CGPGMEMutex
