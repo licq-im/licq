@@ -58,11 +58,18 @@ const char *CUserEvent::Text()
 
 
 //-----CUserEvent::LicqVersionStr-----------------------------------------------
+const char *CUserEvent::LicqVersionToString(unsigned long v)
+{
+  static char s_szVersion[8];
+  sprintf(s_szVersion, "v%ld.%ld.%ld", v / 1000, (v / 10) % 100, v % 10);
+  return (s_szVersion);
+}
+
+
+//-----CUserEvent::LicqVersionStr-----------------------------------------------
 const char *CUserEvent::LicqVersionStr()
 {
-   static char s_szVersion[8];
-   sprintf(s_szVersion, "v%d.%d.%d", LicqVersion() / 1000, (LicqVersion() / 10) % 100, LicqVersion() % 10);
-   return (s_szVersion);
+  return (LicqVersionToString(LicqVersion()));
 }
 
 
