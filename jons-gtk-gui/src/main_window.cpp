@@ -34,6 +34,9 @@ GtkWidget* main_window_new(const gchar* window_title,
 			   gint height,
 			   gint width)
 {
+	/* Here's a good place to start the option defaults */
+	general_options &= ~SHOW_IGN;
+
 	GtkWidget *scroll_bar;
 	GtkWidget *status_bar;
 	GtkWidget *event_box;

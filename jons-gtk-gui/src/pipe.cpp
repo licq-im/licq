@@ -87,7 +87,7 @@ void pipe_signal(CICQSignal *sig)
 		g_print("Error: Unknown signal type: %ld.", sig->Signal());
 	}
 
-	delete sig;
+	//delete sig;
 }
 
 void pipe_event(ICQEvent *event)
