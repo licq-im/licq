@@ -761,21 +761,52 @@ unsigned short VersionToUse(unsigned short v_in)
 //-----SaveUserList-------------------------------------------------------------
 void CICQDaemon::SaveUserList()
 {
-  char filename[MAX_FILENAME_LEN];
-  snprintf(filename, MAX_FILENAME_LEN, "%s/users.conf", BASE_DIR);
-  FILE *usersConf = fopen(filename, "w");
+  static const char suffix[] = ".new";
+  static const char file[] = "users.conf";
 
-  fprintf(usersConf, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());
+  size_t nLen = strlen(BASE_DIR) + sizeof(file) + sizeof(suffix) + 2;
+  char szTmpName[nLen], szFilename[nLen], buff[128];
+  int nRet, n, fd;
+ 
+  snprintf(szFilename, nLen, "%s/%s", BASE_DIR, file);
+  strcpy(szTmpName, szFilename);
+  strcpy(szTmpName, suffix);
+
+  fd = open(szTmpName, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+  if (fd == -1)
+  {
+    // Avoid sending the message to the plugins, a race exists if we are
+    // shutting down
+    if (!m_bShuttingDown)
+      gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
+                 szFilename, strerror(errno));
+    return;
+  }
+     
+  n = sprintf(buff, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());
+  nRet = write(fd, buff, n);
 
   unsigned short i = 1;
+
   FOR_EACH_UIN_START
   {
-    fprintf(usersConf, "User%d = %ld\n", i, nUin);
+    n = sprintf(buff, "User%d = %ld\n", i, nUin);
+    nRet = write(fd, buff, n);
+    if (nRet == -1)
+      FOR_EACH_UIN_BREAK
+
     i++;
   }
   FOR_EACH_UIN_END
 
-  fclose(usersConf);
+  close(fd);
+
+  if (nRet != -1)
+    if (rename(szTmpName, szFilename))
+      unlink(szTmpName);
+  else if (!m_bShuttingDown)
+    gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
+               szFilename, strerror(errno));
 }
 
 void CICQDaemon::SetIgnore(unsigned short n, bool b)
