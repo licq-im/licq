@@ -235,6 +235,7 @@ public:
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
+  bool AddUserEvent(ICQUser *, CUserEvent *);
 
   // NOT MT SAFE
   const char *getUrlViewer();
@@ -322,7 +323,6 @@ protected:
   unsigned short m_nServerAck;
 
   void ChangeUserStatus(ICQUser *u, unsigned long s);
-  bool AddUserEvent(ICQUser *, CUserEvent *);
   void RemoveUserEvent(ICQUser *, int);
   void RejectEvent(unsigned long, CUserEvent *);
   ICQUser *FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e, const char *);
