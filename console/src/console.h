@@ -10,6 +10,8 @@
 #include "window.h"
 #include "licq_user.h"
 
+using namespace std;
+
 #define MAX_CON 8
 #define MAX_CMD_HISTORY 100
 #define SCROLLBACK_BUFFER 20

@@ -3,10 +3,11 @@
 #endif
 
 #include <unistd.h>
-#include <string.h>
-#include <ctype.h>
-#include <vector.h>
-#include <fstream.h>
+#include <cstring>
+#include <cctype>
+#include <vector>
+#include <list>
+#include <fstream>
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #else
@@ -2212,7 +2213,7 @@ void CLicqConsole::InputAuthorize(int cIn)
  * CLicqConsole::Input_Line
  *-------------------------------------------------------------------------*/
 char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn,
-                               bool bEcho = true)
+                               bool bEcho)
 {
   // Now check for keys
   switch (cIn)
