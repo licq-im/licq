@@ -1765,10 +1765,10 @@ void ICQFunctions::saveHistory()
 //-----ICQFunctions::generateReply-------------------------------------------
 void ICQFunctions::generateReply()
 {
-  mleSend->clear();
+  QString s;
   for (int i = 0; i < mleRead->numLines(); i++)
-    mleSend->insertLine( QString("> ") + mleRead->textLine(i));
-  mleSend->append("\n");
+     s += QString("> ") + mleRead->textLine(i) + "\n";
+  mleSend->setText(s);
   mleSend->GotoEnd();
   tabs->showPage(tabList[TAB_SEND].tab);
 }
