@@ -633,13 +633,17 @@ bool SrvSocket::RecvPacket()
   // DAW maybe verify sequence number ?
 
   unsigned short nLen = ((unsigned char)buffer[5]) + (((unsigned char)buffer[4]) << 8);
+#if 0
+  // JON Recv size does not matter here i believe, m_xRevBuffer can create
+  // a large enough packet, if there is enough memory.  It is not a static
+  // buffer like RecvRaw
   if (nLen >= MAX_RECV_SIZE) {
-    gLog.Warn("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, SOCK_ERROR_internal);
+    gLog.Warn("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, nLen);
     m_nErrorType = SOCK_ERROR_errno;
     delete[] buffer;
     return false;
   }
-
+#endif
   // push the 6 bytes at the beginning of the packet again..
   m_xRecvBuffer.Create(nLen + 6);
   m_xRecvBuffer.Pack(buffer, 6);
