@@ -84,10 +84,10 @@ public:
    CBuffer& operator >> (unsigned char &in);
    CBuffer& operator >> (unsigned short &in);
    CBuffer& operator >> (unsigned long &in);
-   char *UnpackString(char *);
-   char *UnpackString();
-   char *UnpackStringBE(char *);
-   char *UnpackStringBE();
+   char *UnpackString(char *, unsigned short);
+   char *UnpackString();                // Need to delete[] returned string
+   char *UnpackStringBE(char *, unsigned short);
+   char *UnpackStringBE();              // Need to delete[] returned string
    unsigned long UnpackUnsignedLong();
    unsigned long UnpackUinString();
    unsigned short UnpackUnsignedShort();
@@ -118,7 +118,7 @@ public:
    unsigned long UnpackUnsignedLongTLV(unsigned short);
    unsigned short UnpackUnsignedShortTLV(unsigned short);
    unsigned char UnpackCharTLV(unsigned short);
-   char *UnpackStringTLV(unsigned short);
+   char *UnpackStringTLV(unsigned short); // Need to delete[] returned string
    CBuffer UnpackTLV(unsigned short);
 
 private:

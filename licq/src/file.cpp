@@ -27,6 +27,11 @@ extern int errno;
  *---------------------------------------------------------------------------*/
 void Trim(char *_sz)
 {
+  if (_sz == NULL)
+  {
+    gLog.Warn("%sInternal Error: Trim(): _sz == NULL.\n", L_WARNxSTR);
+    return;
+  }
   char* b, *e;
 
   b = _sz; while(*b && isspace(*b))  b++;
@@ -88,26 +93,37 @@ void AddNewLines(char *_szDest, const char *_szSource)
 /*-----RemoveNewLines----------------------------------------------------------
  * Replaces all occurences of '\n' in a string by "\n"
  *---------------------------------------------------------------------------*/
-void RemoveNewLines(char *_szDest, const char *_szSource)
+void RemoveNewLines(char *_szDest, int _nDestSize, const char *_szSource)
 {
   if (_szSource == NULL || _szDest == NULL)
   {
-    gLog.Warn("%sInternal Error: RemoveNewLines(): _szDest == NULL or _szSource == NULL.\n", L_WARNxSTR);
+    gLog.Warn("%sInternal Error: RemoveNewLines(): _szDest == NULL or "
+              "_szSource == NULL.\n", L_WARNxSTR);
     return;
   }
   int i = 0, j = 0;
   while (_szSource[i] != '\0')
   {
+    if (j >= _nDestSize) break;
     if (_szSource[i] == '\n')
     {
       _szDest[j++] = '\\';
+      if (j >= _nDestSize) break;
       _szDest[j++] = 'n';
     }
     else
       _szDest[j++] = _szSource[i];
     i++;
   }
-  _szDest[j] = '\0';
+  if (j < _nDestSize)
+    _szDest[j] = '\0';
+  else
+  {
+    if (_nDestSize > 0) _szDest[_nDestSize - 1] = '\0';
+    gLog.Warn("%sInternal Error: RemoveNewLines(): Destination buffer too "
+              "small.\n", L_WARNxSTR);
+    return;
+  }
 }
 
 
@@ -188,6 +204,7 @@ bool CIniFile::LoadFile(const char *_szFilename)
   if (m_nBufSize < 0)
   {
     free(m_szBuffer);
+    m_szBuffer = NULL;
     m_nError = errno;
     Warn(INI_ExIOREAD);
     return false;
@@ -217,11 +234,18 @@ bool CIniFile::ReloadFile()
 
 
 //-----FlushFile---------------------------------------------------------------
+/* FlushFile is susceptible to a symlink attack. If [m_szFilename].new
+ * already exists, it will be truncated and removed. */
 bool CIniFile::FlushFile()
 {
-  // Write files atomically to avoid config trashing
+  // Write files atomically to avoid config trashing.
   char tempname[MAX_FILENAME_LEN];
 
+  if (strlen(m_szFilename) + 4 >= MAX_FILENAME_LEN)
+  {
+    Warn(INI_ExIOWRITE);
+    return false;
+  }
   strcpy(tempname, m_szFilename);
   strcat(tempname, ".new");
 
@@ -351,7 +375,7 @@ void CIniFile::Warn(int nError, const char *_sz)
  * ending at the first new line.  Returns NULL if we are already at the EOF
  * or EOS.  Will not return lines beginning with a # (comments)
  *---------------------------------------------------------------------------*/
-char *CIniFile::ReadLine(char *_szBuffer)
+char *CIniFile::ReadLine(char *_szDest, int _nDestSize)
 {
   int i = 0;
   if (m_nBufPos >= m_nBufSize)
@@ -367,23 +391,23 @@ char *CIniFile::ReadLine(char *_szBuffer)
   }
 
   // the buffer will always end in a newline, so we can just check for it
-  while (m_szBuffer[m_nBufPos] != '\n')
-    _szBuffer[i++] = m_szBuffer[m_nBufPos++];
+  while (m_szBuffer[m_nBufPos] != '\n' && i < _nDestSize - 1)
+    _szDest[i++] = m_szBuffer[m_nBufPos++];
   // Increase the buffer pos to get past the newline
   m_nBufPos++;
   // Replace the newline with a null
-  _szBuffer[i] = '\0';
+  _szDest[i] = '\0';
 
-  return(_szBuffer);
+  return(_szDest);
 }
 
 
 /*-----GetSectionFromLine------------------------------------------------------
  * Extracts the section name from a given line of text.  Returns an empty
- * string if the line does not contain a section, or NULL is the given line
+ * string if the line does not contain a section, or NULL if the given line
  * is NULL or there is an open ([) with no closing (]).
  *---------------------------------------------------------------------------*/
-char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
+char *CIniFile::GetSectionFromLine(char *_szBuffer, const char *_szLine)
 {
   //static char s_szSectionName[MAX_SECTIONxNAME_LEN];
 
@@ -396,7 +420,8 @@ char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
   {
     int i = 1;
     int j = 0;
-    while (_szLine[i] != ']' && _szLine[i] != '\0')
+    while (_szLine[i] != ']' && _szLine[i] != '\0' &&
+           j < MAX_SECTIONxNAME_LEN)
       _szBuffer[j++] = _szLine[i++];
     if (_szLine[i] == '\0')
     {
@@ -415,7 +440,7 @@ char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
  * Extracts a key name from a given line of text.  Returns NULL if the given
  * line is NULL or if there is no = on a non-empty the line.
  *---------------------------------------------------------------------------*/
-char *CIniFile::GetKeyFromLine(char *_szLine, char *_szBuffer)
+char *CIniFile::GetKeyFromLine(char *_szBuffer, const char *_szLine)
 {
   if (_szLine == NULL) return NULL;
 
@@ -448,11 +473,18 @@ char *CIniFile::GetKeyFromLine(char *_szLine, char *_szBuffer)
  * Extracts the data from a given line, ie the characters after the '='.
  * Returns NULL if the given line is NULL or there is no '=' on the line.
  *---------------------------------------------------------------------------*/
-char *CIniFile::GetDataFromLine(char *_szLine, char *_szBuffer, bool bTrim)
+char *CIniFile::GetDataFromLine(char *_szBuffer, const char *_szLine,
+                                bool bTrim)
 {
   //static char s_szData[MAX_LINE_LEN];
   char *szPostEquals;
   char szData[MAX_LINE_LEN];
+
+  if (_szLine == NULL)
+  {
+    Warn(INI_ExFORMAT, _szLine);
+    return NULL;
+  }
 
   // Skip the line if it is blank or a comment
   if (_szLine[0] == '\n'|| _szLine[0] == '#')
@@ -461,15 +493,14 @@ char *CIniFile::GetDataFromLine(char *_szLine, char *_szBuffer, bool bTrim)
   }
   else
   {
-    /* Check for a NULL string, and if not, then get the position of the
-     * first '=' */
-    if (_szLine == NULL || (szPostEquals = strchr(_szLine, '=')) == NULL)
+    if ((szPostEquals = strchr(_szLine, '=')) == NULL)
     {
        Warn(INI_ExFORMAT, _szLine);
        return NULL;
     }
 
-    strcpy(szData, szPostEquals + 1);
+    strncpy(szData, szPostEquals + 1, MAX_LINE_LEN);
+    szData[MAX_LINE_LEN - 1] = '\0';
     if (bTrim) Trim(szData);
     AddNewLines(_szBuffer, szData);
   }
@@ -497,7 +528,8 @@ bool CIniFile::SetSection(const char *_szSection)
   char *sz, szLineBuffer[MAX_LINE_LEN], szSectionBuffer[MAX_SECTIONxNAME_LEN];
   do
   {
-    sz = GetSectionFromLine(ReadLine(szLineBuffer), szSectionBuffer);
+    sz = GetSectionFromLine(szSectionBuffer,
+                            ReadLine(szLineBuffer, MAX_LINE_LEN));
     if (sz == NULL)
     {
       if (GetFlag(INI_FxALLOWxCREATE))
@@ -526,7 +558,7 @@ bool CIniFile::SetSection(const char *_szSection)
   do
   {
     nTempPos = m_nBufPos;
-    sz = ReadLine(szLineBuffer);
+    sz = ReadLine(szLineBuffer, MAX_LINE_LEN);
   }
   while(sz != NULL && sz[0] != '[');
 
@@ -546,7 +578,7 @@ bool CIniFile::SetSection(const char *_szSection)
  * Finds a key and sets the data.  Returns false if the key does not exist.
  *---------------------------------------------------------------------------*/
 bool CIniFile::ReadStr(const char *szKey, char *szData,
-   const char *szDefault, bool bTrim)
+                       const char *szDefault, bool bTrim)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
 
@@ -554,8 +586,8 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
 
   do
   {
-    szLine = ReadLine(szLineBuffer);
-    sz = GetKeyFromLine(szLine, szKeyBuffer);
+    szLine = ReadLine(szLineBuffer, MAX_LINE_LEN);
+    sz = GetKeyFromLine(szKeyBuffer, szLine);
     if (sz == NULL)
     {
        if (szLine == NULL) Warn(INI_ExNOKEY, szKey);
@@ -565,7 +597,7 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
   }
   while (strcmp(sz, szKey) != 0);
 
-  if ((sz = GetDataFromLine(szLine, szData, bTrim)) == NULL)
+  if ((sz = GetDataFromLine(szData, szLine, bTrim)) == NULL)
   {
     if (szDefault != NULL) strcpy(szData, szDefault);
     return (false);
@@ -578,7 +610,8 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
  * Finds a key and sets the numeric data.  Returns false if the key does not
  * exist.
  *---------------------------------------------------------------------------*/
-bool CIniFile::ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault)
+bool CIniFile::ReadNum(const char *_szKey, unsigned long &data,
+                       const unsigned long _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -587,11 +620,12 @@ bool CIniFile::ReadNum(const char *_szKey, unsigned long &data, const unsigned l
     return (false);
   }
 
-  data = (unsigned long)atoi(szData);
+  data = (unsigned long)atol(szData);
   return(true);
 }
 
-bool CIniFile::ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault)
+bool CIniFile::ReadNum(const char *_szKey, unsigned short &data,
+                       const unsigned short _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -618,7 +652,8 @@ bool CIniFile::ReadNum(const char *_szKey, char &data, const char _nDefault)
   return(true);
 }
 
-bool CIniFile::ReadNum(const char *_szKey, signed short &data, const signed short _nDefault)
+bool CIniFile::ReadNum(const char *_szKey, signed short &data,
+                       const signed short _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -660,9 +695,10 @@ void CIniFile::InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd)
   char *szNewBuffer = (char *)malloc(nNewBufSize + 1);
   memcpy(szNewBuffer, m_szBuffer, _nCutStart);
   memcpy(szNewBuffer + _nCutStart, _szNewStr, nNewStrLen);
-  memcpy(szNewBuffer + _nCutStart + nNewStrLen, m_szBuffer + _nCutEnd, m_nBufSize - _nCutEnd + 1);
+  memcpy(szNewBuffer + _nCutStart + nNewStrLen, m_szBuffer + _nCutEnd,
+         m_nBufSize - _nCutEnd + 1);
 
-  free (m_szBuffer);
+  free(m_szBuffer);
   m_szBuffer = szNewBuffer;
   m_nBufSize = nNewBufSize;
   m_bChanged = true;
@@ -714,21 +750,23 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
   do
   {
     nCutStart = m_nBufPos;
-    szLine = ReadLine(szLineBuffer);
-    sz = GetKeyFromLine(szLine, szKeyBuffer);
+    szLine = ReadLine(szLineBuffer, MAX_LINE_LEN);
+    sz = GetKeyFromLine(szKeyBuffer, szLine);
   }
   while (sz != NULL && strcmp(sz, _szKey) != 0);
   int nCutEnd = m_nBufPos;
 
   char szNewLine[MAX_LINE_LEN], szDataNoNL[MAX_LINE_LEN];
   if (_szData != NULL)
-    RemoveNewLines(szDataNoNL, _szData);
+    RemoveNewLines(szDataNoNL, MAX_LINE_LEN, _szData);
   else
   {
-    gLog.Warn("%sInternal Error: CIniFile::WriteStr(%s, NULL).\n", L_WARNxSTR, _szKey);
+    gLog.Warn("%sInternal Error: CIniFile::WriteStr(%s, NULL).\n",
+              L_WARNxSTR, _szKey);
     strcpy(szDataNoNL, "");
   }
   snprintf(szNewLine, MAX_LINE_LEN, "%s = %s\n", _szKey, szDataNoNL);
+  szNewLine[MAX_LINE_LEN - 1] = '\0';
 
   // Check if we are appending a new key to the section
   if (sz == NULL) m_nSectionEnd += strlen(szNewLine);
@@ -742,28 +780,32 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
 bool CIniFile::WriteNum(const char *_szKey, const unsigned short _nData)
 {
    char szN[32];
-   sprintf(szN, "%u", _nData);
+   snprintf(szN, 32, "%u", _nData);
+   szN[31] = '\0';
    return(WriteStr(_szKey, szN));
 }
 
 bool CIniFile::WriteNum(const char *_szKey, const unsigned long _nData)
 {
    char szN[32];
-   sprintf(szN, "%lu", _nData);
+   snprintf(szN, 32, "%lu", _nData);
+   szN[31] = '\0';
    return(WriteStr(_szKey, szN));
 }
 
 bool CIniFile::WriteNum(const char *_szKey, const signed short _nData)
 {
   char szN[32];
-  sprintf(szN, "%d", _nData);
+  snprintf(szN, 32, "%d", _nData);
+  szN[31] = '\0';
   return(WriteStr(_szKey, szN));
 }
 
 bool CIniFile::WriteNum(const char *_szKey, const char _nData)
 {
   char szN[32];
-  sprintf(szN, "%d", _nData);
+  snprintf(szN, 32, "%d", _nData);
+  szN[31] = '\0';
   return(WriteStr(_szKey, szN));
 }
 

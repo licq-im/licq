@@ -43,7 +43,9 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
   if (strncmp(_sz, "default", 7) == 0)
   {
     char temp[MAX_FILENAME_LEN];
-    snprintf(temp, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, _nUin, HISTORY_EXT);
+    snprintf(temp, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR,
+             HISTORY_DIR, _nUin, HISTORY_EXT);
+    temp[sizeof(temp) - 1] = '\0';
     m_szFileName = strdup(temp);
     m_szDescription = strdup("default");
   }
@@ -61,29 +63,38 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
   }
 }
 
+/* szResult[0] != ':' doubles to check if strlen(szResult) < 1 */
 #define GET_VALID_LINE_OR_BREAK \
   { \
-    if ( (szResult = fgets(sz, MAX_LINE_LEN, f)) == NULL || szResult[0] != ':') break; \
+    if ((szResult = fgets(sz, MAX_LINE_LEN, f)) == NULL || szResult[0] != ':') \
+      break; \
     szResult[strlen(szResult) - 1] = '\0'; \
   }
 
 #define GET_VALID_LINES \
   { \
     unsigned short nPos = 0; \
-    while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') \
+    while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') \
     { \
       if (nPos < MAX_HISTORY_MSG_SIZE) \
       { \
         int len = strlen(sz+1); \
-        if(len+1 > MAX_HISTORY_MSG_SIZE - nPos)  len = MAX_HISTORY_MSG_SIZE - nPos; \
+        if (len+1 > MAX_HISTORY_MSG_SIZE - nPos) \
+          len = MAX_HISTORY_MSG_SIZE - nPos; \
         strncpy(&szMsg[nPos], sz+1, len); \
         nPos += len; \
         szMsg[nPos] = '\0'; \
-        /* nPos += snprintf(&szMsg[nPos], MAX_HISTORY_MSG_SIZE - nPos, "%s", &sz[1]); */ \
+        /* nPos += snprintf(&szMsg[nPos], MAX_HISTORY_MSG_SIZE - nPos,
+         *                  "%s", &sz[1]); */ \
       } \
     } \
-    if (szMsg[nPos - 1] == '\n') \
+    if (nPos > 0 && szMsg[nPos - 1] == '\n') \
       szMsg[nPos - 1] = '\0'; \
+  }
+
+#define SKIP_VALID_LINES \
+  { \
+    while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':'); \
   }
 
 bool CUserHistory::Load(HistoryList &lHistory)
@@ -121,6 +132,9 @@ bool CUserHistory::Load(HistoryList &lHistory)
     while (szResult != NULL && sz[0] != '[')
       szResult = fgets(sz, MAX_LINE_LEN, f);
     if (szResult == NULL) break;
+    // Zero unused part of sz to avoid interpreting garbage if sz is too
+    // short
+    memset(sz + strlen(sz) + 1, '\0', MAX_LINE_LEN - strlen(sz) - 1); 
     //"[ C | 0000 | 0000 | 0000 | 000... ]"
     cDir = sz[2];
     // Stick some \0's in to terminate strings
@@ -133,7 +147,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     // Now read in the message
     szMsg[0] = '\0';
     e = NULL;
-    switch(nSubCommand)
+    switch (nSubCommand)
     {
     case ICQ_CMDxSUB_MSG:
     {
@@ -150,7 +164,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       }
       else
       {
-        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
+        SKIP_VALID_LINES;
         //e = new CEventChatCancel(0, tTime, nFlags);
       }
       break;
@@ -169,7 +183,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       }
       else
       {
-        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
+        SKIP_VALID_LINES;
         //e = new CEventFileCancel(0, tTime, nFlags);
       }
       break;
@@ -186,7 +200,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atoi(&szResult[1]);
+      unsigned long nUin = atol(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -207,7 +221,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atoi(&szResult[1]);
+      unsigned long nUin = atol(&szResult[1]);
       GET_VALID_LINES;
       e = new CEventAuthGranted(nUin, szMsg, nCommand, tTime, nFlags);
       break;
@@ -215,7 +229,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_AUTHxREFUSED:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atoi(&szResult[1]);
+      unsigned long nUin = atol(&szResult[1]);
       GET_VALID_LINES;
       e = new CEventAuthRefused(nUin, szMsg, nCommand, tTime, nFlags);
       break;
@@ -223,7 +237,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atoi(&szResult[1]);
+      unsigned long nUin = atol(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -275,7 +289,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       {
         GET_VALID_LINE_OR_BREAK;
         if (b)
-          nUin = atoi(&szResult[1]);
+          nUin = atol(&szResult[1]);
         else if (nUin != 0)
           vc.push_back(new CContact(nUin, &szResult[1]));
         b = !b;

@@ -78,10 +78,11 @@ protected:
        m_bChanged;
 
   // Functions
-  char *ReadLine(char *_szBuffer);
-  char *GetSectionFromLine(char *_szLine, char *_szBuffer);
-  char *GetKeyFromLine(char *_szLine, char *_szBuffer);
-  char *GetDataFromLine(char *_szLine, char *_szBuffer, bool bTrim = true);
+  char *ReadLine(char *_szDest, int nDestSize);
+  char *GetSectionFromLine(char *_szBuffer, const char *_szLine);
+  char *GetKeyFromLine(char *_szBuffer, const char *_szLine);
+  char *GetDataFromLine(char *_szBuffer, const char *_szLine,
+                        bool bTrim = true);
   void Warn(int nError, const char *_sz = NULL);
   void InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd);
 

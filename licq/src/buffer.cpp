@@ -299,17 +299,19 @@ CBuffer& CBuffer::operator>>(unsigned long &in)
   return(*this);
 }
 
-char *CBuffer::UnpackStringBE(char* sz)
+char *CBuffer::UnpackStringBE(char* sz, unsigned short _usiSize)
 {
   unsigned short nLen;
   sz[0] = '\0';
   *this >> nLen;
   rev_e_short(nLen);
+  nLen = nLen < _usiSize ? nLen : _usiSize - 1;
   for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
   sz[nLen] = '\0';
   return sz;
 }
 
+// Need to delete[] returned string
 char *CBuffer::UnpackStringBE()
 {
   unsigned short nLen;
@@ -322,16 +324,18 @@ char *CBuffer::UnpackStringBE()
   return sz;
 }
 
-char *CBuffer::UnpackString(char *sz)
+char *CBuffer::UnpackString(char *sz, unsigned short _usiSize)
 {
   unsigned short nLen;
   sz[0] = '\0';
   *this >> nLen;
+  nLen = nLen < _usiSize ? nLen : _usiSize - 1;
   for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
   sz[nLen] = '\0';
   return sz;
 }
 
+// Need to delete[] returned string
 char *CBuffer::UnpackString()
 {
   unsigned short nLen;
@@ -454,6 +458,12 @@ CBuffer::~CBuffer()
 //-----add----------------------------------------------------------------------
 char *CBuffer::PackUnsignedLong(unsigned long data)
 {
+  if ( getDataSize() + 4 > getDataMaxSize() )
+  {
+    gLog.Warn("%sPackUnsignedLong(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   put_le_long(getDataPosWrite(), data);
   incDataPosWrite(4);
   return getDataPosWrite() - 4;
@@ -461,6 +471,12 @@ char *CBuffer::PackUnsignedLong(unsigned long data)
 
 char *CBuffer::PackUnsignedLongBE(unsigned long data)
 {
+  if (getDataSize() + 4 > getDataMaxSize() )
+  {
+    gLog.Warn("%sPackUnsignedLongBE(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   put_be_long(getDataPosWrite(), data);
   incDataPosWrite(4);
   return getDataPosWrite() - 4;
@@ -468,6 +484,12 @@ char *CBuffer::PackUnsignedLongBE(unsigned long data)
 
 char *CBuffer::PackChar(char data)
 {
+  if (getDataSize() + 1 > getDataMaxSize())
+  {
+    gLog.Warn("%sPackChar(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   *getDataPosWrite() = data;
   incDataPosWrite(1);
   return getDataPosWrite() - 1;
@@ -475,6 +497,12 @@ char *CBuffer::PackChar(char data)
 
 char *CBuffer::Pack(const char *data, int size)
 {
+  if ( getDataSize() + size > getDataMaxSize() )
+  {
+    gLog.Warn("%sPack(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   if (!size) return getDataPosWrite();
   memcpy(getDataPosWrite(), data, size);
   incDataPosWrite(size);
@@ -483,6 +511,12 @@ char *CBuffer::Pack(const char *data, int size)
 
 char *CBuffer::Pack(CBuffer *buf)
 {
+  if ( getDataSize() + buf->getDataSize() > getDataMaxSize() )
+  {
+    gLog.Warn("%sPack(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   memcpy(getDataPosWrite(), buf->getDataStart(), buf->getDataSize());
   incDataPosWrite(buf->getDataSize());
   return getDataPosWrite() - buf->getDataSize();
@@ -501,6 +535,12 @@ char *CBuffer::PackString(const char *data, unsigned short max)
 {
   unsigned short n = (data == NULL ? 0 : strlen(data));
   if (max > 0 && n > max) n = max;
+  if ( getDataSize()  + n + 1 > getDataMaxSize() )
+  {
+    gLog.Warn("%sPackString(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   put_le_short(getDataPosWrite(), n + 1);
   incDataPosWrite(2);
   memcpy(getDataPosWrite(), data, n);
@@ -512,6 +552,12 @@ char *CBuffer::PackString(const char *data, unsigned short max)
 
 char *CBuffer::PackUnsignedShort(unsigned short data)
 {
+  if ( getDataSize() + 2 > getDataMaxSize() )
+  {
+    gLog.Warn("%sPackUnsignedShort(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   put_le_short(getDataPosWrite(), data);
   incDataPosWrite(2);
   return getDataPosWrite() - 2;
@@ -519,6 +565,12 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
 
 char *CBuffer::PackUnsignedShortBE(unsigned short data)
 {
+  if ( getDataSize() + 2 > getDataMaxSize() )
+  {
+    gLog.Warn("%sPackUnsignedShortBE(): Trying to pack more data than "
+              "CBuffer can hold!\n", L_WARNxSTR);
+    return getDataPosWrite();
+  }
   put_be_short(getDataPosWrite(), data);
   incDataPosWrite(2);
   return getDataPosWrite() - 2;
@@ -687,6 +739,7 @@ unsigned char CBuffer::UnpackCharTLV(unsigned short nType)
   return nRet;
 }
 
+// Need to delete[] returned string
 char *CBuffer::UnpackStringTLV(unsigned short nType)
 {
   char *str = 0;

@@ -1322,7 +1322,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_CHAT:
       {
         char szChatClients[1024];
-        packet.UnpackString(szChatClients);
+        packet.UnpackString(szChatClients, sizeof(szChatClients));
         packet.UnpackUnsignedLong(); // reversed port
         unsigned short nPort = packet.UnpackUnsignedLong();
         if (nInVersion <= 4) packet >> theSequence;
@@ -1537,7 +1537,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_CHAT:
       {
         char ul[1024];
-        packet.UnpackString(ul);
+        packet.UnpackString(ul, sizeof(ul));
         packet >> nPortReversed   // port backwards
                >> nPort;    // port to connect to for chat
         if (nInVersion <= 4) packet >> theSequence;

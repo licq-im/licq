@@ -375,7 +375,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nBatchFiles = b.UnpackUnsignedLong();
       m_nBatchSize = b.UnpackUnsignedLong();
       m_nSpeed = b.UnpackUnsignedLong();
-      b.UnpackString(m_szRemoteName);
+      b.UnpackString(m_szRemoteName, sizeof(m_szRemoteName));
 
       m_nBatchStartTime = time(TIME_NOW);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
@@ -422,7 +422,7 @@ bool CFileTransferManager::ProcessPacket()
         return false;
       }
       b.UnpackChar();
-      b.UnpackString(m_szFileName);
+      b.UnpackString(m_szFileName, sizeof(m_szFileName));
       b.UnpackUnsignedShort(); // 0 length string...?
       b.UnpackChar();
       m_nFileSize = b.UnpackUnsignedLong();
@@ -549,7 +549,7 @@ bool CFileTransferManager::ProcessPacket()
         return false;
       }
       m_nSpeed = b.UnpackUnsignedLong();
-      b.UnpackString(m_szRemoteName);
+      b.UnpackString(m_szRemoteName, sizeof(m_szRemoteName));
 
       // Send file info packet
       CPFile_Info p(*m_iPathName);

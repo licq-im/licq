@@ -958,10 +958,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       // read in the four data fields; alias, first name, last name, and email address
       u->SetEnableSave(false);
       char temp[MAX_DATA_LEN], cAuthorization;
-      u->SetAlias(packet.UnpackString(temp));
-      u->SetFirstName(packet.UnpackString(temp));
-      u->SetLastName(packet.UnpackString(temp));
-      u->SetEmailPrimary(packet.UnpackString(temp));
+      u->SetAlias(packet.UnpackString(temp, sizeof(temp)));
+      u->SetFirstName(packet.UnpackString(temp, sizeof(temp)));
+      u->SetLastName(packet.UnpackString(temp, sizeof(temp)));
+      u->SetEmailPrimary(packet.UnpackString(temp, sizeof(temp)));
       packet >> cAuthorization;
       u->SetAuthorization(cAuthorization == 0 ? true : false);
 
@@ -1020,15 +1020,15 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       u->SetEnableSave(false);
       char sTemp[MAX_MESSAGE_SIZE];
 
-      u->SetCity(packet.UnpackString(sTemp));
+      u->SetCity(packet.UnpackString(sTemp, sizeof(sTemp)));
       u->SetCountryCode(packet.UnpackUnsignedShort());
       u->SetTimezone(packet.UnpackChar());
-      u->SetState(packet.UnpackString(sTemp));
+      u->SetState(packet.UnpackString(sTemp, sizeof(sTemp)));
       u->SetAge(packet.UnpackUnsignedShort());
       u->SetGender(packet.UnpackChar());
-      u->SetPhoneNumber(packet.UnpackString(sTemp));
-      u->SetHomepage(packet.UnpackString(sTemp));
-      u->SetAbout(packet.UnpackString(sTemp));
+      u->SetPhoneNumber(packet.UnpackString(sTemp, sizeof(sTemp)));
+      u->SetHomepage(packet.UnpackString(sTemp, sizeof(sTemp)));
+      u->SetAbout(packet.UnpackString(sTemp, sizeof(sTemp)));
       sprintf(sTemp, "%ld", packet.UnpackUnsignedLong());
       u->SetZipCode(sTemp);
 
@@ -1195,10 +1195,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       packet >> nUin;
       CSearchAck *s = new CSearchAck(nUin);
 
-      s->m_szAlias = strdup(packet.UnpackString(szTemp));
-      s->m_szFirstName = strdup(packet.UnpackString(szTemp));
-      s->m_szLastName = strdup(packet.UnpackString(szTemp));
-      s->m_szEmail = strdup(packet.UnpackString(szTemp));
+      s->m_szAlias = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szFirstName = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szLastName = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szEmail = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
 
       // translating string with Translation Table
       gTranslator.ServerToClient(s->m_szAlias);
@@ -1593,7 +1593,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       char *buf;
       gLog.Unknown("%sUnknown server command %d:\n%s\n", L_UNKNOWNxSTR,
          nCommand, packet.print(buf));
-      delete buf;
+      delete [] buf;
       break;
     }
   }
@@ -1614,7 +1614,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   {
     char *buf;
     gLog.Unknown("%sInvalid system message (UIN = 0):\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
-    delete buf;
+    delete [] buf;
   }
 
 #if 0
@@ -1987,10 +1987,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
         {
           gLog.Info("%sBasic info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
           u->SetEnableSave(false);
-          u->SetAlias(packet.UnpackString(szTemp));
-          u->SetFirstName(packet.UnpackString(szTemp));
-          u->SetLastName(packet.UnpackString(szTemp));
-          u->SetEmailPrimary(packet.UnpackString(szTemp));
+          u->SetAlias(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetFirstName(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetLastName(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetEmailPrimary(packet.UnpackString(szTemp, sizeof(szTemp)));
           // FIXME how does this packet end?
           //u->SetAuthorization(!packet.UnpackChar());
           //packet.UnpackChar(); // 02, what the?
@@ -2013,19 +2013,19 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
         {
           gLog.Info("%sGeneral info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
           u->SetEnableSave(false);
-          u->SetAlias(packet.UnpackString(szTemp));
-          u->SetFirstName(packet.UnpackString(szTemp));
-          u->SetLastName(packet.UnpackString(szTemp));
-          u->SetEmailPrimary(packet.UnpackString(szTemp));
-          u->SetEmailSecondary(packet.UnpackString(szTemp));
-          u->SetEmailOld(packet.UnpackString(szTemp));
-          u->SetCity(packet.UnpackString(szTemp));
-          u->SetState(packet.UnpackString(szTemp));
-          u->SetPhoneNumber(packet.UnpackString(szTemp));
-          u->SetFaxNumber(packet.UnpackString(szTemp));
-          u->SetAddress(packet.UnpackString(szTemp));
-          u->SetCellularNumber(packet.UnpackString(szTemp));
-          u->SetZipCode(packet.UnpackString(szTemp));
+          u->SetAlias(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetFirstName(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetLastName(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetEmailPrimary(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetEmailSecondary(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetEmailOld(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCity(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetState(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetPhoneNumber(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetFaxNumber(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetAddress(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCellularNumber(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetZipCode(packet.UnpackString(szTemp, sizeof(szTemp)));
           u->SetCountryCode(packet.UnpackUnsignedShort());
           u->SetTimezone(packet.UnpackChar());
           // FIXME how does this packet end?
@@ -2058,18 +2058,19 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
         {
           gLog.Info("%sWork info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
           u->SetEnableSave(false);
-          u->SetCompanyCity(packet.UnpackString(szTemp));
-          u->SetCompanyState(packet.UnpackString(szTemp));
-          u->SetCompanyPhoneNumber(packet.UnpackString(szTemp));
-          u->SetCompanyFaxNumber(packet.UnpackString(szTemp));
-          u->SetCompanyAddress(packet.UnpackString(szTemp));
-          packet.UnpackString(szTemp); // who knows..."256" typically
+          u->SetCompanyCity(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCompanyState(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCompanyPhoneNumber(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCompanyFaxNumber(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCompanyAddress(packet.UnpackString(szTemp, sizeof(szTemp)));
+          // who knows..."256" typically
+          packet.UnpackString(szTemp, sizeof(szTemp));
           packet.UnpackUnsignedShort(); // ??? 0x0000
-          u->SetCompanyName(packet.UnpackString(szTemp));
-          u->SetCompanyDepartment(packet.UnpackString(szTemp));
-          u->SetCompanyPosition(packet.UnpackString(szTemp));
+          u->SetCompanyName(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCompanyDepartment(packet.UnpackString(szTemp, sizeof(szTemp)));
+          u->SetCompanyPosition(packet.UnpackString(szTemp, sizeof(szTemp)));
           packet.UnpackUnsignedShort(); // ?? 0x0004
-          u->SetCompanyHomepage(packet.UnpackString(szTemp));
+          u->SetCompanyHomepage(packet.UnpackString(szTemp, sizeof(szTemp)));
 
           // translating string with Translation Table
           gTranslator.ServerToClient(u->GetCompanyCity());
@@ -2094,7 +2095,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetEnableSave(false);
           u->SetAge(packet.UnpackUnsignedShort());
           u->SetGender(packet.UnpackChar());
-          u->SetHomepage(packet.UnpackString(szTemp));
+          u->SetHomepage(packet.UnpackString(szTemp, sizeof(szTemp)));
           u->SetBirthYear(packet.UnpackUnsignedShort());
           u->SetBirthMonth(packet.UnpackChar());
           u->SetBirthDay(packet.UnpackChar());
@@ -2114,7 +2115,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
         case ICQ_CMDxMETA_ABOUT:
         {
           gLog.Info("%sAbout info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
-          u->SetAbout(packet.UnpackString(szTemp));
+          u->SetAbout(packet.UnpackString(szTemp, sizeof(szTemp)));
           gTranslator.ServerToClient(u->GetAbout());
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                           USER_ABOUT, nUin));
@@ -2285,10 +2286,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       CSearchAck *s = new CSearchAck(nUin);
 
       // Get the data out of the packet
-      s->m_szAlias = strdup(packet.UnpackString(szTemp));
-      s->m_szFirstName = strdup(packet.UnpackString(szTemp));
-      s->m_szLastName = strdup(packet.UnpackString(szTemp));
-      s->m_szEmail = strdup(packet.UnpackString(szTemp));
+      s->m_szAlias = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szFirstName = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szLastName = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szEmail = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
 
       // Translating string with Translation Table
       gTranslator.ServerToClient(s->m_szAlias);
@@ -2355,10 +2356,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       CSearchAck *s = new CSearchAck(nUin);
 
       // Get the data out of the packet
-      s->m_szAlias = strdup(packet.UnpackString(szTemp));
-      s->m_szFirstName = strdup(packet.UnpackString(szTemp));
-      s->m_szLastName = strdup(packet.UnpackString(szTemp));
-      s->m_szEmail = strdup(packet.UnpackString(szTemp));
+      s->m_szAlias = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szFirstName = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szLastName = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
+      s->m_szEmail = strdup(packet.UnpackString(szTemp, sizeof(szTemp)));
 
       // Translating string with Translation Table
       gTranslator.ServerToClient(s->m_szAlias);

@@ -71,7 +71,7 @@ CPChat_Color::CPChat_Color(CBuffer &b)
   b.UnpackUnsignedLong();
   b.UnpackUnsignedLong();
   m_nUin = b.UnpackUnsignedLong();
-  m_szName = strdup(b.UnpackString(buf));
+  m_szName = strdup(b.UnpackString(buf, sizeof(buf)));
   m_nPort = b.UnpackUnsignedShort();
   m_nPort = (m_nPort >> 8) + (m_nPort << 8);
   m_nColorForeRed = (unsigned char)b.UnpackChar();
@@ -270,7 +270,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
 
   b.UnpackUnsignedLong();
   m_nUin = b.UnpackUnsignedLong();
-  m_szName = strdup(b.UnpackString(buf));
+  m_szName = strdup(b.UnpackString(buf, sizeof(buf)));
   m_nColorForeRed = (unsigned char)b.UnpackChar();
   m_nColorForeGreen = (unsigned char)b.UnpackChar();
   m_nColorForeBlue = (unsigned char)b.UnpackChar();
@@ -288,7 +288,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   m_nSession = b.UnpackUnsignedShort();
   m_nFontSize = b.UnpackUnsignedLong();
   m_nFontFace = b.UnpackUnsignedLong();
-  m_szFontFamily = strdup(b.UnpackString(buf));
+  m_szFontFamily = strdup(b.UnpackString(buf, sizeof(buf)));
   b.UnpackUnsignedShort();
 
   // Read out client packets
@@ -345,7 +345,7 @@ CPChat_Font::CPChat_Font(CBuffer &b)
   m_nSession = b.UnpackUnsignedShort();
   m_nFontSize = b.UnpackUnsignedLong();
   m_nFontFace = b.UnpackUnsignedLong();
-  m_szFontFamily = strdup(b.UnpackString(buf));
+  m_szFontFamily = strdup(b.UnpackString(buf, sizeof(buf)));
 }
 
 /*
@@ -373,7 +373,7 @@ CPChat_ChangeFontFamily::CPChat_ChangeFontFamily(CBuffer &b)
   char buf[128];
 
   //b.UnpackChar(); // CHAT_CHANGExFONT
-  b.UnpackString(buf);
+  b.UnpackString(buf, sizeof(buf));
   b.UnpackUnsignedShort();  // Charset?
 
   m_szFontFamily = strdup(buf);
@@ -550,7 +550,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   if (fontBold) m_nFontFace |= FONT_BOLD;
   if (fontItalic) m_nFontFace |= FONT_ITALIC;
   if (fontUnderline) m_nFontFace |= FONT_UNDERLINE;
-  strncpy(m_szFontFamily, fontFamily, 64);
+  strncpy(m_szFontFamily, fontFamily, sizeof(m_szFontFamily));
   m_nFontSize = fontSize;
   m_nColorFore[0] = fr;
   m_nColorFore[1] = fg;
@@ -1847,7 +1847,7 @@ void CChatManager::ChangeFontFamily(const char *f)
   // 0x22ba baltic
   SendBuffer(&buf, CHAT_FONTxFAMILY);
 
-  strncpy(m_szFontFamily, f, 64);
+  strncpy(m_szFontFamily, f, sizeof(m_szFontFamily));
 }
 
 

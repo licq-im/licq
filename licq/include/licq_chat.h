@@ -182,7 +182,7 @@ public:
   CChatClient(ICQUser *);
 
   // Initialize from the handshake buffer (does not set the session
-  // or port fields however
+  // or port fields however)
   bool LoadFromHandshake_v2(CBuffer &);
   bool LoadFromHandshake_v4(CBuffer &);
   bool LoadFromHandshake_v6(CBuffer &);

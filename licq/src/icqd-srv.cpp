@@ -1051,7 +1051,7 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
     char *buf;
     gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
                  packet.print(buf));
-    delete buf;
+    delete [] buf;
     return false;
   }
 
@@ -1204,7 +1204,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       char *buf;
       gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
          packet.print(buf));
-      delete buf;
+      delete [] buf;
       break;
     }
 
@@ -1945,6 +1945,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           if (!packet.readTLV(-1, nByteLen))
           {
             gLog.Error("%sUnable to parse contact list TLV, aborting!\n", L_ERRORxSTR);
+            delete[] szName;
             return;
           }
         }
@@ -1994,6 +1995,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         }  // switch (nType)
 
         packet.cleanupTLV();
+        delete[] szName;
       } // for count
 
       // Update local info about contact list
@@ -2141,6 +2143,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
+  char *tmp;
 
   switch (nSubtype)
   {
@@ -2152,7 +2155,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       char *buf;
       gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
          packet.print(buf));
-      delete buf;
+      delete [] buf;
       break;
     }
 
@@ -2162,7 +2165,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       char *buf;
       gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
          packet.print(buf));
-      delete buf;
+      delete [] buf;
       break;
     }
 
@@ -2195,8 +2198,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       nTypeMsg &= ~ICQ_CMDxSUB_FxMULTIREC;
       
       char* szMessage = new char[msg.getDataMaxSize()];
-      msg.UnpackString(szMessage); // 2 byte length little endian + string
-      
+      // 2 byte length little endian + string
+      msg.UnpackString(szMessage, msg.getDataMaxSize());      
       char *szType = NULL;
       unsigned short nTypeEvent = 0;
       CUserEvent *eEvent = NULL;
@@ -2752,10 +2755,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         nFoundUin = msg.UnpackUnsignedLong();
         CSearchAck *s = new CSearchAck(nFoundUin);;
         	
-        s->m_szAlias = strdup(msg.UnpackString(szTemp));
-      	s->m_szFirstName = strdup(msg.UnpackString(szTemp));
-      	s->m_szLastName = strdup(msg.UnpackString(szTemp));
-      	s->m_szEmail = strdup(msg.UnpackString(szTemp));
+        s->m_szAlias = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
+      	s->m_szFirstName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
+      	s->m_szLastName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
+      	s->m_szEmail = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
 	msg.UnpackChar(); // authorization required
 	s->m_nStatus = msg.UnpackChar();
 	msg.UnpackChar(); // unknown
@@ -2832,17 +2835,28 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
 	    // main home info
 	    u->SetEnableSave(false);
-	    u->SetAlias( msg.UnpackString() );
-	    u->SetFirstName( msg.UnpackString() );
-	    u->SetLastName( msg.UnpackString() );
-	    u->SetEmailPrimary( msg.UnpackString() );
-	    u->SetCity( msg.UnpackString() );
-	    u->SetState( msg.UnpackString() );
-	    u->SetPhoneNumber( msg.UnpackString() );
-	    u->SetFaxNumber( msg.UnpackString() );
-	    u->SetAddress( msg.UnpackString() );
-	    u->SetCellularNumber( msg.UnpackString() );
-	    u->SetZipCode( msg.UnpackString() );
+	    u->SetAlias( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetFirstName( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetLastName( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetEmailPrimary( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCity( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetState( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetPhoneNumber( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetFaxNumber( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetAddress( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCellularNumber( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetZipCode( tmp = msg.UnpackString() );
+            delete[] tmp;
 	    u->SetCountryCode( msg.UnpackUnsignedShort() );
 	    u->SetTimezone( msg.UnpackChar() );
 	    u->SetHideEmail( msg.UnpackChar() ); // 0 = no, 1 = yes
@@ -2878,7 +2892,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    u->SetEnableSave(false);
 	    u->SetAge( msg.UnpackUnsignedShort() );
 	    u->SetGender( msg.UnpackChar() );
-	    u->SetHomepage( msg.UnpackString() );
+	    u->SetHomepage( tmp = msg.UnpackString() );
+            delete[] tmp;
 	    u->SetBirthYear( msg.UnpackUnsignedShort() );
 	    u->SetBirthMonth( msg.UnpackChar() );
 	    u->SetBirthDay (msg.UnpackChar() );
@@ -2911,11 +2926,13 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    for(int i = 0; i < nEmail; i++) {
 		msg.UnpackChar(); // publish email, not yet implemented
 		if(i == 0) {
-		    u->SetEmailSecondary( msg.UnpackString() );
+		    u->SetEmailSecondary( tmp = msg.UnpackString() );
+                    delete[] tmp;
 		    gTranslator.ServerToClient(u->GetEmailSecondary());
 		}
 		if(i == 1) {
-		    u->SetEmailOld( msg.UnpackString() );
+		    u->SetEmailOld( tmp = msg.UnpackString() );
+                    delete[] tmp;
 		    gTranslator.ServerToClient(u->GetEmailOld());
 		}
 	    }
@@ -2955,18 +2972,28 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    gLog.Info("%sWork info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
 
 	    u->SetEnableSave(false);
-	    u->SetCompanyCity( msg.UnpackString() );
-	    u->SetCompanyState( msg.UnpackString() );
-	    u->SetCompanyPhoneNumber( msg.UnpackString() );
-	    u->SetCompanyFaxNumber( msg.UnpackString() );
-	    u->SetCompanyAddress( msg.UnpackString() );
-	    u->SetCompanyZip( msg.UnpackString() );
+	    u->SetCompanyCity( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyState( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyPhoneNumber( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyFaxNumber( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyAddress( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyZip( tmp = msg.UnpackString() );
+            delete[] tmp;
 	    u->SetCompanyCountry( msg.UnpackUnsignedShort() );
-	    u->SetCompanyName( msg.UnpackString() );
-	    u->SetCompanyDepartment( msg.UnpackString() );
-	    u->SetCompanyPosition( msg.UnpackString() );
+	    u->SetCompanyName( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyDepartment( tmp = msg.UnpackString() );
+            delete[] tmp;
+	    u->SetCompanyPosition( tmp = msg.UnpackString() );
+            delete[] tmp;
 	    msg.UnpackUnsignedShort(); // unknown
-	    u->SetCompanyHomepage( msg.UnpackString() );
+	    u->SetCompanyHomepage( tmp = msg.UnpackString() );
+            delete[] tmp;
 
 	    // translating string with Translation Table
 	    gTranslator.ServerToClient(u->GetCompanyCity());
