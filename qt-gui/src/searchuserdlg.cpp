@@ -57,11 +57,12 @@ SearchUserView::SearchUserView(QWidget *parent)
   addColumn(tr("Name"), 120);
   addColumn(tr("Email"), 120);
   addColumn(tr("Status"), 70);
-  addColumn(tr("Sex & Age"),70);
+  addColumn(tr("Sex & Age"), 70);
+  addColumn(tr("Authorize"), 65);
 
   setAllColumnsShowFocus (true);
   setMinimumHeight(150);
-  setMinimumWidth(440);
+  setMinimumWidth(600);
 #if QT_VERSION >= 210
   setSelectionMode(QListView::Extended);
   setShowSortIndicator(true);
@@ -74,6 +75,7 @@ SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
   QString qsStatus;
   QString qsGender;
   QString qsAge;
+  QString qsAuth;
   
   uinVal = s->Uin();
   setText(0, QString::fromLocal8Bit(s->Alias()));
@@ -108,6 +110,9 @@ SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
   }
   qsAge = (s->Age()) ? QString::number(s->Age()) : QChar('?');
   setText(5, qsGender + '/' + qsAge);
+  
+  qsAuth =(s->Auth() ? SearchUserView::tr("No") : SearchUserView::tr("Yes"));
+  setText(6, qsAuth);
 }
 
 
@@ -258,7 +263,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   top_lay->addWidget(foundView, 2);
 
   lay = new QHBoxLayout(top_lay, 20);
-
+  
   qcbAlertUser = new QCheckBox(tr("A&lert User"), this);
   qcbAlertUser->setChecked(true);
 
