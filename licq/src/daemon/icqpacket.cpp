@@ -781,6 +781,33 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck()
 }
 #endif
 
+
+//-----CPU_SetRandomChatGroup------------------------------------------------
+CPU_SetRandomChatGroup::CPU_SetRandomChatGroup(unsigned long nGroup)
+ : CPacketUdp(ICQ_CMDxSND_SETxRANDOMxCHAT)
+{
+  m_nGroup = nGroup;
+
+  m_nSize += 4;
+  InitBuffer();
+
+  buffer->PackUnsignedLong(m_nGroup);
+}
+
+
+//-----CPU_RandomChatSearch--------------------------------------------------
+CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
+ : CPacketUdp(ICQ_CMDxSND_RANDOMxSEARCH)
+{
+  m_nGroup = nGroup;
+
+  m_nSize += 4;
+  InitBuffer();
+
+  buffer->PackUnsignedLong(m_nGroup);
+}
+
+
 //-----Meta_SetWorkInfo------------------------------------------------------
 CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName, const char *szLastName,

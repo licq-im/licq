@@ -47,6 +47,7 @@ const unsigned short ICQ_CMDxRCV_UPDATExAUTHxFAIL  = 0x01F4; // 500
 const unsigned short ICQ_CMDxRCV_UPDATEDxAUTH      = 0x01FE; // 510
 const unsigned short ICQ_CMDxRCV_MULTIxPACKET      = 0x0212; // 530
 const unsigned short ICQ_CMDxRCV_USERxLISTxDONE    = 0x021C; // 540
+const unsigned short ICQ_CMDxRCV_RANDOMxUSERxFOUND = 0x0258; // 600
 const unsigned short ICQ_CMDxRCV_META              = 0x03DE; // 990
 
 const unsigned short ICQ_CMDxSND_ACK               = 0x000A; //   10
@@ -74,6 +75,8 @@ const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x050A; // 1290
 const unsigned short ICQ_CMDxSND_UPDATExAUTH       = 0x0514; // 1300
 const unsigned short ICQ_CMDxSND_PING2             = 0x051E; // 1310
 const unsigned short ICQ_CMDxSND_USERxADD          = 0x053C; // 1340
+const unsigned short ICQ_CMDxSND_SETxRANDOMxCHAT   = 0x0564; // 1380
+const unsigned short ICQ_CMDxSND_RANDOMxSEARCH     = 0x056E; // 1390
 const unsigned short ICQ_CMDxSND_META              = 0x064A; // 1610
 const unsigned short ICQ_CMDxSND_INVISIBLExLIST    = 0x06A4; // 1700
 const unsigned short ICQ_CMDxSND_VISIBLExLIST      = 0x06AE; // 1710
@@ -174,5 +177,17 @@ const unsigned long ICQ_STATUS_FxPRIVATE           = 0x00000100;
 const unsigned long ICQ_STATUS_FxWEBxPRESENCE      = 0x00010000;
 const unsigned long ICQ_STATUS_FxHIDExIP           = 0x00020000;
 const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;  // not done
+
+const unsigned long ICQ_RANDOMxCHATxGROUP_NONE     = 0xFFFFFFFF;
+const unsigned long ICQ_RANDOMxCHATxGROUP_GENERAL  = 1;
+const unsigned long ICQ_RANDOMxCHATxGROUP_ROMANCE  = 2;
+const unsigned long ICQ_RANDOMxCHATxGROUP_GAMES    = 3;
+const unsigned long ICQ_RANDOMxCHATxGROUP_STUDENTS = 4;
+const unsigned long ICQ_RANDOMxCHATxGROUP_20SOME   = 6;
+const unsigned long ICQ_RANDOMxCHATxGROUP_30SOME   = 7;
+const unsigned long ICQ_RANDOMxCHATxGROUP_40SOME   = 8;
+const unsigned long ICQ_RANDOMxCHATxGROUP_50PLUS   = 9;
+const unsigned long ICQ_RANDOMxCHATxGROUP_MxSEEKxF = 10;
+const unsigned long ICQ_RANDOMxCHATxGROUP_FxSEEKxM = 11;
 
 #endif

@@ -319,6 +319,32 @@ unsigned short CICQDaemon::icqSearchByUin(unsigned long nUin)
 }
 
 
+//-----icqSetRandomChatGroup-------------------------------------------------
+CICQEventTag *CICQDaemon::icqSetRandomChatGroup(unsigned long nGroup)
+{
+  CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(nGroup);
+  gLog.Info("%sSetting random chat group (#%d)...\n", L_UDPxSTR,
+            p->getSequence());
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
+}
+
+
+//-----icqRandomChatSearch---------------------------------------------------
+CICQEventTag *CICQDaemon::icqRandomChatSearch(unsigned long nGroup)
+{
+  CPU_RandomChatSearch *p = new CPU_RandomChatSearch(nGroup);
+  gLog.Info("%sSearching for random chat user (#%d)...\n", L_UDPxSTR,
+            p->getSequence());
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
+}
+
+
 //-----icqPing------------------------------------------------------------------
 void CICQDaemon::icqPing()
 {
@@ -1009,6 +1035,67 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     e->m_sSearchAck = new CSearchAck(0);
     e->m_sSearchAck->cMore = more;
     ProcessDoneEvent(e);
+    break;
+  }
+
+  case ICQ_CMDxRCV_RANDOMxUSERxFOUND:
+  {
+    unsigned long nUin, nIp, nRealIp, nStatus;
+    unsigned short nPort, nJunk, nTcpVersion;
+    char nMode;
+
+    if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+    packet >> nUin;
+
+    if (nUin == 0)
+    {
+      gLog.Info("%sNo random chat user found.\n", L_UDPxSTR);
+      ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_RANDOMxSEARCH, nSubSequence, EVENT_FAILED);
+      if (e == NULL)
+      {
+        gLog.Warn("%sReceived random chat user when no search in progress.\n", L_WARNxSTR);
+        break;
+      }
+      ProcessDoneEvent(e);
+      break;
+    }
+
+    gLog.Info("%sRandom chat user found (%ld).\n", L_UDPxSTR, nUin);
+    packet >> nIp >> nPort >> nJunk >> nRealIp >> nMode
+           >> nStatus >> nTcpVersion;
+    nIp = PacketIpToNetworkIp(nIp);
+    nRealIp = PacketIpToNetworkIp(nRealIp);
+
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    bool bNewUser = false;
+    if (u == NULL)
+    {
+      u = new ICQUser(nUin);
+      bNewUser = true;
+    }
+    u->SetIpPort(nIp, nPort);
+    u->SetRealIp(nRealIp);
+    u->SetMode(nMode);
+    u->SetVersion(nTcpVersion);
+    if (nMode != MODE_DIRECT)
+      u->SetSendServer(true);
+    u->SetStatus(nStatus);
+    u->SetAutoResponse(NULL);
+    if (bNewUser)
+      AddUserToList(u);
+    else
+      gUserManager.DropUser(u);
+
+    // Return the event to the plugin
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_RANDOMxSEARCH, nSubSequence, EVENT_SUCCESS);
+    if (e == NULL)
+    {
+      gLog.Warn("%sReceived random chat user when no search in progress.\n", L_WARNxSTR);
+      break;
+    }
+    e->m_sSearchAck = new CSearchAck(nUin);
+    ProcessDoneEvent(e);
+
     break;
   }
 
@@ -1821,7 +1908,11 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetHideIp(p->HideIp());
       o->SetEnableSave(true);
       o->SaveLicqInfo();
+      unsigned short s = o->StatusFull();
       gUserManager.DropOwner();
+      // Set status to ensure the status flags are set
+      CICQEventTag *t = icqSetStatus(s);
+      delete t;
       e->m_nSubResult = META_DONE;
       break;
     }

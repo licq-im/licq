@@ -131,6 +131,8 @@ public:
   CICQEventTag *icqSetAbout(const char *szAbout);
   CICQEventTag *icqSetPassword(const char *szPassword);
   CICQEventTag *icqSetStatus(unsigned short newStatus);
+  CICQEventTag *icqSetRandomChatGroup(unsigned long nGroup);
+  CICQEventTag *icqRandomChatSearch(unsigned long nGroup);
 
   unsigned short icqSearchByInfo(const char *, const char *, const char *, const char *);
   unsigned short icqSearchByUin(unsigned long);

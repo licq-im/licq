@@ -352,6 +352,27 @@ public:
 };
 
 
+//-----SetRandomChatGroup----------------------------------------------------
+class CPU_SetRandomChatGroup : public CPacketUdp
+{
+public:
+  CPU_SetRandomChatGroup(unsigned long nGroup);
+protected:
+  unsigned long m_nGroup;
+};
+
+
+
+//-----RandomChatSearch----------------------------------------------------
+class CPU_RandomChatSearch : public CPacketUdp
+{
+public:
+  CPU_RandomChatSearch(unsigned long nGroup);
+protected:
+  unsigned long m_nGroup;
+};
+
+
 
 //-----Meta_SetWorkInfo------------------------------------------------------
 class CPU_Meta_SetGeneralInfo : public CPacketUdp

@@ -967,23 +967,24 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   case ICQ_CMDxSND_SEARCHxUIN:
   case ICQ_CMDxSND_REGISTERxUSER:
   case ICQ_CMDxSND_META:
+  case ICQ_CMDxSND_RANDOMxSEARCH:
     switch (e->m_eResult)
     {
-    case EVENT_ERROR:
-    case EVENT_TIMEDOUT:
-    case EVENT_FAILED:
-    case EVENT_SUCCESS:
-    case EVENT_CANCELLED:
-      PushPluginEvent(e);
-      break;
-    case EVENT_ACKED:  // push to extended event list
-      PushExtendedEvent(e);
-      break;
-    default:
-      gLog.Error("%sInternal error: ProcessDoneEvents_tep(): Invalid result for extended event (%d).\n",
-                 L_ERRORxSTR, e->m_eResult);
-      delete e;
-      return;
+      case EVENT_ERROR:
+      case EVENT_TIMEDOUT:
+      case EVENT_FAILED:
+      case EVENT_SUCCESS:
+      case EVENT_CANCELLED:
+        PushPluginEvent(e);
+        break;
+      case EVENT_ACKED:  // push to extended event list
+        PushExtendedEvent(e);
+        break;
+      default:
+        gLog.Error("%sInternal error: ProcessDoneEvents_tep(): Invalid result for extended event (%d).\n",
+                   L_ERRORxSTR, e->m_eResult);
+        delete e;
+        return;
     }
     break;
 
