@@ -34,7 +34,17 @@ KDE
 
 Gnome
 
-5. Set the Licq icon to 64.48 using the options menu, and restart licq.
-6. Select "Swallow App" from the gnome panel menu.
-7. Set "Title =  LicqWharf", "Width =  64", "Height = 48".
+1. Start licq and enable a dock icon. The dock icon appears on the 
+   desktop
+2. In de panel choose Panel->Add to Panel->Swallowed App...
+3. Title of appl: LicqWharf
+   Width=64, Height=48
+4. Press OK
+5. You now get an EMPTY swallowed icon. Licq still is on the desktop.
+6. Remove the emty icon from the panel now.
+   Both the empty swallowed icon AND the licq icon on the desktop 
+   disappear!! 
+   Keep licq running..
+7. Repeat steps 2, 3 and 4.
+   Now the licq dock icon correctly appears in the panel as wanted.
 
