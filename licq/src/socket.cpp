@@ -803,7 +803,7 @@ bool TCPSocket::SSL_Pending()
   return (m_pSSL && SSL_pending(m_pSSL));
 #else
   return false;
-#endif;
+#endif
 }
 
 
