@@ -28,7 +28,7 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
   outputBox = new CLogWidget(this);
   outputBox->setMinimumHeight(outputBox->frameWidth()*2
                               + 16*outputBox->fontMetrics().lineSpacing());
-  outputBox->setMinimumWidth((outputBox->minimumHeight()*3)/2);
+  outputBox->setMinimumWidth(outputBox->minimumHeight()*2);
   top_lay->addWidget(outputBox);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 8);
