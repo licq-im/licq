@@ -183,6 +183,7 @@ INetSocket::INetSocket(unsigned long _nOwner)
 {
   m_nDescriptor = -1;
   m_nOwner = _nOwner;
+  m_nVersion = 0;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
 
@@ -217,13 +218,13 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
   switch(d)
   {
   case D_SENDER:
-    gLog.Packet("%sPacket (%s, %ld bytes) sent (%s:%d -> %s:%d):\n%s\n",
-                L_PACKETxSTR, m_szID, b->getDataSize(), LocalIpStr(szIpL),
+    gLog.Packet("%sPacket (%sv%d, %ld bytes) sent (%s:%d -> %s:%d):\n%s\n",
+                L_PACKETxSTR, m_szID, Version(), b->getDataSize(), LocalIpStr(szIpL),
                 LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   case D_RECEIVER:
-     gLog.Packet("%sPacket (%s, %ld bytes) received (%s:%d <- %s:%d):\n%s\n",
-                L_PACKETxSTR, m_szID, b->getDataSize(), LocalIpStr(szIpL),
+     gLog.Packet("%sPacket (%sv%d, %ld bytes) received (%s:%d <- %s:%d):\n%s\n",
+                L_PACKETxSTR, m_szID, Version(), b->getDataSize(), LocalIpStr(szIpL),
                 LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   }
@@ -517,10 +518,8 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_sLocalAddr = from.m_sLocalAddr;
   m_sRemoteAddr = from.m_sRemoteAddr;
   ClearRecvBuffer();
-//---ACK IS THIS OK???---
   from.m_nDescriptor = -1;
   from.CloseSocket();
-//-----------------------
   OpenSocket();
 }
 
