@@ -1940,7 +1940,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
       m_sProgressMsg = tr("Sending msg ");
-      m_sProgressMsg += bOnline ? tr("through server") : tr("direct");
+      m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
          nLevel, 0);
@@ -1950,7 +1950,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
       m_sProgressMsg = tr("Sending URL ");
-      m_sProgressMsg += bOnline ? tr("through server") : tr("direct");
+      m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
          bOnline, nLevel, 0);
@@ -2050,7 +2050,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         msg = tr("%1 is in %2 mode:\n%3\n")
                  .arg(u->GetAlias()).arg(u->StatusStr()).arg(u->AutoResponse());
         gUserManager.DropUser(u);
-        switch (QueryUser(this, msg, tr("Send Urgent"), tr("Send to Contact List"), tr("Cancel")))
+        switch (QueryUser(this, msg, tr("Send\nUrgent"), tr("Send to\nContact List"), tr("Cancel")))
         {
           case 0:
             RetrySend(e, true, ICQ_TCPxMSG_URGENT);
