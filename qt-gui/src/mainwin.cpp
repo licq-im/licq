@@ -188,7 +188,7 @@ static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
 
 //-----CMainWindow::constructor-------------------------------------------------
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
-                         CQtLogWindow *theLogWindow,
+                         CQtLogWindow *theLogWindow, bool bStartHidden,
                          const char *skinName, const char *iconsName,
                          QWidget *parent, const char *name) : QWidget(parent, name)
 {
@@ -408,7 +408,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    manualAway = 0;
 
    setGeometry(xPos, yPos, wVal, hVal);
-   if (!bHidden) show();
+   if (!bHidden && !bStartHidden) show();
 
    // automatically logon if requested in conf file
    if (m_nAutoLogon > 0)
@@ -537,13 +537,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblMsg->setIndent(skin->lblMsg.margin);
   lblMsg->setNamedFgColor(skin->lblMsg.color.fg);
   lblMsg->setNamedBgColor(skin->lblMsg.color.bg);
-  /*if (skin->lblMsg.transparent)
-  {
-    QPixmap *p = MakeTransparentBg(pmBorder, skin->borderToRect(&skin->lblMsg, pmBorder));
-    lblMsg->setBackgroundPixmap(*p);
-    delete p;
-  }
-  else*/ if (skin->lblMsg.pixmap != NULL)
+  if (skin->lblMsg.pixmap != NULL)
     lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
   connect(lblMsg, SIGNAL(doubleClicked()), this, SLOT(callMsgFunction()));
   QToolTip::add(lblMsg, tr("Right click - User groups\n"
@@ -558,13 +552,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblStatus->setIndent(skin->lblStatus.margin);
   lblStatus->setNamedFgColor(skin->lblStatus.color.fg);
   lblStatus->setNamedBgColor(skin->lblStatus.color.bg);
-  /*if (skin->lblStatus.transparent)
-  {
-    QPixmap *p = MakeTransparentBg(pmBorder, skin->borderToRect(&skin->lblStatus, pmBorder));
-    lblStatus->setBackgroundPixmap(*p);
-    delete p;
-  }
-  else*/ if (skin->lblStatus.pixmap != NULL)
+  if (skin->lblStatus.pixmap != NULL)
     lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
   connect(lblStatus, SIGNAL(doubleClicked()), this, SLOT(slot_AwayMsgDlg()));
   QToolTip::add(lblStatus, tr("Right click - Status menu\n"
@@ -892,6 +880,7 @@ void CMainWindow::updateEvents()
   if (nNumOwnerEvents > 0)
   {
     lblMsg->setText(tr("SysMsg"));
+    lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
   }
   else if (nNumUserEvents > 0)
@@ -899,6 +888,7 @@ void CMainWindow::updateEvents()
     lblMsg->setText(tr("%1 msg%2")
                     .arg(nNumUserEvents)
                     .arg(nNumUserEvents == 1 ? tr(" ") : tr("s")));
+    lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
   }
   else
@@ -909,6 +899,7 @@ void CMainWindow::updateEvents()
     else
       lblMsg->setText(tr("No msgs"));
     szCaption = m_szCaption;
+    lblMsg->setBold(false);
   }
   lblMsg->update();
   setCaption(szCaption);

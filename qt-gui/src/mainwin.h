@@ -50,7 +50,7 @@ class CMainWindow : public QWidget
   Q_OBJECT
 public:
   CMainWindow(CICQDaemon *theServer, CSignalManager *theSigMan,
-              CQtLogWindow *theLogWindow,
+              CQtLogWindow *theLogWindow, bool bStartHidden,
               const char *skinName, const char *iconsName,
               QWidget *parent = 0, const char *name = 0);
   virtual ~CMainWindow();
