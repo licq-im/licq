@@ -2768,7 +2768,7 @@ Folgende Parameter können verwendet werden:
     </message>
     <message>
         <source>Startup</source>
-        <translation>Start</translation>
+        <translation>Programmstart</translation>
     </message>
     <message>
         <source>Status:</source>
