@@ -547,7 +547,10 @@ QWidget* OptionsDlg::new_sounds_options()
                                   "%l - last name\n"
                                   "%u - uin\n"
                                   "%w - webpage\n"
-                                  "%h - phone number"));
+                                  "%h - phone number\n"
+                                  "%s - full status\n"
+                                  "%S - abbrieviated status\n"
+                                  "%o - last seen online"));
   edtSndPlayer = new QLineEdit(hor);
 
   boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
