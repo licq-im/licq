@@ -676,7 +676,7 @@ msgstr ""
 
 #: mainwin.cpp:2183
 msgid "CMainWindow::"
-"Licq version %1.\n"
+"Licq version %1%8.\n"
 "Qt GUI plugin version %2.\n"
 "Compiled on: %7\n"
 "%6\n"
@@ -686,7 +686,7 @@ msgid "CMainWindow::"
 "%3 (%4)\n"
 "%5 contacts."
 msgstr ""
-"Версия Licq: %1.\n"
+"Версия Licq: %1%8.\n"
 "Версия Qt GUI модуля: %2.\n"
 "Дата сборки: %7\n"
 "%6\n"
@@ -1699,7 +1699,6 @@ msgstr "Licq - Защищенное соединение с %1"
 #: keyrequestdlg.cpp:126
 msgid "KeyRequestDlg::Requesting secure channel..."
 msgstr "Запрашиваем защищенное соединение..."
-
 
 #: keyrequestdlg.cpp:34
 msgid "KeyRequestDlg::"
@@ -3109,11 +3108,11 @@ msgstr "Отдел:"
 
 #: userinfodlg.cpp:204
 msgid "UserInfoDlg::EMail 1:"
-msgstr ""
+msgstr "Первый EMail:"
 
 #: userinfodlg.cpp:208
 msgid "UserInfoDlg::EMail 2:"
-msgstr ""
+msgstr "Второй EMail:"
 
 #: userinfodlg.cpp:748
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
@@ -3181,7 +3180,7 @@ msgstr "Сейчас"
 
 #: userinfodlg.cpp:212
 msgid "UserInfoDlg::Old Email:"
-msgstr ""
+msgstr "Старый Email:"
 
 #: userinfodlg.cpp:180
 msgid "UserInfoDlg::Online:"
