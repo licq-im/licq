@@ -766,13 +766,6 @@ void CUserView::resizeEvent(QResizeEvent *e)
 {
   QListView::resizeEvent(e);
 
-#if 0
-  // this code is evil. we let the user configure
-  // the colum widths and here we overwrite the
-  // settings.
-  // In addition, this code causes some sideeffects
-  // during resizing wich look funny and they can't
-  // be fixed as well as slowing resize down.
   unsigned short totalWidth = 0;
   unsigned short nNumCols = header()->count();
   for (unsigned short i = 0; i < nNumCols - 1; i++)
@@ -790,7 +783,6 @@ void CUserView::resizeEvent(QResizeEvent *e)
     setHScrollBarMode(AlwaysOff);
     setColumnWidth(nNumCols - 1, newWidth);
   }
-#endif
 }
 
 
