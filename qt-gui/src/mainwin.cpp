@@ -2604,32 +2604,35 @@ void CMainWindow::slot_miscmodes(int _nId)
   case 6:
     u->SetAutoSecure( !u->AutoSecure() );
     break;
+  case 7:
+    u->SetSendRealIp( !u->SendRealIp() );
+    break;
 
-  case 8:
+  case 9:
     if (u->StatusToUser() == ICQ_STATUS_ONLINE)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_ONLINE);
-      break;
-  case 9:
+    break;
+  case 10:
     if (u->StatusToUser() == ICQ_STATUS_AWAY)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_AWAY);
     break;
-  case 10:
+  case 11:
     if (u->StatusToUser() == ICQ_STATUS_NA)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_NA);
     break;
-  case 11:
+  case 12:
     if (u->StatusToUser() == ICQ_STATUS_OCCUPIED)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_OCCUPIED);
     break;
-  case 12:
+  case 13:
     if (u->StatusToUser() == ICQ_STATUS_DND)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
@@ -3076,6 +3079,7 @@ void CMainWindow::initMenu()
    mnuMiscModes->insertItem(tr("Auto Accept Files" ) );
    mnuMiscModes->insertItem(tr("Auto Accept Chats" ) );
    mnuMiscModes->insertItem(tr("Auto Request Secure" ) );
+   mnuMiscModes->insertItem(tr("Use Real Ip (LAN)" ) );
    mnuMiscModes->insertSeparator();
    mnuMiscModes->insertItem(tr("Online to User"));
    mnuMiscModes->insertItem(tr("Away to User"));
@@ -3159,11 +3163,12 @@ void CMainWindow::slot_usermenu()
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(4), u->AutoFileAccept());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(5), u->AutoChatAccept());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(6), u->AutoSecure());
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(8), u->StatusToUser() == ICQ_STATUS_ONLINE);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(9), u->StatusToUser() == ICQ_STATUS_AWAY);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(10), u->StatusToUser() == ICQ_STATUS_NA);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(11), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(12), u->StatusToUser() == ICQ_STATUS_DND);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(7), u->SendRealIp());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(9), u->StatusToUser() == ICQ_STATUS_ONLINE);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(10), u->StatusToUser() == ICQ_STATUS_AWAY);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(11), u->StatusToUser() == ICQ_STATUS_NA);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(12), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(13), u->StatusToUser() == ICQ_STATUS_DND);
   mnuMiscModes->setItemEnabled(6, gLicqDaemon->CryptoEnabled());
   mnuUser->setItemChecked(mnuUserCustomAutoResponse, u->CustomAutoResponse()[0] != '\0');
   // Send modes
