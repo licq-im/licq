@@ -926,6 +926,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       }
       // Otherwise an event was added or removed
       updateEvents();
+      // autoRaise if needed
+      if(m_bAutoRaise && sig->Argument() > 0)  raise();
+
       if (m_bAutoPopup && sig->Argument() > 0)
       {
         ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -936,10 +939,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           unsigned short s = o->Status();
           gUserManager.DropOwner();
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
-          {
-            raise();
             callFunction(mnuUserView, nUin);
-          }
         }
         else
         {
@@ -1447,9 +1447,8 @@ void CMainWindow::changeStatus(int id)
 
 void CMainWindow::callDefaultFunction(QListViewItem *i)
 {
-  if(i == NULL || ((m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
-                   && i->parent() == NULL))
-     return;
+  if(i == NULL)
+    return;
   unsigned long nUin = ((CUserViewItem *)i)->ItemUin();
   //userView->SelectedItemUin();
   if (nUin == 0) return;
