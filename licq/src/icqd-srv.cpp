@@ -1010,17 +1010,20 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     case 1:
     {
       CBuffer msg = packet.UnpackTLV(0x02, 1);
-      msg.UnpackUnsignedLongBE();  // 7 bytes of junk? 05 01 00 01 01 01 01
-      msg.UnpackUnsignedShortBE();
-      msg.UnpackChar();
-      nMsgLen = msg.UnpackUnsignedShortBE();
-
-      msg.UnpackUnsignedLongBE(); // always ? 0
+      
+      // TLVs in TLV 
+      // type: 05 01: ???
+      //       01 01: 4 bytes flags? + message text
+      msg.readTLV();
+      CBuffer msgTxt = msg.UnpackTLV(0x0101, 0);
+      nMsgLen = msgTxt.getDataSize();
+      
+      msgTxt.UnpackUnsignedLongBE(); // always ? 0 
       nMsgLen -= 4;
 
       char* szMessage = new char[nMsgLen+1];
       for (int i = 0; i < nMsgLen; ++i)
-        szMessage[i] = msg.UnpackChar();
+        szMessage[i] = msgTxt.UnpackChar();
 
       szMessage[nMsgLen] = '\0';
 
