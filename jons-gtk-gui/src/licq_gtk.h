@@ -298,6 +298,8 @@ struct options_window
 	GtkWidget *window;
 	GtkWidget *show_ignored;
 	GtkWidget *show_offline;
+	GtkWidget *show_timestamp;
+	GtkWidget *txtTimestampFormat;
 	GtkWidget *enter_sends;
 	GtkWidget *flash_events;
 
@@ -493,6 +495,8 @@ extern GtkWidget *user_list_menu;
 /* Globals in option_window.cpp */
 extern bool show_offline_users;
 extern bool show_ignored_users;
+extern bool show_convo_timestamp;
+extern char timestamp_format[50];
 extern bool enter_sends;
 extern bool flash_events;
 

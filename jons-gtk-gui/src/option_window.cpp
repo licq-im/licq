@@ -27,10 +27,12 @@
 // Global variables for use in other files
 bool show_offline_users;
 bool show_ignored_users;
+bool show_convo_timestamp;
 bool enter_sends;
 bool flash_events;
+char timestamp_format[50];
 
-/* The "Options" selection under the menu in the main window */
+// The "Options" selection under the menu in the main window
 void menu_options_create()
 {
 	GtkWidget *v_box;
@@ -38,38 +40,39 @@ void menu_options_create()
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *close;
+	GtkWidget *hbox;
 	struct options_window *ow = g_new0(struct options_window, 1);
 
-	/* Make the window */
+	// Make the window
 	ow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_show(ow->window);
 	gtk_window_set_title(GTK_WINDOW(ow->window), "Licq - Options");
 
-	/* The vertical box, the main window will contain this */
+	// The vertical box, the main window will contain this
 	v_box = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(ow->window), v_box);
 
-	/* The notebook that will contain all the options */
+	// The notebook that will contain all the options
 	notebook = gtk_notebook_new();
 
-	/* The table that will be used in all the notebook pages */
+	// The table that will be used in all the notebook pages
 	table = gtk_table_new(5, 2, FALSE);
 
 /*********************** FIRST TAB *********************/ 
 	
-	/* Show ignored users in the contact list? */
+	// Show ignored users in the contact list?
 	ow->show_ignored = gtk_check_button_new_with_label("Show ignored users");
 	gtk_table_attach(GTK_TABLE(table), ow->show_ignored, 0, 1, 0, 1,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
 
-	/* Show offline users in the contact list? */
+	// Show offline users in the contact list?
 	ow->show_offline = gtk_check_button_new_with_label("Show offline users");
 	gtk_table_attach(GTK_TABLE(table), ow->show_offline, 1, 2, 0, 1,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
  
-	/* Enter key pressed in the convo window send it? */
+	// Enter key pressed in the convo window send it?
 	ow->enter_sends = gtk_check_button_new_with_label("Enter sends messages");
 	gtk_table_attach(GTK_TABLE(table), ow->enter_sends, 0, 1, 1, 2,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
@@ -80,34 +83,49 @@ void menu_options_create()
 	gtk_table_attach(GTK_TABLE(table), ow->flash_events, 1, 2, 1, 2,
 		GtkAttachOptions(GTK_FILL | GTK_EXPAND), GTK_FILL, 3, 3);
 
-	/* Set the check buttons */
-	//set_options(ow);
+	// Timestamp
+	ow->show_timestamp = gtk_check_button_new_with_label("Show timestamp in messages");
+	gtk_table_attach(GTK_TABLE(table), ow->show_timestamp, 0, 1, 2, 3,
+		GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+		GTK_FILL, 3, 3);
 
-	/* Put the table in the notebook */
+	// Timestamp format
+	hbox = gtk_hbox_new(false, 5);
+	label = gtk_label_new("Timestamp Format:");
+	ow->txtTimestampFormat = gtk_entry_new_with_max_length(50);
+	gtk_widget_set_usize(ow->txtTimestampFormat, 80, 20);
+	gtk_box_pack_start(GTK_BOX(hbox), label, false, 0, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), ow->txtTimestampFormat, false, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 2, 3,
+		GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+		GTK_FILL, 3,3 );
+	
+
+	// Put the table in the notebook
 	label = gtk_label_new("General");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
 /**************** Second tab: Contact List Colors ****************/
 	
-	/* Recreate the table */
+	// Recreate the table
 	table = gtk_table_new(5, 2, FALSE);
 
-	/* The table for the color selection in the "Contact List Colors" frame */
+	// The table for the color selection in the "Contact List Colors" frame
 	GtkWidget *clr_table = gtk_table_new(3, 3, FALSE);
 	
-	/* Colors frame and attach it to the table and also a table for inside **
-	 * the frame */
+	// Colors frame and attach it to the table and also a table for inside
+	// the frame
 	GtkWidget *color_frame = gtk_frame_new("Contact List Colors");
 	gtk_table_attach(GTK_TABLE(table), color_frame, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 3, 3);
 	gtk_container_add(GTK_CONTAINER(color_frame), clr_table);
 
-	/* Online color label */
+	// Online color label
 	label = gtk_label_new("Online Color");
 	gtk_table_attach(GTK_TABLE(clr_table), label, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 3, 3);
 	
-	/* Online color browse button */
+	// Online color browse button
 	int *chg_on_color = new int;
 	*chg_on_color = 1;
 	
@@ -118,12 +136,12 @@ void menu_options_create()
 	gtk_table_attach(GTK_TABLE(clr_table), online_browse, 2, 3, 0, 1,
 			 GTK_FILL, GTK_FILL, 3, 3);
 
-	/* Offline color label */
+	// Offline color labe
 	label = gtk_label_new("Offline Color");
 	gtk_table_attach(GTK_TABLE(clr_table), label, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 3, 3);
 
-	/* Offline color browse button */
+	// Offline color browse button
 	int *chg_off_color = new int;
 	*chg_off_color = 2;
 	
@@ -321,6 +339,10 @@ void set_options(struct options_window *ow)
 		enter_sends);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->flash_events),
 		flash_events);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_timestamp),
+		show_convo_timestamp);
+	gtk_entry_set_text(GTK_ENTRY(ow->txtTimestampFormat),
+		timestamp_format);
 
 	// Clist of servers
 
@@ -347,20 +369,27 @@ void done_options(GtkWidget *widget, gpointer data)
 		GTK_TOGGLE_BUTTON(ow->show_offline));
 	show_ignored_users = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(ow->show_ignored));
+	show_convo_timestamp = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(ow->show_timestamp));
 	enter_sends = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->enter_sends));
 	flash_events = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
 		ow->flash_events));
+	gchar *temp = gtk_editable_get_chars(GTK_EDITABLE(ow->txtTimestampFormat), 0, -1);
+	strcpy(timestamp_format, temp);
+	g_free(temp);
 	
-	gtk_widget_destroy(ow->window);
-
 	// Save the daemon options
-	icq_daemon->setDefaultRemotePort(gtk_spin_button_get_value_as_int(
-		GTK_SPIN_BUTTON(ow->spnDefPort)));
-	icq_daemon->SetTCPPorts(gtk_spin_button_get_value_as_int(
-		GTK_SPIN_BUTTON(ow->spnPortLow)),
-		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnPortHigh)));
-	icq_daemon->SetTCPEnabled(!gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(ow->chkTCPEnabled)));
+	icq_daemon->setDefaultRemotePort(
+	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnDefPort)));
+
+	icq_daemon->SetTCPPorts(
+	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnPortLow)),
+	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnPortHigh)));
+	
+	icq_daemon->SetTCPEnabled(
+	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->chkTCPEnabled)));
+
+	gtk_widget_destroy(ow->window);
 
 	icq_daemon->SaveConf();
 
@@ -388,6 +417,8 @@ void done_options(GtkWidget *widget, gpointer data)
 	licqConf.WriteBool("ShowIgnoredUsres", show_ignored_users);
 	licqConf.WriteBool("EnterSends", enter_sends);
 	licqConf.WriteBool("FlashEvents", flash_events);
+	licqConf.WriteBool("ShowTimestamp", show_convo_timestamp);
+	licqConf.WriteStr("TimestampFormat", timestamp_format);
 
 	licqConf.FlushFile();
 	licqConf.CloseFile();
@@ -433,6 +464,8 @@ void load_options()
 	licqConf.ReadBool("ShowIgnoredUsers", show_ignored_users, false);
 	licqConf.ReadBool("EnterSends", enter_sends, true);
 	licqConf.ReadBool("FlashEvents", flash_events, true);
+	licqConf.ReadBool("ShowTimestamp", show_convo_timestamp, true);
+	licqConf.ReadStr("TimestampFormat", timestamp_format, "%H:%M:%S");
 }
 
 void show_on_color_dlg(GtkWidget *widget, gpointer data)

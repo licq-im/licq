@@ -24,6 +24,7 @@
 #include "licq_user.h"
 
 #include <string.h>
+#include <time.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -409,9 +410,26 @@ void convo_recv(gulong uin)
 		const gchar *for_user_m =
 	            g_strdup_printf(":  %s\n", message);
 
+		char szTime[26];
+		if (show_convo_timestamp)
+		{
+			time_t message_time = u_event->Time();
+			struct tm *_tm = localtime(&message_time);
+			strftime(szTime, 26, timestamp_format, _tm);
+		}
+
 		gtk_text_freeze(GTK_TEXT(c->text));
 		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0,
 				c->user->GetAlias(), -1);
+		
+		if (show_convo_timestamp)
+		{
+			char *temp_stamp = g_strdup_printf(" (%s)", szTime);
+			gtk_text_insert(GTK_TEXT(c->text), 0, red, 0,
+				temp_stamp, -1);
+			g_free(temp_stamp);
+		}
+		
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_m, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
  	}
