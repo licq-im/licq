@@ -93,6 +93,9 @@ public:
   FlashType m_nFlash;
   CSkin *skin;
 
+  unsigned long m_nCurrentGroup;
+  GroupType m_nGroupType;
+
 public slots:
   void callInfoTab(int, unsigned long);
 
@@ -156,10 +159,7 @@ protected:
                  manualAway,
                  m_nRealHeight;
 
-  unsigned long m_nCurrentGroup;
   DockMode m_nDockMode;
-  GroupType m_nGroupType;
-
   int mouseX, mouseY;
 
   // Functions
@@ -174,13 +174,10 @@ protected:
   virtual void closeEvent (QCloseEvent *);
   virtual void keyPressEvent(QKeyEvent *e);
 
-friend class WharfIcon;
-friend class IconManager_Default;
-friend class OptionsDlg;
-friend class CUserViewItem;
-//friend class UserViewEvent;
-//friend class UserEventCommon;
-//friend class UserSendCommon;
+  friend class WharfIcon;
+  friend class IconManager_Default;
+  friend class OptionsDlg;
+  friend class CUserViewItem;
 
 protected slots:
   void slot_removeUserFromGroup();

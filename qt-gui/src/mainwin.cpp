@@ -943,12 +943,13 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                    L_ERRORxSTR, nUin);
         break;
       }
-      if(m_bThreadView) {
-        CUserViewGroupItem* i = static_cast<CUserViewGroupItem*>(userView->firstChild());
+      if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
+      {
+        CUserViewItem* i = userView->firstChild();
 
         while(i) {
           if(u->GetInGroup(GROUPS_USER, i->GroupId())) {
-            CUserViewItem* it = static_cast<CUserViewItem*>(i->firstChild());
+            CUserViewItem* it = i->firstChild();
 
             while(it) {
               if(it->ItemUin() == nUin) {
@@ -957,7 +958,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                   (void) new CUserViewItem(u, i);
                 break;
               }
-              it = static_cast<CUserViewItem*>(it->nextSibling());
+              it = it->nextSibling();
             }
             if(it == NULL) {
               if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) || !u->StatusOffline()) &&
@@ -965,7 +966,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                 (void) new CUserViewItem(u, i);
             }
           }
-          i = static_cast<CUserViewGroupItem*>(i->nextSibling());
+          i = i->nextSibling();
         }
       }
       else if(u->GetInGroup(m_nGroupType, m_nCurrentGroup))
@@ -988,9 +989,10 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
-        if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
-          userView->AnimationOnline(nUin);
       }
+
+      if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
+        userView->AnimationOnline(nUin);
       // Update their floaty
       CUserView *v = CUserView::FindFloaty(nUin);
       if (v != NULL )
@@ -1025,19 +1027,48 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
                    L_ERRORxSTR, sig->Uin());
         break;
       }
-      if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
-          (m_bShowOffline || !u->StatusOffline()) )
-        (void) new CUserViewItem(u, userView);
+
+      if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
+      {
+        CUserViewItem* i = userView->firstChild();
+
+        while(i)
+        {
+          if(u->GetInGroup(GROUPS_USER, i->GroupId()) &&
+             (m_bShowOffline || !u->StatusOffline() || (!m_bShowOffline && u->NewMessages() > 0)))
+            (void) new CUserViewItem(u, i);
+
+          i = i->nextSibling();
+        }
+      }
+      else
+      {
+
+        if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
+            (m_bShowOffline || !u->StatusOffline() || (!m_bShowOffline && u->NewMessages() > 0)) )
+          (void) new CUserViewItem(u, userView);
+      }
       gUserManager.DropUser(u);
       break;
     }
 
     case LIST_REMOVE:
     {
-      CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-      while (i != NULL && i->ItemUin() != sig->Uin())
-        i = (CUserViewItem *)i->nextSibling();
-      if (i != NULL) delete i;
+      // delete their entries in the user list
+      QListViewItemIterator it(userView);
+      while(it.current())
+      {
+        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
+
+        if(sig->Uin() > 0 && item->ItemUin() == sig->Uin()) {
+          ++it;
+          delete item;
+          item = 0;
+        }
+        else
+          ++it;
+      }
+
       updateEvents();
       // If their box is open, kill it
       {
@@ -1078,10 +1109,15 @@ void CMainWindow::updateUserWin()
   userView->setUpdatesEnabled(false);
   userView->clear();
 
-  if(m_bThreadView) {
+  bool doGroupView = m_bThreadView &&
+    m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0;
+
+  if(doGroupView) {
+    (void) new CUserViewItem(0, tr("All Users"), userView);
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     for (unsigned short i = 0; i < g->size(); i++) {
-      CUserViewGroupItem* gi = new CUserViewGroupItem(i, (*g)[i], userView);
+      CUserViewItem* gi = new CUserViewItem(i+1, (*g)[i], userView);
+      // FIXME This should respect users settings
       gi->setOpen(true);
     }
     gUserManager.UnlockGroupList();
@@ -1089,7 +1125,7 @@ void CMainWindow::updateUserWin()
   FOR_EACH_USER_START(LOCK_R)
   {
     // Only show users on the current group and not on the ignore list
-    if (!m_bThreadView && (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+    if (!doGroupView && (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
       (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) ))
       FOR_EACH_USER_CONTINUE
 
@@ -1097,15 +1133,12 @@ void CMainWindow::updateUserWin()
     if (!m_bShowOffline && pUser->StatusOffline() && pUser->NewMessages() == 0)
       FOR_EACH_USER_CONTINUE;
 
-    if(m_bThreadView) {
-      CUserViewGroupItem* gi = static_cast<CUserViewGroupItem*>(userView->firstChild());
-
-      while(gi) {
-        if(pUser->GetInGroup(GROUPS_USER, gi->GroupId()))
-        {
+    if(doGroupView) {
+      for(CUserViewItem* gi = userView->firstChild(); gi; gi = gi->nextSibling())
+      {
+        if((gi->GroupId() != 0 && pUser->GetInGroup(GROUPS_USER, gi->GroupId())) ||
+           (gi->GroupId() == 0 && !pUser->IgnoreList()))
           (void) new CUserViewItem(pUser, gi);
-        }
-        gi = static_cast<CUserViewGroupItem*>(gi->nextSibling());
       }
     }
     else
@@ -1377,7 +1410,8 @@ void CMainWindow::changeStatus(int id)
 
 void CMainWindow::callDefaultFunction(QListViewItem *i)
 {
-  if(i == NULL || (m_bThreadView && i->parent() == NULL))
+  if(i == NULL || ((m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
+                   && i->parent() == NULL))
      return;
   unsigned long nUin = ((CUserViewItem *)i)->ItemUin();
   //userView->SelectedItemUin();
@@ -1703,7 +1737,8 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     default:
       qDebug("unknown callFunction() fcn: %d", fcn);
   }
-  e->show();
+  if(e != NULL)
+    e->show();
   return e;
 }
 
@@ -1775,7 +1810,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
         InformUser(this, tr("Successfully registered, your user identification\n"
                             "number (UIN) is %1.\n"
                             "Now set your personal information.").arg(gUserManager.OwnerUin()));
-        callFunction(mnuUserGeneral, gUserManager.OwnerUin());
+        callInfoTab(mnuUserGeneral, gUserManager.OwnerUin());
       }
       else
       {
@@ -1829,6 +1864,10 @@ void CMainWindow::slot_removeUserFromGroup()
 
 bool CMainWindow::RemoveUserFromGroup(unsigned long nUin, QWidget *p)
 {
+  // FIXME removing from group doesn't work in thread view
+  if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
+    return false;
+
   if (m_nGroupType == GROUPS_USER)
   {
     if (m_nCurrentGroup == 0)
@@ -1876,8 +1915,10 @@ void CMainWindow::saveAllUsers()
 //-----CMainWindow::addUserToGroup---------------------------------------------
 void CMainWindow::addUserToGroup(int _nId)
 {
-  //gUserManager.AddUserToGroup(userView->SelectedItemUin(), mnuGroup->indexOf(_nId) + 1);
   gUserManager.AddUserToGroup(m_nUserMenuUin, mnuGroup->indexOf(_nId) + 1);
+
+  if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
+    updateUserWin();
 }
 
 void CMainWindow::slot_updateContactList()

@@ -36,6 +36,10 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+#include "xpm/itemCollapsed.xpm"
+#include "xpm/itemExpanded.xpm"
+
 #undef Status
 
 #define FLASH_TIME 800
@@ -51,20 +55,64 @@ QColor  *CUserViewItem::s_cOnline = NULL,
 CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   : QListViewItem(parent)
 {
+  if(listView()->parent() == NULL)
+    listView()->setCaption(CUserView::tr("%1 Floaty (%2)")
+                           .arg(_cUser->GetAlias()).arg(_cUser->Uin()));
+
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
   setGraphics(_cUser);
 }
 
 
-CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewGroupItem* item)
-  : QListViewItem(item)
+CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
+  : QListViewItem(item),
+    m_sGroupName()
 {
-//  qDebug("inserting item %ld in group %s", _cUser->Uin(), item->text(1).latin1());
-
+  m_nGroupId = (unsigned short)(-1);
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
   setGraphics(_cUser);
+}
+
+CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
+  : QListViewItem(lv),
+    m_nGroupId(Id),
+    m_sGroupName(name)
+{
+  m_nUin = 0;
+  m_pIcon = NULL;
+  m_cBack = s_cBack;
+  m_cFore = s_cGridLines;
+  m_bItalic = m_bStrike = false;
+  m_nWeight = QFont::Bold;
+  m_bUrgent = false;
+  // All users group is sorted at the end
+  m_sSortKey = m_nGroupId ? QString::number(m_nGroupId) : QString("9999999999");
+  m_sPrefix = "1";
+  setPixmap(0, *listView()->pixCollapsed);
+  setText(1, name);
+}
+
+CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
+  : QListViewItem(parent),
+    m_sGroupName()
+{
+  m_nGroupId = (unsigned short)(-1);
+  m_nUin = 0;
+  m_pIcon = NULL;
+  m_cBack = s_cBack;
+  m_cFore = s_cOnline;
+  m_bItalic = m_bStrike = false;
+  m_nWeight = QFont::Normal;
+  m_bUrgent = false;
+  setSelectable(false);
+  setHeight(10);
+  m_sSortKey = "";
+  if (barType == BAR_ONLINE)
+    m_sPrefix = "0";
+  else
+    m_sPrefix = "2";
 }
 
 CUserViewItem::~CUserViewItem()
@@ -90,27 +138,6 @@ CUserViewItem::~CUserViewItem()
   }
 }
 
-
-CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
-   : QListViewItem(parent)
-{
-  m_nUin = 0;
-  m_pIcon = NULL;
-  m_cBack = s_cBack;
-  m_cFore = s_cOnline;
-  m_bItalic = m_bStrike = false;
-  m_nWeight = QFont::Normal;
-  m_bUrgent = false;
-  setSelectable(false);
-  setHeight(10);
-  m_sSortKey = "";
-  if (barType == BAR_ONLINE)
-    m_sPrefix = "0";
-  else
-    m_sPrefix = "2";
-}
-
-
 //-----CUserViewItem::setGraphics-----------------------------------------------
 void CUserViewItem::setGraphics(ICQUser *u)
 {
@@ -124,13 +151,19 @@ void CUserViewItem::setGraphics(ICQUser *u)
    if (u->StatusOffline())
    {
      v->numOffline++;
-     if (v->barOffline == NULL && v->parent() && gMainWindow->m_bShowDividers )
+     if (v->barOffline == NULL && v->parent()
+         && gMainWindow->m_bShowDividers
+         && !(gMainWindow->m_bThreadView && gMainWindow->m_nGroupType == GROUPS_USER
+              && gMainWindow->m_nCurrentGroup == 0))
        v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
    }
    else
    {
      v->numOnline++;
-     if (v->barOnline == NULL && v->parent() && gMainWindow->m_bShowDividers )
+     if (v->barOnline == NULL && v->parent()
+         && gMainWindow->m_bShowDividers &&
+         !(gMainWindow->m_bThreadView && gMainWindow->m_nGroupType == GROUPS_USER
+           && gMainWindow->m_nCurrentGroup == 0))
        v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
    }
 
@@ -268,7 +301,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   else
     p->fillRect( 0, 0, width, height(), cg.base());
 
-  if (m_nUin != 0)
+  if (m_nUin != 0 || (m_nUin == 0 && m_nGroupId < (unsigned short)(-1)))
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
     // If this is a floaty then don't draw the highlight box
@@ -365,31 +398,32 @@ void CUserViewItem::drawCAROverlay(QPainter* p)
 
 void CUserView::timerEvent(QTimerEvent* e)
 {
-#warning FIXME
-  if(gMainWindow->m_bThreadView)
-    return;
-
-  CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
+  bool doGroupView = gMainWindow->m_bThreadView &&
+    gMainWindow->m_nGroupType == GROUPS_USER &&
+    gMainWindow->m_nCurrentGroup == 0;
 
   if(e->timerId() == carTimerId)
   {
-    // find the item
-    CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
+    QListViewItemIterator it(this);
 
-    if(carCounter > 0) {
-      while(it) {
-        if(it->ItemUin() == carUin) {
+    if(carCounter > 0 && carUin > 0) {
+      QPainter p(viewport());
+      for(; it.current(); ++it)
+      {
+        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-          QPainter p(viewport());
-          it->drawCAROverlay(&p);
-          break;
+        if(item->ItemUin() == carUin)
+        {
+          if(carCounter == 1)
+            item->repaint();
+          else
+            item->drawCAROverlay(&p);
+          if(!doGroupView)  break;
         }
-        it = static_cast<CUserViewItem*>(it->nextSibling());
       }
     }
 
-    if(!it || (--carCounter == 0)) {
-      if(it) it->repaint();
+    if(--carCounter == 0) {
       carUin = 0;
       killTimer(carTimerId);
       carTimerId = 0;
@@ -397,47 +431,53 @@ void CUserView::timerEvent(QTimerEvent* e)
   }
   else if(e->timerId() == onlTimerId)
   {
-    // find the item
-    CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
-
-    if(onlCounter > 0) {
-      while(it) {
-        if(it->ItemUin() == onlUin) {
-          it->repaint();
-          break;
+    QListViewItemIterator it(this);
+    bool found = false;
+    if(onlUin > 0)
+    {
+      for(; it.current(); ++it)
+      {
+        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
+        if(item->ItemUin() == onlUin)
+        {
+          found = true;
+          item->repaint();
+          if(!doGroupView)  break;
         }
-        it = static_cast<CUserViewItem*>(it->nextSibling());
       }
     }
 
-    if(!it || (--onlCounter == 0)) {
-      if(it) it->repaint();
+    if(!found || (--onlCounter == 0)) {
       onlUin = 0;
       killTimer(onlTimerId);
       onlTimerId = 0;
     }
-
-    return;
   }
   else
   {
-    if(m_nFlashCounter++ & 1)
+    if(m_nFlashCounter++ & 1) // hide event icon
     {
-      // hide
-      while(it) {
-        if(it->ItemUin())  it->setPixmap(0, *it->m_pIconStatus);
-        it = static_cast<CUserViewItem*>(it->nextSibling());
+      QListViewItemIterator it(this);
+      for(; it.current(); ++it)
+      {
+        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
+        if(item->ItemUin())  item->setPixmap(0, *item->m_pIconStatus);
       }
     }
     else {
       // show
       bool foundIcon = false;
-      while(it) {
-        if(it->ItemUin() && it->m_pIcon != NULL && it->m_pIcon != it->m_pIconStatus) {
+      QListViewItemIterator it(this);
+
+      for(; it.current(); ++it)
+      {
+        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
+        if(item->ItemUin() && item->m_pIcon != NULL &&
+           item->m_pIcon != item->m_pIconStatus)
+        {
           foundIcon = true;
-          it->setPixmap(0, *it->m_pIcon);
+          item->setPixmap(0, *item->m_pIcon);
         }
-        it = static_cast<CUserViewItem*>(it->nextSibling());
       }
       // no pending messages any more, kill timer
       if(!foundIcon) {
@@ -457,64 +497,10 @@ QString CUserViewItem::key (int column, bool ascending) const
     return(m_sPrefix + QListViewItem::key(column, ascending));
 }
 
-
-CUserViewGroupItem::CUserViewGroupItem(unsigned short Id, const char* name, QListView* lv)
-  : QListViewItem(lv)
-{
-  setText(1, name);
-
-  m_nId = Id;
-  m_sName = strdup(name);
-}
-
-CUserViewGroupItem::~CUserViewGroupItem()
-{
-  free(m_sName);
-}
-
-QString CUserViewGroupItem::key(int column, bool ascending) const
-{
-  if(column == 0)
-    return QString("1") +  QString::number((int)m_nId);
-  else
-    return QString("1") + QListViewItem::key(column, ascending);
-}
-
-void  CUserViewGroupItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
-{
-  QFont newFont(p->font());
-  newFont.setBold(true);
-  p->setFont(newFont);
-  QListViewItem::paintCell(p, cg, column, width, align);
-
-#if 0
-  int x1 = 0, x2 = width;
-  if (column == 0)
-    x1 = 5;
-  if (column == listView()->header()->count() - 1)
-    x2 = width - 5;
-  p->setPen(QPen(QColor(128, 128, 128), 1));
-  p->drawLine(x1, height() >> 1, x2, height() >> 1);
-  p->setPen(QPen(QColor(255, 255, 255), 1));
-  p->drawLine(x1, (height() >> 1) + 1, x2, (height() >> 1) + 1);
-  if (column == 1)
-  {
-    QString sz = m_sName;
-
-    p->fillRect(5, 0, p->fontMetrics().width(sz) + 6, height(), black);
-    QFont f(p->font());
-    f.setPointSize(f.pointSize() - 2);
-    p->setFont(f);
-    p->drawText(8, 0, width - 8, height(), AlignVCenter, sz);
-  }
-#endif
-}
-
 UserFloatyList* CUserView::floaties = 0;
 
-
 //-----UserList::constructor-----------------------------------------------------------------------
-CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
+CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   : QListView(parent, name)
 {
   m_nFlashCounter = carCounter = onlCounter = 0;
@@ -534,18 +520,27 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
 
   viewport()->setAcceptDrops(true);
 
+#if QT_VERSION >= 210
+  setShowSortIndicator(true);
+#endif
   setRootIsDecorated(gMainWindow->m_bThreadView);
   setAllColumnsShowFocus(true);
-  setTreeStepSize(10);
+  setTreeStepSize(0);
   setSorting(0);
+
+  pixCollapsed = new QPixmap(itemCollapsed_xpm);
+  pixExpanded = new QPixmap(itemExpanded_xpm);
 
   if (parent != NULL)
   {
     setShowHeader(gMainWindow->m_bShowHeader);
     setFrameStyle(gMainWindow->skin->frame.frameStyle);
+    connect(this, SIGNAL(expanded(QListViewItem*)), this, SLOT(itemExpanded(QListViewItem*)));
+    connect(this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(itemCollapsed(QListViewItem*)));
   }
   else
   {
+    setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);
     WId win = winId();
@@ -603,13 +598,6 @@ CUserView *CUserView::FindFloaty(unsigned long nUin)
   if(i<floaties->size()) return floaties->at(i);
 
   return NULL;
-}
-
-
-void CUserView::hideEvent(QHideEvent *)
-{
-  if (parent() == NULL)
-    close(true);
 }
 
 
@@ -753,7 +741,6 @@ void CUserView::viewportDropEvent(QDropEvent* e)
 
 void CUserView::keyPressEvent(QKeyEvent *e)
 {
-  QListViewItem *item = NULL;
   if (e->state() & ControlButton || e->state() & AltButton)
   {
     e->ignore();
@@ -763,41 +750,52 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 
   switch (e->key())
   {
+    case Key_Return:
+    case Key_Enter:
     case Key_Space:
     {
-      // Get the menu width (512 when not initialized; used sane value)
-      if (currentItem() == NULL) return;
-      int nMenuWidth = mnuUser->width();
-      if ( 512 == nMenuWidth )
-         nMenuWidth = 120;
-      // Calculate where to position the menu
-      const QListViewItem *pcItem = currentItem();
-      QPoint cRelPos( (width() - nMenuWidth)/2,
-                     itemPos(pcItem) + pcItem->height() );
-      QPoint cPos( mapToGlobal( cRelPos ) );
-      gMainWindow->SetUserMenuUin(((CUserViewItem*)pcItem)->ItemUin());
-      mnuUser->popup( cPos );
+      CUserViewItem* item = static_cast<CUserViewItem*>(currentItem());
+      if(item == NULL) return;
+
+      if(item->isGroupItem()) {
+        setOpen(item, !item->isOpen());
+        return;
+      }
+
+      // user divider
+      if(item->ItemUin() == 0)  return;
+      gMainWindow->SetUserMenuUin(item->ItemUin());
+      mnuUser->popup(mapToGlobal(QPoint(40, itemPos(item))));
       return;
     }
 
     case Key_Home:
-      item = firstChild();
-      if (item == NULL) return;
-      if (((CUserViewItem *)item)->ItemUin() == 0)
-        item = item->nextSibling();
-      setCurrentItem(item);
-      setSelected(item, true);
-      ensureItemVisible(item);
+    {
+
+      QListViewItemIterator it(this);
+
+      while(it.current() != NULL &&
+            ((CUserViewItem*)(it.current()))->ItemUin() == 0)  ++it;
+      setSelected(it.current(), true);
+      ensureItemVisible(it.current());
       return;
+    }
 
     case Key_End:
-      item = firstChild();
-      if (item == NULL) return;
-      while (item->nextSibling()) item = item->nextSibling();
-      setCurrentItem(item);
-      setSelected(item, true);
-      ensureItemVisible(item);
+    {
+
+      QListViewItemIterator it(this);
+      QListViewItem* lastitem = 0;
+      while(it.current() != NULL) {
+        lastitem = it.current();
+        ++it;
+      }
+      it = lastitem;
+      while(it.current() && ((CUserViewItem*)(it.current()))->ItemUin() == 0)  --it;
+      setSelected(it.current(), true);
+      ensureItemVisible(it.current());
       return;
+    }
 
     default:
     {
@@ -808,34 +806,35 @@ void CUserView::keyPressEvent(QKeyEvent *e)
         return;
       }
 
-      QListViewItem *item = currentItem() != NULL ? currentItem()->nextSibling() : firstChild();
+      QListViewItemIterator it(currentItem() != NULL ? currentItem() : firstChild());
+      if(currentItem() != NULL)  ++it;
 
-      while (item != NULL)
+      while (it.current() != NULL)
       {
+        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
         if (item->text(1).at(0).lower().latin1() == ascii)
         {
           setSelected(item, true);
-          setCurrentItem(item);
           ensureItemVisible(item);
           return;
         }
-        item = item->nextSibling();
+        it++;
       }
 
       // Check the first elements if we didn't find anything yet
       if (currentItem() != NULL)
       {
-        item = firstChild();
-        while (item != NULL && item != currentItem())
+        it = firstChild();
+        while (it.current() != NULL && it.current() != currentItem())
         {
+          CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
           if (item->text(1).at(0).lower().latin1() == ascii)
           {
             setSelected(item, true);
-            setCurrentItem(item);
             ensureItemVisible(item);
             return;
           }
-          item = item->nextSibling();
+          ++it;
         }
       }
 
@@ -942,6 +941,20 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 }
 
 
+// -----------------------------------------------------------------------------
+
+void CUserView::itemExpanded(QListViewItem* i)
+{
+  if(i != NULL && pixExpanded != NULL)
+    i->setPixmap(0, *pixExpanded);
+}
+
+void CUserView::itemCollapsed(QListViewItem* i)
+{
+  if(i != NULL && pixCollapsed != NULL)
+    i->setPixmap(0, *pixCollapsed);
+}
+
 //=====CUserViewTips===============================================================================
 
 CUserViewTips::CUserViewTips(CUserView* parent)
@@ -957,11 +970,7 @@ void CUserViewTips::maybeTip(const QPoint& c)
   if(w->header()->isVisible())
     p.setY(p.y()-w->header()->height());
 
-  QListViewItem* i = w->itemAt(p);
-  if(gMainWindow->m_bThreadView && i != NULL && i->parent() == NULL)
-    return;
-
-  CUserViewItem* item = static_cast<CUserViewItem*>(i);
+  CUserViewItem* item = static_cast<CUserViewItem*>(w->itemAt(p));
   if(item && item->m_nUin)
   {
     QRect r(w->itemRect(item));
