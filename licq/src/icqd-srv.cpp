@@ -1244,23 +1244,33 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
       return (-1);
     }
     s->SetProxy(m_xProxy);
-  } else if (m_xProxy != NULL)
+  }
+  else if (m_xProxy != NULL)
   {
     delete m_xProxy;
     m_xProxy = NULL;
   }
   
-  gLog.Info("%sResolving %s port %d...\n", L_SRVxSTR, server, port);
-  if (!s->SetRemoteAddr(server, port)) {
-    char buf[128];
-    gLog.Warn("%sUnable to resolve %s:\n%s%s.\n", L_ERRORxSTR,
-              server, L_BLANKxSTR, s->ErrorStr(buf, 128));
-    delete s;
-    return (-1); // no route to host (not connected)
-  }
   char ipbuf[32];
-  gLog.Info("%sICQ server found at %s:%d.\n", L_SRVxSTR,
+
+  if (m_xProxy == NULL)
+  {
+    gLog.Info("%sResolving %s port %d...\n", L_SRVxSTR, server, port);
+    if (!s->SetRemoteAddr(server, port)) {
+      char buf[128];
+      gLog.Warn("%sUnable to resolve %s:\n%s%s.\n", L_ERRORxSTR,
+                server, L_BLANKxSTR, s->ErrorStr(buf, 128));
+      delete s;
+      return (-1); // no route to host (not connected)
+    }
+    gLog.Info("%sICQ server found at %s:%d.\n", L_SRVxSTR,
 	      s->RemoteIpStr(ipbuf), s->RemotePort());
+  }
+  else
+  {
+    // It doesn't matter if it resolves or not, the proxy should do it then
+    s->SetRemoteAddr(server, port);
+  }
 
   if (m_xProxy == NULL)
     gLog.Info("%sOpening socket to server.\n", L_SRVxSTR);
