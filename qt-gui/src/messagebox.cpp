@@ -10,6 +10,7 @@
 #include "licq_message.h"
 #include "messagebox.h"
 #include "eventdesc.h"
+#include "gui-defines.h"
 
 MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(parent)
 {
@@ -19,8 +20,9 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   QString sd = d.toString();
   sd.truncate(sd.length() - 5);
 
-  setText(0, EventDescription(msg));
-  setText(1, sd);
+  setText(0, msg->Direction() == D_SENDER ? "S" : "R");
+  setText(1, EventDescription(msg));
+  setText(2, sd);
 }
 
 MsgViewItem::~MsgViewItem(void)
@@ -29,21 +31,16 @@ MsgViewItem::~MsgViewItem(void)
 }
 
 
-void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+void MsgViewItem::paintCell( QPainter * p, const QColorGroup &cgdefault,
+   int column, int width, int align )
 {
-  QFont f(p->font());
-  /*if (index != -1)
-  {
-    f.setItalic(true);
-    p->setFont(f);
-    QListViewItem::paintCell(p, QColorGroup(cg.foreground(), cg.background(), cg.light(), cg.dark(), cg.mid(), QColor("blue"), cg.base()), column, width, align);
-  }
-  else*/
-  {
-    f.setItalic(false);
-    p->setFont(f);
-    QListViewItem::paintCell(p, cg, column, width, align);
-  }
+  QColorGroup cg(cgdefault);
+  if (msg->Direction() == D_SENDER)
+    cg.setColor(QColorGroup::Text, COLOR_SENT);
+  else
+    cg.setColor(QColorGroup::Text, COLOR_RECEIVED);
+
+  QListViewItem::paintCell(p, cg, column, width, align);
 
   // add line to bottom and right side
   p->setPen(cg.mid());
@@ -56,10 +53,12 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, i
 MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
 {
-  addColumn(tr("Event Type"), 215);
-  addColumn(tr("Time Received"), 115);
-  setAllColumnsShowFocus (true);
+  addColumn(tr("D"), 20);
+  addColumn(tr("Event Type"), 180);
+  addColumn(tr("Time Received"), 130);
+  //setAllColumnsShowFocus (true);
   setVScrollBarMode(AlwaysOn);
+  setSorting(-1);
 
   header()->hide();
 
@@ -94,7 +93,7 @@ void MsgView::resizeEvent(QResizeEvent *e)
 {
   QListView::resizeEvent(e);
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(1, width() - 220 - s->width());
+  setColumnWidth(1, width() - 155 - s->width());
 }
 
 #if 0

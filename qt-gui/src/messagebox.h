@@ -4,6 +4,8 @@
 #include <qlistview.h>
 #include <qtooltip.h>
 
+#include "licq_constants.h"
+
 class CUserEvent;
 class MsgView;
 
