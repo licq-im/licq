@@ -1307,14 +1307,26 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                      CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendChatEvent")
 {
+  m_nMPChatPort = 0;
   chkSendServer->setChecked(false);
   chkSendServer->setEnabled(false);
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
 
-  QBoxLayout *lay = new QVBoxLayout(mainWidget);
+  QBoxLayout *lay = new QVBoxLayout(mainWidget, 8);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
+
+  QBoxLayout* h_lay = new QHBoxLayout(lay);
+  lblItem = new QLabel(tr("Multiparty: "), mainWidget);
+  h_lay->addWidget(lblItem);
+
+  edtItem = new CInfoField(mainWidget, false);
+  h_lay->addWidget(edtItem);
+
+  btnBrowse = new QPushButton(tr("Invite"), mainWidget);
+  connect(btnBrowse, SIGNAL(clicked()), this, SLOT(InviteUser()));
+  h_lay->addWidget(btnBrowse);
 
   m_sBaseTitle += tr(" - Chat Request");
   setCaption(m_sBaseTitle);
@@ -1324,6 +1336,33 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
 
 UserSendChatEvent::~UserSendChatEvent()
 {
+}
+
+void UserSendChatEvent::InviteUser()
+{
+  if (m_nMPChatPort == 0)
+  {
+    if (ChatDlg::chatDlgs.size() > 0)
+    {
+      ChatDlg *chatDlg = NULL;
+      CJoinChatDlg *j = new CJoinChatDlg(true, this);
+      if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
+      {
+        edtItem->setText(j->ChatClients());
+        m_nMPChatPort = chatDlg->LocalPort();
+        m_szMPChatClients = chatDlg->ChatClients();
+      }
+      delete j;
+      btnBrowse->setText(tr("Clear"));
+    }
+  }
+  else
+  {
+    m_nMPChatPort = 0;
+    m_szMPChatClients = "";
+    edtItem->setText("");
+    btnBrowse->setText(tr("Invite"));
+  }
 }
 
 

@@ -250,12 +250,15 @@ public:
 protected:
   QLabel *lblItem;
   CInfoField *edtItem;
+  QPushButton *btnBrowse;
   QString m_szMPChatClients;
   unsigned short m_nMPChatPort;
   virtual bool sendDone(ICQEvent *);
 
 protected slots:
   virtual void sendButton();
+
+  void InviteUser();
 };
 
 
