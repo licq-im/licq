@@ -404,8 +404,6 @@ char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
  *---------------------------------------------------------------------------*/
 char *CIniFile::GetKeyFromLine(char *_szLine, char *_szBuffer)
 {
-  //static char s_szKeyName[MAX_KEYxNAME_LEN];
-
   if (_szLine == NULL) return NULL;
 
   // Skip the line if it is blank or a comment
@@ -437,7 +435,7 @@ char *CIniFile::GetKeyFromLine(char *_szLine, char *_szBuffer)
  * Extracts the data from a given line, ie the characters after the '='.
  * Returns NULL if the given line is NULL or there is no '=' on the line.
  *---------------------------------------------------------------------------*/
-char *CIniFile::GetDataFromLine(char *_szLine, char *_szBuffer)
+char *CIniFile::GetDataFromLine(char *_szLine, char *_szBuffer, bool bTrim)
 {
   //static char s_szData[MAX_LINE_LEN];
   char *szPostEquals;
@@ -459,7 +457,7 @@ char *CIniFile::GetDataFromLine(char *_szLine, char *_szBuffer)
     }
 
     strcpy(szData, szPostEquals + 1);
-    Trim(szData);
+    if (bTrim) Trim(szData);
     AddNewLines(_szBuffer, szData);
   }
   return (_szBuffer);
@@ -534,7 +532,8 @@ bool CIniFile::SetSection(const char *_szSection)
 /*-----ReadStr-----------------------------------------------------------------
  * Finds a key and sets the data.  Returns false if the key does not exist.
  *---------------------------------------------------------------------------*/
-bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault)
+bool CIniFile::ReadStr(const char *szKey, char *szData,
+   const char *szDefault, bool bTrim)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
 
@@ -546,16 +545,16 @@ bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault
     sz = GetKeyFromLine(szLine, szKeyBuffer);
     if (sz == NULL)
     {
-       if (szLine == NULL) Warn(INI_ExNOKEY, _szKey);
-       if (_szDefault != NULL) strcpy(_szData, _szDefault);
+       if (szLine == NULL) Warn(INI_ExNOKEY, szKey);
+       if (szDefault != NULL) strcpy(szData, szDefault);
        return (false);
     }
   }
-  while (strcmp(sz, _szKey) != 0);
+  while (strcmp(sz, szKey) != 0);
 
-  if ((sz = GetDataFromLine(szLine, _szData)) == NULL)
+  if ((sz = GetDataFromLine(szLine, szData, bTrim)) == NULL)
   {
-    if (_szDefault != NULL) strcpy(_szData, _szDefault);
+    if (szDefault != NULL) strcpy(szData, szDefault);
     return (false);
   }
   return (true);

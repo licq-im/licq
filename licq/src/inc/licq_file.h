@@ -49,7 +49,7 @@ public:
 
   bool SetSection(const char *_szSectionName);
   bool CreateSection(const char *_szSectionName);
-  bool ReadStr(const char *_szKey, char *_szData, const char *_szDefault = NULL);
+  bool ReadStr(const char *_szKey, char *_szData, const char *_szDefault = NULL, bool bTrim = true);
   bool ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault = 0);
   bool ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault = 0);
   bool ReadNum(const char *_szKey, signed short &data, const signed short _nDefault = 0);
@@ -85,7 +85,7 @@ protected:
   char *ReadLine(char *_szBuffer);
   char *GetSectionFromLine(char *_szLine, char *_szBuffer);
   char *GetKeyFromLine(char *_szLine, char *_szBuffer);
-  char *GetDataFromLine(char *_szLine, char *_szBuffer);
+  char *GetDataFromLine(char *_szLine, char *_szBuffer, bool bTrim = true);
   void Warn(int nError, const char *_sz = NULL);
   void InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd);
 
