@@ -458,6 +458,11 @@ void CMSN::ProcessSignal(CSignal *s)
     }
 
     case PROTOxSENDxREFUSExAUTH:
+    {
+//      CRefuseAuthSignal *sig = static_cast<CRefuseAuthSignal *>(s);
+      break;
+    }
+
     default:
       break;  //Do nothing now...
   }
@@ -546,17 +551,17 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     free(tag);
     m_szCookie = 0;
   }
-  else if (strFirstLine == "HTTP/1.1 302 Object moved")
+  else if (strFirstLine == "HTTP/1.1 302 Found")
   {
     m_pSSLPacket->ParseHeaders();
     string strAuthHeader = m_pSSLPacket->GetValue("WWW-Authenticate");
     string strToSend = strAuthHeader.substr(strAuthHeader.find(" ") + 1, strAuthHeader.size() - strAuthHeader.find(" "));
 
     string strLocation = m_pSSLPacket->GetValue("Location");
-    string::size_type pos = strLocation.find("/", 8);
+    string::size_type pos = strLocation.find("/", 9);
     if (pos != string::npos)
     {
-      string strHost = strLocation.substr(7, pos - 7);
+      string strHost = strLocation.substr(8, pos - 8);
       string strParam = strLocation.substr(pos, strLocation.size() - pos);
       gSocketMan.CloseSocket(m_nSSLSocket, false, true);
       m_nSSLSocket = -1;
@@ -821,6 +826,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         string strNick = m_pPacketBuf->GetParameter();
         gLog.Info("%s%s logged in.\n", L_MSNxSTR, strNick.c_str());
         
+        // This cookie doesn't work anymore now that we are online
+        if (m_szCookie)
+        {
+          free(m_szCookie);
+          m_szCookie = 0;
+        }
+
         pReply = new CPS_MSNSync(m_nListVersion);
       }
       else
@@ -1125,7 +1137,7 @@ sock->RemotePort());
 
   gSocketMan.AddSocket(sock);
   m_nSSLSocket = sock->Descriptor();
-  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, m_szPassword, strParam.c_str());
+  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, m_szPassword, m_szCookie);
   sock->SSLSend(pHello->getBuffer());
   gSocketMan.DropSocket(sock);
 }
@@ -1160,9 +1172,6 @@ void CMSN::MSNAuthenticate(char *szCookie)
   CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, m_szPassword, szCookie);
   sock->SSLSend(pHello->getBuffer());
   gSocketMan.DropSocket(sock);
-
-  free(szCookie);
-  szCookie = 0;
 }
 
 bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)

@@ -76,7 +76,7 @@ void CMSNPayloadPacket::InitBuffer()
 CPS_MSNVersion::CPS_MSNVersion() : CMSNPacket()
 {
   m_szCommand = strdup("VER");
-  char szParams[] = "MSNP8 CVR0";
+  char szParams[] = "MSNP9 MSNP8 CVR0";
   m_nSize += strlen(szParams);
   InitBuffer();
  
