@@ -527,7 +527,11 @@ void ChatDlg::chatRecv()
         if (!iscntrl(chatChar))
         {
            gTranslator.ServerToClient(chatChar);
-           mleRemote->appendChar(chatChar);
+	   //FIXME (this is quick and dirty fix)
+           char tempStr[2];
+           tempStr[0]=chatChar;
+           tempStr[1]=0;
+           mleRemote->appendNNL(QString::fromLocal8Bit(tempStr));
         }
         chatQueue.pop_front();
         break;
