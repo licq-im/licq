@@ -88,7 +88,6 @@ void *ProcessRunningEvent_tep(void *p)
   }
 #endif
 
-
   // Start sending the event
   for (int i = 0; i <= MAX_SERVER_RETRIES; i++)
   {
@@ -100,7 +99,7 @@ void *ProcessRunningEvent_tep(void *p)
     INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
     if (s == NULL)
     {
-      gLog.Warn("%sSocked not connected or invalid (#%d).\n", L_WARNxSTR, e->m_nSequence);
+      gLog.Warn("%sSocket not connected or invalid (#%d).\n", L_WARNxSTR, e->m_nSequence);
       if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
       pthread_exit(NULL);
     }
@@ -462,7 +461,7 @@ void *MonitorSockets_tep(void *p)
                 tcp->ClearRecvBuffer();
                 gSocketManager.DropSocket(tcp);
                 if (!d->ProcessTcpPacket(b, nCurrentSocket))
-                  gSocketManager.CloseSocket(nCurrentSocket, false);
+                  gSocketManager.CloseSocket(nCurrentSocket);
               }
             }
             else
