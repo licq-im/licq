@@ -59,7 +59,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
         fi
       done
 
-      if test -z "$qt_libdir"; then 
+      if test -z "$ac_qt_libdir"; then 
         for qt_dir in $qt_library_dirs; do
           if test -r $qt_dir/libqt.so.2 || test -r $qt_dir/libqt.so.3; then
             ac_qt_libname=-lqt
