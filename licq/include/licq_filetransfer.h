@@ -186,7 +186,8 @@ public:
   unsigned short LocalPort() { return ftServer.LocalPort(); }
   const char *LocalName()  { return m_szLocalName; }
   direction Direction() { return m_nDirection; }
-
+  unsigned long Uin() { return m_nUin; }
+  
   // Available after FT_STARTxBATCH
   const char *RemoteName()  { return m_szRemoteName; }
   unsigned short BatchFiles() { return m_nBatchFiles; }
