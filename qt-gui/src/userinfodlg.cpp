@@ -1128,12 +1128,15 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-'
-      );
+               );
       mlvHistory->append(s);
       // We break the paragraph here, since the history text
       // could be in a different BiDi directionality than the
       // header and timestamp text.
-      s.sprintf("<font color=\"%s\">%s</font><br>", color, MLView::toRichText(messageText, true).utf8().data());
+      s.sprintf("<font color=\"%s\">%s</font><br>",
+                color,
+                MLView::toRichText(messageText, true).utf8().data()
+               );
       mlvHistory->append(s);
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only
