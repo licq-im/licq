@@ -615,6 +615,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QDateTime date;
   date.setTime_t(e->Time());
   QString sd = date.time().toString();
+  bool bUseHTML = false;
 
   QString contactName;
   QTextCodec *codec = QTextCodec::codecForLocale();
@@ -627,6 +628,15 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
       codec = UserCodec::codecForICQUser(u);
       if (e->Direction() == D_RECEIVER)
         contactName = codec->toUnicode(u->GetAlias());
+      for (int x = 0; x < strlen(m_szId); x++)
+      {
+        if (!isdigit(m_szId[x]))
+        {
+          bUseHTML = true;
+          break;
+        }
+      }
+
       gUserManager.DropUser(u);
     }
   }
@@ -668,7 +678,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsEncrypted() ? 'E' : '-',
             contactName.utf8().data(),
             color,
-            MLView::toRichText(messageText, true).utf8().data()
+            MLView::toRichText(messageText, true, bUseHTML).utf8().data()
            );
   append(s);
 #else

@@ -23,7 +23,7 @@ public:
   void setForeground(const QColor&);
   void setHandleLinks(bool enable);
 
-  static QString toRichText(const QString& s, bool highlightURLs = false);
+  static QString toRichText(const QString& s, bool highlightURLs = false, bool useHTML = false);
 public slots:
   virtual void setSource(const QString& name);
 private:
