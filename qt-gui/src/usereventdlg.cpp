@@ -1809,7 +1809,7 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
   if (!e->ExtendedAck()->Accepted())
   {
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    QString result = tr("File transfer with %2 refused:\n%3").arg(u->GetAlias()).arg(e->ExtendedAck()->Response());
+    QString result = tr("File transfer with %2 refused:\n%3").arg(codec->toUnicode(u->GetAlias())).arg(e->ExtendedAck()->Response());
     gUserManager.DropUser(u);
     InformUser(this, result);
   }
@@ -1925,7 +1925,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
   if (!e->ExtendedAck()->Accepted())
   {
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    QString result = tr("Chat with %2 refused:\n%3").arg(u->GetAlias())
+    QString result = tr("Chat with %2 refused:\n%3").arg(codec->toUnicode(u->GetAlias()))
                      .arg(e->ExtendedAck()->Response());
     gUserManager.DropUser(u);
     InformUser(this, result);
