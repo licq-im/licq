@@ -133,6 +133,7 @@ void OptionsDlg::SetupOptions()
   edtFont->setText(qApp->font().rawName());
 #endif
   edtEditFont->setFont(MLEditWrap::editFont);
+  ((QWidget*)edtEditFont)->setFont(MLEditWrap::editFont, true);
   edtEditFont->setText(edtEditFont->font().rawName());
 
   chkGridLines->setChecked(mainwin->gridLines);
@@ -250,8 +251,10 @@ void OptionsDlg::SetupOptions()
 //-----OptionsDlg::ApplyOptions----------------------------------------------
 void OptionsDlg::ApplyOptions()
 {
-  MLEditWrap::editFont = edtEditFont->font();
-  QFont f = edtFont->font();
+  QFont f;
+  f.setRawName(edtEditFont->text());
+  MLEditWrap::editFont = f;
+  f.setRawName(edtFont->text());
 #ifdef USE_KDE
   kapp->setFont(f, true);
 #else
@@ -366,7 +369,7 @@ void OptionsDlg::ApplyOptions()
 void OptionsDlg::slot_selectfont()
 {
   bool fontOk;
-  QFont f = QFontDialog::getFont(&fontOk, this);
+  QFont f = QFontDialog::getFont(&fontOk, edtFont->font(), this);
   if (fontOk) {
     edtFont->setFont(f);
     edtFont->setText(f.rawName());
@@ -376,7 +379,7 @@ void OptionsDlg::slot_selectfont()
 void OptionsDlg::slot_selecteditfont()
 {
   bool fontOk;
-  QFont f = QFontDialog::getFont(&fontOk, this);
+  QFont f = QFontDialog::getFont(&fontOk, edtEditFont->font(), this);
   if (fontOk) {
     edtEditFont->setFont(f);
     setWState(WState_FontFixed);
