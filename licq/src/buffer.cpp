@@ -743,17 +743,19 @@ char *CBuffer::print(char *&p)
 
    if (nBytesToPrint != getDataSize())
      pPos += sprintf(pPos, "...");
-   else if (i % 16 != 0)
+   else
    {
-     szAscii[(i % 16)] = '\0';
-     if ( (i % 16) <= 8)
-     {
-       strcpy(pPos, " ");
-       pPos++;
-     }
+     if ( (i % 16) && (i % 16) <= 8)
+       pPos += sprintf(pPos, " ");
+
+     szAscii[i % 16] = '\0';
+
      while (i++ % 16 != 0)
        pPos += sprintf(pPos, "   ");
+
      pPos += sprintf(pPos, "  %s", szAscii);
+
+     *pPos = '\0';
    }
 
    return(p);
