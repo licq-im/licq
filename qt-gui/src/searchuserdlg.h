@@ -39,8 +39,7 @@ class SearchUserView : public QListView
 {
    Q_OBJECT
 public:
-   SearchUserView(QWidget *parent = NULL, char *name = NULL);
-   unsigned long currentUin(void);
+   SearchUserView(QWidget *parent = 0, char *name = 0);
 };
 
 
@@ -60,9 +59,7 @@ class SearchUserDlg : public QDialog
    Q_OBJECT
 public:
    SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan,
-                  QWidget *parent = NULL, const char *name = NULL);
-
-   ~SearchUserDlg();
+                  QWidget *parent =0, const char *name = 0);
 
 private:
    bool uin_search;
@@ -71,30 +68,30 @@ protected:
 
    CICQDaemon *server;
    CSignalManager *sigman;
-   QPushButton *btnSearch, *btnCancel;
+   QPushButton *btnSearch, *btnReset;
    QCheckBox* qcbAlertUser;
    QTabWidget* search_tab;
 
-   QLabel *lblEmail, *lblFirst, *lblLast, *lblNick, *lblUin;
+   QLabel *lblEmail, *lblFirst, *lblLast, *lblNick, *lblUin, *lblSearch;
    QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin;
    QWidget *alias_tab, *email_tab, *uin_tab;
 
    unsigned short searchSequence;
-   QPushButton *btnDone, *btnAdd, *btnSearchAgain;
+   QPushButton *btnDone, *btnAdd;
    SearchUserView *foundView;
-   QLabel *lblSearch;
 
    void searchFound(CSearchAck *);
    void searchDone(bool);
-   void searchFailed(void);
+   void searchFailed();
+
+   void hideEvent(QHideEvent*);
 
 public slots:
-   virtual void show();
-   virtual void hide();
    void startSearch();
    void addUser();
    void resetSearch();
-   void slot_searchResult(ICQEvent *);
+   void searchResult(ICQEvent *);
+   void selectionChanged();
 };
 
 
