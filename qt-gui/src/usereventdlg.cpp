@@ -542,7 +542,7 @@ UserEventCommon::~UserEventCommon()
   m_lUsers.clear();
 }
 
-inline bool UserEventCommon::FindUserInConvo(char *szId)
+bool UserEventCommon::FindUserInConvo(char *szId)
 {
   return (std::find(m_lUsers.begin(), m_lUsers.end(), szId) != m_lUsers.end());
 }
