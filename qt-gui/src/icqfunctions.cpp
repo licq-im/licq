@@ -228,10 +228,10 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
   chkEditHistory->setGeometry(5, height() - 100, 150, 20);
 
-  chkAutoClose->setGeometry(10, height() - 30, 180, 20);
+  chkAutoClose->setGeometry(10, height() - 30, 100, 20);
   btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
   btnOk->setGeometry(btnCancel->x() - 86, btnCancel->y(), btnCancel->width(), btnCancel->height());
-//  btnSave->setGeometry(btnOk->x() - 86, btnOk->y(), btnOk->width(), btnOk->height());
+  btnSave->setGeometry(btnOk->x() - 86, btnOk->y(), btnOk->width(), btnOk->height());
 }
 
 
@@ -436,21 +436,21 @@ void ICQFunctions::tabSelected(const QString &tab)
   {
      btnOk->setText(_("Update"));
      btnSave->setText(_("Save"));
-//     btnSave->show();
+     btnSave->show();
      currentTab = TAB_BASICINFO;
   }
   else if (tab == tabLabel[TAB_READ])
   {
      btnOk->setText(_("Ok"));
      btnSave->setText(_("Reply"));
-//     m_bIsOwner ? btnSave->hide() : btnSave->show();
+     m_bIsOwner ? btnSave->hide() : btnSave->show();
      currentTab = TAB_READ;
   }
   else if (tab == tabLabel[TAB_DETAILINFO])
   {
      btnOk->setText(_("Update"));
      btnSave->setText(_("Save"));
-//     btnSave->show();
+     btnSave->show();
      currentTab = TAB_DETAILINFO;
   }
   else if (tab == tabLabel[TAB_HISTORY])
@@ -458,7 +458,7 @@ void ICQFunctions::tabSelected(const QString &tab)
      if (mleHistory->numLines() == 1) showHistory();  // if no history, then get it
      btnOk->setText(_("Ok"));
      btnSave->setText(_("Save"));
-//     btnSave->show();
+     btnSave->show();
      currentTab = TAB_HISTORY;
   }
   else
