@@ -90,7 +90,7 @@ private:
   // Network functions
   void SendPacket(CMSNPacket *);
   void Send_SB_Packet(string &, CMSNPacket *, int = -1, bool = true);
-  void MSNLogon(const char *, int);
+  void MSNLogon(const char *, int, unsigned long);
   void MSNGetServer();
   void MSNAuthenticateRedirect(string &, string &);
   void MSNAuthenticate(char *);
@@ -132,6 +132,9 @@ private:
   list<ICQEvent *> m_pEvents;
   StartList m_lStart;
   
+  // Server variables
+  unsigned long m_nStatus;
+
   pthread_t m_tMSNPing;
   
   char *m_szUserName,

@@ -93,7 +93,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
         // Make the new connection
-        MSNLogon(szNewServer, atoi(szPort));
+        MSNLogon(szNewServer, atoi(szPort), m_nStatus);
       }
     }
     else if (strCmd == "USR")
@@ -141,7 +141,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       string strVersion = m_pPacketBuf->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
       
-      pReply = new CPS_MSNChangeStatus(ICQ_STATUS_ONLINE);
+      pReply = new CPS_MSNChangeStatus(m_nStatus);
       SendPacket(pReply);
       
       // Send our local list now
@@ -250,6 +250,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         nStatus = ICQ_STATUS_AWAY;
         
       m_pDaemon->ChangeUserStatus(o, nStatus);
+      m_nStatus = nStatus;
       gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), false));
       gUserManager.DropOwner(MSN_PPID);
     }
@@ -323,7 +324,7 @@ void CMSN::SendPacket(CMSNPacket *p)
   delete p;
 }
 
-void CMSN::MSNLogon(const char *_szServer, int _nPort)
+void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_R);
   if (!o)
@@ -353,12 +354,14 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort)
   
   CMSNPacket *pHello = new CPS_MSNVersion();
   SendPacket(pHello);
+  m_nStatus = _nStatus;
 }
 
 void CMSN::MSNChangeStatus(unsigned long _nStatus)
 {
   CMSNPacket *pSend = new CPS_MSNChangeStatus(_nStatus);
   SendPacket(pSend);
+  m_nStatus = _nStatus;
 }
 
 void CMSN::MSNLogoff()

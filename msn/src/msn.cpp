@@ -69,6 +69,7 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
   m_pPacketBuf = 0;
   m_pNexusBuff = 0;
   m_pSSLPacket = 0;
+  m_nStatus = ICQ_STATUS_OFFLINE;
   m_szUserName = 0;
   m_szPassword = 0;
   
@@ -262,7 +263,7 @@ void CMSN::Run()
             m_nServerSocket = -1;
             gSocketMan.DropSocket(sock);
             gSocketMan.CloseSocket(nSD);
-            MSNLogon("messenger.hotmail.com", 1863);
+            MSNLogon("messenger.hotmail.com", 1863, m_nStatus);
           }
         }
         
@@ -396,7 +397,10 @@ void CMSN::ProcessSignal(CSignal *s)
     case PROTOxLOGON:
     {
       if (m_nServerSocket < 0)
-        MSNLogon("messenger.hotmail.com", 1863);
+      {
+        CLogonSignal *sig = static_cast<CLogonSignal *>(s);
+        MSNLogon("messenger.hotmail.com", 1863, sig->LogonStatus());
+      }
       break;
     }
     
