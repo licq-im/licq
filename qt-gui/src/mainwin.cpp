@@ -1968,7 +1968,7 @@ void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
     }
   }
 
-  gLog.Warn("%sUser Info finished signal for user with no window (%ld)!",
+  gLog.Warn("%sUser Info finished signal for user with no window (%ld)!\n",
             L_WARNxSTR, nUin);
 }
 
@@ -1987,7 +1987,7 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
       return;
     }
   }
-  gLog.Warn("%sUser finished signal for user with no window (%ld)!",
+  gLog.Warn("%sUser finished signal for user with no window (%ld)!\n",
             L_WARNxSTR, nUin);
 }
 
