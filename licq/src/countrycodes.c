@@ -100,6 +100,7 @@ const struct SCountry gCountries[NUM_COUNTRIES + 1] =
   { "Guantanamo Bay", 5399, 88 },
   { "Guatemala", 502, 89 },
   { "Guinea", 224, 90 },
+  { "Guinea-Bissau", 245, 91 },
   { "Guyana", 592, 92 },
   { "Haiti", 509, 93 },
   { "Honduras", 504, 94 },
