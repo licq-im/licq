@@ -134,6 +134,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   l->addWidget(chkAutoClose);
   l->addSpacing(15);
   l->addStretch(1);
+  if (m_bOwner) chkAutoClose->hide();
 
   int bw = 75;
   btnSave = new QPushButton(tr("&Save"), this);
@@ -2257,6 +2258,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
           {
             (void) new MsgViewItem(e->GrabUserEvent(), msgView);
             mleSend->clear();
+            edtItem->clear();
           }
         } // if file or chat
         else
@@ -2273,6 +2275,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
           {
             (void) new MsgViewItem(e->GrabUserEvent(), msgView);
             mleSend->clear();
+            edtItem->clear();
           }
         }
 
@@ -2283,6 +2286,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         if (bForceOpen)
         {
           (void) new MsgViewItem(e->GrabUserEvent(), msgView);
+          edtItem->clear();
           mleSend->clear();
         }
         break;
