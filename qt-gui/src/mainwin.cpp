@@ -1547,9 +1547,9 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 
 
 //-----CMainWindow::callICQFunction-------------------------------------------
-void CMainWindow::callFunction(int fcn, unsigned long nUin)
+UserEventCommon* CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
-  if (nUin == 0) return;
+  if (nUin == 0) return 0;
 
   UserEventCommon *e = NULL;
 
@@ -1580,7 +1580,7 @@ void CMainWindow::callFunction(int fcn, unsigned long nUin)
 #ifdef USE_KDE
         KWin::setActiveWindow(e->winId());
 #endif
-        return;
+        return e;
       }
       break;
     }
@@ -1613,6 +1613,7 @@ void CMainWindow::callFunction(int fcn, unsigned long nUin)
       qDebug("unknown callFunction() fcn: %d", fcn);
   }
   e->show();
+  return e;
 }
 
 

@@ -131,6 +131,9 @@ protected:
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );
 
+  virtual void viewportDragEnterEvent(QDragEnterEvent*);
+  virtual void viewportDropEvent(QDropEvent*);
+
   virtual void hideEvent(QHideEvent *);
   virtual void resizeEvent(QResizeEvent *);
 

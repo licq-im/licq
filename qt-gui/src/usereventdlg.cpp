@@ -1229,6 +1229,13 @@ void UserSendFileEvent::sendButton()
   UserSendCommon::sendButton();
 }
 
+void UserSendFileEvent::setFile(const QString& file, const QString& description)
+{
+  edtItem->setText(file);
+  mleSend->setText(description);
+  mleSend->GotoEnd();
+  mleSend->setEdited(false);
+}
 
 //-----UserSendFileEvent::sendDone-------------------------------------------
 bool UserSendFileEvent::sendDone(ICQEvent *e)
@@ -1374,6 +1381,11 @@ bool UserSendContactEvent::sendDone(ICQEvent *e)
 }
 
 
+//-----UserSendContactEvent::setContact--------------------------------------
+void UserSendContactEvent::setContact(unsigned long Uin, const QString&)
+{
+  edtItem->setText(QString::number(Uin));
+}
 
 // -----------------------------------------------------------------------------
 

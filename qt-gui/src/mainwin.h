@@ -38,6 +38,7 @@ class CEButton;
 class CEComboBox;
 class QListViewItem;
 class UserViewEvent;
+class UserEventCommon;
 class UserSendCommon;
 #ifdef USE_DOCK
 class IconManager;
@@ -59,7 +60,7 @@ public:
               const char *skinName, const char *iconsName,
               QWidget *parent = 0);
   virtual ~CMainWindow();
-  void callFunction(int fcn, unsigned long _nUin);
+  UserEventCommon* callFunction(int fcn, unsigned long _nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(unsigned long, QWidget *);
   void ApplySkin(const char *, bool = false);

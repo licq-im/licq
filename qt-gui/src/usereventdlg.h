@@ -22,12 +22,17 @@
 #include <qwidget.h>
 
 class QBoxLayout;
+class QGroupBox;
 class QVGroupBox;
+class QComboBox;
 class QBoxLayout;
 class QCheckBox;
 class QPushButton;
 class QTimer;
 class QSplitter;
+class QLineEdit;
+class QGroupBox;
+class QButtonGroup;
 class QListViewItem;
 
 class MLEditWrap;
@@ -142,7 +147,7 @@ protected:
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
   QPushButton *btnSend, *btnCancel;
   QLineEdit *edtSpoof;
-  QVGroupBox *grpMR;
+  QGroupBox *grpMR;
   QButtonGroup *grpCmd;
   QComboBox* cmbSendType;
   CMMUserView *lstMultipleRecipients;
@@ -217,6 +222,8 @@ public:
                   unsigned long _nUin, QWidget* parent = 0);
   virtual ~UserSendFileEvent();
 
+  void setFile(const QString& file, const QString& description);
+
 protected:
   MLEditWrap *mleSend;
   QLabel *lblItem;
@@ -264,6 +271,8 @@ public:
   UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                        unsigned long _nUin, QWidget* parent = 0);
   virtual ~UserSendContactEvent();
+
+  void setContact(unsigned long uin, const QString& alias);
 
 protected:
   MLEditWrap *mleSend;

@@ -29,6 +29,7 @@
 #include "userbox.h"
 #include "gui-defines.h"
 #include "mainwin.h"
+#include "usereventdlg.h"
 
 #include "licq_user.h"
 
@@ -393,6 +394,8 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
 
   m_tips = new CUserViewTips(this);
 
+  viewport()->setAcceptDrops(true);
+
   setAllColumnsShowFocus (true);
   setSorting(0);
 
@@ -551,6 +554,60 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
   }
 }
 
+void CUserView::viewportDragEnterEvent(QDragEnterEvent* e)
+{
+  e->accept(QTextDrag::canDecode(e) || QUriDrag::canDecode(e));
+}
+
+
+void CUserView::viewportDropEvent(QDropEvent* e)
+{
+  CUserViewItem* it = static_cast<CUserViewItem*>(itemAt(e->pos()));
+
+  if(it)
+  {
+    if(it->ItemUin())
+    {
+      QString text;
+      QStrList lst;
+      if(QUriDrag::decode(e, lst))
+      {
+        if(!(text = QUriDrag::uriToLocalFile(lst.first())).isEmpty()) {
+          UserSendFileEvent* e = static_cast<UserSendFileEvent*>
+            (gMainWindow->callFunction(mnuUserSendFile, it->ItemUin()));
+          e->setFile(text.mid(5), QString::null);
+          e->show();
+        }
+        else {
+          UserSendUrlEvent* e = static_cast<UserSendUrlEvent*>
+            (gMainWindow->callFunction(mnuUserSendUrl, it->ItemUin()));
+          e->setUrl(text, QString::null);
+          e->show();
+        }
+      }
+      else if(QTextDrag::decode(e, text)) {
+        unsigned long Uin = text.toULong();
+
+        if(Uin >= 10000) {
+          UserSendContactEvent* e = static_cast<UserSendContactEvent*>
+            (gMainWindow->callFunction(mnuUserSendContact, it->ItemUin()));
+          ICQUser* u = gUserManager.FetchUser(Uin, LOCK_R);
+          QString alias = u ? u->GetAlias() : "";
+          gUserManager.DropUser(u);
+
+          e->setContact(Uin, alias);
+          e->show();
+        }
+        else {
+          UserSendMsgEvent* e = static_cast<UserSendMsgEvent*>
+            (gMainWindow->callFunction(mnuUserSendMsg, it->ItemUin()));
+          e->setText(text);
+          e->show();
+        }
+      }
+    }
+  }
+}
 
 
 void CUserView::keyPressEvent(QKeyEvent *e)
@@ -701,7 +758,7 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
   CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
-  if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem())
+  if (parent() && me->state() == LeftButton && (i = (CUserViewItem *)currentItem())
       && !mousePressPos.isNull() && i->ItemUin() &&
       (QPoint(me->pos() - mousePressPos).manhattanLength() > 8))
   {
