@@ -91,6 +91,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   btnCancel = new QPushButton(tr("&Cancel"), this);
   btnCancel->setMinimumWidth(75);
   lay->addWidget(btnCancel);
+  connect (mleResponse, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
