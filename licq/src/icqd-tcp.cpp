@@ -1525,6 +1525,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                 headerLen, ackFlags, msgFlags, licqVersion;
   char licqChar = '\0', junkChar;
   bool errorOccured = false;
+  char *message;
 
   // only used for v7,v8
 	headerLen = 0;
@@ -1698,14 +1699,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   {
   
   // read in the message minus any stupid DOS \r's
-  char message[messageLen + 1];
+  char messageTmp[messageLen + 1];
   unsigned short j = 0;
   for (unsigned short i = 0; i < messageLen; i++)
   {
     packet >> junkChar;
-    if (junkChar != 0x0D) message[j++] = junkChar;
+    if (junkChar != 0x0D) messageTmp[j++] = junkChar;
   }
-  message[j] = '\0';
+  messageTmp[j] = '\0';
+  
+  message = parseRTF(messageTmp);
 
   if (nInVersion <= 4)
   {
@@ -2898,6 +2901,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     return false;
   }
   gUserManager.DropUser(u);
+  if (message)
+    delete [] message;
   return !errorOccured;
 }
 
