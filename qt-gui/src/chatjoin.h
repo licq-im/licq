@@ -22,7 +22,7 @@ public:
   CJoinChatDlg(bool bRequesting, QWidget *p = NULL, const char *n = NULL);
   ~CJoinChatDlg() {}
   ChatDlg *JoinedChat();
-  QString ChatClients() { return lstChats->currentText(); }
+  QString ChatClients() { return lstChats->text(lstChats->currentItem()); }
 protected:
   QListBox *lstChats;
   QPushButton *btnOk, *btnCancel;
