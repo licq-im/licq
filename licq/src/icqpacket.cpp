@@ -1180,39 +1180,44 @@ void CPU_AdvancedMessage::InitBuffer()
 
 //-----ChatRequest-------------------------------------------------------------
 CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
-																 ICQUser *_pUser)
-	: CPU_AdvancedMessage(_pUser, ICQ_CMDxSUB_ICBM, 0, false)
+																 ICQUser *_pUser, bool bICBM)
+	: CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
+												0, false)
 {
 	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
 	int nMessageLen = _szMessage ? strlen(_szMessage) : 0;
 
-	m_nSize += 62 + nUsersLen + nMessageLen + 21; // 21 = strlen of plugin name 
+  if (bICBM)
+		m_nSize += 62 + nUsersLen + nMessageLen + 21; // 21 = strlen(pluginname)
+	else
+		m_nSize += 18 + nUsersLen + nMessageLen;
+
 	InitBuffer();
 
-	buffer->PackUnsignedShort(0x3A); // len of following pluign info
-	buffer->PackUnsignedLongBE(0xBFF720B2);
-	buffer->PackUnsignedLongBE(0x378ED411);
-	buffer->PackUnsignedLongBE(0xBD280004);
-	buffer->PackUnsignedLongBE(0xAC96D905);
-	buffer->PackUnsignedShort(0);
-	buffer->PackUnsignedLong(0x15); // strlen of plugin name
-	buffer->Pack("Send / Start ICQ Chat", 0x15);
-	buffer->PackUnsignedLongBE(0x00000100);
-	buffer->PackUnsignedLongBE(0x00010000);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedShortBE(0);
-	buffer->PackChar(0);
-	buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
-	buffer->PackUnsignedLong(nMessageLen);
-	if (_szMessage)
-		buffer->Pack(_szMessage, nMessageLen);
-	if (_szChatUsers)
-		buffer->PackString(_szChatUsers);
-	else
+	if (bICBM)
 	{
-		buffer->PackUnsignedShort(0x01);
+		buffer->PackUnsignedShort(0x3A); // len of following pluign info
+		buffer->PackUnsignedLongBE(0xBFF720B2);
+		buffer->PackUnsignedLongBE(0x378ED411);
+		buffer->PackUnsignedLongBE(0xBD280004);
+		buffer->PackUnsignedLongBE(0xAC96D905);
+		buffer->PackUnsignedShort(0);
+		buffer->PackUnsignedLong(0x15); // strlen of plugin name
+		buffer->Pack("Send / Start ICQ Chat", 0x15);
+		buffer->PackUnsignedLongBE(0x00000100);
+		buffer->PackUnsignedLongBE(0x00010000);
+		buffer->PackUnsignedLongBE(0);
+		buffer->PackUnsignedShortBE(0);
 		buffer->PackChar(0);
+		buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
+		buffer->PackUnsignedLong(nMessageLen);
+		if (_szMessage)
+			buffer->Pack(_szMessage, nMessageLen);
 	}
+	else
+		buffer->PackString(_szMessage);
+
+	buffer->PackString(_szChatUsers);
 	buffer->PackUnsignedLong(0);
 	buffer->PackUnsignedLong(0);
 	buffer->PackUnsignedLongBE(0x00030000); // ack request
@@ -1220,8 +1225,9 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 
 //-----FileTransfer------------------------------------------------------------
 CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
-	const char *_szDesc)
-	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, false),
+	const char *_szDesc, bool bICBM)
+	: CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, 0,
+												false),
 		CPX_FileTransfer(_szFile)
 {
 	if (!m_bValid)  return;
@@ -1230,32 +1236,42 @@ CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
 	int nDescLen = strlen(_szDesc);
 	m_szDesc = strdup(_szDesc); // XXX where should this be free'd?
 
-	m_nSize += 66 + nFileLen + nDescLen + 4; // 4 = strlen("File")
+  if (bICBM)
+		m_nSize += 66 + nFileLen + nDescLen + 4; // 4 = strlen("File")
+	else
+		m_nSize += 22 + nFileLen + nDescLen ;
 
 	InitBuffer();
 
-	buffer->PackUnsignedShort(0x29);  // len of following plugin info
-	buffer->PackUnsignedLongBE(0xF02D12D9);
-	buffer->PackUnsignedLongBE(0x3091D311);
-	buffer->PackUnsignedLongBE(0x8DD70010);
-	buffer->PackUnsignedLongBE(0x4B06462E);
-	buffer->PackUnsignedShortBE(0x0000);
-	buffer->PackUnsignedLong(0x04); // strlen - is 4 bytes though
-	buffer->Pack("File", 4);
-	buffer->PackUnsignedLongBE(0x00000100);
-	buffer->PackUnsignedLongBE(0x00010000);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedShortBE(0);
-	buffer->PackChar(0);
-	buffer->PackUnsignedLong(nDescLen + nFileLen + 19); //remaining  - is 4 bytes
+	if (bICBM)
+	{
+		buffer->PackUnsignedShort(0x29);  // len of following plugin info
+		buffer->PackUnsignedLongBE(0xF02D12D9);
+		buffer->PackUnsignedLongBE(0x3091D311);
+		buffer->PackUnsignedLongBE(0x8DD70010);
+		buffer->PackUnsignedLongBE(0x4B06462E);
+		buffer->PackUnsignedShortBE(0x0000);
+		buffer->PackUnsignedLong(0x04); // strlen - is 4 bytes though
+		buffer->Pack("File", 4);
+		buffer->PackUnsignedLongBE(0x00000100);
+		buffer->PackUnsignedLongBE(0x00010000);
+		buffer->PackUnsignedLongBE(0);
+		buffer->PackUnsignedShortBE(0);
+		buffer->PackChar(0);
+		buffer->PackUnsignedLong(nDescLen + nFileLen + 19); //remaining  - is 4 bytes
 																											//dont count last 4 bytes
-	buffer->PackUnsignedLong(nDescLen); // file desc - is 4 bytes
-	buffer->Pack(_szDesc, nDescLen);
+		buffer->PackUnsignedLong(nDescLen); // file desc - is 4 bytes
+		buffer->Pack(_szDesc, nDescLen);
+	}
+	else
+		buffer->PackString(_szDesc);
+	
 	buffer->PackUnsignedLongBE(0x2D384444); // ???
 	buffer->PackString(m_szFilename);
 	buffer->PackUnsignedLong(m_nFileSize);
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0x00030000); // ack request
+
 }
 
 

@@ -560,14 +560,15 @@ class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
 	CPU_ChatRequest(char *szReason, const char *szChatUsers,
-			ICQUser *pUser);
+			ICQUser *pUser, bool bICBM);
 };
 
 //-----FileTransfer------------------------------------------------------------
 class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
-	CPU_FileTransfer(ICQUser *, const char *_szFile, const char *_szDesc);
+	CPU_FileTransfer(ICQUser *, const char *_szFile, const char *_szDesc,
+									 bool bICBM);
 };
 
 

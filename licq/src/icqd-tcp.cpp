@@ -178,7 +178,8 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
 	if (bServer)
 	{
-		CPU_FileTransfer *p = new CPU_FileTransfer(u, szFilename, szDosDesc);
+		CPU_FileTransfer *p = new CPU_FileTransfer(u, szFilename, szDosDesc,
+                                (u->Version() > 7));
 
 		if (!p->IsValid())
 		{
@@ -383,7 +384,8 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 	ICQEvent *result = NULL;
 	if (bServer)
 	{
-		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos, szChatUsers, u);
+		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos, szChatUsers, u,
+                               (u->Version() > 7));
 		f = INT_VERSION;
 		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
 																	 TIME_NOW, f);
