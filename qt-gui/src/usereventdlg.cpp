@@ -67,6 +67,7 @@
 #include "sigman.h"
 #include "showawaymsgdlg.h"
 #include "keyrequestdlg.h"
+#include "editfilelistdlg.h"
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
 
@@ -1132,7 +1133,10 @@ void UserSendCommon::changeEventType(int id)
   {
     QPoint p = topLevelWidget()->pos();
     if (e->mleSend && mleSend)
+    {  
       e->mleSend->setText(mleSend->text());
+      e->mleSend->setEdited(e->mleSend->length());
+    }
     if (e->mleHistory && mleHistory){
       e->mleHistory->setText(mleHistory->text());
       e->mleHistory->GotoEnd();
@@ -1671,7 +1675,10 @@ void UserSendUrlEvent::resetSettings()
 void UserSendUrlEvent::sendButton()
 {
   if (edtItem->text().stripWhiteSpace().isEmpty())
+  {
+    InformUser(this, tr("No URL specified"));
     return;
+  }
 
   if (!UserSendCommon::checkSecure()) return;
 
@@ -1730,11 +1737,17 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(lblItem);
 
   edtItem = new CInfoField(mainWidget, false);
+  edtItem->SetReadOnly(true); 
   h_lay->addWidget(edtItem);
 
   btnBrowse = new QPushButton(tr("Browse"), mainWidget);
   connect(btnBrowse, SIGNAL(clicked()), this, SLOT(browseFile()));
   h_lay->addWidget(btnBrowse);
+
+  btnEdit = new QPushButton(tr("Edit"), mainWidget);
+  btnEdit->setEnabled(false);
+  connect(btnEdit,  SIGNAL(clicked()), this, SLOT(editFileList()));
+  h_lay->addWidget(btnEdit);
 
   m_sBaseTitle += tr(" - File Transfer");
   setCaption(m_sBaseTitle);
@@ -1753,18 +1766,62 @@ void UserSendFileEvent::browseFile()
     if (fl.isEmpty()) return;
     QStringList::ConstIterator it = fl.begin();
     QString f;
+    unsigned n = fl.count() + m_lFileList.size(); 
     
-    if (fl.count() > 1)
-      f = QString("%1 Files").arg(fl.count());
-    else
+    if ( n == 0 )
+    {
+      btnEdit->setEnabled(false);
+      f = QString("");
+    }
+    else if( n == 1 )
+    {
+      btnEdit->setEnabled(true);
       f = (*it);
-      
+    }
+    else
+    {
+      f = QString("%1 Files").arg(fl.count() + m_lFileList.size() );
+      btnEdit->setEnabled(true);
+    }
+ 
     for(; it != fl.end(); it++)
       m_lFileList.push_back(strdup((*it).latin1()));
 
     edtItem->setText(f);
 }
 
+
+void UserSendFileEvent::editFileList()
+{ 
+  CEditFileListDlg *dlg;
+
+  dlg = new CEditFileListDlg(&m_lFileList);  
+
+  connect(dlg,SIGNAL(file_deleted(unsigned)), this, SLOT(slot_filedel(unsigned)));
+}
+
+void UserSendFileEvent::slot_filedel(unsigned n)
+{
+  QString f;
+
+   if (n == 0)
+   {
+     f = QString("");
+     btnEdit->setEnabled(false);
+   }
+   else if (n == 1)
+   {
+     f = *(m_lFileList.begin());
+     btnEdit->setEnabled(true);
+   }
+   else
+   {
+     f = QString("%1 Files").arg(m_lFileList.size());
+     btnEdit->setEnabled(true);
+   }
+   
+    edtItem->setText(f);
+}
 
 UserSendFileEvent::~UserSendFileEvent()
 {

@@ -266,7 +266,7 @@ public:
 protected:
   QLabel *lblItem;
   CInfoField *edtItem;
-  QPushButton *btnBrowse;
+  QPushButton *btnBrowse, *btnEdit;
   ConstFileList m_lFileList;
   virtual bool sendDone(ICQEvent*);
 
@@ -274,6 +274,8 @@ protected:
 
 protected slots:
   void browseFile();
+  void editFileList();
+  void slot_filedel(unsigned);
   virtual void sendButton();
 };
 
