@@ -553,7 +553,7 @@ void load_options()
 	licqConf.ReadStr("TimestampFormat", timestamp_format, "%H:%M:%S");
 	
 	// Auto logon
-	licqConf.ReadNum("AutoLogon", auto_logon, 0);
+	licqConf.ReadNum("AutoLogon", auto_logon, ICQ_STATUS_OFFLINE);
 }
 
 void show_on_color_dlg(GtkWidget *widget, gpointer data)

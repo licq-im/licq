@@ -404,6 +404,9 @@ void convo_recv(gulong uin)
 		return;
 	}
 
+	// Use theme colors if it is black on white
+	bool bIgnoreBW = false;
+
 	// Get the color that it was sent in if it's wanted
 	if (recv_colors)
 	{
@@ -418,14 +421,23 @@ void convo_recv(gulong uin)
 		}
 
 		CICQColor *pIcqColor = u_event->Color();
-		c->clrFore->red   = pIcqColor->ForeRed() * 257;
-		c->clrFore->green = pIcqColor->ForeGreen() * 257;
-		c->clrFore->blue  = pIcqColor->ForeBlue() * 257;
-		c->clrFore->pixel = 255;
-		c->clrBack->red   = pIcqColor->BackRed() * 257;
-		c->clrBack->green = pIcqColor->BackGreen() * 257;
-		c->clrBack->blue  = pIcqColor->BackBlue() * 257;
-		c->clrBack->pixel = 255;
+
+		if (pIcqColor->Foreground() == 0x00000000 &&
+		    pIcqColor->Background() == 0x00FFFFFF)
+		{
+			bIgnoreBW = true;
+		}
+		else
+		{
+			c->clrFore->red   = pIcqColor->ForeRed() * 257;
+			c->clrFore->green = pIcqColor->ForeGreen() * 257;
+			c->clrFore->blue  = pIcqColor->ForeBlue() * 257;
+			c->clrFore->pixel = 255;
+			c->clrBack->red   = pIcqColor->BackRed() * 257;
+			c->clrBack->green = pIcqColor->BackGreen() * 257;
+			c->clrBack->blue  = pIcqColor->BackBlue() * 257;
+			c->clrBack->pixel = 255;
+		}
 	}
 	else
 	{
@@ -463,7 +475,9 @@ void convo_recv(gulong uin)
 	{
 	  case ICQ_CMDxSUB_MSG:
 	  {
-		gtk_text_insert(GTK_TEXT(c->text), 0, c->clrFore, c->clrBack,
+		gtk_text_insert(GTK_TEXT(c->text), 0,
+				bIgnoreBW ? 0 : c->clrFore,
+				bIgnoreBW ? 0 : c->clrBack,
 		                u_event->Text(), -1);
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, "\n", -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
