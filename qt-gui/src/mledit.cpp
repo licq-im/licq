@@ -25,8 +25,7 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
     setWordWrap(NoWrap);
   }
 #else
-  if (wordWrap)
-    fprintf(stderr, "Word wrap not supported in Qt < 2.10\n");
+  #warning Word wrap is not supported in Qt < 2.1
 #endif
 
   if (editFont) QWidget::setFont(*editFont, true);
