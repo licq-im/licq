@@ -6,7 +6,6 @@ libdir=$(prefix)/lib/licq
 
 INCLUDES = -D_REENTRANT \
 	-I$(prefix)/include/licq $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
-#	-I$(top_srcdir)/../../src/inc $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
 lib_LTLIBRARIES = licq_qt-gui.la
 
