@@ -24,6 +24,7 @@ licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
 				menu.cpp \
 				more_window.cpp \
 				pipe.cpp \
+				register_user.cpp \
 				search_user_window.cpp \
 				security_window.cpp \
 				status.cpp \
