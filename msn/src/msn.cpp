@@ -397,7 +397,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
         if (u)
         {
-          u->SetTyping(1);
+          u->SetTyping(ICQ_TYPING_ACTIVE);
           gUserManager.DropUser(u);
           m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
             USER_TYPING, strUser.c_str(), MSN_PPID));
