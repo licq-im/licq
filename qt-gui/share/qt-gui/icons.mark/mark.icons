@@ -1,0 +1,13 @@
+[icons]
+Online = online.ppm
+Offline = offline.ppm
+Away = away.ppm
+NA = na.ppm
+Occupied = occupied.ppm
+DND = dnd.ppm
+Private = private.ppm
+Message = message.ppm
+FFC = ffc.ppm
+Url = url.ppm
+Chat = chat.ppm
+File = file.ppm
