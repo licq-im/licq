@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Licq-Plugin-Version: QT based KDE GUI 1.2.6\n"
-"Project-Id-Version: Translation 0.8\n"
+"Project-Id-Version: Translation 0.9\n"
 "PO-Creation-Date: 2003-05-21 12.52.39 CEST\n"
-"PO-Revision-Date: 2003-06-09 17:18.40 CEST\n"
+"PO-Revision-Date: 2003-06-13 11:13.04 CEST\n"
 "Last-Translator: Daniel Levai <leva@fbi.hu>\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 
@@ -466,111 +466,111 @@ msgstr "%1 üzenet%2"
 msgid "CMainWindow::%1 msg%2"
 msgstr "%1 üzenet%2"
 
-#: mainwin.cpp:3922
+#: mainwin.cpp:3926
 msgid "CMainWindow::%1: %2 / %3\n"
 msgstr "%1: %2 / %3\n"
 
-#: mainwin.cpp:3936
+#: mainwin.cpp:3940
 msgid "CMainWindow::%1: %2\n"
 msgstr "%1: %2\n"
 
-#: mainwin.cpp:3755
+#: mainwin.cpp:3759
 msgid "CMainWindow::&About"
 msgstr "&Névjegy"
 
-#: mainwin.cpp:3737
+#: mainwin.cpp:3741
 msgid "CMainWindow::&Add User"
 msgstr "Felhasználó &hozzáadása"
 
-#: mainwin.cpp:3688
+#: mainwin.cpp:3692
 msgid "CMainWindow::&Away"
 msgstr "&Távollét"
 
-#: mainwin.cpp:3691
+#: mainwin.cpp:3695
 msgid "CMainWindow::&Do Not Disturb"
 msgstr "&Ne Zavarj"
 
-#: mainwin.cpp:3763
+#: mainwin.cpp:3767
 msgid "CMainWindow::&Group"
 msgstr "&Csoport"
 
-#: mainwin.cpp:3775
+#: mainwin.cpp:3779
 msgid "CMainWindow::&Help"
 msgstr "&Segítség"
 
-#: mainwin.cpp:3754
+#: mainwin.cpp:3758
 msgid "CMainWindow::&Hints"
 msgstr "&Tippek"
 
-#: mainwin.cpp:3835
+#: mainwin.cpp:3839
 msgid "CMainWindow::&Info"
 msgstr "&Info"
 
-#: mainwin.cpp:3695
+#: mainwin.cpp:3699
 msgid "CMainWindow::&Invisible"
 msgstr "&Láthatatlan"
 
-#: mainwin.cpp:3767
+#: mainwin.cpp:3771
 msgid "CMainWindow::&Mini Mode"
 msgstr "&Mini mód"
 
-#: mainwin.cpp:3766
+#: mainwin.cpp:3770
 msgid "CMainWindow::&Network Window"
 msgstr "&Hálózat Info"
 
-#: mainwin.cpp:2815
+#: mainwin.cpp:2819
 msgid "CMainWindow::&No"
 msgstr "&Nem"
 
-#: mainwin.cpp:3689
+#: mainwin.cpp:3693
 msgid "CMainWindow::&Not Available"
 msgstr "Nem &Elérhetõ"
 
-#: mainwin.cpp:3924
+#: mainwin.cpp:3928
 msgid "CMainWindow::&Ok"
 msgstr "&Ok"
 
-#: mainwin.cpp:3687
+#: mainwin.cpp:3691
 msgid "CMainWindow::&Online"
 msgstr "&Bejelentkezve"
 
-#: mainwin.cpp:3770
+#: mainwin.cpp:3774
 msgid "CMainWindow::&Options..."
 msgstr "&Beállítások..."
 
-#: mainwin.cpp:3772
+#: mainwin.cpp:3776
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "&Plugin rendezõ..."
 
-#: mainwin.cpp:3743
+#: mainwin.cpp:3747
 msgid "CMainWindow::&Popup All Messages"
 msgstr "Minden üzenet megjelenítése"
 
-#: mainwin.cpp:3731
+#: mainwin.cpp:3735
 msgid "CMainWindow::&Random Chat Group"
 msgstr "&Véletlenszerû csevegés"
 
-#: mainwin.cpp:3748
+#: mainwin.cpp:3752
 msgid "CMainWindow::&Redraw User Window"
 msgstr "Ablak újrarajzolása"
 
-#: mainwin.cpp:3924
+#: mainwin.cpp:3928
 msgid "CMainWindow::&Reset"
 msgstr "&Nulláz"
 
-#: mainwin.cpp:3749
+#: mainwin.cpp:3753
 msgid "CMainWindow::&Save All Users"
 msgstr "&Felhasználók mentése"
 
-#: mainwin.cpp:3730
+#: mainwin.cpp:3734
 msgid "CMainWindow::&Security/Password Options"
 msgstr "Bizton&ság/Jelszó beállítása"
 
-#: mainwin.cpp:3756
+#: mainwin.cpp:3760
 msgid "CMainWindow::&Statistics"
 msgstr "&Statisztikák"
 
-#: mainwin.cpp:3762
+#: mainwin.cpp:3766
 msgid "CMainWindow::&Status"
 msgstr "&Állapot"
 
@@ -578,27 +578,27 @@ msgstr "&Állapot"
 msgid "CMainWindow::&System"
 msgstr "&Rendszer"
 
-#: mainwin.cpp:3769
+#: mainwin.cpp:3773
 msgid "CMainWindow::&Thread Group View"
 msgstr "&Csoportok megtekintése"
 
-#: mainwin.cpp:3816
+#: mainwin.cpp:3820
 msgid "CMainWindow::&View Event"
 msgstr "&Esemény megjelenítése"
 
-#: mainwin.cpp:3725
+#: mainwin.cpp:3729
 msgid "CMainWindow::&View System Messages"
 msgstr "&Rendszerüzenetek megtekintése"
 
-#: mainwin.cpp:2815
+#: mainwin.cpp:2819
 msgid "CMainWindow::&Yes"
 msgstr "&Igen"
 
-#: mainwin.cpp:3088
+#: mainwin.cpp:3092
 msgid "CMainWindow::(with KDE support)\n"
 msgstr "(KDE támogatás)\n"
 
-#: mainwin.cpp:4081
+#: mainwin.cpp:4085
 msgid "CMainWindow::"
 "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
 "<ul>"
@@ -629,8 +629,36 @@ msgid "CMainWindow::"
 "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
 "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
 msgstr ""
+"<h2>Tippek a Licq Qt-GUI Plugin használatához</h2><br><hr><br>"
+"<ul>"
+"<li>Az Állapot megváltoztatásához kattints az Állapot címkére.</li>"
+"<li>Az Azonnali válasz megváltoztatásához kattints duplán az Állapot címkére.</li>"
+"<li>A Rendszerüzenetek megtekintéséhez kattints duplán az üzenet címkére.</li>"
+"<li>A Csoport nézet megváltoztatásához kattints jobb gombbal az üzenet címkére.</li>"
+"<li>A következõ billentyûparancsokat használhatod a Felhasználó Listából:<ul>"
+"<li><tt>Ctrl-M : </tt>Mini-mód be/ki</li>"
+"<li><tt>Ctrl-O : </tt>Kijelentkezett Felhasználók megjelenítése</li>"
+"<li><tt>Ctrl-X : </tt>Kilépés</li>"
+"<li><tt>Ctrl-H : </tt>Eltûntet</li>"
+"<li><tt>Ctrl-I : </tt>Következõ üzenet megjelenítése</li>"
+"<li><tt>Ctrl-V : </tt>Üzenet megjelenítése</li>"
+"<li><tt>Ctrl-S : </tt>Üzenet küldése</li>"
+"<li><tt>Ctrl-U : </tt>URL küldése</li>"
+"<li><tt>Ctrl-C : </tt>Csevegés kezdeményezése</li>"
+"<li><tt>Ctrl-F : </tt>Fájl küldése</li>"
+"<li><tt>Ctrl-A : </tt>Azonnali válasz megjelenítése</li>"
+"<li><tt>Ctrl-P : </tt>Összes üzenet megjelenítése</li>"
+"<li><tt>Ctrl-L : </tt>Felhasználó Lista ablakának újrarajzolása</li>"
+"<li><tt>Delete : </tt>Felhasználó eltávolítása az aktuális csoportból</li>"
+"<li><tt>Ctrl-Delete : </tt>Felhasználó eltávolítása a Felhasználó Listából</li></ul>"
+"<li>Hold control while clicking on close in the function window to remove"
+"   the user from your contact list.</li>"
+"<li>A legtöbb szövegbevitelnél leütheted a Ctrl-Enter billentyûket az \"Ok\" vagy \"Elfogad\" gombra kattintás helyett."
+"   Például az Üzenet ablakban.</li>"
+"<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
+"   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
 
-#: mainwin.cpp:4110
+#: mainwin.cpp:4114
 msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr "<hr><p> További információért, látogass el a Licq honlapjára (<tt>http://www.licq.org</tt>).</p>"
 
@@ -669,23 +697,23 @@ msgstr "<ul>"
 "<li><tt>%u - </tt>iCQ szám</li>"
 "<li><tt>%w - </tt>honlap</li></ul>"
 
-#: mainwin.cpp:3739
+#: mainwin.cpp:3743
 msgid "CMainWindow::A&uthorize User"
 msgstr "Felhasználó en&gedélyezése"
 
-#: mainwin.cpp:3799
+#: mainwin.cpp:3803
 msgid "CMainWindow::Accept in Away"
 msgstr "'Távollét'-ben is fogad"
 
-#: mainwin.cpp:3802
+#: mainwin.cpp:3806
 msgid "CMainWindow::Accept in Do Not Disturb"
 msgstr "'Ne zavarj'-ban is fogad"
 
-#: mainwin.cpp:3800
+#: mainwin.cpp:3804
 msgid "CMainWindow::Accept in Not Available"
 msgstr "'Nem vagyok itt'-ben is fogad"
 
-#: mainwin.cpp:3801
+#: mainwin.cpp:3805
 msgid "CMainWindow::Accept in Occupied"
 msgstr "'Dolgozom'-ban is fogad"
 
@@ -693,99 +721,99 @@ msgstr "'Dolgozom'-ban is fogad"
 msgid "CMainWindow::All Users"
 msgstr "Összes felhasználó"
 
-#: mainwin.cpp:2843
+#: mainwin.cpp:2847
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
 msgstr "Biztosan el akarod távolítani õt: \n%1 (%2)\n innen: '%3' ?"
 
-#: mainwin.cpp:2731
+#: mainwin.cpp:2735
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
 msgstr "Biztosan el akarod távolítani õt: \n%1 (%2)\n a Felhasználó Listádból?"
 
-#: mainwin.cpp:2698
+#: mainwin.cpp:2702
 msgid "CMainWindow::Authorization granted."
 msgstr "Engedély megadva."
 
-#: mainwin.cpp:3804
+#: mainwin.cpp:3808
 msgid "CMainWindow::Auto Accept Chats"
 msgstr "Csevegést azonnal elfogad"
 
-#: mainwin.cpp:3803
+#: mainwin.cpp:3807
 msgid "CMainWindow::Auto Accept Files"
 msgstr "Fájlokat azonnal elfogad"
 
-#: mainwin.cpp:3805
+#: mainwin.cpp:3809
 msgid "CMainWindow::Auto Request Secure"
 msgstr "Biztonságos kapcsolat létrehozás automatikusan"
 
-#: mainwin.cpp:3809
+#: mainwin.cpp:3813
 msgid "CMainWindow::Away to User"
 msgstr "Neki 'Távollét' állapot"
 
-#: mainwin.cpp:2848
+#: mainwin.cpp:2852
 msgid "CMainWindow::Cancel"
 msgstr "Mégsem"
 
-#: mainwin.cpp:3873
+#: mainwin.cpp:3877
 msgid "CMainWindow::Check %1 Response"
 msgstr "%1 válasz ellenõrzése"
 
-#: mainwin.cpp:3868
+#: mainwin.cpp:3872
 msgid "CMainWindow::Check Auto Response"
 msgstr "Azonnali válasz ellenõrzése"
 
-#: mainwin.cpp:3718
+#: mainwin.cpp:3722
 msgid "CMainWindow::Clear All"
 msgstr "Mindet &törli"
 
-#: mainwin.cpp:3902
+#: mainwin.cpp:3906
 msgid "CMainWindow::Close &Secure Channel"
 msgstr "Biztonságos &kapcsolat bezárása"
 
-#: mainwin.cpp:3833
+#: mainwin.cpp:3837
 msgid "CMainWindow::Custom Auto Response..."
 msgstr "Egyéni válaszok..."
 
-#: mainwin.cpp:3913
+#: mainwin.cpp:3917
 msgid "CMainWindow::Daemon Statistics\n(Today/Total)\n"
 msgstr "Démon statisztikák\n(Mai/Összes)\n"
 
-#: mainwin.cpp:3929
+#: mainwin.cpp:3933
 msgid "CMainWindow::Daemon Statistics\n\n"
 msgstr "Démon statisztikák"
 
-#: mainwin.cpp:3733
+#: mainwin.cpp:3737
 msgid "CMainWindow::Debug Level"
 msgstr "Debug szint"
 
-#: mainwin.cpp:3812
+#: mainwin.cpp:3816
 msgid "CMainWindow::Do Not Disturb to User"
 msgstr "Neki 'Ne zavarj' állapot"
 
-#: mainwin.cpp:2814
+#: mainwin.cpp:2818
 msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
 msgstr "Biztosan hozzá akarod adni õt:\n%1 (%2)\na Felhasználó Listádba?"
 
-#: mainwin.cpp:3776
+#: mainwin.cpp:3780
 msgid "CMainWindow::E&xit"
 msgstr "&Kilépés"
 
-#: mainwin.cpp:3744
+#: mainwin.cpp:3748
 msgid "CMainWindow::Edit &Groups"
 msgstr "Cso&portok szerkesztése"
 
-#: mainwin.cpp:3838
+#: mainwin.cpp:3842
 msgid "CMainWindow::Edit User Group"
 msgstr "Felhasználó csoportja(i)"
 
-#: mainwin.cpp:2696
+#: mainwin.cpp:2700
 msgid "CMainWindow::Error sending authorization."
 msgstr "Hiba az engedély küldésekor."
 
-#: mainwin.cpp:3713
+#: mainwin.cpp:3717
 msgid "CMainWindow::Errors"
 msgstr "Hibák"
 
-#: mainwin.cpp:3692
+#: mainwin.cpp:3696
 msgid "CMainWindow::Free for C&hat"
 msgstr "Szabad vagyok"
 
@@ -797,7 +825,7 @@ msgstr "Tiltás lista"
 msgid "CMainWindow::Invisible List"
 msgstr "Láthatatlanság lista"
 
-#: mainwin.cpp:3918
+#: mainwin.cpp:3922
 msgid "CMainWindow::Last reset %1\n\n"
 msgstr "Utolsó nullázás %1\n\n"
 
@@ -805,15 +833,15 @@ msgstr "Utolsó nullázás %1\n\n"
 msgid "CMainWindow::Licq (%1)"
 msgstr "Licq (%1)"
 
-#: mainwin.cpp:4158
+#: mainwin.cpp:4162
 msgid "CMainWindow::Licq is unable to find a browser application due to an internal error."
 msgstr "A Licq nem talált megfelelõ bongészõt egy belsõ hiba következtében."
 
-#: mainwin.cpp:4160
+#: mainwin.cpp:4164
 msgid "CMainWindow::Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."
 msgstr "A Licq nem tudta elindítani a bongészõdet és megnyitni a címet.\nIndítsd újra a böngészõdet, és nyisd meg a címet kézzel."
 
-#: mainwin.cpp:3074
+#: mainwin.cpp:3078
 msgid "CMainWindow::"
 "Licq version %1%8.\n"
 "Qt GUI plugin version %2.\n"
@@ -838,11 +866,11 @@ msgstr "Licq verzió %1%8.\n"
 "%3 (%4)\n"
 "%5 felhasználó."
 
-#: mainwin.cpp:2677
+#: mainwin.cpp:2681
 msgid "CMainWindow::Logon failed.\nSee network window for details."
 msgstr "Hiba a bejelentkezéskor.\nNyisd meg a Hálózat Info ablakot a részletekért"
 
-#: mainwin.cpp:3830
+#: mainwin.cpp:3834
 msgid "CMainWindow::Misc Modes"
 msgstr "További állapotok"
 
@@ -858,23 +886,23 @@ msgstr "Nincs üzenet"
 msgid "CMainWindow::No msgs"
 msgstr "Nincs üzenet"
 
-#: mainwin.cpp:3810
+#: mainwin.cpp:3814
 msgid "CMainWindow::Not Available to User"
 msgstr "Neki 'Nem elérhetõ' állapot"
 
-#: mainwin.cpp:3690
+#: mainwin.cpp:3694
 msgid "CMainWindow::O&ccupied"
 msgstr "Dolgozom"
 
-#: mainwin.cpp:3693
+#: mainwin.cpp:3697
 msgid "CMainWindow::O&ffline"
 msgstr "Kijelentkezve"
 
-#: mainwin.cpp:3811
+#: mainwin.cpp:3815
 msgid "CMainWindow::Occupied to User"
 msgstr "Neki 'Dolgozom' állapot"
 
-#: mainwin.cpp:2848
+#: mainwin.cpp:2852
 msgid "CMainWindow::Ok"
 msgstr "Ok"
 
@@ -882,7 +910,7 @@ msgstr "Ok"
 msgid "CMainWindow::Online Notify"
 msgstr "Csatlakozáskor értesít"
 
-#: mainwin.cpp:3808
+#: mainwin.cpp:3812
 msgid "CMainWindow::Online to User"
 msgstr "Neki 'Bejelentkezve' állapot"
 
@@ -890,31 +918,31 @@ msgstr "Neki 'Bejelentkezve' állapot"
 msgid "CMainWindow::Other Users"
 msgstr "Egyéb felhasználók"
 
-#: mainwin.cpp:3715
+#: mainwin.cpp:3719
 msgid "CMainWindow::Packets"
 msgstr "Csomagok"
 
-#: mainwin.cpp:3741
+#: mainwin.cpp:3745
 msgid "CMainWindow::R&andom Chat"
 msgstr "Véletlenszerû csevegés"
 
-#: mainwin.cpp:3740
+#: mainwin.cpp:3744
 msgid "CMainWindow::Re&quest Authorization"
 msgstr "Engedély &kérése"
 
-#: mainwin.cpp:3751
+#: mainwin.cpp:3755
 msgid "CMainWindow::Reg&ister User"
 msgstr "Felhasználó regisztrálása"
 
-#: mainwin.cpp:2691
+#: mainwin.cpp:2695
 msgid "CMainWindow::Registration failed.  See network window for details."
 msgstr "A regisztráció során hiba lépett fel. Nyisd meg a Hálózat Info ablakot a részletekért."
 
-#: mainwin.cpp:3840
+#: mainwin.cpp:3844
 msgid "CMainWindow::Remove From List"
 msgstr "Eltávolítja a Listáról"
 
-#: mainwin.cpp:3904
+#: mainwin.cpp:3908
 msgid "CMainWindow::Request &Secure Channel"
 msgstr "Bi&ztonságos kapcsolat létrehozása"
 
@@ -932,51 +960,51 @@ msgid "CMainWindow::"
 msgstr "Jobb klikk - Csoportok\n"
 "Dupla klikk - Következõ üzenet"
 
-#: mainwin.cpp:3738
+#: mainwin.cpp:3742
 msgid "CMainWindow::S&earch for User"
 msgstr "Felhasználó kere&sése"
 
-#: mainwin.cpp:3771
+#: mainwin.cpp:3775
 msgid "CMainWindow::S&kin Browser..."
 msgstr "&Felület választó..."
 
-#: mainwin.cpp:3774
+#: mainwin.cpp:3778
 msgid "CMainWindow::Sa&ve Settings"
 msgstr "Beállítások &mentése"
 
-#: mainwin.cpp:3823
+#: mainwin.cpp:3827
 msgid "CMainWindow::Send &Authorization"
 msgstr "&Engedély küldése"
 
-#: mainwin.cpp:3820
+#: mainwin.cpp:3824
 msgid "CMainWindow::Send &Chat Request"
 msgstr "&Csevegés kezdeményezése"
 
-#: mainwin.cpp:3821
+#: mainwin.cpp:3825
 msgid "CMainWindow::Send &File Transfer"
 msgstr "&Fájl küldése"
 
-#: mainwin.cpp:3818
+#: mainwin.cpp:3822
 msgid "CMainWindow::Send &Message"
 msgstr "&Üzenet küldése"
 
-#: mainwin.cpp:3825
+#: mainwin.cpp:3829
 msgid "CMainWindow::Send &SMS"
 msgstr "&SMS küldése"
 
-#: mainwin.cpp:3819
+#: mainwin.cpp:3823
 msgid "CMainWindow::Send &URL"
 msgstr "&URL küldése"
 
-#: mainwin.cpp:3824
+#: mainwin.cpp:3828
 msgid "CMainWindow::Send Authorization Re&quest"
 msgstr "Engedély kérése"
 
-#: mainwin.cpp:3822
+#: mainwin.cpp:3826
 msgid "CMainWindow::Send Contact &List"
 msgstr "Felhasználó Lista küldése"
 
-#: mainwin.cpp:3829
+#: mainwin.cpp:3833
 msgid "CMainWindow::Send"
 msgstr "Küld"
 
@@ -984,23 +1012,23 @@ msgstr "Küld"
 msgid "CMainWindow::Server Group"
 msgstr "Szerver oldali csoport"
 
-#: mainwin.cpp:3764
+#: mainwin.cpp:3768
 msgid "CMainWindow::Set &Auto Response..."
 msgstr "Azonnali válasz beállítása..."
 
-#: mainwin.cpp:3717
+#: mainwin.cpp:3721
 msgid "CMainWindow::Set All"
 msgstr "Mindet beállít"
 
-#: mainwin.cpp:3768
+#: mainwin.cpp:3772
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Kijelentkezett Felhasználók megjelenítése"
 
-#: mainwin.cpp:3711
+#: mainwin.cpp:3715
 msgid "CMainWindow::Status Info"
 msgstr "Állapot Info"
 
-#: mainwin.cpp:2684
+#: mainwin.cpp:2688
 msgid "CMainWindow::"
 "Successfully registered, your user identification\n"
 "number (UIN) is %1.\n"
@@ -1013,7 +1041,7 @@ msgstr "A regisztrálás sikeres volt\n"
 msgid "CMainWindow::SysMsg"
 msgstr "Rendszerüzenet"
 
-#: mainwin.cpp:3760
+#: mainwin.cpp:3764
 msgid "CMainWindow::System Functions"
 msgstr "Rendszer funkciók"
 
@@ -1025,51 +1053,51 @@ msgstr "Rendszerüzenet"
 msgid "CMainWindow::System"
 msgstr "Rendszer"
 
-#: mainwin.cpp:3837
+#: mainwin.cpp:3841
 msgid "CMainWindow::Toggle &Floaty"
 msgstr "Lebegõ mód"
 
-#: mainwin.cpp:3831
+#: mainwin.cpp:3835
 msgid "CMainWindow::U&tilities"
 msgstr "&Eszközök"
 
-#: mainwin.cpp:3435
+#: mainwin.cpp:3439
 msgid "CMainWindow::Unable to open extended icons file\n%1."
 msgstr "Nem sikerül megnyitni a bõvített ikon fájt\n%1."
 
-#: mainwin.cpp:3545
+#: mainwin.cpp:3549
 msgid "CMainWindow::Unable to open icons file\n%1."
 msgstr "Nem sikerült megnyitni az ikon fájlt\n%1."
 
-#: mainwin.cpp:3712
+#: mainwin.cpp:3716
 msgid "CMainWindow::Unknown Packets"
 msgstr "Ismeretlen csomagok"
 
-#: mainwin.cpp:3917
+#: mainwin.cpp:3921
 msgid "CMainWindow::Up since %1\n"
 msgstr "Uptime: %1\n"
 
-#: mainwin.cpp:3932
+#: mainwin.cpp:3936
 msgid "CMainWindow::Up since %1\n\n"
 msgstr "Uptime: %1\n\n"
 
-#: mainwin.cpp:3746
+#: mainwin.cpp:3750
 msgid "CMainWindow::Update All Users"
 msgstr "Minden Felhasználó frissítése"
 
-#: mainwin.cpp:3747
+#: mainwin.cpp:3751
 msgid "CMainWindow::Update Current Group"
 msgstr "Aktuális Csoport frissítése"
 
-#: mainwin.cpp:3806
+#: mainwin.cpp:3810
 msgid "CMainWindow::Use Real Ip (LAN)"
 msgstr "Valós IP használata (LAN)"
 
-#: mainwin.cpp:3761
+#: mainwin.cpp:3765
 msgid "CMainWindow::User Functions"
 msgstr "Felhasználói funkciók"
 
-#: mainwin.cpp:3836
+#: mainwin.cpp:3840
 msgid "CMainWindow::View &History"
 msgstr "Elõzmények megtekintése"
 
@@ -1077,11 +1105,11 @@ msgstr "Elõzmények megtekintése"
 msgid "CMainWindow::Visible List"
 msgstr "Látók listája :))"
 
-#: mainwin.cpp:3714
+#: mainwin.cpp:3718
 msgid "CMainWindow::Warnings"
 msgstr "Figyelmeztetések"
 
-#: mainwin.cpp:4057
+#: mainwin.cpp:4061
 msgid "CMainWindow::"
 "You are currently registered as\n"
 "UIN: %1\n"
@@ -1905,13 +1933,13 @@ msgstr "Ismeretlen esemény"
 
 #: eventdesc.cpp:26
 msgid "Event::Web Panel"
-msgstr "Web Panel"
+msgstr "Üzenet Webrõl"
 
-#: mainwin.cpp:4134
+#: mainwin.cpp:4138
 msgid "HintsDlg::&Close"
 msgstr "&Close"
 
-#: mainwin.cpp:4121
+#: mainwin.cpp:4125
 msgid "HintsDlg::Licq - Hints"
 msgstr "Licq - Tippek"
 
@@ -2801,11 +2829,11 @@ msgid "OptionsDlg::"
 msgstr "Az aktuális csoport nevének megjelenítése a "
 "az üzenet fejlécében, ha nincsen új üzenet"
 
-# msgid "OptionsDlg::Hotkey pops up the next pending message\n"
-# "Enter the hotkey literally, like \"shift+f10\", \"none\" for disabling\nchanges here require a Restart to take effect!\n"
-# msgstr "A billentyûparancs, ami a következõ beérkezett üzenet elõhozza. "
-# "Írd ide a billentyûk nevét. Például: \"shift+f10\", vagy \"none\" a billentyûparancs letiltásához.\n"
-# "A változtatások után újra kell indítani a programot!\n"
+msgid "OptionsDlg::Hotkey pops up the next pending message\n"
+"Enter the hotkey literally, like \"shift+f10\", \"none\" for disabling\nchanges here require a Restart to take effect!\n"
+msgstr "A billentyûparancs, ami a következõ beérkezett üzenet elõhozza. "
+"Írd ide a billentyûk nevét. Például: \"shift+f10\", vagy \"none\" a billentyûparancs letiltásához.\n"
+"A változtatások után újra kell indítani a programot!\n"
 
 #: optionsdlg.cpp:684
 msgid "OptionsDlg::Start Hidden"
@@ -3016,7 +3044,7 @@ msgstr "Részletek"
 
 #: plugindlg.cpp:38
 msgid "PluginDlg::Disable"
-msgstr "Letiltás"
+msgstr "Letilt"
 
 #: plugindlg.cpp:64
 msgid "PluginDlg::Done"
@@ -3024,7 +3052,7 @@ msgstr "Kész"
 
 #: plugindlg.cpp:36
 msgid "PluginDlg::Enable"
-msgstr "Engedélyezés"
+msgstr "Engedélyez"
 
 #: plugindlg.cpp:29
 msgid "PluginDlg::Id"
@@ -3276,15 +3304,15 @@ msgstr "Város:"
 
 #: searchuserdlg.cpp:189
 msgid "SearchUserDlg::Company Department:"
-msgstr "Cég telephely:"
+msgstr "Munkahelyen részlege:"
 
 #: searchuserdlg.cpp:186
 msgid "SearchUserDlg::Company Name:"
-msgstr "Cég név:"
+msgstr "Munkahely neve:"
 
 #: searchuserdlg.cpp:192
 msgid "SearchUserDlg::Company Position:"
-msgstr "Cég helye:"
+msgstr "Munkahelyen beosztása:"
 
 #: searchuserdlg.cpp:179
 msgid "SearchUserDlg::Country:"
@@ -3829,7 +3857,7 @@ msgstr "Ország:"
 
 #: userinfodlg.cpp:773
 msgid "UserInfoDlg::Department:"
-msgstr "Telephely:"
+msgstr "Részleg:"
 
 #: userinfodlg.cpp:355
 msgid "UserInfoDlg::EMail 1:"
@@ -3924,7 +3952,7 @@ msgid "UserInfoDlg::"
 "Normally Licq overwrites the Alias when updating user details.\n"
 "Check this if you want to keep your changes to the Alias."
 msgstr "Frissítésnél a Licq felülír minden adatot, köztük a becenevet is.\n"
-       "Kapcsold be ezt, ha meg akarod tartani a beceneveket."
+"Kapcsold be ezt, ha meg akarod tartani a beceneveket."
 
 #: userinfodlg.cpp:1026
 msgid "UserInfoDlg::Now"
@@ -3952,7 +3980,7 @@ msgstr "Telefon:"
 
 #: userinfodlg.cpp:777
 msgid "UserInfoDlg::Position:"
-msgstr "Beosztás"
+msgstr "Beosztás:"
 
 #: userinfodlg.cpp:1100
 msgid "UserInfoDlg::Rever&se"
@@ -4035,8 +4063,8 @@ msgid "UserInfoDlg::"
 "[<font color=\"%2\">Sent</font>] "
 "%3 to %4 of %5"
 msgstr "[<font color=\"%1\">Fogadott</font>] "
-    "[<font color=\"%2\">Küldött</font>] "
-    "%3 to %4 of %5"
+"[<font color=\"%2\">Küldött</font>] "
+"%3 to %4 of %5"
 
 #: userinfodlg.cpp:1656
 msgid "UserInfoDlg::done"
@@ -4086,43 +4114,43 @@ msgstr "&Felhasználó:"
 msgid "UserSelectDlg::Licq User Select"
 msgstr "Licq Felhasználó kiválasztás"
 
-#: usereventdlg.cpp:3029
+#: usereventdlg.cpp:3027
 msgid "UserSendChatEvent:: - Chat Request"
 msgstr " - Csevegés kezdeményezése"
 
-#: usereventdlg.cpp:3128
+#: usereventdlg.cpp:3126
 msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
 msgstr "Csevegés %2 Felhasználóval visszautasítva:\n%3"
 
-#: usereventdlg.cpp:3059
+#: usereventdlg.cpp:3057
 msgid "UserSendChatEvent::Clear"
 msgstr "Töröl"
 
-#: usereventdlg.cpp:3067
+#: usereventdlg.cpp:3065
 msgid "UserSendChatEvent::Invite"
 msgstr "Meghív"
 
-#: usereventdlg.cpp:3019
+#: usereventdlg.cpp:3017
 msgid "UserSendChatEvent::Multiparty: "
 msgstr ""
 
-#: usereventdlg.cpp:2133
+#: usereventdlg.cpp:2131
 msgid "UserSendCommon:: to Contact List"
 msgstr " Felhasználó Listába"
 
-#: usereventdlg.cpp:2127
+#: usereventdlg.cpp:2125
 msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
 msgstr "% éppen: %2 \n(%3)\nKüldés..."
 
-#: usereventdlg.cpp:2153
+#: usereventdlg.cpp:2151
 msgid "UserSendCommon::%1 refused %2, send through server"
 msgstr "%1 visszautasította ezt: %2, küld szerveren keresztül"
 
-#: usereventdlg.cpp:2020
+#: usereventdlg.cpp:2018
 msgid "UserSendCommon::&Cancel"
 msgstr "&Mégsem"
 
-#: usereventdlg.cpp:2375
+#: usereventdlg.cpp:2373
 msgid "UserSendCommon::&Close"
 msgstr "&Bezár"
 
@@ -4134,7 +4162,7 @@ msgstr "&Menü"
 msgid "UserSendCommon::&Send"
 msgstr "&Küld"
 
-#: usereventdlg.cpp:2429
+#: usereventdlg.cpp:2427
 msgid "UserSendCommon::Cancel"
 msgstr "&Mégsem"
 
@@ -4146,11 +4174,11 @@ msgstr "Csevegés kezdeményezése"
 msgid "UserSendCommon::Contact List"
 msgstr "Felhasználó Lista"
 
-#: usereventdlg.cpp:2112
+#: usereventdlg.cpp:2110
 msgid "UserSendCommon::Direct send failed,\nsend through server?"
 msgstr "A közvetlen küldés meghiúsult,\nküldjem a szerveren keresztül?"
 
-#: usereventdlg.cpp:1917
+#: usereventdlg.cpp:1915
 msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
 msgstr "Húzd ide a Felhasználókat\nJobb klikk a mûveletekhez"
 
@@ -4166,7 +4194,7 @@ msgstr "T&öbb címzett"
 msgid "UserSendCommon::Message"
 msgstr "Üzenet"
 
-#: usereventdlg.cpp:2112
+#: usereventdlg.cpp:2110
 msgid "UserSendCommon::No"
 msgstr "Nem"
 
@@ -4178,11 +4206,11 @@ msgstr "SMS"
 msgid "UserSendCommon::Se&nd through server"
 msgstr "&Szerveren keresztüli küldés"
 
-#: usereventdlg.cpp:2429
+#: usereventdlg.cpp:2427
 msgid "UserSendCommon::Send anyway"
 msgstr "Mindenképpen elküld!"
 
-#: usereventdlg.cpp:2007
+#: usereventdlg.cpp:2005
 msgid "UserSendCommon::Sending "
 msgstr "Küldés "
 
@@ -4194,140 +4222,140 @@ msgstr "Sü&rgõs"
 msgid "UserSendCommon::URL"
 msgstr "URL"
 
-#: usereventdlg.cpp:2133
+#: usereventdlg.cpp:2131
 msgid "UserSendCommon::Urgent"
 msgstr "Sürgõs"
 
-#: usereventdlg.cpp:2427
+#: usereventdlg.cpp:2425
 msgid "UserSendCommon::"
 "Warning: Message can't be sent securely\n"
 "through the server!"
 msgstr "Figyelem: Az üzenetet nem lehet titkosítva elküldeni\n"
 "a szerveren keresztül!"
 
-#: usereventdlg.cpp:2112
+#: usereventdlg.cpp:2110
 msgid "UserSendCommon::Yes"
 msgstr "Yes"
 
-#: usereventdlg.cpp:2076
+#: usereventdlg.cpp:2074
 msgid "UserSendCommon::cancelled"
 msgstr "megszakítva"
 
-#: usereventdlg.cpp:2009
+#: usereventdlg.cpp:2007
 msgid "UserSendCommon::direct"
 msgstr "közvetlenül"
 
-#: usereventdlg.cpp:2072
+#: usereventdlg.cpp:2070
 msgid "UserSendCommon::done"
 msgstr "kész"
 
-#: usereventdlg.cpp:2085
+#: usereventdlg.cpp:2083
 msgid "UserSendCommon::error"
 msgstr "hiba"
 
-#: usereventdlg.cpp:2079
+#: usereventdlg.cpp:2077
 msgid "UserSendCommon::failed"
 msgstr "hiba"
 
-#: usereventdlg.cpp:2082
+#: usereventdlg.cpp:2080
 msgid "UserSendCommon::timed out"
 msgstr "idõtúllépés"
 
-#: usereventdlg.cpp:2009
+#: usereventdlg.cpp:2007
 msgid "UserSendCommon::via server"
 msgstr "szerveren keresztül"
 
-#: usereventdlg.cpp:3190
+#: usereventdlg.cpp:3188
 msgid "UserSendContactEvent:: - Contact List"
 msgstr " - Felhasználó Lista"
 
-#: usereventdlg.cpp:3183
+#: usereventdlg.cpp:3181
 msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
 msgstr "Húzd ide a Felhasználókat - Jobb klikk a mûveletekhez"
 
-#: usereventdlg.cpp:2812
+#: usereventdlg.cpp:2810
 msgid "UserSendFileEvent:: - File Transfer"
 msgstr " - Fájl átvitel"
 
-#: usereventdlg.cpp:2803
+#: usereventdlg.cpp:2801
 msgid "UserSendFileEvent::Browse"
 msgstr "Böngészés"
 
-#: usereventdlg.cpp:2807
+#: usereventdlg.cpp:2805
 msgid "UserSendFileEvent::Edit"
 msgstr "Szerkeszt"
 
-#: usereventdlg.cpp:2949
+#: usereventdlg.cpp:2947
 msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
 msgstr "Fájl átvitel meghiúsult vele: %2\n%3"
 
-#: usereventdlg.cpp:2796
+#: usereventdlg.cpp:2794
 msgid "UserSendFileEvent::File(s): "
 msgstr "Fájl(ok)"
 
-#: usereventdlg.cpp:2829
+#: usereventdlg.cpp:2827
 msgid "UserSendFileEvent::Select files to send"
 msgstr "Válaszd ki a küldeni kívánt fájlokat"
 
-#: usereventdlg.cpp:2900
+#: usereventdlg.cpp:2898
 msgid "UserSendFileEvent::You must specify a file to transfer!"
 msgstr "Adj meg egy fájlt a küldéshez!"
 
-#: usereventdlg.cpp:2466
+#: usereventdlg.cpp:2464
 msgid "UserSendMsgEvent:: - Message"
 msgstr " - Üzenet"
 
-#: usereventdlg.cpp:2494
+#: usereventdlg.cpp:2492
 msgid "UserSendMsgEvent::&No"
 msgstr "&Nem"
 
-#: usereventdlg.cpp:2494
+#: usereventdlg.cpp:2492
 msgid "UserSendMsgEvent::&Yes"
 msgstr "&Igen"
 
-#: usereventdlg.cpp:2493
+#: usereventdlg.cpp:2491
 msgid "UserSendMsgEvent::"
 "You didn't edit the message.\n"
 "Do you really want to send it?"
 msgstr "Nem írtál üzenetet.\n"
 "Biztosan el akarod ezt küldeni?"
 
-#: usereventdlg.cpp:3377
+#: usereventdlg.cpp:3375
 msgid "UserSendSmsEvent:: - SMS"
 msgstr " - SMS"
 
-#: usereventdlg.cpp:3405
+#: usereventdlg.cpp:3403
 msgid "UserSendSmsEvent::&No"
 msgstr "&Nem"
 
-#: usereventdlg.cpp:3405
+#: usereventdlg.cpp:3403
 msgid "UserSendSmsEvent::&Yes"
 msgstr "&Igen"
 
-#: usereventdlg.cpp:3361
+#: usereventdlg.cpp:3359
 msgid "UserSendSmsEvent::Chars left : "
 msgstr "Karakter vissza: "
 
-#: usereventdlg.cpp:3355
+#: usereventdlg.cpp:3353
 msgid "UserSendSmsEvent::Phone : "
 msgstr "Telefon: "
 
-#: usereventdlg.cpp:3404
+#: usereventdlg.cpp:3402
 msgid "UserSendSmsEvent::"
 "You didn't edit the SMS.\n"
 "Do you really want to send it?"
 msgstr "Nem írtál üzenetet.\n"
 "Biztosan el akarod ezt küldeni?"
 
-#: usereventdlg.cpp:2652
+#: usereventdlg.cpp:2650
 msgid "UserSendUrlEvent:: - URL"
 msgstr " - URL"
 
-#: usereventdlg.cpp:2687
+#: usereventdlg.cpp:2685
 msgid "UserSendUrlEvent::No URL specified"
 msgstr "Nincs megadva URL"
 
-#: usereventdlg.cpp:2647
+#: usereventdlg.cpp:2645
 msgid "UserSendUrlEvent::URL : "
 msgstr "URL : "
 
@@ -4377,7 +4405,7 @@ msgstr "Felhasználó &Hozzáadása"
 
 #: usereventdlg.cpp:986
 msgid "UserViewEvent::A&uthorize"
-msgstr "&Engedélyezés"
+msgstr "&Engedélyez"
 
 #: usereventdlg.cpp:785
 msgid "UserViewEvent::Aut&o Close"
@@ -4482,7 +4510,7 @@ msgstr "Dátum"
 
 #: dialogs/qfiledialog.cpp:3341
 msgid "QFileDialog::Delete %1"
-msgstr "%1 Törlése"
+msgstr "%1 törlése"
 
 #: dialogs/qfiledialog.cpp:2109
 msgid "QFileDialog::Detail View"
@@ -4722,4 +4750,5 @@ msgstr "Segítség"
 
 #: dialogs/qwizard.cpp:95
 msgid "QWizard::Next >"
+msgstr "Következõ >"
 

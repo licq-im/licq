@@ -1,105 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>KDE default</source>
-        <translation type="unfinished">KDE alapértelmezés</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="unfinished">semmi</translation>
-    </message>
-</context>
-<context>
-    <name>@default</name>
-    <message>
-        <source>File(s): </source>
-        <translation type="unfinished">Fájl(ok)</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="unfinished">Böngészés</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished">Szerkeszt</translation>
-    </message>
-    <message>
-        <source> - File Transfer</source>
-        <translation type="unfinished"> - Fájl átvitel</translation>
-    </message>
-    <message>
-        <source>Select files to send</source>
-        <translation type="unfinished">Válaszd ki a küldeni kívánt fájlokat</translation>
-    </message>
-    <message>
-        <source>You must specify a file to transfer!</source>
-        <translation type="unfinished">Adj meg egy fájlt a küldéshez!</translation>
-    </message>
-    <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="unfinished">Fájl átvitel meghiúsult vele: %2
-%3</translation>
-    </message>
-    <message>
-        <source>Multiparty: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invite</source>
-        <translation type="unfinished">Meghív</translation>
-    </message>
-    <message>
-        <source> - Chat Request</source>
-        <translation type="unfinished"> - Csevegés kezdeményezése</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="unfinished">Töröl</translation>
-    </message>
-    <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="unfinished">Csevegés %2 Felhasználóval visszautasítva:
-%3</translation>
-    </message>
-    <message>
-        <source>Drag Users Here - Right Click for Options</source>
-        <translation type="unfinished">Húzd ide a Felhasználókat - Jobb klikk a műveletekhez</translation>
-    </message>
-    <message>
-        <source> - Contact List</source>
-        <translation type="unfinished"> - Felhasználó Lista</translation>
-    </message>
-    <message>
-        <source>Phone : </source>
-        <translation type="unfinished">Telefon: </translation>
-    </message>
-    <message>
-        <source>Chars left : </source>
-        <translation type="unfinished">Karakter vissza: </translation>
-    </message>
-    <message>
-        <source> - SMS</source>
-        <translation type="unfinished"> - SMS</translation>
-    </message>
-    <message>
-        <source>You didn&apos;t edit the SMS.
-Do you really want to send it?</source>
-        <translation type="unfinished">Nem írtál üzenetet.
-Biztosan el akarod ezt küldeni?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Igen</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nem</translation>
-    </message>
-</context>
-<context>
     <name>AddUserDlg</name>
     <message>
         <source>&amp;Ok</source>
@@ -198,10 +98,6 @@ Hagyhatsz üzenetet.
     <message>
         <source>Set %1 Response for %2</source>
         <translation>%1 válasz beállítása (%2)</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.&lt;br&gt;Examples of popular uses include:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Will replace that line by the current date&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Show a fortune, as a tagline for example&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Run a script, passing the uin and alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Run the same script but ignore the output (for tracking auto response checks or something)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Useless, but shows how you can use shell script.&lt;/li&gt;&lt;/ul&gt;Of course, multiple &quot;|&quot; can appear in the auto response, and commands and regular text can be mixed line by line.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -417,10 +313,6 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
         <source>File transfer complete.</source>
         <translation>Fájl átvitel befejezve.</translation>
     </message>
-    <message>
-        <source>Batch:</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CForwardDlg</name>
@@ -499,6 +391,10 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
 <context>
     <name>CMMSendDlg</name>
     <message>
+        <source>none</source>
+        <translation>semmi</translation>
+    </message>
+    <message>
         <source>Sending mass message to %1...</source>
         <translation>Üzenet küldése neki: %1...</translation>
     </message>
@@ -525,6 +421,10 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Mégsem</translation>
+    </message>
+    <message>
+        <source>KDE default</source>
+        <translation>KDE alapértelmezés</translation>
     </message>
     <message>
         <source>Sending mass list to %1...</source>
@@ -564,6 +464,10 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
 </context>
 <context>
     <name>CMainWindow</name>
+    <message>
+        <source> </source>
+        <translation> </translation>
+    </message>
     <message>
         <source>s</source>
         <translation>s</translation>
@@ -883,6 +787,12 @@ a Felhasználó Listádba?</translation>
         <translation>Minden Felhasználó frissítése</translation>
     </message>
     <message>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
+</source>
+        <translation>&lt;h2&gt;Tippek a Licq Qt-GUI Plugin használatához&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Az Állapot megváltoztatásához kattints az Állapot címkére.&lt;/li&gt;&lt;li&gt;Az Azonnali válasz megváltoztatásához kattints duplán az Állapot címkére.&lt;/li&gt;&lt;li&gt;A Rendszerüzenetek megtekintéséhez kattints duplán az üzenet címkére.&lt;/li&gt;&lt;li&gt;A Csoport nézet megváltoztatásához kattints jobb gombbal az üzenet címkére.&lt;/li&gt;&lt;li&gt;A következő billentyűparancsokat használhatod a Felhasználó Listából:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Mini-mód be/ki&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Kijelentkezett Felhasználók megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Kilépés&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Eltűntet&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Következő üzenet megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Üzenet megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Üzenet küldése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;URL küldése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Csevegés kezdeményezése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Fájl küldése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Azonnali válasz megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Összes üzenet megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Felhasználó Lista ablakának újrarajzolása&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Felhasználó eltávolítása az aktuális csoportból&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Felhasználó eltávolítása a Felhasználó Listából&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;A legtöbb szövegbevitelnél leütheted a Ctrl-Enter billentyűket az &quot;Ok&quot; vagy &quot;Elfogad&quot; gombra kattintás helyett.   Például az Üzenet ablakban.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
+</translation>
+    </message>
+    <message>
         <source>&amp;Redraw User Window</source>
         <translation>Ablak újrarajzolása</translation>
     </message>
@@ -1182,15 +1092,6 @@ Dupla klikk - Következő üzenet</translation>
         <source>Licq is unable to find a browser application due to an internal error.</source>
         <translation>A Licq nem talált megfelelő bongészőt egy belső hiba következtében.</translation>
     </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> </source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
@@ -1401,6 +1302,10 @@ Dupla klikk - Következő üzenet</translation>
         <translation> nap</translation>
     </message>
     <message>
+        <source>Thai</source>
+        <translation>Thai</translation>
+    </message>
+    <message>
         <source> days</source>
         <translation> nap</translation>
     </message>
@@ -1415,6 +1320,18 @@ Dupla klikk - Következő üzenet</translation>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;IP: </translation>
+    </message>
+    <message>
+        <source>Greek</source>
+        <translation>Görög</translation>
+    </message>
+    <message>
+        <source>Tamil</source>
+        <translation>Tamil</translation>
+    </message>
+    <message>
+        <source>Cyrillic</source>
+        <translation>Cirill</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
@@ -1441,12 +1358,36 @@ Dupla klikk - Következő üzenet</translation>
         <translation>0 perc</translation>
     </message>
     <message>
+        <source>Baltic</source>
+        <translation>Balti</translation>
+    </message>
+    <message>
+        <source>Arabic</source>
+        <translation>Arab</translation>
+    </message>
+    <message>
+        <source>Hebrew</source>
+        <translation>Héber</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation>Kórea</translation>
+    </message>
+    <message>
         <source>Online</source>
         <translation>Bejelentkezve</translation>
     </message>
     <message>
         <source>Offline</source>
         <translation>Kijelentkezve</translation>
+    </message>
+    <message>
+        <source>Western European</source>
+        <translation>Nyugat-Európa</translation>
+    </message>
+    <message>
+        <source>Esperanto</source>
+        <translation>Eszperantó</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
@@ -1469,6 +1410,10 @@ Dupla klikk - Következő üzenet</translation>
         <translation>&lt;br&gt;&lt;nobr&gt;U: </translation>
     </message>
     <message>
+        <source>Central European</source>
+        <translation>Közép-Európa</translation>
+    </message>
+    <message>
         <source> minute</source>
         <translation> perce</translation>
     </message>
@@ -1477,8 +1422,32 @@ Dupla klikk - Következő üzenet</translation>
         <translation>&lt;br&gt;&lt;b&gt;Szülinap&amp;nbsp;Ma!&lt;/b&gt;</translation>
     </message>
     <message>
+        <source>Japanese</source>
+        <translation>Japán</translation>
+    </message>
+    <message>
+        <source>Ukrainian</source>
+        <translation>Ukrán</translation>
+    </message>
+    <message>
         <source>%1 Floaty (%2)</source>
         <translation>%1 Lebegő (%2)</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation>Kínai</translation>
+    </message>
+    <message>
+        <source>Turkish</source>
+        <translation>Török</translation>
+    </message>
+    <message>
+        <source>Unicode</source>
+        <translation>Unicode</translation>
+    </message>
+    <message>
+        <source>Chinese Traditional</source>
+        <translation>Kínai Tradicionális</translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
@@ -1487,22 +1456,6 @@ Dupla klikk - Következő üzenet</translation>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;Bejelentkezve: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1574,10 +1527,6 @@ Dupla klikk - Következő üzenet</translation>
     <message>
         <source>Window:</source>
         <translation>Ablak:</translation>
-    </message>
-    <message>
-        <source>Edit final command</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1928,7 +1877,7 @@ ezt a csoportot: &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Web Panel</source>
-        <translation>Web Panel</translation>
+        <translation>Üzenet Webről</translation>
     </message>
     <message>
         <source>Plugin Event</source>
@@ -2965,6 +2914,15 @@ A következő jelöléseket használhatod:
         <translation>Egy URL megnézéséhet szükséges parancs. Maga az URL lesz a program paramétere</translation>
     </message>
     <message>
+        <source>Hotkey pops up the next pending message
+Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
+changes here require a Restart to take effect!
+</source>
+        <translation>A billentyűparancs, ami a következő beérkezett üzenet előhozza. Írd ide a billentyűk nevét. Például: &quot;shift+f10&quot;, vagy &quot;none&quot; a billentyűparancs letiltásához.
+A változtatások után újra kell indítani a programot!
+</translation>
+    </message>
+    <message>
         <source>Allow the vertical scroll bar in the user list</source>
         <translation>A függőleges gördítősáv engedélyezése a Felhasználó Listában</translation>
     </message>
@@ -2992,25 +2950,6 @@ A következő jelöléseket használhatod:
         <source>Alignment</source>
         <translation>Tájolás</translation>
     </message>
-    <message>
-        <source>Always show online notify users</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show online notify users who are offline even when offline users are hidden.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hotkey pops up the next pending message
-Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
-changes here require a Restart to take effect!
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Idle Time</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>PluginDlg</name>
@@ -3036,7 +2975,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Enable</source>
-        <translation>Engedélyezés</translation>
+        <translation>Engedélyez</translation>
     </message>
     <message>
         <source>Configure</source>
@@ -3078,11 +3017,305 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Disable</source>
-        <translation>Letiltás</translation>
+        <translation>Letilt</translation>
     </message>
     <message>
         <source>Version</source>
         <translation>Verzió</translation>
+    </message>
+</context>
+<context>
+    <name>QFileDialog</name>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;Nem</translation>
+    </message>
+    <message>
+        <source>Dir</source>
+        <translation>Kvtár</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Igen</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>Vissza</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>Dátum</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation>Fájl</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Név</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>Megnyit</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Mentés</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>Méret</translation>
+    </message>
+    <message>
+        <source>Sort</source>
+        <translation>Rendez</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Típus</translation>
+    </message>
+    <message>
+        <source>&amp;Open</source>
+        <translation>&amp;Megnyit</translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation>&amp;Mentés</translation>
+    </message>
+    <message>
+        <source>ERROR</source>
+        <translation>HIBA</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Hiba</translation>
+    </message>
+    <message>
+        <source>Sort by &amp;Size</source>
+        <translation>&amp;Méret szerint rendez</translation>
+    </message>
+    <message>
+        <source>Sort by &amp;Date</source>
+        <translation>&amp;Dátum szerint rendez</translation>
+    </message>
+    <message>
+        <source>Sort by &amp;Name</source>
+        <translation>&amp;Név szerint rendez</translation>
+    </message>
+    <message>
+        <source>New Folder 1</source>
+        <translation>Új könyvtár 1</translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
+        <translation>&lt;qt&gt;Biztosan törölni akarod őt: %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
+    </message>
+    <message>
+        <source>the directory</source>
+        <translation>a könyvtár</translation>
+    </message>
+    <message>
+        <source>File &amp;type:</source>
+        <translation>Fájl &amp;típus</translation>
+    </message>
+    <message>
+        <source>File &amp;name:</source>
+        <translation>Fájl &amp;név:</translation>
+    </message>
+    <message>
+        <source>Delete %1</source>
+        <translation>%1 törlése</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Mégsem</translation>
+    </message>
+    <message>
+        <source>R&amp;eload</source>
+        <translation>Ú&amp;jratölt</translation>
+    </message>
+    <message>
+        <source>New Folder</source>
+        <translation>Új könyvtár</translation>
+    </message>
+    <message>
+        <source>&amp;Unsorted</source>
+        <translation>&amp;Rendezetlen</translation>
+    </message>
+    <message>
+        <source>Look &amp;in:</source>
+        <translation>Belené&amp;z:</translation>
+    </message>
+    <message>
+        <source>Preview File Contents</source>
+        <translation>Tartalom előnézet</translation>
+    </message>
+    <message>
+        <source>New Folder %1</source>
+        <translation>Új könyvtár %1</translation>
+    </message>
+    <message>
+        <source>Read-write</source>
+        <translation>Írható-Olvasható</translation>
+    </message>
+    <message>
+        <source>Read-only</source>
+        <translation>Csak olvasható</translation>
+    </message>
+    <message>
+        <source>Find Directory</source>
+        <translation>Könyvtár keresése</translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation>Jogok</translation>
+    </message>
+    <message>
+        <source>Show &amp;hidden files</source>
+        <translation>&amp;Rejtett fájlokat mutat</translation>
+    </message>
+    <message>
+        <source>Save as</source>
+        <translation>Mentés másként</translation>
+    </message>
+    <message>
+        <source>Inaccessible</source>
+        <translation>Elérhetetlen</translation>
+    </message>
+    <message>
+        <source>%1
+File not found.
+Check path and filename.</source>
+        <translation>%1
+Fájl nem található.
+Ellenőrizd az elérési utat, és a nevet.</translation>
+    </message>
+    <message>
+        <source>List View</source>
+        <translation>Lista nézet</translation>
+    </message>
+    <message>
+        <source>Special</source>
+        <translation>Egyedi</translation>
+    </message>
+    <message>
+        <source>Write-only</source>
+        <translation>Írható</translation>
+    </message>
+    <message>
+        <source>the symlink</source>
+        <translation>a szimlink</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation>&amp;Töröl</translation>
+    </message>
+    <message>
+        <source>All files (*)</source>
+        <translation>Minden fájl (*)</translation>
+    </message>
+    <message>
+        <source>Directories</source>
+        <translation>Könyvtárak</translation>
+    </message>
+    <message>
+        <source>Symlink to Special</source>
+        <translation>Szimbolikus link egyedire</translation>
+    </message>
+    <message>
+        <source>&amp;Rename</source>
+        <translation>&amp;Átnevez</translation>
+    </message>
+    <message>
+        <source>One directory up</source>
+        <translation>Egy szinttel feljebb</translation>
+    </message>
+    <message>
+        <source>Preview File Info</source>
+        <translation>Fájl info</translation>
+    </message>
+    <message>
+        <source>the file</source>
+        <translation>a fájl</translation>
+    </message>
+    <message>
+        <source>Create New Folder</source>
+        <translation>Új könyvtár</translation>
+    </message>
+    <message>
+        <source>Symlink to File</source>
+        <translation>Szimbolikus link fájlra</translation>
+    </message>
+    <message>
+        <source>Symlink to Directory</source>
+        <translation>Szimbolikus link könyvtárra</translation>
+    </message>
+    <message>
+        <source>Detail View</source>
+        <translation>Részletek</translation>
+    </message>
+</context>
+<context>
+    <name>QFontDialog</name>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>&amp;Font</source>
+        <translation>&amp;Font</translation>
+    </message>
+    <message>
+        <source>&amp;Size</source>
+        <translation>&amp;Méret</translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation>Alkalmaz</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Bezár</translation>
+    </message>
+    <message>
+        <source>&amp;Color</source>
+        <translation>&amp;Szín</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Mégsem</translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation>Minta</translation>
+    </message>
+    <message>
+        <source>Font st&amp;yle</source>
+        <translation>Font &amp;stílus</translation>
+    </message>
+    <message>
+        <source>Scr&amp;ipt</source>
+        <translation>Scr&amp;ipt</translation>
+    </message>
+    <message>
+        <source>Select Font</source>
+        <translation>Font választása</translation>
+    </message>
+    <message>
+        <source>&amp;Underline</source>
+        <translation>&amp;Aláhúzás</translation>
+    </message>
+    <message>
+        <source>Effects</source>
+        <translation>Hatások</translation>
+    </message>
+    <message>
+        <source>Stri&amp;keout</source>
+        <translation>Á&amp;thúzott</translation>
     </message>
 </context>
 <context>
@@ -3102,6 +3335,29 @@ changes here require a Restart to take effect!
     <message>
         <source>Licq Information</source>
         <translation>Licq info</translation>
+    </message>
+</context>
+<context>
+    <name>QWizard</name>
+    <message>
+        <source>Help</source>
+        <translation>Segítség</translation>
+    </message>
+    <message>
+        <source>&lt; Back</source>
+        <translation>&lt; Vissza</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Mégsem</translation>
+    </message>
+    <message>
+        <source>Finish</source>
+        <translation>Befejez</translation>
+    </message>
+    <message>
+        <source>Next &gt;</source>
+        <translation>Következő &gt;</translation>
     </message>
 </context>
 <context>
@@ -3253,7 +3509,7 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     </message>
     <message>
         <source>Company Name:</source>
-        <translation>Cég név:</translation>
+        <translation>Munkahely neve:</translation>
     </message>
     <message>
         <source>Enter search parameters and select &apos;Search&apos;</source>
@@ -3261,7 +3517,7 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     </message>
     <message>
         <source>Company Position:</source>
-        <translation>Cég helye:</translation>
+        <translation>Munkahelyen beosztása:</translation>
     </message>
     <message>
         <source>Searching (this can take awhile)...</source>
@@ -3337,7 +3593,7 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     </message>
     <message>
         <source>Company Department:</source>
-        <translation>Cég telephely:</translation>
+        <translation>Munkahelyen részlege:</translation>
     </message>
     <message>
         <source>Return Online Users Only</source>
@@ -3441,14 +3697,6 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     <message>
         <source>Unknown</source>
         <translation>Ismeretlen</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3614,10 +3862,6 @@ hogy ezt megváltoztathasd.</translation>
         <source>&amp;Show Again</source>
         <translation>&amp;Újra mutat</translation>
     </message>
-    <message>
-        <source>%1 Response for %2</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SkinBrowserDlg</name>
@@ -3716,77 +3960,6 @@ Ikoncsomag &apos;%2&apos; letiltva</translation>
     <message>
         <source>Extended Icons:</source>
         <translation>Bővített ikonok:</translation>
-    </message>
-</context>
-<context>
-    <name>UserCodec</name>
-    <message>
-        <source>Unicode</source>
-        <translation type="unfinished">Unicode</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="unfinished">Arab</translation>
-    </message>
-    <message>
-        <source>Baltic</source>
-        <translation type="unfinished">Balti</translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="unfinished">Közép-Európa</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="unfinished">Kínai</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="unfinished">Kínai Tradicionális</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="unfinished">Cirill</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="unfinished">Eszperantó</translation>
-    </message>
-    <message>
-        <source>Greek</source>
-        <translation type="unfinished">Görög</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="unfinished">Héber</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="unfinished">Japán</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="unfinished">Kórea</translation>
-    </message>
-    <message>
-        <source>Western European</source>
-        <translation type="unfinished">Nyugat-Európa</translation>
-    </message>
-    <message>
-        <source>Tamil</source>
-        <translation type="unfinished">Tamil</translation>
-    </message>
-    <message>
-        <source>Thai</source>
-        <translation type="unfinished">Thai</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="unfinished">Török</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="unfinished">Ukrán</translation>
     </message>
 </context>
 <context>
@@ -4066,11 +4239,11 @@ hogy lekérdezhesd a beállításaidat.</translation>
     </message>
     <message>
         <source>Department:</source>
-        <translation>Telephely:</translation>
+        <translation>Részleg:</translation>
     </message>
     <message>
         <source>Position:</source>
-        <translation>Beosztás</translation>
+        <translation>Beosztás:</translation>
     </message>
     <message>
         <source>Sorry, history is disabled for this person.</source>
@@ -4188,6 +4361,27 @@ Leírás: %2</translation>
     <message>
         <source>&amp;Password:</source>
         <translation>&amp;Jelszó:</translation>
+    </message>
+</context>
+<context>
+    <name>UserSendChatEvent</name>
+    <message>
+        <source>Clear</source>
+        <translation>Töröl</translation>
+    </message>
+    <message>
+        <source>Invite</source>
+        <translation>Meghív</translation>
+    </message>
+    <message>
+        <source>Chat with %2 refused:
+%3</source>
+        <translation>Csevegés %2 Felhasználóval visszautasítva:
+%3</translation>
+    </message>
+    <message>
+        <source> - Chat Request</source>
+        <translation> - Csevegés kezdeményezése</translation>
     </message>
 </context>
 <context>
@@ -4332,6 +4526,50 @@ a szerveren keresztül!</translation>
     </message>
 </context>
 <context>
+    <name>UserSendContactEvent</name>
+    <message>
+        <source>Drag Users Here - Right Click for Options</source>
+        <translation>Húzd ide a Felhasználókat - Jobb klikk a műveletekhez</translation>
+    </message>
+    <message>
+        <source> - Contact List</source>
+        <translation> - Felhasználó Lista</translation>
+    </message>
+</context>
+<context>
+    <name>UserSendFileEvent</name>
+    <message>
+        <source>Edit</source>
+        <translation>Szerkeszt</translation>
+    </message>
+    <message>
+        <source>You must specify a file to transfer!</source>
+        <translation>Adj meg egy fájlt a küldéshez!</translation>
+    </message>
+    <message>
+        <source>File(s): </source>
+        <translation>Fájl(ok)</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Böngészés</translation>
+    </message>
+    <message>
+        <source> - File Transfer</source>
+        <translation> - Fájl átvitel</translation>
+    </message>
+    <message>
+        <source>File transfer with %2 refused:
+%3</source>
+        <translation>Fájl átvitel meghiúsult vele: %2
+%3</translation>
+    </message>
+    <message>
+        <source>Select files to send</source>
+        <translation>Válaszd ki a küldeni kívánt fájlokat</translation>
+    </message>
+</context>
+<context>
     <name>UserSendMsgEvent</name>
     <message>
         <source>&amp;No</source>
@@ -4350,6 +4588,35 @@ a szerveren keresztül!</translation>
 Do you really want to send it?</source>
         <translation>Nem írtál üzenetet.
 Biztosan el akarod ezt küldeni?</translation>
+    </message>
+</context>
+<context>
+    <name>UserSendSmsEvent</name>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;Nem</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Igen</translation>
+    </message>
+    <message>
+        <source> - SMS</source>
+        <translation> - SMS</translation>
+    </message>
+    <message>
+        <source>You didn&apos;t edit the SMS.
+Do you really want to send it?</source>
+        <translation>Nem írtál üzenetet.
+Biztosan el akarod ezt küldeni?</translation>
+    </message>
+    <message>
+        <source>Chars left : </source>
+        <translation>Karakter vissza: </translation>
+    </message>
+    <message>
+        <source>Phone : </source>
+        <translation>Telefon: </translation>
     </message>
 </context>
 <context>
@@ -4441,7 +4708,7 @@ Kérés megszakítva.</translation>
     </message>
     <message>
         <source>A&amp;uthorize</source>
-        <translation>&amp;Engedélyezés</translation>
+        <translation>&amp;Engedélyez</translation>
     </message>
     <message>
         <source>&amp;Refuse</source>
