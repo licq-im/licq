@@ -4179,41 +4179,52 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 //--------ProcessNewUINFam-----------------------------------------------------
 void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
 {
-  if (nSubtype != ICQ_SNACxNEW_UIN)
-  {
-    char *buf;
-    gLog.Unknown("%sUnknown New UIN Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
-    		nSubtype, packet.print(buf));
-    delete [] buf;
-    return;
-  }
+	switch (nSubtype)
+	{
+		case ICQ_SNACxNEW_UIN_ERROR:
+		{
+			gLog.Warn("%sNew UIN error, is your password too long? (max 8 characters)\n", L_WARNxSTR);
+			break;
+		}
+		case ICQ_SNACxNEW_UIN:
+		{
+			packet.UnpackUnsignedShort(); // flags
+			packet.UnpackUnsignedLong();  // id
 
-  packet.UnpackUnsignedShort(); // flags
-  packet.UnpackUnsignedLong();  // id
+			// 46 bytes of shit
+			for (int x = 0; x < 11; x++)
+				packet.UnpackUnsignedLong();
+			packet.UnpackUnsignedShort();
 
-  // 46 bytes of shit
-  for (int x = 0; x < 11; x++)
-    packet.UnpackUnsignedLong();
-  packet.UnpackUnsignedShort();
+			unsigned long nNewUin = packet.UnpackUnsignedLong();
 
-  unsigned long nNewUin = packet.UnpackUnsignedLong();
+			if (gUserManager.OwnerUin() != 0)
+			{
+				gLog.Warn("%sReceived new uin (%ld) when already have a uin (%ld).\n", L_WARNxSTR,
+					nNewUin, gUserManager.OwnerUin());
+				return;
+			}
 
-  if (gUserManager.OwnerUin() != 0)
-  {
-    gLog.Warn("%sReceived new uin (%ld) when already have a uin (%ld).\n", L_WARNxSTR,
-    	nNewUin, gUserManager.OwnerUin());
-    return;
-  }
+			gLog.Info("%sReceived new uin: %ld\n", L_SRVxSTR, nNewUin);
+			gUserManager.SetOwnerUin(nNewUin);
 
-  gLog.Info("%sReceived new uin: %ld\n", L_SRVxSTR, nNewUin);
-  gUserManager.SetOwnerUin(nNewUin);
+			// Reconnect now
+			int nSD = m_nTCPSrvSocketDesc;
+			m_nTCPSrvSocketDesc = -1;
+			gSocketManager.CloseSocket(nSD);
 
-  // Reconnect now
-  int nSD = m_nTCPSrvSocketDesc;
-  m_nTCPSrvSocketDesc = -1;
-  gSocketManager.CloseSocket(nSD);
-
-  icqLogon(ICQ_STATUS_ONLINE);
+			icqLogon(ICQ_STATUS_ONLINE);
+			break;
+		}
+		default:
+		{
+			char *buf;
+			gLog.Unknown("%sUnknown New UIN Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
+					nSubtype, packet.print(buf));
+			delete [] buf;
+			break;
+		}
+	}
 }
 
 //--------ProcessDataChannel---------------------------------------------------

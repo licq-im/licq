@@ -92,8 +92,9 @@ const unsigned short ICQ_SNACxMETA                 = 0x0002; // client
 //const unsigned short ICQ_SNACxSEARCH             = 0x0002; // client
 
 // Subtypes for new uin family
-const unsigned short ICQ_SNACxREGISTER_USER	   = 0x0004; // client
-const unsigned short ICQ_SNACxNEW_UIN		   = 0x0005; // server
+const unsigned short ICQ_SNACxNEW_UIN_ERROR        = 0x0001; // server
+const unsigned short ICQ_SNACxREGISTER_USER        = 0x0004; // client
+const unsigned short ICQ_SNACxNEW_UIN              = 0x0005; // server
 
 // Subtypes for list family
 const unsigned short ICQ_SNACxLIST_REQUESTxRIGHTS  = 0x0002; // client

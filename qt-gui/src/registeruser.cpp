@@ -122,6 +122,11 @@ void RegisterUserDlg::nextPage()
                            "try to register an existing user. "));
       errorOccured = true;
     }
+    else if(nfoPassword1->text().length() > 8 || nfoPassword2->text().length() > 8)
+    {
+      lblInfo->setText(tr("Invalid password, must be between 1 and 8 characters."));
+      errorOccured = true;
+    }
     else if(nfoPassword1->text().length() == 0)
     {
       lblInfo->setText(tr("Please enter your password in both input fields."));
