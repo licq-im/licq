@@ -93,7 +93,8 @@ public:
        m_bShowExtendedIcons,
        m_bSystemBackground,
        m_bSendFromClipboard,
-       m_bAutoPosReplyWin;
+       m_bAutoPosReplyWin,
+       m_bAutoSendThroughServer;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

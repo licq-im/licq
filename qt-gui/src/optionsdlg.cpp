@@ -199,6 +199,7 @@ void OptionsDlg::SetupOptions()
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
+  chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   switch(mainwin->m_nDockMode)
   {
     case DockNone:
@@ -381,6 +382,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
+  mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
 #ifndef USE_KDE
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
@@ -591,6 +593,9 @@ QWidget* OptionsDlg::new_appearance_options()
   chkAutoPosReplyWin = new QCheckBox(tr("Auto Position the Reply Window"), boxMainWin);
   QWhatsThis::add(chkAutoPosReplyWin, tr("Position a new reply window just underneath "
    "the message view window"));
+  chkAutoSendThroughServer = new QCheckBox(tr("Auto send through server"), boxMainWin);
+  QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through server "
+   "if direct connection fails"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);

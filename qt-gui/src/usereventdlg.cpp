@@ -1095,7 +1095,8 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     if (e->Command() == ICQ_CMDxTCP_START &&
         (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
          e->SubCommand() != ICQ_CMDxSUB_FILE) &&
-        QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
+	(mainwin->m_bAutoSendThroughServer ||
+         QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No"))) )
     {
       RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
     }
