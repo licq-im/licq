@@ -633,8 +633,6 @@ QWidget* OptionsDlg::new_network_options()
 #if QT_VERSION < 210
   QWidget* dummy_w= new QWidget(gbAuto);
   dummy_w->setMinimumHeight(10);
-  lay->addWidget(dummy_w);
-  lay->activate();
 #endif
 
   return w;
