@@ -463,8 +463,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   skin = NULL;
   menu = NULL;
 
-  ApplyIcons(szIcons, true);
-  ApplyExtendedIcons(szExtendedIcons, true);
   pmSecureOn = QPixmap(secure_on_xpm);
   pmSecureOff = QPixmap(secure_off_xpm);
   pmHistory = QPixmap(history_xpm);
@@ -476,6 +474,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   #else
   pmEncoding = QPixmap(charset_xpm);
   #endif
+  ApplyIcons(szIcons, true);
+  ApplyExtendedIcons(szExtendedIcons, true);
   initMenu();
   ApplySkin(szSkin, true);
   skin->frame.frameStyle = nFrameStyle;
@@ -3114,11 +3114,31 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmAuthorize.load(sFilepath);
    if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
-   
+
    fIconsConf.ReadStr("SMS", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmSMS.load(sFilepath);
    if(pmSMS.isNull()) pmSMS = pmMessage;
+
+   fIconsConf.ReadStr("SecureOff", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmSecureOff.load(sFilepath);
+   if(pmSecureOff.isNull()) pmSecureOff = pmMessage;
+
+   fIconsConf.ReadStr("SecureOn", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmSecureOn.load(sFilepath);
+   if(pmSecureOn.isNull()) pmSecureOn = pmMessage;
+
+   fIconsConf.ReadStr("History", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmHistory.load(sFilepath);
+   if(pmHistory.isNull()) pmHistory = pmMessage;
+
+   fIconsConf.ReadStr("Info", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmInfo.load(sFilepath);
+   if(pmInfo.isNull()) pmInfo = pmMessage;
 
    if (!_bInitial)
    {
@@ -3138,7 +3158,11 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
      mnuUser->changeItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
      mnuUser->changeItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
-     mnuUser->changeItem(tr("Request &Secure Channel"), mnuUserSendKey);
+     mnuUser->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
+     mnuOwnerAdm->changeItem(pmInfo, tr("&Info"), OwnerMenuGeneral);
+     mnuOwnerAdm->changeItem(pmHistory, tr("View &History"), OwnerMenuHistory);
+     mnuUser->changeItem(pmInfo, tr("&Info"), mnuUserGeneral);
+     mnuUser->changeItem(pmHistory, tr("View &History"), mnuUserHistory);
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
