@@ -231,6 +231,7 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
 //-----INetSocket::constructor--------------------------------------------------
 INetSocket::INetSocket(unsigned long _nOwner)
 {
+  m_nOwner = _nOwner;
   m_nDescriptor = -1;
   if (_nOwner)
   {
@@ -238,7 +239,6 @@ INetSocket::INetSocket(unsigned long _nOwner)
     sprintf(szUin, "%lu", _nOwner);
     m_szOwnerId = strdup(szUin);
     m_nOwnerPPID = LICQ_PPID;
-    m_nOwner = _nOwner;
   }
   else
   {
@@ -266,6 +266,8 @@ INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
   m_nOwnerPPID = _nOwnerPPID;
   if (m_nOwnerPPID == LICQ_PPID)
     m_nOwner = strtoul(_szOwnerId, (char **)NULL, 10);
+  else
+    m_nOwner = 0;
   m_nVersion = 0;
   m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
