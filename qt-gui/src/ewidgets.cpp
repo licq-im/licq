@@ -3,7 +3,6 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include <assert.h>
 #include <stdio.h>
 #include <qpixmap.h>
 #include <qpainter.h>
@@ -474,9 +473,7 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, c
 
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
-  assert( _e->Uin() == m_nUin );
-
-  if ( _e->UserEvent() )
+  if ( _e->Uin() == m_nUin && _e->UserEvent() )
     addMsg( _e->UserEvent() );
 }
 
