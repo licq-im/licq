@@ -31,7 +31,7 @@ echo ""
 echo "Updating licq.conf file..."
 cd $BASE
 
-sed -e 's/Version = 1027/Version = 1028/g' $LICQCONF > $TMPLICQCONF && mv $TMPLICQCONF $LICQCONF
+sed -e 's/Version = 1027/Version = 1030/g' $LICQCONF > $TMPLICQCONF && mv $TMPLICQCONF $LICQCONF
 UIN=`cat $BASE/owner.uin | grep Uin | cut -d " " -f 3`
 echo "[owners]" >> $LICQCONF
 echo "NumOfOwners = 1" >> $LICQCONF
