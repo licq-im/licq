@@ -1125,8 +1125,9 @@ void ICQUser::SetAlias(const char *s)
 
 bool ICQUser::Away()
 {
-   return (Status() == ICQ_STATUS_AWAY || Status() == ICQ_STATUS_NA ||
-           Status() == ICQ_STATUS_DND || Status() == ICQ_STATUS_OCCUPIED);
+   unsigned short n = Status();
+   return (n == ICQ_STATUS_AWAY || n == ICQ_STATUS_NA ||
+           n == ICQ_STATUS_DND || n == ICQ_STATUS_OCCUPIED);
 }
 
 void ICQUser::SetHistoryFile(const char *s)
