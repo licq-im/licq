@@ -1053,6 +1053,7 @@ void ICQUser::SetDefaults(void)
   SetCompanyDepartment(szTemp);
   SetCompanyPosition(szTemp);
   SetCompanyHomepage(szTemp);
+  SetAbout(szTemp);
 }
 
 /*
