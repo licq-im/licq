@@ -129,6 +129,10 @@ Möchten Sie sie wirklich senden?</translation>
         <source>New User ID:</source>
         <translation>Neue Benutzer ID:</translation>
     </message>
+    <message>
+        <source>Protocol:</source>
+        <translation>Protokoll:</translation>
+    </message>
 </context>
 <context>
     <name>AuthUserDlg</name>
@@ -1232,6 +1236,50 @@ Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopiere
         <source>Do you really want to reset your stats?</source>
         <translation>Möchten Sie wirklich Ihre Statistiken auf 0 zurücksetzen?</translation>
     </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
+        <translation>&lt;b&gt;%1&lt;/b&gt; ist online</translation>
+    </message>
+    <message>
+        <source>Don&apos;t Show</source>
+        <translation>Nicht zeigen</translation>
+    </message>
+    <message>
+        <source>Available</source>
+        <translation>Erreichbar</translation>
+    </message>
+    <message>
+        <source>Busy</source>
+        <translation>Besetzt</translation>
+    </message>
+    <message>
+        <source>Phone &quot;Follow Me&quot;</source>
+        <translation>Telefon folgen</translation>
+    </message>
+    <message>
+        <source>&amp;Owner Manager</source>
+        <translation>&amp;Eigentümer-Manager</translation>
+    </message>
+    <message>
+        <source>Update Info Plugin List</source>
+        <translation>Info-Plugin-Liste aktualisieren</translation>
+    </message>
+    <message>
+        <source>Update Status Plugin List</source>
+        <translation>Status-Plugin-Liste aktualisieren</translation>
+    </message>
+    <message>
+        <source>Update Phone &quot;Follow Me&quot; Status</source>
+        <translation>&quot;Telefon folgen&quot;-Status aktualisieren</translation>
+    </message>
+    <message>
+        <source>Update ICQphone Status</source>
+        <translation>ICQphone-Status aktualisieren</translation>
+    </message>
+    <message>
+        <source>Update File Server Status</source>
+        <translation>Dateiserver-Status aktualisieren</translation>
+    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
@@ -1545,6 +1593,30 @@ Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopiere
         <source>0 minutes</source>
         <translation>0 minuten</translation>
     </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <translation>&lt;br&gt;&amp;quot;Telefon&amp;nbsp;folgen&amp;quot;:&amp;nbsp;verf&amp;uuml;gbar</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <translation>&lt;br&gt;;&amp;quot;Telefon&amp;nbsp;folgen&amp;quot;:&amp;nbsp;Besetzt</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <translation>&lt;br&gt;ICQphone:&amp;nbsp;Verf&amp;uuml;gbar</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <translation>&lt;br&gt;ICQphone:&amp;nbsp;Besetzt</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <translation>&lt;br&gt;Datei-Server:&amp;nbsp;Aktiviert</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <translation>&lt;br&gt;&lt;nobr&gt;</translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>
@@ -1832,6 +1904,21 @@ Sie können mir eine Nachricht hinterlassen.</translation>
     </message>
 </context>
 <context>
+    <name>EditCategoryDlg</name>
+    <message>
+        <source>Unspecified</source>
+        <translation>Undefiniert</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>Ab&amp;brechen</translation>
+    </message>
+</context>
+<context>
     <name>EditFileDlg</name>
     <message>
         <source>&amp;Save</source>
@@ -1947,6 +2034,113 @@ entfernen wollen?</translation>
     <message>
         <source>Save the name of a group being modified.</source>
         <translation>Speichert den Namen der gerade bearbeiteten Gruppe.</translation>
+    </message>
+</context>
+<context>
+    <name>EditPhoneDlg</name>
+    <message>
+        <source>Description:</source>
+        <translation>Beschreibung:</translation>
+    </message>
+    <message>
+        <source>Home Phone</source>
+        <translation>Telefon privat</translation>
+    </message>
+    <message>
+        <source>Work Phone</source>
+        <translation>Telefon geschäftlich</translation>
+    </message>
+    <message>
+        <source>Private Cellular</source>
+        <translation>Mobiltelefon privat</translation>
+    </message>
+    <message>
+        <source>Work Cellular</source>
+        <translation>Mobiltelefon geschäftlich</translation>
+    </message>
+    <message>
+        <source>Home Fax</source>
+        <translation>Fax privat</translation>
+    </message>
+    <message>
+        <source>Work Fax</source>
+        <translation>Fax geschäftlich</translation>
+    </message>
+    <message>
+        <source>Wireless Pager</source>
+        <translation>Funkruf</translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation>Typ:</translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation>Telefon</translation>
+    </message>
+    <message>
+        <source>Cellular</source>
+        <translation>Mobil</translation>
+    </message>
+    <message>
+        <source>Cellular SMS</source>
+        <translation>SMS Mobil</translation>
+    </message>
+    <message>
+        <source>Fax</source>
+        <translation>Fax</translation>
+    </message>
+    <message>
+        <source>Pager</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation>Land:</translation>
+    </message>
+    <message>
+        <source>Network #/Area code:</source>
+        <translation>Ortsvorwahl:</translation>
+    </message>
+    <message>
+        <source>Number:</source>
+        <translation>Rufnummer:</translation>
+    </message>
+    <message>
+        <source>Extension:</source>
+        <translation>Erweiterung:</translation>
+    </message>
+    <message>
+        <source>Provider:</source>
+        <translation>Anbieter:</translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation>Benutzerdefiniert</translation>
+    </message>
+    <message>
+        <source>E-mail Gateway:</source>
+        <translation>E-mail Gateway:</translation>
+    </message>
+    <message>
+        <source>Remove leading 0s from Area Code/Network #</source>
+        <translation>Führende Null (0) von der Ortsvorwahl entfernen</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>Ab&amp;brechen</translation>
+    </message>
+    <message>
+        <source>@</source>
+        <translation>@</translation>
+    </message>
+    <message>
+        <source>Please enter a phone number</source>
+        <translation>Bitte geben Sie eine Telefonnummer ein</translation>
     </message>
 </context>
 <context>
@@ -3087,6 +3281,127 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
     <message>
         <source>Use tabs in Send Window</source>
         <translation>Verwendet Tabs um mehrere Sendefenster in einem zu kombinieren</translation>
+    </message>
+    <message>
+        <source>Small Icon</source>
+        <translation>Kleines Symbol</translation>
+    </message>
+    <message>
+        <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
+        <translation>Verwendet den freedesktop.org Standard zum andocken eines kleinen Symbols in den Fenstermanager.  Dies funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Verbindung</translation>
+    </message>
+    <message>
+        <source>Reconnect after Uin clash</source>
+        <translation>Nach Uin-Konflikt erneut verbinden</translation>
+    </message>
+    <message>
+        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
+        <translation>Wenn die Verbindung beendet wurde, weil Ihre Uin von einem anderen Ort aus verwendet wurde, kann Licq die Verbindung wiederherstellen. Wenn Sie automatisch wiederverbunden werden möchten, aktivieren Sie diese Option.</translation>
+    </message>
+    <message>
+        <source>Auto Update</source>
+        <translation>Automatisches aktualisieren</translation>
+    </message>
+    <message>
+        <source>Auto Update Info</source>
+        <translation>Info automatisch aktualisieren</translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; server stored information.</source>
+        <translation>Aktualisiert automatisch die vom Benutzer auf dem Server gespeicherten Informationen.</translation>
+    </message>
+    <message>
+        <source>Auto Update Info Plugins</source>
+        <translation>Info-Plugins automatisch aktualisieren</translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone Book and Picture.</source>
+        <translation>Aktualisiert automatisch das auf dem Server gespeicherte Telefonbuch und Bild.</translation>
+    </message>
+    <message>
+        <source>Auto Update Status Plugins</source>
+        <translation>Status-Plugins automatisch aktualisieren</translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
+        <translation>Aktualisiert automatisch die auf dem Server gespeicherten Informationen zu &quot;Telefon folgen&quot;, Dateiserver und ICQphone.</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerEditDlg</name>
+    <message>
+        <source>Edit Owner</source>
+        <translation>Eigentümer bearbeiten</translation>
+    </message>
+    <message>
+        <source>User ID:</source>
+        <translation>Benutzer-ID:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Passwort:</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation>Protokoll:</translation>
+    </message>
+    <message>
+        <source>Currently only one owner per protocol is supported.</source>
+        <translation>Zur Zeit wird nur ein Eigentümer pro Protokoll unterstützt.</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>Ab&amp;brechen</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerManagerDlg</name>
+    <message>
+        <source>Licq - Owner Manager</source>
+        <translation>Licq - Eigentümer-Manager</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Hinzufügen</translation>
+    </message>
+    <message>
+        <source>&amp;Modify</source>
+        <translation>&amp;Bearbeiten</translation>
+    </message>
+    <message>
+        <source>D&amp;elete</source>
+        <translation>&amp;Löschen</translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation>&amp;Fertig</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerView</name>
+    <message>
+        <source>User ID</source>
+        <translation>Benutzer-ID</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Protokoll</translation>
+    </message>
+    <message>
+        <source>(Invalid ID)</source>
+        <translation>(Ungültige ID)</translation>
+    </message>
+    <message>
+        <source>Invalid Protocol</source>
+        <translation>Ungültiges Protokoll</translation>
     </message>
 </context>
 <context>
@@ -4272,6 +4587,108 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
     <message>
         <source>ID:</source>
         <translation>ID:</translation>
+    </message>
+    <message>
+        <source>Category:</source>
+        <translation>Kategorie:</translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation>Beschreibung:</translation>
+    </message>
+    <message>
+        <source>User has an ICQ Homepage </source>
+        <translation>Benutzer hate eine ICQ Homepage</translation>
+    </message>
+    <message>
+        <source>User has no ICQ Homepage</source>
+        <translation>Benutzer hat keine ICQ Homepage</translation>
+    </message>
+    <message>
+        <source>M&amp;ore II</source>
+        <translation>&amp;Noch mehr</translation>
+    </message>
+    <message>
+        <source>(none)</source>
+        <translation>(keine)</translation>
+    </message>
+    <message>
+        <source>Occupation:</source>
+        <translation>Beruf:</translation>
+    </message>
+    <message>
+        <source>&amp;Phone</source>
+        <translation>&amp;Telefon</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <source>Number/Gateway</source>
+        <translation>Rufnummer/Gateway</translation>
+    </message>
+    <message>
+        <source>Country/Provider</source>
+        <translation>Land/Anbieter</translation>
+    </message>
+    <message>
+        <source>Currently at:</source>
+        <translation>Zur Zeit erreichbar unter:</translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation>(</translation>
+    </message>
+    <message>
+        <source>) </source>
+        <translation>)</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <source>P&amp;icture</source>
+        <translation>B&amp;ild</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation>Nicht verfügbar</translation>
+    </message>
+    <message>
+        <source>Failed to Load</source>
+        <translation>Fehler beim Laden</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Hinzufügen</translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation>&amp;Löschen</translation>
+    </message>
+    <message>
+        <source>&amp;Browse</source>
+        <translation>&amp;Durchsuchen</translation>
+    </message>
+    <message>
+        <source>Select your picture</source>
+        <translation>Bitte Ihr Bild auswählen</translation>
+    </message>
+    <message>
+        <source> is over %1 bytes.
+Select another picture?</source>
+        <translation>is größer als %1 Bytes.
+Ein anderes Bild auswählen?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Nein</translation>
     </message>
 </context>
 <context>
