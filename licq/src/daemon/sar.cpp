@@ -7,7 +7,7 @@
 #include "sar.conf.h"
 #include "constants.h"
 
-CSARManager gSARManager;
+class CSARManager gSARManager;
 
 
 
