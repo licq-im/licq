@@ -46,6 +46,7 @@ MLView::MLView (QWidget* parent, const char *name)
   setWordWrap(WidgetWidth);
   setWrapPolicy(AtWhiteSpace);
   setReadOnly(true);
+  setTextFormat(RichText);
 }
 
 void MLView::appendNoNewLine(const QString& s)
