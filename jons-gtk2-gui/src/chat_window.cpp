@@ -41,7 +41,6 @@ struct request_chat
 
 struct remote_chat_request
 {
-  GtkWidget *dialog;
   gulong uin;
   CEventChat *c_event;
 };
@@ -79,34 +78,25 @@ struct chat_window
   GtkWidget *font_sel_dlg;
 
   // Remote
-  GdkColor *r_back_color;
-  GdkColor *r_fore_color;
-  PangoFontDescription *r_font;
-  gchar r_font_name[50];
-  gint r_font_size;
-  gboolean r_bold;
-  gboolean r_italic;
+  GtkTextTag *r_tag, *r_tag_irc;
 
   // Local
-  GdkColor *l_back_color;
-  GdkColor *l_fore_color;
-  PangoFontDescription *l_font;
-  gchar l_font_name[50];
-  gint l_font_size;
-  gboolean l_bold;
-  gboolean l_italic;
+  GtkTextTag *l_tag, *l_tag_irc;
   
   // Extra - but important!
   gboolean pane_mode;
-  ICQUser *user;
   gboolean audio;
-  gint last_pos;
   guint input_tag;
+	char *local_name;
 };
 
 GSList *rc_list;
 
+#include <iostream>
 using namespace std; // for list
+
+void
+scroll_to_the_end(GtkWidget *);
 
 typedef list<chat_window *> ChatDlgList;
 ChatDlgList chat_list;
@@ -122,24 +112,118 @@ void chat_refuse(GtkWidget *, gpointer);
 void chat_start_as_server(gulong, CEventChat *);
 void chat_start_as_client(ICQEvent *);
 void chat_audio(gpointer, guint, GtkWidget *);
-void chat_kick(gpointer, guint, GtkWidget *);
-void chat_kick_no_vote(gpointer, guint, GtkWidget *);
+
+void chat_kick(struct chat_window *, guint, GtkWidget *);
+void chat_kick_no_vote(struct chat_window *, guint, GtkWidget *);
 void kick_callback(GtkWidget *, gpointer);
 void kick_no_vote_callback(GtkWidget *, gpointer);
+
 void chat_save(gpointer, guint, GtkWidget *);
 void save_chat_ok(GtkWidget *, gpointer);
 void save_chat_cancel(GtkWidget *, gpointer);
-void chat_close(gpointer, guint, GtkWidget *);
-void chat_pipe_callback(gpointer, gint, GdkInputCondition);
-void chat_beep_users(gpointer, guint, GtkWidget *);
-void chat_change_font(gpointer, guint, GtkWidget *);
-void font_dlg_close(GtkWidget *, gpointer);
-void font_dlg_ok(GtkWidget *, gpointer);
+
+void chat_close(struct chat_window *, guint, GtkWidget *);
+void chat_pipe_callback(struct chat_window *cw, gint, GdkInputCondition);
+void chat_beep_users(struct chat_window *, guint, GtkWidget *);
+void chat_change_font(struct chat_window *, guint, GtkWidget *);
+//void font_dlg_close(GtkWidget *, gpointer);
+void font_dlg_ok(GtkWidget *, struct chat_window *cw);
+
+void
+set_tag_colors(GtkTextTag *tag, int *color_fg, int *color_bg)
+{
+  char fg[8], bg[8];
+  snprintf(fg, 8, "#%02x%02x%02x", color_fg[0], color_fg[1], color_fg[2]);
+  snprintf(bg, 8, "#%02x%02x%02x", color_bg[0], color_bg[1], color_bg[2]);
+  g_object_set(tag, "foreground", fg, "background", bg, NULL);
+}  
+        
+void
+set_tag_fg_color(GtkTextTag *tag, int *color_fg)
+{
+  char fg[8];
+  snprintf(fg, 8, "#%02x%02x%02x", color_fg[0], color_fg[1], color_fg[2]);
+  g_object_set(tag, "foreground", fg, NULL);
+}  
+
+void
+set_tag_bg_color(GtkTextTag *tag, int *color_bg)
+{
+  char bg[8];
+  snprintf(bg, 8, "#%02x%02x%02x", color_bg[0], color_bg[1], color_bg[2]);
+  g_object_set(tag, "background", bg, NULL);
+}  
+
+void
+set_tag_font(GtkTextTag *tag, const char *font_name, int size, PangoStyle style)
+{
+  PangoFontDescription *font;
+  g_object_get(tag, "font-desc", &font, NULL);
+  if (font == NULL)
+    font = pango_font_description_new();
+
+  pango_font_description_set_family(font, font_name);
+  pango_font_description_set_size(font, PANGO_SCALE * size);
+  pango_font_description_set_style(font, style);
+
+  g_object_set(tag, "font-desc", font, NULL);
+}  
+        
+void
+set_tag_font_family(GtkTextTag *tag, const char *font_name)
+{
+  PangoFontDescription *font;
+  g_object_get(tag, "font-desc", &font, NULL);
+  if (font == NULL)
+    font = pango_font_description_new();
+  pango_font_description_set_family(font, font_name);
+  g_object_set(tag, "font-desc", font, NULL);
+}  
+
+void
+set_tag_font_size(GtkTextTag *tag, int size)
+{
+  PangoFontDescription *font;
+  g_object_get(tag, "font-desc", &font, NULL);
+  if (font == NULL)
+    font = pango_font_description_new();
+
+  pango_font_description_set_size(font, PANGO_SCALE * size);
+
+  g_object_set(tag, "font-desc", font, NULL);
+}  
+
+void
+set_tag_font_style(GtkTextTag *tag, PangoStyle style)
+{
+  PangoFontDescription *font;
+  g_object_get(tag, "font-desc", &font, NULL);
+  if (font == NULL)
+    font = pango_font_description_new();
+
+  pango_font_description_set_style(font, style);
+
+  g_object_set(tag, "font-desc", font, NULL);
+}  
+
+void
+set_tag_font_weight(GtkTextTag *tag, PangoWeight weight)
+{
+  PangoFontDescription *font;
+  g_object_get(tag, "font-desc", &font, NULL);
+  if (font == NULL)
+    font = pango_font_description_new();
+
+  pango_font_description_set_weight(font, weight);
+
+  g_object_set(tag, "font-desc", font, NULL);
+}  
 
 void
 close_request_chat(struct request_chat *rc)
 {
   rc_list = g_slist_remove(rc_list, rc);
+	g_free(rc);
 }
 
 void
@@ -153,11 +237,10 @@ cancel_request_chat(GtkWidget *widget, struct request_chat *rc)
 struct request_chat *
 rc_find(gulong uin)
 {
-  struct request_chat *rc;
   GSList *temp_rc_list = rc_list;
 
   while (temp_rc_list) {
-    rc = (struct request_chat *)temp_rc_list->data;
+    struct request_chat *rc = (struct request_chat *)temp_rc_list->data;
     if (rc->user->Uin() == uin)
       return rc;
 
@@ -217,48 +300,44 @@ multi_request_chat(GtkWidget *widget, struct request_chat *rc)
   gtk_widget_set_sensitive(rc->chat_list, true);
 }
 
-void list_request_chat(GtkWidget *widget, ICQUser *user)
+void
+list_request_chat(GtkWidget *widget, ICQUser *user)
 {
   /* Do we even want to be here? */
   struct request_chat *rc = rc_find(user->Uin());
 
   // No get outta here, bitch!
-  if (rc != 0)
+  if (rc != 0) {
+		gtk_window_present(GTK_WINDOW(rc->window));
     return;
+	}
 
   rc = rc_new(user);
-
-  GtkWidget *scroll;
-  GtkWidget *multiparty;
-  GtkWidget *single;
-  GtkWidget *ok;
-  GtkWidget *cancel;
-  GtkWidget *table;
-  GtkWidget *h_box;
-  gchar *title = g_strdup_printf("Licq - Request Chat With %s",
-                                 user->GetAlias());
 
   /* Make the request_chat structure */
   rc->etd = g_new0(struct e_tag_data, 1);
   rc->user = user;
-  rc->etd->buf[0] = '\0';
-
-  /* Create the table and hbox */
-  table = gtk_table_new(4, 2, FALSE);
-  h_box = gtk_hbox_new(FALSE, 5);
 
   /* Create the window */
+  gchar *title = 
+			g_strdup_printf("Licq - Request Chat With %s",
+      		s_convert_to_utf8(user->GetAlias(), user->UserEncoding()).c_str());
+
   rc->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(rc->window), title);
+	gtk_container_set_border_width(GTK_CONTAINER(rc->window), 10);
   g_free(title);
 
   gtk_window_set_position(GTK_WINDOW(rc->window), GTK_WIN_POS_CENTER);
-  gtk_container_add(GTK_CONTAINER(rc->window), table);
   g_signal_connect(G_OBJECT(rc->window), "destroy",
-                   G_CALLBACK(cancel_request_chat), rc);
+			G_CALLBACK(cancel_request_chat), rc);
 
-  /*Create the scrolled window with text and attach it to the window */
-  scroll = gtk_scrolled_window_new(0, 0);
+  /* Create the table and hbox */
+  GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
+  gtk_container_add(GTK_CONTAINER(rc->window), v_box);
+
+  /* Create the scrolled window with text and add it into the window */
+  GtkWidget *scroll = gtk_scrolled_window_new(0, 0);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
       GTK_POLICY_NEVER,
       GTK_POLICY_AUTOMATIC);
@@ -266,36 +345,33 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
   gtk_text_view_set_editable(GTK_TEXT_VIEW(rc->text_box), TRUE);
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(rc->text_box), GTK_WRAP_WORD);
   gtk_container_add(GTK_CONTAINER(scroll), rc->text_box);
-  gtk_table_attach(GTK_TABLE(table), scroll, 0, 2, 0, 1,
-      GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-      GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-      3, 3);
-  gtk_widget_show(scroll);
+	GtkWidget *frame = gtk_frame_new(NULL);
+  gtk_container_add(GTK_CONTAINER(frame), scroll);
+  gtk_widget_show_all(frame);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, FALSE, FALSE, 0);
 
   /* The send as buttons */
-  rc->send_norm = gtk_radio_button_new_with_label(0, "Send Normal");
+  rc->send_norm = 
+			gtk_radio_button_new_with_mnemonic(0, "Send _Normal");
   rc->send_urg = 
-      gtk_radio_button_new_with_label_from_widget(
-          GTK_RADIO_BUTTON(rc->send_norm), "Send Urgent");
+      gtk_radio_button_new_with_mnemonic_from_widget(
+          GTK_RADIO_BUTTON(rc->send_norm), "Send _Urgent");
   rc->send_list = 
-      gtk_radio_button_new_with_label_from_widget(
-          GTK_RADIO_BUTTON(rc->send_norm), "Send To List");
+      gtk_radio_button_new_with_mnemonic_from_widget(
+          GTK_RADIO_BUTTON(rc->send_norm), "Send To _List");
 
   /* Pack them to a box */
+  GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
   gtk_box_pack_start(GTK_BOX(h_box), rc->send_norm, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(h_box), rc->send_urg, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(h_box), rc->send_list, FALSE, FALSE, 0);
 
   /* Attach the box to the table */
-  gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 1, 2,
-      GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-      GTK_FILL, 3, 3);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
   
   /* Progress bar */
   rc->etd->statusbar = gtk_statusbar_new();
-  gtk_table_attach(GTK_TABLE(table), rc->etd->statusbar, 0, 2, 2, 3,
-      GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-      GTK_FILL, 3, 3);
+	gtk_box_pack_start(GTK_BOX(v_box), rc->etd->statusbar, FALSE, FALSE, 0);
 
   // Ok.. this is where the combo box for multi party chats goes
   // but it isn't shown until it's needed
@@ -304,23 +380,19 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
   rc->chat_list = gtk_combo_new();
   gtk_box_pack_start(GTK_BOX(h_box), label, false, false, 0);
   gtk_box_pack_start(GTK_BOX(h_box), rc->chat_list, false, false, 0);
-  gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       GTK_FILL, 3, 3);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
   /* The button box */
-  h_box = gtk_hbox_new(TRUE, 5);
-  multiparty = gtk_button_new_with_mnemonic("_Multi-Party");
-  single = gtk_button_new_with_mnemonic("_Single-Party");
-  ok = gtk_button_new_with_mnemonic("_Invite");
-  cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-  gtk_box_pack_start(GTK_BOX(h_box), multiparty, true, true, 0);
-  gtk_box_pack_start(GTK_BOX(h_box), single, true, true, 0);
-  gtk_box_pack_start(GTK_BOX(h_box), ok, true, true, 0);
-  gtk_box_pack_start(GTK_BOX(h_box), cancel, true, true, 0);
-  gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 4, 5,
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       GTK_FILL, 3, 3);
+  h_box = hbutton_box_new();
+  GtkWidget *multiparty = gtk_button_new_with_mnemonic("_Multi-Party");
+  GtkWidget *single = gtk_button_new_with_mnemonic("_Single-Party");
+  GtkWidget *ok = gtk_button_new_with_mnemonic("_Invite");
+  GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+  gtk_container_add(GTK_CONTAINER(h_box), multiparty);
+  gtk_container_add(GTK_CONTAINER(h_box), single);
+  gtk_container_add(GTK_CONTAINER(h_box), ok);
+  gtk_container_add(GTK_CONTAINER(h_box), cancel);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
   
   /* Connect the signals */
   g_signal_connect(G_OBJECT(multiparty), "clicked",
@@ -337,7 +409,8 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
   gtk_widget_show_all(rc->window);
 }
 
-void ok_request_chat(GtkWidget *widget, struct request_chat *rc)
+void
+ok_request_chat(GtkWidget *widget, struct request_chat *rc)
 {
   guint send_as;
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rc->send_urg)))
@@ -350,11 +423,7 @@ void ok_request_chat(GtkWidget *widget, struct request_chat *rc)
   strcpy(rc->etd->buf, "Requesting Chat ... ");
   status_change(rc->etd->statusbar, "sta", rc->etd->buf);
 
-  GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(rc->text_box));
-  GtkTextIter b, e;
-  gtk_text_buffer_get_start_iter(tb, &b);
-  gtk_text_buffer_get_end_iter(tb, &e);
-  gchar *txt = gtk_text_buffer_get_text(tb, &b, &e, FALSE);
+  string txt(textview_get_chars(rc->text_box));
 
   // Are we doing single or multi?
   if (GTK_WIDGET_SENSITIVE(rc->chat_list)) {
@@ -362,48 +431,68 @@ void ok_request_chat(GtkWidget *widget, struct request_chat *rc)
     unsigned short nPort = 0;
 
     // Find the chat
+		string client_str(entry_get_chars(GTK_COMBO(rc->chat_list)->entry));
     ChatDlgList::iterator iter;
-    for (iter = chat_list.begin(); iter != chat_list.end(); ++iter) {
-      if (strcmp((*iter)->chatman->ClientsStr(),
-                 entry_get_chars(GTK_COMBO(rc->chat_list)->entry).c_str()) 
-                 == 0) {
+    for (iter = chat_list.begin(); iter != chat_list.end(); ++iter)
+      if (strcmp((*iter)->chatman->ClientsStr(), client_str.c_str()) == 0) {
         nPort = (*iter)->chatman->LocalPort();
         break;
       }
-    }
 
     if (iter == chat_list.end()) {
       status_change(rc->etd->statusbar, "sta", 
-          "Requesting Chat ... Invalid Chat");
+					"Requesting Chat ... Invalid Chat");
       message_box("Invalid Multi-Party Chat");
       return;
     }
 
     rc->etd->e_tag = icq_daemon->icqMultiPartyChatRequest(
         rc->user->Uin(), 
-        txt,
-        entry_get_chars(GTK_COMBO(rc->chat_list)->entry).c_str(),
+        txt.c_str(),
+        client_str.c_str(),
         nPort,
         send_as, 
         false);
   }
-  else {
+  else
     // Single
     rc->etd->e_tag = icq_daemon->icqChatRequest(
         rc->user->Uin(),
-        txt,
+        txt.c_str(),
         send_as, 
         false);
-  }
-
-  g_free(txt);
 
   /* The event catcher list */
   catcher = g_slist_append(catcher, rc->etd);
 }
 
-void chat_accept_window(CEventChat *c_event, gulong uin,
-  bool auto_accept)
+void
+chat_accept_cb(GtkWidget *dialog, gint response_id,
+		struct remote_chat_request *r_cr)
+{
+	if (response_id == GTK_RESPONSE_ACCEPT) {
+  	/* Join a multiparty chat (we connect to them) */
+  	if (r_cr->c_event->Port() != 0)
+    	chat_join_multiparty(r_cr);
+  	/* Single party chat (they connect to us) */
+  	else
+    	chat_start_as_server(r_cr->uin, r_cr->c_event);
+	}
+	else {
+  	/* Refuse the chat */
+  	icq_daemon->icqChatRequestRefuse(r_cr->uin, "",
+          	 r_cr->c_event->Sequence(),
+          	 r_cr->c_event->MessageID(),
+          	 r_cr->c_event->IsDirect());
+	}
+
+  /* Close the request window */
+ 	if (dialog != NULL)
+	  gtk_widget_destroy(dialog);
+}
+
+void
+chat_accept_window(CEventChat *c_event, gulong uin, bool auto_accept)
 {
   struct remote_chat_request *r_cr = g_new0(struct remote_chat_request, 1);
 
@@ -411,81 +500,43 @@ void chat_accept_window(CEventChat *c_event, gulong uin,
   r_cr->uin = uin;
   r_cr->c_event = c_event;
 
-  /* Make the dialog window */
-  r_cr->dialog = gtk_dialog_new();
-
-  if(auto_accept)
-  {
-    chat_accept(0, (gpointer)r_cr);
+  if (auto_accept) {
+    chat_accept_cb(0, GTK_RESPONSE_ACCEPT, r_cr);
     return;
   }
   
-  GtkWidget *label;
-  GtkWidget *accept;
-  GtkWidget *refuse;
-  
-  /* Make the buttons */
-  accept = gtk_button_new_with_mnemonic("_Accept");
-  refuse = gtk_button_new_with_mnemonic("_Refuse");
-
-  /* Add the buttons */
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(r_cr->dialog)->action_area),
-        accept);
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(r_cr->dialog)->action_area),
-        refuse);
+  /* Make the dialog window */
+  GtkWidget *dialog = gtk_dialog_new_with_buttons(
+			"Accept Chat",
+			GTK_WINDOW(main_window),
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			"_Accept", GTK_RESPONSE_ACCEPT,
+			"_Refuse", GTK_RESPONSE_REJECT,
+			NULL);
 
   /* Get the label for the window with the chat reason */
   ICQUser *u = gUserManager.FetchUser(uin, LOCK_R);
-  gchar *alias = u->GetAlias();
+  string alias(s_convert_to_utf8(u->GetAlias(), u->UserEncoding()));
+	string txt(s_convert_to_utf8(c_event->Text(), u->UserEncoding()));
   gUserManager.DropUser(u);
 
   gchar *forLabel = g_strdup_printf("Chat with %s (%ld)\nReason:\n%s",
-    alias, uin, c_event->Text());
-  label =gtk_label_new(forLabel);
+    	alias.c_str(), uin, txt.c_str());
+  gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 5);
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox),
+			gtk_label_new(forLabel));
   g_free(forLabel);
 
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(r_cr->dialog)->vbox), label);
-
   /* Connect all the signals */
-  g_signal_connect(G_OBJECT(accept), "clicked",
-         G_CALLBACK(chat_accept), (gpointer)r_cr);
-  g_signal_connect(G_OBJECT(refuse), "clicked",
-         G_CALLBACK(chat_refuse), (gpointer)r_cr);
+  g_signal_connect(G_OBJECT(dialog), "response",
+      G_CALLBACK(chat_accept_cb), r_cr);
   
   /* Show everything */
-  gtk_widget_show_all(r_cr->dialog);
+  gtk_widget_show_all(dialog);
 }
 
-void chat_accept(GtkWidget *widget, gpointer data)
-{
-  /* Don't do a lot of casting, just make another one here */
-  struct remote_chat_request *r_cr = (struct remote_chat_request *)data;
-
-  /* Close the request window */
-  gtk_widget_destroy(r_cr->dialog);
-
-  /* Join a multiparty chat (we connect to them) */
-  if(r_cr->c_event->Port() != 0)
-    chat_join_multiparty(r_cr);
-  /* Single party chat (they connect to us) */
-  else
-    chat_start_as_server(r_cr->uin, r_cr->c_event);
-}
-
-void chat_refuse(GtkWidget *widget, gpointer data)
-{
-  struct remote_chat_request *r_cr = (struct remote_chat_request *)data;
-  /* Refuse the chat */
-  icq_daemon->icqChatRequestRefuse(r_cr->uin, "",
-           r_cr->c_event->Sequence(),
-           r_cr->c_event->MessageID(),
-           r_cr->c_event->IsDirect());
-
-  /* Close the request window */
-  gtk_widget_destroy(r_cr->dialog);
-}
-
-void chat_join_multiparty(struct remote_chat_request *r_cr)
+void
+chat_join_multiparty(struct remote_chat_request *r_cr)
 {
   /* Make the window and the chat manager */
   struct chat_window *cw = chat_window_create(r_cr->uin);
@@ -499,12 +550,13 @@ void chat_join_multiparty(struct remote_chat_request *r_cr)
            r_cr->c_event->IsDirect());
 }
 
-void chat_start_as_server(gulong uin, CEventChat *c)
+void
+chat_start_as_server(gulong uin, CEventChat *c)
 {
   /* Make the window and the chat manager */
   struct chat_window *cw = chat_window_create(uin);
   
-  if(!cw->chatman->StartAsServer())
+  if (!cw->chatman->StartAsServer())
     return;
 
   icq_daemon->icqChatRequestAccept(uin, cw->chatman->LocalPort(),
@@ -513,18 +565,18 @@ void chat_start_as_server(gulong uin, CEventChat *c)
            c->MessageID(), c->IsDirect());
 }
 
-void chat_start_as_client(ICQEvent *event)
+void
+chat_start_as_client(ICQEvent *event)
 {
   CExtendedAck *ea = event->ExtendedAck();
   
-  if(ea == 0)
-  {
+  if (ea == 0) {
     gLog.Error("%sInternal error: chat_start_as_client(): chat request acknowledgement without extended result.\n", L_ERRORxSTR);
     return;
   }
 
   /* Refused */
-  if(!ea->Accepted())
+  if (!ea->Accepted())
     return;
 
   /* Make the window and the chat manager */
@@ -533,107 +585,71 @@ void chat_start_as_client(ICQEvent *event)
   cw->chatman->StartAsClient(ea->Port());
 
   gtk_frame_set_label(GTK_FRAME(cw->frame_remote),
-          "Remote - Waiting for joiners...");
+			"Remote - Waiting for joiners...");
   gLog.Info("%sChat: Waiting for joiners.\n", L_TCPxSTR);
 }
 
 bool
 chat_close_base(chat_window *cw)
 {
-  if(cw->hold_cuser == 0)
-  {
+  if (cw->hold_cuser == 0) {
     cw->chat_user = 0;
     gtk_input_remove(cw->input_tag);
     cw->chatman->CloseChat();
   }
-  /* Remove the user's name from the list box */
-  else
-  {
-    if(cw->chat_user == cw->hold_cuser)
+  else {
+	  /* Remove the user's name from the list box */
+    if (cw->chat_user == cw->hold_cuser)
       cw->chat_user = 0;
   }
   // We are unwanted now
-  if(cw->chatman->ConnectedUsers() == 0)
-  {
-    delete cw->r_back_color;
-    delete cw->r_fore_color;
-    delete cw->l_back_color;
-    delete cw->l_fore_color;
+  if (cw->chatman->ConnectedUsers() == 0)
     return true;
-  }
 
   return false;
 }
 
 gboolean
-call_chat_close(GtkWidget *, GdkEvent *, gpointer data)
+call_chat_close(GtkWidget *, GdkEvent *, struct chat_window *cw)
 {
-  if (chat_close_base((struct chat_window *)data))
+  if (chat_close_base(cw))
     return FALSE;
   return TRUE;
 }
 
-struct chat_window *chat_window_create(gulong uin)
+void
+last_pos_mark_add(GtkWidget *tv)
 {
-  GtkWidget *scroll1;
-  GtkWidget *scroll2;
-  GtkWidget *v_box;
-  GtkWidget *menu_bar;
-  GtkWidget *label;
-  struct chat_window *cw;
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(tv));
+	GtkTextIter iter;
+	gtk_text_buffer_get_end_iter(tb, &iter);
+	gtk_text_buffer_create_mark(tb, "last_pos", &iter, TRUE);
+}
 
-  cw = g_new0(struct chat_window, 1);
+string
+cchatuser_utf8(const char *txt, CChatUser *user)
+{
+  ICQUser *u = gUserManager.FetchUser(user->Uin(), LOCK_R);
+	string utf8_txt(s_convert_to_utf8(txt, u->UserEncoding()));
+  gUserManager.DropUser(u);
+	return utf8_txt;
+}
+
+struct chat_window *
+chat_window_create(gulong uin)
+{
+  struct chat_window *cw = g_new0(struct chat_window, 1);
 
   // Add to the chat list
   chat_list.push_back(cw);
 
   /* Take care of the chat manager stuff */
   cw->chatman = new CChatManager(icq_daemon, uin);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  cw->local_name = convert_to_utf8(cw->chatman->Name(), o->UserEncoding());
+  gUserManager.DropUser(o);
   cw->input_tag = gtk_input_add_full(cw->chatman->Pipe(), GDK_INPUT_READ,
-              chat_pipe_callback, NULL, (gpointer)cw, NULL);
-
-  /* Take care of the font now */
-  PangoFontDescription *font = pango_font_description_new();
-  pango_font_description_set_family(font, "Sans");
-  pango_font_description_set_size(font, PANGO_SCALE * 12);
-  cw->r_font = font;
-  strncpy(cw->r_font_name, "Sans", 50);
-  cw->r_font_size = 12;
-  
-  /* Take care of creating the colors now */
-  cw->r_back_color = new GdkColor;
-  cw->r_fore_color = new GdkColor;
-  cw->l_back_color = new GdkColor;
-  cw->l_fore_color = new GdkColor;
-
-  /* Default background color */
-  cw->r_back_color->red = 257 * cw->chatman->ColorBg()[0];
-  cw->r_back_color->green = 257 * cw->chatman->ColorBg()[1];
-  cw->r_back_color->blue = 257 * cw->chatman->ColorBg()[2];
-
-  /* Default foreground color */
-  cw->r_fore_color->red = 257 * cw->chatman->ColorFg()[0];
-  cw->r_fore_color->green = 257 * cw->chatman->ColorFg()[1];
-  cw->r_fore_color->blue = 257 * cw->chatman->ColorFg()[2];
-  
-  // are the bg and fg colors equal?
-  if (cw->r_back_color->red == cw->r_fore_color->red &&
-      cw->r_back_color->green == cw->r_fore_color->green &&
-      cw->r_back_color->blue == cw->r_fore_color->blue) {
-    cw->r_fore_color->red = 65535;
-    cw->r_fore_color->green = 65535;
-    cw->r_fore_color->blue = 65535;
-    cw->r_back_color->red = 0;
-    cw->r_back_color->green = 0;
-    cw->r_back_color->blue = 0;
-  }
-
-  ICQUser *u = gUserManager.FetchUser(uin, LOCK_R);
-  cw->user = u;
-  gUserManager.DropUser(u);
-
-  /* Last position index */
-  cw->last_pos = 0;
+			(GdkInputFunction)chat_pipe_callback, NULL, cw, NULL);
 
   /* Make the window */
   cw->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -641,85 +657,94 @@ struct chat_window *chat_window_create(gulong uin)
   gtk_window_set_position(GTK_WINDOW(cw->window), GTK_WIN_POS_CENTER);
 
   /* Create the v_box */
-  v_box = gtk_vbox_new(FALSE, 5);
-  gtk_container_add(GTK_CONTAINER(cw->window), v_box);
-  gtk_widget_show(v_box);
+  GtkWidget *main_vbox = gtk_vbox_new(FALSE, 5);
+  gtk_container_add(GTK_CONTAINER(cw->window), main_vbox);
 
-  /* Create the menu */
-  menu_bar = chat_create_menu(cw);
-  gtk_box_pack_start(GTK_BOX(v_box), menu_bar, FALSE, FALSE, 0);
+  /* Create the menu and add it to the main vbox */
+  GtkWidget *menu_bar = chat_create_menu(cw);
+  gtk_box_pack_start(GTK_BOX(main_vbox), menu_bar, FALSE, FALSE, 0);
 
-  /* Create the notepad */
+  /* Create the notebook and add it to the main vbox */
   cw->notebook = gtk_notebook_new();
-  gtk_box_pack_start(GTK_BOX(v_box), cw->notebook, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(main_vbox), cw->notebook, FALSE, FALSE, 0);
   
-  /* Create the table */
-  cw->table = gtk_table_new(4, 1, FALSE);
+  /* Create the vbox */
+  GtkWidget *vbox = gtk_vbox_new(FALSE, 5);
 
   /* Create the remote frame with the remote scrolled text window */
   cw->frame_remote = gtk_frame_new("Remote");
   cw->text_remote = gtk_text_view_new();
+	last_pos_mark_add(cw->text_remote);
+  GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_remote));
+  cw->r_tag = gtk_text_buffer_create_tag(tb, NULL, NULL);
   gtk_text_view_set_editable(GTK_TEXT_VIEW(cw->text_remote), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(cw->text_remote), FALSE);
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(cw->text_remote), GTK_WRAP_WORD);
-  scroll1 = gtk_scrolled_window_new(0, 0);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll1),
-               GTK_POLICY_NEVER,
-               GTK_POLICY_AUTOMATIC);
-  gtk_widget_set_size_request(scroll1, 320, 75);
-  gtk_container_add(GTK_CONTAINER(scroll1), cw->text_remote);
-  gtk_container_add(GTK_CONTAINER(cw->frame_remote), scroll1);
-  gtk_table_attach(GTK_TABLE(cw->table), cw->frame_remote, 0, 1, 1, 2,
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       10, 10);
+  GtkWidget *scroll = gtk_scrolled_window_new(0, 0);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+			GTK_POLICY_NEVER,
+			GTK_POLICY_AUTOMATIC);
+  gtk_widget_set_size_request(scroll, 320, 75);
+  gtk_container_add(GTK_CONTAINER(scroll), cw->text_remote);
+  gtk_container_add(GTK_CONTAINER(cw->frame_remote), scroll);
+  gtk_box_pack_start(GTK_BOX(vbox), cw->frame_remote, TRUE, TRUE, 0);
 
   /* Create the local frame with local text box */
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-
-  gchar *forLFrame = g_strdup_printf("Local - %s", o->GetAlias());
+  gchar *forLFrame = g_strdup_printf("Local - %s", cw->local_name);
   cw->frame_local = gtk_frame_new(forLFrame);
   g_free(forLFrame);
-  gUserManager.DropUser(o);
 
   cw->text_local = gtk_text_view_new();
+	last_pos_mark_add(cw->text_local);
   gtk_text_view_set_editable(GTK_TEXT_VIEW(cw->text_local), TRUE);
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(cw->text_local), GTK_WRAP_WORD);
-  scroll2 = gtk_scrolled_window_new(0, 0);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll2),
-               GTK_POLICY_NEVER,
-               GTK_POLICY_AUTOMATIC);
-  gtk_widget_set_size_request(scroll2, 320, 75);
-  gtk_container_add(GTK_CONTAINER(scroll2), cw->text_local);
-  gtk_container_add(GTK_CONTAINER(cw->frame_local), scroll2);
-  gtk_table_attach(GTK_TABLE(cw->table), cw->frame_local, 0, 1, 2, 3,
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       10, 10);
+  scroll = gtk_scrolled_window_new(0, 0);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+			GTK_POLICY_NEVER,
+			GTK_POLICY_AUTOMATIC);
+  gtk_widget_set_size_request(scroll, 320, 75);
+  gtk_container_add(GTK_CONTAINER(scroll), cw->text_local);
+  gtk_container_add(GTK_CONTAINER(cw->frame_local), scroll);
+  gtk_box_pack_start(GTK_BOX(vbox), cw->frame_local, TRUE, TRUE, 0);
+
+  // Ensure that when switching tabs cursor will end up in the right widget
+	GList *focus_chain = NULL;
+	focus_chain = g_list_append(focus_chain, cw->text_local);
+	gtk_container_set_focus_chain(GTK_CONTAINER(vbox), focus_chain);
+	
+	gtk_notebook_append_page(GTK_NOTEBOOK(cw->notebook),
+			vbox, gtk_label_new("Pane Mode"));
 
   /* The IRC Mode window with user list window */
 
   /* First thing is the table */
   cw->table_irc = gtk_table_new(2, 2, FALSE);
 
-  /* Create the main text box in a scrolled window */
-  cw->text_irc = gtk_text_view_new();
-  gtk_text_view_set_editable(GTK_TEXT_VIEW(cw->text_irc), FALSE);
-  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(cw->text_irc), GTK_WRAP_WORD);
-  scroll1 = gtk_scrolled_window_new(0, 0);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll1),
-               GTK_POLICY_NEVER,
-               GTK_POLICY_AUTOMATIC);
-  gtk_widget_set_size_request(scroll1, 320, 175);
-  gtk_container_add(GTK_CONTAINER(scroll1), cw->text_irc);
-  gtk_table_attach(GTK_TABLE(cw->table_irc), scroll1, 0, 1, 0, 1,
-       GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       GTK_FILL, 5, 5);
-
   /* Create the entry box */
   cw->entry_irc = gtk_entry_new();
   gtk_table_attach(GTK_TABLE(cw->table_irc), cw->entry_irc,
        0, 1, 1, 2, GtkAttachOptions(GTK_FILL | GTK_EXPAND),
        GTK_FILL, 5, 5);
+
+  /* Create the main text box in a scrolled window */
+  cw->text_irc = gtk_text_view_new();
+	last_pos_mark_add(cw->text_irc);
+  tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_irc));
+  cw->r_tag_irc = gtk_text_buffer_create_tag(tb, NULL, NULL);
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(cw->text_irc), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(cw->text_irc), FALSE);
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(cw->text_irc), GTK_WRAP_WORD);
+  scroll = gtk_scrolled_window_new(0, 0);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+			GTK_POLICY_NEVER,
+			GTK_POLICY_AUTOMATIC);
+  gtk_widget_set_size_request(scroll, 320, 175);
+  gtk_container_add(GTK_CONTAINER(scroll), cw->text_irc);
+	GtkWidget *frame = gtk_frame_new(NULL);
+  gtk_container_add(GTK_CONTAINER(frame), scroll);
+  gtk_table_attach(GTK_TABLE(cw->table_irc), frame, 0, 1, 0, 1,
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			GTK_FILL, 5, 5);
 
   /* The list of users for the irc panel */
   GtkListStore *store = gtk_list_store_new(1, G_TYPE_STRING);
@@ -730,52 +755,60 @@ struct chat_window *chat_window_create(gulong uin)
       gtk_tree_view_column_new_with_attributes("User", r, "text", 0, NULL);
   gtk_tree_view_append_column(GTK_TREE_VIEW(cw->list_users), col);
   gtk_table_attach(GTK_TABLE(cw->table_irc), cw->list_users,
-       1, 2, 0, 2, GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-       GTK_FILL, 5, 5);
+			1, 2, 0, 2, GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			GTK_FILL, 5, 5);
   
-  /* The notebook for panel or irc chat mode */
-  label = gtk_label_new("Pane Mode");
+  // Ensure that when switching tabs cursor will end up in the right widget
+	GList *focus_chain2 = NULL;
+	focus_chain2 = g_list_append(focus_chain2, cw->entry_irc);
+	gtk_container_set_focus_chain(GTK_CONTAINER(cw->table_irc), focus_chain2);
+	
   gtk_notebook_append_page(GTK_NOTEBOOK(cw->notebook),
-         cw->table, label);
-  label = gtk_label_new("IRC Mode");
-  gtk_notebook_append_page(GTK_NOTEBOOK(cw->notebook),
-         cw->table_irc, label);
+			cw->table_irc, gtk_label_new("IRC Mode"));
 
   /* We need every key press to know how to send it */
-  g_signal_connect(G_OBJECT(cw->text_local),
-         "key-press-event",
-         G_CALLBACK(chat_send), cw);
+  g_signal_connect(G_OBJECT(cw->text_local), "key-press-event",
+			G_CALLBACK(chat_send), cw);
   g_signal_connect(G_OBJECT(cw->entry_irc), "key-press-event",
-         G_CALLBACK(chat_send), cw);
+			G_CALLBACK(chat_send), cw);
   g_signal_connect(G_OBJECT(cw->window), "delete_event",
-         G_CALLBACK(call_chat_close), cw);
+			G_CALLBACK(call_chat_close), cw);
   
   gtk_widget_show_all(cw->window);
+
+  set_tag_font(cw->r_tag, "Sans", 10, PANGO_STYLE_NORMAL);
+  set_tag_font(cw->r_tag_irc, "Sans", 10, PANGO_STYLE_NORMAL);
+  
+  int *fg = cw->chatman->ColorFg(), *bg = cw->chatman->ColorBg();
+  if (fg[0] != bg[0] || fg[1] != bg[1] || fg[2] != bg[2]) {
+    set_tag_colors(cw->r_tag, fg, bg);
+    set_tag_colors(cw->r_tag_irc, fg, bg);
+  }
 
   return cw;
 }
 
-GtkWidget *chat_create_menu(struct chat_window *cw)
+GtkWidget *
+chat_create_menu(struct chat_window *cw)
 {
-  GtkItemFactoryEntry menu_items[] =
-  {
-           { "/_Chat",        0,         0, 0, "<Branch>" },
-           { "/Chat/_Audio", "<control>A",
-      GtkItemFactoryCallback(chat_audio), 0, "<ToggleItem>" },
-    { "/Chat/_Kick", "<control>K",
-      GtkItemFactoryCallback(chat_kick), 0, 0},
-    { "/Chat/Kick _No Vote", "<control>N",
-      GtkItemFactoryCallback(chat_kick_no_vote), 0, 0},
-    { "/Chat/_Save", "<control>S",
-      GtkItemFactoryCallback(chat_save), 0, 0},
-           { "/Chat/sep1",     0,   0, 0, "<Separator>" },
-           { "/Chat/_Close",  "<control>C",
-      GtkItemFactoryCallback(chat_close), 0, 0},
+  GtkItemFactoryEntry menu_items[] = {
+    { "/_Chat",        0,         0, 0, "<Branch>" },
+      { "/Chat/_Audio", "<control>A",
+          GtkItemFactoryCallback(chat_audio), 0, "<ToggleItem>" },
+      { "/Chat/_Kick", "<control>K",
+          GtkItemFactoryCallback(chat_kick), 0, 0},
+      { "/Chat/Kick _No Vote", "<control>N",
+          GtkItemFactoryCallback(chat_kick_no_vote), 0, 0},
+      { "/Chat/_Save", "<control>S",
+          GtkItemFactoryCallback(chat_save), 0, 0},
+      { "/Chat/sep1",     0,   0, 0, "<Separator>" },
+      { "/Chat/_Close",  "<control>C",
+          GtkItemFactoryCallback(chat_close), 0, 0},
     { "/_More",     0,  0, 0, "<Branch>" },
-    { "/More/_Beep",   "<control>B",
-      GtkItemFactoryCallback(chat_beep_users), 0, 0},
-    { "/More/Change Font", 0,
-       GtkItemFactoryCallback(chat_change_font), 0, 0},
+      { "/More/_Beep",   "<control>B",
+          GtkItemFactoryCallback(chat_beep_users), 0, 0},
+      { "/More/Change Font", 0,
+         GtkItemFactoryCallback(chat_change_font), 0, 0},
   };
 
   GtkItemFactory *item_factory;
@@ -799,12 +832,14 @@ GtkWidget *chat_create_menu(struct chat_window *cw)
   return (gtk_item_factory_get_widget(item_factory, "<main>"));
 }
 
-void chat_audio(gpointer cw, guint action, GtkWidget *widget)
+void 
+chat_audio(gpointer cw, guint action, GtkWidget *widget)
 {
   ((struct chat_window *)cw)->audio = !((struct chat_window *)cw)->audio;
 }
 
-void start_kick_window(struct chat_window *cw)
+void 
+start_kick_window(struct chat_window *cw)
 {
   cw->kw = g_new0(struct kick_window, 1);
 
@@ -817,10 +852,8 @@ void start_kick_window(struct chat_window *cw)
   GList *users = 0;
 
   list<CChatUser *>::iterator iter;
-  for(iter = cw->ChatUsers.begin(); iter != cw->ChatUsers.end(); iter++)
-  {
-    gchar *temp = g_strdup_printf("%s (%ld)", (*iter)->Name(),
-      (*iter)->Uin());
+  for (iter = cw->ChatUsers.begin(); iter != cw->ChatUsers.end(); iter++) {
+    gchar *temp = g_strdup_printf("%s (%ld)", (*iter)->Name(), (*iter)->Uin());
     g_list_append(users, temp);
     g_free(temp);
   }
@@ -833,9 +866,9 @@ void start_kick_window(struct chat_window *cw)
   // Leave the "clicked" signal for btnKick to each function
   // since it varies
   g_signal_connect(G_OBJECT(btnCancel), "clicked",
-    G_CALLBACK(window_close), cw->kw->winKick);
+			G_CALLBACK(window_close), cw->kw->winKick);
   g_signal_connect(G_OBJECT(cw->kw->winKick), "destroy",
-    G_CALLBACK(window_close), cw->kw->winKick);
+			G_CALLBACK(window_close), cw->kw->winKick);
   
   GtkWidget *tblTable = gtk_table_new(2, 2, false);
   gtk_container_add(GTK_CONTAINER(cw->kw->winKick), tblTable);
@@ -860,18 +893,19 @@ void start_kick_window(struct chat_window *cw)
     GtkAttachOptions(GTK_EXPAND | GTK_FILL), 3, 3);
 }
 
-void chat_kick(gpointer _cw, guint action, GtkWidget *widget)
+void 
+chat_kick(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  struct chat_window *cw = (struct chat_window *)_cw;
   start_kick_window(cw);
   
   g_signal_connect(G_OBJECT(cw->kw->btnKick), "clicked",
-    G_CALLBACK(kick_callback), (gpointer)cw);
+    	G_CALLBACK(kick_callback), (gpointer)cw);
 
   gtk_widget_show_all(cw->kw->winKick);
 }
 
-unsigned long start_kick_callback(struct chat_window *cw)
+unsigned long 
+start_kick_callback(struct chat_window *cw)
 {
   // Get their UIN and vote to kick them
   gchar *toKick = gtk_editable_get_chars(GTK_EDITABLE(cw->kw->cmbUsers),
@@ -887,7 +921,8 @@ unsigned long start_kick_callback(struct chat_window *cw)
   return Uin;
 }
 
-void kick_callback(GtkWidget *widget, gpointer _cw)
+void 
+kick_callback(GtkWidget *widget, gpointer _cw)
 {
   struct chat_window *cw = (struct chat_window *)_cw;
   unsigned long Uin = start_kick_callback(cw);  
@@ -900,18 +935,19 @@ void kick_callback(GtkWidget *widget, gpointer _cw)
   // Create a tally window
 }
 
-void chat_kick_no_vote(gpointer _cw, guint action, GtkWidget *widget)
+void 
+chat_kick_no_vote(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  struct chat_window *cw = (struct chat_window *)_cw;
   start_kick_window(cw);
 
   g_signal_connect(G_OBJECT(cw->kw->btnKick), "clicked",
-    G_CALLBACK(kick_no_vote_callback), (gpointer)cw);
+    	G_CALLBACK(kick_no_vote_callback), (gpointer)cw);
   
   gtk_widget_show_all(cw->kw->winKick);
 }
 
-void kick_no_vote_callback(GtkWidget *widget, gpointer _cw)
+void
+kick_no_vote_callback(GtkWidget *widget, gpointer _cw)
 {
   struct chat_window *cw = (struct chat_window *)_cw;
   unsigned long Uin = start_kick_callback(cw);
@@ -924,7 +960,8 @@ void kick_no_vote_callback(GtkWidget *widget, gpointer _cw)
   // Create the tally window
 }
 
-void chat_save(gpointer _cw, guint action, GtkWidget *widget)
+void
+chat_save(gpointer _cw, guint action, GtkWidget *widget)
 {
   GtkWidget *dlg_save_chat = gtk_file_selection_new("Licq - Save Chat");
 
@@ -951,61 +988,53 @@ void save_chat_cancel(GtkWidget *widget, gpointer data)
 {
 }
 
-void chat_close(gpointer temp_cw, guint action, GtkWidget *widget)
+void
+chat_close(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  /* Take the structure and put it in a variable in this scope */
-  struct chat_window *cw = (struct chat_window *)temp_cw;
   if (chat_close_base(cw)) {
     gtk_widget_destroy(cw->window);
     g_free(cw);
   }
 }
 
-void chat_pipe_callback(gpointer g_cw, gint pipe,
-      GdkInputCondition condition)
+void
+chat_pipe_callback(struct chat_window *cw, gint pipe, GdkInputCondition)
 {
-  struct chat_window *cw = (struct chat_window *)g_cw;
-
   /* Read out any pending events */
   gchar buf[32];
   read(pipe, buf, 32);
 
   CChatEvent *e = 0;
-  GtkTextBuffer *tb;
-  GtkTextIter iter1, iter2;
-  GtkTextTag *tag;
-  GtkTextMark *mark;
+  GtkTextBuffer *tb, *tb_irc;
+  GtkTextIter iter, iter_irc;
+  
+  tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_remote));
+  tb_irc = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_irc));
+  gtk_text_buffer_get_end_iter(tb, &iter);
+  gtk_text_buffer_get_end_iter(tb_irc, &iter_irc);
 
-  while((e = cw->chatman->PopChatEvent()) != 0)
-  {
+  while ((e = cw->chatman->PopChatEvent()) != 0) {
     CChatUser *user = e->Client();
+		string user_name = cchatuser_utf8(user->Name(), user);
     cw->hold_cuser = user;
 
-    switch(e->Command())
-    {
+    switch (e->Command()) {
       case CHAT_ERRORxBIND:
-      {
-        message_box("Unable to bind to a port.\nSee Network Log for "
-                    "details.");
-        chat_close((gpointer)cw, 0, 0);
+        message_box("Unable to bind to a port.\nSee Network Log for details.");
+        chat_close(cw, 0, 0);
         break;
-      }
       
       case CHAT_ERRORxCONNECT:
-      {
         message_box("Unable to connect to the remote chat.\nSee Network Log "
                     "for details.");
-        chat_close((gpointer)cw, 0, 0);
+        chat_close(cw, 0, 0);
         break;
-      }
       
       case CHAT_ERRORxRESOURCES:
-      {
         message_box("Unable to create new thread.\nSee Network Log for "
                     "details.");
-        chat_close((gpointer)cw, 0, 0);
+        chat_close(cw, 0, 0);
         break;
-      }
 
       case CHAT_DISCONNECTION:
       {
@@ -1017,12 +1046,10 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 //            cw->ChatUsers.erase(iter);
 //        }
 
-        gchar *temp = g_strdup_printf("%s closed "
-          "connection", user->Name());
-        message_box(temp);
-        g_free(temp);
+        string msg = user_name + " closed connection";
+        message_box(msg.c_str());
 
-        chat_close((gpointer)cw, 0, 0);
+        chat_close(cw, 0, 0);
         return;
       }
 
@@ -1036,304 +1063,180 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 //            cw->ChatUsers.erase(iter);
 //        }
 
-        gchar *temp = g_strdup_printf("%s was kicked",
-          user->Name());
-        message_box(temp);
-        g_free(temp);
+        string msg = user_name + " was kicked";
+        message_box(msg.c_str());
 
-        chat_close((gpointer)cw, 0, 0);
+        chat_close(cw, 0, 0);
         break;
       }
 
       case CHAT_KICKxYOU:
-      {
-        gchar *temp = g_strdup_printf("You have been kicked!");
-        message_box(temp);
-        g_free(temp);
-
+        message_box("You have been kicked!");
         break;
-      }
 
       case CHAT_CONNECTION:
       {
-//        cw->ChatUsers.push_back(user);
+				// cw->ChatUsers.push_back(user);
         GtkTreeIter iter;
         GtkListStore *store = 
             GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(cw->list_users)));
         
         gtk_list_store_append(store, &iter);
-        gtk_list_store_set(store, &iter, 0, user->Name(), -1);
-        if(cw->chat_user == 0)
-        {
+        gtk_list_store_set(store, &iter, 0, user_name.c_str(), -1);
+        if (cw->chat_user == 0) {
           cw->chat_user = user;
-          gtk_notebook_set_current_page(GTK_NOTEBOOK(
-                    cw->notebook), 0);
+          gtk_notebook_set_current_page(GTK_NOTEBOOK(cw->notebook), 0);
         }
-        else
-        {
-          gtk_notebook_set_current_page(GTK_NOTEBOOK(
-                    cw->notebook), 1);
+        else {
+          gtk_notebook_set_current_page(GTK_NOTEBOOK(cw->notebook), 1);
           break;
         }
 
-        gchar *temp = g_strdup_printf("Remote - %s",
-          user->Name());
-        gtk_frame_set_label(
-          GTK_FRAME(cw->frame_remote), temp);
-        g_free(temp);
+        string frame_title = "Remote - " + user_name;
+        gtk_frame_set_label(GTK_FRAME(cw->frame_remote), frame_title.c_str());
 
         /* Get their back color */
-        cw->r_back_color->red =
-          257 * user->ColorBg()[0];
-        cw->r_back_color->green =
-          257 * user->ColorBg()[1];
-        cw->r_back_color->blue =
-          257 * user->ColorBg()[2];
+        set_tag_colors(cw->r_tag, user->ColorFg(), user->ColorBg());
+        set_tag_colors(cw->r_tag_irc, user->ColorFg(), user->ColorBg());
         
-        /* Get their fore color */
-        cw->r_fore_color->red =
-          257 * user->ColorFg()[0];
-        cw->r_fore_color->green =
-          257 * user->ColorFg()[1];
-        cw->r_fore_color->blue =
-          257 * user->ColorFg()[2];
-
         break;
       }
       
       case CHAT_NEWLINE:
       {
         /* Add it to the paned view */
-        if(user == cw->chat_user)
-        {
-              tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_remote));
-              gtk_text_buffer_get_end_iter(tb, &iter1);
-              gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cw->text_remote), 
-                  &iter1,  0, FALSE, 0, 0);
-              gtk_text_buffer_insert(tb, &iter1, "\n", -1);
-        }
+        if (user == cw->chat_user)
+          gtk_text_buffer_insert(tb, &iter, "\n", 1);
 
         /* Add it to the irc view */
-        gchar *temp = g_strdup_printf("%s> ",
-          user->Name());
-        tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_irc));
-        tag = gtk_text_buffer_create_tag(tb, NULL, 
-            "font-desc", cw->r_font,
-            "foreground-gdk", cw->r_fore_color, 
-            "background-gdk", cw->r_back_color, 
-            NULL); 
+        string name_prompt = user_name + "> ";
+        gtk_text_buffer_insert_with_tags(tb_irc, &iter_irc, 
+            name_prompt.c_str(), -1, cw->r_tag_irc, NULL);
 
-        gtk_text_buffer_get_end_iter(tb, &iter1);
-        gtk_text_buffer_insert_with_tags(tb, &iter1, temp, -1, tag, NULL);
-        g_free(temp);
-
-        temp = g_strdup_printf("%s\n", e->Data());
-        gtk_text_buffer_get_end_iter(tb, &iter1);
-        gtk_text_buffer_insert_with_tags(tb, &iter1, temp, -1, tag, NULL);
-        gtk_text_buffer_get_end_iter(tb, &iter1);
-        gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cw->text_irc), &iter1,
-            0, FALSE, 0, 0);
-        g_free(temp);
+        gtk_text_buffer_insert_with_tags(tb_irc, &iter_irc, 
+            e->Data(), -1, cw->r_tag_irc, NULL);
+        gtk_text_buffer_insert_with_tags(tb_irc, &iter_irc, 
+            "\n", 1, cw->r_tag_irc, NULL);
+        scroll_to_the_end(cw->text_irc);
         break;
       }
 
       case CHAT_BEEP:
-      {
         /* Is audio enabled? */
-        if(cw->audio)
+        if (cw->audio)
           gdk_beep();
-        /* If not show a <Beep Beep!> */
-        else
-        {
-          if(user == cw->chat_user)
-          {
-            tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_remote));
-            tag = gtk_text_buffer_create_tag(tb, NULL, 
-              "foreground-gdk", cw->r_fore_color, 
-              "background-gdk", cw->r_back_color, 
-              NULL); 
-            gtk_text_buffer_get_end_iter(tb, &iter1);
-            gtk_text_buffer_insert_with_tags(tb, &iter1, "<Beep Beep!>\n", -1,
-                tag, NULL);
+        	/* If not show a <Beep Beep!> */
+        else {
+          if (user == cw->chat_user) {
+            gtk_text_buffer_insert_with_tags(tb, &iter, 
+                "<Beep Beep!>\n", -1, cw->r_tag, NULL);
+            scroll_to_the_end(cw->text_remote);
           }
             
-          gchar *temp = g_strdup_printf(
-            "%s> <Beep Beep!>\n",
-            user->Name());
-          tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_irc));
-          gtk_text_buffer_get_end_iter(tb, &iter1);
-          gtk_text_buffer_insert(tb, &iter1, temp, -1);
-          gtk_text_buffer_get_end_iter(tb, &iter1);
-          gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cw->text_irc), &iter1,
-              0, FALSE, 0, 0);
-          g_free(temp);
-        }
+          string txt = user_name + "> <Beep Beep!>\n";
+          gtk_text_buffer_insert_with_tags(tb_irc, &iter_irc, 
+              txt.c_str(), -1, cw->r_tag_irc, NULL);
 
+          scroll_to_the_end(cw->text_remote);
+        }
         break;
-      }
 
       case CHAT_LAUGH:
-      {
         break;
-      }
 
       case CHAT_BACKSPACE:
-      {
-        if(user == cw->chat_user)
-        {
-          tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_remote));
-          mark = gtk_text_buffer_get_insert(tb);
+        if (user == cw->chat_user) {
+          GtkTextMark *mark = gtk_text_buffer_get_insert(tb);
+          GtkTextIter iter1, iter2;
           gtk_text_buffer_get_iter_at_mark(tb, &iter1, mark);
           gtk_text_buffer_get_iter_at_mark(tb, &iter2, mark);
           gtk_text_iter_backward_chars(&iter1, 1);
           gtk_text_buffer_delete(tb, &iter1, &iter2);
         }
-        
         break;
-      }
 
       case CHAT_CHARACTER:
-      {
-        if(user == cw->chat_user)
-        {
-          tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_remote));
-          tag = gtk_text_buffer_create_tag(tb, NULL, 
-              "foreground-gdk", cw->r_fore_color, 
-              "background-gdk", cw->r_back_color, 
-              NULL); 
-          gtk_text_buffer_get_end_iter(tb, &iter1);
-          gtk_text_buffer_insert_with_tags(tb, &iter1, e->Data(), -1,
-              tag, NULL);
+        if (user == cw->chat_user) {
+          gtk_text_buffer_insert_with_tags(tb, &iter, 
+              e->Data(), -1, cw->r_tag, NULL);
+          scroll_to_the_end(cw->text_remote);
         }
-        
         break;
-      }
 
       case CHAT_COLORxFG:
-      {
-        if(user == cw->chat_user)
-        {
-          cw->r_fore_color->red =
-            257 * user->ColorFg()[0];
-          cw->r_fore_color->green =
-            257 * user->ColorFg()[1];
-          cw->r_fore_color->blue =
-            257 * user->ColorFg()[2];
-        }
-
+        if (user == cw->chat_user)
+          set_tag_fg_color(cw->r_tag, user->ColorFg());
+        set_tag_fg_color(cw->r_tag_irc, user->ColorFg());
         break;
-      }
 
       case CHAT_COLORxBG:
-      {
-        if(user == cw->chat_user)
-        {
-          cw->r_back_color->red =
-            257 * user->ColorBg()[0];
-          cw->r_back_color->green =
-            257 * user->ColorBg()[1];
-          cw->r_back_color->blue =
-            257 * user->ColorBg()[2];
-        }
-
+        if (user == cw->chat_user)
+          set_tag_bg_color(cw->r_tag, user->ColorBg());
+        set_tag_bg_color(cw->r_tag_irc, user->ColorBg());
         break;
-      }
 
       case CHAT_FONTxFAMILY:
-      {
-        strncpy(cw->r_font_name, user->FontFamily(), 50);
-        pango_font_description_set_family(cw->r_font, user->FontFamily());
-
+        if (user == cw->chat_user)
+          set_tag_font_family(cw->r_tag, user->FontFamily());
+        set_tag_font_family(cw->r_tag_irc, user->FontFamily());
         break;
-      }
 
       case CHAT_FONTxFACE:
-      {
-        if(user == cw->chat_user)
-        {
-          if (user->FontBold())
-            pango_font_description_set_weight(cw->r_font, PANGO_WEIGHT_BOLD);
-          else
-            pango_font_description_set_weight(cw->r_font, PANGO_WEIGHT_NORMAL);
-          if (user->FontItalic())
-            pango_font_description_set_style(cw->r_font, PANGO_STYLE_ITALIC);
-          else
-            pango_font_description_set_style(cw->r_font, PANGO_STYLE_NORMAL);
+        PangoWeight weight;
+        PangoStyle style;
+        if (user->FontBold())
+          weight = PANGO_WEIGHT_BOLD;
+        else
+          weight = PANGO_WEIGHT_NORMAL;
+        if (user->FontItalic())
+          style = PANGO_STYLE_ITALIC;
+        else
+          style = PANGO_STYLE_NORMAL;
+
+        if (user == cw->chat_user) {
+          set_tag_font_style(cw->r_tag, style);
+          set_tag_font_weight(cw->r_tag, weight);
         }
-        
+        set_tag_font_style(cw->r_tag_irc, style);
+        set_tag_font_weight(cw->r_tag_irc, weight);
         break;
-      }
 
       case CHAT_FONTxSIZE:
-      {
-        if(user == cw->chat_user)
-          pango_font_description_set_size(cw->r_font,
-              PANGO_SCALE * user->FontSize());
-
+        if (user == cw->chat_user)
+          set_tag_font_size(cw->r_tag, user->FontSize());
+        set_tag_font_size(cw->r_tag_irc, user->FontSize());
         break;
-      }
 
       case CHAT_FOCUSxOUT:
-      {
-        if(user == cw->chat_user)
-        {
-          gchar *new_text =  g_strdup_printf("Remote - %s - Away",  user->Name());
-          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text);
-          g_free(new_text);
+        if (user == cw->chat_user) {
+          string new_text =  "Remote - " + user_name + " - Away";
+          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text.c_str());
         }
-
         break;
-      }  
-
-      case CHAT_FOCUSxIN:
-      {
-        if(user == cw->chat_user)
-        {
-          gchar *new_text =  g_strdup_printf("Remote - %s", user->Name());
-          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text);
-          g_free(new_text);
-        }
-
-        break;
-      }
 
       case CHAT_SLEEPxON:
-      {
-        if(user == cw->chat_user)
-        {
-          gchar *new_text = g_strdup_printf("Remote - %s - Sleep", user->Name());
-          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text);
-          g_free(new_text);
+        if (user == cw->chat_user) {
+          string new_text =  "Remote - " + user_name + " - Sleep";
+          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text.c_str());
         }
-
         break;
-      }
 
+      case CHAT_FOCUSxIN:
       case CHAT_SLEEPxOFF:
-      {
-        if(user == cw->chat_user)
-        {
-          gchar *new_text = g_strdup_printf("Remote - %s", user->Name());
-          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text);
-          g_free(new_text);
+        if (user == cw->chat_user) {
+          string new_text =  "Remote - " + user_name;
+          gtk_frame_set_label(GTK_FRAME(cw->frame_remote), new_text.c_str());
         }
-
         break;
-      }
-        
+
       case CHAT_KICK:
-      {
         g_print("Kick user %ld?\n", user->ToKick());
         break;
-      }
-
 
       default:
-      {
         gLog.Error("%sInternal Error: invalid command from chat manager (%d)\n", 
             L_ERRORxSTR, e->Command());
         break;
-      }
     }
 
     cw->hold_cuser = 0;
@@ -1341,7 +1244,8 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
   }
 }
 
-const gint find_list_row(const gchar *name, GtkWidget *clist)
+const gint 
+find_list_row(const gchar *name, GtkWidget *clist)
 {
   return 0;
 }
@@ -1356,23 +1260,18 @@ chat_send_irc_mode(struct chat_window *cw)
   gtk_text_buffer_get_end_iter(tb, &iter);
   const gchar *new_txt = gtk_entry_get_text(GTK_ENTRY(cw->entry_irc));
   gtk_text_buffer_insert(tb, &iter, new_txt, -1);
-  gtk_text_buffer_get_end_iter(tb, &iter);
-  gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cw->text_local), &iter,
-      0, FALSE, 0, 0);
+  scroll_to_the_end(cw->text_local);
   gtk_text_buffer_insert(tb, &iter, "\n", 1);
 
-  gchar *temp = g_strdup_printf("%s> ", cw->chatman->Name());
+  gchar *temp = g_strdup_printf("%s> ", cw->local_name);
   tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_irc));
   gtk_text_buffer_get_end_iter(tb, &iter);
   gtk_text_buffer_insert(tb, &iter, temp, -1);
   g_free(temp);
 
-  gtk_text_buffer_get_end_iter(tb, &iter);
   gtk_text_buffer_insert(tb, &iter, new_txt, -1);
-  gtk_text_buffer_get_end_iter(tb, &iter);
-  gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cw->text_irc), &iter,
-      0, FALSE, 0, 0);
-  gtk_text_buffer_insert(tb, &iter, "\n", -1);
+  scroll_to_the_end(cw->text_irc);
+  gtk_text_buffer_insert(tb, &iter, "\n", 1);
   gtk_entry_set_text(GTK_ENTRY(cw->entry_irc), "");
 }
 
@@ -1385,31 +1284,25 @@ chat_send_pane_mode(struct chat_window *cw)
 
   tb1 = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_local));
   mark = gtk_text_buffer_get_mark(tb1, "last_pos");
-  if (mark == 0)
-    gtk_text_buffer_get_start_iter(tb1, &iter1); 
-  else
-    gtk_text_buffer_get_iter_at_mark(tb1, &iter1, mark); 
-    
+  gtk_text_buffer_get_iter_at_mark(tb1, &iter1, mark); 
   gtk_text_buffer_get_end_iter(tb1, &iter2); 
   gchar *new_text = gtk_text_buffer_get_text(tb1, &iter1, &iter2, FALSE);
   
-  gchar *temp = g_strdup_printf("%s> %s\n", cw->chatman->Name(), new_text);
+  // since we scroll_to_the_end before inserting \n in text_local our last_pos 
+	// is alwaysjust before the last \n - get rid of it before inserting it into 
+	// text_irc
+	gchar *temp = g_strdup_printf("%s> %s", cw->local_name, 
+			(new_text[0] == '\n' ? new_text + 1 : new_text));
+  g_free(new_text);
   
   tb2 = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cw->text_irc));
   gtk_text_buffer_get_end_iter(tb2, &iter);
   gtk_text_buffer_insert(tb2, &iter, temp, -1);
-  gtk_text_buffer_get_end_iter(tb2, &iter);
-  gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cw->text_irc), &iter,
-      0, FALSE, 0, 0);
   g_free(temp);
-  g_free(new_text);
 
-  if (mark)
-    gtk_text_buffer_move_mark(tb1, mark, &iter2);
-  else
-    mark = gtk_text_buffer_create_mark(tb1, "last_pos", &iter2, TRUE);
-  gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(cw->text_local), mark, 
-      0, FALSE, 0, 0);
+	scroll_to_the_end(cw->text_irc);
+  gtk_text_buffer_insert(tb2, &iter, "\n", 1);
+  scroll_to_the_end(cw->text_local);
 }
 
 gboolean
@@ -1417,25 +1310,20 @@ chat_send(GtkWidget *widget, GdkEventKey *event, struct chat_window *cw)
 {
   gboolean ret_val;
 
-  switch(event->keyval)
-  {
+  switch (event->keyval) {
     case GDK_BackSpace:
       cw->chatman->SendBackspace();
       return FALSE;
 
     case GDK_Linefeed:
     case GDK_Return:
-      /* We're in the IRC mode, handle cw->text_local and **
-      ** cw->text_irc accordingly.                        */
-      if(gtk_notebook_get_current_page(GTK_NOTEBOOK(cw->notebook)) == 1)
-      {
-        chat_send_irc_mode(cw);
+      if (gtk_notebook_get_current_page(GTK_NOTEBOOK(cw->notebook)) == 1) {
+        // IRC mode
+				chat_send_irc_mode(cw);
         ret_val = TRUE;
       }
-
-      /* We're in the Pane mode */
-      else //if(gtk_notebook_get_current_page(GTK_NOTEBOOK(cw->notebook)) == 0)
-      {
+      else {
+      	// Pane mode
         chat_send_pane_mode(cw);
         ret_val = FALSE;
       }      
@@ -1445,54 +1333,45 @@ chat_send(GtkWidget *widget, GdkEventKey *event, struct chat_window *cw)
   }
 
   /* Limit what we want */
-  if(event->keyval < GDK_space || event->keyval > GDK_questiondown)
+  if (event->keyval < GDK_space || event->keyval > GDK_questiondown)
     return TRUE;
 
   cw->chatman->SendCharacter(event->string[0]);
   return FALSE;
 }
 
-void chat_beep_users(gpointer cw, guint action, GtkWidget *widget)
+void
+chat_beep_users(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  ((struct chat_window *)cw)->chatman->SendBeep();
+  cw->chatman->SendBeep();
   gdk_beep();
 }
 
-void chat_change_font(gpointer _cw, guint action, GtkWidget *widget)
+void
+chat_change_font(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  struct chat_window *cw = (struct chat_window *)_cw;
-
   cw->font_sel_dlg = gtk_font_selection_dialog_new("Licq - Select Font");
 
-  g_signal_connect(G_OBJECT(cw->font_sel_dlg), "delete_event",
-    G_CALLBACK(font_dlg_close), (gpointer)cw);
-  g_signal_connect(G_OBJECT(GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg)->
-    cancel_button), "clicked",
-    G_CALLBACK(font_dlg_close), (gpointer)cw);
-  g_signal_connect(G_OBJECT(GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg)->
-    ok_button), "clicked",
-    G_CALLBACK(font_dlg_ok), (gpointer)cw);
+  g_signal_connect(
+			G_OBJECT(GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg)->cancel_button),
+			"clicked",
+    	G_CALLBACK(window_close), cw->font_sel_dlg);
+  g_signal_connect(
+			G_OBJECT(GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg)->ok_button),
+			"clicked",
+    	G_CALLBACK(font_dlg_ok), cw);
   
   gtk_widget_show_all(cw->font_sel_dlg);
 }
 
-void font_dlg_close(GtkWidget *widget, gpointer _cw)
-{
-  struct chat_window *cw = (struct chat_window *)_cw;
-  gtk_widget_destroy(cw->font_sel_dlg);
-}
-
-void font_dlg_ok(GtkWidget *widget, gpointer _cw)
+void
+font_dlg_ok(GtkWidget *widget, struct chat_window *cw)
 {
   // Only changes the font face for now...
-
-  struct chat_window *cw = (struct chat_window *)_cw;
-
   // Get the font name and font if they exist
   char *tmp = gtk_font_selection_dialog_get_font_name(
-    GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg));
-  if(tmp != 0)
-  {
+	    GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg));
+  if (tmp != 0) {
     int len = 0;
     do
     {
@@ -1514,33 +1393,35 @@ void font_dlg_ok(GtkWidget *widget, gpointer _cw)
     for(int i = len; i > 0; i--)
       tmp--;
     
-    if(len < 45)
-      strncpy(cw->l_font_name, tmp, len);
-    else
-      strncpy(cw->l_font_name, "clean", 6);
+    //if(len < 45)
+    //  strncpy(cw->l_font_name, tmp, len);
+    //else
+    //  strncpy(cw->l_font_name, "clean", 6);
 
-    g_print("Final: %s\n", cw->l_font_name);
+    //g_print("Final: %s\n", cw->l_font_name);
 
-    cw->chatman->ChangeFontFamily(cw->l_font_name, ENCODING_DEFAULT, STYLE_DONTCARE);
+    //cw->chatman->ChangeFontFamily(cw->l_font_name, ENCODING_DEFAULT, 
+		//		STYLE_DONTCARE);
   }
 
   gchar *fname = gtk_font_selection_dialog_get_font_name(
     GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg));
-  if (fname != 0)
-    cw->l_font = pango_font_description_from_string(fname);
+  //if (fname != 0)
+  //  cw->l_font = pango_font_description_from_string(fname);
   g_free(fname);
   
   // Ok, close it now
   gtk_widget_destroy(cw->font_sel_dlg);
 }
 
-void finish_chat(ICQEvent *event)
+void
+finish_chat(ICQEvent *event)
 {
   struct request_chat *rc = g_new0(struct request_chat, 1);
 
   rc = rc_find(event->Uin());
 
-  if(rc == 0)
+  if (rc == 0)
     return;
     
   close_request_chat(rc);
