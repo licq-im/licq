@@ -733,6 +733,7 @@ bool CIniFile::CreateSection(const char *_szSectionName)
   // the section
   char szNewSect[MAX_SECTIONxNAME_LEN + 4];
   snprintf(szNewSect, MAX_SECTIONxNAME_LEN + 4, "[%s]\n", _szSectionName);
+  szNewSect[sizeof (szNewSect) - 1] = '\0';
   m_nSectionStart = m_nBufSize + strlen(szNewSect);
   InsertStr(szNewSect, m_nBufPos, m_nBufPos);
   m_nSectionEnd = m_nBufSize;

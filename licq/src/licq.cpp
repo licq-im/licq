@@ -185,6 +185,7 @@ bool CLicq::Init(int argc, char **argv)
         break;
       case 'b':  // base directory
         snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s", optarg);
+        BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
         bBaseDir = true;
         break;
       case 'd':  // DEBUG_LEVEL
@@ -250,6 +251,7 @@ bool CLicq::Init(int argc, char **argv)
        return false;
      }
      snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/.licq", home);
+     BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
   }
 
   // check if user has conf files installed, install them if not
@@ -263,6 +265,7 @@ bool CLicq::Init(int argc, char **argv)
   // Check pid
   char szConf[MAX_FILENAME_LEN], szKey[32];
   snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
+  szConf[MAX_FILENAME_LEN - 1] = '\0';
   FILE *fs = fopen(szConf, "r");
   if (fs != NULL)
   {
@@ -297,6 +300,7 @@ bool CLicq::Init(int argc, char **argv)
   // Open the config file
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
   snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  szConf[MAX_FILENAME_LEN - 1] = '\0';
   licqConf.LoadFile(szConf);
 
   // Verify the version
@@ -426,7 +430,11 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     snprintf(szPlugin, MAX_FILENAME_LEN, "%slicq_%s.so", LIB_DIR, _szName);
   }
   else
-    strcpy(szPlugin, _szName);
+  {
+    strncpy(szPlugin, _szName, MAX_FILENAME_LEN);
+  }
+  szPlugin[MAX_FILENAME_LEN - 1] = '\0';
+  
   handle = dlopen (szPlugin, DLOPEN_POLICY);
   if (handle == NULL)
   {
@@ -733,6 +741,7 @@ int CLicq::Main()
   // Remove the pid flag
   char sz[MAX_FILENAME_LEN];
   snprintf(sz, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
+  sz[MAX_FILENAME_LEN - 1] = '\0';
   remove(sz);
 
   return list_plugins.size();
@@ -802,7 +811,8 @@ void CLicq::ShutdownPlugins()
 bool CLicq::Install()
 {
   char cmd[MAX_FILENAME_LEN + 128];
-  int lcmd = sizeof(cmd);
+
+  cmd[sizeof(cmd) - 1] = '\0';
 
   // Create the directory if necessary
   if (mkdir(BASE_DIR, 0700) == -1 && errno != EEXIST)
@@ -810,13 +820,13 @@ bool CLicq::Install()
     printf("Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
     return (false);
   }
-  snprintf(cmd, lcmd, "%s/%s", BASE_DIR, HISTORY_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%s/%s", BASE_DIR, HISTORY_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
     printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
-  snprintf(cmd, lcmd, "%s/%s", BASE_DIR, USER_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%s/%s", BASE_DIR, USER_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
     printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
@@ -824,21 +834,21 @@ bool CLicq::Install()
   }
 
   // Create licq.conf
-  snprintf(cmd, lcmd, "%s/licq.conf", BASE_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%s/licq.conf", BASE_DIR);
   FILE *f = fopen(cmd, "w");
   fprintf(f, "%s", LICQ_CONF);
   fclose(f);
 
 
   // Create users.conf
-  snprintf(cmd, lcmd, "%s/users.conf", BASE_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%s/users.conf", BASE_DIR);
   CIniFile usersConf(INI_FxALLOWxCREATE);
   usersConf.LoadFile(cmd);
   usersConf.SetSection("users");
   usersConf.WriteNum("NumOfUsers", 0ul);
   usersConf.FlushFile();
 
-  snprintf (cmd, lcmd, "%s/owner.uin", BASE_DIR);
+  snprintf (cmd, sizeof(cmd) - 1, "%s/owner.uin", BASE_DIR);
   CIniFile licqConf(INI_FxALLOWxCREATE);
   licqConf.LoadFile(cmd);
   licqConf.SetSection("user");

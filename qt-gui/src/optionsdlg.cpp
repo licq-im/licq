@@ -648,21 +648,21 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkShowGroupIfNoMsg, tr("Show the name of the current group in the "
                                           "messages label when there are no new messages"));
   chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxMainWin);
-  QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
-                                  "the user function window after a succesful event"));
+  QWhatsThis::add(chkAutoClose, tr("Auto close the user function window "
+                                   "after a succesful event"));
   chkAutoPopup = new QCheckBox(tr("Auto-Popup Incoming Msg"), boxMainWin);
-  QWhatsThis::add(chkAutoPopup, tr("All incoming messages automatically "
-                                           "open when received, if we are "
+  QWhatsThis::add(chkAutoPopup, tr("Open all incoming messages automatically "
+                                           "when received if we are "
                                            "online (or free for chat)"));
   chkAutoRaise = new QCheckBox(tr("Auto-Raise on Incoming Msg"), boxMainWin);
-  QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
+  QWhatsThis::add(chkAutoRaise, tr("Raise the main window on incoming messages"));
   chkHidden = new QCheckBox(tr("Start Hidden"), boxMainWin);
-  QWhatsThis::add(chkHidden, tr("The main window will start hidden. Only the dock icon will be visible."));
+  QWhatsThis::add(chkHidden, tr("Start main window hidden. Only the dock icon will be visible."));
   chkBoldOnMsg = new QCheckBox(tr("Bold Message Label on Incoming Msg"), boxMainWin);
-  QWhatsThis::add(chkBoldOnMsg, tr("The message info label will be bold if there are incoming messages"));
+  QWhatsThis::add(chkBoldOnMsg, tr("Show the message info label in bold font if there are incoming messages"));
   chkManualNewUser = new QCheckBox(tr("Manual \"New User\" group handling"), boxMainWin);
   QWhatsThis::add(chkManualNewUser, tr("If not checked, a user will be automatically "
-                                       "removed from \"New User\" group when you first"
+                                       "removed from \"New User\" group when you first "
                                        "send an event to them"));
   chkSendFromClipboard = new QCheckBox(tr("Check Clipboard For Urls/Files"), boxMainWin);
   QWhatsThis::add(chkSendFromClipboard, tr("When double-clicking on a user to send a message "
@@ -671,7 +671,7 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkAutoPosReplyWin, tr("Position a new reply window just underneath "
    "the message view window"));
   chkAutoSendThroughServer = new QCheckBox(tr("Auto send through server"), boxMainWin);
-  QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through server "
+  QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through the server "
    "if direct connection fails"));
   chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"), boxMainWin);
   QWhatsThis::add(chkEnableMainwinMouseMovement, tr("Lets you drag around the main window "

@@ -140,7 +140,8 @@ bool CUserManager::Load()
 
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
-  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  filename[MAX_FILENAME_LEN - 1] = '\0';
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(filename);
 
@@ -175,7 +176,7 @@ bool CUserManager::Load()
   licqConf.CloseFile();
 
   // Load users from users.conf
-  snprintf(filename, MAX_FILENAME_LEN, "%s/users.conf", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/users.conf", BASE_DIR);
   CIniFile usersConf(INI_FxFATAL | INI_FxERROR);
   usersConf.LoadFile(filename);
 
@@ -201,7 +202,7 @@ bool CUserManager::Load()
        gLog.Warn("%sSkipping user %i, invalid uin %ld.\n", L_WARNxSTR, i, nUserUin);
        continue;
      }
-     snprintf(filename, MAX_FILENAME_LEN, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
+     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
 
      u = new ICQUser(nUserUin, filename);
      u->AddToContactList();
@@ -332,7 +333,8 @@ void CUserManager::RemoveGroup(unsigned short n)
 
   // Must be called when there are no locks on GroupID and Group lists
   char szName[128];
-  strncpy(szName, m_vszGroups[n-1], 128);
+  strncpy(szName, m_vszGroups[n-1], sizeof(szName));
+  szName[sizeof(szName) - 1] = '\0';
   UnlockGroupList();
   gLicqDaemon->icqRemoveGroup(szName);
 
@@ -431,6 +433,7 @@ void CUserManager::SaveGroups()
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
   snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  filename[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(filename);
 
@@ -563,6 +566,7 @@ void CUserManager::SaveGroupIDs()
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
   snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  filename[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf(INI_FxWARN);
   licqConf.LoadFile(filename);
 
@@ -1061,6 +1065,7 @@ ICQUser::ICQUser(unsigned long nUin)
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
   snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, nUin);
+  szFilename[MAX_FILENAME_LEN - 1] = '\0';
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
@@ -1075,6 +1080,7 @@ void ICQUser::AddToContactList()
   {
     char szFilename[MAX_FILENAME_LEN];
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (access(szFilename, F_OK) == 0)
     {
       if (rename(szFilename, m_fHistory.FileName()) == -1)
@@ -1342,6 +1348,7 @@ void ICQUser::RemoveFiles()
   {
     char szFilename[MAX_FILENAME_LEN];
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (rename(m_fHistory.FileName(), szFilename) == -1)
     {
       gLog.Warn("%sFailed to rename history file (%s):\n%s%s\n", L_WARNxSTR,
@@ -1891,6 +1898,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           break;
         case 'n':
           snprintf(szTemp, sizeof(szTemp), "%s %s", GetFirstName(), GetLastName());
+          szTemp[sizeof(szTemp) - 1] = '\0';
           sz = szTemp;
           break;
         case 'f':
@@ -2501,7 +2509,8 @@ ICQOwner::ICQOwner()
   m_bOnContactList = true;
 
   // Get data from the config file
-  snprintf(filename, MAX_FILENAME_LEN, "%s/owner.uin", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.uin", BASE_DIR);
+  filename[MAX_FILENAME_LEN - 1] = '\0';
 
   // Make sure owner.uin is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
@@ -2530,7 +2539,7 @@ ICQOwner::ICQOwner()
 
   m_fConf.CloseFile();
 
-  snprintf(filename, MAX_FILENAME_LEN, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   SetHistoryFile(filename);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)

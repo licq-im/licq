@@ -84,6 +84,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Begin parsing the config file
   snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "licq.conf");
+  m_szConfigFile[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(m_szConfigFile);
   licqConf.SetFlags(0);
@@ -91,7 +92,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.SetSection("network");
 
   // ICQ Server
-  char szICQServer[MAX_HOSTNAME_LEN];
+  char szICQServer[MAX_LINE_LEN];
 
   licqConf.ReadStr("ICQServer", szICQServer, DEFAULT_SERVER_HOST);
   m_szICQServer = new char[strlen(szICQServer) + 1];
@@ -120,6 +121,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   {
     m_szRejectFile = new char[MAX_FILENAME_LEN];
     snprintf(m_szRejectFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, temp);
+    m_szRejectFile[MAX_FILENAME_LEN - 1] = '\0';
   }
   else
     m_szRejectFile = NULL;
@@ -131,6 +133,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   if (strcmp(m_szErrorFile, "none") != 0)
   {
     snprintf(temp, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, m_szErrorFile);
+    temp[MAX_FILENAME_LEN - 1] = '\0';
     CLogService_File *l = new CLogService_File(m_nErrorTypes);
     if (!l->SetLogFile(temp, "a"))
     {
@@ -148,6 +151,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   {
      char TranslationTableFileNameFull[MAX_FILENAME_LEN];
      snprintf(TranslationTableFileNameFull, MAX_FILENAME_LEN, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, temp);
+     TranslationTableFileNameFull[MAX_FILENAME_LEN - 1] = '\0';
      gTranslator.setTranslationMap (TranslationTableFileNameFull);
   }
 
@@ -165,7 +169,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Proxy
   m_xProxy = NULL;
-  char t_str[MAX_HOSTNAME_LEN];
+  char t_str[MAX_LINE_LEN];
 
   licqConf.ReadBool("ProxyEnabled", m_bProxyEnabled, false);
   licqConf.ReadNum("ProxyServerType", m_nProxyType, PROXY_TYPE_HTTP);
@@ -271,6 +275,7 @@ bool CICQDaemon::Start()
 #ifdef USE_FIFO
   // Open the fifo
   snprintf(sz, MAX_FILENAME_LEN, "%s/licq_fifo", BASE_DIR);
+  sz[MAX_FILENAME_LEN - 1] = '\0';
   gLog.Info("%sOpening fifo.\n", L_INITxSTR);
   fifo_fd = open(sz, O_RDWR);
   if (fifo_fd == -1)
@@ -769,6 +774,7 @@ void CICQDaemon::SaveUserList()
   int nRet, n, fd;
  
   snprintf(szFilename, nLen, "%s/%s", BASE_DIR, file);
+  szFilename[nLen - 1] = '\0';
   strcpy(szTmpName, szFilename);
   strcat(szTmpName, suffix);
 

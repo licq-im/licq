@@ -160,6 +160,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
+  m_szLocalName[sizeof(m_szLocalName) - 1] = '\0';
   gUserManager.DropOwner();
 
   m_nCurrentFile = m_nBatchFiles = 0;
@@ -200,17 +201,22 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
   if (szDirectory == NULL)
   {
     snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s/%ld", BASE_DIR, m_nUin);
+    m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
     if (access(BASE_DIR, F_OK) < 0 && mkdir(m_szDirectory, 0700) == -1 &&
         errno != EEXIST)
     {
       gLog.Warn("%sUnable to create directory %s for file transfer.\n",
          L_WARNxSTR, m_szDirectory);
       strncpy(m_szDirectory, BASE_DIR, MAX_FILENAME_LEN - 1);
+      m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
     }
   }
   else
+  {
     strncpy(m_szDirectory, szDirectory, MAX_FILENAME_LEN - 1);
-
+    m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
+  }
+    
   struct stat buf;
   stat(m_szDirectory, &buf);
   if (!S_ISDIR(buf.st_mode))
@@ -693,12 +699,16 @@ bool CFileTransferManager::StartReceivingFile(char *szFileName)
   struct stat buf;
   m_nFileDesc = -1;
   snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s", m_szDirectory, m_szFileName);
+  m_szPathName[MAX_FILENAME_LEN - 1] = '\0';
   while (m_nFileDesc == -1)
   {
     if (stat(m_szPathName, &buf) != -1)
     {
       if ((unsigned long)buf.st_size >= m_nFileSize)
+      {
         snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%ld", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
+        m_szPathName[MAX_FILENAME_LEN - 1] = '\0';
+      }
       m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT | O_APPEND, 00664);
       m_nFilePos = buf.st_size;
     }

@@ -178,6 +178,7 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
   {
     case SOCK_ERROR_errno:
       strncpy(buf, strerror(errno), buflen);
+      buf[buflen - 1] = '\0';
       break;
 
     case SOCK_ERROR_h_errno:
@@ -185,19 +186,23 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
       sprintf(buf, "hostname resolution failure (%d)", h_errno);
 #else
       strncpy(buf, hstrerror(h_errno), buflen);
+      buf[buflen - 1] = '\0';
 #endif
       break;
 
     case SOCK_ERROR_desx:
       strncpy(buf, "DesX encryption/decryption failure", buflen);
+      buf[buflen - 1] = '\0';
       break;
 
     case SOCK_ERROR_none:
       strncpy(buf, "No error detected", buflen);
+      buf[buflen - 1] = '\0';
       break;
 
     case SOCK_ERROR_internal:
       strncpy(buf, "Internal error", buflen);
+      buf[buflen - 1] = '\0';
       break;
     case SOCK_ERROR_proxy:
       if (m_xProxy != NULL)

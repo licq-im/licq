@@ -773,6 +773,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
 
   char szAlias[64];
   strncpy(szAlias, u->GetAlias(), sizeof(szAlias));
+  szAlias[sizeof(szAlias) - 1] = '\0';
   unsigned short nPort = u->Port();
   unsigned short nVersion = u->ConnectionVersion();
 
@@ -847,6 +848,7 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
 
   char szAlias[64];
   snprintf(szAlias, sizeof(szAlias), "%s (%ld)", u->GetAlias(), u->Uin());
+  szAlias[sizeof(szAlias) - 1] = '\0';
   unsigned long ip = u->Ip();
   unsigned long intip = u->IntIp();
   bool bSendIntIp = u->SendIntIp();

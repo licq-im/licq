@@ -275,12 +275,15 @@ CLicqGui::CLicqGui(int argc, char **argv)
       break;
     case 's':  // skin name
       snprintf(skinName, sizeof(skinName), "%s", optarg);
+      skinName[sizeof(skinName) - 1] = '\0';
       break;
     case 'i':  // icons name
-      snprintf(iconsName, sizeof(skinName), "%s", optarg);
+      snprintf(iconsName, sizeof(iconsName), "%s", optarg);
+      iconsName[sizeof(iconsName) - 1] = '\0';
       break;
     case 'g': // gui style
       strncpy(styleName, optarg, sizeof(styleName));
+      styleName[sizeof(styleName) - 1] = '\0';
       break;
     case 'd': // dock icon
       bStartHidden = true;
@@ -290,6 +293,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 #ifndef USE_KDE
   char buf[500];
   snprintf(buf, sizeof(buf), "%s/licq_qt-gui.style", BASE_DIR);
+  buf[sizeof(buf) - 1] = '\0';
 
   QStyle *style = SetStyle(styleName);
 

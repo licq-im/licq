@@ -84,8 +84,10 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
         strncpy(&szMsg[nPos], sz+1, len); \
         nPos += len; \
         szMsg[nPos] = '\0'; \
-        /* nPos += snprintf(&szMsg[nPos], MAX_HISTORY_MSG_SIZE - nPos,
-         *                  "%s", &sz[1]); */ \
+        /* snprintf(&szMsg[nPos], MAX_HISTORY_MSG_SIZE - nPos,
+         *                  "%s", &sz[1]);
+         * szMsg[MAX_HISTORY_MSG_SIZE - 1] = '\0';
+         * nPos += strlen(szMsg + nPos); */ \
       } \
     } \
     if (nPos > 0 && szMsg[nPos - 1] == '\n') \

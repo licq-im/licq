@@ -282,6 +282,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   gLog.Info("%sQt GUI configuration.\n", L_INITxSTR);
 #endif
   snprintf(szTemp, MAX_FILENAME_LEN, "%s/licq_qt-gui.conf", BASE_DIR);
+  szTemp[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf;
   if (! licqConf.LoadFile(szTemp) )
   {
@@ -615,7 +616,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
      if (pmBorder->isNull())
      {
        gLog.Error("%sError loading background pixmap (%s).\n", L_ERRORxSTR, skin->frame.pixmap);
-       delete skin->frame.pixmap;
+       delete[] skin->frame.pixmap;
        skin->frame.pixmap = NULL;
      }
   }
@@ -631,7 +632,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
      if (pmMask->isNull())
      {
        gLog.Error("%sError loading background mask (%s).\n", L_ERRORxSTR, skin->frame.mask);
-       delete skin->frame.mask;
+       delete[] skin->frame.mask;
        skin->frame.mask = NULL;
      }
   }
@@ -842,6 +843,7 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     // save window position and size
     char buf[MAX_FILENAME_LEN];
     snprintf(buf, MAX_FILENAME_LEN, "%s/licq_qt-gui.conf", BASE_DIR);
+    buf[MAX_FILENAME_LEN - 1] = '\0';
     CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
     // need some more error checking here...
     licqConf.LoadFile(buf);
@@ -2383,6 +2385,7 @@ void CMainWindow::saveOptions()
   // Save all our options
   char filename[MAX_FILENAME_LEN];
   snprintf(filename, MAX_FILENAME_LEN, "%s/licq_qt-gui.conf", BASE_DIR);
+  filename[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
   if (!licqConf.LoadFile(filename)) return;
 
@@ -2867,8 +2870,10 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    else
    {
      snprintf(sIconPath, MAX_FILENAME_LEN, "%s%sicons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
+     sIconPath[MAX_FILENAME_LEN - 1] = '\0';
    }
    snprintf(sFilename, MAX_FILENAME_LEN, "%s%s.icons", sIconPath, _sIconSet);
+   sFilename[MAX_FILENAME_LEN - 1] = '\0';
    CIniFile fIconsConf;
    if (!fIconsConf.LoadFile(sFilename))
    {
@@ -2881,61 +2886,62 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 
    fIconsConf.SetSection("icons");
    fIconsConf.ReadStr("Online", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   sFilepath[MAX_FILENAME_LEN - 1] = '\0';
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmOnline.load(sFilepath);
 
    fIconsConf.ReadStr("FFC", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmFFC.load(sFilepath);
    if (pmFFC.isNull()) pmFFC = pmOnline;
 
    fIconsConf.ReadStr("Offline", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmOffline.load(sFilepath);
 
    fIconsConf.ReadStr("Away", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmAway.load(sFilepath);
 
    fIconsConf.ReadStr("NA", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmNa.load(sFilepath);
 
    fIconsConf.ReadStr("Occupied", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmOccupied.load(sFilepath);
 
    fIconsConf.ReadStr("DND", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmDnd.load(sFilepath);
 
    fIconsConf.ReadStr("Private", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmPrivate.load(sFilepath);
 
    fIconsConf.ReadStr("Message", sFilename, "none");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmMessage.load(sFilepath);
 
    fIconsConf.ReadStr("Url", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmUrl.load(sFilepath);
 
    fIconsConf.ReadStr("Chat", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmChat.load(sFilepath);
 
    fIconsConf.ReadStr("File", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmFile.load(sFilepath);
 
    fIconsConf.ReadStr("Contact", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmContact.load(sFilepath);
    if(pmContact.isNull()) pmContact = pmMessage;
 
    fIconsConf.ReadStr("Authorize", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmAuthorize.load(sFilepath);
    if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
 

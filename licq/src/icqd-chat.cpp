@@ -544,6 +544,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   strncpy(m_szName, o->GetAlias(), 32);
+  m_szName[31] = '\0';
   gUserManager.DropOwner();
 
   m_nFontFace = FONT_PLAIN;
@@ -551,6 +552,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   if (fontItalic) m_nFontFace |= FONT_ITALIC;
   if (fontUnderline) m_nFontFace |= FONT_UNDERLINE;
   strncpy(m_szFontFamily, fontFamily, sizeof(m_szFontFamily));
+  m_szFontFamily[sizeof(m_szFontFamily) - 1] = '\0';
   m_nFontSize = fontSize;
   m_nColorFore[0] = fr;
   m_nColorFore[1] = fg;
@@ -764,6 +766,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       CPChat_Color pin(u->sock.RecvBuffer());
 
       strncpy(u->chatname, pin.Name(), 32);
+      u->chatname[31] = '\0';
       // Fill in the remaining fields in the client structure
       u->client.m_nPort = pin.Port();
       u->client.m_nSession = m_nSession;
@@ -812,6 +815,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       u->fontSize = pin.FontSize();
       u->fontFace = pin.FontFace();
       strncpy(u->fontFamily, pin.FontFamily(), 64);
+      u->fontFamily[63] = '\0';
 
       u->state = CHAT_STATE_CONNECTED;
       PushChatEvent(new CChatEvent(CHAT_CONNECTION, u));
@@ -828,6 +832,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
       // just received the color/font packet
       strncpy(u->chatname, pin.Name(), 32);
+      u->chatname[31] = '\0';
 
       // set up the remote colors
       u->colorFore[0] = pin.ColorForeRed();
@@ -842,6 +847,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       u->fontSize = pin.FontSize();
       u->fontFace = pin.FontFace();
       strncpy(u->fontFamily, pin.FontFamily(), 64);
+      u->fontFamily[63] = '\0';
 
       // Parse the multiusers list
       if (pin.ChatClients().size() > 0)
@@ -1018,6 +1024,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
          encodingFont = u->chatQueue[sizeFontName + 3] |
                         (u->chatQueue[sizeFontName + 4] << 8);
          strncpy(u->fontFamily, nameFont, 64);
+         u->fontFamily[63] = '\0';
 
          // Dequeue all characters
          for (unsigned short i = 0; i < 3 + sizeFontName + 2; i++)
@@ -1328,6 +1335,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
            encodingFont = u->chatQueue[sizeFontName + 2] |
                           (u->chatQueue[sizeFontName + 3] << 8);
            strncpy(u->fontFamily, nameFont, 64);
+           u->fontFamily[63] = '\0';
 
            PushChatEvent(new CChatEvent(CHAT_FONTxFAMILY, u));
            break;
@@ -1850,6 +1858,7 @@ void CChatManager::ChangeFontFamily(const char *f)
   SendBuffer(&buf, CHAT_FONTxFAMILY);
 
   strncpy(m_szFontFamily, f, sizeof(m_szFontFamily));
+  m_szFontFamily[sizeof(m_szFontFamily) - 1] = '\0';
 }
 
 

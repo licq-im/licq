@@ -63,6 +63,7 @@ bool CSARManager::Load()
 
   // Get data from the config file
   snprintf(filename, sizeof(filename), "%s/sar.conf", BASE_DIR);
+  filename[sizeof(filename) - 1] = '\0';
   // Try and load the file
   if (!m_fConf.LoadFile(filename))
   {

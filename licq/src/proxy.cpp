@@ -94,6 +94,7 @@ char *ProxyServer::ErrorStr(char *buf, int buflen)
   {
     case PROXY_ERROR_errno:
       strncpy(buf, strerror(errno), buflen);
+      buf[buflen - 1] = '\0';
       break;
 
     case PROXY_ERROR_h_errno:
@@ -101,17 +102,21 @@ char *ProxyServer::ErrorStr(char *buf, int buflen)
       sprintf(buf, "proxy hostname resolution failure (%d)", h_errno);
 #else
       strncpy(buf, hstrerror(h_errno), buflen);
+      buf[buflen - 1] = '\0';
 #endif
     case PROXY_ERROR_none:
       strncpy(buf, "No proxy error detected", buflen);
+      buf[buflen - 1] = '\0';
       break;
 
     case PROXY_ERROR_internal:
       strncpy(buf, "Internal proxy error", buflen);
+      buf[buflen - 1] = '\0';
       break;
 
     default:
       strncpy(buf, "Unknown proxy error", buflen);
+      buf[buflen - 1] = '\0';
   }
   
   return buf;
@@ -289,7 +294,9 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
   char input_line[HTTP_INPUT_LINE_MAX];
   char cmd[HTTP_CMD_LINE_MAX];
 
-  snprintf(cmd, sizeof(cmd), "CONNECT %s:%d HTTP/1.1\r\nHost = %s:%d\r\n", 
+  cmd[sizeof(cmd) - 1] = '\0';
+
+  snprintf(cmd, sizeof(cmd) - 1, "CONNECT %s:%d HTTP/1.1\r\nHost = %s:%d\r\n", 
 		_szRemoteName, _nRemotePort, _szRemoteName, _nRemotePort);
   if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
   {
@@ -304,7 +311,7 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
     sprintf(cmd_b, "%s:%s", m_szProxyLogin, m_szProxyPasswd);
     char *cmd_b64 = new char[base64_length(strlen(cmd_b)) + 1];
     base64_encode(cmd_b, cmd_b64, strlen(cmd_b));
-    snprintf(cmd, sizeof(cmd), "Proxy-Authorization: Basic %s\r\n", cmd_b64);
+    snprintf(cmd, sizeof(cmd) - 1, "Proxy-Authorization: Basic %s\r\n", cmd_b64);
     delete cmd_b;
     delete cmd_b64;
     if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
@@ -315,7 +322,7 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
     }
   }
   
-  snprintf(cmd, sizeof(cmd), "\r\n");
+  snprintf(cmd, sizeof(cmd) - 1, "\r\n");
   if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
   {
     m_nErrorType = PROXY_ERROR_errno;
