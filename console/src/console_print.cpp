@@ -4,6 +4,7 @@
 #include "licq_filetransfer.h"
 
 #include <string.h>
+#include <time.h>
 
 //======Utilities============================================================
 char *EncodeFileSize(unsigned long nSize)
@@ -506,11 +507,12 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
 
-  // Some IP and Real IP stuff
+  // Some IP, Real IP and last seen stuff
   char buf[32];
   char szRealIp[32];
   const unsigned long nRealIp = u->RealIp();
   strcpy(szRealIp, inet_ntoa_r(*(struct in_addr *)&nRealIp, buf));
+  time_t nLast = u->LastOnline();
 
   wattron(winMain->Win(), A_BOLD);
   for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
@@ -551,6 +553,8 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
                    u->GetTimezone() > 0 ? '-' : '+',
                    u->GetTimezone() / 2,
                    u->GetTimezone() % 2 ? "30" : "00");
+  winMain->wprintf("%C%ALast Seen: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
+    ctime(&nLast));
 
   wattron(winMain->Win(), A_BOLD);
   for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
@@ -645,6 +649,36 @@ void CLicqConsole::PrintInfo_Work(unsigned long nUin)
   waddch(winMain->Win(), '\n');
   winMain->RefreshWin();
   wattroff(winMain->Win(), A_BOLD);
+}
+
+/*----------------------------------------------------------------------------
+ * CLicqConsole::PrintInfo_About
+ *--------------------------------------------------------------------------*/
+void CLicqConsole::PrintInfo_About(unsigned long nUin)
+{
+  // Print the user's about info to the main window
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL)  return;
+
+  wattron(winMain->Win(), A_BOLD);
+  for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
+    waddch(winMain->Win(), ACS_HLINE);
+  waddch(winMain->Win(), '\n');
+  wattroff(winMain->Win(), A_BOLD);
+
+  winMain->wprintf("%s %A(%Z%ld%A) About Info - %Z%s\n", u->GetAlias(), A_BOLD,
+                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
+
+  winMain->wprintf("%s\n", u->GetAbout());
+
+  gUserManager.DropUser(u);
+
+  wattron(winMain->Win(), A_BOLD);
+  for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
+    waddch(winMain->Win(), ACS_HLINE);
+  waddch(winMain->Win(), '\n');
+  winMain->RefreshWin();
+  wattroff(winMain->Win(), A_BOLD); 
 }
 
 /*---------------------------------------------------------------------------- 

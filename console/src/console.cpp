@@ -1183,6 +1183,7 @@ void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
                    "(G)eneral Info\n"
                    "(M)ore Info\n"
                    "(W)ork Info\n"
+                   "(A)bout Info\n"
                    "(U)pdate Info\n"
                    "for %s (%ld)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
@@ -1215,6 +1216,9 @@ void CLicqConsole::InputInfo(int cIn)
           break;
         case 'w':
           PrintInfo_Work(data->nUin);
+          break;
+        case 'a':
+          PrintInfo_About(data->nUin);
           break;
         case 'u':
           winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,

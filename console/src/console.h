@@ -111,6 +111,7 @@ public:
   void PrintInfo_General(unsigned long);
   void PrintInfo_More(unsigned long);
   void PrintInfo_Work(unsigned long);
+  void PrintInfo_About(unsigned long);
   void PrintFileStat(CFileTransferManager *);
 
   void MenuHelp(char *);
