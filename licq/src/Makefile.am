@@ -3,7 +3,7 @@
 #INCLUDES = -Wall -I$(srcdir)/inc -DINSTALL_PREFIX=\"@prefix@\" @SOCKS_INCDIR@
 INCLUDES = -Wall -I$(top_srcdir)/include -DINSTALL_PREFIX=\"@prefix@\" @SOCKS_INCDIR@
 
-noinst_HEADERS = licq.conf.h licq.h plugind.h \
+noinst_HEADERS = licq.conf.h licq.h  \
          time-fix.h sar.conf.h support.h
 
 bin_PROGRAMS = licq
