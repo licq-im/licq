@@ -470,7 +470,7 @@ update_file_info(struct file_window *fw)
 
 	char *txt;
 	if (elapsed != 0) {
-		g_strdup_printf("%02ld:%02ld:%02ld",
+		txt = g_strdup_printf("%02ld:%02ld:%02ld",
 				elapsed / 3600, (elapsed % 3600) / 60, (elapsed % 60));
 		gtk_entry_set_text(GTK_ENTRY(fw->time), txt);
 		g_free(txt);
