@@ -26,6 +26,7 @@
 #include <kglobalsettings.h>
 #include <kwin.h>
 #include <kiconloader.h>
+#include <kurl.h>
 #else
 #include <qapplication.h>
 #endif
@@ -2090,6 +2091,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
       gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
   if(e) {
+    connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
     e->show();
     // there might be more than one send window open
     // make sure we only remember one, or it will get compliated
@@ -3699,6 +3701,27 @@ HintsDlg::HintsDlg(QString &hint)
   show();
 }
 
+// -----------------------------------------------------------------------------
+
+void CMainWindow::slot_viewurl(QWidget *q, QString url)
+{
+#ifdef USE_KDE
+  KApplication* app = static_cast<KApplication*>(qApp);
+  if (url.startsWith("mailto:"))
+    app->invokeMailer( KURL(url) );
+  else
+  // If no URL viewer is set, use KDE default
+  if (licqDaemon && (!licqDaemon->getUrlViewer()))
+    app->invokeBrowser( url );
+  else 
+#endif
+  {
+    if (licqDaemon == NULL)
+      WarnUser(q, tr("Licq is unable to find a browser application due to an internal error."));
+    else if (!licqDaemon->ViewUrl(url.local8Bit().data()))
+      WarnUser(q, tr("Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."));
+  }  
+}
 
 // -----------------------------------------------------------------------------
 

@@ -230,6 +230,7 @@ public slots:
   void saveOptions();
   void slot_updatedList(CICQSignal *);
   void slot_updatedUser(CICQSignal *);
+  void slot_viewurl(QWidget *, QString);
 
 protected slots:
   void slot_hints();

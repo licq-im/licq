@@ -100,6 +100,7 @@ protected slots:
 signals:
   void finished(unsigned long);
   void encodingChanged();
+  void viewurl(QWidget*, QString);
 };
 
 

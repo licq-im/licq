@@ -39,9 +39,11 @@
 #include <kapp.h>
 #include <kfontdialog.h>
 #include <kurlrequester.h>
+#define DEFAULT_URL_VIEWER tr("KDE default")
 #else
 #include <qapplication.h>
 #include <qfontdialog.h>
+#define DEFAULT_URL_VIEWER tr("none")
 #endif
 
 #include "optionsdlg.h"
@@ -322,8 +324,8 @@ void OptionsDlg::SetupOptions()
   chkIgnoreEmailPager->setChecked(mainwin->licqDaemon->Ignore(IGNORE_EMAILPAGER));
 
   // plugins tab
-  edtUrlViewer->setText(mainwin->licqDaemon->getUrlViewer() == NULL ?
-                        tr("none") : QString(mainwin->licqDaemon->getUrlViewer()));
+  cmbUrlViewer->setCurrentText(mainwin->licqDaemon->getUrlViewer() == NULL ?
+			       DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()));
   edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ?
                        tr("none") : QString(mainwin->licqDaemon->Terminal()));
   
@@ -531,7 +533,11 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetIgnore(IGNORE_EMAILPAGER, chkIgnoreEmailPager->isChecked());
 
   // Plugin tab
-  mainwin->licqDaemon->setUrlViewer(edtUrlViewer->text().local8Bit());
+  if (cmbUrlViewer->currentText() == DEFAULT_URL_VIEWER)
+    mainwin->licqDaemon->setUrlViewer("none");  // untranslated!
+  else
+    mainwin->licqDaemon->setUrlViewer(cmbUrlViewer->currentText().local8Bit());
+
   mainwin->licqDaemon->SetTerminal(edtTerminal->text().local8Bit());
   if (cmbDefaultEncoding->currentItem() > 0)
     mainwin->m_DefaultEncoding = UserCodec::encodingForName(cmbDefaultEncoding->currentText());
@@ -1271,7 +1277,15 @@ QWidget* OptionsDlg::new_misc_options()
   lblUrlViewer = new QLabel(tr("Url Viewer:"), boxExtensions);
   QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
                                   "as a parameter."));
-  edtUrlViewer = new QLineEdit(boxExtensions);
+  cmbUrlViewer = new QComboBox(true, boxExtensions);
+  cmbUrlViewer->insertItem(DEFAULT_URL_VIEWER);
+  cmbUrlViewer->insertItem("viewurl-lynx.sh");
+  cmbUrlViewer->insertItem("viewurl-mozilla.sh");
+  cmbUrlViewer->insertItem("viewurl-ncftp.sh");
+  cmbUrlViewer->insertItem("viewurl-netscape.sh");
+  cmbUrlViewer->insertItem("viewurl-opera.sh");
+  cmbUrlViewer->insertItem("viewurl-w3m.sh");
+
   lblTerminal = new QLabel(tr("Terminal:"), boxExtensions);
   edtTerminal = new QLineEdit(tr("Terminal:"), boxExtensions);
   QWhatsThis::add(edtTerminal, tr("The command to run to start your terminal program."));

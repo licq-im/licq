@@ -344,7 +344,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
 #if QT_VERSION < 300
   mlvRead->setFormatQuoted(true);
 #else
-  mlvRead->setICQDaemon(server);
+  connect(mlvRead, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
   splRead->setResizeMode(msgView, QSplitter::FollowSizeHint);
   splRead->setResizeMode(mlvRead, QSplitter::Stretch);
@@ -573,7 +573,9 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
         btnRead1->setText(tr("&Reply"));
         btnRead2->setText(tr("&Quote"));
         btnRead3->setText(tr("&Forward"));
+#ifndef USE_KDE
         if (server->getUrlViewer() != NULL)
+#endif
           btnRead4->setText(tr("&View"));
         break;
 
@@ -862,8 +864,7 @@ void UserViewEvent::slot_btnRead4()
       break;
     }
     case ICQ_CMDxSUB_URL:   // view a url
-      if (!server->ViewUrl(((CEventUrl *)m_xCurrentReadEvent)->Url()))
-        WarnUser(this, tr("View URL failed"));
+      emit viewurl(this, ((CEventUrl *)m_xCurrentReadEvent)->Url());
       break;
   }
 }
@@ -1011,7 +1012,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   if (mainwin->m_bMsgChatView) {
     mleHistory = new CMessageViewWidget(_nUin, splView);
 #if QT_VERSION >= 300
-    mleHistory->setICQDaemon(server);
+    connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
     connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);

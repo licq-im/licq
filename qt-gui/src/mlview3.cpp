@@ -30,10 +30,6 @@
 #include <qpainter.h>
 #include <qaccel.h>
 #include <qregexp.h>
-#if USE_KDE
-#include <kapp.h>
-#include <kurl.h>
-#endif
 
 #include "ewidgets.h"
 #include "licq_icqd.h"
@@ -41,7 +37,7 @@
 #include "mlview3.h"
 
 MLView::MLView (QWidget* parent, const char *name)
-  : QTextBrowser(parent, name), m_handleLinks(true), m_licqDaemon(NULL)
+  : QTextBrowser(parent, name), m_handleLinks(true)
 {
   setWordWrap(WidgetWidth);
   setWrapPolicy(AtWhiteSpace);
@@ -147,31 +143,10 @@ void MLView::setHandleLinks(bool enable)
   m_handleLinks = enable;
 }
 
-void MLView::setICQDaemon(CICQDaemon* licqDaemon)
-{
-  m_licqDaemon = licqDaemon;
-}
-
 void MLView::setSource(const QString& name)
 {
-  if (m_handleLinks)
-  {
-#ifdef USE_KDE
-    KApplication* app = static_cast<KApplication*>(qApp);
-    if (name.find(QRegExp("^\\w+://")) > -1)
-       app->invokeBrowser( name );
-    else if (name.startsWith("mailto:"))
-       app->invokeMailer( KURL(name) );
-#else
-    if (name.find(QRegExp("^\\w+:")) > -1)
-    {
-       if (m_licqDaemon == NULL)
-           WarnUser(this, tr("Licq is unable to find a browser application due to an internal error."));
-       else if (!m_licqDaemon->ViewUrl(name.local8Bit().data()))
-           WarnUser(this, tr("Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."));
-    }
-#endif
-  }
+  if (m_handleLinks && ((name.find(QRegExp("^\\w+://")) > -1) || name.startsWith("mailto:")))
+    emit viewurl(this, name);
 }
 
 bool MLView::hasMarkedText() const

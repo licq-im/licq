@@ -970,7 +970,7 @@ void UserInfoDlg::CreateHistory()
 
   mlvHistory = new CHistoryWidget(p, "history");
 #if QT_VERSION >= 300
-  mlvHistory->setICQDaemon(server);
+  connect(mlvHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
   lay->addWidget(mlvHistory, 1);
 

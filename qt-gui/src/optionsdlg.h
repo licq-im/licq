@@ -101,7 +101,7 @@ protected:
    QWidget* new_misc_options();
    QGroupBox *boxParanoia, *boxExtensions;
    QLabel *lblUrlViewer, *lblDefaultEncoding;
-   QLineEdit *edtUrlViewer;
+   QComboBox *cmbUrlViewer;
    QComboBox *cmbDefaultEncoding;
    QLabel *lblTerminal;
    QLineEdit *edtTerminal;
