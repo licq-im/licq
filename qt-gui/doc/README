@@ -36,6 +36,11 @@ Qt >= 2.1 (if you are using rpm then it requires the qt and qt-devel rpm)
 Some C++ compiler
 KDE >= 2.0 for KDE support
 
+* * * IF CONFIGURE CAN'T FIND msg2qm AND mergetr READ THIS! * * *
+The files you need for translations are located in $QTDIR/tools/mergetr and 
+$QTDIR/tools/msg2qm.  Just make a symbolic link of these files in $QTDIR/bin
+and everything will be working.
+
 * * * IF YOU USE Qt-1.x PROGRAMS (like KDE), READ THIS! * * *
 If you get errors about unknown symbols in the qt-gui plugin library,
 make sure you're using the Qt-2 moc program and that you're linking
