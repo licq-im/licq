@@ -20,6 +20,7 @@ protected:
   QPushButton* btnSelect;
   QPushButton *btnOk, *btnCancel;
   unsigned short m_nStatus;
+  static QPoint snPos;
   short m_nSAR;
 
   virtual void hideEvent(QHideEvent*);

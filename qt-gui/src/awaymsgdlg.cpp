@@ -33,6 +33,10 @@
 
 // -----------------------------------------------------------------------------
 
+QPoint AwayMsgDlg::snPos = QPoint();
+
+// -----------------------------------------------------------------------------
+
 AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
     : QDialog(parent, name)
 {
@@ -75,6 +79,9 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 
 void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 {
+  if((_status & 0xFF) == ICQ_STATUS_ONLINE || _status == ICQ_STATUS_OFFLINE)
+    _status = (_status & 0xFF00) | ICQ_STATUS_AWAY;
+
   m_nStatus = _status;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -90,8 +97,11 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
 
-  if(!isVisible())
+  if(!isVisible()) {
+    if(!snPos.isNull())
+      move(snPos);
     show();
+  }
 }
 
 
@@ -99,6 +109,8 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 
 void AwayMsgDlg::hideEvent(QHideEvent*)
 {
+  snPos = pos();
+
   emit done();
   close(true);
 };
