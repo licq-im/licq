@@ -38,6 +38,7 @@ class CEButton;
 class CEComboBox;
 class QListViewItem;
 class UserViewEvent;
+class UserSendCommon;
 #ifdef USE_DOCK
 class IconManager;
 #endif
@@ -161,6 +162,7 @@ protected:
 friend class WharfIcon;
 friend class IconManager_Default;
 friend class OptionsDlg;
+friend class UserEventCommon;
 friend class UserSendCommon;
 
 protected slots:

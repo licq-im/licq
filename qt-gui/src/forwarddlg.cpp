@@ -110,13 +110,15 @@ void CForwardDlg::slot_ok()
       s1.prepend(tr("Forwarded message:\n"));
       UserSendMsgEvent* e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
       e->setText(s1);
+      e->show();
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
       s1.prepend(tr("Forwarded URL:\n"));
       UserSendUrlEvent* e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
-      e->setUrl(s1, s2);
+      e->setUrl(s2, s1);
+      e->show();
       break;
     }
   }

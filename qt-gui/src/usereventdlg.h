@@ -21,6 +21,7 @@
 
 #include <qdialog.h>
 
+class QBoxLayout;
 class QVGroupBox;
 class QBoxLayout;
 class QCheckBox;
@@ -55,11 +56,13 @@ public:
 protected:
   bool m_bOwner;
   unsigned long m_nUin;
+  QBoxLayout* top_lay;
   CICQDaemon *server;
   CMainWindow *mainwin;
   CSignalManager *sigman;
   CICQEventTag *icqEventTag;
-  QVGroupBox *mainWidget;
+  QWidget *mainWidget;
+  QPushButton *btnHistory, *btnInfo;
 
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
@@ -67,6 +70,9 @@ protected:
 
 protected slots:
   void slot_updatetime();
+  void showHistory();
+  void showUserInfo();
+  void userUpdated(CICQSignal *);
 
 signals:
   void finished(unsigned long);
@@ -117,7 +123,6 @@ public:
   virtual ~UserSendCommon();
 
 protected:
-  MLEditWrap *mleSend;
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
   QPushButton *btnSend, *btnCancel;
   QLineEdit *edtSpoof;
@@ -136,6 +141,7 @@ protected slots:
 
   void cancelSend();
   void massMessageToggled(bool);
+  void userUpdated(CICQSignal *);
 };
 
 
@@ -150,8 +156,9 @@ public:
                   unsigned long _nUin, QWidget* parent = 0);
   virtual ~UserSendMsgEvent();
 
-  void setText(const QString txt);
+  void setText(const QString& txt);
 protected:
+  MLEditWrap *mleSend;
 
 protected slots:
   virtual void sendButton();
@@ -170,8 +177,9 @@ public:
                   unsigned long _nUin, QWidget* parent = 0);
   virtual ~UserSendUrlEvent();
 
-  void setUrl(const QString url, const QString description);
+  void setUrl(const QString& url, const QString& description);
 protected:
+  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
 
@@ -192,6 +200,7 @@ public:
   virtual ~UserSendFileEvent();
 
 protected:
+  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
 
@@ -213,6 +222,7 @@ public:
   virtual ~UserSendChatEvent();
 
 protected:
+  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
 
@@ -234,6 +244,7 @@ public:
   virtual ~UserSendContactEvent();
 
 protected:
+  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
 
