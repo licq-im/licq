@@ -196,7 +196,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
 
    // Set the user tag
-   m_sSortKey.sprintf("%u%010lu", m_nStatus, u->Touched() ^ 0xFFFFFFFF);
+   m_sSortKey.sprintf("%05u%010lu", m_nStatus, u->Touched() ^ 0xFFFFFFFF);
 }
 
 
