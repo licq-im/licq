@@ -421,7 +421,6 @@ CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
   setReadOnly(true);
 };
 
-
 // -----------------------------------------------------------------------------
 
 void CHistoryWidget::paintCell(QPainter* p, int row, int col)
@@ -477,15 +476,15 @@ void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
   assert( _e->Uin() == m_nUin );
 
-  addMsg( _e->UserEvent() );
+  if ( _e->UserEvent() )
+    addMsg( _e->UserEvent() );
 }
 
 void CMessageViewWidget::addMsg(CUserEvent* e )
 {
   QDateTime date;
   date.setTime_t(e->Time());
-  QString sd = date.toString();
-  sd.truncate(sd.length() - 5);
+  QString sd = date.time().toString();
 
   QString n;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
@@ -497,20 +496,18 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 
   QString s;
   if (e->Direction() == D_RECEIVER){
-    s.sprintf("\001%s %s %s %c %s [%c%c%c%c]\n%s\n",
-              EventDescription(e).utf8().data(),
-              tr("from").utf8().data(), n.utf8().data(), '\001',
-              date.toString().utf8().data(),
+    s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
+              '\001', EventDescription(e).utf8().data(),
+              sd.utf8().data(),
               e->IsDirect() ? 'D' : '-',
               e->IsMultiRec() ? 'M' : '-',
               e->IsUrgent() ? 'U' : '-',
               e->IsEncrypted() ? 'E' : '-',
               QString::fromLocal8Bit(e->Text()).utf8().data());
   } else {
-    s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n%s\n",
+    s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
               '\002', EventDescription(e).utf8().data(),
-              tr("to").utf8().data(), n.utf8().data(), '\002',
-              date.toString().utf8().data(),
+              sd.utf8().data(),
               e->IsDirect() ? 'D' : '-',
               e->IsMultiRec() ? 'M' : '-',
               e->IsUrgent() ? 'U' : '-',
@@ -521,7 +518,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   setCursorPosition(numLines(),0);
 
   if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG){
-    u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    u = gUserManager.FetchUser(m_nUin, LOCK_R );
     if (u)  u->EventClearId(e->Id());
     gUserManager.DropUser(u);
   }

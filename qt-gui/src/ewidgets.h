@@ -112,17 +112,18 @@ protected:
 
 class CHistoryWidget : public MLEditWrap
 {
+  Q_OBJECT
 public:
   CHistoryWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CHistoryWidget() {};
-
+      
 protected:
   virtual void paintCell(QPainter* p, int row, int col);
 };
 
 class CMessageViewWidget : public CHistoryWidget
 {
-Q_OBJECT
+  Q_OBJECT
 private:
   unsigned long m_nUin;
 public:
@@ -130,7 +131,7 @@ public:
   virtual ~CMessageViewWidget(){};
 public slots:
   virtual void addMsg(CUserEvent *);
-  virtual void addMsg(ICQEvent *);
+  void addMsg(ICQEvent *);
 };
 
 
