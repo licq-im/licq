@@ -448,7 +448,7 @@ bool CFileTransferManager::ProcessPacket()
       // reasons
       char *pTmp, *pNoPath;
       for (pTmp = m_szFileName + strlen(m_szFileName);
-           *pTmp != '/' && pTmp >= m_szFileName;
+           pTmp >= m_szFileName && *pTmp != '/';
            pTmp--);
       if (pTmp >= m_szFileName && *pTmp == '/')
       {
