@@ -222,7 +222,7 @@ void Encrypt_Server(CBuffer *buffer)
 
 
 // No client encryption yet
-void Encrypt_Client(CBuffer */*buffer*/)
+void Encrypt_Client(CBuffer *)
 {
 }
 
@@ -371,9 +371,15 @@ CPU_Register::CPU_Register(const char *szPasswd)
   : CPacketUdp(ICQ_CMDxSND_REGISTERxUSER)
 {
   m_nSize += strlen (szPasswd) + 1 + 20;
+
+#if ICQ_VERSION == 5
+  m_nSessionId = s_nSessionId = rand() & 0x3FFFFFFF;
+#endif
+  m_nSequence = s_nSequence = rand() & 0x7FFF;
+  m_nSubSequence = s_nSubSequence = 1;
+
   InitBuffer();
 
-  buffer = new CBuffer(m_nSize);
   buffer->PackUnsignedShort(0x0002);
   buffer->PackString(szPasswd);
   buffer->PackUnsignedLong(0x000000A0);
