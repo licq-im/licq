@@ -84,8 +84,10 @@ void CQtLogWindow::slot_log(int s)
   outputBox->GotoEnd();
 
   // hardcoded limit, maybe should be user configurable?
-  while (outputBox->numLines() > 500)
-    outputBox->removeLine(0);
+  if (outputBox->numLines() > 564) {
+      while (outputBox->numLines() > 500)
+          outputBox->removeLine(0);
+  }
 
   if (NextLogType() == L_ERROR)
       CriticalUser(NULL, str);
