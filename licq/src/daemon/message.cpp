@@ -116,13 +116,13 @@ CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
                        time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags)
 {
-   m_szFilename = strdup(_szFilename);
-   m_szFileDescription = strdup(_szFileDescription == NULL ? "" : _szFileDescription);
-   m_nFileSize = _nFileSize;
+  m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
+  m_szFileDescription = strdup(_szFileDescription == NULL ? "" : _szFileDescription);
+  m_nFileSize = _nFileSize;
 
-   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
-   sprintf(m_szText, "File: %s (%ld bytes)\nDescription: %s\n", m_szFilename,
-           m_nFileSize, m_szFileDescription);
+  m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
+  sprintf(m_szText, "File: %s (%ld bytes)\nDescription: %s\n", m_szFilename,
+          m_nFileSize, m_szFileDescription);
 
 }
 
