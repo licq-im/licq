@@ -80,7 +80,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   {
      unsigned short nCharset = 0;
      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
-     if (u && (strcmp(u->UserEncoding(), "ISO 8859-1") == 0))
+     if (u && u->UserEncoding())
        nCharset = 3;
      gUserManager.DropUser(u);
 
@@ -289,7 +289,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   {
     unsigned short nCharset = 0;
     u = gUserManager.FetchUser(_nUin, LOCK_R);
-    if (u && (strcmp(u->UserEncoding(), "ISO 8859-1") == 0))
+    if (u && u->UserEncoding())
       nCharset = 3;
     gUserManager.DropUser(u);
 
