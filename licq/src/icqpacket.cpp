@@ -314,9 +314,9 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
     case 5:
       offset = 6;
       break;
-    case 6:
     case 7:
     case 8:
+    case 6:
     default:
       offset = 0;
   }
@@ -327,6 +327,13 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
     gLog.Packet("%sUnencrypted (ICQ) TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
+  }
+  
+  // Fuck AOL
+  if (version > 6)
+  {
+    buf += 1;
+    size -= 1;
   }
 
   // calculate verification data
@@ -381,16 +388,23 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
   if(version < 4)
     return true;  // no decryption necessary.
 
-  switch(version) {
+  switch(version){
   case 4:
   case 5:
     offset = 6;
     break;
-  case 6:
   case 7:
   case 8:
+  case 6:
   default:
     offset = 0;
+  }
+
+  // Fuck AOL
+  if (version > 6)
+  {
+    buf += 1;
+    size -= 1;
   }
 
   // backup the first 6 bytes
@@ -1007,15 +1021,18 @@ CPU_AckNameInfo::CPU_AckNameInfo()
   buffer->PackUnsignedLongBE(0x00000000);
 }
 
+
 //-----ThroughServer-------------------------------------------------------
-CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned char msgType, char *szMessage)
+CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
+																		 unsigned char msgType, char *szMessage)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
-  m_nDestinationUin = nDestinationUin;
+	m_nMsgType = msgType;
+
   int msgLen = szMessage ? strlen(szMessage) : 0;
   char uin[13];
   uin[12] = '\0';
-  int n = snprintf(uin, 12, "%lu", m_nDestinationUin);
+  int nUinLen = snprintf(uin, 12, "%lu", nDestinationUin);
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
   CBuffer tlvData;
@@ -1026,7 +1043,7 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   	nTypeLen = 13+msgLen;
   	nFormat = 1;
   	break;
-  	
+
   case ICQ_CMDxSUB_URL:
   case ICQ_CMDxSUB_CONTACTxLIST:
   case ICQ_CMDxSUB_AUTHxGRANTED:
@@ -1037,102 +1054,231 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   	nFormat = 4;
   	break;
 
-  case ICQ_CMDxTCP_READxAWAYxMSG:
-  case ICQ_CMDxTCP_READxNAxMSG:
-  case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
-  case ICQ_CMDxTCP_READxDNDxMSG:
-  case ICQ_CMDxTCP_READxFFCxMSG:
-	nTypeLen = 94;
-	nFormat = 2;
-	break;
-
   default:
-  	n = nTypeLen = msgLen = 0;
+  	nUinLen = nTypeLen = msgLen = 0;
   	gLog.Warn("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
+		return;
   }
 
-  m_nSize += 11 + nTypeLen + n + 8; // 11 all bytes pre-tlv
- 				//  8 fom tlv type, tlv len, and last 4 bytes
-  InitBuffer();
+  m_nSize += 11 + nTypeLen + nUinLen + 8; // 11 all bytes pre-tlv
+	//  8 fom tlv type, tlv len, and last 4 bytes
 
-  buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
-  buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
-  buffer->PackUnsignedShortBE(nFormat); // message format
-  buffer->PackChar(n);
-  buffer->Pack(uin, n);
+	InitBuffer();
 
-  tlvData.Create(nTypeLen);
+	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
+	buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
+	buffer->PackUnsignedShortBE(nFormat); // message format
+	buffer->PackChar(nUinLen);
+	buffer->Pack(uin, nUinLen);
 
-  switch (nFormat)
-  {
-  case 1:
-  	nTLVType = 0x02;
-  	
-  	tlvData.PackUnsignedLongBE(0x05010001);
-	tlvData.PackUnsignedShortBE(0x0101);
-  	tlvData.PackChar(0x01);
-	tlvData.PackUnsignedShortBE(msgLen + 4);
-  	tlvData.PackUnsignedLongBE(0);
-	tlvData.Pack(szMessage, msgLen);
-	
-  	break;
-  	
-  case 2:
-  	nTLVType = 0x05;
-  	
-	tlvData.PackUnsignedShort(0);
-	tlvData.PackUnsignedLong(0);	// upper 4 bytes of msg id
-	tlvData.PackUnsignedLong(0);	// lower 4 bytes of msg id
-	tlvData.PackUnsignedLong(0);	// 16 bytes capability
-	tlvData.PackUnsignedLong(0);
-	tlvData.PackUnsignedLong(0);
-	tlvData.PackUnsignedLong(0);
+	tlvData.Create(nTypeLen);
 
-	tlvData.PackUnsignedLongBE(0x000A0002); // tlv type A, len 2
-	tlvData.PackUnsignedShortBE(0x0001);	// 0x0002 for file ack, file ok
+	switch (nFormat)
+	{
+	case 1:
+ 		nTLVType = 0x02;
+ 		
+ 		tlvData.PackUnsignedLongBE(0x05010001);
+		tlvData.PackUnsignedShortBE(0x0101);
+ 		tlvData.PackChar(0x01);
+		tlvData.PackUnsignedShortBE(msgLen + 4);
+ 		tlvData.PackUnsignedLongBE(0);
+		tlvData.Pack(szMessage, msgLen);
+ 		break;
 
-	tlvData.PackUnsignedLongBE(0x000F0000); // empty tlv type F
+	case 4:
+ 		nTLVType = 0x05;
+  		
+		tlvData.PackUnsignedLong(gUserManager.OwnerUin());
+		tlvData.PackChar(msgType);
+		tlvData.PackChar(0); // message flags
+		tlvData.PackLNTS(szMessage);		
+ 		break;
+	}
 
-	tlvData.PackUnsignedLongBE(0x27110036); // tlv type 0x2711, len 0x36
-	tlvData.PackUnsignedShort(0x1B00);	// bytes left till end of 16 0s
-	tlvData.PackUnsignedShort(ICQ_VERSION);
-	for (int x = 0; x < 4; x++) tlvData.PackUnsignedLong(0);
-	tlvData.PackUnsignedShort(0);
-	tlvData.PackUnsignedLong(3);
-	tlvData.PackChar(0);
-	tlvData.PackUnsignedShort(0xFFFF); 	// counter?
-	tlvData.PackUnsignedShort(0x0E);	// bytes left till msgType
-	tlvData.PackUnsignedShort(0xFFFF);	// counter? again
-	for (int y = 0; y < 3; y++) tlvData.PackUnsignedLong(0); // ???
-	tlvData.PackUnsignedShort(msgType);
-	tlvData.PackUnsignedLongBE(0x00000100);	// ???
-	tlvData.PackUnsignedShortBE(0x0100);	// ???
-	tlvData.PackChar(0);			// ???
-	
-  	break;
-  	
-  case 4:
-  	nTLVType = 0x05;
-  	
-	tlvData.PackUnsignedLong(gUserManager.OwnerUin());
-	tlvData.PackChar(msgType);
-	tlvData.PackChar(0); // message flags
-	tlvData.PackLNTS(szMessage);
-		
-  	break;
-  }
-
-  buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
-
-  if (nFormat == 2)
-    buffer->PackUnsignedLongBE(0x00030000); // tlv type: 3, tlv len: 0
-  else
-    buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
+	buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
+	buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
 }
 
-CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin, unsigned long timestamp1, unsigned long timestamp2,
-                         unsigned short Cookie, unsigned char msgType, unsigned char msgFlags,
-                         unsigned short len)
+
+//-----AdvancedMessage---------------------------------------------------------
+CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
+		unsigned char _nMsgFlags, bool _bAck)
+  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
+{
+	char szUin[13];
+	int nUinLen = snprintf(szUin, 12, "%ld", u->Uin());
+
+	m_nSize += 123 + nUinLen;
+
+	m_bAck = _bAck;
+	m_nMsgFlags = _nMsgFlags;
+	m_nMsgType = _nMsgType;
+	m_pUser = u;
+}
+
+void CPU_AdvancedMessage::InitBuffer()
+{
+	CPU_CommonFamily::InitBuffer();
+
+	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+	unsigned short nStatus = o->Status();
+
+	char szUin[13];
+	int nUinLen = snprintf(szUin, 12, "%ld", m_pUser->Uin());
+
+	unsigned short nSequence = m_pUser->Sequence(true);
+
+	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
+	buffer->PackUnsignedLongBE(m_nSubSequence); // lower 4 bytes of message id
+	buffer->PackUnsignedShortBE(0x02); // message format
+	buffer->PackChar(nUinLen);
+	buffer->Pack(szUin, nUinLen);
+
+	buffer->PackUnsignedShortBE(0x0005);	// tlv - message info
+	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen);
+	buffer->PackUnsignedShortBE((m_bAck ? 2 : 0));
+	buffer->PackUnsignedLongBE(0);	// upper 4 bytes of message id again
+	buffer->PackUnsignedLongBE(m_nSubSequence); // lower 4 bytes of message id again
+	buffer->PackUnsignedLongBE(0x09461349); // from icq2002a
+	buffer->PackUnsignedLongBE(0x4C7F11D1); // from icq2002a
+	buffer->PackUnsignedLongBE(0x82224445); // from icq2002a
+	buffer->PackUnsignedLongBE(0x53540000); // from icq2002a
+	buffer->PackUnsignedLongBE(0x000A0002); // tlv - ack or not
+	buffer->PackUnsignedShortBE((m_bAck ? 2 : 1));
+	buffer->PackUnsignedLongBE(0x000F0000); // tlv - empty
+	buffer->PackUnsignedLongBE(0x00030004); // tlv - internal ip
+	buffer->PackUnsignedLong(o->IntIp());
+	buffer->PackUnsignedLongBE(0x00050002); // tlv - listening port
+	buffer->PackUnsignedShort(o->Port());
+	buffer->PackUnsignedShortBE(0x2711); // tlv - more message info
+	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 54);
+	buffer->PackUnsignedShort(0x001B); // len
+	buffer->PackUnsignedShort(ICQ_VERSION);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedShortBE(0);
+	buffer->PackUnsignedLong(0x00000003); // len
+	buffer->PackChar(0x04); // accept connections or firewalled
+	buffer->PackUnsignedShortBE(nSequence); // sequence
+	buffer->PackUnsignedShort(0x000E); // len
+	buffer->PackUnsignedShortBE(nSequence); // sequence
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackChar(m_nMsgType);
+	buffer->PackChar(m_nMsgFlags);
+	buffer->PackUnsignedShort(nStatus);
+	buffer->PackUnsignedShortBE(1);	// priority
+	buffer->PackUnsignedShort(0x0001); // message len
+	buffer->PackChar(0); // message
+
+	gUserManager.DropOwner();
+}
+
+//-----ChatRequest-------------------------------------------------------------
+CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
+																 ICQUser *_pUser)
+	: CPU_AdvancedMessage(_pUser, ICQ_CMDxSUB_ICBM, 0, false)
+{
+	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
+	int nMessageLen = _szMessage ? strlen(_szMessage) : 0;
+
+	m_nSize += 62 + nUsersLen + nMessageLen + 21; // 21 = strlen of plugin name 
+	InitBuffer();
+
+	buffer->PackUnsignedShort(0x3A); // len of following pluign info
+	buffer->PackUnsignedLongBE(0xBFF720B2);
+	buffer->PackUnsignedLongBE(0x378ED411);
+	buffer->PackUnsignedLongBE(0xBD280004);
+	buffer->PackUnsignedLongBE(0xAC96D905);
+	buffer->PackUnsignedShort(0);
+	buffer->PackUnsignedLong(0x15); // strlen of plugin name
+	buffer->Pack("Send / Start ICQ Chat", 0x15);
+	buffer->PackUnsignedLongBE(0x00000100);
+	buffer->PackUnsignedLongBE(0x00010000);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedShortBE(0);
+	buffer->PackChar(0);
+	buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
+	buffer->PackUnsignedLong(nMessageLen);
+	if (_szMessage)
+		buffer->Pack(_szMessage, nMessageLen);
+	if (_szChatUsers)
+		buffer->PackString(_szChatUsers);
+	else
+	{
+		buffer->PackUnsignedShort(0x01);
+		buffer->PackChar(0);
+	}
+	buffer->PackUnsignedLong(0);
+	buffer->PackUnsignedLong(0);
+	buffer->PackUnsignedLongBE(0x00030000); // ack request
+}
+
+//-----FileTransfer------------------------------------------------------------
+CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
+	const char *_szDesc)
+	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, false),
+		CPX_FileTransfer(_szFile)
+{
+	if (!m_bValid)  return;
+
+	int nFileLen = strlen(m_szFilename);
+	int nDescLen = strlen(_szDesc);
+	m_szDesc = strdup(_szDesc); // XXX where should this be free'd?
+
+	m_nSize += 66 + nFileLen + nDescLen + 4; // 4 = strlen("File")
+
+	InitBuffer();
+
+	buffer->PackUnsignedShort(0x29);  // len of following plugin info
+	buffer->PackUnsignedLongBE(0xF02D12D9);
+	buffer->PackUnsignedLongBE(0x3091D311);
+	buffer->PackUnsignedLongBE(0x8DD70010);
+	buffer->PackUnsignedLongBE(0x4B06462E);
+	buffer->PackUnsignedShortBE(0x0000);
+	buffer->PackUnsignedLong(0x04); // strlen - is 4 bytes though
+	buffer->Pack("File", 4);
+	buffer->PackUnsignedLongBE(0x00000100);
+	buffer->PackUnsignedLongBE(0x00010000);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedShortBE(0);
+	buffer->PackChar(0);
+	buffer->PackUnsignedLong(nDescLen + nFileLen + 19); //remaining  - is 4 bytes
+																											//dont count last 4 bytes
+	buffer->PackUnsignedLong(nDescLen); // file desc - is 4 bytes
+	buffer->Pack(_szDesc, nDescLen);
+	buffer->PackUnsignedLongBE(0x2D384444); // ???
+	buffer->PackString(m_szFilename);
+	buffer->PackUnsignedLong(m_nFileSize);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0x00030000); // ack request
+}
+
+
+//-----AcceptFile--------------------------------------------------------------
+CPU_AcceptFile::CPU_AcceptFile(ICQUser *u, unsigned short _nPort,
+															 unsigned short nSequence)
+	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true)
+{
+	//	m_nSize += ;
+
+	InitBuffer();
+
+}
+
+
+//-----AckThroughServer--------------------------------------------------------
+CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin,
+																					 unsigned long timestamp1,
+																					 unsigned long timestamp2, 
+																					 unsigned short Cookie,
+																					 unsigned char msgType,
+																					 unsigned char msgFlags,
+																					 unsigned short len)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, 0x0b)
 {
   char szUin[13];
@@ -1175,6 +1321,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin, unsigned long time
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0xffffff00);
 }
+
 
 //-----SendSms-----------------------------------------------------------------
 CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
@@ -2387,7 +2534,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
-  buffer->PackUnsignedShort(0x002b);
+  buffer->PackUnsignedShort(0x002b); // size
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort);
@@ -2433,6 +2580,23 @@ CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
   buffer->PackUnsignedLong(1);
 }
 
+CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm()
+{
+  m_nSize = 33;
+  buffer = new CBuffer(m_nSize);
+
+  buffer->PackChar(0x03);
+  buffer->PackChar(0x0A);
+  buffer->PackUnsignedLongBE(0x00000001);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x00000001);
+  buffer->PackUnsignedShortBE(0x0004);
+  buffer->PackChar(0x00);
+}
 
 //=====PacketTcp================================================================
 CBuffer *CPacketTcp::Finalize(INetSocket *s)
@@ -2540,9 +2704,11 @@ void CPacketTcp::InitBuffer()
 {
   switch (m_nVersion)
   {
-    case 6:
     case 7:
     case 8:
+      InitBuffer_v7();
+      break;
+    case 6:
       InitBuffer_v6();
       break;
     case 4:
@@ -2560,9 +2726,11 @@ void CPacketTcp::PostBuffer()
 {
   switch (m_nVersion)
   {
-    case 6:
     case 7:
     case 8:
+      PostBuffer_v7();
+      break;
+    case 6:
       PostBuffer_v6();
       break;
     case 4:
@@ -2662,6 +2830,31 @@ void CPacketTcp::PostBuffer_v6()
 //   buffer->PackUnsignedShort(INT_VERSION);
 }
 
+void CPacketTcp::InitBuffer_v7()
+{
+  buffer = new CBuffer(m_nSize + 4);
+
+  buffer->PackChar(0x02);
+  buffer->PackUnsignedLong(0); // Checksum
+  buffer->PackUnsignedShort(m_nCommand);
+  buffer->PackUnsignedShort(0x000E); // ???
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedShort(m_nSubCommand);
+  buffer->PackUnsignedShort(m_nStatus);
+  buffer->PackUnsignedShort(m_nMsgType);
+	//  buffer->PackUnsignedShort(0x0021);
+  buffer->PackString(m_szMessage);
+
+  m_szLocalPortOffset = NULL;
+}
+
+void CPacketTcp::PostBuffer_v7()
+{
+}
+
 
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
@@ -2671,7 +2864,7 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
        _sMessage, true, nLevel, pUser)
 {
   InitBuffer();
-  if (m_nVersion == 6)
+  if (m_nVersion >= 6)
   {
     if (pColor == NULL)
     {
@@ -2782,25 +2975,10 @@ CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
 CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
    const char *_szDescription, unsigned short nLevel, ICQUser *_cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
-               true, nLevel, _cUser)
+               true, nLevel, _cUser),
+		CPX_FileTransfer(_szFilename)
 {
-  m_bValid = true;
-
-  // Check file exists and get size
-  struct stat buf;
-  if (_szFilename == NULL || stat(_szFilename, &buf) < 0)
-  {
-     m_bValid = false;
-     return;
-  }
-  m_nFileSize = buf.st_size;
-
-  // Remove path from filename (if it exists)
-  char *pcEndOfPath = strrchr(_szFilename, '/');
-  if (pcEndOfPath != NULL)
-     m_szFilename = strdup(pcEndOfPath + 1);
-  else
-     m_szFilename = strdup(_szFilename);
+	if (!m_bValid)  return;
 
   m_nSize += 15 + strlen(m_szFilename);
   InitBuffer();
@@ -3192,4 +3370,30 @@ CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
   buffer->PackUnsignedLong(0);
 
   PostBuffer();
+}
+
+
+// Connection independent base classes
+
+//-----FileTransfer------------------------------------------------------------
+CPX_FileTransfer::CPX_FileTransfer(const char *_szFilename)
+{
+  m_bValid = true;
+	m_szDesc = NULL;
+
+  // Check file exists and get size
+  struct stat buf;
+  if (_szFilename == NULL || stat(_szFilename, &buf) < 0)
+  {
+     m_bValid = false;
+     return;
+  }
+  m_nFileSize = buf.st_size;
+
+  // Remove path from filename (if it exists)
+  char *pcEndOfPath = strrchr(_szFilename, '/');
+  if (pcEndOfPath != NULL)
+     m_szFilename = strdup(pcEndOfPath + 1);
+  else
+     m_szFilename = strdup(_szFilename);
 }
