@@ -535,8 +535,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
   }
   else if (e->button() == RightButton)
   {
-    QPoint clickPoint(e->x(), e->y());
-    QListViewItem *clickedItem = itemAt(clickPoint);
+    QListViewItem *clickedItem = itemAt(e->pos());
     if (clickedItem != NULL)
     {
       setSelected(clickedItem, true);
@@ -564,7 +563,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
         for (unsigned short i = 0; i < mnuGroup->count(); i++)
           mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
         gUserManager.DropUser(u);
-        mnuUser->popup(mapToGlobal(clickPoint));
+        mnuUser->popup(mapToGlobal(e->pos()) + QPoint(4,-5), 1);
       }
     }
   }
