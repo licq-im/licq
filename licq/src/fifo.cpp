@@ -216,7 +216,7 @@ static bool buffer_get_ids(CICQDaemon *d, char *buffer,
     {
       if( !strcmp( (*it)->Name(), buffer) )
       {
-        *nPPID = (*it)->Id();
+        *nPPID = (*it)->PPID();
         found = true;
       }
     }
@@ -228,7 +228,7 @@ static bool buffer_get_ids(CICQDaemon *d, char *buffer,
 /*! \brief Given an ascii string gets the szId and the nPPID
  *
  *  -# If all chars are digits then:
- *    -# asume it is an icq's uin, and if bList flag is on, then check if it 
+ *    -# assume it is a uin, and if bList flag is on, then check if it 
  *       is in the list
  *  -# If that fail try with alias Params.
  * 
@@ -261,20 +261,18 @@ static bool atoid( const char *buff, bool bOnList,
   }
   else if( buffer_get_ids(daemon, s, &_szId, &_nPPID, &missing_protocol) )
   {
-    if(bOnList)
+    ret = false;
+
+    FOR_EACH_PROTO_USER_START(_nPPID, LOCK_R)
     {
-      FOR_EACH_PROTO_USER_START(_nPPID, LOCK_R)
+      if( strcasecmp(_szId, pUser->GetAlias()) == 0)
       {
-        if( strcasecmp(_szId, pUser->GetAlias()) == 0)
-        {
-          ret = true;
-          FOR_EACH_PROTO_USER_BREAK
-        }
+        _szId = strdup(pUser->IdString());
+        ret = true;
+        FOR_EACH_PROTO_USER_BREAK
       }
-      FOR_EACH_PROTO_USER_END
     }
-    else
-      ret = false;
+    FOR_EACH_PROTO_USER_END
   }
   else if( missing_protocol )
   {  
@@ -399,7 +397,8 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
   }
 
   if( atoid(argv[1], false, &szId, &nPPID, d) )
-    d->ProtoSendMessage(szId, nPPID, argv[2], false, false);
+    d->ProtoSendMessage(szId, nPPID, argv[2], false, 0);
+
   else
     ReportBadBuddy(argv[0], argv[1]);
 
