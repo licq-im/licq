@@ -318,6 +318,12 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   if (m_nUin != 0)
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
+    // If this is a floaty then don't draw the highlight box
+    if (listView()->parent() == NULL)
+    {
+      cg.setBrush(QColorGroup::Highlight, QBrush(NoBrush));
+      cg.setColor(QColorGroup::HighlightedText, cg.text());
+    }
     QListViewItem::paintCell(p, cg, column, width, align);
   }
   else
