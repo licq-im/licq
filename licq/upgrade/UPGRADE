@@ -3,12 +3,6 @@ Upgrade Instructions
 --------------------
 
 
-Upgrading from 0.71 (cvs tree)
-1.  Edit ~/.licq/licq.conf and add the following:
-    [licq]
-    Version = 710
-    
-
 Upgrading from 0.70
 1.  Backup your .licq directory (just in case)
 2.  Run "upgrade-0.70-0.71.sh"
