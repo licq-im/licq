@@ -330,19 +330,34 @@ bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
 // an owner's id and ppid.
 ICQOwner *CUserManager::FindOwner(const char *_szId, unsigned long _nPPID)
 {
+/*
+  // Strip spaces if ICQ protocol
+  char *szId = new char[strlen(_szId)];
+  if (_nPPID == LICQ_PPID)
+  {
+    for (int i = 0; i < strlen(_szId); i++)
+      if (_szId[i] != ' ')
+        *szId++ = _szId[i];
+  }
+  else
+    strcpy(szId, _szId);
+*/
   ICQOwner *o = NULL;
 
   LockOwnerList(LOCK_R);
   OwnerList::iterator iter;
   for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
   {
-    if (_nPPID == (*iter)->PPID() && strcmp(_szId, (*iter)->IdString()) == 0)
+    if (_nPPID == (*iter)->PPID() && 
+        strcmp(_szId, (*iter)->IdString()) == 0/* || strcmp(szId, (*iter)->IdString()) == 0)*/)
     {
       o = *iter;
       break;
     }
   }
   UnlockOwnerList();
+
+  //delete [] szId;
 
   return o;
 }

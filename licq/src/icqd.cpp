@@ -1152,7 +1152,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 }
 
 ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long nPPID,
-   CPacket *packet, CUserEvent *ue)
+   CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
   if (m_bShuttingDown)
@@ -1168,7 +1168,27 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long nPP
 
 	if (e == NULL)  return NULL;
 
-  return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+  if (bExtendedEvent) PushExtendedEvent(e);
+
+  ICQEvent *result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+
+  // if an error occured, remove the event from the extended queue as well
+  if (result == NULL && bExtendedEvent)
+  {
+    pthread_mutex_lock(&mutex_extendedevents);
+    std::list<ICQEvent *>::iterator i;
+    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
+    {
+      if (*i == e)
+      {
+        m_lxExtendedEvents.erase(i);
+        break;
+      }
+    }
+    pthread_mutex_unlock(&mutex_extendedevents);
+  }
+
+  return result;
 }
 
 ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,

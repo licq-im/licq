@@ -38,7 +38,7 @@ void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
                               bool _bAuthRequired)
 {
   if (_nPPID == LICQ_PPID)
-    icqAddUser(strtoul(_szId, (char **)NULL, 10), _bAuthRequired);
+    icqAddUser(_szId, _bAuthRequired);
   else
     PushProtoSignal(new CAddUserSignal(_szId, _bAuthRequired), _nPPID);
 }
@@ -54,33 +54,23 @@ void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired)
   // Server side list add, and update of group
   if (UseServerContactList())
   {
-    //icqAddUserServer(_nUin, _bAuthRequired);
+    icqAddUserServer(_szId, _bAuthRequired);
   }
 
-  //icqUserBasicInfo(_nUin);
+  icqUserBasicInfo(_szId);
 }
 
 void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bAuthRequired)
 {
   char szUin[24];
   sprintf(szUin, "%lu", _nUin);
-  CSrvPacketTcp *p = new CPU_GenericUinList(szUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
-  gLog.Info("%sAlerting server to new user (#%lu)...\n", L_SRVxSTR,
-             p->Sequence());
-  SendExpectEvent_Server(szUin, LICQ_PPID, p, NULL);
 
-  // Server side list add, and update of group
-  if (UseServerContactList())
-  {
-    icqAddUserServer(_nUin, _bAuthRequired);
-  }
-
-  icqUserBasicInfo(_nUin);
+  icqAddUser(szUin, _bAuthRequired);
 }
 
 
 //-----icqAddUserServer---------------------------------------------------------
-void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
+void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired)
 {
   CSrvPacketTcp *pStart = 0;
 
@@ -93,18 +83,23 @@ void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
       ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(strdup(_szId));
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxNORMAL,
+    0, _bAuthRequired);
+  gLog.Info("%sAdding %s to server list...\n", L_SRVxSTR, _szId);
+  SendExpectEvent_Server(0, pAdd, NULL);
+}
+
+void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
+{
   char szUin[13];
   snprintf(szUin, 12, "%lu", _nUin);
   szUin[12] = 0;
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(szUin));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
-  CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxNORMAL,
-    0, _bAuthRequired);
-  gLog.Info("%sAdding %s to server list...\n", L_SRVxSTR, szUin);
-  SendExpectEvent_Server(0, pAdd, NULL);
+  icqAddUserServer(szUin, _bAuthRequired);
 }
 
 //-----CheckExport--------------------------------------------------------------
@@ -560,15 +555,26 @@ void CICQDaemon::icqRelogon()
 }
 
 //-----icqRequestMetaInfo----------------------------------------------------
-unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
+unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
 {
-  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(nUin);
-  gLog.Info("%sRequesting meta info for %lu (#%lu/#%d)...\n", L_SRVxSTR, nUin,
+  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(_szId);
+  gLog.Info("%sRequesting meta info for %s (#%lu/#%d)...\n", L_SRVxSTR, _szId,
             p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(nUin, p, NULL, true);
+  //XXX not yet
+  //ICQEvent *e = SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL, true);
+  ICQEvent *e = SendExpectEvent_Server(strtoul(_szId, (char **)NULL, 10), p, NULL, true);
   if (e != NULL)
     return e->EventId();
   return 0;
+}
+
+unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = 0;
+
+  return icqRequestMetaInfo(szUin);
 }
 
 //-----icqSetStatus-------------------------------------------------------------
@@ -830,16 +836,27 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
 }
 
 //-----icqGetUserBasicInfo------------------------------------------------------
-unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
+unsigned long CICQDaemon::icqUserBasicInfo(const char *_szId)
 {
-  //CPU_Meta_RequestBasicInfo *p = new CPU_Meta_RequestBasicInfo(_nUin);
-  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(_nUin);
+  //CPU_Meta_RequestBasicInfo *p = new CPU_Meta_RequestBasicInfo(_szId);
+  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(_szId);
   gLog.Info("%sRequesting user info (#%lu/#%d)...\n", L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(_nUin, p, NULL, true);
+  //XXX not yet
+  //ICQEvent *e = SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL, true);
+  ICQEvent *e = SendExpectEvent_Server(strtoul(_szId, (char **)NULL, 10), p, NULL, true);
   if (e != NULL)
     return e->EventId();
   return 0;
+}
+
+unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = 0;
+
+  return icqUserBasicInfo(szUin);
 }
 
 //-----icqPing------------------------------------------------------------------
@@ -1440,6 +1457,7 @@ int CICQDaemon::ConnectToLoginServer()
   if (m_bProxyEnabled)
     InitProxy();
 
+  // Which protocol plugin?
   int r = ConnectToServer(m_szICQServer, m_nICQServerPort);
 
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
@@ -1450,7 +1468,7 @@ int CICQDaemon::ConnectToLoginServer()
 int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 {
   SrvSocket *s = new SrvSocket(gUserManager.OwnerUin());
-  
+
   if (m_bProxyEnabled)
   {
     if (m_xProxy == NULL)

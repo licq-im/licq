@@ -2699,7 +2699,6 @@ CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
 }
 
 
-//-----Meta_SetGeneralInfo---------------------------------------------------
 CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName, const char *szLastName,
                           const char *szEmailPrimary,
@@ -2982,11 +2981,11 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
+CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const char *_szId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
-  m_nUin = nUin;
+  m_szId = strdup(_szId);
 
   int packetSize = 2+2+2+4+2+2+2+4;
   m_nSize += packetSize;
@@ -3000,16 +2999,16 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
-  buffer->PackUnsignedLong(m_nUin);
+  buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
 }
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
+CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const char *_szId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_REQUESTxBASICxINFO;
-  m_nUin = nUin;
+  m_szId = strdup(_szId);
 
   m_nSize += 20;
 
@@ -3021,7 +3020,7 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nSubSequence);
-  buffer->PackUnsignedLong(nUin);
+  buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
 }
 
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
