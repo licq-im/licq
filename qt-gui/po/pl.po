@@ -3,7 +3,7 @@
 # would be translated to "Pub", not "Foo::Pub".
 msgid ""
 msgstr ""
-"Project-Id-Version: Licq Qt-GUI plugin 0.85\n"
+"Project-Id-Version: Licq Qt-GUI plugin 1.0\n"
 "POT-Creation-Date: 1999-02-23 15:38+0200\n"
 "PO-Revision-Date: 1999-08-22 01:55+0200\n"
 "Last-Translator: Grzegorz Nosek <blackfire@go2.pl>\n"
@@ -235,7 +235,7 @@ msgstr "Czas:"
 msgid "CFileDlg::Waiting for connection...\n"
 msgstr "Oczekiwanie na po³±czenie...\n"
 
-#: ewidgets.cpp:501
+#: ewidgets.cpp:463
 msgid "CFontDialog::Select Font"
 msgstr "Wybierz czcionkê"
 
@@ -299,9 +299,13 @@ msgstr "Do³±cz do rozmowy:"
 msgid "CMMSendDlg::&Cancel"
 msgstr "&Anuluj"
 
-#: mmsenddlg.cpp:95
+#: mmsenddlg.cpp:111
 msgid "CMMSendDlg::&Close"
 msgstr "Zam&knij"
+
+#: mmsenddlg.cpp:87
+msgid "CMMSendDlg::Multiple Recipient Contact List"
+msgstr "Lista kontaktów dla wielu odbiorców"
 
 #: mmsenddlg.cpp:58
 msgid "CMMSendDlg::Multiple Recipient Message"
@@ -311,15 +315,19 @@ msgstr "Wiadomo¶æ dla wielu odbiorców"
 msgid "CMMSendDlg::Multiple Recipient URL"
 msgstr "URL dla wielu odbiorców"
 
-#: mmsenddlg.cpp:133
+#: mmsenddlg.cpp:149
 msgid "CMMSendDlg::Sending mass URL to %1..."
 msgstr "Wysy³anie masowego URL do %1..."
 
-#: mmsenddlg.cpp:124
+#: mmsenddlg.cpp:158
+msgid "CMMSendDlg::Sending mass list to %1..."
+msgstr "Wysy³anie masowej listy do %1..."
+
+#: mmsenddlg.cpp:140
 msgid "CMMSendDlg::Sending mass message to %1..."
 msgstr "Wysy³anie masowej wiadomo¶ci do %1..."
 
-#: mmsenddlg.cpp:94
+#: mmsenddlg.cpp:110
 msgid "CMMSendDlg::failed"
 msgstr "nieudane"
 
@@ -343,171 +351,171 @@ msgstr "Obetnij"
 msgid "CMMUserView::Remove"
 msgstr "Usuñ"
 
-#: mainwin.cpp:1240
+#: mainwin.cpp:1250
 msgid "CMainWindow:: "
 msgstr "æ"
 
-#: mainwin.cpp:1240
+#: mainwin.cpp:1250
 msgid "CMainWindow::%1 message%2"
 msgstr "%1 wiadomo¶%2"
 
-#: mainwin.cpp:1239
+#: mainwin.cpp:1249
 msgid "CMainWindow::%1 msg%2"
 msgstr "%1 wiad."
 
-#: mainwin.cpp:2834
+#: mainwin.cpp:2845
 msgid "CMainWindow::%1: %2 / %3\n"
 msgstr "%1: %2 / %3\n"
 
-#: mainwin.cpp:2848
+#: mainwin.cpp:2859
 msgid "CMainWindow::%1: %2\n"
 msgstr "%1: %2\n"
 
-#: mainwin.cpp:2755
+#: mainwin.cpp:2766
 msgid "CMainWindow::&About"
 msgstr "&Informacje"
 
-#: mainwin.cpp:2663
+#: mainwin.cpp:2674
 msgid "CMainWindow::&Add User"
 msgstr "&Dodaj u¿ytkownika"
 
-#: mainwin.cpp:2746
+#: mainwin.cpp:2757
 msgid "CMainWindow::&Away Modes"
 msgstr "Tryby niedostêpno¶ci"
 
-#: mainwin.cpp:2611
+#: mainwin.cpp:2622
 msgid "CMainWindow::&Away"
 msgstr "&Daleko"
 
-#: mainwin.cpp:2614
+#: mainwin.cpp:2625
 msgid "CMainWindow::&Do Not Disturb"
 msgstr "&Zajêty"
 
-#: mainwin.cpp:2752
+#: mainwin.cpp:2763
 msgid "CMainWindow::&General Info"
 msgstr "O&gólne informacje"
 
-#: mainwin.cpp:2688
+#: mainwin.cpp:2699
 msgid "CMainWindow::&Group"
 msgstr "&Grupa"
 
-#: mainwin.cpp:2702
+#: mainwin.cpp:2713
 msgid "CMainWindow::&Help"
 msgstr "&Pomoc"
 
-#: mainwin.cpp:2679
+#: mainwin.cpp:2690
 msgid "CMainWindow::&Hints"
 msgstr "&Wskazówki"
 
-#: mainwin.cpp:2653
+#: mainwin.cpp:2664
 msgid "CMainWindow::&History"
 msgstr "&Historia"
 
-#: mainwin.cpp:2757
+#: mainwin.cpp:2768
 msgid "CMainWindow::&Info"
 msgstr "&Informacje"
 
-#: mainwin.cpp:2618
+#: mainwin.cpp:2629
 msgid "CMainWindow::&Invisible"
 msgstr "N&iewidzialny"
 
-#: mainwin.cpp:2692
+#: mainwin.cpp:2703
 msgid "CMainWindow::&Mini Mode"
 msgstr "Tryb &mini"
 
-#: mainwin.cpp:2753
+#: mainwin.cpp:2764
 msgid "CMainWindow::&More Info"
 msgstr "&Wiêcej informacji"
 
-#: mainwin.cpp:2691
+#: mainwin.cpp:2702
 msgid "CMainWindow::&Network Window"
 msgstr "Okie&nko sieciowe"
 
-#: mainwin.cpp:2002
+#: mainwin.cpp:2012
 msgid "CMainWindow::&No"
 msgstr "&Nie"
 
-#: mainwin.cpp:2612
+#: mainwin.cpp:2623
 msgid "CMainWindow::&Not Available"
 msgstr "&Niedostêpny"
 
-#: mainwin.cpp:2836
+#: mainwin.cpp:2847
 msgid "CMainWindow::&Ok"
 msgstr "&OK"
 
-#: mainwin.cpp:2610
+#: mainwin.cpp:2621
 msgid "CMainWindow::&Online"
 msgstr "&Online"
 
-#: mainwin.cpp:2695
+#: mainwin.cpp:2706
 msgid "CMainWindow::&Options..."
 msgstr "&Opcje..."
 
-#: mainwin.cpp:2697
+#: mainwin.cpp:2708
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "Mened¿er wtyczek..."
 
-#: mainwin.cpp:2668
+#: mainwin.cpp:2679
 msgid "CMainWindow::&Popup All Messages"
 msgstr "Otwórz wszystkie wiadomo¶ci"
 
-#: mainwin.cpp:2657
+#: mainwin.cpp:2668
 msgid "CMainWindow::&Random Chat Group"
 msgstr "G&rupa losowej rozmowy"
 
-#: mainwin.cpp:2673
+#: mainwin.cpp:2684
 msgid "CMainWindow::&Redraw User Window"
 msgstr "&Od¶wie¿ okno u¿ytkowników"
 
-#: mainwin.cpp:2836
+#: mainwin.cpp:2847
 msgid "CMainWindow::&Reset"
 msgstr "Z&resetuj"
 
-#: mainwin.cpp:2674
+#: mainwin.cpp:2685
 msgid "CMainWindow::&Save All Users"
 msgstr "&Zapisz wszystkich u¿ytkowników"
 
-#: mainwin.cpp:2655
+#: mainwin.cpp:2666
 msgid "CMainWindow::&Security Options"
 msgstr "&Bezpieczeñstwo"
 
-#: mainwin.cpp:2681
+#: mainwin.cpp:2692
 msgid "CMainWindow::&Statistics"
 msgstr "&Statystyki"
 
-#: mainwin.cpp:2687
+#: mainwin.cpp:2698
 msgid "CMainWindow::&Status"
 msgstr "&Status"
 
-#: mainwin.cpp:594
+#: mainwin.cpp:595
 msgid "CMainWindow::&System"
 msgstr "&System"
 
-#: mainwin.cpp:2694
+#: mainwin.cpp:2705
 msgid "CMainWindow::&Thread Group View"
 msgstr "&Podzia³ na grupy"
 
-#: mainwin.cpp:2734
+#: mainwin.cpp:2745
 msgid "CMainWindow::&View Event"
 msgstr "&Poka¿ zdarzenie"
 
-#: mainwin.cpp:2647
+#: mainwin.cpp:2658
 msgid "CMainWindow::&View System Messages"
 msgstr "&Poka¿ wiadomo¶ci systemowe"
 
-#: mainwin.cpp:2754
+#: mainwin.cpp:2765
 msgid "CMainWindow::&Work Info"
 msgstr "&Praca"
 
-#: mainwin.cpp:2002
+#: mainwin.cpp:2012
 msgid "CMainWindow::&Yes"
 msgstr "&Tak"
 
-#: mainwin.cpp:2195
+#: mainwin.cpp:2206
 msgid "CMainWindow::(with KDE support)\n"
 msgstr "(z obs³ug± KDE)\n"
 
-#: mainwin.cpp:438
+#: mainwin.cpp:439
 msgid "CMainWindow::"
 "<ul>"
 "<li><tt>%a - </tt>user alias</li>"
@@ -541,135 +549,135 @@ msgstr ""
 "<li><tt>%u - </tt>uin</li>"
 "<li><tt>%w - </tt>webpage</li></ul>"
 
-#: mainwin.cpp:2665
+#: mainwin.cpp:2676
 msgid "CMainWindow::A&uthorize User"
 msgstr "A&utoryzuj u¿ytkownika"
 
-#: mainwin.cpp:2721
+#: mainwin.cpp:2732
 msgid "CMainWindow::Accept in Away"
 msgstr "Przyjmuj gdy Daleko"
 
-#: mainwin.cpp:2724
+#: mainwin.cpp:2735
 msgid "CMainWindow::Accept in Do Not Disturb"
 msgstr "Przyjmuj gdy Zajêty"
 
-#: mainwin.cpp:2722
+#: mainwin.cpp:2733
 msgid "CMainWindow::Accept in Not Available"
 msgstr "Przyjmuj gdy Niedostêpny"
 
-#: mainwin.cpp:2723
+#: mainwin.cpp:2734
 msgid "CMainWindow::Accept in Occupied"
 msgstr "Przyjmuj gdy Zapracowany"
 
-#: mainwin.cpp:1325
+#: mainwin.cpp:1335
 msgid "CMainWindow::All Users"
 msgstr "Wszyscy"
 
-#: mainwin.cpp:2029
+#: mainwin.cpp:2039
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
 msgstr "Czy na pewno chcesz usun±æ\n%1 (%2)\nz grupy '%3'?"
 
-#: mainwin.cpp:1918
+#: mainwin.cpp:1928
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
 msgstr "Czy na pewno chcesz usun±æ\n%1 (%2)\nze swojej listy kontaktów?"
 
-#: mainwin.cpp:1906
+#: mainwin.cpp:1916
 msgid "CMainWindow::Authorization granted."
 msgstr "Udzielono autoryzacji"
 
-#: mainwin.cpp:2727
+#: mainwin.cpp:2738
 msgid "CMainWindow::Away to User"
 msgstr "Udawaj stan \"Daleko\""
 
-#: mainwin.cpp:2034
+#: mainwin.cpp:2044
 msgid "CMainWindow::Cancel"
 msgstr "Anuluj"
 
-#: mainwin.cpp:2656
+#: mainwin.cpp:2667
 msgid "CMainWindow::Change &Password"
 msgstr "Zmieñ &has³o"
 
-#: mainwin.cpp:2795
+#: mainwin.cpp:2806
 msgid "CMainWindow::Check %1 Response"
 msgstr "Sprawd¼ odpowied¼ %1"
 
-#: mainwin.cpp:2790
+#: mainwin.cpp:2801
 msgid "CMainWindow::Check Auto Response"
 msgstr "Sprawd¼ auto-odpowied¼"
 
-#: mainwin.cpp:2640
+#: mainwin.cpp:2651
 msgid "CMainWindow::Clear All"
 msgstr "Wy³±cz wszystko"
 
-#: mainwin.cpp:2814
+#: mainwin.cpp:2825
 msgid "CMainWindow::Close &Secure Channel"
 msgstr "Zamknij &bezpieczny kana³"
 
-#: mainwin.cpp:2749
+#: mainwin.cpp:2760
 msgid "CMainWindow::Custom Auto Response..."
 msgstr "Oddzielna wiadomo¶æ \"Daleko\"..."
 
-#: mainwin.cpp:2825
+#: mainwin.cpp:2836
 msgid "CMainWindow::Daemon Statistics\n(Today/Total)\n"
 msgstr "Statystyki sieciowe\n(dzisiejsze/ca³kowite)\n"
 
-#: mainwin.cpp:2841
+#: mainwin.cpp:2852
 msgid "CMainWindow::Daemon Statistics\n\n"
 msgstr "Statystyki sieciowe\n\n"
 
-#: mainwin.cpp:2659
+#: mainwin.cpp:2670
 msgid "CMainWindow::Debug Level"
 msgstr "Poziom logowania"
 
-#: mainwin.cpp:2730
+#: mainwin.cpp:2741
 msgid "CMainWindow::Do Not Disturb to User"
 msgstr "Udawaj stan \"Zajêty\""
 
-#: mainwin.cpp:2001
+#: mainwin.cpp:2011
 msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
 msgstr "Czy na pewno chcesz dodaæ\n%1 (%2)\n do listy osób ignorowanych?"
 
-#: mainwin.cpp:2703
+#: mainwin.cpp:2714
 msgid "CMainWindow::E&xit"
 msgstr "Za&koñcz"
 
-#: mainwin.cpp:2669
+#: mainwin.cpp:2680
 msgid "CMainWindow::Edit &Groups"
 msgstr "Edytuj &grupy"
 
-#: mainwin.cpp:2760
+#: mainwin.cpp:2771
 msgid "CMainWindow::Edit User Group"
 msgstr "Edytuj grupê u¿ytkownika"
 
-#: mainwin.cpp:1904
+#: mainwin.cpp:1914
 msgid "CMainWindow::Error sending authorization."
 msgstr "B³±d przy wysy³aniu autoryzacji."
 
-#: mainwin.cpp:2635
+#: mainwin.cpp:2646
 msgid "CMainWindow::Errors"
 msgstr "B³êdy"
 
-#: mainwin.cpp:2615
+#: mainwin.cpp:2626
 msgid "CMainWindow::Free for C&hat"
 msgstr "C&hêtny do pogadania"
 
-#: mainwin.cpp:1350
+#: mainwin.cpp:1360
 msgid "CMainWindow::Ignore List"
 msgstr "Lista ignorowanych"
 
-#: mainwin.cpp:1347
+#: mainwin.cpp:1357
 msgid "CMainWindow::Invisible List"
 msgstr "Lista ``niewidzialnych''"
 
-#: mainwin.cpp:2830
+#: mainwin.cpp:2841
 msgid "CMainWindow::Last reset %1\n\n"
 msgstr "Ostatni restart %1\n\n"
 
-#: mainwin.cpp:989
+#: mainwin.cpp:999
 msgid "CMainWindow::Licq (%1)"
 msgstr "Licq (%1)"
 
-#: mainwin.cpp:2183
+#: mainwin.cpp:2194
 msgid "CMainWindow::"
 "Licq version %1%8.\n"
 "Qt GUI plugin version %2.\n"
@@ -692,83 +700,83 @@ msgstr ""
 "%3 (%4)\n"
 "%5 kontaktów."
 
-#: mainwin.cpp:1885
+#: mainwin.cpp:1895
 msgid "CMainWindow::Logon failed.\nSee network window for details."
 msgstr "B³±d przy logowaniu.\nSzczegó³y w okienku sieciowym."
 
-#: mainwin.cpp:1353
+#: mainwin.cpp:1363
 msgid "CMainWindow::New Users"
 msgstr "Nowi u¿ytkownicy"
 
-#: mainwin.cpp:2699
+#: mainwin.cpp:2710
 msgid "CMainWindow::Next &Server"
 msgstr "Nastêpny serwer"
 
-#: mainwin.cpp:1258
+#: mainwin.cpp:1268
 msgid "CMainWindow::No messages"
 msgstr "Brak wiadomo¶ci"
 
-#: mainwin.cpp:1257
+#: mainwin.cpp:1267
 msgid "CMainWindow::No msgs"
 msgstr "Brak wiad."
 
-#: mainwin.cpp:2728
+#: mainwin.cpp:2739
 msgid "CMainWindow::Not Available to User"
 msgstr "Udawaj stan \"Niedostêpny\""
 
-#: mainwin.cpp:2613
+#: mainwin.cpp:2624
 msgid "CMainWindow::O&ccupied"
 msgstr "Za&pracowany"
 
-#: mainwin.cpp:2616
+#: mainwin.cpp:2627
 msgid "CMainWindow::O&ffline"
 msgstr "O&ffline"
 
-#: mainwin.cpp:2729
+#: mainwin.cpp:2740
 msgid "CMainWindow::Occupied to User"
 msgstr "Udawaj stan \"Zapracowany\""
 
-#: mainwin.cpp:2034
+#: mainwin.cpp:2044
 msgid "CMainWindow::Ok"
 msgstr "OK"
 
-#: mainwin.cpp:1341
+#: mainwin.cpp:1351
 msgid "CMainWindow::Online Notify"
 msgstr "Powiadomienie online"
 
-#: mainwin.cpp:2726
+#: mainwin.cpp:2737
 msgid "CMainWindow::Online to User"
 msgstr "Udawaj stan \"Online\""
 
-#: mainwin.cpp:1177
+#: mainwin.cpp:1187
 msgid "CMainWindow::Other Users"
 msgstr "Inni u¿ytkownicy"
 
-#: mainwin.cpp:2637
+#: mainwin.cpp:2648
 msgid "CMainWindow::Packets"
 msgstr "Pakiety"
 
-#: mainwin.cpp:2666
+#: mainwin.cpp:2677
 msgid "CMainWindow::R&andom Chat"
 msgstr "Losowa &rozmowa"
 
-#: mainwin.cpp:2676
+#: mainwin.cpp:2687
 msgid "CMainWindow::Reg&ister User"
 msgstr "Zarejestruj u¿ytkown&ika"
 
-#: mainwin.cpp:1899
+#: mainwin.cpp:1909
 msgid "CMainWindow::Registration failed.  See network window for details."
 msgstr "Rejestracja nie powiod³a siê. Szczegó³y w okienku sieciowym."
 
-#: mainwin.cpp:2762
+#: mainwin.cpp:2773
 msgid "CMainWindow::Remove From List"
 msgstr "Usuñ z listy"
 
-#: mainwin.cpp:2816
+#: mainwin.cpp:2827
 msgid "CMainWindow::Request &Secure Channel"
 msgstr "¯±daj &bezpiecznego kana³u"
 
-#: mainwin.cpp:627
+#: mainwin.cpp:632
 msgid "CMainWindow::"
 "Right click - Status menu\n"
 "Double click - Set auto response"
@@ -776,7 +784,7 @@ msgstr ""
 "Prawy przycisk myszy - menu statusu\n"
 "Podwójne klikniêcie - ustaw auto-odpowied¼"
 
-#: mainwin.cpp:612
+#: mainwin.cpp:615
 msgid "CMainWindow::"
 "Right click - User groups\n"
 "Double click - Show next message"
@@ -784,63 +792,63 @@ msgstr ""
 "Prawy przycisk myszy - grupy u¿ytkowników\n"
 "Podwójne klikniêcie - nastêpna wiadomo¶æ"
 
-#: mainwin.cpp:2664
+#: mainwin.cpp:2675
 msgid "CMainWindow::S&earch for User"
 msgstr "Szukaj u¿ytkownika"
 
-#: mainwin.cpp:2696
+#: mainwin.cpp:2707
 msgid "CMainWindow::S&kin Browser..."
 msgstr "Przegl±darka &skór..."
 
-#: mainwin.cpp:2701
+#: mainwin.cpp:2712
 msgid "CMainWindow::Sa&ve Settings"
 msgstr "Zacho&waj ustawienia"
 
-#: mainwin.cpp:2741
+#: mainwin.cpp:2752
 msgid "CMainWindow::Send &Authorization"
 msgstr "&Autoryzacjê"
 
-#: mainwin.cpp:2738
+#: mainwin.cpp:2749
 msgid "CMainWindow::Send &Chat Request"
 msgstr "Pro¶bê o rozmowê"
 
-#: mainwin.cpp:2739
+#: mainwin.cpp:2750
 msgid "CMainWindow::Send &File Transfer"
 msgstr "Plik"
 
-#: mainwin.cpp:2736
+#: mainwin.cpp:2747
 msgid "CMainWindow::Send &Message"
 msgstr "Wiado&mo¶æ"
 
-#: mainwin.cpp:2737
+#: mainwin.cpp:2748
 msgid "CMainWindow::Send &Url"
 msgstr "URL"
 
-#: mainwin.cpp:2740
+#: mainwin.cpp:2751
 msgid "CMainWindow::Send Contact &List"
 msgstr "&Listê kontaktów"
 
-#: mainwin.cpp:2745
+#: mainwin.cpp:2756
 msgid "CMainWindow::Send"
 msgstr "Wy¶lij"
 
-#: mainwin.cpp:2689
+#: mainwin.cpp:2700
 msgid "CMainWindow::Set &Auto Response..."
 msgstr "Ustaw auto-odpowied¼..."
 
-#: mainwin.cpp:2639
+#: mainwin.cpp:2650
 msgid "CMainWindow::Set All"
 msgstr "W³±cz wszystkie"
 
-#: mainwin.cpp:2693
+#: mainwin.cpp:2704
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Poka¿ &u¿ytkowników offline"
 
-#: mainwin.cpp:2633
+#: mainwin.cpp:2644
 msgid "CMainWindow::Status Info"
 msgstr "Informacje o statusie"
 
-#: mainwin.cpp:1892
+#: mainwin.cpp:1902
 msgid "CMainWindow::"
 "Successfully registered, your user identification\n"
 "number (UIN) is %1.\n"
@@ -850,71 +858,71 @@ msgstr ""
 "(UIN) jest %1.\n"
 "Teraz ustaw swoje dane personalne."
 
-#: mainwin.cpp:1231
+#: mainwin.cpp:1241
 msgid "CMainWindow::SysMsg"
 msgstr "Wiad. syst."
 
-#: mainwin.cpp:2685
+#: mainwin.cpp:2696
 msgid "CMainWindow::System Functions"
 msgstr "Funkcje systemowe"
 
-#: mainwin.cpp:1232
+#: mainwin.cpp:1242
 msgid "CMainWindow::System Message"
 msgstr "Wiadomo¶æ systemowa"
 
-#: mainwin.cpp:571
+#: mainwin.cpp:572
 msgid "CMainWindow::System"
 msgstr "System"
 
-#: mainwin.cpp:2759
+#: mainwin.cpp:2770
 msgid "CMainWindow::Toggle &Floaty"
 msgstr "Prze³±cz p³ywa&j±ce okienko"
 
-#: mainwin.cpp:2747
+#: mainwin.cpp:2758
 msgid "CMainWindow::U&tilities"
 msgstr "&Narzêdzia"
 
-#: mainwin.cpp:2518
+#: mainwin.cpp:2529
 msgid "CMainWindow::Unable to open icons file\n%1."
 msgstr "Nie mo¿na otworzyæ pliku ikon\n%1."
 
-#: mainwin.cpp:2634
+#: mainwin.cpp:2645
 msgid "CMainWindow::Unknown Packets"
 msgstr "Nieznane pakiety"
 
-#: mainwin.cpp:2829
+#: mainwin.cpp:2840
 msgid "CMainWindow::Up since %1\n"
 msgstr "Uruchomiono: %1\n"
 
-#: mainwin.cpp:2844
+#: mainwin.cpp:2855
 msgid "CMainWindow::Up since %1\n\n"
 msgstr "Uruchomiono: %1\n\n"
 
-#: mainwin.cpp:2671
+#: mainwin.cpp:2682
 msgid "CMainWindow::Update All Users"
 msgstr "Uaktualnij wszystkich u¿ytkowników"
 
-#: mainwin.cpp:2672
+#: mainwin.cpp:2683
 msgid "CMainWindow::Update Current Group"
 msgstr "Uaktualnij bie¿±c± grupê"
 
-#: mainwin.cpp:2686
+#: mainwin.cpp:2697
 msgid "CMainWindow::User Functions"
 msgstr "Funkcje u¿ytkowników"
 
-#: mainwin.cpp:2758
+#: mainwin.cpp:2769
 msgid "CMainWindow::View &History"
 msgstr "Poka¿ &historiê"
 
-#: mainwin.cpp:1344
+#: mainwin.cpp:1354
 msgid "CMainWindow::Visible List"
 msgstr "Lista ``widzialnych''"
 
-#: mainwin.cpp:2636
+#: mainwin.cpp:2647
 msgid "CMainWindow::Warnings"
 msgstr "Ostrze¿enia"
 
-#: mainwin.cpp:2958
+#: mainwin.cpp:2969
 msgid "CMainWindow::"
 "You are currently registered as\n"
 "UIN: %1\n"
@@ -928,47 +936,27 @@ msgstr ""
 "Uruchom Licq z opcj± -b ¿eby wybraæ nowy katalog\n"
 "bazowy i wtedy zarejestruj nowego u¿ytkownika."
 
-#: mainwin.cpp:1240
+#: mainwin.cpp:1250
 msgid "CMainWindow::s"
 msgstr "ci"
 
-#: messagebox.cpp:236
-msgid "CMsgViewTips::Cancelled Event"
-msgstr "Anulowane zdarzenie"
-
-#: messagebox.cpp:230
-msgid "CMsgViewTips::Direct"
-msgstr "Bezpo¶rednio"
-
-#: messagebox.cpp:234
-msgid "CMsgViewTips::Multiple Recipients"
-msgstr "Grupowa"
-
-#: messagebox.cpp:230
-msgid "CMsgViewTips::Server"
-msgstr "Przez serwer"
-
-#: messagebox.cpp:232
-msgid "CMsgViewTips::Urgent"
-msgstr "Pilne"
-
-#: outputwin.cpp:45
+#: outputwin.cpp:46
 msgid "CQtLogWindow::&Close"
 msgstr "&Zamknij"
 
-#: outputwin.cpp:38
+#: outputwin.cpp:39
 msgid "CQtLogWindow::&Save"
 msgstr "Zapi&sz"
 
-#: outputwin.cpp:40
+#: outputwin.cpp:41
 msgid "CQtLogWindow::C&lear"
 msgstr "&Wyczy¶æ"
 
-#: outputwin.cpp:114
+#: outputwin.cpp:115
 msgid "CQtLogWindow::Failed to open file:\n%1"
 msgstr "Nie mo¿na otworzyæ pliku:\n%1"
 
-#: outputwin.cpp:26
+#: outputwin.cpp:27
 msgid "CQtLogWindow::Licq Network Log"
 msgstr "Okienko sieciowe Licq"
 
@@ -1040,6 +1028,10 @@ msgstr "Studenci"
 msgid "CRandomChatDlg::Women Seeking Men"
 msgstr "Kobieta szuka mê¿czyzny"
 
+#: registeruser.cpp:43
+msgid "CRefuseDlg::&Register Existing User"
+msgstr "&Zarejestruj istniej±cego u¿ytkownika"
+
 #: refusedlg.cpp:24
 msgid "CRefuseDlg::Cancel"
 msgstr "Anuluj"
@@ -1048,6 +1040,14 @@ msgstr "Anuluj"
 msgid "CRefuseDlg::Licq %1 Refusal"
 msgstr "Licq: %1 - odmowa"
 
+#: registeruser.cpp:83
+msgid "CRefuseDlg::Licq User Registration"
+msgstr "Rejestracja u¿ytkownika Licq"
+
+#: registeruser.cpp:52
+msgid "CRefuseDlg::Password:"
+msgstr "Has³o:"
+
 #: refusedlg.cpp:17
 msgid "CRefuseDlg::Refusal message for %1 with "
 msgstr "Wiadomo¶æ o odmowie: %1 z "
@@ -1055,6 +1055,46 @@ msgstr "Wiadomo¶æ o odmowie: %1 z "
 #: refusedlg.cpp:22
 msgid "CRefuseDlg::Refuse"
 msgstr "Odmów"
+
+#: registeruser.cpp:61
+msgid "CRefuseDlg::UIN Registration - Step 2"
+msgstr "Rejestracja UIN-u - krok 2"
+
+#: registeruser.cpp:76
+msgid "CRefuseDlg::UIN Registration - Step 3"
+msgstr "Rejestracja UIN-u - krok 3"
+
+#: registeruser.cpp:35
+msgid "CRefuseDlg::UIN Registration"
+msgstr "Rejestracja UIN-u"
+
+#: registeruser.cpp:47
+msgid "CRefuseDlg::Uin:"
+msgstr "UIN:"
+
+#: registeruser.cpp:57
+msgid "CRefuseDlg::Verify:"
+msgstr "Potwierd¼:"
+
+#: registeruser.cpp:26
+msgid "CRefuseDlg::"
+"Welcome to the Registration Wizard.\n\n"
+"You can register a new user here, or configure "
+"Licq to use an existing UIN.\n\n"
+"If you are registering a new uin, choose "
+"a password and click \"Finish\".\n"
+"If you already have a uin, then toggle \"Register Existing User\",\n"
+"enter your uin and your password, and click \"OK\"\n\n"
+"Press \"Next\" to proceed."
+msgstr ""
+"Witaj w Kreatorze Rejestracji.\n\n"
+"Mo¿esz tu zarejestrowaæ nowego u¿ytkownika lub "
+"nakazaæ Licq u¿ycie istniej±cego UIN-u.\n\n"
+"Je¶li rejestrujesz nowy UIN, wpisz has³o i kliknij "
+"\"Zakoñcz\".\n"
+"Je¶li masz ju¿ UIN, zaznacz \"Zarejestruj istniej±cego u¿ytkownika\",\n"
+"wpisz UIN i has³o i kliknij \"OK\"\n\n"
+"Kliknij \"Dalej\" ¿eby kontynuowaæ."
 
 #: randomchatdlg.cpp:215
 msgid "CSetRandomChatGroupDlg::&Cancel"
@@ -1136,43 +1176,43 @@ msgstr "nieudane"
 msgid "CSetRandomChatGroupDlg::timed out"
 msgstr "brak odpowiedzi"
 
-#: userbox.cpp:48
+#: userbox.cpp:49
 msgid "CUserView::%1 Floaty (%2)"
 msgstr "P³ywaj±ce okienko %1 (%2)"
 
-#: userbox.cpp:1115
+#: userbox.cpp:1155
 msgid "CUserView::<br><b>Birthday&nbsp;Today!</b>"
 msgstr "<br><b>Urodziny!</b>"
 
-#: userbox.cpp:1134
+#: userbox.cpp:1174
 msgid "CUserView::<br><u>Auto Response:</u>"
 msgstr "<br><u>Auto-odpowied¼:</u>"
 
-#: userbox.cpp:1121
+#: userbox.cpp:1161
 msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
 msgstr "<br>Oddzielna&nbsp;auto-odpowied¼"
 
-#: userbox.cpp:1129
+#: userbox.cpp:1169
 msgid "CUserView::<br>Licq&nbsp;v0.%1."
 msgstr "<br>Licq&nbsp;v0.%1."
 
-#: userbox.cpp:1127
+#: userbox.cpp:1167
 msgid "CUserView::<br>Licq&nbsp;v0.%1/SSL."
 msgstr "<br>Licq&nbsp;v0.%1/SSL."
 
-#: userbox.cpp:1118
+#: userbox.cpp:1158
 msgid "CUserView::<br>Secure&nbsp;connection"
 msgstr "<br>Bezpieczne&nbsp;po³±czenie"
 
-#: userbox.cpp:450
+#: userbox.cpp:462
 msgid "CUserView::Offline"
 msgstr "Offline"
 
-#: userbox.cpp:452
+#: userbox.cpp:464
 msgid "CUserView::Online"
 msgstr "Online"
 
-#: userbox.cpp:633
+#: userbox.cpp:659
 msgid "CUserView::S"
 msgstr "S"
 
@@ -1272,7 +1312,7 @@ msgstr "Tryb &paneli"
 msgid "ChatDlg::&Save Chat"
 msgstr "Zachowaj &rozmowê"
 
-#: chatdlg.cpp:766
+#: chatdlg.cpp:772
 msgid "ChatDlg::/%1.%2.chat"
 msgstr "/%1.%2.rozmowa"
 
@@ -1376,23 +1416,23 @@ msgstr "Tak"
 msgid "ChatDlg::ignores user color settings"
 msgstr "Ignoruje ustawienia kolorów u¿ytkownika"
 
-#: awaymsgdlg.cpp:184
+#: awaymsgdlg.cpp:183
 msgid "CustomAwayMsgDlg::&Cancel"
 msgstr "&Anuluj"
 
-#: awaymsgdlg.cpp:182
+#: awaymsgdlg.cpp:181
 msgid "CustomAwayMsgDlg::&Clear"
 msgstr "&Wyczy¶æ"
 
-#: awaymsgdlg.cpp:179
+#: awaymsgdlg.cpp:178
 msgid "CustomAwayMsgDlg::&Ok"
 msgstr "&OK"
 
-#: awaymsgdlg.cpp:205
+#: awaymsgdlg.cpp:204
 msgid "CustomAwayMsgDlg::I am currently %1.\nYou can leave me a message."
 msgstr "Jestem w³a¶nie %1.\n Mo¿esz zostawiæ mi wiadomo¶æ."
 
-#: awaymsgdlg.cpp:200
+#: awaymsgdlg.cpp:199
 msgid "CustomAwayMsgDlg::Set Custom Auto Response for %1"
 msgstr "Ustaw auto-odpowied¼ dla %1"
 
@@ -1416,10 +1456,6 @@ msgstr "Edytor plików Licq - %1"
 msgid "EditFileDlg::[ Read-Only ]"
 msgstr "[ Tylko do odczytu ]"
 
-#: eventdesc.cpp:38
-msgid "EditGrpDlg::"
-msgstr ""
-
 #: editgrp.cpp:64
 msgid "EditGrpDlg::&Done"
 msgstr "&Gotowe"
@@ -1427,10 +1463,6 @@ msgstr "&Gotowe"
 #: editgrp.cpp:32
 msgid "EditGrpDlg::Add"
 msgstr "Dodaj"
-
-#: eventdesc.cpp:25
-msgid "EditGrpDlg::Added to Contact List"
-msgstr "Dodany do listy kontaktów"
 
 #: editgrp.cpp:88
 msgid "EditGrpDlg::All Users"
@@ -1443,29 +1475,9 @@ msgid "EditGrpDlg::"
 msgstr ""
 "Czy na pewno chcesz usun±æ grupê\n'%1'?"
 
-#: eventdesc.cpp:21
-msgid "EditGrpDlg::Authorization Granted"
-msgstr "Udzielono autoryzacji"
-
-#: eventdesc.cpp:20
-msgid "EditGrpDlg::Authorization Refused"
-msgstr "Odmówiono autoryzacji"
-
-#: eventdesc.cpp:19
-msgid "EditGrpDlg::Authorization Request"
-msgstr "Pro¶ba o autoryzacjê"
-
 #: editgrp.cpp:169
 msgid "EditGrpDlg::Cancel"
 msgstr "Anuluj"
-
-#: eventdesc.cpp:15
-msgid "EditGrpDlg::Chat Request"
-msgstr "Pro¶ba o rozmowê"
-
-#: eventdesc.cpp:32
-msgid "EditGrpDlg::Contact List"
-msgstr "Lista kontaktów"
 
 #: editgrp.cpp:50
 msgid "EditGrpDlg::Default:"
@@ -1483,14 +1495,6 @@ msgstr "Zmieñ nazwê grupy (enter zapisuje)."
 msgid "EditGrpDlg::Edit"
 msgstr "Zmieñ nazwê"
 
-#: eventdesc.cpp:27
-msgid "EditGrpDlg::Email Pager"
-msgstr "Pager e-mail"
-
-#: eventdesc.cpp:16
-msgid "EditGrpDlg::File Transfer"
-msgstr "Transfer plików"
-
 #: editgrp.cpp:24
 msgid "EditGrpDlg::Groups"
 msgstr "Grupy"
@@ -1499,17 +1503,9 @@ msgstr "Grupy"
 msgid "EditGrpDlg::Licq - Edit Groups"
 msgstr "Licq - edycja grup"
 
-#: eventdesc.cpp:14
-msgid "EditGrpDlg::Message"
-msgstr "Wiadomo¶æ"
-
 #: editgrp.cpp:124
 msgid "EditGrpDlg::Ok"
 msgstr "OK"
-
-#: eventdesc.cpp:13
-msgid "EditGrpDlg::Plugin Event"
-msgstr "Wydarzenie wtyczki"
 
 #: editgrp.cpp:33
 msgid "EditGrpDlg::Remove"
@@ -1531,18 +1527,6 @@ msgstr "W górê"
 msgid "EditGrpDlg::The default group to start up in."
 msgstr "Grupa domy¶lna przy uruchamianiu."
 
-#: eventdesc.cpp:17
-msgid "EditGrpDlg::URL"
-msgstr "URL"
-
-#: eventdesc.cpp:39
-msgid "EditGrpDlg::User Info"
-msgstr "Informacje"
-
-#: eventdesc.cpp:26
-msgid "EditGrpDlg::Web Panel"
-msgstr "Panel WWW"
-
 #: editgrp.cpp:105
 msgid "EditGrpDlg::noname"
 msgstr "bez-nazwy"
@@ -1551,15 +1535,71 @@ msgstr "bez-nazwy"
 msgid "Event:: (cancelled)"
 msgstr " (anulowane)"
 
+#: eventdesc.cpp:38
+msgid "Event::"
+msgstr ""
+
+#: eventdesc.cpp:25
+msgid "Event::Added to Contact List"
+msgstr "Dodany do listy kontaktów"
+
+#: eventdesc.cpp:21
+msgid "Event::Authorization Granted"
+msgstr "Autoryzacja udzielona"
+
+#: eventdesc.cpp:20
+msgid "Event::Authorization Refused"
+msgstr "Autoryzacja odrzucona"
+
+#: eventdesc.cpp:19
+msgid "Event::Authorization Request"
+msgstr "Pro¶ba o autoryzacjê"
+
+#: eventdesc.cpp:15
+msgid "Event::Chat Request"
+msgstr "Rozmowa"
+
+#: eventdesc.cpp:32
+msgid "Event::Contact List"
+msgstr "Lista kontaktów"
+
+#: eventdesc.cpp:27
+msgid "Event::Email Pager"
+msgstr "Pager e-mail"
+
+#: eventdesc.cpp:16
+msgid "Event::File Transfer"
+msgstr "Transfer plików"
+
+#: eventdesc.cpp:14
+msgid "Event::Message"
+msgstr "Wiadomo¶æ"
+
+#: eventdesc.cpp:13
+msgid "Event::Plugin Event"
+msgstr "Zdarzenie ze wtyczki (plug-in)"
+
+#: eventdesc.cpp:17
+msgid "Event::URL"
+msgstr "URL"
+
 #: eventdesc.cpp:48
 msgid "Event::Unknown Event"
 msgstr "Nieznane zdarzenie"
 
-#: mainwin.cpp:3034
+#: eventdesc.cpp:39
+msgid "Event::User Info"
+msgstr "Informacje"
+
+#: eventdesc.cpp:26
+msgid "Event::Web Panel"
+msgstr "Panel WWW"
+
+#: mainwin.cpp:3045
 msgid "HintsDlg::&Close"
 msgstr "&Zamknij"
 
-#: mainwin.cpp:2998
+#: mainwin.cpp:3009
 msgid "HintsDlg::"
 "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
 "<ul>"
@@ -1619,29 +1659,25 @@ msgstr ""
 "<li>Oto kompletna lista opcji %, które mog± byæ u¿ywane w parametrach <b>Zdarzeñ</b>,"
 " <b>auto-odpowiedziach</b> i <b>narzêdziach</b>:\n"
 
-#: mainwin.cpp:3027
+#: mainwin.cpp:3038
 msgid "HintsDlg::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr "<hr><p> Wiêcej informacji na stronie Licq (<tt>http://www.licq.org</tt>).</p>"
 
-#: mainwin.cpp:2991
+#: mainwin.cpp:3002
 msgid "HintsDlg::Licq - Hints"
 msgstr "Wskazówki"
 
-#: wharf.cpp:114
-msgid "IconManager::The applet can be removed by\ndisabling it in the options dialog"
-msgstr "Applet mo¿na usun±æ przez\nwy³±czenie go w opcjach"
-
-#: wharf.cpp:357
+#: wharf.cpp:373
 msgid "IconManager_Themed::Unable to load dock theme file\n(%1)\n:%2"
 msgstr "Nie mo¿na za³adowaæ pliku z tematu ikony dokowanej\n(%1)\n%2"
 
-#: wharf.cpp:393
+#: wharf.cpp:409
 msgid "IconManager_Themed::Unable to load dock theme image\n%1"
 msgstr "Nie mo¿na za³adowaæ obrazu z tematu ikony dokowanej\n%1"
 
 #: keyrequestdlg.cpp:75
 msgid "KeyRequestDlg::&Close"
-msgstr "&Zmaknij"
+msgstr "&Zamknij"
 
 #: keyrequestdlg.cpp:69
 msgid "KeyRequestDlg::&Send"
@@ -1709,7 +1745,7 @@ msgid "KeyRequestDlg::"
 msgstr ""
 "Zdalny klient u¿ywa Licq v0.%1, ale nie ma\n"
 "wbudowanej obs³ugi bezpiecznych kana³ów.\n"
-"Prawdopodobnie siê nie uda."
+"Prawdopodobnie operacja siê nie uda."
 
 #: keyrequestdlg.cpp:41
 msgid "KeyRequestDlg::The remote uses Licq v0.%1/SSL."
@@ -1723,23 +1759,43 @@ msgid "KeyRequestDlg::"
 msgstr ""
 "Ta funkcja dzia³a tylko z innymi klientami Licq >= v0.85\n"
 "Zdalny klient raczej nie u¿ywa takiego programu.\n"
-"Mo¿e siê nie udaæ."
+"Operacja mo¿e siê nie udaæ."
 
-#: messagebox.cpp:146
+#: messagebox.cpp:227
+msgid "MsgView::Cancelled Event"
+msgstr "Anulowane zdarzenie"
+
+#: messagebox.cpp:149
 msgid "MsgView::D"
 msgstr "D"
 
-#: messagebox.cpp:147
+#: messagebox.cpp:221
+msgid "MsgView::Direct"
+msgstr "Bezpo¶rednio"
+
+#: messagebox.cpp:150
 msgid "MsgView::Event Type"
 msgstr "Typ zdarzenia"
 
-#: messagebox.cpp:148
+#: messagebox.cpp:225
+msgid "MsgView::Multiple Recipients"
+msgstr "Wielu odbiorców"
+
+#: messagebox.cpp:151
 msgid "MsgView::Options"
 msgstr "Opcje"
 
-#: messagebox.cpp:149
+#: messagebox.cpp:221
+msgid "MsgView::Server"
+msgstr "Serwer"
+
+#: messagebox.cpp:152
 msgid "MsgView::Time"
 msgstr "Czas"
+
+#: messagebox.cpp:223
+msgid "MsgView::Urgent"
+msgstr "Pilne"
 
 #: optionsdlg.cpp:63
 msgid "OptionsDlg::&Apply"
@@ -1753,11 +1809,11 @@ msgstr "&Anuluj"
 msgid "OptionsDlg::&OK"
 msgstr "&OK"
 
-#: optionsdlg.cpp:571
+#: optionsdlg.cpp:575
 msgid "OptionsDlg::64 x 48 Dock Icon"
 msgstr "Ikona 64 x 48"
 
-#: optionsdlg.cpp:657
+#: optionsdlg.cpp:661
 msgid "OptionsDlg::"
 "<p>Command to execute when an event is received.<br>"
 "It will be passed the relevant parameters from "
@@ -1771,19 +1827,19 @@ msgstr ""
 "wyra¿enia, <br>które zostan± zast±pione odpowiednimi "
 "danymi:</p>"
 
-#: optionsdlg.cpp:687
+#: optionsdlg.cpp:691
 msgid "OptionsDlg::Accept Modes"
 msgstr "Akceptuj zdarzenia w trybach"
 
-#: optionsdlg.cpp:943
+#: optionsdlg.cpp:947
 msgid "OptionsDlg::Alignment"
 msgstr "Wyrównanie"
 
-#: optionsdlg.cpp:997
+#: optionsdlg.cpp:1001
 msgid "OptionsDlg::All incoming events will flash"
 msgstr "Przychodz±ce zdarzenia bêd± migotaæ"
 
-#: optionsdlg.cpp:533
+#: optionsdlg.cpp:537
 msgid "OptionsDlg::"
 "All incoming messages automatically "
 "open when received, if we are "
@@ -1793,79 +1849,79 @@ msgstr ""
 "automatycznie otwierane, je¿eli "
 "status jest Online lub Chêtny do rozmowy"
 
-#: optionsdlg.cpp:1000
+#: optionsdlg.cpp:1004
 msgid "OptionsDlg::Allow scroll bar"
 msgstr "Pozwól na pasek przewijania"
 
-#: optionsdlg.cpp:1001
+#: optionsdlg.cpp:1005
 msgid "OptionsDlg::Allow the vertical scroll bar in the user list"
 msgstr "Pozwala na pojawienie siê pionowego paska przewijania na li¶cie u¿ytkowników"
 
-#: optionsdlg.cpp:987
+#: optionsdlg.cpp:991
 msgid "OptionsDlg::Always show online notify users"
 msgstr "Zawsze pokazuj grupê \"powiadamianie online\""
 
-#: optionsdlg.cpp:897
+#: optionsdlg.cpp:901
 msgid "OptionsDlg::Auto Away:"
 msgstr "Auto-away:"
 
-#: optionsdlg.cpp:529
+#: optionsdlg.cpp:533
 msgid "OptionsDlg::Auto Close Function Window"
 msgstr "Zamykanie okna funkcyjnego"
 
-#: optionsdlg.cpp:880
+#: optionsdlg.cpp:884
 msgid "OptionsDlg::Auto Logon:"
 msgstr "Auto logowanie:"
 
-#: optionsdlg.cpp:903
+#: optionsdlg.cpp:907
 msgid "OptionsDlg::Auto N/A:"
 msgstr "Auto n/d:"
 
-#: optionsdlg.cpp:909
+#: optionsdlg.cpp:913
 msgid "OptionsDlg::Auto Offline:"
 msgstr "Auto offline:"
 
-#: optionsdlg.cpp:753
+#: optionsdlg.cpp:757
 msgid "OptionsDlg::Auto"
 msgstr "Auto"
 
-#: optionsdlg.cpp:532
+#: optionsdlg.cpp:536
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
 msgstr "Otwórz przychodz±ce wiadomo¶ci"
 
-#: optionsdlg.cpp:536
+#: optionsdlg.cpp:540
 msgid "OptionsDlg::Auto-Raise on Incoming Msg"
 msgstr "Na wierzch po przyj¶ciu wiadomo¶ci"
 
-#: optionsdlg.cpp:881
+#: optionsdlg.cpp:885
 msgid "OptionsDlg::Automatically log on when first starting up."
 msgstr "Automatycznie loguj siê przy uruchamianiu."
 
-#: optionsdlg.cpp:886
+#: optionsdlg.cpp:890
 msgid "OptionsDlg::Away"
 msgstr "Daleko"
 
-#: optionsdlg.cpp:538
+#: optionsdlg.cpp:542
 msgid "OptionsDlg::Bold Message Label on Incoming Msg"
 msgstr "Pogrubiona etykietka przy nowych wiadomo¶ciach"
 
-#: optionsdlg.cpp:965
+#: optionsdlg.cpp:969
 msgid "OptionsDlg::Center"
 msgstr "Do ¶rodka"
 
-#: optionsdlg.cpp:674
+#: optionsdlg.cpp:678
 msgid "OptionsDlg::Chat Request:"
 msgstr "Rozmowa:"
 
-#: optionsdlg.cpp:953
+#: optionsdlg.cpp:957
 msgid "OptionsDlg::Column %1"
 msgstr "Kolumna %1"
 
-#: optionsdlg.cpp:931
+#: optionsdlg.cpp:935
 msgid "OptionsDlg::Column Configuration"
 msgstr "Konfiguracja kolumn"
 
-#: optionsdlg.cpp:656
+#: optionsdlg.cpp:660
 msgid "OptionsDlg::Command:"
 msgstr "Polecenie:"
 
@@ -1873,40 +1929,40 @@ msgstr "Polecenie:"
 msgid "OptionsDlg::Contact List"
 msgstr "Lista kontaktów"
 
-#: optionsdlg.cpp:569
+#: optionsdlg.cpp:573
 msgid "OptionsDlg::Controls whether or not the dockable icon should be displayed."
 msgstr "Kontroluje wy¶wietlanie dokowanej ikony."
 
-#: optionsdlg.cpp:833
+#: optionsdlg.cpp:837
 msgid "OptionsDlg::Default Auto Response Messages"
 msgstr "Domy¶lne auto-odpowiedzi"
 
-#: optionsdlg.cpp:570
+#: optionsdlg.cpp:574
 msgid "OptionsDlg::Default Icon"
 msgstr "Domy¶lna ikona"
 
-#: optionsdlg.cpp:724
+#: optionsdlg.cpp:728
 msgid "OptionsDlg::Default Server Port:"
 msgstr "Domy¶lny port serwera:"
 
-#: optionsdlg.cpp:725
+#: optionsdlg.cpp:729
 msgid "OptionsDlg::Default port to connect to on the server (should be 4000)"
 msgstr "Domy¶lny port serwera, z którym ma nast±piæ po³±czenie (powinien byæ "
 "równy 4000)"
 
-#: optionsdlg.cpp:728
+#: optionsdlg.cpp:732
 msgid "OptionsDlg::Default"
 msgstr "Domy¶lny"
 
-#: optionsdlg.cpp:1057
+#: optionsdlg.cpp:1062
 msgid "OptionsDlg::Determines if email pager messages are ignored or not."
 msgstr "Okre¶la czy wiadomo¶ci z pagera e-mail s± ignorowane czy nie."
 
-#: optionsdlg.cpp:1051
+#: optionsdlg.cpp:1056
 msgid "OptionsDlg::Determines if mass messages are ignored or not."
 msgstr "Okre¶la czy wiadomo¶ci grupowe s± ignorowane czy nie."
 
-#: optionsdlg.cpp:1048
+#: optionsdlg.cpp:1053
 msgid "OptionsDlg::"
 "Determines if new users are automatically added "
 "to your list or must first request authorization."
@@ -1914,78 +1970,78 @@ msgstr ""
 "Okre¶la czy nowi u¿ytkownicy s± automatycznie dodawani do twojej listy, "
 "czy musz± najpierw otrzymaæ autoryzacjê."
 
-#: optionsdlg.cpp:1054
+#: optionsdlg.cpp:1059
 msgid "OptionsDlg::Determines if web panel messages are ignored or not."
 msgstr "Okre¶la czy wiadomo¶ci z panelu WWW s± ignorowane czy nie."
 
-#: optionsdlg.cpp:889
+#: optionsdlg.cpp:893
 msgid "OptionsDlg::Do Not Disturb"
 msgstr "Zajêty"
 
-#: optionsdlg.cpp:564
+#: optionsdlg.cpp:568
 msgid "OptionsDlg::Docking"
 msgstr "Dokowanie"
 
-#: optionsdlg.cpp:978
+#: optionsdlg.cpp:982
 msgid "OptionsDlg::Draw boxes around each square in the user list"
 msgstr "Rysuj prostok±ty doko³a ka¿dego pola w li¶cie u¿ytkowników"
 
-#: optionsdlg.cpp:603
+#: optionsdlg.cpp:607
 msgid "OptionsDlg::Edit Font:"
 msgstr "Czcionka edytora:"
 
-#: optionsdlg.cpp:654
+#: optionsdlg.cpp:658
 msgid "OptionsDlg::"
 "Enable running of \"Command\" when the relevant "
 "event occurs."
 msgstr ""
 "Wykonuj \"Polecenie\" przy zaj¶ciu odpowiedniego zdarzenia."
 
-#: optionsdlg.cpp:1033
+#: optionsdlg.cpp:1038
 msgid "OptionsDlg::Extensions"
 msgstr "Rozszerzenia"
 
-#: optionsdlg.cpp:677
+#: optionsdlg.cpp:681
 msgid "OptionsDlg::File Transfer:"
 msgstr "Transfer plików:"
 
-#: optionsdlg.cpp:732
+#: optionsdlg.cpp:736
 msgid "OptionsDlg::Firewall"
 msgstr "Firewall"
 
-#: optionsdlg.cpp:996
+#: optionsdlg.cpp:1000
 msgid "OptionsDlg::Flash Events"
 msgstr "Migocz±ce zdarzenia"
 
-#: optionsdlg.cpp:998
+#: optionsdlg.cpp:1002
 msgid "OptionsDlg::Flash Urgent Events"
 msgstr "Migocz±ce pilne zdarzenia"
 
-#: optionsdlg.cpp:606
+#: optionsdlg.cpp:610
 msgid "OptionsDlg::Font used in message editor etc."
 msgstr "Czcionka u¿ywana w edytorze wiadomo¶ci itp."
 
-#: optionsdlg.cpp:595
+#: optionsdlg.cpp:599
 msgid "OptionsDlg::Font"
 msgstr "Czcionka"
 
-#: optionsdlg.cpp:597
+#: optionsdlg.cpp:601
 msgid "OptionsDlg::Font:"
 msgstr "Czcionka:"
 
-#: optionsdlg.cpp:937
+#: optionsdlg.cpp:941
 msgid "OptionsDlg::Format"
 msgstr "Format"
 
-#: optionsdlg.cpp:1007
+#: optionsdlg.cpp:1011
 msgid "OptionsDlg::Frame Style: "
 msgstr "Styl ramek: "
 
-#: optionsdlg.cpp:848
+#: optionsdlg.cpp:852
 msgid "OptionsDlg::Free For Chat"
 msgstr "Chêtny do pogadania"
 
-#: optionsdlg.cpp:890
+#: optionsdlg.cpp:894
 msgid "OptionsDlg::Free for Chat"
 msgstr "Chêtny do pogadania"
 
@@ -1993,11 +2049,11 @@ msgstr "Chêtny do pogadania"
 msgid "OptionsDlg::General"
 msgstr "Ogólne"
 
-#: optionsdlg.cpp:740
+#: optionsdlg.cpp:744
 msgid "OptionsDlg::I can receive direct connections"
 msgstr "Mogê odbieraæ bezpo¶rednie po³±czenia"
 
-#: optionsdlg.cpp:541
+#: optionsdlg.cpp:545
 msgid "OptionsDlg::"
 "If not checked, a user will be automatically "
 "removed from \"New User\" group when you first"
@@ -2006,27 +2062,27 @@ msgstr "Je¶li ta opcja nie jest zaznaczona, u¿ytkownik "
 "bêdzie automatycznie usuwany z grupy \"Nowi\" po "
 "pierwszym wys³anym do niego zdarzeniu"
 
-#: optionsdlg.cpp:1056
+#: optionsdlg.cpp:1061
 msgid "OptionsDlg::Ignore Email Pager"
 msgstr "Ignoruj pager e-mail"
 
-#: optionsdlg.cpp:1050
+#: optionsdlg.cpp:1055
 msgid "OptionsDlg::Ignore Mass Messages"
 msgstr "Ignoruj wiadomo¶ci grupowe"
 
-#: optionsdlg.cpp:1047
+#: optionsdlg.cpp:1052
 msgid "OptionsDlg::Ignore New Users"
 msgstr "Ignoruj nowych u¿ytkowników"
 
-#: optionsdlg.cpp:1053
+#: optionsdlg.cpp:1058
 msgid "OptionsDlg::Ignore Web Panel"
 msgstr "Ignoruj panel WWW"
 
-#: optionsdlg.cpp:894
+#: optionsdlg.cpp:898
 msgid "OptionsDlg::Invisible"
 msgstr "Niewidzialny"
 
-#: optionsdlg.cpp:963
+#: optionsdlg.cpp:967
 msgid "OptionsDlg::Left"
 msgstr "Do lewej"
 
@@ -2034,30 +2090,30 @@ msgstr "Do lewej"
 msgid "OptionsDlg::Licq Options"
 msgstr "Opcje Licq"
 
-#: optionsdlg.cpp:721
+#: optionsdlg.cpp:725
 msgid "OptionsDlg::List of servers to connect to (read-only for now)"
 msgstr "Lista serwerów ICQ (na razie tylko do odczytu)"
 
-#: optionsdlg.cpp:545
+#: optionsdlg.cpp:549
 msgid "OptionsDlg::Locale"
 msgstr "T³umaczenie"
 
-#: optionsdlg.cpp:523
+#: optionsdlg.cpp:527
 msgid "OptionsDlg::Main Window"
 msgstr "G³ówne okno"
 
-#: optionsdlg.cpp:991
+#: optionsdlg.cpp:995
 msgid "OptionsDlg::"
 "Make the user window transparent when there "
 "is no scroll bar"
 msgstr ""
 "Okno u¿ytkowników jest przezroczyste, je¿eli nie ma paska przewijania"
 
-#: optionsdlg.cpp:540
+#: optionsdlg.cpp:544
 msgid "OptionsDlg::Manual \"New User\" group handling"
 msgstr "Rêczne zarz±dzanie grup± \"Nowi\""
 
-#: optionsdlg.cpp:668
+#: optionsdlg.cpp:672
 msgid "OptionsDlg::Message:"
 msgstr "Wiadomo¶æ:"
 
@@ -2069,15 +2125,15 @@ msgstr "Ró¿ne"
 msgid "OptionsDlg::Network"
 msgstr "Sieæ"
 
-#: optionsdlg.cpp:914
+#: optionsdlg.cpp:918
 msgid "OptionsDlg::Never"
 msgstr "Nigdy"
 
-#: optionsdlg.cpp:887
+#: optionsdlg.cpp:891
 msgid "OptionsDlg::Not Available"
 msgstr "Niedostêpny"
 
-#: optionsdlg.cpp:898
+#: optionsdlg.cpp:902
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"away\".  Set to \"0\" "
@@ -2086,7 +2142,7 @@ msgstr ""
 "Liczba minut nieaktywno¶ci, po której automatycznie w³±cza siê status "
 "\"daleko\". Ustaw zero ¿eby wy³±czyæ tê funkcjê."
 
-#: optionsdlg.cpp:904
+#: optionsdlg.cpp:908
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"not available\".  Set to \"0\" "
@@ -2095,7 +2151,7 @@ msgstr ""
 "Liczba minut nieaktywno¶ci, po której automatycznie w³±cza siê status "
 "\"niedostêpny\". Ustaw zero ¿eby wy³±czyæ tê funkcjê."
 
-#: optionsdlg.cpp:910
+#: optionsdlg.cpp:914
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically go offline.  Set to \"0\" "
@@ -2103,27 +2159,27 @@ msgid "OptionsDlg::"
 msgstr "Liczba minut nieaktywno¶ci, po której nastêpuje przej¶cie w stan "
 "offline. Ustaw zero ¿eby wy³±czyætê funkcjê."
 
-#: optionsdlg.cpp:888
+#: optionsdlg.cpp:892
 msgid "OptionsDlg::Occupied"
 msgstr "Zapracowany"
 
-#: optionsdlg.cpp:884
+#: optionsdlg.cpp:888
 msgid "OptionsDlg::Offline"
 msgstr "Offline"
 
-#: optionsdlg.cpp:690
+#: optionsdlg.cpp:694
 msgid "OptionsDlg::OnEvent in Away"
 msgstr "Daleko"
 
-#: optionsdlg.cpp:696
+#: optionsdlg.cpp:700
 msgid "OptionsDlg::OnEvent in DND"
 msgstr "Zajêty"
 
-#: optionsdlg.cpp:692
+#: optionsdlg.cpp:696
 msgid "OptionsDlg::OnEvent in N/A"
 msgstr "Niedostêpny"
 
-#: optionsdlg.cpp:694
+#: optionsdlg.cpp:698
 msgid "OptionsDlg::OnEvent in Occupied"
 msgstr "Zapracowany"
 
@@ -2131,31 +2187,31 @@ msgstr "Zapracowany"
 msgid "OptionsDlg::OnEvent"
 msgstr "Zdarzenia"
 
-#: optionsdlg.cpp:650
+#: optionsdlg.cpp:654
 msgid "OptionsDlg::OnEvents Enabled"
 msgstr "Zdarzenia w³±czone"
 
-#: optionsdlg.cpp:698
+#: optionsdlg.cpp:702
 msgid "OptionsDlg::Online Notify when Logging On"
 msgstr "Powiadamianie online przy logowaniu"
 
-#: optionsdlg.cpp:680
+#: optionsdlg.cpp:684
 msgid "OptionsDlg::Online Notify:"
 msgstr "Powiadomienie Online:"
 
-#: optionsdlg.cpp:885
+#: optionsdlg.cpp:889
 msgid "OptionsDlg::Online"
 msgstr "Online"
 
-#: optionsdlg.cpp:999
+#: optionsdlg.cpp:1003
 msgid "OptionsDlg::Only urgent events will flash"
 msgstr "Tylko pilne zdarzenia bêd± migotaæ"
 
-#: optionsdlg.cpp:975
+#: optionsdlg.cpp:979
 msgid "OptionsDlg::Options"
 msgstr "Opcje"
 
-#: optionsdlg.cpp:1009
+#: optionsdlg.cpp:1013
 msgid "OptionsDlg::"
 "Override the skin setting for the frame "
 "style of the user window:\n"
@@ -2168,55 +2224,55 @@ msgstr ""
 " + 16 (p³aski), 32 (wypuk³y), 48 (wklês³y)\n"
 " + 240 (cieñ)"
 
-#: optionsdlg.cpp:681
+#: optionsdlg.cpp:685
 msgid "OptionsDlg::Parameter for online notification"
 msgstr "Parametr dla powiadomienia online"
 
-#: optionsdlg.cpp:672
+#: optionsdlg.cpp:676
 msgid "OptionsDlg::Parameter for received URLs"
 msgstr "Parametr dla odebranych URLi"
 
-#: optionsdlg.cpp:675
+#: optionsdlg.cpp:679
 msgid "OptionsDlg::Parameter for received chat requests"
 msgstr "Parametr dla odebranych rozmów"
 
-#: optionsdlg.cpp:678
+#: optionsdlg.cpp:682
 msgid "OptionsDlg::Parameter for received file transfers"
 msgstr "Parametr dla odebranych plików"
 
-#: optionsdlg.cpp:669
+#: optionsdlg.cpp:673
 msgid "OptionsDlg::Parameter for received messages"
 msgstr "Parametr dla odebranych wiadomo¶ci"
 
-#: optionsdlg.cpp:684
+#: optionsdlg.cpp:688
 msgid "OptionsDlg::Parameter for received system messages"
 msgstr "Parametr dla odebranych wiadomo¶ci systemowych"
 
-#: optionsdlg.cpp:665
+#: optionsdlg.cpp:669
 msgid "OptionsDlg::Parameters"
 msgstr "Parametry"
 
-#: optionsdlg.cpp:1044
+#: optionsdlg.cpp:1049
 msgid "OptionsDlg::Paranoia"
 msgstr "Paranoja"
 
-#: optionsdlg.cpp:691
+#: optionsdlg.cpp:695
 msgid "OptionsDlg::Perform OnEvent command in away mode"
 msgstr "Wywo³uj polecenia obs³ugi zdarzeñ w stanie \"Daleko\""
 
-#: optionsdlg.cpp:697
+#: optionsdlg.cpp:701
 msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
 msgstr "Wywo³uj polecenia obs³ugi zdarzeñ w stanie \"Zajêty\""
 
-#: optionsdlg.cpp:693
+#: optionsdlg.cpp:697
 msgid "OptionsDlg::Perform OnEvent command in not available mode"
 msgstr "Wywo³uj polecenia obs³ugi zdarzeñ w stanie \"Niedostêpny\""
 
-#: optionsdlg.cpp:695
+#: optionsdlg.cpp:699
 msgid "OptionsDlg::Perform OnEvent command in occupied mode"
 msgstr "Wywo³uj polecenia obs³ugi zdarzeñ w stanie \"Zapracowany\""
 
-#: optionsdlg.cpp:699
+#: optionsdlg.cpp:703
 msgid "OptionsDlg::"
 "Perform the online notify OnEvent "
 " when logging on (this is different from how the Mirabilis client works)"
@@ -2224,19 +2280,19 @@ msgstr ""
 "Wywo³uj zdarzenie \"Powiadomienie online\" przy logowaniu (inaczej ni¿"
 "klient Mirabilis)"
 
-#: optionsdlg.cpp:743
+#: optionsdlg.cpp:747
 msgid "OptionsDlg::Port Range:"
 msgstr "Zakres portów:"
 
-#: optionsdlg.cpp:853
+#: optionsdlg.cpp:857
 msgid "OptionsDlg::Preset slot:"
 msgstr "Slot:"
 
-#: optionsdlg.cpp:964
+#: optionsdlg.cpp:968
 msgid "OptionsDlg::Right"
 msgstr "Do prawej"
 
-#: optionsdlg.cpp:768
+#: optionsdlg.cpp:772
 msgid "OptionsDlg::"
 "SOCKS5 support is built in but disabled.\n"
 "To enable it, set the SOCKS5_SERVER\n"
@@ -2246,19 +2302,19 @@ msgstr ""
 "¯eby j± w³±czyæ, ustaw zmienn± ¶rodowiska\n"
 "SOCKS5_SERVER na <serwer>:<port>."
 
-#: optionsdlg.cpp:868
+#: optionsdlg.cpp:872
 msgid "OptionsDlg::Save"
 msgstr "Zapisz"
 
-#: optionsdlg.cpp:605
+#: optionsdlg.cpp:609
 msgid "OptionsDlg::Select Font"
 msgstr "Wybierz czcionkê"
 
-#: optionsdlg.cpp:600
+#: optionsdlg.cpp:604
 msgid "OptionsDlg::Select a font from the system list"
 msgstr "Wybierz czcionkê z listy systemowej"
 
-#: optionsdlg.cpp:572
+#: optionsdlg.cpp:576
 msgid "OptionsDlg::"
 "Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
 "and a shorter 64x48 icon for use in the Gnome/KDE panel."
@@ -2266,15 +2322,15 @@ msgstr ""
 "Wybiera pomiêdzy starnardow± ikon± 64x64 u¿ywan± w panelu WindowMaker/Afterstep "
 "i ni¿sz± 64x48 do panelu Gnome/KDE"
 
-#: optionsdlg.cpp:717
+#: optionsdlg.cpp:721
 msgid "OptionsDlg::Server settings"
 msgstr "Opcje serwerów:"
 
-#: optionsdlg.cpp:719
+#: optionsdlg.cpp:723
 msgid "OptionsDlg::Servers:"
 msgstr "Serwery:"
 
-#: optionsdlg.cpp:530
+#: optionsdlg.cpp:534
 msgid "OptionsDlg::"
 "Sets the default behavior for auto closing "
 "the user function window after a succesful event"
@@ -2282,41 +2338,41 @@ msgstr ""
 "Okre¶la domy¶lne zachowanie dotycz±ce automatycznego "
 "zamykania okna u¿ytkownika po wys³aniu zdarzenia"
 
-#: optionsdlg.cpp:547
+#: optionsdlg.cpp:551
 msgid "OptionsDlg::"
 "Sets which translation table should be used for "
 "translating characters."
 msgstr ""
 "Okre¶la tablicê translacji u¿ywan± do poszczególnych znaków."
 
-#: optionsdlg.cpp:979
+#: optionsdlg.cpp:983
 msgid "OptionsDlg::Show Column Headers"
 msgstr "Poka¿ nag³ówki kolumn"
 
-#: optionsdlg.cpp:1002
+#: optionsdlg.cpp:1006
 msgid "OptionsDlg::Show Extended Icons"
 msgstr "Poka¿ rozszerzone ikony"
 
-#: optionsdlg.cpp:977
+#: optionsdlg.cpp:981
 msgid "OptionsDlg::Show Grid Lines"
 msgstr "Poka¿ linie siatki"
 
-#: optionsdlg.cpp:982
+#: optionsdlg.cpp:986
 msgid "OptionsDlg::Show User Dividers"
 msgstr "Poka¿ separatory u¿ytkowników"
 
-#: optionsdlg.cpp:1003
+#: optionsdlg.cpp:1007
 msgid "OptionsDlg::"
 "Show birthday, invisible, and custom auto response "
 "icons to the right of users in the list"
 msgstr "Pokazuje ikony urodzin, niewidzialno¶ci i oddzielnej "
 "auto-odpowiedzi na prawo od u¿ytkowników na li¶cie"
 
-#: optionsdlg.cpp:526
+#: optionsdlg.cpp:530
 msgid "OptionsDlg::Show group name if no messages"
 msgstr "Poka¿ nazwê grupy gdy nie ma wiadomo¶ci"
 
-#: optionsdlg.cpp:988
+#: optionsdlg.cpp:992
 msgid "OptionsDlg::"
 "Show online notify users who are offline even "
 "when offline users are hidden."
@@ -2324,29 +2380,29 @@ msgstr ""
 "Pokazuj u¿ytkowników z grupy \"powiadamianie online\" bêd±cych "
 "offline, nawet gdy u¿ytkownicy offline s± ukryci."
 
-#: optionsdlg.cpp:983
+#: optionsdlg.cpp:987
 msgid "OptionsDlg::"
 "Show the \"--online--\" and \"--offline--\" bars "
 "in the contact list"
 msgstr ""
 "Poka¿ separatory \"--online--\" i \"--offline--\" w li¶cie kontaktów"
 
-#: optionsdlg.cpp:527
+#: optionsdlg.cpp:531
 msgid "OptionsDlg::"
 "Show the name of the current group in the "
 "messages label when there are no new messages"
 msgstr ""
 "Poka¿ nazwê bie¿±cej grupy gdy nie ma nowych wiadomo¶ci"
 
-#: optionsdlg.cpp:985
+#: optionsdlg.cpp:989
 msgid "OptionsDlg::Sort Online Users by Status"
 msgstr "Sortuj u¿ytkowników online wg statusu"
 
-#: optionsdlg.cpp:986
+#: optionsdlg.cpp:990
 msgid "OptionsDlg::Sort all online users by their actual status"
 msgstr "Sortuj u¿ytkowników online wg ich statusu"
 
-#: optionsdlg.cpp:878
+#: optionsdlg.cpp:882
 msgid "OptionsDlg::Startup"
 msgstr "Uruchamianie"
 
@@ -2354,46 +2410,46 @@ msgstr "Uruchamianie"
 msgid "OptionsDlg::Status"
 msgstr "Status"
 
-#: optionsdlg.cpp:839
+#: optionsdlg.cpp:843
 msgid "OptionsDlg::Status:"
 msgstr "Status:"
 
-#: optionsdlg.cpp:683
+#: optionsdlg.cpp:687
 msgid "OptionsDlg::System Msg:"
 msgstr "Wiad. systemowa:"
 
-#: optionsdlg.cpp:745
+#: optionsdlg.cpp:749
 msgid "OptionsDlg::TCP port range for incoming connections."
 msgstr "Zakres portów TCP dla po³±czeñ przychodz±cych."
 
-#: optionsdlg.cpp:1041
+#: optionsdlg.cpp:1046
 msgid "OptionsDlg::Terminal:"
 msgstr "Terminal:"
 
-#: optionsdlg.cpp:860
+#: optionsdlg.cpp:864
 msgid "OptionsDlg::Text:"
 msgstr "Tekst:"
 
-#: optionsdlg.cpp:944
+#: optionsdlg.cpp:948
 msgid "OptionsDlg::The alignment of the column"
 msgstr "Wyrównanie kolumny"
 
-#: optionsdlg.cpp:1042
+#: optionsdlg.cpp:1047
 msgid "OptionsDlg::The command to run to start your terminal program."
 msgstr "Polecenie uruchamiaj±ce twój program terminala."
 
-#: optionsdlg.cpp:1037
+#: optionsdlg.cpp:1042
 msgid "OptionsDlg::"
 "The command to run to view a URL.  Will be passed the URL "
 "as a parameter."
 msgstr ""
 "Polecenie do otwierania URLi. Dostanie URL jako parametr."
 
-#: optionsdlg.cpp:596
+#: optionsdlg.cpp:600
 msgid "OptionsDlg::The fonts used"
 msgstr "U¿ywane czcionki"
 
-#: optionsdlg.cpp:938
+#: optionsdlg.cpp:942
 msgid "OptionsDlg::"
 "The format string used to define what will "
 "appear in each column.\n"
@@ -2403,35 +2459,35 @@ msgstr ""
 "w ka¿dej kolumnie.\n"
 "Mog± byæ u¿yte nastêpuj±ce parametry:\n"
 
-#: optionsdlg.cpp:537
+#: optionsdlg.cpp:541
 msgid "OptionsDlg::The main window will raise on incoming messages"
 msgstr "G³ówne okno przejdzie na pierwszy plan po nadej¶ciu wiadomo¶ci"
 
-#: optionsdlg.cpp:539
+#: optionsdlg.cpp:543
 msgid "OptionsDlg::The message info label will be bold if there are incoming messages"
 msgstr "Etykietka wiadomo¶ci bêdzie pogrubiona gdy nadejd± nowe wiadomo¶ci"
 
-#: optionsdlg.cpp:936
+#: optionsdlg.cpp:940
 msgid "OptionsDlg::The string which will appear in the list box column header"
 msgstr "£añcuch, który bêdzie wy¶wietlany w nag³ówku kolumny"
 
-#: optionsdlg.cpp:942
+#: optionsdlg.cpp:946
 msgid "OptionsDlg::The width of the column"
 msgstr "Szeroko¶æ kolumny"
 
-#: optionsdlg.cpp:577
+#: optionsdlg.cpp:581
 msgid "OptionsDlg::Theme:"
 msgstr "Temat:"
 
-#: optionsdlg.cpp:574
+#: optionsdlg.cpp:578
 msgid "OptionsDlg::Themed Icon"
 msgstr "Z tematem"
 
-#: optionsdlg.cpp:935
+#: optionsdlg.cpp:939
 msgid "OptionsDlg::Title"
 msgstr "Tytu³"
 
-#: optionsdlg.cpp:777
+#: optionsdlg.cpp:781
 msgid "OptionsDlg::"
 "To enable socks proxy support, install NEC Socks or Dante\n"
 "then configure the Licq daemon with \"--enable-socks5\"."
@@ -2439,15 +2495,15 @@ msgstr ""
 "¯eby w³±czyæ obs³ugê proxy socks, zainstaluj NEC Socks lub Dante\n"
 "i skonfiguruj demona Licq z opcj± \"--enable-socks5\"."
 
-#: optionsdlg.cpp:546
+#: optionsdlg.cpp:550
 msgid "OptionsDlg::Translation:"
 msgstr "Translacja:"
 
-#: optionsdlg.cpp:990
+#: optionsdlg.cpp:994
 msgid "OptionsDlg::Transparent when possible"
 msgstr "Przezroczyste, je¶li mo¿liwe"
 
-#: optionsdlg.cpp:980
+#: optionsdlg.cpp:984
 msgid "OptionsDlg::"
 "Turns on or off the display of headers above "
 "each column in the user list"
@@ -2455,23 +2511,27 @@ msgstr ""
 "Prze³±cza wy¶wietlanie nag³ówków nad ka¿d± kolumn± "
 "w li¶cie u¿ytkowników"
 
-#: optionsdlg.cpp:671
+#: optionsdlg.cpp:675
 msgid "OptionsDlg::URL:"
 msgstr "URL:"
 
-#: optionsdlg.cpp:1036
+#: optionsdlg.cpp:1041
 msgid "OptionsDlg::Url Viewer:"
 msgstr "Przegl±darka URLi:"
 
-#: optionsdlg.cpp:568
+#: optionsdlg.cpp:572
 msgid "OptionsDlg::Use Dock Icon"
 msgstr "U¿ywaj dokowanej ikony"
 
-#: optionsdlg.cpp:993
+#: optionsdlg.cpp:997
 msgid "OptionsDlg::Use Font Styles"
 msgstr "U¿ywaj styli czcionek"
 
-#: optionsdlg.cpp:994
+#: optionsdlg.cpp:1019
+msgid "OptionsDlg::Use System Background Color"
+msgstr "U¿yj systemowego koloru t³a"
+
+#: optionsdlg.cpp:998
 msgid "OptionsDlg::"
 "Use italics and bold in the user list to "
 "indicate special characteristics such as online notify and visible list"
@@ -2480,23 +2540,23 @@ msgstr ""
 "¿eby oznaczyæ specjalne cechy, takie jak powiadomienie "
 "przy przej¶ciu online i lista 'widzialnych'"
 
-#: optionsdlg.cpp:941
+#: optionsdlg.cpp:945
 msgid "OptionsDlg::Width"
 msgstr "Szeroko¶æ"
 
-#: optionsdlg.cpp:749
+#: optionsdlg.cpp:753
 msgid "OptionsDlg::\tto"
 msgstr "\tdo"
 
-#: optionsdlg.cpp:474
+#: optionsdlg.cpp:478
 msgid "OptionsDlg::default (%1)"
 msgstr "domy¶lna (%1)"
 
-#: optionsdlg.cpp:336
+#: optionsdlg.cpp:339
 msgid "OptionsDlg::default"
 msgstr "domy¶lna"
 
-#: optionsdlg.cpp:554
+#: optionsdlg.cpp:558
 msgid "OptionsDlg::none"
 msgstr "brak"
 
@@ -2560,63 +2620,71 @@ msgstr "próba nieudana"
 msgid "PasswordDlg::timed out"
 msgstr "brak odpowiedzi"
 
-#: plugindlg.cpp:48
+#: plugindlg.cpp:50
 msgid "PluginDlg::Available"
 msgstr "Dostêpny"
 
-#: plugindlg.cpp:31
+#: plugindlg.cpp:41
+msgid "PluginDlg::Configure"
+msgstr "Konfiguruj"
+
+#: plugindlg.cpp:30
 msgid "PluginDlg::Description"
 msgstr "Opis"
 
-#: plugindlg.cpp:40
+#: plugindlg.cpp:39
 msgid "PluginDlg::Details"
 msgstr "Szczegó³y"
 
-#: plugindlg.cpp:36
+#: plugindlg.cpp:35
 msgid "PluginDlg::Disable"
 msgstr "Wy³±cz"
 
-#: plugindlg.cpp:59
+#: plugindlg.cpp:61
 msgid "PluginDlg::Done"
 msgstr "Gotowe"
 
-#: plugindlg.cpp:34
+#: plugindlg.cpp:33
 msgid "PluginDlg::Enable"
 msgstr "W³±cz"
 
-#: plugindlg.cpp:27
+#: plugindlg.cpp:26
 msgid "PluginDlg::Id"
 msgstr "ID"
 
-#: plugindlg.cpp:129
+#: plugindlg.cpp:137
 msgid "PluginDlg::Licq Plugin %1 %2\n"
 msgstr "Wtyczka Licq %1 %2\n"
 
-#: plugindlg.cpp:52
+#: plugindlg.cpp:54
 msgid "PluginDlg::Load"
 msgstr "Za³aduj"
 
-#: plugindlg.cpp:24
+#: plugindlg.cpp:23
 msgid "PluginDlg::Loaded"
 msgstr "Za³adowany"
 
-#: plugindlg.cpp:28
+#: plugindlg.cpp:27
 msgid "PluginDlg::Name"
 msgstr "Nazwa"
 
-#: plugindlg.cpp:56
+#: plugindlg.cpp:178
+msgid "PluginDlg::Plugin %1 has no configuration file"
+msgstr "Wtyczka %1 nie ma pliku konfiguracyjnego"
+
+#: plugindlg.cpp:58
 msgid "PluginDlg::Refresh"
 msgstr "Od¶wie¿"
 
-#: plugindlg.cpp:30
+#: plugindlg.cpp:29
 msgid "PluginDlg::Status"
 msgstr "Status"
 
-#: plugindlg.cpp:38
+#: plugindlg.cpp:37
 msgid "PluginDlg::Unload"
 msgstr "Od³aduj"
 
-#: plugindlg.cpp:29
+#: plugindlg.cpp:28
 msgid "PluginDlg::Version"
 msgstr "Wersja"
 
@@ -2636,23 +2704,15 @@ msgstr "Pytanie Licq"
 msgid "QMessageBox::Licq Warning"
 msgstr "Ostrze¿enie Licq"
 
-#: chatdlg.cpp:781
+#: chatdlg.cpp:787
 msgid "QString::Failed to open file:\n%1"
 msgstr "Nie mo¿na otworzyæ pliku:\n%1"
 
-#: registeruser.cpp:38
-msgid "RegisterUserDlg::&Register Existing User"
-msgstr "&Zarejestruj istniej±cego u¿ytkownika"
-
-#: registeruser.cpp:141
+#: registeruser.cpp:144
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
 msgstr "B³êdny UIN. Spróbuj jeszcze raz."
 
-#: registeruser.cpp:80
-msgid "RegisterUserDlg::Licq User Registration"
-msgstr "Rejestracja u¿ytkownika Licq"
-
-#: registeruser.cpp:124
+#: registeruser.cpp:127
 msgid "RegisterUserDlg::"
 "Now please click 'Finish' to start "
 "the registration process."
@@ -2660,74 +2720,30 @@ msgstr ""
 "Kliknij przycisk 'Zakoñcz' ¿eby rozpocz±æ "
 "proces rejestracji."
 
-#: registeruser.cpp:118
+#: registeruser.cpp:121
 msgid "RegisterUserDlg::"
 "Now please press the 'Back' button "
 "and try again."
 msgstr ""
 "Kliknij przycisk 'Wstecz' i spróbuj ponownie."
 
-#: registeruser.cpp:47
-msgid "RegisterUserDlg::Password:"
-msgstr "Has³o:"
-
-#: registeruser.cpp:107
+#: registeruser.cpp:110
 msgid "RegisterUserDlg::Please enter your password in both input fields."
 msgstr "Wpisz has³o w obydwa pola tekstowe."
 
-#: registeruser.cpp:148
+#: registeruser.cpp:151
 msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
 msgstr "Rejestracja zakoñczona. Teraz zaloguj siê i uaktualnij dane osobiste."
 
-#: registeruser.cpp:112
+#: registeruser.cpp:115
 msgid "RegisterUserDlg::The passwords don't seem to match."
 msgstr "Has³a nie s± identyczne."
 
-#: registeruser.cpp:58
-msgid "RegisterUserDlg::UIN Registration - Step 2"
-msgstr "Rejestracja UINu - krok 2"
-
-#: registeruser.cpp:73
-msgid "RegisterUserDlg::UIN Registration - Step 3"
-msgstr "Rejestracja UINu - krok 3"
-
-#: registeruser.cpp:30
-msgid "RegisterUserDlg::UIN Registration"
-msgstr "Rejestracja UINu"
-
-#: registeruser.cpp:42
-msgid "RegisterUserDlg::Uin:"
-msgstr "UIN:"
-
-#: registeruser.cpp:153
+#: registeruser.cpp:156
 msgid "RegisterUserDlg::User Registration in Progress..."
 msgstr "Rejestracja w toku..."
 
-#: registeruser.cpp:53
-msgid "RegisterUserDlg::Verify:"
-msgstr "Jeszcze raz:"
-
-#: registeruser.cpp:21
-msgid "RegisterUserDlg::"
-"Welcome to the Registration Wizard.\n\n"
-"You can register a new user here, or configure "
-"Licq to use an existing UIN.\n\n"
-"If you are registering a new uin, choose "
-"a password and click \"Finish\".\n"
-"If you already have a uin, then toggle \"Register Existing User\",\n"
-"enter your uin and your password, and click \"OK\"\n\n"
-"Press \"Next\" to proceed."
-msgstr ""
-"Witaj w Asystencie Rejestracji.\n\n"
-"Mo¿esz tu zarejestrowaæ nowego u¿ytkownika "
-"lub wskazaæ Licq istniej±cy UIN w³a¶ciciela.\n\n"
-"Je¶li rejestrujesz nowego u¿ytkownika, wybierz "
-"has³o i kliknij \"Zakoñcz\".\n"
-"Je¶li masz ju¿ UIN, odznacz \"Zarejestruj nowego u¿ytkownika\",\n"
-"wpisz swój UIN i has³o i kliknij \"OK\"\n\n"
-"Kliknij \"Dalej\" ¿eby kontynuowaæ."
-
-#: registeruser.cpp:101
+#: registeruser.cpp:104
 msgid "RegisterUserDlg::"
 "You need to enter a valid UIN when you "
 "try to register an existing user. "
@@ -2735,99 +2751,155 @@ msgstr ""
 "Musisz wpisaæ prawid³owy UIN je¶li chcesz "
 "zarejestrowaæ siê jako istniej±cy u¿ytkownik. "
 
-#: searchuserdlg.cpp:312
+#: searchuserdlg.cpp:343
+msgid "SearchUserDlg::%1 more users found. Narrow search."
+msgstr "Znaleziono jeszcze %1 u¿ytkowników. Sprecyzuj wymagania."
+
+#: searchuserdlg.cpp:379
 msgid "SearchUserDlg::&Add %1 Users"
 msgstr "D&odaj %1 u¿ytkowników"
 
-#: searchuserdlg.cpp:309
+#: searchuserdlg.cpp:376
 msgid "SearchUserDlg::&Add User"
 msgstr "&Dodaj"
 
-#: searchuserdlg.cpp:140
+#: searchuserdlg.cpp:187
 msgid "SearchUserDlg::&Done"
 msgstr "&Gotowe"
 
-#: searchuserdlg.cpp:115
+#: searchuserdlg.cpp:163
 msgid "SearchUserDlg::&Email"
 msgstr "&E-mail"
 
-#: searchuserdlg.cpp:104
-msgid "SearchUserDlg::&Name"
-msgstr "&Imiê"
-
-#: searchuserdlg.cpp:131
+#: searchuserdlg.cpp:178
 msgid "SearchUserDlg::&Search"
 msgstr "&Szukaj"
 
-#: searchuserdlg.cpp:126
+#: searchuserdlg.cpp:173
 msgid "SearchUserDlg::&Uin#"
 msgstr "&UIN#"
 
-#: searchuserdlg.cpp:160
+#: searchuserdlg.cpp:153
+msgid "SearchUserDlg::&Whitepages"
+msgstr "&Bia³e strony"
+
+#: searchuserdlg.cpp:207
 msgid "SearchUserDlg::A&lert User"
 msgstr "&Powiadom u¿ytkownika"
 
-#: searchuserdlg.cpp:91
+#: searchuserdlg.cpp:96
 msgid "SearchUserDlg::Alias:"
 msgstr "Pseudonim:"
 
-#: searchuserdlg.cpp:196
+#: searchuserdlg.cpp:241
 msgid "SearchUserDlg::Cancel"
 msgstr "Anuluj"
 
-#: searchuserdlg.cpp:110
+#: searchuserdlg.cpp:129
+msgid "SearchUserDlg::City:"
+msgstr "Miasto:"
+
+#: searchuserdlg.cpp:146
+msgid "SearchUserDlg::Company Department:"
+msgstr "Wydzia³ w firmie:"
+
+#: searchuserdlg.cpp:143
+msgid "SearchUserDlg::Company Name:"
+msgstr "Nazwa firmy:"
+
+#: searchuserdlg.cpp:149
+msgid "SearchUserDlg::Company Position:"
+msgstr "Stanowisko:"
+
+#: searchuserdlg.cpp:136
+msgid "SearchUserDlg::Country:"
+msgstr "Kraj:"
+
+#: searchuserdlg.cpp:159
 msgid "SearchUserDlg::Email Address:"
 msgstr "Adres e-mail:"
 
-#: searchuserdlg.cpp:241
+#: searchuserdlg.cpp:306
 msgid "SearchUserDlg::Enter search parameters and select 'Search'"
 msgstr "Wpisz parametry poszukiwania i wybierz 'Szukaj'"
 
-#: searchuserdlg.cpp:95
+#: searchuserdlg.cpp:117
+msgid "SearchUserDlg::Female"
+msgstr "Kobieta"
+
+#: searchuserdlg.cpp:99
 msgid "SearchUserDlg::First Name:"
 msgstr "Imiê:"
 
-#: searchuserdlg.cpp:99
+#: searchuserdlg.cpp:114
+msgid "SearchUserDlg::Gender:"
+msgstr "P³eæ:"
+
+#: searchuserdlg.cpp:122
+msgid "SearchUserDlg::Language:"
+msgstr "Jêzyk:"
+
+#: searchuserdlg.cpp:102
 msgid "SearchUserDlg::Last Name:"
 msgstr "Nazwisko:"
 
-#: searchuserdlg.cpp:74
+#: searchuserdlg.cpp:78
 msgid "SearchUserDlg::Licq - User Search"
 msgstr "Licq - wyszukiwanie u¿ytkowników"
 
-#: searchuserdlg.cpp:274
+#: searchuserdlg.cpp:118
+msgid "SearchUserDlg::Male"
+msgstr "Mê¿czyzna"
+
+#: searchuserdlg.cpp:110
+msgid "SearchUserDlg::Maximum Age:"
+msgstr "Maksymalny wiek:"
+
+#: searchuserdlg.cpp:106
+msgid "SearchUserDlg::Minimum Age:"
+msgstr "Minimalny wiek:"
+
+#: searchuserdlg.cpp:341
 msgid "SearchUserDlg::More users found. Narrow search."
 msgstr "Znaleziono wielu u¿ytkowników. Sprecyzuj wymagania."
 
-#: searchuserdlg.cpp:289
+#: searchuserdlg.cpp:356
 msgid "SearchUserDlg::Reset Search"
 msgstr "Nowe wyszukiwanie"
 
-#: searchuserdlg.cpp:286
+#: searchuserdlg.cpp:353
 msgid "SearchUserDlg::Search failed."
 msgstr "Nic nie znaleziono."
 
-#: searchuserdlg.cpp:211
+#: searchuserdlg.cpp:276
 msgid "SearchUserDlg::Searching (this can take awhile)..."
 msgstr "Wyszukiwanie (to mo¿e trochê potrwaæ)..."
 
-#: searchuserdlg.cpp:120
+#: searchuserdlg.cpp:132
+msgid "SearchUserDlg::State:"
+msgstr "Stan:"
+
+#: searchuserdlg.cpp:168
 msgid "SearchUserDlg::UIN#:"
 msgstr "UIN#:"
 
-#: searchuserdlg.cpp:35
+#: searchuserdlg.cpp:116
+msgid "SearchUserDlg::Unspecified"
+msgstr "Brak danych"
+
+#: searchuserdlg.cpp:39
 msgid "SearchUserView::Alias"
 msgstr "Pseudonim"
 
-#: searchuserdlg.cpp:39
+#: searchuserdlg.cpp:43
 msgid "SearchUserView::Email"
 msgstr "E-mail"
 
-#: searchuserdlg.cpp:38
+#: searchuserdlg.cpp:42
 msgid "SearchUserView::Name"
 msgstr "Imiê"
 
-#: searchuserdlg.cpp:36
+#: searchuserdlg.cpp:40
 msgid "SearchUserView::UIN"
 msgstr "UIN"
 
@@ -3008,23 +3080,27 @@ msgstr "Rok:"
 msgid "UserInfoDlg::&About"
 msgstr "&Informacje"
 
-#: userinfodlg.cpp:74
+#: userinfodlg.cpp:75
 msgid "UserInfoDlg::&Close"
 msgstr "Zam&knij"
 
-#: userinfodlg.cpp:732
+#: userinfodlg.cpp:823
 msgid "UserInfoDlg::&Filter: "
 msgstr "&Filtr: "
 
-#: userinfodlg.cpp:166
+#: userinfodlg.cpp:180
 msgid "UserInfoDlg::&General"
 msgstr "&Ogólne"
 
-#: userinfodlg.cpp:706
+#: userinfodlg.cpp:797
 msgid "UserInfoDlg::&History"
 msgstr "&Historia"
 
-#: userinfodlg.cpp:86
+#: userinfodlg.cpp:705
+msgid "UserInfoDlg::&Last"
+msgstr "&Ostatnio"
+
+#: userinfodlg.cpp:88
 msgid "UserInfoDlg::&Menu"
 msgstr "&Menu"
 
@@ -3032,15 +3108,11 @@ msgstr "&Menu"
 msgid "UserInfoDlg::&More"
 msgstr "&Wiêcej"
 
-#: userinfodlg.cpp:73
-msgid "UserInfoDlg::&OK"
-msgstr "&OK"
-
-#: userinfodlg.cpp:984
+#: userinfodlg.cpp:1083
 msgid "UserInfoDlg::&Save"
 msgstr "&Zapisz"
 
-#: userinfodlg.cpp:983
+#: userinfodlg.cpp:1082
 msgid "UserInfoDlg::&Update"
 msgstr "&Uaktualnij"
 
@@ -3060,7 +3132,7 @@ msgstr "Adres:"
 msgid "UserInfoDlg::Age:"
 msgstr "Wiek:"
 
-#: userinfodlg.cpp:177
+#: userinfodlg.cpp:191
 msgid "UserInfoDlg::Alias:"
 msgstr "Pseudonim:"
 
@@ -3076,7 +3148,7 @@ msgstr "Autoryzacja wymagana"
 msgid "UserInfoDlg::Birthday:"
 msgstr "Urodziny:"
 
-#: userinfodlg.cpp:237
+#: userinfodlg.cpp:250
 msgid "UserInfoDlg::Cellular:"
 msgstr "Komórka:"
 
@@ -3084,7 +3156,7 @@ msgstr "Komórka:"
 msgid "UserInfoDlg::City:"
 msgstr "Miasto:"
 
-#: userinfodlg.cpp:246
+#: userinfodlg.cpp:259
 msgid "UserInfoDlg::Country:"
 msgstr "Kraj:"
 
@@ -3092,15 +3164,15 @@ msgstr "Kraj:"
 msgid "UserInfoDlg::Department:"
 msgstr "Wydzia³:"
 
-#: userinfodlg.cpp:204
+#: userinfodlg.cpp:217
 msgid "UserInfoDlg::EMail 1:"
 msgstr "E-mail 1:"
 
-#: userinfodlg.cpp:208
+#: userinfodlg.cpp:221
 msgid "UserInfoDlg::EMail 2:"
 msgstr "E-mail 2:"
 
-#: userinfodlg.cpp:748
+#: userinfodlg.cpp:839
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
 msgstr "B³±d przy ³adowaniu pliku historii: %1\nOpis: %2"
 
@@ -3112,7 +3184,7 @@ msgstr "Fax:"
 msgid "UserInfoDlg::Female"
 msgstr "Kobieta"
 
-#: userinfodlg.cpp:294
+#: userinfodlg.cpp:307
 msgid "UserInfoDlg::GMT%1%1%1"
 msgstr "GMT%1%1%1"
 
@@ -3124,7 +3196,7 @@ msgstr "P³eæ:"
 msgid "UserInfoDlg::Homepage:"
 msgstr "Strona domowa:"
 
-#: userinfodlg.cpp:187
+#: userinfodlg.cpp:200
 msgid "UserInfoDlg::IP:"
 msgstr "IP:"
 
@@ -3140,13 +3212,25 @@ msgstr "Jêzyk 2:"
 msgid "UserInfoDlg::Language 3:"
 msgstr "Jêzyk 3:"
 
-#: userinfodlg.cpp:103
+#: userinfodlg.cpp:727
+msgid "UserInfoDlg::Last Checked Auto Response:"
+msgstr "Ostatnie sprawdzenie auto-odpowiedzi:"
+
+#: userinfodlg.cpp:715
+msgid "UserInfoDlg::Last Online:"
+msgstr "Ostatnio online:"
+
+#: userinfodlg.cpp:723
+msgid "UserInfoDlg::Last Received Event:"
+msgstr "Ostatnie otrzymane zdarzenie:"
+
+#: userinfodlg.cpp:719
+msgid "UserInfoDlg::Last Sent Event:"
+msgstr "Ostatnie wys³ane zdarzenie:"
+
+#: userinfodlg.cpp:117
 msgid "UserInfoDlg::Licq - Info "
 msgstr "Licq - Informacje "
-
-#: userinfodlg.cpp:1103
-msgid "UserInfoDlg::Local"
-msgstr "Lokalne"
 
 #: userinfodlg.cpp:500
 msgid "UserInfoDlg::Male"
@@ -3156,23 +3240,19 @@ msgstr "Mê¿czyzna"
 msgid "UserInfoDlg::Name:"
 msgstr "Imiê:"
 
-#: userinfodlg.cpp:991
+#: userinfodlg.cpp:1092
 msgid "UserInfoDlg::Nex&t"
 msgstr "Da&lej"
 
-#: userinfodlg.cpp:334
+#: userinfodlg.cpp:749
 msgid "UserInfoDlg::Now"
 msgstr "Teraz"
 
-#: userinfodlg.cpp:212
+#: userinfodlg.cpp:225
 msgid "UserInfoDlg::Old Email:"
 msgstr "Stary e-mail:"
 
-#: userinfodlg.cpp:180
-msgid "UserInfoDlg::Online:"
-msgstr "Online:"
-
-#: userinfodlg.cpp:992
+#: userinfodlg.cpp:1093
 msgid "UserInfoDlg::P&rev"
 msgstr "W&stecz"
 
@@ -3184,15 +3264,15 @@ msgstr "Telefon:"
 msgid "UserInfoDlg::Position:"
 msgstr "Stanowisko:"
 
-#: userinfodlg.cpp:720
+#: userinfodlg.cpp:1083
+msgid "UserInfoDlg::Retrieve"
+msgstr "Odbierz"
+
+#: userinfodlg.cpp:811
 msgid "UserInfoDlg::Rever&se"
 msgstr "O&dwróæ"
 
-#: userinfodlg.cpp:1103
-msgid "UserInfoDlg::Server"
-msgstr "Serwer"
-
-#: userinfodlg.cpp:751
+#: userinfodlg.cpp:842
 msgid "UserInfoDlg::Sorry, history is disabled for this person."
 msgstr "Przykro mi, historia dla tej osoby jest nieaktywna."
 
@@ -3200,15 +3280,15 @@ msgstr "Przykro mi, historia dla tej osoby jest nieaktywna."
 msgid "UserInfoDlg::State:"
 msgstr "Stan:"
 
-#: userinfodlg.cpp:191
+#: userinfodlg.cpp:204
 msgid "UserInfoDlg::Status:"
 msgstr "Status:"
 
-#: userinfodlg.cpp:194
+#: userinfodlg.cpp:207
 msgid "UserInfoDlg::Timezone:"
 msgstr "Strefa czasowa:"
 
-#: userinfodlg.cpp:184
+#: userinfodlg.cpp:197
 msgid "UserInfoDlg::UIN:"
 msgstr "UIN:"
 
@@ -3216,7 +3296,7 @@ msgstr "UIN:"
 msgid "UserInfoDlg::Unknown (%1)"
 msgstr "Nieznany (%1)"
 
-#: userinfodlg.cpp:336
+#: userinfodlg.cpp:781
 msgid "UserInfoDlg::Unknown"
 msgstr "Nie wiadomo"
 
@@ -3224,23 +3304,35 @@ msgstr "Nie wiadomo"
 msgid "UserInfoDlg::Unspecified"
 msgstr "Brak danych"
 
-#: userinfodlg.cpp:1103
-msgid "UserInfoDlg::Update local or server information?"
-msgstr "Uaktualniæ informacje lokalne czy na serwerze?"
-
-#: userinfodlg.cpp:1105
+#: userinfodlg.cpp:1249
 msgid "UserInfoDlg::Updating server..."
 msgstr "Uaktualnianie serwera..."
 
-#: userinfodlg.cpp:1110
+#: userinfodlg.cpp:1175
 msgid "UserInfoDlg::Updating..."
 msgstr "Uaktualnianie..."
 
-#: userinfodlg.cpp:242
+#: userinfodlg.cpp:1194
+msgid "UserInfoDlg::"
+"You need to be connected to the\n"
+"ICQ Network to change your settings."
+msgstr ""
+"Musisz byæ po³±czony z sieci± ICQ\n"
+"¿eby zmieniæ ustawienia."
+
+#: userinfodlg.cpp:1153
+msgid "UserInfoDlg::"
+"You need to be connected to the\n"
+"ICQ Network to retrieve your settings."
+msgstr ""
+"Musisz byæ po³±czony z sieci± ICQ\n"
+"¿eby odebraæ swoje ustawienia."
+
+#: userinfodlg.cpp:255
 msgid "UserInfoDlg::Zip:"
 msgstr "Kod pocztowy:"
 
-#: userinfodlg.cpp:930
+#: userinfodlg.cpp:1023
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -3250,7 +3342,7 @@ msgstr ""
 "[<font color=\"%2\">Wys³ane</font>] "
 "%3 z %4 trafieñ"
 
-#: userinfodlg.cpp:922
+#: userinfodlg.cpp:1015
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -3260,211 +3352,223 @@ msgstr ""
 "[<font color=\"%2\">Wys³ane</font>] "
 "od %3 do %4 z %5"
 
-#: userinfodlg.cpp:1141
+#: userinfodlg.cpp:1270
 msgid "UserInfoDlg::done"
 msgstr "zrobione"
 
-#: userinfodlg.cpp:1150
+#: userinfodlg.cpp:1279
 msgid "UserInfoDlg::error"
 msgstr "b³±d"
 
-#: userinfodlg.cpp:1144
+#: userinfodlg.cpp:1273
 msgid "UserInfoDlg::failed"
 msgstr "nieudane"
 
-#: userinfodlg.cpp:884
+#: userinfodlg.cpp:975
 msgid "UserInfoDlg::from"
 msgstr "od"
 
-#: userinfodlg.cpp:863
+#: userinfodlg.cpp:954
 msgid "UserInfoDlg::server"
 msgstr "serwer"
 
-#: userinfodlg.cpp:1147
+#: userinfodlg.cpp:1276
 msgid "UserInfoDlg::timed out"
 msgstr "przekroczenie czasu"
 
-#: userinfodlg.cpp:894
+#: userinfodlg.cpp:986
 msgid "UserInfoDlg::to"
 msgstr "do"
 
-#: usereventdlg.cpp:1428
+#: usereventdlg.cpp:1472
 msgid "UserSendChatEvent:: - Chat Request"
-msgstr " - pro¶ba o rozmowê"
+msgstr " - rozmowa"
 
-#: usereventdlg.cpp:1488
+#: usereventdlg.cpp:1532
 msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
 msgstr "Odmowa rozmowy z %2:\n%3"
 
-#: usereventdlg.cpp:1453
+#: usereventdlg.cpp:1497
 msgid "UserSendChatEvent::Clear"
 msgstr "Wyczy¶æ"
 
-#: usereventdlg.cpp:1461
+#: usereventdlg.cpp:1505
 msgid "UserSendChatEvent::Invite"
 msgstr "Zapro¶"
 
-#: usereventdlg.cpp:1418
+#: usereventdlg.cpp:1462
 msgid "UserSendChatEvent::Multiparty: "
 msgstr "Wieloosobowa: "
 
-#: usereventdlg.cpp:1008
-msgid "UserSendCommon::%1 is in %2 mode:\n%3\n"
-msgstr "%1 jest %2:\n%3\n"
+#: usereventdlg.cpp:1034
+msgid "UserSendCommon:: to Contact List"
+msgstr " na listê kontaktów"
 
-#: usereventdlg.cpp:1028
+#: usereventdlg.cpp:1030
+msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
+msgstr "%1 jest w trybie %2:\n%3\nWy¶lij..."
+
+#: usereventdlg.cpp:1050
 msgid "UserSendCommon::%1 refused %2, send through server."
 msgstr "%1 odmawia %2, wysy³anie przez serwer."
 
-#: usereventdlg.cpp:931
+#: usereventdlg.cpp:953
 msgid "UserSendCommon::&Cancel"
 msgstr "&Anuluj"
 
-#: usereventdlg.cpp:1126
+#: usereventdlg.cpp:1148
 msgid "UserSendCommon::&Close"
 msgstr "Zam&knij"
 
-#: usereventdlg.cpp:767
+#: usereventdlg.cpp:783
 msgid "UserSendCommon::&Menu"
 msgstr "&Menu"
 
-#: usereventdlg.cpp:781
+#: usereventdlg.cpp:797
 msgid "UserSendCommon::&Send"
 msgstr "&Wy¶lij"
 
-#: usereventdlg.cpp:1012
+#: usereventdlg.cpp:1184
 msgid "UserSendCommon::Cancel"
 msgstr "Anuluj"
 
-#: usereventdlg.cpp:775
+#: usereventdlg.cpp:791
 msgid "UserSendCommon::Chat Request"
 msgstr "Rozmowa"
 
-#: usereventdlg.cpp:777
+#: usereventdlg.cpp:793
 msgid "UserSendCommon::Contact List"
 msgstr "Lista kontaktów"
 
-#: usereventdlg.cpp:995
+#: usereventdlg.cpp:1017
 msgid "UserSendCommon::Direct send failed,\nsend through server?"
 msgstr "Wysy³anie bezpo¶rednie zawiod³o,\nwysy³aæ przez serwer?"
 
-#: usereventdlg.cpp:882
+#: usereventdlg.cpp:901
 msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
 msgstr "Przeci±gaj tu u¿ytkowników\nPrawy przycisk myszy: opcje"
 
-#: usereventdlg.cpp:776
+#: usereventdlg.cpp:792
 msgid "UserSendCommon::File Transfer"
 msgstr "Transfer plików"
 
-#: usereventdlg.cpp:760
+#: usereventdlg.cpp:776
 msgid "UserSendCommon::M&ultiple recipients"
 msgstr "Wiel&u odbiorców"
 
-#: usereventdlg.cpp:773
+#: usereventdlg.cpp:789
 msgid "UserSendCommon::Message"
 msgstr "Wiadomo¶æ"
 
-#: usereventdlg.cpp:995
+#: usereventdlg.cpp:1017
 msgid "UserSendCommon::No"
 msgstr "Nie"
 
-#: usereventdlg.cpp:748
+#: usereventdlg.cpp:763
 msgid "UserSendCommon::Se&nd through server"
 msgstr "Przez ser&wer"
 
-#: usereventdlg.cpp:1012
-msgid "UserSendCommon::Send to\nContact List"
-msgstr "Wy¶lij na\nlistê kontaktów"
+#: usereventdlg.cpp:1184
+msgid "UserSendCommon::Send anyway"
+msgstr "Wy¶lij mimo wszystko"
 
-#: usereventdlg.cpp:1012
-msgid "UserSendCommon::Send\nUrgent"
-msgstr "Wy¶lij\npilne"
-
-#: usereventdlg.cpp:921
+#: usereventdlg.cpp:943
 msgid "UserSendCommon::Sending "
 msgstr "Wysy³anie "
 
-#: usereventdlg.cpp:758
+#: usereventdlg.cpp:774
 msgid "UserSendCommon::U&rgent"
 msgstr "&Pilne"
 
-#: usereventdlg.cpp:774
+#: usereventdlg.cpp:790
 msgid "UserSendCommon::URL"
 msgstr "URL"
 
-#: usereventdlg.cpp:995
+#: usereventdlg.cpp:1034
+msgid "UserSendCommon::Urgent"
+msgstr "Pilne"
+
+#: usereventdlg.cpp:1184
+msgid "UserSendCommon::Warning: Message will not be sent securely!"
+msgstr "Uwaga: Wiadomo¶æ nie bêdzie wys³ana w bezpieczny sposób!"
+
+#: usereventdlg.cpp:1017
 msgid "UserSendCommon::Yes"
 msgstr "Tak"
 
-#: usereventdlg.cpp:925
+#: usereventdlg.cpp:947
 msgid "UserSendCommon::direct"
 msgstr "bezpo¶rednio"
 
-#: usereventdlg.cpp:964
+#: usereventdlg.cpp:986
 msgid "UserSendCommon::done"
 msgstr "zrobione"
 
-#: usereventdlg.cpp:974
+#: usereventdlg.cpp:996
 msgid "UserSendCommon::error"
 msgstr "b³±d"
 
-#: usereventdlg.cpp:968
+#: usereventdlg.cpp:990
 msgid "UserSendCommon::failed"
 msgstr "nieudane"
 
-#: usereventdlg.cpp:924
+#: usereventdlg.cpp:946
 msgid "UserSendCommon::partial "
 msgstr "fragmentu "
 
-#: usereventdlg.cpp:971
+#: usereventdlg.cpp:993
 msgid "UserSendCommon::timed out"
 msgstr "przekroczenie czasu"
 
-#: usereventdlg.cpp:925
+#: usereventdlg.cpp:947
 msgid "UserSendCommon::via server"
 msgstr "przez serwer"
 
-#: usereventdlg.cpp:1523
+#: usereventdlg.cpp:1567
 msgid "UserSendContactEvent:: - Contact List"
 msgstr " - lista kontaktów"
 
-#: usereventdlg.cpp:1516
+#: usereventdlg.cpp:1560
 msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
 msgstr "Przeci±gnij tu u¿ytkowników - prawy przycisk myszy: opcje"
 
-#: usereventdlg.cpp:1330
+#: usereventdlg.cpp:1372
 msgid "UserSendFileEvent:: - File Transfer"
 msgstr " - transfer plików"
 
-#: usereventdlg.cpp:1326
+#: usereventdlg.cpp:1368
 msgid "UserSendFileEvent::Browse"
 msgstr "Przegl±daj"
 
-#: usereventdlg.cpp:1387
+#: usereventdlg.cpp:1431
 msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
 msgstr "Odmowa transferu plików do %2:\n%3"
 
-#: usereventdlg.cpp:1320
+#: usereventdlg.cpp:1362
 msgid "UserSendFileEvent::File(s): "
 msgstr "Plik(i): "
 
-#: usereventdlg.cpp:1365
+#: usereventdlg.cpp:1384
+msgid "UserSendFileEvent::Select files to send"
+msgstr "Wybierz pliki do wys³ania"
+
+#: usereventdlg.cpp:1408
 msgid "UserSendFileEvent::You must specify a file to transfer!"
 msgstr "Musisz okre¶liæ plik do wys³ania!"
 
-#: usereventdlg.cpp:1165
+#: usereventdlg.cpp:1203
 msgid "UserSendMsgEvent:: - Message"
 msgstr " - wiadomo¶æ"
 
-#: usereventdlg.cpp:1184
+#: usereventdlg.cpp:1222
 msgid "UserSendMsgEvent::&No"
 msgstr "&Nie"
 
-#: usereventdlg.cpp:1184
+#: usereventdlg.cpp:1222
 msgid "UserSendMsgEvent::&Yes"
 msgstr "&Tak"
 
-#: usereventdlg.cpp:1183
+#: usereventdlg.cpp:1221
 msgid "UserSendMsgEvent::"
 "You didn't edit the message.\n"
 "Do you really want to send it?"
@@ -3472,11 +3576,11 @@ msgstr ""
 "Wiadomo¶æ nie zosta³a zmieniona.\n"
 "Czy na pewno chcesz j± wys³aæ?"
 
-#: usereventdlg.cpp:1249
+#: usereventdlg.cpp:1289
 msgid "UserSendUrlEvent:: - URL"
 msgstr " - URL"
 
-#: usereventdlg.cpp:1244
+#: usereventdlg.cpp:1284
 msgid "UserSendUrlEvent::URL : "
 msgstr "URL : "
 
@@ -3484,11 +3588,11 @@ msgstr "URL : "
 msgid "UserViewEvent::&Close"
 msgstr "Zam&knij"
 
-#: usereventdlg.cpp:403
+#: usereventdlg.cpp:406
 msgid "UserViewEvent::&Forward"
 msgstr "&Prze¶lij"
 
-#: usereventdlg.cpp:389
+#: usereventdlg.cpp:392
 msgid "UserViewEvent::&Join"
 msgstr "&Do³±cz"
 
@@ -3496,35 +3600,35 @@ msgstr "&Do³±cz"
 msgid "UserViewEvent::&Menu"
 msgstr "&Menu"
 
-#: usereventdlg.cpp:402
+#: usereventdlg.cpp:405
 msgid "UserViewEvent::&Quote"
 msgstr "&Zacytuj"
 
-#: usereventdlg.cpp:411
+#: usereventdlg.cpp:414
 msgid "UserViewEvent::&Refuse"
 msgstr "&Odrzuæ"
 
-#: usereventdlg.cpp:401
+#: usereventdlg.cpp:404
 msgid "UserViewEvent::&Reply"
 msgstr "Odpo&wiedz"
 
-#: usereventdlg.cpp:405
+#: usereventdlg.cpp:408
 msgid "UserViewEvent::&View"
 msgstr "&Poka¿"
 
-#: usereventdlg.cpp:382
+#: usereventdlg.cpp:384
 msgid "UserViewEvent::A&ccept"
 msgstr "Ak&ceptuj"
 
-#: usereventdlg.cpp:441
+#: usereventdlg.cpp:444
 msgid "UserViewEvent::A&dd %1 Users"
 msgstr "&Dodaj %1 u¿ytkowników"
 
-#: usereventdlg.cpp:443
+#: usereventdlg.cpp:446
 msgid "UserViewEvent::A&dd User"
 msgstr "Doda&j"
 
-#: usereventdlg.cpp:410
+#: usereventdlg.cpp:413
 msgid "UserViewEvent::A&uthorize"
 msgstr "A&utoryzuj"
 
@@ -3532,11 +3636,11 @@ msgstr "A&utoryzuj"
 msgid "UserViewEvent::Aut&o Close"
 msgstr "Za&mknij"
 
-#: usereventdlg.cpp:611
+#: usereventdlg.cpp:624
 msgid "UserViewEvent::Chat"
 msgstr "Rozmowa"
 
-#: usereventdlg.cpp:625
+#: usereventdlg.cpp:639
 msgid "UserViewEvent::File Transfer"
 msgstr "Transfer plików"
 
@@ -3552,11 +3656,11 @@ msgstr "Da&lej"
 msgid "UserViewEvent::Normal Click - Close Window\n<CTRL>+Click - also delete User"
 msgstr "Klikniêcie zamyka okno\n<CTRL>+klikniêcie usuwa tak¿e u¿ytkownika"
 
-#: usereventdlg.cpp:397
+#: usereventdlg.cpp:400
 msgid "UserViewEvent::Start Chat"
 msgstr "Rozmowa"
 
-#: usereventdlg.cpp:675
+#: usereventdlg.cpp:690
 msgid "UserViewEvent::View URL failed"
 msgstr "Otwarcie URL nie uda³o siê"
 
@@ -3564,7 +3668,7 @@ msgstr "Otwarcie URL nie uda³o siê"
 msgid "UserViewEvent::\n--------------------\nRequest was cancelled."
 msgstr "\n--------------------\n¯±danie anulowane."
 
-#: wharf.cpp:570
+#: wharf.cpp:583
 msgid "WharfIcon::"
 "Left click - Show main window\n"
 "Middle click - Show next message\n"
@@ -3573,4 +3677,60 @@ msgstr ""
 "Lewy przycisk myszy - poka¿ g³ówne okno\n"
 "¦rodkowy przycisk myszy - poka¿ nastêpn± wiadomo¶æ\n"
 "Prawy przycisk myszy - menu systemowe\n"
+
+#: src/dialogs/qfontdialog.cpp:121
+msgid "QFontDialog::&Color"
+msgstr "&Kolor"
+
+#: src/dialogs/qfontdialog.cpp:91
+msgid "QFontDialog::&Font"
+msgstr "&Czcionka"
+
+#: src/dialogs/qfontdialog.cpp:107
+msgid "QFontDialog::&Size"
+msgstr "&Rozmiar"
+
+#: src/dialogs/qfontdialog.cpp:115
+msgid "QFontDialog::&Underline"
+msgstr "&Podkre¶lenie"
+
+#: src/dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::Apply"
+msgstr "Zastosuj"
+
+#: src/dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Cancel"
+msgstr "Anuluj"
+
+#: src/dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Close"
+msgstr "Zamknij"
+
+#: src/dialogs/qfontdialog.cpp:111
+msgid "QFontDialog::Effects"
+msgstr "Efekty"
+
+#: src/dialogs/qfontdialog.cpp:99
+msgid "QFontDialog::Font st&yle"
+msgstr "St&yl czcionki"
+
+#: src/dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::OK"
+msgstr "OK"
+
+#: src/dialogs/qfontdialog.cpp:125
+msgid "QFontDialog::Sample"
+msgstr "Próbka"
+
+#: src/dialogs/qfontdialog.cpp:139
+msgid "QFontDialog::Scr&ipt"
+msgstr "Skryp&t"
+
+#: src/dialogs/qfontdialog.cpp:274
+msgid "QFontDialog::Select Font"
+msgstr "Wybierz czcionkê"
+
+#: src/dialogs/qfontdialog.cpp:113
+msgid "QFontDialog::Stri&keout"
+msgstr "Prze&kre¶lona"
 
