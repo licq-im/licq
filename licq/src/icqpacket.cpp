@@ -613,6 +613,13 @@ CPU_Register::CPU_Register(const char *szPasswd)
   buffer->PackUnsignedLong(0x00000000);
 }
 
+#elif ICQ_VERSION >= 7
+
+CPU_Register::CPU_Register(const char *szPasswd)
+	: CPU_CommonFamily()
+{
+}
+
 #endif
 
 //-----Logon--------------------------------------------------------------------
@@ -952,7 +959,7 @@ CPU_AckNameInfo::CPU_AckNameInfo()
   buffer->PackUnsignedLongBE(0x00000000);
 }
 
-//-----ThroughServer------------------------------------------------------------
+//-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned char msgType, char *szMessage)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
@@ -961,28 +968,77 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   char uin[13];
   uin[12] = '\0';
   int n = snprintf(uin, 12, "%lu", m_nDestinationUin);
+	unsigned short nFormat = 0;
+	int nTypeLen = 0, nTLVType = 0;
+	CBuffer tlvData;
+	
+  switch (msgType)
+  {
+  case ICQ_CMDxSUB_MSG:
+  	nTypeLen = 13+msgLen;
+  	nFormat = 1;
+  	break;
+  	
+  case ICQ_CMDxSUB_ADDEDxTOxLIST:
+  	break;
+  	
+  case ICQ_CMDxSUB_URL:
+  case ICQ_CMDxSUB_AUTHxGRANTED:
+  case ICQ_CMDxSUB_AUTHxREFUSED:
+  case ICQ_CMDxSUB_AUTHxREQUEST:
+  	nTypeLen = 9+msgLen;
+  	nFormat = 4;
+  	break;
 
-  m_nSize += 32 + n + strlen(szMessage);
+  default:
+  	n = Typelen = msgLen = 0;
+  	gLog.Warn("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
+  }
 
+  m_nSize += 11 + nTypeLen + n + 8; // 11 all bytes pre-tlv
+  																	//  8 fom tlv type, tlv len, and last 4 bytes
   InitBuffer();
 
-  buffer->PackUnsignedLongBE(0); // timestamp 1
-  buffer->PackUnsignedLongBE(0); // timestamp 2
-
-  buffer->PackUnsignedShortBE(1); // message format
+ 	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
+	buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
+  buffer->PackUnsignedShortBE(nFormat); // message format
   buffer->PackChar(n);
   buffer->Pack(uin, n);
 
-  buffer->PackUnsignedShortBE(0x02); // type
-  buffer->PackUnsignedShortBE(msgLen + 17); // length
-  buffer->PackUnsignedLongBE(0x05010001);
-  buffer->PackUnsignedShortBE(0x0101);
-  buffer->PackChar(0x01);
-  buffer->PackUnsignedShortBE(msgLen + 4);
-  buffer->PackUnsignedLongBE(0);
-  buffer->Pack(szMessage, msgLen);
-  buffer->PackUnsignedShortBE(0x0006);
-  buffer->PackUnsignedShortBE(0x0000);
+  tlvData.Create(nTypeLen);
+
+  switch (nFormat)
+  {
+  case 1:
+  	nTLVType = 0x02;
+  	
+  	tlvData.PackUnsignedLongBE(0x05010001);
+	  tlvData.PackUnsignedShortBE(0x0101);
+  	tlvData.PackChar(0x01);
+	  tlvData.PackUnsignedShortBE(msgLen + 4);
+  	tlvData.PackUnsignedLongBE(0);
+	  tlvData.Pack(szMessage, msgLen);
+	
+  	break;
+  	
+  case 2:
+  	nTLVType = 0x05;
+  	
+  	break;
+  	
+  case 4:
+  	nTLVType = 0x05;
+  	
+		tlvData.PackUnsignedLong(gUserManager.OwnerUin());
+		tlvData.PackChar(msgType);
+		tlvData.PackChar(0); // message flags
+		tlvData.PackLNTS(szMessage);
+		
+  	break;
+  }
+
+  buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
+  buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
 }
 
 CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin, unsigned long timestamp1, unsigned long timestamp2,
