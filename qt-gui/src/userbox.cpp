@@ -56,30 +56,30 @@ QColor  *CUserViewItem::s_cOnline = NULL,
 
 
 //-----CUserViewItem::constructor-----------------------------------------------
-CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex, QListView *parent)
+CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
    : QListViewItem(parent)
 {
-  m_nIndex = _nIndex;
-  if (_cUser == NULL)
-  {
-    m_nUin = 0;
-    m_pIcon = NULL;
-    m_cBack = s_cBack;
-    m_cFore = s_cOnline;
-    m_bItalic = m_bStrike = false;
-    m_nWeight = QFont::Normal;
-    setSelectable(false);
-    setHeight(10);
-    if (m_nIndex == -1) m_sPrefix = "0";
-    else m_sPrefix = "2";
-  }
-  else
-  {
-    m_nUin = _cUser->Uin();
-    m_status = _cUser->Status();
-    setGraphics(_cUser);
-  }
+  m_nUin = _cUser->Uin();
+  setGraphics(_cUser);
+}
 
+
+CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
+   : QListViewItem(parent)
+{
+  m_nUin = 0;
+  m_pIcon = NULL;
+  m_cBack = s_cBack;
+  m_cFore = s_cOnline;
+  m_bItalic = m_bStrike = false;
+  m_nWeight = QFont::Normal;
+  setSelectable(false);
+  setHeight(10);
+  m_sSortKey = "";
+  if (barType == BAR_ONLINE)
+    m_sPrefix = "0";
+  else
+    m_sPrefix = "2";
 }
 
 
@@ -87,9 +87,21 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex, QListView *parent)
 void CUserViewItem::setGraphics(ICQUser *u)
 {
    static char sTemp[128];
+   CUserView *v = (CUserView *)listView();
+   m_nStatus = u->Status();
+
+   // Create any necessary bars
+   if (u->StatusOffline() && v->barOffline == NULL && v->ShowBars() )
+   {
+      v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
+   }
+   if (!u->StatusOffline() && v->barOnline == NULL && v->ShowBars() )
+   {
+      v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
+   }
 
    m_sPrefix = "1";
-   switch (u->Status())
+   switch (m_nStatus)
    {
    case ICQ_STATUS_FREEFORCHAT:
       m_pIcon = s_pFFC;
@@ -177,12 +189,14 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
    if (u->NewMessages() > 0) m_nWeight = QFont::Bold;
 
-   CUserView *v = (CUserView *)listView();
    for (unsigned short i = 0; i < v->colInfo.size(); i++)
    {
      u->usprintf(sTemp, v->colInfo[i]->m_szFormat);
      setText(i + 1, QString::fromLocal8Bit(sTemp));
    }
+
+   // Set the user tag
+   m_sSortKey.sprintf("%u%010lu", m_nStatus, u->Touched() ^ 0xFFFFFFFF);
 }
 
 
@@ -283,7 +297,8 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     if (column == 1)
     {
       char sz[12] = "Offline";
-      if (m_nIndex == -1) strcpy(sz, "Online");
+      if (m_sPrefix == "0")
+        strcpy(sz, "Online");
       if (pix != NULL)
       {
         QPoint pd(p->xForm(QPoint(5,0)).x(), p->xForm(QPoint(5,0)).y());
@@ -334,13 +349,7 @@ void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
 QString CUserViewItem::key (int column, bool ascending) const
 {
   if (column == 0)
-  {
-    if (m_nIndex < 0)  // bar
-      return(m_sPrefix);
-    char s[8];
-    sprintf(s, "%04d", m_nIndex);
-    return (m_sPrefix + s);
-  }
+    return (m_sPrefix + m_sSortKey);
   else
     return(m_sPrefix + QListViewItem::key(column, ascending));
 }
@@ -350,7 +359,7 @@ QString CUserViewItem::key (int column, bool ascending) const
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
-                    bool bTransparent,
+                    bool bTransparent, bool bShowBars,
                     QWidget *parent, const char *name)
    : QListView(parent, name)
 {
@@ -358,6 +367,8 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
    mnuGroup = mg;
    colInfo = _colInfo;
    m_bTransparent = bTransparent;
+   m_bShowBars = bShowBars;
+   barOnline = barOffline = NULL;
 
    addColumn(tr("S"), 20);
    for (unsigned short i = 0; i < colInfo.size(); i++)
@@ -369,6 +380,7 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
    m_tips = new CUserViewTips(this);
 
    setAllColumnsShowFocus (true);
+   setSorting(0);
    setShowHeader(isHeader);
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
@@ -380,6 +392,12 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
 CUserView::~CUserView()
 {
   delete m_tips;
+}
+
+void CUserView::clear()
+{
+  QListView::clear();
+  barOnline = barOffline = NULL;
 }
 
 
@@ -438,6 +456,10 @@ void CUserView::setShowHeader(bool isHeader)
    else h->show();
 }
 
+void CUserView::setShowBars(bool s)
+{
+}
+
 
 unsigned long CUserView::SelectedItemUin()
 {
@@ -474,13 +496,13 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
          {
            ICQUser *u = gUserManager.FetchUser(SelectedItemUin(), LOCK_R);
            if (u == NULL) return;
-           mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_ONLINExNOTIFY),
+           mnuUser->setItemChecked(MENU_USER_ONLINExNOTIFY,
                                    u->OnlineNotify());
-           mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_INVISIBLExLIST),
+           mnuUser->setItemChecked(MENU_USER_INVISIBLExLIST,
                                    u->InvisibleList());
-           mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_VISIBLExLIST),
+           mnuUser->setItemChecked(MENU_USER_VISIBLExLIST,
                                    u->VisibleList());
-           mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_IGNORExLIST),
+           mnuUser->setItemChecked(MENU_USER_IGNORExLIST,
                                    u->IgnoreList());
            for (unsigned short i = 0; i < mnuGroup->count(); i++)
               mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
@@ -687,10 +709,11 @@ void CUserViewTips::maybeTip(const QPoint& c)
   QListView* w = (QListView*) parentWidget();
   CUserViewItem* item = (CUserViewItem*) w->itemAt(c);
 
-  if(item && item->m_nUin) {
-    char s[32];
+  if(item && item->m_nUin)
+  {
+    char s[64];
 
-    ICQUser::StatusToStatusStr(item->m_status, false, s);
+    ICQUser::StatusToStatusStr(item->m_nStatus, false, s);
     tip(w->itemRect(item), QString(s));
   }
 }

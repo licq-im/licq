@@ -7,8 +7,13 @@
 #include <qtooltip.h>
 
 class ICQUser;
-
 class CUserView;
+
+enum BarType
+{
+  BAR_ONLINE,
+  BAR_OFFLINE
+};
 
 class CColumnInfo
 {
@@ -46,10 +51,10 @@ protected:
 class CUserViewItem : public QListViewItem
 {
 public:
-  CUserViewItem (ICQUser *, short, QListView *);
+  CUserViewItem (ICQUser *, QListView *);
+  CUserViewItem (BarType, QListView *);
   virtual QString key(int column, bool ascending) const;
   unsigned long ItemUin()  { return m_nUin; }
-  short ItemIndex() { return m_nIndex; }
   void setGraphics(ICQUser *);
 protected:
   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
@@ -58,11 +63,10 @@ protected:
   QPixmap *m_pIcon;
 
   unsigned long m_nUin;
-  short m_nIndex;
-  unsigned short m_status;
+  unsigned short m_nStatus;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike;
-  QString m_sPrefix;
+  QString m_sPrefix, m_sSortKey;
 
   static bool    s_bGridLines, s_bFontStyles;
   static QPixmap *s_pOnline,
@@ -95,10 +99,11 @@ class CUserView : public QListView
 public:
   CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
-             bool bTransparent,
+             bool bTransparent, bool bShowBars,
              QWidget *parent = 0, const char *name = 0);
   ~CUserView();
 
+  virtual void clear();
   void maxLastColumn();
 
   void setPixmaps(QPixmap *_pOnline, QPixmap *_pOffline, QPixmap *_pAway,
@@ -109,7 +114,10 @@ public:
                  char *_sNew, char *_sBack, char *_sGridLines);
 
   void setShowHeader(bool);
+  void setShowBars(bool);
   unsigned long SelectedItemUin();
+
+  bool ShowBars(void)  { return m_bShowBars; }
 
   bool getGridLines()  { return CUserViewItem::s_bGridLines; };
   void setGridLines(bool _b)  { CUserViewItem::s_bGridLines = _b; };
@@ -117,9 +125,10 @@ public:
 
 protected:
   QPopupMenu *mnuUser, *mnuGroup;
-  bool m_bTransparent;
+  bool m_bTransparent, m_bShowBars;
   CUserViewTips* m_tips;
   ColumnInfos colInfo;
+  CUserViewItem *barOnline, *barOffline;
   virtual void viewportMousePressEvent(QMouseEvent *e);
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );
