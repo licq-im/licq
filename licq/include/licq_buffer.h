@@ -110,13 +110,13 @@ public:
 
    void PackTLV(unsigned short, unsigned short, const char *);
 
-   unsigned short getTLVLen(unsigned short, unsigned short);
+   unsigned short getTLVLen(unsigned short);
 
-   unsigned long UnpackUnsignedLongTLV(unsigned short, unsigned short);
-   unsigned short UnpackUnsignedShortTLV(unsigned short, unsigned short);
-   unsigned char UnpackCharTLV(unsigned short, unsigned short);
-   char *UnpackStringTLV(unsigned short, unsigned short);
-   CBuffer UnpackTLV(unsigned short,unsigned short);
+   unsigned long UnpackUnsignedLongTLV(unsigned short);
+   unsigned short UnpackUnsignedShortTLV(unsigned short);
+   unsigned char UnpackCharTLV(unsigned short);
+   char *UnpackStringTLV(unsigned short);
+   CBuffer UnpackTLV(unsigned short);
 
 private:
    CBuffer& operator=(const CBuffer&);
@@ -129,7 +129,7 @@ protected:
    unsigned long m_nDataSize;
    SOscarTLV_Chain *m_pTLV;
 
-   SOscarTLV *getTLV(unsigned short _nType, unsigned short _nIndex);
+   SOscarTLV *getTLV(unsigned short _nType);
    void antiwarning() { NetworkIpToPacketIp(PacketIpToNetworkIp(127)); }
 };
 

@@ -59,7 +59,8 @@ public:
   virtual ~CSrvPacketTcp();
 
   virtual const unsigned long  Sequence() { return m_nSequence; }
-  virtual const unsigned short SubSequence() { return 0; }
+  virtual const unsigned short SubSequence() { return m_nSubSequence; }
+
     // do we need this ?
   virtual const unsigned short Command()  { return m_nChannel; }
   virtual const unsigned short SubCommand()  { return 0; }
@@ -72,9 +73,11 @@ protected:
 
   static bool s_bRegistered;
   static unsigned short s_nSequence;
+  static unsigned short s_nSubSequence;
 
   unsigned char m_nChannel;
   unsigned short m_nSequence;
+  unsigned short m_nSubSequence;
 
   char *m_szSequenceOffset;
 };
@@ -198,12 +201,10 @@ protected:
 class CPU_CommonFamily : public CSrvPacketTcp
 {
 public:
-  CPU_CommonFamily(unsigned short Family, unsigned short SubType, unsigned short nUin=0);
+  CPU_CommonFamily(unsigned short Family, unsigned short SubType);
 
 protected:
   void InitBuffer();
-
-    unsigned short m_nUid;
 
 private:
     unsigned short m_nFamily;
@@ -647,7 +648,7 @@ protected:
 class CPU_Meta_RequestAllInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestAllInfo(unsigned long _nUin, unsigned short _nUid);
+  CPU_Meta_RequestAllInfo(unsigned long _nUin);
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
   unsigned long Uin()  {  return m_nUin; }
 protected:
@@ -660,7 +661,7 @@ protected:
 class CPU_Meta_RequestBasicInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestBasicInfo(unsigned long _nUin, unsigned short _nUid);
+  CPU_Meta_RequestBasicInfo(unsigned long _nUin);
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
   unsigned long Uin()  {  return m_nUin; }
 protected:

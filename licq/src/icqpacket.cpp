@@ -236,11 +236,13 @@ void Encrypt_Server(CBuffer *buffer)
 //======Server TCP============================================================
 bool CSrvPacketTcp::s_bRegistered = false;
 unsigned short CSrvPacketTcp::s_nSequence = 0;
+unsigned short CSrvPacketTcp::s_nSubSequence = 0;
 
 CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
 {
   m_nChannel = nChannel;
   m_nSequence = s_nSequence++;
+  m_nSubSequence = s_nSubSequence++;
 
   buffer = NULL;
   m_nSize = 0;
@@ -866,12 +868,11 @@ CPU_GenericFamily::CPU_GenericFamily(unsigned short Family, unsigned short SubTy
   InitBuffer();
 }
 
-CPU_CommonFamily::CPU_CommonFamily(unsigned short Family, unsigned short SubType, unsigned short nUid)
+CPU_CommonFamily::CPU_CommonFamily(unsigned short Family, unsigned short SubType)
   : CSrvPacketTcp(ICQ_CHNxDATA)
 {
   m_nSize += 10;
 
-  m_nUid = nUid;
   m_nFamily = Family;
   m_nSubType = SubType;
 }
@@ -883,7 +884,7 @@ void CPU_CommonFamily::InitBuffer()
   buffer->PackUnsignedShortBE(m_nFamily);
   buffer->PackUnsignedShortBE(m_nSubType);
   buffer->PackUnsignedLongBE(0x00000000); // flags
-  buffer->PackUnsignedShortBE(m_nUid);
+  buffer->PackUnsignedShortBE(m_nSubSequence);
 }
 
 CPU_ClientReady::CPU_ClientReady()
@@ -1611,11 +1612,10 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin, unsigned short nUid)
+CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
   m_nMetaCommand = 0xb204;
-  m_nUid = nUid;
   m_nUin = nUin;
 
   int packetSize = 2+2+2+4+2+2+2+4;
@@ -1628,19 +1628,18 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin, unsigned sh
   buffer->PackUnsignedShort(packetSize-2-2-2); // bytes remaining
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xd007); // type
-  buffer->PackUnsignedShortBE(nUid);
+  buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShortBE(0xb204); // subtype
   buffer->PackUnsignedLong(m_nUin);
 }
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin, unsigned short nUid)
+CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
   m_nMetaCommand = ICQ_CMDxMETA_REQUESTxBASICxINFO;
   m_nUin = nUin;
-  m_nUid = nUid;
 
   m_nSize += 20;
 
@@ -1651,7 +1650,7 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin, unsigne
   buffer->PackUnsignedShort(0x000c); // Bytes remaining
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShort(ICQ_CMDxMETA_REQUESTxBASICxINFO);
-  buffer->PackUnsignedShort(m_nUid);
+  buffer->PackUnsignedShort(m_nSubSequence);
   buffer->PackUnsignedLong(nUin);
 }
 

@@ -34,7 +34,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   ICQEvent *e = (ICQEvent *)p;
   CICQDaemon *d = e->m_pDaemon;
-  struct timeval tv;
+  //struct timeval tv;
 
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)

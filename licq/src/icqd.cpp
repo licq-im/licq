@@ -928,12 +928,6 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 
   assert(e);
 
-  gLog.Info("SendExpectEvent: pending: \n");
-  for (list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
-  {
-    gLog.Info("%p\n", *iter);
-  }
-
   gLog.Info("appending: %p\n", e);
 
   int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
@@ -1040,12 +1034,15 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
       break;
     }
   }
-  gLog.Info("doneevents: for: %p pending: \n", e);
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
-  {
-    gLog.Info("%p Command: %d SubCommand: %d Sequence: %d SubSequence: %d: Uin: %d\n", *iter,
-              (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
-              (*iter)->Uin());
+
+  if (m_lxRunningEvents.size()) {
+    gLog.Info("doneevents: for: %p pending: \n", e);
+    for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+    {
+      gLog.Info("%p Command: %d SubCommand: %d Sequence: %ld SubSequence: %d: Uin: %ld\n", *iter,
+                (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
+                (*iter)->Uin());
+    }
   }
 
   //bool bFound = (iter == m_lxRunningEvents.end());
@@ -1297,14 +1294,14 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
  * Tracks down the relevant extended event, removes it from the list, and
  * returns it, marking the result as appropriate.
  *----------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::DoneExtendedEvent(const unsigned short _nCommand, const unsigned short _nSubSequence, EventResult _eResult)
+ICQEvent *CICQDaemon::DoneExtendedServerEvent(const unsigned short _nSubSequence, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
   {
-    if ((*iter)->m_nSubSequence == _nSubSequence && (*iter)->m_nCommand == _nCommand)
+    if ((*iter)->m_nSubSequence == _nSubSequence)
     {
       e = *iter;
       m_lxExtendedEvents.erase(iter);
@@ -1378,6 +1375,9 @@ void CICQDaemon::PushExtendedEvent(ICQEvent *e)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
+  gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %ld SubSequence: %d: Uin: %ld\n", e,
+            e->Command(), e->SubCommand(), e->Sequence(), e->SubSequence(), e->Uin());
+
   pthread_mutex_unlock(&mutex_extendedevents);
 }
 

@@ -338,8 +338,6 @@ unsigned long CBuffer::UnpackUnsignedLong()
 
 unsigned long CBuffer::UnpackUinString()
 {
-  unsigned char len;
-
   unsigned char nUinLen;
   char uin[20];
   *this >> nUinLen;
@@ -590,25 +588,20 @@ void CBuffer::PackFNACHeader(unsigned short nFamily, unsigned short nSubtype,
 }
 #endif
 
-unsigned short CBuffer::getTLVLen(unsigned short nType, unsigned short nIndex)
+unsigned short CBuffer::getTLVLen(unsigned short nType)
 {
-  unsigned short nLen = 0;
-
-  SOscarTLV *pTLV = getTLV(nType, nIndex);
+  SOscarTLV *pTLV = getTLV(nType);
   if (pTLV)
-  {
-    nLen = pTLV->nLen;
-  }
+    return pTLV->nLen;
 
-  return nLen;
+  return 0;
 }
 
-unsigned long CBuffer::UnpackUnsignedLongTLV(unsigned short nType,
-					     unsigned short nIndex)
+unsigned long CBuffer::UnpackUnsignedLongTLV(unsigned short nType)
 {
   unsigned long nRet = 0;
 
-  SOscarTLV *pTLV = getTLV(nType, nIndex);
+  SOscarTLV *pTLV = getTLV(nType);
   if (pTLV && pTLV->nLen > 3)
   {
     nRet |= (*((pTLV->pData)+0) << 24);
@@ -620,12 +613,11 @@ unsigned long CBuffer::UnpackUnsignedLongTLV(unsigned short nType,
   return nRet;
 }
 
-unsigned short CBuffer::UnpackUnsignedShortTLV(unsigned short nType,
-					       unsigned short nIndex)
+unsigned short CBuffer::UnpackUnsignedShortTLV(unsigned short nType)
 {
   unsigned short nRet = 0;
 
-  SOscarTLV *pTLV = getTLV(nType, nIndex);
+  SOscarTLV *pTLV = getTLV(nType);
   if (pTLV && pTLV->nLen > 1)
   {
     nRet |= (*((pTLV->pData)+0) << 8);
@@ -635,22 +627,22 @@ unsigned short CBuffer::UnpackUnsignedShortTLV(unsigned short nType,
   return nRet;
 }
 
-unsigned char CBuffer::UnpackCharTLV(unsigned short nType, unsigned short nIndex)
+unsigned char CBuffer::UnpackCharTLV(unsigned short nType)
 {
   unsigned char nRet = 0;
 
-  SOscarTLV *pTLV = getTLV(nType, nIndex);
+  SOscarTLV *pTLV = getTLV(nType);
   if (pTLV && pTLV->nLen > 0)
     nRet = *(pTLV->pData);
 
   return nRet;
 }
 
-char *CBuffer::UnpackStringTLV(unsigned short nType, unsigned short nIndex)
+char *CBuffer::UnpackStringTLV(unsigned short nType)
 {
   char *str = 0;
 
-  SOscarTLV *pTLV = getTLV(nType, nIndex);
+  SOscarTLV *pTLV = getTLV(nType);
   if (pTLV)
   {
     str = new char[pTLV->nLen+1];
@@ -663,9 +655,9 @@ char *CBuffer::UnpackStringTLV(unsigned short nType, unsigned short nIndex)
   return str;
 }
 
-CBuffer CBuffer::UnpackTLV(unsigned short nType, unsigned short nIndex)
+CBuffer CBuffer::UnpackTLV(unsigned short nType)
 {
-  SOscarTLV *pTLV = getTLV(nType, nIndex);
+  SOscarTLV *pTLV = getTLV(nType);
   if (pTLV)
   {
     CBuffer cbuf(pTLV->nLen);
@@ -678,26 +670,15 @@ CBuffer CBuffer::UnpackTLV(unsigned short nType, unsigned short nIndex)
     return CBuffer(0);
 }
 
-SOscarTLV *CBuffer::getTLV(unsigned short nType, unsigned short nIndex)
+SOscarTLV *CBuffer::getTLV(unsigned short nType)
 {
   if (!m_pTLV) return 0;
 
   SOscarTLV_Chain *now;
-  int i = 0;
 
   for (now = m_pTLV; now; now = now->pNext)
-  {
-    if (now && now->pTLV)
-    {
-      if (now->pTLV->nType == nType)
-	i++;
-
-      if (i >= nIndex) {
-
-	return now->pTLV;
-      }
-    }
-  }
+    if (now && now->pTLV && now->pTLV->nType == nType)
+        return now->pTLV;
 
   return 0;
 }

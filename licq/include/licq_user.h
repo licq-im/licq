@@ -218,7 +218,6 @@ public:
   bool EnableSave()                     { return m_bEnableSave; }
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
   unsigned long Uin()                   { return m_nUin; }
-  unsigned short Uid()                  { return m_nUid; }
   unsigned long Sequence(bool = false);
   unsigned long RealIp()                { return m_nRealIp; }
   char Mode()                           { return m_nMode; }
@@ -432,7 +431,6 @@ protected:
   bool m_bOnContactList;
   unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
-  unsigned short m_nUid;
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,
@@ -497,7 +495,6 @@ protected:
   UserEventList m_vcMessages;
 
   static unsigned short s_nNumUserEvents;
-  static unsigned short s_nUid;
 
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
@@ -596,7 +593,6 @@ public:
   unsigned long AddUser(ICQUser *);
   void RemoveUser(unsigned long);
   ICQUser *FetchUser(unsigned long, unsigned short);
-  ICQUser *FetchUserByUid(unsigned short, unsigned short);
   void DropUser(ICQUser *);
   ICQOwner *FetchOwner(unsigned short);
   void DropOwner();

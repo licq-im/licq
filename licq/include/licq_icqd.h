@@ -310,7 +310,7 @@ protected:
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);
   ICQEvent *DoneEvent(unsigned long tag, EventResult _eResult);
-  ICQEvent *DoneExtendedEvent(const unsigned short, const unsigned short, EventResult);
+  ICQEvent *DoneExtendedServerEvent(const unsigned short, EventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
   ICQEvent *DoneExtendedEvent(unsigned long tag, EventResult _eResult);
   void ProcessDoneEvent(ICQEvent *);
