@@ -4,6 +4,7 @@ New in 1.3
 
 o  Reversed the viewurl-xxx fix as it resulted in the scripts not working.
    For now urls containing '&' will not be properly displayed.
+o  Removed out of date zsh scripts.
 
 
 New in 1.2

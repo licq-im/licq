@@ -8,6 +8,8 @@ o  Saved-Auto-Response added to auto response dialog
 o  Zip code support
 o  Auto-away feature fixed/improved
 o  Implemented ignore types in option dialog
+o  Sorting contact list keeps online/offline users separate but
+   sorts within each section
 
 
 New in 0.66.1
