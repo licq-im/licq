@@ -288,6 +288,7 @@ void OptionsDlg::colEnable(bool isOn)
          cmbColAlign[i]->setEnabled(false);
       }
    }
+   chkColEnabled[0]->setEnabled(false);
 }
 
 
@@ -362,8 +363,7 @@ void OptionsDlg::SetupOptions()
    // set up the columns stuff
    for (i = 0; i < mainwin->colInfo.size(); i++)
    {
-      if(i)
-        chkColEnabled[i]->setChecked(true);
+      chkColEnabled[i]->setChecked(true);
       edtColTitle[i]->setText(mainwin->colInfo[i]->m_sTitle);
       edtColFormat[i]->setText(mainwin->colInfo[i]->m_szFormat);
       spnColWidth[i]->setValue(mainwin->userView->columnWidth(i + 1));
@@ -392,6 +392,7 @@ void OptionsDlg::SetupOptions()
       spnColWidth[i]->setEnabled(false);
       cmbColAlign[i]->setEnabled(false);
    }
+   chkColEnabled[0]->setEnabled(false);
 
    // set up the sound stuff
    COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
@@ -660,10 +661,10 @@ QWidget* OptionsDlg::new_status_options()
 
 // -----------------------------------------------------------------------------
 
-QWidget* OptionsDlg::new_column_options() {
-
+QWidget* OptionsDlg::new_column_options()
+{
   QWidget* w = new QWidget(this);
-  
+
   QGridLayout* lay1 = new QGridLayout(w, 7, 5, 10);
   lay1->setRowStretch(6, 1);
 
@@ -682,8 +683,9 @@ QWidget* OptionsDlg::new_column_options() {
   lay1->addWidget(lblColFormat, 1, 2);
   lay1->addWidget(lblColWidth, 1, 3);
   lay1->addWidget(lblColAlign, 1, 4);
-  
-  for (unsigned short i = 0; i < 4; i++) {
+
+  for (unsigned short i = 0; i < 4; i++)
+  {
     chkColEnabled[i] = new QCheckBox(tr("Column %1").arg(i), w);
     edtColTitle[i] = new QLineEdit(w);
     QWhatsThis::add(edtColTitle[i], QWhatsThis::textFor(lblColTitle));
@@ -693,7 +695,7 @@ QWidget* OptionsDlg::new_column_options() {
     QWhatsThis::add(spnColWidth[i], QWhatsThis::textFor(lblColWidth));
     spnColWidth[i]->setRange(0, 2048);
     cmbColAlign[i] = new QComboBox(w);
-    QWhatsThis::add(cmbColAlign[i], QWhatsThis::textFor(lblColAlign));    
+    QWhatsThis::add(cmbColAlign[i], QWhatsThis::textFor(lblColAlign));
     cmbColAlign[i]->insertItem(tr("Left"));
     cmbColAlign[i]->insertItem(tr("Right"));
     cmbColAlign[i]->insertItem(tr("Center"));
@@ -706,9 +708,6 @@ QWidget* OptionsDlg::new_column_options() {
   }
   lay1->activate();
 
-  // unchecking the first tab is evil, so forbit it 
-  chkColEnabled[0]->setEnabled(false);
-  
   return w;
 }
 
