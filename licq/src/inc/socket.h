@@ -16,11 +16,8 @@
 #include "pthread_rdwr.h"
 #include "constants.h"
 
-extern "C"
-{
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);
-}
 
 //=====INetSocket==================================================================================
 class INetSocket
