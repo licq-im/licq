@@ -145,24 +145,24 @@ CBuffer& CBuffer::operator>>(unsigned char &in)
 
 CBuffer& CBuffer::operator>>(unsigned short &in)
 {
-   if(getDataPosRead() + sizeof(unsigned short) > (getDataStart() + getDataSize()))
+   if(getDataPosRead() + 2 > (getDataStart() + getDataSize()))
       in = 0;
    else
    {
       in = get_le_short(getDataPosRead());
-      incDataPosRead(sizeof(unsigned short));
+      incDataPosRead(2);
    }
    return(*this);
 }
 
 CBuffer& CBuffer::operator>>(unsigned long &in)
 {
-  if(getDataPosRead() + sizeof(unsigned long) > (getDataStart() + getDataSize()))
+  if(getDataPosRead() + 4 > (getDataStart() + getDataSize()))
     in = 0;
   else
   {
     in = get_le_long(getDataPosRead());
-    incDataPosRead(sizeof(unsigned long));
+    incDataPosRead(4);
   }
   return(*this);
 }
