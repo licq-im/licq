@@ -140,6 +140,8 @@ void CLicqRMS::Shutdown()
  *-------------------------------------------------------------------------*/
 int CLicqRMS::Run(CICQDaemon *_licqDaemon)
 {
+  unsigned short nPort;
+
   // Register with the daemon, we only want the update user signal
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
@@ -150,13 +152,21 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   if (conf.LoadFile(filename))
   {
     conf.SetSection("RMS");
-    //conf.ReadNum("Type", m_nForwardType, FORWARD_EMAIL);
+    conf.ReadNum("Port", nPort, 0);
     conf.CloseFile();
   }
 
   server = new TCPSocket(0);
 
-  if (!licqDaemon->StartTCPServer(server)) return 1;
+  if (licqDaemon->TCPPortsLow() != 0 && nPort == 0)
+  {
+    if (!licqDaemon->StartTCPServer(server)) return 1;
+  }
+  else
+  {
+    server->StartServer(nPort);
+  }
+
   gLog.Info("%sRMS server started on port %d.\n", L_RMSxSTR, server->LocalPort());
   CRMSClient::sockman.AddSocket(server);
   CRMSClient::sockman.DropSocket(server);
