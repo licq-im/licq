@@ -135,7 +135,7 @@ void convo_show(struct conversation *c)
 	/* Add the send through server button and spoofing options */
 	c->send_server = gtk_check_button_new_with_label("Send through server");
 	c->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
-	c->spoof_uin = gtk_entry_new_with_max_length(8);
+	c->spoof_uin = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
 
 	/* Verify that the c->spoof_uin is digits only */
 	gtk_signal_connect(GTK_OBJECT(c->spoof_uin), "insert-text",
@@ -208,7 +208,8 @@ void convo_show(struct conversation *c)
 	gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 
 	/* Don't forget the delete signal */
-	gtk_signal_connect(GTK_OBJECT(c->window), "destroy", GTK_SIGNAL_FUNC(dialog_close), c->window);
+	gtk_signal_connect(GTK_OBJECT(c->window), "destroy",
+			   GTK_SIGNAL_FUNC(convo_close), c);
 
 	gtk_widget_show_all(c->window);
 }
