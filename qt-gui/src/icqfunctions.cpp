@@ -556,26 +556,33 @@ public:
 protected:
 
   virtual void paintCell(QPainter* p, int row, int col)
+  {
+    QFont f(p->font());
+    QPalette& pal = const_cast<QPalette&>(palette());
+
+    QString s = stringShown(row);
+    f.setBold (s[0] == '\001' || s[0] == '\002');
+    int i= row;
+    pal.setColor(QColorGroup::Text, Qt::blue);
+    while(i >= 0)
     {
-      QFont f(p->font());
-      QPalette& pal = const_cast<QPalette&>(palette());
-
-      QString s = stringShown(row);
-      f.setBold(s[0] == '\001' || s[0] == '\002');
-      int i= row;
-      pal.setColor(QColorGroup::Text, Qt::blue);
-      while(i >= 0) {
-        QString s2 = stringShown(i--);
-        if(s2[0] == '\002')  break;
-        if(s2[0] == '\001') {
-          pal.setColor(QColorGroup::Text, Qt::red);
-          break;
-        }
+      QString s2 = stringShown(i--);
+      if (s2[0] == '\002')  break;
+      if (s2[0] == '\003')
+      {
+        pal.setColor(QColorGroup::Text, Qt::black);
+        break;
       }
-
-      p->setFont(f);
-      MLEditWrap::paintCell(p, row, col);
+      else if(s2[0] == '\001')
+      {
+        pal.setColor(QColorGroup::Text, Qt::red);
+        break;
+      }
     }
+
+    p->setFont(f);
+    MLEditWrap::paintCell(p, row, col);
+  }
 };
 
 
@@ -585,7 +592,27 @@ void ICQFunctions::InitHistoryTab()
   tabList[TAB_HISTORY].loaded = true;
   QWidget *p = tabList[TAB_HISTORY].tab;
 
-  QBoxLayout* lay = new QVBoxLayout(p, 8, 8);
+  QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
+
+  lblHistory = new QLabel(p);
+  lblHistory->setAutoResize(true);
+  lblHistory->setAlignment(AlignLeft | AlignVCenter);
+  lay->addWidget(lblHistory);
+
+  mleHistory = new HistoryWidget(p);
+  lay->addWidget(mleHistory);
+
+  QGroupBox *box = new QGroupBox(3, Horizontal, p);
+  lay->addWidget(box);
+
+  btnHistoryReload = new QPushButton(tr("Reload"), box);
+  connect(btnHistoryReload, SIGNAL(clicked()), SLOT(slot_historyReload()));
+  btnHistoryEdit = new QPushButton(tr("Edit"), box);
+  connect(btnHistoryEdit, SIGNAL(clicked()), SLOT(slot_historyEdit()));
+  chkHistoryReverse = new QCheckBox(tr("Reverse"), box);
+  connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
+  chkHistoryReverse->setChecked(true);
+/*  QBoxLayout* lay = new QVBoxLayout(p, 8, 8);
 
   QBoxLayout* l = new QHBoxLayout(lay);
 
@@ -600,7 +627,7 @@ void ICQFunctions::InitHistoryTab()
   l->addWidget(chkHistoryReverse);
 
   mleHistory = new HistoryWidget(p);
-  lay->addWidget(mleHistory, 1);
+  lay->addWidget(mleHistory, 1);*/
 }
 
 
@@ -657,10 +684,6 @@ void ICQFunctions::setupTabs(int index)
 
   // Info tabs
   SetInfo(u);
-  /*SetGeneralInfo(u);
-  SetMoreInfo(u);
-  SetWorkInfo(u);
-  SetAbout(u);*/
 
   bool bNewUser = u->NewUser();
   gUserManager.DropUser(u);
@@ -1521,6 +1544,24 @@ void ICQFunctions::SetupHistory()
   gUserManager.DropUser(u);
 }
 
+
+void ICQFunctions::slot_historyReload()
+{
+  ICQUser::ClearHistory(m_lHistoryList);
+  SetupHistory();
+}
+
+void ICQFunctions::slot_historyEdit()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u == NULL) return;
+
+  (void) new EditFileDlg(u->HistoryFile());
+
+  gUserManager.DropUser(u);
+}
+
+
 void ICQFunctions::slot_historyReverse(bool newVal)
 {
   if (chkHistoryReverse->isChecked() != newVal)
@@ -1587,14 +1628,14 @@ void ICQFunctions::ShowHistory()
   {
 
     d.setTime_t((*tempIter)->Time());
-    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n\n",
+    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n%c--------------------\n",
               (*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002',
               (const char *)EventDescription(*tempIter),
               (const char *)d.toString(),
               (*tempIter)->IsDirect() ? 'D' : '-',
               (*tempIter)->IsMultiRec() ? 'M' : '-',
               (*tempIter)->IsUrgent() ? 'U' : '-',
-              (*tempIter)->Text());
+              (*tempIter)->Text(), '\003');
     st.append(s);
     m_nHistoryShowing++;
     if(m_bHistoryReverse)
