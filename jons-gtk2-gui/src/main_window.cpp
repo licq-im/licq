@@ -18,32 +18,65 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "config.h"
 #include "licq_gtk.h"
+
+#include "licq_user.h"
+#include "licq_icqd.h"
+#include "licq_icq.h"
+
+unsigned short
+get_owner_status()
+{
+	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+	unsigned short status = owner->Status();
+	gUserManager.DropOwner();
+	
+	return status;
+}
 
 #include <gtk/gtk.h>
 #include <fstream>
 
+extern "C" {
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#ifdef USE_SCRNSAVER
+#include <X11/extensions/scrnsaver.h>
+#endif
+
+}
+
+#include <iostream>
 using namespace std;
 
 GtkWidget *vertical_box;
 GtkWidget *contact_list;
 GObject *trayicon;
+GtkWidget *main_window;
 
 gint flash_icons(gpointer);
 
-void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
+gboolean main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
-	save_window_pos();
+	//save_window_pos();
 	gtk_main_quit();
+
+	return FALSE;
 }
+
+gboolean auto_away(gpointer data);
+guint auto_away_id;
 
 GtkWidget* main_window_new(const gchar* window_title)
 {
 	gtk_timeout_add(1000, flash_icons, 0);
 
 	/* Here's a good place to start the option defaults */
-	const char *filename = g_strdup_printf("%s/licq_jons-gtk2-gui.conf",
-					       BASE_DIR);
+	char filename[MAX_FILENAME_LEN];
+	snprintf(filename, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, config_file());
 	fstream file(filename, ios::in | ios::out);
 
 	if(file)
@@ -73,8 +106,6 @@ GtkWidget* main_window_new(const gchar* window_title)
 	/* Make the window fully resizable */
 	gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(main_window), windowW, windowH);
-
-	gtk_widget_realize(main_window);
 
 	/* Call main_window_delete_event when the delete_event is called */
 	g_signal_connect(G_OBJECT(main_window), "delete_event",
@@ -128,10 +159,205 @@ GtkWidget* main_window_new(const gchar* window_title)
 
 	trayicon = licq_init_tray();
 	
+	auto_away_id = gtk_timeout_add(10000, auto_away, 0);
+	
 	return main_window;
 }
 
 void main_window_show()
 {
 	gtk_widget_show(main_window);
+	contact_list_refresh();
+	system_status_refresh();
+	status_bar_refresh();
+}
+
+void changeStatus(int id)
+{
+  unsigned long newStatus = ICQ_STATUS_OFFLINE;
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (id == ICQ_STATUS_OFFLINE)
+  {
+    gUserManager.DropOwner();
+    icq_daemon->icqLogoff();
+    return;
+  }
+  else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
+  {
+    /*
+		mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
+                              !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
+    */
+		if (o->StatusOffline())
+    {
+      gUserManager.DropOwner();
+      return;
+    }
+    /*
+		if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+       newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
+    else
+       newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
+		*/
+  }
+  else
+  {
+    newStatus = id;
+  }
+
+  // we may have been offline and gone online with invisible toggled
+  /*
+	if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+     newStatus |= ICQ_STATUS_FxPRIVATE;
+	*/
+	
+  // disable combo box, flip pixmap...
+  //lblStatus->setEnabled(false);
+
+  // call the right function
+  bool b = o->StatusOffline();
+  gUserManager.DropOwner();
+  if (b)
+    icq_daemon->icqLogon(newStatus);
+  else
+    icq_daemon->icqSetStatus(newStatus);
+}
+
+// this bit is copied straight out of qt-gui
+gboolean auto_away(gpointer)
+{
+#ifdef USE_SCRNSAVER
+  static XScreenSaverInfo *mit_info = NULL;
+  static bool bAutoAway = false;
+  static bool bAutoNA = false;
+  static bool bAutoOffline = false;
+	static Display *display = 0;
+
+	unsigned short status = get_owner_status();
+	
+  if (mit_info == NULL) {
+		if (display == NULL)
+			display = XOpenDisplay(gdk_get_display());
+    int event_base, error_base;
+    if(XScreenSaverQueryExtension(display, &event_base, &error_base)) {
+      mit_info = XScreenSaverAllocInfo ();
+    }
+    else {
+			gLog.Warn("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
+                L_WARNxSTR);
+      return FALSE;
+    }
+  }
+
+  if (!XScreenSaverQueryInfo(display, DefaultRootWindow(display), mit_info)) {
+    gLog.Warn("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
+              L_WARNxSTR);
+    return FALSE;
+  }
+  unsigned long idle_time = mit_info->idle;
+
+  // Check no one changed the status behind our back
+	if ( (bAutoOffline && status != ICQ_STATUS_OFFLINE) ||
+       (bAutoNA && status != ICQ_STATUS_NA && !bAutoOffline) ||
+       (bAutoAway && status != ICQ_STATUS_AWAY && !bAutoNA && !bAutoOffline) )
+  {
+    bAutoOffline = false;
+    bAutoNA = false;
+    bAutoAway = false;
+    return TRUE;
+  }
+	
+//  gLog.Info("offl %d, n/a %d, away %d idlt %d\n",
+//            bAutoOffline, bAutoNA, bAutoAway, idleTime);
+
+	if (auto_offline_time > 0 && idle_time > auto_offline_time * 60000)
+  {
+    if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY || 
+				status == ICQ_STATUS_NA)
+    {
+      changeStatus(ICQ_STATUS_OFFLINE);
+      bAutoOffline = true;
+      bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
+      bAutoNA = ((status == ICQ_STATUS_AWAY && bAutoAway) || bAutoNA);
+    }
+  }
+  else if ((auto_na_time > 0) && idle_time > auto_na_time * 60000)
+  {
+    if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY)
+    {
+      /*
+			if (autoNAMess) {
+       SARList &sar = gSARManager.Fetch(SAR_NA);
+       ICQUser *u = gUserManager.FetchOwner(LOCK_W);
+       u->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+       gUserManager.DropOwner();
+       gSARManager.Drop();
+      }
+			*/
+			
+      changeStatus(ICQ_STATUS_NA);
+      bAutoNA = true;
+      bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
+    }
+  }
+  else if (auto_away_time > 0 && idle_time > auto_away_time * 60000)
+  {
+    if (status == ICQ_STATUS_ONLINE)
+    {
+			/*
+			if (autoAwayMess) {
+       SARList &sar = gSARManager.Fetch(SAR_AWAY);
+       ICQUser *u = gUserManager.FetchOwner(LOCK_W);
+       u->SetAutoResponse("Gone fishin'!");
+       gUserManager.DropOwner();
+       gSARManager.Drop();
+      }
+			*/
+      changeStatus(ICQ_STATUS_AWAY);
+      bAutoAway = true;
+    }
+  }
+  else
+  {
+    if (bAutoOffline)
+    {
+      if (bAutoNA && bAutoAway)
+      {
+        changeStatus(ICQ_STATUS_ONLINE);
+        bAutoOffline = bAutoNA = bAutoAway = false;
+      }
+      else if (bAutoNA)
+      {
+        changeStatus(ICQ_STATUS_AWAY);
+        bAutoNA = bAutoOffline = false;
+      }
+      else
+      {
+        changeStatus(ICQ_STATUS_NA);
+        bAutoOffline = false;
+      }
+    }
+    else if (bAutoNA)
+    {
+      if (bAutoAway)
+      {
+        changeStatus(ICQ_STATUS_ONLINE);
+        bAutoNA = bAutoAway = false;
+      }
+      else
+      {
+        changeStatus(ICQ_STATUS_AWAY);
+        bAutoNA = false;
+      }
+    }
+    else if (bAutoAway)
+    {
+      changeStatus(ICQ_STATUS_ONLINE);
+      bAutoAway = false;
+    }
+  }
+
+	return TRUE;
+#endif // USE_SCRNSAVER
 }
