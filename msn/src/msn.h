@@ -28,6 +28,10 @@
 #define MSN_PPID 0x4D534E5F
 #define L_MSNxSTR "[MSN] "
 
+const char CONTACT_LIST[] = "FL";
+const char ALLOW_LIST[] = "AL";
+const char BLOCK_LIST[] = "BL";
+
 #include <string>
 #include <list>
 #include <vector>
@@ -86,7 +90,8 @@ private:
   void MSNSendMessage(char *, char *, pthread_t);
   void MSNSendTypingNotification(char *);
   void MSNChangeStatus(unsigned long);
-  
+  void MSNAddUser(char *);
+  void MSNGrantAuth(char *);
   
   // Internal functions
   int HashValue(int n) { return n % 211; }
@@ -94,7 +99,10 @@ private:
   void RemovePacket(string, int);
   SBuffer *RetrievePacket(string, int);
   ICQEvent *RetrieveEvent(unsigned long);
-  
+
+  // Config
+  unsigned long m_nListVersion;
+    
   // Variables
   CICQDaemon *m_pDaemon;
   bool m_bExit;

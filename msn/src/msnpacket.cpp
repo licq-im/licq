@@ -199,14 +199,15 @@ CPS_MSNChangeStatus::CPS_MSNChangeStatus(unsigned long _nStatus) : CMSNPacket()
   m_pBuffer->Pack("\r\n", 2);
 }
 
-CPS_MSNSync::CPS_MSNSync() : CMSNPacket()
+CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
 {
   m_szCommand = strdup("SYN");
-  char szParams[] = "0";
-  m_nSize += 1;
+  char szParams[15];
+  int nSize = sprintf(szParams, "%lu", nVersion);
+  m_nSize += nSize;
   InitBuffer();
   
-  m_pBuffer->Pack(szParams, 1);
+  m_pBuffer->Pack(szParams, nSize);
   m_pBuffer->Pack("\r\n", 2);
 }
 
@@ -245,16 +246,18 @@ CPS_MSNSetPrivacy::CPS_MSNSetPrivacy() : CMSNPacket()
   m_pBuffer->Pack("\r\n", 2);
 }
 
-CPS_MSNAddUser::CPS_MSNAddUser(const char *szUser) : CMSNPacket()
+CPS_MSNAddUser::CPS_MSNAddUser(const char *szUser, const char *szList)
+  : CMSNPacket()
 {
   m_szCommand = strdup("ADD");
-  char szParams[] = "FL ";
-  m_nSize += strlen(szParams) + (strlen(szUser) * 2) + 1;
+  m_nSize += strlen(szList) + (strlen(szUser) * 2) + 2;
   InitBuffer();
   
   m_szUser = strdup(szUser);
+  m_szList = strdup(szList);
   
-  m_pBuffer->Pack(szParams, strlen(szParams));
+  m_pBuffer->Pack(m_szList, strlen(m_szList));
+  m_pBuffer->Pack(" ", 1);
   m_pBuffer->Pack(m_szUser, strlen(m_szUser));
   m_pBuffer->Pack(" ", 1);
   m_pBuffer->Pack(m_szUser, strlen(m_szUser));

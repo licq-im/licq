@@ -123,7 +123,7 @@ public:
 class CPS_MSNSync : public CMSNPacket
 {
 public:
-  CPS_MSNSync();
+  CPS_MSNSync(unsigned long);
 };
 
 class CPS_MSNChallenge : public CMSNPacket
@@ -141,11 +141,12 @@ public:
 class CPS_MSNAddUser : public CMSNPacket
 {
 public:
-  CPS_MSNAddUser(const char *);
-  virtual ~CPS_MSNAddUser() { if (m_szUser) free(m_szUser); }
+  CPS_MSNAddUser(const char *, const char *szList);
+  virtual ~CPS_MSNAddUser() { if (m_szUser) free(m_szUser); if (m_szList) free(m_szList); }
   
 protected:
   char *m_szUser;
+  char *m_szList;
 };
 
 class CPS_MSN_SBStart : public CMSNPacket

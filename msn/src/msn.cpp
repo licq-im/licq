@@ -43,6 +43,24 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
   m_pPacketBuf = 0;
   m_szUserName = 0;
   m_szPassword = 0;
+  
+  // Config file
+  char szFileName[MAX_FILENAME_LEN];
+  sprintf(szFileName, "%s/licq_msn.conf", BASE_DIR);
+  CIniFile msnConf;
+  if (!msnConf.LoadFile(szFileName))
+  {
+    FILE *f = fopen(szFileName, "w");
+    fprintf(f, "[network]");
+    fclose(f);
+    msnConf.LoadFile(szFileName);
+  }  
+  
+  msnConf.SetSection("network");
+  
+  msnConf.ReadNum("ListVersion", m_nListVersion, 0);
+  
+  msnConf.CloseFile();
 }
 
 CMSN::~CMSN()
@@ -53,6 +71,19 @@ CMSN::~CMSN()
     free(m_szUserName);
   if (m_szPassword)
     free(m_szPassword);
+    
+  // Config file
+  char szFileName[MAX_FILENAME_LEN];
+  sprintf(szFileName, "%s/licq_msn.conf", BASE_DIR);
+  CIniFile msnConf;
+  if (msnConf.LoadFile(szFileName))
+  {
+    msnConf.SetSection("network");
+    
+    msnConf.WriteNum("ListVersion", m_nListVersion);
+    msnConf.FlushFile();
+    msnConf.CloseFile();
+  }
 }
 
 void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
@@ -295,8 +326,21 @@ void CMSN::ProcessSignal(CSignal *s)
     }
     
     case PROTOxLOGOFF:
+    {
+      break;
+    }
+    
     case PROTOxADD_USER:
+    {
+      CAddUserSignal *sig = static_cast<CAddUserSignal *>(s);
+      MSNAddUser(sig->Id());
+      break;
+    }
+    
     case PROTOxREM_USER:
+    {
+      break;
+    }
     
     case PROTOxSENDxTYPING_NOTIFICATION:
     {
@@ -311,6 +355,13 @@ void CMSN::ProcessSignal(CSignal *s)
     {
       CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
       MSNSendMessage(sig->Id(), sig->Message(), sig->Thread());
+      break;
+    }
+
+    case PROTOxSENDxGRANTxAUTH:
+    {
+      CGrantAuthSignal *sig = static_cast<CGrantAuthSignal *>(s);
+      MSNGrantAuth(sig->Id());
       break;
     }
   }
@@ -386,7 +437,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
     {
       packet->SkipParameter(); // Seq
       packet->SkipParameter(); // current user to add
-      packet->SkipParameter(); // total usrers in conversation
+      packet->SkipParameter(); // total users in conversation
       string strUser = packet->GetParameter();
       
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
@@ -598,7 +649,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         string strNick = m_pPacketBuf->GetParameter();
         gLog.Info("%s%s logged in.\n", L_MSNxSTR, strNick.c_str());
         
-        pReply = new CPS_MSNSync();
+        pReply = new CPS_MSNSync(m_nListVersion);
       }
       else
       {
@@ -620,17 +671,18 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     {
       m_pPacketBuf->SkipParameter();
       string strVersion = m_pPacketBuf->GetParameter();
+      m_nListVersion = atol(strVersion.c_str());
       
       pReply = new CPS_MSNChangeStatus(ICQ_STATUS_ONLINE);
       SendPacket(pReply);
       
       // Send our local list now
-      FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
-      {
-        pReply = new CPS_MSNAddUser(pUser->IdString());
-        SendPacket(pReply);
-      }
-      FOR_EACH_PROTO_USER_END
+      //FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
+      //{
+      //  pReply = new CPS_MSNAddUser(pUser->IdString());
+      //  SendPacket(pReply);
+      //}
+      //FOR_EACH_PROTO_USER_END
       
       pReply = 0;
     }
@@ -638,11 +690,36 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     {
       // Add user
       string strUser = m_pPacketBuf->GetParameter();
-      m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
+      if (!gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
+        m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
     }
     else if (strCmd == "LSG")
     {
       // Add group
+    }
+    else if (strCmd == "ADD")
+    {
+      m_pPacketBuf->SkipParameter(); // What's this?
+      string strList = m_pPacketBuf->GetParameter();
+      m_pPacketBuf->SkipParameter(); // What's this?
+      string strUser = m_pPacketBuf->GetParameter();
+      string strNick = m_pPacketBuf->GetParameter();
+      
+      if (strList == "RL")
+      {
+        CUserEvent *e = new CEventAuthRequest(strUser.c_str(), MSN_PPID,
+          strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+      
+        ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
+        if (m_pDaemon->AddUserEvent(o, e))
+        {
+          gUserManager.DropOwner(MSN_PPID);
+          e->AddToHistory(NULL, D_RECEIVER);
+          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+        }
+        else
+          gUserManager.DropOwner(MSN_PPID);
+      }
     }
     else if (strCmd == "CHG")
     {
@@ -963,6 +1040,18 @@ void CMSN::MSNSendTypingNotification(char *_szUser)
 void CMSN::MSNChangeStatus(unsigned long _nStatus)
 {
   CMSNPacket *pSend = new CPS_MSNChangeStatus(_nStatus);
+  SendPacket(pSend);
+}
+
+void CMSN::MSNAddUser(char *szUser)
+{
+  CMSNPacket *pSend = new CPS_MSNAddUser(szUser, CONTACT_LIST);
+  SendPacket(pSend);
+}
+
+void CMSN::MSNGrantAuth(char *szUser)
+{
+  CMSNPacket *pSend = new CPS_MSNAddUser(szUser, ALLOW_LIST);
   SendPacket(pSend);
 }
 
