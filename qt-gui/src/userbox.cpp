@@ -479,7 +479,8 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
         p->fillRect(5, 0, p->fontMetrics().width(sz) + 6, height(), *m_cBack);
       }
       QFont f(p->font());
-      f.setPointSize(f.pointSize() - 2);
+      if (f.pointSize() > 2)
+        f.setPointSize(f.pointSize() - 2);
       p->setFont(f);
       p->setPen(QPen(*s_cGridLines));
       p->drawText(8, 0, width - 8, height(), AlignVCenter, sz);
@@ -639,7 +640,12 @@ UserFloatyList* CUserView::floaties = 0;
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
-  : QListView(parent, name), QToolTip(viewport())
+#if QT_VERSION >= 220
+  : QListView(parent, name, parent == NULL ? WStyle_Customize | WStyle_NoBorder /*| WStyle_StaysOnTop*/ : 0),
+#else
+  : QListView(parent, name),
+#endif
+    QToolTip(viewport())
 {
   m_nFlashCounter = carCounter = onlCounter = 0;
   msgTimerId = carTimerId = onlTimerId = 0;
@@ -763,12 +769,23 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    CUserViewItem::s_cAway->setNamedColor(_sAway);
    CUserViewItem::s_cOffline->setNamedColor(_sOffline);
    CUserViewItem::s_cNew->setNamedColor(_sNew);
-   CUserViewItem::s_cBack->setNamedColor(_sBack);
    CUserViewItem::s_cGridLines->setNamedColor(_sGridLines);
+   if (gMainWindow->m_bSystemBackground)
+   {
+     *CUserViewItem::s_cBack =
+      QListView::palette().color(QPalette::Normal, QColorGroup::Base);
+   }
+   else
+   {
+     if (_sBack != NULL)
+       CUserViewItem::s_cBack->setNamedColor(_sBack);
+     else
+       CUserViewItem::s_cBack->setNamedColor("grey76");
 
-   QPalette pal(QListView::palette());
-   pal.setColor(QColorGroup::Base, *CUserViewItem::s_cBack);
-   QListView::setPalette(pal);
+     QPalette pal(QListView::palette());
+     pal.setColor(QColorGroup::Base, *CUserViewItem::s_cBack);
+     QListView::setPalette(pal);
+   }
 }
 
 
