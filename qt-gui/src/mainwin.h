@@ -150,7 +150,9 @@ public:
 
 public slots:
   void callInfoTab(int, unsigned long, bool toggle=false);
+#ifdef QT_PROTOCOL_PLUGIN
   void callInfoTab(int, const char *, unsigned long, bool toggle=false);
+#endif
 
 public:
   // Command Tools
