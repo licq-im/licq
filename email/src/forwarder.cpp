@@ -16,8 +16,9 @@ extern int errno;
 #include "licq_icqd.h"
 #include "licq_file.h"
 #include "licq_user.h"
-#include "licq_socket.h"
 #include "licq_constants.h"
+#include "licq_socket.h"
+#include "licq_translate.h"
 
 extern "C" { const char *LP_Version(); }
 
@@ -344,6 +345,10 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmail1());
   }
   sprintf (szDate, "Date: %s", ctime(&t));
+  int l = strlen(szDate);
+  szDate[l - 1] = '\r';
+  szDate[l] = '\n';
+  szDate[l + 1] = '\0';
 
   switch (e->SubCommand())
   {
@@ -409,7 +414,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     return false;
   }
 
-  fprintf(fs, "HELO %s\n", m_szSMTPDomain);
+  fprintf(fs, "HELO %s\r\n", m_szSMTPDomain);
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 250)
@@ -419,7 +424,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     return false;
   }
 
-  fprintf (fs, "MAIL From: %s\n", m_szSMTPFrom);
+  fprintf (fs, "MAIL From: %s\r\n", m_szSMTPFrom);
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 250)
@@ -429,7 +434,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     return false;
   }
 
-  fprintf(fs, "RCPT TO: %s\n", m_szSMTPTo);
+  fprintf(fs, "RCPT TO: %s\r\n", m_szSMTPTo);
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 250)
@@ -439,7 +444,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     return false;
   }
 
-  fprintf(fs, "DATA\n");
+  fprintf(fs, "DATA\r\n");
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 354)
@@ -449,14 +454,16 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     return false;
   }
 
+  char *szTextRN = gTranslator.NToRN(e->Text());
   fprintf(fs, "%s"
-              "%s\n"
-              "%s\n"
-              "%s\n"
-              "%s\n"
-              "\n"
-              "%s\n.\n",
-              szDate, szFrom, szTo, szReplyTo, szSubject, e->Text());
+              "%s\r\n"
+              "%s\r\n"
+              "%s\r\n"
+              "%s\r\n"
+              "\r\n"
+              "%s\r\n.\r\n",
+              szDate, szFrom, szTo, szReplyTo, szSubject, szTextRN);
+  delete [] szTextRN;
 
   fgets(fin, 256, fs);
   code = atoi(fin);
@@ -467,7 +474,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     return false;
   }
 
-  fprintf(fs, "quit\n");
+  fprintf(fs, "quit\r\n");
 
   // Close our connection
   tcp->CloseConnection();
