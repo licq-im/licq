@@ -112,7 +112,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_nOnlCount = 0;
   m_nEvents = 0;
   // Other users group is sorted at the end
-  m_sSortKey = m_nGroupId ? QString::number((int)m_nGroupId) : QString("9999999999");
+  m_sSortKey = m_nGroupId ? QString("%1").arg((int)m_nGroupId, 10) : QString("9999999999");
   m_sPrefix = "1";
   setPixmap(0, gMainWindow->pmCollapsed);
   setText(1, QString::fromLocal8Bit(name));
