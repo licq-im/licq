@@ -3186,8 +3186,10 @@ void CMainWindow::initMenu()
    a->insertItem(ALT + Key_F, ICQ_STATUS_OFFLINE);
    a->insertItem(ALT + Key_I, ICQ_STATUS_FxPRIVATE);
    connect(a, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
+#if QT_VERSION > 309
    connect(a, SIGNAL(activatedAmbiguously(int)), this, SLOT(changeStatusManual(int)));
-   
+#endif
+         
    mnuStatus = new QPopupMenu(NULL);
    mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
    mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
