@@ -195,6 +195,7 @@ void OptionsDlg::SetupOptions()
   chkFlashAll->setChecked(mainwin->m_nFlash == FLASH_ALL);
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
   chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
+  chkHidden->setChecked(mainwin->m_bHidden);
   chkBoldOnMsg->setChecked(mainwin->m_bBoldOnMsg);
   chkManualNewUser->setChecked(mainwin->m_bManualNewUser);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
@@ -220,6 +221,8 @@ void OptionsDlg::SetupOptions()
       rdbDockDefault->setEnabled(false);
       rdbDockThemed->setEnabled(false);
       chkDockFortyEight->setEnabled(false);
+      chkHidden->setEnabled(false);
+      chkHidden->setChecked(false);
       break;
 #ifndef USE_KDE
     case DockDefault:
@@ -228,12 +231,14 @@ void OptionsDlg::SetupOptions()
       chkDockFortyEight->setChecked( ((IconManager_Default *)mainwin->licqIcon)->FortyEight());
       chkDockFortyEight->setEnabled(true);
       cmbDockTheme->setEnabled(false);
+      chkHidden->setEnabled(true);
       break;
     case DockThemed:
       chkUseDock->setChecked(true);
       rdbDockThemed->setChecked(true);
       cmbDockTheme->setEnabled(true);
       chkDockFortyEight->setEnabled(false);
+      chkHidden->setEnabled(true);
       for (unsigned short i = 0; i < cmbDockTheme->count(); i++)
       {
         if (cmbDockTheme->text(i) == ((IconManager_Themed *)mainwin->licqIcon)->Theme())
@@ -251,6 +256,7 @@ void OptionsDlg::SetupOptions()
       rdbDockDefault->setEnabled(false);
       rdbDockThemed->setEnabled(false);
       chkDockFortyEight->setEnabled(false);
+      chkHidden->setEnabled(true);
       break;
 #endif
   }
@@ -398,6 +404,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bAutoClose = chkAutoClose->isChecked();
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
   mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
+  mainwin->m_bHidden = chkHidden->isChecked();
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
   mainwin->m_bManualNewUser = chkManualNewUser->isChecked();
   mainwin->m_bScrollBar = chkScrollBar->isChecked();
@@ -636,6 +643,8 @@ QWidget* OptionsDlg::new_appearance_options()
                                            "online (or free for chat)"));
   chkAutoRaise = new QCheckBox(tr("Auto-Raise on Incoming Msg"), boxMainWin);
   QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
+  chkHidden = new QCheckBox(tr("Start Hidden"), boxMainWin);
+  QWhatsThis::add(chkHidden, tr("The main window will start hidden. Only the dock icon will be visible."));
   chkBoldOnMsg = new QCheckBox(tr("Bold Message Label on Incoming Msg"), boxMainWin);
   QWhatsThis::add(chkBoldOnMsg, tr("The message info label will be bold if there are incoming messages"));
   chkManualNewUser = new QCheckBox(tr("Manual \"New User\" group handling"), boxMainWin);
@@ -742,17 +751,21 @@ QWidget* OptionsDlg::new_appearance_options()
 
 void OptionsDlg::slot_useDockToggled(bool b)
 {
-#ifndef USE_KDE
-if (!b)
+  if (!b)
   {
+#ifndef USE_KDE
     cmbDockTheme->setEnabled(false);
     rdbDockDefault->setEnabled(false);
     rdbDockThemed->setEnabled(false);
     chkDockFortyEight->setEnabled(false);
+#endif
+    chkHidden->setEnabled(false);
+    chkHidden->setChecked(false);
     return;
   }
 
   // Turned on
+#ifndef USE_KDE
   rdbDockDefault->setEnabled(true);
   rdbDockThemed->setEnabled(true);
   if (rdbDockDefault->isChecked())

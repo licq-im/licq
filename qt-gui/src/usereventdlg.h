@@ -63,9 +63,8 @@ public:
 
   unsigned long Uin() { return m_nUin; }
 
-  QTextCodec *codec;
-
 protected:
+  QTextCodec *codec;
   bool m_bOwner;
   unsigned long m_nUin;
   QBoxLayout* top_lay, *top_hlay;
@@ -169,7 +168,6 @@ protected:
   QComboBox* cmbSendType;
   CMMUserView *lstMultipleRecipients;
   MLEditWrap *mleSend;
-  //QString m_msgTextCurrent;
   CICQColor icqColor;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
@@ -209,7 +207,7 @@ protected:
   virtual bool sendDone(ICQEvent *);
 
   virtual void resetSettings();
-  
+
 protected slots:
   virtual void sendButton();
 };
@@ -257,9 +255,9 @@ protected:
   CInfoField *edtItem;
   QPushButton *btnBrowse;
   virtual bool sendDone(ICQEvent*);
-  
+
   virtual void resetSettings();
-  
+
 protected slots:
   void browseFile();
   virtual void sendButton();

@@ -57,7 +57,7 @@ protected:
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight,
              *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg,
-             *chkAutoPopup, *chkAutoRaise, *chkFlashUrgent, *chkFlashAll,
+             *chkAutoPopup, *chkAutoRaise, *chkHidden, *chkFlashUrgent, *chkFlashAll,
              *chkBoldOnMsg, *chkManualNewUser,
              *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
              *chkSysBack, *chkSendFromClipboard, *chkMsgChatView, *chkAutoPosReplyWin,

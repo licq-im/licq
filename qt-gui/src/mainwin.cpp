@@ -359,8 +359,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("Dock64x48", bDockIcon48, false);
   char szDockTheme[64];
   licqConf.ReadStr("DockTheme", szDockTheme, "");
-  bool bHidden;
-  licqConf.ReadBool("Hidden", bHidden, false);
+  licqConf.ReadBool("Hidden", m_bHidden, false);
+  if (!nDockMode) m_bHidden = 0;
   licqConf.ReadBool("AutoRaise", m_bAutoRaise, true);
 
   licqConf.SetSection("startup");
@@ -556,7 +556,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
    resize(wVal, hVal);
    move(xPos, yPos);
-   if (!bHidden && !bStartHidden) show();
+   if (!m_bHidden && !bStartHidden) show();
 
    // automatically logon if requested in conf file
    if (m_nAutoLogon > 0)
@@ -828,9 +828,6 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
     // need some more error checking here...
     licqConf.LoadFile(buf);
-
-    licqConf.SetSection("appearance");
-    licqConf.WriteBool("Hidden", !isVisible());
 
     int x, y;
     if(pos().x() < 2 || pos().y() < 2) {
@@ -1609,8 +1606,9 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
     QString c = QApplication::clipboard()->text();
     if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
     {
-      UserSendUrlEvent *e = (UserSendUrlEvent *)callFunction(mnuUserSendUrl, nUin);
-      if (e == NULL) return;
+      UserEventCommon *ec = callFunction(mnuUserSendUrl, nUin);
+      if (!ec || !ec->inherits("UserSendUrlEvent")) return;
+      UserSendUrlEvent* e = static_cast<UserSendUrlEvent*>(ec);
       // Set the url
       e->setUrl(c, "");
       // Clear the buffer now
@@ -1619,8 +1617,9 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
     }
     else if (c.left(5) == "file:" || c.left(1) == "/")
     {
-      UserSendFileEvent *e = (UserSendFileEvent *)callFunction(mnuUserSendFile, nUin);
-      if (e == NULL) return;
+      UserEventCommon *ec = callFunction(mnuUserSendFile, nUin);
+      if (!ec || !ec->inherits("UserSendFileEvent")) return;
+      UserSendFileEvent* e = static_cast<UserSendFileEvent*>(ec);
       // Set the file
       if(c.left(5) == "file:")
         c.remove(0, 5);
@@ -2349,6 +2348,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
   licqConf.WriteBool("AlwaysShowONU", m_bAlwaysShowONU);
   licqConf.WriteBool("AutoRaise", m_bAutoRaise);
+  licqConf.WriteBool("Hidden", m_bHidden);
   licqConf.WriteBool("ShowExtIcons", m_bShowExtendedIcons);
   licqConf.WriteBool("SystemBackground", m_bSystemBackground);
   licqConf.WriteBool("SendFromClipboard", m_bSendFromClipboard);

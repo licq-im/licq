@@ -37,7 +37,6 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
 {
   m_bDoQuotes = doQuotes;
 
-#if QT_VERSION >= 210
   if (wordWrap)
   {
     setWordWrap(WidgetWidth);
@@ -47,9 +46,6 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
   {
     setWordWrap(NoWrap);
   }
-#else
-  #warning Word wrap is not supported in Qt < 2.1
-#endif
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Enter + CTRL),
@@ -63,7 +59,9 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
 
 void MLEditWrap::appendNoNewLine(QString s)
 {
+#if QT_VERSION < 300
   if (!atEnd()) GotoEnd();
+#endif
   QMultiLineEdit::insert(s);
 }
 
@@ -72,8 +70,9 @@ void MLEditWrap::GotoEnd()
 {
 #if QT_VERSION >= 300
   scrollToBottom();
+#else
+  setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 #endif
-   setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 }
 
 
@@ -81,13 +80,8 @@ void MLEditWrap::setBackground(const QColor& c)
 {
   QPalette pal = palette();
 
-#if QT_VERSION >= 210
   pal.setColor(QPalette::Active, QColorGroup::Base, c);
   pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
-#else
-  pal.setColor(QPalette::Active, QColorGroup::Base, c);
-  pal.setColor(QPalette::Normal, QColorGroup::Base, c);
-#endif
 
   setPalette(pal);
 }
@@ -100,13 +94,8 @@ void MLEditWrap::setForeground(const QColor& c)
 {
   QPalette pal = palette();
 
-#if QT_VERSION >= 210
   pal.setColor(QPalette::Active, QColorGroup::Text, c);
   pal.setColor(QPalette::Inactive, QColorGroup::Text, c);
-#else
-  pal.setColor(QPalette::Active, QColorGroup::Text, c);
-  pal.setColor(QPalette::Normal, QColorGroup::Text, c);
-#endif
 
   setPalette(pal);
 }

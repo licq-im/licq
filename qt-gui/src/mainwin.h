@@ -89,6 +89,7 @@ public:
        m_bSortByStatus,
        m_bShowDividers,
        m_bAutoRaise,
+       m_bHidden,
        m_bBoldOnMsg,
        m_bManualNewUser,
        m_bThreadView,
