@@ -27,8 +27,8 @@ protected:
   unsigned short m_nEditGrp;
 
   void RefreshList();
-public slots:
-  virtual void hide();
+  void hideEvent(QHideEvent*);
+
 protected slots:
   void slot_add();
   void slot_remove();
@@ -39,6 +39,7 @@ protected slots:
   void slot_editcancel();
   void slot_default();
   void slot_newuser();
+  void slot_done();
 signals:
   void signal_updateGroups();
 };
