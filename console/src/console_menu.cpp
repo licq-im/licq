@@ -6,33 +6,29 @@ const unsigned short NUM_COMMANDS = 10;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "/contacts", &CLicqConsole::MenuContactList, NULL,
-    "" },
+    "Force a refresh of the contact list." },
   { "/group", &CLicqConsole::MenuGroup, NULL,
     "Prints the group list or changes to the given group number." },
   { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
     "User commands deal with indiviual users:\n"
-    "info - print user information\n"
-    "message - send a message to the user\n"
-    "url - send a url to the user\n"
-    "view - view any new events from the user\n"
-    "history - print the given range of events from\n"
-    "  the history.\n"
-    "  '$' represents the last message, and +/- can\n"
-    "  be used to specify an offset.  For example\n"
-    "  \"/history $-5,$\" will print from the\n"
-    "  fifth-to-last event to the end.\n"
-    "  If only the start range is specified then one\n"
-    "  event will be printed.\n"
-    "  If the start range begins with +/- then the index\n"
-    "  of the last message printed will be modified by\n"
-    "  the operation.  If the end range begins with +/-\n"
-    "  then it will modify the start range value.\n"
-    "  To cycle through the last 10 events in the history\n"
-    "  try the following:\n"
-    "  \"history $ - 10\"\n"
-    "  \"history +1\"\n"
-    "  \"history +1\"\n"
-    "  ...\n" },
+    "info - print user information\n\n"
+    "message - send a message to the user\n\n"
+    "url - send a url to the user\n\n"
+    "view - view any new events from the user\n\n"
+    "history - print the given range of events from the history.\n"
+    "'$' represents the last message, and +/- can be used to specify "
+    "an offset.  For example \"history $-5,$\" will print from the "
+    "fifth-to-last event to the end.\n"
+    "If only the start range is specified then one event will be printed.\n"
+    "If the start range begins with +/- then the index of the last message "
+    "printed will be modified by the operation.  If the end range begins "
+    "with +/- then it will modify the start range value.\n"
+    "To cycle through the last 10 events in the history\n"
+    "try the following:\n"
+    "/user <> \"history $ - 10\"\n"
+    "/last \"history +1\"\n"
+    "/last \"history +1\"\n"
+    "...\n" },
   { "/owner", &CLicqConsole::MenuOwner, &CLicqConsole::TabOwner,
     "Commands dealing with yourself.  See /user help for details." },
   { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
@@ -55,22 +51,25 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Quit Licq." }
 };
 
-const unsigned short NUM_USER_COMMANDS = 5;
+const unsigned short NUM_USER_COMMANDS = 7;
 const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
 {
   { "info", &CLicqConsole::UserCommand_Info },
   { "view", &CLicqConsole::UserCommand_View },
   { "message", &CLicqConsole::UserCommand_Msg },
   { "url", &CLicqConsole::UserCommand_Url },
-  { "history", &CLicqConsole::UserCommand_History }
+  { "history", &CLicqConsole::UserCommand_History },
+  { "auto-response", &CLicqConsole::UserCommand_FetchAutoResponse },
+  { "remove", &CLicqConsole::UserCommand_Remove }
 };
 
-const unsigned short NUM_OWNER_COMMANDS = 3;
+const unsigned short NUM_OWNER_COMMANDS = 4;
 const struct SOwnerCommand aOwnerCommands[NUM_OWNER_COMMANDS] =
 {
   { "info", &CLicqConsole::UserCommand_Info },
   { "view", &CLicqConsole::UserCommand_View },
-  { "history", &CLicqConsole::UserCommand_History }
+  { "history", &CLicqConsole::UserCommand_History },
+  { "auto-response", &CLicqConsole::UserCommand_SetAutoResponse }
 };
 
 

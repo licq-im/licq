@@ -11,14 +11,17 @@
 #include "user.h"
 
 #define MAX_CON 8
+#define MAX_CMD_HISTORY 100
+#define SCROLLBACK_BUFFER 20
 const unsigned short USER_WIN_WIDTH = 30;
 const char L_CONSOLExSTR[] = "[CON] ";
+const char CANCEL_KEY = 'C';
 
 struct SColorMap
 {
   char szName[16];
   int nColor;
-  bool bBright;
+  int nAttr;
 };
 
 
@@ -36,13 +39,16 @@ protected:
   // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
   const struct SColorMap *m_cColorOnline, *m_cColorOffline,
-                   *m_cColorAway, *m_cColorGroupList;
+                   *m_cColorAway, *m_cColorGroupList, *m_cColorNew,
+                   *m_cColorQuery, *m_cColorInfo, *m_cColorError;
   char m_szOnlineFormat[128];
   char m_szAwayFormat[128];
   char m_szOfflineFormat[128];
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;
+  list<char *> m_lCmdHistory;
+  list<char *>::iterator m_lCmdHistoryIter;
 
   CICQDaemon *licqDaemon;
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
@@ -53,14 +59,18 @@ public:
   void ProcessPipe(void);
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
+  void ProcessDoneEvent(CWindow *win);
   void ProcessStdin(void);
   void ProcessLog(void);
   char *CurrentGroupName(void);
   void SwitchToCon(unsigned short nCon);
 
   void InputCommand(int cIn);
+  void InputLogWindow(int cIn);
   void InputMessage(int cIn);
   void InputUrl(int cIn);
+  void InputRemove(int cIn);
+  void InputAutoResponse(int cIn);
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
   char *Input_Line(char *sz, unsigned short &n, int cIn);
 
@@ -100,6 +110,9 @@ public:
   void UserCommand_View(unsigned long nUin, char *);
   void UserCommand_Url(unsigned long nUin, char *);
   void UserCommand_History(unsigned long nUin, char *);
+  void UserCommand_Remove(unsigned long nUin, char *);
+  void UserCommand_FetchAutoResponse(unsigned long nUin, char *);
+  void UserCommand_SetAutoResponse(unsigned long nUin, char *);
 
   void Beep(void) { printf("\a"); fflush(stdout); }
 };

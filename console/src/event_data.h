@@ -5,27 +5,39 @@
 class CData
 {
 public:
+  CData (unsigned long n)
+    { nUin = n; nPos = 0; szQuery[0] = '\0'; }
   unsigned long nUin;
   unsigned short nPos;
+  char szQuery[32];
 };
 
 
 class DataMsg : public CData
 {
 public:
-  DataMsg(unsigned long n)
-    { nUin = n; nPos = 0; szMsg[0] = '\0'; bUrgent = false; bServer = false; }
+  DataMsg(unsigned long n) : CData(n)
+    { szMsg[0] = '\0'; bUrgent = false; bServer = false; }
   char szMsg[1024];
   bool bUrgent;
   bool bServer;
 };
 
 
+class DataAutoResponse : public CData
+{
+public:
+  DataAutoResponse(void) : CData(0)
+    { szRsp[0] = '\0'; }
+  char szRsp[1024];
+};
+
+
 class DataUrl : public CData
 {
 public:
-  DataUrl(unsigned long n)
-    { nUin = n; nPos = 0; szUrl[0] = '\0'; szDesc[0] = '\0'; bUrgent = false; bServer = false; }
+  DataUrl(unsigned long n) : CData(n)
+    { szUrl[0] = '\0'; szDesc[0] = '\0'; bUrgent = false; bServer = false; }
   char szUrl[1024];
   char szDesc[1024];
   bool bUrgent;

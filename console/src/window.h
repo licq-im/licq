@@ -4,13 +4,13 @@
 #include <iostream.h>
 #include <curses.h>
 
-//#define COLOR_HIGHLIGHT COLOR_MAGENTA
-
 #define COLOR_YELLOW_BLUE COLOR_YELLOW + 8
 #define COLOR_WHITE_BLUE  COLOR_WHITE + 8
 #define COLOR_CYAN_BLUE   COLOR_CYAN + 8
 
-enum InputState { STATE_COMMAND, STATE_PENDING, STATE_MLE, STATE_LE };
+#define SCROLLBACK_OVERLAP 10
+
+enum InputState { STATE_COMMAND, STATE_PENDING, STATE_MLE, STATE_LE, STATE_QUERY };
 
 class ICQEvent;
 class CLicqConsole;
@@ -19,9 +19,11 @@ class CData;
 class CWindow
 {
 public:
-  CWindow(int _rows, int _cols, int _y, int _x, bool _pad);
+  CWindow(int _rows, int _cols, int _y, int _x, int _scrollback);
   ~CWindow(void);
   void RefreshWin(void);
+  void ScrollUp(void);
+  void ScrollDown(void);
   void SetActive(bool _active) { active = _active; RefreshWin(); }
   bool Active(void)  { return active; }
   CWindow& operator<<(char d);
@@ -44,7 +46,7 @@ public:
 protected:
   WINDOW *win;
   bool pad, active;
-  int rows, cols, x, y;
+  int rows, cols, x, y, height, cur_y;
 };
 
 #endif

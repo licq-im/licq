@@ -36,21 +36,27 @@ void CWindow::EndScreen(void)
    endwin();
 }
 
-CWindow::CWindow(int _rows, int _cols, int _y, int _x, bool _pad)
+CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback)
 {
   rows = _rows;
   cols = _cols;
   x = _x;
   y = _y;
-  pad = _pad;
+  height = rows + _scrollback;
+  pad = _scrollback > 0;
   active = false;
   if (pad)
-    win = newpad(rows, cols);
+  {
+    win = newpad(height, cols);
+    wmove(win, height - rows, 0);
+  }
   else
+  {
     win = newwin(rows, cols, y, x);
+    wmove(win, 0, 0);
+  }
   keypad(win, TRUE);
   wbkgd(win, COLOR_PAIR(COLOR_WHITE));
-  wmove(win, 0, 0);
   nLastUin = 0;
   nLastHistory = 1;
 }
@@ -64,9 +70,31 @@ void CWindow::RefreshWin()
 {
   if (!active) return;
   if (pad)
-    pnoutrefresh(win, 0, 0, y, x, rows, cols);
+  {
+    cur_y = height - rows;
+    pnoutrefresh(win, cur_y, 0, y, x, rows + y, cols + x);
+  }
   else
     wnoutrefresh(win);
+  doupdate();
+}
+
+
+void CWindow::ScrollUp()
+{
+  if (!active || !pad) return;
+  cur_y -= rows - SCROLLBACK_OVERLAP;
+  if (cur_y < 0) cur_y = 0;
+  pnoutrefresh(win, cur_y, 0, y, x, rows + y - 1, cols + x);
+  doupdate();
+}
+
+void CWindow::ScrollDown()
+{
+  if (!active || !pad) return;
+  cur_y += rows - SCROLLBACK_OVERLAP;
+  if (cur_y > height - rows) cur_y = height - rows;
+  pnoutrefresh(win, cur_y, 0, y, x, rows + y - 1, cols + x);
   doupdate();
 }
 

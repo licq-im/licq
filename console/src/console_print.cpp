@@ -112,8 +112,10 @@ void CLicqConsole::PrintStatus(void)
     if (u == NULL)
       strcpy(szLastUser, "<Removed>");
     else
+    {
       strcpy(szLastUser, u->getAlias());
-    gUserManager.DropUser(u);
+      gUserManager.DropUser(u);
+    }
   }
   else
     strcpy(szLastUser, "<None>");
@@ -150,7 +152,7 @@ void CLicqConsole::PrintGroups(void)
 
   PrintBoxLeft();
   winMain->wprintf("%A%C%3d. %-19s",
-      m_cColorGroupList->bBright ? A_BOLD : A_NORMAL,
+      m_cColorGroupList->nAttr,
       m_cColorGroupList->nColor, 0, "All Users");
   PrintBoxRight(26);
   waddch(winMain->Win(), ACS_LTEE);
@@ -163,7 +165,7 @@ void CLicqConsole::PrintGroups(void)
   {
     PrintBoxLeft();
     winMain->wprintf("%A%C%3d. %-19s",
-        m_cColorGroupList->bBright ? A_BOLD : A_NORMAL,
+        m_cColorGroupList->nAttr,
         m_cColorGroupList->nColor, j, *i);
     PrintBoxRight(26);
   }
@@ -229,7 +231,7 @@ void CLicqConsole::PrintUsers(void)
       mvwaddch(winBar->Win(), yp, 0, ACS_LTEE);
       for (j = 0; j < 10; j++) waddch(winUsers->Win(), ACS_HLINE);
       winUsers->wprintf("%A%C Online ",
-            m_cColorOnline->bBright ? A_BOLD : A_NORMAL,
+            m_cColorOnline->nAttr,
             m_cColorOnline->nColor);
       for (j = 19; j < USER_WIN_WIDTH; j++) waddch(winUsers->Win(), ACS_HLINE);
       waddch(winUsers->Win(), '\n');
@@ -247,40 +249,37 @@ void CLicqConsole::PrintUsers(void)
         mvwaddch(winBar->Win(), yp, 0, ACS_LTEE);
         for (j = 0; j < 10; j++) waddch(winUsers->Win(), ACS_HLINE);
         winUsers->wprintf("%A%C Offline ",
-            m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
+            m_cColorOffline->nAttr,
             m_cColorOffline->nColor);
         for (j = 20; j < USER_WIN_WIDTH; j++) waddch(winUsers->Win(), ACS_HLINE);
         waddch(winUsers->Win(), '\n');
       }
       bOfflineUsers = true;
     }
+    const struct SColorMap *color = NULL;
+
     switch(pUser->getStatus())
     {
     case ICQ_STATUS_ONLINE:
       pUser->usprintf(szLine, m_szOnlineFormat);
-      winUsers->wprintf("%A%C%c%s\n",
-                       m_cColorOnline->bBright ? A_BOLD : A_NORMAL,
-                       m_cColorOnline->nColor,
-                       pUser->getNumMessages() > 0 ? '*' : ' ',
-                       szLine);
+      color = m_cColorOnline;
       break;
     case ICQ_STATUS_OFFLINE:
       pUser->usprintf(szLine, m_szOfflineFormat);
-      winUsers->wprintf("%A%C%c%s\n",
-                       m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
-                       m_cColorOffline->nColor,
-                       pUser->getNumMessages() > 0 ? '*' : ' ',
-                       szLine);
+      color = m_cColorOffline;
       break;
     default:
       pUser->usprintf(szLine, m_szAwayFormat);
-      winUsers->wprintf("%A%C%c%s\n",
-                       m_cColorAway->bBright ? A_BOLD : A_NORMAL,
-                       m_cColorAway->nColor,
-                       pUser->getNumMessages() > 0 ? '*' : ' ',
-                       szLine);
+      color = m_cColorAway;
       break;
     }
+    if (pUser->getIsNew())
+      color = m_cColorNew;
+    winUsers->wprintf("%A%C%c%s\n",
+                     color->nAttr,
+                     color->nColor,
+                     pUser->getNumMessages() > 0 ? '*' : ' ',
+                     szLine);
 
     if (i >= winUsers->Rows() - 3) FOR_EACH_USER_BREAK;
     i++;
@@ -312,13 +311,13 @@ void CLicqConsole::PrintHelp(void)
                    A_BOLD, A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("                    url | history>",
+  winMain->wprintf("                    url | history | remove>",
                    A_BOLD, A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/o%Zwner [ %Av%Ziew|%Ai%Znfo ]",
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  winMain->wprintf(" %A/o%Zwner [ view | info | history ]",
+                   A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
@@ -327,8 +326,10 @@ void CLicqConsole::PrintHelp(void)
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/st%Zatus [*]<online | away | na | dnd |"
-                   "              occupied | ffc | offline>", A_BOLD, A_BOLD);
+  winMain->wprintf(" %A/st%Zatus [*]<online | away | na | dnd |", A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("             occupied | ffc | offline>");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
