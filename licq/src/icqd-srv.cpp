@@ -1844,7 +1844,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       CBuffer msgTxt = msg.UnpackTLV(0x0101);
       nMsgLen = msgTxt.getDataSize();
 
-      msgTxt.UnpackUnsignedLongBE(); // always ? 0
+      unsigned short nEncoding = msgTxt.UnpackUnsignedShort();
+      unsigned short nSubEncoding = msgTxt.UnpackUnsignedShort();
+
       nMsgLen -= 4;
 
       char* szMessage = new char[nMsgLen+1];
@@ -1852,7 +1854,16 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         szMessage[i] = msgTxt.UnpackChar();
 
       szMessage[nMsgLen] = '\0';
-      char* szMsg = gTranslator.RNToN(szMessage);
+      char* szMsg = 0;
+      if (nEncoding == 2) // utf-8 or utf-16?
+      {
+        char *szTmpMsg = 0; 
+        szTmpMsg = gTranslator.FromUnicode(szMessage);
+        szMsg = gTranslator.RNToN(szTmpMsg);
+        delete [] szTmpMsg;
+      }
+      else
+        szMsg = gTranslator.RNToN(szMessage);
       delete [] szMessage;
 
       // now send the message to the user
