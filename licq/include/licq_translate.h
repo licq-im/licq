@@ -22,6 +22,10 @@ public:
     bool usingDefaultMap()  { return m_bDefault; }
     const char *getMapFileName() { return m_szMapFileName; }
     const char *getMapName() { return m_szMapName; }
+    
+    // Muse use delete[] on the returned value if it is not NULL
+    char *ToUnicode(char *_sz);
+    char *FromUnicode(char *_sz);
     char *NToRN(const char* _szOldStr);
     char *RNToN(const char* _szOldStr);
 

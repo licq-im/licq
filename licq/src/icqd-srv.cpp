@@ -2480,6 +2480,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         nType = packet.UnpackUnsignedShortBE();
         nByteLen = packet.UnpackUnsignedShortBE();
 
+        char *szUnicodeName = gTranslator.FromUnicode(szName);
+
         if (nByteLen)
         {
           if (!packet.readTLV(-1, nByteLen))
@@ -2504,6 +2506,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             unsigned short nInGroup = gUserManager.GetGroupFromID(nTag);
             if (nUin && !gUserManager.IsOnList(nUin))
               AddUserToList(nUin, false); // Don't notify server
+            char *szUnicodeAlias = gTranslator.FromUnicode(szNewName);
 
             ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
             if (u)
@@ -2511,10 +2514,22 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               u->SetGSID(nTag);
 
               if (szNewName)
-                u->SetAlias(szNewName);
+              {
+                if (szUnicodeName)
+                {
+                  u->SetAlias(szUnicodeAlias);
+                }
+              }
 
               if (szSMSNumber)
-                u->SetCellularNumber(szSMSNumber);
+              {
+                char *szUnicodeSMS = gTranslator.FromUnicode(szSMSNumber);
+                if (szUnicodeSMS)
+                {
+                  u->SetCellularNumber(szUnicodeSMS);
+                  delete [] szUnicodeSMS;
+                }
+              }
 
               if (nType == ICQ_ROSTxINVISIBLE)
               {
@@ -2543,7 +2558,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             }
 
             gLog.Info("%sAdded %s (%ld) to list from server.\n", L_SRVxSTR,
-              (szNewName ? szNewName : ""), nUin);
+              (szUnicodeAlias ? szUnicodeAlias : ""), nUin);
+            if (szUnicodeAlias)
+              delete [] szUnicodeAlias;
             if (szNewName)
               delete [] szNewName;
             if (szSMSNumber)
@@ -2560,17 +2577,20 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               unsigned short nGroup = gUserManager.GetGroupFromID(nTag);
               if (nGroup == gUserManager.NumGroups())
               {
-                if (!gUserManager.AddGroup(szName, nTag))
-                  gUserManager.ModifyGroupID(szName, nTag);
+                if (!gUserManager.AddGroup(szUnicodeName, nTag))
+                  gUserManager.ModifyGroupID(szUnicodeName, nTag);
               }
               else
               {
-                gUserManager.RenameGroup(nGroup, szName, false);
+                gUserManager.RenameGroup(nGroup, szUnicodeName, false);
               }
             }
             break;
           }
         }  // switch (nType)
+
+        if (szUnicodeName)
+          delete [] szUnicodeName;
 
         packet.cleanupTLV();
         delete[] szName;

@@ -1611,9 +1611,12 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
       nSize += snprintf(szTmp, 12, "%lu", *i);
       nSize += 10;
 
-      int nAliasLen = strlen(pUser->GetAlias());
+      char *szUnicode = gTranslator.ToUnicode(pUser->GetAlias());
+      int nAliasLen = strlen(szUnicode);
       if (nAliasLen && _nType == ICQ_ROSTxNORMAL)
           nSize += 4 + nAliasLen;
+      if (szUnicode)
+        delete [] szUnicode;
     }
     gUserManager.DropUser(pUser);
   }
@@ -1627,6 +1630,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
     szUin[12] = '\0';
     int nLen;
     int nAliasSize = 0;
+    char *szUnicodeName = 0;
 
     m_nSID = gUserManager.GenerateSID();
 
@@ -1670,7 +1674,8 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
       gUserManager.UnlockGroupIDList();
 
       u->SetGSID(m_nGSID);
-      nAliasSize = strlen(u->GetAlias());
+      szUnicodeName = gTranslator.ToUnicode(u->GetAlias());
+      nAliasSize = strlen(szUnicodeName);
     }
 
     gUserManager.DropUser(u);
@@ -1689,10 +1694,13 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins,
       buffer->PackUnsignedShortBE(nAliasSize+4);
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nAliasSize);
-      buffer->Pack(u->GetAlias(), nAliasSize);
+      buffer->Pack(szUnicodeName, nAliasSize);
     }
     else
       buffer->PackUnsignedShortBE(0);
+
+    if (szUnicodeName)
+      delete [] szUnicodeName;
   }
 }
 
@@ -1741,6 +1749,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   unsigned short nStrLen = strlen(_szName);
   unsigned short nExportSize = 0;
   ICQUser *u = 0;
+  char *szUnicodeName = 0;
 
   m_nSID = gUserManager.GenerateSID();
 
@@ -1793,7 +1802,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
           m_nGSID = 1; // General (unless user renamed group)
       }
 
-      nExportSize = 4 + strlen(u->GetAlias());
+      szUnicodeName = gTranslator.ToUnicode(u->GetAlias());
+      nExportSize = 4 + strlen(szUnicodeName);
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
@@ -1856,13 +1866,16 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   {
     buffer->PackUnsignedShortBE(0x0131);
     buffer->PackUnsignedShortBE(nExportSize-4);
-    buffer->Pack(u->GetAlias(), nExportSize-4);
+    buffer->Pack(szUnicodeName, nExportSize-4);
   }
   if (_bAuthReq)
     buffer->PackUnsignedLongBE(0x00660000);
 
   if (u)
     gUserManager.DropUser(u);
+
+  if (szUnicodeName)
+    delete [] szUnicodeName;
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
@@ -1899,7 +1912,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = strlen(_szName);
-  char *szName = 0;
+  char *szUnicodeName = 0;
   GroupIDList *gID = 0;
 
   switch (_nType)
@@ -1912,8 +1925,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       {
         nGSID = u->GetGSID();
         nSID = u->GetSID();
-        szName = strdup(u->GetAlias());
-        nExtraLen = 4 + strlen(szName);
+        szUnicodeName = gTranslator.ToUnicode(u->GetAlias());
+        nExtraLen = 4 + strlen(szUnicodeName);
         gUserManager.DropUser(u);
       }
 
@@ -1963,7 +1976,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
     {
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nExtraLen-4);
-      buffer->Pack(szName, nExtraLen-4);
+      buffer->Pack(szUnicodeName, nExtraLen-4);
     }
     else if (_nType == ICQ_ROSTxGROUP)
     {
@@ -1990,8 +2003,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
     }
   }
 
-  if (szName)
-    free(szName);
+  if (szUnicodeName)
+    delete [] szUnicodeName;
 }
 
 //-----SearchWhitePages---------------------------------------------------------
@@ -2003,8 +2016,6 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
     const char *szKeyword, bool bOnlineOnly)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
 {
-  // modified by sc 27434326 caligiore@bigfoot.com 17/06/2002
-
   unsigned short nDataLen;	// length of data info to add packet size
   
   nDataLen = LengthField(szFirstName) + LengthField(szLastName) +

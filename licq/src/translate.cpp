@@ -186,6 +186,67 @@ void CTranslator::ClientToServer(char &_cChar)
 }
 
 
+//-----ToUTF8----------------------------------------------------------------
+char *CTranslator::ToUnicode(char *_sz)
+{
+  if (_sz == NULL)  return NULL;
+  unsigned short nLen = strlen(_sz);
+  char *szNewStr = new char[(nLen << 1) + 1];
+  unsigned long j = 0;
+  for (unsigned long i = 0; i < nLen; i++)
+  {
+    if ((unsigned char)_sz[i] <= 0x7F) // good ole ascii
+      szNewStr[j++] = _sz[i];
+    else
+    {
+      szNewStr[j++] = (_sz[i] >> 6) | 0xC0;
+      szNewStr[j++] = (_sz[i] & 0x3F) | 0x80;
+    }
+  }
+
+  szNewStr[j] = '\0';
+  return szNewStr;
+}
+
+
+//-----FromUTF8--------------------------------------------------------------
+char *CTranslator::FromUnicode(char *_sz)
+{
+  if (_sz == NULL)  return NULL;
+  unsigned short nLen = strlen(_sz);
+  char *szNewStr = new char[nLen + 1];
+  unsigned long j = 0;
+  for (unsigned long i = 0; i < nLen; i++)
+  {
+    if ((unsigned char)_sz[i] <= 0x7F) // good ole ascii
+      szNewStr[j++] = _sz[i];
+    else
+    {
+      unsigned short nChar;
+
+      if ((unsigned char)_sz[i] >= 0xE0)
+      {
+        nChar = ((_sz[i] & 0x0F) << 12) | ((_sz[i+1] & 0x3F) << 6) |
+                (_sz[i+2] & 0x3F);
+        i += 2;
+      }
+      else
+      {
+        nChar = ((_sz[i] & 0x1F) << 6) | (_sz[i+1] & 0x3F);
+        i++;
+      }
+
+      if (nChar > 0xFF)
+        szNewStr[j++] = '?';
+      else
+        szNewStr[j++] = (char)nChar;
+    }
+  }
+
+  szNewStr[j] = '\0';
+  return szNewStr;
+}
+
 
 //-----NToRN--------------------------------------------------------------------
 char *CTranslator::NToRN(const char *_szOldStr)
