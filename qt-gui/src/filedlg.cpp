@@ -227,7 +227,7 @@ void CFileDlg::slot_ft()
     {
       case FT_STARTxBATCH:
       {
-        setCaption(tr("Licq - File Transfer (%1)").arg(ftman->RemoteName()));
+        setCaption(QString(tr("Licq - File Transfer (%1)")).arg(QString::fromLocal8Bit(ftman->RemoteName())));
         nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
         nfoBatchSize->setText(encodeFSize(ftman->BatchSize()));
         barBatchTransfer->setTotalSteps(ftman->BatchSize() / 1024);

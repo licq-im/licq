@@ -1290,19 +1290,19 @@ void CUserView::maybeTip(const QPoint& c)
       gUserManager.DropUser(u);
     }
 
-    if ((u->GetEmailPrimary()[0]!='\0') && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>E: ") + tr(u->GetEmailPrimary()) + tr("</nobr>");
+    if (*u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
+      s += tr("<br><nobr>E: ") + QString::fromLocal8Bit(u->GetEmailPrimary()) + tr("</nobr>");
 
     if (item->m_bPhone && gMainWindow->m_bPopPhone)
-      s += tr("<br><nobr>P: ") + tr(u->GetPhoneNumber()) + tr("</nobr>");
+      s += tr("<br><nobr>P: ") + QString::fromLocal8Bit(u->GetPhoneNumber()) + tr("</nobr>");
 
     if (item->m_bCellular && gMainWindow->m_bPopCellular)
-      s += tr("<br><nobr>C: ") + tr(u->GetCellularNumber()) + tr("</nobr>");
+      s += tr("<br><nobr>C: ") + QString::fromLocal8Bit(u->GetCellularNumber()) + tr("</nobr>");
 
     if ((u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>F: ") + tr(u->GetFaxNumber()) + tr("</nobr>");
+      s += tr("<br><nobr>F: ") + QString::fromLocal8Bit(u->GetFaxNumber()) + tr("</nobr>");
 
-    if (((u->Ip()!=0) || (u->RealIp()!=0)) && gMainWindow->m_bPopIP) {
+    if ((u->Ip() || u->RealIp()) && gMainWindow->m_bPopIP) {
       char buf1[32];
       char buf[32];
       ip_ntoa(u->Ip(),buf1);
