@@ -11,7 +11,6 @@
 #include "awaymsgdlg.h"
 #include "sar.h"
 #include "log.h"
-#include "licq-locale.h"
 
 int AwayMsgDlg::s_nX = 100;
 int AwayMsgDlg::s_nY = 100;
@@ -30,7 +29,7 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent = 0, const char *name = 0)
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
 
-  /*btnSelect = new QPushButton(_("&Select"), this);
+  /*btnSelect = new QPushButton(tr("&Select"), this);
   // this doesn't work yet (Qt bug)
   //btnSelect->setIsMenuButton(true);
   connect(btnSelect, SIGNAL(clicked()), SLOT(selectMessage()));
@@ -43,12 +42,12 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent = 0, const char *name = 0)
   l->addSpacing(30);
 
   QPushButton *btnOk, *cancel;
-  btnOk = new QPushButton(_("&Ok"), this );
+  btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(ok()) );
   l->addWidget(btnOk);
 
-  cancel = new QPushButton(_("&Cancel"), this );
+  cancel = new QPushButton(tr("&Cancel"), this );
   connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
   l->addWidget(cancel);
 }
@@ -60,12 +59,12 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   ICQUser::StatusStr(m_nStatus, false, s);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  setCaption(QString(_("Set %1 Response for %2"))
+  setCaption(QString(tr("Set %1 Response for %2"))
              .arg(s).arg(QString::fromLocal8Bit(o->getAlias())));
   if (*o->AutoResponse())
     mleAwayMsg->setText(QString::fromLocal8Bit(o->AutoResponse()));
   else
-    mleAwayMsg->setText(_("I am currently %1.\nYou can leave me a message.")
+    mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
                         .arg(s));
   gUserManager.DropOwner();
 
@@ -152,7 +151,7 @@ void AwayMsgDlg::ok()
 
   menu->insertSeparator();
   // as this is not yet implemented, give user feedback
-  menu->setItemEnabled(menu->insertItem(_("&Edit Items"), -2), false);
+  menu->setItemEnabled(menu->insertItem(tr("&Edit Items"), -2), false);
 
   result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
 

@@ -8,29 +8,28 @@
 
 #include "editgrp.h"
 #include "user.h"
-#include "licq-locale.h"
 
 EditGrpDlg::EditGrpDlg(QWidget *parent = 0, const char *name = 0 ) : QWidget(parent, name)
 {
-  grpGroups = new QGroupBox(_("Groups"), this);
+  grpGroups = new QGroupBox(tr("Groups"), this);
   lstGroups = new QListBox(grpGroups);
-  btnAdd = new QPushButton(_("Add"), grpGroups);
-  btnRemove = new QPushButton(_("Remove"), grpGroups);
-  btnUp = new QPushButton(_("Shift Up"), grpGroups);
-  btnDown = new QPushButton(_("Shift Down"), grpGroups);
-  btnEdit = new QPushButton(_("Edit Name"), grpGroups);
-  QWhatsThis::add(btnEdit, _("Edit group name (hit enter to save)."));
-  btnDefault = new QPushButton(_("Default"), grpGroups);
-  QWhatsThis::add(btnDefault, _("The default group to start up in."));
-  btnNewUser = new QPushButton(_("New Users"), grpGroups);
-  QWhatsThis::add(btnNewUser, _("The group to which new users will be automatically added."));
-  btnDone = new QPushButton(_("Done"), this);
+  btnAdd = new QPushButton(tr("Add"), grpGroups);
+  btnRemove = new QPushButton(tr("Remove"), grpGroups);
+  btnUp = new QPushButton(tr("Shift Up"), grpGroups);
+  btnDown = new QPushButton(tr("Shift Down"), grpGroups);
+  btnEdit = new QPushButton(tr("Edit Name"), grpGroups);
+  QWhatsThis::add(btnEdit, tr("Edit group name (hit enter to save)."));
+  btnDefault = new QPushButton(tr("Default"), grpGroups);
+  QWhatsThis::add(btnDefault, tr("The default group to start up in."));
+  btnNewUser = new QPushButton(tr("New Users"), grpGroups);
+  QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added."));
+  btnDone = new QPushButton(tr("Done"), this);
   nfoDefault = new CInfoField(0, 0, 5, 5, 5, "Default:", true, grpGroups);
   nfoNewUser = new CInfoField(0, 0, 5, 5, 5, "New User:", true, grpGroups);
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
 
-  btnWhat = new QPushButton(_("What's This?"), this);
+  btnWhat = new QPushButton(tr("What's This?"), this);
   connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
 
   resize(320, 360);
@@ -52,9 +51,9 @@ void EditGrpDlg::RefreshList()
 {
   lstGroups->clear();
   if (gUserManager.DefaultGroup() == 0)
-    nfoDefault->setData(_("All Users"));
+    nfoDefault->setData(tr("All Users"));
   if (gUserManager.NewUserGroup() == 0)
-    nfoNewUser->setData(_("All Users"));
+    nfoNewUser->setData(tr("All Users"));
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
   {
@@ -69,7 +68,7 @@ void EditGrpDlg::RefreshList()
 
 void EditGrpDlg::slot_add()
 {
-  gUserManager.AddGroup(strdup(_("noname")));
+  gUserManager.AddGroup(strdup(tr("noname")));
   RefreshList();
   emit (signal_updateGroups());
 }
@@ -79,10 +78,10 @@ void EditGrpDlg::slot_remove()
 {
   int n = lstGroups->currentItem();
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  QString warning(_("Are you sure you want to remove\nthe group '") +
+  QString warning(tr("Are you sure you want to remove\nthe group '") +
                   QString::fromLocal8Bit((*g)[n]) + "'?");
   gUserManager.UnlockGroupList();
-  if(!QueryUser(this, warning, _("Ok"), _("Cancel")));
+  if(!QueryUser(this, warning, tr("Ok"), tr("Cancel")));
     return;
   gUserManager.RemoveGroup(n + 1);
   RefreshList();
@@ -112,7 +111,7 @@ void EditGrpDlg::slot_down()
 
 void EditGrpDlg::slot_default()
 {
-  if (QueryUser(this, _("Clear or Set?"), _("Clear"), _("Set")))
+  if (QueryUser(this, tr("Clear or Set?"), tr("Clear"), tr("Set")))
   {
     gUserManager.SetDefaultGroup(0);
   }
@@ -129,7 +128,7 @@ void EditGrpDlg::slot_default()
 
 void EditGrpDlg::slot_newuser()
 {
-  if (QueryUser(this, _("Clear or Set?"), _("Clear"), _("Set")))
+  if (QueryUser(this, tr("Clear or Set?"), tr("Clear"), tr("Set")))
   {
     gUserManager.SetNewUserGroup(0);
   }
@@ -153,7 +152,7 @@ void EditGrpDlg::slot_edit()
   edtName->setText((*g)[n]);
   gUserManager.UnlockGroupList();
   m_nEditGrp = n + 1;
-  btnEdit->setText(_("Cancel"));
+  btnEdit->setText(tr("Cancel"));
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editcancel()));
   lstGroups->setEnabled(false);
@@ -167,7 +166,7 @@ void EditGrpDlg::slot_editok()
   emit (signal_updateGroups());
 
   lstGroups->setEnabled(true);
-  btnEdit->setText(_("Edit"));
+  btnEdit->setText(tr("Edit"));
   edtName->clear();
   edtName->setEnabled(false);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editok()));
@@ -178,7 +177,7 @@ void EditGrpDlg::slot_editok()
 void EditGrpDlg::slot_editcancel()
 {
   lstGroups->setEnabled(true);
-  btnEdit->setText(_("Edit"));
+  btnEdit->setText(tr("Edit"));
   edtName->clear();
   edtName->setEnabled(false);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editcancel()));

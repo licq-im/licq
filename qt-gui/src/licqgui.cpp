@@ -7,7 +7,6 @@
 #include "outputwin.h"
 #include "log.h"
 #include "plugin.h"
-#include "licq-locale.h"
 #ifdef USE_KDE
 #include <kthemestyle.h>
 #endif
@@ -53,10 +52,6 @@ bool LP_Init(int argc, char **argv)
   char iconsName[32] = "";
   char styleName[32] = "";
   char *LocaleVal = new char;
-
-  LocaleVal = setlocale (LC_ALL, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
 
   // parse command line for arguments
   int i = 0;

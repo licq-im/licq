@@ -12,7 +12,6 @@
 #include "translate.h"
 #include "user.h"
 #include "support.h"
-#include "licq-locale.h"
 
 #define STATE_RECVxHANDSHAKE 1
 #define STATE_RECVxCOLOR 2
@@ -32,7 +31,7 @@ ChatDlg::ChatDlg(unsigned long _nUin,
    m_bAudio = true;
    snChat = snChatServer = NULL;
 
-   boxRemote = new QGroupBox(_("Remote - Not connected"), this);
+   boxRemote = new QGroupBox(tr("Remote - Not connected"), this);
    mleRemote = new MLEditWrap(true, boxRemote);
    mleRemote->setReadOnly(true);
    m_sRemoteName = NULL;
@@ -40,11 +39,11 @@ ChatDlg::ChatDlg(unsigned long _nUin,
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    m_sLocalName = strdup(o->getAlias());
    gUserManager.DropOwner();
-   boxLocal = new QGroupBox(_("Local - ") + QString::fromLocal8Bit(getLocalName()), this);
+   boxLocal = new QGroupBox(tr("Local - ") + QString::fromLocal8Bit(getLocalName()), this);
    mleLocal = new MLEditWrap(true, boxLocal);
    mleLocal->setEnabled(false);
 
-   btnClose = new QPushButton(_("&Close Chat"), this);
+   btnClose = new QPushButton(tr("&Close Chat"), this);
    btnClose->setGeometry(200, 440, 100, 20);
    //connect(btnClose, SIGNAL(clicked()), this, SLOT(chatClose()));
    connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
@@ -87,7 +86,7 @@ bool ChatDlg::startAsServer(void)
    snChatServer = new QSocketNotifier(m_cSocketChatServer.Descriptor(), QSocketNotifier::Read);
    connect(snChatServer, SIGNAL(activated(int)), this, SLOT(chatRecvConnection()));
 
-   boxRemote->setTitle(_("Remote - Waiting for joiners..."));
+   boxRemote->setTitle(tr("Remote - Waiting for joiners..."));
 
    return true;
 }
@@ -102,7 +101,7 @@ void ChatDlg::chatRecvConnection()
    snChat = new QSocketNotifier(m_cSocketChat.Descriptor(), QSocketNotifier::Read);
    connect(snChat, SIGNAL(activated(int)), this, SLOT(StateServer()));
    snChat->setEnabled(true);
-   boxRemote->setTitle(_("Remote - Received connection, shaking hands..."));
+   boxRemote->setTitle(tr("Remote - Received connection, shaking hands..."));
 }
 
 
@@ -163,7 +162,7 @@ void ChatDlg::StateServer()
     m_sRemoteName = new char[nameLen + 1];
     for (unsigned short i = 0; i < nameLen; i++)
        m_cSocketChat.RecvBuffer() >> m_sRemoteName[i];
-    boxRemote->setTitle(_("Remote - ") + QString::fromLocal8Bit(getRemoteName()));
+    boxRemote->setTitle(tr("Remote - ") + QString::fromLocal8Bit(getRemoteName()));
 
     // set up the remote colors
     unsigned short junkShort;
@@ -255,7 +254,7 @@ bool ChatDlg::startAsClient(void)
     return false;
   }
 
-  boxRemote->setTitle(_("Remote - Connected, shaking hands..."));
+  boxRemote->setTitle(tr("Remote - Connected, shaking hands..."));
 
   // Send handshake packet:
   CPacketTcp_Handshake p_handshake(getLocalPort());
@@ -265,7 +264,7 @@ bool ChatDlg::startAsClient(void)
   CPChat_Color p_color(getLocalName(), getLocalPort(), 0xFFFFFF, 0x000000);
   m_cSocketChat.SendPacket(p_color.getBuffer());
 
-  boxRemote->setTitle(_("Remote - Connected, waiting for response..."));
+  boxRemote->setTitle(tr("Remote - Connected, waiting for response..."));
 
   m_nState = STATE_RECVxCOLORxFONT;
   snChat = new QSocketNotifier(m_cSocketChat.Descriptor(), QSocketNotifier::Read);
@@ -317,7 +316,7 @@ void ChatDlg::StateClient()
     m_sRemoteName = new char[nameLen + 1];
     for (unsigned short i = 0; i < nameLen; i++)
        m_cSocketChat.RecvBuffer() >> m_sRemoteName[i];
-    boxRemote->setTitle(_("Remote - ") + QString::fromLocal8Bit(m_sRemoteName));
+    boxRemote->setTitle(tr("Remote - ") + QString::fromLocal8Bit(m_sRemoteName));
 
     // set up the remote colors
     char colorForeRed, colorForeGreen, colorForeBlue, 

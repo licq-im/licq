@@ -27,7 +27,6 @@ extern int errno;
 #include "constants.h"
 #include "support.h"
 #include "mainwin.h"
-#include "licq-locale.h"
 #include "icqd.h"
 #include "userbox.h"
 #include "wharf.h"
@@ -36,15 +35,15 @@ extern int errno;
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTabDialog(parent, name)
 {
   resize(450, 310);
-  setCaption(_("Licq Options"));
+  setCaption(tr("Licq Options"));
 
   mainwin = _mainwin;
-  setOkButton(_("Ok"));
-  setApplyButton(_("Apply"));
-  setCancelButton(_("Cancel"));
+  setOkButton(tr("Ok"));
+  setApplyButton(tr("Apply"));
+  setCancelButton(tr("Cancel"));
   connect (this, SIGNAL(applyButtonPressed()), this, SLOT(slot_apply()));
 
-  QPushButton *btnWhat = new QPushButton(_("What's This?"), this);
+  QPushButton *btnWhat = new QPushButton(tr("What's This?"), this);
   btnWhat->setGeometry(6, height() - 30, 80, 23);
   connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
 
@@ -52,54 +51,54 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   tab[0] = new QWidget(this);
 
   // fonts
-  boxFont = new QGroupBox(_("Font"), tab[0]);
+  boxFont = new QGroupBox(tr("Font"), tab[0]);
   boxFont->setGeometry(10, 125, 410, 90);
-  QWhatsThis::add(boxFont, _("The font used for all widgets"));
-  nfoFont = new CInfoField(10, 20, 40, 5, 340, _("Font:"), false, boxFont);
-  btnFont = new QPushButton(_("Select Font"), boxFont);
+  QWhatsThis::add(boxFont, tr("The font used for all widgets"));
+  nfoFont = new CInfoField(10, 20, 40, 5, 340, tr("Font:"), false, boxFont);
+  btnFont = new QPushButton(tr("Select Font"), boxFont);
   btnFont->setGeometry(10, 45, 100, 30);
-  QWhatsThis::add(btnFont, _("Select a font from the system list"));
+  QWhatsThis::add(btnFont, tr("Select a font from the system list"));
   connect(btnFont, SIGNAL(clicked()), this, SLOT(slot_selectfont()));
 
-  chkFontStyles = new QCheckBox(_("Use Font Styles"), boxFont);
+  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxFont);
   chkFontStyles->setGeometry(120, 45, 180, 20);
-  QWhatsThis::add(chkFontStyles, _("Use italics and bold in the user list to "
+  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
                                    "indicate special characteristics such as "
                                    "online notify and visible list"));
-  chkGridLines = new QCheckBox(_("Show Grid Lines"), tab[0]);
+  chkGridLines = new QCheckBox(tr("Show Grid Lines"), tab[0]);
   chkGridLines->setGeometry(10, 20, 240, 20);
-  QWhatsThis::add(chkGridLines, _("Draw boxes around each square in the user list"));
-  chkHeader = new QCheckBox(_("Show Column Headers"), tab[0]);
+  QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
+  chkHeader = new QCheckBox(tr("Show Column Headers"), tab[0]);
   chkHeader->setGeometry(10, 45, 200, 20);
-  QWhatsThis::add(chkHeader, _("Turns on or off the display of headers above "
+  QWhatsThis::add(chkHeader, tr("Turns on or off the display of headers above "
                                 "each column in the user list"));
-  chkShowDividers = new QCheckBox(_("Show User Dividers"), tab[0]);
+  chkShowDividers = new QCheckBox(tr("Show User Dividers"), tab[0]);
   chkShowDividers->setGeometry(10, 70, 240, 20);
-  QWhatsThis::add(chkShowDividers, _("Show the \"--online--\" and \"--offline--\" bars "
+  QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
                                      "in the contact list"));
-  chkAutoClose = new QCheckBox(_("Auto Close Function Window"), tab[0]);
+  chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), tab[0]);
   chkAutoClose->setGeometry(10, 95, 240, 20);
-  QWhatsThis::add(chkAutoClose, _("Sets the default behavior for auto closing "
+  QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
                                   "the user function window after a succesful event"));
 
   tab[1] = new QWidget(this);
-  lblColTitle = new QLabel (_("Title"), tab[1]);
+  lblColTitle = new QLabel (tr("Title"), tab[1]);
   lblColTitle->setGeometry(80, 10, 80, 20);
-  QWhatsThis::add(lblColTitle, _("The string which will appear in the list box column header"));
-  lblColFormat = new QLabel (_("Format"), tab[1]);
+  QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
+  lblColFormat = new QLabel (tr("Format"), tab[1]);
   lblColFormat->setGeometry(170, 10, 90, 20);
-  QWhatsThis::add(lblColFormat, _("The format string used to define what will"
+  QWhatsThis::add(lblColFormat, tr("The format string used to define what will"
                                   "appear in each column, see OnEvent Command for"
                                   "more information about valid % values"));
-  lblColWidth = new QLabel (_("Width"), tab[1]);
+  lblColWidth = new QLabel (tr("Width"), tab[1]);
   lblColWidth->setGeometry(270, 10, 60, 20);
-  QWhatsThis::add(lblColWidth, _("The width of the column"));
-  lblColAlign = new QLabel(_("Alignment"), tab[1]);
+  QWhatsThis::add(lblColWidth, tr("The width of the column"));
+  lblColAlign = new QLabel(tr("Alignment"), tab[1]);
   lblColAlign->setGeometry(340, 10, 80, 20);
-  QWhatsThis::add(lblColAlign, _("The alignment of the column"));
+  QWhatsThis::add(lblColAlign, tr("The alignment of the column"));
   for (unsigned short i = 0; i < 4; i++)
   {
-     chkColEnabled[i] = new QCheckBox(_("Column %1").arg(i), tab[1]);
+     chkColEnabled[i] = new QCheckBox(tr("Column %1").arg(i), tab[1]);
      chkColEnabled[i]->setGeometry(10, 40 + i * 25, 75, 20);
      edtColTitle[i] = new QLineEdit(tab[1]);
      edtColTitle[i]->setGeometry(80, 40 + i * 25, 80, 20);
@@ -110,20 +109,20 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
      spnColWidth[i]->setRange(0, 2048);
      cmbColAlign[i] = new QComboBox(tab[1]);
      cmbColAlign[i]->setGeometry(340, 40 + i * 25, 80, 20);
-     cmbColAlign[i]->insertItem(_("Left"));
-     cmbColAlign[i]->insertItem(_("Right"));
-     cmbColAlign[i]->insertItem(_("Center"));
+     cmbColAlign[i]->insertItem(tr("Left"));
+     cmbColAlign[i]->insertItem(tr("Right"));
+     cmbColAlign[i]->insertItem(tr("Center"));
      connect(chkColEnabled[i], SIGNAL(toggled(bool)), this, SLOT(colEnable(bool)));
   }
 
   tab[2] = new QWidget(this);
-  chkOnEvents = new QCheckBox(_("OnEvents Enabled"), tab[2]);
+  chkOnEvents = new QCheckBox(tr("OnEvents Enabled"), tab[2]);
   chkOnEvents->setGeometry(10, 10, 130, 20);
-  QWhatsThis::add(chkOnEvents, _("Enable running of \"Command\" when the relevant "
+  QWhatsThis::add(chkOnEvents, tr("Enable running of \"Command\" when the relevant "
                                  "event occurs."));
-  lblSndPlayer = new QLabel(_("Command:"), tab[2]);
+  lblSndPlayer = new QLabel(tr("Command:"), tab[2]);
   lblSndPlayer->setGeometry(160, 10, 60, 20);
-  QWhatsThis::add(lblSndPlayer, _("Command to execute when an event is received.  "
+  QWhatsThis::add(lblSndPlayer, tr("Command to execute when an event is received.  "
                                   "It will be passed the relevant parameters from "
                                   "below.  Parameters can contain the following "
                                   "expressions which will be replaced with the relevant "
@@ -140,127 +139,127 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
                                   "%h - phone number"));
   edtSndPlayer = new QLineEdit(tab[2]);
   edtSndPlayer->setGeometry(230, 10, 190, 20);
-  boxSndEvents = new QGroupBox(_("Parameters"), tab[2]);
+  boxSndEvents = new QGroupBox(tr("Parameters"), tab[2]);
   boxSndEvents->setGeometry(10, 40, 410, 180);
-  lblSndMsg = new QLabel(_("Message:"), boxSndEvents);
+  lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
   lblSndMsg->setGeometry(10, 20, 80, 20);
-  QWhatsThis::add(lblSndMsg, _("Parameter for received messages"));
+  QWhatsThis::add(lblSndMsg, tr("Parameter for received messages"));
   edtSndMsg = new QLineEdit(boxSndEvents);
   edtSndMsg->setGeometry(90, 20, 280, 20);
-  lblSndUrl = new QLabel(_("URL:"), boxSndEvents);
+  lblSndUrl = new QLabel(tr("URL:"), boxSndEvents);
   lblSndUrl->setGeometry(10, 45, 80, 20);
-  QWhatsThis::add(lblSndUrl, _("Parameter for received URLs"));
+  QWhatsThis::add(lblSndUrl, tr("Parameter for received URLs"));
   edtSndUrl = new QLineEdit(boxSndEvents);
   edtSndUrl->setGeometry(90, 45, 280, 20);
-  lblSndChat = new QLabel(_("Chat Request:"), boxSndEvents);
+  lblSndChat = new QLabel(tr("Chat Request:"), boxSndEvents);
   lblSndChat->setGeometry(10, 70, 80, 20);
-  QWhatsThis::add(lblSndChat, _("Parameter for received chat requests"));
+  QWhatsThis::add(lblSndChat, tr("Parameter for received chat requests"));
   edtSndChat = new QLineEdit(boxSndEvents);
   edtSndChat->setGeometry(90, 70, 280, 20);
-  lblSndFile = new QLabel(_("File Transfer:"), boxSndEvents);
+  lblSndFile = new QLabel(tr("File Transfer:"), boxSndEvents);
   lblSndFile->setGeometry(10, 95, 80, 20);
-  QWhatsThis::add(lblSndFile, _("Parameter for received file transfers"));
+  QWhatsThis::add(lblSndFile, tr("Parameter for received file transfers"));
   edtSndFile = new QLineEdit(boxSndEvents);
   edtSndFile->setGeometry(90, 95, 280, 20);
-  lblSndNotify = new QLabel(_("Online Notify:"), boxSndEvents);
+  lblSndNotify = new QLabel(tr("Online Notify:"), boxSndEvents);
   lblSndNotify->setGeometry(10, 120, 80, 20);
-  QWhatsThis::add(lblSndNotify, _("Parameter for online notification"));
+  QWhatsThis::add(lblSndNotify, tr("Parameter for online notification"));
   edtSndNotify = new QLineEdit(boxSndEvents);
   edtSndNotify->setGeometry(90, 120, 280, 20);
-  lblSndSysMsg = new QLabel(_("System Msg:"), boxSndEvents);
+  lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
   lblSndSysMsg->setGeometry(10, 145, 80, 20);
-  QWhatsThis::add(lblSndSysMsg, _("Parameter for received system messages"));
+  QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
   edtSndSysMsg = new QLineEdit(boxSndEvents);
   edtSndSysMsg->setGeometry(90, 145, 280, 20);
 
   tab[3] = new QWidget(this);
-  lblServers = new QLabel (_("Servers:"), tab[3]);
+  lblServers = new QLabel (tr("Servers:"), tab[3]);
   lblServers->setGeometry(10, 10, 70, 20);
   lblServers->setEnabled(false);
-  QWhatsThis::add(lblServers, _("List of servers to connect to (read-only for now)"));
+  QWhatsThis::add(lblServers, tr("List of servers to connect to (read-only for now)"));
   cmbServers = new QComboBox(false, tab[3]);
   cmbServers->setGeometry(80, 10, 150, 20);
   cmbServers->setEnabled(false);
-  lblDefServerPort = new QLabel(_("Default Server Port:"), tab[3]);
+  lblDefServerPort = new QLabel(tr("Default Server Port:"), tab[3]);
   lblDefServerPort->setGeometry(10, 35, 125, 20);
-  QWhatsThis::add(lblDefServerPort, _("Default port to connect to on the server (should be 4000)"));
+  QWhatsThis::add(lblDefServerPort, tr("Default port to connect to on the server (should be 4000)"));
   spnDefServerPort = new QSpinBox(tab[3]);
   spnDefServerPort->setGeometry(140, 35, 90, 20);
   spnDefServerPort->setRange(0, 0xFFFF);
-  lblTcpServerPort = new QLabel(_("TCP Server Port:"), tab[3]);
+  lblTcpServerPort = new QLabel(tr("TCP Server Port:"), tab[3]);
   lblTcpServerPort->setGeometry(10, 60, 120, 20);
-  QWhatsThis::add(lblTcpServerPort, _("TCP port for local server.  Set to \"0\" for "
+  QWhatsThis::add(lblTcpServerPort, tr("TCP port for local server.  Set to \"0\" for "
                                       "system assigned port.  Use if you are behind"
                                       "a firewall or using ip masquerading."));
   spnTcpServerPort = new QSpinBox(tab[3]);
   spnTcpServerPort->setGeometry(140, 60, 90, 20);
   spnTcpServerPort->setRange(0, 0xFFFF);
-  lblMaxUsersPerPacket = new QLabel(_("Max Users per Packet:"), tab[3]);
+  lblMaxUsersPerPacket = new QLabel(tr("Max Users per Packet:"), tab[3]);
   lblMaxUsersPerPacket->setGeometry(10, 85, 150, 20);
-  QWhatsThis::add(lblMaxUsersPerPacket, _("Leave at 125 unless all your users appear "
+  QWhatsThis::add(lblMaxUsersPerPacket, tr("Leave at 125 unless all your users appear "
                                           "offline when they should not be.  Then lower "
                                           "it until they appear again (try ~100)."));
   spnMaxUsersPerPacket = new QSpinBox(tab[3]);
   spnMaxUsersPerPacket->setGeometry(170, 85, 60, 20);
   spnMaxUsersPerPacket->setRange(10, 125);
-  lblAutoLogon = new QLabel(_("Auto Logon:"), tab[3]);
+  lblAutoLogon = new QLabel(tr("Auto Logon:"), tab[3]);
   lblAutoLogon->setGeometry(170, 110, 90, 20);
-  QWhatsThis::add(lblAutoLogon, _("Automatically log on when first starting up."));
+  QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
   cmbAutoLogon = new QComboBox(tab[3]);
   cmbAutoLogon->setGeometry(260, 110, 120, 20);
-  cmbAutoLogon->insertItem(_("Offline"));
-  cmbAutoLogon->insertItem(_("Online"));
-  cmbAutoLogon->insertItem(_("Away"));
-  cmbAutoLogon->insertItem(_("Not Available"));
-  cmbAutoLogon->insertItem(_("Occupied"));
-  cmbAutoLogon->insertItem(_("Do Not Disturb"));
-  cmbAutoLogon->insertItem(_("Free for Chat"));
-  chkAutoLogonInvisible = new QCheckBox(_("Invisible"), tab[3]);
+  cmbAutoLogon->insertItem(tr("Offline"));
+  cmbAutoLogon->insertItem(tr("Online"));
+  cmbAutoLogon->insertItem(tr("Away"));
+  cmbAutoLogon->insertItem(tr("Not Available"));
+  cmbAutoLogon->insertItem(tr("Occupied"));
+  cmbAutoLogon->insertItem(tr("Do Not Disturb"));
+  cmbAutoLogon->insertItem(tr("Free for Chat"));
+  chkAutoLogonInvisible = new QCheckBox(tr("Invisible"), tab[3]);
   chkAutoLogonInvisible->setGeometry(260, 135, 100, 20);
-  lblAutoAway = new QLabel(_("Auto Away:"), tab[3]);
+  lblAutoAway = new QLabel(tr("Auto Away:"), tab[3]);
   lblAutoAway->setGeometry(10, 110, 80, 20);
-  QWhatsThis::add(lblAutoAway, _("Number of minutes of inactivity after which to "
+  QWhatsThis::add(lblAutoAway, tr("Number of minutes of inactivity after which to "
                                  "automatically be marked \"away\".  Set to \"0\" "
                                  "to disable."));
   spnAutoAway = new QSpinBox(tab[3]);
   spnAutoAway->setGeometry(100, 110, 50, 20);
-  lblAutoNa = new QLabel(_("Auto N/A:"), tab[3]);
+  lblAutoNa = new QLabel(tr("Auto N/A:"), tab[3]);
   lblAutoNa->setGeometry(10, 135, 80, 20);
-  QWhatsThis::add(lblAutoNa, _("Number of minutes of inactivity after which to "
+  QWhatsThis::add(lblAutoNa, tr("Number of minutes of inactivity after which to "
                                "automatically be marked \"not available\".  Set to \"0\" "
                                "to disable."));
   spnAutoNa = new QSpinBox(tab[3]);
   spnAutoNa->setGeometry(100, 135, 50, 20);
-  chkWebPresence = new QCheckBox(_("Web Presence Enabled"), tab[3]);
+  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), tab[3]);
   chkWebPresence->setGeometry(10, 160, 200, 20);
-  QWhatsThis::add(chkWebPresence, _("Web presence allows users to see if you are online "
+  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
                                     "through your web indicator."));
-  chkHideIp = new QCheckBox(_("Hide IP"), tab[3]);
+  chkHideIp = new QCheckBox(tr("Hide IP"), tab[3]);
   chkHideIp->setGeometry(10, 185, 200, 20);
-  QWhatsThis::add(chkHideIp, _("Hiding ip stops users from seeing your ip."));
-  chkAllowNewUsers = new QCheckBox(_("Allow New Users"), tab[3]);
+  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
+  chkAllowNewUsers = new QCheckBox(tr("Allow New Users"), tab[3]);
   chkAllowNewUsers->setGeometry(170, 185, 200, 20);
-  QWhatsThis::add(chkAllowNewUsers, _("Determines if new users are automatically added"
+  QWhatsThis::add(chkAllowNewUsers, tr("Determines if new users are automatically added"
                                       "to your list or must first request authorization."));
 
   tab[4] = new QWidget(this);
-  lblErrorLog = new QLabel(_("Error Log:"), tab[4]);
+  lblErrorLog = new QLabel(tr("Error Log:"), tab[4]);
   lblErrorLog->setGeometry(10, 60, 80, 20);
   lblErrorLog->setEnabled(false);
   edtErrorLog = new QLineEdit(tab[4]);
   edtErrorLog->setGeometry(100, 60, 200, 20);
   edtErrorLog->setEnabled(false);
-  lblUrlViewer = new QLabel(_("Url Viewer:"), tab[4]);
+  lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[4]);
   lblUrlViewer->setGeometry(10, 10, 80, 20);
-  QWhatsThis::add(lblUrlViewer, _("The command to run to view a URL.  Will be passed the URL "
+  QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
                                   "as a parameter."));
   edtUrlViewer = new QLineEdit(tab[4]);
   edtUrlViewer->setGeometry(100, 10, 200, 20);
-  nfoTerminal = new CInfoField(10, 35, 80, 10, 200, _("Terminal:"), false, tab[4]);
-  QWhatsThis::add(nfoTerminal, _("The command to run to start your terminal program."));
-  lblTrans = new QLabel(_("Translation:"), tab[4]);
+  nfoTerminal = new CInfoField(10, 35, 80, 10, 200, tr("Terminal:"), false, tab[4]);
+  QWhatsThis::add(nfoTerminal, tr("The command to run to start your terminal program."));
+  lblTrans = new QLabel(tr("Translation:"), tab[4]);
   lblTrans->setGeometry(10, 85, 80, 20);
-  QWhatsThis::add(lblTrans, _("Sets which translation table should be used for "
+  QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
   cmbTrans = new QComboBox(false, tab[4]);
   cmbTrans->setGeometry(100, 85, 200, 20);
@@ -272,12 +271,12 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   {
     gLog.Error("%sError reading translation directory %s:\n%s%s.\n",
                L_ERRORxSTR, szTransFilesDir, L_BLANKxSTR, strerror(errno));
-    cmbTrans->insertItem(_("ERROR"));
+    cmbTrans->insertItem(tr("ERROR"));
     cmbTrans->setEnabled(false);
   }
   else
   {
-    cmbTrans->insertItem(_("none"));
+    cmbTrans->insertItem(tr("none"));
     for (unsigned short i = 0; i < n; i++)
     {
       if (namelist[i]->d_name[0] != '.')
@@ -286,20 +285,20 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
     }
     free (namelist);
   }
-  chkUseDock = new QCheckBox(_("Use Dock Icon"), tab[4]);
+  chkUseDock = new QCheckBox(tr("Use Dock Icon"), tab[4]);
   chkUseDock->setGeometry(10, 110, 120, 20);
-  QWhatsThis::add(chkUseDock, _("Controls whether or not the dockable icon should be displayed."));
-  chkDockFortyEight = new QCheckBox(_("64 x 48 Dock Icon"), tab[4]);
+  QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
+  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), tab[4]);
   chkDockFortyEight->setGeometry(30, 135, 180, 20);
-  QWhatsThis::add(chkDockFortyEight, _("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
+  QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
                                 "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
   connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
 
-  addTab(tab[0], _("Appearance"));
-  addTab(tab[1], _("Columns"));
-  addTab(tab[2], _("OnEvent"));
-  addTab(tab[3], _("Network"));
-  addTab(tab[4], _("Extensions"));
+  addTab(tab[0], tr("Appearance"));
+  addTab(tab[1], tr("Columns"));
+  addTab(tab[2], tr("OnEvent"));
+  addTab(tab[3], tr("Network"));
+  addTab(tab[4], tr("Extensions"));
 
   SetupOptions();
   show();

@@ -33,16 +33,15 @@
 #include <iostream.h>
 
 #include "searchuserdlg.h"
-#include "licq-locale.h"
 
 
 SearchUserView::SearchUserView(QWidget *parent = NULL, char *name = NULL) : QListView(parent, name)
 {
-  addColumn(_("Alias"), 105);
-  addColumn(_("UIN"), 70);
+  addColumn(tr("Alias"), 105);
+  addColumn(tr("UIN"), 70);
   setColumnAlignment(1, AlignRight);
-  addColumn(_("Name"), 120);
-  addColumn(_("Email"), 120);
+  addColumn(tr("Name"), 120);
+  addColumn(tr("Email"), 120);
   setAllColumnsShowFocus (true);
   setMinimumHeight(150);
   setMinimumWidth(440);
@@ -96,52 +95,52 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   grid_lay->addColSpacing(4, 10);grid_lay->addRowSpacing(4, 10);
   grid_lay->addRowSpacing(6, 10);
   
-  lblNick = new QLabel(_("Alias:"), alias_tab);
+  lblNick = new QLabel(tr("Alias:"), alias_tab);
   grid_lay->addWidget(lblNick, 1, 1);
   
   edtNick = new QLineEdit(alias_tab);
   grid_lay->addWidget(edtNick, 1, 3);
   
-  lblFirst = new QLabel(_("First Name:"), alias_tab);
+  lblFirst = new QLabel(tr("First Name:"), alias_tab);
   grid_lay->addWidget(lblFirst, 3, 1);
   
   edtFirst = new QLineEdit(alias_tab);
   grid_lay->addWidget(edtFirst, 3, 3);
   
-  lblLast = new QLabel(_("Last Name:"), alias_tab);
+  lblLast = new QLabel(tr("Last Name:"), alias_tab);
   grid_lay->addWidget(lblLast, 5, 1);
   
   edtLast = new QLineEdit(alias_tab);
   grid_lay->addWidget(edtLast, 5, 3);
   
-  search_tab->addTab(alias_tab, _("&Name"));
+  search_tab->addTab(alias_tab, tr("&Name"));
   
   //-- second tab: search by email
   
   email_tab  = new QWidget(this);
   QBoxLayout* lay2 = new QHBoxLayout(email_tab, 10);
   
-  lblEmail = new QLabel(_("Email Address:"), email_tab);
+  lblEmail = new QLabel(tr("Email Address:"), email_tab);
   lay2->addWidget(lblEmail);
   
   edtEmail = new QLineEdit(email_tab);
   lay2->addWidget(edtEmail);
   
-  search_tab->addTab(email_tab, _("&Email"));
+  search_tab->addTab(email_tab, tr("&Email"));
   
   //-- third tab: search by UIN
   
   uin_tab = new QWidget(this);
   lay2 = new QHBoxLayout(uin_tab, 10);
   
-  lblUin = new QLabel(_("UIN#:"), uin_tab);
+  lblUin = new QLabel(tr("UIN#:"), uin_tab);
   lay2->addWidget(lblUin);
   
   edtUin = new QLineEdit(uin_tab);
   
   lay2->addWidget(edtUin);
   
-  search_tab->addTab(uin_tab, _("&Uin#"));
+  search_tab->addTab(uin_tab, tr("&Uin#"));
   
   lay->addWidget(search_tab, 1);
   
@@ -149,14 +148,14 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   
   lay2->addStretch(1);
   
-  btnSearch = new QPushButton(_("&Search"), this);
+  btnSearch = new QPushButton(tr("&Search"), this);
   lay2->addWidget(btnSearch);
   
-  btnSearchAgain = new QPushButton(_("Search Again"), this);
+  btnSearchAgain = new QPushButton(tr("Search Again"), this);
   btnSearchAgain->setEnabled(false);
   lay2->addWidget(btnSearchAgain);
   
-  btnCancel = new QPushButton(_("&Cancel"), this);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
   lay2->addWidget(btnCancel);
   
   connect (btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -165,7 +164,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
            this, SLOT(slot_searchResult(ICQEvent *)));
   
   // pseudo Status Bar
-  lblSearch = new QLabel(_("Enter search parameters and select 'Search'"), this);
+  lblSearch = new QLabel(tr("Enter search parameters and select 'Search'"), this);
   lblSearch->setFrameStyle(QFrame::WinPanel|QFrame::Sunken);
   
   // post-search widgets
@@ -177,18 +176,18 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   
   lay = new QHBoxLayout(top_lay, 20);
   
-  qcbAlertUser = new QCheckBox(_("A&lert User"), this);
+  qcbAlertUser = new QCheckBox(tr("A&lert User"), this);
   qcbAlertUser->setChecked(true);
   
   lay->addWidget(qcbAlertUser);
   
   lay->addStretch(1);
   
-  btnAdd = new QPushButton(_("&Add User"), this);
+  btnAdd = new QPushButton(tr("&Add User"), this);
   btnAdd->setEnabled(false);
   lay->addWidget(btnAdd);
   
-  btnDone = new QPushButton(_("&Done"), this);
+  btnDone = new QPushButton(tr("&Done"), this);
   lay->addWidget(btnDone);
   
   connect (btnDone, SIGNAL(clicked()), this, SLOT(accept()));
@@ -244,7 +243,7 @@ void SearchUserDlg::startSearch()
   else {
     searchSequence = server->icqStartSearch(edtNick->text(), edtFirst->text(),
                                             edtLast->text(), edtEmail->text());
-    lblSearch->setText(_("Searching (this can take awhile)..."));
+    lblSearch->setText(tr("Searching (this can take awhile)..."));
   }
 }
 
@@ -279,7 +278,7 @@ void SearchUserDlg::resetSearch()
   btnAdd->setEnabled(false);
   btnSearchAgain->setEnabled(false);
   foundView->clear();
-  lblSearch->setText(_("Enter search parameters and select 'Search'"));
+  lblSearch->setText(tr("Enter search parameters and select 'Search'"));
 }
 
 
@@ -305,7 +304,7 @@ void SearchUserDlg::searchFound(struct UserBasicInfo *us)
 void SearchUserDlg::searchDone(char more)
 {
   if (more == (char)1)
-    lblSearch->setText(_("More users found. Narrow search."));
+    lblSearch->setText(tr("More users found. Narrow search."));
   else
     lblSearch->setText("Search complete.");
   btnSearchAgain->setEnabled(true);
@@ -314,7 +313,7 @@ void SearchUserDlg::searchDone(char more)
 
 void SearchUserDlg::searchFailed(void)
 {
-  lblSearch->setText(_("Search failed."));
+  lblSearch->setText(tr("Search failed."));
   btnSearchAgain->setEnabled(true);
 }
 
@@ -328,10 +327,10 @@ void SearchUserDlg::addUser()
   
   // user already there
   if((user = gUserManager.FetchUser(uin, LOCK_N))) {
-    QString msg = QString(_("Sorry, but this user is already\non your "
+    QString msg = QString(tr("Sorry, but this user is already\non your "
                             "contact list as\n'%1'\n\nYou can't add a user twice.")).arg(user->getAlias());
     
-    QMessageBox::warning(this, "Licq - Warning", msg, _("&OK"));
+    QMessageBox::warning(this, "Licq - Warning", msg, tr("&OK"));
     return;
   }
   

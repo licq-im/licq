@@ -10,7 +10,6 @@ extern int errno;
 #endif
 
 #include "skinbrowser.h"
-#include "licq-locale.h"
 #include "support.h"
 #include "constants.h"
 #include "log.h"
@@ -29,14 +28,14 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent = 0, const
 {
   mainwin = _mainwin;
 
-  grpSkins = new QGroupBox(_("Skins"), this);
+  grpSkins = new QGroupBox(tr("Skins"), this);
   lstSkins = new QListBox(grpSkins);
-  btnApplySkin = new QPushButton(_("Apply"), grpSkins);
-  grpIcons = new QGroupBox(_("Icons"), this);
+  btnApplySkin = new QPushButton(tr("Apply"), grpSkins);
+  grpIcons = new QGroupBox(tr("Icons"), this);
   lstIcons = new QListBox(grpIcons);
-  btnApplyIcons = new QPushButton(_("Apply"), grpIcons);
-  btnDone = new QPushButton(_("Done"), this);
-  setCaption(_("Licq Skin Browser"));
+  btnApplyIcons = new QPushButton(tr("Apply"), grpIcons);
+  btnDone = new QPushButton(tr("Done"), this);
+  setCaption(tr("Licq Skin Browser"));
 
   // Load up the available packs
   char szDir[MAX_FILENAME_LEN];
@@ -47,7 +46,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent = 0, const
   {
     gLog.Error("%sError reading qt-gui directory %s:\n%s%s.\n",
                L_ERRORxSTR, szDir, L_BLANKxSTR, strerror(errno));
-    lstSkins->insertItem(_("ERROR"));
+    lstSkins->insertItem(tr("ERROR"));
     lstSkins->setEnabled(false);
   }
   else
@@ -64,7 +63,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent = 0, const
   {
     gLog.Error("%sError reading qt-gui directory %s:\n%s%s.\n",
                L_ERRORxSTR, szDir, L_BLANKxSTR, strerror(errno));
-    lstSkins->insertItem(_("ERROR"));
+    lstSkins->insertItem(tr("ERROR"));
     lstSkins->setEnabled(false);
   }
   else

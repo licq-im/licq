@@ -131,26 +131,13 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_SOCKLEN_T
 
-dnl *** Additions for using gettext
-
-dnl Define which transaltions are availible
-ALL_LINGUAS="sv fr es ru nl"
-
-AM_GNU_GETTEXT
-
-LOCALEDATADIR='$(prefix)/'"$DATADIRNAME/locale"
-AC_SUBST(LOCALEDATADIR)
-
 AC_OUTPUT(
-  po/Makefile.in
-  intl/Makefile
   src/Makefile
   share/Makefile
 	Makefile)
 
 echo ""
 echo "Please remember to use GNU make, often installed as gmake."
-echo "*** Note that this release requires Qt 2.0 ***"
 if test "$have_kde" = yes; then
   echo "KDE 2.0 (CVS) support is enabled."
 else

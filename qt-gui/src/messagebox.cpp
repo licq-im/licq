@@ -5,7 +5,6 @@
 #include <qpainter.h>
 #include "message.h"
 #include "messagebox.h"
-#include "licq-locale.h"
 
 MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView *parent) : QListViewItem(parent)
 {
@@ -48,11 +47,11 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, i
 //-----MsgView::constructor------------------------------------------------------------------------
 MsgView::MsgView (QWidget *parent = 0, const char *name = 0) : QListView(parent, name)
 {
-  addColumn(_("N"), 20);
-  addColumn(_("Event Type"), 115);
-  addColumn(_("Time Received"), 115);
-  addColumn(_("Flags"), 50);
-  addColumn(_("Licq"), 50);
+  addColumn(tr("N"), 20);
+  addColumn(tr("Event Type"), 115);
+  addColumn(tr("Time Received"), 115);
+  addColumn(tr("Flags"), 50);
+  addColumn(tr("Licq"), 50);
   setColumnAlignment(0, AlignCenter);
   setColumnAlignment(3, AlignCenter);
   setColumnAlignment(4, AlignRight);

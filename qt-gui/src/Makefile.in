@@ -17,8 +17,6 @@ mandir = @mandir@
 
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
-localedir = @LOCALEDATADIR@
-LC_ALL = @LC_ALL@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 MKINSTALLDIRS = $(top_srcdir)/mkinstalldirs
@@ -30,11 +28,10 @@ CFLAGS	 = @CFLAGS@
 CXX	 = @CXX@
 CXXFLAGS = -fno-rtti -fno-exceptions @CXXFLAGS@ 
 CPPFLAGS = -Wall -fPIC -DPIC -D_REENTRANT -I$(srcdir) -I$(top_srcdir) \
-           -I$(licq_incdir) -I$(top_srcdir)/intl @CPPFLAGS@ @DEFS@ \
-           -DLOCALEDIR="\"$(localedir)\"" @X_CFLAGS@ @QT_INCLUDES@ \
+           -I$(licq_incdir) @CPPFLAGS@ @DEFS@ @X_CFLAGS@ @QT_INCLUDES@ \
            @KDE_INCLUDES@
 LDFLAGS  = -shared -nostdlib @X_LIBS@ @QT_LDFLAGS@ @KDE_LDFLAGS@
-LDLIBS   = @INTLLIBS@ -lqt @X_PRE_LIBS@ -lX11 -lXext @XSS_LIBS@ @X_EXTRA_LIBS@ @INTLLIBS@ @KDE_LIBS@
+LDLIBS   = -lqt @X_PRE_LIBS@ -lX11 -lXext @XSS_LIBS@ @X_EXTRA_LIBS@ @KDE_LIBS@
 MOC      = @QT_MOC@
 STRIP    = @PROG_STRIP@
 SIZE     = @PROG_SIZE@

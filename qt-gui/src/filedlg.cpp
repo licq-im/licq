@@ -20,7 +20,6 @@
 #include "translate.h"
 #include "ewidgets.h"
 #include "support.h"
-#include "licq-locale.h"
 
 extern int errno;
 
@@ -57,44 +56,44 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    m_szRemoteName = NULL;
    m_snSend = snFile = snFileServer = NULL;
 
-   setCaption(_("ICQ file transfer"));
+   setCaption(tr("ICQ file transfer"));
    setGeometry(100, 100, 500, 325);
 
-   nfoTransferFileName = new CInfoField(10, 15, 100, 5, 290, _("Current file:"), true, this);
+   nfoTransferFileName = new CInfoField(10, 15, 100, 5, 290, tr("Current file:"), true, this);
    nfoTransferFileName->setData(_szTransferFileName);
    nfoTotalFiles = new CInfoField(410, 15, 0, 0, 60, NULL, true, this);
 
-   nfoLocalFileName = new CInfoField(10, 40, 100, 5, 355, _("Local file name:"), true, this);
-   nfoLocalFileName->setData(IsServer() ? _("Unset") : _("N/A"));
+   nfoLocalFileName = new CInfoField(10, 40, 100, 5, 355, tr("Local file name:"), true, this);
+   nfoLocalFileName->setData(IsServer() ? tr("Unset") : tr("N/A"));
    nfoLocalFileName->setEnabled(IsServer());
 
    // Information stuff about the current file
-   QGroupBox *boxCurrent = new QGroupBox(_("Current File"), this);
+   QGroupBox *boxCurrent = new QGroupBox(tr("Current File"), this);
    boxCurrent->setGeometry(10, 80, 220, 170);
-   nfoFileSize = new CInfoField(10, 15, 35, 5, 150, _("Size:"), true, boxCurrent);
+   nfoFileSize = new CInfoField(10, 15, 35, 5, 150, tr("Size:"), true, boxCurrent);
    sprintf(t, "%ld bytes", m_nFileSize);
    nfoFileSize->setData(t);
-   nfoTrans = new CInfoField(10, 40, 35, 5, 150, _("Trans:"), true, boxCurrent);
-   nfoTime = new CInfoField(10, 65, 35, 5, 150, _("Time:"), true, boxCurrent);
-   nfoBPS = new CInfoField(10, 90, 35, 5, 150, _("BPS:"), true, boxCurrent);
-   nfoETA = new CInfoField(10, 115, 35, 5, 150, _("ETA:"), true, boxCurrent);
+   nfoTrans = new CInfoField(10, 40, 35, 5, 150, tr("Trans:"), true, boxCurrent);
+   nfoTime = new CInfoField(10, 65, 35, 5, 150, tr("Time:"), true, boxCurrent);
+   nfoBPS = new CInfoField(10, 90, 35, 5, 150, tr("BPS:"), true, boxCurrent);
+   nfoETA = new CInfoField(10, 115, 35, 5, 150, tr("ETA:"), true, boxCurrent);
    barTransfer = new QProgressBar(boxCurrent);
    barTransfer->setGeometry(10, 140, 200, 20);
 
-   QGroupBox *boxBatch = new QGroupBox(_("Batch"), this);
+   QGroupBox *boxBatch = new QGroupBox(tr("Batch"), this);
    boxBatch->setGeometry(250, 80, 220, 170);
-   nfoBatchSize = new CInfoField(10, 15, 35, 5, 150, _("Size:"), true, boxBatch);
-   nfoBatchTrans = new CInfoField(10, 40, 35, 5, 150, _("Trans:"), true, boxBatch);
-   nfoBatchTime = new CInfoField(10, 65, 35, 5, 150, _("Time:"), true, boxBatch);
-   nfoBatchBPS = new CInfoField(10, 90, 35, 5, 150, _("BPS:"), true, boxBatch);
-   nfoBatchETA = new CInfoField(10, 115, 35, 5, 150, _("ETA:"), true, boxBatch);
+   nfoBatchSize = new CInfoField(10, 15, 35, 5, 150, tr("Size:"), true, boxBatch);
+   nfoBatchTrans = new CInfoField(10, 40, 35, 5, 150, tr("Trans:"), true, boxBatch);
+   nfoBatchTime = new CInfoField(10, 65, 35, 5, 150, tr("Time:"), true, boxBatch);
+   nfoBatchBPS = new CInfoField(10, 90, 35, 5, 150, tr("BPS:"), true, boxBatch);
+   nfoBatchETA = new CInfoField(10, 115, 35, 5, 150, tr("ETA:"), true, boxBatch);
    barBatchTransfer = new QProgressBar(boxBatch);
    barBatchTransfer->setGeometry(10, 140, 200, 20);
 
    lblStatus = new QLabel(this);
    lblStatus->setFrameStyle(QFrame::Box | QFrame::Raised);
 
-   btnCancel = new QPushButton(_("&Cancel Transfer"), this);
+   btnCancel = new QPushButton(tr("&Cancel Transfer"), this);
    connect(btnCancel, SIGNAL(clicked()), this, SLOT(hide()));
    connect(&m_tUpdate, SIGNAL(timeout()), this, SLOT(fileUpdate()));
 
@@ -103,7 +102,7 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    {
       sprintf(t, "%d / ?", m_nCurrentFile + 1);
       nfoTotalFiles->setData(t);
-      nfoBatchSize->setData(_("Unknown"));
+      nfoBatchSize->setData(tr("Unknown"));
       show();
       if (!startAsServer()) setPort(0);
    }
@@ -111,7 +110,7 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    {
       sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
       nfoTotalFiles->setData(t);
-      sprintf(t, _("%ld bytes"), m_nBatchSize);
+      sprintf(t, tr("%ld bytes"), m_nBatchSize);
       nfoBatchSize->setData(t);
       show();
       if (!startAsClient()) setPort(0);
@@ -158,14 +157,14 @@ bool CFileDlg::GetLocalFileName(void)
     {
       if ((unsigned long)buf.st_size >= m_sFileInfo.nSize)
       {
-        if(QueryUser(this, _("File already exists and is at least as big as the incoming file."), _("Overwrite"), _("Cancel")))
+        if(QueryUser(this, tr("File already exists and is at least as big as the incoming file."), tr("Overwrite"), tr("Cancel")))
           nFlags |= O_TRUNC;
         else
           return (false);
       }
       else
       {
-        if (QueryUser(this, _("File already exists and appears incomplete."), _("Overwrite"), _("Resume")))
+        if (QueryUser(this, tr("File already exists and appears incomplete."), tr("Overwrite"), tr("Resume")))
           nFlags |= O_TRUNC;
         else
         {
@@ -182,7 +181,7 @@ bool CFileDlg::GetLocalFileName(void)
     m_nFileDesc = open (f, nFlags, 00664);
     if (m_nFileDesc < 0)
     {
-      if (!QueryUser(this, _("Open error - unable to open file for writing."), _("Retry"), _("Cancel")))
+      if (!QueryUser(this, tr("Open error - unable to open file for writing."), tr("Retry"), tr("Cancel")))
         return (false);
     }
     else
@@ -206,8 +205,8 @@ void CFileDlg::fileCancel()
   if (snFileServer != NULL) snFileServer->setEnabled(false);
   m_xSocketFileServer.CloseConnection();
   m_xSocketFile.CloseConnection();
-  lblStatus->setText(_("File transfer cancelled."));
-  btnCancel->setText(_("Done"));
+  lblStatus->setText(tr("File transfer cancelled."));
+  btnCancel->setText(tr("Done"));
 }
 
 
@@ -221,9 +220,9 @@ void CFileDlg::fileUpdate()
 
   // Transfered
   if (m_nFilePos > 1024)
-    sprintf(sz, _("%0.2f kb"), m_nFilePos / 1024.0);
+    sprintf(sz, tr("%0.2f kb"), m_nFilePos / 1024.0);
   else
-    sprintf(sz, _("%ld b"), m_nFilePos);
+    sprintf(sz, tr("%ld b"), m_nFilePos);
   nfoTrans->setData(sz);
 
   // Time
@@ -240,7 +239,7 @@ void CFileDlg::fileUpdate()
   // BPS
   float fBPS = m_nBytesTransfered / nTime;
   if (fBPS > 1024)
-    sprintf(sz, _("%.2f k"), fBPS / 1024);
+    sprintf(sz, tr("%.2f k"), fBPS / 1024);
   else
     sprintf(sz, "%.2f", fBPS);
   nfoBPS->setData(sz);
@@ -256,9 +255,9 @@ void CFileDlg::fileUpdate()
 
   // Transfered
   if (m_nBatchPos > 1024)
-    sprintf(sz, _("%0.2f kb"), m_nBatchPos / 1024.0);
+    sprintf(sz, tr("%0.2f kb"), m_nBatchPos / 1024.0);
   else
-    sprintf(sz, _("%ld b"), m_nBatchPos);
+    sprintf(sz, tr("%ld b"), m_nBatchPos);
   nfoBatchTrans->setData(sz);
 
   // Time
@@ -276,7 +275,7 @@ void CFileDlg::fileUpdate()
   // BPS
   float fBatchBPS = m_nBatchBytesTransfered / nBatchTime;
   if (fBatchBPS > 1024)
-    sprintf(sz, _("%.2f k"), fBatchBPS / 1024);
+    sprintf(sz, tr("%.2f k"), fBatchBPS / 1024);
   else
     sprintf(sz, "%.2f", fBatchBPS);
   nfoBatchBPS->setData(sz);
@@ -309,7 +308,7 @@ bool CFileDlg::startAsServer(void)
    snFileServer = new QSocketNotifier(m_xSocketFileServer.Descriptor(), QSocketNotifier::Read);
    connect(snFileServer, SIGNAL(activated(int)), this, SLOT(fileRecvConnection()));
 
-   lblStatus->setText(_("Waiting for connection..."));
+   lblStatus->setText(tr("Waiting for connection..."));
 
    return true;
 }
@@ -334,7 +333,7 @@ void CFileDlg::StateServer()
   {
     fileCancel();
     if (m_xSocketFile.Error() == 0)
-      InformUser(this, _("Remote end disconnected."));
+      InformUser(this, tr("Remote end disconnected."));
     else
       gLog.Error("%sFile transfer receive error - lost remote end:\n%s%s\n", L_ERRORxSTR,
                  L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
@@ -390,13 +389,13 @@ void CFileDlg::StateServer()
     m_nBatchBytesTransfered = m_nBatchPos = 0;
     barBatchTransfer->setTotalSteps(m_nBatchSize);
     barBatchTransfer->setProgress(0);
-    setCaption(_("ICQ file transfer %1 %2").arg(IsServer() ? _("from") : _("to")).arg(m_szRemoteName));
+    setCaption(tr("ICQ file transfer %1 %2").arg(IsServer() ? tr("from") : tr("to")).arg(m_szRemoteName));
 
     // Send response
     CPFile_InitServer p(m_szLocalName);
     m_xSocketFile.SendPacket(p.getBuffer());
 
-    lblStatus->setText(_("Received init, waiting for batch info..."));
+    lblStatus->setText(tr("Received init, waiting for batch info..."));
     m_nState = STATE_RECVxFILExINFO;
     break;
   }
@@ -425,7 +424,7 @@ void CFileDlg::StateServer()
 
     m_nCurrentFile++;
     nfoTransferFileName->setData(m_sFileInfo.szName);
-    sprintf(t, _("%ld bytes"), m_sFileInfo.nSize);
+    sprintf(t, tr("%ld bytes"), m_sFileInfo.nSize);
     nfoFileSize->setData(t);
     barTransfer->setTotalSteps(m_sFileInfo.nSize);
 
@@ -476,7 +475,7 @@ void CFileDlg::fileRecvFile()
   {
     m_nStartTime = time(NULL);
     m_nBatchPos += m_nFilePos;
-    lblStatus->setText(_("Receiving file..."));
+    lblStatus->setText(tr("Receiving file..."));
   }
 
   // Write the new data to the file and empty the buffer
@@ -522,10 +521,10 @@ void CFileDlg::fileRecvFile()
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
     /*char msg[1024];
-    sprintf(msg, _("%sFile transfer of\n'%s'\nfrom %s completed successfully.\n"),
+    sprintf(msg, tr("%sFile transfer of\n'%s'\nfrom %s completed successfully.\n"),
             L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
     InformUser(this, msg);*/
-    QString msg = QString(_("File '%1' from %2 received successfully."))
+    QString msg = QString(tr("File '%1' from %2 received successfully."))
                           .arg(m_sFileInfo.szName).arg(m_szRemoteName);
     lblStatus->setText(msg);
 
@@ -541,8 +540,8 @@ void CFileDlg::fileRecvFile()
   // Only get here if the current file is done
   m_nCurrentFile++;
   m_tUpdate.stop();
-  btnCancel->setText(_("Ok"));
-  lblStatus->setText(_("File received."));
+  btnCancel->setText(tr("Ok"));
+  lblStatus->setText(tr("File received."));
   disconnect(snFile, SIGNAL(activated(int)), this, SLOT(fileRecvFile()));
 
   // Now wait for a disconnect or another file
@@ -562,7 +561,7 @@ bool CFileDlg::startAsClient(void)
   gUserManager.DropUser(u);
   gLog.Info("%sFile transfer - connecting to %ld:%d.\n", L_TCPxSTR,
              inet_ntoa_r(*(struct in_addr *)&nIp, buf), getPort());
-   lblStatus->setText(_("Connecting to remote..."));
+   lblStatus->setText(tr("Connecting to remote..."));
    m_xSocketFile.SetRemoteAddr(nIp, getPort());
    if (!m_xSocketFile.OpenConnection())
    {
@@ -571,7 +570,7 @@ bool CFileDlg::startAsClient(void)
      return false;
    }
 
-   lblStatus->setText(_("Connected, shaking hands..."));
+   lblStatus->setText(tr("Connected, shaking hands..."));
 
    // Send handshake packet:
    CPacketTcp_Handshake p_handshake(getLocalPort());
@@ -581,7 +580,7 @@ bool CFileDlg::startAsClient(void)
    CPFile_InitClient p(m_szLocalName, 1, m_nFileSize);
    m_xSocketFile.SendPacket(p.getBuffer());
 
-   lblStatus->setText(_("Connected, waiting for response..."));
+   lblStatus->setText(tr("Connected, waiting for response..."));
    m_nState = STATE_RECVxSERVERxINIT;
    snFile = new QSocketNotifier(m_xSocketFile.Descriptor(), QSocketNotifier::Read);
    connect(snFile, SIGNAL(activated(int)), this, SLOT(StateClient()));
@@ -596,7 +595,7 @@ void CFileDlg::StateClient()
   {
     fileCancel();
     if (m_xSocketFile.Error() == 0)
-      InformUser(this, _("Remote end disconnected."));
+      InformUser(this, tr("Remote end disconnected."));
     else
       gLog.Error("%sFile transfer receive error - lost remote end:\n%s%s\n", L_ERRORxSTR,
                 L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
@@ -631,7 +630,7 @@ void CFileDlg::StateClient()
     m_szRemoteName = new char[nRemoteNameLen];
     for (int i = 0; i < nRemoteNameLen; i++)
        m_xSocketFile.RecvBuffer() >> m_szRemoteName[i];
-    setCaption(_("ICQ file transfer %1 %2").arg(IsServer() ? _("from") : _("to")).arg(m_szRemoteName));
+    setCaption(tr("ICQ file transfer %1 %2").arg(IsServer() ? tr("from") : tr("to")).arg(m_szRemoteName));
 
     // Send file info packet
     CPFile_Info p(nfoTransferFileName->text());
@@ -643,7 +642,7 @@ void CFileDlg::StateClient()
       return;
     }
     m_xSocketFile.SendPacket(p.getBuffer());
-    lblStatus->setText(_("Sent batch info, waiting for ack..."));
+    lblStatus->setText(tr("Sent batch info, waiting for ack..."));
 
     // Set up local batch info
     strcpy(m_sFileInfo.szName, nfoTransferFileName->text());
@@ -662,7 +661,7 @@ void CFileDlg::StateClient()
   case STATE_RECVxSTART:
   {
     // Process batch ack packet, it contains nothing useful so just start the transfer
-    lblStatus->setText(_("Starting transfer..."));
+    lblStatus->setText(tr("Starting transfer..."));
 
     // contains the seek value
     char cJunk;
@@ -727,7 +726,7 @@ void CFileDlg::fileSendFile()
   {
     m_nStartTime = time(NULL);
     m_nBatchPos += m_nFilePos;
-    lblStatus->setText(_("Sending file..."));
+    lblStatus->setText(tr("Sending file..."));
   }
 
   int nBytesToSend = m_sFileInfo.nSize - m_nFilePos;
@@ -771,17 +770,17 @@ void CFileDlg::fileSendFile()
   ::close(m_nFileDesc);
   m_nFileDesc = 0;
   m_tUpdate.stop();
-  btnCancel->setText(_("Ok"));
-  lblStatus->setText(_("File sent."));
+  btnCancel->setText(tr("Ok"));
+  lblStatus->setText(tr("File sent."));
 
   if (nBytesLeft == 0)
   {
     // File transfer done perfectly
     /*char msg[1024];
-    sprintf(msg, _("%sFile transfer of\n'%s'\nto %s completed successfully.\n"),
+    sprintf(msg, tr("%sFile transfer of\n'%s'\nto %s completed successfully.\n"),
             L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
     InformUser(this, msg);*/
-    QString msg = QString(_("Sending of file '%1' to %2 completed successfully."))
+    QString msg = QString(tr("Sending of file '%1' to %2 completed successfully."))
       .arg(m_sFileInfo.szName).arg(m_szRemoteName);
     lblStatus->setText(msg);
   }
@@ -797,8 +796,8 @@ void CFileDlg::fileSendFile()
   m_xSocketFileServer.CloseConnection();
   m_xSocketFile.CloseConnection();
   if (m_snSend != NULL) m_snSend->setEnabled(false);
-  lblStatus->setText(_("File transfer complete."));
-  btnCancel->setText(_("Done"));
+  lblStatus->setText(tr("File transfer complete."));
+  btnCancel->setText(tr("Done"));
 }
 
 

@@ -1,4 +1,4 @@
-SUBDIRS = po intl share src
+SUBDIRS = share src
 
 .PHONY: all_recursive install_recursive clean_recursive distclean_recursive \
 	all clean distclean install

@@ -8,7 +8,6 @@
 #include "fileacceptdlg.h"
 #include "filedlg.h"
 #include "mledit.h"
-#include "licq-locale.h"
 
 #include "icqd.h"
 #include "user.h"
@@ -24,24 +23,24 @@ CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
    m_xEventFile = e->Copy();
 
    setGeometry(100, 100, 300, 130);
-   QLabel *lblRefuse = new QLabel(_("Refusal Reason (if applicable):"), this);
+   QLabel *lblRefuse = new QLabel(tr("Refusal Reason (if applicable):"), this);
    lblRefuse->setGeometry(5, 5, 200, 20);
    mleRefuseMsg = new MLEditWrap(true, this);
    mleRefuseMsg->setGeometry(5, 30, 290, 50);
 
    QPushButton *btnAccept, *btnRefuse, *btnIgnore;
-   btnAccept = new QPushButton(_("Accept"), this );
+   btnAccept = new QPushButton(tr("Accept"), this );
    btnAccept->setGeometry(10, 85, 80, 30 );
    connect( btnAccept, SIGNAL(clicked()), SLOT(accept()) );
-   btnRefuse = new QPushButton(_("Refuse"), this );
+   btnRefuse = new QPushButton(tr("Refuse"), this );
    btnRefuse->setGeometry( 100, 85, 80, 30 );
    connect( btnRefuse, SIGNAL(clicked()), SLOT(refuse()) );
-   btnIgnore = new QPushButton(_("Ignore"), this );
+   btnIgnore = new QPushButton(tr("Ignore"), this );
    btnIgnore->setGeometry(190, 85, 80, 30 );
    connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );
 
    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-   setCaption(_("Accept file transfer from ") + QString::fromLocal8Bit(u->getAlias())+ " ?");
+   setCaption(tr("Accept file transfer from ") + QString::fromLocal8Bit(u->getAlias())+ " ?");
    gUserManager.DropUser(u);
 
    show();

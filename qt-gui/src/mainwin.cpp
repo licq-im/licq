@@ -24,7 +24,6 @@
 #include "utilitydlg.h"
 #include "registeruser.h"
 #include "skinbrowser.h"
-#include "licq-locale.h"
 #include "icqd.h"
 #include "awaymsgdlg.h"
 #include "outputwin.h"
@@ -254,9 +253,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 #ifdef USE_KDE
-  m_szCaption = _("KLicq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
+  m_szCaption = tr("KLicq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
 #else
-  m_szCaption = _("Licq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
+  m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
 #endif
   gUserManager.DropOwner();
   setCaption(m_szCaption);
@@ -357,7 +356,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
    {
-     InformUser(this, _("You have not yet registered a uin.  Select the\n"
+     InformUser(this, tr("You have not yet registered a uin.  Select the\n"
                         "\"Register\" option from the system menu to\n"
                         "register an existing uin or create a new one."));
    }
@@ -446,7 +445,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial = false)
 #endif
     menu->setFrameStyle(QFrame::Panel | QFrame::Raised);
     menu->insertItem(skin->btnSys.caption == NULL ?
-                     _("&System") : QString::fromLocal8Bit(skin->btnSys.caption),
+                     tr("&System") : QString::fromLocal8Bit(skin->btnSys.caption),
                      mnuSystem);
     btnSystem = NULL;
   }
@@ -756,19 +755,19 @@ void CMainWindow::updateEvents(void)
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
   {
-    lblMsg->setText(_("SysMsg"));
+    lblMsg->setText(tr("SysMsg"));
     szCaption = "* " + m_szCaption;
   }
   else if (nNumUserEvents > 0)
   {
-    lblMsg->setText(_("%1 msg%2")
+    lblMsg->setText(tr("%1 msg%2")
                     .arg(nNumUserEvents)
-                    .arg(nNumUserEvents == 1 ? _(" ") : _("s")));
+                    .arg(nNumUserEvents == 1 ? tr(" ") : tr("s")));
     szCaption = "* " + m_szCaption;
   }
   else
   {
-    lblMsg->setText(_("No msgs"));
+    lblMsg->setText(tr("No msgs"));
     szCaption = m_szCaption;
   }
   lblMsg->update();
@@ -825,8 +824,8 @@ void CMainWindow::updateGroups()
   cmbUserGroups->clear();
   mnuUserGroups->clear();
   mnuGroup->clear();
-  cmbUserGroups->insertItem(_("All Users"));
-  mnuUserGroups->insertItem(_("All Users"));
+  cmbUserGroups->insertItem(tr("All Users"));
+  mnuUserGroups->insertItem(tr("All Users"));
   mnuUserGroups->insertSeparator();
 
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
@@ -839,14 +838,14 @@ void CMainWindow::updateGroups()
   gUserManager.UnlockGroupList();
   mnuUserGroups->insertSeparator();
 
-  cmbUserGroups->insertItem(_("Online Notify"));
-  mnuUserGroups->insertItem(_("Online Notify"));
-  cmbUserGroups->insertItem(_("Visible List"));
-  mnuUserGroups->insertItem(_("Visible List"));
-  cmbUserGroups->insertItem(_("Invisible List"));
-  mnuUserGroups->insertItem(_("Invisible List"));
-  cmbUserGroups->insertItem(_("Ignore List"));
-  mnuUserGroups->insertItem(_("Ignore List"));
+  cmbUserGroups->insertItem(tr("Online Notify"));
+  mnuUserGroups->insertItem(tr("Online Notify"));
+  cmbUserGroups->insertItem(tr("Visible List"));
+  mnuUserGroups->insertItem(tr("Visible List"));
+  cmbUserGroups->insertItem(tr("Invisible List"));
+  mnuUserGroups->insertItem(tr("Invisible List"));
+  cmbUserGroups->insertItem(tr("Ignore List"));
+  mnuUserGroups->insertItem(tr("Ignore List"));
 
   int index = m_nCurrentGroup;
   if (m_nGroupType == GROUPS_SYSTEM)
@@ -1171,7 +1170,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
     if (e->m_eResult == EVENT_SUCCESS)
     {
       char buf[256];
-      sprintf(buf, _("Successfully registered, your user identification\n"
+      sprintf(buf, tr("Successfully registered, your user identification\n"
                      "number (UIN) is %ld.  Now log on and update your\n"
                      "personal info."),
                    gUserManager.OwnerUin());
@@ -1181,14 +1180,14 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
     }
     else
     {
-      InformUser(this, _("Registration failed.  See network window for details."));
+      InformUser(this, tr("Registration failed.  See network window for details."));
     }
     break;
   case ICQ_CMDxSND_AUTHORIZE:
      if (e->m_eResult != EVENT_ACKED)
        gLog.Error("%sError sending autorization.\n", L_ERRORxSTR);
      else
-       InformUser(this, _("Authorization granted."));
+       InformUser(this, tr("Authorization granted."));
      break;
   default:
      break;
@@ -1203,11 +1202,11 @@ void CMainWindow::removeUserFromList()
   ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
   if (u == NULL) return;
   unsigned long nUin = u->getUin();
-  QString warning(_("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
+  QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
                      .arg(QString::fromLocal8Bit(u->getAlias()))
                      .arg(nUin) );
   gUserManager.DropUser(u);
-  if (QueryUser(this, warning, _("Ok"), _("Cancel")))
+  if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
      licqDaemon->RemoveUserFromList(nUin);
 }
 
@@ -1221,12 +1220,12 @@ void CMainWindow::removeUserFromGroup()
     if (u == NULL) return;
     unsigned long nUin = u->getUin();
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    QString warning(_("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
+    QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
                        .arg(QString::fromLocal8Bit(u->getAlias()))
                        .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
     gUserManager.UnlockGroupList();
     gUserManager.DropUser(u);
-    if (QueryUser(this, warning, _("Ok"), _("Cancel")))
+    if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
     {
        gUserManager.RemoveUserFromGroup(nUin, m_nCurrentGroup);
        updateUserWin();
@@ -1325,7 +1324,7 @@ void CMainWindow::saveOptions()
 void CMainWindow::aboutBox()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  QString about(_("Licq version %1.\n"
+  QString about(tr("Licq version %1.\n"
                   "Qt GUI plugin version %2.\n\n"
                   "Author: Graham Roff\n"
                   "http://www.licq.org\n\n"
@@ -1628,18 +1627,18 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial = false)
 
    if (!_bInitial)
    {
-     mnuStatus->changeItem(*pmOnline, _("&Online"), mnuStatus->idAt(0));
-     mnuStatus->changeItem(*pmAway, _("&Away"), mnuStatus->idAt(1));
-     mnuStatus->changeItem(*pmNa, _("&Not Available"), mnuStatus->idAt(2));
-     mnuStatus->changeItem(*pmOccupied, _("O&ccupied"), mnuStatus->idAt(3));
-     mnuStatus->changeItem(*pmDnd, _("&Do Not Disturb"), mnuStatus->idAt(4));
-     mnuStatus->changeItem(*pmFFC, _("Free for C&hat"), mnuStatus->idAt(5));
-     mnuStatus->changeItem(*pmOffline, _("O&ffline"), mnuStatus->idAt(6));
-     mnuStatus->changeItem(*pmPrivate, _("&Invisible"), mnuStatus->idAt(8));
-     mnuUser->changeItem(*pmMessage, _("&Send Message"), mnuUser->idAt(1));
-     mnuUser->changeItem(*pmUrl, _("Send &Url"), mnuUser->idAt(2));
-     mnuUser->changeItem(*pmChat, _("Send &Chat Request"), mnuUser->idAt(3));
-     mnuUser->changeItem(*pmFile, _("Send &File Transfer"), mnuUser->idAt(4));
+     mnuStatus->changeItem(*pmOnline, tr("&Online"), mnuStatus->idAt(0));
+     mnuStatus->changeItem(*pmAway, tr("&Away"), mnuStatus->idAt(1));
+     mnuStatus->changeItem(*pmNa, tr("&Not Available"), mnuStatus->idAt(2));
+     mnuStatus->changeItem(*pmOccupied, tr("O&ccupied"), mnuStatus->idAt(3));
+     mnuStatus->changeItem(*pmDnd, tr("&Do Not Disturb"), mnuStatus->idAt(4));
+     mnuStatus->changeItem(*pmFFC, tr("Free for C&hat"), mnuStatus->idAt(5));
+     mnuStatus->changeItem(*pmOffline, tr("O&ffline"), mnuStatus->idAt(6));
+     mnuStatus->changeItem(*pmPrivate, tr("&Invisible"), mnuStatus->idAt(8));
+     mnuUser->changeItem(*pmMessage, tr("&Send Message"), mnuUser->idAt(1));
+     mnuUser->changeItem(*pmUrl, tr("Send &Url"), mnuUser->idAt(2));
+     mnuUser->changeItem(*pmChat, tr("Send &Chat Request"), mnuUser->idAt(3));
+     mnuUser->changeItem(*pmFile, tr("Send &File Transfer"), mnuUser->idAt(4));
      userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
                           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
      updateUserWin();
@@ -1653,22 +1652,22 @@ void CMainWindow::initMenu(void)
 {
    int mnuId;
    mnuStatus = new QPopupMenu(NULL);
-   mnuId = mnuStatus->insertItem(*pmOnline, _("&Online"), ICQ_STATUS_ONLINE);
+   mnuId = mnuStatus->insertItem(*pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
    mnuStatus->setAccel(ALT + Key_O,mnuId);
-   mnuId = mnuStatus->insertItem(*pmAway, _("&Away"), ICQ_STATUS_AWAY);
+   mnuId = mnuStatus->insertItem(*pmAway, tr("&Away"), ICQ_STATUS_AWAY);
    mnuStatus->setAccel(ALT + Key_A,mnuId);
-   mnuId = mnuStatus->insertItem(*pmNa, _("&Not Available"), ICQ_STATUS_NA);
+   mnuId = mnuStatus->insertItem(*pmNa, tr("&Not Available"), ICQ_STATUS_NA);
    mnuStatus->setAccel(ALT + Key_N,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOccupied, _("O&ccupied"), ICQ_STATUS_OCCUPIED);
+   mnuId = mnuStatus->insertItem(*pmOccupied, tr("O&ccupied"), ICQ_STATUS_OCCUPIED);
    mnuStatus->setAccel(ALT + Key_C,mnuId);
-   mnuId = mnuStatus->insertItem(*pmDnd, _("&Do Not Disturb"), ICQ_STATUS_DND);
+   mnuId = mnuStatus->insertItem(*pmDnd, tr("&Do Not Disturb"), ICQ_STATUS_DND);
    mnuStatus->setAccel(ALT + Key_D,mnuId);
-   mnuId = mnuStatus->insertItem(*pmFFC, _("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
+   mnuId = mnuStatus->insertItem(*pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
    mnuStatus->setAccel(ALT + Key_H,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOffline, _("O&ffline"), ICQ_STATUS_OFFLINE);
+   mnuId = mnuStatus->insertItem(*pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
    mnuStatus->setAccel(ALT + Key_F,mnuId);
    mnuStatus->insertSeparator();
-   mnuId = mnuStatus->insertItem(*pmPrivate, _("&Invisible"), ICQ_STATUS_FxPRIVATE);
+   mnuId = mnuStatus->insertItem(*pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
    mnuStatus->setAccel(ALT + Key_I,mnuId);
    connect(mnuStatus, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
 
@@ -1676,27 +1675,27 @@ void CMainWindow::initMenu(void)
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
-   mnuUserAdm->insertItem(_("&Add User"), this, SLOT(showAddUserDlg()));
-   mnuUserAdm->insertItem(_("S&earch for User"), this, SLOT(showSearchUserDlg()));
-   mnuUserAdm->insertItem(_("A&uthorize User"), this, SLOT(showAuthUserDlg()));
+   mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()));
+   mnuUserAdm->insertItem(tr("S&earch for User"), this, SLOT(showSearchUserDlg()));
+   mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(_("Edit Groups"), this, SLOT(showEditGrpDlg()));
-   //mnuUserAdm->insertItem(_("&Update Contact List"), this, SLOT(slot_updateContactList()));
-   //mnuUserAdm->insertItem(_("Update All Users"), this, SLOT(slot_updateAllUsers()));
-   //mnuUserAdm->insertItem(_("&Redraw User Window"), this, SLOT(updateUserWin()));
-   mnuUserAdm->insertItem(_("&Save All Users"), this, SLOT(saveAllUsers()));
+   mnuUserAdm->insertItem(tr("Edit Groups"), this, SLOT(showEditGrpDlg()));
+   //mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
+   //mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
+   //mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
+   mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()));
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(_("Register User"), this, SLOT(slot_register()));
+   mnuUserAdm->insertItem(tr("Register User"), this, SLOT(slot_register()));
 
    mnuDebug = new QPopupMenu(NULL);
-   mnuDebug->insertItem(_("Status Info"));
-   mnuDebug->insertItem(_("Unknown Packets"));
-   mnuDebug->insertItem(_("Errors"));
-   mnuDebug->insertItem(_("Warnings"));
-   mnuDebug->insertItem(_("Packets"));
+   mnuDebug->insertItem(tr("Status Info"));
+   mnuDebug->insertItem(tr("Unknown Packets"));
+   mnuDebug->insertItem(tr("Errors"));
+   mnuDebug->insertItem(tr("Warnings"));
+   mnuDebug->insertItem(tr("Packets"));
    mnuDebug->insertSeparator();
-   mnuDebug->insertItem(_("Set All"));
-   mnuDebug->insertItem(_("Clear All"));
+   mnuDebug->insertItem(tr("Set All"));
+   mnuDebug->insertItem(tr("Clear All"));
    mnuDebug->setCheckable(true);
    // This hack only works assuming that the initial debug level has been set
    // to the stdout log server log types
@@ -1709,28 +1708,28 @@ void CMainWindow::initMenu(void)
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    mnuSystem->insertItem(o->getAlias(), this, SLOT(callOwnerFunction()));
    gUserManager.DropOwner();
-   mnuSystem->insertItem(_("User Functions"), mnuUserAdm);
-   mnuSystem->insertItem(_("&Status"), mnuStatus);
-   mnuSystem->insertItem(_("&Group"), mnuUserGroups);
-   mnuSystem->insertItem(_("Set &Auto Response"), awayMsgDlg, SLOT(show()));
+   mnuSystem->insertItem(tr("User Functions"), mnuUserAdm);
+   mnuSystem->insertItem(tr("&Status"), mnuStatus);
+   mnuSystem->insertItem(tr("&Group"), mnuUserGroups);
+   mnuSystem->insertItem(tr("Set &Auto Response"), awayMsgDlg, SLOT(show()));
    mnuSystem->insertSeparator();
-   mnuSystem->insertItem(_("Show &Network Window"), licqLogWindow, SLOT(show()));
-   mnuSystem->insertItem(_("Use &Mini Mode"), this, SLOT(miniMode()));
-   mnuSystem->insertItem(_("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
-   mnuSystem->insertItem(_("&Options"), this, SLOT(showOptionsDlg()));
-   mnuSystem->insertItem(_("S&kin Browser"), this, SLOT(showSkinBrowser()));
-   mnuSystem->insertItem(_("Debug Level"), mnuDebug);
+   mnuSystem->insertItem(tr("Show &Network Window"), licqLogWindow, SLOT(show()));
+   mnuSystem->insertItem(tr("Use &Mini Mode"), this, SLOT(miniMode()));
+   mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
+   mnuSystem->insertItem(tr("&Options"), this, SLOT(showOptionsDlg()));
+   mnuSystem->insertItem(tr("S&kin Browser"), this, SLOT(showSkinBrowser()));
+   mnuSystem->insertItem(tr("Debug Level"), mnuDebug);
    mnuSystem->insertSeparator();
-   mnuSystem->insertItem(_("Next &Server"), this, SLOT(nextServer()));
+   mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
    mnuSystem->insertSeparator();
-   mnuSystem->insertItem(_("Sa&ve Options"), this, SLOT(saveOptions()));
-   mnuSystem->insertItem(_("&About"), this, SLOT(aboutBox()));
-   mnuSystem->insertItem(_("E&xit"), this, SLOT(slot_shutdown()));
+   mnuSystem->insertItem(tr("Sa&ve Options"), this, SLOT(saveOptions()));
+   mnuSystem->insertItem(tr("&About"), this, SLOT(aboutBox()));
+   mnuSystem->insertItem(tr("E&xit"), this, SLOT(slot_shutdown()));
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
 
    mnuRemove = new QPopupMenu(NULL);
-   mnuRemove->insertItem(_("From Current Group"), this, SLOT(removeUserFromGroup()));
-   mnuRemove->insertItem(_("From Contact List"), this, SLOT(removeUserFromList()));
+   mnuRemove->insertItem(tr("From Current Group"), this, SLOT(removeUserFromGroup()));
+   mnuRemove->insertItem(tr("From Contact List"), this, SLOT(removeUserFromList()));
 
    mnuGroup = new QPopupMenu(NULL);
    connect(mnuGroup, SIGNAL(activated(int)), this, SLOT(addUserToGroup(int)));
@@ -1744,27 +1743,27 @@ void CMainWindow::initMenu(void)
 
    mnuUser = new QPopupMenu(NULL);
    mnuUser->setCheckable(true);
-   mnuUser->insertItem(_("&View Event"));
-   mnuUser->insertItem(*pmMessage, _("&Send Message"));
-   mnuUser->insertItem(*pmUrl, _("Send &Url"));
-   mnuUser->insertItem(*pmChat, _("Send &Chat Request"));
-   mnuUser->insertItem(*pmFile, _("Send &File Transfer"));
-   mnuUser->insertItem(_("Send Authorization"));
-   mnuUser->insertItem(_("Check &Auto Response"));
+   mnuUser->insertItem(tr("&View Event"));
+   mnuUser->insertItem(*pmMessage, tr("&Send Message"));
+   mnuUser->insertItem(*pmUrl, tr("Send &Url"));
+   mnuUser->insertItem(*pmChat, tr("Send &Chat Request"));
+   mnuUser->insertItem(*pmFile, tr("Send &File Transfer"));
+   mnuUser->insertItem(tr("Send Authorization"));
+   mnuUser->insertItem(tr("Check &Auto Response"));
    mnuUser->insertSeparator();
-   mnuUser->insertItem(_("User &Info"));
-   mnuUser->insertItem(_("User &Detail"));
-   mnuUser->insertItem(_("View &History"));
+   mnuUser->insertItem(tr("User &Info"));
+   mnuUser->insertItem(tr("User &Detail"));
+   mnuUser->insertItem(tr("View &History"));
    mnuUser->insertSeparator();
-   mnuUser->insertItem(_("Online Notify"));
-   mnuUser->insertItem(_("Invisible List"));
-   mnuUser->insertItem(_("Visible List"));
-   mnuUser->insertItem(_("Ignore List"));
+   mnuUser->insertItem(tr("Online Notify"));
+   mnuUser->insertItem(tr("Invisible List"));
+   mnuUser->insertItem(tr("Visible List"));
+   mnuUser->insertItem(tr("Ignore List"));
    mnuUser->insertSeparator();
-   mnuUser->insertItem(_("Remove"), mnuRemove);
-   mnuUser->insertItem(_("Add To Group"), mnuGroup);
+   mnuUser->insertItem(tr("Remove"), mnuRemove);
+   mnuUser->insertItem(tr("Add To Group"), mnuGroup);
    mnuUser->insertSeparator();
-   mnuUser->insertItem(_("&Utilities"), mnuUtilities);
+   mnuUser->insertItem(tr("&Utilities"), mnuUtilities);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
 }
 
@@ -1826,7 +1825,7 @@ void CMainWindow::slot_register(void)
   if (gUserManager.OwnerUin() != 0)
   {
     char buf[256];
-    sprintf (buf, _("You are currently registered as\n"
+    sprintf (buf, tr("You are currently registered as\n"
                     "UIN: %ld\n"
                     "Base Directory: %s\n"
                     "Rerun licq with the -b option to select a new\n"

@@ -5,23 +5,22 @@
 #include <stdlib.h>
 #include <qvalidator.h>
 #include "authuserdlg.h"
-#include "licq-locale.h"
 
 #include "icqd.h"
 
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent = 0, const char *name = 0 ) : QDialog(parent, name)
 {
    server = s;
-   setCaption(_("Licq"));
+   setCaption(tr("Licq"));
    resize(340, 100);
-   lblUin = new QLabel(_("Authorize which user (UIN):"), this);
+   lblUin = new QLabel(tr("Authorize which user (UIN):"), this);
    lblUin->setGeometry(10, 15, 160, 20);
    edtUin = new QLineEdit(this);
    edtUin->setGeometry(180, 15, 120, 20);
    edtUin->setValidator(new QIntValidator(0, 2147483647, edtUin));
-   btnOk = new QPushButton(_("&Ok"), this);
+   btnOk = new QPushButton(tr("&Ok"), this);
    btnOk->setGeometry(80, 60, 80, 30);
-   btnCancel = new QPushButton(_("&Cancel"), this);
+   btnCancel = new QPushButton(tr("&Cancel"), this);
    btnCancel->setGeometry(180, 60, 80, 30);
    connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
    connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );

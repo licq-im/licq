@@ -9,14 +9,13 @@
 
 #include "outputwin.h"
 #include "icq-defines.h"
-#include "licq-locale.h"
 
 //---------------------------------------------------------------------------
 
 CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
   : QDialog(parent, name)
 {
-  setCaption(_("Licq Network Log"));
+  setCaption(tr("Licq Network Log"));
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
@@ -29,12 +28,12 @@ CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
 
-  btnClear = new QPushButton(_("C&lear"), this);
+  btnClear = new QPushButton(tr("C&lear"), this);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
   lay->addStretch(1);
   lay->addWidget(btnClear);
 
-  btnHide = new QPushButton(_("&Close"), this);
+  btnHide = new QPushButton(tr("&Close"), this);
   btnHide->setDefault(true);
   connect(btnHide, SIGNAL(clicked()), this, SLOT(hide()));
   lay->addWidget(btnHide);

@@ -3,7 +3,6 @@
 #include "utilitydlg.h"
 #include "icqd.h"
 #include "user.h"
-#include "licq-locale.h"
 
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
@@ -32,7 +31,7 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   }
   nfoDesc = new CInfoField(10, 60, 60, 5, width() - 80, "Description:", true, this);
   nfoDesc->setData(m_xUtility->Description());
-  chkEditFinal = new QCheckBox(_("Edit final command"), this);
+  chkEditFinal = new QCheckBox(tr("Edit final command"), this);
   boxFields = new QGroupBox("User Fields", this);
   mleCommand = new QMultiLineEdit(boxFields);
   mleCommand->setReadOnly(true);
@@ -75,8 +74,8 @@ void CUtilityDlg::slot_cancel()
       fclose(fsCommand);
       fsCommand = NULL;
     }
-    nfoUtility->setTitle(_("Done:"));
-    btnCancel->setText(_("Close"));
+    nfoUtility->setTitle(tr("Done:"));
+    btnCancel->setText(tr("Close"));
     m_bIntWin = false;
   }
   else
@@ -127,7 +126,7 @@ void CUtilityDlg::slot_run()
     nfoUtility->setData(m_xUtility->FullCommand());
     if (chkEditFinal->isChecked())
     {
-      nfoUtility->setTitle(_("Edit:"));
+      nfoUtility->setTitle(tr("Edit:"));
       nfoUtility->SetReadOnly(false);
       chkEditFinal->setEnabled(false);
       return;
@@ -135,7 +134,7 @@ void CUtilityDlg::slot_run()
   }
 
   nfoUtility->SetReadOnly(true);
-  nfoUtility->setTitle(_("Running:"));
+  nfoUtility->setTitle(tr("Running:"));
 
   // Run the command
   int nSystemResult = 0;
@@ -182,13 +181,13 @@ void CUtilityDlg::slot_run()
 
   if (nSystemResult == -1)
   {
-    nfoUtility->setTitle(_("Failed:"));
+    nfoUtility->setTitle(tr("Failed:"));
     m_xUtility->SetFields(m_nUin);
   }
   else
   {
     btnRun->setEnabled(false);
-    btnCancel->setText(_("Done"));
+    btnCancel->setText(tr("Done"));
   }
 }
 

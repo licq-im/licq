@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include "showawaymsgdlg.h"
 #include "user.h"
-#include "licq-locale.h"
 
 ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const char *name = 0)
   : QDialog(parent, name)
@@ -26,7 +25,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
 
-  chkShowAgain = new QCheckBox(_("&Show Again"), this);
+  chkShowAgain = new QCheckBox(tr("&Show Again"), this);
   lay->addWidget(chkShowAgain);
 
   lay->addStretch(1);
@@ -37,12 +36,12 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
 
   char szStatus[32];
   u->getStatusStr(szStatus);
-  setCaption(QString(_("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
+  setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
   mleAwayMsg->setText(u->AutoResponse());
 
   gUserManager.DropUser(u);
 
-  btnOk = new QPushButton(_("&Ok"), this);
+  btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setDefault(true);
   connect(btnOk, SIGNAL(clicked()), SLOT(accept()));
   lay->addWidget(btnOk);

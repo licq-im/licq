@@ -12,7 +12,6 @@
 #include <math.h>
 #include "userbox.h"
 #include "gui-defines.h"
-#include "licq-locale.h"
 
 bool    CUserViewItem::s_bGridLines,
         CUserViewItem::s_bFontStyles;
@@ -260,7 +259,7 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
    mnuGroup = mg;
    colInfo = _colInfo;
 
-   addColumn(_("S"), 20);
+   addColumn(tr("S"), 20);
    for (unsigned short i = 0; i < colInfo.size(); i++)
    {
      addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);

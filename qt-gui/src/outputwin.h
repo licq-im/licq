@@ -11,7 +11,6 @@
 #include <qmessagebox.h>
 
 #include "mledit.h"
-#include "licq-locale.h"
 #include "log.h"
 
 //=====OutputWin===================================================================================
