@@ -8,7 +8,8 @@
 
 #include "icqd.h"
 
-AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent = 0, const char *name = 0 ) : QDialog(parent, name)
+AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
+   : QDialog(parent, name)
 {
    server = s;
    resize(240, 120);

@@ -15,7 +15,7 @@
 int AwayMsgDlg::s_nX = 100;
 int AwayMsgDlg::s_nY = 100;
 
-AwayMsgDlg::AwayMsgDlg(QWidget *parent = 0, const char *name = 0)
+AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
     : QDialog(parent, name)
 {
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);

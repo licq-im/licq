@@ -8,7 +8,8 @@
 
 #include "icqd.h"
 
-AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent = 0, const char *name = 0 ) : QDialog(parent, name)
+AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
+  : QDialog(parent, name)
 {
    server = s;
    setCaption(tr("Licq"));
