@@ -591,8 +591,34 @@ void CMainWindow::CreateUserView()
                        &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
-  connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction()));
+  connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 }
+
+
+//-----CMainWindow::CreateUserFloaty---------------------------------------------
+void CMainWindow::CreateUserFloaty(unsigned long nUin)
+{
+  if (nUin == 0) return;
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+
+  CUserView *f = new CUserView(mnuUser, mnuGroup, mnuAwayModes, colInfo, false,
+                           false, m_bFontStyles, false,
+                           false, false, m_nFlash, NULL);
+  f->setFrameStyle(33);
+  connect (f, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
+
+  CUserViewItem *i = new CUserViewItem(u, f);
+
+  gUserManager.DropUser(u);
+
+  // not so good, we should allow for multiple guys in one box...
+  // perhaps use the viewport sizeHint
+  f->setFixedHeight(i->height() + f->frameWidth() * 2);
+
+  f->show();
+}
+
 
 //-----CMainWindow::destructor--------------------------------------------------
 CMainWindow::~CMainWindow()
@@ -629,7 +655,6 @@ void CMainWindow::resizeEvent (QResizeEvent *)
 {
   userView->setGeometry(skin->frame.border.left, skin->frame.border.top,
                         width() - skin->frameWidth(), height() - skin->frameHeight());
-  userView->maxLastColumn();
 
   if (!skin->frame.hasMenuBar)
     btnSystem->setGeometry(skin->borderToRect(&skin->btnSys, this));
@@ -1122,9 +1147,10 @@ void CMainWindow::changeStatus(int id)
 
 // -----------------------------------------------------------------------------
 
-void CMainWindow::callDefaultFunction()
+void CMainWindow::callDefaultFunction(QListViewItem *i)
 {
-  unsigned long nUin = userView->SelectedItemUin();
+  unsigned long nUin = ((CUserViewItem *)i)->ItemUin();
+  //userView->SelectedItemUin();
   if (nUin == 0) return;
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   // set default function to read or send depending on whether or not
@@ -1202,60 +1228,83 @@ void CMainWindow::callMsgFunction()
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  if(userView->SelectedItemUin() == 0)
-    return;
+  unsigned long nUin = userView->SelectedItemUin();
+
+  if (nUin == 0) return;
 
   switch(index)
   {
     case mnuUserAuthorize:
-      licqDaemon->icqAuthorize(userView->SelectedItemUin());
+      licqDaemon->icqAuthorize(nUin);
       break;
     case mnuUserCheckResponse:
       {
-        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
+        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
       }
       break;
     case mnuUserOnlineNotify:
     {
-      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (!u) return;
       u->SetOnlineNotify(!u->OnlineNotify());
       gUserManager.DropUser(u);
       if (m_bFontStyles) updateUserWin();
+      break;
     }
-    break;
     case mnuUserInvisibleList:
     {
-      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (!u) return;
       u->SetInvisibleList(!u->InvisibleList());
       gUserManager.DropUser(u);
       if (m_bFontStyles) updateUserWin();
       licqDaemon->icqSendInvisibleList(true);
+      break;
     }
-    break;
     case mnuUserVisibleList:
     {
-      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (!u) return;
       u->SetVisibleList(!u->VisibleList());
       gUserManager.DropUser(u);
       if (m_bFontStyles)
         updateUserWin();
       licqDaemon->icqSendVisibleList(true);
+      break;
     }
-    break;
     case mnuUserIgnoreList:
     {
-      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (!u) return;
       u->SetIgnoreList(!u->IgnoreList());
       gUserManager.DropUser(u);
       updateUserWin();
+      break;
     }
-    break;
+    case mnuUserFloaty:
+    {
+      if (CUserView::SelectedItemFloaty())
+      {
+        // delete the floaty, should just delete the item, and only delete
+        // the view if it's empty...
+        CUserView *v = (CUserView *)CUserView::SelectedItem()->listView();
+        delete v;
+      }
+      else
+      {
+        // Should check that the floaty does not already exist
+        UserFloatyList::iterator iter;
+        for (iter = CUserView::floaties.begin(); iter != CUserView::floaties.end(); iter++)
+        {
+          // Should go through the entire userview...
+          if (((CUserViewItem *)(*iter)->firstChild())->ItemUin() == nUin) break;
+        }
+        if (iter == CUserView::floaties.end()) CreateUserFloaty(nUin);
+      }
+      break;
+    }
     default:
-      callFunction(index, userView->SelectedItemUin());
+      callFunction(index, nUin);
   }
 
 }
@@ -2035,6 +2084,7 @@ void CMainWindow::initMenu()
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("&Info"), m);
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
+   mnuUser->insertItem(tr("&Floaty"), mnuUserFloaty);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
    mnuUser->insertItem(tr("Invisible List"), mnuUserInvisibleList);

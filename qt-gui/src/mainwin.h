@@ -36,6 +36,7 @@ class CUserView;
 class CELabel;
 class CEButton;
 class CEComboBox;
+class QListViewItem;
 #ifdef USE_DOCK
 class IconManager;
 #endif
@@ -137,6 +138,7 @@ protected:
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   void CreateUserView();
+  void CreateUserFloaty(unsigned long nUin);
   void resizeEvent (QResizeEvent *);
   void initMenu();
 
@@ -164,7 +166,7 @@ protected slots:
   void changeStatusManual(int index);
   void setCurrentGroupMenu(int id);
   void setCurrentGroup(int);
-  void callDefaultFunction();
+  void callDefaultFunction(QListViewItem *);
   void callOwnerFunction(int);
   void callMsgFunction();
   void callFileFunction (const char *);

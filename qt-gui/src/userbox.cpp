@@ -19,6 +19,18 @@
 #include "config.h"
 #endif
 
+extern "C" {
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+}
+#undef Bool
+#undef None
+#undef KeyPress
+#undef KeyRelease
+#undef FocusIn
+#undef FocusOut
+#undef Status
+
 #include <qpainter.h>
 #include <qpopupmenu.h>
 #include <qheader.h>
@@ -327,7 +339,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 
           int marg = lv ? lv->itemMargin() : 1;
 
-          if ( isSelected() &&
+          if ( isSelected() && lv->parent() != NULL &&
                (column==0 || listView()->allColumnsShowFocus()) ) {
                   p->fillRect( r - marg, 0, width - r + marg, height(),
                            cg.brush( QColorGroup::Highlight ) );
@@ -428,6 +440,11 @@ QString CUserViewItem::key (int column, bool ascending) const
 }
 
 
+UserFloatyList CUserView::floaties;
+unsigned long CUserView::s_nUin = 0;
+bool CUserView::s_bFloaty = false;
+CUserViewItem *CUserView::s_pItem = NULL;
+
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
@@ -461,15 +478,31 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
    setSortByStatus(bSortByStatus);
-   //setFlashUrgent(bFlashUrgent);
 
    // Flash stuff
-   CUserViewItem::s_tFlash = new QTimer(this);
-   CUserViewItem::s_nFlash = nFlash;
-   connect(CUserViewItem::s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
-   CUserViewItem::s_tFlash->start(FLASH_TIME);
-
-   //CUserViewItem::s_pNone = new QPixmap;
+   if (parent != NULL)
+   {
+     CUserViewItem::s_tFlash = new QTimer(this);
+     CUserViewItem::s_nFlash = nFlash;
+     connect(CUserViewItem::s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
+     CUserViewItem::s_tFlash->start(FLASH_TIME);
+   }
+   else
+   {
+     WId win = winId();
+     Display *dsp = x11Display();
+     XWMHints *hints;
+     XClassHint classhint;
+     classhint.res_name = "licq";
+     classhint.res_class = "Floaty";
+     XSetClassHint(dsp, win, &classhint);
+     hints = XGetWMHints(dsp, win);
+     hints->window_group = win;
+     hints->flags = WindowGroupHint;
+     XSetWMHints(dsp, win, hints);
+     XFree( hints );
+     floaties.push_back(this);
+   }
 
    //setAutoMask(true);
 }
@@ -481,7 +514,27 @@ CUserView::~CUserView()
 {
   barOnline = barOffline = NULL;
   delete m_tips;
+  if (parent() == NULL)
+  {
+    UserFloatyList::iterator iter;
+    for (iter = floaties.begin(); iter != floaties.end(); iter++)
+    {
+      if (this == *iter)
+      {
+        floaties.erase(iter);
+        break;
+      }
+    }
+  }
 }
+
+
+void CUserView::hideEvent(QHideEvent *)
+{
+  if (parent() == NULL)
+    close(true);
+}
+
 
 void CUserView::clear()
 {
@@ -533,7 +586,7 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    QPalette pal(palette());
    QColorGroup normal(pal.normal());
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
-                         normal.mid(), normal.text(), *CUserViewItem::s_cBack); //QColor(194, 194, 194));
+                         normal.mid(), normal.text(), *CUserViewItem::s_cBack);
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
 
 }
@@ -556,10 +609,25 @@ void CUserView::setSortByStatus(bool s)
 
 unsigned long CUserView::SelectedItemUin()
 {
+  return s_nUin;
+  /*
    CUserViewItem *i = (CUserViewItem *)currentItem();
    if (i == NULL) return (0);
-   return i->ItemUin();
+   return i->ItemUin();*/
 }
+
+
+bool CUserView::SelectedItemFloaty()
+{
+  return s_bFloaty;
+}
+
+
+CUserViewItem *CUserView::SelectedItem()
+{
+  return s_pItem;
+}
+
 
 
 //-----CUserList::mousePressEvent---------------------------------------------
@@ -586,6 +654,9 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
     QListViewItem *clickedItem = itemAt(e->pos());
     if (clickedItem != NULL)
     {
+      s_pItem = (CUserViewItem *)clickedItem;
+      s_nUin = s_pItem->ItemUin();
+      s_bFloaty = parent() == NULL;
       setSelected(clickedItem, true);
       setCurrentItem(clickedItem);
       if (SelectedItemUin() != 0)
@@ -596,6 +667,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
         mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
         mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
         mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
+        mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? "Disable" : "Enable"));
         // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
         mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
         mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
@@ -714,16 +786,18 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 }
 
 
-void CUserView::maxLastColumn()
+void CUserView::resizeEvent(QResizeEvent *e)
 {
+  QListView::resizeEvent(e);
+
   unsigned short totalWidth = 0;
   unsigned short nNumCols = header()->count();
   for (unsigned short i = 0; i < nNumCols - 1; i++)
     totalWidth += columnWidth(i);
-//  QScrollBar *s = verticalScrollBar();
-//  if (s != NULL) totalWidth += s->width();
+  //QScrollBar *s = verticalScrollBar();
+  //if (s != NULL) totalWidth += s->width();
   int newWidth = width() - totalWidth - 2;
-  if (newWidth < colInfo[nNumCols - 2]->m_nWidth)
+  if (newWidth <= 0)
   {
     setHScrollBarMode(Auto);
     setColumnWidth(nNumCols - 1, colInfo[nNumCols - 2]->m_nWidth);
@@ -733,6 +807,17 @@ void CUserView::maxLastColumn()
     setHScrollBarMode(AlwaysOff);
     setColumnWidth(nNumCols - 1, newWidth);
   }
+  /*
+  if (newWidth < colInfo[nNumCols - 2]->m_nWidth)
+  {
+    setHScrollBarMode(Auto);
+    setColumnWidth(nNumCols - 1, colInfo[nNumCols - 2]->m_nWidth);
+  }
+  else
+  {
+    setHScrollBarMode(AlwaysOff);
+    setColumnWidth(nNumCols - 1, newWidth);
+  }*/
 }
 
 

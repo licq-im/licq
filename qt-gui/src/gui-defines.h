@@ -19,7 +19,8 @@ enum UserMenu {
   mnuUserOnlineNotify,
   mnuUserInvisibleList,
   mnuUserVisibleList,
-  mnuUserIgnoreList
+  mnuUserIgnoreList,
+  mnuUserFloaty
 };
 
 enum OwnerMenu_Identifiers {

@@ -2,6 +2,7 @@
 #define USERBOX_H
 
 #include <vector.h>
+#include <list.h>
 
 #include <qlistview.h>
 #include <qtooltip.h>
@@ -112,6 +113,10 @@ protected slots:
 
 };
 
+class CUserView;
+typedef list<CUserView *> UserFloatyList;
+
+
 //=====UserView===============================================================
 class CUserView : public QListView
 {
@@ -125,7 +130,7 @@ public:
   virtual ~CUserView();
 
   virtual void clear();
-  void maxLastColumn();
+  //void maxLastColumn();
 
   void setPixmaps(QPixmap *_pOnline, QPixmap *_pOffline, QPixmap *_pAway,
                   QPixmap *_pNa, QPixmap *_pOccupied, QPixmap *_pDnd,
@@ -137,7 +142,10 @@ public:
   void setSortByStatus(bool);
   void setShowHeader(bool);
   void setShowBars(bool);
-  unsigned long SelectedItemUin();
+
+  static unsigned long SelectedItemUin();
+  static bool SelectedItemFloaty();
+  static CUserViewItem *SelectedItem();
 
   bool ShowBars(void)  { return m_bShowBars; }
 
@@ -145,10 +153,12 @@ public:
   void setGridLines(bool _b)  { CUserViewItem::s_bGridLines = _b; };
   void setFontStyles(bool _b)  { CUserViewItem::s_bFontStyles = _b; };
 
+  static UserFloatyList floaties;
+
 protected:
   QPopupMenu *mnuUser, *mnuGroup, *mnuAwayModes;
   bool m_bTransparent, m_bShowBars;
-  CUserViewTips* m_tips;
+  CUserViewTips *m_tips;
   ColumnInfos colInfo;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
@@ -158,6 +168,13 @@ protected:
   virtual void viewportMouseMoveEvent(QMouseEvent * me);
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );
+
+  virtual void hideEvent(QHideEvent *);
+  virtual void resizeEvent(QResizeEvent *);
+
+  static unsigned long s_nUin;
+  static bool s_bFloaty;
+  static CUserViewItem *s_pItem;
 
   friend class CUserViewItem;
 
