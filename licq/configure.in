@@ -146,6 +146,20 @@ AC_CHECK_HEADER(vector.h,,
 
 AC_LANG_RESTORE
 
+dnl for malloc debugging
+AC_MSG_CHECKING(if dmalloc is wanted)
+AC_ARG_WITH(dmalloc,
+[  --with-dmalloc          use dmalloc, http://www.dmalloc.com/],
+[if test "$withval" = "yes"; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(WITH_DMALLOC,1,
+    [Defined if using the dmalloc package])
+  LIB_DMALLOC="-ldmalloc"
+else
+  AC_MSG_RESULT(no)
+fi], [AC_MSG_RESULT(no)])
+AC_SUBST(LIB_DMALLOC)
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
