@@ -11,7 +11,7 @@ configure
 make
 make install
 
-And then move licq_email.conf to ~/.licq/licq_email.conf and edit this
+And then move licq_forwarder.conf to ~/.licq/licq_forwarder.conf and edit this
 file appropriately.
 
 
