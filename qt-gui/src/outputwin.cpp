@@ -58,10 +58,12 @@ void CQtLogWindow::slot_log(int s)
   char buf[4];
   read(s, buf, 1);
 
-  //QString log = QTime::currentTime().toString() + " " + NextLogMsg();
-  //outputBox->insert(log);
   outputBox->appendNNL(NextLogMsg());
   outputBox->goToEnd();
+
+  // hardcoded limit, maybe should be user configurable?
+  if(outputBox->numLines() > 500)
+    outputBox->removeLine(0);
 
   if (NextLogType() == L_ERROR)
     (void) new CLicqMessageBox(NextLogMsg(), QMessageBox::Critical);
