@@ -229,8 +229,7 @@ void ProxyServer::CloseConnection()
 //-----HTTPProxyServer----------------------------------------------------------
 #define	HTTP_INPUT_LINE_MAX	8192
 #define	HTTP_CMD_LINE_MAX	384
-#define HTTP_GOODSTRING		"HTTP/1.0 200"
-#define HTTP_GOODSTRING2	"HTTP/1.1 200"
+#define HTTP_STATUS_OK		200
 
 //----- base64 -----------------------------------------------------------------
 static int base64_length(int len)
@@ -285,6 +284,8 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
 {
   int nlc = 0;
   int pos = 0;
+  int ver_major, ver_minor, status_consumed;
+  int status_code = 0;
   char input_line[HTTP_INPUT_LINE_MAX];
   char cmd[HTTP_CMD_LINE_MAX];
 
@@ -331,10 +332,19 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
   }
   input_line[pos] = '\0';
   
-  if ((memcmp(HTTP_GOODSTRING, input_line, strlen(HTTP_GOODSTRING)) == 0) ||
-      (memcmp(HTTP_GOODSTRING2, input_line, strlen(HTTP_GOODSTRING2)) == 0))
+  if (sscanf(input_line, "HTTP/%d.%d %n%d", &ver_major, &ver_minor,
+	     &status_consumed, &status_code) != 3)
+  {
+    gLog.Warn("%sCould not parse HTTP status line from proxy\n", L_ERRORxSTR);
+    m_nErrorType = PROXY_ERROR_internal;
+    CloseConnection();
+    return(false);
+  }
+  if (status_code == HTTP_STATUS_OK)
     return (true);
-    
+
+  gLog.Warn("%sHTTPS proxy return error code: %d, error string:\n%s\n",
+	      L_ERRORxSTR, status_code, input_line);
   m_nErrorType = PROXY_ERROR_internal;
   CloseConnection();
   return(false);
