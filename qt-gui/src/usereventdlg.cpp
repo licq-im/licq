@@ -214,7 +214,7 @@ void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
   if (u == NULL) return;
 
   // initalize codec
-  QTextCodec *codec = QTextCodec::codecForLocale();
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
   label = codec->toUnicode(u->GetAlias());
   tabw->insertTab(tab, label, index);
   updateTabLabel(u);
