@@ -5,7 +5,7 @@ dnl Copyright (c) 2000 Dirk A. Mueller
 AC_DEFUN(AC_PATH_QT,
 [
   AC_ARG_WITH(qt,
-    [  --with-qt               where QT v2.1.x is located. ],
+    [  --with-qt               where QT v2.1.x or higher is located. ],
     [  QTDIR="$withval" ])
 ])
 
@@ -24,9 +24,13 @@ AC_DEFUN(AC_PATH_QT_LIB,
     dnl Did the user give --with-qt-libraries?
     if test -z "$ac_qt_libraries"; then
 
-      dnl No they didn't, so lets look for them...
+      qt_libname=
+      qt_libdir=
+
+      dnl No they didnt, so lets look for them...
       dnl If you need to add extra directories to check, add them here.
       qt_library_dirs="\
+        /usr/lib/qt3/lib \
         /usr/lib/qt2/lib \
         /usr/lib \
         /usr/local/lib \
@@ -48,47 +52,43 @@ AC_DEFUN(AC_PATH_QT_LIB,
       fi
 
       for qt_dir in $qt_library_dirs; do
+        if test -r $qt_dir/libqt-mt.so.2 || test -r $qt_dir/libqt-mt.so.3; then
+          ac_qt_libname=-lqt-mt
+          ac_qt_libdir=$qt_dir
+          break
+        fi
+      done
+
+      for qt_dir in $qt_library_dirs; do
         if test -r $qt_dir/libqt.so.2 || test -r $qt_dir/libqt.so.3; then
-          ac_qt_libraries=$qt_dir
+          ac_qt_libname=-lqt
+          ac_qt_libdir=$qt_dir
           break
         fi
       done
     fi
 
-    ac_cv_lib_qtlib=$ac_qt_libraries
+    ac_cv_lib_qtlib="ac_qt_libname=$ac_qt_libname ac_qt_libdir=$ac_qt_libdir"
   ])
 
+  eval "$ac_cv_lib_qtlib"
 
   dnl Define a shell variable for later checks
 
-  if test -z "$ac_cv_lib_qtlib"; then
+  if test -z "$ac_qt_libdir"; then
     have_qt_lib="no"
+    AC_MSG_RESULT([no :-(])
   else
     have_qt_lib="yes"
-    dnl Check if we have the right lib
-    output=`eval "strings $ac_cv_lib_qtlib/libqt.so | grep -l QCString"`
-    if test -z "$output"; then
-      AC_MSG_ERROR([
-          The Qt lib directory "$ac_cv_lib_qtlib"
-          found by configure doesn't contain a Qt 2.1.x library.
-
-          To overcome special features of the GNU ld (aka bugs), the
-          libqt.so file _needs_ to point to libqt.so.2 which needs
-          to point to a Qt 2.1 library.
-          (this is only needed during compiling and linking, not at runtime)
-
-          Please check your installation.
-
-          Use the --with-qt-libraries option if we found the wrong Qt lib.
-      ])
-    fi
+    AC_MSG_RESULT([yes, lib: $ac_qt_libname in $ac_qt_libdir])
   fi
 
-  AC_MSG_RESULT([$ac_cv_lib_qtlib])
-  QT_LDFLAGS="-L$ac_cv_lib_qtlib"
-  QT_LIBDIR="$ac_cv_lib_qtlib"
+  QT_LDFLAGS="-L$ac_qt_libdir"
+  QT_LIBDIR="$ac_qt_libdir"
+  LIB_QT="$ac_qt_libname"
   AC_SUBST(QT_LDFLAGS)
   AC_SUBST(QT_LIBDIR)
+  AC_SUBST(LIB_QT)
 ])
 
 AC_DEFUN(AC_PATH_QT_INC,
@@ -109,6 +109,7 @@ AC_DEFUN(AC_PATH_QT_INC,
       dnl No they didn't, so lets look for them...
       dnl If you need to add extra directories to check, add them here.
       qt_include_dirs="\
+        /usr/lib/qt3/include \
         /usr/lib/qt2/include \
         /usr/lib/qt/include \
         /usr/include/qt \
@@ -138,9 +139,6 @@ AC_DEFUN(AC_PATH_QT_INC,
               Most likely this is because you've installed a crappy
               outdated Redhat 6.2 RPM. Go to ftp://people.redhat.com/bero/qt
               and update to the correct one.
-
-              If you think something is terribly wrong, write me an
-              email (dirk@licq.org).
             ])
           else
             ac_qt_includes=$qt_dir
@@ -228,6 +226,45 @@ AC_DEFUN(AC_PATH_QT_MOC,
   fi
 
   AC_SUBST(MOC)
+])
+
+AC_DEFUN(AC_CHECK_QT_SETUP,
+[
+  AC_MSG_CHECKING(for QT >= 2.1)
+
+  AC_CACHE_VAL(ac_cv_qt_setup, 
+  [
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    
+    save_CXXFLAGS="$CXXFLAGS"
+    save_LDFLAGS="$LDFLAGS"
+    save_LIBS="$LIBS"
+     
+    CXXFLAGS="$CXXFLAGS $QT_INCLUDES $X_CFLAGS"
+    LDFLAGS="$X_LIBS $QT_LDFLAGS $LDFLAGS"
+    LIBS="$LIB_QT $X_PRE_LIBS -lX11 -lXext $LIBS"
+
+    AC_TRY_LINK([
+      #include <qglobal.h>
+    ],
+    [
+      #if QT_VERSION < 210
+         choke me
+      #endif
+    ],
+      ac_cv_qt_setup=yes,
+      ac_cv_qt_setup=no
+    )
+   ])
+
+  AC_MSG_RESULT($ac_cv_qt_setup)
+
+  if test "$ac_cv_qt_setup" != "yes"; then
+    AC_MSG_ERROR([
+      Sorry, but you need QT version 2.1 or higher to compile the Qt gui plugin.
+    ])
+  fi
 ])
 
 AC_DEFUN(AC_PATH_QT_FINDTR,

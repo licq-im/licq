@@ -8,5 +8,3 @@ SUBDIRS = src share po
 
 EXTRA_DIST = doc 
 
-cvs-clean:
-	$(MAKE) -f admin/Makefile.common cvs-clean

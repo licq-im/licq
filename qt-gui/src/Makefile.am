@@ -2,7 +2,7 @@ EXTRA_DIST = xpm
 
 #hack, FIXME this in a clean manner
 libdir=$(prefix)/lib/licq
-licq_incdir = @LICQ_INCLUDES@
+licq_incdir = $(LICQ_INCLUDES)
 
 INCLUDES = -D_REENTRANT \
 	-I$(licq_incdir) $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
@@ -37,13 +37,11 @@ licq_kde_gui_la_SOURCES = $(licq_gui)
 
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) \
 	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR) 
-#        -export-symbols-regex "LP_.*"
-licq_qt_gui_la_LIBADD = -lqt $(X_PRE_LIBS) -lX11 -lXext \
+licq_qt_gui_la_LIBADD = $(LIB_QT) $(X_PRE_LIBS) -lX11 -lXext \
 	$(XSS_LIBS) $(X_EXTRA_LIBS)
 
 licq_kde_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
         -module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
-#        -export-symbols-regex "LP_.*"
 licq_kde_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
         $(XSS_LIBS) $(X_EXTRA_LIBS)
 

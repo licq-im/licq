@@ -70,10 +70,11 @@ AC_DEFUN(LICQ_CHECK_LICQ,
   if test "$have_licq_inc" = yes; then
     AC_MSG_RESULT(["$licq_inc"])
     LICQ_INCLUDES="$licq_inc"
-    AC_SUBST(LICQ_INCLUDES)
   else
     AC_MSG_RESULT(["not found"])
   fi
+  
+  AC_SUBST(LICQ_INCLUDES)
 
   if test "$have_licq_inc" = "no"; then
     AC_MSG_ERROR([

@@ -129,16 +129,7 @@ it.
 fi
 
 dnl Check for QT version
-AC_MSG_CHECKING(for QT >= 2.1)
-if test ! -r $ac_cv_header_qtinc/qbig5codec.h; then
-  AC_MSG_ERROR([
-
-    $ac_cv_header_qtinc/qbig5codec.h does not exist.
-    Sorry, but you need QT version 2.1 or higher to compile the Qt gui plugin.
-  ])
-else
-  AC_MSG_RESULT(yes)
-fi
+AC_CHECK_QT_SETUP
 
 AC_PATH_QT_MOC
 AC_PATH_QT_FINDTR
@@ -176,7 +167,7 @@ else
   echo "KDE 2          : disabled."
 fi
 echo "Qt includes    : $ac_cv_header_qtinc"
-echo "Qt libraries   : $ac_cv_lib_qtlib"
+echo "Qt libraries   : $ac_qt_libdir, $ac_qt_libname"
 echo "Qt moc         : $MOC"
 echo ""
 
