@@ -90,7 +90,8 @@ UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
 	edtPassword->setText(o->Password());
 	gUserManager.DropOwner();
 
-	show();
+        exec(); // this is different from show(), exec() does not return 
+                //control to caller until we have finished
 }
 
 UserSelectDlg::~UserSelectDlg()
