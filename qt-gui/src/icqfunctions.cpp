@@ -1132,9 +1132,10 @@ void ICQFunctions::ShowHistory()
       break;
     }
   }
-  lblHistory->setText(tr("[<font color=\"" COLOR_RECEIVED "\">Received</font>] "
-                         "[<font color=\"" COLOR_SENT "\">Sent</font>] "
+  lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
+                         "[<font color=\"%2\">Sent</font>] "
                          "%3 to %4 of %5")
+                      .arg(COLOR_RECEIVED).arg(COLOR_SENT)
                       .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
                       .arg(m_nHistoryIndex)
                       .arg(m_lHistoryList.size()));
