@@ -1041,33 +1041,42 @@ void ICQFunctions::callFcn()
 void ICQFunctions::doneFcn(ICQEvent *e)
 {
   if (e != icqEvent) return;
-  bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
+  bool isOk = (e != NULL && (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS));
   bool bForceOpen = false;
 
   QString title, result;
-  switch (e->m_eResult)
+  if (e == NULL)
   {
-  case EVENT_ACKED:
-  case EVENT_SUCCESS:
-    result = tr("done");
-    break;
-  case EVENT_FAILED:
-    result = tr("failed");
-    break;
-  case EVENT_TIMEDOUT:
-    result = tr("timed out");
-    break;
-  case EVENT_ERROR:
     result = tr("error");
-    break;
-  default:
-    break;
+  }
+  else
+  {
+    switch (e->m_eResult)
+    {
+    case EVENT_ACKED:
+    case EVENT_SUCCESS:
+      result = tr("done");
+      break;
+    case EVENT_FAILED:
+      result = tr("failed");
+      break;
+    case EVENT_TIMEDOUT:
+      result = tr("timed out");
+      break;
+    case EVENT_ERROR:
+      result = tr("error");
+      break;
+    default:
+      break;
+    }
   }
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
   setCaption(title);
   btnOk->setEnabled(true);
   btnCancel->setText(tr("Close"));
   icqEvent = NULL;
+
+  if (e == NULL) return;
 
   if (!isOk)
   {
