@@ -45,5 +45,14 @@ install-data-local:
 	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
 			fi \
 	  done; \
+        done
+	@for j in qt-gui/extended.icons.*; do \
+          echo "Installing extended icons $$j"; \
+          $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
+          for i in $$j/*; do \
+            if test -f $$i; then \
+              $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
+            fi \
+          done; \
 	done
 
