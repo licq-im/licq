@@ -18,22 +18,64 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "utilities.h"
 #include "licq_gtk.h"
 
 #include <gtk/gtk.h>
 
 GtkWidget *system_status;
+bool allow_refresh = true;
 
-void system_status_click(GtkWidget *, GdkEventButton *, gpointer);
 void system_message_window();
 void licq_tray_start_flashing();
 void licq_tray_stop_flashing();
+void convo_open(ICQUser *);
 
-GtkWidget *system_status_new(gint borderwidth)
+gboolean
+system_status_click(GtkWidget *w, GdkEventButton *event, gpointer)
+{
+	/* Make sure we have a double click here */
+	if (event->type != GDK_2BUTTON_PRESS || event->button != 1)
+		return TRUE;
+
+	/* If no events are pending, leave */
+	if (ICQUser::getNumUserEvents() == 0)
+		return TRUE;
+
+	/* Check for system messages first */
+	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+	gushort owner_events = owner->NewMessages();
+
+	if (owner_events > 0) {
+		system_message_window();
+		gUserManager.DropOwner();
+		return TRUE;
+	}
+	else
+		gUserManager.DropOwner();
+
+	/* Now for the user messages */
+	allow_refresh = false;
+	FOR_EACH_USER_START(LOCK_R)
+	{
+		if (pUser->NewMessages() > 0)
+			convo_open(pUser);
+	}	
+	FOR_EACH_USER_END
+	allow_refresh = true;
+
+	contact_list_refresh();
+	system_status_refresh();
+
+	return TRUE;
+}
+
+GtkWidget *
+system_status_new()
 {
 	system_status = gtk_statusbar_new();
 
-	gtk_container_set_border_width(GTK_CONTAINER(system_status), borderwidth);
+	gtk_container_set_border_width(GTK_CONTAINER(system_status), 2);
 
 	/* The event box for new messages */
 	GtkWidget *event_box = gtk_event_box_new();
@@ -45,8 +87,7 @@ GtkWidget *system_status_new(gint borderwidth)
 	g_signal_connect(G_OBJECT(event_box), "button_press_event",
 			G_CALLBACK(system_status_click), 0);
 	
-	gtk_widget_show(system_status);
-	gtk_widget_show(event_box);
+	gtk_widget_show_all(event_box);
 
 	return event_box;
 }
@@ -54,17 +95,17 @@ GtkWidget *system_status_new(gint borderwidth)
 void 
 system_status_refresh()
 {
+	if (!allow_refresh)
+		return;
+		
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 	gushort num_owner_events = owner->NewMessages();
 	gUserManager.DropOwner();
 
 	gulong num_user_event = ICQUser::getNumUserEvents() - num_owner_events;
 
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(system_status),
-						"Status");
-	gtk_statusbar_pop(GTK_STATUSBAR(system_status), id);
 	if (num_owner_events > 0)
-		gtk_statusbar_push(GTK_STATUSBAR(system_status), id, "SysMsg");
+		status_change(system_status, "sta", "SysMsg");
 	else if (num_user_event > 0) {
 		gchar *label;
     if (num_user_event == 1)
@@ -72,49 +113,14 @@ system_status_refresh()
     else
     	label = g_strdup_printf("%ld msgs", num_user_event);
 
-		gtk_statusbar_push(GTK_STATUSBAR(system_status), id, label);
+		status_change(system_status, "sta", label);
     g_free(label);
 	}
 	else
-		gtk_statusbar_push(GTK_STATUSBAR(system_status), id, "No msgs");
+		status_change(system_status, "sta", "No msgs");
 
 	if (num_owner_events > 0 || num_user_event > 0)
 		licq_tray_start_flashing();
 	else
 		licq_tray_stop_flashing();
-}
-
-void 
-system_status_click(GtkWidget *w, GdkEventButton *event, gpointer d)
-{
-	/* Make sure we have a double click here */
-	if (event->type != GDK_2BUTTON_PRESS || event->button != 1)
-		return;
-
-	/* If no events are pending, leave */
-	if (ICQUser::getNumUserEvents() == 0)
-		return;
-
-	/* Check for system messages first */
-	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
-	gushort owner_events = owner->NewMessages();
-
-	if (owner_events > 0) {
-		system_message_window();
-		gUserManager.DropOwner();
-		return;
-	}
-	else
-		gUserManager.DropOwner();
-
-	/* Now for the user messages */
-	FOR_EACH_USER_START(LOCK_R)
-	{
-		if(pUser->NewMessages() > 0)
-			convo_open(pUser, false);
-	}	
-	FOR_EACH_USER_END
-
-	contact_list_refresh();
-	system_status_refresh();
 }
