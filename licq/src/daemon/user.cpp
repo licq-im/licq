@@ -13,7 +13,7 @@
 #include <arpa/inet.h>
 #endif
 
-#include "support.h"
+#include "constants.h"
 #include "user.h"
 #include "countrycodes.h"
 #include "log.h"
@@ -388,25 +388,6 @@ void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
 {
   UserList *ul = LockUserList(LOCK_W);
   UserListIter iter;
-  /*
-  bool bInserted = false, bRemoved = !_bOnList;
-  for (iter = ul->begin();
-       iter != ul->end() && (!bInserted || !bRemoved);
-       iter++)
-  {
-    if (*iter == _pcUser && !bRemoved)
-    {
-      ul->erase(iter);
-      bRemoved = true;
-    }
-    if (_pcUser->SortKey() <= (*iter)->SortKey() && !bInserted)
-    {
-      ul->insert(iter, _pcUser);
-      bInserted = true;
-    }
-  }
-  if (!bInserted) ul->push_back(_pcUser);
-  */
 
   if (_bOnList)
   {
@@ -825,6 +806,7 @@ bool ICQUser::LoadData(void)
   setCountry(nTemp);
   m_fConf.ReadNum("Timezone", nTemp, 0x00);
   setTimezone(nTemp);
+  m_fConf.ReadNum("Zipcode", m_nZipcode, 0);
   m_fConf.ReadStr("PhoneNumber", sTemp, "");
   setPhoneNumber(sTemp);
   m_fConf.ReadNum("Age", nTemp, 0);
@@ -912,15 +894,13 @@ void ICQUser::SetDefaults(void)
   setSex(0);
   setAge(0xFFFF);
   setCountry(0xFFFF);
+  setZipcode(0);
   setHomepage("");
   setPhoneNumber("");
   setAbout("");
   SetGroups(GROUPS_SYSTEM, 0);
   SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
   setAuthorization(false);
-  //setInvisibleList(false);
-  //setVisibleList(false);
-  //setOnlineNotify(false);
   setIsNew(true);
 }
 
@@ -1325,9 +1305,6 @@ void ICQUser::saveInfo(void)
       return;
    }
    m_fConf.SetSection("user");
-   //m_fConf.WriteBool("OnlineNotify", getOnlineNotify());
-   //m_fConf.WriteBool("InvisibleList", getInvisibleList());
-   //m_fConf.WriteBool("VisibleList", getVisibleList());
    m_fConf.WriteNum("Groups.System", GetGroups(GROUPS_SYSTEM));
    m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
    char buf[64];
@@ -1363,6 +1340,7 @@ void ICQUser::saveExtInfo(void)
    m_fConf.WriteStr("State", getState());
    m_fConf.WriteNum("Country", getCountryCode());
    m_fConf.WriteNum("Timezone", getTimezone());
+   m_fConf.WriteNum("Zipcode", getZipcode());
    m_fConf.WriteStr("PhoneNumber", getPhoneNumber());
    m_fConf.WriteNum("Age", getAge());
    m_fConf.WriteNum("Sex", getSexNum());

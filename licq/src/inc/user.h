@@ -9,12 +9,11 @@
 #include <list.h>
 
 #include "pthread_rdwr.h"
-#include "constants.h"
-#include "icq-defines.h"
-#include "file.h"
 #include "message.h"
 #include "history.h"
 #include "userfcndlg.h"
+#include "file.h"
+#include "icq-defines.h"
 #include "support.h"
 
 
@@ -138,6 +137,7 @@ public:
   unsigned long getUin(void)           { return(m_nUin); }
   unsigned long getStatusFull(void)  { return m_nStatus; }
   unsigned long getStatusFlags(void)  { return m_nStatus & ICQ_STATUS_FxFLAGS; }
+  unsigned long getZipcode(void)           { return(m_nZipcode); }
   unsigned short getCountryCode(void)  { return m_nCountryCode; }
   unsigned short getAge(void)           { return(m_nAge); }
   unsigned short getSexNum(void)        { return(m_nSex); }
@@ -184,9 +184,10 @@ public:
   void setHomepage(const char *s)     { SetString(&m_sHomepage, s); saveExtInfo(); }
   void setAbout(const char *s)        { SetString(&m_sAbout, s); saveExtInfo(); }
   void setSex(unsigned short s)       { m_nSex = s; saveExtInfo(); }
-  void setCountry(unsigned short s)   { m_nCountryCode = s; saveExtInfo(); };
-  void setTimezone(signed short s)    { m_nTimezone = s; saveExtInfo(); };
-  void setShowAwayMsg(bool s)         { m_bShowAwayMsg = s; };
+  void setCountry(unsigned short s)   { m_nCountryCode = s; saveExtInfo(); }
+  void setTimezone(signed short s)    { m_nTimezone = s; saveExtInfo(); }
+  void setShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
+  void setZipcode(unsigned long s)    { m_nZipcode = s; saveExtInfo(); }
 
   void setStatus(unsigned long);
   void setHistoryFile(const char *);
@@ -246,6 +247,7 @@ protected:
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,
+                m_nZipcode,
                 m_nGroups[2];
   unsigned short m_nSex,
                  m_nCountryCode,
