@@ -1176,24 +1176,23 @@ void UserInfoDlg::ShowHistory()
 
 #if QT_VERSION >= 300
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
-      s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b></font><br><br>",
-                color,
-                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
-                  .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(contactName)).utf8().data(),
-                date.toString().utf8().data(),
-                (*tempIter)->IsDirect() ? 'D' : '-',
-                (*tempIter)->IsMultiRec() ? 'M' : '-',
-                (*tempIter)->IsUrgent() ? 'U' : '-',
-                (*tempIter)->IsEncrypted() ? 'E' : '-'
-               );
+      s = QString("<font color=\"%1\"><b>%2<br>%3 [%4%5%6%7]</b></font><br><br>")
+                  .arg(color)
+                  .arg(((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
+                       .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(contactName)))
+                  .arg(date.toString())
+                  .arg((*tempIter)->IsDirect() ? 'D' : '-')
+                  .arg((*tempIter)->IsMultiRec() ? 'M' : '-')
+                  .arg((*tempIter)->IsUrgent() ? 'U' : '-')
+                  .arg((*tempIter)->IsEncrypted() ? 'E' : '-');
       tmp.append(s);
+
       // We break the paragraph here, since the history text
       // could be in a different BiDi directionality than the
       // header and timestamp text.
-      s.sprintf("<font color=\"%s\">%s</font><br><br>",
-                color,
-                MLView::toRichText(messageText, true, bUseHTML).utf8().data()
-               );
+      s = QString("<font color=\"%1\">%2</font><br><br>")
+                  .arg(color)
+                  .arg(MLView::toRichText(messageText, true, bUseHTML));
       tmp.append(s);
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only

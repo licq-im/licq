@@ -668,20 +668,18 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
 
   // QTextEdit::append adds a paragraph break so we don't have to.
-  s.sprintf("<html><body><font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b></font><br>"
-            "<font color=\"%s\">%s</font></body></html>",
-            color,
-            e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
-              (EventDescription(e) + " ").utf8().data(),
-            sd.utf8().data(),
-            e->IsDirect() ? 'D' : '-',
-            e->IsMultiRec() ? 'M' : '-',
-            e->IsUrgent() ? 'U' : '-',
-            e->IsEncrypted() ? 'E' : '-',
-            contactName.utf8().data(),
-            color,
-            MLView::toRichText(messageText, true, bUseHTML).utf8().data()
-           );
+  s = QString("<html><body><font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
+              .arg(color)
+              .arg((e->SubCommand() == ICQ_CMDxSUB_MSG ? "" : (EventDescription(e) + " ")))
+              .arg(sd)
+              .arg(e->IsDirect() ? 'D' : '-')
+              .arg(e->IsMultiRec() ? 'M' : '-')
+              .arg(e->IsUrgent() ? 'U' : '-')
+              .arg(e->IsEncrypted() ? 'E' : '-')
+              .arg(contactName);
+  s.append(QString("<font color=\"%1\">%2</font></body></html>")
+                   .arg(color)
+                   .arg(MLView::toRichText(messageText, true, bUseHTML)));
   append(s);
 #else
   QString messageText = codec->toUnicode(e->Text());
