@@ -312,7 +312,13 @@ bool CIniFile::FlushFile()
   }
   else
   {
-    close (nFD);
+    if (close(nFD))
+    {
+        // close failed, data may have not been written
+        unlink(tempname);
+        return false;
+    }
+
     if(rename(tempname, m_szFilename))
     {
         // rename failed..
