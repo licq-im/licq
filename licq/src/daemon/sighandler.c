@@ -16,7 +16,7 @@ void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
   struct sigaction sa;
   memset(&sa, 0, sizeof(sa));
   sa.sa_sigaction = f;
-  sa.sa_flags = SA_SIGINFO | SA_ONESHOT;
+  sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
   sigaction(SIGSEGV, &sa, NULL);
 }
 
