@@ -25,6 +25,7 @@
 #include "log.h"
 #include "user.h"
 
+#include <sys/time.h>
 #include <gtk/gtk.h>
 
 GtkWidget *main_window;
@@ -32,6 +33,7 @@ CICQDaemon *icq_daemon;
 gint _pipe;
 CPluginLog *log;
 gint log_pipe;
+struct timeval timer;
 
 const char *LP_Name()
 {
@@ -82,6 +84,10 @@ int LP_Main(CICQDaemon *icqdaemon)
 	main_window = main_window_new(title, 445, 200);	
 
 	main_window_show();
+
+	/* Start the timer for fixing that stupid problem w/ contact list */
+	timer.tv_sec = 0;
+	timer.tv_usec = 0;
 
 	/* Attach plugin signals to a callback */
 	gdk_input_add( _Pipe, GDK_INPUT_READ, pipe_callback, (gpointer)NULL);

@@ -26,6 +26,7 @@
 #include "log.h"
 #include "user.h"
 
+#include <sys/time.h>
 #include <gtk/gtk.h>
 
 /* Definitions to be passed to the licq daemon */
@@ -216,6 +217,7 @@ extern CICQDaemon *icq_daemon;
 extern gint _pipe;
 extern CPluginLog *log;
 extern gint log_pipe;
+extern struct timeval timer;
 
 
 /* Globals in main_window.cpp */

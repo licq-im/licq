@@ -25,6 +25,7 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <sys/time.h>
 
 GdkColor *red, *blue, *green;
 GtkStyle *style;
@@ -35,12 +36,8 @@ GtkWidget *contact_list_new(gint height, gint width)
 {
 	GtkWidget *_contact_l;
 
-	/* Create the contact list using a 2 column clist */
+	/* Create the contact list using a 3 column clist */
 	_contact_l = gtk_clist_new(3);
-
-	/* Set the selection mode */
-	gtk_clist_set_selection_mode(GTK_CLIST(_contact_l),
-				     GTK_SELECTION_BROWSE);
 
 	/* Set the shadow mode and column widths */
 	gtk_clist_set_shadow_type(GTK_CLIST(_contact_l),GTK_SHADOW_ETCHED_IN);
@@ -58,11 +55,14 @@ GtkWidget *contact_list_new(gint height, gint width)
 	gtk_signal_connect(GTK_OBJECT(_contact_l), "button_press_event",
 			   GTK_SIGNAL_FUNC(contact_list_click), NULL);
 
+	gtk_clist_set_button_actions(GTK_CLIST(_contact_l), 0, GTK_BUTTON_IGNORED);
+
 	return _contact_l;
 }
 
 void contact_list_refresh()
 {
+	g_print("Refresh\n");
 	gchar *blah[3];
 	gint num_users = 0;
 
@@ -88,9 +88,14 @@ void contact_list_refresh()
 		gtk_clist_insert(GTK_CLIST(contact_list), num_users, blah);
 
 		if(pUser->NewMessages() > 0)
+		{
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
 					     1, message, bm);
-		
+
+			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
+					   0, "!");
+		} 
+
 	else {
 		/* Get the status of the user */
 		gushort user_status = pUser->Status();
@@ -102,6 +107,8 @@ void contact_list_refresh()
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users					     ,1 , online, bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, blue);
+			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
+					   0, "*");
 			break;
 		  }
 	
@@ -175,7 +182,7 @@ void contact_list_refresh()
 		  default:
 			g_print("Unknown status\n");
 		} //switch
-	} //else
+	} // else
 
 		gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 				      2, pUser->GetAlias());
@@ -205,6 +212,7 @@ void contact_list_click(GtkWidget *contact_list,
 	gchar str_status[30];
 	ICQUser *user;
 	struct conversation *c = NULL;
+	struct timeval check_timer;
 
 	/* Get which cell was clicked in to find that user */
 	gtk_clist_get_selection_info(GTK_CLIST(contact_list),
@@ -216,9 +224,23 @@ void contact_list_click(GtkWidget *contact_list,
 	/* Now the the user */
 	user = (ICQUser *)gtk_clist_get_row_data(GTK_CLIST(contact_list), row);
 
-	/* A double click */
-	if(event->type == GDK_2BUTTON_PRESS && event->button == 1)
+	/* A left mouse click */
+	if(event->button == 1)
 	{
+		/* Fix the stupid contact list double click problem */
+		gettimeofday(&check_timer, NULL);
+
+		if(!((check_timer.tv_sec == timer.tv_sec) &&
+		   (check_timer.tv_usec - timer.tv_usec) < 2000))
+		{
+			timer.tv_sec = check_timer.tv_sec;
+			timer.tv_usec = check_timer.tv_usec;
+			return;
+		}
+
+		timer.tv_sec = 0;
+		timer.tv_usec = 0;
+	
 		c = convo_find(user->Uin());
 		
 		if(c != NULL)
@@ -231,6 +253,7 @@ void contact_list_click(GtkWidget *contact_list,
 			else
 				c = convo_new(user, FALSE);
 
+			contact_list_refresh();
 			system_status_refresh();
 		}
 	}
