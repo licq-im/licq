@@ -20,6 +20,7 @@ extern int errno;
 #include "icq-defines.h"
 #include "translate.h"
 #include "log.h"
+#include "support.h"
 
 #define DEBUG_ENCRYPTION(x)
 //#define DEBUG_ENCRYPTION(x) printf x
@@ -811,11 +812,11 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   gUserManager.DropOwner();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
-  m_nSize += strlen(szAlias) + strlen(szFirstName) + strlen(szLastName) +
-             strlen(szEmail1) * 2 + strlen(szEmail2) + strlen(szCity) +
-             strlen(szState) + strlen(szPhoneNumber) +
-             strlen(szFaxNumber) + strlen(szAddress) +
-             strlen(szCellularNumber) + 36 + 12;
+  m_nSize += strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
+             strlen_safe(szEmail1) * 2 + strlen_safe(szEmail2) + strlen_safe(szCity) +
+             strlen_safe(szState) + strlen_safe(szPhoneNumber) +
+             strlen_safe(szFaxNumber) + strlen_safe(szAddress) +
+             strlen_safe(szCellularNumber) + 36 + 12;
   InitBuffer();
 
   buffer->PackUnsignedShort(m_nMetaCommand);
@@ -863,7 +864,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   m_nLanguage2 = nLanguage2;
   m_nLanguage3 = nLanguage3;
 
-  m_nSize += strlen(szHomepage) + 14;
+  m_nSize += strlen_safe(szHomepage) + 14;
   InitBuffer();
 
   buffer->PackUnsignedShort(m_nMetaCommand);
@@ -894,10 +895,10 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
 {
   m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
 
-  m_nSize += strlen(szCity) + strlen(szState) + strlen(szPhoneNumber) +
-             strlen(szFaxNumber) + strlen(szAddress) + strlen(szName) +
-             strlen(szDepartment) + strlen(szPosition) +
-             strlen(szHomepage) + 8 + 26;
+  m_nSize += strlen_safe(szCity) + strlen_safe(szState) + strlen_safe(szPhoneNumber) +
+             strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szName) +
+             strlen_safe(szDepartment) + strlen_safe(szPosition) +
+             strlen_safe(szHomepage) + 8 + 26;
   InitBuffer();
 
   buffer->PackUnsignedShort(m_nMetaCommand);

@@ -48,6 +48,12 @@ int Redirect(const char *_szFile)
 }
 
 
+int strlen_safe(const char *sz)
+{
+  return sz == NULL ? 0 : strlen(sz);
+}
+
+
 char *inet_ntoa_r(struct in_addr in, char *buf)
 {
   register char *p;
@@ -168,7 +174,7 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
   struct hostent *h_buf;
   h_buf = gethostbyname(szHostName);
   if (h_buf != NULL) memcpy(h, h_buf, sizeof(struct hostent));
-  return (h == NULL ? h_errno : 0);
+  return (h_buf == NULL ? h_errno : 0);
 #endif
 }
 
