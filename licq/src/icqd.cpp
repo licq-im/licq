@@ -1150,12 +1150,12 @@ void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
 {
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
     icqRemoveUser(szId);
-  else
+  else if (nPPID != LICQ_PPID)
     ProtoRemoveUser(szId, nPPID);
 
   gUserManager.RemoveUser(szId, nPPID);
   SaveUserList();
-  
+
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, szId,
     nPPID));
 }
