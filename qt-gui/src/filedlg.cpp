@@ -440,8 +440,8 @@ void CFileDlg::StateServer()
     m_xSocketFile.SendPacket(p.getBuffer());
     lblStatus->setText("Starting transfer...");
 
-    // Update the status every 0.5 seconds
-    m_tUpdate.start(1000);
+    // Update the status every 2 seconds
+    m_tUpdate.start(2000);
 
     disconnect(snFile, SIGNAL(activated(int)), this, SLOT(StateServer()));
     connect(snFile, SIGNAL(activated(int)), this, SLOT(fileRecvFile()));
@@ -707,8 +707,8 @@ void CFileDlg::StateClient()
     barTransfer->setTotalSteps(m_sFileInfo.nSize);
     barTransfer->setProgress(0);
 
-    // Update the status every 1 seconds
-    m_tUpdate.start(1000);
+    // Update the status every 2 seconds
+    m_tUpdate.start(2000);
 
     m_nState = STATE_SENDxFILE;
     break;
