@@ -3,13 +3,15 @@
 #endif
 
 #include <qfont.h>
+#include <qpainter.h>
 #include "mledit.h"
 
 QFont MLEditWrap::editFont = QFont();
 
-MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent, const char *name)
+MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const char *name)
   : QMultiLineEditNew(parent, name)
 {
+  m_doQuotes = doQuotes;
   if (wordWrap)
   {
     setWordWrap(WidgetWidth);
@@ -49,6 +51,26 @@ void MLEditWrap::keyPressEvent (QKeyEvent *e)
    }
 
    QMultiLineEditNew::keyPressEvent(e);
+}
+
+
+// -----------------------------------------------------------------------------
+
+void MLEditWrap::paintCell(QPainter* p, int row, int col)
+{
+  if(m_doQuotes) {
+    QString s = stringShown(row);
+    int i = (s[0] == ' ');
+    bool italic = (s[i] == '>' && (s[i+1] == ' ' || s[i+1] == '>'));
+
+    if(italic ^ p->font().italic()) {
+      QFont f(p->font());
+      f.setItalic(italic);
+      p->setFont(f);
+    }
+  }
+
+  QMultiLineEditNew::paintCell(p, row, col);
 }
 
 #include "mledit.moc"
