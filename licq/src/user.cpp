@@ -934,7 +934,17 @@ void ICQUser::LoadLicqInfo()
 //-----ICQUser::destructor------------------------------------------------------
 ICQUser::~ICQUser()
 {
-  while (NewMessages() > 0) delete EventPop();
+  unsigned long nId;
+  while (m_vcMessages.size() > 0)
+  {
+    nId = m_vcMessages[m_vcMessages.size() - 1]->Id();
+    delete m_vcMessages[m_vcMessages.size() - 1];
+    m_vcMessages.pop_back();
+    decNumUserEvents();
+    if (gLicqDaemon != NULL)
+      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+       USER_EVENTS, m_nUin, nId));
+  }
 
   /* FIXME memory leak, but requires calling free, and that's a lot of typing
   m_szAutoResponse = NULL;
