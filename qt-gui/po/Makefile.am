@@ -23,6 +23,9 @@ all-local:
 	done
 
 clean-local:
+	-rm -f $(top_builddir)/po/template.po
+
+maintainer-clean-local:
 	-rm -f $(top_builddir)/po/*.qm
 
 merge: template
