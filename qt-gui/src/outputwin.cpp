@@ -33,6 +33,9 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
   connect(btnSave, SIGNAL(clicked()), SLOT(slot_save()));
   btnClear = new QPushButton(tr("C&lear"), this);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
+#if QT_VERSION < 210
+  btnClear->setEnabled(false);
+#endif
   btnHide = new QPushButton(tr("&Close"), this);
   btnHide->setDefault(true);
   connect(btnHide, SIGNAL(clicked()), this, SLOT(hide()));
@@ -45,6 +48,7 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
   btnSave->setFixedWidth(bw);
   lay->addStretch(1);
   lay->addWidget(btnSave);
+  lay->addSpacing(30);
   lay->addWidget(btnClear);
   lay->addWidget(btnHide);
 
