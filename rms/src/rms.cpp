@@ -791,7 +791,7 @@ int CRMSClient::Process_LIST()
   }
   NEXT_WORD(data_arg);
 
-  char format[128], ubuf[1024];
+  char format[128], *ubuf;
   if (*data_arg == '\0')
   {
     strcpy(format, "%9u %-20a %3m %s");
@@ -806,8 +806,9 @@ int CRMSClient::Process_LIST()
     if (pUser->GetInGroup(GROUPS_USER, nGroup) &&
         ((pUser->StatusOffline() && n&2) || (!pUser->StatusOffline() && n&1)))
     {
-      pUser->usprintf(ubuf, format);
+      ubuf = pUser->usprintf(format);
       fprintf(fs, "%d %s\n", CODE_LISTxUSER, ubuf);
+      free(ubuf);
     }
   }
   FOR_EACH_USER_END
