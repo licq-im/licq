@@ -2951,7 +2951,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       	s->m_szFirstName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
       	s->m_szLastName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
       	s->m_szEmail = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
-	msg.UnpackChar(); // authorization required
+	s->m_nAuth = msg.UnpackChar(); // authorization required
 	s->m_nStatus = msg.UnpackChar();
 	msg.UnpackChar(); // unknown
 	s->m_nGender = msg.UnpackChar(); // gender

@@ -49,6 +49,7 @@ public:
   char Status()            { return m_nStatus; }
   char Gender()		   { return m_nGender; }
   char Age()		   { return m_nAge; }
+  char Auth()		   { return m_nAuth; }
 
   ~CSearchAck();
 
@@ -64,6 +65,7 @@ protected:
   char m_nStatus;
   char m_nGender;
   char m_nAge;
+  char m_nAuth;
 
 friend class CICQDaemon;
 };
