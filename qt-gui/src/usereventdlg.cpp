@@ -1653,8 +1653,6 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   m_sBaseTitle += tr(" - URL");
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(1);
-
-  m_nCurrentType = 1;
 }
 
 
