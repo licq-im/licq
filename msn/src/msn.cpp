@@ -1237,6 +1237,7 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   gSocketMan.AddSocket(sock);
   CMSNPacket *pReply = new CPS_MSN_SBAnswer(strSessionId.c_str(),
     strCookie.c_str(), m_szUserName);
+  bool bNewUser = false;
   ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
   if (u)
   {
@@ -1247,10 +1248,12 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
     u = new ICQUser(strUser.c_str(), MSN_PPID);
     u->SetSocketDesc(sock);
     m_pDaemon->AddUserToList(u);
+    bNewUser = true;
   }
   gUserManager.DropUser(u);
 
-  MSNAddUser(const_cast<char *>(strUser.c_str()));
+  if (bNewUser)
+    MSNAddUser(const_cast<char *>(strUser.c_str()));
 
   gSocketMan.DropSocket(sock);
   
