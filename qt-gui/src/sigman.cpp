@@ -93,6 +93,9 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGON:
     emit signal_logon();
     break;
+  case SIGNAL_LOGOFF:
+    emit signal_logoff();
+    break;
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());

@@ -32,6 +32,7 @@ signals:
   void signal_updatedUser(CICQSignal *);
   void signal_updatedStatus();
   void signal_logon();
+  void signal_logoff();
 
   // Event signals
   void signal_doneOwnerFcn(ICQEvent *);
