@@ -59,19 +59,19 @@ void create_about_window()
 	// A label to be in the box.. with centered text
 	GtkWidget *label = gtk_label_new(
 		g_strdup_printf("Licq Version: %s\n"
-		  "Jon's GTK2 GUI Version: %s\n"
-		  "GTK+ Version: %d.%d.%d\n"
-		  "Compiled On: %s\n"
-		  "Currently Running On: %s %s [%s]\n\n"
-		  "Author: Jon Keating <jon@licq.org>\n"
-		  "http://jons-gtk-gui.sourceforge.net\n\n"
-		  "%s (%ld)\n"
-		  "%d Contacts",
-		         icq_daemon->Version(), VERSION,
-			 gtk_major_version, gtk_minor_version,
-			 gtk_micro_version, __DATE__,
-			 un.sysname, un.release, un.machine,
-			 o->GetAlias(), o->Uin(), gUserManager.NumUsers()));
+			"Jon's GTK2 GUI Version: %s\n"
+			"GTK+ Version: %d.%d.%d\n"
+			"Compiled On: %s\n"
+			"Currently Running On: %s %s [%s]\n\n"
+			"Author: Jon Keating <jon@licq.org>\n"
+			"http://jons-gtk-gui.sourceforge.net\n\n"
+			"%s (%ld)\n"
+			"%d Contacts",
+			icq_daemon->Version(), VERSION,
+			gtk_major_version, gtk_minor_version,
+			gtk_micro_version, __DATE__,
+			un.sysname, un.release, un.machine,
+			o->GetAlias(), o->Uin(), gUserManager.NumUsers()));
 
 	gUserManager.DropOwner();
 

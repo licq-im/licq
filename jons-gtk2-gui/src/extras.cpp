@@ -45,6 +45,9 @@
 #include <ctype.h>
 #include <gtk/gtk.h>
 
+#include <iostream>
+using namespace std;
+
 void do_colors()
 {
   red = new GdkColor;
@@ -136,13 +139,10 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos,
 void owner_function(ICQEvent *event)
 {
 	/* For the main window, if it's a new registered users */
-	const gchar *title = g_strdup_printf("%ld", gUserManager.OwnerUin());
+	char *title = g_strdup_printf("%ld", gUserManager.OwnerUin());
 
-	switch(event->Command())
-	{
-	case ICQ_CMDxSND_REGISTERxUSER:
-		if(event->Result() == EVENT_SUCCESS)
-		{
+	if (event->Command() == ICQ_CMDxSND_REGISTERxUSER) {
+		if(event->Result() == EVENT_SUCCESS) {
 			wizard_message(5);
 			main_window = main_window_new(title);
 			main_window_show();
@@ -150,11 +150,9 @@ void owner_function(ICQEvent *event)
 			dialog_close(0, register_window);
 		}
 		else
-		{
 			wizard_message(4);
-		}
-		break;
 	}
+	g_free(title);
 }
 
 void user_function(ICQEvent *event)
@@ -162,12 +160,10 @@ void user_function(ICQEvent *event)
 	GSList *temp = catcher;
 	struct e_tag_data *etd;
 
-	while(temp)
-	{
+	while (temp) {
 		etd = (struct e_tag_data *)temp->data;
 
-		if(event->Equals(etd->e_tag))
-		{
+		if (event->Equals(etd->e_tag)) {
 			finish_event(etd, event);
 			return;
 		}
@@ -184,62 +180,52 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	/* Make sure we have the right event and event tag */
 	if( (etd->e_tag == 0 && event != 0) ||
 	    (etd->e_tag != 0 && !event->Equals(etd->e_tag)) )
-	    	return;
+	  return;
 
 	guint id = 0;
 	gchar temp[60];
 	
 	/* Get the id for the status bar, if the statusbar exists */
-	if(etd->statusbar)
-	{
+	if (etd->statusbar)
 		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(etd->statusbar),
 			"sta");
-	}
 
 	/* Get the current text */
 	strcpy(temp, etd->buf);
 	
-	if(event == 0)
-	{
+	if (event == 0)
 		strcat(temp, "error");
-	}
-
-	else if(event->SubCommand() == ICQ_CMDxSUB_SECURExOPEN ||
-		event->SubCommand() == ICQ_CMDxSUB_SECURExCLOSE)
-	{
+	else if (event->SubCommand() == ICQ_CMDxSUB_SECURExOPEN ||
+					 event->SubCommand() == ICQ_CMDxSUB_SECURExCLOSE) {
 		catcher = g_slist_remove(catcher, etd);
 		finish_secure(event);
 		return;
 	}
-	
-	else
-	{
+	else {
 	/* Pop and then push the current text by the right event result */
-		switch(event->Result())
-		{
-		case EVENT_ACKED:
-		case EVENT_SUCCESS:
-			strcat(temp, "done");
-			break;
-		case EVENT_FAILED:
-			strcat(temp, "failed");
-			if(event->SubCommand() == ICQ_CMDxSND_RANDOMxSEARCH)
-				message_box("No random chat user found!");
-			break;
-		case EVENT_TIMEDOUT:
-			strcat(temp, "timed out");
-			break;
-		case EVENT_ERROR:
-			strcat(temp, "error");
-			break;
-		default:
-			strcat(temp, "unknown");
-			break;
+		switch(event->Result()) {
+			case EVENT_ACKED:
+			case EVENT_SUCCESS:
+				strcat(temp, "done");
+				break;
+			case EVENT_FAILED:
+				strcat(temp, "failed");
+				if (event->SubCommand() == ICQ_CMDxSND_RANDOMxSEARCH)
+					message_box("No random chat user found!");
+				break;
+			case EVENT_TIMEDOUT:
+				strcat(temp, "timed out");
+				break;
+			case EVENT_ERROR:
+				strcat(temp, "error");
+				break;
+			default:
+				strcat(temp, "unknown");
+				break;
 		}
 	}
 
-	if(etd->statusbar)
-	{
+	if (etd->statusbar) {
 		gtk_statusbar_pop(GTK_STATUSBAR(etd->statusbar), id);
 		gtk_statusbar_push(GTK_STATUSBAR(etd->statusbar), id, temp);
 	}
@@ -252,25 +238,26 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	catcher = g_slist_remove(catcher, etd);
 
 	/* Get the sub command and see if do more work if needed */
-	switch(event->SubCommand())
-	{
-	case ICQ_CMDxSUB_MSG:
-		finish_message(event);
-		break;
-	case ICQ_CMDxSUB_CHAT:
-		finish_chat(event);
-		break;
-	case ICQ_CMDxSUB_FILE:
-		finish_file(event);
-		break;
-	case ICQ_CMDxTCP_READxAWAYxMSG:
-	case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
-	case ICQ_CMDxTCP_READxNAxMSG:
-	case ICQ_CMDxTCP_READxDNDxMSG:
-	case ICQ_CMDxTCP_READxFFCxMSG:
-		finish_away(event);
-		break;
-	}
+	switch(event->SubCommand()) {
+		case ICQ_CMDxSUB_MSG:
+			finish_message(event);
+			break;
+		case ICQ_CMDxSUB_CHAT:
+			finish_chat(event);
+			break;
+		case ICQ_CMDxSUB_FILE:
+			finish_file(event);
+			break;
+		case ICQ_CMDxTCP_READxAWAYxMSG:
+		case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
+		case ICQ_CMDxTCP_READxNAxMSG:
+		case ICQ_CMDxTCP_READxDNDxMSG:
+		case ICQ_CMDxTCP_READxFFCxMSG:
+			finish_away(event);
+			break;
+		default:
+			cerr << event->SubCommand() << endl;
+	} 
 
 	// No sub command for this..
 	if(event->Command() == ICQ_CMDxSND_RANDOMxSEARCH)
