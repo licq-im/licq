@@ -539,25 +539,32 @@ bool TCPSocket::SendPacket(CBuffer *b)
   pcSize[0] = (b->getDataSize()) & 0xFF;
   pcSize[1] = (b->getDataSize() >> 8) & 0xFF;
 
+  unsigned long nTotalBytesSent = 0;
+  int nBytesSent = 0;
+
   // send the length of the packet, close the connection and return false if unable to send
-  int nBytesSent = send(m_nDescriptor, pcSize, 2, 0);
-  if (nBytesSent <= 0)
+  while (nTotalBytesSent < 2)
   {
-    delete[] pcSize;
-    // errno has been set
-    h_errno = -1;
-    //CloseSocket();
-    return (false);
+    nBytesSent = send(m_nDescriptor, pcSize + nTotalBytesSent, 2 - nTotalBytesSent, 0);
+    if (nBytesSent == -1)
+    {
+      delete[] pcSize;
+      // errno has been set
+      h_errno = -1;
+      //CloseSocket();
+      return (false);
+    }
+    nTotalBytesSent += nBytesSent;
   }
   delete[] pcSize;
 
   // send the rest of the packet
-  unsigned long nTotalBytesSent = 0;
+  nTotalBytesSent = 0;
   while (nTotalBytesSent < b->getDataSize())
   {
     nBytesSent = send(m_nDescriptor, b->getDataStart() + nTotalBytesSent,
                       b->getDataSize() - nTotalBytesSent, 0);
-    if (nBytesSent < 0)
+    if (nBytesSent == -1)
     {
       // errno has been set
       h_errno = -1;
