@@ -3730,6 +3730,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               break;
             }
 
+            bool bTopLevelUpdated = false;
+
             if (bHandled == false)
             {
               bHandled = true;
@@ -3751,6 +3753,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
               if (e->ExtraInfo() == 0)
               {
+                bTopLevelUpdated = true;
                 pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
                 gLog.Info(tr("%sUpdating top level group.\n"), L_SRVxSTR);
               }
@@ -3766,7 +3769,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
             // Skip the call to gUserManager.AddUserToGroup because
             // that will send a message out to the server AGAIN
-            if (e->SubType() == ICQ_SNACxLIST_ROSTxADD)
+            if (e->SubType() == ICQ_SNACxLIST_ROSTxADD && !bTopLevelUpdated)
             {
               ICQUser *u = gUserManager.FetchUser(szPending, LICQ_PPID, LOCK_R);
               if (u)
