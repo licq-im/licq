@@ -374,6 +374,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_strSID = m_pPacketBuf->GetValue("sid");
         m_strKV = m_pPacketBuf->GetValue("kv");
         m_nSessionStart = time(0);
+
+        // We might have another packet attached
+        m_pPacketBuf->SkipRN();
       }
       else if (strType.find("text/x-msmsgsinitialemailnotification") != string::npos)
       {
@@ -423,6 +426,10 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strCmd == "QNG")
     {
       m_bWaitingPingReply = false;
+    }
+    else
+    {
+      gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
     }
     
     // Get the next packet

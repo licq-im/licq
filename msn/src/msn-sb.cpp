@@ -220,13 +220,13 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       // closed the window and connection
       string strUser = packet->GetParameter();
       gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, strUser.c_str());
-
+      
       m_pDaemon->PushPluginSignal(new
         CICQSignal(SIGNAL_CONVOxLEAVE, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
 
       m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
       CConversation *pConv = m_pDaemon->FindConversation(nSock);
-            
+    
       ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_W);
       if (u)
       {
@@ -245,6 +245,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           m_pDaemon->RemoveConversation(pConv->CID());
         }
       }
+    }
+    else
+    {
+      gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
     }
   
     // Get the next packet
