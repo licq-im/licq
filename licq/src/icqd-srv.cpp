@@ -201,9 +201,10 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
   o->SetPassword(_szPasswd);
   gUserManager.DropOwner();
   m_bRegistering = true;
-  CPU_RegisterFirst *p = new CPU_RegisterFirst();
-  gLog.Info("%sRegistering a new user (#%ld)...\n", L_SRVxSTR, p->Sequence());
-  SendExpectEvent_Server(0, p, NULL);
+//  CPU_RegisterFirst *p = new CPU_RegisterFirst();
+//  gLog.Info("%sRegistering a new user (#%ld)...\n", L_SRVxSTR, p->Sequence());
+// SendEvent_Server(p);
+  ConnectToLoginServer();
 }
 
 //-----ICQ::icqRegisterFinish------------------------------------------------
@@ -212,7 +213,12 @@ void CICQDaemon::icqRegisterFinish()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   char *szPasswd = o->Password();
   gUserManager.DropOwner();
+
+  CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
+  SendEvent_Server(pFirst);
+
   CPU_Register *p = new CPU_Register(szPasswd);
+  gLog.Info("%sRegistering a new user...\n", L_SRVxSTR);
   SendExpectEvent_Server(0, p, NULL);
 }
 
@@ -1183,6 +1189,9 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       rev_e_long(realIP);
       realIP = PacketIpToNetworkIp(realIP);
       CPacket::SetRealIp(NetworkIpToPacketIp(realIP));
+      ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
+      owner->SetIp(realIP);
+      gUserManager.DropOwner();
 
       char buf[32];
       gLog.Info("%sServer says we are at %s.\n", L_SRVxSTR, ip_ntoa(realIP, buf));
