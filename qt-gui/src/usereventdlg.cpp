@@ -146,10 +146,7 @@ UserEventCommon::~UserEventCommon()
   emit finished(m_nUin);
 
   if (m_bDeleteUser && !m_bOwner)
-  {
     mainwin->RemoveUserFromList(m_nUin, this);
-  }
-
 }
 
 
@@ -198,21 +195,19 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
                              CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent")
 {
-  // HACK, to be removed
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   splRead = new QSplitter(Vertical, mainWidget);
   lay->addWidget(splRead);
   splRead->setOpaqueResize();
   QHBox *h_top = new QHBox(splRead);
+//  splRead->setResizeMode(h_top, QSplitter::KeepSize);
   msgView = new MsgView(h_top);
   btnReadNext = new QPushButton(tr("Nex&t"), h_top);
   btnReadNext->setEnabled(false);
   connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_btnReadNext()));
 
-  QHGroupBox *h_msg = new QHGroupBox(splRead);
-  mleRead = new MLEditWrap(true, h_msg, true);
+  mleRead = new MLEditWrap(true, splRead, true);
   mleRead->setReadOnly(true);
-  //mainWidget->setStretchFactor(h_msg, 1);
 
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 
@@ -234,6 +229,18 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_btnRead4()));
 
   QBoxLayout *h_lay = new QHBoxLayout(top_lay);
+  chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
+  chkAutoClose->setChecked(gMainWindow->m_bAutoClose);
+  h_lay->addWidget(chkAutoClose);
+#if 0
+  cmbSendType = new QComboBox(this);
+  cmbSendType->insertItem(tr("Message"));
+  cmbSendType->insertItem(tr("URL"));
+  cmbSendType->insertItem(tr("Chat Request"));
+  cmbSendType->insertItem(tr("File Request"));
+  cmbSendType->insertItem(tr("Contact List"));
+  h_lay->addWidget(cmbSendType);
+#endif
   if (!m_bOwner)
   {
     QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
@@ -276,14 +283,16 @@ void UserViewEvent::slot_close()
 }
 
 
-void UserViewEvent::slot_sentevent(ICQEvent *e)
+void UserViewEvent::slot_autoClose()
 {
-  if (true)  // This should be an option here FIXME
-  {
-    (void) new MsgViewItem(e->GrabUserEvent(), msgView);
-    // FIXME we should actually stick this message in so it appears
-    // before any unread messages...
-  }
+  if(!chkAutoClose->isChecked()) return;
+
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  bool doclose = (u->NewMessages() == 0);
+  gUserManager.DropUser(u);
+
+  if(doclose)
+    close();
 }
 
 
@@ -404,10 +413,10 @@ void UserViewEvent::generateReply()
 void UserViewEvent::sendMsg(QString txt)
 {
   UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
-  e->show();
   e->setText(txt);
+  e->show();
 
-  connect(e, SIGNAL(signal_sentevent(ICQEvent *)), SLOT(slot_sentevent(ICQEvent *)));
+  connect(e, SIGNAL(autoCloseNotify()), this, SLOT(slot_autoClose()));
 }
 
 
@@ -439,7 +448,6 @@ void UserViewEvent::slot_btnRead1()
       server->AddUserToList( ((CEventAdded *)m_xCurrentReadEvent)->Uin());
       break;
   } // switch
-
 }
 
 void UserViewEvent::slot_btnRead2()
@@ -579,7 +587,34 @@ void UserViewEvent::slot_btnRead4()
 
 void UserViewEvent::slot_btnReadNext()
 {
-  // todo
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u->NewMessages() == 0)
+  {
+    gUserManager.DropUser(u);
+    return;
+  }
+  MsgViewItem *e = new MsgViewItem(u->EventPop(), msgView);
+  btnReadNext->setEnabled(u->NewMessages() > 0);
+  if (u->NewMessages() > 1)
+  {
+    btnReadNext->setEnabled(true);
+    btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
+  }
+  else if (u->NewMessages() == 1)
+  {
+    btnReadNext->setEnabled(true);
+    btnReadNext->setText(tr("Nex&t"));
+  }
+  else
+  {
+    btnReadNext->setEnabled(false);
+    btnReadNext->setText(tr("Nex&t"));
+  }
+
+  gUserManager.DropUser(u);
+
+  msgView->setSelected(e, true);
+  slot_printMessage(e);
 }
 
 
@@ -589,7 +624,7 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
   {
     case USER_EVENTS:
     {
-      /*if (u->NewMessages() > 1)
+      if (u->NewMessages() > 1)
       {
         btnReadNext->setEnabled(true);
         btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
@@ -603,7 +638,7 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
       {
         btnReadNext->setEnabled(false);
         btnReadNext->setText(tr("Nex&t"));
-      }*/
+      }
       if (sig->Argument() > 0)
       {
         CUserEvent *e = u->EventPeekId(sig->Argument());
@@ -695,8 +730,8 @@ void UserSendCommon::massMessageToggled(bool b)
   if(grpMR == NULL) {
     grpMR = new QVGroupBox(mainWidget);
     (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
-    lstMultipleRecipients = new CMMUserView(mainwin->UserView()->ColInfo(),
-                                            mainwin->showHeader, m_nUin, mainwin, grpMR);
+    lstMultipleRecipients = new CMMUserView(gMainWindow->colInfo, mainwin->m_bShowHeader,
+                                            m_nUin, mainwin, grpMR);
     lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
     //laySend->addWidget(grpMR, 1, 1);
     //laySend->addMultiCellWidget(grpMR, 1, 2, 1, 1);
@@ -813,7 +848,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   }
   else
   {
-    emit signal_sentevent(e);
+    emit autoCloseNotify();
     if (sendDone(e)) close();
   }
 }
@@ -1195,7 +1230,8 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
   if (!e->ExtendedAck()->Accepted())
   {
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    QString result = tr("Chat with %2 refused:\n%3").arg(u->GetAlias()).arg(e->ExtendedAck()->Response());
+    QString result = tr("Chat with %2 refused:\n%3").arg(u->GetAlias())
+                     .arg(e->ExtendedAck()->Response());
     gUserManager.DropUser(u);
     InformUser(this, result);
 

@@ -103,6 +103,8 @@ protected:
   MsgView *msgView;
   CUserEvent *m_xCurrentReadEvent;
   QPushButton *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
+  QCheckBox* chkAutoClose;
+  QComboBox* cmbSendType;
   CEButton *btnRead1, *btnClose;
 
   void generateReply();
@@ -111,7 +113,7 @@ protected:
 
 protected slots:
   void slot_close();
-  void slot_sentevent(ICQEvent *);
+  void slot_autoClose();
   void slot_btnRead1();
   void slot_btnRead2();
   void slot_btnRead3();
@@ -133,7 +135,7 @@ public:
   virtual ~UserSendCommon();
 
 signals:
-  void signal_sentevent(ICQEvent *);
+  void autoCloseNotify();
 
 protected:
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
