@@ -1193,7 +1193,8 @@ void UserSendMsgEvent::sendButton()
   m_sProgressMsg += "...";
   icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit(),
      chkSendServer->isChecked() ? false : true,
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+     chkMass->isChecked());
 
   UserSendCommon::sendButton();
 }
@@ -1273,7 +1274,8 @@ void UserSendUrlEvent::sendButton()
   m_sProgressMsg += "...";
   icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
      chkSendServer->isChecked() ? false : true,
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+     chkMass->isChecked());
 
   UserSendCommon::sendButton();
 }

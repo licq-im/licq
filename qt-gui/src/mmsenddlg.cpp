@@ -124,7 +124,7 @@ void CMMSendDlg::SendNext()
       grpSending->setTitle(tr("Sending mass message to %1...").arg(u->GetAlias()));
       gUserManager.DropUser(u);
 
-      icqEventTag = server->icqSendMessage(m_nUin, s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL);
+      icqEventTag = server->icqSendMessage(m_nUin, s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL, true);
       break;
     }
     case ICQ_CMDxSUB_URL:
@@ -133,7 +133,7 @@ void CMMSendDlg::SendNext()
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(u->GetAlias()));
       gUserManager.DropUser(u);
 
-      icqEventTag = server->icqSendUrl(m_nUin, s2.latin1(), s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL);
+      icqEventTag = server->icqSendUrl(m_nUin, s2.latin1(), s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL, true);
       break;
     }
   }
