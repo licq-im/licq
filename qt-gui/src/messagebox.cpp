@@ -30,10 +30,10 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   SetEventLine();
   QString t =  "-----";
 
-  if (msg->IsCancelled()) t[0] = 'C';
-  if (msg->IsDirect())    t[1] = 'D';
-  if (msg->IsUrgent())    t[2] = 'U';
-  if (msg->IsMultiRec())  t[3] = 'M';
+  if (msg->IsDirect())    t[0] = 'D';
+  if (msg->IsUrgent())    t[1] = 'U';
+  if (msg->IsMultiRec())  t[2] = 'M';
+  if (msg->IsCancelled()) t[3] = 'C';
   if (msg->IsLicq())      t[4] = 'L';
 
   setText(2, t);
@@ -74,7 +74,7 @@ void MsgViewItem::SetEventLine()
       break;
   }
 
-  if (sz != NULL)
+  if (sz != NULL && sz[0] != '\0')
   {
     int width = listView()->columnWidth(1);
     QFont f = listView()->font();
