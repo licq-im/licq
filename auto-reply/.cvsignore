@@ -9,3 +9,5 @@ libtool
 stamp-h
 Makefile
 acinclude.m4
+stamp-h.in
+stamp-h
