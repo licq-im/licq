@@ -162,16 +162,28 @@ public:
   void SaveUserList();
 
   // NOT MT SAFE
-  unsigned short getMaxUsersPerPacket()  { return m_nMaxUsersPerPacket; }
-  bool getTcpPort(unsigned short);
-  void setTcpPort(unsigned short, bool);
+  int GetTCPPort();
+  void FreeTCPPort(unsigned short);
   const char *getUrlViewer();
-  unsigned short getTcpServerPort() { return(m_nTcpServerPort); }
   unsigned short getDefaultRemotePort()  { return(m_nDefaultRemotePort); }
-  void setTcpServerPort(unsigned short n)  { m_nTcpServerPort = n; }
   void setDefaultRemotePort(unsigned short n)  { m_nDefaultRemotePort = n; }
-  void setMaxUsersPerPacket(unsigned short n)  { m_nMaxUsersPerPacket = n; }
   void setUrlViewer(const char *s);
+
+  // Firewall options
+  unsigned short TCPEnabled();
+  void SetTCPEnabled(bool b);
+  const char *FirewallHost()  { return m_szFirewallHost; }
+  void SetFirewallHost(const char *);
+  unsigned short TCPBasePort() { return m_nTCPBasePort; }
+  unsigned short TCPBaseRange() { return m_vbTcpPorts.size(); }
+  void SetTCPBasePort(unsigned short p, unsigned short r);
+#ifdef USE_SOCKS5
+  bool SocksEnabled()  { return true; }
+#else
+  bool SocksEnabled()  { return false; }
+#endif
+  const char *SocksServer()  {  return getenv("SOCKS5_SERVER"); }
+
   const char *Terminal();
   void SetTerminal(const char *s);
   bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
@@ -196,10 +208,11 @@ protected:
 
   char *m_szUrlViewer,
        *m_szTerminal,
-       *m_szRejectFile;
+       *m_szRejectFile,
+       *m_szFirewallHost;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
-  unsigned short m_nTcpServerPort,
+  unsigned short m_nTCPBasePort,
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket;
   char m_szErrorFile[64];

@@ -47,6 +47,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_eStatus = STATUS_OFFLINE_MANUAL;
   m_bShuttingDown = false;
   m_nServerAck = 0;
+  m_szFirewallHost = NULL;
 
   // Begin parsing the config file
   sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
@@ -79,12 +80,17 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
      icqServers.addServer(remoteServerName, remoteServerPort);
   }
 
-  licqConf.ReadNum("TCPServerPort", m_nTcpServerPort, 0);
   bool bTcpEnabled;
+  unsigned short nTCPBasePort, nTCPBaseRange;
+  licqConf.ReadNum("TCPServerPort", nTCPBasePort, 0);
+  licqConf.ReadNum("TCPServerPortRange", nTCPBaseRange, 0);
+  SetTCPBasePort(nTCPBasePort, nTCPBaseRange);
   licqConf.ReadBool("TCPEnabled", bTcpEnabled, true);
-  CPacket::SetMode(bTcpEnabled ? MODE_DIRECT : MODE_INDIRECT);
+  SetTCPEnabled(bTcpEnabled);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
+  licqConf.ReadStr("FirewallHost", szFilename, "");
+  SetFirewallHost(szFilename);
 
   // Rejects log file
   licqConf.ReadStr("Rejects", szFilename, "log.rejects");
@@ -155,7 +161,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
     delete [] szOnParams[i];
 
   icqServers.setServer(1);    // set the initial UDP remote server (opened in ConnectToServer)
-  for (unsigned short i = 0; i < 10; i++) m_vbTcpPorts.push_back(false);
 
   // Pipes
   gLog.Info("%sCreating pipes.\n", L_INITxSTR);
@@ -181,12 +186,17 @@ bool CICQDaemon::Start()
 
   gLog.Info("%sStarting TCP server.\n", L_INITxSTR);
   TCPSocket *s = new TCPSocket(0);
-  if (!s->StartServer(m_nTcpServerPort))    // start up the TCP server
+  int p = -1;
+  do
   {
-     gLog.Error("%sUnable to allocate TCP port for local server (%s)!\n",
-                L_ERRORxSTR, s->ErrorStr(sz, 128));
-     return false;
-  }
+    p = GetTCPPort();
+    if (p == -1)
+    {
+       gLog.Error("%sUnable to allocate TCP port for local server (%s)!\n",
+                  L_ERRORxSTR, "No ports available"/*s->ErrorStr(sz, 128)*/);
+       return false;
+    }
+  } while (!s->StartServer(p));
   m_nTCPSocketDesc = s->Descriptor();
   gSocketManager.AddSocket(s);
   gLog.Info("%sTCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(sz), s->LocalPort());
@@ -451,10 +461,12 @@ void CICQDaemon::SaveConf()
 
   licqConf.SetSection("network");
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
-  licqConf.WriteNum("TCPServerPort", getTcpServerPort());
+  licqConf.WriteNum("TCPServerPort", TCPBasePort());
+  licqConf.WriteNum("TCPServerPortRange", TCPBaseRange());
   licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
-  licqConf.WriteNum("MaxUsersPerPacket", getMaxUsersPerPacket());
+  licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
+  licqConf.WriteStr("FirewallHost", m_szFirewallHost);
 
   // Utility tab
   licqConf.WriteStr("UrlViewer", m_szUrlViewer);
@@ -503,9 +515,27 @@ void CICQDaemon::SaveConf()
 
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// This needs to be changed
-bool CICQDaemon::getTcpPort(unsigned short i)  { return (m_vbTcpPorts[i]); }
-void CICQDaemon::setTcpPort(unsigned short i, bool b) { m_vbTcpPorts[i] = b; }
+int CICQDaemon::GetTCPPort()
+{
+  if (m_nTCPBasePort == 0) return 0;
+
+  unsigned short i = 0;
+  while (i < m_vbTcpPorts.size() && m_vbTcpPorts[i]) i++;
+  if (i == m_vbTcpPorts.size()) return -1;
+
+  m_vbTcpPorts[i] = true;
+  return m_nTCPBasePort + i;
+}
+
+void CICQDaemon::FreeTCPPort(unsigned short nPort)
+{
+  if (nPort == 0 || m_nTCPBasePort == 0 ||
+      nPort < m_nTCPBasePort || nPort - m_nTCPBasePort >= (int)m_vbTcpPorts.size())
+    return;
+
+  m_vbTcpPorts[nPort - m_nTCPBasePort] = false;
+}
+
 const char *CICQDaemon::Terminal()       { return m_szTerminal; }
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
 
@@ -520,6 +550,47 @@ const char *CICQDaemon::getUrlViewer()
 void CICQDaemon::setUrlViewer(const char *s)
 {
   SetString(&m_szUrlViewer, s);
+}
+
+
+void CICQDaemon::SetFirewallHost(const char *s)
+{
+  if (s == NULL || s[0] == '\0')
+  {
+    SetString(&m_szFirewallHost, "");
+    CPacket::SetLocalIp(0);
+  }
+  else
+  {
+    SetString(&m_szFirewallHost, s);
+    unsigned long n = INetSocket::GetIpByName(s);
+    if (n == 0)
+      gLog.Error("%sInvalid firewall hostname: %s\n", L_ERRORxSTR);
+    else
+      CPacket::SetLocalIp(n);
+  }
+}
+
+void CICQDaemon::SetTCPBasePort(unsigned short p, unsigned short r)
+{
+  //if (p != m_nTCPBasePort)
+  {
+    m_nTCPBasePort = p;
+    m_vbTcpPorts.clear();
+    for (unsigned short i = 0; i < r; i++)
+      m_vbTcpPorts.push_back(false);
+  }
+}
+
+unsigned short CICQDaemon::TCPEnabled()
+{
+  return CPacket::Mode() == MODE_DIRECT;
+}
+
+
+void CICQDaemon::SetTCPEnabled(bool b)
+{
+  CPacket::SetMode(b ? MODE_DIRECT : MODE_INDIRECT);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
