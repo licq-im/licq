@@ -1211,7 +1211,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       break;
     case ICQ_CMDxSND_REGISTERxUSER:
       delete registerUserDlg;
-      registerUserDlg = 0;
+      registerUserDlg = NULL;
       if (e->m_eResult == EVENT_SUCCESS)
       {
         char buf[256];
@@ -1804,17 +1804,33 @@ void CMainWindow::initMenu()
    mnuUser = new QPopupMenu(NULL);
    mnuUser->setCheckable(true);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
-   mnuUser->insertItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
-   mnuUser->insertItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
-   mnuUser->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
-   mnuUser->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-   mnuUser->insertItem(tr("Send Authorization"), mnuUserAuthorize);
+   QPopupMenu *m = new QPopupMenu(this);
+   m->insertItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
+   m->insertItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
+   m->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+   m->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+   m->insertItem(tr("Send Authorization"), mnuUserAuthorize);
+   connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
+   mnuUser->insertItem(tr("Send"), m);
+   //mnuUser->insertItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
+   //mnuUser->insertItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
+   //mnuUser->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+   //mnuUser->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+   //mnuUser->insertItem(tr("Send Authorization"), mnuUserAuthorize);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
+   mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    mnuUser->insertSeparator();
-   mnuUser->insertItem(tr("&General Info"), mnuUserGeneral);
-   mnuUser->insertItem(tr("&More Info"), mnuUserMore);
-   mnuUser->insertItem(tr("&Work Info"), mnuUserWork);
-   mnuUser->insertItem(tr("&About"), mnuUserAbout);
+   m = new QPopupMenu(this);
+   m->insertItem(tr("&General Info"), mnuUserGeneral);
+   m->insertItem(tr("&More Info"), mnuUserMore);
+   m->insertItem(tr("&Work Info"), mnuUserWork);
+   m->insertItem(tr("&About"), mnuUserAbout);
+   connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
+   mnuUser->insertItem(tr("&Info"), m);
+   //mnuUser->insertItem(tr("&General Info"), mnuUserGeneral);
+   //mnuUser->insertItem(tr("&More Info"), mnuUserMore);
+   //mnuUser->insertItem(tr("&Work Info"), mnuUserWork);
+   //mnuUser->insertItem(tr("&About"), mnuUserAbout);
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
@@ -1824,8 +1840,6 @@ void CMainWindow::initMenu()
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Remove"), mnuRemove);
    mnuUser->insertItem(tr("Add To Group"), mnuGroup);
-   mnuUser->insertSeparator();
-   mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    connect (mnuUser, SIGNAL(aboutToShow()), this, SLOT(changeAutoResponse()));
 }
@@ -1907,14 +1921,15 @@ void CMainWindow::showPluginDlg()
   (void) new PluginDlg(licqDaemon);
 }
 
-void CMainWindow::slot_doneregister()
-{
-  registerUserDlg = NULL;
-}
 
 void CMainWindow::slot_doneOptions()
 {
   optionsDlg = NULL;
+}
+
+void CMainWindow::slot_doneregister()
+{
+  registerUserDlg = NULL;
 }
 
 void CMainWindow::slot_register()
@@ -1931,11 +1946,12 @@ void CMainWindow::slot_register()
     return;
   }
 
-  if (registerUserDlg)
+  if (registerUserDlg != NULL)
     registerUserDlg->raise();
-  else {
+  else
+  {
     registerUserDlg = new RegisterUserDlg(licqDaemon);
-    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
+    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_registerdone()));
   }
 }
 
