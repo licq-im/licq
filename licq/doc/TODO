@@ -1,5 +1,5 @@
 List of things to do and in progress for Licq:
-o  Server list storage/retrieval
+o  Server list storage/retrieval (almost complete)
 o  v7/v8 client communication
 
 Other Things:
@@ -12,5 +12,5 @@ o  Send uins to users
 
 Plugin Ideas:
 o  Email checker
-o  Web server (in progress)
+o  Web server
 

@@ -1,4 +1,4 @@
-LICQ v1.0.4
+LICQ v1.2.0
 
 An ICQ clone written in C and C++ using a plugin system to allow for
 many possible interfaces.  
@@ -38,15 +38,14 @@ As each user:
    one of the conversion scripts found on the download section of the web
    page or in the licq-data package.
 
+Licq requires the following:
+Some C++ compiler with proper standard c++ headers.
 
 SOCKS5 Proxy Support:
 Licq supports SOCKS5 proxies.  To enable this support, run configure with
---enable-socks5, and optionally --with-socks5-inc=PATH and 
+--enable-socks5, and optionally --with-socks5-inc=PATH and
 --with-socks5-lib=PATH.  Then just make sure all the right environment
 variables are set and it should work.  Also read the SOCKS.HOWTO file.
-
-Licq requires the following:
-Some C++ compiler with proper standard c++ headers.
 
 Licq has been compiled and run successfully on the following systems at one 
 point (note current versions may no longer compile without a bit of tweaking):

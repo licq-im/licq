@@ -1,5 +1,14 @@
 Change log for Licq.
 
+New in 1.2.0
+o  Lots and lots of bug fixes
+o  Memory management fixes
+o  Per user encoding in QT plugin
+o  Initial server side list support
+o  Improved buffer overflow prevention
+o  ICQ CLB file converter
+o  So many other things
+  
 New in 1.0.4
 o  Bug fixes
 o  workarounds for reoccuring offline messages
