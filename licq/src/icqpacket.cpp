@@ -679,6 +679,14 @@ CPU_Register::CPU_Register(const char *szPasswd)
 CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _nLogonStatus)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
+  // truncate password to MAX 8 characters
+  char szPass[MAX_LINE_LEN];
+	strcpy(szPass, szPassword);
+  if (strlen(szPass) > 8)
+	{
+    gLog.Warn("%sPassword too long, truncated to 8 Characters!\n", L_WARNxSTR);
+		szPass[8] = 0;
+	}
   char szEncPass[16];
   unsigned int j;
 
@@ -692,9 +700,9 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 
   m_nLogonStatus = _nLogonStatus;
   m_nTcpVersion = ICQ_VERSION_TCP;
-
+  
   unsigned int uinlen = strlen(szUin);
-  unsigned int pwlen = strlen(szPassword);
+  unsigned int pwlen = strlen(szPass);
 
   m_nSize = uinlen + pwlen + 117;
   InitBuffer();
@@ -703,7 +711,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   unsigned char xor_table[] = { 0xf3, 0x26, 0x81, 0xc4, 0x39, 0x86, 0xdb, 0x92,
 			    0x71, 0xa3, 0xb9, 0xe6, 0x53, 0x7a, 0x95, 0x7c};
   for (j = 0; j < pwlen; j++)
-    szEncPass[j] = (szPassword[j] ^ xor_table[j]);
+    szEncPass[j] = (szPass[j] ^ xor_table[j]);
   szEncPass[j] = 0;
 
   buffer->PackUnsignedLongBE(0x00000001);
