@@ -1185,6 +1185,9 @@ void CICQDaemon::icqLogoff()
   }
   pthread_mutex_unlock(&mutex_runningevents);
 
+  // All extended event are a pointer that are also in the running events.
+  // We do not need to clean these out.
+#if 0
   // wipe out all extended events too...
   pthread_mutex_lock(&mutex_extendedevents);
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
@@ -1194,6 +1197,7 @@ void CICQDaemon::icqLogoff()
   }
   m_lxExtendedEvents.erase(m_lxExtendedEvents.begin(), m_lxExtendedEvents.end());
   pthread_mutex_unlock(&mutex_extendedevents);
+#endif
 
   // Mark all users as offline, this also updates the last seen
   // online field
