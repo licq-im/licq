@@ -39,6 +39,7 @@ extern int h_errno;
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+fd_set gSSL_pending;
 SSL_CTX *gSSL_CTX;
 #endif // OpenSSL
 
@@ -547,13 +548,13 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
 #ifdef USE_OPENSSL
   if (m_pSSL != NULL)
   {
-    int i, j = 0;
+    int i, j;
     ERR_clear_error();
     pthread_mutex_lock(&mutex_ssl);
     i = SSL_write(m_pSSL, pcSize, 2);
-    if (i < 0) j = SSL_get_error(m_pSSL, i);
+    j = SSL_get_error(m_pSSL, i);
     pthread_mutex_unlock(&mutex_ssl);
-    if (i < 0)
+    if (j != SSL_ERROR_NONE)
     {
       const char *file; int line;
       unsigned long err;
@@ -573,9 +574,9 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
     ERR_clear_error();
     pthread_mutex_lock(&mutex_ssl);
     i = SSL_write(m_pSSL, b->getDataStart(), b->getDataSize());
-    if (i < 0) j = SSL_get_error(m_pSSL, i);
+    j = SSL_get_error(m_pSSL, i);
     pthread_mutex_unlock(&mutex_ssl);
-    if (i < 0)
+    if (j != SSL_ERROR_NONE)
     {
       const char *file; int line;
       unsigned long err;
@@ -767,6 +768,17 @@ bool TCPSocket::RecvPacket()
 #endif
   m_xRecvBuffer.incDataPosWrite(nBytesReceived);
 
+#ifdef USE_OPENSSL
+  // Make sure we get called again for more data
+  if (m_pSSL)
+  {
+    if (SSL_pending(m_pSSL))
+      FD_SET(m_nDescriptor, &gSSL_pending);
+    else
+      FD_CLR(m_nDescriptor, &gSSL_pending);
+  }
+#endif
+
   // Print the packet if it's full
   if (m_xRecvBuffer.Full())
     DumpPacket(&m_xRecvBuffer, D_RECEIVER);
@@ -800,11 +812,12 @@ bool TCPSocket::SecureConnect()
   SSL_set_session(m_pSSL, NULL);
   SSL_set_fd(m_pSSL, m_nDescriptor);
   int i = SSL_connect(m_pSSL);
-  if (i < 0)
+  int j = SSL_get_error(m_pSSL, i);
+  if (j != SSL_ERROR_NONE)
   {
-    const char *file; int line;
+    const char *file;
+    int line;
     unsigned long err;
-    int j = SSL_get_error(m_pSSL, i);
     switch (j)
     {
       case SSL_ERROR_SSL:
@@ -829,11 +842,12 @@ bool TCPSocket::SecureListen()
   SSL_set_session(m_pSSL, NULL);
   SSL_set_fd(m_pSSL, m_nDescriptor);
   int i = SSL_accept(m_pSSL);
-  if (i < 0)
+  int j = SSL_get_error(m_pSSL, i);
+  if (j != SSL_ERROR_NONE)
   {
-    const char *file; int line;
+    const char *file;
+    int line;
     unsigned long err;
-    int j = SSL_get_error(m_pSSL, i);
     switch (j)
     {
       case SSL_ERROR_SSL:

@@ -20,6 +20,7 @@
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>
 extern SSL_CTX *gSSL_CTX;
+extern fd_set gSSL_pending;
 #else
 typedef void SSL;
 #endif

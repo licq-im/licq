@@ -365,6 +365,7 @@ bool CLicq::Init(int argc, char **argv)
   DH *dh = get_dh512();
   SSL_CTX_set_tmp_dh(gSSL_CTX, dh);
   DH_free(dh);
+  FD_ZERO(&gSSL_pending);
 #endif
 
   // Start things going

@@ -352,7 +352,11 @@ void *MonitorSockets_tep(void *p)
     nCurrentSocket = 0;
     while (nSocketsAvailable > 0 && nCurrentSocket < l)
     {
-      if (FD_ISSET(nCurrentSocket, &f))
+      if (FD_ISSET(nCurrentSocket, &f)
+#ifdef USE_OPENSSL
+          || FD_ISSET(nCurrentSocket, &gSSL_pending)
+#endif
+         )
       {
         // New socket event ----------------------------------------------------
         if (nCurrentSocket == d->pipe_newsocket[PIPE_READ])
@@ -499,9 +503,21 @@ void *MonitorSockets_tep(void *p)
           }
         }
 
+#ifdef USE_OPENSSL
+        // Only reduce the number of sockets if we aren't still pending
+        if (!FD_ISSET(nCurrentSocket, &gSSL_pending))
+          nSocketsAvailable--;
+#else
         nSocketsAvailable--;
+#endif
       }
+#ifdef USE_OPENSSL
+      // Only increase the socket number if we aren't still pending
+      if (!FD_ISSET(nCurrentSocket, &gSSL_pending))
+        nCurrentSocket++;
+#else
       nCurrentSocket++;
+#endif
     }
   }
   return NULL;
