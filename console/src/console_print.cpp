@@ -408,97 +408,30 @@ void CLicqConsole::PrintUsers()
 void CLicqConsole::PrintHelp()
 {
   PrintBoxTop("Menu", COLOR_WHITE, 48);
+
+  for (unsigned short i = 0; i < NUM_COMMANDS; i++)
+  {
+    waddch(winMain->Win(), ACS_VLINE);
+    winMain->wprintf(aCommands[i].szHelp, m_szCommandChar[0]);
+    PrintBoxRight(48);
+  }
+
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cc%Z%s", A_BOLD, m_szCommandChar[0], A_BOLD, "ontacts");
+  winMain->wprintf(" %BF(1-%d)%b to change between consoles", MAX_CON);
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %BF%d%b to see the log", MAX_CON + 1);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cg%Zroup [ %A#%Z%s", A_BOLD, m_szCommandChar[0],
-    A_BOLD, A_BOLD, A_BOLD, " ]");
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %B<user>%b can be alias, uin,");
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("   $ (last user) or # (owner)");
   PrintBoxRight(48);
 
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cad%Zd %A<uin>%Z [ alert ]", A_BOLD, m_szCommandChar[0],
-    A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" [ %A%cu%Zser ] %A<alias>%Z <info | view | message |",
-                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("                    sendfile | url |");
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("                    history | remove |");
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("                    auto-response>");
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%co%Zwner <view | info | history <n[,n]>",
-                   A_BOLD, m_szCommandChar[0], A_BOLD);
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("         auto-response>");
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cl%Zast [ %A<user-command>%Z ]",
-                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cau%Zthorize <grant | refuse> %A<uin>", A_BOLD, m_szCommandChar[0],
-    A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cf%Zilestat", A_BOLD, m_szCommandChar[0], A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cst%Zatus [*]<online | away | na | dnd |", A_BOLD,
-    m_szCommandChar[0], A_BOLD);
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("             occupied | ffc | offline>");
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%csea%Zrch",
-                   A_BOLD, m_szCommandChar[0], A_BOLD);
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-
-  winMain->wprintf(" %A%cset%Z [ %A<variable>%Z [ = %A<value>%Z ] ]",
-                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD,
-                   A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cd%Zefine [ %A<macro>%Z [ %A<command>%Z ] ]",
-                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD,
-                   A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%ch%Zelp [ %A<command>%Z ]", A_BOLD, m_szCommandChar[0],
-                   A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cq%Zuit", A_BOLD, m_szCommandChar[0], A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %AF(1-%d)%Z to change between consoles", A_BOLD, MAX_CON,
-                   A_BOLD);
-  PrintBoxRight(48);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %AF%d%Z to see the log", A_BOLD, MAX_CON + 1, A_BOLD);
-  PrintBoxRight(48);
   PrintBoxBottom(48);
 }
 

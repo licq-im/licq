@@ -1679,17 +1679,20 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
   PrintHistory(lHistory, nStart - 1, nEnd - 1, szFrom);
 }
 
+
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Msg
  *-------------------------------------------------------------------------*/
 void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
 {
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->state = STATE_MLE;
   winMain->data = new DataMsg(nUin);
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%AEnter message to %s (%ld):\n%s\n", A_BOLD, u->GetAlias(),
                    nUin, MLE_HELP);
   winMain->RefreshWin();
@@ -2254,7 +2257,6 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::Command_Search()
 {
-
   // Get the input now
   winMain->fProcessInput = &CLicqConsole::InputSearch;
   winMain->state = STATE_LE;

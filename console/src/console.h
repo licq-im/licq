@@ -129,6 +129,7 @@ public:
 
   void MenuHelp(char *);
   void MenuContactList(char *);
+  void MenuUins(char *);
   void MenuGroup(char *);
   void MenuQuit(char *);
   void MenuUser(char *);
@@ -137,19 +138,25 @@ public:
   void MenuPlugins(char *);
   void MenuSet(char *);
   void MenuLast(char *);
-  void MenuFileStat(char *);
+  void MenuFile(char *);
   void MenuClear(char *);
   void MenuAdd(char *);
   void MenuDefine(char *);
   void MenuSearch(char *);
   void MenuAuthorize(char *);
+  void MenuMessage(char *);
+  void MenuUrl(char *);
+  void MenuInfo(char *);
+  void MenuSecure(char *);
+  void MenuAutoResponse(char *);
+  void MenuView(char *);
+  void MenuHistory(char *);
+  void MenuRemove(char *);
 
   void TabUser(char *, struct STabCompletion &);
-  void TabOwner(char *, struct STabCompletion &);
   void TabCommand(char *, struct STabCompletion &);
   void TabStatus(char *, struct STabCompletion &);
   void TabSet(char *, struct STabCompletion &);
-  void TabLast(char *, struct STabCompletion &);
 
   void UserCommand_Info(unsigned long nUin, char *);
   void UserCommand_Msg(unsigned long nUin, char *);
@@ -168,6 +175,7 @@ public:
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
   bool ParseMacro(char *);
+  unsigned long GetUinFromArg(char **);
 };
 
 
@@ -183,6 +191,7 @@ struct SCommand
   void (CLicqConsole::*fProcessCommand)(char *);
   void (CLicqConsole::*fProcessTab)(char *, struct STabCompletion &);
   char *szHelp;
+  char *szDescription;
 };
 extern const unsigned short NUM_COMMANDS;
 extern const struct SCommand aCommands[];

@@ -178,6 +178,20 @@ void CWindow::wprintf(char *formatIn, ...)
          formatOut[j] = '\0';
          *this << formatOut;
          break;
+      case 'B':   // more generally set attribute
+         i++;
+         wattron(win, A_BOLD);
+         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         formatOut[j] = '\0';
+         *this << formatOut;
+         break;
+      case 'b':   // more generally set attribute
+         i++;
+         wattroff(win, A_BOLD);
+         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         formatOut[j] = '\0';
+         *this << formatOut;
+         break;
       case 'Z':   // more generally clear attribute
          i++;
          wattroff(win, va_arg(argp, long));

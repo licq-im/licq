@@ -3,30 +3,27 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 16;
+const unsigned short NUM_COMMANDS = 22;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
+    " %B%cco%bntacts",
     "Force a refresh of the contact list." },
   { "group", &CLicqConsole::MenuGroup, NULL,
+    " %B%cg%broup [ %B#%b ]",
     "Prints the group list or changes to the given group number." },
   { "clear", &CLicqConsole::MenuClear, NULL,
+    " %B%ccl%bear",
     "Clears the current window." },
-  { "filestat", &CLicqConsole::MenuFileStat, NULL,
-    "Print out statistics on all current file transfers." },
   { "add", &CLicqConsole::MenuAdd, NULL,
+    " %B%cad%bd %B<uin>%b [ alert ]",
     "Add a user to your list by uin." },
   { "authorize", &CLicqConsole::MenuAuthorize, NULL,
+    " %B%cau%bthorize <grant | refuse> %B<uin>",
     "Authorize grant or refuse  the given user." },
-  { "user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
-    "User commands deal with indiviual users:\n"
-    "info - print user information\n\n"
-    "message - send a message to the user\n\n"
-    "sendfile - send a file to the user\n\n"
-    "url - send a url to the user\n\n"
-    "view - view any new events from the user\n\n"
-    "secure - open, close, or view the current secure channel status\n\n"
-    "history - print the given range of events from the history.\n"
+  { "history", &CLicqConsole::MenuHistory, &CLicqConsole::TabUser,
+    " %B%chi%bstory %B<user>%b [ %B#%b,%B#%b ]",
+    "Print the given range of events from the history.\n"
     "'$' represents the last message, and +/- can be used to specify "
     "an offset.  For example \"history $-5,$\" will print from the "
     "fifth-to-last event to the end.\n"
@@ -40,15 +37,42 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "last \"history +1\"\n"
     "last \"history +1\"\n"
     "...\n" },
-  { "owner", &CLicqConsole::MenuOwner, &CLicqConsole::TabOwner,
-    "Commands dealing with yourself.  See /user help for details." },
+  { "message", &CLicqConsole::MenuMessage, &CLicqConsole::TabUser,
+    " %B%cm%bessage %B<user>%b",
+    "Send a message to a user." },
+  { "url", &CLicqConsole::MenuUrl, &CLicqConsole::TabUser,
+    " %B%cur%bl %B<user>%b",
+    "Send a URL to a user." },
+  { "file", &CLicqConsole::MenuFile, &CLicqConsole::TabUser,
+    " %B%cf%bile [ %B<user>%b ]",
+    "Send a file to a user or display file transfer stats." },
+  { "info", &CLicqConsole::MenuInfo, &CLicqConsole::TabUser,
+    " %B%ci%bnfo %B<user>%b",
+    "Display user information." },
+  { "view", &CLicqConsole::MenuView, &CLicqConsole::TabUser,
+    " %B%cv%biew [ %B<user>%b ]",
+    "View an incoming event." },
+  { "secure", &CLicqConsole::MenuSecure, &CLicqConsole::TabUser,
+    " %B%cs%becure %B<user>%b",
+    "Establish a secure connection to a user." },
+  { "auto-response", &CLicqConsole::MenuAutoResponse, &CLicqConsole::TabUser,
+    " %B%ca%buto-response [ %B<user>%b ]",
+    "View a user's auto-reponse or set your own (use #)." },
+  { "remove", &CLicqConsole::MenuRemove, &CLicqConsole::TabUser,
+    " %B%cr%bemove %B<user>%b",
+    "Remove a user from your contact list." },
   { "status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
+    " %B%cst%batus [*]<online | away | na | dnd | occupied | ffc | offline>",
     "Set your status, prefix with \"*\" for invisible mode." },
-  { "last", &CLicqConsole::MenuLast, &CLicqConsole::TabLast,
-    "Perform the given command on the last user." },
   { "search", &CLicqConsole::MenuSearch, NULL,
+    " %B%csea%brch",
     "Perform a search of the ICQ network." },
+  { "uins", &CLicqConsole::MenuUins, NULL,
+    " %B%cu%bins",
+    "Print out the uins of the users in the current group.\n"
+    "Useful if the user has odd characters in their alias." },
   { "set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
+    " %B%cset%b [ %B<variable>%b [ = %B<value>%b ] ]",
     "Allows the setting and viewing of options.  With no arguments\n"
     "will print all current set'able values.  With one argument will\n"
     "print the value of the given argument.\n"
@@ -56,8 +80,10 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Color values can be red/blue/green/magenta/white/yellow or\n"
     "bright_<color> for bright colors." },
   { "plugins", &CLicqConsole::MenuPlugins, NULL,
+    " %B%cp%blugins",
     "List the currently loaded plugins." },
   { "define", &CLicqConsole::MenuDefine, NULL,
+    " %B%cd%befine [ %B<macro>%b [ %B<command>%b ] ]",
     "Define a new macro, enter macros by not using '/'.\n"
     "A macro can be any string of characters not containing\n"
     "a space.  The command can be any valid command, do not\n"
@@ -65,34 +91,14 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Example: \"/define r last message\" creates a macro \"r\"\n"
     "which replies to the last user you talked to."},
   { "help", &CLicqConsole::MenuHelp, NULL,
+    " %B%che%blp [ %B<command>%b ]",
     "This help screen, can also be passed a command for detailed\n"
     "information about it." },
   { "quit", &CLicqConsole::MenuQuit, NULL,
+    " %B%cq%buit",
     "Quit Licq." }
 };
 
-const unsigned short NUM_USER_COMMANDS = 9;
-const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
-{
-  { "info", &CLicqConsole::UserCommand_Info },
-  { "view", &CLicqConsole::UserCommand_View },
-  { "message", &CLicqConsole::UserCommand_Msg },
-  { "sendfile", &CLicqConsole::UserCommand_SendFile },
-  { "url", &CLicqConsole::UserCommand_Url },
-  { "history", &CLicqConsole::UserCommand_History },
-  { "auto-response", &CLicqConsole::UserCommand_FetchAutoResponse },
-  { "remove", &CLicqConsole::UserCommand_Remove },
-  { "secure", &CLicqConsole::UserCommand_Secure }
-};
-
-const unsigned short NUM_OWNER_COMMANDS = 4;
-const struct SOwnerCommand aOwnerCommands[NUM_OWNER_COMMANDS] =
-{
-  { "info", &CLicqConsole::UserCommand_Info },
-  { "view", &CLicqConsole::UserCommand_View },
-  { "history", &CLicqConsole::UserCommand_History },
-  { "auto-response", &CLicqConsole::UserCommand_SetAutoResponse }
-};
 
 
 /*---------------------------------------------------------------------------
@@ -119,7 +125,7 @@ void CLicqConsole::MenuHelp(char *_szArg)
     return;
   }
   winMain->wprintf("%AHelp on \"%Z%s%A\":%Z\n%s\n", A_BOLD, A_BOLD,
-   aCommands[i].szName, A_BOLD, A_BOLD, aCommands[i].szHelp);
+   aCommands[i].szName, A_BOLD, A_BOLD, aCommands[i].szDescription);
 
 }
 
@@ -444,73 +450,74 @@ void CLicqConsole::MenuContactList(char *)
 
 
 /*---------------------------------------------------------------------------
- * CLicqConsole::MenuUser
+ * CLicqConsole::MenuUins
  *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuUser(char *_szArg)
+void CLicqConsole::MenuUins(char *)
 {
-  char *szAlias, *szCmd, *szUserArg;
-  unsigned long nUin = 0;
-  unsigned short nCmd = 0;
-  bool bCheckUin = true;
+  list <SUser *>::iterator it;
+  ICQUser *u;
 
-  if(_szArg == NULL) {
-    winMain->wprintf("%CNo command given. See </help user> for details.\n",
-                     COLOR_RED);
-    return;
+  for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
+  {
+    u = gUserManager.FetchUser((*it)->nUin, LOCK_R);
+    winMain->wprintf("%s %A-%Z %lu\n", u->GetAlias(), A_BOLD, A_BOLD, u->Uin());
+    gUserManager.DropUser(u);
+  }
+
+}
+
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::GetUinFromArg
+ *-------------------------------------------------------------------------*/
+unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
+{
+  char *szAlias, *szCmd;
+  unsigned long nUin = 0;
+  bool bCheckUin = true;
+  char *szArg = *p_szArg;
+
+  if (szArg == NULL) {
+    return 0;
   }
 
   // Check if the alias is quoted
-  if (_szArg[0] == '"')
+  if (szArg[0] == '"')
   {
     bCheckUin = false;
-    szAlias = &_szArg[1];
-    szCmd = strchr(&_szArg[1], '"');
+    szAlias = &szArg[1];
+    szCmd = strchr(&szArg[1], '"');
     if (szCmd == NULL)
     {
       winMain->wprintf("%CUnbalanced quotes.\n", COLOR_RED);
-      return;
+      return (unsigned long)-1;
     }
     *szCmd++ = '\0';
     szCmd = strchr(szCmd, ' ');
   }
+  else if (szArg[0] == '#')
+  {
+    *p_szArg = NULL;
+    return gUserManager.OwnerUin();
+  }
+  else if (szArg[0] == '$')
+  {
+    *p_szArg = NULL;
+    return winMain->nLastUin;
+  }
   else
   {
-    szAlias = _szArg;
-    szCmd = strchr(_szArg, ' ');
+    szAlias = szArg;
+    szCmd = strchr(szArg, ' ');
   }
 
-  if (szCmd == NULL)
-  {
-    nCmd = 0;
-    szUserArg = NULL;
-  }
-  else
+  if (szCmd != NULL)
   {
     *szCmd++ = '\0';
     STRIP(szCmd);
-    // Find any command args
-    szUserArg = strchr(szCmd, ' ');
-    if (szUserArg != NULL)
-    {
-      *szUserArg++ = '\0';
-      STRIP(szUserArg);
-      if (*szUserArg == '\0') szUserArg = NULL;
-    }
-    unsigned short i;
-    for (i = 0; i < NUM_USER_COMMANDS; i++)
-    {
-      if (strncasecmp(szCmd, aUserCommands[i].szName, strlen(szCmd)) == 0)
-      {
-        nCmd = i;
-        break;
-      }
-    }
-    if (i == NUM_USER_COMMANDS)
-    {
-      winMain->wprintf("%CInvalid user command: %A%s\n", COLOR_RED, A_BOLD, szCmd);
-      return;
-    }
   }
+  *p_szArg = szCmd;
 
   // Find the user
   // See if all the chars are digits
@@ -535,7 +542,7 @@ void CLicqConsole::MenuUser(char *_szArg)
     if (nUin == 0)
     {
       winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
-      return;
+      return (unsigned long)-1;
     }
   }
   else
@@ -543,7 +550,7 @@ void CLicqConsole::MenuUser(char *_szArg)
     if (!gUserManager.IsOnList(nUin))
     {
       winMain->wprintf("%CInvalid uin: %A%lu\n", COLOR_RED, A_BOLD, nUin);
-      return;
+      return (unsigned long)-1;
     }
   }
 
@@ -553,94 +560,219 @@ void CLicqConsole::MenuUser(char *_szArg)
     winMain->nLastUin = nUin;
     PrintStatus();
   }
-  // Run the command
-  (this->*(aUserCommands[nCmd].fProcessCommand))(nUin, szUserArg);
+
+  return nUin;
+}
+
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuMessage
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuMessage(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == gUserManager.OwnerUin())
+    winMain->wprintf("%CYou can't send messages to yourself!\n", COLOR_RED);
+  else if (nUin == 0)
+    winMain->wprintf("%CYou must specify a user to send a message to.\n", COLOR_RED);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_Msg(nUin, sz);
 }
 
 
 /*---------------------------------------------------------------------------
- * CLicqConsole::MenuLast
+ * CLicqConsole::MenuInfo
  *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuLast(char *_szArg)
+void CLicqConsole::MenuInfo(char *szArg)
 {
-  unsigned short nCmd = 0;
-  char *szUserArg;
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
 
-  if (winMain->nLastUin == 0)
-  {
-    winMain->wprintf("%CNo last user.\n", COLOR_RED);
-    return;
-  }
+  if (nUin == gUserManager.OwnerUin())
+    winMain->wprintf("%CSetting personal info not implemented yet.\n", COLOR_RED);
+  else if (nUin == 0)
+    UserCommand_Info(gUserManager.OwnerUin(), sz);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_Info(nUin, sz);
+}
 
-  if (_szArg == NULL)
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuUrl
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuUrl(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == gUserManager.OwnerUin())
+    winMain->wprintf("%CYou can't send URLs to yourself!\n", COLOR_RED);
+  else if (nUin == 0)
+    winMain->wprintf("%CYou must specify a user to send a URL to.\n", COLOR_RED);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_Url(nUin, sz);
+}
+
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuView
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuView(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == 0)
   {
-    nCmd = 0;
-    szUserArg = NULL;
-  }
-  else
-  {
-    // Find any command args
-    szUserArg = strchr(_szArg, ' ');
-    if (szUserArg != NULL)
+    // Do nothing if there are no events pending
+    if (ICQUser::getNumUserEvents() == 0) return;
+
+    // Do system messages first
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned short nNumMsg = o->NewMessages();
+    gUserManager.DropOwner();
+    if (nNumMsg > 0)
     {
-      *szUserArg++ = '\0';
-      STRIP(szUserArg);
-      if (*szUserArg == '\0') szUserArg = NULL;
-    }
-    for (nCmd = 0; nCmd < NUM_USER_COMMANDS; nCmd++)
-    {
-      if (strncasecmp(_szArg, aUserCommands[nCmd].szName, strlen(_szArg)) == 0)
-        break;
-    }
-    if (nCmd == NUM_USER_COMMANDS)
-    {
-      winMain->wprintf("%CInvalid user command: %A%s\n", COLOR_RED, A_BOLD, _szArg);
+      UserCommand_View(gUserManager.OwnerUin(), NULL);
       return;
     }
-  }
 
-  // Run the command
-  (this->*(aUserCommands[nCmd].fProcessCommand))(winMain->nLastUin, szUserArg);
+    time_t t = time(NULL);
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
+      {
+        nUin = pUser->Uin();
+        t = pUser->Touched();
+      }
+    }
+    FOR_EACH_USER_END
+    if (nUin != 0) UserCommand_View(nUin, NULL);
+  }
+  else if (nUin != (unsigned long)-1)
+  {
+    UserCommand_View(nUin, sz);
+  }
 }
 
 
 /*---------------------------------------------------------------------------
- * CLicqConsole::MenuOwner
+ * CLicqConsole::MenuSecure
  *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuOwner(char *_szArg)
+void CLicqConsole::MenuSecure(char *szArg)
 {
-  unsigned short nCmd = 0;
-  char *szUserArg;
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
 
-  if(_szArg == NULL) {
-    winMain->wprintf("%COwner command required. See </help owner>.\n");
-    return;
-  }
-
-  // Find any command args
-  szUserArg = strchr(_szArg, ' ');
-  if (szUserArg != NULL)
-  {
-    *szUserArg++ = '\0';
-    STRIP(szUserArg);
-    if (*szUserArg == '\0') szUserArg = NULL;
-  }
-
-  for (nCmd = 0; nCmd < NUM_OWNER_COMMANDS; nCmd++)
-  {
-    if (strncasecmp(_szArg, aOwnerCommands[nCmd].szName, strlen(_szArg)) == 0)
-      break;
-  }
-  if (nCmd == NUM_OWNER_COMMANDS)
-  {
-    winMain->wprintf("%CInvalid owner command: %A%s\n", COLOR_RED, A_BOLD, _szArg);
-    return;
-  }
-
-  // Run the command
-  (this->*(aOwnerCommands[nCmd].fProcessCommand))(gUserManager.OwnerUin(), szUserArg);
+  if (nUin == gUserManager.OwnerUin())
+    winMain->wprintf("%CYou can't establish a secure connection to yourself!\n", COLOR_RED);
+  else if (nUin == 0)
+    winMain->wprintf("%CYou must specify a user to talk to.\n", COLOR_RED);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_Secure(nUin, sz);
 }
 
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuFile
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuFile(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == gUserManager.OwnerUin())
+    winMain->wprintf("%CYou can't send files to yourself!\n", COLOR_RED);
+  else if (nUin == 0)
+  {
+    bool bNum = false;
+
+    // Go through the list and print out the info on each file
+    list<CFileTransferManager *>::iterator iter;
+    for(iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
+    {
+      bNum = true;
+      PrintFileStat(*iter);
+    }
+
+    if(!bNum)
+    {
+      winMain->wprintf("%A%CNo current file transfers.\n",
+       m_cColorInfo->nAttr,
+       m_cColorInfo->nColor);
+    }
+  }
+  else if (nUin != (unsigned long)-1)
+    UserCommand_SendFile(nUin, sz);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuAutoResponse
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuAutoResponse(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == gUserManager.OwnerUin())
+  {
+    wattron(winMain->Win(), A_BOLD);
+    for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
+      waddch(winMain->Win(), ACS_HLINE);
+    waddch(winMain->Win(), '\n');
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    winMain->wprintf("%B%CAuto response:\n%b%s\n",
+                     COLOR_WHITE, o->AutoResponse());
+    gUserManager.DropOwner();
+    wattron(winMain->Win(), A_BOLD);
+    for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
+      waddch(winMain->Win(), ACS_HLINE);
+    waddch(winMain->Win(), '\n');
+    winMain->RefreshWin();
+    wattroff(winMain->Win(), A_BOLD);
+  }
+  else if (nUin == 0)
+    UserCommand_SetAutoResponse(nUin, sz);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_FetchAutoResponse(nUin, sz);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuRemove
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuRemove(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == gUserManager.OwnerUin())
+    winMain->wprintf("%CYou can't remove yourself!\n", COLOR_RED);
+  else if (nUin == 0)
+    winMain->wprintf("%CYou must specify a user to remove.\n", COLOR_RED);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_Remove(nUin, sz);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuHistory
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuHistory(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == 0)
+    winMain->wprintf("%CYou must specify a user to view history.\n", COLOR_RED);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_History(nUin, sz);
+}
 
 
 /*---------------------------------------------------------------------------
@@ -747,25 +879,6 @@ void CLicqConsole::MenuSet(char *_szArg)
   DoneOptions();
 }
 
-/*--------------------------------------------------------------------------
- * CLicqConsole::MenuFileStat
- *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuFileStat(char *sz)
-{
-  bool bNum = false;
-
-  // Go through the list and print out the info on each file
-  list<CFileTransferManager *>::iterator iter;
-  for(iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
-  {
-    bNum = true;
-    PrintFileStat(*iter);
-  }
-
-  if(!bNum)
-    winMain->wprintf("%C%ANo current file transfers.\n%C%Z",
-      COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
-}
 
 /*-----------------------------------------------------------------------
  * CLicqConsole::MenuClear

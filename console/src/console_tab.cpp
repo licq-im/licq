@@ -108,56 +108,6 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
 }
 
 
-/*---------------------------------------------------------------------------
- * CLicqConsole::TabOwner
- *-------------------------------------------------------------------------*/
-void CLicqConsole::TabOwner(char *_szPartialMatch,
-                            struct STabCompletion &_sTabCompletion)
-{
-  char szMatch[32] = "";
-  unsigned short nLen = strlen(_szPartialMatch);
-  for (unsigned short i = 0; i < NUM_OWNER_COMMANDS; i++)
-  {
-    if (strncasecmp(_szPartialMatch, aOwnerCommands[i].szName, nLen) == 0)
-    {
-      if (szMatch[0] == '\0')
-        strcpy(szMatch, aOwnerCommands[i].szName);
-      else
-        szMatch[StrMatchLen(szMatch, aOwnerCommands[i].szName, nLen)] = '\0';
-      _sTabCompletion.vszPartialMatch.push_back(strdup(aOwnerCommands[i].szName));
-    }
-  }
-  if (nLen == 0)
-    _sTabCompletion.szPartialMatch[0] = '\0';
-  else
-    strcpy(_sTabCompletion.szPartialMatch, szMatch);
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::TabLast
- *-------------------------------------------------------------------------*/
-void CLicqConsole::TabLast(char *_szPartialMatch,
-                           struct STabCompletion &_sTabCompletion)
-{
-  char szMatch[32] = "";
-  unsigned short nLen = strlen(_szPartialMatch);
-  for (unsigned short i = 0; i < NUM_USER_COMMANDS; i++)
-  {
-    if (strncasecmp(_szPartialMatch, aUserCommands[i].szName, nLen) == 0)
-    {
-      if (szMatch[0] == '\0')
-        strcpy(szMatch, aUserCommands[i].szName);
-      else
-        szMatch[StrMatchLen(szMatch, aUserCommands[i].szName, nLen)] = '\0';
-      _sTabCompletion.vszPartialMatch.push_back(strdup(aUserCommands[i].szName));
-    }
-  }
-  if (nLen == 0)
-    _sTabCompletion.szPartialMatch[0] = '\0';
-  else
-    strcpy(_sTabCompletion.szPartialMatch, szMatch);
-}
 
 
 /*---------------------------------------------------------------------------
