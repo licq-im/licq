@@ -25,6 +25,17 @@ my $USER_INFO;
 my $USER_LIST;
 my $USER_OUTPUT;
 
+# Check user's version to avoid problems - implamented by security@solarweb.com
+my $version = `licq -h|head -1|awk '{print \$3}'`;
+chop($version) if $version =~ /\n$/;
+
+if ($version >= 0.71)
+{
+  print "ERROR - incorrect version\n";;
+  print "[This script was not meant for your Licq version ($version)]\n";
+  exit 1;
+}
+
 $USER_LIST = "$ENV{'HOME'}/.licq/users.conf";
 open (LIST, $USER_LIST) ||
   die "Fatal error: Unable to open '$USER_LIST', exiting.\n";
