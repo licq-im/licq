@@ -217,6 +217,9 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	case ICQ_CMDxSUB_MSG:
 		finish_message(event);
 		break;
+	case ICQ_CMDxSUB_CHAT:
+		finish_chat(event);
+		break;
 	case ICQ_CMDxTCP_READxAWAYxMSG:
 	case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
 	case ICQ_CMDxTCP_READxNAxMSG:
@@ -263,10 +266,21 @@ void finish_message(ICQEvent *event)
 	}
 }
 
+void finish_chat(ICQEvent *event)
+{
+	struct request_chat *rc = g_new0(struct request_chat, 1);
+
+	rc = rc_find(event->Uin());
+
+	if(rc != NULL)
+		close_request_chat(rc);
+
+	chat_start_as_client(event);
+}
+
 void finish_away(ICQEvent *event)
 {
-	struct user_away_window *uaw =
-		(struct user_away_window *)g_new0(struct user_away_window, 1);
+	struct user_away_window *uaw = g_new0(struct user_away_window, 1);
 
 	uaw = uaw_find(event->Uin());
 

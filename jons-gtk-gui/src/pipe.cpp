@@ -102,8 +102,12 @@ void pipe_event(ICQEvent *event)
 	case ICQ_CMDxSND_UPDATExDETAIL:
 	case ICQ_CMDxSND_UPDATExBASIC:
 	case ICQ_CMDxSND_META:
+	case ICQ_CMDxSND_RANDOMxSEARCH:
+	case ICQ_CMDxSND_SETxRANDOMxCHAT:
 		user_function(event);
 		break;
+
+	case ICQ_CMDxSND_LOGON:
 	case ICQ_CMDxSND_USERxLIST:
 	case ICQ_CMDxSND_REGISTERxUSER:
 		if(event->Command() != ICQ_CMDxSND_REGISTERxUSER)
@@ -122,7 +126,7 @@ void pipe_event(ICQEvent *event)
 		break;
 
 	default:
-		g_print("Error: pipe_event(): Unknown event from daemon: %d.\n", event->Command());
+		gLog.Warn("%sInternal Error: pipe_event(): Unknown event from daemon: %d.\n", L_WARNxSTR, event->Command());
 	}
 
 	delete event;

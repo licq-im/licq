@@ -110,7 +110,7 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	GtkWidget *close;
 	const gchar *title = g_strdup_printf("Auto Response for %s", user->GetAlias());
 
-	struct e_tag_data *etd = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
+	struct e_tag_data *etd = g_new0(struct e_tag_data, 1);
 	
 	uaw->user = user;
 	uaw->etag = etd;
@@ -210,7 +210,7 @@ struct user_away_window *uaw_new(ICQUser *u)
 	if(uaw != NULL) 
 		return uaw;
 
-	uaw = (struct user_away_window *)g_new0(struct user_away_window, 1);
+	uaw = g_new0(struct user_away_window, 1);
 
 	uaw->user = u;
 

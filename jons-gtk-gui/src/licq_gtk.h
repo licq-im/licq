@@ -24,6 +24,7 @@
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_log.h"
+#include "licq_chat.h"
 #include "licq_user.h"
 
 #include <sys/time.h>
@@ -200,6 +201,29 @@ struct file_accept
 	GtkWidget *file_selection; /* This is for the accepting part */
 };
 
+struct file_window
+{
+	gulong uin;
+	gulong sequence;
+	TCPSocket socket_file;
+	TCPSocket socket_file_server;
+	guint16 state;
+	guint16 port;
+	gchar *local_name;
+	gchar *remote_name;
+	gchar *file_name;
+	gulong total_files;
+	gulong batch_size;
+	time_t start_time;
+	gulong batch_pos;
+	gulong file_pos;
+	gint flags;
+	gint file_desc;
+	gint input_tag;
+	gchar remote_file_name[256];
+	guint16 remote_file_size;
+};
+
 struct search_user
 {
 	GtkWidget *window;
@@ -243,6 +267,38 @@ struct user_security
 	struct e_tag_data *etag;
 };
 
+struct request_chat
+{
+	GtkWidget *window;
+	GtkWidget *text_box;
+	GtkWidget *send_norm;
+	GtkWidget *send_urg;
+	GtkWidget *send_list;
+	ICQUser *user;
+	struct e_tag_data *etd;
+};
+
+struct chat_window
+{
+	CChatManager *chatman;
+	GtkWidget *window;
+	GtkWidget *table;
+	GtkWidget *text_local;
+	GtkWidget *text_remote;
+	GtkWidget *frame_local;
+	GtkWidget *frame_remote;
+	GdkColor *back_color;
+	GdkColor *fore_color;
+	GdkFont *font_remote;
+	gchar font_name[50];
+	gint font_size;
+	gboolean remote_bold;
+	gboolean remote_italic;
+	ICQUser *user;
+	gboolean audio;
+	gint input_tag;
+};
+
 struct e_tag_data
 {
 	GtkWidget *statusbar;
@@ -265,13 +321,14 @@ extern GSList *uaw_list;
 extern GdkColor *red, *green, *blue;
 extern status_icon *online, *away, *na, *dnd, *occ, *offline, *message;
 
+/* Globals in chat_window.cpp */
+extern GSList *rc_list;
+
 /* Globals in convo.cpp */
 extern GSList *cnv;
 
-
 /* Globals in history_window.cpp */
 extern const gchar *line;
-
 
 /* Globals in main.cpp */
 extern GtkWidget *main_window;
@@ -282,25 +339,20 @@ extern gint log_pipe;
 extern struct timeval timer;
 extern GSList *catcher;
 
-
 /* Globals in main_window.cpp */
 extern GtkWidget *vertical_box;
 extern GtkWidget *contact_list;
 extern GtkWidget *status_progress;
 
-
 /* Globals in menu.cpp */
 extern GtkWidget *menu;
 extern GtkWidget *user_list_menu;
 
-
 /* Globals in register_user.cpp */
 extern GtkWidget *register_window;
 
-
 /* Globals in status.cpp */
 extern GtkWidget *_status_menu;
-
 
 /* Globals in system_status.cpp */
 extern GtkWidget *system_status;
@@ -327,6 +379,22 @@ extern void list_read_message(GtkWidget *, ICQUser *);
 extern void close_away_window(GtkWidget *, struct user_away_window *);
 extern struct user_away_window *uaw_new(ICQUser *);
 extern struct user_away_window *uaw_find(unsigned long);
+
+
+/* Functions in chat_window.cpp */
+extern void list_request_chat(GtkWidget *, ICQUser *);
+extern struct request_chat *rc_new(ICQUser *);
+extern struct request_chat *rc_find(gulong);
+extern void ok_request_chat(GtkWidget *, struct request_chat *);
+extern void cancel_request_chat(GtkWidget *, struct request_chat *);
+extern void close_request_chat(struct request_chat *);
+extern void chat_start_as_client(ICQEvent *);
+extern struct chat_window *chat_window_create(gulong);
+extern GtkWidget* chat_create_menu(struct chat_window *);
+extern void chat_menu_audio_callback(GtkWidget *, struct chat_window *);
+extern void chat_close(GtkWidget *, struct chat_window *);
+extern void chat_pipe_callback(gpointer, gint, GdkInputCondition);
+extern void chat_send(GtkWidget *, GdkEventKey *, struct chat_window *);
 
 
 /* Functions in contact_list.cpp */
@@ -359,6 +427,7 @@ extern void owner_function(ICQEvent *);
 extern void user_function(ICQEvent *);
 extern void finish_event(struct e_tag_data *, ICQEvent *);
 extern void finish_message(ICQEvent *);
+extern void finish_chat(ICQEvent *);
 extern void finish_away(ICQEvent *);
 extern void finish_info(CICQSignal *);
 
@@ -367,6 +436,10 @@ extern void finish_info(CICQSignal *);
 extern void file_accept_window(ICQUser *, CUserEvent *);
 extern void accept_file(GtkWidget *, struct file_accept *);
 extern void save_file(GtkWidget *, struct file_accept *);
+extern void file_start_as_server(struct file_window *);
+extern void file_recv_connection(gpointer, gint, GdkInputCondition);
+extern void file_state_server(gpointer, gint, GdkInputCondition);
+extern void file_recv_file(gpointer, gint, GdkInputCondition);
 extern void refuse_file(GtkWidget *, struct file_accept *);
 extern void refuse_ok(GtkWidget *, struct file_accept *);
 

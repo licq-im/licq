@@ -13,6 +13,7 @@ noinst_HEADERS = licq_gtk.h
 licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
 				auth_user_window.cpp \
 				away_window.cpp \
+				chat_window.cpp \
 				contact_list.cpp \
 				convo.cpp \
 				extras.cpp \

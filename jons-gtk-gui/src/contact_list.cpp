@@ -285,6 +285,9 @@ void contact_list_click(GtkWidget *contact_list,
 		add_to_popup("Send URL", _menu,
 			     GTK_SIGNAL_FUNC(list_send_url), user);
 
+		add_to_popup("Send Chat Request", _menu,
+			     GTK_SIGNAL_FUNC(list_request_chat), user);
+
 		if(user->Status() != ICQ_STATUS_ONLINE && 
 		   user->Status() != ICQ_STATUS_OFFLINE)
 		{

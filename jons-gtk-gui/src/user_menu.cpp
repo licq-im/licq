@@ -54,8 +54,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	GtkWidget *statusbar;
 	const gchar *buffer = "Enter data and send a url";
 
-	struct send_url *url = (struct send_url *)g_new0(struct send_url, 1);
-	url->etag = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
+	struct send_url *url = g_new0(struct send_url, 1);
+	url->etag = g_new0(struct e_tag_data, 1);
 
 	url->user = user;
 

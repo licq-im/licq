@@ -454,7 +454,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 void user_info_save(GtkWidget *widget, struct info_user *iu)
 {
-	ICQUser *user = gUserManager.FetchUser(iu->user->Uin(), LOCK_W);
+	ICQUser *user = gUserManager.FetchUser(iu->user->Uin(), LOCK_R);
 	user->SetAlias(gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0,
 					      -1));
 	gUserManager.DropUser(user);

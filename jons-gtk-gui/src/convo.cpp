@@ -413,7 +413,6 @@ void convo_recv(gulong uin)
 			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_f, -1);
 			gtk_text_thaw(GTK_TEXT(c->text));
-
 			file_accept_window(c->user, u_event);
 		}
 	}
