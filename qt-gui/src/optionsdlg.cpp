@@ -1,16 +1,21 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+*/
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
-
-#include <stdio.h>
-#include <sys/types.h>
-#include <dirent.h>
+#include <qdir.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #ifdef USE_KDE
@@ -27,14 +32,17 @@ extern int errno;
 #include "constants.h"
 #include "support.h"
 #include "mainwin.h"
+#include "mledit.h"
 #include "icqd.h"
 #include "userbox.h"
+#include "sar.h"
 #include "wharf.h"
 
 
-OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTabDialog(parent, name)
+OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
+    : QTabDialog(parent, name)
 {
-  resize(450, 310);
+  resize(550, 310);
   setCaption(tr("Licq Options"));
 
   mainwin = _mainwin;
@@ -172,123 +180,55 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   edtSndSysMsg = new QLineEdit(boxSndEvents);
   edtSndSysMsg->setGeometry(90, 145, 280, 20);
 
+  // Network tab
   tab[3] = new QWidget(this);
-  lblServers = new QLabel (tr("Servers:"), tab[3]);
-  lblServers->setGeometry(10, 10, 70, 20);
-  lblServers->setEnabled(false);
-  QWhatsThis::add(lblServers, tr("List of servers to connect to (read-only for now)"));
-  cmbServers = new QComboBox(false, tab[3]);
-  cmbServers->setGeometry(80, 10, 150, 20);
-  cmbServers->setEnabled(false);
-  lblDefServerPort = new QLabel(tr("Default Server Port:"), tab[3]);
-  lblDefServerPort->setGeometry(10, 35, 125, 20);
-  QWhatsThis::add(lblDefServerPort, tr("Default port to connect to on the server (should be 4000)"));
-  spnDefServerPort = new QSpinBox(tab[3]);
-  spnDefServerPort->setGeometry(140, 35, 90, 20);
-  spnDefServerPort->setRange(0, 0xFFFF);
-  lblTcpServerPort = new QLabel(tr("TCP Server Port:"), tab[3]);
-  lblTcpServerPort->setGeometry(10, 60, 120, 20);
-  QWhatsThis::add(lblTcpServerPort, tr("TCP port for local server.  Set to \"0\" for "
-                                      "system assigned port.  Use if you are behind"
-                                      "a firewall or using ip masquerading."));
-  spnTcpServerPort = new QSpinBox(tab[3]);
-  spnTcpServerPort->setGeometry(140, 60, 90, 20);
-  spnTcpServerPort->setRange(0, 0xFFFF);
-  lblMaxUsersPerPacket = new QLabel(tr("Max Users per Packet:"), tab[3]);
-  lblMaxUsersPerPacket->setGeometry(10, 85, 150, 20);
-  QWhatsThis::add(lblMaxUsersPerPacket, tr("Leave at 125 unless all your users appear "
-                                          "offline when they should not be.  Then lower "
-                                          "it until they appear again (try ~100)."));
-  spnMaxUsersPerPacket = new QSpinBox(tab[3]);
-  spnMaxUsersPerPacket->setGeometry(170, 85, 60, 20);
-  spnMaxUsersPerPacket->setRange(10, 125);
-  lblAutoLogon = new QLabel(tr("Auto Logon:"), tab[3]);
-  lblAutoLogon->setGeometry(170, 110, 90, 20);
-  QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
-  cmbAutoLogon = new QComboBox(tab[3]);
-  cmbAutoLogon->setGeometry(260, 110, 120, 20);
-  cmbAutoLogon->insertItem(tr("Offline"));
-  cmbAutoLogon->insertItem(tr("Online"));
-  cmbAutoLogon->insertItem(tr("Away"));
-  cmbAutoLogon->insertItem(tr("Not Available"));
-  cmbAutoLogon->insertItem(tr("Occupied"));
-  cmbAutoLogon->insertItem(tr("Do Not Disturb"));
-  cmbAutoLogon->insertItem(tr("Free for Chat"));
-  chkAutoLogonInvisible = new QCheckBox(tr("Invisible"), tab[3]);
-  chkAutoLogonInvisible->setGeometry(260, 135, 100, 20);
-  lblAutoAway = new QLabel(tr("Auto Away:"), tab[3]);
-  lblAutoAway->setGeometry(10, 110, 80, 20);
-  QWhatsThis::add(lblAutoAway, tr("Number of minutes of inactivity after which to "
-                                 "automatically be marked \"away\".  Set to \"0\" "
-                                 "to disable."));
-  spnAutoAway = new QSpinBox(tab[3]);
-  spnAutoAway->setGeometry(100, 110, 50, 20);
-  lblAutoNa = new QLabel(tr("Auto N/A:"), tab[3]);
-  lblAutoNa->setGeometry(10, 135, 80, 20);
-  QWhatsThis::add(lblAutoNa, tr("Number of minutes of inactivity after which to "
-                               "automatically be marked \"not available\".  Set to \"0\" "
-                               "to disable."));
-  spnAutoNa = new QSpinBox(tab[3]);
-  spnAutoNa->setGeometry(100, 135, 50, 20);
-  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), tab[3]);
-  chkWebPresence->setGeometry(10, 160, 200, 20);
-  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
-                                    "through your web indicator."));
-  chkHideIp = new QCheckBox(tr("Hide IP"), tab[3]);
-  chkHideIp->setGeometry(10, 185, 200, 20);
-  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
-  chkAllowNewUsers = new QCheckBox(tr("Allow New Users"), tab[3]);
-  chkAllowNewUsers->setGeometry(170, 185, 200, 20);
-  QWhatsThis::add(chkAllowNewUsers, tr("Determines if new users are automatically added"
-                                      "to your list or must first request authorization."));
+  new_network_options();
 
-  tab[4] = new QWidget(this);
-  lblErrorLog = new QLabel(tr("Error Log:"), tab[4]);
+  // Status tab
+//  tab[4] = new QWidget(this);
+//  new_status_options();
+ 
+  tab[5] = new QWidget(this);
+  lblErrorLog = new QLabel(tr("Error Log:"), tab[5]);
   lblErrorLog->setGeometry(10, 60, 80, 20);
   lblErrorLog->setEnabled(false);
-  edtErrorLog = new QLineEdit(tab[4]);
+  edtErrorLog = new QLineEdit(tab[5]);
   edtErrorLog->setGeometry(100, 60, 200, 20);
   edtErrorLog->setEnabled(false);
-  lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[4]);
+  lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[5]);
   lblUrlViewer->setGeometry(10, 10, 80, 20);
   QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
                                   "as a parameter."));
-  edtUrlViewer = new QLineEdit(tab[4]);
+  edtUrlViewer = new QLineEdit(tab[5]);
   edtUrlViewer->setGeometry(100, 10, 200, 20);
-  nfoTerminal = new CInfoField(10, 35, 80, 10, 200, tr("Terminal:"), false, tab[4]);
+  nfoTerminal = new CInfoField(10, 35, 80, 10, 200, tr("Terminal:"), false, tab[5]);
   QWhatsThis::add(nfoTerminal, tr("The command to run to start your terminal program."));
-  lblTrans = new QLabel(tr("Translation:"), tab[4]);
+  lblTrans = new QLabel(tr("Translation:"), tab[5]);
   lblTrans->setGeometry(10, 85, 80, 20);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
-  cmbTrans = new QComboBox(false, tab[4]);
+  cmbTrans = new QComboBox(false, tab[5]);
   cmbTrans->setGeometry(100, 85, 200, 20);
-  char szTransFilesDir[MAX_FILENAME_LEN];
-  struct dirent **namelist;
-  sprintf(szTransFilesDir, "%s%s", SHARE_DIR, TRANSLATION_DIR);
-  int n = scandir_r(szTransFilesDir, &namelist, NULL, alphasort);
-  if (n < 0)
+  
+  QString szTransFilesDir;
+  szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
+  QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
+  if (!dTrans.count())
   {
-    gLog.Error("%sError reading translation directory %s:\n%s%s.\n",
-               L_ERRORxSTR, szTransFilesDir, L_BLANKxSTR, strerror(errno));
+    gLog.Error("%sError reading translation directory %s.\n",
+               L_ERRORxSTR, szTransFilesDir.latin1());
     cmbTrans->insertItem(tr("ERROR"));
     cmbTrans->setEnabled(false);
   }
   else
   {
     cmbTrans->insertItem(tr("none"));
-    for (unsigned short i = 0; i < n; i++)
-    {
-      if (namelist[i]->d_name[0] != '.')
-        cmbTrans->insertItem(namelist[i]->d_name);
-      free (namelist[i]);
-    }
-    free (namelist);
+    cmbTrans->insertStringList(dTrans.entryList());
   }
-  chkUseDock = new QCheckBox(tr("Use Dock Icon"), tab[4]);
+  chkUseDock = new QCheckBox(tr("Use Dock Icon"), tab[5]);
   chkUseDock->setGeometry(10, 110, 120, 20);
   QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
-  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), tab[4]);
+  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), tab[5]);
   chkDockFortyEight->setGeometry(30, 135, 180, 20);
   QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
                                 "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
@@ -298,7 +238,8 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   addTab(tab[1], tr("Columns"));
   addTab(tab[2], tr("OnEvent"));
   addTab(tab[3], tr("Network"));
-  addTab(tab[4], tr("Extensions"));
+//  addTab(tab[4], tr("Status"));
+  addTab(tab[5], tr("Extensions"));
 
   SetupOptions();
   show();
@@ -387,7 +328,7 @@ void OptionsDlg::SetupOptions()
   spnTcpServerPort->setValue(mainwin->licqDaemon->getTcpServerPort());
   spnMaxUsersPerPacket->setValue(mainwin->licqDaemon->getMaxUsersPerPacket());
 
-  cmbServers->clear();
+   cmbServers->clear();
   unsigned short i;
   for (i = 0; i < mainwin->licqDaemon->icqServers.numServers(); i++)
     cmbServers->insertItem(mainwin->licqDaemon->icqServers.servers[i]->name());
@@ -402,7 +343,7 @@ void OptionsDlg::SetupOptions()
   chkWebPresence->setChecked(o->getStatusWebPresence());
   gUserManager.DropOwner();
   chkAllowNewUsers->setChecked(mainwin->licqDaemon->AllowNewUsers());
-
+ 
   // plugins tab
   //optionsDlg->edtErrorLog->setText(server->getErrorLogName());
   edtUrlViewer->setText(mainwin->licqDaemon->getUrlViewer() == NULL ? "none" : mainwin->licqDaemon->getUrlViewer());
@@ -605,5 +546,125 @@ void OptionsDlg::slot_selectfont()
   if (fontOk)
     nfoFont->setData(f.rawName());
 }
+
+void OptionsDlg::new_network_options()
+{
+  QGridLayout* lay = new QGridLayout(tab[3], 5, 5, 10);
+  QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, tab[3]);
+  gbServer->setTitle(tr("Server settings"));
+  lay->addWidget(gbServer, 1, 1);
+  
+  lblServers = new QLabel (tr("Servers:"), gbServer);
+  lblServers->setEnabled(false);
+  QWhatsThis::add(lblServers, tr("List of servers to connect to (read-only for now)"));
+  cmbServers = new QComboBox(false, gbServer);
+  cmbServers->setEnabled(false);
+  lblDefServerPort = new QLabel(tr("Default Server Port:"), gbServer);
+  QWhatsThis::add(lblDefServerPort, tr("Default port to connect to on the server (should be 4000)"));
+  spnDefServerPort = new QSpinBox(gbServer);
+  spnDefServerPort->setRange(0, 0xFFFF);
+  spnDefServerPort->setSpecialValueText(tr("Default"));
+  lblTcpServerPort = new QLabel(tr("TCP Server Port:"), gbServer);
+  QWhatsThis::add(lblTcpServerPort, tr("TCP port for local server.  Set to \"0\" for "
+                                      "system assigned port.  Use if you are behind"
+                                      "a firewall or using ip masquerading."));
+  spnTcpServerPort = new QSpinBox(gbServer);
+  spnTcpServerPort->setRange(0, 0xFFFF);
+  spnTcpServerPort->setSpecialValueText(tr("Auto"));
+  lblMaxUsersPerPacket = new QLabel(tr("Max Users per Packet:"), gbServer);
+  QWhatsThis::add(lblMaxUsersPerPacket, tr("Leave at 125 unless all your users appear "
+                                          "offline when they should not be.  Then lower "
+                                          "it until they appear again (try ~100)."));
+  spnMaxUsersPerPacket = new QSpinBox(gbServer);
+  spnMaxUsersPerPacket->setRange(10, 125);
+
+  QGroupBox* gbAuto = new QGroupBox(2, QGroupBox::Horizontal, tab[3]);
+  gbAuto->setTitle(tr("Network startup"));
+  lay->addWidget(gbAuto, 1, 3);
+
+  lblAutoLogon = new QLabel(tr("Auto Logon:"), gbAuto);
+  QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
+  
+  cmbAutoLogon = new QComboBox(gbAuto);
+  cmbAutoLogon->insertItem(tr("Offline"));
+  cmbAutoLogon->insertItem(tr("Online"));
+  cmbAutoLogon->insertItem(tr("Away"));
+  cmbAutoLogon->insertItem(tr("Not Available"));
+  cmbAutoLogon->insertItem(tr("Occupied"));
+  cmbAutoLogon->insertItem(tr("Do Not Disturb"));
+  cmbAutoLogon->insertItem(tr("Free for Chat"));
+
+  // dummy widget for layout
+  QWidget* dummy = new QWidget(gbAuto);
+  chkAutoLogonInvisible = new QCheckBox(tr("Invisible"), gbAuto);
+  dummy->setMinimumHeight(chkAutoLogonInvisible->sizeHint().height()+10);
+
+  lblAutoAway = new QLabel(tr("Auto Away:"), gbAuto);
+  QWhatsThis::add(lblAutoAway, tr("Number of minutes of inactivity after which to "
+                                 "automatically be marked \"away\".  Set to \"0\" "
+                                 "to disable."));
+  spnAutoAway = new QSpinBox(gbAuto);
+  spnAutoAway->setSpecialValueText(tr("Disable"));
+  lblAutoNa = new QLabel(tr("Auto N/A:"), gbAuto);
+  QWhatsThis::add(lblAutoNa, tr("Number of minutes of inactivity after which to "
+                               "automatically be marked \"not available\".  Set to \"0\" "
+                               "to disable."));
+  spnAutoNa = new QSpinBox(gbAuto);
+  spnAutoNa->setSpecialValueText(tr("Disable"));
+
+  QGroupBox* gbGeneral = new QGroupBox(1, QGroupBox::Vertical, tab[3]);
+  lay->addMultiCellWidget(gbGeneral, 3, 3, 1, 3);
+  
+  chkHideIp = new QCheckBox(tr("Hide IP"), gbGeneral);
+  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
+  chkAllowNewUsers = new QCheckBox(tr("Allow New Users"), gbGeneral);
+  
+  QWhatsThis::add(chkAllowNewUsers, tr("Determines if new users are automatically added"
+                                      "to your list or must first request authorization."));
+  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), gbGeneral);
+  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
+                                    "through your web indicator."));
+}
+
+// -----------------------------------------------------------------------------
+
+void OptionsDlg::slot_SARmsg_act(int n)
+{
+  if (n < 0)
+    return;
+  
+  SARList &sar = gSARManager.Fetch(cmbSARgroup->currentItem());
+  edtSARtext->setText(sar[n]->AutoResponse());
+  gSARManager.Drop();
+  debug("slotactivated!!!!");
+}
+
+// -----------------------------------------------------------------------------
+
+void OptionsDlg::new_status_options()
+{
+  QBoxLayout* lay = new QVBoxLayout(tab[4], 10);
+  QGroupBox* gbStatus = new QGroupBox(1, QGroupBox::Horizontal, tab[4]);
+  lay->addWidget(gbStatus);
+  gbStatus->setTitle(tr("Default Auto Responses"));
+
+  cmbSARgroup = new QComboBox(false, gbStatus);
+  cmbSARgroup->insertItem(tr("Away"));
+  cmbSARgroup->insertItem(tr("Not Available"));
+  cmbSARgroup->insertItem(tr("Occupied"));
+  cmbSARgroup->insertItem(tr("Do Not Disturb"));
+  cmbSARgroup->insertItem(tr("Free For Chat"));
+  
+  cmbSARmsg = new QComboBox(true, gbStatus);
+  connect(cmbSARmsg, SIGNAL(activated(int)), this, SLOT(slot_SARmsg_act(int)));
+  SARList &sar = gSARManager.Fetch(SAR_AWAY);
+  for (SARListIter i = sar.begin(); i != sar.end(); i++)
+    cmbSARmsg->insertItem((*i)->Name());
+  gSARManager.Drop();
+
+  edtSARtext = new MLEditWrap(true, gbStatus);
+}
+
+// -----------------------------------------------------------------------------
 
 #include "moc/moc_optionsdlg.h"

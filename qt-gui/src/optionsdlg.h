@@ -16,6 +16,7 @@
 #include "ewidgets.h"
 
 class CMainWindow;
+class MLEditWrap;
 
 class OptionsDlg : public QTabDialog
 {
@@ -25,10 +26,10 @@ public:
    OptionsDlg (CMainWindow *, QWidget *parent = NULL, char *name = NULL);
 
 protected:
-   QWidget *tab[5];
+   QWidget *tab[6];
    CMainWindow *mainwin;
 
-   // network options tab
+   // network tab
    QLabel *lblServers, *lblDefServerPort, *lblTcpServerPort,
           *lblAutoAway, *lblAutoNa, *lblAutoLogon, *lblMaxUsersPerPacket;
    QComboBox *cmbServers, *cmbAutoLogon;
@@ -36,7 +37,7 @@ protected:
             *spnMaxUsersPerPacket;
    QPushButton *btnAddServer;
    QCheckBox  *chkAutoLogonInvisible, *chkWebPresence, *chkHideIp,
-              *chkAllowNewUsers;
+       *chkAllowNewUsers;
 
    // plugin tab
    QLabel *lblErrorLog, *lblUrlViewer, *lblTrans;
@@ -66,9 +67,15 @@ protected:
              *edtSndFile, *edtSndNotify, *edtSndSysMsg;
    QGroupBox *boxSndEvents;
 
+   // status tab
+   QComboBox* cmbSARgroup, *cmbSARmsg;
+   MLEditWrap* edtSARtext;
+
    virtual void hide(void);
 
 protected:
+  void new_network_options();
+  void new_status_options();
   void SetupOptions(void);
   void ApplyOptions(void);
 
@@ -77,8 +84,8 @@ protected slots:
   void slot_apply();
   void slot_selectfont();
   void slot_whatsthis();
+  void slot_SARmsg_act(int);
 };
-
 
 
 #endif
