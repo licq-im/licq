@@ -1650,6 +1650,10 @@ void ICQUser::LoadLicqInfo()
   m_nLastCounters[LAST_CHECKED_AR] = nLast;
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
+  if (User()) // Only allow to keep a modified alias for user uins
+    m_fConf.ReadBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate, false);
+  else
+    m_bKeepAliasOnUpdate = false;
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
   m_fConf.ReadBool("SendIntIp", m_bSendIntIp, false);
   SetCustomAutoResponse(szTemp);
@@ -1891,6 +1895,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nOnlineSince = 0;
   m_nIdleSince = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  m_bKeepAliasOnUpdate = false;
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
@@ -1991,6 +1996,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nOnlineSince = 0;
   m_nIdleSince = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  m_bKeepAliasOnUpdate = false;
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
@@ -2680,6 +2686,7 @@ void ICQUser::SaveGeneralInfo()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteStr("Alias", m_szAlias);
+  m_fConf.WriteBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
   m_fConf.WriteStr("FirstName", m_szFirstName);
   m_fConf.WriteStr("LastName", m_szLastName);
   m_fConf.WriteStr("Email1", m_szEmailPrimary);

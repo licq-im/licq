@@ -3991,7 +3991,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // main home info
           u->SetEnableSave(false);
-          u->SetAlias( tmp = msg.UnpackString() );
+          if (u->m_bKeepAliasOnUpdate)
+            tmp = msg.UnpackString(); // Skip the alias, user wants to keep his own.
+          else
+            u->SetAlias( tmp = msg.UnpackString() );
           delete[] tmp;
           u->SetFirstName( tmp = msg.UnpackString() );
           delete[] tmp;

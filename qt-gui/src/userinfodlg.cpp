@@ -38,6 +38,7 @@
 #include <qtextcodec.h>
 #include <qaccel.h>
 #include <qtimer.h>
+#include <qwhatsthis.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -60,7 +61,7 @@
 #ifdef QT_PROTOCOL_PLUGIN
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                          const char *szId, unsigned long nPPID, QWidget* parent)
-  : QWidget(parent, "UserInfoDialog", WDestructiveClose)
+  : QWidget(parent, "UserInfoDialog", WStyle_ContextHelp | WDestructiveClose)
 {
   server = s;
   mainwin = m;
@@ -165,7 +166,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                          unsigned long _nUin, QWidget* parent)
-  : QWidget(parent, "UserInfoDialog", WDestructiveClose)
+  : QWidget(parent, "UserInfoDialog", WStyle_ContextHelp | WDestructiveClose)
 {
   server = s;
   mainwin = m;
@@ -338,11 +339,11 @@ void UserInfoDlg::CreateGeneralInfo()
 
   lay->addWidget(new QLabel(tr("Alias:"), p), CR, 0);
   nfoAlias = new CInfoField(p, false);
-  //lay->addWidget(nfoAlias, CR, 1);
-  lay->addMultiCellWidget(nfoAlias, CR, CR, 1, 4);
-  /*lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
-  nfoLastOnline = new CInfoField(p, true);
-  lay->addWidget(nfoLastOnline, CR, 4);*/
+  lay->addWidget(nfoAlias, CR, 1);
+  chkKeepAliasOnUpdate = new QCheckBox(tr("Keep Alias on Update"), p);
+  QWhatsThis::add(chkKeepAliasOnUpdate, tr("Normally Licq overwrites the Alias when updating user details.\n"
+                                           "Check this if you want to keep your changes to the Alias."));
+  lay->addMultiCellWidget(chkKeepAliasOnUpdate, CR, CR, 3,4);
 
   lay->addWidget(new QLabel(tr("UIN:"), p), ++CR, 0);
   nfoUin = new CInfoField(p, true);
@@ -444,7 +445,11 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 
+  if(m_bOwner)
+    chkKeepAliasOnUpdate->hide();
+  chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
   nfoAlias->setData(codec->toUnicode(u->GetAlias()));
+  connect(nfoAlias, SIGNAL(textChanged(const QString &)), this, SLOT(slot_aliasChanged(const QString &)));
   nfoFirstName->setData(codec->toUnicode(u->GetFirstName()));
   nfoLastName->setData(codec->toUnicode(u->GetLastName()));
   nfoEmailPrimary->setData(codec->toUnicode(u->GetEmailPrimary()));
@@ -520,6 +525,7 @@ void UserInfoDlg::SaveGeneralInfo()
   u->SetEnableSave(false);
 
   u->SetAlias(codec->fromUnicode(nfoAlias->text()));
+  u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
   u->SetFirstName(codec->fromUnicode(nfoFirstName->text()));
   u->SetLastName(codec->fromUnicode(nfoLastName->text()));
   u->SetEmailPrimary(codec->fromUnicode(nfoEmailPrimary->text()));
@@ -1724,6 +1730,11 @@ void UserInfoDlg::updatedUser(CICQSignal *sig)
     break;
   }
   gUserManager.DropUser(u);
+}
+
+void UserInfoDlg::slot_aliasChanged(const QString &)
+{
+  chkKeepAliasOnUpdate->setChecked(true);
 }
 
 void UserInfoDlg::resetCaption()

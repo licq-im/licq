@@ -412,6 +412,7 @@ public:
   bool AcceptInOccupied()               { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
   bool AcceptInDND()                    { return m_nAutoAccept & ACCEPT_IN_DND; }
   unsigned short StatusToUser()         { return m_nStatusToUser; }
+  bool KeepAliasOnUpdate()              { return m_bKeepAliasOnUpdate; }
   char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
 #ifdef PROTOCOL_PLUGIN
   unsigned long PPID()                  { return m_nPPID; }
@@ -492,6 +493,7 @@ public:
   void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
   void SetAcceptInDND(bool s)         { s ? m_nAutoAccept |= ACCEPT_IN_DND : m_nAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
+  void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
 #ifdef PROTOCOL_PLUGIN
@@ -661,6 +663,7 @@ protected:
        m_bConnectionInProgress,
        m_bSecure;
   unsigned short m_nStatusToUser, m_nSendLevel;
+  bool m_bKeepAliasOnUpdate;
   unsigned short m_nAutoAccept;
 
   // General Info

@@ -101,6 +101,7 @@ protected:
              *nfoAlias, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
              *nfoPhone, *nfoTime, *nfoStatus;
+  QCheckBox *chkKeepAliasOnUpdate;
   CEComboBox *cmbCountry;
   QLabel *lblAuth;
 
@@ -167,6 +168,7 @@ protected slots:
   void slotUpdate();
   void slotRetrieve();
   void doneFunction(ICQEvent*);
+  void slot_aliasChanged(const QString &);
   void resetCaption();
 #ifdef QT_PROTOCOL_PLUGIN
   void ShowUsermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
