@@ -1041,9 +1041,14 @@ void ICQUser::SetAlias(const char *s)
 {
   if (s[0] == '\0')
   {
-    char sz[12];
-    sprintf(sz, "%ld", Uin());
-    SetString(&m_szAlias, sz);
+    if (m_szFirstName[0] != '\0')
+      SetString(&m_szAlias, m_szFirstName);
+    else
+    {
+      char sz[12];
+      sprintf(sz, "%ld", Uin());
+      SetString(&m_szAlias, sz);
+    }
   }
   else
     SetString(&m_szAlias, s);
