@@ -505,6 +505,8 @@ void UserEventCommon::gotTyping(unsigned short nTyping)
     if (tmrTyping->isActive())
       tmrTyping->stop();
     tmrTyping->start(10000, true);
+    
+    nfoStatus->setPaletteBackgroundColor(QColor("yellow"));
   }
 }
 
@@ -512,6 +514,7 @@ void UserEventCommon::slot_updatetyping()
 {
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
   u->SetTyping(ICQ_TYPING_INACTIVEx0);
+  nfoStatus->unsetPalette();
   mainwin->userEventTabDlg->updateTabLabel(u);
   gUserManager.DropUser(u);  
 }
