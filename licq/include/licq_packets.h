@@ -433,8 +433,6 @@ protected:
   char *m_szZipCode;
   unsigned short m_nCountryCode;
   char m_nTimezone;
-  char m_nAuthorization;
-  char m_nWebAware;
   char m_nHideEmail;
 
 friend class CICQDaemon;

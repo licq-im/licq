@@ -1061,10 +1061,6 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
 
   m_nCountryCode = nCountryCode;
   m_nTimezone = ICQUser::SystemTimezone();
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  m_nAuthorization = o->GetAuthorization() ? 0 : 1;
-  m_nWebAware = o->WebAware() ? 1 : 0;
-  gUserManager.DropOwner();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
   m_nSize += strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
@@ -1090,10 +1086,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_szZipCode = buffer->PackString(szZipCode);
   buffer->PackUnsignedShort(m_nCountryCode);
   buffer->PackChar(m_nTimezone);
-  // FIXME what should this be?
-  buffer->PackChar(m_nAuthorization);
-  //buffer->PackChar(m_nWebAware);
-  //buffer->PackChar(m_nHideEmail);
+  buffer->PackChar(m_nHideEmail);
 
   // Check for possible problems
   char *sz = m_szAlias;
@@ -1249,7 +1242,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
   : CPacketUdp(ICQ_CMDxSND_META)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
+  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFOx31;
   m_nUin = nUin;
 
   m_nSize += 6;

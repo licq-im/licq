@@ -1999,9 +1999,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetLastName(packet.UnpackString(szTemp));
           u->SetEmail1(packet.UnpackString(szTemp));
           // FIXME how does this packet end?
-          u->SetAuthorization(!packet.UnpackChar());
+          //u->SetAuthorization(!packet.UnpackChar());
           //packet.UnpackChar(); // 02, what the?
-          u->SetHideEmail(packet.UnpackChar());
+          //u->SetHideEmail(packet.UnpackChar());
 
           // translating string with Translation Table
           gTranslator.ServerToClient(u->GetAlias());
@@ -2036,9 +2036,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetCountryCode(packet.UnpackUnsignedShort());
           u->SetTimezone(packet.UnpackChar());
           // FIXME how does this packet end?
-          u->SetAuthorization(!packet.UnpackChar());
+          //u->SetAuthorization(!packet.UnpackChar());
           //packet.UnpackChar(); // 02, what the?
-          u->SetHideEmail(packet.UnpackChar());
+          //u->SetHideEmail(packet.UnpackChar());
 
           // translating string with Translation Table
           gTranslator.ServerToClient(u->GetAlias());
@@ -2050,6 +2050,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetFaxNumber());
           gTranslator.ServerToClient(u->GetCellularNumber());
           gTranslator.ServerToClient(u->GetAddress());
+          gTranslator.ServerToClient(u->GetZipCode());
 
           u->SetEnableSave(true);
           u->SaveGeneralInfo();
@@ -2147,7 +2148,6 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetZipCode(p->m_szZipCode);
       o->SetCountryCode(p->m_nCountryCode);
       o->SetTimezone(p->m_nTimezone);
-      o->SetAuthorization(p->m_nAuthorization == 0);
       o->SetHideEmail(p->m_nHideEmail == 1);
       o->SetEnableSave(true);
       o->SaveGeneralInfo();
