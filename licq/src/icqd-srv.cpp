@@ -2838,7 +2838,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 u->SetIgnoreList(true);
               }
               else
+              {
                 u->SetSID(nID);
+                u->AddToGroup(GROUPS_USER, nInGroup);
+              }
 
               if (!isOnList)
               {
@@ -2846,8 +2849,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 u->SetNewUser(false);
               }
 
-              // Skip the call to AddUserToGroup
-              u->AddToGroup(GROUPS_USER, nInGroup);
               gUserManager.DropUser(u);
             }
 
