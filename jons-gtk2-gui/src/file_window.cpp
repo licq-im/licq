@@ -21,6 +21,9 @@
 #include <stdlib.h>	// for char *getenv(const char *);
 #include "licq_gtk.h"
 #include "licq_log.h"
+#include "utilities.h"
+
+using namespace std;
 
 GSList *fs_list;
 
@@ -37,13 +40,9 @@ struct file_window
 	GtkWidget *current_file_name;
 	GtkWidget *total_files;
 	GtkWidget *local_file_name;
-	GtkWidget *batch;
 	GtkWidget *batch_progress;
-	GtkWidget *batch_size;
-	GtkWidget *progress;
-	GtkWidget *file_size;
+	GtkWidget *file_progress;
 	GtkWidget *time;
-	GtkWidget *bps;
 	GtkWidget *eta;
 	GtkWidget *status;
 	GtkWidget *cancel;
@@ -69,100 +68,114 @@ struct file_send
 	GtkWidget *send_normal;		// Send it normally
 	GtkWidget *send_urgent;		// Send it urgently
 	GtkWidget *send_list;		// Send it to their list
-	GtkWidget *file_select;		// File selection widget
 
 	/* Internals */
 	gulong uin;
 	struct e_tag_data *etd;
 };
 
-void save_file(struct file_accept *fa);
 void create_file_window(struct file_window *fw);
-void update_file_info(struct file_window *fw);
 struct file_send *fs_find(gulong uin);
-void accept_file(GtkWidget *, gpointer);
-void refuse_file(GtkWidget *, gpointer);
-void refusal_ok(GtkWidget *, gpointer);
-void cancel_file(GtkWidget *, gpointer);
+void accept_file(GtkWidget *, struct file_accept *fa);
+void refuse_file(GtkWidget *, struct file_accept *fa);
+void cancel_file(GtkWidget *, struct file_window *fw);
 void file_pipe_callback(gpointer, gint, GdkInputCondition);
-gchar *encode_file_size(unsigned long);
-void fs_browse_click(GtkWidget *, gpointer);
-void fs_ok_click(GtkWidget *, gpointer);
-void fs_cancel_click(GtkWidget *, gpointer);
-void file_select_ok(GtkWidget *, gpointer);
-void file_select_cancel(GtkWidget *, gpointer);
-void file_start_send(ICQEvent *);
 
-void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept)
+gboolean
+fa_delete(GtkWidget *, GdkEvent *, gpointer data)
 {
-	struct file_accept *fa = (struct file_accept *)g_new0(struct file_accept, 1);
+	g_free(data);
+	return FALSE;
+}
+
+void 
+file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept)
+{
+	struct file_accept *fa = g_new0(struct file_accept, 1);
 	fa->user = user;
 	fa->e = e;
 
-	if(auto_accept)
-	{
-		accept_file(0, (gpointer)fa);
+	if (auto_accept) {
+		accept_file(0, fa);
 		return;
 	}
 
-	GtkWidget *accept;
-	GtkWidget *refuse;
-	GtkWidget *v_box;
-	GtkWidget *h_box;
-	GtkWidget *label;
-	const gchar *title = g_strdup_printf("File From %s", user->GetAlias());
-
 	// Make the window
 	fa->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	char *title = g_strdup_printf("File From %s", user->GetAlias());
 	gtk_window_set_title(GTK_WINDOW(fa->window), title);
+	g_free(title);
 	gtk_window_set_position(GTK_WINDOW(fa->window), GTK_WIN_POS_CENTER);
 
 	// Make the boxes
-	v_box = gtk_vbox_new(FALSE, 5);
-	h_box = gtk_hbox_new(FALSE, 5);
+	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 
-	// The label
-	const gchar *text = g_strdup_printf("File: %s (%ld bytes)",
-					    ((CEventFile *)e)->Filename(),
-					    ((CEventFile *)e)->FileSize());
-	label = gtk_label_new(text);
-
-	// Pack the label
-	gtk_box_pack_start(GTK_BOX(v_box), label, FALSE, FALSE, 10);
+	// Description
+	GtkWidget *tv = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(tv), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tv), GTK_WRAP_WORD);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(tv), FALSE);
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(tv));
+	gtk_text_buffer_set_text(tb, e->Text(), -1);
+	gtk_widget_set_size_request(tv, 300, -1);
+	
+	GtkWidget *frame = gtk_frame_new(0);
+	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN); 
+	gtk_container_add(GTK_CONTAINER(frame), tv);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, FALSE, FALSE, 5);
 
 	// The buttons
-	accept = gtk_button_new_with_mnemonic("_Accept");
-	refuse = gtk_button_new_with_mnemonic("_Refuse");
+	GtkWidget *accept = gtk_button_new_with_mnemonic("_Accept");
+	GtkWidget *refuse = gtk_button_new_with_mnemonic("_Refuse");
 
 	// Pack them
-	gtk_box_pack_start(GTK_BOX(h_box), accept, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), refuse, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 10);
+	GtkWidget *h_box = gtk_hbutton_box_new();
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), GTK_BUTTONBOX_END);
+	gtk_box_set_spacing(GTK_BOX(h_box), 5);
+	gtk_container_add(GTK_CONTAINER(h_box), accept);
+	gtk_container_add(GTK_CONTAINER(h_box), refuse);
 
-	// Connect the signals
-	g_signal_connect(G_OBJECT(fa->window), "destroy",
-			   G_CALLBACK(window_close), fa->window);
-	g_signal_connect(G_OBJECT(refuse), "clicked",
-			   G_CALLBACK(refuse_file), (gpointer)fa);
-	g_signal_connect(G_OBJECT(accept), "clicked",
-			   G_CALLBACK(accept_file), (gpointer)fa);
-
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(fa->window), v_box);
+	
+	// Connect the signals
+	g_signal_connect(G_OBJECT(fa->window), "delete_event",
+			   G_CALLBACK(fa_delete), fa);
+	g_signal_connect(G_OBJECT(refuse), "clicked",
+			   G_CALLBACK(refuse_file), fa);
+	g_signal_connect(G_OBJECT(accept), "clicked",
+			   G_CALLBACK(accept_file), fa);
+
+	gtk_container_set_border_width(GTK_CONTAINER(fa->window), 10);
 	gtk_widget_show_all(fa->window);
 }
 
-void refuse_file(GtkWidget *widget, gpointer _fa)
+void
+refusal_ok(GtkWidget *widget, struct file_accept *fa)
 {
-	struct file_accept *fa = (struct file_accept *)_fa;
+	CEventFile *f = (CEventFile *)fa->e;
 
-	// Close the unnecessary open window
+	string reason(textview_get_chars(fa->text));
+	if (reason.empty()) // user gave no reason
+		reason = "No reason given.";
+
+	icq_daemon->icqFileTransferRefuse(fa->user->Uin(),
+		reason.c_str(), fa->e->Sequence(), 
+		f->MessageID(),
+		f->IsDirect());
+
+	// once refused close all windows
+	window_close(0, fa->window2);
 	window_close(0, fa->window);
+	g_free(fa);
+}
 
+void
+refuse_file(GtkWidget *widget, struct file_accept *fa)
+{
 	// Create a window to get a reason for not accepting it
-	
-	// The window
 	fa->window2 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(fa->window2), "File Refusal");
+	gtk_window_set_title(GTK_WINDOW(fa->window2), "Refuse File Request");
 	
 	// The box for the items in the window
 	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
@@ -171,63 +184,34 @@ void refuse_file(GtkWidget *widget, gpointer _fa)
 	// The text for the refusal
 	fa->text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(fa->text), TRUE);
-	gtk_box_pack_start(GTK_BOX(v_box), fa->text, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(fa->text, 300, 50);
 
-	// The ok button
+	GtkWidget *frame = gtk_frame_new("Reason:");
+	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN); 
+	gtk_container_add(GTK_CONTAINER(frame), fa->text);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, FALSE, FALSE, 0);
+
+	// Buttons
+	GtkWidget *h_box = gtk_hbutton_box_new();
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), GTK_BUTTONBOX_END);
 	GtkWidget *ok = gtk_button_new_from_stock(GTK_STOCK_OK);
-	gtk_box_pack_start(GTK_BOX(v_box), ok, FALSE, FALSE, 0);
+	GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+	gtk_box_pack_start(GTK_BOX(h_box), ok, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), cancel, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// Connect all the signals
 	g_signal_connect(G_OBJECT(ok), "clicked",
-			   G_CALLBACK(refusal_ok), (gpointer)fa);
-	g_signal_connect(G_OBJECT(fa->window2), "destroy",
-			   G_CALLBACK(refusal_ok), (gpointer)fa);
+			   G_CALLBACK(refusal_ok), fa);
+	g_signal_connect(G_OBJECT(cancel), "clicked",
+			   G_CALLBACK(window_close), fa->window2);
 	
+	gtk_container_set_border_width(GTK_CONTAINER(fa->window2), 10);
 	gtk_widget_show_all(fa->window2);
 }
 
-void refusal_ok(GtkWidget *widget, gpointer _fa)
-{
-	struct file_accept *fa = (struct file_accept *)_fa;
-	const char *reason = gtk_editable_get_chars(GTK_EDITABLE(fa->text),
-				0, -1);
-	CEventFile *f = (CEventFile *)fa->e;
-	
-
-	// The user gave a reason
-	if((strcmp(reason, "") != 0))
-	{
-		icq_daemon->icqFileTransferRefuse(fa->user->Uin(),
-			reason, fa->e->Sequence(), 
-			f->MessageID(),
-			f->IsDirect());
-	}
-	
-	// Use a default reason
-	else
-	{
-		icq_daemon->icqFileTransferRefuse(fa->user->Uin(),
-			"No reason given.", fa->e->Sequence(),
-			f->MessageID(),
-			f->IsDirect()
-			);
-	}
-
-	window_close(0, fa->window2);
-}
-
-void accept_file(GtkWidget *widget, gpointer _fa)
-{
-	struct file_accept *fa = (struct file_accept *)_fa;
-
-	// Close the unnecessary open window
-	if(fa->window)
-		window_close(0, fa->window);
-
-	save_file(fa);
-}
-
-void save_file(struct file_accept *fa)
+void
+save_file(struct file_accept *fa, char *filename)
 {
 	struct file_window *fw;
 	CEventFile *f = (CEventFile *)fa->e;
@@ -244,200 +228,200 @@ void save_file(struct file_accept *fa)
 	fw->ftman->SetUpdatesEnabled(1);
 
 	// Get the HOME environment variable
-	const char *home = getenv("HOME");
-	fw->ftman->ReceiveFiles(home);
+	char *p = strrchr(filename, '/');
+	if (p != NULL)
+		*p = '\0';
+	
+	fw->ftman->ReceiveFiles(filename);
 
 	fw->input_tag = gtk_input_add_full(fw->ftman->Pipe(), GDK_INPUT_READ,
-				      file_pipe_callback, NULL, (gpointer)fw, NULL);
+			file_pipe_callback, NULL, fw, NULL);
 
 	// Actually accept the file
 	icq_daemon->icqFileTransferAccept(fw->uin,
-					  fw->ftman->LocalPort(),
-					  fw->sequence,
-					  f->MessageID(),
-					  f->IsDirect());
+			fw->ftman->LocalPort(),
+			fw->sequence,
+			f->MessageID(),
+			f->IsDirect());
 }
 
-void create_file_window(struct file_window *fw)
+void
+accept_file(GtkWidget *widget, struct file_accept *fa)
 {
-	GtkWidget *table;
-	GtkWidget *label;
-	GtkWidget *h_box;
+	GtkWidget *file_selector = 
+			gtk_file_selection_new("Please select destination directory");
+	char *dest_dir = g_strdup_printf("%s/", getenv("HOME"));
+	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), dest_dir);
+	int response = gtk_dialog_run(GTK_DIALOG(file_selector));
+	if (response == GTK_RESPONSE_OK) {
+		char *file_name = g_strdup(
+				gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)));
+		gtk_widget_destroy(GTK_WIDGET(file_selector));
+		if (fa->window)
+			window_close(0, fa->window);
+		save_file(fa, file_name);
+		g_free(fa);
+	}
+	else
+		gtk_widget_destroy(GTK_WIDGET(file_selector));
+}
 
-	// The box for the entry widgets
-	h_box = gtk_hbox_new(FALSE, 5);
+GtkWidget *
+ro_entry_new(int width_chars, const char *sample = NULL)
+{
+	GtkWidget *entry = gtk_entry_new();
+	//gtk_widget_set_size_request(fw->current_file_name, 200, 20);
+	if (sample == NULL)
+		gtk_entry_set_width_chars(GTK_ENTRY(entry), width_chars);
+	else {
+		PangoLayout *layout = gtk_entry_get_layout(GTK_ENTRY(entry));
+		pango_layout_set_text(layout, sample, -1);
+		int wd, ht;
+		pango_layout_get_pixel_size(layout, &wd, &ht);
+		gtk_widget_set_size_request(entry, wd + 20, -1);
+		pango_layout_set_text(layout, "", -1);
+	}
+	gtk_entry_set_editable(GTK_ENTRY(entry), FALSE);
+	gtk_widget_set_sensitive(entry, FALSE);
+	
+	return entry;
+}
 
+void
+create_file_window(struct file_window *fw)
+{
 	// The window
 	fw->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(fw->window),
-			     g_strdup_printf("Licq - File Transfer (%ld)",
-			     		     fw->uin));
+	char *title = g_strdup_printf("Licq - File Transfer (%ld)", fw->uin);
+	gtk_window_set_title(GTK_WINDOW(fw->window), title);
+	g_free(title);
 
 	// Create the table and add it to the window
-	table = gtk_table_new(7, 2, FALSE);
+	GtkWidget *table = gtk_table_new(7, 2, FALSE);
 	gtk_container_add(GTK_CONTAINER(fw->window), table);
 
 	// Current file label
-	label = gtk_label_new("Current File:");
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 3, 3);
+	gtk_table_attach(GTK_TABLE(table),
+			gtk_label_new("Current File:"), 
+			0, 1, 0, 1,
+			GTK_FILL, GTK_FILL, 3, 3);
 
 	// Current file entry box
-	fw->current_file_name = gtk_entry_new();
-	gtk_widget_set_size_request(fw->current_file_name, 200, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->current_file_name, FALSE,
-			   FALSE, 0);
+	fw->current_file_name = ro_entry_new(50);
+	gtk_table_attach(GTK_TABLE(table),
+			fw->current_file_name, 
+			1, 2, 0, 1,
+			GTK_FILL, GTK_FILL, 3, 3);
 
 	// Total number of files entry box
-	fw->total_files = gtk_entry_new();
-	gtk_widget_set_size_request(fw->total_files, 50, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->total_files, FALSE, FALSE, 0);
-
-	// Attach the box with the current file namd and total files
-	// to this table.  This will be the format for all of the entry
-	// boxes to follow in this window.
-	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 0, 1,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 3, 3);
+	fw->total_files = ro_entry_new(0, "99 / 99");
+	gtk_table_attach(GTK_TABLE(table),
+			fw->total_files, 
+			2, 3, 0, 1,
+			GTK_FILL, GTK_FILL, 3, 3);
 
 	// Local file name label
-	label = gtk_label_new("File Name:");
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 3, 3);
+	gtk_table_attach(GTK_TABLE(table), gtk_label_new("File Name:"), 
+			0, 1, 1, 2,
+			GTK_FILL, GTK_FILL, 3, 3);
 
-	// New box
-	h_box = gtk_hbox_new(FALSE, 5);
-	
 	// Local file name entry box
-	fw->local_file_name = gtk_entry_new();
-	gtk_widget_set_size_request(fw->local_file_name, 255, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->local_file_name, FALSE,
-			   FALSE, 0);
+	fw->local_file_name = ro_entry_new(50);
 
 	// Attach it
-	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 1, 2,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 3, 3);
+	gtk_table_attach(GTK_TABLE(table), 
+			fw->local_file_name,
+			1, 3, 1, 2,
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			3, 3);
 			   
 	// Current file label
-	label = gtk_label_new("File:");
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
-			 GTK_FILL, GTK_FILL, 3, 3);
-
-	// New box
-	h_box = gtk_hbox_new(FALSE, 5);
+	gtk_table_attach(GTK_TABLE(table), gtk_label_new("File:"), 
+			0, 1, 2, 3,
+			GTK_FILL, GTK_FILL, 3, 3);
 
 	// Progress bar for current file
-	fw->progress = gtk_progress_bar_new();
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(fw->progress), "%p%%");
-	//gtk_progress_set_text_alignment(GTK_PROGRESS_BAR(fw->progress), 0.5, 0.5);
-	//gtk_progress_set_format_string(GTK_PROGRESS_BAR(fw->progress), "%p%%");
-	gtk_widget_set_size_request(fw->progress, 160, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->progress, FALSE, FALSE, 0);
-
-	// Current file size
-	fw->file_size = gtk_entry_new();
-	gtk_widget_set_size_request(fw->file_size, 90, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->file_size, FALSE, FALSE, 0);
-
-	// Attach it
-	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 2, 3,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 3, 3);
+	fw->file_progress = gtk_progress_bar_new();
+	gtk_table_attach(GTK_TABLE(table), 
+			fw->file_progress,
+			1, 3, 2, 3,
+			GTK_FILL, GTK_FILL, 3, 3);
 
 	// Batch label
-	label = gtk_label_new("Batch:");
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 3, 4,
-			 GTK_FILL, GTK_FILL, 3, 3);
+	gtk_table_attach(GTK_TABLE(table), 
+			gtk_label_new("Batch:"), 
+			0, 1, 3, 4,
+			GTK_FILL, GTK_FILL, 3, 3);
 
-	// New box
-	h_box = gtk_hbox_new(FALSE, 5);
-	
 	// Batch progress bar
 	fw->batch_progress = gtk_progress_bar_new();
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(fw->batch_progress), "%p%%");
-	gtk_widget_set_size_request(fw->batch_progress, 160, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->batch_progress, FALSE,
-			   FALSE, 0);
 
 	// Batch size entry box
-	fw->batch_size = gtk_entry_new();
-	gtk_widget_set_size_request(fw->batch_size, 90, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->batch_size, FALSE, FALSE, 0);
-
-	// Attach it
-	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 3, 4,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 3, 3);
+	gtk_table_attach(GTK_TABLE(table), 
+			fw->batch_progress,
+			1, 3, 3, 4,
+			GTK_FILL, GTK_FILL, 3, 3);
 
 	// This box will contain the time (how long it's been receiving),
 	// ETA, and BPS
-	h_box = gtk_hbox_new(FALSE, 5);
+	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
 	
 	// The time label and entry box
-	label = gtk_label_new("Time:");
-	fw->time = gtk_entry_new();
-	gtk_widget_set_size_request(fw->time, 65, 20);
-	gtk_widget_set_sensitive(fw->time, FALSE);
-
-	// Pack them
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), gtk_label_new("Time:"), FALSE, FALSE, 5);
+	fw->time = ro_entry_new(0, "00:00:00");
 	gtk_box_pack_start(GTK_BOX(h_box), fw->time, FALSE, FALSE, 0);
 
 	// The ETA label and entry box
-	label = gtk_label_new("ETA:");
-	fw->eta = gtk_entry_new();
-	gtk_widget_set_size_request(fw->eta, 65, 20);
-	gtk_widget_set_sensitive(fw->eta, FALSE);
-
-	// Pack them
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), gtk_label_new("ETA:"), FALSE, FALSE, 5);
+	fw->eta = ro_entry_new(0, "00:00:00");
 	gtk_box_pack_start(GTK_BOX(h_box), fw->eta, FALSE, FALSE, 0);
 	
 	// The BPS label and entry box
-	label = gtk_label_new("BPS:");
-	fw->bps = gtk_entry_new();
-	gtk_widget_set_size_request(fw->bps, 65, 20);
-	gtk_widget_set_sensitive(fw->bps, FALSE);
-
-	// Pack them
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), fw->bps, FALSE, FALSE, 0);
-
+	//gtk_box_pack_start(GTK_BOX(h_box), gtk_label_new("BPS:"), FALSE, FALSE, 5);
+	//fw->bps = ro_entry_new(0, "000.0 Bytes/s");
+	//gtk_box_pack_start(GTK_BOX(h_box), fw->bps, FALSE, FALSE, 0);
 
 	// Add the box to the table
-	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 4, 5,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 3, 3);
+	gtk_table_attach(GTK_TABLE(table), 
+			h_box, 
+			1, 3, 4, 5,
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			3, 3);
 
 	// Cancel button
-	fw->cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_table_attach(GTK_TABLE(table), fw->cancel, 1, 2, 5, 6,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 3, 3);
+  fw->cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+  GtkWidget *bbox = gtk_hbutton_box_new();
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
+  gtk_container_add(GTK_CONTAINER(bbox), fw->cancel);
+  
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 5);
+	fw->status = gtk_statusbar_new();
+	gtk_box_pack_start(GTK_BOX(hbox), fw->status, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox), bbox, FALSE, FALSE, 0);
+	
+	gtk_table_attach(GTK_TABLE(table), 
+			hbox, 
+			0, 3, 5, 6,
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			3, 3);
+
 	g_signal_connect(G_OBJECT(fw->cancel), "clicked",
-			  G_CALLBACK(cancel_file), (gpointer)fw);
+			  G_CALLBACK(cancel_file), fw);
 	
 	gtk_widget_show_all(fw->window);
 }
 
-void cancel_file(GtkWidget *widget, gpointer _fw)
+void 
+cancel_file(GtkWidget *widget, struct file_window *fw)
 {
-	struct file_window *fw = (struct file_window *)_fw;
-
 	const gchar *label_text = gtk_button_get_label(GTK_BUTTON(fw->cancel));
 
-	if(strcasecmp(label_text, "Cancel") == 0)
-	{
+	if (strcasecmp(label_text, "Cancel") == 0)
 		// Cancel the transfer
 		fw->ftman->CloseFileTransfer();
-	}
 
 	gtk_input_remove(fw->input_tag);
 
@@ -445,7 +429,112 @@ void cancel_file(GtkWidget *widget, gpointer _fw)
 	window_close(0, fw->window);
 }
 
-void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
+string
+to_str_free(char *p)
+{
+	string s(p);
+	g_free(p);
+	return s;
+}
+
+std::string
+encode_file_size(unsigned long size)
+{
+	gchar unit[6];
+	
+	if (size >= (1024 * 1024)) {
+		size /= (1024*1024) / 10;
+		strcpy(unit, "MB");
+	}
+	else if (size >= 1024) {
+		size /= (1024 / 10);
+		strcpy(unit, "KB");
+	}
+	else if (size != 1) {
+		size *= 10;
+		strcpy(unit, "Bytes");
+	}
+	else {
+		size *= 10;
+		strcpy(unit, "Byte");
+	}
+
+	return 
+		to_str_free(g_strdup_printf("%ld.%ld %s", (size / 10), (size % 10), unit));
+}
+
+void 
+update_file_info(struct file_window *fw)
+{
+	// Time
+	time_t elapsed = time(0) - fw->ftman->StartTime();
+
+	if (fw->ftman->FileSize() == 0 || fw->ftman->BatchSize() == 0)
+		return;
+
+	char *txt;
+	if (elapsed != 0) {
+		g_strdup_printf("%02ld:%02ld:%02ld",
+				elapsed / 3600, (elapsed % 3600) / 60, (elapsed % 60));
+		gtk_entry_set_text(GTK_ENTRY(fw->time), txt);
+		g_free(txt);
+	}
+	
+	// File progress
+	if (elapsed != 0)
+		txt = g_strdup_printf("%s/%s, %s/s",
+				encode_file_size(fw->ftman->FilePos()).c_str(),
+				encode_file_size(fw->ftman->FileSize()).c_str(),
+				encode_file_size(fw->ftman->BytesTransfered() / elapsed).c_str());
+	else
+		txt = g_strdup_printf("%s/%s",
+				encode_file_size(fw->ftman->FilePos()).c_str(),
+				encode_file_size(fw->ftman->FileSize()).c_str());
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(fw->file_progress), txt);
+	g_free(txt);
+
+	// Update progress percent
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(fw->file_progress), 
+			((gfloat)fw->ftman->FilePos() / fw->ftman->FileSize()));
+
+	// Batch progress
+	if (elapsed != 0)
+		txt = g_strdup_printf("%s/%s, %s/s",
+				encode_file_size(fw->ftman->BatchPos()).c_str(),
+				encode_file_size(fw->ftman->BatchSize()).c_str(),
+				encode_file_size(fw->ftman->BatchPos() / elapsed).c_str());
+	else
+		txt = g_strdup_printf("%s/%s",
+				encode_file_size(fw->ftman->BatchPos()).c_str(),
+				encode_file_size(fw->ftman->BatchSize()).c_str());
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(fw->batch_progress), txt);
+	g_free(txt);
+
+	// Get a percentage, cast it to a float and update the batch progress bar
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(fw->batch_progress), 
+			((gfloat)fw->ftman->BatchPos() / fw->ftman->BatchSize()));
+
+	// ETA
+	if (elapsed != 0) {
+		long bytes_left = fw->ftman->BatchSize() - fw->ftman->BatchPos();
+		time_t eta = (time_t)(bytes_left / (fw->ftman->BatchPos() / elapsed));
+		txt = g_strdup_printf("%02ld:%02ld:%02ld",
+							eta / 3600, (eta % 3600) / 60, (eta % 60));
+		gtk_entry_set_text(GTK_ENTRY(fw->eta), txt);
+		g_free(txt);
+	}
+}
+
+void
+transfer_finish(file_window *fw, const char *status_txt)
+{
+	gtk_button_set_label(GTK_BUTTON(fw->cancel), GTK_STOCK_CLOSE);
+	status_change(fw->status, "sta", status_txt);
+  fw->ftman->CloseFileTransfer();
+}
+
+void
+file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
 {
 	struct file_window *fw = (struct file_window *)data;
 
@@ -454,236 +543,195 @@ void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
 	read(fw->ftman->Pipe(), buf, 32);
 
 	CFileTransferEvent *e = 0;
-
-	while((e = fw->ftman->PopFileTransferEvent()) != 0)
-	{
-		switch(e->Command())
-		{
-      case FT_ERRORxBIND:
-      {
-        message_box("Unable to bind to a port.\nSee Network Log for "
-                    "details.");
-        fw->ftman->CloseFileTransfer();
-        break;
-      }
-
-      case FT_ERRORxCONNECT:
-      {
-        message_box("Unable to reach remote host.\nSee Network Log for "
-                    "details.");
-        fw->ftman->CloseFileTransfer();
-        break;
-      }
-
-      case FT_ERRORxRESOURCES:
-      {
-        message_box("Unable to create a thread.\nSee Network Log for "
-                    "details.");
-        fw->ftman->CloseFileTransfer();
-        break;
-      }
-
+	
+	while ((e = fw->ftman->PopFileTransferEvent()) != 0) {
+		switch (e->Command())	{
 		  case FT_STARTxBATCH:
-		  {
-		  	// File 1 out of x files
-			gtk_entry_set_text(GTK_ENTRY(fw->total_files),
-					   g_strdup_printf("1 / %d",
-					   fw->ftman->BatchFiles()));
-			// Total size of the batch
-			gtk_entry_set_text(GTK_ENTRY(fw->batch_size),
-					   encode_file_size(fw->ftman->BatchSize()));
-			break;
-		  }
-		  
+			{
+	  		// File 1 out of x files
+				char *txt = g_strdup_printf("1 / %d", fw->ftman->BatchFiles());
+				gtk_entry_set_text(GTK_ENTRY(fw->total_files), txt);
+				g_free(txt);
+				
+				status_change(fw->status, "sta", "Starting the batch...");
+				break;
+			}
+			
+			case FT_CONFIRMxFILE:
+				fw->ftman->StartReceivingFile(NULL);
+				break;
+			
 		  case FT_STARTxFILE:
-		  {
+			{
 		  	// File x out of y files
-		  	gtk_entry_set_text(GTK_ENTRY(fw->total_files),
-					   g_strdup_printf("%d / %d",
-					     fw->ftman->CurrentFile(),
-					     fw->ftman->BatchFiles()));
-			// Current file name being transfered
-			gtk_entry_set_text(GTK_ENTRY(fw->current_file_name),
-					   fw->ftman->FileName());
-			// Local filename that it's being saved to
-			gtk_entry_set_text(GTK_ENTRY(fw->local_file_name),
-					   fw->ftman->PathName());
-			// Current file size
-			gtk_entry_set_text(GTK_ENTRY(fw->file_size),
-					   encode_file_size(fw->ftman->FileSize()));
-			break;
-		  }
+		  	char *txt = g_strdup_printf("%d / %d", 
+						fw->ftman->CurrentFile(),
+					  fw->ftman->BatchFiles());
+				gtk_entry_set_text(GTK_ENTRY(fw->total_files), txt);
+				g_free(txt);
 
+				// Current file name being transfered
+				gtk_entry_set_text(GTK_ENTRY(fw->current_file_name),
+						fw->ftman->FileName());
+				// Local filename that it's being saved to
+				gtk_entry_set_text(GTK_ENTRY(fw->local_file_name),
+						fw->ftman->PathName());
+				
+				if (fw->ftman->Direction() == D_RECEIVER)
+					status_change(fw->status, "sta", "Receiving...");
+				else
+					status_change(fw->status, "sta", "Sending...");
+				update_file_info(fw);
+
+				break;
+			}
+			
 		  case FT_UPDATE:
-		  {
 		  	// Update the info 
-			update_file_info(fw);
-			break;
-		  }
+				update_file_info(fw);
+				break;
 
 		  case FT_DONExFILE:
-		  {
 		  	update_file_info(fw);
-			break;
-		  }
+				break;
 
 		  case FT_DONExBATCH:
-		  {
-		  	gtk_label_set_text(GTK_LABEL(fw->cancel), "Close");
-		  	message_box("File Transfer:\nBatch Done");
-			fw->ftman->CloseFileTransfer();
-			break;
-		  }
+		  	update_file_info(fw);
+				transfer_finish(fw, "Batch complete");
+				break;
+
+      case FT_ERRORxBIND:
+		  	transfer_finish(fw, 
+						"Unable to bind to a port. See Network Log for details.");
+        break;
+
+      case FT_ERRORxCONNECT:
+		  	transfer_finish(fw, 
+        		"Unable to reach remote host. See Network Log for details.");
+        break;
+
+      case FT_ERRORxRESOURCES:
+		  	transfer_finish(fw, 
+        		"Unable to create a thread. See Network Log for details.");
+        break;
 
 		  case FT_ERRORxCLOSED:
-		  {
-		  	message_box("File Transfer:\nRemote side disconnected");
-			fw->ftman->CloseFileTransfer();
-			break;
-		  }
+		  	transfer_finish(fw, "Remote side disconnected");
+				break;
 
 		  case FT_ERRORxFILE:
-		  {
-		  	message_box("File Transfer:\nFile I/0 Error");
-			fw->ftman->CloseFileTransfer();
-			break;
+			{
+				char *msg = g_strdup_printf("File I/0 error on %s", 
+						fw->ftman->PathName());
+		  	transfer_finish(fw, msg);
+				g_free(msg);
+				break;
 		  }
-		  
+			
 		  case FT_ERRORxHANDSHAKE:
-		  {
-		  	message_box("File Transfer:\nHandshake error");
-			fw->ftman->CloseFileTransfer();
-			break;
-		  }
+		  	transfer_finish(fw, "Handshake error");
+				break;
 		}
 
 		delete e;
 	}
 }
 
-void update_file_info(struct file_window *fw)
+void
+destroy_fs(GtkWidget *widget, struct file_send *fs)
 {
-	// Current File info
-
-	// Time
-	time_t Time = time(0) - fw->ftman->StartTime();
-	gtk_entry_set_text(GTK_ENTRY(fw->time), g_strdup_printf("%02ld:%02ld:%02ld",
-								Time / 3600,
-								(Time % 3600) / 60,
-								(Time % 60)));
-
-	if(Time == 0 || fw->ftman->BytesTransfered() == 0)
-	{
-		gtk_entry_set_text(GTK_ENTRY(fw->bps), "---");
-		gtk_entry_set_text(GTK_ENTRY(fw->eta), "---");
-		return;
-	}
-
-	// BPS
-	gtk_entry_set_text(GTK_ENTRY(fw->bps),
-			   g_strdup_printf("%s/s",
-			       encode_file_size(fw->ftman->BytesTransfered() / Time)));
-
-	// ETA
-	int bytes_left = fw->ftman->FileSize() - fw->ftman->FilePos();
-	time_t eta = (time_t)(bytes_left / (fw->ftman->BytesTransfered() / Time));
-	gtk_entry_set_text(GTK_ENTRY(fw->eta), g_strdup_printf("%02ld:%02ld:%02ld",
-						eta / 3600, (eta % 3600) / 60, (eta % 60)));
-
-	// Get a percentage, cast it to a float, and update the progress bar
-	gfloat percent = ((gfloat)fw->ftman->FilePos() / fw->ftman->FileSize());
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(fw->progress), percent);
-
-	// Batch File info
-
-	// Batch size
-	gtk_entry_set_text(GTK_ENTRY(fw->batch_size),
-			   g_strdup_printf("%s/%s", encode_file_size(fw->ftman->BatchPos()),
-			   		   encode_file_size(fw->ftman->BatchSize())));
-
-	// Get a percentage, cast it to a float and update the batch progress bar
-	gfloat batch_percent = ((gfloat)fw->ftman->BatchPos() / fw->ftman->BatchSize());
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(fw->batch_progress), 
-			batch_percent);
+	// Get rid of the file send list and destory the window
+	fs_list = g_slist_remove(fs_list, fs);
+	g_free(fs);
 }
 
-gchar *encode_file_size(unsigned long size)
+void
+fs_ok_click(GtkWidget *widget, struct file_send *fs)
 {
-	gchar unit[6];
+	string fname(entry_get_chars(fs->file_path));
+	if (fname.empty()) {
+		message_box("File Transfer:\nYou must specify a file to send.");
+		return;
+	}
 	
-	if(size >= (1024 * 1024))
-	{
-		size /= (1024*1024) / 10;
-		strcpy(unit, "MB");
-	}
-	else if(size >= 1024)
-	{
-		size /= (1024 / 10);
-		strcpy(unit, "KB");
-	}
-	else if(size != 1)
-	{
-		size *= 10;
-		strcpy(unit, "Bytes");
-	}
-	else
-	{
-		size *= 10;
-		strcpy(unit, "Byte");
+	fs->etd = g_new0(struct e_tag_data, 1);
+	catcher = g_slist_append(catcher, fs->etd);
+
+	ConstFileList fl;
+	fl.push_back(fname.c_str());
+
+	fs->etd->e_tag = icq_daemon->icqFileTransfer(
+			fs->uin, 
+			fname.c_str(),
+			textview_get_chars(fs->description).c_str(),
+			fl, ICQ_TCPxMSG_NORMAL, false);
+}
+
+void
+fs_browse_click(GtkWidget *widget, struct file_send *fs)
+{
+	char *txt = g_strdup_printf("Select file(s) to send to %ld", fs->uin);
+	GtkWidget *filesel = gtk_file_selection_new(txt);
+	g_free(txt);
+	
+	int response = gtk_dialog_run(GTK_DIALOG(filesel));
+	if (response == GTK_RESPONSE_OK) {
+		const char *fname = 
+				gtk_file_selection_get_filename(GTK_FILE_SELECTION(filesel));
+		gtk_entry_set_text(GTK_ENTRY(fs->file_path), fname);
+		if (fname != NULL && fname[0] != '\0')
+			gtk_widget_set_sensitive(fs->ok, TRUE);
 	}
 
-	return g_strdup_printf("%ld.%ld %s", (size / 10), (size % 10), unit);
+	gtk_widget_destroy(filesel);
 }
 
 // Function to send a file from the contact list
-void list_request_file(GtkWidget *widget, ICQUser *user)
+void
+list_request_file(GtkWidget *widget, ICQUser *user)
 {
-	struct file_send *fs;
-	
 	// Does it already exist?
-	fs = fs_find(user->Uin());
+	struct file_send *fs = fs_find(user->Uin());
 	
 	// Don't make it if it already exists
-	if(fs != 0)
+	if (fs != 0)
 		return;
 		
 	fs = g_new0(struct file_send, 1);
 	fs->uin = user->Uin();
-	fs->file_select = gtk_file_selection_new(g_strdup_printf("Select file to"				" send to %s", user->GetAlias()));
-
+	
 	// Add this to the linked list
 	fs_list = g_slist_append(fs_list, fs);
 
 	// Make the window
 	fs->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(fs->window), g_strdup_printf(
-			     "Send file to %s", user->GetAlias()));
+	char *title = g_strdup_printf("Send file to %s", user->GetAlias());
+	gtk_window_set_title(GTK_WINDOW(fs->window), title);
+	g_free(title);
 
 	// The destroy signal for the window
 	g_signal_connect(G_OBJECT(fs->window), "destroy",
-			   G_CALLBACK(fs_cancel_click), (gpointer)fs);
+			   G_CALLBACK(destroy_fs), fs);
 
 	// The box that will hold all the widgets for this window
 	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(fs->window), v_box);
 
-	// VBox with the description label and text box
-	GtkWidget *desc_v_box = gtk_vbox_new(FALSE, 0);
-	GtkWidget *label = gtk_label_new("Description:");
-	gtk_box_pack_start(GTK_BOX(desc_v_box), label, FALSE, FALSE, 0);
+	// Description in a frame
+	GtkWidget *frame = gtk_frame_new("Description:");
 	fs->description = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(fs->description), TRUE);
 	gtk_widget_set_size_request(fs->description, 100, 75);
-	gtk_box_pack_start(GTK_BOX(desc_v_box), fs->description, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(v_box), desc_v_box, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame), fs->description);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, FALSE, FALSE, 0);
 
 	// HBox with a "File:" label, file path entry box and a browse button
 	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
-	label = gtk_label_new("File:");
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), gtk_label_new("File:"), FALSE, FALSE, 0);
 	fs->file_path = gtk_entry_new();
+	gtk_entry_set_width_chars(GTK_ENTRY(fs->file_path), 40);
 	gtk_box_pack_start(GTK_BOX(h_box), fs->file_path, FALSE, FALSE, 0);
-	fs->browse = gtk_button_new_with_mnemonic("_Browse");
+	fs->browse = gtk_button_new_with_mnemonic("  _Browse  ");
 	gtk_box_pack_start(GTK_BOX(h_box), fs->browse, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
@@ -702,100 +750,40 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// The hbox with the ok and cancel buttons
-	h_box = gtk_hbox_new(FALSE, 5);
+	h_box = gtk_hbutton_box_new();
+	gtk_box_set_spacing(GTK_BOX(h_box), 5);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), GTK_BUTTONBOX_END);
 	fs->ok = gtk_button_new_from_stock(GTK_STOCK_OK);
 	fs->cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_box_pack_start(GTK_BOX(h_box), fs->ok, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), fs->cancel, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(h_box), fs->ok);
+	gtk_container_add(GTK_CONTAINER(h_box), fs->cancel);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// Connect the signals for the browse, ok, and cancel buttons
 	g_signal_connect(G_OBJECT(fs->browse), "clicked",
-			   G_CALLBACK(fs_browse_click), (gpointer)fs);
+			   G_CALLBACK(fs_browse_click), fs);
 	g_signal_connect(G_OBJECT(fs->ok), "clicked",
-			   G_CALLBACK(fs_ok_click), (gpointer)fs);
+			   G_CALLBACK(fs_ok_click), fs);
 	g_signal_connect(G_OBJECT(fs->cancel), "clicked",
-			   G_CALLBACK(fs_cancel_click), (gpointer)fs);
+			   G_CALLBACK(window_close), fs->window);
+	
+	// since we haven't selected any files yet...
+	gtk_widget_set_sensitive(fs->ok, FALSE);
 	
 	// Show the window now
+	gtk_container_set_border_width(GTK_CONTAINER(fs->window), 10);
 	gtk_widget_show_all(fs->window);
-
-	// Make sure the window is closed when a user selects a button
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fs->file_select)->ok_button),
-				  "clicked", G_CALLBACK(file_select_ok),
-				  (gpointer)fs);
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fs->file_select)->cancel_button),
-				"clicked", G_CALLBACK(file_select_cancel),
-				(gpointer)fs);
-
-	// Show the file selection now
-	gtk_widget_show_all(fs->file_select);
-}
-
-void fs_browse_click(GtkWidget *widget, gpointer _fs)
-{
-	struct file_send *fs = (struct file_send *)_fs;
-	gtk_widget_show_all(fs->file_select);
-}
-
-void fs_cancel_click(GtkWidget *widget, gpointer _fs)
-{
-	struct file_send *fs = (struct file_send *)_fs;
-
-	// Get rid of the file send list and destory the window
-	fs_list = g_slist_remove(fs_list, fs);
-	gtk_widget_destroy(fs->window);
-}
-
-void file_select_ok(GtkWidget *widget, gpointer _fs)
-{
-	struct file_send *fs = (struct file_send *)_fs;
-	gtk_widget_hide_all(fs->file_select);
-	gtk_entry_set_text(GTK_ENTRY(fs->file_path),
-		gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs->file_select)));
-}
-
-void file_select_cancel(GtkWidget *widget, gpointer _fs)
-{
-	struct file_send *fs = (struct file_send *)_fs;
-	gtk_widget_hide_all(fs->file_select);
-}
-
-void fs_ok_click(GtkWidget *widget, gpointer _fs)
-{
-	struct file_send *fs = (struct file_send *)_fs;
-	const char *file_name = gtk_file_selection_get_filename(
-					GTK_FILE_SELECTION(fs->file_select));
-
-	if(strcmp(file_name, "") == 0)
-	{
-		message_box("File Transfer:\nYou must specify a file to send.");
-		return;
-	}
-
-	// Only make this if we're really going to send it
-	fs->etd = g_new0(struct e_tag_data, 1);
-
-	// We expect to catch the event back
-	catcher = g_slist_append(catcher, fs->etd);
-
-	ConstFileList fl;
-	fl.push_back(file_name);
-	fs->etd->e_tag = icq_daemon->icqFileTransfer(fs->uin, file_name,
-				gtk_editable_get_chars(GTK_EDITABLE(fs->description), 0, -1),
-				fl, ICQ_TCPxMSG_NORMAL, false);
 }
 
 // Used for the finishing event in extras.cpp
-struct file_send *fs_find(gulong uin)
+struct file_send *
+fs_find(gulong uin)
 {
-	struct file_send *fs;
 	GSList *temp_fs_list = fs_list;
 
-	while(temp_fs_list)
-	{
-		fs = (struct file_send *)temp_fs_list->data;
-		if(fs->uin == uin)
+	while (temp_fs_list) {
+		struct file_send *fs = (struct file_send *)temp_fs_list->data;
+		if (fs->uin == uin)
 			return fs;
 
 		temp_fs_list = temp_fs_list->next;
@@ -806,21 +794,20 @@ struct file_send *fs_find(gulong uin)
 }
 
 // See if the file was accepted or not
-void file_start_send(ICQEvent *event)
+void
+file_start_send(ICQEvent *event)
 {
 	CExtendedAck *ea = event->ExtendedAck();
 	CUserEvent *ue = event->UserEvent();
 	
-	if(ea == 0 || ue == 0)
-	{
+	if (ea == 0 || ue == 0) {
 		gLog.Error("%sInternal error: file_start_send(): chat or file"
 			   " request acknowledgement without extended "
 			   "result.\n", L_ERRORxSTR);
 		return;
 	}
 
-	if(!ea->Accepted())
-	{
+	if (!ea->Accepted()) {
 		ICQUser *u = gUserManager.FetchUser(event->Uin(), LOCK_R);
 		const char *mes = g_strdup_printf("File Transfer with %s "
 			"Refused:\n%s", u->GetAlias(), ea->Response());
@@ -838,28 +825,24 @@ void file_start_send(ICQEvent *event)
 
 	// Create the file transfer manager and connect it's pipe
 	fw->ftman = new CFileTransferManager(icq_daemon, fw->uin);
-	fw->ftman->SetUpdatesEnabled(1);
 	fw->input_tag = gtk_input_add_full(fw->ftman->Pipe(), GDK_INPUT_READ,
-	                              file_pipe_callback, NULL, (gpointer)fw, NULL);
+			file_pipe_callback, NULL, fw, NULL);
+	fw->ftman->SetUpdatesEnabled(1);
   CEventFile *f = (CEventFile *)event->UserEvent();
-  ConstFileList fl;
-  fl.push_back(f->Filename());
-  fw->ftman->SendFiles(fl, ea->Port());
+  fw->ftman->SendFiles(f->FileList(), ea->Port());
 	
 	return;
 }
 
-void finish_file(ICQEvent *event)
+void
+finish_file(ICQEvent *event)
 {
-	struct file_send *fs = g_new0(struct file_send, 1);
+	struct file_send *fs = fs_find(event->Uin());
 
-	fs = fs_find(event->Uin());
-
-	if(fs == 0)
+	if (fs == 0)
 		return;
 		
-//	close_file_send(fs);
-	gtk_widget_destroy(fs->window);
+	window_close(0, fs->window);
 	file_start_send(event);
 }
 
