@@ -19,10 +19,43 @@
  */		 
 
 #include "licq_gtk.h"
-#include "licq_file.h"
+#include "licq_log.h"
 
 #include <gtk/gtk.h>
 #include <fstream>
+
+struct options_window
+{
+	GtkWidget *window;
+	GtkWidget *show_ignored;
+	GtkWidget *show_offline;
+	GtkWidget *show_timestamp;
+	GtkWidget *txtTimestampFormat;
+	GtkWidget *enter_sends;
+	GtkWidget *flash_events;
+	GtkWidget *chkRecvColors;
+	GtkWidget *chkRememberWindowPos;
+
+	// Network section
+	GtkWidget *lstServers;
+	GtkWidget *spnDefPort;
+	GtkWidget *chkBehindFirewall;
+	GtkWidget *btnSOCKS;
+	GtkWidget *txtFirewallHost;
+	GtkWidget *chkTCPEnabled;
+	GtkWidget *spnPortLow;
+	GtkWidget *spnPortHigh;
+
+	// Status section
+	GtkWidget *cmbAutoLogon;
+	GtkWidget *chkInvisible;
+};
+
+void done_options(GtkWidget *, gpointer);
+void show_on_color_dlg(GtkWidget *, gpointer);
+void color_dlg_ok(GtkWidget *, gpointer);
+void color_dlg_cancel(GtkWidget *, gpointer);
+void SOCKSClicked(GtkWidget *, gpointer);
 
 // Global variables for use in other files
 bool show_offline_users;
@@ -43,6 +76,8 @@ short int windowX;
 short int windowY;
 short int windowH;
 short int windowW;
+
+void set_options(struct options_window *ow);
 
 // The "Options" selection under the menu in the main window
 void menu_options_create()

@@ -1,7 +1,8 @@
 #include "licq_gtk.h"
 #include <gtk/gtk.h>
 
-#include "licq_icqd.h"
+void stats_ok_callback(GtkWidget *, gpointer);
+void stats_reset_callback(GtkWidget *, gpointer);
 
 void menu_daemon_stats()
 {
@@ -12,7 +13,7 @@ void menu_daemon_stats()
 		GTK_WIN_POS_CENTER);
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 7);
 	g_signal_connect(G_OBJECT(dialog), "destroy",
-		G_CALLBACK(dialog_close), dialog);
+		G_CALLBACK(window_close), dialog);
 	
 	gchar info[256]; // This should be enough for all the stats
 
@@ -183,11 +184,11 @@ void menu_daemon_stats()
 
 void stats_ok_callback(GtkWidget *widget, gpointer data)
 {
-	dialog_close(0, static_cast<GtkWidget *>(data));
+	window_close(0, static_cast<GtkWidget *>(data));
 }
 
 void stats_reset_callback(GtkWidget *widget, gpointer data)
 {
 	icq_daemon->ResetStats();
-	dialog_close(0, static_cast<GtkWidget *>(data));
+	window_close(0, static_cast<GtkWidget *>(data));
 }

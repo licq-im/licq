@@ -21,10 +21,6 @@
 #include "licq_gtk.h"
 #include "utilities.h"
 
-#include "licq_color.h"
-#include "licq_icqd.h"
-#include "licq_user.h"
-
 #include <string.h>
 #include <time.h>
 #include <gtk/gtk.h>
@@ -65,6 +61,7 @@ void verify_convo_send(GtkWidget *, guint, gchar *, conversation *);
 void convo_cancel(GtkWidget *, conversation *);
 gint convo_delete(GtkWidget *, GdkEvent *, conversation *);
 void convo_close(GtkWidget *, conversation *);
+void convo_recv(gulong uin);
 
 void convo_open_cb(ICQUser *user)
 {

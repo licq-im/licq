@@ -22,6 +22,21 @@
 
 #include <gtk/gtk.h>
 
+void menu_separator(GtkWidget *);
+void menu_system_quit(GtkWidget *, gpointer);
+void menu_system_refresh(GtkWidget *, gpointer);
+
+void create_about_window();
+void menu_system_add_user(GtkWidget *, gpointer);
+void log_window_show(GtkWidget *, gpointer);
+void menu_options_create();
+void create_plugin_window();
+void random_chat_search_window();
+void set_random_chat_window();
+void search_user_window();
+void menu_security_users_window(GtkWidget *, gpointer);
+void menu_daemon_stats();
+
 GtkWidget *menu;
 GtkWidget *user_list_menu;
 

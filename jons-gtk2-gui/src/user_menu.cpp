@@ -20,10 +20,35 @@
 
 #include "licq_gtk.h"
 
-#include "licq_icqd.h"
-#include "licq_user.h"
-
 #include <gtk/gtk.h>
+
+struct send_url
+{
+	GtkWidget *window;
+	GtkWidget *entry_u;
+	GtkWidget *entry_d;
+	GtkWidget *send;
+	GtkWidget *cancel;
+	GtkWidget *send_server;
+	GtkWidget *send_normal;
+	GtkWidget *send_urgent;
+	GtkWidget *send_list;
+	ICQUser *user;
+	struct e_tag_data *etag;
+};
+
+struct delete_user
+{
+	GtkWidget *window;
+	ICQUser *user;
+};
+
+void url_send(GtkWidget *, struct send_url *);
+void url_cancel(GtkWidget *, struct send_url *);
+void url_close(GtkWidget *, struct send_url *);
+void url_verified_close(GtkWidget *, guint, gchar*, struct send_url *);
+void delete_user_callback(GtkWidget *widget, struct delete_user *d);
+void destroy_dialog(GtkWidget *, gpointer);
 
 void list_send_url(GtkWidget *widget, ICQUser *user)
 {
@@ -295,9 +320,9 @@ void list_delete_user(GtkWidget *widget, ICQUser *user)
 
 	/* Connect the signals */
 	g_signal_connect(G_OBJECT(no), "clicked",
-			   G_CALLBACK(dialog_close), d->window);
+			   G_CALLBACK(window_close), d->window);
 	g_signal_connect(G_OBJECT(d->window), "destroy",
-			   G_CALLBACK(dialog_close), d->window);
+			   G_CALLBACK(window_close), d->window);
 	g_signal_connect(G_OBJECT(yes), "clicked",
 			   G_CALLBACK(delete_user_callback), d);
 	

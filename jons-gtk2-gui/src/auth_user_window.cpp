@@ -22,18 +22,50 @@
 
 #include "licq_icqd.h"
 #include "licq_gtk.h"
+#include "utilities.h"
+
+struct auth_user
+{
+	GtkWidget *window;
+	GtkWidget *entry;
+	GtkWidget *text;
+	GtkWidget *grant;
+	GtkWidget *refuse;
+};
+
+static void 
+auth_user_cb(GtkWidget *widget, struct auth_user *au)
+{
+	gulong uin = strtoul(entry_get_chars(au->entry).c_str(), 
+											 NULL, 
+											 10);
+	std::string reason = entry_get_chars(au->text);
+
+	if (widget == au->grant)
+		icq_daemon->icqAuthorizeGrant(uin, reason.c_str());
+	else
+		icq_daemon->icqAuthorizeRefuse(uin, reason.c_str());
+
+	window_close(NULL, au->window);
+}
 
 void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 {
+	static struct auth_user *au = NULL;
+	
+	if (au == NULL)
+		au = g_new0(struct auth_user, 1);
+	else {
+		gtk_widget_show(au->window);
+		return;
+	}
+
 	GtkWidget *label;
 	GtkWidget *scroll;
-	GtkWidget *ok;
 	GtkWidget *cancel;
-	GtkWidget *refuse;
 	GtkWidget *h_box;
 	GtkWidget *v_box;
-	struct auth_user *au = g_new0(struct auth_user, 1);
-
+	
 	/* Create the window */
 	au->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(au->window), "Licq - Authorize User");
@@ -67,55 +99,31 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 
 	/* Make the buttons and pack them */
 	h_box = gtk_hbox_new(FALSE, 5);
-	ok = gtk_button_new_from_stock(GTK_STOCK_OK);
-	refuse = gtk_button_new_with_mnemonic("_Refuse");
+	au->grant = gtk_button_new_from_stock(GTK_STOCK_OK);
+	au->refuse = gtk_button_new_with_mnemonic("_Refuse");
 	cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 15);
-	gtk_box_pack_start(GTK_BOX(h_box), refuse, TRUE, TRUE, 15);
+	gtk_box_pack_start(GTK_BOX(h_box), au->grant, TRUE, TRUE, 15);
+	gtk_box_pack_start(GTK_BOX(h_box), au->refuse, TRUE, TRUE, 15);
 	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 15);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* Connect the signals */
 	g_signal_connect(G_OBJECT(cancel), "clicked",
-			   G_CALLBACK(dialog_close), au->window);
+			   G_CALLBACK(window_close), au->window);
 	g_signal_connect(G_OBJECT(au->window), "destroy",
-			   G_CALLBACK(dialog_close), au->window);
-	g_signal_connect(G_OBJECT(ok), "clicked",
-			   G_CALLBACK(auth_user_grant), au);
-	g_signal_connect(G_OBJECT(refuse), "clicked",
-			   G_CALLBACK(auth_user_refuse), au);
+			   G_CALLBACK(destroy_cb), &au);
+	g_signal_connect(G_OBJECT(au->grant), "clicked",
+			   G_CALLBACK(auth_user_cb), au);
+	g_signal_connect(G_OBJECT(au->refuse), "clicked",
+			   G_CALLBACK(auth_user_cb), au);
 
 	/* Show the window */
 	gtk_container_add(GTK_CONTAINER(au->window), v_box);
 	gtk_widget_show_all(au->window);
 	gtk_window_set_focus(GTK_WINDOW(au->window), au->entry);
 
-	if(uin != 0)
-	{
+	if (uin != 0)	{
 		const gchar *s_uin = g_strdup_printf("%ld", uin);
 		gtk_entry_set_text(GTK_ENTRY(au->entry), s_uin);
 	}
-}
-
-void auth_user_grant(GtkWidget *widget, struct auth_user *au)
-{
-	gulong uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(
-					au->entry), 0, -1));
-	gchar *reason = gtk_editable_get_chars(GTK_EDITABLE(au->text), 0, -1);
-
-	icq_daemon->icqAuthorizeGrant(uin, reason);
-
-	dialog_close(au->window, au->window);
-}
-
-void auth_user_refuse(GtkWidget *widget, struct auth_user *au)
-{
-	gulong uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(
-					au->entry), 0, -1));
-	gchar *reason = gtk_editable_get_chars(GTK_EDITABLE(au->text), 0, -1);
-
-	/* Refuse it */
-	icq_daemon->icqAuthorizeRefuse(uin, reason);
-
-	dialog_close(au->window, au->window);
 }

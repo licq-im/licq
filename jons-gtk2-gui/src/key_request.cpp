@@ -18,16 +18,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "licq_icq.h"
-#include "licq_icqd.h"
-#include "licq_user.h"
-
 #include "licq_gtk.h"
 
 #include <gtk/gtk.h>
 
+struct key_request
+{
+	GtkWidget *window;
+	GtkWidget *label_status;
+	gboolean open;
+
+	ICQUser *user;
+	struct e_tag_data *etag;
+};
+
 // Global list
 GSList *kr_list;
+
+gboolean send_key_request(gpointer);
+gboolean key_request_close_window(gpointer);
+void close_key_request(GtkWidget *, gpointer);
+struct key_request *kr_find(gulong uin);
+struct key_request *kr_new(ICQUser *u);
 
 void create_key_request_window(GtkWidget *widget, ICQUser *user)
 {
@@ -203,3 +215,45 @@ void close_key_request(GtkWidget *widget, gpointer _kr)
 	kr_list = g_slist_remove(kr_list, kr);
 	gtk_widget_destroy(kr->window);
 }
+
+void finish_secure(ICQEvent *event)
+{
+	struct key_request *kr = kr_find(event->Uin());
+
+	// Window isn't open.. cya
+	if(kr == 0)
+		return;
+
+	char result[41];
+	
+	switch(event->Result())
+	{
+		case EVENT_FAILED:
+			strncpy(result,
+				"Remote client does not support OpenSSL.", 41);
+			break;
+
+		case EVENT_ERROR:
+			strncpy(result, "Could not connect to remote client.",
+				41);
+			break;
+
+		case EVENT_SUCCESS:
+			if(kr->open)
+				strncpy(result, "Secure channel established.",
+					41);
+			else
+				strncpy(result, "Secure channel closed.", 41);
+			break;
+		case EVENT_ACKED:
+		case EVENT_TIMEDOUT:
+		case EVENT_CANCELLED:
+		default:
+			break;
+	}
+
+	gtk_label_set_text(GTK_LABEL(kr->label_status), result);
+	if (event->Result() == EVENT_SUCCESS)
+		gtk_timeout_add_full(500, key_request_close_window, NULL, kr, NULL);
+}
+

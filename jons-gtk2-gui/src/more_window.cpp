@@ -20,10 +20,34 @@
 
 #include "licq_gtk.h"
 
-#include "licq_icqd.h"
-#include "licq_user.h"
-
 #include <gtk/gtk.h>
+
+struct more_window
+{
+	GtkWidget *window;
+	GtkWidget *notify;
+	GtkWidget *autochat;
+	GtkWidget *autofile;
+	GtkWidget *autosecure;
+	GtkWidget *realip;
+	GtkWidget *visible;
+	GtkWidget *invisible;
+	GtkWidget *ignore;
+	GtkWidget *accept_away;
+	GtkWidget *accept_na;
+	GtkWidget *accept_dnd;
+	GtkWidget *accept_occ;
+	GtkWidget *online_to;
+	GtkWidget *away_to;
+	GtkWidget *na_to;
+	GtkWidget *dnd_to;
+	GtkWidget *occ_to;
+	GtkWidget *custom_check;
+	GtkWidget *custom_text;
+	ICQUser *user;
+};
+
+void more_ok_callback(GtkWidget *widget, struct more_window *mw);
 
 void list_more_window(GtkWidget *widget, ICQUser *u)
 {
@@ -254,9 +278,9 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 
 	/* Connect the signals of the buttons */
 	g_signal_connect(G_OBJECT(cancel), "clicked",
-			   G_CALLBACK(dialog_close), mw->window);
+			   G_CALLBACK(window_close), mw->window);
 	g_signal_connect(G_OBJECT(mw->window), "destroy",
-			   G_CALLBACK(dialog_close), mw->window);
+			   G_CALLBACK(window_close), mw->window);
 	g_signal_connect(G_OBJECT(ok), "clicked",
 			   G_CALLBACK(more_ok_callback), mw);
 	
@@ -333,5 +357,5 @@ void more_ok_callback(GtkWidget *widget, struct more_window *mw)
 	else
 		mw->user->SetCustomAutoResponse(0);
 	
-	dialog_close(0, mw->window);
+	window_close(0, mw->window);
 }

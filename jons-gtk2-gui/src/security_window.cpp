@@ -20,11 +20,40 @@
 
 #include "licq_gtk.h"
 
-#include "licq_user.h"
-
 #include <gtk/gtk.h>
 
+struct security_window
+{
+        GtkWidget *window;
+        GtkWidget *check_auth;
+        GtkWidget *check_web;
+        GtkWidget *check_hideip;
+        GtkTooltips *tooltips;
+	struct e_tag_data *etag;
+};
+
+struct user_security
+{
+	GtkWidget *window;
+	GtkWidget *check_auth;
+	GtkWidget *check_web;
+	GtkWidget *check_hideip;
+	GtkWidget *ign_new;
+	GtkWidget *ign_web;
+	GtkWidget *ign_mass;
+	GtkWidget *ign_pager;
+	gint page;
+	struct e_tag_data *etag;
+};
+
 struct user_security *us;
+
+GtkWidget *make_user_security_clist();
+void switch_page(GtkNotebook *, GtkNotebookPage *, gint, gpointer);
+void refresh_clist(GtkWidget *, gint);
+void close_user_security_window(GtkWidget *, gpointer);
+void ok_user_security(GtkWidget *, gpointer);
+void remove_user_security(GtkWidget *, GdkEventButton *, gpointer);
 
 void menu_security_users_window(GtkWidget *widget, gpointer data)
 {

@@ -19,9 +19,17 @@
  */
 
 #include "licq_gtk.h"
-#include "licq_icqd.h"
+
+#include "licq_log.h"
 
 #include <gtk/gtk.h>
+
+void pipe_signal(CICQSignal *);
+void pipe_event(ICQEvent *);
+void convo_recv(unsigned long);
+void owner_function(ICQEvent *);
+void user_function(ICQEvent *);
+void search_result(ICQEvent *);
 
 void pipe_callback(gpointer data, gint _Pipe, GdkInputCondition condition)
 {

@@ -24,6 +24,12 @@
 
 #include <gtk/gtk.h>
 
+struct system_message
+{
+	GtkWidget *window;
+	GtkWidget *text;
+};
+
 void
 system_message_window()
 {
@@ -113,9 +119,9 @@ system_message_window()
 
 	/* Connect signals */
 	g_signal_connect(G_OBJECT(button), "clicked",
-			   G_CALLBACK(dialog_close), sm->window);
+			   G_CALLBACK(window_close), sm->window);
 	g_signal_connect(G_OBJECT(sm->window), "destroy",
-			   G_CALLBACK(dialog_close), sm->window);
+			   G_CALLBACK(window_close), sm->window);
 	
 	/* Add the v_box to the window and show the widgets */
 	gtk_container_add(GTK_CONTAINER(sm->window), v_box);

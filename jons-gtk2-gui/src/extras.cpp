@@ -18,8 +18,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */   
 
-#include "licq_gtk.h"
-
 #include "pixmaps/online.xpm"
 #include "pixmaps/offline.xpm"
 #include "pixmaps/away.xpm"
@@ -37,9 +35,9 @@
 #include "pixmaps/securebday.xpm"
 #include "pixmaps/blank.xpm"
 
+#include "licq_gtk.h"
+
 #include "licq_countrycodes.h"
-#include "licq_events.h"
-#include "licq_icqd.h"
 #include "licq_languagecodes.h"
 
 #include <ctype.h>
@@ -47,6 +45,22 @@
 
 #include <iostream>
 using namespace std;
+
+extern GtkWidget *register_window;
+
+/*************** Finishing Events *****************************/
+void finish_away(ICQEvent *event);
+void finish_chat(ICQEvent *event);
+void finish_file(ICQEvent *event);
+void finish_random(ICQEvent *event);
+void finish_secure(ICQEvent *event);
+void finish_message(ICQEvent *event);
+
+/*************** Finishing Signals *****************************/
+void finish_info(CICQSignal *signal);
+
+void wizard_message(int);
+
 
 void do_colors()
 {
@@ -106,7 +120,7 @@ void message_box(const char *message)
 
 	/* Close the window on the OK button */
 	g_signal_connect(G_OBJECT(ok), "clicked",
-			   G_CALLBACK(dialog_close), dialog);
+			   G_CALLBACK(window_close), dialog);
 	
 	/* Show the message box*/
 	gtk_widget_show_all(dialog);
@@ -147,32 +161,12 @@ void owner_function(ICQEvent *event)
 			main_window = main_window_new(title);
 			main_window_show();
 			system_status_refresh();
-			dialog_close(0, register_window);
+			window_close(0, register_window);
 		}
 		else
 			wizard_message(4);
 	}
 	g_free(title);
-}
-
-void user_function(ICQEvent *event)
-{
-	GSList *temp = catcher;
-	struct e_tag_data *etd;
-
-	while (temp) {
-		etd = (struct e_tag_data *)temp->data;
-
-		if (event->Equals(etd->e_tag)) {
-			finish_event(etd, event);
-			return;
-		}
-
-		/* Not this one, go on to the next */
-		temp = temp->next;
-	}
-
-	return;
 }
 
 void finish_event(struct e_tag_data *etd, ICQEvent *event)
@@ -264,233 +258,23 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 		finish_random(event);
 }
 
-/********************** Finishing Events *******************************/
-
-void finish_chat(ICQEvent *event)
+void user_function(ICQEvent *event)
 {
-	struct request_chat *rc = g_new0(struct request_chat, 1);
+	GSList *temp = catcher;
+	struct e_tag_data *etd;
 
-	rc = rc_find(event->Uin());
+	while (temp) {
+		etd = (struct e_tag_data *)temp->data;
 
-	if(rc == 0)
-		return;
-		
-	close_request_chat(rc);
-	chat_start_as_client(event);
-}
-
-void finish_file(ICQEvent *event)
-{
-	struct file_send *fs = g_new0(struct file_send, 1);
-
-	fs = fs_find(event->Uin());
-
-	if(fs == 0)
-		return;
-		
-//	close_file_send(fs);
-	gtk_widget_destroy(fs->window);
-	file_start_send(event);
-}
-
-void finish_away(ICQEvent *event)
-{
-	struct user_away_window *uaw = g_new0(struct user_away_window, 1);
-
-	uaw = uaw_find(event->Uin());
-
-	/* If the window isn't open, don't bother */
-	if(uaw == 0)
-		return;
-
-	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(uaw->text_box));
-	GtkTextIter iter;
-	gtk_text_buffer_get_end_iter(tb, &iter);
-	gtk_text_buffer_insert(tb, &iter, uaw->user->AutoResponse(), -1);
-}
-
-void finish_random(ICQEvent *event)
-{
-	// They can search again!
-	gtk_widget_set_sensitive(rcw->search, true);
-
-	// Show the person's info window
-	ICQUser *u = gUserManager.FetchUser(event->SearchAck()->Uin(), LOCK_R);
-	list_info_user(0, u);
-	gUserManager.DropUser(u);
-}
-
-void finish_secure(ICQEvent *event)
-{
-	struct key_request *kr = kr_find(event->Uin());
-
-	// Window isn't open.. cya
-	if(kr == 0)
-		return;
-
-	char result[41];
-	
-	switch(event->Result())
-	{
-		case EVENT_FAILED:
-			strncpy(result,
-				"Remote client does not support OpenSSL.", 41);
-			break;
-
-		case EVENT_ERROR:
-			strncpy(result, "Could not connect to remote client.",
-				41);
-			break;
-
-		case EVENT_SUCCESS:
-			if(kr->open)
-				strncpy(result, "Secure channel established.",
-					41);
-			else
-				strncpy(result, "Secure channel closed.", 41);
-			break;
-		case EVENT_ACKED:
-		case EVENT_TIMEDOUT:
-		case EVENT_CANCELLED:
-		default:
-			break;
-	}
-
-	gtk_label_set_text(GTK_LABEL(kr->label_status), result);
-	if (event->Result() == EVENT_SUCCESS)
-		gtk_timeout_add_full(500, key_request_close_window, NULL, kr, NULL);
-}
-
-			
-/*************** Finishing Signals *****************************/
-
-void finish_info(CICQSignal *signal)
-{
-	/* Only do the info.. */
-	unsigned long type = signal->SubSignal();
-	
-	if(!(type == USER_GENERAL || type == USER_BASIC || type == USER_EXT ||
-	   type == USER_MORE || type == USER_ABOUT))
-		return;
-
-	struct info_user *iu = g_new0(struct info_user, 1);
-
-	iu = iu_find(signal->Uin());
-
-	if(iu == 0)
-		return;
-
-	const SCountry *country = GetCountryByCode(iu->user->GetCountryCode());
-//	const SLanguage *l1 = GetLanguageByCode(iu->user->GetLanguage(0));
-//	const SLanguage *l2 = GetLanguageByCode(iu->user->GetLanguage(1));
-//	const SLanguage *l3 = GetLanguageByCode(iu->user->GetLanguage(2));
-
-	gchar bday[11];
-	gchar age[6];
-
-	if(iu->user->GetAge() != 65535)
-		sprintf(age, "%hd", iu->user->GetAge());
-	else
-		strcpy(age, "N/A");
-
-	if(iu->user->GetBirthMonth() == 0 || iu->user->GetBirthDay() == 0)
-		strcpy(bday, "N/A");
-	else
-		sprintf(bday, "%d/%d/%d", iu->user->GetBirthMonth(),
-			iu->user->GetBirthDay(), iu->user->GetBirthYear());
-
-	switch(type)
-	{
-	case USER_GENERAL:
-	case USER_BASIC:
-	case USER_EXT:
-		gtk_entry_set_text(GTK_ENTRY(iu->alias), iu->user->GetAlias());
-		gtk_entry_set_text(GTK_ENTRY(iu->fname),
-				   iu->user->GetFirstName());
-		gtk_entry_set_text(GTK_ENTRY(iu->lname),
-				   iu->user->GetLastName());
-		gtk_entry_set_text(GTK_ENTRY(iu->email1),
-				   iu->user->GetEmailPrimary());
-		gtk_entry_set_text(GTK_ENTRY(iu->email2),
-				   iu->user->GetEmailSecondary());
-		gtk_entry_set_text(GTK_ENTRY(iu->oldemail),
-				   iu->user->GetEmailOld());
-		gtk_entry_set_text(GTK_ENTRY(iu->address),
-				   iu->user->GetAddress());
-		gtk_entry_set_text(GTK_ENTRY(iu->city), iu->user->GetCity());
-		gtk_entry_set_text(GTK_ENTRY(iu->state), iu->user->GetState());
-		gtk_entry_set_text(GTK_ENTRY(iu->zip), iu->user->GetZipCode());
-		
-		if(country == 0)
-			gtk_entry_set_text(GTK_ENTRY(iu->country),
-					   "Unspecified");
-		else
-			gtk_entry_set_text(GTK_ENTRY(iu->country),
-					   country->szName);
-
-		gtk_entry_set_text(GTK_ENTRY(iu->phone),
-				   iu->user->GetPhoneNumber());
-		gtk_entry_set_text(GTK_ENTRY(iu->cellphone),
-				   iu->user->GetCellularNumber());
-		gtk_entry_set_text(GTK_ENTRY(iu->faxnumber),
-				   iu->user->GetFaxNumber());
-		break;
-	case USER_MORE:
-		if(iu->user->GetGender() == 1)
-			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Female");
-		else if(iu->user->GetGender() == 2)
-			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Male");
-		else 
-			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Unspecified");
-
-		gtk_entry_set_text(GTK_ENTRY(iu->age), age);
-
-		gtk_entry_set_text(GTK_ENTRY(iu->bday), bday);
-
-		gtk_entry_set_text(GTK_ENTRY(iu->homepage),
-				   iu->user->GetHomepage());
-
-		for(unsigned short i = 0; i < 3; i++) {
-		const SLanguage *l = GetLanguageByCode(iu->user->GetLanguage(i));
-		if(l == 0)
-			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), "Unknown");
-		else
-			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), l->szName);
+		if (event->Equals(etd->e_tag)) {
+			finish_event(etd, event);
+			return;
 		}
-/*
-		if(l2 == 0)
-                        gtk_entry_set_text(GTK_ENTRY(iu->lang2), "Unknown");
-                else
-                        gtk_entry_set_text(GTK_ENTRY(iu->lang2), l2->szName);
 
-		if(l3 == 0)
-                        gtk_entry_set_text(GTK_ENTRY(iu->lang3), "Unknown");
-                else
-                        gtk_entry_set_text(GTK_ENTRY(iu->lang3), l3->szName);
-	*/	break;
-	case USER_WORK:
-		gtk_entry_set_text(GTK_ENTRY(iu->company),
-				   iu->user->GetCompanyName());
-		gtk_entry_set_text(GTK_ENTRY(iu->dept),
-				   iu->user->GetCompanyDepartment());
-		gtk_entry_set_text(GTK_ENTRY(iu->pos),
-				   iu->user->GetCompanyPosition());
-		gtk_entry_set_text(GTK_ENTRY(iu->co_homepage),
-				   iu->user->GetCompanyHomepage());
-		gtk_entry_set_text(GTK_ENTRY(iu->co_address),
-				   iu->user->GetCompanyAddress());
-		gtk_entry_set_text(GTK_ENTRY(iu->co_phone),
-				   iu->user->GetCompanyPhoneNumber());
-		gtk_entry_set_text(GTK_ENTRY(iu->co_fax),
-				   iu->user->GetCompanyFaxNumber());
-		gtk_entry_set_text(GTK_ENTRY(iu->co_city),
-				   iu->user->GetCompanyCity());
-		gtk_entry_set_text(GTK_ENTRY(iu->co_state),
-				   iu->user->GetCompanyState());
-		break;
-	case USER_ABOUT:
-		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(iu->about));
-		gtk_text_buffer_set_text(tb, iu->user->GetAbout(), -1);
-		break;
+		/* Not this one, go on to the next */
+		temp = temp->next;
 	}
+
+	return;
 }
+

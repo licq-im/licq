@@ -22,8 +22,86 @@
 #include <gdk/gdkkeysyms.h>
 #include <list>
 
-#include "licq_icq.h"
 #include "licq_gtk.h"
+#include "licq_chat.h"
+#include "licq_log.h"
+
+struct request_chat
+{
+	GtkWidget *window;
+	GtkWidget *text_box;
+	GtkWidget *send_norm;
+	GtkWidget *send_urg;
+	GtkWidget *send_list;
+	GtkWidget *chat_list;
+	ICQUser *user;
+	struct e_tag_data *etd;
+};
+
+struct remote_chat_request
+{
+	GtkWidget *dialog;
+	gulong uin;
+	CEventChat *c_event;
+};
+
+struct kick_window
+{
+	GtkWidget *winKick;
+	GtkWidget *cmbUsers;
+	GtkWidget *btnKick;
+};
+
+struct chat_window
+{
+	// Chat manager stuff
+	CChatManager *chatman;
+	CChatUser *chat_user;
+	CChatUser *hold_cuser;
+	std::list<CChatUser *> ChatUsers;
+
+	// Kick and tally window
+	struct kick_window *kw;
+
+	// UI
+	GtkWidget *window;
+	GtkWidget *notebook;
+	GtkWidget *table;
+	GtkWidget *table_irc;
+	GtkWidget *text_local;
+	GtkWidget *text_remote;
+	GtkWidget *text_irc;
+	GtkWidget *entry_irc;
+	GtkWidget *list_users;
+	GtkWidget *frame_local;
+	GtkWidget *frame_remote;
+	GtkWidget *font_sel_dlg;
+
+	// Remote
+	GdkColor *r_back_color;
+	GdkColor *r_fore_color;
+	PangoFontDescription *r_font;
+	gchar r_font_name[50];
+	gint r_font_size;
+	gboolean r_bold;
+	gboolean r_italic;
+
+	// Local
+	GdkColor *l_back_color;
+	GdkColor *l_fore_color;
+	PangoFontDescription *l_font;
+	gchar l_font_name[50];
+	gint l_font_size;
+	gboolean l_bold;
+	gboolean l_italic;
+	
+	// Extra - but important!
+	gboolean pane_mode;
+	ICQUser *user;
+	gboolean audio;
+	gint last_pos;
+	guint input_tag;
+};
 
 GSList *rc_list;
 
@@ -31,6 +109,38 @@ using namespace std; // for list
 
 typedef list<chat_window *> ChatDlgList;
 ChatDlgList chat_list;
+
+struct request_chat *rc_new(ICQUser *);
+struct request_chat *rc_find(gulong);
+void close_request_chat(struct request_chat *);
+void chat_join_multiparty(struct remote_chat_request *);
+struct chat_window *chat_window_create(gulong);
+GtkWidget* chat_create_menu(struct chat_window *);
+void start_kick_window(struct chat_window *);
+unsigned long start_kick_callback(struct chat_window *);
+gboolean chat_send(GtkWidget *, GdkEventKey *, struct chat_window *);
+void multi_request_chat(GtkWidget *, gpointer);
+void single_request_chat(GtkWidget *, gpointer);
+void ok_request_chat(GtkWidget *, gpointer);
+void cancel_request_chat(GtkWidget *, gpointer);
+void chat_refuse(GtkWidget *, gpointer);
+void chat_start_as_server(gulong, CEventChat *);
+void chat_start_as_client(ICQEvent *);
+void chat_audio(gpointer, guint, GtkWidget *);
+void chat_kick(gpointer, guint, GtkWidget *);
+void chat_kick_no_vote(gpointer, guint, GtkWidget *);
+void kick_callback(GtkWidget *, gpointer);
+void kick_no_vote_callback(GtkWidget *, gpointer);
+void chat_save(gpointer, guint, GtkWidget *);
+void save_chat_ok(GtkWidget *, gpointer);
+void save_chat_cancel(GtkWidget *, gpointer);
+void chat_close(gpointer, guint, GtkWidget *);
+void chat_pipe_callback(gpointer, gint, GdkInputCondition);
+void chat_beep_users(gpointer, guint, GtkWidget *);
+void chat_change_font(gpointer, guint, GtkWidget *);
+void font_dlg_close(GtkWidget *, gpointer);
+void font_dlg_ok(GtkWidget *, gpointer);
+
 
 void list_request_chat(GtkWidget *widget, ICQUser *user)
 {
@@ -750,9 +860,9 @@ void start_kick_window(struct chat_window *cw)
 	// Leave the "clicked" signal for btnKick to each function
 	// since it varies
 	g_signal_connect(G_OBJECT(btnCancel), "clicked",
-		G_CALLBACK(dialog_close), cw->kw->winKick);
+		G_CALLBACK(window_close), cw->kw->winKick);
 	g_signal_connect(G_OBJECT(cw->kw->winKick), "destroy",
-		G_CALLBACK(dialog_close), cw->kw->winKick);
+		G_CALLBACK(window_close), cw->kw->winKick);
 	
 	GtkWidget *tblTable = gtk_table_new(2, 2, false);
 	gtk_container_add(GTK_CONTAINER(cw->kw->winKick), tblTable);
@@ -1450,3 +1560,17 @@ void font_dlg_ok(GtkWidget *widget, gpointer _cw)
 	// Ok, close it now
 	gtk_widget_destroy(cw->font_sel_dlg);
 }
+
+void finish_chat(ICQEvent *event)
+{
+	struct request_chat *rc = g_new0(struct request_chat, 1);
+
+	rc = rc_find(event->Uin());
+
+	if(rc == 0)
+		return;
+		
+	close_request_chat(rc);
+	chat_start_as_client(event);
+}
+

@@ -20,12 +20,14 @@
 
 #include "licq_gtk.h"
 
-#include "licq_user.h"
-#include "licq_icqd.h"
-
 #include <gtk/gtk.h>
 
 GtkWidget *system_status;
+
+void system_status_click(GtkWidget *, GdkEventButton *, gpointer);
+void system_message_window();
+void licq_tray_start_flashing();
+void licq_tray_stop_flashing();
 
 GtkWidget *system_status_new(gint borderwidth)
 {

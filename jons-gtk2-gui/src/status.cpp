@@ -20,13 +20,23 @@
 
 #include "licq_gtk.h"
 
-#include "licq_user.h"
-#include "licq_icqd.h"
-#include "licq_icq.h"
-
 #include <gtk/gtk.h>
 
 GtkWidget *_status_menu;
+
+gint status_popup_menu(GtkWidget *, GdkEventButton *);
+void status_ffc(GtkWidget *, gpointer);
+void status_online(GtkWidget *, gpointer);
+void status_away(GtkWidget *, gpointer);
+void status_na(GtkWidget *, gpointer);
+void status_occ(GtkWidget *, gpointer);
+void status_dnd(GtkWidget *, gpointer);
+void status_off(GtkWidget *, gpointer);
+void status_invisible(GtkWidget *, GtkWidget *);
+void status_change(gushort);
+void away_msg_window(gushort);
+
+void licq_tray_set_content(GObject *, GdkPixbuf *, int);
 
 GtkWidget *status_bar_new(gint border_width)
 {

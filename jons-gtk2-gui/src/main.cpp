@@ -21,9 +21,7 @@
 #include "licq_gtk.h"
 
 #include "licq_plugin.h"
-#include "licq_icqd.h"
 #include "licq_log.h"
-#include "licq_user.h"
 
 #include <sys/time.h>
 #include <gtk/gtk.h>
@@ -33,6 +31,9 @@ gint _pipe;
 CPluginLog *logg;
 gint log_pipe;
 GSList *catcher;
+
+void log_pipe_callback(gpointer, gint, GdkInputCondition);
+void registration_wizard();
 
 const char *LP_Name()
 {

@@ -20,10 +20,7 @@
 
 #include "config.h"
 #include "licq_gtk.h"
-
-#include "licq_user.h"
-#include "licq_icqd.h"
-#include "licq_icq.h"
+#include "licq_log.h"
 
 unsigned short
 get_owner_status()
@@ -34,9 +31,6 @@ get_owner_status()
 	
 	return status;
 }
-
-#include <gtk/gtk.h>
-#include <fstream>
 
 extern "C" {
 
@@ -49,8 +43,16 @@ extern "C" {
 
 }
 
+#include <gtk/gtk.h>
+
+#include <fstream>
 #include <iostream>
 using namespace std;
+
+GtkWidget *contact_list_new(gint, gint);
+GtkWidget *status_bar_new(gint border_width);
+GtkWidget *system_status_new(gint border_width);
+GObject *licq_init_tray();
 
 GtkWidget *vertical_box;
 GtkWidget *contact_list;

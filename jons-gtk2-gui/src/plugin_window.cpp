@@ -23,9 +23,23 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "licq_icqd.h"
+struct plugin_window
+{
+	GtkWidget *window;
+	GtkWidget *l_clist;
+	GtkWidget *a_clist;
+};
 
 struct plugin_window *pw;
+
+gboolean plugin_close_callback(GtkWidget *, gpointer);
+void plugin_enable_callback(GtkWidget *, gpointer);
+void plugin_disable_callback(GtkWidget *, gpointer);
+void plugin_unload_callback(GtkWidget *, gpointer);
+void plugin_details_callback(GtkWidget *, gpointer);
+void plugin_configure_callback(GtkWidget *, gpointer);
+void plugin_load_callback(GtkWidget *, gpointer);
+void plugin_refresh_callback(GtkWidget *, gpointer);
 
 void create_plugin_window()
 {

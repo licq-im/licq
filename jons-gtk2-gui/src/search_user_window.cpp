@@ -21,8 +21,6 @@
 #include "licq_gtk.h"
 #include "utilities.h"
 
-#include "licq_icqd.h"
-#include "licq_user.h"
 #include "licq_languagecodes.h"
 #include "licq_countrycodes.h"
 
@@ -61,6 +59,14 @@ struct search_user
 
 struct search_user *su = NULL;
 static gint num_found_users = 0;
+
+void search_callback(GtkWidget *, gpointer);
+void search_list_double_click(GtkWidget *, GdkEventButton *, gpointer);
+void search_done(bool);
+void search_found(CSearchAck *);
+void search_failed();
+void search_close(GtkWidget *, gpointer);
+void clear_callback(GtkWidget *, gpointer);
 
 GtkWidget *
 left_aligned_label(const char *lbl)

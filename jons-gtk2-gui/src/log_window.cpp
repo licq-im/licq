@@ -21,14 +21,30 @@
 #include "licq_gtk.h"
 #include "utilities.h"
 
-#include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_countrycodes.h"
 
 #include <gtk/gtk.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std; // for ofstream
+
+struct network_window
+{
+	GtkWidget *window;
+	GtkWidget *text;
+};
+
+void new_log_window();
+void log_window_save(GtkWidget *, gpointer);
+void log_window_save_ok(GtkWidget *, gpointer);
+void log_window_save_cancel(GtkWidget *, gpointer);
+gint log_window_close(GtkWidget *, GtkWidget *);
+void log_window_clear(GtkWidget *, gpointer);
+
+extern CPluginLog *logg;
+extern gint log_pipe;
 
 struct network_window *nw = NULL;
 gboolean nw_shown = FALSE;

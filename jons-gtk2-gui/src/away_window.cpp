@@ -25,38 +25,80 @@
 
 GSList *uaw_list;
 
+struct away_dialog
+{
+	GtkWidget *window;
+	GtkWidget *text;
+};
+
+struct user_away_window
+{
+	GtkWidget *window;
+	GtkWidget *show_again;
+	GtkWidget *text_box;
+	ICQUser *user;
+	GtkWidget *progress;
+	gchar buffer[30];
+	struct e_tag_data *etag;
+};
+
+void set_away_msg(GtkWidget *widget, struct away_dialog *away_d)
+{
+	GtkTextIter s, e;
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(away_d->text));
+	gtk_text_buffer_get_start_iter(tb, &s);
+	gtk_text_buffer_get_end_iter(tb, &e);
+  gchar *txt = gtk_text_buffer_get_text(tb, &s, &e, FALSE);
+	ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
+	owner->SetAutoResponse(txt);
+	gUserManager.DropOwner();
+  g_free(txt);
+
+	window_close(NULL, away_d->window);
+}
+
 void away_msg_window(gushort status)
 {
-	struct away_dialog *away_d = g_new0(struct away_dialog, 1);
+	
+  static struct away_dialog *away_d = NULL;
+  
+  if (away_d == NULL)
+    away_d = g_new0(struct away_dialog, 1);
+  else {
+    gtk_widget_show(away_d->window);
+    return;
+  }
 
-	GtkWidget *ok;
-	GtkWidget *cancel;
-	GtkWidget *h_box;
-	GtkWidget *v_box;
-	const gchar *title =
-		g_strdup_printf("Set %s Response",
-		ICQUser::StatusToStatusStr(status, FALSE));
+	gchar *title = g_strdup_printf("Set %s Response",
+                                 ICQUser::StatusToStatusStr(status, FALSE));
 
 	/* Make the main window */
 	away_d->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(away_d->window), title);
 	gtk_window_set_position(GTK_WINDOW(away_d->window), GTK_WIN_POS_CENTER);
+	g_free(title);
 
 	/* The text box */
 	away_d->text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(away_d->text), TRUE);
 	gtk_widget_set_size_request(GTK_WIDGET(away_d->text), 300, 100);
 
+	// Insert the current away message
+  ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+  GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(away_d->text));
+  gtk_text_buffer_set_text(tb, owner->AutoResponse(), -1);
+	gUserManager.DropOwner();
+
 	/* The boxes */
-	h_box = gtk_hbox_new(TRUE, 5);
-	v_box = gtk_vbox_new(FALSE, 5);
+	GtkWidget *h_box = gtk_hbox_new(TRUE, 5);
+	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 
 	/* Pack the text box into the v_box */
 	gtk_box_pack_start(GTK_BOX(v_box), away_d->text, TRUE, TRUE, 0);
 
 	/* Make the buttons now */
-	ok = gtk_button_new_from_stock(GTK_STOCK_OK);
-	cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+	GtkWidget *ok = gtk_button_new_from_stock(GTK_STOCK_OK);
+	GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 
 	/* Pack the buttons */
 	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 5);
@@ -65,9 +107,9 @@ void away_msg_window(gushort status)
 
 	/* Connect the signals now */
 	g_signal_connect(G_OBJECT(cancel), "clicked",
-			   G_CALLBACK(away_close), away_d->window);
+			   G_CALLBACK(window_close), away_d->window);
 	g_signal_connect(G_OBJECT(away_d->window), "destroy",
-			   G_CALLBACK(away_close), away_d->window);
+			   G_CALLBACK(destroy_cb), &away_d);
 	g_signal_connect(G_OBJECT(ok), "clicked",
 			   G_CALLBACK(set_away_msg), away_d);
 	
@@ -75,66 +117,89 @@ void away_msg_window(gushort status)
 	gtk_container_add(GTK_CONTAINER(away_d->window), v_box);
 	gtk_widget_show_all(away_d->window);
 	gtk_window_set_focus(GTK_WINDOW(away_d->window), away_d->text);
-	gtk_grab_add(away_d->window);
+	gtk_window_set_modal(GTK_WINDOW(away_d->window), TRUE);
 }
 
-void set_away_msg(GtkWidget *widget, struct away_dialog *away_d)
-{
-	ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
-	GtkTextIter s, e;
-	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(away_d->text));
-	gtk_text_buffer_get_start_iter(tb, &s);
-	gtk_text_buffer_get_end_iter(tb, &e);
-  gchar *txt = gtk_text_buffer_get_text(tb, &s, &e, FALSE);
-	owner->SetAutoResponse(txt);
-  g_free(txt);
-	gUserManager.DropOwner();
+/* The following will ensure only one window is open and that when the *
+** Auto Response is received, it pops up in the box there.  Now the    *
+** status of the connection will be brought back to this window        */ 
 
-	gtk_grab_remove(away_d->window);
-	gtk_widget_destroy(away_d->window);
+void 
+destroy_away_window(GtkWidget *widget, struct user_away_window *uaw)
+{
+	uaw->user->SetShowAwayMsg(gtk_toggle_button_get_active(
+					GTK_TOGGLE_BUTTON(uaw->show_again)));
+	uaw_list = g_slist_remove(uaw_list, uaw);
+	catcher = g_slist_remove(catcher, uaw->etag);
+	g_free(uaw->etag);
+  g_free(uaw);
 }
 
-void away_close(GtkWidget *widget, GtkWidget *window)
+struct user_away_window *uaw_find(unsigned long uin)
 {
-	gtk_grab_remove(window);
-	gtk_widget_destroy(window);
+	struct user_away_window *uaw;
+	GSList *temp_uaw_list = uaw_list;
+
+	while (temp_uaw_list) {
+		uaw = (struct user_away_window *)temp_uaw_list->data;
+		if (uaw->user->Uin() == uin)
+			return uaw;
+		temp_uaw_list = temp_uaw_list->next;
+	}
+
+	/* It wasn't found, return null */
+	return 0;
+}
+
+struct user_away_window *uaw_new(ICQUser *u)
+{
+	/* Does it exist already? */
+	struct user_away_window *uaw = uaw_find(u->Uin());
+
+	/* If it does, return it, if not, make one */
+	if (uaw != 0) 
+		return uaw;
+
+	uaw = g_new0(struct user_away_window, 1);
+
+	uaw->user = u;
+
+	uaw_list = g_slist_append(uaw_list, uaw);
+
+//	list_read_message(0, uaw->user);
+
+	return uaw;
 }
 
 void list_read_message(GtkWidget *widget, ICQUser *user)
 {
 	struct user_away_window *uaw = uaw_find(user->Uin());
 	
-	if(uaw != 0)
+	// we're in the process of retrieving the message (or it's displayed already)
+  if (uaw != NULL)
 		return;
 
 	uaw = uaw_new(user);
-
-	GtkWidget *h_box;
-	GtkWidget *v_box;
-	GtkWidget *scroll;
-	GtkWidget *close;
-	const gchar *title = g_strdup_printf("Auto Response for %s", user->GetAlias());
-
-	struct e_tag_data *etd = g_new0(struct e_tag_data, 1);
-	
+	uaw->etag = g_new0(struct e_tag_data, 1);
 	uaw->user = user;
-	uaw->etag = etd;
-	
+
+	gchar *title = g_strdup_printf("Auto Response for %s", user->GetAlias());
 
 	/* Make the window */
 	uaw->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(uaw->window), title);
 	gtk_window_set_position(GTK_WINDOW(uaw->window), GTK_WIN_POS_CENTER);
+	g_free(title);
 
 	g_signal_connect(G_OBJECT(uaw->window), "destroy",
-			   G_CALLBACK(close_away_window), uaw);
+			   G_CALLBACK(destroy_away_window), uaw);
 
 	/* Make the boxes */
-	h_box = gtk_hbox_new(FALSE, 5);
-	v_box = gtk_vbox_new(FALSE, 5);
+	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
+	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 
 	/* The scrolling window */
-	scroll = gtk_scrolled_window_new(0, 0);
+	GtkWidget *scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
@@ -157,9 +222,9 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 				     user->ShowAwayMsg());
 
 	/* The close button */
-	close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	GtkWidget *close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	g_signal_connect(G_OBJECT(close), "clicked",
-			   G_CALLBACK(close_away_window), uaw);
+			   G_CALLBACK(window_close), uaw->window);
 
 	/* Pack everything */
 	gtk_box_pack_start(GTK_BOX(h_box), uaw->show_again, TRUE, TRUE, 10);
@@ -189,59 +254,19 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 
 	/* Append it to gslist */
 	catcher = g_slist_append(catcher, uaw->etag); 
-
-	g_free(const_cast<char *>(title));
 }
 
-void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
+void finish_away(ICQEvent *event)
 {
-	uaw->user->SetShowAwayMsg(gtk_toggle_button_get_active(
-					GTK_TOGGLE_BUTTON(uaw->show_again)));
-	uaw_list = g_slist_remove(uaw_list, uaw);
-	catcher = g_slist_remove(catcher, uaw->etag);
-	dialog_close(0, uaw->window);
+	struct user_away_window *uaw = uaw_find(event->Uin());
+
+	/* If the window isn't open, don't bother */
+	if (uaw == 0)
+		return;
+
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(uaw->text_box));
+	GtkTextIter iter;
+	gtk_text_buffer_get_end_iter(tb, &iter);
+	gtk_text_buffer_insert(tb, &iter, uaw->user->AutoResponse(), -1);
 }
 
-/* The following will ensure only one window is open and that when the *
-** Auto Response is received, it pops up in the box there.  Now the    *
-** status of the connection will be brought back to this window        */ 
-
-struct user_away_window *uaw_new(ICQUser *u)
-{
-	struct user_away_window *uaw;
-
-	/* Does it exist already? */
-	uaw = uaw_find(u->Uin());
-
-	/* If it does, return it, if not, make one */
-	if(uaw != 0) 
-		return uaw;
-
-	uaw = g_new0(struct user_away_window, 1);
-
-	uaw->user = u;
-
-	uaw_list = g_slist_append(uaw_list, uaw);
-
-//	list_read_message(0, uaw->user);
-
-	return uaw;
-}
-
-struct user_away_window *uaw_find(unsigned long uin)
-{
-	struct user_away_window *uaw;
-	GSList *temp_uaw_list = uaw_list;
-
-	while(temp_uaw_list)
-	{
-		uaw = (struct user_away_window *)temp_uaw_list->data;
-		if(uaw->user->Uin() == uin)
-			return uaw;
-
-		temp_uaw_list = temp_uaw_list->next;
-	}
-
-	/* It wasn't found, return null */
-	return 0;
-}

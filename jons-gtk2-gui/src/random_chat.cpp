@@ -21,11 +21,24 @@
 #include <gtk/gtk.h>
 
 #include "licq_gtk.h"
-#include "licq_icqd.h"
-#include "licq_icq.h"
+
+struct random_chat
+{
+	GtkWidget *window;
+	GtkWidget *group_list;
+	GtkWidget *search;
+	GtkWidget *close;
+	struct e_tag_data *etag;
+};
 
 struct random_chat *rcw;
 struct random_chat *src;
+
+void random_search_callback(GtkWidget *, gpointer);
+void random_cancel_callback(GtkWidget *, gpointer);
+void random_close_callback(GtkWidget *, gpointer);
+void set_random_set_callback(GtkWidget *, gpointer);
+void set_random_close_callback(GtkWidget *, gpointer);
 
 void random_chat_search_window()
 {
@@ -45,7 +58,7 @@ void random_chat_search_window()
 
 	// Connect the destroy event
 	g_signal_connect(G_OBJECT(rcw->window), "destroy",
-		G_CALLBACK(dialog_close), rcw->window);
+		G_CALLBACK(window_close), rcw->window);
 
 	// The table for all the widgets
 	GtkWidget *table = gtk_table_new(3, 2, false);
@@ -340,4 +353,15 @@ void set_random_close_callback(GtkWidget *widget, gpointer data)
 	src->etag = 0;
 	g_free(src);
 	src = 0;
+}
+
+void finish_random(ICQEvent *event)
+{
+	// They can search again!
+	gtk_widget_set_sensitive(rcw->search, true);
+
+	// Show the person's info window
+	ICQUser *u = gUserManager.FetchUser(event->SearchAck()->Uin(), LOCK_R);
+	list_info_user(0, u);
+	gUserManager.DropUser(u);
 }

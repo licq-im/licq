@@ -21,15 +21,19 @@
 #include "licq_gtk.h"
 #include "event_description.h"
 
-#include "licq_events.h"
-#include "licq_icqd.h"
-#include "licq_user.h"
-#include "licq_history.h"
-
 #include <gtk/gtk.h>
 #include <time.h>
 
+struct history
+{
+	GtkWidget *text;
+	GtkWidget *check;
+	ICQUser *user;
+};
+
 const gchar *line = "\n----------------------------\n";
+
+void reverse_history(GtkWidget *widget, struct history *hist);
 
 void list_history(GtkWidget *widget, ICQUser *user)
 {
@@ -75,7 +79,7 @@ void list_history(GtkWidget *widget, ICQUser *user)
 	// The close button
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	g_signal_connect(G_OBJECT(button), "clicked",
-			G_CALLBACK(dialog_close), window);
+			G_CALLBACK(window_close), window);
 
 	// The reverse check button
 	hist->check = gtk_check_button_new_with_label("Reverse");

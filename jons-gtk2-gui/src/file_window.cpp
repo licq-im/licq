@@ -20,13 +20,78 @@
 
 #include <stdlib.h>	// for char *getenv(const char *);
 #include "licq_gtk.h"
-
-#include "licq_icqd.h"
-#include "licq_message.h"
-#include "licq_filetransfer.h"
-#include "licq_user.h"
+#include "licq_log.h"
 
 GSList *fs_list;
+
+struct file_window
+{
+	/* File sending/receiving internals */
+	CFileTransferManager *ftman;
+	gulong uin;
+	gint input_tag;
+	gulong sequence;
+
+	/* For the window */
+	GtkWidget *window;
+	GtkWidget *current_file_name;
+	GtkWidget *total_files;
+	GtkWidget *local_file_name;
+	GtkWidget *batch;
+	GtkWidget *batch_progress;
+	GtkWidget *batch_size;
+	GtkWidget *progress;
+	GtkWidget *file_size;
+	GtkWidget *time;
+	GtkWidget *bps;
+	GtkWidget *eta;
+	GtkWidget *status;
+	GtkWidget *cancel;
+};
+
+struct file_accept
+{
+	GtkWidget *window;
+	GtkWidget *window2;
+	ICQUser *user;
+	CUserEvent *e;
+	GtkWidget *text;  /* This is for the refuse part... */
+};
+
+struct file_send
+{
+	GtkWidget *window;		// Window
+	GtkWidget *description;		// File description
+	GtkWidget *file_path;		// File path to send
+	GtkWidget *browse;		// Browse for new file
+	GtkWidget *ok;			// Send
+	GtkWidget *cancel;		// Cancel before it is sent
+	GtkWidget *send_normal;		// Send it normally
+	GtkWidget *send_urgent;		// Send it urgently
+	GtkWidget *send_list;		// Send it to their list
+	GtkWidget *file_select;		// File selection widget
+
+	/* Internals */
+	gulong uin;
+	struct e_tag_data *etd;
+};
+
+void save_file(struct file_accept *fa);
+void create_file_window(struct file_window *fw);
+void update_file_info(struct file_window *fw);
+struct file_send *fs_find(gulong uin);
+void accept_file(GtkWidget *, gpointer);
+void refuse_file(GtkWidget *, gpointer);
+void refusal_ok(GtkWidget *, gpointer);
+void cancel_file(GtkWidget *, gpointer);
+void file_pipe_callback(gpointer, gint, GdkInputCondition);
+gchar *encode_file_size(unsigned long);
+void fs_browse_click(GtkWidget *, gpointer);
+void fs_ok_click(GtkWidget *, gpointer);
+void fs_cancel_click(GtkWidget *, gpointer);
+void file_select_ok(GtkWidget *, gpointer);
+void file_select_cancel(GtkWidget *, gpointer);
+void file_start_send(ICQEvent *);
 
 void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept)
 {
@@ -76,7 +141,7 @@ void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept)
 
 	// Connect the signals
 	g_signal_connect(G_OBJECT(fa->window), "destroy",
-			   G_CALLBACK(dialog_close), fa->window);
+			   G_CALLBACK(window_close), fa->window);
 	g_signal_connect(G_OBJECT(refuse), "clicked",
 			   G_CALLBACK(refuse_file), (gpointer)fa);
 	g_signal_connect(G_OBJECT(accept), "clicked",
@@ -91,7 +156,7 @@ void refuse_file(GtkWidget *widget, gpointer _fa)
 	struct file_accept *fa = (struct file_accept *)_fa;
 
 	// Close the unnecessary open window
-	dialog_close(0, fa->window);
+	window_close(0, fa->window);
 
 	// Create a window to get a reason for not accepting it
 	
@@ -148,7 +213,7 @@ void refusal_ok(GtkWidget *widget, gpointer _fa)
 			);
 	}
 
-	dialog_close(0, fa->window2);
+	window_close(0, fa->window2);
 }
 
 void accept_file(GtkWidget *widget, gpointer _fa)
@@ -157,7 +222,7 @@ void accept_file(GtkWidget *widget, gpointer _fa)
 
 	// Close the unnecessary open window
 	if(fa->window)
-		dialog_close(0, fa->window);
+		window_close(0, fa->window);
 
 	save_file(fa);
 }
@@ -377,7 +442,7 @@ void cancel_file(GtkWidget *widget, gpointer _fw)
 	gtk_input_remove(fw->input_tag);
 
 	// Close this window
-	dialog_close(0, fw->window);
+	window_close(0, fw->window);
 }
 
 void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
@@ -782,5 +847,19 @@ void file_start_send(ICQEvent *event)
   fw->ftman->SendFiles(fl, ea->Port());
 	
 	return;
+}
+
+void finish_file(ICQEvent *event)
+{
+	struct file_send *fs = g_new0(struct file_send, 1);
+
+	fs = fs_find(event->Uin());
+
+	if(fs == 0)
+		return;
+		
+//	close_file_send(fs);
+	gtk_widget_destroy(fs->window);
+	file_start_send(event);
 }
 

@@ -20,9 +20,6 @@
 
 #include "licq_gtk.h"
 
-#include "licq_icqd.h"
-#include "licq_user.h"
-
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/time.h>
@@ -54,6 +51,10 @@ enum {
 	COL_PUSER,
 	N_COLS
 };
+
+GdkColor *get_status_color(unsigned long);
+gboolean contact_list_click(GtkWidget *, GdkEventButton *, gpointer);
+void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -320,6 +321,16 @@ GdkColor *get_status_color(unsigned long nStatus)
 
 	return online_color;
 }
+
+void convo_open_cb(ICQUser *user);
+void list_send_url(GtkWidget *, ICQUser *);
+void list_request_file(GtkWidget *, ICQUser *);
+void list_request_chat(GtkWidget *, ICQUser *);
+void create_key_request_window(GtkWidget *, ICQUser *);
+void list_read_message(GtkWidget *, ICQUser *);
+void list_history(GtkWidget *, ICQUser *);
+void list_more_window(GtkWidget *, ICQUser *);
+void list_delete_user(GtkWidget *, ICQUser *);
 
 gboolean contact_list_click(GtkWidget *contact_list,
 			GdkEventButton *event,

@@ -1,13 +1,15 @@
 #include "licq_gtk.h"
 
-#include "licq_icqd.h"
-#include "licq_user.h"
-
 static GtkWidget *password1;
 static GtkWidget *password2;
 static GtkWidget *check;
 static GtkWidget *uin;
 GtkWidget *register_window;
+
+void wizard_ok(GtkWidget *, gpointer);
+void wizard_cancel(GtkWidget *, gpointer);
+void current_button_callback(GtkWidget *, gpointer);
+void wizard_message(int mes);
 
 void registration_wizard()
 {
@@ -141,7 +143,7 @@ void wizard_ok(GtkWidget *widget, gpointer data)
 		main_window = main_window_new(g_strdup_printf("%ld", _uin));
 		main_window_show();
 		system_status_refresh();
-		dialog_close(0, register_window);
+		window_close(0, register_window);
 	}
 
 	/* Registering a new user */
@@ -215,7 +217,7 @@ void wizard_message(int mes)
 
 	/* Close the dialog window when ok is clicked */
 	g_signal_connect(G_OBJECT(ok), "clicked",
-			   G_CALLBACK(dialog_close), dialog);
+			   G_CALLBACK(window_close), dialog);
 	
 	gtk_widget_show_all(dialog);
 }
