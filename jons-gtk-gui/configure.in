@@ -1,10 +1,8 @@
 AC_INIT(src/contact_list.cpp)
-
+AC_CONFIG_AUX_DIR(admin)
 AM_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE(GtkPlugin, 0.0.1)
-
-AM_MAINTAINER_MODE
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -16,19 +14,10 @@ dnl libtool stuff
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
+AC_LIBTOOL_CXX
 
 dnl Check for header files
-AC_CHECK_LICQ
-
-if test "$have_licq_inc" = no; then
-  AC_MSG_ERROR([
-
-I can't find the Licq header files.
-You must unpack this archive into the plugins/ directory off of the
-main Licq source tree.  In other words, we should be in
-/some/dir/licq-0.xx/plugins/jons-gtk-gui right now.
-])
-fi
+LICQ_CHECK_LICQ
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
