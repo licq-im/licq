@@ -900,7 +900,7 @@ void CMainWindow::updateStatus()
 //----CMainWindow::changeStatusManual-------------------------------------------
 void CMainWindow::changeStatusManual(int id)
 {
-  if (id != ICQ_STATUS_OFFLINE && ((id & 0xFF) != ICQ_STATUS_ONLINE))
+  if (id != ICQ_STATUS_OFFLINE && (id & 0xFF) != ICQ_STATUS_ONLINE)
     awayMsgDlg->SelectAutoResponse(id);
   changeStatus(id);
 }
@@ -1459,18 +1459,22 @@ void CMainWindow::autoAway()
   }
 
   if ( (autoNATime > 0) &&
-       (unsigned long)idleTime > (unsigned long)(autoNATime * 60000) &&
-       (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY) )
+       (unsigned long)idleTime > (unsigned long)(autoNATime * 60000))
   {
-    changeStatus(ICQ_STATUS_NA);
-    bAutoNA = true;
+    if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY)
+    {
+      changeStatus(ICQ_STATUS_NA);
+      bAutoNA = true;
+    }
   }
   else if ( (autoAwayTime > 0) &&
-            (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000) &&
-            (status == ICQ_STATUS_ONLINE) )
+            (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000))
   {
-    changeStatus(ICQ_STATUS_AWAY);
-    bAutoAway = true;
+    if (status == ICQ_STATUS_ONLINE)
+    {
+      changeStatus(ICQ_STATUS_AWAY);
+      bAutoAway = true;
+    }
   }
   else
   {
