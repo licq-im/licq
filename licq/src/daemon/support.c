@@ -40,11 +40,11 @@ void SetString(char **szDest, const char *szSource)
 
 int Redirect(const char *_szFile)
 {
-	int fd = open(_szFile, O_WRONLY);
+  int fd = open(_szFile, O_WRONLY | O_CREAT | O_TRUNC);
   if (fd == -1) return 0;
-	if (dup2(fd, STDOUT_FILENO) == -1) return 0;
-	if (dup2(fd, STDERR_FILENO) == -1) return 0;
-	return 1;
+  if (dup2(fd, STDOUT_FILENO) == -1) return 0;
+  if (dup2(fd, STDERR_FILENO) == -1) return 0;
+  return 1;
 }
 
 
@@ -232,7 +232,7 @@ static char sccsid[] = "@(#)inet_addr.c	8.1 (Berkeley) 6/17/93";
 #define INADDR_NONE (0xffffffff)
 #endif /* INADDR_NONE */
 
-/* 
+/*
  * Check whether "cp" is a valid ascii representation
  * of an Internet address and convert to a binary address.
  * Returns 1 if the address is valid, 0 if not.
@@ -268,7 +268,7 @@ int inet_aton(const char *cp, struct in_addr *addr)
 				continue;
 			}
 			if (base == 16 && isascii(c) && isxdigit(c)) {
-				val = (val << 4) + 
+				val = (val << 4) +
 					(c + 10 - (islower(c) ? 'a' : 'A'));
 				cp++;
 				continue;
