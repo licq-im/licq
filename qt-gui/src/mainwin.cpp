@@ -2970,6 +2970,34 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmAuthorize.load(sFilepath);
    if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
 
+   fIconsConf.ReadStr("Collapsed", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmCollapsed.load(sFilepath);
+   
+   fIconsConf.ReadStr("Expanded", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmExpanded.load(sFilepath);
+   
+   fIconsConf.ReadStr("Phone", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmPhone.load(sFilepath);
+   
+   fIconsConf.ReadStr("Cellular", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmCellular.load(sFilepath);
+   
+   fIconsConf.ReadStr("Birthday", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmBirthday.load(sFilepath);
+   
+   fIconsConf.ReadStr("CustomAR", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmCustomAR.load(sFilepath);
+   
+   fIconsConf.ReadStr("Invisible", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmInvisible.load(sFilepath);
+   
    fIconsConf.ReadStr("SMS", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmSMS.load(sFilepath);

@@ -757,13 +757,40 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   setSorting(0);
   setVScrollBarMode(gMainWindow->m_bScrollBar ? Auto : AlwaysOff);
 
-  pixCollapsed = new QPixmap(itemCollapsed_xpm);
-  pixExpanded  = new QPixmap(itemExpanded_xpm);
-  pixBirthday  = new QPixmap(pixBirthday_xpm);
-  pixCustomAR  = new QPixmap(pixCustomAR_xpm);
-  pixPhone     = new QPixmap(pixPhone_xpm);
-  pixCellular  = new QPixmap(pixCellular_xpm);
-  pixInvisible = new QPixmap(pixInvisible_xpm);
+  if (gMainWindow->pmCollapsed.isNull())
+    pixCollapsed = new QPixmap(itemCollapsed_xpm);
+  else
+    pixCollapsed = new QPixmap(gMainWindow->pmCollapsed);
+    
+  if (gMainWindow->pmExpanded.isNull())
+    pixExpanded = new QPixmap(itemExpanded_xpm);
+  else
+    pixExpanded = new QPixmap(gMainWindow->pmExpanded);
+    
+  if (gMainWindow->pmBirthday.isNull())
+    pixBirthday = new QPixmap(pixBirthday_xpm);
+  else
+    pixBirthday = new QPixmap(gMainWindow->pmBirthday);
+    
+  if (gMainWindow->pmCustomAR.isNull())
+    pixCustomAR = new QPixmap(pixCustomAR_xpm);
+  else
+    pixCustomAR = new QPixmap(gMainWindow->pmCustomAR);
+    
+  if (gMainWindow->pmPhone.isNull())
+    pixPhone = new QPixmap(pixPhone_xpm);
+  else
+    pixPhone = new QPixmap(gMainWindow->pmPhone);
+    
+  if (gMainWindow->pmCellular.isNull())
+    pixCellular = new QPixmap(pixCellular_xpm);
+  else
+    pixCellular = new QPixmap(gMainWindow->pmCellular);
+    
+  if (gMainWindow->pmInvisible.isNull())
+    pixInvisible = new QPixmap(pixInvisible_xpm);
+  else
+    pixInvisible = new QPixmap(gMainWindow->pmInvisible);
 
   if (parent != NULL)
   {
