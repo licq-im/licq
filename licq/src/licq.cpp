@@ -267,7 +267,27 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   const char *error;
   CPluginFunctions *p = new CPluginFunctions;
   char szPlugin[MAX_FILENAME_LEN];
+  static int argcndx=0;
+  int argccnt=0;
+  char **localargv=NULL;
 
+
+  if(!argcndx) {
+      //Step up to the first delimiter if we have done nothing yet
+    while(++argcndx<argc&&strcmp(argv[argcndx],"--")) ;
+  }
+  if(argcndx<argc) {
+    while(++argcndx<argc&&strcmp(argv[argcndx],"--")) {
+      argccnt++;
+    }
+  }
+    //Setup the argv vector, the plugin as argv[0] .. 
+  localargv=(char**)calloc(sizeof(char*),argccnt+1);
+  localargv[0]=(char*)_szName;
+  for(int i=argcndx-argccnt;i<argcndx;i++) {
+      printf("LICQ: gave '%s'\n",argv[i]);
+    localargv[i-argcndx+argccnt+1]=argv[i]; 
+  }
   // First check if the plugin is in the shared location
   if ( _szName[0] != '/' && _szName[0] != '.')
   {
@@ -280,6 +300,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   {
     gLog.Error("%sUnable to load plugin (%s): %s.\n ", L_ERRORxSTR, _szName, dlerror());
     delete p;
+    free(localargv);
     return NULL;
   }
 
@@ -293,6 +314,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Name() function in plugin (%s).\n",
                  L_ERRORxSTR, _szName, error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -306,6 +328,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Version() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -319,6 +342,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Status() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -332,6 +356,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Description() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -345,6 +370,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_BuildDate() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -358,6 +384,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_BuildTime() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -371,6 +398,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Init() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -384,6 +412,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Usage() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -397,6 +426,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Main() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -410,6 +440,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
@@ -423,14 +454,16 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       gLog.Error("%sFailed to find LP_Id variable in plugin (%s).\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
+      free(localargv);
       return NULL;
     }
   }
-
-  if (!(*p->fInit)(argc, argv))
+  optind=0;
+  if (!(*p->fInit)(argccnt+1, localargv))
   {
     gLog.Error("%sFailed to initialize plugin (%s).\n", L_ERRORxSTR, p->Name());
     delete p;
+    free(localargv);
     return NULL;
   }
 
@@ -439,6 +472,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   pthread_mutex_lock(&mutex_pluginfunctions);
   m_vPluginFunctions.push_back(p);
   pthread_mutex_unlock(&mutex_pluginfunctions);
+  free(localargv);
   return p;
 }
 
