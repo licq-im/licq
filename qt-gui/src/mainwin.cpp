@@ -38,6 +38,9 @@
 #include <qlayout.h>
 #include <qtextview.h>
 #include <qpainter.h>
+#if QT_VERSION >= 300
+#include <qstylefactory.h>
+#endif
 
 #include "licqgui.h"
 #include "mainwin.h"
@@ -416,7 +419,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szSkin, skinName);
 
+#if QT_VERSION < 300
   style = new QWindowsStyle;
+#else
+  style = QStyleFactory::create("windows");
+#endif
   awayMsgDlg = NULL;
   optionsDlg = NULL;
   registerUserDlg = NULL;

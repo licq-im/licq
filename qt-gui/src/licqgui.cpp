@@ -57,6 +57,10 @@
 
 #include "licq_icqd.h"
 
+#if QT_VERSION >= 300
+#include <qstylefactory.h>
+#endif
+
 CLicqGui *licqQtGui;
 
 const char *LP_Usage(void)
@@ -167,6 +171,8 @@ int LP_Main(CICQDaemon *_licqDaemon)
 QStyle *CLicqGui::SetStyle(const char *_szStyle)
 {
   QStyle *s = NULL;
+
+#if QT_VERSION < 300
   if (strncmp(_szStyle, "MOTIF", 3) == 0)
     s = new QMotifStyle;
   else if (strncmp(_szStyle, "WINDOWS", 3) == 0)
@@ -191,6 +197,19 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
   else if (strncmp(_szStyle, "GTK", 3) == 0)
     s = new QMotifPlusStyle(true);
 #endif
+#else  // QT_VERSION >= 300
+  if (strncmp(_szStyle, "MOTIF", 3) == 0)
+    s = QStyleFactory::create("motif");
+  else if (strncmp(_szStyle, "WINDOWS", 3) == 0)
+    s = QStyleFactory::create("windows");
+  else if (strncmp(_szStyle, "MAC", 3) == 0)
+    s = QStyleFactory::create("platinum");
+  else if (strncmp(_szStyle, "CDE", 3) == 0)
+    s = QStyleFactory::create("cde");
+  else if (strncmp( _szStyle, "SGI", 3 ) == 0 )
+    s = QStyleFactory::create("sgi");
+#endif
+
   return s;
 }
 
