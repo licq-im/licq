@@ -319,10 +319,11 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
 {
   char szCommand[4];
   unsigned short nSequence;
-  CMSNPacket *pReply = 0;
+  CMSNPacket *pReply;
   
   while (!packet->End())
   {
+    pReply = 0;
     packet->UnpackRaw(szCommand, 3);
     string strCmd(szCommand);
     
@@ -394,6 +395,31 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
 
       m_pDaemon->PushPluginEvent(e);
     }
+    else if (strCmd == "USR")
+    {
+      SStartMessage *pStart = m_lStart.front();
+      pReply = new CPS_MSNCall(pStart->m_szUser);
+    }
+    else if (strCmd == "JOI")
+    {
+      string strUser = packet->GetParameter();
+      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
+      
+      SStartMessage *pStart;
+      StartList::iterator it;
+      for (it = m_lStart.begin(); it != m_lStart.end(); it++)
+      {
+        if (strcmp((*it)->m_szUser, strUser.c_str()) == 0) // case insensitive perhaps?
+        {
+          pStart = *it;
+          m_lStart.erase(it);
+          break;
+        }
+      }
+      
+      MSNSendMessage(pStart->m_szUser, pStart->m_szMsg, pStart->m_tPlugin);
+      delete pStart;
+    }
     else if (strCmd == "BYE")
     {
       // closed the window
@@ -445,23 +471,35 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "XFR")
     {
-      //Time to transfer to a new server (assuming notification server always should be safe)
+      //Time to transfer to a new server
       m_pPacketBuf->SkipParameter(); // Seq
-      m_pPacketBuf->SkipParameter(); // 'NS'
-      const char *szParam = (m_pPacketBuf->GetParameter()).c_str();
-      char szNewServer[16];
-      char *szPort;
-      if ((szPort = strchr(szParam, ':')))
-      {
-        strncpy(szNewServer, szParam, szPort - szParam);
-        szNewServer[szPort - szParam] = '\0';
-        *szPort++ = '\0';
-      }
+      string strServType = m_pPacketBuf->GetParameter();
+      string strServer = m_pPacketBuf->GetParameter();
     
-      gSocketMan.CloseSocket(m_nServerSocket, false, true);
+      if (strServType == "SB")
+      {
+        m_pPacketBuf->SkipParameter(); // 'CKI'
+        string strCookie = m_pPacketBuf->GetParameter();
+        
+        MSNSBConnectStart(strServer, strCookie);
+      }
+      else
+      {
+        const char *szParam = strServer.c_str();
+        char szNewServer[16];
+        char *szPort;
+        if ((szPort = strchr(szParam, ':')))
+        {
+          strncpy(szNewServer, szParam, szPort - szParam);
+          szNewServer[szPort - szParam] = '\0';
+          *szPort++ = '\0';
+        }
+        
+        gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
-      // Make the new connection
-      MSNLogon(szNewServer, atoi(szPort));
+        // Make the new connection
+        MSNLogon(szNewServer, atoi(szPort));
+      }
     }
     else if (strCmd == "USR")
     {
@@ -664,6 +702,47 @@ void CMSN::MSNAuthenticate(char *szCookie)
   free(szCookie);
 }
 
+bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
+{
+  const char *szParam = strServer.c_str();
+  char szServer[16];
+  char *szPort;
+  if ((szPort = strchr(szParam, ':')))
+  {
+    strncpy(szServer, szParam, szPort - szParam);
+    szServer[szPort - szParam] = '\0';
+    *szPort++ = '\0';
+  }
+  
+  SStartMessage *pStart = m_lStart.front();
+  
+  TCPSocket *sock = new TCPSocket(pStart->m_szUser, MSN_PPID);
+  sock->SetRemoteAddr(szServer, atoi(szPort));
+  char ipbuf[32];
+  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
+    sock->RemotePort());
+  
+  if (!sock->OpenConnection())
+  {
+    gLog.Error("%Connection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    delete sock;
+    return false;
+  }
+  
+  gSocketMan.AddSocket(sock);
+  ICQUser *u = gUserManager.FetchUser(pStart->m_szUser, MSN_PPID, LOCK_W);
+  if (u)
+  {
+    u->SetSocketDesc(sock);
+    gUserManager.DropUser(u);
+  }
+  gSocketMan.DropSocket(sock);
+  
+  CMSNPacket *pReply = new CPS_MSN_SBStart(strCookie.c_str(), m_szUserName);
+  string strUser(pStart->m_szUser);
+  Send_SB_Packet(strUser, pReply);  
+}
+
 bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &strCookie,
                               string &strUser)
 {
@@ -680,7 +759,7 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   TCPSocket *sock = new TCPSocket(strUser.c_str(), MSN_PPID);
   sock->SetRemoteAddr(szServer, atoi(szPort));
   char ipbuf[32];
-  gLog.Info("%sConnecting to Switchboard at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
+  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
     sock->RemotePort());
   
   if (!sock->OpenConnection())
@@ -709,20 +788,42 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
 
 void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
 {
-  CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
   string strUser(_szUser);
   
-  CEventMsg *m = new CEventMsg(_szMsg, 0, TIME_NOW, 0);
-  m->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
-  m_pEvents.push_back(e);
+  ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
+  if (!u) return;
+  int nSockDesc = u->SocketDesc();
+  gUserManager.DropUser(u);
   
-  CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
-  e->thread_plugin = _tPlugin;
-  m_pDaemon->PushPluginSignal(s);
+  if (nSockDesc > 0)
+  {
+    CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
+    CEventMsg *m = new CEventMsg(_szMsg, 0, TIME_NOW, 0);
+    m->m_eDir = D_SENDER;
+    ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
+    m_pEvents.push_back(e);
     
-  Send_SB_Packet(strUser, pSend, false);  
+    CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
+    e->thread_plugin = _tPlugin;
+    m_pDaemon->PushPluginSignal(s);
+      
+    Send_SB_Packet(strUser, pSend, false);
+  }
+  else
+  {
+    // Must connect to the SB and call the user
+    CMSNPacket *pSend = new CPS_MSNXfr();
+      
+    SStartMessage *p = new SStartMessage;
+    p->m_szUser = strdup(_szUser);
+    p->m_szMsg = strdup(_szMsg);
+    p->m_tPlugin = _tPlugin;
+    m_lStart.push_back(p);
+   
+    SendPacket(pSend);
+  }  
 }
+
 
 void CMSN::MSNPing()
 {

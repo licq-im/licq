@@ -73,8 +73,10 @@ CPS_MSNClientVersion::CPS_MSNClientVersion(char *szUserName) : CMSNPacket()
   m_nSize += strlen(szParams) + strlen(szUserName);
   InitBuffer();
   
+  m_szUserName = strdup(szUserName);
+  
   m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(szUserName, strlen(szUserName));
+  m_pBuffer->Pack(m_szUserName, strlen(m_szUserName));
   m_pBuffer->Pack("\r\n", 2);
 }
 
@@ -85,8 +87,10 @@ CPS_MSNUser::CPS_MSNUser(char *szUserName) : CMSNPacket()
   m_nSize += strlen(szParams) + strlen(szUserName);
   InitBuffer();
   
+  m_szUserName = strdup(szUserName);
+  
   m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(szUserName, strlen(szUserName));
+  m_pBuffer->Pack(m_szUserName, strlen(m_szUserName));
   m_pBuffer->Pack("\r\n", 2);
 }
 
@@ -112,13 +116,15 @@ CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, char *_szPassword, c
   m_nSize = strlen(szParams1) + strlen(szPassword) + strlen(szUserName)
             + strlen(szParams2) + strlen(szCookie) + 1 + 2;
   
+  m_szCookie = strdup(szCookie);
+  
   m_pBuffer = new CMSNBuffer(m_nSize);
   m_pBuffer->Pack(szParams1, strlen(szParams1));
   m_pBuffer->Pack(szUserName, strlen(szUserName));
   m_pBuffer->Pack(szParams2, strlen(szParams2));
   m_pBuffer->Pack(szPassword, strlen(szPassword));
   m_pBuffer->Pack(",", 1);
-  m_pBuffer->Pack(szCookie, strlen(szCookie));
+  m_pBuffer->Pack(m_szCookie, strlen(m_szCookie));
   m_pBuffer->Pack("\r\n", 2);
   //m_pBuffer->Pack(szParams2, strlen(szParams2));
 }
@@ -130,8 +136,10 @@ CPS_MSNSendTicket::CPS_MSNSendTicket(const char *szTicket) : CMSNPacket()
   m_nSize += strlen(szParams) + strlen(szTicket);
   InitBuffer();
   
+  m_szTicket = strdup(szTicket);
+  
   m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(szTicket, strlen(szTicket));
+  m_pBuffer->Pack(m_szTicket, strlen(m_szTicket));
   m_pBuffer->Pack("\r\n", 2);
 }
 
@@ -199,10 +207,28 @@ CPS_MSNAddUser::CPS_MSNAddUser(const char *szUser) : CMSNPacket()
   m_nSize += strlen(szParams) + (strlen(szUser) * 2) + 1;
   InitBuffer();
   
+  m_szUser = strdup(szUser);
+  
   m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(szUser, strlen(szUser));
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
   m_pBuffer->Pack(" ", 1);
-  m_pBuffer->Pack(szUser, strlen(szUser));
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
+  m_pBuffer->Pack("\r\n", 2);
+}
+
+CPS_MSN_SBStart::CPS_MSN_SBStart(const char *szCookie, const char *szUser)
+  : CMSNPacket()
+{
+  m_szCommand = strdup("USR");
+  m_nSize += strlen(szCookie) + strlen(szUser) + 1;
+  InitBuffer();
+  
+  m_szUser = strdup(szUser);
+  m_szCookie = strdup(szCookie);
+  
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
+  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->Pack(m_szCookie, strlen(m_szCookie));
   m_pBuffer->Pack("\r\n", 2);
 }
 
@@ -214,11 +240,15 @@ CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const char *szSession, const char *szCookie,
   m_nSize += strlen(szSession) + strlen(szCookie) + strlen(szUser) + 2;
   InitBuffer();
   
-  m_pBuffer->Pack(szUser, strlen(szUser));
+  m_szUser = strdup(szUser);
+  m_szSession = strdup(szSession);
+  m_szCookie = strdup(szCookie);
+  
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
   m_pBuffer->Pack(" ", 1);
-  m_pBuffer->Pack(szCookie, strlen(szCookie));
+  m_pBuffer->Pack(m_szCookie, strlen(m_szCookie));
   m_pBuffer->Pack(" ", 1);
-  m_pBuffer->Pack(szSession, strlen(szSession));
+  m_pBuffer->Pack(m_szSession, strlen(m_szSession));
   m_pBuffer->Pack("\r\n", 2);
 }
 
@@ -232,16 +262,38 @@ CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket()
   m_nPayloadSize = strlen(szMsg) + strlen(szParams);
   CMSNPayloadPacket::InitBuffer();
   
+  m_szMsg = strdup(szMsg);
+  
   m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(szMsg, strlen(szMsg));
+  m_pBuffer->Pack(m_szMsg, strlen(m_szMsg));
 }
 
 CPS_MSNPing::CPS_MSNPing() : CMSNPacket(true)
 {
   m_szCommand = strdup("PNG");
-  m_nSize = 0;
+  m_nSize += 0;
   InitBuffer();
   
   m_pBuffer->Pack("\r\n", 2);
 }
 
+CPS_MSNXfr::CPS_MSNXfr() : CMSNPacket()
+{
+  m_szCommand = strdup("XFR");
+  m_nSize += 2;
+  InitBuffer();
+  
+  m_pBuffer->Pack("SB\r\n", 4);
+}
+
+CPS_MSNCall::CPS_MSNCall(char *szUser) : CMSNPacket()
+{
+  m_szCommand = strdup("CAL");
+  m_nSize += strlen(szUser);
+  InitBuffer();
+  
+  m_szUser = strdup(szUser);
+  
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
+  m_pBuffer->Pack("\r\n", 2);
+}

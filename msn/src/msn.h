@@ -29,6 +29,15 @@ struct SBuffer
 
 typedef list<SBuffer *> BufferList;
 
+struct SStartMessage
+{
+  char *m_szUser;
+  char *m_szMsg;
+  pthread_t m_tPlugin;
+};
+
+typedef list<SStartMessage *> StartList;
+
 class CMSN
 {
 public:
@@ -52,6 +61,7 @@ private:
   void Send_SB_Packet(string &, CMSNPacket *, bool = true);
   void MSNLogon(const char *, int);
   void MSNAuthenticate(char *);
+  bool MSNSBConnectStart(string &, string &);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
   void MSNSendMessage(char *, char *, pthread_t);
@@ -73,6 +83,8 @@ private:
   CMSNBuffer *m_pPacketBuf;
   vector<BufferList> m_vlPacketBucket;
   list<ICQEvent *> m_pEvents;
+  StartList m_lStart;
+  
   pthread_t m_tMSNPing;
   
   char *m_szUserName,

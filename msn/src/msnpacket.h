@@ -59,24 +59,40 @@ class CPS_MSNClientVersion : public CMSNPacket
 {
 public:
   CPS_MSNClientVersion(char *);
+  virtual ~CPS_MSNClientVersion() { if (m_szUserName) free(m_szUserName); }
+
+protected:
+  char *m_szUserName;
 };
 
 class CPS_MSNUser : public CMSNPacket
 {
 public:
   CPS_MSNUser(char *);
+  virtual ~CPS_MSNUser() { if(m_szUserName) free(m_szUserName); }
+  
+protected:
+  char *m_szUserName;
 };
 
 class CPS_MSNAuthenticate : public CMSNPacket
 {
 public:
   CPS_MSNAuthenticate(char *, char *, const char *);
+  virtual ~CPS_MSNAuthenticate() { if (m_szCookie) free(m_szCookie); }
+  
+protected:
+  char *m_szCookie;
 };
 
 class CPS_MSNSendTicket : public CMSNPacket
 {
 public:
   CPS_MSNSendTicket(const char *);
+  virtual ~CPS_MSNSendTicket() { if (m_szTicket) free(m_szTicket); }
+  
+protected:
+  char *m_szTicket;
 };
 
 class CPS_MSNChangeStatus : public CMSNPacket
@@ -107,24 +123,70 @@ class CPS_MSNAddUser : public CMSNPacket
 {
 public:
   CPS_MSNAddUser(const char *);
+  virtual ~CPS_MSNAddUser() { if (m_szUser) free(m_szUser); }
+  
+protected:
+  char *m_szUser;
+};
+
+class CPS_MSN_SBStart : public CMSNPacket
+{
+public:
+  CPS_MSN_SBStart(const char *, const char *);
+  virtual ~CPS_MSN_SBStart()
+  { if (m_szUser) free(m_szUser); if (m_szCookie) free(m_szCookie); }
+  
+protected:
+  char *m_szUser,
+       *m_szCookie;
 };
 
 class CPS_MSN_SBAnswer : public CMSNPacket
 {
 public:
-  CPS_MSN_SBAnswer(const char *, const char *, const char *sz);
+  CPS_MSN_SBAnswer(const char *, const char *, const char *);
+  virtual ~CPS_MSN_SBAnswer()
+  {
+    if (m_szSession) free(m_szSession); if (m_szCookie) free(m_szCookie);
+    if (m_szUser) free(m_szUser);
+  }
+  
+protected:
+  char *m_szSession,
+       *m_szCookie,
+       *m_szUser;
 };
 
 class CPS_MSNMessage : public CMSNPayloadPacket
 {
 public:
   CPS_MSNMessage(const char *);
+  virtual ~CPS_MSNMessage() { if (m_szMsg) free(m_szMsg); }
+  
+protected:
+  char *m_szMsg;
 };
 
 class CPS_MSNPing : public CMSNPacket
 {
 public:
   CPS_MSNPing();
+};
+
+class CPS_MSNXfr : public CMSNPacket
+{
+public:
+  CPS_MSNXfr();
+};
+
+class CPS_MSNCall : public CMSNPacket
+{
+public:
+  CPS_MSNCall(char *);
+  virtual ~CPS_MSNCall() { if (m_szUser) free(m_szUser); }
+  
+protected:
+  char *m_szUser;
 };
 
 #endif // __MSNPACKET_H
