@@ -28,6 +28,11 @@ AC_PROG_INSTALL
 AC_PATH_PROG(PROG_STRIP,strip,:)
 AC_PATH_PROG(PROG_SIZE,size,:)
 
+dnl libtool checks
+AC_LIBTOOL_DLOPEN
+AC_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h dirent.h getopt.h malloc.h pwd.h sys/time.h)
@@ -71,15 +76,6 @@ to compile this plugin. Sorry.
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-
-dnl libtool checks
-AC_PROG_LD
-AC_OBJEXT
-AC_EXEEXT
-AC_LIBTOOL_DLOPEN
-AC_DISABLE_STATIC
-AM_PROG_LIBTOOL
-
 
 AC_OUTPUT(
   src/Makefile \
