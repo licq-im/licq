@@ -45,17 +45,21 @@ unsigned long LProto_Capabilities()
   return 0;
 }
 
-void LProto_Main(CICQDaemon *_pDaemon)
+int LProto_Main(CICQDaemon *_pDaemon)
 {
   int nPipe = _pDaemon->RegisterProtoPlugin();  
 
   CMSN *pMSN = new CMSN(_pDaemon, nPipe);
   pMSN->Run();
 
+  _pDaemon->UnregisterProtoPlugin();
+  
   delete pMSN;
+  
+  return 0;
 }
 
-char *LProto_Id()
+char *LProto_PPID()
 {
   static char szId[] = "MSN_";
   return szId;

@@ -243,6 +243,8 @@ void CMSN::Run()
     }
 
   }
+  
+  //pthread_cancel(m_tMSNPing);
 }
 
 void CMSN::ProcessPipe()
