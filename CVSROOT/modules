@@ -32,6 +32,7 @@ jons-gtk-gui jons-gtk-gui &admin
 jons-gtk2-gui jons-gtk2-gui &admin
 qt-gui qt-gui &admin
 rms rms &admin
-licq-plugins &qt-gui &console &auto-reply &email &jons-gtk-gui &rms
+licq-plugins &qt-gui &console &auto-reply &email &jons-gtk-gui &rms &msn
 plugins &qt-gui
 licq licq &admin &plugins
+msn msn &admin
