@@ -65,16 +65,16 @@ void random_chat_search_window()
 
 	// Populate the list
 	GList *items = NULL;
-	items = g_list_append(items, "General");
-	items = g_list_append(items, "Romance");
-	items = g_list_append(items, "Games");
-	items = g_list_append(items, "Students");
-	items = g_list_append(items, "20 Something");
-	items = g_list_append(items, "30 Something");
-	items = g_list_append(items, "40 Something");
-	items = g_list_append(items, "50 Plus");
-	items = g_list_append(items, "Men Seeking Women");
-	items = g_list_append(items, "Women Seeking Men");
+	items = g_list_append(items, const_cast<char *>("General"));
+	items = g_list_append(items, const_cast<char *>("Romance"));
+	items = g_list_append(items, const_cast<char *>("Games"));
+	items = g_list_append(items, const_cast<char *>("Students"));
+	items = g_list_append(items, const_cast<char *>("20 Something"));
+	items = g_list_append(items, const_cast<char *>("30 Something"));
+	items = g_list_append(items, const_cast<char *>("40 Something"));
+	items = g_list_append(items, const_cast<char *>("50 Plus"));
+	items = g_list_append(items, const_cast<char *>("Men Seeking Women"));
+	items = g_list_append(items, const_cast<char *>("Women Seeking Men"));
 
 	// Set the list to these items
 	gtk_combo_set_popdown_strings(GTK_COMBO(rcw->group_list), items);
@@ -205,17 +205,17 @@ void set_random_chat_window()
 
 	GList *list = NULL;
 
-	list = g_list_append(list, "(None)");
-	list = g_list_append(list, "General");
-	list = g_list_append(list, "Romance");
-	list = g_list_append(list, "Games");
-	list = g_list_append(list, "Students");
-	list = g_list_append(list, "20 Something");
-	list = g_list_append(list, "30 Something");
-	list = g_list_append(list, "40 Something");
-	list = g_list_append(list, "50 Plus");
-	list = g_list_append(list, "Men Seeking Women");
-	list = g_list_append(list, "Women Seeking Men");
+	list = g_list_append(list, const_cast<char *>("(None)"));
+	list = g_list_append(list, const_cast<char *>("General"));
+	list = g_list_append(list, const_cast<char *>("Romance"));
+	list = g_list_append(list, const_cast<char *>("Games"));
+	list = g_list_append(list, const_cast<char *>("Students"));
+	list = g_list_append(list, const_cast<char *>("20 Something"));
+	list = g_list_append(list, const_cast<char *>("30 Something"));
+	list = g_list_append(list, const_cast<char *>("40 Something"));
+	list = g_list_append(list, const_cast<char *>("50 Plus"));
+	list = g_list_append(list, const_cast<char *>("Men Seeking Women"));
+	list = g_list_append(list, const_cast<char *>("Women Seeking Men"));
 
 	gtk_combo_set_popdown_strings(GTK_COMBO(src->group_list), list);
 

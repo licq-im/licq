@@ -219,10 +219,10 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		GList *country_strings = NULL;
 
 		country_strings = g_list_append(country_strings,
-			"Unspecified");
+			const_cast<char *>("Unspecified"));
 		for(unsigned short j = 0; j < NUM_COUNTRIES; j++)
 			country_strings = g_list_append(country_strings,
-				GetCountryByIndex(j)->szName);
+				const_cast<char *>(GetCountryByIndex(j)->szName));
 
 		gtk_combo_set_popdown_strings(GTK_COMBO(iu->o_country),
 			country_strings);
@@ -289,9 +289,9 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	{
 		iu->o_gender = gtk_combo_new();
 		GList *gender_strings = NULL;
-		gender_strings = g_list_append(gender_strings, "(None)");
-		gender_strings = g_list_append(gender_strings, "Female");
-		gender_strings = g_list_append(gender_strings, "Male");
+		gender_strings = g_list_append(gender_strings, const_cast<char *>("(None)"));
+		gender_strings = g_list_append(gender_strings, const_cast<char *>("Female"));
+		gender_strings = g_list_append(gender_strings, const_cast<char *>("Male"));
 		gtk_combo_set_popdown_strings(GTK_COMBO(iu->o_gender),
 			gender_strings);
 		gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(iu->o_gender)->entry),
@@ -410,7 +410,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		
 		for(unsigned short j = 0; j < NUM_LANGUAGES; j++)
 			lang_strings = g_list_append(lang_strings,
-				GetLanguageByIndex(j)->szName);
+				const_cast<char *>(GetLanguageByIndex(j)->szName));
 
 		for(unsigned short i = 0; i < 3; i++)
 		{
