@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <ctype.h>
 
 #include "licq_buffer.h"
