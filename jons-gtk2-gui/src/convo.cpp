@@ -71,7 +71,7 @@ void convo_open(ICQUser *user, bool refresh)
 	conversation *c = convo_find(user->Uin());
 
 	if(c != 0)
-		gdk_window_raise(c->window->window);
+		gtk_window_present(GTK_WINDOW(c->window));
 	else
 	{
 		c = g_new0(conversation, 1);
@@ -191,7 +191,7 @@ void convo_show(conversation *c)
 
 	/* Send the message urgently */
 	c->send_urgent = gtk_check_button_new_with_mnemonic("U_rgent");
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent, FALSE, FALSE, 5);
 
 	/* Send the message to contact list */
 	c->send_list = gtk_check_button_new_with_mnemonic("M_ultiple recipients");
@@ -207,8 +207,11 @@ void convo_show(conversation *c)
 	gtk_widget_set_size_request(c->etag->statusbar, 300, -1); 
 	
 	/* Make new buttons with labels */
+  GtkWidget *hbbox = hbutton_box_new();
 	c->send = gtk_button_new_with_mnemonic("_Send");
 	c->close_or_cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+  gtk_container_add(GTK_CONTAINER(hbbox), c->send);
+  gtk_container_add(GTK_CONTAINER(hbbox), c->close_or_cancel);
 
 	/* Get the signals connected for the buttons */
 	g_signal_connect(G_OBJECT(c->close_or_cancel), "clicked",
@@ -217,10 +220,7 @@ void convo_show(conversation *c)
 			   G_CALLBACK(convo_send), c);
 	
 	gtk_box_pack_start(GTK_BOX(button_box), c->etag->statusbar, TRUE, TRUE, 5);
-	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(bbox), c->close_or_cancel, TRUE, TRUE, 5);
-	gtk_box_pack_start(GTK_BOX(bbox), c->send, TRUE, TRUE, 5);
-	gtk_box_pack_end(GTK_BOX(button_box), bbox, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(button_box), hbbox, FALSE, FALSE, 0);
 
 	/* Take care of the rest of the widgets */
 	gtk_box_pack_start(GTK_BOX(vertical_box), button_box, FALSE, FALSE, 5);
