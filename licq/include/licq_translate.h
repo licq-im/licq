@@ -8,6 +8,10 @@
 #ifndef _LICQ_TRANSLATE_H_INCLUDED_
 #define _LICQ_TRANSLATE_H_INCLUDED_
 
+#include <string>
+
+using namespace std;
+
 class CTranslator
 {
 public:
@@ -28,6 +32,7 @@ public:
     char *FromUnicode(char *_sz);
     char *NToRN(const char* _szOldStr);
     char *RNToN(const char* _szOldStr);
+    bool utf16to8(unsigned long c, string &s);
 
 protected:
     unsigned char serverToClientTab[256];
