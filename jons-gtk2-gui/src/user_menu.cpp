@@ -25,24 +25,6 @@
 
 #include <gtk/gtk.h>
 
-void list_start_convo(GtkWidget *widget, ICQUser *user)
-{
-	struct conversation *c = 0;
-
-	c = convo_find(user->Uin());
-
-	if(c != 0)
-		gdk_window_raise(c->window->window);
-
-	else
-	{
-		if(user->NewMessages() > 0)
-			c = convo_new(user, TRUE);
-		else
-			c = convo_new(user, FALSE);
-	}
-}
-
 void list_send_url(GtkWidget *widget, ICQUser *user)
 {
 	GtkWidget *label;
