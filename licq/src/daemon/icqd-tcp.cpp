@@ -452,14 +452,11 @@ CICQEventTag *CICQDaemon::icqSendKeyRequest(unsigned long nUin)
   // Create a key
   CDHKey *k = new CDHKey;
 
-  gLog.Info("%sInitiating d/h key exchange with %s (%ld).\n", L_UDPxSTR,
-    u->GetAlias(), nUin);
-
   BIGNUM *g, *ga, *p, *a;
   char szKey[256] = {0};
   BN_CTX *temp_ctx = BN_CTX_new();
 
-  gLog.Info("%sGenerating encryption key for %s (%ld).\n", L_UDPxSTR,
+  gLog.Info("%sGenerating encryption key for %s (%ld).\n", L_DESxSTR,
      u->GetAlias(), nUin);
 
   // find a prime p and generator g
@@ -479,7 +476,7 @@ CICQEventTag *CICQDaemon::icqSendKeyRequest(unsigned long nUin)
   BN_copy(k->P(), p);
   BN_copy(k->A(), a);
   BN_copy(k->G(), ga);
-  gLog.Info("%sKey for %s (%ld) done.\n", L_UDPxSTR, u->GetAlias(), nUin);
+  gLog.Info("%sKey for %s (%ld) done.\n", L_DESxSTR, u->GetAlias(), nUin);
 
   // prepare send key
   sprintf (szKey, "%s\n%s\n%s", BN_bn2hex(g), BN_bn2hex(ga), BN_bn2hex(p));
@@ -493,7 +490,7 @@ CICQEventTag *CICQDaemon::icqSendKeyRequest(unsigned long nUin)
   BN_clear_free (a);
 
   CPT_KeyRequest *pkt = new CPT_KeyRequest(szKey, u, k);
-  gLog.Info("%sSending key request to %s (#%ld).\n", L_TCPxSTR,
+  gLog.Info("%sSending request for secure channel to %s (#%ld).\n", L_TCPxSTR,
      u->GetAlias(), -pkt->Sequence());
   result = SendExpectEvent_Client(u, pkt, NULL);
 
@@ -502,8 +499,6 @@ CICQEventTag *CICQDaemon::icqSendKeyRequest(unsigned long nUin)
   CICQEventTag *t = NULL;
   if (result != NULL)
     t = new CICQEventTag(result);
-  //else
-  //  u->ClearDHKey(true);
 
   gUserManager.DropUser(u);
 
@@ -1383,12 +1378,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         char cg[9] = {0}, cga[128] = {0}, cp[128] = {0}, cgb[128] = {0};
         BN_CTX *temp_ctx = BN_CTX_new ();
         sscanf(message, "%s\n%s\n%s", cg, cga, cp);
-        gLog.Info("[CRPT] got [%s]\n[%s]\n[%s]\n", cg, cga, cp);
-        /* FIXME OPENSSL can we get rid of this ?
-          strncpy (cg, (const char *) szMessage + 5, 8);
-          strncpy (cga, (const char *) szMessage + 13, 8);
-          strncpy (cp, (const char *) szMessage + 21, 8);
-        */
+        gLog.Info("%sAsymetric key components:\n[%s]\n[%s]\n[%s]\n", L_DESxSTR, cg, cga, cp);
         BN_hex2bn (&g, cg);
         BN_hex2bn (&ga, cga);
         BN_hex2bn (&p, cp);
@@ -1412,7 +1402,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
           if (k->CryptoStatus() == CRYPTO_HALF)
           {
-            gLog.Info("[CRPT] I already sent, but I'm using %s's key.\n",
+            gLog.Info("%sI already sent, but I'm using %s's key.\n", L_DESxSTR,
                u->GetAlias());
           }
 
@@ -1422,9 +1412,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           AckTCP(p, pSock);
 
           k->SetCryptoStatus(CRYPTO_FULL);
-          //pSock->SetDHKey(k);
           u->SetSecure(true);
-          gLog.Info("\t[Sent g^b]:\n[%s]\n", BN_bn2hex(gb));
+
+          gLog.Info("%sSent symetric key to %s (%ld):\n[%s]\n", L_DESxSTR, u->GetAlias(),
+           nUin, BN_bn2hex(gb));
         }
 
         // Clean up
@@ -1435,8 +1426,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         BN_clear_free (gb);
         BN_clear_free (gab);
 
-        gLog.Info("[CRPT] Shared Key with %s(g^(gab)):\n[%s]\n", u->GetAlias(),
-           BN_bn2hex(k->GAB()));
+        gLog.Info("%sSecure channel established with %s (%ld):\n[%s]\n",
+         L_DESxSTR, u->GetAlias(), nUin, BN_bn2hex(k->GAB()));
 
         break;
 
@@ -1584,7 +1575,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             return false;
           }
 
-          gLog.Info("\t[generating g^(ab) for %s]\n", u->GetAlias());
           // we have a gb
           BIGNUM *gb, *gab;
           gb = BN_new();
@@ -1592,16 +1582,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           char cgb[128] = {0};
           BN_CTX *temp_ctx = BN_CTX_new ();
           sscanf(message, "%s", cgb);
-          gLog.Info("[CRPT] got key: \n[%s]\n", cgb);
-          //	strncpy (cgb, (const char *) message + 5, 8);
+          gLog.Info("%sGot key:\n[%s]\n", L_DESxSTR, cgb);
           BN_hex2bn (&gb, cgb);
 
           // now we get a random b, and make g^ab
           BN_mod_exp (gab, gb, k->A(), k->P(), temp_ctx);
-
           BN_copy(k->GAB(), gab);
-          gLog.Info("[CRPT] symmetric key generated for %s\n[%s]\n", u->GetAlias(),
-             BN_bn2hex(gab));
+
+          gLog.Info("%sSecure channel established with %s (%ld):\n[%s]\n", L_DESxSTR,
+             u->GetAlias(), nUin, BN_bn2hex(gab));
           k->SetCryptoStatus(CRYPTO_FULL);
           u->SetSecure(true);
 

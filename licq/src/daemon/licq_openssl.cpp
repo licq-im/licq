@@ -13,7 +13,7 @@
 #include <string.h>
 
 #include "licq_buffer.h"
-//#include "licq_log.h"
+#include "licq_log.h"
 
 
 CDHKey::CDHKey()
@@ -28,11 +28,24 @@ CDHKey::CDHKey()
 
 CBuffer *CDHKey::DesXEncrypt(CBuffer *inbuf)
 {
-  unsigned char *data_in = (unsigned char *)inbuf->getDataStart();
+  if (inbuf->getDataSize() == 0) return NULL;
 
-  if (data_in == NULL) return (NULL);
+  int data_size = inbuf->getDataSize() + 1;
+  // Align on 8 byte boundary
+  if (data_size & 0x07)
+  {
+    data_size >>= 3;
+    data_size <<= 3;
+    data_size += 8;
+  }
 
-  int data_size = inbuf->getDataSize();
+  // Prepare in buffer...sucks having to make an extra copy...
+  unsigned char *data_in = (unsigned char *)malloc(data_size);
+  memset(data_in, 0, data_size);
+  memcpy(data_in, inbuf->getDataStart(), inbuf->getDataSize());
+  data_in[data_size - 1] = data_size - inbuf->getDataSize();
+
+  // Prepare out buffer
   CBuffer *outbuf = new CBuffer(data_size);
   unsigned char *data_out = (unsigned char *)outbuf->getDataStart();
   memset(data_out, 0, data_size);
@@ -45,10 +58,7 @@ CBuffer *CDHKey::DesXEncrypt(CBuffer *inbuf)
   des_cblock xout;
 
   memset(wholebinkey, 0, DES_KEY_SZ * 3);
-  int t = BN_bn2bin(m_gab, wholebinkey);
-
-  char *tt = BN_bn2hex(m_gab);
-  fprintf(stderr, "Key size: %d bytes\nm_gab: [%s]\n--\n", t, tt);
+  BN_bn2bin(m_gab, wholebinkey);
 
   memset(binkey, 0, DES_KEY_SZ);
   memset(xin, 0, DES_KEY_SZ);
@@ -62,16 +72,23 @@ CBuffer *CDHKey::DesXEncrypt(CBuffer *inbuf)
   des_set_odd_parity(&xout);
   memcpy(iv, xout, DES_KEY_SZ); // iv (cbc)
 
-  printf("------------\nDoing desx.cbc\n");
   int j;
   if ((j = des_set_key_checked(&binkey, ks)) != 0)
   {
-	  printf("ERR: %d\n", j);
+    gLog.Warn("%sError checking encryption key: %d\n", L_DESxSTR, j);
+    free(data_in);
     return NULL;
   }
 
+  // Encrypt it
   des_xcbc_encrypt(data_in, data_out, data_size, ks, &iv, &xin,
      &xout, DES_ENCRYPT);
+
+  // Go to the end of the buffer now
+  outbuf->setDataPosWrite(outbuf->getDataStart() + data_size);
+
+  // Clean up
+  free(data_in);
 
   return outbuf;
 }
@@ -84,9 +101,17 @@ CBuffer *CDHKey::DesXDecrypt(CBuffer *inbuf)
   if (data_in == NULL) return NULL;
 
   int data_size = inbuf->getDataSize();
-  CBuffer *outbuf = new CBuffer(data_size);
+  CBuffer *outbuf = new CBuffer(data_size + 8);
   unsigned char *data_out = (unsigned char *)outbuf->getDataStart();
-  memset(data_out, 0, data_size);
+  memset(data_out, 0, outbuf->getDataSize());
+
+  // Hope that the data is 8-byte aligned...we save enough room in the
+  // output buffer, but the input buffer will be overflow read and
+  // the decryption will be wrong in the last bytes
+  if (data_size & 0x07)
+  {
+    gLog.Warn("%sDesXDecrypt: data not 8-byte aligned.\n", L_WARNxSTR);
+  }
 
   des_cblock iv;
   des_key_schedule ks;
@@ -96,10 +121,10 @@ CBuffer *CDHKey::DesXDecrypt(CBuffer *inbuf)
   des_cblock xout;
 
   memset(wholebinkey, 0, DES_KEY_SZ * 3);
-  int t = BN_bn2bin(m_gab, wholebinkey);
+  /*int t =*/ BN_bn2bin(m_gab, wholebinkey);
 
-  char *tt = BN_bn2hex(m_gab);
-  fprintf(stderr, "Key size: %d bytes\nkey: [%s]\n\n", t, tt);
+  //char *tt = BN_bn2hex(m_gab);
+  //fprintf(stderr, "Key size: %d bytes\nkey: [%s]\n\n", t, tt);
 
   memset(binkey, 0, DES_KEY_SZ);
   memset(xin, 0, DES_KEY_SZ);
@@ -113,18 +138,20 @@ CBuffer *CDHKey::DesXDecrypt(CBuffer *inbuf)
   des_set_odd_parity(&xout);
   memcpy(iv, xout, DES_KEY_SZ); // iv (cbc)
 
-  printf("------------\nDoing desx.cbc\n");
   int j;
   if ((j = des_set_key_checked(&binkey, ks)) != 0)
   {
-	  printf("ERR: %d\n",j);
+    gLog.Warn("%sError checking decryption key: %d\n", L_DESxSTR, j);
     return NULL;
   }
 
   des_xcbc_encrypt(data_in, data_out, data_size, ks, &iv, &xin,
    &xout, DES_DECRYPT);
 
-  printf("de:\n[%s]\n--\n", data_out);
+  // Go to the end of the buffer now
+  outbuf->setDataPosWrite(outbuf->getDataStart()
+   + data_size
+   - outbuf->getDataStart()[data_size - 1]);
 
   return outbuf;
 }

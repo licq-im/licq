@@ -273,7 +273,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
+    gLog.Packet("%sUnencrypted (ICQ) TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
   }
@@ -398,7 +398,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sDecrypted TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
+    gLog.Packet("%sDecrypted (ICQ) TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
   }

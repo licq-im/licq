@@ -216,14 +216,16 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
   switch(d)
   {
   case D_SENDER:
-    gLog.Packet("%sPacket (%sv%ld, %ld bytes) sent (%s:%d -> %s:%d):\n%s\n",
-                L_PACKETxSTR, m_szID, Version(), b->getDataSize(), LocalIpStr(szIpL),
-                LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
-     break;
+    gLog.Packet("%sPacket (%sv%ld, %ld bytes) sent:\n%s(%s:%d -> %s:%d)\n%s\n",
+     L_PACKETxSTR, m_szID, Version(), b->getDataSize(), L_BLANKxSTR,
+     LocalIpStr(szIpL),
+     LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
+    break;
   case D_RECEIVER:
-     gLog.Packet("%sPacket (%sv%ld, %ld bytes) received (%s:%d <- %s:%d):\n%s\n",
-                L_PACKETxSTR, m_szID, Version(), b->getDataSize(), LocalIpStr(szIpL),
-                LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
+     gLog.Packet("%sPacket (%sv%ld, %ld bytes) received:\n%s(%s:%d <- %s:%d)\n%s\n",
+      L_PACKETxSTR, m_szID, Version(), b->getDataSize(), L_BLANKxSTR,
+      LocalIpStr(szIpL),
+      LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   }
   delete[] szPacket;
@@ -551,6 +553,15 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
 #ifdef USE_OPENSSL
   if (m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL)
   {
+    if (gLog.LoggingPackets())
+    {
+      char *bt;
+      gLog.Packet("%sUnencrypted (DES) TCP Packet (send %ld bytes):\n%s\n",
+       L_PACKETxSTR, b_in->getDataSize(), b_in->print(bt));
+      delete [] bt;
+    }
+
+    gLog.Info("%sEncrypting packet to %ld.\n", L_DESxSTR, m_nOwner);
     b = m_pDHKey->DesXEncrypt(b_in);
   }
 #endif
@@ -594,7 +605,7 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
   }
 
   // Print the packet
-  DumpPacket(b_in, D_SENDER);
+  DumpPacket(b, D_SENDER);
 
   if (b != b_in) delete b;
   return (true);
@@ -663,15 +674,24 @@ bool TCPSocket::RecvPacket()
   // Print the packet if it's full
   if (m_xRecvBuffer.Full())
   {
+    DumpPacket(&m_xRecvBuffer, D_RECEIVER);
 #ifdef USE_OPENSSL
     if (m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL)
     {
+      gLog.Info("%sDecrypting packet from %ld.\n", L_DESxSTR, m_nOwner);
       CBuffer *buf = m_pDHKey->DesXDecrypt(&m_xRecvBuffer);
       m_xRecvBuffer.Copy(buf);
       delete buf;
+
+      if (gLog.LoggingPackets())
+      {
+        char *bt;
+        gLog.Packet("%sUnencrypted (DES) TCP Packet (recv %ld bytes):\n%s\n",
+         L_PACKETxSTR, m_xRecvBuffer.getDataSize(), m_xRecvBuffer.print(bt));
+        delete [] bt;
+      }
     }
 #endif
-    DumpPacket(&m_xRecvBuffer, D_RECEIVER);
   }
   return (true);
 }

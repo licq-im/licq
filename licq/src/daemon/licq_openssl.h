@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-//#define USE_OPENSSL
+const char L_DESxSTR[]    = "[DES] ";
 
 #ifdef USE_OPENSSL
 

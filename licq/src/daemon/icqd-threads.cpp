@@ -166,10 +166,9 @@ void *ProcessRunningEvent_Client_tep(void *p)
   CBuffer *buf = e->m_pPacket->Finalize(s);
   if (!s->Send(buf))
   {
-    //delete buf;
     char szErrorBuf[128];
     gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
-              e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
+     e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
     if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
   }
 //#ifdef USE_OPENSSL
