@@ -60,8 +60,8 @@ void away_msg_window(gushort status)
 	cancel = gtk_button_new_with_label("Cancel");
 
 	/* Pack the buttons */
-	gtk_box_pack_start(GTK_BOX(h_box), ok, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	/* Connect the signals now */
