@@ -539,14 +539,17 @@ void CEventEmailPager::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //====CEventContactList========================================================
-CEventContactList::CEventContactList(const ContactList &cl,
-                                     unsigned short nCommand,
-                                     time_t tTime, unsigned long nFlags)
+CEventContactList::CEventContactList(ContactList &cl, bool bDeep,
+   unsigned short nCommand, time_t tTime, unsigned long nFlags)
   : CUserEvent(ICQ_CMDxSUB_CONTACTxLIST, nCommand, 0, tTime, nFlags)
 {
-  for(ContactList::const_iterator it = cl.begin(); it != cl.end(); ++it)
-    m_vszFields.push_back(new CContact((*it)->Uin(), (*it)->Alias()));
+  if (bDeep)
+    for(ContactList::const_iterator it = cl.begin(); it != cl.end(); ++it)
+      m_vszFields.push_back(new CContact((*it)->Uin(), (*it)->Alias()));
+  else
+    m_vszFields = cl;
 }
+
 
 void CEventContactList::CreateDescription()
 {
@@ -603,7 +606,7 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
   }
   delete[] szFields;
 
-  return new CEventContactList(vc, nCmd, nTime, nFlags);
+  return new CEventContactList(vc, false, nCmd, nTime, nFlags);
 }
 
 

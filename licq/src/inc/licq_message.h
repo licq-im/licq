@@ -309,13 +309,12 @@ typedef list<CContact *> ContactList;
 class CEventContactList : public CUserEvent
 {
 public:
-  CEventContactList(const ContactList &cl,
-                    unsigned short nCommand,
-                    time_t tTime, unsigned long nFlags);
+  CEventContactList(ContactList &cl, bool bDeep, unsigned short nCommand,
+     time_t tTime, unsigned long nFlags);
   virtual ~CEventContactList();
   virtual void AddToHistory(ICQUser *, direction);
   virtual CEventContactList *Copy()
-    { return (new CEventContactList(m_vszFields, m_nCommand, m_tTime, m_nFlags)); }
+    { return (new CEventContactList(m_vszFields, true, m_nCommand, m_tTime, m_nFlags)); }
 
   const ContactList &Contacts() { return m_vszFields; }
 

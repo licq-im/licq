@@ -234,7 +234,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   u = gUserManager.FetchUser(nUin, LOCK_W);
   if (!online) // send offline
   {
-    e = new CEventContactList(vc, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+    e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
     CPU_ThroughServer *p = new CPU_ThroughServer(0, nUin, ICQ_CMDxSUB_URL, m);
     gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE, nUin, e);
@@ -244,7 +244,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
     if (u == NULL) return NULL;
     unsigned long f = E_DIRECT | INT_VERSION;
     if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-    e = new CEventContactList(vc, ICQ_CMDxTCP_START, TIME_NOW, f);
+    e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, u);
     gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",

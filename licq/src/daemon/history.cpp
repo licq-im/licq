@@ -268,7 +268,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
           vc.push_back(new CContact(nUin, &szResult[1]));
         b = !b;
       }
-      e = new CEventContactList(vc, nCommand, tTime, nFlags);
+      e = new CEventContactList(vc, false, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_USERxINFO:
