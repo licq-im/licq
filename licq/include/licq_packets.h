@@ -496,15 +496,13 @@ protected:
 
 
 //-----Meta_SetGeneralInfo------------------------------------------------------
-class CPU_Meta_SetGeneralInfo : public CPacketUdp
+class CPU_Meta_SetGeneralInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName,
                           const char *szLastName,
                           const char *szEmailPrimary,
-                          const char *szEmailSecondary,
-                          const char *szEmailOld,
                           const char *szCity,
                           const char *szState,
                           const char *szPhoneNumber,
@@ -522,8 +520,6 @@ protected:
   char *m_szFirstName;
   char *m_szLastName;
   char *m_szEmailPrimary;
-  char *m_szEmailSecondary;
-  char *m_szEmailOld;
   char *m_szCity;
   char *m_szState;
   char *m_szPhoneNumber;
@@ -540,7 +536,7 @@ friend class CICQDaemon;
 
 
 //-----Meta_SetMoreInfo------------------------------------------------------
-class CPU_Meta_SetMoreInfo : public CPacketUdp
+class CPU_Meta_SetMoreInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetMoreInfo(unsigned short nAge,
@@ -571,14 +567,16 @@ friend class CICQDaemon;
 
 
 //-----Meta_SetWorkInfo------------------------------------------------------
-class CPU_Meta_SetWorkInfo : public CPacketUdp
+class CPU_Meta_SetWorkInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetWorkInfo(const char *szCity,
                        const char *szState,
                        const char *szPhoneNumber,
                        const char *szFaxNumber,
-                       const char *szAddress,
+                       const char *szStreet,
+		       const char *szZip,
+		       unsigned short nCompanyCountry,
                        const char *szName,
                        const char *szDepartment,
                        const char *szPosition,
@@ -591,7 +589,9 @@ protected:
   char *m_szState;
   char *m_szPhoneNumber;
   char *m_szFaxNumber;
-  char *m_szAddress;
+  char *m_szStreet;
+  char *m_szZip;
+  unsigned short m_nCompanyCountry;
   char *m_szName;
   char *m_szDepartment;
   char *m_szPosition;
@@ -602,7 +602,7 @@ friend class CICQDaemon;
 
 
 //-----Meta_SetAbout---------------------------------------------------------
-class CPU_Meta_SetAbout : public CPacketUdp
+class CPU_Meta_SetAbout : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetAbout(const char *szAbout);

@@ -979,13 +979,12 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   	nFormat = 1;
   	break;
   	
-  case ICQ_CMDxSUB_ADDEDxTOxLIST:
-  	break;
-  	
   case ICQ_CMDxSUB_URL:
+  case ICQ_CMDxSUB_CONTACTxLIST:
   case ICQ_CMDxSUB_AUTHxGRANTED:
   case ICQ_CMDxSUB_AUTHxREFUSED:
   case ICQ_CMDxSUB_AUTHxREQUEST:
+  case ICQ_CMDxSUB_ADDEDxTOxLIST:
   	nTypeLen = 9+msgLen;
   	nFormat = 4;
   	break;
@@ -1483,50 +1482,54 @@ CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
 //-----Meta_SetGeneralInfo---------------------------------------------------
 CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName, const char *szLastName,
-                          const char *szEmailPrimary, const char *szEmailSecondary,
-                          const char *szEmailOld,
+                          const char *szEmailPrimary,
                           const char *szCity, const char *szState,
                           const char *szPhoneNumber, const char *szFaxNumber,
                           const char *szAddress, const char *szCellularNumber,
                           const char *szZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail)
-  : CPacketUdp(ICQ_CMDxSND_META)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
+  m_nMetaCommand = 0xEA03;
 
   m_nCountryCode = nCountryCode;
   m_nTimezone = ICQUser::SystemTimezone();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
-  m_nSize += strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
-             strlen_safe(szEmailPrimary) * 2 + strlen_safe(szEmailSecondary) + strlen_safe(szCity) +
-             strlen_safe(szState) + strlen_safe(szPhoneNumber) + strlen_safe(szEmailOld) +
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
+             strlen_safe(szEmailPrimary) + strlen_safe(szCity) +
+             strlen_safe(szState) + strlen_safe(szPhoneNumber) +
              strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZipCode) +
-             strlen_safe(szCellularNumber) + 36 + 12;
+             strlen_safe(szCellularNumber) + 33 + 2 + 1 + 1;
+  m_nSize += packetSize;
   InitBuffer();
 
-  buffer->PackUnsignedShort(m_nMetaCommand);
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0xEA03); 			// subtype
 
   gTranslator.ClientToServer((char *) szAlias);
   gTranslator.ClientToServer((char *) szFirstName);
   gTranslator.ClientToServer((char *) szLastName);
   gTranslator.ClientToServer((char *) szEmailPrimary);
-  gTranslator.ClientToServer((char *) szEmailSecondary);
-  gTranslator.ClientToServer((char *) szEmailOld);
   gTranslator.ClientToServer((char *) szCity);
   gTranslator.ClientToServer((char *) szState);
   gTranslator.ClientToServer((char *) szPhoneNumber);
   gTranslator.ClientToServer((char *) szFaxNumber);
   gTranslator.ClientToServer((char *) szAddress);
   gTranslator.ClientToServer((char *) szCellularNumber);
+  gTranslator.ClientToServer((char *) szZipCode);
 
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
   m_szLastName = buffer->PackString(szLastName);
   m_szEmailPrimary = buffer->PackString(szEmailPrimary);
-  m_szEmailSecondary = buffer->PackString(szEmailSecondary);
-  m_szEmailOld = buffer->PackString(szEmailOld);
   m_szCity = buffer->PackString(szCity);
   m_szState = buffer->PackString(szState);
   m_szPhoneNumber = buffer->PackString(szPhoneNumber);
@@ -1548,7 +1551,6 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   }
 }
 
-
 //-----Meta_SetMoreInfo------------------------------------------------------
 CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
                        char nGender,
@@ -1559,9 +1561,10 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
                        char nLanguage1,
                        char nLanguage2,
                        char nLanguage3)
-  : CPacketUdp(ICQ_CMDxSND_META)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_MORExINFOxSET;
+  m_nMetaCommand = 0xFD03;
+
   m_nAge = nAge;
   m_nGender = nGender;
   m_nBirthYear = nBirthYear;
@@ -1571,12 +1574,21 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   m_nLanguage2 = nLanguage2;
   m_nLanguage3 = nLanguage3;
 
-  m_nSize += strlen_safe(szHomepage) + 14;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szHomepage)+3 + 10;
+  m_nSize += packetSize;
   InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0xFD03); 			// subtype
 
   gTranslator.ClientToServer((char *) szHomepage);
 
-  buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nAge);
   buffer->PackChar(nGender);
   m_szHomepage = buffer->PackString(szHomepage);
@@ -1586,9 +1598,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackChar(m_nLanguage1);
   buffer->PackChar(m_nLanguage2);
   buffer->PackChar(m_nLanguage3);
-
 }
-
 
 //-----Meta_SetWorkInfo------------------------------------------------------
 CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
@@ -1596,63 +1606,85 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szState,
     const char *szPhoneNumber,
     const char *szFaxNumber,
-    const char *szAddress,
+    const char *szStreet,
+    const char *szZip,
+    unsigned short nCompanyCountry,
     const char *szName,
     const char *szDepartment,
     const char *szPosition,
-    const char *szHomepage) : CPacketUdp(ICQ_CMDxSND_META)
+    const char *szHomepage)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
-
+  m_nMetaCommand = 0xF303;
+  
+  m_nCompanyCountry = nCompanyCountry;  
+  
   char szStatebuf[6];
 
   szStatebuf[5] = '\0';
   snprintf(szStatebuf, 6, szState);
 
-  m_nSize += strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
-             strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szName) +
-             strlen_safe(szDepartment) + strlen_safe(szPosition) +
-             strlen_safe(szHomepage) + 8 + 26;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
+		    strlen_safe(szFaxNumber) + strlen_safe(szStreet) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
+		    strlen_safe(szDepartment) + strlen_safe(szPosition) + 2 +
+		    strlen_safe(szHomepage) + 30;
+  m_nSize += packetSize;
   InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0xF303); 			// subtype
 
   gTranslator.ClientToServer((char *) szCity);
   gTranslator.ClientToServer((char *) szState);
   gTranslator.ClientToServer((char *) szPhoneNumber);
   gTranslator.ClientToServer((char *) szFaxNumber);
-  gTranslator.ClientToServer((char *) szAddress);
+  gTranslator.ClientToServer((char *) szStreet);
+  gTranslator.ClientToServer((char *) szZip);
   gTranslator.ClientToServer((char *) szName);
   gTranslator.ClientToServer((char *) szDepartment);
   gTranslator.ClientToServer((char *) szPosition);
   gTranslator.ClientToServer((char *) szHomepage);
 
-  buffer->PackUnsignedShort(m_nMetaCommand);
   m_szCity = buffer->PackString(szCity);
   m_szState = buffer->PackString(szStatebuf);
   m_szPhoneNumber = buffer->PackString(szPhoneNumber);
   m_szFaxNumber = buffer->PackString(szFaxNumber);
-  m_szAddress = buffer->PackString(szAddress);
-  buffer->PackUnsignedLong(0x0100);
-  buffer->PackUnsignedShort(0xFFFF);
+  m_szStreet = buffer->PackString(szStreet);
+  m_szZip = buffer->PackString(szZip);
+  buffer->PackUnsignedShort(m_nCompanyCountry);
   m_szName = buffer->PackString(szName);
   m_szDepartment = buffer->PackString(szDepartment);
   m_szPosition = buffer->PackString(szPosition);
-  buffer->PackUnsignedShort(0x04);
+  buffer->PackUnsignedShort(0x0500);
   m_szHomepage = buffer->PackString(szHomepage);
-
 }
-
 
 //-----Meta_SetAbout---------------------------------------------------------
 CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
-  : CPacketUdp(ICQ_CMDxSND_META)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_ABOUTxSET;
+  m_nMetaCommand = 0x0604;
 
-  m_nSize += strlen_safe(szAbout) + 5;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAbout) + 3;
+  m_nSize += packetSize;
   InitBuffer();
 
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0x0604); 			// subtype
+
   m_szAbout = szAbout == NULL ? strdup("") : strdup(szAbout);
-  buffer->PackUnsignedShort(m_nMetaCommand);
   char *sz = gTranslator.NToRN(szAbout);
   gTranslator.ClientToServer(sz);
   if (strlen(sz) > MAX_MESSAGE_SIZE)
@@ -1693,7 +1725,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
   buffer->PackUnsignedShortBE(0x2404); // subtype
   buffer->PackChar(m_nAuthorization);
   buffer->PackChar(m_nWebAware);
-  buffer->PackChar(m_nHideIp);
+  buffer->PackChar(1);
   buffer->PackChar(0);
 }
 

@@ -626,9 +626,9 @@ void UserInfoDlg::CreateWorkInfo()
   unsigned short CR = 0;
   QWidget *p = tabList[WorkInfo].tab;
 
-  QGridLayout *lay = new QGridLayout(p, 8, 5, 10, 5);
+  QGridLayout *lay = new QGridLayout(p, 9, 5, 10, 5);
   lay->addColSpacing(2, 10);
-  lay->setRowStretch(7, 1);
+  lay->setRowStretch(8, 1);
 
   lay->addWidget(new QLabel(tr("Name:"), p), CR, 0);
   nfoCompanyName = new CInfoField(p, !m_bOwner);
@@ -650,9 +650,27 @@ void UserInfoDlg::CreateWorkInfo()
   nfoCompanyState->setMaxLength(5);
   lay->addWidget(nfoCompanyState, CR, 4);
 
-  lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
-  nfoCompanyAddress = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyAddress, CR, CR, 1, 4);
+  lay->addWidget(new QLabel(tr("Street:"), p), ++CR, 0);
+  nfoCompanyStreet = new CInfoField(p, !m_bOwner);
+  lay->addMultiCellWidget(nfoCompanyStreet, CR, CR, 1, 4);
+
+  lay->addWidget(new QLabel(tr("Zip:"), p), ++CR, 0);
+  nfoCompanyZip = new CInfoField(p, !m_bOwner);
+  lay->addWidget(nfoCompanyZip, CR, 1);
+  lay->addWidget(new QLabel(tr("Country:"), p), CR, 3);
+  if (m_bOwner)
+  {
+    cmbCompanyCountry = new CEComboBox(true, tabList[WorkInfo].tab);
+    cmbCompanyCountry->setMaximumWidth(cmbCompanyCountry->sizeHint().width()+20);
+    for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
+      cmbCompanyCountry->insertItem(GetCountryByIndex(i)->szName);
+    lay->addWidget(cmbCompanyCountry, CR, 4);
+  }
+  else
+  {
+    nfoCompanyCountry = new CInfoField(p, !m_bOwner);
+    lay->addWidget(nfoCompanyCountry, CR, 4);
+  }
 
   lay->addWidget(new QLabel(tr("Phone:"), p), ++CR, 0);
   nfoCompanyPhone = new CInfoField(p, !m_bOwner);
@@ -661,7 +679,7 @@ void UserInfoDlg::CreateWorkInfo()
   nfoCompanyFax = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoCompanyFax, CR, 4);
 
-  lay->addWidget(new QLabel(tr("Homepage:"), p), CR, 0);
+  lay->addWidget(new QLabel(tr("Homepage:"), p), ++CR, 0);
   nfoCompanyHomepage = new CInfoField(p, !m_bOwner);
   lay->addMultiCellWidget(nfoCompanyHomepage, CR, CR, 1, 4);
 }
@@ -685,12 +703,60 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
   nfoCompanyPosition->setData(codec->toUnicode(u->GetCompanyPosition()));
   nfoCompanyCity->setData(codec->toUnicode(u->GetCompanyCity()));
   nfoCompanyState->setData(codec->toUnicode(u->GetCompanyState()));
-  nfoCompanyAddress->setData(codec->toUnicode(u->GetCompanyAddress()));
+  nfoCompanyStreet->setData(codec->toUnicode(u->GetCompanyStreet()));
+  nfoCompanyZip->setData(codec->toUnicode(u->GetCompanyZip()));
+  if (m_bOwner)
+  {
+    const SCountry *c = GetCountryByCode(u->GetCompanyCountry());
+    if (c == NULL)
+      cmbCompanyCountry->setCurrentItem(0);
+    else
+      cmbCompanyCountry->setCurrentItem(c->nIndex);
+  }
+  else
+  {
+    const SCountry *c = GetCountryByCode(u->GetCompanyCountry());
+    if (c == NULL)
+      nfoCompanyCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
+    else  // known
+      nfoCompanyCountry->setData(c->szName);
+  }
   nfoCompanyPhone->setData(codec->toUnicode(u->GetCompanyPhoneNumber()));
   nfoCompanyFax->setData(codec->toUnicode(u->GetCompanyFaxNumber()));
   nfoCompanyHomepage->setData(codec->toUnicode(u->GetCompanyHomepage()));
 
   if (bDropUser) gUserManager.DropUser(u);
+}
+
+void UserInfoDlg::SaveWorkInfo()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u == NULL) return;
+
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  u->SetEnableSave(false);
+
+  u->SetCompanyCity(codec->fromUnicode(nfoCompanyCity->text()));
+  u->SetCompanyState(codec->fromUnicode(nfoCompanyState->text()));
+  u->SetCompanyPhoneNumber(codec->fromUnicode(nfoCompanyPhone->text()));
+  u->SetCompanyFaxNumber(codec->fromUnicode(nfoCompanyFax->text()));
+  u->SetCompanyStreet(codec->fromUnicode(nfoCompanyStreet->text()));
+  u->SetCompanyZip(codec->fromUnicode(nfoCompanyZip->text()));
+  if (m_bOwner)
+  {
+    unsigned short i = cmbCompanyCountry->currentItem();
+    u->SetCompanyCountry(GetCountryByIndex(i)->nCode);
+  }
+  u->SetCompanyName(codec->fromUnicode(nfoCompanyName->text()));
+  u->SetCompanyDepartment(codec->fromUnicode(nfoCompanyDepartment->text()));
+  u->SetCompanyPosition(codec->fromUnicode(nfoCompanyPosition->text()));
+  u->SetCompanyHomepage(codec->fromUnicode(nfoCompanyHomepage->text()));
+
+  u->SetEnableSave(true);
+  u->SaveWorkInfo();
+
+  gUserManager.DropUser(u);
 }
 
 // -----------------------------------------------------------------------------
@@ -1201,7 +1267,7 @@ void UserInfoDlg::SaveSettings()
     SaveMoreInfo();
     break;
   case WorkInfo:
-    SaveMoreInfo();
+    SaveWorkInfo();
     break;
   case AboutInfo:
     SaveAbout();
@@ -1277,18 +1343,17 @@ void UserInfoDlg::slotUpdate()
     }
   }
 
-
+  unsigned short i, cc;
+  
   switch(currentTab) {
   case GeneralInfo:
   {
-    unsigned short i = cmbCountry->currentItem();
-    unsigned short cc = GetCountryByIndex(i)->nCode;
+    i = cmbCountry->currentItem();
+    cc = GetCountryByIndex(i)->nCode;
     icqEventTag = server->icqSetGeneralInfo(codec->fromUnicode(nfoAlias->text()),
                                             codec->fromUnicode(nfoFirstName->text()),
                                             codec->fromUnicode(nfoLastName->text()),
                                             codec->fromUnicode(nfoEmailPrimary->text()),
-                                            codec->fromUnicode(nfoEmailSecondary->text()),
-                                            codec->fromUnicode(nfoEmailOld->text()),
                                             codec->fromUnicode(nfoCity->text()),
                                             codec->fromUnicode(nfoState->text()),
                                             codec->fromUnicode(nfoPhone->text()),
@@ -1311,11 +1376,15 @@ void UserInfoDlg::slotUpdate()
                                          GetLanguageByIndex(cmbLanguage[2]->currentItem())->nCode);
   break;
   case WorkInfo:
+    i = cmbCompanyCountry->currentItem();
+    cc = GetCountryByIndex(i)->nCode;
     icqEventTag = server->icqSetWorkInfo(codec->fromUnicode(nfoCompanyCity->text()),
                                          codec->fromUnicode(nfoCompanyState->text()),
                                          codec->fromUnicode(nfoCompanyPhone->text()),
                                          codec->fromUnicode(nfoCompanyFax->text()),
-                                         codec->fromUnicode(nfoCompanyAddress->text()),
+                                         codec->fromUnicode(nfoCompanyStreet->text()),
+                                         codec->fromUnicode(nfoCompanyZip->text()),
+					 cc,
                                          codec->fromUnicode(nfoCompanyName->text()),
                                          codec->fromUnicode(nfoCompanyDepartment->text()),
                                          codec->fromUnicode(nfoCompanyPosition->text()),

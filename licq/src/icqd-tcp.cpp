@@ -240,10 +240,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   if (!online) // send offline
   {
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    CPU_ThroughServer *p = new CPU_ThroughServer(nUin,
-       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
-    gLog.Info("%sSending contact list through server (#%ld).\n", L_SRVxSTR, p->Sequence());
-    result = SendExpectEvent_Server(nUin, p, e);
+    result = icqSendThroughServer(nUin, ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e);
   }
   else
   {

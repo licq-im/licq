@@ -850,7 +850,10 @@ void ICQUser::LoadWorkInfo()
   m_fConf.ReadStr("CompanyState", szTemp, "");  SetCompanyState(szTemp);
   m_fConf.ReadStr("CompanyPhoneNumber", szTemp, "");  SetCompanyPhoneNumber(szTemp);
   m_fConf.ReadStr("CompanyFaxNumber", szTemp, "");  SetCompanyFaxNumber(szTemp);
-  m_fConf.ReadStr("CompanyAddress", szTemp, "");  SetCompanyAddress(szTemp);
+//  m_fConf.ReadStr("CompanyAddress", szTemp, "");  SetCompanyAddress(szTemp);
+  m_fConf.ReadStr("CompanyStreet", szTemp, "");  SetCompanyStreet(szTemp);
+  m_fConf.ReadStr("CompanyZip", szTemp, "");  SetCompanyZip(szTemp);
+  m_fConf.ReadNum("CompanyCountry", m_nCompanyCountry, 0);
   m_fConf.ReadStr("CompanyName", szTemp, "");  SetCompanyName(szTemp);
   m_fConf.ReadStr("CompanyDepartment", szTemp, "");  SetCompanyDepartment(szTemp);
   m_fConf.ReadStr("CompanyPosition", szTemp, "");  SetCompanyPosition(szTemp);
@@ -983,6 +986,10 @@ ICQUser::~ICQUser()
       free( m_szCompanyFaxNumber );
   if ( m_szCompanyAddress )
       free( m_szCompanyAddress );
+  if ( m_szCompanyStreet )
+      free( m_szCompanyStreet );
+  if ( m_szCompanyZip )
+      free( m_szCompanyZip );
   if ( m_szCompanyName )
       free( m_szCompanyName );
   if ( m_szCompanyDepartment )
@@ -1074,6 +1081,9 @@ void ICQUser::Init(unsigned long _nUin)
   m_szCompanyPhoneNumber = NULL;
   m_szCompanyFaxNumber = NULL;
   m_szCompanyAddress = NULL;
+  m_szCompanyStreet = NULL;
+  m_szCompanyZip = NULL;
+  m_nCompanyCountry = COUNTRY_UNSPECIFIED;
   m_szCompanyName = NULL;
   m_szCompanyDepartment = NULL;
   m_szCompanyPosition = NULL;
@@ -1141,6 +1151,8 @@ void ICQUser::SetDefaults()
   SetCompanyPhoneNumber(szTemp);
   SetCompanyFaxNumber(szTemp);
   SetCompanyAddress(szTemp);
+  SetCompanyStreet(szTemp);
+  SetCompanyZip(szTemp);
   SetCompanyName(szTemp);
   SetCompanyDepartment(szTemp);
   SetCompanyPosition(szTemp);
@@ -1795,7 +1807,10 @@ void ICQUser::SaveWorkInfo()
   m_fConf.WriteStr("CompanyState", m_szCompanyState);
   m_fConf.WriteStr("CompanyPhoneNumber", m_szCompanyPhoneNumber);
   m_fConf.WriteStr("CompanyFaxNumber", m_szCompanyFaxNumber);
-  m_fConf.WriteStr("CompanyAddress", m_szCompanyAddress);
+//  m_fConf.WriteStr("CompanyAddress", m_szCompanyAddress);
+  m_fConf.WriteStr("CompanyStreet", m_szCompanyStreet);
+  m_fConf.WriteStr("CompanyZip", m_szCompanyZip);
+  m_fConf.WriteNum("CompanyCountry", m_nCompanyCountry);
   m_fConf.WriteStr("CompanyName", m_szCompanyName);
   m_fConf.WriteStr("CompanyDepartment", m_szCompanyDepartment);
   m_fConf.WriteStr("CompanyPosition", m_szCompanyPosition);

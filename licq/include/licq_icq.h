@@ -58,6 +58,7 @@ const unsigned short ICQ_SNACxLOC_SETxUSERxINFO    = 0x0004;
 const unsigned short ICQ_SNACxBDY_REQUESTxRIGHTS   = 0x0002; // client
 const unsigned short ICQ_SNACxBDY_RIGHTSxGRANTED   = 0x0003; // server
 const unsigned short ICQ_SNACxBDY_ADDxTOxLIST      = 0x0004; // client
+const unsigned short ICQ_SNACxBDY_REMOVExFROMxLIST = 0x0005; // client
 
 // Subtypes for message family
 const unsigned short ICQ_SNACxMSG_SETxICQxMODE     = 0x0002; // client

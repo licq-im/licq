@@ -1347,6 +1347,9 @@ void CUserView::maybeTip(const QPoint& c)
 	ds += temp.setNum(nMinute);
         ds += (nMinute > 1 ? " minutes" : " minute");
       }
+      if (!nWeek && !nDay && !nHour && !nMinute)
+	ds += "0 minutes";
+
       ds += ".";
 
       s += tr("<br><nobr>Logged In: ") + ds + tr("</nobr>");

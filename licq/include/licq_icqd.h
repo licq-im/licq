@@ -139,12 +139,13 @@ public:
                                 const char *, const char *_sAbout, const char *);
   unsigned long icqSetWorkInfo(const char *_szCity, const char *_szState,
                            const char *_szPhone,
-                           const char *_szFax, const char *_szAddress,
+                           const char *_szFax, const char *_szStreet,
+			   const char *_szZip, unsigned short _nCompanyCountry,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
   unsigned long icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
                               const char *szLastName, const char *szEmailPrimary,
-                              const char *szEmailSecondary, const char *szEmailOld, const char *szCity,
+                              const char *szCity,
                               const char *szState, const char *szPhoneNumber,
                               const char *szFaxNumber, const char *szAddress,
                               const char *szCellularNumber, const char *szZipCode,
@@ -177,6 +178,7 @@ public:
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
+  void icqRemoveUser(unsigned long _nUin);
   void icqUpdateContactList();
 
   // Visible/Invisible list functions

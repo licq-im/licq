@@ -35,6 +35,14 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
   icqUserBasicInfo(_nUin);
 }
 
+//-----icqRemoveUser-------------------------------------------------------
+void CICQDaemon::icqRemoveUser(unsigned long _nUin)
+{
+  CSrvPacketTcp *p = new CPU_GenericUinList(_nUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST);
+  gLog.Info("%sAlerting server to remove user (#%ld)...\n", L_SRVxSTR,
+            p->Sequence());
+  SendExpectEvent_Server(_nUin, p, NULL);
+}
 
 //-----icqAlertUser-------------------------------------------------------------
 void CICQDaemon::icqAlertUser(unsigned long _nUin)
@@ -153,6 +161,87 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
   return e->EventId();
 }
 
+//-----icqSetGeneralInfo----------------------------------------------------
+unsigned long CICQDaemon::icqSetGeneralInfo(
+                          const char *szAlias, const char *szFirstName,
+                          const char *szLastName, const char *szEmailPrimary,
+                          const char *szCity,
+                          const char *szState, const char *szPhoneNumber,
+                          const char *szFaxNumber, const char *szAddress,
+                          const char *szCellularNumber, const char *szZipCode,
+                          unsigned short nCountryCode, bool bHideEmail)
+{
+  CPU_Meta_SetGeneralInfo *p =
+    new CPU_Meta_SetGeneralInfo(szAlias, szFirstName,
+                                szLastName, szEmailPrimary,
+                                szCity,
+                                szState, szPhoneNumber,
+                                szFaxNumber, szAddress,
+                                szCellularNumber, szZipCode,
+                                nCountryCode, bHideEmail);
+
+  gLog.Info("%sUpdating general info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
+//-----icqSetMoreInfo----------------------------------------------------
+unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
+                              char nGender, const char *szHomepage,
+                              unsigned short nBirthYear, char nBirthMonth,
+                              char nBirthDay, char nLanguage1,
+                              char nLanguage2, char nLanguage3)
+{
+  CPU_Meta_SetMoreInfo *p =
+    new CPU_Meta_SetMoreInfo(nAge, nGender, szHomepage,
+                             nBirthYear, nBirthMonth,
+                             nBirthDay, nLanguage1,
+                             nLanguage2, nLanguage3);
+
+  gLog.Info("%sUpdating more info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
+//-----icqSetWorkInfo--------------------------------------------------------
+unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
+                                     const char *_szPhone,
+                                     const char *_szFax, const char *_szStreet,
+				     const char *_szZip, unsigned short _nCompanyCountry,
+                                     const char *_szName, const char *_szDepartment,
+                                     const char *_szPosition, const char *_szHomepage)
+{
+  CPU_Meta_SetWorkInfo *p =
+    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szStreet,
+                             _szZip, _nCompanyCountry, _szName, _szDepartment, _szPosition, _szHomepage);
+
+  gLog.Info("%sUpdating work info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
+//-----icqSetAbout-----------------------------------------------------------
+unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
+{
+  char *szAbout = gTranslator.NToRN(_szAbout);
+  
+  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
+
+  gLog.Info("%sUpdating about (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+
+  delete [] szAbout;
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
 //-----icqAuthorizeGrant--------------------------------------------------------
 unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMessage)
 // authorize a user to add you to their contact list
@@ -190,16 +279,6 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   return e->EventId();
 }
 
-//-----icqSetSecurityInfo----------------------------------------------------
-unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
-{
-    CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
-    gLog.Info("%sUpdating security info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
-    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-    PushExtendedEvent(e);
-    return e->EventId();
-}
-
 //-----icqSearchByUin------------------------------------------------------------
 unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
 {
@@ -209,6 +288,16 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
    PushExtendedEvent(e);
    return e->EventId();
+}
+
+//-----icqSetSecurityInfo----------------------------------------------------
+unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+{
+    CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
+    gLog.Info("%sUpdating security info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+    PushExtendedEvent(e);
+    return e->EventId();
 }
 
 //-----icqSearchByInfo-----------------------------------------------------------
@@ -425,6 +514,9 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
 	break;	
     case ICQ_CMDxSUB_URL:
         gLog.Info("%sSending url through server (#%ld).\n", L_SRVxSTR, p->Sequence());
+	break;
+    case ICQ_CMDxSUB_CONTACTxLIST:
+        gLog.Info("%sSending contact list through server (#%ld).\n", L_SRVxSTR, p->Sequence());
 	break;
     default:
 	gLog.Info("%sSending misc through server (#%ld).\n", L_SRVxSTR, p->Sequence());
@@ -1436,6 +1528,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       delete [] szMessage;
+      break;
     }
 
     default:
@@ -1605,12 +1698,176 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 			o->SetHideIp(p->HideIp());
     			o->SetEnableSave(true);
     			o->SaveLicqInfo();
+			unsigned short s = o->StatusFull();
     			gUserManager.DropOwner();
+			// Set status to ensure the status flags are set
+			icqSetStatus(s);
     			PushPluginEvent(e2);
     			DoneEvent(e, EVENT_SUCCESS);
     		}
     		else /* META_FAILURE */
-    			gLog.Info("%sSecurity info not updated.\n", L_SRVxSTR);    	
+    			gLog.Info("%sSecurity info not updated.\n", L_SRVxSTR);
+      } else if (nSubtype == ICQ_CMDxMETA_GENERALxINFOxRSP) {
+		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sGeneral info updated.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
+			CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)e->m_pPacket;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+			
+    			o->SetEnableSave(false);
+			
+			o->SetAlias( p->m_szAlias );
+			o->SetFirstName( p->m_szFirstName );
+			o->SetLastName( p->m_szLastName );
+			o->SetEmailPrimary( p->m_szEmailPrimary );
+			o->SetCity( p->m_szCity );
+			o->SetState( p->m_szState );
+			o->SetPhoneNumber( p->m_szPhoneNumber );
+			o->SetFaxNumber( p->m_szFaxNumber );
+			o->SetAddress( p->m_szAddress );
+			o->SetCellularNumber( p->m_szCellularNumber );
+			o->SetZipCode( p->m_szZipCode );
+			o->SetCountryCode( p->m_nCountryCode );
+			o->SetTimezone( p->m_nTimezone );
+			o->SetHideEmail( p->m_nHideEmail ); // 0 = no, 1 = yes
+
+			// translating string with Translation Table
+			gTranslator.ServerToClient(o->GetAlias());
+			gTranslator.ServerToClient(o->GetFirstName());
+			gTranslator.ServerToClient(o->GetLastName());
+			gTranslator.ServerToClient(o->GetEmailPrimary());
+			gTranslator.ServerToClient(o->GetCity());
+			gTranslator.ServerToClient(o->GetState());
+			gTranslator.ServerToClient(o->GetPhoneNumber());
+			gTranslator.ServerToClient(o->GetFaxNumber());
+			gTranslator.ServerToClient(o->GetAddress());
+		        gTranslator.ServerToClient(o->GetCellularNumber());
+			gTranslator.ServerToClient(o->GetZipCode());
+
+			// save the user infomation
+			o->SetEnableSave(true);
+			o->SaveGeneralInfo();
+    			
+			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sGeneral info not updated.\n", L_SRVxSTR);    	
+      } else if (nSubtype == ICQ_CMDxMETA_MORExINFOxRSP) {
+		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sMore info updated.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_MORExINFOxSET;
+			CPU_Meta_SetMoreInfo *p = (CPU_Meta_SetMoreInfo *)e->m_pPacket;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+			
+			o->SetEnableSave(false);
+			
+			o->SetAge( p->m_nAge );
+			o->SetGender( p->m_nGender );
+			o->SetHomepage( p->m_szHomepage );
+			o->SetBirthYear( p->m_nBirthYear );
+			o->SetBirthMonth( p->m_nBirthMonth );
+			o->SetBirthDay ( p->m_nBirthDay );
+			o->SetLanguage1( p->m_nLanguage1 );
+			o->SetLanguage2( p->m_nLanguage2 );
+			o->SetLanguage3( p->m_nLanguage3 );
+
+			// translating string with Translation Table
+			gTranslator.ServerToClient(o->GetHomepage());
+
+			// save the user infomation
+			o->SetEnableSave(true);
+			o->SaveMoreInfo();
+
+			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sMore info not updated.\n", L_SRVxSTR);    	
+      } else if (nSubtype == ICQ_CMDxMETA_WORKxINFOxRSP) {
+		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sWork info updated.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_WORKxINFOxSET;
+			CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)e->m_pPacket;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+			
+			o->SetEnableSave(false);
+			
+			o->SetCompanyCity( p->m_szCity );
+			o->SetCompanyState( p->m_szState );
+			o->SetCompanyPhoneNumber( p->m_szPhoneNumber );
+			o->SetCompanyFaxNumber( p->m_szFaxNumber );
+			o->SetCompanyStreet( p->m_szStreet );
+			o->SetCompanyZip( p->m_szZip );
+			o->SetCompanyCountry( p->m_nCompanyCountry );
+			o->SetCompanyName( p->m_szName );
+			o->SetCompanyDepartment( p->m_szDepartment );
+			o->SetCompanyPosition( p->m_szPosition );
+			o->SetCompanyHomepage( p->m_szHomepage );
+
+			// translating string with Translation Table
+			gTranslator.ServerToClient(o->GetCompanyCity());
+			gTranslator.ServerToClient(o->GetCompanyState());
+			gTranslator.ServerToClient(o->GetCompanyPhoneNumber());
+			gTranslator.ServerToClient(o->GetCompanyFaxNumber());
+			gTranslator.ServerToClient(o->GetCompanyStreet());
+			gTranslator.ServerToClient(o->GetCompanyZip());
+			gTranslator.ServerToClient(o->GetCompanyName());
+			gTranslator.ServerToClient(o->GetCompanyDepartment());
+			gTranslator.ServerToClient(o->GetCompanyPosition());
+			gTranslator.ServerToClient(o->GetCompanyHomepage());
+
+			// save the user infomation
+			o->SetEnableSave(true);
+			o->SaveWorkInfo();
+
+			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sWork info not updated.\n", L_SRVxSTR);    	
+      } else if (nSubtype == ICQ_CMDxMETA_ABOUTxRSP) {
+		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sAbout updated.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_ABOUTxSET;
+			CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)e->m_pPacket;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+			
+			char* msg = gTranslator.RNToN(p->m_szAbout);
+
+			o->SetEnableSave(false);
+			
+			o->SetAbout( msg );
+			delete [] msg;
+
+			// translating string with Translation Table
+			gTranslator.ServerToClient(o->GetAbout());
+
+			// save the user infomation
+			o->SetEnableSave(true);
+			o->SaveAboutInfo();
+
+			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sAbout not updated.\n", L_SRVxSTR);    	
       }
       // Search results need to be processed differently
       else if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {
@@ -1712,6 +1969,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    gLog.Info("%sGeneral info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
 
 	    // main home info
+	    u->SetEnableSave(false);
 	    u->SetAlias( msg.UnpackString() );
 	    u->SetFirstName( msg.UnpackString() );
 	    u->SetLastName( msg.UnpackString() );
@@ -1839,9 +2097,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    u->SetCompanyState( msg.UnpackString() );
 	    u->SetCompanyPhoneNumber( msg.UnpackString() );
 	    u->SetCompanyFaxNumber( msg.UnpackString() );
-	    u->SetCompanyAddress( msg.UnpackString() );  // u->SetCompanyStreet( msg.UnpackString() );
-	    msg.UnpackString();        // u->SetCompanyZip( msg.UnpackString() );
-	    msg.UnpackUnsignedShort(); // u->SetCompanyCountry( msg.UnpackUnsignedShort() );
+	    u->SetCompanyStreet( msg.UnpackString() );
+	    u->SetCompanyZip( msg.UnpackString() );
+	    u->SetCompanyCountry( msg.UnpackUnsignedShort() );
 	    u->SetCompanyName( msg.UnpackString() );
 	    u->SetCompanyDepartment( msg.UnpackString() );
 	    u->SetCompanyPosition( msg.UnpackString() );
@@ -1853,7 +2111,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    gTranslator.ServerToClient(u->GetCompanyState());
 	    gTranslator.ServerToClient(u->GetCompanyPhoneNumber());
 	    gTranslator.ServerToClient(u->GetCompanyFaxNumber());
-	    gTranslator.ServerToClient(u->GetCompanyAddress());
+	    gTranslator.ServerToClient(u->GetCompanyStreet());
+	    gTranslator.ServerToClient(u->GetCompanyZip());
 	    gTranslator.ServerToClient(u->GetCompanyName());
 	    gTranslator.ServerToClient(u->GetCompanyDepartment());
 	    gTranslator.ServerToClient(u->GetCompanyPosition());
@@ -1878,6 +2137,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    char* msg = gTranslator.RNToN(rawmsg);
 	    delete [] rawmsg;
 
+	    u->SetEnableSave(false);
 	    u->SetAbout( msg );
 	    delete [] msg;
 

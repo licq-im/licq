@@ -103,9 +103,10 @@ protected:
   // Work info
   void CreateWorkInfo();
   CInfoField *nfoCompanyName, *nfoCompanyCity, *nfoCompanyState,
-             *nfoCompanyAddress, *nfoCompanyPhone, *nfoCompanyFax,
+             *nfoCompanyStreet, *nfoCompanyZip, *nfoCompanyCountry, *nfoCompanyPhone, *nfoCompanyFax,
              *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
-
+  CEComboBox *cmbCompanyCountry;
+  
   // About
   void CreateAbout();
   QLabel *lblAbout;
