@@ -120,6 +120,7 @@ protected:
   QTimer autoAwayTimer;
   unsigned short autoAwayTime,
                  autoNATime,
+                 autoOfflineTime,
                  manualAway,
                  m_nRealHeight;
 

@@ -37,10 +37,10 @@ protected:
    // network tab
    QWidget* new_network_options();
    QLabel *lblServers, *lblDefServerPort, *lblTcpServerPort,
-          *lblAutoAway, *lblAutoNa, *lblAutoLogon;
+      *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
    QComboBox *cmbServers, *cmbAutoLogon;
    QSpinBox *spnDefServerPort, *spnTcpServerPort, *spnAutoAway, *spnAutoNa,
-            *spnPortLow, *spnPortHigh;
+      *spnAutoOffline, *spnPortLow, *spnPortHigh;
    QPushButton *btnAddServer;
    QCheckBox  *chkAutoLogonInvisible, *chkFirewall, *chkTCPEnabled;
    QLineEdit *edtFirewallHost;

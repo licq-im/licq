@@ -211,6 +211,7 @@ void OptionsDlg::SetupOptions()
 
   spnAutoAway->setValue(mainwin->autoAwayTime);
   spnAutoNa->setValue(mainwin->autoNATime);
+  spnAutoOffline->setValue(mainwin->autoOfflineTime);
   cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon > 10 ? mainwin->m_nAutoLogon - 10 : mainwin->m_nAutoLogon);
   chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon > 10);
 
@@ -400,6 +401,7 @@ void OptionsDlg::ApplyOptions()
 
   mainwin->autoAwayTime = spnAutoAway->value();
   mainwin->autoNATime = spnAutoNa->value();
+  mainwin->autoOfflineTime = spnAutoOffline->value();
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
                           (chkAutoLogonInvisible->isChecked() &&
                            cmbAutoLogon->currentItem() ? 10 : 0);
@@ -929,13 +931,19 @@ QWidget* OptionsDlg::new_status_options()
                                  "automatically be marked \"away\".  Set to \"0\" "
                                  "to disable."));
   spnAutoAway = new QSpinBox(gbAuto);
-  spnAutoAway->setSpecialValueText(tr("Disable"));
+  spnAutoAway->setSpecialValueText(tr("Never"));
   lblAutoNa = new QLabel(tr("Auto N/A:"), gbAuto);
   QWhatsThis::add(lblAutoNa, tr("Number of minutes of inactivity after which to "
                                "automatically be marked \"not available\".  Set to \"0\" "
                                "to disable."));
   spnAutoNa = new QSpinBox(gbAuto);
-  spnAutoNa->setSpecialValueText(tr("Disable"));
+  spnAutoNa->setSpecialValueText(tr("Never"));
+  lblAutoOffline = new QLabel(tr("Auto Offline:"), gbAuto);
+  QWhatsThis::add(lblAutoOffline, tr("Number of minutes of inactivity after which to "
+                               "automatically go offline.  Set to \"0\" "
+                               "to disable."));
+  spnAutoOffline = new QSpinBox(gbAuto);
+  spnAutoOffline->setSpecialValueText(tr("Never"));
   //lay->addWidget(gbAuto);
   //lay->addStretch(1);
 

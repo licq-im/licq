@@ -288,6 +288,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   if (m_nAutoLogon > 16) m_nAutoLogon = 0;
   licqConf.ReadNum("AutoAway", autoAwayTime, 0);
   licqConf.ReadNum("AutoNA", autoNATime, 0);
+  licqConf.ReadNum("AutoOffline", autoOfflineTime, 0);
 
   licqConf.SetSection("functions");
   licqConf.ReadBool("AutoClose", autoClose, true);
@@ -1404,23 +1405,16 @@ void CMainWindow::callUserFunction(int index)
     }
     case mnuUserInvisibleList:
     {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (!u) return;
-      u->SetInvisibleList(!u->InvisibleList());
-      gUserManager.DropUser(u);
-      if (m_bFontStyles) updateUserWin();
-      licqDaemon->icqSendInvisibleList(true);
+      licqDaemon->icqToggleInvisibleList(nUin);
+      if (m_bFontStyles)
+        updateUserWin();
       break;
     }
     case mnuUserVisibleList:
     {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (!u) return;
-      u->SetVisibleList(!u->VisibleList());
-      gUserManager.DropUser(u);
+      licqDaemon->icqToggleVisibleList(nUin);
       if (m_bFontStyles)
         updateUserWin();
-      licqDaemon->icqSendVisibleList(true);
       break;
     }
     case mnuUserIgnoreList:
@@ -1482,7 +1476,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
   if (f == NULL)
   {
-     f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose);
+     f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose, NULL, "user");
      connect (f, SIGNAL(signal_updatedUser(CICQSignal *)), SLOT(slot_updatedUser(CICQSignal *)));
      connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
      f->setupTabs(fcn);
@@ -1677,6 +1671,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("Logon", m_nAutoLogon);
   licqConf.WriteNum("AutoAway", autoAwayTime);
   licqConf.WriteNum("AutoNA", autoNATime);
+  licqConf.WriteNum("AutoOffline", autoOfflineTime);
 
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", autoClose);
@@ -1922,6 +1917,7 @@ void CMainWindow::autoAway()
   static XScreenSaverInfo *mit_info = NULL;
   static bool bAutoAway = false;
   static bool bAutoNA = false;
+  static bool bAutoOffline = false;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short status = o->Status();
@@ -1949,15 +1945,26 @@ void CMainWindow::autoAway()
   Time idleTime = mit_info->idle;
 
   // Check no one changed the status behind our back
-  if ( (bAutoNA && status != ICQ_STATUS_NA) ||
-       (bAutoAway && status != ICQ_STATUS_AWAY && !bAutoNA) )
+  if ( (bAutoOffline && status != ICQ_STATUS_OFFLINE) ||
+       (bAutoNA && status != ICQ_STATUS_NA && !bAutoOffline) ||
+       (bAutoAway && status != ICQ_STATUS_AWAY && !bAutoNA && !bAutoOffline) )
   {
+    bAutoOffline = false;
     bAutoNA = false;
     bAutoAway = false;
     return;
   }
 
-  if ( (autoNATime > 0) &&
+  if ( (autoOfflineTime > 0) &&
+       (unsigned long)idleTime > (unsigned long)(autoOfflineTime * 60000))
+  {
+    if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY || status == ICQ_STATUS_NA)
+    {
+      changeStatus(ICQ_STATUS_OFFLINE);
+      bAutoOffline = true;
+    }
+  }
+  else if ( (autoNATime > 0) &&
        (unsigned long)idleTime > (unsigned long)(autoNATime * 60000))
   {
     if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY)
@@ -1977,7 +1984,7 @@ void CMainWindow::autoAway()
   }
   else
   {
-    if (bAutoNA && bAutoAway)
+    /*if (bAutoNA && bAutoAway)
     {
       changeStatus(ICQ_STATUS_ONLINE);
       bAutoNA = false;
@@ -1987,6 +1994,42 @@ void CMainWindow::autoAway()
     {
       changeStatus(ICQ_STATUS_AWAY);
       bAutoNA = false;
+    }
+    else if (bAutoAway)
+    {
+      changeStatus(ICQ_STATUS_ONLINE);
+      bAutoAway = false;
+    }*/
+    if (bAutoOffline)
+    {
+      if (bAutoNA && bAutoAway)
+      {
+        changeStatus(ICQ_STATUS_ONLINE);
+        bAutoOffline = bAutoNA = bAutoAway = false;
+      }
+      else if (bAutoNA)
+      {
+        changeStatus(ICQ_STATUS_AWAY);
+        bAutoNA = bAutoOffline = false;
+      }
+      else
+      {
+        changeStatus(ICQ_STATUS_NA);
+        bAutoOffline = false;
+      }
+    }
+    else if (bAutoNA)
+    {
+      if (bAutoAway)
+      {
+        changeStatus(ICQ_STATUS_ONLINE);
+        bAutoNA = bAutoAway = false;
+      }
+      else
+      {
+        changeStatus(ICQ_STATUS_AWAY);
+        bAutoNA = false;
+      }
     }
     else if (bAutoAway)
     {
