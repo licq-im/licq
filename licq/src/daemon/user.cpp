@@ -846,13 +846,6 @@ void ICQUser::LoadLicqInfo()
         it++;
       }
     }
-    /*
-    else
-    {
-      m_vcMessages.push_back(new CEventSaved(nNewMessages));
-      incNumUserEvents();
-    }
-    */
     ClearHistory(hist);
   }
 }
@@ -937,7 +930,6 @@ void ICQUser::Init(unsigned long _nUin)
   SetShowAwayMsg(false);
   SetSequence(1);
   ClearSocketDesc();
-  fcnDlg = NULL;
   m_nIp = m_nPort = m_nRealIp = 0;
   m_nMode = MODE_DIRECT;
   m_nVersion = 0x03;

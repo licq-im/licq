@@ -11,7 +11,6 @@
 #include "pthread_rdwr.h"
 #include "message.h"
 #include "history.h"
-#include "userfcndlg.h"
 #include "file.h"
 #include "icq-defines.h"
 
@@ -88,8 +87,6 @@ public:
   ICQUser(unsigned long id);
   virtual ~ICQUser();
   void RemoveFiles();
-
-  CUserFunctionDlg *fcnDlg;
 
   virtual void SaveLicqInfo();
   void SaveGeneralInfo();
