@@ -132,7 +132,7 @@ protected:
 
 protected slots:
   virtual void sendButton();
-  virtual void sendDone(ICQEvent*);
+  virtual bool sendDone(ICQEvent*);
 
   void cancelSend();
   void massMessageToggled(bool);
@@ -155,7 +155,7 @@ protected:
 
 protected slots:
   virtual void sendButton();
-  virtual void sendDone(ICQEvent*);
+  virtual bool sendDone(ICQEvent*);
 };
 
 
@@ -197,7 +197,7 @@ protected:
 
 protected slots:
   virtual void sendButton();
-  virtual void sendDone(ICQEvent*);
+  virtual bool sendDone(ICQEvent*);
 };
 
 
@@ -218,7 +218,7 @@ protected:
 
 protected slots:
   virtual void sendButton();
-  virtual void sendDone(ICQEvent*);
+  virtual bool sendDone(ICQEvent*);
 };
 
 
