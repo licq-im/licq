@@ -28,6 +28,9 @@
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
 #include <qsessionmanager.h>
+#if QT_VERSION >= 220
+#include <qmotifplusstyle.h>
+#endif
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -53,7 +56,7 @@ const char *LP_Usage(void)
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / JFC), ignored by KDE support\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / JFC / GTK), ignored by KDE support\n"
     " -d : start hidden (dock icon only)\n";
   return usage;
 }
@@ -134,6 +137,10 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = new QCDEStyle;
   else if (strncmp(_szStyle, "JFC", 3) == 0)
     s = new JFCStyle;
+#if QT_VERSION >= 220
+  else if (strncmp(_szStyle, "GTK", 3) == 0)
+    s = new QMotifPlusStyle(true);
+#endif
   return s;
 }
 
