@@ -11,18 +11,16 @@
 #include "messagebox.h"
 #include "eventdesc.h"
 
-MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView *parent) : QListViewItem(parent)
+MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(parent)
 {
-  index = (unsigned short)theIndex;
-  msg = theMsg->Copy();
+  msg = theMsg;
   QDateTime d;
   d.setTime_t(msg->Time());
   QString sd = d.toString();
   sd.truncate(sd.length() - 5);
 
-  setText(0, "*");
-  setText(1, EventDescription(msg));
-  setText(2, sd);
+  setText(0, EventDescription(msg));
+  setText(1, sd);
 }
 
 MsgViewItem::~MsgViewItem(void)
@@ -34,13 +32,13 @@ MsgViewItem::~MsgViewItem(void)
 void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
   QFont f(p->font());
-  if (index != -1)
+  /*if (index != -1)
   {
     f.setItalic(true);
     p->setFont(f);
     QListViewItem::paintCell(p, QColorGroup(cg.foreground(), cg.background(), cg.light(), cg.dark(), cg.mid(), QColor("blue"), cg.base()), column, width, align);
   }
-  else
+  else*/
   {
     f.setItalic(false);
     p->setFont(f);
@@ -58,10 +56,8 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, i
 MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
 {
-  addColumn(tr("N"), 20);
   addColumn(tr("Event Type"), 215);
   addColumn(tr("Time Received"), 115);
-  setColumnAlignment(0, AlignCenter);
   setAllColumnsShowFocus (true);
   setVScrollBarMode(AlwaysOn);
 
@@ -98,10 +94,10 @@ void MsgView::resizeEvent(QResizeEvent *e)
 {
   QListView::resizeEvent(e);
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(2, width() - 240 - s->width());
+  setColumnWidth(1, width() - 220 - s->width());
 }
 
-
+#if 0
 //-----MsgView::markRead---------------------------------------------------------------------------
 void MsgView::markRead(short index)
 {
@@ -127,7 +123,7 @@ void MsgView::markRead(short index)
          e->index--;
    }
 }
-
+#endif
 
 //=====CMsgItemTips===============================================================================
 

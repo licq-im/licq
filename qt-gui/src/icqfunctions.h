@@ -146,6 +146,7 @@ protected:
 
   virtual void keyPressEvent(QKeyEvent *);
   virtual void closeEvent(QCloseEvent *);
+  void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   void SetInfo(ICQUser *);
   void SetGeneralInfo(ICQUser *);
   void SetMoreInfo(ICQUser *);
@@ -172,7 +173,8 @@ protected slots:
    void tabSelected(const QString &);
    void ShowHistoryPrev();
    void ShowHistoryNext();
-   void printMessage(QListViewItem *);
+   void slot_nextMessage();
+   void slot_printMessage(QListViewItem *);
    void save();
    void setSpoofed();
    void specialFcn(int);

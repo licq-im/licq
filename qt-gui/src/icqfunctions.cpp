@@ -183,7 +183,7 @@ void ICQFunctions::CreateReadEventTab()
   mleRead->setReadOnly(true);
   splRead->setOpaqueResize(true);
   splRead->setResizeMode(msgView, QSplitter::KeepSize);
-  connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
+  connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 
   QWidget *dummy = new QWidget(p);
   dummy->setMinimumHeight(5);
@@ -193,7 +193,7 @@ void ICQFunctions::CreateReadEventTab()
   btnRead1 = new QPushButton(h);
   btnRead2 = new QPushButton(h);
   btnRead3 = new QPushButton(h);
-  btnRead4 = new QPushButton(h);
+  btnRead4 = new QPushButton(tr("Next"), h);
 
   btnRead1->setEnabled(false);
   btnRead2->setEnabled(false);
@@ -203,7 +203,7 @@ void ICQFunctions::CreateReadEventTab()
   connect(btnRead1, SIGNAL(clicked()), this, SLOT(slot_readbtn1()));
   connect(btnRead2, SIGNAL(clicked()), this, SLOT(slot_readbtn2()));
   connect(btnRead3, SIGNAL(clicked()), this, SLOT(slot_readbtn3()));
-  connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_readbtn4()));
+  connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_nextMessage()));
 }
 
 
@@ -616,18 +616,16 @@ void ICQFunctions::setupTabs(int index)
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
 
   // read tab
-  for (short i = u->NewMessages() - 1; i >= 0; i--)
-     (void) new MsgViewItem(u->GetEvent(i), i, msgView);
-
-  // print the first event if it's a message
-  MsgViewItem *e = (MsgViewItem *)msgView->firstChild();
-  if (e != NULL /*&& (e->msg->SubCommand() == ICQ_CMDxSUB_MSG || e->msg->Command() == 0)*/)
+  if (index == mnuUserView)
   {
-     msgView->setSelected(e, true);
-     gUserManager.DropUser(u);
-     printMessage(e);
-     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u->NewMessages() > 0)
+    {
+      gUserManager.DropUser(u);
+      slot_nextMessage();
+      u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    }
   }
+  if (u->NewMessages() > 0) btnRead4->setEnabled(true);
 
   // Send tab
   rdbFile->setEnabled(!u->StatusOffline());
@@ -661,54 +659,50 @@ void ICQFunctions::setupTabs(int index)
   }
   move (s_nX, s_nY);
   show();
-#ifdef TEST_POS
-  printf("just shown: %d %d\n", x(), y());
-  move(s_nX, s_nY);
-  printf("just shown 2: %d %d\n", x(), y());
-#endif
 
-  switch(index) {
-  case mnuUserView:
-    tabs->showPage(tabList[TAB_READ].tab);
-    break;
-  case mnuUserSendMsg:
-    tabs->showPage(tabList[TAB_SEND].tab);
-    rdbMsg->setChecked(true);
-    specialFcn(0);
-    break;
-  case mnuUserSendUrl:
-    tabs->showPage(tabList[TAB_SEND].tab);
-    rdbUrl->setChecked(true);
-    specialFcn(1);
-    break;
-  case mnuUserSendChat:
-    tabs->showPage(tabList[TAB_SEND].tab);
-    rdbChat->setChecked(true);
-    specialFcn(2);
-    break;
-  case mnuUserSendFile:
-    tabs->showPage(tabList[TAB_SEND].tab);
-    rdbFile->setChecked(true);
-    specialFcn(3);
-    break;
-  case mnuUserGeneral:
-    tabs->showPage(tabList[TAB_GENERALINFO].tab);
-    break;
-  case mnuUserMore:
-    tabs->showPage(tabList[TAB_MOREINFO].tab);
-    break;
-  case mnuUserWork:
-    tabs->showPage(tabList[TAB_WORKINFO].tab);
-    break;
-  case mnuUserAbout:
-    tabs->showPage(tabList[TAB_ABOUT].tab);
-    break;
-  case mnuUserHistory:
-    tabs->showPage(tabList[TAB_HISTORY].tab);
-    break;
-  default:
-    gLog.Warn("%sInternal Error: ICQFunctions::setupTabs(): Invalid index (%d).\n",
-              L_WARNxSTR, index);
+  switch(index)
+  {
+    case mnuUserView:
+      tabs->showPage(tabList[TAB_READ].tab);
+      break;
+    case mnuUserSendMsg:
+      tabs->showPage(tabList[TAB_SEND].tab);
+      rdbMsg->setChecked(true);
+      specialFcn(0);
+      break;
+    case mnuUserSendUrl:
+      tabs->showPage(tabList[TAB_SEND].tab);
+      rdbUrl->setChecked(true);
+      specialFcn(1);
+      break;
+    case mnuUserSendChat:
+      tabs->showPage(tabList[TAB_SEND].tab);
+      rdbChat->setChecked(true);
+      specialFcn(2);
+      break;
+    case mnuUserSendFile:
+      tabs->showPage(tabList[TAB_SEND].tab);
+      rdbFile->setChecked(true);
+      specialFcn(3);
+      break;
+    case mnuUserGeneral:
+      tabs->showPage(tabList[TAB_GENERALINFO].tab);
+      break;
+    case mnuUserMore:
+      tabs->showPage(tabList[TAB_MOREINFO].tab);
+      break;
+    case mnuUserWork:
+      tabs->showPage(tabList[TAB_WORKINFO].tab);
+      break;
+    case mnuUserAbout:
+      tabs->showPage(tabList[TAB_ABOUT].tab);
+      break;
+    case mnuUserHistory:
+      tabs->showPage(tabList[TAB_HISTORY].tab);
+      break;
+    default:
+      gLog.Warn("%sInternal Error: ICQFunctions::setupTabs(): Invalid index (%d).\n",
+                L_WARNxSTR, index);
   }
 
 }
@@ -1115,7 +1109,7 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
   }
   case USER_EVENTS:
   {
-    MsgViewItem *e = (MsgViewItem *)msgView->firstChild();
+    /*MsgViewItem *e = (MsgViewItem *)msgView->firstChild();
     short index = -1;
     if (e != NULL)
     {
@@ -1130,6 +1124,16 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
     {
       e = new MsgViewItem(u->GetEvent(index), index, msgView);
       msgView->ensureItemVisible(e);
+    }*/
+    if (u->NewMessages() > 0)
+    {
+      btnRead4->setEnabled(true);
+      btnRead4->setText(tr("Next (%1)").arg(u->NewMessages()));
+    }
+    else
+    {
+      btnRead4->setEnabled(false);
+      btnRead4->setText(tr("Next"));
     }
     break;
   }
@@ -1152,8 +1156,37 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
 }
 
 
+void ICQFunctions::slot_nextMessage()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u->NewMessages() == 0)
+  {
+    gUserManager.DropUser(u);
+    return;
+  }
+  MsgViewItem *e = new MsgViewItem(u->EventPop(), msgView);
+  btnRead4->setEnabled(u->NewMessages() > 0);
+  if (u->NewMessages() > 0)
+  {
+    btnRead4->setEnabled(true);
+    btnRead4->setText(tr("Next (%1)").arg(u->NewMessages()));
+  }
+  else
+  {
+    btnRead4->setEnabled(false);
+    btnRead4->setText(tr("Next"));
+  }
+
+  gUserManager.DropUser(u);
+
+  msgView->setSelected(e, true);
+  slot_printMessage(e);
+  emit signal_updatedUser(USER_EVENTS, m_nUin);
+}
+
+
 //-----ICQFunctions::printMessage----------------------------------------------
-void ICQFunctions::printMessage(QListViewItem *e)
+void ICQFunctions::slot_printMessage(QListViewItem *e)
 {
   if (e == NULL)
     return;
@@ -1161,11 +1194,11 @@ void ICQFunctions::printMessage(QListViewItem *e)
   btnRead1->setText("");
   btnRead2->setText("");
   btnRead3->setText("");
-  btnRead4->setText("");
+  //btnRead4->setText("");
   btnRead1->setEnabled(false);
   btnRead2->setEnabled(false);
   btnRead3->setEnabled(false);
-  btnRead4->setEnabled(false);
+  //btnRead4->setEnabled(false);
 
   CUserEvent *m = ((MsgViewItem *)e)->msg;
   m_xCurrentReadEvent = m;
@@ -1175,42 +1208,45 @@ void ICQFunctions::printMessage(QListViewItem *e)
     switch (m->SubCommand())
     {
       case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-        btnRead1->setText(tr("Accept"));
-        btnRead2->setText(tr("Refuse"));
-        break;
-
       case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-        btnRead1->setText(tr("Accept"));
-        btnRead2->setText(tr("Refuse"));
+        if (m->IsCancelled())
+        {
+          mleRead->append(tr("\n--------------------\nCANCELLED"));
+        }
+        else
+        {
+          btnRead1->setText(tr("&Accept"));
+          btnRead2->setText(tr("&Refuse"));
+        }
         break;
 
       case ICQ_CMDxSUB_MSG:
-        btnRead1->setText(tr("Quote"));
-        btnRead2->setText(tr("Forward"));
+        btnRead1->setText(tr("&Quote"));
+        btnRead2->setText(tr("&Forward"));
         break;
 
       case ICQ_CMDxSUB_URL:   // view a url
-        btnRead1->setText(tr("Quote"));
-        btnRead2->setText(tr("Forward"));
+        btnRead1->setText(tr("&Quote"));
+        btnRead2->setText(tr("&Forward"));
         if (server->getUrlViewer() != NULL)
-          btnRead3->setText(tr("View"));
+          btnRead3->setText(tr("&View"));
         break;
 
-      case ICQ_CMDxSUB_REQxAUTH:
+      case ICQ_CMDxSUB_AUTHxREQUEST:
       {
-        btnRead1->setText(tr("Authorize"));
-        ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+        btnRead1->setText(tr("A&uthorize"));
+        ICQUser *u = gUserManager.FetchUser( ((CEventAuthRequest *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead2->setText(tr("Add User"));
+          btnRead2->setText(tr("&Add User"));
         else
           gUserManager.DropUser(u);
         break;
       }
-      case ICQ_CMDxSUB_AUTHORIZED:
+      case ICQ_CMDxSUB_AUTHxGRANTED:
       {
-        ICQUser *u = gUserManager.FetchUser( ((CEventAuth *)m)->Uin(), LOCK_R);
+        ICQUser *u = gUserManager.FetchUser( ((CEventAuthGranted *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead1->setText(tr("Add User"));
+          btnRead1->setText(tr("&Add User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -1219,7 +1255,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
       {
         ICQUser *u = gUserManager.FetchUser( ((CEventAdded *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead1->setText(tr("Add User"));
+          btnRead1->setText(tr("&Add User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -1230,17 +1266,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
   if (!btnRead1->text().isEmpty()) btnRead1->setEnabled(true);
   if (!btnRead2->text().isEmpty()) btnRead2->setEnabled(true);
   if (!btnRead3->text().isEmpty()) btnRead3->setEnabled(true);
-  if (!btnRead4->text().isEmpty()) btnRead4->setEnabled(true);
-
-  short index = ((MsgViewItem *)e)->index;
-  if (index >= 0)   // the message had not been seen yet
-  {
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    u->ClearEvent(index);
-    gUserManager.DropUser(u);
-    msgView->markRead(index);
-    emit signal_updatedUser(USER_EVENTS, m_nUin);
-  }
+  //if (!btnRead4->text().isEmpty()) btnRead4->setEnabled(true);
 }
 
 
@@ -1276,12 +1302,12 @@ void ICQFunctions::slot_readbtn1()
       generateReply();
       break;
 
-    case ICQ_CMDxSUB_REQxAUTH:
-      server->icqAuthorize( ((CEventAuthReq *)m_xCurrentReadEvent)->Uin() );
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+      server->icqAuthorize( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin() );
       break;
 
-    case ICQ_CMDxSUB_AUTHORIZED:
-      server->AddUserToList( ((CEventAuth *)m_xCurrentReadEvent)->Uin());
+    case ICQ_CMDxSUB_AUTHxGRANTED:
+      server->AddUserToList( ((CEventAuthGranted *)m_xCurrentReadEvent)->Uin());
       break;
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
@@ -1334,8 +1360,8 @@ void ICQFunctions::slot_readbtn2()
       break;
     }
 
-    case ICQ_CMDxSUB_REQxAUTH:
-      server->AddUserToList( ((CEventAuthReq *)m_xCurrentReadEvent)->Uin());
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+      server->AddUserToList( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin());
       break;
 
   } // switch
@@ -1753,30 +1779,25 @@ void ICQFunctions::callFcn()
       m_sProgressMsg = tr("Sending msg ");
       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
       m_sProgressMsg += "...";
-      icqEventTag =
-        server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
-                               chkSendServer->isChecked() ? false : true,
-                               chkUrgent->isChecked() ? true : false, uin);
+      icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
+         chkSendServer->isChecked() ? false : true,
+         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
     }
     else if (rdbUrl->isChecked()) // send URL
     {
       m_sProgressMsg = tr("Sending URL ");
       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
       m_sProgressMsg += "...";
-      icqEventTag =
-        server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
-                           chkSendServer->isChecked() ? false : true,
-                           chkUrgent->isChecked() ? true : false, uin);
+      icqEventTag = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+         chkSendServer->isChecked() ? false : true,
+         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
     }
     else if (rdbChat->isChecked())   // send chat request
     {
-      m_sProgressMsg = tr("Sending chat request ");
-      m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-      m_sProgressMsg += "...";
-      icqEventTag =
-        server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
-                               chkSendServer->isChecked() ? false : true,
-                               chkUrgent->isChecked() ? true : false, uin);
+      m_sProgressMsg = tr("Sending chat request...");
+      icqEventTag = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
+         chkSendServer->isChecked() ? false : true,
+         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
     }
     else if (rdbFile->isChecked())   // send file transfer
     {
@@ -1785,14 +1806,11 @@ void ICQFunctions::callFcn()
         WarnUser(this, tr("You must specify a file to transfer!"));
         break;
       }
-      m_sProgressMsg = tr("Sending file transfer ");
-      m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-      m_sProgressMsg += "...";
-      icqEventTag =
-        server->icqFileTransfer(m_nUin, edtItem->text(),
-                                mleSend->text().local8Bit(),
-                                chkSendServer->isChecked() ? false : true,
-                                chkUrgent->isChecked() ? true : false, uin);
+      m_sProgressMsg = tr("Sending file transfer...");
+      icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(),
+         mleSend->text().local8Bit(),
+         chkSendServer->isChecked() ? false : true,
+         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
     }
 
     if (icqEventTag == NULL)
@@ -1901,6 +1919,62 @@ void ICQFunctions::callFcn()
 }
 
 
+//-----RetrySend-------------------------------------------------------------
+void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
+{
+  btnOk->setEnabled(false);
+  btnCancel->setText(tr("Cancel"));
+  if (!bOnline)
+  {
+    chkSendServer->setChecked(true);
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    u->SetSendServer(true);
+    gUserManager.DropUser(u);
+  }
+
+  chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
+
+  switch(e->m_nSubCommand)
+  {
+    case ICQ_CMDxSUB_MSG:
+    {
+      CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
+      m_sProgressMsg = tr("Sending msg ");
+      m_sProgressMsg += bOnline ? tr("through server") : tr("direct");
+      m_sProgressMsg += "...";
+      icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
+         nLevel, 0);
+    }
+    case ICQ_CMDxSUB_URL:
+    {
+      CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
+      m_sProgressMsg = tr("Sending URL ");
+      m_sProgressMsg += bOnline ? tr("through server") : tr("direct");
+      m_sProgressMsg += "...";
+      icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
+         bOnline, nLevel, 0);
+    }
+    case ICQ_CMDxSUB_CHAT:
+    {
+      CEventChat *ue = (CEventChat *)e->m_xUserEvent;
+      m_sProgressMsg = tr("Sending chat request...");
+      icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(),
+         bOnline, nLevel, 0);
+    }
+    case ICQ_CMDxSUB_FILE:
+    {
+      CEventFile *ue = (CEventFile *)e->m_xUserEvent;
+      m_sProgressMsg = tr("Sending file transfer...");
+      icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
+         ue->FileDescription(), bOnline, nLevel, 0);
+    }
+  }
+
+  QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
+  setCaption(title);
+}
+
+
 //-----ICQFunctions::doneFcn-------------------------------------------------
 void ICQFunctions::doneFcn(ICQEvent *e)
 {
@@ -1954,28 +2028,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
          e->m_nSubCommand == ICQ_CMDxSUB_URL) &&
         QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
     {
-      btnOk->setEnabled(false);
-      btnCancel->setText(tr("Cancel"));
-      chkSendServer->setChecked(true);
-      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-      u->SetSendServer(true);
-      gUserManager.DropUser(u);
-      if (e->m_nSubCommand == ICQ_CMDxSUB_MSG)
-      {
-        CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
-        m_sProgressMsg = tr("Sending msg through server...");
-        icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), false,
-                                          false, 0);
-      }
-      else
-      {
-        CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
-        m_sProgressMsg = tr("Sending URL through server...");
-        icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(), false,
-                                      false, 0);
-      }
-      QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
-      setCaption(title);
+      RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
     }
   }
   else
@@ -1990,10 +2043,20 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        msg = tr("%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]")
+        msg = tr("%1 is in %2 mode:\n%3\n")
                  .arg(u->GetAlias()).arg(u->StatusStr()).arg(u->AutoResponse());
-        InformUser(this, msg);
         gUserManager.DropUser(u);
+        switch (QueryUser(this, msg, tr("Send Urgent"), tr("Send to Contact List"), tr("Cancel")))
+        {
+          case 0:
+            RetrySend(e, true, ICQ_TCPxMSG_URGENT);
+            break;
+          case 1:
+            RetrySend(e, true, ICQ_TCPxMSG_LIST);
+            break;
+          case 2:
+            break;
+        }
         bForceOpen = true;
       }
       else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)

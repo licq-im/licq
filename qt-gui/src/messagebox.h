@@ -25,13 +25,12 @@ protected:
 class MsgViewItem : public QListViewItem
 {
 public:
-   MsgViewItem (CUserEvent *, unsigned short, QListView *);
-   ~MsgViewItem(void);
-   short index;
-   CUserEvent *msg;
+  MsgViewItem (CUserEvent *, QListView *);
+  ~MsgViewItem(void);
+  CUserEvent *msg;
 
 protected:
-   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
+  virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
 
 friend class CMsgViewTips;
 friend class MsgView;
@@ -44,7 +43,6 @@ class MsgView : public QListView
 public:
   MsgView (QWidget *parent = 0, const char *name = 0);
   CUserEvent *currentMsg(void);
-  void markRead(short);
   QSize sizeHint() const;
 protected:
   CMsgViewTips *tips;
