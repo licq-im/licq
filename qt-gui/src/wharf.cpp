@@ -1,4 +1,3 @@
-// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -91,12 +90,10 @@ void IconManager::X11Init()
   XFree( hints );
 
 #ifdef USE_KDE
-  setActions(KPanelApplet::About |
-             KPanelApplet::Help |
-             KPanelApplet::Preferences);
+  int argc = 0;
+  init(argc, 0);
   setMinimumWidth(wharfIcon->width());
   setMinimumHeight(wharfIcon->height());
-  dock("LicqWharf");
 #endif
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
@@ -129,21 +126,10 @@ int IconManager::heightForWidth(int)
   return wharfIcon->height();
 }
 
-void IconManager::about()
+void IconManager::removedFromPanel()
 {
-  gMainWindow->aboutBox();
+  InformUser(this, tr("The applet can be removed by\ndisabling it in the options dialog"));
 }
-
-void IconManager::help()
-{
-  gMainWindow->slot_hints();
-}
-
-void IconManager::preferences()
-{
-  gMainWindow->popupOptionsDlg();
-}
-
 #endif
 
 void IconManager::mouseReleaseEvent( QMouseEvent *e )
