@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: ts2msg\n"
 
 msgid "AddUserDlg::Licq - Add User"
-msgstr "Licq - Benutzer hinzufügen"
+msgstr "Licq - Benutzer hinzufÃ¼gen"
 
 msgid "AddUserDlg::New User UIN:"
 msgstr "Benutzer UIN:"
@@ -33,7 +33,7 @@ msgid "AuthUserDlg::&Ok"
 msgstr "&Ok"
 
 msgid "AuthUserDlg::Refuse authorization to %1"
-msgstr "Lehne Autorisation für %1 ab"
+msgstr "Lehne Autorisation fÃ¼r %1 ab"
 
 msgid "AuthUserDlg::Authorize which user (UIN):"
 msgstr "Autorisiere Benutzer (UIN):"
@@ -57,13 +57,13 @@ msgid "AwayMsgDlg::&Ok"
 msgstr "&Ok"
 
 msgid "AwayMsgDlg::I'm currently %1, %a.\nYou can leave me a message.\n(%m messages pending from you)."
-msgstr "Ich bin zur Zeit %1, %a.\nSie können mir eine Nachricht hinterlassen.\n(%m Nachrichten von Ihnen warten auf Abruf)."
+msgstr "Ich bin zur Zeit %1, %a.\nSie kÃ¶nnen mir eine Nachricht hinterlassen.\n(%m Nachrichten von Ihnen warten auf Abruf)."
 
 msgid "AwayMsgDlg::&Hints"
 msgstr "&Tipps"
 
 msgid "AwayMsgDlg::<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br><ul><li>You can include any of the % expansions (described in the main hints page).</li><li>Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.<br>Examples of popular uses include:<ul><li><tt>|date</tt>: Will replace that line by the current date</li><li><tt>|fortune</tt>: Show a fortune, as a tagline for example</li><li><tt>|myscript.sh %u %a</tt>: Run a script, passing the uin and alias</li><li><tt>|myscript.sh %u %a > /dev/null</tt>: Run the same script but ignore the output (for tracking auto response checks or something)</li><li><tt>|if [ %u -lt 100000 ]; then echo \"You are special\"; fi</tt>: Useless, but shows how you can use shell script.</li></ul>Of course, multiple \"|\" can appear in the auto response, and commands and regular text can be mixed line by line.</li><hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
-msgstr "<h2>Tipps für das Einstellen der Auto-Antwort</h2><br><hr><br><ul><li>Sie können jede %-Erweiterung, die im Haupt-Tippfenster beschrieben ist, verwenden.</li><li>Jede Zeile, die mit einer Pipe (\"|\") beginnt, wird als Befehl behandelt. Die Zeile wird dann durch dessen Ausgabe ersetzt. Der Befehl wird durch /bin/sh interpretiert, es sind also alle Shell-Kommandos und Meta-Zeichen erlaubt.<br>Die %-Erweiterungen werden dabei automatisch in einfachen Anführungszeichen an die Shell übergegeben, um die Interpretation von Meta-Zeichen, die z. B. der Alias enthalten kann, zu verhindern. <br> Beliebte Anwendungsbeispiele:<ul><li><tt>|date</tt>: Ersetzt die Zeile durch das aktuelle Datum</li><li><tt>|fortune</tt>: Zeigt einen Spruch (z. B. als Fußzeile)</li><li><tt>|myscript.sh %u %a</tt>: Führt ein Script mit UIN und Alias als Parameter aus</li><li><tt>|myscript.sh %u %a > /dev/null</tt>: Führt dasselbe Script aus, ignoriert jedoch die Ausgabe (z. B. um die Auto-Antwort-Abfragen zu protokollieren, oder ähnliches)</li> <li><tt>|if [ %u -lt 100000 ]; then echo \"Du bist etwas Besonderes\"; fi</tt>: Sinnlos, aber es zeigt, wie man ein Shellscript benutzen kann.</li></ul>Natürlich können auch mehrere \"|\" in einer Auto-Antwort auftauchen, Befehle und normaler Text können zeilenweise gemischt werden.</li><hr><p> Für weitere Informationen besuchen Sie die Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
+msgstr "<h2>Tipps fÃ¼r das Einstellen der Auto-Antwort</h2><br><hr><br><ul><li>Sie kÃ¶nnen jede %-Erweiterung, die im Haupt-Tippfenster beschrieben ist, verwenden.</li><li>Jede Zeile, die mit einer Pipe (\"|\") beginnt, wird als Befehl behandelt. Die Zeile wird dann durch dessen Ausgabe ersetzt. Der Befehl wird durch /bin/sh interpretiert, es sind also alle Shell-Kommandos und Meta-Zeichen erlaubt.<br>Die %-Erweiterungen werden dabei automatisch in einfachen AnfÃ¼hrungszeichen an die Shell Ã¼bergegeben, um die Interpretation von Meta-Zeichen, die z. B. der Alias enthalten kann, zu verhindern. <br> Beliebte Anwendungsbeispiele:<ul><li><tt>|date</tt>: Ersetzt die Zeile durch das aktuelle Datum</li><li><tt>|fortune</tt>: Zeigt einen Spruch (z. B. als FuÃŸzeile)</li><li><tt>|myscript.sh %u %a</tt>: FÃ¼hrt ein Script mit UIN und Alias als Parameter aus</li><li><tt>|myscript.sh %u %a > /dev/null</tt>: FÃ¼hrt dasselbe Script aus, ignoriert jedoch die Ausgabe (z. B. um die Auto-Antwort-Abfragen zu protokollieren, oder Ã¤hnliches)</li> <li><tt>|if [ %u -lt 100000 ]; then echo \"Du bist etwas Besonderes\"; fi</tt>: Sinnlos, aber es zeigt, wie man ein Shellscript benutzen kann.</li></ul>NatÃ¼rlich kÃ¶nnen auch mehrere \"|\" in einer Auto-Antwort auftauchen, Befehle und normaler Text kÃ¶nnen zeilenweise gemischt werden.</li><hr><p> FÃ¼r weitere Informationen besuchen Sie die Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
 
 msgid "AwayMsgDlg::&Edit Items"
 msgstr "&Bearbeiten"
@@ -72,10 +72,10 @@ msgid "AwayMsgDlg::&Cancel"
 msgstr "Ab&brechen"
 
 msgid "AwayMsgDlg::&Select"
-msgstr "Aus&wählen"
+msgstr "Aus&wÃ¤hlen"
 
 msgid "AwayMsgDlg::Set %1 Response for %2"
-msgstr "Setze %1 Antwort für %2"
+msgstr "Setze %1 Antwort fÃ¼r %2"
 
 msgid "CFileDlg::KB"
 msgstr "Kb"
@@ -102,7 +102,7 @@ msgid "CFileDlg::Bytes"
 msgstr "Bytes"
 
 msgid "CFileDlg::Close"
-msgstr "Schließen"
+msgstr "SchlieÃŸen"
 
 msgid "CFileDlg::File:"
 msgstr "Datei:"
@@ -114,7 +114,7 @@ msgid "CFileDlg::Time:"
 msgstr "Zeit:"
 
 msgid "CFileDlg::Licq - File Transfer (%1)"
-msgstr "Licq - Dateiübertragung (%1)"
+msgstr "Licq - DateiÃ¼bertragung (%1)"
 
 msgid "CFileDlg::Remote side disconnected."
 msgstr "Gegenstelle hat die Verbindung unterbrochen."
@@ -126,13 +126,13 @@ msgid "CFileDlg::Waiting for connection..."
 msgstr "Warte auf Verbindung..."
 
 msgid "CFileDlg::File already exists and appears incomplete."
-msgstr "Datei existiert bereits und scheint unvollständig zu sein."
+msgstr "Datei existiert bereits und scheint unvollstÃ¤ndig zu sein."
 
 msgid "CFileDlg::Batch:"
 msgstr "Gesamt:"
 
 msgid "CFileDlg::File already exists and is at least as big as the incoming file."
-msgstr "Datei existiert bereits und ist mindestens so groß, wie die zu empfangende Datei."
+msgstr "Datei existiert bereits und ist mindestens so groÃŸ, wie die zu empfangende Datei."
 
 msgid "CFileDlg::Cancel"
 msgstr "Abbrechen"
@@ -141,7 +141,7 @@ msgid "CFileDlg::Resume"
 msgstr "Wiederaufnehmen"
 
 msgid "CFileDlg::Handshake Error.\nSee Network Window for details."
-msgstr "Handshake Fehler.\nSiehe Netzwerkfenster für Details."
+msgstr "Handshake Fehler.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "CFileDlg::File name:"
 msgstr "Dateiname:"
@@ -153,10 +153,10 @@ msgid "CFileDlg::File I/O error: %1."
 msgstr "Datei E/A Fehler: %1."
 
 msgid "CFileDlg::File I/O Error:\n%1\n\nSee Network Window for details."
-msgstr "Datei E/A Fehler:\n%1\n\nSiehe Netzwerkfenster für Details"
+msgstr "Datei E/A Fehler:\n%1\n\nSiehe Netzwerkfenster fÃ¼r Details"
 
 msgid "CFileDlg::File transfer cancelled."
-msgstr "Dateiübertragung abgebrochen."
+msgstr "DateiÃ¼bertragung abgebrochen."
 
 msgid "CFileDlg::Receiving file..."
 msgstr "Empfange Datei..."
@@ -165,19 +165,19 @@ msgid "CFileDlg::Current:"
 msgstr "Aktuell:"
 
 msgid "CFileDlg::Open error - unable to open file for writing."
-msgstr "Schreibfehler - Konnte Datei nicht zum schreiben öffnen."
+msgstr "Schreibfehler - Konnte Datei nicht zum schreiben Ã¶ffnen."
 
 msgid "CFileDlg::Overwrite"
-msgstr "Überschreiben"
+msgstr "Ãœberschreiben"
 
 msgid "CFileDlg::&Cancel Transfer"
-msgstr "Übertragung ab&brechen"
+msgstr "Ãœbertragung ab&brechen"
 
 msgid "CFileDlg::Received %1 from %2 successfully."
 msgstr "%1 von %2 erfolgreich empfangen."
 
 msgid "CFileDlg::File transfer complete."
-msgstr "Dateiübertragung fertig."
+msgstr "DateiÃ¼bertragung fertig."
 
 msgid "CFileDlg::Handshaking error.\n"
 msgstr "Handshaking Fehler.\n"
@@ -186,19 +186,19 @@ msgid "CFileDlg::Connection error.\n"
 msgstr "Verbindungsfehler.\n"
 
 msgid "CFileDlg::Unable to reach remote host.\nSee Network Window for details."
-msgstr "Kann Gegenstelle nicht erreichen.\nSiehe Netzwerkfenster für Details."
+msgstr "Kann Gegenstelle nicht erreichen.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "CFileDlg::Bind error.\n"
 msgstr "Fehler beim binden eines Port.\n"
 
 msgid "CFileDlg::Unable to bind to a port.\nSee Network Window for details."
-msgstr "Kann keinen Port binden.\nSiehe Netzwerkfenster für Details."
+msgstr "Kann keinen Port binden.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "CFileDlg::Not enough resources.\n"
-msgstr "Nicht genügend Ressourcen.\n"
+msgstr "Nicht genÃ¼gend Ressourcen.\n"
 
 msgid "CFileDlg::Unable to create a thread.\nSee Network Window for details."
-msgstr "Kann keinen neuen Thread erzeugen.\nSiehe Netzwerkfenster für Details."
+msgstr "Kann keinen neuen Thread erzeugen.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "CForwardDlg::URL"
 msgstr "URL"
@@ -210,7 +210,7 @@ msgid "CForwardDlg::Forward %1 To User"
 msgstr "Leite %1 an Benutzer weiter"
 
 msgid "CForwardDlg::Drag the user to forward to here:"
-msgstr "Ziehen Sie den Empfänger hier hinein:"
+msgstr "Ziehen Sie den EmpfÃ¤nger hier hinein:"
 
 msgid "CForwardDlg::Unable to forward this message type (%d)."
 msgstr "Kann diesen Nachrichtentyp nicht weiterleiten (%d)."
@@ -228,7 +228,7 @@ msgid "CForwardDlg::Forwarded URL:\n"
 msgstr "Weitergeleitete URL:\n"
 
 msgid "CJoinChatDlg::Select chat to join:"
-msgstr "Chat zum teilnehmen auswählen:"
+msgstr "Chat zum teilnehmen auswÃ¤hlen:"
 
 msgid "CJoinChatDlg::Invite to Join Chat"
 msgstr "In den Chat einladen"
@@ -237,7 +237,7 @@ msgid "CJoinChatDlg::&Cancel"
 msgstr "Ab&brechen"
 
 msgid "CJoinChatDlg::Select chat to invite:"
-msgstr "Chat für die Einladung auswählen:"
+msgstr "Chat fÃ¼r die Einladung auswÃ¤hlen:"
 
 msgid "CJoinChatDlg::Join Multiparty Chat"
 msgstr "An Gruppenchat teilnehmen"
@@ -252,7 +252,7 @@ msgid "CMMSendDlg::Sending mass message to %1..."
 msgstr "Sende Massen Nachricht an %1..."
 
 msgid "CMMSendDlg::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "CMMSendDlg::Sending mass URL to %1..."
 msgstr "Sende Massen URL an %1..."
@@ -261,10 +261,10 @@ msgid "CMMSendDlg::failed"
 msgstr "fehlgeschlagen"
 
 msgid "CMMSendDlg::Multiple Recipient Contact List"
-msgstr "Kontaktliste an mehrere Empfänger"
+msgstr "Kontaktliste an mehrere EmpfÃ¤nger"
 
 msgid "CMMSendDlg::Multiple Recipient URL"
-msgstr "URL an mehrere Empfänger"
+msgstr "URL an mehrere EmpfÃ¤nger"
 
 msgid "CMMSendDlg::&Cancel"
 msgstr "Ab&brechen"
@@ -273,7 +273,7 @@ msgid "CMMSendDlg::Sending mass list to %1..."
 msgstr "Sende Massen Kontaktliste an %1..."
 
 msgid "CMMSendDlg::Multiple Recipient Message"
-msgstr "Nachricht an mehrere Empfänger"
+msgstr "Nachricht an mehrere EmpfÃ¤nger"
 
 msgid "CMMUserView::Crop"
 msgstr "Benutzer ausschneiden"
@@ -285,10 +285,10 @@ msgid "CMMUserView::Remove"
 msgstr "Benutzer entfernen"
 
 msgid "CMMUserView::Add Group"
-msgstr "Gruppe hinzufügen"
+msgstr "Gruppe hinzufÃ¼gen"
 
 msgid "CMMUserView::Add All"
-msgstr "Alle hinzufügen"
+msgstr "Alle hinzufÃ¼gen"
 
 msgid "CMMUserView::Drag'n'Drop didn't work"
 msgstr "Drag und Drop hat nicht funktioniert"
@@ -333,16 +333,16 @@ msgid "CMainWindow::&Options..."
 msgstr "&Optionen..."
 
 msgid "CMainWindow::R&andom Chat"
-msgstr "Zufälliger &Chat"
+msgstr "ZufÃ¤lliger &Chat"
 
 msgid "CMainWindow::Error sending authorization."
 msgstr "Fehler beim senden der Autorisation."
 
 msgid "CMainWindow::&Random Chat Group"
-msgstr "&Zufällige Chat Gruppe"
+msgstr "&ZufÃ¤llige Chat Gruppe"
 
 msgid "CMainWindow::<ul><li><tt>%a - </tt>user alias</li><li><tt>%e - </tt>email</li><li><tt>%f - </tt>first name</li><li><tt>%h - </tt>phone number</li><li><tt>%i - </tt>user ip</li><li><tt>%l - </tt>last name</li><li><tt>%m - </tt># pending messages</li><li><tt>%n - </tt>full name</li><li><tt>%o - </tt>last seen online</li><li><tt>%O - </tt>online since</li><li><tt>%p - </tt>user port</li><li><tt>%s - </tt>full status</li><li><tt>%S - </tt>abbreviated status</li><li><tt>%u - </tt>uin</li><li><tt>%w - </tt>webpage</li></ul>"
-msgstr "<ul><li><tt>%a - </tt>Benutzername (Alias)</li><li><tt>%e - </tt>Email Adresse</li><li><tt>%f - </tt>Vorname</li><li><tt>%h - </tt>Telefonnummer</li><li><tt>%i - </tt>IP-Adresse</li><li><tt>%l - </tt>Nachname</li><li><tt>%m - </tt>Anzahl der wartenden Nachrichten</li><li><tt>%n - </tt>Vollständiger Name</li><li><tt>%o - </tt>letztes Mal online</li><li><tt>%O - </tt>online seit</li><li><tt>%p - </tt>Benutzer Port</li><li><tt>%s - </tt>Kompletter Status</li><li><tt>%S - </tt>Kurzer Status</li><li><tt>%u - </tt>UIN</li><li><tt>%w - </tt>Homepage</li></ul>"
+msgstr "<ul><li><tt>%a - </tt>Benutzername (Alias)</li><li><tt>%e - </tt>Email Adresse</li><li><tt>%f - </tt>Vorname</li><li><tt>%h - </tt>Telefonnummer</li><li><tt>%i - </tt>IP-Adresse</li><li><tt>%l - </tt>Nachname</li><li><tt>%m - </tt>Anzahl der wartenden Nachrichten</li><li><tt>%n - </tt>VollstÃ¤ndiger Name</li><li><tt>%o - </tt>letztes Mal online</li><li><tt>%O - </tt>online seit</li><li><tt>%p - </tt>Benutzer Port</li><li><tt>%s - </tt>Kompletter Status</li><li><tt>%S - </tt>Kurzer Status</li><li><tt>%u - </tt>UIN</li><li><tt>%w - </tt>Homepage</li></ul>"
 
 msgid "CMainWindow::Up since %1\n"
 msgstr "Gestartet seit %1\n"
@@ -354,13 +354,13 @@ msgid "CMainWindow::Check %1 Response"
 msgstr "%1 Antwort &lesen"
 
 msgid "CMainWindow::You are currently registered as\nUIN: %1\nBase Directory: %2\nRerun licq with the -b option to select a new\nbase directory and then register a new user."
-msgstr "Momentan sind Sie registriert als\nUIN: %1\nBasis-Verzeichnis: %2\nStarten Sie licq mit der Option -b, um ein anderes Basis-Verzeichnis\nzu wählen, und registrieren Sie dann einen neuen Benutzer."
+msgstr "Momentan sind Sie registriert als\nUIN: %1\nBasis-Verzeichnis: %2\nStarten Sie licq mit der Option -b, um ein anderes Basis-Verzeichnis\nzu wÃ¤hlen, und registrieren Sie dann einen neuen Benutzer."
 
 msgid "CMainWindow::Auto Request Secure"
-msgstr "Verschlüsselung automatisch anfordern"
+msgstr "VerschlÃ¼sselung automatisch anfordern"
 
 msgid "CMainWindow::Unable to open icons file\n%1."
-msgstr "Konnte Symbol-Datei nicht öffnen\n%1."
+msgstr "Konnte Symbol-Datei nicht Ã¶ffnen\n%1."
 
 msgid "CMainWindow::Send &Authorization"
 msgstr "Sende &Autorisation"
@@ -372,10 +372,10 @@ msgid "CMainWindow::Auto Accept Files"
 msgstr "Dateien automatisch akzeptieren"
 
 msgid "CMainWindow::&Not Available"
-msgstr "&Nicht verfügbar"
+msgstr "&Nicht verfÃ¼gbar"
 
 msgid "CMainWindow::&About"
-msgstr "Ü&ber"
+msgstr "Ãœ&ber"
 
 msgid "CMainWindow::&Group"
 msgstr "&Gruppe"
@@ -384,13 +384,13 @@ msgid "CMainWindow::&Hints"
 msgstr "&Tipps"
 
 msgid "CMainWindow::&Reset"
-msgstr "Zu&rücksetzen"
+msgstr "Zu&rÃ¼cksetzen"
 
 msgid "CMainWindow::Custom Auto Response..."
 msgstr "Spezielle &Auto Antwort..."
 
 msgid "CMainWindow::Licq version %1%8.\nQt GUI plugin version %2.\nCompiled on: %7\n%6\nMaintainer: Jon Keating\nContributions by Dirk A. Mueller\nOriginal Author: Graham Roff\n\nhttp://www.licq.org\n#licq on irc.openprojects.net\n\n%3 (%4)\n%5 contacts."
-msgstr "Licq Version %1%8\nQt GUI Plugin Version %2\nKompiliert am: %7\n%6\nMaintainer: Jon Keating\nBeiträge von Dirk A. Mueller\nUrsprünglicher Autor: Graham Roff\nÜbersetzung: Thomas Reitelbach\nWebseite: http://www.licq.org\nIRC: #licq auf irc.openprojects.net\n%3 (%4)\n%5 Kontakt(e)."
+msgstr "Licq Version %1%8\nQt GUI Plugin Version %2\nKompiliert am: %7\n%6\nMaintainer: Jon Keating\nBeitrÃ¤ge von Dirk A. Mueller\nUrsprÃ¼nglicher Autor: Graham Roff\nÃœbersetzung: Thomas Reitelbach\nWebseite: http://www.licq.org\nIRC: #licq auf irc.openprojects.net\n%3 (%4)\n%5 Kontakt(e)."
 
 msgid "CMainWindow::Online Notify"
 msgstr "Online-Meldung"
@@ -408,10 +408,10 @@ msgid "CMainWindow::%1 msg%2"
 msgstr "%1 Nachricht%2"
 
 msgid "CMainWindow::&Popup All Messages"
-msgstr "Alle Nachrichten ö&ffnen"
+msgstr "Alle Nachrichten Ã¶&ffnen"
 
 msgid "CMainWindow::Accept in Not Available"
-msgstr "Bei 'Nicht verfügbar' akzeptieren"
+msgstr "Bei 'Nicht verfÃ¼gbar' akzeptieren"
 
 msgid "CMainWindow::View &History"
 msgstr "&Verlauf zeigen"
@@ -423,7 +423,7 @@ msgid "CMainWindow::Edit User Group"
 msgstr "&Gruppenmitgliedschaft setzen..."
 
 msgid "CMainWindow::Successfully registered, your user identification\nnumber (UIN) is %1.\nNow set your personal information."
-msgstr "Erfolgreich registriert. Ihre Benutzernummer (UIN) ist: %1.\nStellen Sie als nächstes bitte Ihre persönlichen Informationen ein."
+msgstr "Erfolgreich registriert. Ihre Benutzernummer (UIN) ist: %1.\nStellen Sie als nÃ¤chstes bitte Ihre persÃ¶nlichen Informationen ein."
 
 msgid "CMainWindow::Unknown Packets"
 msgstr "&Unbekannte Pakete"
@@ -438,7 +438,7 @@ msgid "CMainWindow::Cancel"
 msgstr "Abbrechen"
 
 msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
-msgstr "<hr><p> Für weitere Informationen besuchen Sie bitte die Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
+msgstr "<hr><p> FÃ¼r weitere Informationen besuchen Sie bitte die Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
 
 msgid "CMainWindow::&Mini Mode"
 msgstr "&Miniaturansicht"
@@ -447,7 +447,7 @@ msgid "CMainWindow::Errors"
 msgstr "&Fehler"
 
 msgid "CMainWindow::Close &Secure Channel"
-msgstr "Schließe &sicheren Kanal"
+msgstr "SchlieÃŸe &sicheren Kanal"
 
 msgid "CMainWindow::No msgs"
 msgstr "Keine Nachr."
@@ -471,13 +471,13 @@ msgid "CMainWindow::System"
 msgstr "System"
 
 msgid "CMainWindow::Last reset %1\n\n"
-msgstr "Zuletzt zurückgesetzt: %1\n\n"
+msgstr "Zuletzt zurÃ¼ckgesetzt: %1\n\n"
 
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
 msgstr "Sind Sie sicher, dass Sie\n%1 (%2)\naus Gruppe '%3' entfernen wollen?"
 
 msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
-msgstr "Wollen Sie\n%1 (%2)\n wirklich zur Ignorieren Gruppe hinzufügen?"
+msgstr "Wollen Sie\n%1 (%2)\n wirklich zur Ignorieren Gruppe hinzufÃ¼gen?"
 
 msgid "CMainWindow::Packets"
 msgstr "&Pakete"
@@ -489,25 +489,25 @@ msgid "CMainWindow::%1: %2 / %3\n"
 msgstr "%1: %2 / %3\n"
 
 msgid "CMainWindow::Do Not Disturb to User"
-msgstr "Immer 'Nicht stören'"
+msgstr "Immer 'Nicht stÃ¶ren'"
 
 msgid "CMainWindow::Update All Users"
 msgstr "Aktualisiere alle &Benutzer"
 
 msgid "CMainWindow::<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br><ul><li>Change your status by right clicking on the status label.</li><li>Change your auto response by double-clicking on the status label.</li><li>View system messages by double clicking on the message label.</li><li>Change groups by right clicking on the message label.</li><li>Use the following shortcuts from the contact list:<ul><li><tt>Ctrl-M : </tt>Toggle mini-mode</li><li><tt>Ctrl-O : </tt>Toggle show offline users</li><li><tt>Ctrl-X : </tt>Exit</li><li><tt>Ctrl-H : </tt>Hide</li><li><tt>Ctrl-I : </tt>View the next message</li><li><tt>Ctrl-V : </tt>View message</li><li><tt>Ctrl-S : </tt>Send message</li><li><tt>Ctrl-U : </tt>Send Url</li><li><tt>Ctrl-C : </tt>Send chat request</li><li><tt>Ctrl-F : </tt>Send File</li><li><tt>Ctrl-A : </tt>Check Auto response</li><li><tt>Ctrl-P : </tt>Popup all messages</li><li><tt>Ctrl-L : </tt>Redraw user window</li><li><tt>Delete : </tt>Delete user from current group</li><li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul><li>Hold control while clicking on close in the function window to remove   the user from your contact list.</li><li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\".   For example in the send tab of the user function window.</li><li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
-msgstr "<h2>Tipps für die Benutzung<br>des Licq Qt-GUI-Plugins</h2><br><hr><br><ul><li>Sie können Ihren Status durch einen Klick mit der rechten Maustaste auf die Status-Anzeige ändern.</li><li>Durch einen Doppelklick auf die Status-Anzeige können Sie Ihre Auto-Antwort ändern.</li><li>System-Nachrichten sehen Sie durch einen Doppelklick auf die Nachrichten-Anzeige.</li><li>Wechseln Sie die angezeigte Benutzergruppe durch einen Rechtsklick auf die Nachrichten-Anzeige.</li><li>Nutzen Sie die folgenden Tastenkürzel in der Kontaktliste:<ul><li><tt>Strg+M : </tt>Mini-Modus ein-/ausschalten</li><li><tt>Strg+O : </tt>Offline-User anzeigen</li><li><tt>Strg+X : </tt>Beenden</li><li><tt>Strg+H : </tt>Hauptfenster verstecken</li><li><tt>Strg+I : </tt>Nächste Nachricht anzeigen</li><li><tt>Strg+V : </tt>Nachricht anzeigen</li><li><tt>Strg+S : </tt>Nachricht senden</li><li><tt>Strg+U : </tt>URL senden</li><li><tt>Strg+C : </tt>Chatanfrage senden</li><li><tt>Strg+F : </tt>Datei senden</li><li><tt>Strg+A : </tt>Auto-Antwort überprüfen</li><li><tt>Strg+P : </tt>Alle Nachrichten automatisch öffnen</li><li><tt>Strg+L : </tt>Fenster auffrischen</li><li><tt>Entf : </tt>Lösche Benutzer aus aktueller Gruppe</li><li><tt>Strg+Entf : </tt>Lösche Benutzer aus der Kontaktliste</li></ul><li>Halten Sie im Funktions-Fenster die STRG-Taste gedrückt während Sie auf \"Schließen\" klicken, um den Benutzer von der Kontaktliste zu entfernen.</li><li>In den meisten Text-Feldern können Sie STRG+ENTER drücken, um \"Ok\" oder \"Annehmen\" auszuwählen, zum Beispiel beim senden einer Nachricht.</li><li>Hier ist die komplette Liste der %-Optionen, die unter <b>Ereignisse</b> im Optionen-Menü,   <b>Auto-Antwort</b> und <b>Hilfsmittel</b> benutzt werden können:\n"
+msgstr "<h2>Tipps fÃ¼r die Benutzung<br>des Licq Qt-GUI-Plugins</h2><br><hr><br><ul><li>Sie kÃ¶nnen Ihren Status durch einen Klick mit der rechten Maustaste auf die Status-Anzeige Ã¤ndern.</li><li>Durch einen Doppelklick auf die Status-Anzeige kÃ¶nnen Sie Ihre Auto-Antwort Ã¤ndern.</li><li>System-Nachrichten sehen Sie durch einen Doppelklick auf die Nachrichten-Anzeige.</li><li>Wechseln Sie die angezeigte Benutzergruppe durch einen Rechtsklick auf die Nachrichten-Anzeige.</li><li>Nutzen Sie die folgenden TastenkÃ¼rzel in der Kontaktliste:<ul><li><tt>Strg+M : </tt>Mini-Modus ein-/ausschalten</li><li><tt>Strg+O : </tt>Offline-User anzeigen</li><li><tt>Strg+X : </tt>Beenden</li><li><tt>Strg+H : </tt>Hauptfenster verstecken</li><li><tt>Strg+I : </tt>NÃ¤chste Nachricht anzeigen</li><li><tt>Strg+V : </tt>Nachricht anzeigen</li><li><tt>Strg+S : </tt>Nachricht senden</li><li><tt>Strg+U : </tt>URL senden</li><li><tt>Strg+C : </tt>Chatanfrage senden</li><li><tt>Strg+F : </tt>Datei senden</li><li><tt>Strg+A : </tt>Auto-Antwort Ã¼berprÃ¼fen</li><li><tt>Strg+P : </tt>Alle Nachrichten automatisch Ã¶ffnen</li><li><tt>Strg+L : </tt>Fenster auffrischen</li><li><tt>Entf : </tt>LÃ¶sche Benutzer aus aktueller Gruppe</li><li><tt>Strg+Entf : </tt>LÃ¶sche Benutzer aus der Kontaktliste</li></ul><li>Halten Sie im Funktions-Fenster die STRG-Taste gedrÃ¼ckt wÃ¤hrend Sie auf \"SchlieÃŸen\" klicken, um den Benutzer von der Kontaktliste zu entfernen.</li><li>In den meisten Text-Feldern kÃ¶nnen Sie STRG+ENTER drÃ¼cken, um \"Ok\" oder \"Annehmen\" auszuwÃ¤hlen, zum Beispiel beim senden einer Nachricht.</li><li>Hier ist die komplette Liste der %-Optionen, die unter <b>Ereignisse</b> im Optionen-MenÃ¼,   <b>Auto-Antwort</b> und <b>Hilfsmittel</b> benutzt werden kÃ¶nnen:\n"
 
 msgid "CMainWindow::&Redraw User Window"
 msgstr "&Hauptfenster auffrischen"
 
 msgid "CMainWindow::(with KDE support)\n"
-msgstr "(mit KDE Unterstützung)\n"
+msgstr "(mit KDE UnterstÃ¼tzung)\n"
 
 msgid "CMainWindow::Occupied to User"
-msgstr "Immer 'Beschäftigt'"
+msgstr "Immer 'BeschÃ¤ftigt'"
 
 msgid "CMainWindow::Logon failed.\nSee network window for details."
-msgstr "Die Anmeldung ist fehlgeschlagen.\nSiehe Netzwerkfenster für Details."
+msgstr "Die Anmeldung ist fehlgeschlagen.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "CMainWindow::Accept in Away"
 msgstr "Bei 'Abwesenheit' akzeptieren"
@@ -519,7 +519,7 @@ msgid "CMainWindow::Visible List"
 msgstr "Sichtbar"
 
 msgid "CMainWindow::Registration failed.  See network window for details."
-msgstr "Die Registrierung ist fehlgeschlagen.\nSiehe Netzwerkfenster für Details."
+msgstr "Die Registrierung ist fehlgeschlagen.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "CMainWindow::Send &Chat Request"
 msgstr "Sende &Chatanfrage"
@@ -552,19 +552,19 @@ msgid "CMainWindow::&Network Window"
 msgstr "&Netzwerkfenster"
 
 msgid "CMainWindow::&View Event"
-msgstr "&Ereignis öffnen"
+msgstr "&Ereignis Ã¶ffnen"
 
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "&Plugin Verwaltung..."
 
 msgid "CMainWindow::O&ccupied"
-msgstr "Bes&chäftigt"
+msgstr "Bes&chÃ¤ftigt"
 
 msgid "CMainWindow::Set All"
-msgstr "Alle &wählen"
+msgstr "Alle &wÃ¤hlen"
 
 msgid "CMainWindow::&View System Messages"
-msgstr "S&ystemnachrichten öffnen"
+msgstr "S&ystemnachrichten Ã¶ffnen"
 
 msgid "CMainWindow::&Thread Group View"
 msgstr "G&ruppenansicht"
@@ -582,10 +582,10 @@ msgid "CMainWindow::Right click - Status menu\nDouble click - Set auto response"
 msgstr "Rechte Maustaste - Status setzen\nDoppelklick - Auto Antwort setzen"
 
 msgid "CMainWindow::&Add User"
-msgstr "Benutzer &hinzufügen"
+msgstr "Benutzer &hinzufÃ¼gen"
 
 msgid "CMainWindow::Accept in Do Not Disturb"
-msgstr "Bei 'Nicht stören' akzeptieren"
+msgstr "Bei 'Nicht stÃ¶ren' akzeptieren"
 
 msgid "CMainWindow::Use Real Ip (LAN)"
 msgstr "Benutze echte IP (LAN)"
@@ -597,7 +597,7 @@ msgid "CMainWindow::&Online"
 msgstr "&Online"
 
 msgid "CMainWindow::Clear All"
-msgstr "Alle &abwählen"
+msgstr "Alle &abwÃ¤hlen"
 
 msgid "CMainWindow::&Status"
 msgstr "&Status"
@@ -606,7 +606,7 @@ msgid "CMainWindow::&System"
 msgstr "&System"
 
 msgid "CMainWindow::Accept in Occupied"
-msgstr "Bei 'Beschäftigt' akzeptieren"
+msgstr "Bei 'BeschÃ¤ftigt' akzeptieren"
 
 msgid "CMainWindow::Send Contact &List"
 msgstr "Sende &Kontaktliste"
@@ -615,7 +615,7 @@ msgid "CMainWindow::Status Info"
 msgstr "&Status Info"
 
 msgid "CMainWindow::&Do Not Disturb"
-msgstr "Nicht &stören"
+msgstr "Nicht &stÃ¶ren"
 
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
 msgstr "Sind Sie sicher, dass Sie\n%1 (%2)\nvon der Kontaktliste entfernen wollen?"
@@ -627,10 +627,10 @@ msgid "CMainWindow::A&uthorize User"
 msgstr "Benutzer &autorisieren"
 
 msgid "CMainWindow::Free for C&hat"
-msgstr "Frei für C&hat"
+msgstr "Frei fÃ¼r C&hat"
 
 msgid "CMainWindow::Right click - User groups\nDouble click - Show next message"
-msgstr "Rechte Maustaste - Benutzergruppen\nDoppelklick - Nächste Nachricht"
+msgstr "Rechte Maustaste - Benutzergruppen\nDoppelklick - NÃ¤chste Nachricht"
 
 msgid "CMainWindow::No messages"
 msgstr "Keine Nachrichten"
@@ -648,7 +648,7 @@ msgid "CMainWindow::Check Auto Response"
 msgstr "Auto Antwort &lesen"
 
 msgid "CMainWindow::Authorization granted."
-msgstr "Autorisation gewährt."
+msgstr "Autorisation gewÃ¤hrt."
 
 msgid "CMainWindow::System Functions"
 msgstr "S&ystem Funktionen"
@@ -663,13 +663,13 @@ msgid "CMainWindow::S&kin Browser..."
 msgstr "&Design Verwaltung..."
 
 msgid "CMainWindow::Request &Secure Channel"
-msgstr "&Verschlüsselung aktivieren"
+msgstr "&VerschlÃ¼sselung aktivieren"
 
 msgid "CMainWindow::S&earch for User"
 msgstr "Benutzer &suchen"
 
 msgid "CMainWindow::Not Available to User"
-msgstr "Immer 'Nicht verfügbar'"
+msgstr "Immer 'Nicht verfÃ¼gbar'"
 
 msgid "CMainWindow::Toggle &Floaty"
 msgstr "Schwebendes &Fenster ein/aus"
@@ -687,19 +687,19 @@ msgid "CMainWindow::&Security/Password Options"
 msgstr "&Sicherheit / Passwort"
 
 msgid "CMainWindow::Unable to open extended icons file\n%1."
-msgstr "Konnte erweiterte Symbol-Datei nicht öffnen\n%1."
+msgstr "Konnte erweiterte Symbol-Datei nicht Ã¶ffnen\n%1."
 
 msgid "CQtLogWindow::&Save"
 msgstr "&Speichern"
 
 msgid "CQtLogWindow::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "CQtLogWindow::Failed to open file:\n%1"
-msgstr "Fehler beim öffnen der Datei:\n%1"
+msgstr "Fehler beim Ã¶ffnen der Datei:\n%1"
 
 msgid "CQtLogWindow::C&lear"
-msgstr "&Löschen"
+msgstr "&LÃ¶schen"
 
 msgid "CQtLogWindow::Licq Network Log"
 msgstr "Licq Netzwerkfenster"
@@ -708,25 +708,25 @@ msgid "CRandomChatDlg::Games"
 msgstr "Spiele"
 
 msgid "CRandomChatDlg::20 Something"
-msgstr "Über 20"
+msgstr "Ãœber 20"
 
 msgid "CRandomChatDlg::30 Something"
-msgstr "Über 30"
+msgstr "Ãœber 30"
 
 msgid "CRandomChatDlg::40 Something"
-msgstr "Über 40"
+msgstr "Ãœber 40"
 
 msgid "CRandomChatDlg::Random chat search timed out."
-msgstr "Zeitüberschreitung bei Zufalls-Chat-Suche."
+msgstr "ZeitÃ¼berschreitung bei Zufalls-Chat-Suche."
 
 msgid "CRandomChatDlg::Random chat search had an error."
 msgstr "Fehler bei Zufalls-Chat-Suche."
 
 msgid "CRandomChatDlg::No random chat user found in that group."
-msgstr "Keinen zufälligen Chatpartner in dieser Gruppe gefunden."
+msgstr "Keinen zufÃ¤lligen Chatpartner in dieser Gruppe gefunden."
 
 msgid "CRandomChatDlg::50 Plus"
-msgstr "50 und aufwärts"
+msgstr "50 und aufwÃ¤rts"
 
 msgid "CRandomChatDlg::Romance"
 msgstr "Romantik"
@@ -735,7 +735,7 @@ msgid "CRandomChatDlg::&Cancel"
 msgstr "Ab&brechen"
 
 msgid "CRandomChatDlg::Searching for Random Chat Partner..."
-msgstr "Suche nach zufälligem Chatpartner..."
+msgstr "Suche nach zufÃ¤lligem Chatpartner..."
 
 msgid "CRandomChatDlg::&Search"
 msgstr "&Suchen"
@@ -753,13 +753,13 @@ msgid "CRandomChatDlg::Seeking Women"
 msgstr "Suchende Frauen"
 
 msgid "CRandomChatDlg::Seeking Men"
-msgstr "Suchende Männer"
+msgstr "Suchende MÃ¤nner"
 
 msgid "CRefuseDlg::Licq %1 Refusal"
 msgstr "Licq %1 Ablehnen"
 
 msgid "CRefuseDlg::Refusal message for %1 with "
-msgstr "Ablehne-Begründung für %1 mit "
+msgstr "Ablehne-BegrÃ¼ndung fÃ¼r %1 mit "
 
 msgid "CRefuseDlg::Cancel"
 msgstr "Ab&brechen"
@@ -780,31 +780,31 @@ msgid "CSetRandomChatGroupDlg::error"
 msgstr "fehler"
 
 msgid "CSetRandomChatGroupDlg::20 Something"
-msgstr "Über 20"
+msgstr "Ãœber 20"
 
 msgid "CSetRandomChatGroupDlg::30 Something"
-msgstr "Über 30"
+msgstr "Ãœber 30"
 
 msgid "CSetRandomChatGroupDlg::40 Something"
-msgstr "Über 40"
+msgstr "Ãœber 40"
 
 msgid "CSetRandomChatGroupDlg::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "CSetRandomChatGroupDlg::(none)"
 msgstr "(keine)"
 
 msgid "CSetRandomChatGroupDlg::timed out"
-msgstr "Zeitüberschreitung"
+msgstr "ZeitÃ¼berschreitung"
 
 msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
-msgstr "Gruppe für zufälligen Chat setzen"
+msgstr "Gruppe fÃ¼r zufÃ¤lligen Chat setzen"
 
 msgid "CSetRandomChatGroupDlg::failed"
 msgstr "fehlgeschlagen"
 
 msgid "CSetRandomChatGroupDlg::50 Plus"
-msgstr "50 und aufwärts"
+msgstr "50 und aufwÃ¤rts"
 
 msgid "CSetRandomChatGroupDlg::Romance"
 msgstr "Romantik"
@@ -819,13 +819,13 @@ msgid "CSetRandomChatGroupDlg::General"
 msgstr "Allgemein"
 
 msgid "CSetRandomChatGroupDlg::Setting Random Chat Group..."
-msgstr "Setze Gruppe für zufälligen Chat"
+msgstr "Setze Gruppe fÃ¼r zufÃ¤lligen Chat"
 
 msgid "CSetRandomChatGroupDlg::Seeking Women"
 msgstr "Suchende Frauen"
 
 msgid "CSetRandomChatGroupDlg::Seeking Men"
-msgstr "Suchende Männer"
+msgstr "Suchende MÃ¤nner"
 
 msgid "CUserView::S"
 msgstr "S"
@@ -873,7 +873,7 @@ msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
 msgstr "<br>Angepasste&nbsp;Auto Antwort"
 
 msgid "CUserView::<br>Secure&nbsp;connection"
-msgstr "<br>Verschlüsselte&nbsp;Verbindung"
+msgstr "<br>VerschlÃ¼sselte&nbsp;Verbindung"
 
 msgid "CUserView::</nobr>"
 msgstr "</nobr>"
@@ -882,13 +882,13 @@ msgid "CUserView::<br><nobr>Logged In: "
 msgstr "<br><nobr>Eingeloggt: "
 
 msgid "CUserView::<br><nobr>Idle: "
-msgstr "<br><nobr>Untätig:"
+msgstr "<br><nobr>UntÃ¤tig:"
 
 msgid "CUtilityDlg::GUI"
 msgstr "GUI"
 
 msgid "CUtilityDlg::&Run"
-msgstr "&Ausführen"
+msgstr "&AusfÃ¼hren"
 
 msgid "CUtilityDlg::Done"
 msgstr "Fertig"
@@ -900,7 +900,7 @@ msgid "CUtilityDlg::Edit:"
 msgstr "Bearbeiten:"
 
 msgid "CUtilityDlg::Edit final command"
-msgstr "Endgültigen Befehl bearbeiten"
+msgstr "EndgÃ¼ltigen Befehl bearbeiten"
 
 msgid "CUtilityDlg::Command Window"
 msgstr "Befehlsfenster"
@@ -909,7 +909,7 @@ msgid "CUtilityDlg::Licq Utility: %1"
 msgstr "Licq Werkzeug: %1"
 
 msgid "CUtilityDlg::C&lose"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "CUtilityDlg::User Fields"
 msgstr "Benutzerbestimmte Felder"
@@ -927,7 +927,7 @@ msgid "CUtilityDlg::&Cancel"
 msgstr "Ab&brechen"
 
 msgid "CUtilityDlg::Running:"
-msgstr "Wird ausgeführt:"
+msgstr "Wird ausgefÃ¼hrt:"
 
 msgid "CUtilityDlg::Failed:"
 msgstr "Fehlgeschlagen:"
@@ -993,10 +993,10 @@ msgid "ChatDlg::&IRC Mode"
 msgstr "&IRC-Modus"
 
 msgid "ChatDlg::Changes the foreground color"
-msgstr "Ändert die Vordergrundfarbe"
+msgstr "Ã„ndert die Vordergrundfarbe"
 
 msgid "ChatDlg::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
-msgstr "Kann Kodierung <b>%1</b> nicht laden. Nachrichteninhalte könnten verstümmelt erscheinen."
+msgstr "Kann Kodierung <b>%1</b> nicht laden. Nachrichteninhalte kÃ¶nnten verstÃ¼mmelt erscheinen."
 
 msgid "ChatDlg::Background color"
 msgstr "Hintergrundfarbe"
@@ -1008,7 +1008,7 @@ msgid "ChatDlg::Remote - Not connected"
 msgstr "Gegenstelle - Nicht verbunden"
 
 msgid "ChatDlg::&Close Chat"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "ChatDlg::Underline"
 msgstr "Unterstrichen"
@@ -1023,7 +1023,7 @@ msgid "ChatDlg::&Save Chat"
 msgstr "Protokoll &speichern"
 
 msgid "ChatDlg::Changes the background color"
-msgstr "Ändert die Hintergrundfarbe"
+msgstr "Ã„ndert die Hintergrundfarbe"
 
 msgid "ChatDlg::Foreground color"
 msgstr "Vordergrundfarbe"
@@ -1032,16 +1032,16 @@ msgid "ChatDlg::Ignore user settings"
 msgstr "Ignoriere Benutzereinstellungen"
 
 msgid "ChatDlg::Unable to bind to a port.\nSee Network Window for details."
-msgstr "Kann keinen Port binden.\nSiehe Netzwerkfenster für Details."
+msgstr "Kann keinen Port binden.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "ChatDlg::Unable to connect to the remote chat.\nSee Network Window for details."
-msgstr "Kann nicht mit Gegenstelle für Chat verbinden.\nSiehe Netzwerkfenster für Details."
+msgstr "Kann nicht mit Gegenstelle fÃ¼r Chat verbinden.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "ChatDlg::Unable to create new thread.\nSee Network Window for details."
-msgstr "Kann keinen neuen Thread erzeugen.\nSiehe Netzwerkfenster für Details."
+msgstr "Kann keinen neuen Thread erzeugen.\nSiehe Netzwerkfenster fÃ¼r Details."
 
 msgid "ChatDlg::Failed to open file:\n%1"
-msgstr "Fehler beim öffnen der Datei:\n%1"
+msgstr "Fehler beim Ã¶ffnen der Datei:\n%1"
 
 msgid "ChatDlg::StrikeOut"
 msgstr "Durchgestrichen"
@@ -1065,16 +1065,16 @@ msgid "CustomAwayMsgDlg::&Ok"
 msgstr "&Ok"
 
 msgid "CustomAwayMsgDlg::&Clear"
-msgstr "&Löschen"
+msgstr "&LÃ¶schen"
 
 msgid "CustomAwayMsgDlg::&Hints"
 msgstr "&Tipps"
 
 msgid "CustomAwayMsgDlg::Set Custom Auto Response for %1"
-msgstr "Setze spezielle Auto Antwort für %1"
+msgstr "Setze spezielle Auto Antwort fÃ¼r %1"
 
 msgid "CustomAwayMsgDlg::I am currently %1.\nYou can leave me a message."
-msgstr "Ich bin momentan %1.\nSie können mir eine Nachricht hinterlassen."
+msgstr "Ich bin momentan %1.\nSie kÃ¶nnen mir eine Nachricht hinterlassen."
 
 msgid "CustomAwayMsgDlg::&Cancel"
 msgstr "Ab&brechen"
@@ -1083,10 +1083,10 @@ msgid "EditFileDlg::&Save"
 msgstr "&Speichern"
 
 msgid "EditFileDlg::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "EditFileDlg::Failed to open file:\n%1"
-msgstr "Fehler beim öffnen der Datei:\n%1"
+msgstr "Fehler beim Ã¶ffnen der Datei:\n%1"
 
 msgid "EditFileDlg::Licq File Editor - %1"
 msgstr "Licq Datei-Editor - %1"
@@ -1098,7 +1098,7 @@ msgid "EditGrpDlg::Ok"
 msgstr "Ok"
 
 msgid "EditGrpDlg::Add"
-msgstr "Hinzufügen"
+msgstr "HinzufÃ¼gen"
 
 msgid "EditGrpDlg::&Done"
 msgstr "&Fertig"
@@ -1128,7 +1128,7 @@ msgid "EditGrpDlg::Default:"
 msgstr "Standard:"
 
 msgid "EditGrpDlg::The default group to start up in."
-msgstr "Die Gruppe, mit der standardmäßig gestartet wird."
+msgstr "Die Gruppe, mit der standardmÃ¤ÃŸig gestartet wird."
 
 msgid "EditGrpDlg::Edit group name (hit enter to save)."
 msgstr "Markierte Gruppe umbenennen (ENTER zum speichern)."
@@ -1149,7 +1149,7 @@ msgid "EditGrpDlg::Set New Users"
 msgstr "Neue Benutzer"
 
 msgid "EditGrpDlg::The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group."
-msgstr "Die Gruppe zu der alle neuen Benutzer auf der Serverseitigen Kontaktliste hinzugefügt werden."
+msgstr "Die Gruppe zu der alle neuen Benutzer auf der Serverseitigen Kontaktliste hinzugefÃ¼gt werden."
 
 msgid "EditGrpDlg::New User:"
 msgstr "Neue Benutzer:"
@@ -1170,7 +1170,7 @@ msgid "Event::Message"
 msgstr "Nachricht"
 
 msgid "Event::Added to Contact List"
-msgstr "zur Kontaktliste hinzugefügt"
+msgstr "zur Kontaktliste hinzugefÃ¼gt"
 
 msgid "Event::Web Panel"
 msgstr "Web Panel"
@@ -1179,7 +1179,7 @@ msgid "Event::Plugin Event"
 msgstr "Plugin Ereignis"
 
 msgid "Event::File Transfer"
-msgstr "Datei Übertagung"
+msgstr "Datei Ãœbertagung"
 
 msgid "Event::(cancelled)"
 msgstr "(abgebrochen)"
@@ -1197,7 +1197,7 @@ msgid "Event::Chat Request"
 msgstr "Chat Anfrage"
 
 msgid "Event::Authorization Granted"
-msgstr "Autorisation gewährt"
+msgstr "Autorisation gewÃ¤hrt"
 
 msgid "Event::Email Pager"
 msgstr "Email Pager"
@@ -1206,7 +1206,7 @@ msgid "Event::Contact List"
 msgstr "Kontaktliste"
 
 msgid "HintsDlg::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "HintsDlg::Licq - Hints"
 msgstr "Licq - Tipps"
@@ -1218,7 +1218,7 @@ msgid "IconManager_KDEStyle::<br>%1 msgs"
 msgstr "<br>%1 Nachrichten"
 
 msgid "IconManager_KDEStyle::<br>Left click - Show main window<br>Middle click - Show next message<br>Right click - System menu"
-msgstr "<br>linker Mausklick - Hauptfenster<br>mittlerer Mausklick - Nächste Nachricht<br>rechter Mausklick - Systemmenü"
+msgstr "<br>linker Mausklick - Hauptfenster<br>mittlerer Mausklick - NÃ¤chste Nachricht<br>rechter Mausklick - SystemmenÃ¼"
 
 msgid "IconManager_KDEStyle::<br><b>%1 system messages</b>"
 msgstr "<br><b>%1 Systemnachricht(en)</b>"
@@ -1233,49 +1233,49 @@ msgid "KeyRequestDlg::&Send"
 msgstr "&Senden"
 
 msgid "KeyRequestDlg::Closing secure channel..."
-msgstr "Verschlüsselte Verbindung wird abgebaut..."
+msgstr "VerschlÃ¼sselte Verbindung wird abgebaut..."
 
 msgid "KeyRequestDlg::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
-msgstr "<font color=\"ForestGreen\">Verschlüsselte Verbindung aufgebaut.</font>\n"
+msgstr "<font color=\"ForestGreen\">VerschlÃ¼sselte Verbindung aufgebaut.</font>\n"
 
 msgid "KeyRequestDlg::Client does not support OpenSSL.\nRebuild Licq with OpenSSL support."
-msgstr "Ihr Licq Client unterstützt kein OpenSSL\nKompilieren Sie Licq mit OpenSSL Unterstützung neu."
+msgstr "Ihr Licq Client unterstÃ¼tzt kein OpenSSL\nKompilieren Sie Licq mit OpenSSL UnterstÃ¼tzung neu."
 
 msgid "KeyRequestDlg::<font color=\"blue\">Secure channel closed.</font>\n"
-msgstr "<font color=\"blue\">Verschlüsselte Verbindung abgebaut.</font>\n"
+msgstr "<font color=\"blue\">VerschlÃ¼sselte Verbindung abgebaut.</font>\n"
 
 msgid "KeyRequestDlg::Licq - Secure Channel with %1"
-msgstr "Licq - Verschlüsselte Verbindung mit %1"
+msgstr "Licq - VerschlÃ¼sselte Verbindung mit %1"
 
 msgid "KeyRequestDlg::Secure channel is established using SSL\nwith Diffie-Hellman key exchange and\nthe TLS version 1 protocol.\n\n"
-msgstr "Eine verschlüsselte Verbindung über SSL wird mit\nDiffie-Hellman Schlüsseltausch und\nTLS-Protokoll Version 1 aufgebaut.\n\n"
+msgstr "Eine verschlÃ¼sselte Verbindung Ã¼ber SSL wird mit\nDiffie-Hellman SchlÃ¼sseltausch und\nTLS-Protokoll Version 1 aufgebaut.\n\n"
 
 msgid "KeyRequestDlg::<font color=\"red\">Could not connect to remote client.</font>"
 msgstr "<font color=\"red\">Konnte nicht mit Gegenstelle verbinden.</font>"
 
 msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel already established.</font>\n"
-msgstr "<font color=\"yellow\">Eine verschlüsselte Verbindung ist bereits aufgebaut.</font>\n"
+msgstr "<font color=\"yellow\">Eine verschlÃ¼sselte Verbindung ist bereits aufgebaut.</font>\n"
 
 msgid "KeyRequestDlg::The remote uses Licq %1, however it\nhas no secure channel support compiled in.\nThis probably won't work."
-msgstr "Der entfernte Benutzer verwendet zwar Licq %1, doch er\nhat keine SSL Unterstützung einkompiliert.\nDies wird nicht funktionieren."
+msgstr "Der entfernte Benutzer verwendet zwar Licq %1, doch er\nhat keine SSL UnterstÃ¼tzung einkompiliert.\nDies wird nicht funktionieren."
 
 msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel not established.</font>\n"
-msgstr "<font color=\"yellow\">Verschlüsselte Verbindung nicht aufgebaut.</font>\n"
+msgstr "<font color=\"yellow\">VerschlÃ¼sselte Verbindung nicht aufgebaut.</font>\n"
 
 msgid "KeyRequestDlg::The remote uses Licq %1/SSL."
 msgstr "Der entfernte Benutzer verwendet Licq %1/SSL."
 
 msgid "KeyRequestDlg::<font color=\"red\">Remote client does not support OpenSSL.</font>"
-msgstr "<font color=\"red\">Die Gegenstelle unterstützt kein OpenSSL.</font>"
+msgstr "<font color=\"red\">Die Gegenstelle unterstÃ¼tzt kein OpenSSL.</font>"
 
 msgid "KeyRequestDlg::Requesting secure channel..."
-msgstr "Fordere verschlüsselte Verbindung an..."
+msgstr "Fordere verschlÃ¼sselte Verbindung an..."
 
 msgid "KeyRequestDlg::This only works with other Licq clients >= v0.85\nThe remote doesn't seem to use such a client.\nThis might not work."
-msgstr "Dies funktioniert nur mit Licq Clients ab Version 0.85\noder höher. Der entfernte Benutzer scheint keinen solchen Client zu\nverwenden. Dies wird wahrscheinlich nicht funktionieren."
+msgstr "Dies funktioniert nur mit Licq Clients ab Version 0.85\noder hÃ¶her. Der entfernte Benutzer scheint keinen solchen Client zu\nverwenden. Dies wird wahrscheinlich nicht funktionieren."
 
 msgid "KeyRequestDlg::Ready to close channel"
 msgstr "Bereit Verbindung zu schliessen"
@@ -1284,7 +1284,7 @@ msgid "KeyRequestDlg::Ready to request channel"
 msgstr "Bereit Verbindung anzufordern"
 
 msgid "MLView::Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."
-msgstr "Licq kann den Browser nicht starten um die URL zu öffnen\nSie müssen den Browser von Hand starten und die URL in die Adressleiste kopieren."
+msgstr "Licq kann den Browser nicht starten um die URL zu Ã¶ffnen\nSie mÃ¼ssen den Browser von Hand starten und die URL in die Adressleiste kopieren."
 
 msgid "MLView::Licq is unable to find a browser application due to an internal error."
 msgstr "Licq kann aufgrund eines internen Fehlers keine Browseranwendung finden."
@@ -1314,7 +1314,7 @@ msgid "MsgView::Options"
 msgstr "Optionen"
 
 msgid "MsgView::Multiple Recipients"
-msgstr "Mehrere Empfänger"
+msgstr "Mehrere EmpfÃ¤nger"
 
 msgid "OptionsDlg::IP"
 msgstr "IP"
@@ -1338,7 +1338,7 @@ msgid "OptionsDlg::Font"
 msgstr "Schriftart"
 
 msgid "OptionsDlg::N/A:"
-msgstr "Nicht verfügbar:"
+msgstr "Nicht verfÃ¼gbar:"
 
 msgid "OptionsDlg::Left"
 msgstr "Links"
@@ -1353,7 +1353,7 @@ msgid "OptionsDlg::none"
 msgstr "keine"
 
 msgid "OptionsDlg::Show Extended Icons"
-msgstr "Zusätzliche Symbole zeigen"
+msgstr "ZusÃ¤tzliche Symbole zeigen"
 
 msgid "OptionsDlg::Blink All Events"
 msgstr "Alle Ereignisse blinken"
@@ -1386,13 +1386,13 @@ msgid "OptionsDlg::Text:"
 msgstr "Text:"
 
 msgid "OptionsDlg::Title"
-msgstr "Überschrift"
+msgstr "Ãœberschrift"
 
 msgid "OptionsDlg::Width"
 msgstr "Breite"
 
 msgid "OptionsDlg::Parameter for received file transfers"
-msgstr "Parameter für empfangene Datei Übertragung"
+msgstr "Parameter fÃ¼r empfangene Datei Ãœbertragung"
 
 msgid "OptionsDlg::Firewall"
 msgstr "Firewall"
@@ -1404,16 +1404,16 @@ msgid "OptionsDlg::Show Grid Lines"
 msgstr "Gitternetzlinien zeigen"
 
 msgid "OptionsDlg::Override the skin setting for the frame style of the user window:\n   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n + 16 (Plain), 32 (Raised), 48 (Sunken)\n + 240 (Shadow)"
-msgstr "Einstellungen für den Rahmen der Kontaktliste:\n\n   0 (kein Rahmen), 1 (Box), 2 (Panel), 3 (WinPanel)\n + 16 (flach), 32 (erhöht), 48 (versunken)\n + 240 (schattiert)"
+msgstr "Einstellungen fÃ¼r den Rahmen der Kontaktliste:\n\n   0 (kein Rahmen), 1 (Box), 2 (Panel), 3 (WinPanel)\n + 16 (flach), 32 (erhÃ¶ht), 48 (versunken)\n + 240 (schattiert)"
 
 msgid "OptionsDlg::Parameter for received chat requests"
-msgstr "Parameter für empfangene Chat Anfragen"
+msgstr "Parameter fÃ¼r empfangene Chat Anfragen"
 
 msgid "OptionsDlg::Auto Away Messages"
 msgstr "Automatische Antworten"
 
 msgid "OptionsDlg::Turns on or off the display of headers above each column in the user list"
-msgstr "Schaltet die Spaltenüberschriften in der Kontaktliste ein oder aus."
+msgstr "Schaltet die SpaltenÃ¼berschriften in der Kontaktliste ein oder aus."
 
 msgid "OptionsDlg::Start Hidden"
 msgstr "Hauptfenster versteckt starten"
@@ -1437,25 +1437,25 @@ msgid "OptionsDlg::ICQ Server Port:"
 msgstr "ICQ Server Port:"
 
 msgid "OptionsDlg::Parameter for online notification"
-msgstr "Parameter für Online Meldung"
+msgstr "Parameter fÃ¼r Online Meldung"
 
 msgid "OptionsDlg::TCP port range for incoming connections."
-msgstr "TCP Portbereich für eingehende Verbindungen."
+msgstr "TCP Portbereich fÃ¼r eingehende Verbindungen."
 
 msgid "OptionsDlg::Accept Modes"
-msgstr "Per-Status Einstellungen für Ereignisse"
+msgstr "Per-Status Einstellungen fÃ¼r Ereignisse"
 
 msgid "OptionsDlg::Online Notify:"
 msgstr "Online-Meldung:"
 
 msgid "OptionsDlg::Not Available"
-msgstr "Nicht verfügbar"
+msgstr "Nicht verfÃ¼gbar"
 
 msgid "OptionsDlg::&Apply"
-msgstr "Über&nehmen"
+msgstr "Ãœber&nehmen"
 
 msgid "OptionsDlg::Determines if new users are automatically added to your list or must first request authorization."
-msgstr "Sollen neue Benutzer automatisch zur Liste hinzugefügt werden oder müssen sie erst Autorisierung beantragen?"
+msgstr "Sollen neue Benutzer automatisch zur Liste hinzugefÃ¼gt werden oder mÃ¼ssen sie erst Autorisierung beantragen?"
 
 msgid "OptionsDlg::Show the name of the current group in the messages label when there are no new messages"
 msgstr "Name der Benutzergruppe im Nachrichten Etikett zeigen, wenn keine neuen Nachrichten vorhanden sind."
@@ -1464,10 +1464,10 @@ msgid "OptionsDlg::Ignore Web Panel"
 msgstr "Web-Panel ignorieren"
 
 msgid "OptionsDlg::Sets which default encoding should be used for newly added contacts."
-msgstr "Legt fest, welche Standard-Kodierung für neue Benutzer benutzt werden soll."
+msgstr "Legt fest, welche Standard-Kodierung fÃ¼r neue Benutzer benutzt werden soll."
 
 msgid "OptionsDlg::Show the current chat history in Send Window"
-msgstr "Nachrichten in einem Chatähnlichen Fenster anzeigen."
+msgstr "Nachrichten in einem ChatÃ¤hnlichen Fenster anzeigen."
 
 msgid "OptionsDlg::Use Font Styles"
 msgstr "Zeichensatz-Stile benutzen"
@@ -1482,7 +1482,7 @@ msgid "OptionsDlg::Show online notify users who are offline even when offline us
 msgstr "Benutzer mit Online-Meldung immer einblenden, auch wenn sie gerade offline sind."
 
 msgid "OptionsDlg::Show Column Headers"
-msgstr "Spaltenüberschriften zeigen"
+msgstr "SpaltenÃ¼berschriften zeigen"
 
 msgid "OptionsDlg::Bold Message Label on Incoming Msg"
 msgstr "Nachrichten-Label in Fettschrift"
@@ -1491,10 +1491,10 @@ msgid "OptionsDlg::Column %1"
 msgstr "Spalte %1"
 
 msgid "OptionsDlg::Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf and a shorter 64x48 icon for use in the Gnome/KDE panel."
-msgstr "Wählt zwischen dem standard 64x64 Pixel Symbol (Windowmaker/Afterstep) und dem kürzeren 64x48 Pixel Symbol (KDE/GNOME)."
+msgstr "WÃ¤hlt zwischen dem standard 64x64 Pixel Symbol (Windowmaker/Afterstep) und dem kÃ¼rzeren 64x48 Pixel Symbol (KDE/GNOME)."
 
 msgid "OptionsDlg::Perform OnEvent command in occupied mode"
-msgstr "Kommando auch bei Status 'Beschäftigt' ausführen"
+msgstr "Kommando auch bei Status 'BeschÃ¤ftigt' ausfÃ¼hren"
 
 msgid "OptionsDlg::Auto Offline:"
 msgstr "Automatisch offline:"
@@ -1503,16 +1503,16 @@ msgid "OptionsDlg::Online Time"
 msgstr "Online Zeit"
 
 msgid "OptionsDlg::Lets you drag around the main window with your mouse"
-msgstr "Ermöglicht das ziehen des Hauptfensters mit der Maus"
+msgstr "ErmÃ¶glicht das ziehen des Hauptfensters mit der Maus"
 
 msgid "OptionsDlg::OnEvent in DND"
-msgstr "Aktiviert bei Status: 'Nicht stören'"
+msgstr "Aktiviert bei Status: 'Nicht stÃ¶ren'"
 
 msgid "OptionsDlg::OnEvent in N/A"
 msgstr "Aktiviert bei Status: 'Nicht erreichbar'"
 
 msgid "OptionsDlg::Parameter for received messages"
-msgstr "Parameter für empfangene Nachrichten"
+msgstr "Parameter fÃ¼r empfangene Nachrichten"
 
 msgid "OptionsDlg::Message Sent:"
 msgstr "Nachricht gesendet:"
@@ -1545,7 +1545,7 @@ msgid "OptionsDlg::Number of minutes of inactivity after which to automatically 
 msgstr "Anzahl der Minuten, nach denen automatisch der Status 'Offline' gesetzt wird.  Zum abschalten auf \"0\" setzen."
 
 msgid "OptionsDlg::Auto send through server"
-msgstr "Automatisch über den Server senden"
+msgstr "Automatisch Ã¼ber den Server senden"
 
 msgid "OptionsDlg::Use Dock Icon"
 msgstr "Dock Symbol benutzen"
@@ -1614,7 +1614,7 @@ msgid "OptionsDlg::Miscellaneous"
 msgstr "Verschiedenes"
 
 msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
-msgstr "Kommando auch bei Status 'nicht stören' ausführen"
+msgstr "Kommando auch bei Status 'nicht stÃ¶ren' ausfÃ¼hren"
 
 msgid "OptionsDlg::Determines if mass messages are ignored or not."
 msgstr "Ignoriert Massennachrichten (Nachrichten die an sehr viele Benutzer gleichzeitig verschickt wurden)"
@@ -1638,22 +1638,22 @@ msgid "OptionsDlg::Default Icon"
 msgstr "Standard-Symbol"
 
 msgid "OptionsDlg::Check Clipboard For Urls/Files"
-msgstr "Zwischenablage automatisch einfügen"
+msgstr "Zwischenablage automatisch einfÃ¼gen"
 
 msgid "OptionsDlg::Parameters"
 msgstr "Parameter"
 
 msgid "OptionsDlg::Show birthday, invisible, and custom auto response icons to the right of users in the list"
-msgstr "Symbole für Geburtstag, unsichtbar und angepasste Auto-Antwort in der Kontaktliste rechts neben den Benutzernamen einblenden."
+msgstr "Symbole fÃ¼r Geburtstag, unsichtbar und angepasste Auto-Antwort in der Kontaktliste rechts neben den Benutzernamen einblenden."
 
 msgid "OptionsDlg::Transparent when possible"
-msgstr "Transparent, wenn möglich"
+msgstr "Transparent, wenn mÃ¶glich"
 
 msgid "OptionsDlg::Default Auto Response Messages"
-msgstr "Standard-Nachricht für automatische Antworten"
+msgstr "Standard-Nachricht fÃ¼r automatische Antworten"
 
 msgid "OptionsDlg::File Transfer:"
-msgstr "Dateiübertragung:"
+msgstr "DateiÃ¼bertragung:"
 
 msgid "OptionsDlg::OnEvents Enabled"
 msgstr "Ereignisse aktivieren"
@@ -1674,52 +1674,52 @@ msgid "OptionsDlg::Automatically log on when first starting up."
 msgstr "Beim Programmstart automatisch mit diesem Status anmelden"
 
 msgid "OptionsDlg::Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)"
-msgstr "Ausführen der Online-Meldung beim einloggen (dies ist anders als beim Mirabilis Client)"
+msgstr "AusfÃ¼hren der Online-Meldung beim einloggen (dies ist anders als beim Mirabilis Client)"
 
 msgid "OptionsDlg::Number of minutes of inactivity after which to automatically be marked \"away\".  Set to \"0\" to disable."
 msgstr "Anzahl der Minuten, nach denen man automatisch als 'Abwesend' markiert wird. Auf 0 setzen, um diese Funktion auszuschalten."
 
 msgid "OptionsDlg::<p>Command to execute when an event is received.<br>It will be passed the relevant parameters from below.<br>Parameters can contain the following expressions <br> which will be replaced with the relevant information:</p>"
-msgstr "<p>Kommando, dass ausgeführt werden soll, wenn ein Ereignis eintrifft.<br>Die unten stehenden Parameter werden übergeben.<br>Parameter können folgende Ausdrücke enthalten,<br>die durch die jeweilige Information ersetzt werden:</p>"
+msgstr "<p>Kommando, dass ausgefÃ¼hrt werden soll, wenn ein Ereignis eintrifft.<br>Die unten stehenden Parameter werden Ã¼bergeben.<br>Parameter kÃ¶nnen folgende AusdrÃ¼cke enthalten,<br>die durch die jeweilige Information ersetzt werden:</p>"
 
 msgid "OptionsDlg::ICQ Server:"
 msgstr "ICQ Server:"
 
 msgid "OptionsDlg::Determines if email pager messages are ignored or not."
-msgstr "Ignoriert Nachrichten, die über den Email Pager verschickt wurden."
+msgstr "Ignoriert Nachrichten, die Ã¼ber den Email Pager verschickt wurden."
 
 msgid "OptionsDlg::Use authorization"
 msgstr "Kennwort verwenden"
 
 msgid "OptionsDlg::Perform OnEvent command in not available mode"
-msgstr "Kommando auch bei Status 'nicht erreichbar' ausführen"
+msgstr "Kommando auch bei Status 'nicht erreichbar' ausfÃ¼hren"
 
 msgid "OptionsDlg::Occupied"
-msgstr "Beschäftigt"
+msgstr "BeschÃ¤ftigt"
 
 msgid "OptionsDlg::Show User Dividers"
 msgstr "Trennlinien (On-/Offline)"
 
 msgid "OptionsDlg::OnEvent in Occupied"
-msgstr "Aktiviert bei Status: 'Beschäftigt'"
+msgstr "Aktiviert bei Status: 'BeschÃ¤ftigt'"
 
 msgid "OptionsDlg::The format string used to define what will appear in each column.\nThe following parameters can be used:\n"
-msgstr "Der Format-String, der bestimmt, was in der Spalte angezeigt wird.\nFolgende Parameter können verwendet werden:\n"
+msgstr "Der Format-String, der bestimmt, was in der Spalte angezeigt wird.\nFolgende Parameter kÃ¶nnen verwendet werden:\n"
 
 msgid "OptionsDlg::Parameter for received system messages"
-msgstr "Parameter für empfangene Systemnachrichten"
+msgstr "Parameter fÃ¼r empfangene Systemnachrichten"
 
 msgid "OptionsDlg::Manual \"New User\" group handling"
 msgstr "Neue Benutzer manuell verwalten"
 
 msgid "OptionsDlg::Parameter for sent messages"
-msgstr "Parameter für gesendete Nachrichten"
+msgstr "Parameter fÃ¼r gesendete Nachrichten"
 
 msgid "OptionsDlg::Select Font"
-msgstr "Schriftart auswählen"
+msgstr "Schriftart auswÃ¤hlen"
 
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
-msgstr "Neue Nachrichten automatisch öffnen"
+msgstr "Neue Nachrichten automatisch Ã¶ffnen"
 
 msgid "OptionsDlg::64 x 48 Dock Icon"
 msgstr "64 x 48 Dock Symbol"
@@ -1749,25 +1749,25 @@ msgid "OptionsDlg::Proxy Type:"
 msgstr "Proxy Typ:"
 
 msgid "OptionsDlg::Auto N/A:"
-msgstr "Automatisch nicht verfügbar:"
+msgstr "Automatisch nicht verfÃ¼gbar:"
 
 msgid "OptionsDlg::Themed Icon"
 msgstr "Thematisiertes Symbol"
 
 msgid "OptionsDlg::Auto Close Function Window"
-msgstr "Funktionsfenster automatisch schließen"
+msgstr "Funktionsfenster automatisch schlieÃŸen"
 
 msgid "OptionsDlg::Perform OnEvent command in away mode"
-msgstr "Kommando auch bei Status 'Abwesend' ausführen"
+msgstr "Kommando auch bei Status 'Abwesend' ausfÃ¼hren"
 
 msgid "OptionsDlg::Docking"
 msgstr "Andocken"
 
 msgid "OptionsDlg::Determines if web panel messages are ignored or not."
-msgstr "Ignoriert alle Nachrichten die über eine Web Oberfläche verschickt wurden"
+msgstr "Ignoriert alle Nachrichten die Ã¼ber eine Web OberflÃ¤che verschickt wurden"
 
 msgid "OptionsDlg::Enable running of \"Command\" when the relevant event occurs."
-msgstr "Erlaube das Ausführen von \"Befehl\" wenn ein bestimmtes Ereignis eintrifft."
+msgstr "Erlaube das AusfÃ¼hren von \"Befehl\" wenn ein bestimmtes Ereignis eintrifft."
 
 msgid "OptionsDlg::System Msg:"
 msgstr "Systemnachricht:"
@@ -1776,13 +1776,13 @@ msgid "OptionsDlg::Show group name if no messages"
 msgstr "Gruppenname im Nachrichten-Label"
 
 msgid "OptionsDlg::Free for Chat"
-msgstr "Frei für Chat"
+msgstr "Frei fÃ¼r Chat"
 
 msgid "OptionsDlg::Free For Chat"
-msgstr "Frei für Chat"
+msgstr "Frei fÃ¼r Chat"
 
 msgid "OptionsDlg::When double-clicking on a user to send a message check for urls/files in the clipboard"
-msgstr "Überprüft bei Doppelklick auf einen Benutzer die Zwischenablage auf Urls/Dateien und fügt deren Inhalt automatisch in die Nachricht ein"
+msgstr "ÃœberprÃ¼ft bei Doppelklick auf einen Benutzer die Zwischenablage auf Urls/Dateien und fÃ¼gt deren Inhalt automatisch in die Nachricht ein"
 
 msgid "OptionsDlg::Show all encodings"
 msgstr "Alle Kodierungen zeigen"
@@ -1800,7 +1800,7 @@ msgid "OptionsDlg::Extensions"
 msgstr "Erweiterungen"
 
 msgid "OptionsDlg::Do Not Disturb"
-msgstr "Nicht stören"
+msgstr "Nicht stÃ¶ren"
 
 msgid "OptionsDlg::All incoming events will blink"
 msgstr "Alle eintreffende Ereignisse blinken"
@@ -1818,7 +1818,7 @@ msgid "OptionsDlg::Draw boxes around each square in the user list"
 msgstr "Rahmen um jedes Rechteck der Kontaktliste zeichnen"
 
 msgid "OptionsDlg::Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings."
-msgstr "Zeigt alle verfügbaren Kodierungen im Auswahlmenü an. Ansonsten enthält das Menü nur die üblichsten Kodierungen."
+msgstr "Zeigt alle verfÃ¼gbaren Kodierungen im AuswahlmenÃ¼ an. Ansonsten enthÃ¤lt das MenÃ¼ nur die Ã¼blichsten Kodierungen."
 
 msgid "OptionsDlg::Column Configuration"
 msgstr "Spalten in der Kontaktliste"
@@ -1860,19 +1860,19 @@ msgid "OptionsDlg::Sort all online users by their actual status"
 msgstr "Sortiert alle Benutzer nach ihrem aktuellen Status"
 
 msgid "OptionsDlg::Select a font from the system list"
-msgstr "Schriftart für die Licq Programmfenster auswählen"
+msgstr "Schriftart fÃ¼r die Licq Programmfenster auswÃ¤hlen"
 
 msgid "OptionsDlg::The string which will appear in the list box column header"
-msgstr "Die Spaltenüberschrift, die im Kopf der Kontaktliste erscheint"
+msgstr "Die SpaltenÃ¼berschrift, die im Kopf der Kontaktliste erscheint"
 
 msgid "OptionsDlg::Store your contacts on the server so they are accessible from different locations and/or programs"
-msgstr "Aktiviert die Unterstützung für die Serverseitige Kontaktliste.\nWenn eingeschaltet, wird die Kontaktliste auch auf dem ICQ Server gespeichert, so das sie von verschiedenen Standorten oder Programmen aus verfügbar ist"
+msgstr "Aktiviert die UnterstÃ¼tzung fÃ¼r die Serverseitige Kontaktliste.\nWenn eingeschaltet, wird die Kontaktliste auch auf dem ICQ Server gespeichert, so das sie von verschiedenen Standorten oder Programmen aus verfÃ¼gbar ist"
 
 msgid "OptionsDlg::Parameter for received URLs"
-msgstr "Parameter für empfangene Urls"
+msgstr "Parameter fÃ¼r empfangene Urls"
 
 msgid "OptionsDlg::The command to run to view a URL.  Will be passed the URL as a parameter."
-msgstr "Das Kommando, um eine URL anzuzeigen. Die URL wird als Parameter übergeben."
+msgstr "Das Kommando, um eine URL anzuzeigen. Die URL wird als Parameter Ã¼bergeben."
 
 msgid "OptionsDlg::Allow the vertical scroll bar in the user list"
 msgstr "Eine vertikale Bildlaufleiste in der Kontaktliste erlauben.\nWenn aktiviert, wird bei Bedarf eine Bildlaufleiste eingeblendet"
@@ -1881,7 +1881,7 @@ msgid "OptionsDlg::The command to run to start your terminal program."
 msgstr "Das Kommando, um Ihr Terminal-Programm zu starten."
 
 msgid "OptionsDlg::Font used in message editor etc."
-msgstr "Schriftart für Nachrichteneditor usw."
+msgstr "Schriftart fÃ¼r Nachrichteneditor usw."
 
 msgid "OptionsDlg::Ignore New Users"
 msgstr "Neue Benutzer ignorieren"
@@ -1896,7 +1896,7 @@ msgid "OptionsDlg::Auto close the user function window after a succesful event"
 msgstr "Das Funktionsfenster soll nach einem erfolgreichen Ereignis automatisch geschlossen werden"
 
 msgid "OptionsDlg::Open all incoming messages automatically when received if we are online (or free for chat)"
-msgstr "Öffnet neue Nachrichten automatisch sobald eine empfangen wird"
+msgstr "Ã–ffnet neue Nachrichten automatisch sobald eine empfangen wird"
 
 msgid "OptionsDlg::Raise the main window on incoming messages"
 msgstr "Blendet das Hauptfenster von Licq automatisch ein wenn eine Nachricht empfangen wurde"
@@ -1911,10 +1911,10 @@ msgid "OptionsDlg::If not checked, a user will be automatically removed from \"N
 msgstr "Bei manueller Verwaltung werden neue Benutzer nicht mehr automatisch nach der ersten gesendeten Nachricht von der Gruppe \"Neue Benutzer\" entfernt"
 
 msgid "OptionsDlg::Automatically send messages through the server if direct connection fails"
-msgstr "Sendet Nachrichten automatisch über den Server falls eine Direkte Verbindung nicht möglich ist"
+msgstr "Sendet Nachrichten automatisch Ã¼ber den Server falls eine Direkte Verbindung nicht mÃ¶glich ist"
 
 msgid "OptionsDlg::Hotkey pops up the next pending message\nEnter the hotkey literally, like \"shift+f10\", \"none\" for disabling\nchanges here require a Restart to take effect!\n"
-msgstr "Mit dem Hotkey wird automatisch zur nächsten wartenden Nachricht gewechselt.\nGeben Sie den Hotkey literal ein, z. B. \"shift+f10\". Mit \"none\" wird der Hotkey abgeschaltet.\nVeränderungen werden erst nach dem Neustart von Licq wirksam!\n"
+msgstr "Mit dem Hotkey wird automatisch zur nÃ¤chsten wartenden Nachricht gewechselt.\nGeben Sie den Hotkey literal ein, z. B. \"shift+f10\". Mit \"none\" wird der Hotkey abgeschaltet.\nVerÃ¤nderungen werden erst nach dem Neustart von Licq wirksam!\n"
 
 msgid "OptionsDlg::Idle Time"
 msgstr "Leerlaufzeit"
@@ -1956,7 +1956,7 @@ msgid "PluginDlg::Licq Plugin %1 %2\n"
 msgstr "Licq Plugin %1 %2\n"
 
 msgid "PluginDlg::Available"
-msgstr "Verfügbare Plugins"
+msgstr "VerfÃ¼gbare Plugins"
 
 msgid "PluginDlg::Refresh"
 msgstr "Auffrischen"
@@ -1992,25 +1992,25 @@ msgid "RegisterUserDlg::Please enter your password in both input fields."
 msgstr "Bitte geben Sie Ihr Passwort in beide Eingabefelder ein."
 
 msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
-msgstr "Die Registrierung war erfolgreich.\n\nBitte melden Sie sich nun an und geben Sie Ihre persönlichen\nDaten ein."
+msgstr "Die Registrierung war erfolgreich.\n\nBitte melden Sie sich nun an und geben Sie Ihre persÃ¶nlichen\nDaten ein."
 
 msgid "RegisterUserDlg::You need to enter a valid UIN when you try to register an existing user. "
-msgstr "Sie müssen eine gültige UIN eingeben, um sich als existierender Benutzer zu registrieren. "
+msgstr "Sie mÃ¼ssen eine gÃ¼ltige UIN eingeben, um sich als existierender Benutzer zu registrieren. "
 
 msgid "RegisterUserDlg::Now please click 'Finish' to start the registration process."
 msgstr "Vielen Dank.\n\nKlicken Sie nun auf 'Fertigstellen', um den Registrierungsprozess zu starten."
 
 msgid "RegisterUserDlg::User Registration in Progress..."
-msgstr "Benutzer Registrierung läuft ..."
+msgstr "Benutzer Registrierung lÃ¤uft ..."
 
 msgid "RegisterUserDlg::Now please press the 'Back' button and try again."
-msgstr "Klicken Sie auf 'Zurück' um es nochmal zu versuchen.\n\nAchten Sie darauf, das Sie beide Passwörter in gleicher\nSchreibweise eingeben."
+msgstr "Klicken Sie auf 'ZurÃ¼ck' um es nochmal zu versuchen.\n\nAchten Sie darauf, das Sie beide PasswÃ¶rter in gleicher\nSchreibweise eingeben."
 
 msgid "RegisterUserDlg::&Register Existing User"
 msgstr "Ich habe bereits eine &UIN"
 
 msgid "RegisterUserDlg::The passwords don't seem to match."
-msgstr "Die Passwörter stimmen nicht überein"
+msgstr "Die PasswÃ¶rter stimmen nicht Ã¼berein"
 
 msgid "RegisterUserDlg::UIN Registration - Step 2"
 msgstr "UIN Registrierung - Schritt 2"
@@ -2022,16 +2022,16 @@ msgid "RegisterUserDlg::Password:"
 msgstr "Passwort:"
 
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
-msgstr "Ungültige UIN. Versuchen Sie es bitte erneut."
+msgstr "UngÃ¼ltige UIN. Versuchen Sie es bitte erneut."
 
 msgid "RegisterUserDlg::Verify:"
-msgstr "Bestätigen:"
+msgstr "BestÃ¤tigen:"
 
 msgid "RegisterUserDlg::Licq User Registration"
 msgstr "Licq Benutzer Registrierung"
 
 msgid "RegisterUserDlg::Welcome to the Registration Wizard.\n\nYou can register a new user here, or configure Licq to use an existing UIN.\n\nIf you are registering a new uin, choose a password and click \"Finish\".\nIf you already have a uin, then toggle \"Register Existing User\",\nenter your uin and your password, and click \"OK\"\n\nPress \"Next\" to proceed."
-msgstr "Willkommen beim Registrierungs-Assistenten.\n\nMit diesem Assistenten können Sie einen neuen Benutzernamen registrieren,\noder Licq so konfigurieren, daß es eine bereits existierende UIN verwendet.\n\nWenn Sie eine neue UIN registrieren wollen, suchen Sie sich im nächsten\nFenster ein Passwort aus und klicken Sie auf 'Fertigstellen'.\n\nWenn Sie bereits eine UIN besitzen, dann wählen Sie 'Ich habe bereits eine\nUIN', geben Ihr Passwort ein und klicken Sie auf 'Weiter'.\n\nBitte klicken Sie jetzt auf 'Weiter'."
+msgstr "Willkommen beim Registrierungs-Assistenten.\n\nMit diesem Assistenten kÃ¶nnen Sie einen neuen Benutzernamen registrieren,\noder Licq so konfigurieren, daÃŸ es eine bereits existierende UIN verwendet.\n\nWenn Sie eine neue UIN registrieren wollen, suchen Sie sich im nÃ¤chsten\nFenster ein Passwort aus und klicken Sie auf 'Fertigstellen'.\n\nWenn Sie bereits eine UIN besitzen, dann wÃ¤hlen Sie 'Ich habe bereits eine\nUIN', geben Ihr Passwort ein und klicken Sie auf 'Weiter'.\n\nBitte klicken Sie jetzt auf 'Weiter'."
 
 msgid "RegisterUserDlg::UIN Registration"
 msgstr "UIN Registrierung"
@@ -2058,7 +2058,7 @@ msgid "SearchUserDlg::60+"
 msgstr "60+"
 
 msgid "SearchUserDlg::Male"
-msgstr "männlich"
+msgstr "mÃ¤nnlich"
 
 msgid "SearchUserDlg::Reset Search"
 msgstr "Neue Suche"
@@ -2148,13 +2148,13 @@ msgid "SearchUserDlg::A&lert User"
 msgstr "Benutzer &informieren"
 
 msgid "SearchUserDlg::&Add %1 Users"
-msgstr "%1 Benutzer &hinzufügen"
+msgstr "%1 Benutzer &hinzufÃ¼gen"
 
 msgid "SearchUserDlg::Email Address:"
 msgstr "Email Adresse:"
 
 msgid "SearchUserDlg::&Add User"
-msgstr "Benutzer &hinzufügen"
+msgstr "Benutzer &hinzufÃ¼gen"
 
 msgid "SearchUserDlg::&Whitepages"
 msgstr "&Whitepages"
@@ -2232,22 +2232,22 @@ msgid "SecurityDlg::ICQ Security Options"
 msgstr "ICQ Sicherheits-Optionen"
 
 msgid "SecurityDlg::You need to be connected to the\nICQ Network to change the settings."
-msgstr "Sie müssen mit dem ICQ-Netzwerk verbunden sein,\num Einstellungen ändern zu können."
+msgstr "Sie mÃ¼ssen mit dem ICQ-Netzwerk verbunden sein,\num Einstellungen Ã¤ndern zu kÃ¶nnen."
 
 msgid "SecurityDlg::timed out"
-msgstr "Zeitüberschreitung"
+msgstr "ZeitÃ¼berschreitung"
 
 msgid "SecurityDlg::Options"
 msgstr "Optionen"
 
 msgid "SecurityDlg::Web Presence allows users to see if you are online through your web indicator."
-msgstr "'Web Präsenz' ermöglicht es anderen, über die Web Status Abfrage zu erkennen ob Sie online sind oder nicht."
+msgstr "'Web PrÃ¤senz' ermÃ¶glicht es anderen, Ã¼ber die Web Status Abfrage zu erkennen ob Sie online sind oder nicht."
 
 msgid "SecurityDlg::failed"
 msgstr "fehlgeschlagen"
 
 msgid "SecurityDlg::Authorization Required"
-msgstr "Autorisation benötigt"
+msgstr "Autorisation benÃ¶tigt"
 
 msgid "SecurityDlg::&Cancel"
 msgstr "Ab&brechen"
@@ -2259,13 +2259,13 @@ msgid "SecurityDlg::Hide IP stops users from seeing your IP address. It doesn't 
 msgstr "IP verstecken hindert andere Benutzer daran, Ihre IP Adresse zu sehen. Es gibt allerdings keine Garantie, das Ihre IP wirklich ungesehen bleibt."
 
 msgid "SecurityDlg::Web Presence"
-msgstr "Web Präsenz"
+msgstr "Web PrÃ¤senz"
 
 msgid "SecurityDlg::ICQ Security Options [Setting..."
 msgstr "Setze ICQ Sicherheits-Optionen..."
 
 msgid "SecurityDlg::Determines whether regular ICQ clients require your authorization to add you to their contact list."
-msgstr "Bestimmt, ob normale ICQ Clients Ihre Autorisierung benötigen, um Sie zu ihrer Kontaktliste hinzuzufügen."
+msgstr "Bestimmt, ob normale ICQ Clients Ihre Autorisierung benÃ¶tigen, um Sie zu ihrer Kontaktliste hinzuzufÃ¼gen."
 
 msgid "SecurityDlg::Hide IP"
 msgstr "IP verstecken"
@@ -2283,40 +2283,40 @@ msgid "SecurityDlg::Enter your ICQ password here."
 msgstr "Tragen Sie hier Ihr ICQ Passwort ein."
 
 msgid "SecurityDlg::Verify your ICQ password here."
-msgstr "Geben Sie hier Ihr ICQ Passwort zur Bestätigung nochmal ein."
+msgstr "Geben Sie hier Ihr ICQ Passwort zur BestÃ¤tigung nochmal ein."
 
 msgid "SecurityDlg::&Local changes only"
-msgstr "&Nur lokale Änderungen"
+msgstr "&Nur lokale Ã„nderungen"
 
 msgid "SecurityDlg::If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq."
-msgstr "Wenn \"Nur lokale Änderungen\" aktiviert ist, werden alle Änderungen nur auf Ihrem Computer vorgenommen, es werden keine Änderungen an den ICQ Server gesendet. Sehr nützlich wenn Ihr Passwort in Licq falsch gespeichert ist und Sie den Fehler korrigieren wollen."
+msgstr "Wenn \"Nur lokale Ã„nderungen\" aktiviert ist, werden alle Ã„nderungen nur auf Ihrem Computer vorgenommen, es werden keine Ã„nderungen an den ICQ Server gesendet. Sehr nÃ¼tzlich wenn Ihr Passwort in Licq falsch gespeichert ist und Sie den Fehler korrigieren wollen."
 
 msgid "SecurityDlg::Invalid password, must be between 1 and 8 characters."
-msgstr "Ungültiges Passwort, es muss zwischen 1 und 8 Zeichen lang sein."
+msgstr "UngÃ¼ltiges Passwort, es muss zwischen 1 und 8 Zeichen lang sein."
 
 msgid "SecurityDlg::Passwords do not match, try again."
-msgstr "Passworte stimmen nicht überein. Versuchen Sie es erneut."
+msgstr "Passworte stimmen nicht Ã¼berein. Versuchen Sie es erneut."
 
 msgid "SecurityDlg::Setting security options failed."
 msgstr "Setzen der Sicherheitseinstellungen ist fehlgeschlagen."
 
 msgid "SecurityDlg::Changing password failed."
-msgstr "Ändern des Passwortes ist fehlgeschlagen."
+msgstr "Ã„ndern des Passwortes ist fehlgeschlagen."
 
 msgid "SecurityDlg::Timeout while setting security options."
-msgstr "Zeitüberschreitung beim setzen der Sicherheitseinstellungen."
+msgstr "ZeitÃ¼berschreitung beim setzen der Sicherheitseinstellungen."
 
 msgid "SecurityDlg::Timeout while changing password."
-msgstr "Zeitüberschreitung beim ändern des Passwortes."
+msgstr "ZeitÃ¼berschreitung beim Ã¤ndern des Passwortes."
 
 msgid "SecurityDlg::Internal error while setting security options."
 msgstr "Interner Fehler beim setzen der Sicherheitseinstellungen."
 
 msgid "SecurityDlg::Internal error while changing password."
-msgstr "Interner Fehler beim ändern des Passwortes."
+msgstr "Interner Fehler beim Ã¤ndern des Passwortes."
 
 msgid "SecurityDlg::Enter the UIN which you want to use.  Only available if \"Local changes only\" is checked."
-msgstr "Geben Sie die UIN ein die Sie benutzen möchten. Dies ist nur möglich wenn \"Nur lokale Änderungen\" aktiviert ist."
+msgstr "Geben Sie die UIN ein die Sie benutzen mÃ¶chten. Dies ist nur mÃ¶glich wenn \"Nur lokale Ã„nderungen\" aktiviert ist."
 
 msgid "SecurityDlg::&Verify:"
 msgstr "&Wiederholung:"
@@ -2328,7 +2328,7 @@ msgid "ShowAwayMsgDlg::error"
 msgstr "Fehler"
 
 msgid "ShowAwayMsgDlg::timed out"
-msgstr "Zeitüberschreitung"
+msgstr "ZeitÃ¼berschreitung"
 
 msgid "ShowAwayMsgDlg::failed"
 msgstr "fehlgeschlagen"
@@ -2337,7 +2337,7 @@ msgid "ShowAwayMsgDlg::&Show Again"
 msgstr "&Erneut zeigen"
 
 msgid "ShowAwayMsgDlg::%1 Response for %2"
-msgstr "%1 Antwort für %2"
+msgstr "%1 Antwort fÃ¼r %2"
 
 msgid "ShowAwayMsgDlg::refused"
 msgstr "abgelehnt"
@@ -2346,7 +2346,7 @@ msgid "SkinBrowserDlg::Error"
 msgstr "Fehler"
 
 msgid "SkinBrowserDlg::&Apply"
-msgstr "Über&nehmen"
+msgstr "Ãœber&nehmen"
 
 msgid "SkinBrowserDlg::Licq Skin Browser"
 msgstr "Licq Design Verwaltung"
@@ -2385,16 +2385,16 @@ msgid "SkinBrowserDlg::&Cancel"
 msgstr "Ab&brechen"
 
 msgid "SkinBrowserDlg::Unable to open icons file\n%1\nIconset '%2' has been disabled."
-msgstr "Kann Symboldatei nicht öffnen:\n%1\nSymbol Paket '%2' wurde daher deaktiviert."
+msgstr "Kann Symboldatei nicht Ã¶ffnen:\n%1\nSymbol Paket '%2' wurde daher deaktiviert."
 
 msgid "SkinBrowserDlg::Unable to open extended icons file\n%1\nExtended Iconset '%2' has been disabled."
-msgstr "Kann erweiterte Symboldatei nicht öffnen:\n%1\nErweitertes Symbol Paket '%2' wurde daher deaktiviert."
+msgstr "Kann erweiterte Symboldatei nicht Ã¶ffnen:\n%1\nErweitertes Symbol Paket '%2' wurde daher deaktiviert."
 
 msgid "SkinBrowserDlg::Unable to open icons file\n%1"
-msgstr "Kann Symboldatei nicht öffnen:\n%1"
+msgstr "Kann Symboldatei nicht Ã¶ffnen:\n%1"
 
 msgid "SkinBrowserDlg::Unable to open extended icons file\n%1"
-msgstr "Kann erweiterte Symboldatei nicht öffnen:\n%1"
+msgstr "Kann erweiterte Symboldatei nicht Ã¶ffnen:\n%1"
 
 msgid "UserCodec::Unicode"
 msgstr "Unicode"
@@ -2406,7 +2406,7 @@ msgid "UserCodec::Baltic"
 msgstr "Baltisch"
 
 msgid "UserCodec::Central European"
-msgstr "Zentraleuropäisch"
+msgstr "ZentraleuropÃ¤isch"
 
 msgid "UserCodec::Chinese"
 msgstr "Chinesisch"
@@ -2424,7 +2424,7 @@ msgid "UserCodec::Greek"
 msgstr "Griechisch"
 
 msgid "UserCodec::Hebrew"
-msgstr "Hebräisch"
+msgstr "HebrÃ¤isch"
 
 msgid "UserCodec::Japanese"
 msgstr "Japanisch"
@@ -2433,16 +2433,16 @@ msgid "UserCodec::Korean"
 msgstr "Koreanisch"
 
 msgid "UserCodec::Western European"
-msgstr "Westeuropäisch"
+msgstr "WesteuropÃ¤isch"
 
 msgid "UserCodec::Tamil"
 msgstr "Tamil"
 
 msgid "UserCodec::Thai"
-msgstr "Thailändisch"
+msgstr "ThailÃ¤ndisch"
 
 msgid "UserCodec::Turkish"
-msgstr "Türkisch"
+msgstr "TÃ¼rkisch"
 
 msgid "UserCodec::Ukrainian"
 msgstr "Ukrainisch"
@@ -2451,16 +2451,16 @@ msgid "UserEventCommon::Time:"
 msgstr "Ortszeit:"
 
 msgid "UserEventCommon::Change user text encoding"
-msgstr "Zeichensatz für die Anzeige von Nachrichtentext wechseln"
+msgstr "Zeichensatz fÃ¼r die Anzeige von Nachrichtentext wechseln"
 
 msgid "UserEventCommon::This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language."
-msgstr "Dieser Knopf wählt den zu benutzenden Zeichensatz für die Kommunikation mit diesem Benutzer. Sie müssen den Zeichensatz möglicherweise wechseln um in einer fremden Sprache zu kommunizieren."
+msgstr "Dieser Knopf wÃ¤hlt den zu benutzenden Zeichensatz fÃ¼r die Kommunikation mit diesem Benutzer. Sie mÃ¼ssen den Zeichensatz mÃ¶glicherweise wechseln um in einer fremden Sprache zu kommunizieren."
 
 msgid "UserEventCommon::Show User Info"
 msgstr "Informationen zu diesem Benutzer einblenden"
 
 msgid "UserEventCommon::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
-msgstr "Kann Kodierung <b>%1</b> nicht laden. Nachrichteninhalte könnten verstümmelt dargestellt werden."
+msgstr "Kann Kodierung <b>%1</b> nicht laden. Nachrichteninhalte kÃ¶nnten verstÃ¼mmelt dargestellt werden."
 
 msgid "UserEventCommon::Status:"
 msgstr "Status:"
@@ -2472,7 +2472,7 @@ msgid "UserEventCommon::Show User History"
 msgstr "Verlauf zu diesem Benutzer zeigen"
 
 msgid "UserEventCommon::Open / Close secure channel"
-msgstr "Öffnen / Schließen einer verschlüsselten Verbindung"
+msgstr "Ã–ffnen / SchlieÃŸen einer verschlÃ¼sselten Verbindung"
 
 msgid "UserInfoDlg::IP:"
 msgstr "IP:"
@@ -2487,7 +2487,7 @@ msgid "UserInfoDlg::Fax:"
 msgstr "Fax:"
 
 msgid "UserInfoDlg::Male"
-msgstr "Männlich"
+msgstr "MÃ¤nnlich"
 
 msgid "UserInfoDlg::UIN:"
 msgstr "UIN:"
@@ -2505,7 +2505,7 @@ msgid "UserInfoDlg::&Last"
 msgstr "Z&uletzt..."
 
 msgid "UserInfoDlg::&Menu"
-msgstr "&Menü"
+msgstr "&MenÃ¼"
 
 msgid "UserInfoDlg::&More"
 msgstr "Me&hr"
@@ -2523,13 +2523,13 @@ msgid "UserInfoDlg::City:"
 msgstr "Stadt:"
 
 msgid "UserInfoDlg::P&rev"
-msgstr "&Zurück"
+msgstr "&ZurÃ¼ck"
 
 msgid "UserInfoDlg::Name:"
 msgstr "Name:"
 
 msgid "UserInfoDlg::Nex&t"
-msgstr "V&orwärts"
+msgstr "V&orwÃ¤rts"
 
 msgid "UserInfoDlg::error"
 msgstr "Fehler"
@@ -2538,7 +2538,7 @@ msgid "UserInfoDlg::Last Online:"
 msgstr "Letztes mal Online:"
 
 msgid "UserInfoDlg::Updating server..."
-msgstr "Ändere Information auf dem Server..."
+msgstr "Ã„ndere Information auf dem Server..."
 
 msgid "UserInfoDlg:: Year:"
 msgstr "Jahr:"
@@ -2550,13 +2550,13 @@ msgid "UserInfoDlg::Last Checked Auto Response:"
 msgstr "Letzte gelesene Auto Antwort:"
 
 msgid "UserInfoDlg::&About"
-msgstr "Ü&ber"
+msgstr "Ãœ&ber"
 
 msgid "UserInfoDlg::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "UserInfoDlg::You need to be connected to the\nICQ Network to retrieve your settings."
-msgstr "Sie müssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen empfangen zu können."
+msgstr "Sie mÃ¼ssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen empfangen zu kÃ¶nnen."
 
 msgid "UserInfoDlg::Cellular:"
 msgstr "Mobiltelefon:"
@@ -2571,7 +2571,7 @@ msgid "UserInfoDlg::EMail 2:"
 msgstr "Email 2:"
 
 msgid "UserInfoDlg::timed out"
-msgstr "Zeitüberschreitung"
+msgstr "ZeitÃ¼berschreitung"
 
 msgid "UserInfoDlg::Homepage:"
 msgstr "Homepage:"
@@ -2583,7 +2583,7 @@ msgid "UserInfoDlg::Timezone:"
 msgstr "Zeitzone:"
 
 msgid "UserInfoDlg::About:"
-msgstr "Über:"
+msgstr "Ãœber:"
 
 msgid "UserInfoDlg::Alias:"
 msgstr "Alias:"
@@ -2610,10 +2610,10 @@ msgid "UserInfoDlg::Last Received Event:"
 msgstr "Letztes Ereignis empfangen:"
 
 msgid "UserInfoDlg::Authorization Not Required"
-msgstr "Autorisation nicht benötigt"
+msgstr "Autorisation nicht benÃ¶tigt"
 
 msgid "UserInfoDlg::[<font color=\"%1\">Received</font>] [<font color=\"%2\">Sent</font>] %3 out of %4 matches"
-msgstr "[<font color=\"%1\">Empfangen</font>] [<font color=\"%2\">Gesendet</font>] %3 von %4 Übereinstimmungen"
+msgstr "[<font color=\"%1\">Empfangen</font>] [<font color=\"%2\">Gesendet</font>] %3 von %4 Ãœbereinstimmungen"
 
 msgid "UserInfoDlg::GMT%1%1%1"
 msgstr "GMT%1%1%1"
@@ -2631,10 +2631,10 @@ msgid "UserInfoDlg::server"
 msgstr "Server"
 
 msgid "UserInfoDlg::Authorization Required"
-msgstr "Autorisation benötigt"
+msgstr "Autorisation benÃ¶tigt"
 
 msgid "UserInfoDlg::INVALID USER"
-msgstr "UNGÜLTIGER BENUTZER"
+msgstr "UNGÃœLTIGER BENUTZER"
 
 msgid "UserInfoDlg::Birthday:"
 msgstr "Geburtstag:"
@@ -2649,7 +2649,7 @@ msgid "UserInfoDlg::Position:"
 msgstr "Position:"
 
 msgid "UserInfoDlg::Sorry, history is disabled for this person."
-msgstr "Verlauf ist für diesen Benutzer abgeschaltet."
+msgstr "Verlauf ist fÃ¼r diesen Benutzer abgeschaltet."
 
 msgid "UserInfoDlg::Licq - Info "
 msgstr "Licq - Info "
@@ -2661,10 +2661,10 @@ msgid "UserInfoDlg::Address:"
 msgstr "Adresse:"
 
 msgid "UserInfoDlg::Updating..."
-msgstr "Ändern..."
+msgstr "Ã„ndern..."
 
 msgid "UserInfoDlg::You need to be connected to the\nICQ Network to change your settings."
-msgstr "Sie müssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen ändern zu können."
+msgstr "Sie mÃ¼ssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen Ã¤ndern zu kÃ¶nnen."
 
 msgid "UserInfoDlg::Language 3:"
 msgstr "Sprache 3:"
@@ -2688,7 +2688,7 @@ msgid "UserInfoDlg::Retrieve"
 msgstr "Empfangen"
 
 msgid "UserInfoDlg::Rever&se"
-msgstr "&Rückwärts"
+msgstr "&RÃ¼ckwÃ¤rts"
 
 msgid "UserInfoDlg::%1 from %2"
 msgstr "%1 von %2"
@@ -2706,7 +2706,7 @@ msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
 msgstr "Fehler beim laden der Verlaufs-Datei: %1\nBeschreibung: %2"
 
 msgid "UserSendChatEvent::Clear"
-msgstr "Löschen"
+msgstr "LÃ¶schen"
 
 msgid "UserSendChatEvent::Multiparty: "
 msgstr "Mehrbenutzer: "
@@ -2736,7 +2736,7 @@ msgid "UserSendCommon::done"
 msgstr "fertig"
 
 msgid "UserSendCommon::&Menu"
-msgstr "&Menü"
+msgstr "&MenÃ¼"
 
 msgid "UserSendCommon::&Send"
 msgstr "&Senden"
@@ -2745,10 +2745,10 @@ msgid "UserSendCommon::error"
 msgstr "Fehler"
 
 msgid "UserSendCommon::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "UserSendCommon::timed out"
-msgstr "Zeitüberschreitung"
+msgstr "ZeitÃ¼berschreitung"
 
 msgid "UserSendCommon::Message"
 msgstr "Nachricht"
@@ -2757,7 +2757,7 @@ msgid "UserSendCommon::Cancel"
 msgstr "Abbrechen"
 
 msgid "UserSendCommon::File Transfer"
-msgstr "Dateiübertragung"
+msgstr "DateiÃ¼bertragung"
 
 msgid "UserSendCommon::Urgent"
 msgstr "Dringend"
@@ -2766,7 +2766,7 @@ msgid "UserSendCommon::Send anyway"
 msgstr "Trotzdem senden"
 
 msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
-msgstr "Benutzer hier her ziehen.\nKlick mit rechter Maustaste für Optionen"
+msgstr "Benutzer hier her ziehen.\nKlick mit rechter Maustaste fÃ¼r Optionen"
 
 msgid "UserSendCommon::direct"
 msgstr "direkt"
@@ -2775,7 +2775,7 @@ msgid "UserSendCommon::failed"
 msgstr "fehlgeschlagen"
 
 msgid "UserSendCommon::via server"
-msgstr "über Server"
+msgstr "Ã¼ber Server"
 
 msgid "UserSendCommon::U&rgent"
 msgstr "&Dringend"
@@ -2784,13 +2784,13 @@ msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
 msgstr "%1 ist im %2-Modus:\n%3\nSenden..."
 
 msgid "UserSendCommon::Direct send failed,\nsend through server?"
-msgstr "Direkter Versandt fehlgeschlagen,\nüber Server senden?"
+msgstr "Direkter Versandt fehlgeschlagen,\nÃ¼ber Server senden?"
 
 msgid "UserSendCommon::&Cancel"
 msgstr "Ab&brechen"
 
 msgid "UserSendCommon::Warning: Message can't be sent securely\nthrough the server!"
-msgstr "Warnung: Nachricht kann nicht verschlüsselt\nüber den Server verschickt werden!"
+msgstr "Warnung: Nachricht kann nicht verschlÃ¼sselt\nÃ¼ber den Server verschickt werden!"
 
 msgid "UserSendCommon::Sending "
 msgstr "Sende "
@@ -2805,22 +2805,22 @@ msgid "UserSendCommon:: to Contact List"
 msgstr "zur Kontaktliste."
 
 msgid "UserSendCommon::M&ultiple recipients"
-msgstr "&Mehrere Empfänger"
+msgstr "&Mehrere EmpfÃ¤nger"
 
 msgid "UserSendCommon::Se&nd through server"
-msgstr "Sende über S&erver"
+msgstr "Sende Ã¼ber S&erver"
 
 msgid "UserSendCommon::%1 refused %2, send through server"
-msgstr "%1 lehnte ab %2, sende über Server"
+msgstr "%1 lehnte ab %2, sende Ã¼ber Server"
 
 msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
-msgstr "Benutzer hier her ziehen - Klick mit rechter Maustaste für Optionen"
+msgstr "Benutzer hier her ziehen - Klick mit rechter Maustaste fÃ¼r Optionen"
 
 msgid "UserSendContactEvent:: - Contact List"
 msgstr " - Kontaktliste"
 
 msgid "UserSendFileEvent::You must specify a file to transfer!"
-msgstr "Sie müssen eine zu sendende Datei angeben!"
+msgstr "Sie mÃ¼ssen eine zu sendende Datei angeben!"
 
 msgid "UserSendFileEvent::File(s): "
 msgstr "Datei(en): "
@@ -2829,13 +2829,13 @@ msgid "UserSendFileEvent::Browse"
 msgstr "Durchsuchen"
 
 msgid "UserSendFileEvent:: - File Transfer"
-msgstr " - Dateiübertragung"
+msgstr " - DateiÃ¼bertragung"
 
 msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
-msgstr "Dateiübertragung mit %2 abgelehnt:\n%3"
+msgstr "DateiÃ¼bertragung mit %2 abgelehnt:\n%3"
 
 msgid "UserSendFileEvent::Select files to send"
-msgstr "Dateien zum versenden auswählen"
+msgstr "Dateien zum versenden auswÃ¤hlen"
 
 msgid "UserSendMsgEvent::&No"
 msgstr "&Nein"
@@ -2859,7 +2859,7 @@ msgid "UserSendSmsEvent:: - SMS"
 msgstr " - SMS"
 
 msgid "UserSendSmsEvent::You didn't edit the SMS.\nDo you really want to send it?"
-msgstr "Sie haben die SMS nicht bearbeitet.\nMöchten Sie sie wirklich senden?"
+msgstr "Sie haben die SMS nicht bearbeitet.\nMÃ¶chten Sie sie wirklich senden?"
 
 msgid "UserSendSmsEvent::Chars left : "
 msgstr "Verbleibende Zeichen : "
@@ -2880,22 +2880,22 @@ msgid "UserViewEvent::&Join"
 msgstr "&Betreten"
 
 msgid "UserViewEvent::&Menu"
-msgstr "&Menü"
+msgstr "&MenÃ¼"
 
 msgid "UserViewEvent::&View"
 msgstr "&Anzeigen"
 
 msgid "UserViewEvent::Nex&t"
-msgstr "&Nächste"
+msgstr "&NÃ¤chste"
 
 msgid "UserViewEvent::A&dd %1 Users"
-msgstr "&Füge %1 Benutzer hinzu"
+msgstr "&FÃ¼ge %1 Benutzer hinzu"
 
 msgid "UserViewEvent::Aut&o Close"
-msgstr "Automatisch s&chließen"
+msgstr "Automatisch s&chlieÃŸen"
 
 msgid "UserViewEvent::&Close"
-msgstr "S&chließen"
+msgstr "S&chlieÃŸen"
 
 msgid "UserViewEvent::&Quote"
 msgstr "&Zitieren"
@@ -2907,10 +2907,10 @@ msgid "UserViewEvent::A&ccept"
 msgstr "A&kzeptieren"
 
 msgid "UserViewEvent::Normal Click - Close Window\n<CTRL>+Click - also delete User"
-msgstr "Normaler Klick - Fenster schliessen\n<CTRL>+Klick - Benutzer löschen"
+msgstr "Normaler Klick - Fenster schliessen\n<CTRL>+Klick - Benutzer lÃ¶schen"
 
 msgid "UserViewEvent::File Transfer"
-msgstr "Dateiübertragung"
+msgstr "DateiÃ¼bertragung"
 
 msgid "UserViewEvent::Start Chat"
 msgstr "Starte Chat"
@@ -2922,7 +2922,7 @@ msgid "UserViewEvent::View URL failed"
 msgstr "URL-Anzeige fehlgeschlagen"
 
 msgid "UserViewEvent::A&dd User"
-msgstr "&Füge Benutzer hinzu"
+msgstr "&FÃ¼ge Benutzer hinzu"
 
 msgid "UserViewEvent::A&uthorize"
 msgstr "&Autorisieren"
@@ -2931,11 +2931,11 @@ msgid "UserViewEvent::&Refuse"
 msgstr "&Ablehnen"
 
 msgid "UserViewEvent::Nex&t (%1)"
-msgstr "&Nächste (%1)"
+msgstr "&NÃ¤chste (%1)"
 
 msgid "UserViewEvent::&Forward"
 msgstr "&Weiterleiten"
 
 msgid "WharfIcon::Left click - Show main window\nMiddle click - Show next message\nRight click - System menu"
-msgstr "Linke Maustaste - Zeige Hauptfenster Mittlere Maustaste - Zeige nächste Nachricht Rechte Maustaste - System-Menü"
+msgstr "Linke Maustaste - Zeige Hauptfenster Mittlere Maustaste - Zeige nÃ¤chste Nachricht Rechte Maustaste - System-MenÃ¼"
 
