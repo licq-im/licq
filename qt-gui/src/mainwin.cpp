@@ -1884,14 +1884,13 @@ void CMainWindow::slot_register(void)
 {
   if (gUserManager.OwnerUin() != 0)
   {
-    char buf[256];
-    sprintf (buf, tr("You are currently registered as\n"
-                    "UIN: %ld\n"
-                    "Base Directory: %s\n"
+    QString buf = tr("You are currently registered as\n"
+                    "UIN: %1\n"
+                    "Base Directory: %2\n"
                     "Rerun licq with the -b option to select a new\n"
-                    "base directory and then register a new user."),
-                  gUserManager.OwnerUin(), BASE_DIR);
-    InformUser(this, QString::fromLocal8Bit(buf));
+                    "base directory and then register a new user.")
+                    .arg(gUserManager.OwnerUin()).arg(BASE_DIR);
+    InformUser(this, buf);
     return;
   }
 
