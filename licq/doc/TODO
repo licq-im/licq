@@ -10,7 +10,6 @@ o  Have licq automatically detect the status of ppp0 and go online/offline
    accordingly
 o  Fix auto-update all users
 o  Auto accept file option
-o  Batch file transfers
 o  Viewing user info without adding user to list
 o  Intelligent adding of sms phone numbers to a user's info.  No more forcing
    the user to know how to enter the phone number for it to work properly.
