@@ -204,7 +204,7 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
  * remote ip and port to those values
  *---------------------------------------------------------------------------*/
 bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort)
-{ 
+{
   if (_nRemoteIp == 0) return(false);  // if the rIp is invalid, exit
 
   m_sRemoteAddr.sin_port = htons(_nRemotePort);
@@ -408,15 +408,15 @@ bool INetSocket::SendRaw(CBuffer *b)
  *---------------------------------------------------------------------------*/
 bool INetSocket::RecvRaw(void)
 {
-  char *buffer = new char[MAX_RECV_SIZE];  
+  char *buffer = new char[MAX_RECV_SIZE];
   errno = 0;
   int nBytesReceived = recv(m_nDescriptor, buffer, MAX_RECV_SIZE, 0);
   if (nBytesReceived <= 0)
   {
     // errno has been set
     h_errno = -1;
-    //CloseSocket(); 
-    return (false); 
+    //CloseSocket();
+    return (false);
   }
   m_xRecvBuffer.Create(nBytesReceived);
   m_xRecvBuffer.add(buffer, nBytesReceived);
@@ -451,9 +451,9 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
  *---------------------------------------------------------------------------*/
 void TCPSocket::TransferConnectionFrom(TCPSocket &from)
 {
-  m_nDescriptor = from.m_nDescriptor; 
-  m_sLocalAddr = from.m_sLocalAddr; 
-  m_sRemoteAddr = from.m_sRemoteAddr; 
+  m_nDescriptor = from.m_nDescriptor;
+  m_sLocalAddr = from.m_sLocalAddr;
+  m_sRemoteAddr = from.m_sRemoteAddr;
   ClearRecvBuffer();
 //---ACK IS THIS OK???---
   from.m_nDescriptor = -1;
@@ -513,7 +513,7 @@ bool TCPSocket::SendPacket(CBuffer *b)
 
 /*-----TCPSocket::ReceivePacket------------------------------------------------
  * Receive data on the socket.  Checks the buffer to see if it is empty, if
- * so, then it will create it using either the size read in from the socket 
+ * so, then it will create it using either the size read in from the socket
  * (the first two bytes available) or the given size.  Then determine the
  * number of bytes needed to fill the buffer and call recv with this amount.
  * Note if the buffer is not filled, then the next call to this function will
@@ -524,7 +524,7 @@ bool TCPSocket::SendPacket(CBuffer *b)
  *---------------------------------------------------------------------------*/
 bool TCPSocket::RecvPacket(void)
 {
-  if (m_xRecvBuffer.Full()) 
+  if (m_xRecvBuffer.Full())
   {
     gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%d bytes).\n", 
               L_WARNxSTR, m_xRecvBuffer.getDataSize());
@@ -533,45 +533,45 @@ bool TCPSocket::RecvPacket(void)
 
   int nBytesReceived = 0;
   errno = 0;
-  
+
   // Check if the buffer is empty
   if (m_xRecvBuffer.Empty())
-  {  
+  {
     char *buffer = new char[2];
     int nTwoBytes = 0;
     while (nTwoBytes != 2)
     {
       nBytesReceived = recv(m_nDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
-      if (nBytesReceived <= 0)  
-      { 
+      if (nBytesReceived <= 0)
+      {
         // errno has been set
-        h_errno = -1; 
+        h_errno = -1;
         delete[] buffer;
-        //CloseSocket(); 
-        return (false); 
+        //CloseSocket();
+        return (false);
       }
       nTwoBytes += nBytesReceived;
     }
-    m_xRecvBuffer.Create(((unsigned char)buffer[0]) + 
+    m_xRecvBuffer.Create(((unsigned char)buffer[0]) +
                          (((unsigned char)buffer[1]) << 8 ));
     delete[] buffer;
   }
-      
+
   // Determine the number of bytes left to be read into the buffer
   unsigned long nBytesLeft = m_xRecvBuffer.getDataStart() +
                              m_xRecvBuffer.getDataMaxSize() -
                              m_xRecvBuffer.getDataPosWrite();
   nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, MSG_DONTWAIT);
-  if (nBytesReceived < 0)
-  { 
+  if (nBytesReceived <= 0)
+  {
     // errno has been set
     h_errno = -1;
     if (errno == EAGAIN || errno == EWOULDBLOCK) return (true);
-    //CloseSocket(); 
-    return (false); 
+    //CloseSocket();
+    return (false);
   }
   m_xRecvBuffer.incDataPosWrite(nBytesReceived);
-  
+
   // Print the packet if it's full
   if (m_xRecvBuffer.Full()) DumpPacket(&m_xRecvBuffer, D_RECEIVER);
 
