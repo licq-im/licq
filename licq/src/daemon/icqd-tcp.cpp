@@ -434,7 +434,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       s->ClearRecvBuffer();
       if (nOk != 1)
       {
-        gLog.Warn("%sBad handshake ack: %d.\n", L_WARNxSTR, nOk);
+        gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
         return false;
       }
 
@@ -729,19 +729,22 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
       packet.UnpackUnsignedShort(); // 0x000E
-      theSequence = packet.UnpackUnsignedShort();
+      theSequence = 0xFFFF0000 | packet.UnpackUnsignedShort();
+      unsigned long junkLong1, junkLong2, junkLong3;
+      packet >> junkLong1 >> junkLong2 >> junkLong3; // maybe always zero ??!
       newCommand = packet.UnpackUnsignedShort();
       ackFlags = packet.UnpackUnsignedShort();
       msgFlags = packet.UnpackUnsignedShort();
+      packet >> messageLen;
       break;
     }
   }
 
   // Some simple validation of the packet
-  if (checkUin == 0 || command == 0 /*|| newCommand == 0*/) //newCommand is zero with some v4 clients
+  if (checkUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
-    gLog.Unknown("%sInvalid TCP packet(%08lx, %08lx, %08lx):\n%s\n", L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
+    gLog.Unknown("%sInvalid TCP packet(%08lx, %04x, %04x):\n%s\n", L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
     delete buf;
     return false;
   }
@@ -1387,7 +1390,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
     s->ClearRecvBuffer();
     if (nOk != 1)
     {
-      gLog.Warn("%sBad handshake ack: %d.\n", L_WARNxSTR, nOk);
+      gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
       return false;
     }
     nVersion = 4;
@@ -1438,7 +1441,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u != NULL)
   {
-    gLog.Info("%sConnection from %s (%ld) [TCP v%d].\n", L_TCPxSTR,
+    gLog.Info("%sConnection from %s (%ld) [TCP v%ld].\n", L_TCPxSTR,
        u->GetAlias(), nUin, s->Version());
     if (u->SocketDesc() != s->Descriptor())
     {
@@ -1455,7 +1458,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
   else
   {
-    gLog.Info("%sConnection from new user (%ld) [TCP v%d].\n", L_TCPxSTR,
+    gLog.Info("%sConnection from new user (%ld) [TCP v%ld].\n", L_TCPxSTR,
        nUin, s->Version());
   }
 
