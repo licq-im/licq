@@ -33,3 +33,5 @@ LicqDialog::LicqDialog(QWidget *parent, const char *name, bool modal, WFlags f)
   classHint.res_name = (char *)name;
   XSetClassHint(x11Display(), winId(), &classHint);
 }
+
+#include "licqdialog.moc"
