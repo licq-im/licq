@@ -106,7 +106,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_pPacketBuf->SkipParameter(); // email account
         string strNick = m_pPacketBuf->GetParameter();
         gLog.Info("%s%s logged in.\n", L_MSNxSTR, strNick.c_str());
-        
+       
+        // Set our alias here
+        ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
+        string strDecodedNick = Decode(strNick);
+        o->SetAlias(strDecodedNick.c_str());
+        gUserManager.DropOwner(MSN_PPID);
+         
         // This cookie doesn't work anymore now that we are online
         if (m_szCookie)
         {
@@ -241,6 +247,24 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     
       gLog.Info("%sRemoved %s from contact list.\n", L_MSNxSTR, strUser.c_str()); 
     }
+    else if (strCmd == "REA")
+    {
+      m_pPacketBuf->SkipParameter(); // seq
+      string strVersion = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
+      string strNick = m_pPacketBuf->GetParameter();
+      
+      m_nListVersion = atol(strVersion.c_str());
+      if (strcmp(m_szUserName, strUser.c_str()) == 0)
+      {
+        ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
+        string strDecodedNick = Decode(strNick);
+        o->SetAlias(strDecodedNick.c_str());
+        gUserManager.DropOwner(MSN_PPID);
+      }
+      
+      gLog.Info("%s%s renamed successfully.\n", L_MSNxSTR, strUser.c_str());
+    }
     else if (strCmd == "CHG")
     {
       m_pPacketBuf->SkipParameter(); // seq
@@ -308,6 +332,21 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
       }
       gUserManager.DropUser(u);
+
+      // Do we have a connection attempt to this user?
+      StartList::iterator it;
+      pthread_mutex_lock(&mutex_StartList);
+      for (it = m_lStart.begin(); it != m_lStart.end(); it++)
+      {
+        if (*it && strcmp(strUser.c_str(), (*it)->m_szUser) == 0)
+        {
+          gLog.Info("%sRemoving connection attempt to %s.\n", L_MSNxSTR, strUser.c_str());
+          SStartMessage *pStart = (*it);
+          m_lStart.erase(it);
+          break;
+        }
+      }
+      pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "RNG")
     {
@@ -398,8 +437,10 @@ void CMSN::SendPacket(CMSNPacket *p)
 {
   INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
   SrvSocket *sock = static_cast<SrvSocket *>(s);
-  sock->SendRaw(p->getBuffer());
-  gSocketMan.DropSocket(sock);
+  if (!sock->SendRaw(p->getBuffer()))
+    MSNLogoff(true);
+  else
+    gSocketMan.DropSocket(sock);
   
   delete p;
 }
@@ -447,12 +488,15 @@ void CMSN::MSNChangeStatus(unsigned long _nStatus)
   m_nStatus = _nStatus;
 }
 
-void CMSN::MSNLogoff()
+void CMSN::MSNLogoff(bool bDisconnected)
 {
   if (m_nServerSocket == -1) return;
 
-  CMSNPacket *pSend = new CPS_MSNLogoff();
-  SendPacket(pSend);
+  if (bDisconnected)
+  {
+    CMSNPacket *pSend = new CPS_MSNLogoff();
+    SendPacket(pSend);
+  }
   m_nStatus = ICQ_STATUS_OFFLINE;
  
   // Close the server socket
@@ -510,6 +554,14 @@ void CMSN::MSNRenameUser(char *szUser)
 void CMSN::MSNGrantAuth(char *szUser)
 {
   CMSNPacket *pSend = new CPS_MSNAddUser(szUser, ALLOW_LIST);
+  SendPacket(pSend);
+}
+
+void CMSN::MSNUpdateUser(char *szAlias)
+{
+  string strNick(szAlias);
+  string strEncodedNick = Encode(strNick);
+  CMSNPacket *pSend = new CPS_MSNRenameUser(m_szUserName, strEncodedNick.c_str());
   SendPacket(pSend);
 }
 

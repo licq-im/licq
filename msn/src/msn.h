@@ -100,11 +100,12 @@ private:
   void MSNSendMessage(char *, char *, pthread_t, unsigned long);
   void MSNSendTypingNotification(char *, unsigned long);
   void MSNChangeStatus(unsigned long);
-  void MSNLogoff();
+  void MSNLogoff(bool = false);
   void MSNAddUser(char *);
   void MSNRemoveUser(char *);
   void MSNRenameUser(char *);
   void MSNGrantAuth(char *);
+  void MSNUpdateUser(char *);
   
   // Internal functions
   int HashValue(int n) { return n % 211; }
@@ -141,6 +142,7 @@ private:
          m_strKV;
          
   pthread_t m_tMSNPing;
+  pthread_mutex_t mutex_StartList;
   
   char *m_szUserName,
        *m_szPassword,

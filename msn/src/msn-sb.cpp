@@ -163,8 +163,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
     else if (strCmd == "USR")
     {
+      pthread_mutex_lock(&mutex_StartList);
       SStartMessage *pStart = m_lStart.front();
       pReply = new CPS_MSNCall(pStart->m_szUser);
+      pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "JOI")
     {
@@ -187,6 +189,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
   
       SStartMessage *pStart = 0;
       StartList::iterator it;
+      pthread_mutex_lock(&mutex_StartList);
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
         if (strcmp((*it)->m_szUser, strUser.c_str()) == 0) // case insensitive perhaps?
@@ -210,6 +213,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         free(pStart->m_szUser);
         delete pStart;
       }
+      pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "BYE")
     {
@@ -269,8 +273,36 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDel
     s = gSocketMan.FetchSocket(nSocket);
   if (!s) return;
   TCPSocket *sock = static_cast<TCPSocket *>(s);
-  sock->SendRaw(p->getBuffer());
-  gSocketMan.DropSocket(sock);
+  if (!sock->SendRaw(p->getBuffer()))
+  {
+    gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, strUser.c_str());
+
+    m_pDaemon->PushPluginSignal(new
+      CICQSignal(SIGNAL_CONVOxLEAVE, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
+
+    m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
+    CConversation *pConv = m_pDaemon->FindConversation(nSock);
+
+    ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_W);
+    if (u)
+    {
+      u->ClearSocketDesc(ICQ_CHNxNONE);
+      if (!pConv->IsEmpty())
+      {
+        gUserManager.DropUser(u);
+      }
+      else
+      {
+        int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
+        gUserManager.DropUser(u);
+        gSocketMan.DropSocket(s);
+        gSocketMan.CloseSocket(nSock);
+        m_pDaemon->RemoveConversation(pConv->CID());
+      }
+    }
+  }
+  else
+    gSocketMan.DropSocket(sock);
   
   if (bDelete)
     delete p;
@@ -288,9 +320,11 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
     *szPort++ = '\0';
   }
   
+  pthread_mutex_lock(&mutex_StartList);
   SStartMessage *pStart = m_lStart.front();
-  
   TCPSocket *sock = new TCPSocket(pStart->m_szUser, MSN_PPID);
+  pthread_mutex_unlock(&mutex_StartList);
+
   sock->SetRemoteAddr(szServer, atoi(szPort));
   char ipbuf[32];
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
@@ -433,7 +467,9 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
     p->m_pEvent = e;
     p->m_pSignal = s;
     p->m_szUser = strdup(_szUser);
+    pthread_mutex_lock(&mutex_StartList);
     m_lStart.push_back(p);
+    pthread_mutex_unlock(&mutex_StartList);
    
     SendPacket(pSB);
   }  

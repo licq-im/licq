@@ -91,6 +91,9 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
   msnConf.ReadNum("ListVersion", m_nListVersion, 0);
   
   msnConf.CloseFile();
+
+  // pthread stuff now
+  pthread_mutex_init(&mutex_StartList, 0);
 }
 
 CMSN::~CMSN()
@@ -487,6 +490,13 @@ void CMSN::ProcessSignal(CSignal *s)
     case PROTOxREQUESTxINFO:
     {
       CRequestInfo *sig = static_cast<CRequestInfo *>(s);
+      break;
+    }
+
+    case PROTOxUPDATExINFO:
+    {
+      CUpdateInfoSignal *sig = static_cast<CUpdateInfoSignal *>(s);
+      MSNUpdateUser(sig->Alias());
       break;
     }
 

@@ -442,3 +442,5 @@ CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
   m_pBuffer->Pack(szEmail, strlen(szEmail));
   m_pBuffer->Pack(szParams2, strlen(szParams2));
 }
+
+
