@@ -9,9 +9,14 @@ pkgdatadir = $(datadir)/@PACKAGE@
 
 install-data-local:
 	@if test "$(KDEDIR)" != ""; then \
-	  $(mkinstalldirs) $(KDEDIR)/share/applnk/Internet; \
-	  $(INSTALL_DATA) licq.desktop $(KDEDIR)/share/applnk/Internet; \
-        fi
+	   if test -w "$(KDEDIR)"; then \
+	     $(mkinstalldirs) $(KDEDIR)/share/applnk/Internet; \
+	     $(INSTALL_DATA) licq.desktop $(KDEDIR)/share/applnk/Internet; \
+	   else \
+	     $(mkinstalldirs) $(HOME)/.kde/share/applnk/Internet; \
+	     $(INSTALL_DATA) licq.desktop $(HOME)/.kde/share/applnk/Internet; \
+	   fi  \
+	fi
 	$(mkinstalldirs) $(sharedir)
 	@chmod 0777 $(sharedir)
 	$(mkinstalldirs) $(sharedir)/qt-gui/locale
