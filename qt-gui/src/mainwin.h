@@ -189,6 +189,7 @@ protected slots:
   void slot_doneOptions();
   void slot_doneOwnerFcn(ICQEvent *);
   void slot_doneAwayMsgDlg();
+  void slot_stats();
   void saveOptions();
   void showAddUserDlg();
   void showEditGrpDlg();

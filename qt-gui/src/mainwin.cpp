@@ -48,6 +48,7 @@ extern "C" {
 
 #include <qimage.h>
 #include <qwindowsstyle.h>
+#include <qdatetime.h>
 
 #include "mainwin.h"
 #include "licq_icq.h"
@@ -2231,6 +2232,7 @@ void CMainWindow::initMenu()
    QPopupMenu *mnuHelp = new QPopupMenu(NULL);
    mnuHelp->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
    mnuHelp->insertItem(tr("&About"), this, SLOT(aboutBox()));
+   mnuHelp->insertItem(tr("&Statistics"), this, SLOT(slot_stats()));
 
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
@@ -2374,6 +2376,41 @@ void CMainWindow::slot_usermenu()
     mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
 
   gUserManager.DropUser(u);
+}
+
+
+void CMainWindow::slot_stats()
+{
+#ifdef SAVE_STATS
+  QString s = tr("Daemon Statistics\n(Today/Total)\n");
+  QDateTime t_total, t_today;
+  t_today.setTime_t(licqDaemon->StartTime());
+  t_total.setTime_t(licqDaemon->ResetTime());
+  s += tr("Up since %1\n").arg(t_today.toString());
+  s += tr("Last reset %1\n\n").arg(t_total.toString());
+  DaemonStatsList::iterator iter;
+  for (iter = licqDaemon->AllStats().begin(); iter != licqDaemon->AllStats().end(); iter++)
+  {
+    s += tr("%1: %2 / %3\n").arg(iter->Name()).arg(iter->Today()).arg(iter->Total());
+  }
+  if (!QueryUser(this, s, tr("&Ok"), tr("&Reset")))
+  {
+    licqDaemon->ResetStats();
+  }
+#else
+  QString s = tr("Daemon Statistics\n\n");
+  QDateTime t_today;
+  t_today.setTime_t(licqDaemon->StartTime());
+  s += tr("Up since %1\n\n").arg(t_today.toString());
+  DaemonStatsList::iterator iter;
+  for (iter = licqDaemon->AllStats().begin(); iter != licqDaemon->AllStats().end(); iter++)
+  {
+    s += tr("%1: %2\n")
+       .arg(iter->Name())
+       .arg(iter->Today());
+  }
+  InformUser(this, s);
+#endif
 }
 
 
