@@ -17,6 +17,8 @@
 #include "licq_user.h"
 #include "licq_packets.h"
 
+using namespace std;
+
 //-----ConnectToServer----------------------------------------------------------
 int CICQDaemon::ConnectToServer()
 {
@@ -1419,7 +1421,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
         else if (bPlusHalfHour && (nTimezone / 2) < 0)
           sentLocalTime += 1800;
       }
-      
+
       // process the system message, sending the time it occured converted to a time_t structure
       ProcessSystemMessage(packet, nUin, newCommand, sentLocalTime);
       break;

@@ -33,6 +33,7 @@ extern int errno;
 
 #include "licq_icqd.h"
 
+using namespace std;
 
 CDaemonStats::CDaemonStats()
 {

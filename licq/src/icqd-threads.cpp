@@ -15,7 +15,7 @@
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) printf(x)
 
-
+using namespace std;
 
 /*------------------------------------------------------------------------------
  * ProcessRunningEvent_tep
