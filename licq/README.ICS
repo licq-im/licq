@@ -1,77 +1,75 @@
-From alex060@optushome.com.au Mon May 29 10:43:03 2000
-Date: Fri, 26 May 2000 22:47:35 -0400
-From: Alex Salmon <alex060@optushome.com.au>
-Reply-To: licq-main@lists.sourceforge.net
-To: licq-main@lists.sourceforge.net
-Subject: Re: [Licq-main] Connection problem - there is hope i got it 
+README.ICS
 
-hi
-i have a simple sort of effective system working 
-i have pretty much exactlly the same system, the answer is to pipe the udp as
-ics dont like udp connectins from linux icq clients (is this a war or what)
-abc
+Problem ------------
+Your linux box is on a home(uni, school, work) network. you have just
+installed licq and suddenly icq dont work.  The computer connected to the
+internet that supplys your internet connection is running windows98 with
+the Second edition update & it uses the supplyed Internet Connection
+Sharing software.
 
-a) go to cnet downloads and search for a
-udp tunnel proggie for win i found pppshar (shareware but no timebomb) to be
-the best easyest download it (win) in the folder there is a settings.ini file
-and down the bottem add
+Reason for problem ---------- 
+ICS does'n t seem to be able to forward some udp packets. Every now and
+again licq will actually connect. This happens when licq trys to use port
+1024 I am not sure why but it does happen. Another interesting thing is
+that other people will see u to be online every couple of times however
+they can not send u messages and u cannot recieve anything.
+
+Soloution ---------
+the soloution is fairly simple and straight forward. I am sure there is a
+better way but this has worked for me on every version from .72 or
+somthing to the latest CVS. 
+
+1) go to www.cnet.com, click on downloads (up the top leftish) the search
+for a program called pppshar.
+
+2) download it (it says that it is shareware and expires after 30days
+however there is no timebomb and i have been using it for about 8 months.
+
+3) install it (on the windows98SE box that has the net) 
+
+4) open the settings.ini file in the root directory of where u installed
+it
+
+5) down the very bottom of the file add the following
 
 #icq
-service=icq1
+service=icq
 map=udp
-host-icq.mirabilis.com
+host=icq.mirabilis.com
 listen=4
 remote=4000
 enable=yes
 
-tb)hen in your licq config file set the number of servers to 1 and the default
-port to 4 and change server 1 from icq.miribilis.com to <ipofyouricsserver>
-save it 
 
-c)run pppshar then run licq
+6) then save and close the file and run PPPshar. as long as u dont get any
+errors relating to icq then it sould be fine
 
-messages and url's gothrough the udp pipe and file chat etc go through the
-server. it took me about a month to get it working but once i did this i had it
-up in 10 mins lucky guess i guess.. :-)
+7) on your linux box go into your home directory in a console. go into the
+.licq dir and open licq.conf file with an editor
 
-e-mail me with any probs 
+change the NumOfServers from 3 to 1
+change the DefaultPort from 4000 to 4
+change Server1 from icq.mirabilis.com to the IP or Domain of your host
+(the win98se box with the internet)
 
-alex
+then save the file and close it
 
-btw
-makers of licq  - u may want to add somthing lto this effect to the doc/
-dir as i have had many friends do the same thing. 
-0.81 rocks
+restart licq and try to go online
 
+if it dosent work open the network log window 
 
-On Wed, 10 May 2000,
-you wrote: > > I just came home from college and hooked up to my home lan.  Now
-LICQ is not > > connecting properly.  When I try to connect, it connects to the
-server on > > 4000 UDP, but then times out when trying to open the socket.
-> > Here is my setup:
-> > Family computer with dial-up connection run Win98 and ICS to share the
-> > connection
-> 
-> ICS is the worst piece of software ever written.  It doesn't work with
-> many icq clients, including Licq for some reason.  Use a real operating
-> system for your firewall.
-> I'm sort of looking into the possible reason, but since it's an issue with
-> ICS there isn't much I can do.
-> 
-> _____________________________________________________________________
-> Graham Roff                         graham@licq.org 
-> University of Waterloo              ICQ #2127503
-> Computer Engineering                Canada
-> 
-> Nolites tes bastardes carborundorum
-> 
-> 
-> _______________________________________________
-> Licq-main mailing list
-> Licq-main@licq.org
-> http://lists.sourceforge.net/mailman/listinfo/licq-main
+if it says server send wrong version 0 or somthing thereof make sure
+pppshar is working and started.
 
-_______________________________________________
-Licq-main mailing list
-Licq-main@licq.org
-http://lists.sourceforge.net/mailman/listinfo/licq-main
+if it just stalls at connecting to <your IP 192.168.0.1 in my
+case) chances are that the icq server is just to busy to let u
+on (happens occasionly) wait a few secs and try again.
+
+good luck
+
+if u have any probs at all dont hesitate to ask me
+if u work out a better way of acieveing this the i would really love to
+know.. ;-)
+
+Alex Salmon aka ghoti
+alex060@optushome.com.au
