@@ -37,7 +37,7 @@ void CLicqConsole::PrintBoxTop(const char *_szTitle, short _nColor, short _nLeng
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintBoxLeft
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintBoxLeft(void)
+void CLicqConsole::PrintBoxLeft()
 {
   waddch(winMain->Win(), ACS_VLINE);
   waddch(winMain->Win(), ' ');
@@ -76,7 +76,7 @@ void CLicqConsole::PrintBoxBottom(short _nLength)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintPrompt
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintPrompt(void)
+void CLicqConsole::PrintPrompt()
 {
   werase(winPrompt->Win());
   winPrompt->wprintf("%C> ", COLOR_CYAN);
@@ -87,7 +87,7 @@ void CLicqConsole::PrintPrompt(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintStatus
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintStatus(void)
+void CLicqConsole::PrintStatus()
 {
   static char szMsgStr[16];
   static char szLastUser[32];
@@ -142,7 +142,7 @@ void CLicqConsole::PrintStatus(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintGroups
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintGroups(void)
+void CLicqConsole::PrintGroups()
 {
   unsigned short j = 1, k;
 
@@ -206,7 +206,7 @@ void CLicqConsole::PrintVariable(unsigned short nVar)
 /*---------------------------------------------------------------------------
  * CLicqConsole::CreateUserList
  *-------------------------------------------------------------------------*/
-void CLicqConsole::CreateUserList(void)
+void CLicqConsole::CreateUserList()
 {
   unsigned short i = 0;
   struct SUser *s = NULL;
@@ -280,7 +280,7 @@ void CLicqConsole::CreateUserList(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintUsers
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintUsers(void)
+void CLicqConsole::PrintUsers()
 {
   unsigned short i = 0, j;
 
@@ -339,7 +339,7 @@ void CLicqConsole::PrintUsers(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintUsers
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintUsers(void)
+void CLicqConsole::PrintUsers()
 {
   static char szLine[256];
   unsigned short i = 0, j;
@@ -426,7 +426,7 @@ void CLicqConsole::PrintUsers(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintHelp
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintHelp(void)
+void CLicqConsole::PrintHelp()
 {
   PrintBoxTop("Menu", COLOR_WHITE, 48);
   waddch(winMain->Win(), ACS_VLINE);

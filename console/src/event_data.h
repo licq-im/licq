@@ -27,7 +27,7 @@ public:
 class DataAutoResponse : public CData
 {
 public:
-  DataAutoResponse(void) : CData(0)
+  DataAutoResponse() : CData(0)
     { szRsp[0] = '\0'; }
   char szRsp[1024];
 };

@@ -20,7 +20,7 @@ extern int errno
 // Undefine what stupid ncurses defines as wclear(WINDOW *)
 #undef clear()
 
-extern "C" const char *LP_Version(void);
+extern "C" const char *LP_Version();
 
 const unsigned short NUM_STATUS = 13;
 const struct SStatus aStatus[NUM_STATUS] =
@@ -128,7 +128,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
 /*---------------------------------------------------------------------------
  * CLicqConsole::Destructor
  *-------------------------------------------------------------------------*/
-CLicqConsole::~CLicqConsole(void)
+CLicqConsole::~CLicqConsole()
 {
   for (unsigned short i = 0; i <= MAX_CON; i++)
     delete winCon[i];
@@ -141,7 +141,7 @@ CLicqConsole::~CLicqConsole(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::Shutdown
  *-------------------------------------------------------------------------*/
-void CLicqConsole::Shutdown(void)
+void CLicqConsole::Shutdown()
 {
   gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
   gLog.ModifyService(S_PLUGIN, 0);
@@ -233,7 +233,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessLog
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessLog(void)
+void CLicqConsole::ProcessLog()
 {
   static char buf[2];
   read(log->Pipe(), buf, 1);
@@ -275,7 +275,7 @@ void CLicqConsole::ProcessLog(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessPipe
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessPipe(void)
+void CLicqConsole::ProcessPipe()
 {
   char buf[16];
   read(m_nPipe, buf, 1);
@@ -602,7 +602,7 @@ void CLicqConsole::SwitchToCon(unsigned short nCon)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessStdin
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessStdin(void)
+void CLicqConsole::ProcessStdin()
 {
   int cIn = wgetch(winPrompt->Win());
 
@@ -943,7 +943,7 @@ void CLicqConsole::InputCommand(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::CurrentGroupName
  *-------------------------------------------------------------------------*/
-char *CLicqConsole::CurrentGroupName(void)
+char *CLicqConsole::CurrentGroupName()
 {
   static char szGroupName[64];
 

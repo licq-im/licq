@@ -38,9 +38,9 @@ class CLicqConsole
 {
 public:
   CLicqConsole(int, char **);
-  ~CLicqConsole(void);
+  ~CLicqConsole();
   int Run(CICQDaemon *);
-  void Shutdown(void);
+  void Shutdown();
 protected:
   int m_nPipe;
   bool m_bExit;
@@ -66,15 +66,15 @@ protected:
   CPluginLog *log;
 
 public:
-  void ProcessPipe(void);
+  void ProcessPipe();
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
   void ProcessDoneEvent(CWindow *win, ICQEvent *e);
-  void ProcessStdin(void);
-  void ProcessLog(void);
-  char *CurrentGroupName(void);
+  void ProcessStdin();
+  void ProcessLog();
+  char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
-  void CreateUserList(void);
+  void CreateUserList();
 
   void InputCommand(int cIn);
   void InputLogWindow(int cIn);
@@ -85,17 +85,17 @@ public:
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
   char *Input_Line(char *sz, unsigned short &n, int cIn);
 
-  void PrintPrompt(void);
-  void PrintStatus(void);
+  void PrintPrompt();
+  void PrintStatus();
   void PrintBadInput(const char *);
-  void PrintGroups(void);
+  void PrintGroups();
   void PrintBoxTop(const char *_szTitle, short _nColor, short _nLength);
   void PrintBoxBottom(short _nLength);
   void PrintBoxRight(short _nLength);
-  void PrintBoxLeft(void);
+  void PrintBoxLeft();
   void PrintVariable(unsigned short);
-  void PrintUsers(void);
-  void PrintHelp(void);
+  void PrintUsers();
+  void PrintHelp();
   void PrintHistory(HistoryList &, unsigned short, unsigned short, const char *);
 
   void MenuHelp(char *);
@@ -125,7 +125,7 @@ public:
   void UserCommand_FetchAutoResponse(unsigned long nUin, char *);
   void UserCommand_SetAutoResponse(unsigned long nUin, char *);
 
-  void Beep(void) { printf("\a"); fflush(stdout); }
+  void Beep() { printf("\a"); fflush(stdout); }
 };
 
 

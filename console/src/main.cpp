@@ -8,33 +8,33 @@
 
 CLicqConsole *licqConsole;
 
-const char *LP_Usage(void)
+const char *LP_Usage()
 {
   static const char usage[] =
       "Usage:  Licq [ options ] -p console\n";
   return usage;
 }
 
-const char *LP_Name(void)
+const char *LP_Name()
 {
   static const char name[] = "Console";
   return name;
 }
 
 
-const char *LP_Version(void)
+const char *LP_Version()
 {
   static const char version[] = "0.01";
   return version;
 }
 
-const char *LP_Status(void)
+const char *LP_Status()
 {
   static const char status[] = "running";
   return status;
 }
 
-const char *LP_Description(void)
+const char *LP_Description()
 {
   static const char desc[] = "Console plugin based on ncurses";
   return desc;

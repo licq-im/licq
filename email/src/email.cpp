@@ -18,7 +18,7 @@ extern int errno;
 #include "user.h"
 #include "eventdesc.h"
 
-extern "C" { const char *LP_Version(void); }
+extern "C" { const char *LP_Version(); }
 
 const char L_EMAILxSTR[]  = "[EMF] ";
 const unsigned short SUBJ_CHARS = 20;
@@ -38,7 +38,7 @@ CLicqEmail::CLicqEmail(bool _bEnable, char *_szStatus)
 /*---------------------------------------------------------------------------
  * CLicqEmail::Destructor
  *-------------------------------------------------------------------------*/
-CLicqEmail::~CLicqEmail(void)
+CLicqEmail::~CLicqEmail()
 {
   delete tcp;
 }
@@ -46,7 +46,7 @@ CLicqEmail::~CLicqEmail(void)
 /*---------------------------------------------------------------------------
  * CLicqEmail::Shutdown
  *-------------------------------------------------------------------------*/
-void CLicqEmail::Shutdown(void)
+void CLicqEmail::Shutdown()
 {
   gLog.Info("%sShutting down email forwarder.\n", L_EMAILxSTR);
   licqDaemon->UnregisterPlugin();
@@ -122,7 +122,7 @@ int CLicqEmail::Run(CICQDaemon *_licqDaemon)
 /*---------------------------------------------------------------------------
  * CLicqEmail::ProcessPipe
  *-------------------------------------------------------------------------*/
-void CLicqEmail::ProcessPipe(void)
+void CLicqEmail::ProcessPipe()
 {
   char buf[16];
   read(m_nPipe, buf, 1);

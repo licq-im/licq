@@ -8,7 +8,7 @@
 
 #include "window.h"
 
-void CWindow::StartScreen(void)
+void CWindow::StartScreen()
 {
    initscr();             /* initialize the curses library */
    nonl();                /* tell curses not to do NL->CR/NL on output */
@@ -31,7 +31,7 @@ void CWindow::StartScreen(void)
    }
 }
 
-void CWindow::EndScreen(void)
+void CWindow::EndScreen()
 {
    endwin();
 }
@@ -61,7 +61,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback)
   nLastHistory = 1;
 }
 
-CWindow::~CWindow(void)
+CWindow::~CWindow()
 {
    delwin(win);
 }

@@ -20,22 +20,22 @@ class CWindow
 {
 public:
   CWindow(int _rows, int _cols, int _y, int _x, int _scrollback);
-  ~CWindow(void);
-  void RefreshWin(void);
-  void ScrollUp(void);
-  void ScrollDown(void);
+  ~CWindow();
+  void RefreshWin();
+  void ScrollUp();
+  void ScrollDown();
   void SetActive(bool _active) { active = _active; RefreshWin(); }
-  bool Active(void)  { return active; }
+  bool Active()  { return active; }
   CWindow& operator<<(char d);
   CWindow& operator<<(const char *d);
   CWindow& operator<<(unsigned long d);
   CWindow& operator<<(unsigned short d);
   void wprintf(char *formatIn, ...);
-  WINDOW *Win(void)  { return win; }
-  static void StartScreen(void);
-  static void EndScreen(void);
-  int Rows(void) { return rows; }
-  int Cols(void) { return cols; }
+  WINDOW *Win()  { return win; }
+  static void StartScreen();
+  static void EndScreen();
+  int Rows() { return rows; }
+  int Cols() { return cols; }
 
   void (CLicqConsole::*fProcessInput)(int);
   CICQEventTag *event;

@@ -9,7 +9,7 @@
 
 CLicqEmail *licqEmail;
 
-const char *LP_Usage(void)
+const char *LP_Usage()
 {
   static const char usage[] =
     "Usage:  Licq [options] -p email -- [ -h ] [ -e ] [ -l <staus> ]\n"
@@ -19,27 +19,27 @@ const char *LP_Usage(void)
   return usage;
 }
 
-const char *LP_Name(void)
+const char *LP_Name()
 {
   static const char name[] = "Email Forwarder";
   return name;
 }
 
 
-const char *LP_Description(void)
+const char *LP_Description()
 {
   static const char desc[] = "ICQ to Email forwarder";
   return desc;
 }
 
 
-const char *LP_Version(void)
+const char *LP_Version()
 {
   static const char version[] = "0.01";
   return version;
 }
 
-const char *LP_Status(void)
+const char *LP_Status()
 {
   static const char enabled[] = "forwarding enabled";
   static const char disabled[] = "forwarding disabled";

@@ -16,10 +16,10 @@ class CLicqEmail
 {
 public:
   CLicqEmail(bool, char *);
-  ~CLicqEmail(void);
+  ~CLicqEmail();
   int Run(CICQDaemon *);
-  void Shutdown(void);
-  bool Enabled(void) { return m_bEnabled; }
+  void Shutdown();
+  bool Enabled() { return m_bEnabled; }
 
 protected:
   int m_nPipe;
@@ -34,7 +34,7 @@ protected:
   TCPSocket *tcp;
 
 public:
-  void ProcessPipe(void);
+  void ProcessPipe();
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
 
