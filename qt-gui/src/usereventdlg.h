@@ -39,6 +39,7 @@ class CSignalManager;
 class CMainWindow;
 class CUserEvent;
 class CMMUserView;
+class CEButton;
 
 /* ----------------------------------------------------------------------------- */
 
@@ -67,12 +68,16 @@ protected:
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
   QTimer *tmrTime;
+  bool m_bDeleteUser;
+
+  virtual void UserUpdated(CICQSignal *, ICQUser *) = 0;
+  void SetGeneralInfo(ICQUser *);
 
 protected slots:
+  void slot_userupdated(CICQSignal *);
   void slot_updatetime();
   void showHistory();
   void showUserInfo();
-  void userUpdated(CICQSignal *);
 
 signals:
   void finished(unsigned long);
@@ -95,19 +100,22 @@ protected:
   MLEditWrap *mleRead;
   MsgView *msgView;
   CUserEvent *m_xCurrentReadEvent;
-  QPushButton *btnRead1, *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
+  QPushButton *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
+  CEButton *btnRead1, *btnClose;
 
   void generateReply();
   void sendMsg(QString txt);
+  virtual void UserUpdated(CICQSignal *, ICQUser *);
 
 protected slots:
+  void slot_close();
+  void slot_sentevent(ICQEvent *);
   void slot_btnRead1();
   void slot_btnRead2();
   void slot_btnRead3();
   void slot_btnRead4();
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
-  void userUpdated(CICQSignal *);
 };
 
 
@@ -122,26 +130,28 @@ public:
                  unsigned long _nUin, QWidget* parent = 0, const char* name=0);
   virtual ~UserSendCommon();
 
+signals:
+  void signal_sentevent(ICQEvent *);
+
 protected:
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
   QPushButton *btnSend, *btnCancel;
   QLineEdit *edtSpoof;
   QVGroupBox *grpMR;
   QButtonGroup *grpCmd;
-  QString m_szMPChatClients;
-  unsigned short m_nMPChatPort;
   CMMUserView *lstMultipleRecipients;
   QString m_sBaseTitle, m_sProgressMsg;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
+  virtual void UserUpdated(CICQSignal *, ICQUser *);
+  virtual bool sendDone(ICQEvent *) = 0;
 
 protected slots:
   virtual void sendButton();
-  virtual bool sendDone(ICQEvent*);
+  virtual void sendDone_common(ICQEvent *);
 
   void cancelSend();
   void massMessageToggled(bool);
-  void userUpdated(CICQSignal *);
 };
 
 
@@ -158,11 +168,11 @@ public:
 
   void setText(const QString& txt);
 protected:
+  virtual bool sendDone(ICQEvent *);
   MLEditWrap *mleSend;
 
 protected slots:
   virtual void sendButton();
-  virtual bool sendDone(ICQEvent*);
 };
 
 
@@ -182,6 +192,7 @@ protected:
   MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
+  virtual bool sendDone(ICQEvent *);
 
 protected slots:
   virtual void sendButton();
@@ -203,10 +214,10 @@ protected:
   MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
+  virtual bool sendDone(ICQEvent*);
 
 protected slots:
   virtual void sendButton();
-  virtual bool sendDone(ICQEvent*);
 };
 
 
@@ -225,10 +236,12 @@ protected:
   MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
+  QString m_szMPChatClients;
+  unsigned short m_nMPChatPort;
+  virtual bool sendDone(ICQEvent *);
 
 protected slots:
   virtual void sendButton();
-  virtual bool sendDone(ICQEvent*);
 };
 
 
@@ -247,6 +260,8 @@ protected:
   MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
+
+  virtual bool sendDone(ICQEvent *);
 
 protected slots:
   virtual void sendButton();

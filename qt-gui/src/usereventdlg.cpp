@@ -62,6 +62,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   icqEventTag = NULL;
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
+  m_bDeleteUser = false;
 
   top_lay = new QVBoxLayout(this, 8);
 
@@ -81,40 +82,48 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
 
-  ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
-
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u != NULL)
   {
     nfoStatus->setData(u->StatusStr());
-    if (u->GetTimezone() == TIMEZONE_UNKNOWN)
-      nfoTimezone->setText(tr("Unknown"));
-    else
-    {
-      m_nRemoteTimeOffset = u->LocalTimeOffset();
-      QDateTime t;
-      t.setTime_t(u->LocalTime());
-      nfoTimezone->setText(tr("%1 (GMT%1%1%1)")
-                           .arg(t.time().toString())
-                           .arg(u->GetTimezone() > 0 ? "-" : "+")
-                           .arg(abs(u->GetTimezone() / 2))
-                           .arg(u->GetTimezone() % 2 ? "30" : "00") );
-      tmrTime = new QTimer(this);
-      connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
-      tmrTime->start(3000);
-    }
-
-    setCaption(QString::fromLocal8Bit(u->GetAlias()) + " (" +
-               QString::fromLocal8Bit(u->GetFirstName()) + " " +
-               QString::fromLocal8Bit(u->GetLastName())+ ")");
-    setIconText(u->GetAlias());
+    SetGeneralInfo(u);
+    tmrTime = new QTimer(this);
+    connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
+    tmrTime->start(3000);
     gUserManager.DropUser(u);
   }
 
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)), this, SLOT(userUpdated(CICQSignal *)));
+  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
+           this, SLOT(slot_userupdated(CICQSignal *)));
 
-  mainWidget = new QGroupBox(this);
+  mainWidget = new QVGroupBox(this);
   top_lay->addWidget(mainWidget);
 }
+
+
+//-----UserEventCommon::SetGeneralInfo---------------------------------------
+void UserEventCommon::SetGeneralInfo(ICQUser *u)
+{
+  if (u->GetTimezone() == TIMEZONE_UNKNOWN)
+    nfoTimezone->setText(tr("Unknown"));
+  else
+  {
+    m_nRemoteTimeOffset = u->LocalTimeOffset();
+    QDateTime t;
+    t.setTime_t(u->LocalTime());
+    nfoTimezone->setText(tr("%1 (GMT%1%1%1)")
+                         .arg(t.time().toString())
+                         .arg(u->GetTimezone() > 0 ? "-" : "+")
+                         .arg(abs(u->GetTimezone() / 2))
+                         .arg(u->GetTimezone() % 2 ? "30" : "00") );
+  }
+
+  setCaption(QString::fromLocal8Bit(u->GetAlias()) + " (" +
+             QString::fromLocal8Bit(u->GetFirstName()) + " " +
+             QString::fromLocal8Bit(u->GetLastName())+ ")");
+  setIconText(u->GetAlias());
+}
+
 
 void UserEventCommon::slot_updatetime()
 {
@@ -123,17 +132,45 @@ void UserEventCommon::slot_updatetime()
   nfoTimezone->setText(nfoTimezone->text().replace(0, t.time().toString().length(), t.time().toString()));
 }
 
-void UserEventCommon::userUpdated(CICQSignal *sig)
+
+UserEventCommon::~UserEventCommon()
 {
-  if (m_nUin != sig->Uin() || sig->SubSignal() != USER_STATUS) return;
+  qDebug("UserEventCommon::~UserEventCommon()");
+  emit finished(m_nUin);
+
+  if (m_bDeleteUser && !m_bOwner)
+  {
+    mainwin->RemoveUserFromList(m_nUin, this);
+  }
+
+}
+
+
+//-----UserEventCommon::slot_userupdated-------------------------------------
+void UserEventCommon::slot_userupdated(CICQSignal *sig)
+{
+  if (m_nUin != sig->Uin()) return;
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if(u != NULL)
-  {
-    nfoStatus->setData(u->StatusStr());
+  if (u == NULL) return;
 
-    gUserManager.DropUser(u);
+  switch (sig->SubSignal())
+  {
+    case USER_STATUS:
+    {
+      nfoStatus->setData(u->StatusStr());
+      break;
+    }
+    case USER_GENERAL:
+    {
+      SetGeneralInfo(u);
+      break;
+    }
   }
+  // Call the event specific function now
+  UserUpdated(sig, u);
+
+  gUserManager.DropUser(u);
 }
 
 
@@ -142,20 +179,14 @@ void UserEventCommon::showHistory()
   mainwin->callInfoTab(mnuUserHistory, m_nUin);
 }
 
+
 void UserEventCommon::showUserInfo()
 {
   mainwin->callInfoTab(mnuUserGeneral, m_nUin);
 }
 
-UserEventCommon::~UserEventCommon()
-{
-  qDebug("UserEventCommon::~UserEventCommon()");
-  emit finished(m_nUin);
-}
 
-
-// -----------------------------------------------------------------------------
-
+//=====UserViewEvent=========================================================
 UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
                              CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent")
@@ -169,21 +200,18 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   msgView = new MsgView(h_top);
   btnReadNext = new QPushButton(tr("Nex&t"), h_top);
   btnReadNext->setEnabled(false);
-//  btnReadNext->setFixedHeight(msgView->height());
-  //btnReadNext->setFixedWidth(btnReadNext->width());
   connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_btnReadNext()));
 
   QHGroupBox *h_msg = new QHGroupBox(splRead);
   mleRead = new MLEditWrap(true, h_msg, true);
   mleRead->setReadOnly(true);
-//  mainWidget->setStretchFactor(h_msg, 1);
+  //mainWidget->setStretchFactor(h_msg, 1);
 
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)), this, SLOT(userUpdated(CICQSignal *)));
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
   lay->addWidget(h_action);
-  btnRead1 = new QPushButton(h_action);
+  btnRead1 = new CEButton(h_action);
   btnRead2 = new QPushButton(h_action);
   btnRead3 = new QPushButton(h_action);
   btnRead4 = new QPushButton(h_action);
@@ -197,6 +225,12 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnRead2, SIGNAL(clicked()), this, SLOT(slot_btnRead2()));
   connect(btnRead3, SIGNAL(clicked()), this, SLOT(slot_btnRead3()));
   connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_btnRead4()));
+
+  QBoxLayout *h_lay = new QHBoxLayout(top_lay);
+  h_lay->addStretch(1);
+  btnClose = new CEButton(tr("&Close"), this);
+  connect(btnClose, SIGNAL(clicked()), SLOT(slot_close()));
+  h_lay->addWidget(btnClose);
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u && u->NewMessages() > 0)
@@ -221,10 +255,28 @@ UserViewEvent::~UserViewEvent()
 }
 
 
+void UserViewEvent::slot_close()
+{
+  m_bDeleteUser = btnClose->stateWhenPressed() & ControlButton;
+  close();
+}
+
+
+void UserViewEvent::slot_sentevent(ICQEvent *e)
+{
+  if (true)  // This should be an option here FIXME
+  {
+    (void) new MsgViewItem(e->GrabUserEvent(), msgView);
+    // FIXME we should actually stick this message in so it appears
+    // before any unread messages...
+  }
+}
+
+
+//-----UserViewEvent::slot_printMessage--------------------------------------
 void UserViewEvent::slot_printMessage(QListViewItem *eq)
 {
-  if (eq == NULL)
-    return;
+  if (eq == NULL) return;
 
   MsgViewItem *e = (MsgViewItem *)eq;
 
@@ -246,30 +298,33 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
     {
       case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
       case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
+        btnRead1->setText(tr("&Reply"));
         if (m->IsCancelled())
         {
           mleRead->append(tr("\n--------------------\nRequest was cancelled."));
         }
         else
         {
-          btnRead1->setText(tr("A&ccept"));
-          btnRead2->setText(tr("&Refuse"));
+          btnRead2->setText(tr("A&ccept"));
+          btnRead3->setText(tr("&Refuse"));
           // If this is a chat, and we already have chats going, and this is
           // not a join request, then we can join
           if (m->SubCommand() == ICQ_CMDxSUB_CHAT &&
               ChatDlg::chatDlgs.size() > 0 &&
               ((CEventChat *)m)->Port() == 0)
-            btnRead3->setText(tr("&Join"));
+            btnRead4->setText(tr("&Join"));
         }
         break;
 
       case ICQ_CMDxSUB_MSG:
-        btnRead1->setText(tr("&Quote"));
+        btnRead1->setText(tr("&Reply"));
+        //btnRead2->setText(tr("&Quote"));
         btnRead2->setText(tr("&Forward"));
         break;
 
       case ICQ_CMDxSUB_URL:   // view a url
-        btnRead1->setText(tr("&Quote"));
+        btnRead1->setText(tr("&Reply"));
+        //btnRead2->setText(tr("&Quote"));
         btnRead2->setText(tr("&Forward"));
         if (server->getUrlViewer() != NULL)
           btnRead3->setText(tr("&View"));
@@ -331,15 +386,49 @@ void UserViewEvent::generateReply()
   sendMsg(s);
 }
 
+
 void UserViewEvent::sendMsg(QString txt)
 {
-  UserSendMsgEvent* e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
+  UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
   e->show();
   e->setText(txt);
+
+  connect(e, SIGNAL(signal_sentevent(ICQEvent *)), SLOT(slot_sentevent(ICQEvent *)));
 }
 
 
 void UserViewEvent::slot_btnRead1()
+{
+  if (m_xCurrentReadEvent == NULL) return;
+
+  switch (m_xCurrentReadEvent->SubCommand())
+  {
+    case ICQ_CMDxSUB_MSG:  // reply/quote
+    case ICQ_CMDxSUB_URL:
+    case ICQ_CMDxSUB_CHAT:
+    case ICQ_CMDxSUB_FILE:
+      if (btnRead1->stateWhenPressed() & ControlButton)
+        generateReply();
+      else
+        sendMsg("");
+      break;
+
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+      (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), true);
+      break;
+
+    case ICQ_CMDxSUB_AUTHxGRANTED:
+      server->AddUserToList( ((CEventAuthGranted *)m_xCurrentReadEvent)->Uin());
+      break;
+
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+      server->AddUserToList( ((CEventAdded *)m_xCurrentReadEvent)->Uin());
+      break;
+  } // switch
+
+}
+
+void UserViewEvent::slot_btnRead2()
 {
   if (m_xCurrentReadEvent == NULL) return;
 
@@ -375,31 +464,29 @@ void UserViewEvent::slot_btnRead1()
       break;
     }
 
-    case ICQ_CMDxSUB_MSG:
-      generateReply();
-      break;
-
+    case ICQ_CMDxSUB_MSG:  // Forward
     case ICQ_CMDxSUB_URL:
-      generateReply();
+    {
+      CForwardDlg *f = new CForwardDlg(server, sigman, mainwin, m_xCurrentReadEvent);
+      // Move should go here to avoid flicker, but qt is stupid and
+      // will ignore any move()s until after a show().
+      //f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
+      f->show();
+      f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
       break;
+    }
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
-      //server->icqAuthorizeGrant( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
-      (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), true);
+    {
+      (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), false);
       break;
-
-    case ICQ_CMDxSUB_AUTHxGRANTED:
-      server->AddUserToList( ((CEventAuthGranted *)m_xCurrentReadEvent)->Uin());
-      break;
-
-    case ICQ_CMDxSUB_ADDEDxTOxLIST:
-      server->AddUserToList( ((CEventAdded *)m_xCurrentReadEvent)->Uin());
-      break;
+    }
   } // switch
 
 }
 
-void UserViewEvent::slot_btnRead2()
+
+void UserViewEvent::slot_btnRead3()
 {
   if (m_xCurrentReadEvent == NULL) return;
 
@@ -433,39 +520,26 @@ void UserViewEvent::slot_btnRead2()
       break;
     }
 
-    case ICQ_CMDxSUB_MSG:  // Forward
-    case ICQ_CMDxSUB_URL:
-    {
-      CForwardDlg *f = new CForwardDlg(server, sigman, mainwin, m_xCurrentReadEvent);
-      // Move should go here to avoid flicker, but qt is stupid and
-      // will ignore any move()s until after a show().
-      //f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
-      f->show();
-      f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
-      break;
-    }
-
-    case ICQ_CMDxSUB_AUTHxREQUEST:
-    {
-      (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), false);
-      break;
-    }
-  } // switch
-
-}
-
-
-void UserViewEvent::slot_btnRead3()
-{
-  if (m_xCurrentReadEvent == NULL) return;
-
-  switch (m_xCurrentReadEvent->SubCommand())
-  {
     case ICQ_CMDxSUB_URL:   // view a url
       if (!server->ViewUrl(((CEventUrl *)m_xCurrentReadEvent)->Url()))
         WarnUser(this, tr("View URL failed"));
       break;
 
+
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+      server->AddUserToList( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin());
+      break;
+
+  }
+}
+
+
+void UserViewEvent::slot_btnRead4()
+{
+  if (m_xCurrentReadEvent == NULL) return;
+
+  switch (m_xCurrentReadEvent->SubCommand())
+  {
     case ICQ_CMDxSUB_CHAT:  // join to current chat
     {
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
@@ -485,17 +559,7 @@ void UserViewEvent::slot_btnRead3()
       }
       break;
     }
-
-    case ICQ_CMDxSUB_AUTHxREQUEST:
-      server->AddUserToList( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin());
-      break;
-
   }
-}
-
-
-void UserViewEvent::slot_btnRead4()
-{
 }
 
 
@@ -505,38 +569,42 @@ void UserViewEvent::slot_btnReadNext()
 }
 
 
-void UserViewEvent::userUpdated(CICQSignal *sig)
+void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 {
-  if (m_nUin != sig->Uin() || sig->SubSignal() != USER_EVENTS) return;
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if(u != NULL)
+  switch (sig->SubSignal())
   {
-    if (u->NewMessages() > 1)
+    case USER_EVENTS:
     {
-      btnReadNext->setEnabled(true);
-      btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
-    }
-    else if (u->NewMessages() == 1)
-    {
-      btnReadNext->setEnabled(true);
-      btnReadNext->setText(tr("Nex&t"));
-    }
-    else
-    {
-      btnReadNext->setEnabled(false);
-      btnReadNext->setText(tr("Nex&t"));
-    }
-    if (sig->Argument() > 0)
-    {
-      CUserEvent *e = u->EventPeekId(sig->Argument());
-      if (e != NULL)
+      /*if (u->NewMessages() > 1)
       {
-        MsgViewItem *m = new MsgViewItem(e, msgView);
-        msgView->ensureItemVisible(m);
+        btnReadNext->setEnabled(true);
+        btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
       }
+      else if (u->NewMessages() == 1)
+      {
+        btnReadNext->setEnabled(true);
+        btnReadNext->setText(tr("Nex&t"));
+      }
+      else
+      {
+        btnReadNext->setEnabled(false);
+        btnReadNext->setText(tr("Nex&t"));
+      }*/
+      if (sig->Argument() > 0)
+      {
+        CUserEvent *e = u->EventPeekId(sig->Argument());
+        if (e != NULL)
+        {
+          MsgViewItem *m = new MsgViewItem(e, msgView);
+          msgView->ensureItemVisible(m);
+        }
+      }
+      else
+      {
+        // FIXME we should probably remove the event now...
+      }
+      break;
     }
-    gUserManager.DropUser(u);
   }
 }
 
@@ -593,8 +661,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   btnCancel = new QPushButton(tr("&Close"), this);
   h_lay->addWidget(btnCancel);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
-
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)), this, SLOT(userUpdated(CICQSignal *)));
 }
 
 
@@ -602,29 +668,8 @@ UserSendCommon::~UserSendCommon()
 {
 }
 
-void UserSendCommon::userUpdated(CICQSignal *sig)
-{
-  if (m_nUin != sig->Uin() || sig->SubSignal() != USER_STATUS) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if(u != NULL)
-  {
-    if (u->Ip() == 0)
-    {
-      chkSendServer->setChecked(true);
-      chkSendServer->setEnabled(false);
-    }
-    else
-    {
-      chkSendServer->setEnabled(true);
-    }
-    if (u->StatusOffline())
-      chkSendServer->setChecked(true);
-
-    gUserManager.DropUser(u);
-  }
-}
-
+//-----UserSendCommon::massMessageToggled------------------------------------
 void UserSendCommon::massMessageToggled(bool b)
 {
   if(grpMR == NULL) {
@@ -654,18 +699,18 @@ void UserSendCommon::sendButton()
     setCursor(waitCursor);
     btnSend->setEnabled(false);
     btnCancel->setText(tr("&Cancel"));
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone(ICQEvent *)));
+    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
   }
 }
 
 
-//-----UserSendCommon::sendDone----------------------------------------------
-bool UserSendCommon::sendDone(ICQEvent *e)
+//-----UserSendCommon::sendDone_common---------------------------------------
+void UserSendCommon::sendDone_common(ICQEvent *e)
 {
   qDebug("UserSendCommon::sendDone()");
 
   if ( !icqEventTag->Equals(e) )
-    return false;
+    return;
 
   QString title, result;
   if (e == NULL)
@@ -702,19 +747,62 @@ bool UserSendCommon::sendDone(ICQEvent *e)
   btnCancel->setText(tr("&Close"));
   delete icqEventTag;
   icqEventTag = NULL;
-  disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone(ICQEvent *)));
+  disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
 
-  return true;
+  if (e == NULL || e->Result() != EVENT_ACKED)
+  {
+    if (e->Command() == ICQ_CMDxTCP_START &&
+        (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
+         e->SubCommand() != ICQ_CMDxSUB_FILE) &&
+        QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
+    {
+      RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
+    }
+    return;
+  }
+
+  ICQUser *u = NULL;
+  CUserEvent *ue = e->UserEvent();
+  QString msg;
+  if (e->SubResult() == ICQ_TCPxACK_RETURN)
+  {
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    msg = tr("%1 is in %2 mode:\n%3\n")
+             .arg(u->GetAlias()).arg(u->StatusStr())
+             .arg(QString::fromLocal8Bit(u->AutoResponse()));
+    gUserManager.DropUser(u);
+    switch (QueryUser(this, msg, tr("Send\nUrgent"), tr("Send to\nContact List"), tr("Cancel")))
+    {
+      case 0:
+        RetrySend(e, true, ICQ_TCPxMSG_URGENT);
+        break;
+      case 1:
+        RetrySend(e, true, ICQ_TCPxMSG_LIST);
+        break;
+      case 2:
+        break;
+    }
+    return;
+  }
+  else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
+  {
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    msg = tr("%1 refused %2, send through server.")
+          .arg(u->GetAlias()).arg(EventDescription(ue));
+    InformUser(this, msg);
+    gUserManager.DropUser(u);
+    return;
+  }
+  else
+  {
+    emit signal_sentevent(e);
+    if (sendDone(e)) close();
+  }
 }
 
 //-----UserSendCommon::RetrySend---------------------------------------------
 void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 {
-  qDebug("retrySend");
-
-  //btnOk->setEnabled(false);
-  //btnCancel->setText(tr("&Cancel"));
-
   chkSendServer->setChecked(!bOnline);
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
@@ -758,19 +846,14 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
   }
 
   sendButton();
-
-  /*if (icqEventTag != NULL)
-  {
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
-    QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
-    setCaption(title);
-  }*/
 }
 
 
+//-----UserSendCommon::cancelSend--------------------------------------------
 void UserSendCommon::cancelSend()
 {
-  if(!icqEventTag) {
+  if (!icqEventTag)
+  {
     close();
     return;
   }
@@ -779,17 +862,42 @@ void UserSendCommon::cancelSend()
   server->CancelEvent(icqEventTag);
   delete icqEventTag;
   icqEventTag = NULL;
+  btnCancel->setText(tr("&Close"));
 
   setCursor(arrowCursor);
 }
 
 
+//-----UserSendCommon::UserUpdated-------------------------------------------
+void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
+{
+  switch (sig->SubSignal())
+  {
+    case USER_STATUS:
+    {
+      if (u->Ip() == 0)
+      {
+        chkSendServer->setChecked(true);
+        chkSendServer->setEnabled(false);
+      }
+      else
+      {
+        chkSendServer->setEnabled(true);
+      }
+      if (u->StatusOffline())
+        chkSendServer->setChecked(true);
+      break;
+    }
+  }
+}
+
+
+
 
 //=====UserSendMsgEvent======================================================
-
 UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                   CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendMsgEvent")
+  CMainWindow *m, unsigned long nUin, QWidget *parent)
+  : UserSendCommon(s, theSigMan, m, nUin, parent, "UserSendMsgEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   mleSend = new MLEditWrap(true, mainWidget, true);
@@ -860,67 +968,18 @@ void UserSendMsgEvent::sendButton()
 
 
 //-----UserSendMsgEvent::sendDone--------------------------------------------
-bool UserSendMsgEvent::sendDone(ICQEvent* e)
+bool UserSendMsgEvent::sendDone(ICQEvent *e)
 {
-  if (!UserSendCommon::sendDone(e)) return false;
+  if (e->Command() != ICQ_CMDxTCP_START) return true;
 
-  bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
-
-  if (!isOk)
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u->Away() && u->ShowAwayMsg())
   {
-    if (e->Command() == ICQ_CMDxTCP_START &&
-        (e->SubCommand() == ICQ_CMDxSUB_MSG ||
-         e->SubCommand() == ICQ_CMDxSUB_URL) &&
-        QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
-    {
-      RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
-    }
+    gUserManager.DropUser(u);
+    (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
   }
-  else if(e->Command() == ICQ_CMDxTCP_START)
-  {
-    ICQUser *u = NULL;
-    CUserEvent *ue = e->UserEvent();
-    QString msg;
-    if (e->SubResult() == ICQ_TCPxACK_RETURN)
-    {
-      u = gUserManager.FetchUser(m_nUin, LOCK_R);
-      msg = tr("%1 is in %2 mode:\n%3\n")
-        .arg(u->GetAlias()).arg(u->StatusStr())
-        .arg(QString::fromLocal8Bit(u->AutoResponse()));
-      gUserManager.DropUser(u);
-      switch (QueryUser(this, msg, tr("Send\nUrgent"), tr("Send to\nContact List"), tr("Cancel")))
-      {
-      case 0:
-        RetrySend(e, true, ICQ_TCPxMSG_URGENT);
-        break;
-      case 1:
-        RetrySend(e, true, ICQ_TCPxMSG_LIST);
-        break;
-      case 2:
-        break;
-      }
-    }
-    else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
-    {
-      u = gUserManager.FetchUser(m_nUin, LOCK_R);
-      msg = tr("%1 refused %2, send through server.")
-        .arg(u->GetAlias()).arg(EventDescription(ue));
-      InformUser(this, msg);
-      gUserManager.DropUser(u);
-    }
-    else
-    {
-      u = gUserManager.FetchUser(m_nUin, LOCK_R);
-      if (u->Away() && u->ShowAwayMsg()) {
-        gUserManager.DropUser(u);
-        (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
-      }
-      else
-        gUserManager.DropUser(u);
-
-      close();
-    }
-  }
+  else
+    gUserManager.DropUser(u);
 
   return true;
 }
@@ -983,6 +1042,24 @@ void UserSendUrlEvent::sendButton()
 }
 
 
+//-----UserSendUrlEvent::sendDone--------------------------------------------
+bool UserSendUrlEvent::sendDone(ICQEvent *e)
+{
+  if (e->Command() != ICQ_CMDxTCP_START) return true;
+
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u->Away() && u->ShowAwayMsg())
+  {
+    gUserManager.DropUser(u);
+    (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
+  }
+  else
+    gUserManager.DropUser(u);
+
+  return true;
+}
+
+
 //=====UserSendFileEvent=====================================================
 UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                      CMainWindow *m, unsigned long _nUin, QWidget* parent)
@@ -1027,17 +1104,15 @@ void UserSendFileEvent::sendButton()
 }
 
 
+//-----UserSendFileEvent::sendDone-------------------------------------------
 bool UserSendFileEvent::sendDone(ICQEvent *e)
 {
-  if (!UserSendCommon::sendDone(e)) return false;
-
   if (!e->ExtendedAck()->Accepted())
   {
-    ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     QString result = tr("File transfer with %2 refused:\n%3").arg(u->GetAlias()).arg(e->ExtendedAck()->Response());
     gUserManager.DropUser(u);
     InformUser(this, result);
-
   }
   else
   {
@@ -1073,6 +1148,7 @@ UserSendChatEvent::~UserSendChatEvent()
 }
 
 
+//-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
 {
   m_sProgressMsg = tr("Sending chat request...");
@@ -1089,13 +1165,12 @@ void UserSendChatEvent::sendButton()
 }
 
 
+//-----UserSendChatEvent::sendDone-------------------------------------------
 bool UserSendChatEvent::sendDone(ICQEvent *e)
 {
-  if (!UserSendCommon::sendDone(e)) return false;
-
   if (!e->ExtendedAck()->Accepted())
   {
-    ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     QString result = tr("Chat with %2 refused:\n%3").arg(u->GetAlias()).arg(e->ExtendedAck()->Response());
     gUserManager.DropUser(u);
     InformUser(this, result);
@@ -1115,8 +1190,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
 }
 
 
-// -----------------------------------------------------------------------------
-
+//=====UserSendContactEvent==================================================
 UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                            CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendContactEvent")
@@ -1129,26 +1203,49 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   edtItem = new CInfoField(grpOpt, false);
 }
 
+
 UserSendContactEvent::~UserSendContactEvent()
 {
 }
+
 
 void UserSendContactEvent::sendButton()
 {
   unsigned long nContactUin = edtItem->text().toULong();
 
-  if(nContactUin >= 10000) {
+  if (nContactUin >= 10000)
+  {
     UinList uins;
 
     uins.push_back(nContactUin);
 
     icqEventTag = server->icqSendContactList(m_nUin, uins,
-                                             chkSendServer->isChecked() ? false : true,
-                                             chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+       chkSendServer->isChecked() ? false : true,
+       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
 
     UserSendCommon::sendButton();
   }
 }
+
+
+//-----UserSendMsgEvent::sendDone--------------------------------------------
+bool UserSendContactEvent::sendDone(ICQEvent *e)
+{
+  if (e->Command() != ICQ_CMDxTCP_START) return true;
+
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u->Away() && u->ShowAwayMsg())
+  {
+    gUserManager.DropUser(u);
+    (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
+  }
+  else
+    gUserManager.DropUser(u);
+
+  return true;
+}
+
+
 
 // -----------------------------------------------------------------------------
 
