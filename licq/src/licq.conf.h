@@ -5,6 +5,7 @@ static const char LICQ_CONF[] =
 "\n"
 "[plugins]\n"
 "NumPlugins = 0\n"
+"NumProtoPlugins = 0\n"
 "\n"
 "[network]\n"
 "AllowNewUsers = 1\n"
