@@ -119,7 +119,6 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_EVENTxID:
     emit signal_eventTag(s->Id(), s->PPID(), s->Argument());
-printf("Got it: %s %d\n", s->Id(), s->Argument());
     break;
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
