@@ -1217,7 +1217,9 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 	u->SetRealIp(realIP);
       }
 
-      u->SetIpPort(u->Ip(), userPort);
+      if (userPort)
+        u->SetIpPort(u->Ip(), userPort);
+
       u->SetVersion(tcpVersion);
       u->SetCookie(nCookie);
       u->SetClientTimestamp(timestamp);
