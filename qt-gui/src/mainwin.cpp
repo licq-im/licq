@@ -889,7 +889,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
         while (i && i->ItemUin() != nUin)
           i = (CUserViewItem *)i->nextSibling();
-#if QT_VERSION >= 210
+#if 0
+// can't be done this way because online-usercount needs to be updated
+// and online bar needs to be deleted when necessary
         if (i != NULL)
         {
             if(u->StatusOffline() && !m_bShowOffline) {
