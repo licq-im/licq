@@ -2108,7 +2108,7 @@ entfernen wollen?</translation>
     </message>
     <message>
         <source>Extension:</source>
-        <translation>Erweiterung:</translation>
+        <translation>Durchwahl:</translation>
     </message>
     <message>
         <source>Provider:</source>

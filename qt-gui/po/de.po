@@ -5,12 +5,12 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Licq qt-gui\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: 2003-02-03 12:00+200\n"
-"PO-Revision-Date: 2004-08-24 12:00+200\n"
-"Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
+"PO-Revision-Date: 2003-03-24 12:00+200\n"
+"Last-Translator: Mr. Right <cool@here.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language-Team: german <licq-devel@licq.org>\n"
+"Language-Team: german <de@li.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: ts2msg\n"
 
@@ -1419,7 +1419,7 @@ msgid "EditPhoneDlg::Number:"
 msgstr "Rufnummer:"
 
 msgid "EditPhoneDlg::Extension:"
-msgstr "Erweiterung:"
+msgstr "Durchwahl:"
 
 msgid "EditPhoneDlg::Provider:"
 msgstr "Anbieter:"
