@@ -169,7 +169,9 @@ bool CUserManager::Load()
   licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
   if(m_nDefaultGroup >=  1024)
       m_nDefaultGroup = 0;
+  licqConf.ClearFlag(INI_FxFATAL);
   licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
+  licqConf.SetFlag(INI_FxFATAL);
   licqConf.CloseFile();
 
   // Load users from users.conf
@@ -607,7 +609,8 @@ unsigned short CUserManager::GenerateSID()
 
     FOR_EACH_USER_START(LOCK_R)
     {
-      if (pUser->GetSID() == nSID)
+      if (pUser->GetSID() == nSID  || pUser->GetInvisibleSID() == nSID ||
+          pUser->GetVisibleSID() == nSID)
       {
         if (nSID == 0x7FFF)
           nSID = 1;
@@ -888,7 +891,8 @@ void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
   int nGSID = u->GetGSID();
   DropUser(u);
   if (gLicqDaemon)
-    gLicqDaemon->icqChangeGroup(_nUin, _nGroup, nGSID);
+    gLicqDaemon->icqChangeGroup(_nUin, _nGroup, nGSID, ICQ_ROSTxNORMAL,
+      ICQ_ROSTxNORMAL);
 }
 
 
@@ -1208,9 +1212,11 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
-  m_fConf.ReadNum("SID", m_nSID, 0);
+  m_fConf.ReadNum("SID", m_nSID[NORMAL_SID], 0);
+  m_fConf.ReadNum("InvisibleSID", m_nSID[INV_SID], 0);
+  m_fConf.ReadNum("VisibleSID", m_nSID[VIS_SID], 0);
   m_fConf.ReadNum("GSID", m_nGSID, 0);
-
+  
   if (nNewMessages > 0)
   {
     HistoryList hist;
@@ -1422,8 +1428,11 @@ void ICQUser::Init(unsigned long _nUin)
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
   m_bConnectionInProgress = false;
-  m_nSID = 0;
+  m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
   m_nGSID = 0;
+
+  snprintf(m_szUinString, 12, "%lu", m_nUin);
+  m_szUinString[12] = '\0';
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -1566,13 +1575,8 @@ unsigned long ICQUser::Sequence(bool increment)
       return (m_nSequence);
 }
 
-void ICQUser::SetAlias(const char *s, bool _bUpdate)
+void ICQUser::SetAlias(const char *s)
 {
-  char *szOldAlias = NULL;
-  
-  if (m_szAlias)
-    szOldAlias = strdup(m_szAlias);
-
   if (s[0] == '\0')
   {
     if (m_szFirstName != NULL && m_szFirstName[0] != '\0')
@@ -1588,22 +1592,6 @@ void ICQUser::SetAlias(const char *s, bool _bUpdate)
     SetString(&m_szAlias, s);
 
   SaveGeneralInfo();
-
-  // A write lock should be here, we need to unlock for this
-  if (gLicqDaemon && _bUpdate)
-  {
-    unsigned short _nLockType = m_nLockType;
-    if (_nLockType == LOCK_W || _nLockType == LOCK_R)
-      Unlock();
-
-    gLicqDaemon->icqRenameUser(m_nUin, szOldAlias);
-
-    if (_nLockType == LOCK_W || _nLockType == LOCK_R)
-      Lock(_nLockType);
-  }
-
-  if (szOldAlias)
-    free(szOldAlias);
 }
 
 
@@ -2218,9 +2206,11 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    m_fConf.WriteBool("SendIntIp", m_bSendIntIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
-   m_fConf.WriteNum("SID", m_nSID);
+   m_fConf.WriteNum("SID", m_nSID[NORMAL_SID]);
+   m_fConf.WriteNum("InvisibleSID", m_nSID[INV_SID]);
+   m_fConf.WriteNum("VisibleSID", m_nSID[VIS_SID]);
    m_fConf.WriteNum("GSID", m_nGSID);
-
+   
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

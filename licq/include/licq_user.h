@@ -126,6 +126,10 @@ const unsigned long NUM_GROUPS_SYSTEM = 5;
 // to the identifiers
 extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1];
 
+const unsigned short NORMAL_SID         = 0;
+const unsigned short INV_SID            = 1;
+const unsigned short VIS_SID            = 2;
+
 const unsigned short ACCEPT_IN_AWAY     = 0x0001;
 const unsigned short ACCEPT_IN_NA       = 0x0002;
 const unsigned short ACCEPT_IN_OCCUPIED = 0x0004;
@@ -213,7 +217,9 @@ public:
   char *GetAbout()                      { return m_szAbout; }
 
   // Licq Info
-  unsigned short GetSID()               { return m_nSID; }
+  unsigned short GetSID()               { return m_nSID[NORMAL_SID]; }
+  unsigned short GetInvisibleSID()      { return m_nSID[INV_SID]; }
+  unsigned short GetVisibleSID()        { return m_nSID[VIS_SID]; }
   unsigned short GetGSID()              { return m_nGSID; }
   char *AutoResponse()                  { return m_szAutoResponse; }
   char *UserEncoding()                  { return m_szEncoding; }
@@ -222,6 +228,7 @@ public:
   bool EnableSave()                     { return m_bEnableSave; }
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
   unsigned long Uin()                   { return m_nUin; }
+  char *UinString()                     { return m_szUinString; }
   unsigned long Sequence(bool = false);
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
@@ -247,7 +254,7 @@ public:
   void usprintf(char *sz, const char *szFormat, unsigned long nFlags = 0);
 
   // General Info
-  void SetAlias (const char *n, bool _bUpdate = true);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
+  void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
   void SetFirstName (const char *n)          {  SetString(&m_szFirstName, n);  SaveGeneralInfo();  }
   void SetLastName (const char *n)           {  SetString(&m_szLastName, n);  SaveGeneralInfo();  }
   void SetEmailPrimary (const char *n)       {  SetString(&m_szEmailPrimary, n);  SaveGeneralInfo();  }
@@ -294,7 +301,9 @@ public:
   void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
 
   // Licq Info
-  void SetSID(unsigned short s)       { m_nSID = s; }
+  void SetSID(unsigned short s)       { m_nSID[NORMAL_SID] = s; }
+  void SetInvisibleSID(unsigned short s) { m_nSID[INV_SID] = s; }
+  void SetVisibleSID(unsigned short s){ m_nSID[VIS_SID] = s; }
   void SetGSID(unsigned short s)      { m_nGSID = s; }
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
@@ -466,6 +475,7 @@ protected:
   char *m_szAutoResponse;
   char *m_szEncoding;
   char *m_szCustomAutoResponse;
+  char m_szUinString[13];
   bool m_bOnlineNotify,
        m_bSendIntIp,  
        m_bSendServer,
@@ -522,7 +532,7 @@ protected:
   char *m_szAbout;
 
   // Server Side ID, Group SID
-  unsigned short m_nSID;
+  unsigned short m_nSID[3];
   unsigned short m_nGSID;
 
   UserEventList m_vcMessages;
@@ -581,6 +591,7 @@ protected:
   time_t         m_nSSTime;
 };
 
+
 //=====CUsers===================================================================
 
 class CUserHashTable
@@ -600,7 +611,6 @@ protected:
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
 };
-
 
 class CUserManager
 {

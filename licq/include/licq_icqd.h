@@ -182,26 +182,33 @@ public:
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
-  void icqAddUser(unsigned long, bool _bServerOnly = false, bool _bAuthReq = false);
+  void icqAddUser(unsigned long, bool _bAuthReq = false);
+  void icqAddUserServer(unsigned long, bool);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
   void icqRemoveGroup(const char *);
   void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
-                      unsigned short _nOldGSID);
+                      unsigned short _nOldGSID, unsigned short _nNewType,
+                      unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
-  void icqRenameUser(unsigned long _nUin, const char *_szOldAlias);
-  void icqExportUsers(UinList &);
+  void icqRenameUser(unsigned long _nUin);
+  void icqExportUsers(UinList &, unsigned short);
   void icqExportGroups(GroupList &);
   void icqUpdateContactList();
 
-  // Visible/Invisible list functions
+  // Visible/Invisible/Ignore list functions
   void icqAddToVisibleList(unsigned long nUin);
   void icqRemoveFromVisibleList(unsigned long nUin);
   void icqToggleVisibleList(unsigned long nUin);
   void icqAddToInvisibleList(unsigned long nUin);
   void icqRemoveFromInvisibleList(unsigned long nUin);
   void icqToggleInvisibleList(unsigned long nUin);
+  void icqAddToIgnoreList(unsigned long nUin);
+  void icqRemoveFromIgnoreList(unsigned long nUin);
+  void icqToggleIgnoreList(unsigned long nUin);
 
+  void CheckExport();
+  
   void PluginList(PluginsList &l);
   void PluginShutdown(int);
   void PluginEnable(int);
