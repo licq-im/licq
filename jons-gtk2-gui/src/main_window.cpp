@@ -50,8 +50,8 @@ extern "C" {
 using namespace std;
 
 GtkWidget *contact_list_new();
-GtkWidget *status_bar_new(gint border_width);
-GtkWidget *system_status_new(gint border_width);
+GtkWidget *status_bar_new();
+GtkWidget *system_status_new();
 GObject *licq_init_tray();
 
 GtkWidget *vertical_box;
@@ -142,11 +142,11 @@ GtkWidget* main_window_new(const gchar* window_title)
 	//contact_list_refresh();
 
 	/* Add the system status bar and pack it into the vbox */
-	gtk_box_pack_start(GTK_BOX(vertical_box), system_status_new(2),
+	gtk_box_pack_start(GTK_BOX(vertical_box), system_status_new(),
 			FALSE, FALSE, 0);
 
 	/* Now add the mode status bar in */
-	gtk_box_pack_start(GTK_BOX(vertical_box), status_bar_new(2), 
+	gtk_box_pack_start(GTK_BOX(vertical_box), status_bar_new(), 
 			FALSE, FALSE, 0);
 
 	/* Refresh the system status */
