@@ -23,8 +23,8 @@
 **
 *****************************************************************************/
 
-#ifndef QMULTILINEEDIT_H
-#define QMULTILINEEDIT_H
+#ifndef QMULTILINEEDITNEW_H
+#define QMULTILINEEDITNEW_H
 
 #ifndef QT_H
 #include "qtableview.h"
