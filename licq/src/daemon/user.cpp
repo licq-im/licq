@@ -1247,7 +1247,8 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
       case 'o':
       {
         time_t t = time(NULL);
-        strftime(szTemp, 128, "%c", localtime(&t));
+        //strftime(szTemp, 128, "%c", localtime(&t));
+        strftime(szTemp, 128, "%b %d %R", localtime(&t));
         sz = szTemp;
         break;
       }
