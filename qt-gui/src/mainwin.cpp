@@ -1718,6 +1718,20 @@ void CMainWindow::initMenu()
    mnuUserGroups = new QPopupMenu(NULL);
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
+   mnuDebug = new QPopupMenu(NULL);
+   mnuDebug->insertItem(tr("Status Info"));
+   mnuDebug->insertItem(tr("Unknown Packets"));
+   mnuDebug->insertItem(tr("Errors"));
+   mnuDebug->insertItem(tr("Warnings"));
+   mnuDebug->insertItem(tr("Packets"));
+   mnuDebug->insertSeparator();
+   mnuDebug->insertItem(tr("Set All"));
+   mnuDebug->insertItem(tr("Clear All"));
+   mnuDebug->setCheckable(true);
+   for (int i = 0; i < 5; i++)
+     mnuDebug->setItemChecked(mnuDebug->idAt(i), DEBUG_LEVEL & (1 << i));
+   connect(mnuDebug, SIGNAL(activated(int)), this, SLOT(changeDebug(int)));
+
    mnuOwnerAdm = new QPopupMenu(NULL);
    mnuOwnerAdm->insertItem(tr("&View System Messages"), OwnerMenuView);
    mnuOwnerAdm->insertSeparator();
@@ -1729,6 +1743,8 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
+   mnuOwnerAdm->insertSeparator();
+   mnuOwnerAdm->insertItem(tr("Debug Level"), mnuDebug);
    connect (mnuOwnerAdm, SIGNAL(activated(int)), this, SLOT(callOwnerFunction(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
@@ -1744,37 +1760,20 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("Register User"), this, SLOT(slot_register()));
 
-   mnuDebug = new QPopupMenu(NULL);
-   mnuDebug->insertItem(tr("Status Info"));
-   mnuDebug->insertItem(tr("Unknown Packets"));
-   mnuDebug->insertItem(tr("Errors"));
-   mnuDebug->insertItem(tr("Warnings"));
-   mnuDebug->insertItem(tr("Packets"));
-   mnuDebug->insertSeparator();
-   mnuDebug->insertItem(tr("Set All"));
-   mnuDebug->insertItem(tr("Clear All"));
-   mnuDebug->setCheckable(true);
-   // This hack only works assuming that the initial debug level has been set
-   // to the stdout log server log types
-   for (int i = 0; i < 5; i++)
-     mnuDebug->setItemChecked(mnuDebug->idAt(i), DEBUG_LEVEL & (1 << i));
-   connect(mnuDebug, SIGNAL(activated(int)), this, SLOT(changeDebug(int)));
-
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
    mnuSystem->insertItem(tr("System Functions"), mnuOwnerAdm);
    mnuSystem->insertItem(tr("User Functions"), mnuUserAdm);
    mnuSystem->insertItem(tr("&Status"), mnuStatus);
    mnuSystem->insertItem(tr("&Group"), mnuUserGroups);
-   mnuSystem->insertItem(tr("Set &Auto Response"), awayMsgDlg, SLOT(show()));
+   mnuSystem->insertItem(tr("Set &Auto Response..."), awayMsgDlg, SLOT(show()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Show &Network Window"), licqLogWindow, SLOT(show()));
    mnuSystem->insertItem(tr("Use &Mini Mode"), this, SLOT(miniMode()));
    mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
-   mnuSystem->insertItem(tr("&Options"), this, SLOT(showOptionsDlg()));
-   mnuSystem->insertItem(tr("S&kin Browser"), this, SLOT(showSkinBrowser()));
-   mnuSystem->insertItem(tr("&Plugin Manager"), this, SLOT(showPluginDlg()));
-   mnuSystem->insertItem(tr("Debug Level"), mnuDebug);
+   mnuSystem->insertItem(tr("&Options..."), this, SLOT(showOptionsDlg()));
+   mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
+   mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
    mnuSystem->insertSeparator();
