@@ -246,6 +246,7 @@ bool CICQDaemon::Start()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetIpPort(s->LocalIp(), s->LocalPort());
   gUserManager.DropOwner();
+  CPacket::SetLocalPort(s->LocalPort());
   gSocketManager.DropSocket(s);
 
 
@@ -1492,39 +1493,59 @@ void CICQDaemon::CancelEvent(CICQEventTag *t)
 //-----updateAllUsers-------------------------------------------------------------------------
 void CICQDaemon::UpdateAllUsers()
 {
-/*
-  for (unsigned short i = 0; i < getNumUsers(); i++)
+  CICQEventTag *tag;
+
+  FOR_EACH_UIN_START
   {
-    icqUserBasicInfo(getUser(i));
-    icqUserExtInfo(getUser(i));
+    tag = icqRequestMetaInfo(nUin);
+    delete tag;
   }
-*/
-  gLog.Warn("%sThis feature does not work right now.\n", L_WARNxSTR);
+  FOR_EACH_UIN_END
+}
+
+
+void CICQDaemon::UpdateAllUsersInGroup(unsigned short nGroup)
+{
+  CICQEventTag *tag;
+
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetInGroup(GROUPS_USER, nGroup))
+    {
+      tag = icqRequestMetaInfo(pUser->Uin());
+      delete tag;
+    }
+  }
+  FOR_EACH_UIN_END
 }
 
 
 //-----ParseFE------------------------------------------------------------------
 bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {
-   char *pcEnd = szBuffer, *pcStart;
-   unsigned short i = 0;
-   bool bDone = false;
-   // Clear the character pointers
-   memset(*szSubStr, 0, nNumSubStr * sizeof(char *));
+  char *pcEnd = szBuffer, *pcStart;
+  unsigned short i = 0;
+  bool bDone = false;
+  // Clear the character pointers
+  memset(*szSubStr, 0, nNumSubStr * sizeof(char *));
 
-   while (!bDone && i < nNumSubStr)
-   {
-      pcStart = pcEnd;
-      while (*pcEnd != '\0' && (unsigned char)*pcEnd != (unsigned char)0xFE)
-        pcEnd++;
-      if (*pcEnd == '\0')
+  while (!bDone && i < nNumSubStr)
+  {
+     pcStart = pcEnd;
+     while (*pcEnd != '\0' && (unsigned char)*pcEnd != (unsigned char)0xFE)
+       pcEnd++;
+     if (*pcEnd == '\0')
+       bDone = true;
+     else // we are at an FE boundary
+     {
+       *pcEnd++ = '\0';
+       if (*pcEnd == '\0') // possibly end with FE 00 instead of just 00
          bDone = true;
-      else // we are at an FE boundary
-         *pcEnd++ = '\0';
-      (*szSubStr)[i++] = pcStart;
-   }
+     }
+     (*szSubStr)[i++] = pcStart;
+  }
 
-   return (bDone && i == nNumSubStr);
+  return (bDone && i == nNumSubStr);
 }
 
 
