@@ -1042,7 +1042,8 @@ void ICQUser::SetDefaults()
   //SetGroups(GROUPS_SYSTEM, 0);
   //SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
   SetGroups(GROUPS_USER, 0);
-  SetGroups(GROUPS_SYSTEM, GROUP_NEW_USERS);
+  SetGroups(GROUPS_SYSTEM, 0);
+  SetNewUser(true);
   SetAuthorization(false);
   SetNewUser(true);
 
