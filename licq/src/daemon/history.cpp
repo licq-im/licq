@@ -303,6 +303,7 @@ void CUserHistory::Clear(HistoryList &hist)
     delete *it;
     it++;
   }
+  hist.clear();
 }
 
 
