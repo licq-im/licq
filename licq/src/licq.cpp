@@ -60,7 +60,8 @@ bool CLicq::Init(int argc, char **argv)
   bool bBaseDir = false;
   bool bForceInit = false;
   bool bCmdLinePlugins = false;
-  bool bUseColor = isatty(STDOUT_FILENO);
+  bool bRedirect_ok = false;
+  bool bUseColor = true;
   // Check the no one is trying session management on us
   if (argc > 1 && strcmp(argv[1], "-session") == 0)
   {
@@ -107,20 +108,26 @@ bool CLicq::Init(int argc, char **argv)
   // Fork into the background
   if (bFork && fork()) exit(0);
 
+  // See if redirection works, set bUseColor to false if we redirect
+  // to a file.
+  if (szRedirect) {
+    int fd = Redirect(szRedirect);
+    if(!isatty(fd))
+      bUseColor = false;
+    bRedirect_ok = fd >= 0;
+  }
+
   // Initialise the log server for standard output and dump all initial errors
   // and warnings to it regardless of DEBUG_LEVEL
   gLog.AddService(new CLogService_StdOut(DEBUG_LEVEL | L_ERROR | L_WARN, bUseColor));
 
   // Redirect stdout and stderr if asked to
-  if (szRedirect != NULL)
-  {
-    if (Redirect(szRedirect))
+  if (szRedirect) {
+    if (bRedirect_ok)
       gLog.Info("%sOutput redirected to \"%s\".\n", L_INITxSTR, szRedirect);
     else
-    {
       gLog.Warn("%sRedirection to \"%s\" failed:\n%s%s.\n", L_WARNxSTR,
                 szRedirect, L_BLANKxSTR, strerror(errno));
-    }
     free (szRedirect);
     szRedirect = NULL;
   }
