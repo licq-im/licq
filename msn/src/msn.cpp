@@ -755,7 +755,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
-        u->SetOnlineSince(0); // Not in this protocol
+        u->SetOnlineSince(time(NULL)); // Not in this protocol
         gLog.Info("%s%s changed status (%s).\n", L_SRVxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
       }
