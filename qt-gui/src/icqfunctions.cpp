@@ -1707,17 +1707,11 @@ void ICQFunctions::callFcn()
   case TAB_SEND:
   {
     unsigned short nMsgLen = mleSend->text().length();
-    if (nMsgLen > MAX_MESSAGE_SIZE)
-    {
-      if(!QueryUser(this, tr("Message is %1 characters, over the ICQ98 limit of %2.\n"
-                             "Licq, ICQ99, and other clones support longer messages \n"
-                             "however ICQ98 will not. Continue?").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
-                    tr("Ok"), tr("Cancel")))
-      {
-        btnOk->setEnabled(true);
+    if (nMsgLen > MAX_MESSAGE_SIZE && chkSendServer->isChecked()
+        && !QueryUser(this, tr("Message is %1 characters, over the ICQ server limit of %2.\n"
+                               "The message will be truncated if sent through the server.").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
+                      tr("Continue"), tr("Cancel")))
         break;
-      }
-    }
 
     unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
                          edtSpoof->text().toULong() : 0);
