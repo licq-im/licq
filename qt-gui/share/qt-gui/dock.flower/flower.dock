@@ -1,24 +1,24 @@
 # Flower Dock icon theme
-# Graham Roff
+# Graham Roff, Jacek Kopecky
 
 [background]
 NoMessages = nomsg.xpm 
-NoMessagesMask = nomsg-mask.xpm
+NoMessagesMask = mask.xpm
 RegularMessages = regmsg.xpm 
-RegularMessagesMask = regmsg-mask.xpm
-SystemMessages = regmsg.xpm
-SystemMessagesMask = regmsg-mask.xpm
-BothMessages = regmsg.xpm
-BothMessagesMask = regmsg-mask.xpm
+RegularMessagesMask = mask.xpm
+SystemMessages = sysmsg.xpm
+SystemMessagesMask = mask.xpm
+BothMessages = bothmsg.xpm
+BothMessagesMask = mask.xpm
 
-#[status]
-#Mask = statusmask.xpm
-#Online = iconOnline.xpm
-#Offline = iconOffline.xpm
-#Away = iconAway.xpm
-#NA = iconNA.xpm
-#Occupied = iconOccupied.xpm
-#DND = iconDND.xpm
-#FFC = iconFFC.xpm
-#Invisible = iconInvisible.xpm
+[status]
+Mask = statusmask.xpm
+Online = online.xpm
+Offline = offline.xpm
+Away = away.xpm
+NA = na.xpm
+Occupied = occupied.xpm
+DND = dnd.xpm
+FFC = ffc.xpm
+Invisible = invisible.xpm
 
