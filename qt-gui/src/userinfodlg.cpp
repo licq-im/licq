@@ -128,13 +128,22 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   l->addWidget(btnMain4);
   btnMain4->setDefault(true);
 
-  ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  m_sBasic = tr("Licq - Info ") + QString::fromLocal8Bit(u->GetAlias()) + " (" +
-    QString::fromLocal8Bit(u->GetFirstName()) + " " +
-    QString::fromLocal8Bit(u->GetLastName())+ ")";
-  resetCaption();
-  setIconText(u->GetAlias());
-  gUserManager.DropUser(u);
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u == NULL)
+  {
+    m_sBasic = tr("Licq - Info ") + tr("INVALID USER");
+    resetCaption();
+    setIconText(tr("INVALID USER"));
+  }
+  else
+  {
+    m_sBasic = tr("Licq - Info ") + QString::fromLocal8Bit(u->GetAlias()) + " (" +
+     QString::fromLocal8Bit(u->GetFirstName()) + " " +
+     QString::fromLocal8Bit(u->GetLastName())+ ")";
+    resetCaption();
+    setIconText(u->GetAlias());
+    gUserManager.DropUser(u);
+  }
 }
 
 
@@ -301,6 +310,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   if (u == NULL)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u == NULL) return;
     bDropUser = true;
   }
 
@@ -369,6 +379,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
 void UserInfoDlg::SaveGeneralInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u == NULL) return;
   u->SetEnableSave(false);
 
   u->SetAlias(nfoAlias->text().local8Bit());
@@ -501,6 +512,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
   if (u == NULL)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u == NULL) return;
     bDropUser = true;
   }
 
@@ -575,6 +587,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
 void UserInfoDlg::SaveMoreInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u == NULL) return;
   u->SetEnableSave(false);
 
   u->SetAge(nfoAge->text().toULong());
@@ -654,6 +667,7 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
   if (u == NULL)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u == NULL) return;
     bDropUser = true;
   }
 
@@ -699,6 +713,7 @@ void UserInfoDlg::SetAbout(ICQUser *u)
   if (u == NULL)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u == NULL) return;
     bDropUser = true;
   }
 
@@ -712,6 +727,8 @@ void UserInfoDlg::SetAbout(ICQUser *u)
 void UserInfoDlg::SaveAbout()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u == NULL) return;
+
   u->SetAbout(mleAbout->text().local8Bit());
   gUserManager.DropUser(u);
 }
@@ -756,6 +773,7 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
   if (u == NULL)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u == NULL) return;
     bDropUser = true;
   }
 
@@ -849,7 +867,10 @@ void UserInfoDlg::CreateHistory()
 void UserInfoDlg::SetupHistory()
 {
   tabList[HistoryInfo].loaded = true;
+
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u == NULL) return;
+
   if (!u->GetHistory(m_lHistoryList))
   {
     if(u->HistoryFile())
@@ -1055,6 +1076,7 @@ void UserInfoDlg::ShowHistory()
 void UserInfoDlg::SaveHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u == NULL) return;
   u->SaveHistory(mleHistory->text().local8Bit());
   gUserManager.DropUser(u);
 }
@@ -1314,7 +1336,8 @@ void UserInfoDlg::updatedUser(CICQSignal *sig)
   if (m_nUin != sig->Uin()) return;
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if(u == NULL) return;
+  if (u == NULL) return;
+
   switch (sig->SubSignal())
   {
   case USER_GENERAL:
