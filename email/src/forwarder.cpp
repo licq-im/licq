@@ -199,7 +199,7 @@ void CLicqForwarder::ProcessSignal(CICQSignal *s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExUSER:
-    if (s->SubSignal() == USER_EVENTS)
+    if (s->SubSignal() == USER_EVENTS && s->Argument() > 0)
       ProcessUserEvent(s->Uin(), s->Argument());
     break;
   // We should never get any other signal
