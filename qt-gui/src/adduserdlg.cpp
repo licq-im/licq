@@ -56,7 +56,7 @@ void AddUserDlg::show()
 {
    edtUin->setText("");
    edtUin->setFocus();
-   chkAlert->setChecked(false);
+   chkAlert->setChecked(true);
    QDialog::show();
 }
 
