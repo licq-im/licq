@@ -13,6 +13,8 @@ const char BASE_SHARE_DIR[]                        = "share/licq/";
 const char BASE_LIB_DIR[]                          = "lib/licq/";
 const char USER_DIR[]                              = "users";
 const char HISTORY_DIR[]                           = "history";
+const char HISTORY_EXT[]                           = "history";
+const char HISTORYxOLD_EXT[]                       = "history.removed";
 const char TRANSLATION_DIR[]                       = "translations";
 const char UTILITY_DIR[]                           = "utilities";
 extern char BASE_DIR[];

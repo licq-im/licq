@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <errno.h>
 
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
@@ -180,8 +181,8 @@ bool CUserManager::Load()
      sprintf(filename, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
 
      u = new ICQUser(nUserUin, filename);
-     u->SetOnContactList(true);
-     u->SetEnableSave(true);
+     u->AddToContactList();
+     //u->SetEnableSave(true);
      // Store the user in the hash table
      m_hUsers.Store(u, nUserUin);
      // Add the user to the list
@@ -201,8 +202,8 @@ unsigned long CUserManager::AddUser(ICQUser *pUser)
   unsigned long nUin = pUser->Uin();
 
   // Set this user to be on the contact list
-  pUser->SetOnContactList(true);
-  pUser->SetEnableSave(true);
+  pUser->AddToContactList();
+  //pUser->SetEnableSave(true);
   pUser->SaveLicqInfo();
   pUser->SaveGeneralInfo();
   pUser->SaveMoreInfo();
@@ -723,14 +724,35 @@ ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
 }
 
 
-ICQUser::ICQUser(unsigned long _nUin)
+ICQUser::ICQUser(unsigned long nUin)
 {
-  Init(_nUin);
+  Init(nUin);
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
-  sprintf(szFilename, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, _nUin);
+  sprintf(szFilename, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, nUin);
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+}
+
+
+void ICQUser::AddToContactList()
+{
+  m_bOnContactList = m_bEnableSave = true;
+
+  // Check for old history file
+  if (access(m_fHistory.FileName(), F_OK) == -1)
+  {
+    char szFilename[MAX_FILENAME_LEN];
+    sprintf(szFilename, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    if (access(szFilename, F_OK) == 0)
+    {
+      if (rename(szFilename, m_fHistory.FileName()) == -1)
+      {
+        gLog.Warn("%sFailed to rename old history file (%s):\n%s%s\n", L_WARNxSTR,
+            szFilename, L_BLANKxSTR, strerror(errno));
+      }
+    }
+  }
 }
 
 
@@ -880,6 +902,33 @@ void ICQUser::LoadLicqInfo()
 ICQUser::~ICQUser()
 {
   while (NewMessages() > 0) delete EventPop();
+
+  /* FIXME memory leak, but requires calling free, and that's a lot of typing
+  m_szAutoResponse = NULL;
+  m_szAlias = NULL;
+  m_szFirstName = NULL;
+  m_szLastName = NULL;
+  m_szEmail1 = NULL;
+  m_szEmail2 = NULL;
+  m_szCity = NULL;
+  m_szState = NULL;
+  m_szPhoneNumber = NULL;
+  m_szFaxNumber = NULL;
+  m_szAddress = NULL;
+  m_szCellularNumber = NULL;
+  m_szHomepage = NULL;
+  m_szCompanyCity = NULL;
+  m_szCompanyState = NULL;
+  m_szCompanyPhoneNumber = NULL;
+  m_szCompanyFaxNumber = NULL;
+  m_szCompanyAddress = NULL;
+  m_szCompanyName = NULL;
+  m_szCompanyDepartment = NULL;
+  m_szCompanyPosition = NULL;
+  m_szCompanyHomepage = NULL;
+  m_szAbout = NULL;
+  m_szCustomAutoResponse = NULL;*/
+
 /*
   // Destroy the mutex
   int nResult = 0;
@@ -897,13 +946,27 @@ ICQUser::~ICQUser()
 void ICQUser::RemoveFiles()
 {
   remove(m_fConf.FileName());
-  remove(m_fHistory.FileName());
+
+  // Check for old history file and back up
+  struct stat buf;
+  if (stat(m_fHistory.FileName(), &buf) == 0 && buf.st_size > 0)
+  {
+    char szFilename[MAX_FILENAME_LEN];
+    sprintf(szFilename, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    if (rename(m_fHistory.FileName(), szFilename) == -1)
+    {
+      gLog.Warn("%sFailed to rename history file (%s):\n%s%s\n", L_WARNxSTR,
+          szFilename, L_BLANKxSTR, strerror(errno));
+      remove(m_fHistory.FileName());
+    }
+  }
 }
 
 
 void ICQUser::Init(unsigned long _nUin)
 {
-  SetOnContactList(false);
+  //SetOnContactList(false);
+  m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
 
   // General Info
@@ -1295,9 +1358,8 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         break;
       case 'o':
       {
-        time_t t = time(NULL);
         //strftime(szTemp, 128, "%c", localtime(&t));
-        strftime(szTemp, 128, "%b %d %R", localtime(&t));
+        strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastOnline));
         sz = szTemp;
         break;
       }
@@ -1801,7 +1863,8 @@ ICQOwner::ICQOwner()
   m_szPassword = NULL;
 
   Init(0);
-  SetOnContactList(true);
+  //SetOnContactList(true);
+  m_bOnContactList = true;
 
   // Get data from the config file
   sprintf(filename, "%s/owner.uin", BASE_DIR);

@@ -434,7 +434,8 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
   }
 
   gLog.Info("%sShaking hands with %s (%ld).\n", L_TCPxSTR, szAlias, nUin);
-  CPacketTcp_Handshake p(s->LocalPort());
+  nPort = s->LocalPort();
+  CPacketTcp_Handshake p(nPort);
   if (!s->SendPacket(p.getBuffer()))
   {
     char buf[128];
@@ -450,8 +451,9 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
 
   // Set the socket descriptor in the user
   u = gUserManager.FetchUser(nUin, LOCK_W);
-  u->SetSocketDesc(nSD);
+  u->SetSocketDesc(nSD, nPort);
   gUserManager.DropUser(u);
+
 
   // Alert the select thread that there is a new socket
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
@@ -573,7 +575,8 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   }
 
   gLog.Info("%sReverse shaking hands with %ld.\n", L_TCPxSTR, nUin);
-  CPacketTcp_Handshake p(s->LocalPort());
+  nPort = s->LocalPort();
+  CPacketTcp_Handshake p(nPort);
   if (!s->SendPacket(p.getBuffer()))
   {
     char buf[128];
@@ -591,7 +594,7 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u != NULL)
   {
-    u->SetSocketDesc(nSD);
+    u->SetSocketDesc(nSD, nPort);
     gUserManager.DropUser(u);
   }
 
@@ -603,13 +606,17 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
 
 
 //-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
-bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
+//bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
+bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 {
   unsigned long checkUin, theSequence, senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
   unsigned short version, command, junkShort, newCommand, messageLen,
                  ackFlags, msgFlags, licqVersion;
   char licqChar, junkChar;
+
+  CBuffer &packet = pSock->RecvBuffer();
+  int sockfd = pSock->Descriptor();
 
   // Static variables to keep track of repeating chat/file ack packets
   // THIS IS SHIT AND NEEDS TO BE CHANGED FIXME
@@ -625,7 +632,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   ;
 
   // Some simple validation of the packet
-  if (version != ICQ_VERSION_TCP)
+  /*if (version >= 6)
   {
     char *buf;
     gLog.Unknown("%sInvalid TCP version (%d):\n%s\n", L_UNKNOWNxSTR, version,
@@ -633,7 +640,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     delete buf;
     return false;
   }
-  else if (checkUin == 0 || command == 0 || newCommand == 0)
+  else*/ if (checkUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
     gLog.Unknown("%sInvalid TCP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
@@ -682,7 +689,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   {
     u = new ICQUser(checkUin);
     u->Lock(LOCK_W);
-    u->SetSocketDesc(sockfd);
+    u->SetSocketDesc(sockfd, pSock->LocalPort());
     bNewUser = true;
   }
 
@@ -761,7 +768,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
-        AckTCP(p, u->SocketDesc());
+        AckTCP(p, pSock);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
@@ -809,7 +816,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
         //CPT_AckReadAwayMsg p(newCommand, theSequence, true, u);
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);
-        AckTCP(p, u->SocketDesc());
+        AckTCP(p, pSock);
         break;
       }
 
@@ -833,7 +840,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         }
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
-        AckTCP(p, u->SocketDesc());
+        AckTCP(p, pSock);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
@@ -885,7 +892,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         }
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
-        AckTCP(p, u->SocketDesc());
+        AckTCP(p, pSock);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
@@ -1205,9 +1212,27 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
 
 //-----CICQDaemon::AckTCP--------------------------------------------------------------
-void CICQDaemon::AckTCP(CPacketTcp &p, int _nSD)
+void CICQDaemon::AckTCP(CPacketTcp &p, int nSd)
 {
-  SendEvent(_nSD, p);
+#if ICQ_VERSION_TCP == 3
+  TCPSocket *s = (TCPSocket *)gSocketManager.FetchSocket(nSD);
+  if (s != NULL)
+  {
+    s->Send(p.getBuffer());
+    gSocketManager.DropSocket(s);
+  }
+#else
+  SendEvent(nSd, p);
+#endif
+}
+
+void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
+{
+#if ICQ_VERSION_TCP == 3
+  tcp->Send(p.getBuffer());
+#else
+  SendEvent(tcp, p);
+#endif
 }
 
 
@@ -1251,7 +1276,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
         gSocketManager.CloseSocket(u->SocketDesc(), false);
         u->ClearSocketDesc();
       }
-      u->SetSocketDesc(s->Descriptor());
+      u->SetSocketDesc(s->Descriptor(), s->LocalPort());
     }
     gUserManager.DropUser(u);
   }

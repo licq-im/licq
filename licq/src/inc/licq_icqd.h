@@ -249,9 +249,9 @@ public:
   void SetTCPEnabled(bool b);
   const char *FirewallHost()  { return m_szFirewallHost; }
   void SetFirewallHost(const char *);
-  unsigned short TCPBasePort() { return m_nTCPBasePort; }
-  unsigned short TCPBaseRange() { return m_nTCPBaseRange; }
-  void SetTCPBasePort(unsigned short p, unsigned short r);
+  unsigned short TCPPortsLow() { return m_nTCPPortsLow; }
+  unsigned short TCPPortsHigh() { return m_nTCPPortsHigh; }
+  void SetTCPPorts(unsigned short p, unsigned short r);
   bool SocksEnabled();
   const char *SocksServer()  {  return getenv("SOCKS5_SERVER"); }
 
@@ -292,8 +292,8 @@ protected:
        *m_szFirewallHost;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
-  unsigned short m_nTCPBasePort,
-                 m_nTCPBaseRange,
+  unsigned short m_nTCPPortsLow,
+                 m_nTCPPortsHigh,
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket,
                  m_nServerSequence,
@@ -339,22 +339,26 @@ protected:
   ICQEvent *DoneExtendedEvent(const unsigned short, const unsigned short, EventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
   ICQEvent *DoneExtendedEvent(CICQEventTag *tag, EventResult _eResult);
-  void ProcessDoneEvent(ICQEvent *e);
-  void PushExtendedEvent(ICQEvent *e);
-  void PushPluginSignal(CICQSignal *s);
-  void PushPluginEvent(ICQEvent *e);
-  bool SendEvent(int _nSD, CPacket &p);
+  void ProcessDoneEvent(ICQEvent *);
+  void PushExtendedEvent(ICQEvent *);
+  void PushPluginSignal(CICQSignal *);
+  void PushPluginEvent(ICQEvent *);
+  bool SendEvent(int nSD, CPacket &);
+  bool SendEvent(INetSocket *, CPacket &);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
                             unsigned long _nDestinationUin, CUserEvent *e);
   ICQEvent *SendExpectEvent(ICQEvent *);
-  void AckUDP(unsigned short, unsigned short);
-  void AckTCP(CPacketTcp &, int _nSD);
+  void AckUDP(unsigned short, unsigned short, UDPSocket *);
+  void AckTCP(CPacketTcp &, int);
+  void AckTCP(CPacketTcp &, TCPSocket *);
 
-  unsigned short ProcessUdpPacket(CBuffer &packet, unsigned short = 0);
+  //unsigned short ProcessUdpPacket(CBuffer &packet, unsigned short = 0);
+  unsigned short ProcessUdpPacket(UDPSocket *, unsigned short = 0);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
-  bool ProcessTcpPacket(CBuffer &packet, int sockfd);
+  //bool ProcessTcpPacket(CBuffer &packet, int sockfd);
+  bool ProcessTcpPacket(TCPSocket *);
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 

@@ -295,14 +295,16 @@ public:
   static int SystemTimeGMTOffset();
   static char SystemTimezone();
 
-  // Socket functions
-  int SocketDesc()          { return m_nSocketDesc; }
-  void ClearSocketDesc()    { SetSocketDesc(-1); }
-  void SetSocketDesc(int _nSd)  { m_nSocketDesc = _nSd; }
+  // Ip/Port functions
   unsigned long Ip()        { return m_nIp; }
   unsigned short Port()     { return m_nPort; }
-  void SetIpPort(unsigned long _nIp, unsigned short _nPort);
+  unsigned short LocalPort()     { return m_nLocalPort; }
+  void SetIpPort(unsigned long nIp, unsigned short nPort);
   void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
+  // Don't call these:
+  int SocketDesc()          { return m_nSocketDesc; }
+  void ClearSocketDesc()    { SetSocketDesc(-1, 0); }
+  void SetSocketDesc(int s, unsigned short p)  { m_nSocketDesc = s; m_nLocalPort = p; }
 
   // Events functions
   static unsigned short getNumUserEvents();
@@ -325,10 +327,10 @@ protected:
   void LoadWorkInfo();
   void LoadAboutInfo();
   void LoadLicqInfo();
-  void Init(unsigned long _nUin);
+  void Init(unsigned long nUin);
   bool LoadInfo();
   void SetDefaults();
-  void SetOnContactList(bool b)  { m_bOnContactList = b; if (!b) m_bEnableSave = false; }
+  void AddToContactList();
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -336,7 +338,7 @@ protected:
   time_t m_nTouched, m_nLastOnline;
   bool m_bOnContactList;
   unsigned long m_nIp, m_nRealIp, m_nVersion;
-  unsigned short m_nPort;
+  unsigned short m_nPort, m_nLocalPort;
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,

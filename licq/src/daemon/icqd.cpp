@@ -108,10 +108,10 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   }
 
   bool bTcpEnabled;
-  unsigned short nTCPBasePort, nTCPBaseRange;
-  licqConf.ReadNum("TCPServerPort", nTCPBasePort, 0);
-  licqConf.ReadNum("TCPServerPortRange", nTCPBaseRange, 10);
-  SetTCPBasePort(nTCPBasePort, nTCPBaseRange);
+  unsigned short nTCPPortsLow, nTCPPortsHigh;
+  licqConf.ReadNum("TCPPortsLow", nTCPPortsLow, 0);
+  licqConf.ReadNum("TCPPortsHigh", nTCPPortsHigh, 0);
+  SetTCPPorts(nTCPPortsLow, nTCPPortsHigh);
   licqConf.ReadBool("TCPEnabled", bTcpEnabled, true);
   SetTCPEnabled(bTcpEnabled);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
@@ -550,8 +550,8 @@ void CICQDaemon::SaveConf()
 
   licqConf.SetSection("network");
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
-  licqConf.WriteNum("TCPServerPort", m_nTCPBasePort);
-  licqConf.WriteNum("TCPServerPortRange", m_nTCPBaseRange);
+  licqConf.WriteNum("TCPPortsLow", m_nTCPPortsLow);
+  licqConf.WriteNum("TCPPortsHigh", m_nTCPPortsHigh);
   licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
@@ -637,31 +637,21 @@ bool CICQDaemon::ViewUrl(const char *u)
 void CICQDaemon::SetFirewallHost(const char *s)
 {
   if (s == NULL || s[0] == '\0')
-  {
     SetString(&m_szFirewallHost, "");
-    CPacket::SetLocalIp(0);
-  }
   else
-  {
     SetString(&m_szFirewallHost, s);
-    unsigned long n = INetSocket::GetIpByName(s);
-    if (n == 0)
-      gLog.Error("%sInvalid firewall hostname: %s\n", L_ERRORxSTR, s);
-    else
-      CPacket::SetLocalIp(n);
-  }
 }
 
 
 int CICQDaemon::StartTCPServer(TCPSocket *s)
 {
-  if (m_nTCPBasePort == 0)
+  if (m_nTCPPortsLow == 0)
   {
     s->StartServer(0);
   }
   else
   {
-    for (unsigned short p = m_nTCPBasePort; p < m_nTCPBasePort + m_nTCPBaseRange; p++)
+    for (unsigned short p = m_nTCPPortsLow; p <= m_nTCPPortsHigh; p++)
     {
       if (s->StartServer(p)) break;
     }
@@ -686,10 +676,16 @@ int CICQDaemon::StartTCPServer(TCPSocket *s)
 }
 
 
-void CICQDaemon::SetTCPBasePort(unsigned short p, unsigned short r)
+void CICQDaemon::SetTCPPorts(unsigned short p, unsigned short r)
 {
-  m_nTCPBasePort = p;
-  m_nTCPBaseRange = r;
+  m_nTCPPortsLow = p;
+  m_nTCPPortsHigh = r;
+  if (m_nTCPPortsHigh < m_nTCPPortsLow)
+  {
+    gLog.Warn("%sTCP high port (%d) is lower then TCP low port (%d).\n",
+       L_WARNxSTR, m_nTCPPortsHigh, m_nTCPPortsLow);
+    m_nTCPPortsHigh = m_nTCPPortsLow + 10;
+  }
 }
 
 unsigned short CICQDaemon::TCPEnabled()
@@ -914,14 +910,20 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e)
  * Note that the user who owns the given socket is probably read-locked at
  * this point.
  *----------------------------------------------------------------------------*/
-bool CICQDaemon::SendEvent(int _nSD, CPacket &p)
+bool CICQDaemon::SendEvent(int nSD, CPacket &p)
 {
-  INetSocket *s = gSocketManager.FetchSocket(_nSD);
+  INetSocket *s = gSocketManager.FetchSocket(nSD);
   if (s == NULL) return false;
-  CBuffer *buf = p.Finalize();
-  s->Send(buf);
-  delete buf;
+  bool r = SendEvent(s, p);
   gSocketManager.DropSocket(s);
+  return r;
+}
+
+bool CICQDaemon::SendEvent(INetSocket *pSock, CPacket &p)
+{
+  CBuffer *buf = p.Finalize();
+  pSock->Send(buf);
+  delete buf;
   return true;
 }
 

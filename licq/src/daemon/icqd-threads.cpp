@@ -208,7 +208,7 @@ void *ReverseConnectToUser_tep(void *v)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u != NULL)
   {
-    u->SetSocketDesc(nSD);
+    u->SetSocketDesc(nSD, nPort);
     gUserManager.DropUser(u);
   }
 
@@ -346,10 +346,13 @@ void *MonitorSockets_tep(void *p)
           else
           {
             udp->RecvRaw();
-            CBuffer b(udp->RecvBuffer());
+            /*CBuffer b(udp->RecvBuffer());
             udp->ClearRecvBuffer();
             gSocketManager.DropSocket(udp);
-            d->ProcessUdpPacket(b);
+            d->ProcessUdpPacket(b);*/
+            d->ProcessUdpPacket(udp);
+            udp->ClearRecvBuffer();
+            gSocketManager.DropSocket(udp);
           }
         }
 
@@ -398,12 +401,6 @@ void *MonitorSockets_tep(void *p)
                 gLog.Info("%sConnection to %ld lost:\n%s%s.\n", L_TCPxSTR, tcp->Owner(),
                           L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
-              /*ICQUser *u = gUserManager.FetchUser(tcp->Owner(), LOCK_W);
-              if (u != NULL)
-              {
-                u->SetSocketDesc(-1);
-                gUserManager.DropUser(u);
-              }*/
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
               // Go through all running events and fail all from this socket
@@ -437,11 +434,19 @@ void *MonitorSockets_tep(void *p)
                 }
               } while (e != NULL);
 
-              //gSocketManager.CloseSocket(nCurrentSocket);
               break;
             }
             if (tcp->RecvBufferFull())
             {
+              bool r = false;
+              if (tcp->Owner() == 0)
+                r = d->ProcessTcpHandshake(tcp);
+              else
+                r = d->ProcessTcpPacket(tcp);
+              tcp->ClearRecvBuffer();
+              gSocketManager.DropSocket(tcp);
+              if (!r) gSocketManager.CloseSocket(nCurrentSocket);
+              /*
               if (tcp->Owner() == 0)
               {
                 if (!d->ProcessTcpHandshake(tcp))
@@ -462,7 +467,7 @@ void *MonitorSockets_tep(void *p)
                 gSocketManager.DropSocket(tcp);
                 if (!d->ProcessTcpPacket(b, nCurrentSocket))
                   gSocketManager.CloseSocket(nCurrentSocket);
-              }
+              }*/
             }
             else
               gSocketManager.DropSocket(tcp);

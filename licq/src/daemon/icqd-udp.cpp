@@ -773,12 +773,14 @@ ICQUser *CICQDaemon::FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e,
 
 
 //-----ProcessUdpPacket---------------------------------------------------------
-unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMultiPacket)
+unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMultiPacket)
 {
   unsigned short version, nCommand, nSequence, nSubSequence,
                  junkShort;
   unsigned long nUin, nOwnerUin;
   char junkChar;
+
+  CBuffer &packet = udp->RecvBuffer();
 
   // read in the standard UDP header info
   packet >> version;
@@ -851,7 +853,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     {
       gLog.Warn("%sDuplicate packet received, command %d (#%d, expecting #%d).\n",
                 L_WARNxSTR, nCommand, nSequence, m_nServerSequence + 1);
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       return nCommand;
     }
   }
@@ -860,7 +862,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
   {
     case ICQ_CMDxRCV_MULTIxPACKET:  // Multi-packet
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       unsigned char nPackets;
       unsigned short nLen;
       char *buf;
@@ -872,7 +874,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       {
         packet >> nLen;
         buf = packet.getDataPosRead() + nLen;
-        ProcessUdpPacket(packet, nLen);
+        ProcessUdpPacket(udp, nLen);
         packet.setDataPosRead(buf);
       }
       break;
@@ -881,7 +883,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     {
       /* 02 00 6E 00 0B 00 8F 76 20 00 CD CD 77 90 3F 50 00 00 7F 00 00 01 04 00
          00 00 00 03 00 00 00 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       packet >> nUin;
 
       // find which user it is, verify we have them on our list
@@ -974,7 +976,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     case ICQ_CMDxRCV_USERxOFFLINE:  // user just went offline packet
     {
       /* 02 00 78 00 06 00 ED 21 4E 00 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       packet >> nUin;
 
       // find which user it is, verify we have them on our list
@@ -996,7 +998,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       /* 02 00 18 01 6C 00 10 00 50 A5 82 00 08 00 48 61 63 6B 49 43 51 00 04 00
          46 6F 6F 00 04 00 42 61 72 00 15 00 68 61 63 6B 65 72 73 40 75 77 61 74
          65 72 6C 6F 6F 2E 63 61 00 00 00 00  */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
   #if ICQ_VERSION == 2
       packet >> nSubSequence;  // corresponds to the sequence number from the user information request packet...totally irrelevant.
   #endif
@@ -1049,7 +1051,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
          67 65 6E 2E 73 65 2F 67 72 72 2F 00 1E 00 49 27 6D 20 6A 75 73 74 20 61
          20 67 69 72 6C 20 69 6E 20 61 20 77 6F 72 6C 64 2E 2E 2E 00 FF FF FF FF */
 
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
   #if ICQ_VERSION == 2
       packet >> nSubSequence;  // corresponds to the sequence number from the user information request packet
   #endif
@@ -1112,7 +1114,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     case ICQ_CMDxRCV_UPDATEDxBASIC:
     {
       /* 02 00 B4 00 28 00 01 00 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
   #if ICQ_VERSION == 2
       packet >> nSubSequence;
   #endif
@@ -1140,7 +1142,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_UPDATExBASICxFAIL:
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       gLog.Info("%sFailed to update basic info.\n", L_UDPxSTR);
   #if ICQ_VERSION == 2
       packet >> nSubSequence;
@@ -1152,7 +1154,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_UPDATEDxDETAIL:
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       gLog.Info("%sSuccessfully updated detail info.\n", L_UDPxSTR);
   #if ICQ_VERSION == 2
       packet >> nSubSequence;
@@ -1178,7 +1180,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_UPDATExDETAILxFAIL:
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       gLog.Info("%sFailed to update detail info.\n", L_UDPxSTR);
   #if ICQ_VERSION == 2
       packet >> nSubSequence;
@@ -1189,7 +1191,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     }
 
     case ICQ_CMDxRCV_USERxINVALIDxUIN:  // not a good uin
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       packet >> nUin;
       gLog.Info("%sInvalid UIN: %ld.\n", L_UDPxSTR, nUin);
       // we need to do something here, but I bet the command is included in the packet
@@ -1197,7 +1199,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_USERxSTATUS:  // user changed status packet
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       packet >> nUin;
 
       // find which user it is, verify we have them on our list
@@ -1225,7 +1227,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_USERxLISTxDONE:  // end of user list
       /* 02 00 1C 02 05 00 8F 76 20 00 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       m_bOnlineNotifies = true;
       gLog.Info("%sLogon complete.\n", L_UDPxSTR);
       break;
@@ -1235,7 +1237,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       /* 02 00 8C 00 03 00 05 00 8F 76 20 00 0B 00 41 70 6F 74 68 65 6F 73 69 73
          00 07 00 47 72 61 68 61 6D 00 05 00 52 6F 66 66 00 13 00 67 72 6F 66 66 40 75
          77 61 74 65 72 6C 6F 6F 2E 63 61 00 01 02 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       gLog.Info("%sSearch found user:\n", L_UDPxSTR);
 
       char auth;
@@ -1281,7 +1283,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     case ICQ_CMDxRCV_SEARCHxDONE:  // user found in search
     {
       /* 02 00 A0 00 04 00 05 00 00*/
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
 
       char more;
   #if ICQ_VERSION == 2
@@ -1309,7 +1311,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       unsigned short nPort, nJunk, nTcpVersion;
       char nMode;
 
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       packet >> nUin;
 
       if (nUin == 0)
@@ -1371,7 +1373,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     case ICQ_CMDxRCV_SYSxMSGxDONE:  // end of system messages
     {
        /* 02 00 E6 00 04 00 50 A5 82 00 */
-       if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+       if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
        gLog.Info("%sEnd of system messages.\n", L_UDPxSTR);
        m_bOnlineNotifies = true;
 
@@ -1393,7 +1395,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
          73 74 69 6C 6C 20 68 6F 70 69 6E 67 20 66 6F 72 20 74 68 65 20 72 65 63
          6F 72 64 20 63 6F 6D 70 61 6E 79 2C 20 62 75 74 20 79 6F 75 20 6E 65 76
          65 72 20 6B 6E 6F 77 2E 2E 2E 00 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       gLog.Info("%sOffline system message.\n", L_UDPxSTR);
 
       unsigned short yearSent, newCommand;
@@ -1422,7 +1424,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_SYSxMSGxONLINE:  // online system message
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       gLog.Info("%sOnline system message.\n", L_UDPxSTR);
 
       unsigned short newCommand;
@@ -1435,7 +1437,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_META: // meta command
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       unsigned short nMetaCommand;
       char nMetaResult;
       packet >> nMetaCommand
@@ -1465,7 +1467,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_REVERSExTCP:
     {
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       unsigned long nUin, nIp;
       unsigned short nPort, nJunk, nPort2;
       char cJunk;
@@ -1518,8 +1520,17 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     {
       /* 02 00 5A 00 00 00 8F 76 20 00 CD CD 76 10 02 00 01 00 05 00 00 00 00 00
          8C 00 00 00 F0 00 0A 00 0A 00 05 00 0A 00 01 */
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
-      gLog.Info("%sServer says hello.\n", L_UDPxSTR);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
+
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+      unsigned long nLocalIp = packet.UnpackUnsignedLong();
+      CPacket::SetLocalIp(nLocalIp);
+
+      char buf[32];
+      gLog.Info("%sServer says hello, we are at %s.\n", L_UDPxSTR,
+        ip_ntoa(nLocalIp, buf));
 
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       ChangeUserStatus(o, m_nDesiredStatus);
@@ -1574,7 +1585,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       unsigned short nTemp;
       packet >> nTemp >> nOwnerUin;
   #else
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
   #endif
       if (gUserManager.OwnerUin() != 0)
       {
@@ -1593,12 +1604,14 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     }
 
     default:  // what the heck is this packet?  print it out
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+    {
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence, udp);
       char *buf;
       gLog.Unknown("%sUnknown server command %d:\n%s\n", L_UNKNOWNxSTR,
                    nCommand, packet.print(buf));
       delete buf;
       break;
+    }
   }
 
   return(nCommand);
@@ -2235,15 +2248,16 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
 
 
 //-----CICQDaemon::AckUDP--------------------------------------------------------------
-void CICQDaemon::AckUDP(unsigned short _nSequence, unsigned short _nSubSequence)
+void CICQDaemon::AckUDP(unsigned short _nSequence, unsigned short _nSubSequence, UDPSocket *udp)
 // acknowledge whatever packet we received using the relevant sequence number
 {
 #if ICQ_VERSION == 2
-   CPU_Ack p(_nSequence);
+  CPU_Ack p(_nSequence);
 #elif ICQ_VERSION == 4 || ICQ_VERSION == 5
-   CPU_Ack p(_nSequence, _nSubSequence);
+  CPU_Ack p(_nSequence, _nSubSequence);
 #endif
-   SendEvent(m_nUDPSocketDesc, p);
+  //SendEvent(m_nUDPSocketDesc, p);
+  SendEvent(udp, p);
 }
 
 
