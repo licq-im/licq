@@ -810,6 +810,8 @@ void chat_send(GtkWidget *widget, GdkEventKey *event, struct chat_window *cw)
 				gtk_text_insert(GTK_TEXT(cw->text_local), 0, 0, 0,
 						gtk_entry_get_text(GTK_ENTRY(
 							cw->entry_irc)), -1);
+				gtk_text_insert(GTK_TEXT(cw->text_local), 0, 0,
+					        0, "\n", -1);
 
 				gtk_text_insert(GTK_TEXT(cw->text_irc), 0, 0, 0,
 						g_strdup_printf("%s> ",
@@ -842,6 +844,8 @@ void chat_send(GtkWidget *widget, GdkEventKey *event, struct chat_window *cw)
 						"\n", -1);
 				cw->last_pos = gtk_editable_get_position(
 						 GTK_EDITABLE(cw->text_local));
+				// Eat the new line ?
+				cw->last_pos++;
 			
 				g_free(new_text);
 			}			

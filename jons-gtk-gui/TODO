@@ -1,8 +1,5 @@
 Stuff on the top has a higher priority
 
-* Fix some bugs in the chat window, I think there's an extra new line
-  inserted in IRC mode.
-
 * Add a chat join request option so you can invite users to a current chat
   room.
 
