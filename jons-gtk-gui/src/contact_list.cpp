@@ -261,8 +261,26 @@ void contact_list_click(GtkWidget *contact_list,
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
 		GtkWidget *_menu;
+		GtkWidget *item;
+		GtkWidget *separator;
 
 		_menu = gtk_menu_new();
+
+//		add_to_popup(user->GetAlias(), _menu, NULL, NULL);
+
+		/* The non-sensitive user name as a title */
+		item = gtk_menu_item_new_with_label(user->GetAlias());
+		gtk_menu_append(GTK_MENU(_menu), item);
+		gtk_widget_set_sensitive(item, FALSE);
+		gtk_widget_show(item);
+
+		/* A separator */
+		separator = gtk_hseparator_new();
+		item = gtk_menu_item_new();
+		gtk_menu_append(GTK_MENU(_menu), item);
+		gtk_container_add(GTK_CONTAINER(item), separator);
+		gtk_widget_set_sensitive(item, FALSE);
+		gtk_widget_show_all(item);
 
 		add_to_popup("Start Conversation", _menu,
 			     GTK_SIGNAL_FUNC(list_start_convo), user);
