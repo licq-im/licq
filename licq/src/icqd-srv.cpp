@@ -2524,10 +2524,14 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       else
         gLog.Info(tr("%sMessage through server from %s (%s).\n"), L_SRVxSTR,
           u->GetAlias(), szId);
-
+    
+      u->SetTyping(ICQ_TYPING_INACTIVEx0);
+      
       if (AddUserEvent(u, e))
         m_xOnEventManager.Do(ON_EVENT_MSG, u);
       gUserManager.DropUser(u);
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
+                                      LICQ_PPID));
       break;
     }
     case 2: // OSCAR's "Add ICBM parameter" message
@@ -2672,6 +2676,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         bNewUser = true;
       }
 
+      u->SetTyping(ICQ_TYPING_INACTIVEx0);
+      
       if (msgTxt.getTLVLen(0x0004) == 4)
       {
         unsigned long Ip = msgTxt.UnpackUnsignedLongTLV(0x0004);
@@ -2703,6 +2709,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       gUserManager.DropUser(u);
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
+                                      LICQ_PPID));
       break;
     }
     case 4:
@@ -3075,11 +3083,15 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	      gLog.Info(tr("%s%s through server from %s (%s).\n"), L_SBLANKxSTR,
 	    					szType, u->GetAlias(), u->IdString());
 
+            u->SetTyping(ICQ_TYPING_INACTIVEx0);
+            
 	    if (szType) free(szType);
 	    if (AddUserEvent(u, eEvent))
 	      m_xOnEventManager.Do(nTypeEvent, u);
 	    gUserManager.DropUser(u);
-	    break;
+	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
+                                            LICQ_PPID));
+            break;
 	  }
 	  case ICQ_CMDxSUB_AUTHxREQUEST:
 	  case ICQ_CMDxSUB_AUTHxREFUSED:
