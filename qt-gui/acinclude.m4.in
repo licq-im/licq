@@ -351,7 +351,7 @@ AC_DEFUN(AC_PATH_KDE,
     kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
   fi
 
-  LICQ_FIND_FILE(libksycoca.la, $kde_libdirs, kde_libdir)
+  LICQ_FIND_FILE(libkdecore.la, $kde_libdirs, kde_libdir)
   kde_libraries=$kde_libdir
 
   if test -n "$kde_includes" && test -n "$kde_libraries" && test -n "$ac_kde"; then

@@ -21,7 +21,10 @@
 #endif
 
 #ifdef USE_KDE
+#include <kapplication.h>
+#if KDE_VERSION < 290
 #include <kthemestyle.h>
+#endif
 #endif
 #include <qwindowsstyle.h>
 #include <qmotifstyle.h>
