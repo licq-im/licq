@@ -148,13 +148,21 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
 
 void CTranslator::ServerToClient(char *szString)
 {
-  if (m_bDefault || szString == NULL) return;
-  char *pC = szString;
-  while (*pC != '\0')
+  if (szString == NULL) return;
+  if (!m_bDefault)
   {
-    *pC = serverToClientTab[(unsigned char)(*pC)];
-    pC++;
+    char *pC = szString;
+    while(*pC)
+    {
+      *pC = serverToClientTab[(unsigned char)(*pC)];
+      pC++;
+    }
   }
+#ifdef USE_HEBREW
+  char *p = hebrev(szString);
+  strcpy(szString, p);
+  free(p);
+#endif
 }
 
 
@@ -162,21 +170,6 @@ void CTranslator::ServerToClient(char *szString)
 
 void CTranslator::ClientToServer(char *szString)
 {
-#ifdef USE_HEBREW
-  if (szString == NULL) return;
-  if (!m_bDefault)
-  {
-    char *pC = szString;
-    while(*pC)
-    {
-      *pC = clientToServerTab[(unsigned char)(*pC)];
-      pC++;
-    }
-  }
-  char *p = hebrev(szString);
-  strcpy(szString, p);
-  free(p);
-#else
   if (m_bDefault || szString == NULL) return;
   char *pC = szString;
   while(*pC)
@@ -184,7 +177,6 @@ void CTranslator::ClientToServer(char *szString)
     *pC = clientToServerTab[(unsigned char)(*pC)];
     pC++;
   }
-#endif
 }
 
 
