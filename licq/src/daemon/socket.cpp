@@ -41,6 +41,10 @@ extern "C" {
 }
 #endif
 
+#ifndef HAVE_SOCKLEN_T
+#define socklen_t int
+#endif
+
 
 //=====Constants================================================================
 const unsigned short ADDR_LOCAL = 0x01;
