@@ -235,7 +235,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   if (!online) // send offline
   {
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-    CPU_ThroughServer *p = new CPU_ThroughServer(0, nUin, ICQ_CMDxSUB_URL, m);
+    CPU_ThroughServer *p = new CPU_ThroughServer(0, nUin, ICQ_CMDxSUB_CONTACTxLIST, m);
     gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE, nUin, e);
   }
