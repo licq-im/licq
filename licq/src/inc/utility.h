@@ -44,7 +44,7 @@ class CUtility
 public:
   CUtility(const char *_szFileName);
   const char *Name()  { return m_szName; }
-  const char *Command(ICQUser *u) { return m_szCommand; }
+  const char *Command(ICQUser *) { return m_szCommand; }
   const char *Description()  { return m_szDescription; }
   EWinType WinType()  { return m_eWinType; }
 
