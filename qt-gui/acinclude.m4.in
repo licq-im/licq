@@ -517,10 +517,7 @@ if eval "test \"`echo $ac_cv_good_x11headers`\" = no"; then
         ], [
         AC_MSG_WARN([
 the configure script found broken X11 headers. But your compiler doesn't
-seem to support -fpermissive. Compilation is likely to fail.
-
-You can either use/install a newer compiler or (better) install correct
-X11 header files.
+seem to support -fpermissive. Compilation might fail.
         ])
       ])
 else
