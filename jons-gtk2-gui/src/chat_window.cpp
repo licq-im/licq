@@ -410,6 +410,7 @@ void chat_join_multiparty(struct remote_chat_request *r_cr)
 	cw->chatman->StartAsClient(r_cr->c_event->Port());
 
 	icq_daemon->icqChatRequestAccept(r_cr->uin, cw->chatman->LocalPort(),
+					 r_cr->c_event->Clients(),
 					 r_cr->c_event->Sequence(),
 					 r_cr->c_event->MessageID(),
 					 r_cr->c_event->IsDirect());
@@ -424,6 +425,7 @@ void chat_start_as_server(gulong uin, CEventChat *c)
 		return;
 
 	icq_daemon->icqChatRequestAccept(uin, cw->chatman->LocalPort(),
+					 c->Clients(),
 					 c->Sequence(),
 					 c->MessageID(), c->IsDirect());
 }
