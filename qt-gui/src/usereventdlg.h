@@ -25,6 +25,7 @@
 #include "licq_color.h"
 #include "licq_filetransfer.h"
 
+class QTabWidget;
 class QBoxLayout;
 class QGroupBox;
 class QVGroupBox;
@@ -53,6 +54,36 @@ class CEButton;
 class CMessageViewWidget;
 class MLView;
 
+/* ----------------------------------------------------------------------------- */
+#if QT_VERSION >= 300
+class UserEventTabDlg : public QWidget
+{
+  Q_OBJECT
+public:
+  UserEventTabDlg(QWidget *parent = 0, const char *name = 0);
+  ~UserEventTabDlg();
+
+  void addTab(UserEventCommon *tab, int index = -1);
+  void removeTab(QWidget *tab);
+  void selectTab(QWidget *tab);
+  void replaceTab(QWidget *oldTab, UserEventCommon *newTab);
+  bool tabIsSelected(QWidget *tab);
+  bool tabExists(QWidget *tab);
+  void updateTabLabel(ICQUser *u);
+
+private:
+  QTabWidget *tabw;
+
+public slots:
+  void updateTitle(QWidget *tab);
+  void clearEvents(QWidget *tab);
+  void moveLeft();
+  void moveRight();
+
+signals:
+  void signal_done();
+};
+#endif
 /* ----------------------------------------------------------------------------- */
 
 class UserEventCommon : public QWidget
@@ -198,7 +229,7 @@ protected slots:
 
   void cancelSend();
   void massMessageToggled(bool);
-  void slot_resettitle() { setCaption(m_sBaseTitle); }
+  void slot_resettitle();
   void slot_SetForegroundICQColor();
   void slot_SetBackgroundICQColor();
   void trySecure();

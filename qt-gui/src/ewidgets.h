@@ -13,6 +13,7 @@
 
 class CUserEvent;
 class ICQEvent;
+class CMainWindow;
 
 bool QueryUser(QWidget *, QString, QString, QString);
 int QueryUser(QWidget *, QString, QString, QString, QString);
@@ -128,9 +129,10 @@ class CMessageViewWidget : public CHistoryWidget
   Q_OBJECT
 private:
   unsigned long m_nUin;
-  QWidget *parentWidget;
+  CMainWindow *mainwin;
 public:
-  CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, const char * name =0);
+  CMessageViewWidget(unsigned long _nUin, CMainWindow *m,
+		     QWidget* parent=0, const char * name =0);
   virtual ~CMessageViewWidget(){};
 public slots:
   virtual void addMsg(CUserEvent *);

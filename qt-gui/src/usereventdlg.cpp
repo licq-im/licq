@@ -37,6 +37,7 @@
 #include <qpopupmenu.h>
 #include <qtextcodec.h>
 #include <qwhatsthis.h>
+#include <qtabwidget.h>
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
@@ -71,6 +72,166 @@
 #include "editfilelistdlg.h"
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
+
+// -----------------------------------------------------------------------------
+#if QT_VERSION >= 300
+UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
+  : QWidget(parent, name, WDestructiveClose)
+{
+  QBoxLayout *lay = new QVBoxLayout(this);
+  tabw = new QTabWidget(this);
+  lay->addWidget(tabw);
+  connect(tabw, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(updateTitle(QWidget *)));
+  connect(tabw, SIGNAL(currentChanged(QWidget *)),
+          this, SLOT(clearEvents(QWidget *)));
+}
+
+UserEventTabDlg::~UserEventTabDlg()
+{
+  emit signal_done();
+}
+
+void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
+{
+  QString label;
+  ICQUser *u = gUserManager.FetchUser(tab->Uin(), LOCK_W);
+  if (u == NULL) return;
+
+  // initalize codec
+  QTextCodec *codec = QTextCodec::codecForLocale();
+  label = codec->toUnicode(u->GetAlias());
+  tabw->insertTab(tab, label, index);
+  updateTabLabel(u);
+  gUserManager.DropUser(u);
+  tabw->showPage(tab);
+}
+
+void UserEventTabDlg::removeTab(QWidget *tab)
+{
+  if (tabw->count() > 1)
+  {
+    tabw->removePage(tab);
+    tab->close(true);
+  }
+  else
+    close();
+}
+
+void UserEventTabDlg::selectTab(QWidget *tab)
+{
+  tabw->showPage(tab);
+  updateTitle(tab);
+}
+
+void UserEventTabDlg::replaceTab(QWidget *oldTab,
+				 UserEventCommon *newTab)
+{
+  addTab(newTab, tabw->indexOf(oldTab));
+  removeTab(oldTab);
+}
+
+bool UserEventTabDlg::tabIsSelected(QWidget *tab)
+{
+  if (tabw->currentPageIndex() == tabw->indexOf(tab))
+    return true;
+  else
+    return false;
+}
+
+bool UserEventTabDlg::tabExists(QWidget *tab)
+{
+  if (tabw->indexOf(tab) != -1)
+    return true;
+  else return false;
+}
+
+void UserEventTabDlg::updateTabLabel(ICQUser *u)
+{
+  for (int index = 0; index < tabw->count(); index++)
+  {
+    UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
+    if (tab->Uin() == u->Uin())
+    {
+      if (u->NewMessages() > 0)
+      {
+	// use an event icon
+	unsigned short SubCommand = 0;
+	for (unsigned short i = 0; i < u->NewMessages(); i++)
+	{
+	  switch(u->EventPeek(i)->SubCommand())
+	  {
+	  case ICQ_CMDxSUB_FILE:
+	    SubCommand = ICQ_CMDxSUB_FILE;
+	    break;
+	  case ICQ_CMDxSUB_CHAT:
+	    if (SubCommand != ICQ_CMDxSUB_FILE) SubCommand = ICQ_CMDxSUB_CHAT;
+	    break;
+	  case ICQ_CMDxSUB_URL:
+	    if (SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT)
+	      SubCommand = ICQ_CMDxSUB_URL;
+	    break;
+	  case ICQ_CMDxSUB_CONTACTxLIST:
+	    if(SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT
+	       && SubCommand != ICQ_CMDxSUB_URL)
+	      SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
+	  case ICQ_CMDxSUB_MSG:
+	  default:
+	    if (SubCommand == 0) SubCommand = ICQ_CMDxSUB_MSG;
+	    break;
+	  }
+	}
+	if(SubCommand)
+	  tabw->setTabIconSet(tab, CMainWindow::iconForEvent(SubCommand));
+      }
+      // use status icon
+      else tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull()));
+      return;
+    }
+  }
+}
+
+void UserEventTabDlg::updateTitle(QWidget *tab)
+{
+  if (tab->caption())
+    setCaption(tab->caption());
+}
+
+void UserEventTabDlg::clearEvents(QWidget *tab)
+{
+  if (!isActiveWindow()) return;
+  UserEventCommon *e = static_cast<UserEventCommon*>(tab);
+  ICQUser *u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+  if (u != NULL && u->NewMessages() > 0)
+  {
+    std::vector<int> idList;
+    for (unsigned short i = 0; i < u->NewMessages(); i++)
+    {
+      CUserEvent *e = u->EventPeek(i);
+      if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+	idList.push_back(e->Id());
+    }
+
+    for (unsigned short i = 0; i < idList.size(); i++)
+      u->EventClearId(idList[i]);
+  }
+  gUserManager.DropUser(u);
+}
+
+void UserEventTabDlg::moveLeft()
+{
+  int index = tabw->currentPageIndex();
+  if (index > 0)
+    tabw->setCurrentPage(index - 1);
+}
+
+void UserEventTabDlg::moveRight()
+{
+  int index = tabw->currentPageIndex();
+  if (index < tabw->count() - 1)
+    tabw->setCurrentPage(index + 1);
+}
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -245,6 +406,11 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   m_sBaseTitle = codec->toUnicode(u->GetAlias()) + " (" +
              codec->toUnicode(u->GetFirstName()) + " " +
              codec->toUnicode(u->GetLastName())+ ")";
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   setIconText(codec->toUnicode(u->GetAlias()));
 }
@@ -944,6 +1110,16 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      parent == mainwin->userEventTabDlg)
+  {
+    a->connectItem(a->insertItem(ALT + Key_Left),
+		   mainwin->userEventTabDlg, SLOT(moveLeft()));
+    a->connectItem(a->insertItem(ALT + Key_Right),
+		   mainwin->userEventTabDlg, SLOT(moveRight()));
+  }
+#endif
 
   QGroupBox *box = new QGroupBox(this);
   top_lay->addWidget(box);
@@ -1010,7 +1186,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   //splView->setOpaqueResize();
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
-    mleHistory = new CMessageViewWidget(_nUin, splView);
+    mleHistory = new CMessageViewWidget(_nUin, mainwin, splView);
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
@@ -1041,8 +1217,12 @@ UserSendCommon::~UserSendCommon()
 //-----UserSendCommon::windowActivationChange--------------------------------
 void UserSendCommon::windowActivationChange(bool oldActive)
 {
-  if (isActiveWindow() && mainwin->m_bMsgChatView)
-  {
+  if (isActiveWindow() && mainwin->m_bMsgChatView &&
+      (!mainwin->userEventTabDlg ||
+       (mainwin->userEventTabDlg &&
+	(!mainwin->userEventTabDlg->tabExists(this) ||
+	 mainwin->userEventTabDlg->tabIsSelected(this)))))
+    {
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     if (u != NULL && u->NewMessages() > 0)
     {
@@ -1062,6 +1242,17 @@ void UserSendCommon::windowActivationChange(bool oldActive)
   QWidget::windowActivationChange(oldActive);
 }
 #endif
+
+//-----UserSendCommon::slot_resettitle---------------------------------------
+void UserSendCommon::slot_resettitle()
+{
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
+  setCaption(m_sBaseTitle);
+}
 
 //-----UserSendCommon::slot_SetForegroundColor-------------------------------
 void UserSendCommon::slot_SetForegroundICQColor()
@@ -1115,31 +1306,36 @@ void UserSendCommon::slot_SetBackgroundICQColor()
 void UserSendCommon::changeEventType(int id)
 {
   UserSendCommon* e = NULL;
+  QWidget *parent = NULL;
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+      parent = mainwin->userEventTabDlg;
+#endif
   switch(id)
   {
   case 0:
-    e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
+    e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin, parent);
     break;
   case 1:
-    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
+    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin, parent);
     break;
   case 2:
-    e = new UserSendChatEvent(server, sigman, mainwin, m_nUin);
+    e = new UserSendChatEvent(server, sigman, mainwin, m_nUin, parent);
     break;
   case 3:
-    e = new UserSendFileEvent(server, sigman, mainwin, m_nUin);
+    e = new UserSendFileEvent(server, sigman, mainwin, m_nUin, parent);
     break;
   case 4:
-    e = new UserSendContactEvent(server, sigman, mainwin, m_nUin);
+    e = new UserSendContactEvent(server, sigman, mainwin, m_nUin, parent);
     break;
   case 5:
-    e = new UserSendSmsEvent(server, sigman, mainwin, m_nUin);
+    e = new UserSendSmsEvent(server, sigman, mainwin, m_nUin, parent);
     break;
   }
 
   if (e != NULL)
   {
-    QPoint p = topLevelWidget()->pos();
     if (e->mleSend && mleSend)
     {  
       e->mleSend->setText(mleSend->text());
@@ -1149,7 +1345,12 @@ void UserSendCommon::changeEventType(int id)
       e->mleHistory->setText(mleHistory->text());
       e->mleHistory->GotoEnd();
     }
-    e->move(p);
+
+    if (!parent)
+    {
+      QPoint p = topLevelWidget()->pos();
+      e->move(p);
+    }
 
     disconnect(this, SIGNAL(finished(unsigned long)), mainwin, SLOT(slot_sendfinished(unsigned long)));
     mainwin->slot_sendfinished(m_nUin);
@@ -1158,9 +1359,15 @@ void UserSendCommon::changeEventType(int id)
 
     emit signal_msgtypechanged(this, e);
 
-    QTimer::singleShot( 10, e, SLOT( show() ) );
-
-    QTimer::singleShot( 100, this, SLOT( close() ) );
+    if (!parent)
+    {
+      QTimer::singleShot(10, e, SLOT(show()));
+      QTimer::singleShot(100, this, SLOT(close()));
+    }
+#if QT_VERSION >= 300
+    else
+      mainwin->userEventTabDlg->replaceTab(this, e);
+#endif
   }
 }
 
@@ -1173,7 +1380,13 @@ void UserSendCommon::massMessageToggled(bool b)
 {
 	if (b)
 	{
-		tmpWidgetWidth = width();
+#if QT_VERSION >= 300
+	        if (mainwin->userEventTabDlg &&
+		    mainwin->userEventTabDlg->tabIsSelected(this))
+                  tmpWidgetWidth = mainwin->userEventTabDlg->width();
+		else
+#endif
+		  tmpWidgetWidth = width();
 		if (grpMR == NULL)
 		{
 			grpMR = new QVGroupBox(this);
@@ -1199,15 +1412,33 @@ void UserSendCommon::massMessageToggled(bool b)
 			// resize the widget to it's origin width.
 			// This is a workaroung and not perfect, but resize() does not
 			// work as expected. Maybe we find a better solution for this in future.
-			QSize tmpMaxSize = maximumSize();
-			if (tmpWidgetWidth == 0)
-				setFixedWidth(width() - grpMRWidth);
-			else
+#if QT_VERSION >= 300
+			if (mainwin->userEventTabDlg &&
+			    mainwin->userEventTabDlg->tabIsSelected(this))
 			{
-				setFixedWidth(tmpWidgetWidth);
-				tmpWidgetWidth = 0;
+			  QSize tmpMaxSize = mainwin->userEventTabDlg->maximumSize();
+			  if (tmpWidgetWidth == 0)
+			    mainwin->userEventTabDlg->setFixedWidth(mainwin->userEventTabDlg->width() - grpMRWidth);
+			  else
+			  {
+			    mainwin->userEventTabDlg->setFixedWidth(tmpWidgetWidth);
+                            tmpWidgetWidth = 0;
+			  }
+                          mainwin->userEventTabDlg->setMaximumSize(tmpMaxSize);
 			}
-			setMaximumSize(tmpMaxSize);
+			else
+#endif
+			{
+			  QSize tmpMaxSize = maximumSize();
+			  if (tmpWidgetWidth == 0)
+                            setFixedWidth(width() - grpMRWidth);
+			  else
+			  {
+                            setFixedWidth(tmpWidgetWidth);
+			    tmpWidgetWidth = 0;
+			  }
+			  setMaximumSize(tmpMaxSize);
+			}
 		}
   }
 }
@@ -1242,6 +1473,11 @@ void UserSendCommon::sendButton()
     m_sProgressMsg += via_server ? tr("via server") : tr("direct");
     m_sProgressMsg += "...";
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
+#if QT_VERSION >= 300
+    if (mainwin->userEventTabDlg &&
+	mainwin->userEventTabDlg->tabIsSelected(this))
+      mainwin->userEventTabDlg->setCaption(title);
+#endif
     setCaption(title);
     setCursor(waitCursor);
     btnSend->setEnabled(false);
@@ -1266,7 +1502,14 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
 {
   if (e == NULL)
   {
-    setCaption(m_sBaseTitle + " [" + m_sProgressMsg + tr("error") + "]");
+    QString title = m_sBaseTitle + " [" + m_sProgressMsg + tr("error") + "]";
+#if QT_VERSION >= 300
+    if (mainwin->userEventTabDlg &&
+	mainwin->userEventTabDlg->tabIsSelected(this))
+      mainwin->userEventTabDlg->setCaption(title);
+#endif
+    setCaption(title);
+
     return;
   }
 
@@ -1309,6 +1552,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     break;
   }
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(title);
+#endif
   setCaption(title);
 
   setCursor(arrowCursor);
@@ -1529,10 +1777,21 @@ void UserSendCommon::cancelSend()
 
   if (!icqEventTag)
   {
-    close();
+#if QT_VERSION >= 300
+    if (mainwin->userEventTabDlg &&
+	mainwin->userEventTabDlg->tabExists(this))
+      mainwin->userEventTabDlg->removeTab(this);
+    else
+#endif
+      close();
     return;
   }
 
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   server->CancelEvent(icqEventTag);
   icqEventTag = 0;
@@ -1609,6 +1868,11 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setFocus ();
 
   m_sBaseTitle += tr(" - Message");
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(0);
 }
@@ -1755,6 +2019,11 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(edtItem);
 
   m_sBaseTitle += tr(" - URL");
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(1);
 }
@@ -1858,6 +2127,11 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnEdit);
 
   m_sBaseTitle += tr(" - File Transfer");
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(3);
 }
@@ -2019,6 +2293,11 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnBrowse);
 
   m_sBaseTitle += tr(" - Chat Request");
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(2);
 }
@@ -2129,6 +2408,11 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   lay->addWidget(lstContacts);
 
   m_sBaseTitle += tr(" - Contact List");
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(4);
 }
@@ -2254,6 +2538,11 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   }
 
   m_sBaseTitle += tr(" - SMS");
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabIsSelected(this))
+    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
+#endif
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(5);
 }

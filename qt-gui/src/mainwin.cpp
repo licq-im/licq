@@ -41,6 +41,7 @@
 #include <qlayout.h>
 #include <qtextview.h>
 #include <qpainter.h>
+#include <qtabwidget.h>
 #if QT_VERSION >= 300
 #include <qstylefactory.h>
 #endif
@@ -345,6 +346,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("SystemBackground", m_bSystemBackground, false);
   licqConf.ReadBool("SendFromClipboard", m_bSendFromClipboard, true);
   licqConf.ReadBool("MsgChatView", m_bMsgChatView, true );
+#if QT_VERSION < 300
+  m_bTabbedChatting = false;
+#else
+  licqConf.ReadBool("TabbedChatting", m_bTabbedChatting, true);
+#endif
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
@@ -453,6 +459,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   awayMsgDlg = NULL;
   optionsDlg = NULL;
   registerUserDlg = NULL;
+#if QT_VERSION >= 300
+  userEventTabDlg = NULL;
+#endif
   m_nRealHeight = 0;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -640,6 +649,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   ClassHint.res_name = (char *)name();
   XSetClassHint(x11Display(), winId(), &ClassHint);
 #endif
+
 }
 
 //-----ApplySkin----------------------------------------------------------------
@@ -1257,6 +1267,11 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         v->triggerUpdate();
       }
 
+#if QT_VERSION >= 300
+      // update the tab icon of this user
+      if (m_bTabbedChatting && userEventTabDlg)
+        userEventTabDlg->updateTabLabel(u);
+#endif
       gUserManager.DropUser(u);
 
       break;
@@ -2026,7 +2041,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     case mnuUserSendSms:
     {
 #if QT_VERSION < 300
-        QListIterator<UserSendCommon> it(licqUserSend );
+        QListIterator<UserSendCommon> it(licqUserSend);
 #else
         QPtrListIterator<UserSendCommon> it(licqUserSend);
 #endif
@@ -2052,23 +2067,52 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
           for (; it.current(); ++it)
             if ((*it)->Uin() == nUin)
             {
-              e = static_cast<UserSendCommon*>(*it);
-            e->show();
-            if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
-            {
-              e->raise();
+	      e = static_cast<UserSendCommon*>(*it);
+#if QT_VERSION >= 300
+	      if (userEventTabDlg && userEventTabDlg->tabExists(e))
+	      {
+		userEventTabDlg->show();
+		userEventTabDlg->selectTab(e);
+		userEventTabDlg->raise();
 #ifdef USE_KDE
-              KWin::setActiveWindow(e->winId());
+		KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
-            }
-            return e;
-            }
-          }
+	      }
+#endif
+	      else
+	      {
+		e->show();
+		if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+		{
+		  e->raise();
+#ifdef USE_KDE
+		  KWin::setActiveWindow(e->winId());
+#endif
+		}
+	      }
+	      return e;
+	    }
+	}
     }
   default:
     break;
   }
 
+  QWidget *parent = NULL;
+#if QT_VERSION >= 300
+  if (m_bTabbedChatting)
+  {
+    if (userEventTabDlg != NULL)
+      userEventTabDlg->raise();
+    else
+    {
+      // create the tab dialog if it does not exist
+      userEventTabDlg = new UserEventTabDlg();
+      connect(userEventTabDlg, SIGNAL(signal_done()), this, SLOT(slot_doneUserEventTabDlg()));
+    }
+    parent = userEventTabDlg;
+  }
+#endif
   switch (fcn)
   {
     case mnuUserView:
@@ -2078,56 +2122,64 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     }
     case mnuUserSendMsg:
     {
-      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
+      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin, parent);
       break;
     }
     case mnuUserSendUrl:
     {
-      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, nUin);
+      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, nUin, parent);
       break;
     }
     case mnuUserSendChat:
     {
-      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, nUin);
+      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, nUin, parent);
       break;
     }
     case mnuUserSendFile:
     {
-      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, nUin);
+      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, nUin, parent);
       break;
     }
     case mnuUserSendContact:
     {
-      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin);
+      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin, parent);
       break;
     }
     case mnuUserSendSms:
     {
-      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, nUin);
+      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, nUin, parent);
       break;
     }
     default:
       gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
-  if(e) {
-    connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
-    e->show();
-    // there might be more than one send window open
-    // make sure we only remember one, or it will get compliated
-    if (fcn == mnuUserView)
-    {
-      slot_userfinished(nUin);
-      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
-      licqUserView.append(static_cast<UserViewEvent*>(e));
-    }
-    else
-    {
-      slot_sendfinished(nUin);
-      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_sendfinished(unsigned long)));
-      licqUserSend.append(static_cast<UserSendCommon*>(e));
-    }
-  }
+  if (e == NULL) return NULL;
 
+  connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
+#if QT_VERSION >= 300
+  if (m_bTabbedChatting && fcn != mnuUserView)
+  {
+    userEventTabDlg->addTab(e);
+    userEventTabDlg->show();
+  }
+  else
+#endif
+    e->show();
+
+  // there might be more than one send window open
+  // make sure we only remember one, or it will get complicated
+  if (fcn == mnuUserView)
+  {
+    slot_userfinished(nUin);
+    connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
+    licqUserView.append(static_cast<UserViewEvent*>(e));
+  }
+  else
+  {
+    slot_sendfinished(nUin);
+    connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_sendfinished(unsigned long)));
+    licqUserSend.append(static_cast<UserSendCommon*>(e));
+  }
   return e;
 }
 
@@ -2155,6 +2207,12 @@ void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 
 
 // -----------------------------------------------------------------------------
+#if QT_VERSION >= 300
+void CMainWindow::slot_doneUserEventTabDlg()
+{
+  userEventTabDlg = NULL;
+}
+#endif
 
 void CMainWindow::slot_userfinished(unsigned long nUin)
 {
@@ -2183,7 +2241,6 @@ void CMainWindow::slot_sendfinished(unsigned long nUin)
 #else
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 #endif
-
   // go through the whole list, there might be more than
   // one hit
   for ( ; it.current(); ++it)
@@ -2581,6 +2638,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("SystemBackground", m_bSystemBackground);
   licqConf.WriteBool("SendFromClipboard", m_bSendFromClipboard);
   licqConf.WriteBool("MsgChatView", m_bMsgChatView);
+  licqConf.WriteBool("TabbedChatting", m_bTabbedChatting);
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);

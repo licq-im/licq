@@ -207,6 +207,9 @@ void OptionsDlg::SetupOptions()
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
+#if QT_VERSION >= 300
+  chkTabbedChatting->setChecked(mainwin->m_bTabbedChatting);
+#endif
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
@@ -458,6 +461,9 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
   mainwin->m_bMsgChatView = chkMsgChatView->isChecked();
+#if QT_VERSION >= 300
+  mainwin->m_bTabbedChatting = chkTabbedChatting->isChecked();
+#endif
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
@@ -708,6 +714,12 @@ QWidget* OptionsDlg::new_appearance_options()
 
   chkMsgChatView = new QCheckBox(tr("Chatmode Messageview"), boxMainWin);
   QWhatsThis::add(chkMsgChatView, tr("Show the current chat history in Send Window"));
+
+#if QT_VERSION >= 300
+  chkTabbedChatting = new QCheckBox(tr("Tabbed Chatting"), boxMainWin);
+  QWhatsThis::add(chkTabbedChatting, tr("Use tabs in Send Window"));
+  connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
+#endif
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(1, Horizontal, tr("Localization"), w);
@@ -973,6 +985,12 @@ void OptionsDlg::slot_usePortRange(bool b)
 {
   spnPortLow->setEnabled(b);
   spnPortHigh->setEnabled(b);
+}
+
+void OptionsDlg::slot_useMsgChatView(bool b)
+{
+  if (!b) chkTabbedChatting->setChecked(false);
+  chkTabbedChatting->setEnabled(b);
 }
 
 void OptionsDlg::slot_useProxy(bool b)

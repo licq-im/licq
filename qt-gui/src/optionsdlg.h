@@ -77,7 +77,7 @@ protected:
              *chkBoldOnMsg, *chkManualNewUser,
              *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
              *chkSysBack, *chkSendFromClipboard, *chkMsgChatView, *chkAutoPosReplyWin,
-	     *chkAutoSendThroughServer,
+	     *chkAutoSendThroughServer, *chkTabbedChatting,
              *chkEnableMainwinMouseMovement;
    QRadioButton *rdbDockDefault, *rdbDockThemed;
    QComboBox *cmbDockTheme, *cmbSortBy;
@@ -145,6 +145,7 @@ protected slots:
   void slot_useDockToggled(bool);
   void slot_useFirewall(bool);
   void slot_usePortRange(bool b);
+  void slot_useMsgChatView(bool);
   void slot_ok();
 };
 

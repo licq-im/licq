@@ -49,6 +49,9 @@ class IconManager;
 
 class CICQSignal;
 class UserInfoDlg;
+#if QT_VERSION >= 300
+class UserEventTabDlg;
+#endif
 
 #if QT_VERSION < 300
   typedef QList<UserViewEvent> UserViewEventList;
@@ -118,7 +121,8 @@ public:
        m_bPopLastOnline,
        m_bPopOnlineSince,
        m_bPopIdleTime,
-       m_bShowAllEncodings;
+       m_bShowAllEncodings,
+       m_bTabbedChatting;
 
   QString m_MsgAutopopupKey;
   QString m_DefaultEncoding;
@@ -149,6 +153,9 @@ public:
   AwayMsgDlg *awayMsgDlg;
   OptionsDlg *optionsDlg;
   RegisterUserDlg *registerUserDlg;
+#if QT_VERSION >= 300
+  UserEventTabDlg *userEventTabDlg;
+#endif
 
   // Widgets
   CUserView *userView;
@@ -292,6 +299,9 @@ protected slots:
   void slot_popupall();
   void slot_aboutToQuit();
   void UserInfoDlg_finished(unsigned long);
+#if QT_VERSION >= 300
+  void slot_doneUserEventTabDlg();
+#endif
 
 signals:
   void changeDockStatus(unsigned short);

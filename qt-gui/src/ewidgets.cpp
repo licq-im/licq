@@ -25,6 +25,7 @@
 #include "eventdesc.h"
 #include "ewidgets.h"
 #include "usercodec.h"
+#include "usereventdlg.h"
 
 using namespace std;
 
@@ -516,11 +517,11 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 
 //- Message View Widget ---------------------------------------------------------
 
-CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent, const char * name)
+CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget* parent, const char * name)
 :CHistoryWidget(parent,name)
 {
   m_nUin= _nUin;
-  parentWidget = parent;
+  mainwin = m;
 
   // add all unread messages.
   vector<CUserEvent*> newEventList;
@@ -628,9 +629,16 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 #endif 
   GotoEnd();
 
+  QWidget *parent = NULL;
+  if (parentWidget() &&
+      parentWidget()->parentWidget() &&
+      parentWidget()->parentWidget()->parentWidget())
+    parent = parentWidget()->parentWidget()->parentWidget();
   if (
 #if QT_VERSION >= 300
-      parentWidget && parentWidget->isActiveWindow() &&
+      parent && parent->isActiveWindow() &&
+      (!mainwin->m_bTabbedChatting || (mainwin->m_bTabbedChatting &&
+       mainwin->userEventTabDlg->tabIsSelected(parent))) &&
 #endif
       e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R );
