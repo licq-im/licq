@@ -16,6 +16,8 @@
 #include "outputwin.h"
 #include "licq_icq.h"
 
+#undef connect
+
 //---------------------------------------------------------------------------
 
 CQtLogWindow::CQtLogWindow(QWidget *parent)
