@@ -1,0 +1,49 @@
+#! /bin/sh
+
+# Created by: BrAgaTTo@BrasIRC
+# Comments to bragatto.vix@zaz.com.br
+#
+# Linux-ES - BrasIRC.Net - Brazil
+
+echo "*** zICQ -> Licq Converter v1.0"
+echo "*** By: BrAgaTTo@BrasIRC.Net"
+echo
+echo "*** Starting convertion..."
+echo
+echo "*** You realy want to do it?"
+echo "*** The script will overwrite your old config file."
+echo
+echo "*** y/n?"
+read RESPOSTA
+if [ ${RESPOSTA} != 'Y' -a ${RESPOSTA} != 'y' ]; then
+  echo "Good bye... ;)"
+  exit 1
+fi
+echo
+LICQ_DIR=$HOME/.licq
+echo "" > .temp-zicq-to-licq
+UIN_NUM=0
+for i in `cat $HOME/.zicqrc | grep [0-9] | grep "#" -v | grep Port -v | grep UIN -v | grep Server -v | grep Status -v | cut -d " " -f 1`; do
+UIN=`cat $HOME/.zicqrc | grep [0-9] | grep "#" -v | grep Port -v | grep UIN -v | grep Server -v | grep Status -v | cut -d " " -f 1 | grep ${i}`
+NICK=`cat $HOME/.zicqrc | grep [0-9] | grep "#" -v | grep Port -v | grep UIN -v | grep Server -v | grep Status -v | grep ${i} | cut -d " " -f 2`
+
+	echo "Converting user: ${NICK}"
+	UIN_NUM=$[UIN_NUM+1]
+	echo "User${UIN_NUM} = ${UIN}" >> .temp-zicq-to-licq
+	echo "[user]" >> ${LICQ_DIR}/users/${UIN}.uin
+	echo "Alias = ${NICK}" >> ${LICQ_DIR}/users/${UIN}.uin
+	echo "FirstName = none" >> ${LICQ_DIR}/users/${UIN}.uin
+	echo "LastName = none" >> ${LICQ_DIR}/users/${UIN}.uin
+	echo "EMail = none" >> ${LICQ_DIR}/users/${UIN}.uin
+	echo "History = default" >> ${LICQ_DIR}/users/${UIN}.uin
+	echo "NewMessages = 0" >> ${LICQ_DIR}/users/${UIN}.uin
+
+done
+
+echo "[users]" > ${LICQ_DIR}/users.conf
+echo "NumOfUsers = ${UIN_NUM}" >> ${LICQ_DIR}/users.conf
+cat .temp-zicq-to-licq >> ${LICQ_DIR}/users.conf
+rm .temp-zicq-to-licq
+echo
+echo "Enjoy!!! ;)"
+echo
