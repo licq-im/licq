@@ -3,6 +3,7 @@
 #endif
 
 #include <qpainter.h>
+#include "message.h"
 #include "messagebox.h"
 #include "licq-locale.h"
 

@@ -43,7 +43,7 @@ void AwayMsgDlg::show()
     mleAwayMsg->setText(title);
   }
   gUserManager.DropOwner();
-  setGeometry(s_nX, s_nY, width(), height());
+  move(s_nX, s_nY);
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
   QDialog::show();

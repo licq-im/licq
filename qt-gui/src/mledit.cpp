@@ -29,11 +29,14 @@ void MLEditWrap::setWrapSize(int n)
 
 void MLEditWrap::append(const char *s)
 {
-   setAutoUpdate(false);
-   for (unsigned long i = 0; i < strlen(s); i++) 
-      appendChar(s[i]);
-   setAutoUpdate(true);
-   repaint();
+  setAutoUpdate(false);
+  for (unsigned long i = 0; i < strlen(s); i++)
+  {
+    if (s[i] == '\n') appendChar(' ');
+    appendChar(s[i]);
+  }
+  setAutoUpdate(true);
+  repaint();
 }
 
 
@@ -234,7 +237,7 @@ void MLEditWrap::computePosition(void)
   pos = pos + coltemp - mem ;  // add the number of characters behind the
                                // last tab on the line.
 
-  if (found_one){	       
+  if (found_one){
     pos = pos - 1;
   }
 
@@ -252,13 +255,13 @@ void MLEditWrap::keyPressEvent (QKeyEvent *e)
      emit signal_CtrlEnterPressed();
      return;
    }
-   
+/*
    if (e->key() == Key_Insert)
   {
     this->setOverwriteMode(!this->isOverwriteMode());
     return;
   }
-  
+*/
   if(fill_column_is_set && word_wrap_is_set ){
 
     // word break algorithm

@@ -45,7 +45,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   connect (this, SIGNAL(applyButtonPressed()), this, SLOT(slot_apply()));
 
   QPushButton *btnWhat = new QPushButton(_("What's This?"), this);
-  btnWhat->setGeometry(10, height() - 40, 100, 30);
+  btnWhat->setGeometry(6, height() - 30, 80, 23);
   connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
 
   // appearance tab
@@ -137,7 +137,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   edtSndPlayer = new QLineEdit(tab[2]);
   edtSndPlayer->setGeometry(230, 10, 190, 20);
   boxSndEvents = new QGroupBox(_("Parameters"), tab[2]);
-  boxSndEvents->setGeometry(10, 40, 410, 150);
+  boxSndEvents->setGeometry(10, 40, 410, 180);
   lblSndMsg = new QLabel(_("Message:"), boxSndEvents);
   lblSndMsg->setGeometry(10, 20, 80, 20);
   QWhatsThis::add(lblSndMsg, _("Parameter for received messages"));
@@ -163,6 +163,11 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   QWhatsThis::add(lblSndNotify, _("Parameter for online notification"));
   edtSndNotify = new QLineEdit(boxSndEvents);
   edtSndNotify->setGeometry(90, 120, 280, 20);
+  lblSndSysMsg = new QLabel(_("System Msg:"), boxSndEvents);
+  lblSndSysMsg->setGeometry(10, 145, 80, 20);
+  QWhatsThis::add(lblSndSysMsg, _("Parameter for received system messages"));
+  edtSndSysMsg = new QLineEdit(boxSndEvents);
+  edtSndSysMsg->setGeometry(90, 145, 280, 20);
 
   tab[3] = new QWidget(this);
   lblServers = new QLabel (_("Servers:"), tab[3]);
@@ -276,6 +281,11 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   chkUseDock = new QCheckBox(_("Use Dock Icon"), tab[4]);
   chkUseDock->setGeometry(10, 110, 120, 20);
   QWhatsThis::add(chkUseDock, _("Controls whether or not the dockable icon should be displayed."));
+  chkDockFortyEight = new QCheckBox(_("64 x 48 Dock Icon"), tab[4]);
+  chkDockFortyEight->setGeometry(30, 135, 180, 20);
+  QWhatsThis::add(chkDockFortyEight, _("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
+                                "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
+  connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
 
   addTab(tab[0], _("Appearance"));
   addTab(tab[1], _("Columns"));
@@ -361,6 +371,8 @@ void OptionsDlg::SetupOptions()
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkAutoClose->setChecked(mainwin->autoClose);
   chkUseDock->setChecked(mainwin->licqIcon != NULL);
+  chkDockFortyEight->setChecked(mainwin->m_bDockIcon48);
+  //chkDockFortyEight->set
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
   spnTcpServerPort->setValue(mainwin->licqDaemon->getTcpServerPort());
@@ -435,7 +447,6 @@ void OptionsDlg::SetupOptions()
 
    // set up the sound stuff
    COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
-   //optionsDlg->cmbSndType->setCurrentItem(oem->CommandType());
    chkOnEvents->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
    oem->Lock();
    edtSndPlayer->setText(oem->Command());
@@ -444,6 +455,7 @@ void OptionsDlg::SetupOptions()
    edtSndChat->setText(oem->Parameter(ON_EVENT_CHAT));
    edtSndFile->setText(oem->Parameter(ON_EVENT_FILE));
    edtSndNotify->setText(oem->Parameter(ON_EVENT_NOTIFY));
+   edtSndSysMsg->setText(oem->Parameter(ON_EVENT_SYSMSG));
    oem->Unlock();
 }
 
@@ -477,7 +489,13 @@ void OptionsDlg::ApplyOptions()
   {
     if (mainwin->licqIcon == NULL)
     {
-      mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem);
+      mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
+      mainwin->updateStatus();
+    }
+    else if (mainwin->m_bDockIcon48 != chkDockFortyEight->isChecked())
+    {
+      delete mainwin->licqIcon;
+      mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
       mainwin->updateStatus();
     }
   }
@@ -489,6 +507,7 @@ void OptionsDlg::ApplyOptions()
       mainwin->licqIcon = NULL;
     }
   }
+  mainwin->m_bDockIcon48 = chkDockFortyEight->isChecked();
 
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
   mainwin->licqDaemon->setTcpServerPort(spnTcpServerPort->value());
@@ -552,9 +571,9 @@ void OptionsDlg::ApplyOptions()
   // set up the sound stuff
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
-  const char *oemparams[5] = { edtSndMsg->text(), edtSndUrl->text(),
+  const char *oemparams[6] = { edtSndMsg->text(), edtSndUrl->text(),
                                edtSndChat->text(), edtSndFile->text(),
-                               edtSndNotify->text() };
+                               edtSndNotify->text(), edtSndSysMsg->text() };
   oem->SetParameters(edtSndPlayer->text(), oemparams);
 
 }

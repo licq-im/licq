@@ -249,7 +249,7 @@ void CEComboBox::setNamedBgColor(char *theColor)
 
 //-----CInfoField::constructor--------------------------------------------------
 CInfoField::CInfoField(int x, int y, int lenTitle, int lenBlank, int lenInfo,
-                       char *title, bool isReadOnly, QWidget *parent)
+                       const char *title, bool isReadOnly, QWidget *parent)
   : QLineEdit(parent)
 {
   m_bReadOnly = isReadOnly;
@@ -309,7 +309,7 @@ void CInfoField::mouseReleaseEvent(QMouseEvent *e)
 
 void CInfoField::setData(const char *data)
 {
-  setText(data);
+  setText(QString::fromLocal8Bit(data));
 }
 
 void CInfoField::setData(const unsigned long data)

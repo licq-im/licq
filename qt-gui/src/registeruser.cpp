@@ -33,7 +33,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent = 0, const char 
   sprintf (buf, _("If you are registering a new uin, choose a password and click \"OK\".\n"
                   "If you already have a uin, then toggle \"Register Existing User\",\n"
                   "enter your uin and your password, and click \"OK\""));
-  InformUser(this, buf);
+  InformUser(this, QString::fromLocal8Bit(buf));
 }
 
 void RegisterUserDlg::hide()
@@ -51,12 +51,12 @@ void RegisterUserDlg::slot_ok()
   // Validate password
   if (szPassword == NULL || strlen(szPassword) > 8)
   {
-    InformUser (this, "Invalid password, must be 8 characters or less.");
+    InformUser (this, _("Invalid password, must be 8 characters or less."));
     return;
   }
   if (szPassword2 == NULL || strcmp(szPassword, szPassword2) != 0)
   {
-    InformUser (this, "Passwords do not match, try again.");
+    InformUser (this, _("Passwords do not match, try again."));
     return;
   }
 
@@ -66,7 +66,7 @@ void RegisterUserDlg::slot_ok()
     // Validate uin
     if (nUin <= 0)
     {
-      InformUser (this, "Invalid UIN.  Try again.");
+      InformUser (this, _("Invalid UIN.  Try again."));
       return;
     }
     gUserManager.SetOwnerUin(nUin);

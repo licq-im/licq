@@ -14,7 +14,7 @@
 
 
 bool QueryUser(QWidget *, const char *, const char *, const char *);
-void InformUser(QWidget *q, const char *szInfo);
+void InformUser(QWidget *q, const char *);
 
 
 class CELabel : public QLabel
@@ -81,7 +81,7 @@ class CInfoField : public QLineEdit
 {
   Q_OBJECT
 public:
-  CInfoField(int x, int y, int, int, int, char *title, bool isReadOnly, QWidget *parent);
+  CInfoField(int x, int y, int, int, int, const char *title, bool isReadOnly, QWidget *parent);
   void setData(const char *data);
   void setData(const unsigned long data);
   void setGeometry(int, int, int, int, int);

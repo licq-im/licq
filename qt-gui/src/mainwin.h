@@ -118,7 +118,8 @@ protected:
        showHeader,
        autoClose,
        m_bShowOffline,
-       m_bShowDividers;
+       m_bShowDividers,
+       m_bDockIcon48;
   int m_nCurrentGroup;
 
   int mouseX, mouseY;
@@ -164,6 +165,7 @@ protected slots:
   void slot_doneregister();
   void slot_doneOwnerFcn(ICQEvent *);
   void saveOptions();
+  void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
   void showOptionsDlg();

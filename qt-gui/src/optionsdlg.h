@@ -45,21 +45,10 @@ protected:
 
    // appearance tab
    QGroupBox *boxFont;
-   //QLabel *lblFontFamily, *lblFontSize, *lblFontCharSet;
-   //QLineEdit *edtFontFamily;
-   //QSpinBox *spnFontSize;
    CInfoField *nfoFont;
    QPushButton *btnFont;
-   //QComboBox *cmbFontCharSet;
-
-   /*QGroupBox *boxColor;
-   QLabel *lblColorOnline, *lblColorAway, *lblColorOffline, *lblColorNew,
-          *lblColorBackground, *lblColorGridLines;
-   QLineEdit *edtColorOnline, *edtColorAway, *edtColorOffline, *edtColorNew,
-             *edtColorBackground, *edtColorGridLines;*/
-
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
-             *chkFontStyles, *chkUseDock;
+             *chkFontStyles, *chkUseDock, *chkDockFortyEight;
 
    // columns tab
    QLabel *lblColWidth, *lblColAlign, *lblColInfo;
@@ -69,10 +58,10 @@ protected:
 
    // sounds tab
    QLabel *lblSndPlayer, *lblSndMsg, *lblSndChat, *lblSndUrl,
-          *lblSndFile, *lblSndNotify;
+          *lblSndFile, *lblSndNotify, *lblSndSysMsg;
    QCheckBox *chkOnEvents;
    QLineEdit *edtSndPlayer, *edtSndMsg, *edtSndChat, *edtSndUrl,
-             *edtSndFile, *edtSndNotify;
+             *edtSndFile, *edtSndNotify, *edtSndSysMsg;
    QGroupBox *boxSndEvents;
 
    virtual void hide(void);

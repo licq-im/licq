@@ -163,15 +163,14 @@ void CUserViewItem::setGraphics(ICQUser *u)
       switch (v->colInfo[i].info)
       {
       case COL_ALIAS:
-         setText(i + 1, u->getAlias());
+         setText(i + 1, QString::fromLocal8Bit(u->getAlias()));
          break;
       case COL_UIN:
          sprintf (sTemp, "%ld", u->getUin());
          setText(i + 1, sTemp);
          break;
       case COL_NAME:
-         sprintf(sTemp, "%s %s", u->getFirstName(), u->getLastName());
-         setText(i + 1, sTemp);
+         setText(i + 1, QString::fromLocal8Bit(u->getFirstName()) + " " + QString::fromLocal8Bit(u->getLastName()));
          break;
       case COL_EMAIL:
          setText(i + 1, u->getEmail());

@@ -16,6 +16,7 @@
 #include "log.h"
 #include "translate.h"
 #include "utility.h"
+#include "adduserdlg.h"
 #include "authuserdlg.h"
 #include "editgrp.h"
 #include "searchuserdlg.h"
@@ -205,6 +206,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   bool bUseDock;
   licqConf.ReadBool("UseDock", bUseDock, false);
+  licqConf.ReadBool("Dock64x48", m_bDockIcon48, false);
 
   licqConf.SetSection("startup");
   licqConf.ReadNum("Logon", m_nAutoLogon, 0);
@@ -258,11 +260,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   sprintf(m_szCaption, _("Licq (%s)"), o->getAlias());
 #endif
   gUserManager.DropOwner();
-  setCaption(m_szCaption);
+  setCaption(QString::fromLocal8Bit(m_szCaption));
 
   // Group Combo Box
   cmbUserGroups = new CEComboBox(false, this);
   connect(cmbUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroup(int)));
+
 
   // Widgets controlled completely by the skin
   btnSystem = NULL;
@@ -288,7 +291,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqIcon = NULL;
   if (bUseDock)
   {
-    licqIcon = new IconManager(this, mnuSystem);
+    licqIcon = new IconManager(this, mnuSystem, m_bDockIcon48);
     licqIcon->setDockIconMsg(0, 0);
     licqIcon->setDockIconStatus();
   }
@@ -342,9 +345,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
    {
-     InformUser(this, "You have not yet registered a uin.  Select the\n"
-                      "\"Register\" option from the system menu to\n"
-                      "register an existing uin or create a new one.");
+     InformUser(this, _("You have not yet registered a uin.  Select the\n"
+                        "\"Register\" option from the system menu to\n"
+                        "register an existing uin or create a new one."));
    }
 }
 
@@ -391,8 +394,10 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial = false)
   }
 
   // Group Combo Box
+
   cmbUserGroups->setNamedBgColor(skin->cmbGroups.color.bg);
   cmbUserGroups->setNamedFgColor(skin->cmbGroups.color.fg);
+
 
   // System Button
   if (btnSystem != NULL) delete btnSystem;
@@ -428,7 +433,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial = false)
     menu = new QMenuBar(this);
 #endif
     menu->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    menu->insertItem(skin->btnSys.caption == NULL ? _("&System") : skin->btnSys.caption, mnuSystem);
+    menu->insertItem(skin->btnSys.caption == NULL ?
+                     _("&System") : skin->btnSys.caption,
+                     mnuSystem);
     btnSystem = NULL;
   }
 
@@ -1088,24 +1095,24 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
     if (e->m_eResult == EVENT_SUCCESS)
     {
       char buf[256];
-      sprintf(buf, "Successfully registered, your user identification\n"
-                   "number (UIN) is %ld.  Now log on and update your\n"
-                   "personal info.",
+      sprintf(buf, _("Successfully registered, your user identification\n"
+                     "number (UIN) is %ld.  Now log on and update your\n"
+                     "personal info."),
                    gUserManager.OwnerUin());
-      InformUser(this, buf);
+      InformUser(this, QString::fromLocal8Bit(buf));
       changeStatus(0);
       callFunction(8, false);
     }
     else
     {
-      InformUser(this, "Registration failed.  See network window for details.");
+      InformUser(this, _("Registration failed.  See network window for details."));
     }
     break;
   case ICQ_CMDxSND_AUTHORIZE:
      if (e->m_eResult != EVENT_ACKED)
        gLog.Error("%sError sending autorization.\n", L_ERRORxSTR);
      else
-       InformUser(this, "Authorization granted.");
+       InformUser(this, _("Authorization granted."));
      break;
   default:
      break;
@@ -1200,9 +1207,6 @@ void CMainWindow::saveOptions()
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
-  //licqConf.WriteNum("FontSize", fontSize);
-  //licqConf.WriteStr("FontFamily", fontFamily);
-  //licqConf.WriteNum("FontCharSet", fontCharSetInt);
 #ifdef USE_KDE
   if (defaultFont == kapp->font())
     licqConf.WriteStr("Font", "default");
@@ -1214,18 +1218,13 @@ void CMainWindow::saveOptions()
   else
     licqConf.WriteStr("Font", qApp->font().rawName());
 #endif
-/*  licqConf.WriteStr("ColorOnline", colorOnline);
-  licqConf.WriteStr("ColorOffline", colorOffline);
-  licqConf.WriteStr("ColorAway", colorAway);
-  licqConf.WriteStr("ColorNew", colorNew);
-  licqConf.WriteStr("ColorBackground", colorBackground);
-  licqConf.WriteStr("ColorGridLines", colorGridLines);*/
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
   licqConf.WriteBool("UseDock", licqIcon != NULL);
+  licqConf.WriteBool("Dock64x48", m_bDockIcon48);
 
   // save the column info
   licqConf.WriteNum("NumColumns", (unsigned short)colInfo.size());
@@ -1244,15 +1243,19 @@ void CMainWindow::saveOptions()
 }
 
 
-//-----CMainWindow::aboutBox---------------------------------------------------------------------------
+//-----CMainWindow::aboutBox----------------------------------------------------
 void CMainWindow::aboutBox()
 {
   char about[1024];
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  sprintf (about, _("Licq version %s.\nQt GUI plugin version %s.\n\nAuthor: Graham Roff\nhttp://www.licq.org\n\n%s (%ld)\n%d contacts."), licqDaemon->Version(),
-           VERSION, o->getAlias(), o->getUin(), gUserManager.NumUsers());
+  sprintf (about, _("Licq version %s.\nQt GUI plugin version %s.\n\n"
+                    "Author: Graham Roff\n"
+                    "http://www.licq.org\n\n%s (%ld)\n%d contacts."),
+                  licqDaemon->Version(),
+                  VERSION, o->getAlias(), o->getUin(),
+                  gUserManager.NumUsers());
   gUserManager.DropOwner();
-  InformUser(this, about);
+  InformUser(this, QString::fromLocal8Bit(about));
 }
 
 
@@ -1548,6 +1551,7 @@ void CMainWindow::initMenu(void)
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
+   mnuUserAdm->insertItem(_("&Add User"), this, SLOT(showAddUserDlg()));
    mnuUserAdm->insertItem(_("S&earch for User"), this, SLOT(showSearchUserDlg()));
    mnuUserAdm->insertItem(_("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertSeparator();
@@ -1646,6 +1650,14 @@ void CMainWindow::showSearchUserDlg(void)
 }
 
 
+void CMainWindow::showAddUserDlg(void)
+{
+  AddUserDlg *addUserDlg = new AddUserDlg(licqDaemon);
+  connect (addUserDlg, SIGNAL(signal_updatedUsers()), this, SLOT(updateUserWin()));
+  addUserDlg->show();
+}
+
+
 void CMainWindow::showAuthUserDlg(void)
 {
   AuthUserDlg *authUserDlg = new AuthUserDlg(licqDaemon);
@@ -1689,13 +1701,13 @@ void CMainWindow::slot_register(void)
   if (gUserManager.OwnerUin() != 0)
   {
     char buf[256];
-    sprintf (buf, "You are currently registered as\n"
-                  "UIN: %ld\n"
-                  "Base Directory: %s\n"
-                  "Rerun licq with the -b option to select a new\n"
-                  "base directory and then register a new user.",
+    sprintf (buf, _("You are currently registered as\n"
+                    "UIN: %ld\n"
+                    "Base Directory: %s\n"
+                    "Rerun licq with the -b option to select a new\n"
+                    "base directory and then register a new user."),
                   gUserManager.OwnerUin(), BASE_DIR);
-    InformUser(this, buf);
+    InformUser(this, QString::fromLocal8Bit(buf));
     return;
   }
 
