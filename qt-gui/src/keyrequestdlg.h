@@ -18,7 +18,7 @@
 
 */
 
-#include <qwidget.h>
+#include <qdialog.h>
 
 class CSignalManager;
 class ICQEvent;
@@ -27,17 +27,16 @@ class CICQEventTag;
 class QLabel;
 class QPushButton;
 
-
-class KeyRequestDlg : public QWidget
+class KeyRequestDlg : public QDialog
 {
   Q_OBJECT
 public:
-  KeyRequestDlg(CSignalManager *_sigman, unsigned long nUin, QWidget *parent = NULL);
+  KeyRequestDlg(CSignalManager *_sigman, unsigned long nUin, QWidget *parent = 0);
   virtual ~KeyRequestDlg();
 
 protected:
   unsigned long m_nUin;
-  QPushButton *btn;
+  QPushButton *btnSend, *btnCancel;
   QLabel *lblStatus;
   bool m_bOpen;
 
@@ -45,8 +44,8 @@ protected:
   CICQEventTag *icqEventTag;
 
 protected slots:
-  void cancel();
-  void button();
+  virtual void done(int);
+  void startSend();
   void doneEvent(ICQEvent *);
 };
 

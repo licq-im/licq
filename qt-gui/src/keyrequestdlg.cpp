@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,10 +19,11 @@
 // written by Graham Roff <graham@licq.org>
 // -----------------------------------------------------------------------------
 
+#include <qapplication.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-#include <qapplication.h>
+#include <qtimer.h>
 
 #include "licq_icqd.h"
 #include "keyrequestdlg.h"
@@ -32,7 +34,7 @@
 // -----------------------------------------------------------------------------
 
 KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidget *parent)
-  : QWidget(parent, "KeyRequestDialog", WDestructiveClose)
+  : QDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
 {
   m_nUin = nUin;
   sigman = _sigman;
@@ -44,26 +46,28 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
   QLabel *lbl = new QLabel(tr(
-  "Secure channel is established using\n"
-  "Diffie-Hellman key exchange, and encrypted\n"
-  "using DES XCBC encryption.\n"
-  "This only works with other Licq clients."
-  ), this);
+    "Secure channel is established using\n"
+    "Diffie-Hellman key exchange, and \n"
+    "encrypted using DES XCBC encryption.\n"
+    "This only works with other Licq clients."), this);
   top_lay->addWidget(lbl);
 
   lblStatus = new QLabel(this);
   top_lay->addWidget(lblStatus);
 
-  btn = new QPushButton(tr("&Send"), this);
-  btn->setMinimumWidth(75);
-  btn->setDefault(true);
-  connect(btn, SIGNAL(clicked()), SLOT(button()));
-  top_lay->addWidget(btn);
+  QBoxLayout* lay = new QHBoxLayout(top_lay);
+  lay->addStretch(1);
 
-  QPushButton *btnCancel = new QPushButton(tr("&Close"), this);
+  btnSend = new QPushButton(tr("&Send"), this);
+  btnSend->setMinimumWidth(75);
+  btnSend->setDefault(true);
+  connect(btnSend, SIGNAL(clicked()), SLOT(startSend()));
+  lay->addWidget(btnSend);
+
+  btnCancel = new QPushButton(tr("&Close"), this);
   btnCancel->setMinimumWidth(75);
-  connect(btnCancel, SIGNAL(clicked()), SLOT(cancel()));
-  top_lay->addWidget(btnCancel);
+  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
+  lay->addWidget(btnCancel);
 
   if (gLicqDaemon->CryptoEnabled())
   {
@@ -72,12 +76,14 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
       lblStatus->setText("Ready to close channel");
     else
       lblStatus->setText("Ready to request channel");
+    btnSend->setFocus();
   }
   else
   {
     lblStatus->setText(tr("Client does not support OpenSSL.\n"
                           "Rebuild Licq with OpenSSL support."));
-    btn->setEnabled(false);
+    btnSend->setEnabled(false);
+    btnCancel->setFocus();
   }
 
   gUserManager.DropUser(u);
@@ -102,9 +108,10 @@ KeyRequestDlg::~KeyRequestDlg()
 
 // -----------------------------------------------------------------------------
 
-void KeyRequestDlg::button()
+void KeyRequestDlg::startSend()
 {
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+  btnSend->setEnabled(false);
 
   if (m_bOpen)
   {
@@ -121,9 +128,10 @@ void KeyRequestDlg::button()
 }
 
 
-void KeyRequestDlg::cancel()
+void KeyRequestDlg::done(int r)
 {
-  QWidget::close(true);
+  QDialog::done(r);
+  QTimer::singleShot(0, this, SLOT(close()));
 }
 
 
@@ -142,6 +150,7 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
       result = tr("<font color=\"yellow\">Secure channel already established.</font>\n");
     else
       result = tr("<font color=\"yellow\">Secure channel not established.</font>\n");
+    btnSend->setEnabled(false);
   }
   else
   {
@@ -155,13 +164,19 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
         break;
       case EVENT_SUCCESS:
         if (m_bOpen)
-          result = tr("<font color=\"green\">Secure channel established.</font>\n");
+          result = tr("<font color=\"ForestGreen\">Secure channel established.</font>\n");
         else
           result = tr("<font color=\"blue\">Secure channel closed.</font>\n");
         break;
       default:
         break;
     }
+    if(e->Result() == EVENT_SUCCESS) {
+      btnSend->setEnabled(false);
+      btnCancel->setFocus();
+    }
+    else
+      btnSend->setEnabled(true);
   }
 
   lblStatus->setText(result);
@@ -171,8 +186,9 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
     delete icqEventTag;
     icqEventTag = NULL;
   }
-
-  btn->setEnabled(false);
 }
+
+
+// -----------------------------------------------------------------------------
 
 #include "keyrequestdlg.moc"
