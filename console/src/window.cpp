@@ -151,7 +151,7 @@ void CWindow::wprintf(char *formatIn, ...)
 
    va_start(argp, formatIn);
 
-   while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+   while((formatIn[i]) && (formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
 
    formatOut[j] = '\0';
    *this << formatOut;
@@ -169,44 +169,44 @@ void CWindow::wprintf(char *formatIn, ...)
 //#else
 //         wcolor_set(win, va_arg(argp, short), NULL);
 //#endif
-         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'A':   // more generally set attribute
          i++;
          wattron(win, va_arg(argp, long));
-         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'B':   // more generally set attribute
          i++;
          wattron(win, A_BOLD);
-         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'b':   // more generally set attribute
          i++;
          wattroff(win, A_BOLD);
-         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'Z':   // more generally clear attribute
          i++;
          wattroff(win, va_arg(argp, long));
-         while(((formatIn[i]) && formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         while(((formatIn[i]) && formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
          break;
       case 'f': break; //can't cast a float right.
       default:
          formatOut[j++] = '%';
-         while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
+         while((formatIn[i]) && (formatIn[i] != '%') && j < 1022)  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
-         sprintf(out, formatOut, va_arg(argp, long)); //use a double to make sure we get all of the arg (up to 64 bits).
+         snprintf(out, 1024, formatOut, va_arg(argp, long)); //use a double to make sure we get all of the arg (up to 64 bits).
          *this << out;
          break;
       }
