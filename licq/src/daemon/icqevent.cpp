@@ -8,8 +8,8 @@
 
 
 //-----ICQEvent::constructor----------------------------------------------------
-ICQEvent::ICQEvent(int _nSocketDesc, CPacket *p, EConnect _eConnect,
-                   unsigned long _nUin, CUserEvent *e)
+ICQEvent::ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p,
+                   EConnect _eConnect, unsigned long _nUin, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
 {
   // set up internal variables
@@ -25,6 +25,7 @@ ICQEvent::ICQEvent(int _nSocketDesc, CPacket *p, EConnect _eConnect,
   m_sExtendedAck = NULL;
   m_sSearchAck = NULL;
   m_nSubResult = 0;
+  m_xDaemon = _xDaemon;
   thread_plugin = pthread_self();
 }
 
@@ -50,6 +51,7 @@ ICQEvent::ICQEvent(ICQEvent *e)
   m_nSocketDesc = e->m_nSocketDesc;
   m_sExtendedAck = NULL;
   m_sSearchAck = NULL;
+  m_xDaemon = e->m_xDaemon;
   thread_plugin = e->thread_plugin;
   thread_send = e->thread_send;
 }

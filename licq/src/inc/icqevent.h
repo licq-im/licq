@@ -10,6 +10,7 @@
 #include "message.h"
 
 class CPacket;
+class CICQDaemon;
 
 struct SExtendedAck
 {
@@ -34,7 +35,8 @@ enum EEventResult { EVENT_ACKED, EVENT_SUCCESS, EVENT_FAILED, EVENT_TIMEDOUT, EV
 class ICQEvent
 {
 public:
-  ICQEvent(int _nSocketDesc, CPacket *p, EConnect _eConnect, unsigned long _nUin, CUserEvent *e);
+  ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, EConnect _eConnect,
+           unsigned long _nUin, CUserEvent *e);
   ICQEvent(ICQEvent *);
   ~ICQEvent(void);
 
@@ -56,6 +58,8 @@ public:
   CUserEvent    *m_xUserEvent;
   SExtendedAck  *m_sExtendedAck;
   SSearchAck    *m_sSearchAck;
+
+  CICQDaemon    *m_xDaemon;
 };
 
 

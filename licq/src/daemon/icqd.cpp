@@ -40,6 +40,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   m_nUDPSocketDesc = -1;
   m_nTCPSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
+  m_bShuttingDown = false;
 
   // Begin parsing the config file
   sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
@@ -156,19 +157,19 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
 
   // Start up our threads
   gLog.Info("%sInitializing thread data.\n", L_INITxSTR);
-  pthread_mutex_init(&mutex_pendingevents, NULL);
+  /*pthread_mutex_init(&mutex_pendingevents, NULL);
   pthread_cond_init(&cond_pendingevents, NULL);
-  pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_doneevents, NULL);
-  pthread_cond_init(&cond_doneevents, NULL);
+  pthread_cond_init(&cond_doneevents, NULL);*/
+  pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
   pthread_mutex_init(&mutex_plugins, NULL);
 }
 
 
-int CICQDaemon::Start(void)
+bool CICQDaemon::Start(void)
 {
-  char buf[MAX_FILENAME_LEN];
+  char sz[MAX_FILENAME_LEN];
   int nResult = 0;
 
   gLog.Info("%sStarting TCP server.\n", L_INITxSTR);
@@ -176,12 +177,12 @@ int CICQDaemon::Start(void)
   if (!s->StartServer(m_nTcpServerPort))    // start up the TCP server
   {
      gLog.Error("%sUnable to allocate TCP port for local server (%s)!\n",
-                L_ERRORxSTR, s->ErrorStr(buf, 128));
-     return EXIT_STARTxSERVERxFAIL;
+                L_ERRORxSTR, s->ErrorStr(sz, 128));
+     return false;
   }
   m_nTCPSocketDesc = s->Descriptor();
   gSocketManager.AddSocket(s);
-  gLog.Info("%sTCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(buf), s->LocalPort());
+  gLog.Info("%sTCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(sz), s->LocalPort());
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetIpPort(s->LocalIp(), s->LocalPort());
   gUserManager.DropOwner();
@@ -189,22 +190,34 @@ int CICQDaemon::Start(void)
 
 #ifdef USE_FIFO
   // Open the fifo
-  sprintf(buf, "%s/licq_fifo", BASE_DIR);
+  sprintf(sz, "%s/licq_fifo", BASE_DIR);
   gLog.Info("%sOpening fifo.\n", L_INITxSTR);
-  fifo_fd = open(buf, O_RDWR);
+  fifo_fd = open(sz, O_RDWR);
   if (fifo_fd == -1)
   {
-    if (mkfifo(buf, 00600) == -1)
+    if (mkfifo(sz, 00600) == -1)
       gLog.Warn("%sUnable to create fifo:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     else
     {
-      fifo_fd = open(buf, O_RDWR);
+      fifo_fd = open(sz, O_RDWR);
       if (fifo_fd == -1)
         gLog.Warn("%sUnable to open fifo:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     }
   }
   fifo_fs = NULL;
-  if (fifo_fd != -1) fifo_fs = fdopen(fifo_fd, "r");
+  if (fifo_fd != -1)
+  {
+    struct stat buf;
+    fstat(fifo_fd, &buf);
+    if (!S_ISFIFO(buf.st_mode))
+    {
+      gLog.Warn("%s%s is not a FIFO, disabling fifo support.\n", L_WARNxSTR, buf);
+      close(fifo_fd);
+      fifo_fd = -1;
+    }
+    else
+      fifo_fs = fdopen(fifo_fd, "r");
+  }
 #else
   fifo_fs = NULL;
   fifo_fd = -1;
@@ -215,15 +228,15 @@ int CICQDaemon::Start(void)
   if (nResult != 0)
   {
     gLog.Error("%sUnable to start socket monitor thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
-    return EXIT_THREADxFAIL;
+    return false;
   }
   nResult = pthread_create(&thread_ping, NULL, &Ping_tep, this);
   if (nResult != 0)
   {
     gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
-    return EXIT_THREADxFAIL;
+    return false;
   }
-  nResult = pthread_create(&thread_pendingevents , NULL, &ProcessPendingEvents_tep, this);
+  /*nResult = pthread_create(&thread_pendingevents , NULL, &ProcessPendingEvents_tep, this);
   if (nResult != 0)
   {
     gLog.Error("%sUnable to start pending events thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
@@ -234,10 +247,10 @@ int CICQDaemon::Start(void)
   {
     gLog.Error("%sUnable to start done events thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return EXIT_THREADxFAIL;
-  }
+  }*/
 
   //gLog.Info("%sDaemon succesfully started.\n", L_INITxSTR);
-  return EXIT_SUCCESS;
+  return true;
 }
 
 
@@ -295,9 +308,9 @@ CICQDaemon::~CICQDaemon(void)
 pthread_t *CICQDaemon::Shutdown(void)
 {
   static pthread_t *thread_shutdown = (pthread_t *)malloc(sizeof(pthread_t));
-  static bool bShuttingDown = false;
-  if (bShuttingDown) return(thread_shutdown);
-  bShuttingDown = true;
+  if (m_bShuttingDown) return(thread_shutdown);
+  // Small race condition here if multiple plugins call shutdown at the same time
+  m_bShuttingDown = true;
   SaveUserList();
   pthread_create (thread_shutdown, NULL, &Shutdown_tep, this);
   return (thread_shutdown);
@@ -480,14 +493,15 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 
 
 //-----AddUserEvent-----------------------------------------------------------
-void CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
+bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 {
   if (u->User()) e->AddToHistory(u, D_RECEIVER);
   // Don't log a user event if this user is on the ignore list
-  if (u->IgnoreList()) return;
+  if (u->IgnoreList()) return false;
   u->AddEvent(e);
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->getUin()));
+  return true;
 }
 
 
@@ -529,13 +543,30 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConn
 ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect,
                                       unsigned long _nDestinationUin, CUserEvent *ue)
 {
-  ICQEvent *e = new ICQEvent(_nSD, packet, _eConnect, _nDestinationUin, ue);
+  // If we are already shutting down, don't start any events
+  if (m_bShuttingDown) return NULL;
 
-  pthread_mutex_lock(&mutex_pendingevents);
+  ICQEvent *e = new ICQEvent(this, _nSD, packet, _eConnect, _nDestinationUin, ue);
+
+  /*pthread_mutex_lock(&mutex_pendingevents);
   m_lxPendingEvents.push_back(e);
   pthread_mutex_unlock(&mutex_pendingevents);
   DEBUG_THREADS("[SendExpectEvent] Throwing pending event.\n");
-  pthread_cond_signal(&cond_pendingevents);
+  pthread_cond_signal(&cond_pendingevents);*/
+
+  pthread_mutex_lock(&mutex_runningevents);
+  m_lxRunningEvents.push_back(e);
+  pthread_mutex_unlock(&mutex_runningevents);
+
+  DEBUG_THREADS("[SendExpectEvent] Throwing running event.\n");
+  int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_tep, e);
+  if (nResult != 0)
+  {
+    gLog.Warn("%sUnable to start event thread (#%d):\n%s%s.\n", L_ERRORxSTR,
+              e->m_nSequence, L_BLANKxSTR, strerror(nResult));
+    e->m_eResult = EVENT_ERROR;
+    ProcessDoneEvent(e);
+  }
 
   return (e);
 }
@@ -635,7 +666,7 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EEventResult
   return(e);
 }
 
-
+#if 0
 /*------------------------------------------------------------------------------
  * PushDoneEvent
  *
@@ -649,6 +680,107 @@ void CICQDaemon::PushDoneEvent(ICQEvent *e)
   pthread_mutex_unlock(&mutex_doneevents);
   pthread_cond_signal(&cond_doneevents);
 }
+#endif
+/*------------------------------------------------------------------------------
+ * ProcessDoneEvent
+ *
+ * Processes the given event possibly passes the result to the gui.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
+{
+  static unsigned short s_nPingTimeOuts = 0;
+
+  // Determine this now as later we might have deleted the event
+  unsigned short nCommand = e->m_nCommand;
+  EEventResult eResult = e->m_eResult;
+
+  // Write the event to the history file if appropriate
+  if (e->m_xUserEvent != NULL)
+  {
+    ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+    if (u != NULL)
+    {
+      e->m_xUserEvent->AddToHistory(u, D_SENDER);
+      gUserManager.DropUser(u);
+    }
+  }
+
+  // Process the event
+  switch (e->m_nCommand)
+  {
+  // Ping is always sent by the daemon
+  case ICQ_CMDxSND_PING:
+    if (e->m_eResult == EVENT_ACKED)
+      s_nPingTimeOuts = 0;
+    else
+    {
+      s_nPingTimeOuts++;
+      if (s_nPingTimeOuts > MAX_PING_TIMEOUTS)
+      {
+        s_nPingTimeOuts = 0;
+        icqRelogon();
+      }
+    }
+    break;
+
+  // Regular events
+  case ICQ_CMDxSND_SETxSTATUS:
+  case ICQ_CMDxTCP_START:
+  case ICQ_CMDxSND_THRUxSERVER:
+  case ICQ_CMDxSND_USERxADD:
+  case ICQ_CMDxSND_USERxLIST:
+  case ICQ_CMDxSND_SYSxMSGxREQ:
+  case ICQ_CMDxSND_SYSxMSGxDONExACK:
+  case ICQ_CMDxSND_AUTHORIZE:
+  case ICQ_CMDxSND_VISIBLExLIST:
+  case ICQ_CMDxSND_INVISIBLExLIST:
+    PushPluginEvent(e);
+    break;
+
+  // Extended events
+  case ICQ_CMDxSND_LOGON:
+  case ICQ_CMDxSND_USERxGETINFO:
+  case ICQ_CMDxSND_USERxGETDETAILS:
+  case ICQ_CMDxSND_UPDATExDETAIL:
+  case ICQ_CMDxSND_UPDATExBASIC:
+  case ICQ_CMDxSND_SEARCHxSTART:
+  case ICQ_CMDxSND_REGISTERxUSER:
+    switch (e->m_eResult)
+    {
+    case EVENT_ERROR:
+    case EVENT_TIMEDOUT:
+    case EVENT_FAILED:
+    case EVENT_SUCCESS:
+      PushPluginEvent(e);
+      break;
+    case EVENT_ACKED:  // push to extended event list
+      PushExtendedEvent(e);
+      break;
+    default:
+      gLog.Error("%sInternal error: ProcessDoneEvents_tep(): Invalid result for extended event (%d).\n",
+                 L_ERRORxSTR, e->m_eResult);
+      delete e;
+      return;
+    }
+    break;
+
+  default:
+    gLog.Error("%sInternal error: ProcessDoneEvents_tep(): Unknown command (%04X).\n",
+               L_ERRORxSTR, e->m_nCommand);
+    delete e;
+    return;
+  }
+
+  // Some special commands to deal with
+  if (nCommand == ICQ_CMDxSND_SETxSTATUS && eResult == EVENT_ACKED)
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    ChangeUserStatus(o, m_nDesiredStatus);
+    gUserManager.DropOwner();
+  }
+
+}
+
 
 
 /*------------------------------------------------------------------------------
@@ -922,7 +1054,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
 
     if (nStatus == ICQ_STATUS_OFFLINE)
     {
-      if (!b) icqLogoff(false);
+      if (!b) icqLogoff();
     }
     else
     {

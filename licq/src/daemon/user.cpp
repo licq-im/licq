@@ -123,7 +123,7 @@ bool CUserManager::Load(void)
   m_bAllowSave = true;
 
   licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
-  if(m_nDefaultGroup < 0)
+  if(m_nDefaultGroup >=  1024)
       m_nDefaultGroup = 0;
   licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
   licqConf.CloseFile();

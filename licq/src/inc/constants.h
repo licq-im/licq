@@ -40,6 +40,8 @@ const unsigned short MAX_WAIT_PLUGIN               = 10;
 const unsigned short USER_HASH_SIZE                = 128;
 const unsigned short SOCKET_HASH_SIZE              = 127;
 const unsigned long  LOCALHOST                     = 0x0100007F;
+const unsigned short LOGON_ATTEMPT_DELAY           = 300;
+const unsigned short MAX_PING_TIMEOUTS             = 3;
 
 // Thread constants
 const unsigned short LOCK_N                        = 0;
@@ -48,12 +50,6 @@ const unsigned short LOCK_W                        = 2;
 
 #define PIPE_READ  0
 #define PIPE_WRITE 1
-#define EXIT_SUCCESS     0
-#define EXIT_EXCEPTION   1
-#define EXIT_THREADxFAIL 2
-#define EXIT_STARTxSERVERxFAIL 3
-#define EXIT_INSTALLxFAIL 4
-#define EXIT_LOADxUSERSxFAIL 5
 
 
 #endif

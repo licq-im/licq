@@ -425,8 +425,8 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
           break;
         }
       }
+      if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
@@ -456,6 +456,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // translating string with Translation Table
       gTranslator.ServerToClient(szUrl[0]);
       CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], ICQ_CMDxTCP_START, TIME_NOW, nMask | licqVersion);
+      delete []szUrl;
 
       // Add the user to our list if they are new
       if (bNewUser)
@@ -463,7 +464,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         if (!AllowNewUsers())
         {
           RejectEvent(checkUin, e);
-          delete []szUrl;
           break;
         }
         u->Unlock();
@@ -483,20 +483,18 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
         {
           delete e;
-          delete []szUrl;
           break;
         }
       }
 
       // format the url and url description into a message and add it to the users list
+      if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_URL, u);
-      AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
-      delete []szUrl;
       break;
     }
 
@@ -524,8 +522,8 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
+      if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-      AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
@@ -567,8 +565,8 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
+      if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_FILE, u);
-      AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
@@ -599,13 +597,14 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       }
       CEventContactList *e = new CEventContactList(vszFields, ICQ_CMDxTCP_START,
                                                    TIME_NOW, nMask | licqVersion);
+      delete[] szFields;
+
       // Add the user to our list if they are new
       if (bNewUser)
       {
         if (!AllowNewUsers())
         {
           RejectEvent(checkUin, e);
-          delete[] szFields;
           break;
         }
         u->Unlock();
@@ -625,19 +624,17 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
         {
           delete e;
-          delete [] szFields;
           break;
         }
       }
 
+      if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
-      delete[] szFields;
       break;
     }
     default:
@@ -754,7 +751,9 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     {
       e->m_sExtendedAck = sExtendedAck;
       e->m_nSubResult = nSubResult;
-      PushDoneEvent(e);
+      gUserManager.DropUser(u);
+      ProcessDoneEvent(e);
+      return true;
     }
     else if (sExtendedAck != NULL)
       delete sExtendedAck;
