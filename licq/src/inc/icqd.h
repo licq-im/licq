@@ -95,6 +95,7 @@ public:
   ICQEvent *icqLogon(unsigned long logonStatus);
   ICQEvent *icqUserBasicInfo(unsigned long);
   ICQEvent *icqUserExtendedInfo(unsigned long);
+  ICQEvent *icqRequestMetaInfo(unsigned long);
   ICQEvent *icqUpdateBasicInfo(const char *, const char *, const char *,
                                        const char *, bool);
   ICQEvent *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
