@@ -1653,12 +1653,16 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     delete buf;
   }
 
+#if 0
+  // !!! This causes problems for UINs that are > 0x07FFFFFF !!!
   // Check if uin is backwards, what the fuck is with icq99b?
   if (nUin > 0x07FFFFFF)
   {
     nUin = ((nUin & 0x000000FF) << 24) + ((nUin & 0x0000FF00) << 8) +
            ((nUin & 0x00FF0000) >> 8)  + ((nUin & 0xFF000000) >> 24);
   }
+#endif
+
   // Swap high and low bytes for strange new icq99
   if ((newCommand > 0x00FF) && !(newCommand & ICQ_CMDxSUB_FxMULTIREC))
   {
