@@ -1959,6 +1959,8 @@ void UserSendFileEvent::resetSettings()
   mleSend->clear();
   edtItem->clear();
   mleSend->setFocus();
+  m_lFileList.clear();
+  btnEdit->setEnabled(false);
   massMessageToggled( false );
 }
 
