@@ -906,7 +906,6 @@ void ICQUser::RemoveFiles(void)
 void ICQUser::Init(unsigned long _nUin)
 {
   m_szAutoResponse = NULL;
-  m_szAbout = NULL;
 
   // General Info
   m_szAlias = NULL;
@@ -947,6 +946,9 @@ void ICQUser::Init(unsigned long _nUin)
   m_szCompanyDepartment = NULL;
   m_szCompanyPosition = NULL;
   m_szCompanyHomepage = NULL;
+
+  // About
+  m_szAbout = NULL;
 
   m_nUin = _nUin;
   SetStatus(ICQ_STATUS_OFFLINE);
