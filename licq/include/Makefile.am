@@ -10,7 +10,7 @@ include_HEADERS = \
   licq_file.h          licq_onevent.h        licq_user.h \
   licq_filetransfer.h  licq_packets.h        licq_utility.h \
   licq_history.h       licq_plugin.h         pthread_rdwr.h \
-  licq_plugind.h
+  licq_plugind.h       licq_color.h
 
 #man_MANS = licq.1
 
