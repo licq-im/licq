@@ -27,6 +27,8 @@
 #include <qmotifstyle.h>
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
+#include <qsgistyle.h>
+#include <qinterlacestyle.h>
 #include <qsessionmanager.h>
 #include <qaccel.h>
 #if QT_VERSION >= 220
@@ -57,7 +59,7 @@ const char *LP_Usage(void)
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / JFC / GTK), ignored by KDE support\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / JFC / GTK / SGI / LCD), ignored by KDE support\n"
     " -d : start hidden (dock icon only)\n";
   return usage;
 }
@@ -136,6 +138,10 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = new QPlatinumStyle;
   else if (strncmp(_szStyle, "CDE", 3) == 0)
     s = new QCDEStyle;
+  else if (strncmp( _szStyle, "SGI", 3 ) == 0 )
+    s = new QSGIStyle;
+  else if (strncmp( _szStyle, "LCD", 3 ) == 0 )
+    s = new QInterlaceStyle;
   else if (strncmp(_szStyle, "JFC", 3) == 0)
     s = new JFCStyle;
 #if QT_VERSION >= 220
@@ -241,10 +247,10 @@ CLicqGui::CLicqGui(int argc, char **argv)
         style = SetStyle(buf);
       fclose(f);
     }
-    if (style == NULL) style = new STYLE;
   }
 
-  setStyle(style);
+  if ( style )
+    setStyle(style);
 #endif
   m_szSkin = strdup(skinName);
   m_szIcons = strdup(iconsName);
