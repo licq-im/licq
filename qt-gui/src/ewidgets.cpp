@@ -73,7 +73,11 @@ void CELabel::setNamedFgColor(char *theColor)
    if (!c.isValid()) return;
 
    QPalette pal(palette());
-
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(c, normal.background(), normal.light(), normal.dark(),
+                         normal.mid(), c, normal.base());
+   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+#if 0
 #if QT_VERSION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Foreground, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Foreground, c);
@@ -83,6 +87,7 @@ void CELabel::setNamedFgColor(char *theColor)
 #endif
 
    setPalette(pal);
+#endif
 }
 
 
