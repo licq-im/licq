@@ -584,7 +584,8 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   else
     u->SetStatus(s);
 
-  if (m_nAllowUpdateUsers <= 0)
+  u->Touch();
+  //if (m_nAllowUpdateUsers <= 0)
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                     USER_STATUS, u->Uin()));
 }
@@ -604,6 +605,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
     return false;
   }
   u->AddEvent(e);
+  u->Touch();
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->Uin()));
   return true;
@@ -1117,7 +1119,7 @@ bool CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 unsigned long CICQDaemon::StringToStatus(char *_szStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned long nStatus = o->StatusFlags();
+  unsigned long nStatus = o->AddStatusFlags(0);
   gUserManager.DropOwner();
 
   if (_szStatus[0] == '*')

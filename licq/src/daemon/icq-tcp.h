@@ -450,10 +450,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       }
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
     case ICQ_CMDxTCP_READxNAxMSG:
@@ -521,10 +521,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // format the url and url description into a message and add it to the users list
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_URL, u);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       break;
     }
@@ -555,10 +555,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       break;
     }
@@ -598,10 +598,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_FILE, u);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
 
@@ -669,10 +669,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       break;
     }
@@ -815,10 +815,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                u->GetAlias(), checkUin);
       CEventChatCancel *e = new CEventChatCancel(0, TIME_NOW, E_DIRECT);
       AddUserEvent(u, e);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -827,10 +827,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                L_TCPxSTR, u->GetAlias(), checkUin);
       CEventFileCancel *e = new CEventFileCancel(0, TIME_NOW, E_DIRECT);
       AddUserEvent(u, e);
-      gUserManager.DropUser(u);
-      u = gUserManager.FetchUser(checkUin, LOCK_R);
-      gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
+      //gUserManager.DropUser(u);
+      //u = gUserManager.FetchUser(checkUin, LOCK_R);
+      //gUserManager.Reorder(u);
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
 

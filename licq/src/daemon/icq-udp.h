@@ -115,7 +115,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 
 
 //-----ICQ::Logon---------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqLogon(unsigned long logonStatus)
+CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o->Uin() == 0)
@@ -125,15 +125,16 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned long logonStatus)
     return NULL;
   }
   char *passwd = strdup(o->Password());
+  unsigned long status = o->AddStatusFlags(logonStatus);
   gUserManager.DropOwner();
   INetSocket *s = gSocketManager.FetchSocket(m_nTCPSocketDesc);
   if (s == NULL) return NULL;
-  CPU_Logon *p = new CPU_Logon(s, passwd, logonStatus);
+  CPU_Logon *p = new CPU_Logon(s, passwd, status);
   gSocketManager.DropSocket(s);
   free (passwd);
   gLog.Info("%sRequesting logon (#%d)...\n", L_UDPxSTR, p->getSequence());
   m_nServerAck = p->getSequence() - 1;
-  m_nDesiredStatus = logonStatus;
+  m_nDesiredStatus = status;
   m_tLogonTime = time(NULL);
   ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
   CICQEventTag *t = NULL;
@@ -170,7 +171,6 @@ void CICQDaemon::icqLogoff(void)
 {
   // Kill the udp socket asap to avoid race conditions
   int nSD = m_nUDPSocketDesc;
-  m_nAllowUpdateUsers = 0;
   m_nUDPSocketDesc = -1;
   /*
   UDPSocket *s = (UDPSocket *)gSocketManager.FetchSocket(nSD);
@@ -220,7 +220,6 @@ void CICQDaemon::icqLogoff(void)
 //-----icqUpdateContactList-----------------------------------------------------
 void CICQDaemon::icqUpdateContactList(void)
 {
-  m_nAllowUpdateUsers = 0;
   unsigned short n = 0;
   UinList uins;
   FOR_EACH_USER_START(LOCK_W)
@@ -232,7 +231,6 @@ void CICQDaemon::icqUpdateContactList(void)
       CPU_ContactList *p = new CPU_ContactList(uins);
       gLog.Info("%sUpdating contact list (#%d)...\n", L_UDPxSTR, p->getSequence());
       SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-      m_nAllowUpdateUsers++;
       uins.clear();
       n = 0;
     }
@@ -245,10 +243,7 @@ void CICQDaemon::icqUpdateContactList(void)
     CPU_ContactList *p = new CPU_ContactList(uins);
     gLog.Info("%sUpdating contact list (#%d)...\n", L_UDPxSTR, p->getSequence());
     SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-    m_nAllowUpdateUsers++;
   }
-
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
 }
 
 
@@ -313,11 +308,15 @@ void CICQDaemon::icqPing()
 
 
 //-----icqSetStatus-------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetStatus(unsigned long newStatus)
+CICQEventTag *CICQDaemon::icqSetStatus(unsigned short newStatus)
 {
-  CPU_SetStatus *p = new CPU_SetStatus(newStatus);
+  // Set the status flags
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned long s = o->AddStatusFlags(newStatus);
+  gUserManager.DropOwner();
+  CPU_SetStatus *p = new CPU_SetStatus(s);
   gLog.Info("%sChanging status (#%d)...\n", L_UDPxSTR, p->getSequence());
-  m_nDesiredStatus = newStatus;
+  m_nDesiredStatus = s;
   ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
   CICQEventTag *t = NULL;
   if (e != NULL) t = new CICQEventTag(e);
@@ -486,6 +485,20 @@ CICQEventTag *CICQDaemon::icqSetAbout(const char *szAbout)
 }
 
 
+//-----icqSetPassword--------------------------------------------------------
+CICQEventTag *CICQDaemon::icqSetPassword(const char *szPassword)
+{
+  CPU_Meta_SetPassword *p = new CPU_Meta_SetPassword(szPassword);
+  gLog.Info("%sUpdating password (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t =  new CICQEventTag(e);
+  return (t);
+}
+
+
 //-----icqRequestMetaInfo----------------------------------------------------
 CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 {
@@ -631,11 +644,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     u->SetAutoResponse(NULL);
     if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
-    u = gUserManager.FetchUser(nUin, LOCK_R);
-    gUserManager.Reorder(u);  // put the user at the top of the list
-    gUserManager.DropUser(u);
-    if (m_nAllowUpdateUsers <= 0)
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+    //u = gUserManager.FetchUser(nUin, LOCK_R);
+    //gUserManager.Reorder(u);  // put the user at the top of the list
+    //gUserManager.DropUser(u);
+    //if (m_nAllowUpdateUsers <= 0)
+    //  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -656,10 +669,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
               nUin);
     ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
     gUserManager.DropUser(u);
-    u = gUserManager.FetchUser(nUin, LOCK_R);
-    gUserManager.Reorder(u);
-    gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+    //u = gUserManager.FetchUser(nUin, LOCK_R);
+    //gUserManager.Reorder(u);
+    //gUserManager.DropUser(u);
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -880,20 +893,18 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
               (u ? u->GetAlias() : "Unknown user"), nUin, s);
     ChangeUserStatus(u, nNewStatus);
     gUserManager.DropUser(u);
-    u = gUserManager.FetchUser(nUin, LOCK_R);
-    gUserManager.Reorder(u);
-    gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+    //u = gUserManager.FetchUser(nUin, LOCK_R);
+    //gUserManager.Reorder(u);
+    //gUserManager.DropUser(u);
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
   case ICQ_CMDxRCV_USERxLISTxDONE:  // end of user list
     /* 02 00 1C 02 05 00 8F 76 20 00 */
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
-    gLog.Info("%sEnd of online users list.\n", L_UDPxSTR);
-    // Possible race condition here...
-    m_nAllowUpdateUsers--;
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
+    gLog.Info("%sLogon complete.\n", L_UDPxSTR);
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
     break;
 
   case ICQ_CMDxRCV_SEARCHxFOUND:  // user found in search
@@ -1121,13 +1132,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 #if ICQ_VERSION != 5
     icqRequestSystemMsg();
 #endif
-
     // Send an update status packet to force hideip/webpresence
     if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS)
     {
       CICQEventTag *t = icqSetStatus(m_nDesiredStatus);
       if (t != NULL) delete t;
     }
+
     break;
   }
 
@@ -1251,11 +1262,11 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     if (AddUserEvent(u, e))
     {
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      u->Unlock();
-      u->Lock(LOCK_R);
-      gUserManager.Reorder(u);
+      //u->Unlock();
+      //u->Lock(LOCK_R);
+      //gUserManager.Reorder(u);
       gUserManager.DropUser(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     }
     else
       gUserManager.DropUser(u);
@@ -1302,11 +1313,11 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     if (AddUserEvent(u, e))
     {
       m_xOnEventManager.Do(ON_EVENT_URL, u);
-      u->Unlock();
-      u->Lock(LOCK_R);
-      gUserManager.Reorder(u);
+      //u->Unlock();
+      //u->Lock(LOCK_R);
+      //gUserManager.Reorder(u);
       gUserManager.DropUser(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     }
     else
       gUserManager.DropUser(u);
@@ -1590,21 +1601,20 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetCountryCode(packet.UnpackUnsignedShort());
           u->SetTimezone(packet.UnpackChar());
           u->SetAuthorization(!packet.UnpackChar());
-          // Unknown (web panel ?)
+          //u->SetWebAware(packet.UnpackChar());
           packet.UnpackChar();
           u->SetHideEmail(packet.UnpackChar());
 
-
-         // translating string with Translation Table
-         gTranslator.ServerToClient(u->GetAlias());
-         gTranslator.ServerToClient(u->GetFirstName());
-         gTranslator.ServerToClient(u->GetLastName());
-         gTranslator.ServerToClient(u->GetCity());
-         gTranslator.ServerToClient(u->GetState());
-         gTranslator.ServerToClient(u->GetPhoneNumber());
-         gTranslator.ServerToClient(u->GetFaxNumber());
-         gTranslator.ServerToClient(u->GetCellularNumber());
-         gTranslator.ServerToClient(u->GetAddress());
+          // translating string with Translation Table
+          gTranslator.ServerToClient(u->GetAlias());
+          gTranslator.ServerToClient(u->GetFirstName());
+          gTranslator.ServerToClient(u->GetLastName());
+          gTranslator.ServerToClient(u->GetCity());
+          gTranslator.ServerToClient(u->GetState());
+          gTranslator.ServerToClient(u->GetPhoneNumber());
+          gTranslator.ServerToClient(u->GetFaxNumber());
+          gTranslator.ServerToClient(u->GetCellularNumber());
+          gTranslator.ServerToClient(u->GetAddress());
 
           u->SetEnableSave(true);
           u->SaveGeneralInfo();
@@ -1638,7 +1648,6 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetCompanyName());
           gTranslator.ServerToClient(u->GetCompanyDepartment());
           gTranslator.ServerToClient(u->GetCompanyPosition());
-
 
           u->SetEnableSave(true);
           u->SaveWorkInfo();
@@ -1764,25 +1773,27 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     }
     case ICQ_CMDxMETA_SECURITYxRSP:
     {
-      /*CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_xPacket;
-      u->SetEnableSave(false);
-      u->SetAuthorization(p->Authorization());
-      p->SetWebAware(p->WebAware());
-      p->SetHideIp(p->HideIp());
-      u->SetEnableSave(true);
-      u->SaveLicqInfo();
-      */
+      CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_xPacket;
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      o->SetEnableSave(false);
+      o->SetAuthorization(p->Authorization());
+      o->SetWebAware(p->WebAware());
+      o->SetHideIp(p->HideIp());
+      o->SetEnableSave(true);
+      o->SaveLicqInfo();
+      gUserManager.DropOwner();
       e->m_nSubResult = META_DONE;
       break;
     }
     case ICQ_CMDxMETA_PASSWORDxRSP:
     {
-      /*u->SetEnableSave(false);
-      u->SetPassword( ((CPU_Meta_SetPassword)e->m_xPacket)->Password());
-      u->SetEnableSave(true);
-      u->SaveLicqInfo();
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      o->SetEnableSave(false);
+      o->SetPassword( ((CPU_Meta_SetPassword *)e->m_xPacket)->m_szPassword);
+      o->SetEnableSave(true);
+      o->SaveLicqInfo();
+      gUserManager.DropOwner();
       e->m_nSubResult = META_DONE;
-      */
       break;
     }
     default:
