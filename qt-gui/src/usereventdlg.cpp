@@ -80,7 +80,6 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   server = s;
   mainwin = m;
   sigman = theSigMan;
-  icqEventTag = 0;
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_bDeleteUser = false;
@@ -1194,6 +1193,10 @@ void UserSendCommon::sendButton()
       gUserManager.DropUser(u);
   }
 
+  unsigned long icqEventTag = 0;
+  if (m_lnEventTag.size())
+    icqEventTag = m_lnEventTag.front();
+
   if (icqEventTag != 0)
   {
     m_sProgressMsg = tr("Sending ");
@@ -1223,7 +1226,18 @@ void UserSendCommon::setText(const QString& txt)
 //-----UserSendCommon::sendDone_common---------------------------------------
 void UserSendCommon::sendDone_common(ICQEvent *e)
 {
-  if ( !e->Equals(icqEventTag) )
+  unsigned long icqEventTag = 0;
+  std::list<unsigned long>::iterator iter;
+  for (iter = m_lnEventTag.begin(); iter != m_lnEventTag.end(); iter++)
+  {
+    if (e->Equals(*iter))
+    {
+      icqEventTag = *iter;
+      break;
+    }
+  }
+
+  if (icqEventTag == 0)
     return;
 
   QString title, result;
@@ -1259,8 +1273,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   setCursor(arrowCursor);
   btnSend->setEnabled(true);
   btnCancel->setText(tr("&Close"));
-  icqEventTag = 0;
-  disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
+
+  m_lnEventTag.pop_front();
+
+  if (m_lnEventTag.size() == 0)
+    disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
 
   if (e == NULL || e->Result() != EVENT_ACKED)
   {
@@ -1326,6 +1343,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
 //-----UserSendCommon::RetrySend---------------------------------------------
 void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 {
+  unsigned long icqEventTag = 0;
   chkSendServer->setChecked(!bOnline);
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
@@ -1358,8 +1376,8 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       if(uins.size() == 0)
         break;
 
-      icqEventTag = server->icqSendContactList(m_nUin, uins,
-       bOnline, nLevel, false, &icqColor);
+      icqEventTag = server->icqSendContactList(m_nUin, uins, bOnline,
+       nLevel, false, &icqColor);
       break;
     }
     case ICQ_CMDxSUB_CHAT:
@@ -1390,6 +1408,9 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     }
   }
 
+  if (icqEventTag)
+    m_lnEventTag.push_back(icqEventTag);
+
   UserSendCommon::sendButton();
 }
 
@@ -1397,6 +1418,10 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 //-----UserSendCommon::cancelSend--------------------------------------------
 void UserSendCommon::cancelSend()
 {
+  unsigned long icqEventTag = 0;
+  if (m_lnEventTag.size())
+    icqEventTag = m_lnEventTag.front();
+
   if (!icqEventTag)
   {
     close();
@@ -1494,6 +1519,10 @@ void UserSendMsgEvent::sendButton()
   #define PARTLEN (MAX_MESSAGE_SIZE - 14)
 
   // do nothing if a command is already being processed
+  unsigned long icqEventTag = 0;
+  if (m_lnEventTag.size())
+    icqEventTag = m_lnEventTag.front();
+
   if (icqEventTag != 0) return;
 
   if(!mleSend->edited() &&
@@ -1564,7 +1593,8 @@ void UserSendMsgEvent::sendButton()
         chkSendServer->isChecked() ? false : true,
         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         chkMass->isChecked(), &icqColor);
-        
+     m_lnEventTag.push_back(icqEventTag);
+   
      wholeMessagePos += messageRaw.length();
   }
   
@@ -1653,10 +1683,12 @@ void UserSendUrlEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
+  unsigned long icqEventTag;
   icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkMass->isChecked(), &icqColor);
+  m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();
 }
@@ -1744,10 +1776,12 @@ void UserSendFileEvent::sendButton()
     return;
   }
 
+  unsigned long icqEventTag;
   icqEventTag = server->icqFileTransfer(m_nUin, codec->fromUnicode(edtItem->text()),
      codec->fromUnicode(mleSend->text()),
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkSendServer->isChecked());
+  m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();
 }
@@ -1862,6 +1896,8 @@ void UserSendChatEvent::resetSettings()
 //-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
 {
+  unsigned long icqEventTag;
+
   if (m_nMPChatPort == 0)
     icqEventTag = server->icqChatRequest(m_nUin,
                                          codec->fromUnicode(mleSend->text()),
@@ -1873,6 +1909,9 @@ void UserSendChatEvent::sendButton()
                                                    m_nMPChatPort,
                                                    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
 						   chkSendServer->isChecked() );
+
+  m_lnEventTag.push_back(icqEventTag);
+
   UserSendCommon::sendButton();
 }
 
@@ -1954,10 +1993,12 @@ void UserSendContactEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
+  unsigned long icqEventTag;
   icqEventTag = server->icqSendContactList(m_nUin, uins,
     chkSendServer->isChecked() ? false : true,
     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
     chkMass->isChecked(), &icqColor);
+  m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();
 }
@@ -2055,6 +2096,11 @@ UserSendSmsEvent::~UserSendSmsEvent()
 //-----UserSendSmsEvent::sendButton--------------------------------------------
 void UserSendSmsEvent::sendButton()
 {
+  unsigned long icqEventTag = 0;
+  if (m_lnEventTag.size())
+    icqEventTag = m_lnEventTag.front();
+
+
   // do nothing if a command is already being processed
   if (icqEventTag != 0) return;
 
@@ -2067,6 +2113,7 @@ void UserSendSmsEvent::sendButton()
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
 
   icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(), m_nUin);
+  m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();
 }

@@ -20,6 +20,8 @@
 #define USEREVENTDLG_H
 
 #include <qwidget.h>
+#include <list>
+
 #include "licq_color.h"
 
 class QBoxLayout;
@@ -71,7 +73,7 @@ protected:
   CICQDaemon *server;
   CMainWindow *mainwin;
   CSignalManager *sigman;
-  unsigned long icqEventTag;
+  std::list<unsigned long> m_lnEventTag;
   QWidget *mainWidget;
   QPushButton *btnHistory, *btnInfo, *btnEncoding, *btnSecure, *btnForeColor, *btnBackColor;
   QPopupMenu * popupEncoding;
