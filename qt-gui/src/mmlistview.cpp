@@ -19,7 +19,6 @@
 #include "config.h"
 #endif
 
-
 #include <qpainter.h>
 #include <qpopupmenu.h>
 #include <qheader.h>
@@ -27,9 +26,6 @@
 #include <qscrollbar.h>
 #include <qdragobject.h>
 
-#include <stdio.h>
-#include <ctype.h>
-#include <math.h>
 #include "mmlistview.h"
 #include "gui-defines.h"
 #include "ewidgets.h"
@@ -107,7 +103,7 @@ CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
   for (unsigned short i = 0; i < colInfo.size(); i++)
   {
     addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);
-    setColumnAlignment(i, pow(2, colInfo[i]->m_nAlign));
+    setColumnAlignment(i, 1<<colInfo[i]->m_nAlign);
   }
 
   setAllColumnsShowFocus (true);
