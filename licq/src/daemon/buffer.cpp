@@ -300,8 +300,8 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
 //-----print--------------------------------------------------------------------
 char *CBuffer::print(char *&p)
 {
-   static const unsigned short BYTES_PER_LINE = 20;
-   static const unsigned long MAX_DATA_SIZE = 1024 * 1024;
+   static const unsigned short BYTES_PER_LINE = 16;
+   static const unsigned long MAX_DATA_SIZE = 32 * 1024;
 
    if (getDataSize() > MAX_DATA_SIZE)
    {

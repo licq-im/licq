@@ -887,7 +887,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
          gLog.Warn("%sUnknown user (%ld) is online.\n", L_WARNxSTR, nUin);
          break;
       }
-      gLog.Info("%s%s (%ld) went online.\n", L_UDPxSTR, u->GetAlias(), nUin);
 
       // read in the relevant user information
       unsigned short userPort;
@@ -901,6 +900,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
              >> newStatus  // initial status of user
              >> tcpVersion
       ;
+
+      gLog.Info("%s%s (%ld) went online (TCP v%01lx).\n", L_UDPxSTR, u->GetAlias(), nUin, tcpVersion&0x0F);
 
       // The packet class will spit out an ip in network order on a little
       // endian machine and in little-endian on a big endian machine

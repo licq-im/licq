@@ -1496,8 +1496,12 @@ void CPacketTcp::InitBuffer_v2()
 void CPacketTcp::PostBuffer_v2()
 {
   buffer->PackUnsignedLong(m_nSequence);
-  buffer->PackChar('L');
-  buffer->PackUnsignedShort(INT_VERSION);
+  // several V2 clients don't like our
+  // extension, so we omit it for them
+  if(m_nVersion != 2) {
+    buffer->PackChar('L');
+    buffer->PackUnsignedShort(INT_VERSION);
+  }
 }
 
 

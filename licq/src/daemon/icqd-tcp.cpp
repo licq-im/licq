@@ -512,7 +512,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
     return -1;
   }
 
-  gLog.Info("%sShaking hands with %s (%ld).\n", L_TCPxSTR, szAlias, nUin);
+  gLog.Info("%sShaking hands with %s (%ld) via TCPv%01x.\n", L_TCPxSTR, szAlias, nUin, nVersion&0x0f);
   nPort = s->LocalPort();
 
   if (!Handshake_Send(s, nUin, nVersion))
@@ -709,9 +709,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
   unsigned short nInVersion = pSock->Version();
 
-  switch (nInVersion)
+  switch (nInVersion&0x07)
   {
+    case 1:
     case 2:
+    case 3:
     {
       packet >> checkUin
              >> version
@@ -724,6 +726,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       break;
     }
     case 4:
+    case 5:
     {
       if (!Decrypt_Client(&packet, 4))
       {
@@ -744,6 +747,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       break;
     }
     case 6:
+    case 7:
     {
       checkUin = pSock->Owner();
       if (!Decrypt_Client(&packet, 6))
@@ -771,7 +775,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   if (checkUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
-    gLog.Unknown("%sInvalid TCP packet(%08lx, %04x, %04x):\n%s\n", L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
+    gLog.Unknown("%sInvalid TCP packet(%08lx, %04x, %04x):\n%s\n",
+                 L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
     delete buf;
     return false;
   }
@@ -1338,7 +1343,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
   default:
     char *buf;
-    gLog.Unknown("%sUnknown TCP packet (command %d):\n%s\n", L_UNKNOWNxSTR, command, packet.print(buf));
+    gLog.Unknown("%sUnknown TCP packet (command 0x%04x):\n%s\n", L_UNKNOWNxSTR, command, packet.print(buf));
     delete [] buf;
     break;
   }
