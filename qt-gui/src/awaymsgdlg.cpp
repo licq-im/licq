@@ -22,11 +22,10 @@
 #include <qpushbutton.h>
 #include <qpopupmenu.h>
 #include <qlayout.h>
-#include <qmultilineedit.h>
-#include <qaccel.h>
 
 #include "awaymsgdlg.h"
 #include "licq_log.h"
+#include "mledit.h"
 #include "optionsdlg.h"
 #include "licq_sar.h"
 #include "licq_user.h"
@@ -43,17 +42,13 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 {
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
-  mleAwayMsg = new QMultiLineEdit(this);
+  mleAwayMsg = new MLEditWrap(true, this);
   // ICQ99b allows 37 chars per line, so we do the same
 #if QT_VERSION >= 210
   mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWidth);
   mleAwayMsg->setWrapColumnOrWidth(37);
 #endif
-  QAccel *a = new QAccel(mleAwayMsg);
-  a->connectItem(a->insertItem(Key_Enter + CTRL),
-                 this, SLOT(ok()));
-  a->connectItem(a->insertItem(Key_Return + CTRL),
-                 this, SLOT(ok()));
+  connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
@@ -198,11 +193,6 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin,
   mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWidth);
   mleAwayMsg->setWrapColumnOrWidth(37);
 #endif
-  QAccel *a = new QAccel(mleAwayMsg);
-  a->connectItem(a->insertItem(Key_Enter + CTRL),
-                 this, SLOT(slot_ok()));
-  a->connectItem(a->insertItem(Key_Return + CTRL),
-                 this, SLOT(slot_ok()));
   top_lay->addWidget(mleAwayMsg);
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
