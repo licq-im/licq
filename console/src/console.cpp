@@ -241,7 +241,8 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we want to receive all signals
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
-  m_bExit = false;
+  m_bExit = false; 
+  _licqDaemon->AddProtocolPlugins();
   licqDaemon = _licqDaemon;
   m_nCurrentGroup = gUserManager.DefaultGroup();
 
@@ -281,7 +282,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   CreateUserList();
   PrintUsers();
 
-  if (gUserManager.OwnerUin() == 0)
+  if (gUserManager.NumOwners() == 0)
   {
     RegistrationWizard();
   }
@@ -511,10 +512,10 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_UPDATExUSER:
     {
-      if (s->Uin() == gUserManager.OwnerUin() && s->SubSignal() == USER_STATUS
+      if (gUserManager.FindOwner(s->Id(), s->PPID()) != NULL && s->SubSignal() == USER_STATUS
           || s->SubSignal() == USER_EVENTS)
         PrintStatus();
-      ICQUser *u = gUserManager.FetchUser(s->Uin(), LOCK_R);
+      ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
       if (u != NULL)
       {
         if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
@@ -534,6 +535,12 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
   case SIGNAL_ADDxSERVERxLIST:
     licqDaemon->icqRenameUser(s->Uin());
     break;
+  case SIGNAL_NEWxPROTO_PLUGIN:
+    //ignore for now
+    break;
+  case SIGNAL_EVENTxID:
+    AddEventTag(s->Id(), s->PPID(), s->Argument());
+    break;
   default:
     gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());
@@ -542,6 +549,27 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
   delete s;
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::AddEventTag
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::AddEventTag(char *_szId, unsigned long _nPPID, unsigned long _nEventTag)
+{
+  if (!_szId || !_nPPID || !_nEventTag)
+    return;
+
+  CData *data;
+  unsigned short i;
+  for (i = 1; i <= MAX_CON; i++)
+  {
+    data = (CData *)winCon[i]->data;
+    if (strcmp(data->szId, _szId) == 0 && data->nPPID == _nPPID)
+    {
+      winCon[i]->event = _nEventTag;
+      break;
+    }
+  }
+} 
+    
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessEvent
@@ -555,6 +583,12 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     return;
   }
 
+  if (e->SNAC() == 0) {
+    // Not from ICQ
+    ProcessDoneEvent(e); //FIXME
+    return;
+  }
+  
   switch (e->SNAC())
   {
     // Event commands for a user
@@ -698,7 +732,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
   }
   if (win == NULL)
   {
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
+    gLog.Warn("%sInternal error: CLicqConsole::ProcessDoneEvent(): Unknown event from daemon: %d.\n",
               L_WARNxSTR, e->SubCommand());
     return;
   }
@@ -1423,16 +1457,16 @@ char *CLicqConsole::CurrentGroupName()
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Info
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_Info(const char *szId, unsigned long nPPID, char *)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL)
     return;
 
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputInfo;
   winMain->state = STATE_QUERY;
-  winMain->data = new CData(nUin);
+  winMain->data = new CData(szId, nPPID);
 
   winMain->wprintf("%C%A"
                    "(G)eneral Info\n"
@@ -1440,9 +1474,9 @@ void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
                    "(W)ork Info\n"
                    "(A)bout Info\n"
                    "(U)pdate Info\n"
-                   "for %s (%ld)? %C%Z",
+                   "for %s (%s)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-                   u->GetAlias(), nUin, COLOR_WHITE, A_BOLD);
+                   u->GetAlias(), szId, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1464,21 +1498,21 @@ void CLicqConsole::InputInfo(int cIn)
     switch(tolower(cIn))
     {
     case 'g':
-      PrintInfo_General(data->nUin);
+      PrintInfo_General(data->szId, data->nPPID);
       break;
     case 'm':
-      PrintInfo_More(data->nUin);
+      PrintInfo_More(data->szId, data->nPPID);
       break;
     case 'w':
-      PrintInfo_Work(data->nUin);
+      PrintInfo_Work(data->szId, data->nPPID);
       break;
     case 'a':
-      PrintInfo_About(data->nUin);
+      PrintInfo_About(data->szId, data->nPPID);
       break;
     case 'u':
       winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
-      winMain->event = licqDaemon->icqRequestMetaInfo(data->nUin);
+      winMain->event = licqDaemon->icqRequestMetaInfo(data->szId);
       winMain->state = STATE_PENDING;
       return;
     case '\r':
@@ -1510,9 +1544,9 @@ void CLicqConsole::InputInfo(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_View
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_View(const char *szId, unsigned long nPPID, char *)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
   if (u == NULL)
     return;
 
@@ -1542,13 +1576,14 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
 
     // Do we want to accept the file transfer?
     if (e->SubCommand() == ICQ_CMDxSUB_FILE)
-      FileChatOffer(e->Sequence(), u->Uin());
+      //FIXME
+      //FileChatOffer(e->Sequence(), u->Uin());
 
     delete e;
     gUserManager.DropUser(u);
     //PrintUsers();
     //PrintStatus();
-    ProcessSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, nUin));
+    ProcessSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, szId, nPPID));
   }
   else
   {
@@ -1562,20 +1597,20 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Remove
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Remove(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_Remove(const char *szId, unsigned long nPPID, char *)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL)
     return;
 
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputRemove;
   winMain->state = STATE_QUERY;
-  winMain->data = new CData(nUin);
+  winMain->data = new CData(szId, nPPID);
 
-  winMain->wprintf("%C%ARemove %s (%ld) from contact list (y/N)? %C%Z",
+  winMain->wprintf("%C%ARemove %s (%s) from contact list (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-                   u->GetAlias(), nUin, COLOR_WHITE, A_BOLD);
+                   u->GetAlias(), szId, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1597,7 +1632,7 @@ void CLicqConsole::InputRemove(int cIn)
     // The input is done
     if (strncasecmp(data->szQuery, "yes", strlen(data->szQuery)) == 0)
     {
-      licqDaemon->RemoveUserFromList(data->nUin);
+      licqDaemon->RemoveUserFromList(data->szId, data->nPPID);
       winMain->wprintf("%C%AUser removed.\n", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
     }
@@ -1626,16 +1661,16 @@ void CLicqConsole::InputRemove(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_FetchAutoResponse
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_FetchAutoResponse(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_FetchAutoResponse(const char *szId, unsigned long nPPID, char *)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%C%AFetching auto-response for %s (%ld)...",
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  winMain->wprintf("%C%AFetching auto-response for %s (%s)...",
                    m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                   u->GetAlias(), nUin);
+                   u->GetAlias(), szId);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 
-  winMain->event = licqDaemon->icqFetchAutoResponse(nUin);
+  winMain->event = licqDaemon->icqFetchAutoResponse(szId, nPPID);
   // InputMessage just to catch the cancel key
   winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->data = NULL;
@@ -1694,9 +1729,11 @@ int StrToRange(char *sz, int nLast, int nStart)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_History
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
+void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, char *szArg)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u == NULL)
+    return;
   HistoryList lHistory;
   if (!u->GetHistory(lHistory))
   {
@@ -1705,9 +1742,10 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
     return;
   }
   char szFrom[32];
-  if (gUserManager.OwnerUin() == nUin)
-    strcpy(szFrom, "Server");
-  else
+  //TODO: FIX THIS:
+  //if (gUserManager.OwnerUin() == nUin)
+  //  strcpy(szFrom, "Server");
+  //else
     strcpy(szFrom, u->GetAlias());
   gUserManager.DropUser(u);
 
@@ -1780,19 +1818,19 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Msg
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_Msg(const char *szId, unsigned long nPPID, char *)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL)
     return;
 
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->state = STATE_MLE;
-  winMain->data = new DataMsg(nUin);
+  winMain->data = new DataMsg(szId, nPPID);
 
-  winMain->wprintf("%BEnter message to %b%s%B (%b%ld%B):\n", u->GetAlias(),
-                   nUin);
+  winMain->wprintf("%BEnter message to %b%s%B (%b%s%B):\n", u->GetAlias(),
+                   szId);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1801,10 +1839,10 @@ void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
 /*---------------------------------------------------------------------------
  * SendDirect
  *-------------------------------------------------------------------------*/
-static bool SendDirect(unsigned long nUin, char c)
+static bool SendDirect(const char *szId, unsigned long nPPID, char c)
 {
   bool bDirect = (c != 's');
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u != NULL)
   {
     if (u->SocketDesc(ICQ_CHNxNONE) == -1 &&
@@ -1860,11 +1898,11 @@ void CLicqConsole::InputMessage(int cIn)
       }
       *sz = '\0';
       sz++;
-      bool bDirect = SendDirect(data->nUin, *sz);
+      bool bDirect = SendDirect(data->szId, data->nPPID, *sz);
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = licqDaemon->icqSendMessage(data->nUin, data->szMsg,
+      winMain->event = licqDaemon->ProtoSendMessage(data->szId, data->nPPID, data->szMsg,
                        bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
@@ -1879,7 +1917,7 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->wprintf("%C%ASending message through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-      winMain->event = licqDaemon->icqSendMessage(data->nUin, data->szMsg,
+      winMain->event = licqDaemon->ProtoSendMessage(data->szId, data->nPPID, data->szMsg,
                        false, false);
       winMain->state = STATE_PENDING;
     }
@@ -1901,16 +1939,16 @@ void CLicqConsole::InputMessage(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_SendFile
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_SendFile(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_SendFile(const char *szId, unsigned long nPPID, char *)
 {
   // Get the file name
   winMain->fProcessInput = &CLicqConsole::InputSendFile;
   winMain->state = STATE_LE;
-  winMain->data = new DataSendFile(nUin);
+  winMain->data = new DataSendFile(szId, nPPID);
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%BEnter file to send to %b%s%B (%b%ld%B):\n",
-                   u->GetAlias(), nUin);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  winMain->wprintf("%BEnter file to send to %b%s%B (%b%s%B):\n",
+                   u->GetAlias(), szId);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1989,7 +2027,7 @@ void CLicqConsole::InputSendFile(int cIn)
 
       *sz = '\0';
       sz++;
-      bool bDirect = SendDirect(data->nUin, *sz);
+      bool bDirect = SendDirect(data->szId, data->nPPID, *sz);
       bDirect = true; // XXX hack
       winMain->wprintf("%C%ASending File %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
@@ -1998,8 +2036,8 @@ void CLicqConsole::InputSendFile(int cIn)
       ConstFileList lFileList;
       lFileList.push_back(strdup(data->szFileName));
 
-      winMain->event = licqDaemon->icqFileTransfer(data->nUin, data->szFileName,
-                       data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
+      winMain->event = licqDaemon->icqFileTransfer(strtoul(data->szId, (char **)NULL, 10),
+		      data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
     }
@@ -2013,7 +2051,7 @@ void CLicqConsole::InputSendFile(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_SetAutoResponse
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_SetAutoResponse(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_SetAutoResponse(const char *szId, unsigned long nPPID, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputAutoResponse;
@@ -2071,16 +2109,16 @@ void CLicqConsole::InputAutoResponse(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Url
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Url(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_Url(const char *szId, unsigned long nPPID, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputUrl;
   winMain->state = STATE_LE;
-  winMain->data = new DataUrl(nUin);
+  winMain->data = new DataUrl(szId, nPPID);
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   winMain->wprintf("%BEnter URL to %b%s%B (%b%ld%B): ",
-                   u->GetAlias(), nUin);
+                   u->GetAlias(), szId);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -2135,11 +2173,11 @@ void CLicqConsole::InputUrl(int cIn)
       }
       *sz = '\0';
       sz++;
-      bool bDirect = SendDirect(data->nUin, *sz);
+      bool bDirect = SendDirect(data->szId, data->nPPID, *sz);
       winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = licqDaemon->icqSendUrl(data->nUin, data->szUrl,
+      winMain->event = licqDaemon->ProtoSendUrl(data->szId, data->nPPID, data->szUrl,
                                               data->szDesc,
                                               bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
@@ -2155,7 +2193,7 @@ void CLicqConsole::InputUrl(int cIn)
     {
       winMain->wprintf("%C%ASending URL through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-      winMain->event = licqDaemon->icqSendUrl(data->nUin, data->szUrl,
+      winMain->event = licqDaemon->ProtoSendUrl(data->szId, data->nPPID, data->szUrl,
                                               data->szDesc, false, false);
       winMain->state = STATE_PENDING;
     }
@@ -2177,16 +2215,16 @@ void CLicqConsole::InputUrl(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Sms
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Sms(unsigned long nUin, char *)
+void CLicqConsole::UserCommand_Sms(const char *szId, unsigned long nPPID, char *)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL)
     return;
 
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputSms;
   winMain->state = STATE_MLE;
-  winMain->data = new DataSms(nUin);
+  winMain->data = new DataSms(szId, nPPID);
   winMain->wprintf("%BEnter SMS to %b%s%B (%b%s%B):\n", u->GetAlias(),
                    u->GetCellularNumber());
   winMain->RefreshWin();
@@ -2231,11 +2269,11 @@ void CLicqConsole::InputSms(int cIn)
       }
       *sz = '\0';
       sz++;
-      ICQUser *u = gUserManager.FetchUser(data->nUin, LOCK_R);
+      ICQUser *u = gUserManager.FetchUser(data->szId, data->nPPID, LOCK_R);
       winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr, u->GetCellularNumber());
       winMain->event = licqDaemon->icqSendSms(u->GetCellularNumber(),
-                       data->szMsg, data->nUin);
+                       data->szMsg, strtoul(data->szId, (char **)NULL, 0));
       gUserManager.DropUser(u);
       winMain->state = STATE_PENDING;
       break;
@@ -2282,15 +2320,15 @@ void CLicqConsole::InputAuthorize(int cIn)
       *sz = '\0';
       if (data->bUrgent)
       {
-        winMain->wprintf("%C%AGranting authorizing to %lu...", m_cColorInfo->nColor,
-                         m_cColorInfo->nAttr, data->nUin);
-        winMain->event = licqDaemon->icqAuthorizeGrant(data->nUin, data->szMsg);
+        winMain->wprintf("%C%AGranting authorizing to %s...", m_cColorInfo->nColor,
+                         m_cColorInfo->nAttr, data->szId);
+        winMain->event = licqDaemon->icqAuthorizeGrant(strtoul(data->szId, (char **)NULL, 10), data->szMsg);
       }
       else
       {
-        winMain->wprintf("%C%ARefusing authorizing to %lu...", m_cColorInfo->nColor,
-                         m_cColorInfo->nAttr, data->nUin);
-        winMain->event = licqDaemon->icqAuthorizeRefuse(data->nUin, data->szMsg);
+        winMain->wprintf("%C%ARefusing authorizing to %s...", m_cColorInfo->nColor,
+                         m_cColorInfo->nAttr, data->szId);
+        winMain->event = licqDaemon->icqAuthorizeRefuse(strtoul(data->szId, (char **)NULL, 10), data->szMsg);
       }
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;
@@ -2490,14 +2528,14 @@ void CLicqConsole::InputSearch(int cIn)
           // Back to 0 for you!
           data->nPos = 0;
 
-          data->nUin = atol(sz);
+          data->szId = sz;
 
-          if (data->nUin != 0)
+          if (data->szId != 0)
           {
             winMain->wprintf("%C%ASearching:\n",
                              m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
-            winMain->event = licqDaemon->icqSearchByUin(data->nUin);
+            winMain->event = licqDaemon->icqSearchByUin(strtoul(data->szId, (char **)NULL, 10));
             winMain->state = STATE_PENDING;
 
             return;
@@ -2980,12 +3018,12 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::FileChatOffer
  *-------------------------------------------------------------------------*/
-void CLicqConsole::FileChatOffer(unsigned long _nSequence, unsigned long _nUin)
+void CLicqConsole::FileChatOffer(unsigned long _nSequence, const char *_szId, unsigned long _nPPID)
 {
   // Get y or n
   winMain->fProcessInput = &CLicqConsole::InputFileChatOffer;
   winMain->state = STATE_QUERY;
-  winMain->data = new DataFileChatOffer(_nSequence, _nUin);
+  winMain->data = new DataFileChatOffer(_nSequence, _szId, _nPPID);
   winMain->wprintf("%C%ADo you wish to accept this request? (y/N) %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
@@ -3013,7 +3051,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
           // Make the ftman
           CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
-                                        data->nUin);
+                                        strtoul(data->szId, (char **)NULL, 10));
           ftman->SetUpdatesEnabled(1);
           m_lFileStat.push_back(ftman);
 
@@ -3022,7 +3060,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           ftman->ReceiveFiles(home);
           // XXX hack
           unsigned long dummy[2] = { 0, 0};
-          licqDaemon->icqFileTransferAccept(data->nUin, ftman->LocalPort(),
+          licqDaemon->icqFileTransferAccept(strtoul(data->szId, (char **)NULL, 10), ftman->LocalPort(),
                                             data->nSequence, dummy, true);
           winMain->fProcessInput = &CLicqConsole::InputCommand;
 
@@ -3054,12 +3092,12 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
       // XXX hack
       unsigned long dummy[2] = { 0, 0 };
-      licqDaemon->icqFileTransferRefuse(data->nUin, data->szReason,
+      licqDaemon->icqFileTransferRefuse(strtoul(data->szId, (char **)NULL, 10), data->szReason,
                                         data->nSequence, dummy, true);
 
       // We are done now
-      winMain->wprintf("%ARefusing file from %ld with reason: %Z%s\n",
-                       A_BOLD, data->nUin, A_BOLD, data->szReason);
+      winMain->wprintf("%ARefusing file from %s with reason: %Z%s\n",
+                       A_BOLD, data->szId, A_BOLD, data->szReason);
       winMain->fProcessInput = &CLicqConsole::InputCommand;
 
       if(winMain->data)
@@ -3076,9 +3114,9 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 /*-------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Secure
  *-----------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
+void CLicqConsole::UserCommand_Secure(const char *szId, unsigned long nPPID, char *szStatus)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
 
   if(!licqDaemon->CryptoEnabled())
   {
@@ -3115,14 +3153,20 @@ void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = licqDaemon->icqOpenSecureChannel(nUin);
+    char *p;
+    unsigned long uin = strtoul(szId, &p,10);
+    if( (p == 0 || (p && !*p)) && nPPID == LICQ_PPID )
+      winMain->event = licqDaemon->icqOpenSecureChannel(uin);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = licqDaemon->icqCloseSecureChannel(nUin);
+    char *p;
+    unsigned long uin = strtoul(szId, &p,10);
+    if( (p == 0 || (p && !*p)) && nPPID == LICQ_PPID )
+      winMain->event = licqDaemon->icqCloseSecureChannel(uin);
   }
   else
   {
@@ -3141,7 +3185,12 @@ void CLicqConsole::UserSelect()
   // Get the input now
   winMain->fProcessInput = &CLicqConsole::InputUserSelect;
   winMain->state = STATE_LE;
-  winMain->data = new DataUserSelect(gUserManager.OwnerUin()); 
+
+  char sz[20];
+  //TODO which owner
+  sprintf(sz, "%lu", gUserManager.OwnerUin());
+  
+  winMain->data = new DataUserSelect(sz, LICQ_PPID); 
   
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   winMain->wprintf("%A%CEnter your password for %s (%lu):%C%Z\n", A_BOLD,

@@ -42,6 +42,7 @@ public:
   InputState state;
   CData *data;
   unsigned long nLastUin;
+  //struct SContact sLastContact;
   unsigned short nLastHistory;
 protected:
   WINDOW *win;

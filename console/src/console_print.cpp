@@ -288,7 +288,8 @@ void CLicqConsole::CreateUserList()
 
     s = new SUser;
     sprintf(s->szKey, "%05u%010lu", pUser->Status(), pUser->Touched() ^ 0xFFFFFFFF);
-    s->nUin = pUser->Uin();
+    sprintf(s->szId, "%s", pUser->IdString());
+    s->nPPID = pUser->PPID();
     s->bOffline = pUser->StatusOffline();
 
     unsigned long iStatus = pUser->StatusFull();
@@ -498,10 +499,10 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_General
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_General(unsigned long nUin)
+void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
 {
   // Print the users info to the main window
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL) return;
 
   // Some IP, Real IP and last seen stuff
@@ -574,10 +575,10 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_More
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_More(unsigned long nUin)
+void CLicqConsole::PrintInfo_More(const char *szId, unsigned long nPPID)
 {
   // Print the users info to the main window
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL) return;
 
   wattron(winMain->Win(), A_BOLD);
@@ -620,10 +621,10 @@ void CLicqConsole::PrintInfo_More(unsigned long nUin)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_Work
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_Work(unsigned long nUin)
+void CLicqConsole::PrintInfo_Work(const char *szId, unsigned long nPPID)
 {
   // Print the users info to the main window
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL) return;
 
   wattron(winMain->Win(), A_BOLD);
@@ -670,10 +671,10 @@ void CLicqConsole::PrintInfo_Work(unsigned long nUin)
 /*----------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_About
  *--------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_About(unsigned long nUin)
+void CLicqConsole::PrintInfo_About(const char *szId, unsigned long nPPID)
 {
   // Print the user's about info to the main window
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL)  return;
 
   wattron(winMain->Win(), A_BOLD);
