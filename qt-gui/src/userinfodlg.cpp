@@ -1134,7 +1134,7 @@ void UserInfoDlg::SaveSettings()
   {
     SaveGeneralInfo();
     CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_nUin);
-    emit signal_updatedUser(&s);
+    gMainWindow->slot_updatedUser(&s);
     break;
   }
   case MoreInfo:
