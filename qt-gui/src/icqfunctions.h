@@ -84,7 +84,7 @@ protected:
 
   // Extended Info tab
   CInfoField *nfoCity, *nfoState, *nfoAge,
-            *nfoPhone, *nfoHomepage;
+            *nfoPhone, *nfoHomepage, *nfoZipcode;
   QLabel *lblSex, *lblCountry;
   CEComboBox *cmbSex, *cmbCountry;
   QGroupBox *boxAboutMsg;

@@ -117,7 +117,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    fcnTab[TAB_DETAILINFO] = new QWidget(this, tabLabel[TAB_DETAILINFO]);
    nfoAge = new CInfoField(5, 5, 45, 5, 100, tr("Age:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    nfoState = new CInfoField(5, 35, 45, 5, 100, tr("State:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
-   nfoCity = new CInfoField(5, 65, 45, 5, width() - MARGIN_RIGHT - 70, tr("City:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
+   nfoCity = new CInfoField(5, 65, 45, 5, 100, tr("City:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    lblCountry = new QLabel(tr("Country:"), fcnTab[TAB_DETAILINFO]);
    cmbCountry = new CEComboBox(true, fcnTab[TAB_DETAILINFO]);
    cmbCountry->insertItem(tr("Unspecified"));
@@ -135,6 +135,8 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    cmbSex->setEnabled(m_bIsOwner);
    nfoPhone = new CInfoField(180, 35, 45, 5, width() - MARGIN_RIGHT - 245,
                              tr("Phone:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
+   nfoZipcode = new CInfoField(180, 65, 45, 5, width() - MARGIN_RIGHT - 245,
+                             tr("Zip:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    boxAboutMsg = new QGroupBox (fcnTab[TAB_DETAILINFO]);
    boxAboutMsg->setFrameStyle(QFrame::Box | QFrame::Sunken);
    boxAboutMsg->setAlignment(AlignLeft);
@@ -233,13 +235,14 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
 
   nfoAge->setGeometry(5, 5, 45, 5, 100);
   nfoState->setGeometry(5, 35, 45, 5, 100);
-  nfoCity->setGeometry(5, 65, 45, 5, width() - MARGIN_RIGHT - 50);
+  nfoCity->setGeometry(5, 65, 45, 5, 100);
   lblCountry->setGeometry(5, 95, 48, 20);
   cmbCountry->setGeometry(55, 95, width() - MARGIN_RIGHT - 50, 20);
   nfoHomepage->setGeometry(5, 125, 65, 5, width() - MARGIN_RIGHT - 70);
   lblSex->setGeometry(180, 5, 45, 20);
   cmbSex->setGeometry(230, 5, width() - MARGIN_RIGHT - 225, 20);
   nfoPhone->setGeometry(180, 35, 45, 5, width() - MARGIN_RIGHT - 225);
+  nfoZipcode->setGeometry(180, 65, 45, 5, width() - MARGIN_RIGHT - 225);
   boxAboutMsg->setGeometry(5, 155, width() - MARGIN_RIGHT, height() - 235);
   mleAboutMsg->setGeometry(10, 15, boxAboutMsg->width() - 20, boxAboutMsg->height() - 25);
 
@@ -422,6 +425,7 @@ void ICQFunctions::setExtInfo(ICQUser *u)
   nfoCity->setData(ud.city);
   nfoState->setData(ud.state);
   nfoPhone->setData(ud.phone);
+  nfoZipcode->setData(ud.zipcode);
   nfoAge->setData(ud.age);
   nfoHomepage->setData(ud.homepage);
   mleAboutMsg->setText(QString::fromLocal8Bit(ud.about));
@@ -675,6 +679,7 @@ void ICQFunctions::saveExtInfo()
   u->setAge(atol(nfoAge->text()));
   u->setSex(cmbSex->currentItem());
   u->setPhoneNumber(nfoPhone->text());
+  u->setZipcode(nfoZipcode->text().toULong());
   u->setHomepage(nfoHomepage->text());
   u->setAbout(mleAboutMsg->text().local8Bit());
   u->setEnableSave(true);
@@ -730,6 +735,24 @@ void ICQFunctions::ShowHistoryNext(void)
   }
 }
 
+void ItalisizeLine(QString &t, QString pre, unsigned short inspos)
+{
+  int i = 0;
+  while ( (i = t.find(pre, i)) != -1)
+  {
+    t.insert(i + inspos, "<i>");
+    i = t.find("<br>", i + inspos);
+    if (i == -1)
+    {
+      t.append("</i>");
+      break;
+    }
+    else
+      t.insert(i, "</i>");
+  }
+}
+
+
 //-----ICQFunctions::ShowHistory--------------------------------------------
 void ICQFunctions::ShowHistory(void)
 {
@@ -749,7 +772,12 @@ void ICQFunctions::ShowHistory(void)
               (*m_iHistoryIter)->IsDirect() ? 'D' : '-',
               (*m_iHistoryIter)->IsMultiRec() ? 'M' : '-',
               (*m_iHistoryIter)->IsUrgent() ? 'U' : '-');
-    s.append(QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*m_iHistoryIter)->Text() )));
+    QString t = QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*m_iHistoryIter)->Text() ));
+    //printf("%s\n", (const char *)t);
+    ItalisizeLine(t, "<p>&gt;", 3);
+    ItalisizeLine(t, "<br>&gt;", 4);
+    //s.append(QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*m_iHistoryIter)->Text() )));
+    s.append(t);
     s.append("</font><br><hr><br>");
     st.append(s);
     m_iHistoryIter++;
@@ -978,7 +1006,8 @@ void ICQFunctions::callFcn()
         icqEvent = server->icqUpdateExtendedInfo(nfoCity->text().local8Bit(), cc,
                                          nfoState->text().local8Bit(), atol(nfoAge->text()),
                                          cmbSex->currentItem(), nfoPhone->text(),
-                                         nfoHomepage->text(), mleAboutMsg->text().local8Bit());
+                                         nfoHomepage->text(), mleAboutMsg->text().local8Bit(),
+                                         nfoZipcode->text().toULong());
      }
      else
      {
