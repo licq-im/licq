@@ -391,7 +391,7 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   s_nMode = MODE_DIRECT;
   m_nLocalPort = _s->LocalPort();
   m_nLogonStatus = _nLogonStatus;
-  m_nTcpVersion = 0x06;//ICQ_VERSION_TCP;
+  m_nTcpVersion = ICQ_VERSION_TCP;
 
 #if ICQ_VERSION == 2
   m_nSize += 6 + strlen(szPassword) + 28;
