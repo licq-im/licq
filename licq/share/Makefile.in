@@ -42,6 +42,7 @@ install:
 	for i in translations/*; do \
 	  $(INSTALL_DATA) $$i $(sharedir)/translations; \
   done
+	$(MKINSTALLDIRS) $(sharedir)/sounds
 #	$(MKINSTALLDIRS) $(mandir)
 #	$(INSTALL_DATA) licq.1 $(mandir)
 
