@@ -391,19 +391,19 @@ convo_send(GtkWidget *widget, conversation *c)
  	** urgently unless the user says to send it to the contact list*/	
 	// i.e. we'll send urgently even when user didn't specifically check
 	// urgent box
-	gboolean urgent =
+	bool urgent =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent));
 	if (!urgent &&
 			(c->user->Status() == ICQ_STATUS_DND || 
 			 c->user->Status() == ICQ_STATUS_OCCUPIED))
-		urgent = TRUE;
+		urgent = true;
 
 	strcpy(c->etag->buf, "Sending message ");
 
-	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)))
-		strcat(c->etag->buf, "directly ... ");
-	else
+	if (send_server)
 		strcat(c->etag->buf, "through server ... ");
+	else
+		strcat(c->etag->buf, "directly ... ");
 	status_change(c->etag->statusbar, "sta", c->etag->buf);
 
 	/* Send the message */
@@ -412,7 +412,7 @@ convo_send(GtkWidget *widget, conversation *c)
 			(send_server ? false : true), 
 			(urgent ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL));
 	g_free(message);
-	
+  
 	/* Take care of the etd buffer and add it to the slist */
 	catcher = g_slist_append(catcher, c->etag);
 }
