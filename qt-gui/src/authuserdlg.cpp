@@ -71,7 +71,7 @@ void AuthUserDlg::hideEvent(QHideEvent*)
 void AuthUserDlg::ok()
 {
   unsigned long nUin = edtUin->text().toULong();
-  if (nUin != 0) server->icqAuthorizeGrant(nUin);
+  if (nUin != 0) server->icqAuthorizeGrant(nUin, "Authorisation granted");
   accept();
 }
 
