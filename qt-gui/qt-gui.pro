@@ -101,6 +101,7 @@ SOURCES += src/adduserdlg.cpp \
 TRANSLATIONS = po/cs_CZ.ts \
                po/de.ts \
                po/es.ts \
+               po/fi.ts \
                po/fr.ts \
                po/it.ts \
                po/ja_JP.eucJP.ts \
