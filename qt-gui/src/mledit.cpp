@@ -4,6 +4,8 @@
 
 #include <qfont.h>
 #include <qpainter.h>
+#include <qaccel.h>
+
 #include "mledit.h"
 
 
@@ -28,6 +30,12 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
   #warning Word wrap is not supported in Qt < 2.1
 #endif
 
+  QAccel *a = new QAccel( this );
+  a->connectItem(a->insertItem(Key_Enter + CTRL),
+                 this, SIGNAL(signal_CtrlEnterPressed()));
+  a->connectItem(a->insertItem(Key_Return + CTRL),
+                 this, SIGNAL(signal_CtrlEnterPressed()));
+
   if (editFont) QWidget::setFont(*editFont, true);
 }
 
@@ -42,16 +50,6 @@ void MLEditWrap::appendNoNewLine(QString s)
 void MLEditWrap::GotoEnd(void)
 {
    setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
-}
-
-void MLEditWrap::keyPressEvent (QKeyEvent *e)
-{
-   if ((e->state() & ControlButton) && (e->key() == Key_Return || e->key() == Key_Enter))
-   {
-     emit signal_CtrlEnterPressed();
-     return;
-   }
-   QMultiLineEdit::keyPressEvent(e);
 }
 
 

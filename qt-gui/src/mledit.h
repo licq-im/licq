@@ -11,14 +11,14 @@ public:
   void appendNoNewLine(QString s);
   void GotoEnd(void);
 
-  static QFont* editFont;
+  static QFont *editFont;
+
 public slots:
   void clear();
 
 protected:
   bool m_bDoQuotes;
-  virtual void keyPressEvent (QKeyEvent *);
-  void paintCell(QPainter* p, int row, int col);
+  virtual void paintCell(QPainter *p, int row, int col);
 
 signals:
   void signal_CtrlEnterPressed();
