@@ -187,12 +187,12 @@ public:
   unsigned long Signal() { return m_nSignal; }
   unsigned long SubSignal() { return m_nSubSignal; }
   unsigned long Uin() { return m_nUin; }
-  unsigned long Argument() { return m_nArgument; }
+  int Argument() { return m_nArgument; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
-  unsigned long m_nArgument;
+  int m_nArgument;
 };
 
 #endif
