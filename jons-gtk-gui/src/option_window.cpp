@@ -28,9 +28,11 @@
 bool show_offline_users;
 bool show_ignored_users;
 bool show_convo_timestamp;
+bool recv_colors;
 bool enter_sends;
 bool flash_events;
 char timestamp_format[50];
+unsigned long auto_logon;
 
 // The "Options" selection under the menu in the main window
 void menu_options_create()
@@ -99,7 +101,12 @@ void menu_options_create()
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 2, 3,
 		GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 		GTK_FILL, 3,3 );
-	
+
+	// Receive colors
+	ow->chkRecvColors = gtk_check_button_new_with_label("Receive Colors");
+	gtk_table_attach(GTK_TABLE(table), ow->chkRecvColors, 0, 1, 3, 4,
+		GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+		GTK_FILL, 3, 3);
 
 	// Put the table in the notebook
 	label = gtk_label_new("General");
@@ -292,6 +299,7 @@ void menu_options_create()
 	GList *lItems = 0;
 	lItems = g_list_append(lItems, const_cast<char *>("(None)"));
 	lItems = g_list_append(lItems, const_cast<char *>("Online"));
+	lItems = g_list_append(lItems, const_cast<char *>("Free For Chat"));
 	lItems = g_list_append(lItems, const_cast<char *>("Away"));
 	lItems = g_list_append(lItems, const_cast<char *>("Not Available"));
 	lItems = g_list_append(lItems, const_cast<char *>("Occupied"));
@@ -343,6 +351,8 @@ void set_options(struct options_window *ow)
 		show_convo_timestamp);
 	gtk_entry_set_text(GTK_ENTRY(ow->txtTimestampFormat),
 		timestamp_format);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->chkRecvColors),
+		recv_colors);
 
 	// Clist of servers
 
@@ -357,13 +367,55 @@ void set_options(struct options_window *ow)
 		icq_daemon->TCPPortsLow());
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ow->spnPortHigh),
 		icq_daemon->TCPPortsHigh());
+
+	// Auto Logon
+	char szStatus[15];
+	if (auto_logon == ICQ_STATUS_OFFLINE)
+	{
+		strcpy(szStatus, "(None)");
+	}
+	else if (auto_logon & ICQ_STATUS_DND)
+	{
+		strcpy(szStatus, "Do Not Disturb");
+	}
+	else if (auto_logon & ICQ_STATUS_OCCUPIED)
+	{
+		strcpy(szStatus, "Occupied");
+	}
+	else if (auto_logon & ICQ_STATUS_NA)
+	{
+		strcpy(szStatus, "Not Available");
+	}
+	else if (auto_logon & ICQ_STATUS_AWAY)
+	{
+		strcpy(szStatus, "Away");
+	}
+	else if (auto_logon & ICQ_STATUS_FREEFORCHAT)
+	{
+		strcpy(szStatus, "Free For Chat");
+	}
+	else if (auto_logon & ICQ_STATUS_ONLINE)
+	{
+		strcpy(szStatus, "Online");
+	}
+	else
+	{
+		strcpy(szStatus, "(None)");
+	}
+
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ow->cmbAutoLogon)->entry),
+		szStatus);
+
+	if (auto_logon != ICQ_STATUS_OFFLINE && auto_logon & ICQ_STATUS_FxPRIVATE)
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->chkInvisible),
+			true);
+	}
+		
 }
 
 void done_options(GtkWidget *widget, gpointer data)
 {
-	// Refresh the contact list
-	contact_list_refresh();
-
 	struct options_window *ow = (struct options_window *)data;
 	show_offline_users = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(ow->show_offline));
@@ -377,6 +429,8 @@ void done_options(GtkWidget *widget, gpointer data)
 	gchar *temp = gtk_editable_get_chars(GTK_EDITABLE(ow->txtTimestampFormat), 0, -1);
 	strcpy(timestamp_format, temp);
 	g_free(temp);
+	recv_colors = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
+		ow->chkRecvColors));
 	
 	// Save the daemon options
 	icq_daemon->setDefaultRemotePort(
@@ -388,6 +442,31 @@ void done_options(GtkWidget *widget, gpointer data)
 	
 	icq_daemon->SetTCPEnabled(
 	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->chkTCPEnabled)));
+
+	// Auto logon
+	const char *szAutoLogon =
+	  gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(ow->cmbAutoLogon)->entry),
+	                         0, -1);
+
+	if (strcmp("Online", szAutoLogon) == 0)
+		auto_logon = ICQ_STATUS_ONLINE;
+	else if (strcmp("Away", szAutoLogon) == 0)
+		auto_logon = ICQ_STATUS_AWAY;
+	else if (strcmp("Not Available", szAutoLogon) == 0)
+		auto_logon = ICQ_STATUS_NA;
+	else if (strcmp("Occupied", szAutoLogon) == 0)
+		auto_logon = ICQ_STATUS_OCCUPIED;
+	else if (strcmp("Do Not Disturb", szAutoLogon) == 0)
+		auto_logon = ICQ_STATUS_DND;
+	else if (strcmp("Free For Chat", szAutoLogon) == 0)
+		auto_logon = ICQ_STATUS_FREEFORCHAT;
+	else
+		auto_logon = ICQ_STATUS_OFFLINE;
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->chkInvisible)))
+	{
+		auto_logon |= ICQ_STATUS_FxPRIVATE;
+	}
 
 	gtk_widget_destroy(ow->window);
 
@@ -413,10 +492,12 @@ void done_options(GtkWidget *widget, gpointer data)
 	licqConf.WriteNum("ColorAway_Green", away_color->green);
 	licqConf.WriteNum("ColorAway_Blue", away_color->blue);
 	licqConf.WriteNum("ColorAway_Pixel", away_color->pixel);
+	licqConf.WriteNum("AutoLogon", auto_logon);
 	licqConf.WriteBool("ShowOfflineUsers", show_offline_users);
 	licqConf.WriteBool("ShowIgnoredUsres", show_ignored_users);
 	licqConf.WriteBool("EnterSends", enter_sends);
 	licqConf.WriteBool("FlashEvents", flash_events);
+	licqConf.WriteBool("RecvColors", recv_colors);
 	licqConf.WriteBool("ShowTimestamp", show_convo_timestamp);
 	licqConf.WriteStr("TimestampFormat", timestamp_format);
 
@@ -425,6 +506,9 @@ void done_options(GtkWidget *widget, gpointer data)
 
 	// Refresh the colors
 	do_colors();
+
+	// Refresh contact list
+	contact_list_refresh();
 }
 
 // load_options() is only called if the file exists
@@ -464,8 +548,12 @@ void load_options()
 	licqConf.ReadBool("ShowIgnoredUsers", show_ignored_users, false);
 	licqConf.ReadBool("EnterSends", enter_sends, true);
 	licqConf.ReadBool("FlashEvents", flash_events, true);
+	licqConf.ReadBool("RecvColors", recv_colors, true);
 	licqConf.ReadBool("ShowTimestamp", show_convo_timestamp, true);
 	licqConf.ReadStr("TimestampFormat", timestamp_format, "%H:%M:%S");
+	
+	// Auto logon
+	licqConf.ReadNum("AutoLogon", auto_logon, 0);
 }
 
 void show_on_color_dlg(GtkWidget *widget, gpointer data)

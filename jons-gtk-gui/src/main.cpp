@@ -124,11 +124,11 @@ int LP_Main(CICQDaemon *icqdaemon)
 	/* Start the event loop */
 	gtk_main();
 
-	gtk_widget_destroy(main_window);
-
 	icq_daemon->icqLogoff();
-
 	icq_daemon->UnregisterPlugin();
+	gLog.ModifyService(S_PLUGIN, 0);
+
+	gtk_widget_destroy(main_window);
 
 	return 0;
 }

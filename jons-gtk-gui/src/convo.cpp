@@ -20,6 +20,7 @@
 
 #include "licq_gtk.h"
 
+#include "licq_color.h"
 #include "licq_icqd.h"
 #include "licq_user.h"
 
@@ -50,6 +51,8 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 	c = g_new0(struct conversation, 1);
 
 	c->user = u;
+	c->clrBack = new GdkColor;
+	c->clrFore = new GdkColor;
 
 	cnv = g_slist_append(cnv, c);
 
@@ -99,9 +102,7 @@ void convo_show(struct conversation *c)
 	GtkWidget *vertical_box;
 	
 	/* Handle the etag stuff */
-	struct e_tag_data *etd = g_new0(struct e_tag_data, 1);
-
-	c->etag = etd;
+	c->etag = g_new0(struct e_tag_data, 1);
 
 	/* Make the convo window */
 	c->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -217,9 +218,9 @@ void convo_show(struct conversation *c)
 	/* Set the focus of the window */
 	gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 
-	/* Don't forget the delete signal */
-	gtk_signal_connect(GTK_OBJECT(c->window), "destroy",
-			   GTK_SIGNAL_FUNC(convo_close), c);
+	/* Don't forget the delete_event signal */
+	gtk_signal_connect(GTK_OBJECT(c->window), "delete_event",
+			   GTK_SIGNAL_FUNC(convo_delete), c);
 
 	/* More e_tag_data stuff */
 	c->etag->statusbar = c->progress;
@@ -403,40 +404,74 @@ void convo_recv(gulong uin)
 		return;
 	}
 
-	if(u_event->SubCommand() == ICQ_CMDxSUB_MSG)
+	// Get the color that it was sent in if it's wanted
+	if (recv_colors)
 	{
-		const gchar *message = u_event->Text();
-	
-		const gchar *for_user_m =
-	            g_strdup_printf(":  %s\n", message);
+		if (!c->clrBack)
+		{
+			c->clrBack = new GdkColor;
+		}
+		
+		if (!c->clrFore)
+		{
+			c->clrFore = new GdkColor;
+		}
 
+		CICQColor *pIcqColor = u_event->Color();
+		c->clrFore->red   = pIcqColor->ForeRed() * 257;
+		c->clrFore->green = pIcqColor->ForeGreen() * 257;
+		c->clrFore->blue  = pIcqColor->ForeBlue() * 257;
+		c->clrFore->pixel = 255;
+		c->clrBack->red   = pIcqColor->BackRed() * 257;
+		c->clrBack->green = pIcqColor->BackGreen() * 257;
+		c->clrBack->blue  = pIcqColor->BackBlue() * 257;
+		c->clrBack->pixel = 255;
+	}
+	else
+	{
+		if (c->clrFore)
+		{
+			delete c->clrFore;
+			c->clrFore = 0;
+		}
+
+		if (c->clrBack)
+		{
+			delete c->clrBack;
+			c->clrBack = 0;
+		}
+	}
+
+	// How about their alias and an optional timestamp?
+	gtk_text_freeze(GTK_TEXT(c->text));
+	gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, c->user->GetAlias(), -1);
+
+	if (show_convo_timestamp)
+	{
 		char szTime[26];
-		if (show_convo_timestamp)
-		{
-			time_t message_time = u_event->Time();
-			struct tm *_tm = localtime(&message_time);
-			strftime(szTime, 26, timestamp_format, _tm);
-			szTime[25] = '\0';
-		}
+		time_t message_time = u_event->Time();
+		struct tm *_tm = localtime(&message_time);
+		strftime(szTime, 26, timestamp_format, _tm);
+		szTime[25] = '\0';
+	
+		char *szTempStamp = g_strdup_printf(" (%s): ", szTime);
+		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, szTempStamp, -1);
+		g_free(szTempStamp);
+	}
 
-		gtk_text_freeze(GTK_TEXT(c->text));
-		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0,
-				c->user->GetAlias(), -1);
-		
-		if (show_convo_timestamp)
-		{
-			char *temp_stamp = g_strdup_printf(" (%s)", szTime);
-			gtk_text_insert(GTK_TEXT(c->text), 0, red, 0,
-				temp_stamp, -1);
-			g_free(temp_stamp);
-		}
-		
-		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_m, -1);
+	switch (u_event->SubCommand())
+	{
+	  case ICQ_CMDxSUB_MSG:
+	  {
+		gtk_text_insert(GTK_TEXT(c->text), 0, c->clrFore, c->clrBack,
+		                u_event->Text(), -1);
+		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, "\n", -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
- 	}
+		break;
+ 	  }
 
-	else if(u_event->SubCommand() == ICQ_CMDxSUB_URL)
-	{	
+	  case ICQ_CMDxSUB_URL:
+	  {	
 		const char *url = u_event->Text();
 
 		const gchar *for_user_u =
@@ -446,11 +481,11 @@ void convo_recv(gulong uin)
 		gtk_text_freeze(GTK_TEXT(c->text));
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_u, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
+		break;
+	  }
 
-	}
-
-	else if(u_event->SubCommand() == ICQ_CMDxSUB_CHAT)
-	{	
+	  case ICQ_CMDxSUB_CHAT:
+	  {	
 		const gchar *chat_d = u_event->Text();
 
 		if(u_event->IsCancelled())
@@ -473,10 +508,11 @@ void convo_recv(gulong uin)
 			CEventChat *c_event = (CEventChat *)u_event;
 			chat_accept_window(c_event, uin);
 		}
-	}
+		break;
+	  }
 
-	else if(u_event->SubCommand() == ICQ_CMDxSUB_FILE)
-	{
+	  case ICQ_CMDxSUB_FILE:
+	  {
 		const gchar *file_d = u_event->Text();
 		
 		if(u_event->IsCancelled())
@@ -497,13 +533,36 @@ void convo_recv(gulong uin)
 			gtk_text_thaw(GTK_TEXT(c->text));
 			file_accept_window(c->user, u_event);
 		}
-	}
+		break;
+	  }
+
+	  default: // Not good
+		break;
+	} // switch
 }
 
-gboolean convo_close(GtkWidget *widget, struct conversation *c)
+gboolean convo_delete(GtkWidget *widget, GdkEvent *event, struct conversation *c)
 {
-	gtk_widget_destroy(c->window);
+	convo_close(0, c);
+	return false;
+}
+
+void convo_close(GtkWidget *widget, struct conversation *c)
+{
+	if (c->clrBack)
+	{
+		delete (c->clrBack);
+	}
+	if (c->clrFore)
+	{
+		delete (c->clrFore);
+	}
+
 	cnv = g_slist_remove(cnv, c);
 	catcher = g_slist_remove(catcher, c->etag);
-	return TRUE;
+
+	gtk_widget_destroy(c->window);
+
+	g_free(c->etag);
+	g_free(c);
 }

@@ -30,7 +30,6 @@ gint flash_icons(gpointer);
 
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
-	icq_daemon->UnregisterPlugin();
 	gtk_main_quit();
 }
 
@@ -149,6 +148,10 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_widget_show(event_box2);
 	gtk_widget_show(status_bar);
 	gtk_widget_show(system_status);
+
+	// Auto logon here
+	if (auto_logon != ICQ_STATUS_OFFLINE)
+		icq_daemon->icqLogon(auto_logon);
 
 	return main_window;
 }

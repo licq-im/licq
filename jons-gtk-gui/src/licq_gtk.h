@@ -26,14 +26,15 @@
 #include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_chat.h"
+#include "licq_color.h"
 #include "licq_user.h"
 
 #include <sys/time.h>
 #include <gtk/gtk.h>
 #include <fstream.h>
 
-/* Program used definitions */
-#define MAX_LENGTH_UIN	8
+/* Program used constants */
+const int MAX_LENGTH_UIN = 8;
 
 /********** Structures ******************/
 
@@ -49,6 +50,8 @@ struct conversation
 	GtkWidget *send_urgent;
 	GtkWidget *send_list;
 	GtkWidget *progress;
+	GdkColor *clrFore;
+	GdkColor *clrBack;
 	gchar prog_buf[60];
 	gchar *for_user;
 	ICQUser *user;
@@ -302,6 +305,7 @@ struct options_window
 	GtkWidget *txtTimestampFormat;
 	GtkWidget *enter_sends;
 	GtkWidget *flash_events;
+	GtkWidget *chkRecvColors;
 
 	// Network section
 	GtkWidget *lstServers;
@@ -496,9 +500,11 @@ extern GtkWidget *user_list_menu;
 extern bool show_offline_users;
 extern bool show_ignored_users;
 extern bool show_convo_timestamp;
+extern bool recv_colors;
 extern char timestamp_format[50];
 extern bool enter_sends;
 extern bool flash_events;
+extern unsigned long auto_logon;
 
 /* Globals in random_chat.cpp */
 extern struct random_chat *rcw;
@@ -598,7 +604,8 @@ extern void verify_convo_send(GtkWidget *, guint, gchar *,
 			      struct conversation *);
 extern void convo_cancel(GtkWidget *, struct conversation *);
 extern void convo_recv(unsigned long);
-extern gboolean convo_close(GtkWidget *, struct conversation *);
+extern gint convo_delete(GtkWidget *, GdkEvent *, struct conversation *);
+extern void convo_close(GtkWidget *, struct conversation *);
 
 
 /* Functions in extras.cpp */
