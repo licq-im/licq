@@ -1,4 +1,3 @@
-// -*- c-basic-offset: 2 -*-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -488,35 +487,58 @@ sock_error:
  *----------------------------------------------------------------------------*/
 int CICQDaemon::ConnectToUser(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return -1;
 
-  char szAlias[64];
-  strcpy(szAlias, u->GetAlias());
-  unsigned short nPort = u->Port();
-  unsigned short nVersion = u->ConnectionVersion();
   int sd = u->SocketDesc();
-  gUserManager.DropUser(u);
 
+  // Check that we need to connect at all
   if (sd != -1)
   {
+    gUserManager.DropUser(u);
     gLog.Warn("%sConnection attempted to already connected user (%ld).\n",
        L_WARNxSTR, nUin);
     return sd;
   }
 
+  char szAlias[64];
+  strcpy(szAlias, u->GetAlias());
+  unsigned short nPort = u->Port();
+  unsigned short nVersion = u->ConnectionVersion();
+
+  // Poll if there is a connection in progress already
+  while (u->ConnectionInProgress())
+  {
+    gUserManager.DropUser(u);
+    struct timeval tv = { 2, 0 };
+    select(0, NULL, NULL, NULL, &tv);
+    u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u == NULL) return -1;
+  }
+  sd = u->SocketDesc();
+  if (sd == -1) u->SetConnectionInProgress(true);
+  gUserManager.DropUser(u);
+  if (sd != -1) return sd;
+
   TCPSocket *s = new TCPSocket(nUin);
   if (!OpenConnectionToUser(nUin, s, nPort))
   {
+    u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u != NULL) u->SetConnectionInProgress(false);
+    gUserManager.DropUser(u);
     delete s;
     return -1;
   }
 
-  gLog.Info("%sShaking hands with %s (%ld) via TCPv%01x.\n", L_TCPxSTR, szAlias, nUin, nVersion&0x0f);
+  gLog.Info("%sShaking hands (v%d) with %s (%ld).\n", L_TCPxSTR, nVersion,
+     szAlias, nUin);
   nPort = s->LocalPort();
 
   if (!Handshake_Send(s, nUin, nVersion))
   {
+    u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u != NULL) u->SetConnectionInProgress(false);
+    gUserManager.DropUser(u);
     delete s;
     return -1;
   }
@@ -529,9 +551,10 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
 
   // Set the socket descriptor in the user
   u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL) return -1;
   u->SetSocketDesc(nSD, nPort, nVersion);
+  u->SetConnectionInProgress(false);
   gUserManager.DropUser(u);
-
 
   // Alert the select thread that there is a new socket
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
@@ -711,7 +734,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
   unsigned short nInVersion = pSock->Version();
 
-  switch (nInVersion&0x07)
+  switch (nInVersion)
   {
     case 1:
     case 2:
@@ -771,13 +794,18 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet >> messageLen;
       break;
     }
+    default:
+    {
+      gLog.Warn("%sUnknown TCP version %d from socket.\n", nInVersion);
+      break;
+    }
   }
 
   // Some simple validation of the packet
   if (checkUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
-    gLog.Unknown("%sInvalid TCP packet(%08lx, %04x, %04x):\n%s\n",
+    gLog.Unknown("%sInvalid TCP packet (uin: %08lx, cmd: %04x, subcmd: %04x):\n%s\n",
                  L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
     delete buf;
     return false;
@@ -1414,63 +1442,68 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
 
   unsigned long nUin = 0;
   unsigned short nVersion = 0;
-  unsigned short nVerToUse = (nVersionMajor < ICQ_VERSION_TCP ? nVersionMajor : ICQ_VERSION_TCP);
 
-  switch(nVerToUse) {
-  case 7:
-  case 6:
+  switch (VersionToUse(nVersionMajor))
   {
-    b.Reset();
-    CPacketTcp_Handshake_v6 p_in(&b);
-    nUin = p_in.SourceUin();
-
-    // Send the ack
-    CPacketTcp_Handshake_Ack p_ack;
-    if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
-
-    // Send the handshake
-    CPacketTcp_Handshake_v6 p_out(nUin, p_in.SessionId());
-    if (!s->SendPacket(p_out.getBuffer())) goto sock_error;
-
-    // Wait for the ack (this is very bad form...blocking recv here)
-    s->ClearRecvBuffer();
-    do
+    case 7:
+    case 6:
     {
-      if (!s->RecvPacket()) goto sock_error;
-    } while (!s->RecvBufferFull());
-    unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
-    s->ClearRecvBuffer();
-    if (nOk != 1)
+      b.Reset();
+      CPacketTcp_Handshake_v6 p_in(&b);
+      nUin = p_in.SourceUin();
+
+      // Send the ack
+      CPacketTcp_Handshake_Ack p_ack;
+      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+
+      // Send the handshake
+      CPacketTcp_Handshake_v6 p_out(nUin, p_in.SessionId());
+      if (!s->SendPacket(p_out.getBuffer())) goto sock_error;
+
+      // Wait for the ack (this is very bad form...blocking recv here)
+      s->ClearRecvBuffer();
+      do
+      {
+        if (!s->RecvPacket()) goto sock_error;
+      } while (!s->RecvBufferFull());
+      unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
+      s->ClearRecvBuffer();
+      if (nOk != 1)
+      {
+        gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
+        return false;
+      }
+      nVersion = 6;
+      break;
+    }
+
+    case 5:
+    case 4:
     {
-      gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
+      b.UnpackUnsignedLong(); // port number
+      nUin = b.UnpackUnsignedLong();
+      nVersion = 4;
+      break;
+    }
+
+    case 3:
+    case 2:
+    case 1:
+    {
+      b.UnpackUnsignedLong(); // port number
+      nUin = b.UnpackUnsignedLong();
+      nVersion = 2;
+      break;
+    }
+
+    default:
+    {
+      char *buf;
+      gLog.Unknown("%sUnknown TCP handshake packet :\n%s\n",
+                   L_UNKNOWNxSTR, b.print(buf));
+      delete buf;
       return false;
     }
-    nVersion = 6;
-    break;
-  }
-  case 5:
-  case 4:
-  {
-    b.UnpackUnsignedLong(); // port number
-    nUin = b.UnpackUnsignedLong();
-    nVersion = 4;
-    break;
-  }
-  case 3:
-  case 2:
-  case 1:
-    b.UnpackUnsignedLong(); // port number
-    nUin = b.UnpackUnsignedLong();
-    nVersion = 2;
-    break;
-  default:
-  {
-    char *buf;
-    gLog.Unknown("%sUnknown TCP handshake packet :\n%s\n",
-                 L_UNKNOWNxSTR, b.print(buf));
-    delete buf;
-    return false;
-  }
   }
 
   s->SetOwner(nUin);
@@ -1500,7 +1533,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u != NULL)
   {
-    gLog.Info("%sConnection from %s (%ld) [TCP v%ld].\n", L_TCPxSTR,
+    gLog.Info("%sConnection from %s (%ld) [v%ld].\n", L_TCPxSTR,
        u->GetAlias(), nUin, s->Version());
     if (u->SocketDesc() != s->Descriptor())
     {
@@ -1517,7 +1550,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
   else
   {
-    gLog.Info("%sConnection from new user (%ld) [TCP v%ld].\n", L_TCPxSTR,
+    gLog.Info("%sConnection from new user (%ld) [v%ld].\n", L_TCPxSTR,
        nUin, s->Version());
   }
 
