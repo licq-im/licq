@@ -1963,7 +1963,11 @@ void UserSendCommon::massMessageToggled(bool b)
   else
   {
     chkMass->setChecked(false);
-    if (grpMR != NULL && grpMR->isShown())  // only resize when really necessary!
+    if (grpMR != NULL 
+#if QT_VERSION >= 300
+        && grpMR->isShown() /* only resize when really necessary! */ 
+#endif
+    )
     {
       int grpMRWidth = grpMR->width();
       
