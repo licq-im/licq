@@ -130,7 +130,7 @@ CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char 
    pmCurrent = pmUpNoFocus;
 }
 
-CEButton::CEButton(const char *label, QWidget *parent, char *name) : QPushButton(label, parent, name)
+CEButton::CEButton(QString label, QWidget *parent, char *name) : QPushButton(label, parent, name)
 {
    pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
 }

@@ -456,7 +456,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   {
      if (skin->btnSys.pixmapUpNoFocus == NULL)
      {
-        btnSystem = new CEButton(skin->btnSys.caption == NULL ? "System" : skin->btnSys.caption, this);
+        btnSystem = new CEButton(skin->btnSys.caption == NULL ? 
+                                 tr("System") : QString::fromLocal8Bit(skin->btnSys.caption), this);
      }
      else
      {

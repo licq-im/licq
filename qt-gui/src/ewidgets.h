@@ -45,7 +45,7 @@ class CEButton : public QPushButton
   Q_OBJECT
 public:
   CEButton(QPixmap *, QPixmap *, QPixmap *, QWidget *parent = 0, char *name = 0);
-  CEButton(const char *, QWidget *parent = 0, char *name = 0);
+  CEButton(QString , QWidget *parent = 0, char *name = 0);
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
   ~CEButton(void);
