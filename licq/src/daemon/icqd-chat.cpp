@@ -643,7 +643,8 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   gLog.Info("%sChat: Shaking hands [v%d].\n", L_TCPxSTR, VersionToUse(c.m_nVersion));
 
   // Send handshake packet:
-  if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nIp, VersionToUse(c.m_nVersion)))
+  if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nIp, LocalPort(),
+     VersionToUse(c.m_nVersion)))
     return false;
 
   // Send color packet
@@ -730,7 +731,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
     {
       // get the handshake packet
       CBuffer hbuf(u->sock.RecvBuffer());
-      if (!CICQDaemon::Handshake_Recv(&u->sock))
+      if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort()))
       {
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
         return false;
@@ -1055,6 +1056,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         u->focus = true;
         PushChatEvent(new CChatEvent(CHAT_FOCUSxIN, u));
+        u->chatQueue.pop_front();
         break;
       }
 
@@ -1062,6 +1064,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         u->focus = false;
         PushChatEvent(new CChatEvent(CHAT_FOCUSxOUT, u));
+        u->chatQueue.pop_front();
         break;
       }
 
@@ -1069,6 +1072,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         u->sleep = false;
         PushChatEvent(new CChatEvent(CHAT_SLEEPxOFF, u));
+        u->chatQueue.pop_front();
         break;
       }
 
@@ -1076,11 +1080,13 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         u->sleep = true;
         PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
+        u->chatQueue.pop_front();
         break;
       }
 
       case CHAT_DISCONNECTION: // they will disconnect anyway
       {
+        u->chatQueue.pop_front();
         break;
       }
 
