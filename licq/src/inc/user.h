@@ -89,6 +89,7 @@ public:
   void SaveGeneralInfo(void);
   void SaveMoreInfo(void);
   void SaveWorkInfo(void);
+  void SaveAboutInfo(void);
   void SaveBasicInfo(void);
   void SaveExtInfo(void);
 
@@ -126,15 +127,17 @@ public:
   char *GetCompanyState(void)               {  return m_szCompanyState;  }
   char *GetCompanyPhoneNumber(void)         {  return m_szCompanyPhoneNumber; }
   char *GetCompanyFaxNumber(void)           {  return m_szCompanyFaxNumber;  }
-  char *GetComparyAddress(void)             {  return m_szComparyAddress;  }
+  char *GetCompanyAddress(void)             {  return m_szCompanyAddress;  }
   char *GetCompanyName(void)                {  return m_szCompanyName;  }
   char *GetCompanyDepartment(void)          {  return m_szCompanyDepartment;  }
   char *GetCompanyPosition(void)            {  return m_szCompanyPosition;  }
   char *GetCompanyHomepage(void)            {  return m_szCompanyHomepage;  }
 
+  // About Info
+  char *GetAbout(void)                      { return m_szAbout; }
+
   // Licq Info
   char *AutoResponse(void)                  { return m_szAutoResponse; }
-  char *GetAbout(void)                      { return m_szAbout; }
   bool NewUser(void)                        { return m_bNewUser; }
   bool SendServer(void)                     { return m_bSendServer; }
   bool EnableSave(void)                     { return m_bEnableSave; }
@@ -181,11 +184,14 @@ public:
   void SetCompanyState (const char *n)       {  SetString(&m_szCompanyState, n);  SaveWorkInfo();  }
   void SetCompanyPhoneNumber (const char *n) {  SetString(&m_szCompanyPhoneNumber, n);  SaveWorkInfo();  }
   void SetCompanyFaxNumber (const char *n)   {  SetString(&m_szCompanyFaxNumber, n);  SaveWorkInfo();  }
-  void SetComparyAddress (const char *n)     {  SetString(&m_szComparyAddress, n);  SaveWorkInfo();  }
+  void SetCompanyAddress (const char *n)     {  SetString(&m_szCompanyAddress, n);  SaveWorkInfo();  }
   void SetCompanyName (const char *n)        {  SetString(&m_szCompanyName, n);  SaveWorkInfo();  }
   void SetCompanyDepartment (const char *n)  {  SetString(&m_szCompanyDepartment, n);  SaveWorkInfo();  }
   void SetCompanyPosition (const char *n)    {  SetString(&m_szCompanyPosition, n);  SaveWorkInfo();  }
   void SetCompanyHomepage (const char *n)    {  SetString(&m_szCompanyHomepage, n);  SaveWorkInfo();  }
+
+  // About Info
+  void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
 
   // Licq Info
   void SetEnableSave(bool s)          { m_bEnableSave = s; }
@@ -194,7 +200,6 @@ public:
   void SetNewUser(bool s)             { m_bNewUser = s; SaveLicqInfo(); }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
-  void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveLicqInfo();  }
 
   // Status
   unsigned short Status(void);
@@ -266,6 +271,7 @@ protected:
   void LoadGeneralInfo(void);
   void LoadMoreInfo(void);
   void LoadWorkInfo(void);
+  void LoadAboutInfo(void);
   void LoadLicqInfo(void);
   void Init(unsigned long _nUin);
   bool LoadInfo(void);
@@ -280,8 +286,7 @@ protected:
                 m_nStatus,
                 m_nSequence,
                 m_nGroups[2];
-  char *m_szAutoResponse,
-       *m_szAbout;
+  char *m_szAutoResponse;
   bool m_bOnline,
        m_bNewUser,
        m_bOnlineNotify,
@@ -325,11 +330,14 @@ protected:
   char *m_szCompanyState;
   char *m_szCompanyPhoneNumber;
   char *m_szCompanyFaxNumber;
-  char *m_szComparyAddress;
+  char *m_szCompanyAddress;
   char *m_szCompanyName;
   char *m_szCompanyDepartment;
   char *m_szCompanyPosition;
   char *m_szCompanyHomepage;
+
+  // About Info
+  char *m_szAbout;
 
   vector <class CUserEvent *> m_vcMessages;
 

@@ -775,6 +775,7 @@ bool ICQUser::LoadInfo(void)
   LoadGeneralInfo();
   LoadMoreInfo();
   LoadWorkInfo();
+  LoadAboutInfo();
   LoadLicqInfo();
 
   return true;
@@ -831,13 +832,22 @@ void ICQUser::LoadWorkInfo(void)
   m_fConf.ReadStr("CompanyState", szTemp, "");  SetCompanyState(szTemp);
   m_fConf.ReadStr("CompanyPhoneNumber", szTemp, "");  SetCompanyPhoneNumber(szTemp);
   m_fConf.ReadStr("CompanyFaxNumber", szTemp, "");  SetCompanyFaxNumber(szTemp);
-  m_fConf.ReadStr("CompanyAddress", szTemp, "");  SetComparyAddress(szTemp);
+  m_fConf.ReadStr("CompanyAddress", szTemp, "");  SetCompanyAddress(szTemp);
   m_fConf.ReadStr("CompanyName", szTemp, "");  SetCompanyName(szTemp);
   m_fConf.ReadStr("CompanyDepartment", szTemp, "");  SetCompanyDepartment(szTemp);
   m_fConf.ReadStr("CompanyPosition", szTemp, "");  SetCompanyPosition(szTemp);
   m_fConf.ReadStr("CompanyHomepage", szTemp, "");  SetCompanyHomepage(szTemp);
 }
 
+
+//-----ICQUser::LoadAboutInfo-------------------------------------------------
+void ICQUser::LoadAboutInfo(void)
+{
+  // read in the fields, checking for errors each time
+  char szTemp[MAX_DATA_LEN];
+  m_fConf.SetSection("user");
+  m_fConf.ReadStr("About", szTemp, ""); SetAbout(szTemp);
+}
 
 //-----ICQUser::LoadLicqInfo-------------------------------------------------
 void ICQUser::LoadLicqInfo(void)
@@ -858,8 +868,6 @@ void ICQUser::LoadLicqInfo(void)
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
-  m_fConf.ReadStr("About", szTemp, "");
-  SetAbout(szTemp);
 
   if (nNewMessages > 0)
   {
@@ -867,74 +875,6 @@ void ICQUser::LoadLicqInfo(void)
      incNumUserEvents();
   }
 }
-
-
-/*
-//-----ICQUser::LoadData--------------------------------------------------------
-bool ICQUser::LoadData(void)
-{
-  if (!m_fConf.ReloadFile()) return (false);
-
-  // read in the fields, checking for errors each time
-  char sTemp[MAX_DATA_LEN];
-  bool bTemp;
-  unsigned long nTemp, nNewMessages;
-  m_fConf.SetFlags(0);
-  m_fConf.SetSection("user");
-  m_fConf.ReadStr("Alias", sTemp, "Unknown");
-  setAlias(sTemp);
-  m_fConf.ReadStr("FirstName", sTemp, "");
-  setFirstName(sTemp);
-  m_fConf.ReadStr("LastName", sTemp, "");
-  setLastName(sTemp);
-  m_fConf.ReadStr("EMail", sTemp, "");
-  setEmail(sTemp);
-  m_fConf.ReadBool("Authorization", bTemp, false);
-  setAuthorization(bTemp);
-  m_fConf.ReadStr("History", sTemp, "default");
-  if (sTemp[0] == '\0') strcpy(sTemp, "default");
-  setHistoryFile(sTemp);
-  m_fConf.ReadNum("NewMessages", nTemp, 0);
-  nNewMessages = nTemp;
-  m_fConf.ReadBool("NewUser", bTemp, false);
-  setIsNew(bTemp);
-  m_fConf.ReadNum("Groups.System", m_nGroups[GROUPS_SYSTEM], 0);
-  m_fConf.ReadNum("Groups.User", m_nGroups[GROUPS_USER], 0);
-  m_fConf.ReadStr("Ip", sTemp, "0.0.0.0");
-  struct in_addr in;
-  nTemp = inet_aton(sTemp, &in);
-  if (nTemp != 0) nTemp = in.s_addr;
-  unsigned short nPort;
-  m_fConf.ReadNum("Port", nPort, 0);
-  SetIpPort(nTemp, nPort);
-  m_fConf.ReadStr("City", sTemp, "Unknown");
-  setCity(sTemp);
-  m_fConf.ReadStr("State", sTemp, "Unknown");
-  setState(sTemp);
-  m_fConf.ReadNum("Country", nTemp, COUNTRY_UNSPECIFIED);
-  setCountry(nTemp);
-  m_fConf.ReadNum("Timezone", nTemp, 0x00);
-  setTimezone(nTemp);
-  m_fConf.ReadNum("Zipcode", m_nZipCode, 0);
-  m_fConf.ReadStr("PhoneNumber", sTemp, "");
-  setPhoneNumber(sTemp);
-  m_fConf.ReadNum("Age", nTemp, 0);
-  setAge(nTemp);
-  m_fConf.ReadNum("Sex", nTemp, 0);
-  setSex(nTemp);
-  m_fConf.ReadStr("Homepage", sTemp, "Unknown");
-  setHomepage(sTemp);
-  m_fConf.ReadStr("About", sTemp, "");
-  setAbout(sTemp);
-
-  if (nNewMessages > 0)
-  {
-     m_vcMessages.push_back(new CEventSaved(nNewMessages));
-     incNumUserEvents();
-  }
-  return (true);
-}
-*/
 
 
 //-----ICQUser::destructor------------------------------------------------------
@@ -1001,7 +941,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_szCompanyState = NULL;
   m_szCompanyPhoneNumber = NULL;
   m_szCompanyFaxNumber = NULL;
-  m_szComparyAddress = NULL;
+  m_szCompanyAddress = NULL;
   m_szCompanyName = NULL;
   m_szCompanyDepartment = NULL;
   m_szCompanyPosition = NULL;
@@ -1048,7 +988,7 @@ void ICQUser::SetDefaults(void)
   SetCompanyState(szTemp);
   SetCompanyPhoneNumber(szTemp);
   SetCompanyFaxNumber(szTemp);
-  SetComparyAddress(szTemp);
+  SetCompanyAddress(szTemp);
   SetCompanyName(szTemp);
   SetCompanyDepartment(szTemp);
   SetCompanyPosition(szTemp);
@@ -1572,7 +1512,7 @@ void ICQUser::SaveWorkInfo(void)
   m_fConf.WriteStr("CompanyState", m_szCompanyState);
   m_fConf.WriteStr("CompanyPhoneNumber", m_szCompanyPhoneNumber);
   m_fConf.WriteStr("CompanyFaxNumber", m_szCompanyFaxNumber);
-  m_fConf.WriteStr("CompanyAddress", m_szComparyAddress);
+  m_fConf.WriteStr("CompanyAddress", m_szCompanyAddress);
   m_fConf.WriteStr("CompanyName", m_szCompanyName);
   m_fConf.WriteStr("CompanyDepartment", m_szCompanyDepartment);
   m_fConf.WriteStr("CompanyPosition", m_szCompanyPosition);
@@ -1587,6 +1527,31 @@ void ICQUser::SaveWorkInfo(void)
 
   m_fConf.CloseFile();
 }
+
+
+//-----ICQUser::SaveAboutInfo-------------------------------------------------
+void ICQUser::SaveAboutInfo(void)
+{
+   if (!EnableSave()) return;
+
+   if (!m_fConf.ReloadFile())
+   {
+      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+      return;
+   }
+   m_fConf.SetSection("user");
+   m_fConf.WriteStr("About", m_szAbout);
+   if (!m_fConf.FlushFile())
+   {
+     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+     return;
+   }
+
+   m_fConf.CloseFile();
+}
+
 
 //-----ICQUser::SaveLicqInfo-------------------------------------------------
 void ICQUser::SaveLicqInfo(void)
@@ -1608,7 +1573,6 @@ void ICQUser::SaveLicqInfo(void)
    m_fConf.WriteNum("Port", Port());
    m_fConf.WriteBool("NewUser", NewUser());
    m_fConf.WriteNum("NewMessages", NewMessages());
-   m_fConf.WriteStr("About", m_szAbout);
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

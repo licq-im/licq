@@ -46,6 +46,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_nTCPSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
   m_bShuttingDown = false;
+  m_nServerAck = 0;
 
   // Begin parsing the config file
   sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
@@ -165,6 +166,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
   pthread_mutex_init(&mutex_plugins, NULL);
+  pthread_cond_init(&cond_serverack, NULL);
+  pthread_mutex_init(&mutex_serverack, NULL);
 }
 
 

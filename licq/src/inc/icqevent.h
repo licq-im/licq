@@ -93,6 +93,10 @@ const unsigned long USER_STATUS                 = 1;
 const unsigned long USER_EVENTS                 = 2;
 const unsigned long USER_BASIC                  = 3;
 const unsigned long USER_EXT                    = 4;
+const unsigned long USER_GENERAL                = 5;
+const unsigned long USER_MORE                   = 6;
+const unsigned long USER_WORK                   = 7;
+const unsigned long USER_ABOUT                  = 8;
 
 const unsigned long LIST_ADD                     = 1;
 const unsigned long LIST_REMOVE                  = 2;

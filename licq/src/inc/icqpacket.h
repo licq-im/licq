@@ -86,6 +86,35 @@ protected:
    static unsigned long  s_nSessionId;
 };
 
+#if ICQ_VERSION == 2
+//-----Register----------------------------------------------------------------
+// Doesn't actually descend from CPacketUdp in version 2 but we keep the
+// name the same for simplicity
+class CPU_Register : public CPacket
+{
+public:
+  CPU_Register(const char *_szPasswd);
+  virtual ~CPU_Register(void);
+  virtual void Create(void) {}
+
+  virtual const unsigned long  getSequence(void) { return m_nSequence; }
+  virtual const unsigned short SubSequence(void) { return 0; }
+  virtual const unsigned short getCommand(void)  { return m_nCommand; }
+  virtual const unsigned short getSubCommand(void) { return 0; }
+protected:
+  virtual unsigned long getSize(void);
+
+  /* 02 00 FC 03 01 00 02 00 04 00 65 66 67 00 72 00 00 00 00 00 00 00 */
+  unsigned short m_nVersion;
+  unsigned short m_nCommand;
+  unsigned short m_nSequence;
+  unsigned short m_nUnknown1;
+  unsigned short m_nPasswdLen;
+  char          *m_szPasswd;
+  unsigned long  m_nUnknown2;
+  unsigned long  m_nUnknown3;
+};
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
 //-----Register----------------------------------------------------------------
 class CPU_Register : public CPacketUdp
 {
@@ -105,7 +134,7 @@ protected:
   unsigned long  m_nUnknown4;
   unsigned long  m_nUnknown5;
 };
-
+#endif
 
 //-----Logon--------------------------------------------------------------------
 class CPU_Logon : public CPacketUdp
@@ -444,6 +473,51 @@ protected:
 
 
 //-----Meta_SetWorkInfo------------------------------------------------------
+class CPU_Meta_SetGeneralInfo : public CPacketUdp
+{
+public:
+  CPU_Meta_SetGeneralInfo(char *szAlias,
+                          char *szFirstName,
+                          char *szLastName,
+                          char *szEmail1,
+                          char *szEmail2,
+                          char *szCity,
+                          char *szState,
+                          char *szPhoneNumber,
+                          char *szFaxNumber,
+                          char *szAddress,
+                          char *szCellularNumber,
+                          unsigned long nZipCode,
+                          unsigned short nCountryCode,
+                          bool bHideEmail);
+  ~CPU_Meta_SetGeneralInfo();
+  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+protected:
+  unsigned long getSize(void);
+
+  unsigned short m_nMetaCommand;
+
+  char *m_szAlias;
+  char *m_szFirstName;
+  char *m_szLastName;
+  char *m_szEmail1;
+  char *m_szEmail2;
+  char *m_szCity;
+  char *m_szState;
+  char *m_szPhoneNumber;
+  char *m_szFaxNumber;
+  char *m_szAddress;
+  char *m_szCellularNumber;
+  unsigned long m_nZipCode;
+  unsigned short m_nCountryCode;
+  char m_nTimezone;
+  char m_bAuthorization;
+  char m_nUnknown_1;
+  char m_bHideEmail;
+};
+
+
+//-----Meta_SetWorkInfo------------------------------------------------------
 class CPU_Meta_SetWorkInfo : public CPacketUdp
 {
 public:
@@ -462,24 +536,16 @@ protected:
 
   unsigned short m_nMetaCommand;
 
-  unsigned short m_nCityLength;
   char          *m_szCity;
-  unsigned short m_nStateLength;
   char          *m_szState;
-  unsigned short m_nFaxLength;
   char          *m_szFax;
-  unsigned short m_nAddressLength;
   char          *m_szAddress;
   unsigned long  m_nUnknown1;  // 0x0100
   unsigned short m_nUnknown2;  // 0xffff
-  unsigned short m_nNameLength;
   char          *m_szName;
-  unsigned short m_nDepartmentLength;
   char          *m_szDepartment;
-  unsigned short m_nPositionLength;
   char          *m_szPosition;
   unsigned short m_nUnknown3;  // 0x04
-  unsigned short m_nHomepageLength;
   char          *m_szHomepage;
 };
 
@@ -513,6 +579,8 @@ public:
   CPU_Meta_RequestInfo(unsigned long _nUin);
 
   virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+
+  unsigned long Uin(void)  {  return m_nUin; }
 protected:
   unsigned long getSize(void);
 

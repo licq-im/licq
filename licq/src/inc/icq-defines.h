@@ -75,9 +75,9 @@ const unsigned short ICQ_CMDxSND_VISIBLExLIST      = 0x06AE; // 1710
 
 // Meta commands (response)
 const unsigned short ICQ_CMDxMETA_GENERALxINFOxRSP = 0x0064; // 100
+const unsigned short ICQ_CMDxMETA_WORKxINFOxRSP    = 0x006E; // 110 ??
+const unsigned short ICQ_CMDxMETA_MORExINFOxRSP    = 0x0078; // 120 ??
 const unsigned short ICQ_CMDxMETA_ABOUTxRSP        = 0x0082; // 130
-//const unsigned short ICQ_CMDxMETA_MORExINFOxRSP    = 0x00  ; // ??
-//const unsigned short ICQ_CMDxMETA_WORKxINFOxRSP    = 0x00  ; // ??
 const unsigned short ICQ_CMDxMETA_SECURITYxRSP     = 0x00A0; // 160 ??
 const unsigned short ICQ_CMDxMETA_PASSWORDxRSP     = 0x00AA; // 170
 // Meta commands (user info)
@@ -85,18 +85,25 @@ const unsigned short ICQ_CMDxMETA_GENERALxINFO     = 0x00C8; // 200
 const unsigned short ICQ_CMDxMETA_WORKxINFO        = 0x00D2; // 210
 const unsigned short ICQ_CMDxMETA_MORExINFO        = 0x00DC; // 220
 const unsigned short ICQ_CMDxMETA_ABOUT            = 0x00E6; // 230
+const unsigned short ICQ_CMDxMETA_UNKNOWNx240      = 0x00F0; // 240
+const unsigned short ICQ_CMDxMETA_UNKNOWNx250      = 0x00FA; // 250
+const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
 // Meta commands (sent)
 const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E8; // 1000
-//const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x00  ; // ??
-//const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x00  ; // ??
+const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F2; // 1010 ??
+const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FC; // 1020 ??
 const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
 const unsigned short ICQ_CMDxMETA_REQUESTxINFO     = 0x04B0; // 1200
-//const unsigned short ICQ_CMDxMETA_REQUESTxABOUT    = 0x0   ; // ??
 
 const unsigned short META_SUCCESS = 0x0A;
 const unsigned short META_FAILURE = 0x32;
+const unsigned short META_DONE    =
+                      ICQ_CMDxMETA_GENERALxINFO + ICQ_CMDxMETA_WORKxINFO +
+                      ICQ_CMDxMETA_MORExINFO + ICQ_CMDxMETA_ABOUT +
+                      ICQ_CMDxMETA_UNKNOWNx240 + ICQ_CMDxMETA_UNKNOWNx250 +
+                      ICQ_CMDxMETA_UNKNOWNx270;
 
 // TCP commands
 const unsigned short ICQ_CMDxTCP_START             = 0x07EE;

@@ -302,6 +302,42 @@ void CPacketUdp::InitBuffer(void)
 }
 
 //-----Register--------------------------------------------------------------
+#if ICQ_VERSION == 2
+CPU_Register::CPU_Register(const char *_szPasswd)
+{
+  m_nVersion = ICQ_VERSION;
+  m_nCommand = ICQ_CMDxSND_REGISTERxUSER;
+  m_nSequence = 0x001;
+  m_nUnknown1 = 0x0002;
+  m_nPasswdLen = strlen(_szPasswd) + 1;
+  m_szPasswd = strdup(_szPasswd);
+  m_nUnknown2 = 0x00000072;
+  m_nUnknown3 = 0x00000000;
+
+  buffer = new CBuffer(getSize());
+  buffer->add(m_nVersion);
+  buffer->add(m_nCommand);
+  buffer->add(m_nSequence);
+  buffer->add(m_nUnknown1);
+  buffer->add(m_nPasswdLen);
+  buffer->add(m_szPasswd, m_nPasswdLen);
+  buffer->add(m_nUnknown2);
+  buffer->add(m_nUnknown3);
+}
+
+CPU_Register::~CPacketRegister(void)
+{
+  free (m_szPasswd);
+  if (buffer != NULL) delete buffer;
+}
+
+unsigned long CPU_Register::getSize(void)
+{
+  return (strlen (m_szPasswd) + 1 + 18);
+}
+
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
+
 CPU_Register::CPU_Register(const char *_szPasswd)
   : CPacketUdp(ICQ_CMDxSND_REGISTERxUSER)
 {
@@ -337,8 +373,7 @@ unsigned long CPU_Register::getSize(void)
 {
   return (strlen (m_szPasswd) + 1 + 20);
 }
-
-
+#endif
 
 //-----Logon--------------------------------------------------------------------
 unsigned long CPU_Logon::getSize(void)
@@ -919,6 +954,94 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(void)
 #endif
 
 //-----Meta_SetWorkInfo------------------------------------------------------
+CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(char *szAlias,
+                          char *szFirstName, char *szLastName,
+                          char *szEmail1, char *szEmail2,
+                          char *szCity, char *szState,
+                          char *szPhoneNumber, char *szFaxNumber,
+                          char *szAddress, char *szCellularNumber,
+                          unsigned long nZipCode,
+                          unsigned short nCountryCode,
+                          bool bHideEmail)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
+
+  m_szAlias = strdup(szAlias);
+  m_szFirstName = strdup(szFirstName);
+  m_szLastName = strdup(szLastName);
+  m_szEmail1 = strdup(szEmail1);
+  m_szEmail2 = strdup(szEmail2);
+  m_szCity = strdup(szCity);
+  m_szState = strdup(szState);
+  m_szPhoneNumber = strdup(szPhoneNumber);
+  m_szFaxNumber = strdup(szFaxNumber);
+  m_szAddress = strdup(szAddress);
+  m_szCellularNumber = strdup(szCellularNumber);
+  m_nZipCode = nZipCode;
+  m_nCountryCode = nCountryCode;
+  struct timezone tz;
+  gettimeofday(NULL, &tz);
+  m_nTimezone = tz.tz_minuteswest / 30;
+  //if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_bAuthorization = o->GetAuthorization() ? 0 : 1;
+  gUserManager.DropOwner();
+  m_nUnknown_1 = 1;
+  m_bHideEmail = bHideEmail;
+
+  InitBuffer();
+
+  buffer->add(m_nMetaCommand);
+  buffer->PackString(m_szAlias);
+  buffer->PackString(m_szFirstName);
+  buffer->PackString(m_szLastName);
+  buffer->PackString(m_szEmail1);
+  buffer->PackString(m_szEmail2);
+  buffer->PackString(m_szCity);
+  buffer->PackString(m_szState);
+  buffer->PackString(m_szPhoneNumber);
+  buffer->PackString(m_szFaxNumber);
+  buffer->PackString(m_szAddress);
+  buffer->PackString(m_szCellularNumber);
+  buffer->add(m_nZipCode);
+  buffer->add(m_nCountryCode);
+  buffer->add(m_nTimezone);
+  buffer->add(m_bAuthorization);
+  buffer->add(m_nUnknown_1);
+  buffer->add(m_bHideEmail);
+
+  Encrypt();
+}
+
+CPU_Meta_SetGeneralInfo::~CPU_Meta_SetGeneralInfo()
+{
+  free(m_szAlias);
+  free(m_szFirstName);
+  free(m_szLastName);
+  free(m_szEmail1);
+  free(m_szEmail2);
+  free(m_szCity);
+  free(m_szState);
+  free(m_szPhoneNumber);
+  free(m_szFaxNumber);
+  free(m_szAddress);
+  free(m_szCellularNumber);
+}
+
+unsigned long CPU_Meta_SetGeneralInfo::getSize(void)
+{
+  return CPacketUdp::getSize() + strlen(m_szAlias) +
+    strlen(m_szFirstName) + strlen(m_szLastName) + strlen(m_szEmail1) +
+    strlen(m_szEmail2) + strlen(m_szCity) + strlen(m_szState) +
+    strlen(m_szPhoneNumber) + strlen(m_szFaxNumber) + strlen(m_szAddress) +
+    strlen(m_szCellularNumber) + 33 + 12;
+}
+
+
+
+
+//-----Meta_SetWorkInfo------------------------------------------------------
 CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *_szCity,
     const char *_szState,
@@ -929,49 +1052,33 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *_szPosition,
     const char *_szHomepage) : CPacketUdp(ICQ_CMDxSND_META)
 {
-  m_nMetaCommand = 0;//ICQ_CMDxMETA_WORKxINFOxSET;
-  m_nCityLength = strlen(_szCity) + 1;
+  m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
   m_szCity = strdup(_szCity);
-  m_nStateLength = strlen(_szState) + 1;
   m_szState = strdup(_szState);
-  m_nFaxLength = strlen(_szFax) + 1;
   m_szFax = strdup(_szFax);
-  m_nAddressLength = strlen(_szAddress) + 1;
   m_szAddress = strdup(_szAddress);
   m_nUnknown1 = 0x0100;
   m_nUnknown2 = 0xffff;
-  m_nNameLength = strlen(_szName) + 1;
   m_szName = strdup(_szName);
-  m_nDepartmentLength = strlen(_szDepartment) + 1;
   m_szDepartment = strdup(_szDepartment);
-  m_nPositionLength = strlen(_szPosition) + 1;
   m_szPosition = strdup(_szPosition);
   m_nUnknown3 = 0x04;
-  m_nHomepageLength = strlen(_szHomepage) + 1;
   m_szHomepage = strdup(_szHomepage);
 
   InitBuffer();
 
   buffer->add(m_nMetaCommand);
-  buffer->add(m_nCityLength);
-  buffer->add(m_szCity, m_nCityLength);
-  buffer->add(m_nStateLength);
-  buffer->add(m_szState, m_nStateLength);
-  buffer->add(m_nFaxLength);
-  buffer->add(m_szFax, m_nFaxLength);
-  buffer->add(m_nAddressLength);
-  buffer->add(m_szAddress, m_nAddressLength);
+  buffer->PackString(m_szCity);
+  buffer->PackString(m_szState);
+  buffer->PackString(m_szFax);
+  buffer->PackString(m_szAddress);
   buffer->add(m_nUnknown1);
   buffer->add(m_nUnknown2);
-  buffer->add(m_nNameLength);
-  buffer->add(m_szName, m_nNameLength);
-  buffer->add(m_nDepartmentLength);
-  buffer->add(m_szDepartment, m_nDepartmentLength);
-  buffer->add(m_nPositionLength);
-  buffer->add(m_szPosition, m_nPositionLength);
+  buffer->PackString(m_szName);
+  buffer->PackString(m_szDepartment);
+  buffer->PackString(m_szPosition);
   buffer->add(m_nUnknown3);
-  buffer->add(m_nHomepageLength);
-  buffer->add(m_szHomepage, m_nHomepageLength);
+  buffer->PackString(m_szHomepage);
 
   Encrypt();
 }
@@ -991,9 +1098,10 @@ CPU_Meta_SetWorkInfo::~CPU_Meta_SetWorkInfo(void)
 
 unsigned long CPU_Meta_SetWorkInfo::getSize(void)
 {
-  return CPacketUdp::getSize() + m_nCityLength + m_nStateLength +
-         m_nFaxLength + m_nAddressLength + m_nNameLength +
-         m_nDepartmentLength + m_nPositionLength + m_nHomepageLength + 26;
+  return CPacketUdp::getSize() + strlen(m_szCity) + strlen(m_szState) +
+         strlen(m_szFax) + strlen(m_szAddress) + strlen(m_szName) +
+         strlen(m_szDepartment) + strlen(m_szPosition) +
+         strlen(m_szHomepage) + 8 + 26;
 }
 
 
