@@ -26,6 +26,7 @@ class MLEditWrap;
 class CSignalManager;
 class CICQDaemon;
 class ICQEvent;
+class CICQEventTag;
 
 class QPushButton;
 class QCheckBox;
@@ -47,7 +48,7 @@ protected:
 
   CSignalManager *sigman;
   CICQDaemon *server;
-  ICQEvent *icqEvent;
+  CICQEventTag *icqEventTag;
 
 protected slots:
   virtual void accept();

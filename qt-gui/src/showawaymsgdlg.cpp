@@ -81,7 +81,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
-    icqEvent = server->icqFetchAutoResponse(m_nUin);
+    icqEventTag = server->icqFetchAutoResponse(m_nUin);
   }
 
   show();
@@ -112,7 +112,9 @@ void ShowAwayMsgDlg::accept()
 
 void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
 {
-  if (e != icqEvent) return;
+  if ( (icqEventTag == NULL && e != NULL) ||
+       (icqEventTag != NULL && !icqEventTag->Equals(e)) )
+    return;
 
   bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
 
@@ -138,7 +140,11 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
     setCaption(caption() + title);
   }
 
-  icqEvent = NULL;
+  if (icqEventTag != NULL)
+  {
+    delete icqEventTag;
+    icqEventTag = NULL;
+  }
 
   if (isOk && e->m_nCommand == ICQ_CMDxTCP_START)
   {

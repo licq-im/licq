@@ -55,7 +55,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 {
   server = s;
   sigman = theSigMan;
-  icqEvent = NULL;
+  icqEventTag = NULL;
   m_nUin = _nUin;
   m_bOwner = _bIsOwner;
 
@@ -766,6 +766,8 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
     break;
   }
   case USER_GENERAL:
+  case USER_BASIC:
+  case USER_EXT:
     SetGeneralInfo(u);
     break;
   case USER_MORE:
@@ -1156,7 +1158,7 @@ void ICQFunctions::callFcn()
   btnCancel->setText(tr("Cancel"));
 
   // do nothing if a command is already being processed
-  if (icqEvent != NULL) return;
+  if (icqEventTag != NULL) return;
 
   switch (currentTab)
   {
@@ -1183,7 +1185,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg = tr("Sending msg ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
-        icqEvent = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
+        icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
      }
@@ -1192,7 +1194,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg = tr("Sending URL ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
-        icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+        icqEventTag = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                       chkSendServer->isChecked() ? false : true,
                                       chkUrgent->isChecked() ? true : false, uin);
      }
@@ -1201,7 +1203,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg = tr("Sending chat request ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
-        icqEvent = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
+        icqEventTag = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
      }
@@ -1210,12 +1212,12 @@ void ICQFunctions::callFcn()
         m_sProgressMsg = tr("Sending file transfer ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
-        icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+        icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                            chkSendServer->isChecked() ? false : true,
                                            chkUrgent->isChecked() ? true : false, uin);
      }
 
-     if (icqEvent == NULL)
+     if (icqEventTag == NULL)
         doneFcn(NULL);
 
      break;
@@ -1227,7 +1229,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg = tr("Updating server...");
         unsigned short i = cmbCountry->currentItem();
         unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
-        icqEvent = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
+        icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
                                              nfoFirstName->text().local8Bit(),
                                              nfoLastName->text().local8Bit(),
                                              nfoEmail1->text(),
@@ -1244,7 +1246,7 @@ void ICQFunctions::callFcn()
      else
      {
         m_sProgressMsg = tr("Updating...");
-        icqEvent = server->icqRequestMetaInfo(m_nUin);
+        icqEventTag = server->icqRequestMetaInfo(m_nUin);
      }
      break;
   case TAB_MOREINFO:
@@ -1258,7 +1260,7 @@ void ICQFunctions::callFcn()
         unsigned short lc2 = GetLanguageByIndex(i)->nCode;
         i = cmbLanguage[3]->currentItem();
         unsigned short lc3 = GetLanguageByIndex(i)->nCode;
-        icqEvent = server->icqSetMoreInfo(nfoAge->text().toUShort(),
+        icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
                                           cmbGender->currentItem(),
                                           nfoHomepage->text(),
                                           0,
@@ -1269,14 +1271,14 @@ void ICQFunctions::callFcn()
      else
      {
         m_sProgressMsg = tr("Updating...");
-        icqEvent = server->icqRequestMetaInfo(m_nUin);
+        icqEventTag = server->icqRequestMetaInfo(m_nUin);
      }
      break;
   case TAB_WORKINFO:
      if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
      {
         m_sProgressMsg = tr("Updating server...");
-        icqEvent = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
+        icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
                                           nfoCompanyState->text().local8Bit(),
                                           nfoCompanyFax->text().local8Bit(),
                                           nfoCompanyAddress->text().local8Bit(),
@@ -1289,19 +1291,19 @@ void ICQFunctions::callFcn()
      else
      {
         m_sProgressMsg = tr("Updating...");
-        icqEvent = server->icqRequestMetaInfo(m_nUin);
+        icqEventTag = server->icqRequestMetaInfo(m_nUin);
      }
      break;
   case TAB_ABOUT:
      if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
      {
         m_sProgressMsg = tr("Updating server...");
-        icqEvent = NULL;
+        icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());
      }
      else
      {
         m_sProgressMsg = tr("Updating...");
-        icqEvent = server->icqRequestMetaInfo(m_nUin);
+        icqEventTag = server->icqRequestMetaInfo(m_nUin);
      }
      break;
   case TAB_HISTORY:
@@ -1313,13 +1315,17 @@ void ICQFunctions::callFcn()
 
   QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
   setCaption(title);
+  setCursor(waitCursor);
 }
 
 
 //-----ICQFunctions::doneFcn-------------------------------------------------
 void ICQFunctions::doneFcn(ICQEvent *e)
 {
-  if (e != icqEvent) return;
+  if ( (icqEventTag == NULL && e != NULL) ||
+       (icqEventTag != NULL && !icqEventTag->Equals(e)) )
+    return;
+
   bool isOk = (e != NULL && (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS));
   bool bForceOpen = false;
 
@@ -1351,9 +1357,11 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   }
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
   setCaption(title);
+  setCursor(arrowCursor);
   btnOk->setEnabled(true);
   btnCancel->setText(tr("&Close"));
-  icqEvent = NULL;
+  delete icqEventTag;
+  icqEventTag = NULL;
 
   if (e == NULL) return;
 
@@ -1374,14 +1382,14 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       {
         CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
         m_sProgressMsg = tr("Sending msg through server...");
-        icqEvent = server->icqSendMessage(m_nUin, ue->Message(), false,
+        icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), false,
                                           false, 0);
       }
       else
       {
         CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
         m_sProgressMsg = tr("Sending URL through server...");
-        icqEvent = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(), false,
+        icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(), false,
                                       false, 0);
       }
       QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
@@ -1504,11 +1512,12 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 #ifdef TEST_POS
   printf("close event: %d %d\n", x(), y());
 #endif
-  if (icqEvent != NULL)
+  if (icqEventTag != NULL)
   {
     setCaption(m_sBaseTitle);
-    server->CancelEvent(icqEvent);
-    icqEvent = NULL;
+    server->CancelEvent(icqEventTag);
+    delete icqEventTag;
+    icqEventTag = NULL;
     btnOk->setEnabled(true);
     btnCancel->setText(tr("&Close"));
   }

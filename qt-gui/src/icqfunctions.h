@@ -23,6 +23,7 @@ class ICQUser;
 class CICQDaemon;
 class CEComboBox;
 class ICQEvent;
+class CICQEventTag;
 class CInfoField;
 class CSignalManager;
 class MLEditWrap;
@@ -56,7 +57,7 @@ protected:
   CICQDaemon *server;
   CSignalManager *sigman;
   QString m_sBaseTitle, m_sProgressMsg;
-  ICQEvent *icqEvent;
+  CICQEventTag *icqEventTag;
   bool m_bOwner;
   QCheckBox *chkAutoClose;
   QTabWidget* tabs;
