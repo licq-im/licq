@@ -1728,8 +1728,8 @@ void UserSendCommon::windowActivationChange(bool oldActive)
       for (unsigned short i = 0; i < idList.size(); i++)
         u->EventClearId(idList[i]);
     }
-    gUserManager.DropUser(u);
   }
+  gUserManager.DropUser(u);
   QWidget::windowActivationChange(oldActive);
 }
 #endif
