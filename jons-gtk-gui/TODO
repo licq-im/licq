@@ -1,16 +1,29 @@
-Stuff on the top has a higher priority
+Yes, this is in chronological order
 
-* Sending multi-recipient messages.
+* Sending colors
 
-* Sending contacts.
+* Redesign the conversation window to use icons
+
+* Filter for history, and better looking text in the history window
+
+* Threaded group view option (with tooltips!)
+
+* Acceleration keys
+
+* Sending multi-recipient messages
+
+* Sending and receiving contacts
+
+* Fix up chat window and add in all the chat features
 
 * Pretty up the file window (the one that shows the stats)
 
-* Add some buttons to the conversation window, to send a url, chat, file,
-  read their info, history, and anything else worthwhile.
+* SAR Manager, Auto-away
 
-* Add in icon themes and maybe sound themes.
+* Add in icon themes and maybe sound themes
 
 * SOCKS5 Configuration and lots of other options
 
-* Release it eventually...
+* Documentation
+
+* Release it eventually
