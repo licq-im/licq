@@ -37,28 +37,6 @@
 /* Program used constants */
 const int MAX_LENGTH_UIN = 10;
 
-/********** Structures ******************/
-
-struct conversation
-{
-	GtkWidget *window;
-	GtkWidget *entry;
-	GtkWidget *text;
-	GtkWidget *send;
-	GtkWidget *cancel;
-	GtkWidget *send_server;
-	GtkWidget *send_normal;
-	GtkWidget *send_urgent;
-	GtkWidget *send_list;
-	GtkWidget *progress;
-	GdkColor *clrFore;
-	GdkColor *clrBack;
-	gchar prog_buf[60];
-	gchar *for_user;
-	ICQUser *user;
-	struct e_tag_data *etag;
-};
-
 struct send_url
 {
 	GtkWidget *window;
@@ -443,14 +421,6 @@ struct e_tag_data
 	unsigned long e_tag;
 };
 
-struct SFlash
-{
-	GdkPixbuf *icon;
-	gulong nUin;
-	GtkTreePath *path;
-	gboolean bFlashOn;
-};
-
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
@@ -461,14 +431,10 @@ extern GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 extern GdkPixbuf *online, *away, *na, *dnd, *occ, *offline, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
 	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
-extern int nToFlash;
-extern std::list<SFlash *> FlashList;
+void stop_flashing(ICQUser *u);
 
 /* Globals in chat_window.cpp */
 extern GSList *rc_list;
-
-/* Globals in convo.cpp */
-extern GSList *cnv;
 
 /* Globals in history_window.cpp */
 extern const gchar *line;
@@ -482,7 +448,6 @@ extern CICQDaemon *icq_daemon;
 extern gint _pipe;
 extern CPluginLog *logg;
 extern gint log_pipe;
-extern struct timeval timer;
 extern GSList *catcher;
 
 /* Globals in main_window.cpp */
@@ -504,6 +469,9 @@ extern bool enter_sends;
 extern bool flash_events;
 extern unsigned long auto_logon;
 extern bool remember_window_pos;
+extern unsigned long auto_away_time;
+extern unsigned long auto_na_time;
+extern unsigned long auto_offline_time;
 
 /* Globals for window dimensions / location */
 extern short int windowX;
@@ -592,21 +560,10 @@ extern gboolean contact_list_click(GtkWidget *, GdkEventButton *, gpointer);
 extern void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
 extern gint flash_icons(gpointer);
 
-
 /* Functions in convo.cpp */
-extern struct conversation *convo_new(ICQUser *, gboolean);
-extern struct conversation *convo_find(unsigned long);
-extern void convo_show(struct conversation *);
-extern void convo_nick_timestamp(GtkWidget *, const char *, time_t, GdkColor *);
-extern void convo_send(GtkWidget *, gpointer);
-extern gboolean key_press_convo(GtkWidget *, GdkEventKey *, gpointer);
-extern void verify_convo_send(GtkWidget *, guint, gchar *,
-			      struct conversation *);
-extern void convo_cancel(GtkWidget *, struct conversation *);
-extern void convo_recv(unsigned long);
-extern gint convo_delete(GtkWidget *, GdkEvent *, struct conversation *);
-extern void convo_close(GtkWidget *, struct conversation *);
-
+void convo_open_cb(ICQUser *user);
+void convo_open(ICQUser *user, bool refresh);
+void convo_recv(unsigned long);
 
 /* Functions in extras.cpp */
 extern void do_colors();
@@ -670,6 +627,8 @@ extern void log_window_save_cancel(GtkWidget *, gpointer);
 extern gint log_window_close(GtkWidget *, GtkWidget *);
 extern void log_window_clear(GtkWidget *, gpointer);
 
+/* Functions in main.cpp */
+const char *config_file();
 
 /* Functions in main_window.cpp */
 extern GtkWidget *main_window_new(const gchar *);
