@@ -24,8 +24,10 @@ class CFrameSkin
 {
 public:
    struct Border border;
+   unsigned short frameStyle;
    bool maintainBorder;
    bool hasMenuBar;
+   bool transparent;
    char *pixmap;
    char *mask;
 };

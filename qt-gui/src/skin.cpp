@@ -53,7 +53,10 @@ CSkin::CSkin(const char *skinname)
    skinFile.ReadNum("frame.border.bottom", frame.border.bottom);
    skinFile.ReadNum("frame.border.left", frame.border.left);
    skinFile.ReadNum("frame.border.right", frame.border.right);
-   skinFile.ReadBool("frame.hasMenuBar", frame.hasMenuBar);
+   skinFile.SetFlags(0);
+   skinFile.ReadBool("frame.hasMenuBar", frame.hasMenuBar, false);
+   skinFile.ReadNum("frame.frameStyle", frame.frameStyle, 51);
+   skinFile.ReadBool("frame.transparent", frame.transparent, false);
 
    // System Button
    skinFile.SetFlags(0);
