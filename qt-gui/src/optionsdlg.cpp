@@ -278,6 +278,14 @@ void OptionsDlg::SetupOptions()
     spnPortLow->setEnabled(false);
     spnPortHigh->setEnabled(false); 
   }
+  else
+  {
+    if (!mainwin->licqDaemon->TCPEnabled())
+    {
+      spnPortLow->setEnabled(false);
+      spnPortHigh->setEnabled(false);
+    }
+  }
 
   chkProxyEnabled->setChecked(mainwin->licqDaemon->ProxyEnabled());
   cmbProxyType->setCurrentItem(mainwin->licqDaemon->ProxyType() - 1);
@@ -896,6 +904,7 @@ QWidget *OptionsDlg::new_network_options()
   connect(chkFirewall, SIGNAL(toggled(bool)), SLOT(slot_useFirewall(bool)));
   new QWidget(gbFirewall);
   chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
+  connect(chkTCPEnabled, SIGNAL(toggled(bool)), SLOT(slot_usePortRange(bool)));
   new QWidget(gbFirewall);
   QLabel *lbl = new QLabel(tr("Port Range:"), gbFirewall);
   QWhatsThis::add(lbl, tr("TCP port range for incoming connections."));
@@ -946,6 +955,11 @@ QWidget *OptionsDlg::new_network_options()
 void OptionsDlg::slot_useFirewall(bool b)
 {
   chkTCPEnabled->setEnabled(b);
+  slot_usePortRange(b && chkTCPEnabled->isChecked());
+}
+
+void OptionsDlg::slot_usePortRange(bool b)
+{
   spnPortLow->setEnabled(b);
   spnPortHigh->setEnabled(b);
 }
