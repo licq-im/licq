@@ -23,8 +23,8 @@
 **
 *****************************************************************************/
 
-#ifndef QNEWMULTILINEEDIT_H
-#define QNEWMULTILINEEDIT_H
+#ifndef QMULTILINEEDITNEW_H
+#define QMULTILINEEDITNEW_H
 
 #ifndef QT_H
 #include "qtableview.h"
@@ -233,6 +233,7 @@ private:
 
     void 	newMark( int posx, int posy, bool copy=TRUE );
     void 	markWord( int posx, int posy );
+    void	extendSelectionWord( int &newX, int&newY);
     int 	charClass( QChar );
     void	turnMarkOff();
     bool	inMark( int posx, int posy ) const;

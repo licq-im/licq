@@ -34,6 +34,7 @@
 #include <ctype.h>
 
 
+// NOT REVISED
 /*!
   \class QMultiLineEditNew qmultilineedit.h
 
@@ -224,7 +225,6 @@ QMultiLineEditNew::QMultiLineEditNew( QWidget *parent , const char *name )
     horizontalScrollBar()->setCursor( arrowCursor );
     readOnly 	   = FALSE;
     cursorOn	   = FALSE;
-    dummy          = TRUE;
     markIsOn	   = FALSE;
     dragScrolling  = FALSE;
     dragMarking    = FALSE;
@@ -240,8 +240,9 @@ QMultiLineEditNew::QMultiLineEditNew( QWidget *parent , const char *name )
     d->scrollTime = 0;
 
     dummy = TRUE;
-    int w = textWidth("");
-    contents->append(  new QMultiLineEditNewRow("", w) );
+
+    int w  = textWidth( QString::fromLatin1("") );
+    contents->append( new QMultiLineEditNewRow(QString::fromLatin1(""), w) );
     setNumRows( 1 );
     setWidth( w );
     setAcceptDrops(TRUE);
@@ -453,7 +454,7 @@ void QMultiLineEditNew::paintCell( QPainter *painter, int row, int )
 		       fillxpos2 - fillxpos1, cellHeight(row) );
 	p.fillRect( fillxpos1, 0, fillxpos2 - fillxpos1, cellHeight(row),
 		    g.brush( QColorGroup::Highlight ) );
-	p.setPen( g.highlightedText() );	
+	p.setPen( g.highlightedText() );
 	p.drawText( x,  yPos, cellWidth()-d->lr_marg-x, cellHeight(),
 		    d->align == AlignLeft?ExpandTabs:0, s );
 	p.setClipping( FALSE );
@@ -801,8 +802,8 @@ void QMultiLineEditNew::append( const QString &s )
     emit textChanged();
 }
 
-/*!
-An override - pass wheel events to the vertical scrollbar
+/*! \reimp
+Passes wheel events to the vertical scrollbar.
 */
 void QMultiLineEditNew::wheelEvent( QWheelEvent *e ){
     QApplication::sendEvent( verticalScrollBar(), e);
@@ -881,6 +882,12 @@ void QMultiLineEditNew::keyPressEvent( QKeyEvent *e )
 	case Key_Prior:
 	    setTopCell( QMAX( topCell() - pageSize, 0 ) );
 	    break;
+	case Key_C:
+	    if ( echoMode() == Normal && (e->state()&ControlButton) )
+		copy();
+	    else
+		unknown++;
+	    break;
 	default:
 	    unknown++;
 	}
@@ -933,6 +940,13 @@ void QMultiLineEditNew::keyPressEvent( QKeyEvent *e )
 	    break;
 	case Key_Down:
 	    cursorDown( e->state() & ShiftButton );
+	    break;
+	case Key_Home:
+	    setCursorPosition(0,0, e->state() & ShiftButton );
+	    break;
+	case Key_End:
+	    setCursorPosition( numLines()-1, lineLength( numLines()-1 ),
+			       e->state() & ShiftButton );
 	    break;
 	case Key_F:
 	    cursorRight( e->state() & ShiftButton );
@@ -1237,7 +1251,9 @@ void QMultiLineEditNew::removeLine( int line )
     bool recalc = r->w == maxLineWidth();
     contents->remove( line );
     if ( contents->count() == 0 ) {
-	contents->append(  new QMultiLineEditNewRow("", 0) );
+	int w  = textWidth( QString::fromLatin1("") );
+	contents->append( new QMultiLineEditNewRow(QString::fromLatin1(""), w) );
+	setWidth( w );
 	dummy = TRUE;
     }
     setNumRows( contents->count() );
@@ -1570,7 +1586,7 @@ void QMultiLineEditNew::del()
 
 	    for( int i = markBeginY + 1 ; i <= markEndY ; i++ )
 		contents->remove( markBeginY + 1 );
-	
+
 	    if ( contents->isEmpty() )
 		insertLine( QString::fromLatin1(""), -1 );
 
@@ -1698,6 +1714,14 @@ void QMultiLineEditNew::mousePressEvent( QMouseEvent *m )
 
     int newX, newY;
     pixelPosToCursorPos( m->pos(), &newX, &newY );
+
+    if ( m->state() & ShiftButton ) {
+	wordMark = FALSE;
+	dragMarking    = TRUE;
+	setCursorPosition( newY, newX, TRUE);
+	return;
+    }
+
     if (
 	inMark(newX, newY)		// Click on highlighted text
 	&& echoMode() == Normal		// No DnD of passwords, etc.
@@ -1747,7 +1771,7 @@ void QMultiLineEditNew::setCursorPixelPosition(QPoint p, bool clear_mark)
 	    repaintDelayed( FALSE );
 	    d->isHandlingEvent = FALSE;
 	    return;
-	}	
+	}
     }
     if ( cursorY != newY ) {
 	int oldY = cursorY;
@@ -1797,6 +1821,19 @@ void QMultiLineEditNew::mouseMoveEvent( QMouseEvent *e )
     pixelPosToCursorPos(e->pos(), &newX, &newY);
 
     if ( wordMark ) {
+	extendSelectionWord( newX, newY);
+    }
+
+    if ( markDragX == newX && markDragY == newY )
+	return;
+    int oldY = markDragY;
+    newMark( newX, newY, FALSE );
+    for ( int i = QMIN(oldY,newY); i <= QMAX(oldY,newY); i++ )
+	updateCell( i, 0, FALSE );
+}
+
+void QMultiLineEditNew::extendSelectionWord( int &newX, int&newY)
+{
 	QString s = stringShown( newY );
 	int lim = s.length();
 	if ( newX >= 0 && newX < lim ) {
@@ -1815,15 +1852,9 @@ void QMultiLineEditNew::mouseMoveEvent( QMouseEvent *e )
 	    }
 	    newX = i;
 	}
-    }
-
-    if ( markDragX == newX && markDragY == newY )
-	return;
-    int oldY = markDragY;
-    newMark( newX, newY, FALSE );
-    for ( int i = QMIN(oldY,newY); i <= QMAX(oldY,newY); i++ )
-	updateCell( i, 0, FALSE );
 }
+
+
 
 
 /*!
@@ -1874,10 +1905,18 @@ void QMultiLineEditNew::mouseReleaseEvent( QMouseEvent *e )
 void QMultiLineEditNew::mouseDoubleClickEvent( QMouseEvent *m )
 {
     if ( m->button() == LeftButton ) {
+	if ( m->state() & ShiftButton ) {
+	    int newX = cursorX;
+	    int newY = cursorY;
+	    extendSelectionWord( newX, newY);
+	    newMark( newX, newY, FALSE );
+	} else {
+	    markWord( cursorX, cursorY );
+	}
 	dragMarking    = TRUE;
-	markWord( cursorX, cursorY );
 	wordMark = TRUE;
 	updateCell( cursorY, 0, FALSE );
+
     }
 }
 
@@ -2125,10 +2164,11 @@ void QMultiLineEditNew::clear()
 {
     contents->clear();
     cursorX = cursorY = 0;
-    contents->append(  new QMultiLineEditNewRow("", 0) );
+    int w  = textWidth( QString::fromLatin1("") );
+    contents->append( new QMultiLineEditNewRow(QString::fromLatin1(""), w) );
+    setWidth( w );
     dummy = TRUE;
     markIsOn = FALSE;
-    setWidth( 1 );
     if ( autoUpdate() )
 	repaintDelayed();
     if ( !d->isHandlingEvent ) //# && not already empty
@@ -2162,8 +2202,13 @@ void QMultiLineEditNew::newMark( int posx, int posy, bool /*copy*/ )
     cursorX    = posx;
     cursorY    = posy;
     markIsOn = ( markDragX != markAnchorX ||  markDragY != markAnchorY );
+#if defined(_WS_X11_)
     if ( echoMode() == Normal )
-	this->copy();
+       this->copy();
+#else
+    if ( style() == MotifStyle && echoMode() == Normal )
+       this->copy();
+#endif
 }
 
 bool QMultiLineEditNew::beforeMark( int posx, int posy ) const
@@ -2219,8 +2264,13 @@ void QMultiLineEditNew::markWord( int posx, int posy )
     markDragX = i;
     markDragY = posy;
     markIsOn = ( markDragX != markAnchorX ||  markDragY != markAnchorY );
+#if defined(_WS_X11_)
     if ( echoMode() == Normal )
 	copy();
+#else
+    if ( style() == MotifStyle && echoMode() == Normal )
+	copy();
+#endif
 }
 
 /*!
@@ -2262,7 +2312,7 @@ void QMultiLineEditNew::copy() const
     }
 }
 
-/* \obsolete
+/*! \obsolete
 
   Backward compatibility.
 */
@@ -2345,11 +2395,14 @@ void QMultiLineEditNew::setCursorPosition( int line, int col, bool mark )
     cursorX = QMAX( QMIN( col,  lineLength( cursorY )), 0 );
     curXPos = 0;
     makeVisible();
-    updateCell( oldY, 0, FALSE );
-    if ( mark )
+    if ( mark ) {
 	newMark( cursorX, cursorY, FALSE );
-    else
+	for ( int i = QMIN(oldY,cursorY); i <= QMAX(oldY,cursorY); i++ )
+	    updateCell( i, 0, FALSE );
+    } else {
+	updateCell( oldY, 0, FALSE );
 	turnMarkOff();
+    }
 }
 
 
@@ -2503,17 +2556,15 @@ QSize QMultiLineEditNew::sizeHint() const
 
 QSize QMultiLineEditNew::minimumSizeHint() const
 {
-    const int sbDim = 16; //###
-
-     QFontMetrics fm( font() );
+    QFontMetrics fm( font() );
     int h = fm.lineSpacing() + frameWidth()*2;
     int w = fm.maxWidth();
     h += frameWidth();
     w += frameWidth();
     if ( testTableFlags(Tbl_hScrollBar|Tbl_autoHScrollBar) )
-	w += sbDim;
+	w += verticalScrollBar()->sizeHint().width();
     if ( testTableFlags(Tbl_vScrollBar|Tbl_autoVScrollBar) )
-	h += sbDim;
+	h += horizontalScrollBar()->sizeHint().height();
     return QSize(w,h);
 }
 
@@ -2549,7 +2600,8 @@ void QMultiLineEditNew::resizeEvent( QResizeEvent *e )
  */
 void  QMultiLineEditNew::repaintDelayed( bool erase)
 {
-    QApplication::postEvent( this, new QPaintEvent( viewRect(), erase ) );
+    if ( isVisible() )
+	QApplication::postEvent( this, new QPaintEvent( viewRect(), erase ) );
 
 }
 
@@ -3002,7 +3054,7 @@ void QMultiLineEditNew::wrapLine( int line, int removed )
 	}
 	if ( lastSpace <= a )
 	    lastw = linew;
-	
+
 	++i;
     }
     if ( a < int(s.length()) ){
@@ -3081,12 +3133,24 @@ void QMultiLineEditNew::rebreakAll()
 }
 
 /*!
-  Sets the word wrap mode. Possible values are \c NoWrap, \c
-  DynamicWrap, \c FixedWidthWrap and \c FixedColumnWrap.
+  Sets the word wrap mode. Possible values are
 
-  Per default, wrapping keeps words intact. To allow breaking
-  within words, the \c BreakWithinWords can be or'ed to one of the
-  wrap modes.
+    <ul>
+    <li> \c NoWrap - no word wrap at all.
+    <li> \c DynamicWrap - word wrap depending on the current
+     width of the editor widget
+    <li> \c FixedWidthWrap - wrap according to a fix amount
+     of pixels ( see wrapColumnOrWidth() )
+    <li> \c FixedColumnWrap - wrap according to a fix character
+     column. This is useful whenever you need formatted text that
+     can also be displayed gracefully on devices with monospaced
+     fonts, for example a standard VT100 terminal. In that case
+     wrapColumnOrWidth() should typically be set to 80.
+  </ul>
+
+  Per default, wrapping keeps words intact. To allow breaking within
+  words, the flag \c BreakWithinWords can be or'ed to one of the wrap
+  modes.
 
   The default wrap mode is \c NoWrap.
 
@@ -3094,7 +3158,10 @@ void QMultiLineEditNew::rebreakAll()
  */
 void QMultiLineEditNew::setWordWrap( int mode )
 {
+    if ( mode == d->wrapmode )
+	return;
     d->wrapmode = mode;
+    setText( text() );
 }
 
 /*!
@@ -3114,7 +3181,11 @@ int QMultiLineEditNew::wordWrap() const
  */
 void QMultiLineEditNew::setWrapColumnOrWidth( int value )
 {
+    if ( value == d->wrapcol )
+	return;
     d->wrapcol = value;
+    if ( wordWrap() != NoWrap )
+	setText( text() );
 }
 
 /*!
