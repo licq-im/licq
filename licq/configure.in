@@ -160,6 +160,7 @@ AM_PROG_LIBTOOL
 AC_LIBTOOL_CXX
 
 AC_OUTPUT(
+  bin/Makefile \
   share/Makefile \
   src/Makefile \
   include/Makefile \
