@@ -39,11 +39,19 @@ class INetSocket
 {
 public:
   INetSocket(unsigned long _nOwner);
+#ifdef PROTOCOL_PLUGIN
+  INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID);
+#endif
   virtual ~INetSocket();
 
   bool Connected()          { return(m_nDescriptor > 0);  }
   int Descriptor()          { return(m_nDescriptor);      }
   bool DestinationSet()     { return (RemoteIp() != 0); }
+#ifdef PROTOCOL_PLUGIN
+  char *OwnerId()           { return m_szOwnerId; }
+  unsigned long OwnerPPID() { return m_nOwnerPPID; }
+  void SetOwner(const char *s, unsigned long n);
+#endif
   unsigned long Owner()     { return (m_nOwner); }
   void SetOwner(unsigned long _nOwner)  { m_nOwner = _nOwner; }
   unsigned long Version()     { return (m_nVersion); }
@@ -63,7 +71,7 @@ public:
   bool SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort);
 
   void SetProxy(ProxyServer *_xProxy) { m_xProxy = _xProxy; };
-  
+
   void ResetSocket();
   void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
   bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };
@@ -99,6 +107,10 @@ protected:
   unsigned short m_nVersion;
   SocketError_et m_nErrorType;
   ProxyServer *m_xProxy;
+#ifdef PROTOCOL_PLUGIN
+  char *m_szOwnerId;
+  unsigned long m_nOwnerPPID;
+#endif
 };
 
 
@@ -108,8 +120,15 @@ class TCPSocket : public INetSocket
 public:
   TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
     { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
+#ifdef PROTOCOL_PLUGIN
+  TCPSocket(const char *s, unsigned long n) : INetSocket(s, n)
+    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
+  TCPSocket() : INetSocket(0, 0)
+    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
+#else
   TCPSocket() : INetSocket(0)
     { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
+#endif
   virtual ~TCPSocket();
 
   // Abstract base class overloads
@@ -144,6 +163,10 @@ class SrvSocket : public INetSocket
 public:
   SrvSocket(unsigned long _nOwner) : INetSocket(_nOwner)
     { strcpy(m_szID, "SRV"); m_nSockType = SOCK_STREAM; }
+#ifdef PROTOCOL_PLUGIN
+  SrvSocket(const char *s, unsigned long n) : INetSocket(s, n)
+    { strcpy(m_szID, "SRV"); m_nSockType = SOCK_STREAM; }
+#endif
   virtual ~SrvSocket();
 
   // Abstract base class overloads

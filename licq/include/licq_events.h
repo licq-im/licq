@@ -53,6 +53,7 @@ const unsigned short  SA_DISABLED = 2;
     Result() returning EVENT_SUCCESS, which also signifies the search is
     complete.
 */
+//TODO Change CSearchAck class for Protocol Plugin
 class CSearchAck
 {
 public:
@@ -182,6 +183,10 @@ public:
   //!this was a message/url...
   unsigned long Uin()          { return m_nDestinationUin; }
 
+#ifdef PROTOCOL_PLUGIN
+  char *Id()                   { return m_szId; }
+  unsigned long PPID()         { return m_nPPID; }
+#endif
   //!Special structure containing information relevant if this is a
   //!search event.
   CSearchAck *SearchAck()      { return m_pSearchAck; }
@@ -215,6 +220,10 @@ public:
 protected:
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
            unsigned long _nUin, CUserEvent *e);
+#ifdef PROTOCOL_PLUGIN
+  ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
+           const char *_szId, unsigned long _nPPID, CUserEvent *e);
+#endif
   ICQEvent(ICQEvent *);
 
   // Daemon only
@@ -243,6 +252,8 @@ protected:
   unsigned short m_nSubType;
   unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
+  char           *m_szId;
+  unsigned long  m_nPPID;
   CPacket        *m_pPacket;
   pthread_t      thread_send;
   bool           thread_running;
@@ -320,6 +331,10 @@ friend void *MonitorSockets_tep(void *p);
  *  list.  The server side alias is just the UIN as a string.  The plugin
  *  may call icqRenameUser after receiving this.  Sub-type is 0.
  *
+ *  SIGNAL_NEWxPROTO_PLUGIN - A new protocol plugin has been succesfully loaded.
+ *  The sub-type is the id of the plugin.  This is used as a parameter for all
+ *  functions dealing with this new protocol.  The UIN and all other parameters
+ *  are 0.
  *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
@@ -329,6 +344,7 @@ const unsigned long SIGNAL_ONEVENT               = 0x00000010;
 const unsigned long SIGNAL_UI_VIEWEVENT          = 0x00000020;
 const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
 const unsigned long SIGNAL_ADDxSERVERxLIST       = 0x00000080;
+const unsigned long SIGNAL_NEWxPROTO_PLUGIN      = 0x00000100;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // logoff constants
@@ -363,9 +379,13 @@ class CICQSignal
 {
 public:
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, int nArgument = 0, char *nParameters = 0);
+#ifdef PROTOCOL_PLUGIN
+  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
+             unsigned long _nPPID, int nArgument = 0, char *nParameters = 0);
+#endif
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
-  
+
   //!Returns the signal being posted to the plugin.
   unsigned long Signal() { return m_nSignal; }
   //!Returns the sub-signal being posted to the plugin.
@@ -373,12 +393,20 @@ public:
   //!UIN that the signal is related.  See signals to understand how this
   //!value is set.
   unsigned long Uin() { return m_nUin; }
+#ifdef PROTOCOL_PLUGIN
+  char *Id()            { return m_szId; }
+  unsigned long PPID()  { return m_nPPID; }
+#endif
   int Argument() { return m_nArgument; }
   char *Parameters() { return m_szParameters; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
+#ifdef PROTOCOL_PLUGIN
+  char *m_szId;
+  unsigned long m_nPPID;
+#endif
   int m_nArgument;
   char * m_szParameters;
 };

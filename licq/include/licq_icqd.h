@@ -20,6 +20,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_color.h"
 
 class CPlugin;
+class CProtoPlugin;
 class CPacket;
 class CPacketTcp;
 class CLicq;
@@ -90,6 +91,39 @@ public:
   pthread_t *Shutdown();
   void SaveConf();
 
+#ifdef PROTOCOL_PLUGIN
+  // GUI Plugins call these now
+  unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
+     const char *szMessage, bool bOnline, unsigned short nLevel,
+     bool bMultipleRecipients = false, CICQColor *pColor = NULL);
+
+  unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
+     const char *szUrl, const char *szDescription, bool bOnline,
+     unsigned short nLevel, bool bMultipleRecipients = false,
+     CICQColor *pColor = NULL);
+
+  unsigned long ProtoSendContactList(const char *szId, unsigned long nPPID,
+     UinList &uins, bool bOnline, unsigned short nLevel,
+     bool bMultipleRecipients = false, CICQColor *pColor = NULL);
+
+  unsigned long ProtoFetchAutoResponse(const char *szId, unsigned long nPPID,
+     bool bServer = false);
+
+  unsigned long ProtoChatRequest(const char *szId, unsigned long nPPID,
+     const char *szReason, unsigned short nLevel, bool bServer);
+  unsigned long ProtoMultiPartyChatRequest(const char *szId, unsigned long nPPID,
+     const char *szReason, const char *szChatUsers, unsigned short nPort,
+     unsigned short nLevel, bool bServer);
+  void ProtoChatRequestRefuse(const char *szId, unsigned long nPPID,
+     const char *szReason, unsigned long nSequence, unsigned long nMsgID[],
+     bool bDirect);
+  void ProtoChatRequestAccept(const char *szId, unsigned long nPPID,
+     unsigned short nPort, const char *szClients, unsigned long nSequeunce,
+     unsigned long nMsgID[], bool bDirect);
+  void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
+     unsigned long nSequence);
+#endif
+
   // TCP (user) functions
   // Message
   unsigned long icqSendMessage(unsigned long nUin, const char *szMessage,
@@ -118,7 +152,7 @@ public:
   void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
   // File Transfer
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
-     const char *szDescription, ConstFileList &lFileList, 
+     const char *szDescription, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
      unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
@@ -218,6 +252,9 @@ public:
   void PluginDisable(int);
   bool PluginLoad(const char *, int, char **);
 
+  bool ProtoPluginLoad(const char *);
+  int RegisterProtoPlugin();
+  
   void PluginUIViewEvent(unsigned long nUin) {
   	PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
   }
@@ -468,6 +505,7 @@ protected:
   friend class CFileTransferManager;
   friend class COnEventManager;
 	friend class CUserManager;
+  friend class CLicq;
 };
 
 // Global pointer
