@@ -326,7 +326,8 @@ void UserEventCommon::slot_security()
 //=====UserViewEvent=========================================================
 UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
                              CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent")
+  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent"),
+    m_highestEventId(-1)
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   splRead = new QSplitter(Vertical, mainWidget);
@@ -398,10 +399,24 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u != NULL && u->NewMessages() > 0)
   {
+    /*
+     Create an item for the message we're currently viewing.
+    */
     MsgViewItem *e = new MsgViewItem(u->EventPeek(0), codec, msgView);
+    /*
+     Create items for all the messages which already await
+     in the queue. We cannot rely on getting CICQSignals for them
+     since they might've arrived before the dialog appeared,
+     possibly being undisplayed messages from previous licq session.
+    */
     for (unsigned short i = 1; i < u->NewMessages(); i++)
     {
-      (void) new MsgViewItem(u->EventPeek(i), codec, msgView);
+      CUserEvent* event = u->EventPeek(i);
+      (void) new MsgViewItem(event, codec, msgView);
+      // Make sure we don't add this message again, even if we'll
+      // receive an userUpdated signal for it.
+      if (m_highestEventId < event->Id())
+         m_highestEventId = event->Id();
     }
     gUserManager.DropUser(u);
     slot_printMessage(e);
@@ -501,13 +516,13 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   mlvRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
   // Set the text
   if (m->SubCommand() == ICQ_CMDxSUB_SMS)
-     messageText = QString::fromUtf8(m->Text());
+     m_messageText = QString::fromUtf8(m->Text());
   else
-     messageText = codec->toUnicode(m->Text());
+     m_messageText = codec->toUnicode(m->Text());
 #if QT_VERSION < 300
-  mlvRead->setText(messageText);
+  mlvRead->setText(m_messageText);
 #else
-  mlvRead->setText(MLView::toRichText(messageText, true));
+  mlvRead->setText(MLView::toRichText(m_messageText, true));
 #endif
   mlvRead->setCursorPosition(0, 0);
 
@@ -622,7 +637,7 @@ void UserViewEvent::generateReply()
     s += mlvRead->markedText();
   else
     // we don't use mlvRead->text() since on Qt3 it returns rich text
-    s += messageText;
+    s += m_messageText;
 
   s.replace(QRegExp("\n"), QString::fromLatin1("\n> "));
 
@@ -878,11 +893,21 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 
     if (sig->Argument() > 0)
     {
-      e = u->EventPeekId(sig->Argument());
-      if (e != NULL)
+      int eventId = sig->Argument();
+      // Making sure we didn't handle this message already.
+      if (m_highestEventId < eventId)
       {
-        MsgViewItem *m = new MsgViewItem(e, codec, msgView);
-        msgView->ensureItemVisible(m);
+         m_highestEventId = eventId;
+         e = u->EventPeekId(eventId);
+         if (e != NULL)
+         {
+           MsgViewItem *m = new MsgViewItem(e, codec, msgView);
+           msgView->ensureItemVisible(m);
+         }
+      }
+      else
+      {
+         qDebug("Ignoring double message");
       }
     }
 

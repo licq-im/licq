@@ -112,6 +112,8 @@ public:
   virtual ~UserViewEvent();
 
 protected:
+  // widgets
+
   QSplitter *splRead;
   MLView *mlvRead;
   MsgView *msgView;
@@ -119,7 +121,12 @@ protected:
   QCheckBox* chkAutoClose;
   QPushButton *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
   CEButton *btnRead1, *btnClose;
-  QString messageText;
+
+  // The currently displayed message in decoded (Unicode) form.
+  QString m_messageText;
+  // ID of the higest event we've processed. Helps determine
+  // which events we already processed in the ctor.
+  int m_highestEventId;
 
   void generateReply();
   void sendMsg(QString txt);
