@@ -138,7 +138,7 @@ void CUtilityDlg::slot_run()
 {
   // Use the readonly state of the nfoUtility as a flag for whether or
   // not we are editing it
-  if (nfoUtility->ReadOnly())
+  if (nfoUtility->isReadOnly())
   {
     // Set the user fields
     vector<const char *> vszFields(m_xUtility->NumUserFields());
