@@ -1451,7 +1451,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
             messageText = codec->toUnicode((*lHistoryIter)->Text());
   
           // Make the header
-          const char *color = (*lHistoryIter)->Direction() == D_RECEIVER ? "red" : "blue";
+          const char *color = (*lHistoryIter)->Direction() == D_RECEIVER ? "light pink" : "light blue";
           str = QString("<font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
               .arg(color)
               .arg(((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription((*lHistoryIter)) + " ")))
