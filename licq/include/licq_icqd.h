@@ -430,7 +430,7 @@ protected:
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
   int ConnectToUser(unsigned long);
-  int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
+  int ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
      unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort);
 
   void StupidChatLinkageFix();
