@@ -1,5 +1,10 @@
 ChangeLog for licq-data Package
 
+New in 1.6
+o  Added some new skins, improved older ones.
+o  Added ICQ sounds
+
+
 New in 1.5
 
 o  Added RecreateUserList.sh script to rebuild the user list from the current
