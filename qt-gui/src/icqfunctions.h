@@ -6,6 +6,7 @@
 #include "userfcndlg.h"
 #include "history.h"
 
+class QBoxLayout;
 class QSplitter;
 class QCheckBox;
 class QGroupBox;
@@ -71,6 +72,7 @@ protected:
 
   // Send Event tab
   void CreateSendEventTab();
+  QBoxLayout* m_selay;
   MLEditWrap *mleSend;
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent;
   QLineEdit *edtSpoof, *edtItem;
@@ -102,7 +104,7 @@ protected:
 
   // About
   void CreateAboutTab();
-  QGroupBox *boxAbout;
+  QLabel *lblAbout;
   MLEditWrap *mleAbout;
 
   // History tab
