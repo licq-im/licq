@@ -7,6 +7,7 @@
 
 #include <qcolor.h>
 #include <qfont.h>
+#include <qmainwindow.h>
 #include <qmultilineedit.h>
 #include <qsocketnotifier.h>
 
@@ -24,6 +25,7 @@ class QMenuBar;
 class QPopupMenu;
 class QGroupBox;
 class QPushButton;
+class QToolButton;
 
 class CICQDaemon;
 
@@ -80,7 +82,7 @@ enum ChatMode { CHAT_PANE, CHAT_IRC };
 
 //=====ChatDlg===============================================================
 
-class ChatDlg : public QWidget
+class ChatDlg : public QMainWindow
 {
    Q_OBJECT
 public:
@@ -115,7 +117,11 @@ protected:
   CICQDaemon *licqDaemon;
   QListBox *lstUsers;
 
+  QToolButton* tbtBold, *tbtItalic, *tbtUnderline;
+  QToolButton* tbtLaugh, *tbtBeep;
+
   QString chatname, linebuf;
+  QComboBox *cmbFontName, *cmbFontSize, *cmbFrontColor, *cmbBackColor;
 
   ChatMode m_nMode;
   ChatUserList chatUsers;
@@ -130,11 +136,19 @@ protected:
 
 protected slots:
   void chatSend(QKeyEvent *);
+  void chatSendBuffer(const CBuffer*);
+  void chatSendBeep();
   void chatRecv(int);
   void StateServer(int);
   void StateClient(int);
   void chatRecvConnection();
   void chatClose(CChatUser *);
+
+  void fontSizeChanged(const QString&);
+  void fontNameChanged(const QString&);
+  void fontStyleChanged();
+  void frontColorChanged(int);
+  void backColorChanged(int);
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();

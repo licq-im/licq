@@ -10,7 +10,10 @@
 #include <qlistbox.h>
 #include <qlabel.h>
 #include <qsocketnotifier.h>
+#include <qtoolbar.h>
 #include <qpushbutton.h>
+#include <qtoolbutton.h>
+#include <qstatusbar.h>
 #include <qgroupbox.h>
 #include <qmenubar.h>
 #include <qpopupmenu.h>
@@ -34,10 +37,34 @@
 
 ChatDlgList ChatDlg::chatDlgs;
 
+// ---------------------------------------------------------------------------
+// Toolbar icons
+
+#include "xpm/chatBold.xpm"
+#include "xpm/chatItalic.xpm"
+#include "xpm/chatUnder.xpm"
+#include "xpm/chatBeep.xpm"
+
+// ---------------------------------------------------------------------------
+
+#define NUM_COLORS 7
+
+static const int col_array[] =
+{
+  0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00,
+  0xFF, 0x00, 0x00,
+  0xFF, 0xFF, 0x00,
+  0x00, 0xFF, 0x00,
+  0x00, 0xFF, 0xFF,
+  0x00, 0x00, 0xFF
+};
+
+// ---------------------------------------------------------------------------
 
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
                  QWidget *parent, char *name)
-   : QWidget(parent, name)
+   : QMainWindow(parent, name)
 {
   m_nUin = _nUin;
   m_bAudio = true;
@@ -52,8 +79,13 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   chatname = QString::fromLocal8Bit(o->GetAlias());
   gUserManager.DropOwner();
 
+  setCaption(tr("Licq - Chat"));
+  // central widget
+  QWidget* widCentral = new QWidget(this);
+  setCentralWidget(widCentral);
+
   // Panel mode setup
-  boxPane = new QGroupBox(this);
+  boxPane = new QGroupBox(widCentral);
   QGridLayout *play = new QGridLayout(boxPane, 5, 1, 10, 5);
 
   lblRemote = new QLabel(tr("Remote - Not connected"), boxPane);
@@ -76,7 +108,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   play->setRowStretch(4, 1);
 
   // IRC mode setup
-  boxIRC = new QGroupBox(this);
+  boxIRC = new QGroupBox(widCentral);
   QGridLayout *lay = new QGridLayout(boxIRC, 2, 2, 10, 5);
   mleIRCRemote = new CChatWindow(boxIRC);
   mleIRCRemote->setReadOnly(true);
@@ -101,12 +133,80 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   mnuChat->insertItem(tr("Mode"), mnuMode);
   mnuChat->insertItem(tr("Style"));
 
-  btnClose = new QPushButton(tr("&Close Chat"), this);
+  // Toolbar
+  QToolBar* barChat = new QToolBar("label", this);
+  addToolBar(barChat, "label");
+
+  barChat->addSeparator();
+
+  QPixmap* pixBold = new QPixmap(chatBold_xpm);
+  tbtBold = new QToolButton(*pixBold, tr("Bold"), tr("Toggles Bold font"),
+                            this, SLOT(fontStyleChanged()), barChat);
+  tbtBold->setToggleButton(true);
+
+  QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
+  tbtItalic = new QToolButton(*pixItalic, tr("Italic"), tr("Toggles Italic font"),
+                              this, SLOT(fontStyleChanged()), barChat);
+  tbtItalic->setToggleButton(true);
+
+  QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
+  tbtUnderline = new QToolButton(*pixUnder, tr("Underline"), tr("Toggles Bold font"),
+                                 this, SLOT(fontStyleChanged()), barChat);
+  tbtUnderline->setToggleButton(true);
+
+  barChat->addSeparator();
+
+  // ### FIXME: implement laughing
+//  tbtLaugh = new QToolButton(LeftArrow, barChat);
+
+  QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
+  tbtBeep = new QToolButton(*pixBeep, tr("Beep"), tr("Sends a Beep to all recipients"),
+                            this, SLOT(chatSendBeep()), barChat);
+
+  barChat->addSeparator();
+
+  cmbFrontColor = new QComboBox(barChat);
+  connect(cmbFrontColor, SIGNAL(activated(int)), SLOT(frontColorChanged(int)));
+  cmbBackColor = new QComboBox(barChat);
+  connect(cmbBackColor, SIGNAL(activated(int)), SLOT(backColorChanged(int)));
+
+  for(int i = 0; i < NUM_COLORS; i++) {
+    QPixmap* pix = new QPixmap(50, 20);
+    QColor c (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
+
+    pix->fill(c);
+
+    cmbFrontColor->insertItem(*pix, i);
+    cmbBackColor->insertItem(*pix, i);
+  }
+
+  cmbFrontColor->setCurrentItem(1);
+  cmbBackColor->setCurrentItem(0);
+
+  barChat->addSeparator();
+
+  cmbFontName = new QComboBox(barChat);
+  cmbFontName->insertItem("helvetica");
+  cmbFontName->insertItem("times");
+  cmbFontName->insertItem("system");
+  cmbFontName->insertItem("courier");
+  connect(cmbFontName, SIGNAL(activated(const QString&)), SLOT(fontNameChanged(const QString&)));
+
+  cmbFontSize = new QComboBox(barChat);
+//  cmbFontSize->setValidator(new QIntValidator(6, 120, barChat));
+  connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
+
+  cmbFontSize->insertItem(QString::number(font().pointSize()));
+
+  for(int i = 8; i <= 12; i++)  cmbFontSize->insertItem(QString::number(i));
+  for(int i = 14; i<= 24; i +=2)  cmbFontSize->insertItem(QString::number(i));
+  for(int i = 28; i<= 48; i +=8)  cmbFontSize->insertItem(QString::number(i));
+
+  btnClose = new QPushButton(tr("&Close Chat"), widCentral);
   btnClose->setFixedSize(btnClose->sizeHint());
   connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
 
-  QGridLayout *g = new QGridLayout(this, 2, 1, 10, 5);
-  g->setMenuBar(mnuChat);
+  QGridLayout *g = new QGridLayout(widCentral, 2, 1, 6, 4);
   g->addWidget(boxPane, 0, 0);
   g->addWidget(boxIRC, 0, 0);
   g->addWidget(btnClose, 1, 0);
@@ -120,6 +220,8 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   show();
 }
 
+
+// -----------------------------------------------------------------------------
 
 ChatDlg::~ChatDlg()
 {
@@ -140,6 +242,133 @@ ChatDlg::~ChatDlg()
       break;
     }
   }
+}
+
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::fontSizeChanged(const QString& txt)
+{
+  QFont f(mlePaneLocal->font());
+
+  f.setPointSize(txt.toInt());
+
+  mlePaneLocal->setFont(f);
+  mleIRCLocal->setFont(f);
+
+  // transmit to remote
+  CBuffer buffer(5);
+  buffer.PackChar(0x12);
+  buffer.PackUnsignedLong(txt.toULong());
+  chatSendBuffer(&buffer);
+}
+
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::fontNameChanged(const QString& txt)
+{
+  QFont f(mlePaneLocal->font());
+
+  f.setFamily(txt);
+
+  mlePaneLocal->setFont(f);
+  mleIRCLocal->setFont(f);
+
+  // transmit to remote
+  qDebug("not yet implemented");
+}
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::fontStyleChanged()
+{
+  unsigned long style = (tbtBold->state() == QButton::On ? 1 : 0) |
+    (tbtItalic->state() == QButton::On ? 2 : 0) |
+    (tbtUnderline->state() == QButton::On ? 4 : 0);
+
+  QFont f(mlePaneLocal->font());
+
+  f.setBold(tbtBold->state() == QButton::On);
+  f.setItalic(tbtItalic->state() == QButton::On);
+  f.setUnderline(tbtUnderline->state() == QButton::On);
+
+  mlePaneLocal->setFont(f);
+  mleIRCLocal->setFont(f);
+
+  // transmit to remote
+  CBuffer buffer(5);
+  buffer.PackChar(0x11);
+  buffer.PackUnsignedLong(style);
+  chatSendBuffer(&buffer);
+}
+
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::chatSendBeep()
+{
+  CBuffer buffer(1);
+  buffer.PackChar(0x07);
+  chatSendBuffer(&buffer);
+  QApplication::beep();
+}
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::frontColorChanged(int i)
+{
+  QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
+
+  QPalette pal = mlePaneLocal->palette();
+#if QT_VERSION >= 210
+  pal.setColor(QPalette::Active, QColorGroup::Text, color);
+  pal.setColor(QPalette::Inactive, QColorGroup::Text, color);
+#else
+  pal.setColor(QPalette::Active, QColorGroup::Text, color);
+  pal.setColor(QPalette::Normal, QColorGroup::Text, color);
+#endif
+  mlePaneLocal->setPalette(pal);
+  mleIRCLocal->setPalette(pal);
+
+  // sent to remote
+  CBuffer buffer(5);
+  buffer.PackChar(0x00);
+  buffer.PackChar(color.red());
+  buffer.PackChar(color.green());
+  buffer.PackChar(color.blue());
+  buffer.PackChar(0x00);
+
+  chatSendBuffer(&buffer);
+}
+
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::backColorChanged(int i)
+{
+  QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
+
+  QPalette pal = mlePaneLocal->palette();
+#if QT_VERSION >= 210
+  pal.setColor(QPalette::Active, QColorGroup::Base, color);
+  pal.setColor(QPalette::Inactive, QColorGroup::Base, color);
+#else
+  pal.setColor(QPalette::Active, QColorGroup::Base, color);
+  pal.setColor(QPalette::Normal, QColorGroup::Base, color);
+#endif
+  mlePaneLocal->setPalette(pal);
+  mleIRCLocal->setPalette(pal);
+
+  // sent to remote
+  CBuffer buffer(5);
+  buffer.PackChar(0x01);
+  buffer.PackChar(color.red());
+  buffer.PackChar(color.green());
+  buffer.PackChar(color.blue());
+  buffer.PackChar(0x00);
+
+  chatSendBuffer(&buffer);
 }
 
 
@@ -254,8 +483,10 @@ void ChatDlg::StateServer(int sd)
       u->client.m_nPort = pin.Port();
       u->client.m_nSession = m_nSession;
       lstUsers->insertItem(u->chatname);
-      if (u == chatUser)
+      if (u == chatUser) {
         lblRemote->setText(tr("Remote - %1").arg(u->chatname));
+        setCaption(tr("Licq Chat - %1").arg(u->chatname));
+      }
 
       // set up the remote colors
       u->colorFore = QColor (pin.ColorForeRed(), pin.ColorForeGreen(), pin.ColorForeBlue());
@@ -589,6 +820,11 @@ void ChatDlg::chatSend(QKeyEvent *e)
     }
   }
 
+  chatSendBuffer(&buffer);
+}
+
+void ChatDlg::chatSendBuffer(const CBuffer* buffer)
+{
   ChatUserList::iterator iter;
   CChatUser *u = NULL;
   for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
@@ -598,7 +834,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
     // If the socket was closed, ignore the key event
     if (u->state != STATE_RECVxCHAT || u->sock.Descriptor() == -1) continue;
 
-    if (!u->sock.SendRaw(&buffer))
+    if (!u->sock.SendRaw(const_cast<CBuffer*>(buffer)))
     {
       char buf[128];
       gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
@@ -691,11 +927,9 @@ void ChatDlg::chatRecv(int sd)
       {
         if (m_bAudio)
           QApplication::beep();
-        else
-        {
-          if (u == chatUser) mlePaneRemote->append("\n<--BEEP-->");
-          mleIRCRemote->append(u->chatname + "> <--BEEP-->");
-        }
+
+        if (u == chatUser) mlePaneRemote->append("\n<--BEEP-->\n");
+        mleIRCRemote->append(u->chatname + "> <--BEEP-->\n");
         u->chatQueue.pop_front();
         break;
       }
@@ -773,6 +1007,9 @@ void ChatDlg::chatRecv(int sd)
                         (u->chatQueue[sizeFontName + 4] << 8);
          u->font.setFamily(nameFont);
 
+         qDebug("nameFont %s", nameFont);
+         qDebug("encodingFont %x", encodingFont);
+
          if (u == chatUser)
          {
            mlePaneRemote->setFont(u->font);
@@ -790,7 +1027,10 @@ void ChatDlg::chatRecv(int sd)
         unsigned long styleFont;
         styleFont = u->chatQueue[1] | (u->chatQueue[2] << 8) |
                     (u->chatQueue[3] << 16) | (u->chatQueue[4] << 24);
-        //FIXME add font style support
+
+        u->font.setBold(styleFont & 1);
+        u->font.setItalic(styleFont & 2);
+        u->font.setUnderline(styleFont & 4);
 
         // Dequeue all characters
         for (unsigned short i = 0; i < 5; i++)
@@ -954,7 +1194,7 @@ void CChatWindow::insert(const QString &s)
 void CChatWindow::keyPressEvent (QKeyEvent *e)
 {
   if ( (e->key() < Key_Space ||
-        e->key() > Key_AsciiTilde ||
+        e->key() > 0xff ||
         e->state() & ControlButton ||
         e->state() & AltButton)
       &&
@@ -962,7 +1202,8 @@ void CChatWindow::keyPressEvent (QKeyEvent *e)
         e->key() != Key_Backtab &&
         e->key() != Key_Backspace &&
         e->key() != Key_Return &&
-        e->key() != Key_Enter) )
+        e->key() != Key_Enter &&
+        e->key() != 0x0000) )
     return;
 
   if (!atEnd()) GotoEnd();
