@@ -312,6 +312,12 @@ void convo_recv(gulong uin)
 
 	CUserEvent *u_event = c->user->EventPop();
 
+	/* Make sure we really have an event */
+	if(u_event == NULL)
+	{
+		return;
+	}
+
 	if(u_event->SubCommand() == ICQ_CMDxSUB_MSG)
 	{
 		const gchar *message = u_event->Text();
