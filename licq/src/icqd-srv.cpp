@@ -2349,11 +2349,12 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	bool multipart = false;
       	
       	if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e)) {
-				// error: empty result or nonexistent user (1E =  readonly???)
-        	gLog.Info("%sFailed to update detail info: %x.\n", L_SRVxSTR, nResult);
+		// error: empty result or nonexistent user (1E =  readonly???)
+        	gLog.Warn("%sFailed to update user info: %x.\n", L_WARNxSTR, nResult);
         	e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
         	if (e != NULL) ProcessDoneEvent(e);
-          e = NULL;
+        	e = NULL;
+		break;
       	} else {
         	// Find the relevant event
         	e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
