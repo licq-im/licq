@@ -31,10 +31,38 @@ extern int errno;
 
 #include "licq_icqd.h"
 
+
+CDaemonStats::CDaemonStats()
+{
+  m_nTotal = m_nOriginal = m_nLastSaved = 0;
+  m_szName[0] = m_szTag[0] = '\0';
+}
+
+CDaemonStats::CDaemonStats(const char *name, const char *tag)
+{
+  m_nTotal = m_nOriginal = m_nLastSaved = 0;
+  strcpy(m_szName, name);
+  strcpy(m_szTag, tag);
+}
+
+
+void CDaemonStats::Reset()
+{
+  m_nTotal = m_nOriginal = 0;
+}
+
+void CDaemonStats::Init()
+{
+  m_nOriginal = m_nLastSaved = m_nTotal;
+}
+
+
+
+
 //-----CICQDaemon::constructor--------------------------------------------------
 CICQDaemon::CICQDaemon(CLicq *_licq)
 {
-  char szFilename[MAX_FILENAME_LEN];
+  char temp[MAX_FILENAME_LEN];
 
   licq = _licq;
 
@@ -52,9 +80,9 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   gUserManager.SetLicqDaemon(this);
 
   // Begin parsing the config file
-  sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
+  sprintf(m_szConfigFile, "%s/%s", BASE_DIR, "licq.conf");
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
-  licqConf.LoadFile(szFilename);
+  licqConf.LoadFile(m_szConfigFile);
   licqConf.SetFlags(0);
 
   // -----Network configuration-----
@@ -88,15 +116,15 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   SetTCPEnabled(bTcpEnabled);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
-  licqConf.ReadStr("FirewallHost", szFilename, "");
-  SetFirewallHost(szFilename);
+  licqConf.ReadStr("FirewallHost", temp, "");
+  SetFirewallHost(temp);
 
   // Rejects log file
-  licqConf.ReadStr("Rejects", szFilename, "log.rejects");
-  if (strcmp(szFilename, "none") != 0)
+  licqConf.ReadStr("Rejects", temp, "log.rejects");
+  if (strcmp(temp, "none") != 0)
   {
     m_szRejectFile = new char[256];
-    sprintf(m_szRejectFile, "%s/%s", BASE_DIR, szFilename);
+    sprintf(m_szRejectFile, "%s/%s", BASE_DIR, temp);
   }
   else
     m_szRejectFile = NULL;
@@ -106,12 +134,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadNum("ErrorTypes", m_nErrorTypes, L_ERROR | L_UNKNOWN);
   if (strcmp(m_szErrorFile, "none") != 0)
   {
-    sprintf(szFilename, "%s/%s", BASE_DIR, m_szErrorFile);
+    sprintf(temp, "%s/%s", BASE_DIR, m_szErrorFile);
     CLogService_File *l = new CLogService_File(m_nErrorTypes);
-    if (!l->SetLogFile(szFilename, "a"))
+    if (!l->SetLogFile(temp, "a"))
     {
       gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
-                  L_ERRORxSTR, szFilename, L_BLANKxSTR, strerror(errno));
+                  L_ERRORxSTR, temp, L_BLANKxSTR, strerror(errno));
       delete l;
     }
     else
@@ -119,25 +147,25 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   }
 
   // Loading translation table from file
-  licqConf.ReadStr("Translation", szFilename, "none");
-  if (strncmp(szFilename, "none", 4) != 0)
+  licqConf.ReadStr("Translation", temp, "none");
+  if (strncmp(temp, "none", 4) != 0)
   {
      char TranslationTableFileNameFull[MAX_FILENAME_LEN];
-     sprintf(TranslationTableFileNameFull, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, szFilename);
+     sprintf(TranslationTableFileNameFull, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, temp);
      gTranslator.setTranslationMap (TranslationTableFileNameFull);
   }
 
   // Url viewer
   m_szUrlViewer = NULL;
-  licqConf.ReadStr("UrlViewer", szFilename, "none");
-  m_szUrlViewer = new char[strlen(szFilename) + 1];
-  strcpy(m_szUrlViewer, szFilename);
+  licqConf.ReadStr("UrlViewer", temp, "none");
+  m_szUrlViewer = new char[strlen(temp) + 1];
+  strcpy(m_szUrlViewer, temp);
 
   // Terminal
   m_szTerminal = NULL;
-  licqConf.ReadStr("Terminal", szFilename, "xterm -T Licq -e ");
-  m_szTerminal = new char[strlen(szFilename) + 1];
-  strcpy(m_szTerminal, szFilename);
+  licqConf.ReadStr("Terminal", temp, "xterm -T Licq -e ");
+  m_szTerminal = new char[strlen(temp) + 1];
+  strcpy(m_szTerminal, temp);
 
   // -----OnEvent configuration-----
   char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
@@ -160,6 +188,29 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_xOnEventManager.SetParameters(szOnEventCommand, (const char **)szOnParams);
   for (int i = 0; i < MAX_ON_EVENT; i++)
     delete [] szOnParams[i];
+
+  // Statistics
+  m_nResetTime = 0;
+  m_sStats.push_back(CDaemonStats("Events Sent", "Sent"));
+  m_sStats.push_back(CDaemonStats("Events Received", "Recv"));
+  m_sStats.push_back(CDaemonStats("Events Rejected", "Reject"));
+  m_sStats.push_back(CDaemonStats("Auto Response Checked", "ARC"));
+#ifdef SAVE_STATS
+  DaemonStatsList::iterator iter;
+  if (licqConf.SetSection("stats"))
+  {
+    unsigned long t;
+    licqConf.ReadNum("Reset", t, 0);
+    m_nResetTime = t;
+    for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+    {
+      licqConf.ReadNum(iter->m_szTag, iter->m_nTotal, 0);
+      iter->Init();
+    }
+  }
+#endif
+  m_nStartTime = time(NULL);
+  if (m_nResetTime == 0) m_nResetTime = m_nStartTime;
 
   icqServers.setServer(1);    // set the initial UDP remote server (opened in ConnectToServer)
 
@@ -438,9 +489,46 @@ const char *CICQDaemon::Version()
 //-----ICQ::destructor----------------------------------------------------------
 CICQDaemon::~CICQDaemon()
 {
-  if (m_szUrlViewer != NULL) delete [] m_szUrlViewer;
-  if (m_szRejectFile != NULL) delete [] m_szRejectFile;
+  delete []m_szUrlViewer;
+  delete []m_szRejectFile;
 }
+
+
+void CICQDaemon::FlushStats()
+{
+#ifdef SAVE_STATS
+  // Verify we need to save anything
+  DaemonStatsList::iterator iter;
+  for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+  {
+    if (iter->Dirty()) break;
+  }
+  if (iter == m_sStats.end()) return;
+
+  // Save the stats
+  CIniFile licqConf(INI_FxALLOWxCREATE);
+  if (!licqConf.LoadFile(m_szConfigFile)) return;
+  licqConf.SetSection("stats");
+  licqConf.WriteNum("Reset", (unsigned long)m_nResetTime);
+  for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+  {
+    licqConf.WriteNum(iter->m_szTag, iter->m_nTotal);
+    iter->ClearDirty();
+  }
+  licqConf.FlushFile();
+#endif
+}
+
+void CICQDaemon::ResetStats()
+{
+  DaemonStatsList::iterator iter;
+  for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+  {
+    iter->Reset();
+  }
+  m_nResetTime = time(NULL);
+}
+
 
 pthread_t *CICQDaemon::Shutdown()
 {
@@ -457,10 +545,8 @@ pthread_t *CICQDaemon::Shutdown()
 //-----SaveConf-----------------------------------------------------------------
 void CICQDaemon::SaveConf()
 {
-  char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
-  if (!licqConf.LoadFile(filename)) return;
+  if (!licqConf.LoadFile(m_szConfigFile)) return;
 
   licqConf.SetSection("network");
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
@@ -733,6 +819,8 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   }
   u->EventPush(e);
   u->Touch();
+  m_sStats[STATS_EventsReceived].Inc();
+
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->Uin(), e->Id()));
   return true;
@@ -767,6 +855,7 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
     fclose(f);
   }
   delete e;
+  m_sStats[STATS_EventsRejected].Inc();
 }
 
 
@@ -983,6 +1072,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       e->m_pUserEvent->AddToHistory(u, D_SENDER);
       gUserManager.DropUser(u);
     }
+    m_sStats[STATS_EventsSent].Inc();
   }
 
   // Process the event

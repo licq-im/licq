@@ -74,6 +74,45 @@ const unsigned short IGNORE_NEWUSERS   = 2;
 const unsigned short IGNORE_EMAILPAGER = 4;
 const unsigned short IGNORE_WEBPANEL   = 8;
 
+//-----Stats-----------------------------------------------------------------
+class CDaemonStats
+{
+public:
+  // Accessors
+  unsigned long Total() { return m_nTotal; }
+  unsigned long Today() { return m_nTotal - m_nOriginal; }
+  const char *Name()    { return m_szName; }
+
+protected:
+  CDaemonStats();
+  CDaemonStats(const char *, const char *);
+
+  bool Dirty() { return m_nLastSaved != m_nTotal; }
+  void ClearDirty() { m_nLastSaved = m_nTotal; }
+
+  void Init();
+  void Reset();
+  void Inc() { m_nTotal++; }
+
+  unsigned long m_nTotal;
+
+  unsigned long m_nOriginal;
+  unsigned long m_nLastSaved;
+  char m_szTag[16];
+  char m_szName[32];
+
+friend class CICQDaemon;
+};
+
+typedef vector<CDaemonStats> DaemonStatsList;
+#define STATS_EventsSent 0
+#define STATS_EventsReceived 1
+#define STATS_EventsRejected 2
+#define STATS_AutoResponseChecked 3
+// We will save the statistics to disk
+#define SAVE_STATS
+
+
 
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
@@ -229,6 +268,14 @@ public:
 
   ICQRemoteServers icqServers;
 
+  // Statistics
+  CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
+  DaemonStatsList &AllStats() { return m_sStats; }
+  time_t ResetTime() { return m_nResetTime; }
+  time_t StartTime() { return m_nStartTime; }
+  time_t Uptime() { return time(NULL) - m_nStartTime; }
+  void ResetStats();
+
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
@@ -237,6 +284,7 @@ protected:
   int pipe_newsocket[2], fifo_fd;
   FILE *fifo_fs;
   EDaemonStatus m_eStatus;
+  char m_szConfigFile[MAX_FILENAME_LEN];
 
   char *m_szUrlViewer,
        *m_szTerminal,
@@ -256,6 +304,11 @@ protected:
   bool m_bShuttingDown, m_bLoggingOn,
        m_bOnlineNotifies, m_bAlwaysOnlineNotify;
   time_t m_tLogonTime;
+
+  // Statistics
+  void FlushStats();
+  DaemonStatsList m_sStats;
+  time_t m_nStartTime, m_nResetTime;
 
   list <ICQEvent *> m_lxRunningEvents;
   pthread_mutex_t mutex_runningevents;

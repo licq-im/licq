@@ -798,6 +798,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
              u->GetAlias(), checkUin, licqVersion);
         else
           gLog.Info("%s%s (%d) requested auto response.\n", L_TCPxSTR, u->GetAlias(), checkUin);
+        m_sStats[STATS_AutoResponseChecked].Inc();
 
         //CPT_AckReadAwayMsg p(newCommand, theSequence, true, u);
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);

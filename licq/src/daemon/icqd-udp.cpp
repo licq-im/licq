@@ -820,6 +820,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
   if (nCommand != ICQ_CMDxRCV_ACK && nCommand != ICQ_CMDxRCV_ERROR)
   {
+#if 0
     if (nSequence > m_nServerSequence ||
         (m_nServerSequence == 0 && nSequence == 0) ||
         (bMultiPacket && nSequence == m_nServerSequence) )
@@ -828,8 +829,28 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     }
     else
     {
-      gLog.Warn("%sDuplicate packet received, command %d (#%d).\n",
-                L_WARNxSTR, nCommand, nSequence);
+      gLog.Warn("%sDuplicate packet received, command %d (#%d, expecting #%d).\n",
+                L_WARNxSTR, nCommand, nSequence, m_nServerSequence + 1);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      return nCommand;
+    }
+#endif
+    if (nSequence == m_nServerSequence + 1 ||
+        (m_nServerSequence == 0 && nSequence == 0) ||
+        (bMultiPacket && nSequence == m_nServerSequence) )
+    {
+      m_nServerSequence = nSequence;
+    }
+    else if (nSequence > m_nServerSequence + 1)
+    {
+      gLog.Warn("%sOut of order packet received, command %d (#%d, expecting #%d).\n",
+                  L_WARNxSTR, nCommand, nSequence, m_nServerSequence + 1);
+      return nCommand;
+    }
+    else
+    {
+      gLog.Warn("%sDuplicate packet received, command %d (#%d, expecting #%d).\n",
+                L_WARNxSTR, nCommand, nSequence, m_nServerSequence + 1);
       if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
       return nCommand;
     }
@@ -1183,8 +1204,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       ChangeUserStatus(u, nNewStatus);
       gLog.Info("%s%s (%ld) changed status: %s.\n", L_UDPxSTR,
                 u->GetAlias(), nUin, u->StatusStr());
-      nNewStatus >>= 16;
-      if (nNewStatus > 0x0003)
+      nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
+      if (nNewStatus)
         gLog.Warn("%sUnknown status flag: 0x%04X\n", L_WARNxSTR, nNewStatus);
       gUserManager.DropUser(u);
       break;
