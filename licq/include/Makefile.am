@@ -1,18 +1,15 @@
 
-# include the subdirs in the distribution
-#DIST_SUBDIRS = translations utilities
+includedir = @includedir@/licq
 
-incdir = @includedir@/licq
+include_HEADERS = \
+  licq_buffer.h        licq_icq.h            licq_remoteserver.h \
+  licq_chat.h          licq_icqd.h           licq_sar.h \
+  licq_constants.h     licq_languagecodes.h  licq_sighandler.h \
+  licq_countrycodes.h  licq_log.h            licq_socket.h \
+  licq_events.h        licq_message.h        licq_translate.h \
+  licq_file.h          licq_onevent.h        licq_user.h \
+  licq_filetransfer.h  licq_packets.h        licq_utility.h \
+  licq_history.h       licq_plugin.h         pthread_rdwr.h
 
-#TODO: convert this to something that works better
-#but for now it should be sufficient
-install-data-local:
-	$(mkinstalldirs) $(incdir)
-	@for i in $(srcdir)/*.h; do \
-	  if test -f $$i; then \
-	    echo "$(INSTALL_DATA) $$i $(incdir);"; \
-	    $(INSTALL_DATA) $$i $(incdir); \
-	  fi \
-	done
-#       $(mkinstalldirs) $(mandir)
-#       $(INSTALL_DATA) licq.1 $(mandir)
+#man_MANS = licq.1
+
