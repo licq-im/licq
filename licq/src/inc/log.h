@@ -31,8 +31,8 @@ const char L_WARNxSTR[]    = "[WRN] ";
 const char L_UDPxSTR[]     = "[UDP] ";
 const char L_TCPxSTR[]     = "[TCP] ";
 const char L_ERRORxSTR[]   = "[ERR] ";
-const char L_UNKNOWNxSTR[] = "[-?-] ";
-const char L_BLANKxSTR[]   = "      ";
+const char L_UNKNOWNxSTR[] = "[???] ";
+const char L_BLANKxSTR[]   = "                        ";
 const char L_PACKETxSTR[]  = "[PKT] ";
 const char L_INITxSTR[]    = "[INI] ";
 const char L_ENDxSTR[]     = "[END] ";
@@ -49,7 +49,8 @@ class CLogService
 {
 public:
   CLogService(unsigned short _nLogTypes);
-  virtual void lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp) = 0;
+  virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
+                       const char *_szFormat, va_list argp) = 0;
   void SetLogTypes(unsigned short _nLogTypes);
   unsigned short ServiceType(void);
   unsigned short LogType(unsigned short _nLogType);
@@ -69,7 +70,8 @@ class CLogService_StdOut : public CLogService
 {
 public:
    CLogService_StdOut(unsigned short _nLogTypes);
-   virtual void lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp);
+   virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
+                        const char *_szFormat, va_list argp);
 };
 
 
@@ -79,7 +81,8 @@ class CLogService_File : public CLogService
 public:
    CLogService_File(unsigned short _nLogTypes);
    bool SetLogFile(const char *_szFile, const char *_szFlags);
-   virtual void lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp);
+   virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
+                        const char *_szFormat, va_list argp);
 protected:
    FILE *m_fLog;
 };
@@ -107,7 +110,8 @@ class CLogService_Plugin : public CLogService
 public:
   CLogService_Plugin(CPluginLog *_xWindow, unsigned short _nLogTypes);
   bool SetLogWindow(CPluginLog *_xWindow);
-  virtual void lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp);
+  virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
+                       const char *_szFormat, va_list argp);
 protected:
   CPluginLog *m_xLogWindow;
 };

@@ -8,6 +8,8 @@
 extern int errno;
 #endif
 
+#include <time.h>
+
 #include <unistd.h>
 #include "log.h"
 
@@ -66,10 +68,12 @@ CLogService_StdOut::CLogService_StdOut(unsigned short _nLogTypes)
 }
 
 inline
-void CLogService_StdOut::lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp)
+void CLogService_StdOut::lprintf(unsigned short _nLogType, const char *_szPrefix,
+                                 const char *_szFormat, va_list argp)
 {
-   vprintf(_szFormat, argp);
-   fflush(stdout);
+  printf("%s", _szPrefix);
+  vprintf(_szFormat, argp);
+  fflush(stdout);
 }
 
 
@@ -90,11 +94,13 @@ bool CLogService_File::SetLogFile(const char *_szFile, const char *_szFlags)
 }
 
 inline
-void CLogService_File::lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp)
+void CLogService_File::lprintf(unsigned short _nLogType, const char *_szPrefix,
+                               const char *_szFormat, va_list argp)
 {
-   if (m_fLog == NULL) return;
-   vfprintf(m_fLog, _szFormat, argp);
-   fflush(m_fLog);
+  if (m_fLog == NULL) return;
+  fprintf(m_fLog, "%s", _szPrefix);
+  vfprintf(m_fLog, _szFormat, argp);
+  fflush(m_fLog);
 }
 
 
@@ -154,11 +160,15 @@ bool CLogService_Plugin::SetLogWindow(CPluginLog *_xWindow)
 }
 
 inline
-void CLogService_Plugin::lprintf(unsigned short _nLogType, const char *_szFormat, va_list argp)
+void CLogService_Plugin::lprintf(unsigned short _nLogType, const char *_szPrefix,
+                                 const char *_szFormat, va_list argp)
 {
-  if (m_xLogWindow == NULL) return;
   static char szMsgMax[MAX_MSG_SIZE];
-  vsprintf(szMsgMax, _szFormat, argp);
+
+  if (m_xLogWindow == NULL) return;
+
+  unsigned n = sprintf(szMsgMax, "%s", _szPrefix);
+  vsprintf(&szMsgMax[n], _szFormat, argp);
   m_xLogWindow->AddLog(strdup(szMsgMax), _nLogType);
 }
 
@@ -308,24 +318,44 @@ void CLogServer::Packet(unsigned short _nServiceTypes, const char *_szFormat, ..
 
 void CLogServer::Log(const unsigned short _nLogType, const char *_szFormat, va_list argp)
 {
+  static char szTime[32];
+  static struct tm stm;
+
   pthread_mutex_lock(&mutex);
+
+  // Create a time string for the log
+  time_t t = time(NULL);
+  localtime_r(&t, &stm);
+  strftime(szTime, 32, "(%b %d %T) ", &stm);
+
+  // Log the event to each server
   vector<CLogService *>::iterator iter;
   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
   {
     if ((*iter)->LogType(_nLogType))
-        (*iter)->lprintf(_nLogType, _szFormat, argp);
+        (*iter)->lprintf(_nLogType, szTime, _szFormat, argp);
   }
   pthread_mutex_unlock(&mutex);
 }
 
 void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _nLogType, const char *_szFormat, va_list argp)
 {
+  static char szTime[32];
+  static struct tm stm;
+
   pthread_mutex_lock(&mutex);
+
+  // Create a time string for the log
+  time_t t = time(NULL);
+  localtime_r(&t, &stm);
+  strftime(szTime, 32, "(%b %d %T) ", &stm);
+
+  // Log the event to each server
   vector<CLogService *>::iterator iter;
   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
   {
     if ((*iter)->LogType(_nLogType) || (*iter)->ServiceType() & _nServiceTypes)
-        (*iter)->lprintf(_nLogType, _szFormat, argp);
+        (*iter)->lprintf(_nLogType, szTime, _szFormat, argp);
   }
   pthread_mutex_unlock(&mutex);
 }
