@@ -303,7 +303,7 @@ void search_list_double_click(GtkWidget *widget,
 void search_result(ICQEvent *event)
 {	
 	/* Make sure it's the right event */
-	if(!su->etag->e_tag->Equals(event))
+	if(!event->Equals(su->etag->e_tag))
 		return;
 
 	CSearchAck *search_ack = event->SearchAck();

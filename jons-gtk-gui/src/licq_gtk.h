@@ -430,7 +430,7 @@ struct e_tag_data
 {
 	GtkWidget *statusbar;
 	gchar buf[60];
-	CICQEventTag *e_tag;
+	unsigned long e_tag;
 };
 
 struct status_icon

@@ -185,7 +185,7 @@ void user_function(ICQEvent *event)
 	{
 		etd = (struct e_tag_data *)temp->data;
 
-		if(etd->e_tag->Equals(event))
+		if(event->Equals(etd->e_tag))
 		{
 			finish_event(etd, event);
 			return;
@@ -201,8 +201,8 @@ void user_function(ICQEvent *event)
 void finish_event(struct e_tag_data *etd, ICQEvent *event)
 {
 	/* Make sure we have the right event and event tag */
-	if( (etd->e_tag == NULL && event != NULL) ||
-	    (etd->e_tag != NULL && !etd->e_tag->Equals(event)) )
+	if( (etd->e_tag == 0 && event != NULL) ||
+	    (etd->e_tag != 0 && !event->Equals(etd->e_tag)) )
 	    	return;
 
 	guint id = 0;

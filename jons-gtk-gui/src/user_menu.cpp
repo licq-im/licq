@@ -246,7 +246,7 @@ void url_cancel(GtkWidget *cancel, struct send_url *url)
 //	gtk_widget_set_sensitive(url->send, TRUE);
 
 	/* Cancel the url */
-	if(url->etag->e_tag == NULL)
+	if(url->etag->e_tag == 0)
 		return;
 
 	icq_daemon->CancelEvent(url->etag->e_tag);
