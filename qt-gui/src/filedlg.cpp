@@ -108,9 +108,9 @@ CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon,
   btnCancel->setMinimumWidth(75);
   lay->addMultiCellWidget(btnCancel, CR, CR, 1, 2);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(hide()));
-  connect(&m_tUpdate, SIGNAL(timeout()), this, SLOT(slot_update()));
 
   ftman = new CFileTransferManager(licqDaemon, m_nUin);
+  ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
 }
@@ -236,15 +236,18 @@ void CFileDlg::slot_ft()
           lblStatus->setText(tr("Receiving file..."));
         else
           lblStatus->setText(tr("Sending file..."));
-        // Update the status every 2 seconds
-        m_tUpdate.start(2000);
+        break;
+      }
+
+      case FT_UPDATE:
+      {
+        slot_update();
         break;
       }
 
       case FT_DONExFILE:
       {
         lblStatus->setText(tr("Done %1").arg(e->Data()));
-        m_tUpdate.stop();
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
           InformUser(NULL, tr("Received\n%1\nfrom %2 successfully").arg(e->Data()).arg(ftman->RemoteName()));
@@ -261,7 +264,7 @@ void CFileDlg::slot_ft()
         break;
       }
 
-      case FT_CLOSED:
+      case FT_ERRORxCLOSED:
       {
         btnCancel->setText(tr("Close"));
         lblStatus->setText(tr("Remote side disconnected"));
