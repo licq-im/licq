@@ -492,15 +492,15 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
       }
       if (width - w > 8 && m_bStatusInvisible)
       {
-        if (gMainWindow->pmPrivate.isNull())
-        {
-          p->drawPixmap(w, 0, gMainWindow->pmInvisible);
-          w += gMainWindow->pmInvisible.width() + 2;
-        }
-        else
+        if (gMainWindow->pmInvisible.isNull())
         {
           p->drawPixmap(w, 0, gMainWindow->pmPrivate);
           w += gMainWindow->pmPrivate.width() + 2;
+        }
+        else
+        {
+          p->drawPixmap(w, 0, gMainWindow->pmInvisible);
+          w += gMainWindow->pmInvisible.width() + 2;
         }
       }
       if (width - w > 8 && m_bSecure)
