@@ -120,6 +120,12 @@ CLogService_File::CLogService_File(unsigned short _nLogTypes)
    m_nServiceType = S_FILE;
 }
 
+CLogService_File::~CLogService_File()
+{
+   if (m_fLog)
+      fclose(m_fLog);
+}
+
 bool CLogService_File::SetLogFile(const char *_szFile, const char *_szFlags)
 {
    if (m_fLog != NULL) fclose (m_fLog);
@@ -212,6 +218,23 @@ void CLogService_Plugin::LogMessage(const char *_szPrefix,
 CLogServer::CLogServer()
 {
   pthread_mutex_init(&mutex, NULL);
+}
+
+CLogServer::~CLogServer()
+{
+  pthread_mutex_lock(&mutex);
+  vector<CLogService *>::iterator iter;
+  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+    delete *iter; 
+  pthread_mutex_unlock(&mutex);
+
+  int nResult = 0;
+  do
+  {
+    pthread_mutex_lock(&mutex);
+    pthread_mutex_unlock(&mutex);
+    nResult = pthread_mutex_destroy(&mutex);
+  } while (nResult);
 }
 
 void CLogServer::AddService(CLogService *_xService)

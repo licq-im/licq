@@ -54,6 +54,8 @@ class CLogService
 {
 public:
   CLogService(unsigned short _nLogTypes);
+  virtual ~CLogService() { }
+
   virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
 			  unsigned short _nLogType) = 0;
   void SetLogTypes(unsigned short _nLogTypes);
@@ -91,6 +93,8 @@ class CLogService_File : public CLogService
 {
 public:
    CLogService_File(unsigned short _nLogTypes);
+   ~CLogService_File();
+
    bool SetLogFile(const char *_szFile, const char *_szFlags);
    virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
 			   unsigned short _nLogType);
@@ -134,6 +138,8 @@ class CLogServer
 {
 public:
   CLogServer();
+  ~CLogServer();
+
   void AddService(CLogService *_xService);
   void AddLogTypeToService(unsigned short _nServiceType, unsigned short _nLogType);
   void RemoveLogTypeFromService(unsigned short _nServiceType, unsigned short _nLogType);
