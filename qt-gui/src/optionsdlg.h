@@ -14,6 +14,7 @@ class QLabel;
 class QCheckBox;
 class QSpinBox;
 class QGroupBox;
+class QFont;
 
 class OptionsDlg : public QTabDialog
 {
@@ -91,6 +92,7 @@ signals:
 protected:
   void hideEvent(QHideEvent*) { emit signal_done(); close(true); };
   void SetupOptions();
+  void setupFontName(QLineEdit*, const QFont&);
 
 protected slots:
   void colEnable(bool);

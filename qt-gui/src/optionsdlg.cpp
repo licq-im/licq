@@ -122,19 +122,11 @@ void OptionsDlg::colEnable(bool isOn)
 }
 
 
-//-----CMainWindow::showOptions----------------------------------------------
 void OptionsDlg::SetupOptions()
 {
-#ifdef USE_KDE
-  edtFont->setFont(kapp->font());
-  edtFont->setText(kapp->font().rawName());
-#else
-  edtFont->setFont(qApp->font());
-  edtFont->setText(qApp->font().rawName());
-#endif
-  edtEditFont->setFont(MLEditWrap::editFont);
+  setupFontName(edtFont, qApp->font());
+  setupFontName(edtEditFont, MLEditWrap::editFont);
   ((QWidget*)edtEditFont)->setFont(MLEditWrap::editFont, true);
-  edtEditFont->setText(edtEditFont->font().rawName());
 
   chkGridLines->setChecked(mainwin->gridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
@@ -251,15 +243,15 @@ void OptionsDlg::SetupOptions()
 //-----OptionsDlg::ApplyOptions----------------------------------------------
 void OptionsDlg::ApplyOptions()
 {
-  QFont f;
-  f.setRawName(edtEditFont->text());
+  QFont f(mainwin->defaultFont);
+  if(edtEditFont->text() != tr("default"))
+    f.setRawName(edtEditFont->text());
   MLEditWrap::editFont = f;
-  f.setRawName(edtFont->text());
-#ifdef USE_KDE
-  kapp->setFont(f, true);
-#else
+
+  f = mainwin->defaultFont;
+  if(edtFont->text() != tr("default"))
+    f.setRawName(edtFont->text());
   qApp->setFont(f, true);
-#endif
 
   mainwin->gridLines = chkGridLines->isChecked();
   mainwin->m_bFontStyles = chkFontStyles->isChecked();
@@ -366,13 +358,27 @@ void OptionsDlg::ApplyOptions()
 }
 
 
+void OptionsDlg::setupFontName(QLineEdit* le, const QFont& font)
+{
+  QString s;
+  if (font == mainwin->defaultFont)
+    s = tr("default");
+  else
+    s = font.rawName();
+  le->setFont(font);
+  le->setText(s);
+  le->setCursorPosition(0);
+}
+
+
 void OptionsDlg::slot_selectfont()
 {
   bool fontOk;
   QFont f = QFontDialog::getFont(&fontOk, edtFont->font(), this);
   if (fontOk) {
-    edtFont->setFont(f);
-    edtFont->setText(f.rawName());
+    setupFontName(edtFont, f);
+    // default might have changed, so update that one as well
+    setupFontName(edtEditFont, f);
   }
 }
 
@@ -381,9 +387,8 @@ void OptionsDlg::slot_selecteditfont()
   bool fontOk;
   QFont f = QFontDialog::getFont(&fontOk, edtEditFont->font(), this);
   if (fontOk) {
-    edtEditFont->setFont(f);
-    setWState(WState_FontFixed);
-    edtEditFont->setText(f.rawName());
+    setupFontName(edtEditFont, f);
+    ((QWidget*)edtEditFont)->setFont(MLEditWrap::editFont, true);
   }
 }
 

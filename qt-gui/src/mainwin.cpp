@@ -36,6 +36,7 @@
 
 #ifdef USE_KDE
 #include <kapp.h>
+#include <kglobal.h>
 #include <kwin.h>
 #else
 #include <qapplication.h>
@@ -213,18 +214,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   QFont f;
   licqConf.ReadStr("Font", szFont, "default");
 #ifdef USE_KDE
-  defaultFont = kapp->font();
+  defaultFont = KGlobal::generalFont();
 #else
   defaultFont = qApp->font();
 #endif
   if (strcmp(szFont, "default") != 0)
   {
     f.setRawName(szFont);
-#ifdef USE_KDE
-    kapp->setFont(f, true);
-#else
     qApp->setFont(f, true);
-#endif
   }
   licqConf.ReadStr("EditFont", szFont, "default");
   MLEditWrap::editFont = !strcmp(szFont, "default") ? qApp->font()
@@ -1324,17 +1321,8 @@ void CMainWindow::saveOptions()
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
-#ifdef USE_KDE
-  if (defaultFont == kapp->font())
-    licqConf.WriteStr("Font", "default");
-  else
-    licqConf.WriteStr("Font", kapp->font().rawName());
-#else
-  if (defaultFont == qApp->font())
-    licqConf.WriteStr("Font", "default");
-  else
-    licqConf.WriteStr("Font", qApp->font().rawName());
-#endif
+  licqConf.WriteStr("Font", qApp->font() == defaultFont ?
+                    QString("default") : qApp->font().rawName());
   licqConf.WriteStr("EditFont", MLEditWrap::editFont == defaultFont ?
                     QString("default") : MLEditWrap::editFont.rawName());
   licqConf.WriteBool("GridLines", gridLines);
