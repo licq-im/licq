@@ -376,12 +376,12 @@ ICQEvent *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
 
 //-----icqSetGeneralInfo----------------------------------------------------
 ICQEvent *CICQDaemon::icqSetGeneralInfo(
-                          char *szAlias, char *szFirstName,
-                          char *szLastName, char *szEmail1,
-                          char *szEmail2, char *szCity,
-                          char *szState, char *szPhoneNumber,
-                          char *szFaxNumber, char *szAddress,
-                          char *szCellularNumber, unsigned long nZipCode,
+                          const char *szAlias, const char *szFirstName,
+                          const char *szLastName, const char *szEmail1,
+                          const char *szEmail2, const char *szCity,
+                          const char *szState, const char *szPhoneNumber,
+                          const char *szFaxNumber, const char *szAddress,
+                          const char *szCellularNumber, unsigned long nZipCode,
                           unsigned short nCountryCode, bool bHideEmail)
 {
   CPU_Meta_SetGeneralInfo *p =
@@ -401,7 +401,7 @@ ICQEvent *CICQDaemon::icqSetGeneralInfo(
 
 //-----icqSetMoreInfo----------------------------------------------------
 ICQEvent *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
-                              char nGender, char *szHomepage,
+                              char nGender, const char *szHomepage,
                               char nBirthYear, char nBirthMonth,
                               char nBirthDay, char nLanguage1,
                               char nLanguage2, char nLanguage3)
@@ -815,7 +815,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     unsigned long nNewStatus;
     packet >> nNewStatus;
     ICQUser::StatusToStatusStr(nNewStatus, false, s);
-    gLog.Info("%s%s (%ld) is now %s.\n", L_UDPxSTR,
+    gLog.Info("%s%s (%ld) is now \"%s\".\n", L_UDPxSTR,
               (u ? u->GetAlias() : "Unknown user"), nUin, s);
     ChangeUserStatus(u, nNewStatus);
     gUserManager.DropUser(u);
