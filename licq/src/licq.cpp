@@ -939,7 +939,7 @@ int CLicq::Main()
         pthread_join((*p_iter)->thread_plugin, (void **)&nPluginResult);
         gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*p_iter)->Name(), *nPluginResult);
         free (nPluginResult);
-        dlclose((*p_iter)->m_pHandle);
+        //dlclose((*p_iter)->m_pHandle);
         delete *p_iter;
         list_protoplugins.erase(p_iter);
       }

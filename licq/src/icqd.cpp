@@ -101,6 +101,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_nServerAck = 0;
   m_bLoggingOn = false;
   m_bOnlineNotifies = true;
+  m_szRegisterPasswd = 0;
 
   fifo_fs = NULL;
 
@@ -544,7 +545,7 @@ int CICQDaemon::RegisterProtoPlugin()
   int p = -1;
 
   pthread_mutex_lock(&licq->mutex_protoplugins);
-  ProtoPluginsListIter it = licq->list_protoplugins.begin();
+  ProtoPluginsListIter it;
   for (it = licq->list_protoplugins.begin();
        it != licq->list_protoplugins.end();
        it++)

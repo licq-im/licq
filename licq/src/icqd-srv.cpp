@@ -544,9 +544,7 @@ unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
 
 void CICQDaemon::icqRegister(const char *_szPasswd)
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetPassword(_szPasswd);
-  gUserManager.DropOwner();
+  m_szRegisterPasswd = strdup(_szPasswd);
   m_bRegistering = true;
 //  CPU_RegisterFirst *p = new CPU_RegisterFirst();
 //  gLog.Info("%sRegistering a new user (#%lu)...\n", L_SRVxSTR, p->Sequence());
@@ -557,14 +555,10 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 //-----ICQ::icqRegisterFinish------------------------------------------------
 void CICQDaemon::icqRegisterFinish()
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  char *szPasswd = o->Password();
-  gUserManager.DropOwner();
-
   CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
   SendEvent_Server(pFirst);
 
-  CPU_Register *p = new CPU_Register(szPasswd);
+  CPU_Register *p = new CPU_Register(m_szRegisterPasswd);
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
   SendExpectEvent_Server(0, p, NULL);
 }
@@ -1691,8 +1685,16 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   FOR_EACH_PROTO_USER_END
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
+  if (o)
+    ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner();
+
+  if (m_szRegisterPasswd)
+  {
+    free(m_szRegisterPasswd);
+    m_szRegisterPasswd = 0;
+  }
+
   PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));
 }
 
@@ -1791,7 +1793,8 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
     // Now get the internal ip from this socket
     CPacket::SetLocalIp(  NetworkIpToPacketIp(s->LocalIp() ));
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    o->SetIntIp(s->LocalIp());
+    if (o)
+      o->SetIntIp(s->LocalIp());
     gUserManager.DropOwner();
 
     gSocketManager.AddSocket(s);
@@ -5248,7 +5251,7 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
   {
     case ICQ_SNACxNEW_UIN_ERROR:
     {
-      gLog.Warn(tr("%sNew UIN error, is your password too long? (max 8 characters)\n"), L_WARNxSTR);
+      gLog.Warn(tr("%sRegistration error.\n"), L_WARNxSTR);
       break;
     }
     case ICQ_SNACxNEW_UIN:
@@ -5271,7 +5274,18 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       gLog.Info(tr("%sReceived new uin: %lu\n"), L_SRVxSTR, nNewUin);
-      gUserManager.SetOwnerUin(nNewUin);
+      char szUin[14];
+      snprintf(szUin, sizeof(szUin), "%lu", nNewUin);
+      gUserManager.AddOwner(szUin, LICQ_PPID);
+
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      if (o)
+      {
+        o->SetPassword(m_szRegisterPasswd);
+        gUserManager.DropOwner(LICQ_PPID);
+        free(m_szRegisterPasswd);
+        m_szRegisterPasswd = 0;
+      }
 
       // Reconnect now
       int nSD = m_nTCPSrvSocketDesc;

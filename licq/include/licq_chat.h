@@ -234,6 +234,8 @@ class CChatClient
 public:
   CChatClient();
   CChatClient(ICQUser *);
+  CChatClient(const CChatClient &);
+  CChatClient& operator=(const CChatClient &);
   ~CChatClient() { if (m_szId) free(m_szId); }
 
   // Initialize from the handshake buffer (does not set the session
