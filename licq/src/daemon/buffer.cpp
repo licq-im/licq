@@ -9,7 +9,7 @@
 #include "log.h"
 
 
-//=====Utilities=================================================================   
+//=====Utilities=================================================================
 
 // Endianness utility routines: Unlike Real Internet Protocols, this
 // heap of dung uses little-endian byte sex.
@@ -133,7 +133,7 @@ CBuffer& CBuffer::operator>>(char &in)
 
 CBuffer& CBuffer::operator>>(unsigned char &in)
 {
-   if(getDataPosRead() + sizeof(unsigned char) > (getDataStart() + getDataSize())) 
+   if(getDataPosRead() + sizeof(unsigned char) > (getDataStart() + getDataSize()))
       in = 0;
    else
    {
@@ -145,7 +145,7 @@ CBuffer& CBuffer::operator>>(unsigned char &in)
 
 CBuffer& CBuffer::operator>>(unsigned short &in)
 {
-   if(getDataPosRead() + sizeof(unsigned short) > (getDataStart() + getDataSize())) 
+   if(getDataPosRead() + sizeof(unsigned short) > (getDataStart() + getDataSize()))
       in = 0;
    else
    {
@@ -157,7 +157,7 @@ CBuffer& CBuffer::operator>>(unsigned short &in)
 
 CBuffer& CBuffer::operator>>(unsigned long &in)
 {
-  if(getDataPosRead() + sizeof(unsigned long) > (getDataStart() + getDataSize())) 
+  if(getDataPosRead() + sizeof(unsigned long) > (getDataStart() + getDataSize()))
     in = 0;
   else
   {
@@ -280,7 +280,7 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
 //-----print--------------------------------------------------------------------
 char *CBuffer::print(char *&p)
 {
-   static const unsigned short BYTES_PER_LINE = 24;
+   static const unsigned short BYTES_PER_LINE = 16;
    static const unsigned long MAX_DATA_SIZE = 1024 * 1024;
 
    if (getDataSize() > MAX_DATA_SIZE)
@@ -294,8 +294,9 @@ char *CBuffer::print(char *&p)
 
    unsigned short nLenBlank = strlen(L_BLANKxSTR);
    unsigned short nLenBuf = nLenBlank + getDataSize() * 3
-                            + (int)(getDataSize() / BYTES_PER_LINE) * (1 + nLenBlank) 
-                            + 4;
+     + (int)(getDataSize() / BYTES_PER_LINE) * (1 + nLenBlank)
+     + (int)(getDataSize() / 4) * 2
+     + 4;
    p = new char[nLenBuf];
    char *pPos = p;
    sprintf(pPos, "%s", L_BLANKxSTR);
@@ -304,12 +305,15 @@ char *CBuffer::print(char *&p)
    {
       sprintf(pPos, "%02X ", (unsigned char)getDataStart()[i]);
       pPos += 3;
+
       if((i + 1) % BYTES_PER_LINE == 0)
       {
         sprintf(pPos, "\n%s", L_BLANKxSTR);
         pPos += 1 + nLenBlank;
       }
-   }   
+      else if((i + 1) % 4 == 0)
+        pPos += sprintf(pPos, "- ");
+   }
    return(p);
 }
 
