@@ -8,7 +8,7 @@
 #define MODE_DENIED   0x01  // user denies direct connection from "any" user
 
 #define ICQ_VERSION 8
-const unsigned short ICQ_VERSION_TCP               = 0x0006;
+const unsigned short ICQ_VERSION_TCP               = 0x0008;
 
 #define LICQ_WITHSSL     0x7D800000
 #define LICQ_WITHOUTSSL  0x7D000000
@@ -60,6 +60,8 @@ const unsigned short ICQ_SNACxBDY_REQUESTxRIGHTS   = 0x0002; // client
 const unsigned short ICQ_SNACxBDY_RIGHTSxGRANTED   = 0x0003; // server
 const unsigned short ICQ_SNACxBDY_ADDxTOxLIST      = 0x0004; // client
 const unsigned short ICQ_SNACxBDY_REMOVExFROMxLIST = 0x0005; // client
+const unsigned short ICQ_SNACxSUB_ONLINExLIST      = 0x000b;
+const unsigned short ICQ_SNACxSUB_OFFLINExLIST     = 0x000c;
 
 // Subtypes for message family
 const unsigned short ICQ_SNACxMSG_SETxICQxMODE     = 0x0002; // client
@@ -67,8 +69,8 @@ const unsigned short ICQ_SNACxMSG_REQUESTxRIGHTS   = 0x0004; // client
 const unsigned short ICQ_SNAXxMSG_RIGHTSxGRANTED   = 0x0005; // server
 const unsigned short ICQ_SNACxMSG_SENDxSERVER      = 0x0006; // client
 const unsigned short ICQ_SNACxMSG_SERVERxMESSAGE   = 0x0007; // server
-const unsigned short ICQ_SNACxSUB_ONLINExLIST      = 0x000b;
-const unsigned short ICQ_SNACxSUB_OFFLINExLIST     = 0x000c;
+const unsigned short ICQ_SNACxMSG_SERVERxAWAYxMSG  = 0x000b; // server
+const unsigned short ICQ_SNACxMSG_SERVERxACK       = 0x000c; // server
 
 // Subtypes for BOS family
 const unsigned short ICQ_SNACxBOS_REQUESTxRIGHTS   = 0x0002; // client

@@ -1100,6 +1100,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nIp = m_nPort = m_nRealIp = 0;
   m_nMode = MODE_DIRECT;
   m_nVersion = 0x03;
+  m_nCookie = 0;
   m_nClientTimestamp = 0;
   Touch();
   for (unsigned short i = 0; i < 4; i++)

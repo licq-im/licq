@@ -58,6 +58,38 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
   SendExpectEvent_Server(_nUin, p, NULL);
 }
 
+//-----icqFetchAutoResponseServer-----------------------------------------------
+unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  if (!u) return;
+  
+  int nCmd;
+  switch (u->Status())
+  {
+  case ICQ_STATUS_AWAY:
+    nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
+  case ICQ_STATUS_NA:
+    nCmd = ICQ_CMDxTCP_READxNAxMSG; break;
+  case ICQ_STATUS_DND:
+    nCmd = ICQ_CMDxTCP_READxDNDxMSG; break;
+  case ICQ_STATUS_OCCUPIED:
+    nCmd = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
+  case ICQ_STATUS_FREEFORCHAT:
+    nCmd = ICQ_CMDxTCP_READxFFCxMSG; break;
+  default:
+    nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
+  }
+  
+  CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, nCmd, 0);
+  gLog.Info("%sRequesting auto response from %s (%ld).\n", L_SRVxSTR,
+  	u->GetAlias(), p->Sequence());
+  gUserManager.DropUser(u);
+
+  ICQEvent *result = SendExpectEvent_Server(_nUin, p, NULL);
+
+  return result->EventId();
+}
 
 //-----NextServer---------------------------------------------------------------
 void CICQDaemon::SwitchServer()
@@ -1084,7 +1116,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxSUB_ONLINExLIST:
   {
-    unsigned long junk1, realIP, userPort, nUin, timestamp;
+    unsigned long junk1, realIP, userPort, nUin, timestamp, nCookie;
     unsigned short junk2;
     unsigned char mode;
 
@@ -1140,7 +1172,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       mode = msg.UnpackChar();
       unsigned short tcpVersion = msg.UnpackUnsignedShortBE();
       /*unsigned long nTCPSession =*/ msg.UnpackUnsignedLongBE();
-      junk1 = msg.UnpackUnsignedLongBE();  // direct connection cookie
+      nCookie = msg.UnpackUnsignedLongBE();
       junk1 = msg.UnpackUnsignedLongBE();
       timestamp = msg.UnpackUnsignedLongBE();  // will be licq version
       junk1 = msg.UnpackUnsignedLongBE();
@@ -1167,6 +1199,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       u->SetIpPort(u->Ip(), userPort);
       u->SetRealIp(realIP);
       u->SetVersion(tcpVersion);
+      u->SetCookie(nCookie);
       u->SetClientTimestamp(timestamp);
 
       // What is mode 1?  We can't connect direct...
@@ -1316,9 +1349,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     }
     case 2: // OSCAR's "Add ICBM parameter" message
     {
-      char *buf;
-      gLog.Unknown("%sAdd ICBM message!\n%s\n",L_UNKNOWNxSTR,packet.print(buf));
-      delete [] buf;
+      CBuffer msgTxt = packet.UnpackTLV(5);
+      
       break;
     }
     case 4:

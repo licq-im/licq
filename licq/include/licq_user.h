@@ -383,8 +383,10 @@ public:
   unsigned long Ip()        { return m_nIp; }
   unsigned short Port()     { return m_nPort; }
   unsigned short LocalPort()     { return m_nLocalPort; }
+  unsigned long Cookie()        { return m_nCookie; }
   void SetIpPort(unsigned long nIp, unsigned short nPort);
   void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
+  void SetCookie(unsigned long nCookie) { m_nCookie = nCookie);
   // Don't call these:
   int SocketDesc()          { return m_nSocketDesc; }
   void ClearSocketDesc();
@@ -437,7 +439,7 @@ protected:
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;
   bool m_bOnContactList;
-  unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp;
+  unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp, m_nCookie;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned long m_nUin,
                 m_nStatus,

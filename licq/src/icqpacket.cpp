@@ -994,13 +994,13 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
   m_nDestinationUin = nDestinationUin;
-  int msgLen = strlen(szMessage);
+  int msgLen = szMessage ? strlen(szMessage) : 0;
   char uin[13];
   uin[12] = '\0';
   int n = snprintf(uin, 12, "%lu", m_nDestinationUin);
-	unsigned short nFormat = 0;
-	int nTypeLen = 0, nTLVType = 0;
-	CBuffer tlvData;
+  unsigned short nFormat = 0;
+  int nTypeLen = 0, nTLVType = 0;
+  CBuffer tlvData;
 	
   switch (msgType)
   {
@@ -1019,17 +1019,26 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   	nFormat = 4;
   	break;
 
+  case ICQ_CMDxTCP_READxAWAYxMSG:
+  case ICQ_CMDxTCP_READxNAxMSG:
+  case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
+  case ICQ_CMDxTCP_READxDNDxMSG:
+  case ICQ_CMDxTCP_READxFFCxMSG:
+	nTypeLen = 94;
+	nFormat = 2;
+	break;
+
   default:
   	n = nTypeLen = msgLen = 0;
   	gLog.Warn("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
   }
 
   m_nSize += 11 + nTypeLen + n + 8; // 11 all bytes pre-tlv
-  																	//  8 fom tlv type, tlv len, and last 4 bytes
+ 				//  8 fom tlv type, tlv len, and last 4 bytes
   InitBuffer();
 
- 	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
-	buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
+  buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
+  buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
   buffer->PackUnsignedShortBE(nFormat); // message format
   buffer->PackChar(n);
   buffer->Pack(uin, n);
@@ -1042,32 +1051,65 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   	nTLVType = 0x02;
   	
   	tlvData.PackUnsignedLongBE(0x05010001);
-	  tlvData.PackUnsignedShortBE(0x0101);
+	tlvData.PackUnsignedShortBE(0x0101);
   	tlvData.PackChar(0x01);
-	  tlvData.PackUnsignedShortBE(msgLen + 4);
+	tlvData.PackUnsignedShortBE(msgLen + 4);
   	tlvData.PackUnsignedLongBE(0);
-	  tlvData.Pack(szMessage, msgLen);
+	tlvData.Pack(szMessage, msgLen);
 	
   	break;
   	
   case 2:
   	nTLVType = 0x05;
   	
+	tlvData.PackUnsignedShort(0);
+	tlvData.PackUnsignedLong(0);	// upper 4 bytes of msg id
+	tlvData.PackUnsignedLong(0);	// lower 4 bytes of msg id
+	tlvData.PackUnsignedLong(0);	// 16 bytes capability
+	tlvData.PackUnsignedLong(0);
+	tlvData.PackUnsignedLong(0);
+	tlvData.PackUnsignedLong(0);
+
+	tlvData.PackUnsignedLongBE(0x000A0002); // tlv type A, len 2
+	tlvData.PackUnsignedShortBE(0x0001);	// 0x0002 for file ack, file ok
+
+	tlvData.PackUnsignedLongBE(0x000F0000); // empty tlv type F
+
+	tlvData.PackUnsignedLongBE(0x27110036); // tlv type 0x2711, len 0x36
+	tlvData.PackUnsignedShort(0x1B00);	// bytes left till end of 16 0s
+	tlvData.PackUnsignedShort(ICQ_VERSION);
+	for (int x = 0; x < 4; x++) tlvData.PackUnsignedLong(0);
+	tlvData.PackUnsignedShort(0);
+	tlvData.PackUnsignedLong(3);
+	tlvData.PackChar(0);
+	tlvData.PackUnsignedShort(0xFFFF); 	// counter?
+	tlvData.PackUnsignedShort(0x0E);	// bytes left till msgType
+	tlvData.PackUnsignedShort(0xFFFF);	// counter? again
+	for (int y = 0; y < 3; y++) tlvData.PackUnsignedLong(0); // ???
+	tlvData.PackUnsignedShort(msgType);
+	tlvData.PackUnsignedLongBE(0x00000100);	// ???
+	tlvData.PackUnsignedShortBE(0x0100);	// ???
+	tlvData.PackChar(0);			// ???
+	
   	break;
   	
   case 4:
   	nTLVType = 0x05;
   	
-		tlvData.PackUnsignedLong(gUserManager.OwnerUin());
-		tlvData.PackChar(msgType);
-		tlvData.PackChar(0); // message flags
-		tlvData.PackLNTS(szMessage);
+	tlvData.PackUnsignedLong(gUserManager.OwnerUin());
+	tlvData.PackChar(msgType);
+	tlvData.PackChar(0); // message flags
+	tlvData.PackLNTS(szMessage);
 		
   	break;
   }
 
   buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
-  buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
+
+  if (nFormat == 2)
+    buffer->PackUnsignedLongBE(0x00030000); // tlv type: 3, tlv len: 0
+  else
+    buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
 }
 
 CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin, unsigned long timestamp1, unsigned long timestamp2,
@@ -1897,8 +1939,8 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(0x002b0007);
-  //buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedShort(0x002b);
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort);
