@@ -21,45 +21,34 @@
 #define STATE_RECVxCHAT 5
 
 
-ChatDlg::ChatDlg(unsigned long _nUin,
-                 bool _bServer, CICQDaemon *daemon, unsigned short _nPort,
+ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
                  QWidget *parent, char *name)
    : QWidget(parent, name)
 {
-   m_nUin = _nUin;
-   m_nPort = m_nGivenPort = _nPort;
-   m_bServer = _bServer;
-   m_bAudio = true;
-   licqDaemon = daemon;
-   snChat = snChatServer = NULL;
+  m_nUin = _nUin;
+  m_nPort = 0;
+  m_bAudio = true;
+  licqDaemon = daemon;
+  snChat = snChatServer = NULL;
 
-   boxRemote = new QGroupBox(tr("Remote - Not connected"), this);
-   mleRemote = new MLEditWrap(true, boxRemote);
-   mleRemote->setReadOnly(true);
-   m_sRemoteName = NULL;
+  boxRemote = new QGroupBox(tr("Remote - Not connected"), this);
+  mleRemote = new MLEditWrap(true, boxRemote);
+  mleRemote->setReadOnly(true);
+  m_sRemoteName = NULL;
 
-   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   m_sLocalName = strdup(o->GetAlias());
-   gUserManager.DropOwner();
-   boxLocal = new QGroupBox(tr("Local - ") + QString::fromLocal8Bit(getLocalName()), this);
-   mleLocal = new MLEditWrap(true, boxLocal);
-   mleLocal->setEnabled(false);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_sLocalName = strdup(o->GetAlias());
+  gUserManager.DropOwner();
+  boxLocal = new QGroupBox(tr("Local - ") + QString::fromLocal8Bit(m_sLocalName), this);
+  mleLocal = new MLEditWrap(true, boxLocal);
+  mleLocal->setEnabled(false);
 
-   btnClose = new QPushButton(tr("&Close Chat"), this);
-   btnClose->setGeometry(200, 440, 100, 20);
-   connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
+  btnClose = new QPushButton(tr("&Close Chat"), this);
+  btnClose->setGeometry(200, 440, 100, 20);
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
 
-   resize(500, 475);
-
-   // now either connect to the remote host or start up a server
-   if (server())
-   {  // avoid ambiguous else
-      if (!startAsServer()) setPort(0);
-   }
-   else
-   {
-      if (!startAsClient()) setPort(0);
-   }
+  resize(500, 475);
+  show();
 }
 
 
@@ -74,22 +63,29 @@ ChatDlg::~ChatDlg()
 //=====Server===================================================================
 
 //-----startAsServer------------------------------------------------------------
-bool ChatDlg::startAsServer()
+bool ChatDlg::StartAsServer()
 {
-   if (!(m_cSocketChatServer.StartServer(getPort())))
-   {
-     char buf[128];
-     gLog.Error("%sFailed to start local chat server (%s)!\n", L_ERRORxSTR, m_cSocketChatServer.ErrorStr(buf, 128));
-       return false;
-   }
+  m_bServer = true;
+  int port = licqDaemon->GetTCPPort();
+  if (port == -1)   // assign the chat port
+  {
+     WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
+     return false;
+  }
+  m_nPort = port;
+  if (!(m_cSocketChatServer.StartServer(port)))
+  {
+    char buf[128];
+    gLog.Error("%sFailed to start local chat server (%s)!\n", L_ERRORxSTR, m_cSocketChatServer.ErrorStr(buf, 128));
+    return false;
+  }
 
-   setPort(m_cSocketChatServer.LocalPort());
-   snChatServer = new QSocketNotifier(m_cSocketChatServer.Descriptor(), QSocketNotifier::Read);
-   connect(snChatServer, SIGNAL(activated(int)), this, SLOT(chatRecvConnection()));
+  snChatServer = new QSocketNotifier(m_cSocketChatServer.Descriptor(), QSocketNotifier::Read);
+  connect(snChatServer, SIGNAL(activated(int)), this, SLOT(chatRecvConnection()));
 
-   boxRemote->setTitle(tr("Remote - Waiting for joiners..."));
+  boxRemote->setTitle(tr("Remote - Waiting for joiners..."));
 
-   return true;
+  return true;
 }
 
 
@@ -163,7 +159,7 @@ void ChatDlg::StateServer()
     m_sRemoteName = new char[nameLen + 1];
     for (unsigned short i = 0; i < nameLen; i++)
        m_cSocketChat.RecvBuffer() >> m_sRemoteName[i];
-    boxRemote->setTitle(tr("Remote - ") + QString::fromLocal8Bit(getRemoteName()));
+    boxRemote->setTitle(tr("Remote - ") + QString::fromLocal8Bit(m_sRemoteName));
 
     // set up the remote colors
     unsigned short junkShort;
@@ -186,7 +182,7 @@ void ChatDlg::StateServer()
                                QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue));
     mleRemote->setPalette(QPalette(newColorGroup, mleRemote->palette().disabled(), newColorGroup));
 
-    CPChat_ColorFont p_colorfont(getLocalName(), getLocalPort(), 0x000000,
+    CPChat_ColorFont p_colorfont(m_sLocalName, LocalPort(), 0x000000,
                                  0xFFFFFF, 0x0C, 0x00, "courier");
     if (!m_cSocketChat.SendPacket(p_colorfont.getBuffer()))
     {
@@ -238,25 +234,12 @@ void ChatDlg::StateServer()
 
 //=====Client===================================================================
 
-//-----startAsClient------------------------------------------------------------
-bool ChatDlg::startAsClient()
+//-----StartAsClient------------------------------------------------------------
+bool ChatDlg::StartAsClient(unsigned short nPort)
 {
-/*
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  unsigned long nIp = u->Ip();
-  gUserManager.DropUser(u);
-  char buf[128];
-  gLog.Info("%sConnecting to %s:%d for chat.\n", L_TCPxSTR,
-            ip_ntoa(nIp, buf), getPort());
-  m_cSocketChat.SetRemoteAddr(nIp, getPort());
-  if (!m_cSocketChat.OpenConnection())
-  {
-    gLog.Error("%sUnable to connect to chat:\n%s%s.\n", L_ERRORxSTR,
-               L_BLANKxSTR, m_cSocketChat.ErrorStr(buf, 128));
-    return false;
-  }
-*/
-  if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_cSocketChat, getPort()))
+  m_bServer = false;
+  m_nPort = nPort;
+  if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_cSocketChat, m_nPort))
   {
     WarnUser(this, tr("Unable to connect to remote chat.\n"
                       "See the network log for details."));
@@ -266,11 +249,11 @@ bool ChatDlg::startAsClient()
   boxRemote->setTitle(tr("Remote - Connected, shaking hands..."));
 
   // Send handshake packet:
-  CPacketTcp_Handshake p_handshake(getLocalPort());
+  CPacketTcp_Handshake p_handshake(LocalPort());
   m_cSocketChat.SendPacket(p_handshake.getBuffer());
 
   // Send color packet
-  CPChat_Color p_color(getLocalName(), getLocalPort(), 0x000000, 0xFFFFFF);
+  CPChat_Color p_color(m_sLocalName, LocalPort(), 0x000000, 0xFFFFFF);
   m_cSocketChat.SendPacket(p_color.getBuffer());
 
   boxRemote->setTitle(tr("Remote - Connected, waiting for response..."));
@@ -348,7 +331,7 @@ void ChatDlg::StateClient()
     mleRemote->setPalette(QPalette(newColorGroup, mleRemote->palette().disabled(), newColorGroup));
 
     // send the reply (font packet)
-    CPChat_Font p_font(getLocalPort(), 0x0C, 0x00, "courier");
+    CPChat_Font p_font(LocalPort(), 0x0C, 0x00, "courier");
     if (!m_cSocketChat.SendPacket(p_font.getBuffer()))
     {
       char buf[128];
@@ -556,7 +539,7 @@ void ChatDlg::chatRecv()
 void ChatDlg::chatClose()
 {
   m_cSocketChat.CloseConnection();
-  if (m_bServer && m_nGivenPort != 0) licqDaemon->FreeTCPPort(m_nGivenPort);
+  if (m_bServer && m_nPort != 0) licqDaemon->FreeTCPPort(m_nPort);
   mleLocal->setReadOnly(true);
   disconnect(mleLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
 }

@@ -166,11 +166,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
     WarnUser(this, "Unable to find widget stack");
   else
     connect(stack, SIGNAL(aboutToShow(QWidget *)), this, SLOT(slot_aboutToShow(QWidget *)));
-
-
-#ifdef TEST_POS
-  printf("constructor: %d %d\n", x(), y());
-#endif
 }
 
 
@@ -1247,49 +1242,19 @@ void ICQFunctions::slot_readbtn1()
   {
     case ICQ_CMDxSUB_CHAT:  // accept a chat request
     {
-      int port = server->GetTCPPort();
-      if (port == -1)   // assign the chat port
-      {
-         WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
-         break;
-      }
-      ChatDlg *chatDlg = new ChatDlg(m_nUin, true, server, port);
-      if (chatDlg->getPort() != 0)
-      {
-        server->icqChatRequestAccept(m_nUin, chatDlg->getPort(),
-                                     m_xCurrentReadEvent->Sequence());
-        chatDlg->show();
-      }
-      else
-      {
-        chatDlg->hide();
-      }
-
+      CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
+      ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+      if (chatDlg->StartAsServer())
+        server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
       break;
     }
 
     case ICQ_CMDxSUB_FILE:  // accept a file transfer
     {
-      int port = server->GetTCPPort();
-      if (port == -1)   // assign the file port
-      {
-        WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
-        break;
-      }
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
-      CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(),
-                                       server, true, port);
-      if (fileDlg->getPort() != 0)
-      {
-        server->icqFileTransferAccept(m_nUin, fileDlg->getPort(),
-                                         f->Sequence());
-        fileDlg->show();
-      }
-      else
-      {
-        fileDlg->hide();
-      }
-
+      CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(), server);
+      if (fileDlg->StartAsServer())
+        server->icqFileTransferAccept(m_nUin, fileDlg->LocalPort(), f->Sequence());
       break;
     }
 
@@ -2038,17 +2003,15 @@ void ICQFunctions::doneFcn(ICQEvent *e)
           {
           case ICQ_CMDxSUB_CHAT:
           {
-            ChatDlg *chatDlg = new ChatDlg(m_nUin, false, server, ea->nPort);
-            chatDlg->show();
+            ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+            chatDlg->StartAsClient(ea->nPort);
             break;
           }
           case ICQ_CMDxSUB_FILE:
           {
-            CFileDlg *fileDlg = new CFileDlg(m_nUin,
-                                             ((CEventFile *)ue)->Filename(),
-                                             ((CEventFile *)ue)->FileSize(),
-                                             server, false, ea->nPort);
-            fileDlg->show();
+            CEventFile *f = (CEventFile *)ue;
+            CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(), server);
+            fileDlg->StartAsClient(ea->nPort);
             break;
           }
           default:

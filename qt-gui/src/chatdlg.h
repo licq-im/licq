@@ -23,21 +23,18 @@ class ChatDlg : public QWidget
 {
    Q_OBJECT
 public:
-   ChatDlg(unsigned long _nUin, bool _bServer, CICQDaemon *daemon,
-           unsigned short _nPort = 0,
+   ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
            QWidget *parent = NULL, char *name = NULL);
    virtual ~ChatDlg();
 
-   bool startAsClient();
-   bool startAsServer();
+   bool StartAsClient(unsigned short nPort);
+   bool StartAsServer();
 
-   unsigned short getPort()  { return m_nPort; };
-   unsigned short getLocalPort()  { return m_cSocketChat.LocalPort(); };
-   void setPort(unsigned short _nPort)  { m_nPort = _nPort; };
-   char *getLocalName()  { return m_sLocalName; };
-   char *getRemoteName()  { return m_sRemoteName; };
+   unsigned short LocalPort()
+     { return m_bServer ? m_cSocketChatServer.LocalPort() : m_cSocketChat.LocalPort() ; }
+   char *LocalName()  { return m_sLocalName; };
+   char *RemoteName()  { return m_sRemoteName; };
    unsigned long Uin()  { return m_nUin; };
-   bool server()  { return m_bServer; };
 
 public slots:
    virtual void hide();
@@ -59,7 +56,7 @@ protected:
    TCPSocket m_cSocketChat,
              m_cSocketChatServer;
    QSocketNotifier *snChat, *snChatServer;
-   unsigned short m_nPort, m_nState, m_nGivenPort;
+   unsigned short m_nPort, m_nState;
    bool m_bServer, m_bAudio;
    char *m_sRemoteName,
         *m_sLocalName;

@@ -32,18 +32,16 @@ class CFileDlg : public QDialog
 public:
    CFileDlg(unsigned long _nUin,
             const char *_szRemoteFileName, unsigned long _nFileSize,
-            CICQDaemon *daemon, bool _bServer, unsigned short _nPort,
+            CICQDaemon *daemon,
             QWidget *parent = NULL, char *name = NULL);
    virtual ~CFileDlg();
 
-   bool startAsClient();
-   bool startAsServer();
+   bool StartAsClient(unsigned short nPort);
+   bool StartAsServer();
 
-   unsigned short getPort()  { return m_nPort; };
-   unsigned short getLocalPort()  { return m_xSocketFile.LocalPort(); };
-   void setPort(unsigned short _nPort)  { m_nPort = _nPort; };
+   unsigned short LocalPort()
+     { return m_bServer ? m_xSocketFileServer.LocalPort() : m_xSocketFile.LocalPort(); }
    unsigned long Uin()  { return m_nUin; };
-   bool IsServer()  { return m_bServer; };
 
 public slots:
    virtual void hide();
@@ -70,7 +68,7 @@ protected:
    QSocketNotifier *snFile, *snFileServer;
    TCPSocket m_xSocketFile,
              m_xSocketFileServer;
-   unsigned short m_nPort, m_nCurrentFile, m_nState, m_nGivenPort;
+   unsigned short m_nPort, m_nCurrentFile, m_nState;
    unsigned long m_nFileSize, m_nBatchSize, m_nTotalFiles, m_nFilePos, m_nBatchPos;
    time_t m_nStartTime, m_nBatchStartTime;
    bool m_bServer;

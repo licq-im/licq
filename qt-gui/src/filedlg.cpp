@@ -57,16 +57,14 @@ extern int errno;
 
 //-----Constructor------------------------------------------------------------
 CFileDlg::CFileDlg(unsigned long _nUin, const char *_szTransferFileName,
-                   unsigned long _nFileSize, CICQDaemon *daemon, bool _bServer,
-                   unsigned short _nPort,
+                   unsigned long _nFileSize, CICQDaemon *daemon,
                    QWidget *parent, char *name)
   : QDialog(parent, name)
 {
   // If we are the server, then we are receiving a file
   char t[64];
   m_nUin = _nUin;
-  m_nPort = m_nGivenPort = _nPort;
-  m_bServer = _bServer;
+  m_nPort = 0;
   m_nFileSize = _nFileSize;
   m_nCurrentFile = 0;
   m_nFileDesc = 0;
@@ -99,8 +97,6 @@ CFileDlg::CFileDlg(unsigned long _nUin, const char *_szTransferFileName,
   lay->addWidget(lblLocalFileName, ++CR, 0);
   nfoLocalFileName = new CInfoField(this, true);
   lay->addMultiCellWidget(nfoLocalFileName, CR, CR, 1, 2);
-  nfoLocalFileName->setText(IsServer() ? tr("Unset") : tr("N/A"));
-  nfoLocalFileName->setEnabled(IsServer());
 
   lay->addRowSpacing(++CR, 10);
 
@@ -148,22 +144,6 @@ CFileDlg::CFileDlg(unsigned long _nUin, const char *_szTransferFileName,
   lay->addMultiCellWidget(btnCancel, CR, CR, 1, 2);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(hide()));
   connect(&m_tUpdate, SIGNAL(timeout()), this, SLOT(fileUpdate()));
-
-  // now either connect to the remote host or start up a server
-  if (IsServer()) {
-    sprintf(t, "%d / ?", m_nCurrentFile + 1);
-    nfoTotalFiles->setText(t);
-    nfoBatchSize->setText(tr("Unknown"));
-    show();
-    if (!startAsServer()) setPort(0);
-  }
-   else {
-     sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
-     nfoTotalFiles->setText(t);
-     nfoBatchSize->setText(QString("(%1)").arg(encodeFSize(m_nBatchSize)));
-     show();
-     if (!startAsClient()) setPort(0);
-   }
 }
 
 
@@ -253,7 +233,7 @@ void CFileDlg::fileCancel()
   if (snFile != NULL) snFile->setEnabled(false);
   if (snFileServer != NULL) snFileServer->setEnabled(false);
   m_xSocketFileServer.CloseConnection();
-  if (m_bServer && m_nGivenPort != 0) licqDaemon->FreeTCPPort(m_nGivenPort);
+  if (m_bServer && m_nPort != 0) licqDaemon->FreeTCPPort(m_nPort);
   m_xSocketFile.CloseConnection();
   lblStatus->setText(tr("File transfer cancelled."));
   btnCancel->setText(tr("Done"));
@@ -306,23 +286,37 @@ void CFileDlg::fileUpdate()
 //=====Server Side==============================================================
 
 //-----startAsServer------------------------------------------------------------
-bool CFileDlg::startAsServer()
+bool CFileDlg::StartAsServer()
 {
-   gLog.Info("%sStarting file server on port %d.\n", L_TCPxSTR, getPort());
-   if (!(m_xSocketFileServer.StartServer(getPort())))
-   {
-     gLog.Error("%sFile transfer - error creating local socket:\n%s%s\n", L_ERRORxSTR,
-                L_BLANKxSTR, m_xSocketFileServer.ErrorStr(buf, 128));
+  m_bServer = true;
+  int port = licqDaemon->GetTCPPort();
+  if (port == -1)   // assign the chat port
+  {
+     WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
      return false;
-   }
+  }
+  m_nPort = port;
 
-   setPort(m_xSocketFileServer.LocalPort());
-   snFileServer = new QSocketNotifier(m_xSocketFileServer.Descriptor(), QSocketNotifier::Read);
-   connect(snFileServer, SIGNAL(activated(int)), this, SLOT(fileRecvConnection()));
+  gLog.Info("%sStarting file server on port %d.\n", L_TCPxSTR, port);
+  if (!m_xSocketFileServer.StartServer(port))
+  {
+    gLog.Error("%sFile transfer - error creating local socket:\n%s%s\n", L_ERRORxSTR,
+               L_BLANKxSTR, m_xSocketFileServer.ErrorStr(buf, 128));
+    return false;
+  }
 
-   lblStatus->setText(tr("Waiting for connection..."));
+  nfoTotalFiles->setText(QString("%1 / ?").arg(m_nCurrentFile + 1));
+  nfoBatchSize->setText(tr("Unknown"));
+  nfoLocalFileName->setText(tr("Unset"));
 
-   return true;
+  snFileServer = new QSocketNotifier(m_xSocketFileServer.Descriptor(), QSocketNotifier::Read);
+  connect(snFileServer, SIGNAL(activated(int)), this, SLOT(fileRecvConnection()));
+
+  lblStatus->setText(tr("Waiting for connection..."));
+
+  show();
+
+  return true;
 }
 
 
@@ -400,7 +394,7 @@ void CFileDlg::StateServer()
     m_nBatchBytesTransfered = m_nBatchPos = 0;
     barBatchTransfer->setTotalSteps(m_nBatchSize);
     barBatchTransfer->setProgress(0);
-    setCaption(tr("ICQ file transfer %1 %2").arg(IsServer() ? tr("from") : tr("to")).arg(m_szRemoteName));
+    setCaption(tr("ICQ file transfer %1 %2").arg(m_bServer ? tr("from") : tr("to")).arg(m_szRemoteName));
 
     // Send response
     CPFile_InitServer p(m_szLocalName);
@@ -568,24 +562,12 @@ void CFileDlg::fileRecvFile()
 //=====Client Side==============================================================
 
 //-----startAsClient------------------------------------------------------------
-bool CFileDlg::startAsClient()
+bool CFileDlg::StartAsClient(unsigned short nPort)
 {
-/*  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  unsigned long nIp = u->Ip();
-  gUserManager.DropUser(u);
-  gLog.Info("%sFile transfer - connecting to %s:%d.\n", L_TCPxSTR,
-             ip_ntoa(nIp, buf), getPort());
-   lblStatus->setText(tr("Connecting to remote..."));
-   m_xSocketFile.SetRemoteAddr(nIp, getPort());
-   if (!m_xSocketFile.OpenConnection())
-   {
-     WarnUser(this, tr("Unable to connect to remote file server:\n%1.")
-              .arg(m_xSocketFile.ErrorStr(buf, 128)));
-     return false;
-   }
-*/
+  m_bServer = false;
+  m_nPort = nPort;
 
-  if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_xSocketFile, getPort()))
+  if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_xSocketFile, m_nPort))
   {
     WarnUser(this, tr("Unable to connect to remote file server.\n"
                       "See the network log for details.")
@@ -595,8 +577,14 @@ bool CFileDlg::startAsClient()
 
   lblStatus->setText(tr("Connected, shaking hands..."));
 
+  nfoLocalFileName->setText(tr("N/A"));
+  nfoLocalFileName->setEnabled(false);
+  nfoTotalFiles->setText(QString("%1 / %2").arg(m_nCurrentFile + 1).arg(m_nTotalFiles));
+  nfoBatchSize->setText(QString("(%1)").arg(encodeFSize(m_nBatchSize)));
+  show();
+
   // Send handshake packet:
-  CPacketTcp_Handshake p_handshake(getLocalPort());
+  CPacketTcp_Handshake p_handshake(m_xSocketFile.LocalPort());
   m_xSocketFile.SendPacket(p_handshake.getBuffer());
 
   // Send init packet:
@@ -653,7 +641,7 @@ void CFileDlg::StateClient()
     m_szRemoteName = new char[nRemoteNameLen];
     for (int i = 0; i < nRemoteNameLen; i++)
        m_xSocketFile.RecvBuffer() >> m_szRemoteName[i];
-    setCaption(tr("ICQ file transfer %1 %2").arg(IsServer() ? tr("from") : tr("to")).arg(m_szRemoteName));
+    setCaption(tr("ICQ file transfer %1 %2").arg(m_bServer ? tr("from") : tr("to")).arg(m_szRemoteName));
 
     // Send file info packet
     CPFile_Info p(nfoTransferFileName->text());
