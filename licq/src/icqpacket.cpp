@@ -1705,7 +1705,8 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
 
 //-----AddToServerList----------------------------------------------------------
 CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
-  unsigned short _nType, bool _bExport)
+                                         unsigned short _nType, bool _bExport,
+                                         unsigned short _nGroup)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
     m_nGSID(0)
 {
@@ -1726,15 +1727,24 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       u = gUserManager.FetchUser(nUin, LOCK_W);
       u->SetSID(m_nSID);
 
-      // Use the first group that the user is in as the server stored group
+      // Check for a group id
       GroupIDList *pID = gUserManager.LockGroupIDList(LOCK_R);
-      for (unsigned short i = 1; i < pID->size() + 1; i++)
-      { 
-        if (u->GetInGroup(GROUPS_USER, i))
+      if (_nGroup)
+      {
+        // Use the passed in group
+        m_nGSID = (*pID)[_nGroup-1];
+      }
+      else
+      {
+        // Use the first group that the user is in as the server stored group
+        for (unsigned short i = 1; i < pID->size() + 1; i++)
         {
-          m_nGSID = (*pID)[i-1];
-          if (m_nGSID)
-            break;
+          if (u->GetInGroup(GROUPS_USER, i))
+          {
+            m_nGSID = (*pID)[i-1];
+            if (m_nGSID)
+              break;
+          }
         }
       }
 

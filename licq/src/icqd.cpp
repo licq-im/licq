@@ -239,7 +239,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
-	pthread_mutex_init(&mutex_sendqueue_server, NULL);
+  pthread_mutex_init(&mutex_sendqueue_server, NULL);
+  pthread_mutex_init(&mutex_modifyserverusers, NULL);
   pthread_cond_init(&cond_serverack, NULL);
   pthread_mutex_init(&mutex_serverack, NULL);
 }
@@ -809,6 +810,7 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
   gUserManager.DropUser(u);
   SaveUserList();
 
+  // this notify is for local only adds
   if (m_nTCPSrvSocketDesc != -1 && bNotify)  icqAddUser(nUin);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nUin));

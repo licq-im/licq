@@ -186,6 +186,8 @@ public:
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
   void icqRemoveGroup(const char *);
+  void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
+                      unsigned short _nOldGSID);
   void icqRenameGroup(unsigned short _nGSID);
   void icqExportUsers(UinList &);
   void icqExportGroups(GroupList &);
@@ -357,8 +359,10 @@ protected:
   pthread_mutex_t mutex_runningevents;
   std::list <ICQEvent *> m_lxExtendedEvents;
   pthread_mutex_t mutex_extendedevents;
-	std::list <ICQEvent *> m_lxSendQueue_Server;
-	pthread_mutex_t mutex_sendqueue_server;
+  std::list <ICQEvent *> m_lxSendQueue_Server;
+  pthread_mutex_t mutex_sendqueue_server;
+  std::list <char *> m_lszModifyServerUsers;
+  pthread_mutex_t mutex_modifyserverusers;
   pthread_t thread_monitorsockets,
             thread_ping,
             thread_shutdown;

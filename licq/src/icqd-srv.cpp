@@ -43,6 +43,10 @@ void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bServerOnly)
     snprintf(szUin, 12, "%lu", _nUin);
     szUin[12] = 0;
 
+    pthread_mutex_lock(&mutex_modifyserverusers);
+    m_lszModifyServerUsers.push_back(strdup(szUin));
+    pthread_mutex_unlock(&mutex_modifyserverusers);
+
     CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxNORMAL, _bServerOnly);
     gLog.Info("%sAdding %ld to server list...\n", L_SRVxSTR, _nUin);
     SendExpectEvent_Server(0, pAdd, NULL);
@@ -82,10 +86,48 @@ void CICQDaemon::icqAddGroup(const char *_szName)
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(strdup(_szName));
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szName, ICQ_ROSTxGROUP);
   int nGSID = pAdd->GetGSID();
   gLog.Info("%sAdding group %s (%d) to server list ...\n", L_SRVxSTR, _szName, nGSID);
   SendExpectEvent_Server(0, pAdd, NULL);
+}
+
+//-----icqChangeGroup-----------------------------------------------------------
+void CICQDaemon::icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
+                                unsigned short _nOldGSID)
+{
+  if (!UseServerContactList())  return;
+
+  // Get their old SID
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  int nSID = u->GetSID();
+  gUserManager.DropUser(u);
+
+  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                                ICQ_SNACxLIST_ROSTxEDITxSTART);
+  SendEvent_Server(pStart);
+
+  char szUin[13];
+  snprintf(szUin, 12, "%ld", _nUin);
+  szUin[12] = '\0';
+
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(strdup(szUin)); // add
+  m_lszModifyServerUsers.push_back(strdup(szUin)); // remove
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxNORMAL,
+                                                      false, _nNewGroup);
+  gLog.Info("%sChanging group on server list for %s ...\n", L_SRVxSTR, szUin);
+  SendExpectEvent_Server(0, pAdd, NULL);
+
+  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, _nOldGSID,
+                                                        nSID, ICQ_ROSTxNORMAL);
+  SendExpectEvent_Server(0, pRemove, NULL);
 }
 
 //-----icqExportGroups----------------------------------------------------------
@@ -113,11 +155,16 @@ void CICQDaemon::icqRemoveUser(unsigned long _nUin)
 
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
     unsigned short nGSID = u->GetGSID();
-		unsigned short nSID = u->GetSID();
-		char szUin[13];
-		snprintf(szUin, 13, "%ld", _nUin);
+    unsigned short nSID = u->GetSID();
+    char szUin[13];
+    snprintf(szUin, 12, "%ld", _nUin);
+    szUin[12] = '\0';
     u->SetGSID(0);
     gUserManager.DropUser(u);
+
+    pthread_mutex_lock(&mutex_modifyserverusers);
+    m_lszModifyServerUsers.push_back(strdup(szUin));
+    pthread_mutex_unlock(&mutex_modifyserverusers);
 
     CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, nGSID, nSID, ICQ_ROSTxNORMAL);
     SendExpectEvent_Server(0, pRemove, NULL);
@@ -133,26 +180,35 @@ void CICQDaemon::icqRemoveUser(unsigned long _nUin)
 //-----icqRemoveGroup----------------------------------------------------------
 void CICQDaemon::icqRemoveGroup(const char *_szName)
 {
-	if (!UseServerContactList()) return;
+  if (!UseServerContactList()) return;
 
-	CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-		ICQ_SNACxLIST_ROSTxEDITxSTART);
-	SendEvent_Server(pStart);
+  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+    ICQ_SNACxLIST_ROSTxEDITxSTART);
+  SendEvent_Server(pStart);
 
-	CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szName,
-		gUserManager.GetIDFromGroup(_szName), 0, ICQ_ROSTxGROUP);
-	gLog.Info("%sRemoving group from server side list (%s)...\n", L_SRVxSTR, _szName);
-	SendExpectEvent_Server(0, pRemove, NULL);
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(strdup(_szName));
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+
+  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szName,
+    gUserManager.GetIDFromGroup(_szName), 0, ICQ_ROSTxGROUP);
+  gLog.Info("%sRemoving group from server side list (%s)...\n", L_SRVxSTR, _szName);
+  SendExpectEvent_Server(0, pRemove, NULL);
 }
 
 //-----icqRenameGroup----------------------------------------------------------
 void CICQDaemon::icqRenameGroup(unsigned short _nGSID)
 {
-	if (!UseServerContactList() || !_nGSID) return;
+  if (!UseServerContactList() || !_nGSID) return;
 
-	CSrvPacketTcp *pUpdate = new CPU_UpdateGroupToServerList(_nGSID);
-	gLog.Info("%sRenaming group with id 0x%4X...\n", L_SRVxSTR, _nGSID);
-	SendExpectEvent_Server(0, pUpdate, NULL);
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(
+    strdup( "" ));
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+
+  CSrvPacketTcp *pUpdate = new CPU_UpdateGroupToServerList(_nGSID);
+  gLog.Info("%sRenaming group with id %d...\n", L_SRVxSTR, _nGSID);
+  SendExpectEvent_Server(0, pUpdate, NULL);
 }
 
 //-----icqAlertUser-------------------------------------------------------------
@@ -2167,7 +2223,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         {
           if (!packet.readTLV(-1, nByteLen))
           {
-            gLog.Error("%sUnable to parse contact list TLV, aborting!\n", L_ERRORxSTR);
+            gLog.Error("%sUnable to parse contact list TLV, aborting!\n",
+											 L_ERRORxSTR);
             delete[] szName;
             return;
           }
@@ -2191,9 +2248,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               if (nType == ICQ_ROSTxINVISIBLE)  u->SetInvisibleList(true);
               else if (nType == ICQ_ROSTxVISIBLE) u->SetVisibleList(true);
 
-              // Drop before lock. I'm a poet and didn't know it.
+              // Skip the call to AddUserToGroup
+              u->AddToGroup(GROUPS_USER, nInGroup);
               gUserManager.DropUser(u);
-              gUserManager.AddUserToGroup(nUin, nInGroup);
             }
 
             char *szNewName = packet.UnpackStringTLV(0x0131);
@@ -2276,64 +2333,97 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     {
       packet.UnpackUnsignedLong(); // unknown
       packet.UnpackUnsignedLong(); // unknown TLV(1)
-      unsigned short nError = packet.UnpackUnsignedShortBE();
 
-      switch (nError)
+      while (!packet.End())
       {
-        case 0: break; // No error
+        pthread_mutex_lock(&mutex_modifyserverusers);
+        char *szPending = m_lszModifyServerUsers.front();
+        m_lszModifyServerUsers.pop_front();
+        pthread_mutex_unlock(&mutex_modifyserverusers);
 
-        case 0x0E:
-	  gLog.Error("%sAuthorization required to add this user to server list.\n",
-	    L_SRVxSTR);
-	  break;
+        unsigned long nUin = 0;
+        if (szPending)
+          nUin = atol(szPending);
 
-	case 0x02:
-	  gLog.Error("%sUser/Group not found on server list.\n", L_SRVxSTR);
-	  break;
+        unsigned short nError = packet.UnpackUnsignedShortBE();
 
-	default:
-	  gLog.Error("%sUnknown error modyifing server list: 0x%02X\n",
-	    L_SRVxSTR, nError & 0xFF);
-      }
-
-      if (nError)
-	break;
-      
-      CSrvPacketTcp *pReply = 0;
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
-
-      if (e == NULL)
-      {
-        gLog.Warn("%sServer list update ack without request.\n",
-	  L_SRVxSTR);
-	break;
-      }
-
-      switch (e->SubType())
-      {
-        case ICQ_SNACxLIST_ROSTxADD:
-	case ICQ_SNACxLIST_ROSTxREM:
+        switch (nError)
         {
-	  pReply = new CPU_UpdateGroupToServerList(e->ExtraInfo());
-	  gLog.Info("%sUpdating group with ID 0x%X.\n", L_SRVxSTR,
-	    e->ExtraInfo());
-	  SendExpectEvent_Server(0, pReply, NULL);
+          case 0: break; // No error
 
-// XXX
-//	  if (e->SubType() == ICQ_SNACxLIST_ROSTxADD)
-//	    gUserManager.AddUserToGroup(gUserManager.GetGroupFromID(
-//	      e->ExtraInfo()));
+          case 0x0E:
+            gLog.Error("%sAuthorization required to add %s to server list.\n",
+                       L_SRVxSTR, szPending);
+            break;
 
-	  break;
-	}
+          case 0x02:
+            gLog.Error("%sUser/Group %s not found on server list.\n",
+                       L_SRVxSTR,szPending);
+            break;
 
-	case ICQ_SNACxLIST_ROSTxUPD_GROUP:
-	{
-	  pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-	  		ICQ_SNACxLIST_ROSTxEDITxEND);
-	  gLog.Info("%sGroup update completed successfully.\n", L_SRVxSTR);
-	  SendEvent_Server(pReply);
-	}
+          default:
+            gLog.Error("%sUnknown error modyifing server list: 0x%02X\n",
+                       L_SRVxSTR, nError & 0xFF);
+        }
+
+        if (nError)
+          break;
+
+        CSrvPacketTcp *pReply = 0;
+        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+
+        if (e == NULL)
+        {
+          gLog.Warn("%sServer list update ack without request.\n",
+                    L_SRVxSTR);
+          break;
+        }
+
+        switch (e->SubType())
+        {
+          case ICQ_SNACxLIST_ROSTxADD:
+          case ICQ_SNACxLIST_ROSTxREM:
+          {
+            GroupList *g = gUserManager.LockGroupList(LOCK_R);
+            pthread_mutex_lock(&mutex_modifyserverusers);
+            char *szGroupName =
+              strdup( (*g)[gUserManager.GetGroupFromID(
+              e->ExtraInfo())-1] );
+            m_lszModifyServerUsers.push_back(szGroupName);
+            pthread_mutex_unlock(&mutex_modifyserverusers);
+            gUserManager.UnlockGroupList();
+
+            pReply = new CPU_UpdateGroupToServerList(e->ExtraInfo());
+            gLog.Info("%sUpdating group %s.\n", L_SRVxSTR, szGroupName);
+            SendExpectEvent_Server(0, pReply, NULL);
+
+            // Skip the call to gUserManager.AddUserToGroup because
+            // that will send a message out to the server AGAIN
+            if (e->SubType() == ICQ_SNACxLIST_ROSTxADD)
+            {
+              ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+              if (u)
+              {
+                u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
+                              e->ExtraInfo()));
+                gUserManager.DropUser(u);
+              }
+            }
+
+            break;
+          }
+
+          case ICQ_SNACxLIST_ROSTxUPD_GROUP:
+          {
+            pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                           ICQ_SNACxLIST_ROSTxEDITxEND);
+            gLog.Info("%sGroup %s updated successfully.\n", L_SRVxSTR,
+                      szPending);
+            SendEvent_Server(pReply);
+            break;
+          }
+        }
+        free(szPending);
       }
 
       break;
