@@ -24,6 +24,7 @@
 #include <qpopupmenu.h>
 #include <qlayout.h>
 #include <qtimer.h>
+#include <qcheckbox.h>
 
 #include "awaymsgdlg.h"
 #include "licq_log.h"
@@ -31,6 +32,7 @@
 #include "optionsdlg.h"
 #include "licq_sar.h"
 #include "licq_user.h"
+#include "licq_icqd.h"
 
 
 // -----------------------------------------------------------------------------
@@ -47,6 +49,9 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   mleAwayMsg = new MLEditWrap(true, this);
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
+
+  chkFilter = new QCheckBox(tr("Apply user information filter (% arguments)"), this);
+  top_lay->addWidget(chkFilter);
 
   mnuSelect = new QPopupMenu(this);
   connect(mnuSelect, SIGNAL(activated(int)), this, SLOT(slot_selectMessage(int)));
@@ -115,6 +120,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   else
     mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
                         .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
+  chkFilter->setChecked(o->FilterAutoResponse());
   gUserManager.DropOwner();
 
   mleAwayMsg->setFocus();
@@ -142,6 +148,7 @@ void AwayMsgDlg::ok()
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetAutoResponse(s.local8Bit());
+  o->SetFilterAutoResponse(chkFilter->isChecked());
   gUserManager.DropOwner();
   accept();
   close();
