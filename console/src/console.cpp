@@ -1128,7 +1128,7 @@ int StrToRange(char *sz, int nLast, int nStart)
     while (isdigit(*sz)) sz++;
   }
   STRIP(sz);
-  if (*sz != '\0' || n > nLast || n < 1)
+  if (*sz != '\0')
   {
     return -1;
   }
@@ -1175,6 +1175,12 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
                      A_BOLD, szStart);
     return;
   }
+  else if (nStart > nLast || nStart < 1)
+  {
+    winMain->wprintf("%CStart value out of range, history contains %d events.\n",
+                     COLOR_RED, nLast);
+    return;
+  }
 
   if (szEnd != NULL)
   {
@@ -1183,6 +1189,12 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
     {
       winMain->wprintf("%CInvalid end range: %A%s\n", COLOR_RED,
                        A_BOLD, szEnd);
+      return;
+    }
+    else if (nEnd > nLast || nEnd < 1)
+    {
+      winMain->wprintf("%CEnd value out of range, history contains %d events.\n",
+                       COLOR_RED, nLast);
       return;
     }
   }
