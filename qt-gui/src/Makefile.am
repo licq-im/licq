@@ -14,7 +14,7 @@ lib_LTLIBRARIES = @LIB_NAME@
 noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	chatdlg.h editgrp.h editfile.h eventdesc.h ewidgets.h \
 	filedlg.h gui-defines.h licq_qt-gui.conf.h licqgui.h \
-	mainwin.h messagebox.h mledit.h optionsdlg.h outputwin.h passworddlg.h\
+	mainwin.h messagebox.h mledit.h mlview.h optionsdlg.h outputwin.h passworddlg.h\
 	plugindlg.h registeruser.h searchuserdlg.h \
 	securitydlg.h showawaymsgdlg.h sigman.h skin.h skinbrowser.h userbox.h\
 	utilitydlg.h wharf.h randomchatdlg.h forwarddlg.h chatjoin.h \
@@ -24,7 +24,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
 	ewidgets.cpp filedlg.cpp \
-	licqgui.cpp mainwin.cpp messagebox.cpp mledit.cpp optionsdlg.cpp \
+	licqgui.cpp mainwin.cpp messagebox.cpp mledit.cpp mlview.cpp optionsdlg.cpp \
 	outputwin.cpp passworddlg.cpp plugindlg.cpp \
 	registeruser.cpp searchuserdlg.cpp securitydlg.cpp showawaymsgdlg.cpp \
 	sigman.cpp skin.cpp skinbrowser.cpp userbox.cpp utilitydlg.cpp \
