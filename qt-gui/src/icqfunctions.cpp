@@ -1047,13 +1047,13 @@ void ICQFunctions::SaveMoreInfo()
   u->SetEnableSave(false);
 
   u->SetAge(atol(nfoAge->text()));
-  u->SetGender(cmbGender->currentItem());
   u->SetHomepage(nfoHomepage->text());
   //u->SetBirthYear();
   //u->SetBirthMonth();
   //u->SetBirthDay();
   if (m_bOwner)
   {
+    u->SetGender(cmbGender->currentItem());
     for (unsigned short i = 0; i < 3; i++)
     {
       u->SetLanguage(i, GetLanguageByIndex(cmbLanguage[i]->currentItem())->nCode);
