@@ -88,7 +88,7 @@ void MLEditWrap::setCellWidth ( int cellW )
     if ( autoUpdate() && isVisible() )
         repaint();
 #else
-    QTableView::setCellWidth(cellWidth);
+    QTableView::setCellWidth(cellW);
 #endif
 }
 
