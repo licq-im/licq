@@ -13,6 +13,10 @@ public:
   void appendNoNewLine(QString s);
   void GotoEnd();
 
+  // Why the fuck does Qt make these protected?
+  bool hasMarkedText() const { return QMultiLineEdit::hasMarkedText(); }
+  QString markedText() const { return QMultiLineEdit::markedText(); }
+
   static QFont *editFont;
 
 protected:

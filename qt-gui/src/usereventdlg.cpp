@@ -488,11 +488,19 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 void UserViewEvent::generateReply()
 {
   QString s;
-  for (int i = 0; i < mleRead->numLines(); i++)
-    if(!mleRead->textLine(i).stripWhiteSpace().isEmpty())
-      s += QString("> ") + mleRead->textLine(i) + " \n";
-    else
-      s += "\n";
+  if (mleRead->hasMarkedText())
+  {
+    s = QString("> ") + mleRead->markedText();
+    s.replace( QRegExp("\n"), "\n> ");
+  }
+  else
+  {
+    for (int i = 0; i < mleRead->numLines(); i++)
+      if(!mleRead->textLine(i).stripWhiteSpace().isEmpty())
+        s += QString("> ") + mleRead->textLine(i) + " \n";
+      else
+        s += "\n";
+  }
 
   s = s.stripWhiteSpace()+ " \n";
 
