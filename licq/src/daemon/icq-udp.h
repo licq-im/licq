@@ -86,11 +86,20 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
 //-----icqAlertUser-------------------------------------------------------------
 void CICQDaemon::icqAlertUser(unsigned long _nUin)
 {
-  CPU_AddUser *p = new CPU_AddUser(_nUin);
+  //CPU_AddUser *p = new CPU_AddUser(_nUin);
+  //gLog.Info("%sAlerting user they were added (#%d)...\n", L_UDPxSTR, p->getSequence());
+  //SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  char sz[MAX_MESSAGE_SIZE];
+  sprintf(sz, "%s%c%s%c%s%c%s%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
+      0xFE, o->GetLastName(), 0xFE, o->GetEmail1(), 0xFE, o->GetAuthorization() ? '0' : '1');
+  gUserManager.DropOwner();
+  CPU_ThroughServer *p = new CPU_ThroughServer(gUserManager.OwnerUin(),
+      _nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info("%sAlerting user they were added (#%d)...\n", L_UDPxSTR, p->getSequence());
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
-
 
 
 //-----NextServer---------------------------------------------------------------
@@ -1271,13 +1280,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     icqSendVisibleList();
 #if ICQ_VERSION != 5
     icqRequestSystemMsg();
-#endif
     // Send an update status packet to force hideip/webpresence
     if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS)
     {
       CICQEventTag *t = icqSetStatus(m_nDesiredStatus);
       if (t != NULL) delete t;
     }
+#endif
 
     break;
   }
@@ -1297,6 +1306,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
   {
     gLog.Info("%sServer busy, try again in a few minutes.\n", L_UDPxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_FAILED);
     if (e != NULL) ProcessDoneEvent(e);
     break;
