@@ -398,8 +398,11 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
         }
         else
         {
-          btnRead2->setText(tr("A&ccept"));
-          btnRead3->setText(tr("&Refuse"));
+          if (m->Pending())
+          {
+            btnRead2->setText(tr("A&ccept"));
+            btnRead3->setText(tr("&Refuse"));
+          }
           // If this is a chat, and we already have chats going, and this is
           // not a join request, then we can join
           if (m->SubCommand() == ICQ_CMDxSUB_CHAT &&
@@ -573,6 +576,7 @@ void UserViewEvent::slot_btnRead2()
 
     case ICQ_CMDxSUB_CHAT:  // accept a chat request
     {
+      m_xCurrentReadEvent->SetPending(false);
       btnRead2->setEnabled(false);
       btnRead3->setEnabled(false);
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
@@ -592,6 +596,7 @@ void UserViewEvent::slot_btnRead2()
 
     case ICQ_CMDxSUB_FILE:  // accept a file transfer
     {
+      m_xCurrentReadEvent->SetPending(false);
       btnRead2->setEnabled(false);
       btnRead3->setEnabled(false);
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
@@ -630,6 +635,7 @@ void UserViewEvent::slot_btnRead3()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("Chat"), this);
       if (r->exec())
       {
+        m_xCurrentReadEvent->SetPending(false);
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
         server->icqChatRequestRefuse(m_nUin, r->RefuseMessage().local8Bit().data(),
@@ -644,6 +650,7 @@ void UserViewEvent::slot_btnRead3()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("File Transfer"), this);
       if (r->exec())
       {
+        m_xCurrentReadEvent->SetPending(false);
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
         server->icqFileTransferRefuse(m_nUin, r->RefuseMessage().local8Bit().data(),
@@ -898,7 +905,8 @@ QString UserSendCommon::generatePart(const QString& text)
 //-----UserSendCommon::massMessageToggled------------------------------------
 void UserSendCommon::massMessageToggled(bool b)
 {
-  if(grpMR == NULL) {
+  if (grpMR == NULL)
+  {
     grpMR = new QVGroupBox(this);
     top_hlay->addWidget(grpMR);
 
@@ -908,14 +916,17 @@ void UserSendCommon::massMessageToggled(bool b)
     lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
   }
 
-  if(b)
+  if (b)
+  {
     grpMR->show();
-  else {
+  }
+  else
+  {
     // doesn't work right TODO investigate why
     int w = grpMR->width();
     qDebug("width is %d", w);
     grpMR->hide();
-//    resize(width()-w, height());
+    //resize(width()-w, height());
     top_hlay->setGeometry(QRect(0, 0, width()-w, height()));
   }
 }
