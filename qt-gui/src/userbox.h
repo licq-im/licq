@@ -134,8 +134,10 @@ protected:
   CUserViewTips* m_tips;
   ColumnInfos colInfo;
   CUserViewItem *barOnline, *barOffline;
+  QPoint mousePressPos;
   int numOnline, numOffline;
   virtual void viewportMousePressEvent(QMouseEvent *e);
+  virtual void viewportMouseReleaseEvent(QMouseEvent *e);
   virtual void viewportMouseMoveEvent(QMouseEvent * me);
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );

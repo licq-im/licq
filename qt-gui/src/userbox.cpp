@@ -517,53 +517,57 @@ unsigned long CUserView::SelectedItemUin()
 //-----CUserList::mousePressEvent---------------------------------------------
 void CUserView::viewportMousePressEvent(QMouseEvent *e)
 {
-   QListView::viewportMousePressEvent(e);
-   if (e->button() == MidButton)
-   {
-      QPoint clickPoint(e->x(), e->y());
-      QListViewItem *clickedItem = itemAt(clickPoint);
-      if (clickedItem != NULL)
+  QListView::viewportMousePressEvent(e);
+  if (e->button() == LeftButton)
+  {
+    mousePressPos = e->pos();
+  }
+  else if (e->button() == MidButton)
+  {
+    QPoint clickPoint(e->x(), e->y());
+    QListViewItem *clickedItem = itemAt(clickPoint);
+    if (clickedItem != NULL)
+    {
+      setSelected(clickedItem, true);
+      setCurrentItem(clickedItem);
+      doubleClicked(clickedItem);
+    }
+  }
+  else if (e->button() == RightButton)
+  {
+    QPoint clickPoint(e->x(), e->y());
+    QListViewItem *clickedItem = itemAt(clickPoint);
+    if (clickedItem != NULL)
+    {
+      setSelected(clickedItem, true);
+      setCurrentItem(clickedItem);
+      if (SelectedItemUin() != 0)
       {
-         setSelected(clickedItem, true);
-         setCurrentItem(clickedItem);
-         doubleClicked(clickedItem);
-      }
-   }
-   else if (e->button() == RightButton)
-   {
-      QPoint clickPoint(e->x(), e->y());
-      QListViewItem *clickedItem = itemAt(clickPoint);
-      if (clickedItem != NULL)
-      {
-         setSelected(clickedItem, true);
-         setCurrentItem(clickedItem);
-         if (SelectedItemUin() != 0)
-         {
-           ICQUser *u = gUserManager.FetchUser(SelectedItemUin(), LOCK_R);
-           if (u == NULL) return;
-           mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
-           mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
-           mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
-           mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
-           // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(2), u->AcceptInOccupied());
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(3), u->AcceptInDND());
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(5), u->StatusToUser() == ICQ_STATUS_ONLINE);
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(6), u->StatusToUser() == ICQ_STATUS_AWAY);
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(7), u->StatusToUser() == ICQ_STATUS_NA);
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(8), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
-           mnuAwayModes->setItemChecked(mnuAwayModes->idAt(9), u->StatusToUser() == ICQ_STATUS_DND);
-           //mnuAwayModes->setItemChecked(mnuAwayModes->idAt(11), u->CustomAutoResponse()[0] != '\0');
+        ICQUser *u = gUserManager.FetchUser(SelectedItemUin(), LOCK_R);
+        if (u == NULL) return;
+        mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
+        mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
+        mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
+        mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
+        // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(2), u->AcceptInOccupied());
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(3), u->AcceptInDND());
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(5), u->StatusToUser() == ICQ_STATUS_ONLINE);
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(6), u->StatusToUser() == ICQ_STATUS_AWAY);
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(7), u->StatusToUser() == ICQ_STATUS_NA);
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(8), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
+        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(9), u->StatusToUser() == ICQ_STATUS_DND);
+        //mnuAwayModes->setItemChecked(mnuAwayModes->idAt(11), u->CustomAutoResponse()[0] != '\0');
 
-           for (unsigned short i = 0; i < mnuGroup->count(); i++)
-              mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
-           gUserManager.DropUser(u);
-           mnuUser->popup(mapToGlobal(clickPoint));
-         }
+        for (unsigned short i = 0; i < mnuGroup->count(); i++)
+          mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
+        gUserManager.DropUser(u);
+        mnuUser->popup(mapToGlobal(clickPoint));
       }
-   }
+    }
+  }
 }
 
 
@@ -662,6 +666,7 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 
 }
 
+
 void CUserView::maxLastColumn()
 {
   unsigned short totalWidth = 0;
@@ -684,18 +689,30 @@ void CUserView::maxLastColumn()
 }
 
 
+// -----------------------------------------------------------------------------
+
+void  CUserView::viewportMouseReleaseEvent(QMouseEvent* me)
+{
+  mousePressPos.setX(0);
+  mousePressPos.setY(0);
+}
+
+
+// -----------------------------------------------------------------------------
+
 void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
   CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
 
-  if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem()))
+  if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem())
+      && !mousePressPos.isNull() &&
+      (QPoint(me->pos() - mousePressPos).manhattanLength() > 8))
   {
     QTextDrag *d = new QTextDrag(QString::number(i->ItemUin()), this);
     d->dragCopy();
   }
 }
-
 
 
 //=====CUserViewTips===============================================================================
