@@ -115,6 +115,10 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   if (u != NULL)
   {
     nfoStatus->setData(u->StatusStr());
+    if (u->NewMessages() == 0)
+      setIcon(CMainWindow::iconForStatus(u->StatusFull()));
+    else
+      setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
     SetGeneralInfo(u);
     gUserManager.DropUser(u);
   }
@@ -195,6 +199,8 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
     case USER_STATUS:
     {
       nfoStatus->setData(u->StatusStr());
+      if (u->NewMessages() == 0)
+        setIcon(CMainWindow::iconForStatus(u->StatusFull()));
       break;
     }
     case USER_GENERAL:
@@ -202,6 +208,14 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
     case USER_BASIC:
     {
       SetGeneralInfo(u);
+      break;
+    }
+    case USER_EVENTS:
+    {
+      if (u->NewMessages() == 0)
+        setIcon(CMainWindow::iconForStatus(u->StatusFull()));
+      else
+        setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
       break;
     }
   }
