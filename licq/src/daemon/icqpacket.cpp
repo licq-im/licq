@@ -180,7 +180,10 @@ void CPacketUdp::Encrypt(void)
                        ( buf[2] << 8 ) |
                        ( buf[6] );
   unsigned short r1 = 24 + rand() % (l - 24);
+  //static unsigned short r2 = 0;
+  //r2 &= 0xFF;
   unsigned short r2 = rand() & 0xFF;
+  printf("r2: %d [%d]\n", r2, icq_check_data[r2]);
   unsigned long chk2 = ( r1 << 24 ) |
                        ( buf[r1] << 16 ) |
                        ( r2 << 8 ) |
@@ -188,6 +191,7 @@ void CPacketUdp::Encrypt(void)
   chk2 ^= 0x00FF00FF;
   m_nCheckSum = chk1 ^ chk2;
   unsigned long key = l * 0x68656C6C + m_nCheckSum;
+  //if (getCommand() != ICQ_CMDxSND_ACK) r2++;
 
   unsigned long k = 0;
   for (unsigned short i = 10; i < l; i += 4)
@@ -765,7 +769,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   struct timezone tz;
   gettimeofday(NULL, &tz);
   m_nTimezone = tz.tz_minuteswest / 30;
-  //if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
+  if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_nAuthorization = o->GetAuthorization() ? 0 : 1;
   gUserManager.DropOwner();
