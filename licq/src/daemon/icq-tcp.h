@@ -66,7 +66,6 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned lon
             u->GetAlias(), p->getSequence());
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, NULL);
   gUserManager.DropUser(u);
-
   CICQEventTag *t = NULL;
   if (result != NULL)
     t =  new CICQEventTag(result);
@@ -870,7 +869,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
     // translating string with translation table
     gTranslator.ServerToClient (message);
-    // output the away message if there is one (ie if user status is not online)
+
     int nSubResult;
     if (ackFlags == ICQ_TCPxACK_ACCEPT)
     {
@@ -887,7 +886,15 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gLog.Info("%sReturned from %s (#%d).\n", L_TCPxSTR, u->GetAlias(), theSequence);
       nSubResult = ICQ_TCPxACK_RETURN;
     }
-    else
+
+    // output the away message if there is one (ie if user status is not online)
+    if (newCommand == ICQ_CMDxTCP_READxNAxMSG ||
+        newCommand == ICQ_CMDxTCP_READxDNDxMSG ||
+        newCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG ||
+        newCommand == ICQ_CMDxTCP_READxAWAYxMSG ||
+        newCommand == ICQ_CMDxSUB_URL ||
+        newCommand == ICQ_CMDxSUB_CONTACTxLIST ||
+        newCommand == ICQ_CMDxSUB_MSG)
     {
       // Update the away message if it's changed
       if (strcmp(u->AutoResponse(), message) != 0)
