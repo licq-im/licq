@@ -25,7 +25,8 @@
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
 unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
-   bool online, unsigned short nLevel, bool bMultipleRecipients)
+   bool online, unsigned short nLevel, bool bMultipleRecipients,
+   CICQColor *pColor)
 {
   if (_nUin == gUserManager.OwnerUin()) return 0;
 
@@ -63,7 +64,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, NULL, u);
+    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info("%sSending %smessage to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());
@@ -101,7 +102,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 //-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
 unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
-   bool bMultipleRecipients)
+   bool bMultipleRecipients, CICQColor *pColor)
 {
   if (_nUin == gUserManager.OwnerUin()) return 0;
 
@@ -137,7 +138,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, NULL, u);
+    CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info("%sSending %sURL to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());
@@ -202,7 +203,8 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
 //-----CICQDaemon::sendContactList-------------------------------------------
 unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
-   UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients)
+   UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients,
+   CICQColor *pColor)
 {
   if (nUin == gUserManager.OwnerUin()) return 0;
 
@@ -250,7 +252,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, NULL, u);
+    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());
@@ -1063,10 +1065,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     {
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
+        unsigned long fore = 0xFFFFFF, back = 0x000000;
         if (nInVersion <= 4)
           packet >> theSequence;
         else
-          packet >> junkLong >> junkLong;
+          packet >> back >> fore;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1076,6 +1079,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           gLog.Info("%sMessage from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
 
         CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
+        e->SetColor(fore, back);
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, pSock);
@@ -1135,8 +1139,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
       case ICQ_CMDxSUB_URL:  // url sent
       {
+        unsigned long fore = 0xFFFFFF, back = 0x000000;
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
+        else packet >> back >> fore;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1154,6 +1159,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           errorOccured = true;
           break;
         }
+        e->SetColor(fore, back);
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, pSock);
@@ -1187,9 +1193,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       // Contact List
       case ICQ_CMDxSUB_CONTACTxLIST:
       {
+        unsigned long fore = 0xFFFFFF, back = 0x000000;
         if (nInVersion <= 4) packet >> theSequence;
         else packet >> junkLong >> junkLong;
-        packet >> licqChar >> licqVersion;
+        packet >> fore >> back;
         nMask |= licqVersion;
         if (licqChar == 'L')
           gLog.Info("%sContact list from %s (%ld) [Licq %s].\n", L_TCPxSTR,
@@ -1207,6 +1214,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           errorOccured = true;
           break;
         }
+        e->SetColor(fore, back);
 
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, pSock);

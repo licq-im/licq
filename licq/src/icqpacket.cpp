@@ -23,7 +23,7 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_log.h"
 #include "licq_utility.h"
-#include "licq_icqd.h"  // CICQColor
+#include "licq_color.h"
 #include "support.h"
 
 

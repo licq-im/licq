@@ -5,6 +5,7 @@
 #include <time.h>
 #include "licq_buffer.h"
 #include "licq_constants.h"
+#include "licq_color.h"
 
 #define EVENT_HEADER_SIZE  80
 
@@ -48,6 +49,7 @@ public:
    bool IsEncrypted()  { return m_nFlags & E_ENCRYPTED; };
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
+   CICQColor *Color() { return &m_sColor; }
 
    bool Pending() { return m_bPending; }
    void SetPending(bool b)  { m_bPending = b; }
@@ -59,6 +61,7 @@ protected:
 
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
+   void SetColor(unsigned long fore, unsigned long back)  { m_sColor.Set(fore, back); }
 
    virtual void CreateDescription() = 0;
    static int s_nId;
@@ -72,6 +75,7 @@ protected:
    time_t         m_tTime;
    unsigned long  m_nFlags;
    bool m_bPending;
+   CICQColor      m_sColor;
 
 friend class CICQDaemon;
 friend class CUserHistory;
