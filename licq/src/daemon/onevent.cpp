@@ -47,21 +47,25 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   // Check if globally command should be run
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->Status();
-  gUserManager.DropOwner();
 
   // Messy Mode / Accept Stuff by Andypoo (andypoo@ihug.com.au)
+  bool no = false;
   if (u == NULL)
   {
-    if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) return;
+    no = ( (s == ICQ_STATUS_AWAY && !o->AcceptInAway()) ||
+           (s == ICQ_STATUS_NA && !o->AcceptInNA() ) ||
+           (s == ICQ_STATUS_OCCUPIED && !o->AcceptInOccupied()) ||
+           (s == ICQ_STATUS_DND && !o->AcceptInDND() ));
   }
   else
   {
-    if (((s == ICQ_STATUS_AWAY) && (!u->AcceptInAway())) ||
-        ((s == ICQ_STATUS_NA) && (!u->AcceptInNA())) ||
-        ((s == ICQ_STATUS_OCCUPIED) && (!u->AcceptInOccupied())) ||
-        ((s == ICQ_STATUS_DND) && (!u->AcceptInDND()))) return;
+    no = ( (s == ICQ_STATUS_AWAY && !u->AcceptInAway() && !o->AcceptInAway()) ||
+           (s == ICQ_STATUS_NA && !u->AcceptInNA() && !o->AcceptInNA() ) ||
+           (s == ICQ_STATUS_OCCUPIED && !u->AcceptInOccupied() && !o->AcceptInOccupied()) ||
+           (s == ICQ_STATUS_DND && !u->AcceptInDND() && !o->AcceptInDND() ));
   }
-  //if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) return;
+  gUserManager.DropOwner();
+  if (no) return;
 
   pthread_mutex_lock(&mutex);
 
