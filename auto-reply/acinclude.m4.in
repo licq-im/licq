@@ -38,7 +38,7 @@ done
 AC_DEFUN(AC_CHECK_LICQ,
 [
   AC_MSG_CHECKING([for licq header files])
-  
+
   AC_FIND_FILE(icqd.h, "../../src/inc", licq_inc)
   if test "$licq_inc" = no; then
     have_licq_inc=no
