@@ -53,7 +53,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     " %B%cv%biew [ %B<user>%b ]",
     "View an incoming event." },
   { "secure", &CLicqConsole::MenuSecure, &CLicqConsole::TabUser,
-    " %B%cs%becure %B<user>%b",
+    " %B%cs%becure %B<user>%b [ open | close ]",
     "Establish a secure connection to a user." },
   { "auto-response", &CLicqConsole::MenuAutoResponse, &CLicqConsole::TabUser,
     " %B%ca%buto-response [ %B<user>%b ]",
