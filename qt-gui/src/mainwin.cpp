@@ -328,6 +328,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqLogWindow = theLogWindow;
   positionChanges = 0;
   m_szUserMenuId = 0;
+  m_nProtoNum = 0;
 
   // Overwrite Qt's event handler
   old_handler = XSetErrorHandler(licq_xerrhandler);
@@ -766,8 +767,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     mnuPFM->setItemChecked(o->PhoneFollowMeStatus(), true);
     gUserManager.DropOwner();
    }
-
-   m_nProtoNum = 0;
 
 #if QT_VERSION > 3
   XClassHint ClassHint;
@@ -2345,7 +2344,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
 void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
 {
   int nAt = (index & 0x00FF0000) >> 16;
-  unsigned long nThisPPID = nAt > 0 ? m_lnProtMenu[nAt] : 0;
+  unsigned long nThisPPID = nAt > 0 ? m_lnProtMenu[nAt] : LICQ_PPID;
   index &= 0x0000FFFF;
   
   if (index == OwnerMenuView)

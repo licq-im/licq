@@ -78,6 +78,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
+  m_nStatus = _cUser->Status();
   setGraphics(_cUser);
 }
 
@@ -98,7 +99,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
-  m_nStatus = ICQ_STATUS_OFFLINE;
+  m_nStatus = _cUser->Status();
   setGraphics(_cUser);
 }
 
@@ -123,6 +124,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
+  m_nStatus = 0;
   // Other users group is sorted at the end
   m_sSortKey = m_nGroupId ? QString("%1").arg((int)m_nGroupId, 10) : QString("9999999999");
   m_sPrefix = "1";
@@ -141,6 +143,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_nPPID = 0;
   m_nOnlCount = 0;
   m_nEvents = 0;
+  m_nStatus = 0;
   m_pIcon = NULL;
   m_cBack = s_cBack;
   m_cFore = s_cOnline;
