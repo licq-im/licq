@@ -7,10 +7,15 @@
 #include <dirent.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <paths.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include "time-fix.h"
+
+#ifdef HAVE_PATHS_H
+#include <paths.h>
+#else
+#define _PATH_BSHELL "/bin/sh"
+#endif
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
