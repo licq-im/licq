@@ -149,9 +149,9 @@ public:
   CICQEventTag *icqSetStatus(unsigned short newStatus);
   CICQEventTag *icqSetRandomChatGroup(unsigned long nGroup);
   CICQEventTag *icqRandomChatSearch(unsigned long nGroup);
+  CICQEventTag *icqSearchByInfo(const char *, const char *, const char *, const char *);
+  CICQEventTag *icqSearchByUin(unsigned long);
 
-  unsigned short icqSearchByInfo(const char *, const char *, const char *, const char *);
-  unsigned short icqSearchByUin(unsigned long);
   void icqLogoff();
   void icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   void icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);

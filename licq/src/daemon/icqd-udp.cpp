@@ -324,25 +324,33 @@ void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty)
 
 
 //-----icqSearchByInfo-----------------------------------------------------------
-unsigned short CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
+CICQEventTag *CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
 {
   CPU_SearchByInfo *p = new CPU_SearchByInfo(nick, first, last, email);
   gLog.Info("%sStarting search by info for user (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-  return p->SubSequence();
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+
+  CICQEventTag *t = NULL;
+  if (e!= NULL)
+    t = new CICQEventTag(e);
+  return (t);
 }
 
 
 //-----icqSearchByUin-----------------------------------------------------------
-unsigned short CICQDaemon::icqSearchByUin(unsigned long nUin)
+CICQEventTag *CICQDaemon::icqSearchByUin(unsigned long nUin)
 {
   CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
   gLog.Info("%sStarting search by uin for user (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-  return p->SubSequence();
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+
+  CICQEventTag *t = NULL;
+  if (e!= NULL)
+    t = new CICQEventTag(e);
+  return (t);
 }
 
 
