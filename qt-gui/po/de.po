@@ -1080,7 +1080,7 @@ msgstr "A&uto schliessen"
 
 #: icqfunctions.cpp:428
 msgid "ICQFunctions::About"
-msgstr ""
+msgstr "Über"
 
 #: icqfunctions.cpp:434
 msgid "ICQFunctions::About:"
