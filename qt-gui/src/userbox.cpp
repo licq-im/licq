@@ -35,6 +35,7 @@
 #include <math.h>
 #include "userbox.h"
 #include "gui-defines.h"
+#include "mainwin.h"
 
 #include "licq_user.h"
 
@@ -405,9 +406,6 @@ QString CUserViewItem::key (int column, bool ascending) const
 
 
 UserFloatyList* CUserView::floaties = 0;
-unsigned long CUserView::s_nUin = 0;
-bool CUserView::s_bFloaty = false;
-CUserViewItem *CUserView::s_pItem = NULL;
 
 
 //-----UserList::constructor-----------------------------------------------------------------------
@@ -585,29 +583,12 @@ void CUserView::setSortByStatus(bool s)
 }
 
 
-unsigned long CUserView::SelectedItemUin()
-{
-  return s_nUin;
-}
-
 
 unsigned long CUserView::MainWindowSelectedItemUin()
 {
    CUserViewItem *i = (CUserViewItem *)currentItem();
    if (i == NULL) return (0);
    return i->ItemUin();
-}
-
-
-bool CUserView::SelectedItemFloaty()
-{
-  return s_bFloaty;
-}
-
-
-CUserViewItem *CUserView::SelectedItem()
-{
-  return s_pItem;
 }
 
 
@@ -633,16 +614,16 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
   }
   else if (e->button() == RightButton)
   {
-    QListViewItem *clickedItem = itemAt(e->pos());
+    CUserViewItem *clickedItem = (CUserViewItem *)itemAt(e->pos());
     if (clickedItem != NULL)
     {
-      s_pItem = (CUserViewItem *)clickedItem;
-      s_nUin = s_pItem->ItemUin();
-      s_bFloaty = parent() == NULL;
       setSelected(clickedItem, true);
       setCurrentItem(clickedItem);
-      if (SelectedItemUin() != 0)
+      if (clickedItem->ItemUin())
+      {
+        gMainWindow->SetUserMenuUin(clickedItem->ItemUin());
         mnuUser->popup(mapToGlobal(e->pos()) + QPoint(4,-5), 1);
+      }
     }
   }
 }
@@ -670,12 +651,10 @@ void CUserView::keyPressEvent(QKeyEvent *e)
          nMenuWidth = 120;
       // Calculate where to position the menu
       const QListViewItem *pcItem = currentItem();
-      s_pItem = (CUserViewItem *)pcItem;
-      s_nUin = s_pItem->ItemUin();
-      s_bFloaty = parent() == NULL;
       QPoint cRelPos( (width() - nMenuWidth)/2,
                      itemPos(pcItem) + pcItem->height() );
       QPoint cPos( mapToGlobal( cRelPos ) );
+      gMainWindow->SetUserMenuUin(((CUserViewItem*)pcItem)->ItemUin());
       mnuUser->popup( cPos );
       return;
     }

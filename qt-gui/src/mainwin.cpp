@@ -1431,7 +1431,8 @@ void CMainWindow::callMsgFunction()
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  unsigned long nUin = userView->SelectedItemUin();
+  //unsigned long nUin = userView->SelectedItemUin();
+  unsigned long nUin = m_nUserMenuUin;
 
   if (nUin == 0) return;
 
@@ -1741,7 +1742,8 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
 //-----CMainWindow::removeUser-------------------------------------------------
 void CMainWindow::slot_removeUserFromList()
 {
-  RemoveUserFromList(userView->SelectedItemUin(), this);
+  //RemoveUserFromList(userView->SelectedItemUin(), this);
+  RemoveUserFromList(m_nUserMenuUin, this);
 }
 
 
@@ -1764,7 +1766,8 @@ bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
 
 void CMainWindow::slot_removeUserFromGroup()
 {
-  RemoveUserFromGroup(userView->SelectedItemUin(), this);
+  //RemoveUserFromGroup(userView->SelectedItemUin(), this);
+  RemoveUserFromGroup(m_nUserMenuUin, this);
 }
 
 
@@ -1817,8 +1820,8 @@ void CMainWindow::saveAllUsers()
 //-----CMainWindow::addUserToGroup---------------------------------------------
 void CMainWindow::addUserToGroup(int _nId)
 {
-   gUserManager.AddUserToGroup(userView->SelectedItemUin(),
-                               mnuGroup->indexOf(_nId) + 1);
+  //gUserManager.AddUserToGroup(userView->SelectedItemUin(), mnuGroup->indexOf(_nId) + 1);
+  gUserManager.AddUserToGroup(m_nUserMenuUin, mnuGroup->indexOf(_nId) + 1);
 }
 
 void CMainWindow::slot_updateContactList()
@@ -1989,7 +1992,8 @@ void CMainWindow::slot_utility(int _nId)
   int nUtility = mnuUtilities->indexOf(_nId);
   CUtility *u = gUtilityManager.Utility(nUtility);
   if (u == NULL) return;
-  unsigned long nUin = userView->SelectedItemUin();
+  //unsigned long nUin = userView->SelectedItemUin();
+  unsigned long nUin = m_nUserMenuUin;
   if (nUin != 0) (void) new CUtilityDlg(u, nUin, licqDaemon);
 }
 
@@ -1998,7 +2002,8 @@ void CMainWindow::slot_utility(int _nId)
 void CMainWindow::slot_awaymodes(int _nId)
 {
   int nAwayModes = mnuAwayModes->indexOf(_nId);
-  ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+  //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
   if (u == NULL) return;
 
   switch(nAwayModes)
@@ -2051,7 +2056,8 @@ void CMainWindow::slot_awaymodes(int _nId)
     {
       gUserManager.DropUser(u);
       u = NULL;
-      (void) new CustomAwayMsgDlg(userView->SelectedItemUin());
+      //(void) new CustomAwayMsgDlg(userView->SelectedItemUin());
+      (void) new CustomAwayMsgDlg(m_nUserMenuUin);
     }
   }
   if (u != NULL)
@@ -2523,7 +2529,8 @@ void CMainWindow::initMenu()
 
 void CMainWindow::slot_usermenu()
 {
-  ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
+  //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
 
   if (u == NULL)
   {

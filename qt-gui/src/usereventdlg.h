@@ -79,6 +79,7 @@ protected slots:
   void slot_updatetime();
   void showHistory();
   void showUserInfo();
+  void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
 
 signals:
   void finished(unsigned long);
@@ -153,7 +154,6 @@ protected slots:
   void cancelSend();
   void massMessageToggled(bool);
   void slot_resettitle() { setCaption(m_sBaseTitle); }
-
 };
 
 

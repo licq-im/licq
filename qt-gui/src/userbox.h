@@ -147,10 +147,6 @@ public:
   unsigned long MainWindowSelectedItemUin();
   ColumnInfos &ColInfo()  { return colInfo; }
 
-  static unsigned long SelectedItemUin();
-  static bool SelectedItemFloaty();
-  static CUserViewItem *SelectedItem();
-
   bool ShowBars(void)  { return m_bShowBars; }
 
   bool getGridLines()  { return CUserViewItem::s_bGridLines; };
@@ -177,10 +173,6 @@ protected:
 
   virtual void hideEvent(QHideEvent *);
   virtual void resizeEvent(QResizeEvent *);
-
-  static unsigned long s_nUin;
-  static bool s_bFloaty;
-  static CUserViewItem *s_pItem;
 
   friend class CUserViewItem;
 

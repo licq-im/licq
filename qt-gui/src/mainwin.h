@@ -65,6 +65,8 @@ public:
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
+  QPopupMenu *UserMenu() { return mnuUser; }
+  void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
 
   static const QPixmap& iconForStatus(unsigned long FullStatus);
   static const QPixmap& iconForEvent(unsigned short SubCommand);
@@ -121,6 +123,7 @@ protected:
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmAuthorize;
   ColumnInfos colInfo;
+  unsigned long m_nUserMenuUin;
 
   // AutoAway
   QTimer autoAwayTimer;

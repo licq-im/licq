@@ -234,6 +234,13 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_btnRead4()));
 
   QBoxLayout *h_lay = new QHBoxLayout(top_lay);
+  if (!m_bOwner)
+  {
+    QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
+    h_lay->addWidget(btnMenu);
+    connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
+    btnMenu->setPopup(gMainWindow->UserMenu());
+  }
   h_lay->addStretch(1);
   btnClose = new CEButton(tr("&Close"), this);
   connect(btnClose, SIGNAL(clicked()), SLOT(slot_close()));
@@ -661,6 +668,13 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 #endif
 
   QBoxLayout* h_lay = new QHBoxLayout(top_lay);
+  if (!m_bOwner)
+  {
+    QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
+    h_lay->addWidget(btnMenu);
+    connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
+    btnMenu->setPopup(gMainWindow->UserMenu());
+  }
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
   h_lay->addWidget(btnSend);
