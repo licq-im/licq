@@ -1,0 +1,61 @@
+#
+# Make any modifications to Makefile.in *NOT* Makefile, as it will be
+# overwritten by configure.
+#
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+qt_srcdir = @top_srcdir@/src
+
+prefix = @prefix@
+
+bindir = @bindir@
+sharedir = @datadir@/licq/qt-gui
+mandir = @mandir@
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+MKINSTALLDIRS = $(top_srcdir)/mkinstalldirs
+
+FINDTR   = @QT_FINDTR@
+MSG2QM   = @QT_MSG2QM@
+MERGETR  = @QT_MERGETR@
+
+SUFFIXES = .po
+
+.PHONY: all clean distclean install
+all:
+
+clean:
+	$(RM) template.po
+
+distclean: clean
+	$(RM) *~ Makefile tags
+
+merge: template.po
+	for i in *.po; do \
+	  $(MERGETR) $$i template.po
+	done
+
+qm: merge
+	for i in *.po; do \
+	  make $$i
+	done
+
+install: all qm
+	$(MKINSTALLDIRS) $(sharedir)
+	for i in *.qm; do \
+	  $(INSTALL_DATA) $$i $(sharedir)/$$i; \
+	done
+
+template.po:
+	$(FINDTR) $(qt_srcdir)/*.cpp $(qt_srcdir)/*.h > template.po
+
+%.qm: %.po
+	$(MSG2QM) $< $@
+
+
