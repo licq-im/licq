@@ -427,6 +427,11 @@ CLicq::~CLicq()
   //...
   // Kill the daemon
   if (licqDaemon != NULL) delete licqDaemon;
+
+  // Remove the lock file
+  char szConf[MAX_FILENAME_LEN];
+  snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
+  remove(szConf);
 }
 
 
