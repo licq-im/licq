@@ -316,23 +316,22 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
 char *CBuffer::print(char *&p)
 {
    static const unsigned short BYTES_PER_LINE = 16;
-   static const unsigned long MAX_DATA_SIZE = 32 * 1024;
+   static const unsigned long MAX_DATA_SIZE = 8 * 1024;
+   static const unsigned long SPACE_PER_LINE =
+    strlen(L_BLANKxSTR) + strlen("0000: ") + BYTES_PER_LINE * 3 + 4;
 
-   if (getDataSize() > MAX_DATA_SIZE)
+   unsigned long nBytesToPrint = getDataSize();
+
+   if (nBytesToPrint > MAX_DATA_SIZE)
    {
-     gLog.Error("%sInternal error: CBuffer::print(): Packet is suspiciously large (%lu bytes).\n%sAborting print.\n",
-                L_ERRORxSTR, getDataSize(), L_BLANKxSTR);
-     p = new char[32];
-     strcpy(p, "- E R R O R -");
-     return (p);
+     gLog.Warn("%sCBuffer::print(): Packet is suspiciously large (%lu bytes).\n%sAborting print.\n",
+                L_WARNxSTR, getDataSize(), L_BLANKxSTR);
+     nBytesToPrint = MAX_DATA_SIZE;
    }
 
-   unsigned short nLenBlank = strlen(L_BLANKxSTR) + 6;
-   unsigned short nLenBuf = nLenBlank + getDataSize() * 3
-     + (int)(getDataSize() / BYTES_PER_LINE) * (1 + nLenBlank)
-     + (int)(getDataSize() / 4) * 2
-     + 4;
-   p = new char[nLenBuf];
+   unsigned short nLenBuf = ((int)(nBytesToPrint / BYTES_PER_LINE) + 1) *
+    SPACE_PER_LINE;
+   p = new char[nLenBuf + 1];
    char *pPos = p;
    pPos += sprintf(pPos, "%s0000: ", L_BLANKxSTR);
    unsigned short i = 0;
@@ -340,13 +339,16 @@ char *CBuffer::print(char *&p)
    {
       pPos += sprintf(pPos, "%02X ", (unsigned char)getDataStart()[i++]);
 
-      if (i >= getDataSize()) break;
+      if (i >= nBytesToPrint) break;
 
       if(i % BYTES_PER_LINE == 0)
         pPos += sprintf(pPos, "\n%s%04X: ", L_BLANKxSTR, i);
       else if(i % 8 == 0)
         pPos += sprintf(pPos, " ");
    }
+   if (nBytesToPrint != getDataSize())
+     pPos += sprintf(pPos, "...");
+
    return(p);
 }
 
