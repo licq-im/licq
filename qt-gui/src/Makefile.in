@@ -37,7 +37,7 @@ STRIP    = @PROG_STRIP@
 SIZE     = @PROG_SIZE@
  
 
-OBJECTS	= obj/icqfunctions.o obj/outputwin.o obj/awaymsgdlg.o obj/adduserdlg.o \
+OBJECTS	= obj/icqfunctions.o obj/outputwin.o obj/awaymsgdlg.o \
           obj/authuserdlg.o obj/userbox.o obj/licqgui.o obj/mainwin.o \
           obj/mledit.o  obj/searchuserdlg.o obj/messagebox.o obj/chatdlg.o \
           obj/optionsdlg.o obj/ewidgets.o obj/chatacceptdlg.o \
