@@ -27,6 +27,12 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
   if (!online) // send offline
   {
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+     if (strlen(mDos) > MAX_MESSAGE_SIZE)
+     {
+       gLog.Warn("%sTruncating message to %d characters to send through server.\n",
+                 L_WARNxSTR, MAX_MESSAGE_SIZE);
+       mDos[MAX_MESSAGE_SIZE] = '\0';
+     }
      CPU_ThroughServer *p = new CPU_ThroughServer(_nSourceUin, _nUin, ICQ_CMDxSUB_MSG, mDos);
      gLog.Info("%sSending message through server (#%d).\n", L_UDPxSTR, p->getSequence());
      result = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE, _nUin, e);
@@ -74,12 +80,11 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
   CEventUrl *e = NULL;
   szDescDos = gTranslator.NToRN(description);
   gTranslator.ClientToServer(szDescDos);
-  char m[ (url == NULL ? 0 : strlen(url)) + (szDescDos == NULL ? 0 : strlen(szDescDos)) + 2];
-  strcpy(m, szDescDos == NULL ? "" : szDescDos);
-  int nLen = strlen(m);
-  m[nLen] = (char)0xFE;
-  m[nLen + 1] = '\0';
-  strcat(m, url == NULL ? "" : url);
+  int n = strlen_safe(url) + strlen_safe(szDescDos) + 2;
+  char m[n];
+  if (!online && n > MAX_MESSAGE_SIZE && szDescDos != NULL)
+    szDescDos[MAX_MESSAGE_SIZE - strlen_safe(url) - 2] = '\0';
+  sprintf(m, "%s%c%s", szDescDos == NULL ? "" : szDescDos, char(0xFE), url == NULL ? "" : url);
 
   ICQEvent *result = NULL;
 
@@ -804,10 +809,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       break;
     }
@@ -950,10 +951,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                u->GetAlias(), checkUin);
       CEventChatCancel *e = new CEventChatCancel(0, TIME_NOW, E_DIRECT);
       AddUserEvent(u, e);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -962,10 +959,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                L_TCPxSTR, u->GetAlias(), checkUin);
       CEventFileCancel *e = new CEventFileCancel(0, TIME_NOW, E_DIRECT);
       AddUserEvent(u, e);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
 
