@@ -115,6 +115,13 @@ public:
   */
   void ProtoRemoveUser(const char *szId, unsigned long nPPID);
 
+  //! Rename a user on the server contact list.
+  /*!
+       \param szId The user ID to rename.
+       \param nPPID The user's protocol plugin ID.
+  */
+  void ProtoRenameUser(const char *szId, unsigned long nPPID);
+
   //! Change status for a protocol.
   /*!
        \param nPPID The protocol ID.
@@ -345,7 +352,7 @@ public:
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(unsigned long _nUin);
-  void icqRenameUser(const char *_szId, unsigned long _nPPID);
+  void icqRenameUser(const char *_szId);
   void icqExportUsers(UserStringList &, unsigned short);
   void icqExportGroups(GroupList &);
   void icqUpdatePhoneBookTimestamp();

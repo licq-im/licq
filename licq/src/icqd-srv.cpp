@@ -435,14 +435,22 @@ void CICQDaemon::icqRenameUser(unsigned long _nUin)
   snprintf(szUin, 12, "%lu", _nUin);
   szUin[12] = '\0'; 
 
-  icqRenameUser(szUin, LICQ_PPID);
+  icqRenameUser(szUin);
 }
 
-void CICQDaemon::icqRenameUser(const char *_szId, unsigned long _nPPID)
+void CICQDaemon::ProtoRenameUser(const char *_szId, unsigned long _nPPID)
+{
+  if (_nPPID == LICQ_PPID)
+    icqRenameUser(_szId);
+  else
+    PushProtoSignal(new CRenameUserSignal(_szId), _nPPID);
+}
+
+void CICQDaemon::icqRenameUser(const char *_szId)
 {
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
 
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   char *szNewAlias = u->GetAlias();
   gUserManager.DropUser(u);

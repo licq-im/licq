@@ -348,6 +348,11 @@ CRemoveUserSignal::CRemoveUserSignal(const char *szId)
 {
 }
 
+CRenameUserSignal::CRenameUserSignal(const char *szId)
+  : CSignal(PROTOxRENAME_USER, szId)
+{
+}
+
 CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg)
   : CSignal(PROTOxSENDxMSG, szId)
 {

@@ -439,6 +439,8 @@ enum SIGNAL_TYPE
   PROTOxADD_USER,
   //! The user requested this protocol to remove a user.
   PROTOxREM_USER,
+  //! The user requested this protocol to rename the user on the server's list.
+  PROTOxRENAME_USER,
   //! The user requested this protocol to send a message.
   PROTOxSENDxMSG,
   //! The user has started typing and wants to let the remote user know about
@@ -519,6 +521,12 @@ class CRemoveUserSignal : public CSignal
 {
 public:
   CRemoveUserSignal(const char *);
+};
+
+class CRenameUserSignal : public CSignal
+{
+public:
+  CRenameUserSignal(const char *);
 };
 
 /*! \brief Signal to a protocol plugin to send a messasge
