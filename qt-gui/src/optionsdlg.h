@@ -70,8 +70,8 @@ protected:
    QLabel *lblFont, *lblEditFont, *lblFrameStyle, *lblHotKey;
    QLineEdit *edtFont, *edtEditFont, *edtFrameStyle, *edtHotKey;
    QPushButton *btnFont, *btnEditFont;
-   QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
-             *chkFontStyles, *chkUseDock, *chkDockFortyEight,
+   QCheckBox *chkSSList, *chkGridLines, *chkHeader, *chkAutoClose,
+             *chkShowDividers, *chkFontStyles, *chkUseDock, *chkDockFortyEight,
              *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg,
              *chkAutoPopup, *chkAutoRaise, *chkHidden, *chkFlashUrgent, *chkFlashAll,
              *chkBoldOnMsg, *chkManualNewUser,

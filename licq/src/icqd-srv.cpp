@@ -26,6 +26,29 @@
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(unsigned long _nUin)
 {
+  // Server side list add, and update of group
+  if (UseServerContactList())
+  {
+    CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+      ICQ_SNACxLIST_ROSTxEDITxSTART);
+    SendEvent_Server(pStart);
+
+    char szUin[13];
+    snprintf(szUin, 12, "%lu", _nUin);
+    szUin[12] = 0;
+
+    CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxNORMAL);
+    gLog.Info("%sAdding %ld to server list...\n", L_SRVxSTR, _nUin);
+    SendExpectEvent_Server(0, pAdd, NULL);
+
+    CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(pAdd->GetGSID());
+    SendExpectEvent_Server(0, pUpdateGroup, NULL);
+
+    CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+      ICQ_SNACxLIST_ROSTxEDITxEND);
+    SendEvent_Server(pEnd);
+  }
+
   CSrvPacketTcp *p = new CPU_GenericUinList(_nUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
   gLog.Info("%sAlerting server to new user (#%ld)...\n", L_SRVxSTR,
             p->Sequence());
@@ -35,32 +58,53 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
   icqUserBasicInfo(_nUin);
 }
 
+//-----icqAddGroup--------------------------------------------------------------
+void CICQDaemon::icqAddGroup(const char *_szName)
+{
+  if (!UseServerContactList())  return;
+
+  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+    ICQ_SNACxLIST_ROSTxEDITxSTART);
+  SendEvent_Server(pStart);
+
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szName, ICQ_ROSTxGROUP);
+  int nGSID = pAdd->GetGSID();
+  gLog.Info("%sAdding group %s (%d) to server list ...\n", L_SRVxSTR, _szName, nGSID);
+  SendExpectEvent_Server(0, pAdd, NULL);
+
+  CSrvPacketTcp *pUpdate = new CPU_UpdateGroupToServerList(nGSID);
+  SendExpectEvent_Server(0, pUpdate, NULL);
+
+  CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+    ICQ_SNACxLIST_ROSTxEDITxEND);
+  SendEvent_Server(pEnd);
+}
+
 //-----icqRemoveUser-------------------------------------------------------
 void CICQDaemon::icqRemoveUser(unsigned long _nUin)
 {
-  // Server side contact list
-  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-  	ICQ_SNACxLIST_ROSTxEDITxSTART);
-  SendExpectEvent_Server(0, pStart, NULL);
-
-  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_nUin);
-  SendExpectEvent_Server(0, pRemove, NULL);
-
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-  unsigned short nGSID = 0;
-  if (u)
+  // Remove from the SSList and update groups
+  if (UseServerContactList())
   {
-    nGSID = u->GetGSID();
+    CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+      ICQ_SNACxLIST_ROSTxEDITxSTART);
+    SendEvent_Server(pStart);
+
+    CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_nUin);
+    SendExpectEvent_Server(0, pRemove, NULL);
+
+    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+    unsigned short nGSID = u->GetGSID();
     u->SetGSID(0);
+    gUserManager.DropUser(u);
+
+    CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(nGSID);
+    SendExpectEvent_Server(0, pUpdateGroup, NULL);
+
+    CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+      ICQ_SNACxLIST_ROSTxEDITxEND);
+    SendEvent_Server(pEnd);
   }
-  gUserManager.DropUser(u);
-
-  CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(nGSID);
-  SendExpectEvent_Server(0, pUpdateGroup, NULL);
-
-  CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-  	ICQ_SNACxLIST_ROSTxEDITxEND);
-  SendExpectEvent_Server(0, pEnd, NULL);
 
   // Tell server they are no longer with us.
   CSrvPacketTcp *p = new CPU_GenericUinList(_nUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST);
@@ -1037,9 +1081,8 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       p = new CPU_GenericFamily(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REQUESTxRIGHTS);
       SendEvent_Server(p);
 
-      // Jon XXX Use the server side list if wanted
-      // This request does contain parameters
-      gLog.Info("%sRequesting Server Contact List rights.\n", L_SRVxSTR);
+      // Jon XXX This request does contain parameters
+      gLog.Info("%sRequesting server contact list rights.\n", L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS);
       SendEvent_Server(p);
       
@@ -1725,10 +1768,13 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_RIGHTSxGRANTED:
     {
       gLog.Info("%sServer granted Server Contact List.\n", L_SRVxSTR);
-      gLog.Info("%sRequesting Server Contact List.\n", L_SRVxSTR);
+      if (UseServerContactList())
+      {
+        gLog.Info("%sRequesting Server Contact List.\n", L_SRVxSTR);
 
-      CSrvPacketTcp *p = new CPU_RequestList();
-      SendEvent_Server(p);
+        CSrvPacketTcp *p = new CPU_RequestList();
+        SendEvent_Server(p);
+      }
       break;
     }
 
@@ -1809,6 +1855,36 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
         packet.cleanupTLV();
       } // for count
+
+      // Update local info about contact list
+      nTime = packet.UnpackUnsignedLongBE();
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      bool bFirstTime = o->GetSSTime() ? false: true;
+      o->SetSSTime(nTime);
+      o->SetSSCount(nCount);
+      gUserManager.DropOwner();
+
+      // Is this our first time?  Let's update server with local info!
+      if (bFirstTime)
+      {
+        GroupList *g = gUserManager.LockGroupList(LOCK_R);
+        GroupIDList *gID = gUserManager.LockGroupIDList(LOCK_R);
+        int i;
+
+        for (i = 0; i < gID->size(); i++)
+        {
+          if ((*gID)[i] == 0)
+          {
+            // JON XXX Fix this!
+            //icqAddGroup((*g)[i]);
+          }
+        }
+
+        gUserManager.UnlockGroupList();
+        gUserManager.UnlockGroupIDList();
+
+      }
+
       break;
     } // case rost reply
   } // switch subtype

@@ -1283,7 +1283,6 @@ void CUserView::maybeTip(const QPoint& c)
 #else
         s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(codec->toUnicode(u->AutoResponse()));
 #endif
-
       gUserManager.DropUser(u);
     }
 

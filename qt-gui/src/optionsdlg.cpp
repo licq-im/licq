@@ -181,6 +181,7 @@ void OptionsDlg::SetupOptions()
   setupFontName(edtEditFont, *MLEditWrap::editFont);
   ((QWidget*)edtEditFont)->setFont(*MLEditWrap::editFont, true);
 
+  chkSSList->setChecked(mainwin->licqDaemon->UseServerContactList());
   chkGridLines->setChecked(mainwin->m_bGridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
   chkShowExtIcons->setChecked(mainwin->m_bShowExtendedIcons);
@@ -497,6 +498,7 @@ void OptionsDlg::ApplyOptions()
     mainwin->m_nDockMode = DockNone;
   }
 
+  mainwin->licqDaemon->SetUseServerContactList(chkSSList->isChecked());
   mainwin->licqDaemon->SetICQServer(edtICQServer->text().local8Bit());
   mainwin->licqDaemon->SetICQServerPort(spnICQServerPort->value());
   mainwin->licqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
@@ -1163,6 +1165,8 @@ QWidget* OptionsDlg::new_column_options()
 
   boxUserWin = new QGroupBox(2, Horizontal, tr("Options"), w);
 
+  chkSSList = new QCheckBox(tr("Use server side contact list"), boxUserWin);
+  QWhatsThis::add(chkSSList, tr("Store your contacts on the server so they are accessible from different locations and/or programs"));
   chkGridLines = new QCheckBox(tr("Show Grid Lines"), boxUserWin);
   QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
   chkHeader = new QCheckBox(tr("Show Column Headers"), boxUserWin);

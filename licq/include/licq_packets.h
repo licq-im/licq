@@ -277,7 +277,14 @@ protected:
 class CPU_AddToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_AddToServerList(unsigned long _nUin);
+  CPU_AddToServerList(const char *_szName, unsigned short _nType);
+  
+  unsigned short GetSID()   { return m_nSID; }
+  unsigned short GetGSID()  { return m_nGSID; }
+  
+protected:
+  unsigned short m_nSID,
+                 m_nGSID;
 };
 
 //-----RemoveFromServerList-----------------------------------------------------

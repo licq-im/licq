@@ -549,8 +549,8 @@ public:
   unsigned long AddStatusFlags(unsigned long nStatus);
 
   // Server Side List functions
-  time_t GetSSCheck()                 { return m_nSSTime; }
-  void SetSSCheck(time_t t)           { m_nSSTime = t; }
+  time_t GetSSTime()                  { return m_nSSTime; }
+  void SetSSTime(time_t t)            { m_nSSTime = t; }
   unsigned short GetSSCount()         { return m_nSSCount; }
   void SetSSCount(unsigned short n)   { m_nSSCount = n; }
 
@@ -646,7 +646,8 @@ protected:
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
   unsigned short m_nDefaultGroup, //m_nNewUserGroup,
-                 m_nUserListLockType, m_nGroupListLockType, m_nGroupIDListLockType;
+                 m_nUserListLockType, m_nGroupListLockType,
+                 m_nGroupIDListLockType;
   bool m_bAllowSave;
 
   friend class CICQDaemon;

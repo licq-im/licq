@@ -267,28 +267,25 @@ void CUserManager::RemoveUser(unsigned long _nUin)
  *-------------------------------------------------------------------------*/
 bool CUserManager::AddGroup(char *_szName, unsigned short nID)
 {
-  bool bRet = false;
+  bool bNewGroup = true;
 
   if(_szName)
   {
     // Check to make sure it isn't a group name already
-    int j = 0;
     LockGroupList(LOCK_W);
-    for (GroupList::iterator i = m_vszGroups.begin(); i != m_vszGroups.end();
-      ++i)
+
+    GroupList::iterator iter;
+    for (iter = m_vszGroups.begin(); iter != m_vszGroups.end(); iter++)
     {
-      if (strlen(_szName) == strlen(*i))
+      if (strcasecmp(*iter, _szName) == 0)
       {
-        for (; j < strlen(_szName); j++)
-        {
-          if (toupper(_szName[j]) != toupper((*i)[j]))
-            break;
-        }
+        bNewGroup = false;
+        break;
       }
     }
 
     // Don't allow a duplicate name
-    if (j == strlen(_szName))
+    if (!bNewGroup)
     {
       gLog.Warn("%sGroup %s already on list.\n", L_WARNxSTR, _szName);
     }
@@ -298,13 +295,12 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
 
       m_vszGroups.push_back(strdup(_szName));
       SaveGroups();
-      bRet = true;
     }
 
     UnlockGroupList();
   }
   
-  return bRet;
+  return bNewGroup;
 }
 
 
@@ -479,8 +475,10 @@ unsigned short CUserManager::GetGroupFromID(unsigned short nID)
 void CUserManager::ModifyGroupID(char *szGroup, unsigned short nNewID)
 {
   unsigned short nGroup = 0;
+
   LockGroupList(LOCK_R);
   LockGroupIDList(LOCK_W);
+
   for (GroupList::iterator i = m_vszGroups.begin(); i != m_vszGroups.end();
       ++i)
   {
@@ -492,6 +490,7 @@ void CUserManager::ModifyGroupID(char *szGroup, unsigned short nNewID)
     else
       nGroup++;
   }
+
   UnlockGroupIDList();
 
   SaveGroups();
@@ -759,7 +758,6 @@ void CUserManager::UnlockGroupIDList()
     break;
   }
 }
-
 
 /*---------------------------------------------------------------------------
  * CUserManager::AddUserToGroup
@@ -2366,6 +2364,8 @@ ICQOwner::~ICQOwner()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteStr("AutoResponse", AutoResponse());
+  m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
+  m_fConf.WriteNum("SSCount", m_nSSCount);
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

@@ -182,6 +182,7 @@ public:
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
+  void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
   void icqUpdateContactList();
 
@@ -267,6 +268,10 @@ public:
   CICQSignal *PopPluginSignal();
   ICQEvent *PopPluginEvent();
 
+  // Server Side List functions
+  bool UseServerContactList()         { return m_bUseSS; }
+  void SetUseServerContactList(bool b)  { m_bUseSS = b; }
+
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
   DaemonStatsList &AllStats() { return m_sStats; }
@@ -318,6 +323,9 @@ protected:
   char *m_szProxyPasswd;
   ProxyServer *m_xProxy;
   
+  // SS List
+  bool m_bUseSS;
+
   // Statistics
   void FlushStats();
   DaemonStatsList m_sStats;

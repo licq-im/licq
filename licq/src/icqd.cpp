@@ -184,6 +184,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_szProxyPasswd = new char[strlen(t_str) + 1];
   strcpy(m_szProxyPasswd, t_str);
 
+  licqConf.ReadBool("UseSS", m_bUseSS, true);
+
   // -----OnEvent configuration-----
   char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
   unsigned short nOnEventCmdType;
@@ -568,6 +570,9 @@ void CICQDaemon::SaveConf()
   licqConf.WriteBool("ProxyAuthEnabled", m_bProxyAuthEnabled);
   licqConf.WriteStr("ProxyLogin", m_szProxyLogin);
   licqConf.WriteStr("ProxyPassword", m_szProxyPasswd);
+
+  // SS List
+  licqConf.WriteBool("UseSS", m_bUseSS);
 
   // save the sound stuff
   licqConf.SetSection("onevent");
