@@ -61,7 +61,10 @@ const char *CUserEvent::Text()
 const char *CUserEvent::LicqVersionToString(unsigned long v)
 {
   static char s_szVersion[8];
-  sprintf(s_szVersion, "v%ld.%ld.%ld", v / 1000, (v / 10) % 100, v % 10);
+  if(v % 10)
+    sprintf(s_szVersion, "v%ld.%ld.%ld", v / 1000, (v / 10) % 100, v % 10);
+  else
+    sprintf(s_szVersion, "v%ld.%ld", v / 1000, (v / 10) % 100);
   return (s_szVersion);
 }
 
