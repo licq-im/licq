@@ -880,6 +880,13 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
     }
 
+    if (packet.getTLVLen(0x000a) == 4) {
+      unsigned long userIP = packet.UnpackUnsignedLongTLV(0x000a);
+      rev_e_long(userIP);
+      userIP = PacketIpToNetworkIp(userIP);
+      u->SetIpPort(userIP, u->Port());
+    }
+
     if (packet.getTLVLen(0x000c) == 0x25) {
       CBuffer msg = packet.UnpackTLV(0x000c);
 
@@ -909,10 +916,10 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Info("%s%s (%ld) changed connection info: v%01x.\n",
                     L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F);
 
+
       }
-      unsigned long userIP = PacketIpToNetworkIp(userIP);
       realIP = PacketIpToNetworkIp(realIP);
-      u->SetIpPort(userIP, userPort);
+      u->SetIpPort(u->Ip(), userPort);
       u->SetRealIp(realIP);
       u->SetVersion(tcpVersion);
       u->SetClientTimestamp(timestamp);
