@@ -509,8 +509,6 @@ void convo_recv(gulong uin)
 	
 	switch (u_event->SubCommand()) {
 	  case ICQ_CMDxSUB_MSG:
-			cerr << "encoding: " << c->user->UserEncoding() << endl
-					<< "text: " << u_event->Text() << endl;
 			txt = convert_to_utf8(u_event->Text(), c->user->UserEncoding());
 			if (!bIgnoreBW)	{
 				GtkTextTag *tag = gtk_text_buffer_create_tag(tb, NULL, 
