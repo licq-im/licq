@@ -41,7 +41,7 @@ obj/%.o: %.cpp
 
 
 .PHONY: all clean distclean install
-all: licq-daemon.a licq
+all: licq
 
 dep:
 	g++ $(CPPFLAGS) -MM *.cpp > Makefile.dep
@@ -51,7 +51,7 @@ Makefile.dep:
 	make dep
 
 clean:
-	$(RM) licq core *.o *.core Makefile.dep
+	$(RM) licq core *.o *.core obj/*.o Makefile.dep
 	( cd daemon && $(MAKE) clean )
 
 distclean: clean
@@ -63,11 +63,11 @@ install: all
 	$(INSTALL_PROGRAM) $(srcdir)/licq $(bindir)
 	$(STRIP) $(bindir)/licq
 
-licq-daemon.a:
+licq-daemon:
 	( cd daemon && $(MAKE) licq-daemon.a )
 
-licq: $(OBJECTS) $(srcdir)/daemon/licq-daemon.a
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+licq: licq-daemon $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(srcdir)/daemon/licq-daemon.a $(LDFLAGS) $(LDLIBS)
 	$(SIZE) $@
 
 # Automatically generated depends - made with
