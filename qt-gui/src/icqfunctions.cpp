@@ -87,6 +87,12 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_xCurrentReadEvent = NULL;
 
+  for (unsigned short i = 0; i < 8; i++)
+  {
+    tabList[i].loaded = false;
+    tabList[i].tab = NULL;
+  }
+
   CreateReadEventTab();
   CreateSendEventTab();
   CreateGeneralInfoTab();
@@ -108,13 +114,13 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   tabs = new QTabWidget(this);
   lay->addWidget(tabs);
 
-  tabs->addTab(fcnTab[TAB_READ], tabLabel[TAB_READ]);
-  tabs->addTab(fcnTab[TAB_SEND], tabLabel[TAB_SEND]);
-  tabs->addTab(fcnTab[TAB_GENERALINFO], tabLabel[TAB_GENERALINFO]);
-  tabs->addTab(fcnTab[TAB_MOREINFO], tabLabel[TAB_MOREINFO]);
-  tabs->addTab(fcnTab[TAB_WORKINFO], tabLabel[TAB_WORKINFO]);
-  tabs->addTab(fcnTab[TAB_ABOUT], tabLabel[TAB_ABOUT]);
-  tabs->addTab(fcnTab[TAB_HISTORY], tabLabel[TAB_HISTORY]);
+  tabs->addTab(tabList[TAB_READ].tab, tabList[TAB_READ].label);
+  tabs->addTab(tabList[TAB_SEND].tab, tabList[TAB_SEND].label);
+  tabs->addTab(tabList[TAB_GENERALINFO].tab, tabList[TAB_GENERALINFO].label);
+  tabs->addTab(tabList[TAB_MOREINFO].tab, tabList[TAB_MOREINFO].label);
+  tabs->addTab(tabList[TAB_WORKINFO].tab, tabList[TAB_WORKINFO].label);
+  tabs->addTab(tabList[TAB_ABOUT].tab, tabList[TAB_ABOUT].label);
+  tabs->addTab(tabList[TAB_HISTORY].tab, tabList[TAB_HISTORY].label);
 
   QBoxLayout* l = new QHBoxLayout(lay, 8);
 
@@ -153,6 +159,12 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
   connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
 
+  QWidgetStack *stack = (QWidgetStack *)tabs->child("tab pages");
+  if (stack == NULL)
+    WarnUser(this, "Unable to find widget stack");
+  else
+    connect(stack, SIGNAL(aboutToShow(QWidget *)), this, SLOT(slot_aboutToShow(QWidget *)));
+
 
 #ifdef TEST_POS
   printf("constructor: %d %d\n", x(), y());
@@ -162,12 +174,13 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
 void ICQFunctions::CreateReadEventTab()
 {
-  tabLabel[TAB_READ] = tr("&View");
-  QVBox *p = new QVBox(this, tabLabel[TAB_READ]);
+  tabList[TAB_READ].label = tr("&View");
+  QVBox *p = new QVBox(this, tabList[TAB_READ].label);
   p->setMargin(8);
-  fcnTab[TAB_READ] = p;
+  tabList[TAB_READ].tab = p;
+  tabList[TAB_READ].loaded = true;
 
-  splRead = new QSplitter(QSplitter::Vertical, fcnTab[TAB_READ]);
+  splRead = new QSplitter(QSplitter::Vertical, p);
   msgView = new MsgView(splRead);
   mleRead = new MLEditWrap(true, splRead);
   mleRead->setReadOnly(true);
@@ -175,11 +188,10 @@ void ICQFunctions::CreateReadEventTab()
   splRead->setResizeMode(msgView, QSplitter::KeepSize);
   connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
 
-  //p->addSpacing(5);
-  QWidget *dummy = new QWidget(fcnTab[TAB_READ]);
+  QWidget *dummy = new QWidget(p);
   dummy->setMinimumHeight(5);
 
-  QHBox *h = new QHBox(fcnTab[TAB_READ]);
+  QHBox *h = new QHBox(p);
   h->setSpacing(10);
   btnRead1 = new QPushButton(h);
   btnRead2 = new QPushButton(h);
@@ -200,11 +212,12 @@ void ICQFunctions::CreateReadEventTab()
 
 void ICQFunctions::CreateSendEventTab()
 {
-  tabLabel[TAB_SEND] = tr("S&end");
-  fcnTab[TAB_SEND] = new QWidget(this, tabLabel[TAB_SEND]);
-  QBoxLayout* selay = new QVBoxLayout(fcnTab[TAB_SEND], 8);
+  tabList[TAB_SEND].label = tr("S&end");
+  tabList[TAB_SEND].tab = new QWidget(this, tabList[TAB_SEND].label);
+  QBoxLayout* selay = new QVBoxLayout(tabList[TAB_SEND].tab, 8);
+  tabList[TAB_SEND].loaded = true;
 
-  grpCmd = new QButtonGroup(1, Vertical, tr("Select Function"), fcnTab[TAB_SEND]);
+  grpCmd = new QButtonGroup(1, Vertical, tr("Select Function"), tabList[TAB_SEND].tab);
   rdbMsg = new QRadioButton(tr("Message"), grpCmd);
   rdbUrl = new QRadioButton(tr("URL"), grpCmd);
   rdbChat = new QRadioButton(tr("Chat Request"), grpCmd);
@@ -216,12 +229,12 @@ void ICQFunctions::CreateSendEventTab()
 #endif
   selay->addWidget(grpCmd);
 
-  mleSend = new MLEditWrap(true, fcnTab[TAB_SEND]);
+  mleSend = new MLEditWrap(true, tabList[TAB_SEND].tab);
   mleSend->setMinimumHeight(150);
   selay->addWidget(mleSend);
   selay->setStretchFactor(mleSend, 1);
 
-  grpOpt = new QGroupBox(2, Horizontal, fcnTab[TAB_SEND]);
+  grpOpt = new QGroupBox(2, Horizontal, tabList[TAB_SEND].tab);
   selay->addWidget(grpOpt);
   lblItem = new QLabel(grpOpt);
   edtItem = new QLineEdit(grpOpt);
@@ -233,16 +246,16 @@ void ICQFunctions::CreateSendEventTab()
 
   QBoxLayout* hlay = new QHBoxLayout(selay);
 
-  chkSendServer = new QCheckBox(tr("Send through server"), fcnTab[TAB_SEND]);
+  chkSendServer = new QCheckBox(tr("Send through server"), tabList[TAB_SEND].tab);
   hlay->addWidget(chkSendServer);
-  chkUrgent = new QCheckBox(tr("Urgent"), fcnTab[TAB_SEND]);
+  chkUrgent = new QCheckBox(tr("Urgent"), tabList[TAB_SEND].tab);
   hlay->addWidget(chkUrgent);
 
 #ifdef USE_SPOOFING
   hlay = new QHBoxLayout(selay);
-  chkSpoof = new QCheckBox(tr("Spoof UIN:"), fcnTab[TAB_SEND]);
+  chkSpoof = new QCheckBox(tr("Spoof UIN:"), tabList[TAB_SEND].tab);
   hlay->addWidget(chkSpoof);
-  edtSpoof = new QLineEdit(fcnTab[TAB_SEND]);
+  edtSpoof = new QLineEdit(tabList[TAB_SEND].tab);
   hlay->addWidget(edtSpoof);
   edtSpoof->setEnabled(false);
   edtSpoof->setValidator(new QIntValidator(1, 100000000, edtSpoof));
@@ -257,11 +270,18 @@ void ICQFunctions::CreateSendEventTab()
 
 void ICQFunctions::CreateGeneralInfoTab()
 {
-  unsigned short CR = 0;
+  tabList[TAB_GENERALINFO].label = tr("General");
+  tabList[TAB_GENERALINFO].tab = new QWidget(this, tabList[TAB_GENERALINFO].label);
+  tabList[TAB_GENERALINFO].loaded = false;
+}
 
-  tabLabel[TAB_GENERALINFO] = tr("General");
-  fcnTab[TAB_GENERALINFO] = new QWidget(this, tabLabel[TAB_GENERALINFO]);
-  QWidget *p = fcnTab[TAB_GENERALINFO];
+
+void ICQFunctions::InitGeneralInfoTab()
+{
+  tabList[TAB_GENERALINFO].loaded = true;
+
+  unsigned short CR = 0;
+  QWidget *p = tabList[TAB_GENERALINFO].tab;
 
   QGridLayout *lay = new QGridLayout(p, 10, 5, 10, 5);
   lay->addColSpacing(2, 10);
@@ -313,7 +333,7 @@ void ICQFunctions::CreateGeneralInfoTab()
   lay->addWidget(new QLabel(tr("Country:"), p), ++CR, 0);
   if (m_bOwner)
   {
-    cmbCountry = new CEComboBox(true, fcnTab[TAB_GENERALINFO]);
+    cmbCountry = new CEComboBox(true, tabList[TAB_GENERALINFO].tab);
     cmbCountry->insertItem(tr("Unspecified"));
     cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
     for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
@@ -341,11 +361,18 @@ void ICQFunctions::CreateGeneralInfoTab()
 
 void ICQFunctions::CreateMoreInfoTab()
 {
-  unsigned short CR = 0;
-  tabLabel[TAB_MOREINFO] = tr("More");
-  fcnTab[TAB_MOREINFO] = new QWidget(this, tabLabel[TAB_MOREINFO]);
-  QWidget *p = fcnTab[TAB_MOREINFO];
+  tabList[TAB_MOREINFO].label = tr("More");
+  tabList[TAB_MOREINFO].tab = new QWidget(this, tabList[TAB_MOREINFO].label);
+  tabList[TAB_MOREINFO].loaded = false;
+}
 
+
+void ICQFunctions::InitMoreInfoTab()
+{
+  tabList[TAB_MOREINFO].loaded = true;
+
+  unsigned short CR = 0;
+  QWidget *p = tabList[TAB_MOREINFO].tab;
   QGridLayout *lay = new QGridLayout(p, 6, 5, 10, 5);
   lay->addColSpacing(2, 10);
   lay->setRowStretch(5, 1);
@@ -431,10 +458,18 @@ void ICQFunctions::CreateMoreInfoTab()
 
 void ICQFunctions::CreateWorkInfoTab()
 {
+  tabList[TAB_WORKINFO].label = tr("Work");
+  tabList[TAB_WORKINFO].tab = new QWidget(this, tabList[TAB_WORKINFO].label);
+  tabList[TAB_WORKINFO].loaded = false;
+}
+
+
+void ICQFunctions::InitWorkInfoTab()
+{
+  tabList[TAB_WORKINFO].loaded = true;
+
   unsigned short CR = 0;
-  tabLabel[TAB_WORKINFO] = tr("Work");
-  fcnTab[TAB_WORKINFO] = new QWidget(this, tabLabel[TAB_WORKINFO]);
-  QWidget *p = fcnTab[TAB_WORKINFO];
+  QWidget *p = tabList[TAB_WORKINFO].tab;
 
   QGridLayout *lay = new QGridLayout(p, 8, 5, 10, 5);
   lay->addColSpacing(2, 10);
@@ -478,11 +513,20 @@ void ICQFunctions::CreateWorkInfoTab()
 
 void ICQFunctions::CreateAboutTab()
 {
-  tabLabel[TAB_ABOUT] = tr("About");
-  QVBox* p = new QVBox(this, tabLabel[TAB_ABOUT]);
+  tabList[TAB_ABOUT].label = tr("About");
+  tabList[TAB_ABOUT].tab = new QVBox(this, tabList[TAB_ABOUT].label);
+  tabList[TAB_ABOUT].loaded = false;
+}
+
+
+void ICQFunctions::InitAboutTab()
+{
+  tabList[TAB_ABOUT].loaded = true;
+
+  QVBox *p = (QVBox *)tabList[TAB_ABOUT].tab;
+
   p->setMargin(8);
   p->setSpacing(8);
-  fcnTab[TAB_ABOUT] = p;
 
   lblAbout = new QLabel(tr("About:"), p);
   mleAbout = new MLEditWrap(true, p);
@@ -491,11 +535,16 @@ void ICQFunctions::CreateAboutTab()
 
 void ICQFunctions::CreateHistoryTab()
 {
-  unsigned short CR = 0;
+  tabList[TAB_HISTORY].label = tr("History");
+  tabList[TAB_HISTORY].tab = new QWidget(this, tabList[TAB_HISTORY].label);
+  tabList[TAB_HISTORY].loaded = false;
+}
 
-  tabLabel[TAB_HISTORY] = tr("History");
-  fcnTab[TAB_HISTORY] = new QWidget(this, tabLabel[TAB_HISTORY]);
-  QWidget *p = fcnTab[TAB_HISTORY];
+void ICQFunctions::InitHistoryTab()
+{
+  unsigned short CR = 0;
+  tabList[TAB_HISTORY].loaded = true;
+  QWidget *p = tabList[TAB_HISTORY].tab;
 
   QGridLayout *lay = new QGridLayout(p, 3, 3, 8, 0);
 
@@ -520,9 +569,9 @@ void ICQFunctions::keyPressEvent(QKeyEvent *e)
     close();
     return;
   }
-  else if (tabs->currentPage() == fcnTab[TAB_READ] && !e->text().isEmpty())
+  else if (tabs->currentPage() == tabList[TAB_READ].tab && !e->text().isEmpty())
   {
-    tabs->showPage(fcnTab[TAB_SEND]);
+    tabs->showPage(tabList[TAB_SEND].tab);
     return;
   }
   QWidget::keyPressEvent(e);
@@ -561,13 +610,13 @@ void ICQFunctions::setupTabs(int index)
   }
   rdbMsg->setChecked(true);
   specialFcn(0);
-  tabs->setTabEnabled(fcnTab[TAB_SEND], !m_bOwner);
+  tabs->setTabEnabled(tabList[TAB_SEND].tab, !m_bOwner);
 
   // Info tabs
-  SetGeneralInfo(u);
+  /*SetGeneralInfo(u);
   SetMoreInfo(u);
   SetWorkInfo(u);
-  SetAbout(u);
+  SetAbout(u);*/
 
   bool bNewUser = u->NewUser();
   gUserManager.DropUser(u);
@@ -590,42 +639,42 @@ void ICQFunctions::setupTabs(int index)
 
   switch(index) {
   case mnuUserView:
-    tabs->showPage(fcnTab[TAB_READ]);
+    tabs->showPage(tabList[TAB_READ].tab);
     break;
   case mnuUserSendMsg:
-    tabs->showPage(fcnTab[TAB_SEND]);
+    tabs->showPage(tabList[TAB_SEND].tab);
     rdbMsg->setChecked(true);
     specialFcn(0);
     break;
   case mnuUserSendUrl:
-    tabs->showPage(fcnTab[TAB_SEND]);
+    tabs->showPage(tabList[TAB_SEND].tab);
     rdbUrl->setChecked(true);
     specialFcn(1);
     break;
   case mnuUserSendChat:
-    tabs->showPage(fcnTab[TAB_SEND]);
+    tabs->showPage(tabList[TAB_SEND].tab);
     rdbChat->setChecked(true);
     specialFcn(2);
     break;
   case mnuUserSendFile:
-    tabs->showPage(fcnTab[TAB_SEND]);
+    tabs->showPage(tabList[TAB_SEND].tab);
     rdbFile->setChecked(true);
     specialFcn(3);
     break;
   case mnuUserGeneral:
-    tabs->showPage(fcnTab[TAB_GENERALINFO]);
+    tabs->showPage(tabList[TAB_GENERALINFO].tab);
     break;
   case mnuUserMore:
-    tabs->showPage(fcnTab[TAB_MOREINFO]);
+    tabs->showPage(tabList[TAB_MOREINFO].tab);
     break;
   case mnuUserWork:
-    tabs->showPage(fcnTab[TAB_WORKINFO]);
+    tabs->showPage(tabList[TAB_WORKINFO].tab);
     break;
   case mnuUserAbout:
-    tabs->showPage(fcnTab[TAB_ABOUT]);
+    tabs->showPage(tabList[TAB_ABOUT].tab);
     break;
   case mnuUserHistory:
-    tabs->showPage(fcnTab[TAB_HISTORY]);
+    tabs->showPage(tabList[TAB_HISTORY].tab);
     break;
   default:
     gLog.Warn("%sInternal Error: ICQFunctions::setupTabs(): Invalid index (%d).\n",
@@ -857,7 +906,7 @@ void ICQFunctions::SetAbout(ICQUser *u)
 //-----ICQFunctions::SendUrl---------------------------------------------------
 void ICQFunctions::SendUrl(const char *url, const char *desc)
 {
-  tabs->showPage(fcnTab[1]);
+  tabs->showPage(tabList[TAB_SEND].tab);
   rdbUrl->setChecked(true);
   specialFcn(1);
   edtItem->setText(url);
@@ -867,61 +916,106 @@ void ICQFunctions::SendUrl(const char *url, const char *desc)
 //-----ICQFunctions::SendFile--------------------------------------------------
 void ICQFunctions::SendFile(const char *file, const char *desc)
 {
-  tabs->showPage(fcnTab[1]);
+  tabs->showPage(tabList[TAB_SEND].tab);
   rdbFile->setChecked(true);
   specialFcn(3);
   edtItem->setText(file);
   mleSend->setText(desc);
 }
 
+
+void ICQFunctions::slot_aboutToShow(QWidget *p)
+{
+  if (p == tabList[TAB_GENERALINFO].tab)
+  {
+     if (!tabList[TAB_GENERALINFO].loaded)
+     {
+       InitGeneralInfoTab();
+       SetGeneralInfo(NULL);
+     }
+  }
+  else if (p == tabList[TAB_MOREINFO].tab)
+  {
+     if (!tabList[TAB_MOREINFO].loaded)
+     {
+       InitMoreInfoTab();
+       SetMoreInfo(NULL);
+     }
+  }
+  else if (p == tabList[TAB_WORKINFO].tab)
+  {
+     if (!tabList[TAB_WORKINFO].loaded)
+     {
+       InitWorkInfoTab();
+       SetWorkInfo(NULL);
+     }
+  }
+  else if (p == tabList[TAB_ABOUT].tab)
+  {
+     if (!tabList[TAB_ABOUT].loaded)
+     {
+       InitAboutTab();
+       SetAbout(NULL);
+     }
+  }
+  else if (p == tabList[TAB_HISTORY].tab)
+  {
+     if (!tabList[TAB_HISTORY].loaded)
+     {
+       InitHistoryTab();
+       SetupHistory();
+     }
+  }
+}
+
+
 //-----ICQFunctions::tabSelected-----------------------------------------------
 void ICQFunctions::tabSelected(const QString &tab)
 {
-  if (tab == tabLabel[TAB_SEND])
+  if (tab == tabList[TAB_SEND].label)
   {
      mleSend->setFocus();
      btnOk->setText(tr("&Send"));
      btnSave->hide();
      currentTab = TAB_SEND;
   }
-  else if (tab == tabLabel[TAB_GENERALINFO])
+  else if (tab == tabList[TAB_GENERALINFO].label)
   {
      btnOk->setText(tr("Update"));
      btnSave->setText(tr("Save"));
      btnSave->show();
      currentTab = TAB_GENERALINFO;
   }
-  else if (tab == tabLabel[TAB_READ])
+  else if (tab == tabList[TAB_READ].label)
   {
      btnOk->setText(tr("Ok"));
      btnSave->hide();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
   }
-  else if (tab == tabLabel[TAB_MOREINFO])
+  else if (tab == tabList[TAB_MOREINFO].label)
   {
      btnOk->setText(tr("Update"));
      btnSave->setText(tr("Save"));
      btnSave->show();
      currentTab = TAB_MOREINFO;
   }
-  else if (tab == tabLabel[TAB_WORKINFO])
+  else if (tab == tabList[TAB_WORKINFO].label)
   {
      btnOk->setText(tr("Update"));
      btnSave->setText(tr("Save"));
      btnSave->show();
      currentTab = TAB_WORKINFO;
   }
-  else if (tab == tabLabel[TAB_ABOUT])
+  else if (tab == tabList[TAB_ABOUT].label)
   {
      btnOk->setText(tr("Update"));
      btnSave->setText(tr("Save"));
      btnSave->show();
      currentTab = TAB_ABOUT;
   }
-  else if (tab == tabLabel[TAB_HISTORY])
+  else if (tab == tabList[TAB_HISTORY].label)
   {
-     if (m_lHistoryList.size() == 0) SetupHistory();  // if no history, then get it
      btnOk->setText(tr("Next"));
      btnSave->setText(tr("Prev"));
      btnSave->show();
@@ -982,16 +1076,16 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
   case USER_GENERAL:
   case USER_BASIC:
   case USER_EXT:
-    SetGeneralInfo(u);
+    if (tabList[TAB_GENERALINFO].loaded) SetGeneralInfo(u);
     break;
   case USER_MORE:
-    SetMoreInfo(u);
+    if (tabList[TAB_MOREINFO].loaded) SetMoreInfo(u);
     break;
   case USER_WORK:
-    SetWorkInfo(u);
+    if (tabList[TAB_WORKINFO].loaded) SetWorkInfo(u);
     break;
   case USER_ABOUT:
-    SetAbout(u);
+    if (tabList[TAB_ABOUT].loaded) SetAbout(u);
     break;
   }
   gUserManager.DropUser(u);
@@ -1451,7 +1545,7 @@ void ICQFunctions::generateReply()
     mleSend->insertLine( QString("> ") + mleRead->textLine(i));
   mleSend->append("\n");
   mleSend->goToEnd();
-  tabs->showPage(fcnTab[1]);
+  tabs->showPage(tabList[TAB_SEND].tab);
 }
 
 //---------------------------------------------------------------------------

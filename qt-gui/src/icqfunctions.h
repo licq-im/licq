@@ -44,6 +44,13 @@ const int TAB_ABOUT = 5;
 const int TAB_HISTORY = 6;
 const int TAB_SECURITY = 7;
 
+struct STab
+{
+  QString label;
+  QWidget *tab;
+  bool loaded;
+};
+
 class ICQFunctions : public QWidget, public CUserFunctionDlg
 {
    Q_OBJECT
@@ -55,7 +62,7 @@ public:
   void setupTabs(int);
 
 protected:
-  QString tabLabel[8];
+  struct STab tabList[8];
   int currentTab;
   CICQDaemon *server;
   CSignalManager *sigman;
@@ -63,8 +70,7 @@ protected:
   CICQEventTag *icqEventTag;
   bool m_bOwner;
   QCheckBox *chkAutoClose;
-  QTabWidget* tabs;
-  QWidget *fcnTab[8];
+  QTabWidget *tabs;
   QPushButton *btnSave, *btnOk, *btnCancel;
 
   // Read Event tab
@@ -87,6 +93,7 @@ protected:
 
   // User Info tab
   void CreateGeneralInfoTab();
+  void InitGeneralInfoTab();
   CInfoField *nfoFirstName, *nfoLastName, *nfoEmail1, *nfoEmail2,
              *nfoAlias,*nfoStatus, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
@@ -98,6 +105,7 @@ protected:
 
   // More info
   void CreateMoreInfoTab();
+  void InitMoreInfoTab();
   CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage,
              *nfoGender;
   CEComboBox *cmbLanguage[3], *cmbGender;
@@ -105,17 +113,20 @@ protected:
 
   // Work info
   void CreateWorkInfoTab();
+  void InitWorkInfoTab();
   CInfoField *nfoCompanyName, *nfoCompanyCity, *nfoCompanyState,
              *nfoCompanyAddress, *nfoCompanyPhone, *nfoCompanyFax,
              *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
 
   // About
   void CreateAboutTab();
+  void InitAboutTab();
   QLabel *lblAbout;
   MLEditWrap *mleAbout;
 
   // History tab
   void CreateHistoryTab();
+  void InitHistoryTab();
   CInfoField *nfoHistory;
   QTextView *mleHistory;
   QLabel *lblHistory;
@@ -165,6 +176,7 @@ protected slots:
    void slot_readbtn2();
    void slot_readbtn3();
    void slot_readbtn4();
+   void slot_aboutToShow(QWidget *);
 
 signals:
    void signal_updatedUser(unsigned long, unsigned long);
