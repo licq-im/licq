@@ -8,12 +8,13 @@
 #include <stdio.h>
 #include <vector.h>
 #include "file.h"
+#include "pthread_rdwr.h"
 
 #define SAR_AWAY      0
 #define SAR_NA        1
 #define SAR_OCCUPIED  2
 #define SAR_DND       3
-#define SAR_FFF       4
+#define SAR_FFC       4
 
 #define SAR_NUM_SECTIONS 5
 
@@ -48,9 +49,11 @@ public:
   ~CSARManager(void);
   bool Load(void);
   void Save(void);
-  SARList &SavedAutoResponses(unsigned short n);
+  SARList &Fetch(unsigned short n);
+  void Drop(void);
 protected:
   CIniFile m_fConf;
+  pthread_mutex_t mutex;
   SARList m_lSAR[SAR_NUM_SECTIONS];
 };
 

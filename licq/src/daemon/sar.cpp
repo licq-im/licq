@@ -54,7 +54,7 @@ CSARManager::~CSARManager(void)
  *-------------------------------------------------------------------------*/
 bool CSARManager::Load(void)
 {
-  char filename[128], szTemp1[32], szTemp2[32], szTemp3[32];
+  char filename[128], szTemp1[32], szTemp2[128], szTemp3[512];
   unsigned short nTemp;
   char *n[] = SAR_SECTIONS;
 
@@ -79,11 +79,11 @@ bool CSARManager::Load(void)
   {
     m_fConf.SetSection(n[i]);
     m_fConf.ReadNum("NumSAR", nTemp, 0);
-    for (unsigned short i = 0; i < nTemp; i++)
+    for (unsigned short j = 0; j < nTemp; j++)
     {
-      sprintf(szTemp1, "SAR%d.Name", i + 1);
+      sprintf(szTemp1, "SAR%d.Name", j + 1);
       m_fConf.ReadStr(szTemp1, szTemp2, "");
-      sprintf(szTemp1, "SAR%d.Text", i + 1);
+      sprintf(szTemp1, "SAR%d.Text", j + 1);
       m_fConf.ReadStr(szTemp1, szTemp3, "");
       m_lSAR[i].push_back(new CSavedAutoResponse(szTemp2, szTemp3));
     }
@@ -119,10 +119,17 @@ void CSARManager::Save(void)
 /*---------------------------------------------------------------------------
  * SARManager::SavedAutoResponses
  *-------------------------------------------------------------------------*/
-SARList &CSARManager::SavedAutoResponses(unsigned short n)
+SARList &CSARManager::Fetch(unsigned short n)
 {
+  pthread_mutex_lock(&mutex);
   if (n >= SAR_NUM_SECTIONS) n = 0;
   return m_lSAR[n];
+}
+
+
+void CSARManager::Drop(void)
+{
+  pthread_mutex_unlock(&mutex);
 }
 
 
