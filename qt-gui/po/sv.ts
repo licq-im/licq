@@ -1750,7 +1750,7 @@ Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ladda fontsystem &lt;b&gt;%1&lt;/b&gt;. Innehållet i meddelandet kan verka skadat.</translation>
     </message>
     <message>
         <source>StrikeOut</source>
@@ -1762,7 +1762,7 @@ Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Set Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Ange fontsystem</translation>
     </message>
     <message>
         <source>
@@ -2832,11 +2832,11 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>Default Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Standard fontsystem:</translation>
     </message>
     <message>
         <source>Sets which default encoding should be used for newly added contacts.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anger vilket fontsystem som skall anges som standard för nya kontakter.</translation>
     </message>
     <message>
         <source>System default (%1)</source>
@@ -2844,11 +2844,11 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>Show all encodings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Visa alla fontsystem</translation>
     </message>
     <message>
         <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Visa alla tillgängliga fontsystem i menyn för val av fontsystem för användare. Normalt visar menyn de vanligaste fontsystemen.</translation>
     </message>
     <message>
         <source>Message Sent:</source>
@@ -3005,27 +3005,27 @@ förändringar här kräver en omstart av programmet innan de får effekt!</tran
     </message>
     <message>
         <source>Tabbed Chatting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Chatfönster med flikar.</translation>
     </message>
     <message>
         <source>Use tabs in Send Window</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Använd flikar i skicka fönstret</translation>
     </message>
     <message>
         <source>Additional &amp;sorting:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Utökad &amp;sortering</translation>
     </message>
     <message>
         <source>status</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">status</translation>
     </message>
     <message>
         <source>status + last event</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">status + senaste händelse</translation>
     </message>
     <message>
         <source>status + new messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">status + nya meddelanden</translation>
     </message>
     <message>
         <source>&lt;b&gt;none:&lt;/b&gt; - Don&apos;t sort online users by Status&lt;br&gt;
@@ -3838,15 +3838,15 @@ Gruppen utökadeikoner &apos;%2&apos; är ej tillgänglig.</translation>
     </message>
     <message>
         <source>Change user text encoding</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ändra fontsysteme för användare</translation>
     </message>
     <message>
         <source>This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Den här knappen väljer vilket fontsystem som ska användas när du kommunicerar med denna användare. Du kan behöva byta fontsystem för att kommunicera på ett annat språk.</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunde inte ladda fontsystem &lt;b&gt;%1&lt;/b&gt;. Meddelandet kan verka skadat.</translation>
     </message>
 </context>
 <context>
