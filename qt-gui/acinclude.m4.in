@@ -21,27 +21,28 @@ AC_DEFUN(AC_PATH_QT_LIB,
 
   AC_CACHE_VAL(ac_cv_lib_qtlib, [
 
-    dnl Did the user give --with-qt-libraries?
-    if test -z "$ac_qt_libraries"; then
-
       qt_libname=
       qt_libdir=
 
       dnl No they didnt, so lets look for them...
       dnl If you need to add extra directories to check, add them here.
-      qt_library_dirs="\
-        /usr/lib/qt3/lib \
-        /usr/lib/qt2/lib \
-        /usr/lib \
-        /usr/local/lib \
-        /usr/lib/qt \
-        /usr/lib/qt/lib \
-        /usr/local/lib/qt \
-        /usr/local/qt/lib \
-        /usr/X11/lib \
-        /usr/X11/lib/qt \
-        /usr/X11R6/lib \
-        /usr/X11R6/lib/qt"
+      if test -z "$ac_qt_libraries"; then
+        qt_library_dirs="\
+          /usr/lib/qt3/lib \
+          /usr/lib/qt2/lib \
+          /usr/lib \
+          /usr/local/lib \
+          /usr/lib/qt \
+          /usr/lib/qt/lib \
+          /usr/local/lib/qt \
+          /usr/local/qt/lib \
+          /usr/X11/lib \
+          /usr/X11/lib/qt \
+          /usr/X11R6/lib \
+          /usr/X11R6/lib/qt"
+      else
+        qt_library_dirs="$ac_qt_libraries"
+      fi
 
       if test -n "$QTDIR"; then
         qt_library_dirs="$QTDIR/lib $qt_library_dirs"
@@ -59,20 +60,15 @@ AC_DEFUN(AC_PATH_QT_LIB,
         else
           echo "tried $qt_dir/libqt-mt.so" >&AC_FD_CC 
         fi
-      done
 
-      if test -z "$ac_qt_libdir"; then 
-        for qt_dir in $qt_library_dirs; do
-          if test -r "$qt_dir/libqt.so"; then
-            ac_qt_libname=-lqt
-            ac_qt_libdir=$qt_dir
-            break
-          else
-            echo "tried $qt_dir/libqt.so" >&AC_FD_CC 
-          fi
-        done
-      fi
-    fi
+        if test -r "$qt_dir/libqt.so"; then
+          ac_qt_libname=-lqt
+          ac_qt_libdir=$qt_dir
+          break
+        else
+          echo "tried $qt_dir/libqt.so" >&AC_FD_CC 
+        fi
+      done
 
     ac_cv_lib_qtlib="ac_qt_libname=$ac_qt_libname ac_qt_libdir=$ac_qt_libdir"
   ])
