@@ -14,9 +14,9 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <list.h>
 #include <deque.h>
 #include <stdarg.h>
-#include <pthread.h>
 #include <stdio.h>
 
+#include "pthread_rdwr.h"
 #include "socket.h"
 #include "icqevent.h"
 #include "remoteserver.h"
@@ -33,11 +33,13 @@ class CPluginFunctions
 public:
   const char *Name(void)    { return (*fName)(); }
   const char *Version(void) { return (*fVersion)(); }
+  const char *Status(void) { return (*fStatus)(); }
   unsigned short Id(void)   { return *nId; }
 
 protected:
   const char *(*fName)(void);
   const char *(*fVersion)(void);
+  const char *(*fStatus)(void);
   void (*fUsage)(void);
   bool (*fInit)(int, char **);
   int (*fMain)(CICQDaemon *);
@@ -113,6 +115,9 @@ public:
   void icqRequestSystemMsg(void);
 
   void PluginList(PluginsList &l);
+  void PluginShutdown(int);
+  void PluginEnable(int);
+  void PluginDisable(int);
 
   void UpdateAllUsers();
   void SwitchServer(void);
@@ -138,6 +143,7 @@ public:
   void SetTerminal(const char *s);
   bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
+  unsigned long StringToStatus(char *_szStatus);
 
   COnEventManager *OnEventManager(void)  { return &m_xOnEventManager; }
   CICQSignal *PopPluginSignal(void);

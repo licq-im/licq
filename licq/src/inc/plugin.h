@@ -34,6 +34,16 @@ const char *LP_Version(void);
 
 
 /*------------------------------------------------------------------------------
+ * Status
+ *
+ * Returns the status of the plugin.  Typically this will be enabled or
+ * disabled.  Rarely relevant for a main interface plugin.
+ * Should use a static character array.
+ *----------------------------------------------------------------------------*/
+const char *LP_Status(void);
+
+
+/*------------------------------------------------------------------------------
  * Usage
  *
  * Prints out the usage for the plugin.

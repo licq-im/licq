@@ -367,34 +367,22 @@ void *Shutdown_tep(void *p)
 
   // Send shutdown signal to all the plugins
   vector<CPlugin *>::iterator iter;
+  pthread_mutex_lock(&d->mutex_plugins);
   for (iter = d->m_vPlugins.begin(); iter != d->m_vPlugins.end(); iter++)
   {
     (*iter)->Shutdown();
   }
+  pthread_mutex_unlock(&d->mutex_plugins);
 
   // Cancel the monitor sockets thread (deferred until ready)
   //pthread_cancel(d->thread_monitorsockets);
   write(d->pipe_newsocket[PIPE_WRITE], "X", 1);
 
-  // Send a NULL event to the pending events thread to cancel it
-  /*pthread_mutex_lock(&d->mutex_pendingevents);
-  d->m_lxPendingEvents.push_back(NULL);
-  pthread_mutex_unlock(&d->mutex_pendingevents);
-  DEBUG_THREADS("[Shutdown_tep] Throwing NULL pending event.\n");
-  pthread_cond_signal(&d->cond_pendingevents);*/
-
   // Cancel the ping thread
   pthread_cancel(d->thread_ping);
 
-  // Push a NULL event onto the done queue to cancel that thread
-  /*DEBUG_THREADS("[Shutdown_tep] Throwing NULL done event.\n");
-  d->PushDoneEvent(NULL);*/
-
   // Join our threads
   pthread_join(d->thread_monitorsockets, NULL);
-  //pthread_join(d->thread_ping, NULL);
-  /*pthread_join(d->thread_pendingevents, NULL);
-  pthread_join(d->thread_doneevents, NULL);*/
 
   gSocketManager.CloseSocket(d->m_nTCPSocketDesc);
   if (d->m_nUDPSocketDesc != -1) d->icqLogoff();

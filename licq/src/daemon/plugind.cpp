@@ -32,6 +32,16 @@ void CPlugin::Shutdown(void)
   write(pipe_plugin[PIPE_WRITE], "X", 1);
 }
 
+void CPlugin::Enable(void)
+{
+  write(pipe_plugin[PIPE_WRITE], "1", 1);
+}
+
+void CPlugin::Disable(void)
+{
+  write(pipe_plugin[PIPE_WRITE], "0", 1);
+}
+
 
 bool CPlugin::CompareThread(pthread_t t)
 {

@@ -291,6 +291,7 @@ void CICQDaemon::UnregisterPlugin(void)
   {
     if ((*iter)->CompareThread(pthread_self()))
     {
+      //gLog.Info("%sUnregistering plugin %d.\n", L_ENDxSTR, (*iter)->Id());
       delete *iter;
       m_vPlugins.erase(iter);
       break;
@@ -327,6 +328,57 @@ void CICQDaemon::PluginList(PluginsList &lPlugins)
         break;
       }
     }
+  }
+  pthread_mutex_unlock(&mutex_plugins);
+}
+
+/*------------------------------------------------------------------------------
+ * PluginShutdown
+ *
+ * Unloads the given plugin.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::PluginShutdown(int id)
+{
+  pthread_mutex_lock(&mutex_plugins);
+  vector<CPlugin *>::iterator iter;
+  // Go through our list of registered plugins
+  for (iter = m_vPlugins.begin(); iter != m_vPlugins.end(); iter++)
+  {
+    if (id == (*iter)->Id()) (*iter)->Shutdown();
+  }
+  pthread_mutex_unlock(&mutex_plugins);
+}
+
+/*------------------------------------------------------------------------------
+ * PluginDisable
+ *
+ * Disables the given plugin.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::PluginDisable(int id)
+{
+  pthread_mutex_lock(&mutex_plugins);
+  vector<CPlugin *>::iterator iter;
+  // Go through our list of registered plugins
+  for (iter = m_vPlugins.begin(); iter != m_vPlugins.end(); iter++)
+  {
+    if (id == (*iter)->Id()) (*iter)->Disable();
+  }
+  pthread_mutex_unlock(&mutex_plugins);
+}
+
+/*------------------------------------------------------------------------------
+ * PluginEnable
+ *
+ * Enableds the given plugin.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::PluginEnable(int id)
+{
+  pthread_mutex_lock(&mutex_plugins);
+  vector<CPlugin *>::iterator iter;
+  // Go through our list of registered plugins
+  for (iter = m_vPlugins.begin(); iter != m_vPlugins.end(); iter++)
+  {
+    if (id == (*iter)->Id()) (*iter)->Enable();
   }
   pthread_mutex_unlock(&mutex_plugins);
 }
@@ -1007,6 +1059,38 @@ void CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr)
    }
 }
 
+unsigned long CICQDaemon::StringToStatus(char *_szStatus)
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned long nStatus = o->getStatusFlags();
+  gUserManager.DropOwner();
+
+  if (_szStatus[0] == '*')
+  {
+    _szStatus++;
+    nStatus |= ICQ_STATUS_FxPRIVATE;
+  }
+  if (strcasecmp(_szStatus, "online") == 0)
+    nStatus |= ICQ_STATUS_ONLINE;
+  else if (strcasecmp(_szStatus, "away") == 0)
+    nStatus |= ICQ_STATUS_AWAY;
+  else if (strcasecmp(_szStatus, "na") == 0)
+    nStatus |= ICQ_STATUS_NA;
+  else if (strcasecmp(_szStatus, "occupied") == 0)
+    nStatus |= ICQ_STATUS_OCCUPIED;
+  else if (strcasecmp(_szStatus, "dnd") == 0)
+    nStatus |= ICQ_STATUS_DND;
+  else if (strcasecmp(_szStatus, "ffc") == 0)
+    nStatus |= ICQ_STATUS_FREEFORCHAT;
+  else if (strcasecmp(_szStatus, "offline") == 0)
+    nStatus = ICQ_STATUS_OFFLINE;
+  else
+  {
+    nStatus = INT_MAX;
+  }
+  return nStatus;
+}
+
 
 //-----ProcessFifo--------------------------------------------------------------
 void CICQDaemon::ProcessFifo(char *_szBuf)
@@ -1049,30 +1133,11 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     }
     // Determine the status to go to
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    unsigned long nStatus = o->getStatusFlags();
     bool b = o->getStatusOffline();
     gUserManager.DropOwner();
 
-    if (szStatus[0] == '*')
-    {
-      szStatus++;
-      nStatus |= ICQ_STATUS_FxPRIVATE;
-    }
-    if (strcasecmp(szStatus, "online") == 0)
-      nStatus |= ICQ_STATUS_ONLINE;
-    else if (strcasecmp(szStatus, "away") == 0)
-      nStatus |= ICQ_STATUS_AWAY;
-    else if (strcasecmp(szStatus, "na") == 0)
-      nStatus |= ICQ_STATUS_NA;
-    else if (strcasecmp(szStatus, "occupied") == 0)
-      nStatus |= ICQ_STATUS_OCCUPIED;
-    else if (strcasecmp(szStatus, "dnd") == 0)
-      nStatus |= ICQ_STATUS_DND;
-    else if (strcasecmp(szStatus, "ffc") == 0)
-      nStatus |= ICQ_STATUS_FREEFORCHAT;
-    else if (strcasecmp(szStatus, "offline") == 0)
-      nStatus = ICQ_STATUS_OFFLINE;
-    else
+    unsigned long nStatus = StringToStatus(szStatus);
+    if (nStatus == INT_MAX)
     {
       gLog.Warn("%sFifo \"status\" command with invalid status \"%s\".\n",
                 L_WARNxSTR, szStatus);

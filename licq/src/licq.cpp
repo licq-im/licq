@@ -302,6 +302,19 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       return false;
     }
   }
+  // LP_Status
+  p->fStatus = (const char * (*)(void))dlsym(handle, "LP_Status");
+  if ((error = dlerror()) != NULL)
+  {
+    p->fStatus = (const char * (*)(void))dlsym(handle, "_LP_Status");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Status() function in plugin (%s).\n",
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
+      return false;
+    }
+  }
   // LP_Init
   p->fInit = (bool (*)(int, char **))dlsym(handle, "LP_Init");
   if ((error = dlerror()) != NULL)

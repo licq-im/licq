@@ -16,6 +16,8 @@ public:
   CICQSignal *PopSignal(void);
   ICQEvent *PopEvent(void);
 
+  void Enable(void);
+  void Disable(void);
   void Shutdown(void);
 
   bool CompareThread(pthread_t);
