@@ -19,6 +19,7 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = $(top_srcdir)/mkinstalldirs
 
 FINDTR   = @QT_FINDTR@
@@ -44,7 +45,7 @@ merge: template.po
 	done
 
 install: $(TRANSLATIONS)
-	$(MKINSTALLDIRS) $(sharedir)
+	$(MKINSTALLDIRS) $(sharedir)/locale
 	for i in *.qm; do \
 	  $(INSTALL_DATA) $$i $(sharedir)/locale/$$i; \
 	done
