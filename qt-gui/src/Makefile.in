@@ -71,7 +71,7 @@ dep: mocs
 
 Makefile.dep:
 	touch Makefile.dep
-	make dep
+	$(MAKE) dep
 
 clean:
 	$(RM) core obj/*.o *.core moc/moc_* licq_qt-gui.so Makefile.dep
