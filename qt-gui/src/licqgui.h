@@ -30,6 +30,7 @@ protected:
   CSignalManager *licqSignalManager;
   CQtLogWindow *licqLogWindow;
 
+  QStyle *SetStyle(const char *_szStyle);
 };
 
 #endif

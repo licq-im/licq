@@ -89,7 +89,23 @@ int LP_Main(CICQDaemon *_licqDaemon)
   return nResult;
 }
 
-
+QStyle *CLicqGui::SetStyle(const char *_szStyle)
+{
+  QStyle *s = NULL;
+  if (strncmp(_szStyle, "MOTIF", 3) == 0)
+    s = new QMotifStyle;
+  else if (strncmp(_szStyle, "WINDOWS", 3) == 0)
+    s = new QWindowsStyle;
+  else if (strncmp(_szStyle, "MAC", 3) == 0)
+    s = new QPlatinumStyle;
+  else if (strncmp(_szStyle, "CDE", 3) == 0)
+    s = new QCDEStyle;
+#ifdef USE_KDE
+  else if (strncmp(_szStyle, "KDE", 3) == 0)
+    s = new KThemeStyle;
+#endif
+  return s;
+}
 
 
 CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIcons, const char *_szStyle)
@@ -99,41 +115,48 @@ CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIc
 : QApplication(argc, argv)
 #endif
 {
-  QStyle *style = NULL;
-  if (strcmp(_szStyle, "MOTIF") == 0)
-    style = new QMotifStyle;
-  else if (strcmp(_szStyle, "WINDOWS") == 0)
-    style = new QWindowsStyle;
-  else if (strcmp(_szStyle, "MAC") == 0)
-    style = new QPlatinumStyle;
-  else if (strcmp(_szStyle, "CDE") == 0)
-    style = new QCDEStyle;
-#ifdef USE_KDE
-  else if (strcmp(_szStyle, "KDE") == 0)
-    style = new KThemeStyle;
-#endif
+  char buf[64];
+  sprintf(buf, "%s/licq_qt-gui.style", BASE_DIR);
 
-  if (style == NULL)
+  QStyle *style = SetStyle(_szStyle);
+
+  // Write out the style if not NULL
+  if (style != NULL)
+  {
+    FILE *f = fopen(buf, "w");
+    if (f != NULL)
+    {
+      fprintf(f, "%s\n", _szStyle);
+      fclose(f);
+    }
+  }
+  // Otherwise try and load it from the file
+  else
   {
 #ifdef USE_KDE
     style = new KThemeStyle;
 #else
-    if (strcmp(STYLE, "MOTIF") == 0)
-      style = new QMotifStyle;
-    else if (strcmp(STYLE, "WINDOWS") == 0)
-      style = new QWindowsStyle;
-    else if (strcmp(STYLE, "MAC") == 0)
-      style = new QPlatinumStyle;
-    else if (strcmp(optarg, "CDE") == 0)
-      style = new QCDEStyle;
-    else
-      style = new QWindowsStyle;
+    FILE *f = fopen(buf, "r");
+    if (f != NULL)
+    {
+      if (fgets(buf, 64, f) != NULL)
+        style = SetStyle(buf);
+      fclose(f);
+    }
+    if (style == NULL) style = new STYLE;
 #endif
   }
 
   setStyle(style);
   m_szSkin = strdup(_szSkin);
   m_szIcons = strdup(_szIcons);
+
+  // Try and load a translation
+  QString transfile;
+  transfile.sprintf("%s%s/locale.qm", SHARE_DIR, QTGUI_DIR);
+  QTranslator *trans = new QTranslator(this);
+  trans->load(transfile);
+  installTranslator(trans);
 }
 
 

@@ -18,7 +18,7 @@
 
 /* Change this to MotifStyle if you want the old-school Motif
    widget look. */
-#define STYLE "WINDOWS"
+#define STYLE QCDEStyle
 
 /* The name of the package we're compiling */
 #undef PACKAGE
