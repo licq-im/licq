@@ -3,7 +3,7 @@
 echo "Licq 0.70 Upgrade Script."
 
 echo "Updating user config files..."
-for i in $HOME/.licq/users/*.uin; do 
+for i in $HOME/.licq/users/*.uin $HOME/.licq/owner.uin; do 
   TEST=`grep Groups.System $i`
   if [ -z  "$TEST" ]; then
     awk 'BEGIN { s = 0 } \
