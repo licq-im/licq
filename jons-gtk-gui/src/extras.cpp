@@ -368,7 +368,6 @@ void finish_info(CICQSignal *signal)
 	const SLanguage *l1 = GetLanguageByCode(iu->user->GetLanguage(0));
 	const SLanguage *l2 = GetLanguageByCode(iu->user->GetLanguage(1));
 	const SLanguage *l3 = GetLanguageByCode(iu->user->GetLanguage(2));
-	const gchar *zip = g_strdup_printf("%ld", iu->user->GetZipCode());
 
 	gchar *bday;
 	gchar *age;
@@ -399,7 +398,7 @@ void finish_info(CICQSignal *signal)
 				   iu->user->GetAddress());
 		gtk_entry_set_text(GTK_ENTRY(iu->city), iu->user->GetCity());
 		gtk_entry_set_text(GTK_ENTRY(iu->state), iu->user->GetState());
-		gtk_entry_set_text(GTK_ENTRY(iu->zip), zip);
+		gtk_entry_set_text(GTK_ENTRY(iu->zip), iu->user->GetZipCode());
 		
 		if(country == NULL)
 			gtk_entry_set_text(GTK_ENTRY(iu->country),

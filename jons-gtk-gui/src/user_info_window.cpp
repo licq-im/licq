@@ -206,8 +206,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	pack_hbox(h_box, label, iu->state);
 
 	/* The zip and pack it */
-	const gchar *zip = g_strdup_printf("%ld", user->GetZipCode());
-	do_entry(iu->zip, label, "Zip:    ", zip, is_o);
+	do_entry(iu->zip, label, "Zip:    ", user->GetZipCode(), is_o);
 	pack_hbox(h_box, label, iu->zip);
 
 	/* Finally pack the state and zip */
