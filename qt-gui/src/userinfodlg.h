@@ -81,7 +81,7 @@ protected:
   CSignalManager *sigman;
   CICQEventTag *icqEventTag;
   QTabWidget* tabs;
-  QPushButton* btnSave, *btnOk, *btnClose;
+  QPushButton* btnMain1, *btnMain2, *btnMain3, *btnMain4;
 
   // User Info tab
   void CreateGeneralInfo();
@@ -149,10 +149,11 @@ protected slots:
   void updateTab(const QString&);
   void updatedUser(CICQSignal*);
   void SaveSettings();
-  void slotOk();
+  void slotUpdate();
+  void slotRetrieve();
   void doneFunction(ICQEvent*);
   void resetCaption();
-  void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
+  void ShowUsermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
 
 signals:
   void finished(unsigned long);

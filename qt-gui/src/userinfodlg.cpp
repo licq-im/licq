@@ -84,37 +84,49 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(updatedUser(CICQSignal *)));
 
-  btnSave = new QPushButton(tr("&Save"), this);
-  btnOk = new QPushButton(tr("&OK"), this);
-  btnClose = new QPushButton(tr("&Close"), this);
+  btnMain3 = new QPushButton(tr("&Update"), this);
+  btnMain4 = new QPushButton(tr("&Close"), this);
+  connect(btnMain4, SIGNAL(clicked()), this, SLOT(close()));
+
+  if(m_bOwner)
+  {
+    btnMain1 = new QPushButton(tr("&Save"), this);
+    btnMain2 = new QPushButton(tr("Retrieve"), this);
+    connect(btnMain1, SIGNAL(clicked()), this, SLOT(SaveSettings()));
+    connect(btnMain2, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
+    connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotUpdate()));
+  }
+  else
+  {
+    btnMain1 = new QPushButton(tr("&Menu"), this);
+    btnMain2 = new QPushButton(tr("&Save"), this);
+    connect(btnMain1, SIGNAL(clicked()), this, SLOT(ShowUsermenu()));
+    btnMain1->setPopup(gMainWindow->UserMenu());
+    connect(btnMain2, SIGNAL(clicked()), this, SLOT(SaveSettings()));
+    connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
+  }
+
   int bw = 80;
-  bw = QMAX(bw, btnSave->sizeHint().width());
-  bw = QMAX(bw, btnOk->sizeHint().width());
-  bw = QMAX(bw, btnClose->sizeHint().width());
-  btnSave->setFixedWidth(bw);
-  btnOk->setFixedWidth(bw);
-  btnClose->setFixedWidth(bw);
+  bw = QMAX(bw, btnMain1->sizeHint().width());
+  bw = QMAX(bw, btnMain2->sizeHint().width());
+  bw = QMAX(bw, btnMain3->sizeHint().width());
+  bw = QMAX(bw, btnMain4->sizeHint().width());
+  btnMain1->setFixedWidth(bw);
+  btnMain2->setFixedWidth(bw);
+  btnMain3->setFixedWidth(bw);
+  btnMain4->setFixedWidth(bw);
 
   QBoxLayout* l = new QHBoxLayout(lay);
-  if (!m_bOwner)
-  {
-    QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
-    l->addWidget(btnMenu);
-    connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
-    btnMenu->setPopup(gMainWindow->UserMenu());
-  }
+
+  l->addWidget(btnMain1);
   l->addStretch(2);
-  l->addWidget(btnSave);
-  connect(btnSave, SIGNAL(clicked()), this, SLOT(SaveSettings()));
-  l->addWidget(btnOk);
-  connect(btnOk, SIGNAL(clicked()), this, SLOT(slotOk()));
+  l->addWidget(btnMain2);
+  l->addWidget(btnMain3);
   l->addSpacing(35);
-  l->addWidget(btnClose);
-  btnClose->setDefault(true);
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+  l->addWidget(btnMain4);
+  btnMain4->setDefault(true);
 
   ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
-
   m_sBasic = tr("Licq - Info ") + QString::fromLocal8Bit(u->GetAlias()) + " (" +
     QString::fromLocal8Bit(u->GetFirstName()) + " " +
     QString::fromLocal8Bit(u->GetLastName())+ ")";
@@ -823,7 +835,7 @@ void UserInfoDlg::ShowHistoryPrev()
          (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
          i++)
     {
-	    m_iHistorySIter--;
+            m_iHistorySIter--;
     }
     ShowHistory();
   }
@@ -838,8 +850,8 @@ void UserInfoDlg::ShowHistoryNext()
          (i < NUM_MSG_PER_HISTORY) && (m_iHistoryEIter != m_lHistoryList.end());
          i++)
     {
-	    m_iHistoryEIter++;
-	    m_nHistoryIndex++;
+            m_iHistoryEIter++;
+            m_nHistoryIndex++;
     }
     ShowHistory();
   }
@@ -974,39 +986,39 @@ void UserInfoDlg::updateTab(const QString& txt)
   if (txt == tabList[GeneralInfo].label)
   {
     currentTab = GeneralInfo;
-    btnOk->setText(tr("&Update"));
-    btnSave->setText(tr("&Save"));
+    btnMain3->setText(tr("&Update"));
+    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     if (!tabList[GeneralInfo].loaded)
       SetGeneralInfo(NULL);
   }
   else if (txt == tabList[MoreInfo].label)
   {
-    btnOk->setText(tr("&Update"));
-    btnSave->setText(tr("&Save"));
+    btnMain3->setText(tr("&Update"));
+    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     currentTab = MoreInfo;
     if (!tabList[MoreInfo].loaded)
       SetMoreInfo(NULL);
   }
   else if (txt == tabList[WorkInfo].label)
   {
-    btnOk->setText(tr("&Update"));
-    btnSave->setText(tr("&Save"));
+    btnMain3->setText(tr("&Update"));
+    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     currentTab = WorkInfo;
     if (!tabList[WorkInfo].loaded)
       SetWorkInfo(NULL);
   }
   else if (txt == tabList[AboutInfo].label)
   {
-    btnOk->setText(tr("&Update"));
-    btnSave->setText(tr("&Save"));
+    btnMain3->setText(tr("&Update"));
+    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     currentTab = AboutInfo;
     if (!tabList[AboutInfo].loaded)
       SetAbout(NULL);
   }
   else if (txt == tabList[HistoryInfo].label)
   {
-    btnOk->setText(tr("Nex&t"));
-    btnSave->setText(tr("P&rev"));
+    btnMain3->setText(tr("Nex&t"));
+    btnMain2->setText(tr("P&rev"));
     currentTab = HistoryInfo;
     if (!tabList[HistoryInfo].loaded)
       SetupHistory();
@@ -1039,102 +1051,111 @@ void UserInfoDlg::SaveSettings()
   }
 }
 
-void UserInfoDlg::slotOk()
-{
-  switch(currentTab)
-  {
-  case GeneralInfo:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      unsigned short i = cmbCountry->currentItem();
-      unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
-      icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
-                                              nfoFirstName->text().local8Bit(),
-                                              nfoLastName->text().local8Bit(),
-                                              nfoEmailPrimary->text().local8Bit(),
-                                              nfoEmailSecondary->text().local8Bit(),
-                                              nfoEmailOld->text().local8Bit(),
-                                              nfoCity->text().local8Bit(),
-                                              nfoState->text().local8Bit(),
-                                              nfoPhone->text().local8Bit(),
-                                              nfoFax->text().local8Bit(),
-                                              nfoAddress->text().local8Bit(),
-                                              nfoCellular->text().local8Bit(),
-                                              nfoZipCode->text().local8Bit(),
-                                              cc, false);
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case MoreInfo:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      unsigned short i;
-      i = cmbLanguage[0]->currentItem();
-      unsigned short lc1 = GetLanguageByIndex(i)->nCode;
-      i = cmbLanguage[1]->currentItem();
-      unsigned short lc2 = GetLanguageByIndex(i)->nCode;
-      i = cmbLanguage[2]->currentItem();
-      unsigned short lc3 = GetLanguageByIndex(i)->nCode;
-      icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
-                                           cmbGender->currentItem(),
-                                           nfoHomepage->text().local8Bit(),
-                                           spnBirthYear->value(),
-                                           spnBirthMonth->value(),
-                                           spnBirthDay->value(),
-                                           lc1, lc2, lc3);
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case WorkInfo:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
-                                           nfoCompanyState->text().local8Bit(),
-                                           nfoCompanyPhone->text().local8Bit(),
-                                           nfoCompanyFax->text().local8Bit(),
-                                           nfoCompanyAddress->text().local8Bit(),
-                                           nfoCompanyName->text().local8Bit(),
-                                           nfoCompanyDepartment->text().local8Bit(),
-                                           nfoCompanyPosition->text().local8Bit(),
-                                           nfoCompanyHomepage->text().local8Bit());
 
+void UserInfoDlg::slotRetrieve()
+{
+  if(currentTab != HistoryInfo)
+  {
+    ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+    if(o == NULL)  return;
+    unsigned short status = o->Status();
+    gUserManager.DropOwner();
+
+    if(status == ICQ_STATUS_OFFLINE) {
+      InformUser(this, tr("You need to be connected to the\n"
+                          "ICQ Network to retrieve your settings."));
+      return;
     }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case AboutInfo:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case HistoryInfo:
+  }
+  else
+  {
     ShowHistoryNext();
-    break;
+    return;
+  }
+
+  switch(currentTab) {
+  case GeneralInfo:  icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+  case MoreInfo:     icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+  case WorkInfo:     icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+  case AboutInfo:    icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
   }
 
   if (icqEventTag != NULL)
   {
+    setCursor(waitCursor);
+    m_sProgressMsg = tr("Updating...");
+    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
+    setCaption(m_sBasic + " [" + m_sProgressMsg +"]");
+  }
+}
+
+
+void UserInfoDlg::slotUpdate()
+{
+  if(currentTab != HistoryInfo)
+  {
+    ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+    if(o == NULL)  return;
+    unsigned short status = o->Status();
+    gUserManager.DropOwner();
+
+    if(status == ICQ_STATUS_OFFLINE) {
+      InformUser(this, tr("You need to be connected to the\n"
+                          "ICQ Network to change your settings."));
+      return;
+    }
+  }
+
+  switch(currentTab) {
+  case GeneralInfo:
+  {
+    unsigned short i = cmbCountry->currentItem();
+    unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
+    icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
+                                            nfoFirstName->text().local8Bit(),
+                                            nfoLastName->text().local8Bit(),
+                                            nfoEmailPrimary->text().local8Bit(),
+                                            nfoEmailSecondary->text().local8Bit(),
+                                            nfoEmailOld->text().local8Bit(),
+                                            nfoCity->text().local8Bit(),
+                                            nfoState->text().local8Bit(),
+                                            nfoPhone->text().local8Bit(),
+                                            nfoFax->text().local8Bit(),
+                                            nfoAddress->text().local8Bit(),
+                                            nfoCellular->text().local8Bit(),
+                                            nfoZipCode->text().local8Bit(),
+                                            cc, false);
+  }
+  break;
+  case MoreInfo:
+    icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
+                                         cmbGender->currentItem(),
+                                         nfoHomepage->text().local8Bit(),
+                                         spnBirthYear->value(),
+                                         spnBirthMonth->value(),
+                                         spnBirthDay->value(),
+                                         GetLanguageByIndex(cmbLanguage[0]->currentItem())->nCode,
+                                         GetLanguageByIndex(cmbLanguage[1]->currentItem())->nCode,
+                                         GetLanguageByIndex(cmbLanguage[2]->currentItem())->nCode);
+  break;
+  case WorkInfo:
+    icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
+                                         nfoCompanyState->text().local8Bit(),
+                                         nfoCompanyPhone->text().local8Bit(),
+                                         nfoCompanyFax->text().local8Bit(),
+                                         nfoCompanyAddress->text().local8Bit(),
+                                         nfoCompanyName->text().local8Bit(),
+                                         nfoCompanyDepartment->text().local8Bit(),
+                                         nfoCompanyPosition->text().local8Bit(),
+                                         nfoCompanyHomepage->text().local8Bit());
+  break;
+  case AboutInfo:    icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());  break;
+  case HistoryInfo:  ShowHistoryNext();  break;
+  }
+
+  if (icqEventTag != NULL)
+  {
+    m_sProgressMsg = tr("Updating server...");
     setCursor(waitCursor);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
     setCaption(m_sBasic + " [" + m_sProgressMsg +"]");
