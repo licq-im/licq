@@ -61,8 +61,6 @@ char *inet_ntoa_r(struct in_addr in, char *buf)
 
 
 //=====Constants================================================================
-const unsigned short ADDR_LOCAL = 0x01;
-const unsigned short ADDR_REMOTE = 0x02;
 const unsigned long MAX_RECV_SIZE = 4096;
 
 
@@ -255,55 +253,39 @@ void INetSocket::ResetSocket()
 }
 
 
-/*-----INetSocket::SetAddrsFromSocket------------------------------------------
+/*-----INetSocket::SetLocalAddress------------------------------------------
  * Sets the sockaddr_in structures using data from the connected socket
  *---------------------------------------------------------------------------*/
-bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
+bool INetSocket::SetLocalAddress()
 {
-  if (_nFlags & ADDR_LOCAL)
+  // Setup the local structure
+  socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
+  if (getsockname(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, &sizeofSockaddr) < 0)
   {
-    // Setup the local structure
-    socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
-    if (getsockname(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, &sizeofSockaddr) < 0)
-    {
-      // errno has been set
-      h_errno = -1;
-      return (false);
-    }
-#if 0
-    if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
-    {
-      char szHostName[256];
-      if (gethostname(szHostName, 256) == -1)
-      {
-        strcpy(szHostName, "localhost");
-        //h_errno = -1;
-        //return false;
-      }
-      struct hostent sLocalHost;
-      h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
-      if (h_errno != 0)
-      {
-        errno = -1;
-        return false;
-      }
-      m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
-    }
-#endif
+    // errno has been set
+    h_errno = -1;
+    return (false);
   }
-#if 0
-  if (_nFlags & ADDR_REMOTE)
+
+  // This should never happen unless the IP stack is fucked
+  if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
   {
-    // Set up the remote structure
-    sizeofSockaddr = sizeof(struct sockaddr_in);
-    if (getpeername(m_nDescriptor, (struct sockaddr *)&m_sRemoteAddr, &sizeofSockaddr) < 0)
+    gLog.Warn("%sYour IP stack or SOCKS client is a piece of crap.\n"
+              "%sAttempting to guess local IP.\n", L_WARNxSTR, L_BLANKxSTR);
+    char szHostName[256];
+    if (gethostname(szHostName, 256) == -1)
     {
-      // errno has been set
-      h_errno = -1;
-      return (false);
+      strcpy(szHostName, "localhost");
     }
+    struct hostent sLocalHost;
+    h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
+    if (h_errno != 0)
+    {
+      errno = -1;
+      return false;
+    }
+    m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
   }
-#endif
   return (true);
 }
 
@@ -370,14 +352,12 @@ bool INetSocket::OpenConnection()
     CloseConnection();
     return(false);
   }
-
+/*
 #ifdef USE_SOCKS5
   if (m_nSockType != SOCK_STREAM) return true;
 #endif
-
-  if (!SetAddrsFromSocket(ADDR_LOCAL | ADDR_REMOTE))
-    return (false);
-  return (true);
+*/
+  return SetLocalAddress();
 }
 
 
@@ -411,7 +391,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
     return (false);
   }
 
-  if (!SetAddrsFromSocket(ADDR_LOCAL)) return (false);
+  //if (!SetLocalAddress()) return (false);
 
   if (m_nSockType == SOCK_STREAM)
     listen(m_nDescriptor, 10); // Allow 10 unprocessed connections
@@ -526,7 +506,7 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
 {
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
   newSocket.m_nDescriptor = accept(m_nDescriptor, (struct sockaddr *)&newSocket.m_sRemoteAddr, &sizeofSockaddr);
-  newSocket.SetAddrsFromSocket(ADDR_LOCAL | ADDR_REMOTE);
+  newSocket.SetLocalAddress();
 }
 
 
@@ -573,6 +553,7 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
 
     gLog.Info("%sEncrypting packet to %ld.\n", L_DESxSTR, m_nOwner);
     b = m_pDHKey->DesXEncrypt(b_in);
+    if (b == NULL) return false;
   }
 #endif
 
@@ -690,6 +671,7 @@ bool TCPSocket::RecvPacket()
     {
       gLog.Info("%sDecrypting packet from %ld.\n", L_DESxSTR, m_nOwner);
       CBuffer *buf = m_pDHKey->DesXDecrypt(&m_xRecvBuffer);
+      if (buf == NULL) return false;
       m_xRecvBuffer.Copy(buf);
       delete buf;
 

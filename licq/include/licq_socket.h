@@ -78,7 +78,7 @@ public:
 
 protected:
   const char *GetIDStr()  { return (m_szID); }
-  bool SetAddrsFromSocket(unsigned short _nFlags);
+  bool SetLocalAddress();
   void DumpPacket(CBuffer *b, direction d);
 
   int m_nDescriptor;
