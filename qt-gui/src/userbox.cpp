@@ -1389,10 +1389,9 @@ void CUserView::maybeTip(const QPoint& c)
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     if (u != NULL)
     {
-      if (u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED)
-        s += tr("<br>Licq&nbsp;%1/SSL").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
-      else if (u->SecureChannelSupport() == SECURE_CHANNEL_NOTSUPPORTED)
-        s += tr("<br>Licq&nbsp;%1").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
+      const char *p = u->ClientInfo();
+      if( p )
+        s += "<br>" + QString(p).replace(' ', "&nbsp;");
 
       if (u->AutoResponse() && *u->AutoResponse() &&
           item->m_nStatus != ICQ_STATUS_OFFLINE &&
