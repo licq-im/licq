@@ -1,0 +1,1563 @@
+// -*- c-basic-offset: 2 -*-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
+
+#include "time-fix.h"
+
+#include "licq_icqd.h"
+#include "licq_translate.h"
+#include "licq_packets.h"
+#include "licq_socket.h"
+#include "licq_user.h"
+#include "licq_events.h"
+#include "licq_log.h"
+#include "licq_chat.h"
+#include "licq_filetransfer.h"
+#include "support.h"
+
+#include <iostream.h>
+
+//-----icqAddUser----------------------------------------------------------
+void CICQDaemon::icqAddUser(unsigned long _nUin)
+{
+  CSrvPacketTcp *p = new CPU_GenericUinList(_nUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
+  gLog.Info("%sAlerting server to new user (#%ld)...\n", L_SRVxSTR,
+            p->Sequence());
+  SendExpectEvent_Server(p);
+
+  // update the users info from the server
+  icqUserBasicInfo(_nUin);
+}
+
+
+//-----icqAlertUser-------------------------------------------------------------
+void CICQDaemon::icqAlertUser(unsigned long _nUin)
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  char sz[MAX_MESSAGE_SIZE];
+  sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
+          0xFE, o->GetLastName(), 0xFE, o->GetEmailPrimary(), 0xFE,
+          o->GetAuthorization() ? '0' : '1', 0xFE);
+  gUserManager.DropOwner();
+  CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
+  gLog.Info("%sAlerting user they were added (#%ld)...\n", L_SRVxSTR, p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+
+//-----NextServer---------------------------------------------------------------
+void CICQDaemon::SwitchServer()
+{
+  icqRelogon();
+}
+
+
+void CICQDaemon::icqRegister(const char *_szPasswd)
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  o->SetPassword(_szPasswd);
+  gUserManager.DropOwner();
+  CPU_Register *p = new CPU_Register(_szPasswd);
+  gLog.Info("%sRegistering a new user (#%ld)...\n", L_SRVxSTR, p->Sequence());
+  m_nServerAck = p->Sequence() - 1;
+  m_nServerSequence = 0;
+  SendExpectEvent_Server(p);
+}
+
+
+//-----ICQ::icqRelogon-------------------------------------------------------
+void CICQDaemon::icqRelogon(bool bChangeServer)
+{
+  unsigned long status;
+
+  if (m_eStatus == STATUS_ONLINE)
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    status = o->StatusFull();
+    gUserManager.DropOwner();
+  }
+  else
+  {
+    status = m_nDesiredStatus;
+  }
+
+  if (bChangeServer)
+    SwitchServer();
+  else
+    icqLogoff();
+  m_eStatus = STATUS_OFFLINE_MANUAL;
+
+  icqLogon(status);
+
+  m_eStatus = STATUS_OFFLINE_FORCED;
+}
+
+//-----icqRequestMetaInfo----------------------------------------------------
+unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
+{
+  ICQUser* u = gUserManager.FetchUser(nUin, LOCK_R);
+  unsigned short uid = 0;
+  if (u) {
+    uid = u->Uid();
+    gUserManager.DropUser(u);
+  }
+  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(nUin, uid);
+  gLog.Info("%sRequesting meta info for %ld (#%ld/#%d)...\n", L_SRVxSTR, nUin,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(p);
+  return e->EventId();
+}
+
+//-----icqSetStatus-------------------------------------------------------------
+unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
+{
+  // Set the status flags
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned long s = o->AddStatusFlags(newStatus);
+  bool Invisible = o->StatusInvisible();
+  bool goInvisible = (newStatus & ICQ_STATUS_FxPRIVATE);
+  bool isLogon = o->StatusOffline();
+  gUserManager.DropOwner();
+
+  if (!Invisible && goInvisible)
+    icqSendVisibleList();
+
+  CSrvPacketTcp* p;
+  if (1 || isLogon)
+    p = new CPU_SetLogonStatus(s);
+  else
+    p = new CPU_SetStatus(s);
+
+  gLog.Info("%sChanging status to %s (#%ld)...\n", L_SRVxSTR,
+            ICQUser::StatusToStatusStr(newStatus, goInvisible), p->Sequence());
+  m_nDesiredStatus = s;
+
+  ICQEvent *e = SendExpectEvent_Server(p);
+  unsigned long eid = e->EventId();
+
+  if (Invisible && !goInvisible)
+    icqSendInvisibleList();
+
+  return eid;
+}
+
+//-----icqGetUserBasicInfo------------------------------------------------------
+unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
+{
+  ICQUser* u = gUserManager.FetchUser(_nUin, LOCK_R);
+  unsigned short uid = 0;
+  if (u) {
+    uid = u->Uid();
+    gUserManager.DropUser(u);
+  }
+  //CPU_Meta_RequestBasicInfo *p = new CPU_Meta_RequestBasicInfo(_nUin, uid);
+  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(_nUin, uid);
+  gLog.Info("%sRequesting user info (#%ld/#%d)...\n", L_SRVxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(p);
+  return e->EventId();
+}
+
+//-----icqPing------------------------------------------------------------------
+void CICQDaemon::icqPing()
+{
+  // pinging is necessary to avoid that masquerading
+  // servers close the connection
+   CPU_Ping *p = new CPU_Ping;
+   SendExpectEvent_Server(p);
+}
+
+//-----icqUpdateContactList-----------------------------------------------------
+void CICQDaemon::icqUpdateContactList()
+{
+  unsigned short n = 0;
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_W)
+  {
+    n++;
+    uins.push_back(pUser->Uin());
+    if (n == m_nMaxUsersPerPacket)
+    {
+      CSrvPacketTcp *p = new CPU_GenericUinList(uins, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
+      gLog.Info("%sUpdating contact list (#%ld)...\n", L_SRVxSTR, p->Sequence());
+      SendExpectEvent_Server(p);
+      uins.erase(uins.begin(), uins.end());
+      n = 0;
+    }
+    // Reset all users to offline
+    if (!pUser->StatusOffline()) ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+  }
+  FOR_EACH_USER_END
+  if (n != 0)
+  {
+    CSrvPacketTcp *p = new CPU_GenericUinList(uins, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
+    gLog.Info("%sUpdating contact list (#%ld)...\n", L_SRVxSTR, p->Sequence());
+    SendExpectEvent_Server(p);
+  }
+}
+
+//-----icqSendVisibleList-------------------------------------------------------
+void CICQDaemon::icqSendVisibleList()
+{
+  // send user info packet
+  // Go through the entire list of users, checking if each one is on
+  // the visible list
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST) )
+      uins.push_back(pUser->Uin());
+  }
+  FOR_EACH_USER_END
+  CSrvPacketTcp* p = new CPU_GenericUinList(uins, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
+  gLog.Info("%sSending visible list (#%ld)...\n", L_SRVxSTR, p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+
+//-----icqSendInvisibleList-----------------------------------------------------
+void CICQDaemon::icqSendInvisibleList()
+{
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) )
+      uins.push_back(pUser->Uin());
+  }
+  FOR_EACH_USER_END
+
+  CSrvPacketTcp* p = new CPU_GenericUinList(uins, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxINVISIBxLIST);
+  gLog.Info("%sSending invisible list (#%ld)...\n", L_SRVxSTR, p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+//-----icqAddToVisibleList---------------------------------------------------
+void CICQDaemon::icqToggleVisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+  bool b = u->VisibleList();
+  gUserManager.DropUser(u);
+
+  if (b)
+    icqRemoveFromVisibleList(nUin);
+  else
+    icqAddToVisibleList(nUin);
+}
+
+void CICQDaemon::icqToggleInvisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+  bool b = u->InvisibleList();
+  gUserManager.DropUser(u);
+
+  if (b)
+    icqRemoveFromInvisibleList(nUin);
+  else
+    icqAddToInvisibleList(nUin);
+}
+
+void CICQDaemon::icqAddToVisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetVisibleList(true);
+    gUserManager.DropUser(u);
+  }
+  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
+  gLog.Info("%sAdding user %ld to visible list (#%ld)...\n", L_SRVxSTR, nUin,
+     p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+void CICQDaemon::icqRemoveFromVisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetVisibleList(false);
+    gUserManager.DropUser(u);
+  }
+  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxVISIBLExLIST);
+  gLog.Info("%sRemoving user %ld from visible list (#%ld)...\n", L_SRVxSTR, nUin,
+     p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+void CICQDaemon::icqAddToInvisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetInvisibleList(true);
+    gUserManager.DropUser(u);
+  }
+  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxINVISIBxLIST);
+  gLog.Info("%sAdding user %ld to invisible list (#%ld)...\n", L_SRVxSTR, nUin,
+     p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+void CICQDaemon::icqRemoveFromInvisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetInvisibleList(false);
+    gUserManager.DropUser(u);
+  }
+  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxINVISIBxLIST);
+  gLog.Info("%sRemoving user %ld from invisible list (#%ld)...\n", L_SRVxSTR, nUin,
+     p->Sequence());
+  SendExpectEvent_Server(p);
+}
+
+/*------------------------------------------------------------------------------
+ * ProcessDoneEvent
+ *
+ * Processes the given event possibly passes the result to the gui.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
+{
+  // Determine this now as later we might have deleted the event
+  unsigned short nCommand = e->m_nCommand;
+  EventResult eResult = e->m_eResult;
+
+  // Write the event to the history file if appropriate
+  if (e->m_pUserEvent != NULL &&
+      e->m_eResult == EVENT_ACKED &&
+      e->m_nSubResult != ICQ_TCPxACK_RETURN)
+  {
+    ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+    if (u != NULL)
+    {
+      e->m_pUserEvent->AddToHistory(u, D_SENDER);
+      u->SetLastSentEvent();
+      m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
+      gUserManager.DropUser(u);
+    }
+    m_sStats[STATS_EventsSent].Inc();
+  }
+
+  // Process the event
+  switch (e->m_nCommand)
+  {
+  case ICQ_CHNxNEW:
+  case ICQ_CHNxPING:
+  {
+    delete e;
+    break;
+  }
+  // Regular events
+  case ICQ_CHNxDATA:
+    // DAW uwww.. horrible
+    e->m_nCommand = ICQ_CMDxSND_THRUxSERVER;
+  case ICQ_CMDxTCP_START:
+    PushPluginEvent(e);
+    break;
+
+  case ICQ_CMDxSND_SETxSTATUS:
+    if (e->m_eResult == EVENT_ACKED)
+    {
+      // DAW FIXME
+//       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+//       ChangeUserStatus(o, ((CPU_SetStatus *)e->m_pPacket)->Status() );
+//       gUserManager.DropOwner();
+    }
+    PushPluginEvent(e);
+    break;
+
+  case ICQ_CMDxSND_SETxRANDOMxCHAT:
+    if (e->m_eResult == EVENT_ACKED)
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_pPacket)->Group());
+      gUserManager.DropOwner();
+    }
+    PushPluginEvent(e);
+    break;
+
+#if 0
+  // Extended events
+  case ICQ_CMDxSND_LOGON:
+  case ICQ_CMDxSND_USERxGETINFO:
+  case ICQ_CMDxSND_USERxGETDETAILS:
+  case ICQ_CMDxSND_UPDATExDETAIL:
+  case ICQ_CMDxSND_UPDATExBASIC:
+  case ICQ_CMDxSND_SEARCHxINFO:
+  case ICQ_CMDxSND_SEARCHxUIN:
+  case ICQ_CMDxSND_REGISTERxUSER:
+  case ICQ_CMDxSND_META:
+  case ICQ_CMDxSND_RANDOMxSEARCH:
+  {
+    switch (e->m_eResult)
+    {
+      case EVENT_ERROR:
+      case EVENT_TIMEDOUT:
+      case EVENT_FAILED:
+      case EVENT_SUCCESS:
+      case EVENT_CANCELLED:
+        PushPluginEvent(e);
+        break;
+      case EVENT_ACKED:  // push to extended event list
+        PushExtendedEvent(e);
+        break;
+      default:
+        gLog.Error("%sInternal error: ProcessDoneEvents(): Invalid result for extended event (%d).\n",
+                   L_ERRORxSTR, e->m_eResult);
+        delete e;
+        return;
+    }
+    break;
+  }
+#endif
+
+  default:
+    gLog.Warn("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
+               L_ERRORxSTR, e->m_nCommand);
+    delete e;
+    return;
+  }
+}
+
+//-----ICQ::Logon--------------------------------------------------------------
+
+unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
+{
+  if (m_bLoggingOn)
+  {
+    gLog.Warn("%sAttempt to logon while already logged or logging on, logoff and try again.\n", L_WARNxSTR);
+    return 0;
+  }
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (o->Uin() == 0)
+  {
+    gUserManager.DropOwner();
+    gLog.Error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
+    return 0;
+  }
+  if (o->Password()[0] == '\0')
+  {
+    gUserManager.DropOwner();
+    gLog.Error("%sNo password set.  Edit ~/.licq/owner.uin and fill in the password field.\n", L_ERRORxSTR);
+    return 0;
+  }
+  char szUin[13];
+  snprintf(szUin, 12, "%ld", o->Uin());
+  szUin[12] = 0;
+  char *passwd = strdup(o->Password());
+  unsigned long status = o->AddStatusFlags(logonStatus);
+  gUserManager.DropOwner();
+  CPU_Logon *p = new CPU_Logon(passwd, szUin, status);
+  free(passwd);
+  m_bOnlineNotifies = false;
+  gLog.Info("%sRequesting logon (#%ld)...\n", L_SRVxSTR, p->Sequence());
+  m_nServerSequence = 0;
+  m_nDesiredStatus = status;
+  m_bLoggingOn = true;
+  m_tLogonTime = time(NULL);
+  ICQEvent *e = SendExpectEvent_Server(p);
+  return e->EventId();
+}
+
+//-----ICQ::icqLogoff-----------------------------------------------------------
+void CICQDaemon::icqLogoff()
+{
+  // Kill the udp socket asap to avoid race conditions
+  int nSD = m_nTCPSrvSocketDesc;
+  m_nTCPSrvSocketDesc = -1;
+  gLog.Info("%sLogging off.\n", L_SRVxSTR);
+  CPU_Logoff p;
+  SendEvent(nSD, p, true);
+  gSocketManager.CloseSocket(nSD);
+
+  m_eStatus = STATUS_OFFLINE_MANUAL;
+  m_bLoggingOn = false;
+
+  pthread_mutex_lock(&mutex_runningevents);
+  std::list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin();
+  while (iter != m_lxRunningEvents.end())
+  {
+    if ((*iter)->m_nSocketDesc == nSD)
+    {
+      if (!pthread_equal((*iter)->thread_send, pthread_self()))
+        pthread_cancel((*iter)->thread_send);
+      //(*iter)->m_eResult = EVENT_CANCELLED;
+      //ProcessDoneEvent(*iter);
+      CancelEvent(*iter);
+      iter = m_lxRunningEvents.erase(iter);
+    }
+    else
+      iter++;
+  }
+  pthread_mutex_unlock(&mutex_runningevents);
+
+  // wipe out all extended events too...
+  pthread_mutex_lock(&mutex_extendedevents);
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  {
+    (*iter)->m_eResult = EVENT_CANCELLED;
+    ProcessDoneEvent(*iter);
+  }
+  m_lxExtendedEvents.erase(m_lxExtendedEvents.begin(), m_lxExtendedEvents.end());
+  pthread_mutex_unlock(&mutex_extendedevents);
+
+  // Mark all users as offline, this also updates the last seen
+  // online field
+  FOR_EACH_USER_START(LOCK_W)
+  {
+    if (!pUser->StatusOffline())
+      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+  }
+  FOR_EACH_USER_END
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
+  gUserManager.DropOwner();
+  PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));
+}
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----ConnectToServer---------------------------------------------------------
+
+int CICQDaemon::ConnectToLoginServer()
+{
+  int r = ConnectToServer("login.icq.com", DEFAULT_SERVER_PORT);
+
+  write(pipe_newsocket[PIPE_WRITE], "S", 1);
+
+  return r;
+}
+
+int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
+{
+  SrvSocket *s = new SrvSocket(0);
+
+  gLog.Info("%sResolving %s port %d...\n", L_SRVxSTR, server, port);
+  if (!s->SetRemoteAddr(server, port)) {
+    char buf[128];
+    gLog.Warn("%sUnable to resolve %s:\n%s%s.\n", L_ERRORxSTR,
+              server, L_BLANKxSTR, s->ErrorStr(buf, 128));
+    delete s;
+    return (-1); // no route to host (not connected)
+  }
+  char ipbuf[32];
+  gLog.Info("%sICQ server found at %s:%d.\n", L_SRVxSTR,
+	      s->RemoteIpStr(ipbuf), s->RemotePort());
+
+  gLog.Info("%sOpening socket to server.\n", L_SRVxSTR);
+  if (!s->OpenConnection())
+  {
+    char buf[128];
+    gLog.Warn("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
+              s->RemoteIpStr(ipbuf), s->RemotePort(), L_BLANKxSTR,
+              s->ErrorStr(buf, 128));
+    delete s;
+    return -1;
+  }
+
+  // Now get the real ip from this socket
+  CPacket::SetLocalIp(  NetworkIpToPacketIp(s->LocalIp() ));
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  o->SetIp(s->LocalIp());
+  gUserManager.DropOwner();
+
+  gSocketManager.AddSocket(s);
+  m_nTCPSrvSocketDesc = s->Descriptor();
+  gSocketManager.DropSocket(s);
+
+  return m_nTCPSrvSocketDesc;
+}
+
+//-----FindUserForInfoUpdate-------------------------------------------------
+ICQUser *CICQDaemon::FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e,
+   const char *t)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL)
+  {
+    // If the event is NULL as well then nothing we can do
+    if (e == NULL)
+    {
+      gLog.Warn("%sResponse to unknown %s info request for unknown user (%ld).\n",
+                L_WARNxSTR, t, nUin);
+      return NULL;
+    }
+    // Check if we need to create the user
+    if (e->m_pUnknownUser == NULL)
+    {
+      e->m_pUnknownUser = new ICQUser(nUin);
+    }
+    // If not, validate the uin
+    else if (e->m_pUnknownUser->Uin() != nUin)
+    {
+      gLog.Error("%sInternal Error: Event contains wrong user.\n", L_ERRORxSTR);
+      return NULL;
+    }
+
+    u = e->m_pUnknownUser;
+    u->Lock(LOCK_W);
+  }
+  gLog.Info("%sReceived %s information for %s (%ld).\n", L_SRVxSTR, t,
+            u->GetAlias(), nUin);
+  return u;
+}
+
+//-----ProcessSrvPacket---------------------------------------------------------
+bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
+{
+  unsigned short nLen;
+  unsigned short  nSequence;
+  char startCode, nChannel;
+
+  // read in the standard server TCP header info
+  packet >> startCode;
+
+  if (startCode != 0x2a)
+  {
+    gLog.Warn("%sProcessSrvPacket bad start code: %d.\n", L_WARNxSTR, startCode);
+    char *buf;
+    gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
+                 packet.print(buf));
+    delete buf;
+    return false;
+  }
+
+  packet >> nChannel
+         >> nSequence
+         >> nLen;
+
+  // Eww
+  rev_e_short(nSequence);
+  rev_e_short(nLen);
+
+  switch (nChannel)
+  {
+  case ICQ_CHNxNEW:
+    // DAW can we really ignore those packets??
+    //gLog.Warn("%sPacket on unhandled Channel 'New' received!\n", L_SRVxSTR);
+    break;
+
+  case ICQ_CHNxDATA:
+    ProcessDataChannel(packet);
+    break;
+
+  case ICQ_CHNxERROR:
+    gLog.Warn("%sPacket on unhandled Channel 'Error' received!\n", L_SRVxSTR);
+    break;
+
+  case ICQ_CHNxCLOSE:
+    return ProcessCloseChannel(packet);
+    break;
+
+  default:
+    gLog.Warn("%sServer send unknown channel: %02x\n", L_SRVxSTR, nChannel);
+    break;
+  }
+
+  return true;
+}
+
+//--------ProcessServiceFam----------------------------------------------------
+
+void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
+{
+  packet.UnpackUnsignedShortBE(); // flags
+  packet.UnpackUnsignedLongBE(); // sequence
+
+  switch (nSubtype)
+  {
+  case ICQ_SNACxSUB_READYxSERVER:
+    {
+      CSrvPacketTcp* p;
+
+      gLog.Info("%sServer says he's ready.\n", L_SRVxSTR);
+
+      gLog.Info("%sSending our channel capability list...\n", L_SRVxSTR);
+      p = new CPU_ImICQ();
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sRequesting rate info...\n", L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSUB_REQ_RATE_INFO);
+      SendExpectEvent_Server(p);
+
+      // ask the user who we are (yeah we know already though)
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_GETxUSERxINFO);
+      SendExpectEvent_Server(p);
+
+      break;
+    }
+
+  case ICQ_SNACxSRV_ACKxIMxICQ:
+    {
+      CSrvPacketTcp* p;
+      gLog.Info("%sServer sent us channel capability list (ignoring).\n", L_SRVxSTR);
+
+      gLog.Info("%sRequesting location rights.\n", L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_REQUESTxRIGHTS);
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sRequesting contact list rights.\n", L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REQUESTxRIGHTS);
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sRequesting Instant Messaging rights.\n", L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_REQUESTxRIGHTS);
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sRequesting BOS rights.\n", L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REQUESTxRIGHTS);
+      SendExpectEvent_Server(p);
+
+      break;
+    }
+  case ICQ_SNACxSUB_RATE_INFO:
+  {
+      gLog.Info("%sServer sent us rate information.\n", L_SRVxSTR);
+      CSrvPacketTcp *p = new CPU_RateAck();
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sSetting ICQ Instant Messaging Mode.\n", L_SRVxSTR);
+      p = new CPU_ICQMode();
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sSending capability settings (?)\n",L_SRVxSTR);
+      p = new CPU_CapabilitySettings();
+      SendExpectEvent_Server(p);
+
+
+      gLog.Info("%sSending client ready...\n", L_SRVxSTR);
+      p = new CPU_ClientReady();
+      SendExpectEvent_Server(p);
+
+      gLog.Info("%sSending offline message request...\n", L_SRVxSTR);
+      p = new CPU_RequestSysMsg;
+      SendExpectEvent_Server(p);
+
+      m_eStatus = STATUS_ONLINE;
+      m_bLoggingOn = false;
+      ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_SUCCESS);
+      if (e != NULL) ProcessDoneEvent(e);
+      PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, 0));
+
+      break;
+    }
+
+  case ICQ_SNACxRCV_NAMExINFO:
+  {
+    unsigned short nUserClass, nLevel;
+    unsigned long nUin, realIP;
+
+    gLog.Info("%sGot Name Info from Server\n", L_SRVxSTR);
+
+    nUin = packet.UnpackUinString();
+    nLevel = packet.UnpackUnsignedShortBE();
+    nUserClass = packet.UnpackUnsignedShortBE();
+
+    gLog.Info("%sUIN: %ld level: %04hx Class: %04hx\n", L_SRVxSTR,
+              nUin, nLevel, nUserClass );
+
+    if (!packet.readTLV()) {
+      char *buf;
+      gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
+         packet.print(buf));
+      delete buf;
+      break;
+    }
+
+    // T(1) unknown
+    // T(2) member since
+    // T(3) online since
+    // T(4) idle time ?
+    // T(6) status code
+    // T(A) IP
+    // T(C) direct connection info (???)
+    if (packet.getTLVLen(0x6, 1) == 4)
+      m_nDesiredStatus = packet.UnpackUnsignedLongTLV(0x06, 1);
+    if (packet.getTLVLen(0x0a, 1) == 4) {
+      realIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
+      rev_e_long(realIP);
+      realIP = PacketIpToNetworkIp(realIP);
+      CPacket::SetRealIp(NetworkIpToPacketIp(realIP));
+
+      char buf[32];
+      gLog.Info("%sServer says we are at %s.\n", L_SRVxSTR, ip_ntoa(realIP, buf));
+      icqSetStatus(m_nDesiredStatus);
+    }
+    if (packet.getTLVLen(0x0c, 1)) {
+      gLog.Unknown("%sServer send us direct conn info,len: %d\n", L_UNKNOWNxSTR,
+                   packet.getTLVLen(0x0c, 1));
+    }
+
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    ChangeUserStatus(o, m_nDesiredStatus);
+    gLog.Info("%sServer says we're now: %s\n", L_SRVxSTR, ICQUser::StatusToStatusStr(o->Status(), o->StatusInvisible()));
+    gUserManager.DropOwner();
+
+    break;
+  }
+  default:
+    gLog.Warn("%sUnknown Service Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
+    break;
+  }
+}
+
+//--------ProcessLocationFam-----------------------------------------------
+void CICQDaemon::ProcessLocationFam(const CBuffer &packet, unsigned short nSubtype)
+{
+  switch (nSubtype)
+  {
+  case ICQ_SNAXxLOC_RIGHTSxGRANTED:
+    gLog.Info("%sReceived rights for Location Services\n", L_SRVxSTR);
+    break;
+
+  default:
+    gLog.Warn("%sUnknown Location Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
+    break;
+  }
+}
+
+//--------ProcessBuddyFam--------------------------------------------------
+void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
+{
+  switch (nSubtype)
+  {
+  case ICQ_SNACxSUB_ONLINExLIST:
+  {
+    unsigned long junk1, realIP, userIP, userPort, nTCPSession,
+      nNewStatus, nUin, nOnlineSince, timestamp;
+    unsigned short junk2, nLen, tcpVersion;
+    unsigned char mode;
+    bool gotDCI = false;
+
+    junk1 = packet.UnpackUnsignedLongBE();
+    junk2 = packet.UnpackUnsignedShortBE();
+    nUin  = packet.UnpackUinString();
+
+    junk1 = packet.UnpackUnsignedLongBE(); // tlvcount
+
+    if (!packet.readTLV()) {
+      gLog.Error("%sfuck\n", L_ERRORxSTR);
+      return;
+    }
+
+    if (packet.getTLVLen(0x0c, 1) == 0x25) {
+      CBuffer msg = packet.UnpackTLV(0x0c, 1);
+
+      realIP = msg.UnpackUnsignedLong();
+      userPort = msg.UnpackUnsignedLongBE();
+      mode = msg.UnpackChar();
+      tcpVersion = msg.UnpackUnsignedShortBE();
+      nTCPSession = msg.UnpackUnsignedLongBE();
+      junk1 = msg.UnpackUnsignedLongBE();  // direct connection cookie
+      junk1 = msg.UnpackUnsignedLongBE();
+      timestamp = msg.UnpackUnsignedLongBE();  // will be licq version
+      junk1 = msg.UnpackUnsignedLongBE();
+      gotDCI = true;
+    }
+
+    userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
+    rev_e_long(userIP);
+    nNewStatus = packet.UnpackUnsignedLongTLV(0x06, 1);
+    nOnlineSince = packet.UnpackUnsignedLongTLV(0x03, 1);
+
+    packet.cleanupTLV();
+
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u == NULL)
+    {
+      gLog.Warn("%sUnknown user (%ld) changed status.\n", L_WARNxSTR,
+                nUin);
+      break;
+    }
+    ChangeUserStatus(u, nNewStatus);
+    if((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
+      gLog.Info("%s%s (%ld) changed status: %s (v%01x) [Licq %s/SSL].\n",
+                L_SRVxSTR, u->GetAlias(), nUin, u->StatusStr(), tcpVersion & 0x0F,
+                CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
+    else if((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+      gLog.Info("%s%s (%ld) changed status: %s (v%01x) [Licq %s].\n",
+                L_SRVxSTR, u->GetAlias(), nUin, u->StatusStr(), tcpVersion & 0x0F,
+                CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
+    else if(timestamp == 0xffffffff)
+      gLog.Info("%s%s (%ld) changed status: %s (v%01x) [MIRANDA].\n",
+                L_SRVxSTR, u->GetAlias(), nUin, u->StatusStr(), tcpVersion & 0x0F);
+    else
+      gLog.Info("%s%s (%ld) changed status: %s (v%01x).\n", L_SRVxSTR, u->GetAlias(),
+                nUin, u->StatusStr(), tcpVersion & 0x0F);
+
+    if (gotDCI) {
+      userIP = PacketIpToNetworkIp(userIP);
+      realIP = PacketIpToNetworkIp(realIP);
+      u->SetIpPort(userIP, userPort);
+      u->SetRealIp(realIP);
+      u->SetVersion(tcpVersion);
+      u->SetClientTimestamp(timestamp);
+      // What is mode 1?  We can't connect direct...
+      if (mode == 1 || mode == 6 ||
+          (nNewStatus & ICQ_STATUS_FxDIRECTxLISTED) ||
+          (nNewStatus & ICQ_STATUS_FxDIRECTxAUTH)
+        ) mode = MODE_INDIRECT;
+      if (mode != MODE_DIRECT && mode != MODE_INDIRECT)
+      {
+        gLog.Unknown("%sUnknown peer-to-peer mode for %s (%ld): %d\n", L_UNKNOWNxSTR,
+                     u->GetAlias(), u->Uin(), mode);
+        u->SetMode(MODE_DIRECT);
+        u->SetSendServer(false);
+      }
+      else
+      {
+        u->SetMode(mode);
+        u->SetSendServer(mode == MODE_INDIRECT);
+      }
+      u->SetAutoResponse(NULL);
+      u->SetShowAwayMsg(false);
+    }
+    nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
+    if (nNewStatus)
+    {
+      gLog.Unknown("%sUnknown status flag for %s (%ld): 0x%08lX\n",
+                   L_UNKNOWNxSTR, u->GetAlias(), nUin, nNewStatus);
+    }
+    if ((m_bOnlineNotifies || m_bAlwaysOnlineNotify) && u->OnlineNotify())
+      m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
+    gUserManager.DropUser(u);
+    break;
+  }
+  case ICQ_SNACxSUB_OFFLINExLIST:
+  {
+    unsigned long junk1, nUin;
+    unsigned short junk2;
+
+    junk1 = packet.UnpackUnsignedLongBE();
+    junk2 = packet.UnpackUnsignedShortBE();
+
+    nUin = packet.UnpackUinString();
+
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u == NULL)
+    {
+      gLog.Warn("%sUnknown user (%ld) has gone offline.\n", L_WARNxSTR, nUin);
+      break;
+    }
+    gLog.Info("%s%s (%ld) went offline.\n", L_SRVxSTR, u->GetAlias(), nUin);
+    u->SetClientTimestamp(0);
+    ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
+    gUserManager.DropUser(u);
+    break;
+  }
+  case ICQ_SNACxBDY_RIGHTSxGRANTED:
+  {
+    gLog.Info("%sReceived rights for Contact List..\n", L_SRVxSTR);
+
+    icqUpdateContactList();
+    break;
+  }
+
+  default:
+    gLog.Warn("%sUnknown Buddy Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
+    break;
+  }
+}
+
+//--------ProcessMessageFam------------------------------------------------
+void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
+{
+  // DAW unknown..
+  packet.UnpackUnsignedLongBE();
+  packet.UnpackUnsignedShortBE();
+
+  switch (nSubtype)
+  {
+  case ICQ_SNACxMSG_SERVERxMESSAGE:
+  {
+    unsigned long timestamp1, timestamp2, nUin;
+    unsigned long timeSent;
+    unsigned short mFormat, nMsgLen, nTLVs;
+
+    timestamp1 = packet.UnpackUnsignedLongBE();
+    timestamp2 = packet.UnpackUnsignedLongBE();
+    timeSent   = time(0L);
+    mFormat    = packet.UnpackUnsignedShortBE();
+    nUin       = packet.UnpackUinString();
+
+    if (nUin < 10000) {
+      gLog.Warn("%sMessage through server with strange Uin: %04lx\n", L_WARNxSTR, nUin);
+      break;
+    }
+
+    packet.UnpackUnsignedShortBE(); // warning level ?
+    nTLVs = packet.UnpackUnsignedShortBE();
+    gLog.Info("numtlvs: %d\n",nTLVs);
+    if (nTLVs && !packet.readTLV()) {
+      gLog.Error("Fuck2\n");
+      return;
+    }
+
+
+    switch(mFormat) {
+    case 1:
+    {
+      CBuffer msg = packet.UnpackTLV(0x02, 1);
+      msg.UnpackUnsignedLongBE();  // 7 bytes of junk? 05 01 00 01 01 01 01
+      msg.UnpackUnsignedShortBE();
+      msg.UnpackChar();
+      nMsgLen = msg.UnpackUnsignedShortBE();
+
+      msg.UnpackUnsignedLongBE(); // always ? 0
+      nMsgLen -= 4;
+
+      char* szMessage = new char[nMsgLen+1];
+      for (int i = 0; i < nMsgLen; ++i)
+        szMessage[i] = msg.UnpackChar();
+
+      szMessage[nMsgLen] = '\0';
+
+      // now send the message to the user
+      CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
+      delete [] szMessage;
+
+      // Lock the user to add the message to their queue
+      ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (u == NULL)
+      {
+        if (Ignore(IGNORE_NEWUSERS))
+        {
+          gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
+          RejectEvent(nUin, e);
+          break;
+        }
+        gLog.Info("%sMessage from new user (%ld).\n",
+                  L_SBLANKxSTR, nUin);
+        AddUserToList(nUin);
+        u = gUserManager.FetchUser(nUin, LOCK_W);
+      }
+      else
+        gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
+                  u->GetAlias(), nUin);
+
+      if (AddUserEvent(u, e))
+        m_xOnEventManager.Do(ON_EVENT_MSG, u);
+      gUserManager.DropUser(u);
+      break;
+    }
+    case 2: // OSCAR's "Add ICBM parameter" message
+    {
+      char *buf;
+      gLog.Unknown("%sAdd ICBM message!\n%s\n",L_UNKNOWNxSTR,packet.print(buf));
+      delete [] buf;
+      break;
+    }
+    case 4:
+    {
+      CBuffer msg = packet.UnpackTLV(0x05, 1);
+      char *mbuf;
+      gLog.Unknown("%sUnpacked message\n%s\n", L_UNKNOWNxSTR,
+                   msg.print(mbuf));
+      delete [] mbuf;
+      unsigned short type = msg.UnpackUnsignedShortBE();
+
+      if (type != 0) {
+        gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n", L_ERRORxSTR,
+                     mFormat, packet.print(mbuf));
+        delete [] mbuf;
+      }
+      msg.UnpackUnsignedLongBE();
+      msg.UnpackUnsignedLongBE();
+      msg.UnpackUnsignedLongBE();
+      msg.UnpackUnsignedLongBE();
+      msg.UnpackUnsignedLongBE();
+      msg.UnpackUnsignedLongBE();
+
+      if (!msg.readTLV()) {
+        gLog.Error("Fuck3\n");
+        return;
+      }
+
+      CBuffer payload = msg.UnpackTLV(0x2711, 1);
+      for (int i = 0; i < 2 + 1 + 19 + 4 + 1 + 2 + 2; ++i)
+        payload.UnpackChar(); // junk
+
+      unsigned short Cookie = payload.UnpackUnsignedShort();
+
+      for (int i = 0; i < 12; ++i)
+        payload.UnpackChar(); // junk
+
+      unsigned char msgType = payload.UnpackChar();
+      unsigned char msgFlags = payload.UnpackChar();
+
+      payload.UnpackUnsignedShortBE(); // ???
+      payload.UnpackUnsignedShortBE(); // ???
+
+
+      char* bufmsg = payload.UnpackString();
+      unsigned short msgLen = strlen(bufmsg);
+      gLog.Info("%sformat 4 variant message!\n", L_UNKNOWNxSTR);
+      char *buf;
+      gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n", L_ERRORxSTR,
+                   mFormat, packet.print(buf));
+      delete [] buf;
+
+      CEventMsg *e = CEventMsg::Parse(bufmsg, ICQ_CMDxRCV_SYSxMSGxONLINE, 0, 0);
+      delete [] bufmsg;
+
+      // Lock the user to add the message to their queue
+      ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (u == NULL)
+      {
+        if (Ignore(IGNORE_NEWUSERS))
+        {
+          gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
+          RejectEvent(nUin, e);
+          break;
+        }
+        gLog.Info("%sMessage from new user (%ld).\n",
+                  L_SBLANKxSTR, nUin);
+        AddUserToList(nUin);
+        u = gUserManager.FetchUser(nUin, LOCK_W);
+      }
+      else
+        gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
+                  u->GetAlias(), nUin);
+
+      if (AddUserEvent(u, e))
+        m_xOnEventManager.Do(ON_EVENT_MSG, u);
+      gUserManager.DropUser(u);
+
+      CSrvPacketTcp* p = new CPU_AckThroughServer(nUin, timestamp1, timestamp2, Cookie, msgType, msgFlags, msgLen);
+      SendExpectEvent_Server(p);
+
+      break;
+    }
+    default:
+      char *buf;
+      gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n", L_ERRORxSTR,
+                   mFormat, packet.print(buf));
+      delete [] buf;
+      break;
+    }
+    break;
+  }
+  case ICQ_SNAXxMSG_RIGHTSxGRANTED:
+    gLog.Info("%sReceived rights for Instant Messaging..\n", L_SRVxSTR);
+    break;
+  default:
+    gLog.Warn("%sUnknown Message Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
+    break;
+  }
+}
+
+//--------ProcessBosFam---------------------------------------------
+void CICQDaemon::ProcessBOSFam(CBuffer &packet, unsigned short nSubtype)
+{
+  switch (nSubtype)
+  {
+  case ICQ_SNACxBOS_RIGHTSxGRANTED:
+    gLog.Info("%sReceived BOS rights.\n", L_SRVxSTR);
+    //icqSetStatus(m_nDesiredStatus);
+    break;
+
+  default:
+    gLog.Warn("%sUnknown BOS Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
+    break;
+  }
+}
+
+//--------ProcessVariousFam-----------------------------------------
+void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
+{
+  unsigned long Flags = packet.UnpackUnsignedLongBE();
+  unsigned short nUid = packet.UnpackUnsignedShortBE();
+
+  switch (nSubtype)
+  {
+  case 0x0003: // multi-purpose sub-type
+  {
+    unsigned short nLen, nType, nId;
+
+    if (!packet.readTLV()) {
+      char *buf;
+      gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
+         packet.print(buf));
+      delete buf;
+      break;
+    }
+
+    CBuffer msg = packet.UnpackTLV(1, 0);
+
+    if (msg.Empty()) {
+      char *buf;
+      gLog.Unknown("%sUnknown server response:\n%s\n", L_UNKNOWNxSTR,
+         packet.print(buf));
+      delete buf;
+      break;
+    }
+
+    nLen = msg.UnpackUnsignedShortBE();
+    msg.UnpackUnsignedLong(); // own UIN
+    nType = msg.UnpackUnsignedShortBE();
+    nId = msg.UnpackUnsignedShortBE(); // req-id, which we use to match requests for info and replies
+
+    switch(nType) {
+    case 0x4100:
+    {
+      struct tm sendTM;
+      unsigned long nUin;
+      nUin = msg.UnpackUnsignedLong();
+
+      sendTM.tm_year = msg.UnpackUnsignedShort() - 1900;
+      sendTM.tm_mon = msg.UnpackChar() - 1;
+      sendTM.tm_mday = msg.UnpackChar();
+      sendTM.tm_hour = msg.UnpackChar();
+      sendTM.tm_min = msg.UnpackChar();
+      sendTM.tm_sec = msg.UnpackChar();
+      sendTM.tm_isdst = -1;
+      msg.UnpackChar(); // flags
+
+      // DAW fix the timezone problem
+      char* szMessage = new char[msg.getDataMaxSize()];
+      msg.UnpackString(szMessage); // 2 byte length little endian + string
+      gLog.Info("%sgot Offline Message through server:\n", L_SRVxSTR);
+
+      // now send the message to the user
+      CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, mktime(&sendTM), 0);
+      delete [] szMessage;
+
+      // Lock the user to add the message to their queue
+      ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (u == NULL)
+      {
+        if (Ignore(IGNORE_NEWUSERS))
+        {
+          gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
+          RejectEvent(nUin, e);
+          break;
+        }
+        gLog.Info("%sMessage from new user (%ld).\n",
+                  L_SBLANKxSTR, nUin);
+        AddUserToList(nUin);
+        u = gUserManager.FetchUser(nUin, LOCK_W);
+      }
+      else
+        gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
+                  u->GetAlias(), nUin);
+
+      if (AddUserEvent(u, e))
+        m_xOnEventManager.Do(ON_EVENT_MSG, u);
+      gUserManager.DropUser(u);
+
+      break;
+    }
+    case 0x4200:
+    {
+      gLog.Info("%sEnd of Offline messages (nId: %04hx).\n", L_SRVxSTR, nId);
+      CSrvPacketTcp* p = new CPU_SysMsgDoneAck(nId);
+      SendExpectEvent_Server(p);
+
+      break;
+    }
+    case 0xDA07:
+    {
+      unsigned short nSubtype;
+      unsigned char nResult;
+      nSubtype = msg.UnpackUnsignedShortBE();
+      nResult = msg.UnpackChar();
+      if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e)) {
+	// error: empty result or nonexistent user (1E =  readonly???)
+      } else {
+      	switch (nSubtype) {
+      	  // full info
+        case 0xc800:
+        {
+          // find which user it is, verify we have them on our list
+           ICQUser* u = gUserManager.FetchUserByUid(nUid, LOCK_R);
+           if (u == NULL) break;
+           unsigned long nUin = u->Uin();
+           gUserManager.DropUser(u);
+
+           // Find the relevant event
+           ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_USERxGETINFO, 0, EVENT_SUCCESS);
+
+           u = FindUserForInfoUpdate( nUin, e, "extended");
+           if (u == NULL) break;
+
+           u->SetEnableSave(false);
+
+           // main home info
+           u->SetAlias( msg.UnpackString() );
+           u->SetFirstName( msg.UnpackString() );
+           u->SetLastName( msg.UnpackString() );
+           u->SetEmailPrimary( msg.UnpackString() );
+           u->SetCity( msg.UnpackString() );
+           u->SetState( msg.UnpackString() );
+           u->SetPhoneNumber( msg.UnpackString() );
+           u->SetFaxNumber( msg.UnpackString() );
+           u->SetAddress( msg.UnpackString() );
+           u->SetCellularNumber( msg.UnpackString() );
+           u->SetZipCode( msg.UnpackString() );
+           u->SetCountryCode( msg.UnpackUnsignedShort() );
+           u->SetTimezone( msg.UnpackChar() );
+           u->SetHideEmail( msg.UnpackChar() ); // 0 = no, 1 = yes
+
+           // translating string with Translation Table
+           gTranslator.ServerToClient(u->GetAlias());
+           gTranslator.ServerToClient(u->GetFirstName());
+           gTranslator.ServerToClient(u->GetLastName());
+
+           // save the user infomation
+           u->SetEnableSave(true);
+           u->SaveBasicInfo();
+
+           if (e != NULL)
+             ProcessDoneEvent(e);
+           else
+           {
+             gLog.Warn("%sResponse to unknown extended info request for %s (%ld).\n",
+                       L_WARNxSTR, u->GetAlias(), nUin);
+           }
+           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
+           gUserManager.DropUser(u);
+
+           break;
+        }
+        case 0xdc00:
+          // homepage info
+          char *buf;
+          gLog.Unknown("%shomepage info: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          msg.UnpackUnsignedShortBE(); // unknown WORD
+          break;
+        case 0xeb00:
+          // email info
+
+          gLog.Unknown("%semail info: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          break;
+        case 0x0e01:
+          // unknown
+
+          gLog.Unknown("%sunknown info: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          msg.UnpackUnsignedShortBE(); // WORD 0
+          break;
+        case 0xd200:
+          // work info
+
+          gLog.Unknown("%swork info: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          break;
+        case 0xe600:
+          // LTNS about
+
+          gLog.Unknown("%sabout info: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          break;
+        case 0xf000:
+
+          gLog.Unknown("%spersonal interests: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          // personal interests info
+          break;
+        case 0xfa00:
+
+          gLog.Unknown("%past backgrounds: %04hx\n%s\n", L_UNKNOWNxSTR,
+                       nUid, packet.print(buf));
+          delete [] buf;
+
+          // past background info
+          break;
+      	}
+      }
+      break;
+    }
+    default: {
+      char *buf;
+      gLog.Unknown("%sUnknown SNAC 15,03 response type: %04hx\n%s\n", L_UNKNOWNxSTR,
+                   nType, packet.print(buf));
+      delete [] buf;
+      break;
+    }
+    }
+    break;
+  }
+  default:
+    char *buf;
+    gLog.Unknown("%sUnknown Various Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
+                 nSubtype, packet.print(buf));
+    delete [] buf;
+    break;
+  }
+}
+
+//--------ProcessDataChannel---------------------------------------------------
+
+void CICQDaemon::ProcessDataChannel(CBuffer &packet)
+{
+  unsigned short nFamily, nSubtype;
+
+  packet >> nFamily >> nSubtype;
+  rev_e_short(nFamily);
+  rev_e_short(nSubtype);
+
+  switch (nFamily)
+  {
+  case ICQ_SNACxFAM_SERVICE:
+    ProcessServiceFam(packet, nSubtype);
+    break;
+
+  case ICQ_SNACxFAM_LOCATION:
+    ProcessLocationFam(packet, nSubtype);
+    break;
+
+  case ICQ_SNACxFAM_BUDDY:
+    ProcessBuddyFam(packet, nSubtype);
+    break;
+
+  case ICQ_SNACxFAM_MESSAGE:
+    ProcessMessageFam(packet, nSubtype);
+    break;
+
+  case ICQ_SNACxFAM_BOS:
+    ProcessBOSFam(packet, nSubtype);
+    break;
+
+  case ICQ_SNACxFAM_VARIOUS:
+    ProcessVariousFam(packet, nSubtype);
+    break;
+
+  default:
+    gLog.Warn("%sUnknown Family on data channel: %04hx\n", L_SRVxSTR, nFamily);
+    break;
+  }
+}
+
+//--------ProcessCloseChannel--------------------------------------------------
+
+bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
+{
+  int nSD = m_nTCPSrvSocketDesc;
+  if (nSD < 0) {
+    printf("nsd <0 !\n");
+  }
+  else {
+    m_nTCPSrvSocketDesc = -1;
+    gSocketManager.CloseSocket(nSD);
+  }
+
+  if (packet.getDataSize() == 0) {
+    gLog.Info("%sWe're logging off..\n", L_SRVxSTR);
+    return true;
+  }
+
+  if (!packet.readTLV()) {
+    gLog.Error("%sError during parsing packet!\n", L_ERRORxSTR);
+    return false;
+  }
+
+  unsigned short nError = packet.UnpackUnsignedShortTLV(0x08, 1);
+  switch (nError) {
+  case 0x18:
+    gLog.Error("%sRate limit exceeded.\n", L_ERRORxSTR);
+    m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
+
+    break;
+
+  case 0x05:
+    gLog.Error("%sInvalid UIN and password combination.\n", L_ERRORxSTR);
+    m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
+    break;
+
+  case 0:
+    break;
+
+  default:
+    gLog.Error("%sUnknown sign on error: 0x%02X.\n", L_ERRORxSTR, nError);
+  }
+
+  if (nError)
+  {
+    packet.cleanupTLV();
+    return false;
+  }
+
+  nError = packet.UnpackUnsignedShortTLV(0x09, 1);
+  switch (nError)
+  {
+  case 0x01:
+    gLog.Error("%sYour ICQ number is used from another location.\n", L_ERRORxSTR);
+    m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
+    icqLogoff();
+    break;
+
+  case 0:
+    break;
+
+  default:
+    gLog.Error("%sUnknown runtime error form server: 0x%02X.\n", L_ERRORxSTR, nError);
+  }
+
+  if (nError)
+  {
+    packet.cleanupTLV();
+    return false;
+  }
+
+  char *szNewServer = packet.UnpackStringTLV(0x05, 1);
+  char *szCookie = packet.UnpackStringTLV(0x06, 1);
+  int nCookieLen = packet.getTLVLen(0x06, 1);
+
+  if (!szNewServer || !szCookie)
+  {
+    gLog.Error("%sUnable to sign on: NewServer: %s, cookie: %s.\n", L_ERRORxSTR,
+               szNewServer ? szNewServer : "(null)", szCookie ? szCookie : "(null)");
+    if (szNewServer) delete [] szNewServer;
+    if (szCookie) delete [] szCookie;
+    return false;
+  }
+
+  packet.cleanupTLV();
+
+  char* ptr;
+  if ( (ptr = strchr(szNewServer, ':')))
+    *ptr++ = '\0';
+
+  gLog.Info("%sAuthenticated. Connecting to %s port %s.\n", L_SRVxSTR, szNewServer, ptr);
+
+  // Connect to the new server here and send our cookie
+  ConnectToServer(szNewServer, ptr ? atoi(ptr) : 5190);
+
+  // Send our cookie
+  CPU_SendCookie *p = new CPU_SendCookie(szCookie, nCookieLen);
+  SendExpectEvent_Server(p);
+
+  delete [] szNewServer;
+  delete [] szCookie;
+
+  return true;
+}

@@ -194,7 +194,7 @@ public:
   char GetLanguage1()                   {  return m_nLanguage[0];  }
   char GetLanguage2()                   {  return m_nLanguage[1];  }
   char GetLanguage3()                   {  return m_nLanguage[2];  }
-  char GetLanguage(const char l)            {  return m_nLanguage[l];  }
+  char GetLanguage(const char l)        {  return m_nLanguage[l];  }
 
   // Work Info
   char *GetCompanyCity()                {  return m_szCompanyCity;  }
@@ -219,6 +219,7 @@ public:
   bool EnableSave()                     { return m_bEnableSave; }
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
   unsigned long Uin()                   { return m_nUin; }
+  unsigned short Uid()                  { return m_nUid; }
   unsigned long Sequence(bool = false);
   unsigned long RealIp()                { return m_nRealIp; }
   char Mode()                           { return m_nMode; }
@@ -432,6 +433,7 @@ protected:
   bool m_bOnContactList;
   unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
+  unsigned short m_nUid;
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,
@@ -496,6 +498,7 @@ protected:
   UserEventList m_vcMessages;
 
   static unsigned short s_nNumUserEvents;
+  static unsigned short s_nUid;
 
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
@@ -542,6 +545,26 @@ protected:
 };
 
 
+//=====ICQActiveList============================================================
+
+class ICQActiveList : public ICQUser
+{
+public:
+  ICQActiveList();
+  virtual ~ICQActiveList();
+
+protected:
+  unsigned long m_nOwnerUin;
+  char *m_szTitle;
+  char *m_szSubject;
+  char *m_szHomepage;
+  char *m_szShortDesc;
+  char *m_szLongDesc;
+  char *m_szRequirements;
+};
+
+
+
 //=====CUsers===================================================================
 
 class CUserHashTable
@@ -574,6 +597,7 @@ public:
   unsigned long AddUser(ICQUser *);
   void RemoveUser(unsigned long);
   ICQUser *FetchUser(unsigned long, unsigned short);
+  ICQUser *FetchUserByUid(unsigned short, unsigned short);
   void DropUser(ICQUser *);
   ICQOwner *FetchOwner(unsigned short);
   void DropOwner();

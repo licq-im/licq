@@ -27,8 +27,8 @@ const unsigned short L_ALL      = L_MOST | L_PACKET;
 const unsigned short L_NONE     = 0;
 
 const char L_WARNxSTR[]    = "[WRN] ";
-const char L_UDPxSTR[]     = "[UDP] ";
 const char L_TCPxSTR[]     = "[TCP] ";
+const char L_SRVxSTR[]     = "[SRV] ";
 const char L_ERRORxSTR[]   = "[ERR] ";
 const char L_UNKNOWNxSTR[] = "[???] ";
 const char L_BLANKxSTR[]   = "                ";

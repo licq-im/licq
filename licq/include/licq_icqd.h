@@ -13,7 +13,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <stdio.h>
 
 #include "licq_events.h"
-#include "licq_remoteserver.h"
 #include "licq_onevent.h"
 #include "licq_user.h"
 #include "licq_plugind.h"
@@ -26,9 +25,8 @@ class CLicq;
 class ICQUser;
 class CICQEventTag;
 class TCPSocket;
+class SrvSocket;
 class INetSocket;
-class UDPSocket;
-
 
 const unsigned short IGNORE_MASSMSG    = 1;
 const unsigned short IGNORE_NEWUSERS   = 2;
@@ -216,8 +214,6 @@ public:
 
   // NOT MT SAFE
   const char *getUrlViewer();
-  unsigned short getDefaultRemotePort()  { return(m_nDefaultRemotePort); }
-  void setDefaultRemotePort(unsigned short n)  { n == 0 ? m_nDefaultRemotePort = 4000 : m_nDefaultRemotePort = n; }
   void setUrlViewer(const char *s);
 
   bool ViewUrl(const char *url);
@@ -245,8 +241,6 @@ public:
   CICQSignal *PopPluginSignal();
   ICQEvent *PopPluginEvent();
 
-  ICQRemoteServers icqServers;
-
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
   DaemonStatsList &AllStats() { return m_sStats; }
@@ -271,13 +265,12 @@ protected:
                 m_nIgnoreTypes;
   unsigned short m_nTCPPortsLow,
                  m_nTCPPortsHigh,
-                 m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket,
                  m_nServerSequence,
                  m_nErrorTypes,
                  m_nBirthdayRange;
   char m_szErrorFile[64];
-  int m_nUDPSocketDesc,
+  int m_nTCPSrvSocketDesc,
       m_nTCPSocketDesc;
   bool m_bShuttingDown,
        m_bLoggingOn,
@@ -332,11 +325,23 @@ protected:
   ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
-  void AckUDP(unsigned short, unsigned short, UDPSocket *);
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, TCPSocket *);
 
-  unsigned short ProcessUdpPacket(UDPSocket *, unsigned short = 0);
+  bool ProcessSrvPacket(CBuffer&);
+
+  //--- Channels ---------
+  bool ProcessCloseChannel(CBuffer&);
+  void ProcessDataChannel(CBuffer&);
+
+  //--- Families ---------
+  void ProcessServiceFam(CBuffer&, unsigned short);
+  void ProcessLocationFam(const CBuffer&, unsigned short);
+  void ProcessBuddyFam(CBuffer&, unsigned short);
+  void ProcessMessageFam(CBuffer&, unsigned short);
+  void ProcessVariousFam(CBuffer&, unsigned short);
+  void ProcessBOSFam(CBuffer&, unsigned short);
+
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
   bool ProcessTcpPacket(TCPSocket *);
@@ -345,7 +350,8 @@ protected:
 
   static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short, unsigned short);
   static bool Handshake_Recv(TCPSocket *, unsigned short);
-  int ConnectToServer();
+  int ConnectToServer(const char* server, unsigned short port);
+  int ConnectToLoginServer();
   int ConnectToUser(unsigned long);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
      unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort);

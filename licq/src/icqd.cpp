@@ -76,8 +76,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Initialise the data values
   m_nIgnoreTypes = 0;
-  m_nUDPSocketDesc = -1;
   m_nTCPSocketDesc = -1;
+  m_nTCPSrvSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
   m_bShuttingDown = false;
   m_nServerAck = 0;
@@ -91,29 +91,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.LoadFile(m_szConfigFile);
   licqConf.SetFlags(0);
 
-  // -----Network configuration-----
-  unsigned short numRemoteServers, remoteServerPort;
-  char remoteServerID[32], remotePortID[32], remoteServerName[64];
-
   licqConf.SetSection("network");
-  licqConf.ReadNum("NumOfServers", numRemoteServers, 1);
-
-  // Check for a default server port - if it's not there, we set it to the internal default
-  licqConf.ReadNum("DefaultServerPort", m_nDefaultRemotePort, DEFAULT_SERVER_PORT);
-
-  // read in all the servers
-  for(int i = 0; i < numRemoteServers; i++)
-  {
-     sprintf(remoteServerID, "Server%d", i + 1);
-     sprintf(remotePortID, "ServerPort%d", i + 1);
-     if (!licqConf.ReadStr(remoteServerID, remoteServerName)) continue;
-     licqConf.ReadNum(remotePortID, remoteServerPort, getDefaultRemotePort());
-     // backward compatibility
-     if ( i == 0 && !strcmp( remoteServerName, "icq.mirabilis.com" ) )
-       strcpy( remoteServerName, "icq.icq.com" );
-     icqServers.addServer(remoteServerName, remoteServerPort);
-  }
-
   bool bTcpEnabled;
   unsigned short nTCPPortsLow, nTCPPortsHigh;
   licqConf.ReadNum("TCPPortsLow", nTCPPortsLow, 0);
@@ -223,8 +201,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 #endif
   m_nStartTime = time(NULL);
   if (m_nResetTime == 0) m_nResetTime = m_nStartTime;
-
-  icqServers.setServer(1);    // set the initial UDP remote server (opened in ConnectToServer)
 
   // Pipes
   pipe(pipe_newsocket);
@@ -531,7 +507,6 @@ void CICQDaemon::SaveConf()
   if (!licqConf.LoadFile(m_szConfigFile)) return;
 
   licqConf.SetSection("network");
-  licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
   licqConf.WriteNum("TCPPortsLow", m_nTCPPortsLow);
   licqConf.WriteNum("TCPPortsHigh", m_nTCPPortsHigh);
   licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
@@ -761,7 +736,7 @@ bool CICQDaemon::AddUserToList(unsigned long nUin)
   gUserManager.DropUser(u);
   SaveUserList();
 
-  if (m_nUDPSocketDesc != -1) icqAddUser(nUin);
+  if (m_nTCPSrvSocketDesc != -1) icqAddUser(nUin);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nUin));
 
@@ -789,7 +764,7 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   // At this point the user is write locked
   SaveUserList();
 
-  if (m_nUDPSocketDesc != -1) icqAddUser(nu->Uin());
+  if (m_nTCPSrvSocketDesc != -1) icqAddUser(nu->Uin());
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->Uin()));
 }
@@ -930,7 +905,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
   if (m_bShuttingDown) return NULL;
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(this, m_nUDPSocketDesc, packet, CONNECT_SERVER, nUin, ue);
+  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, nUin, ue);
   return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 }
 
@@ -1164,6 +1139,7 @@ ICQEvent *CICQDaemon::DoneEvent(unsigned long tag, EventResult _eResult)
  *
  * Processes the given event possibly passes the result to the gui.
  *----------------------------------------------------------------------------*/
+#if ICQ_VERSION < 8
 void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 {
 #if ICQ_VERSION != 5
@@ -1298,7 +1274,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   }
 #endif
 }
-
+#endif
 
 
 /*------------------------------------------------------------------------------
@@ -1594,7 +1570,7 @@ unsigned long StringToStatus(char *_szStatus)
 int GetUinFromArg(char **p_szArg, unsigned long *nUin)
 {
   char *szAlias, *szCmd;
-  bool bCheckUin = true; 
+  bool bCheckUin = true;
   char *szArg = *p_szArg;
 
   *nUin = 0;
@@ -1602,7 +1578,7 @@ int GetUinFromArg(char **p_szArg, unsigned long *nUin)
   if (szArg == NULL) {
     return 0;
   }
-   
+
   // Check if the alias is quoted
   if (szArg[0] == '"')
   {
@@ -1624,15 +1600,15 @@ int GetUinFromArg(char **p_szArg, unsigned long *nUin)
     return 0;
   }
   else
-  {   
+  {
     szAlias = szArg;
     szCmd = strchr(szArg, ' ');
   }
-   
+
   if (szCmd != NULL)
   {
     *szCmd++ = '\0';
-    STRIP(szCmd);   
+    STRIP(szCmd);
   }
   *p_szArg = szCmd;
 
@@ -1644,7 +1620,7 @@ int GetUinFromArg(char **p_szArg, unsigned long *nUin)
     while (isdigit(*sz)) sz++;
     if (*sz == '\0') *nUin = atol(szAlias);
   }
-   
+
   if (*nUin == 0)
   {
     FOR_EACH_USER_START(LOCK_R)
@@ -1654,14 +1630,14 @@ int GetUinFromArg(char **p_szArg, unsigned long *nUin)
         *nUin = pUser->Uin();
         FOR_EACH_USER_BREAK;
       }
-    }  
+    }
     FOR_EACH_USER_END
-    if (*nUin == 0)   
+    if (*nUin == 0)
     {
       gLog.Warn("%sInvalid user: %s.\n", L_WARNxSTR, szAlias);
       return -1;
-    } 
-  }   
+    }
+  }
   else
   {
     if (!gUserManager.IsOnList(*nUin))
@@ -1669,7 +1645,7 @@ int GetUinFromArg(char **p_szArg, unsigned long *nUin)
       gLog.Warn("%sInvalid uin: %lu.\n", L_WARNxSTR, *nUin);
       return -1;
     }
-  }  
+  }
 
   return 0;
 }

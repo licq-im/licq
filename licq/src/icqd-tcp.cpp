@@ -57,7 +57,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
      }
      CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
         ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), mDos);
-     gLog.Info("%sSending message through server (#%ld).\n", L_UDPxSTR, p->Sequence());
+     gLog.Info("%sSending message through server (#%ld).\n", L_SRVxSTR, p->Sequence());
      result = SendExpectEvent_Server(_nUin, p, e);
   }
   else        // send direct
@@ -133,7 +133,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
     CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
        ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
-    gLog.Info("%sSending url through server (#%ld).\n", L_UDPxSTR, p->Sequence());
+    gLog.Info("%sSending url through server (#%ld).\n", L_SRVxSTR, p->Sequence());
     result = SendExpectEvent_Server(_nUin, p, e);
   }
   else
@@ -249,7 +249,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
     CPU_ThroughServer *p = new CPU_ThroughServer(nUin,
        ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
-    gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->Sequence());
+    gLog.Info("%sSending contact list through server (#%ld).\n", L_SRVxSTR, p->Sequence());
     result = SendExpectEvent_Server(nUin, p, e);
   }
   else
@@ -545,7 +545,6 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       return true;
     }
     case 6:
-    case 7:
     {
       // Send the hanshake
       CPacketTcp_Handshake_v6 p(nUin, 0, nPort);
@@ -570,6 +569,46 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
       CPacketTcp_Handshake_v6 p_in(&s->RecvBuffer());
+      s->ClearRecvBuffer();
+      if (p.SessionId() != p_in.SessionId())
+      {
+        gLog.Warn("%sBad handshake session id: received %ld, expecting %ld.\n",
+           L_WARNxSTR, p_in.SessionId(), p.SessionId());
+        return false;
+      }
+
+      // Send the hanshake ack
+      CPacketTcp_Handshake_Ack p_ack;
+      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+
+      return true;
+    }
+
+    case 7:
+    {
+      // Send the hanshake
+      CPacketTcp_Handshake_v7 p(nUin, 0, nPort);
+      if (!s->SendPacket(p.getBuffer())) goto sock_error;
+
+      // Wait for the handshake ack
+      do
+      {
+        if (!s->RecvPacket()) goto sock_error;
+      } while (!s->RecvBufferFull());
+      unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
+      s->ClearRecvBuffer();
+      if (nOk != 1)
+      {
+        gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
+        return false;
+      }
+
+      // Wait for the reverse handshake
+      do
+      {
+        if (!s->RecvPacket()) goto sock_error;
+      } while (!s->RecvBufferFull());
+      CPacketTcp_Handshake_v7 p_in(&s->RecvBuffer());
       s->ClearRecvBuffer();
       if (p.SessionId() != p_in.SessionId())
       {
@@ -899,7 +938,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         char *buf;
         gLog.Unknown("%sInvalid TCPv4 encryption:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
-        delete buf;
+        delete [] buf;
         return false;
       }
       packet >> nUin
@@ -914,14 +953,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       break;
     }
     case 6:
-    case 7:
     {
       nUin = pSock->Owner();
       if (!Decrypt_Client(&packet, 6))
       {
         char *buf;
         gLog.Unknown("%sInvalid TCPv6 encryption:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
-        delete buf;
+        delete [] buf;
         return false;
       }
       packet.UnpackUnsignedLong(); // Checksum
@@ -934,6 +972,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       ackFlags = packet.UnpackUnsignedShort();
       msgFlags = packet.UnpackUnsignedShort();
       packet >> messageLen;
+      break;
+    }
+    case 7:
+    {
+      char *buf;
+      gLog.Unknown("%sUnknown TCPv7 packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
+      delete [] buf;
       break;
     }
     default:
@@ -949,7 +994,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     char *buf;
     gLog.Unknown("%sInvalid TCP packet (uin: %08lx, cmd: %04x, subcmd: %04x):\n%s\n",
                  L_UNKNOWNxSTR, nUin, command, newCommand, packet.print(buf));
-    delete buf;
+    delete [] buf;
     return false;
   }
 
@@ -961,7 +1006,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     else
       gLog.Warn("%sTCP message from invalid UIN (%ld, expect %ld):\n%s\n",
                 L_WARNxSTR, nUin, pSock->Owner(), packet.print(buf));
-    delete buf;
+    delete [] buf;
     return false;
   }
 
@@ -1823,7 +1868,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
     char *buf;
     gLog.Unknown("%sUnknown TCP handshake packet (command = 0x%02X):\n%s\n",
                  L_UNKNOWNxSTR, cHandshake, b.print(buf));
-    delete buf;
+    delete [] buf;
     return false;
   }
 
@@ -1833,6 +1878,41 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
   switch (VersionToUse(nVersionMajor))
   {
     case 7:
+    {
+      b.Reset();
+      char *buf;
+      gLog.Unknown("%sTCP handshake packet v7 (command = 0x%02X):\n%s\n",
+                   L_UNKNOWNxSTR, cHandshake, b.print(buf));
+      delete [] buf;
+
+      CPacketTcp_Handshake_v7 p_in(&b);
+      nUin = p_in.SourceUin();
+
+      // Send the ack
+      CPacketTcp_Handshake_Ack p_ack;
+      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+
+      // Send the handshake
+      CPacketTcp_Handshake_v7 p_out(nUin, p_in.SessionId(), nPort);
+      if (!s->SendPacket(p_out.getBuffer())) goto sock_error;
+
+      // Wait for the ack (this is very bad form...blocking recv here)
+      s->ClearRecvBuffer();
+      do
+      {
+        if (!s->RecvPacket()) goto sock_error;
+      } while (!s->RecvBufferFull());
+      unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
+      s->ClearRecvBuffer();
+      if (nOk != 1)
+      {
+        gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
+        return false;
+      }
+      nVersion = 7;
+      break;
+    }
+
     case 6:
     {
       b.Reset();
@@ -1888,7 +1968,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
       char *buf;
       gLog.Unknown("%sUnknown TCP handshake packet :\n%s\n",
                    L_UNKNOWNxSTR, b.print(buf));
-      delete buf;
+      delete [] buf;
       return false;
     }
   }

@@ -409,6 +409,30 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
   return u;
 }
 
+ICQUser *CUserManager::FetchUserByUid(unsigned short _nUid, unsigned short _nLockType)
+{
+  ICQUser *u = NULL;
+
+  gLog.Info("fetchuserbyid: %d\n", _nUid);
+
+  LockUserList(LOCK_R);
+  for (UserList::iterator iter = m_vpcUsers.begin();
+       iter != m_vpcUsers.end();
+       ++iter) {
+
+      if ( (*iter)->Uid() == _nUid) {
+          u = *iter;
+          break;
+      }
+  }
+
+  if (u != NULL)
+    u->Lock(_nLockType);
+
+  UnlockUserList();
+
+  return u;
+}
 
 
 /*---------------------------------------------------------------------------
@@ -731,6 +755,7 @@ void CUserHashTable::Unlock()
 //=====CUser====================================================================
 
 unsigned short ICQUser::s_nNumUserEvents = 0;
+unsigned short ICQUser::s_nUid = 0;
 pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
 
@@ -1039,6 +1064,8 @@ void ICQUser::Init(unsigned long _nUin)
   m_szAutoResponse = NULL;
   m_szEncoding = strdup("");
   m_bSecure = false;
+
+  m_nUid = s_nUid++;
 
   // General Info
   m_szAlias = NULL;

@@ -430,7 +430,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
 
 
 //-----INetSocket::SetRemoteAddr-----------------------------------------------
-bool INetSocket::SetRemoteAddr(char *_szRemoteName, unsigned short _nRemotePort)
+bool INetSocket::SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort)
 {
   return(SetRemoteAddr(GetIpByName(_szRemoteName), _nRemotePort));
 }
@@ -442,13 +442,11 @@ void INetSocket::CloseConnection()
   m_xRecvBuffer.Clear();
   if (m_nDescriptor != -1)
   {
-    close (m_nDescriptor);
+    ::shutdown(m_nDescriptor, 2);
+    ::close (m_nDescriptor);
     m_nDescriptor = -1;
   }
 }
-
-
-
 
 //-----INetSocket::SendRaw------------------------------------------------------
 bool INetSocket::SendRaw(CBuffer *b)
@@ -497,6 +495,135 @@ bool INetSocket::RecvRaw()
   return (true);
 }
 
+//=====SrvSocket===============================================================
+
+/*-----SrvSocket::SendPacket---------------------------------------------------
+ * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
+ * that the entire packet will be sent, however, it may block if the tcp
+ * buffer is full.  This should not be a problem unless we are sending a huge
+ * packet.
+ *---------------------------------------------------------------------------*/
+
+bool SrvSocket::SendPacket(CBuffer *b_in)
+{
+  CBuffer *b = b_in;
+
+  unsigned long nTotalBytesSent = 0;
+  int nBytesSent = 0;
+
+  // send the packet
+  nTotalBytesSent = 0;
+  errno = 0;
+  while (nTotalBytesSent < b->getDataSize())
+  {
+    nBytesSent = send(m_nDescriptor, b->getDataStart() + nTotalBytesSent,
+                      b->getDataSize() - nTotalBytesSent, 0);
+    if (nBytesSent <= 0)
+    {
+      if (nBytesSent < 0 && errno == EINTR) continue;
+      m_nErrorType = SOCK_ERROR_errno;
+      if (b != b_in) delete b;
+      return(false);
+    }
+    nTotalBytesSent += nBytesSent;
+  }
+
+  // Print the packet
+  DumpPacket(b, D_SENDER);
+
+  if (b != b_in) delete b;
+  return (true);
+}
+
+/*-----SrvSocket::ReceivePacket------------------------------------------------
+ * Receive data on the socket.  Checks the buffer to see if it is empty, if
+ * so, then it will create it using either the size read in from the socket
+ * (the first two bytes available) or the given size.
+ *---------------------------------------------------------------------------*/
+bool SrvSocket::RecvPacket()
+{
+  if (!m_xRecvBuffer.Empty())
+  {
+    gLog.Error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%ld bytes).\n",
+              L_WARNxSTR, m_xRecvBuffer.getDataSize());
+    return (true);
+  }
+
+  int nBytesReceived = 0;
+  errno = 0;
+
+  // Check if the buffer is empty
+  char *buffer = new char[6];
+  int nSixBytes = 0;
+  while (nSixBytes != 6)
+  {
+    nBytesReceived = read(m_nDescriptor, buffer + nSixBytes, 6 - nSixBytes);
+    if (nBytesReceived <= 0)
+    {
+      if (nBytesReceived == 0)
+        gLog.Warn("server socket was closed!!!\n");
+      else {
+        char buf[128];
+        m_nErrorType = SOCK_ERROR_errno;
+        gLog.Warn("%serror during receiving from server socket :-((\n%s%s\n",
+                  L_WARNxSTR, L_BLANKxSTR, ErrorStr(buf, sizeof(buf)));
+      }
+      delete[] buffer;
+      return (false);
+    }
+    nSixBytes += nBytesReceived;
+  }
+
+  // now we start to verify the FLAP header
+  if (buffer[0] != 0x2a) {
+    gLog.Warn("%sServer send bad packet start code: %d.\n", L_WARNxSTR, buffer[0]);
+    gLog.Warn("%sSixbyte: %02x %02x %02x %02x %02x %02x\n", L_WARNxSTR,
+              buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
+    m_nErrorType = SOCK_ERROR_errno;
+    delete[] buffer;
+    return false;
+  }
+
+  // DAW maybe verify sequence number ?
+
+  unsigned short nLen = ((unsigned char)buffer[5]) + (((unsigned char)buffer[4]) << 8);
+  if (nLen >= MAX_RECV_SIZE) {
+    gLog.Warn("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, SOCK_ERROR_internal);
+    m_nErrorType = SOCK_ERROR_errno;
+    delete[] buffer;
+    return false;
+  }
+
+  // push the 6 bytes at the beginning of the packet again..
+  m_xRecvBuffer.Create(nLen + 6);
+  m_xRecvBuffer.Pack(buffer, 6);
+  delete[] buffer;
+
+  while ( !m_xRecvBuffer.Full()) {
+    // Determine the number of bytes left to be read into the buffer
+    unsigned long nBytesLeft = m_xRecvBuffer.getDataStart() +
+                               m_xRecvBuffer.getDataMaxSize() -
+                               m_xRecvBuffer.getDataPosWrite();
+
+    nBytesReceived = read(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft);
+    if (nBytesReceived == 0 ||
+        (nBytesReceived < 0 && errno != EINTR) )
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      return (false);
+    }
+    m_xRecvBuffer.incDataPosWrite(nBytesReceived);
+  }
+
+  DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+
+  return (true);
+}
+
+
+SrvSocket::~SrvSocket()
+{
+}
 
 //=====TCPSocket===============================================================
 
@@ -613,12 +740,10 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
   unsigned long nTotalBytesSent = 0;
   int nBytesSent = 0;
 
-  // send the length of the packet, close the connection and return false if unable to send
-  while (nTotalBytesSent < 2)
-  {
+  //  send the length of the packet, close the connection and return false if unable to send
+  while (nTotalBytesSent < 2) {
     nBytesSent = send(m_nDescriptor, pcSize + nTotalBytesSent, 2 - nTotalBytesSent, 0);
-    if (nBytesSent <= 0)
-    {
+    if (nBytesSent <= 0) {
       delete[] pcSize;
       if (b != b_in) delete b;
       m_nErrorType = SOCK_ERROR_errno;

@@ -1423,18 +1423,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
           sentLocalTime += 1800;
       }
 
-      // filter out dupes.. this is as best as it can get..
-      ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (u) {
-        if (u->Touched() >= sentLocalTime) {
-          // its a dupe
-          gUserManager.DropUser(u);
-          break;
-        }
-        u->Touch();
-        gUserManager.DropUser(u);
-      }
-
       // process the system message, sending the time it occured converted to a time_t structure
       ProcessSystemMessage(packet, nUin, newCommand, sentLocalTime);
       break;

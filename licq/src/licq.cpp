@@ -144,7 +144,9 @@ list<unsigned short> LP_Ids;
 
 CLicq::CLicq()
 {
-  DEBUG_LEVEL = 0;
+  // DAM debug level increased for now
+  // DEBUG_LEVEL = 0;
+  DEBUG_LEVEL = 31;
   licqDaemon = NULL;
   pthread_mutex_init(&mutex_plugins, NULL);
 }

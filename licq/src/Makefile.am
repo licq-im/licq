@@ -8,12 +8,12 @@ noinst_HEADERS = licq.conf.h licq.h  \
 
 bin_PROGRAMS = licq
 licq_SOURCES = licq.cpp main.cpp \
-         icqpacket.cpp socket.cpp icqd.cpp icqd-udp.cpp \
-         icqd-tcp.cpp icqd-threads.cpp remoteserver.cpp \
-			   icqevent.cpp buffer.cpp user.cpp history.cpp \
-			   utility.cpp countrycodes.c log.cpp translate.cpp \
-			   file.cpp message.cpp support.c pthread_rdwr.c \
-			   onevent.cpp plugind.cpp sar.cpp languagecodes.c \
+         icqpacket.cpp socket.cpp icqd.cpp \
+         icqd-tcp.cpp icqd-srv.cpp icqd-threads.cpp \
+	 icqevent.cpp buffer.cpp user.cpp history.cpp \
+	 utility.cpp countrycodes.c log.cpp translate.cpp \
+	 file.cpp message.cpp support.c pthread_rdwr.c \
+	 onevent.cpp plugind.cpp sar.cpp languagecodes.c \
          icqd-chat.cpp sighandler.c icqd-filetransfer.cpp \
          hebrev.c icqcolor.cpp
 

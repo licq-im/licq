@@ -3,13 +3,86 @@
 #define ICQDEFINES_H
 
 // Version constants
-#define ICQ_VERSION 5
 #define MODE_DIRECT 0x04
 #define MODE_INDIRECT 0x02
+#define MODE_DENIED   0x01  // user denies direct connection from "any" user
+
+#define ICQ_VERSION 8
 const unsigned short ICQ_VERSION_TCP               = 0x0006;
 
 #define LICQ_WITHSSL     0x7D800000
 #define LICQ_WITHOUTSSL  0x7D000000
+
+// Server channels
+const unsigned char ICQ_CHNxNEW                    = 0x01;
+const unsigned char ICQ_CHNxDATA                   = 0x02;
+const unsigned char ICQ_CHNxERROR                  = 0x03;
+const unsigned char ICQ_CHNxCLOSE                  = 0x04;
+const unsigned char ICQ_CHNxPING                   = 0x05;
+
+// Server SNAC families
+const unsigned short ICQ_SNACxFAM_SERVICE          = 0x0001;
+const unsigned short ICQ_SNACxFAM_LOCATION         = 0x0002;
+const unsigned short ICQ_SNACxFAM_BUDDY            = 0x0003;
+const unsigned short ICQ_SNACxFAM_MESSAGE          = 0x0004;
+const unsigned short ICQ_SNACxFAM_BOS              = 0x0009;
+const unsigned short ICQ_SNACxFAM_LISTS            = 0x0013;
+const unsigned short ICQ_SNACxFAM_VARIOUS          = 0x0015;
+
+// Subtypes for service family
+const unsigned short ICQ_SNACxSUB_ERROR            = 0x0001; // server
+const unsigned short ICQ_SNACxSUB_READYxCLIENT     = 0x0002; // client
+const unsigned short ICQ_SNACxSUB_READYxSERVER     = 0x0003; // server
+const unsigned short ICQ_SNACxSUB_NEW_SERVICE      = 0x0004; // client
+const unsigned short ICQ_SNACxSUB_REDIRECT         = 0x0005; // server
+const unsigned short ICQ_SNACxSUB_REQ_RATE_INFO    = 0x0006; // client
+const unsigned short ICQ_SNACxSUB_RATE_INFO        = 0x0007; // server
+const unsigned short ICQ_SNACxSND_RATE_ACK         = 0x0008; // client
+
+const unsigned short ICQ_SNACxSUB_RATE_CHANGE      = 0x000a; // server
+const unsigned short ICQ_SNACxSUB_PAUSE            = 0x000b; // server
+const unsigned short ICQ_SNACxSUB_RESUME           = 0x000d; // server
+const unsigned short ICQ_SNACxSRV_GETxUSERxINFO    = 0x000e; // client
+const unsigned short ICQ_SNACxRCV_NAMExINFO        = 0x000f; // server
+const unsigned short ICQ_SNACxSND_NAMExINFOxACK    = 0x0011; // client
+const unsigned short ICQ_SNACxSRV_IMxICQ           = 0x0017; // client
+const unsigned short ICQ_SNACxSRV_ACKxIMxICQ       = 0x0018; // server
+const unsigned short ICQ_SNACxSRV_SETxSTATUS       = 0x001e; // client
+
+// Subtypes for location family
+const unsigned short ICQ_SNACxLOC_REQUESTxRIGHTS   = 0x0002; // client
+const unsigned short ICQ_SNAXxLOC_RIGHTSxGRANTED   = 0x0003; // server
+const unsigned short ICQ_SNACxLOC_SETxUSERxINFO    = 0x0004;
+
+// Subtypes for buddy family
+const unsigned short ICQ_SNACxBDY_REQUESTxRIGHTS   = 0x0002; // client
+const unsigned short ICQ_SNACxBDY_RIGHTSxGRANTED   = 0x0003; // server
+const unsigned short ICQ_SNACxBDY_ADDxTOxLIST      = 0x0004; // client
+
+// Subtypes for message family
+const unsigned short ICQ_SNACxMSG_SETxICQxMODE     = 0x0002; // client
+const unsigned short ICQ_SNACxMSG_REQUESTxRIGHTS   = 0x0004; // client
+const unsigned short ICQ_SNAXxMSG_RIGHTSxGRANTED   = 0x0005; // server
+const unsigned short ICQ_SNACxMSG_SENDxSERVER      = 0x0006; // client
+const unsigned short ICQ_SNACxMSG_SERVERxMESSAGE   = 0x0007; // server
+const unsigned short ICQ_SNACxSUB_ONLINExLIST      = 0x000b;
+const unsigned short ICQ_SNACxSUB_OFFLINExLIST     = 0x000c;
+
+// Subtypes for BOS family
+const unsigned short ICQ_SNACxBOS_REQUESTxRIGHTS   = 0x0002; // client
+const unsigned short ICQ_SNACxBOS_RIGHTSxGRANTED   = 0x0003; // client
+const unsigned short ICQ_SNACxBOS_ADDxVISIBLExLIST = 0x0005;
+const unsigned short ICQ_SNACxBOS_REMxVISIBLExLIST = 0x0006;
+const unsigned short ICQ_SNACxBOS_ADDxINVISIBxLIST = 0x0007;
+const unsigned short ICQ_SNACxBOS_REMxINVISIBxLIST = 0x0008;
+
+// Subtypes for various family
+const unsigned short ICQ_SNACxOFF_SYSMSG           = 0x0002; // client
+const unsigned short ICQ_SNACxOFF_SYSMSGxACK       = 0x0002;
+const unsigned short ICQ_SNACxMETA_INFO            = 0x0002; // client
+
+// messagetypes
+const unsigned short ICQ_MSGxAUTHORIZE             = 0x0008;
 
 // UDP commands
 const unsigned short ICQ_CMDxRCV_ACK               = 0x000A; //  10
@@ -38,7 +111,7 @@ const unsigned short ICQ_CMDxRCV_USERxDETAILS      = 0x0122; // 290
 const unsigned short ICQ_CMDxRCV_USERxINVALIDxUIN  = 0x012C; // 300
 const unsigned short ICQ_CMDxRCV_REVERSExTCP       = 0x015E; // 350
 const unsigned short ICQ_CMDxRCV_USERxSTATUS       = 0x01A4; // 420
-#if ICQ_VERSION == 4 || ICQ_VERSION == 5
+#if ICQ_VERSION >= 4
 const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x01E0; // 480
 const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x01EA; // 490
 #endif
@@ -68,7 +141,7 @@ const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x04A6; // 1190
 #endif
 const unsigned short ICQ_CMDxSND_UPDATExDETAIL     = 0x04B0; // 1200
 const unsigned short ICQ_CMDxSND_SETxSTATUS        = 0x04D8; // 1240
-#if ICQ_VERSION == 4 || ICQ_VERSION == 5
+#if ICQ_VERSION >= 4
 const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x050A; // 1290
 #endif
 const unsigned short ICQ_CMDxSND_UPDATExAUTH       = 0x0514; // 1300
@@ -190,15 +263,18 @@ const unsigned short ICQ_TCPxMSG_FxNA              = 0x0800;
 const unsigned short ICQ_TCPxMSG_FxDND             = 0x1000;
 
 const unsigned long ICQ_STATUS_FxFLAGS             = 0xFFFF0000;
-const unsigned long ICQ_STATUS_FxUNKNOWNxFLAGS     = 0xDFD0FCC8;
+const unsigned long ICQ_STATUS_FxUNKNOWNxFLAGS     = 0xCFC0FCC8;
 const unsigned long ICQ_STATUS_FxPRIVATE           = 0x00000100;
 const unsigned long ICQ_STATUS_FxPFMxAVAILABLE     = 0x00000200;  // not implemented
 const unsigned long ICQ_STATUS_FxWEBxPRESENCE      = 0x00010000;
 const unsigned long ICQ_STATUS_FxHIDExIP           = 0x00020000;
 const unsigned long ICQ_STATUS_FxPFM               = 0x00040000;  // not implemented
 const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;
+const unsigned long ICQ_STATUS_FxDIRECTxDISABLED   = 0x00100000;
 const unsigned long ICQ_STATUS_FxICQxHOMEPAGE      = 0x00200000;  // not implemented
-const unsigned long ICQ_STATUS_FxSCREENxSAVER      = 0x20000000;  // not implemented
+const unsigned long ICQ_STATUS_FxDIRECTxLISTED     = 0x20000000;  // will accept connectio only when listed on contact list
+const unsigned long ICQ_STATUS_FxDIRECTxAUTH       = 0x10000000;  // will accept connectio only when authorized
+
 
 const unsigned long ICQ_RANDOMxCHATxGROUP_NONE     = 0;
 const unsigned long ICQ_RANDOMxCHATxGROUP_GENERAL  = 1;

@@ -730,7 +730,6 @@ bool CChatManager::ProcessPacket(CChatUser *u)
     case CHAT_STATE_HANDSHAKE:
     {
       // get the handshake packet
-      CBuffer hbuf(u->sock.RecvBuffer());
       if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort()))
       {
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
@@ -740,13 +739,13 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       {
         case 2:
         case 3:
-          u->client.LoadFromHandshake_v2(hbuf);
+          u->client.LoadFromHandshake_v2(u->sock.RecvBuffer());
           break;
         case 4:
-          u->client.LoadFromHandshake_v4(hbuf);
+          u->client.LoadFromHandshake_v4(u->sock.RecvBuffer());
           break;
         case 6:
-          u->client.LoadFromHandshake_v6(hbuf);
+          u->client.LoadFromHandshake_v6(u->sock.RecvBuffer());
           break;
       }
       gLog.Info("%sChat: Received handshake from %ld [v%ld].\n", L_TCPxSTR,
@@ -1134,10 +1133,10 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
           FinishKickVote(iter, true);
         else if ((*iter)->nYes + (*iter)->nNo == (*iter)->nNumUsers)
           FinishKickVote(iter, false);
-          
-        
+
+
         PushChatEvent(new CChatEvent(CHAT_KICKxYES, u));
-        break;        
+        break;
       }
 
       case CHAT_KICKxNO:
@@ -1197,7 +1196,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
 
         CBuffer bye(4);
         SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, nUin, true);
-        
+
         CloseClient(*iter);
         break;
       }
@@ -1377,7 +1376,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
           PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
           break;
         }
-        
+
         case CHAT_KICK:
         {
           if (u->chatQueue.size() < 4)  return true;
@@ -1456,7 +1455,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
           if (u->chatQueue.size() < 6)  return true;
           unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
             (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
-        
+
           // Find the user and say bye-bye to him
           ChatUserList::iterator iter;
           for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
@@ -1469,7 +1468,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
           CBuffer bye(4);
           SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, nUin, true);
-        
+
           CloseClient(*iter);
           break;
         }
@@ -1492,7 +1491,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
           PushChatEvent(new CChatEvent(CHAT_DISCONNECTIONxKICKED, u));
           break;
         }
-      
+
         case CHAT_DISCONNECTION:        // they will disconnect anyway
         {
           break;
@@ -1593,7 +1592,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
     {
       for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
         ok = SendBufferToClient(b, cmd, *iter);
-    }  
+    }
     else
     {
       // Send it to every user except _iter
@@ -1613,7 +1612,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
       else
         ok = SendBufferToClient(b, cmd, *u_iter);
     }
-  } 
+  }
 }
 
 
@@ -1649,7 +1648,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
 
   b_out.setDataPosWrite(b_out.getDataStart());
   b_out.setDataPosRead(b_out.getDataStart());
-  
+
   return true;
 }
 
@@ -1733,7 +1732,7 @@ void CChatManager::SendKick(unsigned long _nUin)
   vote->nYes = 1;
   vote->nNo = 1;
   voteInfo.push_back(vote);
- 
+
   // Send the packet to all connected clients except the one we are
   // requesting to kick
   CBuffer buf(4);
@@ -1968,7 +1967,7 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
     SendBuffer(&buf, CHAT_KICKxPASS, (*iter)->nUin, true);
   else
     SendBuffer(&buf, CHAT_KICKxFAIL, (*iter)->nUin, true);
-  
+
   // Send the person a notice if they were kicked
   if (bPassed)
   {

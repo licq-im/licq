@@ -57,7 +57,7 @@ public:
   unsigned short RemotePort()  { return (ntohs(m_sRemoteAddr.sin_port)); };
 
   bool SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort);
-  bool SetRemoteAddr(char *_szRemoteName, unsigned short _nRemotePort);
+  bool SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort);
 
   void ResetSocket();
   void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
@@ -128,6 +128,26 @@ protected:
   void* m_p_SSL;
 #define m_pSSL ((SSL *) m_p_SSL)
   pthread_mutex_t mutex_ssl;
+};
+
+
+//=====SrvSocket===============================================================
+class SrvSocket : public INetSocket
+{
+public:
+  SrvSocket(unsigned long _nOwner) : INetSocket(_nOwner)
+    { strcpy(m_szID, "SRV"); m_nSockType = SOCK_STREAM; }
+  virtual ~SrvSocket();
+
+  // Abstract base class overloads
+  virtual bool Send(CBuffer *b)
+    { return SendPacket(b); }
+  virtual bool Recv()
+    { return RecvPacket(); }
+
+  // Functions specific to Server TCP communication
+  bool SendPacket(CBuffer *b);
+  bool RecvPacket();
 };
 
 
