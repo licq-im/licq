@@ -24,6 +24,9 @@ protected:
   unsigned short m_nStatus;
   short m_nSAR;
 
+signals:
+  void popupOptions(int);
+
 protected slots:
   void ok();
   void show();

@@ -26,6 +26,7 @@
 #include "awaymsgdlg.h"
 #include "log.h"
 #include "mledit.h"
+#include "optionsdlg.h"
 #include "sar.h"
 #include "user.h"
 
@@ -152,14 +153,12 @@ void AwayMsgDlg::slot_selectMessage()
   }
 
   menu->insertSeparator();
-  // as this is not yet implemented, give user feedback
-  menu->setItemEnabled(menu->insertItem(tr("&Edit Items"), -2), false);
+  menu->insertItem(tr("&Edit Items"), 999);
 
   result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
 
-  if(result == -2) {
-    // todo: open options menu
-  }
+  if(result == 999)
+    emit popupOptions(OptionsDlg::ODlgStatus);
   else {
     SARList &sar = gSARManager.Fetch(m_nSAR);
     if ((unsigned) result < sar.size())
