@@ -2,10 +2,10 @@
 #define USERBOX_H
 
 #include <vector.h>
-#include <list.h>
 
 #include <qlistview.h>
 #include <qtooltip.h>
+#include <qvector.h>
 
 class ICQUser;
 class CUserView;
@@ -114,7 +114,7 @@ protected slots:
 };
 
 class CUserView;
-typedef list<CUserView *> UserFloatyList;
+typedef QVector<CUserView> UserFloatyList;
 
 
 //=====UserView===============================================================

@@ -463,7 +463,8 @@ CUserView::CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
      hints->flags = WindowGroupHint;
      XSetWMHints(dsp, win, hints);
      XFree( hints );
-     floaties.push_back(this);
+     floaties.resize(floaties.size()+1);
+     floaties.insert(floaties.size()-1, this);
    }
 
    //setAutoMask(true);
@@ -478,27 +479,32 @@ CUserView::~CUserView()
   delete m_tips;
   if (parent() == NULL)
   {
-    UserFloatyList::iterator iter;
-    for (iter = floaties.begin(); iter != floaties.end(); iter++)
+    unsigned int i = 0;
+    for (; i<floaties.size(); i++)
     {
-      if (this == *iter)
-      {
-        floaties.erase(iter);
+      if (floaties.at(i) == this) {
+        floaties.take(i);
+        i++;
         break;
       }
     }
+    while(i < floaties.size()-1)
+        floaties.insert(i, floaties.at(i+1));
+
+    floaties.resize(floaties.size()-1);
   }
 }
 
 
 CUserView *CUserView::FindFloaty(unsigned long nUin)
 {
-  UserFloatyList::iterator iter;
-  for (iter = floaties.begin(); iter != floaties.end(); iter++)
+  unsigned int i = 0;
+  for (; i<floaties.size(); i++)
   {
-    if ( (*iter)->firstChild()->ItemUin() == nUin ) break;
+    if (floaties.at(i)->firstChild()->ItemUin()== nUin)
+        break;
   }
-  if (iter != floaties.end()) return *iter;
+  if(i<floaties.size()) return floaties.at(i);
 
   return NULL;
 }
@@ -780,15 +786,14 @@ void  CUserView::viewportMouseReleaseEvent(QMouseEvent* me)
 
 void CUserView::UpdateFloaties()
 {
-  UserFloatyList::iterator iter;
-  for (iter = CUserView::floaties.begin(); iter != CUserView::floaties.end(); iter++)
+  for (unsigned int i = 0; i<floaties.size(); i++)
   {
-    CUserViewItem *i = (*iter)->firstChild();
-    ICQUser *u = gUserManager.FetchUser(i->ItemUin(), LOCK_R);
+    CUserViewItem* item = floaties.at(i)->firstChild();
+    ICQUser *u = gUserManager.FetchUser(item->ItemUin(), LOCK_R);
     if (u == NULL) return;
-    i->setGraphics(u);
+    item->setGraphics(u);
     gUserManager.DropUser(u);
-    (*iter)->triggerUpdate();
+    floaties.at(i)->triggerUpdate();
   }
 }
 

@@ -669,19 +669,19 @@ CMainWindow::~CMainWindow()
 
   licqConf.SetSection("floaties");
   licqConf.WriteNum("Num", (unsigned short)CUserView::floaties.size());
-  UserFloatyList::iterator iter;
   unsigned short i = 0;
   char key[32];
-  for (iter = CUserView::floaties.begin(); iter != CUserView::floaties.end(); iter++)
+  for (; i < CUserView::floaties.size(); )
   {
+    CUserView* iter = CUserView::floaties.at(i);
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteNum(key, (*iter)->firstChild()->ItemUin());
+    licqConf.WriteNum(key, iter->firstChild()->ItemUin());
     sprintf(key, "Floaty%d.X", i);
-    licqConf.WriteNum(key, (unsigned short)((*iter)->x() > 0 ? (*iter)->x() : 0));
+    licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
-    licqConf.WriteNum(key, (unsigned short)((*iter)->y() > 0 ? (*iter)->y() : 0));
+    licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
     sprintf(key, "Floaty%d.W", i);
-    licqConf.WriteNum(key, (unsigned short)(*iter)->width());
+    licqConf.WriteNum(key, (unsigned short)iter->width());
     i++;
   }
 
@@ -1423,7 +1423,7 @@ void CMainWindow::callUserFunction(int index)
     {
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (!u) return;
-      if(!u->IgnoreList() && !QueryUser(this, 
+      if(!u->IgnoreList() && !QueryUser(this,
           tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
           .arg(u->GetAlias()).arg(nUin), tr("&Yes"), tr("&No")))
       {
