@@ -96,12 +96,12 @@ public:
 
 };
 
-//=====UserView====================================================================================
+//=====UserView===============================================================
 class CUserView : public QListView
 {
   Q_OBJECT
 public:
-  CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
+  CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
              bool bTransparent, bool bShowBars, bool bSortByStatus,
              QWidget *parent = 0, const char *name = 0);
@@ -129,7 +129,7 @@ public:
   void setFontStyles(bool _b)  { CUserViewItem::s_bFontStyles = _b; };
 
 protected:
-  QPopupMenu *mnuUser, *mnuGroup;
+  QPopupMenu *mnuUser, *mnuGroup, *mnuAwayModes;
   bool m_bTransparent, m_bShowBars;
   CUserViewTips* m_tips;
   ColumnInfos colInfo;

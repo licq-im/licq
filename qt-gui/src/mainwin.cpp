@@ -548,7 +548,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 //-----CMainWindow::CreateUserView---------------------------------------------
 void CMainWindow::CreateUserView()
 {
-  userView = new CUserView(mnuUser, mnuGroup, colInfo, showHeader, gridLines,
+  userView = new CUserView(mnuUser, mnuGroup, mnuAwayModes, colInfo, showHeader,
+                           gridLines,
                            m_bFontStyles, skin->frame.transparent,
                            m_bShowDividers, m_bSortByStatus, this);
   userView->setFrameStyle(skin->frame.frameStyle);
@@ -1442,6 +1443,64 @@ void CMainWindow::slot_utility(int _nId)
 }
 
 
+//-----CMainWindow::slot_awaymodes--------------------------------------------
+void CMainWindow::slot_awaymodes(int _nId)
+{
+  int nAwayModes = mnuAwayModes->indexOf(_nId);
+  ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+  if (u == NULL) return;
+
+  switch(nAwayModes)
+  {
+    case 0:
+      u->SetAcceptInAway(!u->AcceptInAway());
+      break;
+    case 1:
+      u->SetAcceptInNA(!u->AcceptInNA());
+      break;
+    case 2:
+      u->SetAcceptInOccupied(!u->AcceptInOccupied());
+      break;
+    case 3:
+      u->SetAcceptInDND(!u->AcceptInDND());
+      break;
+
+    case 5:
+      if (u->StatusToUser() == ICQ_STATUS_ONLINE)
+        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+      else
+        u->SetStatusToUser(ICQ_STATUS_ONLINE);
+      break;
+    case 6:
+      if (u->StatusToUser() == ICQ_STATUS_AWAY)
+        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+      else
+        u->SetStatusToUser(ICQ_STATUS_AWAY);
+      break;
+    case 7:
+      if (u->StatusToUser() == ICQ_STATUS_NA)
+        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+      else
+        u->SetStatusToUser(ICQ_STATUS_NA);
+      break;
+    case 8:
+      if (u->StatusToUser() == ICQ_STATUS_OCCUPIED)
+        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+      else
+        u->SetStatusToUser(ICQ_STATUS_OCCUPIED);
+      break;
+    case 9:
+      if (u->StatusToUser() == ICQ_STATUS_DND)
+        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+      else
+        u->SetStatusToUser(ICQ_STATUS_DND);
+      break;
+  }
+  gUserManager.DropUser(u);
+}
+
+
+
 //-----CMainWindow::nextServer------------------------------------------------
 void CMainWindow::nextServer()
 {
@@ -1812,6 +1871,22 @@ void CMainWindow::initMenu()
    }
    connect(mnuUtilities, SIGNAL(activated(int)), this, SLOT(slot_utility(int)));
 
+   mnuAwayModes = new QPopupMenu(NULL);
+   mnuAwayModes->setCheckable(true);
+   mnuAwayModes->insertItem(tr("Accept in Away"));
+   mnuAwayModes->insertItem(tr("Accept in Not Available"));
+   mnuAwayModes->insertItem(tr("Accept in Occupied"));
+   mnuAwayModes->insertItem(tr("Accept in Do Not Disturb"));
+   mnuAwayModes->insertSeparator();
+   mnuAwayModes->insertItem(tr("Online to User"));
+   mnuAwayModes->insertItem(tr("Away to User"));
+   mnuAwayModes->insertItem(tr("Not Available to User"));
+   mnuAwayModes->insertItem(tr("Occupied to User"));
+   mnuAwayModes->insertItem(tr("Do Not Disturb to User"));
+//   mnuAwayModes->insertSeparator();
+//   mnuAwayModes->insertItem(tr("Custom Away Message..."));
+   connect(mnuAwayModes, SIGNAL(activated(int)), this, SLOT(slot_awaymodes(int)));
+
    mnuUser = new QPopupMenu(NULL);
    mnuUser->setCheckable(true);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
@@ -1823,12 +1898,8 @@ void CMainWindow::initMenu()
    m->insertItem(tr("Send Authorization"), mnuUserAuthorize);
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("Send"), m);
-   //mnuUser->insertItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
-   //mnuUser->insertItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
-   //mnuUser->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
-   //mnuUser->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-   //mnuUser->insertItem(tr("Send Authorization"), mnuUserAuthorize);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
+   mnuUser->insertItem(tr("&Away Modes"), mnuAwayModes);
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    mnuUser->insertSeparator();
    m = new QPopupMenu(this);
@@ -1838,10 +1909,6 @@ void CMainWindow::initMenu()
    m->insertItem(tr("&About"), mnuUserAbout);
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("&Info"), m);
-   //mnuUser->insertItem(tr("&General Info"), mnuUserGeneral);
-   //mnuUser->insertItem(tr("&More Info"), mnuUserMore);
-   //mnuUser->insertItem(tr("&Work Info"), mnuUserWork);
-   //mnuUser->insertItem(tr("&About"), mnuUserAbout);
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);

@@ -84,7 +84,8 @@ protected:
              *mnuStatus,
              *mnuDebug,
              *mnuRemove,
-             *mnuUtilities;
+             *mnuUtilities,
+             *mnuAwayModes;
   CELabel *lblStatus, *lblMsg;
   CEButton *btnSystem;
   CEComboBox *cmbUserGroups;
@@ -180,6 +181,7 @@ protected slots:
   void popupSystemMenu();
   void changeDebug(int);
   void slot_utility(int);
+  void slot_awaymodes(int);
   void miniMode();
   void ToggleShowOffline();
   void nextServer();
