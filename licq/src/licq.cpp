@@ -16,8 +16,11 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <string.h>
 #include <dlfcn.h>
+#include <string.h>
+#include <string>
+
+using namespace std;
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
@@ -144,6 +147,22 @@ void ssl_info_callback(SSL *s, int where, int ret)
 #endif
 /*-----End of OpenSSL code-------------------------------------------------*/
 
+
+/*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/
+int SelectUserUtility(const struct dirent *d)
+{
+  char *pcDot = strrchr(d->d_name, '.');
+  if (pcDot == NULL) return (0);
+  return (strcmp(pcDot, ".uin") == 0);
+}
+
+int SelectHistoryUtility(const struct dirent *d)
+{
+  char *pcDot = strchr(d->d_name, '.');
+  if (pcDot == NULL) return (0);
+  return (strcmp(pcDot, ".history") == 0 ||
+          strcmp(pcDot, ".history.removed") == 0);
+}
 
 char **global_argv = NULL;
 int global_argc = 0;
@@ -329,13 +348,17 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.ReadNum("Version", nVersion, 0);
   if (nVersion < 1028)
   {
-    fprintf(stderr, tr("Previous Licq config files detected.\n"
-                       "Manual upgrade is necessary.  Follow the instructions\n"
-                       "in the UPGRADE file included with the source tree or\n"
-                       "in /usr/doc/licq-xxx/upgrade.\n"));
-    return false;
+    gLog.Info("%sUpgrading config file formats.\n", L_SBLANKxSTR);
+    if (UpgradeLicq(licqConf))
+      gLog.Info("%sUpgrade completed.\n", L_SBLANKxSTR);
+    else
+    {
+      gLog.Warn("%sUpgrade failed. Please save your licq directory and\n"
+                "%sreport this as a bug.\n", L_ERRORxSTR, L_BLANKxSTR);
+      return false;
+    }
   }
-  if (nVersion < INT_VERSION)
+  else if (nVersion < INT_VERSION)
   {
     licqConf.WriteNum("Version", (unsigned short)INT_VERSION);
     licqConf.FlushFile();
@@ -441,6 +464,93 @@ const char *CLicq::Version()
   return version;
 }
 
+
+/*-----------------------------------------------------------------------------
+ * UpgradeLicq
+ *
+ * Upgrades the config files to the current version.
+ *---------------------------------------------------------------------------*/
+bool CLicq::UpgradeLicq(CIniFile &licqConf)
+{  
+  CIniFile ownerFile(INI_FxERROR);
+  string strBaseDir = BASE_DIR;
+  string strOwnerFile = strBaseDir + "/owner.uin";
+  if (!ownerFile.LoadFile(strOwnerFile.c_str()))
+    return false;
+
+  // Get the UIN
+  unsigned long nUin;
+  ownerFile.SetSection("user");
+  ownerFile.ReadNum("Uin", nUin, 0);
+  ownerFile.CloseFile();
+
+  // Set the new version number
+  licqConf.SetSection("licq");
+  licqConf.WriteNum("Version", (unsigned short)INT_VERSION);  
+ 
+  // Create the owner section and fill it
+  licqConf.SetSection("owners");
+  licqConf.WriteNum("NumOfOwners", (unsigned short)1);
+  licqConf.WriteNum("Owner1.Id", nUin);
+  licqConf.WriteStr("Owner1.PPID", "Licq");
+  
+  // Add the protocol plugins info
+  licqConf.SetSection("plugins");
+  licqConf.WriteNum("NumProtoPlugins", (unsigned short)0);
+  licqConf.FlushFile();
+  
+  // Rename owner.uin to owner.Licq
+  string strNewOwnerFile = strBaseDir + "/owner.Licq";
+  if (rename(strOwnerFile.c_str(), strNewOwnerFile.c_str()))
+    return false;
+
+  // Update all the user files and update users.conf
+  struct dirent **UinFiles;
+  string strUserDir = strBaseDir + "/users";
+  string strUsersConf = strBaseDir + "/users.conf";
+  int n = scandir_alpha_r(strUserDir.c_str(), &UinFiles, SelectUserUtility);
+  if (n != 0)
+  {
+    CIniFile userConfFile(INI_FxERROR);
+    if (!userConfFile.LoadFile(strUsersConf.c_str()))
+      return false;
+    userConfFile.SetSection("users");  
+    userConfFile.WriteNum("NumOfUsers", (unsigned short)n);
+    for (unsigned short i = 0; i < n; i++)
+    {
+      char szKey[20];
+      snprintf(szKey, sizeof(szKey), "User%d", i+1);
+      string strFileName = strUserDir + "/" + UinFiles[i]->d_name;
+      string strNewName = UinFiles[i]->d_name;
+      strNewName.replace(strNewName.find(".uin", 0), 4, ".Licq");
+      string strNewFile = strUserDir + "/" + strNewName;
+      if (rename(strFileName.c_str(), strNewFile.c_str()))
+        return false;
+      userConfFile.WriteStr(szKey, strNewName.c_str());
+    }
+    
+    userConfFile.FlushFile();
+  }
+  
+  // Rename the history files
+  struct dirent **HistoryFiles;
+  string strHistoryDir = strBaseDir + "/history";
+  int nNumHistory = scandir_alpha_r(strHistoryDir.c_str(), &HistoryFiles,
+    SelectHistoryUtility);
+  if (nNumHistory)
+  {
+    for (unsigned short i = 0; i < nNumHistory; i++)
+    {
+      string strFileName = strHistoryDir + "/" + HistoryFiles[i]->d_name;
+      string strNewFile = strHistoryDir + "/" + HistoryFiles[i]->d_name;
+      strNewFile.replace(strNewFile.find(".history", 0), 8, ".Licq.history");
+      if (rename(strFileName.c_str(), strNewFile.c_str()))
+        return false;
+    }
+  }
+  
+  return true;
+}
 
 /*-----------------------------------------------------------------------------
  * LoadPlugin

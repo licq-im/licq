@@ -13,6 +13,8 @@
 extern char **global_argv;
 extern int global_argc;
 
+class CIniFile;
+
 class CLicq
 {
 public:
@@ -35,6 +37,8 @@ public:
   void SaveLoadedPlugins();
 
 protected:
+  bool UpgradeLicq(CIniFile &);
+
   CICQDaemon *licqDaemon;
   unsigned short m_nNextId;
   PluginsList list_plugins;
