@@ -851,8 +851,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
     return;
   }
 
-  //if (e->Result() == EVENT_ACKED)
-  if (e->SearchAck() != NULL)
+  if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
   {
     win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %lu %A(%Z%s%A)\n",
      COLOR_WHITE,
