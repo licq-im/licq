@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,7 +39,7 @@ QPoint AwayMsgDlg::snPos = QPoint();
 // -----------------------------------------------------------------------------
 
 AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
-    : QDialog(parent, name)
+  : QDialog(parent, name, false, WDestructiveClose)
 {
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
@@ -55,13 +56,13 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 
   int bw = 75;
   btnSelect = new QPushButton(tr("&Select"), this);
-//  btnSelect->setIsMenuButton(true);
+  btnSelect->setIsMenuButton(true);
   connect(btnSelect, SIGNAL(clicked()), SLOT(slot_selectMessage()));
   btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(ok()) );
   btnCancel = new QPushButton(tr("&Cancel"), this );
-  connect( btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+  connect( btnCancel, SIGNAL(clicked()), SLOT(close()) );
   bw = QMAX(bw, btnSelect->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnCancel->sizeHint().width());
@@ -108,17 +109,10 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   }
 }
 
-
-// -----------------------------------------------------------------------------
-
-void AwayMsgDlg::hideEvent(QHideEvent*)
+AwayMsgDlg::~AwayMsgDlg()
 {
-  snPos = pos();
-
   emit done();
-  close(true);
-};
-
+}
 
 // -----------------------------------------------------------------------------
 
@@ -128,6 +122,7 @@ void AwayMsgDlg::ok()
   o->SetAutoResponse(mleAwayMsg->text().local8Bit());
   gUserManager.DropOwner();
   accept();
+  close();
 }
 
 
@@ -181,9 +176,9 @@ void AwayMsgDlg::slot_selectMessage()
 
 // -----------------------------------------------------------------------------
 
-CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin,
-   QWidget *parent, const char *name)
-   : QDialog(parent, name)
+CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent,
+                                   const char *name)
+    : QDialog(parent, name, false, WDestructiveClose)
 {
   m_nUin = nUin;
 
@@ -210,7 +205,7 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin,
   QPushButton *btnClear = new QPushButton(tr("&Clear"), this );
   connect( btnClear, SIGNAL(clicked()), SLOT(slot_clear()) );
   QPushButton *btnCancel = new QPushButton(tr("&Cancel"), this );
-  connect( btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+  connect( btnCancel, SIGNAL(clicked()), SLOT(close()) );
   //bw = QMAX(bw, btnSelect->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnClear->sizeHint().width());
@@ -257,6 +252,7 @@ void CustomAwayMsgDlg::slot_ok()
   u->SetCustomAutoResponse(mleAwayMsg->text().local8Bit());
   gUserManager.DropUser(u);
   accept();
+  close();
 }
 
 
@@ -266,60 +262,8 @@ void CustomAwayMsgDlg::slot_clear()
   u->ClearCustomAutoResponse();
   gUserManager.DropUser(u);
   accept();
+  close();
 }
 
-void CustomAwayMsgDlg::hideEvent(QHideEvent*)
-{
-  close(true);
-};
-
-
-// -----------------------------------------------------------------------------
-#if 0
-void CustomAwayMsgDlg::slot_selectMessage()
-{
-  QPopupMenu* menu = new QPopupMenu(this);
-
-  int result = 0;
-
-  // Fill in the menu bar
-  switch (m_nStatus)
-  {
-  case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
-  case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
-  case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
-  case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
-  case ICQ_STATUS_AWAY:
-  default:
-    m_nSAR = SAR_AWAY;
-  }
-
-  if (m_nSAR >= 0) {
-    SARList &sar = gSARManager.Fetch(m_nSAR);
-    for (unsigned i = 0; i < sar.size(); i++)
-      menu->insertItem(sar[i]->Name(), i);
-    gSARManager.Drop();
-  }
-
-  menu->insertSeparator();
-  menu->insertItem(tr("&Edit Items"), 999);
-
-  result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
-
-  if(result == 999)
-    emit popupOptions(OptionsDlg::ODlgStatus);
-  else {
-    SARList &sar = gSARManager.Fetch(m_nSAR);
-    if ((unsigned) result < sar.size())
-      mleAwayMsg->setText(sar[result]->AutoResponse());
-
-    gSARManager.Drop();
-  }
-
-  delete menu;
-}
-#endif
-
-// -----------------------------------------------------------------------------
 
 #include "awaymsgdlg.moc"
