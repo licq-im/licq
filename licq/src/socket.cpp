@@ -811,8 +811,6 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   from.CloseConnection();
 }
 
-#define m_pSSL ( ( SSL * ) m_p_SSL )
-
 /*-----TCPSocket::SendPacket---------------------------------------------------
  * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
  * that the entire packet will be sent, however, it may block if the tcp
