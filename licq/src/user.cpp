@@ -1098,6 +1098,7 @@ void ICQUser::Init(unsigned long _nUin)
   Touch();
   for (unsigned short i = 0; i < 4; i++)
     m_nLastCounters[i] = 0;
+  m_nOnlineSince = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
@@ -1607,6 +1608,16 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
           sz = szTemp;
           break;
+	case 'O':
+	  if (m_nStatus == ICQ_STATUS_OFFLINE || m_nOnlineSince == 0)
+	  {
+	    strcpy(szTemp, "Unknown");
+	    sz = szTemp;
+	    break;
+	  }
+	  strftime(szTemp, 128, "%b %d %R", localtime(&m_nOnlineSince));
+	  sz = szTemp;
+	  break;
         case 'm':
           sprintf(szTemp, "%d", NewMessages());
           sz = szTemp;

@@ -25,6 +25,7 @@ Window = GUI
 # %s full status string
 # %S short status string with no spaces
 # %o last seen online
+# %O online since
 # %% a percent symbol
 # %# user will be prompted for input, for each %# a User#.Title field must be
 #    present containing a description of the item, and a User#.Default field

@@ -879,7 +879,8 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
   {
     unsigned short nUserClass, nLevel;
     unsigned long nUin, realIP;
-
+    time_t nOnlineSince = 0;
+    
     gLog.Info("%sGot Name Info from Server\n", L_SRVxSTR);
 
     nUin = packet.UnpackUinString();
@@ -916,6 +917,8 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info("%sServer says we are at %s.\n", L_SRVxSTR, ip_ntoa(realIP, buf));
       //icqSetStatus(m_nDesiredStatus);
     }
+    if (packet.getTLVLen(0x0003) == 4)
+      nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
     if (packet.getTLVLen(0x000c)) {
       gLog.Unknown("%sServer send us direct conn info,len: %d\n", L_UNKNOWNxSTR,
                    packet.getTLVLen(0x000c));
@@ -923,6 +926,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     ChangeUserStatus(o, m_nDesiredStatus);
+    o->SetOnlineSince(nOnlineSince);
     gLog.Info("%sServer says we're now: %s\n", L_SRVxSTR, ICQUser::StatusToStatusStr(o->Status(), o->StatusInvisible()));
     gUserManager.DropOwner();
 
@@ -997,6 +1001,11 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       rev_e_long(userIP);
       userIP = PacketIpToNetworkIp(userIP);
       u->SetIpPort(userIP, u->Port());
+    }
+
+    if (packet.getTLVLen(0x0003) == 4) {
+      time_t nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
+      u->SetOnlineSince(nOnlineSince);
     }
 
     if (packet.getTLVLen(0x000c) == 0x25) {

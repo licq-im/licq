@@ -758,7 +758,7 @@ void UserInfoDlg::CreateLastCountersInfo()
   unsigned short CR = 0;
   QWidget *p = tabList[LastCountersInfo].tab;
 
-  QGridLayout *lay = new QGridLayout(p, 5, 2, 10, 5);
+  QGridLayout *lay = new QGridLayout(p, 6, 2, 10, 5);
   //lay->setRowStretch(9, 1);
 
   lay->addWidget(new QLabel(tr("Last Online:"), p), CR, 0);
@@ -776,6 +776,10 @@ void UserInfoDlg::CreateLastCountersInfo()
   lay->addWidget(new QLabel(tr("Last Checked Auto Response:"), p), ++CR, 0);
   nfoLastCheckedAR = new CInfoField(p, true);
   lay->addWidget(nfoLastCheckedAR, CR, 1);
+
+  lay->addWidget(new QLabel(tr("Online Since:"), p), ++CR, 0);
+  nfoOnlineSince = new CInfoField(p, true);
+  lay->addWidget(nfoOnlineSince, CR, 1);
 
   lay->setRowStretch(++CR, 5);
 }
@@ -835,6 +839,18 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
     ds = t.toString();
     ds.truncate(ds.length() - 8);
     nfoLastCheckedAR->setData(ds);
+  }
+
+  if (u->StatusOffline())
+    nfoOnlineSince->setData(tr("Offline"));
+  else if (u->OnlineSince() == 0)
+    nfoOnlineSince->setData(tr("Unknown"));
+  else
+  {
+    t.setTime_t(u->OnlineSince());
+    ds = t.toString();
+    ds.truncate(ds.length() - 8);
+    nfoOnlineSince->setData(ds);
   }
 
   if (bDropUser) gUserManager.DropUser(u);

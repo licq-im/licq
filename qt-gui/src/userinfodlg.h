@@ -113,7 +113,7 @@ protected:
 
   // Last Counters
   void CreateLastCountersInfo();
-  CInfoField *nfoLastOnline, *nfoLastSent, *nfoLastRecv, *nfoLastCheckedAR;
+  CInfoField *nfoLastOnline, *nfoLastSent, *nfoLastRecv, *nfoLastCheckedAR, *nfoOnlineSince;
 
   // History tab
   void CreateHistory();

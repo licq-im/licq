@@ -506,6 +506,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%m - </tt># pending messages</li>"
                     "<li><tt>%n - </tt>full name</li>"
                     "<li><tt>%o - </tt>last seen online</li>"
+		    "<li><tt>%O - </tt>online since</li>"
                     "<li><tt>%p - </tt>user port</li>"
                     "<li><tt>%s - </tt>full status</li>"
                     "<li><tt>%S - </tt>abbreviated status</li>"
