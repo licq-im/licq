@@ -1805,10 +1805,13 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
       }
       else
       {
-        e->raise();
+        if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+        {
+          e->raise();
 #ifdef USE_KDE
-        KWin::setActiveWindow(e->winId());
+          KWin::setActiveWindow(e->winId());
 #endif
+        }
         return e;
       }
       break;
