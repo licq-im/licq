@@ -152,11 +152,12 @@ protected:
       m_nTCPSocketDesc;
   bool m_bAllowNewUsers;
 
-  char *m_szUrlViewer, *m_szTerminal;
+  char *m_szUrlViewer, *m_szTerminal, *m_szRejectFile, *m_szErrorFile;
 
   void ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   void AddUserEvent(ICQUser *u, CUserEvent *e);
+  void RejectEvent(unsigned long, CUserEvent *);
 
   ICQEvent *DoneEvent(ICQEvent *e, EEventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EEventResult _eResult);

@@ -311,6 +311,7 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
 }
 
 
+
 //-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
 bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 {
@@ -390,32 +391,41 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     case ICQ_CMDxSUB_MSG:  // straight message from a user
     {
       gLog.Info("%sMessage from %s (%d).\n", L_TCPxSTR, u->getAlias(), checkUin);
+      packet >> theSequence >> licqChar >> licqVersion;
+      gTranslator.ServerToClient (message);
+      CEventMsg *e = new CEventMsg(message, ICQ_CMDxTCP_START, TIME_NOW,
+                                   nMask | licqVersion);
+
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers()) break;
+        if (!AllowNewUsers())
+        {
+          RejectEvent(checkUin, e);
+          break;
+        }
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
         bNewUser = false;
       }
 
-      packet >> theSequence >> licqChar >> licqVersion;
       CPT_AckMessage p(theSequence, true, bUrgent, u);
       AckTCP(p, u->SocketDesc());
+
       // If we are in DND or Occupied and message isn't urgent then we ignore it
       if (!bUrgent)
       {
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
         unsigned long s = o->getStatus();
         gUserManager.DropOwner();
-        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) break;
+        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
+        {
+          delete e;
+          break;
+        }
       }
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      gTranslator.ServerToClient (message);
-
-      CEventMsg *e = new CEventMsg(message, ICQ_CMDxTCP_START, TIME_NOW,
-                                   nMask | licqVersion);
       AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
@@ -439,10 +449,23 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     {
       gLog.Info("%sURL from %s (%d).\n", L_TCPxSTR, u->getAlias(), checkUin);
       packet >> theSequence >> licqChar >> licqVersion;
+      // parse the message into url and url description
+      char **szUrl = new char*[2]; // desc, url
+      ParseFE(message, &szUrl, 2);
+
+      // translating string with Translation Table
+      gTranslator.ServerToClient(szUrl[0]);
+      CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], ICQ_CMDxTCP_START, TIME_NOW, nMask | licqVersion);
+
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers()) break;
+        if (!AllowNewUsers())
+        {
+          RejectEvent(checkUin, e);
+          delete []szUrl;
+          break;
+        }
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
@@ -457,19 +480,16 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
         unsigned long s = o->getStatus();
         gUserManager.DropOwner();
-        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) break;
+        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
+        {
+          delete e;
+          delete []szUrl;
+          break;
+        }
       }
-
-      // parse the message into url and url description
-      char **szUrl = new char*[2]; // desc, url
-      ParseFE(message, &szUrl, 2);
-
-      // translating string with Translation Table
-      gTranslator.ServerToClient(szUrl[0]);
 
       // format the url and url description into a message and add it to the users list
       m_xOnEventManager.Do(ON_EVENT_URL, u);
-      CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], ICQ_CMDxTCP_START, TIME_NOW, nMask | licqVersion);
       AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
@@ -486,20 +506,25 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gLog.Info("%sChat request from %s (%d).\n", L_TCPxSTR, u->getAlias(), checkUin);
       packet >> junkLong >> junkLong >> junkShort >> junkChar >> theSequence
              >> licqChar >> licqVersion;
+      // translating string with translation table
+      gTranslator.ServerToClient (message);
+      CEventChat *e = new CEventChat(message, theSequence, TIME_NOW, nMask | licqVersion);
+
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers()) break;
+        if (!AllowNewUsers())
+        {
+          RejectEvent(checkUin, e);
+          break;
+        }
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
         bNewUser = false;
       }
 
-      // translating string with translation table
-      gTranslator.ServerToClient (message);
       m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-      CEventChat *e = new CEventChat(message, theSequence, TIME_NOW, nMask | licqVersion);
       AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
@@ -511,15 +536,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     case ICQ_CMDxSUB_FILE:
     {
       gLog.Info("%sFile transfer request from %s (%d).\n", L_TCPxSTR, u->getAlias(), checkUin);
-      // Add the user to our list if they are new
-      if (bNewUser)
-      {
-        if (!AllowNewUsers()) break;
-        u->Unlock();
-        AddUserToList(u);
-        u->Lock(LOCK_W);
-        bNewUser = false;
-      }
 
       unsigned short nLenFilename;
       unsigned long nFileLength;
@@ -534,10 +550,24 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       // translating string with translation table
       gTranslator.ServerToClient (message);
-      m_xOnEventManager.Do(ON_EVENT_FILE, u);
       CEventFile *e = new CEventFile(szFilename, message, nFileLength,
                                      theSequence, TIME_NOW,
                                      nMask | licqVersion);
+      // Add the user to our list if they are new
+      if (bNewUser)
+      {
+        if (!AllowNewUsers())
+        {
+          RejectEvent(checkUin, e);
+          break;
+        }
+        u->Unlock();
+        AddUserToList(u);
+        u->Lock(LOCK_W);
+        bNewUser = false;
+      }
+
+      m_xOnEventManager.Do(ON_EVENT_FILE, u);
       AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
@@ -551,26 +581,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     {
       gLog.Info("%sContact list from %s (%d).\n", L_BLANKxSTR, u->getAlias(), checkUin);
       packet >> theSequence >> licqChar >> licqVersion;
-      // Add the user to our list if they are new
-      if (bNewUser)
-      {
-        if (!AllowNewUsers()) break;
-        u->Unlock();
-        AddUserToList(u);
-        u->Lock(LOCK_W);
-        bNewUser = false;
-      }
-
-      CPT_AckContactList p(theSequence, true, bUrgent, u);
-      AckTCP(p, u->SocketDesc());
-      // If we are in DND or Occupied and message isn't urgent then we ignore it
-      if (!bUrgent)
-      {
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-        unsigned long s = o->getStatus();
-        gUserManager.DropOwner();
-        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) break;
-      }
 
       unsigned short i = 0;
       while ((unsigned char)message[i++] != 0xFE);
@@ -587,10 +597,40 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         gTranslator.ServerToClient(szFields[i + 1]); // alias
         vszFields.push_back(szFields[i + 1]);
       }
-
-      m_xOnEventManager.Do(ON_EVENT_MSG, u);
       CEventContactList *e = new CEventContactList(vszFields, ICQ_CMDxTCP_START,
                                                    TIME_NOW, nMask | licqVersion);
+      // Add the user to our list if they are new
+      if (bNewUser)
+      {
+        if (!AllowNewUsers())
+        {
+          RejectEvent(checkUin, e);
+          delete[] szFields;
+          break;
+        }
+        u->Unlock();
+        AddUserToList(u);
+        u->Lock(LOCK_W);
+        bNewUser = false;
+      }
+
+      CPT_AckContactList p(theSequence, true, bUrgent, u);
+      AckTCP(p, u->SocketDesc());
+      // If we are in DND or Occupied and message isn't urgent then we ignore it
+      if (!bUrgent)
+      {
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long s = o->getStatus();
+        gUserManager.DropOwner();
+        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
+        {
+          delete e;
+          delete [] szFields;
+          break;
+        }
+      }
+
+      m_xOnEventManager.Do(ON_EVENT_MSG, u);
       AddUserEvent(u, e);
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);

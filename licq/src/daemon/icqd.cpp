@@ -77,21 +77,33 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   licqConf.ReadBool("AllowNewUsers", m_bAllowNewUsers, true);
 
   // Error log file
-  licqConf.ReadStr("Errors", szFilename, "none");
+  licqConf.ReadStr("Errors", szFilename, "log.errors");
   if (strcmp(szFilename, "none") != 0)
   {
-    char errorFileNameFull[256];
-    sprintf(errorFileNameFull, "%s/%s", BASE_DIR, szFilename);
+    m_szErrorFile = new char[256];
+    sprintf(m_szErrorFile, "%s/%s", BASE_DIR, szFilename);
     CLogService_File *l = new CLogService_File(L_ERROR | L_UNKNOWN);
-    if (!l->SetLogFile(errorFileNameFull, "a"))
+    if (!l->SetLogFile(m_szErrorFile, "a"))
     {
       gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
-                  L_ERRORxSTR, errorFileNameFull, L_BLANKxSTR, strerror(errno));
+                  L_ERRORxSTR, m_szErrorFile, L_BLANKxSTR, strerror(errno));
       delete l;
     }
     else
       gLog.AddService(l);
   }
+  else
+    m_szErrorFile = NULL;
+
+  // Rejects log file
+  licqConf.ReadStr("Rejects", szFilename, "log.rejects");
+  if (strcmp(szFilename, "none") != 0)
+  {
+    m_szRejectFile = new char[256];
+    sprintf(m_szRejectFile, "%s/%s", BASE_DIR, szFilename);
+  }
+  else
+    m_szRejectFile = NULL;
 
   // Loading translation table from file
   licqConf.ReadStr("Translation", szFilename, "none");
@@ -276,6 +288,8 @@ const char *CICQDaemon::Version(void)
 CICQDaemon::~CICQDaemon(void)
 {
   if (m_szUrlViewer != NULL) delete [] m_szUrlViewer;
+  if (m_szErrorFile != NULL) delete [] m_szErrorFile;
+  if (m_szRejectFile != NULL) delete [] m_szRejectFile;
 }
 
 pthread_t *CICQDaemon::Shutdown(void)
@@ -305,7 +319,6 @@ void CICQDaemon::SaveConf(void)
   licqConf.WriteBool("AllowNewUsers", AllowNewUsers());
 
   // Utility tab
-  //licqConf.WriteStr("Errors", server->getErrorLogName());
   licqConf.WriteStr("UrlViewer", m_szUrlViewer);
   const char *pc = strrchr(gTranslator.getMapName(), '/');
   if (pc != NULL)
@@ -314,6 +327,22 @@ void CICQDaemon::SaveConf(void)
     pc = gTranslator.getMapName();
   licqConf.WriteStr("Translation", pc);
   licqConf.WriteStr("Terminal", m_szTerminal);
+  if (m_szErrorFile == NULL)
+    licqConf.WriteStr("Errors", "none");
+  else
+  {
+    pc = strrchr(m_szErrorFile, '/');
+    pc++;
+    licqConf.WriteStr("Errors", pc);
+  }
+  if (m_szRejectFile == NULL)
+    licqConf.WriteStr("Rejects", "none");
+  else
+  {
+    pc = strrchr(m_szRejectFile, '/');
+    pc++;
+    licqConf.WriteStr("Rejects", pc);
+  }
 
   //optionsDlg->cmbServers->clear();
   //unsigned short i;
@@ -461,6 +490,28 @@ void CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
                                   u->getUin()));
 }
 
+
+/*----------------------------------------------------------------------------
+ * CICQDaemon::RejectEvent
+ *
+ *--------------------------------------------------------------------------*/
+void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
+{
+  if (m_szRejectFile == NULL) return;
+
+  FILE *f = fopen(m_szRejectFile, "a");
+  if (f == NULL)
+  {
+    gLog.Warn("%sUnable to open \"%s\" for writing.\n", m_szRejectFile);
+  }
+  else
+  {
+    fprintf(f, "Event from new user (%ld) rejected: \n%s\n--------------------\n\n",
+            nUin, e->Text());
+  }
+  delete e;
+  fclose(f);
+}
 
 
 /*----------------------------------------------------------------------------

@@ -1021,6 +1021,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       if (!AllowNewUsers())
       {
         gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
+        RejectEvent(nUin, e);
         break;
       }
       gLog.Info("%sMessage from new user (%ld).\n",
@@ -1061,6 +1062,8 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       if (!AllowNewUsers())
       {
         gLog.Info("%sURL from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
+        RejectEvent(nUin, e);
+        delete []szUrl;
         break;
       }
       gLog.Info("%sURL from new user (%ld).\n",
