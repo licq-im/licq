@@ -338,11 +338,12 @@ void SearchUserDlg::searchResult(ICQEvent *e)
   edtEmail->setEnabled(true);
   edtUin->setEnabled(true);
 
+  if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
+    searchFound(e->SearchAck());
+
   if (e->Result() == EVENT_SUCCESS)
     searchDone(e->SearchAck());
-  else if (e->Result() == EVENT_ACKED)
-    searchFound(e->SearchAck());
-  else
+  else if (e->Result() != EVENT_ACKED)
     searchFailed();
 }
 
