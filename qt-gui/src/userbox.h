@@ -59,7 +59,8 @@ public:
   void setGraphics(ICQUser *);
 protected:
   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
-  virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r );
+  virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r ) { };
+
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon;
 

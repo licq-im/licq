@@ -28,6 +28,9 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#endif
 #include <math.h>
 #include "userbox.h"
 #include "gui-defines.h"
@@ -62,6 +65,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
    : QListViewItem(parent)
 {
   m_nUin = _cUser->Uin();
+  setSelectable(m_nUin != 0);
   setGraphics(_cUser);
 }
 
@@ -228,17 +232,11 @@ void CUserViewItem::setGraphics(ICQUser *u)
    // Set the user tag
    if (s_bSortByStatus)
      // sort STATUS_FFF like STATUS_ONLINE.
-     m_sSortKey.sprintf("%05u%010lu",
-       (m_nStatus == ICQ_STATUS_FREEFORCHAT) ?
-         ICQ_STATUS_ONLINE : m_nStatus, u->Touched() ^ 0xFFFFFFFF);
+     m_sSortKey.sprintf("%04x%016lx",
+       (m_nStatus == ICQ_STATUS_FREEFORCHAT) ? ICQ_STATUS_ONLINE : m_nStatus,
+                        ULONG_MAX - u->Touched());
    else
-     m_sSortKey.sprintf("%010lu", u->Touched() ^ 0xFFFFFFFF);
-}
-
-
-void CUserViewItem::paintFocus ( QPainter *p, const QColorGroup & cg, const QRect & r )
-{
-  if (m_nUin != 0 && isSelected()) QListViewItem::paintFocus(p, cg, r);
+     m_sSortKey.sprintf("%016lx", ULONG_MAX - u->Touched());
 }
 
 
@@ -277,6 +275,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   }
 
   //QListViewItem::paintCell(p, cg, column, width, align);
+
   //-----QListViewItem::paintCell------
 
           if ( !p )
@@ -312,7 +311,6 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
           }
 
   //-----------------------------------
-
 
   // Make the dividing line between online and offline users
   if (m_nUin == 0)
