@@ -323,6 +323,8 @@ void CUtilityInternalWindow::PClose()
 
    // Kill the bastard
    kill(pid, SIGKILL);
+   // Now he will die for sure
+   waitpid(pid, &pstat, 0);
 }
 
 
