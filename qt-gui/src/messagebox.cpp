@@ -27,9 +27,17 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   sd.truncate(sd.length() - 5);
 
   setText(0, msg->Direction() == D_SENDER ? "S" : "*R");
-  //setText(1, EventDescription(msg));
   SetEventLine();
-  setText(2, sd);
+  QString t =  "-----";
+
+  if (msg->IsCancelled()) t[0] = 'C';
+  if (msg->IsDirect())    t[1] = 'D';
+  if (msg->IsUrgent())    t[2] = 'U';
+  if (msg->IsMultiRec())  t[3] = 'M';
+  if (msg->IsLicq())      t[4] = 'L';
+
+  setText(2, t);
+  setText(3, sd);
 }
 
 
@@ -135,7 +143,8 @@ MsgView::MsgView (QWidget *parent)
   : QListView(parent, "MessageView")
 {
   addColumn(tr("D"), 20);
-  addColumn(tr("Event Type"), 180);
+  addColumn(tr("Event Type"), 100);
+  addColumn(tr("Options"), 50);
   addColumn(tr("Time"), 130);
   setAllColumnsShowFocus (true);
   setColumnAlignment(0, AlignHCenter);
@@ -176,7 +185,7 @@ QSize MsgView::sizeHint() const
 void MsgView::resizeEvent(QResizeEvent *e)
 {
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(1, width() - 152 - s->width());
+  setColumnWidth(1, width() - 200 - s->width());
   QListView::resizeEvent(e);
   SetEventLines();
 }
