@@ -48,7 +48,7 @@ void CMSNPacket::InitBuffer()
   if (m_bPing)
     m_nSize += snprintf(buf, 32, "%s", m_szCommand) + 2;
   else
-    m_nSize += snprintf(buf, 32, "%s %lu ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
+    m_nSize += snprintf(buf, 32, "%s %hu ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
   
   m_pBuffer = new CMSNBuffer(m_nSize);
   m_pBuffer->Pack(buf, strlen(buf));
@@ -65,7 +65,7 @@ void CMSNPayloadPacket::InitBuffer()
     return;
   char buf[32];
   
-  m_nSize = snprintf(buf, 32, "%s %lu %c %lu\r\n", m_szCommand, m_nSequence,
+  m_nSize = snprintf(buf, 32, "%s %hu %c %lu\r\n", m_szCommand, m_nSequence,
     m_bAck ? 'A' : 'N', m_nPayloadSize);
   m_nSize += m_nPayloadSize;
   
