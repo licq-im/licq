@@ -12,6 +12,7 @@ extern int errno;
 #endif
 
 #include "forwarder.h"
+#include "forwarder.conf.h"
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_file.h"
@@ -69,8 +70,18 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
   m_nSMTPPort = 25; //getservicebyname("snmp");
   char filename[256];
   sprintf (filename, "%s/licq_forwarder.conf", BASE_DIR);
-  CIniFile conf(INI_FxFATAL | INI_FxERROR);
-  conf.LoadFile(filename);
+  CIniFile conf;
+  if (!conf.LoadFile(filename))
+  {
+    if(!CreateDefaultConfig())
+    {
+      gLog.Error("%sCould not create default configuration file: %s\n", L_FORWARDxSTR, filename);
+      return 1;
+    }
+    gLog.Info("%sA default configuration file has been created: %s\n", L_FORWARDxSTR, filename);
+    conf.LoadFile(filename);
+  }
+  conf.SetFlags(INI_FxFATAL | INI_FxERROR);
   conf.SetSection("Forward");
   conf.ReadNum("Type", m_nForwardType, FORWARD_EMAIL);
 
@@ -142,6 +153,24 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
   return 0;
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqForwarder::CreateDefaultConfig
+ *-------------------------------------------------------------------------*/
+bool CLicqForwarder::CreateDefaultConfig()
+{
+  bool ret = false;
+  // Create licq_forwarder.conf
+  char cmd[MAX_FILENAME_LEN + 128];
+  cmd[sizeof(cmd) - 1] = '\0';
+  snprintf(cmd, sizeof(cmd) - 1, "%s/licq_forwarder.conf", BASE_DIR);
+  if (FILE *f = fopen(cmd, "w"))
+  {
+    fprintf(f, "%s", FORWARDER_CONF);
+    fclose(f);
+    ret = true;
+  }
+  return ret;
+}
 
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessPipe

@@ -48,6 +48,9 @@ public:
   bool ForwardEvent_ICQ(ICQUser *, CUserEvent *);
   bool ForwardEvent_Email(ICQUser *, CUserEvent *);
 
+private:
+  bool CreateDefaultConfig();
+
 };
 
 
