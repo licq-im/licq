@@ -576,8 +576,6 @@ void Encrypt_Client(CBuffer *pkt);
 class CPacketTcp_Handshake : public CPacket
 {
 public:
-  virtual ~CPacketTcp_Handshake();
-
   virtual const unsigned long  getSequence()   { return 0; }
   virtual const unsigned short SubSequence()   { return 0; }
   virtual const unsigned short getCommand()    { return ICQ_CMDxTCP_HANDSHAKE; }

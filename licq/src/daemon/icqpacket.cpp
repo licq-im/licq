@@ -249,16 +249,23 @@ void Encrypt_Client(CBuffer *pkt)
   unsigned long hex, key, B1, M1, check;
   unsigned int i;
   unsigned char X1, X2, X3;
-  char *buf = pkt->getDataStart();
+  unsigned char *buf = (unsigned char*)pkt->getDataStart();
   unsigned long size = pkt->getDataSize();
 
   // calculate checkcode
-  M1 = (rand() % ((size < 255 ? size : 255)-10))+10;
+  DEBUG_ENCRYPTION(("encrypt size is %d, %04x\n", size, size));
+  unsigned long arg = (size < 255 ? size : 255)-10;
+  DEBUG_ENCRYPTION(("arg is %ld, %08lx\n", arg, arg));
+  M1 = (rand() % arg) +10;
+  DEBUG_ENCRYPTION(("M1 is %d, %04x\n", M1, M1));
   X1 = buf[M1] ^ 0xFF;
   X2 = rand() % 220;
   X3 = client_check_data[X2] ^ 0xFF;
   B1 = (buf[4]<<24)|(buf[6]<<16)|(buf[4]<<8)|(buf[6]);
-  check = ((M1 << 24) | (X1 << 16) | (X2 << 8) | X3) ^ B1;
+  check = (M1 << 24) | (X1 << 16) | (X2 << 8) | X3;
+  DEBUG_ENCRYPTION(("original check %08lx\nB1 is %08lx\n", check, B1));
+  check ^= B1;
+  DEBUG_ENCRYPTION(("complete check %08lx\n", check));
 
   // main XOR key
   key = 0x67657268 * size + check;
@@ -283,11 +290,13 @@ bool Decrypt_Client(CBuffer *pkt)
   unsigned long hex, key, B1, M1, check;
   unsigned int i;
   unsigned char X1, X2, X3;
-  char *buf = pkt->getDataStart();
+  unsigned char *buf = (unsigned char*)pkt->getDataStart();
   unsigned long size = pkt->getDataSize();
 
   // retrieve checkcode
   check = (buf[3]<<24)|(buf[2]<<16)|(buf[1]<<8)|(buf[0]);
+
+  DEBUG_ENCRYPTION(("size %d, check %08lx\n", size, check));
 
   // main XOR key
   key = 0x67657268 * size + check;
@@ -1186,13 +1195,6 @@ CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long nUin)
 }
 
 
-//=====PacketTcp_Handshake======================================================
-CPacketTcp_Handshake::~CPacketTcp_Handshake()
-{
-  if (buffer != NULL) delete buffer;
-}
-
-
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
   m_nLocalPort = nLocalPort;
@@ -1363,7 +1365,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
 CPacketTcp::~CPacketTcp()
 {
   free (m_szMessage);
-  if (buffer != NULL) delete buffer;
+  delete buffer;
 }
 
 

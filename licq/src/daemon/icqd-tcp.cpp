@@ -731,15 +731,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet.UnpackUnsignedShort();
       packet.UnpackUnsignedShort();
       theSequence = packet.UnpackUnsignedShort();
-      if (packet.UnpackUnsignedLong() != 0 ||
-          packet.UnpackUnsignedLong() != 0 ||
-          packet.UnpackUnsignedLong() != 0)
-      {
-        char *buf;
-        gLog.Unknown("%sInvalid decrypted TCP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
-        delete buf;
-        return false;
-      }
       newCommand = packet.UnpackUnsignedShort();
       ackFlags = packet.UnpackUnsignedShort();
       msgFlags = packet.UnpackUnsignedShort();
@@ -748,10 +739,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   }
 
   // Some simple validation of the packet
-  if (checkUin == 0 || command == 0 || newCommand == 0)
+  if (checkUin == 0 || command == 0 /*|| newCommand == 0*/) //newCommand is zero with some v4 clients
   {
     char *buf;
-    gLog.Unknown("%sInvalid TCP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
+    gLog.Unknown("%sInvalid TCP packet(%08lx, %08lx, %08lx):\n%s\n", L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
     delete buf;
     return false;
   }
@@ -1377,7 +1368,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
   {
     b.Reset();
     CPacketTcp_Handshake_v4 p_in(&b);
-    nUin = p_in.DestinationUin();
+    nUin = p_in.SourceUin();
 
     // Send the ack
     CPacketTcp_Handshake_Ack p_ack;
