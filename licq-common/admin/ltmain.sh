@@ -1,7 +1,7 @@
 # ltmain.sh - Provide generalized library-building support services.
 # NOTE: Changing this file will not affect anything until you rerun ltconfig.
 #
-# Copyright (C) 1996-2000 Free Software Foundation, Inc.
+# Copyright (C) 1996-2000, 2001 Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 #
 # This program is free software; you can redistribute it and/or modify
@@ -55,7 +55,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4a
-TIMESTAMP=" (1.641.2.77 2000/08/01 04:25:15)"
+TIMESTAMP=" (1.641.2.179mm 2001/02/15 21:55:40)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -122,7 +122,7 @@ do
   if test -n "$prev"; then
     case "$prev" in
     execute_dlfiles)
-      eval "$prev=\"\$$prev \$arg\""
+      execute_dlfiles="$execute_dlfiles $arg"
       ;;
     tag)
       tagname="$arg"
@@ -483,7 +483,7 @@ if test -z "$show_help"; then
       "$CC "*) ;;
       # Blanks in the command may have been stripped by the calling shell,
       # but not from the CC environment variable when ltconfig was run.
-      "`$echo X$CC | $Xsed` "*) ;;
+      "`$echo $CC` "*) ;;
       *)
         for z in $available_tags; do
           if grep "^### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
@@ -497,7 +497,7 @@ if test -z "$show_help"; then
               tagname=$z
               break
               ;;
-	    "`$echo X$CC | $Xsed` "*)
+	    "`$echo $CC` "*)
 	      tagname=$z
 	      break
 	      ;;
@@ -545,7 +545,7 @@ if test -z "$show_help"; then
 
     # On Cygwin there's no "real" PIC flag so we must build both object types
     case "$host_os" in
-    cygwin* | mingw* | os2*)
+    cygwin* | mingw* | pw32* | os2*)
       pic_mode=default
       ;;
     esac
@@ -570,7 +570,7 @@ if test -z "$show_help"; then
     # Lock this critical section if it is needed
     # We use this script file to make the link, it avoids creating a new file
     if test "$need_locks" = yes; then
-      until ln "$0" "$lockfile" 2>/dev/null; do
+      until $run ln "$0" "$lockfile" 2>/dev/null; do
 	$show "Waiting for $lockfile to be removed"
 	sleep 2
       done
@@ -768,7 +768,7 @@ EOF
 
     # Unlock the critical section if it was locked
     if test "$need_locks" != no; then
-      $rm "$lockfile"
+      $run $rm "$lockfile"
     fi
 
     exit 0
@@ -778,7 +778,7 @@ EOF
   link | relink)
     modename="$modename: link"
     case "$host" in
-    *-*-cygwin* | *-*-mingw* | *-*-os2*)
+    *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
       # It is impossible to link a dll without this setting, and
       # we shouldn't force the makefile maintainer to figure out
       # which system we are compiling for in order to pass an extra
@@ -1046,19 +1046,20 @@ EOF
 	continue
 	;;
 
-      -L*)
-	dir=`$echo "X$arg" | $Xsed -e 's/^-L//'`
-	case "$host" in
-	*-*-irix*)
-	  case "$dir" in
-	  ANG:[A-Za-z0-9]*)
-	    compile_command="$compile_command $arg"
-	    finalize_command="$finalize_command $arg"
-	    continue
-	  ;;
-	  esac
+      # The native IRIX linker understands -LANG:*, -LIST:* and -LNO:*
+      # so, if we see these flags be careful not to treat them like -L
+      -L[A-Z][A-Z]*:*)
+	case $with_gcc/$host in
+	no/*-*-irix*)
+	  compile_command="$compile_command $arg"
+	  finalize_command="$finalize_command $arg"
 	  ;;
 	esac
+	continue
+	;;
+       
+      -L*)
+	dir=`$echo "X$arg" | $Xsed -e 's/^-L//'`
 	# We need an absolute path.
 	case "$dir" in
 	[\\/]* | [A-Za-z]:[\\/]*) ;;
@@ -1079,7 +1080,7 @@ EOF
 	  ;;
 	esac
 	case "$host" in
-	*-*-cygwin* | *-*-mingw* | *-*-os2*)
+	*-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
 	  case ":$dllsearchpath:" in
 	  *":$dir:"*) ;;
 	  *) dllsearchpath="$dllsearchpath:$dir";;
@@ -1092,16 +1093,24 @@ EOF
       -l*)
 	if test "$arg" = "-lc"; then
 	  case "$host" in
-	  *-*-cygwin* | *-*-mingw* | *-*-os2* | *-*-beos*)
+	  *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2* | *-*-beos*)
 	    # These systems don't actually have c library (as such)
 	    continue
+	    ;;
+	  *-*-rhapsody* | *-*-darwin*)
+	    # Darwin C library is in the System framework
+	    deplibs="$deplibs -framework System"
 	    ;;
 	  esac
 	elif test "$arg" = "-lm"; then
 	  case "$host" in
-	  *-*-cygwin* | *-*-beos*)
+	  *-*-cygwin* | *-*-pw32* | *-*-beos*)
 	    # These systems don't actually have math library (as such)
 	    continue
+	    ;;
+	  *-*-rhapsody* | *-*-darwin*)
+	    # Darwin math library is in the System framework
+	    deplibs="$deplibs -framework System"
 	    ;;
 	  esac
 	fi
@@ -1121,15 +1130,15 @@ EOF
 
       -no-install)
 	case "$host" in
-	*-*-cygwin* | *-*-mingw* | *-*-os2*)
+	*-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
 	  # The PATH hackery in wrapper scripts is required on Windows
 	  # in order for the loader to find any dlls it needs.
 	  $echo "$modename: warning: \`-no-install' is ignored for $host" 1>&2
 	  $echo "$modename: warning: assuming \`-no-fast-install' instead" 1>&2
 	  fast_install=no
 	  ;;
-	*-*-rhapsody*)
-	  # rhapsody is a little odd...
+	*-*-rhapsody* | *-*-darwin*)
+	  # Darwin C library is in the System framework
 	  deplibs="$deplibs -framework System"
 	  ;;
 	*)
@@ -1179,11 +1188,11 @@ EOF
 	;;
 
       -static)
-	# If we have no pic_flag, then this is the same as -all-static.
-	if test -z "$pic_flag" && test -n "$link_static_flag"; then
-	  compile_command="$compile_command $link_static_flag"
-	  finalize_command="$finalize_command $link_static_flag"
-	fi
+        # The effects of -static are defined in a previous loop.
+	# We used to do the same as -all-static on platforms that
+	# didn't have a PIC flag, but the assumption that the effects
+	# would be equivalent was wrong.  It would break on at least
+	# Digital Unix and AIX.
 	continue
 	;;
 
@@ -1413,7 +1422,7 @@ EOF
       "$CC "*) ;;
       # Blanks in the command may have been stripped by the calling shell,
       # but not from the CC environment variable when ltconfig was run.
-      "`$echo X$CC | $Xsed` "*) ;;
+      "`$echo $CC` "*) ;;
       *)
         for z in $available_tags; do
           if grep "^### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
@@ -1427,7 +1436,7 @@ EOF
               tagname=$z
               break
 	      ;;
-	    "`$echo X$CC | $Xsed` "*)
+	    "`$echo $CC` "*)
 	      tagname=$z
 	      break
 	      ;;
@@ -1768,9 +1777,11 @@ EOF
 	    exit 1
 	  fi
 	  if test -z "$dlname" || test "$dlopen_support" != yes || test "$build_libtool_libs" = no; then
-	    # If there is no dlname, no dlopen support or we're linking statically,
-	    # we need to preload.
-	    dlprefiles="$dlprefiles $lib"
+	    # If there is no dlname, no dlopen support or we're linking
+	    # statically, we need to preload.  We also need to preload any
+	    # dependent libraries so libltdl's deplib preloader doesn't
+	    # bomb out in the load deplibs phase.
+	    dlprefiles="$dlprefiles $lib $dependency_libs"
 	  else
 	    newdlfiles="$newdlfiles $lib"
 	  fi
@@ -1820,6 +1831,9 @@ EOF
 	  # are required to link).
 	  if test -n "$old_library"; then
 	    newdlprefiles="$newdlprefiles $dir/$old_library"
+	  # Otherwise, use the dlname, so that lt_dlopen finds it.
+	  elif test -n "$dlname"; then
+	    newdlprefiles="$newdlprefiles $dir/$dlname"
 	  else
 	    newdlprefiles="$newdlprefiles $dir/$linklib"
 	  fi
@@ -2477,10 +2491,10 @@ EOF
 	  ;;
 
 	windows)
-	  # Like Linux, but with '-' rather than '.', since we only
-	  # want one extension on Windows 95.
+	  # Use '-' rather than '.', since we only want one
+	  # extension on DOS 8.3 filesystems.
 	  major=`expr $current - $age`
-	  versuffix="-$major-$age-$revision"
+	  versuffix="-$major"
 	  ;;
 
 	*)
@@ -2595,7 +2609,7 @@ EOF
       if test "$build_libtool_libs" = yes; then
 	if test -n "$rpath"; then
 	  case "$host" in
-	  *-*-cygwin* | *-*-mingw* | *-*-os2* | *-*-beos*)
+	  *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2* | *-*-beos*)
 	    # these systems don't actually have a c library (as such)!
 	    ;;
 	  *)
@@ -2646,7 +2660,7 @@ EOF
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	      # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" ; then
+	      if test "$name" != "" -a "$name" != "0"; then
 		libname=`eval \\$echo \"$libname_spec\"`
 		deplib_matches=`eval \\$echo \"$library_names_spec\"`
 		set dummy $deplib_matches
@@ -2671,7 +2685,7 @@ EOF
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	     # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" ; then
+	      if test "$name" != "" -a "$name" != "0"; then
 		$rm conftest
 		$LTCC -o conftest conftest.c $i
 		# Did it work?
@@ -2711,7 +2725,7 @@ EOF
 	  for a_deplib in $deplibs; do
 	    name="`expr $a_deplib : '-l\(.*\)'`"
 	    # If $name is empty we are operating on a -L argument.
-	    if test "$name" != "" ; then
+	    if test "$name" != "" -a "$name" != "0"; then
 	      libname=`eval \\$echo \"$libname_spec\"`
 	      for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
 		    potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
@@ -3247,7 +3261,7 @@ EOF
 	  esac
 	fi
 	case "$host" in
-	*-*-cygwin* | *-*-mingw* | *-*-os2*)
+	*-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
 	  case ":$dllsearchpath:" in
 	  *":$libdir:"*) ;;
 	  *) dllsearchpath="$dllsearchpath:$libdir";;
@@ -3607,9 +3621,14 @@ static const void *lt_preloaded_setup() {
       if test -n "$relink_command"; then
 	# Preserve any variables that may affect compiler behavior
 	for var in $variables_saved_for_relink; do
-	  eval var_value=\$$var
-	  var_value=`$echo "X$var_value" | $Xsed -e "$sed_quote_subst"`
-	  relink_command="$var=\"$var_value\"; export $var; $relink_command"
+	  if eval test -z \"\${$var+set}\"; then
+	    relink_command="{ test -z \"\${$var+set}\" || unset $var || { $var=; export $var; }; }; $relink_command"
+	  elif eval var_value=\$$var; test -z "$var_value"; then
+	    relink_command="$var=; export $var; $relink_command"
+	  else
+	    var_value=`$echo "X$var_value" | $Xsed -e "$sed_quote_subst"`
+	    relink_command="$var=\"$var_value\"; export $var; $relink_command"
+	  fi
 	done
 	relink_command="cd `pwd`; $relink_command"
 	relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
@@ -3782,7 +3801,7 @@ else
 	case $host in
 	# win32 systems need to use the prog path for dll
 	# lookup to work
-	*-*-cygwin*)
+	*-*-cygwin* | *-*-pw32*)
 	  $echo >> $output "\
       exec \$progdir/\$program \${1+\"\$@\"}
 "
@@ -3925,9 +3944,14 @@ fi\
 
       # Preserve any variables that may affect compiler behavior
       for var in $variables_saved_for_relink; do
-	eval var_value=\$$var
-	var_value=`$echo "X$var_value" | $Xsed -e "$sed_quote_subst"`
-	relink_command="$var=\"$var_value\"; export $var; $relink_command"
+	if eval test -z \"\${$var+set}\"; then
+	  relink_command="{ test -z \"\${$var+set}\" || unset $var || { $var=; export $var; }; }; $relink_command"
+	elif eval var_value=\$$var; test -z "$var_value"; then
+	  relink_command="$var=; export $var; $relink_command"
+	else
+	  var_value=`$echo "X$var_value" | $Xsed -e "$sed_quote_subst"`
+	  relink_command="$var=\"$var_value\"; export $var; $relink_command"
+	fi
       done
       # Quote the link command for shipping.
       relink_command="cd `pwd`; $SHELL $0 --mode=relink $libtool_args"
@@ -4999,12 +5023,24 @@ $echo "Try \`$modename --help' for more information about other modes."
 
 exit 0
 
+# The TAGs below are defined such that we never get into a situation
+# in which we disable both kinds of libraries.  Given conflicting
+# choices, we go for a static library, that is the most portable,
+# since we can't tell whether shared libraries were disabled because
+# the user asked for that or because the platform doesn't support
+# them.  This is particularly important on AIX, because we don't
+# support having both static and shared libraries enabled at the same
+# time on that platform, so we default to a shared-only configuration.
+# If a disable-shared tag is given, we'll fallback to a static-only
+# configuration.  But we'll never go from static-only to shared-only.
+
 ### BEGIN LIBTOOL TAG CONFIG: disable-shared
 build_libtool_libs=no
+build_old_libs=yes
 ### END LIBTOOL TAG CONFIG: disable-shared
 
 ### BEGIN LIBTOOL TAG CONFIG: disable-static
-build_old_libs=no
+build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 ### END LIBTOOL TAG CONFIG: disable-static
 
 # Local Variables:

@@ -92,7 +92,7 @@ EOF
       allow_undefined_flag=unsupported
       # Joseph Beckenbach <jrb3@best.com> says some releases of gcc
       # support --undefined.  This deserves some investigation.  FIXME
-      archive_cmds='$CC -nostart $libobjs $deplibs $linker_flags ${wl}-soname $wl$soname -o $lib'
+      archive_cmds='$CC -nostart $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
     else
       ld_shlibs=no
     fi
@@ -169,6 +169,18 @@ EOF
       $CC $output_objdir/$soname-exp '$lt_cv_cc_dll_switch' -Wl,-e,'$dll_entry' -o $lib '$ltdll_obj'$libobjs $deplibs $compiler_flags'
     ;;
 
+  darwin*|rhapsody*)
+    allow_undefined_flag='-undefined warning'
+    archive_cmds='$CC $(if test "$module" = "yes"; then echo -bundle; else
+      echo -dynamiclib; fi) -o $lib $libobjs $deplibs $linkopts'
+    archive_expsym_cmds="$archive_cmds"' && strip -s $export_symbols'
+    ## What we need is to hardcode the path to the library, not the search path
+    #hardcode_direct=yes
+    #hardcode_libdir_flag_spec='-install_name $libdir/$lib'
+    hardcode_shlibpath_var=no
+    whole_archive_flag_spec='-all_load'
+    ;;
+
   netbsd*)
     if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
       archive_cmds='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
@@ -193,8 +205,8 @@ EOF
 
 EOF
     elif $LD --help 2>&1 | egrep ': supported targets:.* elf' > /dev/null; then
-      archive_cmds='$CC -shared $libobjs $deplibs $linker_flags ${wl}-soname $wl$soname -o $lib'
-      archive_expsym_cmds='$CC -shared $libobjs $deplibs $linker_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
+      archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
+      archive_expsym_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
     else
       ld_shlibs=no
     fi
@@ -217,10 +229,16 @@ EOF
     ;;
   esac
 
+  case "$host_os" in
+  freebsd*)
+    skip_need_lc_check=yes
+    ;;
+  esac
+
   if test "$ld_shlibs" = yes; then
     runpath_var=LD_RUN_PATH
-    hardcode_libdir_flag_spec="$wlarc"'--rpath '"$wlarc"'$libdir'
-    export_dynamic_flag_spec="$wlarc"'--export-dynamic'
+    hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
+    export_dynamic_flag_spec='${wl}--export-dynamic'
     case $host_os in
     cygwin* | mingw*)
       # dlltool doesn't understand --whole-archive et. al.
@@ -328,7 +346,7 @@ else
     old_archive_from_new_cmds='true'
     # FIXME: Should let the user specify the lib program.
     old_archive_cmds='lib /OUT:$oldlib$oldobjs$old_deplibs'
-    fix_srcfile_path='`cygpath -w $srcfile`'
+    fix_srcfile_path='`cygpath -w "$srcfile"`'
     ;;
 
   freebsd1*)
@@ -360,6 +378,7 @@ else
     hardcode_libdir_flag_spec='-R$libdir'
     hardcode_direct=yes
     hardcode_shlibpath_var=no
+    skip_need_lc_check=yes
     ;;
 
   hpux9* | hpux10* | hpux11*)
@@ -392,8 +411,16 @@ else
     else
       archive_cmds='$LD -shared -o $lib $libobjs $deplibs $linker_flags'      # ELF
     fi
-    hardcode_libdir_flag_spec='${wl}-R$libdir'
+    hardcode_libdir_flag_spec='-R$libdir'
     hardcode_direct=yes
+    hardcode_shlibpath_var=no
+    ;;
+
+  newsos6)
+    archive_cmds='$LD -G -h $soname -o $lib $libobjs $deplibs $linkopts'
+    hardcode_direct=yes
+    hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
+    hardcode_libdir_separator=:
     hardcode_shlibpath_var=no
     ;;
 
@@ -431,8 +458,10 @@ else
     else
       allow_undefined_flag=' -expect_unresolved \*'
       archive_cmds='$LD -shared${allow_undefined_flag} $libobjs $deplibs $linker_flags -msym -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
+      archive_expsym_cmds='for i in `cat $export_symbols`; do printf "-exported_symbol " >> $lib.exp; echo "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
+      $LD -shared${allow_undefined_flag} -input $lib.exp $linker_flags $libobjs $deplibs -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib~$rm $lib.exp'
     fi
-    hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
+    hardcode_libdir_flag_spec='-rpath $libdir'
     hardcode_libdir_separator=:
     ;;
 
@@ -611,6 +640,11 @@ else
       ac_cv_prog_cc_pic='-DDLL_EXPORT'
       ;;
 
+    newsos6)
+      ac_cv_prog_cc_pic='-KPIC'
+      ac_cv_prog_cc_static='-Bstatic'
+      ;;
+
     osf3* | osf4* | osf5*)
       # All OSF/1 code is PIC.
       ac_cv_prog_cc_wl='-Wl,'
@@ -675,6 +709,9 @@ if test "$enable_shared" = yes && test "$with_gcc" = yes; then
     if eval "test \"`echo '$''{'ac_cv_archive_cmds_needs_lc'+set}'`\" = set"; then
       echo $ac_n "(cached) $ac_c" 1>&6
       need_lc=$ac_cv_archive_cmds_needs_lc
+    elif test "x$skip_need_lc_check" = "xyes" ; then
+      echo $ac_n "(skipping, using no) $ac_c" 1>&6
+      need_lc=no
     else
       $rm conftest*
       echo "static int dummy;" > conftest.$ac_ext
@@ -683,7 +720,7 @@ if test "$enable_shared" = yes && test "$with_gcc" = yes; then
 	cat conftest.err 1>&5
 	soname=conftest
 	lib=conftest
-	libobjs=conftest.o
+	libobjs=conftest.$ac_objext
 	deplibs=
 	wl=$ac_cv_prog_cc_wl
 	compiler_flags=-v
@@ -691,10 +728,12 @@ if test "$enable_shared" = yes && test "$with_gcc" = yes; then
 	verstring=
 	output_objdir=.
 	libname=conftest
+	save_allow_undefined_flag=$allow_undefined_flag
 	allow_undefined_flag=
 	if { (eval echo ltcf-c.sh:need_lc: \"$archive_cmds\") 1>&5; (eval $archive_cmds) 2>&1 | grep " -lc " 1>&5 ; }; then
 	  need_lc=no
 	fi
+	allow_undefined_flag=$save_allow_undefined_flag
       else
 	cat conftest.err 1>&5
       fi

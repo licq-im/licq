@@ -160,7 +160,7 @@ case "$host_os" in
         # FIXME: insert proper C++ library support
         ld_shlibs=no
         ;;
-    esac 
+    esac
     ;;
   dgux*)
     case "$cc_basename" in
@@ -181,6 +181,8 @@ case "$host_os" in
     ;;
   freebsd*)
     # FreeBSD uses GNU C++ and GNU ld
+    skip_need_lc_check=yes
+    remove_lgcc=yes
     ;;
   hpux*)
     case "$cc_basename" in
@@ -190,8 +192,8 @@ case "$host_os" in
         ;;
       aCC)
 	case "$host_os" in
-	hpux9*) archive_cmds='$rm $output_objdir/$soname~$CC -b ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib' ;;
-	*) archive_cmds='$CC -b ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags' ;;
+	hpux9*) archive_cmds='$rm $output_objdir/$soname~$CC -b ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib' ;;
+	*) archive_cmds='$CC -b ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags' ;;
 	esac
 	hardcode_libdir_flag_spec='${wl}+b ${wl}$libdir'
 	hardcode_libdir_separator=:
@@ -220,6 +222,7 @@ case "$host_os" in
 	  hardcode_minus_L=yes
 	  export_dynamic_flag_spec='${wl}-E'
 	  output_verbose_link_cmds='$CC -shared -fPIC $CFLAGS -v conftest.$objext 2>&1 | egrep "\-L"'
+	  remove_lgcc=yes
         fi
         if test "$with_gcc" = no ; then
 	  # FIXME: insert proper C++ library support
@@ -233,11 +236,17 @@ case "$host_os" in
       CC)
         # SGI C++
         archive_cmds='$CC -shared -all -multigot $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
+
+	# Archives containing C++ object files must be created using
+	# "CC -ar", where "CC" is the IRIX C++ compiler.  This is
+	# necessary to make sure instantiated templates are included
+	# in the archive.
+	old_archive_cmds='$CC -ar -WR,-u -o $oldlib $oldobjs'
         ;;
       *)
         if test "$with_gcc" = yes; then
           if test "$with_gnu_ld" = no; then
-            archive_cmds='$CC -D_LANGUAGE_C_CPLUS_PLUS -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${objdir}/so_locations -o $lib'
+            archive_cmds='$CC -nostdlib -D_LANGUAGE_C_CPLUS_PLUS -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${objdir}/so_locations -o $lib'
           else
             archive_cmds='$LD -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -o $lib'
           fi
@@ -256,8 +265,8 @@ case "$host_os" in
         # KCC will only create a shared library if the output file
         # ends with ".so" (or ".sl" for HP-UX), so rename the library
         # to its proper name (with version) after linking.
-        archive_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $linker_flags --soname $soname -o \$templib; mv \$templib $lib'
-        archive_expsym_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $linker_flags --soname $soname -o \$templib ${wl}-retain-symbols-file,$export_symbols; mv \$templib $lib'
+        archive_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+        archive_expsym_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib ${wl}-retain-symbols-file,$export_symbols; mv \$templib $lib'
 
         # Commands to make compiler produce verbose output that lists
         # what "hidden" libraries, object files and flags are used when
@@ -278,8 +287,8 @@ case "$host_os" in
         ;;
       cxx)
         # Compaq C++
-        archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname $wl$soname -o $lib'
-        archive_expsym_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname $wl$soname  -o $lib ${wl}-retain-symbols-file $wl$export_symbols'
+        archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname -o $lib'
+        archive_expsym_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname  -o $lib ${wl}-retain-symbols-file $wl$export_symbols'
 
         runpath_var=LD_RUN_PATH
         hardcode_libdir_flag_spec='-rpath $libdir'
@@ -333,10 +342,27 @@ case "$host_os" in
     ;;
   netbsd*)
     if test "$with_gcc" = no || test "$with_gnu_ld" = no; then
-      # MM: I'm optimistic, and unless someone says otherwise, NetBSD using
-      #     g++ with GNU ld works.
-      # FIXME: insert proper C++ library support
-      ld_shlibs=no
+      # This should only be triggered for NetBSD/a.out
+      # Add in C++ constructor/destructor support
+      if test -f /usr/pkg/lib/c++rt0/c++rt0.o.PIC; then
+        cppopts="/usr/pkg/lib/c++rt0/c++rt0.o.PIC"
+      elif test -f /usr/lib/c++rt0.o; then
+        cppopts="/usr/lib/c++rt0.o"
+      fi
+      archive_cmds='ld -Bshareable -o $lib '"$cppopts"' $libobjs $deplibs $linkopts'
+    fi
+    ;;
+  openbsd*)
+    if test "$with_gcc" = yes && test "$with_gnu_ld" = no; then
+      # MM: OpenBSD 2.7 uses G++, but not GNU ld
+      archive_cmds='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $lib'
+      archive_expsym_cmds='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $lib'
+      old_archive_cmds="$old_archive_cmds~"'$RANLIB $oldlib'
+      hardcode_libdir_flag_spec='${wl}-R$libdir'
+      hardcode_direct=yes
+      hardcode_shlibpath_var=no
+      whole_archive_flag_spec='${wl}-Bforcearchive'
+      remove_lgcc=yes
     fi
     ;;
   osf3*)
@@ -359,7 +385,7 @@ case "$host_os" in
 	  # KCC will only create a shared library if the output file
 	  # ends with ".so" (or ".sl" for HP-UX), so rename the library
 	  # to its proper name (with version) after linking.
-	  archive_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $linker_flags --soname $soname -o \$templib; mv \$templib $lib'
+	  archive_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
 
 	  hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
 	  hardcode_libdir_separator=:
@@ -376,7 +402,7 @@ case "$host_os" in
 	  ;;
 	cxx)
 	  allow_undefined_flag=' ${wl}-expect_unresolved ${wl}\*'
-	  archive_cmds='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname $soname `test -n "$verstring" && echo ${wl}-set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
+	  archive_cmds='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $soname `test -n "$verstring" && echo ${wl}-set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
 
 	  hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
 	  hardcode_libdir_separator=:
@@ -419,7 +445,7 @@ case "$host_os" in
 	  # KCC will only create a shared library if the output file
 	  # ends with ".so" (or ".sl" for HP-UX), so rename the library
 	  # to its proper name (with version) after linking.
-	  archive_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $linker_flags --soname $soname -o \$templib; mv \$templib $lib'
+	  archive_cmds='templib=`echo $lib | sed -e "s/\.so\..*/\.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
 
 	  hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
 	  hardcode_libdir_separator=:
@@ -436,7 +462,7 @@ case "$host_os" in
 	cxx)
 	  allow_undefined_flag=' -Wl,-expect_unresolved -Wl,\*'
 	  no_undefined_flag=' -Wl,-expect_unresolved -Wl,\*'
-	  archive_cmds='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-msym ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` -update_registry ${objdir}/so_locations -o $lib'
+	  archive_cmds='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-msym ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` -update_registry ${objdir}/so_locations -o $lib'
 	  
 	  hardcode_libdir_flag_spec='-rpath $libdir'
 	  hardcode_libdir_separator=:
@@ -497,9 +523,9 @@ case "$host_os" in
       CC)
 	# Sun C++ 4.2, 5.x and Centerline C++
         no_undefined_flag=' -ztext'
-        archive_cmds='$CC -G${allow_undefined_flag} -nolib -h$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags'
+        archive_cmds='$CC -G${allow_undefined_flag} -nolib -h$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
         archive_expsym_cmds='$echo "{ global:" > $lib.exp~cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $lib.exp~$echo "local: *; };" >> $lib.exp~
-        $CC -G${allow_undefined_flag} -nolib ${wl}-M ${wl}$lib.exp -h$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags~$rm $lib.exp'
+        $CC -G${allow_undefined_flag} -nolib ${wl}-M ${wl}$lib.exp -h$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~$rm $lib.exp'
 
         hardcode_libdir_flag_spec='-R$libdir'
         hardcode_shlibpath_var=no
@@ -533,7 +559,7 @@ case "$host_os" in
         ;;
       gcx)
         # Green Hills C++ Compiler
-        archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname -o $lib'
+        archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-h $wl$soname -o $lib'
 
         # The C++ compiler must be used to create the archive.
         old_archive_cmds='$CC $LDFLAGS -archive -o $oldlib $oldobjs'
@@ -566,7 +592,7 @@ case "$host_os" in
           hardcode_libdir_flag_spec='${wl}-R $wl$libdir'
         fi
         ;;
-    esac   
+    esac
     ;;
   tandem*)
     case "$cc_basename" in
@@ -579,7 +605,7 @@ case "$host_os" in
         # FIXME: insert proper C++ library support
         ld_shlibs=no
         ;;
-    esac   
+    esac
     ;;
   unixware*)
     # FIXME: insert proper C++ library support
@@ -659,7 +685,7 @@ else
         # Green Hills C++ Compiler
         # ac_cv_prog_cc_static="--no_auto_instantiation -u __main -u __premain -u _abort -r $COOL_DIR/lib/libOrb.a $MVME_DIR/lib/CC/libC.a $MVME_DIR/lib/classix/libcx.s.a"
         ;;
-      esac 
+      esac
       ;;
     dgux*)
       case "$cc_basename" in
@@ -733,7 +759,7 @@ else
           ;;
         *)
           ;;
-      esac   
+      esac
       ;;
     netbsd*)
       ;;
@@ -783,7 +809,7 @@ else
           ;;
         *)
           ;;
-      esac   
+      esac
       ;;
     sunos4*)
       case "$cc_basename" in
@@ -808,7 +834,7 @@ else
           ;;
         *)
           ;;
-      esac   
+      esac
       ;;
     unixware*)
       ;;
@@ -835,7 +861,7 @@ private:
 EOF
 
 
-if eval $ac_compile 2>&5; then
+if (eval $ac_compile) 2>&5; then
   # Parse the compiler output and extract the necessary
   # objects, libraries and library flags.
 
@@ -874,10 +900,18 @@ if eval $ac_compile 2>&5; then
          # linked, so don't bother handling this case.
          esac
        else
-         if test -z "$postdeps"; then
-           postdeps="${prev}${p}"
-         else
-           postdeps="${postdeps} ${prev}${p}"
+	 add="${prev}${p}"
+	 if test "x$remove_lgcc" = "xyes" ; then
+	   case "$add" in
+	     -lgcc ) add="" ;;
+	   esac
+	 fi
+	 if test -n "$add" ; then
+           if test -z "$postdeps"; then
+             postdeps="$add"
+           else
+             postdeps="${postdeps} ${add}"
+           fi
          fi
        fi
        ;;
@@ -918,7 +952,11 @@ fi
 
 $rm -f confest.$objext
 
-case " $postdeps " in
-*" -lc "*) need_lc=no ;;
-*) need_lc=yes ;;
-esac
+if test "x$skip_need_lc_check" = "xyes" ; then
+  need_lc=no
+else
+  case " $postdeps " in
+  *" -lc "*) need_lc=no ;;
+  *) need_lc=yes ;;
+  esac
+fi
