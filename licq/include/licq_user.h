@@ -785,11 +785,11 @@ protected:
   void SetDefaults();
   void AddToContactList();
 
+  void SetSecure(bool s) { m_bSecure = s; }
   void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
   bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
   bool ConnectionInProgress() { return m_bConnectionInProgress; }
   void SetConnectionInProgress(bool c)  { m_bConnectionInProgress = c; }
-  void SetSecure(bool s) { m_bSecure = s; }
 
   void SetLastSentEvent()           { m_nLastCounters[LAST_SENT_EVENT] = time(NULL); }
   void SetLastReceivedEvent()       { m_nLastCounters[LAST_RECV_EVENT] = time(NULL); }
@@ -919,6 +919,7 @@ protected:
   friend class CICQDaemon;
   friend class CMSN;
   friend class CSocketManager;
+  friend void *MonitorSockets_tep(void *);
 };
 
 
