@@ -45,6 +45,13 @@ CUtilityManager::CUtilityManager()
   // does nothing for now
 }
 
+CUtilityManager::~CUtilityManager()
+{
+  std::vector <CUtility *>::iterator iter;
+  for (iter = m_vxUtilities.begin(); iter != m_vxUtilities.end(); iter++)
+    delete *iter;
+}
+
 unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
 {
   struct dirent **namelist;
@@ -164,6 +171,18 @@ CUtility::CUtility(const char *_szFileName)
   m_szName = strdup(pcField);
 }
 
+
+CUtility::~CUtility()
+{
+  std::vector <CUtilityUserField *>::iterator iter;
+  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
+    delete *iter;
+
+  if (m_szName)        free(m_szName);
+  if (m_szCommand)     free(m_szCommand);
+  if (m_szDescription) free(m_szDescription);
+  if (m_szFullCommand) delete []m_szFullCommand;
+}
 
 bool CUtility::SetFields(unsigned long _nUin)
 {

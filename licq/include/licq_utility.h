@@ -62,6 +62,8 @@ class CUtility
 {
 public:
   CUtility(const char *_szFileName);
+  ~CUtility();
+
   const char *Name()  { return m_szName; }
   const char *Command(ICQUser *) { return m_szCommand; }
   const char *Description()  { return m_szDescription; }
@@ -93,6 +95,8 @@ class CUtilityManager
 {
 public:
   CUtilityManager();
+  ~CUtilityManager();
+
   unsigned short LoadUtilities(const char *_szDir);
   CUtility *Utility(unsigned short n)  { return m_vxUtilities[n]; }
   unsigned short NumUtilities()  { return m_vxUtilities.size(); }
