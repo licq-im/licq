@@ -46,6 +46,10 @@ void CSignalManager::slot_incoming()
     break;
   }
 
+  case '0':
+  case '1':
+    break;
+
   default:
     gLog.Warn("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
   }

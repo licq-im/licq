@@ -5,6 +5,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+
 #ifdef USE_SCRNSAVER
 #include <X11/extensions/scrnsaver.h>
 #endif
@@ -15,6 +16,7 @@
 #undef KeyRelease
 #undef FocusIn
 #undef FocusOut
+#undef Status
 
 #ifdef USE_KDE
 #include <kapp.h>
@@ -1148,7 +1150,6 @@ ICQFunctions *CMainWindow::callFunction(int fcn, bool isUser, unsigned long _nUi
 void CMainWindow::slot_shutdown()
 {
   licqDaemon->Shutdown();
-  //qApp.quit();
 }
 
 //-----CMainWindow::slot_logon--------------------------------------------------

@@ -46,6 +46,12 @@ const char *LP_Version(void)
   return version;
 }
 
+const char *LP_Status(void)
+{
+  static const char status[] = "running";
+  return status;
+}
+
 bool LP_Init(int argc, char **argv)
 {
   char skinName[32] = "";
@@ -191,5 +197,9 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
 
   setMainWidget(licqMainWindow);
   licqMainWindow->show();
-  return exec();
+  int r = exec();
+  _licqDaemon->UnregisterPlugin();
+
+  return r;
 }
+
