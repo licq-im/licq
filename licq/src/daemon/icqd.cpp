@@ -89,8 +89,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.SetFlags(0);
 
   // -----Network configuration-----
-  gLog.Info("%sNetwork configuration.\n", L_INITxSTR);
-
   unsigned short numRemoteServers, remoteServerPort;
   char remoteServerID[32], remotePortID[32], remoteServerName[64];
 
@@ -174,7 +172,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
   unsigned short nOnEventCmdType;
 
-  gLog.Info("%sOnEvent configuration.\n", L_INITxSTR);
   licqConf.SetSection("onevent");
   licqConf.ReadNum("Enable", nOnEventCmdType, 0);
   licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, false);
@@ -218,14 +215,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   icqServers.setServer(1);    // set the initial UDP remote server (opened in ConnectToServer)
 
   // Pipes
-  gLog.Info("%sCreating pipes.\n", L_INITxSTR);
   pipe(pipe_newsocket);
 
   // Initialize the random number generator
   srand(time(NULL));
 
   // Start up our threads
-  gLog.Info("%sInitializing thread data.\n", L_INITxSTR);
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
   pthread_mutex_init(&mutex_plugins, NULL);
@@ -710,6 +705,11 @@ unsigned short VersionToUse(unsigned short v_in)
   gLog.Warn("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
   return 2;*/
   unsigned short v_out = v_in < ICQ_VERSION_TCP ? v_in : ICQ_VERSION_TCP;
+  if (v_out < 2)
+  {
+    gLog.Warn("%sInvalid TCP version %d.  Attempting v2.\n", L_WARNxSTR, v_out);
+    v_out = 2;
+  }
   return v_out;
 }
 
