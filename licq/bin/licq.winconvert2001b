@@ -1,0 +1,64 @@
+#!/bin/bash
+#Description: Converts ICQ2001b databases (.clb) to licq format.
+#Author: Carlos Augusto Silva e Silva (mb`)
+#Version: 0.1
+#Date: 02/05/2002
+
+if [ -f "$1" ]; then
+luser=~/.licq/users
+luserc=~/.licq/users.conf
+nlines="$(cat "$1"|wc -l)"
+n=1
+tmpfile="/tmp/count.$$"
+pastefile="/tmp/winlicq.$$"
+
+while [ "$n" -le "$nlines" ];
+    do printf %04d $n >> $tmpfile;
+    echo >> $tmpfile;
+    (( n++ ));
+done
+paste -d ";" "$tmpfile" "$1" > $pastefile
+
+echo "[users]" > $luserc
+echo "NumOfUsers = " >> $luserc
+
+n=1
+while [ "$n" -le "$nlines" ]; do
+    line="$(grep "$(printf %04d $n);" $pastefile|cut -b 6-)"
+    group="$(echo $line|cut -d ";" -f 1)"
+    uin="$(echo $line|cut -d ";" -f 2)"
+    alias="$(echo $line|cut -d ";" -f 3)"
+    echo "[user]" > $luser/$uin.uin
+    echo "Alias = $alias" >> $luser/$uin.uin
+    echo "FirstName = none" >> $luser/$uin.uin
+    echo "LastName = none" >> $luser/$uin.uin
+    echo "EMail = none" >> $luser/$uin.uin
+    echo "History = default" >> $luser/$uin.uin
+    echo "NewMessages = 0" >> $luser/$uin.uin
+    echo "Authorization = 0" >> $luser/$uin.uin
+    echo "City = 0" >> $luser/$uin.uin
+    echo "State = 0" >> $luser/$uin.uin
+    echo "Country = 0" >> $luser/$uin.uin
+    echo "PhoneNumber = 0" >> $luser/$uin.uin
+    echo "Age = 0" >> $luser/$uin.uin
+    echo "Sex = 0" >> $luser/$uin.uin
+    echo "Homepage = 0" >> $luser/$uin.uin
+    echo "About = 0" >> $luser/$uin.uin
+    echo "OnlineNotify = 0" >> $luser/$uin.uin
+    echo "NewUser = 0" >> $luser/$uin.uin
+    echo "Group = $group" >> $luser/$uin.uin
+    echo "VisibleList = 0" >> $luser/$uin.uin
+    echo "InvisibleList = 0" >> $luser/$uin.uin
+    ((  n++ ))
+done
+n=0
+for i in $(cd $luser; ls *??.uin|cut -d "." -f 1); do
+    (( n++ ))
+    echo "User$n = $i" >> $luserc
+done
+sed s/"NumOfUsers = "/"NumOfUsers = $n"/g $luserc > /tmp/luserc.$$
+mv /tmp/luserc.$$ $luserc
+rm -rf $tmpfile $pastefile
+else
+    echo "Usage: $0 ICQDB.clb"
+fi
