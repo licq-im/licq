@@ -587,7 +587,7 @@ void ICQFunctions::save()
     break;
   default:
     gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %s.\n",
-              L_WARNxSTR, currentTab);
+              L_WARNxSTR, tabLabel[currentTab]);
     break;
   }
 }
