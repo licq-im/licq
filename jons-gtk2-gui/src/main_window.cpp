@@ -63,7 +63,7 @@ gint flash_icons(gpointer);
 
 gboolean main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
-	//save_window_pos();
+	save_window_pos();
 	gtk_main_quit();
 
 	return FALSE;
@@ -129,7 +129,8 @@ GtkWidget* main_window_new(const gchar* window_title)
 	/* Add a scroll bar for the contact list */
 	scroll_bar = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_bar),
-				       GTK_POLICY_NEVER,
+				       //GTK_POLICY_NEVER,
+				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
 	/* Add in the contact list */
