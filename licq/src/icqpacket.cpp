@@ -888,8 +888,8 @@ CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus)
   buffer->PackUnsignedLongBE(0x00060004);     // TLV
   buffer->PackUnsignedLongBE(m_nNewStatus);  // ICQ status
   buffer->PackUnsignedLongBE(0x000C0025); // TLV
-  buffer->PackUnsignedLong(0);    // direct connection info
-  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLong(s_nLocalIp);    // direct connection info
+  buffer->PackUnsignedLongBE(s_nLocalPort);
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
   buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
