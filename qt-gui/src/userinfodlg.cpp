@@ -277,7 +277,7 @@ void UserInfoDlg::CreateGeneralInfo()
   if (m_bOwner)
   {
     cmbCountry = new CEComboBox(true, tabList[GeneralInfo].tab);
-    cmbCountry->insertItem(tr("Unspecified"));
+    //cmbCountry->insertItem(tr("Unspecified"));
     cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
     for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
       cmbCountry->insertItem(GetCountryByIndex(i)->szName);
@@ -328,29 +328,19 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoStatus->setData(u->StatusStr());
   if (m_bOwner)
   {
-    if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
+    const SCountry *c = GetCountryByCode(u->GetCountryCode());
+    if (c == NULL)
       cmbCountry->setCurrentItem(0);
     else
-    {
-      const SCountry *c = GetCountryByCode(u->GetCountryCode());
-      if (c == NULL)
-        cmbCountry->setCurrentItem(0);
-      else
-        cmbCountry->setCurrentItem(c->nIndex + 1);
-    }
+      cmbCountry->setCurrentItem(c->nIndex);
   }
   else
   {
-    if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
-      nfoCountry->setData(tr("Unspecified"));
-    else
-    {
-      const SCountry *c = GetCountryByCode(u->GetCountryCode());
-      if (c == NULL)
-        nfoCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
-      else  // known
-        nfoCountry->setData(c->szName);
-    }
+    const SCountry *c = GetCountryByCode(u->GetCountryCode());
+    if (c == NULL)
+      nfoCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
+    else  // known
+      nfoCountry->setData(c->szName);
   }
   nfoAddress->setData(u->GetAddress());
   nfoCity->setData(u->GetCity());
@@ -397,10 +387,7 @@ void UserInfoDlg::SaveGeneralInfo()
   if (m_bOwner)
   {
     unsigned short i = cmbCountry->currentItem();
-    if (i == 0)
-      u->SetCountryCode(COUNTRY_UNSPECIFIED);
-    else
-      u->SetCountryCode(GetCountryByIndex(i - 1)->nCode);
+    u->SetCountryCode(GetCountryByIndex(i)->nCode);
   }
 
   u->SetEnableSave(true);
@@ -564,7 +551,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
     if (m_bOwner)
     {
       if (l == NULL)
-        cmbLanguage[i]->setCurrentItem(NUM_LANGUAGES - 1);
+        cmbLanguage[i]->setCurrentItem(0);
       else
         cmbLanguage[i]->setCurrentItem(l->nIndex);
     }
@@ -1231,7 +1218,7 @@ void UserInfoDlg::slotUpdate()
   case GeneralInfo:
   {
     unsigned short i = cmbCountry->currentItem();
-    unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
+    unsigned short cc = GetCountryByIndex(i)->nCode;
     icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
                                             nfoFirstName->text().local8Bit(),
                                             nfoLastName->text().local8Bit(),
