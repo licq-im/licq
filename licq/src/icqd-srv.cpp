@@ -869,9 +869,9 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
                 nUin);
       break;
     }
-    unsigned long nNewStatus = u->StatusFull();
-    if (packet.getTLVLen(0x0006) == 4) {
-      nNewStatus = packet.UnpackUnsignedLongTLV(0x0006);
+    // 0 if not set -> Online
+    unsigned long nNewStatus = packet.UnpackUnsignedLongTLV(0x0006);
+    if (u->StatusFull() != nNewStatus) {
       ChangeUserStatus(u, nNewStatus);
       gLog.Info("%s%s (%ld) changed status: %s.\n", L_SRVxSTR, u->GetAlias(), nUin, u->StatusStr());
       if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
