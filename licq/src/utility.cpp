@@ -240,7 +240,7 @@ bool CUtilityInternalWindow::POpen(const char *cmd)
   if (pipe(pdes_out) < 0) return false;
   if (pipe(pdes_err) < 0) return false;
 
-  switch (pid = vfork())
+  switch (pid = fork())
   {
     case -1:                        /* Error. */
     {
