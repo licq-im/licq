@@ -1285,16 +1285,16 @@ void CUserView::maybeTip(const QPoint& c)
     }
 
     if (*u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>E: ") + QString::fromLocal8Bit(u->GetEmailPrimary()) + tr("</nobr>");
+      s += tr("<br><nobr>E: ") + codec->toUnicode(u->GetEmailPrimary()) + tr("</nobr>");
 
     if (item->m_bPhone && gMainWindow->m_bPopPhone)
-      s += tr("<br><nobr>P: ") + QString::fromLocal8Bit(u->GetPhoneNumber()) + tr("</nobr>");
+      s += tr("<br><nobr>P: ") + codec->toUnicode(u->GetPhoneNumber()) + tr("</nobr>");
 
     if (item->m_bCellular && gMainWindow->m_bPopCellular)
-      s += tr("<br><nobr>C: ") + QString::fromLocal8Bit(u->GetCellularNumber()) + tr("</nobr>");
+      s += tr("<br><nobr>C: ") + codec->toUnicode(u->GetCellularNumber()) + tr("</nobr>");
 
     if ((u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>F: ") + QString::fromLocal8Bit(u->GetFaxNumber()) + tr("</nobr>");
+      s += tr("<br><nobr>F: ") + codec->toUnicode(u->GetFaxNumber()) + tr("</nobr>");
 
     if ((u->Ip() || u->RealIp()) && gMainWindow->m_bPopIP) {
       char buf1[32];
