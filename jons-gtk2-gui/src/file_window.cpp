@@ -129,9 +129,7 @@ file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept)
 	GtkWidget *refuse = gtk_button_new_with_mnemonic("_Refuse");
 
 	// Pack them
-	GtkWidget *h_box = gtk_hbutton_box_new();
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), GTK_BUTTONBOX_END);
-	gtk_box_set_spacing(GTK_BOX(h_box), 5);
+	GtkWidget *h_box = hbutton_box_new();
 	gtk_container_add(GTK_CONTAINER(h_box), accept);
 	gtk_container_add(GTK_CONTAINER(h_box), refuse);
 
@@ -192,12 +190,11 @@ refuse_file(GtkWidget *widget, struct file_accept *fa)
 	gtk_box_pack_start(GTK_BOX(v_box), frame, FALSE, FALSE, 0);
 
 	// Buttons
-	GtkWidget *h_box = gtk_hbutton_box_new();
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), GTK_BUTTONBOX_END);
+	GtkWidget *h_box = hbutton_box_new();
 	GtkWidget *ok = gtk_button_new_from_stock(GTK_STOCK_OK);
 	GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_box_pack_start(GTK_BOX(h_box), ok, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(h_box), ok);
+	gtk_container_add(GTK_CONTAINER(h_box), cancel);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// Connect all the signals
@@ -392,8 +389,7 @@ create_file_window(struct file_window *fw)
 
 	// Cancel button
   fw->cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-  GtkWidget *bbox = gtk_hbutton_box_new();
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
+  GtkWidget *bbox = hbutton_box_new();
   gtk_container_add(GTK_CONTAINER(bbox), fw->cancel);
   
 	GtkWidget *hbox = gtk_hbox_new(FALSE, 5);
@@ -750,9 +746,7 @@ list_request_file(GtkWidget *widget, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// The hbox with the ok and cancel buttons
-	h_box = gtk_hbutton_box_new();
-	gtk_box_set_spacing(GTK_BOX(h_box), 5);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), GTK_BUTTONBOX_END);
+	h_box = hbutton_box_new();
 	fs->ok = gtk_button_new_from_stock(GTK_STOCK_OK);
 	fs->cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 	gtk_container_add(GTK_CONTAINER(h_box), fs->ok);
