@@ -99,12 +99,12 @@ it.
 fi
 
 dnl Check for QT version
-AC_MSG_CHECKING(for QT >= 2.0)
-if test ! -r $ac_cv_header_qtinc/qstyle.h; then
+AC_MSG_CHECKING(for QT >= 2.1)
+if test ! -r $ac_cv_header_qtinc/qbig5codec.h; then
   AC_MSG_ERROR([
 
-    $ac_cv_header_qtinc/qstyle.h does not exist.
-    Sorry, but you need QT version 2.0 or higher to compile the Qt gui plugin.
+    $ac_cv_header_qtinc/qbig5codec.h does not exist.
+    Sorry, but you need QT version 2.1 or higher to compile the Qt gui plugin.
   ])
 else
   AC_MSG_RESULT(yes)

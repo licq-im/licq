@@ -154,7 +154,7 @@ AC_DEFUN(AC_PATH_QT_INC,
       fi
 
       for qt_dir in $qt_include_dirs; do
-        if test -r "$qt_dir/qcstring.h"; then
+        if test -r "$qt_dir/qbig5codec.h"; then
           ac_qt_includes=$qt_dir
           break
         fi
@@ -225,14 +225,14 @@ AC_DEFUN(AC_PATH_QT_MOC,
 
         The Qt meta object compiler (moc)
         $MOC
-        found by configure is not the one part of Qt 2.xx.
+        found by configure is not the one part of Qt 2.1.
 
         It's likely that the found one is the one shipped with
         Qt 1.xx. That one will not work.
 
         Please check your installation.
         Use the --with-qt-moc option to specify the path and name
-        of the moc compiler shipped with your Qt 2.xx lib.
+        of the moc compiler shipped with your Qt 2.1 lib.
         see ./configure --help for details.
     ])
   fi
@@ -377,7 +377,7 @@ test -n "$ac_kde" || have_kde=no
 if test "$have_kde" = yes; then
   AC_MSG_RESULT([libraries $ac_kde_libraries, headers $ac_kde_includes])
   AC_DEFINE(USE_KDE)
-  KDE_LIBS="-lkfile -lkio -lkdeui -lkdecore"
+  KDE_LIBS="-lkfile"
   AC_SUBST(KDE_LIBS)
 else
   AC_MSG_RESULT(["no"])

@@ -1,0 +1,45 @@
+Requirements:
+
+- X11 header files (xfree-devel)
+- Qt 2.1 header files, Qt 2.1 lib, Qt 2.1 moc compiler
+
+
+Qt 2.1 can be downloaded from ftp.trolltech.com/pub/qt/source
+Redhat RPMs can be found at ftp://people.redhat.com/bero/qt
+
+NOTE:
+
+if you get errors like
+
+Unable to load plugin (qt-gui): /usr/lib/licq/licq_qt-gui.so:
++undefined symbol: dragEnterEvent__14QMultiLineEditP15QDragEnterEvent.
+
+
+or similiar (text after "undefined symbol: " might vary) then you have
+a older Qt 2.x lib in the paths given in /etc/ld.so.conf. uninstall them or
+make sure that the Qt 2.1 lib is found first.
+
+If you get compilation errors in a file named "*.moc", then you're using
+the wrong moc compiler. you need the one shipped with your Qt 2.1 version.
+NOTE some distros rename it to "moc2". use --with-qt-moc=<path>/moc2 to fix
+this.
+
+GENERAL INSTALL instructions:
+
+READ AND UNDERSTAND ./configure --help
+
+run
+
+./configure <youroptionsifnecessary>
+make
+make install
+
+
+note if you set the QTDIR environment variable to point to your Qt 2.1
+installation before running ./configure, everything should run through
+just fine.
+
+Take a look at the other README's as well.
+
+If you have a problem that is not noted here, read through the licq-main
+and licq-devel mailinglist archives.
