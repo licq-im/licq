@@ -284,7 +284,7 @@ protected slots:
   void setCurrentGroup(int);
   void callDefaultFunction(const char *, unsigned long);
   void callDefaultFunction(QListViewItem *);
-  void callOwnerFunction(int);
+  void callOwnerFunction(int, unsigned long = LICQ_PPID);
   void callMsgFunction();
   void callFileFunction (const char *);
   void callUrlFunction (const char *);

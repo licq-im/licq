@@ -1302,7 +1302,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         {
           ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
           unsigned short s = o->Status();
-          gUserManager.DropOwner();
+          gUserManager.DropOwner(nPPID);
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
           {
             bool bCallUserView = false, bCallSendMsg = false;
@@ -1353,7 +1353,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         if (sig->SubSignal() == USER_STATUS || sig->SubSignal() == USER_EXT) break;
         ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
         m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(nPPID);
         if (caption()[0] == '*')
           setCaption(QString("* ") + m_szCaption);
         else
@@ -2021,22 +2021,45 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
     ((CUserViewItem *)i)->ItemPPID());
 }
 
-void CMainWindow::callOwnerFunction(int index)
+void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
 {
   if (index == OwnerMenuView)
   {
-    //TODO which owner?
-    char szUin[24];
-    sprintf(szUin, "%lu", gUserManager.OwnerUin());
-    callFunction(index, szUin, LICQ_PPID);
+    ProtoPluginsList pl; 
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
+    {
+      char *szId = 0;
+      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      szId = strdup(o->IdString());
+      unsigned short nNumMsg = o->NewMessages();
+      gUserManager.DropOwner((*it)->PPID());
+      
+      if (nNumMsg > 0)
+        callFunction(index, szId, (*it)->PPID());
+
+      free(szId);
+    } 
   }
 
   else if (index == OwnerMenuGeneral || index == OwnerMenuHistory)
   {
-    //TODO Which owner?
-    char szUin[24];
-    sprintf(szUin, "%lu", gUserManager.OwnerUin());
-    callInfoTab(index, szUin, LICQ_PPID);
+    char *szId;
+    ProtoPluginsList pl;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
+    {
+      if ((*it)->PPID() == nPPID)
+      {
+        ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+        szId = strdup(o->IdString());
+        gUserManager.DropOwner((*it)->PPID());
+        callInfoTab(index, szId, nPPID);
+        free(szId);
+      }
+    }
   }
 
   else if (index == OwnerMenuSecurity)
@@ -2500,16 +2523,21 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
   if (strcmp(szId, "0") == 0)
   {
     // Do system messages first
-    //TODO Which protocol?
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    unsigned short nNumMsg = o->NewMessages();
-    gUserManager.DropOwner();
-    if (nNumMsg > 0)
+    ProtoPluginsList pl;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
     {
-      callOwnerFunction(OwnerMenuView);
-      return;
+      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      unsigned short nNumMsg = o->NewMessages();
+      gUserManager.DropOwner((*it)->PPID());
+      if (nNumMsg > 0)
+      {
+        callOwnerFunction(OwnerMenuView, (*it)->PPID());
+        return;
+      }
     }
-
+    
     time_t t = time(NULL);
     FOR_EACH_USER_START(LOCK_R)
     {

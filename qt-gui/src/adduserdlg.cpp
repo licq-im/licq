@@ -26,6 +26,7 @@
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qframe.h>
+#include <qcombobox.h>
 
 #include "adduserdlg.h"
 
@@ -38,17 +39,34 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 {
 	server = s;
 
-	QBoxLayout *lay = new QBoxLayout(this, QBoxLayout::Down, 8);
-	QFrame *frmUin = new QFrame(this);
+        QBoxLayout *lay = new QBoxLayout(this, QBoxLayout::Down, 8);
+        QFrame *frmProtocol = new QFrame(this);
+        QFrame *frmUin = new QFrame(this);
 	chkAlert = new QCheckBox(tr("&Alert User"), this);
 	QFrame *frmBtn = new QFrame(this);
-	lay->addWidget(frmUin);
+        lay->addWidget(frmProtocol);
+        lay->addWidget(frmUin);
 	lay->addWidget(chkAlert);
 	lay->addSpacing(5);
 	lay->addStretch();
 	lay->addWidget(frmBtn);
 
-	QBoxLayout *layUin = new QBoxLayout(frmUin, QBoxLayout::LeftToRight);
+        QBoxLayout *layProtocol = new QBoxLayout(frmProtocol, QBoxLayout::LeftToRight);
+        lblProtocol = new QLabel(tr("Protocol:"), frmProtocol);
+        cmbProtocol = new QComboBox(frmProtocol);
+        layProtocol->addWidget(lblProtocol);
+        layProtocol->addWidget(cmbProtocol);
+        
+        // Fill the combo list now
+        ProtoPluginsList pl;
+        ProtoPluginsListIter it;
+        server->ProtoPluginList(pl);
+        for (it = pl.begin(); it != pl.end(); it++)
+        {
+          cmbProtocol->insertItem((*it)->Name());  
+        }
+        
+        QBoxLayout *layUin = new QBoxLayout(frmUin, QBoxLayout::LeftToRight);
 	lblUin = new QLabel(tr("New User ID:"), frmUin);
 	edtUin = new QLineEdit(frmUin);
 	layUin->addWidget(lblUin);
@@ -87,10 +105,12 @@ void AddUserDlg::ok()
   QString strUser = edtUin->text().latin1();
   if (!strUser.isEmpty())
   {
-    //TODO Get protocol
-    server->AddUserToList(strUser, LICQ_PPID);
-    //if (chkAlert->isChecked())
-    //  server->icqAlertUser(strUser);
+    ProtoPluginsList pl;
+    ProtoPluginsListIter it;
+    server->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
+      if (strcmp((*it)->Name(), cmbProtocol->currentText().latin1()) == 0)
+        server->AddUserToList(strUser, (*it)->PPID());
   }
 
   close(true);

@@ -7,6 +7,7 @@ class QPushButton;
 class QLabel;
 class QLineEdit;
 class QCheckBox;
+class QComboBox;
 
 class CICQDaemon;
 
@@ -18,9 +19,10 @@ public:
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;
-   QLabel *lblUin;
+   QLabel *lblUin, *lblProtocol;
    QLineEdit *edtUin;
    QCheckBox *chkAlert;
+   QComboBox *cmbProtocol;
 public slots:
    virtual void show();
 protected slots:

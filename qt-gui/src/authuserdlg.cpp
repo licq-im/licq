@@ -119,6 +119,11 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   server = s;
   m_nUin = nUin;
   m_bGrant = bGrant;
+  m_nPPID = LICQ_PPID;
+  char szUin[14];
+  sprintf(szUin, "%lu", nUin);
+  m_szId = strdup(szUin);
+  
 
   if(bGrant)
     setCaption(tr("Licq - Grant Authorisation"));
@@ -200,12 +205,11 @@ void AuthUserDlg::ok()
 
   if (m_szId != 0)
   {
-    //TODO
-    QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, LICQ_PPID);
+    QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
     if (m_bGrant)
-      server->icqAuthorizeGrant(strtoul(m_szId, (char **)NULL, 10), codec->fromUnicode(mleResponse->text()));
+      server->ProtoAuthorizeGrant(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
     else
-      server->icqAuthorizeRefuse(strtoul(m_szId, (char **)NULL, 10), codec->fromUnicode(mleResponse->text()));
+      server->ProtoAuthorizeRefuse(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
     close(true);
   }
 }
