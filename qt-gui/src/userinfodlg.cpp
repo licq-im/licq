@@ -51,7 +51,7 @@
 
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                          unsigned long _nUin, QWidget* parent)
-  : QDialog(parent, "UserInfoDialog", false, WDestructiveClose)
+  : QWidget(parent, "UserInfoDialog", WDestructiveClose)
 {
   server = s;
   mainwin = m;
@@ -79,8 +79,6 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
 
-  QBoxLayout* l = new QHBoxLayout(lay);
-  l->addStretch(2);
 
   btnSave = new QPushButton(tr("&Save"), this);
   btnOk = new QPushButton(tr("&OK"), this);
@@ -92,6 +90,16 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   btnSave->setFixedWidth(bw);
   btnOk->setFixedWidth(bw);
   btnClose->setFixedWidth(bw);
+
+  QBoxLayout* l = new QHBoxLayout(lay);
+  if (!m_bOwner)
+  {
+    QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
+    l->addWidget(btnMenu);
+    connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
+    btnMenu->setPopup(gMainWindow->UserMenu());
+  }
+  l->addStretch(2);
   l->addWidget(btnSave);
   connect(btnSave, SIGNAL(clicked()), this, SLOT(SaveSettings()));
   l->addWidget(btnOk);

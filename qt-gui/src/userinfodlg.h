@@ -19,9 +19,10 @@
 #ifndef USERINFODLG_H
 #define USERINFODLG_H
 
-#include <qdialog.h>
+#include <qwidget.h>
 
 #include "licq_history.h"
+#include "mainwin.h"
 
 class QSpinBox;
 class QLabel;
@@ -40,7 +41,7 @@ class CEComboBox;
 class ICQUser;
 class MLEditWrap;
 
-class UserInfoDlg : public QDialog
+class UserInfoDlg : public QWidget
 {
   Q_OBJECT
 public:
@@ -143,6 +144,7 @@ protected slots:
   void slotOk();
   void doneFunction(ICQEvent*);
   void resetCaption();
+  void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
 
 signals:
   void finished(unsigned long);
