@@ -292,3 +292,5 @@ void OwnerManagerDlg::slot_update()
 {
   updateOwners();
 }
+
+#include "ownermanagerdlg.moc"
