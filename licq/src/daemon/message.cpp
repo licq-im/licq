@@ -97,19 +97,19 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
                      time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags)
 {
-   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
+  m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
 }
 
 
 void CEventMsg::CreateDescription()
 {
-   m_szText = strdup(m_szMessage);
+  m_szText = strdup(m_szMessage);
 }
 
 
 CEventMsg::~CEventMsg()
 {
-   free (m_szMessage);
+  free (m_szMessage);
 }
 
 void CEventMsg::AddToHistory(ICQUser *u, direction _nDir)

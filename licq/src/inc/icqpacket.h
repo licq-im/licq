@@ -293,6 +293,7 @@ class CPU_SetStatus : public CPacketUdp
 {
 public:
    CPU_SetStatus(unsigned long _nNewStatus);
+   unsigned long Status() { return m_nNewStatus; }
 protected:
    unsigned long m_nNewStatus;
 };
@@ -357,6 +358,7 @@ class CPU_SetRandomChatGroup : public CPacketUdp
 {
 public:
   CPU_SetRandomChatGroup(unsigned long nGroup);
+  unsigned long Group() { return m_nGroup; }
 protected:
   unsigned long m_nGroup;
 };

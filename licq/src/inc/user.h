@@ -391,8 +391,10 @@ public:
   void SetWebAware(bool b)  {  m_bWebAware = b; SaveLicqInfo(); }
   void SetHideIp(bool b)    {  m_bHideIp = b; SaveLicqInfo(); }
   void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
+  void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
   bool WebAware()             { return m_bWebAware; }
   bool HideIp()               { return m_bHideIp; }
+  unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
 
   // Virtual overloaded functions
@@ -404,6 +406,7 @@ protected:
   bool m_bException;
   bool m_bWebAware;
   bool m_bHideIp;
+  unsigned long m_nRandomChatGroup;
 };
 
 

@@ -1652,6 +1652,7 @@ ICQOwner::ICQOwner()
   SetPassword(szTemp);
   m_fConf.ReadBool("WebPresence", m_bWebAware, false);
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
+  m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
 
   m_fConf.CloseFile();
 
@@ -1700,6 +1701,7 @@ void ICQOwner::SaveLicqInfo()
   m_fConf.WriteStr("Password", Password());
   m_fConf.WriteBool("WebPresence", WebAware());
   m_fConf.WriteBool("HideIP", HideIp());
+  m_fConf.WriteNum("RCG", RandomChatGroup());
 
   if (!m_fConf.FlushFile())
   {

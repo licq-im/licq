@@ -640,7 +640,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     else
     {
       gLog.Warn("%sDuplicate packet received, command %d (#%d).\n",
-                L_UDPxSTR, nCommand, nSequence);
+                L_WARNxSTR, nCommand, nSequence);
       if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
       return nCommand;
     }

@@ -947,7 +947,6 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 #endif
     break;
   // Regular events
-  case ICQ_CMDxSND_SETxSTATUS:
   case ICQ_CMDxTCP_START:
   case ICQ_CMDxSND_THRUxSERVER:
   case ICQ_CMDxSND_USERxADD:
@@ -957,6 +956,26 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   case ICQ_CMDxSND_AUTHORIZE:
   case ICQ_CMDxSND_VISIBLExLIST:
   case ICQ_CMDxSND_INVISIBLExLIST:
+    PushPluginEvent(e);
+    break;
+
+  case ICQ_CMDxSND_SETxSTATUS:
+    if (e->m_eResult == EVENT_ACKED)
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      ChangeUserStatus(o, ((CPU_SetStatus *)e->m_xPacket)->Status() );
+      gUserManager.DropOwner();
+    }
+    PushPluginEvent(e);
+    break;
+
+  case ICQ_CMDxSND_SETxRANDOMxCHAT:
+    if (e->m_eResult == EVENT_ACKED)
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_xPacket)->Group());
+      gUserManager.DropOwner();
+    }
     PushPluginEvent(e);
     break;
 
@@ -984,7 +1003,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
         PushExtendedEvent(e);
         break;
       default:
-        gLog.Error("%sInternal error: ProcessDoneEvents_tep(): Invalid result for extended event (%d).\n",
+        gLog.Error("%sInternal error: ProcessDoneEvents(): Invalid result for extended event (%d).\n",
                    L_ERRORxSTR, e->m_eResult);
         delete e;
         return;
@@ -992,21 +1011,15 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     break;
 
   default:
-    gLog.Error("%sInternal error: ProcessDoneEvents_tep(): Unknown command (%04X).\n",
+    gLog.Error("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
                L_ERRORxSTR, e->m_nCommand);
     delete e;
     return;
   }
 
   // Some special commands to deal with
-  if (nCommand == ICQ_CMDxSND_SETxSTATUS && eResult == EVENT_ACKED)
-  {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    ChangeUserStatus(o, m_nDesiredStatus);
-    gUserManager.DropOwner();
-  }
 #if ICQ_VERSION == 5
-  else if (nCommand != ICQ_CMDxTCP_START &&
+  if (nCommand != ICQ_CMDxTCP_START &&
            (eResult == EVENT_TIMEDOUT || eResult == EVENT_ERROR) )
   {
     if (nCommand == ICQ_CMDxSND_LOGON)

@@ -178,7 +178,7 @@ const unsigned long ICQ_STATUS_FxWEBxPRESENCE      = 0x00010000;
 const unsigned long ICQ_STATUS_FxHIDExIP           = 0x00020000;
 const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;  // not done
 
-const unsigned long ICQ_RANDOMxCHATxGROUP_NONE     = 0xFFFFFFFF;
+const unsigned long ICQ_RANDOMxCHATxGROUP_NONE     = 0;
 const unsigned long ICQ_RANDOMxCHATxGROUP_GENERAL  = 1;
 const unsigned long ICQ_RANDOMxCHATxGROUP_ROMANCE  = 2;
 const unsigned long ICQ_RANDOMxCHATxGROUP_GAMES    = 3;
