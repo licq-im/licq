@@ -23,6 +23,7 @@
 #include "config.h"
 #endif
 
+#include <assert.h>
 #include <qaccel.h>
 #include <qcheckbox.h>
 #include <qdatetime.h>
@@ -1241,12 +1242,12 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     btnMenu->setPopup(mainwin->UserMenu());
   }
   cmbSendType = new QComboBox(this);
-  cmbSendType->insertItem(tr("Message"));
-  cmbSendType->insertItem(tr("URL"));
-  cmbSendType->insertItem(tr("Chat Request"));
-  cmbSendType->insertItem(tr("File Transfer"));
-  cmbSendType->insertItem(tr("Contact List"));
-  cmbSendType->insertItem(tr("SMS"));
+  cmbSendType->insertItem(tr("Message"), UC_MESSAGE);
+  cmbSendType->insertItem(tr("URL"), UC_URL);
+  cmbSendType->insertItem(tr("Chat Request"), UC_CHAT);
+  cmbSendType->insertItem(tr("File Transfer"), UC_FILE);
+  cmbSendType->insertItem(tr("Contact List"), UC_CONTACT);
+  cmbSendType->insertItem(tr("SMS"), UC_SMS);
   connect(cmbSendType, SIGNAL(activated(int)), this, SLOT(changeEventType(int)));
   h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
@@ -1424,24 +1425,26 @@ void UserSendCommon::changeEventType(int id)
   switch(id)
   {
 
-  case 0:
+  case UC_MESSAGE:
     e = new UserSendMsgEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
-  case 1:
+  case UC_URL:
     e = new UserSendUrlEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
-  case 2:
+  case UC_CHAT:
     e = new UserSendChatEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
-  case 3:
+  case UC_FILE:
     e = new UserSendFileEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
-  case 4:
+  case UC_CONTACT:
     e = new UserSendContactEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
-  case 5:
+  case UC_SMS:
     e = new UserSendSmsEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
+  default:
+    assert(0);
   }
 
   if (e != NULL)
@@ -2038,7 +2041,7 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(0);
+  cmbSendType->setCurrentItem(UC_MESSAGE);
 }
 
 UserSendMsgEvent::~UserSendMsgEvent()
@@ -2186,7 +2189,7 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(1);
+  cmbSendType->setCurrentItem(UC_URL);
 }
 
 UserSendUrlEvent::~UserSendUrlEvent()
@@ -2294,7 +2297,7 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(3);
+  cmbSendType->setCurrentItem(UC_FILE);
 }
 
 void UserSendFileEvent::browseFile()
@@ -2468,7 +2471,7 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(2);
+  cmbSendType->setCurrentItem(UC_CHAT);
 }
 
 UserSendChatEvent::~UserSendChatEvent()
@@ -2587,7 +2590,7 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(4);
+  cmbSendType->setCurrentItem(UC_CONTACT);
 }
 
 UserSendContactEvent::~UserSendContactEvent()
@@ -2717,7 +2720,7 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(5);
+  cmbSendType->setCurrentItem(UC_SMS);
 }
 
 //-----UserSendSmsEvent::~UserSendSmsEvent-------------------------------------

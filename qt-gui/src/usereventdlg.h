@@ -96,6 +96,14 @@ public:
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
 
+  enum type {
+  	UC_MESSAGE,
+  	UC_URL,
+  	UC_CHAT,
+  	UC_FILE,
+  	UC_CONTACT,
+  	UC_SMS
+  };
 protected:
   QTextCodec *codec;
   bool m_bOwner;
@@ -267,7 +275,7 @@ public:
 protected:
   virtual bool sendDone(ICQEvent *);
   virtual void resetSettings();
-  virtual bool isType(int id) { return (id == 0); }
+  virtual bool isType(int id) { return (id == UC_MESSAGE); }
 
 protected slots:
   virtual void sendButton();
@@ -292,7 +300,7 @@ protected:
   CInfoField *edtItem;
   virtual bool sendDone(ICQEvent *);
   virtual void resetSettings();
-  virtual bool isType(int id) { return (id == 1); }
+  virtual bool isType(int id) { return (id == UC_URL); }
 
 protected slots:
   virtual void sendButton();
@@ -319,7 +327,7 @@ protected:
   ConstFileList m_lFileList;
   virtual bool sendDone(ICQEvent*);
   virtual void resetSettings();
-  virtual bool isType(int id) { return (id == 2); }
+  virtual bool isType(int id) { return (id == UC_FILE); }
 
 protected slots:
   void browseFile();
@@ -348,7 +356,7 @@ protected:
   unsigned short m_nMPChatPort;
   virtual bool sendDone(ICQEvent *);
   virtual void resetSettings();
-  virtual bool isType(int id) { return (id == 3); }
+  virtual bool isType(int id) { return (id == UC_CHAT); }
 
 protected slots:
   virtual void sendButton();
@@ -377,7 +385,7 @@ protected:
 
   virtual bool sendDone(ICQEvent *);
   virtual void resetSettings();
-  virtual bool isType(int id) { return (id == 4); }
+  virtual bool isType(int id) { return (id == UC_CONTACT); }
 
 protected slots:
   virtual void sendButton();
@@ -403,7 +411,7 @@ protected:
 
   virtual bool sendDone(ICQEvent *);
   virtual void resetSettings();
-  virtual bool isType(int id) { return (id == 5); }
+  virtual bool isType(int id) { return (id == UC_SMS); }
 
 protected slots:
   virtual void sendButton();
