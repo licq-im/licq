@@ -227,8 +227,15 @@ void CELabel::resizeEvent (QResizeEvent *)
 void CELabel::mousePressEvent(QMouseEvent* e)
 {
   if(e->button() == MidButton)
-
     emit doubleClicked();
+  else if (e->button() == RightButton)
+  {
+    if (mnuPopUp != NULL)
+    {
+      QPoint clickPoint(e->x(), e->y());
+      mnuPopUp->popup(mapToGlobal(clickPoint));
+    }
+  }
   else
     QLabel::mousePressEvent(e);
 }
@@ -238,19 +245,6 @@ void CELabel::mouseDoubleClickEvent(QMouseEvent *)
 {
    emit doubleClicked();
 }
-
-
-void CELabel::mouseReleaseEvent(QMouseEvent *e)
-{
-   QLabel::mouseReleaseEvent(e);
-   if (mnuPopUp == NULL) return;
-   if (e->button() == RightButton)
-   {
-      QPoint clickPoint(e->x(), e->y());
-      mnuPopUp->popup(mapToGlobal(clickPoint));
-   }
-}
-
 
 //-----CEButton-----------------------------------------------------------------
 CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char *name)

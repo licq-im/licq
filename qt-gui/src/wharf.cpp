@@ -117,10 +117,10 @@ void IconManager::closeEvent( QCloseEvent* e)
   e->ignore();
 }
 
-void IconManager::mouseReleaseEvent( QMouseEvent *e )
+void IconManager::mousePressEvent( QMouseEvent *e )
 {
 #ifdef DEBUG_WHARF
-  printf("icon release\n");
+  printf("icon press\n");
 #endif
   switch(e->button())
   {
@@ -137,7 +137,7 @@ void IconManager::mouseReleaseEvent( QMouseEvent *e )
     default:
       break;
   }
-  //wharfIcon->mouseReleaseEvent(e);
+  //wharfIcon->mousePressEvent(e);
 }
 
 void IconManager::paintEvent( QPaintEvent * )
@@ -647,7 +647,7 @@ void IconManager_KDEStyle::paintEvent( QPaintEvent *e)
     p.drawPixmap((width()-m_statusIcon.width())/2, (height()-m_statusIcon.height())/2, m_statusIcon);
 }
 
-void IconManager_KDEStyle::mouseReleaseEvent( QMouseEvent *e )
+void IconManager_KDEStyle::mousePressEvent( QMouseEvent *e )
 {
   switch(e->button())
   {
@@ -664,7 +664,7 @@ void IconManager_KDEStyle::mouseReleaseEvent( QMouseEvent *e )
     }
     break;
    default:
-     IconManager::mouseReleaseEvent(e);
+     IconManager::mousePressEvent(e);
      break;
   }
 }
@@ -717,12 +717,12 @@ WharfIcon::~WharfIcon()
   delete vis;
 }
 
-void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
+void WharfIcon::mousePressEvent( QMouseEvent *e )
 {
 #ifdef DEBUG_WHARF
-  printf("wharf release\n");
+  printf("wharf press\n");
 #endif
-  ((IconManager *)parent())->mouseReleaseEvent(e);
+  ((IconManager *)parent())->mousePressEvent(e);
 }
 
 

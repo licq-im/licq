@@ -38,7 +38,7 @@ public:
   virtual ~WharfIcon();
   void Set(QPixmap *);
 protected:
-  virtual void mouseReleaseEvent (QMouseEvent *);
+  virtual void mousePressEvent (QMouseEvent *);
   virtual void paintEvent (QPaintEvent *);
   QPixmap *vis;
 friend class IconManager;
@@ -61,7 +61,7 @@ protected:
   CMainWindow *mainwin;
   QPopupMenu *menu;
   void X11Init();
-  virtual void mouseReleaseEvent(QMouseEvent *);
+  virtual void mousePressEvent(QMouseEvent *);
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
   WharfIcon *wharfIcon;
@@ -114,7 +114,7 @@ public:
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
 
 protected:
-  virtual void mouseReleaseEvent (QMouseEvent *);
+  virtual void mousePressEvent (QMouseEvent *);
   virtual void timerEvent(QTimerEvent*);
   virtual void paintEvent (QPaintEvent *);
 
