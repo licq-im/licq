@@ -490,7 +490,7 @@ void ChatDlg::chatRecv()
         if (chatQueue.size() < 3) return;
         unsigned short sizeFontName, encodingFont, i;
         sizeFontName = chatQueue[1] + chatQueue[2] << 8;
-        if (chatQueue.size() < (unsigned long)(sizeFontName + 2)) return;
+        if (chatQueue.size() < (unsigned long)(sizeFontName + 2 + 3)) return;
         char nameFont[sizeFontName];
         for (i = 0; i < sizeFontName; i++)
            nameFont[i] = chatQueue[i + 3];
@@ -498,7 +498,7 @@ void ChatDlg::chatRecv()
                        chatQueue[sizeFontName + 4] << 8;
 
         // Dequeue all characters
-        for (unsigned short i = 0; i < 6 + sizeFontName; i++)
+        for (unsigned short i = 0; i < 3 + sizeFontName + 2; i++)
            chatQueue.pop_front();
         break;
      }
@@ -525,7 +525,7 @@ void ChatDlg::chatRecv()
         break;
      }
      default:
-        if (!iscntrl(chatChar))
+        if (!iscntrl((int)(unsigned char)chatChar))
         {
            gTranslator.ServerToClient(chatChar);
 	   //FIXME (this is quick and dirty fix)
