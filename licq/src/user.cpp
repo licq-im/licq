@@ -1182,6 +1182,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
+  m_fConf.ReadBool("SendServerLastSelected", m_bSendServerLastSelected, false);
   m_fConf.ReadBool("SendRealIp", m_bSendRealIp, false);
   SetCustomAutoResponse(szTemp);
   m_fConf.ReadStr( "UserEncoding", szTemp, "" );
@@ -1379,7 +1380,9 @@ void ICQUser::Init(unsigned long _nUin)
   SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
   SetSendServer(false);
+  SetSendServerLastSelected(false);
   SetSendRealIp(false);
+  SetSendServerLastSelected(false);
   SetShowAwayMsg(false);
   SetSequence(0xFFFFFFFF);
   SetOfflineOnDisconnect(false);
@@ -2161,6 +2164,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
+   m_fConf.WriteBool("SendServerLastSelected", m_bSendServerLastSelected);
    m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
    m_fConf.WriteNum("SID", m_nSID);

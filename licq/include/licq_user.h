@@ -219,6 +219,7 @@ public:
   char *UserEncoding()                  { return m_szEncoding; }
   bool SendRealIp()                     { return m_bSendRealIp; }
   bool SendServer()                     { return m_bSendServer; }
+  bool SendServerLastSelected()         { return m_bSendServerLastSelected; }
   unsigned short SendLevel()            { return m_nSendLevel; }
   bool EnableSave()                     { return m_bEnableSave; }
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
@@ -302,6 +303,7 @@ public:
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendRealIp(bool s)          { m_bSendRealIp = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
+  void SetSendServerLastSelected(bool s) { m_bSendServerLastSelected = s; }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
@@ -457,6 +459,7 @@ protected:
   bool m_bOnlineNotify,
        m_bSendRealIp,
        m_bSendServer,
+       m_bSendServerLastSelected,
        m_bEnableSave,
        m_bShowAwayMsg,
        m_bOfflineOnDisconnect,
