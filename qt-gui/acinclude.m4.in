@@ -2,14 +2,14 @@
 dnl Copyright (c) 1998 N. D. Bellamy
 dnl Copyright (c) 2000 Dirk A. Mueller
 
-AC_DEFUN(AC_PATH_QT,
+AC_DEFUN([AC_PATH_QT],
 [
   AC_ARG_WITH(qt,
     [  --with-qt               where QT v3.x or higher is located. ],
     [  QTDIR="$withval" ])
 ])
 
-AC_DEFUN(AC_PATH_QT_LIB,
+AC_DEFUN([AC_PATH_QT_LIB],
 [
   AC_REQUIRE_CPP()
   AC_REQUIRE([AC_PATH_X])
@@ -106,7 +106,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
   AC_SUBST(LIB_QT)
 ])
 
-AC_DEFUN(AC_PATH_QT_INC,
+AC_DEFUN([AC_PATH_QT_INC],
 [
   AC_REQUIRE_CPP()
   AC_REQUIRE([AC_PATH_X])
@@ -182,7 +182,7 @@ AC_DEFUN(AC_PATH_QT_INC,
 ])
 
 
-AC_DEFUN(AC_PATH_QT_MOC,
+AC_DEFUN([AC_PATH_QT_MOC],
 [
   AC_ARG_WITH(qt-moc,
     [  --with-qt-moc           where the QT 3.x moc is located. ],
@@ -243,7 +243,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
   AC_SUBST(MOC)
 ])
 
-AC_DEFUN(AC_CHECK_QT_SETUP,
+AC_DEFUN([AC_CHECK_QT_SETUP],
 [
   AC_MSG_CHECKING(for QT >= 3.x)
 
@@ -282,7 +282,7 @@ AC_DEFUN(AC_CHECK_QT_SETUP,
   fi
 ])
 
-AC_DEFUN(AC_PATH_QT_FINDTR,
+AC_DEFUN([AC_PATH_QT_FINDTR],
 [
   AC_PATH_PROG(
     QT_FINDTR,
@@ -297,7 +297,7 @@ AC_DEFUN(AC_PATH_QT_FINDTR,
   AC_SUBST(QT_FINDTR)
 ])
 
-AC_DEFUN(AC_PATH_QT_MSGTOQM,
+AC_DEFUN([AC_PATH_QT_MSGTOQM],
 [
   AC_PATH_PROG(
     QT_MSG2QM,
@@ -312,7 +312,7 @@ AC_DEFUN(AC_PATH_QT_MSGTOQM,
   AC_SUBST(QT_MSG2QM)
 ])
 
-AC_DEFUN(AC_PATH_QT_MERGETR,
+AC_DEFUN([AC_PATH_QT_MERGETR],
 [
   AC_PATH_PROG(
     QT_MERGETR,
@@ -331,7 +331,7 @@ AC_DEFUN(AC_PATH_QT_MERGETR,
 ## KDE detection. Terribly simple.
 ## ------------------------------------------------------------------------
 
-AC_DEFUN(AC_PATH_KDE,
+AC_DEFUN([AC_PATH_KDE],
 [
   AC_ARG_WITH(kde,
     [  --with-kde              compile with KDE support. ],
@@ -340,7 +340,7 @@ AC_DEFUN(AC_PATH_KDE,
   kde_version=2
 ])
 
-AC_DEFUN(AC_PATH_KDE_INCLUDES,
+AC_DEFUN([AC_PATH_KDE_INCLUDES],
 [
   AC_REQUIRE([AC_PATH_QT_INC])
 
@@ -384,7 +384,7 @@ AC_DEFUN(AC_PATH_KDE_INCLUDES,
   AC_SUBST(kde_includes)
 ])
 
-AC_DEFUN(AC_PATH_KDE_LIBRARIES,
+AC_DEFUN([AC_PATH_KDE_LIBRARIES],
 [
   AC_REQUIRE([AC_PATH_QT_LIB])
   AC_REQUIRE([AC_PATH_QT_INC])
@@ -436,7 +436,7 @@ AC_DEFUN(AC_PATH_KDE_LIBRARIES,
 ])
 
 dnl Like AC_CHECK_HEADER, but it uses the already-computed -I directories.
-AC_DEFUN(AC_CHECK_X_HEADER, [
+AC_DEFUN([AC_CHECK_X_HEADER], [
   ac_save_CPPFLAGS="$CPPFLAGS"
   if test \! -z "$includedir" ; then
     CPPFLAGS="$CPPFLAGS -I$includedir"
@@ -448,7 +448,7 @@ AC_DEFUN(AC_CHECK_X_HEADER, [
 
 dnl Like AC_CHECK_LIB, but it used the -L dirs set up by the X checks.
 
-AC_DEFUN(AC_CHECK_X_LIB, [
+AC_DEFUN([AC_CHECK_X_LIB], [
   ac_save_CPPFLAGS="$CPPFLAGS"
   ac_save_LDFLAGS="$LDFLAGS"
 
@@ -472,7 +472,7 @@ AC_DEFUN(AC_CHECK_X_LIB, [
 )
 
 dnl check if a given compiler flag works
-AC_DEFUN(KDE_CHECK_COMPILER_FLAG,
+AC_DEFUN([KDE_CHECK_COMPILER_FLAG],
 [
 AC_MSG_CHECKING(whether $CXX supports -$1)
 kde_cache=`echo $1 | sed 'y%.=/+-%___p_%'`
@@ -498,7 +498,7 @@ fi
 ])
 
 dnl Check if we can include the X11 headers without -fpermissive
-AC_DEFUN(LICQ_CHECK_X11HEADERS,
+AC_DEFUN([LICQ_CHECK_X11HEADERS],
 [
 AC_MSG_CHECKING(for good X11 headers)
 AC_CACHE_VAL(ac_cv_good_x11headers,
@@ -542,7 +542,7 @@ else
 fi
 ])
 
-AC_DEFUN(LICQ_CHECK_QT_HEADER,
+AC_DEFUN([LICQ_CHECK_QT_HEADER],
 [
   AC_MSG_CHECKING([for specific Qt header files])
 
