@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -1144,7 +1145,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         else
           gLog.Info("%s%s (%ld) requested auto response.\n", L_TCPxSTR, u->GetAlias(), nUin);
 
-        //CPT_AckReadAwayMsg p(newCommand, theSequence, true, u);
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);
         AckTCP(p, pSock);
 
@@ -1677,8 +1677,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             -theSequence, l);
           nSubResult = ICQ_TCPxACK_RETURN;
           break;
+        case ICQ_TCPxACK_OCCUPIEDxCAR:
+        case ICQ_TCPxACK_DNDxCAR:
+          gLog.Info("%sCustom %s response from %s (#%ld)%s.\n", L_TCPxSTR,
+                    (ackFlags == ICQ_TCPxACK_DNDxCAR ? "DnD" : "Occupied"), u->GetAlias(),
+                    -theSequence, l);
+          nSubResult = ICQ_TCPxACK_ACCEPT; // FIXME: or should this be ACK_RETURN ?
+          break;
         default:
-          gLog.Unknown("%sUnknown ack flags from %s (#%ld): %04x %s.\n", L_UNKNOWNxSTR,
+          gLog.Unknown("%sUnknown ack flag from %s (#%ld): %04x %s.\n", L_UNKNOWNxSTR,
                        u->GetAlias(), -theSequence, ackFlags, l);
           nSubResult = ICQ_TCPxACK_ACCEPT;
       }
