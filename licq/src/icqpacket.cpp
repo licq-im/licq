@@ -886,6 +886,12 @@ CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const char *szAlias,
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
+
+  gTranslator.ClientToServer((char *) szAlias);
+  gTranslator.ClientToServer((char *) szFirstName);
+  gTranslator.ClientToServer((char *) szLastName);
+  gTranslator.ClientToServer((char *) szEmail);
+
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
   m_szLastName = buffer->PackString(szLastName);
@@ -921,6 +927,13 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
+
+  gTranslator.ClientToServer((char *) szCity);
+  gTranslator.ClientToServer((char *) szHomepage);
+  gTranslator.ClientToServer((char *) szPhone);
+  gTranslator.ClientToServer((char *) szState);
+//  gTranslator.ClientToServer((char *) szAbout);
+  
   m_szCity = buffer->PackString(szCity);
   buffer->PackUnsignedShort(m_nCountry);
   buffer->PackChar(m_cTimezone);
@@ -1071,6 +1084,20 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   InitBuffer();
 
   buffer->PackUnsignedShort(m_nMetaCommand);
+  
+  gTranslator.ClientToServer((char *) szAlias);
+  gTranslator.ClientToServer((char *) szFirstName);
+  gTranslator.ClientToServer((char *) szLastName);
+  gTranslator.ClientToServer((char *) szEmailPrimary);
+  gTranslator.ClientToServer((char *) szEmailSecondary);
+  gTranslator.ClientToServer((char *) szEmailOld);
+  gTranslator.ClientToServer((char *) szCity);
+  gTranslator.ClientToServer((char *) szState);
+  gTranslator.ClientToServer((char *) szPhoneNumber);
+  gTranslator.ClientToServer((char *) szFaxNumber);
+  gTranslator.ClientToServer((char *) szAddress);
+  gTranslator.ClientToServer((char *) szCellularNumber);
+
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
   m_szLastName = buffer->PackString(szLastName);
@@ -1124,6 +1151,8 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   m_nSize += strlen_safe(szHomepage) + 14;
   InitBuffer();
 
+  gTranslator.ClientToServer((char *) szHomepage);
+
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nAge);
   buffer->PackChar(nGender);
@@ -1157,6 +1186,16 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
              strlen_safe(szDepartment) + strlen_safe(szPosition) +
              strlen_safe(szHomepage) + 8 + 26;
   InitBuffer();
+
+  gTranslator.ClientToServer((char *) szCity);
+  gTranslator.ClientToServer((char *) szState);
+  gTranslator.ClientToServer((char *) szPhoneNumber);
+  gTranslator.ClientToServer((char *) szFaxNumber);
+  gTranslator.ClientToServer((char *) szAddress);
+  gTranslator.ClientToServer((char *) szName);
+  gTranslator.ClientToServer((char *) szDepartment);
+  gTranslator.ClientToServer((char *) szPosition);
+  gTranslator.ClientToServer((char *) szHomepage);
 
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szCity = buffer->PackString(szCity);

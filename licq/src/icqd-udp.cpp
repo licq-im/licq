@@ -2009,6 +2009,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetAlias());
           gTranslator.ServerToClient(u->GetFirstName());
           gTranslator.ServerToClient(u->GetLastName());
+	  gTranslator.ServerToClient(u->GetEmailPrimary());
 
           u->SetEnableSave(true);
           u->SaveGeneralInfo();
@@ -2045,6 +2046,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetAlias());
           gTranslator.ServerToClient(u->GetFirstName());
           gTranslator.ServerToClient(u->GetLastName());
+	  gTranslator.ServerToClient(u->GetEmailPrimary());
+	  gTranslator.ServerToClient(u->GetEmailSecondary());
+	  gTranslator.ServerToClient(u->GetEmailOld());
           gTranslator.ServerToClient(u->GetCity());
           gTranslator.ServerToClient(u->GetState());
           gTranslator.ServerToClient(u->GetPhoneNumber());
@@ -2151,8 +2155,23 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetCountryCode(p->m_nCountryCode);
       o->SetTimezone(p->m_nTimezone);
       o->SetHideEmail(p->m_nHideEmail == 1);
+
+      gTranslator.ServerToClient(o->GetAlias());
+      gTranslator.ServerToClient(o->GetFirstName());
+      gTranslator.ServerToClient(o->GetLastName());
+      gTranslator.ServerToClient(o->GetEmailPrimary());
+      gTranslator.ServerToClient(o->GetEmailOld());
+      gTranslator.ServerToClient(o->GetEmailSecondary());
+      gTranslator.ServerToClient(o->GetCity());
+      gTranslator.ServerToClient(o->GetState());
+      gTranslator.ServerToClient(o->GetPhoneNumber());
+      gTranslator.ServerToClient(o->GetFaxNumber());
+      gTranslator.ServerToClient(o->GetAddress());
+      gTranslator.ServerToClient(o->GetCellularNumber());
+
       o->SetEnableSave(true);
       o->SaveGeneralInfo();
+
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                       USER_GENERAL, o->Uin()));
       gUserManager.DropOwner();
@@ -2173,8 +2192,12 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetLanguage1(p->m_nLanguage1);
       o->SetLanguage2(p->m_nLanguage2);
       o->SetLanguage3(p->m_nLanguage3);
+
+      gTranslator.ServerToClient(o->GetHomepage());
+
       o->SetEnableSave(true);
       o->SaveMoreInfo();
+
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                       USER_MORE, o->Uin()));
       gUserManager.DropOwner();
@@ -2195,8 +2218,21 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetCompanyDepartment(p->m_szDepartment);
       o->SetCompanyPosition(p->m_szPosition);
       o->SetCompanyHomepage(p->m_szHomepage);
+
+      gTranslator.ServerToClient(o->GetCompanyCity());
+      gTranslator.ServerToClient(o->GetCompanyState());
+      gTranslator.ServerToClient(o->GetCompanyPhoneNumber());
+      gTranslator.ServerToClient(o->GetCompanyFaxNumber());
+      gTranslator.ServerToClient(o->GetCompanyAddress());
+      gTranslator.ServerToClient(o->GetCompanyName());
+      gTranslator.ServerToClient(o->GetCompanyDepartment());
+      gTranslator.ServerToClient(o->GetCompanyPosition());
+      gTranslator.ServerToClient(o->GetCompanyHomepage());
+
+
       o->SetEnableSave(true);
       o->SaveWorkInfo();
+
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                       USER_WORK, o->Uin()));
       gUserManager.DropOwner();
@@ -2208,6 +2244,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)e->m_pPacket;
       o->SetAbout(p->m_szAbout);
+
+//      gTranslator.ServerToClient(o->GetAbout());
+
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                       USER_ABOUT, o->Uin()));
       gUserManager.DropOwner();
