@@ -39,6 +39,12 @@ Url = url.xpm
 Chat = chat.xpm
 File = file.xpm
 Authorize = authorize.xpm
+SMS = sms.xpm
+Contact = contact.xpm
+SecureOff = secureoff.xpm
+SecureOn = secureon.xpm
+History = history.xpm
+Info = info.xpm
 
 # Sample extended icon pack config file
 [icons]
