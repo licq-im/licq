@@ -30,20 +30,22 @@ AC_DEFUN(AC_CHECK_SOCKS5,
     AC_MSG_RESULT(yes)
 
     if test "$socks_libdir" = "no"; then
-	AC_CHECK_LIB(socks5, SOCKSconnect, SOCKS_LIBS="-lsocks5")
+      dnl AC_CHECK_LIB(socks5, SOCKSconnect, SOCKS_LIBS="-lsocks5")
+      SOCKS_LIBS="-lsocks5"
     else
     	AC_MSG_CHECKING(where to look for the SOCKS5 library)
-	SOCKS_LIBS="-lsocks5"
-	SOCKS_LIBDIR="-L$socks_libdir"
-	AC_MSG_RESULT($socks_libdir)
+      SOCKS_LIBS="-lsocks5"
+      SOCKS_LIBDIR="-L$socks_libdir"
+      AC_MSG_RESULT($socks_libdir)
     fi
 
     if test "$socks_incdir" = "no"; then
-        AC_CHECK_HEADER(socks.h)
+      AC_CHECK_HEADER(socks.h)
+      SOCKS_INCDIR="-Wno-implicit"
     else
     	AC_MSG_CHECKING(where to look for the SOCKS5 headers)
-	SOCKS_INCDIR="-I$socks_incdir"
-	AC_MSG_RESULT($socks_incdir)
+      SOCKS_INCDIR="-I$socks_incdir -Wno-implicit"
+      AC_MSG_RESULT($socks_incdir)
     fi
     AC_DEFINE(USE_SOCKS5)
   fi
