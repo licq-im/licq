@@ -56,7 +56,6 @@ protected:
   CICQDaemon *server;
   CSignalManager *sigman;
   QString m_sBaseTitle, m_sProgressMsg;
-  unsigned short m_nUnknownCountryCode;
   ICQEvent *icqEvent;
   bool m_bOwner;
   QCheckBox *chkAutoClose;
@@ -92,9 +91,8 @@ protected:
 
   // More info
   void CreateMoreInfoTab();
-  CInfoField *nfoAge, *nfoBirthday, *nfoLanguage1, *nfoLanguage2,
-             *nfoLanguage3, *nfoHomepage;
-  CEComboBox *cmbGender;
+  CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage;
+  CEComboBox *cmbLanguage[3], *cmbGender;
 
   // Work info
   void CreateWorkInfoTab();
@@ -135,7 +133,6 @@ protected:
   void ShowHistory();
 
 public slots:
-  //virtual void hide();
   void SendUrl(const char *url, const char *desc);
   void SendFile(const char *file, const char *desc);
 

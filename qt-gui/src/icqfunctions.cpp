@@ -30,6 +30,7 @@
 #include "filedlg.h"
 #include "showawaymsgdlg.h"
 #include "countrycodes.h"
+#include "languagecodes.h"
 #include "log.h"
 #include "sigman.h"
 #include "eventdesc.h"
@@ -237,8 +238,6 @@ void ICQFunctions::CreateGeneralInfoTab()
   {
     cmbCountry = new CEComboBox(true, fcnTab[TAB_GENERALINFO]);
     cmbCountry->insertItem(tr("Unspecified"));
-    cmbCountry->insertItem(tr("Unknown"));
-    m_nUnknownCountryCode = 0xFFFF;
     for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
       cmbCountry->insertItem(GetCountryByIndex(i)->szName);
     lay->addWidget(cmbCountry, CR, 1);
@@ -293,16 +292,38 @@ void ICQFunctions::CreateMoreInfoTab()
   nfoBirthday = new CInfoField(p, !m_bOwner);
   lay->addMultiCellWidget(nfoBirthday, CR, CR, 1, 4);
 
-  lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
-  nfoLanguage1 = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoLanguage1, CR, 1);
-  lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
-  nfoLanguage2 = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoLanguage2, CR, 4);
+  if (m_bOwner)
+  {
+    lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
+    cmbLanguage[0] = new CEComboBox(true, p);
+    lay->addWidget(cmbLanguage[0], CR, 1);
+    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
+    cmbLanguage[1] = new CEComboBox(true, p);
+    lay->addWidget(cmbLanguage[1], CR, 4);
 
-  lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
-  nfoLanguage3 = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoLanguage3, CR, 1);
+    lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
+    cmbLanguage[2] = new CEComboBox(true, p);
+    lay->addWidget(cmbLanguage[2], CR, 1);
+
+    for (unsigned short i = 0; i < 3; i++)
+    {
+      for (unsigned short j = 0; j < NUM_LANGUAGES; j++)
+        cmbLanguage[i]->insertItem(GetLanguageByIndex(j)->szName);
+    }
+  }
+  else
+  {
+    lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
+    nfoLanguage[0] = new CInfoField(p, !m_bOwner);
+    lay->addWidget(nfoLanguage[0], CR, 1);
+    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
+    nfoLanguage[1] = new CInfoField(p, !m_bOwner);
+    lay->addWidget(nfoLanguage[1], CR, 4);
+
+    lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
+    nfoLanguage[2] = new CInfoField(p, !m_bOwner);
+    lay->addWidget(nfoLanguage[2], CR, 1);
+  }
 }
 
 
@@ -503,22 +524,23 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
     {
       const SCountry *c = GetCountryByCode(u->GetCountryCode());
       if (c == NULL)
-      {
-        m_nUnknownCountryCode = u->GetCountryCode();
-        cmbCountry->changeItem(tr("Unknown (%1)").arg(m_nUnknownCountryCode), 1);
-        cmbCountry->setCurrentItem(1);
-      }
-      else  // known
-        cmbCountry->setCurrentItem(c->nIndex + 2);
+        cmbCountry->setCurrentItem(0);
+      else
+        cmbCountry->setCurrentItem(c->nIndex + 1);
     }
   }
   else
   {
-    const SCountry *c = GetCountryByCode(u->GetCountryCode());
-    if (c == NULL)
-      nfoCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
-    else  // known
-      nfoCountry->setData(c->szName);
+    if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
+      nfoCountry->setData(tr("Unspecified"));
+    else
+    {
+      const SCountry *c = GetCountryByCode(u->GetCountryCode());
+      if (c == NULL)
+        nfoCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
+      else  // known
+        nfoCountry->setData(c->szName);
+    }
   }
   nfoCity->setData(u->GetCity());
   nfoState->setData(u->GetState());
@@ -554,6 +576,24 @@ void ICQFunctions::SetMoreInfo(ICQUser *u)
   else
     nfoAge->setData(u->GetAge());
   nfoHomepage->setData(u->GetHomepage());
+  for (unsigned short i = 0; i < 3; i++)
+  {
+    const SLanguage *l = GetLanguageByCode(u->GetLanguage(i));
+    if (m_bOwner)
+    {
+      if (l == NULL)
+        cmbLanguage[i]->setCurrentItem(NUM_LANGUAGES - 1);
+      else
+        cmbLanguage[i]->setCurrentItem(l->nIndex);
+    }
+    else
+    {
+      if (l == NULL)
+        nfoLanguage[i]->setData(tr("Unknown (%1)").arg(u->GetLanguage(i)));
+      else  // known
+        nfoLanguage[i]->setData(l->szName);
+    }
+  }
 
   if (bDropUser) gUserManager.DropUser(u);
 }
@@ -866,10 +906,8 @@ void ICQFunctions::SaveGeneralInfo()
     unsigned short i = cmbCountry->currentItem();
     if (i == 0)
       u->SetCountryCode(COUNTRY_UNSPECIFIED);
-    else if (i == 1)
-      u->SetCountryCode(m_nUnknownCountryCode);
     else
-      u->SetCountryCode(GetCountryByIndex(i - 2)->nCode);
+      u->SetCountryCode(GetCountryByIndex(i - 1)->nCode);
   }
 
   u->SetEnableSave(true);
@@ -890,9 +928,13 @@ void ICQFunctions::SaveMoreInfo()
   //u->SetBirthYear();
   //u->SetBirthMonth();
   //u->SetBirthDay();
-  //u->SetLanguage1(nfoLanguage1->text()->toUShort());
-  //u->SetLanguage2(nfoLanguage1->text()->toUShort());
-  //u->SetLanguage3(nfoLanguage1->text()->toUShort());
+  if (m_bOwner)
+  {
+    for (unsigned short i = 0; i < 3; i++)
+    {
+      u->SetLanguage(i, GetLanguageByIndex(cmbLanguage[i]->currentItem())->nCode);
+    }
+  }
 
   u->SetEnableSave(true);
   u->SaveMoreInfo();
@@ -1183,16 +1225,25 @@ void ICQFunctions::callFcn()
      if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
      {
         m_sProgressMsg = tr("Updating server...");
-        icqEvent = server->icqUpdateBasicInfo(nfoAlias->text().local8Bit(),
-                                           nfoFirstName->text().local8Bit(),
-                                           nfoLastName->text().local8Bit(),
-                                           nfoEmail1->text(),
-                                           chkAuthorization->isChecked());
+        unsigned short i = cmbCountry->currentItem();
+        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
+        icqEvent = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
+                                             nfoFirstName->text().local8Bit(),
+                                             nfoLastName->text().local8Bit(),
+                                             nfoEmail1->text(),
+                                             nfoEmail2->text(),
+                                             nfoCity->text().local8Bit(),
+                                             nfoState->text().local8Bit(),
+                                             nfoPhone->text().local8Bit(),
+                                             nfoFax->text().local8Bit(),
+                                             nfoAddress->text().local8Bit(),
+                                             nfoCellular->text().local8Bit(),
+                                             nfoZipCode->text().toULong(),
+                                             cc, false);
      }
      else
      {
         m_sProgressMsg = tr("Updating...");
-        //icqEvent = server->icqUserBasicInfo(m_nUin);
         icqEvent = server->icqRequestMetaInfo(m_nUin);
      }
      break;
@@ -1200,18 +1251,24 @@ void ICQFunctions::callFcn()
      if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
      {
         m_sProgressMsg = tr("Updating server...");
-        unsigned short i = cmbCountry->currentItem();
-        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : (i == 1 ? m_nUnknownCountryCode : GetCountryByIndex(i - 2)->nCode) );
-        icqEvent = server->icqUpdateExtendedInfo(nfoCity->text().local8Bit(), cc,
-                                         nfoState->text().local8Bit(), atol(nfoAge->text()),
-                                         cmbGender->currentItem(), nfoPhone->text(),
-                                         nfoHomepage->text(), mleAbout->text().local8Bit(),
-                                         nfoZipCode->text().toULong());
+        unsigned short i;
+        i = cmbLanguage[0]->currentItem();
+        unsigned short lc1 = GetLanguageByIndex(i)->nCode;
+        i = cmbLanguage[1]->currentItem();
+        unsigned short lc2 = GetLanguageByIndex(i)->nCode;
+        i = cmbLanguage[3]->currentItem();
+        unsigned short lc3 = GetLanguageByIndex(i)->nCode;
+        icqEvent = server->icqSetMoreInfo(nfoAge->text().toUShort(),
+                                          cmbGender->currentItem(),
+                                          nfoHomepage->text(),
+                                          0,
+                                          0,
+                                          0,
+                                          lc1, lc2, lc3);
      }
      else
      {
         m_sProgressMsg = tr("Updating...");
-        //icqEvent = server->icqUserExtendedInfo(m_nUin);
         icqEvent = server->icqRequestMetaInfo(m_nUin);
      }
      break;
@@ -1219,7 +1276,15 @@ void ICQFunctions::callFcn()
      if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
      {
         m_sProgressMsg = tr("Updating server...");
-        icqEvent = NULL;
+        icqEvent = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
+                                          nfoCompanyState->text().local8Bit(),
+                                          nfoCompanyFax->text().local8Bit(),
+                                          nfoCompanyAddress->text().local8Bit(),
+                                          nfoCompanyName->text().local8Bit(),
+                                          nfoCompanyDepartment->text().local8Bit(),
+                                          nfoCompanyPosition->text().local8Bit(),
+                                          nfoCompanyHomepage->text().local8Bit());
+
      }
      else
      {
