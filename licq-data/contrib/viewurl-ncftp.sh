@@ -11,4 +11,4 @@
 NCFTP=ncftp
 XTERM=xterm
 
-${XTERM} -title "Licq URL View" -e ${NCFTP} '$1'
+${XTERM} -title "Licq URL View" -e ${NCFTP} "$1"

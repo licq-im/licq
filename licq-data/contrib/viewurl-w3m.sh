@@ -11,4 +11,4 @@
 XTERM=xterm
 W3M=w3m
 
-${XTERM} -title "Licq URL View" -e ${W3M} '$1'
+${XTERM} -title "Licq URL View" -e ${W3M} "$1"

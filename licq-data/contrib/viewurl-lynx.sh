@@ -11,4 +11,4 @@
 XTERM=xterm
 LYNX=lynx
 
-${XTERM} -title "Licq URL View" -e ${LYNX} '$1'
+${XTERM} -title "Licq URL View" -e ${LYNX} "$1"
