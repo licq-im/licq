@@ -1,0 +1,24 @@
+# Dock theme for the gnome panel
+# Scott Walker
+
+[background]
+NoMessages = nomsg.xpm 
+NoMessagesMask = none
+RegularMessages = msg.xpm 
+RegularMessagesMask = none
+SystemMessages = sysmsg.xpm
+SystemMessagesMask = none
+BothMessages = msg.xpm
+BothMessagesMask = none
+
+#[status]
+#Mask = statusmask.xpm
+#Online = iconOnline.xpm
+#Offline = iconOffline.xpm
+#Away = iconAway.xpm
+#NA = iconNA.xpm
+#Occupied = iconOccupied.xpm
+#DND = iconDND.xpm
+#FFC = iconFFC.xpm
+#Invisible = iconInvisible.xpm
+
