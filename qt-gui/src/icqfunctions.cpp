@@ -40,6 +40,7 @@
 #include <qstylesheet.h>
 #include <qlayout.h>
 #include <qdatetime.h>
+#include <qspinbox.h>
 
 #include "icqfunctions.h"
 #include "chatacceptdlg.h"
@@ -338,8 +339,26 @@ void ICQFunctions::CreateMoreInfoTab()
   lay->addMultiCellWidget(nfoHomepage, CR, CR, 1, 4);
 
   lay->addWidget(new QLabel(tr("Birthday:"), p), ++CR, 0);
-  nfoBirthday = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoBirthday, CR, CR, 1, 4);
+  if (m_bOwner)
+  {
+    QHBoxLayout *layb = new QHBoxLayout(lay);
+    //QIntValidator *v = new QIntValidator(p);
+    layb->addWidget(new QLabel(tr("Day:"), p));
+    spnBirthDay = new QSpinBox(1, 31, 1, p);
+    layb->addWidget(spnBirthDay);
+    layb->addWidget(new QLabel(tr("Month:"), p));
+    spnBirthMonth = new QSpinBox(1, 12, 1, p);
+    layb->addWidget(spnBirthMonth);
+    layb->addWidget(new QLabel(tr("Year:"), p));
+    spnBirthYear = new QSpinBox(0, 120, 1, p);
+    layb->addWidget(spnBirthYear);
+    lay->addMultiCell(layb, CR, CR, 1, 4);
+  }
+  else
+  {
+    nfoBirthday = new CInfoField(p, !m_bOwner);
+    lay->addMultiCellWidget(nfoBirthday, CR, CR, 1, 4);
+  }
 
   if (m_bOwner)
   {
@@ -635,6 +654,7 @@ void ICQFunctions::SetMoreInfo(ICQUser *u)
     bDropUser = true;
   }
 
+  // Gender
   if (m_bOwner)
   {
     cmbGender->setCurrentItem(u->GetGender());
@@ -648,10 +668,32 @@ void ICQFunctions::SetMoreInfo(ICQUser *u)
     else
       nfoGender->setData(tr("Unspecified"));
   }
+
+  // Age
   if (u->GetAge() == AGE_UNSPECIFIED)
     nfoAge->setData(tr("Unspecified"));
   else
     nfoAge->setData(u->GetAge());
+
+  // Birthday
+  if (m_bOwner)
+  {
+    spnBirthDay->setValue((unsigned short)u->GetBirthDay());
+    spnBirthMonth->setValue((unsigned short)u->GetBirthYear());
+    spnBirthYear->setValue((unsigned short)u->GetBirthYear() + 1900);
+  }
+  else
+  {
+    if (u->GetBirthMonth() == 0 || u->GetBirthDay() == 0)
+    {
+      nfoBirthday->setData(tr("Unspecified"));
+    }
+    else
+    {
+      QDate d(u->GetBirthYear() + 1900, u->GetBirthMonth(), u->GetBirthDay());
+      nfoBirthday->setData(d.toString());
+    }
+  }
   nfoHomepage->setData(u->GetHomepage());
   for (unsigned short i = 0; i < 3; i++)
   {
@@ -1329,9 +1371,9 @@ void ICQFunctions::callFcn()
         icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
                                           cmbGender->currentItem(),
                                           nfoHomepage->text(),
-                                          0,
-                                          0,
-                                          0,
+                                          spnBirthYear->value() - 1900,
+                                          spnBirthMonth->value(),
+                                          spnBirthDay->value(),
                                           lc1, lc2, lc3);
      }
      else

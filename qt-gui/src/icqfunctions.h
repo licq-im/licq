@@ -19,6 +19,7 @@ class QTextView;
 class QTabWidget;
 class QListViewItem;
 class QTimer;
+class QSpinBox;
 
 class ICQUser;
 class CICQDaemon;
@@ -97,6 +98,7 @@ protected:
   CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage,
              *nfoGender;
   CEComboBox *cmbLanguage[3], *cmbGender;
+  QSpinBox *spnBirthDay, *spnBirthMonth, *spnBirthYear;
 
   // Work info
   void CreateWorkInfoTab();
