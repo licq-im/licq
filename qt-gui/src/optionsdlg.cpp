@@ -128,8 +128,10 @@ void OptionsDlg::colEnable(bool isOn)
 void OptionsDlg::SetupOptions()
 {
   setupFontName(edtFont, qApp->font());
-  setupFontName(edtEditFont, MLEditWrap::editFont);
-  ((QWidget*)edtEditFont)->setFont(MLEditWrap::editFont, true);
+  if(!MLEditWrap::editFont)
+    MLEditWrap::editFont = new QFont(qApp->font());
+  setupFontName(edtEditFont, *MLEditWrap::editFont);
+  ((QWidget*)edtEditFont)->setFont(*MLEditWrap::editFont, true);
 
   chkGridLines->setChecked(mainwin->gridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
@@ -280,7 +282,8 @@ void OptionsDlg::ApplyOptions()
   QFont f(mainwin->defaultFont);
   if(edtEditFont->text().find(tr("default"), 0, false) != 0)
     f.setRawName(edtEditFont->text());
-  MLEditWrap::editFont = f;
+  delete MLEditWrap::editFont;
+  MLEditWrap::editFont = new QFont(f);
 
   f = mainwin->defaultFont;
   if(edtFont->text().find(tr("default"), 0, false) != 0)
@@ -295,6 +298,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bShowGroupIfNoMsg = chkShowGroupIfNoMsg->isChecked();
   mainwin->autoClose = chkAutoClose->isChecked();
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
+  mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   if (chkUseDock->isChecked() &&
@@ -422,7 +426,7 @@ void OptionsDlg::slot_selecteditfont()
   QFont f = QFontDialog::getFont(&fontOk, edtEditFont->font(), this);
   if (fontOk) {
     setupFontName(edtEditFont, f);
-    ((QWidget*)edtEditFont)->setFont(MLEditWrap::editFont, true);
+    ((QWidget*)edtEditFont)->setFont(f, true);
   }
 }
 
