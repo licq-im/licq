@@ -121,7 +121,7 @@ msgstr "Отменить передачу"
 
 #: filedlg.cpp:98
 msgid "CFileDlg::Batch:"
-msgstr ""
+msgstr "Всего:"
 
 #: filedlg.cpp:827
 msgid "CFileDlg::Byte"
@@ -165,11 +165,11 @@ msgstr "Файл '%1' от '%2' принят успешно."
 
 #: filedlg.cpp:181
 msgid "CFileDlg::File already exists and appears incomplete."
-msgstr "Файл уже есть и похоже неполный."
+msgstr "Файл уже есть и, похоже, неполный."
 
 #: filedlg.cpp:174
 msgid "CFileDlg::File already exists and is at least as big as the incoming file."
-msgstr "Файл уже есть и по крайней мере не меньше передаваемого."
+msgstr "Файл уже есть и, по крайней мере, не меньше передаваемого."
 
 #: filedlg.cpp:81
 msgid "CFileDlg::File name:"
@@ -238,7 +238,7 @@ msgstr "Перезаписать"
 
 #: filedlg.cpp:388
 msgid "CFileDlg::Received init, waiting for batch info..."
-msgstr ""
+msgstr "Соединение установлено, ожидаю информацию о файле(ах)..."
 
 #: filedlg.cpp:472
 msgid "CFileDlg::Receiving file..."
@@ -266,7 +266,7 @@ msgstr "Отправка файла '%1' к %2 завершена успешно."
 
 #: filedlg.cpp:641
 msgid "CFileDlg::Sent batch info, waiting for ack..."
-msgstr ""
+msgstr "Информация о файле(ах) отправлена, жду подтверждения..."
 
 #: filedlg.cpp:660
 msgid "CFileDlg::Starting transfer..."
@@ -407,7 +407,7 @@ msgstr "Менеджер модулей..."
 
 #: mainwin.cpp:1909
 msgid "CMainWindow::&Random Chat Group"
-msgstr ""
+msgstr "Случайные собеседники"
 
 #: mainwin.cpp:1923
 msgid "CMainWindow::&Redraw User Window"
@@ -459,19 +459,19 @@ msgstr "Авторизовать пользователя"
 
 #: mainwin.cpp:1966
 msgid "CMainWindow::Accept in Away"
-msgstr "Принимать, если в \"Отошел\""
+msgstr "Принимать, если в режиме \"Отошел\""
 
 #: mainwin.cpp:1969
 msgid "CMainWindow::Accept in Do Not Disturb"
-msgstr "Принимать, если в \"Не беспокоить\""
+msgstr "Принимать, если в режиме \"Не беспокоить\""
 
 #: mainwin.cpp:1967
 msgid "CMainWindow::Accept in Not Available"
-msgstr "Принимать, если в \"Недоступен\""
+msgstr "Принимать, если в режиме \"Недоступен\""
 
 #: mainwin.cpp:1968
 msgid "CMainWindow::Accept in Occupied"
-msgstr "Принимать, если в \"Занят\""
+msgstr "Принимать, если в режиме \"Занят\""
 
 #: mainwin.cpp:2010
 msgid "CMainWindow::Add To Group"
@@ -495,7 +495,7 @@ msgstr "Авторизация подтверждена."
 
 #: mainwin.cpp:1972
 msgid "CMainWindow::Away to User"
-msgstr "Виден как \"Отошел\""
+msgstr "Виден в режиме \"Отошел\""
 
 #: mainwin.cpp:1366
 msgid "CMainWindow::Cancel"
@@ -507,7 +507,7 @@ msgstr "Изменить пароль"
 
 #: mainwin.cpp:2036
 msgid "CMainWindow::Check %1 Response"
-msgstr "Проверить '%1' автоответ"
+msgstr "Проверить '%1' авто-ответ"
 
 #: mainwin.cpp:2031
 msgid "CMainWindow::Check Auto Response"
@@ -527,7 +527,7 @@ msgstr "Уровень отладки"
 
 #: mainwin.cpp:1975
 msgid "CMainWindow::Do Not Disturb to User"
-msgstr "Виден как \"Не беспокоить\""
+msgstr "Виден в режиме \"Не беспокоить\""
 
 #: mainwin.cpp:1947
 msgid "CMainWindow::E&xit"
@@ -603,7 +603,7 @@ msgstr "Нет сообщений"
 
 #: mainwin.cpp:1973
 msgid "CMainWindow::Not Available to User"
-msgstr "Виден как \"Недоступен\""
+msgstr "Виден в режиме \"Недоступен\""
 
 #: mainwin.cpp:1868
 msgid "CMainWindow::O&ccupied"
@@ -615,7 +615,7 @@ msgstr "Отключен"
 
 #: mainwin.cpp:1974
 msgid "CMainWindow::Occupied to User"
-msgstr "Виден как \"Занят\""
+msgstr "Виден в режиме \"Занят\""
 
 #: mainwin.cpp:1366
 msgid "CMainWindow::Ok"
@@ -627,7 +627,7 @@ msgstr "Оповещать о появлении"
 
 #: mainwin.cpp:1971
 msgid "CMainWindow::Online to User"
-msgstr "Виден как \"В сети\""
+msgstr "Виден в режиме \"В сети\""
 
 #: mainwin.cpp:1889
 msgid "CMainWindow::Packets"
@@ -655,7 +655,7 @@ msgid "CMainWindow::"
 "Double click - Set auto response"
 msgstr ""
 "Правая кнопка - Меню статуса\n"
-"Двойной щелчок - Установить автоответ"
+"Двойной щелчок - Установить авто-ответ"
 
 #: mainwin.cpp:532
 msgid "CMainWindow::"
@@ -667,7 +667,7 @@ msgstr ""
 
 #: mainwin.cpp:1916
 msgid "CMainWindow::S&earch for User"
-msgstr "Искать пользователя"
+msgstr "Поиск пользователя"
 
 #: mainwin.cpp:1940
 msgid "CMainWindow::S&kin Browser..."
@@ -757,7 +757,7 @@ msgstr "Неизвестные пакеты"
 
 #: mainwin.cpp:1922
 msgid "CMainWindow::Update All Users"
-msgstr "Обновить всех пользователей"
+msgstr "Обновить информацию о пользователях"
 
 #: mainwin.cpp:1937
 msgid "CMainWindow::Use &Mini Mode"
@@ -874,7 +874,7 @@ msgstr ""
 
 #: randomchatdlg.cpp:56
 msgid "CRandomChatDlg::Games"
-msgstr ""
+msgstr "Игры"
 
 #: randomchatdlg.cpp:54
 msgid "CRandomChatDlg::General"
@@ -882,7 +882,7 @@ msgstr ""
 
 #: randomchatdlg.cpp:62
 msgid "CRandomChatDlg::Men Seeking Women"
-msgstr ""
+msgstr "Мужчины ищущие женщин"
 
 #: randomchatdlg.cpp:125
 msgid "CRandomChatDlg::No random chat user found in that group."
@@ -903,7 +903,7 @@ msgstr "Поиск случайного собеседника не удался - вышло время."
 
 #: randomchatdlg.cpp:55
 msgid "CRandomChatDlg::Romance"
-msgstr ""
+msgstr "Романтики"
 
 #: randomchatdlg.cpp:107
 msgid "CRandomChatDlg::Searching for Random Chat Partner..."
@@ -911,11 +911,11 @@ msgstr "Поиск случайного собеседника..."
 
 #: randomchatdlg.cpp:57
 msgid "CRandomChatDlg::Students"
-msgstr ""
+msgstr "Студенты"
 
 #: randomchatdlg.cpp:63
 msgid "CRandomChatDlg::Women Seeking Men"
-msgstr ""
+msgstr "Женщины ищущие мужчин"
 
 #: refusedlg.cpp:25
 msgid "CRefuseDlg::Cancel"
@@ -967,7 +967,7 @@ msgstr ""
 
 #: randomchatdlg.cpp:180
 msgid "CSetRandomChatGroupDlg::Games"
-msgstr ""
+msgstr "Игры"
 
 #: randomchatdlg.cpp:178
 msgid "CSetRandomChatGroupDlg::General"
@@ -975,11 +975,11 @@ msgstr ""
 
 #: randomchatdlg.cpp:186
 msgid "CSetRandomChatGroupDlg::Men Seeking Women"
-msgstr ""
+msgstr "Мужчины ищущие женщин"
 
 #: randomchatdlg.cpp:179
 msgid "CSetRandomChatGroupDlg::Romance"
-msgstr ""
+msgstr "Романтики"
 
 #: randomchatdlg.cpp:152
 msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
@@ -991,11 +991,11 @@ msgstr "Устанавливается группа для случайных разговоров..."
 
 #: randomchatdlg.cpp:181
 msgid "CSetRandomChatGroupDlg::Students"
-msgstr ""
+msgstr "Студенты"
 
 #: randomchatdlg.cpp:187
 msgid "CSetRandomChatGroupDlg::Women Seeking Men"
-msgstr ""
+msgstr "Женщины ищущие мужчин"
 
 #: randomchatdlg.cpp:280
 msgid "CSetRandomChatGroupDlg::done"
@@ -1043,7 +1043,7 @@ msgstr "Закрыть"
 
 #: utilitydlg.cpp:183
 msgid "CUtilityDlg::Command Window"
-msgstr "Окно команды"
+msgstr "Окно команд"
 
 #: utilitydlg.cpp:34
 msgid "CUtilityDlg::Command:"
@@ -1244,7 +1244,7 @@ msgstr "Изменить имя"
 
 #: eventdesc.cpp:26
 msgid "EditGrpDlg::Email Pager"
-msgstr ""
+msgstr "E-Mail пэйджер"
 
 #: eventdesc.cpp:15
 msgid "EditGrpDlg::File Transfer"
@@ -1308,7 +1308,7 @@ msgstr "Информация о пользователе"
 
 #: eventdesc.cpp:25
 msgid "EditGrpDlg::Web Panel"
-msgstr ""
+msgstr "Web-панель"
 
 #: editgrp.cpp:104
 msgid "EditGrpDlg::noname"
@@ -1380,7 +1380,7 @@ msgstr "Просмотр"
 
 #: icqfunctions.cpp:114
 msgid "ICQFunctions::A&uto Close"
-msgstr "Автозакрытие"
+msgstr "Авто-закрытие"
 
 #: icqfunctions.cpp:503
 msgid "ICQFunctions::About"
@@ -1400,7 +1400,7 @@ msgstr "Добавить пользователя"
 
 # #: icqfunctions.cpp:996
 # msgid "ICQFunctions::Add?"
-# msgstr "Довавить?"
+# msgstr "Добавить?"
 
 #: icqfunctions.cpp:484
 msgid "ICQFunctions::Address:"
@@ -1544,7 +1544,7 @@ msgid "ICQFunctions::"
 "Licq, ICQ99, and other clones support longer messages \n"
 "however ICQ98 will not. Continue?"
 msgstr ""
-"Это сообщение длиной в %1 символов, что больше лимита ICQ98,\n"
+"Это сообщение имеет длину в %1 символов, что больше лимита ICQ98,\n"
 "составляющего %2 символов. Licq, ICQ99 и другие клоны, \n"
 "в отличие от ICQ98, поддерживают более длинные сообщения."
 "Продолжить?"
@@ -1660,6 +1660,10 @@ msgid "ICQFunctions::"
 "responsibility for your actions.\n"
 "Do you want to continue?"
 msgstr ""
+"Подделка UIN-а неэтична и, возможно, нелегальна!\n"
+"Нажав Ok вы освобождаете автора от ответственности\n"
+"за Ваши действия.\n"
+"Хотите продолжить?"
 
 #: icqfunctions.cpp:480
 msgid "ICQFunctions::State:"
@@ -1797,7 +1801,7 @@ msgstr ""
 
 #: messagebox.cpp:63
 msgid "MsgView::Time Received"
-msgstr "Время прихода"
+msgstr "Время получения"
 
 #: optionsdlg.cpp:46
 msgid "OptionsDlg::&Apply"
@@ -1833,6 +1837,9 @@ msgid "OptionsDlg::"
 "open when received, if we are "
 "online (or free for chat)"
 msgstr ""
+"Все входящие сообщения автоматически "
+"открываются при получении, если ваш статус "
+"\"В сети\" (или \"Свободен для разговора\")"
 
 #: optionsdlg.cpp:59
 msgid "OptionsDlg::Appearance"
@@ -1844,7 +1851,7 @@ msgstr "Авто-отошел:"
 
 #: optionsdlg.cpp:469
 msgid "OptionsDlg::Auto Close Function Window"
-msgstr "Автозакрытие функциональных окон"
+msgstr "Авто-закрытие функциональных окон"
 
 #: optionsdlg.cpp:874
 msgid "OptionsDlg::Auto Logon:"
@@ -1860,11 +1867,11 @@ msgstr "Автоматически"
 
 #: optionsdlg.cpp:479
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
-msgstr "Автопоказ приходящих сообщений"
+msgstr "Авто-показ приходящих сообщений"
 
 #: optionsdlg.cpp:483
 msgid "OptionsDlg::Auto-Raise on Incoming Msg"
-msgstr "Автовсплытие при приходе сообщения"
+msgstr "Авто-всплытие при приходе сообщения"
 
 #: optionsdlg.cpp:875
 msgid "OptionsDlg::Automatically log on when first starting up."
@@ -1938,11 +1945,11 @@ msgstr ""
 
 #: optionsdlg.cpp:824
 msgid "OptionsDlg::Default Auto Response Messages"
-msgstr "Автоответы по умолчанию"
+msgstr "Авто-ответы по умолчанию"
 
 #: optionsdlg.cpp:550
 msgid "OptionsDlg::Default Icon"
-msgstr ""
+msgstr "Значок по умолчанию"
 
 #: optionsdlg.cpp:713
 msgid "OptionsDlg::Default Server Port:"
@@ -2144,6 +2151,9 @@ msgid "OptionsDlg::"
 "automatically be marked \"away\".  Set to \"0\" "
 "to disable."
 msgstr ""
+"Время бездействия (в минутах), после которого "
+"Ваш статус автоматически меняется на \"Отошел\". "
+"Введите \"0\" чтобы отключить."
 
 #: optionsdlg.cpp:898
 msgid "OptionsDlg::"
@@ -2151,6 +2161,9 @@ msgid "OptionsDlg::"
 "automatically be marked \"not available\".  Set to \"0\" "
 "to disable."
 msgstr ""
+"Время бездействия (в минутах), после которого "
+"Ваш статус автоматически меняется на \"Не доступен\". "
+"Введите \"0\" чтобы отключить."
 
 #: optionsdlg.cpp:882
 msgid "OptionsDlg::Occupied"
@@ -2852,6 +2865,9 @@ msgid "SecurityDlg::"
 "require your authorization to add you to "
 "their contact list."
 msgstr ""
+"Вынуждает ICQ-клиента запрашивать Ваше "
+"подтверждение на добавление Вас в чей-либо "
+"контакт-лист."
 
 #: securitydlg.cpp:41
 msgid "SecurityDlg::Hide IP"
@@ -2879,15 +2895,15 @@ msgstr "Настройки"
 
 #: securitydlg.cpp:38
 msgid "SecurityDlg::Web Presence"
-msgstr "Веб-присутствие"
+msgstr "Web-присутствие"
 
 #: securitydlg.cpp:39
 msgid "SecurityDlg::"
 "Web presence allows users to see if you are online "
 "through your web indicator."
 msgstr ""
-"Веб присутствие позволяет видеть в сети вы или нет "
-"через ваш веб-индикатор."
+"Web-присутствие позволяет видеть в сети вы или нет "
+"через ваш Web-индикатор."
 
 #: securitydlg.cpp:124
 msgid "SecurityDlg::error"
