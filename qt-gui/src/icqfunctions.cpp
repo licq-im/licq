@@ -41,7 +41,7 @@
 #include <qwidgetstack.h>
 #include <qstylesheet.h>
 #include <qlayout.h>
-#include <qdatetime.h>
+
 #include <qtimer.h>
 #include <qspinbox.h>
 
@@ -51,13 +51,11 @@
 #include "messagebox.h"
 #include "filedlg.h"
 #include "showawaymsgdlg.h"
-#include "licq_countrycodes.h"
-#include "licq_languagecodes.h"
 #include "licq_log.h"
 #include "sigman.h"
-#include "editfile.h"
+//#include "editfile.h"
 #include "eventdesc.h"
-#include "gui-defines.h"
+//#include "gui-defines.h"
 #include "refusedlg.h"
 #include "forwarddlg.h"
 #include "chatjoin.h"
@@ -65,8 +63,10 @@
 #include "mmlistview.h"
 #include "mmsenddlg.h"
 #include "authuserdlg.h"
+#include "userinfodlg.h"
+#include "usereventdlg.h"
 
-#include "licq_user.h"
+//#include "licq_user.h"
 #include "mledit.h"
 #include "licq_events.h"
 #include "licq_icqd.h"
@@ -100,11 +100,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
   CreateReadEventTab();
   CreateSendEventTab();
-  CreateGeneralInfoTab();
-  CreateMoreInfoTab();
-  CreateWorkInfoTab();
-  CreateAboutTab();
-  CreateHistoryTab();
 
   QBoxLayout* lay = new QVBoxLayout(this, 8);
 
@@ -121,11 +116,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
   tabs->addTab(tabList[TAB_READ].tab, tabList[TAB_READ].label);
   tabs->addTab(tabList[TAB_SEND].tab, tabList[TAB_SEND].label);
-  tabs->addTab(tabList[TAB_GENERALINFO].tab, tabList[TAB_GENERALINFO].label);
-  tabs->addTab(tabList[TAB_MOREINFO].tab, tabList[TAB_MOREINFO].label);
-  tabs->addTab(tabList[TAB_WORKINFO].tab, tabList[TAB_WORKINFO].label);
-  tabs->addTab(tabList[TAB_ABOUT].tab, tabList[TAB_ABOUT].label);
-  tabs->addTab(tabList[TAB_HISTORY].tab, tabList[TAB_HISTORY].label);
 
   QBoxLayout* l = new QHBoxLayout(lay, 8);
 
@@ -137,16 +127,12 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   if (m_bOwner) chkAutoClose->hide();
 
   int bw = 75;
-  btnSave = new QPushButton(tr("&Save"), this);
   btnOk = new QPushButton(tr("O&k"), this);
   btnCancel = new CEButton(tr("&Close"), this);
-  bw = QMAX(bw, btnSave->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnCancel->sizeHint().width());
-  btnSave->setFixedWidth(bw);
   btnOk->setFixedWidth(bw);
   btnCancel->setFixedWidth(bw);
-  l->addWidget(btnSave);
   l->addSpacing(7);
   l->addWidget(btnOk);
   l->addWidget(btnCancel);
@@ -162,13 +148,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
            this, SLOT(slot_updatedUser(CICQSignal *)));
   connect (btnCancel, SIGNAL(clicked()), this, SLOT(slot_close()));
   connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
-  connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
-
-  QWidgetStack *stack = (QWidgetStack *)tabs->child("tab pages");
-  if (stack == NULL)
-    WarnUser(this, "Unable to find widget stack");
-  else
-    connect(stack, SIGNAL(aboutToShow(QWidget *)), this, SLOT(slot_aboutToShow(QWidget *)));
 }
 
 
@@ -315,331 +294,6 @@ void ICQFunctions::slot_masstoggled(bool b)
 
 
 
-void ICQFunctions::CreateGeneralInfoTab()
-{
-  tabList[TAB_GENERALINFO].label = tr("&General");
-  tabList[TAB_GENERALINFO].tab = new QWidget(this, tabList[TAB_GENERALINFO].label.latin1());
-  tabList[TAB_GENERALINFO].loaded = false;
-}
-
-
-void ICQFunctions::InitGeneralInfoTab()
-{
-  tabList[TAB_GENERALINFO].loaded = true;
-
-  unsigned short CR = 0;
-  QWidget *p = tabList[TAB_GENERALINFO].tab;
-
-  QGridLayout *lay = new QGridLayout(p, 10, 5, 10, 5);
-  lay->addColSpacing(2, 10);
-  lay->setRowStretch(9, 1);
-
-  lay->addWidget(new QLabel(tr("Alias:"), p), CR, 0);
-  nfoAlias = new CInfoField(p, false);
-  lay->addWidget(nfoAlias, CR, 1);
-  lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
-  nfoLastOnline = new CInfoField(p, true);
-  lay->addWidget(nfoLastOnline, CR, 4);
-
-  lay->addWidget(new QLabel(tr("UIN:"), p), ++CR, 0);
-  nfoUin = new CInfoField(p, true);
-  lay->addWidget(nfoUin, CR, 1);
-  lay->addWidget(new QLabel(tr("IP:"), p), CR, 3);
-  nfoIp = new CInfoField(p, true);
-  lay->addWidget(nfoIp, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Name:"), p), ++CR, 0);
-  nfoFirstName = new CInfoField(p, false);
-  lay->addWidget(nfoFirstName, CR, 1);
-  nfoLastName = new CInfoField(p, false);
-  lay->addMultiCellWidget(nfoLastName, CR, CR, 2, 4);
-
-  lay->addWidget(new QLabel(tr("EMail 1:"), p), ++CR, 0);
-  nfoEmail1 = new CInfoField(p, false);
-  lay->addMultiCellWidget(nfoEmail1, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("EMail 2:"), p), ++CR, 0);
-  nfoEmail2 = new CInfoField(p, false);
-  lay->addMultiCellWidget(nfoEmail2, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("State:"), p), ++CR, 0);
-  nfoState = new CInfoField(p, !m_bOwner);
-  nfoState->setMaxLength(5);
-  lay->addWidget(nfoState, CR, 1);
-  lay->addWidget(new QLabel(tr("City:"), p), CR, 3);
-  nfoCity = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCity, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
-  nfoAddress = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoAddress, CR, 1);
-  lay->addWidget(new QLabel(tr("Phone:"), p), CR, 3);
-  nfoPhone = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoPhone, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Country:"), p), ++CR, 0);
-  if (m_bOwner)
-  {
-    cmbCountry = new CEComboBox(true, tabList[TAB_GENERALINFO].tab);
-    cmbCountry->insertItem(tr("Unspecified"));
-    cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
-    for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
-      cmbCountry->insertItem(GetCountryByIndex(i)->szName);
-    lay->addWidget(cmbCountry, CR, 1);
-  }
-  else
-  {
-    nfoCountry = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoCountry, CR, 1);
-  }
-  lay->addWidget(new QLabel(tr("Zip:"), p), CR, 3);
-  nfoZipCode = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoZipCode, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Cellular:"), p), ++CR, 0);
-  nfoCellular = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCellular, CR, 1);
-  lay->addWidget(new QLabel(tr("Fax:"), p), CR, 3);
-  nfoFax = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoFax, CR, 4);
-
-}
-
-
-void ICQFunctions::CreateMoreInfoTab()
-{
-  tabList[TAB_MOREINFO].label = tr("&More");
-  tabList[TAB_MOREINFO].tab = new QWidget(this, tabList[TAB_MOREINFO].label.latin1());
-  tabList[TAB_MOREINFO].loaded = false;
-}
-
-
-void ICQFunctions::InitMoreInfoTab()
-{
-  tabList[TAB_MOREINFO].loaded = true;
-
-  unsigned short CR = 0;
-  QWidget *p = tabList[TAB_MOREINFO].tab;
-  QGridLayout *lay = new QGridLayout(p, 8, 5, 10, 5);
-  lay->addColSpacing(2, 10);
-  lay->addRowSpacing(5, 5);
-  lay->setRowStretch(7, 1);
-
-  lay->addWidget(new QLabel(tr("Age:"), p), CR, 0);
-  nfoAge = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoAge, CR, 1);
-  lay->addWidget(new QLabel(tr("Gender:"), p), CR, 3);
-  if (m_bOwner)
-  {
-    cmbGender = new CEComboBox(true, p);
-    cmbGender->insertItem(tr("Unspecified"), GENDER_UNSPECIFIED);
-    cmbGender->insertItem(tr("Female"), GENDER_FEMALE);
-    cmbGender->insertItem(tr("Male"), GENDER_MALE);
-    lay->addWidget(cmbGender, CR, 4);
-  }
-  else
-  {
-    nfoGender = new CInfoField(p, true);
-    lay->addWidget(nfoGender, CR, 4);
-  }
-
-  lay->addWidget(new QLabel(tr("Homepage:"), p), ++CR, 0);
-  nfoHomepage = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoHomepage, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("Birthday:"), p), ++CR, 0);
-  if (m_bOwner)
-  {
-    QHBox* w = new QHBox(p);
-    w->setSpacing(8);
-    QLabel* lblDay = new QLabel(tr(" Day:"), w);
-    lblDay->setAlignment(AlignRight | AlignVCenter | SingleLine);
-    spnBirthDay = new QSpinBox(1, 31, 1, w);
-    QLabel* lblMonth = new QLabel(tr(" Month:"), w);
-    lblMonth->setAlignment(AlignRight | AlignVCenter | SingleLine);
-    spnBirthMonth = new QSpinBox(1, 12, 1, w);
-    QLabel* lblYear = new QLabel(tr(" Year:"), w);
-    lblYear->setAlignment(AlignRight | AlignVCenter | SingleLine);
-    spnBirthYear = new QSpinBox(1900, 2020, 1, w);
-    lay->addMultiCellWidget(w, CR, CR, 1, 4);
-  }
-  else
-  {
-    nfoBirthday = new CInfoField(p, !m_bOwner);
-    lay->addMultiCellWidget(nfoBirthday, CR, CR, 1, 4);
-  }
-
-  if (m_bOwner)
-  {
-    lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
-    cmbLanguage[0] = new CEComboBox(true, p);
-    lay->addWidget(cmbLanguage[0], CR, 1);
-    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
-    cmbLanguage[1] = new CEComboBox(true, p);
-    lay->addWidget(cmbLanguage[1], CR, 4);
-
-    lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
-    cmbLanguage[2] = new CEComboBox(true, p);
-    lay->addWidget(cmbLanguage[2], CR, 1);
-
-    for (unsigned short i = 0; i < 3; i++)
-    {
-      for (unsigned short j = 0; j < NUM_LANGUAGES; j++)
-        cmbLanguage[i]->insertItem(GetLanguageByIndex(j)->szName);
-    }
-  }
-  else
-  {
-    lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
-    nfoLanguage[0] = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoLanguage[0], CR, 1);
-    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
-    nfoLanguage[1] = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoLanguage[1], CR, 4);
-
-    lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
-    nfoLanguage[2] = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoLanguage[2], CR, 1);
-  }
-
-  lblAuth = new QLabel(p);
-  CR += 2;
-  lay->addMultiCellWidget(lblAuth, CR, CR, 0, 4);
-}
-
-
-void ICQFunctions::CreateWorkInfoTab()
-{
-  tabList[TAB_WORKINFO].label = tr("&Work");
-  tabList[TAB_WORKINFO].tab = new QWidget(this, tabList[TAB_WORKINFO].label.latin1());
-  tabList[TAB_WORKINFO].loaded = false;
-}
-
-
-void ICQFunctions::InitWorkInfoTab()
-{
-  tabList[TAB_WORKINFO].loaded = true;
-
-  unsigned short CR = 0;
-  QWidget *p = tabList[TAB_WORKINFO].tab;
-
-  QGridLayout *lay = new QGridLayout(p, 8, 5, 10, 5);
-  lay->addColSpacing(2, 10);
-  lay->setRowStretch(7, 1);
-
-  lay->addWidget(new QLabel(tr("Name:"), p), CR, 0);
-  nfoCompanyName = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyName, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("Department:"), p), ++CR, 0);
-  nfoCompanyDepartment = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyDepartment, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("Position:"), p), ++CR, 0);
-  nfoCompanyPosition = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyPosition, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("City:"), p), ++CR, 0);
-  nfoCompanyCity = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCompanyCity, CR, 1);
-  lay->addWidget(new QLabel(tr("State:"), p), CR, 3);
-  nfoCompanyState = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCompanyState, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
-  nfoCompanyAddress = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyAddress, CR, CR, 1, 4);
-
-  lay->addWidget(new QLabel(tr("Phone:"), p), ++CR, 0);
-  nfoCompanyPhone = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCompanyPhone, CR, 1);
-  lay->addWidget(new QLabel(tr("Fax:"), p), CR, 3);
-  nfoCompanyFax = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCompanyFax, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Homepage:"), p), CR, 0);
-  nfoCompanyHomepage = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyHomepage, CR, CR, 1, 4);
-}
-
-
-void ICQFunctions::CreateAboutTab()
-{
-  tabList[TAB_ABOUT].label = tr("&About");
-  tabList[TAB_ABOUT].tab = new QVBox(this, tabList[TAB_ABOUT].label.latin1());
-  tabList[TAB_ABOUT].loaded = false;
-}
-
-
-void ICQFunctions::InitAboutTab()
-{
-  tabList[TAB_ABOUT].loaded = true;
-
-  QVBox *p = (QVBox *)tabList[TAB_ABOUT].tab;
-
-  p->setMargin(8);
-  p->setSpacing(8);
-
-  lblAbout = new QLabel(tr("About:"), p);
-  mleAbout = new MLEditWrap(true, p);
-  mleAbout->setReadOnly(!m_bOwner);
-  // Windows ICQ seems to limit the about info to 450 chars
-  // so we do the same
-  mleAbout->setMaxLength(450);
-}
-
-
-void ICQFunctions::CreateHistoryTab()
-{
-  tabList[TAB_HISTORY].label = tr("&History");
-  tabList[TAB_HISTORY].tab = new QWidget(this, tabList[TAB_HISTORY].label.latin1());
-  tabList[TAB_HISTORY].loaded = false;
-}
-
-
-void ICQFunctions::InitHistoryTab()
-{
-  tabList[TAB_HISTORY].loaded = true;
-  QWidget *p = tabList[TAB_HISTORY].tab;
-
-  /*QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
-
-  lblHistory = new QLabel(p);
-  lblHistory->setAutoResize(true);
-  lblHistory->setAlignment(AlignLeft | AlignVCenter);
-  lay->addWidget(lblHistory);
-
-  mleHistory = new HistoryWidget(p);
-  lay->addWidget(mleHistory, 2);
-
-  QGroupBox *box = new QGroupBox(1, Vertical, p);
-  lay->addWidget(box);
-
-  btnHistoryReload = new QPushButton(tr("Reload"), box);
-  connect(btnHistoryReload, SIGNAL(clicked()), SLOT(slot_historyReload()));
-  btnHistoryEdit = new QPushButton(tr("Edit"), box);
-  connect(btnHistoryEdit, SIGNAL(clicked()), SLOT(slot_historyEdit()));
-  chkHistoryReverse = new QCheckBox(tr("Reverse"), box);
-  connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
-  chkHistoryReverse->setChecked(true);*/
-
-  QBoxLayout* lay = new QVBoxLayout(p, 8, 8);
-
-  QBoxLayout* l = new QHBoxLayout(lay);
-
-  lblHistory = new QLabel(p);
-  lblHistory->setAlignment(AlignLeft | AlignVCenter | SingleLine);
-  l->addWidget(lblHistory, 1);
-
-  chkHistoryReverse = new QCheckBox(tr("Rever&se"), p);
-  connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
-  chkHistoryReverse->setChecked(true);
-  chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
-  l->addWidget(chkHistoryReverse);
-
-  mleHistory = new CHistoryWidget(p);
-  lay->addWidget(mleHistory, 1);
-}
 
 
 //-----ICQFunctions::keyPressEvent----------------------------------------------
@@ -747,21 +401,6 @@ void ICQFunctions::setupTabs(int index)
       rdbFile->setChecked(true);
       specialFcn(3);
       break;
-    case mnuUserGeneral:
-      tabs->showPage(tabList[TAB_GENERALINFO].tab);
-      break;
-    case mnuUserMore:
-      tabs->showPage(tabList[TAB_MOREINFO].tab);
-      break;
-    case mnuUserWork:
-      tabs->showPage(tabList[TAB_WORKINFO].tab);
-      break;
-    case mnuUserAbout:
-      tabs->showPage(tabList[TAB_ABOUT].tab);
-      break;
-    case mnuUserHistory:
-      tabs->showPage(tabList[TAB_HISTORY].tab);
-      break;
     default:
       gLog.Warn("%sInternal Error: ICQFunctions::setupTabs(): Invalid index (%d).\n",
                 L_WARNxSTR, index);
@@ -796,89 +435,17 @@ void ICQFunctions::SetInfo(ICQUser *u)
                          .arg(u->GetTimezone() % 2 ? "30" : "00") );
     tmrTime = new QTimer(this);
     connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
-    tmrTime->start(3000);
+    tmrTime->start(1000);
   }
 
   m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
-                 QString::fromLocal8Bit(u->GetFirstName()) + " " +
-                 QString::fromLocal8Bit(u->GetLastName())+ ")";
+    QString::fromLocal8Bit(u->GetFirstName()) + " " +
+    QString::fromLocal8Bit(u->GetLastName())+ ")";
   setCaption(m_sBaseTitle);
   setIconText(u->GetAlias());
 
   if (bDropUser) gUserManager.DropUser(u);
 }
-
-
-//-----ICQFunctions::setGeneralInfo-----------------------------------------------
-void ICQFunctions::SetGeneralInfo(ICQUser *u)
-{
-  char buf[32];
-  bool bDropUser = false;
-
-  if (u == NULL)
-  {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    bDropUser = true;
-  }
-
-  nfoAlias->setData(u->GetAlias());
-  nfoFirstName->setData(u->GetFirstName());
-  nfoLastName->setData(u->GetLastName());
-  nfoEmail1->setData(u->GetEmail1());
-  nfoEmail2->setData(u->GetEmail2());
-  nfoUin->setData(u->Uin());
-  nfoIp->setData(u->IpPortStr(buf));
-  if (m_bOwner)
-  {
-    if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
-      cmbCountry->setCurrentItem(0);
-    else
-    {
-      const SCountry *c = GetCountryByCode(u->GetCountryCode());
-      if (c == NULL)
-        cmbCountry->setCurrentItem(0);
-      else
-        cmbCountry->setCurrentItem(c->nIndex + 1);
-    }
-  }
-  else
-  {
-    if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
-      nfoCountry->setData(tr("Unspecified"));
-    else
-    {
-      const SCountry *c = GetCountryByCode(u->GetCountryCode());
-      if (c == NULL)
-        nfoCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
-      else  // known
-        nfoCountry->setData(c->szName);
-    }
-  }
-  nfoCity->setData(u->GetCity());
-  nfoState->setData(u->GetState());
-  nfoPhone->setData(u->GetPhoneNumber());
-  nfoFax->setData(u->GetFaxNumber());
-  nfoCellular->setData(u->GetCellularNumber());
-  nfoZipCode->setData(u->GetZipCode());
-
-  if (!u->StatusOffline())
-    nfoLastOnline->setData(tr("Now"));
-  else if (u->LastOnline() == 0)
-    nfoLastOnline->setData(tr("Unknown"));
-  else
-  {
-    QDateTime t;
-    t.setTime_t(u->LastOnline());
-    QString ds = t.toString();
-    ds.truncate(ds.length() - 8);
-    nfoLastOnline->setData(ds);
-  }
-
-  SetInfo(u);
-
-  if (bDropUser) gUserManager.DropUser(u);
-}
-
 
 void ICQFunctions::slot_updatetime()
 {
@@ -886,129 +453,6 @@ void ICQFunctions::slot_updatetime()
   t.setTime_t(time(NULL) + m_nRemoteTimeOffset);
   nfoTimezone->setText(nfoTimezone->text().replace(0, t.time().toString().length(), t.time().toString()));
 }
-
-
-//-----ICQFunctions::SetMoreInfo-------------------------------------------------
-void ICQFunctions::SetMoreInfo(ICQUser *u)
-{
-  bool bDropUser = false;
-
-  if (u == NULL)
-  {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    bDropUser = true;
-  }
-
-  // Gender
-  if (m_bOwner)
-  {
-    cmbGender->setCurrentItem(u->GetGender());
-  }
-  else
-  {
-    if (u->GetGender() == 1)
-      nfoGender->setData(tr("Female"));
-    else if (u->GetGender() == 2)
-      nfoGender->setData(tr("Male"));
-    else
-      nfoGender->setData(tr("Unspecified"));
-  }
-
-  // Age
-  if (u->GetAge() == AGE_UNSPECIFIED)
-    nfoAge->setData(tr("Unspecified"));
-  else
-    nfoAge->setData(u->GetAge());
-
-  // Birthday
-  if (m_bOwner)
-  {
-    spnBirthDay->setValue((unsigned short)u->GetBirthDay());
-    spnBirthMonth->setValue((unsigned short)u->GetBirthMonth());
-    spnBirthYear->setValue((unsigned short)u->GetBirthYear() + 1900);
-  }
-  else
-  {
-    if (u->GetBirthMonth() == 0 || u->GetBirthDay() == 0)
-    {
-      nfoBirthday->setData(tr("Unspecified"));
-    }
-    else
-    {
-      QDate d(u->GetBirthYear() + 1900, u->GetBirthMonth(), u->GetBirthDay());
-      nfoBirthday->setData(d.toString());
-    }
-  }
-  nfoHomepage->setData(u->GetHomepage());
-  for (unsigned short i = 0; i < 3; i++)
-  {
-    const SLanguage *l = GetLanguageByCode(u->GetLanguage(i));
-    if (m_bOwner)
-    {
-      if (l == NULL)
-        cmbLanguage[i]->setCurrentItem(NUM_LANGUAGES - 1);
-      else
-        cmbLanguage[i]->setCurrentItem(l->nIndex);
-    }
-    else
-    {
-      if (l == NULL)
-        nfoLanguage[i]->setData(tr("Unknown (%1)").arg(u->GetLanguage(i)));
-      else  // known
-        nfoLanguage[i]->setData(l->szName);
-    }
-  }
-
-  if (u->GetAuthorization())
-    lblAuth->setText(tr("Authorization Required"));
-  else
-    lblAuth->setText(tr("Authorization Not Required"));
-
-  if (bDropUser) gUserManager.DropUser(u);
-}
-
-
-//-----ICQFunctions::SetWorkInfo-------------------------------------------------
-void ICQFunctions::SetWorkInfo(ICQUser *u)
-{
-  bool bDropUser = false;
-
-  if (u == NULL)
-  {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    bDropUser = true;
-  }
-
-  nfoCompanyName->setData(u->GetCompanyName());
-  nfoCompanyDepartment->setData(u->GetCompanyDepartment());
-  nfoCompanyPosition->setData(u->GetCompanyPosition());
-  nfoCompanyCity->setData(u->GetCompanyCity());
-  nfoCompanyState->setData(u->GetCompanyState());
-  nfoCompanyAddress->setData(u->GetCompanyAddress());
-  nfoCompanyPhone->setData(u->GetCompanyPhoneNumber());
-  nfoCompanyFax->setData(u->GetCompanyFaxNumber());
-  nfoCompanyHomepage->setData(u->GetCompanyHomepage());
-
-  if (bDropUser) gUserManager.DropUser(u);
-}
-
-
-//-----ICQFunctions::SetAbout-------------------------------------------------
-void ICQFunctions::SetAbout(ICQUser *u)
-{
-  bool bDropUser = false;
-
-  if (u == NULL)
-  {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    bDropUser = true;
-  }
-
-  mleAbout->setText(QString::fromLocal8Bit(u->GetAbout()));
-
-  if (bDropUser) gUserManager.DropUser(u);
-}
-
 
 
 //-----ICQFunctions::SendMsg---------------------------------------------------
@@ -1041,51 +485,6 @@ void ICQFunctions::SendFile(QString file, QString desc)
 }
 
 
-void ICQFunctions::slot_aboutToShow(QWidget *p)
-{
-  if (p == tabList[TAB_GENERALINFO].tab)
-  {
-     if (!tabList[TAB_GENERALINFO].loaded)
-     {
-       InitGeneralInfoTab();
-       SetGeneralInfo(NULL);
-     }
-  }
-  else if (p == tabList[TAB_MOREINFO].tab)
-  {
-     if (!tabList[TAB_MOREINFO].loaded)
-     {
-       InitMoreInfoTab();
-       SetMoreInfo(NULL);
-     }
-  }
-  else if (p == tabList[TAB_WORKINFO].tab)
-  {
-     if (!tabList[TAB_WORKINFO].loaded)
-     {
-       InitWorkInfoTab();
-       SetWorkInfo(NULL);
-     }
-  }
-  else if (p == tabList[TAB_ABOUT].tab)
-  {
-     if (!tabList[TAB_ABOUT].loaded)
-     {
-       InitAboutTab();
-       SetAbout(NULL);
-     }
-  }
-  else if (p == tabList[TAB_HISTORY].tab)
-  {
-     if (!tabList[TAB_HISTORY].loaded)
-     {
-       InitHistoryTab();
-       SetupHistory();
-     }
-  }
-}
-
-
 //-----ICQFunctions::tabSelected-----------------------------------------------
 void ICQFunctions::tabSelected(const QString &tab)
 {
@@ -1093,62 +492,16 @@ void ICQFunctions::tabSelected(const QString &tab)
   {
      mleSend->setFocus();
      btnOk->setText(tr("&Send"));
-     btnSave->hide();
      btnOk->show();
      currentTab = TAB_SEND;
   }
-  else if (tab == tabList[TAB_GENERALINFO].label)
-  {
-     btnOk->setText(tr("&Update"));
-     btnSave->setText(tr("&Save"));
-     btnSave->show();
-     btnOk->show();
-     currentTab = TAB_GENERALINFO;
-  }
+
   else if (tab == tabList[TAB_READ].label)
   {
      btnOk->setText(tr("Ok"));
      btnOk->hide();
-     btnSave->hide();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
-  }
-  else if (tab == tabList[TAB_MOREINFO].label)
-  {
-     btnOk->setText(tr("&Update"));
-     btnOk->show();
-     btnSave->setText(tr("&Save"));
-     btnSave->show();
-     currentTab = TAB_MOREINFO;
-  }
-  else if (tab == tabList[TAB_WORKINFO].label)
-  {
-     btnOk->setText(tr("&Update"));
-     btnOk->show();
-     btnSave->setText(tr("&Save"));
-     btnSave->show();
-     currentTab = TAB_WORKINFO;
-  }
-  else if (tab == tabList[TAB_ABOUT].label)
-  {
-     btnOk->setText(tr("&Update"));
-     btnOk->show();
-     btnSave->setText(tr("&Save"));
-     btnSave->show();
-     currentTab = TAB_ABOUT;
-  }
-  else if (tab == tabList[TAB_HISTORY].label)
-  {
-     btnOk->setText(tr("Nex&t"));
-     btnOk->show();
-     btnSave->setText(tr("P&rev"));
-     btnSave->show();
-     currentTab = TAB_HISTORY;
-  }
-  else
-  {
-     btnOk->setText(tr("&Ok"));
-     btnOk->show();
   }
 }
 
@@ -1213,20 +566,6 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
     }
     break;
   }
-  case USER_GENERAL:
-  case USER_BASIC:
-  case USER_EXT:
-    if (tabList[TAB_GENERALINFO].loaded) SetGeneralInfo(u);
-    break;
-  case USER_MORE:
-    if (tabList[TAB_MOREINFO].loaded) SetMoreInfo(u);
-    break;
-  case USER_WORK:
-    if (tabList[TAB_WORKINFO].loaded) SetWorkInfo(u);
-    break;
-  case USER_ABOUT:
-    if (tabList[TAB_ABOUT].loaded) SetAbout(u);
-    break;
   }
   gUserManager.DropUser(u);
 }
@@ -1527,6 +866,8 @@ void ICQFunctions::slot_readbtn3()
 
 void ICQFunctions::slot_readbtn4()
 {
+  UserViewEvent* uidlg = new UserViewEvent(server, sigman, mainwin, m_nUin);
+  uidlg->show();
 }
 
 
@@ -1583,288 +924,6 @@ void ICQFunctions::slot_sendbtn()
     }
     edtItem->setText(f);
   }
-}
-
-
-//-----ICQFunctions::save------------------------------------------------------
-void ICQFunctions::save()
-{
-  switch (currentTab)
-  {
-  case TAB_READ:
-    break;
-  case TAB_GENERALINFO:
-  {
-    SaveGeneralInfo();
-    CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_nUin);
-    emit signal_updatedUser(&s);
-    break;
-  }
-  case TAB_MOREINFO:
-    SaveMoreInfo();
-    break;
-  case TAB_WORKINFO:
-    SaveMoreInfo();
-    break;
-  case TAB_ABOUT:
-    SaveAbout();
-    break;
-  case TAB_HISTORY:
-    ShowHistoryPrev();
-    break;
-  default:
-    gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %d.\n",
-              L_WARNxSTR, currentTab);
-    break;
-  }
-}
-
-
-//-----ICQFunctions::SaveGeneralInfo-------------------------------------------
-void ICQFunctions::SaveGeneralInfo()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->SetEnableSave(false);
-
-  u->SetAlias(nfoAlias->text().local8Bit());
-  u->SetFirstName(nfoFirstName->text().local8Bit());
-  u->SetLastName(nfoLastName->text().local8Bit());
-  u->SetEmail1(nfoEmail1->text().local8Bit());
-  u->SetEmail2(nfoEmail2->text().local8Bit());
-  u->SetCity(nfoCity->text().local8Bit());
-  u->SetState(nfoState->text().local8Bit());
-  u->SetAddress(nfoAddress->text().local8Bit());
-  u->SetPhoneNumber(nfoPhone->text().local8Bit());
-  u->SetFaxNumber(nfoFax->text().local8Bit());
-  u->SetCellularNumber(nfoCellular->text().local8Bit());
-  u->SetZipCode(nfoZipCode->text().toULong());
-  if (m_bOwner)
-  {
-    unsigned short i = cmbCountry->currentItem();
-    if (i == 0)
-      u->SetCountryCode(COUNTRY_UNSPECIFIED);
-    else
-      u->SetCountryCode(GetCountryByIndex(i - 1)->nCode);
-  }
-
-  u->SetEnableSave(true);
-  u->SaveGeneralInfo();
-  gUserManager.DropUser(u);
-}
-
-
-//-----ICQFunctions::SaveMoreInfo---------------------------------------------
-void ICQFunctions::SaveMoreInfo()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->SetEnableSave(false);
-
-  u->SetAge(nfoAge->text().toULong());
-  u->SetHomepage(nfoHomepage->text().local8Bit());
-  //u->SetBirthYear();
-  //u->SetBirthMonth();
-  //u->SetBirthDay();
-  if (m_bOwner)
-  {
-    u->SetGender(cmbGender->currentItem());
-    for (unsigned short i = 0; i < 3; i++)
-    {
-      u->SetLanguage(i, GetLanguageByIndex(cmbLanguage[i]->currentItem())->nCode);
-    }
-  }
-
-  u->SetEnableSave(true);
-  u->SaveMoreInfo();
-  gUserManager.DropUser(u);
-}
-
-
-//-----ICQFunctions::SaveAbout---------------------------------------------
-void ICQFunctions::SaveAbout()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->SetAbout(mleAbout->text().local8Bit());
-  gUserManager.DropUser(u);
-}
-
-
-//-----ICQFunctions::SetupHistory--------------------------------------------
-void ICQFunctions::SetupHistory()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (!u->GetHistory(m_lHistoryList))
-  {
-    if(u->HistoryFile())
-      mleHistory->setText(tr("Error loading history file: %1\nDescription: %2")
-        .arg(u->HistoryFile()).arg(u->HistoryName()));
-    else
-      mleHistory->setText(tr("Sorry, history is disabled for this person."));
-  }
-  else
-  {
-    m_bHistoryReverse = chkHistoryReverse->isChecked();
-    m_iHistoryEIter = m_lHistoryList.end();
-    m_iHistorySIter = m_iHistoryEIter;
-    for (unsigned short i = 0;
-         (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
-         i++)
-    {
-      m_iHistorySIter--;
-    }
-    m_nHistoryIndex = m_lHistoryList.size();
-    ShowHistory();
-  }
-  gUserManager.DropUser(u);
-}
-
-
-void ICQFunctions::slot_historyReload()
-{
-  ICQUser::ClearHistory(m_lHistoryList);
-  SetupHistory();
-}
-
-void ICQFunctions::slot_historyEdit()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u == NULL) return;
-
-  (void) new EditFileDlg(u->HistoryFile());
-
-  gUserManager.DropUser(u);
-}
-
-
-void ICQFunctions::slot_historyReverse(bool newVal)
-{
-  if (chkHistoryReverse->isChecked() != newVal)
-    chkHistoryReverse->setChecked(newVal);
-  else if(m_bHistoryReverse != newVal)
-  {
-    m_bHistoryReverse = newVal;
-    ShowHistory();
-  }
-}
-
-void ICQFunctions::ShowHistoryPrev()
-{
-  if (m_iHistorySIter != m_lHistoryList.begin())
-  {
-    m_iHistoryEIter = m_iHistorySIter;
-    m_nHistoryIndex -= NUM_MSG_PER_HISTORY;
-    for (unsigned short i = 0;
-         (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
-         i++)
-    {
-	    m_iHistorySIter--;
-    }
-    ShowHistory();
-  }
-}
-
-void ICQFunctions::ShowHistoryNext()
-{
-  if (m_iHistoryEIter != m_lHistoryList.end())
-  {
-    m_iHistorySIter = m_iHistoryEIter;
-    for (unsigned short i = 0;
-         (i < NUM_MSG_PER_HISTORY) && (m_iHistoryEIter != m_lHistoryList.end());
-         i++)
-    {
-	    m_iHistoryEIter++;
-	    m_nHistoryIndex++;
-    }
-    ShowHistory();
-  }
-}
-
-//-----ICQFunctions::ShowHistory--------------------------------------------
-void ICQFunctions::ShowHistory()
-{
-  // Last check (should never be true)
-  if (m_lHistoryList.size() == 0) return;
-  HistoryListIter tempIter;
-
-  if(m_bHistoryReverse)
-  {
-    tempIter = m_iHistoryEIter;
-    tempIter--;
-  }
-  else
-  {
-    tempIter = m_iHistorySIter;
-  }
-  QString s, st, n;
-  QDateTime d;
-  m_nHistoryShowing = 0;
-  if (m_bOwner)
-    n = tr("server");
-  else
-  {
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    if (u != NULL)
-    {
-      n = QString::fromLocal8Bit(u->GetAlias());
-      gUserManager.DropUser(u);
-    }
-  }
-  while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
-  {
-    d.setTime_t((*tempIter)->Time());
-    if ((*tempIter)->Direction() == D_RECEIVER)
-      s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
-                '\001', EventDescription(*tempIter).data(),
-                tr("from").utf8().data(), n.utf8().data(), '\001',
-                d.toString().utf8().data(),
-                (*tempIter)->IsDirect() ? 'D' : '-',
-                (*tempIter)->IsMultiRec() ? 'M' : '-',
-                (*tempIter)->IsUrgent() ? 'U' : '-',
-                (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
-    else
-      s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
-                '\002', EventDescription(*tempIter).data(),
-                tr("to").utf8().data(), n.utf8().data(), '\002',
-                d.toString().utf8().data(),
-                (*tempIter)->IsDirect() ? 'D' : '-',
-                (*tempIter)->IsMultiRec() ? 'M' : '-',
-                (*tempIter)->IsUrgent() ? 'U' : '-',
-                (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
-    st.append(s);
-    m_nHistoryShowing++;
-    if(m_bHistoryReverse)
-    {
-      if (tempIter == m_iHistorySIter)
-        break;
-      tempIter--;
-    }
-    else
-    {
-       tempIter++;
-       if (tempIter == m_iHistoryEIter)
-         break;
-    }
-  }
-  lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
-                         "[<font color=\"%2\">Sent</font>] "
-                         "%3 to %4 of %5")
-                      .arg(COLOR_RECEIVED).arg(COLOR_SENT)
-                      .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
-                      .arg(m_nHistoryIndex)
-                      .arg(m_lHistoryList.size()));
-  mleHistory->setText(st);
-  if(!m_bHistoryReverse)
-    mleHistory->GotoEnd();
-  else
-    mleHistory->setCursorPosition(0, 0);
-}
-
-
-//-----ICQFunctions::saveHistory---------------------------------------------
-void ICQFunctions::saveHistory()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  u->SaveHistory(mleHistory->text().local8Bit());
-  gUserManager.DropUser(u);
 }
 
 
@@ -2042,95 +1101,8 @@ void ICQFunctions::callFcn()
 
     break;
   }
-
-  case TAB_GENERALINFO:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      unsigned short i = cmbCountry->currentItem();
-      unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
-      icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
-                                              nfoFirstName->text().local8Bit(),
-                                              nfoLastName->text().local8Bit(),
-                                              nfoEmail1->text().local8Bit(),
-                                              nfoEmail2->text().local8Bit(),
-                                              nfoCity->text().local8Bit(),
-                                              nfoState->text().local8Bit(),
-                                              nfoPhone->text().local8Bit(),
-                                              nfoFax->text().local8Bit(),
-                                              nfoAddress->text().local8Bit(),
-                                              nfoCellular->text().local8Bit(),
-                                              nfoZipCode->text().toULong(),
-                                              cc, false);
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case TAB_MOREINFO:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      unsigned short i;
-      i = cmbLanguage[0]->currentItem();
-      unsigned short lc1 = GetLanguageByIndex(i)->nCode;
-      i = cmbLanguage[1]->currentItem();
-      unsigned short lc2 = GetLanguageByIndex(i)->nCode;
-      i = cmbLanguage[2]->currentItem();
-      unsigned short lc3 = GetLanguageByIndex(i)->nCode;
-      icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
-                                           cmbGender->currentItem(),
-                                           nfoHomepage->text().local8Bit(),
-                                           spnBirthYear->value() - 1900,
-                                           spnBirthMonth->value(),
-                                           spnBirthDay->value(),
-                                           lc1, lc2, lc3);
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case TAB_WORKINFO:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
-                                           nfoCompanyState->text().local8Bit(),
-                                           nfoCompanyPhone->text().local8Bit(),
-                                           nfoCompanyFax->text().local8Bit(),
-                                           nfoCompanyAddress->text().local8Bit(),
-                                           nfoCompanyName->text().local8Bit(),
-                                           nfoCompanyDepartment->text().local8Bit(),
-                                           nfoCompanyPosition->text().local8Bit(),
-                                           nfoCompanyHomepage->text().local8Bit());
-
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case TAB_ABOUT:
-    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-    {
-      m_sProgressMsg = tr("Updating server...");
-      icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());
-    }
-    else
-    {
-      m_sProgressMsg = tr("Updating...");
-      icqEventTag = server->icqRequestMetaInfo(m_nUin);
-    }
-    break;
-  case TAB_HISTORY:
-    ShowHistoryNext();
-    break;
   }
+
 
   if (icqEventTag != NULL)
   {
@@ -2444,7 +1416,6 @@ ICQFunctions::~ICQFunctions()
 {
   if (icqEventTag != NULL) server->CancelEvent(icqEventTag);
   delete icqEventTag;
-  ICQUser::ClearHistory(m_lHistoryList);
 }
 
 #include "icqfunctions.moc"

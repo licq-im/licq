@@ -3,8 +3,6 @@
 
 #include <qdialog.h>
 
-#include "licq_history.h"
-
 class QBoxLayout;
 class QSplitter;
 class QCheckBox;
@@ -42,12 +40,6 @@ class CMMUserView;
 
 const int TAB_READ = 0;
 const int TAB_SEND = 1;
-const int TAB_GENERALINFO = 2;
-const int TAB_MOREINFO = 3;
-const int TAB_WORKINFO = 4;
-const int TAB_ABOUT = 5;
-const int TAB_HISTORY = 6;
-const int TAB_SECURITY = 7;
 
 struct STab
 {
@@ -78,8 +70,13 @@ protected:
   bool m_bOwner, m_bDeleteUser;
   QCheckBox *chkAutoClose;
   QTabWidget *tabs;
-  QPushButton *btnSave, *btnOk;
+  QPushButton  *btnOk;
   CEButton *btnCancel;
+
+  // common part
+  CInfoField *nfoStatus, *nfoTimezone;
+  time_t m_nRemoteTimeOffset;
+  QTimer *tmrTime;
 
   // Read Event tab
   void CreateReadEventTab();
@@ -108,53 +105,6 @@ protected:
   unsigned short m_nMPChatPort;
   CMMUserView *lstMultipleRecipients;
 
-  // User Info tab
-  void CreateGeneralInfoTab();
-  void InitGeneralInfoTab();
-  CInfoField *nfoFirstName, *nfoLastName, *nfoEmail1, *nfoEmail2,
-             *nfoAlias,*nfoStatus, *nfoIp, *nfoUin, *nfoCity, *nfoState,
-             *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
-             *nfoPhone, *nfoTimezone, *nfoLastOnline;
-  CEComboBox *cmbCountry;
-  QLabel *lblAuth;
-  time_t m_nRemoteTimeOffset;
-  QTimer *tmrTime;
-
-  // More info
-  void CreateMoreInfoTab();
-  void InitMoreInfoTab();
-  CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage,
-             *nfoGender;
-  CEComboBox *cmbLanguage[3], *cmbGender;
-  QSpinBox *spnBirthDay, *spnBirthMonth, *spnBirthYear;
-
-  // Work info
-  void CreateWorkInfoTab();
-  void InitWorkInfoTab();
-  CInfoField *nfoCompanyName, *nfoCompanyCity, *nfoCompanyState,
-             *nfoCompanyAddress, *nfoCompanyPhone, *nfoCompanyFax,
-             *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
-
-  // About
-  void CreateAboutTab();
-  void InitAboutTab();
-  QLabel *lblAbout;
-  MLEditWrap *mleAbout;
-
-  // History tab
-  void CreateHistoryTab();
-  void InitHistoryTab();
-  CInfoField *nfoHistory;
-  MLEditWrap *mleHistory;
-  QLabel *lblHistory;
-  QCheckBox *chkHistoryReverse;
-  HistoryList m_lHistoryList;
-  HistoryListIter m_iHistorySIter;
-  HistoryListIter m_iHistoryEIter;
-  bool m_bHistoryReverse;
-  unsigned short m_nHistoryIndex, m_nHistoryShowing;
-  QPushButton *btnHistoryReload, *btnHistoryEdit;
-
   static unsigned short s_nX;
   static unsigned short s_nY;
 
@@ -162,18 +112,7 @@ protected:
   virtual void closeEvent(QCloseEvent *);
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   void SetInfo(ICQUser *);
-  void SetGeneralInfo(ICQUser *);
-  void SetMoreInfo(ICQUser *);
-  void SetWorkInfo(ICQUser *);
-  void SetAbout(ICQUser *);
-  void SaveGeneralInfo();
-  void SaveMoreInfo();
-  void SaveWorkInfo();
-  void SaveAbout();
-  void saveHistory();
   void generateReply();
-  void SetupHistory();
-  void ShowHistory();
 
 public slots:
   void SendMsg(QString msg);
@@ -185,24 +124,16 @@ protected slots:
    void doneFcn(ICQEvent *);
    void slot_updatedUser(CICQSignal *);
    void tabSelected(const QString &);
-   void ShowHistoryPrev();
-   void ShowHistoryNext();
-   //void slot_nextMessage();
    void slot_printMessage(QListViewItem *);
-   void save();
    void setSpoofed();
    void specialFcn(int);
    void slot_masstoggled(bool);
-   void slot_historyReverse(bool);
-   void slot_historyReload();
-   void slot_historyEdit();
    void slot_updatetime();
    void slot_readbtn1();
    void slot_readbtn2();
    void slot_readbtn3();
    void slot_readbtn4();
    void slot_sendbtn();
-   void slot_aboutToShow(QWidget *);
    void slot_close();
    void slot_resettitle();
 

@@ -1,18 +1,12 @@
 #ifndef CHATJOINDLG_H
 #define CHATJOINDLG_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <qdialog.h>
+#include <qlistbox.h>
 
 #include "chatdlg.h"
 
-class QListBox;
 class QPushButton;
-
-
 
 class CJoinChatDlg : public QDialog
 {

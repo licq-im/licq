@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -76,6 +77,8 @@ extern "C" {
 #include "passworddlg.h"
 #include "plugindlg.h"
 #include "randomchatdlg.h"
+#include "userinfodlg.h"
+#include "usereventdlg.h"
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
@@ -997,14 +1000,28 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       if (i != NULL) delete i;
       updateEvents();
       // If their box is open, kill it
-      UserDataListIter it;
-      for (it = licqUserData.begin(); it != licqUserData.end(); it++)
       {
-        if ((*it)->Uin() == sig->Uin())
+        QListIterator<ICQFunctions> it(licqUserData);
+        for ( ; it.current(); ++it)
         {
-          delete *it;
-          licqUserData.erase(it);
-          break;
+          if ((*it)->Uin() == sig->Uin())
+          {
+            delete it.current();
+            licqUserData.remove(it.current());
+            break;
+          }
+        }
+      }
+      {
+        // if their info box is open, kill it
+        QListIterator<UserInfoDlg> it(licqUserInfo);
+        for( ; it.current(); ++it){
+          if((*it)->Uin() == sig->Uin())
+          {
+            delete it.current();
+            licqUserInfo.remove(it.current());
+            break;
+          }
         }
       }
       break;
@@ -1310,10 +1327,13 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
 
 void CMainWindow::callOwnerFunction(int index)
 {
-  if (index == OwnerMenuView  || index == OwnerMenuGeneral ||
+  if (index == OwnerMenuView)
+    callFunction(index, gUserManager.OwnerUin());
+
+  else if (index == OwnerMenuGeneral ||
       index == OwnerMenuMore  || index == OwnerMenuWork ||
       index == OwnerMenuAbout || index == OwnerMenuHistory)
-    callFunction(index, gUserManager.OwnerUin());
+    callInfoTab(index, gUserManager.OwnerUin());
 
   else if (index == OwnerMenuSecurity)
     (void) new SecurityDlg(licqDaemon, licqSigMan);
@@ -1445,11 +1465,70 @@ void CMainWindow::callUserFunction(int index)
       }
       break;
     }
+    case mnuUserHistory:
+    case mnuUserGeneral:
+    case mnuUserMore:
+    case mnuUserWork:
+    case mnuUserAbout:
+      callInfoTab(index, nUin);
+      break;
     default:
       callFunction(index, nUin);
   }
 
 }
+
+void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
+{
+  qDebug("callInfoTab(%d, %ld)", fcn, nUin);
+
+  if(nUin == 0) return;
+
+  UserInfoDlg* f = 0;
+  QListIterator<UserInfoDlg> it(licqUserInfo);
+
+  for( ; it.current(); ++it) {
+    if((*it)->Uin() == nUin) {
+      f = *it;
+      break;
+    }
+  }
+
+  if(f) {
+    qDebug("found window!");
+    f->show();
+    f->raise();
+  }
+  else {
+    qDebug("creating new window!");
+    f = new UserInfoDlg(licqDaemon, licqSigMan, this, nUin);
+    connect(f, SIGNAL(finished(unsigned long)), this, SLOT(UserInfoDlg_finished(unsigned long)));
+    f->show();
+    licqUserInfo.append(f);
+  }
+
+  switch(fcn) {
+    case mnuUserHistory:
+      f->showTab(UserInfoDlg::HistoryInfo);
+      break;
+    case mnuUserGeneral:
+      f->showTab(UserInfoDlg::GeneralInfo);
+      break;
+    case mnuUserMore:
+      f->showTab(UserInfoDlg::MoreInfo);
+      break;
+    case mnuUserWork:
+      f->showTab(UserInfoDlg::WorkInfo);
+      break;
+    case mnuUserAbout:
+      f->showTab(UserInfoDlg::AboutInfo);
+      break;
+  }
+  f->show();
+  f->raise();
+}
+
+
 
 
 //-----CMainWindow::callICQFunction-------------------------------------------
@@ -1459,8 +1538,13 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
   if (nUin == 0) return NULL;
 
-  UserDataListIter it;
-  for (it = licqUserData.begin(); it != licqUserData.end(); it++)
+#if 0
+  UserViewEvent* e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
+  e->show();
+
+#else
+  QListIterator<ICQFunctions> it(licqUserData);
+  for (; it.current(); ++it)
   {
     if ((*it)->Uin() == nUin)
     {
@@ -1475,7 +1559,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
      connect (f, SIGNAL(signal_updatedUser(CICQSignal *)), SLOT(slot_updatedUser(CICQSignal *)));
      connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
      f->setupTabs(fcn);
-     licqUserData.push_back(f);
+     licqUserData.append(f);
   }
   else
   {
@@ -1485,18 +1569,42 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
     f->show();
     f->raise();
   }
+#endif
   return f;
 }
 
-//-----CMainWindow::slot_userfinished------------------------------------------------
+
+// -----------------------------------------------------------------------------
+
+void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
+{
+  qDebug("info dlg %ld finished", nUin);
+
+  QListIterator<UserInfoDlg> it(licqUserInfo);
+
+  for( ; it.current(); ++it){
+    if((*it)->Uin() == nUin) {
+      licqUserInfo.remove(*it);
+      return;
+    }
+  }
+
+  gLog.Warn("%sUser Info finished signal for user with no window (%ld)!",
+            L_WARNxSTR, nUin);
+}
+
+
+// -----------------------------------------------------------------------------
+
 void CMainWindow::slot_userfinished(unsigned long nUin)
 {
-  UserDataListIter it;
-  for (it = licqUserData.begin(); it != licqUserData.end(); it++)
+  QListIterator<ICQFunctions> it(licqUserData);
+
+  for ( ; it.current(); ++it)
   {
     if ((*it)->Uin() == nUin)
     {
-      licqUserData.erase(it);
+      licqUserData.remove(*it);
       return;
     }
   }

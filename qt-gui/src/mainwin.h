@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-#include <vector.h>
+//#include <vector.h>
 
 #ifdef USE_KDE
 #include <kmenubar.h>
@@ -13,6 +13,7 @@
 #include <qmenubar.h>
 #endif
 
+#include <qlist.h>
 #include <qwidget.h>
 #include <qtimer.h>
 #include <qbitmap.h>
@@ -42,10 +43,10 @@ class IconManager;
 #endif
 
 class CICQSignal;
+class UserInfoDlg;
 
-typedef list <ICQFunctions *> UserDataList;
-typedef list <ICQFunctions *>::iterator UserDataListIter;
-
+typedef QList<ICQFunctions> UserViewEventList;
+typedef QList<UserInfoDlg> UserInfoList;
 
 //=====CMainWindow==============================================================
 class CMainWindow : public QWidget
@@ -73,7 +74,8 @@ protected:
 #ifdef USE_DOCK
   IconManager *licqIcon;
 #endif
-  UserDataList licqUserData;
+  UserViewEventList licqUserData;
+  UserInfoList licqUserInfo;
 
   // Dialog boxes
   AwayMsgDlg *awayMsgDlg;
@@ -181,6 +183,7 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
+  void callInfoTab(int, unsigned long);
   void slot_userfinished(unsigned long);
   void slot_usermenu();
   void slot_logon();
@@ -217,6 +220,7 @@ protected slots:
   void slot_updateAllUsers();
   void slot_popupall();
   void slot_shutdown();
+  void UserInfoDlg_finished(unsigned long);
 
 signals:
   void changeDockStatus(unsigned short);
