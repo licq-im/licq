@@ -930,6 +930,7 @@ void CMSN::MSNSendTypingNotification(char *_szUser)
     
   if (nSockDesc > 0)
     Send_SB_Packet(strUser, pSend, false);
+#if 0
   else
   {
     // Must connect to the SB and call the user
@@ -944,6 +945,7 @@ void CMSN::MSNSendTypingNotification(char *_szUser)
    
     SendPacket(pSB);    
   }
+#endif
 }
 
 void CMSN::MSNChangeStatus(unsigned long _nStatus)
