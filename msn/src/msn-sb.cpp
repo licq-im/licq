@@ -336,7 +336,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, int n
   ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
   int nSocket = nSockDesc != -1 ? nSockDesc : u->SocketDesc(ICQ_CHNxNONE);
-  bool bOffline = u->StatusOffline();
+  bool bCantSend = u->StatusOffline() || (m_nStatus & ICQ_STATUS_FxPRIVATE);
   gUserManager.DropUser(u);
   
   CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
@@ -346,16 +346,19 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, int n
   e->thread_plugin = _tPlugin;  
   CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
   
-  if (bOffline)
+  if (bCantSend)
   {
-    // MSN doesn't support sending to offline users.
+    // MSN doesn't support sending to offline users or if we are invisible.
     // It'd be best to change the GUI, but Licq uses a
     // GUI plugin system.. so that would force more requirements
     // on the plugin. This allows the plugin to see that it has failed.
     m_pDaemon->PushPluginSignal(s);
     e->m_eResult = EVENT_FAILED;
     m_pDaemon->PushPluginEvent(e);
-    gLog.Error("%sCannot send messages to offline MSN users.\n", L_ERRORxSTR);
+    if (m_nStatus & ICQ_STATUS_FxPRIVATE)
+      gLog.Error("%sCannot send messages while Invisible.\n", L_ERRORxSTR);
+    else
+      gLog.Error("%sCannot send messages to offline MSN users.\n", L_ERRORxSTR);
     return;
   }
   
