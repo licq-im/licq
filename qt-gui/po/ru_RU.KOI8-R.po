@@ -181,11 +181,6 @@ msgstr "Licq - Передача файла(ов) (%1)"
 msgid "CFileDlg::MB"
 msgstr "Мб"
 
-# #: filedlg.cpp:279
-# msgid "CFileDlg::No more ports available, add more\nor close open chat/file sessions."
-# msgstr "Нет больше свободных портов."
-# "Добавьте еще\nили закройте часть передач файлов и/или разговоров."
-
 #: filedlg.cpp:247
 msgid "CFileDlg::Ok"
 msgstr "Да"
@@ -249,7 +244,7 @@ msgstr "Переслать"
 #: forwarddlg.cpp:47
 msgid "CForwardDlg::Drag the user to forward to here:"
 msgstr "Перетащите пользователя, которому\n"
-"хотите переправить сообщения сюда:"
+"хотите переслать сообщения сюда:"
 
 #: forwarddlg.cpp:43
 msgid "CForwardDlg::Forward %1 To User"
@@ -525,11 +520,11 @@ msgstr "Изменить пароль"
 
 #: mainwin.cpp:2273
 msgid "CMainWindow::Check %1 Response"
-msgstr "Проверить '%1' авто-ответ"
+msgstr "Посмотреть '%1' авто-ответ"
 
 #: mainwin.cpp:2268
 msgid "CMainWindow::Check Auto Response"
-msgstr "Проверить Авто-ответ"
+msgstr "Посмотреть Авто-ответ"
 
 #: mainwin.cpp:2117
 msgid "CMainWindow::Clear All"
@@ -604,11 +599,11 @@ msgid "CMainWindow::"
 "   For example in the send tab of the user function window.\n"
 msgstr ""
 "Советы по использованию QT-модуля для Licq\n\n"
-"o  Change your status by right clicking on the status label.\n"
-"o  Change your auto response by double-clicking on the status label.\n"
-"o  View system messages by double clicking on the message label.\n"
-"o  Change groups by right clicking on the message label.\n"
-"o  Use the following shortcuts from the contact list:\n"
+"o  Статус можно изменить нажатием правой кнопки мыши на поле статуса.\n"
+"o  Авто-ответ можно изменить двойным щелчком на поле отображения статуса.\n"
+"o  Для просмотра системных сообщений можно использовать двойной щелчок на поле сообщений.\n"
+"o  Выбор отображаемых групп можно осуществить нажатим правой кнопки мыши на поле сообщений.\n"
+"o  Так же в списке контактов можно воспользоваться следующими \"горячими клавишами\":\n"
 "   Ctrl-M : Включение/выключение мини-режима\n"
 "   Ctrl-O : Показывать/не показывать пользователей не в сети\n"
 "   Ctrl-X : Выход\n"
@@ -777,10 +772,6 @@ msgstr "Установить Авто-ответ"
 msgid "CMainWindow::Set All"
 msgstr "Установить все"
 
-# #: mainwin.cpp:2107
-# msgid "CMainWindow::Show &Network Window"
-# msgstr "Показать окно протокола сети"
-
 #: mainwin.cpp:2168
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Показывать пользователей не в сети"
@@ -801,7 +792,7 @@ msgstr ""
 
 #: mainwin.cpp:1030
 msgid "CMainWindow::SysMsg"
-msgstr "Сист. сообщ"
+msgstr "Сист. сообщ."
 
 #: mainwin.cpp:2160
 msgid "CMainWindow::System Functions"
@@ -822,14 +813,6 @@ msgstr "Ошибка при открытии файла иконки\n%1."
 #: mainwin.cpp:2111
 msgid "CMainWindow::Unknown Packets"
 msgstr "Неизвестные пакеты"
-
-# #: mainwin.cpp:1918
-# msgid "CMainWindow::Update All Users"
-# msgstr "Обновить информацию о пользователях"
-
-# #: mainwin.cpp:2108
-# msgid "CMainWindow::Use &Mini Mode"
-# msgstr "Использовать мини-режим"
 
 #: mainwin.cpp:2161
 msgid "CMainWindow::User Functions"
@@ -1290,10 +1273,6 @@ msgstr "Отменить"
 msgid "CustomAwayMsgDlg::&Clear"
 msgstr "Очистить"
 
-# #: awaymsgdlg.cpp:290
-# msgid "CustomAwayMsgDlg::&Edit Items"
-# msgstr "Редактировать"
-
 #: awaymsgdlg.cpp:187
 msgid "CustomAwayMsgDlg::&Ok"
 msgstr "Да"
@@ -1498,10 +1477,6 @@ msgstr ""
 msgid "ICQFunctions::%1 is in %2 mode:\n%3\n"
 msgstr "%1 в режиме \"%2\":\n%3\n"
 
-# #: icqfunctions.cpp:1935
-# msgid "ICQFunctions::%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]"
-# msgstr "%1 в режиме '%2'\n%3\n[Используйте \"Срочно\" для отправки]"
-
 #: icqfunctions.cpp:2198
 msgid "ICQFunctions::%1 refused %2, send through server."
 msgstr "%1 не принял %2, отправьте через сервер."
@@ -1549,10 +1524,6 @@ msgstr "Сообщение"
 #: icqfunctions.cpp:388
 msgid "ICQFunctions::&More"
 msgstr "Подробнее"
-
-# #: icqfunctions.cpp:258
-# msgid "ICQFunctions::&Multiple"
-# msgstr "Многим адресатам"
 
 #: icqfunctions.cpp:266
 msgid "ICQFunctions::&Multiple recipients"
@@ -1829,10 +1800,6 @@ msgstr "Подменить UIN:"
 #: icqfunctions.cpp:262
 msgid "ICQFunctions::Se&nd through server"
 msgstr "Отправить через сервер"
-
-# #: icqfunctions.cpp:212
-# msgid "ICQFunctions::Select Function"
-# msgstr "Выбрать функцию"
 
 #: icqfunctions.cpp:2182
 msgid "ICQFunctions::Send to\nContact List"
@@ -2621,7 +2588,7 @@ msgstr "Статус:"
 
 #: optionsdlg.cpp:678
 msgid "OptionsDlg::System Msg:"
-msgstr "Сист. сообщ:"
+msgstr "Сист. сообщ.:"
 
 #: optionsdlg.cpp:989
 msgid "OptionsDlg::Terminal:"
@@ -2891,10 +2858,6 @@ msgstr "Зарегистрировать существующего пользователя"
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
 msgstr "Неверный UIN. Попробуйте еще раз."
 
-# #: registeruser.cpp:93
-# msgid "RegisterUserDlg::Invalid password, must be 8 characters or less."
-# msgstr "Неверный пароль. Должен быть не более 8 символов."
-
 #: registeruser.cpp:74
 msgid "RegisterUserDlg::Licq User Registration"
 msgstr "Licq: Регистрация пользователя"
@@ -2985,10 +2948,6 @@ msgstr ""
 msgid "SearchUserDlg::&Name"
 msgstr "Имя"
 
-# #: searchuserdlg.cpp:310
-# msgid "SearchUserDlg::&OK"
-# msgstr "Да"
-
 #: searchuserdlg.cpp:132
 msgid "SearchUserDlg::&Search"
 msgstr "Поиск"
@@ -3044,15 +3003,6 @@ msgstr "Поиск не удался."
 #: searchuserdlg.cpp:211
 msgid "SearchUserDlg::Searching (this can take awhile)..."
 msgstr "Идет поиск (это может занять некоторое время)..."
-
-# #: searchuserdlg.cpp:306
-# msgid "SearchUserDlg::"
-# "Sorry, but this user is already\non your "
-# "contact list as\n'%1'\n\nYou can't add a user twice."
-# msgstr ""
-# "Извините, но этот пользователь уже есть\n"
-# "в Вашем списке контактов как '%1'.\n"
-# "Вы не можете добавить его второй раз"
 
 #: searchuserdlg.cpp:121
 msgid "SearchUserDlg::UIN#:"
