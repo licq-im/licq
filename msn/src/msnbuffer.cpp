@@ -193,7 +193,7 @@ std::string CMSNBuffer::GetParameter()
   
   setDataPosRead(getDataPosRead() - 1);
   
-  while (cCheck != ' ' && cCheck != '\n' && !End())
+  while (cCheck != ' ' && cCheck != '\r' && !End())
   {
     *this >> cCheck;
     if (cCheck != ' ' && cCheck != '\r' && cCheck != '\n')

@@ -16,6 +16,10 @@
 
 // written by Jon Keating <jon@licq.org>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
@@ -28,6 +32,28 @@
 #include <vector>
 
 using namespace std;
+
+#ifndef HAVE_STRNDUP
+
+#include <stdlib.h>
+
+char *strndup(const char *s, size_t n)
+{
+  char *str;
+
+  if (n < 1)
+    return NULL;
+
+  str = (char *)malloc(n + 1);
+  if (!str)
+    return NULL;
+
+  memset(str, '\0', n + 1);
+  strncpy(str, s, n);
+
+  return str;
+}
+#endif // HAVE_STRNDUP
 
 //Global socket manager
 CSocketManager gSocketMan;
@@ -542,7 +568,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       string strUser = packet->GetParameter();
       packet->SkipParameter(); // Nick
       string strSize = packet->GetParameter(); // Size
-      int nSize = atoi(strSize.c_str());
+      int nSize = atoi(strSize.c_str()) + 1; // Make up for the \n
       unsigned long nBeforeParse = packet->getDataPosRead() - packet->getDataStart();
       packet->SkipPacket(); // Skip \r\n
       packet->ParseHeaders();
@@ -792,6 +818,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       string strUser = m_pPacketBuf->GetParameter();
       string strNick = m_pPacketBuf->GetParameter();
       string strLists = m_pPacketBuf->GetParameter();
+printf("User: %s\nNick: %s\nLists: %s\n", strUser.c_str(), strNick.c_str(), strLists.c_str());
       string strUserLists;
       int nLists = atoi(strLists.c_str());
       if (nLists & FLAG_CONTACT_LIST)
