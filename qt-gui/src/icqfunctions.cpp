@@ -444,7 +444,7 @@ void ICQFunctions::tabSelected(const QString &tab)
   if (tab == tabLabel[TAB_SEND])
   {
      mleSend->setFocus();
-     btnOk->setText(_("Send"));
+     btnOk->setText(_("&Send"));
      btnSave->hide();
      currentTab = TAB_SEND;
   }
