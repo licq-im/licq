@@ -154,7 +154,6 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
   CPU_Logon *p = new CPU_Logon(s->LocalPort(), passwd, status);
   gSocketManager.DropSocket(s);
   free (passwd);
-  //m_xOnEventManager.Pause(true);
   m_bOnlineNotifies = false;
   gLog.Info("%sRequesting logon (#%d)...\n", L_UDPxSTR, p->getSequence());
   m_nServerAck = p->getSequence() - 1;
@@ -248,8 +247,6 @@ void CICQDaemon::icqLogoff()
       ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_USER_END
-
-  //m_xOnEventManager.Pause(false);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
@@ -774,8 +771,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       u->SetSendServer(true);
     ChangeUserStatus(u, newStatus);
     u->SetAutoResponse(NULL);
-    if (m_bOnlineNotifies || m_bAlwaysOnlineNotify);
-      if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
+    if ((m_bOnlineNotifies || m_bAlwaysOnlineNotify) && u->OnlineNotify())
+      m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
     /*
     // Test of going online bytes
@@ -1046,7 +1043,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
   case ICQ_CMDxRCV_USERxLISTxDONE:  // end of user list
     /* 02 00 1C 02 05 00 8F 76 20 00 */
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
-    //m_xOnEventManager.Pause(false);
     m_bOnlineNotifies = true;
     gLog.Info("%sLogon complete.\n", L_UDPxSTR);
     break;
@@ -1194,7 +1190,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
      /* 02 00 E6 00 04 00 50 A5 82 00 */
      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
      gLog.Info("%sEnd of system messages.\n", L_UDPxSTR);
-     //m_xOnEventManager.Pause(false);
      m_bOnlineNotifies = true;
 
 #if ICQ_VERSION == 2

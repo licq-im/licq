@@ -12,7 +12,6 @@
 
 COnEventManager::COnEventManager()
 {
-  m_bPause = false;
   m_szCommand = NULL;
   for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
     m_aszParameters[i] = NULL;
@@ -34,13 +33,6 @@ unsigned short COnEventManager::CommandType()
   return n;
 }
 
-void COnEventManager::Pause(bool pause)
-{
-  pthread_mutex_lock(&mutex);
-  m_bPause = pause;
-  pthread_mutex_unlock(&mutex);
-}
-
 //-----COnEventManager::SetParameters-------------------------------------------
 void COnEventManager::SetParameters(const char *_szCommand, const char **_aszParams)
 {
@@ -55,8 +47,6 @@ void COnEventManager::SetParameters(const char *_szCommand, const char **_aszPar
 //-----COnEventManager::Do------------------------------------------------------
 void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 {
-  if (m_bPause) return;
-
   // Check if globally command should be run
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->Status();
