@@ -23,5 +23,4 @@
 # For example:
 #DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # or
-jons-gtk-gui/ $CVSROOT/CVSROOT/testsyncmail -u %{sVv} jon@emostar.dyndns.org
 DEFAULT $CVSROOT/CVSROOT/syncmail -u %{sVv} licq-cvs@lists.sourceforge.net

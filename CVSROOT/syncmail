@@ -68,7 +68,7 @@ import time
 import getopt
 
 # Notification command
-MAILCMD = '/bin/mail -s "CVS: %(SUBJECT)s" %(PEOPLE)s 2>&1 > /dev/null'
+MAILCMD = '/bin/mail -s "%(SUBJECT)s" %(PEOPLE)s 2>&1 > /dev/null'
 
 # Diff trimming stuff
 DIFF_HEAD_LINES = 20
@@ -181,7 +181,8 @@ def main():
     # $CVSROOT, followed by the list of files that are changing.
     if not args:
         usage(1, 'No CVS module specified')
-    SUBJECT = args[0]
+    fixsubject = string.split(args[0])
+    SUBJECT = fixsubject[0]
     specs = string.split(args[0])
     del args[0]
 
