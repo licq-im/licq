@@ -103,6 +103,10 @@ CUserManager::~CUserManager()
     delete *iter;
   }
 
+  GroupList::iterator g_iter;
+  for (g_iter = m_vszGroups.begin(); g_iter != m_vszGroups.end(); g_iter++)
+    delete *g_iter;
+
   // Owner destructor saves the current auto response though
   delete m_xOwner;
 }
@@ -156,7 +160,9 @@ bool CUserManager::Load()
      sprintf(sGroupIDKey, "Group%d.id", i);
      licqConf.ReadNum(sGroupIDKey, nID, 0);
      licqConf.SetFlag( INI_FxFATAL );
-     AddGroup(strdup(sGroupName), nID);
+     char *szTempGroup = strdup(sGroupName);
+     AddGroup(szTempGroup, nID);
+     free(szTempGroup);
   }
   m_bAllowSave = true;
 
@@ -1251,6 +1257,8 @@ ICQUser::~ICQUser()
       free( m_szEmailPrimary );
   if ( m_szEmailSecondary )
       free( m_szEmailSecondary );
+  if ( m_szEmailOld )
+      free( m_szEmailOld );
   if ( m_szCity )
       free( m_szCity );
   if ( m_szState )
@@ -1263,6 +1271,10 @@ ICQUser::~ICQUser()
       free( m_szAddress );
   if ( m_szCellularNumber )
       free( m_szCellularNumber );
+  if ( m_szZipCode )
+      free( m_szZipCode );
+  if ( m_szHomepage )
+      free( m_szHomepage );
   if ( m_szCompanyCity )
       free( m_szCompanyCity );
   if ( m_szCompanyState )
@@ -2488,6 +2500,8 @@ ICQOwner::~ICQOwner()
   }
   m_fConf.CloseFile();
 
+  if ( m_szPassword )
+    free( m_szPassword );
 }
 
 
