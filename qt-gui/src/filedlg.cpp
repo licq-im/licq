@@ -38,6 +38,7 @@
 
 #include "filedlg.h"
 #include "licq_packets.h"
+#include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "ewidgets.h"
