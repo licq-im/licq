@@ -66,6 +66,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
   m_bSecure = false;
+  m_bBirthday = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   setGraphics(_cUser);
@@ -80,6 +81,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
   m_bSecure = false;
+  m_bBirthday = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
@@ -99,6 +101,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_nWeight = QFont::Bold;
   m_bUrgent = false;
   m_bSecure = false;
+  m_bBirthday = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   // Other users group is sorted at the end
@@ -203,6 +206,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_nEvents = u->NewMessages();
    m_bSecure = u->Secure();
    m_bUrgent = false;
+   m_bBirthday = (u->Birthday() == 0);
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -411,7 +415,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     {
       int w = p->fontMetrics().width(text(1)) + 6;
 
-      if (width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY))
+      if (width - w > 8 && (m_bBirthday))
       {
         p->drawPixmap(w, 0, *listView()->pixBirthday);
         w += listView()->pixBirthday->width() + 2;
