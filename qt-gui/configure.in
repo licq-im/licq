@@ -33,6 +33,8 @@ dnl libtool stuff
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
+LIBTOOL="$LIBTOOL --silent"
+AC_SUBST(LIBTOOL)
 
 dnl Checks for header files.
 AC_HEADER_STDC
