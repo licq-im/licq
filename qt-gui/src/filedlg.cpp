@@ -414,10 +414,15 @@ void CFileDlg::StateServer()
   case STATE_RECVxFILExINFO:
   {
     // Process file packet
-    unsigned short nLen, nTest;
+    unsigned short nLen;
     char cJunk;
-    m_xSocketFile.RecvBuffer() >> nTest;
-    if (nTest != 0x0002)
+    m_xSocketFile.RecvBuffer() >> cJunk;
+    if (cJunk == 0x05)
+    {
+      // set our speed, for now fuckem and go as fast as possible
+      break;
+    }
+    if (cJunk != 0x02)
     {
       char *pbuf;
       gLog.Error("%sError receiving data: invalid file info packet:\n%s%s\n",
@@ -426,7 +431,7 @@ void CFileDlg::StateServer()
       fileCancel();
       return;
     }
-    m_xSocketFile.RecvBuffer() >> nLen;
+    m_xSocketFile.RecvBuffer() >> cJunk >> nLen;
     for (int j = 0; j < nLen; j++)
       m_xSocketFile.RecvBuffer() >> m_sFileInfo.szName[j];
     m_xSocketFile.RecvBuffer() >> nLen;
@@ -494,8 +499,11 @@ void CFileDlg::fileRecvFile()
   b >> cTest;
   if (cTest != 0x06)
   {
-    gLog.Error("%sFile receive error, invalid data (%c).  Ignoring packet.\n", cTest);
-               //, L_BLANKxSTR, m_xSocketFile.RecvBuffer().print());
+    if (cTest != 0x05)
+    {
+      gLog.Unknown("%sFile receive error, invalid data (%c).  Ignoring packet.\n",
+                   L_UNKNOWNxSTR, cTest);
+    }
     m_xSocketFile.ClearRecvBuffer();
     return;
   }
@@ -530,10 +538,6 @@ void CFileDlg::fileRecvFile()
     // File transfer done perfectly
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
-    /*char msg[1024];
-    sprintf(msg, tr("%sFile transfer of\n'%s'\nfrom %s completed successfully.\n"),
-            L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    InformUser(this, msg);*/
     QString msg = QString(tr("File '%1' from %2 received successfully."))
                           .arg(m_sFileInfo.szName).arg(m_szRemoteName);
     lblStatus->setText(msg);
@@ -575,8 +579,8 @@ bool CFileDlg::startAsClient()
    m_xSocketFile.SetRemoteAddr(nIp, getPort());
    if (!m_xSocketFile.OpenConnection())
    {
-     gLog.Error("%sUnable to connect to remote file server:\n%s%s.\n", L_ERRORxSTR,
-                L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
+     WarnUser(this, tr("Unable to connect to remote file server:\n%1.")
+              .arg(m_xSocketFile.ErrorStr(buf, 128)));
      return false;
    }
 
@@ -607,8 +611,8 @@ void CFileDlg::StateClient()
     if (m_xSocketFile.Error() == 0)
       InformUser(this, tr("Remote end disconnected."));
     else
-      gLog.Error("%sFile transfer receive error - lost remote end:\n%s%s\n", L_ERRORxSTR,
-                L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
+      WarnUser(this, tr("File transfer receive error - lost remote end:\n%1\n")
+               .arg(m_xSocketFile.ErrorStr(buf, 128)));
     return;
   }
   if (!m_xSocketFile.RecvBufferFull()) return;
@@ -676,6 +680,11 @@ void CFileDlg::StateClient()
     // contains the seek value
     char cJunk;
     m_xSocketFile.RecvBuffer() >> cJunk >> m_nFilePos;
+    if (cJunk == 0x05)
+    {
+      // set our speed, for now fuckem and go as fast as possible
+      break;
+    }
     if (cJunk != 0x03)
     {
       char *pbuf;
