@@ -162,6 +162,7 @@ void OptionsDlg::SetupOptions()
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->m_bAutoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
+  chkScrollBar->setChecked(mainwin->m_bScrollBar);
   chkFlashUrgent->setChecked(mainwin->m_nFlash >= FLASH_URGENT);
   chkFlashAll->setChecked(mainwin->m_nFlash == FLASH_ALL);
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
@@ -333,6 +334,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
   mainwin->m_bManualNewUser = chkManualNewUser->isChecked();
   mainwin->m_bThreadView = chkUseThreadView->isChecked();
+  mainwin->m_bScrollBar = chkScrollBar->isChecked();
   mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
                       chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
@@ -1015,6 +1017,9 @@ QWidget* OptionsDlg::new_column_options()
   chkUseThreadView = new QCheckBox(tr("Use Group View"), boxUserWin);
   QWhatsThis::add(chkUseThreadView, tr("Users will be arranged in groups for "
                                        "contact list"));
+  chkScrollBar = new QCheckBox(tr("Allow scroll bar"), boxUserWin);
+  QWhatsThis::add(chkScrollBar, tr("Allow the vertical scroll bar in the user list"));
+
   QHBox *hlay = new QHBox(boxUserWin);
   lblFrameStyle = new QLabel(tr("Frame Style: "), hlay);
   edtFrameStyle = new QLineEdit(hlay);

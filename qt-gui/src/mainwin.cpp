@@ -303,6 +303,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
   m_nFlash = (FlashType)nFlash;
+  licqConf.ReadBool("ScrollBar", m_bScrollBar, true);
   bool bFrameTransparent;
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
@@ -2059,6 +2060,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("BoldOnMsg", m_bBoldOnMsg);
   licqConf.WriteBool("ManualNewUser", m_bManualNewUser);
   licqConf.WriteBool("Transparent", skin->frame.transparent);
+  licqConf.WriteBool("ScrollBar", m_bScrollBar);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
   licqConf.WriteBool("AlwaysShowONU", m_bAlwaysShowONU);

@@ -321,7 +321,8 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 
   const QPixmap *pix = NULL;
 
-  if (listView()->contentsHeight() < listView()->viewport()->height() &&
+  if ((listView()->contentsHeight() < listView()->viewport()->height() ||
+       listView()->vScrollBarMode() == QListView::AlwaysOff) &&
       listView()->parent() && gMainWindow->skin->frame.transparent )
     pix = listView()->parentWidget()->backgroundPixmap();
 
@@ -411,7 +412,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
 {
   const QPixmap *pix = NULL;
-  if (contentsHeight() < viewport()->height()
+  if ((contentsHeight() < viewport()->height() || vScrollBarMode() == AlwaysOff)
       && parent() && gMainWindow->skin->frame.transparent)
     pix = parentWidget()->backgroundPixmap();
 
@@ -552,7 +553,6 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   barOnline = barOffline = NULL;
   numOnline = numOffline = 0;
 
-//  addColumn(tr("S"), gMainWindow->m_bThreadView ? 40 : 20);
   addColumn(tr("S"), 20);
 
   for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
@@ -572,6 +572,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   setAllColumnsShowFocus(true);
   setTreeStepSize(0);
   setSorting(0);
+  setVScrollBarMode(gMainWindow->m_bScrollBar ? Auto : AlwaysOff);
 
   pixCollapsed = new QPixmap(itemCollapsed_xpm);
   pixExpanded = new QPixmap(itemExpanded_xpm);
@@ -591,12 +592,11 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
     setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);
-    XWMHints *hints;
     XClassHint classhint;
     classhint.res_name = "licq";
     classhint.res_class = "Floaty";
     XSetClassHint(x11Display(), winId(), &classhint);
-    hints = XGetWMHints(x11Display(), winId());
+    XWMHints *hints = XGetWMHints(x11Display(), winId());
     hints->window_group = winId();
     hints->flags = WindowGroupHint;
     XSetWMHints(x11Display(), winId(), hints);

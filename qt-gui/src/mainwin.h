@@ -88,7 +88,8 @@ public:
        m_bAutoRaise,
        m_bBoldOnMsg,
        m_bManualNewUser,
-       m_bThreadView;
+       m_bThreadView,
+       m_bScrollBar;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;
@@ -179,6 +180,7 @@ protected:
   friend class IconManager_Default;
   friend class OptionsDlg;
   friend class CUserViewItem;
+  friend class UserSendCommon;
 
 public slots:
   void updateUserWin();
@@ -242,6 +244,7 @@ protected slots:
 
 signals:
   void changeDockStatus(unsigned short);
+  void signal_sentevent(ICQEvent *e);
 
 };
 
