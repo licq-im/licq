@@ -1525,7 +1525,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                 headerLen, ackFlags, msgFlags, licqVersion;
   char licqChar = '\0', junkChar;
   bool errorOccured = false;
-  char *message;
+  char *message = 0;
 
   // only used for v7,v8
 	headerLen = 0;
