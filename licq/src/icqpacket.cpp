@@ -3794,6 +3794,20 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const char *_szId)
   buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
 }
 
+//-----RequestInfo-------------------------------------------------------------
+CPU_RequestInfo::CPU_RequestInfo(const char *_szId)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO)
+{
+  int nSize = strlen(_szId);
+  m_nSize += 5 + nSize;
+  
+  InitBuffer();
+
+  buffer->PackUnsignedLongBE(0x00000003);
+  buffer->PackChar(nSize);
+  buffer->Pack(_szId, nSize);
+}
+
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
   m_nLocalPort = nLocalPort;

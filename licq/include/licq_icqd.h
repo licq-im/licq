@@ -605,7 +605,7 @@ protected:
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *, CUserEvent *);
   void RejectEvent(unsigned long, CUserEvent *);
-  ICQUser *FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e, const char *);
+  ICQUser *FindUserForInfoUpdate(const char *szId, ICQEvent *e, const char *);
   unsigned long FindUinByCellular(const char *_szCellular);
 
   void icqRegisterFinish();
@@ -650,7 +650,7 @@ protected:
 
   //--- Families ---------
   void ProcessServiceFam(CBuffer&, unsigned short);
-  void ProcessLocationFam(const CBuffer&, unsigned short);
+  void ProcessLocationFam(CBuffer&, unsigned short);
   void ProcessBuddyFam(CBuffer&, unsigned short);
   void ProcessMessageFam(CBuffer&, unsigned short);
   void ProcessVariousFam(CBuffer&, unsigned short);

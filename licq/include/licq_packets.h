@@ -1067,6 +1067,12 @@ protected:
 friend class CICQDaemon;
 };
 
+//-----RequestInfo-----------------------------------------------------------
+class CPU_RequestInfo : public CPU_CommonFamily
+{
+public:
+  CPU_RequestInfo(const char *szId);
+};
 
 //-----SetPassword---------------------------------------------------------
 class CPU_SetPassword : public CPU_CommonFamily
