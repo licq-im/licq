@@ -1348,6 +1348,8 @@ void CMSN::MSNChangeStatus(unsigned long _nStatus)
 
 void CMSN::MSNLogoff()
 {
+  if (m_nServerSocket == -1) return;
+
   CMSNPacket *pSend = new CPS_MSNLogoff();
   SendPacket(pSend);
  
