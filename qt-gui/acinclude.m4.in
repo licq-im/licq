@@ -488,19 +488,14 @@ AC_DEFUN(LICQ_CHECK_X11HEADERS,
 [
 AC_LANG_CPLUSPLUS
 save_CXXFLAGS="$CXXFLAGS"
-if test "$GCC" = "yes"; then
-CXXFLAGS="$CXXFLAGS -pedantic-errors"
-fi
 CXXFLAGS="$CXXFLAGS $X_CFLAGS"
 AC_MSG_CHECKING(for good X11 headers)
 AC_CACHE_VAL(ac_cv_good_x11headers,
 [
 AC_TRY_COMPILE([
 
-extern "C" {
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-}
 ],
 [
 /* elvis is alive */
@@ -525,5 +520,7 @@ You can either use/install a newer compiler or (better) install correct
 X11 header files.
         ])
       ])
+else
+   CXXFLAGS="$CXXFLAGS -Wall"
 fi
 ])
