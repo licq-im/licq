@@ -340,11 +340,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    if (m_nAutoLogon > 0)
    {
       if (m_nAutoLogon >= 10)
-      {
         mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, true);
-        m_nAutoLogon -= 10;
-      }
-      switch (m_nAutoLogon)
+      
+      switch (m_nAutoLogon % 10)
       {
       case 1: changeStatus(ICQ_STATUS_ONLINE); break;
       case 2: changeStatus(ICQ_STATUS_AWAY); break;
@@ -352,7 +350,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       case 4: changeStatus(ICQ_STATUS_OCCUPIED); break;
       case 5: changeStatus(ICQ_STATUS_DND); break;
       case 6: changeStatus(ICQ_STATUS_FREEFORCHAT); break;
-      default: gLog.Warn("%sInvalid auto online id: %d.\n", m_nAutoLogon);
+      default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, m_nAutoLogon);
       }
    }
 
