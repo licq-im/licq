@@ -143,33 +143,35 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     cmbLanguage->insertItem(gLanguages[i].szName);
   grid_lay->addWidget(cmbLanguage, CR, 3);
 
-  grid_lay->addWidget(new QLabel(tr("City:"), alias_tab), ++CR, 1);
-  edtCity = new QLineEdit(alias_tab);
-  grid_lay->addWidget(edtCity, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("State:"), alias_tab), ++CR, 1);
-  edtState = new QLineEdit(alias_tab);
-  grid_lay->addWidget(edtState, CR, 3);
+  CR = 0;
 
-  grid_lay->addWidget(new QLabel(tr("Country:"), alias_tab), ++CR, 1);
+  grid_lay->addWidget(new QLabel(tr("City:"), alias_tab), ++CR, 5);
+  edtCity = new QLineEdit(alias_tab);
+  grid_lay->addWidget(edtCity, CR, 7);
+  grid_lay->addWidget(new QLabel(tr("State:"), alias_tab), ++CR, 5);
+  edtState = new QLineEdit(alias_tab);
+  grid_lay->addWidget(edtState, CR, 7);
+
+  grid_lay->addWidget(new QLabel(tr("Country:"), alias_tab), ++CR, 5);
   cmbCountry = new QComboBox(false, alias_tab);
   cmbCountry->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
     cmbCountry->insertItem(gCountries[i].szName);
-  grid_lay->addWidget(cmbCountry, CR, 3);
+  grid_lay->addWidget(cmbCountry, CR, 7);
 
-  grid_lay->addWidget(new QLabel(tr("Company Name:"), alias_tab), ++CR, 1);
+  grid_lay->addWidget(new QLabel(tr("Company Name:"), alias_tab), ++CR, 5);
   edtCoName = new QLineEdit(alias_tab);
-  grid_lay->addWidget(edtCoName, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("Company Department:"), alias_tab), ++CR, 1);
+  grid_lay->addWidget(edtCoName, CR, 7);
+  grid_lay->addWidget(new QLabel(tr("Company Department:"), alias_tab), ++CR, 5);
   edtCoDept = new QLineEdit(alias_tab);
-  grid_lay->addWidget(edtCoDept, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("Company Position:"), alias_tab), ++CR, 1);
+  grid_lay->addWidget(edtCoDept, CR, 7);
+  grid_lay->addWidget(new QLabel(tr("Company Position:"), alias_tab), ++CR, 5);
   edtCoPos = new QLineEdit(alias_tab);
-  grid_lay->addWidget(edtCoPos, CR, 3);
+  grid_lay->addWidget(edtCoPos, CR, 7);
 
   CR++;
   chkOnlineOnly = new QCheckBox(tr("Return Online Users Only"), alias_tab);
-  grid_lay->addMultiCellWidget(chkOnlineOnly, CR, CR, 1, 3);
+  grid_lay->addMultiCellWidget(chkOnlineOnly, CR, CR, 1, 7);
 
   search_tab->addTab(alias_tab, tr("&Whitepages"));
 
