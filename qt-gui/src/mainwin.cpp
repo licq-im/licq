@@ -260,6 +260,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
+  licqConf.ReadBool("FlashUrgent", m_bFlashUrgent, true);
   bool bFrameTransparent;
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
@@ -580,16 +581,15 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 void CMainWindow::CreateUserView()
 {
   userView = new CUserView(mnuUser, mnuGroup, mnuAwayModes, colInfo, showHeader,
-                           gridLines,
-                           m_bFontStyles, skin->frame.transparent,
-                           m_bShowDividers, m_bSortByStatus, this);
+                           gridLines, m_bFontStyles, skin->frame.transparent,
+                           m_bShowDividers, m_bSortByStatus, m_bFlashUrgent,
+                           this);
   userView->setFrameStyle(skin->frame.frameStyle);
   userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
                        &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
-  connect (userView, SIGNAL(doubleClicked(QListViewItem *)),
-           this, SLOT(callDefaultFunction()));
+  connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction()));
 }
 
 //-----CMainWindow::destructor--------------------------------------------------
@@ -1470,6 +1470,7 @@ void CMainWindow::saveOptions()
                      QString("default") : MLEditWrap::editFont->rawName());
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
+  licqConf.WriteBool("FlashUrgent", m_bFlashUrgent);
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);

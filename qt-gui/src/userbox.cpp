@@ -37,9 +37,12 @@
 
 #include "licq_user.h"
 
+#define FLASH_TIME 800
+
 bool    CUserViewItem::s_bGridLines = false,
         CUserViewItem::s_bFontStyles = true,
-        CUserViewItem::s_bSortByStatus = true;
+        CUserViewItem::s_bSortByStatus = true,
+        CUserViewItem::s_bFlashUrgent = true;
 QPixmap *CUserViewItem::s_pOnline = NULL,
         *CUserViewItem::s_pOffline = NULL,
         *CUserViewItem::s_pAway = NULL,
@@ -51,7 +54,8 @@ QPixmap *CUserViewItem::s_pOnline = NULL,
         *CUserViewItem::s_pUrl = NULL,
         *CUserViewItem::s_pChat = NULL,
         *CUserViewItem::s_pFile = NULL,
-        *CUserViewItem::s_pFFC = NULL;
+        *CUserViewItem::s_pFFC = NULL,
+        *CUserViewItem::s_pNone = NULL;
 QColor  *CUserViewItem::s_cOnline = NULL,
         *CUserViewItem::s_cAway = NULL,
         *CUserViewItem::s_cOffline = NULL,
@@ -65,6 +69,8 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
    : QListViewItem(parent)
 {
   m_nUin = _cUser->Uin();
+  m_nFlash = 0;
+  m_bUrgent = false;
   setSelectable(m_nUin != 0);
   setGraphics(_cUser);
 }
@@ -103,6 +109,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_cFore = s_cOnline;
   m_bItalic = m_bStrike = false;
   m_nWeight = QFont::Normal;
+  m_bUrgent = false;
   setSelectable(false);
   setHeight(10);
   m_sSortKey = "";
@@ -185,26 +192,34 @@ void CUserViewItem::setGraphics(ICQUser *u)
      {
        switch(u->EventPeek(i)->SubCommand())
        {
-       case ICQ_CMDxSUB_MSG:
-         if (m_pIcon == NULL)
+         case ICQ_CMDxSUB_MSG:
+           if (m_pIcon == NULL)
+             m_pIcon = s_pMessage;
+           break;
+         case ICQ_CMDxSUB_URL:
+           if (m_pIcon == NULL || m_pIcon == s_pMessage)
+             m_pIcon = s_pUrl;
+           break;
+         case ICQ_CMDxSUB_CHAT:
+           if (m_pIcon == NULL || m_pIcon == s_pMessage || m_pIcon == s_pUrl)
+             m_pIcon = s_pChat;
+           break;
+         case ICQ_CMDxSUB_FILE:
+           m_pIcon = s_pFile;
+           break;
+         default:
            m_pIcon = s_pMessage;
-         break;
-       case ICQ_CMDxSUB_URL:
-         if (m_pIcon == NULL || m_pIcon == s_pMessage)
-           m_pIcon = s_pUrl;
-         break;
-       case ICQ_CMDxSUB_CHAT:
-         if (m_pIcon == NULL || m_pIcon == s_pMessage || m_pIcon == s_pUrl)
-           m_pIcon = s_pChat;
-         break;
-       case ICQ_CMDxSUB_FILE:
-         m_pIcon = s_pFile;
-         break;
-       default:
-         m_pIcon = s_pMessage;
-         break;
+           break;
        }
+       if (u->EventPeek(i)->IsUrgent()) m_bUrgent = true;
      }
+   }
+
+   if (m_bUrgent && s_bFlashUrgent)
+   {
+     m_tFlash = new QTimer(this);
+     connect(m_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
+     m_tFlash->start(FLASH_TIME);
    }
 
    if (u->NewUser())
@@ -237,6 +252,21 @@ void CUserViewItem::setGraphics(ICQUser *u)
                         ULONG_MAX - u->Touched());
    else
      m_sSortKey.sprintf("%016lx", ULONG_MAX - u->Touched());
+}
+
+
+void CUserViewItem::slot_flash()
+{
+  m_nFlash++;
+
+  if (m_nFlash & 0x0001) // hide
+  {
+    setPixmap(0, *s_pNone);
+  }
+  else  // show
+  {
+    if (m_pIcon != NULL) setPixmap(0, *m_pIcon);
+  }
 }
 
 
@@ -399,6 +429,7 @@ QString CUserViewItem::key (int column, bool ascending) const
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
                     bool bTransparent, bool bShowBars, bool bSortByStatus,
+                    bool bFlashUrgent,
                     QWidget *parent, const char *name)
    : QListView(parent, name)
 {
@@ -426,6 +457,10 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
    setSortByStatus(bSortByStatus);
+   //setFlashUrgent(bFlashUrgent);
+   CUserViewItem::s_bFlashUrgent = bFlashUrgent;
+
+   CUserViewItem::s_pNone = new QPixmap;
 
    //setAutoMask(true);
 }

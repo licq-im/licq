@@ -141,6 +141,7 @@ void OptionsDlg::SetupOptions()
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->autoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
+  chkFlashUrgent->setChecked(mainwin->m_bFlashUrgent);
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
   chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
@@ -305,6 +306,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->autoClose = chkAutoClose->isChecked();
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
   mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
+  mainwin->m_bFlashUrgent = chkFlashUrgent->isChecked();
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   if (chkUseDock->isChecked() &&
@@ -494,6 +496,8 @@ QWidget* OptionsDlg::new_appearance_options()
                                     " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
                                     " + 240 (Shadow"));
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
+  chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);
+  QWhatsThis::add(chkFlashUrgent, tr("Urgent events will flash"));
 
   QGroupBox *boxMainWin = new QGroupBox(1, Horizontal, tr("Main Window"), w);
   l->addWidget(boxMainWin);

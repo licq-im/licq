@@ -48,8 +48,9 @@ protected:
 
 
 //=====UserViewItem================================================================================
-class CUserViewItem : public QListViewItem
+class CUserViewItem : public QObject, public QListViewItem
 {
+  Q_OBJECT
 public:
   CUserViewItem (ICQUser *, QListView *);
   CUserViewItem (BarType, QListView *);
@@ -57,20 +58,23 @@ public:
   virtual QString key(int column, bool ascending) const;
   unsigned long ItemUin()  { return m_nUin; }
   void setGraphics(ICQUser *);
+  unsigned short Status() const { return m_nStatus; };
 protected:
   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
   virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r ) { };
 
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon;
+  QTimer *m_tFlash;
 
   unsigned long m_nUin;
   unsigned short m_nStatus;
   QFont::Weight m_nWeight;
-  bool m_bItalic, m_bStrike;
+  bool m_bItalic, m_bStrike, m_bUrgent;
   QString m_sPrefix, m_sSortKey;
+  int m_nFlash;
 
-  static bool    s_bGridLines, s_bFontStyles, s_bSortByStatus;
+  static bool    s_bGridLines, s_bFontStyles, s_bSortByStatus, s_bFlashUrgent;
   static QPixmap *s_pOnline,
                  *s_pOffline,
                  *s_pAway,
@@ -82,7 +86,8 @@ protected:
                  *s_pUrl,
                  *s_pChat,
                  *s_pFile,
-                 *s_pFFC;
+                 *s_pFFC,
+                 *s_pNone;
   static QColor  *s_cOnline,
                  *s_cAway,
                  *s_cOffline,
@@ -92,8 +97,9 @@ protected:
 
   friend class CUserView;
   friend class CUserViewTips;
-public:
-  unsigned short Status() const { return m_nStatus; };
+
+protected slots:
+  void slot_flash();
 
 };
 
@@ -105,6 +111,7 @@ public:
   CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
              bool bTransparent, bool bShowBars, bool bSortByStatus,
+             bool bFlash,
              QWidget *parent = 0, const char *name = 0);
   virtual ~CUserView();
 
