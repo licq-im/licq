@@ -926,11 +926,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       timestamp = packet.UnpackUnsignedLong();
 
       if((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
-          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld/SSL].\n",
-                    L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F, timestamp & 0xFFFF);
+          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq %s/SSL].\n",
+                    L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
+                    CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else if((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld].\n",
-                    L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F, timestamp & 0xFFFF);
+          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq %s].\n",
+                    L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
+                    CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else
           gLog.Info("%s%s (%ld) went online (v%01lx).\n", L_UDPxSTR, u->GetAlias(),
                     nUin, tcpVersion & 0x0F);
@@ -2396,8 +2398,6 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
               L_WARNxSTR);
         break;
       }
-
-
 
       ICQEvent *e2 = new ICQEvent(e);
       e2->m_pSearchAck = s;
