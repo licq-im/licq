@@ -700,7 +700,7 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
     RemoveNewLines(szDataNoNL, _szData);
   else
   {
-    gLog.Warn("%sInternal Error: CIniFile::WriteStr(): _szData is NULL.\n", L_WARNxSTR);
+    gLog.Warn("%sInternal Error: CIniFile::WriteStr(%s, NULL).\n", L_WARNxSTR, _szKey);
     strcpy(szDataNoNL, "");
   }
   sprintf(szNewLine, "%s = %s\n", _szKey, szDataNoNL);
