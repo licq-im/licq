@@ -145,7 +145,7 @@ CSkin::CSkin(const char *skinname)
    }
    else
       lblStatus.color.bg = strdup(temp);
-   skinFile.ReadNum("lblStatus.margin", lblStatus.margin, 5);
+   skinFile.ReadNum("lblStatus.margin", lblStatus.margin, 4);
    skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
    skinFile.ReadNum("lblStatus.frameStyle", lblStatus.frameStyle);
 
@@ -180,7 +180,7 @@ CSkin::CSkin(const char *skinname)
    }
    else
       lblMsg.color.bg = strdup(temp);
-   skinFile.ReadNum("lblMsg.margin", lblMsg.margin, 5);
+   skinFile.ReadNum("lblMsg.margin", lblMsg.margin, 4);
    skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
    skinFile.ReadNum("lblMsg.frameStyle", lblMsg.frameStyle);
 
