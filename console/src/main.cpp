@@ -25,7 +25,7 @@ const char *LP_Name()
 
 const char *LP_Version()
 {
-  static const char version[] = "0.20";
+  static const char version[] = "0.21";
   return version;
 }
 
