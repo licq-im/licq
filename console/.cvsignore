@@ -11,5 +11,5 @@ acinclude.m4
 ltmain.sh
 ltconfig
 libtool
-stamp-h.in
-stamp-h
+autom4te.cache
+stamp-h*
