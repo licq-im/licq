@@ -602,8 +602,8 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
   while ((unsigned char)sz[i++] != 0xFE);
   sz[--i] = '\0';
   int nNumContacts = atoi(sz);
-  char **szFields = new char*[nNumContacts * 2];
-  if (!ParseFE(&sz[++i], &szFields, nNumContacts * 2))
+  char **szFields = new char*[nNumContacts * 2 + 1];
+  if (!ParseFE(&sz[++i], &szFields, nNumContacts * 2 + 1))
   {
     delete []szFields;
     return NULL;
