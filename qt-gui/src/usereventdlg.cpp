@@ -937,7 +937,11 @@ void UserViewEvent::generateReply()
   QString s;
 
   if (mlvRead->hasMarkedText())
+  {
+    mlvRead->setTextFormat(PlainText);
     s = QString("> ") + mlvRead->markedText();
+    mlvRead->setTextFormat(RichText);
+  }
   else
     // we don't use mlvRead->text() since on Qt3 it returns rich text
     if (!m_messageText.stripWhiteSpace().isEmpty())
