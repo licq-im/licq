@@ -1076,10 +1076,9 @@ void CUserManager::AddUserToGroup(const char *szId, unsigned long nPPID,
   u->AddToGroup(GROUPS_USER, _nGroup);
   int nGSID = u->GetGSID();
   DropUser(u);
-  if (gLicqDaemon && nPPID == LICQ_PPID)
-    gLicqDaemon->icqChangeGroup(szId, nPPID, _nGroup, nGSID, 
-                                ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
-
+  if (gLicqDaemon)
+    gLicqDaemon->icqChangeGroup(szId, nPPID, _nGroup,
+      nGSID, ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
 }
 
 void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)

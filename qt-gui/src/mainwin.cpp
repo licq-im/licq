@@ -1135,7 +1135,6 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
   char *szId = 0;  //must be free()'d
   unsigned long nPPID = 0;
   userView->MainWindowSelectedItemUser(szId, nPPID);
-  unsigned long nUin = userView->MainWindowSelectedItemUin();
 
   if (e->key() == Qt::Key_Delete)
   {
@@ -2663,7 +2662,7 @@ bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
 
 void CMainWindow::FillUserGroup()
 {
-  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
   if(u == NULL) return;
 
   mnuGroup->setItemChecked(1000+GROUP_ONLINE_NOTIFY, u->OnlineNotify());
@@ -2686,9 +2685,9 @@ void CMainWindow::UserGroupToggled(int id)
   {
     // User groups
     if(mnuGroup->isItemChecked(id))
-      RemoveUserFromGroup(GROUPS_USER, id, m_nUserMenuUin, this);
+      RemoveUserFromGroup(GROUPS_USER, id, m_szUserMenuId, m_nUserMenuPPID, this);
     else {
-      gUserManager.AddUserToGroup(m_nUserMenuUin, id);
+      gUserManager.AddUserToGroup(m_szUserMenuId, m_nUserMenuPPID, id);
       updateUserWin();
     }
   }
@@ -2697,7 +2696,7 @@ void CMainWindow::UserGroupToggled(int id)
     switch(id-1000) {
     case GROUP_NEW_USERS:
     {
-      ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
       if (!u) return;
       u->SetNewUser(!u->NewUser());
       gUserManager.DropUser(u);
@@ -2706,7 +2705,7 @@ void CMainWindow::UserGroupToggled(int id)
     }
     case GROUP_ONLINE_NOTIFY:
     {
-      ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
       if (!u) return;
       u->SetOnlineNotify(!u->OnlineNotify());
       gUserManager.DropUser(u);
@@ -2715,32 +2714,32 @@ void CMainWindow::UserGroupToggled(int id)
     }
     case GROUP_VISIBLE_LIST:
     {
-      licqDaemon->icqToggleVisibleList(m_nUserMenuUin);
+      licqDaemon->icqToggleVisibleList(m_szUserMenuId, m_nUserMenuPPID);
       if (m_bFontStyles)
         updateUserWin();
       break;
     }
     case GROUP_INVISIBLE_LIST:
     {
-      licqDaemon->icqToggleInvisibleList(m_nUserMenuUin);
+      licqDaemon->icqToggleInvisibleList(m_szUserMenuId, m_nUserMenuPPID);
       if (m_bFontStyles)
         updateUserWin();
       break;
     }
     case GROUP_IGNORE_LIST:
     {
-      ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
       if (!u) return;
       if(!u->IgnoreList() && !QueryUser(this,
           tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
-          .arg(u->GetAlias()).arg(m_nUserMenuUin), tr("&Yes"), tr("&No")))
+          .arg(u->GetAlias()).arg(m_szUserMenuId), tr("&Yes"), tr("&No")))
       {
         gUserManager.DropUser(u);
         break;
       }
       u->SetIgnoreList(!u->IgnoreList());
       gUserManager.DropUser(u);
-      licqDaemon->icqToggleIgnoreList(m_nUserMenuUin); // network only
+      licqDaemon->icqToggleIgnoreList(m_szUserMenuId, m_nUserMenuPPID); // network only
       updateUserWin();
       break;
     }
@@ -2829,7 +2828,7 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group, unsi
 
 void CMainWindow::FillServerGroup()
 {
-  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
   if (u == NULL) return;
 
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
@@ -2852,7 +2851,7 @@ void CMainWindow::ServerGroupChanged(int n)
 {
   if (mnuServerGroup->isItemChecked(n)) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
   if (u == NULL) return;
 
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
@@ -2862,7 +2861,7 @@ void CMainWindow::ServerGroupChanged(int n)
   gUserManager.UnlockGroupList();
   gUserManager.DropUser(u);
 
-  gUserManager.AddUserToGroup(m_nUserMenuUin, n);
+  gUserManager.AddUserToGroup(m_szUserMenuId, m_nUserMenuPPID, n);
   updateUserWin();
 }
 
@@ -3106,7 +3105,7 @@ void CMainWindow::slot_miscmodes(int _nId)
 {
   int nAwayModes = mnuMiscModes->indexOf(_nId);
   //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
   if (u == NULL) return;
 
   switch(nAwayModes)
@@ -3811,7 +3810,7 @@ void CMainWindow::initMenu()
 void CMainWindow::slot_usermenu()
 {
   //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
-  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
 
   if (u == NULL)
   {

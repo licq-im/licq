@@ -436,8 +436,7 @@ void UserInfoDlg::SaveGeneralInfo()
   gUserManager.DropUser(u);
 
   if (!m_bOwner)
-    // TODO change the daemon to use szId and PPID
-    server->icqRenameUser(strtoul(m_szId, (char**)NULL, 10));
+    server->icqRenameUser(m_szId, m_nPPID);
 }
 
 // -----------------------------------------------------------------------------

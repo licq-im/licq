@@ -274,15 +274,14 @@ void CICQDaemon::icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
   SendExpectEvent_Server(0, pRemove, NULL);
 }
 
-//-----icqChangeGroup-----------------------------------------------------------
-void CICQDaemon::icqChangeGroup(const char* _szName, unsigned long _PPID, 
-                                unsigned short _nNewGroup, unsigned short _nOldGSID, 
+void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
+                                unsigned short _nNewGroup, unsigned short _nOldGSID,
                                 unsigned short _nNewType, unsigned short _nOldType)
 {
   if (!UseServerContactList())  return;
 
   // Get their old SID
-  ICQUser *u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   int nSID = u->GetSID();
   gUserManager.DropUser(u);
 
@@ -291,16 +290,16 @@ void CICQDaemon::icqChangeGroup(const char* _szName, unsigned long _PPID,
   SendEvent_Server(pStart);
 
   pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szName)); // add
-  m_lszModifyServerUsers.push_back(strdup(_szName)); // remove
+  m_lszModifyServerUsers.push_back(strdup(_szId)); // add
+  m_lszModifyServerUsers.push_back(strdup(_szId)); // remove
   pthread_mutex_unlock(&mutex_modifyserverusers);
-  
-  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szName, _nNewType,
+
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, _nNewType,
                                                       _nNewGroup);
-  gLog.Info("%sChanging group on server list for %s ...\n", L_SRVxSTR, _szName);
+  gLog.Info("%sChanging group on server list for %s ...\n", L_SRVxSTR, _szId);
   SendExpectEvent_Server(0, pAdd, NULL);
 
-  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szName, _nOldGSID,
+  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, _nOldGSID,
                                                         nSID, _nOldType);
   SendExpectEvent_Server(0, pRemove, NULL);
 }
@@ -428,23 +427,28 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 //-----icqRenameUser------------------------------------------------------------
 void CICQDaemon::icqRenameUser(unsigned long _nUin)
 {
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = '\0'; 
+
+  icqRenameUser(szUin, LICQ_PPID);
+}
+
+void CICQDaemon::icqRenameUser(const char *_szId, unsigned long _nPPID)
+{
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
 
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   if (u == NULL) return;
   char *szNewAlias = u->GetAlias();
   gUserManager.DropUser(u);
 
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = '\0';
-
   pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(szUin));
+  m_lszModifyServerUsers.push_back(strdup(_szId));
   pthread_mutex_unlock(&mutex_modifyserverusers);
 
-  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(szUin, ICQ_ROSTxNORMAL);
-  gLog.Info("%sRenaming %lu to %s...\n", L_SRVxSTR, _nUin, szNewAlias);
+  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szId, ICQ_ROSTxNORMAL);
+  gLog.Info("%sRenaming %s to %s...\n", L_SRVxSTR, _szId, szNewAlias);
   SendExpectEvent_Server(0, pUpdate, NULL);
 }
 
@@ -963,101 +967,142 @@ void CICQDaemon::icqSendInvisibleList()
   SendEvent_Server(p);
 }
 
-//-----icqAddToVisibleList---------------------------------------------------
+//----- icqToggleVisibleList (deprecated!) -------------------------------------
 void CICQDaemon::icqToggleVisibleList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqToggleVisibleList(szUin, LICQ_PPID);
+}
+
+//-----icqToggleVisibleList--------------------------------------------------
+void CICQDaemon::icqToggleVisibleList(const char* _szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   if (u == NULL) return;
   bool b = u->VisibleList();
   gUserManager.DropUser(u);
 
   if (b)
-    icqRemoveFromVisibleList(nUin);
+    icqRemoveFromVisibleList(_szId, _nPPID);
   else
-    icqAddToVisibleList(nUin);
+    icqAddToVisibleList(_szId, _nPPID);
 }
 
+//-----icqToggleInvisibleList (deprecated!)-------------------------------------
 void CICQDaemon::icqToggleInvisibleList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqToggleInvisibleList(szUin, LICQ_PPID);
+}
+
+//-----icqToggleInvisibleList---------------------------------------------------
+void CICQDaemon::icqToggleInvisibleList(const char *_szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   if (u == NULL) return;
   bool b = u->InvisibleList();
   gUserManager.DropUser(u);
 
   if (b)
-    icqRemoveFromInvisibleList(nUin);
+    icqRemoveFromInvisibleList(_szId, _nPPID);
   else
-    icqAddToInvisibleList(nUin);
+    icqAddToInvisibleList(_szId, _nPPID);
 }
 
+//-----icqToggleIgnoreList (deprecated!)----------------------------------------
 void CICQDaemon::icqToggleIgnoreList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqToggleIgnoreList(szUin, LICQ_PPID);
+}
+
+//-----icqToggleIgnoreList------------------------------------------------------
+void CICQDaemon::icqToggleIgnoreList(const char *_szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   if (u == NULL) return;
   bool b = u->IgnoreList();
   gUserManager.DropUser(u);
 
   if (b)
-    icqAddToIgnoreList(nUin);
+    icqAddToIgnoreList(_szId, _nPPID);
   else
-    icqRemoveFromIgnoreList(nUin);
+    icqRemoveFromIgnoreList(_szId, _nPPID);
 }
 
+//-----icqAddToVisibleList (deprecated!)----------------------------------------
 void CICQDaemon::icqAddToVisibleList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqAddToVisibleList(szUin, LICQ_PPID);
+}
+
+//-----icqAddToVisibleList------------------------------------------------------
+void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
   if (u != NULL)
   {
     u->SetVisibleList(true);
     gUserManager.DropUser(u);
   }
-  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
-  gLog.Info("%sAdding user %lu to visible list (#%lu)...\n", L_SRVxSTR, nUin,
+  CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
+  gLog.Info("%sAdding user %s to visible list (#%lu)...\n", L_SRVxSTR, _szId,
      p->Sequence());
   SendEvent_Server(p);
 
   if (UseServerContactList())
   {
-    char szUin[13];
-    snprintf(szUin, 12, "%lu", nUin);
-    szUin[12] = '\0';
-
     pthread_mutex_lock(&mutex_modifyserverusers);
-    m_lszModifyServerUsers.push_back(strdup(szUin));
+    m_lszModifyServerUsers.push_back(strdup(_szId));
     pthread_mutex_unlock(&mutex_modifyserverusers);
 
-    CSrvPacketTcp *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxVISIBLE);
+    CSrvPacketTcp *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxVISIBLE);
     SendExpectEvent_Server(0, pAdd, NULL);
   }
 }
 
+//-----icqRemoveFromVisibleList (deprecated!)-----------------------------------
 void CICQDaemon::icqRemoveFromVisibleList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqRemoveFromVisibleList(szUin, LICQ_PPID);
+}
+
+//-----icqRemoveFromVisibleList-------------------------------------------------
+void CICQDaemon::icqRemoveFromVisibleList(const char* _szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
   if (u != NULL)
   {
     u->SetVisibleList(false);
     gUserManager.DropUser(u);
   }
-  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxVISIBLExLIST);
-  gLog.Info("%sRemoving user %lu from visible list (#%lu)...\n", L_SRVxSTR, nUin,
+  CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxVISIBLExLIST);
+  gLog.Info("%sRemoving user %s from visible list (#%lu)...\n", L_SRVxSTR, _szId,
      p->Sequence());
   SendEvent_Server(p);
 
   if (UseServerContactList())
   {
-    char szUin[13];
-    snprintf(szUin, 12, "%lu", nUin);
-    szUin[12] = '\0';
-
-    u = gUserManager.FetchUser(nUin, LOCK_R);
+    u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
     if (u != NULL)
     {
       pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back(strdup(szUin));
+      m_lszModifyServerUsers.push_back(strdup(_szId));
       pthread_mutex_unlock(&mutex_modifyserverusers);
 
-      CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, 0, u->GetVisibleSID(),
+      CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetVisibleSID(),
         ICQ_ROSTxVISIBLE);
       SendExpectEvent_Server(0, pRemove, NULL);
       gUserManager.DropUser(u);
@@ -1065,61 +1110,73 @@ void CICQDaemon::icqRemoveFromVisibleList(unsigned long nUin)
   }
 }
 
+//-----icqAddToInvisibleList (deprecated!)--------------------------------------
 void CICQDaemon::icqAddToInvisibleList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqAddToInvisibleList(szUin, LICQ_PPID);
+}
+
+//-----icqAddToInvisibleList----------------------------------------------------
+void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
   if (u != NULL)
   {
     u->SetInvisibleList(true);
     gUserManager.DropUser(u);
   }
-  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxINVISIBxLIST);
-  gLog.Info("%sAdding user %lu to invisible list (#%lu)...\n", L_SRVxSTR, nUin,
+  CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxINVISIBxLIST);
+  gLog.Info("%sAdding user %s to invisible list (#%lu)...\n", L_SRVxSTR, _szId,
      p->Sequence());
   SendEvent_Server(p);
 
   if (UseServerContactList())
   {
-    char szUin[13];
-    snprintf(szUin, 12, "%lu", nUin);
-    szUin[12] = '\0';
-
     pthread_mutex_lock(&mutex_modifyserverusers);
-    m_lszModifyServerUsers.push_back(strdup(szUin));
+    m_lszModifyServerUsers.push_back(strdup(_szId));
     pthread_mutex_unlock(&mutex_modifyserverusers);
 
-    CSrvPacketTcp *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxINVISIBLE);
+    CSrvPacketTcp *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxINVISIBLE);
     SendExpectEvent_Server(0, pAdd, NULL);
   }
 }
 
+//-----icqRemoveFromInvisibleList (deprecated!)---------------------------------
 void CICQDaemon::icqRemoveFromInvisibleList(unsigned long nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqRemoveFromInvisibleList(szUin, LICQ_PPID);
+}
+
+//-----icqRemoveFromInvisibleList-----------------------------------------------
+void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nPPID)
+{
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
   if (u != NULL)
   {
     u->SetInvisibleList(false);
     gUserManager.DropUser(u);
   }
-  CSrvPacketTcp *p = new CPU_GenericUinList(nUin, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxINVISIBxLIST);
-  gLog.Info("%sRemoving user %lu from invisible list (#%lu)...\n", L_SRVxSTR, nUin,
+  CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxINVISIBxLIST);
+  gLog.Info("%sRemoving user %s from invisible list (#%lu)...\n", L_SRVxSTR, _szId,
      p->Sequence());
   SendEvent_Server(p);
 
   if (UseServerContactList())
   {
-    char szUin[13];
-    snprintf(szUin, 12, "%lu", nUin);
-    szUin[12] = '\0';
-
-    u = gUserManager.FetchUser(nUin, LOCK_R);
+    u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
     if (u)
     {
       pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back(strdup(szUin));
+      m_lszModifyServerUsers.push_back(strdup(_szId));
       pthread_mutex_unlock(&mutex_modifyserverusers);
 
-      CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, 0, u->GetInvisibleSID(),
+      CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetInvisibleSID(),
         ICQ_ROSTxINVISIBLE);
       SendExpectEvent_Server(0, pRemove, NULL);
       gUserManager.DropUser(u);
@@ -1127,22 +1184,42 @@ void CICQDaemon::icqRemoveFromInvisibleList(unsigned long nUin)
   }
 }
 
+//-----icqAddToIgnoreList (deprecated!)-----------------------------------------
 void CICQDaemon::icqAddToIgnoreList(unsigned long nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqAddToIgnoreList(szUin, LICQ_PPID);
+}
+
+//-----icqAddToIgnoreList-------------------------------------------------------
+void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long _nPPID)
 {
   if (!UseServerContactList()) return;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   int nGSID = u->GetGSID();
   gUserManager.DropUser(u);
 
-  icqChangeGroup(nUin, 0, nGSID, ICQ_ROSTxIGNORE, ICQ_ROSTxNORMAL);
+  icqChangeGroup(_szId, _nPPID, 0, nGSID, ICQ_ROSTxIGNORE, ICQ_ROSTxNORMAL);
 }
 
+//-----icqRemoveFromIgnoreList (deprecated!)------------------------------------
 void CICQDaemon::icqRemoveFromIgnoreList(unsigned long nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  icqRemoveFromIgnoreList(szUin, LICQ_PPID);
+}
+
+//-----icqRemoveFromIgnoreList--------------------------------------------------
+void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID)
 {
   if (!UseServerContactList()) return;
 
-  icqChangeGroup(nUin, 0, 0, ICQ_ROSTxNORMAL, ICQ_ROSTxIGNORE);
+  icqChangeGroup(_szId, _nPPID, 0, 0, ICQ_ROSTxNORMAL, ICQ_ROSTxIGNORE);
 }
 
 
@@ -3032,8 +3109,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               gUserManager.DropUser(u);
             }
 
-            gLog.Info("%sAdded %s (%s) to list from server.\n", L_SRVxSTR,
-              (szUnicodeAlias ? szUnicodeAlias : ""), szId);
+            if (!isOnList)
+            {
+              gLog.Info("%sAdded %s (%s) to list from server.\n", L_SRVxSTR,
+                (szUnicodeAlias ? szUnicodeAlias : ""), szId);
+            }
 
             if (szUnicodeAlias)
               delete [] szUnicodeAlias;
@@ -3154,8 +3234,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
                 ICQ_SNACxLIST_ROSTxEDITxEND);
               SendEvent_Server(pReply);
-              if (nUin)
-                icqAddUserServer(nUin, true);
+              if (szPending)
+                icqAddUserServer(szPending, true);
               break;
             }
 
@@ -3197,16 +3277,14 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             // that will send a message out to the server AGAIN
             if (e->SubType() == ICQ_SNACxLIST_ROSTxADD)
             {
-              if (nUin)
+              ICQUser *u = gUserManager.FetchUser(szPending, LICQ_PPID, LOCK_R);
+              if (u)
               {
-                ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-                if (u)
-                {
-                  u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
-                                e->ExtraInfo()));
-                  gUserManager.DropUser(u);
-                  PushPluginSignal(new CICQSignal(SIGNAL_ADDxSERVERxLIST, 0, nUin));
-                }
+                u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
+                              e->ExtraInfo()));
+                gUserManager.DropUser(u);
+                PushPluginSignal(new CICQSignal(SIGNAL_ADDxSERVERxLIST, 0,
+                                                szPending, LICQ_PPID));
               }
             }
 
@@ -3218,27 +3296,17 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             if (bHandled == false)
             {
               bHandled = true;
-              if (nUin == 0)
+              gLog.Info("%sUpdated %s successfully.\n", L_SRVxSTR,
+                        szPending);
+                
+              if (nError == 0x0E)
               {
-                pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-                                               ICQ_SNACxLIST_ROSTxEDITxEND);
-                gLog.Info("%sGroup %s updated successfully.\n", L_SRVxSTR,
-                          szPending);
-                SendEvent_Server(pReply);
-              }
-              else
-              {
-                gLog.Info("%sUser %s updated successfully.\n", L_SRVxSTR,
-                          szPending);
-                if (nError == 0x0E)
-                {
-                  pReply = new CPU_UpdateToServerList(szPending,
-		                 ICQ_ROSTxNORMAL, 0, true);
-		  pthread_mutex_lock(&mutex_modifyserverusers);
-		  m_lszModifyServerUsers.push_back(strdup(szPending));
-		  pthread_mutex_unlock(&mutex_modifyserverusers);
-		  SendExpectEvent_Server(0, pReply, NULL);
-                }
+                pReply = new CPU_UpdateToServerList(szPending,
+                  ICQ_ROSTxNORMAL, 0, true);
+                pthread_mutex_lock(&mutex_modifyserverusers);
+                m_lszModifyServerUsers.push_back(strdup(szPending));
+                pthread_mutex_unlock(&mutex_modifyserverusers);
+                SendExpectEvent_Server(0, pReply, NULL);
               }
             }
 
@@ -3247,6 +3315,13 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         }
         free(szPending);
       } while (!packet.End());
+
+      if (nError == 0)
+      {
+        pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                       ICQ_SNACxLIST_ROSTxEDITxEND);
+        SendEvent_Server(pReply);
+      }
 
       break;
     }

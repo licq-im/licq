@@ -154,7 +154,8 @@ public:
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
   // Auto Response
-  unsigned long icqFetchAutoResponse(unsigned long nUin, bool bServer = false);
+  unsigned long icqFetchAutoResponse(unsigned long nUin, bool bServer = false) __attribute__ ((deprecated));
+  unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false);
   // Chat Request
   unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
      unsigned short nLevel, bool bServer);
@@ -249,28 +250,39 @@ public:
   void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
                       unsigned short _nOldGSID, unsigned short _nNewType,
                       unsigned short _nOldType);
-  void icqChangeGroup(const char* _szName, unsigned long _PPID, 
-                      unsigned short _nNewGroup, unsigned short _nOldGSID, 
+  void icqChangeGroup(const char *_szId, unsigned long _nPPID,
+                      unsigned short _nNewGroup, unsigned short _nOldGSID,
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(unsigned long _nUin);
+  void icqRenameUser(const char *_szId, unsigned long _nPPID);
   void icqExportUsers(UserStringList &, unsigned short);
   void icqExportGroups(GroupList &);
   void icqUpdateContactList();
 
   // Visible/Invisible/Ignore list functions
-  void icqAddToVisibleList(unsigned long nUin);
-  void icqRemoveFromVisibleList(unsigned long nUin);
-  void icqToggleVisibleList(unsigned long nUin);
-  void icqAddToInvisibleList(unsigned long nUin);
-  void icqRemoveFromInvisibleList(unsigned long nUin);
-  void icqToggleInvisibleList(unsigned long nUin);
-  void icqAddToIgnoreList(unsigned long nUin);
-  void icqRemoveFromIgnoreList(unsigned long nUin);
-  void icqToggleIgnoreList(unsigned long nUin);
+  void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);
+  void icqRemoveFromVisibleList(const char *_szId, unsigned long _nPPID);
+  void icqToggleVisibleList(const char *_szId, unsigned long _nPPID);
+  void icqAddToInvisibleList(const char *_szId, unsigned long _nPPID);
+  void icqRemoveFromInvisibleList(const char *_szId, unsigned long _nPPID);
+  void icqToggleInvisibleList(const char *_szId, unsigned long _nPPID);
+  void icqAddToIgnoreList(const char *_szId, unsigned long _nPPID);
+  void icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID);
+  void icqToggleIgnoreList(const char *_szId, unsigned long _nPPID);
+  // Visible/Invisible/Ignore list functions (deprecated versions, for compatibility)
+  void icqAddToVisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqRemoveFromVisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqToggleVisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqAddToInvisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqRemoveFromInvisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqToggleInvisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqAddToIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqRemoveFromIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
+  void icqToggleIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
 
   void CheckExport();
-  
+
   void PluginList(PluginsList &l);
   void PluginShutdown(int);
   void PluginEnable(int);
@@ -423,7 +435,7 @@ protected:
   // ICQ Server
   char *m_szICQServer;
   unsigned short m_nICQServerPort;
-  
+
   // Proxy
   bool m_bProxyEnabled;
   unsigned short m_nProxyType;

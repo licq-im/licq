@@ -178,12 +178,26 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
 }
 
 
-//-----CICQDaemon::sendReadAwayMsg---------------------------------------------
+//-----CICQDaemon::icqFetchAutoResponse (deprecated!)---------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
 {
-  if (nUin == gUserManager.OwnerUin()) return 0;
+  char szId[13];
+  snprintf(szId, 12, "%lu", gUserManager.OwnerUin());
+  szId[12] = 0;
+  
+  return icqFetchAutoResponse(szId, LICQ_PPID);
+}
+
+//-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
+unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", gUserManager.OwnerUin());
+  szUin[12] = 0;
+  if (_szId == szUin) return 0;
+  
   ICQEvent *result;
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
 
   if (bServer)
   {
@@ -192,7 +206,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
                         ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
     gLog.Info("%sRequesting auto reponse from %s.\n", L_SRVxSTR,
               u->GetAlias());
-    result = SendExpectEvent_Server(nUin, s, NULL);
+    result = SendExpectEvent_Server(_szId, _nPPID, s, NULL);
   }
   else
   {

@@ -88,13 +88,13 @@ public:
   void ApplyExtendedIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
   QPopupMenu *UserMenu() { return mnuUser; }
-  void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
-  void SetUserMenuUser(const char *s, unsigned long n)
+  void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; } // deprecated, use SetUserMenuUser instead!
+  void SetUserMenuUser(const char *_szId, unsigned long _nPPID)
   {
     if (m_szUserMenuId)  free(m_szUserMenuId);
-    m_szUserMenuId = strdup(s);
-    m_nUserMenuPPID = n;
-    m_nUserMenuUin = strtoul(s, (char **)NULL, 10);
+    m_szUserMenuId = strdup(_szId);
+    m_nUserMenuPPID = _nPPID;
+    m_nUserMenuUin = strtoul(_szId, (char **)NULL, 10); // deprecated, use m_nUserMenuId instead!
   }
   static QPixmap &iconForStatus(unsigned long FullStatus);
   static QPixmap &iconForEvent(unsigned short SubCommand);
