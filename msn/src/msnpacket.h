@@ -172,6 +172,17 @@ protected:
   char *m_szList;
 };
 
+class CPS_MSNRenameUser : public CMSNPacket
+{
+public:
+  CPS_MSNRenameUser(const char *, const char *);
+  virtual ~CPS_MSNRenameUser() { if (m_szUser) free(m_szUser); if (m_szNewNick) free (m_szNewNick); }
+
+protected:
+  char *m_szUser;
+  char *m_szNewNick;
+};
+
 class CPS_MSN_SBStart : public CMSNPacket
 {
 public:

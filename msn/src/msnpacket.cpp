@@ -326,6 +326,21 @@ CPS_MSNRemoveUser::CPS_MSNRemoveUser(const char *szUser, const char *szList)
   m_pBuffer->Pack("\r\n", 2);
 }
 
+CPS_MSNRenameUser::CPS_MSNRenameUser(const char *szUser, const char *szNewNick)
+  : CMSNPacket()
+{
+  m_szCommand = strdup("REA");
+  m_szUser = strdup(szUser);
+  m_szNewNick = strdup(szNewNick);
+  m_nSize += strlen(m_szUser) + strlen(m_szNewNick) + 1;
+  InitBuffer();
+
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
+  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->Pack(m_szNewNick, strlen(m_szNewNick));
+  m_pBuffer->Pack("\r\n", 2);
+}
+
 CPS_MSN_SBStart::CPS_MSN_SBStart(const char *szCookie, const char *szUser)
   : CMSNPacket()
 {

@@ -101,6 +101,7 @@ private:
   void MSNLogoff();
   void MSNAddUser(char *);
   void MSNRemoveUser(char *);
+  void MSNRenameUser(char *);
   void MSNGrantAuth(char *);
   
   // Internal functions
@@ -109,6 +110,8 @@ private:
   void RemovePacket(string, int);
   SBuffer *RetrievePacket(string, int);
   ICQEvent *RetrieveEvent(unsigned long);
+  static string Decode(const string &);
+  static string Encode(const string &);
 
   // Config
   unsigned long m_nListVersion;

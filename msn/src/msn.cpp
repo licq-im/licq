@@ -167,6 +167,44 @@ ICQEvent *CMSN::RetrieveEvent(unsigned long _nTag)
   return e;
 }
 
+string CMSN::Decode(const string &strIn)
+{
+  string strOut = "";
+  
+  for (int i = 0; i < strIn.length(); i++)
+  {
+    if (strIn[i] == '%')
+    {
+      char szByte[3];
+      szByte[0] = strIn[++i]; szByte[1] = strIn[++i]; szByte[2] = '\0';
+      strOut += strtol(szByte, NULL, 16);
+    }
+    else
+      strOut += strIn[i];
+  }
+
+  return strOut;
+}
+
+string CMSN::Encode(const string &strIn)
+{
+  string strOut = "";
+
+  for (int i = 0; i < strIn.length(); i++)
+  {
+    if (isalnum(strIn[i]))
+      strOut += strIn[i];
+    else
+    {
+      char szChar[4];
+      sprintf(szChar, "%%%02X", strIn[i]);
+      szChar[3] = '\0';
+      strOut += szChar;
+    }
+  }
+
+  return strOut;
+}
 void CMSN::Run()
 {
   int nNumDesc;
@@ -389,6 +427,13 @@ void CMSN::ProcessSignal(CSignal *s)
       break;
     }
     
+    case PROTOxRENAME_USER:
+    {
+      CRenameUserSignal *sig = static_cast<CRenameUserSignal *>(s);
+      MSNRenameUser(sig->Id());
+      break;
+    }
+
     case PROTOxSENDxTYPING_NOTIFICATION:
     {
       CTypingNotificationSignal *sig =
@@ -827,6 +872,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       if ((nLists & FLAG_CONTACT_LIST) &&
           !gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
         m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
+
+      ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+      if (u)
+      {
+        string strDecodedNick = Decode(strNick);
+        u->SetAlias(strDecodedNick.c_str());
+        u->SetNewUser(false);
+        gUserManager.DropUser(u);
+      }
     }
     else if (strCmd == "LSG")
     {
@@ -859,7 +913,17 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
           gUserManager.DropOwner(MSN_PPID);
       }
       else
+      {
         gLog.Info("%sAdded %s to contact list.\n", L_MSNxSTR, strUser.c_str());
+        
+        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+        if (u)
+        {
+          string strDecodedNick = Decode(strNick);
+          u->SetAlias(strDecodedNick.c_str());
+          gUserManager.DropUser(u);
+        }
+      }
     }
     else if (strCmd == "REM")
     {      
@@ -1293,6 +1357,19 @@ void CMSN::MSNAddUser(char *szUser)
 void CMSN::MSNRemoveUser(char *szUser)
 {
   CMSNPacket *pSend = new CPS_MSNRemoveUser(szUser, CONTACT_LIST);
+  SendPacket(pSend);
+}
+
+void CMSN::MSNRenameUser(char *szUser)
+{
+  ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_R);
+  if (!u) return;
+  char *szNewNick = u->GetAlias();
+  gUserManager.DropUser(u);
+
+  string strNick(szNewNick);
+  string strEncodedNick = Encode(strNick);
+  CMSNPacket *pSend = new CPS_MSNRenameUser(szUser, strEncodedNick.c_str());
   SendPacket(pSend);
 }
 
