@@ -54,11 +54,11 @@ protected:
   const struct SColorMap *m_cColorOnline, *m_cColorOffline,
                    *m_cColorAway, *m_cColorGroupList, *m_cColorNew,
                    *m_cColorQuery, *m_cColorInfo, *m_cColorError;
-  char m_szOnlineFormat[128];
-  char m_szOtherOnlineFormat[128];
-  char m_szAwayFormat[128];
-  char m_szOfflineFormat[128];
-  char m_szCommandChar[128];
+  char m_szOnlineFormat[30];
+  char m_szOtherOnlineFormat[30];
+  char m_szAwayFormat[30];
+  char m_szOfflineFormat[30];
+  char m_szCommandChar[30];
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;

@@ -970,8 +970,8 @@ void CLicqConsole::InputCommand(int cIn)
       bool bTab = false;
       for (unsigned short i = 0; i < NUM_COMMANDS; i++)
       {
-        char szTempCmd[128];
-        sprintf(szTempCmd, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+        char szTempCmd[20];
+        snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
         if (strncasecmp(szIn, szTempCmd, strlen(szIn)) == 0)
         {
           if (!aCommands[i].fProcessTab)
@@ -1092,8 +1092,8 @@ void CLicqConsole::InputCommand(int cIn)
       unsigned short i;
       for (i = 0; i < NUM_COMMANDS; i++)
       {
-        char szTempCmd[128];
-        sprintf(szTempCmd, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+        char szTempCmd[20];
+        snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
 
         if (strncasecmp(szIn, szTempCmd, strlen(szIn)) == 0)
         {

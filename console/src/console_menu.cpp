@@ -511,7 +511,7 @@ void CLicqConsole::MenuSet(char *_szArg)
       return;
     }
     szValue[strlen(szValue) - 1] = '\0';
-    strcpy((char *)aVariables[nVariable].pData, &szValue[1]);
+    strncpy((char *)aVariables[nVariable].pData, &szValue[1], 30);
     break;
 
   case INT:
