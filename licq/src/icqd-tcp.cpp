@@ -27,7 +27,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
 {
-  if (_nUin == gUserManager.OwnerUin()) return 0;
+  if (_nUin == gUserManager.OwnerUin() || m == NULL) return 0;
 
   ICQEvent *result = NULL;
   char *mDos = NULL;
@@ -77,7 +77,9 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   gUserManager.DropUser(u);
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
-  delete mDos;
+  if (mDos)
+    delete [] mDos;
+
   return result->EventId();
 }
 
@@ -149,7 +151,9 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   gUserManager.DropUser(u);
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
-  delete szDescDos;
+  if (szDescDos)
+    delete [] szDescDos;
+
   return result->EventId();
 }
 
@@ -194,7 +198,9 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   u->SetSendLevel(nLevel);
   gUserManager.DropUser(u);
 
-  delete szDosDesc;
+  if (szDosDesc)
+    delete [] szDosDesc;
+
   return result->EventId();
 }
 
@@ -312,7 +318,9 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
   CPT_AckFileRefuse p(szReasonDos, nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
-  delete szReasonDos;
+
+  if (szReasonDos)
+    delete [] szReasonDos;
 }
 
 
@@ -350,7 +358,8 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
   u->SetSendLevel(nLevel);
   gUserManager.DropUser(u);
 
-  delete szReasonDos;
+  if (szReasonDos)
+    delete [] szReasonDos;
   return result->EventId();
 }
 
@@ -383,7 +392,9 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
   CPT_AckChatRefuse p(szReasonDos, nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
-  delete szReasonDos;
+
+  if (szReasonDos)
+    delete [] szReasonDos;
 }
 
 
