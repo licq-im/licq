@@ -625,7 +625,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 					GetCountryByName(_country);
 				cc = NewCountry->nCode;
 			}
-
+/*
 	   		iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->fname), 0, -1),
@@ -642,6 +642,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
 		  	cc, 
 	 	  	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(iu->hide_email)));
+*/
 		}
 
 		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
@@ -689,6 +690,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
 			== 3)
 	   	{
+/*
 			iu->etag->e_tag = icq_daemon->icqSetWorkInfo(
 	   			gtk_editable_get_chars(GTK_EDITABLE(iu->co_city), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_state), 0, -1),
@@ -699,6 +701,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 				gtk_editable_get_chars(GTK_EDITABLE(iu->dept), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->pos), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_homepage), 0, -1));
+*/
 		}
 		
 		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))

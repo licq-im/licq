@@ -702,6 +702,7 @@ void color_dlg_cancel(GtkWidget *widget, gpointer data)
 
 void SOCKSClicked(GtkWidget *widget, gpointer data)
 {
+/*
 	if (icq_daemon->SocksEnabled())
 	{
 		const char *env = icq_daemon->SocksServer();
@@ -725,4 +726,5 @@ void SOCKSClicked(GtkWidget *widget, gpointer data)
 		message_box("To enable SOCKS5 support, install NEC Socks or Dante\n"
 			    "then configure the Licq daemon with \"--enable-socks5\".\n");
 	}
+*/
 }
