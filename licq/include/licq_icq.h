@@ -68,6 +68,7 @@ const unsigned short ICQ_SNACxSUB_ONLINExLIST      = 0x000b;
 const unsigned short ICQ_SNACxSUB_OFFLINExLIST     = 0x000c;
 
 // Subtypes for message family
+const unsigned short ICQ_SNACxMSG_ICBMxERROR       = 0x0001; // server
 const unsigned short ICQ_SNACxMSG_SETxICQxMODE     = 0x0002; // client
 const unsigned short ICQ_SNACxMSG_REQUESTxRIGHTS   = 0x0004; // client
 const unsigned short ICQ_SNACxMSG_RIGHTSxGRANTED   = 0x0005; // server

@@ -225,6 +225,12 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
     return false;
   }
 
+  if (!StartFileTransferServer())
+  {
+    PushFileTransferEvent(FT_ERRORxBIND);
+    return false;
+  }
+
   // Create the socket manager thread
   if (pthread_create(&thread_ft, NULL, &FileTransferManager_tep, this) == -1)
   {
@@ -949,15 +955,7 @@ void *FileTransferManager_tep(void *arg)
   int l, nSocketsAvailable, nCurrentSocket;
   char buf[2];
 
-  if (ftman->m_nDirection == D_RECEIVER)
-  {
-    if (!ftman->StartFileTransferServer())
-    {
-      ftman->PushFileTransferEvent(FT_ERRORxBIND);
-      return NULL;
-    }
-  }
-  else if (ftman->m_nDirection == D_SENDER)
+  if (ftman->m_nDirection == D_SENDER)
   {
     if (!ftman->ConnectToFileServer(ftman->m_nPort))
     {
@@ -965,7 +963,7 @@ void *FileTransferManager_tep(void *arg)
       return NULL;
     }
   }
-  else
+  else if (ftman->m_nDirection != D_RECEIVER)
     return NULL;
 
   while (true)

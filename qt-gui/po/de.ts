@@ -3565,8 +3565,8 @@ Bitte klicken Sie jetzt auf &apos;Weiter&apos;.</translation>
 <context>
     <name>SearchUserDlg</name>
     <message>
-        <source>69+</source>
-        <translation>69+</translation>
+        <source>60+</source>
+        <translation>60+</translation>
     </message>
     <message>
         <source>Male</source>

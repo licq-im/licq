@@ -4153,7 +4153,7 @@ Appuyez sur &quot;Suivant&quot; pour poursuivre.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>69+</source>
+        <source>60+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

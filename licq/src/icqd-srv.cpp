@@ -1609,7 +1609,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
     // 0 if not set -> Online
     unsigned long nNewStatus = packet.UnpackUnsignedLongTLV(0x0006);
-    unsigned short nOldStatus = u->Status();
+    unsigned long nOldStatus = u->StatusFull();
       
     if (packet.getTLVLen(0x000a) == 4) {
       unsigned long userIP = packet.UnpackUnsignedLongTLV(0x000a);
@@ -1669,7 +1669,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         strcpy(szExtraInfo, "");
       szExtraInfo[27] = '\0';
 
-      if (u->StatusFull() != nNewStatus)
+      if (nOldStatus != nNewStatus)
       {
         ChangeUserStatus(u, nNewStatus);
         gLog.Info("%s%s (%ld) changed status: %s (v%01x)%s.\n", L_SRVxSTR, u->GetAlias(),
@@ -1678,6 +1678,8 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Unknown("%sUnknown status flag for %s (%ld): 0x%08lX\n",
                        L_UNKNOWNxSTR, u->GetAlias(), nUin, (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
+        u->SetAutoResponse(NULL);
+        u->SetShowAwayMsg(false);
       }
 
       if (intIP)
@@ -1710,8 +1712,6 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         u->SetMode(mode);
         u->SetSendServer(mode == MODE_INDIRECT);
       }
-      u->SetAutoResponse(NULL);
-      u->SetShowAwayMsg(false);
     }
     
     // We are no longer able to differentiate oncoming users from the
@@ -1761,11 +1761,40 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 //--------ProcessMessageFam------------------------------------------------
 void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 {
-  /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
-  /*unsigned short nSubSequence =*/ packet.UnpackUnsignedShortBE();
+  /*unsigned short Flags =*/ packet.UnpackUnsignedShortBE();
+  unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
   switch (nSubtype)
   {
+  case ICQ_SNACxMSG_ICBMxERROR:
+  {
+    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+    if (e)
+    {
+      ProcessDoneEvent(e);
+
+      unsigned short err = packet.UnpackUnsignedShortBE();
+      switch (err)
+      {
+      case 0x0004:
+        gLog.Warn("%sUser is offline.\n", L_WARNxSTR);
+        break;
+      case 0x0009:
+        gLog.Warn("%sClient does not understand type-2 messages.\n", L_WARNxSTR);
+        break;
+      case 0x000e:
+        gLog.Warn("%sPacket was malformed.\n", L_WARNxSTR);
+        break;
+      default:
+        gLog.Unknown("%sUnknown ICBM error: 0x%04x.\n", L_UNKNOWNxSTR, err);
+      }
+
+    }
+    else
+      gLog.Warn("%sICBM error for unknown event.\n", L_WARNxSTR);
+
+    break;
+  }
   case ICQ_SNACxMSG_SERVERxMESSAGE:
   {
     unsigned long nMsgID[2], nUin;
@@ -2419,7 +2448,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 									nMsgID);
 			}
 
-			pExtendedAck = new CExtendedAck(false, 0, szMessage);
+			pExtendedAck = new CExtendedAck(true, 0, szMessage);
 			nSubResult = ICQ_TCPxACK_RETURN;
 		}
 
@@ -2524,8 +2553,13 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
             unsigned long nUin = atoi(szName);
             unsigned short nInGroup = gUserManager.GetGroupFromID(nTag);
+            bool isOnList = true;
             if (nUin && !gUserManager.IsOnList(nUin))
+            {
+              isOnList = false;
               AddUserToList(nUin, false); // Don't notify server
+            }
+
             char *szUnicodeAlias = gTranslator.FromUnicode(szNewName);
 
             ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -2571,8 +2605,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               else
                 u->SetSID(nID);
 
-              // They aren't a new user if we added them to a server list
-              u->SetNewUser(false);
+              if (!isOnList)
+              {
+                // They aren't a new user if we added them to a server list
+                u->SetNewUser(false);
+              }
 
               // Skip the call to AddUserToGroup
               u->AddToGroup(GROUPS_USER, nInGroup);
@@ -2870,7 +2907,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       sendTM.tm_min = msg.UnpackChar();
       sendTM.tm_sec = 0;
       sendTM.tm_isdst = -1;
-      nTimeSent = mktime(&sendTM);
+
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+      nTimeSent = mktime(&sendTM) - o->SystemTimeGMTOffset();
+      gUserManager.DropOwner();
       
       // Msg type & flags
       unsigned short nTypeMsg = msg.UnpackUnsignedShort();

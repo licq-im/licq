@@ -165,7 +165,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   cmbAge->insertItem(tr("30 - 39"), 3);
   cmbAge->insertItem(tr("40 - 49"), 4);
   cmbAge->insertItem(tr("50 - 59"), 5);
-  cmbAge->insertItem(tr("69+"), 6);
+  cmbAge->insertItem(tr("60+"), 6);
   cmbAge->setFixedWidth(cmbAge->sizeHint().width());
   grid_lay->addWidget(cmbAge, CR, 3);
   grid_lay->addWidget(new QLabel(tr("Gender:"), whitepages_tab), ++CR, 1);

@@ -4445,7 +4445,7 @@ msgid "SearchUserDlg::50 - 59"
 msgstr ""
 
 #: searchuserdlg.cpp:130
-msgid "SearchUserDlg::69+"
+msgid "SearchUserDlg::60+"
 msgstr ""
 
 #: searchuserdlg.cpp:232

@@ -127,19 +127,24 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   bool isOk = (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS);
 
   QString title, result;
-  switch (e->Result())
+  if (e->ExtendedAck() && !e->ExtendedAck()->Accepted())
+    result = tr("refused");
+  else
   {
-  case EVENT_FAILED:
-    result = tr("failed");
-    break;
-  case EVENT_TIMEDOUT:
-    result = tr("timed out");
-    break;
-  case EVENT_ERROR:
-    result = tr("error");
-    break;
-  default:
-    break;
+    switch (e->Result())
+    {
+    case EVENT_FAILED:
+      result = tr("failed");
+      break;
+    case EVENT_TIMEDOUT:
+      result = tr("timed out");
+      break;
+    case EVENT_ERROR:
+      result = tr("error");
+      break;
+    default:
+      break;
+    }
   }
 
   if(!result.isEmpty())
@@ -150,13 +155,14 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
 
   icqEventTag = 0;
 
-  // FIXME server command
   if (isOk && (e->Command() == ICQ_CMDxTCP_START ||
-               e->Command() == ICQ_CMDxSND_THRUxSERVER))
+               e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)))
   {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
     QTextCodec * codec = UserCodec::codecForICQUser(u);
-    mleAwayMsg->setText(codec->toUnicode(u->AutoResponse()));
+    const char *szAutoResp = (e->ExtendedAck() && !e->ExtendedAck()->Accepted())?
+                              e->ExtendedAck()->Response() : u->AutoResponse();
+    mleAwayMsg->setText(codec->toUnicode(szAutoResp));
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(true);
     mleAwayMsg->setBackgroundMode(PaletteBase);

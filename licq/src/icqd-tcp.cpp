@@ -1181,6 +1181,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     packet >> junkChar;
     if (junkChar != 0x0D) message[j++] = junkChar;
   }
+  message[j] = '\0';
 
   if (nInVersion <= 4)
   {

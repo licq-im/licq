@@ -4040,7 +4040,7 @@ Não se pode adicionar duas vezes um mesmo usuário.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>69+</source>
+        <source>60+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
