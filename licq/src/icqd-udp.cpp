@@ -1401,6 +1401,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       sentTime.tm_mday = daySent;
       sentTime.tm_mon  = monthSent - 1;
       sentTime.tm_year = yearSent - 1900;
+      sentTime.tm_isdst= -1;
 
       time_t sentLocalTime = mktime(&sentTime);
 
