@@ -361,7 +361,7 @@ msgstr "%1 wiadomo¶%2"
 
 #: mainwin.cpp:1249
 msgid "CMainWindow::%1 msg%2"
-msgstr "%1 wiad."
+msgstr "%1 wie%2"
 
 #: mainwin.cpp:2845
 msgid "CMainWindow::%1: %2 / %3\n"
@@ -718,7 +718,7 @@ msgstr "Brak wiadomo¶ci"
 
 #: mainwin.cpp:1267
 msgid "CMainWindow::No msgs"
-msgstr "Brak wiad."
+msgstr "Brak wie¶ci"
 
 #: mainwin.cpp:2739
 msgid "CMainWindow::Not Available to User"
