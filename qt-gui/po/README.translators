@@ -11,7 +11,7 @@ Who is doing which translation?
 Language:					Maintainer:																				Used Filetype: (ts/po)
 ---------					-----------																				--------------
 bg_BG, Bulgarian	Ivan Dimitrov <dobber@bastun.net>									po
-cs_CZ, czech			Martin Hnatek <m.hnatek@sh.cvut.cz>								?
+cs_CZ, czech			Martin Hnatek <m.hnatek@sh.cvut.cz>								ts
 de, german				Thomas Reitelbach <thomas@licq.org>								ts
 es, espania				-unknown/none-
 fr								Yves Dessertine <yves.d@hrnet.fr>									?
