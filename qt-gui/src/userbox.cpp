@@ -95,7 +95,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_sSortKey = m_nGroupId ? QString::number((int)m_nGroupId) : QString("9999999999");
   m_sPrefix = "1";
   setPixmap(0, *listView()->pixCollapsed);
-  setText(1, name);
+  setText(1, QString::fromLocal8Bit(name));
 
 }
 
@@ -136,10 +136,10 @@ CUserViewItem::~CUserViewItem()
       CUserViewItem *i = static_cast<CUserViewItem*>(parent());
       i->m_nOnlCount--;
       if (i->m_nOnlCount)
-        i->setText(1, QString(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
+        i->setText(1, QString::fromLocal8Bit(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
                    + QString(")"));
       else
-        i->setText(1, i->m_sGroupName);
+        i->setText(1,  QString::fromLocal8Bit(i->m_sGroupName));
     }
     v->numOnline--;
   }
@@ -170,10 +170,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
        i->m_nOnlCount++;
 
      if(i->m_nOnlCount)
-       i->setText(1, QString(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
+       i->setText(1, QString::fromLocal8Bit(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
                   + QString(")"));
      else
-       i->setText(1, i->m_sGroupName);
+       i->setText(1,  QString::fromLocal8Bit(i->m_sGroupName));
      }
 
    m_nStatus = u->Status();

@@ -1144,7 +1144,7 @@ void CMainWindow::updateUserWin()
 
   if (doGroupView)
   {
-    CUserViewItem* gi = new CUserViewItem(0, tr("Other Users"), userView);
+    CUserViewItem* gi = new CUserViewItem(0, tr("Other Users").local8Bit(), userView);
     gi->setOpen(true);
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     for (unsigned short i = 0; i < g->size(); i++)
