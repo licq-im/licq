@@ -1773,7 +1773,18 @@ void CMainWindow::updateStatus()
    lblStatus->update();
 
    // set icon of the licq main widget for window manager
+#ifdef USE_KDE
+#if KDE_VERSION >= 320
+   /* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
+      does no longer update the icon in kicker anymore :(
+      So we do it the "kde-way" here */
+   KWin::setIcons(winId(), CMainWindow::iconForStatus(o->StatusFull()), CMainWindow::iconForStatus(o->StatusFull()));
+#else    // KDE_VERSION
    setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+#endif   // KDE_VERSION
+#else   // USE_KDE
+   setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+#endif   // USE_KDE
 
    gUserManager.DropOwner();
 
