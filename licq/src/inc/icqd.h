@@ -86,17 +86,29 @@ public:
   void SaveConf();
 
   // TCP (user) functions
-  CICQEventTag *icqSendMessage(unsigned long _nUin, const char *m, bool online, unsigned short nLevel, unsigned long id = 0);
-  CICQEventTag *icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, unsigned short nLevel, unsigned long id = 0);
-  CICQEventTag *icqFetchAutoResponse(unsigned long _nUin, unsigned long id = 0);
-  CICQEventTag *icqChatRequest(unsigned long _nUin, const char *reason, bool online, unsigned short nLevel, unsigned long id = 0);
-  CICQEventTag *icqFileTransfer(unsigned long _nUin, const char *_szFilename, const char *_szDescription, bool online, unsigned short nLevel, unsigned long id = 0);
-  void icqFileTransferRefuse(unsigned long _nUin, const char *reason, unsigned long theSequence);
-  void icqFileTransferCancel(unsigned long _nUin, unsigned long seq);
-  void icqFileTransferAccept(unsigned long _nUin, unsigned short thePort, unsigned long theSequence);
-  void icqChatRequestRefuse(unsigned long _nUin, const char *reason, unsigned long theSequence);
-  void icqChatRequestAccept(unsigned long _nUin, unsigned short thePort, unsigned long theSequence);
-  void icqChatRequestCancel(unsigned long _nUin, unsigned long seq);
+  CICQEventTag *icqSendMessage(unsigned long nUin, const char *szMessage,
+     bool bOnline, unsigned short nLevel, unsigned long nSpoofUin = 0);
+  CICQEventTag *icqSendUrl(unsigned long nUin, const char *szUrl,
+     const char *szDescription, bool bOnline, unsigned short nLevel,
+     unsigned long nSpoofUin = 0);
+  CICQEventTag *icqFetchAutoResponse(unsigned long nUin);
+  CICQEventTag *icqChatRequest(unsigned long nUin, const char *szReason,
+     unsigned short nLevel);
+  CICQEventTag *icqMultiPartyChatRequest(unsigned long nUin,
+     const char *szReason, const char *szChatUsers, unsigned short nPort,
+     unsigned short nLevel);
+  CICQEventTag *icqFileTransfer(unsigned long nUin, const char *szFilename,
+     const char *szDescription, unsigned short nLevel);
+  void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
+     unsigned long nSequence);
+  void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
+  void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
+     unsigned long nSequence);
+  void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
+     unsigned long nSequence);
+  void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
+     unsigned long nSequence);
+  void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);

@@ -707,7 +707,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   u->EventPush(e);
   u->Touch();
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-                                  u->Uin()));
+                                  u->Uin(), e->Id()));
   return true;
 }
 
