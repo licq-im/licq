@@ -19,6 +19,7 @@
  */
 
 #include "licq_gtk.h"
+#include "utilities.h"
 
 #include "licq_icqd.h"
 #include "licq_user.h"
@@ -54,11 +55,12 @@ struct search_user
 	GtkWidget *uin;
 	GtkWidget *list;
 	GtkWidget *clear;
-	struct e_tag_data *etag;
+	GtkWidget *statusbar;
+	unsigned long e_tag;
 };
 
-struct search_user *su;
-static gint num_found_users;
+struct search_user *su = NULL;
+static gint num_found_users = 0;
 
 GtkWidget *
 left_aligned_label(const char *lbl)
@@ -70,6 +72,9 @@ left_aligned_label(const char *lbl)
 
 const char *genders[] = {"Unspecified", "Female", "Male"};
 static const int NUM_GENDERS = 3;
+const char *ages[] = {"Unspecified", "18 - 22", "23 - 29", "30 - 39", "40 - 49",
+		"50 - 59", "60+"};
+static const int NUM_AGES = 7;
 
 GtkWidget *
 new_entry(const char *label, GtkWidget *table, int c, int r)
@@ -87,21 +92,18 @@ new_entry(const char *label, GtkWidget *table, int c, int r)
 void search_user_window()
 {
 	/* Only one search window */
-	if (su != 0) {
+	if (su != NULL) {
 		gdk_window_raise(su->window->window);
 		return;
 	}
 
 	su = g_new0(struct search_user, 1);
-	su->etag = g_new0(struct e_tag_data, 1);
 
 	num_found_users = 0;
 
 	/* Create the window */
 	su->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(su->window), "Licq - User Search");
-
-	// gtk_window_set_default_size(GTK_WINDOW(su->window), 550, 350);
 
 	/* destroy event for window */
 	g_signal_connect(G_OBJECT(su->window), "destroy",
@@ -132,20 +134,9 @@ void search_user_window()
 	su->age = gtk_option_menu_new();
 	GtkWidget *age_menu = gtk_menu_new();
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(su->age), age_menu);
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("Unspecified"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("18 - 22"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("23 - 29"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("30 - 39"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("40 - 49"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("50 - 59"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
-			gtk_menu_item_new_with_label("60+"));
+	for (int i = 0; i < NUM_AGES; ++i)
+		gtk_menu_shell_append(GTK_MENU_SHELL(age_menu), 
+				gtk_menu_item_new_with_label(ages[i]));
 	gtk_option_menu_set_history(GTK_OPTION_MENU(su->age), 0);
 	gtk_table_attach(GTK_TABLE(whitepages), su->age,
 			1, 2, 3, 4, GtkAttachOptions(GTK_FILL | GTK_EXPAND),
@@ -301,17 +292,14 @@ void search_user_window()
   gtk_box_pack_start(GTK_BOX(main_vbox), scroll, TRUE, TRUE, 5);
 
 	/* The statusbar */
-	GtkWidget *statusbar = gtk_statusbar_new();
-  gtk_box_pack_start(GTK_BOX(main_vbox), statusbar, TRUE, TRUE, 5);
+	su->statusbar = gtk_statusbar_new();
+  gtk_box_pack_start(GTK_BOX(main_vbox), su->statusbar, TRUE, TRUE, 5);
 	
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(su->statusbar),
 			"sta");
-	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), id);
-	gtk_statusbar_push(GTK_STATUSBAR(statusbar), id,
+	gtk_statusbar_pop(GTK_STATUSBAR(su->statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(su->statusbar), id,
 			"Enter Search Parameters");
-
-	/* The etag has to know about the statusbar */
-	su->etag->statusbar = statusbar;
 
 	//gtk_widget_set_size_request(GTK_WIDGET(su->window), 435, 465); 
 	gtk_widget_show_all(su->window);
@@ -334,6 +322,7 @@ void clear_callback(GtkWidget *widget, gpointer data)
 			GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(su->list)));
 	gtk_list_store_clear(store);
 	gtk_widget_set_sensitive(su->clear, FALSE);
+	change_status(su->statusbar, "sta", "");
 }
 
 const char *
@@ -348,20 +337,20 @@ get_index(GtkWidget *w)
 	return gtk_option_menu_get_history(GTK_OPTION_MENU(w));
 }
 
-void search_callback(GtkWidget *widget, gpointer data)
+void 
+search_callback(GtkWidget *widget, gpointer data)
 {
-	change_status(su->etag->statusbar, "sta", 
-			"Searching, this may take awhile.");
+	change_status(su->statusbar, "sta", "Searching, this may take awhile.");
 	
 	unsigned short mins[7] = {0, 18, 23, 30, 40, 50, 60};
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
 
-	gulong uin = (gulong)(atol(get_text(su->uin)));
+	gulong uin = strtoul(get_text(su->uin), 0, 10);
 
 	if(uin >= 10000)
-		su->etag->e_tag = icq_daemon->icqSearchByUin(uin);
+		su->e_tag = icq_daemon->icqSearchByUin(uin);
 	else
-    su->etag->e_tag = icq_daemon->icqSearchWhitePages(
+    su->e_tag = icq_daemon->icqSearchWhitePages(
 				get_text(su->first_name),
 				get_text(su->last_name),
 				get_text(su->nick_name),
@@ -380,42 +369,41 @@ void search_callback(GtkWidget *widget, gpointer data)
 				false);
 }
 
-void search_list_double_click(GtkWidget *widget,
-			      GdkEventButton *eb,
-			      gpointer data)
+void 
+search_list_double_click(GtkWidget *widget, GdkEventButton *eb, gpointer data)
 {
-	gulong uin;
-	ICQUser *user;
+	// we'll consider left button double click only
+  if (eb->type != GDK_2BUTTON_PRESS || eb->button != 1)
+		return;
 
 	/* Get which cell was clicked in */
 	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(su->list));
+
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	
 	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
-		return;
-	if(!(eb->type == GDK_2BUTTON_PRESS && eb->button == 1))
 		return;
 
 	gchar *c_uin;
 	gtk_tree_model_get(model, &iter, 1, &c_uin, -1);
-	uin = atol(c_uin);
+	gulong uin = strtoul(c_uin, 0, 10);
 	g_free(c_uin);
 
-	if((uin == 0) || (user = gUserManager.FetchUser(uin, LOCK_N)))
+	// either invalid uin or we have this user already
+  if (uin == 0 || gUserManager.FetchUser(uin, LOCK_N) != NULL)
 		return;
 
 	icq_daemon->AddUserToList(uin);
 
 	char *for_statusbar = g_strdup_printf("User (%ld) added", uin);
-	change_status(su->etag->statusbar, "sta", for_statusbar);
+	change_status(su->statusbar, "sta", for_statusbar);
 	g_free(for_statusbar);
 }
 
 void search_result(ICQEvent *event)
 {	
 	/* Make sure it's the right event */
-	if(!event->Equals(su->etag->e_tag))
+	if (su == NULL || !event->Equals(su->e_tag))
 		return;
 
 	CSearchAck *search_ack = event->SearchAck();
@@ -428,43 +416,27 @@ void search_result(ICQEvent *event)
 		search_failed();
 }
 
-void search_done(bool more)
+void 
+search_done(bool more)
 {
 	if (more)
-		change_status(su->etag->statusbar, "sta",
+		change_status(su->statusbar, "sta",
 			"More users found, narrow your search and try again.");
 	else
-		change_status(su->etag->statusbar, "sta",
+		change_status(su->statusbar, "sta",
 			"Search complete, double click user to add her/him.");
 }
 
-std::string
-s_convert_to_utf8(const gchar *input_text, const gchar *input_enc)
+void 
+search_found(CSearchAck *s)
 {
-	if (input_text == 0 || input_text[0] == '\0')
-		return string("");
-	char *p = convert_to_utf8(input_text, input_enc);
-	string ret("");
-	if (p != 0) {
-		ret = p;
-		g_free(p);
-	}
-	return ret;
-}
-
-void search_found(CSearchAck *s)
-{
-	cerr << "s_f 1\n";
-	string name(
-			s_convert_to_utf8(s->FirstName(), 0) + ' ' + 
-			s_convert_to_utf8(s->LastName(), 0));
+	string name(s_convert_to_utf8(s->FirstName()) + ' ' + 
+  		s_convert_to_utf8(s->LastName()));
 
 	char *uin = g_strdup_printf("%ld", s->Uin());
-	string alias(s_convert_to_utf8(s->Alias(), 0));
-	string email(s_convert_to_utf8(s->Email(), 0));
+	string alias(s_convert_to_utf8(s->Alias()));
+	string email(s_convert_to_utf8(s->Email()));
 
-	cerr << "s_f 2\n";
-	
 	GtkListStore *store = 
 			GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(su->list)));
 	GtkTreeIter iter;
@@ -491,19 +463,18 @@ void search_found(CSearchAck *s)
 		gender = "F";
 	else if (s->Gender() == 2)
 		gender = "M";
-	char *sex_age = 0;
+	char *sex_age;
 	if (s->Age())
 		sex_age = g_strdup_printf("%s/%d", gender, s->Age());
 	else
 		sex_age = g_strdup_printf("%s/?", gender);
 	gtk_list_store_set(store, &iter, 5, sex_age, -1);
+	g_free(sex_age);
 
 	if (s->Auth())
 		gtk_list_store_set(store, &iter, 6, "No", -1);
 	else
 		gtk_list_store_set(store, &iter, 6, "Yes", -1);
-	
-	cerr << "s_f 3\n";
 	
 	num_found_users++;
 	gtk_widget_set_sensitive(su->clear, TRUE);
@@ -511,11 +482,13 @@ void search_found(CSearchAck *s)
 
 void search_failed()
 {
-	change_status(su->etag->statusbar, "sta", "Search failed.");
+	change_status(su->statusbar, "sta", "Search failed.");
 }
 
-void search_close(GtkWidget *widget, gpointer data)
+void 
+search_close(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy(su->window);
-	su = 0;
+	g_free(su);
+	su = NULL;
 }
