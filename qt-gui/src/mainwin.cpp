@@ -1739,9 +1739,9 @@ void CMainWindow::initMenu(void)
    mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("Edit Groups"), this, SLOT(showEditGrpDlg()));
-   //mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
+   mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
    //mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
-   //mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
+   mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
    mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("Register User"), this, SLOT(slot_register()));
