@@ -250,7 +250,10 @@ CEventChat::CEventChat(const char *szReason, const char *szClients,
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
-  m_szClients = strdup(szClients);
+  if (nPort == 0)
+    m_szClients = NULL;
+  else
+    m_szClients = strdup(szClients);
   m_nPort = nPort;
 }
 
