@@ -60,7 +60,6 @@
 #include "eventdesc.h"
 #include "gui-defines.h"
 
-
 #include "user.h"
 #include "mledit.h"
 #include "icqevent.h"
@@ -69,9 +68,6 @@
 #define NUM_MSG_PER_HISTORY 20
 #define COLOR_SENT "blue"
 #define COLOR_RECEIVED "red"
-
-// ugly, but for now
-#include "icqf_history.cpp"
 
 //#define TEST_POS
 
@@ -470,6 +466,32 @@ void ICQFunctions::CreateAboutTab()
   mleAbout = new MLEditWrap(true, p);
 }
 
+
+void ICQFunctions::CreateHistoryTab()
+{
+  unsigned short CR = 0;
+
+  tabLabel[TAB_HISTORY] = tr("History");
+  fcnTab[TAB_HISTORY] = new QWidget(this, tabLabel[TAB_HISTORY]);
+  QWidget *p = fcnTab[TAB_HISTORY];
+
+  QGridLayout *lay = new QGridLayout(p, 3, 3, 8, 0);
+
+  mleHistory = new QTextView(p);
+  lay->addMultiCellWidget(mleHistory, CR, CR, 0, 2);
+
+  lblHistory = new QLabel(p);
+  CR++;
+  lay->addMultiCellWidget(lblHistory, CR, CR, 0, 1);
+
+  chkHistoryReverse = new QCheckBox("Reverse",p);
+  connect(chkHistoryReverse,SIGNAL(toggled(bool)),SLOT(ReverseHistory(bool)));
+  lay->addWidget(chkHistoryReverse, CR, 2);
+  chkHistoryReverse->setChecked(true);
+  //lay->addWidget(new QLabel(tr("History File:"), p), ++CR, 0);
+  //nfoHistory = new CInfoField(p, true);
+  //lay->addMultiCellWidget(nfoHistory, CR, CR, 1, 2);
+}
 
 //-----ICQFunctions::keyPressEvent----------------------------------------------
 void ICQFunctions::keyPressEvent(QKeyEvent *e)
@@ -1127,6 +1149,165 @@ void ICQFunctions::SaveAbout()
 }
 
 
+//-----ICQFunctions::SetupHistory--------------------------------------------
+void ICQFunctions::SetupHistory()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  //nfoHistory->setData(u->HistoryName());
+  if (!u->GetHistory(m_lHistoryList))
+  {
+    mleHistory->setText(tr("Error loading history"));
+  }
+  else
+  {
+    m_bHistoryReverse = true;
+    m_iHistoryEIter = m_lHistoryList.end();
+    m_iHistorySIter = m_iHistoryEIter;
+    for (unsigned short i = 0;
+         (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
+         i++)
+    {
+      m_iHistorySIter--;
+    }
+    m_nHistoryIndex = m_lHistoryList.size();
+    ShowHistory();
+  }
+  gUserManager.DropUser(u);
+}
+
+void ICQFunctions::ReverseHistory(bool newVal)
+{
+  if (chkHistoryReverse->isChecked() != newVal)
+    chkHistoryReverse->setChecked(newVal);
+  else if(m_bHistoryReverse != newVal)
+  {
+    m_bHistoryReverse = newVal;
+    ShowHistory();
+  }
+}
+
+void ICQFunctions::ShowHistoryPrev()
+{
+  if (m_iHistorySIter != m_lHistoryList.begin())
+  {
+    m_iHistoryEIter = m_iHistorySIter;
+    m_nHistoryIndex -= NUM_MSG_PER_HISTORY;
+    for (unsigned short i = 0;
+         (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
+         i++)
+    {
+	    m_iHistorySIter--;
+    }
+    ShowHistory();
+  }
+}
+
+void ICQFunctions::ShowHistoryNext()
+{
+  if (m_iHistoryEIter != m_lHistoryList.end())
+  {
+    m_iHistorySIter = m_iHistoryEIter;
+    for (unsigned short i = 0;
+         (i < NUM_MSG_PER_HISTORY) && (m_iHistoryEIter != m_lHistoryList.end());
+         i++)
+    {
+	    m_iHistoryEIter++;
+	    m_nHistoryIndex++;
+    }
+    ShowHistory();
+  }
+}
+
+void ItalisizeLine(QString &t, QString pre, unsigned short inspos)
+{
+  int i = 0;
+  while ( (i = t.find(pre, i)) != -1)
+  {
+    t.insert(i + inspos, "<i>");
+    i = t.find("<br>", i + inspos);
+    if (i == -1)
+    {
+      t.append("</i>");
+      break;
+    }
+    else
+      t.insert(i, "</i>");
+  }
+}
+
+
+//-----ICQFunctions::ShowHistory--------------------------------------------
+void ICQFunctions::ShowHistory()
+{
+  // Last check (should never be true)
+  if (m_lHistoryList.size() == 0) return;
+  HistoryListIter tempIter;
+
+  if(m_bHistoryReverse)
+  {
+    tempIter = m_iHistoryEIter;
+    tempIter--;
+  }
+  else
+  {
+    tempIter = m_iHistorySIter;
+  }
+  QString s, st;
+  QDateTime d;
+  m_nHistoryShowing = 0;
+  while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
+  {
+
+    d.setTime_t((*tempIter)->Time());
+    s.sprintf("<font color=\"%s\"><b>%s (%s) [%c%c%c]</b><br><br>",
+              (*tempIter)->Direction() == D_RECEIVER ? COLOR_RECEIVED : COLOR_SENT,
+              (const char *)EventDescription(*tempIter),
+              (const char *)d.toString(),
+              (*tempIter)->IsDirect() ? 'D' : '-',
+              (*tempIter)->IsMultiRec() ? 'M' : '-',
+              (*tempIter)->IsUrgent() ? 'U' : '-');
+    QString t = QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*tempIter)->Text() ));
+    ItalisizeLine(t, "<p>&gt;", 3);
+    ItalisizeLine(t, "<br>&gt;", 4);
+    //s.append(QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*tempIter)->Text() )));
+    s.append(t);
+    s.append("</font><br><hr><br>");
+    st.append(s);
+    m_nHistoryShowing++;
+    if(m_bHistoryReverse)
+    {
+      if (tempIter == m_iHistorySIter)
+        break;
+      tempIter--;
+    }
+    else
+    {
+       tempIter++;
+       if (tempIter == m_iHistoryEIter)
+         break;
+    }
+  }
+  lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
+                         "[<font color=\"%2\">Sent</font>] "
+                         "%3 to %4 of %5")
+                      .arg(COLOR_RECEIVED).arg(COLOR_SENT)
+                      .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
+                      .arg(m_nHistoryIndex)
+                      .arg(m_lHistoryList.size()));
+  mleHistory->setText(st);
+  mleHistory->center(0,0,0,0);
+}
+
+
+//-----ICQFunctions::saveHistory---------------------------------------------
+void ICQFunctions::saveHistory()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  u->SaveHistory(mleHistory->text().local8Bit());
+  gUserManager.DropUser(u);
+}
+
+
 //-----ICQFunctions::generateReply-------------------------------------------
 void ICQFunctions::generateReply()
 {
@@ -1148,7 +1329,9 @@ void ICQFunctions::setSpoofed()
                             "responsibility for your actions.\n"
                             "Do you want to continue?"),
                    tr("Ok"), tr("Cancel")))
+    {
       chkSpoof->setChecked(false);
+    }
   }
 }
 
@@ -1189,7 +1372,7 @@ void ICQFunctions::specialFcn(int theFcn)
 #ifdef USE_KDE
     // !!! FIXME !!!!
     //QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
-    QStringList fl = KFileDialog::getOpenFileName(NULL, NULL, this);
+    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
     QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #endif

@@ -114,10 +114,9 @@ protected:
   // History tab
   void CreateHistoryTab();
   CInfoField *nfoHistory;
-  MLEditWrap *mleHistory;
-  QLabel *lblHistory, *lblHistInfo;
+  QTextView *mleHistory;
+  QLabel *lblHistory;
   QCheckBox *chkHistoryReverse;
-  QScrollBar *scrHistory;
   HistoryList m_lHistoryList;
   HistoryListIter m_iHistorySIter;
   HistoryListIter m_iHistoryEIter;
@@ -159,7 +158,6 @@ protected slots:
    void specialFcn(int);
    void ReverseHistory(bool);
    void slot_updatetime();
-   void slot_histslider(int);
 
 signals:
    void signal_updatedUser(unsigned long, unsigned long);
