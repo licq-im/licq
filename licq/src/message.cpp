@@ -184,12 +184,15 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 
 CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
                        unsigned long _nFileSize, unsigned long _nSequence,
-                       time_t _tTime, unsigned long _nFlags)
+                       time_t _tTime, unsigned long _nFlags,
+                       unsigned long _nMsgID1, unsigned long _nMsgID2)
    : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags)
 {
   m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
   m_szFileDescription = strdup(_szFileDescription == NULL ? "" : _szFileDescription);
   m_nFileSize = _nFileSize;
+	m_nMsgID[0] = _nMsgID1;
+	m_nMsgID[1] = _nMsgID2;
 }
 
 
@@ -279,17 +282,21 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 //=====CEventChat===============================================================
 
 CEventChat::CEventChat(const char *szReason, unsigned long nSequence,
-                       time_t tTime, unsigned long nFlags)
+                       time_t tTime, unsigned long nFlags,
+											 unsigned long nMsgID1, unsigned long nMsgID2)
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
   m_szClients = NULL;
   m_nPort = 0;
+  m_nMsgID[0] = nMsgID1;
+  m_nMsgID[1] = nMsgID2;
 }
 
 CEventChat::CEventChat(const char *szReason, const char *szClients,
    unsigned short nPort, unsigned long nSequence,
-   time_t tTime, unsigned long nFlags)
+   time_t tTime, unsigned long nFlags, unsigned long nMsgID1,
+   unsigned long nMsgID2)
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
@@ -298,6 +305,8 @@ CEventChat::CEventChat(const char *szReason, const char *szClients,
   else
     m_szClients = strdup(szClients);
   m_nPort = nPort;
+  m_nMsgID[0] = nMsgID1;
+  m_nMsgID[1] = nMsgID2;
 }
 
 void CEventChat::CreateDescription()

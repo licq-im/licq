@@ -320,20 +320,22 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequen
 
 //-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-   unsigned long nSequence, bool bServer)
+   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
 {
    // basically a fancy tcp ack packet which is sent late
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
 	gLog.Info("%sAccepting file transfer from %s (#%ld).\n",
-						bServer ? L_SRVxSTR : L_TCPxSTR, u->GetAlias(), -nSequence);
-	if (bServer)
-	{
-	}
-	else
+						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+	if (bDirect)
 	{
 		CPT_AckFileAccept p(nPort, nSequence, u);
 		AckTCP(p, u->SocketDesc());
+	}
+	else
+	{
+		CPU_AckFileAccept *p = new CPU_AckFileAccept(u, nMsgID, nSequence, nPort);
+		SendEvent_Server(p);
 	}
 
   gUserManager.DropUser(u);
@@ -341,20 +343,31 @@ void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
 
 
 
-//-----CICQDaemon::chatRefuse-----------------------------------------------------------------------------
+//-----CICQDaemon::fileRefuse-----------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-   unsigned long nSequence)
+   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
 {
    // add to history ??
   char *szReasonDos = gTranslator.NToRN(szReason);
   gTranslator.ClientToServer(szReasonDos);
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sRefusing file transfer from %s (#%ld).\n", L_TCPxSTR,
-     u->GetAlias(), -nSequence);
-  CPT_AckFileRefuse p(szReasonDos, nSequence, u);
-  AckTCP(p, u->SocketDesc());
-  gUserManager.DropUser(u);
+  gLog.Info("%sRefusing file transfer from %s (#%ld).\n",
+						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+
+	if (bDirect)
+	{
+		CPT_AckFileRefuse p(szReasonDos, nSequence, u);
+		AckTCP(p, u->SocketDesc());
+  }
+	else
+	{
+		CPU_AckFileRefuse *p = new CPU_AckFileRefuse(nUin, nMsgID, nSequence,
+																								 szReasonDos);
+		SendEvent_Server(p);
+	}
+
+	gUserManager.DropUser(u);
 
   if (szReasonDos)
     delete [] szReasonDos;
@@ -434,18 +447,28 @@ void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned long nSequenc
 
 //-----CICQDaemon::chatRefuse-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-   unsigned long nSequence)
+   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sRefusing chat request with %s (#%ld).\n", L_TCPxSTR,
-     u->GetAlias(), -nSequence);
+  gLog.Info("%sRefusing chat request with %s (#%ld).\n",
+						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
   char *szReasonDos = gTranslator.NToRN(szReason);
   gTranslator.ClientToServer(szReasonDos);
 
-  CPT_AckChatRefuse p(szReasonDos, nSequence, u);
-  AckTCP(p, u->SocketDesc());
+	if (bDirect)
+	{
+		CPT_AckChatRefuse p(szReasonDos, nSequence, u);
+		AckTCP(p, u->SocketDesc());
+	}
+	else
+	{
+		CPU_AckChatRefuse *p = new CPU_AckChatRefuse(u->Uin(), nMsgID, nSequence,
+																								 szReasonDos);
+		SendEvent_Server(p);
+	}
+
   gUserManager.DropUser(u);
 
   if (szReasonDos)
@@ -455,16 +478,27 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
 
 //-----CICQDaemon::chatAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-   unsigned long nSequence)
+   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sAccepting chat request with %s (#%ld).\n", L_TCPxSTR,
-     u->GetAlias(), -nSequence);
-  CPT_AckChatAccept p(nPort, nSequence, u);
-  AckTCP(p, u->SocketDesc());
+  gLog.Info("%sAccepting chat request with %s (#%ld).\n",
+						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+
+	if (bDirect)
+	{
+		CPT_AckChatAccept p(nPort, nSequence, u);
+		AckTCP(p, u->SocketDesc());
+	}
+	else
+	{
+		CPU_AckChatAccept *p = new CPU_AckChatAccept(nUin, nMsgID, nSequence,
+																								 nPort);
+		SendEvent_Server(p);
+	}
+
   gUserManager.DropUser(u);
 }
 
@@ -1727,7 +1761,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         break;
 
 #else // We do not support OpenSSL
-        gLog.Info("%sReceived secure channel request from %s (%ld) but we do not support OpenSSL.\n",
+       gLog.Info("%sReceived secure channel request from %s (%ld) but we do not support OpenSSL.\n",
            L_TCPxSTR, u->GetAlias(), nUin);
         // Send the nack back
         CPT_AckOpenSecureChannel p(theSequence, false, u);
@@ -1882,6 +1916,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					nICBMCommand = ICQ_CMDxSUB_FILE;
 				else if (strstr(szPlugin, "Chat"))
 					nICBMCommand = ICQ_CMDxSUB_CHAT;
+				else if (strstr(szPlugin, "URL"))
+					nICBMCommand = ICQ_CMDxSUB_URL;
+				else if (strstr(szPlugin, "Contacts"))
+					nICBMCommand = ICQ_CMDxSUB_CONTACTxLIST;
 				else
 				{
 					gLog.Info("%sUnknown direct ack ICBM plugin type: %s\n", L_TCPxSTR,
@@ -2203,7 +2241,8 @@ void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
 }
 
 
-bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
+bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
+																bool bConfirm)
 {
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
@@ -2252,24 +2291,27 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
         return false;
       }
 
-      // Get handshake confirmation
-      CPacketTcp_Handshake_Confirm p_confirm;
-      int nGot = s->RecvBuffer().getDataSize();
-      s->ClearRecvBuffer();
+			if (bConfirm)
+			{
+				// Get handshake confirmation
+				CPacketTcp_Handshake_Confirm p_confirm;
+				int nGot = s->RecvBuffer().getDataSize();
+				s->ClearRecvBuffer();
       
-      if (nGot > 4)
-      {
-				if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
-      }
-      else
-      {
-        do
+				if (nGot > 4)
 				{
-					if (!s->RecvPacket()) goto sock_error;
-				} while (!s->RecvBufferFull());
+					if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
+				}
+				else
+				{
+					do
+					{
+						if (!s->RecvPacket()) goto sock_error;
+					} while (!s->RecvBufferFull());
 
-        if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
-      }
+					if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
+				}
+			}
 
       nVersion = VersionToUse(nVersionMajor);
 

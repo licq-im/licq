@@ -116,13 +116,14 @@ class CEventFile : public CUserEvent
 public:
    CEventFile(const char *_szFilename, const char *_szFileDescription,
               unsigned long _nFileSize, unsigned long _nSequence, time_t _tTime,
-              unsigned long _nFlags);
+              unsigned long _nFlags, unsigned long _nMsgID1 = 0,
+              unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventFile *Copy()
       {
         CEventFile *e = new CEventFile(m_szFilename, m_szFileDescription,
-         m_nFileSize, m_nSequence, m_tTime, m_nFlags);
+         m_nFileSize, m_nSequence, m_tTime, m_nFlags, m_nMsgID[0], m_nMsgID[1]);
         e->CopyBase(this);
         return e;
       }
@@ -130,11 +131,13 @@ public:
    const char *Filename()  { return m_szFilename; }
    unsigned long FileSize()  {  return m_nFileSize; }
    const char *FileDescription() { return m_szFileDescription; }
+	 unsigned long *MessageID() { return m_nMsgID; }
 protected:
    void CreateDescription();
    char *m_szFilename;
    char *m_szFileDescription;
    unsigned long m_nFileSize;
+   unsigned long m_nMsgID[2];
 };
 
 
@@ -170,26 +173,29 @@ class CEventChat : public CUserEvent
 {
 public:
    CEventChat(const char *szReason, unsigned long nSequence, time_t tTime,
-      unsigned long nFlags);
+      unsigned long nFlags, unsigned long nMsgID1 = 0, unsigned long nMsgID2=0);
    CEventChat(const char *szReason, const char *szClients, unsigned short nPort,
-      unsigned long nSequence, time_t tTime, unsigned long nFlags);
+      unsigned long nSequence, time_t tTime, unsigned long nFlags,
+      unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
   virtual ~CEventChat();
   virtual void AddToHistory(ICQUser *, direction);
   virtual CEventChat *Copy()
      {
        CEventChat *e = new CEventChat(m_szText, m_szClients, m_nPort,
-        m_nSequence, m_tTime, m_nFlags);
+        m_nSequence, m_tTime, m_nFlags, m_nMsgID[0], m_nMsgID[1]);
        e->CopyBase(this);
        return e;
      }
   const char *Reason()  { return m_szReason; }
   const char *Clients()  { return m_szClients; }
   unsigned short Port()   { return m_nPort; }
+  unsigned long *MessageID() { return m_nMsgID; }
 protected:
   void CreateDescription();
   char *m_szReason;
   char *m_szClients;
   unsigned short m_nPort;
+  unsigned long m_nMsgID[2];
 };
 
 

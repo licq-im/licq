@@ -1438,7 +1438,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
-  unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
+  /*unsigned short nSubSequence =*/ packet.UnpackUnsignedShortBE();
 
   switch (nSubtype)
   {
@@ -1542,7 +1542,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       unsigned short nLen;
       unsigned char nMsgType, nMsgFlags;
-      unsigned long nPluginLen;
      
       nLen = advMsg.UnpackUnsignedShort();
       advMsg.incDataPosRead(nLen - 2);
@@ -1572,7 +1571,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 				if (junkChar != 0x0D)  message[j++] = junkChar;
 			}
 			message[j] = '\0'; // ensure null terminated
-  
+
+			// translate now
+			gTranslator.ServerToClient(message);
+
 			bool bNewUser = false;
 			ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
 			if (u == NULL)
@@ -1581,285 +1583,16 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 				bNewUser = true;
 			}
 
-			switch (nMsgType)
-			{
-			case ICQ_CMDxSUB_ICBM:
-			{
-				if (nLen != 1)
-				{
-					char *buf;
-					gLog.Warn("%sInvalid ICBM:\n%s\n", L_SRVxSTR, packet.print(buf));
-					delete [] buf;
-					break;
-				}
-				
-				nLen = advMsg.UnpackUnsignedShort();
-				advMsg.incDataPosRead(18);
+			ProcessMessage(u, advMsg, message, nMsgType, nMask, nMsgID,
+										 nSequence, bIsAck, bNewUser);
 
-				nPluginLen = advMsg.UnpackUnsignedLong();
-				char szPlugin[nPluginLen+1];
-				for (unsigned long i = 0; i < nPluginLen; i++)
-					advMsg >> szPlugin[i];
-				szPlugin[nPluginLen] = '\0';
-
-				advMsg.incDataPosRead(nLen - 22 - nPluginLen);
-
-				advMsg.UnpackUnsignedLong();  // bytes remaining
-   
-				int nCommand = 0;
-				if (strstr(szPlugin, "File"))
-					nCommand = ICQ_CMDxSUB_FILE;
-				else if (strstr(szPlugin, "URL"))
-					nCommand = ICQ_CMDxSUB_URL;
-				else if (strstr(szPlugin, "Chat"))
-					nCommand = ICQ_CMDxSUB_CHAT;
-				else if (strstr(szPlugin, "Contacts"))
-					nCommand = ICQ_CMDxSUB_CONTACTxLIST;
-				else
-				{
-					gLog.Info("%sUnknown ICBM plugin type: %s\n", L_SRVxSTR, szPlugin);
-					break;
-				}
-
-				unsigned long nLongLen = advMsg.UnpackUnsignedLong();
-				char szMessage[nLongLen+1]; 
-				for (unsigned long j = 0; j < nLongLen; j++)
-					advMsg >> szMessage[j];
-				szMessage[nLongLen] = '\0';
-
-				switch (nCommand)
-				{
-				case ICQ_CMDxSUB_FILE:
-				{
-					int nPort = advMsg.UnpackUnsignedShortBE();
-
-					if (bIsAck)
-					{
-				    ICQEvent *e = DoneServerEvent(nMsgID[1], EVENT_ACKED);
-				    CExtendedAck *pExtendedAck;
-						pExtendedAck = new CExtendedAck(nPort != 0, nPort, szMessage);
-
-						if (e != NULL)
-						{
-							e->m_pExtendedAck = pExtendedAck;
-							e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-							gUserManager.DropUser(u);
-							ProcessDoneEvent(e);
-							return;
-						}
-						else
-						{
-							gLog.Warn("%sAck for unknown event.\n", L_SRVxSTR);
-							delete pExtendedAck;
-							return;
-						}
-					}
-					else
-					{
-						advMsg.UnpackUnsignedShort(); // Unknown
-						nLen = advMsg.UnpackUnsignedShort(); // filename len
-						char szFileName[nLen];
-						for (unsigned short i = 0; i < nLen; i++)
-							advMsg >> szFileName[i];
-
-						unsigned long nFileSize = advMsg.UnpackUnsignedLong();
-
-						gLog.Info("%sFile transfer request through server from %s (%ld).\n",
-								L_SRVxSTR, u->GetAlias(), nUin);
-
-						gTranslator.ServerToClient(szMessage);
-						CEventFile *e = new CEventFile(szFileName, szMessage, nFileSize,
-									 nSequence, TIME_NOW, nMask);
-
-						if (bNewUser)
-						{
-							if (Ignore(IGNORE_NEWUSERS))
-							{
-								RejectEvent(nUin, e);
-								break;
-							}
-							AddUserToList(u);
-							bNewUser = false;
-						}
-
-						if (!AddUserEvent(u, e)) break;
-						m_xOnEventManager.Do(ON_EVENT_FILE, u);
-					}
-
-					break;
-				}
-
-				case ICQ_CMDxSUB_CHAT:
-				{
-					char szChatClients[1024];
-					unsigned short nPort, nReversedPort;
-					advMsg.UnpackString(szChatClients, sizeof(szChatClients));
-					nReversedPort = advMsg.UnpackUnsignedShortBE();
-					advMsg >> nPort;
-					
-					if (nPort == 0)
-						nPort = nReversedPort;
-
-					if (bIsAck)
-					{
-				    ICQEvent *e = DoneServerEvent(nMsgID[1], EVENT_ACKED);
-				    CExtendedAck *pExtendedAck;
-						pExtendedAck = new CExtendedAck(nPort != 0, nPort, szMessage);
-
-						if (e != NULL)
-						{
-							gLog.Info("%sChat request accepted by %s (%ld).\n", L_SRVxSTR,
-												u->GetAlias(), nUin);
-							e->m_pExtendedAck = pExtendedAck;
-							e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-							gUserManager.DropUser(u);
-							ProcessDoneEvent(e);
-							return;
-						}
-						else
-						{
-							gLog.Warn("%sAck for unknown event.\n", L_SRVxSTR);
-							delete pExtendedAck;
-							return;
-						}						
-					}
-					else
-					{
-						gLog.Info("%sChat request through server from %s (%ld).\n",
-											L_SRVxSTR, u->GetAlias(), nUin);
-
-						gTranslator.ServerToClient(szMessage);
-						CEventChat *e = new CEventChat(szMessage, szChatClients, 0,
-																					 nSequence, TIME_NOW, nMask);
-						if (bNewUser)
-						{
-							if (Ignore(IGNORE_NEWUSERS))
-							{
-								RejectEvent(nUin, e);
-								break;
-							}
-							AddUserToList(u);
-							bNewUser = false;
-						}
-
-						if (!AddUserEvent(u, e)) break;
-						m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-					}
-					break;
-				}
-
-				case ICQ_CMDxSUB_URL:
-				{
-					gLog.Info("%sURL from %s (%ld).\n",	L_SRVxSTR, u->GetAlias(), nUin);
-
-					CEventUrl *e = CEventUrl::Parse(szMessage,
-						ICQ_CMDxRCV_SYSxMSGxONLINE, TIME_NOW, nMask);
-					if (e == NULL)
-					{
-						char *buf;
-						gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR,
-							packet.print(buf));
-						delete [] buf;
-						break;
-					}
-
-					if (bNewUser)
-					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
-							RejectEvent(nUin, e);
-							break;
-						}
-						AddUserToList(u);
-						bNewUser = false;
-					}
-
-					if (!AddUserEvent(u, e)) break;
-					m_xOnEventManager.Do(ON_EVENT_URL, u);
-					break;
-				}
-				case ICQ_CMDxSUB_CONTACTxLIST:
-				{
-					gLog.Info("%sContact list from %s (%ld).\n", L_SRVxSTR, u->GetAlias(),
-										nUin);
-					CEventContactList *e = CEventContactList::Parse(szMessage,
-																										 ICQ_CMDxRCV_SYSxMSGxONLINE,
-																													TIME_NOW, nMask);
-					if (e == NULL)
-					{
-						char *buf;
-						gLog.Warn("%sInvalid contact list:\n%s\n", L_WARNxSTR,
-											packet.print(buf));
-						delete [] buf;
-						break;
-					}
-
-					if (bNewUser)
-					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
-							RejectEvent(nUin, e);
-							break;
-						}
-						AddUserToList(u);
-						bNewUser = false;
-					}
-
-					if (!AddUserEvent(u, e)) break;
-					m_xOnEventManager.Do(ON_EVENT_MSG, u);
-					break;
-				}
-				} // switch nCommand
-
-				break;
-			}
-
-			case ICQ_CMDxSUB_MSG:
-			{
-				unsigned long fore, back;
-				advMsg >> fore >> back;
-				if (back == fore)
-				{
-					back = 0xFFFFFF;
-					fore = 0x000000;
-				}
-
-				CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
-																				TIME_NOW, nMask);
-				e->SetColor(fore, back);
-
-				if (bNewUser)
-				{
-					if (Ignore(IGNORE_NEWUSERS))
-					{
-						RejectEvent(nUin, e);
-						break;
-					}
-					AddUserToList(u);
-					bNewUser = false;
-				}
-
-				if (!AddUserEvent(u, e)) break;
-				m_xOnEventManager.Do(ON_EVENT_MSG, u);
-				break;
-			}
-
-			default:
-      {
-				char *buf;
-				gLog.Warn("%sUnknown format 2 message:\n%s\n", L_SRVxSTR,
-									packet.print(buf));
-				delete [] buf;
-			}
-			} // switch nMsgType
-
-			if (bNewUser)
+			if (bNewUser) // can be changed in ProcessMessage
 			{
 				delete u;
 				break;
 			}
+
 			gUserManager.DropUser(u);
-      
 			break;
     }
     case 4:

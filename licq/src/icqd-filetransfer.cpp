@@ -347,7 +347,7 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_HANDSHAKE:
     {
-      if (!CICQDaemon::Handshake_Recv(&ftSock, LocalPort())) break;
+      if (!CICQDaemon::Handshake_Recv(&ftSock, LocalPort(), false)) break;
       gLog.Info("%sFile Transfer: Received handshake.\n", L_TCPxSTR);
       m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
       break;

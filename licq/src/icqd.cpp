@@ -1,5 +1,4 @@
 // -*- c-basic-offset: 2 -*-
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -805,7 +804,7 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
   gUserManager.DropUser(u);
   SaveUserList();
 
-  if (m_nTCPSrvSocketDesc != -1 && bNotify) icqAddUser(nUin);
+  if (m_nTCPSrvSocketDesc != -1 && bNotify)  icqAddUser(nUin);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nUin));
 
@@ -833,7 +832,14 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   // At this point the user is write locked
   SaveUserList();
 
-  if (m_nTCPSrvSocketDesc != -1) icqAddUser(nu->Uin());
+  if (m_nTCPSrvSocketDesc != -1)
+	{
+		// XXX if adding to server list, it will get write lock FIX THAT SHIT!
+		unsigned long nUin = nu->Uin();
+		gUserManager.DropUser(nu);
+		icqAddUser(nUin);
+		nu = gUserManager.FetchUser(nUin, LOCK_W);
+	}
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->Uin()));
 }
@@ -1631,6 +1637,241 @@ void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
 }
 
 
+//-----ProcessMessage-----------------------------------------------------------
+void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
+																unsigned short nMsgType, unsigned long nMask,
+																unsigned long nMsgID[2],
+																unsigned long nSequence, bool bIsAck,
+																bool &bNewUser)
+{
+	char *szType = NULL;
+	CUserEvent *pEvent = NULL;
+	unsigned short nEventType = 0;
+
+	// for acks
+	unsigned short nPort;
+
+	switch (nMsgType)
+	{
+	case ICQ_CMDxSUB_MSG:
+	{
+		unsigned long fore, back;
+		packet >> fore >> back;
+		if (back == fore)
+		{
+			back = 0xFFFFFF;
+			fore = 0x000000;
+		}
+
+		CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
+																		TIME_NOW, nMask);
+		e->SetColor(fore, back);
+
+		CPU_AckGeneral *p = new CPU_AckGeneral(u->Uin(), nMsgID[0], nMsgID[1],
+																					 nSequence, ICQ_CMDxSUB_MSG, 0);
+		SendEvent_Server(p);
+
+		szType = strdup("Message");
+		nEventType = ON_EVENT_MSG;
+		pEvent = e;
+		break;
+	}
+
+	case ICQ_CMDxSUB_CHAT:
+	{
+		char szChatClients[1024];
+		unsigned short nPortReversed;
+
+		packet.UnpackString(szChatClients, sizeof(szChatClients));
+		nPortReversed = packet.UnpackUnsignedShortBE();
+		packet >> nPort;
+
+		if (nPort == 0)
+			nPort = nPortReversed;
+
+		if (!bIsAck)
+		{
+			CEventChat *e = new CEventChat(message, szChatClients, 0, nSequence,
+																		 TIME_NOW, nMask, nMsgID[0], nMsgID[1]);
+			nEventType = ON_EVENT_CHAT;
+			pEvent = e;
+		}
+
+		szType = strdup("Chat request");
+		break;
+	}
+
+	case ICQ_CMDxSUB_FILE:
+	{
+		unsigned short nPortReversed, nFilenameLen;
+		unsigned long nFileSize;
+
+		nPortReversed = packet.UnpackUnsignedShortBE();
+		packet >> nPort;
+
+		if (nPort == 0)
+			nPort = nPortReversed;
+
+		if (!bIsAck)
+		{
+			packet >> nFilenameLen;
+			char szFilename[nFilenameLen+1];
+			for (unsigned short i = 0; i < nFilenameLen; i++)
+				packet >> szFilename[i];
+			szFilename[nFilenameLen] = '\0'; // be safe
+			packet >> nFileSize;
+
+			CEventFile *e = new CEventFile(szFilename, message, nFileSize,
+																		 nSequence, TIME_NOW, nMask, nMsgID[0],
+                                     nMsgID[1]);
+			nEventType = ON_EVENT_FILE;
+			pEvent = e;
+		}
+
+		szType = strdup("File transfer request through server");
+		break;
+	}
+
+	case ICQ_CMDxSUB_URL:
+	{
+		CEventUrl *e = CEventUrl::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
+																		TIME_NOW,	nMask);
+		CPU_AckGeneral *p = new CPU_AckGeneral(u->Uin(), nMsgID[0], nMsgID[1],
+																					 nSequence, ICQ_CMDxSUB_URL, 0);
+		SendEvent_Server(p);
+
+		szType = strdup("URL");
+		nEventType = ON_EVENT_URL;
+		pEvent = e;
+		break;
+	}
+
+	case ICQ_CMDxSUB_CONTACTxLIST:
+	{
+		CEventContactList *e = CEventContactList::Parse(message,
+																									ICQ_CMDxRCV_SYSxMSGxONLINE,
+																										TIME_NOW, nMask);
+		CPU_AckGeneral *p = new CPU_AckGeneral(u->Uin(), nMsgID[0], nMsgID[1],
+																					 nSequence, ICQ_CMDxSUB_CONTACTxLIST,
+																					 0);
+		SendEvent_Server(p);
+
+		szType = strdup("Contact list");
+		nEventType = ON_EVENT_MSG;
+		pEvent = e;
+		break;
+	}
+
+	case ICQ_CMDxSUB_ICBM:
+	{
+		unsigned short nLen;
+		unsigned long nLongLen;
+
+		packet >> nLen;
+		packet.incDataPosRead(18);
+		packet >> nLongLen; // plugin len
+		char szPlugin[nLongLen+1];
+		for (unsigned long i = 0; i < nLongLen; i++)
+			packet >> szPlugin[i];
+		szPlugin[nLongLen] = '\0';
+
+		packet.incDataPosRead(nLen - 22 - nLongLen); // unknown
+		packet >> nLongLen; // bytes remaining
+
+		int nCommand = 0;
+		if (strstr(szPlugin, "File"))
+			nCommand = ICQ_CMDxSUB_FILE;
+		else if (strstr(szPlugin, "URL"))
+			nCommand = ICQ_CMDxSUB_URL;
+		else if (strstr(szPlugin, "Chat"))
+			nCommand = ICQ_CMDxSUB_CHAT;
+		else if (strstr(szPlugin, "Contacts"))
+			nCommand = ICQ_CMDxSUB_CONTACTxLIST;
+
+		if (nCommand == 0)
+		{
+			gLog.Warn("%sUnknown ICBM plugin type: %s\n", L_SRVxSTR, szPlugin);
+			return;
+		}
+
+		packet >> nLongLen;
+		char szMessage[nLongLen+1];
+		for (unsigned long i = 0; i < nLongLen; i++)
+			packet >> szMessage[i];
+		szMessage[nLongLen] = '\0';
+
+		// recursion
+		ProcessMessage(u, packet, szMessage, nCommand, nMask, nMsgID,
+									 nSequence, bIsAck, bNewUser);
+		return;
+
+		break; // bah!
+	}
+
+	default:
+		szType = strdup("unknown event");
+	} // switch nMsgType
+
+	if (bIsAck)
+	{
+		ICQEvent *pAckEvent = DoneServerEvent(nMsgID[1], EVENT_ACKED);
+		CExtendedAck *pExtendedAck = new CExtendedAck(nPort != 0, nPort,
+																									message);
+
+		if (pAckEvent)
+		{
+			pAckEvent->m_pExtendedAck = pExtendedAck;
+			pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+			gLog.Info("%s%s accepted from %s (%ld).\n", L_SRVxSTR, szType,
+								u->GetAlias(), u->Uin());
+			gUserManager.DropUser(u);
+			ProcessDoneEvent(pAckEvent);
+		}
+		else
+		{
+			gLog.Warn("%sAck for unknown event.\n", L_SRVxSTR);
+			delete pExtendedAck;
+		}
+	}
+	else
+	{
+		// If it parsed, did it parse properly?
+		if (pEvent)
+		{
+			if (bNewUser)
+			{
+				if (Ignore(IGNORE_NEWUSERS))
+				{
+					gLog.Info("%s%s from new user (%ld), ignoring.\n", L_SRVxSTR,
+										szType, u->Uin());
+					if (szType)  free(szType);
+					RejectEvent(u->Uin(), pEvent);
+					return;
+				}
+				gLog.Info("%s%s from new user (%ld).\n", L_SRVxSTR, szType, u->Uin());
+				AddUserToList(u);
+				bNewUser = false;
+			}
+			else
+				gLog.Info("%s%s from %s (%ld).\n", L_SRVxSTR, szType, u->GetAlias(),
+									u->Uin());
+
+			if (AddUserEvent(u, pEvent))
+				m_xOnEventManager.Do(nEventType, u);
+		}
+		else // invalid parse or unknown event
+		{
+			char *buf;
+			gLog.Warn("%sInvalid %s:\n%s\n", L_WARNxSTR, szType,
+								packet.print(buf));
+			delete [] buf;
+		}
+	}
+
+	if (szType)  free(szType);
+}
+
+
 //-----ParseFE------------------------------------------------------------------
 bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {
@@ -1654,5 +1895,3 @@ bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 
   return (!*pcEnd);
 }
-
-

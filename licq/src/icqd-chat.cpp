@@ -647,7 +647,7 @@ bool CChatManager::ConnectToChat(CChatClient &c)
      VersionToUse(c.m_nVersion), false))
     return false;
 
-  // Send color packet
+  // Send color packet 
   CPChat_Color p_color(m_szName, LocalPort(),
      m_nColorFore[0], m_nColorFore[1], m_nColorFore[2],
      m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
@@ -730,7 +730,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
     case CHAT_STATE_HANDSHAKE:
     {
       // get the handshake packet
-      if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort()))
+      if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort(), false))
       {
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
         return false;
@@ -745,8 +745,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           u->client.LoadFromHandshake_v4(u->sock.RecvBuffer());
           break;
         case 6:
-			  case 7:
-			  case 8:
+        case 7:
+        case 8:
           u->client.LoadFromHandshake_v6(u->sock.RecvBuffer());
           break;
       }
@@ -863,7 +863,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       }
 
       // send the reply (font packet)
-      CPChat_Font p_font(LocalPort(), m_nSession,
+			CPChat_Font p_font(LocalPort(), m_nSession,
          m_nFontSize, m_nFontFace & FONT_BOLD, m_nFontFace & FONT_ITALIC,
          m_nFontFace & FONT_UNDERLINE, m_szFontFamily);
       if (!u->sock.SendPacket(p_font.getBuffer()))
@@ -2110,13 +2110,11 @@ void *ChatManager_tep(void *arg)
             if (u->state != CHAT_STATE_CONNECTED)
             {
               ok = chatman->ProcessPacket(u);
-		DEBUG_THREADS("[ChatManager_tep] process packet.\n");
             }
 
             else  // Raw character being received
             {
               ok = chatman->ProcessRaw(u);
-		DEBUG_THREADS("[ChatManager_tep] process raw.\n");
             }
 
             u->sock.Unlock();

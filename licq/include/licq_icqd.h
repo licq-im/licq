@@ -111,18 +111,18 @@ public:
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
   void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-     unsigned long nSequence);
+     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-     unsigned long nSequence);
+     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
   // File Transfer
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
      const char *szDescription, unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-     unsigned long nSequence);
+     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-     unsigned long nSequence, bool bServer);
+     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   unsigned long icqOpenSecureChannel(unsigned long nUin);
   unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
@@ -295,6 +295,12 @@ public:
   time_t Uptime() { return time(NULL) - m_nStartTime; }
   void ResetStats();
 
+	// Common message handler
+	void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
+											unsigned short nMsgType, unsigned long nMask,
+											unsigned long nMsgID[], unsigned long nSequence,
+											bool bIsAck, bool &bNewUser);
+
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
@@ -415,7 +421,7 @@ protected:
 
   static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short,
                              unsigned short, bool = true);
-  static bool Handshake_Recv(TCPSocket *, unsigned short);
+  static bool Handshake_Recv(TCPSocket *, unsigned short, bool = true);
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
   int ConnectToUser(unsigned long);

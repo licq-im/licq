@@ -545,14 +545,19 @@ protected:
 class CPU_AdvancedMessage : public CPU_CommonFamily
 {
 public:
-	CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
-											unsigned char _nMsgFlags, bool _bAck);
+	CPU_AdvancedMessage(ICQUser *u,	unsigned char _nMsgType,
+											unsigned char _nMsgFlags,	bool _bAck,
+											unsigned short _nSequence,
+											unsigned long nID1 = 0,
+											unsigned long nID2 = 0);
 protected:
 	void InitBuffer();
 	bool m_bAck;
 	ICQUser				 *m_pUser;
 	unsigned char  m_nMsgType;
 	unsigned char  m_nMsgFlags;
+	unsigned short m_nSequence;
+	unsigned long m_nMsgID[2];
 };
 
 //-----ChatRequest-------------------------------------------------------------
@@ -572,23 +577,60 @@ public:
 };
 
 
-//-----AcceptFile--------------------------------------------------------------
-class CPU_AcceptFile : public CPU_AdvancedMessage
-{
-public:
-	CPU_AcceptFile(ICQUser *u, unsigned short _nPort,
-								 unsigned short _nSequence);
-};
-
-
 //-----AckThroughServer--------------------------------------------------------
 class CPU_AckThroughServer : public CPU_CommonFamily
 {
 public:
-    CPU_AckThroughServer(unsigned long Uin, unsigned long timestamp1, unsigned long timestamp2,
-                         unsigned short Cookie, unsigned char msgType, unsigned char msgFlags,
-                         unsigned short len);
+    CPU_AckThroughServer(unsigned long Uin, unsigned long msgid1,
+												 unsigned long msgid2, unsigned short sequence,
+												 unsigned char msgType, unsigned char msgFlags);
+protected:
+	void InitBuffer();
 
+	unsigned long m_nUin, m_nMsgID[2];
+	unsigned short m_nSequence, m_nMsgType, m_nMsgFlags, m_nUinLen;
+	char m_szUin[13];
+};
+
+//-----AckGeneral--------------------------------------------------------------
+class CPU_AckGeneral : public CPU_AckThroughServer
+{
+public:
+	CPU_AckGeneral(unsigned long nUin, unsigned long nMsgID1,
+								 unsigned long nMsgID2, unsigned short nSequence,
+								 unsigned short nMsgType, unsigned short nMsgFlags);
+};
+
+//-----AckFileAccept-----------------------------------------------------------
+class CPU_AckFileAccept : public CPU_AdvancedMessage
+{
+public:
+	CPU_AckFileAccept(ICQUser *u, unsigned long nMsgID[],
+										unsigned short nSequence,	unsigned short nPort);
+};
+
+//-----AckFileRefuse-----------------------------------------------------------
+class CPU_AckFileRefuse : public CPU_AckThroughServer
+{
+public:
+	CPU_AckFileRefuse(unsigned long nUin, unsigned long nMsgID[],
+										unsigned short nSequence, const char *msg);
+};
+
+//-----AckChatAccept-----------------------------------------------------------
+class CPU_AckChatAccept : public CPU_AckThroughServer
+{
+public:
+	CPU_AckChatAccept(unsigned long nUin, unsigned long nMsgID[],
+										unsigned short nSequence, unsigned short nPort);
+};
+
+//-----AckChatRefuse-----------------------------------------------------------
+class CPU_AckChatRefuse : public CPU_AckThroughServer
+{
+public:
+	CPU_AckChatRefuse(unsigned long nUin, unsigned long nMsgID[],
+										unsigned short nSequence, const char *msg);
 };
 
 //-----SendSms-----------------------------------------------------------

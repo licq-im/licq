@@ -1103,7 +1103,10 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 
 //-----AdvancedMessage---------------------------------------------------------
 CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
-		unsigned char _nMsgFlags, bool _bAck)
+																				 unsigned char _nMsgFlags, bool _bAck,
+																				 unsigned short _nSequence,
+																				 unsigned long nMsgID1,
+																				 unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
 	char szUin[13];
@@ -1115,6 +1118,9 @@ CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
 	m_nMsgFlags = _nMsgFlags;
 	m_nMsgType = _nMsgType;
 	m_pUser = u;
+	m_nSequence = _nSequence;
+	m_nMsgID[0] = nMsgID1;
+	m_nMsgID[1] = nMsgID2;
 }
 
 void CPU_AdvancedMessage::InitBuffer()
@@ -1127,19 +1133,33 @@ void CPU_AdvancedMessage::InitBuffer()
 	char szUin[13];
 	int nUinLen = snprintf(szUin, 12, "%ld", m_pUser->Uin());
 
-	unsigned short nSequence = m_pUser->Sequence(true);
+	unsigned short nSequence;
+	unsigned long nID1, nID2;
 
-	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
-	buffer->PackUnsignedLongBE(m_nSubSequence); // lower 4 bytes of message id
+	if (m_bAck)
+	{	
+		nSequence = m_nSequence;
+		nID1 = m_nMsgID[0];
+		nID2 = m_nMsgID[1];
+	}
+	else
+	{
+		nSequence = m_pUser->Sequence(true);
+		nID1 = 0;
+		nID2 = m_nSubSequence;
+	}
+
+	buffer->PackUnsignedLongBE(nID1); // upper 4 bytes of message id
+	buffer->PackUnsignedLongBE(nID2); // lower 4 bytes of message id
 	buffer->PackUnsignedShortBE(0x02); // message format
 	buffer->PackChar(nUinLen);
 	buffer->Pack(szUin, nUinLen);
 
 	buffer->PackUnsignedShortBE(0x0005);	// tlv - message info
 	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen);
-	buffer->PackUnsignedShortBE((m_bAck ? 2 : 0));
-	buffer->PackUnsignedLongBE(0);	// upper 4 bytes of message id again
-	buffer->PackUnsignedLongBE(m_nSubSequence); // lower 4 bytes of message id again
+	buffer->PackUnsignedShortBE((m_bAck ? 0 : 0));
+	buffer->PackUnsignedLongBE(nID1);	// upper 4 bytes of message id again
+	buffer->PackUnsignedLongBE(nID2); // lower 4 bytes of message id again
 	buffer->PackUnsignedLongBE(0x09461349); // from icq2002a
 	buffer->PackUnsignedLongBE(0x4C7F11D1); // from icq2002a
 	buffer->PackUnsignedLongBE(0x82224445); // from icq2002a
@@ -1182,7 +1202,7 @@ void CPU_AdvancedMessage::InitBuffer()
 CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 																 ICQUser *_pUser, bool bICBM)
 	: CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
-												0, false)
+												0, false, 0)
 {
 	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
 	int nMessageLen = _szMessage ? strlen(_szMessage) : 0;
@@ -1227,7 +1247,7 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
 	const char *_szDesc, bool bICBM)
 	: CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, 0,
-												false),
+												false, 0),
 		CPX_FileTransfer(_szFile)
 {
 	if (!m_bValid)  return;
@@ -1275,44 +1295,38 @@ CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
 }
 
 
-//-----AcceptFile--------------------------------------------------------------
-CPU_AcceptFile::CPU_AcceptFile(ICQUser *u, unsigned short _nPort,
-															 unsigned short nSequence)
-	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true)
+//-----AckThroughServer--------------------------------------------------------
+CPU_AckThroughServer::CPU_AckThroughServer(unsigned long nUin,
+																					 unsigned long nMsgID1,
+																					 unsigned long nMsgID2, 
+																					 unsigned short nSequence,
+																					 unsigned char nMsgType,
+																					 unsigned char nMsgFlags)
+  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-	//	m_nSize += ;
+  snprintf(m_szUin, 13, "%lu", nUin);
+  m_nUinLen = strlen(m_szUin);
 
-	InitBuffer();
+  m_nSize += 64 + m_nUinLen;
 
+	m_nUin = nUin;
+	m_nMsgID[0] = nMsgID1;
+	m_nMsgID[1] = nMsgID2;
+	m_nSequence = nSequence;
+	m_nMsgType = nMsgType;
+	m_nMsgFlags = nMsgFlags;
 }
 
-
-//-----AckThroughServer--------------------------------------------------------
-CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin,
-																					 unsigned long timestamp1,
-																					 unsigned long timestamp2, 
-																					 unsigned short Cookie,
-																					 unsigned char msgType,
-																					 unsigned char msgFlags,
-																					 unsigned short len)
-  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, 0x0b)
+void CPU_AckThroughServer::InitBuffer()
 {
-  char szUin[13];
-  int nUinLen;
+  CPU_CommonFamily::InitBuffer();
 
-  snprintf(szUin, 13, "%lu", Uin);
-  nUinLen = strlen(szUin);
-
-  m_nSize += 75 + nUinLen + len;
-
-  InitBuffer();
-
-  buffer->PackUnsignedLongBE(timestamp1);
-  buffer->PackUnsignedLongBE(timestamp2);
+  buffer->PackUnsignedLongBE(m_nMsgID[0]);
+  buffer->PackUnsignedLongBE(m_nMsgID[1]);
   buffer->PackUnsignedShortBE(2);
-  buffer->PackChar(nUinLen);
-  buffer->Pack(szUin, nUinLen);
-  buffer->PackUnsignedShortBE(0x03);
+  buffer->PackChar(m_nUinLen);
+  buffer->Pack(m_szUin, m_nUinLen);
+	buffer->PackUnsignedShortBE(0x03);
   buffer->PackUnsignedShort(0x1b);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
   buffer->PackUnsignedLongBE(0);
@@ -1321,23 +1335,107 @@ CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin,
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedShortBE(0);
   buffer->PackUnsignedLong(3);
-  buffer->PackChar(0);
-  buffer->PackUnsignedShort(Cookie);
+  buffer->PackChar(4);
+  buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedShort(0x0e);
-  buffer->PackUnsignedShort(Cookie);
+  buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
-  buffer->PackChar(msgType);
-  buffer->PackChar(msgFlags);
-  buffer->PackUnsignedLongBE(0);
-
-  buffer->PackUnsignedShort(1);
-  buffer->PackChar(0);
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0xffffff00);
+  buffer->PackUnsignedShort(m_nMsgType);
+  buffer->PackUnsignedShort(m_nMsgFlags);
+  buffer->PackUnsignedShort(0);
 }
 
+
+//-----AckGeneral--------------------------------------------------------------
+CPU_AckGeneral::CPU_AckGeneral(unsigned long nUin, unsigned long nMsgID1,
+															 unsigned long nMsgID2, unsigned short nSequence,
+															 unsigned short nMsgType, unsigned short nMsgFlags)
+	: CPU_AckThroughServer(nUin, nMsgID1, nMsgID2, nSequence, nMsgType, nMsgFlags)
+{
+	m_nSize += 11;
+	InitBuffer();
+
+
+	buffer->PackString("");
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedLongBE(0xFFFFFFFF);
+}
+
+
+//-----AckFileAccept-----------------------------------------------------------
+CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
+																		 unsigned long nMsgID[2],
+																		 unsigned short nSequence,
+																		 unsigned short nPort)
+	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_FILE, 0, true, nSequence, nMsgID[0],
+												nMsgID[1])
+{
+	// XXX This is not the ICBM way yet!
+	// XXX It doesnt' even work! Perhaps try ICBM and it'll work?
+	m_nSize += 19;
+	InitBuffer();
+
+	//buffer->PackString(""); // description
+	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
+	buffer->PackString(""); // filename
+	buffer->PackUnsignedLong(0); // filesize
+	buffer->PackUnsignedLong(nPort); // port
+	buffer->PackUnsignedLong(0x00030000); // ack request
+}
+				
+
+//-----AckFileRefuse-----------------------------------------------------------
+CPU_AckFileRefuse::CPU_AckFileRefuse(unsigned long nUin, unsigned long nMsgID[2],
+																		 unsigned short nSequence, const char *msg)
+	: CPU_AckThroughServer(nUin, nMsgID[0], nMsgID[1], nSequence,
+												 ICQ_CMDxSUB_FILE, ICQ_TCPxACK_REFUSE)
+{
+	// XXX This is not the ICBM way yet!
+	m_nSize += strlen(msg) + 18;
+	InitBuffer();
+
+	buffer->PackString(msg);
+	buffer->PackUnsignedLong(0); // port reversed
+	buffer->PackString("");
+	buffer->PackUnsignedLong(0);
+	buffer->PackUnsignedLong(0);
+}
+
+//-----AckChatAccept-----------------------------------------------------------
+CPU_AckChatAccept::CPU_AckChatAccept(unsigned long nUin, unsigned long nMsgID[2],
+																		 unsigned short nSequence,
+																		 unsigned short nPort)
+	: CPU_AckThroughServer(nUin, nMsgID[0], nMsgID[1], nSequence,
+												 ICQ_CMDxSUB_CHAT, ICQ_TCPxACK_ACCEPT)
+
+{
+	// XXX This is not the ICBM way yet!
+	m_nSize += 14;
+	InitBuffer();
+
+	buffer->PackString("");
+	buffer->PackString("");
+	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
+	buffer->PackUnsignedLong(nPort);
+}
+
+//-----AckChatRefuse-----------------------------------------------------------
+CPU_AckChatRefuse::CPU_AckChatRefuse(unsigned long nUin, unsigned long nMsgID[2],
+																		 unsigned short nSequence, const char *msg)
+	: CPU_AckThroughServer(nUin, nMsgID[0], nMsgID[1], nSequence,
+												 ICQ_CMDxSUB_CHAT, 1)
+{
+	// XXX This is not the ICBM way yet!
+	m_nSize += strlen(msg) + 14;
+	InitBuffer();
+
+	buffer->PackString(msg);
+	buffer->PackString("");
+	buffer->PackUnsignedLong(0);
+	buffer->PackUnsignedLong(0);
+}
 
 //-----SendSms-----------------------------------------------------------------
 CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
