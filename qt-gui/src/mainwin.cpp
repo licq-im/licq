@@ -1256,24 +1256,36 @@ void CMainWindow::removeUserFromList()
 
 void CMainWindow::removeUserFromGroup()
 {
-  if (m_nCurrentGroup == 0)
-    removeUserFromList();
-  else
+  if (m_nGroupType == GROUPS_USER)
   {
-    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
-    if (u == NULL) return;
-    unsigned long nUin = u->Uin();
-    GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-                       .arg(QString::fromLocal8Bit(u->GetAlias()))
-                       .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
-    gUserManager.UnlockGroupList();
-    gUserManager.DropUser(u);
-    if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
+    if (m_nCurrentGroup == 0)
+      removeUserFromList();
+    else
     {
-       gUserManager.RemoveUserFromGroup(nUin, m_nCurrentGroup);
-       updateUserWin();
+      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
+      if (u == NULL) return;
+      unsigned long nUin = u->Uin();
+      GroupList *g = gUserManager.LockGroupList(LOCK_R);
+      QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
+                         .arg(QString::fromLocal8Bit(u->GetAlias()))
+                         .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
+      gUserManager.UnlockGroupList();
+      gUserManager.DropUser(u);
+      if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
+      {
+         gUserManager.RemoveUserFromGroup(nUin, m_nCurrentGroup);
+         updateUserWin();
+      }
     }
+  }
+  else if (m_nGroupType == GROUPS_SYSTEM)
+  {
+    if (m_nCurrentGroup == 0) return;
+    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+    if (u == NULL) return;
+    u->RemoveFromGroup(GROUPS_SYSTEM, m_nCurrentGroup);
+    gUserManager.DropUser(u);
+    updateUserWin();
   }
 }
 
