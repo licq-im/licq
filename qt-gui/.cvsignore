@@ -7,6 +7,8 @@ Makefile
 Makefile.in
 config.h.in
 libtool
+ltmain.sh
+ltconfig
 aclocal.m4
 acinclude.m4
 stamp-h.in
