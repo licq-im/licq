@@ -1218,10 +1218,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
-          gLog.Info("%sContact list from %s (%ld) [Licq %s].\n", L_BLANKxSTR,
+          gLog.Info("%sContact list from %s (%ld) [Licq %s].\n", L_TCPxSTR,
              u->GetAlias(), nUin, CUserEvent::LicqVersionToString(licqVersion));
         else
-          gLog.Info("%sContact list from %s (%ld).\n", L_BLANKxSTR, u->GetAlias(),
+          gLog.Info("%sContact list from %s (%ld).\n", L_TCPxSTR, u->GetAlias(),
              nUin);
 
         CEventContactList *e = CEventContactList::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
