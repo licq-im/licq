@@ -42,6 +42,7 @@
 #include <qtextcodec.h>
 #include <qwhatsthis.h>
 #include <qtabwidget.h>
+#include <ctype.h>
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
