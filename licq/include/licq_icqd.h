@@ -195,13 +195,13 @@ public:
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
   void ProtoChatRequestRefuse(const char *szId, unsigned long nPPID,
-     const char *szReason, unsigned long nSequence, unsigned long nMsgID[],
+     const char *szReason, unsigned short nSequence, unsigned long nMsgID[],
      bool bDirect);
   void ProtoChatRequestAccept(const char *szId, unsigned long nPPID,
      unsigned short nPort, const char *szClients, unsigned long nSequeunce,
      unsigned long nMsgID[], bool bDirect);
   void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
-     unsigned long nSequence);
+     unsigned short nSequence);
   
   unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
      const char *szMessage);
@@ -240,22 +240,22 @@ public:
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
   void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
+     unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-     const char *szClients, unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
-  void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
+     const char *szClients, unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
+  void icqChatRequestCancel(unsigned long nUin, unsigned short nSequence);
   // File Transfer
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
      const char *szDescription, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
-  void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
+     unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
+  void icqFileTransferCancel(unsigned long nUin, unsigned short nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
+     unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
   unsigned long icqOpenSecureChannel(unsigned long nUin);
   unsigned long icqCloseSecureChannel(unsigned long nUin);
-  void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
+  void icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence);
 
   // Plugins
   unsigned long icqRequestInfoPluginList(const char *szId,
@@ -512,12 +512,12 @@ public:
   // Common message handler
   void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
      unsigned short nMsgType, unsigned long nMask,
-     unsigned long nMsgID[], unsigned long nSequence,
+     unsigned long nMsgID[], unsigned short nSequence,
      bool bIsAck, bool &bNewUser);
 
   bool ProcessPluginMessage(CBuffer &packet, ICQUser *u, unsigned char nChannel,
      bool bIsAck, unsigned long nMsgID1,
-     unsigned long nMsgID2, unsigned long nSequence,
+     unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
   bool WaitForReverseConnection(unsigned short id, unsigned long uin);
   
@@ -619,7 +619,7 @@ protected:
   void FailEvents(int sd, int err);
   ICQEvent *DoneServerEvent(unsigned long, EventResult);
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
-  ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);
+  ICQEvent *DoneEvent(int _nSD, unsigned short _nSequence, EventResult _eResult);
   ICQEvent *DoneEvent(unsigned long tag, EventResult _eResult);
   ICQEvent *DoneExtendedServerEvent(const unsigned short, EventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);

@@ -165,7 +165,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     pthread_testcancel();
 
     int socket = -1;
-    unsigned long nSequence;
+    unsigned short nSequence;
     INetSocket *s;
     
     // Check if the socket is connected
@@ -248,7 +248,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     s = gSocketManager.FetchSocket(socket);
     if (s == NULL)
     {
-      gLog.Warn(tr("%sSocket not connected or invalid (#%lu).\n"), L_WARNxSTR,
+      gLog.Warn(tr("%sSocket not connected or invalid (#%hu).\n"), L_WARNxSTR,
                 nSequence);
       if (d->DoneEvent(e, EVENT_ERROR) != NULL)
       {
@@ -307,11 +307,11 @@ exit_server_thread:
 
   if (!sent)
   {
-    unsigned long nSequence = e->m_nSequence;
+    unsigned short nSequence = e->m_nSequence;
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn(tr("%sError sending event (#%lu):\n%s%s.\n"), L_WARNxSTR,
+    gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
               nSequence, L_BLANKxSTR, szErrorBuf);
 
     if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -504,10 +504,10 @@ void *ProcessRunningEvent_Client_tep(void *p)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
-    unsigned long nSequence = e->m_nSequence;
+    unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn(tr("%sSocket %d does not exist (#%lu).\n"), L_WARNxSTR, socket,
+    gLog.Warn(tr("%sSocket %d does not exist (#%hu).\n"), L_WARNxSTR, socket,
        nSequence);
     if (d->DoneEvent(e, EVENT_ERROR) != NULL)
       d->ProcessDoneEvent(e);
@@ -555,10 +555,10 @@ void *ProcessRunningEvent_Client_tep(void *p)
     gSocketManager.CloseSocket(socket);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
-    unsigned long nSequence = e->m_nSequence;
+    unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn(tr("%sError sending event (#%lu):\n%s%s.\n"), L_WARNxSTR,
+    gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
      -nSequence, L_BLANKxSTR, szErrorBuf);
     write(d->pipe_newsocket[PIPE_WRITE], "S", 1);
     // Kill the event, do after the above as ProcessDoneEvent erase the event

@@ -2414,7 +2414,7 @@ int ICQUser::Birthday(unsigned short nRange)
 }
 
 
-unsigned long ICQUser::Sequence(bool increment)
+unsigned short ICQUser::Sequence(bool increment)
 {
    if (increment)
       return (m_nSequence--);

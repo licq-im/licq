@@ -74,11 +74,7 @@ public:
    CBuffer *getBuffer()  { return buffer; };
    virtual CBuffer *Finalize(INetSocket *) { return NULL; }
 
-//   CPacket& operator=(const CPacket &);
-//   CPacket& operator+=(const CPacket &);
-//   friend CPacket operator+(const CPacket &, const CPacket &);
-
-   virtual const unsigned long  Sequence() = 0;
+   virtual const unsigned short Sequence() = 0;
    virtual const unsigned short SubSequence() = 0;
    virtual const unsigned short Command() = 0;
    virtual const unsigned short SubCommand() = 0;
@@ -119,7 +115,7 @@ class CSrvPacketTcp : public CPacket
 public:
   // Packet details
   virtual const unsigned char  Channel()     { return m_nChannel; }
-  virtual const unsigned long  Sequence()    { return m_nSequence; }
+  virtual const unsigned short Sequence()    { return m_nSequence; }
   virtual const unsigned short SubSequence() { return m_nSubSequence; }
   virtual const unsigned long  SNAC() { return ((m_nFamily << 16) | (m_nSubType)); }
   virtual const unsigned short SubCommand()  { return m_nSubCommand; }
@@ -159,7 +155,7 @@ class CPacketUdp : public CPacket
 {
 public:
    virtual CBuffer *Finalize(INetSocket *);
-   virtual const unsigned long  Sequence() { return m_nSequence; }
+   virtual const unsigned short Sequence() { return m_nSequence; }
    virtual const unsigned short SubSequence() { return m_nSubSequence; }
    virtual const unsigned short Command()  { return m_nCommand; }
    virtual const unsigned short SubCommand()  { return 0; }
@@ -248,7 +244,7 @@ public:
   CPU_Register(const char *_szPasswd);
   virtual ~CPU_Register();
 
-  virtual const unsigned long  Sequence() { return m_nSequence; }
+  virtual const unsigned short Sequence() { return m_nSequence; }
   virtual const unsigned short SubSequence() { return 0; }
   virtual const unsigned short Command()  { return m_nCommand; }
   virtual const unsigned short SubCommand() { return 0; }
@@ -1144,7 +1140,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version);
 class CPacketTcp_Handshake : public CPacket
 {
 public:
-  virtual const unsigned long  Sequence()   { return 0; }
+  virtual const unsigned short Sequence()   { return 0; }
   virtual const unsigned short SubSequence()   { return 0; }
   virtual const unsigned short Command()    { return ICQ_CMDxTCP_HANDSHAKE; }
   virtual const unsigned short SubCommand() { return 0; }
@@ -1248,7 +1244,7 @@ public:
 class CPacketTcp_Handshake_Confirm : public CPacketTcp_Handshake
 {
 public:
-  CPacketTcp_Handshake_Confirm(unsigned char nChannel, unsigned long nSequence);
+  CPacketTcp_Handshake_Confirm(unsigned char nChannel, unsigned short nSequence);
   CPacketTcp_Handshake_Confirm(CBuffer *inbuf);
 
   virtual const unsigned char Channel() { return m_nChannel; }
@@ -1266,7 +1262,7 @@ public:
    virtual ~CPacketTcp();
 
    virtual CBuffer *Finalize(INetSocket *);
-   virtual const unsigned long  Sequence()   { return m_nSequence; }
+   virtual const unsigned short Sequence()   { return m_nSequence; }
    virtual const unsigned short SubSequence()   { return 0; }
    virtual const unsigned short Command()    { return m_nCommand; }
    virtual const unsigned short SubCommand() { return m_nSubCommand; }
@@ -1296,7 +1292,7 @@ protected:
    unsigned long  m_nLocalPort;
    unsigned short m_nStatus;
    unsigned short m_nMsgType;
-   unsigned long  m_nSequence;
+   unsigned short m_nSequence;
    bool           m_bPluginReq;
    
    char *m_szLocalPortOffset;
@@ -1396,7 +1392,7 @@ public:
 class CPT_Ack : public CPacketTcp
 {
 protected:
-  CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
+  CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
      bool _bAccept, bool _bUrgent, ICQUser *_cUser);
 };
 
@@ -1405,7 +1401,7 @@ protected:
 class CPT_AckGeneral : public CPT_Ack
 {
 public:
-  CPT_AckGeneral(unsigned short nSubCommand, unsigned long nSequence,
+  CPT_AckGeneral(unsigned short nSubCommand, unsigned short nSequence,
      bool bAccept, bool bUrgent, ICQUser *pUser);
 };
 
@@ -1414,7 +1410,7 @@ public:
 class CPT_AckOldSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckOldSecureChannel(unsigned long nSequence, ICQUser *pUser);
+  CPT_AckOldSecureChannel(unsigned short nSequence, ICQUser *pUser);
 };
 
 
@@ -1422,7 +1418,7 @@ public:
 class CPT_AckOpenSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckOpenSecureChannel(unsigned long nSequence, bool ok, ICQUser *pUser);
+  CPT_AckOpenSecureChannel(unsigned short nSequence, bool ok, ICQUser *pUser);
 };
 
 
@@ -1430,7 +1426,7 @@ public:
 class CPT_AckCloseSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckCloseSecureChannel(unsigned long nSequence, ICQUser *pUser);
+  CPT_AckCloseSecureChannel(unsigned short nSequence, ICQUser *pUser);
 };
 
 
@@ -1439,7 +1435,7 @@ public:
 class CPT_AckMessage : public CPT_Ack
 {
 public:
-  CPT_AckMessage(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
+  CPT_AckMessage(unsigned short _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
 };
 
 
@@ -1447,7 +1443,7 @@ public:
 class CPT_AckReadAwayMessage : public CPT_Ack
 {
 public:
-   CPT_AckReadAwayMessage(unsigned short _nSubCommand, unsigned long _nSequence,
+   CPT_AckReadAwayMessage(unsigned short _nSubCommand, unsigned short _nSequence,
                           bool _bAccept, ICQUser *_cUser);
 };
 
@@ -1456,7 +1452,7 @@ public:
 class CPT_AckUrl : public CPT_Ack
 {
 public:
-  CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
+  CPT_AckUrl(unsigned short _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
 };
 
 
@@ -1464,7 +1460,7 @@ public:
 class CPT_AckContactList : public CPT_Ack
 {
 public:
-  CPT_AckContactList(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
+  CPT_AckContactList(unsigned short _nSequence, bool _bAccept, bool _bUrgent,
                      ICQUser *_cUser);
 };
 #endif
@@ -1473,7 +1469,7 @@ public:
 class CPT_AckChatRefuse : public CPT_Ack
 {
 public:
-  CPT_AckChatRefuse(const char *_sReason, unsigned long _nSequence, ICQUser *_cUser);
+  CPT_AckChatRefuse(const char *_sReason, unsigned short _nSequence, ICQUser *_cUser);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 03 00 6E 6F 00 CF 60 AD
       95 CF 60 AD 95 1E 3C 00 00 04 01 00 00 00 01 00 00 00 00 00 00 00 00 00
       00 01 00 00 00 */
@@ -1485,7 +1481,7 @@ class CPT_AckChatAccept : public CPT_Ack
 {
 public:
   CPT_AckChatAccept(unsigned short _nPort, const char *szClients,
-                    unsigned long _nSequence, ICQUser *_cUser, bool bICBM);
+                    unsigned short _nSequence, ICQUser *_cUser, bool bICBM);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD 95 CF
       60 AD 95 1E 3C 00 00 04 00 00 00 00 01 00 00 40 78 00 00 78 40 00 00 02
       00 00 00 */
@@ -1498,7 +1494,7 @@ public:
 class CPT_AckFileAccept : public CPT_Ack
 {
 public:
-  CPT_AckFileAccept(unsigned short _nPort, unsigned long _nSequence,
+  CPT_AckFileAccept(unsigned short _nPort, unsigned short _nSequence,
                     ICQUser *_cUser);
 protected:
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 01 00 00 D1 EF 04 9F 7F
@@ -1515,7 +1511,7 @@ protected:
 class CPT_AckFileRefuse : public CPT_Ack
 {
 public:
-  CPT_AckFileRefuse(const char *_sReason, unsigned long _nSequence, ICQUser *_cUser);
+  CPT_AckFileRefuse(const char *_sReason, unsigned short _nSequence, ICQUser *_cUser);
 protected:
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
       6E 6B 73 00 D1 EF 04 9F 7F 00 00 01 4A 1F 00 00 04 01 00 00 00 00 00 00
@@ -1527,7 +1523,7 @@ protected:
 class CPT_Cancel : public CPacketTcp
 {
 protected:
-   CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
+   CPT_Cancel(unsigned short _nSubCommand, unsigned short _nSequence,
               ICQUser *_cUser);
 };
 
@@ -1536,7 +1532,7 @@ protected:
 class CPT_CancelChat : public CPT_Cancel
 {
 public:
-   CPT_CancelChat(unsigned long _nSequence, ICQUser *_cUser);
+   CPT_CancelChat(unsigned short _nSequence, ICQUser *_cUser);
    /* 50 A5 82 00 03 00 D0 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD D3 CF
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
@@ -1547,7 +1543,7 @@ public:
 class CPT_CancelFile : public CPT_Cancel
 {
 public:
-   CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser);
+   CPT_CancelFile(unsigned short _nSequence, ICQUser *_cUser);
    /* 50 A5 82 00 03 00 D0 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD D3 CF
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
@@ -1557,7 +1553,7 @@ public:
 class CPT_PluginError : public CPacketTcp
 {
 public:
-   CPT_PluginError(ICQUser *_cUser, unsigned long nSequence,
+   CPT_PluginError(ICQUser *_cUser, unsigned short nSequence,
      unsigned char nChannel);
    virtual const unsigned char Channel() { return m_nChannel; }
 
@@ -1582,7 +1578,7 @@ protected:
 class CPT_InfoPhoneBookResp : public CPacketTcp
 {
 public:
-   CPT_InfoPhoneBookResp(ICQUser *_cUser, unsigned long nSequence);
+   CPT_InfoPhoneBookResp(ICQUser *_cUser, unsigned short nSequence);
    virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
@@ -1590,7 +1586,7 @@ public:
 class CPT_InfoPictureResp : public CPacketTcp
 {
 public:
-   CPT_InfoPictureResp(ICQUser *_cUser, unsigned long nSequence);
+   CPT_InfoPictureResp(ICQUser *_cUser, unsigned short nSequence);
    virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
@@ -1598,7 +1594,7 @@ public:
 class CPT_InfoPluginListResp : public CPacketTcp
 {
 public:
-   CPT_InfoPluginListResp(ICQUser *_cUser, unsigned long nSequence);
+   CPT_InfoPluginListResp(ICQUser *_cUser, unsigned short nSequence);
    virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
@@ -1619,7 +1615,7 @@ protected:
 class CPT_StatusPluginListResp : public CPacketTcp
 {
 public:
-  CPT_StatusPluginListResp(ICQUser *_cUser, unsigned long nSequence);
+  CPT_StatusPluginListResp(ICQUser *_cUser, unsigned short nSequence);
   virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };
 
@@ -1627,7 +1623,7 @@ public:
 class CPT_StatusPluginResp : public CPacketTcp
 {
 public:
-  CPT_StatusPluginResp(ICQUser *_cUser, unsigned long nSequence,
+  CPT_StatusPluginResp(ICQUser *_cUser, unsigned short nSequence,
                        unsigned long nStatus);
   virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };

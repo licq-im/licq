@@ -176,7 +176,7 @@ struct SChatReverseConnectInfo
 class CPacketChat : public CPacket
 {
 public:
-  virtual const unsigned long  Sequence()   { return 0; };
+  virtual const unsigned short Sequence()   { return 0; };
   virtual const unsigned short SubSequence()   { return 0; };
   virtual const unsigned short Command()    { return 0; };
   virtual const unsigned short SubCommand() { return 0; };

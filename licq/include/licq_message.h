@@ -30,7 +30,7 @@ class CUserEvent
 {
 public:
    CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
-              unsigned long _nSequence, time_t _tTime,
+              unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags);
    CUserEvent(const CUserEvent *);
    virtual ~CUserEvent();
@@ -41,7 +41,7 @@ public:
    time_t Time()  {  return m_tTime; }
    const char *LicqVersionStr();
    static const char *LicqVersionToString(unsigned long);
-   unsigned long Sequence()  { return m_nSequence; }
+   unsigned short Sequence()  { return m_nSequence; }
    unsigned short Command()  { return m_nCommand; }
    unsigned short SubCommand()  { return m_nSubCommand; }
    int Id()  { return m_nId; }
@@ -76,7 +76,7 @@ protected:
    char          *m_szText;
    unsigned short m_nCommand;
    unsigned short m_nSubCommand;
-   unsigned long  m_nSequence;
+   unsigned short m_nSequence;
    int            m_nId;
    time_t         m_tTime;
    unsigned long  m_nFlags;
@@ -121,7 +121,7 @@ class CEventFile : public CUserEvent
 public:
    CEventFile(const char *_szFilename, const char *_szFileDescription,
               unsigned long _nFileSize, ConstFileList &lFileList,
-              unsigned long _nSequence, time_t _tTime,
+              unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nMsgID1 = 0,
               unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
@@ -181,10 +181,10 @@ protected:
 class CEventChat : public CUserEvent
 {
 public:
-   CEventChat(const char *szReason, unsigned long nSequence, time_t tTime,
+   CEventChat(const char *szReason, unsigned short nSequence, time_t tTime,
       unsigned long nFlags, unsigned long nMsgID1 = 0, unsigned long nMsgID2=0);
    CEventChat(const char *szReason, const char *szClients, unsigned short nPort,
-      unsigned long nSequence, time_t tTime, unsigned long nFlags,
+      unsigned short nSequence, time_t tTime, unsigned long nFlags,
       unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
   virtual ~CEventChat();
   virtual void AddToHistory(ICQUser *, direction);

@@ -103,7 +103,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Message *p = new CPT_Message(cipher ? cipher : mDos, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info(tr("%sSending %smessage to %s (#%ld).\n"), L_TCPxSTR,
+    gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
@@ -173,7 +173,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info(tr("%sSending %smessage to %s (#%ld).\n"), L_TCPxSTR,
+    gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
@@ -230,8 +230,8 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
   else
   {
     CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(u);
-    gLog.Info(tr("%sRequesting auto response from %s (#%ld).\n"), L_TCPxSTR,
-              u->GetAlias(), -p->Sequence());
+    gLog.Info(tr("%sRequesting auto response from %s (#%hu).\n"), L_TCPxSTR,
+	      u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, NULL);
   }
 
@@ -305,7 +305,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info(tr("%sSending %sURL to %s (#%ld).\n"), L_TCPxSTR,
+    gLog.Info(tr("%sSending %sURL to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
@@ -373,7 +373,7 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
     {
       e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
                 lFileList, p->Sequence(), TIME_NOW, f);
-      gLog.Info(tr("%sSending file transfer to %s (#%ld).\n"), L_SRVxSTR,
+      gLog.Info(tr("%sSending file transfer to %s (#%hu).\n"), L_SRVxSTR, 
                 u->GetAlias(), -p->Sequence());
 
       result = SendExpectEvent_Server(u->Uin(), p, e);
@@ -396,8 +396,8 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
       e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
                          lFileList, p->Sequence(), TIME_NOW, f);
-      gLog.Info(tr("%sSending %sfile transfer to %s (#%ld).\n"), L_TCPxSTR,
-                nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
+      gLog.Info(tr("%sSending %sfile transfer to %s (#%hu).\n"), L_TCPxSTR,
+                nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
                 u->GetAlias(), -p->Sequence());
 
       result = SendExpectEvent_Client(u, p, e);
@@ -471,7 +471,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info(tr("%sSending %scontact list to %s (#%ld).\n"), L_TCPxSTR,
+    gLog.Info(tr("%sSending %scontact list to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
@@ -555,7 +555,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
+    gLog.Info("%sSending %scontact list to %s (#%hu).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
@@ -778,13 +778,13 @@ unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
 }
 
 //-----CICQDaemon::fileCancel-------------------------------------------------------------------------
-void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequence)
+void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned short nSequence)
 {
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info(tr("%sCancelling file transfer to %s (#%ld).\n"), L_TCPxSTR,
-     u->GetAlias(), -nSequence);
+  gLog.Info(tr("%sCancelling file transfer to %s (#%hu).\n"), L_TCPxSTR, 
+            u->GetAlias(), -nSequence);
   CPT_CancelFile p(nSequence, u);
   AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   gUserManager.DropUser(u);
@@ -793,13 +793,13 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequen
 
 //-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
+   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
 {
    // basically a fancy tcp ack packet which is sent late
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-	gLog.Info(tr("%sAccepting file transfer from %s (#%ld).\n"),
-						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+	gLog.Info(tr("%sAccepting file transfer from %s (#%hu).\n"),
+		  bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
 	if (bDirect)
 	{
 		CPT_AckFileAccept p(nPort, nSequence, u);
@@ -818,15 +818,15 @@ void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
 
 //-----CICQDaemon::fileRefuse-----------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
+   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
 {
    // add to history ??
   char *szReasonDos = gTranslator.NToRN(szReason);
   gTranslator.ClientToServer(szReasonDos);
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info(tr("%sRefusing file transfer from %s (#%ld).\n"),
-						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+  gLog.Info(tr("%sRefusing file transfer from %s (#%hu).\n"), 
+            bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
 
 	if (bDirect)
 	{
@@ -889,8 +889,8 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 
 		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
 																	 TIME_NOW, f);
-		gLog.Info(tr("%sSending chat request to %s (#%ld).\n"), L_SRVxSTR,
-							u->GetAlias(), -p->Sequence());
+		gLog.Info(tr("%sSending chat request to %s (#%hu).\n"), L_SRVxSTR,
+			  u->GetAlias(), -p->Sequence());
 
 		result = SendExpectEvent_Server(u->Uin(), p, e);
 	}
@@ -903,7 +903,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 		if (u->Secure()) f |= E_ENCRYPTED;
 		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
 																	 TIME_NOW, f);
-		gLog.Info(tr("%sSending %schat request to %s (#%ld).\n"), L_TCPxSTR,
+		gLog.Info(tr("%sSending %schat request to %s (#%hu).\n"), L_TCPxSTR,
 							nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
 							u->GetAlias(), -p->Sequence());
 		result = SendExpectEvent_Client(u, p, e);
@@ -922,12 +922,12 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 
 
 //-----CICQDaemon::chatCancel----------------------------------------------------------
-void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned long nSequence)
+void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned short nSequence)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info(tr("%sCancelling chat request with %s (#%ld).\n"), L_TCPxSTR,
-     u->GetAlias(), -nSequence);
+  gLog.Info(tr("%sCancelling chat request with %s (#%hu).\n"), L_TCPxSTR, 
+            u->GetAlias(), -nSequence);
   CPT_CancelChat p(nSequence, u);
   AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   gUserManager.DropUser(u);
@@ -936,13 +936,13 @@ void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned long nSequenc
 
 //-----CICQDaemon::chatRefuse-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
+   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info(tr("%sRefusing chat request with %s (#%ld).\n"),
-						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+  gLog.Info(tr("%sRefusing chat request with %s (#%hu).\n"), 
+            bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
   char *szReasonDos = gTranslator.NToRN(szReason);
   gTranslator.ClientToServer(szReasonDos);
 
@@ -967,15 +967,15 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
 
 //-----CICQDaemon::chatAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-   const char *szClients, unsigned long nSequence, unsigned long nMsgID[2],
+   const char *szClients, unsigned short nSequence, unsigned long nMsgID[2],
    bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info(tr("%sAccepting chat request with %s (#%ld).\n"),
-						bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+  gLog.Info(tr("%sAccepting chat request with %s (#%hu).\n"), 
+            bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
 
 	if (bDirect)
 	{
@@ -1021,8 +1021,8 @@ unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
   }
 
   CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(u);
-  gLog.Info(tr("%sSending request for secure channel to %s (#%ld).\n"), L_TCPxSTR,
-     u->GetAlias(), -pkt->Sequence());
+  gLog.Info(tr("%sSending request for secure channel to %s (#%hu).\n"), L_TCPxSTR,
+            u->GetAlias(), -pkt->Sequence());
   result = SendExpectEvent_Client(u, pkt, NULL);
 
   u->SetSendServer(false);
@@ -1065,8 +1065,8 @@ unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
   }
 
   CPT_CloseSecureChannel *pkt = new CPT_CloseSecureChannel(u);
-  gLog.Info(tr("%sClosing secure channel with %s (#%ld).\n"), L_TCPxSTR,
-     u->GetAlias(), -pkt->Sequence());
+  gLog.Info(tr("%sClosing secure channel with %s (#%hu).\n"), L_TCPxSTR,
+            u->GetAlias(), -pkt->Sequence());
   result = SendExpectEvent_Client(u, pkt, NULL);
 
   u->SetSendServer(false);
@@ -1087,12 +1087,12 @@ unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
 
 
 //-----CICQDaemon::keyCancel-------------------------------------------------------------------------
-void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence)
+void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return;
-  gLog.Info(tr("%sCancelling secure channel request to %s (#%ld).\n"), L_TCPxSTR,
-     u->GetAlias(), -nSequence);
+  gLog.Info(tr("%sCancelling secure channel request to %s (#%hu).\n"), L_TCPxSTR,
+            u->GetAlias(), -nSequence);
   // XXX Tear down tcp connection ??
   gUserManager.DropUser(u);
 }
@@ -1519,10 +1519,10 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
 //-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
 bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 {
-  unsigned long nUin, theSequence, senderIp, localIp,
+  unsigned long nUin, senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
   unsigned short version, command, junkShort, newCommand, messageLen,
-                headerLen, ackFlags, msgFlags, licqVersion;
+                 headerLen, ackFlags, msgFlags, licqVersion, theSequence;
   char licqChar = '\0', junkChar;
   bool errorOccured = false;
   char *message = 0;
@@ -2751,7 +2751,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     int nSubResult;
     if (ackFlags == ICQ_TCPxACK_REFUSE)
     {
-      gLog.Info(tr("%sRefusal from %s (#%ld)%s.\n"), L_TCPxSTR, u->GetAlias(), -theSequence, l);
+      gLog.Info(tr("%sRefusal from %s (#%hu)%s.\n"), L_TCPxSTR, u->GetAlias(), -theSequence, l);
       nSubResult = ICQ_TCPxACK_REFUSE;
     }
     else
@@ -2761,15 +2761,14 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         u->SetAutoResponse(message);
         u->SetShowAwayMsg(*message);
-        gLog.Info(tr("%sAuto response from %s (#%ld)%s.\n"), L_TCPxSTR,
-          u->GetAlias(), -theSequence, l);
+        gLog.Info(tr("%sAuto response from %s (#%hu)%s.\n"), L_TCPxSTR,
+                  u->GetAlias(), -theSequence, l);
       }
 
       switch(ackFlags)
       {
         case ICQ_TCPxACK_ONLINE:
-          gLog.Info(tr("%sAck from %s (#%ld)%s.\n"), L_TCPxSTR, u->GetAlias(),
-            -theSequence, l);
+          gLog.Info(tr("%sAck from %s (#%hu)%s.\n"), L_TCPxSTR, u->GetAlias(), -theSequence, l);
           if (pExtendedAck && !pExtendedAck->Accepted())
             nSubResult = ICQ_TCPxACK_RETURN;
           else
@@ -2778,25 +2777,23 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         case ICQ_TCPxACK_AWAY:
         case ICQ_TCPxACK_NA:
         case ICQ_TCPxACK_OCCUPIEDx2: //auto decline due to occupied mode
-          gLog.Info(tr("%sAck from %s (#%ld)%s.\n"), L_TCPxSTR, u->GetAlias(),
-            -theSequence, l);
+          gLog.Info(tr("%sAck from %s (#%hu)%s.\n"), L_TCPxSTR, u->GetAlias(), -theSequence, l);
           nSubResult = ICQ_TCPxACK_REFUSE;
           break;
         case ICQ_TCPxACK_OCCUPIED:
         case ICQ_TCPxACK_DND:
-          gLog.Info(tr("%sReturned from %s (#%ld)%s.\n"), L_TCPxSTR, u->GetAlias(),
-            -theSequence, l);
+          gLog.Info(tr("%sReturned from %s (#%hu)%s.\n"), L_TCPxSTR, u->GetAlias(), -theSequence, l);
           nSubResult = ICQ_TCPxACK_RETURN;
           break;
         case ICQ_TCPxACK_OCCUPIEDxCAR:
         case ICQ_TCPxACK_DNDxCAR:
-          gLog.Info(tr("%sCustom %s response from %s (#%ld)%s.\n"), L_TCPxSTR,
+          gLog.Info(tr("%sCustom %s response from %s (#%hu)%s.\n"), L_TCPxSTR,
                     (ackFlags == ICQ_TCPxACK_DNDxCAR ? tr("DnD") : tr("Occupied")), u->GetAlias(),
                     -theSequence, l);
           nSubResult = ICQ_TCPxACK_ACCEPT; // FIXME: or should this be ACK_RETURN ?
           break;
         default:
-          gLog.Unknown("%sUnknown ack flag from %s (#%ld): %04x %s.\n", L_UNKNOWNxSTR,
+          gLog.Unknown("%sUnknown ack flag from %s (#%hu): %04x %s.\n", L_UNKNOWNxSTR,
                        u->GetAlias(), -theSequence, ackFlags, l);
           nSubResult = ICQ_TCPxACK_ACCEPT;
       }
@@ -2911,7 +2908,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
                                       bool bIsAck,
                                       unsigned long nMsgID1,
                                       unsigned long nMsgID2,
-                                      unsigned long nSequence,
+                                      unsigned short nSequence,
                                       TCPSocket *pSock)
 {
   bool errorOccured = false;

@@ -1291,7 +1291,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start server event thread (#%lu):\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to start server event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     e->m_eResult = EVENT_ERROR;
   }
@@ -1424,7 +1424,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start event thread (#%lu):\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to start event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     DoneEvent(e, EVENT_ERROR);
     if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
@@ -1597,7 +1597,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
     gLog.Info("doneevents: for: %p pending: \n", e);
     for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
     {
-      gLog.Info("%p Command: %d SubCommand: %d Sequence: %lu SubSequence: %d: Uin: %lu\n", *iter,
+      gLog.Info("%p Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", *iter,
                 (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
                 (*iter)->Uin());
     }
@@ -1641,7 +1641,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
  *       thread during which the sending thread may continue to do stuff.
  *       The result is extra sends or time out warnings.
  *----------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult)
+ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned short _nSequence, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
@@ -1939,7 +1939,7 @@ void CICQDaemon::PushExtendedEvent(ICQEvent *e)
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
 #if 0
-  gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %lu SubSequence: %d: Uin: %lu\n", e,
+  gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", e,
             e->Command(), e->SubCommand(), e->Sequence(), e->SubSequence(), e->Uin());
 #endif
   pthread_mutex_unlock(&mutex_extendedevents);
@@ -2181,7 +2181,7 @@ bool CICQDaemon::AddProtocolPlugins()
 void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                 unsigned short nMsgType, unsigned long nMask,
                                 unsigned long nMsgID[2],
-                                unsigned long nSequence, bool bIsAck,
+                                unsigned short nSequence, bool bIsAck,
                                 bool &bNewUser)
 {
   char *szType = NULL;

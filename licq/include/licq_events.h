@@ -187,7 +187,7 @@ public:
 
   //!This is used to identify events internally, but is necessary for
   //!accepting/rejecting chat or file requests.
-  unsigned long Sequence()     { return m_nSequence; }
+  unsigned short Sequence()     { return m_nSequence; }
 
   //!This is used to identify events internally, is are necessary for
   //!accepting/rejecting chat or file requests.
@@ -247,8 +247,8 @@ protected:
   unsigned short ExtraInfo()   { return m_nExtraInfo; }
 
   // Compare this event to another one
-  bool CompareEvent(int, unsigned long) const;
-  bool CompareEvent(unsigned long) const;
+  bool CompareEvent(int, unsigned short) const;
+  bool CompareEvent(unsigned short) const;
   bool CompareSubSequence(unsigned long) const;
   unsigned long EventId() const;
 
@@ -263,7 +263,7 @@ protected:
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;
   unsigned long  m_nDestinationUin;
-  unsigned long  m_nSequence;
+  unsigned short m_nSequence;
   unsigned short m_nSubSequence;
   unsigned short m_nSubType;
   unsigned short m_nExtraInfo;

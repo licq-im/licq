@@ -37,7 +37,7 @@ int CUserEvent::s_nId = 1;
 
 //----CUserEvent::constructor---------------------------------------------------
 CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
-                       unsigned long nSequence, time_t tTime,
+                       unsigned short nSequence, time_t tTime,
                        unsigned long nFlags)
 {
    // Assigned stuff
@@ -204,7 +204,7 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 
 CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
                        unsigned long _nFileSize, ConstFileList &_lFileList,
-                       unsigned long _nSequence, time_t _tTime,
+                       unsigned short _nSequence, time_t _tTime,
                        unsigned long _nFlags, unsigned long _nMsgID1,
                        unsigned long _nMsgID2)
    : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags),
@@ -304,9 +304,9 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 
 //=====CEventChat===============================================================
 
-CEventChat::CEventChat(const char *szReason, unsigned long nSequence,
+CEventChat::CEventChat(const char *szReason, unsigned short nSequence,
                        time_t tTime, unsigned long nFlags,
-											 unsigned long nMsgID1, unsigned long nMsgID2)
+                       unsigned long nMsgID1, unsigned long nMsgID2)
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
@@ -317,7 +317,7 @@ CEventChat::CEventChat(const char *szReason, unsigned long nSequence,
 }
 
 CEventChat::CEventChat(const char *szReason, const char *szClients,
-   unsigned short nPort, unsigned long nSequence,
+   unsigned short nPort, unsigned short nSequence,
    time_t tTime, unsigned long nFlags, unsigned long nMsgID1,
    unsigned long nMsgID2)
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)

@@ -203,12 +203,12 @@ ICQEvent::~ICQEvent()
 
 
 //-----ICQEvent::CompareEvent---------------------------------------------------
-bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence) const
+bool ICQEvent::CompareEvent(int sockfd, unsigned short _nSequence) const
 {
    return(m_nSocketDesc == sockfd && m_nSequence == _nSequence);
 }
 
-bool ICQEvent::CompareEvent(unsigned long nEventId) const
+bool ICQEvent::CompareEvent(unsigned short nEventId) const
 {
   return (m_nEventId == nEventId);
 }

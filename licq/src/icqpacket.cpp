@@ -3955,7 +3955,7 @@ CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
 }
 
 CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(unsigned char nChannel,
-  unsigned long nId)
+  unsigned short nSequence)
 {
   m_nSize = 33;
   buffer = new CBuffer(m_nSize);
@@ -3986,8 +3986,8 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(unsigned char nChanne
   buffer->PackChar(0x03);
   buffer->PackUnsignedLong(0x0000000A);
   buffer->PackUnsignedLong(nOurId);
-  buffer->PackUnsignedLong(nId);
-  if (nId == 0)  //we are initiating the connection
+  buffer->PackUnsignedLong(nSequence);
+  if (nSequence == 0)  //we are initiating the connection
   {
     buffer->Pack(GUID, 16);
     buffer->PackUnsignedLong(0x00040001);
@@ -4594,7 +4594,7 @@ char *PipeInput(char *m_szMessage)
 
 
 
-CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
+CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
                 bool _bAccept, bool l, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept,
                l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
@@ -4645,7 +4645,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
 
 
 //-----AckGeneral---------------------------------------------------------------
-CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
+CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned short nSequence,
    bool bAccept, bool nLevel, ICQUser *pUser)
   : CPT_Ack(nCmd, nSequence, bAccept, nLevel, pUser)
 {
@@ -4666,7 +4666,7 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
 
 
 //-----AckKey---------------------------------------------------------------
-CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned long nSequence,
+CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
    bool ok, ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
@@ -4680,7 +4680,7 @@ CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned long nSequence,
 }
 
 
-CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned long nSequence,
+CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned short nSequence,
    ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
@@ -4699,7 +4699,7 @@ CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned long nSequence,
 }
 
 
-CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned long nSequence,
+CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned short nSequence,
    ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExCLOSE, nSequence, true, true, pUser)
 {
@@ -4716,7 +4716,7 @@ CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned long nSequence,
 
 #if 0
 //-----AckMessage---------------------------------------------------------------
-CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
+CPT_AckMessage::CPT_AckMessage(unsigned short _nSequence, bool _bAccept,
                                bool nLevel, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, nLevel, _cUser)
 {
@@ -4728,7 +4728,7 @@ CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
 
 //-----AckReadAwayMessage-------------------------------------------------------
 CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
-                                               unsigned long _nSequence,
+                                               unsigned short _nSequence,
                                                bool _bAccept, ICQUser *_cUser)
   : CPT_Ack(_nSubCommand, _nSequence, _bAccept, false, _cUser)
 {
@@ -4738,7 +4738,7 @@ CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
 
 
 //-----AckUrl-------------------------------------------------------------------
-CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool nLevel,
+CPT_AckUrl::CPT_AckUrl(unsigned short _nSequence, bool _bAccept, bool nLevel,
                       ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, nLevel, _cUser)
 {
@@ -4748,7 +4748,7 @@ CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool nLevel,
 
 
 //-----AckContactList--------------------------------------------------------
-CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
+CPT_AckContactList::CPT_AckContactList(unsigned short _nSequence, bool _bAccept,
                                        bool nLevel, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, nLevel, _cUser)
 {
@@ -4759,7 +4759,7 @@ CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
 
 //-----AckChatRefuse------------------------------------------------------------
 CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
-   unsigned long _nSequence, ICQUser *_cUser)
+   unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
   free (m_szMessage);
@@ -4775,7 +4775,7 @@ CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
 
 //-----AckChatAccept------------------------------------------------------------
 CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClients,
-                                    unsigned long _nSequence, ICQUser *_cUser,
+                                    unsigned short _nSequence, ICQUser *_cUser,
                                     bool bICBM)
   : CPT_Ack(bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
 {
@@ -4831,7 +4831,7 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClient
 
 //-----AckFileRefuse------------------------------------------------------------
 CPT_AckFileRefuse::CPT_AckFileRefuse(const char *szReason,
-                                    unsigned long _nSequence, ICQUser *_cUser)
+                                    unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, false, _cUser)
 {
   free(m_szMessage);
@@ -4851,7 +4851,7 @@ CPT_AckFileRefuse::CPT_AckFileRefuse(const char *szReason,
 
 //-----AckFileAccept------------------------------------------------------------
 CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
-                                    unsigned long _nSequence, ICQUser *_cUser)
+                                    unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, true, true, _cUser)
 {
   m_nFileSize = 0;
@@ -4871,7 +4871,7 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
 
 
 //+++++Cancel+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
+CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned short _nSequence,
                       ICQUser *_cUser)
   : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, "", true, 0, _cUser)
 {
@@ -4881,7 +4881,7 @@ CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
 
 
 //-----CancelChat---------------------------------------------------------------
-CPT_CancelChat::CPT_CancelChat(unsigned long _nSequence, ICQUser *_cUser)
+CPT_CancelChat::CPT_CancelChat(unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Cancel(ICQ_CMDxSUB_CHAT, _nSequence, _cUser)
 {
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -4894,7 +4894,7 @@ CPT_CancelChat::CPT_CancelChat(unsigned long _nSequence, ICQUser *_cUser)
 
 
 //-----CancelFile---------------------------------------------------------------
-CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
+CPT_CancelFile::CPT_CancelFile(unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Cancel(ICQ_CMDxSUB_FILE, _nSequence, _cUser)
 {
   m_nSize += 15;
@@ -4909,7 +4909,7 @@ CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
 }
 
 //-----Send error reply------------------------------------------------------
-CPT_PluginError::CPT_PluginError(ICQUser *_cUser, unsigned long nSequence,
+CPT_PluginError::CPT_PluginError(ICQUser *_cUser, unsigned short nSequence,
                                  unsigned char nChannel)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x03", true, 0, _cUser)
 {
@@ -4939,7 +4939,7 @@ CPT_InfoPluginReq::CPT_InfoPluginReq(ICQUser *_cUser, const char *GUID,
 
 //----Reply to phone book request-----------------------------------------------
 CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
-  unsigned long nSequence)
+  unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
 
@@ -5018,7 +5018,7 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
 
 //----Reply to picture request--------------------------------------------------
 CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
-  unsigned long nSequence)
+  unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
   char szFilename[MAX_FILENAME_LEN];
@@ -5115,7 +5115,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
 
 //----Reply to plugin list request----------------------------------------------
 CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
-  unsigned long nSequence)
+  unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
   unsigned long num_plugins = sizeof(info_plugins)/sizeof(struct PluginList);
@@ -5187,7 +5187,7 @@ CPT_StatusPluginReq::CPT_StatusPluginReq(ICQUser *_cUser, const char *GUID,
 
 //----Reply to plugin list request----------------------------------------------
 CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
-  unsigned long nSequence)
+  unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, 0, _cUser)
 {
   unsigned long num_plugins = sizeof(status_plugins)/sizeof(struct PluginList);
@@ -5245,7 +5245,7 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
 
 //----Reply to status request--------------------------------------------------
 CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
-  unsigned long nSequence,
+  unsigned short nSequence,
   unsigned long nStatus)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x02", true, 0, _cUser)
 {

@@ -515,7 +515,7 @@ public:
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
   unsigned long Uin()                   { return m_nUin; }
   char *UinString()                     { return m_szUinString; }
-  unsigned long Sequence(bool = false);
+  unsigned short Sequence(bool = false);
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
   char *ClientInfo()                    { return m_szClientInfo; }
@@ -617,7 +617,7 @@ public:
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
-  void SetSequence(unsigned long s)   { m_nSequence = s; }
+  void SetSequence(unsigned short s)  { m_nSequence = s; }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void SetUserEncoding(const char* s) { SetString(&m_szEncoding, s); }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
@@ -815,8 +815,8 @@ protected:
   unsigned short m_nTyping;
   unsigned long m_nUin,
                 m_nStatus,
-                m_nSequence,
                 m_nGroups[2];
+  unsigned short m_nSequence;
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   char m_nMode;
   char *m_szClientInfo;
