@@ -530,8 +530,11 @@ void OptionsDlg::ApplyOptions()
       if (mainwin->m_nDockMode != DockDefault ||
           ((IconManager_Default *)mainwin->licqIcon)->FortyEight() != chkDockFortyEight->isChecked() )
       {
-        mainwin->licqIcon->close();
-        delete mainwin->licqIcon;
+        if (mainwin->licqIcon)
+        {
+          mainwin->licqIcon->close();
+          delete mainwin->licqIcon;
+        }
         mainwin->licqIcon = new IconManager_Default(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
         mainwin->m_nDockMode = DockDefault;
       }
@@ -904,6 +907,8 @@ void OptionsDlg::slot_useDockToggled(bool b)
     cmbDockTheme->setEnabled(true);
     chkDockFortyEight->setEnabled(false);
   }
+  else
+    rdbDockDefault->setChecked(true);
 #endif
 }
 
