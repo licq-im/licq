@@ -9,6 +9,7 @@
 #include <qvalidator.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
+#include <qmap.h>
 
 #include "mledit.h"
 #include "mlview.h"
