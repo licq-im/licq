@@ -73,8 +73,8 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent, char
   tab[4] = new_status_options();
   tab[5] = new_misc_options();
 
-  addTab(tab[0], tr("Appearance"));
-  addTab(tab[1], tr("Columns"));
+  addTab(tab[0], tr("General"));
+  addTab(tab[1], tr("Contact List"));
   addTab(tab[2], tr("OnEvent"));
   addTab(tab[3], tr("Network"));
   addTab(tab[4], tr("Status"));
@@ -485,42 +485,8 @@ void OptionsDlg::slot_selecteditfont()
 QWidget* OptionsDlg::new_appearance_options()
 {
   QWidget* w = new QWidget(this);
-  QBoxLayout* lay = new QVBoxLayout(w, 8);
-  QBoxLayout* l = new QHBoxLayout(lay, 8);
-
-  boxUserWin = new QGroupBox(1, Horizontal, tr("Contact List"), w);
-  l->addWidget(boxUserWin);
-
-  chkGridLines = new QCheckBox(tr("Show Grid Lines"), boxUserWin);
-  QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
-  chkHeader = new QCheckBox(tr("Show Column Headers"), boxUserWin);
-  QWhatsThis::add(chkHeader, tr("Turns on or off the display of headers above "
-                                "each column in the user list"));
-  chkShowDividers = new QCheckBox(tr("Show User Dividers"), boxUserWin);
-  QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
-                                     "in the contact list"));
-  chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
-  QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
-  chkTransparent = new QCheckBox(tr("Transparent when possible"), boxUserWin);
-  QWhatsThis::add(chkTransparent, tr("Make the user window transparent when there "
-                                     "is no scroll bar"));
-  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxUserWin);
-  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
-                                   "indicate special characteristics such as "
-                                   "online notify and visible list"));
-  QHBox *hlay = new QHBox(boxUserWin);
-  lblFrameStyle = new QLabel(tr("Frame Style: "), hlay);
-  edtFrameStyle = new QLineEdit(hlay);
-  QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
-                                    "style of the user window:\n"
-                                    "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
-                                    " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
-                                    " + 240 (Shadow)"));
-  edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
-  chkFlashAll = new QCheckBox(tr("Flash Events"), boxUserWin);
-  QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
-  chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);
-  QWhatsThis::add(chkFlashUrgent, tr("Only urgent events will flash"));
+  QBoxLayout *lay = new QVBoxLayout(w, 8);
+  QBoxLayout *l = new QHBoxLayout(lay, 8);
 
   QGroupBox *boxMainWin = new QGroupBox(1, Horizontal, tr("Main Window"), w);
   l->addWidget(boxMainWin);
@@ -545,9 +511,6 @@ QWidget* OptionsDlg::new_appearance_options()
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
-  /*lblLocale = new QLabel(tr("Locale:"), boxLocale);
-  QWhatsThis::add(lblLocale, tr("Sets which locale should be used for "
-                              "all messages."));*/
 
   cmbTrans = new QComboBox(false, boxLocale);
   QString szTransFilesDir;
@@ -733,10 +696,10 @@ QWidget* OptionsDlg::new_sounds_options()
 
 // -----------------------------------------------------------------------------
 
-QWidget* OptionsDlg::new_network_options()
+QWidget *OptionsDlg::new_network_options()
 {
-  QWidget* w = new QWidget(this);
-  QBoxLayout* lay = new QVBoxLayout(w, 8, 4);
+  QWidget *w = new QWidget(this);
+  QBoxLayout *lay = new QVBoxLayout(w, 8, 4);
 
   QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, w);
   lay->addWidget(gbServer);
@@ -783,6 +746,8 @@ QWidget* OptionsDlg::new_network_options()
   connect(chkFirewall, SIGNAL(toggled(bool)), chkTCPEnabled, SLOT(setEnabled(bool)));
   connect(chkFirewall, SIGNAL(toggled(bool)), spnPortLow, SLOT(setEnabled(bool)));
   connect(chkFirewall, SIGNAL(toggled(bool)), spnPortHigh, SLOT(setEnabled(bool)));
+
+  lay->addStretch(1);
 
   return w;
 }
@@ -856,11 +821,10 @@ void OptionsDlg::slot_SARsave_act()
 
 QWidget* OptionsDlg::new_status_options()
 {
-  QVBox* w = new QVBox(this);
-  w->setMargin(8);
-  w->setSpacing(8);
-  QGroupBox* gbStatus = new QGroupBox(tr("Default Auto Response Messages"), w);
-  QBoxLayout* lay = new QVBoxLayout(gbStatus, 8);
+  QWidget *w = new QWidget(this);
+
+  QGroupBox *gbStatus = new QGroupBox(tr("Default Auto Response Messages"), w);
+  QBoxLayout *lay = new QVBoxLayout(gbStatus, 8);
   lay->addSpacing(16);
 
   QBoxLayout* l = new QHBoxLayout(lay);
@@ -893,9 +857,6 @@ QWidget* OptionsDlg::new_status_options()
   l = new QHBoxLayout(lay);
   edtSARtext = new MLEditWrap(true, gbStatus);
   l->addWidget(edtSARtext);
-  // ICQ99b allows 37 chars per line, so we do the same
-  //edtSARtext->setWordWrap(QMultiLineEdit::FixedColumnWidth);
-  //edtSARtext->setWrapColumnOrWidth(37);
 
   QPushButton* btnSaveIt = new QPushButton(tr("Save"), gbStatus);
   btnSaveIt->setMinimumWidth(75);
@@ -944,13 +905,11 @@ QWidget* OptionsDlg::new_status_options()
                                "to disable."));
   spnAutoOffline = new QSpinBox(gbAuto);
   spnAutoOffline->setSpecialValueText(tr("Never"));
-  //lay->addWidget(gbAuto);
-  //lay->addStretch(1);
 
-#if QT_VERSION < 210
-  dummy = new QWidget(gbAuto);
-  dummy->setMinimumHeight(10);
-#endif
+  QVBoxLayout *vlay = new QVBoxLayout(w, 8, 8);
+  vlay->addWidget(gbStatus);
+  vlay->addWidget(gbAuto);
+  vlay->addStretch(1);
 
   return w;
 }
@@ -962,18 +921,19 @@ QWidget* OptionsDlg::new_column_options()
 {
   QWidget* w = new QWidget(this);
 
-  QGridLayout* lay1 = new QGridLayout(w, 7, 5, 10);
-  lay1->setRowStretch(6, 1);
+  QGroupBox *grp = new QGroupBox (tr("Column Configuration"), w);
 
-  lblColTitle = new QLabel (tr("Title"), w);
+  QGridLayout *lay1 = new QGridLayout(grp, 7, 5, 10);
+
+  lblColTitle = new QLabel (tr("Title"), grp);
   QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
-  lblColFormat = new QLabel (tr("Format"), w);
+  lblColFormat = new QLabel (tr("Format"), grp);
   QWhatsThis::add(lblColFormat, tr("The format string used to define what will "
                                    "appear in each column, see OnEvent Command for "
                                    "more information about valid % values"));
-  lblColWidth = new QLabel (tr("Width"), w);
+  lblColWidth = new QLabel (tr("Width"), grp);
   QWhatsThis::add(lblColWidth, tr("The width of the column"));
-  lblColAlign = new QLabel(tr("Alignment"), w);
+  lblColAlign = new QLabel(tr("Alignment"), grp);
   QWhatsThis::add(lblColAlign, tr("The alignment of the column"));
 
   lay1->addWidget(lblColTitle, 1, 1);
@@ -983,15 +943,15 @@ QWidget* OptionsDlg::new_column_options()
 
   for (unsigned short i = 0; i < 4; i++)
   {
-    chkColEnabled[i] = new QCheckBox(tr("Column %1").arg(i), w);
-    edtColTitle[i] = new QLineEdit(w);
+    chkColEnabled[i] = new QCheckBox(tr("Column %1").arg(i), grp);
+    edtColTitle[i] = new QLineEdit(grp);
     QWhatsThis::add(edtColTitle[i], QWhatsThis::textFor(lblColTitle));
-    edtColFormat[i] = new QLineEdit(w);
+    edtColFormat[i] = new QLineEdit(grp);
     QWhatsThis::add(edtColFormat[i], QWhatsThis::textFor(lblColFormat));
-    spnColWidth[i] = new QSpinBox(w);
+    spnColWidth[i] = new QSpinBox(grp);
     QWhatsThis::add(spnColWidth[i], QWhatsThis::textFor(lblColWidth));
     spnColWidth[i]->setRange(0, 2048);
-    cmbColAlign[i] = new QComboBox(w);
+    cmbColAlign[i] = new QComboBox(grp);
     QWhatsThis::add(cmbColAlign[i], QWhatsThis::textFor(lblColAlign));
     cmbColAlign[i]->insertItem(tr("Left"));
     cmbColAlign[i]->insertItem(tr("Right"));
@@ -1004,6 +964,45 @@ QWidget* OptionsDlg::new_column_options()
     connect(chkColEnabled[i], SIGNAL(toggled(bool)), this, SLOT(colEnable(bool)));
   }
   lay1->activate();
+
+  boxUserWin = new QGroupBox(2, Horizontal, tr("Options"), w);
+
+  chkGridLines = new QCheckBox(tr("Show Grid Lines"), boxUserWin);
+  QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
+  chkHeader = new QCheckBox(tr("Show Column Headers"), boxUserWin);
+  QWhatsThis::add(chkHeader, tr("Turns on or off the display of headers above "
+                                "each column in the user list"));
+  chkShowDividers = new QCheckBox(tr("Show User Dividers"), boxUserWin);
+  QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
+                                     "in the contact list"));
+  chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
+  QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
+  chkTransparent = new QCheckBox(tr("Transparent when possible"), boxUserWin);
+  QWhatsThis::add(chkTransparent, tr("Make the user window transparent when there "
+                                     "is no scroll bar"));
+  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxUserWin);
+  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
+                                   "indicate special characteristics such as "
+                                   "online notify and visible list"));
+  chkFlashAll = new QCheckBox(tr("Flash Events"), boxUserWin);
+  QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
+  chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);
+  QWhatsThis::add(chkFlashUrgent, tr("Only urgent events will flash"));
+  QHBox *hlay = new QHBox(boxUserWin);
+  lblFrameStyle = new QLabel(tr("Frame Style: "), hlay);
+  edtFrameStyle = new QLineEdit(hlay);
+  QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
+                                    "style of the user window:\n"
+                                    "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
+                                    " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
+                                    " + 240 (Shadow)"));
+  edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
+
+
+  QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);
+  g_main->addWidget(grp);
+  g_main->addWidget(boxUserWin);
+  g_main->addStretch(1);
 
   return w;
 }
