@@ -9,19 +9,25 @@
 #include <qbitmap.h>
 #include <qpopupmenu.h>
 
-#ifdef USE_KDE
-#include <kapplet.h>
+#ifndef USE_KDE
+class KApplet : public QWidget
+{
+  Q_OBJECT
+public:
+  KApplet(QWidget* parent=0, const char* name =0)
+    : QWidget(parent, name) { };
+};
 #else
-#define KApplet QWidget
+#include <kapplet.h>
 #endif
 
 
 class WharfIcon : public QWidget
 {
+  Q_OBJECT
 public:
   WharfIcon(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
-  virtual ~WharfIcon(void);
-  void DrawIcon(void);
+  virtual ~WharfIcon();
 protected:
   virtual void mouseReleaseEvent (QMouseEvent *);
   virtual void paintEvent (QPaintEvent *);
@@ -35,14 +41,14 @@ friend class IconManager;
 
 class IconManager : public KApplet
 {
+  Q_OBJECT
 public:
   IconManager(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
-  virtual ~IconManager(void);
-  void setDockIconStatus(void);
+  virtual ~IconManager();
+  void setDockIconStatus();
   void setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
-  void DrawIcon(void);
 protected:
-  QPixmap *GetDockIconStatusIcon(void);
+  QPixmap *GetDockIconStatusIcon();
   virtual void mouseReleaseEvent( QMouseEvent *e );
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
