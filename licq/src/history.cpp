@@ -79,6 +79,13 @@ void CUserHistory::SetFile(const char *_sz, const char *_szId,
   }
 }
 #else
+//---SetFile-------------------------------------------------------------------
+/*! \brief Sets the name of the history file
+ *
+ * Sets the name of the history file. A value "default" for _sz means to 
+ * use default history name which is <uin>.history. A Value "none" for _sz means 
+ * no history file. All other values mean to use _sz as the history file name.
+ */
 void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
 {
   if (m_szFileName != NULL) free(m_szFileName);
@@ -390,7 +397,11 @@ bool CUserHistory::Load(HistoryList &lHistory)
   return true;
 }
 
-
+//---Save----------------------------------------------------------------------
+/*! \brief Writes history to disk
+ *
+ * Writes history to disk. If file does not exists it is created.
+ */
 void CUserHistory::Save(const char *buf)
 {
   if (m_szFileName == NULL || buf == NULL) return;
@@ -406,6 +417,8 @@ void CUserHistory::Save(const char *buf)
 }
 
 
+//---Clear---------------------------------------------------------------------
+/*! \brief Clears the history */
 void CUserHistory::Clear(HistoryList &hist)
 {
   HistoryListIter it = hist.begin();
@@ -418,6 +431,12 @@ void CUserHistory::Clear(HistoryList &hist)
 }
 
 
+//---Append--------------------------------------------------------------------
+/*! \brief Appends a message to the history
+ *
+ * Appends message _sz to the history. If the history file does not exist it 
+ * will be created.
+ */
 void CUserHistory::Append(const char *_sz)
 {
   if (m_szFileName == NULL || _sz == NULL) return;
