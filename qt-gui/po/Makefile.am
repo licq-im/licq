@@ -1,7 +1,10 @@
 #HACK, FIXME in a more clean manner
 localedir = $(prefix)/share/licq/qt-gui/locale
 
-TRANSLATIONS = de es ru_RU.KOI8-R
+TRANSLATIONS = de es pl it ru_RU.KOI8-R
+
+%.qm: %.po
+	@$(QT_MSG2QM) $< $@ >/dev/null 2>&1
 
 merge: template
 	@for i in *.po; do \
