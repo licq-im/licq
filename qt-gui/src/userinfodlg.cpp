@@ -332,6 +332,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
         nfoCountry->setData(c->szName);
     }
   }
+  nfoAddress->setData(u->GetAddress());
   nfoCity->setData(u->GetCity());
   nfoState->setData(u->GetState());
   nfoPhone->setData(u->GetPhoneNumber());
@@ -383,6 +384,7 @@ void UserInfoDlg::SaveGeneralInfo()
 
   u->SetEnableSave(true);
   u->SaveGeneralInfo();
+
   gUserManager.DropUser(u);
 }
 
@@ -568,13 +570,13 @@ void UserInfoDlg::SaveMoreInfo()
   u->SetEnableSave(false);
 
   u->SetAge(nfoAge->text().toULong());
-  u->SetHomepage(nfoHomepage->text().local8Bit());
-  //u->SetBirthYear();
-  //u->SetBirthMonth();
-  //u->SetBirthDay();
+  u->SetHomepage(nfoHomepage->text().local8Bit().data());
   if (m_bOwner)
   {
     u->SetGender(cmbGender->currentItem());
+    u->SetBirthYear(spnBirthYear->value() - 1900);
+    u->SetBirthMonth(spnBirthMonth->value());
+    u->SetBirthDay(spnBirthDay->value());
     for (unsigned short i = 0; i < 3; i++)
     {
       u->SetLanguage(i, GetLanguageByIndex(cmbLanguage[i]->currentItem())->nCode);
