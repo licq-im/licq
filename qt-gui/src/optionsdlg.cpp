@@ -54,7 +54,7 @@
 
 
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
-  : QTabDialog(parent, "OptionsDialog", false, WDestructiveClose)
+  : QTabDialog(parent, "OptionsDialog", false, WStyle_ContextHelp | WDestructiveClose)
 {
   setCaption(tr("Licq Options"));
 

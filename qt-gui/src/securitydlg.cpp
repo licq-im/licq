@@ -35,7 +35,7 @@
 
 SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
                          QWidget *parent)
-   : QDialog(parent, "SecurityDialog", false, WDestructiveClose)
+   : QDialog(parent, "SecurityDialog", false, WStyle_ContextHelp | WDestructiveClose )
 {
   server = s;
   sigman = _sigman;
