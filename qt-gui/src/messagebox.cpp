@@ -50,7 +50,7 @@ MsgViewItem::~MsgViewItem(void)
 
 void MsgViewItem::SetEventLine()
 {
-  QString s = EventDescription(msg);
+  QString s = EventDescription(msg).local8Bit();
   const char *sz = NULL;
 
   switch(msg->SubCommand())
