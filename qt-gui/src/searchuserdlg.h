@@ -21,13 +21,15 @@
 // Search user code base written by Alan Penner (apenner@andrew.cmu.edu)
 // modified by Graham Roff && Dirk A. Mueller <dmuell@gmx.net>
 
-#include <qdialog.h>
+#include <qwidget.h>
 #include <qlistview.h>
 
 class QTabWidget;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
+class QComboBox;
+class QSpinBox;
 
 class CICQDaemon;
 class CSignalManager;
@@ -54,7 +56,7 @@ protected:
 
 
 
-class SearchUserDlg : public QDialog
+class SearchUserDlg : public QWidget
 {
    Q_OBJECT
 public:
@@ -73,8 +75,11 @@ protected:
    QCheckBox* qcbAlertUser;
    QTabWidget* search_tab;
 
-   QLabel *lblEmail, *lblFirst, *lblLast, *lblNick, *lblUin, *lblSearch;
-   QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin;
+   QLabel *lblSearch;
+   QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin,
+     *edtCity, *edtState, *edtCoName, *edtCoDept, *edtCoPos;
+   QSpinBox *spnMinAge, *spnMaxAge;
+   QComboBox *cmbCountry, *cmbGender, *cmbLanguage;
    QWidget *alias_tab, *email_tab, *uin_tab;
 
    CICQEventTag *searchTag;
@@ -82,7 +87,7 @@ protected:
    SearchUserView *foundView;
 
    void searchFound(CSearchAck *);
-   void searchDone(bool);
+   void searchDone(CSearchAck *);
    void searchFailed();
 
 public slots:
