@@ -49,7 +49,9 @@ protected:
 #ifdef USE_KDE
   virtual int widthForHeight(int height);
   virtual int heightForWidth(int width);
-  virtual void removedFromPanel();
+  virtual void about();
+  virtual void help();
+  virtual void preferences();
 #endif
   WharfIcon *wharfIcon;
   int m_nNewMsg, m_nSysMsg;
