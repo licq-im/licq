@@ -127,9 +127,9 @@ void ChatDlg::StateServer()
   case STATE_RECVxHANDSHAKE:
   {
     // get the handshake packet
-    char cHandshake;
+    unsigned char cHandshake;
     m_cSocketChat.RecvBuffer() >> cHandshake;
-    if ((unsigned short)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
+    if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
     {
        m_cSocketChat.CloseConnection();
        gLog.Error("%sReceive error - bad handshake (%04X).\n", L_ERRORxSTR,
