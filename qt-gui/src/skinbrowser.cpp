@@ -1,29 +1,28 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+*/
 
-#include <stdio.h>
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <qdir.h>
 
 #include "skinbrowser.h"
 #include "support.h"
 #include "constants.h"
 #include "log.h"
 
-int selectPlugins(const struct dirent *d)
-{
-  return(strncmp(d->d_name, "skin.", 5) == 0);
-}
-int selectIcons(const struct dirent *d)
-{
-  return(strncmp(d->d_name, "icons.", 6) == 0);
-}
-
-SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent = 0, const char *name = 0 )
+SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
   mainwin = _mainwin;
@@ -38,44 +37,36 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent = 0, const
   setCaption(tr("Licq Skin Browser"));
 
   // Load up the available packs
-  char szDir[MAX_FILENAME_LEN];
-  struct dirent **namelist;
-  sprintf(szDir, "%s%s", SHARE_DIR, QTGUI_DIR);
-  int n = scandir_r(szDir, &namelist, selectPlugins, alphasort);
-  if (n < 0)
+  QString szDir;
+  szDir.sprintf("%s%s", SHARE_DIR, QTGUI_DIR);
+  QDir dPlugins(szDir, "skin.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
+  if (!dPlugins.count())
   {
-    gLog.Error("%sError reading qt-gui directory %s:\n%s%s.\n",
-               L_ERRORxSTR, szDir, L_BLANKxSTR, strerror(errno));
+    gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
     lstSkins->insertItem(tr("ERROR"));
     lstSkins->setEnabled(false);
   }
   else
   {
-    for (unsigned short i = 0; i < n; i++)
-    {
-      lstSkins->insertItem(&namelist[i]->d_name[5]);
-      free (namelist[i]);
-    }
-    free (namelist);
+    QStringList::Iterator it;
+    QStringList lst = dPlugins.entryList();
+    for (it = lst.begin(); it != lst.end(); ++it)
+      lstSkins->insertItem((*it).mid(5));
   }
-  n = scandir_r(szDir, &namelist, selectIcons, alphasort);
-  if (n < 0)
+  QDir dIcons(szDir, "icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
+  if (!dIcons.count())
   {
-    gLog.Error("%sError reading qt-gui directory %s:\n%s%s.\n",
-               L_ERRORxSTR, szDir, L_BLANKxSTR, strerror(errno));
+    gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
     lstSkins->insertItem(tr("ERROR"));
     lstSkins->setEnabled(false);
   }
   else
   {
-    for (unsigned short i = 0; i < n; i++)
-    {
-      lstIcons->insertItem(&namelist[i]->d_name[6]);
-      free (namelist[i]);
-    }
-    free (namelist);
+    QStringList::Iterator it;
+    QStringList lst = dIcons.entryList();
+    for (it = lst.begin(); it != lst.end(); ++it)
+        lstIcons->insertItem((*it).mid(6));
   }
-
   setGeometry(mainwin->x() - 100, mainwin->y() + 100, 300,
               150 + (lstSkins->count() > lstIcons->count() ? lstSkins->count() : lstIcons->count()) * 15);
 
