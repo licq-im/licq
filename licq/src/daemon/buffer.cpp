@@ -252,7 +252,6 @@ bool CBuffer::Full()
 //-----Copy---------------------------------------------------------------------
 void CBuffer::Copy(CBuffer *b)
 {
-  Clear();
   Create(b->getDataSize());
   Pack(b);
 }
