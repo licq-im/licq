@@ -84,7 +84,7 @@ protected:
   QSplitter *splRead;
   MLEditWrap *mleRead;
   MsgView *msgView;
-  QPushButton *btnRead1, *btnRead2, *btnRead3, *btnRead4;
+  QPushButton *btnRead1, *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
   CUserEvent *m_xCurrentReadEvent;
 
   // Send Event tab
@@ -192,6 +192,7 @@ protected slots:
    void slot_readbtn1();
    void slot_readbtn2();
    void slot_readbtn3();
+   void slot_readbtn4();
    void slot_sendbtn();
    void slot_aboutToShow(QWidget *);
    void slot_close();
