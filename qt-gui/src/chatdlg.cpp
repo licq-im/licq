@@ -758,7 +758,13 @@ void ChatDlg::closeEvent(QCloseEvent* e)
 {
   if(QueryUser(this, tr("Do you want to save the chat session?"),
                tr("Yes"), tr("No")))
-    slot_save();
+  {
+    if (!slot_save())
+    {
+      e->ignore();
+      return;
+    }
+  }
 
   e->accept();
   chatClose(NULL);
@@ -774,7 +780,7 @@ QString ChatDlg::ChatClients()
 }
 
 
-void ChatDlg::slot_save()
+bool ChatDlg::slot_save()
 {
   QString t = QDateTime::currentDateTime().toString();
   t.replace(QString(" "), QString("-"));
@@ -794,6 +800,7 @@ void ChatDlg::slot_save()
     if (!f.open(IO_WriteOnly))
     {
       WarnUser(this, tr("Failed to open file:\n%1").arg(fn));
+      return false;
     }
     else
     {
@@ -801,6 +808,11 @@ void ChatDlg::slot_save()
       t << mleIRCRemote->text();
       f.close();
     }
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 

@@ -116,7 +116,7 @@ protected slots:
   void chatClose(CChatUser *);
 
   void slot_chat();
-  void slot_save();
+  bool slot_save();
   void slot_audio();
 
   void fontSizeChanged(const QString&);
