@@ -2,6 +2,7 @@ aclocal.m4
 Makefile.in
 configure
 config.h
+config.h.in
 ltmain.sh
 ltconfig
 libtool
