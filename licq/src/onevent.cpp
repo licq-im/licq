@@ -66,8 +66,12 @@ void COnEventManager::SetParameters(const char *_szCommand, const char **_aszPar
 //-----COnEventManager::Do------------------------------------------------------
 void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 {
+  unsigned long nPPID = LICQ_PPID;
+  if (u)
+    nPPID = u->PPID();
+
   // Check if globally command should be run
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
   unsigned long s = o->Status();
 
   // Messy Mode / Accept Stuff by Andypoo (andypoo@ihug.com.au)
@@ -86,7 +90,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
            (s == ICQ_STATUS_OCCUPIED && !u->AcceptInOccupied() && !o->AcceptInOccupied()) ||
            (s == ICQ_STATUS_DND && !u->AcceptInDND() && !o->AcceptInDND() ));
   }
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(nPPID);
   if (no) return;
 
   pthread_mutex_lock(&mutex);
@@ -124,7 +128,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 
         szFullParam = u->usprintf(szParam);
         gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_ONEVENT,
-         _nEvent, u->Uin(),0, szFullParam));
+         _nEvent, u->IdString(), u->PPID(), 0, szFullParam));
         free(szFullParam);
       }
     }
