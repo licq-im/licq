@@ -4,12 +4,12 @@
 
 #ifdef USE_HEBREW
 /*
-	Yo. since the old hebrev wasnt realy working.. and it didnt "mirror" the right way...
-	i've made a few changes... basicly rewrite it.
-	if there are any errors at all.. any problems with the source or with its actions
-	plz *DO* notify me.
-
-		^-RaveN-^ (raven@junior3.technion.ac.il)
+		Ok.. thats an update to the Hebew-Reversing module.
+		It had a small bug in iseng()....
+		Sorry about that.
+		
+		Plus! A new email all comments should be send to:
+		^-RaveN-^ (raven@math.technion.ac.il)
 */
 
 
@@ -31,7 +31,7 @@ static inline int isheb(const char ch)
 
 static inline int iseng(const char ch)
 {
-	return ((ch >= 'A'  &&  ch <= 'z')  ||  (ch >= 'a'  &&  ch <= 'z'));
+	return ((ch >= 'A'  &&  ch <= 'Z')  ||  (ch >= 'a'  &&  ch <= 'z'));
 }
 
 
