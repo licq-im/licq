@@ -1,6 +1,8 @@
 # This is a Qt message file in .po format.  Each msgid starts with
 # a scope.  This scope should *NOT* be translated - eg. "Foo::Bar"
 # would be translated to "Pub", not "Foo::Pub".
+# updated translations by Martin Macok <martin.macok@underground.cz>
+# original translation by Martin Hnatek <m.hnatek@sh.cvut.cz>
 msgid ""
 msgstr ""
 "Project-Id-Version: Qt plugin 1.0\n"
@@ -61,30 +63,58 @@ msgstr "Odmítnout ¾ádost o autorizaci od %1"
 msgid "AuthUserDlg::Response"
 msgstr "Odpovìï"
 
-#: awaymsgdlg.cpp:48
+#: awaymsgdlg.cpp:75
 msgid "AwayMsgDlg::&Cancel"
 msgstr "&Zru¹it"
 
-#: awaymsgdlg.cpp:95
+#: awaymsgdlg.cpp:126
 msgid "AwayMsgDlg::&Edit Items"
 msgstr "&Editovat"
 
-#: awaymsgdlg.cpp:45
+#: awaymsgdlg.cpp:70
+msgid "AwayMsgDlg::&Hints"
+msgstr "&Hinty"
+
+#: awaymsgdlg.cpp:72
 msgid "AwayMsgDlg::&Ok"
 msgstr "&Ok"
 
-#: awaymsgdlg.cpp:43
+#: awaymsgdlg.cpp:68
 msgid "AwayMsgDlg::&Select"
 msgstr "&Výbìr"
 
-#: awaymsgdlg.cpp:103
+#: awaymsgdlg.cpp:23
+msgid "AwayMsgDlg::"
+"<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
+"<ul>"
+"<li>You can include any of the % expansions (described in the main hints page).</li>"
+"<li>Any line beginning with a pipe (|) will be treated as a command "
+"to be run.  The line will be replaced by the output of the command. "
+"The command is parsed by /bin/sh so any shell commands or meta-characters "
+"are allowed.  For security reasons, any % expansions are automatically "
+"passed to the command surrounded by single quotes to prevent shell parsing "
+"of any meta-characters included in an alias.<br>"
+"Examples of popular uses include:"
+"<ul>"
+"<li><tt>|date</tt>: Will replace that line by the current date</li>"
+"<li><tt>|fortune</tt>: Show a fortune, as a tagline for example</li>"
+"<li><tt>|myscript.sh %u %a</tt>: Run a script, passing the uin and alias</li>"
+"<li><tt>|myscript.sh %u %a > /dev/null</tt>: Run the same script but ignore the output (for tracking auto response checks or something)</li>"
+"<li><tt>|if [ %u -lt 100000 ]; then echo \"You are special\"; fi</tt>: Useless, but shows how you can use shell script.</li>"
+"</ul>"
+"Of course, multiple \"|\" can appear in the auto response, and commands and regular "
+"text can be mixed line by line.</li>"
+"<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+msgstr ""
+
+#: awaymsgdlg.cpp:134
 msgid "AwayMsgDlg::"
 "I'm currently %1, %a.\n"
 "You can leave me a message.\n"
 "(%m messages pending from you)."
 msgstr ""
 
-#: awaymsgdlg.cpp:98
+#: awaymsgdlg.cpp:129
 msgid "AwayMsgDlg::Set %1 Response for %2"
 msgstr "Nastavit %1 odpovìï (u¾ivatel %2)"
 
@@ -345,9 +375,9 @@ msgstr "Èas:"
 msgid "CFileDlg::Waiting for connection...\n"
 msgstr "Èekám na spojení...\n"
 
-#: ewidgets.cpp:463
-msgid "CFontDialog::Select Font"
-msgstr "Výbìr fontu"
+# #: ewidgets.cpp:463
+# msgid "CFontDialog::Select Font"
+# msgstr "Výbìr fontu"
 
 #: forwarddlg.cpp:65
 msgid "CForwardDlg::&Cancel"
@@ -405,7 +435,7 @@ msgstr "Výbìr chatu pro pozvání:"
 msgid "CJoinChatDlg::Select chat to join:"
 msgstr "Výbìr chatu pro pøipojení"
 
-#: mmsenddlg.cpp:36
+#: mmsenddlg.cpp:37
 msgid "CMMSendDlg::&Cancel"
 msgstr "&Zru¹it"
 
@@ -413,27 +443,27 @@ msgstr "&Zru¹it"
 msgid "CMMSendDlg::&Close"
 msgstr "&Zavøít"
 
-#: mmsenddlg.cpp:87
+#: mmsenddlg.cpp:88
 msgid "CMMSendDlg::Multiple Recipient Contact List"
 msgstr "Seznam u¾ivatelù více pøíjemcùm"
 
-#: mmsenddlg.cpp:58
+#: mmsenddlg.cpp:59
 msgid "CMMSendDlg::Multiple Recipient Message"
 msgstr "Zpráva více pøíjemcùm"
 
-#: mmsenddlg.cpp:73
+#: mmsenddlg.cpp:74
 msgid "CMMSendDlg::Multiple Recipient URL"
 msgstr "URL pro více pøíjemcù"
 
-#: mmsenddlg.cpp:149
+#: mmsenddlg.cpp:151
 msgid "CMMSendDlg::Sending mass URL to %1..."
 msgstr "Posílám hromadné URL u¾ivatelùm: %1..."
 
-#: mmsenddlg.cpp:158
+#: mmsenddlg.cpp:161
 msgid "CMMSendDlg::Sending mass list to %1..."
 msgstr "Posílám hromadný seznam u¾ivatelùm: %1..."
 
-#: mmsenddlg.cpp:140
+#: mmsenddlg.cpp:141
 msgid "CMMSendDlg::Sending mass message to %1..."
 msgstr "Posílám hromadnou zprávu u¾ivatelùm: %1..."
 
@@ -441,155 +471,147 @@ msgstr "Posílám hromadnou zprávu u¾ivatelùm: %1..."
 msgid "CMMSendDlg::failed"
 msgstr "nevy¹lo"
 
-#: mmlistview.cpp:75
+#: mmlistview.cpp:77
 msgid "CMMUserView::Add All"
 msgstr "Pøidat v¹echny"
 
-#: mmlistview.cpp:74
+#: mmlistview.cpp:76
 msgid "CMMUserView::Add Group"
 msgstr "Pøidat skupinu"
 
-#: mmlistview.cpp:72
+#: mmlistview.cpp:74
 msgid "CMMUserView::Clear"
 msgstr "Vyprázdnit"
 
-#: mmlistview.cpp:71
+#: mmlistview.cpp:73
 msgid "CMMUserView::Crop"
 msgstr "Smazat ostatní"
 
-#: mmlistview.cpp:70
+#: mmlistview.cpp:72
 msgid "CMMUserView::Remove"
 msgstr "Odstranit"
 
-#: mainwin.cpp:1250
+#: mainwin.cpp:1321
 msgid "CMainWindow:: "
 msgstr " "
 
-#: mainwin.cpp:1250
+#: mainwin.cpp:1321
 msgid "CMainWindow::%1 message%2"
 msgstr "%1 zpráva%2"
 
-#: mainwin.cpp:1249
+#: mainwin.cpp:1320
 msgid "CMainWindow::%1 msg%2"
 msgstr "%1 zpráva %2"
 
-#: mainwin.cpp:2845
+#: mainwin.cpp:3089
 msgid "CMainWindow::%1: %2 / %3\n"
 msgstr "%1: %2 / %3\n"
 
-#: mainwin.cpp:2859
+#: mainwin.cpp:3103
 msgid "CMainWindow::%1: %2\n"
 msgstr "%1: %2\n"
 
-#: mainwin.cpp:2766
+#: mainwin.cpp:3006
 msgid "CMainWindow::&About"
 msgstr "O tom/&nìm/ní"
 
-#: mainwin.cpp:2674
+#: mainwin.cpp:2911
 msgid "CMainWindow::&Add User"
 msgstr "Pøid&at u¾ivatele"
 
-#: mainwin.cpp:2757
-msgid "CMainWindow::&Away Modes"
-msgstr "&Away módy"
-
-#: mainwin.cpp:2622
+#: mainwin.cpp:2859
 msgid "CMainWindow::&Away"
 msgstr "&Away"
 
-#: mainwin.cpp:2625
+#: mainwin.cpp:2862
 msgid "CMainWindow::&Do Not Disturb"
 msgstr "&Do Not Disturb"
 
-# #: mainwin.cpp:2154
-# msgid "CMainWindow::&Floaty"
-# msgstr "&Plovoucí"
-
-#: mainwin.cpp:2763
+#: mainwin.cpp:3003
 msgid "CMainWindow::&General Info"
 msgstr "Zá&kladní info"
 
-#: mainwin.cpp:2699
+#: mainwin.cpp:2936
 msgid "CMainWindow::&Group"
 msgstr "&Skupina"
 
-#: mainwin.cpp:2713
+#: mainwin.cpp:2950
 msgid "CMainWindow::&Help"
 msgstr "Nápo&vìda"
 
-#: mainwin.cpp:2690
+#: mainwin.cpp:2927
 msgid "CMainWindow::&Hints"
 msgstr "&Rady"
 
-#: mainwin.cpp:2664
+#: mainwin.cpp:2901
 msgid "CMainWindow::&History"
 msgstr "&Historie"
 
-#: mainwin.cpp:2768
+#: mainwin.cpp:3008
 msgid "CMainWindow::&Info"
 msgstr "&Info"
 
-#: mainwin.cpp:2629
+#: mainwin.cpp:2866
 msgid "CMainWindow::&Invisible"
 msgstr "&Invisible"
 
-#: mainwin.cpp:2703
+#: mainwin.cpp:2940
 msgid "CMainWindow::&Mini Mode"
 msgstr "&Mini mód"
 
-#: mainwin.cpp:2764
+#: mainwin.cpp:3004
 msgid "CMainWindow::&More Info"
 msgstr "Da&l¹í info"
 
-#: mainwin.cpp:2702
+#: mainwin.cpp:2939
 msgid "CMainWindow::&Network Window"
 msgstr "Sí»ový záz&nam"
 
-#: mainwin.cpp:2012
+#: mainwin.cpp:2199
 msgid "CMainWindow::&No"
 msgstr "&Ne"
 
-#: mainwin.cpp:2623
+#: mainwin.cpp:2860
 msgid "CMainWindow::&Not Available"
 msgstr "&Not Available"
 
-#: mainwin.cpp:2847
+#: mainwin.cpp:3091
 msgid "CMainWindow::&Ok"
 msgstr "&Ok"
 
-#: mainwin.cpp:2621
+#: mainwin.cpp:2858
 msgid "CMainWindow::&Online"
 msgstr "&Online"
 
-#: mainwin.cpp:2706
+#: mainwin.cpp:2943
 msgid "CMainWindow::&Options..."
 msgstr "Nastav&ovat..."
 
-#: mainwin.cpp:2708
+#: mainwin.cpp:2945
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "&Pluginy..."
 
-#: mainwin.cpp:2679
+#: mainwin.cpp:2916
 msgid "CMainWindow::&Popup All Messages"
 msgstr "&Otevøít v¹echny zprávy"
 
-#: mainwin.cpp:2668
+#: mainwin.cpp:2905
 msgid "CMainWindow::&Random Chat Group"
 msgstr "Náhodná &chatovací skupina"
 
-#: mainwin.cpp:2684
+#: mainwin.cpp:2921
 msgid "CMainWindow::&Redraw User Window"
 msgstr "Pøek&reslit u¾ivatelské okno"
 
-#: mainwin.cpp:2847
+#: mainwin.cpp:3091
 msgid "CMainWindow::&Reset"
 msgstr "&Vynulovat"
 
-#: mainwin.cpp:2685
+#: mainwin.cpp:2922
 msgid "CMainWindow::&Save All Users"
 msgstr "Ulo¾it &v¹echny u¾ivatele"
 
-#: mainwin.cpp:2666
+#: mainwin.cpp:2903
 msgid "CMainWindow::&Security Options"
 msgstr "Bezpeèno&stní nastavení"
 
@@ -597,19 +619,19 @@ msgstr "Bezpeèno&stní nastavení"
 # msgid "CMainWindow::&Send Message"
 # msgstr "Po&slat zprávu"
 
-#: mainwin.cpp:2692
+#: mainwin.cpp:2929
 msgid "CMainWindow::&Statistics"
 msgstr "&Statistiky"
 
-#: mainwin.cpp:2698
+#: mainwin.cpp:2935
 msgid "CMainWindow::&Status"
 msgstr "Status"
 
-#: mainwin.cpp:595
+#: mainwin.cpp:652
 msgid "CMainWindow::&System"
 msgstr "&Systém"
 
-#: mainwin.cpp:2705
+#: mainwin.cpp:2942
 msgid "CMainWindow::&Thread Group View"
 msgstr "Ukáza&t skupiny"
 
@@ -617,27 +639,63 @@ msgstr "Ukáza&t skupiny"
 # msgid "CMainWindow::&Update Contact List"
 # msgstr "Obnovit seznam &u¾ivatelù"
 
-#: mainwin.cpp:2745
+#: mainwin.cpp:2985
 msgid "CMainWindow::&View Event"
 msgstr "Podí&vat se na událost"
 
-#: mainwin.cpp:2658
+#: mainwin.cpp:2895
 msgid "CMainWindow::&View System Messages"
 msgstr "Podí&vat se na systémové zprávy"
 
-#: mainwin.cpp:2765
+#: mainwin.cpp:3005
 msgid "CMainWindow::&Work Info"
 msgstr "P&racovní info"
 
-#: mainwin.cpp:2012
+#: mainwin.cpp:2199
 msgid "CMainWindow::&Yes"
 msgstr "&Ano"
 
-#: mainwin.cpp:2206
+#: mainwin.cpp:2420
 msgid "CMainWindow::(with KDE support)\n"
 msgstr "(s KDE podporou)"
 
-#: mainwin.cpp:439
+#: mainwin.cpp:3237
+msgid "CMainWindow::"
+"<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
+"<ul>"
+"<li>Change your status by right clicking on the status label.</li>"
+"<li>Change your auto response by double-clicking on the status label.</li>"
+"<li>View system messages by double clicking on the message label.</li>"
+"<li>Change groups by right clicking on the message label.</li>"
+"<li>Use the following shortcuts from the contact list:<ul>"
+"<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
+"<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
+"<li><tt>Ctrl-X : </tt>Exit</li>"
+"<li><tt>Ctrl-H : </tt>Hide</li>"
+"<li><tt>Ctrl-I : </tt>View the next message</li>"
+"<li><tt>Ctrl-V : </tt>View message</li>"
+"<li><tt>Ctrl-S : </tt>Send message</li>"
+"<li><tt>Ctrl-U : </tt>Send Url</li>"
+"<li><tt>Ctrl-C : </tt>Send chat request</li>"
+"<li><tt>Ctrl-F : </tt>Send File</li>"
+"<li><tt>Ctrl-A : </tt>Check Auto response</li>"
+"<li><tt>Ctrl-P : </tt>Popup all messages</li>"
+"<li><tt>Ctrl-L : </tt>Redraw user window</li>"
+"<li><tt>Delete : </tt>Delete user from current group</li>"
+"<li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul>"
+"<li>Hold control while clicking on close in the function window to remove"
+"   the user from your contact list.</li>"
+"<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
+"   For example in the send tab of the user function window.</li>"
+"<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
+"   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
+msgstr ""
+
+#: mainwin.cpp:3266
+msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+msgstr "<hr><p> Pro více informací nav¹tivte domovskou stránku Licq (<tt>http://www.licq.org</tt>).</p>"
+
+#: mainwin.cpp:485
 msgid "CMainWindow::"
 "<ul>"
 "<li><tt>%a - </tt>user alias</li>"
@@ -649,45 +707,65 @@ msgid "CMainWindow::"
 "<li><tt>%m - </tt># pending messages</li>"
 "<li><tt>%n - </tt>full name</li>"
 "<li><tt>%o - </tt>last seen online</li>"
+"<li><tt>%O - </tt>online since</li>"
 "<li><tt>%p - </tt>user port</li>"
 "<li><tt>%s - </tt>full status</li>"
 "<li><tt>%S - </tt>abbreviated status</li>"
 "<li><tt>%u - </tt>uin</li>"
 "<li><tt>%w - </tt>webpage</li></ul>"
-msgstr
-"<ul>"
-"<li><tt>%a - </tt>alias u¾ivatele</li>"
-"<li><tt>%e - </tt>email</li>"
-"<li><tt>%f - </tt>køestní jméno</li>"
-"<li><tt>%h - </tt>telefonní èíslo</li>"
-"<li><tt>%i - </tt>ip adresa u¾ivatele</li>"
-"<li><tt>%l - </tt>pøíjmení</li>"
-"<li><tt>%m - </tt>poèet nevyøízených zpráv</li>"
-"<li><tt>%n - </tt>celé jméno</li>"
-"<li><tt>%o - </tt>naposledy vidìn online</li>"
-"<li><tt>%p - </tt>port u¾ivatele</li>"
-"<li><tt>%s - </tt>úplný status</li>"
-"<li><tt>%S - </tt>zkrácený status</li>"
-"<li><tt>%u - </tt>uin</li>"
-"<li><tt>%w - </tt>webová stránka</li></ul>"
+msgstr ""
 
-#: mainwin.cpp:2676
+# #: mainwin.cpp:439
+# msgid "CMainWindow::"
+# "<ul>"
+# "<li><tt>%a - </tt>user alias</li>"
+# "<li><tt>%e - </tt>email</li>"
+# "<li><tt>%f - </tt>first name</li>"
+# "<li><tt>%h - </tt>phone number</li>"
+# "<li><tt>%i - </tt>user ip</li>"
+# "<li><tt>%l - </tt>last name</li>"
+# "<li><tt>%m - </tt># pending messages</li>"
+# "<li><tt>%n - </tt>full name</li>"
+# "<li><tt>%o - </tt>last seen online</li>"
+# "<li><tt>%p - </tt>user port</li>"
+# "<li><tt>%s - </tt>full status</li>"
+# "<li><tt>%S - </tt>abbreviated status</li>"
+# "<li><tt>%u - </tt>uin</li>"
+# "<li><tt>%w - </tt>webpage</li></ul>"
+# msgstr
+# "<ul>"
+# "<li><tt>%a - </tt>alias u¾ivatele</li>"
+# "<li><tt>%e - </tt>email</li>"
+# "<li><tt>%f - </tt>køestní jméno</li>"
+# "<li><tt>%h - </tt>telefonní èíslo</li>"
+# "<li><tt>%i - </tt>ip adresa u¾ivatele</li>"
+# "<li><tt>%l - </tt>pøíjmení</li>"
+# "<li><tt>%m - </tt>poèet nevyøízených zpráv</li>"
+# "<li><tt>%n - </tt>celé jméno</li>"
+# "<li><tt>%o - </tt>naposledy vidìn online</li>"
+# "<li><tt>%p - </tt>port u¾ivatele</li>"
+# "<li><tt>%s - </tt>úplný status</li>"
+# "<li><tt>%S - </tt>zkrácený status</li>"
+# "<li><tt>%u - </tt>uin</li>"
+# "<li><tt>%w - </tt>webová stránka</li></ul>"
+
+#: mainwin.cpp:2913
 msgid "CMainWindow::A&uthorize User"
 msgstr "A&utorizovat u¾ivatele"
 
-#: mainwin.cpp:2732
+#: mainwin.cpp:2969
 msgid "CMainWindow::Accept in Away"
 msgstr "Pøijímat v Away"
 
-#: mainwin.cpp:2735
+#: mainwin.cpp:2972
 msgid "CMainWindow::Accept in Do Not Disturb"
 msgstr "Pøijímat v Do Not Disturb"
 
-#: mainwin.cpp:2733
+#: mainwin.cpp:2970
 msgid "CMainWindow::Accept in Not Available"
 msgstr "Pøijímat v Not Available"
 
-#: mainwin.cpp:2734
+#: mainwin.cpp:2971
 msgid "CMainWindow::Accept in Occupied"
 msgstr "Pøijímat v Occupied"
 
@@ -695,51 +773,63 @@ msgstr "Pøijímat v Occupied"
 # msgid "CMainWindow::Add To Group"
 # msgstr "Pøi&dat do skupiny"
 
-#: mainwin.cpp:1335
+#: mainwin.cpp:1406
 msgid "CMainWindow::All Users"
 msgstr "All Users"
 
-#: mainwin.cpp:2039
+#: mainwin.cpp:2226
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
 msgstr "Chcete opravdu odstranit \n%1 (%2)\n ze skupiny '%3' ?"
 
-#: mainwin.cpp:1928
+#: mainwin.cpp:2115
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
 msgstr "Chcete opravdu odstranit \n%1 (%2)\n ze seznamu u¾ivatelù?"
 
-#: mainwin.cpp:1916
+#: mainwin.cpp:2103
 msgid "CMainWindow::Authorization granted."
 msgstr "Autorizace potvrzena."
 
-#: mainwin.cpp:2738
+#: mainwin.cpp:2974
+msgid "CMainWindow::Auto Accept Chats"
+msgstr "Automaticky pøijímat Chat"
+
+#: mainwin.cpp:2973
+msgid "CMainWindow::Auto Accept Files"
+msgstr "Automaticky pøijímat soubory"
+
+#: mainwin.cpp:2975
+msgid "CMainWindow::Auto Request Secure"
+msgstr "Automaticky vy¾adovat bezpeèný kanál"
+
+#: mainwin.cpp:2978
 msgid "CMainWindow::Away to User"
 msgstr "Away pro u¾ivatele"
 
-#: mainwin.cpp:2044
+#: mainwin.cpp:2231
 msgid "CMainWindow::Cancel"
 msgstr "&Zru¹it"
 
-#: mainwin.cpp:2667
+#: mainwin.cpp:2904
 msgid "CMainWindow::Change &Password"
 msgstr "Z&mìnit heslo"
 
-#: mainwin.cpp:2806
+#: mainwin.cpp:3046
 msgid "CMainWindow::Check %1 Response"
 msgstr "&Uka¾ %1 odpovìï"
 
-#: mainwin.cpp:2801
+#: mainwin.cpp:3041
 msgid "CMainWindow::Check Auto Response"
 msgstr "&Uka¾ Auto odpovìï"
 
-#: mainwin.cpp:2651
+#: mainwin.cpp:2888
 msgid "CMainWindow::Clear All"
 msgstr "Zakázat v¹e"
 
-#: mainwin.cpp:2825
+#: mainwin.cpp:3069
 msgid "CMainWindow::Close &Secure Channel"
 msgstr "Zavøít &bezpeèný kanál"
 
-#: mainwin.cpp:2760
+#: mainwin.cpp:3000
 msgid "CMainWindow::Custom Auto Response..."
 msgstr "V&lastní Auto odpovìï..."
 
@@ -747,31 +837,31 @@ msgstr "V&lastní Auto odpovìï..."
 # msgid "CMainWindow::Custom Away Message..."
 # msgstr "Vlastní Away zpráva..."
 
-#: mainwin.cpp:2836
+#: mainwin.cpp:3080
 msgid "CMainWindow::Daemon Statistics\n(Today/Total)\n"
 msgstr "Statistika daemona\n(Dnes/Celkovì)\n"
 
-#: mainwin.cpp:2852
+#: mainwin.cpp:3096
 msgid "CMainWindow::Daemon Statistics\n\n"
 msgstr "Statistika daemona\n\n"
 
-#: mainwin.cpp:2670
+#: mainwin.cpp:2907
 msgid "CMainWindow::Debug Level"
 msgstr "Stupeò ladìní"
 
-#: mainwin.cpp:2741
+#: mainwin.cpp:2981
 msgid "CMainWindow::Do Not Disturb to User"
 msgstr "Do Not Disturb pro u¾ivatele"
 
-#: mainwin.cpp:2011
+#: mainwin.cpp:2198
 msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
 msgstr "Opravdu chcete pøidat\n%1 (%2)\ndo ignore seznamu?"
 
-#: mainwin.cpp:2714
+#: mainwin.cpp:2951
 msgid "CMainWindow::E&xit"
 msgstr "Kone&c"
 
-#: mainwin.cpp:2680
+#: mainwin.cpp:2917
 msgid "CMainWindow::Edit &Groups"
 msgstr "Editovat &skupiny"
 
@@ -779,11 +869,11 @@ msgstr "Editovat &skupiny"
 # msgid "CMainWindow::Edit Groups"
 # msgstr "Editovat &skupiny"
 
-#: mainwin.cpp:2771
+#: mainwin.cpp:3011
 msgid "CMainWindow::Edit User Group"
 msgstr "&Editovat skupiny"
 
-#: mainwin.cpp:1914
+#: mainwin.cpp:2101
 msgid "CMainWindow::Error sending authorization."
 msgstr "Chyba pøi posílání autorizace."
 
@@ -791,11 +881,11 @@ msgstr "Chyba pøi posílání autorizace."
 # msgid "CMainWindow::Error sending autorization."
 # msgstr "Chyba pøi posílání autorizace."
 
-#: mainwin.cpp:2646
+#: mainwin.cpp:2883
 msgid "CMainWindow::Errors"
 msgstr "Chyby"
 
-#: mainwin.cpp:2626
+#: mainwin.cpp:2863
 msgid "CMainWindow::Free for C&hat"
 msgstr "Free for C&hat"
 
@@ -807,23 +897,23 @@ msgstr "Free for C&hat"
 # msgid "CMainWindow::From Current Group"
 # msgstr "Ze souèasné skupiny"
 
-#: mainwin.cpp:1360
+#: mainwin.cpp:1431
 msgid "CMainWindow::Ignore List"
 msgstr "I&gnore seznam"
 
-#: mainwin.cpp:1357
+#: mainwin.cpp:1428
 msgid "CMainWindow::Invisible List"
 msgstr "I&nvisible seznam"
 
-#: mainwin.cpp:2841
+#: mainwin.cpp:3085
 msgid "CMainWindow::Last reset %1\n\n"
 msgstr "Posledni vynulovaní %1\n\n"
 
-#: mainwin.cpp:999
+#: mainwin.cpp:1056
 msgid "CMainWindow::Licq (%1)"
 msgstr "Licq (%1)"
 
-#: mainwin.cpp:2194
+#: mainwin.cpp:2408
 msgid "CMainWindow::"
 "Licq version %1%8.\n"
 "Qt GUI plugin version %2.\n"
@@ -845,67 +935,71 @@ msgstr
 "%3 (%4)\n"
 "%5 kontaktù."
 
-#: mainwin.cpp:1895
+#: mainwin.cpp:2082
 msgid "CMainWindow::Logon failed.\nSee network window for details."
 msgstr "Pøihlá¹ení se nezdaøilo.\nSí»ový záznam obsahuje detaily."
 
-#: mainwin.cpp:1363
+#: mainwin.cpp:2997
+msgid "CMainWindow::Misc Modes"
+msgstr "Rùzné re¾imy"
+
+#: mainwin.cpp:1434
 msgid "CMainWindow::New Users"
 msgstr "New Users"
 
-#: mainwin.cpp:2710
+#: mainwin.cpp:2947
 msgid "CMainWindow::Next &Server"
 msgstr "&Dal¹í server"
 
-#: mainwin.cpp:1268
+#: mainwin.cpp:1339
 msgid "CMainWindow::No messages"
 msgstr "®ádné zprávy"
 
-#: mainwin.cpp:1267
+#: mainwin.cpp:1338
 msgid "CMainWindow::No msgs"
 msgstr "®ádné zprávy"
 
-#: mainwin.cpp:2739
+#: mainwin.cpp:2979
 msgid "CMainWindow::Not Available to User"
 msgstr "Not Available pro u¾ivatele"
 
-#: mainwin.cpp:2624
+#: mainwin.cpp:2861
 msgid "CMainWindow::O&ccupied"
 msgstr "O&ccupied"
 
-#: mainwin.cpp:2627
+#: mainwin.cpp:2864
 msgid "CMainWindow::O&ffline"
 msgstr "O&ffline"
 
-#: mainwin.cpp:2740
+#: mainwin.cpp:2980
 msgid "CMainWindow::Occupied to User"
 msgstr "Occupied pro u¾ivatele"
 
-#: mainwin.cpp:2044
+#: mainwin.cpp:2231
 msgid "CMainWindow::Ok"
 msgstr "Ok"
 
-#: mainwin.cpp:1351
+#: mainwin.cpp:1422
 msgid "CMainWindow::Online Notify"
 msgstr "&Online upozornìní"
 
-#: mainwin.cpp:2737
+#: mainwin.cpp:2977
 msgid "CMainWindow::Online to User"
 msgstr "Online pro u¾ivatele"
 
-#: mainwin.cpp:1187
+#: mainwin.cpp:1258
 msgid "CMainWindow::Other Users"
 msgstr "Ostatní u¾ivatelé"
 
-#: mainwin.cpp:2648
+#: mainwin.cpp:2885
 msgid "CMainWindow::Packets"
 msgstr "Pakety"
 
-#: mainwin.cpp:2677
+#: mainwin.cpp:2914
 msgid "CMainWindow::R&andom Chat"
 msgstr "&Náhodný chat"
 
-#: mainwin.cpp:2687
+#: mainwin.cpp:2924
 msgid "CMainWindow::Reg&ister User"
 msgstr "Reg&istrovat u¾ivatele"
 
@@ -913,7 +1007,7 @@ msgstr "Reg&istrovat u¾ivatele"
 # msgid "CMainWindow::Register User"
 # msgstr "Registrovat u¾ivatele"
 
-#: mainwin.cpp:1909
+#: mainwin.cpp:2096
 msgid "CMainWindow::Registration failed.  See network window for details."
 msgstr "Registrace se nezdaøila. Sí»ový záznam obsahuje detaily."
 
@@ -921,15 +1015,15 @@ msgstr "Registrace se nezdaøila. Sí»ový záznam obsahuje detaily."
 # msgid "CMainWindow::Remove"
 # msgstr "Odst&ranit"
 
-#: mainwin.cpp:2773
+#: mainwin.cpp:3013
 msgid "CMainWindow::Remove From List"
 msgstr "Odst&ranit ze seznamu"
 
-#: mainwin.cpp:2827
+#: mainwin.cpp:3071
 msgid "CMainWindow::Request &Secure Channel"
 msgstr "®ádost o bezpeèný &kanál"
 
-#: mainwin.cpp:632
+#: mainwin.cpp:689
 msgid "CMainWindow::"
 "Right click - Status menu\n"
 "Double click - Set auto response"
@@ -937,7 +1031,7 @@ msgstr
 "Pravé tlaèítko - status menu\n"
 "Dvojklik - nastavit auto odpovìï"
 
-#: mainwin.cpp:615
+#: mainwin.cpp:672
 msgid "CMainWindow::"
 "Right click - User groups\n"
 "Double click - Show next message"
@@ -945,11 +1039,11 @@ msgstr
 "Pravé tlaèítko - skupiny\n"
 "Dvojklik - ukázat dal¹í zprávu"
 
-#: mainwin.cpp:2675
+#: mainwin.cpp:2912
 msgid "CMainWindow::S&earch for User"
 msgstr "Hl&edat u¾ivatele"
 
-#: mainwin.cpp:2707
+#: mainwin.cpp:2944
 msgid "CMainWindow::S&kin Browser..."
 msgstr "Procházet s&kiny"
 
@@ -957,15 +1051,15 @@ msgstr "Procházet s&kiny"
 # msgid "CMainWindow::Sa&ve Options"
 # msgstr "Ulo¾it nasta&vení"
 
-#: mainwin.cpp:2712
+#: mainwin.cpp:2949
 msgid "CMainWindow::Sa&ve Settings"
 msgstr "&Ulo¾it nastavení"
 
-#: mainwin.cpp:2752
+#: mainwin.cpp:2992
 msgid "CMainWindow::Send &Authorization"
 msgstr "Poslat &autorizaci"
 
-#: mainwin.cpp:2749
+#: mainwin.cpp:2989
 msgid "CMainWindow::Send &Chat Request"
 msgstr "Poslat ¾ádost o &chat"
 
@@ -973,27 +1067,31 @@ msgstr "Poslat ¾ádost o &chat"
 # msgid "CMainWindow::Send &Contact List"
 # msgstr "Poslat se&znam u¾ivatelù"
 
-#: mainwin.cpp:2750
+#: mainwin.cpp:2990
 msgid "CMainWindow::Send &File Transfer"
 msgstr "Poslat sou&bor"
 
-#: mainwin.cpp:2747
+#: mainwin.cpp:2987
 msgid "CMainWindow::Send &Message"
 msgstr "Po&slat zprávu"
 
-#: mainwin.cpp:2748
-msgid "CMainWindow::Send &Url"
-msgstr "Poslat &Url"
+#: mainwin.cpp:2988
+msgid "CMainWindow::Send &URL"
+msgstr "Poslat &URL"
+
+# #: mainwin.cpp:2748
+# msgid "CMainWindow::Send &Url"
+# msgstr "Poslat &Url"
 
 # #: mainwin.cpp:2141
 # msgid "CMainWindow::Send"
 # msgstr "Po&slat"
 
-#: mainwin.cpp:2751
+#: mainwin.cpp:2991
 msgid "CMainWindow::Send Contact &List"
 msgstr "Poslat se&znam u¾ivatelù"
 
-#: mainwin.cpp:2756
+#: mainwin.cpp:2996
 msgid "CMainWindow::Send"
 msgstr "Po&slat"
 
@@ -1005,11 +1103,11 @@ msgstr "Po&slat"
 # msgid "CMainWindow::Send"
 # msgstr "Po&slat"
 
-#: mainwin.cpp:2700
+#: mainwin.cpp:2937
 msgid "CMainWindow::Set &Auto Response..."
 msgstr "Nastavit &Auto odpovìï..."
 
-#: mainwin.cpp:2650
+#: mainwin.cpp:2887
 msgid "CMainWindow::Set All"
 msgstr "Vybrat v¹e"
 
@@ -1017,15 +1115,15 @@ msgstr "Vybrat v¹e"
 # msgid "CMainWindow::Show &Network Window"
 # msgstr "Ukázat sí»ový záz&nam"
 
-#: mainwin.cpp:2704
+#: mainwin.cpp:2941
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Uka&zovat Offline u¾ivatele"
 
-#: mainwin.cpp:2644
+#: mainwin.cpp:2881
 msgid "CMainWindow::Status Info"
 msgstr "Status Info"
 
-#: mainwin.cpp:1902
+#: mainwin.cpp:2089
 msgid "CMainWindow::"
 "Successfully registered, your user identification\n"
 "number (UIN) is %1.\n"
@@ -1050,11 +1148,11 @@ msgstr
 # "èíslo (UIN) je %ld.\n"
 # "Nyní mù¾ete nastavit své osobní údaje."
 
-#: mainwin.cpp:1241
+#: mainwin.cpp:1312
 msgid "CMainWindow::SysMsg"
 msgstr "Systémová zpráva"
 
-#: mainwin.cpp:2696
+#: mainwin.cpp:2933
 msgid "CMainWindow::System Functions"
 msgstr "Systémové funkce"
 
@@ -1062,43 +1160,43 @@ msgstr "Systémové funkce"
 # msgid "CMainWindow::System"
 # msgstr "Systém"
 
-#: mainwin.cpp:1242
+#: mainwin.cpp:1313
 msgid "CMainWindow::System Message"
 msgstr "Systémová zpráva"
 
-#: mainwin.cpp:572
+#: mainwin.cpp:629
 msgid "CMainWindow::System"
 msgstr "Systém"
 
-#: mainwin.cpp:2770
+#: mainwin.cpp:3010
 msgid "CMainWindow::Toggle &Floaty"
 msgstr "&Plovoucí"
 
-#: mainwin.cpp:2758
+#: mainwin.cpp:2998
 msgid "CMainWindow::U&tilities"
 msgstr "Nás&troje"
 
-#: mainwin.cpp:2529
+#: mainwin.cpp:2766
 msgid "CMainWindow::Unable to open icons file\n%1."
 msgstr "Soubor ikon není mo¾né otevøít\n%1."
 
-#: mainwin.cpp:2645
+#: mainwin.cpp:2882
 msgid "CMainWindow::Unknown Packets"
 msgstr "Neznámé pakety"
 
-#: mainwin.cpp:2840
+#: mainwin.cpp:3084
 msgid "CMainWindow::Up since %1\n"
 msgstr "Pøipojen od %1\n"
 
-#: mainwin.cpp:2855
+#: mainwin.cpp:3099
 msgid "CMainWindow::Up since %1\n\n"
 msgstr "Pøipojen od %1\n\n"
 
-#: mainwin.cpp:2682
+#: mainwin.cpp:2919
 msgid "CMainWindow::Update All Users"
 msgstr "Obnovit v¹echny u¾ivatele"
 
-#: mainwin.cpp:2683
+#: mainwin.cpp:2920
 msgid "CMainWindow::Update Current Group"
 msgstr "Obnovit aktuální skupinu"
 
@@ -1106,23 +1204,23 @@ msgstr "Obnovit aktuální skupinu"
 # msgid "CMainWindow::Use &Mini Mode"
 # msgstr "Pou¾ít &Mini mód"
 
-#: mainwin.cpp:2697
+#: mainwin.cpp:2934
 msgid "CMainWindow::User Functions"
 msgstr "U¾ivatelské &funkce"
 
-#: mainwin.cpp:2769
+#: mainwin.cpp:3009
 msgid "CMainWindow::View &History"
 msgstr "Uka¾ &Historii"
 
-#: mainwin.cpp:1354
+#: mainwin.cpp:1425
 msgid "CMainWindow::Visible List"
 msgstr "Visi&ble seznam"
 
-#: mainwin.cpp:2647
+#: mainwin.cpp:2884
 msgid "CMainWindow::Warnings"
 msgstr "Varování"
 
-#: mainwin.cpp:2969
+#: mainwin.cpp:3213
 msgid "CMainWindow::"
 "You are currently registered as\n"
 "UIN: %1\n"
@@ -1136,7 +1234,7 @@ msgstr
 "Spus»te znovu licq z parametrem -b pro výbìr jiného\n"
 "adresáøe a poté se zaregistrujte jako nový u¾ivatel."
 
-#: mainwin.cpp:1250
+#: mainwin.cpp:1321
 msgid "CMainWindow::s"
 msgstr "(y)"
 
@@ -1156,7 +1254,7 @@ msgstr "(y)"
 # msgid "CMsgViewTips::Urgent"
 # msgstr "Urgentnì"
 
-#: outputwin.cpp:46
+#: outputwin.cpp:43
 msgid "CQtLogWindow::&Close"
 msgstr "&Zavøít"
 
@@ -1212,7 +1310,7 @@ msgstr "General"
 msgid "CRandomChatDlg::Men Seeking Women"
 msgstr "Men Seeking Women"
 
-#: randomchatdlg.cpp:116
+#: randomchatdlg.cpp:111
 msgid "CRandomChatDlg::No random chat user found in that group."
 msgstr "®ádný u¾ivatel pro náhodný chat v této skupinì."
 
@@ -1220,11 +1318,11 @@ msgstr "®ádný u¾ivatel pro náhodný chat v této skupinì."
 msgid "CRandomChatDlg::Random Chat Search"
 msgstr "Hledání náhodného chatu"
 
-#: randomchatdlg.cpp:122
+#: randomchatdlg.cpp:117
 msgid "CRandomChatDlg::Random chat search had an error."
 msgstr "Chyba pøi hledání náhodného chatu."
 
-#: randomchatdlg.cpp:119
+#: randomchatdlg.cpp:114
 msgid "CRandomChatDlg::Random chat search timed out."
 msgstr "Vypr¹el èasový limit pøi hledání náhodného chatu."
 
@@ -1232,7 +1330,7 @@ msgstr "Vypr¹el èasový limit pøi hledání náhodného chatu."
 msgid "CRandomChatDlg::Romance"
 msgstr "Romance"
 
-#: randomchatdlg.cpp:98
+#: randomchatdlg.cpp:97
 msgid "CRandomChatDlg::Searching for Random Chat Partner..."
 msgstr "Hledám partnera pro náhodný chat..."
 
@@ -1244,9 +1342,9 @@ msgstr "Students"
 msgid "CRandomChatDlg::Women Seeking Men"
 msgstr "Women Seeking Men"
 
-#: registeruser.cpp:43
-msgid "CRefuseDlg::&Register Existing User"
-msgstr "&Registrovat existujícího u¾ivatele"
+# #: registeruser.cpp:43
+# msgid "CRefuseDlg::&Register Existing User"
+# msgstr "&Registrovat existujícího u¾ivatele"
 
 #: refusedlg.cpp:24
 msgid "CRefuseDlg::Cancel"
@@ -1256,13 +1354,13 @@ msgstr "&Zru¹it"
 msgid "CRefuseDlg::Licq %1 Refusal"
 msgstr "Licq %1 odmítnutí"
 
-#: registeruser.cpp:83
-msgid "CRefuseDlg::Licq User Registration"
-msgstr "Licq - Registrace u¾ivatele"
+# #: registeruser.cpp:83
+# msgid "CRefuseDlg::Licq User Registration"
+# msgstr "Licq - Registrace u¾ivatele"
 
-#: registeruser.cpp:52
-msgid "CRefuseDlg::Password:"
-msgstr "Heslo:"
+# #: registeruser.cpp:52
+# msgid "CRefuseDlg::Password:"
+# msgstr "Heslo:"
 
 #: refusedlg.cpp:17
 msgid "CRefuseDlg::Refusal message for %1 with "
@@ -1272,123 +1370,123 @@ msgstr "Zamítací zpráva od %1: "
 msgid "CRefuseDlg::Refuse"
 msgstr "&Odmítnout"
 
-#: registeruser.cpp:61
-msgid "CRefuseDlg::UIN Registration - Step 2"
-msgstr "UIN registrace - Krok 2"
+# #: registeruser.cpp:61
+# msgid "CRefuseDlg::UIN Registration - Step 2"
+# msgstr "UIN registrace - Krok 2"
 
-#: registeruser.cpp:76
-msgid "CRefuseDlg::UIN Registration - Step 3"
-msgstr "UIN registrace - Krok 3"
+# #: registeruser.cpp:76
+# msgid "CRefuseDlg::UIN Registration - Step 3"
+# msgstr "UIN registrace - Krok 3"
 
-#: registeruser.cpp:35
-msgid "CRefuseDlg::UIN Registration"
-msgstr "UIN registrace"
+# #: registeruser.cpp:35
+# msgid "CRefuseDlg::UIN Registration"
+# msgstr "UIN registrace"
 
-#: registeruser.cpp:47
-msgid "CRefuseDlg::Uin:"
-msgstr "Uin:"
+# #: registeruser.cpp:47
+# msgid "CRefuseDlg::Uin:"
+# msgstr "Uin:"
 
-#: registeruser.cpp:57
-msgid "CRefuseDlg::Verify:"
-msgstr "Kontrola:"
+# #: registeruser.cpp:57
+# msgid "CRefuseDlg::Verify:"
+# msgstr "Kontrola:"
 
-#: registeruser.cpp:26
-msgid "CRefuseDlg::"
-"Welcome to the Registration Wizard.\n\n"
-"You can register a new user here, or configure "
-"Licq to use an existing UIN.\n\n"
-"If you are registering a new uin, choose "
-"a password and click \"Finish\".\n"
-"If you already have a uin, then toggle \"Register Existing User\",\n"
-"enter your uin and your password, and click \"OK\"\n\n"
-"Press \"Next\" to proceed."
-msgstr
-"Vítejte v prùvodci registrací.\n\n"
-"Mù¾ete se zaregistrovat jako nový u¾ivatel nebo pou¾ít "
-"existující UIN.\n\n"
-"Jestli¾e registrujete nové UIN, vyplòte "
-"heslo a kliknìte \"Finish\".\n"
-"Pokud ji¾ máte pøidìleno UIN, za¹krtnìte \"Register Existing User\",\n"
-"vlo¾te své UIN a heslo a kliknìte \"OK\"\n\n"
-"Zvolte \"Next\" pro pokraèovaní."
+# #: registeruser.cpp:26
+# msgid "CRefuseDlg::"
+# "Welcome to the Registration Wizard.\n\n"
+# "You can register a new user here, or configure "
+# "Licq to use an existing UIN.\n\n"
+# "If you are registering a new uin, choose "
+# "a password and click \"Finish\".\n"
+# "If you already have a uin, then toggle \"Register Existing User\",\n"
+# "enter your uin and your password, and click \"OK\"\n\n"
+# "Press \"Next\" to proceed."
+# msgstr
+# "Vítejte v prùvodci registrací.\n\n"
+# "Mù¾ete se zaregistrovat jako nový u¾ivatel nebo pou¾ít "
+# "existující UIN.\n\n"
+# "Jestli¾e registrujete nové UIN, vyplòte "
+# "heslo a kliknìte \"Finish\".\n"
+# "Pokud ji¾ máte pøidìleno UIN, za¹krtnìte \"Register Existing User\",\n"
+# "vlo¾te své UIN a heslo a kliknìte \"OK\"\n\n"
+# "Zvolte \"Next\" pro pokraèovaní."
 
-#: randomchatdlg.cpp:215
+#: randomchatdlg.cpp:209
 msgid "CSetRandomChatGroupDlg::&Cancel"
 msgstr "&Zru¹it"
 
-#: randomchatdlg.cpp:243
+#: randomchatdlg.cpp:237
 msgid "CSetRandomChatGroupDlg::&Close"
 msgstr "&Zavøít"
 
-#: randomchatdlg.cpp:149
+#: randomchatdlg.cpp:144
 msgid "CSetRandomChatGroupDlg::&Set"
 msgstr "Na&stavit"
 
-#: randomchatdlg.cpp:167
+#: randomchatdlg.cpp:162
 msgid "CSetRandomChatGroupDlg::(none)"
 msgstr "(none)"
 
-#: randomchatdlg.cpp:172
+#: randomchatdlg.cpp:167
 msgid "CSetRandomChatGroupDlg::20 Something"
 msgstr "20 Something"
 
-#: randomchatdlg.cpp:173
+#: randomchatdlg.cpp:168
 msgid "CSetRandomChatGroupDlg::30 Something"
 msgstr "30 Something"
 
-#: randomchatdlg.cpp:174
+#: randomchatdlg.cpp:169
 msgid "CSetRandomChatGroupDlg::40 Something"
 msgstr "40 Something"
 
-#: randomchatdlg.cpp:175
+#: randomchatdlg.cpp:170
 msgid "CSetRandomChatGroupDlg::50 Plus"
 msgstr "50 Plus"
 
-#: randomchatdlg.cpp:170
+#: randomchatdlg.cpp:165
 msgid "CSetRandomChatGroupDlg::Games"
 msgstr "Games"
 
-#: randomchatdlg.cpp:168
+#: randomchatdlg.cpp:163
 msgid "CSetRandomChatGroupDlg::General"
 msgstr "General"
 
-#: randomchatdlg.cpp:176
+#: randomchatdlg.cpp:171
 msgid "CSetRandomChatGroupDlg::Men Seeking Women"
 msgstr "Men Seeking Women"
 
-#: randomchatdlg.cpp:169
+#: randomchatdlg.cpp:164
 msgid "CSetRandomChatGroupDlg::Romance"
 msgstr "Romance"
 
-#: randomchatdlg.cpp:142
+#: randomchatdlg.cpp:137
 msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
 msgstr "Nastavení náhodné chatovací skupiny"
 
-#: randomchatdlg.cpp:234
+#: randomchatdlg.cpp:228
 msgid "CSetRandomChatGroupDlg::Setting Random Chat Group..."
 msgstr "Nastavuji náhodnou chatovací skupinu..."
 
-#: randomchatdlg.cpp:171
+#: randomchatdlg.cpp:166
 msgid "CSetRandomChatGroupDlg::Students"
 msgstr "Students"
 
-#: randomchatdlg.cpp:177
+#: randomchatdlg.cpp:172
 msgid "CSetRandomChatGroupDlg::Women Seeking Men"
 msgstr "Women Seeking Men"
 
-#: randomchatdlg.cpp:262
+#: randomchatdlg.cpp:252
 msgid "CSetRandomChatGroupDlg::done"
 msgstr "hotovo"
 
-#: randomchatdlg.cpp:259
+#: randomchatdlg.cpp:249
 msgid "CSetRandomChatGroupDlg::error"
 msgstr "chyba"
 
-#: randomchatdlg.cpp:253
+#: randomchatdlg.cpp:243
 msgid "CSetRandomChatGroupDlg::failed"
 msgstr "nevy¹lo"
 
-#: randomchatdlg.cpp:256
+#: randomchatdlg.cpp:246
 msgid "CSetRandomChatGroupDlg::timed out"
 msgstr "vypr¹el èas"
 
@@ -1396,7 +1494,7 @@ msgstr "vypr¹el èas"
 # msgid "CUserView::%1 Floating Window"
 # msgstr "%1 Plovoucí okno"
 
-#: userbox.cpp:49
+#: userbox.cpp:58
 msgid "CUserView::%1 Floaty (%2)"
 msgstr "%1 plovoucí (%2)"
 
@@ -1408,45 +1506,137 @@ msgstr "%1 plovoucí (%2)"
 # msgid "CUserView::Enable"
 # msgstr "Povolit"
 
-#: userbox.cpp:1155
+#: userbox.cpp:1339
+msgid "CUserView::</nobr>"
+msgstr ""
+
+#: userbox.cpp:1245
 msgid "CUserView::<br><b>Birthday&nbsp;Today!</b>"
 msgstr "<br><b>Narozeniny&nbsp;Dnes!</b>"
 
-#: userbox.cpp:1174
+#: userbox.cpp:1277
+msgid "CUserView::<br><nobr>C: "
+msgstr ""
+
+#: userbox.cpp:1271
+msgid "CUserView::<br><nobr>E: "
+msgstr ""
+
+#: userbox.cpp:1280
+msgid "CUserView::<br><nobr>F: "
+msgstr ""
+
+#: userbox.cpp:1290
+msgid "CUserView::<br><nobr>Ip: "
+msgstr ""
+
+#: userbox.cpp:1339
+msgid "CUserView::<br><nobr>Logged In: "
+msgstr "Pøihlá¹en: "
+
+#: userbox.cpp:1297
+msgid "CUserView::<br><nobr>O: "
+msgstr ""
+
+#: userbox.cpp:1274
+msgid "CUserView::<br><nobr>P: "
+msgstr ""
+
+#: userbox.cpp:1265
 msgid "CUserView::<br><u>Auto Response:</u>"
 msgstr "<br><u>Auto odpovìï:</u>"
 
-#: userbox.cpp:1161
+#: userbox.cpp:1251
 msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
 msgstr "<br>Vlastní&nbsp;Auto&nbsp;odpovìï"
 
-#: userbox.cpp:1169
-msgid "CUserView::<br>Licq&nbsp;v0.%1."
-msgstr "<br>Licq&nbsp;v0.%1."
+#: userbox.cpp:1260
+msgid "CUserView::<br>Licq&nbsp;%1"
+msgstr ""
 
-#: userbox.cpp:1167
-msgid "CUserView::<br>Licq&nbsp;v0.%1/SSL."
-msgstr "<br>Licq&nbsp;v0.%1/SSL."
+#: userbox.cpp:1258
+msgid "CUserView::<br>Licq&nbsp;%1/SSL"
+msgstr ""
 
-#: userbox.cpp:1158
+# #: userbox.cpp:1169
+# msgid "CUserView::<br>Licq&nbsp;v0.%1."
+# msgstr "<br>Licq&nbsp;v0.%1."
+
+# #: userbox.cpp:1167
+# msgid "CUserView::<br>Licq&nbsp;v0.%1/SSL."
+# msgstr "<br>Licq&nbsp;v0.%1/SSL."
+
+#: userbox.cpp:1248
 msgid "CUserView::<br>Secure&nbsp;connection"
 msgstr "<br>Bezpeèné&nbsp;spojení"
 
-#: userbox.cpp:462
+#: usercodec.cpp:39
+msgid "CUserView::Arabic"
+msgstr ""
+
+#: usercodec.cpp:34
+msgid "CUserView::Baltic"
+msgstr ""
+
+#: usercodec.cpp:31
+msgid "CUserView::Central European"
+msgstr ""
+
+#: usercodec.cpp:44
+msgid "CUserView::Chinese Simplified"
+msgstr ""
+
+#: usercodec.cpp:42
+msgid "CUserView::Chinese Traditional"
+msgstr ""
+
+#: usercodec.cpp:37
+msgid "CUserView::Cyrillic"
+msgstr ""
+
+#: usercodec.cpp:32
+msgid "CUserView::Esperanto"
+msgstr ""
+
+#: usercodec.cpp:40
+msgid "CUserView::Greek"
+msgstr ""
+
+#: usercodec.cpp:41
+msgid "CUserView::Hebrew"
+msgstr ""
+
+#: userbox.cpp:524
 msgid "CUserView::Offline"
 msgstr "Offline"
 
-#: userbox.cpp:464
+#: userbox.cpp:526
 msgid "CUserView::Online"
 msgstr "Online"
 
-#: userbox.cpp:659
+#: userbox.cpp:723
 msgid "CUserView::S"
 msgstr "S"
 
 # #: userbox.cpp:1101
 # msgid "CUserView::\n<b>Birthday Today!</b>"
 # msgstr "\n<b>Narozeniny dnes!</b>"
+
+#: usercodec.cpp:46
+msgid "CUserView::Turkish"
+msgstr ""
+
+#: usercodec.cpp:38
+msgid "CUserView::Ukrainan"
+msgstr ""
+
+#: usercodec.cpp:26
+msgid "CUserView::Unicode"
+msgstr ""
+
+#: usercodec.cpp:29
+msgid "CUserView::Western European"
+msgstr ""
 
 #: utilitydlg.cpp:97
 msgid "CUtilityDlg::&Cancel"
@@ -1524,7 +1714,7 @@ msgstr "U¾ivatelské polo¾ky"
 msgid "CUtilityDlg::Window:"
 msgstr "Okno:"
 
-#: chatdlg.cpp:526
+#: chatdlg.cpp:585
 msgid "ChatDlg::%1 closed connection."
 msgstr "%1 uzavøel spojení"
 
@@ -1548,7 +1738,7 @@ msgstr "&Talk re¾im"
 msgid "ChatDlg::&Save Chat"
 msgstr "&Ulo¾it chat"
 
-#: chatdlg.cpp:772
+#: chatdlg.cpp:841
 msgid "ChatDlg::/%1.%2.chat"
 msgstr "/%1.%2.chat"
 
@@ -1556,23 +1746,23 @@ msgstr "/%1.%2.chat"
 # msgid "ChatDlg::/%1.chat"
 # msgstr "/%1.chat"
 
-#: chatdlg.cpp:203
+#: chatdlg.cpp:201
 msgid "ChatDlg::Background color"
 msgstr "Barva pozadí"
 
-#: chatdlg.cpp:192
+#: chatdlg.cpp:190
 msgid "ChatDlg::Beep"
 msgstr "Píp"
 
-#: chatdlg.cpp:228
+#: chatdlg.cpp:226
 msgid "ChatDlg::Bold"
 msgstr "Tuènì"
 
-#: chatdlg.cpp:204
+#: chatdlg.cpp:202
 msgid "ChatDlg::Changes the background color"
 msgstr "Mìní barvu pozadí"
 
-#: chatdlg.cpp:199
+#: chatdlg.cpp:197
 msgid "ChatDlg::Changes the foreground color"
 msgstr "Mìní barvu popøedí"
 
@@ -1580,23 +1770,27 @@ msgstr "Mìní barvu popøedí"
 msgid "ChatDlg::Chat"
 msgstr "Chat"
 
-#: chatdlg.cpp:744
+#: chatdlg.cpp:810
 msgid "ChatDlg::Do you want to save the chat session?"
 msgstr "Chcete opravdu ulo¾it chat relaci?"
 
-#: chatdlg.cpp:198
+#: chatdlg.cpp:196
 msgid "ChatDlg::Foreground color"
 msgstr "Barva popøedí"
 
-#: chatdlg.cpp:187
+#: chatdlg.cpp:185
 msgid "ChatDlg::Ignore user settings"
 msgstr "Ignorovat nastavení u¾ivatele"
 
-#: chatdlg.cpp:233
+#: chatdlg.cpp:186
+msgid "ChatDlg::Ignores user color settings"
+msgstr "Ignoruj u¾ivatelské nastavení barev"
+
+#: chatdlg.cpp:231
 msgid "ChatDlg::Italic"
 msgstr "Italika"
 
-#: chatdlg.cpp:540
+#: chatdlg.cpp:601
 msgid "ChatDlg::Licq - Chat %1"
 msgstr "Licq - Chat %1"
 
@@ -1609,7 +1803,7 @@ msgstr "Licq - Chat"
 # msgid "ChatDlg::Local - "
 # msgstr "Lokální klient -"
 
-#: chatdlg.cpp:304
+#: chatdlg.cpp:330
 msgid "ChatDlg::Local - %1"
 msgstr "Lokální klient - %1"
 
@@ -1625,11 +1819,11 @@ msgstr "Re¾im"
 # msgid "ChatDlg::Remote - "
 # msgstr "Vzdálený klient -"
 
-#: chatdlg.cpp:745
+#: chatdlg.cpp:811
 msgid "ChatDlg::No"
 msgstr "Ne"
 
-#: chatdlg.cpp:539
+#: chatdlg.cpp:600
 msgid "ChatDlg::Remote - %1"
 msgstr "Vzdálený klient - %1"
 
@@ -1641,7 +1835,7 @@ msgstr "Vzdálený klient - %1"
 # msgid "ChatDlg::Remote - Connected, waiting for response..."
 # msgstr "Vzdálený klient - spojen, èekám na odezvu..."
 
-#: chatdlg.cpp:457
+#: chatdlg.cpp:483
 msgid "ChatDlg::Remote - Connecting..."
 msgstr "Vzdálený klient - Navazuji spojení..."
 
@@ -1653,19 +1847,19 @@ msgstr "Vzdálený klient - Spojení nenavázáno"
 # msgid "ChatDlg::Remote - Received connection, shaking hands..."
 # msgstr "Vzdálený klient - navázáno spojení, probíhá handshake..."
 
-#: chatdlg.cpp:447
+#: chatdlg.cpp:473
 msgid "ChatDlg::Remote - Waiting for joiners..."
 msgstr "Vzdálený klient - Èekám na ostatní..."
 
-#: chatdlg.cpp:193
+#: chatdlg.cpp:191
 msgid "ChatDlg::Sends a Beep to all recipients"
 msgstr "Pípne u v¹ech ostatních úèastníkù"
 
-#: chatdlg.cpp:239
+#: chatdlg.cpp:237
 msgid "ChatDlg::Toggles Bold font"
 msgstr "Pøepíná tuèný font"
 
-#: chatdlg.cpp:234
+#: chatdlg.cpp:232
 msgid "ChatDlg::Toggles Italic font"
 msgstr "Pøepíná sklonìný font"
 
@@ -1677,43 +1871,39 @@ msgstr "Pøepíná sklonìný font"
 # "Pøipojení ke vzdálenému chatu se nezdaøilo.\n"
 # "Sí»ový záznam obsahuje detaily."
 
-#: chatdlg.cpp:238
+#: chatdlg.cpp:236
 msgid "ChatDlg::Underline"
 msgstr "Podtr¾ený"
 
-#: chatdlg.cpp:745
+#: chatdlg.cpp:811
 msgid "ChatDlg::Yes"
 msgstr "Ano"
 
-#: chatdlg.cpp:188
-msgid "ChatDlg::ignores user color settings"
-msgstr "ignoruje u¾ivatelské nastavení barvy"
+# #: chatdlg.cpp:188
+# msgid "ChatDlg::ignores user color settings"
+# msgstr "ignoruje u¾ivatelské nastavení barvy"
 
-#: awaymsgdlg.cpp:183
+#: awaymsgdlg.cpp:223
 msgid "CustomAwayMsgDlg::&Cancel"
 msgstr "&Zru¹it"
 
-#: awaymsgdlg.cpp:181
+#: awaymsgdlg.cpp:221
 msgid "CustomAwayMsgDlg::&Clear"
 msgstr "&Proèistit"
 
-# #: awaymsgdlg.cpp:297
-# msgid "CustomAwayMsgDlg::&Edit Items"
-# msgstr ""
+#: awaymsgdlg.cpp:216
+msgid "CustomAwayMsgDlg::&Hints"
+msgstr "&Hinty"
 
-#: awaymsgdlg.cpp:178
+#: awaymsgdlg.cpp:218
 msgid "CustomAwayMsgDlg::&Ok"
 msgstr "&Ok"
 
-# #: awaymsgdlg.cpp:196
-# msgid "CustomAwayMsgDlg::&Select"
-# msgstr ""
-
-#: awaymsgdlg.cpp:204
+#: awaymsgdlg.cpp:248
 msgid "CustomAwayMsgDlg::I am currently %1.\nYou can leave me a message."
 msgstr "I am currently %1.\nYou can leave me a message."
 
-#: awaymsgdlg.cpp:199
+#: awaymsgdlg.cpp:243
 msgid "CustomAwayMsgDlg::Set Custom Auto Response for %1"
 msgstr "Nastavit speciální auto odpovìï pro %1"
 
@@ -1736,10 +1926,6 @@ msgstr "Licq editor souborù - %1"
 #: editfile.cpp:66
 msgid "EditFileDlg::[ Read-Only ]"
 msgstr "[ Pouze pro ètení ]"
-
-# #: eventdesc.cpp:38
-# msgid "EditGrpDlg::"
-# msgstr ""
 
 #: editgrp.cpp:64
 msgid "EditGrpDlg::&Done"
@@ -1884,17 +2070,13 @@ msgstr "Výchozí skupina pøi startu."
 msgid "EditGrpDlg::noname"
 msgstr "noname"
 
-#: eventdesc.cpp:53
-msgid "Event:: (cancelled)"
-msgstr " (zru¹eno)"
-
-# #: eventdesc.cpp:52
-# msgid "Event:: Cancelled"
-# msgstr "Zru¹eno"
-
 #: eventdesc.cpp:38
 msgid "Event::"
 msgstr ""
+
+#: eventdesc.cpp:52
+msgid "Event::(cancelled)"
+msgstr "(zru¹eno)"
 
 #: eventdesc.cpp:25
 msgid "Event::Added to Contact List"
@@ -1940,7 +2122,7 @@ msgstr "Událost pluginu"
 msgid "Event::URL"
 msgstr "URL"
 
-#: eventdesc.cpp:48
+#: eventdesc.cpp:47
 msgid "Event::Unknown Event"
 msgstr "Neznámá událost"
 
@@ -1952,75 +2134,75 @@ msgstr "Info o u¾ivateli"
 msgid "Event::Web Panel"
 msgstr "Web Panel"
 
-#: mainwin.cpp:3045
+#: mainwin.cpp:3290
 msgid "HintsDlg::&Close"
 msgstr "&Zavøít"
 
-#: mainwin.cpp:3009
-msgid "HintsDlg::"
-"<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
-"<ul>"
-"<li>Change your status by right clicking on the status label.</li>"
-"<li>Change your auto response by double-clicking on the status label.</li>"
-"<li>View system messages by double clicking on the message label.</li>"
-"<li>Change groups by right clicking on the message label.</li>"
-"<li>Use the following shortcuts from the contact list:<ul>"
-"<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
-"<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
-"<li><tt>Ctrl-X : </tt>Exit</li>"
-"<li><tt>Ctrl-H : </tt>Hide</li>"
-"<li><tt>Ctrl-I : </tt>View the next message</li>"
-"<li><tt>Ctrl-V : </tt>View message</li>"
-"<li><tt>Ctrl-S : </tt>Send message</li>"
-"<li><tt>Ctrl-U : </tt>Send Url</li>"
-"<li><tt>Ctrl-C : </tt>Send chat request</li>"
-"<li><tt>Ctrl-F : </tt>Send File</li>"
-"<li><tt>Ctrl-A : </tt>Check Auto response</li>"
-"<li><tt>Ctrl-P : </tt>Popup all messages</li>"
-"<li><tt>Ctrl-L : </tt>Redraw user window</li>"
-"<li><tt>Delete : </tt>Delete user from current group</li>"
-"<li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul>"
-"<li>Hold control while clicking on close in the function window to remove"
-"   the user from your contact list.</li>"
-"<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
-"   For example in the send tab of the user function window.</li>"
-"<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
-"   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
-msgstr
-"<h2>Rady pro pou¾ívání<br>Licq Qt-GUI Pluginu</h2><br><hr><br>"
-"<ul>"
-"<li>Status zmìníte kliknutím pravého tlaèítka na status políèko.</li>"
-"<li>Auto odpovìï zmìníte poklepáním na status políèko.</li>"
-"<li>Zprávy zobrazíte poklepáním na políèko zpráv.</li>"
-"<li>Zmìnu skupiny provedete kliknutím pravého tlaèítka na políèko zpráv.</li>"
-"<li>V seznamu u¾ivatelù pou¾ijte následující zkratkové klávesy:<ul>"
-"<li><tt>Ctrl-M : </tt>Pøepíná mini mód</li>"
-"<li><tt>Ctrl-O : </tt>Pøepíná ukazování offline u¾ivatelù</li>"
-"<li><tt>Ctrl-X : </tt>Konec (Exit)</li>"
-"<li><tt>Ctrl-H : </tt>Schovat (Hide)</li>"
-"<li><tt>Ctrl-I : </tt>Zobrazit dal¹í zprávu</li>"
-"<li><tt>Ctrl-V : </tt>Zobrazit zprávu</li>"
-"<li><tt>Ctrl-S : </tt>Poslat zprávu</li>"
-"<li><tt>Ctrl-U : </tt>Poslat Url</li>"
-"<li><tt>Ctrl-C : </tt>Poslat ¾ádost o chat</li>"
-"<li><tt>Ctrl-F : </tt>Poslat soubor (File)</li>"
-"<li><tt>Ctrl-A : </tt>Ukázat auto odpovìï</li>"
-"<li><tt>Ctrl-P : </tt>Otevøít v¹echny zprávy</li>"
-"<li><tt>Ctrl-L : </tt>Pøekreslit u¾ivatelské okno</li>"
-"<li><tt>Delete : </tt>Smazat u¾ivatele z aktuální skupiny</li>"
-"<li><tt>Ctrl-Delete : </tt>Smazat u¾ivatele ze seznamu u¾ivatelù</li></ul>"
-"<li>Pøidr¾te Control a zároveò kliknìte na zavøení ve funkèním oknì pro"
-"   odstranìní u¾ivatele ze seznamu u¾ivatelù.</li>"
-"<li>Ctrl-Enter pou¾ijte ve vìt¹inì vstupních políèek pro potvrzení akce."
-"   Pøíkladem mù¾e být dialog pro posílání zpávy u¾ivateli.</li>"
-"<li>Zde je kompletní seznam direktiv uvozených znakem %, ktere mohou být "
-"pou¾ity v <b>OnEvent</b> parametrech, <b>auto odpovìdích</b> a <b>nástrojích</b>:\n"
+# #: mainwin.cpp:3009
+# msgid "HintsDlg::"
+# "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
+# "<ul>"
+# "<li>Change your status by right clicking on the status label.</li>"
+# "<li>Change your auto response by double-clicking on the status label.</li>"
+# "<li>View system messages by double clicking on the message label.</li>"
+# "<li>Change groups by right clicking on the message label.</li>"
+# "<li>Use the following shortcuts from the contact list:<ul>"
+# "<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
+# "<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
+# "<li><tt>Ctrl-X : </tt>Exit</li>"
+# "<li><tt>Ctrl-H : </tt>Hide</li>"
+# "<li><tt>Ctrl-I : </tt>View the next message</li>"
+# "<li><tt>Ctrl-V : </tt>View message</li>"
+# "<li><tt>Ctrl-S : </tt>Send message</li>"
+# "<li><tt>Ctrl-U : </tt>Send Url</li>"
+# "<li><tt>Ctrl-C : </tt>Send chat request</li>"
+# "<li><tt>Ctrl-F : </tt>Send File</li>"
+# "<li><tt>Ctrl-A : </tt>Check Auto response</li>"
+# "<li><tt>Ctrl-P : </tt>Popup all messages</li>"
+# "<li><tt>Ctrl-L : </tt>Redraw user window</li>"
+# "<li><tt>Delete : </tt>Delete user from current group</li>"
+# "<li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul>"
+# "<li>Hold control while clicking on close in the function window to remove"
+# "   the user from your contact list.</li>"
+# "<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
+# "   For example in the send tab of the user function window.</li>"
+# "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
+# "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
+# msgstr
+# "<h2>Rady pro pou¾ívání<br>Licq Qt-GUI Pluginu</h2><br><hr><br>"
+# "<ul>"
+# "<li>Status zmìníte kliknutím pravého tlaèítka na status políèko.</li>"
+# "<li>Auto odpovìï zmìníte poklepáním na status políèko.</li>"
+# "<li>Zprávy zobrazíte poklepáním na políèko zpráv.</li>"
+# "<li>Zmìnu skupiny provedete kliknutím pravého tlaèítka na políèko zpráv.</li>"
+# "<li>V seznamu u¾ivatelù pou¾ijte následující zkratkové klávesy:<ul>"
+# "<li><tt>Ctrl-M : </tt>Pøepíná mini mód</li>"
+# "<li><tt>Ctrl-O : </tt>Pøepíná ukazování offline u¾ivatelù</li>"
+# "<li><tt>Ctrl-X : </tt>Konec (Exit)</li>"
+# "<li><tt>Ctrl-H : </tt>Schovat (Hide)</li>"
+# "<li><tt>Ctrl-I : </tt>Zobrazit dal¹í zprávu</li>"
+# "<li><tt>Ctrl-V : </tt>Zobrazit zprávu</li>"
+# "<li><tt>Ctrl-S : </tt>Poslat zprávu</li>"
+# "<li><tt>Ctrl-U : </tt>Poslat Url</li>"
+# "<li><tt>Ctrl-C : </tt>Poslat ¾ádost o chat</li>"
+# "<li><tt>Ctrl-F : </tt>Poslat soubor (File)</li>"
+# "<li><tt>Ctrl-A : </tt>Ukázat auto odpovìï</li>"
+# "<li><tt>Ctrl-P : </tt>Otevøít v¹echny zprávy</li>"
+# "<li><tt>Ctrl-L : </tt>Pøekreslit u¾ivatelské okno</li>"
+# "<li><tt>Delete : </tt>Smazat u¾ivatele z aktuální skupiny</li>"
+# "<li><tt>Ctrl-Delete : </tt>Smazat u¾ivatele ze seznamu u¾ivatelù</li></ul>"
+# "<li>Pøidr¾te Control a zároveò kliknìte na zavøení ve funkèním oknì pro"
+# "   odstranìní u¾ivatele ze seznamu u¾ivatelù.</li>"
+# "<li>Ctrl-Enter pou¾ijte ve vìt¹inì vstupních políèek pro potvrzení akce."
+# "   Pøíkladem mù¾e být dialog pro posílání zpávy u¾ivateli.</li>"
+# "<li>Zde je kompletní seznam direktiv uvozených znakem %, ktere mohou být "
+# "pou¾ity v <b>OnEvent</b> parametrech, <b>auto odpovìdích</b> a <b>nástrojích</b>:\n"
 
-#: mainwin.cpp:3038
-msgid "HintsDlg::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
-msgstr "<hr><p> Více informací najdete na domovkých stránkách Licq (<tt>http://www.licq.org</tt>).</p>"
+# #: mainwin.cpp:3038
+# msgid "HintsDlg::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+# msgstr "<hr><p> Více informací najdete na domovkých stránkách Licq (<tt>http://www.licq.org</tt>).</p>"
 
-#: mainwin.cpp:3002
+#: mainwin.cpp:3277
 msgid "HintsDlg::Licq - Hints"
 msgstr "Licq - Rady"
 
@@ -2648,47 +2830,68 @@ msgstr "Licq - Rady"
 # msgid "IconManager::The applet can be removed by\ndisabling it in the options dialog"
 # msgstr "Applet mù¾e být odstranìn\nzakázáním v nastavovacím dialogu"
 
-#: wharf.cpp:373
+#: wharf.cpp:665
+msgid "IconManager_KDEStyle::<br>%1 msgs"
+msgstr "<br>%1 zpráv"
+
+#: wharf.cpp:667
+msgid "IconManager_KDEStyle::<br>1 msg"
+msgstr "<br>1 zpráva"
+
+#: wharf.cpp:662
+msgid "IconManager_KDEStyle::<br><b>%1 system messages</b>"
+msgstr "<br><b>%1 systémových zpráv</b>"
+
+#: wharf.cpp:669
+msgid "IconManager_KDEStyle::"
+"<br>Left click - Show main window"
+"<br>Middle click - Show next message"
+"<br>Right click - System menu"
+msgstr "<br>Levé tlaèítko - Uka¾ hlavní okno"
+"<br>Prostøední tlaèítko - Uka¾ dal¹í zprávu"
+"<br>Pravé tlaèítko - Systémové menu"
+
+#: wharf.cpp:358
 msgid "IconManager_Themed::Unable to load dock theme file\n(%1)\n:%2"
 msgstr "Nezdaøilo se otevøení souboru s dokovým tématem\n(%1)\n:%2"
 
-#: wharf.cpp:409
+#: wharf.cpp:394
 msgid "IconManager_Themed::Unable to load dock theme image\n%1"
 msgstr "Nezdaøilo se otevøení souboru s obrázkem pro dokové téma\n%1"
 
-#: keyrequestdlg.cpp:75
+#: keyrequestdlg.cpp:76
 msgid "KeyRequestDlg::&Close"
 msgstr "&Zavøít"
 
-#: keyrequestdlg.cpp:69
+#: keyrequestdlg.cpp:70
 msgid "KeyRequestDlg::&Send"
 msgstr "Po&slat"
 
-#: keyrequestdlg.cpp:182
+#: keyrequestdlg.cpp:175
 msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
 msgstr "<font color=\"ForestGreen\">Bezpeèný kanál otevøen.</font>\n"
 
-#: keyrequestdlg.cpp:184
+#: keyrequestdlg.cpp:177
 msgid "KeyRequestDlg::<font color=\"blue\">Secure channel closed.</font>\n"
 msgstr "<font color=\"blue\">Bezpeèný kanál uzavøen.</font>\n"
 
-#: keyrequestdlg.cpp:178
+#: keyrequestdlg.cpp:171
 msgid "KeyRequestDlg::<font color=\"red\">Could not connect to remote client.</font>"
 msgstr "<font color=\"red\">Nemohu se spojit se vzdáleným klientem.</font>"
 
-#: keyrequestdlg.cpp:175
+#: keyrequestdlg.cpp:168
 msgid "KeyRequestDlg::<font color=\"red\">Remote client does not support OpenSSL.</font>"
 msgstr "<font color=\"red\">Vzdálený klient nepodporuje OpenSSL.</font>"
 
-#: keyrequestdlg.cpp:165
+#: keyrequestdlg.cpp:158
 msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel already established.</font>\n"
 msgstr "<font color=\"yellow\">Bezpeèný kanál ji¾ existuje.</font>\n"
 
-#: keyrequestdlg.cpp:167
+#: keyrequestdlg.cpp:160
 msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel not established.</font>\n"
 msgstr "<font color=\"yellow\">Bezpeèný kanál není otevøen.</font>\n"
 
-#: keyrequestdlg.cpp:91
+#: keyrequestdlg.cpp:92
 msgid "KeyRequestDlg::"
 "Client does not support OpenSSL.\n"
 "Rebuild Licq with OpenSSL support."
@@ -2718,9 +2921,9 @@ msgstr
 "s Diffie-Hellmanovou metodou výmìny klíèe a\n"
 "protokolem TLS verze 1.\n\n"
 
-#: keyrequestdlg.cpp:46
+#: keyrequestdlg.cpp:47
 msgid "KeyRequestDlg::"
-"The remote uses Licq v0.%1, however it\n"
+"The remote uses Licq %1, however it\n"
 "has no secure channel support compiled in.\n"
 "This probably won't work."
 msgstr
@@ -2729,10 +2932,10 @@ msgstr
 "Bezpeèné spojení pravdìpodobnì nebude fungovat."
 
 #: keyrequestdlg.cpp:41
-msgid "KeyRequestDlg::The remote uses Licq v0.%1/SSL."
-msgstr "Vzd8lený klient pou¾ívá Licq v0.%1/SSL."
+msgid "KeyRequestDlg::The remote uses Licq %1/SSL."
+msgstr "Vzdálený klient pou¾ívá Licq v0.%1/SSL."
 
-#: keyrequestdlg.cpp:52
+#: keyrequestdlg.cpp:53
 msgid "KeyRequestDlg::"
 "This only works with other Licq clients >= v0.85\n"
 "The remote doesn't seem to use such a client.\n"
@@ -2742,19 +2945,19 @@ msgstr
 "Vzdálený u¾ivatel zøejmì pou¾ívá jiného klienta.\n"
 "Bezpeèné spojení pravdìpodobnì nebude fungovat."
 
-#: messagebox.cpp:227
+#: messagebox.cpp:235
 msgid "MsgView::Cancelled Event"
 msgstr "Zru¹ená událost"
 
-#: messagebox.cpp:149
+#: messagebox.cpp:157
 msgid "MsgView::D"
 msgstr "D"
 
-#: messagebox.cpp:221
+#: messagebox.cpp:229
 msgid "MsgView::Direct"
 msgstr "Pøímý"
 
-#: messagebox.cpp:150
+#: messagebox.cpp:158
 msgid "MsgView::Event Type"
 msgstr "Typ události"
 
@@ -2763,19 +2966,19 @@ msgstr "Typ události"
 # msgid "MsgView::N"
 # msgstr "N"
 
-#: messagebox.cpp:225
+#: messagebox.cpp:233
 msgid "MsgView::Multiple Recipients"
 msgstr "Více pøíjemcù"
 
-#: messagebox.cpp:151
+#: messagebox.cpp:159
 msgid "MsgView::Options"
 msgstr "Nastavení"
 
-#: messagebox.cpp:221
+#: messagebox.cpp:229
 msgid "MsgView::Server"
 msgstr "Server"
 
-#: messagebox.cpp:152
+#: messagebox.cpp:160
 msgid "MsgView::Time"
 msgstr "Èas"
 
@@ -2783,15 +2986,15 @@ msgstr "Èas"
 # msgid "MsgView::Time Received"
 # msgstr "Obdr¾en èas"
 
-#: messagebox.cpp:223
+#: messagebox.cpp:231
 msgid "MsgView::Urgent"
 msgstr "Urgentnì"
 
-#: optionsdlg.cpp:63
+#: optionsdlg.cpp:64
 msgid "OptionsDlg::&Apply"
 msgstr "Pou¾ív&at"
 
-#: optionsdlg.cpp:67
+#: optionsdlg.cpp:68
 msgid "OptionsDlg::&Cancel"
 msgstr "&Zru¹it"
 
@@ -2799,15 +3002,15 @@ msgstr "&Zru¹it"
 # msgid "OptionsDlg::&Help"
 # msgstr "Pomo&c"
 
-#: optionsdlg.cpp:59
+#: optionsdlg.cpp:60
 msgid "OptionsDlg::&OK"
 msgstr "&OK"
 
-#: optionsdlg.cpp:575
+#: optionsdlg.cpp:705
 msgid "OptionsDlg::64 x 48 Dock Icon"
 msgstr "64 x 48 doková ikona"
 
-#: optionsdlg.cpp:661
+#: optionsdlg.cpp:797
 msgid "OptionsDlg::"
 "<p>Command to execute when an event is received.<br>"
 "It will be passed the relevant parameters from "
@@ -2821,19 +3024,23 @@ msgstr
 "výrazy, <br>které budou nahrazeny pøíslu¹nými "
 "údaji:</p>"
 
-#: optionsdlg.cpp:691
+#: optionsdlg.cpp:830
 msgid "OptionsDlg::Accept Modes"
 msgstr "Akceptovací módy"
 
-#: optionsdlg.cpp:947
+#: optionsdlg.cpp:1105
 msgid "OptionsDlg::Alignment"
 msgstr "Umístìní"
 
-#: optionsdlg.cpp:1001
-msgid "OptionsDlg::All incoming events will flash"
-msgstr "V¹echny pøíchozí zprávy zpùsobí zablikání"
+#: optionsdlg.cpp:1158
+msgid "OptionsDlg::All incoming events will blink"
+msgstr "V¹echny pøíchozí události budou blikat"
 
-#: optionsdlg.cpp:537
+# #: optionsdlg.cpp:1001
+# msgid "OptionsDlg::All incoming events will flash"
+# msgstr "V¹echny pøíchozí zprávy zpùsobí zablikání"
+
+#: optionsdlg.cpp:649
 msgid "OptionsDlg::"
 "All incoming messages automatically "
 "open when received, if we are "
@@ -2843,15 +3050,19 @@ msgstr
 "otevøou, pokud je u¾ivatel "
 "online (nebo free for chat)"
 
-#: optionsdlg.cpp:1004
+#: optionsdlg.cpp:671
+msgid "OptionsDlg::Allow dragging main window"
+msgstr "Povolit pøesouvání hlavního okna"
+
+#: optionsdlg.cpp:1161
 msgid "OptionsDlg::Allow scroll bar"
 msgstr "Povolit scroll bar"
 
-#: optionsdlg.cpp:1005
+#: optionsdlg.cpp:1162
 msgid "OptionsDlg::Allow the vertical scroll bar in the user list"
 msgstr "Povolit vertikální scroll bar v seznamu u¾ivatelù"
 
-#: optionsdlg.cpp:991
+#: optionsdlg.cpp:1148
 msgid "OptionsDlg::Always show online notify users"
 msgstr "V¾dy ukazovat u¾ivatele s online upozornìním"
 
@@ -2859,19 +3070,23 @@ msgstr "V¾dy ukazovat u¾ivatele s online upozornìním"
 # msgid "OptionsDlg::Appearance"
 # msgstr "Vzhled"
 
-#: optionsdlg.cpp:901
+#: optionsdlg.cpp:1249
+msgid "OptionsDlg::Auto Away Messages"
+msgstr "Automatická Away zpráva"
+
+#: optionsdlg.cpp:1060
 msgid "OptionsDlg::Auto Away:"
 msgstr "Automatické Away:"
 
-#: optionsdlg.cpp:533
+#: optionsdlg.cpp:645
 msgid "OptionsDlg::Auto Close Function Window"
 msgstr "Automaticky zavírat okna"
 
-#: optionsdlg.cpp:884
+#: optionsdlg.cpp:1043
 msgid "OptionsDlg::Auto Logon:"
 msgstr "Automatické pøihlá¹ení:"
 
-#: optionsdlg.cpp:907
+#: optionsdlg.cpp:1066
 msgid "OptionsDlg::Auto N/A:"
 msgstr "Automatické N/A:"
 
@@ -2879,47 +3094,90 @@ msgstr "Automatické N/A:"
 # msgid "OptionsDlg::Auto"
 # msgstr "Automaticky"
 
-#: optionsdlg.cpp:913
+#: optionsdlg.cpp:1072
 msgid "OptionsDlg::Auto Offline:"
 msgstr "Automatické Offline:"
 
-#: optionsdlg.cpp:757
-msgid "OptionsDlg::Auto"
-msgstr "Auto"
+# #: optionsdlg.cpp:757
+# msgid "OptionsDlg::Auto"
+# msgstr "Auto"
 
-#: optionsdlg.cpp:536
+#: optionsdlg.cpp:665
+msgid "OptionsDlg::Auto Position the Reply Window"
+msgstr "Automaticky umístit okno pøi odpovídání"
+
+#: optionsdlg.cpp:668
+msgid "OptionsDlg::Auto send through server"
+msgstr "Automaticky posílat pøes server"
+
+#: optionsdlg.cpp:882
+msgid "OptionsDlg::Auto"
+msgstr ""
+
+#: optionsdlg.cpp:648
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
 msgstr "Automaticky otevøít okno pøi události"
 
-#: optionsdlg.cpp:540
+#: optionsdlg.cpp:652
 msgid "OptionsDlg::Auto-Raise on Incoming Msg"
 msgstr "Automaticky do popøedí pøi pøíchozí zprávì"
 
-#: optionsdlg.cpp:885
+#: optionsdlg.cpp:1044
 msgid "OptionsDlg::Automatically log on when first starting up."
 msgstr "Automaticky se pøihlásit pøi startu aplikace."
 
-#: optionsdlg.cpp:890
+#: optionsdlg.cpp:669
+msgid "OptionsDlg::"
+"Automatically send messages through server "
+"if direct connection fails"
+msgstr "Automaticky posílej zprávy pøes server "
+"pokud sel¾e pøímé spojení"
+
+#: optionsdlg.cpp:1049
 msgid "OptionsDlg::Away"
 msgstr "Away"
 
-#: optionsdlg.cpp:542
+#: optionsdlg.cpp:1251
+msgid "OptionsDlg::Away:"
+msgstr ""
+
+#: optionsdlg.cpp:1157
+msgid "OptionsDlg::Blink All Events"
+msgstr "Blikání pøi v¹ech událostech"
+
+#: optionsdlg.cpp:1159
+msgid "OptionsDlg::Blink Urgent Events"
+msgstr "Blikání pøi urgentních událostech"
+
+#: optionsdlg.cpp:656
 msgid "OptionsDlg::Bold Message Label on Incoming Msg"
 msgstr "Tuèný font pøi obdr¾ení zprávy"
 
-#: optionsdlg.cpp:969
+#: optionsdlg.cpp:1192
+msgid "OptionsDlg::Cellular"
+msgstr "Mobil"
+
+#: optionsdlg.cpp:1127
 msgid "OptionsDlg::Center"
 msgstr "Støed"
 
-#: optionsdlg.cpp:678
+#: optionsdlg.cpp:814
 msgid "OptionsDlg::Chat Request:"
 msgstr "®ádost o chat:"
 
-#: optionsdlg.cpp:957
+#: optionsdlg.cpp:675
+msgid "OptionsDlg::Chatmode Messageview"
+msgstr "Chatovací re¾im zobrazení zpráv"
+
+#: optionsdlg.cpp:662
+msgid "OptionsDlg::Check Clipboard For Urls/Files"
+msgstr "Zkontroluj schránku na URL/soubory"
+
+#: optionsdlg.cpp:1115
 msgid "OptionsDlg::Column %1"
 msgstr "Sloupec %1"
 
-#: optionsdlg.cpp:935
+#: optionsdlg.cpp:1094
 msgid "OptionsDlg::Column Configuration"
 msgstr "Konfigurace sloupcù"
 
@@ -2949,47 +3207,47 @@ msgstr "Konfigurace sloupcù"
 # "%o - last seen online"
 # msgstr ""
 
-#: optionsdlg.cpp:660
+#: optionsdlg.cpp:796
 msgid "OptionsDlg::Command:"
 msgstr "Pøíkaz:"
 
-#: optionsdlg.cpp:91
+#: optionsdlg.cpp:93
 msgid "OptionsDlg::Contact List"
 msgstr "Seznam u¾ivatelù"
 
-#: optionsdlg.cpp:573
+#: optionsdlg.cpp:703
 msgid "OptionsDlg::Controls whether or not the dockable icon should be displayed."
 msgstr "Urèuje, zda má být zobrazena doková ikona."
 
-#: optionsdlg.cpp:837
+#: optionsdlg.cpp:996
 msgid "OptionsDlg::Default Auto Response Messages"
 msgstr "Výchozí Auto odpovìdi"
 
-#: optionsdlg.cpp:574
+#: optionsdlg.cpp:704
 msgid "OptionsDlg::Default Icon"
 msgstr "Výchozí ikona"
 
-#: optionsdlg.cpp:728
-msgid "OptionsDlg::Default Server Port:"
-msgstr "Výchozí port serveru"
+# #: optionsdlg.cpp:728
+# msgid "OptionsDlg::Default Server Port:"
+# msgstr "Výchozí port serveru"
 
-#: optionsdlg.cpp:729
-msgid "OptionsDlg::Default port to connect to on the server (should be 4000)"
-msgstr "Výchozí port pro pøipojení na server (mìlo by být 4000)"
+# #: optionsdlg.cpp:729
+# msgid "OptionsDlg::Default port to connect to on the server (should be 4000)"
+# msgstr "Výchozí port pro pøipojení na server (mìlo by být 4000)"
 
-#: optionsdlg.cpp:732
-msgid "OptionsDlg::Default"
-msgstr "Výchozí"
+# #: optionsdlg.cpp:732
+# msgid "OptionsDlg::Default"
+# msgstr "Výchozí"
 
-#: optionsdlg.cpp:1062
+#: optionsdlg.cpp:1242
 msgid "OptionsDlg::Determines if email pager messages are ignored or not."
 msgstr "Urèuje, zda zprávy email pageru budou ignorovány."
 
-#: optionsdlg.cpp:1056
+#: optionsdlg.cpp:1236
 msgid "OptionsDlg::Determines if mass messages are ignored or not."
 msgstr "Urèuje, zda masové zprávy budou ignorovány."
 
-#: optionsdlg.cpp:1053
+#: optionsdlg.cpp:1233
 msgid "OptionsDlg::"
 "Determines if new users are automatically added "
 "to your list or must first request authorization."
@@ -2997,7 +3255,7 @@ msgstr
 "Urèuje, zda noví u¾ivatelé jsou automaticky pøidáváni "
 "do Va¹eho seznamu, nebo je nejdøíve vy¾adována autorizace."
 
-#: optionsdlg.cpp:1059
+#: optionsdlg.cpp:1239
 msgid "OptionsDlg::Determines if web panel messages are ignored or not."
 msgstr "Urèuje, zda budou web panel zprávy ignorovány."
 
@@ -3005,37 +3263,45 @@ msgstr "Urèuje, zda budou web panel zprávy ignorovány."
 # msgid "OptionsDlg::Disable"
 # msgstr "Zakázat"
 
-#: optionsdlg.cpp:893
+#: optionsdlg.cpp:1052
 msgid "OptionsDlg::Do Not Disturb"
 msgstr "Do Not Disturb"
 
-#: optionsdlg.cpp:568
+#: optionsdlg.cpp:698
 msgid "OptionsDlg::Docking"
 msgstr "Parametry doku"
 
-#: optionsdlg.cpp:982
+#: optionsdlg.cpp:1139
 msgid "OptionsDlg::Draw boxes around each square in the user list"
 msgstr "Kreslit linky mezi jednotlivými u¾ivateli v seznamu."
 
-#: optionsdlg.cpp:607
+#: optionsdlg.cpp:737
 msgid "OptionsDlg::Edit Font:"
 msgstr "Editaèní font:"
 
-#: optionsdlg.cpp:658
+#: optionsdlg.cpp:1189
+msgid "OptionsDlg::Email"
+msgstr "Email"
+
+#: optionsdlg.cpp:794
 msgid "OptionsDlg::"
 "Enable running of \"Command\" when the relevant "
 "event occurs."
 msgstr "Povolit spou¹tìní pøíkazu, pokud nastane pøíslu¹ná událost."
 
-#: optionsdlg.cpp:1038
+#: optionsdlg.cpp:1218
 msgid "OptionsDlg::Extensions"
 msgstr "Doplòky"
 
-#: optionsdlg.cpp:681
+#: optionsdlg.cpp:1191
+msgid "OptionsDlg::Fax"
+msgstr "Fax"
+
+#: optionsdlg.cpp:817
 msgid "OptionsDlg::File Transfer:"
 msgstr "Pøenos souboru:"
 
-#: optionsdlg.cpp:736
+#: optionsdlg.cpp:870
 msgid "OptionsDlg::Firewall"
 msgstr "Firewall"
 
@@ -3043,27 +3309,27 @@ msgstr "Firewall"
 # msgid "OptionsDlg::Firewall/Proxy Host:"
 # msgstr "Firewall/Proxy poèítaè:"
 
-#: optionsdlg.cpp:1000
-msgid "OptionsDlg::Flash Events"
-msgstr "Blikání událostí"
+# #: optionsdlg.cpp:1000
+# msgid "OptionsDlg::Flash Events"
+# msgstr "Blikání událostí"
 
-#: optionsdlg.cpp:1002
-msgid "OptionsDlg::Flash Urgent Events"
-msgstr "Blikání urgentních událostí"
+# #: optionsdlg.cpp:1002
+# msgid "OptionsDlg::Flash Urgent Events"
+# msgstr "Blikání urgentních událostí"
 
-#: optionsdlg.cpp:610
+#: optionsdlg.cpp:740
 msgid "OptionsDlg::Font used in message editor etc."
 msgstr "Fonty pou¾ívané v editoru zpráv atd."
 
-#: optionsdlg.cpp:599
+#: optionsdlg.cpp:729
 msgid "OptionsDlg::Font"
 msgstr "Písmo"
 
-#: optionsdlg.cpp:601
+#: optionsdlg.cpp:731
 msgid "OptionsDlg::Font:"
 msgstr "Písmo:"
 
-#: optionsdlg.cpp:941
+#: optionsdlg.cpp:1099
 msgid "OptionsDlg::Format"
 msgstr "Formát"
 
@@ -3071,19 +3337,19 @@ msgstr "Formát"
 # msgid "OptionsDlg::Frame Style:"
 # msgstr "Styl rámu:"
 
-#: optionsdlg.cpp:1011
+#: optionsdlg.cpp:1168
 msgid "OptionsDlg::Frame Style: "
 msgstr "Styl rámu: "
 
-#: optionsdlg.cpp:852
+#: optionsdlg.cpp:1011
 msgid "OptionsDlg::Free For Chat"
 msgstr "Free For Chat"
 
-#: optionsdlg.cpp:894
+#: optionsdlg.cpp:1053
 msgid "OptionsDlg::Free for Chat"
 msgstr "Free for Chat"
 
-#: optionsdlg.cpp:90
+#: optionsdlg.cpp:92
 msgid "OptionsDlg::General"
 msgstr "Obecné"
 
@@ -3091,61 +3357,98 @@ msgstr "Obecné"
 # msgid "OptionsDlg::I am behind a firewall/proxy"
 # msgstr "Jsem za firewallem/proxy"
 
-#: optionsdlg.cpp:744
+#: optionsdlg.cpp:894
+msgid "OptionsDlg::HTTPS"
+msgstr ""
+
+#: optionsdlg.cpp:1180
+msgid "OptionsDlg::Hot key: "
+msgstr "Klávesová zkratka: "
+
+#: optionsdlg.cpp:872
 msgid "OptionsDlg::I can receive direct connections"
 msgstr "Je mo¾né navázat pøímé spojení"
 
-#: optionsdlg.cpp:545
+#: optionsdlg.cpp:863
+msgid "OptionsDlg::ICQ Server Port:"
+msgstr "Port ICQ serveru:"
+
+#: optionsdlg.cpp:862
+msgid "OptionsDlg::ICQ Server:"
+msgstr "ICQ server:"
+
+#: optionsdlg.cpp:1193
+msgid "OptionsDlg::IP"
+msgstr "IP"
+
+# #: optionsdlg.cpp:545
+# msgid "OptionsDlg::"
+# "If not checked, a user will be automatically "
+# "removed from \"New User\" group when you first"
+# "send an event to him"
+
+#: optionsdlg.cpp:659
 msgid "OptionsDlg::"
 "If not checked, a user will be automatically "
 "removed from \"New User\" group when you first"
-"send an event to him"
+"send an event to them"
 msgstr
 "Pokud není tato volba aktivní, u¾ivatel bude automaticky "
 "odstranìn ze skupiny \"New User\", jakmile mu po¹lete první "
 "zprávu nebo jinou událost"
 
-#: optionsdlg.cpp:1061
+#: optionsdlg.cpp:1241
 msgid "OptionsDlg::Ignore Email Pager"
 msgstr "Ignorovat email pager"
 
-#: optionsdlg.cpp:1055
+#: optionsdlg.cpp:1235
 msgid "OptionsDlg::Ignore Mass Messages"
 msgstr "Ignorovat masové zprávy"
 
-#: optionsdlg.cpp:1052
+#: optionsdlg.cpp:1232
 msgid "OptionsDlg::Ignore New Users"
 msgstr "Ignorovat nové u¾ivatele"
 
-#: optionsdlg.cpp:1058
+#: optionsdlg.cpp:1238
 msgid "OptionsDlg::Ignore Web Panel"
 msgstr "Ignorovat web panel"
 
-#: optionsdlg.cpp:898
+#: optionsdlg.cpp:1057
 msgid "OptionsDlg::Invisible"
 msgstr "Invisible"
 
-#: optionsdlg.cpp:967
+#: optionsdlg.cpp:1194
+msgid "OptionsDlg::Last online"
+msgstr "Naposledy online"
+
+#: optionsdlg.cpp:1125
 msgid "OptionsDlg::Left"
 msgstr "Vlevo"
 
-#: optionsdlg.cpp:47
+#: optionsdlg.cpp:672
+msgid "OptionsDlg::"
+"Lets you drag around the main window "
+"with your mouse"
+msgstr "Umo¾ní pøesouvání hlavního okna "
+"pomocí my¹i"
+
+#: optionsdlg.cpp:48
 msgid "OptionsDlg::Licq Options"
 msgstr "Licq nastavení"
 
-#: optionsdlg.cpp:725
-msgid "OptionsDlg::List of servers to connect to (read-only for now)"
-msgstr "Seznam serverù pro pøipojování (prozatím pouze pro ètení)"
+# #: optionsdlg.cpp:725
+# msgid "OptionsDlg::List of servers to connect to (read-only for now)"
+# msgstr "Seznam serverù pro pøipojování (prozatím pouze pro ètení)"
 
-#: optionsdlg.cpp:549
+#: optionsdlg.cpp:679
 msgid "OptionsDlg::Locale"
 msgstr "Lokalizace"
 
-#: optionsdlg.cpp:527
+#: optionsdlg.cpp:639
 msgid "OptionsDlg::Main Window"
 msgstr "Hlavní okno"
 
-#: optionsdlg.cpp:995
+#: optionsdlg.cpp:1152
 msgid "OptionsDlg::"
 "Make the user window transparent when there "
 "is no scroll bar"
@@ -3153,23 +3456,31 @@ msgstr
 "U¾ivatelské okno bude transparentní, pokud "
 "nemá scroll bar"
 
-#: optionsdlg.cpp:544
+#: optionsdlg.cpp:658
 msgid "OptionsDlg::Manual \"New User\" group handling"
 msgstr "Ruèní úpravy \"New User\" skupiny"
 
-#: optionsdlg.cpp:672
+#: optionsdlg.cpp:826
+msgid "OptionsDlg::Message Sent:"
+msgstr "Zpráva odeslána:"
+
+#: optionsdlg.cpp:808
 msgid "OptionsDlg::Message:"
 msgstr "Zpráva:"
 
-#: optionsdlg.cpp:95
+#: optionsdlg.cpp:97
 msgid "OptionsDlg::Miscellaneous"
 msgstr "Rùzné"
 
-#: optionsdlg.cpp:93
+#: optionsdlg.cpp:1253
+msgid "OptionsDlg::N/A:"
+msgstr ""
+
+#: optionsdlg.cpp:95
 msgid "OptionsDlg::Network"
 msgstr "Sí»"
 
-#: optionsdlg.cpp:918
+#: optionsdlg.cpp:1077
 msgid "OptionsDlg::Never"
 msgstr "Nikdy"
 
@@ -3177,11 +3488,11 @@ msgstr "Nikdy"
 # msgid "OptionsDlg::None"
 # msgstr "¾ádný"
 
-#: optionsdlg.cpp:891
+#: optionsdlg.cpp:1050
 msgid "OptionsDlg::Not Available"
 msgstr "Not Available"
 
-#: optionsdlg.cpp:902
+#: optionsdlg.cpp:1061
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"away\".  Set to \"0\" "
@@ -3191,7 +3502,7 @@ msgstr
 "bude automaticky oznaèen jako \"away\".  Nastavení "
 "na hodnotu \"0\" funkci vypíná."
 
-#: optionsdlg.cpp:908
+#: optionsdlg.cpp:1067
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"not available\".  Set to \"0\" "
@@ -3201,7 +3512,7 @@ msgstr
 "bude automaticky oznaèen jako \"not available\".  Nastavení "
 "na hodnotu \"0\" funkci vypíná."
 
-#: optionsdlg.cpp:914
+#: optionsdlg.cpp:1073
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically go offline.  Set to \"0\" "
@@ -3211,53 +3522,65 @@ msgstr
 "pøejde automaticky do \"offline\".  Nastavení "
 "na hodnotu \"0\" funkci vypíná."
 
-#: optionsdlg.cpp:892
+#: optionsdlg.cpp:1051
 msgid "OptionsDlg::Occupied"
 msgstr "Occupied"
 
-#: optionsdlg.cpp:888
+#: optionsdlg.cpp:1047
 msgid "OptionsDlg::Offline"
 msgstr "Offline"
 
-#: optionsdlg.cpp:694
+#: optionsdlg.cpp:833
 msgid "OptionsDlg::OnEvent in Away"
 msgstr "Provádìt pøi Away"
 
-#: optionsdlg.cpp:700
+#: optionsdlg.cpp:839
 msgid "OptionsDlg::OnEvent in DND"
 msgstr "Provádìt pøi DND"
 
-#: optionsdlg.cpp:696
+#: optionsdlg.cpp:835
 msgid "OptionsDlg::OnEvent in N/A"
 msgstr "Provádìt pøi N/A"
 
-#: optionsdlg.cpp:698
+#: optionsdlg.cpp:837
 msgid "OptionsDlg::OnEvent in Occupied"
 msgstr "Provádìt pøi Occupied"
 
-#: optionsdlg.cpp:92
+#: optionsdlg.cpp:94
 msgid "OptionsDlg::OnEvent"
 msgstr "Pøi události"
 
-#: optionsdlg.cpp:654
+#: optionsdlg.cpp:790
 msgid "OptionsDlg::OnEvents Enabled"
 msgstr "Pøi události provést pøíkaz"
 
-#: optionsdlg.cpp:702
+#: optionsdlg.cpp:841
 msgid "OptionsDlg::Online Notify when Logging On"
 msgstr "Online upozornìní pøi pøihlá¹ení"
 
-#: optionsdlg.cpp:684
+#: optionsdlg.cpp:820
 msgid "OptionsDlg::Online Notify:"
 msgstr "Online upozornìní"
 
-#: optionsdlg.cpp:889
-msgid "OptionsDlg::Online"
-msgstr "Online"
+# #: optionsdlg.cpp:889
+# msgid "OptionsDlg::Online"
+# msgstr "Online"
 
-#: optionsdlg.cpp:1003
-msgid "OptionsDlg::Only urgent events will flash"
-msgstr "Pouze urgentní zprávy budou blikat"
+#: optionsdlg.cpp:1195
+msgid "OptionsDlg::Online Time"
+msgstr "Doba online"
+
+#: optionsdlg.cpp:1048
+msgid "OptionsDlg::Online"
+msgstr ""
+
+#: optionsdlg.cpp:1160
+msgid "OptionsDlg::Only urgent events will blink"
+msgstr "Pouze urgentní události budou blikat"
+
+# #: optionsdlg.cpp:1003
+# msgid "OptionsDlg::Only urgent events will flash"
+# msgstr "Pouze urgentní zprávy budou blikat"
 
 # #: optionsdlg.cpp:488
 # #?
@@ -3274,11 +3597,11 @@ msgstr "Pouze urgentní zprávy budou blikat"
 # " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
 # " + 240 (Shadow)"
 
-#: optionsdlg.cpp:979
+#: optionsdlg.cpp:1136
 msgid "OptionsDlg::Options"
 msgstr "Nastavení"
 
-#: optionsdlg.cpp:1013
+#: optionsdlg.cpp:1170
 msgid "OptionsDlg::"
 "Override the skin setting for the frame "
 "style of the user window:\n"
@@ -3292,77 +3615,114 @@ msgstr
 " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
 " + 240 (Shadow)"
 
-#: optionsdlg.cpp:685
+#: optionsdlg.cpp:821
 msgid "OptionsDlg::Parameter for online notification"
 msgstr "Parametry pøedávané pøi online upozornìní"
 
-#: optionsdlg.cpp:676
+#: optionsdlg.cpp:812
 msgid "OptionsDlg::Parameter for received URLs"
 msgstr "Parametry pøedávané pøi obdr¾ení URL"
 
-#: optionsdlg.cpp:679
+#: optionsdlg.cpp:815
 msgid "OptionsDlg::Parameter for received chat requests"
 msgstr "Parametry pøedávané pøi obdr¾ení ¾ádosti o chat"
 
-#: optionsdlg.cpp:682
+#: optionsdlg.cpp:818
 msgid "OptionsDlg::Parameter for received file transfers"
 msgstr "Parametry pøedávané pøi obdr¾ení souboru"
 
-#: optionsdlg.cpp:673
+#: optionsdlg.cpp:809
 msgid "OptionsDlg::Parameter for received messages"
 msgstr "Parametry pøedávané pøi obdr¾ení zprávy"
 
-#: optionsdlg.cpp:688
+#: optionsdlg.cpp:824
 msgid "OptionsDlg::Parameter for received system messages"
 msgstr "Parametry pøedávané pøi obdr¾ení systémové zprávy"
 
-#: optionsdlg.cpp:669
+#: optionsdlg.cpp:827
+msgid "OptionsDlg::Parameter for sent messages"
+msgstr "Parametry odeslaných zpráv"
+
+#: optionsdlg.cpp:805
 msgid "OptionsDlg::Parameters"
 msgstr "Parametry"
 
-#: optionsdlg.cpp:1049
+#: optionsdlg.cpp:1229
 msgid "OptionsDlg::Paranoia"
 msgstr "Paranoia"
 
-#: optionsdlg.cpp:695
+#: optionsdlg.cpp:908
+msgid "OptionsDlg::Password:"
+msgstr "Heslo:"
+
+#: optionsdlg.cpp:834
 msgid "OptionsDlg::Perform OnEvent command in away mode"
 msgstr "Povolit spou¹tìní pøíkazu pro re¾im \"away\""
 
-#: optionsdlg.cpp:701
+#: optionsdlg.cpp:840
 msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
 msgstr "Povolit spou¹tìní pøíkazu pro re¾im \"do not disturb\""
 
-#: optionsdlg.cpp:697
+#: optionsdlg.cpp:836
 msgid "OptionsDlg::Perform OnEvent command in not available mode"
 msgstr "Povolit spou¹tìní pøíkazu pro re¾im \"not available\""
 
-#: optionsdlg.cpp:699
+#: optionsdlg.cpp:838
 msgid "OptionsDlg::Perform OnEvent command in occupied mode"
 msgstr "Povolit spou¹tìní pøíkazu pro re¾im \"occupied\""
 
-# #: optionsdlg.cpp:676
-# msgid "OptionsDlg::"
-# "Perform the online notify OnEvent "
-# " when logging on (this is different from how the Mirabilis client works"
-# msgstr ""
-
-#: optionsdlg.cpp:703
+#: optionsdlg.cpp:842
 msgid "OptionsDlg::"
 "Perform the online notify OnEvent "
-" when logging on (this is different from how the Mirabilis client works)"
+"when logging on (this is different from how the Mirabilis client works)"
 msgstr
 "Pøi pøihla¹ování provést pøíkaz pro online upozornìní "
 "(to je rozdílné od zpùsobu, který pou¾ívá Mirabilis klient)"
 
-#: optionsdlg.cpp:747
+#: optionsdlg.cpp:1190
+msgid "OptionsDlg::Phone"
+msgstr "Telefon"
+
+#: optionsdlg.cpp:1187
+msgid "OptionsDlg::Popup info"
+msgstr "Popup informace"
+
+#: optionsdlg.cpp:874
 msgid "OptionsDlg::Port Range:"
 msgstr "Rozsah portù:"
 
-#: optionsdlg.cpp:857
+#: optionsdlg.cpp:666
+msgid "OptionsDlg::"
+"Position a new reply window just underneath "
+"the message view window"
+msgstr "Umísti nové odpovídací okno hned pod "
+"okno se zprávou"
+
+#: optionsdlg.cpp:1016
 msgid "OptionsDlg::Preset slot:"
 msgstr "Název:"
 
-#: optionsdlg.cpp:968
+#: optionsdlg.cpp:1299
+msgid "OptionsDlg::Previous Message"
+msgstr "Pøedchozí zpráva"
+
+#: optionsdlg.cpp:898
+msgid "OptionsDlg::Proxy Server Port:"
+msgstr "Port proxy serveru:"
+
+#: optionsdlg.cpp:897
+msgid "OptionsDlg::Proxy Server:"
+msgstr "Proxy server:"
+
+#: optionsdlg.cpp:891
+msgid "OptionsDlg::Proxy Type:"
+msgstr "Typ proxy:"
+
+#: optionsdlg.cpp:886
+msgid "OptionsDlg::Proxy"
+msgstr "Proxy"
+
+#: optionsdlg.cpp:1126
 msgid "OptionsDlg::Right"
 msgstr "Vpravo"
 
@@ -3370,29 +3730,29 @@ msgstr "Vpravo"
 # msgid "OptionsDlg::SOCKS5 Proxy"
 # msgstr "SOCKS5 Proxy"
 
-#: optionsdlg.cpp:772
-msgid "OptionsDlg::"
-"SOCKS5 support is built in but disabled.\n"
-"To enable it, set the SOCKS5_SERVER\n"
-"environment variable to <server>:<port>."
-msgstr
-"Podpora pro SOCKS5 je vestavìna, ale vypnuta.\n"
-"Pokud ji chcete zapnout, nastavte promìnnou prostøedí\n"
-"SOCKS5_SERVER na hodnotu <server>:<port>."
+# #: optionsdlg.cpp:772
+# msgid "OptionsDlg::"
+# "SOCKS5 support is built in but disabled.\n"
+# "To enable it, set the SOCKS5_SERVER\n"
+# "environment variable to <server>:<port>."
+# msgstr
+# "Podpora pro SOCKS5 je vestavìna, ale vypnuta.\n"
+# "Pokud ji chcete zapnout, nastavte promìnnou prostøedí\n"
+# "SOCKS5_SERVER na hodnotu <server>:<port>."
 
-#: optionsdlg.cpp:872
+#: optionsdlg.cpp:1031
 msgid "OptionsDlg::Save"
 msgstr "Ulo¾it"
 
-#: optionsdlg.cpp:609
+#: optionsdlg.cpp:739
 msgid "OptionsDlg::Select Font"
 msgstr "Výbìr písma"
 
-#: optionsdlg.cpp:604
+#: optionsdlg.cpp:734
 msgid "OptionsDlg::Select a font from the system list"
 msgstr "Výbìr písma ze systémového seznamu"
 
-#: optionsdlg.cpp:576
+#: optionsdlg.cpp:706
 msgid "OptionsDlg::"
 "Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
 "and a shorter 64x48 icon for use in the Gnome/KDE panel."
@@ -3400,15 +3760,15 @@ msgstr
 "Vyberte mezi standardní velikostí ikony 64x64, která se pou¾ívá ve WindowMakeru/Afterstepu, "
 "a velikostí 64x48, která se pou¾ívá v Gnome/KDE panelu."
 
-#: optionsdlg.cpp:721
+#: optionsdlg.cpp:859
 msgid "OptionsDlg::Server settings"
 msgstr "Nastavení serveru:"
 
-#: optionsdlg.cpp:723
-msgid "OptionsDlg::Servers:"
-msgstr "Servery:"
+# #: optionsdlg.cpp:723
+# msgid "OptionsDlg::Servers:"
+# msgstr "Servery:"
 
-#: optionsdlg.cpp:534
+#: optionsdlg.cpp:646
 msgid "OptionsDlg::"
 "Sets the default behavior for auto closing "
 "the user function window after a succesful event"
@@ -3416,7 +3776,7 @@ msgstr
 "Urèuje, zda bude u¾ivatelské okno automaticky "
 "uzavøeno po úspì¹ném vyøízení události"
 
-#: optionsdlg.cpp:551
+#: optionsdlg.cpp:681
 msgid "OptionsDlg::"
 "Sets which translation table should be used for "
 "translating characters."
@@ -3424,23 +3784,23 @@ msgstr
 "Urèuje, která pøekladová tabulka bude pou¾ívána pro "
 "pøeklad znakù."
 
-#: optionsdlg.cpp:983
+#: optionsdlg.cpp:1140
 msgid "OptionsDlg::Show Column Headers"
 msgstr "Zobrazovat záhlaví sloupcù"
 
-#: optionsdlg.cpp:1006
+#: optionsdlg.cpp:1163
 msgid "OptionsDlg::Show Extended Icons"
 msgstr "Zobrazovat roz¹íøené ikony"
 
-#: optionsdlg.cpp:981
+#: optionsdlg.cpp:1138
 msgid "OptionsDlg::Show Grid Lines"
 msgstr "Linkování mezi øádky"
 
-#: optionsdlg.cpp:986
+#: optionsdlg.cpp:1143
 msgid "OptionsDlg::Show User Dividers"
 msgstr "Zobrazovat oddìlovaèe u¾ivatelù"
 
-#: optionsdlg.cpp:1007
+#: optionsdlg.cpp:1164
 msgid "OptionsDlg::"
 "Show birthday, invisible, and custom auto response "
 "icons to the right of users in the list"
@@ -3448,11 +3808,11 @@ msgstr
 "Zobrazovat ikony pro narozeniny, invisible status a vlastní auto odpovìï "
 "napravo od jména u¾ivatele v seznamu"
 
-#: optionsdlg.cpp:530
+#: optionsdlg.cpp:642
 msgid "OptionsDlg::Show group name if no messages"
 msgstr "Zobrazovat jméno skupiny, pokud nejsou zprávy"
 
-#: optionsdlg.cpp:992
+#: optionsdlg.cpp:1149
 msgid "OptionsDlg::"
 "Show online notify users who are offline even "
 "when offline users are hidden."
@@ -3460,7 +3820,7 @@ msgstr
 "Ukazovat u¾ivatele s online upozornìním, kteøí jsou offline, i v pøípadì, "
 "¾e je zobrazování offline u¾ivatelù vypnuto."
 
-#: optionsdlg.cpp:987
+#: optionsdlg.cpp:1144
 msgid "OptionsDlg::"
 "Show the \"--online--\" and \"--offline--\" bars "
 "in the contact list"
@@ -3468,7 +3828,11 @@ msgstr
 "Ukazovat \"--online--\" a \"--offline--\" oddìlovaèe "
 "v seznamu u¾ivatelù"
 
-#: optionsdlg.cpp:531
+#: optionsdlg.cpp:676
+msgid "OptionsDlg::Show the current chat history in Send Window"
+msgstr "Ukazuj aktuální historii chatu pøi psaní zpráv"
+
+#: optionsdlg.cpp:643
 msgid "OptionsDlg::"
 "Show the name of the current group in the "
 "messages label when there are no new messages"
@@ -3476,11 +3840,11 @@ msgstr
 "Ukazovat jméno aktuální skupiny v "
 "políèku zpráv, pokud nejsou ¾ádné nové zprávy"
 
-#: optionsdlg.cpp:989
+#: optionsdlg.cpp:1146
 msgid "OptionsDlg::Sort Online Users by Status"
 msgstr "Pou¾ívat status pro øazení online u¾ivatelù"
 
-#: optionsdlg.cpp:990
+#: optionsdlg.cpp:1147
 msgid "OptionsDlg::Sort all online users by their actual status"
 msgstr "Pou¾ívat status pro øazení v¹ech online u¾ivatelù"
 
@@ -3488,43 +3852,47 @@ msgstr "Pou¾ívat status pro øazení v¹ech online u¾ivatelù"
 # msgid "OptionsDlg::Starting port for incoming connections."
 # msgstr "Poèáteèní port pro pøíchozí spojení."
 
-#: optionsdlg.cpp:882
+#: optionsdlg.cpp:654
+msgid "OptionsDlg::Start Hidden"
+msgstr "Skryté okno pøi startu"
+
+#: optionsdlg.cpp:1041
 msgid "OptionsDlg::Startup"
 msgstr "Pøi startu"
 
-#: optionsdlg.cpp:94
+#: optionsdlg.cpp:96
 msgid "OptionsDlg::Status"
 msgstr "Status"
 
-#: optionsdlg.cpp:843
+#: optionsdlg.cpp:1002
 msgid "OptionsDlg::Status:"
 msgstr "Status:"
 
-#: optionsdlg.cpp:687
+#: optionsdlg.cpp:823
 msgid "OptionsDlg::System Msg:"
 msgstr "Systémová zpráva:"
 
-#: optionsdlg.cpp:749
+#: optionsdlg.cpp:875
 msgid "OptionsDlg::TCP port range for incoming connections."
 msgstr "Rozsah TCP portù pro pøíchozí spojení."
 
-#: optionsdlg.cpp:1046
+#: optionsdlg.cpp:1226
 msgid "OptionsDlg::Terminal:"
 msgstr "Terminál:"
 
-#: optionsdlg.cpp:864
+#: optionsdlg.cpp:1023
 msgid "OptionsDlg::Text:"
 msgstr "Text:"
 
-#: optionsdlg.cpp:948
+#: optionsdlg.cpp:1106
 msgid "OptionsDlg::The alignment of the column"
 msgstr "Zarovnání sloupce"
 
-#: optionsdlg.cpp:1047
+#: optionsdlg.cpp:1227
 msgid "OptionsDlg::The command to run to start your terminal program."
 msgstr "Pøíkaz pro spu¹tìní terminálu."
 
-#: optionsdlg.cpp:1042
+#: optionsdlg.cpp:1222
 msgid "OptionsDlg::"
 "The command to run to view a URL.  Will be passed the URL "
 "as a parameter."
@@ -3535,16 +3903,9 @@ msgstr
 # msgid "OptionsDlg::The font used for all widgets"
 # msgstr "Písmo pou¾ívané pro v¹echny widgety"
 
-#: optionsdlg.cpp:600
+#: optionsdlg.cpp:730
 msgid "OptionsDlg::The fonts used"
 msgstr "Pou¾ité fonty"
-
-# #: optionsdlg.cpp:915
-# msgid "OptionsDlg::"
-# "The format string used to define what will "
-# "appear in each column, see OnEvent Command for "
-# "more information about valid % values"
-# msgstr ""
 
 # #: optionsdlg.cpp:899
 # msgid "OptionsDlg::"
@@ -3556,7 +3917,7 @@ msgstr "Pou¾ité fonty"
 # "daný sloupec. Nápovìda k pøíkazu provádìnému "
 # "pøi události obsahuje výèet pou¾itelných hodnot."
 
-#: optionsdlg.cpp:942
+#: optionsdlg.cpp:1100
 msgid "OptionsDlg::"
 "The format string used to define what will "
 "appear in each column.\n"
@@ -3566,70 +3927,74 @@ msgstr
 "daný sloupec.\n"
 "Mohou být pou¾ity následující parametry:\n"
 
-#: optionsdlg.cpp:541
+#: optionsdlg.cpp:653
 msgid "OptionsDlg::The main window will raise on incoming messages"
 msgstr "Hlavní okno bude automaticky vyzdvi¾eno pøi obdr¾ení události"
 
-#: optionsdlg.cpp:543
+#: optionsdlg.cpp:655
+msgid "OptionsDlg::The main window will start hidden. Only the dock icon will be visible."
+msgstr "Hlavní okno zùstane skryté pøi startu. Viditelná bude pouze ikonka v doku."
+
+#: optionsdlg.cpp:657
 msgid "OptionsDlg::The message info label will be bold if there are incoming messages"
 msgstr "V informaèním políèku se pøi obdr¾ení zpráv bude pou¾ívat tuèný font"
 
-#: optionsdlg.cpp:940
+#: optionsdlg.cpp:1098
 msgid "OptionsDlg::The string which will appear in the list box column header"
 msgstr "Øetìzec, který se objeví v záhlaví daného sloupce"
 
-#: optionsdlg.cpp:946
+#: optionsdlg.cpp:1104
 msgid "OptionsDlg::The width of the column"
 msgstr "©íøka sloupce"
 
-#: optionsdlg.cpp:581
+#: optionsdlg.cpp:711
 msgid "OptionsDlg::Theme:"
 msgstr "Téma:"
 
-#: optionsdlg.cpp:578
+#: optionsdlg.cpp:708
 msgid "OptionsDlg::Themed Icon"
 msgstr "Ikona s tématem"
 
-#: optionsdlg.cpp:939
+#: optionsdlg.cpp:1097
 msgid "OptionsDlg::Title"
 msgstr "Název"
 
-#: optionsdlg.cpp:781
-msgid "OptionsDlg::"
-"To enable socks proxy support, install NEC Socks or Dante\n"
-"then configure the Licq daemon with \"--enable-socks5\"."
-msgstr
-"Pro zapnutí socks proxy je potøeba nainstalovat NEC Socks nebo Dante\n"
-"a poté spustit configure skript pro licq démona s parametrem \"--enable-socks5\"."
+# #: optionsdlg.cpp:781
+# msgid "OptionsDlg::"
+# "To enable socks proxy support, install NEC Socks or Dante\n"
+# "then configure the Licq daemon with \"--enable-socks5\"."
+# msgstr
+# "Pro zapnutí socks proxy je potøeba nainstalovat NEC Socks nebo Dante\n"
+# "a poté spustit configure skript pro licq démona s parametrem \"--enable-socks5\"."
 
-#: optionsdlg.cpp:550
+#: optionsdlg.cpp:680
 msgid "OptionsDlg::Translation:"
 msgstr "Pøekódování:"
 
-#: optionsdlg.cpp:994
+#: optionsdlg.cpp:1151
 msgid "OptionsDlg::Transparent when possible"
 msgstr "Pokud mo¾no transparentní"
 
-#: optionsdlg.cpp:984
+#: optionsdlg.cpp:1141
 msgid "OptionsDlg::"
 "Turns on or off the display of headers above "
 "each column in the user list"
 msgstr "Zapíná nebo vypíná zobrazování záhlaví sloupcù "
 "v seznamu u¾ivatelù"
 
-#: optionsdlg.cpp:675
+#: optionsdlg.cpp:811
 msgid "OptionsDlg::URL:"
 msgstr "URL:"
 
-#: optionsdlg.cpp:1041
+#: optionsdlg.cpp:1221
 msgid "OptionsDlg::Url Viewer:"
 msgstr "Prohlí¾eè pro Url:"
 
-#: optionsdlg.cpp:572
+#: optionsdlg.cpp:702
 msgid "OptionsDlg::Use Dock Icon"
 msgstr "Pou¾ívat dokovou ikonu"
 
-#: optionsdlg.cpp:997
+#: optionsdlg.cpp:1154
 msgid "OptionsDlg::Use Font Styles"
 msgstr "Pou¾ívat styly písma"
 
@@ -3637,11 +4002,15 @@ msgstr "Pou¾ívat styly písma"
 # msgid "OptionsDlg::Use Group View"
 # msgstr "Ukázat skupiny"
 
-#: optionsdlg.cpp:1019
+#: optionsdlg.cpp:1177
 msgid "OptionsDlg::Use System Background Color"
 msgstr "Pou¾ívat systémovou barvu pozadí"
 
-#: optionsdlg.cpp:998
+#: optionsdlg.cpp:902
+msgid "OptionsDlg::Use authorization"
+msgstr "Pou¾ívej autorizaci"
+
+#: optionsdlg.cpp:1155
 msgid "OptionsDlg::"
 "Use italics and bold in the user list to "
 "indicate special characteristics such as online notify and visible list"
@@ -3662,23 +4031,38 @@ msgstr
 # "U¾ivatelé budou uspoøádáni do skupin pro "
 # "zobrazení v seznamu u¾ivatelù."
 
-#: optionsdlg.cpp:945
+#: optionsdlg.cpp:888
+msgid "OptionsDlg::Use proxy server"
+msgstr "Pou¾ívej proxy server"
+
+#: optionsdlg.cpp:906
+msgid "OptionsDlg::Username:"
+msgstr "U¾ivatel:"
+
+#: optionsdlg.cpp:663
+msgid "OptionsDlg::"
+"When double-clicking on a user to send a message "
+"check for urls/files in the clipboard"
+msgstr "Pøi posílání zprávy dvojklikem na jeho jméno "
+"zkontroluj schránku, zda v ní nejsou URL nebo soubory"
+
+#: optionsdlg.cpp:1103
 msgid "OptionsDlg::Width"
 msgstr "©íøka"
 
-#: optionsdlg.cpp:753
+#: optionsdlg.cpp:879
 msgid "OptionsDlg::\tto"
-msgstr "\tkomu"
+msgstr "\tdo"
 
-#: optionsdlg.cpp:478
+#: optionsdlg.cpp:589
 msgid "OptionsDlg::default (%1)"
 msgstr "výchozí (%1)"
 
-#: optionsdlg.cpp:339
+#: optionsdlg.cpp:395
 msgid "OptionsDlg::default"
 msgstr "výchozí"
 
-#: optionsdlg.cpp:558
+#: optionsdlg.cpp:688
 msgid "OptionsDlg::none"
 msgstr "¾ádný"
 
@@ -3698,11 +4082,11 @@ msgstr "&Kontrola:"
 msgid "PasswordDlg::Enter your ICQ password here."
 msgstr "Zde zadejte nové ICQ heslo."
 
-#: passworddlg.cpp:95
+#: passworddlg.cpp:94
 msgid "PasswordDlg::ICQ Password [Setting...]"
 msgstr "ICQ heslo[Nastavuji...]"
 
-#: passworddlg.cpp:82
+#: passworddlg.cpp:81
 msgid "PasswordDlg::Invalid password, must be 8 characters or less."
 msgstr "Heslo neplatné; mù¾e mít maximálnì 8 písmen."
 
@@ -3714,15 +4098,15 @@ msgstr "Licq - Nastavení hesla."
 msgid "PasswordDlg::Password"
 msgstr "Heslo"
 
-#: passworddlg.cpp:87
+#: passworddlg.cpp:86
 msgid "PasswordDlg::Passwords do not match, try again."
 msgstr "Hesla se neshodují, zkuste znovu."
 
-#: passworddlg.cpp:127
+#: passworddlg.cpp:122
 msgid "PasswordDlg::Set Password [Setting..."
 msgstr "Nastavení hesla [Nastavuji..."
 
-#: passworddlg.cpp:130
+#: passworddlg.cpp:125
 msgid "PasswordDlg::Set Password"
 msgstr "Nastavení hesla"
 
@@ -3730,15 +4114,15 @@ msgstr "Nastavení hesla"
 msgid "PasswordDlg::Verify your ICQ password here."
 msgstr "Zde kontrola hesla."
 
-#: passworddlg.cpp:120
+#: passworddlg.cpp:115
 msgid "PasswordDlg::error"
 msgstr "chyba"
 
-#: passworddlg.cpp:114
+#: passworddlg.cpp:109
 msgid "PasswordDlg::failed"
 msgstr "nevy¹lo"
 
-#: passworddlg.cpp:117
+#: passworddlg.cpp:112
 msgid "PasswordDlg::timed out"
 msgstr "vypr¹el èas"
 
@@ -3839,23 +4223,23 @@ msgstr "Verze"
 # msgid "QMultiLineEditNew::Undo"
 # msgstr "Zpìt"
 
-#: ewidgets.cpp:64
+#: ewidgets.cpp:75
 msgid "QMessageBox::Licq Error"
 msgstr "Licq chyba"
 
-#: ewidgets.cpp:44
+#: ewidgets.cpp:55
 msgid "QMessageBox::Licq Information"
 msgstr "Licq informace"
 
-#: ewidgets.cpp:34
+#: ewidgets.cpp:45
 msgid "QMessageBox::Licq Question"
 msgstr "Licq otázka"
 
-#: ewidgets.cpp:54
+#: ewidgets.cpp:65
 msgid "QMessageBox::Licq Warning"
 msgstr "Licq varování"
 
-#: chatdlg.cpp:787
+#: chatdlg.cpp:862
 msgid "QString::Failed to open file:\n%1"
 msgstr "Chyba pøi otvírání souboru:\n%1"
 
@@ -3863,7 +4247,11 @@ msgstr "Chyba pøi otvírání souboru:\n%1"
 # msgid "RegisterUserDlg::&Register Existing User"
 # msgstr "Zaregistrovat existujícího u¾ivatele"
 
-#: registeruser.cpp:144
+#: registeruser.cpp:42
+msgid "RegisterUserDlg::&Register Existing User"
+msgstr "&Registruj existujícího u¾ivatele"
+
+#: registeruser.cpp:143
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
 msgstr "Neplatné UIN.  Zkuste znovu."
 
@@ -3879,7 +4267,11 @@ msgstr "Neplatné UIN.  Zkuste znovu."
 # msgid "RegisterUserDlg::Now click Finish to start the registration process."
 # msgstr "Nyní zvolte \"Finish\" pro spustìní registrace."
 
-#: registeruser.cpp:127
+#: registeruser.cpp:82
+msgid "RegisterUserDlg::Licq User Registration"
+msgstr "U¾ivatelské registrace licq"
+
+#: registeruser.cpp:126
 msgid "RegisterUserDlg::"
 "Now please click 'Finish' to start "
 "the registration process."
@@ -3887,7 +4279,7 @@ msgstr
 "Nyní zvolte 'Finish' pro spustìní "
 "registrace."
 
-#: registeruser.cpp:121
+#: registeruser.cpp:120
 msgid "RegisterUserDlg::"
 "Now please press the 'Back' button "
 "and try again."
@@ -3903,15 +4295,19 @@ msgstr
 # msgid "RegisterUserDlg::Passwords do not match, try again."
 # msgstr "Hesla se neshodují, zkuste znovu."
 
-#: registeruser.cpp:110
+#: registeruser.cpp:51
+msgid "RegisterUserDlg::Password:"
+msgstr "Heslo:"
+
+#: registeruser.cpp:109
 msgid "RegisterUserDlg::Please enter your password in both input fields."
 msgstr "Vlo¾te heslo do obou vstupních políèek."
 
-#: registeruser.cpp:151
+#: registeruser.cpp:150
 msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
 msgstr "Registrace úspì¹nì dokonèena. Nyní se mù¾ete pøihlásit a nastavit své osobní údaje."
 
-#: registeruser.cpp:115
+#: registeruser.cpp:114
 msgid "RegisterUserDlg::The passwords don't seem to match."
 msgstr "Hesla se neshodují."
 
@@ -3931,39 +4327,51 @@ msgstr "Hesla se neshodují."
 # msgid "RegisterUserDlg::Uin:"
 # msgstr "Uin:"
 
-#: registeruser.cpp:156
+#: registeruser.cpp:60
+msgid "RegisterUserDlg::UIN Registration - Step 2"
+msgstr "Registrace UIN - èást 2"
+
+#: registeruser.cpp:75
+msgid "RegisterUserDlg::UIN Registration - Step 3"
+msgstr "Registrace UIN - èást 3"
+
+#: registeruser.cpp:34
+msgid "RegisterUserDlg::UIN Registration"
+msgstr "Registrace UIN"
+
+#: registeruser.cpp:46
+msgid "RegisterUserDlg::Uin:"
+msgstr "Uin:"
+
+#: registeruser.cpp:155
 msgid "RegisterUserDlg::User Registration in Progress..."
 msgstr "Probíhá registrace u¾ivatele..."
 
-# #: registeruser.cpp:53
-# msgid "RegisterUserDlg::Verify:"
-# msgstr "Kontrola:"
+#: registeruser.cpp:56
+msgid "RegisterUserDlg::Verify:"
+msgstr "Kontrola:"
 
-# #: registeruser.cpp:21
-# msgid "RegisterUserDlg::"
-# "Welcome to the Registration Wizard.\n\n"
-# "You can register a new user here, or configure "
-# "Licq to use an existing UIN.\n\n"
-# "If you are registering a new uin, choose "
-# "a password and click \"Finish\".\n"
-# "If you already have a uin, then toggle \"Register Existing User\",\n"
-# "enter your uin and your password, and click \"OK\"\n\n"
-# "Press \"Next\" to proceed."
-# msgstr
-# "Vítejte v registraèním prùvodci.\n\n"
-# "Mù¾ete zde provést registraci nového u¾ivatele, nebo nastavit "
-# "pou¾ívání existujícího UIN.\n\n"
-# "Jestli¾e registrujete nové uin, zvolte "
-# "heslo a kliknìte \"Finish\".\n"
-# "Pokud ji¾ máte pøidìleno uin, zapnìte volbu \"Register Existing User\",\n"
-# "vlo¾te své uin a heslo a kliknìte \"OK\"\n\n"
-# "Potvrïte \"Next\" pro dal¹í pokraèování."
+#: registeruser.cpp:25
+msgid "RegisterUserDlg::"
+"Welcome to the Registration Wizard.\n\n"
+"You can register a new user here, or configure "
+"Licq to use an existing UIN.\n\n"
+"If you are registering a new uin, choose "
+"a password and click \"Finish\".\n"
+"If you already have a uin, then toggle \"Register Existing User\",\n"
+"enter your uin and your password, and click \"OK\"\n\n"
+"Press \"Next\" to proceed."
+msgstr
+"Vítejte v registraèním prùvodci.\n\n"
+"Mù¾ete zde provést registraci nového u¾ivatele, nebo nastavit "
+"pou¾ívání existujícího UIN.\n\n"
+"Jestli¾e registrujete nové uin, zvolte "
+"heslo a kliknìte \"Finish\".\n"
+"Pokud ji¾ máte pøidìleno uin, zapnìte volbu \"Register Existing User\",\n"
+"vlo¾te své uin a heslo a kliknìte \"OK\"\n\n"
+"Potvrïte \"Next\" pro dal¹í pokraèování."
 
-# #: registeruser.cpp:91
-# msgid "RegisterUserDlg::You need to enter a password first."
-# msgstr ""
-
-#: registeruser.cpp:104
+#: registeruser.cpp:103
 msgid "RegisterUserDlg::"
 "You need to enter a valid UIN when you "
 "try to register an existing user. "
@@ -3971,15 +4379,15 @@ msgstr
 "Pøi registraci existujícího u¾ivatele je potøeba "
 "vlo¾it platné UIN. "
 
-#: searchuserdlg.cpp:343
+#: searchuserdlg.cpp:371
 msgid "SearchUserDlg::%1 more users found. Narrow search."
 msgstr "Více jak %1 u¾ivatelù nalezeno. Upøesnìte hledání."
 
-#: searchuserdlg.cpp:379
+#: searchuserdlg.cpp:405
 msgid "SearchUserDlg::&Add %1 Users"
 msgstr "Pøid&at %1 u¾ivatele"
 
-#: searchuserdlg.cpp:376
+#: searchuserdlg.cpp:402
 msgid "SearchUserDlg::&Add User"
 msgstr "Pøid&at u¾ivatele"
 
@@ -3987,11 +4395,11 @@ msgstr "Pøid&at u¾ivatele"
 # msgid "SearchUserDlg::&Cancel"
 # msgstr "&Zru¹it"
 
-#: searchuserdlg.cpp:187
+#: searchuserdlg.cpp:212
 msgid "SearchUserDlg::&Done"
 msgstr "&Konec"
 
-#: searchuserdlg.cpp:163
+#: searchuserdlg.cpp:188
 msgid "SearchUserDlg::&Email"
 msgstr "&Email"
 
@@ -4004,99 +4412,127 @@ msgstr "&Email"
 # msgid "SearchUserDlg::&OK"
 # msgstr "&OK"
 
-#: searchuserdlg.cpp:178
+#: searchuserdlg.cpp:203
 msgid "SearchUserDlg::&Search"
 msgstr "&Hledat"
 
-#: searchuserdlg.cpp:173
+#: searchuserdlg.cpp:198
 msgid "SearchUserDlg::&Uin#"
 msgstr "&Uin#"
 
-#: searchuserdlg.cpp:153
+#: searchuserdlg.cpp:178
 msgid "SearchUserDlg::&Whitepages"
 msgstr "&Bílé stránky"
 
-#: searchuserdlg.cpp:207
+#: searchuserdlg.cpp:125
+msgid "SearchUserDlg::18 - 22"
+msgstr ""
+
+#: searchuserdlg.cpp:126
+msgid "SearchUserDlg::23 - 29"
+msgstr ""
+
+#: searchuserdlg.cpp:127
+msgid "SearchUserDlg::30 - 39"
+msgstr ""
+
+#: searchuserdlg.cpp:128
+msgid "SearchUserDlg::40 - 49"
+msgstr ""
+
+#: searchuserdlg.cpp:129
+msgid "SearchUserDlg::50 - 59"
+msgstr ""
+
+#: searchuserdlg.cpp:130
+msgid "SearchUserDlg::69+"
+msgstr ""
+
+#: searchuserdlg.cpp:232
 msgid "SearchUserDlg::A&lert User"
 msgstr "Upozornit u¾ivate&le"
 
-#: searchuserdlg.cpp:96
+#: searchuserdlg.cpp:122
+msgid "SearchUserDlg::Age Range:"
+msgstr "Vìkový rozsah:"
+
+#: searchuserdlg.cpp:113
 msgid "SearchUserDlg::Alias:"
 msgstr "Alias:"
 
-#: searchuserdlg.cpp:241
+#: searchuserdlg.cpp:268
 msgid "SearchUserDlg::Cancel"
 msgstr "Zru¹it"
 
-#: searchuserdlg.cpp:129
+#: searchuserdlg.cpp:150
 msgid "SearchUserDlg::City:"
 msgstr "Mìsto:"
 
-#: searchuserdlg.cpp:146
+#: searchuserdlg.cpp:167
 msgid "SearchUserDlg::Company Department:"
 msgstr "Firemní oddìlení:"
 
-#: searchuserdlg.cpp:143
+#: searchuserdlg.cpp:164
 msgid "SearchUserDlg::Company Name:"
 msgstr "Jméno firmy:"
 
-#: searchuserdlg.cpp:149
+#: searchuserdlg.cpp:170
 msgid "SearchUserDlg::Company Position:"
 msgstr "Pozice ve firmì:"
 
-#: searchuserdlg.cpp:136
+#: searchuserdlg.cpp:157
 msgid "SearchUserDlg::Country:"
 msgstr "Zemì:"
 
-#: searchuserdlg.cpp:159
+#: searchuserdlg.cpp:184
 msgid "SearchUserDlg::Email Address:"
 msgstr "Email adresa:"
 
-#: searchuserdlg.cpp:306
+#: searchuserdlg.cpp:333
 msgid "SearchUserDlg::Enter search parameters and select 'Search'"
 msgstr "Vyplòte hledáné údaje a poté zvolte 'Hledat'"
 
-#: searchuserdlg.cpp:117
+#: searchuserdlg.cpp:136
 msgid "SearchUserDlg::Female"
 msgstr "®enské"
 
-#: searchuserdlg.cpp:99
+#: searchuserdlg.cpp:116
 msgid "SearchUserDlg::First Name:"
 msgstr "Jméno:"
 
-#: searchuserdlg.cpp:114
+#: searchuserdlg.cpp:133
 msgid "SearchUserDlg::Gender:"
 msgstr "Pohlaví:"
 
-#: searchuserdlg.cpp:122
+#: searchuserdlg.cpp:141
 msgid "SearchUserDlg::Language:"
 msgstr "Jazyk:"
 
-#: searchuserdlg.cpp:102
+#: searchuserdlg.cpp:119
 msgid "SearchUserDlg::Last Name:"
 msgstr "Pøíjmení:"
 
-#: searchuserdlg.cpp:78
+#: searchuserdlg.cpp:95
 msgid "SearchUserDlg::Licq - User Search"
 msgstr "Licq - Hledání u¾ivatelù"
 
-#: searchuserdlg.cpp:118
+#: searchuserdlg.cpp:137
 msgid "SearchUserDlg::Male"
 msgstr "Mu¾ské"
 
-#: searchuserdlg.cpp:110
-msgid "SearchUserDlg::Maximum Age:"
-msgstr "Nejvy¹¹í vìk:"
+# #: searchuserdlg.cpp:110
+# msgid "SearchUserDlg::Maximum Age:"
+# msgstr "Nejvy¹¹í vìk:"
 
-#: searchuserdlg.cpp:106
-msgid "SearchUserDlg::Minimum Age:"
-msgstr "Nejni¾¹í vìk:"
+# #: searchuserdlg.cpp:106
+# msgid "SearchUserDlg::Minimum Age:"
+# msgstr "Nejni¾¹í vìk:"
 
-#: searchuserdlg.cpp:341
+#: searchuserdlg.cpp:369
 msgid "SearchUserDlg::More users found. Narrow search."
 msgstr "Pøíli¹ mnoho záznamù. Upøesnìte hledání."
 
-#: searchuserdlg.cpp:356
+#: searchuserdlg.cpp:382
 msgid "SearchUserDlg::Reset Search"
 msgstr "Vynulovat hledání"
 
@@ -4104,11 +4540,15 @@ msgstr "Vynulovat hledání"
 # msgid "SearchUserDlg::Search Again"
 # msgstr "Hledat znovu"
 
-#: searchuserdlg.cpp:353
+#: searchuserdlg.cpp:175
+msgid "SearchUserDlg::Return Online Users Only"
+msgstr "Pouze online u¾ivatele"
+
+#: searchuserdlg.cpp:380
 msgid "SearchUserDlg::Search failed."
 msgstr "Hledání neúspì¹né."
 
-#: searchuserdlg.cpp:276
+#: searchuserdlg.cpp:304
 msgid "SearchUserDlg::Searching (this can take awhile)..."
 msgstr "Hledám (to mù¾e chvíli trvat)..."
 
@@ -4120,15 +4560,15 @@ msgstr "Hledám (to mù¾e chvíli trvat)..."
 # "Tohoto u¾ivatele ji¾ máte \nve Va¹em "
 # "seznamu jako\n'%1'\n\nU¾ivatel nemù¾e být zaøazen dvakrát."
 
-#: searchuserdlg.cpp:132
+#: searchuserdlg.cpp:153
 msgid "SearchUserDlg::State:"
 msgstr "Stát:"
 
-#: searchuserdlg.cpp:168
+#: searchuserdlg.cpp:193
 msgid "SearchUserDlg::UIN#:"
 msgstr "UIN#:"
 
-#: searchuserdlg.cpp:116
+#: searchuserdlg.cpp:135
 msgid "SearchUserDlg::Unspecified"
 msgstr "Nespecifikováno"
 
@@ -4143,6 +4583,10 @@ msgstr "Email"
 #: searchuserdlg.cpp:42
 msgid "SearchUserView::Name"
 msgstr "Jméno"
+
+#: searchuserdlg.cpp:44
+msgid "SearchUserView::Status"
+msgstr "Status"
 
 #: searchuserdlg.cpp:40
 msgid "SearchUserView::UIN"
@@ -4170,23 +4614,26 @@ msgstr
 "potøebují Va¹í autorizaci, aby si Vás mohli "
 "pøidat do seznamu u¾ivatelù."
 
+# #: securitydlg.cpp:43
+# msgid "SecurityDlg::Hide IP"
+
+#: securitydlg.cpp:44
+msgid "SecurityDlg::Hide IP stops users from seeing your IP address. It doesn't guarantee it will be hidden though."
+msgstr "Skryj IP pøed ostatními u¾ivateli. Tato funkce není garantována."
+
 #: securitydlg.cpp:43
 msgid "SecurityDlg::Hide IP"
 msgstr "Skrýt IP"
 
-#: securitydlg.cpp:44
-msgid "SecurityDlg::Hiding ip stops users from seeing your ip."
-msgstr "Schování IP zabrání u¾ivatelùm zobrazování Va¹eho IP."
-
-#: securitydlg.cpp:135
+#: securitydlg.cpp:130
 msgid "SecurityDlg::ICQ Security Options [Setting..."
 msgstr "ICQ bezpeènostní nastavení [Nastavuji..."
 
-#: securitydlg.cpp:103
+#: securitydlg.cpp:102
 msgid "SecurityDlg::ICQ Security Options [Setting...]"
 msgstr "ICQ bezpeènostní nastavení [Nastavuji...]"
 
-#: securitydlg.cpp:138
+#: securitydlg.cpp:133
 msgid "SecurityDlg::ICQ Security Options"
 msgstr "ICQ bezpeènostní nastavení"
 
@@ -4194,19 +4641,26 @@ msgstr "ICQ bezpeènostní nastavení"
 msgid "SecurityDlg::Options"
 msgstr "Nastavení"
 
-#: securitydlg.cpp:40
-msgid "SecurityDlg::Web Presence"
-msgstr "Web Presence"
-
 #: securitydlg.cpp:41
 msgid "SecurityDlg::"
-"Web presence allows users to see if you are online "
+"Web Presence allows users to see if you are online "
 "through your web indicator."
-msgstr
-"Web presence dovoluje u¾ivatelùm pomocí webového indikátoru zjistit, "
-"zda jste online."
+msgstr "Webová prezence umo¾ní ostatním vidìt vá¹ status "
+"prostøednictvím webového indikátoru."
 
-#: securitydlg.cpp:92
+#: securitydlg.cpp:40
+msgid "SecurityDlg::Web Presence"
+msgstr "Webová prezence"
+
+# #: securitydlg.cpp:41
+# msgid "SecurityDlg::"
+# "Web presence allows users to see if you are online "
+# "through your web indicator."
+# msgstr
+# "Web presence dovoluje u¾ivatelùm pomocí webového indikátoru zjistit, "
+# "zda jste online."
+
+#: securitydlg.cpp:91
 msgid "SecurityDlg::"
 "You need to be connected to the\n"
 "ICQ Network to change the settings."
@@ -4214,27 +4668,27 @@ msgstr
 "Zmìna nastavení vy¾aduje\n"
 "pøipojení do ICQ sítì."
 
-#: securitydlg.cpp:128
+#: securitydlg.cpp:123
 msgid "SecurityDlg::error"
 msgstr "chyba"
 
-#: securitydlg.cpp:122
+#: securitydlg.cpp:117
 msgid "SecurityDlg::failed"
 msgstr "nevy¹lo"
 
-#: securitydlg.cpp:125
+#: securitydlg.cpp:120
 msgid "SecurityDlg::timed out"
 msgstr "vypr¹el èas"
 
-#: showawaymsgdlg.cpp:48
+#: showawaymsgdlg.cpp:51
 msgid "ShowAwayMsgDlg::%1 Response for %2"
 msgstr "%1 odpovìï pro %2"
 
-#: showawaymsgdlg.cpp:50
+#: showawaymsgdlg.cpp:53
 msgid "ShowAwayMsgDlg::&Ok"
 msgstr "&Ok"
 
-#: showawaymsgdlg.cpp:39
+#: showawaymsgdlg.cpp:41
 msgid "ShowAwayMsgDlg::&Show Again"
 msgstr "&Ukázat znovu"
 
@@ -4250,107 +4704,123 @@ msgstr "nevy¹lo"
 msgid "ShowAwayMsgDlg::timed out"
 msgstr "vypr¹el èas"
 
-#: skinbrowser.cpp:37
+#: skinbrowser.cpp:38
 msgid "SkinBrowserDlg::&Apply"
 msgstr "&Pou¾ít"
 
-#: skinbrowser.cpp:56
+#: skinbrowser.cpp:57
 msgid "SkinBrowserDlg::&Done"
 msgstr "&Hotovo"
 
-#: skinbrowser.cpp:38
+#: skinbrowser.cpp:39
 msgid "SkinBrowserDlg::&Edit"
 msgstr "&Editovat"
 
-#: skinbrowser.cpp:52
+#: skinbrowser.cpp:53
 msgid "SkinBrowserDlg::A&pply"
 msgstr "Pou¾ív&at"
 
-#: skinbrowser.cpp:84
+#: skinbrowser.cpp:85
 msgid "SkinBrowserDlg::Error"
 msgstr "Chyba"
 
-#: skinbrowser.cpp:40
+#: skinbrowser.cpp:41
 msgid "SkinBrowserDlg::Icons"
 msgstr "Ikony"
 
-#: skinbrowser.cpp:61
+#: skinbrowser.cpp:62
 msgid "SkinBrowserDlg::Licq Skin Browser"
 msgstr "Licq - Prochazení skinù"
 
-#: skinbrowser.cpp:43
+#: skinbrowser.cpp:44
 msgid "SkinBrowserDlg::Name"
 msgstr "Jméno"
 
-#: skinbrowser.cpp:24
+#: skinbrowser.cpp:25
 msgid "SkinBrowserDlg::Skins"
 msgstr "Skiny"
 
-#: usereventdlg.cpp:78
+#: usereventdlg.cpp:106
+msgid "UserEventCommon::Change user text encoding"
+msgstr "Zmìò u¾ivatelské kódování"
+
+#: usereventdlg.cpp:91
 msgid "UserEventCommon::Secure channel information"
 msgstr "Informace o bezpeèném kanálu"
 
-#: usereventdlg.cpp:83
+#: usereventdlg.cpp:96
 msgid "UserEventCommon::Show User History"
 msgstr "Zobrazit historii"
 
-#: usereventdlg.cpp:88
+#: usereventdlg.cpp:101
 msgid "UserEventCommon::Show User Info"
 msgstr "Zobrazit informace o u¾ivateli"
 
-#: usereventdlg.cpp:68
+#: usereventdlg.cpp:80
 msgid "UserEventCommon::Status:"
 msgstr "Status:"
 
-#: usereventdlg.cpp:72
+#: usereventdlg.cpp:107
+msgid "UserEventCommon::This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language."
+msgstr "Toto tlaèítko vybírá kódování text pøi komunikaci. Rùzné jazyky mohou pou¾ívat rùzná kódování."
+
+#: usereventdlg.cpp:84
 msgid "UserEventCommon::Time:"
 msgstr "Èas:"
 
-#: usereventdlg.cpp:113
+#: usereventdlg.cpp:179
 msgid "UserEventCommon::Unknown"
 msgstr "Není známo"
 
-#: userinfodlg.cpp:424
+#: userinfodlg.cpp:440
 msgid "UserInfoDlg:: Day:"
 msgstr "Den:"
 
-#: userinfodlg.cpp:427
+#: userinfodlg.cpp:443
 msgid "UserInfoDlg:: Month:"
 msgstr "Mìsíc:"
 
-#: userinfodlg.cpp:430
+#: userinfodlg.cpp:446
 msgid "UserInfoDlg:: Year:"
 msgstr "Rok:"
 
-#: userinfodlg.cpp:660
+#: userinfodlg.cpp:1106
+msgid "UserInfoDlg::%1 from %2"
+msgstr "%1 od %2"
+
+#: userinfodlg.cpp:1106
+msgid "UserInfoDlg::%1 to %1"
+msgstr "%1 do %2"
+
+#: userinfodlg.cpp:749
 msgid "UserInfoDlg::&About"
 msgstr "O &nìm/ní"
 
-#: userinfodlg.cpp:75
+#: userinfodlg.cpp:77
 msgid "UserInfoDlg::&Close"
 msgstr "&Zavøít"
 
-#: userinfodlg.cpp:823
+#: userinfodlg.cpp:938
 msgid "UserInfoDlg::&Filter: "
 msgstr "&Filter: "
 
-#: userinfodlg.cpp:180
+#: userinfodlg.cpp:189
 msgid "UserInfoDlg::&General"
 msgstr "Zá&kladní"
 
-#: userinfodlg.cpp:797
+#: userinfodlg.cpp:912
 msgid "UserInfoDlg::&History"
 msgstr "&Historie"
 
-#: userinfodlg.cpp:705
+#: userinfodlg.cpp:803
 msgid "UserInfoDlg::&Last"
 msgstr "N&aposledy"
 
-#: userinfodlg.cpp:88
+#: userinfodlg.cpp:90
 msgid "UserInfoDlg::&Menu"
 msgstr "&Menu"
 
-#: userinfodlg.cpp:386
+#: userinfodlg.cpp:402
 msgid "UserInfoDlg::&More"
 msgstr "Da&l¹í"
 
@@ -4358,127 +4828,131 @@ msgstr "Da&l¹í"
 # msgid "UserInfoDlg::&OK"
 # msgstr "&OK"
 
-#: userinfodlg.cpp:1083
+#: userinfodlg.cpp:1209
 msgid "UserInfoDlg::&Save"
 msgstr "&Ulo¾it"
 
-#: userinfodlg.cpp:1082
+#: userinfodlg.cpp:1208
 msgid "UserInfoDlg::&Update"
 msgstr "&Obnovit"
 
-#: userinfodlg.cpp:586
+#: userinfodlg.cpp:605
 msgid "UserInfoDlg::&Work"
 msgstr "P&ráce"
 
-#: userinfodlg.cpp:669
+#: userinfodlg.cpp:758
 msgid "UserInfoDlg::About:"
 msgstr "Pí¹e o sobì:"
 
-#: userinfodlg.cpp:616
+#: userinfodlg.cpp:636
 msgid "UserInfoDlg::Address:"
 msgstr "Adresa:"
 
-#: userinfodlg.cpp:397
+#: userinfodlg.cpp:413
 msgid "UserInfoDlg::Age:"
 msgstr "Vìk:"
 
-#: userinfodlg.cpp:191
+#: userinfodlg.cpp:200
 msgid "UserInfoDlg::Alias:"
 msgstr "Alias:"
 
-#: userinfodlg.cpp:553
+#: userinfodlg.cpp:571
 msgid "UserInfoDlg::Authorization Not Required"
 msgstr "Autorizace nepo¾adována"
 
-#: userinfodlg.cpp:551
+#: userinfodlg.cpp:569
 msgid "UserInfoDlg::Authorization Required"
 msgstr "Autorizace po¾adována"
 
-#: userinfodlg.cpp:419
+#: userinfodlg.cpp:435
 msgid "UserInfoDlg::Birthday:"
 msgstr "Narozeniny:"
 
-#: userinfodlg.cpp:250
+#: userinfodlg.cpp:259
 msgid "UserInfoDlg::Cellular:"
 msgstr "Mobil:"
 
-#: userinfodlg.cpp:609
+#: userinfodlg.cpp:628
 msgid "UserInfoDlg::City:"
 msgstr "Mìsto:"
 
-#: userinfodlg.cpp:259
+#: userinfodlg.cpp:643
 msgid "UserInfoDlg::Country:"
 msgstr "Zemì:"
 
-#: userinfodlg.cpp:601
+#: userinfodlg.cpp:620
 msgid "UserInfoDlg::Department:"
 msgstr "Oddìlení"
 
-#: userinfodlg.cpp:217
+#: userinfodlg.cpp:226
 msgid "UserInfoDlg::EMail 1:"
 msgstr "EMail 1:"
 
-#: userinfodlg.cpp:221
+#: userinfodlg.cpp:230
 msgid "UserInfoDlg::EMail 2:"
 msgstr "EMail 2:"
 
-#: userinfodlg.cpp:839
+#: userinfodlg.cpp:957
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
 msgstr "Chyba pøi nahrávání souboru historie: %1\nPopis: %2"
 
-#: userinfodlg.cpp:623
+#: userinfodlg.cpp:661
 msgid "UserInfoDlg::Fax:"
 msgstr "Fax:"
 
-#: userinfodlg.cpp:498
+#: userinfodlg.cpp:516
 msgid "UserInfoDlg::Female"
 msgstr "®enské"
 
-#: userinfodlg.cpp:307
+#: userinfodlg.cpp:319
 msgid "UserInfoDlg::GMT%1%1%1"
 msgstr "GMT%1%1%1"
 
-#: userinfodlg.cpp:400
+#: userinfodlg.cpp:416
 msgid "UserInfoDlg::Gender:"
 msgstr "Pohlaví:"
 
-#: userinfodlg.cpp:627
+#: userinfodlg.cpp:665
 msgid "UserInfoDlg::Homepage:"
 msgstr "Homepage:"
 
-#: userinfodlg.cpp:200
+#: userinfodlg.cpp:123
+msgid "UserInfoDlg::INVALID USER"
+msgstr "NEPLATNÝ U®IVATEL"
+
+#: userinfodlg.cpp:209
 msgid "UserInfoDlg::IP:"
 msgstr "IP:"
 
-#: userinfodlg.cpp:462
+#: userinfodlg.cpp:479
 msgid "UserInfoDlg::Language 1:"
 msgstr "Jazyk 1:"
 
-#: userinfodlg.cpp:465
+#: userinfodlg.cpp:482
 msgid "UserInfoDlg::Language 2:"
 msgstr "Jazyk 2:"
 
-#: userinfodlg.cpp:469
+#: userinfodlg.cpp:486
 msgid "UserInfoDlg::Language 3:"
 msgstr "Jazyk 3:"
 
-#: userinfodlg.cpp:727
+#: userinfodlg.cpp:825
 msgid "UserInfoDlg::Last Checked Auto Response:"
 msgstr "Naposledy zkontrolována auto odpovìï:"
 
-#: userinfodlg.cpp:715
+#: userinfodlg.cpp:813
 msgid "UserInfoDlg::Last Online:"
 msgstr "Naposledy online:"
 
-#: userinfodlg.cpp:723
+#: userinfodlg.cpp:821
 msgid "UserInfoDlg::Last Received Event:"
 msgstr "Poslední obdr¾ená událost:"
 
-#: userinfodlg.cpp:719
+#: userinfodlg.cpp:817
 msgid "UserInfoDlg::Last Sent Event:"
 msgstr "Poslední vyslaná událost:"
 
-#: userinfodlg.cpp:117
+#: userinfodlg.cpp:128
 msgid "UserInfoDlg::Licq - Info "
 msgstr "Licq - Info "
 
@@ -4486,23 +4960,27 @@ msgstr "Licq - Info "
 # msgid "UserInfoDlg::Local"
 # msgstr "Lokálnì"
 
-#: userinfodlg.cpp:500
+#: userinfodlg.cpp:518
 msgid "UserInfoDlg::Male"
 msgstr "Mu¾ské"
 
-#: userinfodlg.cpp:597
+#: userinfodlg.cpp:616
 msgid "UserInfoDlg::Name:"
 msgstr "Jméno:"
 
-#: userinfodlg.cpp:1092
+#: userinfodlg.cpp:1218
 msgid "UserInfoDlg::Nex&t"
 msgstr "&Dal¹í"
 
-#: userinfodlg.cpp:749
+#: userinfodlg.cpp:852
 msgid "UserInfoDlg::Now"
 msgstr "Teï"
 
-#: userinfodlg.cpp:225
+#: userinfodlg.cpp:894
+msgid "UserInfoDlg::Offline"
+msgstr "Offline"
+
+#: userinfodlg.cpp:234
 msgid "UserInfoDlg::Old Email:"
 msgstr "Starý email"
 
@@ -4510,23 +4988,27 @@ msgstr "Starý email"
 # msgid "UserInfoDlg::Online:"
 # msgstr "Online:"
 
-#: userinfodlg.cpp:1093
+#: userinfodlg.cpp:829
+msgid "UserInfoDlg::Online Since:"
+msgstr "Online od:"
+
+#: userinfodlg.cpp:1219
 msgid "UserInfoDlg::P&rev"
 msgstr "&Pøedchozí"
 
-#: userinfodlg.cpp:620
+#: userinfodlg.cpp:658
 msgid "UserInfoDlg::Phone:"
 msgstr "Telefon:"
 
-#: userinfodlg.cpp:605
+#: userinfodlg.cpp:624
 msgid "UserInfoDlg::Position:"
 msgstr "Pozice:"
 
-#: userinfodlg.cpp:1083
+#: userinfodlg.cpp:1209
 msgid "UserInfoDlg::Retrieve"
 msgstr "Obdr¾et"
 
-#: userinfodlg.cpp:811
+#: userinfodlg.cpp:926
 msgid "UserInfoDlg::Rever&se"
 msgstr "&Sestupnì"
 
@@ -4534,35 +5016,35 @@ msgstr "&Sestupnì"
 # msgid "UserInfoDlg::Server"
 # msgstr "Server"
 
-#: userinfodlg.cpp:842
+#: userinfodlg.cpp:960
 msgid "UserInfoDlg::Sorry, history is disabled for this person."
 msgstr "Lituji, historie je vypnuta pro tohoto u¾ivatele."
 
-#: userinfodlg.cpp:612
+#: userinfodlg.cpp:631
 msgid "UserInfoDlg::State:"
 msgstr "Stát:"
 
-#: userinfodlg.cpp:204
+#: userinfodlg.cpp:213
 msgid "UserInfoDlg::Status:"
 msgstr "Status:"
 
-#: userinfodlg.cpp:207
+#: userinfodlg.cpp:216
 msgid "UserInfoDlg::Timezone:"
 msgstr "Zóna:"
 
-#: userinfodlg.cpp:197
+#: userinfodlg.cpp:206
 msgid "UserInfoDlg::UIN:"
 msgstr "UIN:"
 
-#: userinfodlg.cpp:544
+#: userinfodlg.cpp:703
 msgid "UserInfoDlg::Unknown (%1)"
 msgstr "Neznámý (%1)"
 
-#: userinfodlg.cpp:781
+#: userinfodlg.cpp:896
 msgid "UserInfoDlg::Unknown"
 msgstr "Není známo"
 
-#: userinfodlg.cpp:522
+#: userinfodlg.cpp:540
 msgid "UserInfoDlg::Unspecified"
 msgstr "Nespecifikováno"
 
@@ -4570,15 +5052,15 @@ msgstr "Nespecifikováno"
 # msgid "UserInfoDlg::Update local or server information?"
 # msgstr "Obnovit informace lokálnì nebo ze serveru?"
 
-#: userinfodlg.cpp:1249
+#: userinfodlg.cpp:1382
 msgid "UserInfoDlg::Updating server..."
 msgstr "Obnovuji ze serveru..."
 
-#: userinfodlg.cpp:1175
+#: userinfodlg.cpp:1301
 msgid "UserInfoDlg::Updating..."
 msgstr "Obnovuji..."
 
-#: userinfodlg.cpp:1194
+#: userinfodlg.cpp:1323
 msgid "UserInfoDlg::"
 "You need to be connected to the\n"
 "ICQ Network to change your settings."
@@ -4586,7 +5068,7 @@ msgstr
 "Pro zmìnu Va¹ich nastavení musíte\n"
 "být pøihlá¹en do ICQ sítì."
 
-#: userinfodlg.cpp:1153
+#: userinfodlg.cpp:1279
 msgid "UserInfoDlg::"
 "You need to be connected to the\n"
 "ICQ Network to retrieve your settings."
@@ -4594,11 +5076,11 @@ msgstr
 "Pro zmìnu Va¹ich nastavení musíte\n"
 "být pøihlá¹en do ICQ sítì."
 
-#: userinfodlg.cpp:255
+#: userinfodlg.cpp:640
 msgid "UserInfoDlg::Zip:"
 msgstr "Zip:"
 
-#: userinfodlg.cpp:1023
+#: userinfodlg.cpp:1145
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -4608,7 +5090,7 @@ msgstr
 "[<font color=\"%2\">Odesláno</font>] "
 "%3 z %4 vyhovujících"
 
-#: userinfodlg.cpp:1015
+#: userinfodlg.cpp:1137
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -4618,55 +5100,55 @@ msgstr
 "[<font color=\"%2\">Odesláno</font>] "
 "od %3 do %4 z %5"
 
-#: userinfodlg.cpp:1270
+#: userinfodlg.cpp:1403
 msgid "UserInfoDlg::done"
 msgstr "hotovo"
 
-#: userinfodlg.cpp:1279
+#: userinfodlg.cpp:1412
 msgid "UserInfoDlg::error"
 msgstr "chyba"
 
-#: userinfodlg.cpp:1273
+#: userinfodlg.cpp:1406
 msgid "UserInfoDlg::failed"
 msgstr "nevy¹lo"
 
-#: userinfodlg.cpp:975
-msgid "UserInfoDlg::from"
-msgstr "od"
+# #: userinfodlg.cpp:975
+# msgid "UserInfoDlg::from"
+# msgstr "od"
 
-#: userinfodlg.cpp:954
+#: userinfodlg.cpp:1073
 msgid "UserInfoDlg::server"
 msgstr "server"
 
-#: userinfodlg.cpp:1276
+#: userinfodlg.cpp:1409
 msgid "UserInfoDlg::timed out"
 msgstr "vypr¹el èas"
 
-#: userinfodlg.cpp:986
-msgid "UserInfoDlg::to"
-msgstr "pro"
+# #: userinfodlg.cpp:986
+# msgid "UserInfoDlg::to"
+# msgstr "pro"
 
-#: usereventdlg.cpp:1472
+#: usereventdlg.cpp:1672
 msgid "UserSendChatEvent:: - Chat Request"
 msgstr " - ®ádost o chat"
 
-#: usereventdlg.cpp:1532
+#: usereventdlg.cpp:1739
 msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
 msgstr "Chat s u¾ivatelem %2 odmítnut:\n%3"
 
-#: usereventdlg.cpp:1497
+#: usereventdlg.cpp:1697
 msgid "UserSendChatEvent::Clear"
 msgstr "Proèistit"
 
-#: usereventdlg.cpp:1505
+#: usereventdlg.cpp:1705
 msgid "UserSendChatEvent::Invite"
 msgstr "Pozvat"
 
-#: usereventdlg.cpp:1462
+#: usereventdlg.cpp:1662
 msgid "UserSendChatEvent::Multiparty: "
 msgstr "Víceu¾ivatelský: "
 
-#: usereventdlg.cpp:1034
+#: usereventdlg.cpp:1190
 msgid "UserSendCommon:: to Contact List"
 msgstr " do seznamu u¾ivatelù"
 
@@ -4674,71 +5156,71 @@ msgstr " do seznamu u¾ivatelù"
 # msgid "UserSendCommon::%1 is in %2 mode:\n%3\n"
 # msgstr "%1 je v %2 módu:\n%3\n"
 
-#: usereventdlg.cpp:1030
+#: usereventdlg.cpp:1184
 msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
 msgstr "%1 je v %2 módu:\n%3\nposláno..."
 
-#: usereventdlg.cpp:1050
+#: usereventdlg.cpp:1206
 msgid "UserSendCommon::%1 refused %2, send through server."
 msgstr "%1 odmítnulo %2, poslat pøes server."
 
-#: usereventdlg.cpp:953
+#: usereventdlg.cpp:1107
 msgid "UserSendCommon::&Cancel"
 msgstr "&Zru¹it"
 
-#: usereventdlg.cpp:1148
+#: usereventdlg.cpp:1305
 msgid "UserSendCommon::&Close"
 msgstr "&Zavøít"
 
-#: usereventdlg.cpp:783
+#: usereventdlg.cpp:889
 msgid "UserSendCommon::&Menu"
 msgstr "&Menu"
 
-#: usereventdlg.cpp:797
+#: usereventdlg.cpp:903
 msgid "UserSendCommon::&Send"
 msgstr "Po&slat"
 
-#: usereventdlg.cpp:1184
+#: usereventdlg.cpp:1355
 msgid "UserSendCommon::Cancel"
 msgstr "Zru¹it"
 
-#: usereventdlg.cpp:791
+#: usereventdlg.cpp:897
 msgid "UserSendCommon::Chat Request"
 msgstr "®ádost o chat"
 
-#: usereventdlg.cpp:793
+#: usereventdlg.cpp:899
 msgid "UserSendCommon::Contact List"
 msgstr "Seznam u¾ivatelù"
 
-#: usereventdlg.cpp:1017
+#: usereventdlg.cpp:1171
 msgid "UserSendCommon::Direct send failed,\nsend through server?"
 msgstr "Pøímé spojení se nezdaøilo,\nposlat pøes server?"
 
-#: usereventdlg.cpp:901
+#: usereventdlg.cpp:1060
 msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
 msgstr "Pøetáhnìte po¾adované u¾ivatele\nPravé tlaèítko pro dal¹í volby"
 
-#: usereventdlg.cpp:792
+#: usereventdlg.cpp:898
 msgid "UserSendCommon::File Transfer"
 msgstr "Pøenos souboru"
 
-#: usereventdlg.cpp:776
+#: usereventdlg.cpp:874
 msgid "UserSendCommon::M&ultiple recipients"
 msgstr "&Více pøíjemcù"
 
-#: usereventdlg.cpp:789
+#: usereventdlg.cpp:895
 msgid "UserSendCommon::Message"
 msgstr "Zpráva"
 
-#: usereventdlg.cpp:1017
+#: usereventdlg.cpp:1171
 msgid "UserSendCommon::No"
 msgstr "Ne"
 
-#: usereventdlg.cpp:763
+#: usereventdlg.cpp:861
 msgid "UserSendCommon::Se&nd through server"
 msgstr "Poslat pøes s&erver"
 
-#: usereventdlg.cpp:1184
+#: usereventdlg.cpp:1355
 msgid "UserSendCommon::Send anyway"
 msgstr "Pøesto odeslat"
 
@@ -4750,103 +5232,101 @@ msgstr "Pøesto odeslat"
 # msgid "UserSendCommon::Send\nUrgent"
 # msgstr "Poslat\nurgentnì"
 
-#: usereventdlg.cpp:943
+#: usereventdlg.cpp:1099
 msgid "UserSendCommon::Sending "
 msgstr "Posílám "
 
-#: usereventdlg.cpp:774
+#: usereventdlg.cpp:872
 msgid "UserSendCommon::U&rgent"
 msgstr "U&rgentnì"
 
-#: usereventdlg.cpp:790
+#: usereventdlg.cpp:896
 msgid "UserSendCommon::URL"
 msgstr "URL"
 
-#: usereventdlg.cpp:1034
+#: usereventdlg.cpp:1190
 msgid "UserSendCommon::Urgent"
 msgstr "Urgentnì"
 
-#: usereventdlg.cpp:1184
-msgid "UserSendCommon::Warning: Message will not be sent securely!"
+#: usereventdlg.cpp:1353
+msgid "UserSendCommon::"
+"Warning: Message can't be sent securely\n"
+"through the server!"
 msgstr "Varování: Zpáva nebude posílána se zabezpeèením!"
 
-#: usereventdlg.cpp:1017
+#: usereventdlg.cpp:1171
 msgid "UserSendCommon::Yes"
 msgstr "Ano"
 
-#: usereventdlg.cpp:947
+#: usereventdlg.cpp:1101
 msgid "UserSendCommon::direct"
 msgstr "pøímo"
 
-#: usereventdlg.cpp:986
+#: usereventdlg.cpp:1140
 msgid "UserSendCommon::done"
 msgstr "hotovo"
 
-#: usereventdlg.cpp:996
+#: usereventdlg.cpp:1150
 msgid "UserSendCommon::error"
 msgstr "chyba"
 
-#: usereventdlg.cpp:990
+#: usereventdlg.cpp:1144
 msgid "UserSendCommon::failed"
 msgstr "nevy¹lo"
 
-#: usereventdlg.cpp:946
-msgid "UserSendCommon::partial "
-msgstr "èásteèný "
-
-#: usereventdlg.cpp:993
+#: usereventdlg.cpp:1147
 msgid "UserSendCommon::timed out"
 msgstr "vypr¹el èas"
 
-#: usereventdlg.cpp:947
+#: usereventdlg.cpp:1101
 msgid "UserSendCommon::via server"
 msgstr "pøes server"
 
-#: usereventdlg.cpp:1567
+#: usereventdlg.cpp:1775
 msgid "UserSendContactEvent:: - Contact List"
 msgstr " - Seznam u¾ivatelù"
 
-#: usereventdlg.cpp:1560
+#: usereventdlg.cpp:1768
 msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
 msgstr "Pøetáhnìte po¾adované u¾ivatele - Pravé tlaèítko pro dal¹í volby"
 
-#: usereventdlg.cpp:1372
+#: usereventdlg.cpp:1561
 msgid "UserSendFileEvent:: - File Transfer"
 msgstr " - Pøenos souboru"
 
-#: usereventdlg.cpp:1368
+#: usereventdlg.cpp:1557
 msgid "UserSendFileEvent::Browse"
 msgstr "&Procházet"
 
-#: usereventdlg.cpp:1431
+#: usereventdlg.cpp:1628
 msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
 msgstr "Pøenos souboru s %2 odmítnut:\n%3"
 
-#: usereventdlg.cpp:1362
+#: usereventdlg.cpp:1551
 msgid "UserSendFileEvent::File(s): "
 msgstr "Soubor(y): "
 
-#: usereventdlg.cpp:1384
+#: usereventdlg.cpp:1573
 msgid "UserSendFileEvent::Select files to send"
 msgstr "Výbìr souborù"
 
-#: usereventdlg.cpp:1408
+#: usereventdlg.cpp:1597
 msgid "UserSendFileEvent::You must specify a file to transfer!"
 msgstr "Musíte zadat soubor, který se má poslat!"
 
-#: usereventdlg.cpp:1203
+#: usereventdlg.cpp:1375
 msgid "UserSendMsgEvent:: - Message"
 msgstr " - Zpráva"
 
-#: usereventdlg.cpp:1222
+#: usereventdlg.cpp:1394
 msgid "UserSendMsgEvent::&No"
 msgstr "&Ne"
 
-#: usereventdlg.cpp:1222
+#: usereventdlg.cpp:1394
 msgid "UserSendMsgEvent::&Yes"
 msgstr "&Ano"
 
-#: usereventdlg.cpp:1221
+#: usereventdlg.cpp:1393
 msgid "UserSendMsgEvent::"
 "You didn't edit the message.\n"
 "Do you really want to send it?"
@@ -4854,99 +5334,99 @@ msgstr
 "Zpráva nebyla editována.\n"
 "Chcete ji opravdu poslat?"
 
-#: usereventdlg.cpp:1289
+#: usereventdlg.cpp:1467
 msgid "UserSendUrlEvent:: - URL"
 msgstr " - URL"
 
-#: usereventdlg.cpp:1284
+#: usereventdlg.cpp:1462
 msgid "UserSendUrlEvent::URL : "
 msgstr "URL : "
 
-#: usereventdlg.cpp:263
+#: usereventdlg.cpp:338
 msgid "UserViewEvent::&Close"
 msgstr "&Zavøít"
 
-#: usereventdlg.cpp:406
+#: usereventdlg.cpp:495
 msgid "UserViewEvent::&Forward"
 msgstr "&Pøedat"
 
-#: usereventdlg.cpp:392
+#: usereventdlg.cpp:481
 msgid "UserViewEvent::&Join"
 msgstr "Pøipo&jit"
 
-#: usereventdlg.cpp:251
+#: usereventdlg.cpp:326
 msgid "UserViewEvent::&Menu"
 msgstr "&Menu"
 
-#: usereventdlg.cpp:405
+#: usereventdlg.cpp:494
 msgid "UserViewEvent::&Quote"
 msgstr "&Citovat"
 
-#: usereventdlg.cpp:414
+#: usereventdlg.cpp:503
 msgid "UserViewEvent::&Refuse"
 msgstr "O&dmítnout"
 
-#: usereventdlg.cpp:404
+#: usereventdlg.cpp:493
 msgid "UserViewEvent::&Reply"
 msgstr "&Odpovìdìt"
 
-#: usereventdlg.cpp:408
+#: usereventdlg.cpp:497
 msgid "UserViewEvent::&View"
 msgstr "Podí&vat se"
 
-#: usereventdlg.cpp:384
+#: usereventdlg.cpp:473
 msgid "UserViewEvent::A&ccept"
 msgstr "&Pøijmout"
 
-#: usereventdlg.cpp:444
+#: usereventdlg.cpp:533
 msgid "UserViewEvent::A&dd %1 Users"
 msgstr "Pøi&dat %1 u¾ivatelù"
 
-#: usereventdlg.cpp:446
+#: usereventdlg.cpp:535
 msgid "UserViewEvent::A&dd User"
 msgstr "Pøi&dat u¾ivatele"
 
-#: usereventdlg.cpp:413
+#: usereventdlg.cpp:502
 msgid "UserViewEvent::A&uthorize"
 msgstr "A&utorizovat"
 
-#: usereventdlg.cpp:255
+#: usereventdlg.cpp:330
 msgid "UserViewEvent::Aut&o Close"
 msgstr "Aut&omaticky zavøít"
 
-#: usereventdlg.cpp:624
+#: usereventdlg.cpp:722
 msgid "UserViewEvent::Chat"
 msgstr "Chat"
 
-#: usereventdlg.cpp:639
+#: usereventdlg.cpp:737
 msgid "UserViewEvent::File Transfer"
 msgstr "Pøenos souboru"
 
-#: usereventdlg.cpp:340
+#: usereventdlg.cpp:424
 msgid "UserViewEvent::Nex&t (%1)"
 msgstr "&Dal¹í (%1)"
 
-#: usereventdlg.cpp:342
+#: usereventdlg.cpp:426
 msgid "UserViewEvent::Nex&t"
 msgstr "&Dal¹í"
 
-#: usereventdlg.cpp:264
+#: usereventdlg.cpp:339
 msgid "UserViewEvent::Normal Click - Close Window\n<CTRL>+Click - also delete User"
 msgstr "Normální klik - zavøít okno\n<CTRL>+klik - zároveò smazat u¾ivatele"
 
-#: usereventdlg.cpp:400
+#: usereventdlg.cpp:489
 msgid "UserViewEvent::Start Chat"
 msgstr "&Spustit chat"
 
-#: usereventdlg.cpp:690
+#: usereventdlg.cpp:788
 msgid "UserViewEvent::View URL failed"
 msgstr "Chyba pøi zobrazení URL"
 
-#: usereventdlg.cpp:378
+#: usereventdlg.cpp:467
 msgid "UserViewEvent::\n--------------------\nRequest was cancelled."
 msgstr "\n--------------------\nPo¾adavek zru¹en."
 
-#: wharf.cpp:583
+#: wharf.cpp:683
 msgid "WharfIcon::"
 "Left click - Show main window\n"
 "Middle click - Show next message\n"
@@ -4956,59 +5436,59 @@ msgstr
 "Prostøední tlaèítko - ukázat dal¹í zprávu\n"
 "Pravé tlaèítko - systémové menu"
 
-#: src/dialogs/qfontdialog.cpp:121
-msgid "QFontDialog::&Color"
-msgstr "&Barva"
+# #: src/dialogs/qfontdialog.cpp:121
+# msgid "QFontDialog::&Color"
+# msgstr "&Barva"
 
-#: src/dialogs/qfontdialog.cpp:91
-msgid "QFontDialog::&Font"
-msgstr "&Písmo"
+# #: src/dialogs/qfontdialog.cpp:91
+# msgid "QFontDialog::&Font"
+# msgstr "&Písmo"
 
-#: src/dialogs/qfontdialog.cpp:107
-msgid "QFontDialog::&Size"
-msgstr "&Velikost"
+# #: src/dialogs/qfontdialog.cpp:107
+# msgid "QFontDialog::&Size"
+# msgstr "&Velikost"
 
-#: src/dialogs/qfontdialog.cpp:115
-msgid "QFontDialog::&Underline"
-msgstr "Po&dtr¾ené"
+# #: src/dialogs/qfontdialog.cpp:115
+# msgid "QFontDialog::&Underline"
+# msgstr "Po&dtr¾ené"
 
-#: src/dialogs/qfontdialog.cpp:214
-msgid "QFontDialog::Apply"
-msgstr "Pou¾ív&at"
+# #: src/dialogs/qfontdialog.cpp:214
+# msgid "QFontDialog::Apply"
+# msgstr "Pou¾ív&at"
 
-#: src/dialogs/qfontdialog.cpp:225
-msgid "QFontDialog::Cancel"
-msgstr "&Zru¹it"
+# #: src/dialogs/qfontdialog.cpp:225
+# msgid "QFontDialog::Cancel"
+# msgstr "&Zru¹it"
 
-#: src/dialogs/qfontdialog.cpp:225
-msgid "QFontDialog::Close"
-msgstr "&Zavøít"
+# #: src/dialogs/qfontdialog.cpp:225
+# msgid "QFontDialog::Close"
+# msgstr "&Zavøít"
 
-#: src/dialogs/qfontdialog.cpp:111
-msgid "QFontDialog::Effects"
-msgstr "Efekty"
+# #: src/dialogs/qfontdialog.cpp:111
+# msgid "QFontDialog::Effects"
+# msgstr "Efekty"
 
-#: src/dialogs/qfontdialog.cpp:99
-msgid "QFontDialog::Font st&yle"
-msgstr "St&yl písma"
+# #: src/dialogs/qfontdialog.cpp:99
+# msgid "QFontDialog::Font st&yle"
+# msgstr "St&yl písma"
 
-#: src/dialogs/qfontdialog.cpp:214
-msgid "QFontDialog::OK"
-msgstr "&OK"
+# #: src/dialogs/qfontdialog.cpp:214
+# msgid "QFontDialog::OK"
+# msgstr "&OK"
 
-#: src/dialogs/qfontdialog.cpp:125
-msgid "QFontDialog::Sample"
-msgstr "Vzorek"
+# #: src/dialogs/qfontdialog.cpp:125
+# msgid "QFontDialog::Sample"
+# msgstr "Vzorek"
 
-#: src/dialogs/qfontdialog.cpp:139
-msgid "QFontDialog::Scr&ipt"
-msgstr "&Typ písma"
+# #: src/dialogs/qfontdialog.cpp:139
+# msgid "QFontDialog::Scr&ipt"
+# msgstr "&Typ písma"
 
-#: src/dialogs/qfontdialog.cpp:274
-msgid "QFontDialog::Select Font"
-msgstr "Výbìr fontu"
+# #: src/dialogs/qfontdialog.cpp:274
+# msgid "QFontDialog::Select Font"
+# msgstr "Výbìr fontu"
 
-#: src/dialogs/qfontdialog.cpp:113
-msgid "QFontDialog::Stri&keout"
-msgstr "Pøe¹&krtnuté"
+# #: src/dialogs/qfontdialog.cpp:113
+# msgid "QFontDialog::Stri&keout"
+# msgstr "Pøe¹&krtnuté"
 
