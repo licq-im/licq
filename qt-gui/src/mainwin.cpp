@@ -340,11 +340,20 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    if (m_nAutoLogon > 0)
    {
       if (m_nAutoLogon >= 10)
-        mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), true);
-      if (m_nAutoLogon > 10 && m_nAutoLogon < 17)
-        changeStatusManual(m_nAutoLogon - 11);
-      else if (m_nAutoLogon > 0 && m_nAutoLogon < 7)
-        changeStatusManual(m_nAutoLogon - 1);
+      {
+        mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, true);
+        m_nAutoLogon -= 10;
+      }
+      switch (m_nAutoLogon)
+      {
+      case 1: changeStatus(ICQ_STATUS_ONLINE); break;
+      case 2: changeStatus(ICQ_STATUS_AWAY); break;
+      case 3: changeStatus(ICQ_STATUS_NA); break;
+      case 4: changeStatus(ICQ_STATUS_OCCUPIED); break;
+      case 5: changeStatus(ICQ_STATUS_DND); break;
+      case 6: changeStatus(ICQ_STATUS_FREEFORCHAT); break;
+      default: gLog.Warn("%sInvalid auto online id: %d.\n", m_nAutoLogon);
+      }
    }
 
    // verify we exist
@@ -879,9 +888,6 @@ void CMainWindow::updateStatus()
    lblStatus->setText(sStatus);
    lblStatus->update();
 
-   if (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE)
-     awayMsgDlg->show();
-
    // set the color if it isn't set by the skin
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);
 
@@ -890,56 +896,56 @@ void CMainWindow::updateStatus()
 #endif
 }
 
-//----CMainWindow::changeStatusManual------------------------------------------------------------------
+
+//----CMainWindow::changeStatusManual-------------------------------------------
 void CMainWindow::changeStatusManual(int id)
 {
-  int index = mnuStatus->indexOf(id);
-  if (index != MNUxITEM_STATUSxINVISIBLE) manualAway = index;
-  /*if (index == 1 || index == 2 || index == 3 || index == 4)
-    awayMsgDlg->show();*/
-  changeStatus(index);
+  if (id != ICQ_STATUS_OFFLINE && id != ICQ_STATUS_ONLINE)
+    awayMsgDlg->SelectAutoResponse(id);
+  changeStatus(id);
 }
 
 
 //----CMainWindow::changeStatus-------------------------------------------------
-void CMainWindow::changeStatus(int index)
+void CMainWindow::changeStatus(int id)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  switch(index)
+  if (id == ICQ_STATUS_OFFLINE)
   {
-  case 0: newStatus = ICQ_STATUS_ONLINE; break;
-  case 1: newStatus = ICQ_STATUS_AWAY; break;
-  case 2: newStatus = ICQ_STATUS_NA; break;
-  case 3: newStatus = ICQ_STATUS_OCCUPIED; break;
-  case 4: newStatus = ICQ_STATUS_DND; break;
-  case 5: newStatus = ICQ_STATUS_FREEFORCHAT; break;
-  case 6: newStatus = ICQ_STATUS_OFFLINE;
     gUserManager.DropOwner();
     licqDaemon->icqLogoff(false);
     return;
-  case MNUxITEM_STATUSxINVISIBLE:  // toggle invisible status
-     mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE),
-                               !mnuStatus->isItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE)));
-     if (o->getStatusOffline())
-     {
-       gUserManager.DropOwner();
-       return;
-     }
-     if (mnuStatus->isItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE)))
-        newStatus = o->getStatusFull() | ICQ_STATUS_FxPRIVATE;
-     else
-        newStatus = o->getStatusFull() & (~ICQ_STATUS_FxPRIVATE);
-     break;
-  default:
+  }
+  else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
+  {
+    mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
+                              !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
+    if (o->getStatusOffline())
+    {
+      gUserManager.DropOwner();
+      return;
+    }
+    if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+       newStatus = o->getStatusFull() | ICQ_STATUS_FxPRIVATE;
+    else
+       newStatus = o->getStatusFull() & (~ICQ_STATUS_FxPRIVATE);
+  }
+  else
+  {
+    newStatus = id;
+  }
+
+/*  default:
+     gUserManager.DropOwner();
      gLog.Error("%sInternal error: CMainWindow::changeStatus(): bad index value %d.\n",
                 L_ERRORxSTR, index);
      return;
-  }
+  }*/
 
   // we may have been offline and gone online with invisible toggled
-  if (mnuStatus->isItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE)))
+  if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
      newStatus |= ICQ_STATUS_FxPRIVATE;
 
   // maintain the current extended status flags (we aren't changing any of
@@ -953,10 +959,7 @@ void CMainWindow::changeStatus(int index)
   bool b = o->getStatusOffline();
   gUserManager.DropOwner();
   if (b)
-  {
-     if (!licqDaemon->icqLogon(newStatus))  // unable to connect to mirabilis server
-        lblStatus->setEnabled(true);  // errors will be reported by the ICQ subsystem
-  }
+     licqDaemon->icqLogon(newStatus);
   else
      licqDaemon->icqSetStatus(newStatus);
 }
@@ -1175,7 +1178,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
                      "personal info."),
                    gUserManager.OwnerUin());
       InformUser(this, QString::fromLocal8Bit(buf));
-      changeStatus(0);
+      changeStatus(ICQ_STATUS_ONLINE);
       callFunction(8, false);
     }
     else
@@ -1430,16 +1433,12 @@ void CMainWindow::autoAway()
 #ifdef USE_SCRNSAVER
   static XScreenSaverInfo *mit_info = NULL;
   static bool bXScreenSaver = true;
+  static bool bAutoAway = false;
+  static bool bAutoNA = false;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short status = o->getStatus();
   gUserManager.DropOwner();
-  // manualAway 1 is Away and 2 is NA (from the popup menu)
-  if ((manualAway == 1 || manualAway == 2) ||
-      (status != ICQ_STATUS_NA && status != ICQ_STATUS_ONLINE &&
-       status != ICQ_STATUS_AWAY && status != ICQ_STATUS_FREEFORCHAT) ||
-       !bXScreenSaver)
-      return;
 
   if (mit_info == NULL) mit_info = XScreenSaverAllocInfo ();
   bXScreenSaver = XScreenSaverQueryInfo (x11Display(), DefaultRootWindow (x11Display()), mit_info);
@@ -1451,14 +1450,48 @@ void CMainWindow::autoAway()
   }
   Time idleTime = mit_info->idle;
 
-  if (((unsigned long)idleTime > (unsigned long)autoNATime * 60000 && autoNATime != 0) &&
-      (status != ICQ_STATUS_NA))
-     changeStatus(2);   // set na mode
-  else if (((unsigned long)idleTime > (unsigned long)autoAwayTime * 60000 && autoAwayTime != 0) && (status != ICQ_STATUS_AWAY) &&
-           (status != ICQ_STATUS_NA))
-     changeStatus(1);  // go into away mode
-  else if ((status == ICQ_STATUS_AWAY || status == ICQ_STATUS_NA) && ((unsigned long)idleTime < (unsigned long)autoAwayTime * 60000 && autoAwayTime != 0))
-     changeStatus(0); // wake back up
+  // Check no one changed the status behind our back
+  if ( (bAutoNA && status != ICQ_STATUS_NA) || (bAutoAway && status != ICQ_STATUS_AWAY) )
+  {
+    bAutoNA = false;
+    bAutoAway = false;
+    return;
+  }
+
+  if ( (autoNATime > 0) &&
+       (unsigned long)idleTime > (unsigned long)(autoNATime * 60000) &&
+       (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY) )
+  {
+    changeStatus(ICQ_STATUS_NA);
+    bAutoNA = true;
+  }
+  else if ( (autoAwayTime > 0) &&
+            (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000) &&
+            (status == ICQ_STATUS_ONLINE) )
+  {
+    changeStatus(ICQ_STATUS_AWAY);
+    bAutoAway = true;
+  }
+  else
+  {
+    if (bAutoNA && bAutoAway)
+    {
+      changeStatus(ICQ_STATUS_ONLINE);
+      bAutoNA = false;
+      bAutoAway = false;
+    }
+    else if (bAutoNA)
+    {
+      changeStatus(ICQ_STATUS_AWAY);
+      bAutoNA = false;
+    }
+    else if (bAutoAway)
+    {
+      changeStatus(ICQ_STATUS_ONLINE);
+      bAutoAway = false;
+    }
+  }
+
 #endif // USE_SCRNSAVER
 }
 
@@ -1618,23 +1651,23 @@ void CMainWindow::initMenu(void)
 {
    int mnuId;
    mnuStatus = new QPopupMenu(NULL);
-   mnuId = mnuStatus->insertItem(*pmOnline, _("&Online"));
-   //mnuStatus->setAccel(ALT + Key_O,mnuId);
-   mnuId = mnuStatus->insertItem(*pmAway, _("&Away"));
-   //mnuStatus->setAccel(ALT + Key_A,mnuId);
-   mnuId = mnuStatus->insertItem(*pmNa, _("&Not Available"));
-   //mnuStatus->setAccel(ALT + Key_N,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOccupied, _("O&ccupied"));
-   //mnuStatus->setAccel(ALT + Key_C,mnuId);
-   mnuId = mnuStatus->insertItem(*pmDnd, _("&Do Not Disturb"));
-   //mnuStatus->setAccel(ALT + Key_D,mnuId);
-   mnuId = mnuStatus->insertItem(*pmFFC, _("Free for C&hat"));
-   //mnuStatus->setAccel(ALT + Key_H,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOffline, _("O&ffline"));
-   //mnuStatus->setAccel(ALT + Key_F,mnuId);
+   mnuId = mnuStatus->insertItem(*pmOnline, _("&Online"), ICQ_STATUS_ONLINE);
+   mnuStatus->setAccel(ALT + Key_O,mnuId);
+   mnuId = mnuStatus->insertItem(*pmAway, _("&Away"), ICQ_STATUS_AWAY);
+   mnuStatus->setAccel(ALT + Key_A,mnuId);
+   mnuId = mnuStatus->insertItem(*pmNa, _("&Not Available"), ICQ_STATUS_NA);
+   mnuStatus->setAccel(ALT + Key_N,mnuId);
+   mnuId = mnuStatus->insertItem(*pmOccupied, _("O&ccupied"), ICQ_STATUS_OCCUPIED);
+   mnuStatus->setAccel(ALT + Key_C,mnuId);
+   mnuId = mnuStatus->insertItem(*pmDnd, _("&Do Not Disturb"), ICQ_STATUS_DND);
+   mnuStatus->setAccel(ALT + Key_D,mnuId);
+   mnuId = mnuStatus->insertItem(*pmFFC, _("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
+   mnuStatus->setAccel(ALT + Key_H,mnuId);
+   mnuId = mnuStatus->insertItem(*pmOffline, _("O&ffline"), ICQ_STATUS_OFFLINE);
+   mnuStatus->setAccel(ALT + Key_F,mnuId);
    mnuStatus->insertSeparator();
-   mnuId = mnuStatus->insertItem(*pmPrivate, _("&Invisible"));
-   //mnuStatus->setAccel(ALT + Key_I,mnuId);
+   mnuId = mnuStatus->insertItem(*pmPrivate, _("&Invisible"), ICQ_STATUS_FxPRIVATE);
+   mnuStatus->setAccel(ALT + Key_I,mnuId);
    connect(mnuStatus, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
 
    mnuUserGroups = new QPopupMenu(NULL);

@@ -11,31 +11,28 @@
 #include "mledit.h"
 
 class QPushButton;
-class QStringList;
+class QComboBox;
 
 class AwayMsgDlg : public QDialog
 {
   Q_OBJECT
 public:
-  AwayMsgDlg(QStringList& _respHeader, QStringList& _respText, QWidget *parent = 0, const char *name = 0);
-
-  void selectAutoResponse(unsigned short status);
-  
-  virtual void show();
+  AwayMsgDlg(QWidget *parent = 0, const char *name = 0);
+  void SelectAutoResponse(unsigned short status);
   virtual void hide();
+
 protected:
   MLEditWrap *mleAwayMsg;
-
+  QComboBox *cmbSAR;
   static int s_nX, s_nY;
+  QPushButton* btnSelect;
+  unsigned short m_nStatus;
+  short m_nSAR;
+
 protected slots:
   void ok();
-  void selectMessage();
-  
-private:
-  QPushButton* btnSelect;
-  QStringList& responseHeader;
-  QStringList& responseText;
-  unsigned short status;
+  void show();
+  void slot_SARSelected(int);
 };
 
 
