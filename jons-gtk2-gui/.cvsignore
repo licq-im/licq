@@ -1,0 +1,11 @@
+Makefile.in
+Makefile
+config.h
+configure
+libtool
+ltconfig
+ltmain.sh
+acinclude.m4
+aclocal.m4
+stamp-h.in
+stamp-h
