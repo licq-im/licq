@@ -1,304 +1,570 @@
-#: dialogs/qfiledialog.cpp:3560
-msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
+#. 
+#: QAccel::
+msgid "Ctrl"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3252
-msgid "QFileDialog::&Delete"
+#. 
+#: QAccel::
+msgid "Alt"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3344
-msgid "QFileDialog::&No"
+#. 
+#: QAccel::
+msgid "Shift"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3247
-msgid "QFileDialog::&Open"
+#. 
+#: QAccel::
+msgid "Open URL"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3251
-msgid "QFileDialog::&Rename"
+#. Translate this string to the string 'LTR' in left-to-right languages or to 'RTL' in right-to-left languages (such as Hebrew and Arabic) to get proper widget layout.
+#: QApplication::
+msgid "QT_LAYOUT_DIRECTION"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3246
-msgid "QFileDialog::&Save"
+#. 
+#: QColorDialog::
+msgid "Hu&e:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3285
-msgid "QFileDialog::&Unsorted"
+#. 
+#: QColorDialog::
+msgid "&Sat:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3344
-msgid "QFileDialog::&Yes"
+#. 
+#: QColorDialog::
+msgid "&Val:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3342
-msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
+#. 
+#: QColorDialog::
+msgid "&Red:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:1904
-msgid "QFileDialog::All files (*)"
+#. 
+#: QColorDialog::
+msgid "&Green:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:1967
-msgid "QFileDialog::Attributes"
+#. 
+#: QColorDialog::
+msgid "Bl&ue:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2053
-msgid "QFileDialog::Back"
+#. 
+#: QColorDialog::
+msgid "A&lpha channel:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2007
-msgid "QFileDialog::Cancel"
+#. 
+#: QColorDialog::
+msgid "&Basic colors"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2079
-msgid "QFileDialog::Create New Folder"
+#. 
+#: QColorDialog::
+msgid "&Custom colors"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:1966
-msgid "QFileDialog::Date"
+#. 
+#: QColorDialog::
+msgid "&Define Custom Colors >>"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3341
-msgid "QFileDialog::Delete %1"
+#. 
+#: QColorDialog::
+msgid "OK"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2109
-msgid "QFileDialog::Detail View"
+#. 
+#: QColorDialog::
+msgid "Cancel"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2235
-msgid "QFileDialog::Dir"
+#. 
+#: QColorDialog::
+msgid "&Add to Custom Colors"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3442
-msgid "QFileDialog::Directories"
+#. 
+#: QColorDialog::
+msgid "Select color"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:4388
-msgid "QFileDialog::ERROR"
+#. 
+#: QDialog::
+msgid "What's This?"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3560
-msgid "QFileDialog::Error"
+#. 
+#: QFileDialog::
+msgid "Copy or Move a File"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2042
-msgid "QFileDialog::File &name:"
+#. 
+#: QFileDialog::
+msgid "Read: %1"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2043
-msgid "QFileDialog::File &type:"
+#. 
+#: QFileDialog::
+msgid "Write: %1"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2234
-msgid "QFileDialog::File"
+#. 
+#: QFileDialog::
+msgid "All Files (*)"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3437
-msgid "QFileDialog::Find Directory"
+#. 
+#: QFileDialog::
+msgid "Name"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2229
-msgid "QFileDialog::Inaccessible"
+#. 
+#: QFileDialog::
+msgid "Size"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2099
-msgid "QFileDialog::List View"
+#. 
+#: QFileDialog::
+msgid "Type"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2041
-msgid "QFileDialog::Look &in:"
+#. 
+#: QFileDialog::
+msgid "Date"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:1962
-msgid "QFileDialog::Name"
+#. 
+#: QFileDialog::
+msgid "Attributes"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3390
-msgid "QFileDialog::New Folder %1"
+#. 
+#: QFileDialog::
+msgid "Look &in:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3380
-msgid "QFileDialog::New Folder 1"
+#. 
+#: QFileDialog::
+msgid "File &name:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3385
-msgid "QFileDialog::New Folder"
+#. 
+#: QFileDialog::
+msgid "File &type:"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2003
-msgid "QFileDialog::OK"
+#. 
+#: QFileDialog::
+msgid "Back"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2068
-msgid "QFileDialog::One directory up"
+#. 
+#: QFileDialog::
+msgid "One directory up"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:4249
-msgid "QFileDialog::Open"
+#. 
+#: QFileDialog::
+msgid "Create New Folder"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2131
-msgid "QFileDialog::Preview File Contents"
+#. 
+#: QFileDialog::
+msgid "List View"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2120
-msgid "QFileDialog::Preview File Info"
+#. 
+#: QFileDialog::
+msgid "Detail View"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3276
-msgid "QFileDialog::R&eload"
+#. 
+#: QFileDialog::
+msgid "Preview File Info"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2227
-msgid "QFileDialog::Read-only"
+#. 
+#: QFileDialog::
+msgid "Preview File Contents"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2226
-msgid "QFileDialog::Read-write"
+#. 
+#: QFileDialog::
+msgid "Read-write"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2699
-msgid "QFileDialog::Save as"
+#. 
+#: QFileDialog::
+msgid "Read-only"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3536
-msgid "QFileDialog::Save"
+#. 
+#: QFileDialog::
+msgid "Write-only"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3304
-msgid "QFileDialog::Show &hidden files"
+#. 
+#: QFileDialog::
+msgid "Inaccessible"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:1963
-msgid "QFileDialog::Size"
+#. 
+#: QFileDialog::
+msgid "Symlink to File"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3283
-msgid "QFileDialog::Sort by &Date"
+#. 
+#: QFileDialog::
+msgid "Symlink to Directory"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3280
-msgid "QFileDialog::Sort by &Name"
+#. 
+#: QFileDialog::
+msgid "Symlink to Special"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3282
-msgid "QFileDialog::Sort by &Size"
+#. 
+#: QFileDialog::
+msgid "File"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3300
-msgid "QFileDialog::Sort"
+#. 
+#: QFileDialog::
+msgid "Dir"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2236
-msgid "QFileDialog::Special"
+#. 
+#: QFileDialog::
+msgid "Special"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2232
-msgid "QFileDialog::Symlink to Directory"
+#. 
+#: QFileDialog::
+msgid "Open"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2231
-msgid "QFileDialog::Symlink to File"
+#. 
+#: QFileDialog::
+msgid "Save As"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2233
-msgid "QFileDialog::Symlink to Special"
+#. 
+#: QFileDialog::
+msgid "&Open"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:1965
-msgid "QFileDialog::Type"
+#. 
+#: QFileDialog::
+msgid "&Save"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:2228
-msgid "QFileDialog::Write-only"
+#. 
+#: QFileDialog::
+msgid "&Rename"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3336
-msgid "QFileDialog::the directory"
+#. 
+#: QFileDialog::
+msgid "&Delete"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3334
-msgid "QFileDialog::the file"
+#. 
+#: QFileDialog::
+msgid "R&eload"
 msgstr ""
 
-#: dialogs/qfiledialog.cpp:3338
-msgid "QFileDialog::the symlink"
+#. 
+#: QFileDialog::
+msgid "Sort by &Name"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:121
-msgid "QFontDialog::&Color"
+#. 
+#: QFileDialog::
+msgid "Sort by &Size"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:91
-msgid "QFontDialog::&Font"
+#. 
+#: QFileDialog::
+msgid "Sort by &Date"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:107
-msgid "QFontDialog::&Size"
+#. 
+#: QFileDialog::
+msgid "&Unsorted"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:115
-msgid "QFontDialog::&Underline"
+#. 
+#: QFileDialog::
+msgid "Sort"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:214
-msgid "QFontDialog::Apply"
+#. 
+#: QFileDialog::
+msgid "Show &hidden files"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:225
-msgid "QFontDialog::Cancel"
+#. 
+#: QFileDialog::
+msgid "the file"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:225
-msgid "QFontDialog::Close"
+#. 
+#: QFileDialog::
+msgid "the directory"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:111
-msgid "QFontDialog::Effects"
+#. 
+#: QFileDialog::
+msgid "the symlink"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:99
-msgid "QFontDialog::Font st&yle"
+#. 
+#: QFileDialog::
+msgid "Delete %1"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:214
-msgid "QFontDialog::OK"
+#. 
+#: QFileDialog::
+msgid "<qt>Are you sure you wish to delete %1 \"%2\"?</qt>"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:125
-msgid "QFontDialog::Sample"
+#. 
+#: QFileDialog::
+msgid "&Yes"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:139
-msgid "QFontDialog::Scr&ipt"
+#. 
+#: QFileDialog::
+msgid "&No"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:274
-msgid "QFontDialog::Select Font"
+#. 
+#: QFileDialog::
+msgid "New Folder 1"
 msgstr ""
 
-#: dialogs/qfontdialog.cpp:113
-msgid "QFontDialog::Stri&keout"
+#. 
+#: QFileDialog::
+msgid "New Folder"
 msgstr ""
 
-#: dialogs/qwizard.cpp:94
-msgid "QWizard::< Back"
+#. 
+#: QFileDialog::
+msgid "New Folder %1"
 msgstr ""
 
-#: dialogs/qwizard.cpp:93
-msgid "QWizard::Cancel"
+#. 
+#: QFileDialog::
+msgid "Find Directory"
 msgstr ""
 
-#: dialogs/qwizard.cpp:96
-msgid "QWizard::Finish"
+#. 
+#: QFileDialog::
+msgid "Directories"
 msgstr ""
 
-#: dialogs/qwizard.cpp:97
-msgid "QWizard::Help"
+#. 
+#: QFileDialog::
+msgid "Save"
 msgstr ""
 
-#: dialogs/qwizard.cpp:95
-msgid "QWizard::Next >"
+#. 
+#: QFileDialog::
+msgid "Error"
+msgstr ""
+
+#. 
+#: QFileDialog::
+msgid "%1\nFile not found.\nCheck path and filename."
+msgstr ""
+
+#. 
+#: QFileDialog::
+msgid "All Files (*.*)"
+msgstr ""
+
+#. 
+#: QFileDialog::
+msgid "Open "
+msgstr ""
+
+#. 
+#: QFileDialog::
+msgid "Select a Directory"
+msgstr ""
+
+#. 
+#: QFileDialog::
+msgid "Directory:"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "&Font"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Font st&yle"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "&Size"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Effects"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Stri&keout"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "&Underline"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "&Color"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Sample"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Scr&ipt"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Apply"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Close"
+msgstr ""
+
+#. 
+#: QFontDialog::
+msgid "Select Font"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "&Undo"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "&Redo"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "Cu&t"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "&Copy"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "&Paste"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "Clear"
+msgstr ""
+
+#. 
+#: QLineEdit::
+msgid "Select All"
+msgstr ""
+
+#. 
+#: QLocalFs::
+msgid "Could not rename\n%1\nto\n%2"
+msgstr ""
+
+#. 
+#: QLocalFs::
+msgid "Could not open\n%1"
+msgstr ""
+
+#. 
+#: QLocalFs::
+msgid "Could not write\n%1"
+msgstr ""
+
+#. 
+#: QLocalFs::
+msgid "Could not read directory\n%1"
+msgstr ""
+
+#. 
+#: QLocalFs::
+msgid "Could not create directory\n%1"
+msgstr ""
+
+#. 
+#: QLocalFs::
+msgid "Could not remove file or directory\n%1"
+msgstr ""
+
+#. 
+#: QWhatsThisButton::
+msgid "What's this?"
+msgstr ""
+
+#. 
+#: QWizard::
+msgid "< &Back"
+msgstr ""
+
+#. 
+#: QWizard::
+msgid "&Next >"
+msgstr ""
+
+#. 
+#: QWizard::
+msgid "&Cancel"
+msgstr ""
+
+#. 
+#: QWizard::
+msgid "&Finish"
+msgstr ""
+
+#. 
+#: QWizard::
+msgid "&Help"
+msgstr ""
+
+#. 
+#: QtMultiLineEdit::
+msgid "Cut"
+msgstr ""
+
+#. 
+#: QtMultiLineEdit::
+msgid "Paste special..."
 msgstr ""
 
