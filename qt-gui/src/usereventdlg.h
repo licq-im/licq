@@ -83,6 +83,7 @@ protected slots:
 
 signals:
   void finished(unsigned long);
+  void updateUser(CICQSignal*);
 };
 
 
@@ -103,12 +104,11 @@ protected:
   MsgView *msgView;
   CUserEvent *m_xCurrentReadEvent;
   QPushButton *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
-  QCheckBox* chkAutoClose;
-  QComboBox* cmbSendType;
   CEButton *btnRead1, *btnClose;
 
   void generateReply();
   void sendMsg(QString txt);
+  void updateNextButton();
   virtual void UserUpdated(CICQSignal *, ICQUser *);
 
 protected slots:
@@ -143,6 +143,7 @@ protected:
   QLineEdit *edtSpoof;
   QVGroupBox *grpMR;
   QButtonGroup *grpCmd;
+  QComboBox* cmbSendType;
   CMMUserView *lstMultipleRecipients;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
@@ -153,6 +154,7 @@ protected slots:
   virtual void sendButton();
   virtual void sendDone_common(ICQEvent *);
 
+  void changeEventType(int);
   void cancelSend();
   void massMessageToggled(bool);
   void slot_resettitle() { setCaption(m_sBaseTitle); }
@@ -218,9 +220,11 @@ protected:
   MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
+  QPushButton *btnBrowse;
   virtual bool sendDone(ICQEvent*);
 
 protected slots:
+  void browseFile();
   virtual void sendButton();
 };
 

@@ -75,6 +75,7 @@ protected:
 
   unsigned long m_nUin;
   unsigned short m_nStatus;
+  unsigned long m_nStatusFull;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;
   QString m_sPrefix, m_sSortKey;

@@ -19,6 +19,10 @@
 // written by Graham Roff <graham@licq.org>
 // contributions by Dirk A. Mueller <dirk@licq.org>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <qcheckbox.h>
 #include <qdatetime.h>
 #include <qvbox.h>
@@ -28,6 +32,12 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qsplitter.h>
+
+#ifdef USE_KDE
+#include <kfiledialog.h>
+#else
+#include <qfiledialog.h>
+#endif
 
 #include "licq_message.h"
 #include "licq_icqd.h"
@@ -83,19 +93,30 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
 
+  connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
   tmrTime = NULL;
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   if (u != NULL)
   {
     nfoStatus->setData(u->StatusStr());
     SetGeneralInfo(u);
-    gUserManager.DropUser(u);
+
+    if (u->NewUser())
+    {
+      u->SetNewUser(false);
+      gUserManager.DropUser(u);
+
+      CICQSignal s(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+      emit updateUser(&s);
+    }
+    else
+      gUserManager.DropUser(u);
   }
 
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(slot_userupdated(CICQSignal *)));
 
-  mainWidget = new QGroupBox(this);
+  mainWidget = new QWidget(this);
   top_lay->addWidget(mainWidget);
 }
 
@@ -199,13 +220,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead = new QSplitter(Vertical, mainWidget);
   lay->addWidget(splRead);
   splRead->setOpaqueResize();
-  QHBox *h_top = new QHBox(splRead);
 //  splRead->setResizeMode(h_top, QSplitter::KeepSize);
-  msgView = new MsgView(h_top);
-  btnReadNext = new QPushButton(tr("Nex&t"), h_top);
-  btnReadNext->setEnabled(false);
-  connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_btnReadNext()));
 
+  msgView = new MsgView(splRead);
   mleRead = new MLEditWrap(true, splRead, true);
   mleRead->setReadOnly(true);
 
@@ -231,28 +248,25 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnRead3, SIGNAL(clicked()), this, SLOT(slot_btnRead3()));
   connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_btnRead4()));
 
-  QBoxLayout *h_lay = new QHBoxLayout(top_lay);
-#if 0
-  cmbSendType = new QComboBox(this);
-  cmbSendType->insertItem(tr("Message"));
-  cmbSendType->insertItem(tr("URL"));
-  cmbSendType->insertItem(tr("Chat Request"));
-  cmbSendType->insertItem(tr("File Request"));
-  cmbSendType->insertItem(tr("Contact List"));
-  h_lay->addWidget(cmbSendType);
-#endif
+  QBoxLayout *h_lay = new QHBoxLayout(top_lay, 4);
   if (!m_bOwner)
   {
     QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
     h_lay->addWidget(btnMenu);
     connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
     btnMenu->setPopup(gMainWindow->UserMenu());
-    chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
-    chkAutoClose->setChecked(gMainWindow->m_bAutoClose);
-    h_lay->addWidget(chkAutoClose);
   }
   h_lay->addStretch(1);
+  int bw = 75;
+  btnReadNext = new QPushButton(tr("Nex&t"), this);
   btnClose = new CEButton(tr("&Close"), this);
+  bw = QMAX(bw, btnReadNext->sizeHint().width());
+  bw = QMAX(bw, btnClose->sizeHint().width());
+  btnReadNext->setFixedWidth(bw);
+  btnClose->setFixedWidth(bw);
+  h_lay->addWidget(btnReadNext);
+  btnReadNext->setEnabled(false);
+  connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_btnReadNext()));
   connect(btnClose, SIGNAL(clicked()), SLOT(slot_close()));
   h_lay->addWidget(btnClose);
 
@@ -286,16 +300,42 @@ void UserViewEvent::slot_close()
 }
 
 
+//-----UserViewEvent::slot_autoClose-----------------------------------------
 void UserViewEvent::slot_autoClose()
 {
-  if(!chkAutoClose->isChecked()) return;
-
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   bool doclose = (u->NewMessages() == 0);
   gUserManager.DropUser(u);
 
   if(doclose)
     close();
+}
+
+//-----UserViewEvent::updateNextButton---------------------------------------
+void UserViewEvent::updateNextButton()
+{
+  int num = 0;
+
+  MsgViewItem* it = static_cast<MsgViewItem*>(msgView->firstChild());
+  MsgViewItem* e = NULL;
+
+  while(it) {
+    if(it->m_nEventId != -1) {
+      e = it;
+      num++;
+    }
+    it = static_cast<MsgViewItem*>(it->nextSibling());
+  }
+
+  btnReadNext->setEnabled(num > 0);
+
+  if(num > 1)
+    btnReadNext->setText(tr("Nex&t (%1)").arg(num));
+  else if (num == 1)
+    btnReadNext->setText(tr("Nex&t"));
+
+  if(e && e->msg)
+    btnReadNext->setIconSet(CMainWindow::iconForEvent(e->msg->SubCommand()));
 }
 
 
@@ -590,73 +630,43 @@ void UserViewEvent::slot_btnRead4()
 
 void UserViewEvent::slot_btnReadNext()
 {
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  if (u->NewMessages() == 0)
-  {
-    gUserManager.DropUser(u);
-    return;
-  }
-  MsgViewItem *e = new MsgViewItem(u->EventPop(), msgView);
-  btnReadNext->setEnabled(u->NewMessages() > 0);
-  if (u->NewMessages() > 1)
-  {
-    btnReadNext->setEnabled(true);
-    btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
-  }
-  else if (u->NewMessages() == 1)
-  {
-    btnReadNext->setEnabled(true);
-    btnReadNext->setText(tr("Nex&t"));
-  }
-  else
-  {
-    btnReadNext->setEnabled(false);
-    btnReadNext->setText(tr("Nex&t"));
+  MsgViewItem* it = static_cast<MsgViewItem*>(msgView->firstChild());
+  MsgViewItem* e = NULL;
+
+  while(it) {
+    if(it->m_nEventId != -1) {
+      e = it;
+    }
+    it = static_cast<MsgViewItem*>(it->nextSibling());
   }
 
-  gUserManager.DropUser(u);
+  updateNextButton();
 
-  msgView->setSelected(e, true);
-  slot_printMessage(e);
+  if(e != NULL) {
+    msgView->setSelected(e, true);
+    msgView->ensureItemVisible(e);
+    slot_printMessage(e);
+  }
 }
 
 
 void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 {
-  switch (sig->SubSignal())
+  if(sig->SubSignal() == USER_EVENTS)
   {
-    case USER_EVENTS:
+    CUserEvent* e = NULL;
+
+    if (sig->Argument() > 0)
     {
-      if (u->NewMessages() > 1)
+      e = u->EventPeekId(sig->Argument());
+      if (e != NULL)
       {
-        btnReadNext->setEnabled(true);
-        btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
+        MsgViewItem *m = new MsgViewItem(e, msgView);
+        msgView->ensureItemVisible(m);
       }
-      else if (u->NewMessages() == 1)
-      {
-        btnReadNext->setEnabled(true);
-        btnReadNext->setText(tr("Nex&t"));
-      }
-      else
-      {
-        btnReadNext->setEnabled(false);
-        btnReadNext->setText(tr("Nex&t"));
-      }
-      if (sig->Argument() > 0)
-      {
-        CUserEvent *e = u->EventPeekId(sig->Argument());
-        if (e != NULL)
-        {
-          MsgViewItem *m = new MsgViewItem(e, msgView);
-          msgView->ensureItemVisible(m);
-        }
-      }
-      else
-      {
-        // FIXME we should probably remove the event now...
-      }
-      break;
     }
+
+    updateNextButton();
   }
 }
 
@@ -710,8 +720,17 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
     btnMenu->setPopup(gMainWindow->UserMenu());
   }
+  cmbSendType = new QComboBox(this);
+  cmbSendType->insertItem(tr("Message"));
+  cmbSendType->insertItem(tr("URL"));
+  cmbSendType->insertItem(tr("Chat Request"));
+  cmbSendType->insertItem(tr("File Request"));
+  cmbSendType->insertItem(tr("Contact List"));
+  connect(cmbSendType, SIGNAL(activated(int)), this, SLOT(changeEventType(int)));
+  h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
+  btnSend->setAccel(CTRL+Key_Enter);
   h_lay->addWidget(btnSend);
   connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
   btnCancel = new QPushButton(tr("&Close"), this);
@@ -722,6 +741,33 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
 UserSendCommon::~UserSendCommon()
 {
+}
+
+//-----UserSendCommon::changeEventType---------------------------------------
+void UserSendCommon::changeEventType(int id)
+{
+  switch(id)
+  {
+  case 0:
+    gMainWindow->callFunction(mnuUserSendMsg, m_nUin);
+    break;
+  case 1:
+    gMainWindow->callFunction(mnuUserSendUrl, m_nUin);
+    break;
+  case 2:
+    gMainWindow->callFunction(mnuUserSendChat, m_nUin);
+    break;
+  case 3:
+    gMainWindow->callFunction(mnuUserSendFile, m_nUin);
+    break;
+  case 4:
+    gMainWindow->callFunction(mnuUserSendContact, m_nUin);
+    break;
+  }
+
+  close();
+
+  // TODO: save and restore typed text
 }
 
 //-----UserSendCommon::massMessageToggled------------------------------------
@@ -1046,16 +1092,18 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                    CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendUrlEvent")
 {
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
+  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
+
   mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
   setTabOrder(mleSend, btnSend);
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 
-  QGroupBox* grpOpt = new QGroupBox(1, Vertical, mainWidget);
-  lay->addWidget(grpOpt);
-  lblItem = new QLabel(tr("URL : "), grpOpt);
-  edtItem = new CInfoField(grpOpt, false);
+  QBoxLayout* h_lay = new QHBoxLayout(lay);
+  lblItem = new QLabel(tr("URL : "), mainWidget);
+  h_lay->addWidget(lblItem);
+  edtItem = new CInfoField(mainWidget, false);
+  h_lay->addWidget(edtItem);
 }
 
 
@@ -1127,17 +1175,43 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
 
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
+  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
   mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
   setTabOrder(mleSend, btnSend);
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 
-  QGroupBox* grpOpt = new QGroupBox(1, Vertical, mainWidget);
-  lblItem = new QLabel(tr("File(s)"), grpOpt);
-  edtItem = new CInfoField(grpOpt, false);
-  lay->addWidget(grpOpt);
+  QBoxLayout* h_lay = new QHBoxLayout(lay);
+  lblItem = new QLabel(tr("File(s): "), mainWidget);
+  h_lay->addWidget(lblItem);
+
+  edtItem = new CInfoField(mainWidget, false);
+  h_lay->addWidget(edtItem);
+
+  btnBrowse = new QPushButton(tr("Browse"), mainWidget);
+  connect(btnBrowse, SIGNAL(clicked()), this, SLOT(browseFile()));
+  h_lay->addWidget(btnBrowse);
+}
+
+
+void UserSendFileEvent::browseFile()
+{
+#ifdef USE_KDE
+    QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
+#else
+    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
+#endif
+    if (fl.isEmpty()) return;
+    QStringList::ConstIterator it;
+    QString f;
+    for( it = fl.begin(); it != fl.end(); it++ )
+    {
+      if (it != fl.begin())
+        f += ", ";
+      f += (*it);
+    }
+    edtItem->setText(f);
 }
 
 

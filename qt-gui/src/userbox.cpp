@@ -106,6 +106,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    static char sTemp[128];
    CUserView *v = (CUserView *)listView();
    m_nStatus = u->Status();
+   m_nStatusFull = u->StatusFull();
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -166,6 +167,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
            if (SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT)
              SubCommand = ICQ_CMDxSUB_URL;
            break;
+         case ICQ_CMDxSUB_CONTACTxLIST:
+           if(SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT
+              && SubCommand != ICQ_CMDxSUB_URL)
+             SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
          case ICQ_CMDxSUB_MSG:
          default:
            if (SubCommand == 0) SubCommand = ICQ_CMDxSUB_MSG;
@@ -178,8 +183,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
 
    if (v->timerId == 0 &&
-       (u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
-       (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT))
+       ((u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
+       (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT)))
      v->timerId = v->startTimer(FLASH_TIME);
 
    if (u->NewUser())
@@ -728,7 +733,10 @@ void CUserViewTips::maybeTip(const QPoint& c)
     QRect r(w->itemRect(item));
     if(w->header()->isVisible())
       r.moveBy(0, w->header()->height());
-    tip(r, QString(ICQUser::StatusToStatusStr(item->m_nStatus, false)));
+    QString s = ICQUser::StatusToStatusStr(item->m_nStatus, false);
+    if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
+      s += CUserView::tr("\n<b>Today's Birthday!</b>");
+    tip(r, s);
   }
 }
 

@@ -939,41 +939,21 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
         while (i && i->ItemUin() != nUin)
           i = (CUserViewItem *)i->nextSibling();
-#if 0
-// can't be done this way because online-usercount needs to be updated
-// and online bar needs to be deleted when necessary
-        if (i != NULL)
-        {
-            if(u->StatusOffline() && !m_bShowOffline) {
-                delete i; i=0;
-                userView->triggerUpdate();
-            }
-            else {
-                i->setGraphics(u);
-                userView->sort();
-            }
-        }
-        else
-        {
-          if ( (m_bShowOffline || !u->StatusOffline()) &&
-               (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
-            (void) new CUserViewItem(u, userView);
-        }
-#else
         if (i != NULL)
         {
           delete i;
-          if (m_bShowOffline || !u->StatusOffline())
+          if (m_bShowOffline || !u->StatusOffline() ||
+              (!m_bShowOffline && u->NewMessages() > 0))
             (void) new CUserViewItem(u, userView);
           userView->triggerUpdate();
         }
         else
         {
-          if ( (m_bShowOffline || !u->StatusOffline()) &&
+          if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) ||
+                !u->StatusOffline()) &&
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
-#endif
       }
       // Update their floaty
       CUserView *v = CUserView::FindFloaty(nUin);
@@ -1572,7 +1552,6 @@ void CMainWindow::callFunction(int fcn, unsigned long nUin)
   if (nUin == 0) return;
 
   UserEventCommon *e = NULL;
-  bool doraise = false;
 
   switch (fcn)
   {
@@ -1596,7 +1575,13 @@ void CMainWindow::callFunction(int fcn, unsigned long nUin)
         licqUserView.append(static_cast<UserViewEvent*>(e));
       }
       else
-        doraise = true;
+      {
+        e->raise();
+#ifdef USE_KDE
+        KWin::setActiveWindow(e->winId());
+#endif
+        return;
+      }
       break;
     }
     case mnuUserSendMsg:
@@ -1627,15 +1612,7 @@ void CMainWindow::callFunction(int fcn, unsigned long nUin)
     default:
       qDebug("unknown callFunction() fcn: %d", fcn);
   }
-
   e->show();
-  if (doraise)
-  {
-    e->raise();
-#ifdef USE_KDE
-    KWin::setActiveWindow(e->winId());
-#endif
-  }
 }
 
 
@@ -1920,20 +1897,22 @@ void CMainWindow::aboutBox()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   QString about(tr("Licq version %1.\n"
-                  "Qt GUI plugin version %2.\n"
-                  "%6\n"
-                  "Author: Graham Roff\n"
-                  "Contributions by Dirk Mueller\n"
-                  "http://www.licq.org\n\n"
-                  "%3 (%4)\n"
-                  "%5 contacts.").arg(licqDaemon->Version())
+                   "Qt GUI plugin version %2.\n"
+                   "Compiled on: %7\n"
+                   "%6\n"
+                   "Author: Graham Roff\n"
+                   "Contributions by Dirk A. Mueller\n"
+                   "http://www.licq.org\n\n"
+                   "%3 (%4)\n"
+                   "%5 contacts.").arg(licqDaemon->Version())
                    .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))
                    .arg(o->Uin()).arg(gUserManager.NumUsers())
 #ifdef USE_KDE
-                   .arg(tr("(with KDE support)\n")));
+                   .arg(tr("(with KDE support)\n"))
 #else
-                   .arg("\n"));
+                   .arg("\n")
 #endif
+                   .arg(__DATE__));
   gUserManager.DropOwner();
   InformUser(this, about);
 }
@@ -2317,10 +2296,12 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    fIconsConf.ReadStr("Contact", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmContact.load(sFilepath);
+   if(pmContact.isNull()) pmContact = pmMessage;
 
    fIconsConf.ReadStr("Authorize", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmAuthorize.load(sFilepath);
+   if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
 
    if (!_bInitial)
    {
