@@ -51,6 +51,22 @@ GtkWidget *menu_new_item(GtkWidget *_menu, const char *str, GtkSignalFunc s_func
 	return menu_item;
 }
 
+void menu_separator(GtkWidget *_menu)
+{
+	GtkWidget *separator;
+	GtkWidget *menu_item;
+	
+	separator = gtk_hseparator_new();
+	menu_item = gtk_menu_item_new();
+
+	gtk_menu_append(GTK_MENU(_menu), menu_item);
+	gtk_container_add(GTK_CONTAINER(menu_item), separator);
+	gtk_widget_set_sensitive(menu_item, FALSE);
+	
+	gtk_widget_show(menu_item);
+	gtk_widget_show(separator);
+}
+	
 void menu_create()
 {
 	GtkWidget *item;
@@ -70,6 +86,11 @@ void menu_create()
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
 	gtk_widget_show(item);
 
+	item = menu_new_item(sub_menu, "Edit Info",
+			     GTK_SIGNAL_FUNC(list_info_user));
+
+	menu_separator(sub_menu);
+	
 	item = menu_new_item(sub_menu, "Add User",
 			     GTK_SIGNAL_FUNC(menu_system_add_user));
  
@@ -88,6 +109,8 @@ void menu_create()
 
 	item = menu_new_item(menu, "Refresh",
 				GTK_SIGNAL_FUNC(menu_system_refresh));
+
+	menu_separator(menu);
 
 	item = menu_new_item(menu, "Exit",
 				  GTK_SIGNAL_FUNC(menu_system_quit));
