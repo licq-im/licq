@@ -774,8 +774,4 @@ extern void licq_tray_set_content(GObject *, GdkPixbuf *, int);
 extern gint licq_tray_flash(GObject *tray);
 void licq_tray_start_flashing();
 void licq_tray_stop_flashing();
-
-// convert txt to utf8, return must be freed using g_free
-char *
-convert_to_utf8(const char *txt, const char *encoding);
 #endif /* __LICQ_GTK_H */
