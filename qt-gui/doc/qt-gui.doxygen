@@ -1,11 +1,14 @@
 # Doxyfile 0.1
 
+# type "doxygen doc/qt-gui.doxygen" inside qt-gui directory to build.
+# Documentation will be created in ./doc/doxygen/.
+
 #---------------------------------------------------------------------------
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Licq-QT-GUI
 PROJECT_NUMBER         = 1.2.3
-OUTPUT_DIRECTORY       = ./doc-qt-gui
+OUTPUT_DIRECTORY       = ./doc/doxygen
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = YES
@@ -52,7 +55,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = licq/plugins/qt-gui/src
+INPUT                  = src
 FILE_PATTERNS          = *.cpp \
 			 *.cc \
 			 *.C \
