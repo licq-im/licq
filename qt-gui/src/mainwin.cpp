@@ -223,9 +223,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #else
   gLog.Info("%sQt GUI configuration.\n", L_INITxSTR);
 #endif
-  sprintf(filename, "%s/licq_qt-gui.conf", BASE_DIR);
+  sprintf(szTemp, "%s/licq_qt-gui.conf", BASE_DIR);
   CIniFile licqConf;
-  if (! licqConf.LoadFile(filename) )
+  if (! licqConf.LoadFile(szTemp) )
   {
     FILE *f = fopen(szTemp, "w");
     fprintf(f, "%s", QTGUI_CONF);
@@ -241,16 +241,16 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #else
   defaultFont = qApp->font();
 #endif
-  if (strcmp(szFont, "default") != 0)
+  if (strcmp(szTemp, "default") != 0)
   {
-    f.setRawName(szFont);
+    f.setRawName(szTemp);
     qApp->setFont(f, true);
   }
-  licqConf.ReadStr("EditFont", szFont, "default");
-  if(!strcmp(szFont, "default"))
+  licqConf.ReadStr("EditFont", szTemp, "default");
+  if(!strcmp(szTemp, "default"))
     f = qApp->font();
   else
-    f.setRawName(szFont);
+    f.setRawName(szTemp);
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
@@ -274,7 +274,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("UseDock", nDockMode, (unsigned short)DockNone);
   m_nDockMode = (DockMode)nDockMode;
   licqConf.ReadBool("Dock64x48", bDockIcon48, false);
-  licqConf.ReadStr("DockTheme", filename, "");
+  char szDockTheme[64];
+  licqConf.ReadStr("DockTheme", szDockTheme, "");
   bool bHidden;
   licqConf.ReadBool("Hidden", bHidden, false);
   licqConf.ReadBool("AutoRaise", m_bAutoRaise, true);
