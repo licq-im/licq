@@ -26,6 +26,9 @@
 /* Whether or not to include SOCKS5 firewall support */
 #undef USE_SOCKS5
 
+/* Whether or not to include OpenSSL encryption support */
+#undef USE_OPENSSL
+
 /* Define this if the system headers don't */
 #undef socklen_t
 

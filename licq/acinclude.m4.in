@@ -152,3 +152,61 @@ if test $licq_extern_timezone = yes; then
   AC_DEFINE(USE_TIMEZONE)
 fi
 ])
+
+
+AC_DEFUN(AC_CHECK_OPENSSL,
+[
+  AC_MSG_CHECKING(if OpenSSL support is desired)
+
+  WITH_OPENSSL="yes"
+	
+  AC_ARG_ENABLE(
+    openssl,
+    [  --disable-openssl       disable OpenSSL support],
+    WITH_OPENSSL="$enableval",
+    WITH_OPENSSL="yes")
+
+  AC_ARG_WITH(
+    openssl-inc,
+    [  --with-openssl-inc=PATH  include path for OpenSSL headers],
+    openssl_incdir="$withval", openssl_incdir="no")
+
+  AC_ARG_WITH(
+    openssl-lib,
+    [  --with-openssl-lib=PATH  library path for OpenSSL libraries],
+    openssl_libdir="$withval", openssl_libdir="no")
+
+  if test "$WITH_OPENSSL" = "no"; then
+    AC_MSG_RESULT(no)
+  else
+    AC_MSG_RESULT(yes)
+
+  	dnl AC_MSG_CHECKING(for the OpenSSL headers)
+    temp=$CPPFLAGS
+    if test "$openssl_incdir" != "no"; then
+      CPPFLAGS="$CPPFLAGS -I$openssl_incdir"
+    fi
+    AC_CHECK_HEADER(openssl/des.h, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    if test "$WITH_OPENSSL" = "no"; then
+      CPPFLAGS="$temp"
+    fi
+
+    dnl AC_MSG_CHECKING(for the OpenSSL library)
+    temp="$LIBS"
+    if test "$openssl_libdir" != "no"; then
+      LIBS="$LIBS -L$openssl_libdir"
+    fi
+    AC_CHECK_LIB(crypto, des_xcbc_encrypt, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    if test "$WITH_OPENSSL" = "no"; then
+      LIBS="$temp"
+    else
+      LIBS="$LIBS -lcrypto -lssl"
+    fi
+ 
+    if test "$WITH_OPENSSL" = "yes"; then
+      AC_DEFINE(USE_OPENSSL)
+    fi
+  fi
+])
+
+

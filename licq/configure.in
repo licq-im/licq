@@ -130,6 +130,7 @@ dlopen(NULL, RTLD_LAZY)
 AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror readdir_r)
 
 AC_CHECK_SOCKS5
+AC_CHECK_OPENSSL
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
@@ -159,9 +160,30 @@ AM_PROG_LIBTOOL
 AC_OUTPUT(
   share/Makefile \
   src/Makefile \
-  src/daemon/Makefile \
+  include/Makefile \
   Makefile )
 
+
 echo ""
-echo "Please remember to use GNU make, often installed as gmake."
 echo ""
+
+if test "$WITH_SOCKS5" = "no"; then
+  echo "SOCKS5 support is disabled."
+else
+  echo "SOCKS5 support is enabled."
+fi
+
+if test "$WITH_OPENSSL" = "no"; then
+  echo "OpenSSL support is not available.  Licq will not be able to"
+  echo "establish secure communication channels.  If you desire this"
+  echo "functionality install OpenSSL (libraries and headers) and"
+  echo "rebuild Licq.  OpenSSL can be found at http://www.openssl.org"
+  echo "or as RPM from your local distribution site."
+else
+  echo "OpenSSL secure channel support is enabled."
+fi
+
+echo ""
+echo "--- Now type \"make\" to build Licq ---"
+echo ""
+
