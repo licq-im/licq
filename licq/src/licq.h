@@ -9,6 +9,8 @@
 #include <list.h>
 #include "licq_icqd.h"
 
+extern char **global_argv;
+extern int global_argc;
 
 class CLicq
 {

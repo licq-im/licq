@@ -37,6 +37,9 @@ extern int errno;
 
 #include "licq.conf.h"
 
+char **global_argv = NULL;
+int global_argc = 0;
+
 // Plugin variables
 pthread_cond_t LP_IdSignal;
 pthread_mutex_t LP_IdMutex;
@@ -105,6 +108,10 @@ bool CLicq::Init(int argc, char **argv)
       }
     }
   }
+
+  // Save the command line arguments in case anybody cares
+  global_argc = argc;
+  global_argv = argv;
 
   // Fork into the background
   if (bFork && fork()) exit(0);
