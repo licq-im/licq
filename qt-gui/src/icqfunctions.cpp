@@ -916,7 +916,8 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
       } while (e != NULL);
     }
     index++;
-    (void) new MsgViewItem(u->GetEvent(index), index, msgView);
+    e = new MsgViewItem(u->GetEvent(index), index, msgView);
+    msgView->ensureItemVisible(e);
     break;
   }
   case USER_GENERAL:
@@ -1457,7 +1458,7 @@ void ICQFunctions::callFcn()
 
   QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
   setCaption(title);
-  setCursor(waitCursor);
+  if (icqEventTag != NULL) setCursor(waitCursor);
 }
 
 
