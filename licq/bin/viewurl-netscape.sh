@@ -31,9 +31,9 @@ fi
 
 if [ -h ${HOME}/.netscape/lock ]; then
   if ps -e | grep netscape > /dev/null ; then
-     ${NETSCAPE} -remote openURL\("$URL"\,new_window\) ; &
+     ${NETSCAPE} -remote openURL\("$URL"\,new_window\) &
   else
-     rm ${HOME}/.netscape/lock ;
+     rm ${HOME}/.netscape/lock
      ${NETSCAPE} "$URL" &
   fi
 else
