@@ -97,14 +97,11 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
 
 CUserManager::~CUserManager()
 {
-  /* while technically we should do this, nothing interesting happens
-     in the user destructor so we don't bother
   UserList::iterator iter;
   for (iter = m_vpcUsers.begin(); iter != m_vpcUsers.end(); iter++)
   {
     delete *iter;
   }
-  */
 
   // Owner destructor saves the current auto response though
   delete m_xOwner;
