@@ -7,6 +7,8 @@ o  Bug fixes
 o  New fifo commands (adduser, metauserinfo)
 o  Uses libtool for better cross-platform support
 o  64-bit machine support
+o  Auto-accept and status-to-user features per-user
+o  No online notifies during logon
 
 
 New in 0.75
