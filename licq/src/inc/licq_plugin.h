@@ -103,23 +103,17 @@ extern pthread_mutex_t LP_IdMutex;
 extern list<unsigned short> LP_Ids;
 unsigned short LP_Id;
 
-/*void signal_handler_pluginThread(int s)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv(LP_Name());
-}*/
-void signal_handler_pluginThread(int s, siginfo_t *si, void *context)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv(LP_Name(), si, context);
-}
 
+void signal_handler_pluginThread(int s /*, siginfo_t *si, void *context*/)
+{
+  if (s == SIGSEGV)
+    licq_handle_sigsegv(LP_Name() /*, si, context*/);
+}
 
 
 
 void *LP_Main_tep(void *p)
 {
-  //signal(SIGSEGV, &signal_handler_pluginThread);
   licq_segv_handler(&signal_handler_pluginThread);
 
   LP_Exit(LP_Main((CICQDaemon *)p));

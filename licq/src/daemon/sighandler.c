@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 //#define HAVE_BACKTRACE
 
@@ -13,7 +14,7 @@
 #include <execinfo.h>
 #endif
 
-
+/*
 void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 {
   struct sigaction sa;
@@ -22,43 +23,49 @@ void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
   sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
   sigaction(SIGSEGV, &sa, NULL);
 }
+*/
+
+void licq_segv_handler(void (*f)(int))
+{
+  signal(SIGSEGV, f);
+}
 
 
-void signal_handler_managerThread(int s, siginfo_t *si, void *context)
+void signal_handler_managerThread(int s /*, siginfo_t *si, void *context */)
 {
   if (s == SIGSEGV)
-    licq_handle_sigsegv("Manager Thread", si, context);
+    licq_handle_sigsegv("Manager Thread" /*, si, context */);
 }
 
 
 
-void signal_handler_eventThread(int s, siginfo_t *si, void *context)
+void signal_handler_eventThread(int s /*, siginfo_t *si, void *context */)
 {
   if (s == SIGSEGV)
-    licq_handle_sigsegv("Event Thread", si, context);
+    licq_handle_sigsegv("Event Thread" /*, si, context */);
 }
 
 
-void signal_handler_pingThread(int s, siginfo_t *si, void *context)
+void signal_handler_pingThread(int s /*, siginfo_t *si, void *context */)
 {
   if (s == SIGSEGV)
-    licq_handle_sigsegv("Ping Thread", si, context);
+    licq_handle_sigsegv("Ping Thread" /*, si, context */);
 }
 
 
-void signal_handler_monitorThread(int s, siginfo_t *si, void *context)
+void signal_handler_monitorThread(int s /*, siginfo_t *si, void *context */)
 {
   if (s == SIGSEGV)
-    licq_handle_sigsegv("Monitor Thread", si, context);
+    licq_handle_sigsegv("Monitor Thread" /*, si, context */);
 }
 
 
 
 
-void licq_handle_sigsegv(const char *s, siginfo_t *si, void *context)
+void licq_handle_sigsegv(const char *s /*, siginfo_t *si, void *context */)
 {
-  fprintf(stderr, "Licq Segmentation Violation Detected [%s]:\n", s);
-  fprintf(stderr, "Fault Address: [0x%08lX]\n", (unsigned long)si->si_addr);
+  fprintf(stderr, "Licq Segmentation Violation Detected [%s].\n", s);
+  /*fprintf(stderr, "Fault Address: [0x%08lX]\n", (unsigned long)si->si_addr); */
 
 #ifdef HAVE_BACKTRACE
   fprintf(stderr, "Backtrace:\n");
@@ -79,7 +86,7 @@ void licq_handle_sigsegv(const char *s, siginfo_t *si, void *context)
 #endif
 
   /* stupid line to stop useless warning */
-  if ((unsigned long)context == 1) printf("c");
+  /*if ((unsigned long)context == 1) printf("c");*/
 
   abort();
 }
