@@ -39,10 +39,10 @@ AC_DEFUN(LICQ_CHECK_LICQ,
 
   AC_ARG_WITH(licq-includes,
     [  --with-licq-includes    where the Licq daemon includes are located.],
-    [  licq_licq_includes="$withval" ], licq_licq_includes="")
+    [  licq_licq_includes="$withval" ])
 
   if test -n "$licq_licq_includes"; then
-    $licq_inc = $licq_licq_includes
+    licq_inc=$licq_licq_includes
   else
     LICQ_FIND_FILE(licq_icqd.h, $prefix/include/licq \
                                 /usr/local/include/licq \
