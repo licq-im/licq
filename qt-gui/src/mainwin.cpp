@@ -341,6 +341,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("AlwaysShowONU", m_bAlwaysShowONU, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadNum("SortByStatus", m_nSortByStatus, 1);
+  licqConf.ReadNum("SortColumn", m_nSortColumn, 0);
+  licqConf.ReadBool("SortColumnAscending", m_bSortColumnAscending, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
   licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
   licqConf.ReadBool("ManualNewUser", m_bManualNewUser, false);
@@ -3007,6 +3009,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowHeader", m_bShowHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteNum("SortByStatus", m_nSortByStatus);
+  licqConf.WriteNum("SortColumn", m_nSortColumn);
+  licqConf.WriteBool("SortColumnAscending", m_bSortColumnAscending);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
   licqConf.WriteBool("UseThreadView", m_bThreadView);
   licqConf.WriteNum("TVGroupStates", m_nGroupStates);

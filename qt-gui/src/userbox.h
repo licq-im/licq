@@ -148,6 +148,7 @@ public:
   static CUserView *FindFloaty(const char *, unsigned long);
 #endif
   static void UpdateFloaties();
+  virtual void setSorting( int column, bool ascending = true);
 
 protected:
   int m_nFlashCounter;

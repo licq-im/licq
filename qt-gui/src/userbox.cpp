@@ -794,7 +794,7 @@ QString CUserViewItem::key (int column, bool ascending) const
   if (column == 0)
     return (m_sPrefix + m_sSortKey + text(1).lower());
   else
-    return(QListViewItem::key(column, ascending).lower());
+    return (m_sPrefix + QListViewItem::key(column, ascending).lower());
 }
 
 UserFloatyList* CUserView::floaties = 0;
@@ -834,7 +834,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 #endif
   setAllColumnsShowFocus(true);
   setTreeStepSize(0);
-  setSorting(0);
+  setSorting(gMainWindow->m_nSortColumn, gMainWindow->m_bSortColumnAscending);
   setVScrollBarMode(gMainWindow->m_bScrollBar ? Auto : AlwaysOff);
 
   if (parent != NULL)
@@ -1582,4 +1582,11 @@ void CUserView::maybeTip(const QPoint& c)
 
     tip(r, s);
   }
+}
+
+void CUserView::setSorting( int column, bool ascending)
+{
+  gMainWindow->m_nSortColumn = column;
+  gMainWindow->m_bSortColumnAscending = ascending;
+  QListView::setSorting( column, ascending );
 }

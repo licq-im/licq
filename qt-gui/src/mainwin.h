@@ -134,7 +134,8 @@ public:
        m_bPopOnlineSince,
        m_bPopIdleTime,
        m_bShowAllEncodings,
-       m_bTabbedChatting;
+       m_bTabbedChatting,
+       m_bSortColumnAscending;
 
   QString m_MsgAutopopupKey;
   QString m_DefaultEncoding;
@@ -144,7 +145,8 @@ public:
   CSkin *skin;
 
   unsigned long m_nCurrentGroup, m_nGroupStates;
-  unsigned short m_nSortByStatus;
+  unsigned short m_nSortByStatus,
+                 m_nSortColumn;
   GroupType m_nGroupType;
   QString usprintfHelp;
 
