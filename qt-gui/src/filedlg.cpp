@@ -186,8 +186,8 @@ void CFileDlg::slot_update()
      .arg(encodeFSize(ftman->BatchPos())).arg(encodeFSize(ftman->BatchSize())));
 
 
-  barTransfer->setProgress(ftman->FilePos());
-  barBatchTransfer->setProgress(ftman->BatchPos());
+  barTransfer->setProgress(ftman->FilePos() / 1024);
+  barBatchTransfer->setProgress(ftman->BatchPos() / 1024);
 }
 
 
@@ -230,7 +230,7 @@ void CFileDlg::slot_ft()
         setCaption(tr("Licq - File Transfer (%1)").arg(ftman->RemoteName()));
         nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
         nfoBatchSize->setText(encodeFSize(ftman->BatchSize()));
-        barBatchTransfer->setTotalSteps(ftman->BatchSize());
+        barBatchTransfer->setTotalSteps(ftman->BatchSize() / 1024);
         barBatchTransfer->setProgress(0);
         break;
       }
@@ -241,7 +241,7 @@ void CFileDlg::slot_ft()
         nfoTransferFileName->setText(ftman->FileName());
         nfoLocalFileName->setText(ftman->PathName());
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
-        barTransfer->setTotalSteps(ftman->FileSize());
+        barTransfer->setTotalSteps(ftman->FileSize() / 1024);
         if (ftman->Direction() == D_RECEIVER)
           mleStatus->appendNoNewLine(tr("Receiving file...\n"));
         else
@@ -412,7 +412,7 @@ bool CFileDlg::GetLocalFileName()
 
   nfoLocalFileName->setText(f);
   m_nBytesTransfered = 0;
-  barTransfer->setTotalSteps(m_sFileInfo.nSize);
+  barTransfer->setTotalSteps(m_sFileInfo.nSize / 1024);
   barTransfer->setProgress(0);
   return(true);
 }
