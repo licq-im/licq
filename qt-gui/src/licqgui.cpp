@@ -152,11 +152,15 @@ CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIc
   m_szIcons = strdup(_szIcons);
 
   // Try and load a translation
-  QString transfile;
-  transfile.sprintf("%s%s/locale.qm", SHARE_DIR, QTGUI_DIR);
-  QTranslator *trans = new QTranslator(this);
-  trans->load(transfile);
-  installTranslator(trans);
+  char *p;
+  if ( (p = getenv("LANGUAGE")) || (p = getenv("LANG")) );
+  {
+    QString str;
+    str.sprintf("%s/qt-gui/locale/%s.qm", SHARE_DIR, p);
+    QTranslator *trans = new QTranslator(this);
+    trans->load(str);
+    installTranslator(trans);
+  }
 }
 
 
