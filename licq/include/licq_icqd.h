@@ -461,6 +461,7 @@ protected:
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
   friend void *Shutdown_tep(void *p);
+  friend void *ConnectToServer_tep(void *s);
   friend class ICQUser;
   friend class CSocketManager;
   friend class CChatManager;

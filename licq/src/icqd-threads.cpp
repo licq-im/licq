@@ -28,6 +28,29 @@ void cleanup_socket(void *s)
   gSocketManager.DropSocket((INetSocket *)s);
 }
 
+void *cleanup_thread_tep(void *t)
+{
+  pthread_detach(pthread_self());
+  int *s;
+  pthread_join(*((pthread_t *)t), (void **)&s);
+  delete (pthread_t *)t;
+  delete s;
+  pthread_exit(NULL);
+}
+
+void cleanup_thread(void *t)
+{
+  pthread_t cleanup;
+  pthread_create(&cleanup, NULL, &cleanup_thread_tep, t);
+}
+
+void *ConnectToServer_tep(void *s)
+{
+  *((int *)s) = gLicqDaemon->ConnectToLoginServer();
+  pthread_exit(s);
+}
+
+
 /*------------------------------------------------------------------------------
  * ProcessRunningEvent_tep
  *
@@ -87,17 +110,28 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
     if (e == NULL)
     {
-      pthread_mutex_unlock(&send_mutex);
+      bool bEmpty = d->m_lxSendQueue_Server.empty();
+
       pthread_mutex_unlock(&d->mutex_sendqueue_server);
-      pthread_exit(NULL);
+      pthread_mutex_unlock(&send_mutex);
+
+      if (bEmpty)
+        pthread_exit(NULL);
+
+      struct timeval tv = { 1, 0 };
+      select(0, NULL, NULL, NULL, &tv);
+      pthread_mutex_lock(&send_mutex);
+      pthread_mutex_lock(&d->mutex_sendqueue_server);
     }
-
-    d->m_lxSendQueue_Server.erase(iter);
-
-    if (e->m_bCancelled)
+    else
     {
-      delete e;
-      e = NULL;
+      d->m_lxSendQueue_Server.erase(iter);
+
+      if (e->m_bCancelled)
+      {
+        delete e;
+        e = NULL;
+      }
     }
   }
 
@@ -128,8 +162,20 @@ void *ProcessRunningEvent_Server_tep(void *p)
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
         gLog.Info("%sConnecting to login server.\n", L_SRVxSTR);
 
-        int socket = d->ConnectToLoginServer();
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_t *t = new pthread_t;
+        int *s = new int;
+        pthread_create(t, NULL, ConnectToServer_tep, s);
+        pthread_cleanup_push(cleanup_thread, t);
+          pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
+          pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+          pthread_testcancel();
+          pthread_join(*t, NULL);
+        pthread_cleanup_pop(0);
+        int socket = *s;
+        delete t;
+        delete s;
+
+        pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
         pthread_testcancel();
 
         e->m_nSocketDesc = socket;

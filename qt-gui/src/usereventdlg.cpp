@@ -47,6 +47,7 @@
 #endif
 
 #include "licq_message.h"
+#include "licq_translate.h"
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "usercodec.h"
@@ -1257,6 +1258,12 @@ void UserSendCommon::setText(const QString& txt)
 //-----UserSendCommon::sendDone_common---------------------------------------
 void UserSendCommon::sendDone_common(ICQEvent *e)
 {
+  if (e == NULL)
+  {
+    setCaption(m_sBaseTitle + " [" + m_sProgressMsg + tr("error") + "]");
+    return;
+  }
+
   unsigned long icqEventTag = 0;
   std::list<unsigned long>::iterator iter;
   for (iter = m_lnEventTag.begin(); iter != m_lnEventTag.end(); iter++)
@@ -1264,6 +1271,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     if (e->Equals(*iter))
     {
       icqEventTag = *iter;
+      m_lnEventTag.erase(iter);
       break;
     }
   }
@@ -1272,34 +1280,27 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     return;
 
   QString title, result;
-  if (e == NULL)
+  switch (e->Result())
   {
+  case EVENT_ACKED:
+  case EVENT_SUCCESS:
+    result = tr("done");
+    QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
+    break;
+  case EVENT_CANCELLED:
+    result = tr("cancelled");
+    break;
+  case EVENT_FAILED:
+    result = tr("failed");
+    break;
+  case EVENT_TIMEDOUT:
+    result = tr("timed out");
+    break;
+  case EVENT_ERROR:
     result = tr("error");
-  }
-  else
-  {
-    switch (e->Result())
-    {
-    case EVENT_ACKED:
-    case EVENT_SUCCESS:
-      result = tr("done");
-      QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
-      break;
-    case EVENT_CANCELLED:
-      result = tr("cancelled");
-      break;
-    case EVENT_FAILED:
-      result = tr("failed");
-      break;
-    case EVENT_TIMEDOUT:
-      result = tr("timed out");
-      break;
-    case EVENT_ERROR:
-      result = tr("error");
-      break;
-    default:
-      break;
-    }
+    break;
+  default:
+    break;
   }
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
   setCaption(title);
@@ -1311,12 +1312,10 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   if (mainwin->m_bAutoSendThroughServer && e->Result() == EVENT_CANCELLED)
     chkSendServer->setChecked(true);
 
-  m_lnEventTag.pop_front();
-
   if (m_lnEventTag.size() == 0)
     disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
 
-  if (e == NULL || e->Result() != EVENT_ACKED)
+  if (e->Result() != EVENT_ACKED)
   {
     if (e->Command() == ICQ_CMDxTCP_START && e->Result() != EVENT_CANCELLED &&
 	(mainwin->m_bAutoSendThroughServer ||
@@ -1384,14 +1383,76 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
   chkSendServer->setChecked(!bOnline);
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
-  switch(e->SubCommand())
+  switch(e->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
   {
     case ICQ_CMDxSUB_MSG:
     {
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
+      // create initial strings (implicit copying, no allocation impact :)
+      char *tmp = gTranslator.NToRN(codec->fromUnicode(ue->Message()));
+      QCString wholeMessageRaw(tmp);
+      delete [] tmp;
+      unsigned int wholeMessagePos = 0;
 
-      icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
-         nLevel, false, &icqColor);
+      bool needsSplitting = false;
+      // If we send through server (= have message limit), and we've crossed the limit
+      if (!bOnline && ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE))
+      {
+        needsSplitting = true;
+      }
+
+      QString message;
+      QCString messageRaw;
+
+      while (wholeMessageRaw.length() > wholeMessagePos)
+      {
+        if (needsSplitting)
+        {
+          // This is a bit ugly but adds safety. We don't simply search
+          // for a whitespace to cut at in the encoded text (since we don't
+          // really know how spaces are represented in its encoding), so
+          // we take the maximum length, then convert back to a Unicode string
+          // and then search for Unicode whitespaces.
+          messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
+          tmp = gTranslator.RNToN(messageRaw);
+          messageRaw = tmp;
+          delete [] tmp;
+          message = codec->toUnicode(messageRaw);
+
+          if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
+          {
+            // We try to find the optimal place to cut
+            // (according to our narrow-minded Latin1 idea of optimal :)
+            // prefer keeping sentences intact 1st
+            int foundIndex = message.findRev(QRegExp("[\\.\\n]"));
+            // slicing at 0 position would be useless
+            if (foundIndex <= 0)
+              foundIndex = message.findRev(QRegExp("\\s"));
+
+            if (foundIndex > 0)
+            {
+              message.truncate(foundIndex);
+              messageRaw = codec->fromUnicode(message);
+            }
+          }
+        }
+        else
+        {
+          message = ue->Message();
+          messageRaw = codec->fromUnicode(message);
+        }
+
+        icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
+           bOnline, nLevel, false, &icqColor);
+        m_lnEventTag.push_back(icqEventTag);
+
+        tmp = gTranslator.NToRN(messageRaw);
+        wholeMessagePos += strlen(tmp);
+        delete [] tmp;
+      }
+
+      icqEventTag = 0;
+
       break;
     }
     case ICQ_CMDxSUB_URL:
@@ -1555,8 +1616,6 @@ UserSendMsgEvent::~UserSendMsgEvent()
 //-----UserSendMsgEvent::sendButton------------------------------------------
 void UserSendMsgEvent::sendButton()
 {
-  #define PARTLEN (MAX_MESSAGE_SIZE - 14)
-
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
@@ -1575,13 +1634,14 @@ void UserSendMsgEvent::sendButton()
   if (!UserSendCommon::checkSecure()) return;
 
   // create initial strings (implicit copying, no allocation impact :)
-  QString wholeMessage = mleSend->text();
-  QCString wholeMessageRaw = codec->fromUnicode(wholeMessage);
+  char *tmp = gTranslator.NToRN(codec->fromUnicode(mleSend->text()));
+  QCString wholeMessageRaw(tmp);
+  delete [] tmp;
   unsigned int wholeMessagePos = 0;
 
   bool needsSplitting = false;
   // If we send through server (= have message limit), and we've crossed the limit
-  if (chkSendServer->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > PARTLEN))
+  if (chkSendServer->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE))
   {
      needsSplitting = true;
   }
@@ -1598,15 +1658,22 @@ void UserSendMsgEvent::sendButton()
         // really know how spaces are represented in its encoding), so
         // we take the maximum length, then convert back to a Unicode string
         // and then search for Unicode whitespaces.
-        messageRaw = wholeMessageRaw.mid(wholeMessagePos, PARTLEN);
+        messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
+        tmp = gTranslator.RNToN(messageRaw);
+        messageRaw = tmp;
+        delete [] tmp;
         message = codec->toUnicode(messageRaw);
         
-        if ((wholeMessageRaw.length() - wholeMessagePos) > PARTLEN)
+        if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
         {
            // We try to find the optimal place to cut
            // (according to our narrow-minded Latin1 idea of optimal :)
-           int foundIndex = message.findRev(QRegExp("[\\s\\.]"));
+           // prefer keeping sentences intact 1st
+           int foundIndex = message.findRev(QRegExp("[\\.\\n]"));
            // slicing at 0 position would be useless
+           if (foundIndex <= 0)
+             foundIndex = message.findRev(QRegExp("\\s"));
+
            if (foundIndex > 0)
            {
               message.truncate(foundIndex);
@@ -1617,7 +1684,7 @@ void UserSendMsgEvent::sendButton()
      else
      {
         message = mleSend->text();
-        messageRaw = wholeMessageRaw;
+        messageRaw = codec->fromUnicode(message);
      }
 
      if (chkMass->isChecked())
@@ -1631,8 +1698,10 @@ void UserSendMsgEvent::sendButton()
         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         chkMass->isChecked(), &icqColor);
      m_lnEventTag.push_back(icqEventTag);
-   
-     wholeMessagePos += messageRaw.length();
+
+     tmp = gTranslator.NToRN(messageRaw);
+     wholeMessagePos += strlen(tmp);
+     delete [] tmp;
   }
   
   UserSendCommon::sendButton();

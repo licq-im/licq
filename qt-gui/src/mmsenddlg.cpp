@@ -26,6 +26,7 @@
 #include <qprogressbar.h>
 #include <qvgroupbox.h>
 #include <qtextcodec.h>
+#include <qregexp.h>
 
 #include <unistd.h>
 #include <stdio.h>
@@ -34,6 +35,7 @@
 #include "mmlistview.h"
 #include "sigman.h"
 #include "licq_user.h"
+#include "licq_translate.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "usercodec.h"
@@ -160,7 +162,68 @@ void CMMSendDlg::SendNext()
       grpSending->setTitle(tr("Sending mass message to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
 
-      icqEventTag = server->icqSendMessage(m_nUin, codec->fromUnicode(s1), false, ICQ_TCPxMSG_NORMAL, true);
+      // create initial strings (implicit copying, no allocation impact :)
+      char *tmp = gTranslator.NToRN(codec->fromUnicode(s1));
+      QCString wholeMessageRaw(tmp);
+      delete [] tmp;
+      unsigned int wholeMessagePos = 0;
+
+      bool needsSplitting = false;
+      // If we send through server (= have message limit), and we've crossed the limit
+      if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
+      {
+        needsSplitting = true;
+      }
+
+      QString message;
+      QCString messageRaw;
+
+      while (wholeMessageRaw.length() > wholeMessagePos)
+      {
+        if (needsSplitting)
+        {
+          // This is a bit ugly but adds safety. We don't simply search
+          // for a whitespace to cut at in the encoded text (since we don't
+          // really know how spaces are represented in its encoding), so
+          // we take the maximum length, then convert back to a Unicode string
+          // and then search for Unicode whitespaces.
+          messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
+          tmp = gTranslator.RNToN(messageRaw);
+          messageRaw = tmp;
+          delete [] tmp;
+          message = codec->toUnicode(messageRaw);
+
+          if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
+          {
+            // We try to find the optimal place to cut
+            // (according to our narrow-minded Latin1 idea of optimal :)
+            // prefer keeping sentences intact 1st
+            int foundIndex = message.findRev(QRegExp("[\\.\\n]"));
+            // slicing at 0 position would be useless
+            if (foundIndex <= 0)
+              foundIndex = message.findRev(QRegExp("\\s"));
+
+            if (foundIndex > 0)
+            {
+              message.truncate(foundIndex);
+              messageRaw = codec->fromUnicode(message);
+            }
+          }
+        }
+        else
+        {
+          message = s1;
+          messageRaw = codec->fromUnicode(message);
+        }
+
+        icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
+           false, ICQ_TCPxMSG_NORMAL, true);
+
+        tmp = gTranslator.NToRN(messageRaw);
+        wholeMessagePos += strlen(tmp);
+        delete [] tmp;
+      }
+
       break;
     }
     case ICQ_CMDxSUB_URL:

@@ -1036,10 +1036,16 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, nUin, ue);
-  e->m_NoAck = true;
+  if (e == NULL)
+    return 0;
+
+  ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+  if (u == NULL || !u->StatusOffline())
+    e->m_NoAck = true;
+  if (u != NULL)
+    gUserManager.DropUser(u);
 
   result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
-
   return result;
 }
 
@@ -1181,7 +1187,12 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
   m_bLoggingOn = true;
   m_tLogonTime = time(NULL);
 //  ICQEvent *e = SendEvent_Server(p);
-  SendEvent_Server(p);
+//  SendEvent_Server(p);
+  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, 0, NULL);
+  if (e == NULL)
+    return 0;
+  SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+
   return 0;
 }
 
@@ -1193,22 +1204,27 @@ void CICQDaemon::icqLogoff()
   m_nTCPSrvSocketDesc = -1;
 
   m_eStatus = STATUS_OFFLINE_MANUAL;
-  m_bLoggingOn = false;
 
-
-  if (nSD == -1)
+  if (nSD == -1 && !m_bLoggingOn)
   {
     gLog.Warn("%sAttempt to logoff while not logged on.\n", L_WARNxSTR);
     return;
   }
 
+  m_bLoggingOn = false;
+
   gLog.Info("%sLogging off.\n", L_SRVxSTR);
-  CPU_Logoff p;
-  ICQEvent *cancelledEvent = new ICQEvent(this, nSD, &p, CONNECT_SERVER, 0, NULL);
-  cancelledEvent->m_pPacket = NULL;
-  cancelledEvent->m_bCancelled = true;
-  SendEvent(nSD, p, true);
-  gSocketManager.CloseSocket(nSD);
+  ICQEvent *cancelledEvent = NULL;
+
+  if (nSD != -1)
+  {
+    CPU_Logoff p;
+    cancelledEvent = new ICQEvent(this, nSD, &p, CONNECT_SERVER, 0, NULL);
+    cancelledEvent->m_pPacket = NULL;
+    cancelledEvent->m_bCancelled = true;
+    SendEvent(nSD, p, true);
+    gSocketManager.CloseSocket(nSD);
+  }
 
   postLogoff(nSD, cancelledEvent);
 }
@@ -1219,9 +1235,10 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_lock(&mutex_sendqueue_server);
   pthread_mutex_lock(&mutex_extendedevents);
   std::list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin();
+
   while (iter != m_lxRunningEvents.end())
   {
-    if ((*iter)->m_nSocketDesc == nSD)
+    if ((*iter)->m_nSocketDesc == nSD || (*iter)->Channel() == ICQ_CHNxNEW)
     {
       ICQEvent *e = *iter;
       iter = m_lxRunningEvents.erase(iter);
@@ -1366,17 +1383,31 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
     return -1;
   }
 
-  // Now get the internal ip from this socket
-  CPacket::SetLocalIp(  NetworkIpToPacketIp(s->LocalIp() ));
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetIntIp(s->LocalIp());
-  gUserManager.DropOwner();
+  static pthread_mutex_t connect_mutex = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_lock(&connect_mutex);
+  int nSocket;
+  if (m_nTCPSrvSocketDesc != -1)
+  {
+    gLog.Warn("%sConnection to server already exists, aborting.\n", L_WARNxSTR);
+    delete s;
+    nSocket = -1;
+  }
+  else
+  {
+    // Now get the internal ip from this socket
+    CPacket::SetLocalIp(  NetworkIpToPacketIp(s->LocalIp() ));
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    o->SetIntIp(s->LocalIp());
+    gUserManager.DropOwner();
 
-  gSocketManager.AddSocket(s);
-  m_nTCPSrvSocketDesc = s->Descriptor();
-  gSocketManager.DropSocket(s);
+    gSocketManager.AddSocket(s);
+    nSocket = m_nTCPSrvSocketDesc = s->Descriptor();
+    gSocketManager.DropSocket(s);
+  }
 
-  return m_nTCPSrvSocketDesc;
+  pthread_mutex_unlock(&connect_mutex);
+
+  return nSocket;
 }
 
 //-----FindUserForInfoUpdate-------------------------------------------------
@@ -2592,6 +2623,19 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 		gLog.Info("%sReceived rights for Instant Messaging..\n", L_SRVxSTR);
 		break;
 	}
+  case ICQ_SNACxMSG_SERVERxACK:
+  {
+    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ACKED);
+    if (e)
+    {
+	      e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+      ProcessDoneEvent(e);
+    }
+    else
+      gLog.Warn("%sAck for unknown event.\n", L_WARNxSTR);
+
+    break;
+  }
 	default:
 	{
 		gLog.Warn("%sUnknown Message Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);

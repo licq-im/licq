@@ -43,7 +43,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-	ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+	ICQUser *u;
   if (!online) // send offline
   {
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
@@ -55,9 +55,11 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
      }
      result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
                                    mDos, e);
+     u = gUserManager.FetchUser(_nUin, LOCK_W);
   }
   else        // send direct
   {
+    u = gUserManager.FetchUser(_nUin, LOCK_W);
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
@@ -73,8 +75,9 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   {
     u->SetSendServer(!online);
     u->SetSendLevel(nLevel);
+    gUserManager.DropUser(u);
   }
-  gUserManager.DropUser(u);
+
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   if (mDos)
@@ -142,14 +145,16 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+  ICQUser *u;
   if (!online) // send offline
   {
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
     result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e);
+    u = gUserManager.FetchUser(_nUin, LOCK_W);
   }
   else
   {
+    u = gUserManager.FetchUser(_nUin, LOCK_W);
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
@@ -164,8 +169,9 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   {
     u->SetSendServer(!online);
     u->SetSendLevel(nLevel);
+    gUserManager.DropUser(u);
   }
-  gUserManager.DropUser(u);
+
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   if (szDescDos)
@@ -292,14 +298,15 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-  u = gUserManager.FetchUser(nUin, LOCK_W);
   if (!online) // send offline
   {
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
     result = icqSendThroughServer(nUin, ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e);
+    u = gUserManager.FetchUser(nUin, LOCK_W);
   }
   else
   {
+    u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
@@ -314,8 +321,9 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   {
     u->SetSendServer(!online);
     u->SetSendLevel(nLevel);
+    gUserManager.DropUser(u);
   }
-  gUserManager.DropUser(u);
+
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   delete []m;
