@@ -469,6 +469,7 @@ CICQDaemon::~CICQDaemon()
 {
   if(m_szUrlViewer)   delete []m_szUrlViewer;
   if(m_szRejectFile)  delete []m_szRejectFile;
+  if(m_szICQServer)   delete []m_szICQServer;
   gLicqDaemon = NULL;
 }
 
