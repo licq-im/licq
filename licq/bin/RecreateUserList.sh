@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASE=~/.licq
+BASE=${HOME}/.licq
 CONF="${BASE}/users.conf"
 
 echo "Licq User List Recreation App"
