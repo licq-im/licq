@@ -620,7 +620,7 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
   if (u == NULL) return;
 
   CUserView *f = new CUserView(mnuUser, colInfo, false,
-     false, m_bFontStyles, false, false, false, m_nFlash, NULL);
+     false, m_bFontStyles, false, false, m_bSortByStatus, m_nFlash, NULL);
   f->setFrameStyle(33);
   connect (f, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 
