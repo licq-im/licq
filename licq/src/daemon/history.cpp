@@ -113,7 +113,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     // Read out the relevant values
     nSubCommand = atoi(&sz[6]);
     nCommand = atoi(&sz[13]);
-    nFlags = atoi(&sz[20]);
+    nFlags = atoi(&sz[20]) << 16;
     tTime = (time_t)atoi(&sz[27]);
     // Now read in the message
     szMsg[0] = '\0';
@@ -276,41 +276,6 @@ bool CUserHistory::Load(HistoryList &lHistory)
   return true;
 }
 
-/*
-void CUserHistory::Load(char *&hbuf)
-{
-  if (m_szFileName == NULL)
-  {
-    hbuf = new char[64];
-    strcpy(hbuf, "No history file set.");
-    return;
-  }
-
-  int fd = open(m_szFileName, O_RDONLY);
-  if (fd == -1)
-  {
-    hbuf = new char[256];
-    if (errno == ENOENT)
-    {
-      strcpy(hbuf, "Empty.");
-      return;
-    }
-    else
-    {
-      sprintf(hbuf, "%sUnable to open history file (%s):\n%s%s.\n", L_WARNxSTR,
-              m_szFileName, L_BLANKxSTR, strerror(errno));
-      gLog.Warn("%s", hbuf);
-      return;
-    }
-  }
-  struct stat buf;
-  fstat(fd, &buf);
-  hbuf = new char[buf.st_size + 1];
-  read(fd, hbuf, buf.st_size);
-  hbuf[buf.st_size] = '\0';
-  close(fd);
-}
-*/
 
 void CUserHistory::Save(const char *buf)
 {
@@ -324,6 +289,17 @@ void CUserHistory::Save(const char *buf)
   }
   write(fd, buf, strlen(buf));
   close(fd);
+}
+
+
+void CUserHistory::Clear(HistoryList &hist)
+{
+  HistoryListIter it = hist.begin();
+  while (it != hist.end())
+  {
+    delete *it;
+    it++;
+  }
 }
 
 

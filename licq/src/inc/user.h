@@ -231,6 +231,7 @@ public:
   void WriteToHistory(const char *);
   void SetHistoryFile(const char *);
   int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
+  void ClearHistory(HistoryList &h)  { m_fHistory.Clear(h); }
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
   const char *HistoryName()      { return m_fHistory.Description(); }
 

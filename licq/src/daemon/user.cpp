@@ -387,50 +387,6 @@ void CUserManager::DropOwner()
   m_xOwner->Unlock();
 }
 
-#if 0
-/*---------------------------------------------------------------------------
- * CUserManager::Reorder
- *
- * Assumes a read lock on the user.
- *-------------------------------------------------------------------------*/
-void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
-{
-  UserList *ul = LockUserList(LOCK_W);
-  UserListIter iter;
-
-  if (_bOnList)
-  {
-    iter = ul->begin();
-    while (iter != ul->end() && *iter != _pcUser) iter++;
-    if (iter == ul->end())
-    {
-      gLog.Warn("%sInternal Error: CUserManager::Reorder():\n"
-                "%sGiven user \"%s\" (%ld) not found.\n", L_WARNxSTR,
-                L_BLANKxSTR, _pcUser->GetAlias(), _pcUser->Uin());
-      UnlockUserList();
-      return;
-    }
-    // Now iter is the user to move
-    ul->erase(iter);
-  }
-
-  // Now we reinsert the user in the correct place
-  pthread_mutex_lock(&ICQUser::mutex_sortkey);
-  for (iter = ul->begin(); iter != ul->end(); iter++)
-  {
-    if (_pcUser->SortKey() <= (*iter)->SortKey())
-    {
-      ul->insert(iter, _pcUser);
-      break;
-    }
-  }
-  // Check if we have to add to the end
-  if (iter == ul->end()) ul->push_back(_pcUser);
-  pthread_mutex_unlock(&ICQUser::mutex_sortkey);
-
-  UnlockUserList();
-}
-#endif
 
 /*---------------------------------------------------------------------------
  * CUserManager::SaveAllUsers
@@ -873,8 +829,28 @@ void ICQUser::LoadLicqInfo()
 
   if (nNewMessages > 0)
   {
-     m_vcMessages.push_back(new CEventSaved(nNewMessages));
-     incNumUserEvents();
+    HistoryList hist;
+    if (GetHistory(hist) && hist.size() >= nNewMessages)
+    {
+      HistoryListIter it = hist.end();
+      while (nNewMessages > 0)
+      {
+        it--;
+        nNewMessages--;
+      }
+      while (it != hist.end())
+      {
+        m_vcMessages.push_back( (*it)->Copy() );
+        incNumUserEvents();
+        it++;
+      }
+    }
+    else
+    {
+      m_vcMessages.push_back(new CEventSaved(nNewMessages));
+      incNumUserEvents();
+    }
+    ClearHistory(hist);
   }
 }
 

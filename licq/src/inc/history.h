@@ -16,7 +16,7 @@ public:
   void SetFile(const char *, unsigned long);
   void Append(const char *);
   bool Load(HistoryList &);
-  void Clear();
+  void Clear(HistoryList &);
   void Save(const char *);
   const char *Description()  { return m_szDescription; }
   const char *FileName()     { return m_szFileName; }
