@@ -30,7 +30,6 @@
 #include "translate.h"
 #include "log.h"
 #include "constants.h"
-#include "support.h"
 #include "mainwin.h"
 #include "mledit.h"
 #include "icqd.h"
