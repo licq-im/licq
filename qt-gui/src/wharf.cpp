@@ -588,6 +588,7 @@ IconManager_KDEStyle::IconManager_KDEStyle(CMainWindow *_mainwin, QPopupMenu *_m
   resize(24,24);
 #ifdef USE_KDE
   KWin::setSystemTrayWindowFor( winId(), _mainwin ? _mainwin->topLevelWidget()->winId() : qt_xrootwin() );
+  setBackgroundMode(X11ParentRelative);
 #endif
   show();
 }
