@@ -424,6 +424,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   
   gSocketMan.CloseSocket(m_nSSLSocket, false, true);
   m_nSSLSocket = -1;
+  sSSLPacket.Clear();
 }
 
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
