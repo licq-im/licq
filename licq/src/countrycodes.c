@@ -55,7 +55,7 @@ const struct SCountry gCountries[NUM_COUNTRIES + 1] =
   { "China", 86, 44 },
   { "Christmas Island", 672, 45 },
   { "Cocos-Keeling Islands", 6101, 46 },
-  { "Columbia", 57, 47 },
+  { "Colombia", 57, 47 },
   { "Comoros", 2691, 48 },
   { "Congo", 242, 49 },
   { "Cook Islands", 682, 50 },
