@@ -252,6 +252,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadStr("DockTheme", szDockTheme, "");
   bool bHidden;
   licqConf.ReadBool("Hidden", bHidden, false);
+  licqConf.ReadBool("AutoRaise", m_bAutoRaise, true);
 
   licqConf.SetSection("startup");
   licqConf.ReadNum("Logon", m_nAutoLogon, 0);
@@ -720,6 +721,8 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
           if (u != NULL) gUserManager.DropUser(u);
         }
       }
+      // Come to the top
+      if (m_bAutoRaise) raise();
       // Fall through
     }
     case USER_STATUS:
@@ -1425,6 +1428,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
+  licqConf.WriteBool("AutoRaise", m_bAutoRaise);
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)

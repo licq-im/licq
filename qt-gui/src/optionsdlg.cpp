@@ -140,6 +140,7 @@ void OptionsDlg::SetupOptions()
   chkAutoClose->setChecked(mainwin->autoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
+  chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   switch(mainwin->m_nDockMode)
   {
@@ -460,12 +461,15 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
                                    "indicate special characteristics such as "
                                    "online notify and visible list"));
-  chkAutoPopup= new QCheckBox(tr("Auto-Popup Incoming Msg"), boxUserWin);
+  chkAutoPopup = new QCheckBox(tr("Auto-Popup Incoming Msg"), boxUserWin);
   QWhatsThis::add(chkAutoPopup, tr("All incoming messages automatically "
                                            "open when received, if we are "
                                            "online (or free for chat)"));
-  lblFrameStyle = new QLabel(tr("Frame Style:"), boxUserWin);
-  edtFrameStyle = new QLineEdit(boxUserWin);
+  chkAutoRaise = new QCheckBox(tr("Auto-Raise on Incoming Msg"), boxUserWin);
+  QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
+  QHBox *hlay = new QHBox(boxUserWin);
+  lblFrameStyle = new QLabel(tr("Frame Style:"), hlay);//boxUserWin);
+  edtFrameStyle = new QLineEdit(hlay);//boxUserWin);
   QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
                                     "style of the user window:\n"
                                     "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
