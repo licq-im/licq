@@ -183,7 +183,6 @@ protected:
   CMMUserView *lstMultipleRecipients;
   MLEditWrap *mleSend;
   CICQColor icqColor;
-  int m_nCurrentType;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
