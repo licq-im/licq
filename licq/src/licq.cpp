@@ -218,7 +218,6 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.CloseFile();
 
   // Start things going
-  InitCountryCodes();
   if (!gUserManager.Load())
     return false;
   gSARManager.Load();
