@@ -41,6 +41,7 @@ protected:
    QLabel *lblServers, *lblDefServerPort,
       *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
    QComboBox *cmbServers, *cmbAutoLogon;
+   QComboBox *cmbAutoAwayMess, *cmbAutoNAMess;
    QSpinBox *spnDefServerPort, *spnAutoAway, *spnAutoNa,
       *spnAutoOffline, *spnPortLow, *spnPortHigh;
    QPushButton *btnAddServer;
@@ -101,6 +102,7 @@ signals:
 protected:
   void SetupOptions();
   void setupFontName(QLineEdit*, const QFont&);
+  void buildAutoStatusCombos(bool);
 
 protected slots:
   virtual void accept();

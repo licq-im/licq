@@ -56,6 +56,7 @@ extern "C" {
 
 #include "mainwin.h"
 #include "licq_icq.h"
+#include "licq_sar.h"
 #include "gui-defines.h"
 #include "licq_log.h"
 #include "licq_translate.h"
@@ -340,6 +341,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("AutoAway", autoAwayTime, 0);
   licqConf.ReadNum("AutoNA", autoNATime, 0);
   licqConf.ReadNum("AutoOffline", autoOfflineTime, 0);
+  licqConf.ReadNum("AutoAwayMess", autoAwayMess, 0);
+  licqConf.ReadNum("AutoNAMess", autoNAMess, 0);
 
   licqConf.SetSection("functions");
   licqConf.ReadBool("AutoClose", m_bAutoClose, true);
@@ -2120,6 +2123,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("AutoAway", autoAwayTime);
   licqConf.WriteNum("AutoNA", autoNATime);
   licqConf.WriteNum("AutoOffline", autoOfflineTime);
+  licqConf.WriteNum("AutoAwayMess", autoAwayMess);
+  licqConf.WriteNum("AutoNAMess", autoNAMess);
 
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", m_bAutoClose);
@@ -2450,6 +2455,14 @@ void CMainWindow::autoAway()
   {
     if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY)
     {
+      if (autoNAMess) {
+       SARList &sar = gSARManager.Fetch(SAR_NA);
+       ICQUser *u = gUserManager.FetchOwner(LOCK_W);
+       u->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+       gUserManager.DropOwner();
+       gSARManager.Drop();
+      }
+
       changeStatus(ICQ_STATUS_NA);
       bAutoNA = true;
       bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
@@ -2460,6 +2473,15 @@ void CMainWindow::autoAway()
   {
     if (status == ICQ_STATUS_ONLINE)
     {
+      if (autoAwayMess) {
+       cerr << "Setting auto away message." << endl;
+       SARList &sar = gSARManager.Fetch(SAR_AWAY);
+       ICQUser *u = gUserManager.FetchOwner(LOCK_W);
+       u->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+       gUserManager.DropOwner();
+       gSARManager.Drop();
+      }
+
       changeStatus(ICQ_STATUS_AWAY);
       bAutoAway = true;
     }

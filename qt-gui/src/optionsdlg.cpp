@@ -110,6 +110,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
   tabw->addTab(tab[5], tr("Miscellaneous"));
 
   SetupOptions();
+
   tabw->showPage(tab[settab]);
   show();
 }
@@ -451,6 +452,9 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
                           (chkAutoLogonInvisible->isChecked() &&
                            cmbAutoLogon->currentItem() ? 10 : 0);
+
+  mainwin->autoAwayMess = cmbAutoAwayMess->currentItem();
+  mainwin->autoNAMess = cmbAutoNAMess->currentItem();
 
   // set up the columns stuff
   unsigned short i, j = mainwin->colInfo.size();
@@ -861,6 +865,8 @@ void OptionsDlg::slot_SARsave_act()
 
   gSARManager.Drop();
   gSARManager.Save();
+
+  buildAutoStatusCombos(0);
 }
 
 
@@ -1102,11 +1108,53 @@ QWidget* OptionsDlg::new_misc_options()
   dummy_w->setMinimumHeight(10);
 #endif
 
+  QWidget* boxAutoStatus = new QGroupBox(2, Horizontal, tr("Auto Away Messages"), w);
+  lay->addWidget(boxAutoStatus);
+  new QLabel(tr("Away:"), boxAutoStatus);
+  cmbAutoAwayMess = new QComboBox(boxAutoStatus);
+  new QLabel(tr("N/A:"), boxAutoStatus);
+  cmbAutoNAMess = new QComboBox(boxAutoStatus);
+
+  buildAutoStatusCombos(1);
+
   lay->addStretch(1);
   lay->activate();
 
-
   return w;
+}
+
+// -----------------------------------------------------------------------------
+// I want to rebuild the Combo boxes when user saves the
+// messages therefor we have a separate function.
+void OptionsDlg::buildAutoStatusCombos(bool firstTime)
+{
+  int selectedNA, selectedAway;
+
+  //Save selection (or get first selection)
+  if (firstTime) {
+    selectedAway = mainwin->autoAwayMess;
+    selectedNA   = mainwin->autoNAMess;
+  } else {
+    selectedAway = cmbAutoAwayMess->currentItem();
+    selectedNA   = cmbAutoNAMess->currentItem();
+  }
+
+  cmbAutoAwayMess->clear();
+  cmbAutoAwayMess->insertItem("Previous Message",0);
+  SARList &sara = gSARManager.Fetch(SAR_AWAY);
+  for (unsigned i = 0; i < sara.size(); i++)
+    cmbAutoAwayMess->insertItem(sara[i]->Name(),i+1);
+  gSARManager.Drop();
+
+  cmbAutoNAMess->clear();
+  cmbAutoNAMess->insertItem("Previous Message",0);
+  SARList &sarn = gSARManager.Fetch(SAR_NA);
+  for (unsigned i = 0; i < sarn.size(); i++)
+    cmbAutoNAMess->insertItem(sarn[i]->Name(),i+1);
+  gSARManager.Drop();
+
+  cmbAutoAwayMess->setCurrentItem(selectedNA);
+  cmbAutoNAMess->setCurrentItem(selectedAway);
 }
 
 

@@ -165,7 +165,9 @@ public:
                  autoNATime,
                  autoOfflineTime,
                  manualAway,
-                 m_nRealHeight;
+                 m_nRealHeight,
+                 autoAwayMess,
+                 autoNAMess;
 
   DockMode m_nDockMode;
   int mouseX, mouseY;
