@@ -600,10 +600,28 @@ class CPacketTcp_Handshake_v4 : public CPacketTcp_Handshake
 {
 public:
   CPacketTcp_Handshake_v4(unsigned long nDestinationUin, unsigned long nSessionId);
+  CPacketTcp_Handshake_v4(CBuffer *);
+
+  char Handshake() { return m_nHandshake; }
+  unsigned short VersionMajor() { return m_nVersionMajor; }
+  unsigned short VersionMinor() { return m_nVersionMinor; }
+  unsigned long DestinationUin() { return m_nDestinationUin; }
+  unsigned long SourceUin() { return m_nSourceUin; }
+  unsigned long LocalIp()  { return m_nLocalIp; }
+  unsigned long RealIp()  { return m_nRealIp; }
+  char Mode()  { return m_nMode; }
+  unsigned long SessionId() { return m_nSessionId; }
 
 protected:
-  unsigned long  m_nDestinationUin;
-  unsigned long  m_nSessionId;
+  char m_nHandshake;
+  unsigned short m_nVersionMajor;
+  unsigned short m_nVersionMinor;
+  unsigned long m_nDestinationUin;
+  unsigned long m_nSourceUin;
+  unsigned long m_nLocalIp;
+  unsigned long m_nRealIp;
+  char m_nMode;
+  unsigned long m_nSessionId;
 };
 
 

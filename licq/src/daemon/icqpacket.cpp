@@ -1191,6 +1191,26 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nDestinationUin,
 }
 
 
+CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(CBuffer *inbuf)
+{
+  m_nHandshake = inbuf->UnpackChar();
+  m_nVersionMajor = inbuf->UnpackUnsignedShort();
+  m_nVersionMinor = inbuf->UnpackUnsignedShort();
+  m_nDestinationUin = inbuf->UnpackUnsignedLong();
+  inbuf->UnpackUnsignedLong();
+  inbuf->UnpackUnsignedShort();
+  m_nSourceUin = inbuf->UnpackUnsignedLong();
+  m_nLocalIp = inbuf->UnpackUnsignedLong();
+  m_nRealIp = inbuf->UnpackUnsignedLong();
+  m_nMode = inbuf->UnpackChar();
+  inbuf->UnpackUnsignedLong(); // tcp flags?
+  m_nSessionId = inbuf->UnpackUnsignedLong();
+  //inbuf->UnpackUnsignedLong(); // constant
+  //inbuf->UnpackUnsignedLong(); // constant
+}
+
+
+
 CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
 {
   m_nSize = 4;
