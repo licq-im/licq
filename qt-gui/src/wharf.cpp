@@ -112,8 +112,7 @@ IconManager::~IconManager()
 
 void IconManager::closeEvent( QCloseEvent* e)
 {
-  gMainWindow->slot_shutdown();
-  e->accept();
+  e->ignore();
 }
 
 #ifdef USE_KDE
