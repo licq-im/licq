@@ -59,6 +59,7 @@
 #include "gui-defines.h"
 #include "refusedlg.h"
 #include "forwarddlg.h"
+#include "chatjoin.h"
 
 #include "user.h"
 #include "mledit.h"
@@ -1211,6 +1212,12 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
         {
           btnRead1->setText(tr("&Accept"));
           btnRead2->setText(tr("&Refuse"));
+          // If this is a chat, and we already have chats going, and this is
+          // not a join request, then we can join
+          if (m->SubCommand() == ICQ_CMDxSUB_CHAT &&
+              ChatDlg::chatDlgs.size() > 0 &&
+              ((CEventChat *)m)->Port() == 0)
+            btnRead3->setText(tr("&Join"));
         }
         break;
 
@@ -1274,8 +1281,16 @@ void ICQFunctions::slot_readbtn1()
     {
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
       ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
-      if (chatDlg->StartAsServer())
-        server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+      if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
+      {
+        if (chatDlg->StartAsClient(c->Port()))
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+      }
+      else  // single party (other side connects to us)
+      {
+        if (chatDlg->StartAsServer())
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+      }
       break;
     }
 
@@ -1379,6 +1394,27 @@ void ICQFunctions::slot_readbtn3()
         delete szCmd;
       }
       break;
+
+    case ICQ_CMDxSUB_CHAT:  // join to current chat
+    {
+      CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
+      if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
+      {
+        ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+        if (chatDlg->StartAsClient(c->Port()))
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+      }
+      else  // single party (other side connects to us)
+      {
+        ChatDlg *chatDlg = NULL;
+        CJoinChatDlg *j = new CJoinChatDlg(this);
+        if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+        delete j;
+      }
+      break;
+    }
+
   }
 }
 
@@ -1790,8 +1826,7 @@ void ICQFunctions::callFcn()
     {
       m_sProgressMsg = tr("Sending chat request...");
       icqEventTag = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
-         chkSendServer->isChecked() ? false : true,
-         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
+         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
     }
     else if (rdbFile->isChecked())   // send file transfer
     {
@@ -1803,8 +1838,7 @@ void ICQFunctions::callFcn()
       m_sProgressMsg = tr("Sending file transfer...");
       icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(),
          mleSend->text().local8Bit(),
-         chkSendServer->isChecked() ? false : true,
-         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
+         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
     }
 
     if (icqEventTag == NULL)
@@ -1954,8 +1988,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventChat *ue = (CEventChat *)e->m_xUserEvent;
       m_sProgressMsg = tr("Sending chat request...");
-      icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(),
-         bOnline, nLevel, 0);
+      icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel);
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -1963,7 +1996,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventFile *ue = (CEventFile *)e->m_xUserEvent;
       m_sProgressMsg = tr("Sending file transfer...");
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
-         ue->FileDescription(), bOnline, nLevel, 0);
+         ue->FileDescription(), nLevel);
       break;
     }
   }
