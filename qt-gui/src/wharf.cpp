@@ -35,6 +35,7 @@
 
 #include <stdio.h>
 #include <qpainter.h>
+#include <qfile.h>
 #ifdef USE_KDE
 #include <kwin.h>
 #endif
@@ -355,7 +356,7 @@ void IconManager_Themed::SetTheme(const char *theme)
   else
     baseDockDir.sprintf("%s%sdock.%s/", SHARE_DIR, QTGUI_DIR, theme);
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s.dock", (const char *)baseDockDir, theme);
+  sprintf(filename, "%s%s.dock", QFile::encodeName(baseDockDir).data(), theme);
   CIniFile dockFile(INI_FxWARN);
   if (!dockFile.LoadFile(filename))
   {

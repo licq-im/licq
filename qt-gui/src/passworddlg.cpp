@@ -106,7 +106,7 @@ void PasswordDlg::accept()
   btnUpdate->setEnabled(false);
   QObject::connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)),
                    this, SLOT(slot_doneUserFcn(ICQEvent *)));
-  tag = server->icqSetPassword(edtFirst->text());
+  tag = server->icqSetPassword(edtFirst->text().local8Bit());
   setCaption(tr("ICQ Password [Setting...]"));
 }
 

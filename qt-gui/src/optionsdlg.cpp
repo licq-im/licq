@@ -218,7 +218,7 @@ void OptionsDlg::SetupOptions()
   else
    {
      unsigned short n = 1, c = cmbTrans->count();
-     while (n < c && strcmp(pc, cmbTrans->text(n)) != 0) n++;
+     while (n < c && pc != cmbTrans->text(n)) n++;
      if (n == c)
      {
        gLog.Error("%sError: Unable to find current translation map '%s' in translation directory.\n",
@@ -328,12 +328,12 @@ void OptionsDlg::ApplyOptions()
       if (mainwin->m_nDockMode != DockThemed)
       {
         delete mainwin->licqIcon;
-        mainwin->licqIcon = new IconManager_Themed(mainwin, mainwin->mnuSystem, cmbDockTheme->currentText());
+        mainwin->licqIcon = new IconManager_Themed(mainwin, mainwin->mnuSystem, cmbDockTheme->currentText().local8Bit());
         mainwin->m_nDockMode = DockThemed;
       }
       else if ( ((IconManager_Themed *)mainwin->licqIcon)->Theme() != cmbDockTheme->currentText() )
       {
-        ((IconManager_Themed *)mainwin->licqIcon)->SetTheme(cmbDockTheme->currentText());
+        ((IconManager_Themed *)mainwin->licqIcon)->SetTheme(cmbDockTheme->currentText().local8Bit());
       }
     }
     mainwin->updateStatus();
@@ -350,7 +350,7 @@ void OptionsDlg::ApplyOptions()
   if (chkFirewall->isChecked())
   {
     mainwin->licqDaemon->SetTCPBasePort(spnPortLow->value(), spnPortHigh->value() - spnPortLow->value() + 1);
-    mainwin->licqDaemon->SetFirewallHost(edtFirewallHost->text());
+    mainwin->licqDaemon->SetFirewallHost(edtFirewallHost->text().local8Bit());
     mainwin->licqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
   }
   else
@@ -376,7 +376,7 @@ void OptionsDlg::ApplyOptions()
     else
     {
       char szTransFileName[MAX_FILENAME_LEN];
-      sprintf(szTransFileName, "%s/%s/%s", BASE_DIR, TRANSLATION_DIR, (const char *)cmbTrans->currentText());
+      sprintf(szTransFileName, "%s/%s/%s", BASE_DIR, TRANSLATION_DIR, QFile::encodeName(cmbTrans->currentText()).data());
       gTranslator.setTranslationMap(szTransFileName);
     }
   }

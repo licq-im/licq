@@ -117,14 +117,14 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
 void SkinBrowserDlg::slot_applyskin()
 {
   if (!lstSkins->currentItem()) return;
-  mainwin->ApplySkin(lstSkins->currentItem()->text(0));
+  mainwin->ApplySkin(lstSkins->currentItem()->text(0).local8Bit());
 }
 
 
 void SkinBrowserDlg::slot_applyicons()
 {
   if (!lstIcons->currentItem()) return;
-  mainwin->ApplyIcons(lstIcons->currentItem()->text(0));
+  mainwin->ApplyIcons(lstIcons->currentItem()->text(0).local8Bit());
 }
 
 
@@ -133,8 +133,8 @@ void SkinBrowserDlg::slot_editskin()
   if (!lstSkins->currentItem()) return;
   QString f;
   f.sprintf("%sqt-gui/skin.%s/%s.skin", SHARE_DIR,
-            (const char *)lstSkins->currentItem()->text(0),
-            (const char *)lstSkins->currentItem()->text(0));
+            QFile::encodeName(lstSkins->currentItem()->text(0)).data(),
+            QFile::encodeName(lstSkins->currentItem()->text(0)).data());
   (void) new EditFileDlg(f);
 }
 

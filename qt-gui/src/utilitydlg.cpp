@@ -153,7 +153,7 @@ void CUtilityDlg::slot_run()
     unsigned short i = 0;
     for (iter = edtFields.begin(); iter != edtFields.end(); iter++)
     {
-      vszFields[i++] = (*iter)->text();
+      vszFields[i++] = (*iter)->text().local8Bit();
     }
     m_xUtility->SetUserFields(vszFields);
     nfoUtility->setText(m_xUtility->FullCommand());
@@ -177,13 +177,13 @@ void CUtilityDlg::slot_run()
   case UtilityWinGui:
   {
     m_xUtility->SetBackgroundTask();
-    nSystemResult = system(cmd);
+    nSystemResult = system(cmd.local8Bit());
     break;
   }
   case UtilityWinTerm:
   {
     char* szCmd = new char[cmd.length() + strlen(server->Terminal()) + 4];
-    sprintf(szCmd, "%s %s &", server->Terminal(), (const char *)cmd);
+    sprintf(szCmd, "%s %s &", server->Terminal(), cmd.local8Bit().data());
     nSystemResult = system(szCmd);
     delete szCmd;
     break;
@@ -199,7 +199,7 @@ void CUtilityDlg::slot_run()
     boxFields->show();
     mleCommand->show();
     resize(width(), 300);
-    fsCommand = popen(cmd, "r");
+    fsCommand = popen(cmd.local8Bit(), "r");
     if (fsCommand != NULL)
     {
       snCommand = new QSocketNotifier(fileno(fsCommand), QSocketNotifier::Read, this);

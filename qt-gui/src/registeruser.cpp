@@ -100,8 +100,8 @@ void RegisterUserDlg::dataChanged()
 
 void RegisterUserDlg::accept()
 {
-  const char *szPassword = nfoPassword1->text();
-  const char *szPassword2 = nfoPassword2->text();
+  const char *szPassword = nfoPassword1->text().local8Bit();
+  const char *szPassword2 = nfoPassword2->text().local8Bit();
   // Validate password
   if (szPassword == NULL || strlen(szPassword) > 8)
   {
@@ -116,7 +116,7 @@ void RegisterUserDlg::accept()
 
   if (chkExistingUser->isChecked())
   {
-    unsigned long nUin = atol(nfoUin->text());
+    unsigned long nUin = nfoUin->text().toULong();
     // Validate uin
     if (nUin <= 0)
     {

@@ -108,7 +108,7 @@ void PluginDlg::slot_load()
   if (lstAvailable->currentItem() == -1) return;
 
   char *sz[] = { "licq", NULL };
-  licqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()), 1, sz);
+  licqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1(), 1, sz);
 }
 
 
