@@ -928,7 +928,7 @@ void CMainWindow::changeStatus(int id)
   if (id == ICQ_STATUS_OFFLINE)
   {
     gUserManager.DropOwner();
-    licqDaemon->icqLogoff(false);
+    licqDaemon->icqLogoff();
     return;
   }
   else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
@@ -1165,6 +1165,10 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
   //bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
   switch (e->m_nCommand)
   {
+    case ICQ_CMDxSND_LOGON:
+      if (e->m_eResult != EVENT_SUCCESS)
+        WarnUser(this, tr("Logon failed.\nSee network window for details."));
+      break;
 /*  case ICQ_CMDxSND_LOGOFF:
      //lblStatus->setEnabled(true);
      if (!isOk) gLog.Error("%sError logging off.\n", L_ERRORxSTR);
