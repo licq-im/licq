@@ -41,6 +41,24 @@ extern "C" {
 }
 #endif
 
+extern "C"
+{
+
+char *ip_ntoa(unsigned long in, char *buf)
+{
+  return inet_ntoa_r( *(struct in_addr *)&in, buf);
+}
+
+char *inet_ntoa_r(struct in_addr in, char *buf)
+{
+  register char *p;
+  p = (char *)&in;
+#define UC(b)   (((int)b)&0xff)
+  sprintf(buf, "%d.%d.%d.%d", UC(p[0]), UC(p[1]), UC(p[2]), UC(p[3]));
+  return buf;
+}
+} // extern C
+
 
 //=====Constants================================================================
 const unsigned short ADDR_LOCAL = 0x01;

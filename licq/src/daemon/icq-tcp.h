@@ -278,8 +278,10 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
     return -1;
   }
   char *szAlias = strdup(u->GetAlias());
+  char buf[32];
 
-  gLog.Info("%sConnecting to %s (%d) on port %d.\n", L_TCPxSTR, szAlias, _nUin, u->Port());
+  gLog.Info("%sConnecting to %s (%d) at %s:%d.\n", L_TCPxSTR, szAlias,
+            _nUin, ip_ntoa(u->Ip(), buf), u->Port());
 
   // If we fail to set the remote address, the ip must be 0
   bool b = s->SetRemoteAddr(u->Ip(), u->Port());
@@ -301,7 +303,8 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
     if (s->Error() != EINTR && u != NULL && u->RealIp() != u->Ip() &&
         u->RealIp() != 0 && m_szFirewallHost[0] != '\0')
     {
-      gLog.Info("%sConnecting to %s (%d) real ip on port %d.\n", L_TCPxSTR, szAlias, _nUin, u->Port());
+      gLog.Info("%sConnecting to %s (%d) at %s:%d.\n", L_TCPxSTR, szAlias,
+                _nUin, ip_ntoa(u->RealIp(), buf), u->Port());
       s->SetRemoteAddr(u->RealIp(), u->Port());
       gUserManager.DropUser(u);
 
@@ -361,8 +364,10 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
                                      unsigned short nPort)
 {
   TCPSocket *s = new TCPSocket(nUin);
+  char buf[32];
 
-  gLog.Info("%sReverse connecting to %ld on port %d.\n", L_TCPxSTR, nUin, nPort);
+  gLog.Info("%sReverse connecting to %ld at %s:%d.\n", L_TCPxSTR, nUin,
+            ip_ntoa(nIp, buf), nPort);
 
   // If we fail to set the remote address, the ip must be 0
   s->SetRemoteAddr(nIp, nPort);
