@@ -1045,14 +1045,15 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
     return;
   }
 
+  unsigned long nUin = nu->Uin();
   gUserManager.AddUser(nu);
-  // At this point the user is write locked
+  gUserManager.DropUser(nu);
   SaveUserList();
+  nu = gUserManager.FetchUser(nUin, LOCK_W);
 
   if (m_nTCPSrvSocketDesc != -1)
   {
     // XXX if adding to server list, it will get write lock FIX THAT SHIT!
-    unsigned long nUin = nu->Uin();
     gUserManager.DropUser(nu);
     icqAddUser(nUin);
     nu = gUserManager.FetchUser(nUin, LOCK_W);

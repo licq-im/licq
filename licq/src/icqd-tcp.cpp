@@ -973,7 +973,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       } while (!s->RecvBufferFull());
       CPacketTcp_Handshake_v7 p_in(&s->RecvBuffer());
       s->ClearRecvBuffer();
-      if (p.SessionId() != p_in.SessionId())
+      if (p_in.SessionId() && p.SessionId() != p_in.SessionId())
       {
         gLog.Warn(tr("%sBad handshake cookie: received %ld, expecting %ld.\n"),
            L_WARNxSTR, p_in.SessionId(), p.SessionId());
