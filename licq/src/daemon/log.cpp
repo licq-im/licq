@@ -250,6 +250,24 @@ void CLogServer::ModifyService(unsigned short _nServiceType, unsigned short _nLo
   pthread_mutex_unlock(&mutex);
 }
 
+unsigned short CLogServer::ServiceLogTypes(unsigned short _nServiceType)
+{
+  unsigned short n = L_NONE;
+  pthread_mutex_lock(&mutex);
+  // Go through the vector setting the log types
+  vector<CLogService *>::iterator iter;
+  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+  {
+    if ((*iter)->ServiceType() == _nServiceType)
+    {
+      n = (*iter)->LogType(L_ALL);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex);
+  return n;
+}
+
 void CLogServer::SetServiceData(unsigned short _nServiceType, void *_pData)
 {
   pthread_mutex_lock(&mutex);

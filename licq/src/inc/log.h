@@ -43,6 +43,8 @@ const unsigned short S_STDOUT   = 1;
 const unsigned short S_FILE     = 2;
 const unsigned short S_PLUGIN   = 4;
 
+const unsigned short LOG_PREFIX_OFFSET = 10;
+
 const unsigned short MAX_MSG_SIZE = 2048;
 
 
@@ -130,6 +132,7 @@ public:
   void AddLogTypeToService(unsigned short _nServiceType, unsigned short _nLogType);
   void RemoveLogTypeFromService(unsigned short _nServiceType, unsigned short _nLogType);
   void ModifyService(unsigned short _nServiceType, unsigned short _nLogTypes);
+  unsigned short ServiceLogTypes(unsigned short _nServiceType);
   void SetServiceData(unsigned short _nServiceType, void *_pData);
 
   void Info(const char *_szFormat, ...);
