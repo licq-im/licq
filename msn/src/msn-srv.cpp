@@ -173,8 +173,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
-        string strDecodedNick = Decode(strNick);
-        u->SetAlias(strDecodedNick.c_str());
+        if (!u->KeepAliasOnUpdate())
+        {
+          string strDecodedNick = Decode(strNick);
+          u->SetAlias(strDecodedNick.c_str());
+        }
         u->SetEmailPrimary(strUser.c_str());
         u->SetNewUser(false);
         gUserManager.DropUser(u);
@@ -260,6 +263,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_pPacketBuf->SkipParameter(); // seq
       string strStatus = m_pPacketBuf->GetParameter();
       string strUser = m_pPacketBuf->GetParameter();
+      string strNick = m_pPacketBuf->GetParameter();
+
       unsigned short nStatus = ICQ_STATUS_AWAY;
 
       if (strStatus == "NLN")
@@ -270,6 +275,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         u->SetOnlineSince(time(NULL)); // Not in this protocol
         u->SetSendServer(true); // no direct connections
+        if (!u->KeepAliasOnUpdate())
+        {
+          string strDecodedNick = Decode(strNick);
+          u->SetAlias(strDecodedNick.c_str());
+        }
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
 
