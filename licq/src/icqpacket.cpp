@@ -3162,6 +3162,12 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
     buffer->PackUnsignedLong(0x00000000);
     buffer->PackUnsignedLong(0x00000000);
   }
+  else if (m_nVersion >= 7)
+	{
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00FFFFFF);
+  }
+
   PostBuffer();
 }
 
