@@ -202,8 +202,8 @@ void CLicqConsole::MenuDefine(char *szArg)
     {
       delete *iter;
 #undef erase
-        listMacros.erase(iter);
       listMacros.erase(iter);
+      break;
     }
   }
 
