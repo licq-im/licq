@@ -1,0 +1,20 @@
+[icons]
+Online = online.xpm
+FFC = ffc.xpm
+Offline = offline.xpm
+Away = away.xpm
+NA = na.xpm
+Occupied = occ.xpm
+DND = dnd.xpm
+Private = invisible.xpm
+Message = message.xpm
+Url = url.xpm
+Chat = chat.xpm
+File = file.xpm
+SMS = sms.xpm
+Contact = contact.xpm
+Authorize = authorize.xpm
+SecureOff = secureoff.xpm
+SecureOn = secureon.xpm
+History = history.xpm
+Info = info.xpm
