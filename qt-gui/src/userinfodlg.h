@@ -73,6 +73,7 @@ protected:
   bool m_bOwner;
   int currentTab;
   unsigned long m_nUin;
+  QString m_sProgressMsg;
   QString m_sBasic;
   CICQDaemon *server;
   CMainWindow *mainwin;

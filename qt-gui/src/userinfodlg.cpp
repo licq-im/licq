@@ -956,8 +956,8 @@ void UserInfoDlg::SaveSettings()
 
 void UserInfoDlg::slotOk()
 {
-  QString m_sProgressMsg;
-  switch(currentTab) {
+  switch(currentTab)
+  {
   case GeneralInfo:
     if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
     {
