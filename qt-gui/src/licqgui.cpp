@@ -131,7 +131,6 @@ int LP_Main(CICQDaemon *_licqDaemon)
 
 QStyle *CLicqGui::SetStyle(const char *_szStyle)
 {
-#ifndef USE_KDE
   QStyle *s = NULL;
   if (strncmp(_szStyle, "MOTIF", 3) == 0)
     s = new QMotifStyle;
@@ -142,10 +141,6 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
   else if (strncmp(_szStyle, "CDE", 3) == 0)
     s = new QCDEStyle;
   return s;
-#else
-  if(_szStyle); // no warning
-  return &kapp->style();
-#endif
 }
 
 
@@ -156,6 +151,7 @@ CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin
 : QApplication(argc, argv)
 #endif
 {
+#ifndef USE_KDE
   char buf[64];
   sprintf(buf, "%s/licq_qt-gui.style", BASE_DIR);
 
@@ -174,7 +170,6 @@ CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin
   // Otherwise try and load it from the file
   else
   {
-#ifndef USE_KDE
     FILE *f = fopen(buf, "r");
     if (f != NULL)
     {
@@ -183,10 +178,10 @@ CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin
       fclose(f);
     }
     if (style == NULL) style = new STYLE;
-#endif
   }
 
   setStyle(style);
+#endif
   m_szSkin = strdup(_szSkin);
   m_szIcons = strdup(_szIcons);
   m_bStartHidden = bStartHidden;
