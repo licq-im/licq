@@ -1607,6 +1607,8 @@ ICQUser::~ICQUser()
       free( m_szAbout );
   if ( m_szCustomAutoResponse )
       free( m_szCustomAutoResponse );
+  if ( m_szClientInfo )
+      free( m_szClientInfo );
   if ( m_szId )
       free( m_szId );
 /*
@@ -1747,6 +1749,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_bAwaitingAuth = false;
   m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
   m_nGSID = 0;
+  m_szClientInfo = NULL;
 
   snprintf(m_szUinString, 12, "%lu", m_nUin);
   m_szUinString[12] = '\0';

@@ -1937,30 +1937,38 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
       char szExtraInfo[28] = { 0 };
       if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
-        snprintf(szExtraInfo, 27, " [Licq %s/SSL]",
+        snprintf(szExtraInfo, 27, "Licq %s/SSL",
                  CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else if ((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-        snprintf(szExtraInfo, 27, " [Licq %s]",
+        snprintf(szExtraInfo, 27, "Licq %s",
                  CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else if (timestamp == 0xffffffff)
-        strcpy(szExtraInfo, " [MIRANDA]");
+        strcpy(szExtraInfo, "MIRANDA");
       else if (timestamp == 0xFFFFFF8F)
-        strcpy(szExtraInfo, " [StrICQ]");
+        strcpy(szExtraInfo, "StrICQ");
       else if (timestamp == 0xFFFFFF42)
-        strcpy(szExtraInfo, " [mICQ]");
+        strcpy(szExtraInfo, "mICQ");
       else if (timestamp == 0xFFFFFF7F)
-        strcpy(szExtraInfo, " [&RQ]");
+        strcpy(szExtraInfo, "&RQ");
       else if (timestamp == 0xFFFFFFAB)
-        strcpy(szExtraInfo, " [YSM]");
+        strcpy(szExtraInfo, "YSM");
       else
-        strcpy(szExtraInfo, "");
+        szExtraInfo[0]=0;
       szExtraInfo[27] = '\0';
 
+      u->SetClientInfo(szExtraInfo[0] ? szExtraInfo : NULL);
       if (nOldStatus != nNewStatus)
       {
+        char *szClient = new char[strlen(szExtraInfo)+6];
+        if (szExtraInfo[0])
+          sprintf(szClient, " [%s].\n", szExtraInfo);
+        else
+          sprintf(szClient, ".\n");
+
         ChangeUserStatus(u, nNewStatus);
-        gLog.Info("%s%s (%s) changed status: %s (v%01x)%s.\n", L_SRVxSTR, u->GetAlias(),
-                  u->IdString(), u->StatusStr(), tcpVersion & 0x0F, szExtraInfo);
+        gLog.Info("%s%s (%s) changed status: %s (v%01x)%s",
+                   L_SRVxSTR, u->GetAlias(), u->IdString(), u->StatusStr(),
+                   tcpVersion & 0x0F, szClient);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.Unknown("%sUnknown status flag for %s (%s): 0x%08lX\n",
                        L_UNKNOWNxSTR, u->GetAlias(), u->IdString(),
@@ -1968,6 +1976,8 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
         u->SetAutoResponse(NULL);
         u->SetShowAwayMsg(false);
+
+        delete [] szClient;
       }
 
       if (intIP)

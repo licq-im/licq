@@ -398,6 +398,7 @@ public:
   char *IdString()                      { return m_szId; }
 
   char *usprintf(const char *szFormat, unsigned long nFlags = 0);
+  const char *ClientInfo()                    { return m_szClientInfo; }
 
   // General Info
   void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
@@ -476,6 +477,10 @@ public:
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
   void SetPPID(unsigned long n)       { m_nPPID = n; }
   void SetId(const char *s)            { SetString(&m_szId, s); SaveLicqInfo(); }
+  void SetClientInfo(const char *s)
+  { if(m_szClientInfo) free(m_szClientInfo); 
+    if(s) m_szClientInfo = strdup(s); else m_szClientInfo = NULL; 
+  }
 
   // Status
   unsigned short Status();
@@ -625,6 +630,7 @@ protected:
                 m_nSequence,
                 m_nGroups[2];
   char m_nMode;
+  char *m_szClientInfo;
   char *m_szAutoResponse;
   char *m_szEncoding;
   char *m_szCustomAutoResponse;
