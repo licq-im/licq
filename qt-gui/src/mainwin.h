@@ -178,12 +178,14 @@ protected:
   friend class OptionsDlg;
   friend class CUserViewItem;
 
+public slots:
+  void updateUserWin();
+
 protected slots:
   void slot_hints();
   void UserGroupToggled(int);
   void FillUserGroup();
   void saveAllUsers();
-  void updateUserWin();
   void updateEvents();
   void updateStatus();
   void updateGroups();

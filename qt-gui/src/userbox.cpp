@@ -583,20 +583,21 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   }
   else
   {
+    XSetWindowAttributes wsa;
+    wsa.override_redirect = TRUE;
+    XChangeWindowAttributes( x11Display(), winId(), CWOverrideRedirect, &wsa );
     setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);
-    WId win = winId();
-    Display *dsp = x11Display();
     XWMHints *hints;
     XClassHint classhint;
     classhint.res_name = "licq";
     classhint.res_class = "Floaty";
-    XSetClassHint(dsp, win, &classhint);
-    hints = XGetWMHints(dsp, win);
-    hints->window_group = win;
+    XSetClassHint(x11Display(), winId(), &classhint);
+    hints = XGetWMHints(x11Display(), winId());
+    hints->window_group = winId();
     hints->flags = WindowGroupHint;
-    XSetWMHints(dsp, win, hints);
+    XSetWMHints(x11Display(), winId(), hints);
     XFree( hints );
     floaties->resize(floaties->size()+1);
     floaties->insert(floaties->size()-1, this);
@@ -778,6 +779,17 @@ void CUserView::viewportDropEvent(QDropEvent* e)
             (gMainWindow->callFunction(mnuUserSendMsg, it->ItemUin()));
           e->setText(text);
           e->show();
+        }
+      }
+    }
+    else if(it->isGroupItem())
+    {
+      QString text;
+      if(QTextDrag::decode(e, text)) {
+        unsigned long Uin = text.toULong();
+        if(Uin >= 10000) {
+          gUserManager.AddUserToGroup(Uin, it->GroupId());
+          gMainWindow->updateUserWin();
         }
       }
     }
@@ -977,12 +989,15 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
   CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
-  if (parent() && me->state() == LeftButton && (i = (CUserViewItem *)currentItem())
+  if (parent() && (me->state() & LeftButton) && (i = (CUserViewItem *)currentItem())
       && !mousePressPos.isNull() && i->ItemUin() &&
       (QPoint(me->pos() - mousePressPos).manhattanLength() > 8))
   {
     QTextDrag *d = new QTextDrag(QString::number(i->ItemUin()), this);
     d->dragCopy();
+  }
+  else if(!parent() && me->state() & LeftButton) {
+    move(me->globalX()-mousePressPos.x(), me->globalY()-mousePressPos.y());
   }
 }
 
