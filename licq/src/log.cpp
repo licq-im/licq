@@ -427,6 +427,7 @@ void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _
   strftime(szTime, 32, "%T: ", &stm);
 
   vsnprintf(szMsgMax, MAX_MSG_SIZE, _szFormat, argp);
+  szMsgMax[MAX_MSG_SIZE - 2] = '\n';
   szMsgMax[MAX_MSG_SIZE - 1] = '\0';
 
   // Log the event to each server
