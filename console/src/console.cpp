@@ -453,6 +453,14 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
+    if (s->SubSignal() == LIST_REMOVE)
+    {
+      for (unsigned short i = 0; i < MAX_CON; i++)
+      {
+        if (s->Uin() == winCon[i]->nLastUin)
+          winCon[i]->nLastUin = 0;
+      }
+    }
     PrintStatus();
     CreateUserList();
     PrintUsers();
@@ -1343,12 +1351,14 @@ char *CLicqConsole::CurrentGroupName()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
 {
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputInfo;
   winMain->state = STATE_QUERY;
   winMain->data = new CData(nUin);
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%C%A"
                    "(G)eneral Info\n"
                    "(M)ore Info\n"
@@ -1428,7 +1438,7 @@ void CLicqConsole::InputInfo(int cIn)
 void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  //if (u->NewUser()) u->SetNewUser(false);
+  if (u == NULL) return;
 
   if (u->NewMessages() > 0)
   {
@@ -1478,12 +1488,14 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::UserCommand_Remove(unsigned long nUin, char *)
 {
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputRemove;
   winMain->state = STATE_QUERY;
   winMain->data = new CData(nUin);
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%C%ARemove %s (%ld) from contact list (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
                    u->GetAlias(), nUin, COLOR_WHITE, A_BOLD);
