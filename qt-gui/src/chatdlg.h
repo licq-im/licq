@@ -72,7 +72,8 @@ public:
 };
 
 typedef list<CChatUser *> ChatUserList;
-typedef ChatUserList::iterator ChatUserIter;
+class ChatDlg;
+typedef list<ChatDlg *> ChatDlgList;
 
 enum ChatMode { CHAT_PANE, CHAT_IRC };
 
@@ -92,6 +93,10 @@ public:
 
   unsigned short LocalPort() { return m_cSocketChatServer.LocalPort(); }
   unsigned long Uin()  { return m_nUin; };
+
+  QString ChatClients();
+
+  static ChatDlgList chatDlgs;
 
 public slots:
   virtual void hide();
@@ -131,6 +136,8 @@ protected slots:
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();
+
+friend class CJoinChatDlg;
 };
 
 #endif

@@ -32,6 +32,9 @@
 #define STATE_CLOSED 6
 
 
+ChatDlgList ChatDlg::chatDlgs;
+
+
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
                  QWidget *parent, char *name)
    : QWidget(parent, name)
@@ -110,6 +113,9 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   SwitchToPaneMode();
 
+  // Add ourselves to the list
+  chatDlgs.push_back(this);
+
   resize(500, 475);
   show();
 }
@@ -117,14 +123,25 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
 ChatDlg::~ChatDlg()
 {
-  ChatUserIter iter;
-  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  for (ChatUserList::iterator iter = chatUsers.begin();
+       iter != chatUsers.end(); iter++)
   {
     delete *iter;
   }
 
   if (snChatServer != NULL) delete snChatServer;
+
+  list<ChatDlg *>::iterator iter;
+  for (iter = chatDlgs.begin(); iter != chatDlgs.end(); iter++)
+  {
+    if (this == *iter)
+    {
+      chatDlgs.erase(iter);
+      break;
+    }
+  }
 }
+
 
 //=====Server===================================================================
 bool ChatDlg::StartAsServer()
@@ -160,7 +177,15 @@ void ChatDlg::chatRecvConnection()
   CChatUser *u = new CChatUser;
   u->font = mlePaneRemote->font();
 
-  if (chatUsers.size() == 0) chatUser = u;
+  if (chatUsers.size() == 0)
+  {
+    chatUser = u;
+  }
+  else
+  {
+    SwitchToIRCMode();
+    mnuMode->setItemEnabled(mnuMode->idAt(0), false);
+  }
 
   m_cSocketChatServer.RecvConnection(u->sock);
 
@@ -295,10 +320,13 @@ void ChatDlg::StateServer(int sd)
 
       disconnect(u->sn, SIGNAL(activated(int)), this, SLOT(StateServer(int)));
       connect(u->sn, SIGNAL(activated(int)), this, SLOT(chatRecv(int)));
-      connect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
-      connect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
-      mlePaneLocal->setEnabled(true);
-      mleIRCLocal->setEnabled(true);
+      if (u == chatUser)
+      {
+        connect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
+        connect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
+        mlePaneLocal->setEnabled(true);
+        mleIRCLocal->setEnabled(true);
+      }
 
       u->state = STATE_RECVxCHAT;
     }
@@ -348,7 +376,15 @@ bool ChatDlg::ConnectToChat(CChatClient &c)
     return false;
   }
 
-  if (chatUsers.size() == 0) chatUser = u;
+  if (chatUsers.size() == 0)
+  {
+    chatUser = u;
+  }
+  else
+  {
+    SwitchToIRCMode();
+    mnuMode->setItemEnabled(mnuMode->idAt(0), false);
+  }
   chatUsers.push_back(u);
 
   gLog.Info("%sChat: Shaking hands.\n", L_TCPxSTR);
@@ -446,12 +482,12 @@ void ChatDlg::StateClient(int sd)
         ChatClientList::iterator iter;
         for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); iter++)
         {
-          ChatUserIter iter2;
+          ChatUserList::iterator iter2;
           for (iter2 = chatUsers.begin(); iter2 != chatUsers.end(); iter2++)
           {
             if ((*iter2)->uin == iter->m_nUin) break;
           }
-          if (iter2 == chatUsers.end()) continue;
+          if (iter2 != chatUsers.end()) continue;
           // Connect to this user
           ConnectToChat(*iter);
         }
@@ -473,10 +509,13 @@ void ChatDlg::StateClient(int sd)
       // now we are done with the handshaking
       disconnect(u->sn, SIGNAL(activated(int)), this, SLOT(StateClient(int)));
       connect(u->sn, SIGNAL(activated(int)), this, SLOT(chatRecv(int)));
-      connect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), SLOT(chatSend(QKeyEvent *)));
-      connect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), SLOT(chatSend(QKeyEvent *)));
-      mlePaneLocal->setEnabled(true);
-      mleIRCLocal->setEnabled(true);
+      if (u == chatUser)
+      {
+        connect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), SLOT(chatSend(QKeyEvent *)));
+        connect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), SLOT(chatSend(QKeyEvent *)));
+        mlePaneLocal->setEnabled(true);
+        mleIRCLocal->setEnabled(true);
+      }
       u->state = STATE_RECVxCHAT;
       break;
     }
@@ -532,7 +571,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
     }
   }
 
-  ChatUserIter iter;
+  ChatUserList::iterator iter;
   CChatUser *u = NULL;
   for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
   {
@@ -553,10 +592,28 @@ void ChatDlg::chatSend(QKeyEvent *e)
 }
 
 
+QString ChatDlg::ChatClients()
+{
+  QString n;
+  ChatUserList::iterator iter;
+  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  {
+    if (*iter != chatUser)
+    {
+      QString m = (*iter)->chatname;
+      if (m.isEmpty()) m.setNum((*iter)->uin);
+      if (!n.isEmpty()) n += ", ";
+      n += m;
+    }
+  }
+  return n;
+}
+
+
 CChatUser *ChatDlg::FindChatUser(int sd)
 {
   // Find the right user
-  ChatUserIter iter;
+  ChatUserList::iterator iter;
   for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
     if ( (*iter)->sock.Descriptor() == sd) break;
 
@@ -785,7 +842,7 @@ void ChatDlg::SwitchToPaneMode()
 
 void ChatDlg::chatClose(CChatUser *u)
 {
-  ChatUserIter iter;
+  ChatUserList::iterator iter;
   if (u == NULL)
   {
     for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
