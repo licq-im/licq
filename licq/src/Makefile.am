@@ -8,7 +8,7 @@ noinst_HEADERS = licq.conf.h licq.h
 
 bin_PROGRAMS = licq
 licq_SOURCES = licq.cpp main.cpp
-licq_LDADD = $(top_builddir)/src/daemon/liblicq-daemon.la @SOCKS_LIBS@
+licq_LDADD = $(top_builddir)/src/daemon/liblicq-daemon.la @SOCKS_LIBS@ 
 licq_LDFLAGS = -export-dynamic @SOCKS_LIBDIR@
 
 install-data-local:

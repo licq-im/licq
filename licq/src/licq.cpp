@@ -290,7 +290,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fName = (const char * (*)())dlsym(handle, "_LP_Name");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Name() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Name() function in plugin (%s): %s\n",
                  L_ERRORxSTR, _szName, error);
       delete p;
       return NULL;
@@ -303,7 +303,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fVersion = (const char * (*)())dlsym(handle, "_LP_Version");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Version() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Version() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -316,7 +316,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fStatus = (const char * (*)())dlsym(handle, "_LP_Status");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Status() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Status() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -329,7 +329,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fDescription = (const char * (*)())dlsym(handle, "_LP_Description");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Description() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Description() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -342,7 +342,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fBuildDate = (const char * (*)())dlsym(handle, "_LP_BuildDate");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_BuildDate() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_BuildDate() function in plugin (%s): %s.\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -355,7 +355,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fBuildTime = (const char * (*)())dlsym(handle, "_LP_BuildTime");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_BuildTime() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_BuildTime() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -368,7 +368,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fInit = (bool (*)(int, char **))dlsym(handle, "_LP_Init");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Init() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Init() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -381,7 +381,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fUsage = (const char * (*)())dlsym(handle, "_LP_Usage");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Usage() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Usage() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -394,7 +394,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fMain = (int (*)(CICQDaemon *))dlsym(handle, "_LP_Main");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Main() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Main() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -407,7 +407,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->fMain_tep = (void * (*)(void *))dlsym(handle, "_LP_Main_tep");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
@@ -420,7 +420,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     p->nId = (unsigned short *)dlsym(handle, "_LP_Id");
     if ((error = dlerror()) != NULL)
     {
-      gLog.Error("%sFailed to find LP_Id variable in plugin (%s).\n",
+      gLog.Error("%sFailed to find LP_Id variable in plugin (%s): %s\n",
                  L_ERRORxSTR, p->Name(), error);
       delete p;
       return NULL;
