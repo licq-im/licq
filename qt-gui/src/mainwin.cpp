@@ -165,15 +165,47 @@ static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border b
    return (pmFinal);
 }
 
-/*
-static QPixmap *MakeTransparentBg(QPixmap *_pm, const QRect &r)
+
+const QPixmap& CMainWindow::iconForStatus(unsigned long Status)
 {
-  QPixmap *pm = new QPixmap(r.size());
-  QPainter p(pm);
-  p.drawPixmap(0, 0, *_pm, r.x(), r.y(), r.width(), r.height());
-  return(pm);
+  if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE))
+    return gMainWindow->pmPrivate;
+
+  switch(Status) {
+  case ICQ_STATUS_FREEFORCHAT:
+    return gMainWindow->pmFFC;
+  case ICQ_STATUS_AWAY:
+    return gMainWindow->pmAway;
+  case ICQ_STATUS_OCCUPIED:
+    return gMainWindow->pmOccupied;
+  case ICQ_STATUS_DND:
+    return gMainWindow->pmDnd;
+  case ICQ_STATUS_NA:
+    return gMainWindow->pmNa;
+  case ICQ_STATUS_OFFLINE:
+    return gMainWindow->pmOffline;
+  case ICQ_STATUS_ONLINE:
+  default:
+    return gMainWindow->pmOnline;
+  }
 }
-*/
+
+const QPixmap& CMainWindow::iconForEvent(unsigned short SubCommand)
+{
+  switch(SubCommand)
+  {
+  case ICQ_CMDxSUB_URL:
+    return gMainWindow->pmUrl;
+  case ICQ_CMDxSUB_CHAT:
+    return gMainWindow->pmChat;
+  case ICQ_CMDxSUB_FILE:
+    return gMainWindow->pmFile;
+  case ICQ_CMDxSUB_MSG:
+  default:
+    return gMainWindow->pmMessage;
+  }
+}
+
 
 static XErrorHandler old_handler = 0;
 static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
@@ -189,6 +221,7 @@ static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
   return (*old_handler)(dpy, err);
 }
 
+CMainWindow* gMainWindow = NULL;
 
 //-----CMainWindow::constructor-------------------------------------------------
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
@@ -197,6 +230,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                          QWidget *parent)
   : QWidget(parent, "MainWindow")
 {
+  gMainWindow = this;
   licqDaemon = theDaemon;
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
@@ -692,6 +726,7 @@ CMainWindow::~CMainWindow()
 
   licqConf.FlushFile();
   licqConf.CloseFile();
+  gMainWindow = NULL;
 }
 
 

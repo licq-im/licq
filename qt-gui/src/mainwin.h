@@ -66,6 +66,9 @@ public:
   void ApplyIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
 
+  static const QPixmap& iconForStatus(unsigned long FullStatus);
+  static const QPixmap& iconForEvent(unsigned short SubCommand);
+
 protected:
   // Command Tools
   CICQDaemon *licqDaemon;
@@ -228,6 +231,8 @@ signals:
   void changeDockStatus(unsigned short);
 
 };
+
+extern CMainWindow* gMainWindow;
 
 
 #endif
