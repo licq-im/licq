@@ -81,7 +81,7 @@ msgid "AwayMsgDlg::"
 msgstr ""
 "Я сейчас в режиме \"%1\", %a.\n"
 "Вы можете оставить мне сообщение.\n"
-"(%m непросмотренных сообщений от Вас)."
+"(%m не просмотренных сообщений от Вас)."
 
 #: awaymsgdlg.cpp:98
 msgid "AwayMsgDlg::Set %1 Response for %2"
@@ -1149,7 +1149,7 @@ msgstr "%1 (%2)"
 msgid "CUserView::<br><b>Birthday&nbsp;Today!</b>"
 msgstr "<br><b>Сегодня&nbsp;День&nbsp;Рождения!</b>"
 
-#: userbox.cpp:1132
+#: userbox.cpp:1134
 msgid "CUserView::<br><u>Auto Response:</u>"
 msgstr "<br><u>Авто-ответ:</u>"
 
@@ -1628,10 +1628,9 @@ msgstr ""
 
 #: mainwin.cpp:3029
 msgid "HintsDlg::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
-msgstr ""
-"<hr><p> Для получения более подробной информации используйте"
-" web-сайт (<tt>http://www.licq.org</tt>) или его русское зеркало"
-" (<tt>http://www.ru.licq.org</tt>).</p>"
+msgstr "<hr><p> Для получения более подробной информации используйте "
+"web-сайт (<tt>http://www.licq.org</tt>) или его русское зеркало "
+"(<tt>http://www.ru.licq.org</tt>).</p>"
 
 #: mainwin.cpp:2991
 msgid "HintsDlg::Licq - Hints"
@@ -1701,11 +1700,12 @@ msgstr "Licq - Защищенное соединение с %1"
 msgid "KeyRequestDlg::Requesting secure channel..."
 msgstr "Запрашиваем защищенное соединение..."
 
+
 #: keyrequestdlg.cpp:34
 msgid "KeyRequestDlg::"
-"Secure channel is established using\n"
-"Diffie-Hellman key exchange, and \n"
-"encrypted using DES XCBC encryption.\n\n"
+"Secure channel is established using SSL\n"
+"with Diffie-Hellman key exchange and\n"
+"the TLS version 1 protocol.\n\n"
 msgstr ""
 
 #: keyrequestdlg.cpp:46
@@ -1728,9 +1728,9 @@ msgid "KeyRequestDlg::"
 "The remote doesn't seem to use such a client.\n"
 "This might not work."
 msgstr ""
-"Это работатет только с другими Licq клиентами \n"
+"Это работает только с другими Licq клиентами \n"
 "версии старше, чем 0.85. Удаленная сторона не \n"
-"использует подобного клиенты.\n"
+"использует подобного клиента.\n"
 "Это работать не будет."
 
 #: messagebox.cpp:146
@@ -3007,19 +3007,19 @@ msgstr "Время:"
 msgid "UserEventCommon::Unknown"
 msgstr "Неизвестно"
 
-#: userinfodlg.cpp:418
+#: userinfodlg.cpp:424
 msgid "UserInfoDlg:: Day:"
 msgstr " День:"
 
-#: userinfodlg.cpp:421
+#: userinfodlg.cpp:427
 msgid "UserInfoDlg:: Month:"
 msgstr " Месяц:"
 
-#: userinfodlg.cpp:424
+#: userinfodlg.cpp:430
 msgid "UserInfoDlg:: Year:"
 msgstr " Год:"
 
-#: userinfodlg.cpp:654
+#: userinfodlg.cpp:660
 msgid "UserInfoDlg::&About"
 msgstr "О себе"
 
@@ -3027,7 +3027,7 @@ msgstr "О себе"
 msgid "UserInfoDlg::&Close"
 msgstr "Закрыть"
 
-#: userinfodlg.cpp:726
+#: userinfodlg.cpp:732
 msgid "UserInfoDlg::&Filter: "
 msgstr "Фильтр: "
 
@@ -3035,7 +3035,7 @@ msgstr "Фильтр: "
 msgid "UserInfoDlg::&General"
 msgstr "Общая"
 
-#: userinfodlg.cpp:700
+#: userinfodlg.cpp:706
 msgid "UserInfoDlg::&History"
 msgstr "История"
 
@@ -3043,7 +3043,7 @@ msgstr "История"
 msgid "UserInfoDlg::&Menu"
 msgstr "Меню"
 
-#: userinfodlg.cpp:380
+#: userinfodlg.cpp:386
 msgid "UserInfoDlg::&More"
 msgstr "Подробнее"
 
@@ -3051,27 +3051,27 @@ msgstr "Подробнее"
 msgid "UserInfoDlg::&OK"
 msgstr "Да"
 
-#: userinfodlg.cpp:978
+#: userinfodlg.cpp:984
 msgid "UserInfoDlg::&Save"
 msgstr "Сохранить"
 
-#: userinfodlg.cpp:977
+#: userinfodlg.cpp:983
 msgid "UserInfoDlg::&Update"
 msgstr "Обновить"
 
-#: userinfodlg.cpp:580
+#: userinfodlg.cpp:586
 msgid "UserInfoDlg::&Work"
 msgstr "О Работе"
 
-#: userinfodlg.cpp:663
+#: userinfodlg.cpp:669
 msgid "UserInfoDlg::About:"
 msgstr "О себе:"
 
-#: userinfodlg.cpp:610
+#: userinfodlg.cpp:616
 msgid "UserInfoDlg::Address:"
 msgstr "Адрес:"
 
-#: userinfodlg.cpp:391
+#: userinfodlg.cpp:397
 msgid "UserInfoDlg::Age:"
 msgstr "Возраст:"
 
@@ -3079,31 +3079,31 @@ msgstr "Возраст:"
 msgid "UserInfoDlg::Alias:"
 msgstr "Ник:"
 
-#: userinfodlg.cpp:547
+#: userinfodlg.cpp:553
 msgid "UserInfoDlg::Authorization Not Required"
 msgstr "Авторизация не требуется"
 
-#: userinfodlg.cpp:545
+#: userinfodlg.cpp:551
 msgid "UserInfoDlg::Authorization Required"
 msgstr "Авторизация требуется"
 
-#: userinfodlg.cpp:413
+#: userinfodlg.cpp:419
 msgid "UserInfoDlg::Birthday:"
 msgstr "День рождения:"
 
-#: userinfodlg.cpp:233
+#: userinfodlg.cpp:237
 msgid "UserInfoDlg::Cellular:"
 msgstr "Сотовый:"
 
-#: userinfodlg.cpp:603
+#: userinfodlg.cpp:609
 msgid "UserInfoDlg::City:"
 msgstr "Город:"
 
-#: userinfodlg.cpp:242
+#: userinfodlg.cpp:246
 msgid "UserInfoDlg::Country:"
 msgstr "Страна:"
 
-#: userinfodlg.cpp:595
+#: userinfodlg.cpp:601
 msgid "UserInfoDlg::Department:"
 msgstr "Отдел:"
 
@@ -3115,27 +3115,27 @@ msgstr ""
 msgid "UserInfoDlg::EMail 2:"
 msgstr ""
 
-#: userinfodlg.cpp:742
+#: userinfodlg.cpp:748
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
 msgstr "Ошибка загрузки файла истории: %1\nОписание: %2"
 
-#: userinfodlg.cpp:617
+#: userinfodlg.cpp:623
 msgid "UserInfoDlg::Fax:"
 msgstr "Факс:"
 
-#: userinfodlg.cpp:492
+#: userinfodlg.cpp:498
 msgid "UserInfoDlg::Female"
 msgstr "Женский"
 
-#: userinfodlg.cpp:289
+#: userinfodlg.cpp:294
 msgid "UserInfoDlg::GMT%1%1%1"
 msgstr ""
 
-#: userinfodlg.cpp:394
+#: userinfodlg.cpp:400
 msgid "UserInfoDlg::Gender:"
 msgstr "Пол:"
 
-#: userinfodlg.cpp:621
+#: userinfodlg.cpp:627
 msgid "UserInfoDlg::Homepage:"
 msgstr "Домашняя страница:"
 
@@ -3143,15 +3143,15 @@ msgstr "Домашняя страница:"
 msgid "UserInfoDlg::IP:"
 msgstr ""
 
-#: userinfodlg.cpp:456
+#: userinfodlg.cpp:462
 msgid "UserInfoDlg::Language 1:"
 msgstr "Основной язык:"
 
-#: userinfodlg.cpp:459
+#: userinfodlg.cpp:465
 msgid "UserInfoDlg::Language 2:"
 msgstr "Второй язык:"
 
-#: userinfodlg.cpp:463
+#: userinfodlg.cpp:469
 msgid "UserInfoDlg::Language 3:"
 msgstr "Третий язык:"
 
@@ -3159,55 +3159,59 @@ msgstr "Третий язык:"
 msgid "UserInfoDlg::Licq - Info "
 msgstr "Licq - Информация "
 
-#: userinfodlg.cpp:1096
+#: userinfodlg.cpp:1103
 msgid "UserInfoDlg::Local"
 msgstr "локальную"
 
-#: userinfodlg.cpp:494
+#: userinfodlg.cpp:500
 msgid "UserInfoDlg::Male"
 msgstr "Мужской"
 
-#: userinfodlg.cpp:591
+#: userinfodlg.cpp:597
 msgid "UserInfoDlg::Name:"
 msgstr "Имя:"
 
-#: userinfodlg.cpp:985
+#: userinfodlg.cpp:991
 msgid "UserInfoDlg::Nex&t"
 msgstr "Дальше"
 
-#: userinfodlg.cpp:329
+#: userinfodlg.cpp:334
 msgid "UserInfoDlg::Now"
 msgstr "Сейчас"
+
+#: userinfodlg.cpp:212
+msgid "UserInfoDlg::Old Email:"
+msgstr ""
 
 #: userinfodlg.cpp:180
 msgid "UserInfoDlg::Online:"
 msgstr "В сети:"
 
-#: userinfodlg.cpp:986
+#: userinfodlg.cpp:992
 msgid "UserInfoDlg::P&rev"
 msgstr "Назад"
 
-#: userinfodlg.cpp:614
+#: userinfodlg.cpp:620
 msgid "UserInfoDlg::Phone:"
 msgstr "Телефон:"
 
-#: userinfodlg.cpp:599
+#: userinfodlg.cpp:605
 msgid "UserInfoDlg::Position:"
 msgstr "Должность:"
 
-#: userinfodlg.cpp:714
+#: userinfodlg.cpp:720
 msgid "UserInfoDlg::Rever&se"
 msgstr "В обратном порядке"
 
-#: userinfodlg.cpp:1096
+#: userinfodlg.cpp:1103
 msgid "UserInfoDlg::Server"
 msgstr "На сервере"
 
-#: userinfodlg.cpp:745
+#: userinfodlg.cpp:751
 msgid "UserInfoDlg::Sorry, history is disabled for this person."
 msgstr "Извините, история запрещена для данного пользователя."
 
-#: userinfodlg.cpp:606
+#: userinfodlg.cpp:612
 msgid "UserInfoDlg::State:"
 msgstr "Штат:"
 
@@ -3223,35 +3227,35 @@ msgstr "Временная зона:"
 msgid "UserInfoDlg::UIN:"
 msgstr ""
 
-#: userinfodlg.cpp:538
+#: userinfodlg.cpp:544
 msgid "UserInfoDlg::Unknown (%1)"
 msgstr "Неизвестно (%1)"
 
-#: userinfodlg.cpp:331
+#: userinfodlg.cpp:336
 msgid "UserInfoDlg::Unknown"
 msgstr "Неизвестно"
 
-#: userinfodlg.cpp:516
+#: userinfodlg.cpp:522
 msgid "UserInfoDlg::Unspecified"
 msgstr "Не указано"
 
-#: userinfodlg.cpp:1096
+#: userinfodlg.cpp:1103
 msgid "UserInfoDlg::Update local or server information?"
 msgstr "Обновить локальную информацию или на сервере?"
 
-#: userinfodlg.cpp:1098
+#: userinfodlg.cpp:1105
 msgid "UserInfoDlg::Updating server..."
 msgstr "Обновляется на сервере..."
 
-#: userinfodlg.cpp:1103
+#: userinfodlg.cpp:1110
 msgid "UserInfoDlg::Updating..."
 msgstr "Обновляется..."
 
-#: userinfodlg.cpp:238
+#: userinfodlg.cpp:242
 msgid "UserInfoDlg::Zip:"
 msgstr "Индекс:"
 
-#: userinfodlg.cpp:924
+#: userinfodlg.cpp:930
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -3261,7 +3265,7 @@ msgstr ""
 "[<font color=\"%2\">Отправленные</font>] "
 "%3 из %4 подходящих"
 
-#: userinfodlg.cpp:916
+#: userinfodlg.cpp:922
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -3271,31 +3275,31 @@ msgstr ""
 "[<font color=\"%2\">Отправленные</font>] "
 "с %3 по %4 из %5"
 
-#: userinfodlg.cpp:1134
+#: userinfodlg.cpp:1141
 msgid "UserInfoDlg::done"
 msgstr "готово"
 
-#: userinfodlg.cpp:1143
+#: userinfodlg.cpp:1150
 msgid "UserInfoDlg::error"
 msgstr "ошибка"
 
-#: userinfodlg.cpp:1137
+#: userinfodlg.cpp:1144
 msgid "UserInfoDlg::failed"
 msgstr "неудачно"
 
-#: userinfodlg.cpp:878
+#: userinfodlg.cpp:884
 msgid "UserInfoDlg::from"
 msgstr "от"
 
-#: userinfodlg.cpp:857
+#: userinfodlg.cpp:863
 msgid "UserInfoDlg::server"
 msgstr "через сервер"
 
-#: userinfodlg.cpp:1140
+#: userinfodlg.cpp:1147
 msgid "UserInfoDlg::timed out"
 msgstr "вышло время"
 
-#: userinfodlg.cpp:888
+#: userinfodlg.cpp:894
 msgid "UserInfoDlg::to"
 msgstr "к"
 
