@@ -32,6 +32,7 @@ extern int errno;
 #include "utility.h"
 #include "support.h"
 #include "sar.h"
+#include "user.h"
 #include "icqd.h"
 
 #include "licq.conf.h"
