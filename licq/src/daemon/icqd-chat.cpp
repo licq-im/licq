@@ -643,7 +643,7 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   gLog.Info("%sChat: Shaking hands [v%d].\n", L_TCPxSTR, VersionToUse(c.m_nVersion));
 
   // Send handshake packet:
-  if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nIp, LocalPort(),
+  if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nUin, LocalPort(),
      VersionToUse(c.m_nVersion)))
     return false;
 
