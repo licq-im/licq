@@ -132,12 +132,7 @@ void MLView::GotoEnd()
 
 void MLView::setBackground(const QColor& c)
 {
-  QPalette pal = palette();
-
-  pal.setColor(QPalette::Active, QColorGroup::Base, c);
-  pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
-
-  setPalette(pal);
+  setPaper(QBrush(c));
 }
 
 
@@ -146,12 +141,7 @@ void MLView::setBackground(const QColor& c)
 
 void MLView::setForeground(const QColor& c)
 {
-  QPalette pal = palette();
-
-  pal.setColor(QPalette::Active, QColorGroup::Text, c);
-  pal.setColor(QPalette::Inactive, QColorGroup::Text, c);
-
-  setPalette(pal);
+  setColor(c);
 }
 
 void MLView::setHandleLinks(bool enable)
