@@ -555,7 +555,11 @@ void ChatDlg::slot_chat()
         // add to irc window
         mleIRCRemote->append(QString::fromLocal8Bit(u->Name()) + "> " + QString::fromLocal8Bit(e->Data()));
         mleIRCRemote->GotoEnd();
-        if (u == chatUser) mlePaneRemote->insertLine("");
+        if (u == chatUser)
+        {
+          mlePaneRemote->insertLine("");
+          mlePaneRemote->GotoEnd();
+        }
         break;
       }
 
