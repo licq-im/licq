@@ -355,21 +355,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   setIconText("Licq");
 #endif
 
-#ifdef USE_DOCK
-  licqIcon = NULL;
-  switch (m_nDockMode)
-  {
-    case DockDefault:
-      licqIcon = new IconManager_Default(this, mnuSystem, bDockIcon48);
-      break;
-    case DockThemed:
-      licqIcon = new IconManager_Themed(this, mnuSystem, szDockTheme);
-      break;
-    case DockNone:
-      break;
-  }
-#endif
-
   // User List
    char colKey[16], colTitle[32], colFormat[32];
    unsigned short colWidth, colAlign, numColumns;
@@ -387,6 +372,21 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       colInfo.push_back(new CColumnInfo(QString::fromLocal8Bit(colTitle), colFormat, colWidth, colAlign));
    }
    CreateUserView();
+
+#ifdef USE_DOCK
+  licqIcon = NULL;
+  switch (m_nDockMode)
+  {
+    case DockDefault:
+      licqIcon = new IconManager_Default(this, mnuSystem, bDockIcon48);
+      break;
+    case DockThemed:
+      licqIcon = new IconManager_Themed(this, mnuSystem, szDockTheme);
+      break;
+    case DockNone:
+      break;
+  }
+#endif
 
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
@@ -1868,14 +1868,6 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-     /*mnuStatus->setAccel(ALT + Key_O, ICQ_STATUS_ONLINE);
-     mnuStatus->setAccel(ALT + Key_A, ICQ_STATUS_AWAY);
-     mnuStatus->setAccel(ALT + Key_N, ICQ_STATUS_NA);
-     mnuStatus->setAccel(ALT + Key_C, ICQ_STATUS_OCCUPIED);
-     mnuStatus->setAccel(ALT + Key_D, ICQ_STATUS_DND);
-     mnuStatus->setAccel(ALT + Key_H, ICQ_STATUS_FREEFORCHAT);
-     mnuStatus->setAccel(ALT + Key_F, ICQ_STATUS_OFFLINE);
-     mnuStatus->setAccel(ALT + Key_I, ICQ_STATUS_FxPRIVATE);*/
      userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
                           &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
      updateUserWin();
