@@ -8,6 +8,7 @@
 #include <qheader.h>
 
 #include "licq_message.h"
+#include "licq_icq.h"
 #include "messagebox.h"
 #include "eventdesc.h"
 #include "gui-defines.h"
@@ -26,9 +27,11 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   sd.truncate(sd.length() - 5);
 
   setText(0, msg->Direction() == D_SENDER ? "S" : "*R");
-  setText(1, EventDescription(msg));
+  //setText(1, EventDescription(msg));
+  SetEventLine();
   setText(2, sd);
 }
+
 
 MsgViewItem::~MsgViewItem(void)
 {
@@ -36,10 +39,64 @@ MsgViewItem::~MsgViewItem(void)
 }
 
 
+void MsgViewItem::SetEventLine()
+{
+  QString s = EventDescription(msg);
+  const char *sz = NULL;
+
+  switch(msg->SubCommand())
+  {
+    case ICQ_CMDxSUB_MSG:
+      sz = msg->Text();
+      break;
+
+    case ICQ_CMDxSUB_URL:
+      sz = ((CEventUrl *)msg)->Url();
+      break;
+
+    case ICQ_CMDxSUB_CHAT:
+      sz = ((CEventChat *)msg)->Reason();
+      break;
+
+    case ICQ_CMDxSUB_FILE:
+      sz = ((CEventFile *)msg)->Filename();
+      break;
+
+    default:
+      break;
+  }
+
+  if (sz != NULL)
+  {
+    int width = listView()->columnWidth(1);
+    QFont f = listView()->font();
+    if (m_nEventId != -1) f.setBold(true);
+    QFontMetrics fm(f);
+    width -= fm.width(s) + fm.width(" [...]");// + listView()->itemMargin() * 2;
+    unsigned short n = 0;
+
+    s += " [";
+    while (sz[n] != '\n' && sz[n] != '\0')
+    {
+      width -= fm.width(sz[n]);
+      if (width <= 0) break;
+      s += sz[n++];
+    }
+    if (sz[n] != '\0')
+      s += "...]";
+    else
+      s += "]";
+  }
+
+  setText(1, s);
+}
+
+
 void MsgViewItem::MarkRead()
 {
   m_nEventId = -1;
   setText(0, msg->Direction() == D_SENDER ? "S" : "R");
+  SetEventLine();
 }
 
 
@@ -121,6 +178,19 @@ void MsgView::resizeEvent(QResizeEvent *e)
   QScrollBar *s = verticalScrollBar();
   setColumnWidth(1, width() - 152 - s->width());
   QListView::resizeEvent(e);
+  SetEventLines();
+}
+
+
+void MsgView::SetEventLines()
+{
+  QListViewItemIterator it(this);
+  while(it.current())
+  {
+    MsgViewItem *item = static_cast<MsgViewItem*>(it.current());
+    item->SetEventLine();
+    it++;
+  }
 }
 
 

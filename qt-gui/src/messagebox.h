@@ -38,6 +38,8 @@ protected:
   virtual void paintCell(QPainter *, const QColorGroup &, int column, int width, int align);
   virtual void paintFocus(QPainter *, const QColorGroup &cg, const QRect &r) {}
 
+  void SetEventLine();
+
 friend class CMsgViewTips;
 friend class MsgView;
 };
@@ -54,6 +56,7 @@ protected:
   CMsgViewTips *tips;
 
   virtual void resizeEvent(QResizeEvent *e);
+  void SetEventLines();
 };
 
 
