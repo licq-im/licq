@@ -359,7 +359,7 @@ void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int 
   if (listView()->parent() && gMainWindow->skin->frame.transparent )
     pix = listView()->QListView::parentWidget()->backgroundPixmap();
 
-  setStaticBackground(pix && listView()->contentsHeight() >= listView()->viewport()->height());
+  listView()->setStaticBackground(pix && listView()->contentsHeight() >= listView()->viewport()->height());
 #else
   if ((listView()->contentsHeight() < listView()->viewport()->height() ||
        listView()->vScrollBarMode() == QListView::AlwaysOff) &&
