@@ -106,6 +106,9 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
      sprintf(remotePortID, "ServerPort%d", i + 1);
      if (!licqConf.ReadStr(remoteServerID, remoteServerName)) continue;
      licqConf.ReadNum(remotePortID, remoteServerPort, getDefaultRemotePort());
+     // backward compatibility
+     if ( i == 0 && !strcmp( remoteServerName, "icq.mirabilis.com" ) )
+       strcpy( remoteServerName, "icq.icq.com" );
      icqServers.addServer(remoteServerName, remoteServerPort);
   }
 
@@ -1601,7 +1604,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     szRawArgs++;
     while (isspace(*szRawArgs)) szRawArgs++;
   }
-  if (*szRawArgs && szRawArgs[strlen(szRawArgs) - 1] == '\n') 
+  if (*szRawArgs && szRawArgs[strlen(szRawArgs) - 1] == '\n')
     szRawArgs[strlen(szRawArgs) - 1] = '\0';
 
   gLog.Info("%sReceived command \"%s\" with arguments \"%s\".\n", L_FIFOxSTR,
