@@ -22,12 +22,8 @@ enum UserMenu {
   mnuUserWork,
   mnuUserAbout,
   mnuUserHistory,
-  mnuUserNewUser,
-  mnuUserOnlineNotify,
-  mnuUserInvisibleList,
-  mnuUserVisibleList,
-  mnuUserIgnoreList,
-  mnuUserFloaty
+  mnuUserFloaty,
+  mnuUserRemoveFromList
 };
 
 enum OwnerMenu_Identifiers {

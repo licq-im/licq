@@ -61,6 +61,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
+  m_nOnlCount = 0;
   setGraphics(_cUser);
 }
 
@@ -72,6 +73,8 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nGroupId = (unsigned short)(-1);
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
+  m_nOnlCount = 0;
+  m_nStatus = ICQ_STATUS_OFFLINE;
   setGraphics(_cUser);
 }
 
@@ -87,11 +90,13 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_bItalic = m_bStrike = false;
   m_nWeight = QFont::Bold;
   m_bUrgent = false;
-  // All users group is sorted at the end
+  m_nOnlCount = 0;
+  // Other users group is sorted at the end
   m_sSortKey = m_nGroupId ? QString::number(m_nGroupId) : QString("9999999999");
   m_sPrefix = "1";
   setPixmap(0, *listView()->pixCollapsed);
   setText(1, name);
+
 }
 
 CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
@@ -100,6 +105,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
 {
   m_nGroupId = (unsigned short)(-1);
   m_nUin = 0;
+  m_nOnlCount = 0;
   m_pIcon = NULL;
   m_cBack = s_cBack;
   m_cFore = s_cOnline;
@@ -123,8 +129,18 @@ CUserViewItem::~CUserViewItem()
 
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
-  else
+  else {
+    if(parent()) {
+      CUserViewItem* i = static_cast<CUserViewItem*>(parent());
+      i->m_nOnlCount--;
+      if(i->m_nOnlCount)
+        i->setText(1, QString(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
+                   + QString(")"));
+      else
+        i->setText(1, i->m_sGroupName);
+    }
     v->numOnline--;
+  }
 
   if (v->numOffline == 0 && v->barOffline != NULL)
   {
@@ -143,6 +159,21 @@ void CUserViewItem::setGraphics(ICQUser *u)
 {
    static char sTemp[128];
    CUserView *v = (CUserView *)listView();
+
+   if(parent()) {
+     CUserViewItem* i = static_cast<CUserViewItem*>(parent());
+     if(u->StatusOffline() && m_nStatus != ICQ_STATUS_OFFLINE)
+       i->m_nOnlCount--;
+     if(m_nStatus == ICQ_STATUS_OFFLINE && !u->StatusOffline())
+       i->m_nOnlCount++;
+
+     if(i->m_nOnlCount)
+       i->setText(1, QString(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
+                  + QString(")"));
+     else
+       i->setText(1, i->m_sGroupName);
+     }
+
    m_nStatus = u->Status();
    m_nStatusFull = u->StatusFull();
    m_bStatusInvisible = u->StatusInvisible();
@@ -666,6 +697,9 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
   if (e->button() == LeftButton)
   {
     mousePressPos = e->pos();
+    CUserViewItem *clickedItem = static_cast<CUserViewItem*>(itemAt(e->pos()));
+    if (clickedItem != NULL && e->pos().x() < header()->sectionSize(0) && clickedItem->isGroupItem())
+      clickedItem->setOpen(!clickedItem->isOpen());
   }
   else if (e->button() == MidButton)
   {

@@ -793,7 +793,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
     if (e->state() & ControlButton)
       RemoveUserFromList(nUin, this);
     else
-      RemoveUserFromGroup(nUin, this);
+      RemoveUserFromGroup(m_nGroupType, m_nCurrentGroup, nUin, this);
     //e->accept();
     return;
   }
@@ -963,7 +963,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             if(it == NULL) {
               if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) || !u->StatusOffline()) &&
                    ((i->GroupId() != 0 && u->GetInGroup(GROUPS_USER, i->GroupId())) ||
-                    (i->GroupId() == 0 && !u->IgnoreList())))
+                    (i->GroupId() == 0 && u->GetGroups(GROUPS_USER) == 0 && !u->IgnoreList())))
                 (void) new CUserViewItem(u, i);
             }
           }
@@ -1114,10 +1114,11 @@ void CMainWindow::updateUserWin()
     m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0;
 
   if(doGroupView) {
-    (void) new CUserViewItem(0, tr("All Users"), userView);
+    CUserViewItem* gi = new CUserViewItem(0, tr("Other Users"), userView);
+    gi->setOpen(true);
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     for (unsigned short i = 0; i < g->size(); i++) {
-      CUserViewItem* gi = new CUserViewItem(i+1, (*g)[i], userView);
+      gi = new CUserViewItem(i+1, (*g)[i], userView);
       // FIXME This should respect users settings
       gi->setOpen(true);
     }
@@ -1138,7 +1139,7 @@ void CMainWindow::updateUserWin()
       for(CUserViewItem* gi = userView->firstChild(); gi; gi = gi->nextSibling())
       {
         if((gi->GroupId() != 0 && pUser->GetInGroup(GROUPS_USER, gi->GroupId())) ||
-           (gi->GroupId() == 0 && !pUser->IgnoreList()))
+           (gi->GroupId() == 0 && pUser->GetGroups(GROUPS_USER) == 0 && !pUser->IgnoreList()))
           (void) new CUserViewItem(pUser, gi);
       }
     }
@@ -1254,21 +1255,27 @@ void CMainWindow::updateGroups()
   {
     cmbUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
     mnuUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
-    mnuGroup->insertItem(QString::fromLocal8Bit((*g)[i]));
+    mnuGroup->insertItem(QString::fromLocal8Bit((*g)[i]), i+1);
   }
   gUserManager.UnlockGroupList();
   mnuUserGroups->insertSeparator();
+  mnuGroup->insertSeparator();
 
   cmbUserGroups->insertItem(tr("Online Notify"));
   mnuUserGroups->insertItem(tr("Online Notify"));
+  mnuGroup->insertItem(tr("Online Notify"), 1000+GROUP_ONLINE_NOTIFY);
   cmbUserGroups->insertItem(tr("Visible List"));
   mnuUserGroups->insertItem(tr("Visible List"));
+  mnuGroup->insertItem(tr("Visible List"), 1000+GROUP_VISIBLE_LIST);
   cmbUserGroups->insertItem(tr("Invisible List"));
   mnuUserGroups->insertItem(tr("Invisible List"));
+  mnuGroup->insertItem(tr("Invisible List"), 1000+GROUP_INVISIBLE_LIST);
   cmbUserGroups->insertItem(tr("Ignore List"));
   mnuUserGroups->insertItem(tr("Ignore List"));
+  mnuGroup->insertItem(tr("Ignore List"), 1000+GROUP_IGNORE_LIST);
   cmbUserGroups->insertItem(tr("New Users"));
   mnuUserGroups->insertItem(tr("New Users"));
+  mnuGroup->insertItem(tr("New Users"), 1000+GROUP_NEW_USERS);
 
   int index = m_nCurrentGroup;
   if (m_nGroupType == GROUPS_SYSTEM)
@@ -1542,54 +1549,6 @@ void CMainWindow::callUserFunction(int index)
       (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
       break;
     }
-    case mnuUserNewUser:
-    {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (!u) return;
-      u->SetNewUser(!u->NewUser());
-      gUserManager.DropUser(u);
-      updateUserWin();
-      break;
-    }
-    case mnuUserOnlineNotify:
-    {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (!u) return;
-      u->SetOnlineNotify(!u->OnlineNotify());
-      gUserManager.DropUser(u);
-      if (m_bFontStyles) updateUserWin();
-      break;
-    }
-    case mnuUserInvisibleList:
-    {
-      licqDaemon->icqToggleInvisibleList(nUin);
-      if (m_bFontStyles)
-        updateUserWin();
-      break;
-    }
-    case mnuUserVisibleList:
-    {
-      licqDaemon->icqToggleVisibleList(nUin);
-      if (m_bFontStyles)
-        updateUserWin();
-      break;
-    }
-    case mnuUserIgnoreList:
-    {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (!u) return;
-      if(!u->IgnoreList() && !QueryUser(this,
-          tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
-          .arg(u->GetAlias()).arg(nUin), tr("&Yes"), tr("&No")))
-      {
-        gUserManager.DropUser(u);
-        break;
-      }
-      u->SetIgnoreList(!u->IgnoreList());
-      gUserManager.DropUser(u);
-      updateUserWin();
-      break;
-    }
     case mnuUserFloaty:
     {
       // Check that the floaty does not already exist
@@ -1611,6 +1570,9 @@ void CMainWindow::callUserFunction(int index)
     case mnuUserWork:
     case mnuUserAbout:
       callInfoTab(index, nUin);
+      break;
+    case mnuUserRemoveFromList:
+      RemoveUserFromList(m_nUserMenuUin, this);
       break;
     default:
       callFunction(index, nUin);
@@ -1736,7 +1698,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
       break;
     }
     default:
-      qDebug("unknown callFunction() fcn: %d", fcn);
+      gLog.Warn("%sunknown callFunction() fcn: %d", L_WARNxSTR, fcn);
   }
   if(e != NULL)
     e->show();
@@ -1830,15 +1792,6 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
 }
 
 
-
-//-----CMainWindow::removeUser-------------------------------------------------
-void CMainWindow::slot_removeUserFromList()
-{
-  //RemoveUserFromList(userView->SelectedItemUin(), this);
-  RemoveUserFromList(m_nUserMenuUin, this);
-}
-
-
 bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -1855,23 +1808,98 @@ bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
   return false;
 }
 
-
-void CMainWindow::slot_removeUserFromGroup()
+void CMainWindow::FillUserGroup()
 {
-  //RemoveUserFromGroup(userView->SelectedItemUin(), this);
-  RemoveUserFromGroup(m_nUserMenuUin, this);
+  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  if(u == NULL) return;
+
+  mnuGroup->setItemChecked(1000+GROUP_ONLINE_NOTIFY, u->OnlineNotify());
+  mnuGroup->setItemChecked(1000+GROUP_INVISIBLE_LIST, u->InvisibleList());
+  mnuGroup->setItemChecked(1000+GROUP_VISIBLE_LIST, u->VisibleList());
+  mnuGroup->setItemChecked(1000+GROUP_IGNORE_LIST, u->IgnoreList());
+  mnuGroup->setItemChecked(1000+GROUP_NEW_USERS, u->NewUser());
+
+  GroupList *g = gUserManager.LockGroupList(LOCK_R);
+  for (unsigned short i = 0; i < g->size(); i++)
+    mnuGroup->setItemChecked(i+1, u->GetInGroup(GROUPS_USER, i+1));
+  gUserManager.UnlockGroupList();
+  gUserManager.DropUser(u);
 }
 
 
-bool CMainWindow::RemoveUserFromGroup(unsigned long nUin, QWidget *p)
+void CMainWindow::UserGroupToggled(int id)
 {
-  // FIXME removing from group doesn't work in thread view
-  if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
-    return false;
-
-  if (m_nGroupType == GROUPS_USER)
+  if(id >= 0 && id < 1000)
   {
-    if (m_nCurrentGroup == 0)
+    // User groups
+    if(mnuGroup->isItemChecked(id))
+      RemoveUserFromGroup(GROUPS_USER, id, m_nUserMenuUin, this);
+    else {
+      gUserManager.AddUserToGroup(m_nUserMenuUin, id);
+      updateUserWin();
+    }
+  }
+  else if(id >= 1000)
+  {
+    switch(id-1000) {
+    case GROUP_NEW_USERS:
+    {
+      ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+      if (!u) return;
+      u->SetNewUser(!u->NewUser());
+      gUserManager.DropUser(u);
+      updateUserWin();
+      break;
+    }
+    case GROUP_ONLINE_NOTIFY:
+    {
+      ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+      if (!u) return;
+      u->SetOnlineNotify(!u->OnlineNotify());
+      gUserManager.DropUser(u);
+      if (m_bFontStyles) updateUserWin();
+      break;
+    }
+    case GROUP_VISIBLE_LIST:
+    {
+      licqDaemon->icqToggleVisibleList(m_nUserMenuUin);
+      if (m_bFontStyles)
+        updateUserWin();
+      break;
+    }
+    case GROUP_INVISIBLE_LIST:
+    {
+      licqDaemon->icqToggleInvisibleList(m_nUserMenuUin);
+      if (m_bFontStyles)
+        updateUserWin();
+      break;
+    }
+    case GROUP_IGNORE_LIST:
+    {
+      ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
+      if (!u) return;
+      if(!u->IgnoreList() && !QueryUser(this,
+          tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
+          .arg(u->GetAlias()).arg(m_nUserMenuUin), tr("&Yes"), tr("&No")))
+      {
+        gUserManager.DropUser(u);
+        break;
+      }
+      u->SetIgnoreList(!u->IgnoreList());
+      gUserManager.DropUser(u);
+      updateUserWin();
+      break;
+    }
+    }
+  }
+}
+
+
+bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long nUin, QWidget *p)
+{
+  if (gtype == GROUPS_USER)
+  {
+    if (group == 0)
       return RemoveUserFromList(nUin, p);
     else
     {
@@ -1881,23 +1909,23 @@ bool CMainWindow::RemoveUserFromGroup(unsigned long nUin, QWidget *p)
       GroupList *g = gUserManager.LockGroupList(LOCK_R);
       QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
                          .arg(QString::fromLocal8Bit(u->GetAlias()))
-                         .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
+                         .arg(nUin).arg(QString::fromLocal8Bit( (*g)[group - 1] )) );
       gUserManager.UnlockGroupList();
       gUserManager.DropUser(u);
       if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
       {
-         gUserManager.RemoveUserFromGroup(nUin, m_nCurrentGroup);
+         gUserManager.RemoveUserFromGroup(nUin, group);
          updateUserWin();
          return true;
       }
     }
   }
-  else if (m_nGroupType == GROUPS_SYSTEM)
+  else if (gtype == GROUPS_SYSTEM)
   {
-    if (m_nCurrentGroup == 0) return true;
+    if (group == 0) return true;
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL) return true;
-    u->RemoveFromGroup(GROUPS_SYSTEM, m_nCurrentGroup);
+    u->RemoveFromGroup(GROUPS_SYSTEM, group);
     gUserManager.DropUser(u);
     updateUserWin();
     return true;
@@ -1911,15 +1939,6 @@ bool CMainWindow::RemoveUserFromGroup(unsigned long nUin, QWidget *p)
 void CMainWindow::saveAllUsers()
 {
    gUserManager.SaveAllUsers();
-}
-
-//-----CMainWindow::addUserToGroup---------------------------------------------
-void CMainWindow::addUserToGroup(int _nId)
-{
-  gUserManager.AddUserToGroup(m_nUserMenuUin, mnuGroup->indexOf(_nId) + 1);
-
-  if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
-    updateUserWin();
 }
 
 void CMainWindow::slot_updateContactList()
@@ -2550,12 +2569,10 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("E&xit"), this, SLOT(slot_shutdown()));
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
 
-   mnuRemove = new QPopupMenu(NULL);
-   mnuRemove->insertItem(tr("From Current Group"), this, SLOT(slot_removeUserFromGroup()));
-   mnuRemove->insertItem(tr("From Contact List"), this, SLOT(slot_removeUserFromList()));
-
    mnuGroup = new QPopupMenu(NULL);
-   connect(mnuGroup, SIGNAL(activated(int)), this, SLOT(addUserToGroup(int)));
+   mnuGroup->setCheckable(true);
+   connect(mnuGroup, SIGNAL(activated(int)), this, SLOT(UserGroupToggled(int)));
+   connect(mnuGroup, SIGNAL(aboutToShow()), this, SLOT(FillUserGroup()));
 
    mnuUtilities = new QPopupMenu(NULL);
    for (unsigned short i = 0; i < gUtilityManager.NumUtilities(); i++)
@@ -2581,7 +2598,6 @@ void CMainWindow::initMenu()
    connect(mnuAwayModes, SIGNAL(activated(int)), this, SLOT(slot_awaymodes(int)));
 
    mnuUser = new QPopupMenu(NULL);
-   mnuUser->setCheckable(true);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
    mnuSend = new QPopupMenu(this);
    mnuSend->insertItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
@@ -2605,15 +2621,9 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("&Info"), m);
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
+   mnuUser->insertItem(tr("Edit User Group"), mnuGroup);
    mnuUser->insertSeparator();
-   mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
-   mnuUser->insertItem(tr("Invisible List"), mnuUserInvisibleList);
-   mnuUser->insertItem(tr("Visible List"), mnuUserVisibleList);
-   mnuUser->insertItem(tr("Ignore List"), mnuUserIgnoreList);
-   mnuUser->insertItem(tr("New User"), mnuUserNewUser);
-   mnuUser->insertSeparator();
-   mnuUser->insertItem(tr("Remove"), mnuRemove);
-   mnuUser->insertItem(tr("Add To Group"), mnuGroup);
+   mnuUser->insertItem(tr("Remove From List"), mnuUserRemoveFromList);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    connect (mnuUser, SIGNAL(aboutToShow()), this, SLOT(slot_usermenu()));
 }
@@ -2650,11 +2660,6 @@ void CMainWindow::slot_usermenu()
     mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
 
-  mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
-  mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
-  mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
-  mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
-  mnuUser->setItemChecked(mnuUserNewUser, u->NewUser());
   // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
   mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
   mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
@@ -2669,9 +2674,6 @@ void CMainWindow::slot_usermenu()
   // Send modes
   mnuSend->setItemEnabled(mnuUserSendChat, !u->StatusOffline());
   mnuSend->setItemEnabled(mnuUserSendFile, !u->StatusOffline());
-
-  for (unsigned short i = 0; i < mnuGroup->count(); i++)
-    mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
 
   gUserManager.DropUser(u);
 }

@@ -89,6 +89,7 @@ protected:
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;
   unsigned short m_nGroupId;
+  int m_nOnlCount;
   QCString m_sGroupName;
   bool m_bStatusInvisible;
   QFont::Weight m_nWeight;

@@ -62,7 +62,7 @@ public:
   virtual ~CMainWindow();
   UserEventCommon *callFunction(int fcn, unsigned long nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
-  bool RemoveUserFromGroup(unsigned long, QWidget *);
+  bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
@@ -130,7 +130,6 @@ protected:
              *mnuUserAdm,
              *mnuStatus,
              *mnuDebug,
-             *mnuRemove,
              *mnuUtilities,
              *mnuAwayModes,
              *mnuSend;
@@ -180,10 +179,9 @@ protected:
   friend class CUserViewItem;
 
 protected slots:
-  void slot_removeUserFromGroup();
-  void slot_removeUserFromList();
   void slot_hints();
-  void addUserToGroup(int);
+  void UserGroupToggled(int);
+  void FillUserGroup();
   void saveAllUsers();
   void updateUserWin();
   void updateEvents();
