@@ -1036,15 +1036,8 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, nUin, ue);
-  if (e == NULL)
-    return 0;
+  if (e == NULL) return 0;
   e->m_NoAck = true;
-
-  ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
-  if (u == NULL || !u->StatusOffline())
-    e->m_NoAck = true;
-  if (u != NULL)
-    gUserManager.DropUser(u);
 
   result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
   return result;
