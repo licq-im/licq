@@ -68,6 +68,8 @@ CUserViewItem::~CUserViewItem()
 {
   CUserView *v = (CUserView *)listView();
 
+  if (v == NULL) return;
+
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
   else

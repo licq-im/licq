@@ -105,7 +105,7 @@ public:
              bool isHeader, bool _bGridLines, bool _bFontStyles,
              bool bTransparent, bool bShowBars,
              QWidget *parent = 0, const char *name = 0);
-  ~CUserView();
+  virtual ~CUserView();
 
   virtual void clear();
   void maxLastColumn();
