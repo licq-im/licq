@@ -1877,7 +1877,7 @@ void CMainWindow::changeStatus(int id)
   licqDaemon->ProtoPluginList(pl);
   for (it = pl.begin(); it != pl.end(); it++)
   {
-    unsigned long nPPID = (*it)->Id();
+    unsigned long nPPID = (*it)->PPID();
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (id == ICQ_STATUS_OFFLINE)
     {

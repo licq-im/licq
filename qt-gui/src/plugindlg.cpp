@@ -188,7 +188,10 @@ void PluginDlg::slot_disable()
 void PluginDlg::slot_unload()
 {
   if (lstLoaded->currentItem() == NULL) return;
-  gLicqDaemon->PluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
+  if (lstLoaded->currentItem()->text(3) == "")
+    gLicqDaemon->ProtoPluginShutdown(lstLoaded->currentItem()->text(0).toUShort()); 
+  else
+    gLicqDaemon->PluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
 
   slot_refresh();
 }
@@ -243,7 +246,7 @@ void PluginDlg::slot_refresh()
   for (p_it = p_l.begin(); p_it != p_l.end(); p_it++)
   {
     if (strcmp((*p_it)->Name(), "Licq") == 0) continue;
-    (void) new QListViewItem(lstLoaded, QString("-"),
+    (void) new QListViewItem(lstLoaded, QString::number((int)(*p_it)->Id()),
                      QString((*p_it)->Name()),
                      QString((*p_it)->Version()),
                      QString(""),
