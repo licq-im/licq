@@ -1031,6 +1031,9 @@ void CICQDaemon::FailEvents(int sd, int err)
       if (err == ECONNRESET)
       {
         e->m_nSocketDesc = -1;
+        // We have to decrypt the packet so we can re-encrypt it properly
+        Decrypt_Client(e->m_pPacket->getBuffer(),
+         ((CPacketTcp *)e->m_pPacket)->Version());
         SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
       }
       else
