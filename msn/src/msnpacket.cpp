@@ -15,7 +15,7 @@ CMSNPacket::CMSNPacket(bool _bPing) : CPacket()
   m_bPing = _bPing;
   
   pthread_mutex_lock(&s_xMutex);
-  if (s_nSequence > 99999)
+  if (s_nSequence > 9999)
    s_nSequence = 0;
   m_nSequence = s_nSequence++;
   pthread_mutex_unlock(&s_xMutex);
@@ -30,7 +30,7 @@ void CMSNPacket::InitBuffer()
   if (m_bPing)
     m_nSize += snprintf(buf, 32, "%s", m_szCommand) + 2;
   else
-    m_nSize += snprintf(buf, 32, "%s %u ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
+    m_nSize += snprintf(buf, 32, "%s %lu ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
   
   m_pBuffer = new CMSNBuffer(m_nSize);
   m_pBuffer->Pack(buf, strlen(buf));
@@ -47,7 +47,7 @@ void CMSNPayloadPacket::InitBuffer()
     return;
   char buf[32];
   
-  m_nSize = snprintf(buf, 32, "%s %u A %u\r\n", m_szCommand, m_nSequence, m_nPayloadSize);
+  m_nSize = snprintf(buf, 32, "%s %lu A %lu\r\n", m_szCommand, m_nSequence, m_nPayloadSize);
   m_nSize += m_nPayloadSize;
   
   m_pBuffer = new CMSNBuffer(m_nSize);
@@ -100,7 +100,7 @@ CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, char *_szPassword, c
   //TODO make a real url encoder
   char *szPassword = new char[strlen(_szPassword) * 3 + 1];
   char *szUserName = new char[strlen(_szUserName) * 3 + 1];
-  int i;
+  unsigned int i;
   for (i = 0; i < strlen(_szPassword); i++)
     sprintf(&szPassword[i * 3], "%%%02X", _szPassword[i]); 
   szPassword[(i * 3)] = '\0';
