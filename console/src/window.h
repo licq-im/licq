@@ -33,12 +33,14 @@ public:
   static void StartScreen(void);
   static void EndScreen(void);
   int Rows(void) { return rows; }
+  int Cols(void) { return cols; }
 
   void (CLicqConsole::*fProcessInput)(int);
   ICQEvent *event;
   InputState state;
   CData *data;
   unsigned long nLastUin;
+  unsigned short nLastHistory;
 protected:
   WINDOW *win;
   bool pad, active;

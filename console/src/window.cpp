@@ -52,6 +52,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, bool _pad)
   wbkgd(win, COLOR_PAIR(COLOR_WHITE));
   wmove(win, 0, 0);
   nLastUin = 0;
+  nLastHistory = 1;
 }
 
 CWindow::~CWindow(void)
