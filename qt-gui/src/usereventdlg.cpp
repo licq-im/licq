@@ -79,19 +79,17 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_bDeleteUser = false;
 
-  QAccel *a = new QAccel( this );
-  a->connectItem(a->insertItem(Key_Escape), this, SLOT(close()));
-
   top_hlay = new QHBoxLayout(this, 6);
   top_lay = new QVBoxLayout(top_hlay);
 
   QBoxLayout *layt = new QHBoxLayout(top_lay, 8);
   layt->addWidget(new QLabel(tr("Status:"), this));
   nfoStatus = new CInfoField(this, true);
-  nfoStatus->setMinimumWidth(nfoStatus->sizeHint().width()+70);
+  nfoStatus->setMinimumWidth(nfoStatus->sizeHint().width()+50);
   layt->addWidget(nfoStatus);
   layt->addWidget(new QLabel(tr("Time:"), this));
   nfoTimezone = new CInfoField(this, true);
+  nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2);
   layt->addWidget(nfoTimezone);
   btnHistory = new QPushButton(this);
   btnHistory->setPixmap(QPixmap(history_xpm));
@@ -220,6 +218,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead = new QSplitter(Vertical, mainWidget);
   lay->addWidget(splRead);
   splRead->setOpaqueResize();
+
+  QAccel *a = new QAccel( this );
+  a->connectItem(a->insertItem(Key_Escape), this, SLOT(close()));
 
   msgView = new MsgView(splRead);
   mleRead = new MLEditWrap(true, splRead, true);
@@ -741,6 +742,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 {
   grpMR = NULL;
 
+  QAccel *a = new QAccel( this );
+  a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
+
   QGroupBox *box = new QGroupBox(this);
   top_lay->addWidget(box);
   QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
@@ -892,8 +896,8 @@ void UserSendCommon::massMessageToggled(bool b)
     int w = grpMR->width();
     qDebug("width is %d", w);
     grpMR->hide();
-    resize(width()-w, height());
-    //top_hlay->setGeometry(QRect(x(), y(), width()-w, height()));
+//    resize(width()-w, height());
+    top_hlay->setGeometry(QRect(0, 0, width()-w, height()));
   }
 }
 
