@@ -301,18 +301,20 @@ void convo_recv(gulong uin)
 			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, file_d, -1);
 			gtk_text_thaw(GTK_TEXT(c->text));
-			return;
 		}
 
-		const gchar *for_user_f =
-		    g_strdup_printf("\n%s requests to send you a file!\n%s\n",
+		else
+		{
+			const gchar *for_user_f =
+		    	g_strdup_printf("\n%s requests to send you a file!\n%s\n",
 				    c->user->GetAlias(), file_d);
 
-		gtk_text_freeze(GTK_TEXT(c->text));
-		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_f, -1);
-		gtk_text_thaw(GTK_TEXT(c->text));
+			gtk_text_freeze(GTK_TEXT(c->text));
+			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_f, -1);
+			gtk_text_thaw(GTK_TEXT(c->text));
 
-		file_accept_window(c->user, (CEventFile *)u_event);
+			file_accept_window(c->user, (CEventFile *)u_event);
+		}
 	}
 
 	c->user->ClearEvent(0);	
