@@ -154,16 +154,22 @@ protected:
 class CEventChat : public CUserEvent
 {
 public:
-   CEventChat(const char *_szReason, unsigned long _nSequence, time_t _tTime,
-              unsigned long _nFlags);
-   virtual ~CEventChat();
-   virtual void AddToHistory(ICQUser *, direction);
-   virtual CEventChat *Copy()
-      { return (new CEventChat(m_szText, m_nSequence, m_tTime, m_nFlags)); };
-   const char *Reason()  { return m_szReason; }
+   CEventChat(const char *szReason, unsigned long nSequence, time_t tTime,
+      unsigned long nFlags);
+   CEventChat(const char *szReason, const char *szClients, unsigned short nPort,
+      unsigned long nSequence, time_t tTime, unsigned long nFlags);
+  virtual ~CEventChat();
+  virtual void AddToHistory(ICQUser *, direction);
+  virtual CEventChat *Copy()
+     { return (new CEventChat(m_szText, m_szClients, m_nPort, m_nSequence, m_tTime, m_nFlags)); };
+  const char *Reason()  { return m_szReason; }
+  const char *Clients()  { return m_szClients; }
+  unsigned short Port()   { return m_nPort; }
 protected:
-   void CreateDescription();
-   char *m_szReason;
+  void CreateDescription();
+  char *m_szReason;
+  char *m_szClients;
+  unsigned short m_nPort;
 };
 
 #if 0

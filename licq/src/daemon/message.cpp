@@ -235,22 +235,41 @@ void CEventUrl::AddToHistory(ICQUser *u, direction _nDir)
 
 //=====CEventChat===============================================================
 
-CEventChat::CEventChat(const char *_szReason, unsigned long _nSequence,
-                       time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags)
+CEventChat::CEventChat(const char *szReason, unsigned long nSequence,
+                       time_t tTime, unsigned long nFlags)
+   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)
 {
-  m_szReason = strdup(_szReason ==  NULL ? "" : _szReason);
+  m_szReason = strdup(szReason ==  NULL ? "" : szReason);
+  m_szClients = NULL;
+  m_nPort = 0;
+}
+
+CEventChat::CEventChat(const char *szReason, const char *szClients,
+   unsigned short nPort, unsigned long nSequence,
+   time_t tTime, unsigned long nFlags)
+   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags)
+{
+  m_szReason = strdup(szReason ==  NULL ? "" : szReason);
+  m_szClients = strdup(szClients);
+  m_nPort = nPort;
 }
 
 void CEventChat::CreateDescription()
 {
-  m_szText = strdup(m_szReason);
+  if (m_szClients == NULL)
+    m_szText = strdup(m_szReason);
+  else
+  {
+    m_szText = (char *)malloc(strlen(m_szReason) + strlen(m_szClients) + 128);
+    sprintf(m_szText, "%s\n--------------------\nMultiparty:\n%s", m_szReason, m_szClients);
+  }
 }
 
 
 CEventChat::~CEventChat()
 {
   free(m_szReason);
+  if (m_szClients != NULL) free(m_szClients);
 }
 
 
