@@ -27,7 +27,7 @@ licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	wharf.cpp randomchatdlg.cpp forwarddlg.cpp
 
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
-	-s -module -avoid-version -rpath $(libdir)
+	-s -module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
 licq_qt_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
 	$(XSS_LIBS) $(X_EXTRA_LIBS) $(KDE_LIBS)
 
