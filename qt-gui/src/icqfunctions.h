@@ -18,6 +18,7 @@
 #include <qvalidator.h>
 #include <qcombobox.h>
 #include <qsplitter.h>
+#include <qtextview.h>
 
 #include "userfcndlg.h"
 #include "messagebox.h"
@@ -90,11 +91,10 @@ protected:
   MLEditWrap *mleAboutMsg;
 
   // History tab
-  MLEditWrap *mleHistory;
-  //QCheckBox *chkEditHistory;
+  QTextView *mleHistory;
+  QLabel *lblHistory;
   HistoryList m_lHistoryList;
   HistoryListIter m_iHistoryIter;
-  //QPushButton *btnHistoryPrev, *btnHistoryNext;
   unsigned short m_nHistoryIndex, m_nHistoryShowing;
 
   static unsigned short s_nX;

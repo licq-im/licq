@@ -3,6 +3,8 @@
 #endif
 
 #include <qpainter.h>
+#include <qdatetime.h>
+
 #include "message.h"
 #include "messagebox.h"
 #include "eventdesc.h"
@@ -11,10 +13,12 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView 
 {
    index = (unsigned short)theIndex;
    msg = theMsg->Copy();
+   QDateTime d;
+   d.setTime_t(msg->Time());
 
    setText(0, "*");
    setText(1, EventDescription(msg));
-   setText(2, msg->Time());
+   setText(2, d.toString());
    char szFlags[4];
    szFlags[0] = msg->IsDirect() ? 'D' : ' ';
    szFlags[1] = msg->IsUrgent() ? 'U' : ' ';

@@ -9,6 +9,7 @@
 #endif
 #include <qtabbar.h>
 #include <qwidgetstack.h>
+#include <qstylesheet.h>
 
 #include "icqfunctions.h"
 #include "chatacceptdlg.h"
@@ -32,7 +33,9 @@
 #define LM 6
 #define TM 6
 #define BM 42
-#define NUM_MSG_PER_HISTORY 5
+#define NUM_MSG_PER_HISTORY 20
+#define COLOR_SENT "red"
+#define COLOR_RECEIVED "blue"
 
 unsigned short ICQFunctions::s_nX = 100;
 unsigned short ICQFunctions::s_nY = 100;
@@ -140,9 +143,9 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
    tabLabel[TAB_HISTORY] = tr("History");
    fcnTab[TAB_HISTORY] = new QWidget(this, tabLabel[TAB_HISTORY]);
-   mleHistory = new MLEditWrap(true, fcnTab[TAB_HISTORY]);
-   //chkEditHistory = new QCheckBox(tr("History read only"), fcnTab[TAB_HISTORY]);
-   //connect(chkEditHistory, SIGNAL(toggled(bool)), mleHistory, SLOT(setReadOnly(bool)));
+   mleHistory = new QTextView(fcnTab[TAB_HISTORY]);
+   //mleHistory->styleSheet()->setAlignment(Qt::WordBreak);
+   lblHistory = new QLabel(fcnTab[TAB_HISTORY]);
 
    addTab(fcnTab[TAB_READ], tabLabel[TAB_READ]);
    addTab(fcnTab[TAB_SEND], tabLabel[TAB_SEND]);
@@ -241,7 +244,7 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   mleAboutMsg->setGeometry(10, 15, boxAboutMsg->width() - 20, boxAboutMsg->height() - 25);
 
   mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
-  //chkEditHistory->setGeometry(5, height() - 100, 150, 20);
+  lblHistory->setGeometry(5, height() - 100, width() - 10, 20);
 
   chkAutoClose->setGeometry(10, height() - 30, 180, 20);
   btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
@@ -313,8 +316,7 @@ void ICQFunctions::setupTabs(int index)
   setExtInfo(u);
 
   // History tab
-  mleHistory->setReadOnly(true);
-  //chkEditHistory->setChecked(true);
+  //mleHistory->setReadOnly(true);
 
   bool bIsNew = u->getIsNew();
   gUserManager.DropUser(u);
@@ -734,23 +736,22 @@ void ICQFunctions::ShowHistory(void)
   // Last check (should never be true)
   if (m_lHistoryList.size() == 0) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  char sz[48];
-  strcpy(sz, m_bIsOwner ? "Server" : u->getAlias());
-  gUserManager.DropUser(u);
   QString s, st;
+  QDateTime d;
   m_nHistoryShowing = 0;
   while (m_nHistoryShowing < NUM_MSG_PER_HISTORY)
   {
-    s.sprintf("| %s -> %s: %s\n"
-              "| %s [%c%c%c]\n",
-              (*m_iHistoryIter)->Direction() == D_RECEIVER ? sz : o->getAlias(),
-              (*m_iHistoryIter)->Direction() == D_RECEIVER ? o->getAlias() : sz,
+    d.setTime_t((*m_iHistoryIter)->Time());
+    s.sprintf("<font color=\"%s\"><b>%s (%s) [%c%c%c]</b><br><br>",
+              (*m_iHistoryIter)->Direction() == D_RECEIVER ? COLOR_RECEIVED : COLOR_SENT,
               (const char *)EventDescription(*m_iHistoryIter),
-              (*m_iHistoryIter)->Time(), (*m_iHistoryIter)->IsDirect() ? 'D' : '-',
-              (*m_iHistoryIter)->IsMultiRec() ? 'M' : '-', (*m_iHistoryIter)->IsUrgent() ? 'U' : '-');
-    st.append(s + QString::fromLocal8Bit( (*m_iHistoryIter)->Text() ) + "\n");
+              (const char *)d.toString(),
+              (*m_iHistoryIter)->IsDirect() ? 'D' : '-',
+              (*m_iHistoryIter)->IsMultiRec() ? 'M' : '-',
+              (*m_iHistoryIter)->IsUrgent() ? 'U' : '-');
+    s.append(QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*m_iHistoryIter)->Text() )));
+    s.append("</font><br><hr><br>");
+    st.append(s);
     m_iHistoryIter++;
     m_nHistoryIndex++;
     m_nHistoryShowing++;
@@ -759,13 +760,14 @@ void ICQFunctions::ShowHistory(void)
       break;
     }
   }
-  mleHistory->setText(tr("[Events %1 to %2 of %3]\n--------------------\n\n").arg(m_nHistoryIndex - m_nHistoryShowing + 1)
-    .arg(m_nHistoryIndex).arg(m_lHistoryList.size()) );
+  lblHistory->setText(tr("[<font color=\"" COLOR_RECEIVED "\">Received</font>] "
+                         "[<font color=\"" COLOR_SENT "\">Sent</font>] "
+                         "%3 to %4 of %5")
+                      .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
+                      .arg(m_nHistoryIndex)
+                      .arg(m_lHistoryList.size()));
+  mleHistory->setText(st);
 
-  mleHistory->append(st);
-  mleHistory->goToEnd();
-
-  gUserManager.DropOwner();
 }
 
 
