@@ -286,20 +286,20 @@ const unsigned long LIST_ALL                     = 3;
 class CICQSignal
 {
 public:
-  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, int nArgument = 0,char *nParameters=NULL);
+  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, int nArgument = 0, char *nParameters = 0);
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
   unsigned long Signal() { return m_nSignal; }
   unsigned long SubSignal() { return m_nSubSignal; }
   unsigned long Uin() { return m_nUin; }
   int Argument() { return m_nArgument; }
-  char * Parameters() { return m_nParameters; }
+  char *Parameters() { return m_szParameters; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
   int m_nArgument;
-  char * m_nParameters;
+  char * m_szParameters;
 };
 
 #endif
