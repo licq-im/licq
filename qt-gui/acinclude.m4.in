@@ -61,6 +61,14 @@ AC_DEFUN(AC_PATH_QT_LIB,
           echo "tried $qt_dir/libqt-mt.so" >&AC_FD_CC 
         fi
 
+        if test -r "$qt_dir/libqt-mt.so.3"; then
+          ac_qt_libname=-lqt-mt
+          ac_qt_libdir=$qt_dir
+          break
+        else
+          echo "tried $qt_dir/libqt-mt.so.3" >&AC_FD_CC
+        fi
+
         if test -r "$qt_dir/libqt.so"; then
           ac_qt_libname=-lqt
           ac_qt_libdir=$qt_dir
