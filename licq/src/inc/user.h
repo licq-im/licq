@@ -152,6 +152,7 @@ public:
   char *getSex(char *);
   char *getCountry(char *);
   void getStatusStr(char *);
+  static void StatusStr(unsigned short, bool, char *);
 
   void GetHistory(char *&buf)  { m_fHistory.Load(buf); }
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }

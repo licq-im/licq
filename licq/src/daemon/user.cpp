@@ -1066,9 +1066,16 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   saveInfo();
 }
 
+
 void ICQUser::getStatusStr(char *sz)
 {
-  switch(getStatus())
+  StatusStr(getStatus(), getStatusInvisible(), sz);
+}
+
+
+void ICQUser::StatusStr(unsigned short n, bool b, char *sz)
+{
+  switch(n)
   {
   case ICQ_STATUS_OFFLINE:     strcpy(sz, "Offline");  break;
   case ICQ_STATUS_ONLINE:      strcpy(sz, "Online");   break;
@@ -1077,9 +1084,9 @@ void ICQUser::getStatusStr(char *sz)
   case ICQ_STATUS_OCCUPIED:    strcpy(sz, "Occupied"); break;
   case ICQ_STATUS_DND:         strcpy(sz, "Do Not Disturb"); break;
   case ICQ_STATUS_FREEFORCHAT: strcpy(sz, "Free for Chat"); break;
-  default:                     sprintf(sz, "(0x%04X)", getStatus()); break;
+  default:                     sprintf(sz, "0x%04X", n); break;
   }
-  if (getStatusInvisible())
+  if (b)
   {
     memmove(sz + 1, sz, strlen(sz) + 1);
     sz[0] = '(';
