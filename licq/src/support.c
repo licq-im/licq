@@ -96,6 +96,14 @@ char *GetXmlTag(const char *szXmlSource, const char *szTagName)
   return szDest;
 }
     
+int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin)
+{
+  int nRet = snprintf(_szBuf, _nSize - 1, "%lu", _nUin);
+  _szBuf[_nSize - 1] = '\0';
+
+  return (nRet == -1) ? _nSize - 1 : nRet; 
+}
+
 int Redirect(const char *_szFile)
 {
   int fd = open(_szFile, O_WRONLY | O_CREAT | O_APPEND, 00660);

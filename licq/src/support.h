@@ -21,6 +21,9 @@ extern "C" {
 #endif
 
 
+const unsigned short MAX_UIN_DIGITS  = 13;
+
+
 /* Basic support functions */
 
 void SetString(char **szDest, const char *szSource);
@@ -28,6 +31,8 @@ void SetString(char **szDest, const char *szSource);
 char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen);
 
 char *GetXmlTag(const char *szXmlSource, const char *szTagName);
+
+int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin);
 
 int Redirect(const char *);
 
