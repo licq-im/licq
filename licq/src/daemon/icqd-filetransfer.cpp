@@ -284,7 +284,7 @@ bool CFileTransferManager::ProcessPacket()
     if (m_nState == FT_STATE_WAITxFORxFILExINFO)
       m_nResult = FT_DONExBATCH;
     else
-      m_nResult = FT_CLOSED;
+      m_nResult = FT_ERRORxCLOSED;
     return false;
   }
 
@@ -336,7 +336,7 @@ bool CFileTransferManager::ProcessPacket()
       CPFile_InitServer p(m_szLocalName);
       if (!SendPacket(&p))
       {
-        m_nResult = FT_CLOSED;
+        m_nResult = FT_ERRORxCLOSED;
         return false;
       }
 
@@ -407,7 +407,7 @@ bool CFileTransferManager::ProcessPacket()
       CPFile_Start p(m_nFilePos);
       if (!SendPacket(&p))
       {
-        m_nResult = FT_CLOSED;
+        m_nResult = FT_ERRORxCLOSED;
         return false;
       }
 
@@ -425,6 +425,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Info("%sFile Transfer: Receiving %s (%ld bytes).\n", L_TCPxSTR,
            m_szFileName, m_nFileSize);
         PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, m_szPathName));
+        gettimeofday(&tv_lastupdate, NULL);
       }
 
       // Write the new data to the file and empty the buffer
@@ -457,6 +458,18 @@ bool CFileTransferManager::ProcessPacket()
       m_nBytesTransfered += nBytesWritten;
       m_nBatchPos += nBytesWritten;
       m_nBatchBytesTransfered += nBytesWritten;
+
+      // Check if we need to send an update notification
+      if (m_nUpdatesEnabled)
+      {
+        struct timeval tv_now;
+        gettimeofday(&tv_now, NULL);
+        if (tv_now.tv_sec >= tv_lastupdate.tv_sec + m_nUpdatesEnabled)
+        {
+          PushFileTransferEvent(FT_UPDATE);
+          tv_lastupdate = tv_now;
+        }
+      }
 
       int nBytesLeft = m_nFileSize - m_nFilePos;
       if (nBytesLeft > 0)
@@ -517,7 +530,7 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (!SendPacket(&p))
       {
-        m_nResult = FT_CLOSED;
+        m_nResult = FT_ERRORxCLOSED;
         return false;
       }
 
@@ -548,7 +561,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid start packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
-        m_nResult = FT_CLOSED;
+        m_nResult = FT_ERRORxCLOSED;
         return false;
       }
 
@@ -620,6 +633,7 @@ bool CFileTransferManager::SendFilePacket()
     gLog.Info("%sFile Transfer: Sending %s (%ld bytes).\n", L_TCPxSTR,
        m_szPathName, m_nFileSize);
     PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, m_szPathName));
+    gettimeofday(&tv_lastupdate, NULL);
   }
 
   int nBytesToSend = m_nFileSize - m_nFilePos;
@@ -636,7 +650,7 @@ bool CFileTransferManager::SendFilePacket()
   xSendBuf.Pack(pSendBuf, nBytesToSend);
   if (!SendBuffer(&xSendBuf))
   {
-    m_nResult = FT_CLOSED;
+    m_nResult = FT_ERRORxCLOSED;
     return false;
   }
 
@@ -645,6 +659,18 @@ bool CFileTransferManager::SendFilePacket()
 
   m_nBatchPos += nBytesToSend;
   m_nBatchBytesTransfered += nBytesToSend;
+
+  // Check if we need to send an update notification
+  if (m_nUpdatesEnabled)
+  {
+    struct timeval tv_now;
+    gettimeofday(&tv_now, NULL);
+    if (tv_now.tv_sec >= tv_lastupdate.tv_sec + m_nUpdatesEnabled)
+    {
+      PushFileTransferEvent(FT_UPDATE);
+      tv_lastupdate = tv_now;
+    }
+  }
 
   int nBytesLeft = m_nFileSize - m_nFilePos;
   if (nBytesLeft > 0)
@@ -688,7 +714,7 @@ bool CFileTransferManager::SendFilePacket()
     }
     if (!SendPacket(&p))
     {
-      m_nResult = FT_CLOSED;
+      m_nResult = FT_ERRORxCLOSED;
       return false;
     }
 
@@ -801,6 +827,8 @@ void *FileTransferManager_tep(void *arg)
   licq_segv_handler(&signal_handler_ftThread);
 
   fd_set f_recv, f_send;
+  struct timeval *tv;
+  struct timeval tv_updates = { 2, 0 };
   int l, nSocketsAvailable, nCurrentSocket;
   char buf[2];
 
@@ -822,7 +850,28 @@ void *FileTransferManager_tep(void *arg)
       // No need to check "l" as ftSock is already in the read list
     }
 
-    nSocketsAvailable = select(l, &f_recv, &f_send, NULL, NULL);
+    // Prepare max timeout if necessary
+    if (ftman->m_nUpdatesEnabled &&
+        (ftman->m_nState == FT_STATE_SENDINGxFILE ||
+         ftman->m_nState == FT_STATE_RECEIVINGxFILE) )
+    {
+      tv_updates.tv_sec = ftman->m_nUpdatesEnabled;
+      tv_updates.tv_usec = 0;
+      tv = &tv_updates;
+    }
+    else
+    {
+      tv = NULL;
+    }
+
+    nSocketsAvailable = select(l, &f_recv, &f_send, NULL, tv);
+
+    // Check if we timed out
+    if (tv != NULL && nSocketsAvailable == 0)
+    {
+      ftman->PushFileTransferEvent(FT_UPDATE);
+      gettimeofday(&ftman->tv_lastupdate, NULL);
+    }
 
     nCurrentSocket = 0;
     while (nSocketsAvailable > 0 && nCurrentSocket < l)

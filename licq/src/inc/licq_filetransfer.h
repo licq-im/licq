@@ -16,6 +16,10 @@
  *     received from.
  *     Listen on the CFileTransferManager::Pipe() for a signal that an event
  *     is available for processing.
+ *     To receive automatic notification every x seconds (removes the need
+ *     for a seperate timer in the plugin) call SetUpdatesEnabled(x) where
+ *     x is the interval (2 seconds is good).  This will cause an FT_UPDATE
+ *     signal to be sent every x seconds while a transfer is going on.
  * 2a. To receive files, call CFileTransferManager::ReceiveFiles().
  * 2b. To send files, call CFileTransferManager::SendFiles(<files>, <port>),
  *     where <files> is a ConstFileList of files to send, and <port> is the
@@ -37,13 +41,13 @@
  *       data argument will be the full pathname of the file.
  *     FT_DONExTRANSFER: Signals that the transfer is done and the other side
  *       has disconnected.
- *     FT_CLOSED: This means that the other side disconnected unexpectedly.
- *     FT_ERRORx<...>: This means some kind of I/O error has occured either
+ *     FT_ERRORx<...>: This means some kind of error has occured either
  *       reading/writing to files or talking to the network.  More details
  *       are available in the log.  The type of error is also specified
  *       as FT_ERRORxFILE (file read/write error, PathName() contains the
- *       name of the offending file) or FT_ERRORxHANDSHAKE (handshaking error
- *       by the other side).
+ *       name of the offending file), FT_ERRORxHANDSHAKE (handshaking error
+ *       by the other side), or FT_ERRORxCLOSED (the remote side closed
+ *       the connection unexpectedly).
  * 4.  Call CloseFileTransfer() when done or to cancel, or simply delete the
  *       CFileTransferManager object.
  *
@@ -52,6 +56,8 @@
  * which case the file will be saved as <filename>.<timestamp>
  *-------------------------------------------------------------------------*/
 
+#include <sys/time.h>
+
 #include "licq_packets.h"
 class CICQDaemon;
 
@@ -59,11 +65,12 @@ class CICQDaemon;
 // FileTransferEvent codes
 const unsigned char FT_STARTxBATCH   = 1;
 const unsigned char FT_STARTxFILE    = 2;
-const unsigned char FT_DONExFILE     = 3;
-const unsigned char FT_DONExBATCH    = 4;
-const unsigned char FT_CLOSED        = 5;
+const unsigned char FT_UPDATE        = 3;
+const unsigned char FT_DONExFILE     = 4;
+const unsigned char FT_DONExBATCH    = 5;
 const unsigned char FT_ERRORxFILE      = 0xFF;
 const unsigned char FT_ERRORxHANDSHAKE = 0xFE;
+const unsigned char FT_ERRORxCLOSED    = 0xFD;
 
 
 //=====File=====================================================================
@@ -190,6 +197,8 @@ public:
   unsigned long BatchPos() { return m_nBatchPos; }
 
   void ChangeSpeed(unsigned short);
+  void SetUpdatesEnabled(unsigned short n) { m_nUpdatesEnabled = n; }
+  unsigned short UpdatesEnabled(void) { return m_nUpdatesEnabled; }
 
   int Pipe() { return pipe_events[PIPE_READ]; }
   CFileTransferEvent *PopFileTransferEvent();
@@ -201,6 +210,9 @@ protected:
   pthread_t thread_ft;
   FileList m_lPathNames;
   direction m_nDirection;
+
+  struct timeval tv_lastupdate;
+  unsigned short m_nUpdatesEnabled;
 
   unsigned char m_nResult;
   unsigned long m_nUin;
