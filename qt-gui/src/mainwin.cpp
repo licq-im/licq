@@ -699,7 +699,8 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
                  L_ERRORxSTR, _nUin);
       break;
     }
-    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup)) {
+    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+    {
       CUserViewItem *i = (CUserViewItem *)userView->firstChild();
       while (i && i->ItemUin() != _nUin)
         i = (CUserViewItem *)i->nextSibling();
@@ -1081,56 +1082,57 @@ void CMainWindow::callUserFunction(int index)
   if(userView->SelectedItemUin() == 0)
     return;
 
-  switch(index) {
-  case mnuUserAuthorize:
-    licqDaemon->icqAuthorize(userView->SelectedItemUin());
-    break;
-  case mnuUserCheckResponse:
+  switch(index)
+  {
+    case mnuUserAuthorize:
+      licqDaemon->icqAuthorize(userView->SelectedItemUin());
+      break;
+    case mnuUserCheckResponse:
+      {
+        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
+      }
+      break;
+    case mnuUserOnlineNotify:
     {
-      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
+      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      if (!u) return;
+      u->SetOnlineNotify(!u->OnlineNotify());
+      gUserManager.DropUser(u);
+      if (m_bFontStyles) updateUserWin();
     }
     break;
-  case mnuUserOnlineNotify:
-  {
-    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (!u) return;
-    u->SetOnlineNotify(!u->OnlineNotify());
-    gUserManager.DropUser(u);
-    if (m_bFontStyles) updateUserWin();
-  }
-  break;
-  case mnuUserInvisibleList:
-  {
-    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (!u) return;
-    u->SetInvisibleList(!u->InvisibleList());
-    gUserManager.DropUser(u);
-    if (m_bFontStyles) updateUserWin();
-    licqDaemon->icqSendInvisibleList(true);
-  }
-  break;
-  case mnuUserVisibleList:
-  {
-    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (!u) return;
-    u->SetVisibleList(!u->VisibleList());
-    gUserManager.DropUser(u);
-    if (m_bFontStyles)
+    case mnuUserInvisibleList:
+    {
+      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      if (!u) return;
+      u->SetInvisibleList(!u->InvisibleList());
+      gUserManager.DropUser(u);
+      if (m_bFontStyles) updateUserWin();
+      licqDaemon->icqSendInvisibleList(true);
+    }
+    break;
+    case mnuUserVisibleList:
+    {
+      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      if (!u) return;
+      u->SetVisibleList(!u->VisibleList());
+      gUserManager.DropUser(u);
+      if (m_bFontStyles)
+        updateUserWin();
+      licqDaemon->icqSendVisibleList(true);
+    }
+    break;
+    case mnuUserIgnoreList:
+    {
+      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+      if (!u) return;
+      u->SetIgnoreList(!u->IgnoreList());
+      gUserManager.DropUser(u);
       updateUserWin();
-    licqDaemon->icqSendVisibleList(true);
-  }
-  break;
-  case mnuUserIgnoreList:
-  {
-    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (!u) return;
-    u->SetIgnoreList(!u->IgnoreList());
-    gUserManager.DropUser(u);
-    updateUserWin();
-  }
-  break;
-  default:
-    callFunction(index, userView->SelectedItemUin());
+    }
+    break;
+    default:
+      callFunction(index, userView->SelectedItemUin());
   }
 
 }
@@ -1226,7 +1228,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
     break;
   case ICQ_CMDxSND_AUTHORIZE:
      if (e->m_eResult != EVENT_ACKED)
-       gLog.Error("%sError sending autorization.\n", L_ERRORxSTR);
+       WarnUser(this, tr("Error sending autorization."));
      else
        InformUser(this, tr("Authorization granted."));
      break;
