@@ -125,16 +125,20 @@ const unsigned long LIST_ALL                     = 4;
 class CICQSignal
 {
 public:
-  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin);
+  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, unsigned long nArgument = 0);
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
   unsigned long Signal() { return m_nSignal; }
   unsigned long SubSignal() { return m_nSubSignal; }
   unsigned long Uin() { return m_nUin; }
+  // Argument depends on what the signal/subsignal is:
+  // UPDATExUSER/USER_EVENTS - event id
+  unsigned long Argument() { return m_nArgument; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
+  unsigned long m_nArgument;
 };
 
 #endif

@@ -110,12 +110,13 @@ bool CICQEventTag::Equals(const ICQEvent *e)
 
 
 //=====CICQSignal===============================================================
-CICQSignal::CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal,
-                       unsigned long _nUin)
+CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
+                       unsigned long nUin, unsigned long nArgument)
 {
-  m_nSignal = _nSignal;
-  m_nSubSignal = _nSubSignal;
-  m_nUin = _nUin;
+  m_nSignal = nSignal;
+  m_nSubSignal = nSubSignal;
+  m_nUin = nUin;
+  m_nArgument = nArgument;
 }
 
 
