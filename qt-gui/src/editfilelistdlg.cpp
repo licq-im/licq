@@ -25,7 +25,7 @@
 #include "editfilelistdlg.h"
 
 CEditFileListDlg::CEditFileListDlg(ConstFileList *_lFileList, QWidget *parent)
-  : LicqDialog(parent, "EditFileListDlg", false, WStyle_ContextHelp |
+  : LicqDialog(parent, "EditFileListDlg", true, WStyle_ContextHelp |
                                               WDestructiveClose)
 { 
   QGridLayout *lay = new QGridLayout(this, 5, 2, 10, 5);
