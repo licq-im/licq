@@ -90,7 +90,7 @@ void CUtilityDlg::resizeEvent(QResizeEvent *e)
   nfoWinType->setGeometry(10, 35, 60, 5, width() - 85);
   nfoDesc->setGeometry(10, 60, 60, 5, width() - 85);
   boxFields->setGeometry(10, 90, width() - 20, height() - 140);
-  mleCommand->setGeometry(10, 15, boxFields->width() - 20, boxFields->height() - 25);
+  mleCommand->setGeometry(10, 20, boxFields->width() - 20, boxFields->height() - 30);
   for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
   {
     lblFields[i]->setGeometry(10, (i+1) * 25 - 5, 140, 20);
@@ -134,6 +134,11 @@ void CUtilityDlg::slot_run()
   }
   case UtilityWinLicq:
   {
+    for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
+    {
+      lblFields[i]->hide();
+      edtFields[i]->hide();
+    }
     boxFields->setTitle("Command Window");
     boxFields->show();
     mleCommand->show();
