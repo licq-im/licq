@@ -32,12 +32,12 @@ class QLineEdit;
 class CICQDaemon;
 class CSignalManager;
 class ICQEvent;
+class CICQEventTag;
 class ICQUser;
 class CSearchAck;
 
 class SearchUserView : public QListView
 {
-   Q_OBJECT
 public:
    SearchUserView(QWidget *parent = 0, char *name = 0);
 };
@@ -60,6 +60,7 @@ class SearchUserDlg : public QDialog
 public:
    SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan,
                   QWidget *parent =0, const char *name = 0);
+   ~SearchUserDlg();
 
 private:
    bool uin_search;
@@ -76,7 +77,7 @@ protected:
    QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin;
    QWidget *alias_tab, *email_tab, *uin_tab;
 
-   unsigned short searchSequence;
+   CICQEventTag *searchTag;
    QPushButton *btnDone, *btnAdd;
    SearchUserView *foundView;
 

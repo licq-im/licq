@@ -87,6 +87,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   server = s;
   sigman = theSigMan;
   setCaption(tr("Licq - User Search"));
+  searchTag = NULL;
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 6);
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
@@ -190,6 +191,12 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   resetSearch();
 }
 
+SearchUserDlg::~SearchUserDlg()
+{
+  delete searchTag;
+}
+
+
 void SearchUserDlg::startSearch()
 {
   unsigned long uin = edtUin->text().toULong(&uin_search);
@@ -207,12 +214,12 @@ void SearchUserDlg::startSearch()
 
   if (uin_search && uin)
   {
-    searchSequence = server->icqSearchByUin(uin);
+    searchTag = server->icqSearchByUin(uin);
   }
   else
   {
-    searchSequence = server->icqSearchByInfo(edtNick->text().local8Bit(),edtFirst->text().local8Bit(),
-                                            edtLast->text().local8Bit(), edtEmail->text().local8Bit());
+    searchTag = server->icqSearchByInfo(edtNick->text().local8Bit(),edtFirst->text().local8Bit(),
+       edtLast->text().local8Bit(), edtEmail->text().local8Bit());
   }
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
@@ -228,14 +235,15 @@ void SearchUserDlg::resetSearch()
   btnAdd->setEnabled(false);
   btnReset->setEnabled(false);
   foundView->clear();
-  searchSequence = 0;
+  delete searchTag;
+  searchTag = NULL;
   lblSearch->setText(tr("Enter search parameters and select 'Search'"));
 }
 
 
 void SearchUserDlg::searchResult(ICQEvent *e)
 {
-  if (e->SubSequence() != searchSequence) return;
+  if (!searchTag->Equals(e)) return;
 
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
@@ -246,11 +254,20 @@ void SearchUserDlg::searchResult(ICQEvent *e)
   edtUin->setEnabled(true);
 
   if (e->Result() == EVENT_SUCCESS)
+  {
     searchDone(e->SearchAck()->More());
+    delete searchTag;
+    searchTag = NULL;
+  }
   else if (e->Result() == EVENT_ACKED)
     searchFound(e->SearchAck());
   else
+  {
     searchFailed();
+    delete searchTag;
+    searchTag = NULL;
+  }
+
 }
 
 void SearchUserDlg::searchFound(CSearchAck *s)
