@@ -150,7 +150,7 @@ AC_DEFUN(LICQ_CHECK_OPENSSL,
     if test "$openssl_incdir" != "no"; then
       CPPFLAGS="$CPPFLAGS -I$openssl_incdir"
     fi
-    AC_CHECK_HEADER(openssl/ssl.h, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    AC_CHECK_HEADER(openssl/des.h, WITH_OPENSSL="yes", WITH_OPENSSL="no")
     if test "$WITH_OPENSSL" = "no"; then
       CPPFLAGS="$temp"
     fi

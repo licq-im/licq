@@ -182,7 +182,7 @@ if test "$WITH_OPENSSL" = "no"; then
   echo "functionality install OpenSSL (libraries and headers) and"
   echo "rebuild Licq.  OpenSSL can be found at http://www.openssl.org"
   echo "or as RPM from your local distribution site.  Note you need"
-  echo "version 0.9.4 or greater."
+  echo "version 0.9.5 or greater."
 else
   echo "OpenSSL secure channel support is enabled."
 fi
