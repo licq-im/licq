@@ -1111,27 +1111,28 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
 void CICQDaemon::AddUserToList(ICQUser *nu)
 {
   // Don't add a user we already have
-  if (gUserManager.IsOnList(nu->Uin()))
+  if (gUserManager.IsOnList(nu->IdString(), nu->PPID()))
   {
-    gLog.Warn(tr("%sUser %lu already on contact list.\n"), L_WARNxSTR, nu->Uin());
+    gLog.Warn(tr("%sUser %s already on contact list.\n"), L_WARNxSTR, nu->IdString());
     return;
   }
 
-  unsigned long nUin = nu->Uin();
+  const char *szId = nu->IdString();
+  unsigned long nPPID = nu->PPID();
   gUserManager.AddUser(nu);
   gUserManager.DropUser(nu);
   SaveUserList();
-  nu = gUserManager.FetchUser(nUin, LOCK_W);
+  nu = gUserManager.FetchUser(szId, nPPID, LOCK_W);
 
-  if (m_nTCPSrvSocketDesc != -1)
+  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
   {
     // XXX if adding to server list, it will get write lock FIX THAT SHIT!
     gUserManager.DropUser(nu);
-    icqAddUser(nUin);
-    nu = gUserManager.FetchUser(nUin, LOCK_W);
+    icqAddUser(szId);
+    nu = gUserManager.FetchUser(szId, nPPID, LOCK_W);
   }
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->Uin()));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->IdString(), nu->PPID()));
 }
 
 //-----RemoveUserFromList-------------------------------------------------------
