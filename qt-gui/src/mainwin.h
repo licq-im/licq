@@ -329,6 +329,7 @@ protected slots:
   void slot_eventTag(const char *, unsigned long, unsigned long);
   void slot_doneplugindlg();
   void slot_doneOptions();
+  void slot_doneOwnerManager();
   void slot_doneOwnerFcn(ICQEvent *);
   void slot_doneAwayMsgDlg();
   void slot_stats();

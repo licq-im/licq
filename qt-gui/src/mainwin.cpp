@@ -4261,6 +4261,7 @@ void CMainWindow::showOwnerManagerDlg()
   else
   {
     ownerManagerDlg = new OwnerManagerDlg(this, licqDaemon);
+    connect(ownerManagerDlg, SIGNAL(signal_done()), this, SLOT(slot_doneOwnerManager())); 
     ownerManagerDlg->show();
   }
 }
@@ -4404,6 +4405,12 @@ void CMainWindow::slot_popupall()
     callDefaultFunction(*iter, ppids.front());
     ppids.pop_front();
   }
+}
+
+
+void CMainWindow::slot_doneOwnerManager()
+{
+  ownerManagerDlg = 0;
 }
 
 

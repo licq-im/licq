@@ -263,6 +263,11 @@ OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
   }
 }
 
+OwnerManagerDlg::~OwnerManagerDlg()
+{
+  emit signal_done();
+}
+
 void OwnerManagerDlg::updateOwners()
 {
   ownerView->clear();

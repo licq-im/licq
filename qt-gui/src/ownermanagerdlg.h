@@ -59,6 +59,7 @@ class OwnerManagerDlg : public LicqDialog
    Q_OBJECT
 public:
   OwnerManagerDlg(CMainWindow *m, CICQDaemon *s);
+  virtual ~OwnerManagerDlg();
   void slot_doneRegisterUser(ICQEvent *);
 
 protected slots:
@@ -83,6 +84,9 @@ protected:
               *btnModify,
               *btnDelete,
               *btnDone;
+
+signals:
+  void signal_done();
 };
 
 #endif // __OWNERMANAGERDLG_H
