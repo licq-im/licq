@@ -311,8 +311,8 @@ char *CBuffer::print(char *&p)
         sprintf(pPos, "\n%s", L_BLANKxSTR);
         pPos += 1 + nLenBlank;
       }
-      else if((i + 1) % 4 == 0)
-        pPos += sprintf(pPos, "- ");
+      /*else if((i + 1) % 4 == 0)
+        pPos += sprintf(pPos, "- ");*/
    }
    return(p);
 }
