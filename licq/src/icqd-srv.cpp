@@ -1406,14 +1406,6 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
     // 0 if not set -> Online
     unsigned long nNewStatus = packet.UnpackUnsignedLongTLV(0x0006);
-    if (u->StatusFull() != nNewStatus) {
-      ChangeUserStatus(u, nNewStatus);
-      gLog.Info("%s%s (%ld) changed status: %s.\n", L_SRVxSTR, u->GetAlias(), nUin, u->StatusStr());
-      if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
-        gLog.Unknown("%sUnknown status flag for %s (%ld): 0x%08lX\n",
-                     L_UNKNOWNxSTR, u->GetAlias(), nUin, (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
-      nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
-    }
 
     if (packet.getTLVLen(0x000a) == 4) {
       unsigned long userIP = packet.UnpackUnsignedLongTLV(0x000a);
@@ -1444,21 +1436,29 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       junk1 = msg.UnpackUnsignedLongBE();
       junk2 = msg.UnpackUnsignedShortBE();
 
-      if (u->ClientTimestamp() != timestamp || u->Version() != tcpVersion) {
-        if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
-          gLog.Info("%s%s (%ld) changed connection info: v%01x [Licq %s/SSL].\n",
-                    L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
-                    CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
-        else if ((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-          gLog.Info("%s%s (%ld) changed connection info: v%01x [Licq %s].\n",
-                    L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
-                    CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
-        else if (timestamp == 0xffffffff)
-          gLog.Info("%s%s (%ld) changed connection info: v%01x [MIRANDA].\n",
-                    L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F);
-        else
-          gLog.Info("%s%s (%ld) changed connection info: v%01x.\n",
-                    L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F);
+
+      char szExtraInfo[128] = { 0 };
+      if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
+        snprintf(szExtraInfo, 127, " [Licq %s/SSL]",
+                 CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
+      else if ((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+        snprintf(szExtraInfo, 127, " [Licq %s]",
+                 CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
+      else if (timestamp == 0xffffffff)
+        strcpy(szExtraInfo, " [MIRANDA]");
+      else
+        strcpy(szExtraInfo, "");
+      szExtraInfo[127] = '\0';
+
+      if (u->StatusFull() != nNewStatus)
+      {
+        ChangeUserStatus(u, nNewStatus);
+        gLog.Info("%s%s (%ld) changed status: %s (v%01x%s).\n", L_SRVxSTR, u->GetAlias(),
+                  nUin, u->StatusStr(), tcpVersion & 0x0F, szExtraInfo);
+        if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
+          gLog.Unknown("%sUnknown status flag for %s (%ld): 0x%08lX\n",
+                       L_UNKNOWNxSTR, u->GetAlias(), nUin, (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
+        nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
       }
 
       if (intIP)
