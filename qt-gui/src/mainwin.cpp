@@ -1429,7 +1429,11 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
 #if QT_VERSION >= 300
       // update the tab icon of this user
       if (m_bTabbedChatting && userEventTabDlg)
+      {
+        if (sig->SubSignal() == USER_TYPING)
+          userEventTabDlg->gotTyping(u);
         userEventTabDlg->updateTabLabel(u);
+      }
 #endif
       gUserManager.DropUser(u);
 

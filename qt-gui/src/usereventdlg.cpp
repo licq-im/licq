@@ -332,6 +332,20 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
 #endif
 }
 
+void UserEventTabDlg::gotTyping(ICQUser *u)
+{
+#if QT_VERSION >= 300
+  for (int index = 0; index < tabw->count(); index++)
+  {
+    UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
+    if (strcmp(tab->Id(), u->IdString()) == 0 && tab->PPID() == u->PPID())
+    {
+      tab->gotTyping(u->GetTyping());
+    }
+  }
+#endif
+}
+
 /*! This slot should get called when the current tab has 
  *  changed.
  */
@@ -444,6 +458,9 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
     }
   }
 
+  tmrTyping = new QTimer(this);
+  connect(tmrTyping, SIGNAL(timeout()), this, SLOT(slot_updatetyping()));
+
   if (u->Secure())
     btnSecure->setPixmap(mainwin->pmSecureOn);
   else
@@ -481,6 +498,23 @@ UserEventCommon::~UserEventCommon()
   free(m_szId);
 }
 
+void UserEventCommon::gotTyping(unsigned short nTyping)
+{
+  if (nTyping == ICQ_TYPING_ACTIVE)
+  {
+    if (tmrTyping->isActive())
+      tmrTyping->stop();
+    tmrTyping->start(10000, true);
+  }
+}
+
+void UserEventCommon::slot_updatetyping()
+{
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  u->SetTyping(ICQ_TYPING_INACTIVEx0);
+  mainwin->userEventTabDlg->updateTabLabel(u);
+  gUserManager.DropUser(u);  
+}
 
 //-----UserEventCommon::slot_userupdated-------------------------------------
 void UserEventCommon::slot_userupdated(CICQSignal *sig)

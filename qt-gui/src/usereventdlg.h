@@ -70,6 +70,7 @@ public:
   bool tabIsSelected(QWidget *tab);
   bool tabExists(QWidget *tab);
   void updateTabLabel(ICQUser *u);
+  void gotTyping(ICQUser *u);
 
 private:
   CETabWidget *tabw;
@@ -99,7 +100,8 @@ public:
   unsigned long PPID()  { return m_nPPID; }
 
   void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
-  
+  void gotTyping(unsigned short);
+ 
   enum type {
   	UC_MESSAGE,
   	UC_URL,
@@ -124,7 +126,7 @@ protected:
 
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
-  QTimer *tmrTime;
+  QTimer *tmrTime, *tmrTyping;
   bool m_bDeleteUser;
   QString m_sBaseTitle, m_sProgressMsg;
 
@@ -139,6 +141,7 @@ protected slots:
   void slot_connectsignal();
   void slot_userupdated(CICQSignal *);
   void slot_updatetime();
+  void slot_updatetyping();
   void showHistory();
   void showUserInfo();
   void slot_usermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
