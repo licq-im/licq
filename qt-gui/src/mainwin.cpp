@@ -900,7 +900,7 @@ void CMainWindow::updateStatus()
 //----CMainWindow::changeStatusManual-------------------------------------------
 void CMainWindow::changeStatusManual(int id)
 {
-  if (id != ICQ_STATUS_OFFLINE && id != ICQ_STATUS_ONLINE)
+  if (id != ICQ_STATUS_OFFLINE && ((id & 0xFF) != ICQ_STATUS_ONLINE))
     awayMsgDlg->SelectAutoResponse(id);
   changeStatus(id);
 }
