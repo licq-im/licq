@@ -193,7 +193,7 @@ void CUserViewItem::paintFocus ( QPainter *p, const QColorGroup & cg, const QRec
 
 
 //-----CUserViewItem::paintCell-------------------------------------------------
-void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int column, int width, int align )
 {
   QFont newFont(p->font());
   newFont.setWeight(m_nWeight);
@@ -204,7 +204,62 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column,
   }
   p->setFont(newFont);
 
-  QListViewItem::paintCell(p, QColorGroup(cg.foreground(), cg.background(), cg.light(), cg.dark(), cg.mid(), *m_cFore, *m_cBack), column, width, align);
+  QColorGroup cg(cgdefault.foreground(), cgdefault.background(),
+                 cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
+                 *m_cFore, *m_cBack);
+  const QPixmap *pix = NULL;
+  if (!listView()->verticalScrollBar()->isVisible() &&
+      ((CUserView *)listView())->m_bTransparent)
+    pix = ((QWidget *)listView()->parent())->backgroundPixmap();
+
+  if (pix != NULL)
+  {
+    QPoint pd(p->xForm(QPoint(0,0)).x(), p->xForm(QPoint(0,0)).y());
+    QPoint pp(listView()->mapToParent(pd));
+    p->drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
+  }
+  else
+  {
+    p->fillRect( 0, 0, width, height(), cg.base());
+  }
+
+  //QListViewItem::paintCell(p, cg, column, width, align);
+  //-----QListViewItem::paintCell------
+
+          if ( !p )
+              return;
+
+          QListView *lv = listView();
+          int r = lv ? lv->itemMargin() : 1;
+          const QPixmap * icon = pixmap( column );
+
+          //p->fillRect( 0, 0, width, height(), cg.base() );
+
+          int marg = lv ? lv->itemMargin() : 1;
+
+          if ( isSelected() &&
+               (column==0 || listView()->allColumnsShowFocus()) ) {
+                  p->fillRect( r - marg, 0, width - r + marg, height(),
+                           cg.brush( QColorGroup::Highlight ) );
+                  p->setPen( cg.highlightedText() );
+          } else {
+              p->setPen( cg.text() );
+          }
+
+          if ( icon ) {
+              p->drawPixmap( r, (height()-icon->height())/2, *icon );
+              r += icon->width() + listView()->itemMargin();
+          }
+
+          QString t = text( column );
+          if ( !t.isEmpty() ) {
+              // should do the ellipsis thing in drawText()
+              p->drawText( r, 0, width-marg-r, height(),
+                           align | AlignVCenter, t );
+          }
+
+  //-----------------------------------
+
 
   // Make the dividing line between online and offline users
   if (m_nUin == 0)
@@ -227,7 +282,16 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column,
     {
       char sz[12] = "Offline";
       if (m_nIndex == -1) strcpy(sz, "Online");
-      p->fillRect(5, 0, p->fontMetrics().width(sz) + 6, height(), *m_cBack);
+      if (pix != NULL)
+      {
+        QPoint pd(p->xForm(QPoint(5,0)).x(), p->xForm(QPoint(5,0)).y());
+        QPoint pp(listView()->mapToParent(pd));
+        p->drawPixmap(5, 0, *pix, pp.x(), pp.y(), p->fontMetrics().width(sz) + 6, height());
+      }
+      else
+      {
+        p->fillRect(5, 0, p->fontMetrics().width(sz) + 6, height(), *m_cBack);
+      }
       QFont f(p->font());
       f.setPointSize(f.pointSize() - 2);
       p->setFont(f);
@@ -242,6 +306,24 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column,
     p->setPen(*s_cGridLines);
     p->drawLine(0, height() - 1, width - 1, height() - 1);
     p->drawLine(width - 1, 0, width - 1, height() - 1);
+  }
+}
+
+
+void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
+{
+  const QPixmap *pix = NULL;
+  if (!verticalScrollBar()->isVisible() && m_bTransparent)
+    pix = ((QWidget *)parent())->backgroundPixmap();
+
+  if (pix != NULL)
+  {
+    QPoint pp(mapToParent(r.topLeft()));
+    p->drawPixmap(r.x(), r.y(), *pix, pp.x(), pp.y(), r.width(), r.height());
+  }
+  else
+  {
+    QListView::paintEmptyArea(p, r);
   }
 }
 
@@ -266,12 +348,14 @@ QString CUserViewItem::key (int column, bool ascending) const
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
+                    bool bTransparent,
                     QWidget *parent, const char *name)
    : QListView(parent, name)
 {
    mnuUser = m;
    mnuGroup = mg;
    colInfo = _colInfo;
+   m_bTransparent = bTransparent;
 
    addColumn(tr("S"), 20);
    for (unsigned short i = 0; i < colInfo.size(); i++)
@@ -283,7 +367,6 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
    m_tips = new CUserViewTips(this);
 
    setAllColumnsShowFocus (true);
-   setFrameStyle(QFrame::Panel | QFrame::Sunken);
    setShowHeader(isHeader);
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);

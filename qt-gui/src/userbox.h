@@ -95,6 +95,7 @@ class CUserView : public QListView
 public:
   CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
+             bool bTransparent,
              QWidget *parent = 0, const char *name = 0);
   ~CUserView();
 
@@ -116,19 +117,14 @@ public:
 
 protected:
   QPopupMenu *mnuUser, *mnuGroup;
+  bool m_bTransparent;
   CUserViewTips* m_tips;
   ColumnInfos colInfo;
   virtual void viewportMousePressEvent(QMouseEvent *e);
   virtual void keyPressEvent(QKeyEvent *e);
+  virtual void paintEmptyArea( QPainter *, const QRect & );
 
-#if 0
-  // XDND
-  virtual void dragEnterEvent(QDragEnterEvent*);
-  virtual void dragMoveEvent(QDragMoveEvent*);
-  virtual void dropEvent(QDropEvent*);
-#endif
-
-  friend class CUserViewItem;
+friend class CUserViewItem;
 };
 
 #endif
