@@ -129,9 +129,13 @@ void CLicqConsole::PrintStatus()
 
   werase(winStatus->Win());
 
+  unsigned short nNumOwnerEvents = 0;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumOwnerEvents = o->NewMessages();
-  gUserManager.DropOwner();
+  if (o != NULL)
+  {
+    nNumOwnerEvents = o->NewMessages();
+    gUserManager.DropOwner();
+  }
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
     sprintf (szMsgStr, "System Message");
@@ -155,21 +159,25 @@ void CLicqConsole::PrintStatus()
   else
     strcpy(szLastUser, "<None>");
 
-  o = gUserManager.FetchOwner(LOCK_R);
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winStatus->Win(), 0, 0, ACS_HLINE, COLS);
   mvwaddch(winStatus->Win(), 0, COLS - USER_WIN_WIDTH - 1, ACS_BTEE);
   wmove(winStatus->Win(), 1, 0);
 
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
-  winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", COLOR_YELLOW_BLUE,
-                     A_BOLD, COLOR_WHITE_BLUE, o->GetAlias(), COLOR_YELLOW_BLUE,
-                     COLOR_WHITE_BLUE, o->Uin(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, o->StatusStr(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE, COLOR_CYAN_BLUE,
-                     szLastUser, COLOR_YELLOW_BLUE);
-  gUserManager.DropOwner();
+  
+  o = gUserManager.FetchOwner(LOCK_R);
+  if (o != NULL)
+  {
+    winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", COLOR_YELLOW_BLUE,
+                      A_BOLD, COLOR_WHITE_BLUE, o->GetAlias(), COLOR_YELLOW_BLUE,
+                      COLOR_WHITE_BLUE, o->Uin(), COLOR_YELLOW_BLUE,
+                      COLOR_CYAN_BLUE, o->StatusStr(), COLOR_YELLOW_BLUE,
+                      COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
+                      COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE, COLOR_CYAN_BLUE,
+                      szLastUser, COLOR_YELLOW_BLUE);
+    gUserManager.DropOwner();
+  }
   wclrtoeol(winStatus->Win());
   winStatus->RefreshWin();
 }
