@@ -86,7 +86,7 @@ menu_new_item_with_pixmap(GtkWidget *_menu, const char *text,
 	
 	if (s_func)
 		g_signal_connect(G_OBJECT(menu_item), "activate",
-			G_CALLBACK(s_func), 0);
+			G_CALLBACK(s_func), data);
 	
 	return menu_item;
 }
