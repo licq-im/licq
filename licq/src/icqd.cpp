@@ -934,6 +934,8 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
     gLog.Info("%p\n", *iter);
   }
 
+  gLog.Info("appending: %p\n", e);
+
   int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
   if (nResult != 0)
   {
@@ -1038,10 +1040,12 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
       break;
     }
   }
-  gLog.Info("doneevents: pending: \n");
+  gLog.Info("doneevents: for: %p pending: \n", e);
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
   {
-    gLog.Info("%p\n", *iter);
+    gLog.Info("%p Command: %d SubCommand: %d Sequence: %d SubSequence: %d: Uin: %d\n", *iter,
+              (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
+              (*iter)->Uin());
   }
 
   //bool bFound = (iter == m_lxRunningEvents.end());

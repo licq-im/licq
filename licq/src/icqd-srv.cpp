@@ -130,7 +130,7 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
     icqSendVisibleList();
 
   CSrvPacketTcp* p;
-  if (1 || isLogon)
+  if (isLogon)
     p = new CPU_SetLogonStatus(s);
   else
     p = new CPU_SetStatus(s);
@@ -406,7 +406,6 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     PushPluginEvent(e);
     break;
 
-#if 0
   // Extended events
   case ICQ_CMDxSND_LOGON:
   case ICQ_CMDxSND_USERxGETINFO:
@@ -439,7 +438,6 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     }
     break;
   }
-#endif
 
   default:
     gLog.Warn("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
@@ -813,7 +811,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
       char buf[32];
       gLog.Info("%sServer says we are at %s.\n", L_SRVxSTR, ip_ntoa(realIP, buf));
-      icqSetStatus(m_nDesiredStatus);
+      //icqSetStatus(m_nDesiredStatus);
     }
     if (packet.getTLVLen(0x0c, 1)) {
       gLog.Unknown("%sServer send us direct conn info,len: %d\n", L_UNKNOWNxSTR,
@@ -1189,7 +1187,7 @@ void CICQDaemon::ProcessBOSFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxBOS_RIGHTSxGRANTED:
     gLog.Info("%sReceived BOS rights.\n", L_SRVxSTR);
-    //icqSetStatus(m_nDesiredStatus);
+    icqSetStatus(m_nDesiredStatus);
     break;
 
   default:
