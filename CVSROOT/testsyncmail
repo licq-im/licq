@@ -181,7 +181,8 @@ def main():
     # $CVSROOT, followed by the list of files that are changing.
     if not args:
         usage(1, 'No CVS module specified')
-    SUBJECT = args[0]
+    fixsubject = string.split(args[0])
+    SUBJECT = fixsubject[0]
     specs = string.split(args[0])
     del args[0]
 
