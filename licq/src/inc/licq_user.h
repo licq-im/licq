@@ -284,6 +284,7 @@ public:
   unsigned long Ip()        { return m_nIp; }
   unsigned short Port()     { return m_nPort; }
   void SetIpPort(unsigned long _nIp, unsigned short _nPort);
+  void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
 
   // Events functions
   static unsigned short getNumUserEvents();
@@ -379,6 +380,7 @@ protected:
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
+  static CICQDaemon *s_pLicqDaemon;
 
   friend class CUserGroup;
   friend class CUserManager;
@@ -445,6 +447,7 @@ public:
   CUserManager();
   ~CUserManager();
   bool Load();
+  void SetOwnerUin(unsigned long _nUin);
 
   unsigned long AddUser(ICQUser *);
   void RemoveUser(unsigned long);
@@ -453,7 +456,6 @@ public:
   ICQOwner *FetchOwner(unsigned short);
   void DropOwner();
   unsigned long OwnerUin()  { return m_nOwnerUin; }
-  void SetOwnerUin(unsigned long _nUin);
 
   UserList *LockUserList(unsigned short);
   void UnlockUserList();
@@ -469,7 +471,6 @@ public:
 
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
-  //void Reorder(ICQUser *_pcUser, bool _bOnList = true);
   void SaveAllUsers();
 
   unsigned short NumUsers();
@@ -479,6 +480,8 @@ public:
   void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
+  void SetLicqDaemon(CICQDaemon *);
+
   pthread_rdwr_t mutex_grouplist, mutex_userlist;
   GroupList m_vszGroups;
   UserList m_vpcUsers;
@@ -488,6 +491,8 @@ protected:
   unsigned short m_nDefaultGroup, m_nNewUserGroup,
                  m_nUserListLockType, m_nGroupListLockType;
   bool m_bAllowSave;
+
+  friend class CICQDaemon;
 };
 
 

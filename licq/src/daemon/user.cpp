@@ -19,9 +19,11 @@
 #include "licq_languagecodes.h"
 #include "licq_log.h"
 #include "licq_packets.h"
+#include "licq_icqd.h"
 #include "support.h"
 
 class CUserManager gUserManager;
+CICQDaemon *ICQUser::s_pLicqDaemon = NULL;
 
 
 /*---------------------------------------------------------------------------
@@ -104,6 +106,12 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
   o->SetAlias(buf);
   DropOwner();
   m_nOwnerUin = _nUin;
+}
+
+
+void CUserManager::SetLicqDaemon(CICQDaemon *d)
+{
+  ICQUser::s_pLicqDaemon = d;
 }
 
 
@@ -1636,6 +1644,9 @@ CUserEvent *ICQUser::EventPop()
   m_vcMessages.pop_back();
   decNumUserEvents();
   SaveNewMessagesInfo();
+
+  s_pLicqDaemon->RemoveUserEvent(this, e->Id());
+
   return e;
 }
 
@@ -1644,12 +1655,16 @@ void ICQUser::EventClear(unsigned short index)
 {
   if (index >= m_vcMessages.size()) return;
 
+  unsigned long id = m_vcMessages[index]->Id();
+
   delete m_vcMessages[index];
   for (unsigned short i = index; i < m_vcMessages.size() - 1; i++)
     m_vcMessages[i] = m_vcMessages[i + 1];
   m_vcMessages.pop_back();
   decNumUserEvents();
   SaveNewMessagesInfo();
+
+  s_pLicqDaemon->RemoveUserEvent(this, id);
 }
 
 
@@ -1664,6 +1679,7 @@ void ICQUser::EventClearId(unsigned long id)
       m_vcMessages.erase(iter);
       decNumUserEvents();
       SaveNewMessagesInfo();
+      s_pLicqDaemon->RemoveUserEvent(this, id);
       break;
     }
   }

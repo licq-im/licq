@@ -64,6 +64,9 @@ int CICQDaemon::ConnectToServer()
 
   // Now get the local ip from this socket
   CPacket::SetIps(s);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  o->SetIp(s->LocalIp());
+  gUserManager.DropOwner();
 
   gSocketManager.AddSocket(s);
   m_nUDPSocketDesc = s->Descriptor();

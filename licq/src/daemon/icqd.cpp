@@ -48,6 +48,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_szFirewallHost = NULL;
   m_bLoggingOn = false;
 
+  gUserManager.SetLicqDaemon(this);
+
   // Begin parsing the config file
   sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
@@ -706,6 +708,14 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->Uin(), e->Id()));
   return true;
+}
+
+
+//-----RemoveUserEvent-----------------------------------------------------------
+void CICQDaemon::RemoveUserEvent(ICQUser *u, unsigned long nId)
+{
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
+                                  u->Uin(), -nId));
 }
 
 

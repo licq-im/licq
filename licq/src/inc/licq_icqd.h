@@ -248,7 +248,8 @@ protected:
 
   bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
-  bool AddUserEvent(ICQUser *u, CUserEvent *e);
+  bool AddUserEvent(ICQUser *, CUserEvent *);
+  void RemoveUserEvent(ICQUser *, unsigned long);
   void RejectEvent(unsigned long, CUserEvent *);
 
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
@@ -285,6 +286,7 @@ protected:
   friend void *MonitorSockets_tep(void *p);
   friend void *ProcessRunningEvent_tep(void *p);
   friend void *Shutdown_tep(void *p);
+  friend class ICQUser;
 };
 
 
