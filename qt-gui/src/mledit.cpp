@@ -64,7 +64,7 @@ void MLEditWrap::keyPressEvent (QKeyEvent *e)
 void MLEditWrap::paintCell(QPainter* p, int row, int col)
 {
 
-#if QT_VERSION < 210
+#if QT_VERSION >= 210
   if(m_doQuotes) {
     QString s = stringShown(row);
     int i = (s[0] == ' ');
