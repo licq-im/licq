@@ -100,6 +100,18 @@ void *LP_Main_tep(void *p)
 }
 
 
+char *LP_BuildDate(void)
+{
+  static char szDate[] = __DATE__;
+  return szDate;
+}
+
+char *LP_BuildTime(void)
+{
+  static char szTime[] = __TIME__;
+  return szTime;
+}
+
 void LP_Exit(int _nResult)
 {
   int *p = (int *)malloc(sizeof(int));
