@@ -110,15 +110,15 @@ public:
                            const char *_szFax, const char *_szAddress,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
-  ICQEvent *icqSetGeneralInfo(char *szAlias, char *szFirstName,
-                              char *szLastName, char *szEmail1,
-                              char *szEmail2, char *szCity,
-                              char *szState, char *szPhoneNumber,
-                              char *szFaxNumber, char *szAddress,
-                              char *szCellularNumber, unsigned long nZipCode,
+  ICQEvent *icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
+                              const char *szLastName, const char *szEmail1,
+                              const char *szEmail2, const char *szCity,
+                              const char *szState, const char *szPhoneNumber,
+                              const char *szFaxNumber, const char *szAddress,
+                              const char *szCellularNumber, unsigned long nZipCode,
                               unsigned short nCountryCode, bool bHideEmail);
   ICQEvent *icqSetMoreInfo(unsigned short nAge,
-                           char nGender, char *szHomepage,
+                           char nGender, const char *szHomepage,
                            char nBirthYear, char nBirthMonth,
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);

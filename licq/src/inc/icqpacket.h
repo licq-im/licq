@@ -345,17 +345,17 @@ public:
 class CPU_Meta_SetGeneralInfo : public CPacketUdp
 {
 public:
-  CPU_Meta_SetGeneralInfo(char *szAlias,
-                          char *szFirstName,
-                          char *szLastName,
-                          char *szEmail1,
-                          char *szEmail2,
-                          char *szCity,
-                          char *szState,
-                          char *szPhoneNumber,
-                          char *szFaxNumber,
-                          char *szAddress,
-                          char *szCellularNumber,
+  CPU_Meta_SetGeneralInfo(const char *szAlias,
+                          const char *szFirstName,
+                          const char *szLastName,
+                          const char *szEmail1,
+                          const char *szEmail2,
+                          const char *szCity,
+                          const char *szState,
+                          const char *szPhoneNumber,
+                          const char *szFaxNumber,
+                          const char *szAddress,
+                          const char *szCellularNumber,
                           unsigned long nZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail);
@@ -390,7 +390,7 @@ class CPU_Meta_SetMoreInfo : public CPacketUdp
 public:
   CPU_Meta_SetMoreInfo(unsigned short nAge,
                        char nGender,
-                       char *szHomepage,
+                       const char *szHomepage,
                        char nBirthYear,
                        char nBirthMonth,
                        char nBirthDay,
@@ -442,6 +442,7 @@ protected:
 
 friend class CICQDaemon;
 };
+
 
 //-----Meta_SetAbout---------------------------------------------------------
 class CPU_Meta_SetAbout : public CPacketUdp
