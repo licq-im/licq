@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/licq.h)
-
+AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
@@ -157,7 +157,7 @@ AC_EXEEXT
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_SHARED
 AM_PROG_LIBTOOL
-dnl AC_LIBTOOL_CXX
+AC_LIBTOOL_CXX
 
 AC_OUTPUT(
   share/Makefile \
@@ -187,6 +187,7 @@ else
 fi
 
 echo ""
-echo "--- Now type \"make\" to build Licq ---"
+echo "--- Now type \"gmake\" to build Licq ---"
+echo "--- If gmake is not working, try \"make\" ---"
 echo ""
 
