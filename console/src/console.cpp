@@ -15,7 +15,6 @@ extern int errno
 #include "log.h"
 #include "icqd.h"
 #include "event_data.h"
-#include "eventdesc.h"
 
 // Undefine what stupid ncurses defines as wclear(WINDOW *)
 #undef clear()
@@ -489,7 +488,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
       {
         u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
         win->wprintf("%s refused %s.\n",
-                     u->GetAlias(), EventDescription(ue));
+                     u->GetAlias(), ue->Description());
         gUserManager.DropUser(u);
       }
       /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
@@ -1055,7 +1054,7 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
   if (u->NewMessages() > 0)
   {
     // Fetch the most recent event
-    CUserEvent *e = u->GetEvent(0);
+    CUserEvent *e = u->EventPop();
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
       waddch(winMain->Win(), ACS_HLINE);
@@ -1064,7 +1063,7 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     char *szTime = ctime(&t);
     szTime[16] = '\0';
     winMain->wprintf("%A%C%s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
-                     COLOR_WHITE, EventDescription(e),
+                     COLOR_WHITE, e->Description(),
                      u->User() ? u->GetAlias() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
@@ -1075,7 +1074,7 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     waddch(winMain->Win(), '\n');
     winMain->RefreshWin();
     wattroff(winMain->Win(), A_BOLD);
-    u->ClearEvent(0);
+    delete e;
     gUserManager.DropUser(u);
     //PrintUsers();
     //PrintStatus();

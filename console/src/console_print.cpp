@@ -1,5 +1,4 @@
 #include "console.h"
-#include "eventdesc.h"
 #include "countrycodes.h"
 #include "languagecodes.h"
 
@@ -423,7 +422,7 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
     char *szTime = ctime(&t);
     szTime[16] = '\0';
     winMain->wprintf("%A%C[%d of %d] %s %s %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
-                     COLOR_WHITE, n + 1, lHistory.size(), EventDescription(*it),
+                     COLOR_WHITE, n + 1, lHistory.size(), (*it)->Description(),
                      (*it)->Direction() == D_RECEIVER ? "from" : "to", szFrom,
                      szTime, (*it)->IsDirect() ? 'D' : '-',
                      (*it)->IsMultiRec() ? 'M' : '-', (*it)->IsUrgent() ? 'U' : '-',
