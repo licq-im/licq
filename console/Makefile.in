@@ -38,7 +38,7 @@ cvs-clean:
           cd $$pwd/$$i ;\
           for f in * .*; do \
             if test ! -d $$f; then \
-              if grep -q "^/$$f/" CVS/Entries; then \
+              if grep "^/$$f/" CVS/Entries >/dev/null; then \
                 a="b"; \
               else \
                 echo "F $$i/$$f"; \
