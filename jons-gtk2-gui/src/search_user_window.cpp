@@ -372,7 +372,7 @@ search_callback(GtkWidget *widget, gpointer data)
 				get_text(su->c_department),
 				get_text(su->c_position),
 				get_text(su->keyword),
-				false);
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(su->online_only)));
 }
 
 void 
