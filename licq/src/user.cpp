@@ -28,6 +28,16 @@
 
 class CUserManager gUserManager;
 
+const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1] = {
+  "",
+  "Online Notify",
+  "Visible List",
+  "Invisible List",
+  "Ignore List",
+  "New Users"
+};
+
+
 
 /*---------------------------------------------------------------------------
  * ICQUser::Lock

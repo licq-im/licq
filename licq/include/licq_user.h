@@ -124,6 +124,10 @@ const unsigned long GROUP_VISIBLE_LIST    = 2;
 const unsigned long GROUP_INVISIBLE_LIST  = 3;
 const unsigned long GROUP_IGNORE_LIST     = 4;
 const unsigned long GROUP_NEW_USERS       = 5;
+const unsigned long NUM_GROUPS_SYSTEM = 5;
+// We stick in an empty group 0 so that the names correspond
+// to the identifiers
+extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1];
 
 const unsigned short ACCEPT_IN_AWAY     = 0x0001;
 const unsigned short ACCEPT_IN_NA       = 0x0002;
