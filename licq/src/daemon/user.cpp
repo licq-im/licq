@@ -175,8 +175,13 @@ bool CUserManager::Load()
      sprintf(sUserKey, "User%d", i);
      if (!usersConf.ReadNum(sUserKey, nUserUin))
      {
-        gLog.Warn("%sSkipping user %i, UIN not found.\n", L_WARNxSTR, i);
-        continue;
+       gLog.Warn("%sSkipping user %i, UIN not found.\n", L_WARNxSTR, i);
+       continue;
+     }
+     if (nUserUin == 0)
+     {
+       gLog.Warn("%sSkipping user %i, invalid uin %ld.\n", L_WARNxSTR, i, nUserUin);
+       continue;
      }
      sprintf(filename, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
 

@@ -732,23 +732,26 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
 
 
 //-----AddUserToList------------------------------------------------------------
-void CICQDaemon::AddUserToList(unsigned long _nUin)
+void CICQDaemon::AddUserToList(unsigned long nUin)
 {
+  // Don't add invalid uins
+  if (nUin == 0) return;
+
   // Don't add a user we already have
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u != NULL)
   {
     gUserManager.DropUser(u);
-    gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, _nUin);
+    gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nUin);
     return;
   }
 
-  gUserManager.AddUser(new ICQUser(_nUin));
+  gUserManager.AddUser(new ICQUser(nUin));
   SaveUserList();
 
-  if (m_nUDPSocketDesc != -1) icqAddUser(_nUin);
+  if (m_nUDPSocketDesc != -1) icqAddUser(nUin);
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, _nUin));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nUin));
 }
 
 
