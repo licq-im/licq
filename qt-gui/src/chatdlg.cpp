@@ -21,8 +21,8 @@
 
 
 ChatDlg::ChatDlg(unsigned long _nUin,
-                 bool _bServer, unsigned short _nPort = 0,
-                 QWidget *parent = NULL, char *name = NULL)
+                 bool _bServer, unsigned short _nPort,
+                 QWidget *parent, char *name)
    : QWidget(parent, name)
 {
    m_nUin = _nUin;

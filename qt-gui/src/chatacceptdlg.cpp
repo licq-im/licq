@@ -14,7 +14,7 @@
 
 CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin, 
                          unsigned long _nSequence,
-                         QWidget *parent = 0, const char *name = 0) 
+                         QWidget *parent, const char *name) 
    : QWidget(parent, name)
 {
    m_xServer = _xServer;

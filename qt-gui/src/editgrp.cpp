@@ -9,7 +9,8 @@
 #include "editgrp.h"
 #include "user.h"
 
-EditGrpDlg::EditGrpDlg(QWidget *parent = 0, const char *name = 0 ) : QWidget(parent, name)
+EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
+  : QWidget(parent, name)
 {
   grpGroups = new QGroupBox(tr("Groups"), this);
   lstGroups = new QListBox(grpGroups);
