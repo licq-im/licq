@@ -1082,57 +1082,39 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 }
 
 
-char *ICQUser::StatusStr(char *sz)
+const char *ICQUser::StatusStr()
 {
-  return StatusToStatusStr(m_nStatus, StatusInvisible(), sz);
+  return StatusToStatusStr(m_nStatus, StatusInvisible());
 }
 
-char *ICQUser::StatusStrShort(char *sz)
+const char *ICQUser::StatusStrShort()
 {
-  return StatusToStatusStrShort(m_nStatus, StatusInvisible(), sz);
+  return StatusToStatusStrShort(m_nStatus, StatusInvisible());
 }
 
 
-char *ICQUser::StatusToStatusStr(unsigned short n, bool b, char *sz)
+const char *ICQUser::StatusToStatusStr(unsigned short n, bool b)
 {
-  if (n == ICQ_STATUS_OFFLINE) strcpy(sz, "Offline");
-  else if (n & ICQ_STATUS_DND) strcpy(sz, "Do Not Disturb");
-  else if (n & ICQ_STATUS_OCCUPIED) strcpy(sz, "Occupied");
-  else if (n & ICQ_STATUS_NA) strcpy(sz, "Not Available");
-  else if (n & ICQ_STATUS_AWAY) strcpy(sz, "Away");
-  else if (n & ICQ_STATUS_FREEFORCHAT) strcpy(sz, "Free for Chat");
-  else if (n << 24 == 0x00) strcpy(sz, "Online");
-  else
-    sprintf(sz, "0x%04X", n);
-
-  if (b)
-  {
-    memmove(sz + 1, sz, strlen(sz) + 1);
-    sz[0] = '(';
-    strcat(sz, ")");
-  }
-  return sz;
+  if (n == ICQ_STATUS_OFFLINE) return b ? "(Offline)" : "Offline";
+  else if (n & ICQ_STATUS_DND) return b ? "(Do Not Disturb)" : "Do Not Disturb";
+  else if (n & ICQ_STATUS_OCCUPIED) return b ? "(Occupied)" : "Occupied";
+  else if (n & ICQ_STATUS_NA) return b ? "(Not Available)" : "Not Available";
+  else if (n & ICQ_STATUS_AWAY) return b ? "(Away)" : "Away";
+  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? "(Free for Chat)" : "Free for Chat";
+  else if (n << 24 == 0x00) return b ? "(Online)" : "Online";
+  else return "Unknown";
 }
 
-char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b, char *sz)
+const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 {
-  if (n == ICQ_STATUS_OFFLINE) strcpy(sz, "Off");
-  else if (n & ICQ_STATUS_DND) strcpy(sz, "DND");
-  else if (n & ICQ_STATUS_OCCUPIED) strcpy(sz, "Occ");
-  else if (n & ICQ_STATUS_NA) strcpy(sz, "N/A");
-  else if (n & ICQ_STATUS_AWAY) strcpy(sz, "Away");
-  else if (n & ICQ_STATUS_FREEFORCHAT) strcpy(sz, "FFC");
-  else if (n << 24 == 0x00) strcpy(sz, "On");
-  else
-    sprintf(sz, "0x%04X", n);
-
-  if (b)
-  {
-    memmove(sz + 1, sz, strlen(sz) + 1);
-    sz[0] = '(';
-    strcat(sz, ")");
-  }
-  return sz;
+  if (n == ICQ_STATUS_OFFLINE) return b ? "(Off)" : "Off";
+  else if (n & ICQ_STATUS_DND) return b ? "(DND)" : "DND";
+  else if (n & ICQ_STATUS_OCCUPIED) return b ? "(Occ)" : "Occ";
+  else if (n & ICQ_STATUS_NA) return b ? "(N/A)" : "N/A";
+  else if (n & ICQ_STATUS_AWAY) return b ? "(Away)" : "Away";
+  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? "(FFC)" : "FFC";
+  else if (n << 24 == 0x00) return b ? "(On)" : "On";
+  else return "???";
 }
 
 
@@ -1190,7 +1172,8 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
 {
   bool bLeft = false;
   unsigned short i = 0, j, nField = 0, nPos = 0;
-  char szTemp[128], *sz;
+  char szTemp[128];
+  const char *sz;
   _sz[0] = '\0';
   while(_szFormat[i] != '\0')
   {
@@ -1257,10 +1240,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         sz = GetPhoneNumber();
         break;
       case 'S':
-        sz = StatusStrShort(szTemp);
+        sz = StatusStrShort();
         break;
       case 's':
-        sz = StatusStr(szTemp);
+        sz = StatusStr();
         break;
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",

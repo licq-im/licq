@@ -217,11 +217,11 @@ public:
   bool StatusOffline(void)         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
   void SetStatusOffline(void);
-  char *StatusStr(char *);
-  char *StatusStrShort(char *);
+  const char *StatusStr();
+  const char *StatusStrShort();
   bool Away(void);
-  static char *StatusToStatusStr(unsigned short, bool, char *);
-  static char *StatusToStatusStrShort(unsigned short, bool, char *);
+  static const char *StatusToStatusStr(unsigned short, bool);
+  static const char *StatusToStatusStrShort(unsigned short, bool);
 
   // Message/History functions
   unsigned short NewMessages(void)   { return(m_vcMessages.size()); }
