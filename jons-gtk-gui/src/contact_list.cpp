@@ -43,7 +43,7 @@ GtkWidget *contact_list_new(gint height, gint width)
 	GtkWidget *_contact_l;
 
 #if 1
-// THIS IS HERE BECAUSE I AM CHANGING TO A CTREE...
+// THIS IS HERE BECAUSE I AM CHANGING TO A TREE...
 
 	/* Create the contact list using a 3 column clist */
 	_contact_l = gtk_clist_new(3);
@@ -60,7 +60,8 @@ GtkWidget *contact_list_new(gint height, gint width)
 
 	/* Size the contact list */
 	gtk_widget_set_usize(_contact_l, width, height);
-#endif
+
+#else
 
 	_contact_l = gtk_tree_new();
 	gtk_tree_set_view_mode(GTK_TREE(_contact_l), GTK_TREE_VIEW_ITEM);
@@ -73,6 +74,8 @@ GtkWidget *contact_list_new(gint height, gint width)
 			   GTK_SIGNAL_FUNC(contact_list_click), NULL);
 
 	gtk_clist_set_button_actions(GTK_CLIST(_contact_l), 0, GTK_BUTTON_IGNORED);
+
+#endif
 
 	return _contact_l;
 }
