@@ -1415,8 +1415,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
-      //Drop user in the nick tvl
-      //gUserManager.DropUser(u);
       gUserManager.UnlockGroupIDList();
 
       break;
@@ -1452,6 +1450,9 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     buffer->PackUnsignedShortBE(nExportSize-4);
     buffer->Pack(u->GetAlias(), nExportSize-4);
   }
+
+  if (u)
+    gUserManager.DropUser(u);
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
