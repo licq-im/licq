@@ -310,7 +310,7 @@ protected slots:
   void popupOptionsDlg() { emit showOptionsDlg(0); };
   void showAuthUserDlg();
   void showReqAuthDlg(int);
-  void showReqAuthDlg(const char * = 0, unsigned long = 0);
+  void showReqAuthDlg(const char *, unsigned long);
   void showSearchUserDlg();
   void popupSystemMenu();
   void changeDebug(int);
