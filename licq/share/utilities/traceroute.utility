@@ -1,4 +1,4 @@
 [utility]
-Window = TERM
+Window = LICQ
 Command = traceroute %i
 Description = Trace the route to the user
