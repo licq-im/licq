@@ -69,7 +69,8 @@ const struct SLanguage gLanguages[NUM_LANGUAGES] =
   { "Vietnamese", 52, 57 },
   { "Yiddish", 53, 58 },
   { "Yoruba", 54, 59 },
-  { "Bosnian", 8, 60 },
+  { "Bosnian", 56, 60 },
+  { "Azerbaijani", 68, 61 },
 };
 
 
