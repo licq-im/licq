@@ -1821,7 +1821,7 @@ msgstr ""
 
 #: optionsdlg.cpp:679
 msgid "OptionsDlg::Accept Modes"
-msgstr ""
+msgstr "Разрешить команды на событие"
 
 #: optionsdlg.cpp:932
 msgid "OptionsDlg::Alignment"
@@ -2160,29 +2160,25 @@ msgstr "Занят"
 msgid "OptionsDlg::Offline"
 msgstr "Отключен"
 
-# #: optionsdlg.cpp:61
-# msgid "OptionsDlg::OnEvent"
-# msgstr "На событие"
-
 #: optionsdlg.cpp:682
 msgid "OptionsDlg::OnEvent in Away"
-msgstr ""
+msgstr "В режиме \"Отошел\""
 
 #: optionsdlg.cpp:688
 msgid "OptionsDlg::OnEvent in DND"
-msgstr ""
+msgstr "В режиме \"Не беспокоить\""
 
 #: optionsdlg.cpp:684
 msgid "OptionsDlg::OnEvent in N/A"
-msgstr ""
+msgstr "В режиме \"Недоступен\""
 
 #: optionsdlg.cpp:686
 msgid "OptionsDlg::OnEvent in Occupied"
-msgstr ""
+msgstr "В режиме \"Занят\""
 
 #: optionsdlg.cpp:61
 msgid "OptionsDlg::OnEvent"
-msgstr ""
+msgstr "Команды на событие"
 
 #: optionsdlg.cpp:630
 msgid "OptionsDlg::OnEvents Enabled"
@@ -2239,19 +2235,19 @@ msgstr "Паранойя"
 
 #: optionsdlg.cpp:683
 msgid "OptionsDlg::Perform OnEvent command in away mode"
-msgstr ""
+msgstr "Выполнять команды на событие в режиме \"отошел\""
 
 #: optionsdlg.cpp:689
 msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
-msgstr ""
+msgstr "Выполнять команды на событие в режиме \"не беспокоить\""
 
 #: optionsdlg.cpp:685
 msgid "OptionsDlg::Perform OnEvent command in not available mode"
-msgstr ""
+msgstr "Выполнять команды на событие в режиме \"недоступен\""
 
 #: optionsdlg.cpp:687
 msgid "OptionsDlg::Perform OnEvent command in occupied mode"
-msgstr ""
+msgstr "Выполнять команды на событие в режиме \"занят\""
 
 #: optionsdlg.cpp:732
 msgid "OptionsDlg::Port Range:"
