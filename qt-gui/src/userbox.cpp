@@ -212,7 +212,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       ((CUserView *)listView())->m_bTransparent)*/
   if (listView()->contentsHeight() < listView()->viewport()->height() &&
       ((CUserView *)listView())->m_bTransparent)
-    pix = ((QWidget *)listView()->parent())->backgroundPixmap();
+    pix = listView()->parentWidget()->backgroundPixmap();
 
   if (pix != NULL)
   {
@@ -316,7 +316,7 @@ void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
 {
   const QPixmap *pix = NULL;
   if (contentsHeight() < viewport()->height() && m_bTransparent)
-    pix = ((QWidget *)parent())->backgroundPixmap();
+    pix = parentWidget()->backgroundPixmap();
 
   if (pix != NULL)
   {
