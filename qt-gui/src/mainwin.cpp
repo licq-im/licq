@@ -1901,7 +1901,7 @@ void CMainWindow::miniMode()
    if (inMiniMode)
    {
       userView->show();
-      setMaximumHeight(2048);
+      setMaximumHeight(4096);
       resize(width(), m_nRealHeight);
       setMinimumHeight(100);
    }
