@@ -16,7 +16,6 @@ extern int errno;
 #include "icqd.h"
 #include "file.h"
 #include "user.h"
-#include "eventdesc.h"
 #include "constants.h"
 
 extern "C" { const char *LP_Version(); }
@@ -316,9 +315,9 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
-  sprintf(szText, "[ %s from %s (ICQ#%ld) sent %s ]\n\n%s\n", EventDescription(e),
+  sprintf(szText, "[ %s from %s (ICQ#%ld) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->Uin(), szTime, e->Text());
-  CICQEventTag *tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, false);
+  CICQEventTag *tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == NULL)
   {
@@ -367,21 +366,21 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     s[40] = '\0';
     char *n = strchr(s, '\n');
     if (n != NULL) *n = '\0';
-    sprintf (szSubject, "Subject: %s [%s%s]", EventDescription(e),
+    sprintf (szSubject, "Subject: %s [%s%s]", e->Description(),
              s, strlen(e->Text()) > SUBJ_CHARS ? "..." : "");
     delete []s;
     break;
   }
   case ICQ_CMDxSUB_URL:
-    sprintf (szSubject, "Subject: %s [%s]", EventDescription(e),
+    sprintf (szSubject, "Subject: %s [%s]", e->Description(),
              ((CEventUrl *)e)->Url());
     break;
   case ICQ_CMDxSUB_FILE:
-    sprintf (szSubject, "Subject: %s [%s]", EventDescription(e),
+    sprintf (szSubject, "Subject: %s [%s]", e->Description(),
              ((CEventFile *)e)->Filename());
     break;
   default:
-    sprintf (szSubject, "Subject: %s", EventDescription(e));
+    sprintf (szSubject, "Subject: %s", e->Description());
   }
 
 
