@@ -409,10 +409,10 @@ void OptionsDlg::ApplyOptions()
   // set up the sound stuff
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
-  const char *oemparams[6] = { edtSndMsg->text().local8Bit(), edtSndUrl->text().local8Bit(),
-                               edtSndChat->text().local8Bit(), edtSndFile->text().local8Bit(),
-                               edtSndNotify->text().local8Bit(), edtSndSysMsg->text().local8Bit() };
-  oem->SetParameters(edtSndPlayer->text().local8Bit(), oemparams);
+  const char *oemparams[6] = { edtSndMsg->text().latin1(), edtSndUrl->text().latin1(),
+                               edtSndChat->text().latin1(), edtSndFile->text().latin1(),
+                               edtSndNotify->text().latin1(), edtSndSysMsg->text().latin1() };
+  oem->SetParameters(edtSndPlayer->text().latin1(), oemparams);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetEnableSave(false);
   o->SetAcceptInAway(chkOEAway->isChecked());
