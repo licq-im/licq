@@ -253,13 +253,13 @@ QPixmap *IconManager_Default::GetDockIconStatusIcon()
   gUserManager.DropOwner();
   switch (s)
   {
-  case ICQ_STATUS_ONLINE: return wharfIcon->mainwin->pmOnline;
-  case ICQ_STATUS_AWAY: return wharfIcon->mainwin->pmAway;
-  case ICQ_STATUS_NA: return wharfIcon->mainwin->pmNa;
-  case ICQ_STATUS_OCCUPIED: return (wharfIcon->mainwin->pmOccupied);
-  case ICQ_STATUS_DND: return wharfIcon->mainwin->pmDnd;
-  case ICQ_STATUS_FREEFORCHAT: return wharfIcon->mainwin->pmChat;
-  case ICQ_STATUS_OFFLINE: return wharfIcon->mainwin->pmOffline;
+  case ICQ_STATUS_ONLINE: return &wharfIcon->mainwin->pmOnline;
+  case ICQ_STATUS_AWAY: return &wharfIcon->mainwin->pmAway;
+  case ICQ_STATUS_NA: return &wharfIcon->mainwin->pmNa;
+  case ICQ_STATUS_OCCUPIED: return &wharfIcon->mainwin->pmOccupied;
+  case ICQ_STATUS_DND: return &wharfIcon->mainwin->pmDnd;
+  case ICQ_STATUS_FREEFORCHAT: return &wharfIcon->mainwin->pmChat;
+  case ICQ_STATUS_OFFLINE: return &wharfIcon->mainwin->pmOffline;
   }
   return NULL;
 }
@@ -321,7 +321,7 @@ void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short 
     // Draw the little icon now
     QPixmap *m = NULL;
     if (nSysMsg > 0 || nNewMsg > 0)
-      m = wharfIcon->mainwin->pmMessage;
+      m = &wharfIcon->mainwin->pmMessage;
     else
       m = GetDockIconStatusIcon();
     p.fillRect(31, 6, 27, 16, QColor(0,0,0));

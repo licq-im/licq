@@ -596,8 +596,8 @@ void CMainWindow::CreateUserView()
                            m_bFontStyles, skin->frame.transparent,
                            m_bShowDividers, m_bSortByStatus, this);
   userView->setFrameStyle(skin->frame.frameStyle);
-  userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
-                       pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
+  userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
+                       &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
   connect (userView, SIGNAL(doubleClicked(QListViewItem *)),
@@ -1778,123 +1778,93 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      sprintf(sIconPath, "%s%sicons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
    }
    sprintf(sFilename, "%s%s.icons", sIconPath, _sIconSet);
-   CIniFile fIconsConf(INI_FxERROR | INI_FxFATAL);
-   fIconsConf.LoadFile(sFilename);
-   fIconsConf.SetFlags(INI_FxWARN);
+   CIniFile fIconsConf;
+   if (!fIconsConf.LoadFile(sFilename))
+   {
+     WarnUser(this, tr("Unable to open icons file\n%1.").arg(sFilename));
+     return;
+   }
 
    fIconsConf.SetSection("icons");
    fIconsConf.ReadStr("Online", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmOnline = new QPixmap(sFilepath);
-   if (pmOnline->isNull())
-     gLog.Warn("%sUnable to open 'online' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmOnline.load(sFilepath);
 
    fIconsConf.ReadStr("FFC", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmFFC = new QPixmap(sFilepath);
-   if (pmFFC->isNull())
-   {
-     gLog.Warn("%sUnable to open 'free for chat' pixmap.\n",
-                L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmFFC.load(sFilepath);
+   if (pmFFC.isNull())
      pmFFC = pmOnline;
-   }
 
    fIconsConf.ReadStr("Offline", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmOffline = new QPixmap(sFilepath);
-   if (pmOffline->isNull())
-     gLog.Warn("%sUnable to open 'offline' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmOffline.load(sFilepath);
 
    fIconsConf.ReadStr("Away", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmAway = new QPixmap(sFilepath);
-   if (pmAway->isNull())
-     gLog.Warn("%sUnable to open 'away' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmAway.load(sFilepath);
 
    fIconsConf.ReadStr("NA", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmNa = new QPixmap(sFilepath);
-   if (pmNa->isNull())
-     gLog.Warn("%sUnable to open 'N/A' pixmap.\n",
-                L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmNa.load(sFilepath);
 
    fIconsConf.ReadStr("Occupied", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmOccupied = new QPixmap(sFilepath);
-   if (pmOccupied->isNull())
-     gLog.Warn("%sUnable to open 'occupied' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmOccupied.load(sFilepath);
 
    fIconsConf.ReadStr("DND", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmDnd = new QPixmap(sFilepath);
-   if (pmDnd->isNull())
-     gLog.Warn("%sUnable to open 'DND' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmDnd.load(sFilepath);
 
    fIconsConf.ReadStr("Private", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmPrivate = new QPixmap(sFilepath);
-   if (pmPrivate->isNull())
-     gLog.Warn("%sUnable to open 'private' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmPrivate.load(sFilepath);
 
    fIconsConf.ReadStr("Message", sFilename, "none");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmMessage = new QPixmap(sFilepath);
-   if (pmMessage->isNull())
-     gLog.Warn("%sUnable to open 'message' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmMessage.load(sFilepath);
 
    fIconsConf.ReadStr("Url", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmUrl = new QPixmap(sFilepath);
-   if (pmUrl->isNull())
-   {
-     gLog.Warn("%sUnable to open 'url' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmUrl.load(sFilepath);
+   if (pmUrl.isNull())
      pmUrl = pmMessage;
-   }
 
    fIconsConf.ReadStr("Chat", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmChat = new QPixmap(sFilepath);
-   if (pmChat->isNull())
-   {
-     gLog.Warn("%sUnable to open 'chat' pixmap.\n",
-               L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmChat.load(sFilepath);
+   if (pmChat.isNull())
      pmChat = pmMessage;
-   }
 
    fIconsConf.ReadStr("File", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
-   pmFile = new QPixmap(sFilepath);
-   if (pmFile->isNull())
-   {
-     gLog.Warn("%sUnable to open 'file' pixmap.\n",
-                L_WARNxSTR, sFilepath, L_BLANKxSTR);
+   pmFile.load(sFilepath);
+   if (pmFile.isNull())
      pmFile = pmMessage;
-   }
+
+   fIconsConf.ReadStr("Authorize", sFilename, "");
+   sprintf(sFilepath, "%s%s", sIconPath, sFilename);
+   pmAuthorize.load(sFilepath);
+   if (pmAuthorize.isNull())
+     pmAuthorize = pmMessage;
 
    if (!_bInitial)
    {
-     mnuStatus->changeItem(*pmOnline, tr("&Online"), mnuStatus->idAt(0));
-     mnuStatus->changeItem(*pmAway, tr("&Away"), mnuStatus->idAt(1));
-     mnuStatus->changeItem(*pmNa, tr("&Not Available"), mnuStatus->idAt(2));
-     mnuStatus->changeItem(*pmOccupied, tr("O&ccupied"), mnuStatus->idAt(3));
-     mnuStatus->changeItem(*pmDnd, tr("&Do Not Disturb"), mnuStatus->idAt(4));
-     mnuStatus->changeItem(*pmFFC, tr("Free for C&hat"), mnuStatus->idAt(5));
-     mnuStatus->changeItem(*pmOffline, tr("O&ffline"), mnuStatus->idAt(6));
-     mnuStatus->changeItem(*pmPrivate, tr("&Invisible"), mnuStatus->idAt(8));
-     mnuUser->changeItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
-     mnuUser->changeItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
-     mnuUser->changeItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
-     mnuUser->changeItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-     userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
-                          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
+     mnuStatus->changeItem(pmOnline, tr("&Online"), mnuStatus->idAt(0));
+     mnuStatus->changeItem(pmAway, tr("&Away"), mnuStatus->idAt(1));
+     mnuStatus->changeItem(pmNa, tr("&Not Available"), mnuStatus->idAt(2));
+     mnuStatus->changeItem(pmOccupied, tr("O&ccupied"), mnuStatus->idAt(3));
+     mnuStatus->changeItem(pmDnd, tr("&Do Not Disturb"), mnuStatus->idAt(4));
+     mnuStatus->changeItem(pmFFC, tr("Free for C&hat"), mnuStatus->idAt(5));
+     mnuStatus->changeItem(pmOffline, tr("O&ffline"), mnuStatus->idAt(6));
+     mnuStatus->changeItem(pmPrivate, tr("&Invisible"), mnuStatus->idAt(8));
+     mnuUser->changeItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
+     mnuUser->changeItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
+     mnuUser->changeItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+     mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+     mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+     userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
+                          &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
      updateUserWin();
      updateEvents();
    }
@@ -1906,22 +1876,22 @@ void CMainWindow::initMenu()
 {
    int mnuId;
    mnuStatus = new QPopupMenu(NULL);
-   mnuId = mnuStatus->insertItem(*pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
+   mnuId = mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
    mnuStatus->setAccel(ALT + Key_O,mnuId);
-   mnuId = mnuStatus->insertItem(*pmAway, tr("&Away"), ICQ_STATUS_AWAY);
+   mnuId = mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
    mnuStatus->setAccel(ALT + Key_A,mnuId);
-   mnuId = mnuStatus->insertItem(*pmNa, tr("&Not Available"), ICQ_STATUS_NA);
+   mnuId = mnuStatus->insertItem(pmNa, tr("&Not Available"), ICQ_STATUS_NA);
    mnuStatus->setAccel(ALT + Key_N,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOccupied, tr("O&ccupied"), ICQ_STATUS_OCCUPIED);
+   mnuId = mnuStatus->insertItem(pmOccupied, tr("O&ccupied"), ICQ_STATUS_OCCUPIED);
    mnuStatus->setAccel(ALT + Key_C,mnuId);
-   mnuId = mnuStatus->insertItem(*pmDnd, tr("&Do Not Disturb"), ICQ_STATUS_DND);
+   mnuId = mnuStatus->insertItem(pmDnd, tr("&Do Not Disturb"), ICQ_STATUS_DND);
    mnuStatus->setAccel(ALT + Key_D,mnuId);
-   mnuId = mnuStatus->insertItem(*pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
+   mnuId = mnuStatus->insertItem(pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
    mnuStatus->setAccel(ALT + Key_H,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
+   mnuId = mnuStatus->insertItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
    mnuStatus->setAccel(ALT + Key_F,mnuId);
    mnuStatus->insertSeparator();
-   mnuId = mnuStatus->insertItem(*pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
+   mnuId = mnuStatus->insertItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
    mnuStatus->setAccel(ALT + Key_I,mnuId);
    connect(mnuStatus, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
 
@@ -2028,11 +1998,11 @@ void CMainWindow::initMenu()
    mnuUser->setCheckable(true);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
    QPopupMenu *m = new QPopupMenu(this);
-   m->insertItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
-   m->insertItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
-   m->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
-   m->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-   m->insertItem(tr("Send Authorization"), mnuUserAuthorize);
+   m->insertItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
+   m->insertItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
+   m->insertItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+   m->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+   m->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("Send"), m);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);

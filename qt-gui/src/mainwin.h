@@ -103,8 +103,8 @@ protected:
   QStyle *style;
   unsigned short m_nAutoLogon;
   char *m_szIconSet;
-  QPixmap *pmOnline, *pmOffline, *pmAway, *pmDnd, *pmOccupied, *pmNa,
-          *pmPrivate, *pmFFC, *pmMessage, *pmUrl, *pmChat, *pmFile;
+  QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
+          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmAuthorize;
   ColumnInfos colInfo;
 
   // AutoAway
