@@ -3035,23 +3035,7 @@ void CMainWindow::slot_register()
 
 void CMainWindow::slot_hints()
 {
-
-  (void) new HintsDlg;
-}
-
-
-// -----------------------------------------------------------------------------
-HintsDlg::HintsDlg()
-  : QDialog(0, "HintsDlg", false, WDestructiveClose)
-{
-  setCaption(tr("Licq - Hints"));
-
-  QBoxLayout* topLay = new QVBoxLayout(this, 5);
-
-  txtView = new QTextView(this);
-  txtView->setMinimumWidth(370);
-  txtView->setMinimumHeight(450);
-  txtView->setText(tr(
+  QString hints = tr(
     "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
     "<ul>"
     "<li>Change your status by right clicking on the status label.</li>"
@@ -3081,7 +3065,24 @@ HintsDlg::HintsDlg()
     "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
     "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n") + gMainWindow->usprintfHelp +
                    "</li></ul>" + tr(
-    "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"));
+    "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>");
+
+  (void) new HintsDlg(hints);
+}
+
+
+// -----------------------------------------------------------------------------
+HintsDlg::HintsDlg(QString &hint)
+  : QDialog(0, "HintsDlg", false, WDestructiveClose)
+{
+  setCaption(tr("Licq - Hints"));
+
+  QBoxLayout* topLay = new QVBoxLayout(this, 5);
+
+  txtView = new QTextView(this);
+  txtView->setMinimumWidth(370);
+  txtView->setMinimumHeight(450);
+  txtView->setText(hint);
   txtView->setFocus();
   topLay->addWidget(txtView);
 

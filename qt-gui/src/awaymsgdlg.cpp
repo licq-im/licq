@@ -24,6 +24,7 @@
 #include <qpopupmenu.h>
 #include <qlayout.h>
 #include <qtimer.h>
+#include <qapplication.h>
 
 #include "awaymsgdlg.h"
 #include "licq_log.h"
@@ -33,6 +34,30 @@
 #include "licq_sar.h"
 #include "licq_user.h"
 #include "licq_icqd.h"
+
+static const char hints[] = QT_TR_NOOP(
+ "<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
+ "<ul>"
+ "<li>You can include any of the % expansions (described in the main hints page).</li>"
+
+ "<li>Any line beginning with a pipe (|) will be treated as a command "
+ "to be run.  The line will be replaced by the output of the command. "
+ "The command is parsed by /bin/sh so any shell commands or meta-characters "
+ "are allowed.  For security reasons, any % expansions are automatically "
+ "passed to the command surrounded by single quotes to prevent shell parsing "
+ "of any meta-characters included in an alias (such as \">\" or \"&\").<br>"
+ "Examples of popular uses include:"
+ "<ul>"
+ "<li><tt>|date</tt>: Will replace that line by the current date</li>"
+ "<li><tt>|fortune</tt>: Show a fortune, as a tagline for example</li>"
+ "<li><tt>|myscript.sh %u %a</tt>: Run a script, passing the uin and alias</li>"
+ "<li><tt>|myscript.sh %u %a > /dev/null</tt>: Run the same script but ignore the output (for tracking auto response checks or something)</li>"
+ "<li><tt>|if [ %u -lt 100000 ]; then echo \"You are special\"; fi</tt>: Useless, but shows how you can use shell script.</li>"
+ "</ul>"
+ "Of course, multiple \"|\" can appear in the auto response, and commands and regular "
+ "text can be mixed line by line.</li>"
+
+ "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>");
 
 
 // -----------------------------------------------------------------------------
@@ -57,6 +82,8 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   int bw = 75;
   btnSelect = new QPushButton(tr("&Select"), this);
   btnSelect->setPopup(mnuSelect);
+  QPushButton *btnHints = new QPushButton(tr("&Hints"), this);
+  connect(btnHints, SIGNAL(clicked()), SLOT(slot_hints()));
   btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(ok()) );
@@ -65,13 +92,17 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   bw = QMAX(bw, btnSelect->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnCancel->sizeHint().width());
+  bw = QMAX(bw, btnHints->sizeHint().width());
   btnSelect->setFixedWidth(bw);
   btnOk->setFixedWidth(bw);
   btnCancel->setFixedWidth(bw);
+  btnHints->setFixedWidth(bw);
 
   l->addWidget(btnSelect);
   l->addStretch(1);
   l->addSpacing(30);
+  l->addWidget(btnHints);
+  l->addSpacing(20);
   l->addWidget(btnOk);
   l->addWidget(btnCancel);
 }
@@ -136,6 +167,13 @@ AwayMsgDlg::~AwayMsgDlg()
   emit done();
 }
 
+void AwayMsgDlg::slot_hints()
+{
+  QString h = tr(hints);
+  (void) new HintsDlg(h);
+}
+
+
 // -----------------------------------------------------------------------------
 
 void AwayMsgDlg::ok()
@@ -190,6 +228,8 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
 
   int bw = 75;
+  QPushButton *btnHints = new QPushButton(tr("&Hints"), this);
+  connect(btnHints, SIGNAL(clicked()), SLOT(slot_hints()));
   QPushButton *btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
@@ -200,12 +240,16 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnClear->sizeHint().width());
   bw = QMAX(bw, btnCancel->sizeHint().width());
+  bw = QMAX(bw, btnHints->sizeHint().width());
   btnOk->setFixedWidth(bw);
   btnClear->setFixedWidth(bw);
   btnCancel->setFixedWidth(bw);
+  btnHints->setFixedWidth(bw);
 
   l->addStretch(1);
   l->addSpacing(30);
+  l->addWidget(btnHints);
+  l->addSpacing(20);
   l->addWidget(btnOk);
   l->addWidget(btnClear);
   l->addWidget(btnCancel);
@@ -229,6 +273,12 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
 
 
 // -----------------------------------------------------------------------------
+void CustomAwayMsgDlg::slot_hints()
+{
+  QString h = tr(hints);
+  (void) new HintsDlg(h);
+}
+
 
 void CustomAwayMsgDlg::slot_ok()
 {

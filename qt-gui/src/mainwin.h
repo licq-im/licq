@@ -266,18 +266,18 @@ signals:
 
 class HintsDlg : public QDialog
 {
-  Q_OBJECT
 public:
-  HintsDlg();
+  HintsDlg(QString &);
 
 private:
-  QTextView* txtView;
-  QPushButton* btnClose;
+  QTextView *txtView;
+  QPushButton *btnClose;
 };
 
 // -----------------------------------------------------------------------------
 
 extern CMainWindow* gMainWindow;
 
+// HintsDlg class
 
 #endif

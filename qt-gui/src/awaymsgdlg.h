@@ -32,6 +32,7 @@ protected slots:
   void ok();
   virtual void reject();
   void slot_selectMessage(int);
+  void slot_hints();
 };
 
 
@@ -48,6 +49,7 @@ protected:
 protected slots:
   void slot_clear();
   void slot_ok();
+  void slot_hints();
 };
 
 
