@@ -1579,7 +1579,8 @@ CChatClient::CChatClient(ICQUser *u)
 {
   m_nVersion = u->Version();
   m_nUin = u->Uin();
-  m_nIp = u->RealIp();
+  m_nIp = u->Ip();
+  m_nRealIp = u->RealIp();
   m_nMode = u->Mode();
   m_nSession = 0;
   m_nHandshake = 0x64;
