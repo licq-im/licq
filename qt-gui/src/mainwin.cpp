@@ -34,7 +34,6 @@
 
 #include <qaccel.h>
 #include <qimage.h>
-#include <qwindowsstyle.h>
 #include <qdatetime.h>
 #include <qdir.h>
 #include <qclipboard.h>
@@ -44,6 +43,8 @@
 #include <qtabwidget.h>
 #if QT_VERSION >= 300
 #include <qstylefactory.h>
+#else
+#include <qwindowsstyle.h>
 #endif
 
 #include "licqgui.h"
@@ -451,10 +452,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szSkin, skinName);
 
-#if QT_VERSION < 300
-  style = new QWindowsStyle;
-#else
+#if QT_VERSION >= 300
   style = QStyleFactory::create("windows");
+#else
+  style = new QWindowsStyle;
 #endif
   awayMsgDlg = NULL;
   optionsDlg = NULL;

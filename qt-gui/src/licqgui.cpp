@@ -26,6 +26,10 @@
 #include <kthemestyle.h>
 #endif
 #endif
+
+// In Qt 3.x and above, we should use QStyleFactory, since the styles
+// can come as plugins.
+#if QT_VERSION < 300
 #include <qwindowsstyle.h>
 #include <qmotifstyle.h>
 #include <qplatinumstyle.h>
@@ -35,12 +39,14 @@
 #include <qinterlacestyle.h>
 #endif
 #endif
-#include <qsessionmanager.h>
-#include <qaccel.h>
 #if QT_VERSION >= 220
 #include <qsgistyle.h>
 #include <qmotifplusstyle.h>
 #endif
+#endif // end of QT_VERSION < 300
+
+#include <qsessionmanager.h>
+#include <qaccel.h>
 #include "licqgui.h"
 #include <qtextcodec.h>
 #ifdef HAVE_LOCALE_H

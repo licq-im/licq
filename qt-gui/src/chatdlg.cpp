@@ -41,7 +41,6 @@
 #include <qpopupmenu.h>
 #include <qclipboard.h>
 #include <qtextstream.h>
-#include <qwindowsstyle.h>
 #include <qmenubar.h>
 #include <qtextcodec.h>
 #ifdef USE_KDE
