@@ -1542,7 +1542,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
           gUserManager.DropOwner(m_nPPID);
         }
         else
-          ownerName = QString("Error! no owner set");
+          ownerName = QString(tr("Error! no owner set"));
         QDateTime date;
         
         // Iterate through each message to add
