@@ -181,3 +181,73 @@ AC_DEFUN([AC_C_SOCKLEN_T_AND_SOCKS],
   ]);
 
 ])
+
+AC_DEFUN([LICQ_CHECK_OPENSSL],
+[
+  AC_MSG_CHECKING(if OpenSSL support is desired)
+
+  AC_ARG_ENABLE(
+    openssl,
+    [  --disable-openssl       disable OpenSSL support],
+    WITH_OPENSSL="$enableval", WITH_OPENSSL="yes")
+
+  AC_ARG_WITH(
+    openssl-inc,
+    [  --with-openssl-inc=PATH  include path for OpenSSL headers],
+    openssl_incdir="$withval", openssl_incdir="no")
+
+  AC_ARG_WITH(
+    openssl-lib,
+    [  --with-openssl-lib=PATH  library path for OpenSSL libraries],
+    openssl_libdir="$withval", openssl_libdir="no")
+
+  if test "$WITH_OPENSSL" = "no"; then
+    AC_MSG_RESULT(no)
+  else
+    AC_MSG_RESULT(yes)
+
+    dnl AC_MSG_CHECKING(for the OpenSSL headers)
+    temp=$CPPFLAGS
+    dnl Extra search path for kerberos includes, Redhat 9 needs this for OpenSSL
+    if test -d "/usr/kerberos/include"; then
+      kerberos_incdir="-I/usr/kerberos/include"
+      CPPFLAGS="$CPPFLAGS $kerberos_incdir"
+    fi
+
+    if test "$openssl_incdir" != "no"; then
+      CPPFLAGS="$CPPFLAGS -I$openssl_incdir"
+    fi
+    AC_CHECK_HEADER(openssl/ssl.h, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    if test "$WITH_OPENSSL" = "no"; then
+      CPPFLAGS="$temp"
+    fi
+
+    if test "$WITH_OPENSSL" = "yes"; then
+      dnl AC_MSG_CHECKING(for the OpenSSL library)
+      temp="$LIBS"
+      if test "$openssl_libdir" != "no"; then
+        LIBS="$LIBS -L$openssl_libdir"
+      fi
+      AC_CHECK_LIB(crypto, DH_free)
+      if test "$ac_cv_lib_crypto_DH_free" = "yes"; then
+          AC_CHECK_LIB(ssl, SSL_new, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+      else
+          WITH_OPENSSL="no"
+      fi
+      if test "$WITH_OPENSSL" = "no"; then
+        LIBS="$temp"
+      else
+        LIBS="-lssl $LIBS"
+      fi
+    fi
+
+    AC_MSG_CHECKING(if OpenSSL support can be enabled)
+    if test "$WITH_OPENSSL" = "yes"; then
+      AC_DEFINE_UNQUOTED(USE_OPENSSL, 1, [Define if OpenSSL is available])
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+    fi
+  fi
+])
+
