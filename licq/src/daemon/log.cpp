@@ -71,6 +71,7 @@ inline
 void CLogService_StdOut::lprintf(unsigned short _nLogType, const char *_szPrefix,
                                  const char *_szFormat, va_list argp)
 {
+  printf("%s", _szPrefix);
   vprintf(_szFormat, argp);
   fflush(stdout);
 }
@@ -97,6 +98,7 @@ void CLogService_File::lprintf(unsigned short _nLogType, const char *_szPrefix,
                                const char *_szFormat, va_list argp)
 {
   if (m_fLog == NULL) return;
+  fprintf(m_fLog, "%s", _szPrefix);
   vfprintf(m_fLog, _szFormat, argp);
   fflush(m_fLog);
 }
