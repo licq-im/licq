@@ -501,7 +501,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QString s;
 
 #if QT_VERSION >= 300
-  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s</font>",
+  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s<br></font>",
             (e->Direction() == D_RECEIVER) ? "red" : "blue",
             EventDescription(e).utf8().data(),
             sd.utf8().data(),
