@@ -508,35 +508,22 @@ QWidget* OptionsDlg::new_appearance_options()
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
 
   l = new QVBoxLayout(l);
-  boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
+  boxLocale = new QGroupBox(2, Horizontal, tr("Locale"), w);
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
-  lblLocale = new QLabel(tr("Locale:"), boxLocale);
+  /*lblLocale = new QLabel(tr("Locale:"), boxLocale);
   QWhatsThis::add(lblLocale, tr("Sets which locale should be used for "
-                              "all messages."));
+                              "all messages."));*/
 
   cmbTrans = new QComboBox(false, boxLocale);
-  cmbLocale = new QComboBox(false, boxLocale);
-
   QString szTransFilesDir;
   szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
   QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
+  cmbTrans->insertItem(tr("none"));
+  cmbTrans->insertStringList(dTrans.entryList());
 
-  if (!dTrans.count())
-  {
-    gLog.Error("%sError reading translation directory %s.\n",
-               L_ERRORxSTR, szTransFilesDir.latin1());
-    cmbTrans->insertItem(tr("ERROR"));
-    cmbTrans->setEnabled(false);
-  }
-  else
-  {
-    cmbTrans->insertItem(tr("none"));
-    cmbTrans->insertStringList(dTrans.entryList());
-  }
-
-  QString szLocaleFilesDir;
+  /*QString szLocaleFilesDir;
   szLocaleFilesDir.sprintf("%sqt-gui/locale", SHARE_DIR);
   QDir dLocale(szLocaleFilesDir, "*.qm", QDir::Name, QDir::Files | QDir::Readable);
 
@@ -549,7 +536,7 @@ QWidget* OptionsDlg::new_appearance_options()
   {
     cmbLocale->insertItem(tr("Auto"));
     cmbLocale->insertStringList(dLocale.entryList());
-  }
+  }*/
 #if QT_VERSION < 210
   QWidget* dummy_w = new QWidget(boxLocale);
   if (dummy_w);
