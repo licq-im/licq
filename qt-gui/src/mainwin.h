@@ -17,10 +17,9 @@
 #include <qtimer.h>
 #include <qbitmap.h>
 
-#define QTGUI_DIR "qt-gui/"
-
 #include "userbox.h"
 #include "user.h"
+#include "gui-defines.h"
 
 class QStyle;
 
@@ -119,9 +118,9 @@ protected:
        autoClose,
        m_bShowOffline,
        m_bSortByStatus,
-       m_bShowDividers,
-       m_bDockIcon48;
+       m_bShowDividers;
   unsigned long m_nCurrentGroup;
+  DockMode m_nDockMode;
   GroupType m_nGroupType;
 
   int mouseX, mouseY;
@@ -140,7 +139,7 @@ protected:
   virtual void keyPressEvent(QKeyEvent *e);
 
 friend class WharfIcon;
-friend class IconManager;
+friend class IconManager_Default;
 friend class SkinBrowserDlg;
 friend class OptionsDlg;
 

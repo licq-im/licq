@@ -33,25 +33,41 @@
 #include "xpm/iconMask-48.xpm"
 #include "xpm/iconDigits.h"
 
-#include "wharf.h"
-#include "mainwin.h"
-#include "user.h"
-#include <qpainter.h>
-#ifdef USE_KDE
-#include <kwin.h>
-#endif
+#include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #undef Status
+#undef Bool
+#undef None
+#undef KeyPress
+#undef KeyRelease
+#undef FocusIn
+#undef FocusOut
+
+#include "wharf.h"
+#include "mainwin.h"
+#include "user.h"
+#include "ewidgets.h"
+#include <qpainter.h>
+
+#ifdef USE_KDE
+#include <kwin.h>
+#endif
 
 
 /*
   Constructs a WharfIcon widget.
 */
+IconManager::IconManager(QWidget *parent, const char *name )
+  : KApplet(parent, name)
+{
+  setCaption("LicqWharf");
+  m_nNewMsg = m_nSysMsg = 0;
+  wharfIcon = NULL;
+}
 
 
-IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent, const char *name )
-  : KApplet(parent, name), wharfIcon(_mainwin, _menu, _bFortyEight, this)
+void IconManager::X11Init()
 {
   // set the hints
   Display *dsp = x11Display();  // get the display
@@ -63,46 +79,89 @@ IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyE
   XSetClassHint(dsp, win, &classhint); // set the class hints
   hints = XGetWMHints(dsp, win);  // init hints
   hints->initial_state = WithdrawnState;
-  hints->icon_window = wharfIcon.winId();
+  hints->icon_window = wharfIcon->winId();
   hints->window_group = win;  // set the window hint
   hints->flags = WindowGroupHint | IconWindowHint | StateHint; // set the window group hint
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
 
-  setCaption("LicqWharf");
-  m_nNewMsg = m_nSysMsg = 0;
-  m_bFortyEight = _bFortyEight;
 #ifdef USE_KDE
   int argc = 0;
   init(argc, 0);
-  setMinimumWidth(wharfIcon.width());
-  setMinimumHeight(wharfIcon.height());
+  setMinimumWidth(wharfIcon->width());
+  setMinimumHeight(wharfIcon->height());
 #else
   iconify();
 #endif
-  resize (wharfIcon.width(), wharfIcon.height());
-  setMask(wharfIcon.mask);
+  resize (wharfIcon->width(), wharfIcon->height());
+  setMask(*wharfIcon->vis->mask());
   show();
 }
 
+
 IconManager::~IconManager()
 {
+  delete wharfIcon;
 }
 
 void IconManager::closeEvent( QCloseEvent*) {}
 
 #ifdef USE_KDE
-
 void IconManager::setupGeometry(Orientation orientation, int width, int height)
 {
-    setMinimumSize(64,48);
-
-    KApplet::setupGeometry(orientation, minimumSize().width(), minimumSize().height());
+  setMinimumSize(64,48);
+  KApplet::setupGeometry(orientation, minimumSize().width(), minimumSize().height());
 }
 #endif
 
+void IconManager::mouseReleaseEvent( QMouseEvent *e )
+{
+  wharfIcon->mouseReleaseEvent(e);
+}
+
+void IconManager::paintEvent( QPaintEvent * )
+{
+  QPainter painter(this);
+  painter.drawPixmap(0, 0, *wharfIcon->vis);
+  painter.end();
+}
+
+
+
+
+//=====IconManager_Default===================================================
+
+IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent, const char *name )
+  : IconManager(parent, name)
+{
+  m_bFortyEight = _bFortyEight;
+  if (m_bFortyEight)
+  {
+    pix = new QPixmap((const char **)iconBack_48_xpm);
+    QBitmap b;
+    b = QPixmap((const char **)iconMask_48_xpm);
+    pix->setMask(b);
+    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
+  }
+  else
+  {
+    pix = new QPixmap((const char **)iconBack_64_xpm);
+    QBitmap b;
+    b = QPixmap((const char **)iconMask_64_xpm);
+    pix->setMask(b);
+    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
+  }
+  X11Init();
+}
+
+IconManager_Default::~IconManager_Default()
+{
+  delete pix;
+}
+
+
 //-----CMainWindow::setDockIconStatus-------------------------------------------
-void IconManager::setDockIconStatus()
+void IconManager_Default::SetDockIconStatus()
 {
   QPixmap m;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -118,7 +177,7 @@ void IconManager::setDockIconStatus()
   }
   if (o->StatusInvisible()) m = QPixmap((const char **)iconInvisible_xpm);
   gUserManager.DropOwner();
-  QPainter painter(wharfIcon.vis);
+  QPainter painter(wharfIcon->vis);
   if (!m_bFortyEight)
   {
     painter.drawPixmap(0, 44, m);
@@ -141,34 +200,34 @@ void IconManager::setDockIconStatus()
     painter.drawPixmap(0, 27, m);
   painter.end();
 
-  wharfIcon.repaint(false);
+  wharfIcon->repaint(false);
   repaint(false);
 }
 
 
-//-----IconManager::GetDockIconStatusIcon--------------------------------------
-QPixmap *IconManager::GetDockIconStatusIcon()
+//-----IconManager_Default::GetDockIconStatusIcon----------------------------
+QPixmap *IconManager_Default::GetDockIconStatusIcon()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->Status();
   gUserManager.DropOwner();
   switch (s)
   {
-  case ICQ_STATUS_ONLINE: return wharfIcon.mainwin->pmOnline;
-  case ICQ_STATUS_AWAY: return wharfIcon.mainwin->pmAway;
-  case ICQ_STATUS_NA: return wharfIcon.mainwin->pmNa;
-  case ICQ_STATUS_OCCUPIED: return (wharfIcon.mainwin->pmOccupied);
-  case ICQ_STATUS_DND: return wharfIcon.mainwin->pmDnd;
-  case ICQ_STATUS_FREEFORCHAT: return wharfIcon.mainwin->pmChat;
-  case ICQ_STATUS_OFFLINE: return wharfIcon.mainwin->pmOffline;
+  case ICQ_STATUS_ONLINE: return wharfIcon->mainwin->pmOnline;
+  case ICQ_STATUS_AWAY: return wharfIcon->mainwin->pmAway;
+  case ICQ_STATUS_NA: return wharfIcon->mainwin->pmNa;
+  case ICQ_STATUS_OCCUPIED: return (wharfIcon->mainwin->pmOccupied);
+  case ICQ_STATUS_DND: return wharfIcon->mainwin->pmDnd;
+  case ICQ_STATUS_FREEFORCHAT: return wharfIcon->mainwin->pmChat;
+  case ICQ_STATUS_OFFLINE: return wharfIcon->mainwin->pmOffline;
   }
   return NULL;
 }
 
-//-----CMainWindow::setDockIconMsg----------------------------------------------
-void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
+//-----IconManager_Default::setDockIconMsg-----------------------------------
+void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
 {
-  QPainter p(wharfIcon.vis);
+  QPainter p(wharfIcon->vis);
   unsigned short d1, d10;
   m_nNewMsg = nNewMsg;
   m_nSysMsg = nSysMsg;
@@ -222,7 +281,7 @@ void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
     // Draw the little icon now
     QPixmap *m = NULL;
     if (nSysMsg > 0 || nNewMsg > 0)
-      m = wharfIcon.mainwin->pmMessage;
+      m = wharfIcon->mainwin->pmMessage;
     else
       m = GetDockIconStatusIcon();
     p.fillRect(31, 6, 27, 16, QColor(0,0,0));
@@ -237,41 +296,234 @@ void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
   }
   p.end();
 
-  wharfIcon.repaint(false);
+  wharfIcon->repaint(false);
   repaint(false);
 }
 
-void IconManager::mouseReleaseEvent( QMouseEvent *e )
+//=====IconManager_Themed===================================================
+
+IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu, const char *theme, QWidget *parent, const char *name )
+  : IconManager(parent, name), m_szTheme(theme)
 {
-  wharfIcon.mouseReleaseEvent(e);
+  // Open the config file and read it
+  char temp[MAX_FILENAME_LEN];
+  QString baseDockDir;
+  if (theme[0] == '/')
+  {
+    baseDockDir = theme;
+    if (baseDockDir[baseDockDir.length() - 1] != '/') baseDockDir += QString("/");
+  }
+  else
+    baseDockDir.sprintf("%s%sdock.%s/", SHARE_DIR, QTGUI_DIR, theme);
+  char filename[MAX_FILENAME_LEN];
+  sprintf(filename, "%s%s.dock", (const char *)baseDockDir, theme);
+  CIniFile dockFile(INI_FxWARN);
+  if (!dockFile.LoadFile(filename))
+  {
+    WarnUser(_mainwin, tr("Unable to load dock theme file\n(%1)\n:%2")
+                       .arg(filename).arg(strerror(dockFile.Error())));
+    return;
+  }
+  dockFile.SetSection("background");
+  // No messages
+  dockFile.ReadStr("NoMessages", temp);
+  pixNoMessages = new QPixmap(baseDockDir + QString(temp));
+  if (pixNoMessages->isNull())
+    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+  dockFile.ReadStr("NoMessagesMask", temp, "none");
+  if (strcmp(temp, "none") != 0)
+    pixNoMessages->setMask(QBitmap(baseDockDir + QString(temp)));
+  // Regular messages
+  dockFile.ReadStr("RegularMessages", temp);
+  pixRegularMessages = new QPixmap(baseDockDir + QString(temp));
+  if (pixRegularMessages->isNull())
+    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+  dockFile.ReadStr("RegularMessagesMask", temp, "none");
+  if (strcmp(temp, "none") != 0)
+    pixRegularMessages->setMask(QBitmap(baseDockDir + QString(temp)));
+  // System messages
+  dockFile.ReadStr("SystemMessages", temp);
+  pixSystemMessages = new QPixmap(baseDockDir + QString(temp));
+  if (pixSystemMessages->isNull())
+    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+  dockFile.ReadStr("SystemMessagesMask", temp, "none");
+  if (strcmp(temp, "none") != 0)
+    pixSystemMessages->setMask(QBitmap(baseDockDir + QString(temp)));
+  // Both messages
+  dockFile.ReadStr("BothMessages", temp);
+  pixBothMessages = new QPixmap(baseDockDir + QString(temp));
+  if (pixBothMessages->isNull())
+    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+  dockFile.ReadStr("BothMessagesMask", temp, "none");
+  if (strcmp(temp, "none") != 0)
+    pixBothMessages->setMask(QBitmap(baseDockDir + QString(temp)));
+
+  // Status icons
+  pixOnline = pixOffline = pixAway = pixNA = pixOccupied = pixDND = pixInvisible = pixFFC = NULL;
+  if (dockFile.SetSection("status"))
+  {
+    // Online
+    dockFile.ReadStr("Online", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixOnline = new QPixmap(baseDockDir + QString(temp));
+    // Offline
+    dockFile.ReadStr("Offline", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixOffline = new QPixmap(baseDockDir + QString(temp));
+    // Away
+    dockFile.ReadStr("Away", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixAway = new QPixmap(baseDockDir + QString(temp));
+    // NA
+    dockFile.ReadStr("NA", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixNA = new QPixmap(baseDockDir + QString(temp));
+    // Occupied
+    dockFile.ReadStr("Occupied", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixOccupied = new QPixmap(baseDockDir + QString(temp));
+    // DND
+    dockFile.ReadStr("DND", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixDND = new QPixmap(baseDockDir + QString(temp));
+    // Invisible
+    dockFile.ReadStr("Invisible", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixInvisible = new QPixmap(baseDockDir + QString(temp));
+    // FFC
+    dockFile.ReadStr("FFC", temp, "none");
+    if (strcmp(temp, "none") != 0)
+      pixFFC = new QPixmap(baseDockDir + QString(temp));
+
+    dockFile.ReadStr("Mask", temp, "none");
+    if (strcmp(temp, "none") != 0)
+    {
+      QBitmap mask(baseDockDir + QString(temp));
+      if (pixOnline != NULL) pixOnline->setMask(mask);
+      if (pixOffline != NULL) pixOffline->setMask(mask);
+      if (pixAway != NULL) pixAway->setMask(mask);
+      if (pixNA != NULL) pixNA->setMask(mask);
+      if (pixOccupied != NULL) pixOccupied->setMask(mask);
+      if (pixDND != NULL) pixDND->setMask(mask);
+      if (pixInvisible != NULL) pixInvisible->setMask(mask);
+      if (pixFFC != NULL) pixFFC->setMask(mask);
+    }
+  }
+
+  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this);
+  X11Init();
 }
 
-WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight,
+
+IconManager_Themed::~IconManager_Themed()
+{
+  delete pixNoMessages;
+  delete pixBothMessages;
+  delete pixRegularMessages;
+  delete pixSystemMessages;
+  delete pixOnline;
+  delete pixOffline;
+  delete pixAway;
+  delete pixNA;
+  delete pixOccupied;
+  delete pixDND;
+  delete pixFFC;
+  delete pixInvisible;
+}
+
+
+
+//-----CMainWindow::setDockIconStatus-------------------------------------------
+void IconManager_Themed::SetDockIconStatus()
+{
+  QPixmap *p = NULL;
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  switch (o->Status())
+  {
+    case ICQ_STATUS_ONLINE: p = pixOnline; break;
+    case ICQ_STATUS_AWAY: p = pixAway; break;
+    case ICQ_STATUS_NA: p = pixNA; break;
+    case ICQ_STATUS_OCCUPIED: p = pixOccupied; break;
+    case ICQ_STATUS_DND: p = pixDND; break;
+    case ICQ_STATUS_FREEFORCHAT: p = pixFFC; break;
+    case ICQ_STATUS_OFFLINE: p = pixOffline; break;
+  }
+  if (o->StatusInvisible()) p = pixInvisible;
+  gUserManager.DropOwner();
+  if (p != NULL)
+  {
+    QPainter painter(wharfIcon->vis);
+    painter.drawPixmap(0, 0, *p);
+    painter.end();
+  }
+
+  wharfIcon->repaint(false);
+  repaint(false);
+}
+
+
+//-----IconManager_Themed::setDockIconMsg-----------------------------------
+void IconManager_Themed::SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
+{
+  QPixmap *p = NULL;
+  if (nNewMsg > 0 && nSysMsg > 0)
+  {
+    if (!(m_nNewMsg > 0 && m_nSysMsg > 0))
+      p = pixBothMessages;
+  }
+  else if (nNewMsg > 0)
+  {
+    if (!(m_nNewMsg > 0))
+      p = pixRegularMessages;
+  }
+  else if (nSysMsg > 0)
+  {
+    if (!(m_nSysMsg > 0))
+      p = pixSystemMessages;
+  }
+  else
+  {
+    if (!(m_nNewMsg == 0 && m_nSysMsg == 0))
+      p = pixNoMessages;
+  }
+
+  if (p != NULL)
+  {
+    wharfIcon->Set(p);
+    SetDockIconStatus();
+    setMask(*wharfIcon->vis->mask());
+    wharfIcon->repaint(false);
+    repaint(false);
+  }
+
+  m_nNewMsg = nNewMsg;
+  m_nSysMsg = nSysMsg;
+
+}
+
+//=====WharfIcon=============================================================
+
+WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, QPixmap *p,
                      QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
   mainwin = _mainwin;
   menu = _menu;
-  if (_bFortyEight)
-  {
-    vis = new QPixmap((const char **)iconBack_48_xpm);
-    QPixmap p((const char **)iconMask_48_xpm);
-    mask = p;
-  }
-  else
-  {
-    vis = new QPixmap((const char **)iconBack_64_xpm);
-    QPixmap p((const char **)iconMask_64_xpm);
-    mask = p;
-  }
-  resize(vis->width(), vis->height());
-  setMask(mask);
-
+  vis = NULL;
+  Set(p);
   QToolTip::add(this, tr("Left click - Show main window\n"
                          "Middle click - Show next message\n"
                          "Right click - System menu\n"));
-
   show();
+}
+
+
+void WharfIcon::Set(QPixmap *pix)
+{
+  delete vis;
+  vis = new QPixmap(*pix);
+  resize(vis->width(), vis->height());
+  setMask(*vis->mask());
 }
 
 WharfIcon::~WharfIcon()
@@ -306,10 +558,4 @@ void WharfIcon::paintEvent( QPaintEvent * )
   painter.end();
 }
 
-void IconManager::paintEvent( QPaintEvent * )
-{
-  QPainter painter(this);
-  painter.drawPixmap(0, 0, *wharfIcon.vis);
-  painter.end();
-}
 

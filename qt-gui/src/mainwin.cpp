@@ -238,9 +238,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
   licqConf.ReadNum("FrameStyle", nFrameStyle, 51);
-  bool bUseDock;
-  licqConf.ReadBool("UseDock", bUseDock, false);
-  licqConf.ReadBool("Dock64x48", m_bDockIcon48, false);
+  char szDockTheme[MAX_FILENAME_LEN];
+  bool bDockIcon48;
+  unsigned short nDockMode;
+  licqConf.ReadNum("UseDock", nDockMode, (unsigned short)DockNone);
+  m_nDockMode = (DockMode)nDockMode;
+  licqConf.ReadBool("Dock64x48", bDockIcon48, false);
+  licqConf.ReadStr("DockTheme", szDockTheme, "");
   bool bHidden;
   licqConf.ReadBool("Hidden", bHidden, false);
 
@@ -328,11 +332,16 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
 #ifdef USE_DOCK
   licqIcon = NULL;
-  if (bUseDock)
+  switch (m_nDockMode)
   {
-    licqIcon = new IconManager(this, mnuSystem, m_bDockIcon48);
-    licqIcon->setDockIconMsg(0, 0);
-    licqIcon->setDockIconStatus();
+    case DockDefault:
+      licqIcon = new IconManager_Default(this, mnuSystem, bDockIcon48);
+      break;
+    case DockThemed:
+      licqIcon = new IconManager_Themed(this, mnuSystem, szDockTheme);
+      break;
+    case DockNone:
+      break;
   }
 #endif
 
@@ -828,7 +837,7 @@ void CMainWindow::updateEvents()
   setCaption(szCaption);
 
 #ifdef USE_DOCK
-  if (licqIcon != NULL) licqIcon->setDockIconMsg(nNumUserEvents, nNumOwnerEvents);
+  if (licqIcon != NULL) licqIcon->SetDockIconMsg(nNumUserEvents, nNumOwnerEvents);
 #endif
 }
 
@@ -946,7 +955,7 @@ void CMainWindow::updateStatus()
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);
 
 #ifdef USE_DOCK
-  if (licqIcon != NULL) licqIcon->setDockIconStatus();
+  if (licqIcon != NULL) licqIcon->SetDockIconStatus();
 #endif
 }
 
@@ -1352,8 +1361,20 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
-  licqConf.WriteBool("UseDock", licqIcon != NULL);
-  licqConf.WriteBool("Dock64x48", m_bDockIcon48);
+#ifdef USE_DOCK
+  licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
+  switch(m_nDockMode)
+  {
+    case DockDefault:
+      licqConf.WriteBool("Dock64x48", ((IconManager_Default *)licqIcon)->FortyEight());
+      break;
+    case DockThemed:
+      licqConf.WriteStr("DockTheme", (const char *)((IconManager_Themed *)licqIcon)->Theme());
+      break;
+    case DockNone:
+      break;
+  }
+#endif
 
   // save the column info
   licqConf.WriteNum("NumColumns", (unsigned short)colInfo.size());
@@ -1382,7 +1403,7 @@ void CMainWindow::aboutBox()
                   "Qt GUI plugin version %2.\n"
                   "%6\n"
                   "Author: Graham Roff\n"
-                  "Qt-GUI contributions by Dirk Mueller\n"
+                  "Contributions by Dirk Mueller\n"
                   "http://www.licq.org\n\n"
                   "%3 (%4)\n"
                   "%5 contacts.").arg(licqDaemon->Version())

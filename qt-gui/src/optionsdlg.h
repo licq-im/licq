@@ -15,6 +15,7 @@ class QCheckBox;
 class QSpinBox;
 class QGroupBox;
 class QFont;
+class QRadioButton;
 
 class OptionsDlg : public QTabDialog
 {
@@ -52,6 +53,8 @@ protected:
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight,
              *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg;
+   QRadioButton *rdbDockDefault, *rdbDockThemed;
+   QComboBox *cmbDockTheme;
 
    // columns tab
    QWidget* new_column_options();
@@ -104,6 +107,7 @@ protected slots:
   void slot_SARgroup_act(int);
   void slot_SARsave_act();
   void slot_socks();
+  void slot_useDockToggled(bool);
 };
 
 

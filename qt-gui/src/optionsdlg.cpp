@@ -26,6 +26,8 @@
 #include <qpushbutton.h>
 #include <qcheckbox.h>
 #include <qspinbox.h>
+#include <qradiobutton.h>
+#include <qbuttongroup.h>
 #include <qfontdialog.h>
 #include <qgroupbox.h>
 #include <qwhatsthis.h>
@@ -46,6 +48,7 @@
 #include "sar.h"
 #include "wharf.h"
 #include "skin.h"
+
 
 
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent, char *name)
@@ -137,9 +140,29 @@ void OptionsDlg::SetupOptions()
   chkAutoClose->setChecked(mainwin->autoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
-  chkUseDock->setChecked(mainwin->licqIcon != NULL);
-  chkDockFortyEight->setChecked(mainwin->m_bDockIcon48);
-  chkDockFortyEight->setEnabled(chkUseDock->isChecked());
+  switch(mainwin->m_nDockMode)
+  {
+    case DockNone:
+      chkUseDock->setChecked(false);
+      cmbDockTheme->setEnabled(false);
+      rdbDockDefault->setEnabled(false);
+      rdbDockThemed->setEnabled(false);
+      chkDockFortyEight->setEnabled(false);
+      break;
+    case DockDefault:
+      chkUseDock->setChecked(true);
+      rdbDockDefault->setChecked(true);
+      chkDockFortyEight->setChecked( ((IconManager_Default *)mainwin->licqIcon)->FortyEight());
+      chkDockFortyEight->setEnabled(true);
+      cmbDockTheme->setEnabled(false);
+      break;
+    case DockThemed:
+      chkUseDock->setChecked(true);
+      rdbDockThemed->setChecked(true);
+      cmbDockTheme->setEnabled(true);
+      chkDockFortyEight->setEnabled(false);
+      break;
+  }
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
   chkFirewall->setChecked(mainwin->licqDaemon->FirewallHost()[0] == '\0');
@@ -263,31 +286,29 @@ void OptionsDlg::ApplyOptions()
   mainwin->autoClose = chkAutoClose->isChecked();
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
-  if (chkUseDock->isChecked())
+  if (chkUseDock->isChecked() &&
+      (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
   {
-    if (mainwin->licqIcon == NULL)
+    delete mainwin->licqIcon;
+    if (rdbDockDefault->isChecked())
     {
-      mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
-      mainwin->updateStatus();
-      mainwin->updateEvents();
+      mainwin->licqIcon = new IconManager_Default(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
+      mainwin->m_nDockMode = DockDefault;
     }
-    else if (mainwin->m_bDockIcon48 != chkDockFortyEight->isChecked())
+    else if (rdbDockThemed->isChecked())
     {
-      delete mainwin->licqIcon;
-      mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
-      mainwin->updateStatus();
-      mainwin->updateEvents();
+      mainwin->licqIcon = new IconManager_Themed(mainwin, mainwin->mnuSystem, cmbDockTheme->currentText());
+      mainwin->m_nDockMode = DockThemed;
     }
+    mainwin->updateStatus();
+    mainwin->updateEvents();
   }
   else
   {
-    if (mainwin->licqIcon != NULL)
-    {
-      delete mainwin->licqIcon;
-      mainwin->licqIcon = NULL;
-    }
+    delete mainwin->licqIcon;
+    mainwin->licqIcon = NULL;
+    mainwin->m_nDockMode = DockNone;
   }
-  mainwin->m_bDockIcon48 = chkDockFortyEight->isChecked();
 
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
   if (chkFirewall->isChecked())
@@ -488,12 +509,33 @@ QWidget* OptionsDlg::new_appearance_options()
   l->addWidget(boxLocale);
 
   boxDocking = new QGroupBox(1, Horizontal, tr("Docking"), w);
+  QButtonGroup *grpDocking = new QButtonGroup(boxDocking);
+  grpDocking->setExclusive(true);
+  grpDocking->hide();
   chkUseDock = new QCheckBox(tr("Use Dock Icon"), boxDocking);
   QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
+  rdbDockDefault = new QRadioButton(tr("Default Icon"), boxDocking);
   chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), boxDocking);
   QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
                                         "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
-  connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
+  rdbDockThemed = new QRadioButton(tr("Themed Icon"), boxDocking);
+  grpDocking->insert(rdbDockDefault);
+  grpDocking->insert(rdbDockThemed);
+  (void) new QLabel(tr("Theme:"), boxDocking);
+  cmbDockTheme = new QComboBox(boxDocking);
+  // Set the currently available themes
+  QString szDockThemesDir;
+  szDockThemesDir.sprintf("%s%s", SHARE_DIR, QTGUI_DIR);
+  QDir d(szDockThemesDir, "dock.*", QDir::Name, QDir::Dirs | QDir::Readable);
+  QStringList s = d.entryList();
+  QStringList::Iterator sit;
+  for (sit = s.begin(); sit != s.end(); sit++)
+    (*sit).remove(0, 5);
+  cmbDockTheme->insertStringList(s);
+  connect(rdbDockDefault, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
+  connect(rdbDockThemed, SIGNAL(toggled(bool)), cmbDockTheme, SLOT(setEnabled(bool)));
+  connect(chkUseDock, SIGNAL(toggled(bool)), SLOT(slot_useDockToggled(bool)));
+
   l->addWidget(boxDocking);
 
   l = new QVBoxLayout(lay, 8);
@@ -513,6 +555,32 @@ QWidget* OptionsDlg::new_appearance_options()
   l->addWidget(boxFont);
 
   return w;
+}
+
+void OptionsDlg::slot_useDockToggled(bool b)
+{
+  if (!b)
+  {
+    cmbDockTheme->setEnabled(false);
+    rdbDockDefault->setEnabled(false);
+    rdbDockThemed->setEnabled(false);
+    chkDockFortyEight->setEnabled(false);
+    return;
+  }
+
+  // Turned on
+  rdbDockDefault->setEnabled(true);
+  rdbDockThemed->setEnabled(true);
+  if (rdbDockDefault->isChecked())
+  {
+    cmbDockTheme->setEnabled(false);
+    chkDockFortyEight->setEnabled(true);
+  }
+  else if (rdbDockThemed->isChecked())
+  {
+    cmbDockTheme->setEnabled(true);
+    chkDockFortyEight->setEnabled(false);
+  }
 }
 
 
@@ -873,8 +941,6 @@ QWidget* OptionsDlg::new_misc_options()
   boxParanoia = new QGroupBox(3, Vertical, tr("Paranoia"), w);
   lay->addWidget(boxParanoia);
 
-  /*chkHideIp = new QCheckBox(tr("Hide IP"), boxParanoia);
-  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));*/
   chkIgnoreNewUsers = new QCheckBox(tr("Ignore New Users"), boxParanoia);
   QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added "
                                       "to your list or must first request authorization."));
@@ -886,10 +952,6 @@ QWidget* OptionsDlg::new_misc_options()
 
   chkIgnoreEmailPager = new QCheckBox(tr("Ignore Email Pager"), boxParanoia);
   QWhatsThis::add(chkIgnoreEmailPager, tr("Determines if email pager messages are ignored or not."));
-
-  /*chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), boxParanoia);
-  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
-                                    "through your web indicator."));*/
 
 #if QT_VERSION < 210
   QWidget* dummy_w= new QWidget(boxParanoia);
