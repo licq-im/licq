@@ -85,17 +85,30 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
 
 
 //-----CICQDaemon::sendReadAwayMsg---------------------------------------------
-unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
+unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
 {
   if (nUin == gUserManager.OwnerUin()) return 0;
-
+  ICQEvent *result;
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(u);
-  gLog.Info("%sRequesting auto response from %s (#%ld).\n", L_TCPxSTR,
-            u->GetAlias(), -p->Sequence());
-  ICQEvent *result = SendExpectEvent_Client(u, p, NULL);
-  gUserManager.DropUser(u);
 
+  if (bServer)
+  {
+    // Generic read, gets changed in constructor
+    CSrvPacketTcp *s = new CPU_AdvancedMessage(u,
+                        ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
+    gLog.Info("%sRequesting auto reponse from %s.\n", L_SRVxSTR,
+              u->GetAlias());
+    result = SendExpectEvent_Server(nUin, s, NULL);
+  }
+  else
+  {
+    CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(u);
+    gLog.Info("%sRequesting auto response from %s (#%ld).\n", L_TCPxSTR,
+              u->GetAlias(), -p->Sequence());
+    result = SendExpectEvent_Client(u, p, NULL);
+  }
+
+  gUserManager.DropUser(u);
   return result->EventId();
 }
 
@@ -362,7 +375,7 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
   }
 	else
 	{
-		CPU_AckFileRefuse *p = new CPU_AckFileRefuse(nUin, nMsgID, nSequence,
+		CPU_AckFileRefuse *p = new CPU_AckFileRefuse(u, nMsgID, nSequence,
 																								 szReasonDos);
 		SendEvent_Server(p);
 	}
@@ -464,7 +477,7 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
 	}
 	else
 	{
-		CPU_AckChatRefuse *p = new CPU_AckChatRefuse(u->Uin(), nMsgID, nSequence,
+		CPU_AckChatRefuse *p = new CPU_AckChatRefuse(u, nMsgID, nSequence,
 																								 szReasonDos);
 		SendEvent_Server(p);
 	}
@@ -494,7 +507,7 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
 	}
 	else
 	{
-		CPU_AckChatAccept *p = new CPU_AckChatAccept(nUin, nMsgID, nSequence,
+		CPU_AckChatAccept *p = new CPU_AckChatAccept(u, nMsgID, nSequence,
 																								 nPort);
 		SendEvent_Server(p);
 	}

@@ -1029,7 +1029,7 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
   CBuffer tlvData;
-	
+
   switch (msgType)
   {
   case ICQ_CMDxSUB_MSG:
@@ -1070,7 +1070,7 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 	{
 	case 1:
  		nTLVType = 0x02;
- 		
+
  		tlvData.PackUnsignedLongBE(0x05010001);
 		tlvData.PackUnsignedShortBE(0x0101);
  		tlvData.PackChar(0x01);
@@ -1081,11 +1081,11 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 
 	case 4:
  		nTLVType = 0x05;
-  		
+
 		tlvData.PackUnsignedLong(gUserManager.OwnerUin());
 		tlvData.PackChar(msgType);
 		tlvData.PackChar(0); // message flags
-		tlvData.PackLNTS(szMessage);		
+		tlvData.PackLNTS(szMessage);
  		break;
 	}
 
@@ -1095,8 +1095,8 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 
 
 //-----AdvancedMessage---------------------------------------------------------
-CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
-																				 unsigned char _nMsgFlags, bool _bAck,
+CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
+																				 unsigned short _nMsgFlags, bool _bAck,
 																				 unsigned short _nSequence,
 																				 unsigned long nMsgID1,
 																				 unsigned long nMsgID2)
@@ -1114,6 +1114,13 @@ CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
 	m_nSequence = _nSequence;
 	m_nMsgID[0] = nMsgID1;
 	m_nMsgID[1] = nMsgID2;
+
+  // nobody inheirited us
+  if (m_nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
+  {
+    m_nSize -= 14; // no direct connection info
+    InitBuffer();
+  }
 }
 
 void CPU_AdvancedMessage::InitBuffer()
@@ -1122,15 +1129,18 @@ void CPU_AdvancedMessage::InitBuffer()
 
 	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 	unsigned short nStatus = o->Status();
+  if (m_pUser->StatusToUser() != ICQ_STATUS_OFFLINE)
+    nStatus = m_pUser->StatusToUser();
 
 	char szUin[13];
 	int nUinLen = snprintf(szUin, 12, "%ld", m_pUser->Uin());
 
 	unsigned short nSequence;
 	unsigned long nID1, nID2;
+  unsigned short nDirectInfo = 14; // size of direct info
 
 	if (m_bAck)
-	{	
+	{
 		nSequence = m_nSequence;
 		nID1 = m_nMsgID[0];
 		nID2 = m_nMsgID[1];
@@ -1140,6 +1150,21 @@ void CPU_AdvancedMessage::InitBuffer()
 		nSequence = m_pUser->Sequence(true);
 		nID1 = 0;
 		nID2 = m_nSubSequence;
+    if (m_nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
+    {
+      nDirectInfo = 0; // no direct info needed
+
+      // Get the correct message
+      switch(m_pUser->Status())
+      {
+        case ICQ_STATUS_AWAY: m_nMsgType = ICQ_CMDxTCP_READxAWAYxMSG; break;
+        case ICQ_STATUS_NA: m_nMsgType = ICQ_CMDxTCP_READxNAxMSG; break;
+        case ICQ_STATUS_DND: m_nMsgType = ICQ_CMDxTCP_READxDNDxMSG; break;
+        case ICQ_STATUS_OCCUPIED: m_nMsgType = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
+        case ICQ_STATUS_FREEFORCHAT: m_nMsgType = ICQ_CMDxTCP_READxFFCxMSG; break;
+        default: m_nMsgType = ICQ_CMDxTCP_READxAWAYxMSG; break;
+      }
+    }
 	}
 
 	buffer->PackUnsignedLongBE(nID1); // upper 4 bytes of message id
@@ -1149,7 +1174,7 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->Pack(szUin, nUinLen);
 
 	buffer->PackUnsignedShortBE(0x0005);	// tlv - message info
-	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen);
+	buffer->PackUnsignedShortBE(m_nSize - 25 - nUinLen);
 	buffer->PackUnsignedShortBE((m_bAck ? 0 : 0));
 	buffer->PackUnsignedLongBE(nID1);	// upper 4 bytes of message id again
 	buffer->PackUnsignedLongBE(nID2); // lower 4 bytes of message id again
@@ -1159,13 +1184,18 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedLongBE(0x53540000); // from icq2002a
 	buffer->PackUnsignedLongBE(0x000A0002); // tlv - ack or not
 	buffer->PackUnsignedShortBE((m_bAck ? 2 : 1));
-	buffer->PackUnsignedLongBE(0x000F0000); // tlv - empty
-	buffer->PackUnsignedLongBE(0x00030004); // tlv - internal ip
-	buffer->PackUnsignedLong(o->IntIp());
-	buffer->PackUnsignedLongBE(0x00050002); // tlv - listening port
-	buffer->PackUnsignedShort(o->Port());
+
+  if (nDirectInfo)
+  {
+	  buffer->PackUnsignedLongBE(0x00050002); // tlv - listening port
+	  buffer->PackUnsignedShort(o->Port());
+    buffer->PackUnsignedLongBE(0x00030004); // tlv - internal ip
+    buffer->PackUnsignedLong(o->IntIp());
+  }
+
+  buffer->PackUnsignedLongBE(0x000F0000); // tlv - empty
 	buffer->PackUnsignedShortBE(0x2711); // tlv - more message info
-	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 54);
+	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 36 - nDirectInfo);
 	buffer->PackUnsignedShort(0x001B); // len
 	buffer->PackUnsignedShort(ICQ_VERSION);
 	buffer->PackUnsignedLongBE(0);
@@ -1181,12 +1211,14 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
-	buffer->PackChar(m_nMsgType);
-	buffer->PackChar(m_nMsgFlags);
+	buffer->PackUnsignedShort(m_nMsgType);
 	buffer->PackUnsignedShort(nStatus);
-	buffer->PackUnsignedShortBE(1);	// priority
+	buffer->PackUnsignedShort(m_nMsgFlags ? m_nMsgFlags : 1);
 	buffer->PackUnsignedShort(0x0001); // message len
 	buffer->PackChar(0); // message
+
+  //if (!nDirectInfo)
+  //  buffer->PackUnsignedLongBE(0x00030000);
 
 	gUserManager.DropOwner();
 }
@@ -1278,7 +1310,7 @@ CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
 	}
 	else
 		buffer->PackString(_szDesc);
-	
+
 	buffer->PackUnsignedLongBE(0x2D384444); // ???
 	buffer->PackString(m_szFilename);
 	buffer->PackUnsignedLong(m_nFileSize);
@@ -1289,25 +1321,92 @@ CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
 
 
 //-----AckThroughServer--------------------------------------------------------
-CPU_AckThroughServer::CPU_AckThroughServer(unsigned long nUin,
-																					 unsigned long nMsgID1,
-																					 unsigned long nMsgID2, 
-																					 unsigned short nSequence,
-																					 unsigned char nMsgType,
-																					 unsigned char nMsgFlags)
+CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
+                                           unsigned long nMsgID1,
+                                           unsigned long nMsgID2,
+                                           unsigned short nSequence,
+                                           unsigned short nMsgType,
+                                           bool bAccept, unsigned short nLevel)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  snprintf(m_szUin, 13, "%lu", nUin);
+  snprintf(m_szUin, 13, "%lu", u->Uin());
   m_nUinLen = strlen(m_szUin);
 
-  m_nSize += 64 + m_nUinLen;
+  m_nSize += 66 + m_nUinLen;
 
-	m_nUin = nUin;
-	m_nMsgID[0] = nMsgID1;
-	m_nMsgID[1] = nMsgID2;
-	m_nSequence = nSequence;
-	m_nMsgType = nMsgType;
-	m_nMsgFlags = nMsgFlags;
+  m_nUin = u->Uin();
+  m_nMsgID[0] = nMsgID1;
+  m_nMsgID[1] = nMsgID2;
+  m_nSequence = nSequence;
+  m_nMsgType = nMsgType;
+  m_nSequence = nSequence;
+  m_nLevel = nLevel;
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short s = o->Status();
+  if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
+    s = u->StatusToUser();
+
+  if (!bAccept)
+    m_nStatus = ICQ_TCPxACK_REFUSE;
+  else
+  {
+    switch (s)
+    {
+      case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
+      case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
+      case ICQ_STATUS_DND:
+        m_nStatus = (*u->CustomAutoResponse() && m_nMsgType == ICQ_CMDxTCP_READxDNDxMSG)
+          ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
+        break;
+      case ICQ_STATUS_OCCUPIED:
+        m_nStatus = (*u->CustomAutoResponse() && m_nMsgType == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
+          ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
+        break;
+      case ICQ_STATUS_ONLINE:
+      case ICQ_STATUS_FREEFORCHAT:
+      default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
+    }
+  }
+
+  // don't send out AutoResponse if we're online
+  // it could contain stuff the other site shouldn't be able to read
+  // also some clients always pop up the auto response
+  // window when they receive one, annoying for them..
+  if(((u->StatusToUser() != ICQ_STATUS_OFFLINE &&
+       u->StatusToUser() != ICQ_STATUS_ONLINE)  ?
+      u->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
+  {
+    if (*u->CustomAutoResponse())
+    {
+      //m_szMessage = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
+      //pUser->usprintf(m_szMessage, u->CustomAutoResponse(), USPRINTF_NTORN);
+      char *cus = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
+      char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      u->usprintf(def, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      u->usprintf(cus, u->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
+      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
+      free(cus);
+      free(def);
+    }
+    else
+    {
+      m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      u->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+    }
+  }
+  else
+    m_szMessage = strdup("");
+
+  gUserManager.DropOwner();
+
+  // Check for pipes, should possibly go after the ClientToServer call
+  m_szMessage = PipeInput(m_szMessage);
+
+  gTranslator.ClientToServer(m_szMessage);
+
+  m_nSize += strlen(m_szMessage)+1;
 }
 
 void CPU_AckThroughServer::InitBuffer()
@@ -1336,24 +1435,26 @@ void CPU_AckThroughServer::InitBuffer()
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedShort(m_nMsgType);
-  buffer->PackUnsignedShort(m_nMsgFlags);
-  buffer->PackUnsignedShort(0);
+  buffer->PackUnsignedShort(m_nStatus);
+  buffer->PackUnsignedShort(m_nLevel);
+  buffer->PackString(m_szMessage);
+  free(m_szMessage);
 }
 
 
 //-----AckGeneral--------------------------------------------------------------
-CPU_AckGeneral::CPU_AckGeneral(unsigned long nUin, unsigned long nMsgID1,
-															 unsigned long nMsgID2, unsigned short nSequence,
-															 unsigned short nMsgType, unsigned short nMsgFlags)
-	: CPU_AckThroughServer(nUin, nMsgID1, nMsgID2, nSequence, nMsgType, nMsgFlags)
+CPU_AckGeneral::CPU_AckGeneral(ICQUser *u, unsigned long nMsgID1,
+                               unsigned long nMsgID2, unsigned short nSequence,
+                               unsigned short nMsgType, bool bAccept,
+                               unsigned short nLevel)
+  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, nMsgType, bAccept,
+                         nLevel)
 {
-	m_nSize += 11;
-	InitBuffer();
+  m_nSize += 8;
+  InitBuffer();
 
-
-	buffer->PackString("");
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0xFFFFFFFF);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0xFFFFFF00);
 }
 
 
@@ -1405,13 +1506,13 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackUnsignedLongBE(0x00030000); // ack request
 #endif
 }
-				
+
 
 //-----AckFileRefuse-----------------------------------------------------------
-CPU_AckFileRefuse::CPU_AckFileRefuse(unsigned long nUin, unsigned long nMsgID[2],
+CPU_AckFileRefuse::CPU_AckFileRefuse(ICQUser *u, unsigned long nMsgID[2],
 																		 unsigned short nSequence, const char *msg)
-	: CPU_AckThroughServer(nUin, nMsgID[0], nMsgID[1], nSequence,
-												 ICQ_CMDxSUB_FILE, ICQ_TCPxACK_REFUSE)
+	: CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
+												 ICQ_CMDxSUB_FILE, false, 0)
 {
 	// XXX This is not the ICBM way yet!
 	m_nSize += strlen(msg) + 18;
@@ -1425,28 +1526,27 @@ CPU_AckFileRefuse::CPU_AckFileRefuse(unsigned long nUin, unsigned long nMsgID[2]
 }
 
 //-----AckChatAccept-----------------------------------------------------------
-CPU_AckChatAccept::CPU_AckChatAccept(unsigned long nUin, unsigned long nMsgID[2],
+CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, unsigned long nMsgID[2],
 																		 unsigned short nSequence,
 																		 unsigned short nPort)
-	: CPU_AckThroughServer(nUin, nMsgID[0], nMsgID[1], nSequence,
-												 ICQ_CMDxSUB_CHAT, ICQ_TCPxACK_ACCEPT)
-
+	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_CHAT, 0, true, nSequence,
+                             nMsgID[0], nMsgID[1])
 {
 	// XXX This is not the ICBM way yet!
 	m_nSize += 14;
 	InitBuffer();
 
 	buffer->PackString("");
-	buffer->PackString("");
+  buffer->PackString("");
 	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
 	buffer->PackUnsignedLong(nPort);
 }
 
 //-----AckChatRefuse-----------------------------------------------------------
-CPU_AckChatRefuse::CPU_AckChatRefuse(unsigned long nUin, unsigned long nMsgID[2],
+CPU_AckChatRefuse::CPU_AckChatRefuse(ICQUser *u, unsigned long nMsgID[2],
 																		 unsigned short nSequence, const char *msg)
-	: CPU_AckThroughServer(nUin, nMsgID[0], nMsgID[1], nSequence,
-												 ICQ_CMDxSUB_CHAT, 1)
+	: CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
+												 ICQ_CMDxSUB_CHAT, false, 0)
 {
 	// XXX This is not the ICBM way yet!
 	m_nSize += strlen(msg) + 14;
@@ -3559,9 +3659,10 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort,
   m_nPort = _nPort;
   m_nStatus = ICQ_TCPxACK_ONLINE;
 
-  m_nSize += 11;
+  m_nSize += 14;
   InitBuffer();
 
+  buffer->PackString("");
   buffer->PackString("");
   buffer->PackUnsignedLong(ReversePort(m_nPort));
   buffer->PackUnsignedLong(m_nPort);

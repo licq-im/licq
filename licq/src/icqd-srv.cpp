@@ -1858,7 +1858,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     {
       //I must admit, any server that does anything like this is a pile of shit
       CBuffer msgTxt = packet.UnpackTLV(5);
-			if (msgTxt.getDataSize() == 0)  break;
+      if (msgTxt.getDataSize() == 0)  break;
 
       unsigned short nCancel = msgTxt.UnpackUnsignedShort();
 
@@ -1867,67 +1867,87 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       msgTxt.incDataPosRead(24); // junk before tlv
       msgTxt.readTLV();
 
-			CBuffer ackMsg = msgTxt.UnpackTLV(0x000A);
-			if (ackMsg.getDataSize() == 0)  break;
-			bool bIsAck = (ackMsg.UnpackUnsignedShortBE() == 2 ? true : false);
+      CBuffer ackMsg = msgTxt.UnpackTLV(0x000A);
+      if (ackMsg.getDataSize() == 0)  break;
+      bool bIsAck = (ackMsg.UnpackUnsignedShortBE() == 2 ? true : false);
 
       CBuffer advMsg = msgTxt.UnpackTLV(0x2711);
-			if (advMsg.getDataSize() == 0)  break;
+      if (advMsg.getDataSize() == 0)  break;
 
       unsigned short nLen;
-      unsigned char nMsgType, nMsgFlags;
-     
+      unsigned short nMsgType, nStatus, nMsgFlags;
+
       nLen = advMsg.UnpackUnsignedShort();
       advMsg.incDataPosRead(nLen - 2);
       unsigned short nSequence = advMsg.UnpackUnsignedShort();
 
       nLen = advMsg.UnpackUnsignedShort();
-			if (nLen == 0x12) // what is this, a "you're on my list" statement?
-				break;
+      if (nLen == 0x12) // what is this, a "you're on my list" statement?
+        break;
       advMsg.incDataPosRead(nLen);
 
-			unsigned long nMask = 0;
-			nMsgType = advMsg.UnpackChar();
-			nMsgFlags = advMsg.UnpackChar();
-			if (nMsgFlags & 0x80)
-				nMask |= ICQ_CMDxSUB_FxMULTIREC;
-			advMsg.UnpackUnsignedLong();
+      // Get the message type, status, and flags
+      unsigned long nMask = 0;
+      advMsg >> nMsgType >> nStatus >> nMsgFlags;
+      if (nMsgType & ICQ_CMDxSUB_FxMULTIREC)
+      {
+        nMask |= ICQ_CMDxSUB_FxMULTIREC;
+        nMsgType &= ~ICQ_CMDxSUB_FxMULTIREC;
+      }
+
+      if (nMsgFlags == ICQ_TCPxMSG_URGENT2)
+        nMask |= ICQ_TCPxMSG_URGENT;
+      if (nMsgFlags == ICQ_TCPxMSG_LIST2)
+        nMask |= ICQ_TCPxMSG_LIST;
 
       nLen = advMsg.UnpackUnsignedShort();
-	
-			// read the message in, excpet for DOS \r's
-			char junkChar;
-			char message[nLen+1];
-			unsigned short j = 0;
-			for (unsigned short i = 0; i < nLen; i++)
-			{
-				advMsg >> junkChar;
-				if (junkChar != 0x0D)  message[j++] = junkChar;
-			}
-			message[j] = '\0'; // ensure null terminated
 
-			// translate now
-			gTranslator.ServerToClient(message);
+      // read the message in, except for DOS \r's
+      char junkChar;
+      char message[nLen+1];
+      unsigned short j = 0;
+      for (unsigned short i = 0; i < nLen; i++)
+      {
+        advMsg >> junkChar;
+        if (junkChar != 0x0D)  message[j++] = junkChar;
+      }
+      message[j] = '\0'; // ensure null terminated
 
-			bool bNewUser = false;
-			ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-			if (u == NULL)
-			{
-				u = new ICQUser(nUin);
-				bNewUser = true;
-			}
+      // translate now
+      gTranslator.ServerToClient(message);
 
-			ProcessMessage(u, advMsg, message, nMsgType, nMask, nMsgID,
-										 nSequence, bIsAck, bNewUser);
+      bool bNewUser = false;
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (u == NULL)
+      {
+        u = new ICQUser(nUin);
+        bNewUser = true;
+      }
 
-			if (bNewUser) // can be changed in ProcessMessage
-			{
-				delete u;
-				break;
-			}
+      // Special status to us?
+      if (!bNewUser && nStatus != ICQ_STATUS_OFFLINE &&
+          !(nStatus == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
+          nStatus != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
+      {
+        bool r = u->OfflineOnDisconnect() || u->StatusOffline();
+        ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | nStatus);
+        gLog.Info("%s%s (%ld) is %s to us.\n", L_TCPxSTR, u->GetAlias(),
+          u->Uin(), u->StatusStr());
+        if (r) u->SetOfflineOnDisconnect(true);
+      }
 
-			gUserManager.DropUser(u);
-			break;
+      // Handle it
+      ProcessMessage(u, advMsg, message, nMsgType, nMask, nMsgID,
+                     nSequence, bIsAck, bNewUser);
+
+      if (bNewUser) // can be changed in ProcessMessage
+      {
+        delete u;
+        break;
+      }
+
+      gUserManager.DropUser(u);
+      break;
     }
     case 4:
     //Version 5 (V5) protocol messages incapsulated in v7 packet.
