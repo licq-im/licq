@@ -209,6 +209,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   aVariables[i++].pData = m_szCommandChar;
 
   m_bExit = false;
+  cdkUserList = 0;
 }
 
 
@@ -290,7 +291,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   }
   else
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     if (o->Password()[0] == '\0')
     {
       gUserManager.DropOwner();

@@ -385,7 +385,7 @@ void CLicqConsole::PrintUsers()
     s = new SScrollUser;
 	s->pos = i;
 	s->nPPID = (*it)->nPPID;
-    s->color = (*it)->color;
+        s->color = (*it)->color;
 	sprintf(s->szId, "%s", (*it)->szId);
 	
     m_lScrollUsers.push_back(s);
@@ -415,7 +415,8 @@ void CLicqConsole::PrintUsers()
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserListHighlight
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserListHighlight(chtype type, chtype input) {
+void CLicqConsole::UserListHighlight(chtype type, chtype input)
+{
   // There has got to be a better way to do this...
   list <SScrollUser *>::iterator it;
   int down;
@@ -427,10 +428,10 @@ void CLicqConsole::UserListHighlight(chtype type, chtype input) {
     down = 0;
   for (it = m_lScrollUsers.begin(); it != m_lScrollUsers.end(); it++)
   {
-    if ((*it)->pos == cdkUserList->currentItem + down)
+    if ((*it)->pos == (cdkUserList->currentItem + down))
     {
       ICQUser *u = gUserManager.FetchUser((*it)->szId, (*it)->nPPID, LOCK_R);
-      if (u->NewMessages())
+      if (u && u->NewMessages())
         setCDKScrollHighlight(cdkUserList, COLOR_PAIR((*it)->color->nColor - 6) | type);
       else
         setCDKScrollHighlight(cdkUserList, COLOR_PAIR((*it)->color->nColor) | type);
