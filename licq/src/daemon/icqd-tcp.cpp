@@ -728,8 +728,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       }
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
-      packet.UnpackUnsignedShort();
-      packet.UnpackUnsignedShort();
+      packet.UnpackUnsignedShort(); // 0x000E
       theSequence = packet.UnpackUnsignedShort();
       newCommand = packet.UnpackUnsignedShort();
       ackFlags = packet.UnpackUnsignedShort();
