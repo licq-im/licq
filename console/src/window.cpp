@@ -66,11 +66,15 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback)
   keypad(win, TRUE);
   wbkgd(win, COLOR_PAIR(COLOR_WHITE));
   nLastUin = 0;
+  sLastContact.szId = 0;
+  sLastContact.nPPID = 0;
   nLastHistory = 1;
 }
 
 CWindow::~CWindow()
 {
+   if (sLastContact.szId)
+     free(sLastContact.szId);
    delwin(win);
 }
 

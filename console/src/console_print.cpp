@@ -140,9 +140,10 @@ void CLicqConsole::PrintStatus()
   else
     strcpy(szMsgStr, "No Messages");
 
-  if (winMain->nLastUin != 0)
+  if (winMain->sLastContact.szId != 0)
   {
-    ICQUser *u = gUserManager.FetchUser(winMain->nLastUin, LOCK_R);
+    ICQUser *u = gUserManager.FetchUser(winMain->sLastContact.szId,
+      winMain->sLastContact.nPPID, LOCK_R);
     if (u == NULL)
       strcpy(szLastUser, "<Removed>");
     else
@@ -292,32 +293,31 @@ void CLicqConsole::CreateUserList()
     s->nPPID = pUser->PPID();
     s->bOffline = pUser->StatusOffline();
 
-    unsigned long iStatus = pUser->StatusFull();
+    unsigned short nStatus = pUser->Status();
 
-    if(iStatus & ICQ_STATUS_FxPRIVATE)
+    if(pUser->StatusInvisible())
     {
       szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
 
-    if((unsigned short)iStatus == ICQ_STATUS_OFFLINE)
+    else if(nStatus == ICQ_STATUS_OFFLINE)
     {
       szTmp = pUser->usprintf(m_szOfflineFormat);
       s->color = m_cColorOffline;
     }
-    else if( (unsigned short) iStatus != ICQ_STATUS_OFFLINE &&
-        ((iStatus & ICQ_STATUS_DND) || (iStatus & ICQ_STATUS_OCCUPIED) ||
-        (iStatus & ICQ_STATUS_NA) || (iStatus & ICQ_STATUS_AWAY)))
+    else if(nStatus == ICQ_STATUS_DND || nStatus == ICQ_STATUS_OCCUPIED ||
+            nStatus == ICQ_STATUS_NA || nStatus == ICQ_STATUS_AWAY)
     {
       szTmp = pUser->usprintf(m_szAwayFormat);
       s->color = m_cColorAway;
     }
-    else if((unsigned short)iStatus == ICQ_STATUS_FREEFORCHAT)
+    else if(nStatus == ICQ_STATUS_FREEFORCHAT)
     {
       szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
-    else if((unsigned short)iStatus == ICQ_STATUS_ONLINE)
+    else if(nStatus == ICQ_STATUS_ONLINE)
     {
       szTmp = pUser->usprintf(m_szOnlineFormat);
       s->color = m_cColorOnline;

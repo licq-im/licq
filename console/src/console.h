@@ -36,12 +36,6 @@ struct SUser
   const struct SColorMap *color;
 };
 
-struct SContact
-{
-  char *szId;
-  unsigned long nPPID;
-};
-
 struct SMacro
 {
   char szMacro[32];

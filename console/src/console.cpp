@@ -2322,13 +2322,13 @@ void CLicqConsole::InputAuthorize(int cIn)
       {
         winMain->wprintf("%C%AGranting authorizing to %s...", m_cColorInfo->nColor,
                          m_cColorInfo->nAttr, data->szId);
-        winMain->event = licqDaemon->icqAuthorizeGrant(strtoul(data->szId, (char **)NULL, 10), data->szMsg);
+        winMain->event = licqDaemon->ProtoAuthorizeGrant(data->szId, data->nPPID, data->szMsg);
       }
       else
       {
         winMain->wprintf("%C%ARefusing authorizing to %s...", m_cColorInfo->nColor,
                          m_cColorInfo->nAttr, data->szId);
-        winMain->event = licqDaemon->icqAuthorizeRefuse(strtoul(data->szId, (char **)NULL, 10), data->szMsg);
+        winMain->event = licqDaemon->ProtoAuthorizeRefuse(data->szId, data->nPPID, data->szMsg);
       }
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;

@@ -91,7 +91,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "A macro can be any string of characters not containing\n"
     "a space.  The command can be any valid command, do not\n"
     "prepend the command character when defining.\n"
-    "Example: \"/define r last message\" creates a macro \"r\"\n"
+    "Example: \"/define r message $\" creates a macro \"r\"\n"
     "which replies to the last user you talked to."},
   { "help", &CLicqConsole::MenuHelp, NULL,
     " %B%che%blp [ %B<command>%b ]",
@@ -351,12 +351,11 @@ void CLicqConsole::MenuAdd(char *szArg)
 /*---------------------------------------------------------------------------
  * CLicqConsole::MenuAuthorize
  *-------------------------------------------------------------------------*/
-//TODO: update for other protocols
 void CLicqConsole::MenuAuthorize(char *szArg)
 {
   if (szArg == NULL)
   {
-    winMain->wprintf("%CSpecify \"grant/refuse\" and a UIN to authorize.\n", COLOR_RED);
+    winMain->wprintf("%CSpecify \"grant/refuse\" and a UIN/Screen Name to authorize.\n", COLOR_RED);
     return;
   }
 
@@ -373,15 +372,6 @@ void CLicqConsole::MenuAuthorize(char *szArg)
     szArg += 6;
   }
 
-  // Try to change groups
-  int nUin = atol(szArg);
-  
-  if (nUin == 0)
-  {
-    winMain->wprintf("%CUIN must be non-zero.\n", COLOR_RED);
-    return;
-  }
-
   // Get the input now
   winMain->fProcessInput = &CLicqConsole::InputAuthorize;
   winMain->state = STATE_MLE;
@@ -393,8 +383,6 @@ void CLicqConsole::MenuAuthorize(char *szArg)
                    m_cColorQuery->nAttr, m_cColorQuery->nColor);
 
   return;
-
-
 }
 
 
@@ -616,17 +604,20 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
     *szCmd++ = '\0';
     szCmd = strchr(szCmd, ' ');
   }
-  //TODO - fix this
-  //else if (szArg[0] == '#')
-  //{
-  //  *p_szArg = NULL;
-  //  return gUserManager.OwnerUin();
-  //}
-  //else if (szArg[0] == '$')
-  //{
-  //  *p_szArg = NULL;
-  //  return winMain->nLastUin;
-  //}
+  else if (szArg[0] == '#')
+  {
+    *p_szArg = NULL;
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    scon.szId = o->IdString();
+    scon.nPPID = o->PPID(); 
+    gUserManager.DropOwner();
+    return scon;
+  }
+  else if (szArg[0] == '$')
+  {
+    *p_szArg = NULL;
+    return winMain->sLastContact;
+  }
   else
   {
     szAlias = szArg;
@@ -658,13 +649,17 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
     return scon;
   }
  
-  //TODO
   // Save this as the last user
-  //if (winMain->nLastUin != nUin)
-  //{
-  //  winMain->nLastUin = nUin;
-  //  PrintStatus();
-  //}
+  if (winMain->sLastContact.szId == 0 ||
+      !(strcmp(scon.szId, winMain->sLastContact.szId) == 0 &&
+      scon.nPPID == winMain->sLastContact.nPPID))
+  {
+    if (winMain->sLastContact.szId)
+      free(winMain->sLastContact.szId);
+    winMain->sLastContact.nPPID = scon.nPPID;
+    winMain->sLastContact.szId = strdup(scon.szId);
+    PrintStatus();
+  }
 
   return scon;
 }

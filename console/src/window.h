@@ -15,6 +15,13 @@ enum InputState { STATE_COMMAND, STATE_PENDING, STATE_MLE, STATE_LE, STATE_QUERY
 class CLicqConsole;
 class CData;
 
+struct SContact
+{
+  char *szId;
+  unsigned long nPPID;
+};
+
+
 class CWindow
 {
 public:
@@ -42,7 +49,7 @@ public:
   InputState state;
   CData *data;
   unsigned long nLastUin;
-  //struct SContact sLastContact;
+  struct SContact sLastContact;
   unsigned short nLastHistory;
 protected:
   WINDOW *win;
