@@ -32,7 +32,7 @@ static const char LICQ_CONF[] =
 "ProxyAuthEnabled = 0\n"
 "ProxyLogin = \n"
 "ProxyPassword = \n"
-"UseSS = 1\n"
+"UseSS = 0\n"
 "\n"
 "[onevent]\n"
 "Enable = 1\n"
