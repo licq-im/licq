@@ -4,12 +4,16 @@
 #include "licqdialog.h"
 #include <qlistview.h>
 
+#include "registeruser.h"
+
 class QPushButton;
 class QLabel;
 class QLineEdit;
 class QComboBox;
 
 class CICQDaemon;
+class ICQEvent;
+class CMainWindow;
 
 class OwnerEditDlg : public LicqDialog
 {
@@ -54,11 +58,14 @@ class OwnerManagerDlg : public LicqDialog
 {
    Q_OBJECT
 public:
-  OwnerManagerDlg(CICQDaemon *s);
+  OwnerManagerDlg(CMainWindow *m, CICQDaemon *s);
+  void slot_doneRegisterUser(ICQEvent *);
 
 protected slots:
   void slot_listClicked(QListViewItem *, const QPoint &, int);
   void slot_addClicked();
+  void slot_registerClicked();
+  void slot_doneregister();
   void slot_modifyClicked();
   void slot_deleteClicked();
   void slot_update();
@@ -66,10 +73,13 @@ protected slots:
 protected:
   void updateOwners();
   
+  CMainWindow *mainwin;
   CICQDaemon *server;
+  RegisterUserDlg *registerUserDlg;
   
   OwnerView *ownerView;
   QPushButton *btnAdd,
+              *btnRegister,
               *btnModify,
               *btnDelete,
               *btnDone;

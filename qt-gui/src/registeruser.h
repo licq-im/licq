@@ -36,8 +36,8 @@ signals:
 protected:
   CICQDaemon *server;
   QGroupBox *grpInfo;
-  CInfoField *nfoUin, *nfoPassword1, *nfoPassword2;
-  QCheckBox *chkExistingUser, *chkSavePassword;
+  CInfoField *nfoPassword1, *nfoPassword2;
+  QCheckBox *chkSavePassword;
   QWidget* page1, *page2, *page3;
   QLabel* lblInfo, *lblInfo2;
 
@@ -45,7 +45,6 @@ protected slots:
   void accept();
   void dataChanged();
   void nextPage();
-  void enableNfoUin(bool);
 };
 
 

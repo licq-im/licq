@@ -63,7 +63,7 @@
 #include "editgrp.h"
 #include "searchuserdlg.h"
 #include "utilitydlg.h"
-#include "registeruser.h"
+#include "ownermanagerdlg.h"
 #include "skinbrowser.h"
 #include "licq_icqd.h"
 #include "awaymsgdlg.h"
@@ -538,7 +538,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
   awayMsgDlg = NULL;
   optionsDlg = NULL;
-  registerUserDlg = NULL;
+  ownerManagerDlg = NULL;
   pluginDlg = NULL;
 #if QT_VERSION >= 300
   userEventTabDlg = NULL;
@@ -725,7 +725,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
    // verify we exist
    if (gUserManager.NumOwners() == 0)
-     slot_register();
+     showOwnerManagerDlg();
    else
    {
      // Do we need to get a password
@@ -1460,8 +1460,22 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       {
         // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-        while (i && !(i->ItemPPID() == nPPID && strcmp(i->ItemId(), szId) == 0))
+        char *szItemId = 0, *szRealId = 0;
+        if (i)
+          szItemId = ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
+        ICQUser::MakeRealId(szId, nPPID, szRealId);
+        while (i && !(i->ItemPPID() == nPPID && strcmp(szItemId, szRealId) == 0))
+        {
           i = (CUserViewItem *)i->nextSibling();
+          if (i)
+          {
+            delete [] szItemId; szItemId = 0;
+            ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
+          }
+        }
+        if (szItemId) delete [] szItemId;
+        delete [] szRealId;
+
         if (i != NULL)
         {
           delete i;
@@ -2862,36 +2876,24 @@ void CMainWindow::slot_eventTag(const char *_szId, unsigned long _nPPID,
 void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
 {
   updateStatus();
-  switch (e->Command())
+  switch (e->SNAC())
   {
-    case ICQ_CMDxSND_LOGON:
+    case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
       if (e->Result() != EVENT_SUCCESS)
         WarnUser(this, tr("Logon failed.\nSee network window for details."));
       break;
-    case ICQ_CMDxSND_REGISTERxUSER:
-      delete registerUserDlg;
-      registerUserDlg = NULL;
-      if (e->Result() == EVENT_SUCCESS)
-      {
-        char sz[20];
-        //TODO which owner
-        sprintf(sz, "%lu", gUserManager.OwnerUin());
-        InformUser(this, tr("Successfully registered, your user identification\n"
-                            "number (UIN) is %1.\n"
-                            "Now set your personal information.").arg(gUserManager.OwnerUin()));
-        callInfoTab(mnuUserGeneral, sz, LICQ_PPID);
-      }
-      else
-      {
-        InformUser(this, tr("Registration failed.  See network window for details."));
-      }
+    case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
+      if (ownerManagerDlg)
+        ownerManagerDlg->slot_doneRegisterUser(e);
       break;
+/*
     case ICQ_CMDxSND_AUTHORIZE:
        if (e->Result() != EVENT_ACKED)
          WarnUser(this, tr("Error sending authorization."));
        else
          InformUser(this, tr("Authorization granted."));
        break;
+*/
     default:
        break;
   }
@@ -4050,8 +4052,6 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("Update Current Group"), this, SLOT(slot_updateAllUsersInGroup()), 0, MNU_USER_ADM_UPDATE_CURRENT_GROUP);
    mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()), 0, MNU_USER_ADM_REDRAW_USER_WIN);
    mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()), 0, MNU_USER_ADM_SAVE_ALL_USERS);
-   mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(tr("Reg&ister User"), this, SLOT(slot_register()), 0, MNU_USER_ADM_REGISTER_USER);
 
    QPopupMenu *mnuHelp = new QPopupMenu(NULL);
    mnuHelp->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
@@ -4256,8 +4256,13 @@ void CMainWindow::slot_stats()
 
 void CMainWindow::showOwnerManagerDlg()
 {
-  OwnerManagerDlg *ownerManagerDlg = new OwnerManagerDlg(licqDaemon);
-  ownerManagerDlg->show();
+  if (ownerManagerDlg)
+    ownerManagerDlg->raise();
+  else
+  {
+    ownerManagerDlg = new OwnerManagerDlg(this, licqDaemon);
+    ownerManagerDlg->show();
+  }
 }
 
 void CMainWindow::showSearchUserDlg()
@@ -4405,34 +4410,6 @@ void CMainWindow::slot_popupall()
 void CMainWindow::slot_doneOptions()
 {
   optionsDlg = NULL;
-}
-
-void CMainWindow::slot_doneregister()
-{
-  registerUserDlg = NULL;
-}
-
-void CMainWindow::slot_register()
-{
-  if (gUserManager.OwnerUin() != 0)
-  {
-    QString buf = tr("You are currently registered as\n"
-                    "UIN: %1\n"
-                    "Base Directory: %2\n"
-                    "Rerun licq with the -b option to select a new\n"
-                    "base directory and then register a new user.")
-                    .arg(gUserManager.OwnerUin()).arg(BASE_DIR);
-    InformUser(this, buf);
-    return;
-  }
-
-  if (registerUserDlg != NULL)
-    registerUserDlg->raise();
-  else
-  {
-    registerUserDlg = new RegisterUserDlg(licqDaemon);
-    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
-  }
 }
 
 // -----------------------------------------------------------------------------

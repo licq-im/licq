@@ -38,12 +38,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
            (parent, "RegisterUserDialog", false, WDestructiveClose)
 {
   page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
-                        "You can register a new user here, or configure "
-                        "Licq to use an existing UIN.\n\n"
-                        "If you are registering a new uin, choose "
-                        "a password and click \"Finish\".\n"
-                        "If you already have a uin, then toggle \"Register Existing User\",\n"
-                        "enter your uin and your password, and click \"OK\"\n\n"
+                        "You can register a new user here.\n\n"
                         "Press \"Next\" to proceed."), this);
 
   addPage(page1, tr("UIN Registration"));
@@ -53,15 +48,6 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   page2 = new QVBox(this);
 
   grpInfo = new QGroupBox(2, Horizontal, page2);
-
-  chkExistingUser = new QCheckBox(tr("&Register Existing User"), grpInfo);
-  // dummy widget
-  (void) new QWidget(grpInfo);
-
-  (void) new QLabel(tr("Uin:"), grpInfo);
-
-  nfoUin = new CInfoField(grpInfo, false);
-  nfoUin->setValidator(new QIntValidator(10000, 2000000000, this));
 
   (void) new QLabel(tr("Password:"), grpInfo);
 
@@ -78,11 +64,8 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   setHelpEnabled(page2, false);
 
   connect (cancelButton(), SIGNAL(clicked()), SLOT(hide()) );
-  connect (chkExistingUser, SIGNAL(toggled(bool)), this, SLOT(enableNfoUin(bool)));
   connect (nfoPassword2, SIGNAL(textChanged(const QString&)), this, SLOT(dataChanged()));
-  chkExistingUser->setChecked(false);
   chkSavePassword->setChecked(true);
-  nfoUin->setEnabled(false);
   setNextEnabled(page2, false);
 
   connect(backButton(), SIGNAL(clicked()), this, SLOT(nextPage()));
@@ -116,18 +99,12 @@ void RegisterUserDlg::nextPage()
 {
   if(currentPage() == page3) {
     bool errorOccured = false;
-    if(chkExistingUser->isChecked() && nfoUin->text().toULong() < 10000)
-    {
-      lblInfo->setText(tr("You need to enter a valid UIN when you "
-                           "try to register an existing user. "));
-      errorOccured = true;
-    }
-    else if(nfoPassword1->text().length() > 8 || nfoPassword2->text().length() > 8)
+    if(nfoPassword1->text().length() > 8 || nfoPassword2->text().length() > 8)
     {
       lblInfo->setText(tr("Invalid password, must be between 1 and 8 characters."));
       errorOccured = true;
     }
-    else if(!chkExistingUser->isChecked() && nfoPassword1->text().length() == 0)
+    else if(nfoPassword1->text().length() == 0)
     {
       lblInfo->setText(tr("Please enter your password in both input fields."));
       errorOccured = true;
@@ -157,43 +134,15 @@ void RegisterUserDlg::nextPage()
 
 void RegisterUserDlg::accept()
 {
-  if (chkExistingUser->isChecked())
-  {
-    unsigned long nUin = nfoUin->text().toULong();
-    // Validate uin
-    if (nUin == 0)
-    {
-      InformUser (this, tr("Invalid UIN.  Try again."));
-      return;
-    }
-    gUserManager.SetOwnerUin(nUin);
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    o->SetSavePassword(chkSavePassword->isChecked());
-    o->SetPassword(nfoPassword1->text().latin1());
-    gUserManager.DropOwner();
-    InformUser (this, tr("Registered succesfully.  Now log on and update your personal info."));
-    hide();
-  }
-  else
-  {
-    setCaption(tr("User Registration in Progress..."));
-    server->icqRegister(nfoPassword1->text().latin1());
-    finishButton()->setEnabled(false);
-    cancelButton()->setEnabled(false);
-    nfoUin->setEnabled(false);
-    nfoPassword1->setEnabled(false);
-    nfoPassword2->setEnabled(false);
-    chkExistingUser->setEnabled(false);
-  }
-  server->SaveConf();
-  close(true);
-}
+  setCaption(tr("User Registration in Progress..."));
+  server->icqRegister(nfoPassword1->text().latin1());
+  finishButton()->setEnabled(false);
+  cancelButton()->setEnabled(false);
+  nfoPassword1->setEnabled(false);
+  nfoPassword2->setEnabled(false);
 
-void RegisterUserDlg::enableNfoUin(bool b)
-{
-  nfoUin->setEnabled(b);
-  if (b)
-    nfoUin->setFocus();
+  server->SaveConf();
+//  close(true);
 }
 
 #include "registeruser.moc"

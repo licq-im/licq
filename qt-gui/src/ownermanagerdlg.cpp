@@ -13,9 +13,11 @@
 #include <qlineedit.h>
 #include <qframe.h>
 #include <qlabel.h>
+#include <qdialog.h>
 
 #include "ownermanagerdlg.h"
 #include "ewidgets.h"
+#include "mainwin.h"
 #include "licq_icqd.h"
 #include "licq_user.h"
 
@@ -210,10 +212,12 @@ OwnerItem::OwnerItem(CICQDaemon *s, const char *szId, unsigned long nPPID,
 
 //----OwnerManagerDlg----------------------------------------------------------
 
-OwnerManagerDlg::OwnerManagerDlg(CICQDaemon *s)
+OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
   : LicqDialog(NULL, "OwnerDialog", false, WDestructiveClose)
 {
+  mainwin = m;
   server = s;
+  registerUserDlg = 0;
   setCaption(tr("Licq - Owner Manager"));
   
   QBoxLayout *toplay = new QVBoxLayout(this, 8, 8); 
@@ -226,6 +230,8 @@ OwnerManagerDlg::OwnerManagerDlg(CICQDaemon *s)
   QBoxLayout *lay = new QHBoxLayout(toplay, 10);
   btnAdd = new QPushButton(tr("&Add"), this);
   lay->addWidget(btnAdd);
+  btnRegister = new QPushButton(tr("&Register"), this);
+  lay->addWidget(btnRegister);
   btnModify = new QPushButton(tr("&Modify"), this);
   btnModify->setEnabled(false);
   lay->addWidget(btnModify);
@@ -239,12 +245,22 @@ OwnerManagerDlg::OwnerManagerDlg(CICQDaemon *s)
   connect(ownerView, SIGNAL(clicked(QListViewItem *, const QPoint &, int)),
     this, SLOT(slot_listClicked(QListViewItem *, const QPoint &, int)));
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(slot_addClicked()));
+  connect(btnRegister, SIGNAL(clicked()), this, SLOT(slot_registerClicked()));
   connect(btnModify, SIGNAL(clicked()), this, SLOT(slot_modifyClicked()));
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(slot_deleteClicked()));
   connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
     
   // Add the owners to the list now
   updateOwners();
+
+  // Show information to the user
+  if (gUserManager.NumOwners() == 0)
+  {
+    InformUser(this, tr("From the Owner Manager dialog you are able to add and register "
+                        "your accounts.\n"
+                        "Currently, only one owner per protocol is supported, but this "
+                        "will be changed in future versions."));
+  }
 }
 
 void OwnerManagerDlg::updateOwners()
@@ -269,6 +285,56 @@ void OwnerManagerDlg::slot_addClicked()
   OwnerEditDlg *d = new OwnerEditDlg(server, 0, 0, this);
   d->show();
   connect(d, SIGNAL(destroyed()), this, SLOT(slot_update()));
+}
+
+void OwnerManagerDlg::slot_registerClicked()
+{
+  if (gUserManager.OwnerUin() != 0)
+  {
+    QString buf = tr("You are currently registered as\n"
+                    "UIN: %1\n"
+                    "Base Directory: %2\n"
+                    "Rerun licq with the -b option to select a new\n"
+                    "base directory and then register a new user.")
+                    .arg(gUserManager.OwnerUin()).arg(BASE_DIR);
+    InformUser(this, buf);
+    return;
+  }
+
+  if (registerUserDlg != 0)
+    registerUserDlg->raise();
+  else
+  {
+    registerUserDlg = new RegisterUserDlg(server);
+    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
+  }
+}
+
+void OwnerManagerDlg::slot_doneregister()
+{
+  registerUserDlg = 0;
+}
+
+void OwnerManagerDlg::slot_doneRegisterUser(ICQEvent *e)
+{
+  delete registerUserDlg;
+  registerUserDlg = NULL;
+  if (e->Result() == EVENT_SUCCESS)
+  {
+    updateOwners();
+
+    char sz[20];
+    //TODO which owner
+    sprintf(sz, "%lu", gUserManager.OwnerUin());
+    InformUser(this, tr("Successfully registered, your user identification\n"
+                        "number (UIN) is %1.\n"
+                        "Now set your personal information.").arg(gUserManager.OwnerUin()));
+    mainwin->callInfoTab(mnuUserGeneral, sz, LICQ_PPID);
+  }
+  else
+  {
+    InformUser(this, tr("Registration failed.  See network window for details."));
+  }
 }
 
 void OwnerManagerDlg::slot_modifyClicked()
