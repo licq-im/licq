@@ -24,6 +24,8 @@
 
 #include <gtk/gtk.h>
 
+GList *uaw_list;
+
 void away_msg_window(gushort status)
 {
 	struct away_dialog *away_d = g_new0(struct away_dialog, 1);
@@ -95,15 +97,17 @@ void away_close(GtkWidget *widget, GtkWidget *window)
 
 void list_read_message(GtkWidget *widget, ICQUser *user)
 {
-	/* Keep track of this event.. we need this */
-	struct main_progress *m_prog = g_new0(main_progress, 1);
+	struct user_away_window *uaw = uaw_find(user->Uin());
+	
+	if(uaw != NULL)
+		return;
+
+	uaw = uaw_new(user);
 
 	GtkWidget *h_box;
 	GtkWidget *v_box;
 	GtkWidget *scroll;
-	GtkWidget *text_box;
 	GtkWidget *close;
-	struct user_away_window *uaw = g_new0(struct user_away_window, 1);
 	const gchar *title = g_strdup_printf("Auto Response for %s", user->GetAlias());
 
 	uaw->user = user;
@@ -124,13 +128,13 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 				       GTK_POLICY_AUTOMATIC);
 
 	/* The text box */
-	text_box = gtk_text_new(NULL, NULL);
-	gtk_text_set_editable(GTK_TEXT(text_box), FALSE);
-	gtk_text_set_word_wrap(GTK_TEXT(text_box), TRUE);
-	gtk_text_set_line_wrap(GTK_TEXT(text_box), TRUE);
+	uaw->text_box = gtk_text_new(NULL, NULL);
+	gtk_text_set_editable(GTK_TEXT(uaw->text_box), FALSE);
+	gtk_text_set_word_wrap(GTK_TEXT(uaw->text_box), TRUE);
+	gtk_text_set_line_wrap(GTK_TEXT(uaw->text_box), TRUE);
 
 	/* Add the text box to the scrolling window */
-	gtk_container_add(GTK_CONTAINER(scroll), text_box);
+	gtk_container_add(GTK_CONTAINER(scroll), uaw->text_box);
 
 	/* Pack the scrolled window into the v_box */
 	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 5);
@@ -150,35 +154,72 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 10);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
+	/* The progress bar */
+	uaw->progress = gtk_statusbar_new();
+	strcpy(uaw->buffer, "Checking Response ... ");
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(uaw->progress),
+						"prog");
+	gtk_statusbar_pop(GTK_STATUSBAR(uaw->progress), id);
+	gtk_statusbar_push(GTK_STATUSBAR(uaw->progress), id, uaw->buffer);
+
+	/* Pack the progress bar */
+	gtk_box_pack_start(GTK_BOX(v_box), uaw->progress, FALSE, FALSE, 5);
+
 	gtk_container_add(GTK_CONTAINER(uaw->window), v_box);
 	gtk_widget_show_all(uaw->window);
 
-	/* Get the response... put it in the main progress bar */
-	m_prog->e_tag = icq_daemon->icqFetchAutoResponse(user->Uin());
-	
-	gchar *temp = g_strdup_printf("A/R for %s .. ", user->GetAlias());
-	strcpy(m_prog->buffer, temp);
-
-	/* Add it to the GList */
-	m_prog_list = g_list_append(m_prog_list, m_prog);
-
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress),
-						"main_prog");
-	gtk_statusbar_pop(GTK_STATUSBAR(status_progress), id);
-	gtk_statusbar_push(GTK_STATUSBAR(status_progress), id, m_prog->buffer);
-
-	if(strcmp("", user->AutoResponse()))
-	{
-		gtk_text_freeze(GTK_TEXT(text_box));
-		gtk_text_insert(GTK_TEXT(text_box), 0, 0, 0,
-				user->AutoResponse(), -1);
-		gtk_text_thaw(GTK_TEXT(text_box));
-	}	
+	/* Get the response */
+	uaw->e_tag = icq_daemon->icqFetchAutoResponse(user->Uin());
 }
 
 void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
 {
 	uaw->user->SetShowAwayMsg(gtk_toggle_button_get_active(
 					GTK_TOGGLE_BUTTON(uaw->show_again)));
+	uaw_list = g_list_remove(uaw_list, uaw);
 	dialog_close(NULL, uaw->window);
+}
+
+/* The following will ensure only one window is open and that when the *
+** Auto Response is received, it pops up in the box there.  Now the    *
+** status of the connection will be brought back to this window        */ 
+
+struct user_away_window *uaw_new(ICQUser *u)
+{
+	struct user_away_window *uaw;
+
+	/* Does it exist already? */
+	uaw = uaw_find(u->Uin());
+
+	/* If it does, return it, if not, make one */
+	if(uaw != NULL) 
+		return uaw;
+
+	uaw = (struct user_away_window *)g_new0(struct user_away_window, 1);
+
+	uaw->user = u;
+
+	uaw_list = g_list_append(uaw_list, uaw);
+
+	list_read_message(NULL, uaw->user);
+
+	return uaw;
+}
+
+struct user_away_window *uaw_find(unsigned long uin)
+{
+	struct user_away_window *uaw;
+	GList *temp_uaw_list = uaw_list;
+
+	while(temp_uaw_list)
+	{
+		uaw = (struct user_away_window *)temp_uaw_list->data;
+		if(uaw->user->Uin() == uin)
+			return uaw;
+
+		temp_uaw_list = temp_uaw_list->next;
+	}
+
+	/* It wasn't found, return null */
+	return NULL;
 }

@@ -141,9 +141,11 @@ struct user_away_window
 {
 	GtkWidget *window;
 	GtkWidget *show_again;
+	GtkWidget *text_box;
 	ICQUser *user;
 	CICQEventTag *e_tag;
-	gchar progress[40];
+	GtkWidget *progress;
+	gchar buffer[30];
 };
 
 struct file_accept
@@ -223,6 +225,8 @@ extern void set_away_msg(GtkWidget *, struct away_dialog *);
 extern void away_close(GtkWidget *, GtkWidget *);
 extern void list_read_message(GtkWidget *, ICQUser *);
 extern void close_away_window(GtkWidget *, struct user_away_window *);
+extern struct user_away_window *uaw_new(ICQUser *);
+extern struct user_away_window *uaw_find(unsigned long);
 
 
 /* Functions in contact_list.cpp */

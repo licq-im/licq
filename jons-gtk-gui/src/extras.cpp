@@ -119,35 +119,58 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
 
 void user_function(ICQEvent *event)
 {
-	struct conversation *c = g_new(struct conversation, 1);
+	struct conversation *c =
+		(struct conversation *)g_new0(struct conversation, 1);
+	struct user_away_window *uaw =
+		(struct user_away_window *)g_new0(struct user_away_window, 1);
+
 	guint id;
 
 	c = convo_find(event->m_nDestinationUin);
+	uaw = uaw_find(event->m_nDestinationUin);
 
 	/* Have a status bar on the contact list for this to go to... */
-	if(c == NULL)
+	if(c == NULL && uaw == NULL)
 	{
 		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress)
 						  , "prog");
 		check_other_event(event, status_progress, id);
 		return;
 	}
-	
-	/* Make sure we have the right event and event tag */
-	if( (c->e_tag == NULL && event != NULL) ||
-	    (c->e_tag != NULL && !c->e_tag->Equals(event)) )
+
+	if(uaw == NULL)
+	{	
+		/* Make sure we have the right event and event tag */
+		if( (c->e_tag == NULL && event != NULL) ||
+	    	    (c->e_tag != NULL && !c->e_tag->Equals(event)) )
+			return;
+
+		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress),
+						  "prog");
+
+		if(event == NULL)
+		{
+			strcat(c->prog_buf, "error");
+			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
+					   c->prog_buf);
+		}
+
+		check_event(event, c->progress, id, c->prog_buf);
 		return;
-
-	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress), "prog");
-
-	if(event == NULL)
-	{
-		strcat(c->prog_buf, "error");
-		gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-		gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
 	}
 
-	check_event(event, c->progress, id, c->prog_buf);
+	/* It must be a user_away_window then */
+	if( (uaw->e_tag == NULL && event != NULL) ||
+	    (uaw->e_tag != NULL && !uaw->e_tag->Equals(event)) )
+		return;
+
+	gtk_text_freeze(GTK_TEXT(uaw->text_box));
+	gtk_text_insert(GTK_TEXT(uaw->text_box), 0, 0, 0,
+			uaw->user->AutoResponse(), -1);
+	gtk_text_thaw(GTK_TEXT(uaw->text_box));
+
+	check_event(event, uaw->progress, id, uaw->buffer);
 }
 
 void check_event(ICQEvent *event, GtkWidget *widget,
