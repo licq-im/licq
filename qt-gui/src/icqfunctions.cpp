@@ -566,8 +566,22 @@ void ICQFunctions::printMessage(QListViewItem *e)
       }
       break;
     case ICQ_CMDxSUB_REQxAUTH:
+    {
       if (QueryUser(this, tr("Authorize?"), tr("Yes"), tr("No")))
-        server->icqAuthorize( ((CEventAuth *)m)->Uin() );
+        server->icqAuthorize( ((CEventAuthReq *)m)->Uin() );
+      //...only ask if they aren't already there...
+      ICQUser *u = gUserManager.FetchUser(((CEventAuthReq *)m)->Uin(), LOCK_R);
+      if (u != NULL)
+        gUserManager.DropUser(u);
+      else
+      {
+        if (QueryUser(this, tr("Add?"), tr("Yes"), tr("No")))
+          server->AddUserToList( ((CEventAuthReq *)m)->Uin());
+      }
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHORIZED:
+    {
       //...only ask if they aren't already there...
       ICQUser *u = gUserManager.FetchUser(((CEventAuth *)m)->Uin(), LOCK_R);
       if (u != NULL)
@@ -578,6 +592,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
           server->AddUserToList( ((CEventAuth *)m)->Uin());
       }
       break;
+    }
     } // switch
   }  // if
 
@@ -684,7 +699,7 @@ void ICQFunctions::showHistory()
                 (*i)->Dir() == 'R' ? o->getAlias() : sz,
                 (const char *)EventDescription(*i), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
                 (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-');
-      st.append(s + QString::fromLocal8Bit( (*i)->Text() ));
+      st.append(s + QString::fromLocal8Bit( (*i)->Text() ) + "\n");
     }
     mleHistory->setText(st);
   }
@@ -965,14 +980,14 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       {
         CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
         m_sProgressMsg = tr("Sending msg through server...");
-        icqEvent = server->icqSendMessage(m_nUin, ue->Message(), true,
+        icqEvent = server->icqSendMessage(m_nUin, ue->Message(), false,
                                           false, 0);
       }
       else
       {
         CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
         m_sProgressMsg = tr("Sending URL through server...");
-        icqEvent = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(), true,
+        icqEvent = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(), false,
                                       false, 0);
       }
       QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
