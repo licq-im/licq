@@ -90,7 +90,7 @@ protected:
                  *s_cNew,
                  *s_cBack,
                  *s_cGridLines;
-                 
+
   friend class CUserView;
 };
 
@@ -133,7 +133,7 @@ protected:
   QPopupMenu *mnuUser;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
-  QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday, 
+  QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday,
           *pixInvisible, *pixPhone, *pixCellular;
   int numOnline, numOffline;
   virtual void timerEvent(QTimerEvent*);
@@ -146,17 +146,12 @@ protected:
 
   virtual void viewportDragEnterEvent(QDragEnterEvent*);
   virtual void viewportDropEvent(QDropEvent*);
+#if QT_VERSION >= 300
+  virtual void contentsContextMenuEvent ( QContextMenuEvent * );
+#endif
 
   virtual void resizeEvent(QResizeEvent *);
   virtual void maybeTip(const QPoint&);
-
-#if QT_VERSION >= 300
-  virtual void contentsMousePressEvent(QMouseEvent *e) { viewportMousePressEvent(e); }
-  virtual void contentsMouseReleaseEvent(QMouseEvent *e) { viewportMouseReleaseEvent(e); }
-  virtual void contentsMouseMoveEvent(QMouseEvent *e) { viewportMouseMoveEvent(e); }
-  virtual void contentsDragEnterEvent(QDragEnterEvent *e) { viewportDragEnterEvent(e); }
-  virtual void contentsDropEvent(QDropEvent*e) { viewportDropEvent(e); }
-#endif
 
   friend class CUserViewItem;
 protected slots:

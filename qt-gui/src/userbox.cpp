@@ -41,7 +41,7 @@
 #include "licq_user.h"
 #include "licq_socket.h"
 
-#include <X11/Xlib.h> 
+#include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include "xpm/itemCollapsed.xpm"
@@ -484,7 +484,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
     else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
     {
       int w = p->fontMetrics().width(text(1)) + 6;
-   
+
       if (width - w > 8 && (m_bPhone))
       {
         p->drawPixmap(w, 0, *listView()->pixPhone);
@@ -900,11 +900,8 @@ unsigned long CUserView::MainWindowSelectedItemUin()
 //-----CUserList::mousePressEvent---------------------------------------------
 void CUserView::viewportMousePressEvent(QMouseEvent *e)
 {
-  #if QT_VERSION >= 300
-  QListView::contentsMousePressEvent(e);
-  #else
   QListView::viewportMousePressEvent(e);
-  #endif
+
   if (e->button() == LeftButton)
   {
     mousePressPos = e->pos();
@@ -923,6 +920,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
       emit doubleClicked(clickedItem);
     }
   }
+#if QT_VERSION < 300
   else if (e->button() == RightButton)
   {
     CUserViewItem *clickedItem = (CUserViewItem *)itemAt(e->pos());
@@ -937,7 +935,25 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
       }
     }
   }
+#endif
 }
+
+#if QT_VERSION >= 300
+void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
+{
+  CUserViewItem *clickedItem = (CUserViewItem *)itemAt(e->pos());
+  if (clickedItem != NULL)
+  {
+    setSelected(clickedItem, true);
+    setCurrentItem(clickedItem);
+    if (clickedItem->ItemUin())
+    {
+      gMainWindow->SetUserMenuUin(clickedItem->ItemUin());
+      mnuUser->popup(viewport()->mapToGlobal(e->pos()), 1);
+    }
+  }
+}
+#endif
 
 void CUserView::viewportDragEnterEvent(QDragEnterEvent* e)
 {
@@ -1174,6 +1190,8 @@ void CUserView::AnimationOnline(unsigned long uin)
 
 void  CUserView::viewportMouseReleaseEvent(QMouseEvent* me)
 {
+  QListView::viewportMouseReleaseEvent( me );
+
   mousePressPos.setX(0);
   mousePressPos.setY(0);
 }
@@ -1198,11 +1216,8 @@ void CUserView::UpdateFloaties()
 void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
   CUserViewItem *i;
-  #if QT_VERSION >= 300
-  QListView::contentsMouseMoveEvent(me);
-  #else
   QListView::viewportMouseMoveEvent(me);
-  #endif
+
   if (parent() && (me->state() & LeftButton) && (i = (CUserViewItem *)currentItem())
       && !mousePressPos.isNull() && i->ItemUin() &&
       (QPoint(me->pos() - mousePressPos).manhattanLength() > 8))
@@ -1286,7 +1301,7 @@ void CUserView::maybeTip(const QPoint& c)
 
     if ((u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
       s += tr("<br><nobr>F: ") + tr(u->GetFaxNumber()) + tr("</nobr>");
-    
+
     if (((u->Ip()!=0) || (u->RealIp()!=0)) && gMainWindow->m_bPopIP) {
       char buf1[32];
       char buf[32];
@@ -1294,14 +1309,14 @@ void CUserView::maybeTip(const QPoint& c)
       ip_ntoa(u->RealIp(),buf);
       s += tr("<br><nobr>Ip: ") + buf1 +"/"+buf+ tr("</nobr>");
     }
-    
+
     if ((u->LastOnline()>0) && gMainWindow->m_bPopLastOnline) {
       QDateTime t;
       t.setTime_t(u->LastOnline());
       QString ds = t.toString();
       s += tr("<br><nobr>O: ") +  ds + tr("</nobr>");
     }
-      
+
     tip(r, s);
   }
 }
