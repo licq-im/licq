@@ -287,6 +287,9 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
     {
       if (u->NewMessages() > 0)
       {
+        // to clear it..
+        tab->gotTyping(u->GetTyping());
+
         // use an event icon
         unsigned short SubCommand = 0;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
@@ -508,6 +511,8 @@ void UserEventCommon::gotTyping(unsigned short nTyping)
     
     nfoStatus->setPaletteBackgroundColor(QColor("yellow"));
   }
+  else
+    nfoStatus->unsetPalette();
 }
 
 void UserEventCommon::slot_updatetyping()
