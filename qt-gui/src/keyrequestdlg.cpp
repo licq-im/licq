@@ -54,7 +54,8 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   {
     case SECURE_CHANNEL_SUPPORTED:
       t2 = tr("The remote uses Licq %1/SSL.").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
-      QTimer::singleShot(0, this, SLOT(startSend()));
+      if(gLicqDaemon->CryptoEnabled())
+        QTimer::singleShot(0, this, SLOT(startSend()));
       break;
 
     case SECURE_CHANNEL_NOTSUPPORTED:
