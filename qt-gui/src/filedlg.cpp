@@ -250,9 +250,9 @@ void CFileDlg::slot_ft()
         lblStatus->setText(tr("Done %1").arg(e->Data()));
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
-          InformUser(NULL, tr("Received\n%1\nfrom %2 successfully").arg(e->Data()).arg(ftman->RemoteName()));
+          InformUser(this, tr("Received\n%1\nfrom %2 successfully").arg(e->Data()).arg(ftman->RemoteName()));
         else
-          InformUser(NULL, tr("Sent\n%1\nto %2 successfully").arg(e->Data()).arg(ftman->RemoteName()));
+          InformUser(this, tr("Sent\n%1\nto %2 successfully").arg(e->Data()).arg(ftman->RemoteName()));
         break;
       }
 
