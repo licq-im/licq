@@ -140,6 +140,7 @@ CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
   connect(mnuMM, SIGNAL(activated(int)), SLOT(slot_menu(int)));
 
   colInfo = _colInfo;
+  m_szId = 0;
   m_nUin = nUin;
   mainwin = pMainwin;
 
