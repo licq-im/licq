@@ -279,7 +279,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned short nVersion = u->ConnectionVersion();
   gUserManager.DropUser(u);
-  if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, LocalPort(), nVersion))
+  if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, LocalPort(), nVersion, false))
     return false;
 
   // Send init packet:

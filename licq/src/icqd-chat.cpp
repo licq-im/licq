@@ -644,7 +644,7 @@ bool CChatManager::ConnectToChat(CChatClient &c)
 
   // Send handshake packet:
   if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nUin, LocalPort(),
-     VersionToUse(c.m_nVersion)))
+     VersionToUse(c.m_nVersion), false))
     return false;
 
   // Send color packet
@@ -745,6 +745,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           u->client.LoadFromHandshake_v4(u->sock.RecvBuffer());
           break;
         case 6:
+			  case 7:
+			  case 8:
           u->client.LoadFromHandshake_v6(u->sock.RecvBuffer());
           break;
       }
@@ -2108,11 +2110,13 @@ void *ChatManager_tep(void *arg)
             if (u->state != CHAT_STATE_CONNECTED)
             {
               ok = chatman->ProcessPacket(u);
+		DEBUG_THREADS("[ChatManager_tep] process packet.\n");
             }
 
             else  // Raw character being received
             {
               ok = chatman->ProcessRaw(u);
+		DEBUG_THREADS("[ChatManager_tep] process raw.\n");
             }
 
             u->sock.Unlock();
