@@ -325,6 +325,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
 
+  licqConf.ReadBool("showPopEmail",m_bPopEmail, false);
+  licqConf.ReadBool("showPopPhone",m_bPopPhone, true);
+  licqConf.ReadBool("showPopFax",m_bPopFax, false);
+  licqConf.ReadBool("showPopCellular",m_bPopCellular, true);
+  licqConf.ReadBool("showPopIP",m_bPopIP, false);
+  licqConf.ReadBool("showPopLastOnelin",m_bPopLastOnline, false);
+
+
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
   m_nFlash = (FlashType)nFlash;
@@ -2275,6 +2283,14 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);
+
+  licqConf.WriteBool("showPopEmail",m_bPopEmail);
+  licqConf.WriteBool("showPopPhone",m_bPopPhone);
+  licqConf.WriteBool("showPopFax",m_bPopFax);
+  licqConf.WriteBool("showPopCellular",m_bPopCellular);
+  licqConf.WriteBool("showPopIP",m_bPopIP);
+  licqConf.WriteBool("showPopLastOnelin",m_bPopLastOnline);
+
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)

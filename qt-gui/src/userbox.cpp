@@ -25,6 +25,7 @@
 #include <qscrollbar.h>
 #include <qdragobject.h>
 #include <qstylesheet.h>
+#include <qdatetime.h>
 
 #include "userbox.moc"
 #include "skin.h"
@@ -36,13 +37,16 @@
 #include "usercodec.h"
 
 #include "licq_user.h"
+#include "licq_socket.h"
 
-#include <X11/Xlib.h>
+#include <X11/Xlib.h> 
 #include <X11/Xutil.h>
 
 #include "xpm/itemCollapsed.xpm"
 #include "xpm/itemExpanded.xpm"
 #include "xpm/pixCustomAR.xpm"
+#include "xpm/pixPhone.xpm"
+#include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
 
@@ -70,6 +74,8 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_bUrgent = false;
   m_bSecure = false;
   m_bBirthday = false;
+  m_bPhone = false;
+  m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   setGraphics(_cUser);
@@ -85,6 +91,8 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_bUrgent = false;
   m_bSecure = false;
   m_bBirthday = false;
+  m_bPhone = false;
+  m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
@@ -105,6 +113,8 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_bUrgent = false;
   m_bSecure = false;
   m_bBirthday = false;
+  m_bPhone = false;
+  m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   // Other users group is sorted at the end
@@ -209,7 +219,9 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_nEvents = u->NewMessages();
    m_bSecure = u->Secure();
    m_bUrgent = false;
-   m_bBirthday = (u->Birthday() == 0);
+   m_bBirthday =  (u->Birthday() == 0);
+   m_bPhone  = u->GetPhoneNumber()[0] != '\0';
+   m_bCellular = u->GetCellularNumber()[0] !='\0';
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -450,7 +462,17 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
     else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
     {
       int w = p->fontMetrics().width(text(1)) + 6;
-
+   
+      if (width - w > 8 && (m_bPhone))
+      {
+        p->drawPixmap(w, 0, *listView()->pixPhone);
+        w += listView()->pixPhone->width() + 2;
+      }
+      if (width - w > 8 && (m_bCellular))
+      {
+        p->drawPixmap(w, 0, *listView()->pixCellular);
+        w += listView()->pixCellular->width() + 2;
+      }
       if (width - w > 8 && (m_bBirthday))
       {
         p->drawPixmap(w, 0, *listView()->pixBirthday);
@@ -719,9 +741,11 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   setVScrollBarMode(gMainWindow->m_bScrollBar ? Auto : AlwaysOff);
 
   pixCollapsed = new QPixmap(itemCollapsed_xpm);
-  pixExpanded = new QPixmap(itemExpanded_xpm);
-  pixBirthday = new QPixmap(pixBirthday_xpm);
-  pixCustomAR = new QPixmap(pixCustomAR_xpm);
+  pixExpanded  = new QPixmap(itemExpanded_xpm);
+  pixBirthday  = new QPixmap(pixBirthday_xpm);
+  pixCustomAR  = new QPixmap(pixCustomAR_xpm);
+  pixPhone     = new QPixmap(pixPhone_xpm);
+  pixCellular  = new QPixmap(pixCellular_xpm);
   pixInvisible = new QPixmap(pixInvisible_xpm);
 
   if (parent != NULL)
@@ -1219,6 +1243,33 @@ void CUserView::maybeTip(const QPoint& c)
       gUserManager.DropUser(u);
     }
 
+    if ((u->GetEmailPrimary()[0]!='\0') && gMainWindow->m_bPopEmail)
+      s += tr("<br><nobr>E: ") + tr(u->GetEmailPrimary()) + tr("</nobr>");
+
+    if (item->m_bPhone && gMainWindow->m_bPopPhone)
+      s += tr("<br><nobr>P: ") + tr(u->GetPhoneNumber()) + tr("</nobr>");
+
+    if (item->m_bCellular && gMainWindow->m_bPopCellular)
+      s += tr("<br><nobr>C: ") + tr(u->GetCellularNumber()) + tr("</nobr>");
+
+    if ((u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
+      s += tr("<br><nobr>F: ") + tr(u->GetFaxNumber()) + tr("</nobr>");
+    
+    if (((u->Ip()!=0) || (u->RealIp()!=0)) && gMainWindow->m_bPopIP) {
+      char buf1[32];
+      char buf[32];
+      ip_ntoa(u->Ip(),buf1);
+      ip_ntoa(u->RealIp(),buf);
+      s += tr("<br><nobr>Ip: ") + buf1 +"/"+buf+ tr("</nobr>");
+    }
+    
+    if ((u->LastOnline()>0) && gMainWindow->m_bPopLastOnline) {
+      QDateTime t;
+      t.setTime_t(u->LastOnline());
+      QString ds = t.toString();
+      s += tr("<br><nobr>O: ") +  ds + tr("</nobr>");
+    }
+      
     tip(r, s);
   }
 }

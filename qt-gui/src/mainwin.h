@@ -99,7 +99,13 @@ public:
        m_bMsgChatView,
        m_bAutoPosReplyWin,
        m_bAutoSendThroughServer,
-       m_bEnableMainwinMouseMovement;
+       m_bEnableMainwinMouseMovement,
+       m_bPopEmail,
+       m_bPopPhone, 
+       m_bPopFax, 
+       m_bPopCellular, 
+       m_bPopIP, 
+       m_bPopLastOnline;
 
   QString m_MsgAutopopupKey;
 

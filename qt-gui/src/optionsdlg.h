@@ -31,7 +31,7 @@ public:
    virtual ~OptionsDlg();
 
 protected:
-   QWidget *tab[6];
+   QWidget *tab[8];
    QTabWidget* tabw;
    QPushButton *btnOk, *btnApply, *btnCancel;
    CMainWindow *mainwin;
@@ -96,6 +96,15 @@ protected:
    QWidget* new_status_options();
    QComboBox* cmbSARgroup, *cmbSARmsg;
    MLEditWrap* edtSARtext;
+
+   // display tab
+   QWidget* new_popup_options();
+   QGroupBox *boxPopWin;
+   QCheckBox *popEmail, *popPhone, *popFax, *popCellular, *popIP, *popLastOnline;
+
+   // Phone & celluar tab
+   QWidget* new_phone_options();
+
 
 signals:
   void signal_done();

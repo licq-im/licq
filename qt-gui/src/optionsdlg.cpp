@@ -101,6 +101,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
   tab[3] = new_network_options();
   tab[4] = new_status_options();
   tab[5] = new_misc_options();
+  //  tab[6] = new_phone_options();
 
   tabw->addTab(tab[0], tr("General"));
   tabw->addTab(tab[1], tr("Contact List"));
@@ -108,6 +109,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
   tabw->addTab(tab[3], tr("Network"));
   tabw->addTab(tab[4], tr("Status"));
   tabw->addTab(tab[5], tr("Miscellaneous"));
+  //  tabw->addTab(tab[6], tr("Phone"));
 
   SetupOptions();
 
@@ -203,6 +205,13 @@ void OptionsDlg::SetupOptions()
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
+  popEmail->setChecked(mainwin->m_bPopEmail);
+  popPhone->setChecked(mainwin->m_bPopPhone);
+  popFax->setChecked(mainwin->m_bPopFax);
+  popCellular->setChecked(mainwin->m_bPopCellular);
+  popIP->setChecked(mainwin->m_bPopIP);
+  popLastOnline->setChecked(mainwin->m_bPopLastOnline);
+
   switch(mainwin->m_nDockMode)
   {
     case DockNone:
@@ -400,6 +409,15 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
+
+  mainwin->m_bPopEmail= popEmail->isChecked();
+  mainwin->m_bPopPhone= popPhone->isChecked();
+  mainwin->m_bPopFax= popFax->isChecked();
+  mainwin->m_bPopCellular= popCellular->isChecked();
+  mainwin->m_bPopIP= popIP->isChecked();
+  mainwin->m_bPopLastOnline= popLastOnline->isChecked();
+
+
 #ifndef USE_KDE
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
@@ -1125,11 +1143,25 @@ QWidget* OptionsDlg::new_column_options()
                                 "\"none\" for disabling\n"
                                 "changes here require a Restart to take effect!\n"));
 
+  boxPopWin = new QGroupBox(1, Horizontal, tr("Popup info"), w);
+
+  popEmail  = new QCheckBox(tr("Email"), boxPopWin);
+  popPhone  = new QCheckBox(tr("Phone"), boxPopWin);
+  popFax    = new QCheckBox(tr("Fax"),   boxPopWin);
+  popCellular= new QCheckBox(tr("Cellular"), boxPopWin);
+  popIP     = new QCheckBox(tr("IP"), boxPopWin);
+  popLastOnline = new QCheckBox(tr("Last online"), boxPopWin);
+
+  
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);
   g_main->addWidget(grp);
-  g_main->addWidget(boxUserWin);
-  g_main->addStretch(1);
 
+  QHBoxLayout *g_options = new QHBoxLayout(g_main,8);
+  g_options->addWidget(boxUserWin);
+  g_options->addWidget(boxPopWin);
+
+  g_main->addStretch(1);
+  
   return w;
 }
 
@@ -1186,6 +1218,17 @@ QWidget* OptionsDlg::new_misc_options()
 
   return w;
 }
+
+
+// -----------------------------------------------------------------------------
+QWidget* OptionsDlg::new_phone_options()
+{
+  QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QVBoxLayout(w, 8, 4);
+
+  return w;
+}
+
 
 // -----------------------------------------------------------------------------
 // I want to rebuild the Combo boxes when user saves the
