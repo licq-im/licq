@@ -11,8 +11,6 @@
 #include <qapplication.h>
 #endif
 
-//#include "mainwin.h"
-
 class CICQDaemon;
 class CMainWindow;
 class CSignalManager;
@@ -29,6 +27,7 @@ public:
   ~CLicqGui(void);
   int Run(CICQDaemon *);
   void Shutdown(void);
+  //virtual bool x11EventFilter(XEvent *);
 protected:
   char *m_szSkin, *m_szIcons;
   CMainWindow *licqMainWindow;

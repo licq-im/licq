@@ -227,4 +227,15 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
 
   return r;
 }
+/*
+#include <X11/Xlib.h>
+
+bool CLicqGui::x11EventFilter(XEvent *e)
+{
+  QETWidget *widget = (QETWidget*)QWidget::find( (WId)e->xany.window );
+  printf("event %d %d %d\n", e->type, widget, e->xany.window);
+  return QApplication::x11EventFilter(e);
+}
+*/
+
 
