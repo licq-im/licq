@@ -211,25 +211,20 @@ CEventChat::CEventChat(const char *_szReason, unsigned long _nSequence,
                        time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags)
 {
-  m_szReason = strdup(_szReason ==  NULL ? "" : _szReason);
-
-  m_szText = new char[strlen(m_szReason) + 16];
-  sprintf(m_szText, "Reason: %s\n", m_szReason);
-
+  m_szText = strdup(_szReason ==  NULL ? "" : _szReason);
 }
 
 
 CEventChat::~CEventChat(void)
 {
-   free (m_szReason);
 }
 
 
 void CEventChat::AddToHistory(ICQUser *u, direction _nDir)
 {
-  char *szOut = new char[(strlen(m_szReason) << 1) + EVENT_HEADER_SIZE];
+  char *szOut = new char[(strlen(m_szText) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  AddStrWithColons(&szOut[nPos], m_szReason);
+  AddStrWithColons(&szOut[nPos], m_szText);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }

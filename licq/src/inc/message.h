@@ -142,9 +142,7 @@ public:
    virtual ~CEventChat(void);
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventChat *Copy(void)
-      { return (new CEventChat(m_szReason, m_nSequence, m_tTime, m_nFlags)); };
-protected:
-   char *m_szReason;
+      { return (new CEventChat(m_szText, m_nSequence, m_tTime, m_nFlags)); };
 };
 
 
