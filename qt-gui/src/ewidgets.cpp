@@ -687,7 +687,8 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
       (!mainwin->m_bTabbedChatting || (mainwin->m_bTabbedChatting &&
        mainwin->userEventTabDlg->tabIsSelected(parent))) &&
 #endif
-      e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
+      e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+  {
     UserSendCommon *s = static_cast<UserSendCommon*>(parent);
     QTimer::singleShot(s->clearDelay, s, SLOT(slot_ClearNewEvents()));
   }

@@ -1516,6 +1516,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   grpMR = NULL;
   tmpWidgetWidth = 0;
   m_bGrpMRIsVisible = false;
+  clearDelay = 250;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1606,8 +1607,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
-
-  clearDelay = 250;
 }
 #endif
 
@@ -1618,6 +1617,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   grpMR = NULL;
   tmpWidgetWidth = 0;
   m_bGrpMRIsVisible = false;
+  clearDelay = 250;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1715,8 +1715,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
-
-  clearDelay = 250;
 }
 
 
@@ -1810,9 +1808,9 @@ void UserSendCommon::slot_ClearNewEvents()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
 #endif
 
-  if (isActiveWindow() && mainwin->m_bMsgChatView 
+  if (mainwin->m_bMsgChatView 
 #if QT_VERSION >= 300
-      && (!mainwin->userEventTabDlg ||
+      && isActiveWindow() && (!mainwin->userEventTabDlg ||
        (mainwin->userEventTabDlg &&
          (!mainwin->userEventTabDlg->tabExists(this) ||
           mainwin->userEventTabDlg->tabIsSelected(this))))
