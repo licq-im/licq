@@ -104,6 +104,7 @@ void message_box(const char *message)
 
 	/* Create the dialog */
 	dialog = gtk_dialog_new();
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 3);
 
 	/* The label */
 	label = gtk_label_new(message);

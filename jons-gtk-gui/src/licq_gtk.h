@@ -636,7 +636,7 @@ extern void pipe_event(ICQEvent *);
 
 /* Functions in plugin_window.cpp */
 extern void create_plugin_window();
-extern void plugin_close_callback(GtkWidget *, gpointer);
+extern gboolean plugin_close_callback(GtkWidget *, gpointer);
 extern void plugin_enable_callback(GtkWidget *, gpointer);
 extern void plugin_disable_callback(GtkWidget *, gpointer);
 extern void plugin_unload_callback(GtkWidget *, gpointer);
@@ -685,6 +685,12 @@ extern void refresh_clist(GtkCList *, gint);
 extern void close_user_security_window(GtkWidget *, gpointer);
 extern void ok_user_security(GtkWidget *, gpointer);
 extern void remove_user_security(GtkWidget *, GdkEventButton *, gpointer);
+
+
+/* Functions in stats.cpp */
+extern void menu_daemon_stats();
+extern void stats_ok_callback(GtkWidget *, gpointer);
+extern void stats_reset_callback(GtkWidget *, gpointer);
 
 
 /* Functions in status.cpp */

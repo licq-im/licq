@@ -33,6 +33,7 @@ licq_jons_gtk_gui_la_SOURCES =  about_window.cpp \
 				register_user.cpp \
 				search_user_window.cpp \
 				security_window.cpp \
+				stats_window.cpp \
 				status.cpp \
 				system_message.cpp \
 				system_status.cpp \

@@ -159,6 +159,9 @@ void menu_create()
 
 	menu_separator(menu);
 
+	item = menu_new_item(menu, "Daemon Stats",
+				GTK_SIGNAL_FUNC(menu_daemon_stats));
+
 	item = menu_new_item(menu, "About",
 				GTK_SIGNAL_FUNC(create_about_window));
 

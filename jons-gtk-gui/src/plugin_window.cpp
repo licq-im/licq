@@ -1,4 +1,22 @@
-
+/*
+ * Licq GTK GUI Plugin
+ *
+ * Copyright (C) 2000, Jon Keating <jon@licq.org>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 
 #include "licq_gtk.h"
 #include <gtk/gtk.h>
@@ -35,7 +53,7 @@ void create_plugin_window()
 	// Scroll window for the clist
 	GtkWidget *scroll_win = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_win),
-		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		GTK_POLICY_ALWAYS, GTK_POLICY_AUTOMATIC);
 
 	// The loaded clist
 	gchar *l_titles[] =
@@ -46,8 +64,8 @@ void create_plugin_window()
 	gtk_clist_set_column_width(GTK_CLIST(pw->l_clist), 2, 50);
 	gtk_clist_set_column_width(GTK_CLIST(pw->l_clist), 3, 50);
 	gtk_clist_set_column_width(GTK_CLIST(pw->l_clist), 4, 90);
+	gtk_widget_set_usize(pw->l_clist, 295, 100);
 	gtk_container_add(GTK_CONTAINER(scroll_win), pw->l_clist);
-	gtk_widget_set_usize(scroll_win, 335, 100);
 	gtk_box_pack_start(GTK_BOX(l_box), scroll_win, true, true, 5);
 
 	// The "Enable", "Disable", "Unload", "Details", and "Configure" buttons
@@ -72,7 +90,7 @@ void create_plugin_window()
 		GTK_SIGNAL_FUNC(plugin_configure_callback), NULL);
 
 	// Pack the buttons into an hbox then pack the hbox into the vbox
-	GtkWidget *buttons_box = gtk_hbox_new(false, 0);
+	GtkWidget *buttons_box = gtk_hbox_new(true, 0);
 	gtk_box_pack_start(GTK_BOX(buttons_box), enable, true, true, 5);
 	gtk_box_pack_start(GTK_BOX(buttons_box), disable, true, true, 5);
 	gtk_box_pack_start(GTK_BOX(buttons_box), unload, true, true, 5);
@@ -132,11 +150,12 @@ void create_plugin_window()
 	gtk_widget_show_all(pw->window);
 }
 
-void plugin_close_callback(GtkWidget *widget, gpointer data)
+gboolean plugin_close_callback(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy(pw->window);
 	g_free(pw);
 	pw = 0;
+	return true;
 }
 
 void plugin_enable_callback(GtkWidget *widget, gpointer data)
@@ -279,7 +298,8 @@ void plugin_refresh_callback(GtkWidget *widget, gpointer data)
 
 		gtk_clist_append(GTK_CLIST(pw->l_clist), text);
 
-		g_free(text[0]);
+		if(text[0])
+			g_free(text[0]);
 	}
 
 	// Thaw the list
