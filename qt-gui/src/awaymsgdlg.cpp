@@ -193,6 +193,7 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin,
   mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWidth);
   mleAwayMsg->setWrapColumnOrWidth(37);
 #endif
+  connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
