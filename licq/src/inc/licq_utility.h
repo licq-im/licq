@@ -49,7 +49,7 @@ public:
   EWinType WinType()  { return m_eWinType; }
 
   bool SetFields(unsigned long _nUin);
-  void SetUserFields(vector<const char *> &_vszUserFields);
+  void SetUserFields(const vector<const char *> &_vszUserFields);
   void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }
   const char *FullCommand() { return m_szFullCommand; }
 

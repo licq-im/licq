@@ -168,11 +168,11 @@ bool CUtility::SetFields(unsigned long _nUin)
 }
 
 
-void CUtility::SetUserFields(vector <const char *> &_vszUserFields)
+void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
 {
   if ( _vszUserFields.size() != NumUserFields())
   {
-    gLog.Warn("%sInternal error: CUtility::SetUserFields(): incorrect number of data fields (%d/%d).\n", 
+    gLog.Warn("%sInternal error: CUtility::SetUserFields(): incorrect number of data fields (%d/%d).\n",
               L_WARNxSTR, _vszUserFields.size(), NumUserFields());
     return;
   }
@@ -188,12 +188,10 @@ void CUtility::SetUserFields(vector <const char *> &_vszUserFields)
     pcFieldEnd++;
     strcat(m_szFullCommand, pcFieldStart);
     // Anything non-digit at this point we just ignore
-    if (isdigit(pcFieldEnd[0]))
-    {
-      unsigned short nField = *pcFieldEnd - '0';
+    if (isdigit(*pcFieldEnd))
       // We know that any user field numbers are valid from the constructor
-      strcat(m_szFullCommand, _vszUserFields[nField - 1]);
-    }
+        strcat(m_szFullCommand, _vszUserFields[*pcFieldEnd - '1']);
+
     pcFieldStart = pcFieldEnd;
     if (pcFieldStart == '\0') break;
     pcFieldStart++;
