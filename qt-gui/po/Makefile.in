@@ -45,7 +45,7 @@ merge: template.po
 
 qm: merge $(TRANSLATIONS)
 
-install: all qm
+install: 
 	$(MKINSTALLDIRS) $(sharedir)
 	for i in *.qm; do \
 	  $(INSTALL_DATA) $$i $(sharedir)/$$i; \
