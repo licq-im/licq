@@ -47,7 +47,7 @@ const unsigned short ICQ_CMDxRCV_UPDATExAUTHxFAIL  = 0x01F4; // 500
 const unsigned short ICQ_CMDxRCV_UPDATEDxAUTH      = 0x01FE; // 510
 const unsigned short ICQ_CMDxRCV_MULTIxPACKET      = 0x0212; // 530
 const unsigned short ICQ_CMDxRCV_USERxLISTxDONE    = 0x021C; // 540
-const unsigned short ICQ_CMDxRCV_RANDOMxUSERxFOUND = 0x0258; // 600
+const unsigned short ICQ_CMDxRCV_RANDOMxUSERxFOUND = 0x024E; // 590
 const unsigned short ICQ_CMDxRCV_META              = 0x03DE; // 990
 
 const unsigned short ICQ_CMDxSND_ACK               = 0x000A; //   10
