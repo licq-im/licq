@@ -45,7 +45,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   mleAwayMsg->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
   mleAwayMsg->setWrapColumnOrWidth(37);
   mleAwayMsg->setReadOnly(true);
-  mleAwayMsg->setMinimumSize(195, 80);
+  mleAwayMsg->setMinimumSize(230, 110);
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), SLOT(accept()));
   top_lay->addWidget(mleAwayMsg);
 
