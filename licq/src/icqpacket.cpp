@@ -1813,8 +1813,10 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
   GroupList::iterator g;
   for (g = groups.begin(); g != groups.end(); g++)
   {
-    nSize += strlen((*g));
+    char *szUnicode = gTranslator.ToUnicode(*g);
+    nSize += strlen(szUnicode);
     nSize += 10;
+    delete [] szUnicode;
   }
   
   m_nSize += nSize;
@@ -1829,12 +1831,16 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
 
     gUserManager.ModifyGroupID(*g, nGSID);
 
-    buffer->PackUnsignedShortBE(strlen(*g));
-    buffer->Pack(*g, strlen(*g));
+    char *szUnicodeName = gTranslator.ToUnicode(*g);
+
+    buffer->PackUnsignedShortBE(strlen(szUnicodeName));
+    buffer->Pack(szUnicodeName, strlen(szUnicodeName));
     buffer->PackUnsignedShortBE(nGSID);
     buffer->PackUnsignedShortBE(0);
     buffer->PackUnsignedShortBE(ICQ_ROSTxGROUP);
     buffer->PackUnsignedShortBE(0);
+
+    delete [] szUnicodeName;
   }
 }
 
@@ -1918,6 +1924,9 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       m_nSID = 0;
       SetExtraInfo(0);
 
+      szUnicodeName = gTranslator.ToUnicode((char *)_szName);
+      nStrLen = strlen(szUnicodeName);
+
       // modifygroupid needs write access, so unlock to make sure it gets what it wants.
       gUserManager.UnlockGroupIDList();
 
@@ -1956,7 +1965,10 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nStrLen);
-  buffer->Pack(_szName, nStrLen);
+  if (szUnicodeName && _nType == ICQ_ROSTxGROUP)
+    buffer->Pack(szUnicodeName, nStrLen);
+  else
+    buffer->Pack(_szName, nStrLen);
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -1983,12 +1995,22 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
 {
   int nNameLen = strlen(_szName);
+  char *szUnicodeName = 0;
+
+  if (_nType == ICQ_ROSTxGROUP)
+  {
+    szUnicodeName = gTranslator.ToUnicode((char *)_szName);
+    nNameLen = strlen(szUnicodeName);
+  }  
 
   m_nSize += 10+nNameLen;
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
-  buffer->Pack(_szName, nNameLen);
+  if (szUnicodeName)
+    buffer->Pack(szUnicodeName, nNameLen);
+  else
+    buffer->Pack(_szName, nNameLen);
   buffer->PackUnsignedShortBE(_nGSID);
   buffer->PackUnsignedShortBE(_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -1998,6 +2020,9 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
     SetExtraInfo(0);
   else
     SetExtraInfo(_nGSID);
+
+  if (szUnicodeName)
+    delete [] szUnicodeName;
 }
 
 //-----UpdateToServerList---------------------------------------------------
@@ -2047,6 +2072,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       }
       else
       {
+        szUnicodeName = gTranslator.ToUnicode((char *)_szName);
+        nNameLen = strlen(szUnicodeName);
         FOR_EACH_USER_START(LOCK_R)
         {
           if (pUser->GetGSID() == nGSID)
@@ -2065,7 +2092,10 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
-  buffer->Pack(_szName, nNameLen);
+  if (szUnicodeName && _nType == ICQ_ROSTxGROUP)
+    buffer->Pack(szUnicodeName, nNameLen);
+  else
+    buffer->Pack(_szName, nNameLen);
   buffer->PackUnsignedShortBE(nGSID);
   buffer->PackUnsignedShortBE(nSID);
   buffer->PackUnsignedShortBE(_nType);
