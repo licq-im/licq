@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <ctype.h>
 
 #include "licq_buffer.h"
 #include "licq_log.h"
@@ -315,39 +316,56 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
 //-----print--------------------------------------------------------------------
 char *CBuffer::print(char *&p)
 {
-   static const unsigned short BYTES_PER_LINE = 16;
    static const unsigned long MAX_DATA_SIZE = 8 * 1024;
+   static const char BUFFER_BLANKS[] = "     ";
    static const unsigned long SPACE_PER_LINE =
-    strlen(L_BLANKxSTR) + strlen("0000: ") + BYTES_PER_LINE * 3 + 4;
+    strlen(BUFFER_BLANKS) + strlen("0000: ") + 16 * 3 + 18 + 4;
 
    unsigned long nBytesToPrint = getDataSize();
+   char szAscii[16 + 1];
+   szAscii[16] = '\0';
 
    if (nBytesToPrint > MAX_DATA_SIZE)
    {
-     gLog.Warn("%sCBuffer::print(): Packet is suspiciously large (%lu bytes).\n%sAborting print.\n",
-                L_WARNxSTR, getDataSize(), L_BLANKxSTR);
      nBytesToPrint = MAX_DATA_SIZE;
    }
 
-   unsigned short nLenBuf = ((int)(nBytesToPrint / BYTES_PER_LINE) + 1) *
+   unsigned short nLenBuf = ((int)(nBytesToPrint / 16) + 1) *
     SPACE_PER_LINE;
    p = new char[nLenBuf + 1];
    char *pPos = p;
-   pPos += sprintf(pPos, "%s0000: ", L_BLANKxSTR);
+   pPos += sprintf(pPos, "%s0000: ", BUFFER_BLANKS);
    unsigned short i = 0;
+   unsigned char c = 0;
    while(true)
    {
-      pPos += sprintf(pPos, "%02X ", (unsigned char)getDataStart()[i++]);
+     c = (unsigned char)getDataStart()[i];
+     szAscii[i % 16] = isprint(c) ? c : '.';
+     pPos += sprintf(pPos, "%02X ", c);
+     i++;
 
-      if (i >= nBytesToPrint) break;
+     if (i >= nBytesToPrint) break;
 
-      if(i % BYTES_PER_LINE == 0)
-        pPos += sprintf(pPos, "\n%s%04X: ", L_BLANKxSTR, i);
-      else if(i % 8 == 0)
-        pPos += sprintf(pPos, " ");
+     if (i % 16 == 0)
+       pPos += sprintf(pPos, "  %s\n%s%04X: ", szAscii, BUFFER_BLANKS, i);
+     else if(i % 8 == 0)
+       pPos += sprintf(pPos, " ");
    }
+
    if (nBytesToPrint != getDataSize())
      pPos += sprintf(pPos, "...");
+   else if (i % 16 != 0)
+   {
+     szAscii[(i % 16)] = '\0';
+     if ( (i % 16) <= 8)
+     {
+       strcpy(pPos, " ");
+       pPos++;
+     }
+     while (i++ % 16 != 0)
+       pPos += sprintf(pPos, "   ");
+     pPos += sprintf(pPos, "  %s", szAscii);
+   }
 
    return(p);
 }
