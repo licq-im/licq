@@ -63,6 +63,7 @@ public:
   void slot_doneRegisterUser(ICQEvent *);
 
 protected slots:
+  void slot_listClicked(QListViewItem *);
   void slot_listClicked(QListViewItem *, const QPoint &, int);
   void slot_addClicked();
   void slot_registerClicked();

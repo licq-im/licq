@@ -233,17 +233,19 @@ OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
   btnRegister = new QPushButton(tr("&Register"), this);
   lay->addWidget(btnRegister);
   btnModify = new QPushButton(tr("&Modify"), this);
-  btnModify->setEnabled(false);
   lay->addWidget(btnModify);
   btnDelete = new QPushButton(tr("D&elete"), this);
-  btnDelete->setEnabled(false);
   lay->addWidget(btnDelete);
   btnDone = new QPushButton(tr("&Done"), this);
   lay->addWidget(btnDone);
   
   // Connect all the signals
   connect(ownerView, SIGNAL(clicked(QListViewItem *, const QPoint &, int)),
-    this, SLOT(slot_listClicked(QListViewItem *, const QPoint &, int)));
+          this, SLOT(slot_listClicked(QListViewItem *, const QPoint &, int)));
+  connect(ownerView, SIGNAL(currentChanged(QListViewItem *)),
+          this, SLOT(slot_listClicked(QListViewItem *)));
+  connect(ownerView, SIGNAL(spacePressed(QListViewItem *)),
+          this, SLOT(slot_listClicked(QListViewItem *)));
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(slot_addClicked()));
   connect(btnRegister, SIGNAL(clicked()), this, SLOT(slot_registerClicked()));
   connect(btnModify, SIGNAL(clicked()), this, SLOT(slot_modifyClicked()));
@@ -277,12 +279,20 @@ void OwnerManagerDlg::updateOwners()
     (void) new OwnerItem(server, pOwner->IdString(), pOwner->PPID(), ownerView);
   }
   FOR_EACH_OWNER_END
+  
+  btnModify->setEnabled(false);
+  btnDelete->setEnabled(false);
+}
+
+void OwnerManagerDlg::slot_listClicked(QListViewItem *it)
+{
+  btnModify->setEnabled(it);
+  btnDelete->setEnabled(it);
 }
 
 void OwnerManagerDlg::slot_listClicked(QListViewItem *it, const QPoint &, int)
 {
-  btnModify->setEnabled(it);
-  btnDelete->setEnabled(it);
+  slot_listClicked(it);
 }
 
 void OwnerManagerDlg::slot_addClicked()
@@ -345,6 +355,8 @@ void OwnerManagerDlg::slot_doneRegisterUser(ICQEvent *e)
 void OwnerManagerDlg::slot_modifyClicked()
 {
   OwnerItem *i = dynamic_cast<OwnerItem *>(ownerView->selectedItem());
+  if (i == 0) return;
+  
   OwnerEditDlg *d = new OwnerEditDlg(server, i->Id(), i->PPID(), this);
   d->show();
   connect(d, SIGNAL(destroyed()), this, SLOT(slot_update()));
