@@ -181,6 +181,9 @@ CUserViewItem::~CUserViewItem()
 
   if (v == NULL) return;
 
+  if (this == v->barOffline || this == v->barOnline)
+    return;
+
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
   else
