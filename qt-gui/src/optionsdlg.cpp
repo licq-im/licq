@@ -145,6 +145,7 @@ void OptionsDlg::SetupOptions()
   chkFlashAll->setChecked(mainwin->m_nFlash == FLASH_ALL);
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
   chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
+  chkBoldOnMsg->setChecked(mainwin->m_bBoldOnMsg);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   switch(mainwin->m_nDockMode)
   {
@@ -308,6 +309,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->autoClose = chkAutoClose->isChecked();
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
   mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
+  mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
   mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
                       chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
@@ -519,6 +521,8 @@ QWidget* OptionsDlg::new_appearance_options()
                                            "online (or free for chat)"));
   chkAutoRaise = new QCheckBox(tr("Auto-Raise on Incoming Msg"), boxMainWin);
   QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
+  chkBoldOnMsg = new QCheckBox(tr("Bold Message Label on Incoming Msg"), boxMainWin);
+  QWhatsThis::add(chkBoldOnMsg, tr("The message info label will be bold if there are incoming messages"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Horizontal, tr("Locale"), w);
