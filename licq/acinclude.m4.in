@@ -53,7 +53,6 @@ AC_DEFUN(AC_CHECK_SOCKS5,
     fi
 
     if test -n "$SOCKS_LIBS"; then
-       SOCKS_LIBS="-lsocks5"
        if test "$socks_libdir" != "no"; then
           SOCKS_LIBDIR="-L$socks_libdir"
        fi
@@ -90,7 +89,7 @@ AC_DEFUN(AC_CHECK_SOCKS5,
            AC_DEFINE(SOCKS5_OPTLEN, int, [getsockopt optlen parameter type])
          else 
            if test $licq_socks_optlen = "socklen_t"; then
-             AC_DEFINE(SOCKS5_OPTLEN,socklen_t [getsockopt optlen parameter type])
+             AC_DEFINE(SOCKS5_OPTLEN,socklen_t, [getsockopt optlen parameter type])
            fi
          fi
       fi
