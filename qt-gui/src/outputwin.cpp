@@ -23,15 +23,15 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
 {
   setCaption(tr("Licq Network Log"));
 
-  QBoxLayout* top_lay = new QVBoxLayout(this, 10);
+  QBoxLayout* top_lay = new QVBoxLayout(this, 8);
 
   outputBox = new CLogWidget(this);
   outputBox->setMinimumHeight(outputBox->frameWidth()*2
-                              + 12*outputBox->fontMetrics().lineSpacing());
+                              + 16*outputBox->fontMetrics().lineSpacing());
   outputBox->setMinimumWidth((outputBox->minimumHeight()*3)/2);
   top_lay->addWidget(outputBox);
 
-  QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
+  QBoxLayout* lay = new QHBoxLayout(top_lay, 8);
 
   btnSave = new QPushButton(tr("&Save"), this);
   connect(btnSave, SIGNAL(clicked()), SLOT(slot_save()));
