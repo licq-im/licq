@@ -90,6 +90,9 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
 {
   CWindow::StartScreen();
 
+  // XXX Change this to CIniFile.. oh yeah, add in a variable for the
+  // status window text and colors.. that'd be cool
+
   m_bShowOffline = true;
   m_bShowDividers = true;
   m_nCurrentGroup = 0;

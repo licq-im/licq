@@ -2,13 +2,15 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 11;
+const unsigned short NUM_COMMANDS = 12;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "/contacts", &CLicqConsole::MenuContactList, NULL,
     "Force a refresh of the contact list." },
   { "/group", &CLicqConsole::MenuGroup, NULL,
     "Prints the group list or changes to the given group number." },
+  { "/clear", &CLicqConsole::MenuClear, NULL,
+    "Clears the current window." },
   { "/filestat", &CLicqConsole::MenuFileStat, NULL,
     "Print out statistics on all current file transfers." },
   { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
@@ -18,6 +20,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "sendfile - send a file to the user\n\n"
     "url - send a url to the user\n\n"
     "view - view any new events from the user\n\n"
+    "secure - open, close, or view the current secure channel status\n\n"
     "history - print the given range of events from the history.\n"
     "'$' represents the last message, and +/- can be used to specify "
     "an offset.  For example \"history $-5,$\" will print from the "
@@ -525,4 +528,12 @@ void CLicqConsole::MenuFileStat(char *sz)
   if(!bNum)
     winMain->wprintf("%C%ANo current file transfers.\n%C%Z",
       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+}
+
+/*-----------------------------------------------------------------------
+ * CLicqConsole::MenuClear
+ *---------------------------------------------------------------------*/
+void CLicqConsole::MenuClear(char *)
+{
+  winMain->wprintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }

@@ -119,6 +119,8 @@ public:
   void MenuSet(char *);
   void MenuLast(char *);
   void MenuFileStat(char *);
+  void MenuClear(char *);
+
 
   void TabUser(char *, struct STabCompletion &);
   void TabOwner(char *, struct STabCompletion &);
