@@ -48,7 +48,12 @@ public:
   CEButton(QWidget *parent = 0, char *name = 0);
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
-  ButtonState stateWhenPressed() { return whenPressed; }
+  ButtonState stateWhenPressed()
+  {
+    ButtonState b = whenPressed;
+    whenPressed = NoButton;
+    return b;
+  }
   ~CEButton();
 public slots:
   void polish();
