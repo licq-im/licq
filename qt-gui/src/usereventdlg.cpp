@@ -1258,6 +1258,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
       result = tr("done");
       QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
       break;
+    case EVENT_CANCELLED:
+      result = tr("cancelled");
+      break;
     case EVENT_FAILED:
       result = tr("failed");
       break;
@@ -1277,6 +1280,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   setCursor(arrowCursor);
   btnSend->setEnabled(true);
   btnCancel->setText(tr("&Close"));
+  // If cancelled automatically check "Send through Server"
+  if (mainwin->m_bAutoSendThroughServer && e->Result() == EVENT_CANCELLED)
+    chkSendServer->setChecked(true);
 
   m_lnEventTag.pop_front();
 
