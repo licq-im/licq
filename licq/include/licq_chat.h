@@ -117,6 +117,40 @@ const unsigned long FONT_PLAIN     = 0x00000000;
 const unsigned long FONT_BOLD      = 0x00000001;
 const unsigned long FONT_ITALIC    = 0x00000002;
 const unsigned long FONT_UNDERLINE = 0x00000004;
+const unsigned long FONT_STRIKEOUT = 0x00000008;
+
+//Font encodings (taken from windows api docs)
+const unsigned char ENCODING_ANSI        =   0;
+const unsigned char ENCODING_DEFAULT     =   1;
+const unsigned char ENCODING_SYMBOL      =   2;
+const unsigned char ENCODING_MAC         =  77;
+const unsigned char ENCODING_SHIFTJIS    = 128;
+const unsigned char ENCODING_HANGEUL     = 129;
+const unsigned char ENCODING_JOHAB       = 130;
+const unsigned char ENCODING_GB2312      = 134;
+const unsigned char ENCODING_CHINESEBIG5 = 136;
+const unsigned char ENCODING_GREEK       = 161;
+const unsigned char ENCODING_TURKISH     = 162;
+const unsigned char ENCODING_VIETNAMESE  = 163;
+const unsigned char ENCODING_HEBREW      = 177;
+const unsigned char ENCODING_ARABIC      = 178;
+const unsigned char ENCODING_BALTIC      = 186;
+const unsigned char ENCODING_RUSSIAN     = 204;
+const unsigned char ENCODING_THAI        = 222;
+const unsigned char ENCODING_EASTEUROPE  = 238;
+const unsigned char ENCODING_OEM         = 255;
+
+//Font style (taken from windows api docs)
+const unsigned char STYLE_DEFAULTxPITCH  = 0x00;
+const unsigned char STYLE_FIXEDxPITCH    = 0x01;
+const unsigned char STYLE_VARIABLExPITCH = 0x02;
+
+const unsigned char STYLE_DONTCARE       = 0x00;
+const unsigned char STYLE_ROMAN          = 0x10;
+const unsigned char STYLE_SWISS          = 0x20;
+const unsigned char STYLE_MODERN         = 0x30;
+const unsigned char STYLE_SCRIPT         = 0x40;
+const unsigned char STYLE_DECORATIVE     = 0x50;
 
 struct SVoteInfo
 {
@@ -223,9 +257,9 @@ public:
      int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
      int nColorBackRed, int nColorBackBlue, int nColorBackGreen,
      unsigned long nFontSize,
-     bool bFontBold, bool bFontItalic, bool bFontUnderline,
-     const char *szFontFamily,
-     ChatClientPList &clientList);
+     bool bFontBold, bool bFontItalic, bool bFontUnderline, bool bFontStrikeOut,
+     const char *szFontFamily, unsigned char nFontEncoding,
+     unsigned char nFontStyle, ChatClientPList &clientList);
 
   CPChat_ColorFont(CBuffer &);
 
@@ -246,8 +280,11 @@ public:
   bool FontBold() { return m_nFontFace & FONT_BOLD; }
   bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
   unsigned long FontFace() { return m_nFontFace; }
   const char *FontFamily() { return m_szFontFamily; }
+  unsigned char FontEncoding() { return m_nFontEncoding; }
+  unsigned char FontStyle() { return m_nFontStyle; }
   ChatClientList &ChatClients()  { return chatClients; }
 
 protected:
@@ -264,6 +301,7 @@ protected:
   unsigned long m_nFontSize;
   unsigned long m_nFontFace;
   char *m_szFontFamily;
+  unsigned char m_nFontEncoding, m_nFontStyle;
   ChatClientList chatClients;
 };
 
@@ -277,7 +315,8 @@ public:
    CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
                unsigned long nFontSize,
                bool bFontBold, bool bFontItalic, bool bFontUnderline,
-               const char *szFontFamily);
+               bool bFontStrikeOut, const char *szFontFamily,
+               unsigned char nFontEncoding, unsigned char nFontStyle);
    CPChat_Font(CBuffer &);
    virtual ~CPChat_Font()  { if (m_szFontFamily != NULL) free (m_szFontFamily); }
 
@@ -287,8 +326,11 @@ public:
   bool FontBold() { return m_nFontFace & FONT_BOLD; }
   bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
   unsigned long FontFace() { return m_nFontFace; }
   const char *FontFamily() { return m_szFontFamily; }
+  unsigned char FontEncoding() { return m_nFontEncoding; }
+  unsigned char FontStyle() { return m_nFontStyle; }
 
 protected:
   unsigned short m_nPort;
@@ -296,6 +338,7 @@ protected:
   unsigned long m_nFontSize;
   unsigned long m_nFontFace;
   char *m_szFontFamily;
+  unsigned char m_nFontEncoding, m_nFontStyle;
 };
 
 
@@ -398,18 +441,21 @@ extern "C" { void *ChatManager_tep(void *); }
 class CChatUser
 {
 public:
-  unsigned long Uin()       { return uin; }
-  unsigned long ToKick()    { return nToKick; }
-  const char *Name()        { return chatname; }
-  int *ColorFg()            { return colorFore; }
-  int *ColorBg()            { return colorBack; }
-  char *FontFamily()        { return fontFamily; }
-  unsigned short FontSize() { return fontSize; }
-  bool FontBold()           { return fontFace & FONT_BOLD; }
-  bool FontItalic()         { return fontFace & FONT_ITALIC; }
-  bool FontUnderline()      { return fontFace & FONT_UNDERLINE; }
-  bool Focus()              { return focus; }
-  bool Sleep()              { return sleep; }
+  unsigned long Uin()          { return uin; }
+  unsigned long ToKick()       { return nToKick; }
+  const char *Name()           { return chatname; }
+  int *ColorFg()               { return colorFore; }
+  int *ColorBg()               { return colorBack; }
+  char *FontFamily()           { return fontFamily; }
+  unsigned char FontEncoding() { return fontEncoding; }
+  unsigned char FontStyle()    { return fontStyle; }
+  unsigned short FontSize()    { return fontSize; }
+  bool FontBold()              { return fontFace & FONT_BOLD; }
+  bool FontItalic()            { return fontFace & FONT_ITALIC; }
+  bool FontUnderline()         { return fontFace & FONT_UNDERLINE; }
+  bool FontStrikeOut()         { return fontFace & FONT_STRIKEOUT; }
+  bool Focus()                 { return focus; }
+  bool Sleep()                 { return sleep; }
 
   ~CChatUser() {}
 
@@ -421,6 +467,7 @@ protected:
   char chatname[32];
   int colorFore[3], colorBack[3];
   char fontFamily[64];
+  unsigned char fontEncoding, fontStyle;
   unsigned short fontSize;
   unsigned long fontFace;
   bool focus, sleep;
@@ -473,10 +520,12 @@ class CChatManager
 public:
   CChatManager(CICQDaemon *d, unsigned long nUin,
      const char *fontFamily = "courier",
+     unsigned char fontEncoding = ENCODING_DEFAULT,
+     unsigned char fontStyle = STYLE_DONTCARE | STYLE_DEFAULTxPITCH,
      unsigned short fontSize = 12, bool fontBold = false,
      bool fontItalic = false, bool fontUnderline = false,
-     int fr = 0xFF, int fg = 0xFF, int fb = 0xFF,
-     int br = 0x00, int bg = 0x00, int bb = 0x00);
+     bool fontStrikeOut = false, int fr = 0xFF, int fg = 0xFF,
+     int fb = 0xFF, int br = 0x00, int bg = 0x00, int bb = 0x00);
   ~CChatManager();
 
   bool StartAsServer();
@@ -489,6 +538,8 @@ public:
   unsigned short LocalPort() { return chatServer.LocalPort(); }
   const char *Name()  { return m_szName; }
   const char *FontFamily()  { return m_szFontFamily; }
+  unsigned char FontEncoding() { return m_nFontEncoding; }
+  unsigned char FontStyle() { return m_nFontStyle; }
   unsigned long FontFace()  { return m_nFontFace; }
   unsigned short FontSize()  { return m_nFontSize; }
   int *ColorFg()  { return m_nColorFore; }
@@ -497,9 +548,9 @@ public:
   bool Sleep()  { return m_bSleep; }
   bool Focus()  { return m_bFocus; }
 
-  void ChangeFontFamily(const char *);
+  void ChangeFontFamily(const char *, unsigned char, unsigned char);
   void ChangeFontSize(unsigned short);
-  void ChangeFontFace(bool, bool, bool);
+  void ChangeFontFace(bool, bool, bool, bool);
   void ChangeColorFg(int, int, int);
   void ChangeColorBg(int, int, int);
   void SendBeep();
@@ -538,6 +589,7 @@ protected:
 
   int m_nColorFore[3], m_nColorBack[3];
   char m_szFontFamily[64], m_szName[64];
+  unsigned char m_nFontEncoding, m_nFontStyle;
   unsigned short m_nFontSize;
   unsigned long m_nFontFace;
   bool m_bSleep, m_bFocus;

@@ -218,9 +218,9 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
    int nColorForeRed, int nColorForeGreen, int nColorForeBlue, int nColorBackRed,
    int nColorBackBlue, int nColorBackGreen,
    unsigned long nFontSize,
-   bool bFontBold, bool bFontItalic, bool bFontUnderline,
-   const char *szFontFamily,
-   ChatClientPList &clientList)
+   bool bFontBold, bool bFontItalic, bool bFontUnderline, bool bFontStrikeOut,
+   const char *szFontFamily, unsigned char nFontEncoding,
+   unsigned char nFontStyle, ChatClientPList &clientList)
 {
   m_szName = NULL;
   m_nPort = nLocalPort;
@@ -237,7 +237,10 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   if (bFontBold) m_nFontFace |= FONT_BOLD;
   if (bFontItalic) m_nFontFace |= FONT_ITALIC;
   if (bFontUnderline) m_nFontFace |= FONT_UNDERLINE;
+  if (bFontStrikeOut) m_nFontFace |= FONT_STRIKEOUT;
   m_szFontFamily = NULL;
+  m_nFontEncoding = nFontEncoding;
+  m_nFontStyle = nFontStyle;
 
   m_nSize = 10 + strlen(szLocalName) + 38 + strlen(szFontFamily) + 4
             + clientList.size() * (sizeof(CChatClient) + 2);
@@ -263,7 +266,8 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);
   buffer->PackString(szFontFamily);
-  buffer->PackUnsignedShort(0x2200);
+  buffer->PackChar(nFontEncoding);
+  buffer->PackChar(nFontStyle);
   buffer->PackChar(clientList.size());
 
   ChatClientPList::iterator iter;
@@ -307,7 +311,8 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   m_nFontSize = b.UnpackUnsignedLong();
   m_nFontFace = b.UnpackUnsignedLong();
   m_szFontFamily = strdup(b.UnpackString(buf, sizeof(buf)));
-  b.UnpackUnsignedShort();
+  m_nFontEncoding = b.UnpackChar();
+  m_nFontStyle = b.UnpackChar();
 
   // Read out client packets
   unsigned short nc = b.UnpackChar();
@@ -324,7 +329,8 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
 CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
                          unsigned long nFontSize,
                          bool bFontBold, bool bFontItalic, bool bFontUnderline,
-                         const char *szFontFamily)
+                         bool bFontStrikeOut, const char *szFontFamily,
+                         unsigned char nFontEncoding, unsigned char nFontStyle)
 {
   m_nPort = nLocalPort;
   m_nSession = nSession;
@@ -333,7 +339,10 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
   if (bFontBold) m_nFontFace |= FONT_BOLD;
   if (bFontItalic) m_nFontFace |= FONT_ITALIC;
   if (bFontUnderline) m_nFontFace |= FONT_UNDERLINE;
+  if (bFontStrikeOut) m_nFontFace |= FONT_STRIKEOUT;
   m_szFontFamily = NULL;
+  m_nFontEncoding = nFontEncoding;
+  m_nFontStyle = nFontStyle;
 
   m_nSize = 29 + strlen(szFontFamily) + 3;
   InitBuffer();
@@ -347,8 +356,8 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);
   buffer->PackString(szFontFamily);
-  buffer->PackUnsignedShort(0x2200);
-//  buffer->PackChar(0);
+  buffer->PackChar(nFontEncoding);
+  buffer->PackChar(nFontStyle);
 }
 
 CPChat_Font::CPChat_Font(CBuffer &b)
@@ -364,6 +373,8 @@ CPChat_Font::CPChat_Font(CBuffer &b)
   m_nFontSize = b.UnpackUnsignedLong();
   m_nFontFace = b.UnpackUnsignedLong();
   m_szFontFamily = strdup(b.UnpackString(buf, sizeof(buf)));
+  m_nFontEncoding = b.UnpackChar();
+  m_nFontStyle = b.UnpackChar();
 }
 
 /*
@@ -518,6 +529,8 @@ CChatUser::CChatUser()
   chatname[0] = '\0';
   linebuf[0] = '\0';
   strcpy(fontFamily, "courier");
+  fontEncoding = ENCODING_DEFAULT;
+  fontStyle = STYLE_MODERN | STYLE_FIXEDxPITCH; // style of courier
   fontSize = 12;
   fontFace = FONT_PLAIN;
   focus = true;
@@ -549,9 +562,9 @@ ChatManagerList CChatManager::cmList;
 
 
 CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
-  const char *fontFamily, unsigned short fontSize, bool fontBold,
-  bool fontItalic, bool fontUnderline, int fr, int fg, int fb,
-  int br, int bg, int bb)
+  const char *fontFamily, unsigned char fontEncoding, unsigned char fontStyle,
+  unsigned short fontSize, bool fontBold, bool fontItalic, bool fontUnderline,
+  bool fontStrikeOut, int fr, int fg, int fb, int br, int bg, int bb)
 {
   // Create the plugin notification pipe
   pipe(pipe_thread);
@@ -571,8 +584,11 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   if (fontBold) m_nFontFace |= FONT_BOLD;
   if (fontItalic) m_nFontFace |= FONT_ITALIC;
   if (fontUnderline) m_nFontFace |= FONT_UNDERLINE;
+  if (fontStrikeOut) m_nFontFace |= FONT_STRIKEOUT;
   strncpy(m_szFontFamily, fontFamily, sizeof(m_szFontFamily));
   m_szFontFamily[sizeof(m_szFontFamily) - 1] = '\0';
+  m_nFontEncoding = fontEncoding;
+  m_nFontStyle = fontStyle;
   m_nFontSize = fontSize;
   m_nColorFore[0] = fr;
   m_nColorFore[1] = fg;
@@ -827,7 +843,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
          m_nColorFore[0], m_nColorFore[1], m_nColorFore[2],
          m_nColorBack[0], m_nColorBack[1], m_nColorBack[2],
          m_nFontSize, m_nFontFace & FONT_BOLD, m_nFontFace & FONT_ITALIC,
-         m_nFontFace & FONT_UNDERLINE, m_szFontFamily, l);
+         m_nFontFace & FONT_UNDERLINE, m_nFontFace & FONT_STRIKEOUT,
+         m_szFontFamily, m_nFontEncoding, m_nFontStyle, l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
         char buf[128];
@@ -850,6 +867,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       u->fontFace = pin.FontFace();
       strncpy(u->fontFamily, pin.FontFamily(), 64);
       u->fontFamily[63] = '\0';
+      u->fontEncoding = pin.FontEncoding();
+      u->fontStyle = pin.FontStyle();
 
       u->state = CHAT_STATE_CONNECTED;
       PushChatEvent(new CChatEvent(CHAT_CONNECTION, u));
@@ -882,6 +901,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       u->fontFace = pin.FontFace();
       strncpy(u->fontFamily, pin.FontFamily(), 64);
       u->fontFamily[63] = '\0';
+      u->fontEncoding = pin.FontEncoding();
+      u->fontStyle = pin.FontStyle();
 
       // Parse the multiusers list
       if (pin.ChatClients().size() > 0)
@@ -906,7 +927,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       // send the reply (font packet)
 			CPChat_Font p_font(LocalPort(), m_nSession,
          m_nFontSize, m_nFontFace & FONT_BOLD, m_nFontFace & FONT_ITALIC,
-         m_nFontFace & FONT_UNDERLINE, m_szFontFamily);
+         m_nFontFace & FONT_UNDERLINE, m_nFontFace & FONT_STRIKEOUT,
+         m_szFontFamily, m_nFontEncoding, m_nFontStyle);
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
         char buf[128];
@@ -1053,16 +1075,16 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       case CHAT_FONTxFAMILY: // change font type
       {
          if (u->chatQueue.size() < 3) return true;
-         unsigned short sizeFontName, encodingFont, i;
+         unsigned short sizeFontName, i;
          sizeFontName = u->chatQueue[1] | (u->chatQueue[2] << 8);
          if (u->chatQueue.size() < (unsigned long)(sizeFontName + 2 + 3)) return true;
          char nameFont[sizeFontName];
          for (i = 0; i < sizeFontName; i++)
             nameFont[i] = u->chatQueue[i + 3];
-         encodingFont = u->chatQueue[sizeFontName + 3] |
-                        (u->chatQueue[sizeFontName + 4] << 8);
          strncpy(u->fontFamily, nameFont, 64);
          u->fontFamily[63] = '\0';
+         u->fontEncoding = u->chatQueue[sizeFontName + 3];
+         u->fontStyle = u->chatQueue[sizeFontName + 4];
 
          // Dequeue all characters
          for (unsigned short i = 0; i < 3 + sizeFontName + 2; i++)
@@ -1326,9 +1348,6 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
                  (u->chatQueue[4] << 16) |
                  (u->chatQueue[5] << 24);
 
-      // FIXME did old clients used to do that too???
-      if (chatChar == CHAT_FONTxFAMILY) chatSize--;
-
       if (u->chatQueue.size() < 6 + chatSize) return true;
       for (unsigned short i = 0; i < 6; i++)
         u->chatQueue.pop_front();
@@ -1369,17 +1388,19 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
         case CHAT_FONTxFAMILY: // change font type
         {
-           unsigned short sizeFontName, encodingFont, i;
+           unsigned short sizeFontName, i;
            sizeFontName = u->chatQueue[0] | (u->chatQueue[1] << 8);
            char nameFont[sizeFontName];
            for (i = 0; i < sizeFontName; i++)
               nameFont[i] = u->chatQueue[i + 2];
-           encodingFont = u->chatQueue[sizeFontName + 2] |
-                          (u->chatQueue[sizeFontName + 3] << 8);
            strncpy(u->fontFamily, nameFont, 64);
            u->fontFamily[63] = '\0';
+           u->fontEncoding = u->chatQueue[sizeFontName + 2];
+           u->fontStyle = u->chatQueue[sizeFontName + 3];
 
            PushChatEvent(new CChatEvent(CHAT_FONTxFAMILY, u));
+           //the size includes the following character, so don't dequeue it
+           chatSize--;
            break;
         }
 
@@ -1692,6 +1713,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
   {
     b_out.PackChar(0);
     b_out.PackChar(cmd);
+    //the change font command size includes the following character
     b_out.PackUnsignedLong(b->getDataSize() + ((cmd == CHAT_FONTxFAMILY)?1:0));
     b_out.Pack(b->getDataStart(), b->getDataSize());
   }
@@ -1884,23 +1906,22 @@ void CChatManager::Sleep(bool s)
 }
 
 
-void CChatManager::ChangeFontFamily(const char *f)
+void CChatManager::ChangeFontFamily(const char *f, unsigned char enc,
+                                    unsigned char style)
 {
   //CPChat_ChangeFontFamily p(f);
   //SendPacket(&p);
 
   CBuffer buf(strlen_safe(f) + 5);
   buf.PackString(f);
-  buf.PackUnsignedShort(0x2200);
-  // 0x2200 west
-  // 0x22a2 turkey
-  // 0x22cc cyrillic
-  // 0x22a1 greek
-  // 0x22ba baltic
+  buf.PackChar(enc);
+  buf.PackChar(style);
   SendBuffer(&buf, CHAT_FONTxFAMILY);
 
   strncpy(m_szFontFamily, f, sizeof(m_szFontFamily));
   m_szFontFamily[sizeof(m_szFontFamily) - 1] = '\0';
+  m_nFontEncoding = enc;
+  m_nFontStyle = style;
 }
 
 
@@ -1917,7 +1938,7 @@ void CChatManager::ChangeFontSize(unsigned short s)
 }
 
 
-void CChatManager::ChangeFontFace(bool b, bool i, bool u)
+void CChatManager::ChangeFontFace(bool b, bool i, bool u, bool s)
 {
   //CPChat_ChangeFontFace p(b, i, u);
   //SendPacket(&p);
@@ -1926,6 +1947,7 @@ void CChatManager::ChangeFontFace(bool b, bool i, bool u)
   if (b) m_nFontFace |= FONT_BOLD;
   if (i) m_nFontFace |= FONT_ITALIC;
   if (u) m_nFontFace |= FONT_UNDERLINE;
+  if (s) m_nFontFace |= FONT_STRIKEOUT;
 
   CBuffer buf(4);
   buf.PackUnsignedLong(m_nFontFace);
@@ -2073,7 +2095,7 @@ void CChatManager::CloseClient(CChatUser *u)
 //-----CChatManager::ClientsStr----------------------------------------------
 char *CChatManager::ClientsStr()
 {
-  char *sz = new char[chatUsers.size() * 36];
+  char *sz = new char[chatUsers.size() * 36 + 1];
   sz[0] = '\0';
   int nPos = 0;
 

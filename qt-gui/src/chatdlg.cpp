@@ -71,6 +71,7 @@ ChatDlgList ChatDlg::chatDlgs;
 #include "xpm/chatBold.xpm"
 #include "xpm/chatItalic.xpm"
 #include "xpm/chatUnder.xpm"
+#include "xpm/chatStrike.xpm"
 #include "xpm/chatBeep.xpm"
 #include "xpm/chatIgnore.xpm"
 #include "xpm/chatChangeFg.xpm"
@@ -200,22 +201,26 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
    // tbtLaugh = new QToolButton(LeftArrow, barChat);
 
   QPixmap* pixIgnore = new QPixmap(chatIgnore_xpm);
+  qPixmaps.push_back(pixIgnore);
   tbtIgnore = new QToolButton(*pixIgnore, tr("Ignore user settings"),
     tr("Ignores user color settings"), this, SLOT(updateRemoteStyle()), barChat);
   tbtIgnore->setToggleButton(true);
 
   QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
+  qPixmaps.push_back(pixBeep);
   tbtBeep = new QToolButton(*pixBeep, tr("Beep"),
      tr("Sends a Beep to all recipients"),this, SLOT(chatSendBeep()), barChat);
 
   barChat->addSeparator();
 
   QPixmap* pixFg = new QPixmap(chatChangeFg_xpm);
+  qPixmaps.push_back(pixFg);
   tbtFg = new QToolButton(*pixFg, tr("Foreground color"),
      tr("Changes the foreground color"), this, SLOT(changeFrontColor()), barChat);
   mnuFg = new QPopupMenu(this);
 
   QPixmap* pixBg = new QPixmap(chatChangeBg_xpm);
+  qPixmaps.push_back(pixBg);
   tbtBg = new QToolButton(*pixBg, tr("Background color"),
      tr("Changes the background color"), this, SLOT(changeBackColor()), barChat);
 
@@ -224,6 +229,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   for(unsigned int i = 0; i < NUM_COLORS; i++)
   {
     QPixmap *pix = new QPixmap(48, 14);
+    qPixmaps.push_back(pix);
     QPainter p(pix);
     QColor c (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
@@ -232,6 +238,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
     mnuBg->insertItem(*pix, i);
     QPixmap* pixf = new QPixmap(48, 14);
+    qPixmaps.push_back(pixf);
     pixf->fill(colorGroup().background());
     QPainter pf(pixf);
     pf.setPen(c);
@@ -241,33 +248,47 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   barChat->addSeparator();
 
   QPixmap* pixBold = new QPixmap(chatBold_xpm);
+  qPixmaps.push_back(pixBold);
   tbtBold = new QToolButton(*pixBold, tr("Bold"),
     tr("Toggles Bold font") , this, SLOT(fontStyleChanged()), barChat);
   tbtBold->setToggleButton(true);
 
   QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
+  qPixmaps.push_back(pixItalic);
   tbtItalic = new QToolButton(*pixItalic, tr("Italic"),
     tr("Toggles Italic font"), this, SLOT(fontStyleChanged()), barChat);
   tbtItalic->setToggleButton(true);
 
   QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
+  qPixmaps.push_back(pixUnder);
   tbtUnderline = new QToolButton(*pixUnder, tr("Underline"),
      tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
   tbtUnderline->setToggleButton(true);
 
+  QPixmap *pixStrike = new QPixmap(chatStrike_xpm);
+  qPixmaps.push_back(pixStrike);
+  tbtStrikeOut = new QToolButton(*pixStrike, tr("StrikeOut"),
+     tr("Toggles StrikeOut font"), this, SLOT(fontStyleChanged()), barChat);
+  tbtStrikeOut->setToggleButton(true);
+
   tbtBold->setAutoRaise(false);
   tbtItalic->setAutoRaise(false);
   tbtUnderline->setAutoRaise(false);
+  tbtStrikeOut->setAutoRaise(false);
 
   barChat->addSeparator();
 
-  cmbFontSize = new QComboBox(false, barChat);
+  cmbFontSize = new QComboBox(true, barChat);
+  cmbFontSize->setInsertionPolicy(QComboBox::NoInsertion);
+  //windows font size limit seems to be 1638 (tested 98, 2000)
+  cmbFontSize->setValidator(new QIntValidator(1, 1638, cmbFontSize));
   connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
   cmbFontSize->insertItem(QString::number(font().pointSize()));
 
   QValueList<int> sizes = QFontDatabase::standardSizes();
   for(unsigned i = 0; i < sizes.count(); i++)
-    cmbFontSize->insertItem(QString::number(sizes[i]));
+    if(sizes[i] != font().pointSize())
+      cmbFontSize->insertItem(QString::number(sizes[i]));
 
   QFontDatabase fb;
   cmbFontName = new QComboBox(false, barChat);
@@ -284,16 +305,6 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   barChat->addSeparator();
 
   codec = QTextCodec::codecForLocale();
-
-  // determine the other user's preferred encoding
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  if (u != NULL)
-  {
-    // restore prefered encoding
-    codec = UserCodec::codecForICQUser(u);
-
-    gUserManager.DropUser(u);
-  }
 
   QString codec_name = QString::fromLatin1( codec->name() ).lower(); // TODO: determine best codec
   QPopupMenu *popupEncoding = new QPopupMenu;
@@ -340,14 +351,18 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   chatDlgs.push_back(this);
 
   // Create the chat manager using our font
-  QFont f(mlePaneLocal->font());
-  char *fontName = strdup(f.family().local8Bit());
-  char *endp = strstr(fontName, " [");
-  if (endp != NULL)
-    *endp = '\0';
-  chatman = new CChatManager(daemon, _nUin,
-     fontName, f.pointSize(), f.bold(), f.italic(), f.underline());
-  free(fontName);
+  QFontInfo fi(mlePaneLocal->font());
+  QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
+  unsigned char style = STYLE_DONTCARE;
+  if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
+    style |= STYLE_FIXEDxPITCH;
+  else
+    style |= STYLE_VARIABLExPITCH;
+  unsigned char encoding = UserCodec::charsetForName(codec->name());
+  chatman = new CChatManager(daemon, _nUin, fi.family().local8Bit(),
+     encoding, style, fi.pointSize(), fi.bold(), fi.italic(), fi.underline(),
+     fi.strikeOut());
+  
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), this, SLOT(slot_chat()));
 
@@ -383,6 +398,10 @@ ChatDlg::~ChatDlg()
   if (sn != NULL) delete sn;
   sn = NULL;
 
+  QPixmapList::iterator i;
+  for (i = qPixmaps.begin(); i != qPixmaps.end(); i++) delete *i;
+  qPixmaps.clear();
+
   ChatDlgList::iterator iter;
   for (iter = chatDlgs.begin(); iter != chatDlgs.end(); iter++)
   {
@@ -411,11 +430,12 @@ void ChatDlg::fontSizeChanged(const QString& txt)
   mleIRCLocal->setFont(f);
   mleIRCRemote->setFont(f);
 
-  // transmit to remote
-  chatman->ChangeFontSize(txt.toULong());
-
   // if ignoring style change the remote panes too
   updateRemoteStyle();
+
+  // transmit to remote
+  QFontInfo fi(f);
+  chatman->ChangeFontSize(fi.pointSize());
 }
 
 
@@ -431,18 +451,29 @@ void ChatDlg::fontNameChanged(const QString &txt)
   mleIRCLocal->setFont(f);
   mleIRCRemote->setFont(f);
 
-  // transmit to remote
-  char *newFont = strdup(txt.ascii());
-  char *endp = strstr(newFont, " [");
-  if (endp != NULL)
-  {
-    *endp = '\0';
-  }
-  chatman->ChangeFontFamily(newFont);
-  free(newFont);
-
   // if ignoring style change the remote panes too
   updateRemoteStyle();
+
+  // transmit to remote
+  sendFontInfo();
+}
+
+// -----------------------------------------------------------------------------
+
+void ChatDlg::sendFontInfo()
+{
+  //FIXME can we get more precise style???
+  QFontInfo fi(mlePaneLocal->font());
+  QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
+  unsigned char style = STYLE_DONTCARE;
+  if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
+    style |= STYLE_FIXEDxPITCH;
+  else
+    style |= STYLE_VARIABLExPITCH;
+
+  unsigned char encoding = UserCodec::charsetForName(codec->name());
+
+  chatman->ChangeFontFamily(fi.family().local8Bit(), encoding, style);
 }
 
 // -----------------------------------------------------------------------------
@@ -454,18 +485,18 @@ void ChatDlg::fontStyleChanged()
   f.setBold(tbtBold->state() == QButton::On);
   f.setItalic(tbtItalic->state() == QButton::On);
   f.setUnderline(tbtUnderline->state() == QButton::On);
+  f.setStrikeOut(tbtStrikeOut->state() == QButton::On);
 
   mlePaneLocal->setFont(f);
   mleIRCLocal->setFont(f);
   mleIRCRemote->setFont(f);
 
-  // transmit to remote
-  chatman->ChangeFontFace(tbtBold->state() == QButton::On,
-    tbtItalic->state() == QButton::On,
-    tbtUnderline->state() == QButton::On);
-
   // if ignoring style change the remote panes too
   updateRemoteStyle();
+
+  // transmit to remote
+  QFontInfo fi(f);
+  chatman->ChangeFontFace(fi.bold(), fi.italic(), fi.underline(), fi.strikeOut());
 }
 
 
@@ -490,11 +521,11 @@ void ChatDlg::changeFrontColor()
   mleIRCLocal->setForeground(color);
   mleIRCRemote->setForeground(color);
 
-  // sent to remote
-  chatman->ChangeColorFg(color.red(), color.green(), color.blue());
-
   // if ignoring style change the remote panes too
   updateRemoteStyle();
+
+  // sent to remote
+  chatman->ChangeColorFg(color.red(), color.green(), color.blue());
 }
 
 
@@ -511,11 +542,11 @@ void ChatDlg::changeBackColor()
   mleIRCLocal->setBackground(color);
   mleIRCRemote->setBackground(color);
 
-  // sent to remote
-  chatman->ChangeColorBg(color.red(), color.green(), color.blue());
-
   // if ignoring style change the remote panes too
   updateRemoteStyle();
+
+  // sent to remote
+  chatman->ChangeColorBg(color.red(), color.green(), color.blue());
 }
 
 // -----------------------------------------------------------------------------
@@ -597,7 +628,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
 
          // even if the pane didn't trigger the event,
          // we need to keep it updated
-         mlePaneLocal->insertLine("");
+         mlePaneLocal->appendNoNewLine("\n");
          // so you'll get some idea what your buddy sees (encoding-wise)
          mleIRCRemote->append(chatname + "> " + codec->toUnicode(encoded));
          mleIRCRemote->GotoEnd();
@@ -646,7 +677,6 @@ void ChatDlg::chatSend(QKeyEvent *e)
       break;
     }
   }
-
 }
 
 
@@ -715,6 +745,10 @@ void ChatDlg::slot_chat()
           connect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
           mlePaneLocal->setEnabled(true);
           mleIRCLocal->setEnabled(true);
+          if (m_nMode == CHAT_PANE)
+            mlePaneLocal->setFocus();
+          else
+            mleIRCLocal->setFocus();
         }
 
         CChatWindow *lePaneRemote = new CChatWindow(boxPane);
@@ -735,11 +769,10 @@ void ChatDlg::slot_chat()
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
 
         // add to IRC box
-        mleIRCRemote->append(n + QString::fromLatin1("> ") + codec->toUnicode(e->Data()));
+        mleIRCRemote->append(n + QString::fromLatin1("> ") + UserCodec::codecForCChatUser(u)->toUnicode(e->Data()));
         mleIRCRemote->GotoEnd();
-
-        GetPane(u)->insertLine("");
-        GetPane(u)->GotoEnd();
+        GetWindow(u)->appendNoNewLine("\n");
+        GetWindow(u)->GotoEnd();
         break;
       }
 
@@ -749,7 +782,7 @@ void ChatDlg::slot_chat()
           QApplication::beep();
         else
         {
-          GetPane(u)->append(tr("\n<--BEEP-->\n"));
+          GetWindow(u)->append(tr("\n<--BEEP-->\n"));
           mleIRCRemote->append(chatname + tr("> <--BEEP-->\n"));
         }
         break;
@@ -758,13 +791,13 @@ void ChatDlg::slot_chat()
       case CHAT_BACKSPACE:   // backspace
       {
 #if QT_VERSION >= 300
-        GetPane(u)->setReadOnly(false);
-        GetPane(u)->setCursorPosition(-1, -1, false);
+        GetWindow(u)->setReadOnly(false);
+        GetWindow(u)->setCursorPosition(-1, -1, false);
 #endif
-        GetPane(u)->backspace();
+        GetWindow(u)->backspace();
 #if QT_VERSION >= 300
-        GetPane(u)->setReadOnly(true);
-        GetPane(u)->update();
+        GetWindow(u)->setReadOnly(true);
+        GetWindow(u)->update();
 #endif
         break;
       }
@@ -772,7 +805,7 @@ void ChatDlg::slot_chat()
       case CHAT_COLORxFG: // change foreground color
       {
         if (tbtIgnore->state() == QButton::Off)
-          GetPane(u)->setForeground(QColor (u->ColorFg()[0],
+          GetWindow(u)->setForeground(QColor (u->ColorFg()[0],
              u->ColorFg()[1], u->ColorFg()[2]));
         break;
       }
@@ -780,7 +813,7 @@ void ChatDlg::slot_chat()
       case CHAT_COLORxBG:  // change background color
       {
         if (tbtIgnore->state() == QButton::Off)
-          GetPane(u)->setBackground(QColor (u->ColorBg()[0],
+          GetWindow(u)->setBackground(QColor (u->ColorBg()[0],
              u->ColorBg()[1], u->ColorBg()[2]));
 
         break;
@@ -790,9 +823,30 @@ void ChatDlg::slot_chat()
       {
         if (tbtIgnore->state() == QButton::Off)
         {
-          QFont f(GetPane(u)->font());
+          QFont f(GetWindow(u)->font());
+          f.setFixedPitch(u->FontStyle() & 0x0F == STYLE_FIXEDxPITCH);
+          switch (u->FontStyle() & 0xF0)
+          {
+          case STYLE_ROMAN:
+            f.setStyleHint(QFont::Serif);
+            break;
+          case STYLE_SWISS:
+            f.setStyleHint(QFont::SansSerif);
+            break;
+          case STYLE_DECORATIVE:
+            f.setStyleHint(QFont::Decorative);
+            break;
+          case STYLE_DONTCARE:
+          case STYLE_MODERN:
+          case STYLE_SCRIPT:
+          default:
+            f.setStyleHint(QFont::AnyStyle);
+            break;
+          }
+
           f.setFamily(u->FontFamily());
-          GetPane(u)->setFont(f);
+
+          GetWindow(u)->setFont(f);
         }
         break;
       }
@@ -801,11 +855,12 @@ void ChatDlg::slot_chat()
       {
         if (tbtIgnore->state() == QButton::Off)
         {
-          QFont f(GetPane(u)->font());
+          QFont f(GetWindow(u)->font());
           f.setBold(u->FontBold());
           f.setItalic(u->FontItalic());
           f.setUnderline(u->FontUnderline());
-          GetPane(u)->setFont(f);
+          f.setStrikeOut(u->FontStrikeOut());
+          GetWindow(u)->setFont(f);
         }
         break;
       }
@@ -814,9 +869,9 @@ void ChatDlg::slot_chat()
       {
         if (tbtIgnore->state() == QButton::Off)
         {
-          QFont f(GetPane(u)->font());
+          QFont f(GetWindow(u)->font());
           f.setPointSize(u->FontSize() > 24 ? 24 : u->FontSize());
-          GetPane(u)->setFont(f);
+          GetWindow(u)->setFont(f);
         }
         break;
       }
@@ -832,7 +887,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_CHARACTER:
       {
-        GetPane(u)->appendNoNewLine(codec->toUnicode(e->Data()));
+        GetWindow(u)->appendNoNewLine(UserCodec::codecForCChatUser(u)->toUnicode(e->Data()));
         break;
       }
 
@@ -857,8 +912,8 @@ void ChatDlg::SwitchToIRCMode()
   boxPane->hide();
   mleIRCLocal->setText(mlePaneLocal->textLine(mlePaneLocal->numLines()-2));
   mleIRCLocal->GotoEnd();
-  mleIRCLocal->setFocus();
   boxIRC->show();
+  mleIRCLocal->setFocus();
 }
 
 
@@ -868,9 +923,9 @@ void ChatDlg::SwitchToPaneMode()
   mnuMode->setItemChecked(mnuMode->idAt(0), true);
   mnuMode->setItemChecked(mnuMode->idAt(1), false);
   boxIRC->hide();
-  mlePaneLocal->setFocus();
   mlePaneLocal->GotoEnd();
   boxPane->show();
+  mlePaneLocal->setFocus();
 }
 
 
@@ -939,7 +994,7 @@ void ChatDlg::closeEvent(QCloseEvent* e)
   chatClose(NULL);
 }
 
-CChatWindow *ChatDlg::GetPane(CChatUser *u)
+CChatWindow *ChatDlg::GetWindow(CChatUser *u)
 {
   ChatUserWindowsList::iterator iter;
   for (iter = chatUserWindows.begin(); iter != chatUserWindows.end(); iter++)
@@ -974,7 +1029,7 @@ QString ChatDlg::ChatClients()
 {
   char *sz = chatman->ClientsStr();
   QString n = sz;
-  delete sz;
+  delete [] sz;
   return n;
 }
 
@@ -1061,15 +1116,8 @@ void ChatDlg::slot_setEncoding(int encodingMib)
     /* make the chosen encoding checked */
     popupEncoding->setItemChecked(encodingMib, true);
 
-    /* save prefered character set */
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    if (u != NULL) {
-      u->SetEnableSave(false);
-      u->SetUserEncoding(encoding.latin1());
-      u->SetEnableSave(true);
-      u->SaveLicqInfo();
-      gUserManager.DropUser(u);
-    }
+    // transmit to remote
+    sendFontInfo();
 
     emit encodingChanged();
   }
@@ -1100,10 +1148,7 @@ void CChatWindow::appendNoNewLine(QString s)
 
 void CChatWindow::GotoEnd()
 {
-  if (lineLength(numLines() - 1) == 0)
-    setCursorPosition(numLines() - 1, 0);
-  else
-    setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
+  setCursorPosition(numLines() - 1, lineLength(numLines() - 1));
 }
 
 
@@ -1129,6 +1174,8 @@ void CChatWindow::keyPressEvent (QKeyEvent *e)
         e->key() != Key_Return &&
         e->key() != Key_Enter))
     return;
+
+  GotoEnd();
 
   // the order of the two is important -- on Enter, first QMultiLineEdit adds
   // a line break, and later we clear the input line, and not vice versa
@@ -1163,7 +1210,6 @@ void CChatWindow::mouseReleaseEvent( QMouseEvent *e )
 void CChatWindow::paste()
 {
   QString t = QApplication::clipboard()->text();
-  QApplication::clipboard()->clear();
 
   if ( !t.isEmpty() ) {
 

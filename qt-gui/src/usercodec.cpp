@@ -29,53 +29,53 @@
 #include "licq_chat.h"
 
 UserCodec::encoding_t UserCodec::m_encodings[] = {
-  { QT_TR_NOOP("Unicode"), "UTF-8", 106, true },
+  { QT_TR_NOOP("Unicode"), "UTF-8", 106, ENCODING_DEFAULT, true },
 
-  { QT_TR_NOOP("Arabic"), "ISO 8859-6", 82, false },
-  { QT_TR_NOOP("Arabic"), "CP 1256", 2256, true },
+  { QT_TR_NOOP("Arabic"), "ISO 8859-6", 82, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Arabic"), "CP 1256", 2256, ENCODING_ARABIC, true },
 
-  { QT_TR_NOOP("Baltic"), "ISO 8859-13", 109, false },
-  { QT_TR_NOOP("Baltic"), "CP 1257", 2257, true },
+  { QT_TR_NOOP("Baltic"), "ISO 8859-13", 109, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Baltic"), "CP 1257", 2257, ENCODING_BALTIC, true },
 
-  { QT_TR_NOOP("Central European"), "ISO 8859-2", 5, false },
-  { QT_TR_NOOP("Central European"), "CP 1250", 2250, true },
+  { QT_TR_NOOP("Central European"), "ISO 8859-2", 5, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Central European"), "CP 1250", 2250, ENCODING_EASTEUROPE, true },
 
-  { QT_TR_NOOP("Chinese"), "GBK", -2025, false },
-  { QT_TR_NOOP("Chinese Traditional"), "Big5", 2026, true },
+  { QT_TR_NOOP("Chinese"), "GBK", -2025, ENCODING_GB2312, false },
+  { QT_TR_NOOP("Chinese Traditional"), "Big5", 2026, ENCODING_CHINESEBIG5, true },
 
-  { QT_TR_NOOP("Cyrillic"), "ISO 8859-5", 8, false },
-  { QT_TR_NOOP("Cyrillic"), "KOI8-R", 2084, false },
-  { QT_TR_NOOP("Cyrillic"), "CP 1251", 2251, true },
+  { QT_TR_NOOP("Cyrillic"), "ISO 8859-5", 8, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Cyrillic"), "KOI8-R", 2084, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Cyrillic"), "CP 1251", 2251, ENCODING_RUSSIAN, true },
 
-  { QT_TR_NOOP("Esperanto"), "ISO 8859-3", 6, false },
+  { QT_TR_NOOP("Esperanto"), "ISO 8859-3", 6, ENCODING_DEFAULT, false },
   
-  { QT_TR_NOOP("Greek"), "ISO 8859-7", 10, false },
-  { QT_TR_NOOP("Greek"), "CP 1253", 2253, true },
+  { QT_TR_NOOP("Greek"), "ISO 8859-7", 10, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Greek"), "CP 1253", 2253, ENCODING_GREEK, true },
   
   // Visual Hebrew is avoided on purpose -- its not usable for communications
-  { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I", 85, false },
-  { QT_TR_NOOP("Hebrew"), "CP 1255", 2255, true },
+  { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I", 85, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Hebrew"), "CP 1255", 2255, ENCODING_HEBREW, true },
 
-  { QT_TR_NOOP("Japanese"), "Shift-JIS", 17, true },
-  { QT_TR_NOOP("Japanese"), "JIS7", 16, false },
-  { QT_TR_NOOP("Japanese"), "eucJP", 18, false },
+  { QT_TR_NOOP("Japanese"), "Shift-JIS", 17, ENCODING_SHIFTJIS, true },
+  { QT_TR_NOOP("Japanese"), "JIS7", 16, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Japanese"), "eucJP", 18, ENCODING_DEFAULT, false },
 
-  { QT_TR_NOOP("Korean"), "eucKR", 38, true },
+  { QT_TR_NOOP("Korean"), "eucKR", 38, ENCODING_DEFAULT, true },
 
-  { QT_TR_NOOP("Western European"), "ISO 8859-1", 4, false },
-  { QT_TR_NOOP("Western European"), "ISO 8859-15", 111, false },
-  { QT_TR_NOOP("Western European"), "CP 1252", 2252, true },
+  { QT_TR_NOOP("Western European"), "ISO 8859-1", 4, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Western European"), "ISO 8859-15", 111, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Western European"), "CP 1252", 2252, ENCODING_ANSI, true },
 
-  { QT_TR_NOOP("Tamil"), "TSCII", 2028, true },
+  { QT_TR_NOOP("Tamil"), "TSCII", 2028, ENCODING_DEFAULT, true },
 
-  { QT_TR_NOOP("Thai"), "TIS-620", 2259, true },
+  { QT_TR_NOOP("Thai"), "TIS-620", 2259, ENCODING_THAI, true },
 
-  { QT_TR_NOOP("Turkish"), "ISO 8859-9", 12, false },
-  { QT_TR_NOOP("Turkish"), "CP 1254", 2254, true },
+  { QT_TR_NOOP("Turkish"), "ISO 8859-9", 12, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Turkish"), "CP 1254", 2254, ENCODING_TURKISH, true },
 
-  { QT_TR_NOOP("Ukrainian"), "KOI8-U", 2088, false },
+  { QT_TR_NOOP("Ukrainian"), "KOI8-U", 2088, ENCODING_DEFAULT, false },
   
-  { 0, 0, 0, false } // end marker
+  { 0, 0, 0, 0, false } // end marker
 };
 
 QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
@@ -107,14 +107,11 @@ QTextCodec* UserCodec::codecForUIN(uint uin)
 
 QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
 {
-  if (ICQUser *user = gUserManager.FetchUser(u->Uin(), LOCK_R)) {
-    QTextCodec *codec = UserCodec::codecForICQUser(user);
-    gUserManager.DropUser(user);
-    return codec;
-  }
+  if (nameForCharset(u->FontEncoding()) != QString::null)
+    return QTextCodec::codecForName(nameForCharset(u->FontEncoding()));
 
   // return default encoding
-  return QTextCodec::codecForLocale();
+  return codecForUIN(u->Uin());
 }
 
 QString UserCodec::encodingForMib(int mib)
@@ -145,4 +142,31 @@ QString UserCodec::encodingForName(const QString &descriptiveName)
 {
   int left = descriptiveName.find( " ( " );
   return descriptiveName.mid( left + 3, descriptiveName.find( " )", left ) - left - 3 );
+}
+
+unsigned char UserCodec::charsetForName(QString name)
+{
+  encoding_t *it = &m_encodings[0];
+  while (it->encoding != NULL) {
+     if (it->encoding == name)
+       return it->charset;
+     it++;
+  }
+
+  return ENCODING_DEFAULT;
+}
+
+QString UserCodec::nameForCharset(unsigned char charset)
+{
+  if (charset == ENCODING_DEFAULT)
+    return QString::null;
+
+  encoding_t *it = &m_encodings[0];
+  while (it->encoding != NULL) {
+     if (it->charset == charset)
+       return QString::fromLatin1(it->encoding);
+     it++;
+  }
+
+  return QString::null;
 }

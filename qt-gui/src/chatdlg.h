@@ -71,6 +71,7 @@ typedef struct {
   QLabel *l;
 } UserWindowPair;
 typedef std::list<UserWindowPair> ChatUserWindowsList;
+typedef std::list<QPixmap *> QPixmapList;
 
 enum ChatMode { CHAT_PANE, CHAT_IRC };
 
@@ -111,7 +112,7 @@ protected:
   CMainWindow *mainwin;
   QListBox *lstUsers;
 
-  QToolButton *tbtBold, *tbtItalic, *tbtUnderline;
+  QToolButton *tbtBold, *tbtItalic, *tbtUnderline, *tbtStrikeOut;
   QToolButton *tbtLaugh, *tbtBeep, *tbtFg, *tbtBg;
   QToolButton *tbtIgnore, *tbtEncoding;
 
@@ -120,13 +121,15 @@ protected:
 
   ChatMode m_nMode;
   ChatUserWindowsList chatUserWindows;
+  QPixmapList qPixmaps; //pixmaps are not deleted by qt destructor
+
   unsigned long m_nUin;
   QSocketNotifier *sn;
   bool m_bAudio;
   QTextCodec *codec;
 
   virtual void closeEvent(QCloseEvent*);
-  CChatWindow *GetPane(CChatUser *u);
+  CChatWindow *GetWindow(CChatUser *u);
   void UpdateRemotePane();
 
   friend class CJoinChatDlg;
@@ -142,6 +145,7 @@ protected slots:
 
   void fontSizeChanged(const QString&);
   void fontNameChanged(const QString&);
+  void sendFontInfo();
   void fontStyleChanged();
   void changeFrontColor();
   void changeBackColor();

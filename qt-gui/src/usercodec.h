@@ -31,6 +31,7 @@ public:
 	const char *script;
 	const char *encoding;
 	int mib;
+	unsigned char charset;
 	bool isMinimal;
   };
 
@@ -43,6 +44,8 @@ public:
   static QString encodingForMib(int mib);
   static QString nameForEncoding(const QString &encoding);
   static QString encodingForName(const QString &descriptiveName);
+  static unsigned char charsetForName(QString name);
+  static QString nameForCharset(unsigned char charset);
 
 public:
   static encoding_t m_encodings[];
