@@ -898,10 +898,9 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
   m_fConf.ReadBool("SendRealIp", m_bSendRealIp, false);
-  m_fConf.ReadStr( "UserCharset", m_szCharset, "" );
-
   SetCustomAutoResponse(szTemp);
-
+  m_fConf.ReadStr( "UserCharset", szTemp, "" );
+  SetString( &m_szCharset, szTemp );
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
