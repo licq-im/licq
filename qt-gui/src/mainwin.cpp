@@ -302,6 +302,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
   licqConf.ReadBool("ManualNewUser", m_bManualNewUser, false);
   licqConf.ReadBool("UseThreadView", m_bThreadView, false);
+  licqConf.ReadNum("ThreadViewGroupStates", m_nGroupStates, 0xFFFFFFFE);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -435,6 +436,20 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       CreateUserFloaty(nUin, xPosF, yPosF, wValF);
   }
 
+  usprintfHelp = tr("%a - user alias\n"
+                    "%e - email\n"
+                    "%f - first name\n"
+                    "%h - phone number\n"
+                    "%i - user ip\n"
+                    "%l - last name\n"
+                    "%m - # pending messages\n"
+                    "%n - full name\n"
+                    "%o - last seen online"
+                    "%p - user port\n"
+                    "%s - full status\n"
+                    "%S - abbrieviated status\n"
+                    "%u - uin\n"
+                    "%w - webpage");
 #ifdef USE_DOCK
   licqIcon = NULL;
   switch (m_nDockMode)
@@ -1157,13 +1172,12 @@ void CMainWindow::updateUserWin()
   if (doGroupView)
   {
     CUserViewItem* gi = new CUserViewItem(0, tr("Other Users").local8Bit(), userView);
-    gi->setOpen(true);
+    gi->setOpen(m_nGroupStates & 1);
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     for (unsigned short i = 0; i < g->size(); i++)
     {
       gi = new CUserViewItem(i+1, (*g)[i], userView);
-      // FIXME This should respect users settings
-      gi->setOpen(true);
+      gi->setOpen(m_nGroupStates & (1<<QMIN(i+1, 31)));
     }
     gUserManager.UnlockGroupList();
   }
@@ -2078,6 +2092,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
   licqConf.WriteBool("UseThreadView", m_bThreadView);
+  licqConf.WriteNum("ThreadViewGroupStates", m_nGroupStates);
   licqConf.WriteBool("BoldOnMsg", m_bBoldOnMsg);
   licqConf.WriteBool("ManualNewUser", m_bManualNewUser);
   licqConf.WriteBool("Transparent", skin->frame.transparent);

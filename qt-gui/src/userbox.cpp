@@ -1016,14 +1016,22 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 
 void CUserView::itemExpanded(QListViewItem* i)
 {
-  if(i != NULL && pixExpanded != NULL)
-    i->setPixmap(0, *pixExpanded);
+  if(i == NULL) return;
+  CUserViewItem* it = static_cast<CUserViewItem*>(i);
+
+  gMainWindow->m_nGroupStates |= 1<<it->GroupId();
+
+  if(pixExpanded != NULL)  i->setPixmap(0, *pixExpanded);
 }
 
 void CUserView::itemCollapsed(QListViewItem* i)
 {
-  if(i != NULL && pixCollapsed != NULL)
-    i->setPixmap(0, *pixCollapsed);
+  if(i == NULL) return;
+  CUserViewItem* it = static_cast<CUserViewItem*>(i);
+
+  gMainWindow->m_nGroupStates &= ~(1<<it->GroupId());
+
+  if(pixCollapsed != NULL)  i->setPixmap(0, *pixCollapsed);
 }
 
 //=====CUserViewTips===============================================================================

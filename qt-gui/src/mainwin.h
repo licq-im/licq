@@ -95,8 +95,9 @@ public:
   FlashType m_nFlash;
   CSkin *skin;
 
-  unsigned long m_nCurrentGroup;
+  unsigned long m_nCurrentGroup, m_nGroupStates;
   GroupType m_nGroupType;
+  QString usprintfHelp;
 
 public slots:
   void callInfoTab(int, unsigned long, bool toggle=false);
