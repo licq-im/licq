@@ -12,7 +12,7 @@
 NETSCAPE=netscape
 
 if [ -h ${HOME}/.netscape/lock ]; then
-  ${NETSCAPE} -remote openURL\("$1"\,new_window\) ;
+  ${NETSCAPE} -remote openURL\('$1'\,new_window\)
 else
-  ${NETSCAPE} "$1" ;
+  ${NETSCAPE} '$1'
 fi
