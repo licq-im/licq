@@ -365,7 +365,8 @@ public:
   void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
   void icqUpdateContactList();
   void icqTypingNotification(const char *_szId, bool _bActive);
-
+  void icqCheckInvisible(const char *_szId);
+  
   // Visible/Invisible/Ignore list functions
   void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);
   void icqRemoveFromVisibleList(const char *_szId, unsigned long _nPPID);

@@ -2391,6 +2391,11 @@ void CMainWindow::callUserFunction(int index)
       (void) new ReqAuthDlg(licqDaemon, szId, nPPID);
       break;
     }
+    case mnuUserCheckIfInvisible:
+    {
+      licqDaemon->icqCheckInvisible(szId);
+      break;
+    }
     case mnuUserCheckResponse:
     {
       (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, szId, nPPID);
@@ -4283,6 +4288,7 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Send"), mnuSend);
    mnuUser->insertItem(tr("Misc Modes"), mnuMiscModes);
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
+   mnuUser->insertItem(tr("Check If Invisible"), mnuUserCheckIfInvisible);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
    mnuUser->insertItem(pmCustomAR, tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
    mnuUser->insertSeparator();

@@ -1222,6 +1222,24 @@ CPU_TypingNotification::CPU_TypingNotification(const char *szId, bool bActive)
   buffer->Pack(szId, nLen);
   buffer->PackUnsignedShortBE(nTyping);
 }
+
+//-----CheckInvisible------------------------------------------------------
+CPU_CheckInvisible::CPU_CheckInvisible(const char *szId)
+  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
+{
+  int nLen = strlen(szId);
+  m_nSize += 15 + nLen;
+  
+  InitBuffer();
+  
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE((unsigned long)m_nSequence);
+  buffer->PackUnsignedShortBE(0x0002);
+  buffer->PackChar(nLen);
+  buffer->Pack(szId, nLen);
+  buffer->PackUnsignedLongBE(0x00060000);
+}
+
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const char *szId,
                                      unsigned char msgType, char *szMessage,

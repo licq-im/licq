@@ -485,6 +485,12 @@ public:
   CPU_TypingNotification(const char *szId, bool bActive);
 };
 
+//-----CheckInvisible----------------------------------------------------------
+class CPU_CheckInvisible : public CPU_CommonFamily
+{
+public:
+  CPU_CheckInvisible(const char *szId);
+};
 
 //-----Ack---------------------------------------------------------------------
 class CPU_Ack : public CPacketUdp

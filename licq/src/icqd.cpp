@@ -533,6 +533,7 @@ void CICQDaemon::ProtoPluginList(ProtoPluginsList &lPlugins)
 
 bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
 {
+  // Check to make sure it's not already loaded
   CProtoPlugin *p = licq->LoadProtoPlugin(szPlugin);
   if (p == NULL) return false;
 

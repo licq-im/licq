@@ -1119,6 +1119,13 @@ void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
   SendEvent_Server(p);
 }
 
+//-----icqCheckInvisible--------------------------------------------------------
+void CICQDaemon::icqCheckInvisible(const char *_szId)
+{
+  CSrvPacketTcp *p = new CPU_CheckInvisible(_szId);
+  SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
+}
+
 //-----icqSendVisibleList-------------------------------------------------------
 void CICQDaemon::icqSendVisibleList()
 {
@@ -2596,6 +2603,20 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   case ICQ_SNACxMSG_ICBMxERROR:
   {
     unsigned short err = packet.UnpackUnsignedShortBE();
+
+    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+    
+    bool bHandled = false;
+    if (e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER))
+    {
+      bHandled = true;
+      ICQUser *u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
+      gLog.Info(tr("%s%s (%s) is Invisible.\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+      u->SetOnlineSince(time(NULL));
+      ChangeUserStatus(u, ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE);
+      gUserManager.DropUser(u);
+    }
+    
     switch (err)
     {
     case 0x0004:
@@ -2605,7 +2626,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Warn(tr("%sClient does not understand type-2 messages.\n"), L_WARNxSTR);
       break;
     case 0x000e:
-      gLog.Warn(tr("%sPacket was malformed.\n"), L_WARNxSTR);
+      if (!bHandled)
+        gLog.Warn(tr("%sPacket was malformed.\n"), L_WARNxSTR);
       break;
     case 0x0015:
       gLog.Info(tr("%sList overflow.\n"), L_WARNxSTR);
@@ -2613,8 +2635,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     default:
       gLog.Unknown(tr("%sUnknown ICBM error: 0x%04x.\n"), L_UNKNOWNxSTR, err);
     }
-
-    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
     
     if (e)
       ProcessDoneEvent(e);
@@ -3545,7 +3565,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ACKED);
     if (e)
     {
-	      e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+      e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
       ProcessDoneEvent(e);
     }
       

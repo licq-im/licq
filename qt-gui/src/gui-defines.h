@@ -20,6 +20,7 @@ enum UserMenu {
   mnuUserSendKey,
   mnuUserAuthorize,
   mnuUserAuthorizeRequest,
+  mnuUserCheckIfInvisible,
   mnuUserCheckResponse,
   mnuUserCustomAutoResponse,
   mnuUserGeneral,
