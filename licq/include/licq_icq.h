@@ -9,7 +9,7 @@
 // Version constants
 #define ICQ_VERSION 5
 #define MODE_DIRECT 0x04
-#define MODE_INDIRECT 0x06
+#define MODE_INDIRECT 0x02
 const unsigned short ICQ_VERSION_TCP               = 0x0006;
 
 // UDP commands
