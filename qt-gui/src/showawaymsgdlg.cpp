@@ -90,8 +90,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
 
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
-  if (icqEventTag != NULL)
-    delete icqEventTag;
+  delete icqEventTag;
 }
 
 
