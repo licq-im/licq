@@ -159,6 +159,7 @@ public:
   void CancelEvent(CICQEventTag *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
                             unsigned short nPort);
+  int StartTCPServer(TCPSocket *);
 
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);
@@ -166,8 +167,6 @@ public:
   void SaveUserList();
 
   // NOT MT SAFE
-  int GetTCPPort();
-  void FreeTCPPort(unsigned short);
   const char *getUrlViewer();
   unsigned short getDefaultRemotePort()  { return(m_nDefaultRemotePort); }
   void setDefaultRemotePort(unsigned short n)  { m_nDefaultRemotePort = n; }
@@ -179,7 +178,7 @@ public:
   const char *FirewallHost()  { return m_szFirewallHost; }
   void SetFirewallHost(const char *);
   unsigned short TCPBasePort() { return m_nTCPBasePort; }
-  unsigned short TCPBaseRange() { return m_vbTcpPorts.size(); }
+  unsigned short TCPBaseRange() { return m_nTCPBaseRange; }
   void SetTCPBasePort(unsigned short p, unsigned short r);
   bool SocksEnabled();
   const char *SocksServer()  {  return getenv("SOCKS5_SERVER"); }
@@ -198,7 +197,6 @@ public:
 
 protected:
   CLicq *licq;
-  vector<bool> m_vbTcpPorts;
   COnEventManager m_xOnEventManager;
   vector<CPlugin *> m_vPlugins;
   pthread_mutex_t mutex_plugins;
@@ -213,6 +211,7 @@ protected:
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
   unsigned short m_nTCPBasePort,
+                 m_nTCPBaseRange,
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket,
                  m_nServerSequence;

@@ -185,26 +185,20 @@ bool CICQDaemon::Start()
   char sz[MAX_FILENAME_LEN];
   int nResult = 0;
 
-  gLog.Info("%sStarting TCP server.\n", L_INITxSTR);
   TCPSocket *s = new TCPSocket(0);
-  int p = -1;
-  do
+  m_nTCPSocketDesc = StartTCPServer(s);
+  if (m_nTCPSocketDesc == -1)
   {
-    p = GetTCPPort();
-    if (p == -1)
-    {
-       gLog.Error("%sUnable to allocate TCP port for local server (%s)!\n",
-                  L_ERRORxSTR, "No ports available"/*s->ErrorStr(sz, 128)*/);
-       return false;
-    }
-  } while (!s->StartServer(p));
-  m_nTCPSocketDesc = s->Descriptor();
+     gLog.Error("%sUnable to allocate TCP port for local server (%s)!\n",
+                L_ERRORxSTR, "No ports available");
+     return false;
+  }
   gSocketManager.AddSocket(s);
-  gLog.Info("%sTCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(sz), s->LocalPort());
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetIpPort(s->LocalIp(), s->LocalPort());
   gUserManager.DropOwner();
   gSocketManager.DropSocket(s);
+
 
 #ifdef USE_FIFO
   // Open the fifo
@@ -470,8 +464,8 @@ void CICQDaemon::SaveConf()
 
   licqConf.SetSection("network");
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
-  licqConf.WriteNum("TCPServerPort", TCPBasePort());
-  licqConf.WriteNum("TCPServerPortRange", TCPBaseRange());
+  licqConf.WriteNum("TCPServerPort", m_nTCPBasePort);
+  licqConf.WriteNum("TCPServerPortRange", m_nTCPBaseRange);
   licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
@@ -496,11 +490,6 @@ void CICQDaemon::SaveConf()
     licqConf.WriteStr("Rejects", pc);
   }
 
-  //optionsDlg->cmbServers->clear();
-  //unsigned short i;
-  //for (i = 0; i < server->icqServers.numServers(); i++)
-  //   optionsDlg->cmbServers->insertItem(server->icqServers.servers[i]->name());
-
   // save the sound stuff
   licqConf.SetSection("onevent");
   COnEventManager *oem = OnEventManager();
@@ -523,27 +512,6 @@ void CICQDaemon::SaveConf()
 }
 
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-int CICQDaemon::GetTCPPort()
-{
-  if (m_nTCPBasePort == 0) return 0;
-
-  unsigned short i = 0;
-  while (i < m_vbTcpPorts.size() && m_vbTcpPorts[i]) i++;
-  if (i == m_vbTcpPorts.size()) return -1;
-
-  m_vbTcpPorts[i] = true;
-  return m_nTCPBasePort + i;
-}
-
-void CICQDaemon::FreeTCPPort(unsigned short nPort)
-{
-  if (nPort == 0 || m_nTCPBasePort == 0 ||
-      nPort < m_nTCPBasePort || nPort - m_nTCPBasePort >= (int)m_vbTcpPorts.size())
-    return;
-
-  m_vbTcpPorts[nPort - m_nTCPBasePort] = false;
-}
 
 const char *CICQDaemon::Terminal()       { return m_szTerminal; }
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
@@ -580,23 +548,35 @@ void CICQDaemon::SetFirewallHost(const char *s)
   }
 }
 
-void CICQDaemon::SetTCPBasePort(unsigned short p, unsigned short r)
-{
-  // We always need at least one port
-  if (p != 0 && r == 0) r = 1;
 
-  if (p == m_nTCPBasePort)
+int CICQDaemon::StartTCPServer(TCPSocket *s)
+{
+  if (m_nTCPBasePort == 0)
   {
-    while (m_vbTcpPorts.size() > r) m_vbTcpPorts.pop_back();
-    while (m_vbTcpPorts.size() < r) m_vbTcpPorts.push_back(false);
+    s->StartServer(0);
   }
   else
   {
-    m_nTCPBasePort = p;
-    m_vbTcpPorts.clear();
-    for (unsigned short i = 0; i < r; i++)
-      m_vbTcpPorts.push_back(false);
+    for (unsigned short p = m_nTCPBasePort; p < m_nTCPBasePort + m_nTCPBaseRange; p++)
+    {
+      if (s->StartServer(p)) break;
+    }
   }
+
+  if (s->Descriptor() != -1)
+  {
+    char sz[64];
+    gLog.Info("%sLocal TCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(sz), s->LocalPort());
+  }
+
+  return s->Descriptor();
+}
+
+
+void CICQDaemon::SetTCPBasePort(unsigned short p, unsigned short r)
+{
+  m_nTCPBasePort = p;
+  m_nTCPBaseRange = r;
 }
 
 unsigned short CICQDaemon::TCPEnabled()
