@@ -31,6 +31,9 @@
 extern int errno;
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_utility.h"
 #include "licq_log.h"
 #include "licq_user.h"
@@ -64,7 +67,7 @@ unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
 {
   struct dirent **namelist;
 
-  gLog.Info("%sLoading utilities.\n", L_INITxSTR);
+  gLog.Info(tr("%sLoading utilities.\n"), L_INITxSTR);
   int n = scandir_alpha_r(_szDir, &namelist, SelectUtility);
   if (n < 0)
   {
@@ -83,7 +86,7 @@ unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
     p = new CUtility(szFile);
     if (p->Exception())
     {
-      gLog.Warn("%sWarning: unable to load utility \"%s\".\n", L_WARNxSTR, namelist[i]->d_name);
+      gLog.Warn(tr("%sWarning: unable to load utility \"%s\".\n"), L_WARNxSTR, namelist[i]->d_name);
       continue;
     }
     m_vxUtilities.push_back(p);
@@ -119,7 +122,7 @@ CUtility::CUtility(const char *_szFileName)
     m_eWinType = UtilityWinLicq;
   else
   {
-    gLog.Warn("%sWarning: Invalid entry in plugin \"%s\":\nWindow = %s\n",
+    gLog.Warn(tr("%sWarning: Invalid entry in plugin \"%s\":\nWindow = %s\n"),
               L_WARNxSTR, _szFileName, szTemp);
     bException = true;
     return;
@@ -132,7 +135,7 @@ CUtility::CUtility(const char *_szFileName)
     return;
   }
   m_szCommand = strdup(szTemp);
-  fUtility.ReadStr("Description", szTemp, "none");
+  fUtility.ReadStr("Description", szTemp, tr("none"));
   m_szDescription = strdup(szTemp);
   m_szFullCommand = NULL;
 

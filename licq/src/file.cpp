@@ -25,6 +25,9 @@
 extern int errno;
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_file.h"
 #include "licq_log.h"
 
@@ -38,7 +41,7 @@ void Trim(char *_sz)
 {
   if (_sz == NULL)
   {
-    gLog.Warn("%sInternal Error: Trim(): _sz == NULL.\n", L_WARNxSTR);
+    gLog.Warn(tr("%sInternal Error: Trim(): _sz == NULL.\n"), L_WARNxSTR);
     return;
   }
   char* b, *e;
@@ -355,19 +358,22 @@ void CIniFile::Warn(int nError, const char *_sz)
   {
   case INI_ExNOKEY:
     if (GetFlag(INI_FxWARN))
-      gLog.Warn("%sIniFile: Warning, failed to find key.\n%sFile    = %s\n%sSection = [%s]\n%sKey     = \"%s\"\n",
-                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
-                m_szSectionName, L_BLANKxSTR, _sz);
+      gLog.Warn(tr("%sIniFile: Warning, failed to find key.\n%sFile    = "
+                   "%s\n%sSection = [%s]\n%sKey     = \"%s\"\n"),
+                   L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
+                   m_szSectionName, L_BLANKxSTR, _sz);
     if(GetFlag(INI_FxERROR))
-      gLog.Error("%sIniFile: Warning, failed to find key.\n%sFile    = %s\n%sSection = [%s]\n%sKey     = \"%s\"\n",
-                L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
-                 m_szSectionName, L_BLANKxSTR, _sz);
+      gLog.Error(tr("%sIniFile: Warning, failed to find key.\n%sFile    = "
+                    "%s\n%sSection = [%s]\n%sKey     = \"%s\"\n"),
+                    L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
+                    m_szSectionName, L_BLANKxSTR, _sz);
     break;
 
   case INI_ExNOSECTION:
     if (GetFlag(INI_FxWARN))
-      gLog.Warn("%sIniFile: Warning, failed to find section.\n%sFile    = %s\n%sSection = [%s]\n",
-                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
+      gLog.Warn(tr("%sIniFile: Warning, failed to find section.\n%sFile    = "
+                   "%s\n%sSection = [%s]\n"),
+                   L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, failed to find section.\n%sFile    = %s\n%sSection = [%s]\n",
                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
@@ -375,7 +381,7 @@ void CIniFile::Warn(int nError, const char *_sz)
 
   case INI_ExFORMAT:
     if (GetFlag(INI_FxWARN))
-      gLog.Warn("%sIniFile: Warning, invalid file format.\n%sFile = %s\n%sLine = %s\n",
+      gLog.Warn(tr("%sIniFile: Warning, invalid file format.\n%sFile = %s\n%sLine = %s\n"),
                 L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, invalid file format.\n%sFile = %s\n%sLine = %s\n",
@@ -384,7 +390,7 @@ void CIniFile::Warn(int nError, const char *_sz)
 
   case INI_ExIOREAD:
     if (GetFlag(INI_FxWARN))
-      gLog.Warn("%sIniFile: Warning, I/O read error.\n%sFile  = %s\n%sError = %s\n",
+      gLog.Warn(tr("%sIniFile: Warning, I/O read error.\n%sFile  = %s\n%sError = %s\n"),
                 L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                 strerror(Error()));
     if(GetFlag(INI_FxERROR))
@@ -395,7 +401,7 @@ void CIniFile::Warn(int nError, const char *_sz)
 
   case INI_ExIOWRITE:
     if (GetFlag(INI_FxWARN))
-      gLog.Warn("%sIniFile: Warning, I/O write error.\n%sFile  = %s\n%sError = %s\n",
+      gLog.Warn(tr("%sIniFile: Warning, I/O write error.\n%sFile  = %s\n%sError = %s\n"),
                 L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                 strerror(Error()));
     if(GetFlag(INI_FxERROR))

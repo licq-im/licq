@@ -12,6 +12,9 @@
 #include <string.h>
 #include <sys/stat.h>
 
+// Localization
+#include "gettext.h"
+
 #include "licq_sar.h"
 #include "licq_log.h"
 #include "sar.conf.h"
@@ -68,7 +71,7 @@ bool CSARManager::Load()
   unsigned short nTemp;
   char *n[] = SAR_SECTIONS;
 
-  gLog.Info("%sLoading saved auto-responses.\n", L_INITxSTR);
+  gLog.Info(tr("%sLoading saved auto-responses.\n"), L_INITxSTR);
 
   // Get data from the config file
   snprintf(filename, sizeof(filename), "%s/sar.conf", BASE_DIR);

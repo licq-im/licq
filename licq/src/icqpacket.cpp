@@ -22,6 +22,9 @@
 extern int errno;
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "time-fix.h"
 
 #include "licq_packets.h"
@@ -133,7 +136,7 @@ void Encrypt_Server(CBuffer *buffer)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted Packet:\n%s\n", L_PACKETxSTR, buffer->print(b));
+    gLog.Packet(tr("%sUnencrypted Packet:\n%s\n"), L_PACKETxSTR, buffer->print(b));
     delete [] b;
   }
 
@@ -193,7 +196,7 @@ void Encrypt_Server(CBuffer *buffer)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted Packet (%lu bytes):\n%s\n", L_PACKETxSTR, l,
+    gLog.Packet(tr("%sUnencrypted Packet (%lu bytes):\n%s\n"), L_PACKETxSTR, l,
                 buffer->print(b));
     delete [] b;
   }
@@ -328,7 +331,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted (ICQ) TCP Packet (%lu bytes):\n%s\n", L_PACKETxSTR, size,
+    gLog.Packet(tr("%sUnencrypted (ICQ) TCP Packet (%lu bytes):\n%s\n"), L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
   }
@@ -468,7 +471,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sDecrypted (ICQ) TCP Packet (%lu bytes):\n%s\n", L_PACKETxSTR, size,
+    gLog.Packet(tr("%sDecrypted (ICQ) TCP Packet (%lu bytes):\n%s\n"), L_PACKETxSTR, size,
        pkt->print(b));
     delete [] b;
   }
@@ -687,12 +690,12 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 {
   // truncate password to MAX 8 characters
   char szPass[MAX_LINE_LEN];
-	strcpy(szPass, szPassword);
+  strcpy(szPass, szPassword);
   if (strlen(szPass) > 8)
-	{
-    gLog.Warn("%sPassword too long, truncated to 8 Characters!\n", L_WARNxSTR);
-		szPass[8] = 0;
-	}
+  {
+    gLog.Warn(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
+              szPass[8] = 0;
+  }
   char szEncPass[16];
   unsigned int j;
 
@@ -3701,7 +3704,7 @@ char *PipeInput(char *m_szMessage)
 
     if (!win.POpen(szCmd))
     {
-      gLog.Warn("%sCould not execute \"%s\" for auto-response.\n", L_WARNxSTR, szCmd);
+      gLog.Warn(tr("%sCould not execute \"%s\" for auto-response.\n"), L_WARNxSTR, szCmd);
       szCmdOutput[0] = '\0';
     }
     else
@@ -3716,7 +3719,7 @@ char *PipeInput(char *m_szMessage)
 
       if ((i = win.PClose()) != 0)
       {
-        gLog.Warn("%s%s returned abnormally: exit code %d\n", L_WARNxSTR, szCmd, i);
+        gLog.Warn(tr("%s%s returned abnormally: exit code %d\n"), L_WARNxSTR, szCmd, i);
         // do anything to szCmdOutput ???
       }
     }

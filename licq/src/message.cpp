@@ -14,6 +14,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Localization
+#include "gettext.h"
+
 #include "licq_message.h"
 #include "licq_user.h"
 #include "licq_translate.h"
@@ -211,7 +214,7 @@ void CEventFile::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
-  sprintf(m_szText, "File: %s (%lu bytes)\nDescription:\n%s\n", m_szFilename,
+  sprintf(m_szText, tr("File: %s (%lu bytes)\nDescription:\n%s\n"), m_szFilename,
           m_nFileSize, m_szFileDescription);
 }
 
@@ -251,7 +254,7 @@ void CEventUrl::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
-  sprintf(m_szText, "Url: %s\nDescription:\n%s\n", m_szUrl, m_szUrlDescription);
+  sprintf(m_szText, tr("Url: %s\nDescription:\n%s\n"), m_szUrl, m_szUrlDescription);
 }
 
 
@@ -331,7 +334,7 @@ void CEventChat::CreateDescription()
   else
   {
     m_szText = new char[strlen(m_szReason) + strlen(m_szClients) + 128];
-    sprintf(m_szText, "%s\n--------------------\nMultiparty:\n%s", m_szReason, m_szClients);
+    sprintf(m_szText, tr("%s\n--------------------\nMultiparty:\n%s"), m_szReason, m_szClients);
   }
 }
 
@@ -397,7 +400,7 @@ void CEventAdded::CreateDescription()
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
                       strlen(m_szLastName) + strlen(m_szEmail) +
                       strlen(m_szId) + strlen(p) + 512];
-  sprintf(m_szText, "Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n",
+  sprintf(m_szText, tr("Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n"),
     m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
 }
@@ -478,12 +481,12 @@ void CEventAuthRequest::CreateDescription()
                       + strlen(m_szReason) + strlen(m_szId) + strlen(p) + 256];
   //sprintf(m_szText, "%s (%s %s, %s), uin %lu, requests authorization to add you to their contact list:\n%s\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
-  int pos = sprintf(m_szText, "Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n",
+  int pos = sprintf(m_szText, tr("Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n"),
      m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
 
   if (m_szReason[0] != '\0')
-    sprintf(&m_szText[pos], "Authorization Request:\n%s\n", m_szReason);
+    sprintf(&m_szText[pos], tr("Authorization Request:\n%s\n"), m_szReason);
 }
 
 
@@ -551,7 +554,7 @@ void CEventAuthGranted::CreateDescription()
   if (m_szText) delete [] m_szText;
   char *p = PPIDSTRING(m_nPPID);
   m_szText = new char[strlen(m_szId) + strlen(p) + strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, "User %s (%s) authorized you", m_szId, p);
+  int pos = sprintf(m_szText, tr("User %s (%s) authorized you"), m_szId, p);
   delete [] p;
 
   if (m_szMessage[0] != '\0')
@@ -617,7 +620,7 @@ void CEventAuthRefused::CreateDescription()
   if (m_szText) delete [] m_szText;
   char *p = PPIDSTRING(m_nPPID);
   m_szText = new char[strlen(m_szId) + strlen(p) + strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, "User %s (%s) refused to authorize you", m_szId, p);
+  int pos = sprintf(m_szText, tr("User %s (%s) refused to authorize you"), m_szId, p);
   delete [] p;
 
   if (m_szMessage[0] != '\0')
@@ -664,7 +667,7 @@ void CEventWebPanel::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
-  sprintf(m_szText, "Message from %s (%s) through web panel:\n%s\n",
+  sprintf(m_szText, tr("Message from %s (%s) through web panel:\n%s\n"),
           m_szName, m_szEmail, m_szMessage);
 }
 
@@ -705,7 +708,7 @@ void CEventEmailPager::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
-  sprintf(m_szText, "Message from %s (%s) through email pager:\n%s\n",
+  sprintf(m_szText, tr("Message from %s (%s) through email pager:\n%s\n"),
           m_szName, m_szEmail, m_szMessage);
 }
 
@@ -748,7 +751,7 @@ void CEventContactList::CreateDescription()
   if (m_szText) delete [] m_szText;
   m_szText = new char [m_vszFields.size() * 32 + 128];
   char *szEnd = m_szText;
-  szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size());
+  szEnd += sprintf(m_szText, tr("Contact list (%d contacts):\n"), m_vszFields.size());
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
   {
@@ -820,7 +823,7 @@ void CEventSms::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szNumber) + strlen(m_szMessage) + 32];
-  sprintf(m_szText, "Phone: %s\n%s\n", m_szNumber, m_szMessage);
+  sprintf(m_szText, tr("Phone: %s\n%s\n"), m_szNumber, m_szMessage);
 }
 
 CEventSms::~CEventSms()
@@ -884,7 +887,7 @@ void CEventServerMessage::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
-  sprintf(m_szText, "System Server Message from %s (%s):\n%s\n", m_szName,
+  sprintf(m_szText, tr("System Server Message from %s (%s):\n%s\n"), m_szName,
           m_szEmail, m_szMessage);
 }
 
@@ -988,33 +991,33 @@ void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
 static const int MAX_EVENT = 26;
 
 static const char *szEventTypes[27] =
-{ "Plugin Event",
-  "Message",
-  "Chat Request",
-  "File Transfer",
-  "URL",
+{ tr("Plugin Event"),
+  tr("Message"),
+  tr("Chat Request"),
+  tr("File Transfer"),
+  tr("URL"),
   "",
-  "Authorization Request",
-  "AUthorization Refused",
-  "Authorization Granted",
-  "Server Message",
-  "",
-  "",
-  "Added to Contact List",
-  "Web Panel",
-  "Email Pager",
+  tr("Authorization Request"),
+  tr("AUthorization Refused"),
+  tr("Authorization Granted"),
+  tr("Server Message"),
   "",
   "",
-  "",
-  "",
-  "Contact List",
+  tr("Added to Contact List"),
+  tr("Web Panel"),
+  tr("Email Pager"),
   "",
   "",
   "",
   "",
+  tr("Contact List"),
   "",
   "",
-  "SMS"
+  "",
+  "",
+  "",
+  "",
+  tr("SMS")
 };
 
 
@@ -1025,12 +1028,12 @@ const char *CUserEvent::Description()
 
   if (SubCommand() > MAX_EVENT ||
       szEventTypes[SubCommand()][0] == '\0')
-    strcpy(desc, "Unknown Event");
+    strcpy(desc, tr("Unknown Event"));
   else
   {
     strcpy(desc, szEventTypes[SubCommand()]);
     if (IsCancelled())
-      strcat(desc, " (cancelled)");
+      strcat(desc, tr(" (cancelled)"));
   }
   return desc;
 }

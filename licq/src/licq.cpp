@@ -33,6 +33,9 @@ extern int errno;
 #include <pwd.h>
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_icq.h"
 #include "licq.h"
 #include "licq_log.h"
@@ -174,7 +177,7 @@ bool CLicq::Init(int argc, char **argv)
   // Check the no one is trying session management on us
   if (argc > 1 && strcmp(argv[1], "-session") == 0)
   {
-    fprintf(stderr, "Session management is not supported by Licq.\n");
+    fprintf(stderr, tr("Session management is not supported by Licq.\n"));
   }
   else
   {
@@ -241,9 +244,9 @@ bool CLicq::Init(int argc, char **argv)
   // Redirect stdout and stderr if asked to
   if (szRedirect) {
     if (bRedirect_ok)
-      gLog.Info("%sOutput redirected to \"%s\".\n", L_INITxSTR, szRedirect);
+      gLog.Info(tr("%sOutput redirected to \"%s\".\n"), L_INITxSTR, szRedirect);
     else
-      gLog.Warn("%sRedirection to \"%s\" failed:\n%s%s.\n", L_WARNxSTR,
+      gLog.Warn(tr("%sRedirection to \"%s\" failed:\n%s%s.\n"), L_WARNxSTR,
                 szRedirect, L_BLANKxSTR, strerror(errno));
     free (szRedirect);
     szRedirect = NULL;
@@ -282,12 +285,12 @@ bool CLicq::Init(int argc, char **argv)
     if (pid != 0)
     {
       if (kill(pid, 0) == -1) {
-        gLog.Warn("%sLicq: Ignoring stale lockfile (pid %d)\n", L_WARNxSTR, pid);
+        gLog.Warn(tr("%sLicq: Ignoring stale lockfile (pid %d)\n"), L_WARNxSTR, pid);
       }
       else
       {
-        gLog.Error("%sLicq: Already running at pid %d.\n"
-                   "%s      Kill process or remove %s.\n",
+        gLog.Error(tr("%sLicq: Already running at pid %d.\n"
+                      "%s      Kill process or remove %s.\n"),
                    L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
         return false;
       }
@@ -302,8 +305,8 @@ bool CLicq::Init(int argc, char **argv)
     fclose(fs);
   }
   else
-    gLog.Warn("%sLicq: %s cannot be opened for writing.\n"
-              "%s      skipping lockfile protection.\n",
+    gLog.Warn(tr("%sLicq: %s cannot be opened for writing.\n"
+                 "%s      skipping lockfile protection.\n"),
               L_WARNxSTR, szConf, L_BLANKxSTR);
 
   // Open the config file
@@ -319,10 +322,10 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.ReadNum("Version", nVersion, 0);
   if (nVersion < 710)
   {
-    fprintf(stderr, "Previous Licq config files detected.\n"
-                    "Manual upgrade is necessary.  Follow the instructions\n"
-                    "in the UPGRADE file included with the source tree or\n"
-                    "in /usr/doc/licq-xxx/upgrade.\n");
+    fprintf(stderr, tr("Previous Licq config files detected.\n"
+                       "Manual upgrade is necessary.  Follow the instructions\n"
+                       "in the UPGRADE file included with the source tree or\n"
+                       "in /usr/doc/licq-xxx/upgrade.\n"));
     return false;
   }
   if (nVersion < INT_VERSION)
@@ -665,7 +668,7 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
 
 void CLicq::StartPlugin(CPlugin *p)
 {
-  gLog.Info("%sStarting plugin %s (version %s).\n", L_INITxSTR, p->Name(),
+  gLog.Info(tr("%sStarting plugin %s (version %s).\n"), L_INITxSTR, p->Name(),
             p->Version());
   pthread_create( &p->thread_plugin, NULL, p->fMain_tep, licqDaemon);
 }
@@ -778,8 +781,8 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
 
 void CLicq::StartProtoPlugin(CProtoPlugin *p)
 {
-  gLog.Info("%sStarting protocol plugin %s (version %s).\n", L_INITxSTR, p->Name(),
-           p->Version());
+  gLog.Info(tr("%sStarting protocol plugin %s (version %s).\n"), L_INITxSTR, p->Name(),
+            p->Version());
   pthread_create(&p->thread_plugin, NULL, p->fMain_tep, licqDaemon);
 }
 
@@ -806,7 +809,8 @@ int CLicq::Main()
 
   if (list_plugins.size() == 0)
   {
-    gLog.Warn("%sNo plugins specified on the command-line (-p option).\n%sSee the README for more information.\n",
+    gLog.Warn(tr("%sNo plugins specified on the command-line (-p option).\n"
+                 "%sSee the README for more information.\n"),
               L_WARNxSTR, L_BLANKxSTR);
     return nResult;
   }
@@ -871,7 +875,7 @@ int CLicq::Main()
     }
 
     pthread_join((*iter)->thread_plugin, (void **)&nPluginResult);
-    gLog.Info("%sPlugin %s exited with code %d.\n", L_ENDxSTR, (*iter)->Name(), *nPluginResult);
+    gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*iter)->Name(), *nPluginResult);
     free (nPluginResult);
     // We should close the dynamic link but under linux this makes Qt crash
     //dlclose((*iter)->dl_handle);
@@ -883,7 +887,7 @@ int CLicq::Main()
 
   for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
   {
-    gLog.Info("%sPlugin %s failed to exit.\n", L_WARNxSTR, (*iter)->Name());
+    gLog.Info(tr("%sPlugin %s failed to exit.\n"), L_WARNxSTR, (*iter)->Name());
     pthread_cancel( (*iter)->thread_plugin);
   }
   pthread_mutex_unlock(&mutex_plugins);
@@ -903,7 +907,7 @@ int CLicq::Main()
 
 void CLicq::PrintUsage()
 {
-  printf("%s version %s.\n"
+  printf(tr("%s version %s.\n"
          "Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
          " -h : this help screen (and any plugin help screens as well)\n"
          " -d : set what information is logged to standard output:\n"
@@ -917,7 +921,7 @@ void CLicq::PrintUsage()
          " -b : set the base directory for the config and data files (~/.licq by default)\n"
          " -I : force initialization of the given base directory\n"
          " -p : load the given plugin library\n"
-         " -o : redirect stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
+         " -o : redirect stderr to <file>, which can be a device (ie /dev/ttyp4)\n"),
          PACKAGE, VERSION);
 }
 

@@ -23,6 +23,9 @@
 #include <arpa/inet.h>
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_constants.h"
 #include "licq_user.h"
 #include "licq_countrycodes.h"
@@ -155,7 +158,7 @@ void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
  *-------------------------------------------------------------------------*/
 bool CUserManager::Load()
 {
-  gLog.Info("%sUser configuration.\n", L_INITxSTR);
+  gLog.Info(tr("%sUser configuration.\n"), L_INITxSTR);
 
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
@@ -224,7 +227,7 @@ bool CUserManager::Load()
   unsigned short nUsers;
   usersConf.SetSection("users");
   usersConf.ReadNum("NumOfUsers", nUsers);
-  gLog.Info("%sLoading %d users.\n", L_INITxSTR, nUsers);
+  gLog.Info(tr("%sLoading %d users.\n"), L_INITxSTR, nUsers);
 
   // TODO: We need to only load users of protocol plugins that are loaded!
   char sUserKey[MAX_KEYxNAME_LEN];
@@ -238,7 +241,7 @@ bool CUserManager::Load()
     sprintf(sUserKey, "User%d", i);
     if (!usersConf.ReadStr(sUserKey, szFile, ""))
     {
-      gLog.Warn("%sSkipping user %i, empty key.\n", L_WARNxSTR, i);
+      gLog.Warn(tr("%sSkipping user %i, empty key.\n"), L_WARNxSTR, i);
       continue;
     }
     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR,
@@ -412,7 +415,7 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
     // Don't allow a duplicate name
     if (!bNewGroup)
     {
-      gLog.Warn("%sGroup %s already on list.\n", L_WARNxSTR, _szName);
+      gLog.Warn(tr("%sGroup %s already on list.\n"), L_WARNxSTR, _szName);
     }
     else
     {
@@ -1362,7 +1365,7 @@ void ICQUser::AddToContactList()
     {
       if (rename(szFilename, m_fHistory.FileName()) == -1)
       {
-        gLog.Warn("%sFailed to rename old history file (%s):\n%s%s\n", L_WARNxSTR,
+        gLog.Warn(tr("%sFailed to rename old history file (%s):\n%s%s\n"), L_WARNxSTR,
             szFilename, L_BLANKxSTR, strerror(errno));
       }
     }
@@ -1392,7 +1395,7 @@ void ICQUser::LoadGeneralInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_LINE_LEN];
-  m_fConf.ReadStr("Alias", szTemp, "Unknown");  SetAlias(szTemp);
+  m_fConf.ReadStr("Alias", szTemp, tr("Unknown"));  SetAlias(szTemp);
   m_fConf.ReadStr("FirstName", szTemp, "");  SetFirstName(szTemp);
   m_fConf.ReadStr("LastName", szTemp, "");  SetLastName(szTemp);
   m_fConf.ReadStr("Email1", szTemp, "");  SetEmailPrimary(szTemp);
@@ -1419,7 +1422,7 @@ void ICQUser::LoadMoreInfo()
   char szTemp[MAX_LINE_LEN];
   m_fConf.ReadNum("Age", m_nAge, 0);
   m_fConf.ReadNum("Gender", m_nGender, GENDER_UNSPECIFIED);
-  m_fConf.ReadStr("Homepage", szTemp, "<none>");  SetHomepage(szTemp);
+  m_fConf.ReadStr("Homepage", szTemp, tr("<none>"));  SetHomepage(szTemp);
   m_fConf.ReadNum("BirthYear", m_nBirthYear, 0);
   m_fConf.ReadNum("BirthMonth", m_nBirthMonth, 0);
   m_fConf.ReadNum("BirthDay", m_nBirthDay, 0);
@@ -1641,7 +1644,7 @@ void ICQUser::RemoveFiles()
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (rename(m_fHistory.FileName(), szFilename) == -1)
     {
-      gLog.Warn("%sFailed to rename history file (%s):\n%s%s\n", L_WARNxSTR,
+      gLog.Warn(tr("%sFailed to rename history file (%s):\n%s%s\n"), L_WARNxSTR,
           szFilename, L_BLANKxSTR, strerror(errno));
       remove(m_fHistory.FileName());
     }
@@ -2057,26 +2060,26 @@ const char *ICQUser::StatusStrShort()
 
 const char *ICQUser::StatusToStatusStr(unsigned short n, bool b)
 {
-  if (n == ICQ_STATUS_OFFLINE) return b ? "(Offline)" : "Offline";
-  else if (n & ICQ_STATUS_DND) return b ? "(Do Not Disturb)" : "Do Not Disturb";
-  else if (n & ICQ_STATUS_OCCUPIED) return b ? "(Occupied)" : "Occupied";
-  else if (n & ICQ_STATUS_NA) return b ? "(Not Available)" : "Not Available";
-  else if (n & ICQ_STATUS_AWAY) return b ? "(Away)" : "Away";
-  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? "(Free for Chat)" : "Free for Chat";
-  else if (n << 24 == 0x00) return b ? "(Online)" : "Online";
+  if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Offline)") : tr("Offline");
+  else if (n & ICQ_STATUS_DND) return b ? tr("(Do Not Disturb)") : tr("Do Not Disturb");
+  else if (n & ICQ_STATUS_OCCUPIED) return b ? tr("(Occupied)") : tr("Occupied");
+  else if (n & ICQ_STATUS_NA) return b ? tr("(Not Available)") : tr("Not Available");
+  else if (n & ICQ_STATUS_AWAY) return b ? tr("(Away)") : tr("Away");
+  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(Free for Chat)") : tr("Free for Chat");
+  else if (n << 24 == 0x00) return b ? tr("(Online)") : tr("Online");
   else return "Unknown";
 }
 
 
 const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 {
-  if (n == ICQ_STATUS_OFFLINE) return b ? "(Off)" : "Off";
-  else if (n & ICQ_STATUS_DND) return b ? "(DND)" : "DND";
-  else if (n & ICQ_STATUS_OCCUPIED) return b ? "(Occ)" : "Occ";
-  else if (n & ICQ_STATUS_NA) return b ? "(N/A)" : "N/A";
-  else if (n & ICQ_STATUS_AWAY) return b ? "(Away)" : "Away";
-  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? "(FFC)" : "FFC";
-  else if (n << 24 == 0x00) return b ? "(On)" : "On";
+  if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Off)") : tr("Off");
+  else if (n & ICQ_STATUS_DND) return b ? tr("(DND)") : tr("DND");
+  else if (n & ICQ_STATUS_OCCUPIED) return b ? tr("(Occ)") : tr("Occ");
+  else if (n & ICQ_STATUS_NA) return b ? tr("(N/A)") : tr("N/A");
+  else if (n & ICQ_STATUS_AWAY) return b ? tr("(Away)") : tr("Away");
+  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(FFC)") : tr("FFC");
+  else if (n << 24 == 0x00) return b ? tr("(On)") : tr("On");
   else return "???";
 }
 
@@ -2088,7 +2091,7 @@ char *ICQUser::IpStr(char *rbuf)
   if (Ip() > 0)     		// Default to the given ip
     strcpy(ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
   else				// Otherwise we don't know
-    strcpy(ip, "Unknown");
+    strcpy(ip, tr("Unknown"));
 
   if (StatusHideIp())
     sprintf(rbuf, "(%s)", ip);
@@ -2123,7 +2126,7 @@ char *ICQUser::IntIpStr(char *rbuf)
       gSocketManager.DropSocket(s);
     }
     else
-      strcpy(rbuf, "Invalid");
+      strcpy(rbuf, tr("Invalid"));
   }
   else
   {
@@ -2276,7 +2279,7 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
         case 'o':
           if(m_nLastCounters[LAST_ONLINE] == 0)
           {
-            strcpy(szTemp, "Never");
+            strcpy(szTemp, tr("Never"));
             sz = szTemp;
             break;
           }
@@ -2286,7 +2289,7 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
         case 'O':
           if (m_nStatus == ICQ_STATUS_OFFLINE || m_nOnlineSince == 0)
           {
-            strcpy(szTemp, "Unknown");
+            strcpy(szTemp, tr("Unknown"));
             sz = szTemp;
             break;
           }
@@ -2309,24 +2312,33 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
 
             if (nDays)
             {
-              sprintf(szTime, "%d day%s ", nDays, (nDays > 1 ? "s" : ""));
+              if (nDays > 1)
+                sprintf(szTime, tr("%d days "), nDays);
+              else
+                sprintf(szTime, tr("%d day "), nDays);
               strcat(szTemp, szTime);
             }
 
             if (nHours)
             {
-              sprintf(szTime, "%d hour%s ", nHours, (nHours > 1 ? "s" : ""));
+              if (nHours > 1)
+                sprintf(szTime, tr("%d hours "), nHours);
+              else
+                sprintf(szTime, tr("%d hour "), nHours);
               strcat(szTemp, szTime);
             }
 
             if (nMinutes)
             {
-              sprintf(szTime, "%d minute%s", nMinutes, (nMinutes > 1 ? "s" : ""));
+              if (nMinutes > 1)
+                sprintf(szTime, tr("%d minutes"), nMinutes);
+              else
+                sprintf(szTime, tr("%d minute"), nMinutes);
               strcat(szTemp, szTime);
             }
           }
           else
-            strcpy(szTemp, "Active");
+            strcpy(szTemp, tr("Active"));
 
           sz = szTemp;
 
@@ -2857,7 +2869,7 @@ void ICQUser::decNumUserEvents()
 //-----ICQOwner::constructor----------------------------------------------------
 ICQOwner::ICQOwner()
 {
-  gLog.Info("%sOwner configuration.\n", L_INITxSTR);
+  gLog.Info(tr("%sOwner configuration.\n"), L_INITxSTR);
   char szTemp[MAX_LINE_LEN];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
@@ -2875,7 +2887,7 @@ ICQOwner::ICQOwner()
   // Make sure owner.uin is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
   {
-    gLog.Warn("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n",
+    gLog.Warn(tr("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"),
                  L_WARNxSTR, filename);
   }
 
@@ -2903,8 +2915,8 @@ ICQOwner::ICQOwner()
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
   {
-    gLog.Warn("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
-              "%sUpdate general info on server to fix.\n",
+    gLog.Warn(tr("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
+              "%sUpdate general info on server to fix.\n"),
        L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
   }
 
@@ -2927,7 +2939,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   // Make sure owner.uin is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
   {
-    gLog.Warn("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n",
+    gLog.Warn(tr("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"),
                  L_WARNxSTR, filename);
   }
 
@@ -2956,7 +2968,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
 
   m_fConf.CloseFile();
 
-  gLog.Info("%sOwner configuration for %s.\n", L_INITxSTR, m_szId);
+  gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, m_szId);
 
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.%s.%s.history", BASE_DIR, HISTORY_DIR,
            m_szId, p);
@@ -2964,8 +2976,8 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
   {
-    gLog.Warn("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
-              "%sUpdate general info on server to fix.\n",
+    gLog.Warn(tr("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
+              "%sUpdate general info on server to fix.\n"),
        L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
   }
   SetEnableSave(true);

@@ -32,6 +32,9 @@ extern int errno;
 extern int h_errno;
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_socket.h"
 #include "licq_icq.h"
 #include "licq_log.h"
@@ -206,7 +209,7 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
 
     case SOCK_ERROR_h_errno:
 #ifndef HAVE_HSTRERROR
-      sprintf(buf, "hostname resolution failure (%d)", h_errno);
+      sprintf(buf, tr("hostname resolution failure (%d)"), h_errno);
 #else
       strncpy(buf, hstrerror(h_errno), buflen);
       buf[buflen - 1] = '\0';
@@ -214,17 +217,17 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
       break;
 
     case SOCK_ERROR_desx:
-      strncpy(buf, "DesX encryption/decryption failure", buflen);
+      strncpy(buf, tr("DesX encryption/decryption failure"), buflen);
       buf[buflen - 1] = '\0';
       break;
 
     case SOCK_ERROR_none:
-      strncpy(buf, "No error detected", buflen);
+      strncpy(buf, tr("No error detected"), buflen);
       buf[buflen - 1] = '\0';
       break;
 
     case SOCK_ERROR_internal:
-      strncpy(buf, "Internal error", buflen);
+      strncpy(buf, tr("Internal error"), buflen);
       buf[buflen - 1] = '\0';
       break;
     case SOCK_ERROR_proxy:
@@ -382,8 +385,8 @@ bool INetSocket::SetLocalAddress(bool bIp)
   // This should never happen unless the IP stack is fucked
   if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY && bIp)
   {
-    gLog.Warn("%sYour IP stack or SOCKS client is a piece of crap.\n"
-              "%sAttempting to guess local IP.\n", L_WARNxSTR, L_BLANKxSTR);
+    gLog.Warn(tr("%sYour IP stack or SOCKS client is a piece of crap.\n"
+                 "%sAttempting to guess local IP.\n"), L_WARNxSTR, L_BLANKxSTR);
     char szHostName[256];
     if (gethostname(szHostName, 256) == -1)
     {
@@ -682,11 +685,11 @@ bool SrvSocket::RecvPacket()
     if (nBytesReceived <= 0)
     {
       if (nBytesReceived == 0)
-        gLog.Warn("server socket was closed!!!\n");
+        gLog.Warn(tr("server socket was closed!!!\n"));
       else {
         char buf[128];
         m_nErrorType = SOCK_ERROR_errno;
-        gLog.Warn("%serror during receiving from server socket :-((\n%s%s\n",
+        gLog.Warn(tr("%serror during receiving from server socket :-((\n%s%s\n"),
                   L_WARNxSTR, L_BLANKxSTR, ErrorStr(buf, sizeof(buf)));
       }
       delete[] buffer;

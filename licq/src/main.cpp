@@ -24,6 +24,8 @@ extern "C" {
 }
 #endif
 
+// Localization
+#include "gettext.h"
 
 // define a global variable for the base directory containing the data and config subdirectories
 char BASE_DIR[MAX_FILENAME_LEN];
@@ -34,6 +36,12 @@ unsigned short DEBUG_LEVEL;
 
 int main(int argc, char **argv)
 {
+  // prepare daemon localization
+  setlocale(LC_MESSAGES,"");
+  setlocale(LC_CTYPE,"");
+  bindtextdomain(PACKAGE, LOCALEDIR);
+  textdomain(PACKAGE);
+
 // Make sure argv[0] is defined otherwise licq will crash if it is NULL
   if (argv[0] == NULL)
      argv[0] = "licq";

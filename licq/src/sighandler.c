@@ -26,6 +26,8 @@
 #include <execinfo.h>
 #endif
 
+// Localization
+#include "gettext.h"
 
 void licq_handle_sigsegv(int);
 void licq_handle_sigchld(int);
@@ -61,15 +63,15 @@ void licq_handle_sigsegv(int s)
 {
   if (s != SIGSEGV)
   {
-    fprintf(stderr, "Unknown signal.\n");
+    fprintf(stderr, tr("Unknown signal.\n"));
     return;
   }
 
-  fprintf(stderr, "Licq Segmentation Violation Detected.\n");
+  fprintf(stderr, tr("Licq Segmentation Violation Detected.\n"));
   /*fprintf(stderr, "Fault Address: [0x%08lX]\n", (unsigned long)si->si_addr); */
 
 #ifdef HAVE_BACKTRACE
-  fprintf(stderr, "Backtrace:\n");
+  fprintf(stderr, tr("Backtrace:\n"));
   {
     void *array[32];
     unsigned short i;
@@ -82,7 +84,7 @@ void licq_handle_sigsegv(int s)
     res = backtrace_symbols(array, 1);
     fprintf(stderr, "%s\n", res[0]);*/
   }
-  fprintf(stderr, "Attempting to generate core file.\n");
+  fprintf(stderr, tr("Attempting to generate core file.\n"));
 
   #ifdef HAVE_PTHREAD_KILL_OTHER_THREADS_NP
 	// only available in LinuxThreads, not in NPTL
@@ -99,7 +101,7 @@ void licq_handle_sigchld(int s)
 {
   if (s != SIGCHLD)
   {
-    fprintf(stderr, "Unknown signal.\n");
+    fprintf(stderr, tr("Unknown signal.\n"));
     return;
   }
 

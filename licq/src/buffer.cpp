@@ -17,6 +17,9 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 
+// Localization
+#include "gettext.h"
+
 #include "licq_buffer.h"
 #include "licq_log.h"
 
@@ -494,8 +497,8 @@ char *CBuffer::PackUnsignedLong(unsigned long data)
 {
   if ( getDataSize() + 4 > getDataMaxSize() )
   {
-    gLog.Warn("%sPackUnsignedLong(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPackUnsignedLong(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   put_le_long(getDataPosWrite(), data);
@@ -507,8 +510,8 @@ char *CBuffer::PackUnsignedLongBE(unsigned long data)
 {
   if (getDataSize() + 4 > getDataMaxSize() )
   {
-    gLog.Warn("%sPackUnsignedLongBE(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPackUnsignedLongBE(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   put_be_long(getDataPosWrite(), data);
@@ -520,8 +523,8 @@ char *CBuffer::PackChar(char data)
 {
   if (getDataSize() + 1 > getDataMaxSize())
   {
-    gLog.Warn("%sPackChar(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPackChar(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   *getDataPosWrite() = data;
@@ -533,8 +536,8 @@ char *CBuffer::Pack(const char *data, int size)
 {
   if ( getDataSize() + size > getDataMaxSize() )
   {
-    gLog.Warn("%sPack(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPack(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   if (!size) return getDataPosWrite();
@@ -547,8 +550,8 @@ char *CBuffer::Pack(CBuffer *buf)
 {
   if ( getDataSize() + buf->getDataSize() > getDataMaxSize() )
   {
-    gLog.Warn("%sPack(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPack(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   memcpy(getDataPosWrite(), buf->getDataStart(), buf->getDataSize());
@@ -571,8 +574,8 @@ char *CBuffer::PackString(const char *data, unsigned short max)
   if (max > 0 && n > max) n = max;
   if ( getDataSize()  + n + 1 > getDataMaxSize() )
   {
-    gLog.Warn("%sPackString(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPackString(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   put_le_short(getDataPosWrite(), n + 1);
@@ -591,8 +594,8 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
 {
   if ( getDataSize() + 2 > getDataMaxSize() )
   {
-    gLog.Warn("%sPackUnsignedShort(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPackUnsignedShort(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   put_le_short(getDataPosWrite(), data);
@@ -604,8 +607,8 @@ char *CBuffer::PackUnsignedShortBE(unsigned short data)
 {
   if ( getDataSize() + 2 > getDataMaxSize() )
   {
-    gLog.Warn("%sPackUnsignedShortBE(): Trying to pack more data than "
-              "CBuffer can hold!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sPackUnsignedShortBE(): Trying to pack more data than "
+                 "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
   put_be_short(getDataPosWrite(), data);
@@ -657,7 +660,7 @@ bool CBuffer::readTLV(int nCount, int nBytes)
 
     if (nBytes > 0 && nCurBytes > nBytes)
     {
-      gLog.Warn("%sRead too much TLV data!\n", L_WARNxSTR);
+      gLog.Warn(tr("%sRead too much TLV data!\n"), L_WARNxSTR);
       return true;
     }
   }
@@ -665,7 +668,7 @@ bool CBuffer::readTLV(int nCount, int nBytes)
   // Finish off the number of bytes we wanted
   if (nCurBytes < nBytes)
   { 
-    gLog.Warn("%sUnable to read requested amount of TLV data!\n", L_WARNxSTR);
+    gLog.Warn(tr("%sUnable to read requested amount of TLV data!\n"), L_WARNxSTR);
     for (; nCurBytes < nBytes; nCurBytes++)
       UnpackChar();
   }

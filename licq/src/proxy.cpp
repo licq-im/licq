@@ -36,6 +36,9 @@ extern int errno;
 extern int h_errno;
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_proxy.h"
 #include "licq_log.h"
 #include "support.h"
@@ -90,23 +93,23 @@ char *ProxyServer::ErrorStr(char *buf, int buflen)
 
     case PROXY_ERROR_h_errno:
 #ifndef HAVE_HSTRERROR
-      sprintf(buf, "proxy hostname resolution failure (%d)", h_errno);
+      sprintf(buf, tr("proxy hostname resolution failure (%d)"), h_errno);
 #else
       strncpy(buf, hstrerror(h_errno), buflen);
       buf[buflen - 1] = '\0';
 #endif
     case PROXY_ERROR_none:
-      strncpy(buf, "No proxy error detected", buflen);
+      strncpy(buf, tr("No proxy error detected"), buflen);
       buf[buflen - 1] = '\0';
       break;
 
     case PROXY_ERROR_internal:
-      strncpy(buf, "Internal proxy error", buflen);
+      strncpy(buf, tr("Internal proxy error"), buflen);
       buf[buflen - 1] = '\0';
       break;
 
     default:
-      strncpy(buf, "Unknown proxy error", buflen);
+      strncpy(buf, tr("Unknown proxy error"), buflen);
       buf[buflen - 1] = '\0';
   }
   
@@ -334,7 +337,7 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
   if (sscanf(input_line, "HTTP/%d.%d %n%d", &ver_major, &ver_minor,
 	     &status_consumed, &status_code) != 3)
   {
-    gLog.Warn("%sCould not parse HTTP status line from proxy\n", L_ERRORxSTR);
+    gLog.Warn(tr("%sCould not parse HTTP status line from proxy\n"), L_ERRORxSTR);
     m_nErrorType = PROXY_ERROR_internal;
     CloseConnection();
     return(false);
@@ -342,7 +345,7 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
   if (status_code == HTTP_STATUS_OK)
     return (true);
 
-  gLog.Warn("%sHTTPS proxy return error code: %d, error string:\n%s\n",
+  gLog.Warn(tr("%sHTTPS proxy return error code: %d, error string:\n%s\n"),
 	      L_ERRORxSTR, status_code, input_line);
   m_nErrorType = PROXY_ERROR_internal;
   CloseConnection();

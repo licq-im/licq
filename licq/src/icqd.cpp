@@ -21,6 +21,9 @@
 #include <assert.h>
 #include "time-fix.h"
 
+// Localization
+#include "gettext.h"
+
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #else
@@ -214,30 +217,30 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
     szOnParams[i][0] = '\0';
   }
 
-	// Prepare default values for onEvent
-	char DEF_MESSAGE[MAX_FILENAME_LEN];
-	char DEF_URL[MAX_FILENAME_LEN];
-	char DEF_CHAT[MAX_FILENAME_LEN];
-	char DEF_FILE[MAX_FILENAME_LEN];
-	char DEF_NOTIFY[MAX_FILENAME_LEN];
-	char DEF_SYSMSG[MAX_FILENAME_LEN];
-	char DEF_MSGSENT[MAX_FILENAME_LEN];
-	strcpy(DEF_MESSAGE, SHARE_DIR);
-	strcpy(DEF_URL, SHARE_DIR);
-	strcpy(DEF_CHAT, SHARE_DIR);
-	strcpy(DEF_FILE, SHARE_DIR);
-	strcpy(DEF_NOTIFY, SHARE_DIR);
-	strcpy(DEF_SYSMSG, SHARE_DIR);
-	strcpy(DEF_MSGSENT, SHARE_DIR);
-	// be paranoid, don't let it overflow
-	unsigned short MAX_APPEND = (MAX_FILENAME_LEN - strlen(SHARE_DIR) - 1);  // max chars to append via strncat()
-	strncat(DEF_MESSAGE, "sounds/icq/Message.wav", MAX_APPEND);
-	strncat(DEF_URL,     "sounds/icq/URL.wav", MAX_APPEND);
-	strncat(DEF_CHAT,    "sounds/icq/Chat.wav", MAX_APPEND);
-	strncat(DEF_FILE,    "sounds/icq/File.wav", MAX_APPEND);
-	strncat(DEF_NOTIFY,  "sounds/icq/Online.wav", MAX_APPEND);
-	strncat(DEF_SYSMSG,  "sounds/icq/System.wav", MAX_APPEND);
-	strncat(DEF_MSGSENT, "sounds/icq/Message.wav", MAX_APPEND);
+  // Prepare default values for onEvent
+  char DEF_MESSAGE[MAX_FILENAME_LEN];
+  char DEF_URL[MAX_FILENAME_LEN];
+  char DEF_CHAT[MAX_FILENAME_LEN];
+  char DEF_FILE[MAX_FILENAME_LEN];
+  char DEF_NOTIFY[MAX_FILENAME_LEN];
+  char DEF_SYSMSG[MAX_FILENAME_LEN];
+  char DEF_MSGSENT[MAX_FILENAME_LEN];
+  strcpy(DEF_MESSAGE, SHARE_DIR);
+  strcpy(DEF_URL, SHARE_DIR);
+  strcpy(DEF_CHAT, SHARE_DIR);
+  strcpy(DEF_FILE, SHARE_DIR);
+  strcpy(DEF_NOTIFY, SHARE_DIR);
+  strcpy(DEF_SYSMSG, SHARE_DIR);
+  strcpy(DEF_MSGSENT, SHARE_DIR);
+  // be paranoid, don't let it overflow
+  unsigned short MAX_APPEND = (MAX_FILENAME_LEN - strlen(SHARE_DIR) - 1);  // max chars to append via strncat()
+  strncat(DEF_MESSAGE, "sounds/icq/Message.wav", MAX_APPEND);
+  strncat(DEF_URL,     "sounds/icq/URL.wav", MAX_APPEND);
+  strncat(DEF_CHAT,    "sounds/icq/Chat.wav", MAX_APPEND);
+  strncat(DEF_FILE,    "sounds/icq/File.wav", MAX_APPEND);
+  strncat(DEF_NOTIFY,  "sounds/icq/Online.wav", MAX_APPEND);
+  strncat(DEF_SYSMSG,  "sounds/icq/System.wav", MAX_APPEND);
+  strncat(DEF_MSGSENT, "sounds/icq/Message.wav", MAX_APPEND);
 
   licqConf.ReadStr("Command", szOnEventCommand, "play");
   licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG], DEF_MESSAGE);
@@ -300,8 +303,8 @@ bool CICQDaemon::Start()
   m_nTCPSocketDesc = StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
-     gLog.Error("%sUnable to allocate TCP port for local server (%s)!\n",
-                L_ERRORxSTR, "No ports available");
+     gLog.Error(tr("%sUnable to allocate TCP port for local server (%s)!\n"),
+                L_ERRORxSTR, tr("No ports available"));
      return false;
   }
   gSocketManager.AddSocket(s);
@@ -320,17 +323,17 @@ bool CICQDaemon::Start()
   // Open the fifo
   snprintf(sz, MAX_FILENAME_LEN, "%s/licq_fifo", BASE_DIR);
   sz[MAX_FILENAME_LEN - 1] = '\0';
-  gLog.Info("%sOpening fifo.\n", L_INITxSTR);
+  gLog.Info(tr("%sOpening fifo.\n"), L_INITxSTR);
   fifo_fd = open(sz, O_RDWR);
   if (fifo_fd == -1)
   {
     if (mkfifo(sz, 00600) == -1)
-      gLog.Warn("%sUnable to create fifo:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+      gLog.Warn(tr("%sUnable to create fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     else
     {
       fifo_fd = open(sz, O_RDWR);
       if (fifo_fd == -1)
-        gLog.Warn("%sUnable to open fifo:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+        gLog.Warn(tr("%sUnable to open fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     }
   }
   fifo_fs = NULL;
@@ -340,7 +343,7 @@ bool CICQDaemon::Start()
     fstat(fifo_fd, &buf);
     if (!S_ISFIFO(buf.st_mode))
     {
-      gLog.Warn("%s%s is not a FIFO, disabling fifo support.\n", L_WARNxSTR, sz);
+      gLog.Warn(tr("%s%s is not a FIFO, disabling fifo support.\n"), L_WARNxSTR, sz);
       close(fifo_fd);
       fifo_fd = -1;
     }
@@ -352,7 +355,7 @@ bool CICQDaemon::Start()
   fifo_fd = -1;
 #endif
 
-  gLog.Info("%sSpawning daemon threads.\n", L_INITxSTR);
+  gLog.Info(tr("%sSpawning daemon threads.\n"), L_INITxSTR);
   nResult = pthread_create(&thread_monitorsockets, NULL, &MonitorSockets_tep, this);
   if (nResult != 0)
   {
@@ -797,15 +800,15 @@ int CICQDaemon::StartTCPServer(TCPSocket *s)
   char sz[64];
   if (s->Descriptor() != -1)
   {
-    gLog.Info("%sLocal TCP server started on port %d.\n", L_TCPxSTR, s->LocalPort());
+    gLog.Info(tr("%sLocal TCP server started on port %d.\n"), L_TCPxSTR, s->LocalPort());
   }
   else if (s->Error() == EADDRINUSE)
   {
-    gLog.Warn("%sNo ports available for local TCP server.\n", L_WARNxSTR);
+    gLog.Warn(tr("%sNo ports available for local TCP server.\n"), L_WARNxSTR);
   }
   else
   {
-    gLog.Warn("%sFailed to start local TCP server:\n%s%s\n", L_WARNxSTR,
+    gLog.Warn(tr("%sFailed to start local TCP server:\n%s%s\n"), L_WARNxSTR,
        L_BLANKxSTR, s->ErrorStr(sz, 64));
   }
 
@@ -819,7 +822,7 @@ void CICQDaemon::SetTCPPorts(unsigned short p, unsigned short r)
   m_nTCPPortsHigh = r;
   if (m_nTCPPortsHigh < m_nTCPPortsLow)
   {
-    gLog.Warn("%sTCP high port (%d) is lower then TCP low port (%d).\n",
+    gLog.Warn(tr("%sTCP high port (%d) is lower then TCP low port (%d).\n"),
        L_WARNxSTR, m_nTCPPortsHigh, m_nTCPPortsLow);
     m_nTCPPortsHigh = m_nTCPPortsLow + 10;
   }
@@ -850,11 +853,11 @@ void CICQDaemon::InitProxy()
 
   if (m_xProxy != NULL)
   {
-    gLog.Info("%sResolving proxy: %s:%d...\n", L_INITxSTR, m_szProxyHost, m_nProxyPort);
+    gLog.Info(tr("%sResolving proxy: %s:%d...\n"), L_INITxSTR, m_szProxyHost, m_nProxyPort);
     if (!m_xProxy->SetProxyAddr(m_szProxyHost, m_nProxyPort)) {
       char buf[128];
 
-      gLog.Warn("%sUnable to resolve proxy server %s:\n%s%s.\n", L_ERRORxSTR,
+      gLog.Warn(tr("%sUnable to resolve proxy server %s:\n%s%s.\n"), L_ERRORxSTR,
                  m_szProxyHost, L_BLANKxSTR, m_xProxy->ErrorStr(buf, 128));
       delete m_xProxy;
       m_xProxy = NULL;
@@ -885,7 +888,7 @@ unsigned short VersionToUse(unsigned short v_in)
     else
       v_out = 6;
 
-    gLog.Warn("%sInvalid TCP version %d.  Attempting v%d.\n", L_WARNxSTR, v_in,
+    gLog.Warn(tr("%sInvalid TCP version %d.  Attempting v%d.\n"), L_WARNxSTR, v_in,
                                                               v_out);
   }
   return v_out;
@@ -965,7 +968,7 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
   // Don't add a user we already have
   if (gUserManager.IsOnList(szId, nPPID))
   {
-    gLog.Warn("%sUser %s already on contact list.\n", L_WARNxSTR, szId);
+    gLog.Warn(tr("%sUser %s already on contact list.\n"), L_WARNxSTR, szId);
     return false;
   }
 
@@ -999,7 +1002,7 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
   // Don't add a user we already have
   if (gUserManager.IsOnList(nUin))
   {
-    gLog.Warn("%sUser %lu already on contact list.\n", L_WARNxSTR, nUin);
+    gLog.Warn(tr("%sUser %lu already on contact list.\n"), L_WARNxSTR, nUin);
     return false;
   }
 
@@ -1031,7 +1034,7 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   // Don't add a user we already have
   if (gUserManager.IsOnList(nu->Uin()))
   {
-    gLog.Warn("%sUser %lu already on contact list.\n", L_WARNxSTR, nu->Uin());
+    gLog.Warn(tr("%sUser %lu already on contact list.\n"), L_WARNxSTR, nu->Uin());
     return;
   }
 
@@ -1137,7 +1140,7 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
   FILE *f = fopen(m_szRejectFile, "a");
   if (f == NULL)
   {
-    gLog.Warn("%sUnable to open \"%s\" for writing.\n", L_WARNxSTR, m_szRejectFile);
+    gLog.Warn(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, m_szRejectFile);
   }
   else
   {
@@ -1991,7 +1994,7 @@ void CICQDaemon::CancelEvent(unsigned long t)
 
   if (eRun == NULL && eExt == NULL && eSrv == NULL)
   {
-    gLog.Warn("%sCancelled event not found.\n", L_WARNxSTR);
+    gLog.Warn(tr("%sCancelled event not found.\n"), L_WARNxSTR);
     return;
   }
 
@@ -2101,7 +2104,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                            nLevel);
     SendEvent_Server(p);
 
-    szType = strdup("Message");
+    szType = strdup(tr("Message"));
     nEventType = ON_EVENT_MSG;
     pEvent = e;
     break;
@@ -2130,7 +2133,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       pEvent = e;
     }
 
-    szType = strdup("Chat request");
+    szType = strdup(tr("Chat request"));
     break;
   }
 
@@ -2167,7 +2170,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
     packet >> nPort;
 
-    szType = strdup("File transfer request through server");
+    szType = strdup(tr("File transfer request through server"));
     break;
   }
 
@@ -2180,7 +2183,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                            nLevel);
     SendEvent_Server(p);
 
-    szType = strdup("URL");
+    szType = strdup(tr("URL"));
     nEventType = ON_EVENT_URL;
     pEvent = e;
     break;
@@ -2196,7 +2199,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                            true, nLevel);
     SendEvent_Server(p);
 
-    szType = strdup("Contact list");
+    szType = strdup(tr("Contact list"));
     nEventType = ON_EVENT_MSG;
     pEvent = e;
     break;
@@ -2214,7 +2217,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       {
         u->SetAutoResponse(message);
         u->SetShowAwayMsg(*message);
-        gLog.Info("%sAuto response from %s (#%lu).\n", L_SRVxSTR, u->GetAlias(),
+        gLog.Info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
                   nMsgID[1]);
       }
       ICQEvent *e = DoneServerEvent(nMsgID[1], EVENT_ACKED);
@@ -2225,11 +2228,11 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         ProcessDoneEvent(e);
       }
       else
-        gLog.Warn("%sAck for unknown event.\n", L_SRVxSTR);
+        gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
     }
     else
     {
-      gLog.Info("%s%s (%lu) requested auto response.\n", L_SRVxSTR,
+      gLog.Info(tr("%s%s (%lu) requested auto response.\n"), L_SRVxSTR,
                 u->GetAlias(), u->Uin());
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -2275,7 +2278,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
     if (nCommand == 0)
     {
-      gLog.Warn("%sUnknown ICBM plugin type: %s\n", L_SRVxSTR, szPlugin);
+      gLog.Warn(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, szPlugin);
       return;
     }
 
@@ -2299,7 +2302,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
   default:
     gTranslator.ServerToClient(message);
-    szType = strdup("unknown event");
+    szType = strdup(tr("unknown event"));
   } // switch nMsgType
 
   if (bIsAck)
@@ -2311,14 +2314,14 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     {
       pAckEvent->m_pExtendedAck = pExtendedAck;
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-      gLog.Info("%s%s accepted from %s (%lu).\n", L_SRVxSTR, szType,
+      gLog.Info(tr("%s%s accepted from %s (%lu).\n"), L_SRVxSTR, szType,
                 u->GetAlias(), u->Uin());
       gUserManager.DropUser(u);
       ProcessDoneEvent(pAckEvent);
     }
     else
     {
-      gLog.Warn("%sAck for unknown event.\n", L_SRVxSTR);
+      gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
       delete pExtendedAck;
      }
   }
@@ -2342,18 +2345,18 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       {
         if (Ignore(IGNORE_NEWUSERS))
         {
-          gLog.Info("%s%s from new user (%lu), ignoring.\n", L_SRVxSTR,
+          gLog.Info(tr("%s%s from new user (%lu), ignoring.\n"), L_SRVxSTR,
                     szType, u->Uin());
           if (szType)  free(szType);
           RejectEvent(u->Uin(), pEvent);
           return;
         }
-        gLog.Info("%s%s from new user (%lu).\n", L_SRVxSTR, szType, u->Uin());
+        gLog.Info(tr("%s%s from new user (%lu).\n"), L_SRVxSTR, szType, u->Uin());
         AddUserToList(u);
         bNewUser = false;
       }
       else
-        gLog.Info("%s%s from %s (%lu).\n", L_SRVxSTR, szType, u->GetAlias(),
+        gLog.Info(tr("%s%s from %s (%lu).\n"), L_SRVxSTR, szType, u->GetAlias(),
                   u->Uin());
 
       if (AddUserEvent(u, pEvent))
@@ -2362,7 +2365,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     else // invalid parse or unknown event
     {
       char *buf;
-      gLog.Warn("%sInvalid %s:\n%s\n", L_WARNxSTR, szType, packet.print(buf));
+      gLog.Warn(tr("%sInvalid %s:\n%s\n"), L_WARNxSTR, szType, packet.print(buf));
       delete [] buf;
     }
   }

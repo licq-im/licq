@@ -20,6 +20,9 @@
 #include "licq_sighandler.h"
 #include "support.h"
 
+// Localization
+#include "gettext.h"
+
 #define DEBUG_THREADS(x)
 
 
@@ -663,7 +666,7 @@ bool CChatManager::StartChatServer()
 {
   if (licqDaemon->StartTCPServer(&chatServer) == -1)
   {
-    gLog.Warn("%sNo more ports available, add more or close open chat/file sessions.\n", L_WARNxSTR);
+    gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;
   }
 
@@ -733,7 +736,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
     gUserManager.DropUser(temp_user);
   }
 
-  gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
+  gLog.Info(tr("%sChat: Connecting to server.\n"), L_TCPxSTR);
   if (!licqDaemon->OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp, &u->sock,
           c->m_nPort, bSendIntIp))
   {
@@ -743,7 +746,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
 
   chatUsers.push_back(u);
 
-  gLog.Info("%sChat: Shaking hands [v%d].\n", L_TCPxSTR, VersionToUse(c->m_nVersion));
+  gLog.Info(tr("%sChat: Shaking hands [v%d].\n"), L_TCPxSTR, VersionToUse(c->m_nVersion));
 
   // Send handshake packet:
   if (!CICQDaemon::Handshake_Send(&u->sock, c->m_nUin, LocalPort(),
@@ -756,7 +759,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
      m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
   u->sock.SendPacket(p_color.getBuffer());
 
-  gLog.Info("%sChat: Waiting for color/font response.\n", L_TCPxSTR);
+  gLog.Info(tr("%sChat: Waiting for color/font response.\n"), L_TCPxSTR);
 
   u->state = CHAT_STATE_WAITxFORxCOLORxFONT;
 
@@ -797,7 +800,7 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   sockman.DropSocket(&u->sock);
   write(pipe_thread[PIPE_WRITE], "R", 1);
 
-  gLog.Info("%sChat: Received reverse connection.\n", L_TCPxSTR);
+  gLog.Info(tr("%sChat: Received reverse connection.\n"), L_TCPxSTR);
 }
 
 
@@ -823,9 +826,9 @@ bool CChatManager::ProcessPacket(CChatUser *u)
   {
     char buf[128];
     if (u->sock.Error() == 0)
-      gLog.Info("%sChat: Remote end disconnected.\n", L_TCPxSTR);
+      gLog.Info(tr("%sChat: Remote end disconnected.\n"), L_TCPxSTR);
     else
-      gLog.Info("%sChat: Lost remote end:\n%s%s\n", L_TCPxSTR,
+      gLog.Info(tr("%sChat: Lost remote end:\n%s%s\n"), L_TCPxSTR,
                 L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
     return false;
   }
@@ -862,7 +865,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           u->m_pClient->LoadFromHandshake_v7(handshake);
           break;
       }
-      gLog.Info("%sChat: Received handshake from %s [v%ld].\n", L_TCPxSTR,
+      gLog.Info(tr("%sChat: Received handshake from %s [v%ld].\n"), L_TCPxSTR,
          u->m_pClient->m_szId, u->sock.Version());
       u->uin = u->m_pClient->m_nUin;
       if (u->szId)  free(u->szId);
@@ -874,7 +877,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_WAITxFORxCOLOR:  // we just received the color packet
     {
-      gLog.Info("%sChat: Received color packet.\n", L_TCPxSTR);
+      gLog.Info(tr("%sChat: Received color packet.\n"), L_TCPxSTR);
 
       CPChat_Color pin(u->sock.RecvBuffer());
 
@@ -922,7 +925,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_WAITxFORxFONT:
     {
-      gLog.Info("%sChat: Received font packet.\n", L_TCPxSTR);
+      gLog.Info(tr("%sChat: Received font packet.\n"), L_TCPxSTR);
       CPChat_Font pin(u->sock.RecvBuffer());
 
       // just received the font reply
@@ -941,7 +944,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_WAITxFORxCOLORxFONT:
     {
-      gLog.Info("%sChat: Received color/font packet.\n", L_TCPxSTR);
+      gLog.Info(tr("%sChat: Received color/font packet.\n"), L_TCPxSTR);
 
       CPChat_ColorFont pin(u->sock.RecvBuffer());
       u->uin = pin.Uin();
@@ -973,7 +976,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       // Parse the multiusers list
       if (pin.ChatClients().size() > 0)
       {
-        gLog.Info("%sChat: Joined multiparty (%d people).\n", L_TCPxSTR,
+        gLog.Info(tr("%sChat: Joined multiparty (%d people).\n"), L_TCPxSTR,
            pin.ChatClients().size() + 1);
         ChatClientList::iterator iter;
         for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); iter++)
@@ -1058,9 +1061,9 @@ bool CChatManager::ProcessRaw(CChatUser *u)
   {
     char buf[128];
     if (u->sock.Error() == 0)
-      gLog.Info("%sChat: Remote end disconnected.\n", L_TCPxSTR);
+      gLog.Info(tr("%sChat: Remote end disconnected.\n"), L_TCPxSTR);
     else
-      gLog.Info("%sChat: Lost remote end:\n%s%s\n", L_TCPxSTR,
+      gLog.Info(tr("%sChat: Lost remote end:\n%s%s\n"), L_TCPxSTR,
                 L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
     return false;
   }
@@ -1795,7 +1798,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
   if (!u->sock.SendRaw(&b_out))
   {
     char buf[128];
-    gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
+    gLog.Warn(tr("%sChat: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
                u->sock.ErrorStr(buf, 128));
     CloseClient(u);
     return false;
@@ -1826,7 +1829,7 @@ void CChatManager::SendBuffer_Raw(CBuffer *b)
       if (!u->sock.SendRaw(b))
       {
         char buf[128];
-        gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
+        gLog.Warn(tr("%sChat: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
                    u->sock.ErrorStr(buf, 128));
         CloseClient(u);
         ok = false;
@@ -2245,7 +2248,7 @@ void *ChatManager_tep(void *arg)
 
           u->state = CHAT_STATE_HANDSHAKE;
           chatman->chatUsers.push_back(u);
-          gLog.Info("%sChat: Received connection.\n", L_TCPxSTR);
+          gLog.Info(tr("%sChat: Received connection.\n"), L_TCPxSTR);
         }
 
         // Message from connected socket----------------------------------------
@@ -2254,7 +2257,7 @@ void *ChatManager_tep(void *arg)
           CChatUser *u = chatman->FindChatUser(nCurrentSocket);
           if (u == NULL)
           {
-            gLog.Warn("%sChat: No user owns socket %d.\n", L_WARNxSTR, nCurrentSocket);
+            gLog.Warn(tr("%sChat: No user owns socket %d.\n"), L_WARNxSTR, nCurrentSocket);
           }
           else
           {

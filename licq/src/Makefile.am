@@ -1,4 +1,9 @@
-AM_CPPFLAGS = -Wall -I$(top_srcdir)/include -DLOCALEDIR=\"@datadir@/locale\" -DINSTALL_PREFIX=\"@prefix@\" @SOCKS_INCDIR@
+AM_CPPFLAGS = -Wall -I$(top_srcdir)/include -DINSTALL_PREFIX=\"@prefix@\" @SOCKS_INCDIR@
+
+datadir = @datadir@
+localedir = $(datadir)/locale
+DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+LIBS = @LTLIBINTL@ @LIBS@
 
 noinst_HEADERS = licq.conf.h licq.h  \
 	 time-fix.h sar.conf.h support.h

@@ -38,6 +38,9 @@
 extern int errno;
 #endif
 
+// Localization
+#include "gettext.h"
+
 #include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_constants.h"
@@ -59,54 +62,54 @@ extern int errno;
 #define ReportBadBuddy(cmdname,szUin) \
   (gLog.Info("%s `%s': bad buddy string `%s'\n",L_FIFOxSTR,cmdname,szUin))
 
-static const char* const HELP_STATUS = 
+static const char* const HELP_STATUS = tr(
         "\tstatus <[*]<status>> <auto response>\n"
         "\t\tstatus: online, offline, na, away, occupied, dnd, ffc\n\n"
         "\t\tSets the status of the current Licq session\n"
         "\t\tto that given (precede the status by a\n"
-        "\t\t\"*\" for invisible mode)\n";
-static const char* const HELP_AUTO = 
+        "\t\t\"*\" for invisible mode)\n");
+static const char* const HELP_AUTO = tr(
         "\tauto_response <auto response>\n"
         "\t\tSets the auto response message without\n"
-        "\t\tchanging the current status.\n";
-static const char* const HELP_MSG =
+        "\t\tchanging the current status.\n");
+static const char* const HELP_MSG = tr(
         "\tmessage <buddy> <message>\n"
-        "\t\tSend a message to the given buddy.\n";
-static const char* const HELP_URL = 
+        "\t\tSend a message to the given buddy.\n");
+static const char* const HELP_URL = tr(
         "\turl <buddy> <url> [<description>]\n"
-        "\t\tSend a url to the given buddy.\n";
-static const char* const HELP_SMS =
+        "\t\tSend a url to the given buddy.\n");
+static const char* const HELP_SMS = tr(
         "\tsms <buddy> <message>\n"
-        "\tSend a SMS to the given buddy.\n";
-static const char* const HELP_SMS_NUMBER =
+        "\tSend a SMS to the given buddy.\n");
+static const char* const HELP_SMS_NUMBER = tr(
         "\tsms <number> <message>\n"
-        "\tSend a SMS to the given cellular number.\n";
-static const char* const HELP_REDIRECT = 
+        "\tSend a SMS to the given cellular number.\n");
+static const char* const HELP_REDIRECT = tr(
         "\tredirect <file>\n"
         "\t\tRedirects stderr for\n"
-        "\t\tLicq to the given file.\n";
-static const char* const HELP_DEBUGLVL = 
+        "\t\tLicq to the given file.\n");
+static const char* const HELP_DEBUGLVL = tr(
         "\tdebuglvl <level>\n"
         "\t\tSet what information is logged.\n"
-        "\t\tSee <level> in licq -h\n";
-static const char* const HELP_ADDUSER = 
+        "\t\tSee <level> in licq -h\n");
+static const char* const HELP_ADDUSER = tr(
         "\tadduser <uin>\n"
-        "\t\tAdd user with <uin> to your contact list.\n";
-static const char* const HELP_USERINFO = 
+        "\t\tAdd user with <uin> to your contact list.\n");
+static const char* const HELP_USERINFO = tr(
         "\tuserinfo <buddy>\n"
-        "\t\tUpdates a buddy's user information.\n";
-static const char* const HELP_EXIT =
+        "\t\tUpdates a buddy's user information.\n");
+static const char* const HELP_EXIT = tr(
         "\texit\n"
-        "\t\tCauses the Licq session to shutdown.\n";
-static const char* const HELP_UIVIEWEVENT = 
+        "\t\tCauses the Licq session to shutdown.\n");
+static const char* const HELP_UIVIEWEVENT = tr(
         "\tui_viewevent [<buddy>]\n"
-        "\t\tShows the oldest pending event.\n";
-static const char* const HELP_UIMESSAGE =
+        "\t\tShows the oldest pending event.\n");
+static const char* const HELP_UIMESSAGE = tr(
         "\tui_message <buddy>\n"
-        "\t\tOpen the plugin message composer to <buddy>\n";
-static const char* const HELP_HELP = 
+        "\t\tOpen the plugin message composer to <buddy>\n");
+static const char* const HELP_HELP = tr(
         "\thelp <command>\n" 
-        "\t\tPrint help information for <command>.\n";
+        "\t\tPrint help information for <command>.\n");
 
 #define MAX_ARGV 64
 
@@ -336,7 +339,7 @@ static int fifo_status( int argc, const char *const *argv, void *data)
 
   if (nStatus == INT_MAX)
   {
-    gLog.Warn("%s%s %s: command with invalid status \"%s\".\n",
+    gLog.Warn(tr("%s%s %s: command with invalid status \"%s\".\n"),
               L_WARNxSTR,L_FIFOxSTR,argv[0],szStatus);
     return -1;
   }
@@ -463,7 +466,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
       }
     }
     else
-      gLog.Info("%s `%s': bad protol. ICQ only alowed\n", L_FIFOxSTR, argv[0]);
+      gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
   }
   else
     ReportBadBuddy(argv[0], argv[1]);
@@ -501,11 +504,11 @@ static int fifo_redirect ( int argc, const char *const *argv, void *data)
 
   if ( !Redirect(argv[1]) )
   {
-    gLog.Warn("%s %s: redirection to \"%s\" failed: %s.\n",
+    gLog.Warn(tr("%s %s: redirection to \"%s\" failed: %s.\n"),
               L_WARNxSTR,argv[0], argv[1],strerror(errno));
   }
   else
-    gLog.Info("%s %s: output redirected to \"%s\".\n", L_INITxSTR, argv[0],
+    gLog.Info(tr("%s %s: output redirected to \"%s\".\n"), L_INITxSTR, argv[0],
              argv[1]);
 
   return 0;
@@ -560,13 +563,13 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
   else if( !atoid(argv[1], true, &szId, &nPPID, d) )
     ReportBadBuddy(argv[0],argv[1]);
   else if( nPPID != LICQ_PPID )
-     gLog.Info("%s `%s': bad protol. ICQ only alowed\n", L_FIFOxSTR, argv[0]);
+     gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
   else
   {
     u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
     if (u == NULL)
-      gLog.Warn("%s %s: user %s not on contact list, not retrieving"
-                "info.\n", L_WARNxSTR, argv[0], szId);
+      gLog.Warn(tr("%s %s: user %s not on contact list, not retrieving"
+                "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
       unsigned long nUin = u->Uin();
@@ -650,10 +653,10 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
 
   if( argc == 1 )
   {
-    gLog.Info("%sFifo commands:\n",L_FIFOxSTR);
+    gLog.Info(tr("%sFifo commands:\n"), L_FIFOxSTR);
     for( i=0; table[i].fnc ; i++ )
       gLog.Info("%s%s\n",L_BLANKxSTR,table[i].szName);
-    gLog.Info("%s: Type `help command'\n",L_FIFOxSTR);
+    gLog.Info(tr("%s: Type `help command'\n"), L_FIFOxSTR);
   }
   else 
   {
@@ -661,10 +664,10 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
     {
       j=process_tok(table, argv[i] );
       if( j >= 0 )
-        gLog.Info("%s %s: help for `%s'\n%s\n",
+        gLog.Info(tr("%s %s: help for `%s'\n%s\n"),
                   L_FIFOxSTR,argv[0],argv[i],table[j].szHelp);
       else
-        gLog.Info("%s %s: unknown command `%s'\n",
+        gLog.Info(tr("%s %s: unknown command `%s'\n"),
                   L_FIFOxSTR,argv[0],argv[i]);
     }
   }
@@ -778,14 +781,14 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
   if( szBuf == NULL )
     return ;
 
-  gLog.Info("%sReceived string: `%s'\n", L_FIFOxSTR, szBuf );
+  gLog.Info(tr("%sReceived string: `%s'\n"), L_FIFOxSTR, szBuf );
   line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
   index = process_tok(fifocmd_table,argv[0]);
 
   switch( index )
   {
     case CL_UNKNOWN:
-      gLog.Info("%s: '%s' Unknown fifo command. Try 'help'\n",
+      gLog.Info(tr("%s: '%s' Unknown fifo command. Try 'help'\n"),
                 L_FIFOxSTR,argv[0]);
       break;
     case CL_NONE:

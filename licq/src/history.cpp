@@ -16,6 +16,9 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
+// Localization
+#include "gettext.h"
+
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #else
@@ -156,7 +159,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     }
     else
     {
-      gLog.Warn("%sUnable to open history file (%s):\n%s%s.\n", L_WARNxSTR,
+      gLog.Warn(tr("%sUnable to open history file (%s):\n%s%s.\n"), L_WARNxSTR,
               m_szFileName, L_BLANKxSTR, strerror(errno));
       return false;
     }
@@ -362,7 +365,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       break;
     }
     default:
-      gLog.Warn("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n",
+      gLog.Warn(tr("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"),
                 L_WARNxSTR, m_szFileName, nSubCommand);
       break;
     }

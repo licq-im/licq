@@ -20,6 +20,9 @@
 #include "licq_plugind.h"
 #include "licq.h"
 
+// Localization
+#include "gettext.h"
+
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) gLog.Info(x)
 
@@ -167,7 +170,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
       if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        gLog.Info("%sConnecting to login server.\n", L_SRVxSTR);
+        gLog.Info(tr("%sConnecting to login server.\n"), L_SRVxSTR);
 
 /***** Not yet, perhaps a problem with certain versions of pthreads? *****
         pthread_t *t = new pthread_t;
@@ -196,7 +199,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
         if (e->m_nSocketDesc == -1)
         {
           pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-          gLog.Info("%sConnecting to login server failed, failing event\n",
+          gLog.Info(tr("%sConnecting to login server failed, failing event\n"),
                     L_SRVxSTR);
           // we need to initialize the logon time for the next retry
           d->m_tLogonTime = time(NULL);
@@ -219,7 +222,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
       else
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        gLog.Info("%sNot connected to server, failing event\n", L_SRVxSTR);
+        gLog.Info(tr("%sNot connected to server, failing event\n"), L_SRVxSTR);
         if (d->DoneEvent(e, EVENT_ERROR) != NULL)
         {
           d->DoneExtendedEvent(e, EVENT_ERROR);
@@ -243,7 +246,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     INetSocket *s = gSocketManager.FetchSocket(socket);
     if (s == NULL)
     {
-      gLog.Warn("%sSocket not connected or invalid (#%lu).\n", L_WARNxSTR,
+      gLog.Warn(tr("%sSocket not connected or invalid (#%lu).\n"), L_WARNxSTR,
                 nSequence);
       if (d->DoneEvent(e, EVENT_ERROR) != NULL)
       {
@@ -303,7 +306,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn("%sError sending event (#%lu):\n%s%s.\n", L_WARNxSTR,
+    gLog.Warn(tr("%sError sending event (#%lu):\n%s%s.\n"), L_WARNxSTR,
               nSequence, L_BLANKxSTR, szErrorBuf);
 
     if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -403,7 +406,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned long nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn("%sSocket %d does not exist (#%lu).\n", L_WARNxSTR, socket,
+    gLog.Warn(tr("%sSocket %d does not exist (#%lu).\n"), L_WARNxSTR, socket,
        nSequence);
     if (d->DoneEvent(e, EVENT_ERROR) != NULL)
       d->ProcessDoneEvent(e);
@@ -454,7 +457,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned long nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn("%sError sending event (#%lu):\n%s%s.\n", L_WARNxSTR,
+    gLog.Warn(tr("%sError sending event (#%lu):\n%s%s.\n"), L_WARNxSTR,
      -nSequence, L_BLANKxSTR, szErrorBuf);
     write(d->pipe_newsocket[PIPE_WRITE], "S", 1);
     // Kill the event, do after the above as ProcessDoneEvent erase the event
@@ -633,7 +636,7 @@ void *MonitorSockets_tep(void *p)
             SrvSocket *srvTCP = static_cast<SrvSocket*>(s);
             if (srvTCP == NULL)
             {
-              gLog.Warn("%sInvalid server socket in set.\n", L_WARNxSTR);
+              gLog.Warn(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
             }
             // DAW FIXME error handling when socket is closed..
@@ -668,7 +671,7 @@ void *MonitorSockets_tep(void *p)
             TCPSocket *tcp = static_cast<TCPSocket *>(s);
             if (tcp == NULL)
             {
-              gLog.Warn("%sInvalid server TCP socket in set.\n", L_WARNxSTR);
+              gLog.Warn(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
             }
             else
@@ -699,12 +702,12 @@ void *MonitorSockets_tep(void *p)
             {
               int err = tcp->Error();
               if (err == 0)
-                gLog.Info("%sConnection to %lu was closed.\n", L_TCPxSTR
+                gLog.Info(tr("%sConnection to %lu was closed.\n"), L_TCPxSTR
                                                              , tcp->Owner());
               else
               {
                 char buf[128];
-                gLog.Info("%sConnection to %lu lost:\n%s%s.\n", L_TCPxSTR,
+                gLog.Info(tr("%sConnection to %lu lost:\n%s%s.\n"), L_TCPxSTR,
                           tcp->Owner(), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
               gSocketManager.DropSocket(tcp);
@@ -731,7 +734,7 @@ void *MonitorSockets_tep(void *p)
             // Kill the socket if there was a problem
             if (!r)
             {
-              gLog.Info("%sClosing connection to %lu.\n", L_TCPxSTR,
+              gLog.Info(tr("%sClosing connection to %lu.\n"), L_TCPxSTR,
                                                           tcp->Owner());
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
@@ -774,7 +777,7 @@ void *Shutdown_tep(void *p)
   CICQDaemon *d = (CICQDaemon *)p;
 
   // Shutdown
-  gLog.Info("%sShutting down daemon.\n", L_ENDxSTR);
+  gLog.Info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
   d->licq->ShutdownPlugins();
