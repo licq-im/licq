@@ -27,6 +27,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include <list>
+#include <iostream>
 using namespace std; // for std::list
 
 struct conversation
@@ -39,6 +40,7 @@ struct conversation
 	GtkWidget *send_server;
 	GtkWidget *send_urgent;
 	GtkWidget *send_list;
+	GtkWidget *charset;
 	GdkColor *clrFore;
 	GdkColor *clrBack;
 	gchar *for_user;
@@ -78,6 +80,7 @@ void convo_open(ICQUser *user, bool refresh)
 
 		c->window = 0;
 		c->user = user;
+		
 		c->clrBack = new GdkColor;
 		c->clrFore = new GdkColor;
 		c->for_user = 0;
@@ -100,7 +103,8 @@ void convo_open(ICQUser *user, bool refresh)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_server), TRUE);
 }
 
-conversation *convo_find(unsigned long uin)
+conversation *
+convo_find(unsigned long uin)
 {
 	for (list<conversation *>::iterator i = cnv.begin(); i != cnv.end(); ++i)
 		if ((*i)->user->Uin() == uin)
@@ -126,6 +130,44 @@ void convo_close_or_cancel(GtkWidget *widget, conversation *c)
 		convo_close(widget, c);
 }
 
+void
+charset_select(GtkWidget *w, struct conversation *c)
+{
+	char *p =	(char *)g_object_get_data(G_OBJECT(w), "encoding");
+	if (strcmp(p, c->user->UserEncoding()) == 0)
+		return;
+		
+	unsigned long uin = c->user->Uin();
+	ICQUser *u = gUserManager.FetchUser(uin, LOCK_W);
+	u->SetUserEncoding(p);
+	u->SaveLicqInfo();
+	gUserManager.DropUser(u);
+	c->user = gUserManager.FetchUser(uin, LOCK_R);
+}
+
+void
+charset_popup(GtkWidget *w, struct conversation *c)
+{
+	/* Add the character set menu */
+	GtkWidget *menu = gtk_menu_new();
+	const char *user_enc = c->user->UserEncoding();
+	if (user_enc == NULL || *user_enc == 0)
+		user_enc = "UTF-8";
+	for (encoding *ep = encodings; ep->name != NULL; ++ep) {
+		char *lbl = g_strdup_printf("%s (%s)", ep->name, ep->enc);
+		GtkWidget *item = gtk_check_menu_item_new_with_label(lbl);
+		g_free(lbl);
+		if (strcmp(user_enc, ep->enc) == 0)
+			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_object_set_data(G_OBJECT(item), "encoding", ep->enc);
+		g_signal_connect(G_OBJECT(item), "activate",
+				G_CALLBACK(charset_select), c);
+	}
+	gtk_widget_show_all(menu);
+	gtk_menu_popup(GTK_MENU(menu), 0, 0, 0, 0, 0, gtk_get_current_event_time());
+}
+	
 void convo_show(conversation *c)
 {
 	GtkWidget *scroll;
@@ -195,7 +237,17 @@ void convo_show(conversation *c)
 
 	/* Send the message to contact list */
 	c->send_list = gtk_check_button_new_with_mnemonic("M_ultiple recipients");
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_list, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_list, FALSE, FALSE, 5);
+	
+	/* Character set */
+	GtkWidget *bbox = hbutton_box_new();
+	c->charset = gtk_button_new();
+	gtk_container_add(GTK_CONTAINER(c->charset), 
+			gtk_image_new_from_pixbuf(charset_icon));
+	gtk_container_add(GTK_CONTAINER(bbox), c->charset);
+	gtk_box_pack_end(GTK_BOX(options_box), bbox, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(c->charset), "clicked", 
+			G_CALLBACK(charset_popup), c);
 
 	/* Now pack the options_box */
 	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
@@ -235,10 +287,11 @@ void convo_show(conversation *c)
 	gtk_container_set_border_width(GTK_CONTAINER(c->window), 10);
 
 	/* Set the title of the window */
-	gchar *temp = c->user->GetAlias();
-	const gchar *win_title = g_strdup_printf("Conversation with %s", temp);
+	gchar *win_title = g_strdup_printf("Conversation with %s", 
+			s_convert_to_utf8(c->user->GetAlias(), c->user->UserEncoding()).c_str());
 	gtk_window_set_title(GTK_WINDOW(c->window), win_title);
-
+	g_free(win_title);
+	
 	/* Set the focus of the window */
 	gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 
@@ -277,8 +330,7 @@ void convo_nick_timestamp(GtkWidget *text, const char *nick,
 	GtkTextIter iter;
 	
 	// How about their alias and an optional timestamp?
-	if (show_convo_timestamp)
-	{
+	if (show_convo_timestamp) {
 		char szTime[26];
 		struct tm *_tm = localtime(&message_time);
 		strftime(szTime, 26, timestamp_format, _tm);
@@ -309,7 +361,7 @@ void convo_nick_timestamp(GtkWidget *text, const char *nick,
 void convo_send(GtkWidget *widget, conversation *c)
 {
 	/* Set the 2 button widgets */
-	if(GTK_WIDGET_IS_SENSITIVE(c->send))
+	if (GTK_WIDGET_IS_SENSITIVE(c->send))
 		gtk_widget_set_sensitive(c->send, false);
 	toggle_close_cancel(c, 2);
 
@@ -330,41 +382,33 @@ void convo_send(GtkWidget *widget, conversation *c)
 
 	/* I don't like those popups to send urgent... so just send it **
  	** urgently unless the user says to send it to the contact list*/	
-	if((c->user->Status() == ICQ_STATUS_DND ||
+	if ((c->user->Status() == ICQ_STATUS_DND ||
 	   c->user->Status() == ICQ_STATUS_OCCUPIED) &&
 	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)))
 		urgent = TRUE;
 
 	strcpy(c->etag->buf, "Sending message ");
 
-	if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)))
+	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)))
 		strcat(c->etag->buf, "directly ... ");
 	else
 		strcat(c->etag->buf, "through server ... ");
 
 	/* Send the message */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)) ||
-	   urgent)
-	{ 
-	   c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
-	     (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-	     ICQ_TCPxMSG_URGENT);
-	}
-
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)) ||
+		  urgent)
+	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+	     	(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
+	     	ICQ_TCPxMSG_URGENT);
 	/* Send to contact list */
-	else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
-	{
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
 	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
-             (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-             ICQ_TCPxMSG_LIST);
-	}
-
+				(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
+        ICQ_TCPxMSG_LIST);
 	else /* Just send it normally */
-	{
 	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
-             (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-             ICQ_TCPxMSG_NORMAL);
-	}
+    		(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
+        ICQ_TCPxMSG_NORMAL);
 
 	/* Take care of the etd buffer and add it to the slist */
 	status_change(c->etag->statusbar, "sta", c->etag->buf);
@@ -406,8 +450,7 @@ void convo_recv(gulong uin)
 	conversation *c = convo_find(uin);
 
 	/* If the window doesn't exist, don't show anything */
-	if(c == 0)
-	{
+	if (c == 0) {
 		system_status_refresh();
 		return;
 	}
@@ -415,15 +458,14 @@ void convo_recv(gulong uin)
 	CUserEvent *u_event = c->user->EventPop();
 
 	/* Make sure we really have an event */
-	if(u_event == 0)
+	if (u_event == 0)
 		return;
 
 	// Use theme colors if it is black on white
 	bool bIgnoreBW = false;
 
 	// Get the color that it was sent in if it's wanted
-	if (recv_colors)
-	{
+	if (recv_colors) {
 		if (!c->clrBack)
 			c->clrBack = new GdkColor;
 		if (!c->clrFore)
@@ -434,8 +476,7 @@ void convo_recv(gulong uin)
 		if (pIcqColor->Foreground() == 0x00000000 &&
 				pIcqColor->Background() == 0x00FFFFFF)
 			bIgnoreBW = true;
-		else
-		{
+		else {
 			c->clrFore->red   = pIcqColor->ForeRed() * 257;
 			c->clrFore->green = pIcqColor->ForeGreen() * 257;
 			c->clrFore->blue  = pIcqColor->ForeBlue() * 257;
@@ -446,16 +487,12 @@ void convo_recv(gulong uin)
 			c->clrBack->pixel = 255;
 		}
 	}
-	else
-	{
-		if (c->clrFore)
-		{
+	else {
+		if (c->clrFore) {
 			delete c->clrFore;
 			c->clrFore = 0;
 		}
-
-		if (c->clrBack)
-		{
+		if (c->clrBack)	{
 			delete c->clrBack;
 			c->clrBack = 0;
 		}
@@ -463,17 +500,19 @@ void convo_recv(gulong uin)
 
 	// How about their alias and an optional timestamp?
 	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->text));
-	convo_nick_timestamp(c->text, c->user->GetAlias(), u_event->Time(), "remote");
+	convo_nick_timestamp(c->text, 
+			s_convert_to_utf8(c->user->GetAlias(), c->user->UserEncoding()).c_str(), 
+			u_event->Time(), "remote");
 	GtkTextIter iter;
 	gtk_text_buffer_get_end_iter(tb, &iter);
 	gchar *txt;
 	
-	switch (u_event->SubCommand())
-	{
+	switch (u_event->SubCommand()) {
 	  case ICQ_CMDxSUB_MSG:
+			cerr << "encoding: " << c->user->UserEncoding() << endl
+					<< "text: " << u_event->Text() << endl;
 			txt = convert_to_utf8(u_event->Text(), c->user->UserEncoding());
-			if (!bIgnoreBW)
-			{
+			if (!bIgnoreBW)	{
 				GtkTextTag *tag = gtk_text_buffer_create_tag(tb, NULL, 
 						"foreground-gdk", c->clrFore,
 						"background-gdk", c->clrBack,
