@@ -49,7 +49,7 @@ void WarnUser(QWidget *q, QString sz)
 #ifdef USE_KDE
   KMessageBox::sorry(q, sz, QMessageBox::tr("Licq Warning"), false);
 #else
-  QMessageBox::warning(q, QMessageBox::tr("Licq Warning"), sz, QMessageBox::Ok | QMessageBox::Default, QMessageBox::Ignore);
+  QMessageBox::warning(q, QMessageBox::tr("Licq Warning"), sz, QMessageBox::Ok | QMessageBox::Default, 0);
 #endif
 }
 
@@ -59,7 +59,7 @@ void CriticalUser(QWidget *q, QString sz)
 #ifdef USE_KDE
   KMessageBox::error(q, sz, QMessageBox::tr("Licq Error"), false);
 #else
-  QMessageBox::warning(q, QMessageBox::tr("Licq Error"), sz, QMessageBox::Ok | QMessageBox::Default, QMessageBox::Ignore);
+  QMessageBox::warning(q, QMessageBox::tr("Licq Error"), sz, QMessageBox::Ok | QMessageBox::Default, 0);
 #endif
 }
 
