@@ -1559,39 +1559,39 @@ Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopiere
     </message>
     <message>
         <source> weeks</source>
-        <translation>wochen</translation>
+        <translation> Wochen</translation>
     </message>
     <message>
         <source> week</source>
-        <translation>woche</translation>
+        <translation> Woche</translation>
     </message>
     <message>
         <source> days</source>
-        <translation>tage</translation>
+        <translation> Tage</translation>
     </message>
     <message>
         <source> day</source>
-        <translation>tag</translation>
+        <translation> Tag</translation>
     </message>
     <message>
         <source> hours</source>
-        <translation>stunden</translation>
+        <translation> Stunden</translation>
     </message>
     <message>
         <source> hour</source>
-        <translation>stunde</translation>
+        <translation> Stunde</translation>
     </message>
     <message>
         <source> minutes</source>
-        <translation>minuten</translation>
+        <translation> Minuten</translation>
     </message>
     <message>
         <source> minute</source>
-        <translation>minute</translation>
+        <translation> Minute</translation>
     </message>
     <message>
         <source>0 minutes</source>
-        <translation>0 minuten</translation>
+        <translation>0 Minuten</translation>
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
@@ -1599,7 +1599,7 @@ Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopiere
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation>&lt;br&gt;;&amp;quot;Telefon&amp;nbsp;folgen&amp;quot;:&amp;nbsp;Besetzt</translation>
+        <translation>&lt;br&gt;&amp;quot;Telefon&amp;nbsp;folgen&amp;quot;:&amp;nbsp;Besetzt</translation>
     </message>
     <message>
         <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
