@@ -26,6 +26,7 @@ class QPopupMenu;
 class QGroupBox;
 class QPushButton;
 class QToolButton;
+class QComboBox;
 
 class CICQDaemon;
 
@@ -38,6 +39,9 @@ public:
   void appendNoNewLine(QString);
   void GotoEnd();
 
+  void setBackground(const QColor&);
+  void setForeground(const QColor&);
+
 public slots:
   virtual void insert (const QString &);
   virtual void paste();
@@ -46,7 +50,6 @@ public slots:
 
 protected:
   virtual void keyPressEvent (QKeyEvent *);
-  void paintCell(QPainter* p, int row, int col);
 
 signals:
   void keyPressed(QKeyEvent *);
@@ -100,9 +103,6 @@ public:
 
   static ChatDlgList chatDlgs;
 
-public slots:
-  virtual void hide();
-
 protected:
   bool StartChatServer();
   bool ConnectToChat(CChatClient &);
@@ -111,17 +111,15 @@ protected:
   CChatWindow *mlePaneLocal, *mlePaneRemote, *mleIRCRemote, *mleIRCLocal;
   QGroupBox *boxPane, *boxIRC;
   QLabel *lblLocal, *lblRemote;
-  QPushButton *btnClose;
-  QMenuBar *mnuChat;
-  QPopupMenu *mnuMode, *mnuStyle;
+  QPopupMenu *mnuMode, *mnuStyle, *mnuMain, *mnuFg, *mnuBg;
   CICQDaemon *licqDaemon;
   QListBox *lstUsers;
 
   QToolButton* tbtBold, *tbtItalic, *tbtUnderline;
-  QToolButton* tbtLaugh, *tbtBeep;
+  QToolButton* tbtLaugh, *tbtBeep, *tbtFg, *tbtBg;
 
   QString chatname, linebuf;
-  QComboBox *cmbFontName, *cmbFontSize, *cmbFrontColor, *cmbBackColor;
+  QComboBox *cmbFontName, *cmbFontSize;
 
   ChatMode m_nMode;
   ChatUserList chatUsers;
@@ -131,6 +129,8 @@ protected:
   TCPSocket m_cSocketChatServer;
   QSocketNotifier *snChatServer;
   bool m_bAudio;
+
+  virtual void hideEvent(QHideEvent*);
 
   friend class CJoinChatDlg;
 
@@ -147,8 +147,8 @@ protected slots:
   void fontSizeChanged(const QString&);
   void fontNameChanged(const QString&);
   void fontStyleChanged();
-  void frontColorChanged(int);
-  void backColorChanged(int);
+  void changeFrontColor();
+  void changeBackColor();
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();

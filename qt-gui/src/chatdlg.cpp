@@ -17,10 +17,13 @@
 #include <qgroupbox.h>
 #include <qmenubar.h>
 #include <qpopupmenu.h>
-
+#include <qclipboard.h>
+#include <qfontdatabase.h>
+#include <qwindowsstyle.h>
 
 #include "chatdlg.h"
 #include "ewidgets.h"
+#include "mledit.h"
 #include "licq_packets.h"
 #include "licq_log.h"
 #include "licq_translate.h"
@@ -44,15 +47,24 @@ ChatDlgList ChatDlg::chatDlgs;
 #include "xpm/chatItalic.xpm"
 #include "xpm/chatUnder.xpm"
 #include "xpm/chatBeep.xpm"
+#include "xpm/chatChangeFg.xpm"
+#include "xpm/chatChangeBg.xpm"
 
 // ---------------------------------------------------------------------------
 
-#define NUM_COLORS 7
+#define NUM_COLORS 14
 
 static const int col_array[] =
 {
   0xFF, 0xFF, 0xFF,
   0x00, 0x00, 0x00,
+  0x7F, 0x00, 0x00,
+  0x00, 0x80, 0x00,
+  0x80, 0x80, 0x00,
+  0x00, 0x00, 0x80,
+  0x80, 0x00, 0x80,
+  0x80, 0x80, 0x80,
+  0xC0, 0xC0, 0xC0,
   0xFF, 0x00, 0x00,
   0xFF, 0xFF, 0x00,
   0x00, 0xFF, 0x00,
@@ -80,13 +92,14 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   gUserManager.DropOwner();
 
   setCaption(tr("Licq - Chat"));
+  statusBar();
   // central widget
   QWidget* widCentral = new QWidget(this);
   setCentralWidget(widCentral);
 
   // Panel mode setup
   boxPane = new QGroupBox(widCentral);
-  QGridLayout *play = new QGridLayout(boxPane, 5, 1, 10, 5);
+  QGridLayout *play = new QGridLayout(boxPane, 5, 1, 4);
 
   lblRemote = new QLabel(tr("Remote - Not connected"), boxPane);
   mlePaneRemote = new CChatWindow(boxPane);
@@ -109,7 +122,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // IRC mode setup
   boxIRC = new QGroupBox(widCentral);
-  QGridLayout *lay = new QGridLayout(boxIRC, 2, 2, 10, 5);
+  QGridLayout *lay = new QGridLayout(boxIRC, 2, 2, 4);
   mleIRCRemote = new CChatWindow(boxIRC);
   mleIRCRemote->setReadOnly(true);
   mleIRCRemote->setMinimumHeight(100);
@@ -126,37 +139,23 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   lay->setColStretch(0, 1);
 
   // Generic setup
-  mnuChat = new QMenuBar(this);
-  mnuMode = new QPopupMenu(mnuChat);
+  mnuMain = new QPopupMenu(menuBar());
+  mnuMain->insertItem(tr("Close chat"), this, SLOT(hide()), ALT + Key_Q);
+  mnuMode = new QPopupMenu(menuBar());
   mnuMode->insertItem(tr("Pane Mode"), this, SLOT(SwitchToPaneMode()));
   mnuMode->insertItem(tr("IRC Mode"), this, SLOT(SwitchToIRCMode()));
-  mnuChat->insertItem(tr("Mode"), mnuMode);
-  mnuChat->insertItem(tr("Style"));
+  menuBar()->insertItem(tr("Chat"), mnuMain);
+  menuBar()->insertItem(tr("Mode"), mnuMode);
+//  mnuChat->insertItem(tr("Style"));
 
   // Toolbar
   QToolBar* barChat = new QToolBar("label", this);
   addToolBar(barChat, "label");
+  barChat->setHorizontalStretchable(true);
 
   barChat->addSeparator();
 
-  QPixmap* pixBold = new QPixmap(chatBold_xpm);
-  tbtBold = new QToolButton(*pixBold, tr("Bold"), tr("Toggles Bold font"),
-                            this, SLOT(fontStyleChanged()), barChat);
-  tbtBold->setToggleButton(true);
-
-  QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
-  tbtItalic = new QToolButton(*pixItalic, tr("Italic"), tr("Toggles Italic font"),
-                              this, SLOT(fontStyleChanged()), barChat);
-  tbtItalic->setToggleButton(true);
-
-  QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
-  tbtUnderline = new QToolButton(*pixUnder, tr("Underline"), tr("Toggles Bold font"),
-                                 this, SLOT(fontStyleChanged()), barChat);
-  tbtUnderline->setToggleButton(true);
-
-  barChat->addSeparator();
-
-  // ### FIXME: implement laughing
+   // ### FIXME: implement laughing
 //  tbtLaugh = new QToolButton(LeftArrow, barChat);
 
   QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
@@ -165,57 +164,86 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   barChat->addSeparator();
 
-  cmbFrontColor = new QComboBox(barChat);
-  connect(cmbFrontColor, SIGNAL(activated(int)), SLOT(frontColorChanged(int)));
-  cmbBackColor = new QComboBox(barChat);
-  connect(cmbBackColor, SIGNAL(activated(int)), SLOT(backColorChanged(int)));
+  QPixmap* pixFg = new QPixmap(chatChangeFg_xpm);
+  tbtFg = new QToolButton(*pixFg, tr("Foreground color"), tr("Changes the foreground color"),
+                          this, SLOT(changeFrontColor()), barChat);
+  mnuFg = new QPopupMenu(this);
+
+  QPixmap* pixBg = new QPixmap(chatChangeBg_xpm);
+  tbtBg = new QToolButton(*pixBg, tr("Background color"), tr("Changes the background color"),
+                          this, SLOT(changeBackColor()), barChat);
+
+  mnuBg = new QPopupMenu(this);
 
   for(int i = 0; i < NUM_COLORS; i++) {
-    QPixmap* pix = new QPixmap(50, 20);
+    QPixmap* pix = new QPixmap(48, 14);
+    QPainter p(pix);
     QColor c (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
     pix->fill(c);
+    p.drawRect(0, 0, 48, 14);
 
-    cmbFrontColor->insertItem(*pix, i);
-    cmbBackColor->insertItem(*pix, i);
+    mnuBg->insertItem(*pix, i);
+    QPixmap* pixf = new QPixmap(48, 14);
+    pixf->fill(colorGroup().background());
+    QPainter pf(pixf);
+    pf.setPen(c);
+    pf.drawText(5, 12, QString("Abc"));
+    mnuFg->insertItem(*pixf, i);
   }
-
-  cmbFrontColor->setCurrentItem(1);
-  cmbBackColor->setCurrentItem(0);
 
   barChat->addSeparator();
 
+  QPixmap* pixBold = new QPixmap(chatBold_xpm);
+  tbtBold = new QToolButton(*pixBold, tr("Bold"), tr("Toggles Bold font"),
+                            this, SLOT(fontStyleChanged()), barChat);
+  tbtBold->setToggleButton(true);
+  tbtBold->setAutoRaise(false);
+
+  QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
+  tbtItalic = new QToolButton(*pixItalic, tr("Italic"), tr("Toggles Italic font"),
+                              this, SLOT(fontStyleChanged()), barChat);
+  tbtItalic->setToggleButton(true);
+  tbtItalic->setAutoRaise(false);
+
+  QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
+  tbtUnderline = new QToolButton(*pixUnder, tr("Underline"), tr("Toggles Bold font"),
+                                 this, SLOT(fontStyleChanged()), barChat);
+  tbtUnderline->setToggleButton(true);
+  tbtUnderline->setAutoRaise(false);
+
+  barChat->addSeparator();
+
+  QFontDatabase fb;
   cmbFontName = new QComboBox(barChat);
-  cmbFontName->insertItem("helvetica");
-  cmbFontName->insertItem("times");
-  cmbFontName->insertItem("system");
-  cmbFontName->insertItem("courier");
+  cmbFontName->setStyle(new QWindowsStyle);
+#if 0
+  cmbFontName->setSizeLimit(15);
+  QStringList sl = fb.families();
+  while(sl.at(55) != sl.end())  sl.remove(sl.at(55));
+#endif
+  cmbFontName->insertStringList(fb.families());
+  barChat->setStretchableWidget(cmbFontName);
   connect(cmbFontName, SIGNAL(activated(const QString&)), SLOT(fontNameChanged(const QString&)));
 
   cmbFontSize = new QComboBox(barChat);
-//  cmbFontSize->setValidator(new QIntValidator(6, 120, barChat));
   connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
-
   cmbFontSize->insertItem(QString::number(font().pointSize()));
 
-  for(int i = 8; i <= 12; i++)  cmbFontSize->insertItem(QString::number(i));
-  for(int i = 14; i<= 24; i +=2)  cmbFontSize->insertItem(QString::number(i));
-  for(int i = 28; i<= 48; i +=8)  cmbFontSize->insertItem(QString::number(i));
-
-  btnClose = new QPushButton(tr("&Close Chat"), widCentral);
-  btnClose->setFixedSize(btnClose->sizeHint());
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
+  QValueList<int> sizes = QFontDatabase::standardSizes();
+  for(unsigned i = 0; i < sizes.count(); i++)
+    cmbFontSize->insertItem(QString::number(sizes[i]));
 
   QGridLayout *g = new QGridLayout(widCentral, 2, 1, 6, 4);
   g->addWidget(boxPane, 0, 0);
   g->addWidget(boxIRC, 0, 0);
-  g->addWidget(btnClose, 1, 0);
 
   SwitchToPaneMode();
 
   // Add ourselves to the list
   chatDlgs.push_back(this);
 
+  widCentral->setMinimumSize(400, 300);
   resize(500, 475);
   show();
 }
@@ -276,7 +304,17 @@ void ChatDlg::fontNameChanged(const QString& txt)
   mleIRCLocal->setFont(f);
 
   // transmit to remote
-  qDebug("not yet implemented");
+  const char* name = txt.ascii();
+  CBuffer buffer(txt.length() + 5);
+  buffer.PackChar(0x10);
+  buffer.PackString(name);
+  buffer.PackUnsignedShort(0x2200);
+  // 0x2200 west
+  // 0x22a2 turkey
+  // 0x22cc cyrillic
+  // 0x22a1 greek
+  // 0x22ba baltic
+  chatSendBuffer(&buffer);
 }
 
 // -----------------------------------------------------------------------------
@@ -316,20 +354,14 @@ void ChatDlg::chatSendBeep()
 
 // -----------------------------------------------------------------------------
 
-void ChatDlg::frontColorChanged(int i)
+void ChatDlg::changeFrontColor()
 {
+  int i = mnuFg->exec(tbtFg->mapToGlobal(QPoint(0,tbtFg->height()+2)));
+  if (i<0) return;
+
   QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
-  QPalette pal = mlePaneLocal->palette();
-#if QT_VERSION >= 210
-  pal.setColor(QPalette::Active, QColorGroup::Text, color);
-  pal.setColor(QPalette::Inactive, QColorGroup::Text, color);
-#else
-  pal.setColor(QPalette::Active, QColorGroup::Text, color);
-  pal.setColor(QPalette::Normal, QColorGroup::Text, color);
-#endif
-  mlePaneLocal->setPalette(pal);
-  mleIRCLocal->setPalette(pal);
+  mlePaneLocal->setForeground(color);
 
   // sent to remote
   CBuffer buffer(5);
@@ -345,20 +377,15 @@ void ChatDlg::frontColorChanged(int i)
 
 // -----------------------------------------------------------------------------
 
-void ChatDlg::backColorChanged(int i)
+void ChatDlg::changeBackColor()
 {
+  int i = mnuBg->exec(tbtBg->mapToGlobal(QPoint(0,tbtBg->height()+2)));
+  if (i<0) return;
+
   QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
-  QPalette pal = mlePaneLocal->palette();
-#if QT_VERSION >= 210
-  pal.setColor(QPalette::Active, QColorGroup::Base, color);
-  pal.setColor(QPalette::Inactive, QColorGroup::Base, color);
-#else
-  pal.setColor(QPalette::Active, QColorGroup::Base, color);
-  pal.setColor(QPalette::Normal, QColorGroup::Base, color);
-#endif
-  mlePaneLocal->setPalette(pal);
-  mleIRCLocal->setPalette(pal);
+  mlePaneLocal->setBackground(color);
+  mleIRCLocal->setBackground(color);
 
   // sent to remote
   CBuffer buffer(5);
@@ -485,7 +512,7 @@ void ChatDlg::StateServer(int sd)
       lstUsers->insertItem(u->chatname);
       if (u == chatUser) {
         lblRemote->setText(tr("Remote - %1").arg(u->chatname));
-        setCaption(tr("Licq Chat - %1").arg(u->chatname));
+        setCaption(tr("Licq - Chat %1").arg(u->chatname));
       }
 
       // set up the remote colors
@@ -493,19 +520,8 @@ void ChatDlg::StateServer(int sd)
       u->colorBack = QColor (pin.ColorBackRed(), pin.ColorBackGreen(), pin.ColorBackBlue());
       if (u == chatUser)
       {
-        QPalette pal = mlePaneRemote->palette();
-#if QT_VERSION >= 210
-        pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Inactive, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-        pal.setColor(QPalette::Inactive, QColorGroup::Base, u->colorBack);
-#else
-        pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-        pal.setColor(QPalette::Normal, QColorGroup::Base, u->colorBack);
-#endif
-        mlePaneRemote->setPalette(pal);
+        mlePaneRemote->setForeground(u->colorFore);
+        mlePaneRemote->setBackground(u->colorBack);
       }
 
       // Send the response
@@ -518,19 +534,10 @@ void ChatDlg::StateServer(int sd)
         l.push_back(&(*iter)->client);
       }
 
-      QString f;
-      switch (mlePaneLocal->font().styleHint())
-      {
-        case QFont::Helvetica: f = "helvetica"; break;
-        case QFont::Times: f = "times"; break;
-        case QFont::System: f = "system"; break;
-        case QFont::Courier:
-        default: f = "courier"; break;
-      }
       CPChat_ColorFont p_colorfont(chatname, LocalPort(), m_nSession,
          0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
          mlePaneLocal->font().pointSize(), false, false, false,
-         f, l);
+         mlePaneLocal->font().family(), l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
         char buf[128];
@@ -691,19 +698,8 @@ void ChatDlg::StateClient(int sd)
       u->colorBack = QColor (pin.ColorBackRed(), pin.ColorBackGreen(), pin.ColorBackBlue());
       if (u == chatUser)
       {
-        QPalette pal = mlePaneRemote->palette();
-#if QT_VERSION >= 210
-        pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Inactive, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-        pal.setColor(QPalette::Inactive, QColorGroup::Base, u->colorBack);
-#else
-        pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
-        pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-        pal.setColor(QPalette::Normal, QColorGroup::Base, u->colorBack);
-#endif
-        mlePaneRemote->setPalette(pal);
+        mlePaneRemote->setForeground(u->colorFore);
+        mlePaneRemote->setBackground(u->colorBack);
       }
 
       u->font.setPointSize(pin.FontSize());
@@ -733,18 +729,9 @@ void ChatDlg::StateClient(int sd)
       }
 
       // send the reply (font packet)
-      QString f;
-      switch (mlePaneLocal->font().styleHint())
-      {
-        case QFont::Helvetica: f = "helvetica"; break;
-        case QFont::Times: f = "times"; break;
-        case QFont::System: f = "system"; break;
-        case QFont::Courier:
-        default: f = "courier"; break;
-      }
       CPChat_Font p_font(LocalPort(), m_nSession,
          mlePaneRemote->font().pointSize(),
-         false, false, false, f);
+         false, false, false, mlePaneLocal->font().family());
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
         char buf[128];
@@ -955,17 +942,8 @@ void ChatDlg::chatRecv(int sd)
 
         u->colorFore = QColor (colorForeRed, colorForeGreen, colorForeBlue);
         if (u == chatUser)
-        {
-          QPalette pal = mlePaneRemote->palette();
-#if QT_VERSION >= 210
-          pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-          pal.setColor(QPalette::Inactive, QColorGroup::Text, u->colorFore);
-#else
-          pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-          pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
-#endif
-          mlePaneRemote->setPalette(pal);
-        }
+          mlePaneRemote->setForeground(u->colorFore);
+
         break;
       }
 
@@ -981,17 +959,8 @@ void ChatDlg::chatRecv(int sd)
 
         u->colorBack = QColor (colorBackRed, colorBackGreen, colorBackBlue);
         if (u == chatUser)
-        {
-          QPalette pal = mlePaneRemote->palette();
-#if QT_VERSION >= 210
-          pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-          pal.setColor(QPalette::Inactive, QColorGroup::Base, u->colorBack);
-#else
-          pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-          pal.setColor(QPalette::Normal, QColorGroup::Base, u->colorBack);
-#endif
-          mlePaneRemote->setPalette(pal);
-        }
+          mlePaneRemote->setBackground(u->colorBack);
+
         break;
       }
       case 0x10: // change font type
@@ -1007,13 +976,8 @@ void ChatDlg::chatRecv(int sd)
                         (u->chatQueue[sizeFontName + 4] << 8);
          u->font.setFamily(nameFont);
 
-         qDebug("nameFont %s", nameFont);
-         qDebug("encodingFont %x", encodingFont);
-
          if (u == chatUser)
-         {
            mlePaneRemote->setFont(u->font);
-         }
 
          // Dequeue all characters
          for (unsigned short i = 0; i < 3 + sizeFontName + 2; i++)
@@ -1031,6 +995,9 @@ void ChatDlg::chatRecv(int sd)
         u->font.setBold(styleFont & 1);
         u->font.setItalic(styleFont & 2);
         u->font.setUnderline(styleFont & 4);
+
+        if(u == chatUser)
+          mlePaneRemote->setFont(u->font);
 
         // Dequeue all characters
         for (unsigned short i = 0; i < 5; i++)
@@ -1152,16 +1119,15 @@ void ChatDlg::chatClose(CChatUser *u)
 }
 
 
-void ChatDlg::hide()
+void ChatDlg::hideEvent(QHideEvent*)
 {
   chatClose(NULL);
-  QWidget::hide();
-  delete this;
+  close(true);
 }
 
 
-
-//=====CChatWindow===========================================================
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 CChatWindow::CChatWindow (QWidget *parent)
   : QMultiLineEdit(parent, 0)
@@ -1170,8 +1136,11 @@ CChatWindow::CChatWindow (QWidget *parent)
   setWordWrap(WidgetWidth);
   setWrapPolicy(AtWhiteSpace);
 #endif
+  if(MLEditWrap::editFont) QWidget::setFont(*MLEditWrap::editFont);
 }
 
+
+// -----------------------------------------------------------------------------
 
 void CChatWindow::appendNoNewLine(QString s)
 {
@@ -1179,10 +1148,16 @@ void CChatWindow::appendNoNewLine(QString s)
   QMultiLineEdit::insert(s);
 }
 
+
+// -----------------------------------------------------------------------------
+
 void CChatWindow::GotoEnd()
 {
   setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 }
+
+
+// -----------------------------------------------------------------------------
 
 void CChatWindow::insert(const QString &s)
 {
@@ -1191,13 +1166,14 @@ void CChatWindow::insert(const QString &s)
 }
 
 
+// -----------------------------------------------------------------------------
+
 void CChatWindow::keyPressEvent (QKeyEvent *e)
 {
   if ( (e->key() < Key_Space ||
         e->key() > 0xff ||
         e->state() & ControlButton ||
-        e->state() & AltButton)
-      &&
+        e->state() & AltButton) &&
        (e->key() != Key_Tab &&
         e->key() != Key_Backtab &&
         e->key() != Key_Backspace &&
@@ -1206,22 +1182,76 @@ void CChatWindow::keyPressEvent (QKeyEvent *e)
         e->key() != 0x0000) )
     return;
 
-  if (!atEnd()) GotoEnd();
-  QMultiLineEdit::keyPressEvent(e);
   emit keyPressed(e);
+  QMultiLineEdit::keyPressEvent(e);
 }
 
+
+// -----------------------------------------------------------------------------
 
 void CChatWindow::paste()
 {
+#if 0
+  QString t = QApplication::clipboard()->text();
+
+  QApplication::clipboard()->clear();
+
+  QMultiLineEdit::paste();
+
+  if ( !t.isEmpty() ) {
+
+    for (int i=0; (uint)i<t.length(); i++) {
+      if ( t[i] < ' ' && t[i] != '\n' && t[i] != '\t' )
+        t[i] = ' ';
+    }
+
+    for(int i=0; (unsigned) i<t.length(); i++) {
+      QKeyEvent press(QEvent::KeyPress, 0, t[i].latin1(), 0, QString(t[i]));
+
+      keyPressEvent(&press);
+    }
+  }
+#endif
 }
 
 
-void CChatWindow::paintCell(QPainter* p, int row, int col)
+// -----------------------------------------------------------------------------
+
+void CChatWindow::setBackground(const QColor& c)
 {
-  QMultiLineEdit::paintCell(p, row, col);
+  QPalette pal = palette();
+
+#if QT_VERSION >= 210
+  pal.setColor(QPalette::Active, QColorGroup::Base, c);
+  pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
+#else
+  pal.setColor(QPalette::Active, QColorGroup::Base, c);
+  pal.setColor(QPalette::Normal, QColorGroup::Base, c);
+#endif
+
+  setPalette(pal);
 }
 
 
+// -----------------------------------------------------------------------------
+
+
+void CChatWindow::setForeground(const QColor& c)
+{
+  QPalette pal = palette();
+
+#if QT_VERSION >= 210
+  pal.setColor(QPalette::Active, QColorGroup::Text, c);
+  pal.setColor(QPalette::Inactive, QColorGroup::Text, c);
+#else
+  pal.setColor(QPalette::Active, QColorGroup::Text, c);
+  pal.setColor(QPalette::Normal, QColorGroup::Text, c);
+#endif
+
+  setPalette(pal);
+}
+
+
+// -----------------------------------------------------------------------------
 
 #include "chatdlg.moc"
