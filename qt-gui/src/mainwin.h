@@ -80,6 +80,7 @@ protected:
              *mnuUser,
              *mnuUserGroups,
              *mnuGroup,
+             *mnuOwnerAdm,
              *mnuUserAdm,
              *mnuStatus,
              *mnuDebug,
@@ -129,7 +130,7 @@ protected:
   void CreateUserView(void);
   void resizeEvent (QResizeEvent *);
   void initMenu(void);
-  ICQFunctions *callFunction(int fcn, bool isUser, unsigned long _nUin = 0);
+  ICQFunctions *callFunction(int fcn, unsigned long _nUin);
 
   virtual void mouseMoveEvent (QMouseEvent *);
   virtual void mousePressEvent (QMouseEvent *);
@@ -153,13 +154,13 @@ protected slots:
   void changeStatus(int index);
   void changeStatusManual(int index);
   void setCurrentGroupMenu(int id);
-  void setCurrentGroup(int index);
+  void setCurrentGroup(int);
   void callDefaultFunction();
-  void callOwnerFunction();
+  void callOwnerFunction(int);
   void callMsgFunction();
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
-  void callUserFunction(int fcn);
+  void callUserFunction(int);
   void slot_logon();
   void slot_register();
   void slot_doneregister();
