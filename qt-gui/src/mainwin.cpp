@@ -1370,6 +1370,7 @@ void CMainWindow::aboutBox()
                   "Qt GUI plugin version %2.\n"
                   "%6\n"
                   "Author: Graham Roff\n"
+                  "Qt-GUI contributions by Dirk Mueller\n"
                   "http://www.licq.org\n\n"
                   "%3 (%4)\n"
                   "%5 contacts.").arg(licqDaemon->Version())
