@@ -1,44 +1,47 @@
 static const char LICQ_CONF[] =
-"
-[licq]
-Version = 710
-
-[plugins]
-NumPlugins = 1
-Plugin1 = qt-gui
-
-[network]
-AllowNewUsers = 1
-NumOfServers = 3
-DefaultServerPort = 4000
-Server1 = icq.mirabilis.com
-Server2 = icq2.mirabilis.com
-Server3 = icq3.mirabilis.com
-TCPServerPort = 0
-MaxUsersPerPacket = 100
-Errors = log.errors
-Rejects = log.rejects
-Translation = none
-UrlViewer = viewurl-netscape.sh
-Terminal = xterm -T Licq -e 
-IgnoreTypes = 0
-
-[onevent]
-Enable = 1
-Command = play
-Message = ~/wavs/message.wav
-Chat = ~/wavs/chat.wav
-File = ~/wavs/file.wav
-Url = ~/wavs/url.wav
-OnlineNotify = ~/wavs/notify.wav
-SysMsg = ~/wavs/sysmsg.wav
-
-[groups]
-NumOfGroups = 3
-DefaultGroup = 0
-NewUserGroup = 1
-Group1.name = New Users
-Group2.name = Friends
-Group3.name = Family
-";
+"\n"
+"[licq]\n"
+"Version = 710\n"
+"\n"
+"[plugins]\n"
+"NumPlugins = 1\n"
+"Plugin1 = qt-gui\n"
+"\n"
+"[network]\n"
+"AllowNewUsers = 1\n"
+"NumOfServers = 3\n"
+"DefaultServerPort = 4000\n"
+"Server1 = icq.mirabilis.com\n"
+"Server2 = icq2.mirabilis.com\n"
+"Server3 = icq3.mirabilis.com\n"
+"TCPServerPort = 0\n"
+"TCPServerPortRange = 0\n"
+"TCPEnabled = true\n"
+"FirewallHost = \n"
+"MaxUsersPerPacket = 100\n"
+"Errors = log.errors\n"
+"Rejects = log.rejects\n"
+"Translation = none\n"
+"UrlViewer = viewurl-netscape.sh\n"
+"Terminal = xterm -T Licq -e \n"
+"IgnoreTypes = 0\n"
+"\n"
+"[onevent]\n"
+"Enable = 1\n"
+"Command = play\n"
+"Message = ~/wavs/message.wav\n"
+"Chat = ~/wavs/chat.wav\n"
+"File = ~/wavs/file.wav\n"
+"Url = ~/wavs/url.wav\n"
+"OnlineNotify = ~/wavs/notify.wav\n"
+"SysMsg = ~/wavs/sysmsg.wav\n"
+"\n"
+"[groups]\n"
+"NumOfGroups = 3\n"
+"DefaultGroup = 0\n"
+"NewUserGroup = 1\n"
+"Group1.name = New Users\n"
+"Group2.name = Friends\n"
+"Group3.name = Family\n"
+"\n";
 
