@@ -241,6 +241,7 @@ public:
   time_t LastReceivedEvent()            { return m_nLastCounters[LAST_RECV_EVENT]; }
   time_t LastCheckedAutoResponse()      { return m_nLastCounters[LAST_CHECKED_AR]; }
   time_t OnlineSince()      		{ return m_nOnlineSince; }
+  time_t IdleSince()                    { return m_nIdleSince; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
   bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
   bool AutoSecure()                     { return m_nAutoAccept & AUTO_SECURE; }
@@ -457,6 +458,7 @@ protected:
   void SetLastCheckedAutoResponse() { m_nLastCounters[LAST_CHECKED_AR] = time(NULL); }
 
   void SetOnlineSince(time_t t)     { m_nOnlineSince = t; }
+  void SetIdleSince(time_t t)       { m_nIdleSince = t; }
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -464,6 +466,7 @@ protected:
   time_t m_nTouched;
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;
+  time_t m_nIdleSince;
   bool m_bOnContactList;
   unsigned long m_nIp, m_nIntIp, m_nVersion, m_nClientTimestamp, m_nCookie;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;

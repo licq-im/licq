@@ -1639,6 +1639,14 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       u->SetOnlineSince(nOnlineSince);
     }
 
+    if (packet.getTLVLen(0x0004) == 2)
+    {
+      unsigned short nIdleTime = packet.UnpackUnsignedShortTLV(0x0004);
+      u->SetIdleSince(time(NULL) - (nIdleTime * 60));
+    }
+    else
+      u->SetIdleSince(0);
+
     if (packet.getTLVLen(0x000c) == 0x25) {
       CBuffer msg = packet.UnpackTLV(0x000c);
 

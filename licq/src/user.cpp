@@ -1424,6 +1424,7 @@ void ICQUser::Init(unsigned long _nUin)
   for (unsigned short i = 0; i < 4; i++)
     m_nLastCounters[i] = 0;
   m_nOnlineSince = 0;
+  m_nIdleSince = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
@@ -1947,16 +1948,56 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
           sz = szTemp;
           break;
-	case 'O':
-	  if (m_nStatus == ICQ_STATUS_OFFLINE || m_nOnlineSince == 0)
-	  {
-	    strcpy(szTemp, "Unknown");
-	    sz = szTemp;
-	    break;
-	  }
-	  strftime(szTemp, 128, "%b %d %R", localtime(&m_nOnlineSince));
-	  sz = szTemp;
-	  break;
+        case 'O':
+          if (m_nStatus == ICQ_STATUS_OFFLINE || m_nOnlineSince == 0)
+          {
+            strcpy(szTemp, "Unknown");
+            sz = szTemp;
+            break;
+          }
+          strftime(szTemp, 128, "%b %d %R", localtime(&m_nOnlineSince));
+          sz = szTemp;
+          break;
+          
+        case 'I':
+        {
+          if (m_nIdleSince)
+          {
+            unsigned short nDays, nHours, nMinutes;
+            char szTime[128];
+            unsigned long nIdleTime = time(NULL) - m_nIdleSince;
+            nDays = nIdleTime / ( 60 * 60 * 24);
+            nHours = (nIdleTime % (60 * 60 * 24)) / (60 * 60);
+            nMinutes = (nIdleTime % (60 * 60)) / 60;
+
+            strcpy(szTemp, "");
+
+            if (nDays)
+            {
+              sprintf(szTime, "%d day%s ", nDays, (nDays > 1 ? "s" : ""));
+              strcat(szTemp, szTime);
+            }
+
+            if (nHours)
+            {
+              sprintf(szTime, "%d hour%s ", nHours, (nHours > 1 ? "s" : ""));
+              strcat(szTemp, szTime);
+            }
+
+            if (nMinutes)
+            {
+              sprintf(szTime, "%d minute%s", nMinutes, (nMinutes > 1 ? "s" : ""));
+              strcat(szTemp, szTime);
+            }
+          }
+          else
+            strcpy(szTemp, "Active");
+            
+          sz = szTemp;
+
+          break;
+        }
+
         case 'm':
           sprintf(szTemp, "%d", NewMessages());
           sz = szTemp;
