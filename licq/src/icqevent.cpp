@@ -360,3 +360,15 @@ CTypingNotificationSignal::CTypingNotificationSignal(const char *szId,
 {
 }
 
+CGrantAuthSignal::CGrantAuthSignal(const char *szId, const char *szMsg)
+  : CSignal(PROTOxSENDxGRANTxAUTH, szId)
+{
+  m_szMsg = szMsg ? strdup(szMsg) : 0;
+}
+
+CRefuseAuthSignal::CRefuseAuthSignal(const char *szId, const char *szMsg)
+  : CSignal(PROTOxSENDxREFUSExAUTH, szId)
+{
+  m_szMsg = szMsg ? strdup(szMsg) : 0;
+}
+

@@ -10,6 +10,7 @@
 
 typedef std::list<const char *> ConstFileList;
 
+#define LICQ_PPID 0x4C696371  // "Licq"
 #define EVENT_HEADER_SIZE  80
 
 // Define some event flags, leave the 2 LSB's for the licq version
@@ -60,7 +61,7 @@ public:
 protected:
    virtual void AddToHistory(ICQUser *, direction) = 0;
    int AddToHistory_Header(direction, char *);
-   void AddToHistory_Flush(ICQUser *, char *);
+   void AddToHistory_Flush(ICQUser *, char *, unsigned long = LICQ_PPID);
 
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }

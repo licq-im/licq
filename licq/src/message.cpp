@@ -134,15 +134,15 @@ int CUserEvent::AddToHistory_Header(direction _nDir, char *szOut)
 }
 
 
-void CUserEvent::AddToHistory_Flush(ICQUser *u, char *szOut)
+void CUserEvent::AddToHistory_Flush(ICQUser *u, char *szOut, unsigned long nPPID)
 {
   if (u != NULL)
     u->WriteToHistory(szOut);
   else
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
     o->WriteToHistory(szOut);
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(nPPID);
   }
 }
 
@@ -433,7 +433,7 @@ void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
   nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n:%s\n:%s\n:%s\n", m_szId,
                   p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, szOut, m_nPPID);
   delete [] szOut;
 }
 
@@ -522,7 +522,7 @@ void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
   delete [] p;
 
   AddStrWithColons(&szOut[nPos], m_szReason);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, szOut, m_nPPID);
   delete [] szOut;
 }
 
@@ -588,7 +588,7 @@ void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
   delete [] p;
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, szOut, m_nPPID);
   delete [] szOut;
 }
 
@@ -654,7 +654,7 @@ void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
   delete [] p;
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, szOut, m_nPPID);
   delete [] szOut;
 }
 
@@ -778,17 +778,19 @@ CEventContactList::~CEventContactList()
 
 void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
 {
+  unsigned long nPPID = LICQ_PPID;
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
   {
     char *p = PPIDSTRING((*iter)->PPID());
+    nPPID = (*iter)->PPID();
     nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n", (*iter)->IdString(),
       p, (*iter)->Alias());
     delete [] p;
   }
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, szOut, nPPID);
   delete [] szOut;
 }
 

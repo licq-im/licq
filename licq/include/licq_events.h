@@ -443,7 +443,13 @@ enum SIGNAL_TYPE
   PROTOxSENDxMSG,
   //! The user has started typing and wants to let the remote user know about
   //! about it.
-  PROTOxSENDxTYPING_NOTIFICATION
+  PROTOxSENDxTYPING_NOTIFICATION,
+  //! The user granted authorization for a user to add them to his
+  //! contact list.
+  PROTOxSENDxGRANTxAUTH,
+  //! The user refused authorization for a user to add them to his
+  //! contact list.
+  PROTOxSENDxREFUSExAUTH
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -541,6 +547,27 @@ public:
 
 private:
   bool m_bActive;
+};
+
+class CGrantAuthSignal : public CSignal
+{
+public:
+  CGrantAuthSignal(const char *, const char *);
+  virtual ~CGrantAuthSignal() { if (m_szMsg) free(m_szMsg); }
+  char *Message() { return m_szMsg; }
+
+private:
+  char *m_szMsg;
+};
+
+class CRefuseAuthSignal : public CSignal
+{
+public:
+  CRefuseAuthSignal(const char *, const char *);
+  virtual ~CRefuseAuthSignal() { if (m_szMsg) free(m_szMsg); }
+
+private:
+  char *m_szMsg;
 };
 
 #endif

@@ -606,7 +606,7 @@ void CICQDaemon::ProtoPluginShutdown(unsigned short _nId)
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end(); iter++)
   {
-    if ((*(*iter)->nId) == _nId) (*iter)->Shutdown();
+    if ((*iter)->Id() == _nId) (*iter)->Shutdown();
   }
   pthread_mutex_unlock(&licq->mutex_protoplugins);
 }
@@ -1042,7 +1042,7 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
     icqAddUser(szId);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID));
-
+  PushProtoSignal(new CAddUserSignal(szId, false), nPPID);
   return true;
 }
 

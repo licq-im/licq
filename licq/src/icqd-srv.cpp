@@ -811,9 +811,29 @@ unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
   return 0;
 }
 
-//-----icqAuthorizeGrant--------------------------------------------------------
+//-----icqAuthorizeGrant-------------------------------------------------------
+unsigned long CICQDaemon::ProtoAuthorizeGrant(const char *szId,
+  unsigned long nPPID, const char *szMessage)
+{
+  unsigned long nRet = 0;
+
+  if (nPPID == LICQ_PPID)
+    nRet = icqAuthorizeGrant(szId, szMessage);
+  else
+    PushProtoSignal(new CGrantAuthSignal(szId, szMessage), nPPID);
+  return nRet;
+}
+
 unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMessage)
-// authorize a user to add you to their contact list
+{
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+
+  return icqAuthorizeGrant(szUin, szMessage);
+}
+
+unsigned long CICQDaemon::icqAuthorizeGrant(const char *szId,
+  const char *szMessage)
 {
   char *sz = NULL;
   if (szMessage != NULL)
@@ -821,8 +841,8 @@ unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMe
     sz = gTranslator.NToRN(szMessage);
     gTranslator.ClientToServer(sz);
   }
-  CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxGRANTED, sz);
-  gLog.Info(tr("%sAuthorizing user %lu (#%lu)...\n"), L_SRVxSTR, nUin, p->Sequence());
+  CPU_ThroughServer *p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxGRANTED, sz);
+  gLog.Info(tr("%sAuthorizing user %s (#%lu)...\n"), L_SRVxSTR, szId, p->Sequence());
   delete [] sz;
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
@@ -831,9 +851,29 @@ unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMe
   return 0;
 }
 
-//-----icqAuthorizeRefuse-------------------------------------------------------
+//-----icqAuthorizeRefuse------------------------------------------------------
+unsigned long CICQDaemon::ProtoAuthorizeRefuse(const char *szId,
+  unsigned long nPPID, const char *szMessage)
+{
+  unsigned long nRet = 0;
+
+  if (nPPID == LICQ_PPID)
+    nRet = icqAuthorizeRefuse(szId, szMessage);
+  else
+    PushProtoSignal(new CRefuseAuthSignal(szId, szMessage), nPPID);
+
+  return nRet;
+}
+
 unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
-// refuseto authorize a user to add you to their contact list
+{
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+  return icqAuthorizeRefuse(szUin, szMessage);
+}
+
+unsigned long CICQDaemon::icqAuthorizeRefuse(const char *szId,
+  const char *szMessage)
 {
   char *sz = NULL;
   if (szMessage != NULL)
@@ -841,9 +881,9 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
     sz = gTranslator.NToRN(szMessage);
     gTranslator.ClientToServer(sz);
   }
-  CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxREFUSED, sz);
-  gLog.Info(tr("%sRefusing authorization to user %lu (#%lu)...\n"), L_SRVxSTR,
-     nUin, p->Sequence());
+  CPU_ThroughServer *p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxREFUSED, sz);
+  gLog.Info(tr("%sRefusing authorization to user %s (#%lu)...\n"), L_SRVxSTR,
+     szId, p->Sequence());
   delete [] sz;
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);

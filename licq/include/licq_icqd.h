@@ -194,6 +194,12 @@ public:
      unsigned long nMsgID[], bool bDirect);
   void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
      unsigned long nSequence);
+  
+  unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
+     const char *szMessage);
+
+  unsigned long ProtoAuthorizeRefuse(const char *szId, unsigned long nPPID,
+     const char *szMessage);
 
   // TCP (user) functions
   // Message
@@ -317,7 +323,9 @@ public:
   void postLogoff(int nSD, ICQEvent *cancelledEvent);
   void icqRelogon();
   unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
+  unsigned long icqAuthorizeGrant(const char *szId, const char *szMessage);
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
+  unsigned long icqAuthorizeRefuse(const char *szId, const char *szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long _nUin, bool _bAuthReq = false);

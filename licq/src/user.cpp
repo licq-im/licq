@@ -1463,12 +1463,13 @@ void CUserManager::UnlockOwnerList()
 void CUserManager::AddUserToGroup(const char *szId, unsigned long nPPID,
   unsigned short _nGroup)
 {
+  //TODO: For other protocols
   ICQUser *u = FetchUser(szId, nPPID, LOCK_W);
   if (u == NULL) return;
   u->AddToGroup(GROUPS_USER, _nGroup);
   int nGSID = u->GetGSID();
   DropUser(u);
-  if (gLicqDaemon)
+  if (gLicqDaemon && nPPID == LICQ_PPID)
     gLicqDaemon->icqChangeGroup(szId, nPPID, _nGroup,
       nGSID, ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
 }
@@ -3796,4 +3797,5 @@ void ICQOwner::SetPicture(const char *f)
     close(source);
     close(dest);
   }
- }
+}
+ 
