@@ -68,7 +68,7 @@ MsgViewItem::~MsgViewItem(void)
 
 void MsgViewItem::SetEventLine()
 {
-  QString s = EventDescription(msg).local8Bit();
+  QString s = EventDescription(msg);
   const char *sz = NULL;
 
   switch(msg->SubCommand())
@@ -115,7 +115,7 @@ void MsgViewItem::SetEventLine()
       s += "]";
   }
 
-  setText(1, QString::fromLocal8Bit(s));
+  setText(1, s);
 }
 
 
