@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,10 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
+
+// written by Graham Roff <graham@licq.org>
+// KDE support by Dirk Mueller <dirk@licq.org>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -37,6 +40,7 @@
 #include <qpainter.h>
 #include <qfile.h>
 #ifdef USE_KDE
+#include <kwin.h>
 #include <kpopupmenu.h>
 #endif
 
@@ -56,12 +60,13 @@
 #undef FocusIn
 #undef FocusOut
 
+//#define DEBUG_WHARF
 
 /*
   Constructs a WharfIcon widget.
 */
 IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent = 0)
-  : KSystemTray(parent, "LicqWharf")
+  : QWidget(parent, "LicqWharf", WType_TopLevel)
 {
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
@@ -74,6 +79,7 @@ IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *pare
 void IconManager::X11Init()
 {
   // set the hints
+#ifndef USE_KDE
   Display *dsp = x11Display();  // get the display
   WId win = winId();     // get the window
   XWMHints *hints;  // hints
@@ -90,12 +96,8 @@ void IconManager::X11Init()
   hints->flags = WindowGroupHint | IconWindowHint | IconPositionHint | StateHint; // set the window group hint
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
-
-#ifdef USE_KDE
-  //setMinimumWidth(wharfIcon->width());
-  //setMinimumHeight(wharfIcon->height());
-  contextMenu()->insertItem(QString("Licq"), menu);
 #endif
+
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
   show();
@@ -115,43 +117,11 @@ void IconManager::closeEvent( QCloseEvent* e)
   e->ignore();
 }
 
-#ifdef USE_KDE
-/*
-int IconManager::widthForHeight(int)
-{
-  return wharfIcon->width();
-}
-
-int IconManager::heightForWidth(int)
-{
-  return wharfIcon->height();
-}
-
-void IconManager::removedFromPanel()
-{
-  InformUser(this, tr("The applet can be removed by\ndisabling it in the options dialog"));
-}
-*/
-#endif
-
 void IconManager::mouseReleaseEvent( QMouseEvent *e )
 {
 #ifdef DEBUG_WHARF
   printf("icon release\n");
 #endif
-#ifdef USE_KDE
-  switch(e->button())
-  {
-    case MidButton:
-      mainwin->callMsgFunction();
-      break;
-    case LeftButton:
-    case RightButton:
-    default:
-      KSystemTray::mouseReleaseEvent(e);
-      break;
-  }
-#else
   switch(e->button())
   {
     case LeftButton:
@@ -168,7 +138,6 @@ void IconManager::mouseReleaseEvent( QMouseEvent *e )
       break;
   }
   //wharfIcon->mouseReleaseEvent(e);
-#endif
 }
 
 void IconManager::paintEvent( QPaintEvent * )
@@ -605,6 +574,120 @@ void IconManager_Themed::SetDockIconMsg(unsigned short nNewMsg, unsigned short n
 
 }
 
+//=============================================================================
+
+IconManager_KDEStyle::IconManager_KDEStyle(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent )
+  : IconManager(_mainwin, _menu, parent)
+{
+  m_timerToggle = false;
+
+  m_ownerStatus = 0;
+  m_nSysMsg = 0;
+  m_nNewMsg = 0;
+  m_bStatusInvisible = false;
+  resize(24,24);
+#ifdef USE_KDE
+  KWin::setSystemTrayWindowFor( winId(), _mainwin ? _mainwin->topLevelWidget()->winId() : qt_xrootwin() );
+#endif
+  show();
+}
+
+
+IconManager_KDEStyle::~IconManager_KDEStyle()
+{
+}
+
+void IconManager_KDEStyle::SetDockIconStatus()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_statusIcon = CMainWindow::iconForStatus(o->StatusFull());
+  m_ownerStatus = o->Status();
+  m_bStatusInvisible = o->StatusInvisible();
+  gUserManager.DropOwner();
+
+  updateTooltip();
+
+  repaint(false);
+}
+
+void IconManager_KDEStyle::SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
+{
+  m_nNewMsg = nNewMsg;
+  m_nSysMsg = nSysMsg;
+
+  killTimers();
+  if(m_nNewMsg + m_nSysMsg)
+  {
+    m_eventIcon = mainwin->pmMessage;
+    startTimer(800 / QMIN(4, m_nNewMsg + m_nSysMsg));
+  }
+  else
+    m_eventIcon = QPixmap();
+
+  updateTooltip();
+
+  repaint(false);
+}
+
+void IconManager_KDEStyle::timerEvent(QTimerEvent* e)
+{
+  m_timerToggle = !m_timerToggle;
+  repaint();
+}
+
+void IconManager_KDEStyle::paintEvent( QPaintEvent *e)
+{
+  QPainter p(this);
+
+  if(m_timerToggle && !m_eventIcon.isNull())
+    p.drawPixmap((width()-m_eventIcon.width())/2, (height()-m_eventIcon.height())/2, m_eventIcon);
+  else
+    p.drawPixmap((width()-m_statusIcon.width())/2, (height()-m_statusIcon.height())/2, m_statusIcon);
+}
+
+void IconManager_KDEStyle::mouseReleaseEvent( QMouseEvent *e )
+{
+  switch(e->button())
+  {
+  case LeftButton:
+    if(mainwin->isVisible())
+      mainwin->hide();
+    else
+    {
+      mainwin->show();
+#ifdef USE_KDE
+      KWin::setOnDesktop(mainwin->winId(), KWin::currentDesktop());
+#endif
+      mainwin->raise();
+    }
+    break;
+   default:
+     IconManager::mouseReleaseEvent(e);
+     break;
+  }
+}
+
+void IconManager_KDEStyle::updateTooltip()
+{
+  QToolTip::remove(this);
+  QString s = QString("<nobr>") + QString(ICQUser::StatusToStatusStr(m_ownerStatus, m_bStatusInvisible))
+      + QString("</nobr>");
+
+  if(m_nSysMsg)
+    s += tr("<br><b>%1 system messages</b>").arg(m_nSysMsg);
+
+  if(m_nNewMsg > 1)
+    s += tr("<br>%1 msgs").arg(m_nNewMsg);
+  else if(m_nNewMsg)
+    s += tr("<br>1 msg");
+
+  s += tr("<br>Left click - Show main window"
+          "<br>Middle click - Show next message"
+          "<br>Right click - System menu");
+
+  QToolTip::add(this, s);
+}
+
 //=====WharfIcon=============================================================
 
 WharfIcon::WharfIcon(QPixmap *p, QWidget *parent)
@@ -651,5 +734,3 @@ void WharfIcon::paintEvent( QPaintEvent * )
   painter.drawPixmap(0, 0, *vis);
   painter.end();
 }
-
-

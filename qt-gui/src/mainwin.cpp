@@ -471,6 +471,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%w - </tt>webpage</li></ul>");
 #ifdef USE_DOCK
   licqIcon = NULL;
+#ifdef USE_KDE
+  if(m_nDockMode != DockNone)
+    licqIcon = new IconManager_KDEStyle(this, mnuSystem);
+#else
   switch (m_nDockMode)
   {
     case DockDefault:
@@ -482,7 +486,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     case DockNone:
       break;
   }
-#endif
+#endif // USE_KDE
+#endif // USE_DOCK
 
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 

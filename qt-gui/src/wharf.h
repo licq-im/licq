@@ -1,3 +1,23 @@
+// -*- c-basic-offset: 2 -*-
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+// written by Graham Roff <graham@licq.org>
+// KDE support by Dirk Mueller <dirk@licq.org>
+
 #ifndef WHARF_H
 #define WHARF_H
 
@@ -9,19 +29,12 @@
 #include <qbitmap.h>
 #include <qpopupmenu.h>
 
-#ifndef USE_KDE
-#define KSystemTray QWidget
-#else
-#include <ksystemtray.h>
-#endif
-
 class CMainWindow;
-
 
 class WharfIcon : public QWidget
 {
 public:
-  WharfIcon(QPixmap *, QWidget *parent= 0);
+  WharfIcon(QPixmap *, QWidget *parent);
   virtual ~WharfIcon();
   void Set(QPixmap *);
 protected:
@@ -31,16 +44,19 @@ protected:
 friend class IconManager;
 friend class IconManager_Default;
 friend class IconManager_Themed;
+friend class IconManager_KDEStyle;
 };
 
 
-class IconManager : public KSystemTray
+class IconManager : public QWidget
 {
 public:
   IconManager(CMainWindow *, QPopupMenu *, QWidget *parent = 0);
   virtual ~IconManager();
-  virtual void SetDockIconStatus() = 0;
-  virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg) = 0;
+  // reimplement these two
+  virtual void SetDockIconStatus() {};
+  virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg) {};
+
 protected:
   CMainWindow *mainwin;
   QPopupMenu *menu;
@@ -48,10 +64,6 @@ protected:
   virtual void mouseReleaseEvent(QMouseEvent *);
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
-#ifdef USE_KDE
-  //virtual int widthForHeight(int height);
-  //virtual int heightForWidth(int width);
-#endif
   WharfIcon *wharfIcon;
   int m_nNewMsg, m_nSysMsg;
   int mouseX, mouseY;
@@ -92,5 +104,31 @@ protected:
           *pixInvisible, *pixFFC;
 };
 
+class IconManager_KDEStyle : public IconManager
+{
+public:
+  IconManager_KDEStyle(CMainWindow*, QPopupMenu*, QWidget* parent=0);
+  virtual ~IconManager_KDEStyle();
+
+  virtual void SetDockIconStatus();
+  virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
+
+protected:
+  virtual void mouseReleaseEvent (QMouseEvent *);
+  virtual void timerEvent(QTimerEvent*);
+  virtual void paintEvent (QPaintEvent *);
+
+  void updateTooltip();
+
+  QPixmap m_statusIcon;
+  QPixmap m_eventIcon;
+
+  unsigned short m_ownerStatus;
+  unsigned short m_NewMsgs;
+  unsigned short m_SysMsgs;
+
+  bool m_bStatusInvisible;
+  bool m_timerToggle;
+};
 
 #endif
