@@ -23,6 +23,8 @@
 
 #include "licq_history.h"
 #include "mainwin.h"
+#include "catdlg.h"
+#include "phonedlg.h"
 
 class QSpinBox;
 class QLabel;
@@ -30,6 +32,8 @@ class QCheckBox;
 class QPushButton;
 class QTabWidget;
 class QProgressBar;
+class QListView;
+class QListViewItem;
 
 class CInfoField;
 class CICQDaemon;
@@ -48,8 +52,11 @@ public:
   enum Tab {
     GeneralInfo,
     MoreInfo,
+    More2Info,
     WorkInfo,
     AboutInfo,
+    PhoneInfo,
+    PictureInfo,
     HistoryInfo,
     LastCountersInfo,
     InfoTabCount
@@ -93,26 +100,46 @@ protected:
              *nfoPhone, *nfoTime, *nfoStatus;
   QCheckBox *chkKeepAliasOnUpdate;
   CEComboBox *cmbCountry;
-  QLabel *lblAuth;
+  QLabel *lblAuth, *lblICQHomepage;
 
   // More info
   void CreateMoreInfo();
   CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage,
              *nfoGender;
+  QListView *lvHomepageCategory;
+  MLEditWrap *mleHomepageDesc;
   CEComboBox *cmbLanguage[3], *cmbGender;
   QSpinBox *spnBirthDay, *spnBirthMonth, *spnBirthYear;
+
+  // More2 info
+  void CreateMore2Info();
+  static int SplitCategory(QListViewItem *parent, QTextCodec *codec,
+                           const char *descr);
+  QListView *lsvMore2;
+  QListViewItem *lviMore2Top[3];
 
   // Work info
   void CreateWorkInfo();
   CInfoField *nfoCompanyName, *nfoCompanyCity, *nfoCompanyState,
              *nfoCompanyAddress, *nfoCompanyZip, *nfoCompanyCountry, *nfoCompanyPhone, *nfoCompanyFax,
-             *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
-  CEComboBox *cmbCompanyCountry;
+             *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment, *nfoCompanyOccupation;
+  CEComboBox *cmbCompanyCountry, *cmbCompanyOccupation;
 
   // About
   void CreateAbout();
   QLabel *lblAbout;
   MLEditWrap *mleAbout;
+
+  // PhoneBook
+  void CreatePhoneBook();
+  QListView *lsvPhoneBook;
+  QComboBox *cmbActive;
+  CInfoField *nfoActive;
+
+  // Picture
+  void CreatePicture();
+  QLabel *lblPicture;
+  QString m_sFilename;
 
   // Last Counters
   void CreateLastCountersInfo();
@@ -136,14 +163,22 @@ protected:
 
   void SetGeneralInfo(ICQUser *);
   void SetMoreInfo(ICQUser *);
+  void SetMore2Info(ICQUser *);
+  void UpdateMore2Info(QTextCodec *, ICQUserCategory *);
   void SetWorkInfo(ICQUser *);
   void SetAbout(ICQUser *);
+  void SetPhoneBook(ICQUser *);
+  void UpdatePhoneBook(QTextCodec *);
+  void SetPicture(ICQUser *);
   void SetLastCountersInfo(ICQUser *);
   void SaveGeneralInfo();
   void SaveMoreInfo();
+  void SaveMore2Info();
   void SaveWorkInfo();
   void SaveAbout();
-
+  void SavePhoneBook();
+  void SavePicture();
+  
   virtual void keyPressEvent(QKeyEvent*);
 
 protected slots:
@@ -162,6 +197,11 @@ protected slots:
   void resetCaption();
   void ShowUsermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
   void slot_showHistoryTimer();
+  void EditCategory(QListViewItem *selected);
+  void setCategory(ICQUserCategory *cat);
+  void PhoneBookUpdated(struct PhoneBookEntry pbe, int nEntry);
+  void EditPhoneEntry(QListViewItem *selected);
+  void ChangeActivePhone(int index);
 
 signals:
   void finished(const char *, unsigned long);
@@ -171,6 +211,10 @@ signals:
 private:
   static bool chkContains(const char* text, const char* filter, int filterlen);
   QTimer *timer;
+  ICQUserCategory *m_Interests;
+  ICQUserCategory *m_Backgrounds;
+  ICQUserCategory *m_Organizations;
+  ICQUserPhoneBook *m_PhoneBook;
 };
 
 #endif

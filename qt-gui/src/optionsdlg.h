@@ -100,14 +100,16 @@ protected:
 
    // misc tab
    QWidget* new_misc_options();
-   QGroupBox *boxParanoia, *boxExtensions;
+   QGroupBox *boxParanoia, *boxExtensions, *boxAutoUpdate;
    QLabel *lblUrlViewer, *lblDefaultEncoding;
    QComboBox *cmbUrlViewer;
    QComboBox *cmbDefaultEncoding;
    QLabel *lblTerminal;
    QLineEdit *edtTerminal;
    QCheckBox *chkWebPresence, *chkHideIp, *chkIgnoreNewUsers,
-             *chkIgnoreWebPanel, *chkIgnoreMassMsg, *chkIgnoreEmailPager, *chkShowAllEncodings;
+             *chkIgnoreWebPanel, *chkIgnoreMassMsg, *chkIgnoreEmailPager,
+             *chkShowAllEncodings, *chkAutoUpdateInfo,
+             *chkAutoUpdateInfoPlugins, *chkAutoUpdateStatusPlugins;
 
    // status tab
    QWidget* new_status_options();

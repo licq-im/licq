@@ -23,7 +23,10 @@ const unsigned char ICQ_CHNxERROR                  = 0x03;
 const unsigned char ICQ_CHNxCLOSE                  = 0x04;
 const unsigned char ICQ_CHNxPING                   = 0x05;
 // Licq internal
-const unsigned char ICQ_CHNxNONE                   = 0xFF;
+const unsigned char ICQ_CHNxNONE                   = 0xFC;
+const unsigned char ICQ_CHNxINFO                   = 0xFD;
+const unsigned char ICQ_CHNxSTATUS                 = 0xFE;
+const unsigned char ICQ_CHNxUNKNOWN                = 0xFF;
 
 // Server SNAC families
 const unsigned short ICQ_SNACxFAM_SERVICE          = 0x0001;
@@ -76,7 +79,7 @@ const unsigned short ICQ_SNACxMSG_SENDxSERVER      = 0x0006; // client
 const unsigned short ICQ_SNACxMSG_SERVERxMESSAGE   = 0x0007; // server
 const unsigned short ICQ_SNACxMSG_SERVERxREPLYxMSG = 0x000b; // client, server
 const unsigned short ICQ_SNACxMSG_SERVERxACK       = 0x000c; // server
-
+const unsigned short ICQ_SNACxMSG_TYPING           = 0x0014; // client, server
 // Subtypes for BOS family
 const unsigned short ICQ_SNACxBOS_REQUESTxRIGHTS   = 0x0002; // client
 const unsigned short ICQ_SNACxBOS_RIGHTSxGRANTED   = 0x0003; // client
@@ -203,6 +206,8 @@ const unsigned short ICQ_CMDxMETA_WORKxINFOxRSP    = 0x006E; // 110
 const unsigned short ICQ_CMDxMETA_MORExINFOxRSP    = 0x0078; // 120
 const unsigned short ICQ_CMDxMETA_ABOUTxRSP        = 0x0082; // 130
 const unsigned short ICQ_CMDxMETA_EMAILxINFOxRSP   = 0x0087; // 140
+const unsigned short ICQ_CMDxMETA_INTERESTSxINFOxRSP = 0x008C; // 140
+const unsigned short ICQ_CMDxMETA_ORGBACKxINFOxRSP = 0x0096; // 150
 const unsigned short ICQ_CMDxMETA_SENDxSMSxRSP     = 0x0096; // 150
 const unsigned short ICQ_CMDxMETA_SECURITYxRSP     = 0x00A0; // 160
 const unsigned short ICQ_CMDxMETA_PASSWORDxRSP     = 0x00AA; // 170
@@ -214,21 +219,24 @@ const unsigned short ICQ_CMDxMETA_WORKxINFO        = 0x00D2; // 210
 const unsigned short ICQ_CMDxMETA_MORExINFO        = 0x00DC; // 220
 const unsigned short ICQ_CMDxMETA_ABOUT            = 0x00E6; // 230
 const unsigned short ICQ_CMDxMETA_EMAILxINFO       = 0x00EB; // 235
-const unsigned short ICQ_CMDxMETA_UNKNOWNx240      = 0x00F0; // 240
+const unsigned short ICQ_CMDxMETA_INTERESTSxINFO   = 0x00F0; // 240
 const unsigned short ICQ_CMDxMETA_PASTxINFO        = 0x00FA; // 250
 const unsigned short ICQ_CMDxMETA_BASICxINFO       = 0x0104; // 260
-const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
+const unsigned short ICQ_CMDxMETA_HOMEPAGExINFO    = 0x010E; // 270
 // Meta commands (sent)
-const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03EA; // 1004
+const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03EA; // 1002
 const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F3; // 1011
-const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FD; // 1020
+const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FD; // 1021
 const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
-const unsigned short ICQ_CMDxMETA_EMAILxINFOxSET   = 0x040B; // 1040
+const unsigned short ICQ_CMDxMETA_EMAILxINFOxSET   = 0x040B; // 1035
+const unsigned short ICQ_CMDxMETA_INTERESTSxINFOxSET = 0x0410; // 1040
+const unsigned short ICQ_CMDxMETA_ORGBACKxINFOxSET = 0x041A; // 1050
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
-const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B2; // 1201
+const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B2; // 1202
 const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO  = 0x04BA; // 1210
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFOx31 = 0x04CF; // 1231
+const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFOxOWNER = 0x04D0; // 1232
 const unsigned short ICQ_CMDxMETA_SEARCHxWP        = 0x055F;
 const unsigned short ICQ_CMDxMETA_SEARCHxUIN       = 0x0569;
 const unsigned short ICQ_CMDxMETA_RANDOMxSEARCH    = 0x074E; // 1870
@@ -295,13 +303,27 @@ const unsigned short ICQ_CMDxSUB_AUTHxREQUEST      = 0x0006;
 const unsigned short ICQ_CMDxSUB_AUTHxREFUSED      = 0x0007;
 const unsigned short ICQ_CMDxSUB_AUTHxGRANTED      = 0x0008;
 const unsigned short ICQ_CMDxSUB_MSGxSERVER        = 0x0009;
+const unsigned short ICQ_CMDxSUB_EXTERNAL          = 0x000A;
 const unsigned short ICQ_CMDxSUB_ADDEDxTOxLIST     = 0x000C;
 const unsigned short ICQ_CMDxSUB_WEBxPANEL         = 0x000D;
 const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;
 const unsigned short ICQ_CMDxSUB_CONTACTxLIST      = 0x0013;
+const unsigned short ICQ_CMDxSUB_PHONExCALL        = 0x0014;
+const unsigned short ICQ_CMDxSUB_PHONExBOOK        = 0x0016;
+const unsigned short ICQ_CMDxSUB_PICTURE           = 0x0019;
 const unsigned short ICQ_CMDxSUB_SMS               = 0x001A;
 const unsigned short ICQ_CMDxSUB_ICBM              = 0x001A;  // This one sucks
 const unsigned short ICQ_CMDxSUB_FxMULTIREC        = 0x8000;
+// These exist as ICBM plugins only and the number is unofficial
+const unsigned short ICQ_CMDxSUB_SENDxEICQ         = 0x00D7;
+const unsigned short ICQ_CMDxSUB_CONACTxREQUEST    = 0x00D8;
+const unsigned short ICQ_CMDxSUB_ACTIVExLIST       = 0x00D9;
+const unsigned short ICQ_CMDxSUB_PCxTOxPCxCALL     = 0x00DA;
+const unsigned short ICQ_CMDxSUB_GREETINGxCARD     = 0x00DB;
+const unsigned short ICQ_CMDxSUB_VOICExMESSAGE     = 0x00DC;
+const unsigned short ICQ_CMDxSUB_IRCQxNET          = 0x00DD;
+const unsigned short ICQ_CMDxSUB_HOMEPAGExINVITE   = 0x00DE;
+const unsigned short ICQ_CMDxSUB_HOMEPAGExNEWS     = 0x00DF;
 // Encryption Licq extension command
 const unsigned short ICQ_CMDxSUB_SECURExOLD        = 0x00ED;  // Licq extension
 const unsigned short ICQ_CMDxSUB_SECURExCLOSE      = 0x00EE;  // Licq extension
@@ -355,10 +377,10 @@ const unsigned short ICQ_TCPxMSG_FxDND             = 0x1000;
 const unsigned long ICQ_STATUS_FxFLAGS             = 0xFFFF0000;
 const unsigned long ICQ_STATUS_FxUNKNOWNxFLAGS     = 0xCFC0FCC8;
 const unsigned long ICQ_STATUS_FxPRIVATE           = 0x00000100;
-const unsigned long ICQ_STATUS_FxPFMxAVAILABLE     = 0x00000200;  // not implemented
+const unsigned long ICQ_STATUS_FxPFMxAVAILABLE     = 0x00000200;
 const unsigned long ICQ_STATUS_FxWEBxPRESENCE      = 0x00010000;
 const unsigned long ICQ_STATUS_FxHIDExIP           = 0x00020000;
-const unsigned long ICQ_STATUS_FxPFM               = 0x00040000;  // not implemented
+const unsigned long ICQ_STATUS_FxPFM               = 0x00040000;
 const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;
 const unsigned long ICQ_STATUS_FxDIRECTxDISABLED   = 0x00100000;
 const unsigned long ICQ_STATUS_FxICQxHOMEPAGE      = 0x00200000;  // not implemented
@@ -378,4 +400,95 @@ const unsigned long ICQ_RANDOMxCHATxGROUP_50PLUS   = 9;
 const unsigned long ICQ_RANDOMxCHATxGROUP_MxSEEKxF = 10;
 const unsigned long ICQ_RANDOMxCHATxGROUP_FxSEEKxM = 11;
 
+const unsigned short ICQ_TYPING_INACTIVEx0        = 0; //icq2go sends this
+const unsigned short ICQ_TYPING_INACTIVEx1        = 1; //icqlite sends this
+const unsigned short ICQ_TYPING_ACTIVE            = 2;
+
+const unsigned char ICQ_PLUGIN_REQUEST            = 0;
+const unsigned char ICQ_PLUGIN_SUCCESS            = 1;
+const unsigned char ICQ_PLUGIN_STATUSxREPLY       = 2;
+const unsigned char ICQ_PLUGIN_ERROR              = 3;
+const unsigned char ICQ_PLUGIN_REJECTED           = 4;
+const unsigned char ICQ_PLUGIN_AWAY               = 5;
+
+const unsigned long ICQ_PLUGIN_STATUSxINACTIVE    = 0;
+const unsigned long ICQ_PLUGIN_STATUSxACTIVE      = 1;
+const unsigned long ICQ_PLUGIN_STATUSxBUSY        = 2;
+
+/* treat it as response id for now, it might have a different meaning
+   judging by the 2 values for info plugin list */
+const unsigned long ICQ_PLUGIN_RESP_INFOxLIST   = 0x00010002;
+const unsigned long ICQ_PLUGIN_RESP_INFOxLISTx0 = 0x00010000;
+const unsigned long ICQ_PLUGIN_RESP_PHONExBOOK  = 0x00000003;
+const unsigned long ICQ_PLUGIN_RESP_PICTURE     = 0x00000001;
+const unsigned long ICQ_PLUGIN_RESP_STATUSxLIST = 0x00010000;
+
+//actual plugins
+const char PLUGIN_PHONExBOOK[]        = { 0x90, 0x7C, 0x21, 0x2C, 0x91, 0x4D,
+                                          0xD3, 0x11, 0xAD, 0xEB, 0x00, 0x04,
+                                          0xAC, 0x96, 0xAA, 0xB2, 0x00, 0x00 };
+
+const char PLUGIN_PICTURE[]           = { 0x80, 0x66, 0x28, 0x83, 0x80, 0x28,
+                                          0xD3, 0x11, 0x8D, 0xBB, 0x00, 0x10,
+                                          0x4B, 0x06, 0x46, 0x2E, 0x00, 0x00 };
+
+const char PLUGIN_FILExSERVER[]       = { 0xF0, 0x2D, 0x12, 0xD9, 0x30, 0x91,
+                                          0xD3, 0x11, 0x8D, 0xD7, 0x00, 0x10,
+                                          0x4B, 0x06, 0x46, 0x2E, 0x04, 0x00 };
+
+const char PLUGIN_FOLLOWxME[]         = { 0x90, 0x7C, 0x21, 0x2C, 0x91, 0x4D,
+                                          0xD3, 0x11, 0xAD, 0xEB, 0x00, 0x04,
+                                          0xAC, 0x96, 0xAA, 0xB2, 0x02, 0x00 };
+
+const char PLUGIN_ICQxPHONE[]         = { 0x3F, 0xB6, 0x5E, 0x38, 0xA0, 0x30,
+                                          0xD4, 0x11, 0xBD, 0x0F, 0x00, 0x06,
+                                          0x29, 0xEE, 0x4D, 0xA1, 0x00, 0x00 };
+
+//these are used to get plugin list
+const char PLUGIN_QUERYxINFO[]        = { 0xF0, 0x02, 0xBF, 0x71, 0x43, 0x71,
+                                          0xD3, 0x11, 0x8D, 0xD2, 0x00, 0x10,
+                                          0x4B, 0x06, 0x46, 0x2E, 0x00, 0x00 };
+
+const char PLUGIN_QUERYxSTATUS[]      = { 0x10, 0x18, 0x06, 0x70, 0x54, 0x71,
+                                          0xD3, 0x11, 0x8D, 0xD2, 0x00, 0x10,
+                                          0x4B, 0x06, 0x46, 0x2E, 0x00, 0x00 };
+
+// these are sent in handshake packets
+const char PLUGIN_INFOxMANAGER[]      = { 0xA0, 0xE9, 0x3F, 0x37, 0x4F, 0xE9,
+                                          0xD3, 0x11, 0xBC, 0xD2, 0x00, 0x04,
+                                          0xAC, 0x96, 0xDD, 0x96, 0x00, 0x00 };
+
+const char PLUGIN_STATUSxMANAGER[]    = { 0x10, 0xCF, 0x40, 0xD1, 0x4F, 0xE9,
+                                          0xD3, 0x11, 0xBC, 0xD2, 0x00, 0x04,
+                                          0xAC, 0x96, 0xDD, 0x96, 0x00, 0x00 };
+
+const char PLUGIN_NORMAL[]            = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+//capabilities sent in messages and on login
+const char ICQ_CAPABILITY_SRVxRELAY[] = { 0x09, 0x46, 0x13, 0x49, 0x4C, 0x7F,
+                                          0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
+                                          0x53, 0x54, 0x00, 0x00 };
+
+const char ICQ_CAPABILITY_DIRECT[]    = { 0x09, 0x46, 0x13, 0x44, 0x4C, 0x7F,
+                                          0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
+                                          0x53, 0x54, 0x00, 0x00 };
+
+const char ICQ_CAPABILITY_UTF8[]      = { 0x09, 0x46, 0x13, 0x4E, 0x4C, 0x7F,
+                                          0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
+                                          0x53, 0x54, 0x00, 0x00 };
+
+const char ICQ_CAPABILITY_RTFxMSGS[]  = { 0x97, 0xB1, 0x27, 0x51, 0x24, 0x3C,
+                                          0x43, 0x34, 0xAD, 0x22, 0xD6, 0xAB,
+                                          0xF7, 0x3F, 0x14, 0x92 };
+
+const char ICQ_CAPABILITY_TYPING[]    = { 0x56, 0x3F, 0xC8, 0x09, 0x0B, 0x6F,
+                                          0x41, 0xBD, 0x9F, 0x79, 0x42, 0x26,
+                                          0x09, 0xDF, 0xA2, 0xF3 };
+
+const char ICQ_CAPABILITY_LICQxVER[]  = { 'L',  'i',  'c',  'q',  ' ',  'c',
+                                          'l',  'i',  'e',  'n',  't',  ' ',
+                                          0x00, 0x00, 0x00, 0x00 };
+ 
 #endif

@@ -88,6 +88,9 @@ public:
 
   static unsigned long GetIpByName(const char *_szHostName);
 
+  void SetChannel(unsigned char nChannel) { m_nChannel = nChannel; }
+  unsigned char Channel()                 { return m_nChannel; }
+  
 protected:
   const char *GetIDStr()  { return (m_szID); }
   bool SetLocalAddress(bool bIp = true);
@@ -105,6 +108,7 @@ protected:
   ProxyServer *m_xProxy;
   char *m_szOwnerId;
   unsigned long m_nOwnerPPID;
+  unsigned char m_nChannel;
 };
 
 

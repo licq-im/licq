@@ -61,7 +61,9 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 						 << "SMS" << "Contact" << "Authorize" << "SecureOff" << "SecureOn"
 						 << "History" << "Info";
 	*lstAExtIcons << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
-								<< "CustomAR" << "Invisible" << "Phone";
+                      << "CustomAR" << "Invisible" << "Phone"
+                      << "PhoneFollowMeActive" << "PhoneFollowMeBusy"
+                      << "ICQphoneActive" << "ICQphoneBusy" << "SharedFiles";
 
 	// Main Box
 	QVBoxLayout *toplay = new QVBoxLayout(this);

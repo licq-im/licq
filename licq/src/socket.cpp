@@ -264,7 +264,8 @@ INetSocket::INetSocket(unsigned long _nOwner)
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
   m_szRemoteName = NULL;
   m_xProxy = NULL;
-
+  m_nChannel = ICQ_CHNxNONE;
+  
   // Initialise the mutex
   pthread_mutex_init(&mutex, NULL);
 }
@@ -287,7 +288,8 @@ INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
   m_szRemoteName = NULL;
   m_xProxy = NULL;
-
+  m_nChannel = ICQ_CHNxNONE;
+  
   // Initialize the mutex
   pthread_mutex_init(&mutex, NULL);
 }
@@ -1437,7 +1439,8 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
 
   char *szOwner = s->OwnerId() ? strdup(s->OwnerId()) : 0;
   unsigned long nPPID = s->OwnerPPID();
-
+  unsigned char nChannel = s->Channel();
+  
   // First remove the socket from the hash table so it won't be fetched anymore
   m_hSockets.Remove(nSd);
 
@@ -1461,7 +1464,7 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
     
     if (u != NULL)
     {
-      u->ClearSocketDesc();
+      u->ClearSocketDesc(nChannel);
       if (u->OfflineOnDisconnect())
         gLicqDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
       gUserManager.DropUser(u);

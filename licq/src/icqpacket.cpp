@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
@@ -252,6 +253,18 @@ void Encrypt_Server(CBuffer *buffer)
 #endif
 }
 
+struct PluginList info_plugins[] =
+{
+  { "Picture"   , PLUGIN_PICTURE   , "Picture"                          },
+  { "Phone Book", PLUGIN_PHONExBOOK, "Phone Book / Phone \"Follow Me\"" }
+};
+
+struct PluginList status_plugins[] =
+{
+  {"Phone \"Follow Me\"", PLUGIN_FOLLOWxME, "Phone Book / Phone \"Follow Me\""},
+  { "Shared Files Directory", PLUGIN_FILExSERVER, "Shared Files Directory" },
+  { "ICQphone Status"       , PLUGIN_ICQxPHONE  , "ICQphone Status"        }
+};
 
 //======Server TCP============================================================
 bool CSrvPacketTcp::s_bRegistered = false;
@@ -787,17 +800,22 @@ CPU_ImICQ::CPU_ImICQ()
 }
 
 //-----ImICQ-----------------------------------------------------------------
-CPU_ICQMode::CPU_ICQMode()
+CPU_ICQMode::CPU_ICQMode(unsigned short channel, unsigned long flags)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SETxICQxMODE)
 {
   m_nSize += 16;
 
   InitBuffer();
 
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x00031f40);
-  buffer->PackUnsignedLongBE(0x03e703e7);
-  buffer->PackUnsignedLongBE(0x00000000);
+  /* channel 0 sets default options for channels we did not specifically
+     initialize */
+  buffer->PackUnsignedShortBE(channel);
+  buffer->PackUnsignedLongBE(flags);   // the meanings of the flags are unknown
+  buffer->PackUnsignedShortBE(8000);      // max message size
+  buffer->PackUnsignedShortBE(999);       // max sender warning level
+  buffer->PackUnsignedShortBE(999);       // max receiver warning level
+  buffer->PackUnsignedShortBE(0);         // min message interval
+  buffer->PackUnsignedShortBE(0);         // unknown
 }
 
 //-----RateAck-----------------------------------------------------------------
@@ -834,20 +852,22 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   buffer->PackTLV(0x05, 0x40, data);
 #else
 
-  m_nSize += 52 + 0x10;
+  char data[4][CAP_LENGTH];
+  m_nSize += 4 + sizeof(data);
   InitBuffer();
-// 49 4d ( 1 2 5)
-  char data[0x40] = { 0x09, 0x46, 0x13, 0x49, 0x4c, 0x7f, 0x11, 0xd1,
-		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
-                      0x09, 0x46, 0x13, 0x45, 0x4c, 0x7f, 0x11, 0xd1,
-		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
-                      0x09, 0x46, 0x13, 0x46, 0x4c, 0x7f, 0x11, 0xd1,
-		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
-                      0x09, 0x46, 0x13, 0x4d, 0x4c, 0x7f, 0x11, 0xd1,
-		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00
-                    };
 
-  buffer->PackTLV(0x05, 0x40, data);
+  memcpy(data[0], ICQ_CAPABILITY_DIRECT, CAP_LENGTH);
+  memcpy(data[1], ICQ_CAPABILITY_SRVxRELAY, CAP_LENGTH);
+  memcpy(data[2], ICQ_CAPABILITY_TYPING, CAP_LENGTH);
+  memcpy(data[3], ICQ_CAPABILITY_LICQxVER, CAP_LENGTH);
+  data[3][12] = INT_VERSION / 1000;
+  data[3][13] = (INT_VERSION / 10) % 1000;
+  data[3][14] = INT_VERSION % 10;
+#ifdef USE_OPENSSL
+  data[3][15] = 1;
+#endif
+  buffer->PackTLV(0x05, sizeof(data), (char *)data);  
+
 #endif
 }
 
@@ -865,14 +885,15 @@ CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus)
   buffer->PackUnsignedLongBE(m_nNewStatus);  // ICQ status
 }
 
-CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
+CPU_SetStatusFamily::CPU_SetStatusFamily()
   : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS)
 {
-  m_nNewStatus = _nNewStatus;
-
   m_nSize += 55;
+}
 
-  InitBuffer();
+void CPU_SetStatusFamily::InitBuffer()
+{
+  CPU_CommonFamily::InitBuffer();
 
   buffer->PackUnsignedLongBE(0x00060004);     // TLV
   buffer->PackUnsignedLongBE(m_nNewStatus);  // ICQ status
@@ -890,17 +911,106 @@ CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
   // build date of the core DLL of Mirabilis ICQ
   // we use that to tell other users that we're Licq
   // ICQ99b:  0x385BFAAC;
+  
+  /* should eventually switch to some other way to identify licq, probably
+     use capabilities */
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);  
 #ifdef USE_OPENSSL
    buffer->PackUnsignedLongBE(LICQ_WITHSSL | INT_VERSION);
 #else
    buffer->PackUnsignedLongBE(LICQ_WITHOUTSSL | INT_VERSION);
 #endif
    // some kind of timestamp ?
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x3b7248ed); // timestamp of some kind?
+  buffer->PackUnsignedLongBE(o->ClientStatusTimestamp());
+  buffer->PackUnsignedLongBE(o->ClientInfoTimestamp());
+  gUserManager.DropOwner();
   buffer->PackUnsignedShortBE(0x0000);
 }
 
+CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
+  : CPU_SetStatusFamily()
+{
+  m_nNewStatus = _nNewStatus;
+
+  InitBuffer();
+}
+
+CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
+  : CPU_SetStatusFamily()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_nNewStatus = o->StatusFull();
+  gUserManager.DropOwner();
+
+  m_nSize += 4 + 1 + 4 + 6 + GUID_LENGTH + 4 + 1;
+
+  InitBuffer();
+
+  o = gUserManager.FetchOwner(LOCK_R);
+
+  buffer->PackUnsignedLongBE(0x00110022); // TLV
+  buffer->PackChar(2);                    // info update
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedShort(2);           //Unknown
+  buffer->PackUnsignedShort(1);           //Unknown
+  buffer->PackUnsignedShort(1);           //Unknown
+  buffer->Pack(GUID, GUID_LENGTH);
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackChar(0);                    //No info follows ??
+
+  gUserManager.DropOwner();
+}
+
+CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
+                                                     unsigned long nState)
+  : CPU_SetStatusFamily()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_nNewStatus = o->StatusFull();
+  gUserManager.DropOwner();
+
+  m_nSize += 4 + 1 + 4 + 6 + GUID_LENGTH + 1 + 4 + 4 + 6;
+
+  InitBuffer();
+
+  o = gUserManager.FetchOwner(LOCK_R);
+
+  buffer->PackUnsignedLongBE(0x0011002C); // TLV
+  buffer->PackChar(3);                    // info update
+  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  buffer->PackUnsignedShort(0);           //Unknown
+  buffer->PackUnsignedShort(1);           //Unknown
+  buffer->PackUnsignedShort(1);           //Unknown
+  buffer->Pack(GUID, GUID_LENGTH);
+  buffer->PackChar(1);                    //Unknown
+  buffer->PackUnsignedLong(nState);
+  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  buffer->PackUnsignedShort(0);           //Unknown
+  buffer->PackUnsignedShort(0);           //Unknown
+  buffer->PackUnsignedShort(1);           //Unknown
+
+  gUserManager.DropOwner();
+}
+
+CPU_UpdateTimestamp::CPU_UpdateTimestamp()
+  : CPU_SetStatusFamily()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_nNewStatus = o->StatusFull();
+  gUserManager.DropOwner();
+
+  m_nSize += 4 + 1 + 4;
+
+  InitBuffer();
+
+  o = gUserManager.FetchOwner(LOCK_R);
+
+  buffer->PackUnsignedLongBE(0x00110005);         // TLV
+  buffer->PackChar(0);                            // server info update
+  buffer->PackUnsignedLong(o->ClientTimestamp());
+
+  gUserManager.DropOwner();
+}
 
 //-----GenericUinList-----------------------------------------------------------
 CPU_GenericUinList::CPU_GenericUinList(UserStringList &users, unsigned short family, unsigned short Subtype)
@@ -1200,77 +1310,50 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 }
 
 
-//-----AdvancedMessage---------------------------------------------------------
-CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
-																				 unsigned short _nMsgFlags, bool _bAck,
-																				 unsigned short _nSequence,
-																				 unsigned long nMsgID1,
-																				 unsigned long nMsgID2)
+//-----Type2Message-------------------------------------------------------------
+CPU_Type2Message::CPU_Type2Message(ICQUser *u, bool _bAck, bool _bDirectInfo,
+                                   const char *cap,
+                                   unsigned long nMsgID1,
+                                   unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
 	char szUin[13];
-	int nUinLen = snprintf(szUin, 12, "%ld", u->Uin());
+	int nUinLen = snprintf(szUin, 12, "%lu", u->Uin());
+        unsigned short nDirectInfo = _bDirectInfo ? 14 : 0; //size of di
 
-	m_nSize += 123 + nUinLen;
+	m_nSize += 55 + nUinLen + nDirectInfo;
 
-	m_bAck = _bAck;
-	m_nMsgFlags = _nMsgFlags;
-	m_nSubCommand = _nMsgType;
 	m_pUser = u;
-	m_nSequence = _nSequence;
+        m_bAck = _bAck;
+        m_bDirectInfo = _bDirectInfo;
 	m_nMsgID[0] = nMsgID1;
 	m_nMsgID[1] = nMsgID2;
 
-  // nobody inheirited us
-  if (m_nSubCommand == ICQ_CMDxTCP_READxAWAYxMSG)
-  {
-    m_nSize -= 14; // no direct connection info
-    InitBuffer();
-  }
+  memcpy(m_cap, cap, CAP_LENGTH);
+  m_nExtraLen = 0;
 }
 
-void CPU_AdvancedMessage::InitBuffer()
+void CPU_Type2Message::InitBuffer()
 {
 	CPU_CommonFamily::InitBuffer();
 
 	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-	unsigned short nStatus = o->Status();
-  if (m_pUser->StatusToUser() != ICQ_STATUS_OFFLINE)
-    nStatus = m_pUser->StatusToUser();
 
 	char szUin[13];
-	int nUinLen = snprintf(szUin, 12, "%ld", m_pUser->Uin());
+	int nUinLen = snprintf(szUin, 12, "%lu", m_pUser->Uin());
 
-	unsigned short nSequence;
 	unsigned long nID1, nID2;
-  unsigned short nDirectInfo = 14; // size of direct info
+  unsigned short nDirectInfo = m_bDirectInfo ? 14 : 0; // size of direct info
 
 	if (m_bAck)
 	{
-		nSequence = m_nSequence;
 		nID1 = m_nMsgID[0];
 		nID2 = m_nMsgID[1];
 	}
 	else
 	{
-		nSequence = m_pUser->Sequence(true);
 		nID1 = 0;
 		nID2 = m_nSubSequence;
-    if (m_nSubCommand == ICQ_CMDxTCP_READxAWAYxMSG)
-    {
-      nDirectInfo = 0; // no direct info needed
-
-      // Get the correct message
-      switch(m_pUser->Status())
-      {
-        case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-        case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
-        case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
-        case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-        case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
-        default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-      }
-    }
 	}
 
 	buffer->PackUnsignedLongBE(nID1); // upper 4 bytes of message id
@@ -1280,15 +1363,12 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->Pack(szUin, nUinLen);
 
 	buffer->PackUnsignedShortBE(0x0005);	// tlv - message info
-	buffer->PackUnsignedShortBE(m_nSize - 25 - nUinLen);
-	buffer->PackUnsignedShortBE((m_bAck ? 0 : 0));
+	buffer->PackUnsignedShortBE(m_nSize - 25 - nUinLen - m_nExtraLen);
+	buffer->PackUnsignedShortBE(0);
 	buffer->PackUnsignedLongBE(nID1);	// upper 4 bytes of message id again
 	buffer->PackUnsignedLongBE(nID2); // lower 4 bytes of message id again
-	buffer->PackUnsignedLongBE(0x09461349); // from icq2002a
-	buffer->PackUnsignedLongBE(0x4C7F11D1); // from icq2002a
-	buffer->PackUnsignedLongBE(0x82224445); // from icq2002a
-	buffer->PackUnsignedLongBE(0x53540000); // from icq2002a
-	buffer->PackUnsignedLongBE(0x000A0002); // tlv - ack or not
+	buffer->Pack(m_cap, CAP_LENGTH);
+        buffer->PackUnsignedLongBE(0x000A0002); // tlv - ack or not
 	buffer->PackUnsignedShortBE((m_bAck ? 2 : 1));
 
   if (nDirectInfo)
@@ -1301,49 +1381,482 @@ void CPU_AdvancedMessage::InitBuffer()
 
   buffer->PackUnsignedLongBE(0x000F0000); // tlv - empty
 	buffer->PackUnsignedShortBE(0x2711); // tlv - more message info
-	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 36 - nDirectInfo);
+	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 36 - nDirectInfo -
+          m_nExtraLen);
+          
+  gUserManager.DropOwner();
+}
+
+//-----PluginMessage-----------------------------------------------------------
+CPU_PluginMessage::CPU_PluginMessage(ICQUser *u, bool bAck,
+                                     const char *PluginGUID,
+                                     unsigned long nMsgID1,
+                                     unsigned long nMsgID2)
+  : CPU_Type2Message(u, bAck, false, ICQ_CAPABILITY_SRVxRELAY, nMsgID1, nMsgID2)
+{
+  m_nSize += 49;
+
+  memcpy(m_PluginGUID, PluginGUID, GUID_LENGTH);
+}
+
+void CPU_PluginMessage::InitBuffer()
+{
+  CPU_Type2Message::InitBuffer();
+
 	buffer->PackUnsignedShort(0x001B); // len
 	buffer->PackUnsignedShort(m_pUser->ConnectionVersion());
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedShortBE(0);
-	buffer->PackUnsignedLong(0x00000003); // len
-	buffer->PackChar(0x04); // accept connections or firewalled
-	buffer->PackUnsignedShort(nSequence); // sequence
-	buffer->PackUnsignedShort(0x000E); // len
-	buffer->PackUnsignedShort(nSequence); // sequence
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedShort(m_nSubCommand);
-	buffer->PackUnsignedShort(nStatus);
-	buffer->PackUnsignedShort(m_nMsgFlags);
-	buffer->PackUnsignedShort(0x0001); // message len
-	buffer->PackChar(0); // message
+  buffer->Pack(m_PluginGUID, GUID_LENGTH);
+  buffer->PackUnsignedLong(0x00000003); //unknown
+  buffer->PackChar(0);  //unknown
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedShort(0x0012);
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedShort(m_bAck ? 0 : 1);
+  buffer->PackUnsignedShort(0);
+}
 
-  //if (!nDirectInfo)
-  //  buffer->PackUnsignedLongBE(0x00030000);
+//-----Send error reply------------------------------------------------------
+CPU_PluginError::CPU_PluginError(ICQUser *u, unsigned long nMsgID1,
+                                 unsigned long nMsgID2,
+                                 unsigned short nSequence, const char *cap)
+  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true, 0, cap)
+{
+  // this is a bit of a hack
+  m_szMessage[0] = ICQ_PLUGIN_ERROR;
+  InitBuffer();
+}
 
-	gUserManager.DropOwner();
+//-----Send info plugin request------------------------------------------------
+CPU_InfoPluginReq::CPU_InfoPluginReq(ICQUser *u, const char *GUID,
+                                     unsigned long nTime)
+  : CPU_PluginMessage(u, false, PLUGIN_INFOxMANAGER)
+{
+  m_nSize += 27;
+  memcpy(m_ReqGUID, GUID, GUID_LENGTH);
+
+  InitBuffer();
+  buffer->PackUnsignedShort(2);
+  buffer->PackUnsignedShort(1);
+  buffer->PackChar(0);
+  buffer->Pack(GUID, GUID_LENGTH);
+  buffer->PackUnsignedLong(nTime);
+}
+
+//-----Send info plugin list---------------------------------------------------
+CPU_InfoPluginListResp::CPU_InfoPluginListResp(ICQUser *u,
+                                               unsigned long nMsgID1,
+                                               unsigned long nMsgID2,
+                                               unsigned short nSequence)
+  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
+                         ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
+{
+  unsigned long num_plugins = sizeof(info_plugins)/sizeof(struct PluginList);
+
+  unsigned long nLen;
+  if (num_plugins == 0)
+    nLen = 0;
+  else
+  {
+    nLen = 4 + 4;
+    for (unsigned long i = 0; i < num_plugins; i ++)
+    {
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(info_plugins[i].name)
+              + 4 + strlen(info_plugins[i].description) + 4;
+    }
+  }
+
+  m_nSize += 2 + 2 + 4 + 4 + nLen;
+
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);
+  buffer->PackUnsignedShort(1);
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  gUserManager.DropOwner();
+  buffer->PackUnsignedLong(nLen);
+  if (nLen != 0)
+  {
+    buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_INFOxLIST);
+    buffer->PackUnsignedLong(num_plugins);
+    for (unsigned long i = 0; i < num_plugins; i++)
+    {
+      buffer->Pack(info_plugins[i].guid, GUID_LENGTH);
+
+      buffer->PackUnsignedShort(0); //Unknown
+      buffer->PackUnsignedShort(1); //Unknown
+
+      unsigned int l = strlen(info_plugins[i].name);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(info_plugins[i].name, l);
+
+      l = strlen(info_plugins[i].description);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(info_plugins[i].description, l);
+
+      buffer->PackUnsignedLong(0);  //Unknown
+    }
+  }
+}
+
+//-----Send phone book response-----------------------------------------------
+CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(ICQUser *u, unsigned long nMsgID1,
+                                             unsigned long nMsgID2,
+                                             unsigned short nSequence)
+  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
+                         ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
+{
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQUserPhoneBook *book = o->GetPhoneBook();
+
+  unsigned long num_entries;
+  unsigned long nLen = 4 + 4;
+  const struct PhoneBookEntry *entry;
+  for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
+  {
+    nLen += 4 + strlen(entry->szDescription) + 4 + strlen(entry->szAreaCode)
+          + 4 + strlen(entry->szPhoneNumber) + 4 + strlen(entry->szExtension)
+          + 4 + strlen(entry->szCountry)     + 4 + 4 + 4
+          + 4 + strlen(entry->szGateway)     + 4 + 4 + 4 + 4;
+  }
+
+  m_nSize += 2 + 2 + 4 + 4 + nLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+
+  buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_PHONExBOOK); //Response ID
+
+  buffer->PackUnsignedLong(num_entries);
+
+  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  {
+    unsigned long sLen = strlen(entry->szDescription);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szDescription, sLen);
+
+    sLen = strlen(entry->szAreaCode);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szAreaCode, sLen);
+
+    sLen = strlen(entry->szPhoneNumber);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szPhoneNumber, sLen);
+
+    sLen = strlen(entry->szExtension);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szExtension, sLen);
+
+    sLen = strlen(entry->szCountry);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szCountry, sLen);
+
+    buffer->PackUnsignedLong(entry->nActive);
+  }
+
+  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  {
+    unsigned long sLen = strlen(entry->szGateway);
+    buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
+
+    buffer->PackUnsignedLong(entry->nType);
+
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szGateway, sLen);
+
+    buffer->PackUnsignedLong(entry->nGatewayType);
+    buffer->PackUnsignedLong(entry->nSmsAvailable);
+    buffer->PackUnsignedLong(entry->nRemoveLeading0s);
+    buffer->PackUnsignedLong(entry->nPublish);
+  }
+
+  gUserManager.DropOwner();
+}
+
+//-----Send picture response-------------------------------------------------
+CPU_InfoPictureResp::CPU_InfoPictureResp(ICQUser *u, unsigned long nMsgID1,
+                                         unsigned long nMsgID2,
+                                         unsigned short nSequence)
+ : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
+                         ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
+{
+  char szFilename[MAX_FILENAME_LEN];
+  szFilename[MAX_FILENAME_LEN - 1] = '\0';
+ snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/owner.pic", BASE_DIR);
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned long nLen = 0, nFileLen = 0;
+  int fd = -1;
+  if (o->GetPicturePresent())
+  {
+    fd = open(szFilename, O_RDONLY);
+    if (fd == -1)
+    {
+      gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                     szFilename, L_BLANKxSTR, strerror(errno));
+    }
+    else
+    {
+      struct stat fi;
+      if (fstat(fd, &fi) == -1)
+      {
+        gLog.Error("%sUnable to stat picture file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                     szFilename, L_BLANKxSTR, strerror(errno));
+      }
+      else
+      {
+        nFileLen = fi.st_size;
+        nLen = 4 + 4 + 1 + 4 + nFileLen;
+      }
+    }
+  }
+
+  m_nSize += 2 + 2 + 4 + 4 + nLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+
+  if (nLen != 0)
+  {
+    buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_PICTURE); //Response ID
+
+    buffer->PackUnsignedLong(1); //filename length
+    buffer->PackChar('p'); //windows icq needs a filename
+
+    buffer->PackUnsignedLong(nFileLen);
+
+    char buf[8192];
+    unsigned long nRead = 0;
+    while (nRead < nFileLen)
+    {
+      unsigned long nToRead;
+      if (sizeof(buf) < nFileLen - nRead)
+        nToRead = sizeof(buf);
+      else
+        nToRead = nFileLen - nRead;
+
+      ssize_t nBytesRead = read(fd, buf, nToRead);
+      if (nBytesRead == -1)
+      {
+        gLog.Error("%sFailed to read file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                    szFilename, L_BLANKxSTR, strerror(errno));
+        break;
+      }
+      if (nBytesRead == 0)
+      {
+        gLog.Error("%sPremature end of file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                    szFilename, L_BLANKxSTR, strerror(errno));
+        break;
+      }
+
+      nRead += nBytesRead;
+      for (ssize_t i = 0; i < nBytesRead; i++)
+        buffer->PackChar(buf[i]);
+    }
+
+    if (nRead < nFileLen)
+    {
+      //failed to read as much as predicted, fill with 0s
+      for (; nRead < nFileLen; nRead++)
+        buffer->PackChar(0);
+    }
+  }
+
+  if (fd != -1)
+    close(fd);
+
+  gUserManager.DropOwner();
+}
+
+//-----Send status plugin request---------------------------------------------
+CPU_StatusPluginReq::CPU_StatusPluginReq(ICQUser *u, const char *GUID,
+                                         unsigned long nTime)
+  : CPU_PluginMessage(u, false, PLUGIN_STATUSxMANAGER)
+{
+  m_nSize += 27;
+  memcpy(m_ReqGUID, GUID, GUID_LENGTH);
+
+  InitBuffer();
+  buffer->PackUnsignedShort(0);
+  buffer->PackUnsignedShort(1);
+  buffer->PackChar(0);
+  buffer->Pack(GUID, GUID_LENGTH);
+  buffer->PackUnsignedLong(nTime);
+}
+
+//-----Send status plugin list------------------------------------------------
+CPU_StatusPluginListResp::CPU_StatusPluginListResp(ICQUser *u,
+                                                   unsigned long nMsgID1,
+                                                   unsigned long nMsgID2,
+                                                   unsigned short nSequence)
+  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
+                         0, PLUGIN_STATUSxMANAGER)
+{
+  unsigned long num_plugins = sizeof(status_plugins)/sizeof(struct PluginList);
+
+  unsigned long nLen;
+  if (num_plugins == 0)
+    nLen = 0;
+  else
+  {
+    nLen = 4 + 4;
+    for (unsigned long i = 0; i < num_plugins; i ++)
+    {
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(status_plugins[i].name) 
+              + 4 + strlen(status_plugins[i].description) + 4;
+    }
+  }
+
+  m_nSize += 13 + 4 + 4 + nLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(0);    //Unknown
+  buffer->PackUnsignedLong(0);    //Unknown
+  buffer->PackChar(1);            //Unknown
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  gUserManager.DropOwner();
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+
+  if (nLen != 0)
+  {
+    buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_STATUSxLIST); //Response ID
+    buffer->PackUnsignedLong(num_plugins);
+    for (unsigned long i = 0; i < num_plugins; i++)
+    {
+      buffer->Pack(status_plugins[i].guid, GUID_LENGTH);
+
+      buffer->PackUnsignedShort(0); //Unknown
+      buffer->PackUnsignedShort(1); //Unknown
+
+      unsigned int l = strlen(status_plugins[i].name);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(status_plugins[i].name, l);
+
+      l = strlen(status_plugins[i].description);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(status_plugins[i].description, l);
+
+      buffer->PackUnsignedLong(0);  //Unknown
+    }
+  }
+}
+
+//-----Send the plugin status------------------------------------------------
+CPU_StatusPluginResp::CPU_StatusPluginResp(ICQUser *u, unsigned long nMsgID1,
+                                           unsigned long nMsgID2,
+                                           unsigned short nSequence,
+                                           unsigned long nStatus)
+  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
+                         0, PLUGIN_STATUSxMANAGER)
+{
+  // this is a bit of a hack
+  m_szMessage[0] = ICQ_PLUGIN_STATUSxREPLY;
+  m_nSize += 2 + 2 + 4 + 4 + 1;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+
+  buffer->PackUnsignedLong(nStatus);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  gUserManager.DropOwner();
+  buffer->PackChar(1);            //Unknown
+}
+
+//-----AdvancedMessage---------------------------------------------------------
+CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
+																			 unsigned short _nMsgFlags, bool _bAck,
+																				 unsigned short _nSequence,
+																				 unsigned long nMsgID1,
+																				 unsigned long nMsgID2)
+  : CPU_Type2Message(u, _bAck,
+                     !_bAck && _nMsgType == ICQ_CMDxTCP_READxAWAYxMSG,
+                     ICQ_CAPABILITY_SRVxRELAY, nMsgID1, nMsgID2)
+{
+	m_nSize += 54;
+
+	m_nMsgFlags = _nMsgFlags;
+	m_nSequence = _nSequence;
+
+  if (!_bAck && _nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
+  {
+    // Get the correct message
+    switch(m_pUser->Status())
+    {
+      case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
+      case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
+      case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
+      case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
+      case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
+      default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
+    }
+    InitBuffer();
+  }
+  else
+  {
+    m_nSubCommand = _nMsgType;
+  }
+}
+
+void CPU_AdvancedMessage::InitBuffer()
+{
+  CPU_Type2Message::InitBuffer();
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short nStatus = o->Status();
+  if (m_pUser->StatusToUser() != ICQ_STATUS_OFFLINE)
+    nStatus = m_pUser->StatusToUser();
+  gUserManager.DropOwner();
+
+  buffer->PackUnsignedShort(0x001B); // len
+  buffer->PackUnsignedShort(m_pUser->ConnectionVersion());
+  buffer->Pack(PLUGIN_NORMAL, GUID_LENGTH);
+  buffer->PackUnsignedLong(0x00000003); // len
+  buffer->PackChar(0x04); // accept connections or firewalled
+  buffer->PackUnsignedShort(m_nSequence); // sequence
+  buffer->PackUnsignedShort(0x000E); // len
+  buffer->PackUnsignedShort(m_nSequence); // sequence
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedShort(m_nSubCommand);
+  buffer->PackUnsignedShort(nStatus);
+  buffer->PackUnsignedShort(m_nMsgFlags);
+  buffer->PackUnsignedShort(0x0001); // message len
+  buffer->PackChar(0); // message
 }
 
 //-----ChatRequest-------------------------------------------------------------
 CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
                                  unsigned short nPort, unsigned short nLevel,
                                  ICQUser *_pUser, bool bICBM)
-	: CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
-												nLevel, false, 0)
+  : CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
+                        nLevel, false, 0)
 {
 	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
 	int nMessageLen = _szMessage ? strlen(_szMessage) : 0;
 
   if (bICBM)
-		m_nSize += 62 + nUsersLen + nMessageLen + 21; // 21 = strlen(pluginname)
+		m_nSize += 58 + nUsersLen + nMessageLen + 21; // 21 = strlen(pluginname)
 	else
-		m_nSize += 18 + nUsersLen + nMessageLen;
+		m_nSize += 14 + nUsersLen + nMessageLen;
 
+//  m_nExtraLen += 4; m_nSize += 4; //ack request
 	InitBuffer();
 
 	if (bICBM)
@@ -1374,15 +1887,15 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 	buffer->PackUnsignedShort(0);
 	buffer->PackUnsignedShort(nPort);
 	buffer->PackUnsignedShort(0);
-	buffer->PackUnsignedLongBE(0x00030000); // ack request
+//	buffer->PackUnsignedLongBE(0x00030000); // ack request
 }
 
 //-----FileTransfer------------------------------------------------------------
 CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, ConstFileList &lFileList, 
 	const char *_szFile, const char *_szDesc, unsigned short nLevel, bool bICBM)
-	: CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
-												false, 0),
-		CPX_FileTransfer(lFileList, _szFile)
+  : CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
+                        false, 0),
+    CPX_FileTransfer(lFileList, _szFile)
 {
 	if (!m_bValid)  return;
 
@@ -1391,9 +1904,10 @@ CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, ConstFileList &lFileList,
 	m_szDesc = strdup(_szDesc); // XXX where should this be free'd?
 
   if (bICBM)
-		m_nSize += 66 + nFileLen + nDescLen + 4; // 4 = strlen("File")
+		m_nSize += 62 + nFileLen + nDescLen + 4; // 4 = strlen("File")
 	else
-		m_nSize += 22 + nFileLen + nDescLen ;
+		m_nSize += 18 + nFileLen + nDescLen ;
+//  m_nExtraLen += 4; m_nSize += 4; //the ack request
 
 	InitBuffer();
 
@@ -1424,18 +1938,41 @@ CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, ConstFileList &lFileList,
 	buffer->PackString(m_szFilename);
 	buffer->PackUnsignedLong(m_nFileSize);
 	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedLongBE(0x00030000); // ack request
-
+//	buffer->PackUnsignedLongBE(0x00030000); // ack request
 }
 
+//-----NoManager------------------------------------------------------------
+CPU_NoManager::CPU_NoManager(ICQUser *u, unsigned long nMsgID1,
+                             unsigned long nMsgID2)
+  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
+{
+  char szUin[13];
+  snprintf(szUin, 13, "%lu", u->Uin());
+  unsigned long nUinLen = strlen(szUin);
 
+  m_nSize += 17 + nUinLen;
+
+  InitBuffer();
+
+  buffer->PackUnsignedLongBE(nMsgID1);
+  buffer->PackUnsignedLongBE(nMsgID2);
+  buffer->PackUnsignedShortBE(2);
+  buffer->PackChar(nUinLen);
+  buffer->Pack(szUin, nUinLen);
+  buffer->PackUnsignedShortBE(0x03);  /* tlv3?? who knows, doesn't fit with the
+                                         ack below */
+  buffer->PackUnsignedShortBE(0x02);
+  buffer->PackUnsignedShort(0);
+}
+ 
 //-----AckThroughServer--------------------------------------------------------
 CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
                                            unsigned long nMsgID1,
                                            unsigned long nMsgID2,
                                            unsigned short nSequence,
                                            unsigned short nMsgType,
-                                           bool bAccept, unsigned short nLevel)
+                                           bool bAccept, unsigned short nLevel,
+                                           const char *GUID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
   snprintf(m_szUin, 13, "%lu", u->Uin());
@@ -1450,94 +1987,103 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
   m_nSubCommand = nMsgType;
   m_nSequence = nSequence;
   m_nLevel = nLevel;
-
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short s = o->Status();
-  if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
-    s = u->StatusToUser();
-
-  if (!bAccept)
-    m_nStatus = ICQ_TCPxACK_REFUSE;
+  memcpy(m_GUID, GUID, GUID_LENGTH);
+  
+  if (memcmp(GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0)
+  {
+    m_szMessage = (char *)malloc(1);
+    m_szMessage[0] = bAccept ? ICQ_PLUGIN_SUCCESS : ICQ_PLUGIN_REJECTED;
+    m_nStatus = ICQ_TCPxACK_ONLINE;
+    m_nSize ++;
+  }
   else
   {
-    switch (s)
-    {
-      case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
-      case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
-      case ICQ_STATUS_DND:
-        m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
-          ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
-        break;
-      case ICQ_STATUS_OCCUPIED:
-        m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
-          ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
-        break;
-      case ICQ_STATUS_ONLINE:
-      case ICQ_STATUS_FREEFORCHAT:
-      default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
-    }
-  }
-
-  // don't send out AutoResponse if we're online
-  // it could contain stuff the other site shouldn't be able to read
-  // also some clients always pop up the auto response
-  // window when they receive one, annoying for them..
-  if(((u->StatusToUser() != ICQ_STATUS_OFFLINE &&
-       u->StatusToUser() != ICQ_STATUS_ONLINE)  ?
-      u->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
-  {
-    if (*u->CustomAutoResponse())
-    {
-      //m_szMessage = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
-      //pUser->usprintf(m_szMessage, u->CustomAutoResponse(), USPRINTF_NTORN);
-      char *cus;
-      char *def;
-      def = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      cus = u->usprintf(u->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
-      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
-      free(cus);
-      free(def);
-    }
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned short s = o->Status();
+    if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
+      s = u->StatusToUser();
+  
+    if (!bAccept)
+      m_nStatus = ICQ_TCPxACK_REFUSE;
     else
     {
-      m_szMessage = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      switch (s)
+      {
+        case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
+        case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
+        case ICQ_STATUS_DND:
+          m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
+            ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
+          break;
+        case ICQ_STATUS_OCCUPIED:
+          m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
+            ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
+          break;
+        case ICQ_STATUS_ONLINE:
+        case ICQ_STATUS_FREEFORCHAT:
+        default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
+      }
     }
+  
+    // don't send out AutoResponse if we're online
+    // it could contain stuff the other site shouldn't be able to read
+    // also some clients always pop up the auto response
+    // window when they receive one, annoying for them..
+    if(((u->StatusToUser() != ICQ_STATUS_OFFLINE &&
+        u->StatusToUser() != ICQ_STATUS_ONLINE)  ?
+        u->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
+    {
+      if (*u->CustomAutoResponse())
+      {
+        //m_szMessage = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
+        //pUser->usprintf(m_szMessage, u->CustomAutoResponse(), USPRINTF_NTORN);
+        char *cus;
+        char *def;
+        def = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+        cus = u->usprintf(u->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+        m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
+        sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
+        free(cus);
+        free(def);
+      }
+      else
+      {
+        m_szMessage = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      }
+    }
+    else
+      m_szMessage = strdup("");
+  
+    gUserManager.DropOwner();
+  
+    // Check for pipes, should possibly go after the ClientToServer call
+    m_szMessage = PipeInput(m_szMessage);
+  
+    gTranslator.ClientToServer(m_szMessage);
+  
+    m_nSize += strlen(m_szMessage)+1;
   }
-  else
-    m_szMessage = strdup("");
-
-  gUserManager.DropOwner();
-
-  // Check for pipes, should possibly go after the ClientToServer call
-  m_szMessage = PipeInput(m_szMessage);
-
-  gTranslator.ClientToServer(m_szMessage);
-
-  m_nSize += strlen(m_szMessage)+1;
 }
 
 void CPU_AckThroughServer::InitBuffer()
 {
   CPU_CommonFamily::InitBuffer();
 
+  bool bPlugin = memcmp(m_GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0;
+  
   buffer->PackUnsignedLongBE(m_nMsgID[0]);
   buffer->PackUnsignedLongBE(m_nMsgID[1]);
   buffer->PackUnsignedShortBE(2);
   buffer->PackChar(m_nUinLen);
   buffer->Pack(m_szUin, m_nUinLen);
-	buffer->PackUnsignedShortBE(0x03);
+  buffer->PackUnsignedShortBE(0x03);
   buffer->PackUnsignedShort(0x1b);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedShortBE(0);
+  buffer->Pack(m_GUID, GUID_LENGTH);
   buffer->PackUnsignedLong(3);
-  buffer->PackChar(4);
+  buffer->PackChar(0);
   buffer->PackUnsignedShort(m_nSequence);
-  buffer->PackUnsignedShort(0x0e);
+  buffer->PackUnsignedShort(bPlugin ? 0x12 : 0x0E);
   buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
@@ -1545,10 +2091,16 @@ void CPU_AckThroughServer::InitBuffer()
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nLevel);
-  buffer->PackString(m_szMessage);
+  if (bPlugin)
+  {
+    buffer->PackUnsignedShort(1);
+    buffer->PackChar(m_szMessage[0]);
+  }
+  else
+    buffer->PackString(m_szMessage);
+  
   free(m_szMessage);
 }
-
 
 //-----AckGeneral--------------------------------------------------------------
 CPU_AckGeneral::CPU_AckGeneral(ICQUser *u, unsigned long nMsgID1,
@@ -1556,7 +2108,7 @@ CPU_AckGeneral::CPU_AckGeneral(ICQUser *u, unsigned long nMsgID1,
                                unsigned short nMsgType, bool bAccept,
                                unsigned short nLevel)
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, nMsgType, bAccept,
-                         nLevel)
+                         nLevel, PLUGIN_NORMAL)
 {
   m_nSize += 8;
   InitBuffer();
@@ -1586,7 +2138,8 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackUnsignedLong(0); // filesize
 	buffer->PackUnsignedLong(nPort); // port
 #else
-	m_nSize += 80;
+	m_nSize += 76;
+//  m_nExtraLen += 4; m_nSize += 4; //the ack request
 	InitBuffer();
 
 	buffer->PackUnsignedShort(0x32);  // len of following plugin info
@@ -1610,7 +2163,7 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackString(""); // filename
 	buffer->PackUnsignedLong(0); // filesize
 	buffer->PackUnsignedLong(nPort); // port
-	buffer->PackUnsignedLongBE(0x00030000); // ack request
+//	buffer->PackUnsignedLongBE(0x00030000); // ack request
 #endif
 }
 
@@ -1618,8 +2171,8 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 //-----AckFileRefuse-----------------------------------------------------------
 CPU_AckFileRefuse::CPU_AckFileRefuse(ICQUser *u, unsigned long nMsgID[2],
 																		 unsigned short nSequence, const char *msg)
-	: CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
-												 ICQ_CMDxSUB_FILE, false, 0)
+  : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
+      ICQ_CMDxSUB_FILE, false, 0, PLUGIN_NORMAL)
 {
 	// XXX This is not the ICBM way yet!
 	m_nSize += strlen(msg) + 18;
@@ -1652,8 +2205,8 @@ CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, const char *szClients,
 //-----AckChatRefuse-----------------------------------------------------------
 CPU_AckChatRefuse::CPU_AckChatRefuse(ICQUser *u, unsigned long nMsgID[2],
 																		 unsigned short nSequence, const char *msg)
-	: CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
-												 ICQ_CMDxSUB_CHAT, false, 0)
+  : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
+      ICQ_CMDxSUB_CHAT, false, 0, PLUGIN_NORMAL)
 {
 	// XXX This is not the ICBM way yet!
 	m_nSize += strlen(msg) + 14;
@@ -2846,6 +3399,123 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackChar(m_nLanguage3);
 }
 
+//-----Meta_SetInterestsInfo----------------------------------------------------
+CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(
+                                             const ICQUserCategory* interests)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_INTERESTSxINFOxSET;
+
+  m_Interests = new ICQUserCategory(CAT_INTERESTS);
+
+  int packetSize = 2 + 2 + 2 + 4 + 2 + 2 + 2 + 1;
+  unsigned char num_Interests = 0;
+  unsigned short cat;
+  const char *descr;
+  int i;
+  for (i = 0; interests->Get(i, &cat, &descr); i++)
+  {
+    char *tmp = strdup(descr);
+    gTranslator.ClientToServer(tmp);
+    m_Interests->AddCategory(cat, tmp);
+    num_Interests++;
+    packetSize += 2 + 2 + strlen_safe(tmp) + 1;
+    free(tmp);
+  }
+
+  m_nSize += packetSize;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
+
+  buffer->PackChar(num_Interests);
+  for (i = 0; m_Interests->Get(i, &cat, &descr); i++)
+  {
+    buffer->PackUnsignedShort(cat);
+    buffer->PackString(descr);
+  }
+}
+
+CPU_Meta_SetInterestsInfo::~CPU_Meta_SetInterestsInfo()
+{
+  delete m_Interests;
+}
+
+//-----Meta_SetOrgBackInfo------------------------------------------------------
+CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(
+                                             const ICQUserCategory* orgs,
+                                             const ICQUserCategory* background)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_ORGBACKxINFOxSET;
+
+  m_Orgs = new ICQUserCategory(CAT_ORGANIZATION);
+  m_Background = new ICQUserCategory(CAT_BACKGROUND);
+
+  int packetSize = 2 + 2 + 2 + 4 + 2 + 2 + 2 + 2;
+  unsigned char num_Orgs = 0;
+  unsigned char num_Background = 0;
+  unsigned short cat;
+  const char *descr;
+  int i;
+  for (i = 0; orgs->Get(i, &cat, &descr); i++)
+  {
+    char *tmp = strdup(descr);
+    gTranslator.ClientToServer(tmp);
+    m_Orgs->AddCategory(cat, tmp);
+    num_Orgs++;
+    packetSize += 2 + 2 + strlen_safe(tmp) + 1;
+    free(tmp);
+  }
+  for (i = 0; background->Get(i, &cat, &descr); i++)
+  {
+    char *tmp = strdup(descr);
+    gTranslator.ClientToServer(tmp);
+    m_Background->AddCategory(cat, tmp);
+    num_Background++;
+    packetSize += 2 + 2 + strlen_safe(tmp) + 1;
+    free(tmp);
+  }
+
+  m_nSize += packetSize;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
+
+  buffer->PackChar(num_Background);
+  for (i = 0; m_Background->Get(i, &cat, &descr); i++)
+  {
+    buffer->PackUnsignedShort(cat);
+    buffer->PackString(descr);
+  }
+  buffer->PackChar(num_Orgs);
+  for (i = 0; m_Orgs->Get(i, &cat, &descr); i++)
+  {
+    buffer->PackUnsignedShort(cat);
+    buffer->PackString(descr);
+  }
+}
+
+CPU_Meta_SetOrgBackInfo::~CPU_Meta_SetOrgBackInfo()
+{
+  delete m_Orgs;
+  delete m_Background;
+}
+
 //-----Meta_SetWorkInfo------------------------------------------------------
 CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szCity,
@@ -2858,17 +3528,18 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szName,
     const char *szDepartment,
     const char *szPosition,
+    unsigned short nCompanyOccupation,
     const char *szHomepage)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
   
   m_nCompanyCountry = nCompanyCountry;  
+  m_nCompanyOccupation = nCompanyOccupation;
   
   char szStatebuf[6];
-
+  strncpy(szStatebuf, szState, 6);
   szStatebuf[5] = '\0';
-  snprintf(szStatebuf, 5, "%s", szState);
 
   int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
 		    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
@@ -2907,7 +3578,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   m_szName = buffer->PackString(szName);
   m_szDepartment = buffer->PackString(szDepartment);
   m_szPosition = buffer->PackString(szPosition);
-  buffer->PackUnsignedShort(0x0500);
+  buffer->PackUnsignedShort(m_nCompanyOccupation);
   m_szHomepage = buffer->PackString(szHomepage);
 }
 
@@ -2980,7 +3651,10 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const char *_szId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
+  if (gUserManager.FindOwner(_szId, LICQ_PPID) == 0)
+    m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
+  else
+    m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFOxOWNER;
   m_szId = strdup(_szId);
 
   int packetSize = 2+2+2+4+2+2+2+4;
@@ -3027,7 +3701,7 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(2L);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
@@ -3045,7 +3719,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(4L);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(0x00000000);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp); // maybe should be 0
@@ -3065,7 +3739,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedShort(6L);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
   buffer->PackUnsignedShort(0x0027); //size
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
@@ -3114,7 +3788,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(CBuffer *inbuf)
 
 
 CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
-   unsigned long nSessionId, unsigned short nLocalPort)
+   unsigned long nSessionId, unsigned short nLocalPort, unsigned long nId)
 {
   m_nDestinationUin = nDestinationUin;
 
@@ -3148,7 +3822,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
 
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
-  buffer->PackUnsignedLong(0x00000000); // ???
+  buffer->PackUnsignedLong(nId); // the connection id for reverse connect
 
 }
 
@@ -3167,6 +3841,8 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(CBuffer *inbuf)
   m_nMode = inbuf->UnpackChar();
   inbuf->UnpackUnsignedLong();
   m_nSessionId = inbuf->UnpackUnsignedLong(); // Mmmm cookie
+  inbuf->incDataPosRead(8);
+  m_nId = inbuf->UnpackUnsignedLong();
 }
 
 
@@ -3177,20 +3853,73 @@ CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
   buffer->PackUnsignedLong(1);
 }
 
-CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(bool bIncoming)
+CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(unsigned char nChannel,
+  unsigned long nId)
 {
   m_nSize = 33;
   buffer = new CBuffer(m_nSize);
 
+  const char *GUID;
+  unsigned long nOurId;
+  switch (nChannel)
+  {
+  case ICQ_CHNxNONE:
+    nOurId = 0x00000001;
+    GUID = PLUGIN_NORMAL;
+    break;
+ case ICQ_CHNxINFO:
+    nOurId = 0x000003EB;
+    GUID = PLUGIN_INFOxMANAGER;
+    break;
+  case ICQ_CHNxSTATUS:
+    nOurId = 0x000003EA;
+    GUID = PLUGIN_STATUSxMANAGER;
+    break;
+  default:
+    gLog.Warn("%sChannel %u is not implemented\n", L_WARNxSTR, nChannel);
+    return;
+  }
+
+  m_nChannel = nChannel;
+
   buffer->PackChar(0x03);
   buffer->PackUnsignedLong(0x0000000A);
-  buffer->PackUnsignedLong(0x00000001);
-  buffer->PackUnsignedLong(bIncoming ? 0x00000001 : 0x00000000);
-  buffer->PackUnsignedLong(0x00000000);
-  buffer->PackUnsignedLong(0x00000000);
-  buffer->PackUnsignedLong(bIncoming ? 0x00040001 : 0x00000000);
-  buffer->PackUnsignedLong(0x00000000);
-  buffer->PackUnsignedLong(bIncoming ? 0x00000000 : 0x00040001);
+  buffer->PackUnsignedLong(nOurId);
+  buffer->PackUnsignedLong(nId);
+  if (nId == 0)  //we are initiating the connection
+  {
+    buffer->Pack(GUID, 16);
+    buffer->PackUnsignedLong(0x00040001);
+  }
+  else
+  {
+    buffer->Pack(GUID, 8);
+    buffer->PackUnsignedLong(0x00040001);
+    buffer->Pack(GUID + 8, 8);
+  }
+}
+
+CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(CBuffer *inbuf)
+{
+  inbuf->incDataPosRead(5); //skip over junk
+  m_nId = inbuf->UnpackUnsignedLong(); // some sort of id??
+  inbuf->UnpackUnsignedLong(); // 0 in incomming, our id in outgoing
+
+  char GUID[16];
+  for (int i = 0; i < 16; i ++)
+    (*inbuf) >> GUID[i];
+
+  if (memcmp(GUID, PLUGIN_NORMAL, 16) == 0)
+    m_nChannel = ICQ_CHNxNONE;
+  else if (memcmp(GUID, PLUGIN_INFOxMANAGER, 16) == 0)
+    m_nChannel = ICQ_CHNxINFO;
+  else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, 16) == 0)
+    m_nChannel = ICQ_CHNxSTATUS;
+  else
+  {
+    gLog.Warn("%sUnknown channel GUID.\n", L_WARNxSTR);
+    m_nChannel = ICQ_CHNxUNKNOWN;
+  }
 }
 
 //=====PacketTcp================================================================
@@ -3453,16 +4182,24 @@ void CPacketTcp::InitBuffer_v7()
   buffer->PackChar(0x02);
   buffer->PackUnsignedLong(0); // Checksum
   buffer->PackUnsignedShort(m_nCommand);
-  buffer->PackUnsignedShort(0x000E); // ???
+  buffer->PackUnsignedShort((Channel() == ICQ_CHNxNONE) ? 0x000E : 0x0012);
   buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedLong(0);
   buffer->PackUnsignedLong(0);
   buffer->PackUnsignedLong(0);
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
-  buffer->PackUnsignedShort(m_nMsgType);
-	//  buffer->PackUnsignedShort(0x0021);
-  buffer->PackString(m_szMessage);
+  buffer->PackUnsignedShort((Channel() == ICQ_CHNxNONE) ? m_nMsgType : m_nLevel);
+//  buffer->PackUnsignedShort(0x0021);
+  if (Channel() == ICQ_CHNxNONE)
+  {
+    buffer->PackString(m_szMessage);
+  }
+  else
+  {
+    buffer->PackUnsignedShort(1);
+    buffer->PackChar(m_szMessage[0]);
+  }
 
   m_szLocalPortOffset = NULL;
 }
@@ -4070,6 +4807,361 @@ CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
   PostBuffer();
 }
 
+//-----Send error reply------------------------------------------------------
+CPT_PluginError::CPT_PluginError(ICQUser *_cUser, unsigned long nSequence,
+                                 unsigned char nChannel)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x03", true, 0, _cUser)
+{
+  m_nSequence = nSequence;
+  m_nChannel = nChannel;
+
+  InitBuffer();
+  PostBuffer();
+}
+
+//-----Send info plugin request------------------------------------------------
+CPT_InfoPluginReq::CPT_InfoPluginReq(ICQUser *_cUser, const char *GUID,
+  unsigned long nTime)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, "", true, 0, _cUser)
+{
+  m_nSize += 22;
+  memcpy(m_ReqGUID, GUID, GUID_LENGTH);
+
+  InitBuffer();
+
+  buffer->Pack(GUID, GUID_LENGTH);
+
+  buffer->PackUnsignedLong(nTime);
+
+  PostBuffer();
+}
+
+//----Reply to phone book request-----------------------------------------------
+CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
+  unsigned long nSequence)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
+{
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQUserPhoneBook *book = o->GetPhoneBook();
+
+  unsigned long num_entries;
+  unsigned long nLen = 4 + 4;
+  const struct PhoneBookEntry *entry;
+  for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
+  {
+    nLen += 4 + strlen(entry->szDescription) + 4 + strlen(entry->szAreaCode)
+          + 4 + strlen(entry->szPhoneNumber) + 4 + strlen(entry->szExtension)
+          + 4 + strlen(entry->szCountry)     + 4 + 4 + 4
+          + 4 + strlen(entry->szGateway)     + 4 + 4 + 4 + 4;
+  }
+
+  m_nSize += 2 + 2 + 4 + 4 + nLen;
+  m_nSequence = nSequence;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+
+  buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_PHONExBOOK); //Response ID
+
+  buffer->PackUnsignedLong(num_entries);
+
+  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  {
+    unsigned long sLen = strlen(entry->szDescription);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szDescription, sLen);
+
+    sLen = strlen(entry->szAreaCode);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szAreaCode, sLen);
+
+    sLen = strlen(entry->szPhoneNumber);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szPhoneNumber, sLen);
+
+    sLen = strlen(entry->szExtension);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szExtension, sLen);
+
+    sLen = strlen(entry->szCountry);
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szCountry, sLen);
+
+    buffer->PackUnsignedLong(entry->nActive);
+  }
+
+  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  {
+    unsigned long sLen = strlen(entry->szGateway);
+    buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
+
+    buffer->PackUnsignedLong(entry->nType);
+
+    buffer->PackUnsignedLong(sLen);
+    buffer->Pack(entry->szGateway, sLen);
+
+    buffer->PackUnsignedLong(entry->nGatewayType);
+    buffer->PackUnsignedLong(entry->nSmsAvailable);
+    buffer->PackUnsignedLong(entry->nRemoveLeading0s);
+    buffer->PackUnsignedLong(entry->nPublish);
+  }
+
+  gUserManager.DropOwner();
+
+  PostBuffer();
+}
+
+//----Reply to picture request--------------------------------------------------
+CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
+  unsigned long nSequence)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
+{
+  char szFilename[MAX_FILENAME_LEN];
+  szFilename[MAX_FILENAME_LEN - 1] = '\0';
+  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/owner.pic", BASE_DIR);
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned long nLen = 0, nFileLen = 0;
+  int fd = -1;
+  if (o->GetPicturePresent())
+  {
+    fd = open(szFilename, O_RDONLY);
+    if (fd == -1)
+    {
+      gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                     szFilename, L_BLANKxSTR, strerror(errno));
+    }
+    else
+    {
+      struct stat fi;
+      if (fstat(fd, &fi) == -1)
+      {
+        gLog.Error("%sUnable to stat picture file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                     szFilename, L_BLANKxSTR, strerror(errno));
+      }
+      else
+      {
+        nFileLen = fi.st_size;
+        nLen = 4 + 4 + 1 + 4 + nFileLen;
+      }
+    }
+  }
+
+  m_nSize += 2 + 2 + 4 + 4 + nLen;
+  m_nSequence = nSequence;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+
+  if (nLen != 0)
+  {
+    buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_PICTURE); //Response ID
+
+    buffer->PackUnsignedLong(1); //filename length
+    buffer->PackChar('p'); //windows icq needs a filename
+
+    buffer->PackUnsignedLong(nFileLen);
+
+    char buf[8192];
+    unsigned long nRead = 0;
+    while (nRead < nFileLen)
+    {
+      unsigned long nToRead;
+      if (sizeof(buf) < nFileLen - nRead)
+        nToRead = sizeof(buf);
+      else
+        nToRead = nFileLen - nRead;
+
+      ssize_t nBytesRead = read(fd, buf, nToRead);
+      if (nBytesRead == -1)
+      {
+        gLog.Error("%sFailed to read file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                    szFilename, L_BLANKxSTR, strerror(errno));
+        break;
+      }
+      if (nBytesRead == 0)
+      {
+        gLog.Error("%sPremature end of file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                    szFilename, L_BLANKxSTR, strerror(errno));
+        break;
+      }
+
+      nRead += nBytesRead;
+      for (ssize_t i = 0; i < nBytesRead; i++)
+        buffer->PackChar(buf[i]);
+    }
+
+    if (nRead < nFileLen)
+    {
+      //failed to read as much as predicted, fill with 0s
+      for (; nRead < nFileLen; nRead++)
+        buffer->PackChar(0);
+    }
+  }
+
+  if (fd != -1)
+    close(fd);
+  
+  gUserManager.DropOwner();
+}
+
+//----Reply to plugin list request----------------------------------------------
+CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
+  unsigned long nSequence)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
+{
+  unsigned long num_plugins = sizeof(info_plugins)/sizeof(struct PluginList);
+
+  unsigned long nLen;
+  if (num_plugins == 0)
+    nLen = 0;
+  else
+  {
+    nLen = 4 + 4;
+    for (unsigned long i = 0; i < num_plugins; i ++)
+    {
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(info_plugins[i].name) 
+              + 4 + strlen(info_plugins[i].description) + 4;
+    }
+  }
+
+  m_nSize += 2 + 2 + 4 + 4 + nLen;
+  m_nSequence = nSequence;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  gUserManager.DropOwner();
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+  if (nLen != 0)
+  {
+    buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_INFOxLIST); //Response ID
+    buffer->PackUnsignedLong(num_plugins);
+    for (unsigned long i = 0; i < num_plugins; i++)
+    {
+      buffer->Pack(info_plugins[i].guid, GUID_LENGTH);
+
+      buffer->PackUnsignedShort(0); //Unknown
+      buffer->PackUnsignedShort(1); //Unknown
+
+      unsigned int l = strlen(info_plugins[i].name);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(info_plugins[i].name, l);
+
+      l = strlen(info_plugins[i].description);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(info_plugins[i].description, l);
+
+      buffer->PackUnsignedLong(0);  //Unknown
+    }
+  }
+  PostBuffer();
+}
+
+//-----Send status plugin request----------------------------------------------
+CPT_StatusPluginReq::CPT_StatusPluginReq(ICQUser *_cUser, const char *GUID,
+  unsigned long nTime)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, "", true, 0, _cUser)
+{
+  m_nSize += 22;
+  memcpy(m_ReqGUID, GUID, GUID_LENGTH);
+
+  InitBuffer();
+
+  buffer->Pack(GUID, GUID_LENGTH);
+
+  buffer->PackUnsignedLong(nTime);
+
+  PostBuffer();
+}
+
+//----Reply to plugin list request----------------------------------------------
+CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
+  unsigned long nSequence)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, 0, _cUser)
+{
+  unsigned long num_plugins = sizeof(status_plugins)/sizeof(struct PluginList);
+
+  unsigned long nLen;
+  if (num_plugins == 0)
+    nLen = 0;
+  else
+  {
+    nLen = 4 + 4;
+    for (unsigned long i = 0; i < num_plugins; i ++)
+    {
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(status_plugins[i].name) 
+              + 4 + strlen(status_plugins[i].description) + 4;
+    }
+  }
+
+  m_nSize += 13 + 4 + 4 + nLen;
+  m_nSequence = nSequence;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(0);    //Unknown
+  buffer->PackUnsignedLong(0);    //Unknown
+  buffer->PackChar(1);            //Unknown
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  gUserManager.DropOwner();
+  buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
+  if (nLen != 0)
+  {
+    buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_STATUSxLIST); //Response ID
+    buffer->PackUnsignedLong(num_plugins);
+    for (unsigned long i = 0; i < num_plugins; i++)
+    {
+      buffer->Pack(status_plugins[i].guid, GUID_LENGTH);
+
+      buffer->PackUnsignedShort(0); //Unknown
+      buffer->PackUnsignedShort(1); //Unknown
+
+      unsigned int l = strlen(status_plugins[i].name);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(status_plugins[i].name, l);
+
+      l = strlen(status_plugins[i].description);
+      buffer->PackUnsignedLong(l);
+      buffer->Pack(status_plugins[i].description, l);
+
+      buffer->PackUnsignedLong(0);  //Unknown
+    }
+  }
+  PostBuffer();
+}
+
+//----Reply to status request--------------------------------------------------
+CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
+  unsigned long nSequence,
+  unsigned long nStatus)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x02", true, 0, _cUser)
+{
+  m_nSize += 2 + 2 + 4 + 4 + 1;
+  m_nSequence = nSequence;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(0);   //Unknown
+  buffer->PackUnsignedShort(1);   //Unknown
+  buffer->PackUnsignedLong(nStatus);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  gUserManager.DropOwner();
+  buffer->PackChar(1);            //Unknown
+
+  PostBuffer();
+}
 
 // Connection independent base classes
 

@@ -12,12 +12,14 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <ctype.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <errno.h>
+#include <vector>
 
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
@@ -29,6 +31,7 @@
 #include "licq_constants.h"
 #include "licq_user.h"
 #include "licq_countrycodes.h"
+#include "licq_occupationcodes.h"
 #include "licq_languagecodes.h"
 #include "licq_log.h"
 #include "licq_packets.h"
@@ -36,6 +39,378 @@
 #include "licq_socket.h"
 #include "support.h"
 #include "pthread_rdwr.h"
+
+using std::vector;
+
+ICQUserCategory::ICQUserCategory(UserCat uc)
+{
+  used = 0;
+  m_uc = uc;
+}
+
+ICQUserCategory::~ICQUserCategory()
+{
+  Clean();
+}
+
+void ICQUserCategory::Clean()
+{      
+  unsigned short i;
+
+  for(i = 0; i < used; i++)
+    free((void *)data[i].descr);
+    
+  used = 0;
+}
+
+bool ICQUserCategory::SaveToDisk(CIniFile &m_fConf,const char *const szN,
+                             const char *const szCat,const char *const szDescr)
+{      
+  char buff[255];
+  unsigned short i;
+
+  if (!m_fConf.ReloadFile())
+  {
+    gLog.Error("%sError opening '%s' for reading.\n"
+               "%sSee log for details.\n", L_ERRORxSTR, m_fConf.FileName(),
+               L_BLANKxSTR);
+      return false;
+  }
+
+  m_fConf.SetSection("user");
+  m_fConf.WriteNum(szN, used);
+
+  for(i = 0; i < used; i ++)
+  {
+    snprintf(buff, sizeof(buff), szCat, i);
+    m_fConf.WriteNum(buff, data[i].id);
+    snprintf(buff, sizeof(buff), szDescr, i);
+    m_fConf.WriteStr(buff, data[i].descr);
+  }
+
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n"
+               "%sSee log for details.\n", L_ERRORxSTR,
+               m_fConf.FileName(), L_BLANKxSTR);
+    return false;
+  }
+
+  m_fConf.CloseFile();
+  return true;
+}
+
+bool ICQUserCategory::LoadFromDisk(CIniFile &m_fConf, const char *const szN,
+       const char *const szCat, const char *const szDescr)
+{
+  unsigned short i, j, ret, n;
+  char buff[255];
+  char szTemp[MAX_LINE_LEN];
+
+  Clean();
+  m_fConf.SetSection("user");
+  ret = m_fConf.ReadNum(szN, used, 0);
+
+  if (used > MAX_CATEGORIES)
+  {
+    gLog.Warn("%sTrying to load more categories than the max limit."
+              "Truncating.\n",L_WARNxSTR);
+    used = MAX_CATEGORIES;
+  }
+
+  for(i = j = 0, n = used; i < n; i++)
+  {
+    snprintf(buff, sizeof(buff), szCat, i);
+    ret = m_fConf.ReadNum(buff, data[j].id, 0);
+
+    snprintf(buff, sizeof(buff), szDescr, i);
+    if (ret)
+    {
+      ret = m_fConf.ReadStr(buff, szTemp);
+      if (ret)
+      {
+        data[j].descr = strdup(szTemp);
+        if (data[j].descr == NULL)
+          ret = 0;
+      }
+      
+    }
+
+    /* this one failed loading. we ignore and keep trying */
+    if (!ret)
+      used--;
+    else
+      j++;
+  }
+   
+  return true;
+}
+
+bool ICQUserCategory::AddCategory(unsigned short cat_, const char *descr_)
+{
+  bool nRet = true;
+
+  if (used == MAX_CATEGORIES || descr_ == NULL)
+    nRet =  false;
+  else if (cat_ != 0)
+  {
+    data[used].id = cat_;
+    data[used].descr = strdup(descr_);
+
+    if (data[used].descr == NULL)
+      nRet = false;
+    else
+      used++;
+  }
+   
+  return nRet;
+}
+
+bool ICQUserCategory::Get(unsigned d,short unsigned *id, char const*  * descr) 
+                                                                         const
+{
+  bool nRet = false;
+
+  //assert(id && descr);
+
+  if(nRet = (d < used ))
+  {
+    *id = data[d].id;
+    *descr = (const char *)data[d].descr;
+  }
+  
+  return nRet;
+}
+
+//===========================================================================
+
+ICQUserPhoneBook::ICQUserPhoneBook()
+{
+}
+
+ICQUserPhoneBook::~ICQUserPhoneBook()
+{
+  Clean();
+}
+
+void ICQUserPhoneBook::AddEntry(const struct PhoneBookEntry *entry)
+{
+  struct PhoneBookEntry new_entry = *entry;
+  new_entry.szDescription = strdup(entry->szDescription);
+  new_entry.szAreaCode = strdup(entry->szAreaCode);
+  new_entry.szPhoneNumber = strdup(entry->szPhoneNumber);
+  new_entry.szExtension = strdup(entry->szExtension);
+  new_entry.szCountry = strdup(entry->szCountry);
+  new_entry.szGateway = strdup(entry->szGateway);
+
+  PhoneBookVector.push_back(new_entry);
+}
+
+void ICQUserPhoneBook::SetEntry(const struct PhoneBookEntry *entry,
+                                unsigned long nEntry)
+{
+  if (nEntry >= PhoneBookVector.size())
+  {
+    AddEntry(entry);
+    return;
+  }
+
+  free(PhoneBookVector[nEntry].szDescription);
+  free(PhoneBookVector[nEntry].szAreaCode);
+  free(PhoneBookVector[nEntry].szPhoneNumber);
+  free(PhoneBookVector[nEntry].szExtension);
+  free(PhoneBookVector[nEntry].szCountry);
+  free(PhoneBookVector[nEntry].szGateway);
+
+  PhoneBookVector[nEntry] = *entry;
+  PhoneBookVector[nEntry].szDescription = strdup(entry->szDescription);
+  PhoneBookVector[nEntry].szAreaCode = strdup(entry->szAreaCode);
+  PhoneBookVector[nEntry].szPhoneNumber = strdup(entry->szPhoneNumber);
+  PhoneBookVector[nEntry].szExtension = strdup(entry->szExtension);
+  PhoneBookVector[nEntry].szCountry = strdup(entry->szCountry);
+  PhoneBookVector[nEntry].szGateway = strdup(entry->szGateway);
+}
+
+void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
+{
+  if (nEntry >= PhoneBookVector.size())
+    return;
+
+  vector<struct PhoneBookEntry>::iterator i = PhoneBookVector.begin();
+  for (;nEntry > 0; nEntry--, i++);
+
+  free((*i).szDescription);
+  free((*i).szAreaCode);
+  free((*i).szPhoneNumber);
+  free((*i).szExtension);
+  free((*i).szCountry);
+  free((*i).szGateway);
+
+  PhoneBookVector.erase(i);
+}
+
+void ICQUserPhoneBook::Clean()
+{
+  while (PhoneBookVector.size() > 0)
+    ClearEntry(PhoneBookVector.size() - 1);
+}
+
+void ICQUserPhoneBook::SetActive(long nEntry)
+{
+  vector<struct PhoneBookEntry>::iterator iter;
+  long i;
+  for (i = 0, iter = PhoneBookVector.begin(); iter != PhoneBookVector.end()
+                                                 ; i++, iter++)
+    (*iter).nActive = (i == nEntry);
+}
+
+bool ICQUserPhoneBook::Get(unsigned long nEntry,
+                           const struct PhoneBookEntry **entry)
+{
+  if (nEntry >= PhoneBookVector.size())
+    return false;
+
+  *entry = &PhoneBookVector[nEntry];
+  return true;
+}
+
+bool ICQUserPhoneBook::SaveToDisk(CIniFile &m_fConf)
+{
+  char buff[40];
+
+  if (!m_fConf.ReloadFile())
+  {
+    gLog.Error("%sError opening '%s' for reading.\n"
+               "%sSee log for details.\n", L_ERRORxSTR, m_fConf.FileName(),
+               L_BLANKxSTR);
+    return false;
+  }
+
+  m_fConf.SetSection("user");
+
+  m_fConf.WriteNum("PhoneEntries", (unsigned long)PhoneBookVector.size());
+
+  for (unsigned long i = 0 ; i < PhoneBookVector.size(); i++)
+  {
+    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
+    m_fConf.WriteStr(buff, PhoneBookVector[i].szDescription);
+
+    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
+    m_fConf.WriteStr(buff, PhoneBookVector[i].szAreaCode);
+
+    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
+    m_fConf.WriteStr(buff, PhoneBookVector[i].szPhoneNumber);
+
+    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
+    m_fConf.WriteStr(buff, PhoneBookVector[i].szExtension);
+
+    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
+    m_fConf.WriteStr(buff, PhoneBookVector[i].szCountry);
+
+    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
+    m_fConf.WriteNum(buff, PhoneBookVector[i].nActive);
+
+    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
+    m_fConf.WriteNum(buff, PhoneBookVector[i].nType);
+
+    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
+    m_fConf.WriteStr(buff, PhoneBookVector[i].szGateway);
+
+    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
+    m_fConf.WriteNum(buff, PhoneBookVector[i].nGatewayType);
+
+    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
+    m_fConf.WriteNum(buff, PhoneBookVector[i].nSmsAvailable);
+
+    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
+    m_fConf.WriteNum(buff, PhoneBookVector[i].nRemoveLeading0s);
+
+    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
+    m_fConf.WriteNum(buff, PhoneBookVector[i].nPublish);
+  }
+
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n"
+               "%sSee log for details.\n", L_ERRORxSTR,
+               m_fConf.FileName(), L_BLANKxSTR);
+    return false;
+  }
+
+  m_fConf.CloseFile();
+  return true;
+}
+
+bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
+{
+  char buff[40];
+  char szDescription[MAX_LINE_LEN];
+  char szAreaCode[MAX_LINE_LEN];
+  char szPhoneNumber[MAX_LINE_LEN];
+  char szExtension[MAX_LINE_LEN];
+  char szCountry[MAX_LINE_LEN];
+  char szGateway[MAX_LINE_LEN];
+  struct PhoneBookEntry entry = {
+                                  szDescription,
+                                  szAreaCode,
+                                  szPhoneNumber,
+                                  szExtension,
+                                  szCountry,
+                                  0, 0,
+                                  szGateway,
+                                  0, 0, 0, 0
+                                };
+
+  Clean();
+  m_fConf.SetSection("user");
+
+  unsigned long nNumEntries;
+  m_fConf.ReadNum("PhoneEntries", nNumEntries);
+  for (unsigned long i = 0; i < nNumEntries; i++)
+  {
+    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
+    m_fConf.ReadStr(buff, entry.szDescription, "");
+
+    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
+    m_fConf.ReadStr(buff, entry.szAreaCode, "");
+
+    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
+    m_fConf.ReadStr(buff, entry.szPhoneNumber, "");
+
+    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
+    m_fConf.ReadStr(buff, entry.szExtension, "");
+
+    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
+    m_fConf.ReadStr(buff, entry.szCountry, "");
+
+    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
+    m_fConf.ReadNum(buff, entry.nActive, 0);
+
+    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
+    m_fConf.ReadNum(buff, entry.nType, 0);
+
+    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
+    m_fConf.ReadStr(buff, entry.szGateway, "");
+
+    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
+    m_fConf.ReadNum(buff, entry.nGatewayType, 1);
+
+    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
+    m_fConf.ReadNum(buff, entry.nSmsAvailable, 0);
+
+    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
+    m_fConf.ReadNum(buff, entry.nRemoveLeading0s, 1);
+
+    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
+    m_fConf.ReadNum(buff, entry.nPublish, 2);
+
+    AddEntry(&entry);
+  }
+
+  return true;
+}
+//===========================================================================
+
 
 class CUserManager gUserManager;
 
@@ -269,7 +644,15 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
   pUser->SaveLicqInfo();
   pUser->SaveGeneralInfo();
   pUser->SaveMoreInfo();
+  pUser->SaveHomepageInfo();
   pUser->SaveWorkInfo();
+  pUser->SaveAboutInfo();
+  pUser->SaveInterestsInfo();
+  pUser->SaveBackgroundsInfo();
+  pUser->SaveOrganizationsInfo();
+  pUser->SavePhoneBookInfo();
+  pUser->SavePictureInfo();
+  pUser->SaveExtInfo();
 
   // Store the user in the hash table
   m_hUsers.Store(pUser, _szId, _nPPID);
@@ -871,8 +1254,14 @@ void CUserManager::SaveAllUsers()
     pUser->SaveLicqInfo();
     pUser->SaveGeneralInfo();
     pUser->SaveMoreInfo();
+    pUser->SaveHomepageInfo();
     pUser->SaveWorkInfo();
     pUser->SaveAboutInfo();
+    pUser->SaveInterestsInfo();
+    pUser->SaveBackgroundsInfo();
+    pUser->SaveOrganizationsInfo();
+    pUser->SavePhoneBookInfo();
+    pUser->SavePictureInfo();
     pUser->SaveExtInfo();
   }
   FOR_EACH_USER_END
@@ -1382,8 +1771,14 @@ bool ICQUser::LoadInfo()
 
   LoadGeneralInfo();
   LoadMoreInfo();
+  LoadHomepageInfo();
   LoadWorkInfo();
   LoadAboutInfo();
+  LoadInterestsInfo();
+  LoadBackgroundsInfo();
+  LoadOrganizationsInfo();
+  LoadPhoneBookInfo();
+  LoadPictureInfo();
   LoadLicqInfo();
 
   return true;
@@ -1432,6 +1827,18 @@ void ICQUser::LoadMoreInfo()
 }
 
 
+//-----ICQUser::LoadHomepageInfo---------------------------------------------
+void ICQUser::LoadHomepageInfo()
+{
+  // read in the fields, checking for errors each time
+  char szTemp[MAX_LINE_LEN];
+  m_fConf.ReadBool("HomepageCatPresent", m_bHomepageCatPresent, false);
+  m_fConf.ReadNum("HomepageCatCode", m_nHomepageCatCode, 0);
+  m_fConf.ReadStr("HomepageDesc", szTemp, "");  SetHomepageDesc(szTemp);
+  m_fConf.ReadBool("ICQHomepagePresent", m_bICQHomepagePresent, false);
+}
+
+
 //-----ICQUser::LoadWorkInfo-------------------------------------------------
 void ICQUser::LoadWorkInfo()
 {
@@ -1447,6 +1854,7 @@ void ICQUser::LoadWorkInfo()
   m_fConf.ReadStr("CompanyName", szTemp, "");  SetCompanyName(szTemp);
   m_fConf.ReadStr("CompanyDepartment", szTemp, "");  SetCompanyDepartment(szTemp);
   m_fConf.ReadStr("CompanyPosition", szTemp, "");  SetCompanyPosition(szTemp);
+  m_fConf.ReadNum("CompanyOccupation", m_nCompanyOccupation, 0);
   m_fConf.ReadStr("CompanyHomepage", szTemp, "");  SetCompanyHomepage(szTemp);
 }
 
@@ -1458,6 +1866,19 @@ void ICQUser::LoadAboutInfo()
   char szTemp[MAX_LINE_LEN];
   m_fConf.SetSection("user");
   m_fConf.ReadStr("About", szTemp, ""); SetAbout(szTemp);
+}
+
+//-----ICQUser::LoadPhoneBookInfo--------------------------------------------
+void ICQUser::LoadPhoneBookInfo()
+{
+  m_PhoneBook->LoadFromDisk(m_fConf);
+}
+
+//-----ICQUser::LoadPictureInfo----------------------------------------------
+void ICQUser::LoadPictureInfo()
+{
+  m_fConf.SetSection("user");
+  m_fConf.ReadBool("PicturePresent", m_bPicturePresent, false);
 }
 
 //-----ICQUser::LoadLicqInfo-------------------------------------------------
@@ -1507,6 +1928,18 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("InvisibleSID", m_nSID[INV_SID], 0);
   m_fConf.ReadNum("VisibleSID", m_nSID[VIS_SID], 0);
   m_fConf.ReadNum("GSID", m_nGSID, 0);
+  m_fConf.ReadNum("ClientTimestamp", m_nClientTimestamp, 0);
+  m_fConf.ReadNum("ClientInfoTimestamp", m_nClientInfoTimestamp, 0);
+  m_fConf.ReadNum("ClientStatusTimestamp", m_nClientStatusTimestamp, 0);
+  m_fConf.ReadNum("OurClientTimestamp", m_nOurClientTimestamp, 0);
+  m_fConf.ReadNum("OurClientInfoTimestamp", m_nOurClientInfoTimestamp, 0);
+  m_fConf.ReadNum("OurClientStatusTimestamp", m_nOurClientStatusTimestamp, 0);
+  m_fConf.ReadNum("PhoneFollowMeStatus", m_nPhoneFollowMeStatus,
+                  ICQ_PLUGIN_STATUSxINACTIVE);
+  m_fConf.ReadNum("ICQphoneStatus", m_nICQphoneStatus,
+                  ICQ_PLUGIN_STATUSxINACTIVE);
+  m_fConf.ReadNum("SharedFilesStatus", m_nSharedFilesStatus,
+                  ICQ_PLUGIN_STATUSxINACTIVE);
 
   if (nNewMessages > 0)
   {
@@ -1585,6 +2018,8 @@ ICQUser::~ICQUser()
       free( m_szZipCode );
   if ( m_szHomepage )
       free( m_szHomepage );
+  if ( m_szHomepageDesc )
+      free( m_szHomepageDesc );
   if ( m_szCompanyCity )
       free( m_szCompanyCity );
   if ( m_szCompanyState )
@@ -1613,6 +2048,11 @@ ICQUser::~ICQUser()
       free( m_szClientInfo );
   if ( m_szId )
       free( m_szId );
+  
+  delete m_Interests;
+  delete m_Organizations;
+  delete m_Backgrounds;
+  delete m_PhoneBook;
 /*
   // Destroy the mutex
   int nResult = 0;
@@ -1684,8 +2124,10 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nCountryCode = COUNTRY_UNSPECIFIED;
   m_nTimezone = TIMEZONE_UNKNOWN;
   m_bAuthorization = false;
+  m_nWebAwareStatus = 2; //Status unknown
   m_bHideEmail = false;
-
+  m_nTyping = ICQ_TYPING_INACTIVEx0;
+  
   // More Info
   m_nAge = 0xffff;
   m_nGender = 0;
@@ -1696,6 +2138,17 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nLanguage[0] = 0;
   m_nLanguage[1] = 0;
   m_nLanguage[2] = 0;
+
+  // Homepage Info
+  m_bHomepageCatPresent = false;
+  m_nHomepageCatCode = 0;
+  m_szHomepageDesc = NULL;
+  m_bICQHomepagePresent = false;
+
+  // More2
+  m_Interests    = new ICQUserCategory(CAT_INTERESTS);
+  m_Organizations = new ICQUserCategory(CAT_ORGANIZATION);
+  m_Backgrounds  = new ICQUserCategory(CAT_BACKGROUND);
 
   // Work Info
   m_szCompanyCity = NULL;
@@ -1708,10 +2161,17 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_szCompanyName = NULL;
   m_szCompanyDepartment = NULL;
   m_szCompanyPosition = NULL;
+  m_nCompanyOccupation = OCCUPATION_UNSPECIFIED;
   m_szCompanyHomepage = NULL;
 
   // About
   m_szAbout = NULL;
+
+  // Phone Book
+  m_PhoneBook = new ICQUserPhoneBook();
+
+  // Picture
+  m_bPicturePresent = false;
 
   if (_szId)
     m_szId = strdup(_szId);
@@ -1737,6 +2197,15 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nVersion = 0;
   m_nCookie = 0;
   m_nClientTimestamp = 0;
+  m_nClientInfoTimestamp = 0;
+  m_nClientStatusTimestamp = 0;
+  m_nOurClientTimestamp = 0;
+  m_nOurClientInfoTimestamp = 0;
+  m_nOurClientStatusTimestamp = 0;
+  m_bUserUpdated = false;
+  m_nPhoneFollowMeStatus = ICQ_PLUGIN_STATUSxINACTIVE;
+  m_nICQphoneStatus = ICQ_PLUGIN_STATUSxINACTIVE;
+  m_nSharedFilesStatus = ICQ_PLUGIN_STATUSxINACTIVE;
   Touch();
   for (unsigned short i = 0; i < 4; i++)
     m_nLastCounters[i] = 0;
@@ -1787,6 +2256,7 @@ void ICQUser::SetDefaults()
   SetAddress(szTemp);
   SetCellularNumber(szTemp);
   SetHomepage(szTemp);
+  SetHomepageDesc(szTemp);
   SetZipCode(szTemp);
   SetCompanyCity(szTemp);
   SetCompanyState(szTemp);
@@ -1824,6 +2294,9 @@ void ICQUser::SetStatusOffline()
     m_nLastCounters[LAST_ONLINE] = time(NULL);
     SaveLicqInfo();
   }
+  
+  SetTyping(ICQ_TYPING_INACTIVEx0);
+  SetUserUpdated(false);
   SetStatus(ICQ_STATUS_OFFLINE);
 }
 
@@ -1928,12 +2401,18 @@ void ICQUser::SetHistoryFile(const char *s)
 
 void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
-  if (SocketDesc() != -1 &&
+  if ((SocketDesc(ICQ_CHNxNONE) != -1 || SocketDesc(ICQ_CHNxINFO) != -1
+       || SocketDesc(ICQ_CHNxSTATUS) != -1) &&
       ( (Ip() != 0 && Ip() != _nIp) || (Port() != 0 && Port() != _nPort)) )
   {
     // Close our socket, but don't let socket manager try and clear
     // our socket descriptor
-    gSocketManager.CloseSocket(SocketDesc(), false);
+    if (SocketDesc(ICQ_CHNxNONE) != -1)
+      gSocketManager.CloseSocket(SocketDesc(ICQ_CHNxNONE), false);
+    if (SocketDesc(ICQ_CHNxINFO) != -1)
+      gSocketManager.CloseSocket(SocketDesc(ICQ_CHNxINFO), false);
+    if (SocketDesc(ICQ_CHNxSTATUS) != -1)
+      gSocketManager.CloseSocket(SocketDesc(ICQ_CHNxSTATUS), false);
     ClearSocketDesc();
   }
   m_nIp = _nIp;
@@ -1941,11 +2420,30 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   SaveLicqInfo();
 }
 
+int ICQUser::SocketDesc(unsigned char nChannel)
+{
+  switch (nChannel)
+  {
+  case ICQ_CHNxNONE:
+    return m_nNormalSocketDesc;
+  case ICQ_CHNxINFO:
+    return m_nInfoSocketDesc;
+  case ICQ_CHNxSTATUS:
+    return m_nStatusSocketDesc;
+  }
+  gLog.Warn("%sUnknown channel type %u\n", L_WARNxSTR, nChannel);
 
+  return 0;
+}
 
 void ICQUser::SetSocketDesc(TCPSocket *s)
 {
-  m_nSocketDesc = s->Descriptor();
+  if (s->Channel() == ICQ_CHNxNONE)
+    m_nNormalSocketDesc = s->Descriptor();
+  else if (s->Channel() == ICQ_CHNxINFO)
+    m_nInfoSocketDesc = s->Descriptor();
+  else if (s->Channel() == ICQ_CHNxSTATUS)
+    m_nStatusSocketDesc = s->Descriptor();
   m_nLocalPort = s->LocalPort();
   m_nConnectionVersion = s->Version();
   if (m_bSecure != s->Secure())
@@ -1964,7 +2462,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
 
 void ICQUser::ClearSocketDesc()
 {
-  m_nSocketDesc = -1;
+  m_nNormalSocketDesc = m_nInfoSocketDesc = m_nStatusSocketDesc = -1;
   m_nLocalPort = 0;
   m_nConnectionVersion = 0;
   m_bSecure = false;
@@ -1974,6 +2472,28 @@ void ICQUser::ClearSocketDesc()
       USER_SECURITY, m_szId, m_nPPID, 0));
 }
 
+void ICQUser::ClearSocketDesc(unsigned char nChannel)
+{
+  switch (nChannel)
+  {
+  case ICQ_CHNxNONE:
+    m_nNormalSocketDesc = -1;
+    break;
+  case ICQ_CHNxINFO:
+    m_nInfoSocketDesc = -1;
+    break;
+  case ICQ_CHNxSTATUS:
+    m_nStatusSocketDesc = -1;
+    break;
+  default:
+    gLog.Info("%sUnknown channel %u\n", L_WARNxSTR, nChannel);
+    return;
+  }
+  if (m_nStatusSocketDesc == m_nInfoSocketDesc == m_nNormalSocketDesc == -1)
+    ClearSocketDesc();
+  else if (gLicqDaemon != NULL && m_bOnContactList)
+    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, 0));
+}
 
 unsigned short ICQUser::ConnectionVersion()
 {
@@ -2116,10 +2636,15 @@ char *ICQUser::PortStr(char *rbuf)
 char *ICQUser::IntIpStr(char *rbuf)
 {
   char buf[32];
+  int socket = SocketDesc(ICQ_CHNxNONE);
+  if (socket < 0)
+    socket = SocketDesc(ICQ_CHNxINFO);
+  if (socket < 0)
+    socket = SocketDesc(ICQ_CHNxSTATUS);
 
-  if (SocketDesc() > 0)		// First check if we are connected
+  if (socket > 0)		// First check if we are connected
   {
-    INetSocket *s = gSocketManager.FetchSocket(SocketDesc());
+    INetSocket *s = gSocketManager.FetchSocket(socket);
     if (s != NULL)
     {
       strcpy(rbuf, s->RemoteIpStr(buf));
@@ -2535,6 +3060,32 @@ void ICQUser::SaveMoreInfo()
   m_fConf.CloseFile();
 }
 
+//-----ICQUser::SaveHomepageInfo----------------------------------------------
+void ICQUser::SaveHomepageInfo()
+{
+  if (!EnableSave()) return;
+
+  if (!m_fConf.ReloadFile())
+  {
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
+     return;
+  }
+  m_fConf.SetSection("user");
+  m_fConf.WriteBool("HomepageCatPresent", m_bHomepageCatPresent);
+  m_fConf.WriteNum("HomepageCatCode", m_nHomepageCatCode);
+  m_fConf.WriteStr("HomepageDesc", m_szHomepageDesc);
+  m_fConf.WriteBool("ICQHomepagePresent", m_bICQHomepagePresent);
+
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+    return;
+  }
+
+  m_fConf.CloseFile();
+}
 
 //-----ICQUser::SaveWorkInfo----------------------------------------------
 void ICQUser::SaveWorkInfo()
@@ -2558,6 +3109,7 @@ void ICQUser::SaveWorkInfo()
   m_fConf.WriteStr("CompanyName", m_szCompanyName);
   m_fConf.WriteStr("CompanyDepartment", m_szCompanyDepartment);
   m_fConf.WriteStr("CompanyPosition", m_szCompanyPosition);
+  m_fConf.WriteNum("CompanyOccupation", m_nCompanyOccupation);
   m_fConf.WriteStr("CompanyHomepage", m_szCompanyHomepage);
 
   if (!m_fConf.FlushFile())
@@ -2594,6 +3146,89 @@ void ICQUser::SaveAboutInfo()
    m_fConf.CloseFile();
 }
 
+//-----ICQUser::Save<categories>Info()-----------------------------------------
+static const char *const szN_int    = "InterestsN";
+static const char *const szCat_int  = "InterestsCat%04X";
+static const char *const szDesc_int = "InterestsDesc%04X";
+
+static const char *const szN_bac    = "BackgroundsN";
+static const char *const szCat_bac  = "BackgroundsCat%04X";
+static const char *const szDesc_bac = "BackgroundsDesc%04X";
+
+static const char *const szN_aff    = "OrganizationsN";
+static const char *const szCat_aff  = "OrganizationsCat%04X";
+static const char *const szDesc_aff = "OrganizationsDesc%04X";
+
+
+void ICQUser::SaveInterestsInfo()
+{
+  if (!EnableSave())
+    return;
+
+  m_Interests->SaveToDisk(m_fConf, szN_int, szCat_int, szDesc_int);
+}
+
+void ICQUser::LoadInterestsInfo()
+{
+  m_Interests->LoadFromDisk(m_fConf, szN_int, szCat_int, szDesc_int);
+}
+
+void ICQUser::SaveBackgroundsInfo()
+{
+  if (!EnableSave())
+    return;
+
+  m_Backgrounds->SaveToDisk(m_fConf, szN_bac, szCat_bac, szDesc_bac);
+}
+
+void ICQUser::LoadBackgroundsInfo()
+{
+  m_Backgrounds->LoadFromDisk(m_fConf, szN_bac, szCat_bac, szDesc_bac);
+}
+
+void ICQUser::SaveOrganizationsInfo()
+{
+  if (!EnableSave())
+    return;
+
+  m_Organizations->SaveToDisk(m_fConf,szN_aff,szCat_aff, szDesc_aff);
+}
+
+void ICQUser::LoadOrganizationsInfo()
+{
+  m_Organizations->LoadFromDisk(m_fConf, szN_aff,szCat_aff, szDesc_aff);
+}
+
+//-----ICQUser::SavePhoneBookInfo--------------------------------------------
+void ICQUser::SavePhoneBookInfo()
+{
+  if (!EnableSave()) return;
+
+  m_PhoneBook->SaveToDisk(m_fConf);
+}
+
+//-----ICQUser::SavePictureInfo----------------------------------------------
+void ICQUser::SavePictureInfo()
+{
+  if (!EnableSave()) return;
+
+  if (!m_fConf.ReloadFile())
+  {
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+     return;
+  }
+  m_fConf.SetSection("user");
+  m_fConf.WriteBool("PicturePresent", m_bPicturePresent);
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+    return;
+  }
+
+  m_fConf.CloseFile();
+}
 
 //-----ICQUser::SaveLicqInfo-------------------------------------------------
 void ICQUser::SaveLicqInfo()
@@ -2629,6 +3264,15 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("InvisibleSID", m_nSID[INV_SID]);
    m_fConf.WriteNum("VisibleSID", m_nSID[VIS_SID]);
    m_fConf.WriteNum("GSID", m_nGSID);
+   m_fConf.WriteNum("ClientTimestamp", m_nClientTimestamp);
+   m_fConf.WriteNum("ClientInfoTimestamp", m_nClientInfoTimestamp);
+   m_fConf.WriteNum("ClientStatusTimestamp", m_nClientStatusTimestamp);
+   m_fConf.WriteNum("OurClientTimestamp", m_nOurClientTimestamp);
+   m_fConf.WriteNum("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
+   m_fConf.WriteNum("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
+   m_fConf.WriteNum("PhoneFollowMeStatus", m_nPhoneFollowMeStatus);
+   m_fConf.WriteNum("ICQphoneStatus", m_nICQphoneStatus);
+   m_fConf.WriteNum("SharedFilesStatus", m_nSharedFilesStatus);
 
    if (!m_fConf.FlushFile())
    {
@@ -2920,6 +3564,16 @@ ICQOwner::ICQOwner()
        L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
   }
 
+  //if owner timestamps do not exist, set them to current time
+  unsigned long nTime = time(NULL);
+
+/*  if (m_nClientTimestamp == 0)
+    m_nClientTimestamp = nTime;*/
+  if (m_nClientInfoTimestamp == 0)
+    m_nClientInfoTimestamp = nTime;
+  if (m_nClientStatusTimestamp == 0)
+    m_nClientStatusTimestamp = nTime;
+
   SetEnableSave(true);
 }
 
@@ -3022,6 +3676,10 @@ unsigned long ICQOwner::AddStatusFlags(unsigned long s)
     s |= ICQ_STATUS_FxHIDExIP;
   if (Birthday() == 0)
     s |= ICQ_STATUS_FxBIRTHDAY;
+  if (PhoneFollowMeStatus() != ICQ_PLUGIN_STATUSxINACTIVE)
+    s |= ICQ_STATUS_FxPFM;
+  if (PhoneFollowMeStatus() == ICQ_PLUGIN_STATUSxACTIVE)
+    s |= ICQ_STATUS_FxPFMxAVAILABLE;
 
   return s;
 }
@@ -3069,3 +3727,74 @@ void ICQOwner::SetStatusOffline()
   SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
 }
 
+//----ICQOwner::SetPicture---------------------------------------------------
+void ICQOwner::SetPicture(const char *f)
+{
+  char szFilename[MAX_FILENAME_LEN];
+  szFilename[MAX_FILENAME_LEN - 1] = '\0';
+  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/owner.pic", BASE_DIR);
+  if (f == NULL)
+  {
+    SetPicturePresent(false);
+    if (remove(szFilename) != 0 && errno != ENOENT)
+    {
+      gLog.Error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
+                         L_ERRORxSTR, m_szAlias, szFilename, L_BLANKxSTR,
+                         strerror(errno));
+    }
+  }
+  else if (strcmp(f, szFilename) == 0)
+  {
+    SetPicturePresent(true);
+    return;
+  }
+  else
+  {
+    int source = open(f, O_RDONLY);
+    if (source == -1)
+    {
+      gLog.Error("%sUnable to open source picture file (%s):\n%s%s.\n",
+                       L_ERRORxSTR, f, L_BLANKxSTR, strerror(errno));
+      return;
+    }
+
+    int dest = open(szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+    if (dest == -1)
+    {
+      gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
+                                     szFilename, L_BLANKxSTR, strerror(errno));
+      return;
+    }
+
+    char buf[8192];
+    ssize_t s;
+    while (1)
+    {
+      s = read(source, buf, sizeof(buf));
+      if (s == 0)
+      {
+        SetPicturePresent(true);
+        break;
+      }
+      else if (s == -1)
+      {
+        gLog.Error("%sError reading from %s:\n%s%s.\n", L_ERRORxSTR, f,
+                                         L_BLANKxSTR, strerror(errno));
+        SetPicturePresent(false);
+        break;
+      }
+
+      if (write(dest, buf, s) != s)
+      {
+        gLog.Error("%sError writing to %s:\n%s%s.\n", L_ERRORxSTR, f,
+                                         L_BLANKxSTR, strerror(errno));
+        SetPicturePresent(false);
+        break;
+      }
+    }
+
+    close(source);
+    close(dest);
+  }
+ }
+ 

@@ -13,8 +13,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 
 // Localization
 #include "gettext.h"
@@ -562,7 +564,206 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
 #endif
 }
 
+//-----CICQDaemon::sendInfoPluginReq--------------------------------------------
+unsigned long CICQDaemon::icqRequestInfoPlugin(ICQUser *u, bool bServer,
+                                               const char *GUID)
+{
+  ICQEvent *result = NULL;
+  if (bServer)
+  {
+    CPU_InfoPluginReq *p = new CPU_InfoPluginReq(u, GUID, 0);
+    result = SendExpectEvent_Server(u->Uin(), p, NULL);
+  }
+  else
+  {
+    CPT_InfoPluginReq *p = new CPT_InfoPluginReq(u, GUID, 0);
+    result = SendExpectEvent_Client(u, p, NULL);
+  }
 
+  if (result != NULL)
+    return result->EventId();
+  return 0;
+}
+
+//-----CICQDaemon::sendInfoPluginListReq----------------------------------------
+unsigned long CICQDaemon::icqRequestInfoPluginList(const char *szId,
+                                                   bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting info plugin list from %s through server.\n",
+              L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting info plugin list from %s.\n", L_TCPxSTR,
+              u->GetAlias());
+
+  unsigned long result = icqRequestInfoPlugin(u, bServer, PLUGIN_QUERYxINFO);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
+
+//-----CICQDaemon::sendPhoneBookReq--------------------------------------------
+unsigned long CICQDaemon::icqRequestPhoneBook(const char *szId,
+                                              bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting Phone Book from %s through server.\n",
+              L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting Phone Book from %s.\n", L_TCPxSTR, u->GetAlias());
+
+  unsigned long result = icqRequestInfoPlugin(u, bServer, PLUGIN_PHONExBOOK);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
+
+//-----CICQDaemon::sendPictureReq-----------------------------------------------
+unsigned long CICQDaemon::icqRequestPicture(const char *szId, bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting Picture from %s through server.\n",
+              L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting Picture from %s.\n", L_TCPxSTR, u->GetAlias());
+
+  unsigned long result = icqRequestInfoPlugin(u, bServer, PLUGIN_PICTURE);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
+
+//-----CICQDaemon::sendStatusPluginReq------------------------------------------
+unsigned long CICQDaemon::icqRequestStatusPlugin(ICQUser *u, bool bServer,
+                                                 const char *GUID)
+{
+  ICQEvent *result = NULL;
+  if (bServer)
+  {
+    CPU_StatusPluginReq *p = new CPU_StatusPluginReq(u, GUID, 0);
+    result = SendExpectEvent_Server(u->IdString(), u->PPID(), p, NULL);
+  }
+  else
+  {
+    CPT_StatusPluginReq *p = new CPT_StatusPluginReq(u, GUID, 0);
+    result = SendExpectEvent_Client(u, p, NULL);
+  }
+
+  if (result != NULL)
+    return result->EventId();
+  return 0;
+}
+
+//-----CICQDaemon::sendStatusPluginListReq--------------------------------------
+unsigned long CICQDaemon::icqRequestStatusPluginList(const char *szId,
+                                                     bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting status plugin list from %s through server.\n",
+              L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting status plugin list from %s.\n", L_TCPxSTR,
+              u->GetAlias());
+
+  unsigned long result = icqRequestStatusPlugin(u, bServer,
+                                                PLUGIN_QUERYxSTATUS);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
+
+//-----CICQDaemon::sendSharedFilesReq--------------------------------------
+unsigned long CICQDaemon::icqRequestSharedFiles(const char *szId,
+                                                bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting file server status from %s through server.\n",
+              L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting file server status from %s.\n", L_TCPxSTR,
+              u->GetAlias());
+
+  unsigned long result = icqRequestStatusPlugin(u, bServer, PLUGIN_FILExSERVER);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
+
+//-----CICQDaemon::sendPhoneFollowMeReq--------------------------------------
+unsigned long CICQDaemon::icqRequestPhoneFollowMe(const char *szId,
+                                                  bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting Phone \"Follow Me\" status from %s through"
+              " server.\n", L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting Phone \"Follow Me\" status from %s.\n", L_TCPxSTR,
+              u->GetAlias());
+
+  unsigned long result = icqRequestStatusPlugin(u, bServer, PLUGIN_FOLLOWxME);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
+
+//-----CICQDaemon::sendICQphoneReq--------------------------------------
+unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
+                                             bool bServer)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  if (u == NULL) return 0;
+
+  if (bServer)
+    gLog.Info("%sRequesting ICQphone status from %s through server.\n",
+              L_SRVxSTR, u->GetAlias());
+  else
+    gLog.Info("%sRequesting ICQphone status from %s.\n", L_TCPxSTR,
+              u->GetAlias());
+
+  unsigned long result = icqRequestStatusPlugin(u, bServer, PLUGIN_FILExSERVER);
+
+  gUserManager.DropUser(u);
+
+  return result;
+}
 
 //-----CICQDaemon::fileCancel-------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequence)
@@ -573,7 +774,7 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequen
   gLog.Info(tr("%sCancelling file transfer to %s (#%ld).\n"), L_TCPxSTR,
      u->GetAlias(), -nSequence);
   CPT_CancelFile p(nSequence, u);
-  AckTCP(p, u->SocketDesc());
+  AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   gUserManager.DropUser(u);
 }
 
@@ -590,7 +791,7 @@ void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
 	if (bDirect)
 	{
 		CPT_AckFileAccept p(nPort, nSequence, u);
-		AckTCP(p, u->SocketDesc());
+		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
 	{
@@ -618,7 +819,7 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
 	if (bDirect)
 	{
 		CPT_AckFileRefuse p(szReasonDos, nSequence, u);
-		AckTCP(p, u->SocketDesc());
+		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   }
 	else
 	{
@@ -636,7 +837,7 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
 
 //-----CICQDaemon::sendChat------------------------------------------------------------
 unsigned long CICQDaemon::icqChatRequest(unsigned long nUin, const char *szReason,
-																				 unsigned short nLevel, bool bServer)
+                                         unsigned short nLevel, bool bServer)
 {
   return icqMultiPartyChatRequest(nUin, szReason, NULL, 0, nLevel, bServer);
 }
@@ -653,11 +854,12 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
   char *szReasonDos = gTranslator.NToRN(reason);
   gTranslator.ClientToServer(szReasonDos);
 
-	unsigned long f;
-	ICQEvent *result = NULL;
-	if (bServer)
-	{
-		f = INT_VERSION;
+  unsigned long f;
+  ICQEvent *result = NULL;
+  if (bServer)
+  {
+    f = INT_VERSION;
+    
     //flags through server are a little different
     if (nLevel == ICQ_TCPxMSG_NORMAL)
       nLevel = ICQ_TCPxMSG_NORMAL2;
@@ -715,7 +917,7 @@ void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned long nSequenc
   gLog.Info(tr("%sCancelling chat request with %s (#%ld).\n"), L_TCPxSTR,
      u->GetAlias(), -nSequence);
   CPT_CancelChat p(nSequence, u);
-  AckTCP(p, u->SocketDesc());
+  AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   gUserManager.DropUser(u);
 }
 
@@ -735,7 +937,7 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
 	if (bDirect)
 	{
 		CPT_AckChatRefuse p(szReasonDos, nSequence, u);
-		AckTCP(p, u->SocketDesc());
+		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
 	{
@@ -766,7 +968,7 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
 	if (bDirect)
 	{
 		CPT_AckChatAccept p(nPort, szClients, nSequence, u, u->Version() > 7);
-		AckTCP(p, u->SocketDesc());
+		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
 	{
@@ -894,7 +1096,8 @@ void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nS
  * Shake hands on the given socket with the given user.
  *-------------------------------------------------------------------------*/
 bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
-   unsigned short nPort, unsigned short nVersion, bool bConfirm)
+   unsigned short nPort, unsigned short nVersion, bool bConfirm,
+   unsigned long nId)
 {
   s->SetVersion(nVersion);
   s->SetOwner(nUin);
@@ -906,13 +1109,14 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
     {
       CPacketTcp_Handshake_v2 p(s->LocalPort());
       if (!s->SendPacket(p.getBuffer())) goto sock_error;
-      return true;
+      break;
     }
     case 4:
+    case 5:
     {
       CPacketTcp_Handshake_v4 p(s->LocalPort());
       if (!s->SendPacket(p.getBuffer())) goto sock_error;
-      return true;
+      break;
     }
     case 6:
     {
@@ -951,14 +1155,14 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       CPacketTcp_Handshake_Ack p_ack;
       if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
 
-      return true;
+      break;
     }
 
     case 7:
     case 8:
     {
       // Send the hanshake
-      CPacketTcp_Handshake_v7 p(nUin, 0, nPort);
+      CPacketTcp_Handshake_v7 p(nUin, 0, nPort, nId);
       if (!s->SendPacket(p.getBuffer())) goto sock_error;
 
       // Wait for the handshake ack
@@ -998,19 +1202,19 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
 			// handshake though, just not file or chat...
 			if (bConfirm)
 			{
-				// Send handshake accepted
-				CPacketTcp_Handshake_Confirm p_confirm(false);
-				if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
+                          if (nId == 0)
+                          {
+                            if (!Handshake_SendConfirm_v7(s))
+                              return false;
+                          }
+                          else
+                          {
+                            if (!Handshake_RecvConfirm_v7(s))
+                              goto sock_error;
+                          }
+                        }
 
-				// Wait for reverse handshake accepted
-				do
-				{
-					if (!s->RecvPacket()) goto sock_error;
-				} while (!s->RecvBufferFull());
-				s->ClearRecvBuffer();
-			}
-
-      return true;
+      break;
     }
 
     default:
@@ -1019,6 +1223,8 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       return false;
   }
 
+  return true;
+  
 sock_error:
   char buf[128];
   if (s->Error() == 0)
@@ -1035,12 +1241,12 @@ sock_error:
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int CICQDaemon::ConnectToUser(unsigned long nUin)
+int CICQDaemon::ConnectToUser(unsigned long nUin, unsigned char nChannel)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return -1;
 
-  int sd = u->SocketDesc();
+  int sd = u->SocketDesc(nChannel);
 
   // Check that we need to connect at all
   if (sd != -1)
@@ -1066,7 +1272,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL) return -1;
   }
-  sd = u->SocketDesc();
+  sd = u->SocketDesc(ICQ_CHNxNONE);
   if (sd == -1) u->SetConnectionInProgress(true);
   gUserManager.DropUser(u);
   if (sd != -1) return sd;
@@ -1080,7 +1286,8 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
     delete s;
     return -1;
   }
-
+  s->SetChannel(nChannel);
+  
   gLog.Info(tr("%sShaking hands with %s (%ld) [v%d].\n"), L_TCPxSTR,
      szAlias, nUin, nVersion);
   nPort = s->LocalPort();
@@ -1378,28 +1585,32 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet.UnpackChar(); // 0x02
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
-      headerLen = packet.UnpackUnsignedShort(); // 0x000E
+      headerLen = packet.UnpackUnsignedShort();
       theSequence = (signed short)packet.UnpackUnsignedShort();
       packet.incDataPosRead(headerLen - 2);
       newCommand = packet.UnpackUnsignedShort();
-      ackFlags = packet.UnpackUnsignedShort();
-      msgFlags = packet.UnpackUnsignedShort();
-      packet >> messageLen;
 
-      // Stupid AOL
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-      if (u && (u->LicqVersion() == 0 || u->LicqVersion() >= 1022))
+      if (pSock->Channel() == ICQ_CHNxNONE)
       {
-        msgFlags <<= 4;
-        msgFlags &= 0x0060;
-        if (msgFlags & ICQ_TCPxMSG_URGENT)
-          msgFlags = ICQ_TCPxMSG_LIST;
-        else if (msgFlags & ICQ_TCPxMSG_LIST)
-          msgFlags = ICQ_TCPxMSG_URGENT;
+        ackFlags = packet.UnpackUnsignedShort();
+        msgFlags = packet.UnpackUnsignedShort();
+        packet >> messageLen;
+        
+        // Stupid AOL
+        ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+        if (u && (u->LicqVersion() == 0 || u->LicqVersion() >= 1022))
+        {
+          msgFlags <<= 4;
+          msgFlags &= 0x0060;
+          if (msgFlags & ICQ_TCPxMSG_URGENT)
+            msgFlags = ICQ_TCPxMSG_LIST;
+          else if (msgFlags & ICQ_TCPxMSG_LIST)
+            msgFlags = ICQ_TCPxMSG_URGENT;
+        }
+        if (u)
+          gUserManager.DropUser(u);
       }
-      if (u)
-        gUserManager.DropUser(u);
-
+      
       break;
     }
     default:
@@ -1410,11 +1621,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   }
 
   // Some simple validation of the packet
-  if (nUin == 0 || command == 0 || newCommand == 0)
+  if (nUin == 0 || command == 0)
   {
     char *buf;
-    gLog.Unknown("%sInvalid TCP packet (uin: %08lx, cmd: %04x, subcmd: %04x):\n%s\n",
-                 L_UNKNOWNxSTR, nUin, command, newCommand, packet.print(buf));
+    gLog.Unknown("%sInvalid TCP packet (uin: %08lx, cmd: %04x):\n%s\n",
+                 L_UNKNOWNxSTR, nUin, command, packet.print(buf));
     delete [] buf;
     return false;
   }
@@ -1431,11 +1642,38 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     return false;
   }
 
-  // Silently leave, this is in v8 clients.  Seems to be saying
-  // that you are on their list
-  if (headerLen == 0x0012)
-    return false;
+  // Store our status for later use
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short nOwnerStatus = o->Status();
+  gUserManager.DropOwner();
 
+  // find which user was sent
+  bool bNewUser = false;
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL)
+  {
+    u = new ICQUser(nUin);
+    u->SetSocketDesc(pSock);
+    bNewUser = true;
+  }
+
+  // Check for spoofing
+  if (u->SocketDesc(pSock->Channel()) != sockfd)
+  {
+    gLog.Warn("%sUser %s (%lu) socket (%d) does not match incoming message (%d).\n",
+              L_TCPxSTR, u->GetAlias(), u->Uin(),
+              u->SocketDesc(pSock->Channel()), sockfd);
+  }
+
+  if (pSock->Channel() != ICQ_CHNxNONE)
+  {
+    errorOccured = ProcessPluginMessage(packet, u, pSock->Channel(),
+                                        command == ICQ_CMDxTCP_ACK,
+                                        0, 0, theSequence, pSock);
+  }
+  else
+  {
+  
   // read in the message minus any stupid DOS \r's
   char message[messageLen + 1];
   unsigned short j = 0;
@@ -1458,29 +1696,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     ;
     senderIp = PacketIpToNetworkIp(senderIp);
     localIp = PacketIpToNetworkIp(localIp);
-  }
-
-
-  // Store our status for later use
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nOwnerStatus = o->Status();
-  gUserManager.DropOwner();
-
-  // find which user was sent
-  bool bNewUser = false;
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u == NULL)
-  {
-    u = new ICQUser(nUin);
-    u->SetSocketDesc(pSock);
-    bNewUser = true;
-  }
-
-  // Check for spoofing
-  if (u->SocketDesc() != sockfd)
-  {
-    gLog.Warn(tr("%sUser %s (%ld) socket (%d) does not match incoming message (%d).\n"),
-              L_TCPxSTR, u->GetAlias(), u->Uin(), u->SocketDesc(), sockfd);
   }
 
   unsigned long nMask = E_DIRECT
@@ -2652,7 +2867,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     errorOccured = true;
     break;
   }
-
+  
+  }
   if (bNewUser)
   {
     delete u;
@@ -2662,7 +2878,686 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   return !errorOccured;
 }
 
+bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
+                                      unsigned char nChannel,
+                                      bool bIsAck,
+                                      unsigned long nMsgID1,
+                                      unsigned long nMsgID2,
+                                      unsigned long nSequence,
+                                      TCPSocket *pSock)
+{
+  bool errorOccured = false;
+  const char *szInfo = pSock ? L_TCPxSTR : L_SRVxSTR;
 
+  switch (nChannel)
+  {
+  case ICQ_CHNxINFO:
+  {
+    packet.incDataPosRead(2);
+    char error_level = packet.UnpackChar();
+
+    if (!bIsAck)
+    {
+      if (error_level != ICQ_PLUGIN_REQUEST)
+      {
+        gLog.Warn("%sInfo plugin request with unknown level %u from %s.\n",
+                  L_WARNxSTR, error_level, u->GetAlias());
+        errorOccured = true;
+        break;
+      }
+      char GUID[GUID_LENGTH];
+      for (int i = 0 ; i < GUID_LENGTH; i ++)
+        packet >> GUID[i];
+
+      if (memcmp(GUID, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sInfo plugin list request from %s.\n", szInfo,
+                                                          u->GetAlias());
+        if (pSock)
+        {
+          CPT_InfoPluginListResp p(u, nSequence);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_InfoPluginListResp *p = new CPU_InfoPluginListResp(u, nMsgID1,
+                                                    nMsgID2, nSequence);
+          SendEvent_Server(p);
+        }
+      }
+      else if (memcmp(GUID, PLUGIN_PHONExBOOK, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sPhone Book request from %s.\n", szInfo, u->GetAlias());
+        if (pSock)
+        {
+          CPT_InfoPhoneBookResp p(u, nSequence);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_InfoPhoneBookResp *p = new CPU_InfoPhoneBookResp(u, nMsgID1,
+                                                       nMsgID2, nSequence);
+          SendEvent_Server(p);
+        }
+      }
+      else if (memcmp(GUID, PLUGIN_PICTURE, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sPicture request from %s.\n", szInfo, u->GetAlias());
+
+        if (pSock)
+        {
+          CPT_InfoPictureResp p(u, nSequence);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_InfoPictureResp *p = new CPU_InfoPictureResp(u, nMsgID1, nMsgID2,
+                                                                nSequence);
+          SendEvent_Server(p);
+        }
+      }
+      else
+      {
+        gLog.Warn("%sUnknown info request from %s.\n", L_WARNxSTR,
+                                                       u->GetAlias());
+        if (pSock)
+        {
+          CPT_PluginError p(u, nSequence, ICQ_CHNxINFO);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_PluginError *p = new CPU_PluginError(u, nMsgID1, nMsgID2, nSequence,
+                                                   PLUGIN_INFOxMANAGER);
+          SendEvent_Server(p);
+        }
+        errorOccured = true;
+      }
+    }
+    else
+    {
+      EventResult result;
+
+      switch (error_level)
+      {
+      case ICQ_PLUGIN_SUCCESS:
+      {
+        packet.incDataPosRead(4); //Unknown
+        //Time of last update
+        unsigned long nTime = packet.UnpackUnsignedLong();
+        if (nTime == u->ClientInfoTimestamp())
+          u->SetOurClientInfoTimestamp(nTime);
+
+        //bytes remaining in packet
+        unsigned long len = packet.UnpackUnsignedLong();
+        if (len < 8)
+        {
+          //this could be no plugins or no picture, need to check
+          ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+                                          EVENT_ACKED) :
+                                DoneServerEvent(nMsgID2, EVENT_ACKED);
+
+          if (e == NULL)
+          {
+            gLog.Warn("%sAck for unknown event from %s.\n", L_WARNxSTR,
+                                                            u->GetAlias());
+            return true;
+          }
+
+          const char *GUID;
+          if (e->SNAC() ==
+                    MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) &&
+              e->ExtraInfo() == ServerInfoPluginRequest)
+          {
+            GUID = ((CPU_InfoPluginReq *)e->m_pPacket)->RequestGUID();
+          }
+          else if (e->Channel() == ICQ_CHNxINFO &&
+                   e->ExtraInfo() == DirectInfoPluginRequest)
+          {
+            GUID = ((CPT_InfoPluginReq *)e->m_pPacket)->RequestGUID();
+          }
+          else
+          {
+            gLog.Warn("%sAck for the wrong event from %s.\n", L_WARNxSTR,
+                                                              u->GetAlias());
+            delete e;
+            return true;
+          }
+
+          if (memcmp(GUID, PLUGIN_PICTURE, GUID_LENGTH) == 0)
+          {
+            gLog.Info("%s%s has no picture.\n", szInfo, u->GetAlias());
+
+            char szFilename[MAX_FILENAME_LEN];
+            szFilename[MAX_FILENAME_LEN - 1] = '\0';
+            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%lu.pic",
+                                             BASE_DIR, USER_DIR, u->Uin());
+
+            if (remove(szFilename) != 0 && errno != ENOENT)
+            {
+              gLog.Error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
+                         L_ERRORxSTR, u->GetAlias(), szFilename, L_BLANKxSTR,
+                         strerror(errno));
+            }
+
+            u->SetEnableSave(false);
+            u->SetPicturePresent(false);
+            u->SetEnableSave(true);
+            u->SavePictureInfo();
+
+            PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PICTURE,
+                                 u->Uin()));
+
+            
+          }
+          else if (memcmp(GUID, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
+          {
+            gLog.Info("%s%s has no info plugins.\n", szInfo, u->GetAlias());
+          }
+          else
+          {
+            gLog.Unknown("%sUnknown info response with no data from %s.\n",
+                                                        szInfo, u->GetAlias());
+          }
+
+          ProcessDoneEvent(e);
+          return false;
+        }
+        else
+        {
+          unsigned long nRequest = packet.UnpackUnsignedLong(); 
+          unsigned long nEntries = packet.UnpackUnsignedLong();
+          switch (nRequest)
+          {
+          case ICQ_PLUGIN_RESP_INFOxLIST:
+          case ICQ_PLUGIN_RESP_INFOxLISTx0:
+          {
+            for (; nEntries > 0; nEntries --)
+            {
+              packet.incDataPosRead(GUID_LENGTH); // GUID of plugin
+              packet.incDataPosRead(4); //Unknown
+              unsigned long nLen = packet.UnpackUnsignedLong();
+              char szName[nLen+1];
+              for (unsigned long i = 0; i < nLen; i++)
+                packet >> szName[i];
+              szName[nLen] = '\0';
+
+              nLen = packet.UnpackUnsignedLong();
+              char szFullName[nLen+1];
+              for (unsigned long i = 0; i < nLen; i++)
+                packet >> szFullName[i];
+              szFullName[nLen] = '\0';
+
+              packet.incDataPosRead(4); //Unknown (always 0?)
+
+              gLog.Info("%s%s has %s (%s).\n", szInfo, u->GetAlias(), szName,
+                                               szFullName);
+            }
+            break;
+          }
+
+          case ICQ_PLUGIN_RESP_PHONExBOOK:
+          {
+            gLog.Info("%sPhone Book reply from %s.\n", szInfo, u->GetAlias());
+            struct PhoneBookEntry pb[nEntries];
+            for (unsigned long i = 0; i < nEntries; i ++)
+            {
+              unsigned long nLen = packet.UnpackUnsignedLong();
+              pb[i].szDescription = new char[nLen + 1];
+              for (unsigned long j = 0; j < nLen; j++)
+                packet >> pb[i].szDescription[j];
+              pb[i].szDescription[nLen] = '\0';
+              gTranslator.ServerToClient(pb[i].szDescription);
+
+              nLen = packet.UnpackUnsignedLong();
+              pb[i].szAreaCode = new char[nLen + 1];
+              for (unsigned long j = 0; j < nLen; j++)
+                packet >> pb[i].szAreaCode[j];
+              pb[i].szAreaCode[nLen] = '\0';
+              gTranslator.ServerToClient(pb[i].szAreaCode);
+
+              nLen = packet.UnpackUnsignedLong();
+              pb[i].szPhoneNumber = new char[nLen + 1];
+              for (unsigned long j = 0; j < nLen; j++)
+                packet >> pb[i].szPhoneNumber[j];
+              pb[i].szPhoneNumber[nLen] = '\0';
+              gTranslator.ServerToClient(pb[i].szPhoneNumber);
+
+              nLen = packet.UnpackUnsignedLong();
+              pb[i].szExtension = new char[nLen + 1];
+              for (unsigned long j = 0; j < nLen; j++)
+                packet >> pb[i].szExtension[j];
+              pb[i].szExtension[nLen] = '\0';
+              gTranslator.ServerToClient(pb[i].szExtension);
+
+              nLen = packet.UnpackUnsignedLong();
+              pb[i].szCountry = new char[nLen + 1];
+              for (unsigned long j = 0; j < nLen; j++)
+                packet >> pb[i].szCountry[j];
+              pb[i].szCountry[nLen] = '\0';
+              gTranslator.ServerToClient(pb[i].szCountry);
+
+              pb[i].nActive = packet.UnpackUnsignedLong();
+            }
+            for (unsigned long i = 0; i < nEntries; i ++)
+            {
+              packet.UnpackUnsignedLong(); // entry length
+
+              pb[i].nType = packet.UnpackUnsignedLong();
+
+              unsigned long nLen = packet.UnpackUnsignedLong();
+              pb[i].szGateway = new char[nLen + 1];
+              for (unsigned long j = 0; j < nLen; j++)
+                packet >> pb[i].szGateway[j];
+              pb[i].szGateway[nLen] = '\0';
+              gTranslator.ServerToClient(pb[i].szGateway);
+
+              pb[i].nGatewayType = packet.UnpackUnsignedLong();
+              pb[i].nSmsAvailable = packet.UnpackUnsignedLong();
+              pb[i].nRemoveLeading0s = packet.UnpackUnsignedLong();
+              pb[i].nPublish = packet.UnpackUnsignedLong();
+            }
+
+            u->SetEnableSave(false);
+            u->GetPhoneBook()->Clean();
+            for (unsigned long i = 0; i < nEntries; i++)
+            {
+              u->GetPhoneBook()->AddEntry(&pb[i]);
+              delete [] pb[i].szDescription;
+              delete [] pb[i].szAreaCode;
+              delete [] pb[i].szPhoneNumber;
+              delete [] pb[i].szExtension;
+              delete [] pb[i].szCountry;
+              delete [] pb[i].szGateway;
+            }
+            u->SetEnableSave(true);
+            u->SavePhoneBookInfo();
+
+            PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PHONExBOOK,
+                                 u->Uin()));
+
+            break;
+          }
+
+          case ICQ_PLUGIN_RESP_PICTURE:
+          {
+            gLog.Info("%sPicture reply from %s.\n", szInfo, u->GetAlias());
+            packet.incDataPosRead(nEntries); // filename, don't care
+
+            char szFilename[MAX_FILENAME_LEN];
+            szFilename[MAX_FILENAME_LEN - 1] = '\0';
+            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%lu.pic",
+                                             BASE_DIR, USER_DIR, u->Uin());
+
+            int nFD = open(szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+            if (nFD == -1)
+            {
+              gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n",
+                         L_ERRORxSTR, szFilename, L_BLANKxSTR, strerror(errno));
+              break;
+            }
+
+            unsigned long nLen = packet.UnpackUnsignedLong();
+            char data[nLen];
+            for (unsigned long i = 0; i < nLen; i++)
+            {
+              packet >> data[i];
+            }
+
+            write(nFD, data, nLen);
+
+            u->SetEnableSave(false);
+            u->SetPicturePresent(true);
+            u->SetEnableSave(true);
+            u->SavePictureInfo();
+
+            PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PICTURE,
+                                 u->Uin()));
+
+            break;
+          }
+          }
+        }
+
+        result = EVENT_ACKED;
+        break;
+      }
+      case ICQ_PLUGIN_ERROR:
+      {
+        gLog.Warn("%sInfo plugin not available from %s.\n", L_WARNxSTR,
+                                                            u->GetAlias());
+        result = EVENT_ERROR;
+        break;
+      }
+      case ICQ_PLUGIN_REJECTED:
+      {
+        gLog.Info("%s%s refused our request.\n", szInfo, u->GetAlias());
+        result = EVENT_FAILED;
+        break;
+      }
+      case ICQ_PLUGIN_AWAY:
+      {
+        gLog.Info("%sOur request was refused because %s is away.\n", szInfo,
+                  u->GetAlias());
+        result = EVENT_FAILED;
+        break;
+      }
+      default:
+      {
+        gLog.Warn("%sUnknown reply level %u from %s.\n", L_UNKNOWNxSTR,
+                  error_level, u->GetAlias());
+        errorOccured = true;
+        result = EVENT_ERROR;
+        break;
+      }
+      } 
+
+      ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+                                      result) :
+                            DoneServerEvent(nMsgID2, result);
+      if (e == NULL)
+        gLog.Warn("%sAck for unknown event from %s.\n", L_WARNxSTR,
+                                                        u->GetAlias());
+      else
+        ProcessDoneEvent(e);
+
+    }
+
+    break;
+  }
+  case ICQ_CHNxSTATUS:
+  {
+    packet.incDataPosRead(2);
+    char error_level = packet.UnpackChar();
+
+    if (!bIsAck)
+    {
+      if (error_level != ICQ_PLUGIN_REQUEST)
+      {
+        gLog.Warn("%sUnknown status plugin request level %u from %s.\n",
+                  L_WARNxSTR, error_level, u->GetAlias());
+        errorOccured = true;
+        break;
+      }
+
+      char GUID[GUID_LENGTH];
+      for (int i = 0 ; i < GUID_LENGTH; i ++)
+        packet >> GUID[i];
+
+      if (memcmp(GUID, PLUGIN_QUERYxSTATUS, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sStatus plugin list request from %s.\n", szInfo,
+                                                             u->GetAlias());
+        if (pSock)
+        {
+          CPT_StatusPluginListResp p(u, nSequence);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_StatusPluginListResp *p = new CPU_StatusPluginListResp(u, nMsgID1,
+                                                        nMsgID2, nSequence);
+          SendEvent_Server(p);
+        }
+      }
+      else if (memcmp(GUID, PLUGIN_FILExSERVER, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sFile server status request from %s.\n", szInfo,
+                                                              u->GetAlias());
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long nStatus = o->SharedFilesStatus();
+        gUserManager.DropOwner();
+        if (pSock)
+        {
+          CPT_StatusPluginResp p(u, nSequence, nStatus);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_StatusPluginResp *p = new CPU_StatusPluginResp(u, nMsgID1, nMsgID2,
+                                           nSequence, nStatus);
+          SendEvent_Server(p);
+        }
+      }
+      else if (memcmp(GUID, PLUGIN_ICQxPHONE, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sICQphone status request from %s.\n", szInfo,
+                                                              u->GetAlias());
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long nStatus = o->ICQphoneStatus();
+        gUserManager.DropOwner();
+        if (pSock)
+        {
+          CPT_StatusPluginResp p(u, nSequence, nStatus);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_StatusPluginResp *p = new CPU_StatusPluginResp(u, nMsgID1, nMsgID2,
+                                           nSequence, nStatus);
+          SendEvent_Server(p);
+        }
+      }
+      else if (memcmp(GUID, PLUGIN_FOLLOWxME, GUID_LENGTH) == 0)
+      {
+        gLog.Info("%sPhone \"Follow Me\" status request from %s.\n", szInfo,
+                                                              u->GetAlias());
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long nStatus = o->PhoneFollowMeStatus();
+        gUserManager.DropOwner();
+        if (pSock)
+        {
+          CPT_StatusPluginResp p(u, nSequence, nStatus);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_StatusPluginResp *p = new CPU_StatusPluginResp(u, nMsgID1, nMsgID2,
+                                           nSequence, nStatus);
+          SendEvent_Server(p);
+        }
+      }
+      else
+      {
+        gLog.Warn("%sUnknown status request from %s.\n", L_WARNxSTR,
+                                                         u->GetAlias());
+        if (pSock)
+        {
+          CPT_PluginError p(u, nSequence, ICQ_CHNxSTATUS);
+          AckTCP(p, pSock);
+        }
+        else
+        {
+          CPU_PluginError *p = new CPU_PluginError(u, nMsgID1, nMsgID2, nSequence,
+                                                   PLUGIN_STATUSxMANAGER);
+          SendEvent_Server(p);
+        }
+        errorOccured = true;
+      }
+    }
+    else
+    {
+      EventResult result;
+
+      switch (error_level)
+      {
+      case ICQ_PLUGIN_SUCCESS:
+      {
+        packet.incDataPosRead(13); //Unknown
+        //Time of last installation of new status plugins
+        unsigned long nTime = packet.UnpackUnsignedLong();
+        if (nTime == u->ClientStatusTimestamp())
+          u->SetOurClientStatusTimestamp(nTime);
+
+        //bytes remaining in packet
+        unsigned long len = packet.UnpackUnsignedLong(); 
+        if (len < 8)
+        {
+          gLog.Info("%s%s has no status plugins.\n", szInfo, u->GetAlias());
+        }
+        else
+        {
+          packet.incDataPosRead(4); // Unknown
+          unsigned long nEntries = packet.UnpackUnsignedLong();
+          for (; nEntries > 0; nEntries --)
+          {
+            packet.incDataPosRead(GUID_LENGTH); // GUID of plugin
+            packet.incDataPosRead(4); //Unknown
+            unsigned long nLen = packet.UnpackUnsignedLong();
+            char szName[nLen+1];
+            for (unsigned long i = 0; i < nLen; i++)
+              packet >> szName[i];
+            szName[nLen] = '\0';
+
+            nLen = packet.UnpackUnsignedLong();
+            char szFullName[nLen+1];
+            for (unsigned long i = 0; i < nLen; i++)
+              packet >> szFullName[i];
+            szFullName[nLen] = '\0';
+
+            packet.incDataPosRead(4); //Unknown (always 0?)
+
+            gLog.Info("%s%s has %s (%s).\n", szInfo, u->GetAlias(), szName,
+                                             szFullName);
+          }
+        }
+
+        result = EVENT_ACKED;
+        break;
+      }
+      case ICQ_PLUGIN_STATUSxREPLY:
+      {
+        ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+                                        EVENT_ACKED) :
+                              DoneServerEvent(nMsgID2, EVENT_ACKED);
+
+        if (e == NULL)
+        {
+          gLog.Warn("%sAck for unknown event from %s.\n", L_WARNxSTR,
+                                                          u->GetAlias());
+          return true;
+        }
+
+        const char *GUID;
+        if (e->SNAC() ==
+                  MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) &&
+            e->ExtraInfo() == ServerStatusPluginRequest)
+        {
+          GUID = ((CPU_StatusPluginReq *)e->m_pPacket)->RequestGUID();
+        }
+        else if (e->Channel() == ICQ_CHNxINFO &&
+                 e->ExtraInfo() == DirectStatusPluginRequest)
+        {
+          GUID = ((CPT_StatusPluginReq *)e->m_pPacket)->RequestGUID();
+        }
+        else
+        {
+          gLog.Warn("%sAck for the wrong event from %s.\n", L_WARNxSTR,
+                                                            u->GetAlias());
+          delete e;
+          return true;
+        }
+
+        packet.incDataPosRead(4); // Unknown
+        unsigned long nState = packet.UnpackUnsignedLong();
+        unsigned long nTime = packet.UnpackUnsignedLong();
+
+        if (nTime == u->ClientStatusTimestamp())
+          u->SetOurClientStatusTimestamp(nTime);
+
+        char *szState;
+        switch (nState)
+        {
+          case ICQ_PLUGIN_STATUSxINACTIVE: szState = "inactive"; break;
+          case ICQ_PLUGIN_STATUSxACTIVE:   szState = "active";   break;
+          case ICQ_PLUGIN_STATUSxBUSY:     szState = "busy";     break;
+          default:                         szState = "unknown";  break;
+        }
+
+        if (memcmp(GUID, PLUGIN_FILExSERVER, GUID_LENGTH) == 0)
+        {
+          gLog.Info("%s%s's Shared Files Directory is %s.\n", szInfo,
+                                                     u->GetAlias(), szState);
+          u->SetSharedFilesStatus(nState);
+        }
+        else if (memcmp(GUID, PLUGIN_FOLLOWxME, GUID_LENGTH) == 0)
+        {
+          gLog.Info("%s%s's Phone \"Follow Me\" is %s.\n", szInfo,
+                                                     u->GetAlias(), szState);
+          u->SetPhoneFollowMeStatus(nState);
+        }
+        else if (memcmp(GUID, PLUGIN_ICQxPHONE, GUID_LENGTH) == 0)
+        {
+          gLog.Info("%s%s's ICQphone is %s.\n", szInfo, u->GetAlias(),
+                                                                    szState);
+          u->SetICQphoneStatus(nState);
+        }
+
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                        USER_STATUS, u->Uin(), 0));
+
+        ProcessDoneEvent(e);
+        return false;
+      }
+      case ICQ_PLUGIN_ERROR:
+      {
+        gLog.Warn("%sStatus plugin not available from %s.\n", L_WARNxSTR,
+                                                            u->GetAlias());
+        result = EVENT_ERROR;
+        break;
+      }
+      case ICQ_PLUGIN_REJECTED:
+      {
+        gLog.Info("%s%s refused our request.\n", szInfo, u->GetAlias());
+        result = EVENT_FAILED;
+        break;
+      }
+      case ICQ_PLUGIN_AWAY:
+      {
+        gLog.Info("%sOur request was refused because %s is away.\n", szInfo,
+                  u->GetAlias());
+        result = EVENT_FAILED;
+        break;
+      }
+      default:
+      {
+        gLog.Warn("%sUnknown reply level %u from %s.\n", L_UNKNOWNxSTR,
+                  error_level, u->GetAlias());
+        errorOccured = true;
+        result = EVENT_ERROR;
+        break;
+      }
+      }
+
+      ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+                                      result) :
+                            DoneServerEvent(nMsgID2, result);
+      if (e == NULL)
+        gLog.Warn("%sAck for unknown event from %s.\n", L_WARNxSTR,
+                                                        u->GetAlias());
+      else
+        ProcessDoneEvent(e);
+
+    }
+
+    break;
+  }
+  default:
+  {
+    gLog.Warn("%sUnknown channel %u from %s\n", L_WARNxSTR, nChannel,
+                                                u->GetAlias());
+    if (!pSock)
+    {
+      CPU_NoManager *p = new CPU_NoManager(u, nMsgID1, nMsgID2);
+      SendEvent_Server(p);
+    }
+
+    errorOccured = true;
+    break;
+  }
+  }
+  return errorOccured;
+}
 
 //-----CICQDaemon::AckTCP--------------------------------------------------------------
 void CICQDaemon::AckTCP(CPacketTcp &p, int nSd)
@@ -2697,15 +3592,6 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
   CBuffer &b = s->RecvBuffer();
   b >> cHandshake >> nVersionMajor >> nVersionMinor;
 
-  if ((unsigned char)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
-  {
-    char *buf;
-    gLog.Unknown("%sUnknown TCP handshake packet (command = 0x%02X):\n%s\n",
-                 L_UNKNOWNxSTR, cHandshake, b.print(buf));
-    delete [] buf;
-    return false;
-  }
-
   unsigned long nUin = 0;
   unsigned short nVersion = 0;
 
@@ -2717,6 +3603,23 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       b.Reset();
       CPacketTcp_Handshake_v7 p_in(&b);
       nUin = p_in.SourceUin();
+
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u == NULL)
+      {
+        gLog.Warn("%sConnection from unknown user.\n", L_WARNxSTR);
+        return false;
+      }
+      unsigned long nCookie = u->Cookie();
+      gUserManager.DropUser(u);
+
+      if (nCookie != p_in.SessionId())
+      {
+        char ipbuf[32];
+        gLog.Warn("%sSpoofed connection from %s as uin %lu.\n", L_WARNxSTR,
+                  s->RemoteIpStr(ipbuf), nUin);
+        return false;
+      }
 
       // Send the ack
       CPacketTcp_Handshake_Ack p_ack;
@@ -2732,6 +3635,13 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       {
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
+      
+      if (s->RecvBuffer().getDataSize() != 4)
+      {
+        gLog.Warn("%sHandshake ack not the right size.\n", L_WARNxSTR);
+        return false;
+      }
+
       unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
       if (nOk != 1)
       {
@@ -2742,7 +3652,8 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
 			if (bConfirm)
 			{
 				// Get handshake confirmation
-				CPacketTcp_Handshake_Confirm p_confirm(true);
+                                //FIXME reverse connections
+				CPacketTcp_Handshake_Confirm p_confirm(ICQ_CHNxNONE, 0);
 				int nGot = s->RecvBuffer().getDataSize();
 				s->ClearRecvBuffer();
       
@@ -2771,6 +3682,23 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       b.Reset();
       CPacketTcp_Handshake_v6 p_in(&b);
       nUin = p_in.SourceUin();
+
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u == NULL)
+      {
+        gLog.Warn("%sConnection from unknown user.\n", L_WARNxSTR);
+        return false;
+      }
+      unsigned long nCookie = u->Cookie();
+      gUserManager.DropUser(u);
+
+      if (nCookie != p_in.SessionId())
+      {
+        char ipbuf[32];
+        gLog.Warn("%sSpoofed connection from %s as uin %lu.\n", L_WARNxSTR,
+                  s->RemoteIpStr(ipbuf), nUin);
+        return false;
+      }
 
       // Send the ack
       CPacketTcp_Handshake_Ack p_ack;
@@ -2802,7 +3730,29 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
     {
       b.UnpackUnsignedLong(); // port number
       nUin = b.UnpackUnsignedLong();
-      nVersion = 4;
+      nVersion = VersionToUse(nVersionMajor);
+
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u == NULL)
+      {
+        gLog.Warn("%sConnection from unknown user.\n", L_WARNxSTR);
+        return false;
+      }
+      unsigned long nIntIp = u->IntIp();
+      unsigned long nIp = u->Ip();
+      gUserManager.DropUser(u);
+      /* This might prevent connections from clients behind assymetric
+         connections (i.e. direct to ICQ server and through socks to clients)
+         but they should be using v6+ anyway */
+      if (nIntIp != s->RemoteIp() && nIp != s->RemoteIp())
+      {
+        char ipbuf[32];
+        return false;
+        gLog.Warn("%sConnection from %s as %lu possible spoof.\n", L_WARNxSTR,
+                  s->RemoteIpStr(ipbuf), nUin);
+        return false;
+      }
+      
       break;
     }
 
@@ -2813,6 +3763,28 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       b.UnpackUnsignedLong(); // port number
       nUin = b.UnpackUnsignedLong();
       nVersion = 2;
+      
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u == NULL)
+      {
+        gLog.Warn("%sConnection from unknown user.\n", L_WARNxSTR);
+        return false;
+      }
+      unsigned long nIntIp = u->IntIp();
+      unsigned long nIp = u->Ip();
+      gUserManager.DropUser(u);
+      /* This might prevent connections from clients behind assymetric
+         connections (i.e. direct to ICQ server and through socks to clients)
+         but they should be using v6+ anyway */
+      if (nIntIp != s->RemoteIp() && nIp != s->RemoteIp())
+      {
+        char ipbuf[32];
+        return false;
+        gLog.Warn("%sConnection from %s as %lu possible spoof.\n", L_WARNxSTR,
+                  s->RemoteIpStr(ipbuf), nUin);
+        return false;
+      }
+
       break;
     }
 
@@ -2842,6 +3814,75 @@ sock_error:
   return false;
 }
 
+bool CICQDaemon::Handshake_SendConfirm_v7(TCPSocket *s)
+{
+  // Send handshake accepted
+  CPacketTcp_Handshake_Confirm p_confirm(s->Channel(), 0);
+  if (!s->SendPacket(p_confirm.getBuffer()))
+    return false;
+
+  // Wait for reverse handshake accepted
+  s->ClearRecvBuffer();
+  do
+  {
+    if (!s->RecvPacket())
+      return false;
+  } while (!s->RecvBufferFull());
+  s->ClearRecvBuffer();
+
+  return true;
+}
+
+bool CICQDaemon::Handshake_RecvConfirm_v7(TCPSocket *s)
+{
+  // Get handshake confirmation
+  s->ClearRecvBuffer();
+  do
+  {
+    if (!s->RecvPacket()) goto sock_error;
+  } while (!s->RecvBufferFull());
+
+  { // damn scoping
+    CBuffer &b = s->RecvBuffer();
+    if (b.getDataSize() != 33)
+    {
+      gLog.Warn("%sHandshake confirm not the right size.\n", L_WARNxSTR);
+      return false;
+    }
+    unsigned char c = b.UnpackChar();
+    unsigned long l = b.UnpackUnsignedLong();
+    if (c != 0x03 || l != 0x0000000A)
+    {
+      gLog.Warn("%sUnknown handshake response %2X,%8lX.\n", L_WARNxSTR, c, l);
+      return false;
+    }
+    b.Reset();
+    CPacketTcp_Handshake_Confirm p_confirm_in(&b);
+    if (p_confirm_in.Channel() != ICQ_CHNxUNKNOWN)
+      s->SetChannel(p_confirm_in.Channel());
+    else
+    {
+      gLog.Warn("%sUnknown channel in ack packet.\n", L_WARNxSTR);
+      return false;
+    }
+
+    s->ClearRecvBuffer();
+
+    CPacketTcp_Handshake_Confirm p_confirm_out(p_confirm_in.Channel(),
+                                                       p_confirm_in.Id());
+
+    if (s->SendPacket(p_confirm_out.getBuffer()))
+      return true;
+  }
+ 
+ sock_error:
+  char buf[128];
+  if (s->Error() == 0)
+    gLog.Warn(tr("%sHandshake error, remote side closed connection.\n"), L_WARNxSTR);
+  else
+    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+  return false;
+}
 
 /*------------------------------------------------------------------------------
  * ProcessTcpHandshake
@@ -2860,14 +3901,16 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   {
     gLog.Info(tr("%sConnection from %s (%ld) [v%ld].\n"), L_TCPxSTR,
        u->GetAlias(), nUin, s->Version());
-    if (u->SocketDesc() != s->Descriptor())
+    if (u->SocketDesc(s->Channel()) != s->Descriptor())
     {
-      if (u->SocketDesc() != -1)
+      if (u->SocketDesc(s->Channel()) != -1)
       {
         gLog.Warn(tr("%sUser %s (%ld) already has an associated socket.\n"),
                   L_WARNxSTR, u->GetAlias(), nUin);
-        gSocketManager.CloseSocket(u->SocketDesc(), false);
-        u->ClearSocketDesc();
+        gUserManager.DropUser(u);
+        return true;
+/*      gSocketManager.CloseSocket(u->SocketDesc(), false);
+        u->ClearSocketDesc();*/
       }
       u->SetSocketDesc(s);
     }

@@ -20,7 +20,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	utilitydlg.h wharf.h randomchatdlg.h forwarddlg.h chatjoin.h \
 	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h \
 	jfcstyle.h usercodec.h reqauthdlg.h licqdialog.h userselectdlg.h \
-	editfilelistdlg.h emoticon.h
+	editfilelistdlg.h emoticon.h catdlg.h phonedlg.h
 
 licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
@@ -32,7 +32,7 @@ licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	wharf.cpp randomchatdlg.cpp forwarddlg.cpp chatjoin.cpp mmlistview.cpp \
 	mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
 	jfcstyle.cpp usercodec.cpp reqauthdlg.cpp licqdialog.cpp userselectdlg.cpp \
-	editfilelistdlg.cpp emoticon.cpp
+	editfilelistdlg.cpp emoticon.cpp catdlg.cpp phonedlg.cpp
 
 licq_qt_gui_la_SOURCES = $(licq_gui)
 licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp

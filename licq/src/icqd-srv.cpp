@@ -35,6 +35,7 @@
 #include "licq_filetransfer.h"
 #include "support.h"
 #include "licq_message.h"
+#include "licq_countrycodes.h"
 #include "licq_protoplugind.h"
 
 void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
@@ -50,7 +51,7 @@ void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
 void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired)
 {
   CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
-  gLog.Info(tr("%sAlerting server to new user (#%ld)...\n"), L_SRVxSTR,
+  gLog.Info(tr("%sAlerting server to new user (#%lu)...\n"), L_SRVxSTR,
              p->Sequence());
   SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
 
@@ -743,17 +744,47 @@ unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
   return 0;
 }
 
+//-----icqSetInterestsInfo------------------------------------------------------
+unsigned long CICQDaemon::icqSetInterestsInfo(const ICQUserCategory* interests)
+{
+  CPU_Meta_SetInterestsInfo *p = new CPU_Meta_SetInterestsInfo(interests);
+  gLog.Info("%sUpdating Interests info (#%lu/#%d)..\n", L_SRVxSTR,
+    p->Sequence(), p->SubSequence());
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  if (e != NULL)
+    return e->EventId();
+  return 0;
+}
+
+//-----icqSetOrgBackInfo--------------------------------------------------------
+unsigned long CICQDaemon::icqSetOrgBackInfo(const ICQUserCategory* orgs,
+                                            const ICQUserCategory* background)
+{
+  CPU_Meta_SetOrgBackInfo *p =
+    new CPU_Meta_SetOrgBackInfo(orgs, background);
+  gLog.Info("%sUpdating Organizations/Backgrounds info (#%lu/#%d)..\n",
+    L_SRVxSTR, p->Sequence(), p->SubSequence());
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  if (e != NULL)
+    return e->EventId();
+  return 0;
+}
+
 //-----icqSetWorkInfo--------------------------------------------------------
 unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
                                      const char *_szPhone,
                                      const char *_szFax, const char *_szAddress,
-				     const char *_szZip, unsigned short _nCompanyCountry,
+                                     const char *_szZip, unsigned short _nCompanyCountry,
                                      const char *_szName, const char *_szDepartment,
-                                     const char *_szPosition, const char *_szHomepage)
+                                     const char *_szPosition, unsigned short _nCompanyOccupation,
+                                     const char *_szHomepage)
 {
   CPU_Meta_SetWorkInfo *p =
     new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szAddress,
-                             _szZip, _nCompanyCountry, _szName, _szDepartment, _szPosition, _szHomepage);
+                             _szZip, _nCompanyCountry, _szName, _szDepartment,
+                             _szPosition, _nCompanyOccupation, _szHomepage);
 
   gLog.Info(tr("%sUpdating work info (#%lu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
@@ -904,6 +935,54 @@ void CICQDaemon::icqPing()
   // servers close the connection
    CPU_Ping *p = new CPU_Ping;
    SendEvent_Server(p);
+}
+
+//-----icqUpdateInfoTimestamp---------------------------------------------------
+void CICQDaemon::icqUpdateInfoTimestamp(const char *GUID)
+{
+  CPU_UpdateInfoTimestamp *p = new CPU_UpdateInfoTimestamp(GUID);
+  SendEvent_Server(p);
+}
+
+//-----icqUpdatePhoneBookTimestamp----------------------------------------------
+void CICQDaemon::icqUpdatePhoneBookTimestamp()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+  o->SetClientInfoTimestamp(time(NULL));
+  bool bOffline = o->StatusOffline();
+  gUserManager.DropOwner();
+
+  if (!bOffline)
+    icqUpdateInfoTimestamp(PLUGIN_PHONExBOOK);
+}
+
+//-----icqUpdatePictureTimestamp------------------------------------------------
+void CICQDaemon::icqUpdatePictureTimestamp()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+  o->SetClientInfoTimestamp(time(NULL));
+  bool bOffline = o->StatusOffline();
+  gUserManager.DropOwner();
+
+  if (!bOffline)
+    icqUpdateInfoTimestamp(PLUGIN_PICTURE);
+}
+
+//-----icqSetPhoneFollowMeStatus------------------------------------------------
+void CICQDaemon::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
+{
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+  o->SetClientStatusTimestamp(time(NULL));
+  o->SetPhoneFollowMeStatus(nNewStatus);
+  bool bOffline = o->StatusOffline();
+  gUserManager.DropOwner();
+
+  if (!bOffline)
+  {
+    CPU_UpdateStatusTimestamp *p =
+      new CPU_UpdateStatusTimestamp(PLUGIN_FOLLOWxME, nNewStatus);
+    SendEvent_Server(p);
+  }
 }
 
 //-----icqUpdateContactList-----------------------------------------------------
@@ -1312,7 +1391,8 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   {
     delete e;
   }
-  else if (e->m_nChannel == ICQ_CHNxNONE)
+  else if (e->m_nChannel == ICQ_CHNxNONE || e->m_nChannel == ICQ_CHNxINFO ||
+           e->m_nChannel == ICQ_CHNxSTATUS)
   {
     if (e->m_nCommand == ICQ_CMDxTCP_START)
       PushPluginEvent(e);
@@ -1483,6 +1563,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   for (iter = m_lxSendQueue_Server.begin(); i > 0; i--)
   {
     ICQEvent *e = *iter;
+    gLog.Info("Event #%lu is still on the server queue!\n", e->Sequence());
     iter = m_lxSendQueue_Server.erase(iter);
     ICQEvent *cancelled = new ICQEvent(e);
     cancelled->m_bCancelled = true;
@@ -1495,6 +1576,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
     if ((*iter)->m_nSocketDesc == nSD || (*iter)->Channel() == ICQ_CHNxNEW)
     {
       ICQEvent *e = *iter;
+      gLog.Info("Event #%lu is still on the running queue!\n", e->Sequence());
       iter = m_lxRunningEvents.erase(iter);
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
       {
@@ -1832,7 +1914,9 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       SendEvent_Server(p);
 
       gLog.Info(tr("%sSetting ICQ Instant Messaging Mode.\n"), L_SRVxSTR);
-      p = new CPU_ICQMode();
+      p = new CPU_ICQMode(1, 11); // enable typing notifications
+      SendEvent_Server(p);
+      p = new CPU_ICQMode(0, 3); // set default flags for all channels
       SendEvent_Server(p);
 
       gLog.Info(tr("%sSending capability settings (?)\n"),L_SRVxSTR);
@@ -1961,7 +2045,9 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxSUB_ONLINExLIST:
   {
-    unsigned long junk1, intIP, userPort, timestamp, nCookie, nUserIP;
+    unsigned long junk1, intIP, userPort, nInfoTimestamp = 0,
+                  nStatusPluginTimestamp = 0, nInfoPluginTimestamp = 0, nCookie,
+                  nUserIP;
     unsigned short junk2;
     unsigned char mode;
     char *szId;
@@ -2040,35 +2126,44 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       mode = msg.UnpackChar();
       unsigned short tcpVersion = msg.UnpackUnsignedShortBE();
       nCookie = msg.UnpackUnsignedLongBE();
-      junk1 = msg.UnpackUnsignedLongBE();
-      junk1 = msg.UnpackUnsignedLongBE();
-      timestamp = msg.UnpackUnsignedLongBE();  // will be licq version
-      junk1 = msg.UnpackUnsignedLongBE();
-      junk1 = msg.UnpackUnsignedLongBE();
+      msg.UnpackUnsignedLongBE();
+      unsigned long tcount = msg.UnpackUnsignedLongBE();
+      nInfoTimestamp = msg.UnpackUnsignedLongBE();  // will be licq version
+      nStatusPluginTimestamp = msg.UnpackUnsignedLongBE();
+      nInfoPluginTimestamp = msg.UnpackUnsignedLongBE();
+      if (tcount == 0)
+        nInfoTimestamp = nStatusPluginTimestamp = nInfoPluginTimestamp = 0;
+      else if (tcount == 1)
+        nStatusPluginTimestamp = nInfoPluginTimestamp = 0;
+      else if (tcount == 2)
+        nInfoPluginTimestamp = 0;
+        
       junk2 = msg.UnpackUnsignedShortBE();
 
       char szExtraInfo[28] = { 0 };
-      if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
+      if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
         snprintf(szExtraInfo, 27, "Licq %s/SSL",
-                 CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
-      else if ((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+                 CUserEvent::LicqVersionToString(nInfoTimestamp & 0xFFFF));
+      else if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
         snprintf(szExtraInfo, 27, "Licq %s",
-                 CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
-      else if (timestamp == 0xffffffff)
+                 CUserEvent::LicqVersionToString(nInfoTimestamp & 0xFFFF));
+      else if (nInfoTimestamp == 0xffffffff)
         strcpy(szExtraInfo, "MIRANDA");
-      else if (timestamp == 0xFFFFFF8F)
+      else if (nInfoTimestamp == 0xFFFFFF8F)
         strcpy(szExtraInfo, "StrICQ");
-      else if (timestamp == 0xFFFFFF42)
+      else if (nInfoTimestamp == 0xFFFFFF42)
         strcpy(szExtraInfo, "mICQ");
-      else if (timestamp == 0xFFFFFF7F)
+      else if (nInfoTimestamp == 0xFFFFFF7F)
         strcpy(szExtraInfo, "&RQ");
-      else if (timestamp == 0xFFFFFFAB)
+      else if (nInfoTimestamp == 0xFFFFFFAB)
         strcpy(szExtraInfo, "YSM");
       else
         szExtraInfo[0]=0;
       szExtraInfo[27] = '\0';
 
       u->SetClientInfo(szExtraInfo[0] ? szExtraInfo : NULL);
+      u->SetVersion(tcpVersion);
+      
       if (nOldStatus != nNewStatus)
       {
         char *szClient = new char[strlen(szExtraInfo)+6];
@@ -2101,12 +2196,11 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       if (userPort)
         u->SetPort(userPort);
 
-      u->SetVersion(tcpVersion);
       u->SetCookie(nCookie);
-      u->SetClientTimestamp(timestamp);
 
-      // What is mode 1?  We can't connect direct...
-      if (mode == 1 || mode == 6 ||
+      /* Mode 0 is used improperly by too many clients,
+         don't bother warning, just set it to be indirect */
+      if (mode == MODE_DENIED || mode == 6 || mode == 0 ||
           (nNewStatus & ICQ_STATUS_FxDIRECTxLISTED) ||
           (nNewStatus & ICQ_STATUS_FxDIRECTxAUTH)
         ) mode = MODE_INDIRECT;
@@ -2138,6 +2232,110 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         u->SetShowAwayMsg(false);
       }
     }
+
+    if (u->OurClientStatusTimestamp() != nStatusPluginTimestamp &&
+        nOldStatus == ICQ_STATUS_OFFLINE)
+    {
+      //we don't know what the new values are yet, so don't show anything
+      u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxINACTIVE);
+      u->SetICQphoneStatus(ICQ_PLUGIN_STATUSxINACTIVE);
+      u->SetSharedFilesStatus(ICQ_PLUGIN_STATUSxINACTIVE);
+    }
+    
+    if (packet.hasTLV(0x0011))
+    {
+      CBuffer msg = packet.UnpackTLV(0x0011);
+      char index = msg.UnpackChar();
+      unsigned long nTime = msg.UnpackUnsignedLong(); //Timestamp
+
+      char plugin[GUID_LENGTH];
+      switch (index)
+      {
+      case 0x01: //Updated user info
+        gLog.Info("%s%s updated info.\n", L_SRVxSTR, u->GetAlias());
+        u->SetUserUpdated(false);
+        break;
+
+      case 0x02: //Updated info plugin settings
+        msg.incDataPosRead(6); /* 02 00 01 00 01 00
+                                  Don't know what those mean */
+        for (unsigned int i = 0; i < sizeof(plugin); i ++)
+          plugin[i] = msg.UnpackChar();
+
+        if (memcmp(plugin, PLUGIN_PHONExBOOK, GUID_LENGTH) == 0)
+          gLog.Info("%s%s updated phonebook\n", L_SRVxSTR, u->GetAlias());
+        else if (memcmp(plugin, PLUGIN_PICTURE, GUID_LENGTH) == 0)
+          gLog.Info("%s%s updated picture\n", L_SRVxSTR, u->GetAlias());
+        else if (memcmp(plugin, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
+          gLog.Info("%s%s updated info plugin list\n", L_SRVxSTR,
+                    u->GetAlias());
+        else
+          gLog.Warn("%sUnknown info plugin update from %s\n", L_WARNxSTR,
+                    u->GetAlias());
+
+        u->SetUserUpdated(false);
+
+        break;
+
+      case 0x03: //Updated status plugin settings
+      {
+        msg.incDataPosRead(6); /* 00 00 01 00 01 00 */
+        for (unsigned int i = 0; i < sizeof(plugin); i ++)
+          plugin[i] = msg.UnpackChar();
+
+        msg.incDataPosRead(1);  /* 01 */
+
+        unsigned long nPluginStatus = msg.UnpackUnsignedLong();
+        char *state;
+        switch (nPluginStatus)
+        {
+          case ICQ_PLUGIN_STATUSxINACTIVE: state = "inactive"; break;
+          case ICQ_PLUGIN_STATUSxACTIVE:   state = "active";   break;
+          case ICQ_PLUGIN_STATUSxBUSY:     state = "busy";     break;
+          default:                         state = "unknown";  break;
+        }
+
+        if (memcmp(plugin, PLUGIN_FOLLOWxME, GUID_LENGTH) == 0)
+        {
+            gLog.Info(tr("%s%s changed Phone \"Follow Me\" status to %s.\n"),
+                                              L_SRVxSTR, u->GetAlias(), state);
+            u->SetPhoneFollowMeStatus(nPluginStatus);
+        }
+        else if (memcmp(plugin, PLUGIN_FILExSERVER, GUID_LENGTH) == 0)
+        {
+            gLog.Info(tr("%s%s changed Shared Files Directory status to %s.\n"),
+              L_SRVxSTR, u->GetAlias(), state);
+            u->SetSharedFilesStatus(nPluginStatus);
+        }
+        else if (memcmp(plugin, PLUGIN_ICQxPHONE, GUID_LENGTH) == 0)
+        {
+            gLog.Info(tr("%s%s changed ICQphone status to %s.\n"), L_SRVxSTR,
+              u->GetAlias(), state);
+            u->SetICQphoneStatus(nPluginStatus);
+        }
+
+        // if status was up to date then we don't need to reask the user
+        if (u->OurClientStatusTimestamp() == u->ClientStatusTimestamp() &&
+            nOldStatus != ICQ_STATUS_OFFLINE)
+          u->SetOurClientStatusTimestamp(nTime);
+
+
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                         USER_STATUS, u->IdString(), u->PPID(), 0));
+
+        break;
+      }
+
+      default:
+        gLog.Warn(tr("%sUnknown index %d from %s.\n"), L_WARNxSTR, index,
+        u->GetAlias());
+      }
+    }
+
+    // maybe use this for auto update info later
+    u->SetClientTimestamp(nInfoTimestamp);
+    u->SetClientInfoTimestamp(nInfoPluginTimestamp);
+    u->SetClientStatusTimestamp(nStatusPluginTimestamp);
 
     // We are no longer able to differentiate oncoming users from the
     // users that are on when we sign on.. so try the online since flag
@@ -2196,30 +2394,31 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxMSG_ICBMxERROR:
   {
-    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
-    if (e)
+    unsigned short err = packet.UnpackUnsignedShortBE();
+    switch (err)
     {
-      ProcessDoneEvent(e);
-
-      unsigned short err = packet.UnpackUnsignedShortBE();
-      switch (err)
-      {
-      case 0x0004:
-        gLog.Warn(tr("%sUser is offline.\n"), L_WARNxSTR);
-        break;
-      case 0x0009:
-        gLog.Warn(tr("%sClient does not understand type-2 messages.\n"), L_WARNxSTR);
-        break;
-      case 0x000e:
-        gLog.Warn(tr("%sPacket was malformed.\n"), L_WARNxSTR);
-        break;
-      default:
-        gLog.Unknown("%sUnknown ICBM error: 0x%04x.\n", L_UNKNOWNxSTR, err);
-      }
-
+    case 0x0004:
+      gLog.Warn(tr("%sUser is offline.\n"), L_WARNxSTR);
+      break;
+    case 0x0009:
+      gLog.Warn(tr("%sClient does not understand type-2 messages.\n"), L_WARNxSTR);
+      break;
+    case 0x000e:
+      gLog.Warn(tr("%sPacket was malformed.\n"), L_WARNxSTR);
+      break;
+    case 0x0015:
+      gLog.Info(tr("%sList overflow.\n"), L_WARNxSTR);
+      break;
+    default:
+      gLog.Unknown(tr("%sUnknown ICBM error: 0x%04x.\n"), L_UNKNOWNxSTR, err);
     }
+
+    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+    
+    if (e)
+      ProcessDoneEvent(e);
     else
-      gLog.Warn("%sICBM error for unknown event.\n", L_WARNxSTR);
+      gLog.Warn(tr("%sICBM error for unknown event.\n"), L_WARNxSTR);
 
     break;
   }
@@ -2266,7 +2465,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       unsigned short nEncoding = msgTxt.UnpackUnsignedShort();
       unsigned short nSubEncoding = msgTxt.UnpackUnsignedShort();
-
+      
       nMsgLen -= 4;
 
       char* szMessage = new char[nMsgLen+1];
@@ -2327,7 +2526,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       if (nCancel == 1)  break;
 
-      msgTxt.incDataPosRead(24); // junk before tlv
+      msgTxt.incDataPosRead(8); // message ids again
+      
+      char cap[CAP_LENGTH];
+      for (unsigned short i = 0; i < CAP_LENGTH; i++)
+        msgTxt >> cap[i];
+
       msgTxt.readTLV();
 
       CBuffer ackMsg = msgTxt.UnpackTLV(0x000A);
@@ -2336,22 +2540,87 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       CBuffer advMsg = msgTxt.UnpackTLV(0x2711);
       if (advMsg.getDataSize() == 0)  break;
+      
+      if (memcmp(cap, ICQ_CAPABILITY_DIRECT, CAP_LENGTH) == 0)
+      {
+#if 0        // reverse connect request
+        if (advMsg.getDataSize() != 27) break;
+
+        unsigned long nUin, nIp, nPort, nFailedPort, nPort2, nId;
+        unsigned short nVersion;
+        char nMode;
+        advMsg >> nUin >> nIp >> nPort >> nMode >> nFailedPort >> nPort2
+               >> nVersion >> nId;
+
+        /* nPort seems to always contain the port to connect to, nPort2 is a
+           duplicate of nPort. But check anyway */
+        if (nPort == 0)
+          nPort = nPort2;
+
+        pthread_t t;
+        CReverseConnectToUserData *data = new CReverseConnectToUserData(
+                               nUin, nId, ICQ_CHNxUNKNOWN, nIp, nPort,
+                               nVersion, nFailedPort, nMsgID[0], nMsgID[1]);
+        pthread_create(&t, NULL, &ReverseConnectToUser_tep, data);
+        break;
+
+#else
+        break; // not handled yet
+#endif
+      }
+      else if (memcmp(cap, ICQ_CAPABILITY_SRVxRELAY, CAP_LENGTH) != 0) break;
 
       unsigned short nLen;
       unsigned short nMsgType, nStatus, nMsgFlags;
 
       nLen = advMsg.UnpackUnsignedShort();
-      advMsg.incDataPosRead(nLen - 2);
+      advMsg.UnpackUnsignedShort(); // tcp version
+      
+      char GUID[GUID_LENGTH];
+      for (unsigned short i = 0; i < GUID_LENGTH; i++) // channel
+        advMsg >> GUID[i];
+        
+      advMsg.incDataPosRead(nLen - 2 - GUID_LENGTH - 2);
+      
       unsigned short nSequence = advMsg.UnpackUnsignedShort();
 
       nLen = advMsg.UnpackUnsignedShort();
-      if (nLen == 0x12) // what is this, a "you're on my list" statement?
-        break;
       advMsg.incDataPosRead(nLen);
 
       // Get the message type, status, and flags
       unsigned long nMask = 0;
-      advMsg >> nMsgType >> nStatus >> nMsgFlags;
+      advMsg >> nMsgType;
+
+      if (memcmp(GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0)
+      {
+        unsigned char nChannel = ICQ_CHNxUNKNOWN;
+
+        if (memcmp(GUID, PLUGIN_INFOxMANAGER, GUID_LENGTH) == 0)
+          nChannel = ICQ_CHNxINFO;
+        else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, GUID_LENGTH) == 0)
+          nChannel = ICQ_CHNxSTATUS;
+
+        bool bNewUser = false;
+        ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+        if (u == NULL)
+        {
+          u = new ICQUser(szId, LICQ_PPID);
+          bNewUser = true;
+        }
+
+        ProcessPluginMessage(advMsg, u, nChannel, bIsAck, nMsgID[0], nMsgID[1],
+                             nSequence, NULL);
+
+        if (bNewUser)
+          delete u;
+        else
+          gUserManager.DropUser(u);
+
+        break;
+      }
+ 
+      advMsg >> nStatus >> nMsgFlags;
+
       if (nMsgType & ICQ_CMDxSUB_FxMULTIREC)
       {
         nMask |= ICQ_CMDxSUB_FxMULTIREC;
@@ -2971,6 +3240,25 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     else
       gLog.Warn(tr("%sAck for unknown event.\n"), L_WARNxSTR);
 
+    break;
+  }
+  case ICQ_SNACxMSG_TYPING:
+  {
+    packet.UnpackUnsignedLongBE(); // timestamp
+    packet.UnpackUnsignedLongBE(); // message id
+    packet.UnpackUnsignedShortBE(); // format (only seen 1)
+    unsigned long nUin = packet.UnpackUinString();
+    unsigned short nTyping = packet.UnpackUnsignedShortBE();
+
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u == NULL)
+    {
+      gLog.Warn("%sTyping status received for unknown user\n", L_WARNxSTR);
+      break;
+    }
+    u->SetTyping(nTyping);
+    gUserManager.DropUser(u);
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, nUin));
     break;
   }
 	default:
@@ -3901,6 +4189,33 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gUserManager.DropOwner();
         }
       }
+      else if (nSubtype == ICQ_CMDxMETA_INTERESTSxINFOxRSP)
+      {
+        szType = strdup("Interests info");
+        pEvent = DoneServerEvent(nSubSequence,
+          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+
+        if (pEvent != NULL && nResult == META_SUCCESS)
+        {
+          CPU_Meta_SetInterestsInfo *p =
+                           (CPU_Meta_SetInterestsInfo *)pEvent->m_pPacket;
+          ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+          o->SetEnableSave(false);
+          unsigned short cat;
+          const char *descr;
+          o->m_Interests->Clean();
+          for (int i = 0; p->m_Interests->Get(i, &cat, &descr); i++)
+          {
+            char *tmp = strdup(descr);
+            gTranslator.ServerToClient(tmp);
+            o->m_Interests->AddCategory(cat, tmp);
+            free(tmp);
+          }
+          o->SetEnableSave(true);
+          o->SaveInterestsInfo();
+          gUserManager.DropOwner();
+        }
+      }
       else if (nSubtype == ICQ_CMDxMETA_WORKxINFOxRSP)
       {
         szType = strdup(tr("Work info"));
@@ -3912,8 +4227,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)pEvent->m_pPacket;
           ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
           o->SetEnableSave(false);
-          o->SetCompanyCity(p->m_szCity );
-          o->SetCompanyState(p->m_szState );o->SetCompanyPhoneNumber( p->m_szPhoneNumber);
+          o->SetCompanyCity(p->m_szCity);
+          o->SetCompanyState(p->m_szState);
+          o->SetCompanyPhoneNumber(p->m_szPhoneNumber);
           o->SetCompanyFaxNumber(p->m_szFaxNumber);
           o->SetCompanyAddress(p->m_szAddress);
           o->SetCompanyZip(p->m_szZip);
@@ -3921,6 +4237,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           o->SetCompanyName(p->m_szName);
           o->SetCompanyDepartment(p->m_szDepartment);
           o->SetCompanyPosition(p->m_szPosition);
+          o->SetCompanyOccupation(p->m_nCompanyOccupation);
           o->SetCompanyHomepage(p->m_szHomepage);
 
           // translating string with Translation Table
@@ -3967,99 +4284,160 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       }
       else if (nSubtype == ICQ_CMDxMETA_SENDxSMSxRSP)
       {
-        char *szTag, *szXml, *szSmsResponse;
+        // this one sucks, it could be sms or organization response
+        pEvent = DoneServerEvent(nSubSequence,
+          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
 
-        msg.UnpackUnsignedShortBE();
-        msg.UnpackUnsignedShortBE();
-        msg.UnpackUnsignedShortBE();
-
-        szTag = msg.UnpackStringBE();
-        szXml = msg.UnpackStringBE();
-        szSmsResponse = GetXmlTag(szXml, "sms_response");
-
-        if (szSmsResponse != NULL)
+        if (pEvent != NULL &&
+            pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_ORGBACKxINFOxSET)
         {
-          char *szDeliverable;
-          szDeliverable = GetXmlTag(szSmsResponse, "deliverable");
+          szType = strdup("Organizations/Background info");
 
-          if (szDeliverable != NULL)
+          if (nResult == META_SUCCESS)
           {
-            if (!strcmp(szDeliverable, "Yes"))
+            CPU_Meta_SetOrgBackInfo *p =
+                             (CPU_Meta_SetOrgBackInfo *)pEvent->m_pPacket;
+            ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+            o->SetEnableSave(false);
+            unsigned short cat;
+            const char *descr;
+            o->m_Organizations->Clean();
+            for (int i = 0; p->m_Orgs->Get(i, &cat, &descr); i++)
             {
-              gLog.Info(tr("%sSMS delivered.\n"), L_SRVxSTR);
-              ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
-              if (e) ProcessDoneEvent(e);
+              char *tmp = strdup(descr);
+              gTranslator.ServerToClient(tmp);
+              o->m_Organizations->AddCategory(cat, tmp);
+              free(tmp);
             }
-            else if (!strcmp(szDeliverable, "No"))
+            o->SetEnableSave(true);
+            o->SaveOrganizationsInfo();
+
+            o->m_Backgrounds->Clean();
+            for (int i = 0; p->m_Background->Get(i, &cat, &descr); i++)
             {
-              char *szId, *szParam;
-
-              szId = GetXmlTag(szSmsResponse, "id");
-              szParam = GetXmlTag(szSmsResponse, "param");
-              gLog.Warn(tr("%sSMS not delivered, error #%s, param: %s\n"), L_SRVxSTR,
-                        szId, szParam);
-
-              if (szId != NULL) free(szId);
-              if (szParam != NULL) free(szParam);
-              ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_FAILED);
-              if (e) ProcessDoneEvent(e);
+              char *tmp = strdup(descr);
+              gTranslator.ServerToClient(tmp);
+              o->m_Backgrounds->AddCategory(cat, tmp);
+              free(tmp);
             }
-            else if (!strcmp(szDeliverable, "SMTP"))
+            o->SetEnableSave(true);
+            o->SaveBackgroundsInfo();
+            gUserManager.DropOwner();
+          }
+        }
+        else if (pEvent != NULL &&
+                pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_SENDxSMS)
+        {
+          char *szTag, *szXml, *szSmsResponse;
+  
+          msg.UnpackUnsignedShortBE();
+          msg.UnpackUnsignedShortBE();
+          msg.UnpackUnsignedShortBE();
+  
+          szTag = msg.UnpackStringBE();
+          szXml = msg.UnpackStringBE();
+          szSmsResponse = GetXmlTag(szXml, "sms_response");
+  
+          if (szSmsResponse != NULL)
+          {
+            char *szDeliverable;
+            szDeliverable = GetXmlTag(szSmsResponse, "deliverable");
+  
+            if (szDeliverable != NULL)
             {
-              char *szFrom, *szTo, *szSubject;
-
-              szFrom = GetXmlTag(szSmsResponse, "from");
-              szTo = GetXmlTag(szSmsResponse, "to");
-              szSubject = GetXmlTag(szSmsResponse, "subject");
-              gLog.Info(tr("%sSending SMS via SMTP not supported yet.\n"), L_SRVxSTR);
-
-              if (szFrom != NULL)
+              if (!strcmp(szDeliverable, "Yes"))
               {
-                gLog.Info(tr("%sFrom: %s\n"), L_SRVxSTR, szFrom);
-                free(szFrom);
+                gLog.Info(tr("%sSMS delivered.\n"), L_SRVxSTR);
+                if (pEvent)
+                {
+                  pEvent->m_eResult = EVENT_SUCCESS;
+                  ProcessDoneEvent(pEvent);
+                }
               }
-
-              if (szTo != NULL)
+              else if (!strcmp(szDeliverable, "No"))
               {
-                gLog.Info(tr("%sTo: %s\n"), L_SRVxSTR, szTo);
-                free(szTo);
+                char *szId, *szParam;
+  
+                szId = GetXmlTag(szSmsResponse, "id");
+                szParam = GetXmlTag(szSmsResponse, "param");
+                gLog.Warn(tr("%sSMS not delivered, error #%s, param: %s\n"),
+                  L_SRVxSTR, szId, szParam);
+  
+                if (szId != NULL) free(szId);
+                if (szParam != NULL) free(szParam);
+                if (pEvent)
+                {
+                  pEvent->m_eResult = EVENT_FAILED;
+                  ProcessDoneEvent(pEvent);
+                }
               }
-
-              if (szSubject != NULL)
+              else if (!strcmp(szDeliverable, "SMTP"))
               {
-                gLog.Info(tr("%sSubject: %s\n"), L_SRVxSTR, szSubject);
-                free(szSubject);
+                char *szFrom, *szTo, *szSubject;
+  
+                szFrom = GetXmlTag(szSmsResponse, "from");
+                szTo = GetXmlTag(szSmsResponse, "to");
+                szSubject = GetXmlTag(szSmsResponse, "subject");
+                gLog.Info(tr("%sSending SMS via SMTP not supported yet.\n"),
+                  L_SRVxSTR);
+  
+                if (szFrom != NULL)
+                {
+                  gLog.Info(tr("%sFrom: %s\n"), L_SRVxSTR, szFrom);
+                  free(szFrom);
+                }
+  
+                if (szTo != NULL)
+                {
+                  gLog.Info(tr("%sTo: %s\n"), L_SRVxSTR, szTo);
+                  free(szTo);
+                }
+  
+                if (szSubject != NULL)
+                {
+                  gLog.Info(tr("%sSubject: %s\n"), L_SRVxSTR, szSubject);
+                  free(szSubject);
+                }
+  
+                if (pEvent)
+                {
+                  pEvent->m_eResult = EVENT_FAILED;
+                  ProcessDoneEvent(pEvent);
+                }
               }
-
-              ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_FAILED);
-              if (e) ProcessDoneEvent(e);
+              else
+              {
+                char *buf;
+                gLog.Info(tr("%sUnknown SMS response:\n%s"), L_UNKNOWNxSTR,
+                          packet.print(buf));
+  
+                delete [] buf;
+  
+                if (pEvent)
+                {
+                  pEvent->m_eResult = EVENT_FAILED;
+                  ProcessDoneEvent(pEvent);
+                }
+              }
+  
+              free(szDeliverable);
             }
             else
             {
-              char *buf;
-              gLog.Info(tr("%sUnknown SMS response:\n%s"), L_UNKNOWNxSTR,
-                        packet.print(buf));
-
-              delete [] buf;
-
-              ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_FAILED);
-              if (e) ProcessDoneEvent(e);
+              gLog.Info(tr("%sUndeliverable SMS.\n"), L_SRVxSTR);
+              if (pEvent)
+              {
+                pEvent->m_eResult = EVENT_FAILED;
+                ProcessDoneEvent(pEvent);
+              }
             }
-
-            free(szDeliverable);
+  
+            free(szSmsResponse);
           }
-          else
-          {
-            gLog.Info(tr("%sUndeliverable SMS.\n"), L_SRVxSTR);
-            ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_FAILED);
-            if (e) ProcessDoneEvent(e);
-          }
-
-          free(szSmsResponse);
+  
+          delete [] szTag;
+          delete [] szXml;
         }
-
-        delete [] szTag;
-        delete [] szXml;
       }
       else if (nSubtype == ICQ_CMDxMETA_SETxRANDxCHATxRSP)
       {
@@ -4249,7 +4627,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         switch (nSubtype)
         {
         case ICQ_CMDxMETA_GENERALxINFO:
-
+        {   
           gLog.Info(tr("%sGeneral info on %s (%lu).\n"), L_SRVxSTR, u->GetAlias(), u->Uin());
 
           // main home info
@@ -4281,8 +4659,27 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           delete[] tmp;
           u->SetCountryCode( msg.UnpackUnsignedShort() );
           u->SetTimezone( msg.UnpackChar() );
-          u->SetHideEmail( msg.UnpackChar() ); // 0 = no, 1 = yes
+          u->SetAuthorization( !msg.UnpackChar() );
+          unsigned char nStatus = msg.UnpackChar(); // Web aware status
 
+          if (u->Uin() == gUserManager.OwnerUin())
+          {
+            static_cast<ICQOwner *>(u)->SetWebAware(nStatus);
+            /* this unpack is inside the if statement since it appears only
+               for the owner request */
+            u->SetHideEmail( msg.UnpackChar() );
+          }
+          else
+          {
+          /* TODO maybe implement web aware (could be useful for viewing info of
+             users not on contact list) */
+          }
+
+/*
+          unsigned short tmp = msg.UnpackChar();
+          if (tmp)
+            gLog.Error("%sConnection flags??? %x\n", L_ERRORxSTR, cf); */
+ 
           // translating string with Translation Table
           gTranslator.ServerToClient(u->GetAlias());
           gTranslator.ServerToClient(u->GetFirstName());
@@ -4305,9 +4702,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->Uin()));
           break;
-
+        }
         case ICQ_CMDxMETA_MORExINFO:
-
+        {
           gLog.Info(tr("%sMore info on %s (%lu).\n"), L_SRVxSTR, u->GetAlias(), u->Uin());
 
           u->SetEnableSave(false);
@@ -4322,6 +4719,32 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetLanguage2( msg.UnpackChar() );
           u->SetLanguage3( msg.UnpackChar() );
 
+          //TODO
+/*
+          if (unsigned short tmp = msg.UnpackUnsignedShort()) //??
+            gLog.Error("Unknown value %x\n", tmp);
+          char *city = msg.UnpackString();        //Originally from city
+          char *state = msg.UnpackString();        //Originally from state
+          const struct SCountry *sc = GetCountryByCode(msg.UnpackUnsignedShort()); //Originally from country
+          char *country = "unknown";
+          if (sc)
+            country = sc->szName;
+          char *mstatus = "unknown";
+          switch (msg.UnpackChar())          // marital status: 
+          {
+            case 0:  mstatus = "unspecified"; break;
+            case 10: mstatus = "Single"; break;
+            case 11: mstatus = "In a long-term relationship"; break;
+            case 12: mstatus = "Engaged"; break;
+            case 20: mstatus = "Married"; break;
+            case 30: mstatus = "Divorced"; break;
+            case 31: mstatus = "Separated"; break;
+            case 40: mstatus = "Widowed"; break;
+          }
+          gLog.Info("%s%s status is %s, originally from: %s, %s, %s\n",
+                    L_WARNxSTR, u->GetAlias(), mstatus, city, state, country);
+          */
+          
           // translating string with Translation Table
           gTranslator.ServerToClient(u->GetHomepage());
 
@@ -4334,20 +4757,19 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE, u->Uin()));
           break;
-
+        }
         case ICQ_CMDxMETA_EMAILxINFO:
         {
 
           gLog.Info(tr("%sEmail info on %s (%lu).\n"), L_SRVxSTR, u->GetAlias(), u->Uin());
 
           u->SetEnableSave(false);
-          // let's just grab the first 2 for now
           int nEmail = (int)msg.UnpackChar();
           for(int i = 0; i < 2; i++)
           {
             if (i < nEmail)
-          {
-            msg.UnpackChar(); // publish email, not yet implemented
+            {
+              msg.UnpackChar(); // publish email, not yet implemented
               tmp = msg.UnpackString();
             }
             else
@@ -4380,17 +4802,40 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           break;
         }
 
-        case 0x010E:
+        case ICQ_CMDxMETA_HOMEPAGExINFO:
         {
-          char* buf;
-          gLog.Unknown(tr("%sunknown info: %04hx\n%s\n"), L_UNKNOWNxSTR,
-                       nSubSequence, packet.print(buf));
-          delete [] buf;
+          gLog.Info("%sHomepage info on %s (%lu).\n", L_SRVxSTR, u->GetAlias(),
+            u->Uin());          
           
-          msg.UnpackUnsignedShortBE(); // WORD 0
+          u->SetEnableSave(false);
           
+          unsigned char categoryPresent = msg.UnpackChar();
+          u->SetHomepageCatPresent(categoryPresent);
+          
+          if (categoryPresent)
+          {
+            u->SetHomepageCatCode(msg.UnpackUnsignedShort());
+
+            char *rawmsg = msg.UnpackString();
+            char *msg = gTranslator.RNToN(rawmsg);
+            delete [] rawmsg;
+
+            u->SetHomepageDesc(msg);
+            delete [] msg;
+
+            gTranslator.ServerToClient(u->GetHomepageDesc());
+          }
+          
+          u->SetICQHomepagePresent(msg.UnpackChar());
+
+          // save the user infomation
+          u->SetEnableSave(true);
+          u->SaveHomepageInfo();
+
           PushExtendedEvent(e);
           multipart = true;
+          
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_HP, u->Uin()));
           break;
         }
 
@@ -4418,7 +4863,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           delete[] tmp;
           u->SetCompanyPosition( tmp = msg.UnpackString() );
           delete[] tmp;
-          msg.UnpackUnsignedShort(); // unknown
+          u->SetCompanyOccupation(msg.UnpackUnsignedShort());
           u->SetCompanyHomepage( tmp = msg.UnpackString() );
           delete[] tmp;
 
@@ -4472,30 +4917,92 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           break;
         }
 
-        case 0x00F0:
+        case ICQ_CMDxMETA_INTERESTSxINFO:
         {
+          unsigned i, n;
+          bool nRet = true;
 
-          // personal interests info
-          char * buf;
+          gLog.Info("%sPersonal Interests info on %s (%lu).\n", L_SRVxSTR,
+                    u->GetAlias(), u ->Uin());
 
-          gLog.Unknown(tr("%spersonal interests: %04hx\n%s\n"), L_UNKNOWNxSTR,
-                      nSubSequence, packet.print(buf));
-          delete [] buf;
+          u->SetEnableSave(false);
+          u->m_Interests->Clean();
+          n = msg.UnpackChar();
 
+          for (i = 0; nRet && i < n; i++)
+          { 
+            unsigned short cat = msg.UnpackUnsignedShort();
+            tmp = msg.UnpackString();
+            gTranslator.ServerToClient(tmp);
+            nRet = u->m_Interests->AddCategory(cat, tmp);
+            delete [] tmp;
+          }
+
+          // save the user infomation
+          u->SetEnableSave(true);
+          u->SaveInterestsInfo();
+          
           PushExtendedEvent(e);
           multipart = true;
-
+          
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE2,
+                           u->Uin()));
           break;
         }
 
         case ICQ_CMDxMETA_PASTxINFO:
         {
           // past background info - last one received
-          char* buf;
+          unsigned i, n;
+          bool nRet = true;
 
-          gLog.Unknown(tr("%spast backgrounds: %04hx\n%s\n"), L_UNKNOWNxSTR,
-                      nSubSequence, packet.print(buf));
-          delete [] buf;
+          gLog.Info("%sOrganizations/Past Background info on %s (%lu).\n",
+                    L_SRVxSTR, u->GetAlias(), u ->Uin());
+
+          u->SetEnableSave(false);
+
+          u->m_Backgrounds->Clean();
+ 
+          n = msg.UnpackChar();
+
+          for (i = 0; nRet && i < n; i++)
+          {
+            unsigned short cat = msg.UnpackUnsignedShort();
+            tmp = msg.UnpackString();
+            gTranslator.ServerToClient(tmp);
+            nRet = u->m_Backgrounds->AddCategory(cat, tmp);
+            delete [] tmp;
+          }
+
+          // save the user infomation
+          u->SetEnableSave(true);
+          u->SaveBackgroundsInfo();
+
+          //---- Organizations
+          u->SetEnableSave(false);
+          u->m_Organizations->Clean();
+          nRet = true;
+          n = msg.UnpackChar();
+
+          for(i = 0; nRet && i < n; i++)
+          {
+            unsigned short cat = msg.UnpackUnsignedShort();
+            tmp = msg.UnpackString();
+            gTranslator.ServerToClient(tmp);
+            nRet = u->m_Organizations->AddCategory(cat, tmp);
+            delete [] tmp;
+          }
+
+          // our user info is now up to date
+          u->SetOurClientTimestamp(u->ClientTimestamp());
+
+          // save the user infomation
+          u->SetEnableSave(true);
+          u->SaveOrganizationsInfo();
+          u->SaveLicqInfo();
+
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE2,
+                           u->Uin()));
 
           break;
         }

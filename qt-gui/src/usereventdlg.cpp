@@ -172,11 +172,18 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
     ++it;
   }
 
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
-           this, SLOT(slot_userupdated(CICQSignal *)));
+  /* We might be called from a slot so connect the signal only after all the
+     existing signals are handled */
+  QTimer::singleShot(0, this, SLOT(slot_connectsignal()));
 
   mainWidget = new QWidget(this);
   top_lay->addWidget(mainWidget);
+}
+
+void UserEventCommon::slot_connectsignal()
+{
+  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
+           this, SLOT(slot_userupdated(CICQSignal *)));
 }
 
 UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
@@ -1217,10 +1224,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *hlay = new QHBoxLayout(vlay);
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-  chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
+  chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
   if( (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST)) ||
-      (u->Port() == 0 && u->SocketDesc() == -1))
+      (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
   {
     chkSendServer->setChecked(true);
     chkSendServer->setEnabled(false);
@@ -1719,7 +1726,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     u->SetShowAwayMsg( false );
     gUserManager.DropUser(u);
     // if the original message was through server, send this one through server
-    bool bServer = e->Channel() == ICQ_CHNxNONE;
+    bool bServer = e->Channel() == ICQ_CHNxNONE ||
+                   e->Channel() == ICQ_CHNxINFO ||
+                   e->Channel() == ICQ_CHNxSTATUS;
     switch (QueryUser(this, msg, tr("Urgent"), tr(" to Contact List"), tr("Cancel")))
     {
       case 0:

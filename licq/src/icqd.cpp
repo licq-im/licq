@@ -85,6 +85,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Initialise the data values
   m_nIgnoreTypes = 0;
+  m_bAutoUpdateInfo = m_bAutoUpdateInfoPlugins = m_bAutoUpdateStatusPlugins
+                    = true;
   m_nTCPSocketDesc = -1;
   m_nTCPSrvSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
@@ -124,6 +126,10 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   SetTCPEnabled(!m_bFirewall || (m_bFirewall && m_bTCPEnabled));
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
+  licqConf.ReadBool("AutoUpdateInfo", m_bAutoUpdateInfo, true);
+  licqConf.ReadBool("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins, true);
+  licqConf.ReadBool("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins,
+    true);
   unsigned long nColor;
   licqConf.ReadNum("ForegroundColor", nColor, 0x00000000);
   CICQColor::SetDefaultForeground(nColor);
@@ -372,6 +378,14 @@ bool CICQDaemon::Start()
     gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return false;
   }
+  
+  nResult = pthread_create(&thread_updateusers, NULL, &UpdateUsers_tep, this);
+  if (nResult != 0)
+  {
+    gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    return false;
+  }
+
   return true;
 }
 
@@ -684,6 +698,9 @@ void CICQDaemon::SaveConf()
   licqConf.WriteBool("Firewall", m_bFirewall);
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
+  licqConf.WriteBool("AutoUpdateInfo", m_bAutoUpdateInfo);
+  licqConf.WriteBool("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
+  licqConf.WriteBool("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
   licqConf.WriteNum("ForegroundColor", CICQColor::DefaultForeground());
   licqConf.WriteNum("BackgroundColor", CICQColor::DefaultBackground());
 
@@ -1123,8 +1140,12 @@ void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
 //-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {
-  unsigned short oldstatus = u->Status() | (u->StatusInvisible() << 8);
+  unsigned long oldstatus = u->StatusFull();
   int arg = 0;
+  
+  if (oldstatus == ICQ_STATUS_OFFLINE)
+    u->SetUserUpdated(false);
+    
   if (s == ICQ_STATUS_OFFLINE)
   {
     if (!u->StatusOffline()) arg = -1;
@@ -1134,12 +1155,23 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   {
     if (u->StatusOffline()) arg = 1;
     u->SetStatus(s);
+    
+    //This is the v6 way of telling us phone follow me status
+    if (s & ICQ_STATUS_FxPFM)
+    {
+      if (s & ICQ_STATUS_FxPFMxAVAILABLE)
+        u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxACTIVE);
+      else
+        u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxBUSY);
+    }
+    else if (u->Version() < 7)
+      u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxINACTIVE);
   }
 
   // Say that we know their status for sure
   u->SetOfflineOnDisconnect(false);
 
-  if(oldstatus != (u->Status() | (u->StatusInvisible() << 8)))
+  if(oldstatus != s)
   {
     u->Touch();
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
@@ -1336,7 +1368,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(), packet,
+  ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(packet->Channel()), packet,
      CONNECT_USER, pUser->Uin(), ue);
 
   if (e == NULL) return NULL;
@@ -1879,6 +1911,7 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(unsigned long tag, EventResult _eResult)
  *----------------------------------------------------------------------------*/
 void CICQDaemon::PushExtendedEvent(ICQEvent *e)
 {
+  assert(e != NULL);
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
 #if 0

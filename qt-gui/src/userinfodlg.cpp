@@ -28,6 +28,7 @@
 
 #include <qvbox.h>
 #include <qcheckbox.h>
+#include <qheader.h>
 #include <qdatetime.h>
 #include <qlayout.h>
 #include <qspinbox.h>
@@ -41,12 +42,25 @@
 #include <qwhatsthis.h>
 #include <ctype.h>
 
+#ifdef USE_KDE
+#include <kfiledialog.h>
+#else
+#include <qfiledialog.h>
+#endif
+
 #include "licq_countrycodes.h"
+#include "licq_occupationcodes.h"
+#include "licq_homepagecodes.h"
 #include "licq_events.h"
 #include "licq_languagecodes.h"
+#include "licq_interestcodes.h"
+#include "licq_organizationcodes.h"
+#include "licq_backgroundcodes.h"
+#include "licq_providers.h"
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
+#include "licq_log.h"
 #include "usercodec.h"
 
 #include "editfile.h"
@@ -57,6 +71,12 @@
 #include "sigman.h"
 #include "mledit.h"
 #include "mlview.h"
+
+#include "xpm/phonebookPhone.xpm"
+#include "xpm/phonebookCellular.xpm"
+#include "xpm/phonebookCellularSMS.xpm"
+#include "xpm/phonebookFax.xpm"
+#include "xpm/phonebookPager.xpm"
 
 // -----------------------------------------------------------------------------
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
@@ -70,11 +90,16 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
   m_bOwner = (gUserManager.FindOwner(szId, nPPID) != NULL);
-
+  m_Interests = m_Organizations = m_Backgrounds = NULL;
+  m_PhoneBook = NULL;
+ 
   CreateGeneralInfo();
   CreateMoreInfo();
+  CreateMore2Info();
   CreateWorkInfo();
   CreateAbout();
+  CreatePhoneBook();
+  CreatePicture();
   CreateHistory();
   CreateLastCountersInfo();
 
@@ -85,8 +110,11 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 
   tabs->addTab(tabList[GeneralInfo].tab, tabList[GeneralInfo].label);
   tabs->addTab(tabList[MoreInfo].tab, tabList[MoreInfo].label);
+  tabs->addTab(tabList[More2Info].tab, tabList[More2Info].label);
   tabs->addTab(tabList[WorkInfo].tab, tabList[WorkInfo].label);
   tabs->addTab(tabList[AboutInfo].tab, tabList[AboutInfo].label);
+  tabs->addTab(tabList[PhoneInfo].tab, tabList[PhoneInfo].label);
+  tabs->addTab(tabList[PictureInfo].tab, tabList[PictureInfo].label);
   tabs->addTab(tabList[HistoryInfo].tab, tabList[HistoryInfo].label);
   tabs->addTab(tabList[LastCountersInfo].tab, tabList[LastCountersInfo].label);
 
@@ -171,6 +199,15 @@ UserInfoDlg::~UserInfoDlg()
     server->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
+
+  if (m_Interests != NULL)
+    delete m_Interests;
+  if (m_Organizations != NULL)
+    delete m_Organizations;
+  if (m_Backgrounds != NULL)
+    delete m_Backgrounds;
+  if (m_PhoneBook != NULL)
+    delete m_PhoneBook;
 
   emit finished(m_szId, m_nPPID);
 
@@ -450,10 +487,10 @@ void UserInfoDlg::CreateMoreInfo()
 
   unsigned short CR = 0;
   QWidget *p = tabList[MoreInfo].tab;
-  QGridLayout *lay = new QGridLayout(p, 8, 5, 10, 5);
+  QGridLayout *lay = new QGridLayout(p, 9, 5, 10, 5);
   lay->addColSpacing(2, 10);
-  lay->addRowSpacing(5, 5);
-  lay->setRowStretch(7, 1);
+  lay->addRowSpacing(6, 5);
+  lay->setRowStretch(3, 1);
 
   lay->addWidget(new QLabel(tr("Age:"), p), CR, 0);
   nfoAge = new CInfoField(p, !m_bOwner);
@@ -477,6 +514,19 @@ void UserInfoDlg::CreateMoreInfo()
   nfoHomepage = new CInfoField(p, !m_bOwner);
   lay->addMultiCellWidget(nfoHomepage, CR, CR, 1, 4);
 
+  lay->addWidget(new QLabel(tr("Category:"), p), ++CR, 0);
+  lvHomepageCategory = new QListView(p);
+  lvHomepageCategory->addColumn("");
+  lvHomepageCategory->header()->hide();
+  lvHomepageCategory->setRootIsDecorated(true);
+  lvHomepageCategory->setMaximumHeight(50);
+  lay->addMultiCellWidget(lvHomepageCategory, CR, CR, 1, 4);
+
+  lay->addWidget(new QLabel(tr("Description:"), p), ++CR, 0);
+  mleHomepageDesc = new MLEditWrap(true, p);
+  mleHomepageDesc->setReadOnly(true);
+  lay->addMultiCellWidget(mleHomepageDesc, CR, CR, 1, 4);
+  
   lay->addWidget(new QLabel(tr("Birthday:"), p), ++CR, 0);
   if (m_bOwner)
   {
@@ -504,9 +554,9 @@ void UserInfoDlg::CreateMoreInfo()
     lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
     cmbLanguage[0] = new CEComboBox(true, p);
     lay->addWidget(cmbLanguage[0], CR, 1);
-    lay->addWidget(new QLabel(tr("Language 2:"), p), ++CR, 0);
+    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
     cmbLanguage[1] = new CEComboBox(true, p);
-    lay->addWidget(cmbLanguage[1], CR, 1);
+    lay->addWidget(cmbLanguage[1], CR, 4);
 
     lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
     cmbLanguage[2] = new CEComboBox(true, p);
@@ -524,9 +574,9 @@ void UserInfoDlg::CreateMoreInfo()
     lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
     nfoLanguage[0] = new CInfoField(p, !m_bOwner);
     lay->addWidget(nfoLanguage[0], CR, 1);
-    lay->addWidget(new QLabel(tr("Language 2:"), p), ++CR, 0);
+    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
     nfoLanguage[1] = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoLanguage[1], CR, 1);
+    lay->addWidget(nfoLanguage[1], CR, 4);
 
     lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
     nfoLanguage[2] = new CInfoField(p, !m_bOwner);
@@ -534,8 +584,12 @@ void UserInfoDlg::CreateMoreInfo()
   }
 
   lblAuth = new QLabel(p);
-  CR += 2;
+  CR++;
   lay->addMultiCellWidget(lblAuth, CR, CR, 0, 4);
+  
+  lblICQHomepage = new QLabel(p);
+  CR++;
+  lay->addMultiCellWidget(lblICQHomepage, CR, CR, 0, 4);
 }
 
 void UserInfoDlg::SetMoreInfo(ICQUser *u)
@@ -592,7 +646,53 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
       nfoBirthday->setData(d.toString());
     }
   }
+  
   nfoHomepage->setData(codec->toUnicode(u->GetHomepage()));
+
+  lvHomepageCategory->clear();
+  mleHomepageDesc->clear();
+  if (u->GetHomepageCatPresent())
+  {
+    if (m_bOwner)
+      mleHomepageDesc->setReadOnly(false);
+
+    const SHomepageCat *c = GetHomepageCatByCode(u->GetHomepageCatCode());
+    if (c != NULL)
+    {
+      QListViewItem *lvi = new QListViewItem(lvHomepageCategory);
+      QListViewItem *top = lvi;
+      char *sTmp = strdup(c->szName);
+      char *front = sTmp;
+      char *last = NULL;
+      char *end;
+      while (true)
+      {
+        lvi->setOpen(true);
+        end = strchr(front, '/');
+        if (end == NULL)
+        {
+          lvi->setText(0, front);
+          break;
+        }
+
+        *end = '\0';
+
+        if (last == NULL || strcmp(last, front))
+        {
+          lvi->setText(0, front);
+          last = front;
+          lvi = new QListViewItem(lvi);
+        }
+
+        front = end + 1;
+      }
+      lvHomepageCategory->setMaximumHeight(top->totalHeight() + 5);
+      free(sTmp);
+    }
+    QString descstr = codec->toUnicode(u->GetHomepageDesc());
+    descstr.replace(QRegExp("\r"), "");
+    mleHomepageDesc->setText(descstr);
+  }
 
   for (unsigned short i = 0; i < 3; i++)
   {
@@ -617,6 +717,15 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
     lblAuth->setText(tr("Authorization Required"));
   else
     lblAuth->setText(tr("Authorization Not Required"));
+
+  if (u->GetICQHomepagePresent())
+  {
+    QString url;
+    url.sprintf("(http://%lu.homepage.icq.com/)", u->Uin());
+    lblICQHomepage->setText(tr("User has an ICQ Homepage ") + url);
+  }
+  else
+    lblICQHomepage->setText(tr("User has no ICQ Homepage"));
 
   if (bDropUser) gUserManager.DropUser(u);
 }
@@ -648,6 +757,218 @@ void UserInfoDlg::SaveMoreInfo()
 
 // -----------------------------------------------------------------------------
 
+void UserInfoDlg::CreateMore2Info()
+{
+  tabList[More2Info].label = tr("M&ore II");
+  tabList[More2Info].tab=new QVBox(this,tabList[More2Info].label.latin1());
+
+  tabList[More2Info].loaded = false;
+
+  QVBox *p = (QVBox *)tabList[More2Info].tab;
+  p->setMargin(8);
+  p->setSpacing(8);
+
+  lsvMore2 = new QListView(p);
+  lsvMore2->addColumn("");
+  lsvMore2->header()->hide();
+  lsvMore2->setEnabled(true);
+  lsvMore2->setAllColumnsShowFocus(true);
+  lsvMore2->setSorting(-1);
+  if (!m_bOwner)
+    lsvMore2->setSelectionMode(QListView::NoSelection);
+
+  lviMore2Top[CAT_BACKGROUND] = new QListViewItem(lsvMore2, "Past Background");
+  lviMore2Top[CAT_BACKGROUND]->setOpen(true);
+
+  lviMore2Top[CAT_ORGANIZATION] = new QListViewItem(lsvMore2,
+    "Organization, Affiliation, Group");
+  lviMore2Top[CAT_ORGANIZATION]->setOpen(true);
+
+  lviMore2Top[CAT_INTERESTS] = new QListViewItem(lsvMore2,"Personal Interests");
+  lviMore2Top[CAT_INTERESTS]->setOpen(true);
+
+  if (m_bOwner)
+    connect(lsvMore2, SIGNAL(doubleClicked(QListViewItem *)),
+            SLOT(EditCategory(QListViewItem *)));
+}
+
+int UserInfoDlg::SplitCategory(QListViewItem *parent, QTextCodec *codec,
+                               const char *descr)
+{
+  char *p, *q, *s;
+  QListViewItem *lvi = NULL;
+
+  if (descr == NULL || !*descr)
+    return -1;
+
+  s = p = strdup(descr);
+  if (p == NULL)
+    return -1;
+
+  while ((q = strchr(s,',')))
+  {
+    if (q)
+    {
+      *q = '\0';
+
+      if (*s)
+      {
+        QString qs = codec->toUnicode(s);
+        if (lvi == NULL)
+          lvi = new QListViewItem(parent,qs);
+        else
+          lvi = new QListViewItem(parent,lvi,qs);
+      }
+      s = q + 1;
+    }
+  }
+  if (*s)
+  {
+    QString qs = codec->toUnicode(s);
+    if (lvi == NULL)
+      new QListViewItem(parent, qs);
+    else
+      new QListViewItem(parent, lvi, qs);
+  }
+
+  parent->setOpen(true);
+
+  free(p);
+  return 0;
+}
+
+void UserInfoDlg::SetMore2Info(ICQUser *u)
+{
+  ICQUserCategory *cat;
+  bool drop = false;
+  int i;
+  unsigned short id;
+  const char *descr;
+
+  tabList[More2Info].loaded = true;
+
+  if (u == NULL)
+  {
+    drop = true;
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u == NULL)
+      return;
+  }
+
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  if (m_Interests != NULL)
+    delete m_Interests;
+  m_Interests = new ICQUserCategory(CAT_INTERESTS);
+  cat = u->GetInterests();
+  for (i = 0; cat->Get(i, &id, &descr); i++)
+    m_Interests->AddCategory(id, descr);
+  UpdateMore2Info(codec, cat);
+
+  if (m_Organizations != NULL)
+    delete m_Organizations;
+  m_Organizations = new ICQUserCategory(CAT_ORGANIZATION);
+  cat = u->GetOrganizations();
+  for (i = 0; cat->Get(i, &id, &descr); i++)
+    m_Organizations->AddCategory(id, descr);
+  UpdateMore2Info(codec, cat);
+
+  if (m_Backgrounds != NULL)
+    delete m_Backgrounds;
+  m_Backgrounds = new ICQUserCategory(CAT_BACKGROUND);
+  cat = u->GetBackgrounds();
+  for (i = 0; cat->Get(i, &id, &descr); i++)
+    m_Backgrounds->AddCategory(id, descr);
+  UpdateMore2Info(codec, cat);
+
+  if (drop)
+    gUserManager.DropUser(u);
+}
+
+void UserInfoDlg::UpdateMore2Info(QTextCodec *codec, ICQUserCategory *cat)
+{
+  QListViewItem *lvi = NULL, *lvChild;
+  unsigned short i, id;
+  const char *descr;
+
+  while ((lvChild = lviMore2Top[cat->GetCategory()]->firstChild()))
+    delete lvChild;
+
+  if (cat == NULL)
+    return;
+
+  const struct SCategory *(*cat2str)(unsigned short);
+  switch (cat->GetCategory())
+  {
+  case CAT_INTERESTS:
+    cat2str = GetInterestByCode;
+    break;
+  case CAT_ORGANIZATION:
+    cat2str = GetOrganizationByCode;
+    break;
+  case CAT_BACKGROUND:
+    cat2str = GetBackgroundByCode;
+    break;
+  default:
+    return;
+  }
+
+  for (i = 0; cat->Get(i, &id, &descr); i++)
+  {
+    const struct SCategory *sCat = cat2str(id);
+    QString name;
+    if (sCat == NULL)
+      name = tr("Unknown");
+    else
+      name = sCat->szName;
+
+    if (lvi == NULL)
+      lvi = new QListViewItem(lviMore2Top[cat->GetCategory()], name);
+    else
+      lvi = new QListViewItem(lviMore2Top[cat->GetCategory()], lvi, name);
+    SplitCategory(lvi, codec, descr);
+  }
+
+  if (i == 0)
+    lvi = new QListViewItem(lviMore2Top[cat->GetCategory()], tr("(none)"));
+}
+
+void UserInfoDlg::SaveMore2Info()
+{
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  if (u == NULL)
+    return;
+
+  int i;
+  unsigned short cat;
+  const char *descr;
+
+  u->SetEnableSave(false);
+  u->GetInterests()->Clean();
+  for (i = 0; m_Interests->Get(i, &cat, &descr); i++)
+    u->GetInterests()->AddCategory(cat, descr);
+  u->SetEnableSave(true);
+  u->SaveInterestsInfo();
+  u->SetEnableSave(false);
+  u->GetOrganizations()->Clean();
+  for (i = 0; m_Organizations->Get(i, &cat, &descr); i++)
+    u->GetOrganizations()->AddCategory(cat, descr);
+  u->SetEnableSave(true);
+  u->SaveOrganizationsInfo();
+
+  u->SetEnableSave(false);
+  u->GetBackgrounds()->Clean();
+  for (i = 0; m_Backgrounds->Get(i, &cat, &descr); i++)
+    u->GetBackgrounds()->AddCategory(cat, descr);
+  u->SetEnableSave(true);
+  u->SaveBackgroundsInfo();
+
+  gUserManager.DropUser(u);
+
+}
+
+// -----------------------------------------------------------------------------
+
 void UserInfoDlg::CreateWorkInfo()
 {
   tabList[WorkInfo].label = tr("&Work");
@@ -657,9 +978,9 @@ void UserInfoDlg::CreateWorkInfo()
   unsigned short CR = 0;
   QWidget *p = tabList[WorkInfo].tab;
 
-  QGridLayout *lay = new QGridLayout(p, 9, 5, 10, 5);
+  QGridLayout *lay = new QGridLayout(p, 10, 5, 10, 5);
   lay->addColSpacing(2, 10);
-  lay->setRowStretch(8, 1);
+  lay->setRowStretch(9, 1);
 
   lay->addWidget(new QLabel(tr("Name:"), p), CR, 0);
   nfoCompanyName = new CInfoField(p, !m_bOwner);
@@ -672,6 +993,22 @@ void UserInfoDlg::CreateWorkInfo()
   lay->addWidget(new QLabel(tr("Position:"), p), ++CR, 0);
   nfoCompanyPosition = new CInfoField(p, !m_bOwner);
   lay->addMultiCellWidget(nfoCompanyPosition, CR, CR, 1, 4);
+
+  lay->addWidget(new QLabel(tr("Occupation:"), p), ++CR, 0);
+  if (m_bOwner)
+  {
+    cmbCompanyOccupation = new CEComboBox(true, tabList[WorkInfo].tab);
+    cmbCompanyOccupation->setMaximumWidth(cmbCompanyOccupation->sizeHint().width()+20);
+
+    for (unsigned short i = 0; i < NUM_OCCUPATIONS; i++)
+      cmbCompanyOccupation->insertItem(GetOccupationByIndex(i)->szName);
+    lay->addWidget(cmbCompanyOccupation, CR, 1);
+  }
+  else
+  {
+    nfoCompanyOccupation = new CInfoField(p, !m_bOwner);
+    lay->addWidget(nfoCompanyOccupation, CR, 1);
+  }
 
   lay->addWidget(new QLabel(tr("City:"), p), ++CR, 0);
   nfoCompanyCity = new CInfoField(p, !m_bOwner);
@@ -743,6 +1080,12 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
       cmbCompanyCountry->setCurrentItem(0);
     else
       cmbCompanyCountry->setCurrentItem(c->nIndex);
+      
+    const SOccupation *o = GetOccupationByCode(u->GetCompanyOccupation());
+    if (o == NULL)
+      cmbCompanyOccupation->setCurrentItem(0);
+    else
+      cmbCompanyOccupation->setCurrentItem(o->nIndex);
   }
   else
   {
@@ -751,6 +1094,12 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
       nfoCompanyCountry->setData(tr("Unknown (%1)").arg(u->GetCompanyCountry()));
     else  // known
       nfoCompanyCountry->setData(c->szName);
+      
+    const SOccupation *o = GetOccupationByCode(u->GetCompanyOccupation());
+    if (o == NULL)
+      nfoCompanyOccupation->setData(tr("Unknown (%1)").arg(u->GetCompanyOccupation()));
+    else
+      nfoCompanyOccupation->setData(o->szName);
   }
   nfoCompanyPhone->setData(codec->toUnicode(u->GetCompanyPhoneNumber()));
   nfoCompanyFax->setData(codec->toUnicode(u->GetCompanyFaxNumber()));
@@ -778,6 +1127,9 @@ void UserInfoDlg::SaveWorkInfo()
   {
     unsigned short i = cmbCompanyCountry->currentItem();
     u->SetCompanyCountry(GetCountryByIndex(i)->nCode);
+    
+    i = cmbCompanyOccupation->currentItem();
+    u->SetCompanyOccupation(GetOccupationByIndex(i)->nCode);
   }
   u->SetCompanyName(codec->fromUnicode(nfoCompanyName->text()));
   u->SetCompanyDepartment(codec->fromUnicode(nfoCompanyDepartment->text()));
@@ -844,6 +1196,290 @@ void UserInfoDlg::SaveAbout()
 
   u->SetAbout(codec->fromUnicode(str.left(450)));
   gUserManager.DropUser(u);
+}
+
+// -----------------------------------------------------------------------------
+
+void UserInfoDlg::CreatePhoneBook()
+{
+  tabList[PhoneInfo].label = tr("&Phone");
+  tabList[PhoneInfo].tab = new QWidget(this, tabList[PhoneInfo].label.latin1());
+  tabList[PhoneInfo].loaded = false;
+
+  QWidget *p = tabList[PhoneInfo].tab;
+
+  QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
+
+  lsvPhoneBook = new QListView(p);
+  lsvPhoneBook->addColumn(tr("Type"));
+  lsvPhoneBook->addColumn(tr("Number/Gateway"));
+  lsvPhoneBook->addColumn(tr("Country/Provider"));
+  lsvPhoneBook->setEnabled(true);
+  lsvPhoneBook->setAllColumnsShowFocus(true);
+  lsvPhoneBook->setSorting(-1);
+  lay->addWidget(lsvPhoneBook);
+
+  QHBoxLayout *hlay = new QHBoxLayout();
+  lay->addLayout(hlay);
+
+  hlay->addWidget(new QLabel(tr("Currently at:"), p));
+
+  if (m_bOwner)
+  {
+    cmbActive = new QComboBox(p);
+    hlay->addWidget(cmbActive);
+
+    connect(lsvPhoneBook, SIGNAL(doubleClicked(QListViewItem *)),
+            SLOT(EditPhoneEntry(QListViewItem *)));
+    connect(cmbActive, SIGNAL(activated(int)), SLOT(ChangeActivePhone(int)));
+  }
+  else
+  {
+    nfoActive = new CInfoField(p, true);
+    hlay->addWidget(nfoActive);
+
+    lsvPhoneBook->setSelectionMode(QListView::NoSelection);
+  }
+}
+
+void UserInfoDlg::SetPhoneBook(ICQUser *u)
+{
+  tabList[PhoneInfo].loaded = true;
+  bool bDropUser = false;
+
+  if (u == NULL)
+  {
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u == NULL) return;
+    bDropUser = true;
+  }
+
+  if (m_PhoneBook != NULL)
+    delete m_PhoneBook;
+
+  m_PhoneBook = new ICQUserPhoneBook();
+  const struct PhoneBookEntry *entry;
+  for (unsigned long i = 0; u->GetPhoneBook()->Get(i, &entry); i++)
+    m_PhoneBook->AddEntry(entry);
+
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+  UpdatePhoneBook(codec);
+
+  if (bDropUser) gUserManager.DropUser(u);
+}
+
+void UserInfoDlg::UpdatePhoneBook(QTextCodec *codec)
+{
+  QListViewItem *lsv;
+  QPixmap pixPhone(phonebookPhone_xpm);
+  QPixmap pixCellular(phonebookCellular_xpm);
+  QPixmap pixCellularSMS(phonebookCellularSMS_xpm);
+  QPixmap pixFax(phonebookFax_xpm);
+  QPixmap pixPager(phonebookPager_xpm);
+
+  //clear the list
+  while ((lsv = lsvPhoneBook->firstChild()) != NULL)
+    delete lsv;
+
+  if (m_bOwner)
+  {
+    cmbActive->clear();
+    cmbActive->insertItem("");
+  }
+  else
+    nfoActive->clear();
+
+  lsv = NULL;
+  const struct PhoneBookEntry *entry;
+  for (unsigned long i = 0; m_PhoneBook->Get(i, &entry); i++)
+  {
+    QString description = codec->toUnicode(entry->szDescription);
+    QString number;
+    QString country;
+    if (entry->nType == TYPE_PAGER)
+    {
+      //Windows icq uses extension, try it first
+      if (entry->szExtension[0] != '\0')
+        number = codec->toUnicode(entry->szExtension);
+      else
+        number = codec->toUnicode(entry->szPhoneNumber);
+
+      QString gateway;
+      if (entry->nGatewayType == GATEWAY_BUILTIN)
+      {
+        country = codec->toUnicode(entry->szGateway);
+
+        const struct SProvider *sProvider = GetProviderByName(entry->szGateway);
+        if (sProvider != NULL)
+          gateway = sProvider->szGateway;
+        else
+          gateway = tr("Unknown");
+      }
+      else
+      {
+        country = tr("Unknown");
+        gateway = codec->toUnicode(entry->szGateway);
+      }
+
+      number += gateway;
+    }
+    else
+    {
+      const struct SCountry *sCountry = GetCountryByName(entry->szCountry);
+      if (sCountry != NULL)
+        number.sprintf("+%u ", sCountry->nPhone);
+      char *szAreaCode;
+      szAreaCode = entry->szAreaCode;
+      if (entry->nRemoveLeading0s)
+        szAreaCode += strspn(szAreaCode, "0");
+      if (szAreaCode[0] != '\0')
+        number += tr("(") + codec->toUnicode(szAreaCode) + tr(") ");
+      else if (entry->szAreaCode[0] != '\0')
+        number += tr("(") + codec->toUnicode(entry->szAreaCode) + tr(") ");
+      number += codec->toUnicode(entry->szPhoneNumber);
+      if (entry->szExtension[0] != '\0')
+        number += tr("-") + codec->toUnicode(entry->szExtension);
+
+      country = codec->toUnicode(entry->szCountry);
+    }
+
+    if (m_bOwner)
+    {
+      cmbActive->insertItem(number);
+      if (entry->nActive)
+        cmbActive->setCurrentItem(i + 1);
+    }
+    else if (entry->nActive)
+    {
+      nfoActive->setText(number);
+    }
+
+    if (lsv == NULL)
+      lsv = new QListViewItem(lsvPhoneBook, description, number, country);
+    else
+      lsv = new QListViewItem(lsvPhoneBook, lsv, description, number, country);
+
+    switch (entry->nType)
+    {
+    case TYPE_PHONE:
+      lsv->setPixmap(0, pixPhone);
+      break;
+    case TYPE_CELLULAR:
+      lsv->setPixmap(0, pixCellular);
+      break;
+    case TYPE_CELLULARxSMS:
+      lsv->setPixmap(0, pixCellularSMS);
+      break;
+    case TYPE_FAX:
+      lsv->setPixmap(0, pixFax);
+      break;
+    case TYPE_PAGER:
+      lsv->setPixmap(0, pixPager);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+void UserInfoDlg::SavePhoneBook()
+{
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  if (u == NULL)
+    return;
+
+  u->SetEnableSave(false);
+  u->GetPhoneBook()->Clean();
+  const struct PhoneBookEntry *entry;
+  for (unsigned long i = 0; m_PhoneBook->Get(i, &entry); i++)
+    u->GetPhoneBook()->AddEntry(entry);
+
+  u->SetEnableSave(true);
+  u->SavePhoneBookInfo();
+
+  gUserManager.DropUser(u);
+
+  if (m_bOwner)
+    server->icqUpdatePhoneBookTimestamp();
+}
+
+//-----Picture------------------------------------------------------------
+void UserInfoDlg::CreatePicture()
+{
+  tabList[PictureInfo].label = tr("P&icture");
+  tabList[PictureInfo].tab = new QVBox(this,
+    tabList[PictureInfo].label.latin1());
+  tabList[PictureInfo].loaded = false;
+
+  QVBox *p = (QVBox *)tabList[PictureInfo].tab;
+  p->setMargin(8);
+  p->setSpacing(8);
+  lblPicture = new QLabel(p);
+  lblPicture->setAlignment(lblPicture->alignment() | Qt::AlignHCenter);
+}
+
+void UserInfoDlg::SetPicture(ICQUser *u)
+{
+
+  if (!m_bOwner || !tabList[PictureInfo].loaded)
+  {
+    bool bDropUser = false;
+    if (u == NULL)
+    {
+      u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      if (u == NULL) return;
+      bDropUser = true;
+    }
+
+    if (u->GetPicturePresent())
+    {
+      if (m_bOwner)
+        m_sFilename.sprintf("%s/owner.pic", BASE_DIR);
+      else
+        //FIXME: other protocols
+        m_sFilename.sprintf("%s/%s/%s.pic", BASE_DIR, USER_DIR, m_szId);
+    }
+    else
+      m_sFilename = QString::null;
+
+    if (bDropUser) gUserManager.DropUser(u);
+  }
+
+  tabList[PictureInfo].loaded = true;
+
+  QPixmap p;
+  QString s = tr("Not Available");
+  if (!m_sFilename.isNull())
+  {
+    if (!p.load(m_sFilename))
+    {
+      gLog.Warn("%sFailed to load user picture, did you forget to compile GIF"
+                " support?\n", L_WARNxSTR);
+      s = tr("Failed to Load");
+    }
+  }
+
+  if (p.isNull())
+    lblPicture->setText(s);
+  else
+    lblPicture->setPixmap(p);
+
+}
+
+void UserInfoDlg::SavePicture()
+{
+  // Only owner can set his picture
+  if (!m_bOwner) return;
+  //FIXME other owners too
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+
+  o->SetEnableSave(false);
+  o->SetPicture(m_sFilename.latin1());
+  o->SetEnableSave(true);
+  o->SavePictureInfo();
+  gUserManager.DropOwner();
+
+  server->icqUpdatePictureTimestamp();
 }
 
 //-----LastCounters--------------------------------------------------------
@@ -1014,6 +1650,122 @@ void UserInfoDlg::slot_showHistoryTimer()
 {
   timer->stop();
   timer->start(1000, true);
+}
+void UserInfoDlg::EditCategory(QListViewItem *selected)
+{
+  //undo the effect of double click
+  selected->setOpen(!selected->isOpen());
+  //at the end of this, selected points at an item at the top level of the list
+  while (selected->depth() != 0)
+    selected = selected->parent();
+
+  EditCategoryDlg *ecd;
+  if (selected == lviMore2Top[CAT_INTERESTS])
+    ecd = new EditCategoryDlg(this, m_Interests);
+  else if (selected == lviMore2Top[CAT_ORGANIZATION])
+    ecd = new EditCategoryDlg(this, m_Organizations);
+  else if (selected == lviMore2Top[CAT_BACKGROUND])
+    ecd = new EditCategoryDlg(this, m_Backgrounds);
+  else
+    return;
+
+  connect(ecd,  SIGNAL(updated(ICQUserCategory *)),
+          this, SLOT(setCategory(ICQUserCategory *)));
+  ecd->show();
+}
+
+void UserInfoDlg::setCategory(ICQUserCategory *cat)
+{
+  switch (cat->GetCategory())
+  {
+  case CAT_INTERESTS:
+    if (m_Interests != NULL)
+      delete m_Interests;
+    m_Interests = cat;
+    break;
+  case CAT_ORGANIZATION:
+    if (m_Organizations != NULL)
+      delete m_Organizations;
+    m_Organizations = cat;
+    break;
+  case CAT_BACKGROUND:
+    if (m_Backgrounds != NULL)
+      delete m_Backgrounds;
+    m_Backgrounds = cat;
+    break;
+  default:
+    return;
+  }
+
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  if (u == NULL)
+    return;
+
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
+  UpdateMore2Info(codec, cat);
+  gUserManager.DropUser(u);
+}
+
+void UserInfoDlg::PhoneBookUpdated(struct PhoneBookEntry pbe, int entryNum)
+{
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  if (u == NULL)
+    return;
+
+  // FIXME implement this
+  pbe.nActive = 0;
+  pbe.nPublish = PUBLISH_DISABLE;
+
+  if (entryNum == -1)
+    m_PhoneBook->AddEntry(&pbe);
+  else
+    m_PhoneBook->SetEntry(&pbe, entryNum);
+
+  delete [] pbe.szDescription;
+  delete [] pbe.szAreaCode;
+  delete [] pbe.szPhoneNumber;
+  delete [] pbe.szExtension;
+  delete [] pbe.szCountry;
+  delete [] pbe.szGateway;
+
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
+
+  UpdatePhoneBook(codec);
+
+  gUserManager.DropUser(u);
+}
+
+void UserInfoDlg::EditPhoneEntry(QListViewItem *selected)
+{
+  selected = selected->itemAbove();
+  unsigned long nSelection = 0;
+  while (selected != NULL)
+  {
+    nSelection++;
+    selected = selected->itemAbove();
+  }
+
+  const struct PhoneBookEntry *entry;
+  m_PhoneBook->Get(nSelection, &entry);
+
+  EditPhoneDlg *epd = new EditPhoneDlg(this, entry, nSelection);
+  connect(epd, SIGNAL(updated(struct PhoneBookEntry, int)),
+          SLOT(PhoneBookUpdated(struct PhoneBookEntry, int)));
+  epd->show();
+}
+
+void UserInfoDlg::ChangeActivePhone(int index)
+{
+  m_PhoneBook->SetActive(index - 1);
+
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  if (u == NULL)
+    return;
+
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
+  UpdatePhoneBook(codec);
+
+  gUserManager.DropUser(u);
 }
 
 void UserInfoDlg::SetupHistory()
@@ -1295,6 +2047,18 @@ void UserInfoDlg::updateTab(const QString& txt)
     if (!tabList[MoreInfo].loaded)
       SetMoreInfo(NULL);
   }
+  else if (txt == tabList[More2Info].label)
+  {
+     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
+     btnMain2->setText(m_bOwner ? tr("&Retrieve") : tr("&Save"));
+     btnMain3->setText(m_bOwner ? tr("S&end") : tr("&Update"));
+     btnMain3->setEnabled(true);
+     btnMain2->setEnabled(true);
+     btnMain1->setEnabled(true);
+     currentTab = More2Info;
+     if (!tabList[More2Info].loaded)
+       SetMore2Info(NULL);
+  }
   else if (txt == tabList[WorkInfo].label)
   {
     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
@@ -1318,6 +2082,30 @@ void UserInfoDlg::updateTab(const QString& txt)
     currentTab = AboutInfo;
     if (!tabList[AboutInfo].loaded)
       SetAbout(NULL);
+  }
+  else if (txt == tabList[PhoneInfo].label)
+  {
+    btnMain3->setText(m_bOwner ? tr("&Add")   : tr("&Update"));
+    btnMain2->setText(m_bOwner ? tr("&Clear") : tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save")  : tr("&Menu"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
+    currentTab = PhoneInfo;
+    if (!tabList[PhoneInfo].loaded)
+      SetPhoneBook(NULL);
+  }
+  else if (txt == tabList[PictureInfo].label)
+  {
+    btnMain3->setText(m_bOwner ? tr("&Browse") : tr("&Update"));
+    btnMain2->setText(m_bOwner ? tr("&Clear")  : tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save")   : tr("&Menu"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
+    currentTab = PictureInfo;
+    if (!tabList[PictureInfo].loaded)
+      SetPicture(NULL);
   }
   else if (txt == tabList[HistoryInfo].label)
   {
@@ -1362,11 +2150,20 @@ void UserInfoDlg::SaveSettings()
   case MoreInfo:
     SaveMoreInfo();
     break;
+  case More2Info:
+    SaveMore2Info();
+    break;
   case WorkInfo:
     SaveWorkInfo();
     break;
   case AboutInfo:
     SaveAbout();
+    break;
+  case PhoneInfo:
+    SavePhoneBook();
+    break;
+  case PictureInfo:
+    SavePicture();
     break;
   case HistoryInfo:
     if (!m_bOwner)
@@ -1382,20 +2179,7 @@ void UserInfoDlg::slotRetrieve()
 {
   if (currentTab == LastCountersInfo) return;
 
-  if (currentTab != HistoryInfo)
-  {
-    ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
-    if(o == NULL)  return;
-    unsigned short status = o->Status();
-    gUserManager.DropOwner();
-
-    if(status == ICQ_STATUS_OFFLINE) {
-      InformUser(this, tr("You need to be connected to the\n"
-                          "ICQ Network to retrieve your settings."));
-      return;
-    }
-  }
-  else
+  if (currentTab == HistoryInfo)
   {
     if (m_bOwner)
       ShowHistoryPrev();
@@ -1403,7 +2187,42 @@ void UserInfoDlg::slotRetrieve()
       ShowHistoryNext();
     return;
   }
+  
+  ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+  if(o == NULL)  return;
+  unsigned short status = o->Status();
+  QTextCodec *codec = UserCodec::codecForICQUser(o);
+  gUserManager.DropOwner();
+  
+  if (m_bOwner && currentTab == PhoneInfo)
+  {
+    QListViewItem *selected = lsvPhoneBook->currentItem();
+    selected = selected->itemAbove();
+    unsigned long nSelection = 0;
+    while (selected != NULL)
+    {
+      nSelection++;
+      selected = selected->itemAbove();
+    }
 
+    m_PhoneBook->ClearEntry(nSelection);
+    UpdatePhoneBook(codec);
+    return;
+  }
+  
+  if (m_bOwner && currentTab == PictureInfo)
+  {
+    m_sFilename = QString::null;
+    SetPicture(NULL);
+    return;
+  }
+
+  if(status == ICQ_STATUS_OFFLINE)
+  {
+      InformUser(this, tr("You need to be connected to the\n"
+                          "ICQ Network to retrieve your settings."));
+      return;
+  }
   switch(currentTab)
   {
     //TODO change in the daemon
@@ -1413,12 +2232,33 @@ void UserInfoDlg::slotRetrieve()
     case MoreInfo:
       icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
       break;
+    case More2Info:
+      icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
+      break;
     case WorkInfo:
       icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
       break;
     case AboutInfo:
       icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
       break;
+    case PhoneInfo:
+    {
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      if (u == NULL) return;
+      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
+      gUserManager.DropUser(u);
+      icqEventTag = server->icqRequestPhoneBook(m_szId, bSendServer);
+      break;
+    }
+    case PictureInfo:
+    {
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      if (u == NULL) return;
+      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
+      gUserManager.DropUser(u);
+      icqEventTag = server->icqRequestPicture(m_szId, bSendServer);
+      break;
+    }
   }
 
   if (icqEventTag != 0)
@@ -1437,7 +2277,8 @@ void UserInfoDlg::slotUpdate()
 
   QTextCodec * codec = QTextCodec::codecForLocale();
 
-  if (currentTab != HistoryInfo)
+  if (currentTab != HistoryInfo && currentTab != PhoneInfo &&
+      currentTab != PictureInfo)
   {
     ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
     if(o == NULL)  return;
@@ -1452,7 +2293,7 @@ void UserInfoDlg::slotUpdate()
     }
   }
 
-  unsigned short i, cc;
+  unsigned short i, cc, occupation;
 
   switch(currentTab) {
   case GeneralInfo:
@@ -1487,22 +2328,88 @@ void UserInfoDlg::slotUpdate()
                                          GetLanguageByIndex(cmbLanguage[1]->currentItem())->nCode,
                                          GetLanguageByIndex(cmbLanguage[2]->currentItem())->nCode);
   break;
+  case More2Info:
+    server->icqSetInterestsInfo(m_Interests);
+    icqEventTag = server->icqSetOrgBackInfo(m_Organizations, m_Backgrounds);
+  break;
   case WorkInfo:
     i = cmbCompanyCountry->currentItem();
     cc = GetCountryByIndex(i)->nCode;
+    i = cmbCompanyOccupation->currentItem();
+    occupation = GetOccupationByIndex(i)->nCode;
     icqEventTag = server->icqSetWorkInfo(codec->fromUnicode(nfoCompanyCity->text()),
                                          codec->fromUnicode(nfoCompanyState->text()),
                                          codec->fromUnicode(nfoCompanyPhone->text()),
                                          codec->fromUnicode(nfoCompanyFax->text()),
                                          codec->fromUnicode(nfoCompanyAddress->text()),
                                          codec->fromUnicode(nfoCompanyZip->text()),
-					 cc,
+                                         cc,
                                          codec->fromUnicode(nfoCompanyName->text()),
                                          codec->fromUnicode(nfoCompanyDepartment->text()),
                                          codec->fromUnicode(nfoCompanyPosition->text()),
+                                         occupation,
                                          nfoCompanyHomepage->text().local8Bit());
   break;
   case AboutInfo:    icqEventTag = server->icqSetAbout(codec->fromUnicode(mleAbout->text()));  break;
+  case PhoneInfo:
+  {
+    EditPhoneDlg *epd = new EditPhoneDlg(this);
+    connect(epd, SIGNAL(updated(struct PhoneBookEntry, int)),
+            SLOT(PhoneBookUpdated(struct PhoneBookEntry, int)));
+    epd->show();
+    break;
+  }
+  case PictureInfo:
+  {
+    QString Filename;
+
+    while (1)
+    {
+#ifdef USE_KDE
+      Filename = KFileDialog::getOpenFileName(QString::null,
+                      "Images (*.bmp *.jpg *.jpeg *.jpe *.gif)", this,
+                      tr("Select your picture"));
+#else
+      Filename = QFileDialog::getOpenFileName(QString::null,
+                      "Images (*.bmp *.jpg *.jpeg *.jpe *.gif)", this,
+                      "PictureBrowser", tr("Select your picture"));
+#endif
+      if (Filename.isNull())
+        break;
+
+      QFile file(Filename);
+      if (file.size() <= MAX_PICTURE_SIZE)
+        break;
+
+      QString msg = Filename + tr(" is over %1 bytes.\nSelect another picture?")
+                                 .arg(MAX_PICTURE_SIZE);
+      if (QueryUser(this, msg, tr("Yes"), tr("No")) == 0)
+      {
+        Filename = QString::null;
+        break;
+      }
+    }
+
+    if (Filename.isNull())
+      break;
+
+    m_sFilename = Filename;
+    QPixmap p;
+    QString s = tr("Not Available");
+    if (!p.load(Filename))
+    {
+      gLog.Warn("%sFailed to load user picture, did you forget to compile GIF"
+                " support?\n", L_WARNxSTR);
+      s = tr("Failed to Load");
+    }
+
+    if (p.isNull())
+      lblPicture->setText(s);
+    else
+      lblPicture->setPixmap(p);
+
+    break;
+  }
   case HistoryInfo:  ShowHistoryNext();  break;
   }
 
@@ -1568,13 +2475,23 @@ void UserInfoDlg::updatedUser(CICQSignal *sig)
     SetGeneralInfo(u);
     break;
   case USER_MORE:
+  case USER_HP:
     SetMoreInfo(u);
+    break;
+  case USER_MORE2:
+    SetMore2Info(u);
     break;
   case USER_WORK:
     SetWorkInfo(u);
     break;
   case USER_ABOUT:
     SetAbout(u);
+    break;
+  case USER_PHONExBOOK:
+    SetPhoneBook(u);
+    break;
+  case USER_PICTURE:
+    SetPicture(u);
     break;
   }
   gUserManager.DropUser(u);

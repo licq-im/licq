@@ -2,6 +2,7 @@
 #define ICQEVENT_H
 
 #include "pthread_rdwr.h"
+#include "licq_constants.h"
 
 #include <stdlib.h>
 
@@ -317,6 +318,7 @@ friend void *MonitorSockets_tep(void *p);
  *    If the user checked our auto-response then the argument will be 0.
  *    USER_SECURITY - The users security status changed.  If the arg is
  *    1 the user is now secure, if it's 0, the user is no longer secure.
+ *    USER_TYPING - Indicates the typing status of the user has changed.
  *
  *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
 
@@ -376,6 +378,11 @@ const unsigned long USER_MORE                   = 6;
 const unsigned long USER_WORK                   = 7;
 const unsigned long USER_ABOUT                  = 8;
 const unsigned long USER_SECURITY               = 9;
+const unsigned long USER_MORE2                  = 10;
+const unsigned long USER_HP                     = 11;
+const unsigned long USER_PHONExBOOK             = 12;
+const unsigned long USER_PICTURE                = 13;
+const unsigned long USER_TYPING                 = 14;
 
 const unsigned long LIST_ADD                     = 1;
 const unsigned long LIST_REMOVE                  = 2;

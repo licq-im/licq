@@ -135,6 +135,7 @@ protected:
   void SetGeneralInfo(ICQUser *);
 
 protected slots:
+  void slot_connectsignal();
   void slot_userupdated(CICQSignal *);
   void slot_updatetime();
   void showHistory();

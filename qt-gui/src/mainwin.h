@@ -189,6 +189,7 @@ public:
              *mnuOwnerAdm,
              *mnuUserAdm,
              *mnuStatus,
+             *mnuPFM,
              *mnuDebug,
              *mnuUtilities,
              *mnuMiscModes,
@@ -212,7 +213,8 @@ public:
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmSms,
           pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmEncoding,
           pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed,
-	  pmExpanded;
+          pmExpanded, pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
+          pmPhoneFollowMeBusy, pmSharedFiles;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   unsigned long m_nProtoNum;
@@ -277,6 +279,7 @@ protected slots:
   void changeStatus(int index);
   void changeStatusManualProtocol(int index);
   void changeStatusManual(int index);
+  void changePFMStatus(int index);
   void setCurrentGroupMenu(int id);
   void setCurrentGroup(int);
   void callDefaultFunction(const char *, unsigned long);

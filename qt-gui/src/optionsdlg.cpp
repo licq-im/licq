@@ -331,6 +331,12 @@ void OptionsDlg::SetupOptions()
   chkIgnoreWebPanel->setChecked(mainwin->licqDaemon->Ignore(IGNORE_WEBPANEL));
   chkIgnoreEmailPager->setChecked(mainwin->licqDaemon->Ignore(IGNORE_EMAILPAGER));
 
+  chkAutoUpdateInfo->setChecked(mainwin->licqDaemon->AutoUpdateInfo());
+  chkAutoUpdateInfoPlugins->setChecked(mainwin->licqDaemon
+                                              ->AutoUpdateInfoPlugins());
+  chkAutoUpdateStatusPlugins->setChecked(mainwin->licqDaemon
+                                                ->AutoUpdateStatusPlugins());
+
   // plugins tab
 #if QT_VERSION > 300
   cmbUrlViewer->setCurrentText(mainwin->licqDaemon->getUrlViewer() == NULL ?
@@ -550,6 +556,10 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_EMAILPAGER, chkIgnoreEmailPager->isChecked());
+
+  mainwin->licqDaemon->SetAutoUpdateInfo(chkAutoUpdateInfo->isChecked());
+  mainwin->licqDaemon->SetAutoUpdateInfoPlugins(chkAutoUpdateInfoPlugins->isChecked());
+  mainwin->licqDaemon->SetAutoUpdateStatusPlugins(chkAutoUpdateStatusPlugins->isChecked());
 
   // Plugin tab
   if (cmbUrlViewer->currentText() == DEFAULT_URL_VIEWER)
@@ -1393,6 +1403,22 @@ QWidget* OptionsDlg::new_misc_options()
   cmbAutoNAMess = new QComboBox(boxAutoStatus);
 
   buildAutoStatusCombos(1);
+
+  boxAutoUpdate = new QGroupBox(2, Vertical, tr("Auto Update"), w);
+  lay->addWidget(boxAutoUpdate);
+  chkAutoUpdateInfo = new QCheckBox(tr("Auto Update Info"), boxAutoUpdate);
+  QWhatsThis::add(chkAutoUpdateInfo, tr("Automatically update users' server "
+                                        "stored information."));
+
+  chkAutoUpdateInfoPlugins = new QCheckBox(tr("Auto Update Info Plugins"),
+                                           boxAutoUpdate);
+  QWhatsThis::add(chkAutoUpdateInfoPlugins, tr("Automatically update users' "
+                                               "Phone Book and Picture."));
+
+  chkAutoUpdateStatusPlugins = new QCheckBox(tr("Auto Update Status Plugins"),
+                                             boxAutoUpdate);
+  QWhatsThis::add(chkAutoUpdateStatusPlugins, tr("Automatically update users' "
+                     "Phone \"Follow Me\", File Server and ICQphone status."));
 
   lay->addStretch(1);
   lay->activate();

@@ -17,7 +17,9 @@ licq_SOURCES = licq.cpp main.cpp \
 	 file.cpp message.cpp support.c pthread_rdwr.c \
 	 onevent.cpp plugind.cpp sar.cpp languagecodes.c \
 	 icqd-chat.cpp sighandler.c icqd-filetransfer.cpp \
-	 hebrev.c icqcolor.cpp fifo.cpp  protoplugind.cpp gpg.cpp
+	 hebrev.c icqcolor.cpp fifo.cpp  protoplugind.cpp gpg.cpp \
+         occupationcodes.c homepagecodes.c interestcodes.c \
+         organizationcodes.c backgroundcodes.c providers.c
 
 licq_LDADD = @SOCKS_LIBS@ 
 licq_LDFLAGS = -export-dynamic @SOCKS_LIBDIR@

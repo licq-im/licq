@@ -237,8 +237,116 @@ const unsigned short LAST_RECV_EVENT    = 1;
 const unsigned short LAST_SENT_EVENT    = 2;
 const unsigned short LAST_CHECKED_AR    = 3;
 
+const unsigned short MAX_CATEGORY_SIZE  = 60;
+
+typedef enum
+{
+  CAT_INTERESTS,
+  CAT_ORGANIZATION,
+  CAT_BACKGROUND,
+  CAT_MAX
+} UserCat;
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//====ICQUserCategory===========================================================
+class ICQUserCategory
+{
+public:
+  ICQUserCategory(UserCat uc);
+  ~ICQUserCategory();
+  bool AddCategory (unsigned short cat, const char *descr);
+  void Clean();
+
+  bool Get(unsigned d,unsigned short *id, char const ** descr) const;
+  UserCat GetCategory() { return m_uc; }
+
+  static const unsigned MAX_CATEGORIES = 4;
+
+private:
+  bool SaveToDisk(CIniFile &m_fConf,const char *const szN,
+                  const char *const szCat,const char *const szDescr);
+  bool LoadFromDisk(CIniFile &m_fConf, const char *const szN,
+                    const char *const szCat,const char *const szDescr);
+
+  unsigned short used;
+  
+  struct cat
+  {       unsigned short id;
+          char *descr;
+  };
+  struct cat data[MAX_CATEGORIES];
+  UserCat m_uc;
+  friend class ICQUser;
+};
+
+struct PhoneBookEntry
+{
+  char *szDescription;
+  char *szAreaCode;
+  char *szPhoneNumber;
+  char *szExtension;
+  char *szCountry;
+  unsigned long nActive;
+  unsigned long nType;
+  char *szGateway;
+  unsigned long nGatewayType;
+  unsigned long nSmsAvailable;
+  unsigned long nRemoveLeading0s;
+  unsigned long nPublish;
+};
+
+const unsigned short MAX_DESCRIPTION_SIZE  = 16;
+const unsigned short MAX_AREAxCODE_SIZE    =  5;
+const unsigned short MAX_PHONExNUMBER_SIZE = 16;
+const unsigned short MAX_EXTENSION_SIZE    = 20;
+const unsigned short MAX_GATEWAY_SIZE      = 64;
+const unsigned short MAX_PICTURE_SIZE      = 8081;
+
+enum EPhoneType
+{
+  TYPE_PHONE,
+  TYPE_CELLULAR,
+  TYPE_CELLULARxSMS,
+  TYPE_FAX,
+  TYPE_PAGER,
+  TYPE_MAX
+};
+
+enum EGatewayType
+{
+  GATEWAY_BUILTIN = 1,
+  GATEWAY_CUSTOM
+};
+
+enum EPublish
+{
+  PUBLISH_ENABLE = 1,
+  PUBLISH_DISABLE
+};
+
+//====ICQUserPhoneBook=========================================================
+class ICQUserPhoneBook
+{
+public:
+  ICQUserPhoneBook();
+  ~ICQUserPhoneBook();
+  void AddEntry(const struct PhoneBookEntry *entry);
+  void SetEntry(const struct PhoneBookEntry *entry, unsigned long nEntry);
+  void ClearEntry(unsigned long nEntry);
+  void Clean();
+  void SetActive(long nEntry);
+
+  bool Get(unsigned long nEntry, const struct PhoneBookEntry  **entry);
+
+private:
+  bool SaveToDisk  (CIniFile &m_fConf);
+  bool LoadFromDisk(CIniFile &m_fConf);
+
+  std::vector<struct PhoneBookEntry> PhoneBookVector;
+
+  friend class ICQUser;
+};
 
 //=====ICQUser==================================================================
 /*! \brief Details about an ICQ user and operations to perform on them.
@@ -260,8 +368,14 @@ public:
   virtual void SaveLicqInfo();
   void SaveGeneralInfo();
   void SaveMoreInfo();
+  void SaveHomepageInfo();
   void SaveWorkInfo();
   void SaveAboutInfo();
+  void SaveInterestsInfo();
+  void SaveBackgroundsInfo();
+  void SaveOrganizationsInfo();
+  void SavePhoneBookInfo();
+  void SavePictureInfo();
   void SaveExtInfo();
   void SaveNewMessagesInfo();
 
@@ -299,6 +413,8 @@ public:
   //!Returns true if the user requires you to be authorized to add
   //!them to anyone's ICQ list.
   bool GetAuthorization()               {  return m_bAuthorization;  }
+  //!Retrieves the users's web status
+  unsigned char GetWebAwareStatus()     {  return m_nWebAwareStatus; }
   //!Returns true if the user has attempted to hide the e-mail addresses
   //!provided in their information.
   bool GetHideEmail()                   {  return m_bHideEmail;  }
@@ -326,6 +442,16 @@ public:
   //!Useful when retrieving their languages in a loop.
   char GetLanguage(unsigned char l)        {  return m_nLanguage[l];  }
 
+  // Homepage Info
+  //!Returns true if the user has entered a homepage category
+  bool GetHomepageCatPresent()             {  return m_bHomepageCatPresent; }
+  //!Retrieves the user's homepage category code
+  unsigned short GetHomepageCatCode()      {  return m_nHomepageCatCode; }
+  //!Retrivies the users homepage description
+  char *GetHomepageDesc()               {  return m_szHomepageDesc; }
+  //!Returns true if the user has an ICQ homepage (http://<uin>.home.icq.com/)
+  bool GetICQHomepagePresent()          {  return m_bICQHomepagePresent; }
+
   // Work Info
   //!Retrieves the city of the company the user is employed by.
   char *GetCompanyCity()                {  return m_szCompanyCity;  }
@@ -348,6 +474,8 @@ public:
   char *GetCompanyDepartment()          {  return m_szCompanyDepartment;  }
   //!Retrieves the user's job title.
   char *GetCompanyPosition()            {  return m_szCompanyPosition;  }
+  //!Retrieves the users's occupation code
+  unsigned short GetCompanyOccupation() {  return m_nCompanyOccupation; }
   //!Retrieves the URL of the company the user is employed by.
   char *GetCompanyHomepage()            {  return m_szCompanyHomepage;  }
 
@@ -355,12 +483,28 @@ public:
   //!Retrieves the self description of the user.
   char *GetAbout()                      { return m_szAbout; }
 
+  // More2 Info
+  //!Retrieves the user's interests
+  ICQUserCategory *GetInterests()       { return m_Interests; }
+  //!Retrieves the user's backgrounds
+  ICQUserCategory *GetBackgrounds()     { return m_Backgrounds; }
+  //!Retrieves the user's organizations
+  ICQUserCategory *GetOrganizations()   { return m_Organizations; }
+
+  // Phone Book Info
+  //!Retrives the user's phone book
+  ICQUserPhoneBook *GetPhoneBook()      { return m_PhoneBook; }
+
+  // Picture Info
+  bool GetPicturePresent()              { return m_bPicturePresent; }
+
   // Licq Info
   bool GetAwaitingAuth()                { return m_bAwaitingAuth; }
   unsigned short GetSID()               { return m_nSID[NORMAL_SID]; }
   unsigned short GetInvisibleSID()      { return m_nSID[INV_SID]; }
   unsigned short GetVisibleSID()        { return m_nSID[VIS_SID]; }
   unsigned short GetGSID()              { return m_nGSID; }
+  unsigned short GetTyping()            { return m_nTyping; }
   //!Retrieves the user's auto response message that was last seen.
   char *AutoResponse()                  { return m_szAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
@@ -374,7 +518,14 @@ public:
   unsigned long Sequence(bool = false);
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
+  char *ClientInfo()                    { return m_szClientInfo; }
   unsigned long ClientTimestamp()       { return m_nClientTimestamp; }
+  unsigned long OurClientTimestamp()    { return m_nOurClientTimestamp; }
+  unsigned long ClientInfoTimestamp()   { return m_nClientInfoTimestamp; }
+  unsigned long OurClientInfoTimestamp() { return m_nOurClientInfoTimestamp; }
+  unsigned long ClientStatusTimestamp() { return m_nClientStatusTimestamp; }
+  unsigned long OurClientStatusTimestamp() { return m_nOurClientStatusTimestamp; }
+  bool UserUpdated()                    { return m_bUserUpdated; }
   SecureChannelSupport_et SecureChannelSupport();
   unsigned short LicqVersion();
   unsigned short ConnectionVersion();
@@ -398,7 +549,6 @@ public:
   char *IdString()                      { return m_szId; }
 
   char *usprintf(const char *szFormat, unsigned long nFlags = 0);
-  const char *ClientInfo()                    { return m_szClientInfo; }
 
   // General Info
   void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
@@ -417,6 +567,7 @@ public:
   void SetCountryCode (unsigned short n)     {  m_nCountryCode = n;  SaveGeneralInfo();  }
   void SetTimezone (const char n)            {  m_nTimezone = n;  SaveGeneralInfo();  }
   void SetAuthorization (bool n)             {  m_bAuthorization = n;  SaveGeneralInfo();  }
+  virtual void SetWebAwareStatus (char n)    {  m_nWebAwareStatus = n;  }
   void SetHideEmail (bool n)                 {  m_bHideEmail = n;  SaveGeneralInfo();  }
 
   // More Info
@@ -431,6 +582,12 @@ public:
   void SetLanguage3 (const char n)           {  m_nLanguage[2] = n;  SaveMoreInfo();  }
   void SetLanguage (unsigned char l, char n) {  m_nLanguage[l] = n;  SaveMoreInfo();  }
 
+  // Homepage Info
+  void SetHomepageCatPresent(bool n)         {  m_bHomepageCatPresent = n; SaveHomepageInfo(); }
+  void SetHomepageCatCode(unsigned short n)  {  m_nHomepageCatCode = n; SaveHomepageInfo(); }
+  void SetHomepageDesc(const char *n)        {  SetString(&m_szHomepageDesc, n); SaveHomepageInfo(); }
+  void SetICQHomepagePresent(bool n)         {  m_bICQHomepagePresent = n; SaveHomepageInfo(); }
+
   // Work Info
   void SetCompanyCity (const char *n)        {  SetString(&m_szCompanyCity, n);  SaveWorkInfo();  }
   void SetCompanyState (const char *n)       {  SetString(&m_szCompanyState, n);  SaveWorkInfo();  }
@@ -442,10 +599,14 @@ public:
   void SetCompanyName (const char *n)        {  SetString(&m_szCompanyName, n);  SaveWorkInfo();  }
   void SetCompanyDepartment (const char *n)  {  SetString(&m_szCompanyDepartment, n);  SaveWorkInfo();  }
   void SetCompanyPosition (const char *n)    {  SetString(&m_szCompanyPosition, n);  SaveWorkInfo();  }
+  void SetCompanyOccupation (unsigned short n) {  m_nCompanyOccupation = n;  SaveWorkInfo();  }
   void SetCompanyHomepage (const char *n)    {  SetString(&m_szCompanyHomepage, n);  SaveWorkInfo();  }
 
   // About Info
   void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
+
+  // Picture info
+  void SetPicturePresent(bool b)      { m_bPicturePresent = b; SavePictureInfo(); }
 
   // Licq Info
   void SetAwaitingAuth(bool b)        { m_bAwaitingAuth = b; }
@@ -462,7 +623,14 @@ public:
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
+  void SetClientInfo(char *s)         { SetString(&m_szClientInfo, s); }
   void SetClientTimestamp(unsigned long s) { m_nClientTimestamp = s; }
+  void SetOurClientTimestamp(unsigned long s) { m_nOurClientTimestamp = s; }
+  void SetClientInfoTimestamp(unsigned long s) { m_nClientInfoTimestamp = s; }
+  void SetOurClientInfoTimestamp(unsigned long s) { m_nOurClientInfoTimestamp = s; }
+  void SetClientStatusTimestamp(unsigned long s) { m_nClientStatusTimestamp = s; }
+  void SetOurClientStatusTimestamp(unsigned long s) { m_nOurClientStatusTimestamp = s; }
+  void SetUserUpdated(bool s)         { m_bUserUpdated = s; }
   void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
   void SetAutoChatAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_CHAT : m_nAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
   void SetAutoFileAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_FILE : m_nAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
@@ -475,6 +643,7 @@ public:
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
+  void SetTyping(unsigned short nTyping)    { m_nTyping = nTyping; }
   void SetPPID(unsigned long n)       { m_nPPID = n; }
   void SetId(const char *s)            { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetClientInfo(const char *s)
@@ -490,7 +659,13 @@ public:
   bool StatusHideIp()          {  return m_nStatus & ICQ_STATUS_FxHIDExIP; }
   bool StatusBirthday()        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
   bool StatusOffline()         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
+  unsigned long PhoneFollowMeStatus() { return m_nPhoneFollowMeStatus; }
+  unsigned long ICQphoneStatus()      { return m_nICQphoneStatus; }
+  unsigned long SharedFilesStatus()   { return m_nSharedFilesStatus; }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
+  void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; }
+  void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
+  void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
   virtual void SetStatusOffline();
   const char *StatusStr();
   const char *StatusStrShort();
@@ -569,8 +744,9 @@ public:
   char *PortStr(char *rbuf);
   
   // Don't call these:
-  int SocketDesc()          { return m_nSocketDesc; }
+  int SocketDesc(unsigned char);
   void ClearSocketDesc();
+  void ClearSocketDesc(unsigned char);
   void SetSocketDesc(TCPSocket *);
 
   // Events functions
@@ -590,11 +766,17 @@ public:
   void Unlock();
 
 protected:
-  ICQUser() { /* ICQOwner inherited constructor - does nothing */ };
+  ICQUser() { /* ICQOwner inherited constructor - does nothing */ }
   void LoadGeneralInfo();
   void LoadMoreInfo();
+  void LoadHomepageInfo();
   void LoadWorkInfo();
   void LoadAboutInfo();
+  void LoadInterestsInfo();
+  void LoadBackgroundsInfo();
+  void LoadOrganizationsInfo();
+  void LoadPhoneBookInfo();
+  void LoadPictureInfo();
   void LoadLicqInfo();
   void Init(unsigned long nUin);
   void Init(const char *, unsigned long);
@@ -617,18 +799,24 @@ protected:
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
-  int m_nSocketDesc;
+  int m_nNormalSocketDesc, m_nInfoSocketDesc, m_nStatusSocketDesc;
   time_t m_nTouched;
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;
   time_t m_nIdleSince;
   bool m_bOnContactList;
   unsigned long m_nIp, m_nIntIp, m_nVersion, m_nClientTimestamp, m_nCookie;
+  unsigned long m_nClientInfoTimestamp, m_nClientStatusTimestamp;
+  unsigned long m_nOurClientTimestamp, m_nOurClientInfoTimestamp;
+  unsigned long m_nOurClientStatusTimestamp;
+  bool m_bUserUpdated;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
+  unsigned short m_nTyping;
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,
                 m_nGroups[2];
+  unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   char m_nMode;
   char *m_szClientInfo;
   char *m_szAutoResponse;
@@ -666,11 +854,16 @@ protected:
   char m_nTimezone;
   bool m_bAuthorization;
   bool m_bHideEmail;
-
+  unsigned char m_nWebAwareStatus;
+  
   // More Info
   unsigned short m_nAge;
   char m_nGender;
   char *m_szHomepage;
+  bool m_bHomepageCatPresent;
+  unsigned short m_nHomepageCatCode;
+  char *m_szHomepageDesc;
+  bool m_bICQHomepagePresent;
   unsigned short m_nBirthYear;
   char m_nBirthMonth;
   char m_nBirthDay;
@@ -687,11 +880,23 @@ protected:
   char *m_szCompanyName;
   char *m_szCompanyDepartment;
   char *m_szCompanyPosition;
+  unsigned short m_nCompanyOccupation;
   char *m_szCompanyHomepage;
 
   // About Info
   char *m_szAbout;
   
+  // More2 Info
+  ICQUserCategory *m_Interests;
+  ICQUserCategory *m_Backgrounds;
+  ICQUserCategory *m_Organizations;
+
+  // Phone Book Info
+  ICQUserPhoneBook *m_PhoneBook;
+
+  // Picture Info
+  bool m_bPicturePresent;
+
   // Protocol ID
   unsigned long m_nPPID;
 
@@ -729,6 +934,7 @@ public:
   char *Password() { return(m_szPassword); }
   void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
   void SetWebAware(bool b)     {  m_bWebAware = b; SaveLicqInfo(); }
+  virtual void SetWebAwareStatus(unsigned char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
   void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
@@ -745,6 +951,8 @@ public:
   unsigned short GetSSCount()         { return m_nSSCount; }
   void SetSSCount(unsigned short n)   { m_nSSCount = n; }
 
+  void SetPicture(const char *f);
+  
   // Virtual overloaded functions
   virtual void SaveLicqInfo();
   virtual void SetStatusOffline();

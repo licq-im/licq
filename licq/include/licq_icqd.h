@@ -234,6 +234,18 @@ public:
   unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
 
+  // Plugins
+  unsigned long icqRequestInfoPluginList(const char *szId,
+     bool bServer = false);
+  unsigned long icqRequestPhoneBook(const char *szId, bool bServer = false);
+  unsigned long icqRequestPicture(const char *szId, bool bServer = false);
+  unsigned long icqRequestStatusPluginList(const char *szId,
+     bool bServer = false);
+  unsigned long icqRequestSharedFiles(const char *szId, bool bServer = false);
+  unsigned long icqRequestPhoneFollowMe(const char *szId,
+     bool bServer = false);
+  unsigned long icqRequestICQphone(const char *szId, bool bServer = false);
+
   // Server functions
   void icqRegister(const char *_szPasswd);
   unsigned long icqFetchAutoResponseServer(unsigned long);
@@ -255,7 +267,8 @@ public:
                            const char *_szFax, const char *_szAddress,
 			   const char *_szZip, unsigned short _nCompanyCountry,
                            const char *_szName, const char *_szDepartment,
-                           const char *_szPosition, const char *_szHomepage);
+                           const char *_szPosition, unsigned short _nCompanyOccupation,
+                           const char *_szHomepage);
   unsigned long icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
                               const char *szLastName, const char *szEmailPrimary,
                               const char *szCity,
@@ -270,6 +283,11 @@ public:
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);
   unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
+  unsigned long icqSetInterestsInfo(const ICQUserCategory *interests);
+  unsigned long icqSetOrgBackInfo(const ICQUserCategory *orgs,
+                                  const ICQUserCategory *background);
+  unsigned long icqSetHomepageInfo(bool bCatetory, unsigned short nCategory,
+                                const char *szHomepageDesc, bool bICQHomepage);
   unsigned long icqSetAbout(const char *szAbout);
   unsigned long icqSetPassword(const char *szPassword);
   unsigned long icqSetStatus(unsigned short newStatus);
@@ -312,6 +330,9 @@ public:
   void icqRenameUser(const char *_szId, unsigned long _nPPID);
   void icqExportUsers(UserStringList &, unsigned short);
   void icqExportGroups(GroupList &);
+  void icqUpdatePhoneBookTimestamp();
+  void icqUpdatePictureTimestamp();
+  void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
   void icqUpdateContactList();
 
   // Visible/Invisible/Ignore list functions
@@ -423,6 +444,14 @@ public:
   void SetTCPPorts(unsigned short p, unsigned short r);
   static bool CryptoEnabled();
 
+  bool AutoUpdateInfo()          { return m_bAutoUpdateInfo; }
+  bool AutoUpdateInfoPlugins()   { return m_bAutoUpdateInfoPlugins; }
+  bool AutoUpdateStatusPlugins() { return m_bAutoUpdateStatusPlugins; }
+
+  void SetAutoUpdateInfo(bool b)          { m_bAutoUpdateInfo = b; }
+  void SetAutoUpdateInfoPlugins(bool b)   { m_bAutoUpdateInfoPlugins = b; }
+  void SetAutoUpdateStatusPlugins(bool b) { m_bAutoUpdateStatusPlugins = b; }
+
   const char *Terminal();
   void SetTerminal(const char *s);
   bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
@@ -452,11 +481,16 @@ public:
   time_t Uptime() { return time(NULL) - m_nStartTime; }
   void ResetStats();
 
-	// Common message handler
-	void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
-											unsigned short nMsgType, unsigned long nMask,
-											unsigned long nMsgID[], unsigned long nSequence,
-											bool bIsAck, bool &bNewUser);
+  // Common message handler
+  void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
+     unsigned short nMsgType, unsigned long nMask,
+     unsigned long nMsgID[], unsigned long nSequence,
+     bool bIsAck, bool &bNewUser);
+
+  bool ProcessPluginMessage(CBuffer &packet, ICQUser *u, unsigned char nChannel,
+     bool bIsAck, unsigned long nMsgID1,
+     unsigned long nMsgID2, unsigned long nSequence,
+     TCPSocket *pSock);
 
 protected:
   CLicq *licq;
@@ -471,6 +505,7 @@ protected:
        *m_szRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
+  bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
   unsigned short m_nTCPPortsLow,
                  m_nTCPPortsHigh,
                  m_nMaxUsersPerPacket,
@@ -523,6 +558,7 @@ protected:
   pthread_mutex_t mutex_cancelthread;
   pthread_t thread_monitorsockets,
             thread_ping,
+            thread_updateusers,
             thread_shutdown;
 
   pthread_cond_t cond_serverack;
@@ -592,18 +628,26 @@ protected:
   void ProcessFifo(char *);
 
   static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short,
-                             unsigned short, bool = true);
+                             unsigned short, bool = true, unsigned long = 0);
+  static bool Handshake_SendConfirm_v7(TCPSocket *);
   static bool Handshake_Recv(TCPSocket *, unsigned short, bool = true);
+  static bool Handshake_RecvConfirm_v7(TCPSocket *);
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
-  int ConnectToUser(unsigned long);
+  int ConnectToUser(unsigned long, unsigned char);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
      unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort);
+
+  // Protected plugin related stuff
+  unsigned long icqRequestInfoPlugin(ICQUser *, bool, const char *);
+  unsigned long icqRequestStatusPlugin(ICQUser *, bool, const char *);
+  void icqUpdateInfoTimestamp(const char *);
 
   void StupidChatLinkageFix();
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
+  friend void *UpdateUsers_tep(void *p);
   friend void *MonitorSockets_tep(void *p);
   friend void *ReverseConnectToUser_tep(void *p);
   friend void *ProcessRunningEvent_Client_tep(void *p);

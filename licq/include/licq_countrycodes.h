@@ -7,12 +7,13 @@ extern "C" {
 
 #define COUNTRY_UNSPECIFIED  0
 #define COUNTRY_UNKNOWN      0xFFFF
-#define NUM_COUNTRIES 242
+#define NUM_COUNTRIES 244
 
 struct SCountry
 {
   char *szName;          /* Name of the country */
   unsigned short nCode;  /* Country code */
+  unsigned short nPhone; /* International phone code */
   unsigned short nIndex; /* Index in array */
 };
 extern const struct SCountry gCountries[];

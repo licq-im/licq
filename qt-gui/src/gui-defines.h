@@ -23,26 +23,21 @@ enum UserMenu {
   mnuUserCheckResponse,
   mnuUserCustomAutoResponse,
   mnuUserGeneral,
-  mnuUserMore,
-  mnuUserWork,
-  mnuUserAbout,
-  mnuUserLast,
   mnuUserHistory,
   mnuUserFloaty,
-  mnuUserRemoveFromList
+  mnuUserRemoveFromList,
+  mnuUserSendInfoPluginListRequest,
+  mnuUserSendStatusPluginListRequest,
+  mnuUserSendPhoneFollowMeRequest,
+  mnuUserSendICQphoneRequest,
+  mnuUserSendFileServerRequest
 };
 
 enum OwnerMenu_Identifiers {
   OwnerMenuView = mnuUserView,
   OwnerMenuGeneral = mnuUserGeneral,
-  OwnerMenuMore = mnuUserMore,
-  OwnerMenuWork = mnuUserWork,
-  OwnerMenuAbout = mnuUserAbout,
-  OwnerMenuLast = mnuUserLast,
   OwnerMenuHistory = mnuUserHistory,
   OwnerMenuSecurity,
-  OwnerMenuPassword,
-  OwnerMenuSavedPassword,
   OwnerMenuRandomChat
 };
 

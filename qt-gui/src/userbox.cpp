@@ -225,6 +225,9 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_nStatus = u->Status();
    m_nStatusFull = u->StatusFull();
    m_bStatusInvisible = u->StatusInvisible();
+   m_nPhoneFollowMeStatus = u->PhoneFollowMeStatus();
+   m_nICQphoneStatus = u->ICQphoneStatus();
+   m_nSharedFilesStatus = u->SharedFilesStatus();
    m_bCustomAR = u->CustomAutoResponse()[0] != '\0';
    m_nEvents = u->NewMessages();
    m_bSecure = u->Secure();
@@ -527,6 +530,40 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         {
           p->drawPixmap(w, 0, gMainWindow->pmInvisible);
           w += gMainWindow->pmInvisible.width() + 2;
+        }
+      }
+      if (m_nStatus != ICQ_STATUS_OFFLINE)
+      {
+        if (width - w > 8)
+        {
+          if (m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
+          {
+            p->drawPixmap(w, 0, gMainWindow->pmPhoneFollowMeActive);
+            w += gMainWindow->pmPhoneFollowMeActive.width() + 2;
+          }
+          else if (m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)
+          {
+            p->drawPixmap(w, 0, gMainWindow->pmPhoneFollowMeBusy);
+            w += gMainWindow->pmPhoneFollowMeBusy.width() + 2;
+          }
+        }
+        if (width - w > 8)
+        {
+          if (m_nICQphoneStatus == ICQ_PLUGIN_STATUSxACTIVE)
+          {
+            p->drawPixmap(w, 0, gMainWindow->pmICQphoneActive);
+            w += gMainWindow->pmICQphoneActive.width() + 2;
+          }
+          else if (m_nICQphoneStatus == ICQ_PLUGIN_STATUSxBUSY)
+          {
+            p->drawPixmap(w, 0, gMainWindow->pmICQphoneBusy);
+            w += gMainWindow->pmICQphoneBusy.width() + 2;
+          }
+        }
+        if (width - w > 8 && m_nSharedFilesStatus == ICQ_PLUGIN_STATUSxACTIVE)
+        {
+          p->drawPixmap(w, 0, gMainWindow->pmSharedFiles);
+          w += gMainWindow->pmSharedFiles.width() + 2;
         }
       }
       if (width - w > 8 && m_bSecure)
@@ -1392,6 +1429,22 @@ void CUserView::maybeTip(const QPoint& c)
 
     if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
       s += tr("<br><b>Birthday&nbsp;Today!</b>");
+    
+    if (item->m_nStatus != ICQ_STATUS_OFFLINE)
+    {
+      if (item->m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
+        s += tr("<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Available");
+      else if (item->m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)
+        s += tr("<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Busy");
+
+      if (item->m_nICQphoneStatus == ICQ_PLUGIN_STATUSxACTIVE)
+        s += tr("<br>ICQphone:&nbsp;Available");
+      else if (item->m_nICQphoneStatus == ICQ_PLUGIN_STATUSxBUSY)
+        s += tr("<br>ICQphone:&nbsp;Busy");
+
+      if (item->m_nSharedFilesStatus == ICQ_PLUGIN_STATUSxACTIVE)
+        s += tr("<br>File&nbsp;Server:&nbsp;Enabled");
+    }
 
     if (item->m_bSecure)
       s += tr("<br>Secure&nbsp;connection");
@@ -1403,10 +1456,9 @@ void CUserView::maybeTip(const QPoint& c)
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     if (u != NULL)
     {
-      const char *p = u->ClientInfo();
-      if (p && *p)
-        s += "<br>" + QString(p).replace(QRegExp(" "), "&nbsp;");
-
+      if (!u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
+      s += tr("<br><nobr>") + codec->toUnicode(u->ClientInfo()) + tr("</nobr>");
+      
       if (u->AutoResponse() && *u->AutoResponse() &&
           item->m_nStatus != ICQ_STATUS_OFFLINE &&
           item->m_nStatus != ICQ_STATUS_ONLINE)

@@ -8,6 +8,25 @@
 
 class CICQColor;
 
+// values of extra info to identify plugin request
+const unsigned short DirectInfoPluginRequest     = 1;
+const unsigned short DirectStatusPluginRequest   = 2;
+const unsigned short ServerInfoPluginRequest     = 3;
+const unsigned short ServerStatusPluginRequest   = 4;
+
+const unsigned short GUID_LENGTH                 = 18;
+const unsigned short CAP_LENGTH                  = 16;
+
+// list of plugins we currently support
+struct PluginList
+{
+  const char *name;
+  const char *guid;
+  const char *description;
+};
+
+extern struct PluginList info_plugins[];
+extern struct PluginList status_plugins[];
 
 unsigned short ReversePort(unsigned short p);
 unsigned short LengthField(const char *szField);
@@ -278,7 +297,7 @@ public:
 class CPU_ICQMode : public CPU_CommonFamily
 {
 public:
-    CPU_ICQMode();
+    CPU_ICQMode(unsigned short nChannel, unsigned long nFlags);
 };
 
 //-----CapabilitySettings-------------------------------------------------------------
@@ -385,15 +404,39 @@ private:
    unsigned long m_nNewStatus;
 };
 
-class CPU_SetLogonStatus : public CPU_CommonFamily
+class CPU_SetStatusFamily : public CPU_CommonFamily
 {
 public:
-   CPU_SetLogonStatus(unsigned long _nNewStatus);
+   CPU_SetStatusFamily();
 
-private:
+protected:
+   void InitBuffer();
    unsigned long m_nNewStatus;
 };
 
+class CPU_SetLogonStatus : public CPU_SetStatusFamily
+{
+public:
+  CPU_SetLogonStatus(unsigned long _nNewStatus);
+};
+
+class CPU_UpdateInfoTimestamp : public CPU_SetStatusFamily
+{
+public:
+  CPU_UpdateInfoTimestamp(const char *GUID);
+};
+
+class CPU_UpdateStatusTimestamp : public CPU_SetStatusFamily
+{
+public:
+  CPU_UpdateStatusTimestamp(const char *GUID, unsigned long nState);
+};
+
+class CPU_UpdateTimestamp : public CPU_SetStatusFamily
+{
+public:
+  CPU_UpdateTimestamp();
+};
 
 //-----ClientReady--------------------------------------------------------------
 class CPU_ClientReady : public CPU_CommonFamily
@@ -559,24 +602,76 @@ protected:
   unsigned char  m_nMsgType;
 };
 
-
-//-----AdvancedMessage---------------------------------------------------------
-class CPU_AdvancedMessage : public CPU_CommonFamily
+//-----Type2Message-------------------------------------------------------------
+class CPU_Type2Message : public CPU_CommonFamily
 {
 public:
-  CPU_AdvancedMessage(ICQUser *u,	unsigned short _nMsgType,
-                      unsigned short _nMsgFlags,	bool _bAck,
+  CPU_Type2Message(ICQUser *u, bool _bAck, bool _bDirectInfo, const char *cap,
+                   unsigned long nMsgID1 = 0,
+                   unsigned long nMsgID2 = 0);
+protected:
+  void InitBuffer();
+
+  ICQUser *m_pUser;
+  bool m_bAck;
+  bool m_bDirectInfo;
+  unsigned long m_nMsgID[2];
+  char m_cap[CAP_LENGTH];
+  unsigned long m_nExtraLen; // length of data following 0x2711 tlv
+};
+
+//-----PluginMessage-----------------------------------------------------------
+class CPU_PluginMessage : public CPU_Type2Message
+{
+public:
+  CPU_PluginMessage(ICQUser *u, bool bAck, const char *PluginGUID,
+                    unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
+
+protected:
+  void InitBuffer();
+
+  char m_PluginGUID[GUID_LENGTH];
+};
+
+//-----InfoPluginRequest-------------------------------------------------------
+class CPU_InfoPluginReq : public CPU_PluginMessage
+{
+public:
+  CPU_InfoPluginReq(ICQUser *u, const char *GUID, unsigned long nTime);
+  virtual const char *RequestGUID() { return m_ReqGUID; }
+  virtual const unsigned short ExtraInfo() { return ServerInfoPluginRequest; }
+
+protected:
+  char m_ReqGUID[GUID_LENGTH];
+};
+
+//-----StatusPluginRequest-----------------------------------------------------
+class CPU_StatusPluginReq : public CPU_PluginMessage
+{
+public:
+  CPU_StatusPluginReq(ICQUser *u, const char *GUID, unsigned long nTime);
+  virtual const unsigned short ExtraInfo() { return ServerStatusPluginRequest; }
+  virtual const char *RequestGUID() { return m_ReqGUID; }
+
+protected:
+  char m_ReqGUID[GUID_LENGTH];
+};
+
+//-----AdvancedMessage---------------------------------------------------------
+class CPU_AdvancedMessage : public CPU_Type2Message
+{
+public:
+  CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
+                      unsigned short _nMsgFlags, bool _bAck,
                       unsigned short _nSequence,
                       unsigned long nID1 = 0,
                       unsigned long nID2 = 0);
 protected:
   void InitBuffer();
-  bool m_bAck;
-  ICQUser       *m_pUser;
+
   unsigned short m_nMsgType;
   unsigned short m_nMsgFlags;
   unsigned short m_nSequence;
-  unsigned long  m_nMsgID[2];
 };
 
 //-----ChatRequest-------------------------------------------------------------
@@ -595,6 +690,12 @@ public:
 		   const char *_szDesc, unsigned short nLevel, bool bICBM);
 };
 
+//-----NoManager--------------------------------------------------------
+class CPU_NoManager : public CPU_CommonFamily
+{
+public:
+    CPU_NoManager(ICQUser *u, unsigned long nMsgID1, unsigned long nMsgID2);
+};
 
 //-----AckThroughServer--------------------------------------------------------
 class CPU_AckThroughServer : public CPU_CommonFamily
@@ -603,7 +704,7 @@ public:
     CPU_AckThroughServer(ICQUser *u, unsigned long msgid1,
                          unsigned long msgid2, unsigned short sequence,
                          unsigned short msgType, bool bAccept,
-                         unsigned short nLevel);
+                         unsigned short nLevel, const char *GUID);
 protected:
   void InitBuffer();
 
@@ -611,6 +712,7 @@ protected:
   unsigned short m_nSequence, m_nMsgType, m_nStatus, m_nUinLen, m_nLevel;
   char m_szUin[13];
   char *m_szMessage;
+  char m_GUID[GUID_LENGTH];
 };
 
 //-----AckGeneral--------------------------------------------------------------
@@ -654,11 +756,62 @@ public:
                     unsigned short nSequence, const char *msg);
 };
 
+//-----PluginError-------------------------------------------------------------
+class CPU_PluginError : public CPU_AckThroughServer
+{
+public:
+  CPU_PluginError(ICQUser *u, unsigned long nMsgID1, unsigned long nMsgID2,
+                  unsigned short nSequence, const char *GUID);
+};
+
+//-----InfoPluginListResp------------------------------------------------------
+class CPU_InfoPluginListResp : public CPU_AckThroughServer
+{
+public:
+  CPU_InfoPluginListResp(ICQUser *u, unsigned long nMsgID1,
+                         unsigned long nMsgID2, unsigned short nSequence);
+
+};
+
+//-----InfoPhoneBookResp-------------------------------------------------------
+class CPU_InfoPhoneBookResp : public CPU_AckThroughServer
+{
+public:
+  CPU_InfoPhoneBookResp(ICQUser *u, unsigned long nMsgID1,
+                        unsigned long nMsgID2, unsigned short nSequence);
+};
+
+//-----InfoPictureResp---------------------------------------------------------
+class CPU_InfoPictureResp : public CPU_AckThroughServer
+{
+public:
+  CPU_InfoPictureResp(ICQUser *u, unsigned long nMsgID1,
+                      unsigned long nMsgID2, unsigned short nSequence);
+};
+
+//-----StatusPluginListResp----------------------------------------------------
+class CPU_StatusPluginListResp : public CPU_AckThroughServer
+{
+public:
+  CPU_StatusPluginListResp(ICQUser *u, unsigned long nMsgID1,
+                           unsigned long nMsgID2, unsigned short nSequence);
+};
+
+//-----StatusPluginResp-----------------------------------------------------
+class CPU_StatusPluginResp : public CPU_AckThroughServer
+{
+public:
+  CPU_StatusPluginResp(ICQUser *u, unsigned long nMsgID1,
+                       unsigned long nMsgID2, unsigned short nSequence,
+                       unsigned long nStatus);
+};
+
 //-----SendSms-----------------------------------------------------------
 class CPU_SendSms : public CPU_CommonFamily
 {
 public:
    CPU_SendSms(const char *szNumber, const char *szMessage);
+   virtual const unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
    unsigned long m_nMetaCommand;
 };
@@ -807,6 +960,38 @@ protected:
 friend class CICQDaemon;
 };
 
+//-----Meta_SetInterestsInfo----------------------------------------------------
+class CPU_Meta_SetInterestsInfo : public CPU_CommonFamily
+{
+public:
+  CPU_Meta_SetInterestsInfo(const ICQUserCategory* interests);
+  ~CPU_Meta_SetInterestsInfo();
+  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+protected:
+  unsigned short m_nMetaCommand;
+
+  ICQUserCategory *m_Interests;
+
+friend class CICQDaemon;
+};
+
+
+//-----Meta_SetOrgBackInfo------------------------------------------------------
+class CPU_Meta_SetOrgBackInfo : public CPU_CommonFamily
+{
+public:
+  CPU_Meta_SetOrgBackInfo(const ICQUserCategory* orgs,
+                          const ICQUserCategory* background);
+  ~CPU_Meta_SetOrgBackInfo();
+  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+protected:
+  unsigned short m_nMetaCommand;
+
+  ICQUserCategory *m_Orgs;
+  ICQUserCategory *m_Background;
+
+friend class CICQDaemon;
+};
 
 //-----Meta_SetWorkInfo------------------------------------------------------
 class CPU_Meta_SetWorkInfo : public CPU_CommonFamily
@@ -817,11 +1002,12 @@ public:
                        const char *szPhoneNumber,
                        const char *szFaxNumber,
                        const char *szAddress,
-		       const char *szZip,
-		       unsigned short nCompanyCountry,
+                       const char *szZip,
+                       unsigned short nCompanyCountry,
                        const char *szName,
                        const char *szDepartment,
                        const char *szPosition,
+                       unsigned short nCompanyOccupation,
                        const char *szHomepage);
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
@@ -837,6 +1023,7 @@ protected:
   char *m_szName;
   char *m_szDepartment;
   char *m_szPosition;
+  unsigned short m_nCompanyOccupation;
   char *m_szHomepage;
 
 friend class CICQDaemon;
@@ -995,7 +1182,8 @@ class CPacketTcp_Handshake_v7 : public CPacketTcp_Handshake
 {
 public:
   CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
-     unsigned long nSessionId, unsigned short nLocalPort = 0);
+     unsigned long nSessionId, unsigned short nLocalPort = 0,
+     unsigned long nId = 0);
   CPacketTcp_Handshake_v7(CBuffer *);
 
   char Handshake() { return m_nHandshake; }
@@ -1008,7 +1196,8 @@ public:
   unsigned long RealIp()  { return m_nRealIp; }
   char Mode()  { return m_nMode; }
   unsigned long SessionId() { return m_nSessionId; }
-
+  unsigned long Id() { return m_nId; }
+  
 protected:
   char m_nHandshake;
   unsigned short m_nVersionMajor;
@@ -1020,6 +1209,7 @@ protected:
   unsigned long m_nRealIp;
   char m_nMode;
   unsigned long m_nSessionId;
+  unsigned long m_nId;
 };
 
 
@@ -1032,7 +1222,14 @@ public:
 class CPacketTcp_Handshake_Confirm : public CPacketTcp_Handshake
 {
 public:
-  CPacketTcp_Handshake_Confirm(bool bIncoming);
+  CPacketTcp_Handshake_Confirm(unsigned char nChannel, unsigned long nSequence);
+  CPacketTcp_Handshake_Confirm(CBuffer *inbuf);
+
+  virtual const unsigned char Channel() { return m_nChannel; }
+  unsigned long Id() { return m_nId; }
+protected:
+  unsigned char m_nChannel;
+  unsigned long m_nId;
 };
 
 
@@ -1053,7 +1250,8 @@ public:
    unsigned short Version()  { return m_nVersion; }
 protected:
    CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
-      const char *szMessage, bool _bAccept, unsigned short nLevel, ICQUser *_cUser);
+      const char *szMessage, bool _bAccept, unsigned short nLevel,
+      ICQUser *_cUser);
    void InitBuffer();
    void PostBuffer();
    void InitBuffer_v2();
@@ -1073,7 +1271,8 @@ protected:
    unsigned short m_nStatus;
    unsigned short m_nMsgType;
    unsigned long  m_nSequence;
-
+   bool           m_bPluginReq;
+   
    char *m_szLocalPortOffset;
    unsigned short m_nLevel;
    unsigned short m_nVersion;
@@ -1328,5 +1527,83 @@ public:
       00 00 00 */
 };
 
+//----Send error reply----------------------------------------------------------
+class CPT_PluginError : public CPacketTcp
+{
+public:
+   CPT_PluginError(ICQUser *_cUser, unsigned long nSequence,
+     unsigned char nChannel);
+   virtual const unsigned char Channel() { return m_nChannel; }
+
+protected:
+   unsigned char m_nChannel;
+};
+
+//----Request info plugin list--------------------------------------------------
+class CPT_InfoPluginReq : public CPacketTcp
+{
+public:
+   CPT_InfoPluginReq(ICQUser *_cUser, const char *GUID, unsigned long int nTime);
+   virtual const unsigned char Channel()   { return ICQ_CHNxINFO; }
+   virtual const char *RequestGUID()        { return m_ReqGUID; }
+   virtual const unsigned short ExtraInfo() { return DirectInfoPluginRequest; }
+
+protected:
+   char m_ReqGUID[GUID_LENGTH];
+};
+
+//----Response to phone book request--------------------------------------------
+class CPT_InfoPhoneBookResp : public CPacketTcp
+{
+public:
+   CPT_InfoPhoneBookResp(ICQUser *_cUser, unsigned long nSequence);
+   virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
+};
+
+//-----Response to picture request----------------------------------------------
+class CPT_InfoPictureResp : public CPacketTcp
+{
+public:
+   CPT_InfoPictureResp(ICQUser *_cUser, unsigned long nSequence);
+   virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
+};
+
+//----Response to info plugin list request--------------------------------------
+class CPT_InfoPluginListResp : public CPacketTcp
+{
+public:
+   CPT_InfoPluginListResp(ICQUser *_cUser, unsigned long nSequence);
+   virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
+};
+
+//----Send status plugin request------------------------------------------------
+class CPT_StatusPluginReq : public CPacketTcp
+{
+public:
+   CPT_StatusPluginReq(ICQUser *_cUser, const char *GUID, unsigned long nTime);
+   virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
+   virtual const unsigned short ExtraInfo() { return DirectStatusPluginRequest;}
+   virtual const char *RequestGUID() { return m_ReqGUID; }
+
+protected:
+  char m_ReqGUID[GUID_LENGTH];
+};
+
+//----Response to status plugin list request------------------------------------
+class CPT_StatusPluginListResp : public CPacketTcp
+{
+public:
+  CPT_StatusPluginListResp(ICQUser *_cUser, unsigned long nSequence);
+  virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
+};
+
+//----Response to status request------------------------------------------------
+class CPT_StatusPluginResp : public CPacketTcp
+{
+public:
+  CPT_StatusPluginResp(ICQUser *_cUser, unsigned long nSequence,
+                       unsigned long nStatus);
+  virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
+};
 
 #endif

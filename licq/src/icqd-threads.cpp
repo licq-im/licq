@@ -155,7 +155,8 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   // declared here because pthread_cleanup_push starts a new block
   CBuffer *buf;
-  bool sent;
+  bool sent = false;
+  bool bExit = false;
   char szErrorBuf[128];
 
   pthread_cleanup_push(cleanup_mutex, &send_mutex);
@@ -163,6 +164,10 @@ void *ProcessRunningEvent_Server_tep(void *p)
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
 
+    int socket = -1;
+    unsigned long nSequence;
+    INetSocket *s;
+    
     // Check if the socket is connected
     if (e->m_nSocketDesc == -1)
     {
@@ -172,7 +177,6 @@ void *ProcessRunningEvent_Server_tep(void *p)
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
         gLog.Info(tr("%sConnecting to login server.\n"), L_SRVxSTR);
 
-/***** Not yet, perhaps a problem with certain versions of pthreads? *****
         pthread_t *t = new pthread_t;
         int *s = new int;
         pthread_create(t, NULL, ConnectToServer_tep, s);
@@ -188,10 +192,6 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
         pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
         pthread_testcancel();
-*********************/
-
-        int socket = d->ConnectToLoginServer();
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
         e->m_nSocketDesc = socket;
 
@@ -216,7 +216,8 @@ void *ProcessRunningEvent_Server_tep(void *p)
             pthread_testcancel();
             delete e;
           }
-          pthread_exit(NULL);
+          bExit = true;
+          goto exit_server_thread;
         }
       }
       else
@@ -234,16 +235,17 @@ void *ProcessRunningEvent_Server_tep(void *p)
           pthread_testcancel();
           delete e;
         }
-        pthread_exit(NULL);
+        bExit = true;
+        goto exit_server_thread;
       }
     }
 
-    int socket = e->m_nSocketDesc;
-    unsigned long nSequence = e->m_nSequence;
+    socket = e->m_nSocketDesc;
+    nSequence = e->m_nSequence;
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
     // Start sending the event
-    INetSocket *s = gSocketManager.FetchSocket(socket);
+    s = gSocketManager.FetchSocket(socket);
     if (s == NULL)
     {
       gLog.Warn(tr("%sSocket not connected or invalid (#%lu).\n"), L_WARNxSTR,
@@ -259,28 +261,27 @@ void *ProcessRunningEvent_Server_tep(void *p)
         pthread_testcancel();
         delete e;
       }
-      pthread_exit(NULL);
+      bExit = true;
+      goto exit_server_thread;
     }
 
     pthread_cleanup_push(cleanup_socket, s);
 
-      /* FIXME ugly hack, but prevents event from being deleted while we still
-         need it and cannot be canceled */
-      pthread_mutex_lock(&d->mutex_runningevents);
+      pthread_mutex_lock(&d->mutex_cancelthread);
 
       // check to make sure we were not cancelled already
-      pthread_cleanup_push(cleanup_mutex, &d->mutex_runningevents);
+      pthread_cleanup_push(cleanup_mutex, &d->mutex_cancelthread);
         pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
         //if we get here  then we haven't been cancelled and we won't be
-        //as long as we hold mutex_runningevents
+        //as long as we hold mutex_cancelthread
 
         buf = e->m_pPacket->Finalize(NULL);
 
-        pthread_mutex_unlock(&d->mutex_runningevents);
-      pthread_cleanup_pop(0); //mutex_runningevents
+        pthread_mutex_unlock(&d->mutex_cancelthread);
+      pthread_cleanup_pop(0); //mutex_cancelthread
 
       sent = s->Send(buf);
       delete buf;
@@ -294,9 +295,13 @@ void *ProcessRunningEvent_Server_tep(void *p)
       gSocketManager.DropSocket(s);
     pthread_cleanup_pop(0); //socket
 
+exit_server_thread:
     pthread_mutex_unlock(&send_mutex);
   pthread_cleanup_pop(0); //send_mutex
 
+  if (bExit)
+    pthread_exit(NULL);
+    
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
   pthread_testcancel();
 
@@ -375,8 +380,108 @@ void *ProcessRunningEvent_Client_tep(void *p)
   if (e->m_nSocketDesc == -1)
   {
     unsigned long nDestinationUin = e->m_nDestinationUin;
+    unsigned char nChannel = e->Channel();
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    int socket = d->ConnectToUser(nDestinationUin);
+   
+    ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+    if (u == NULL)
+    {
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+        d->ProcessDoneEvent(e);
+      else
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        delete e;
+      }
+      pthread_exit(NULL);
+    }
+
+    unsigned long nVersion = u->Version();
+    unsigned char nMode = u->Mode();
+    unsigned short nRemotePort = u->Port();
+    bool bSendIntIp = u->SendIntIp();
+    gUserManager.DropUser(u);
+
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned long nIP = bSendIntIp ? o->IntIp() : o->Ip();
+    unsigned short nLocalPort = o->Port();
+    gUserManager.DropOwner();
+
+    int socket = -1;
+    if (nVersion > 6 && nMode != MODE_DIRECT)
+    {
+      int nId = 0;
+    /* FIXME: not yet
+      nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
+                                            nLocalPort, nRemotePort);
+      if (nId != -1)
+      {
+        d->WaitForReverseConnection(nId, nDestinationUin);
+        u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+        if (u == NULL)
+        {
+          if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+            d->ProcessDoneEvent(e);
+          else
+          {
+            pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+            pthread_testcancel();
+            delete e;
+          }
+          pthread_exit(NULL);
+        }
+        socket = u->SocketDesc(nChannel);
+        gUserManager.DropUser(u);
+      }
+      *********/
+      // if we failed, try direct anyway
+      if (socket == -1)
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+        socket = d->ConnectToUser(nDestinationUin, nChannel);
+      }
+    }
+    else
+    {
+      socket = d->ConnectToUser(nDestinationUin, nChannel);
+
+      // if we failed, try through server
+      if (socket == -1)
+      {
+      /**FIXME not yet
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+        int nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
+                                              nLocalPort, nRemotePort);
+        if (nId != -1)
+        {
+          d->WaitForReverseConnection(nId, nDestinationUin);
+          u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+          if (u == NULL)
+          {
+            if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+              d->ProcessDoneEvent(e);
+            else
+            {
+              pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+              pthread_testcancel();
+              delete e;
+            }
+            pthread_exit(NULL);
+          }
+          socket = u->SocketDesc(nChannel);
+          gUserManager.DropUser(u);
+        }
+        ****/
+      }
+    }
+
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
     e->m_nSocketDesc = socket;
@@ -632,10 +737,10 @@ void *MonitorSockets_tep(void *p)
           // Message from the server -------------------------------------------
           else if (nCurrentSocket == d->m_nTCPSrvSocketDesc)
           {
-            DEBUG_THREADS("[MonitorSockets_tep] Data on TCP server socket.\n");
-            SrvSocket *srvTCP = static_cast<SrvSocket*>(s);
-            if (srvTCP == NULL)
-            {
+              DEBUG_THREADS("[MonitorSockets_tep] Data on TCP server socket.\n");
+              SrvSocket *srvTCP = static_cast<SrvSocket*>(s);
+              if (srvTCP == NULL)
+              {
               gLog.Warn(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
             }
@@ -714,7 +819,7 @@ void *MonitorSockets_tep(void *p)
               gSocketManager.CloseSocket(nCurrentSocket);
               d->FailEvents(nCurrentSocket, err);
 
-              break;
+//              break;
             }
 
             // Save the bytes pending status of the socket
@@ -788,6 +893,9 @@ void *Shutdown_tep(void *p)
   // Cancel the ping thread
   pthread_cancel(d->thread_ping);
 
+  // Cancel the update users thread
+  pthread_cancel(d->thread_updateusers);
+  
   // Join our threads
   pthread_join(d->thread_monitorsockets, NULL);
 
@@ -808,5 +916,96 @@ void *Shutdown_tep(void *p)
   return NULL;
 }
 
+void *UpdateUsers_tep(void *p)
+{
+  pthread_detach(pthread_self());
+
+  CICQDaemon *d = (CICQDaemon *)p;
+  struct timeval tv;
+
+  while (true)
+  {
+    if (d->m_eStatus == STATUS_ONLINE)
+    {
+      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+      FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
+      {
+        bool bSent = false;
+
+        if (d->AutoUpdateInfo() && !pUser->UserUpdated() &&
+            pUser->ClientTimestamp() != pUser->OurClientTimestamp()
+            && pUser->ClientTimestamp() != 0)
+        {
+          d->icqRequestMetaInfo(pUser->Uin());
+          bSent = true;
+        }
+
+        if (!pUser->StatusOffline() && !pUser->UserUpdated() &&
+            //Don't bother clients that we know don't support plugins
+            pUser->Version() >= 7 &&
+            //Old versions of Licq
+            ((pUser->ClientTimestamp() & 0xFFFF0000 != LICQ_WITHSSL &&
+              pUser->ClientTimestamp() & 0xFFFF0000 != LICQ_WITHOUTSSL) ||
+             pUser->ClientTimestamp() & 0xFFFF > 1026) &&
+            pUser->ClientTimestamp() != 0xFFFFFF42 && //mICQ
+            pUser->ClientTimestamp() != 0xFFFFFFFF && //Miranda
+            pUser->ClientTimestamp() != 0xFFFFFF7F && //&RQ
+            pUser->ClientTimestamp() != 0xFFFFFFBE && //Alicq
+            pUser->ClientTimestamp() != 0x3B75AC09 && //Trillian
+            pUser->ClientTimestamp() != 0x3AA773EE && //libICQ2000 based clients
+            pUser->ClientTimestamp() != 0x3BC1252C && //ICQ Interest Search
+            pUser->ClientTimestamp() != 0x3B176B57 && //jcq2k
+            pUser->ClientTimestamp() != 0x3BA76E2E && //SmartICQ
+            pUser->ClientTimestamp() != 0x3C7D8CBC && //Vista
+            pUser->ClientTimestamp() != 0x3CFE0688 && //Meca
+            pUser->ClientTimestamp() != 0x3BFF8C98 //IGA
+           )
+        {
+          if (d->AutoUpdateInfoPlugins() &&
+              pUser->ClientInfoTimestamp() != pUser->OurClientInfoTimestamp() &&
+              pUser->ClientInfoTimestamp() != 0)
+          {
+            gLog.Info("Updating %s's info plugins.\n", pUser->GetAlias());
+            d->icqRequestInfoPlugin(pUser, true, PLUGIN_QUERYxINFO);
+            d->icqRequestInfoPlugin(pUser, true, PLUGIN_PHONExBOOK);
+            d->icqRequestInfoPlugin(pUser, true, PLUGIN_PICTURE);
+            bSent = true;
+          }
+
+          if (d->AutoUpdateStatusPlugins() &&
+             pUser->ClientStatusTimestamp() != pUser->OurClientStatusTimestamp()
+              && pUser->ClientStatusTimestamp() != 0)
+          {
+            gLog.Info("Updating %s's status plugins.\n", pUser->GetAlias());
+            d->icqRequestStatusPlugin(pUser, true, PLUGIN_QUERYxSTATUS);
+            d->icqRequestStatusPlugin(pUser, true, PLUGIN_FILExSERVER);
+            d->icqRequestStatusPlugin(pUser, true, PLUGIN_FOLLOWxME);
+            d->icqRequestStatusPlugin(pUser, true, PLUGIN_ICQxPHONE);
+            bSent = true;
+          }
+
+        }
+
+        if (bSent)
+        {
+          pUser->SetUserUpdated(true);
+          FOR_EACH_PROTO_USER_BREAK;
+        }
+      }
+      FOR_EACH_PROTO_USER_END
+      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    }
+
+    pthread_testcancel();
+
+    tv.tv_sec = UPDATE_FREQUENCY;
+    tv.tv_usec = 0;
+    select(0, NULL, NULL, NULL, &tv);
+
+    pthread_testcancel();
+  }
+
+  pthread_exit(NULL);
+}
 
 #endif

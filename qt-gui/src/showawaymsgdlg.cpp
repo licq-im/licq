@@ -84,7 +84,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   }
   else
   {
-    bool bSendServer = (u->SocketDesc() <= 0);
+    bool bSendServer = (u->SocketDesc(ICQ_CHNxNONE) <= 0 && u->Version() > 6);
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     mleAwayMsg->setBackgroundMode(PaletteBackground);

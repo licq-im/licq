@@ -94,6 +94,12 @@
 #include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
+#include "xpm/pixICQphoneActive.xpm"
+#include "xpm/pixICQphoneBusy.xpm"
+#include "xpm/pixPhoneFollowMeActive.xpm"
+#include "xpm/pixPhoneFollowMeBusy.xpm"
+#include "xpm/pixSharedFiles.xpm"
+
 #include "licq_qt-gui.conf.h"
 
 extern "C" {
@@ -650,6 +656,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, m_nAutoLogon);
       }
    }
+
+   o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+   mnuPFM->setItemChecked(o->PhoneFollowMeStatus(), true);
+   gUserManager.DropOwner();
 
    // verify we exist
    ICQOwner *owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
@@ -1330,6 +1340,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
     case USER_EXT:
     case USER_STATUS:
     case USER_SECURITY:
+    case USER_TYPING:
     {
       if (gUserManager.FindOwner(szId, nPPID) != NULL)
       {
@@ -1921,6 +1932,15 @@ void CMainWindow::changeStatus(int id)
   }
 }
 
+//----CMainWindow::changeStatus-------------------------------------------------
+void CMainWindow::changePFMStatus(int id)
+{
+  licqDaemon->icqSetPhoneFollowMeStatus(id);
+  for (unsigned int i = 0; i < mnuPFM->count(); i++)
+    mnuPFM->setItemChecked(mnuPFM->idAt(i), false);
+  mnuPFM->setItemChecked(id, true);
+}
+
 // -----------------------------------------------------------------------------
 
 void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
@@ -2001,16 +2021,13 @@ void CMainWindow::callOwnerFunction(int index)
     callFunction(index, szUin, LICQ_PPID);
   }
 
-  else if (index == OwnerMenuGeneral ||
-      index == OwnerMenuMore  || index == OwnerMenuWork ||
-      index == OwnerMenuAbout || index == OwnerMenuLast ||
-      index == OwnerMenuHistory)
-    {
-      //TODO Which owner?
-      char szUin[24];
-      sprintf(szUin, "%lu", gUserManager.OwnerUin());
-      callInfoTab(index, szUin, LICQ_PPID);
-    }
+  else if (index == OwnerMenuGeneral || index == OwnerMenuHistory)
+  {
+    //TODO Which owner?
+    char szUin[24];
+    sprintf(szUin, "%lu", gUserManager.OwnerUin());
+    callInfoTab(index, szUin, LICQ_PPID);
+  }
 
   else if (index == OwnerMenuSecurity)
     (void) new SecurityDlg(licqDaemon, licqSigMan);
@@ -2090,10 +2107,6 @@ void CMainWindow::callUserFunction(int index)
     }
     case mnuUserHistory:
     case mnuUserGeneral:
-    case mnuUserMore:
-    case mnuUserWork:
-    case mnuUserAbout:
-    case mnuUserLast:
       callInfoTab(index, szId, nPPID);
       break;
     case mnuUserRemoveFromList:
@@ -2103,6 +2116,41 @@ void CMainWindow::callUserFunction(int index)
     case mnuUserSendKey:
     {
       (void) new KeyRequestDlg(licqSigMan, szId, nPPID);
+      break;
+    }
+
+    case mnuUserSendInfoPluginListRequest:
+    {
+      if (nPPID == LICQ_PPID)
+        licqDaemon->icqRequestInfoPluginList(szId, true);
+      break;
+    }
+
+    case mnuUserSendStatusPluginListRequest:
+    {
+      if (nPPID == LICQ_PPID)
+        licqDaemon->icqRequestStatusPluginList(szId, true);
+      break;
+    }
+
+    case mnuUserSendPhoneFollowMeRequest:
+    {
+      if (nPPID == LICQ_PPID)
+        licqDaemon->icqRequestPhoneFollowMe(szId, true);
+      break;
+    }
+
+    case mnuUserSendICQphoneRequest:
+    {
+      if (nPPID == LICQ_PPID)
+        licqDaemon->icqRequestICQphone(szId, true);
+      break;
+    }
+
+    case mnuUserSendFileServerRequest:
+    {
+      if (nPPID == LICQ_PPID)
+        licqDaemon->icqRequestSharedFiles(szId, true);
       break;
     }
 
@@ -2145,18 +2193,6 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
     case mnuUserGeneral:
       tab = UserInfoDlg::GeneralInfo;
       break;
-    case mnuUserMore:
-      tab = UserInfoDlg::MoreInfo;
-      break;
-    case mnuUserWork:
-      tab = UserInfoDlg::WorkInfo;
-      break;
-    case mnuUserAbout:
-      tab = UserInfoDlg::AboutInfo;
-      break;
-    case mnuUserLast:
-      tab = UserInfoDlg::LastCountersInfo;
-      break;
     }
     if(toggle && f->isTabShown(tab))
     {
@@ -2183,18 +2219,6 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       break;
     case mnuUserGeneral:
       f->showTab(UserInfoDlg::GeneralInfo);
-      break;
-    case mnuUserMore:
-      f->showTab(UserInfoDlg::MoreInfo);
-      break;
-    case mnuUserWork:
-      f->showTab(UserInfoDlg::WorkInfo);
-      break;
-    case mnuUserAbout:
-      f->showTab(UserInfoDlg::AboutInfo);
-      break;
-    case mnuUserLast:
-      f->showTab(UserInfoDlg::LastCountersInfo);
       break;
   }
   f->show();
@@ -3429,69 +3453,78 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
 
    fIconsConf.SetSection("icons");
    fIconsConf.ReadStr("Collapsed", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmCollapsed.load(sFilepath);
    if (pmCollapsed.isNull())
-   {
-     QPixmap pix(itemCollapsed_xpm);
-     pmCollapsed = pix;
-   }
-
+     pmCollapsed = QPixmap(itemCollapsed_xpm);
+     
    fIconsConf.ReadStr("Expanded", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmExpanded.load(sFilepath);
    if (pmExpanded.isNull())
-   {
-     QPixmap pix(itemExpanded_xpm);
-     pmExpanded = pix;
-   }
-
-
+     pmExpanded = QPixmap(itemExpanded_xpm);
+    
    fIconsConf.ReadStr("Phone", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmPhone.load(sFilepath);
    if (pmPhone.isNull())
-   {
-     QPixmap pix(pixPhone_xpm);
-     pmPhone = pix;
-   }
-
+     pmPhone = QPixmap(pixPhone_xpm);
+   
    fIconsConf.ReadStr("Cellular", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmCellular.load(sFilepath);
    if (pmCellular.isNull())
-   {
-     QPixmap pix(pixCellular_xpm);
-     pmCellular = pix;
-   }
-
-
+     pmCellular = QPixmap(pixCellular_xpm);
+   
    fIconsConf.ReadStr("Birthday", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmBirthday.load(sFilepath);
    if (pmBirthday.isNull())
-   {
-     QPixmap pix(pixBirthday_xpm);
-     pmBirthday = pix;
-   }
+     pmBirthday = QPixmap(pixBirthday_xpm);
 
+   
    fIconsConf.ReadStr("CustomAR", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmCustomAR.load(sFilepath);
    if (pmCustomAR.isNull())
-   {
-     QPixmap pix(pixCustomAR_xpm);
-     pmCustomAR = pix;
-   }
+     pmCustomAR = QPixmap(pixCustomAR_xpm);
 
    fIconsConf.ReadStr("Invisible", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmInvisible.load(sFilepath);
    if (pmInvisible.isNull())
-   {
-     QPixmap pix(pixInvisible_xpm);
-     pmInvisible = pix;
-   }
+     pmInvisible = QPixmap(pixInvisible_xpm);
+ 
+   
+   fIconsConf.ReadStr("ICQphoneActive", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmICQphoneActive.load(sFilepath);
+   if (pmICQphoneActive.isNull())
+     pmICQphoneActive = QPixmap(pixICQphoneActive_xpm);
+
+   fIconsConf.ReadStr("ICQphoneBusy", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmICQphoneBusy.load(sFilepath);
+   if (pmICQphoneBusy.isNull())
+     pmICQphoneBusy = QPixmap(pixICQphoneBusy_xpm);
+
+   fIconsConf.ReadStr("PhoneFollowMeActive", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmPhoneFollowMeActive.load(sFilepath);
+   if (pmPhoneFollowMeActive.isNull())
+     pmPhoneFollowMeActive = QPixmap(pixPhoneFollowMeActive_xpm);
+
+   fIconsConf.ReadStr("PhoneFollowMeBusy", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmPhoneFollowMeBusy.load(sFilepath);
+   if (pmPhoneFollowMeBusy.isNull())
+     pmPhoneFollowMeBusy = QPixmap(pixPhoneFollowMeBusy_xpm);
+
+   fIconsConf.ReadStr("SharedFiles", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmSharedFiles.load(sFilepath);
+   if (pmSharedFiles.isNull())
+     pmSharedFiles = QPixmap(pixSharedFiles_xpm);
 
    if (!_bInitial)
      updateUserWin();
@@ -3674,6 +3707,13 @@ void CMainWindow::initMenu()
 #endif
 
    mnuStatus = new QPopupMenu(NULL);
+   mnuPFM = new QPopupMenu(NULL);
+   mnuPFM->insertItem(tr("Don't Show"), ICQ_PLUGIN_STATUSxINACTIVE);
+   mnuPFM->insertItem(tr("Available"), ICQ_PLUGIN_STATUSxACTIVE);
+   mnuPFM->insertItem(tr("Busy"), ICQ_PLUGIN_STATUSxBUSY);
+   connect(mnuPFM, SIGNAL(activated(int)), this, SLOT(changePFMStatus(int)));
+   mnuStatus->insertItem(tr("Phone \"Follow Me\""), mnuPFM);
+   mnuStatus->insertSeparator();
    mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
    mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
    mnuStatus->insertItem(pmNa, tr("&Not Available"), ICQ_STATUS_NA);
@@ -3813,6 +3853,16 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
    mnuSend->insertItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
    mnuSend->insertItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
+   mnuSend->insertItem(tr("Update Info Plugin List"),
+                       mnuUserSendInfoPluginListRequest);
+   mnuSend->insertItem(tr("Update Status Plugin List"),
+                       mnuUserSendStatusPluginListRequest);
+   mnuSend->insertItem(tr("Update Phone \"Follow Me\" Status"),
+                       mnuUserSendPhoneFollowMeRequest);
+   mnuSend->insertItem(tr("Update ICQphone Status"),
+                       mnuUserSendICQphoneRequest);
+   mnuSend->insertItem(tr("Update File Server Status"),
+                       mnuUserSendFileServerRequest);
    mnuSend->insertSeparator();
    mnuSend->insertItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
