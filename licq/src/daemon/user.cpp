@@ -1946,7 +1946,7 @@ ICQOwner::ICQOwner()
   sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   SetHistoryFile(filename);
 
-  if (m_nTimezone != SystemTimezone())
+  if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
   {
     gLog.Warn("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
               "%sUpdate general info on server to fix.\n",
