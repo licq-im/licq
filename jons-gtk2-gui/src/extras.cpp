@@ -1,4 +1,3 @@
-
 /*
  * Licq GTK GUI Plugin
  *
@@ -279,42 +278,6 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 }
 
 /********************** Finishing Events *******************************/
-
-void finish_message(ICQEvent *event)
-{
-	struct conversation *c =
-		(struct conversation *)g_new0(struct conversation, 1);
-
-	c = convo_find(event->Uin());
-
-	/* If the window isn't open, there isn't anything left to do */
-	if(c == 0)
-		return;
-
-	/* Check to make sure it sent, and if it did, put the text in */
-	g_strreverse(c->etag->buf);
-
-	if(strncmp(c->etag->buf, "en", 2) == 0)
-	{
-		ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
-		const gchar *name = g_strdup_printf("%s",
-						owner->GetAlias());
-		gUserManager.DropOwner();
-
-		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->entry));
-		gtk_text_buffer_set_text(tb, "", -1);
-		gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
-		
-		convo_nick_timestamp(c->text, name, time(NULL), blue);
-		tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->text));
-		GtkTextIter iter;
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		gtk_text_buffer_insert(tb, &iter, c->for_user, -1);
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		GtkTextMark *mark = gtk_text_buffer_create_mark(tb, NULL, &iter, TRUE);
-		gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(c->text), mark, 0, FALSE, 0, 0);
-	}
-}
 
 void finish_chat(ICQEvent *event)
 {
