@@ -2025,8 +2025,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetFirstName(packet.UnpackString(szTemp));
           u->SetLastName(packet.UnpackString(szTemp));
           u->SetEmailPrimary(packet.UnpackString(szTemp));
-          u->SetEmailSecondary(packet.UnpackString(szTemp));
           u->SetEmailOld(packet.UnpackString(szTemp));
+          u->SetEmailSecondary(packet.UnpackString(szTemp));
           u->SetCity(packet.UnpackString(szTemp));
           u->SetState(packet.UnpackString(szTemp));
           u->SetPhoneNumber(packet.UnpackString(szTemp));
@@ -2139,8 +2139,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetFirstName(p->m_szFirstName);
       o->SetLastName(p->m_szLastName);
       o->SetEmailPrimary(p->m_szEmailPrimary);
-      o->SetEmailSecondary(p->m_szEmailSecondary);
       o->SetEmailOld(p->m_szEmailOld);
+      o->SetEmailSecondary(p->m_szEmailSecondary);
       o->SetCity(p->m_szCity);
       o->SetState(p->m_szState);
       o->SetPhoneNumber(p->m_szPhoneNumber);

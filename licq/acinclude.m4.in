@@ -189,12 +189,12 @@ AC_DEFUN(AC_CHECK_OPENSSL,
   else
     AC_MSG_RESULT(yes)
 
-  	dnl AC_MSG_CHECKING(for the OpenSSL headers)
+   	dnl AC_MSG_CHECKING(for the OpenSSL headers)
     temp=$CPPFLAGS
     if test "$openssl_incdir" != "no"; then
       CPPFLAGS="$CPPFLAGS -I$openssl_incdir"
     fi
-    AC_CHECK_HEADER(openssl/des.h, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    AC_CHECK_HEADER(openssl/ssl.h, WITH_OPENSSL="yes", WITH_OPENSSL="no")
     if test "$WITH_OPENSSL" = "no"; then
       CPPFLAGS="$temp"
     fi
@@ -204,11 +204,17 @@ AC_DEFUN(AC_CHECK_OPENSSL,
     if test "$openssl_libdir" != "no"; then
       LIBS="$LIBS -L$openssl_libdir"
     fi
-    AC_CHECK_LIB(crypto, des_set_key_checked, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    AC_CHECK_LIB(crypto, DH_free)
+    if test "$ac_cv_lib_crypto_DH_free" = "yes"; then
+        LIBS="$LIBS -lcrypto"
+        AC_CHECK_LIB(ssl, SSL_new, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    else
+        WITH_OPENSSL="no"
+    fi
     if test "$WITH_OPENSSL" = "no"; then
       LIBS="$temp"
     else
-      LIBS="$LIBS -lcrypto -lssl"
+      LIBS="$LIBS -lssl -lcrypto"
     fi
 
     if test "$WITH_OPENSSL" = "yes"; then

@@ -46,9 +46,9 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
-  QString t1 = tr("Secure channel is established using\n"
-                  "Diffie-Hellman key exchange, and \n"
-                  "encrypted using DES XCBC encryption.\n\n");
+  QString t1 = tr("Secure channel is established using SSL\n"
+                  "with Diffie-Hellman key exchange and\n"
+                  "the TLS version 1 protocol.\n\n");
   QString t2;
   switch (u->SecureChannelSupport())
   {

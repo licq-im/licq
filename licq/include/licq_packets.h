@@ -777,12 +777,7 @@ protected:
 class CPT_OpenSecureChannel : public CPacketTcp
 {
 public:
-  CPT_OpenSecureChannel(char *szKey, ICQUser *pUser, CDHKey *);
-  ~CPT_OpenSecureChannel();
-
-  CDHKey *GrabDHKey() { CDHKey *k = m_pDHKey; m_pDHKey = NULL; return k; }
-protected:
-  CDHKey *m_pDHKey;
+  CPT_OpenSecureChannel(ICQUser *pUser);
 };
 
 
@@ -816,10 +811,18 @@ public:
 
 
 //-----AckKey------------------------------------------------------------
+class CPT_AckOldSecureChannel : public CPT_Ack
+{
+public:
+  CPT_AckOldSecureChannel(unsigned long nSequence, ICQUser *pUser);
+};
+
+
+//-----AckKey------------------------------------------------------------
 class CPT_AckOpenSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckOpenSecureChannel(unsigned long nSequence, const char *szKey, ICQUser *pUser);
+  CPT_AckOpenSecureChannel(unsigned long nSequence, bool ok, ICQUser *pUser);
 };
 
 

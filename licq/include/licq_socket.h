@@ -17,7 +17,12 @@
 #include "licq_buffer.h"
 #include "licq_constants.h"
 
-class CDHKey;
+#ifdef USE_OPENSSL
+#include <openssl/ssl.h>
+extern SSL_CTX *gSSL_CTX;
+#else
+typedef void SSL;
+#endif
 
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);
@@ -46,12 +51,6 @@ public:
   void SetOwner(unsigned long _nOwner)  { m_nOwner = _nOwner; }
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
-
-  bool Secure();
-  CDHKey *DHKey() { return m_pDHKey; }
-  CDHKey *CreateDHKey();
-  void ClearDHKey();
-  void SetDHKey(CDHKey *p) { m_pDHKey = p; }
 
   int Error();
   char *ErrorStr(char *, int);
@@ -94,7 +93,6 @@ protected:
   int m_nDescriptor;
   struct sockaddr_in m_sRemoteAddr, m_sLocalAddr;
   CBuffer m_xRecvBuffer;
-  CDHKey *m_pDHKey;
   char m_szID[4];
   int m_nSockType;
   unsigned long m_nOwner;
@@ -108,9 +106,10 @@ class TCPSocket : public INetSocket
 {
 public:
   TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; }
+    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_pSSL = NULL;}
   TCPSocket() : INetSocket(0)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; }
+    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_pSSL = NULL;}
+  virtual ~TCPSocket();
 
   // Abstract base class overloads
   virtual bool Send(CBuffer *b)
@@ -123,6 +122,15 @@ public:
   bool RecvPacket();
   void RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
+
+  bool Secure() { return m_pSSL != NULL; }
+
+  void SecureConnect();
+  void SecureListen();
+  void SecureStop();
+
+protected:
+  SSL *m_pSSL;
 };
 
 

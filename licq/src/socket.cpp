@@ -34,15 +34,20 @@ extern int h_errno;
 #include "licq_user.h"
 #include "support.h"
 #include "licq_icqd.h"
-#include "licq_openssl.h"
 
+#ifdef USE_OPENSSL
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
+SSL_CTX *gSSL_CTX;
+#endif // OpenSSL
 
 #ifdef USE_SOCKS5
 #define SOCKS
 extern "C" {
 #include <socks.h>
 }
-#endif
+#endif // SOCKS5
 
 
 char *ip_ntoa(unsigned long in, char *buf)
@@ -203,7 +208,6 @@ INetSocket::INetSocket(unsigned long _nOwner)
   m_nDescriptor = -1;
   m_nOwner = _nOwner;
   m_nVersion = 0;
-  m_pDHKey = NULL;
   m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
@@ -433,7 +437,6 @@ bool INetSocket::SetRemoteAddr(char *_szRemoteName, unsigned short _nRemotePort)
 void INetSocket::CloseConnection()
 {
   m_xRecvBuffer.Clear();
-  ClearDHKey();
   if (m_nDescriptor != -1)
   {
     close (m_nDescriptor);
@@ -441,31 +444,7 @@ void INetSocket::CloseConnection()
   }
 }
 
-void INetSocket::ClearDHKey()
-{
-#ifdef USE_OPENSSL
-  delete m_pDHKey;
-#endif
-  m_pDHKey = NULL;
-}
 
-CDHKey *INetSocket::CreateDHKey()
-{
-#ifdef USE_OPENSSL
-  m_pDHKey = new CDHKey;
-#endif
-  return m_pDHKey;
-}
-
-
-bool INetSocket::Secure()
-{
-#ifdef USE_OPENSSL
-  return m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL;
-#else
-  return false;
-#endif
-}
 
 
 //-----INetSocket::SendRaw------------------------------------------------------
@@ -542,9 +521,10 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_sRemoteAddr = from.m_sRemoteAddr;
   m_nOwner = from.m_nOwner;
   m_nVersion = from.m_nVersion;
-  m_pDHKey = from.m_pDHKey;
+  m_pSSL = from.m_pSSL;
   ClearRecvBuffer();
   from.m_nDescriptor = -1;
+  from.m_pSSL = NULL;
   from.CloseConnection();
 }
 
@@ -561,29 +541,52 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
   char *pcSize = new char[2];
   CBuffer *b = b_in;
 
-#ifdef USE_OPENSSL
-  if (m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL)
-  {
-    if (gLog.LoggingPackets())
-    {
-      char *bt;
-      gLog.Packet("%sUnencrypted (DES) TCP Packet (send %ld bytes):\n%s\n",
-       L_PACKETxSTR, b_in->getDataSize(), b_in->print(bt));
-      delete [] bt;
-    }
-
-    gLog.Info("%sEncrypting packet to %ld.\n", L_DESxSTR, m_nOwner);
-    b = m_pDHKey->DesXEncrypt(b_in);
-    if (b == NULL)
-    {
-      m_nErrorType = SOCK_ERROR_desx;
-      return false;
-    }
-  }
-#endif
-
   pcSize[0] = (b->getDataSize()) & 0xFF;
   pcSize[1] = (b->getDataSize() >> 8) & 0xFF;
+
+#ifdef USE_OPENSSL
+  if (m_pSSL != NULL)
+  {
+    int i, j;
+    ERR_clear_error();
+    if ((i = SSL_write(m_pSSL, pcSize, 2)) < 0)
+    {
+      const char *file; int line;
+      unsigned long err;
+      switch (j = SSL_get_error(m_pSSL, i))
+      {
+        case SSL_ERROR_SSL:
+          err = ERR_get_error_line(&file, &line);
+          gLog.Error("%sSSL_write error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
+          ERR_clear_error();
+          break;
+        default:
+          gLog.Error("%sSSL_write error %d, SSL_%d\n", L_SSLxSTR, i, j);
+          break;
+      }
+    }
+
+    ERR_clear_error();
+    if ((i = SSL_write(m_pSSL, b->getDataStart(), b->getDataSize())) < 0)
+    {
+      const char *file; int line;
+      unsigned long err;
+      switch (j = SSL_get_error(m_pSSL, i))
+      {
+        case SSL_ERROR_SSL:
+          err = ERR_get_error_line(&file, &line);
+          gLog.Error("%sSSL_write error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
+          ERR_clear_error();
+          break;
+        default:
+          gLog.Error("%sSSL_write error %d, SSL_%d\n", L_SSLxSTR, i, j);
+          break;
+      }
+    }
+  }
+  else
+  {
+#endif
 
   unsigned long nTotalBytesSent = 0;
   int nBytesSent = 0;
@@ -617,6 +620,10 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
     }
     nTotalBytesSent += nBytesSent;
   }
+
+#ifdef USE_OPENSSL
+  }
+#endif
 
   // Print the packet
   DumpPacket(b, D_SENDER);
@@ -656,6 +663,36 @@ bool TCPSocket::RecvPacket()
     int nTwoBytes = 0;
     while (nTwoBytes != 2)
     {
+#ifdef USE_OPENSSL
+      if (m_pSSL)
+      {
+        nBytesReceived = SSL_read(m_pSSL, buffer, 2);
+        switch (SSL_get_error(m_pSSL, nBytesReceived))
+        {
+          case SSL_ERROR_NONE:
+            break;
+          case SSL_ERROR_WANT_READ:
+          case SSL_ERROR_WANT_WRITE:
+          case SSL_ERROR_WANT_X509_LOOKUP:
+            break;
+          case SSL_ERROR_ZERO_RETURN:
+            m_nErrorType = SOCK_ERROR_errno;
+            errno = 0;
+            delete[] buffer;
+            return (false);
+          case SSL_ERROR_SYSCALL:
+            m_nErrorType = SOCK_ERROR_errno;
+            delete[] buffer;
+            return (false);
+          case SSL_ERROR_SSL:
+            m_nErrorType = SOCK_ERROR_internal;
+            delete[] buffer;
+            return (false);
+        }
+      }
+      else
+      {
+#endif
       nBytesReceived = recv(m_nDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
       if (nBytesReceived <= 0)
       {
@@ -663,6 +700,9 @@ bool TCPSocket::RecvPacket()
         delete[] buffer;
         return (false);
       }
+#ifdef USE_OPENSSL
+      }
+#endif
       nTwoBytes += nBytesReceived;
     }
     m_xRecvBuffer.Create(((unsigned char)buffer[0]) +
@@ -674,6 +714,33 @@ bool TCPSocket::RecvPacket()
   unsigned long nBytesLeft = m_xRecvBuffer.getDataStart() +
                              m_xRecvBuffer.getDataMaxSize() -
                              m_xRecvBuffer.getDataPosWrite();
+#ifdef USE_OPENSSL
+  if (m_pSSL != NULL)
+  {
+    nBytesReceived = SSL_read(m_pSSL, m_xRecvBuffer.getDataPosWrite(), nBytesLeft);
+    switch (SSL_get_error(m_pSSL, nBytesReceived))
+    {
+      case SSL_ERROR_NONE:
+        break;
+      case SSL_ERROR_WANT_READ:
+      case SSL_ERROR_WANT_WRITE:
+      case SSL_ERROR_WANT_X509_LOOKUP:
+        return (true);
+      case SSL_ERROR_ZERO_RETURN:
+        m_nErrorType = SOCK_ERROR_errno;
+        errno = 0;
+        return (false);
+      case SSL_ERROR_SYSCALL:
+        m_nErrorType = SOCK_ERROR_errno;
+        return (false);
+      case SSL_ERROR_SSL:
+        m_nErrorType = SOCK_ERROR_internal;
+        return (false);
+    }
+  }
+  else
+  {
+#endif
   nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, MSG_DONTWAIT);
   if (nBytesReceived <= 0)
   {
@@ -681,37 +748,77 @@ bool TCPSocket::RecvPacket()
     if (errno == EAGAIN || errno == EWOULDBLOCK) return (true);
     return (false);
   }
+#ifdef USE_OPENSSL
+  }
+#endif
   m_xRecvBuffer.incDataPosWrite(nBytesReceived);
 
   // Print the packet if it's full
   if (m_xRecvBuffer.Full())
-  {
     DumpPacket(&m_xRecvBuffer, D_RECEIVER);
-#ifdef USE_OPENSSL
-    if (m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL)
-    {
-      gLog.Info("%sDecrypting packet from %ld.\n", L_DESxSTR, m_nOwner);
-      CBuffer *buf = m_pDHKey->DesXDecrypt(&m_xRecvBuffer);
-      if (buf == NULL)
-      {
-        m_nErrorType = SOCK_ERROR_desx;
-        return false;
-      }
-      m_xRecvBuffer.Copy(buf);
-      delete buf;
 
-      if (gLog.LoggingPackets())
-      {
-        char *bt;
-        gLog.Packet("%sUnencrypted (DES) TCP Packet (recv %ld bytes):\n%s\n",
-         L_PACKETxSTR, m_xRecvBuffer.getDataSize(), m_xRecvBuffer.print(bt));
-        delete [] bt;
-      }
-    }
-#endif
-  }
   return (true);
 }
+
+
+TCPSocket::~TCPSocket()
+{
+  if (m_pSSL != NULL)
+  {
+#ifdef USE_OPENSSL
+    SSL_free(m_pSSL);
+#endif
+    m_pSSL = NULL;
+  }
+}
+
+
+
+#ifdef USE_OPENSSL /*-----Start of OpenSSL code----------------------------*/
+
+void TCPSocket::SecureConnect()
+{
+  m_pSSL = SSL_new(gSSL_CTX);
+#ifdef SSL_DEBUG
+  m_pSSL->debug = 1;
+#endif
+  SSL_set_session(m_pSSL, NULL);
+  SSL_set_fd(m_pSSL, m_nDescriptor);
+  SSL_connect(m_pSSL);
+}
+
+void TCPSocket::SecureListen()
+{
+  m_pSSL = SSL_new(gSSL_CTX);
+  SSL_set_session(m_pSSL, NULL);
+  SSL_set_fd(m_pSSL, m_nDescriptor);
+  SSL_accept(m_pSSL);
+}
+
+void TCPSocket::SecureStop()
+{
+  SSL_free(m_pSSL);
+  m_pSSL = NULL;
+}
+
+#else
+
+void TCPSocket::SecureConnect()
+{
+}
+
+void TCPSocket::SecureListen()
+{
+}
+
+void TCPSocket::SecureStop()
+{
+  m_pSSL = NULL;
+}
+
+
+#endif /*-----End of OpenSSL code------------------------------------------*/
+
 
 
 //=====Locking==================================================================

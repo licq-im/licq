@@ -21,13 +21,6 @@
 #include "licq_filetransfer.h"
 #include "support.h"
 
-#include "licq_openssl.h"
-#ifdef USE_OPENSSL
-#include <openssl/bn.h>
-#include <openssl/des.h>
-#include <openssl/crypto.h>
-#endif
-
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
@@ -427,7 +420,7 @@ CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("%sCannot send key request to user not on list (%ld).\n",
+    gLog.Warn("%sCannot send secure channel request to user not on list (%ld).\n",
        L_WARNxSTR, nUin);
     return NULL;
   }
@@ -435,62 +428,13 @@ CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
   // Check that the user doesn't already have a secure channel
   if (u->Secure())
   {
-    /*if (u->DHKey()->CryptoStatus() == CRYPTO_HALF)
-    {
-      gLog.Warn("%sKey request already in progress for %s (%ld).\n",
-         L_WARNxSTR, u->GetAlias(), nUin);
-      gUserManager.DropUser(u);
-      return NULL;
-    }
-    // Wipe out any old key
-    u->ClearDHKey(true);*/
     gLog.Warn("%s%s (%ld) already has a secure channel.\n", L_WARNxSTR,
        u->GetAlias(), nUin);
     gUserManager.DropUser(u);
     return NULL;
   }
 
-  // Create a key
-  CDHKey *k = new CDHKey;
-
-  BIGNUM *g, *ga, *p, *a;
-  char szKey[256] = {0};
-  BN_CTX *temp_ctx = BN_CTX_new();
-
-  gLog.Info("%sGenerating encryption key for %s (%ld).\n", L_DESxSTR,
-     u->GetAlias(), nUin);
-
-  // find a prime p and generator g
-  p = BN_new();
-  p = BN_generate_prime(NULL, 192, 1, NULL, NULL, NULL, NULL);
-
-  // load in our generator, 2
-  g = BN_new();
-  BN_dec2bn (&g, "2");
-
-  // now we get a random a, and make g^a
-  a = BN_new();
-  BN_rand (a, 192, 0, 127);
-  ga = BN_new();
-  BN_mod_exp (ga, g, a, p, temp_ctx);
-
-  BN_copy(k->P(), p);
-  BN_copy(k->A(), a);
-  BN_copy(k->G(), ga);
-  gLog.Info("%sKey for %s (%ld) done.\n", L_DESxSTR, u->GetAlias(), nUin);
-
-  // prepare send key
-  sprintf (szKey, "%s\n%s\n%s", BN_bn2hex(g), BN_bn2hex(ga), BN_bn2hex(p));
-  k->SetCryptoStatus(CRYPTO_HALF);
-
-  // clean up
-  BN_CTX_free (temp_ctx);
-  BN_clear_free (g);
-  BN_clear_free (ga);
-  BN_clear_free (p);
-  BN_clear_free (a);
-
-  CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(szKey, u, k);
+  CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(u);
   gLog.Info("%sSending request for secure channel to %s (#%ld).\n", L_TCPxSTR,
      u->GetAlias(), -pkt->Sequence());
   result = SendExpectEvent_Client(u, pkt, NULL);
@@ -522,7 +466,7 @@ CICQEventTag *CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("%sCannot send key request to user not on list (%ld).\n",
+    gLog.Warn("%sCannot send secure channel request to user not on list (%ld).\n",
        L_WARNxSTR, nUin);
     return NULL;
   }
@@ -565,13 +509,9 @@ void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nS
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return;
-  gLog.Info("%sCancelling key request to %s (#%ld).\n", L_TCPxSTR,
+  gLog.Info("%sCancelling secure channel request to %s (#%ld).\n", L_TCPxSTR,
      u->GetAlias(), -nSequence);
-  //CPT_CancelKeyRequest p(nSequence, u);
-  //AckTCP(p, u->SocketDesc());
-  //u->ClearDHKey(true);
-  //u->SetSecure(false);
-  // we shouldn't need to do anything here right???
+  // XXX Tear down tcp connection ??
   gUserManager.DropUser(u);
 }
 
@@ -1387,12 +1327,22 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         break;
       }
 
-      // Encryption key request
+      // Old-style encryption request:
+      case ICQ_CMDxSUB_SECURExOLD:
+      {
+        gLog.Info("%sReceived old-style key request from %s (%ld) but we do not support it.\n",
+           L_TCPxSTR, u->GetAlias(), nUin);
+        // Send the nack back
+        CPT_AckOldSecureChannel p(theSequence, u);
+        AckTCP(p, pSock);
+        break;
+      }
+
+      // Secure channel request
       case ICQ_CMDxSUB_SECURExOPEN:
       {
 #ifdef USE_OPENSSL
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
 
         if (licqChar == 'L')
@@ -1402,100 +1352,34 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           gLog.Info("%sSecure channel request from %s (%ld).\n", L_TCPxSTR,
            u->GetAlias(), nUin);
 
-        CDHKey *k = pSock->DHKey();
-        if (k == NULL)
-        {
-          k = pSock->CreateDHKey();
-        }
-        else if (k->CryptoStatus() == CRYPTO_FULL)
-        {
-          u->SetSecure(false);
-          pSock->ClearDHKey();
-          k = pSock->CreateDHKey();
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 0));
-        }
+        CPT_AckOpenSecureChannel p(theSequence, true, u);
+        AckTCP(p, pSock);
 
-        // we have a g, g^a, p
-        BIGNUM *b, *g, *ga, *p, *gb, *gab;
-        b = BN_new();
-        g = BN_new();
-        ga = BN_new();
-        p = BN_new();
-        gb = BN_new();
-        gab = BN_new();
-        char cg[9] = {0}, cga[128] = {0}, cp[128] = {0}, cgb[128] = {0};
-        BN_CTX *temp_ctx = BN_CTX_new ();
-        sscanf(message, "%s\n%s\n%s", cg, cga, cp);
-        //gLog.Info("%sAsymetric key components:\n[%s]\n[%s]\n[%s]\n", L_DESxSTR, cg, cga, cp);
-        BN_hex2bn (&g, cg);
-        BN_hex2bn (&ga, cga);
-        BN_hex2bn (&p, cp);
+        u->SetSecure(true);
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
 
-        // now we get a random b, and make g^ab
-        BN_rand (b, 192, 0, 127);
-        BN_mod_exp (gab, ga, b, p, temp_ctx);
-        BN_mod_exp (gb, g, b, p, temp_ctx);
-
-        // Now, lets see how this happened
-        // If we hadn't sent anything yet, eat their key, and reply accordingly,
-        // or if we have sent already, compare his prime to mine.  If his is
-        // larger, then we'll use his.  I'll eat his key, and reply accordingly.
-        if ((k->CryptoStatus() == CRYPTO_NONE) ||
-            ((k->CryptoStatus() == CRYPTO_HALF) && (BN_cmp(k->P(), p) == 1)) )
-        {
-          BN_copy(k->P(), p);
-          BN_copy(k->A(), b);
-          BN_copy(k->G(), ga);
-          BN_copy(k->GAB(), gab);
-
-          if (k->CryptoStatus() == CRYPTO_HALF)
-          {
-            gLog.Info("%sI already sent, but I'm using %s's key.\n", L_DESxSTR,
-               u->GetAlias());
-          }
-
-          // send gab
-          strcpy(cgb, BN_bn2hex (gb));
-          CPT_AckOpenSecureChannel p(theSequence, cgb, u);
-          AckTCP(p, pSock);
-
-          k->SetCryptoStatus(CRYPTO_FULL);
-          u->SetSecure(true);
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
-
-          gLog.Info("%sSent symetric key to %s (%ld).\n", L_DESxSTR, u->GetAlias(), nUin);
-        }
-
-        // Clean up
-        BN_CTX_free (temp_ctx);
-        BN_clear_free (p);
-        BN_clear_free (b);
-        BN_clear_free (ga);
-        BN_clear_free (gb);
-        BN_clear_free (gab);
 
         gLog.Info("%sSecure channel established with %s (%ld).\n",
-         L_DESxSTR, u->GetAlias(), nUin);
+         L_SSLxSTR, u->GetAlias(), nUin);
 
         break;
 
 #else // We do not support OpenSSL
-        gLog.Info("%sReceived key request from %s (%ld) but we do not support OpenSSL.\n",
+        gLog.Info("%sReceived secure channel request from %s (%ld) but we do not support OpenSSL.\n",
            L_TCPxSTR, u->GetAlias(), nUin);
         // Send the nack back
-        CPT_AckOpenSecureChannel p(theSequence, "", u);
+        CPT_AckOpenSecureChannel p(theSequence, false, u);
         AckTCP(p, pSock);
         break;
 #endif
       }
 
 
-      // Encryption key request
+      // Secure channel close request
       case ICQ_CMDxSUB_SECURExCLOSE:
       {
 #ifdef USE_OPENSSL
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
 
         if (licqChar == 'L')
@@ -1509,13 +1393,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         CPT_AckCloseSecureChannel p(theSequence, u);
         AckTCP(p, pSock);
 
+        pSock->SecureStop();
         u->SetSecure(false);
-        pSock->ClearDHKey();
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 0));
         break;
 
 #else // We do not support OpenSSL
-        gLog.Info("%sReceived secure channel closed from %s (%ld) but we do not support OpenSSL.\n",
+        gLog.Info("%sReceived secure channel close from %s (%ld) but we do not support OpenSSL.\n",
            L_TCPxSTR, u->GetAlias(), nUin);
         // Send the nack back
         CPT_AckCloseSecureChannel p(theSequence, u);
@@ -1618,12 +1502,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_SECURExOPEN:
       {
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
 
         char l[32] = "";
         if (licqChar == 'L') sprintf(l, " [Licq v0.%d]", licqVersion);
-        gLog.Info("%sSecure key response from %s (%ld)%s.\n", L_TCPxSTR,
+        gLog.Info("%sSecure channel response from %s (%ld)%s.\n", L_TCPxSTR,
          u->GetAlias(), nUin, l);
 
         ICQEvent *e = NULL;
@@ -1633,7 +1516,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           gLog.Info("%s%s (%ld) does not support OpenSSL.\n", L_TCPxSTR,
              u->GetAlias(), nUin);
-          pSock->ClearDHKey();
           u->SetSecure(false);
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 0));
           // find the event, fail it
@@ -1641,49 +1523,26 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
         else
         {
-          CDHKey *k = pSock->DHKey();
-
           // Find the event, succeed it
           e = DoneEvent(sockfd, theSequence, EVENT_SUCCESS);
 
           // Check that a request was in progress...should always be ok
-          if (e == NULL || k == NULL || k->CryptoStatus() != CRYPTO_HALF)
+          if (e == NULL)
           {
-            gLog.Warn("%sKey response from %s (%ld) when no request in progress.\n",
+            gLog.Warn("%sSecure channel response from %s (%ld) when no request in progress.\n",
                L_WARNxSTR, u->GetAlias(), nUin);
             // Close the connection as we are in trouble
-            pSock->ClearDHKey();
             u->SetSecure(false);
             gUserManager.DropUser(u);
             PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 0));
-            delete e;
             return false;
           }
 
-          // we have a gb
-          BIGNUM *gb, *gab;
-          gb = BN_new();
-          gab = BN_new();
-          char cgb[128] = {0};
-          BN_CTX *temp_ctx = BN_CTX_new ();
-          sscanf(message, "%s", cgb);
-          //gLog.Info("%sGot key:\n[%s]\n", L_DESxSTR, cgb);
-          BN_hex2bn (&gb, cgb);
-
-          // now we get a random b, and make g^ab
-          BN_mod_exp (gab, gb, k->A(), k->P(), temp_ctx);
-          BN_copy(k->GAB(), gab);
-
-          gLog.Info("%sSecure channel established with %s (%ld).\n", L_DESxSTR,
+          gLog.Info("%sSecure channel established with %s (%ld).\n", L_SSLxSTR,
              u->GetAlias(), nUin);
-          k->SetCryptoStatus(CRYPTO_FULL);
+          pSock->SecureConnect();
           u->SetSecure(true);
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
-
-          // clean up
-          BN_CTX_free(temp_ctx);
-          BN_clear_free(gb);
-          BN_clear_free(gab);
         }
 
         // finish up
@@ -1699,7 +1558,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_SECURExCLOSE:
       {
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
 
         char l[32] = "";
@@ -1719,7 +1577,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           return false;
         }
 
-        pSock->ClearDHKey();
+        pSock->SecureStop();
         u->SetSecure(false);
         gUserManager.DropUser(u);
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 0));

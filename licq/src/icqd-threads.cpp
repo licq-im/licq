@@ -177,19 +177,6 @@ void *ProcessRunningEvent_Client_tep(void *p)
     if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
     pthread_exit(NULL);
   }
-#ifdef USE_OPENSSL
-  // Check if this was a key request
-  if (e->m_pPacket->SubCommand() == ICQ_CMDxSUB_SECURExOPEN)
-  {
-    if (s->DHKey() != NULL)
-    {
-      gLog.Warn("%sSent key request to %ld when channel already secure.\n",
-       L_WARNxSTR, e->m_nDestinationUin);
-      s->ClearDHKey();
-    }
-    s->SetDHKey( ((CPT_OpenSecureChannel *)e->m_pPacket)->GrabDHKey() );
-  }
-#endif
   gSocketManager.DropSocket(s);
 
   pthread_exit(NULL);

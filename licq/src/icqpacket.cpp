@@ -23,7 +23,6 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_log.h"
 #include "support.h"
-#include "licq_openssl.h"
 
 
 unsigned short ReversePort(unsigned short p)
@@ -1318,7 +1317,8 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(0x00270006);
+  //buffer->PackUnsignedLong(0x00270006);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort);
@@ -1708,38 +1708,20 @@ CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
 
 
 //-----Key------------------------------------------------------------------
-CPT_OpenSecureChannel::CPT_OpenSecureChannel(char *szKey, ICQUser *_cUser, CDHKey *key)
+CPT_OpenSecureChannel::CPT_OpenSecureChannel(ICQUser *_cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExOPEN,
-       szKey, true, ICQ_TCPxMSG_NORMAL, _cUser)
+       "", true, ICQ_TCPxMSG_NORMAL, _cUser)
 {
-  m_pDHKey = key;
-
   InitBuffer();
-  if (m_nVersion == 6)
-  {
-    buffer->PackUnsignedLong(0x00000000);
-    buffer->PackUnsignedLong(0x00FFFFFF);
-  }
   PostBuffer();
 }
 
-CPT_OpenSecureChannel::~CPT_OpenSecureChannel()
-{
-#ifdef USE_OPENSSL
-  delete m_pDHKey;
-#endif
-}
 
 CPT_CloseSecureChannel::CPT_CloseSecureChannel(ICQUser *_cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExCLOSE,
        "", true, ICQ_TCPxMSG_NORMAL, _cUser)
 {
   InitBuffer();
-  if (m_nVersion == 6)
-  {
-    buffer->PackUnsignedLong(0x00000000);
-    buffer->PackUnsignedLong(0x00FFFFFF);
-  }
   PostBuffer();
 }
 
@@ -1809,12 +1791,26 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
 
 //-----AckKey---------------------------------------------------------------
 CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned long nSequence,
-   const char *szKey, ICQUser *pUser)
+   bool ok, ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
   m_nSize -= strlen(m_szMessage);
   free(m_szMessage);
-  m_szMessage = strdup(szKey);
+  m_szMessage = strdup(ok ? "1" : "");
+  m_nSize += strlen(m_szMessage);
+
+  InitBuffer();
+  PostBuffer();
+}
+
+
+CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned long nSequence,
+   ICQUser *pUser)
+  : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
+{
+  m_nSize -= strlen(m_szMessage);
+  free(m_szMessage);
+  m_szMessage = strdup("");
   m_nSize += strlen(m_szMessage);
 
   InitBuffer();
@@ -1837,11 +1833,6 @@ CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned long nSequence,
   m_nSize += strlen(m_szMessage);
 
   InitBuffer();
-  if (m_nVersion == 6)
-  {
-    buffer->PackUnsignedLong(0x00000000);
-    buffer->PackUnsignedLong(0x00000000);
-  }
   PostBuffer();
 }
 

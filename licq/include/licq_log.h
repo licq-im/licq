@@ -41,6 +41,7 @@ const char L_PACKETxSTR[]  = "[PKT] ";
 const char L_INITxSTR[]    = "[INI] ";
 const char L_ENDxSTR[]     = "[END] ";
 const char L_FIFOxSTR[]    = "[FIF] ";
+const char L_SSLxSTR[]     = "[SSL] ";
 
 const unsigned short S_STDOUT   = 1;
 const unsigned short S_FILE     = 2;
