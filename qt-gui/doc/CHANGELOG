@@ -1,5 +1,14 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.81
+o  Popup all messages option
+o  Ctrl-Delete and Delete used in contact list to remove users
+   from list or current group
+o  Ctrl-Delete on close button in user function window removes the user
+   from the contact list
+o  Fix for chat problems
+
+
 New in 0.80
 o  Multiparty Chat
 o  Send message urgent or to contact list with one click

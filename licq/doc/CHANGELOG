@@ -1,5 +1,11 @@
 Change log for Licq.
 
+New in 0.81
+o  Chat thread segfault handler
+o  Use first name if no alias present
+o  Fix no-rtti problem
+
+
 New in 0.80
 o  Multiparty chat
 o  Chat integrated into the daemon
