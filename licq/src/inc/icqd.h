@@ -97,7 +97,7 @@ public:
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);
-  CICQEventTag *icqLogon(unsigned long logonStatus);
+  CICQEventTag *icqLogon(unsigned short logonStatus);
   CICQEventTag *icqUserBasicInfo(unsigned long);
   CICQEventTag *icqUserExtendedInfo(unsigned long);
   CICQEventTag *icqRequestMetaInfo(unsigned long);
@@ -126,7 +126,8 @@ public:
                            char nLanguage2, char nLanguage3);
   CICQEventTag *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
   CICQEventTag *icqSetAbout(const char *szAbout);
-  CICQEventTag *icqSetStatus(unsigned long newStatus);
+  CICQEventTag *icqSetPassword(const char *szPassword);
+  CICQEventTag *icqSetStatus(unsigned short newStatus);
 
   unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
   void icqLogoff(void);
@@ -193,8 +194,7 @@ protected:
        *m_szRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
-  unsigned short m_nAllowUpdateUsers,
-                 m_nTcpServerPort,
+  unsigned short m_nTcpServerPort,
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket;
   char m_szErrorFile[64];
