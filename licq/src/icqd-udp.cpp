@@ -873,6 +873,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       // read in the relevant user information
       unsigned short userPort;
       unsigned long userIP, realIP, newStatus, tcpVersion;
+      unsigned long timestamp;
       char mode;
       packet >> userIP
              >> userPort
@@ -882,9 +883,20 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
              >> newStatus  // initial status of user
              >> tcpVersion
       ;
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+      timestamp = packet.UnpackUnsignedLong();
 
-      gLog.Info("%s%s (%ld) went online (v%01lx).\n", L_UDPxSTR, u->GetAlias(),
-         nUin, tcpVersion & 0x0F);
+      if((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
+          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld/OpenSSL].\n",
+                    L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F, timestamp & 0xFFFF);
+      else if((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld].\n",
+                    L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F, timestamp & 0xFFFF);
+      else
+          gLog.Info("%s%s (%ld) went online (v%01lx).\n", L_UDPxSTR, u->GetAlias(),
+                    nUin, tcpVersion & 0x0F);
 
       // The packet class will spit out an ip in network order on a little
       // endian machine and in little-endian on a big endian machine
@@ -907,20 +919,14 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
         u->SetSendServer(mode == MODE_INDIRECT);
       }
       u->SetVersion(tcpVersion);
+      u->SetClientTimestamp(timestamp);
       ChangeUserStatus(u, newStatus);
       u->SetAutoResponse(NULL);
+      u->SetShowAwayMsg(false);
       if ((m_bOnlineNotifies || m_bAlwaysOnlineNotify) && u->OnlineNotify())
         m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
       gUserManager.DropUser(u);
 
-      // Test of timestamp
-      /*
-      packet.UnpackUnsignedLong();
-      packet.UnpackUnsignedLong();
-      packet.UnpackUnsignedLong();
-      time_t t = (time_t)packet.UnpackUnsignedLong();
-      if (t != 0) gLog.Info("%sTimestamp (%ld): %s", L_SBLANKxSTR, t, ctime(&t));
-      */
       /*
       // Test of going online bytes
       unsigned char c1 = 0;
@@ -967,8 +973,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
          break;
       }
       gLog.Info("%s%s (%ld) went offline.\n", L_UDPxSTR, u->GetAlias(), nUin);
+      u->SetClientTimestamp(0);
       ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
-
       gUserManager.DropUser(u);
       break;
     }

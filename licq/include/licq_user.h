@@ -206,6 +206,7 @@ public:
   unsigned long RealIp()                { return m_nRealIp; }
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
+  unsigned long ClientTimestamp()       { return m_nClientTimestamp; }
   unsigned short ConnectionVersion();
   time_t LastOnline()                   { return m_nLastOnline; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
@@ -275,6 +276,7 @@ public:
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
+  void SetClientTimestamp(unsigned long s) { m_nClientTimestamp = s; }
   void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
   void SetAutoChatAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_CHAT : m_nAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
   void SetAutoFileAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_FILE : m_nAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
@@ -397,7 +399,7 @@ protected:
   int m_nSocketDesc;
   time_t m_nTouched, m_nLastOnline;
   bool m_bOnContactList;
-  unsigned long m_nIp, m_nRealIp, m_nVersion;
+  unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned long m_nUin,
                 m_nStatus,

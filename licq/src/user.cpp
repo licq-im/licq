@@ -1042,6 +1042,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nIp = m_nPort = m_nRealIp = 0;
   m_nMode = MODE_DIRECT;
   m_nVersion = 0x03;
+  m_nClientTimestamp = 0;
   Touch();
   m_nLastOnline = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
@@ -1428,7 +1429,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         sz = StatusStr();
         break;
       case 'o':
-	if(m_nLastOnline == 0) 
+	if(m_nLastOnline == 0)
 	{
 	  strcpy(szTemp, "Never");
 	  sz = szTemp;

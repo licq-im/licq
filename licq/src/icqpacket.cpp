@@ -660,7 +660,16 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
   buffer->PackUnsignedShort(0x013F);
   buffer->PackUnsignedLong(0x00000050); // always the same
   buffer->PackUnsignedLong(0x00000003); // always the same
-  buffer->PackUnsignedLong(0x385BFAAC); // timestamp of something? (varies)
+
+  // build date of the core DLL of Mirabilis ICQ
+  // we use that to tell other users that we're Licq
+  // ICQ99b:  0x385BFAAC;
+#ifdef USE_OPENSSL
+  buffer->PackUnsignedLong(LICQ_WITHSSL | INT_VERSION);
+#else
+  buffer->PackUnsignedLong(LICQ_WITHOUTSSL | INT_VERSION);
+#endif
+// timestamp of something? (varies)
   buffer->PackUnsignedLong(0x00000000); // totally unknown (non-zero in other clients)
   buffer->PackUnsignedLong(0x00000000); // always zero
 #endif
