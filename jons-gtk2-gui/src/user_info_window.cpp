@@ -902,7 +902,6 @@ void do_label_and_entry(GtkWidget *&entry,
 
 void finish_info(CICQSignal *signal)
 {
-	cerr << "finish_info\n";
   /* Only do the info.. */
 	unsigned long type = signal->SubSignal();
   
