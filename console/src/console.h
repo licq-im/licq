@@ -40,6 +40,7 @@ public:
   ~CLicqConsole();
   int Run(CICQDaemon *);
   void Shutdown();
+
 protected:
   int m_nPipe;
   bool m_bExit;
@@ -57,6 +58,7 @@ protected:
   char m_szOtherOnlineFormat[128];
   char m_szAwayFormat[128];
   char m_szOfflineFormat[128];
+  char m_szCommandChar[128];
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;

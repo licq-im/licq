@@ -24,13 +24,15 @@ void CLicqConsole::TabCommand(char *_szPartialMatch,
   unsigned short nLen = strlen(_szPartialMatch);
   for (unsigned short i = 0; i < NUM_COMMANDS; i++)
   {
-    if (strncasecmp(_szPartialMatch, aCommands[i].szName, nLen) == 0)
+    char szTempCmd[20];
+    snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+    if (strncasecmp(_szPartialMatch, szTempCmd, nLen) == 0)
     {
       if (szMatch[0] == '\0')
-        strcpy(szMatch, aCommands[i].szName);
+        strcpy(szMatch, szTempCmd);
       else
-        szMatch[StrMatchLen(szMatch, aCommands[i].szName, nLen)] = '\0';
-      _sTabCompletion.vszPartialMatch.push_back(strdup(aCommands[i].szName));
+        szMatch[StrMatchLen(szMatch, szTempCmd, nLen)] = '\0';
+      _sTabCompletion.vszPartialMatch.push_back(strdup(szTempCmd));
     }
   }
   if (nLen == 0)

@@ -43,7 +43,7 @@ const struct SStatus aStatus[NUM_STATUS] =
   { "*ffc", ICQ_STATUS_FREEFORCHAT }
 };
 
-const unsigned short NUM_VARIABLES = 14;
+const unsigned short NUM_VARIABLES = 15;
 struct SVariable aVariables[NUM_VARIABLES] =
 {
   { "show_offline_users", BOOL, NULL },           // 0
@@ -59,7 +59,8 @@ struct SVariable aVariables[NUM_VARIABLES] =
   { "user_online_format", STRING, NULL },         // 10
   { "user_other_online_format", STRING, NULL },   // 11
   { "user_away_format", STRING, NULL },           // 12
-  { "user_offline_format", STRING, NULL }         // 13
+  { "user_offline_format", STRING, NULL },        // 13
+  { "command_character", STRING, NULL }           // 14
 };
 
 const unsigned short NUM_COLORMAPS = 15;
@@ -123,6 +124,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   licqConf.ReadStr("OtherOnlineFormat", m_szOtherOnlineFormat, "%-20a[%6S]");
   licqConf.ReadStr("AwayFormat", m_szAwayFormat, "%-20a[%6S]");
   licqConf.ReadStr("OfflineFormat", m_szOfflineFormat, "%-20a");
+  licqConf.ReadStr("CommandCharacter", m_szCommandChar, "/");
 
   // Set the colors
   m_cColorOnline    = &aColorMaps[m_nColorOnline];
@@ -152,6 +154,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   aVariables[i++].pData = m_szOtherOnlineFormat;
   aVariables[i++].pData = m_szAwayFormat;
   aVariables[i++].pData = m_szOfflineFormat;
+  aVariables[i++].pData = m_szCommandChar;
 
   m_bExit = false;
 }
@@ -321,6 +324,7 @@ void CLicqConsole::DoneOptions()
   licqConf.WriteStr("OtherOnlineFormat", m_szOtherOnlineFormat);
   licqConf.WriteStr("AwayFormat", m_szAwayFormat);
   licqConf.WriteStr("OfflineFormat", m_szOfflineFormat);
+  licqConf.WriteStr("CommandCharacter", m_szCommandChar);
 
   licqConf.FlushFile();
   licqConf.CloseFile();
@@ -946,11 +950,11 @@ void CLicqConsole::InputCommand(int cIn)
     szIn[nPos] = '\0';
     char *szArg = strchr(szIn, ' ');
     unsigned short nArgPos = 0;
-    if (szIn[0] == '/' && szArg == NULL)
+    if (szIn[0] == m_szCommandChar[0] && szArg == NULL)
     { // Command completion
       TabCommand(szIn, sTabCompletion);
     }
-    else if (szIn[0] != '/')
+    else if (szIn[0] != m_szCommandChar[0])
     { // User completion
       szArg = NULL;
       nArgPos = 0;
@@ -966,7 +970,9 @@ void CLicqConsole::InputCommand(int cIn)
       bool bTab = false;
       for (unsigned short i = 0; i < NUM_COMMANDS; i++)
       {
-        if (strncasecmp(szIn, aCommands[i].szName, strlen(szIn)) == 0)
+        char szTempCmd[128];
+        sprintf(szTempCmd, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+        if (strncasecmp(szIn, szTempCmd, strlen(szIn)) == 0)
         {
           if (!aCommands[i].fProcessTab)
             break;;
@@ -1068,7 +1074,7 @@ void CLicqConsole::InputCommand(int cIn)
     }
     m_lCmdHistoryIter = m_lCmdHistory.end();
 
-    if (szIn[0] != '/')
+    if (szIn[0] != m_szCommandChar[0])
     { // User command
       MenuUser(szIn);
     }
@@ -1086,7 +1092,10 @@ void CLicqConsole::InputCommand(int cIn)
       unsigned short i;
       for (i = 0; i < NUM_COMMANDS; i++)
       {
-        if (strncasecmp(szIn, aCommands[i].szName, strlen(szIn)) == 0)
+        char szTempCmd[128];
+        sprintf(szTempCmd, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+
+        if (strncasecmp(szIn, szTempCmd, strlen(szIn)) == 0)
         {
           (this->*(aCommands[i].fProcessCommand))(szArg);
           break;

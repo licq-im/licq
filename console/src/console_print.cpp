@@ -393,16 +393,17 @@ void CLicqConsole::PrintHelp()
 {
   PrintBoxTop("Menu", COLOR_WHITE, 48);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/c%Z%s", A_BOLD, A_BOLD, "ontacts");
+  winMain->wprintf(" %A%cc%Z%s", A_BOLD, m_szCommandChar[0], A_BOLD, "ontacts");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/g%Zroup [ %A#%Z%s", A_BOLD, A_BOLD, A_BOLD, A_BOLD, " ]");
+  winMain->wprintf(" %A%cg%Zroup [ %A#%Z%s", A_BOLD, m_szCommandChar[0],
+    A_BOLD, A_BOLD, A_BOLD, " ]");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" [ %A/u%Zser ] %A<alias>%Z <info | view | message |",
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  winMain->wprintf(" [ %A%cu%Zser ] %A<alias>%Z <info | view | message |",
+                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("                    sendfile | url |");
@@ -412,38 +413,40 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/o%Zwner [ view | info | history <n[,n]> ]",
-                   A_BOLD, A_BOLD);
+  winMain->wprintf(" %A%co%Zwner [ view | info | history <n[,n]> ]",
+                   A_BOLD, m_szCommandChar[0], A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/l%Zast [ %A<user-command>%Z ]",
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  winMain->wprintf(" %A%cl%Zast [ %A<user-command>%Z ]",
+                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/f%Zilestat", A_BOLD, A_BOLD);
+  winMain->wprintf(" %A%cf%Zilestat", A_BOLD, m_szCommandChar[0], A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/st%Zatus [*]<online | away | na | dnd |", A_BOLD, A_BOLD);
+  winMain->wprintf(" %A%cst%Zatus [*]<online | away | na | dnd |", A_BOLD,
+    m_szCommandChar[0], A_BOLD);
   PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("             occupied | ffc | offline>");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/se%Z%s [ %A<variable>%Z [ = %A<value>%Z ] ]",
-                   A_BOLD, A_BOLD, "t", A_BOLD, A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(48);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/h%Zelp [ %A<command>%Z ]", A_BOLD, A_BOLD,
+  winMain->wprintf(" %A%cse%Z%s [ %A<variable>%Z [ = %A<value>%Z ] ]",
+                   A_BOLD, m_szCommandChar[0], A_BOLD, "t", A_BOLD, A_BOLD,
                    A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/q%Zuit", A_BOLD, A_BOLD);
+  winMain->wprintf(" %A%ch%Zelp [ %A<command>%Z ]", A_BOLD, m_szCommandChar[0],
+                   A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A%cq%Zuit", A_BOLD, m_szCommandChar[0], A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);

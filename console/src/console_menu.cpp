@@ -5,15 +5,15 @@
 const unsigned short NUM_COMMANDS = 12;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
-  { "/contacts", &CLicqConsole::MenuContactList, NULL,
+  { "contacts", &CLicqConsole::MenuContactList, NULL,
     "Force a refresh of the contact list." },
-  { "/group", &CLicqConsole::MenuGroup, NULL,
+  { "group", &CLicqConsole::MenuGroup, NULL,
     "Prints the group list or changes to the given group number." },
-  { "/clear", &CLicqConsole::MenuClear, NULL,
+  { "clear", &CLicqConsole::MenuClear, NULL,
     "Clears the current window." },
-  { "/filestat", &CLicqConsole::MenuFileStat, NULL,
+  { "filestat", &CLicqConsole::MenuFileStat, NULL,
     "Print out statistics on all current file transfers." },
-  { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
+  { "user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
     "User commands deal with indiviual users:\n"
     "info - print user information\n\n"
     "message - send a message to the user\n\n"
@@ -31,29 +31,29 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "with +/- then it will modify the start range value.\n"
     "To cycle through the last 10 events in the history\n"
     "try the following:\n"
-    "/user <> \"history $ - 10\"\n"
-    "/last \"history +1\"\n"
-    "/last \"history +1\"\n"
+    "user <> \"history $ - 10\"\n"
+    "last \"history +1\"\n"
+    "last \"history +1\"\n"
     "...\n" },
-  { "/owner", &CLicqConsole::MenuOwner, &CLicqConsole::TabOwner,
+  { "owner", &CLicqConsole::MenuOwner, &CLicqConsole::TabOwner,
     "Commands dealing with yourself.  See /user help for details." },
-  { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
+  { "status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
     "Set your status, prefix with \"*\" for invisible mode." },
-  { "/last", &CLicqConsole::MenuLast, &CLicqConsole::TabLast,
+  { "last", &CLicqConsole::MenuLast, &CLicqConsole::TabLast,
     "Perform the given command on the last user." },
-  { "/set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
+  { "set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
     "Allows the setting and viewing of options.  With no arguments\n"
     "will print all current set'able values.  With one argument will\n"
     "print the value of the given argument.\n"
     "A boolean value can be yes/true/on or no/false/off.\n"
     "Color values can be red/blue/green/magenta/white/yellow or\n"
     "bright_<color> for bright colors." },
-  { "/plugins", &CLicqConsole::MenuPlugins, NULL,
+  { "plugins", &CLicqConsole::MenuPlugins, NULL,
     "List the currently loaded plugins." },
-  { "/help", &CLicqConsole::MenuHelp, NULL,
+  { "help", &CLicqConsole::MenuHelp, NULL,
     "This help screen, can also be passed a command for detailed\n"
     "information about it." },
-  { "/quit", &CLicqConsole::MenuQuit, NULL,
+  { "quit", &CLicqConsole::MenuQuit, NULL,
     "Quit Licq." }
 };
 
@@ -96,7 +96,7 @@ void CLicqConsole::MenuHelp(char *_szArg)
   unsigned short i;
   for (i = 0; i < NUM_COMMANDS; i++)
   {
-    if (strncasecmp(_szArg, &aCommands[i].szName[1], strlen(_szArg)) == 0)
+    if (strncasecmp(_szArg, aCommands[i].szName, strlen(_szArg)) == 0)
       break;
   }
   if (i == NUM_COMMANDS)
@@ -108,8 +108,6 @@ void CLicqConsole::MenuHelp(char *_szArg)
                    aCommands[i].szHelp);
 
 }
-
-
 
 
 /*---------------------------------------------------------------------------
