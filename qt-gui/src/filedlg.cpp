@@ -228,7 +228,7 @@ void CFileDlg::slot_ft()
       case FT_STARTxBATCH:
       {
         setCaption(tr("Licq - File Transfer (%1)").arg(ftman->RemoteName()));
-        nfoTotalFiles->setText(tr("%1 / %2").arg(1).arg(ftman->BatchFiles()));
+        nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
         nfoBatchSize->setText(encodeFSize(ftman->BatchSize()));
         barBatchTransfer->setTotalSteps(ftman->BatchSize());
         barBatchTransfer->setProgress(0);
@@ -237,7 +237,7 @@ void CFileDlg::slot_ft()
 
       case FT_STARTxFILE:
       {
-        nfoTotalFiles->setText(tr("%1 / %2").arg(ftman->CurrentFile()).arg(ftman->BatchFiles()));
+        nfoTotalFiles->setText(QString("%1 / %2").arg(ftman->CurrentFile()).arg(ftman->BatchFiles()));
         nfoTransferFileName->setText(ftman->FileName());
         nfoLocalFileName->setText(ftman->PathName());
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
