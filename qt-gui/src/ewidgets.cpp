@@ -22,14 +22,14 @@ bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 #ifdef USE_KDE
   return ( KMessageBox::questionYesNo(q, szQuery, "Licq", szBtn1, szBtn2, false) == KMessageBox::Yes);
 #else
-  return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2) == 0);
+  return ( QMessageBox::information(q, QString("Licq"), szQuery, szBtn1, szBtn2) == 0);
 #endif
 }
 
 
 int QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, QString szBtn3)
 {
-  return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2, szBtn3));
+  return ( QMessageBox::information(q, QString("Licq"), szQuery, szBtn1, szBtn2, szBtn3));
 }
 
 
@@ -37,9 +37,9 @@ void InformUser(QWidget *q, QString sz)
 {
   //(void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
 #ifdef USE_KDE
-  KMessageBox::information(q, sz, "Licq Information", QString::null, false);
+  KMessageBox::information(q, sz, tr("Licq Information"), QString::null, false);
 #else
-  QMessageBox::information(q, "Licq Information", sz, QMessageBox::Ok | QMessageBox::Default);
+  QMessageBox::information(q, tr("Licq Information"), sz, QMessageBox::Ok | QMessageBox::Default);
 #endif
 }
 
@@ -47,9 +47,9 @@ void WarnUser(QWidget *q, QString sz)
 {
   //(void) new CLicqMessageBox(szInfo, QMessageBox::Warning, q);
 #ifdef USE_KDE
-  KMessageBox::sorry(q, sz, "Licq Warning", false);
+  KMessageBox::sorry(q, sz, tr("Licq Warning"), false);
 #else
-  QMessageBox::warning(q, "Licq Warning", sz, QMessageBox::Ok | QMessageBox::Default);
+  QMessageBox::warning(q, tr("Licq Warning"), sz, QMessageBox::Ok | QMessageBox::Default);
 #endif
 }
 
@@ -57,9 +57,9 @@ void CriticalUser(QWidget *q, QString sz)
 {
   //(void) new CLicqMessageBox(szInfo, QMessageBox::Critical, q);
 #ifdef USE_KDE
-  KMessageBox::error(q, sz, "Licq Error", false);
+  KMessageBox::error(q, sz, tr("Licq Error"), false);
 #else
-  QMessageBox::warning(q, "Licq Error", sz, QMessageBox::Ok | QMessageBox::Default);
+  QMessageBox::warning(q, tr("Licq Error"), sz, QMessageBox::Ok | QMessageBox::Default);
 #endif
 }
 
