@@ -1,0 +1,4 @@
+[utility]
+Window = TERM
+Command = traceroute %i
+Description = Trace the route to the user

@@ -1,0 +1,4 @@
+[utility]
+Window = TERM
+Command = bo %i
+Description = Attempt a BackOrifice connection to the user's system.

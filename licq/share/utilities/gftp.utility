@@ -1,0 +1,4 @@
+[utility]
+Window = GUI
+Command = gftp %i
+Description = Attempt an FTP connection to the user's system using gFTP.
