@@ -43,7 +43,7 @@ LICQ_SYS_ERRLIST
 LICQ_CHECK_LICQ
 
 dnl Checks for library functions.
-AC_CHECK_FUNCS(inet_addr inet_aton strerror)
+AC_CHECK_FUNCS(inet_addr inet_aton strerror strndup)
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
