@@ -7,12 +7,13 @@
 unsigned short CMSNPacket::s_nSequence = 0;
 pthread_mutex_t CMSNPacket::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
-CMSNPacket::CMSNPacket()
+CMSNPacket::CMSNPacket(bool _bPing)
 {
   m_pBuffer = 0;
   m_szCommand = 0;
   m_nSize = 0;
-
+  m_bPing = _bPing;
+  
   pthread_mutex_lock(&s_xMutex);
   m_nSequence = s_nSequence++;
   pthread_mutex_unlock(&s_xMutex);
@@ -24,7 +25,10 @@ void CMSNPacket::InitBuffer()
     return;
   char buf[32];
     
-  m_nSize += snprintf(buf, 32, "%s %u ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
+  if (m_bPing)
+    m_nSize += snprintf(buf, 32, "%s", m_szCommand) + 2;
+  else
+    m_nSize += snprintf(buf, 32, "%s %u ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
   
   m_pBuffer = new CMSNBuffer(m_nSize);
   m_pBuffer->Pack(buf, strlen(buf));
@@ -229,3 +233,13 @@ CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket()
   m_pBuffer->Pack(szParams, strlen(szParams));
   m_pBuffer->Pack(szMsg, strlen(szMsg));
 }
+
+CPS_MSNPing::CPS_MSNPing() : CMSNPacket(true)
+{
+  m_szCommand = strdup("PNG");
+  m_nSize = 0;
+  InitBuffer();
+  
+  m_pBuffer->Pack("\r\n", 2);
+}
+

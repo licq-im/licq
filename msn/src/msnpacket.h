@@ -9,7 +9,7 @@
 class CMSNPacket
 {
 public:
-  CMSNPacket();
+  CMSNPacket(bool = false);
   virtual ~CMSNPacket() { if (m_pBuffer) delete m_pBuffer; if (m_szCommand) free(m_szCommand); }
   CMSNBuffer *getBuffer() { return m_pBuffer; }
   
@@ -24,7 +24,8 @@ protected:
   char *m_szCommand;
   unsigned short m_nSequence;
   unsigned long m_nSize;
-
+  bool m_bPing;
+  
   // Statics
   static unsigned short s_nSequence;
   static pthread_mutex_t s_xMutex;
@@ -113,6 +114,12 @@ class CPS_MSNMessage : public CMSNPayloadPacket
 {
 public:
   CPS_MSNMessage(const char *);
+};
+
+class CPS_MSNPing : public CMSNPacket
+{
+public:
+  CPS_MSNPing();
 };
 
 #endif // __MSNPACKET_H

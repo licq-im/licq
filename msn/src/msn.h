@@ -13,6 +13,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <pthread.h>
 
 using std::string;
 using std::list;
@@ -36,6 +37,9 @@ public:
   
   void Run();
   
+  void MSNPing();
+  bool Connected() { return m_nServerSocket != -1; }
+  
 private:
   void ProcessSignal(CSignal *);
   void ProcessPipe();
@@ -51,6 +55,8 @@ private:
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
   void MSNSendMessage(char *, char *);
+ 
+
   
   // Internal functions
   int HashValue(int n) { return n % 211; }
@@ -65,6 +71,8 @@ private:
   int m_nSSLSocket;
   CMSNBuffer *m_pPacketBuf;
   vector<BufferList> m_vlPacketBucket;
+  
+  pthread_t m_tMSNPing;
   
   char *m_szUserName,
        *m_szPassword;

@@ -14,6 +14,8 @@ using namespace std;
 //Global socket manager
 CSocketManager gSocketMan;
 
+void *MSNPing_tep(void *);
+
 CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 {
   m_pDaemon = _pDaemon;
@@ -71,11 +73,18 @@ SBuffer *CMSN::RetrievePacket(string _strUser, int _nSock)
   
 void CMSN::Run()
 {
-  int nResult;
   int nNumDesc;
   int nCurrent; 
   fd_set f;
 
+  int nResult = pthread_create(&m_tMSNPing, NULL, &MSNPing_tep, this);
+  if (nResult)
+  {
+    gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+  }
+  
+  nResult = 0;
+  
   while (1)
   {
     f = gSocketMan.SocketSet();
@@ -665,4 +674,38 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg)
   CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
   string strUser(_szUser);
   Send_SB_Packet(strUser, pSend);  
+}
+
+void CMSN::MSNPing()
+{
+  CMSNPacket *pSend = new CPS_MSNPing();
+  SendPacket(pSend);
+}
+
+void *MSNPing_tep(void *p)
+{
+  pthread_detach(pthread_self());
+  
+  CMSN *pMSN = (CMSN *)p;
+  
+  struct timeval tv;
+
+  while (true)
+  {
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    
+    if (pMSN->Connected())
+      pMSN->MSNPing();
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+
+    tv.tv_sec = 60;
+    tv.tv_usec = 0;
+    select(0, 0, 0, 0, &tv);
+
+    pthread_testcancel();
+  }  
+  
+  return 0;
 }
