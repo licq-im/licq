@@ -225,7 +225,7 @@ public:
   bool PluginLoad(const char *, int, char **);
 
   void UpdateAllUsers();
-  void UpdateAllUsersInGroup(unsigned short);
+  void UpdateAllUsersInGroup(GroupType, unsigned short);
   void SwitchServer();
   void CancelEvent(CICQEventTag *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
@@ -308,8 +308,10 @@ protected:
   char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;
-  bool m_bShuttingDown, m_bLoggingOn,
-       m_bOnlineNotifies, m_bAlwaysOnlineNotify;
+  bool m_bShuttingDown,
+       m_bLoggingOn,
+       m_bOnlineNotifies,
+       m_bAlwaysOnlineNotify;
   time_t m_tLogonTime;
 
   // Statistics

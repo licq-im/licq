@@ -121,6 +121,9 @@ const unsigned short ACCEPT_IN_DND      = 0x0008;
 const unsigned short AUTO_ACCEPT_CHAT   = 0x0100;
 const unsigned short AUTO_ACCEPT_FILE   = 0x0200;
 
+const unsigned short USPRINTF_NTORN     = 1;
+const unsigned short USPRINTF_NOFW      = 2;
+
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -210,7 +213,7 @@ public:
   unsigned short StatusToUser()         { return m_nStatusToUser; }
   char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
 
-  void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
+  void usprintf(char *sz, const char *szFormat, unsigned long nFlags = 0);
   char *IpPortStr(char *rbuf);
 
   // General Info
@@ -480,6 +483,8 @@ public:
   bool HideIp()               { return m_bHideIp; }
   unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
+  void SetFilterAutoResponse(bool b) { m_bFilterAutoResponse = b; }
+  bool FilterAutoResponse()  { return m_bFilterAutoResponse; }
 
   // Virtual overloaded functions
   virtual void SaveLicqInfo();
@@ -487,9 +492,10 @@ public:
   virtual bool User()  { return false; }
 protected:
   char *m_szPassword;
-  bool m_bException;
-  bool m_bWebAware;
-  bool m_bHideIp;
+  bool m_bException,
+       m_bWebAware,
+       m_bHideIp,
+       m_bFilterAutoResponse;
   unsigned long m_nRandomChatGroup;
 };
 

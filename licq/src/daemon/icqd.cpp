@@ -1504,19 +1504,19 @@ void CICQDaemon::UpdateAllUsers()
 }
 
 
-void CICQDaemon::UpdateAllUsersInGroup(unsigned short nGroup)
+void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
 {
   CICQEventTag *tag;
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (pUser->GetInGroup(GROUPS_USER, nGroup))
+    if (pUser->GetInGroup(g, nGroup))
     {
       tag = icqRequestMetaInfo(pUser->Uin());
       delete tag;
     }
   }
-  FOR_EACH_UIN_END
+  FOR_EACH_USER_END
 }
 
 

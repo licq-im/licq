@@ -1688,6 +1688,7 @@ CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
 
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
                 bool _bAccept, bool l, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept,
@@ -1700,17 +1701,37 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
   if (pUser->CustomAutoResponse()[0] != '\0')
   {
     char *cus = gTranslator.NToRN(pUser->CustomAutoResponse());
-    char *def = gTranslator.NToRN(o->AutoResponse());
+    char *def;
+    if (o->FilterAutoResponse())
+    {
+      def = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
+    }
+    else
+    {
+      def = gTranslator.NToRN(o->AutoResponse());
+    }
     m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
     sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
     free(cus);
     free(def);
   }
-  else {
+  else
+  {
     if(((pUser->StatusToUser() != ICQ_STATUS_OFFLINE &&
          pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
         pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
-      m_szMessage = gTranslator.NToRN(o->AutoResponse());
+    {
+      if (o->FilterAutoResponse())
+      {
+        m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
+        pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
+      }
+      else
+      {
+        m_szMessage = gTranslator.NToRN(o->AutoResponse());
+      }
+    }
     else
       // don't sent out AutoResponse if we're online
       // it could contain stuff the other site shouldn't read

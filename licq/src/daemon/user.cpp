@@ -1309,7 +1309,7 @@ char *ICQUser::IpPortStr(char *rbuf)
 }
 
 
-void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
+void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
 {
   bool bLeft = false;
   unsigned short i = 0, j, nField = 0, nPos = 0;
@@ -1330,7 +1330,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
     else if (_szFormat[i] == '%')
     {
       i++;
-      if (bAllowFieldWidth)
+      if (!(nFlags & USPRINTF_NOFW))
       {
         if (_szFormat[i] == '-')
         {
@@ -1446,6 +1446,8 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
     }
     else
     {
+      if (_szFormat[i] == '\n' && (nFlags & USPRINTF_NTORN))
+        _sz[nPos++] = '\r';
       _sz[nPos++] = _szFormat[i++];
     }
   }
@@ -1935,6 +1937,7 @@ ICQOwner::ICQOwner()
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   m_fConf.ReadStr("AutoResponse", szTemp, "");
   SetAutoResponse(szTemp);
+  m_fConf.ReadBool("FilterAR", m_bFilterAutoResponse, false);
 
   m_fConf.CloseFile();
 
@@ -1970,6 +1973,7 @@ ICQOwner::~ICQOwner()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteStr("AutoResponse", AutoResponse());
+  m_fConf.WriteBool("FilterAR", FilterAutoResponse());
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
