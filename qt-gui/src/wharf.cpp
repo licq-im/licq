@@ -708,19 +708,19 @@ void IconManager_KDEStyle::mousePressEvent( QMouseEvent *e )
   switch(e->button())
   {
   case LeftButton:
-    if(mainwin->isVisible())
+    if(mainwin->isVisible() && !mainwin->isMinimized())
       mainwin->hide();
     else
     {
       mainwin->show();
 #ifdef USE_KDE
       KWin::setOnDesktop(mainwin->winId(), KWin::currentDesktop());
-  #if !KDE_IS_VERSION(3,1,94) 
-      mainwin->raise();
-  #endif
-#else
-      mainwin->raise();
 #endif
+      if (mainwin->isMaximized())
+      	mainwin->showMaximized();
+      else
+      	mainwin->showNormal();
+      mainwin->raise();
     }
     break;
    default:
