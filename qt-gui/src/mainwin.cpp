@@ -1472,7 +1472,7 @@ void CMainWindow::saveOptions()
                      QString("default") : MLEditWrap::editFont->rawName());
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
-  licqConf.WriteBool("Flash", m_nFlash);
+  licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
@@ -1636,8 +1636,16 @@ void CMainWindow::slot_awaymodes(int _nId)
       else
         u->SetStatusToUser(ICQ_STATUS_DND);
       break;
+
+    case 11:
+    {
+      gUserManager.DropUser(u);
+      u = NULL;
+      (void) new CustomAwayMsgDlg(userView->SelectedItemUin());
+    }
   }
-  gUserManager.DropUser(u);
+  if (u != NULL)
+    gUserManager.DropUser(u);
 }
 
 
@@ -2000,8 +2008,8 @@ void CMainWindow::initMenu()
    mnuAwayModes->insertItem(tr("Not Available to User"));
    mnuAwayModes->insertItem(tr("Occupied to User"));
    mnuAwayModes->insertItem(tr("Do Not Disturb to User"));
-//   mnuAwayModes->insertSeparator();
-//   mnuAwayModes->insertItem(tr("Custom Away Message..."));
+   mnuAwayModes->insertSeparator();
+   mnuAwayModes->insertItem(tr("Custom Auto Response..."));
    connect(mnuAwayModes, SIGNAL(activated(int)), this, SLOT(slot_awaymodes(int)));
 
    mnuUser = new QPopupMenu(NULL);

@@ -34,4 +34,28 @@ protected slots:
 };
 
 
+class CustomAwayMsgDlg : public QDialog
+{
+  Q_OBJECT
+public:
+  CustomAwayMsgDlg(unsigned long, QWidget *parent = 0, const char *name = 0);
+
+protected:
+  QMultiLineEdit *mleAwayMsg;
+  //unsigned short m_nStatus;
+  unsigned long m_nUin;
+
+  virtual void hideEvent(QHideEvent*);
+
+//signals:
+  //void popupOptions(int);
+
+protected slots:
+  void slot_clear();
+  void slot_ok();
+  //void slot_selectMessage();
+};
+
+
+
 #endif
