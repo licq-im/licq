@@ -26,11 +26,7 @@
 #endif
 
 #include <qapplication.h>
-#if QT_VERSION < 210
-#define private public
-#endif
 #include <qfontdatabase.h>
-#undef private
 #include <ctype.h>
 #include <qlayout.h>
 #include <stdlib.h>
@@ -256,11 +252,9 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
      tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
   tbtUnderline->setToggleButton(true);
 
-#if QT_VERSION >= 210
   tbtBold->setAutoRaise(false);
   tbtItalic->setAutoRaise(false);
   tbtUnderline->setAutoRaise(false);
-#endif
 
   barChat->addSeparator();
 
@@ -937,10 +931,8 @@ void ChatDlg::slot_setEncoding(int encoding_index)
 CChatWindow::CChatWindow (QWidget *parent)
   : QMultiLineEdit(parent, 0)
 {
-#if QT_VERSION >= 210
   setWordWrap(WidgetWidth);
   setWrapPolicy(AtWhiteSpace);
-#endif
   if(MLEditWrap::editFont) QWidget::setFont(*MLEditWrap::editFont);
 }
 
@@ -1042,13 +1034,8 @@ void CChatWindow::setBackground(const QColor& c)
 {
   QPalette pal = palette();
 
-#if QT_VERSION >= 210
   pal.setColor(QPalette::Active, QColorGroup::Base, c);
   pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
-#else
-  pal.setColor(QPalette::Active, QColorGroup::Base, c);
-  pal.setColor(QPalette::Normal, QColorGroup::Base, c);
-#endif
 
   setPalette(pal);
 }
@@ -1061,13 +1048,8 @@ void CChatWindow::setForeground(const QColor& c)
 {
   QPalette pal = palette();
 
-#if QT_VERSION >= 210
   pal.setColor(QPalette::Active, QColorGroup::Text, c);
   pal.setColor(QPalette::Inactive, QColorGroup::Text, c);
-#else
-  pal.setColor(QPalette::Active, QColorGroup::Text, c);
-  pal.setColor(QPalette::Normal, QColorGroup::Text, c);
-#endif
 
   setPalette(pal);
 }
