@@ -69,7 +69,7 @@ dep:
 	g++ $(CPPFLAGS) -MM *.cpp | sed -e 's/^/obj\//' | sed -e 's/^obj\/ / /' > Makefile.dep
 
 clean:
-	$(RM) core obj/*.o *.core moc/* licq_qt-gui.so
+	$(RM) core obj/*.o *.core moc/moc_* licq_qt-gui.so
 
 distclean: clean
 	$(RM) *~ Makefile tags
