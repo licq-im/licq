@@ -57,8 +57,7 @@ PluginDlg::PluginDlg()
   tblStandard->setColumnReadOnly(2, true);
   tblStandard->setColumnReadOnly(5, true);
   tblStandard->setMinimumHeight(100);
-  tblStandard->setMaximumHeight(100);
-  
+
   QHeader *headerStd = tblStandard->horizontalHeader();
   headerStd->setLabel(0, tr("Id"), 20);
   headerStd->setLabel(1, tr("Name"));
@@ -77,8 +76,7 @@ PluginDlg::PluginDlg()
   tblProtocol->setColumnReadOnly(2, true);
   tblProtocol->setColumnReadOnly(4, true);
   tblProtocol->setMinimumHeight(100);
-  tblProtocol->setMaximumHeight(100);
-  
+
   QHeader *headerPrt = tblProtocol->horizontalHeader();
   headerPrt->setLabel(0, tr("Id"), 20);
   headerPrt->setLabel(1, tr("Name"));
