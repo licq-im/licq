@@ -646,22 +646,24 @@ CPU_RegisterFirst::CPU_RegisterFirst()
 CPU_Register::CPU_Register(const char *szPasswd)
 	: CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER)
 {
-  m_nSize += 55 + strlen(szPasswd);
+  int nPassLen = strlen(szPasswd);
+  m_nSize += 55 + nPassLen;
   m_nSubSequence = 0;
 
   InitBuffer();
 
-  buffer->PackUnsignedLongBE(0x0001003b);
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nPassLen+51);
   buffer->PackUnsignedLongBE(0x00000000);
   buffer->PackUnsignedLongBE(0x28000300);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0x8a4c0000);
-  buffer->PackUnsignedLongBE(0x8a4c0000);
+  buffer->PackUnsignedLongBE(0x82270000);
+  buffer->PackUnsignedLongBE(0x82270000);
   for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
   buffer->PackLNTS(szPasswd);
-  buffer->PackUnsignedLongBE(0x8a4c0000);
-  buffer->PackUnsignedLongBE(0x00000602);
+  buffer->PackUnsignedLongBE(0x82270000);
+  buffer->PackUnsignedLongBE(0x00001902);
 }
 
 #endif
@@ -1369,6 +1371,38 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins)
     }
     else
       buffer->PackUnsignedShortBE(0);
+  }
+}
+
+//-----ExportGroupsToServerList-------------------------------------------------
+CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD)
+{
+  int nSize = 0;
+  int nGSID = 0;
+
+  GroupList::iterator g;
+  for (g = groups.begin(); g != groups.end(); g++)
+  {
+    nSize += strlen((*g));
+    nSize += 10;
+  }
+  
+  m_nSize += nSize;
+  InitBuffer();
+
+  for (g = groups.begin(); g != groups.end(); g++)
+  {
+    nGSID = gUserManager.GenerateSID();
+
+    gUserManager.ModifyGroupID(*g, nGSID);
+
+    buffer->PackUnsignedShortBE(strlen(*g));
+    buffer->Pack(*g, strlen(*g));
+    buffer->PackUnsignedShortBE(nGSID);
+    buffer->PackUnsignedShortBE(0);
+    buffer->PackUnsignedShortBE(ICQ_ROSTxGROUP);
+    buffer->PackUnsignedShortBE(0);
   }
 }
 

@@ -69,6 +69,7 @@ void CICQDaemon::icqExportUsers(UinList &uins)
   SendEvent_Server(pStart);
 
   CSrvPacketTcp *pExport = new CPU_ExportToServerList(uins);
+  gLog.Info("%sExporting users to server contact list...\n", L_SRVxSTR);
   SendExpectEvent_Server(0, pExport, NULL);
 }
 
@@ -85,6 +86,19 @@ void CICQDaemon::icqAddGroup(const char *_szName)
   int nGSID = pAdd->GetGSID();
   gLog.Info("%sAdding group %s (%d) to server list ...\n", L_SRVxSTR, _szName, nGSID);
   SendExpectEvent_Server(0, pAdd, NULL);
+}
+
+//-----icqExportGroups----------------------------------------------------------
+void CICQDaemon::icqExportGroups(GroupList &groups)
+{
+  if (!UseServerContactList()) return;
+
+  CSrvPacketTcp *pStart = new CPU_ExportContactStart();
+  SendEvent_Server(pStart);
+
+  CSrvPacketTcp *pExport = new CPU_ExportGroupsToServerList(groups);
+  gLog.Info("%sExporting groups to server contact list...\n", L_SRVxSTR);
+  SendExpectEvent_Server(0, pExport, NULL);
 }
 
 //-----icqRemoveUser-------------------------------------------------------
@@ -186,6 +200,22 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
   ICQEvent *result = SendExpectEvent_Server(_nUin, p, NULL);
 
   return result->EventId();
+}
+
+//-----icqSetRandomChatGroup----------------------------------------------------
+unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
+{
+  gLog.Warn("%sThis feature is currently not implemented.\n", L_WARNxSTR);
+
+  return 0;
+}
+
+//-----icqRandomChatSearch------------------------------------------------------
+unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
+{
+  gLog.Warn("%sThis feature is currently not implemented.\n", L_WARNxSTR);
+
+  return 0;
 }
 
 //-----NextServer---------------------------------------------------------------
@@ -1980,19 +2010,25 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         GroupList *g = gUserManager.LockGroupList(LOCK_R);
         GroupIDList *gID = gUserManager.LockGroupIDList(LOCK_R);
 
+        GroupList groups;
+	unsigned long n = 0;
         for (unsigned int i = 0; i < gID->size(); i++)
         {
           if ((*gID)[i] == 0)
           {
-            icqAddGroup((*g)[i]);
+	    n++;
+	    groups.push_back((*g)[i]);
           }
         }
 
         gUserManager.UnlockGroupList();
         gUserManager.UnlockGroupIDList();
 
+	if (n)
+	  icqExportGroups(groups);
+
         UinList uins;
-	unsigned long n = 0;
+	n = 0;
         FOR_EACH_USER_START(LOCK_R)
         {
           if (pUser->GetSID() == 0)
