@@ -1440,7 +1440,26 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           userEventTabDlg->gotTyping(u);
         userEventTabDlg->updateTabLabel(u);
       }
+      else
 #endif
+      if (sig->SubSignal() == USER_TYPING)
+      {
+#if QT_VERSION < 300
+        QListIterator<UserSendCommon> it(licqUserSend );
+#else
+        QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+        UserEventCommon *e = 0;
+
+        for (; it.current(); ++it)
+          if ((*it)->Id() && strcmp((*it)->Id(), szId) == 0 &&
+             (*it)->PPID() == nPPID)
+          {
+              e = static_cast<UserSendCommon*>(*it);
+              e->gotTyping(u->GetTyping());
+          }
+      }
+
       gUserManager.DropUser(u);
 
       break;
@@ -1872,10 +1891,32 @@ void CMainWindow::showAwayMsgDlg(unsigned short nStatus)
 //----CMainWindow::changeStatusManual-------------------------------------------
 void CMainWindow::changeStatusManualProtocol(int id)
 {
-  if (id != ICQ_STATUS_OFFLINE && (id & 0xFF) != ICQ_STATUS_ONLINE)
-    showAwayMsgDlg(id);
+  int nAt = (id & 0xFF00) >> 8;
+  int nPPID = m_lnProtMenu[nAt];
+  int nRealID = 0;
+  
+  if (id & CHANGE_STATUS_PRV)
+    nRealID |= ICQ_STATUS_FxPRIVATE;
+    
+  if (id & CHANGE_STATUS_ONLINE)
+    nRealID |= ICQ_STATUS_ONLINE;
+  else if (id & CHANGE_STATUS_OFFLINE)
+    nRealID |= ICQ_STATUS_OFFLINE;
+  else if (id & CHANGE_STATUS_FFC)
+    nRealID |= ICQ_STATUS_FREEFORCHAT;
+  else if (id & CHANGE_STATUS_DND)
+    nRealID |= ICQ_STATUS_DND;
+  else if (id & CHANGE_STATUS_OCC)
+    nRealID |= ICQ_STATUS_OCCUPIED;
+  else if (id & CHANGE_STATUS_AWAY)
+    nRealID |= ICQ_STATUS_AWAY;
+  else if (id & CHANGE_STATUS_NA)
+    nRealID |= ICQ_STATUS_NA;
+  
+  if (nRealID != ICQ_STATUS_OFFLINE && (nRealID & 0xFF) != ICQ_STATUS_ONLINE)
+    showAwayMsgDlg(nRealID);
 
-  changeStatus(id);
+  changeStatus(nRealID, nPPID);
 }
 
 //----CMainWindow::changeStatusManual-------------------------------------------
@@ -1889,7 +1930,7 @@ void CMainWindow::changeStatusManual(int id)
 
 
 //----CMainWindow::changeStatus-------------------------------------------------
-void CMainWindow::changeStatus(int id)
+void CMainWindow::changeStatus(int id, unsigned long _nPPID)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
 
@@ -1899,6 +1940,9 @@ void CMainWindow::changeStatus(int id)
   for (it = pl.begin(); it != pl.end(); it++)
   {
     unsigned long nPPID = (*it)->PPID();
+    if (_nPPID != 0xFFFFFFFF && nPPID != _nPPID)
+      continue;
+       
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (id == ICQ_STATUS_OFFLINE)
     {
@@ -2598,22 +2642,22 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
     // Add ICQ status menu
     mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmOnline, tr("&Online"),
-      ICQ_STATUS_ONLINE);
+      CHANGE_STATUS_ONLINE);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmAway, tr("&Away"),
-      ICQ_STATUS_AWAY);
+      CHANGE_STATUS_AWAY);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmNa, tr("&Not Available"),
-      ICQ_STATUS_NA);
+      CHANGE_STATUS_NA);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmOccupied, tr("O&ccupied"),
-      ICQ_STATUS_OCCUPIED);
+      CHANGE_STATUS_OCC);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmDnd, tr("&Do Not Disturb"),
-      ICQ_STATUS_DND);
+      CHANGE_STATUS_DND);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmFFC, tr("Free for C&hat"),
-      ICQ_STATUS_FREEFORCHAT);
+      CHANGE_STATUS_FFC);
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmOffline, tr("O&ffline"),
-      ICQ_STATUS_OFFLINE);
+      CHANGE_STATUS_OFFLINE);
     mnuProtocolStatus[m_nProtoNum]->insertSeparator();
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
-      ICQ_STATUS_FxPRIVATE);
+      CHANGE_STATUS_PRV);
     mnuStatus->insertItem("ICQ", mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
     connect(mnuProtocolStatus[m_nProtoNum], SIGNAL(activated(int)),
       this, SLOT(changeStatusManualProtocol(int)));
@@ -2625,23 +2669,23 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
 
   char *pName = licqDaemon->ProtoPluginName(nPPID);
   mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmOnline, tr("&Online"),
-    ICQ_STATUS_ONLINE);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmAway, tr("&Away"),
-    ICQ_STATUS_AWAY);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmNa, tr("&Not Available"),
-    ICQ_STATUS_NA);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmOccupied, tr("O&ccupied"),
-    ICQ_STATUS_OCCUPIED);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmDnd, tr("&Do Not Disturb"),
-    ICQ_STATUS_DND);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmFFC, tr("Free for C&hat"),
-    ICQ_STATUS_FREEFORCHAT);
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmOffline, tr("O&ffline"),
-    ICQ_STATUS_OFFLINE);
-  mnuProtocolStatus[m_nProtoNum]->insertSeparator();
-  mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
-    ICQ_STATUS_FxPRIVATE);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOnline, tr("&Online"),
+      CHANGE_STATUS_ONLINE | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmAway, tr("&Away"),
+      CHANGE_STATUS_AWAY | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmNa, tr("&Not Available"),
+      CHANGE_STATUS_NA | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOccupied, tr("O&ccupied"),
+      CHANGE_STATUS_OCC | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmDnd, tr("&Do Not Disturb"),
+      CHANGE_STATUS_DND | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmFFC, tr("Free for C&hat"),
+      CHANGE_STATUS_FFC | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOffline, tr("O&ffline"),
+      CHANGE_STATUS_OFFLINE | (m_nProtoNum << 8));
+    mnuProtocolStatus[m_nProtoNum]->insertSeparator();
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
+      CHANGE_STATUS_PRV | (m_nProtoNum << 8));
   mnuStatus->insertItem(pName ? pName : "(No Name)",
     mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
   mnuStatus->insertSeparator(m_nProtoNum + 1);

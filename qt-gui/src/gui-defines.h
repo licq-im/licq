@@ -50,6 +50,15 @@ const unsigned short MNUxITEM_STATUSxINVISIBLE     = 8;
 const unsigned short MNUxITEM_DEBUGxALL            = 6;
 const unsigned short MNUxITEM_DEBUGxNONE           = 7;
 
+const int CHANGE_STATUS_ONLINE          = 0x0000;
+const int CHANGE_STATUS_FFC             = 0x0001;
+const int CHANGE_STATUS_AWAY            = 0x0002;
+const int CHANGE_STATUS_NA              = 0x0004;
+const int CHANGE_STATUS_DND             = 0x0008;
+const int CHANGE_STATUS_OCC             = 0x0010;
+const int CHANGE_STATUS_OFFLINE         = 0x0020;
+const int CHANGE_STATUS_PRV             = 0x0040;
+
 enum DockMode
 {
   DockNone = 0,

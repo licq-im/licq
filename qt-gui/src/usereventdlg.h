@@ -236,7 +236,7 @@ protected:
   MLEditWrap *mleSend;
   CICQColor icqColor;
   QString strTempMsg;
-  QTimer *tmrTyping;
+  QTimer *tmrSendTyping;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(CICQSignal *, ICQUser *);

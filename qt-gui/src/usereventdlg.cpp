@@ -130,6 +130,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   layt->addWidget(btnEncoding);
 
   tmrTime = NULL;
+  tmrTyping = NULL;
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
   if (u != NULL)
@@ -461,8 +462,11 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
     }
   }
 
-  tmrTyping = new QTimer(this);
-  connect(tmrTyping, SIGNAL(timeout()), this, SLOT(slot_updatetyping()));
+  if (tmrTyping == NULL)
+  {
+    tmrTyping = new QTimer(this);
+    connect(tmrTyping, SIGNAL(timeout()), this, SLOT(slot_updatetyping()));
+  }
 
   if (u->Secure())
     btnSecure->setPixmap(mainwin->pmSecureOn);
@@ -1349,15 +1353,18 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     }
     gUserManager.DropUser(u);
 
-    tmrTyping = new QTimer(this);
-    connect(tmrTyping, SIGNAL(timeout()), SLOT(slot_textChanged_timeout()));
-
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
     connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
+
+  {
+    tmrSendTyping = new QTimer(this);
+    connect(tmrSendTyping, SIGNAL(timeout()), SLOT(slot_textChanged_timeout()));
+  }
+
   mleSend = new MLEditWrap(true, splView, true);
   if (mainwin->m_bMsgChatView)
   {
@@ -1440,7 +1447,7 @@ void UserSendCommon::slot_textChanged()
   strTempMsg = mleSend->text();
   server->ProtoTypingNotification(m_szId, m_nPPID, true);
   disconnect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  tmrTyping->start(5000);
+  tmrSendTyping->start(5000);
 }
 
 void UserSendCommon::slot_textChanged_timeout()
@@ -1456,7 +1463,8 @@ void UserSendCommon::slot_textChanged_timeout()
   }
   else
   {
-    tmrTyping->stop();
+    if (tmrSendTyping->isActive())
+      tmrSendTyping->stop();
     connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
     server->ProtoTypingNotification(m_szId, m_nPPID, false);
   }
@@ -2143,7 +2151,8 @@ UserSendMsgEvent::~UserSendMsgEvent()
 void UserSendMsgEvent::sendButton()
 {
   // Take care of typing notification now
-  tmrTyping->stop();
+  if (tmrSendTyping->isActive())
+    tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_szId, m_nPPID, false);
   
@@ -2311,7 +2320,7 @@ void UserSendUrlEvent::resetSettings()
 void UserSendUrlEvent::sendButton()
 {
   // Take care of typing notification now
-  tmrTyping->stop();
+  tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_szId, m_nPPID, false);
   
@@ -2478,7 +2487,7 @@ UserSendFileEvent::~UserSendFileEvent()
 void UserSendFileEvent::sendButton()
 {
   // Take care of typing notification now
-  tmrTyping->stop();
+  tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_szId, m_nPPID, false);
   
@@ -2623,7 +2632,7 @@ void UserSendChatEvent::resetSettings()
 void UserSendChatEvent::sendButton()
 {
   // Take care of typing notification now
-  tmrTyping->stop();
+  tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_szId, m_nPPID, false);
   
@@ -2713,7 +2722,7 @@ UserSendContactEvent::~UserSendContactEvent()
 void UserSendContactEvent::sendButton()
 {
   // Take care of typing notification now
-  tmrTyping->stop();
+  tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_szId, m_nPPID, false);
   
@@ -2848,7 +2857,7 @@ UserSendSmsEvent::~UserSendSmsEvent()
 void UserSendSmsEvent::sendButton()
 {
   // Take care of typing notification now
-  tmrTyping->stop();
+  tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_szId, m_nPPID, false);
   
