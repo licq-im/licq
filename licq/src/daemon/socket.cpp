@@ -182,7 +182,7 @@ INetSocket::~INetSocket(void)
 void INetSocket::DumpPacket(CBuffer *b, direction d)
 {
   char *szPacket;
-  char szIpR[32];
+  char szIpR[32], szIpL[32];
 
   // This speeds things up if no one is logging packets
   if (!gLog.LoggingPackets()) return;
@@ -190,14 +190,14 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
   switch(d)
   {
   case D_SENDER:
-    gLog.Packet("%s%s: send %d Bytes to %s:%d:\n%s\n",
-                L_PACKETxSTR, m_szID, b->getDataSize(), RemoteIpStr(szIpR),
-                RemotePort(), b->print(szPacket));
+    gLog.Packet("%sPacket (%s, %d bytes) sent (%s:%d -> %s:%d):\n%s\n",
+                L_PACKETxSTR, m_szID, b->getDataSize(), LocalIpStr(szIpL),
+                LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   case D_RECEIVER:
-     gLog.Packet("%s%s: recv %d Bytes from %s:%d:\n%s\n",
-                 L_PACKETxSTR, m_szID, b->getDataSize(), RemoteIpStr(szIpR),
-                 RemotePort(), b->print(szPacket));
+     gLog.Packet("%sPacket (%s, %d bytes) received (%s:%d <- %s:%d):\n%s\n",
+                L_PACKETxSTR, m_szID, b->getDataSize(), LocalIpStr(szIpL),
+                LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   }
   delete[] szPacket;
@@ -558,7 +558,7 @@ bool TCPSocket::RecvPacket(void)
 {
   if (m_xRecvBuffer.Full())
   {
-    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%d bytes).\n",
+    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%d bytes).\n", 
               L_WARNxSTR, m_xRecvBuffer.getDataSize());
     return (true);
   }
@@ -626,7 +626,7 @@ static void UnlockSocket(INetSocket *s)
 
 
 //=====CSocketHashTable=========================================================
-CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
+CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize) 
 {
   pthread_rdwr_init_np(&mutex_rw, NULL);
 }
@@ -634,7 +634,7 @@ CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 
 void CSocketHashTable::Lock(unsigned short _nLockType)
 {
-  switch (_nLockType)
+  switch (_nLockType) 
   {
   case LOCK_R:
     pthread_rdwr_rlock_np (&mutex_rw);
@@ -690,7 +690,7 @@ INetSocket *CSocketHashTable::Retrieve(int _nSd)
       LockSocket(*iter);
       nSd = (*iter)->Descriptor();
       UnlockSocket(*iter);
-      if (nSd == _nSd)
+      if (nSd == _nSd) 
       {
         s = (*iter);
         break;
