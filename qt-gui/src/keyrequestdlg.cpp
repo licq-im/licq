@@ -202,7 +202,6 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
     else
       btnSend->setEnabled(true);
 
-#if 0
     if ( m_bOpen ) {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
       if ( u ) {
@@ -210,8 +209,6 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
         gUserManager.DropUser( u );
       }
     }
-#endif
-    
   }
 
   lblStatus->setText(result);

@@ -912,16 +912,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *hlay = new QHBoxLayout(vlay);
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (mainwin->m_bAutoDetectSendThroughServer)
-  {
-    chkSendServer->setChecked(u->SendServer() ||
-                              (u->StatusOffline() && u->SocketDesc() == -1));
-  }
-  else
-  {
-    chkSendServer->setChecked(u->SendServerLastSelected() ||
-                              (u->StatusOffline() && u->SocketDesc() == -1));
-  }
+  chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
+
   if( (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST)) ||
       (u->Port() == 0 && u->SocketDesc() == -1))
   {
@@ -1171,14 +1163,6 @@ void UserSendCommon::sendButton()
     btnSend->setEnabled(false);
     btnCancel->setText(tr("&Cancel"));
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
-    
-    ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    if (via_server != u->SendServerLastSelected())
-    {
-      u->SetSendServerLastSelected(via_server);
-      u->SetEnableSave(true);
-    }
-    gUserManager.DropUser(u);
   }
 }
 
@@ -1436,8 +1420,7 @@ bool UserSendCommon::checkSecure()
     {
       send_ok = false;
     }
-    else
-      u->SetAutoSecure( false );
+    u->SetAutoSecure( false );
   }
   gUserManager.DropUser(u);
   return send_ok;

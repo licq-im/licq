@@ -340,7 +340,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("MsgChatView", m_bMsgChatView, true );
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
-  licqConf.ReadBool("AutoDetectSendThroughServer", m_bAutoDetectSendThroughServer, true);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
 
   licqConf.ReadBool("showPopEmail",m_bPopEmail, false);
@@ -2434,8 +2433,6 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("MsgChatView", m_bMsgChatView);
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
-  licqConf.WriteBool("AutoDetectSendThroughServer",
-                     m_bAutoDetectSendThroughServer);
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);
 
   licqConf.WriteBool("showPopEmail",m_bPopEmail);
