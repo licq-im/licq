@@ -2213,6 +2213,9 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       // translating string with Translation Table
       gTranslator.ServerToClient(u->GetAbout());
 
+      delete [] szId;
+      szId = strdup(u->IdString());
+      
       // save the user infomation
       u->SetEnableSave(true);
       u->SaveAboutInfo();
@@ -2222,7 +2225,9 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       if (e)
         ProcessDoneEvent(e);
       
+      
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_ABOUT, szId, LICQ_PPID));
+      free(szId);
     }
 
     break;
