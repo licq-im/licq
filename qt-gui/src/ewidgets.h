@@ -33,6 +33,7 @@ public slots:
 protected:
   void resizeEvent (QResizeEvent *);
   virtual void mouseDoubleClickEvent(QMouseEvent *);
+  virtual void mousePressEvent(QMouseEvent *);
   virtual void mouseReleaseEvent(QMouseEvent *e);
   virtual void drawContents(QPainter*);
   bool m_bTransparent;

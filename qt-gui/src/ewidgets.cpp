@@ -189,6 +189,14 @@ void CELabel::resizeEvent (QResizeEvent *)
   }
 }
 
+void CELabel::mousePressEvent(QMouseEvent* e)
+{
+  if(e->button() == MidButton)
+    emit doubleClicked();
+  else
+    QLabel::mousePressEvent(e);
+}
+
 
 void CELabel::mouseDoubleClickEvent(QMouseEvent *)
 {
