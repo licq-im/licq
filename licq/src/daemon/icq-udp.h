@@ -31,7 +31,7 @@ int CICQDaemon::ConnectToServer(void)
   if (!s->SetRemoteAddr(icqServers.current()->name(), icqServers.current()->port()))
   {
     char buf[128];
-    gLog.Warn("%sUnable to resolve %s:\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to resolve %s:\n%s%s.\n", L_ERRORxSTR,
               icqServers.current()->name(), L_BLANKxSTR, s->ErrorStr(buf, 128));
     delete s;
     return (-1);  // no route to host (not connected)
@@ -44,7 +44,7 @@ int CICQDaemon::ConnectToServer(void)
   if (!s->OpenConnection())
   {
     char buf[128];
-    gLog.Warn("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
               s->RemoteIpStr(ipbuf), s->RemotePort(), L_BLANKxSTR,
               s->ErrorStr(buf, 128));
     delete s;
@@ -831,7 +831,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
        6F 72 64 20 63 6F 6D 70 61 6E 79 2C 20 62 75 74 20 79 6F 75 20 6E 65 76
        65 72 20 6B 6E 6F 77 2E 2E 2E 00 */
     AckUDP(theSequence);
-    gLog.Info("%sOffline system message:\n", L_UDPxSTR);
+    gLog.Info("%sOffline system message.\n", L_UDPxSTR);
 
     unsigned short yearSent, newCommand;
     char monthSent, daySent, hourSent, minSent;
@@ -860,7 +860,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
   case ICQ_CMDxRCV_SYSxMSGxONLINE:  // online system message
   {
     AckUDP(theSequence);
-    gLog.Info("%sOnline system message:\n", L_UDPxSTR);
+    gLog.Info("%sOnline system message.\n", L_UDPxSTR);
     unsigned short newCommand;
     packet >> nUin
            >> newCommand;
@@ -1013,16 +1013,16 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     {
       if (!AllowNewUsers())
       {
-        gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_BLANKxSTR, nUin);
+        gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
         break;
       }
       gLog.Info("%sMessage from new user (%ld).\n",
-                L_BLANKxSTR, nUin);
+                L_SBLANKxSTR, nUin);
       AddUserToList(nUin);
       u = gUserManager.FetchUser(nUin, LOCK_W);
     }
     else
-      gLog.Info("%sMessage through server from %s (%ld).\n", L_BLANKxSTR,
+      gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
                 u->getAlias(), nUin);
 
     m_xOnEventManager.Do(ON_EVENT_MSG, u);
@@ -1057,16 +1057,16 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     {
       if (!AllowNewUsers())
       {
-        gLog.Info("%sURL from new user (%ld), ignoring.\n", L_BLANKxSTR, nUin);
+        gLog.Info("%sURL from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
         break;
       }
       gLog.Info("%sURL from new user (%ld).\n",
-                L_BLANKxSTR, nUin);
+                L_SBLANKxSTR, nUin);
       AddUserToList(nUin);
       u = gUserManager.FetchUser(nUin, LOCK_W);
     }
     else
-      gLog.Info("%sURL through server from %s (%ld).\n", L_BLANKxSTR,
+      gLog.Info("%sURL through server from %s (%ld).\n", L_SBLANKxSTR,
                 u->getAlias(), nUin);
 
     m_xOnEventManager.Do(ON_EVENT_URL, u);
@@ -1086,7 +1086,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
         72 6C 6F 6F 2E 63 61 FE 31 FE 50 6C 65 61 73 65 20 61 75 74 68 6F 72 69
         7A 65 20 6D 65 2E 00 */
 
-     gLog.Info("%sAuthorization request from %ld.\n", L_BLANKxSTR, nUin);
+     gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
      unsigned short infoLen;
      packet >> infoLen;
      char message[infoLen + 1];
@@ -1115,7 +1115,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   }
   case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
   {
-     gLog.Info("%sUser %ld added you to their contact list.\n", L_BLANKxSTR,
+     gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR,
                nUin);
 
      unsigned short infoLen;
@@ -1139,7 +1139,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gTranslator.ServerToClient(szFields[0]);  // alias
      gTranslator.ServerToClient(szFields[1]);  // first name
      gTranslator.ServerToClient(szFields[2]);  // last name
-     gLog.Info("%s%s (%s %s), %s\n", L_BLANKxSTR, szFields[0], szFields[1],
+     gLog.Info("%s%s (%s %s), %s\n", L_UDPxSTR, szFields[0], szFields[1],
               szFields[2], szFields[3]);
 
      CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
@@ -1160,7 +1160,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
        65 6D 61 69 6C FE 33 FE 53 65 6E 64 65 72 20 49 50 3A 20 32 30 39 2E 32
        33 39 2E 36 2E 31 33 0D 0A 53 75 62 6A 65 63 74 3A 20 73 75 62 6A 65 63
        74 0D 0A 74 68 65 20 6D 65 73 73 61 67 65 00 */
-    gLog.Info("%sMessage through web panel.\n", L_BLANKxSTR);
+    gLog.Info("%sMessage through web panel.\n", L_SBLANKxSTR);
 
     unsigned short nLen;
     packet >> nLen;
@@ -1174,7 +1174,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gTranslator.ServerToClient(szFields[0]);
     gTranslator.ServerToClient(szFields[5]);
 
-    gLog.Info("%sFrom %s (%s).\n", L_BLANKxSTR, szFields[0], szFields[3]);
+    gLog.Info("%sFrom %s (%s).\n", L_SBLANKxSTR, szFields[0], szFields[3]);
     CEventWebPanel *e = new CEventWebPanel(szFields[0], szFields[3], szFields[5],
                                            ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
@@ -1193,7 +1193,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
        20 5B 53 4C 41 53 48 44 4F 54 5D 0D 0A 5B 54 68 65 20 49 6E 74 65 72 6E
        65 74 5D 20 45 6E 6F 72 6D 6F 75 73 20 38 30 73 20 54 65 78 74 66 69 6C
        65 20 41 72 63 68 69 76 65 00 */
-    gLog.Info("%sEmail pager message.\n", L_BLANKxSTR);
+    gLog.Info("%sEmail pager message.\n", L_SBLANKxSTR);
 
     unsigned short nLen;
     packet >> nLen;
@@ -1207,7 +1207,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gTranslator.ServerToClient(szFields[0]);
     gTranslator.ServerToClient(szFields[5]);
 
-    gLog.Info("%sFrom %s (%s).\n", L_BLANKxSTR, szFields[0], szFields[3]);
+    gLog.Info("%sFrom %s (%s).\n", L_SBLANKxSTR, szFields[0], szFields[3]);
     CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3], szFields[5],
                                                ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
@@ -1224,7 +1224,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     /* 02 00 DC 00 1A 00 23 64 84 00 CF 07 06 15 13 2B 13 00 1E 00 32 FE 37 33
        39 37 38 35 33 FE 46 6C 75 6E 6B 69 FE 37 33 35 37 32 31 39 FE 55 68 75
        FE 00 */
-    gLog.Info("%sContact list.\n", L_BLANKxSTR);
+    gLog.Info("%sContact list.\n", L_SBLANKxSTR);
 
     unsigned short nLen;
     packet >> nLen;
@@ -1248,7 +1248,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       vszFields.push_back(szFields[i + 1]);
     }
 
-    gLog.Info("%s%s contacts.\n", L_BLANKxSTR, szMessage);
+    gLog.Info("%s%s contacts.\n", L_SBLANKxSTR, szMessage);
     CEventContactList *e = new CEventContactList(vszFields, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     AddUserEvent(o, e);
