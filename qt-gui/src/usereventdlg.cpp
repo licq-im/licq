@@ -324,7 +324,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       // use status icon
       else
       {
-        tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull(), u->PPID()));
+        tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
         if (u->GetTyping() == ICQ_TYPING_ACTIVE)
           tabw->setTabColor(tab, QColor("green"));
         else

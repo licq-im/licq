@@ -102,7 +102,8 @@ public:
     m_nUserMenuPPID = _nPPID;
     m_nUserMenuUin = strtoul(_szId, (char **)NULL, 10); // deprecated, use m_nUserMenuId instead!
   }
-  static QPixmap &iconForStatus(unsigned long FullStatus, unsigned long nPPID = LICQ_PPID);
+  static QPixmap &iconForStatus(unsigned long FullStatus, const char *szId = "0",
+    unsigned long nPPID = LICQ_PPID);
   static QPixmap &iconForEvent(unsigned short SubCommand);
 
   // global configuration data
@@ -219,7 +220,8 @@ public:
           pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed,
           pmExpanded, pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
-          pmMSNOccupied, pmMSNPrivate, pmMSNAway;
+          pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
+          pmAIMOffline;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   int m_nProtoNum;

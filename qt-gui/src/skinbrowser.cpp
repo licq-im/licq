@@ -60,6 +60,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
                    << "Occupied" << "DND" << "Private" << "Message" << "Url"
                    << "Chat" << "File" << "SMS" << "Contact" << "Authorize"
                    << "SecureOff" << "SecureOn" << "History" << "Info"
+                   << "AIMOnline" << "AIMOffline" << "AIMAway"
                    << "MSNOnline" << "MSNOffline" << "MSNAway"
                    << "MSNOccupied" << "MSNPrivate";
 

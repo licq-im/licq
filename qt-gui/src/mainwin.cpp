@@ -206,8 +206,11 @@ static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border b
 }
 
 
-QPixmap& CMainWindow::iconForStatus(unsigned long Status, unsigned long nPPID)
+QPixmap& CMainWindow::iconForStatus(unsigned long Status, const char *szId,
+  unsigned long nPPID)
 {
+  bool bAIM = (nPPID == LICQ_PPID) && (!isdigit(szId[0]));
+
   if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE)
      && !gMainWindow->m_bShowExtendedIcons)
      if (nPPID == MSN_PPID)
@@ -218,32 +221,49 @@ QPixmap& CMainWindow::iconForStatus(unsigned long Status, unsigned long nPPID)
   if ((unsigned short) Status == ICQ_STATUS_OFFLINE)
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNOffline;
+    else if (bAIM)
+      return gMainWindow->pmAIMOffline;
     else
       return gMainWindow->pmOffline;
+
   if (Status & ICQ_STATUS_DND)
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNOccupied;
+    else if (bAIM)
+      return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmDnd;
+
   if (Status & ICQ_STATUS_OCCUPIED)
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNOccupied;
+    else if (bAIM)
+      return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmOccupied;
+
   if (Status & ICQ_STATUS_NA)
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNAway;
+    else if (bAIM)
+      return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmNa;
+
   if (Status & ICQ_STATUS_AWAY)
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNAway;
+    else if (bAIM)
+      return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmAway;
+
   if (Status & ICQ_STATUS_FREEFORCHAT) return gMainWindow->pmFFC;
 
   if (nPPID == MSN_PPID)
     return gMainWindow->pmMSNOnline;
+  else if (bAIM)
+    return gMainWindow->pmAIMOnline;
   else
     return gMainWindow->pmOnline;
 }
@@ -3812,6 +3832,21 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    fIconsConf.ReadStr("File", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmFile.load(sFilepath);
+
+   fIconsConf.ReadStr("AIMOnline", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmAIMOnline.load(sFilepath);
+   if (pmAIMOnline.isNull()) pmMSNOnline = pmOnline;
+
+   fIconsConf.ReadStr("AIMOffline", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmAIMOffline.load(sFilepath);
+   if (pmAIMOffline.isNull()) pmAIMOffline = pmOffline;
+
+   fIconsConf.ReadStr("AIMAway", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmAIMAway.load(sFilepath);
+   if (pmAIMAway.isNull()) pmAIMAway = pmAway;
 
    fIconsConf.ReadStr("MSNOnline", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
