@@ -119,6 +119,8 @@ void pipe_signal(CICQSignal *sig)
 
 			if (sig->Uin() == gUserManager.OwnerUin())
 				status_bar_refresh();
+			else if (sig->SubSignal() == USER_GENERAL)
+				icq_daemon->icqRenameUser(sig->Uin());
 		}
 
 		contact_list_refresh();
