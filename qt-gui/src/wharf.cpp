@@ -79,6 +79,8 @@ void IconManager::X11Init()
   XSetClassHint(dsp, win, &classhint); // set the class hints
   hints = XGetWMHints(dsp, win);  // init hints
   hints->initial_state = WithdrawnState;
+  //hints->icon_x = 0;
+  //hints->icon_y = 0;
   hints->icon_window = wharfIcon->winId();
   hints->window_group = win;  // set the window hint
   hints->flags = WindowGroupHint | IconWindowHint | StateHint; // set the window group hint
