@@ -193,7 +193,9 @@ void ICQFunctions::CreateReadEventTab()
   QHGroupBox *h_msg = new QHGroupBox(p);
   mleRead = new MLEditWrap(true, h_msg, true);
   mleRead->setReadOnly(true);
+#if QT_VERSION >= 210
   p->setStretchFactor(h_msg, 1);
+#endif
 
 #if QT_VERSION >= 210
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
@@ -1264,6 +1266,7 @@ void ICQFunctions::slot_nextMessage()
   slot_printMessage(e);
 }
 */
+
 
 //-----ICQFunctions::printMessage----------------------------------------------
 void ICQFunctions::slot_printMessage(QListViewItem *eq)
