@@ -31,6 +31,11 @@ friend class CICQDaemon;
 
 
 //-----CSearchAck------------------------------------------------------------
+// Values for the Status() field of the SearchAck
+const unsigned short  SA_OFFLINE = 0;
+const unsigned short  SA_ONLINE = 1;
+const unsigned short  SA_DISABLED = 2;
+
 class CSearchAck
 {
 public:
@@ -40,7 +45,7 @@ public:
   const char *FirstName()  { return m_szFirstName; }
   const char *LastName()   { return m_szLastName; }
   const char *Email()      { return m_szEmail; }
-  bool More()              { return m_bMore; }
+  int More()               { return m_nMore; }
   char Status()            { return m_nStatus; }
 
   ~CSearchAck();
@@ -53,7 +58,7 @@ protected:
   char *m_szFirstName;
   char *m_szLastName;
   char *m_szEmail;
-  bool m_bMore;
+  bool m_nMore;
   char m_nStatus;
 
 friend class CICQDaemon;

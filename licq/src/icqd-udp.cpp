@@ -1304,7 +1304,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       }
       ICQEvent *e2 = new ICQEvent(e);
       e2->m_pSearchAck = s;
-      e2->m_pSearchAck->m_bMore = false;
+      e2->m_pSearchAck->m_nMore = 0;
       PushPluginEvent(e2);
       PushExtendedEvent(e);
       break;
@@ -1330,7 +1330,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
         break;
       }
       e->m_pSearchAck = new CSearchAck(0);
-      e->m_pSearchAck->m_bMore = more;
+      e->m_pSearchAck->m_nMore = (more != 0 ? -1 : 0);
       ProcessDoneEvent(e);
       break;
     }
@@ -2051,7 +2051,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetAlias());
           gTranslator.ServerToClient(u->GetFirstName());
           gTranslator.ServerToClient(u->GetLastName());
-	  gTranslator.ServerToClient(u->GetEmailPrimary());
+      gTranslator.ServerToClient(u->GetEmailPrimary());
 
           u->SetEnableSave(true);
           u->SaveGeneralInfo();
@@ -2088,9 +2088,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetAlias());
           gTranslator.ServerToClient(u->GetFirstName());
           gTranslator.ServerToClient(u->GetLastName());
-	  gTranslator.ServerToClient(u->GetEmailPrimary());
-	  gTranslator.ServerToClient(u->GetEmailSecondary());
-	  gTranslator.ServerToClient(u->GetEmailOld());
+      gTranslator.ServerToClient(u->GetEmailPrimary());
+      gTranslator.ServerToClient(u->GetEmailSecondary());
+      gTranslator.ServerToClient(u->GetEmailOld());
           gTranslator.ServerToClient(u->GetCity());
           gTranslator.ServerToClient(u->GetState());
           gTranslator.ServerToClient(u->GetPhoneNumber());
@@ -2359,7 +2359,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
 
       // Eat it.. always 0x00
       packet.UnpackChar();
-      
+
       gLog.Info("%s%s (%ld) <%s %s %s>\n", L_SBLANKxSTR, s->m_szAlias, nUin,
                 s->m_szFirstName, s->m_szLastName, s->m_szEmail);
 
@@ -2367,7 +2367,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       if (e == NULL)
       {
         gLog.Warn("%sReceived search result when no search in progress.\n",
-	          L_WARNxSTR);
+              L_WARNxSTR);
         break;
       }
 
@@ -2376,7 +2376,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       ICQEvent *e2 = new ICQEvent(e);
       e2->m_pSearchAck = s;
       e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;  // Sub-meta command
-      e2->m_pSearchAck->m_bMore = false;
+      e2->m_eResult = EVENT_ACKED;
+      e2->m_pSearchAck->m_nMore = 0;
       PushPluginEvent(e2);
 
       break;
@@ -2387,9 +2388,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       {
         gLog.Info("%sWP search found no users.\n", L_UDPxSTR);
         ICQEvent *e2 = new ICQEvent(e);
+        e2->m_eResult = EVENT_SUCCESS;
         e2->m_pSearchAck = NULL;
         // It's a lie, but let's the plugin check for a
-	// null search ack to see if no users were found
+        // null search ack to see if no users were found
         e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
         PushPluginEvent(e2);
         break;
@@ -2431,14 +2433,14 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       packet.UnpackChar();
 
       gLog.Info("%s%s (%ld) <%s %s %s>\n", L_SBLANKxSTR, s->m_szAlias, nUin,
-		s->m_szFirstName, s->m_szLastName, s->m_szEmail);
+        s->m_szFirstName, s->m_szLastName, s->m_szEmail);
 
       // Make a copy for the plugin
       if (e == NULL)
       {
-	gLog.Warn("%sReceived search result when no search in progress.\n",
-		  L_WARNxSTR);
-	break;
+        gLog.Warn("%sReceived search result when no search in progress.\n",
+          L_WARNxSTR);
+        break;
       }
 
       // More users..... It sure looks like this is the number of how many
@@ -2449,9 +2451,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       ICQEvent *e2 = new ICQEvent(e);
       e2->m_pSearchAck = s;
       e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;  // Sub meta-command
-      e2->m_pSearchAck->m_bMore = !(nNumMore == 0);
+      e2->m_eResult = EVENT_SUCCESS;
+      e2->m_pSearchAck->m_nMore = nNumMore;
       PushPluginEvent(e2);
-      
+
       break;
     }
     default:
