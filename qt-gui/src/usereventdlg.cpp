@@ -1016,7 +1016,11 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
   mleSend = new MLEditWrap(true, splView, true);
-  //splView->setResizeMode(mleSend, QSplitter::Stretch);
+  if (mainwin->m_bMsgChatView)
+  {
+    splView->setResizeMode(mleSend, QSplitter::KeepSize);
+    mleSend->resize(mleSend->width(), 90);
+  }
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
   icqColor.SetToDefault();

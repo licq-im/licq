@@ -1822,52 +1822,8 @@ void CMainWindow::callFileFunction (const char *_szFile)
 
 void CMainWindow::callMsgFunction()
 {
-  // Do nothing if there are no events pending
-  if (ICQUser::getNumUserEvents() == 0) return;
-
-  // Do system messages first
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumMsg = o->NewMessages();
-  gUserManager.DropOwner();
-  if (nNumMsg > 0)
-  {
-    callOwnerFunction(OwnerMenuView);
-    return;
-  }
-
-  unsigned long nUin = 0;
-  time_t t = time(NULL);
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
-    {
-      nUin = pUser->Uin();
-      t = pUser->Touched();
-    }
-  }
-  FOR_EACH_USER_END
-
-  if (nUin != 0)
-  {
-    if (m_bMsgChatView)
-    {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-      for (unsigned short i = 0; i < u->NewMessages(); i++)
-      {
-        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
-        {
-          gUserManager.DropUser(u);
-          callFunction(mnuUserSendMsg, nUin);
-          return;
-        }
-      }
-
-      gUserManager.DropUser(u);
-      callFunction(mnuUserView, nUin);
-    }
-    else
-      callFunction(mnuUserView, nUin);
-  }
+  // No need for code duplication
+  slot_ui_viewevent(0);
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
@@ -2237,18 +2193,18 @@ void CMainWindow::slot_logon()
 //-----CMainWindow::slot_ui_viewevent-------------------------------------------
 void CMainWindow::slot_ui_viewevent(unsigned long nUin)
 {
+  // Do nothing if there are no events pending
+  if (ICQUser::getNumUserEvents() == 0) return;
+
   if (nUin == 0)
   {
-    // Do nothing if there are no events pending
-    if (ICQUser::getNumUserEvents() == 0) return;
-
     // Do system messages first
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
     unsigned short nNumMsg = o->NewMessages();
     gUserManager.DropOwner();
     if (nNumMsg > 0)
     {
-      callFunction (mnuUserView, gUserManager.OwnerUin());
+      callOwnerFunction(OwnerMenuView);
       return;
     }
 
@@ -2262,11 +2218,28 @@ void CMainWindow::slot_ui_viewevent(unsigned long nUin)
       }
     }
     FOR_EACH_USER_END
-    if (nUin != 0) callFunction (mnuUserView, nUin);
   }
-  else
+
+  if (nUin != 0)
   {
-    callFunction (mnuUserView, nUin);
+    if (m_bMsgChatView)
+    {
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+      {
+        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
+        {
+          gUserManager.DropUser(u);
+          callFunction(mnuUserSendMsg, nUin);
+          return;
+        }
+      }
+
+      gUserManager.DropUser(u);
+      callFunction(mnuUserView, nUin);
+    }
+    else
+      callFunction(mnuUserView, nUin);
   }
 }
 
