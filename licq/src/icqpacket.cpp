@@ -1868,6 +1868,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       // Save the SID
       u = gUserManager.FetchUser(nUin, LOCK_W);
       u->SetSID(m_nSID);
+      u->SetAwaitingAuth(_bAuthReq);
 
       // Check for a group id
       GroupIDList *pID = gUserManager.LockGroupIDList(LOCK_R);
@@ -2048,6 +2049,9 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
       if (u)
       {
+        if (u->GetAwaitingAuth())
+          _bAuthReq = true;
+
         nGSID = u->GetGSID();
         nSID = u->GetSID();
         szUnicodeName = gTranslator.ToUnicode(u->GetAlias());

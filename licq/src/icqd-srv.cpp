@@ -2103,6 +2103,13 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  // translating string with Translation Table
 	  gTranslator.ServerToClient (szMessage);
 
+          ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+          if (u)
+          {
+            u->SetAwaitingAuth(false);
+            gUserManager.DropUser(u);
+          }
+
 	  CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage,
 						       ICQ_CMDxRCV_SYSxMSGxONLINE,
 						       nTimeSent, 0);
@@ -2735,6 +2742,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                   u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
                                 e->ExtraInfo()));
                   gUserManager.DropUser(u);
+                  PushPluginSignal(new CICQSignal(SIGNAL_ADDxSERVERxLIST, 0, nUin));
                 }
               }
             }
@@ -2942,6 +2950,13 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // translating string with Translation Table
           gTranslator.ServerToClient (szMessage);
+
+          ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+          if (u)
+          {
+            u->SetAwaitingAuth(false);
+            gUserManager.DropUser(u);
+          }
 
           CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
                                                        nTimeSent, 0);

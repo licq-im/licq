@@ -1042,6 +1042,7 @@ inline bool CMainWindow::show_user(ICQUser *u)
 void CMainWindow::slot_updatedUser(CICQSignal *sig)
 {
   unsigned long nUin = sig->Uin();
+        
   switch(sig->SubSignal())
   {
     case USER_EVENTS:
@@ -1163,9 +1164,6 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       }
 
       gUserManager.DropUser(u);
-
-      if (sig->SubSignal() == USER_GENERAL && licqDaemon)
-        licqDaemon->icqRenameUser(nUin);
 
       break;
     }

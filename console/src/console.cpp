@@ -514,15 +514,14 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
         gUserManager.DropUser(u);
       }
 
-      if (s->Uin() != gUserManager.OwnerUin() &&
-          s->SubSignal() == USER_GENERAL)
-        licqDaemon->icqRenameUser(s->Uin());
-
       break;
     }
   case SIGNAL_LOGON:
   case SIGNAL_LOGOFF:
     PrintStatus();
+    break;
+  case SIGNAL_ADDxSERVERxLIST:
+    licqDaemon->icqRenameUser(s->Uin());
     break;
   default:
     gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",

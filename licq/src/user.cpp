@@ -1218,6 +1218,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
+  m_fConf.ReadBool("AwaitingAuth", m_bAwaitingAuth, false);
   m_fConf.ReadNum("SID", m_nSID[NORMAL_SID], 0);
   m_fConf.ReadNum("InvisibleSID", m_nSID[INV_SID], 0);
   m_fConf.ReadNum("VisibleSID", m_nSID[VIS_SID], 0);
@@ -1436,6 +1437,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
   m_bConnectionInProgress = false;
+  m_bAwaitingAuth = false;
   m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
   m_nGSID = 0;
 
@@ -2256,6 +2258,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    m_fConf.WriteBool("SendIntIp", m_bSendIntIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
+   m_fConf.WriteBool("AwaitingAuth", m_bAwaitingAuth);
    m_fConf.WriteNum("SID", m_nSID[NORMAL_SID]);
    m_fConf.WriteNum("InvisibleSID", m_nSID[INV_SID]);
    m_fConf.WriteNum("VisibleSID", m_nSID[VIS_SID]);

@@ -266,6 +266,7 @@ public:
   char *GetAbout()                      { return m_szAbout; }
 
   // Licq Info
+  bool GetAwaitingAuth()                { return m_bAwaitingAuth; }
   unsigned short GetSID()               { return m_nSID[NORMAL_SID]; }
   unsigned short GetInvisibleSID()      { return m_nSID[INV_SID]; }
   unsigned short GetVisibleSID()        { return m_nSID[VIS_SID]; }
@@ -353,6 +354,7 @@ public:
   void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
 
   // Licq Info
+  void SetAwaitingAuth(bool b)        { m_bAwaitingAuth = b; }
   void SetSID(unsigned short s)       { m_nSID[NORMAL_SID] = s; }
   void SetInvisibleSID(unsigned short s) { m_nSID[INV_SID] = s; }
   void SetVisibleSID(unsigned short s){ m_nSID[VIS_SID] = s; }
@@ -586,6 +588,7 @@ protected:
   char *m_szAbout;
 
   // Server Side ID, Group SID
+  bool m_bAwaitingAuth;
   unsigned short m_nSID[3];
   unsigned short m_nGSID;
 

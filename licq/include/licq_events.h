@@ -315,6 +315,10 @@ friend void *MonitorSockets_tep(void *p);
  *  SIGNAL_UI_MESSAGE - The UIN is that of the user we want to send a
  *  message. All other parameters are 0.
  *
+ *  SIGNAL_ADDxSERVERxLIST - The UIN has been successfully added to the server
+ *  list.  The server side alias is just the UIN as a string.  The plugin
+ *  may call icqRenameUser after receiving this.  Sub-type is 0.
+ *
  *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
@@ -323,6 +327,7 @@ const unsigned long SIGNAL_LOGOFF                = 0x00000008;
 const unsigned long SIGNAL_ONEVENT               = 0x00000010;
 const unsigned long SIGNAL_UI_VIEWEVENT          = 0x00000020;
 const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
+const unsigned long SIGNAL_ADDxSERVERxLIST       = 0x00000080;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // logoff constants

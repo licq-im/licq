@@ -119,8 +119,6 @@ void pipe_signal(CICQSignal *sig)
 
 			if (sig->Uin() == gUserManager.OwnerUin())
 				status_bar_refresh();
-			else if (sig->SubSignal() == USER_GENERAL)
-				icq_daemon->icqRenameUser(sig->Uin());
 		}
 
 		contact_list_refresh();
@@ -128,6 +126,10 @@ void pipe_signal(CICQSignal *sig)
 	  }
 
 	  case SIGNAL_LOGOFF:  break;
+
+          case SIGNAL_ADDxSERVERxLIST:
+		icq_daemon->icqRenameUser(sig->Uin());
+		break;
 
 	  default:
 		g_print("Error: Unknown signal type: %ld.", sig->Signal());
