@@ -1140,14 +1140,14 @@ void OptionsDlg::buildAutoStatusCombos(bool firstTime)
   }
 
   cmbAutoAwayMess->clear();
-  cmbAutoAwayMess->insertItem("Previous Message",0);
+  cmbAutoAwayMess->insertItem(tr("Previous Message"),0);
   SARList &sara = gSARManager.Fetch(SAR_AWAY);
   for (unsigned i = 0; i < sara.size(); i++)
     cmbAutoAwayMess->insertItem(sara[i]->Name(),i+1);
   gSARManager.Drop();
 
   cmbAutoNAMess->clear();
-  cmbAutoNAMess->insertItem("Previous Message",0);
+  cmbAutoNAMess->insertItem(tr("Previous Message"),0);
   SARList &sarn = gSARManager.Fetch(SAR_NA);
   for (unsigned i = 0; i < sarn.size(); i++)
     cmbAutoNAMess->insertItem(sarn[i]->Name(),i+1);
