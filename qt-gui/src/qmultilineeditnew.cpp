@@ -3318,7 +3318,7 @@ void QMultiLineEditNew::wrapLine( int line, int removed )
 	QWidget::scroll( 0, sh,
 			 QRect( contentsRect().left(), yPos,
 				contentsRect().width(), contentsRect().bottom()
-				- yPos ) );
+				- yPos + 1) );
     if ( autoUpdate() ) {
 	for (int ul = 0; ul <= nlines; ++ul )
 	    updateCell( line + ul, 0, FALSE );
