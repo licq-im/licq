@@ -1747,7 +1747,7 @@ msgstr ""
 
 #: ../src/userbox.cpp:1339
 msgid "CUserView::<br><nobr>Idle: "
-msgstr ""
+msgstr "<br><nobr>Neèinný: "
 
 #: ../src/userbox.cpp:1282
 msgid "CUserView::<br><nobr>Ip: "
@@ -1755,7 +1755,7 @@ msgstr ""
 
 #: ../src/userbox.cpp:1329
 msgid "CUserView::<br><nobr>Logged In: "
-msgstr "Pøihlá¹en: "
+msgstr "<br><nobr>Pøihlá¹en: "
 
 #: ../src/userbox.cpp:1289
 msgid "CUserView::<br><nobr>O: "
@@ -1767,11 +1767,11 @@ msgstr ""
 
 #: ../src/userbox.cpp:1257
 msgid "CUserView::<br><u>Auto Response:</u>"
-msgstr "<br><u>Auto odpovìï:</u>"
+msgstr "<br><u>Automatická odpovìï:</u>"
 
 #: ../src/userbox.cpp:1240
 msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
-msgstr "<br>Vlastní&nbsp;Auto&nbsp;odpovìï"
+msgstr "<br>Vlastní&nbsp;automatická&nbsp;odpovìï"
 
 #: ../src/userbox.cpp:1249
 msgid "CUserView::<br>Licq&nbsp;%1"
@@ -1803,7 +1803,7 @@ msgstr ""
 
 #: ../src/usercodec.cpp:26
 msgid "CUserView::Central European"
-msgstr ""
+msgstr "Støední Evropa"
 
 # #: usercodec.cpp:44
 # msgid "CUserView::Chinese Simplified"
