@@ -307,6 +307,9 @@ void contact_list_click(GtkWidget *contact_list,
 		add_to_popup("Send Chat Request", _menu,
 			     GTK_SIGNAL_FUNC(list_request_chat), user);
 
+		add_to_popup("Send File Request", _menu,
+			     GTK_SIGNAL_FUNC(list_request_file), user);
+
 		/* A separator */
                 separator = gtk_hseparator_new();
                 item = gtk_menu_item_new(); 

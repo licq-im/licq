@@ -23,6 +23,7 @@
 
 #include "licq_icqd.h"
 #include "licq_events.h"
+#include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_chat.h"
 #include "licq_user.h"
@@ -195,34 +196,53 @@ struct user_away_window
 struct file_accept
 {
 	GtkWidget *window;
+	GtkWidget *window2;
 	ICQUser *user;
-	CEventFile *e;
-	GtkWidget *window2;  /* This is for the refuse part... */
-	GtkWidget *textbox;  /* This is for the refuse part... */
-	GtkWidget *file_selection; /* This is for the accepting part */
+	CUserEvent *e;
+	GtkWidget *text;  /* This is for the refuse part... */
+};
+
+struct file_send
+{
+	GtkWidget *window;		// Window
+	GtkWidget *description;		// File description
+	GtkWidget *file_path;		// File path to send
+	GtkWidget *browse;		// Browse for new file
+	GtkWidget *ok;			// Send
+	GtkWidget *cancel;		// Cancel before it is sent
+	GtkWidget *send_normal;		// Send it normally
+	GtkWidget *send_urgent;		// Send it urgently
+	GtkWidget *send_list;		// Send it to their list
+	GtkWidget *file_select;		// File selection widget
+
+	/* Internals */
+	gulong uin;
+	struct e_tag_data *etd;
 };
 
 struct file_window
 {
+	/* File sending/receiving internals */
+	CFileTransferManager *ftman;
 	gulong uin;
-	gulong sequence;
-	TCPSocket socket_file;
-	TCPSocket socket_file_server;
-	guint16 state;
-	guint16 port;
-	gchar *local_name;
-	gchar *remote_name;
-	gchar *file_name;
-	gulong total_files;
-	gulong batch_size;
-	time_t start_time;
-	gulong batch_pos;
-	gulong file_pos;
-	gint flags;
-	gint file_desc;
 	gint input_tag;
-	gchar remote_file_name[256];
-	guint16 remote_file_size;
+	gulong sequence;
+
+	/* For the window */
+	GtkWidget *window;
+	GtkWidget *current_file_name;
+	GtkWidget *total_files;
+	GtkWidget *local_file_name;
+	GtkWidget *batch;
+	GtkWidget *batch_progress;
+	GtkWidget *batch_size;
+	GtkWidget *progress;
+	GtkWidget *file_size;
+	GtkWidget *time;
+	GtkWidget *bps;
+	GtkWidget *eta;
+	GtkWidget *status;
+	GtkWidget *cancel;
 };
 
 struct search_user
@@ -473,14 +493,22 @@ extern void finish_info(CICQSignal *);
 
 /* Functions in file_window.cpp */
 extern void file_accept_window(ICQUser *, CUserEvent *);
-extern void accept_file(GtkWidget *, struct file_accept *);
-extern void save_file(GtkWidget *, struct file_accept *);
-extern void file_start_as_server(struct file_window *);
-extern void file_recv_connection(gpointer, gint, GdkInputCondition);
-extern void file_state_server(gpointer, gint, GdkInputCondition);
-extern void file_recv_file(gpointer, gint, GdkInputCondition);
-extern void refuse_file(GtkWidget *, struct file_accept *);
-extern void refuse_ok(GtkWidget *, struct file_accept *);
+extern void accept_file(GtkWidget *, gpointer);
+extern void save_file(struct file_accept *);
+extern void refuse_file(GtkWidget *, gpointer);
+extern void refusal_ok(GtkWidget *, gpointer);
+extern void cancel_file(GtkWidget *, gpointer);
+extern void file_pipe_callback(gpointer, gint, GdkInputCondition);
+extern void create_file_window(struct file_window *);
+extern void update_file_info(struct file_window *);
+extern gchar *encode_file_size(unsigned long);
+extern void list_request_file(GtkWidget *, ICQUser *);
+extern void fs_browse_click(GtkWidget *, gpointer);
+extern void fs_ok_click(GtkWidget *, gpointer);
+extern void fs_cancel_click(GtkWidget *, gpointer);
+extern void file_select_ok(GtkWidget *, gpointer);
+extern void file_select_cancel(GtkWidget *, gpointer);
+extern void send_file(GtkWidget *, gpointer);
 
 
 /* Functions in history_window.cpp */

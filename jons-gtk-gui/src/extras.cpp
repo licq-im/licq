@@ -87,7 +87,7 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
 	int i;
    	gchar *result = g_new(gchar, len);
 
-   	for (i=0; i<len; i++)
+   	for (i = 0; i < len; i++)
 	{
 		if(!isdigit(text[i]))
 			result[i] = NULL;
@@ -163,12 +163,16 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	    (etd->e_tag != NULL && !etd->e_tag->Equals(event)) )
 	    	return;
 
-	guint id;
+	guint id = 0;
 	gchar temp[60];
 	
-	/* Get the id for the status bar */
-	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(etd->statusbar), "sta");
-	
+	/* Get the id for the status bar, if the statusbar exists */
+	if(etd->statusbar)
+	{
+		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(etd->statusbar),
+			"sta");
+	}
+
 	/* Get the current text */
 	strcpy(temp, etd->buf);
 	
@@ -201,9 +205,12 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 		}
 	}
 
-	gtk_statusbar_pop(GTK_STATUSBAR(etd->statusbar), id);
-	gtk_statusbar_push(GTK_STATUSBAR(etd->statusbar), id, temp);
-	
+	if(etd->statusbar)
+	{
+		gtk_statusbar_pop(GTK_STATUSBAR(etd->statusbar), id);
+		gtk_statusbar_push(GTK_STATUSBAR(etd->statusbar), id, temp);
+	}
+
 	/* Update the buffer for the e_tag_data */
 	strcpy(etd->buf, "");
 	strcpy(etd->buf, temp);
@@ -305,7 +312,7 @@ void finish_info(CICQSignal *signal)
 	   type == USER_MORE || type == USER_ABOUT))
 		return;
 
-	struct info_user *iu = (struct info_user *)g_new0(struct info_user, 1);
+	struct info_user *iu = g_new0(struct info_user, 1);
 
 	iu = iu_find(signal->Uin());
 
