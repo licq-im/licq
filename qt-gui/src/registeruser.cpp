@@ -33,13 +33,13 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
   : QWizard(parent, name, false)
 {
   page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
-                                    "You can register a new user here, or configure "
-                                    "Licq to use an existing UIN.\n\n"
-                                    "If you are registering a new uin, choose a password and click"
-                                    "\"Finish\".\n"
-                                    "If you already have a uin, then toggle \"Register Existing User\",\n"
-                                    "enter your uin and your password, and click \"OK\"\n\n"
-                                    "Press \"Next\" to proceed."), this);
+                        "You can register a new user here, or configure "
+                        "Licq to use an existing UIN.\n\n"
+                        "If you are registering a new uin, choose "
+                        "a password and click \"Finish\".\n"
+                        "If you already have a uin, then toggle \"Register Existing User\",\n"
+                        "enter your uin and your password, and click \"OK\"\n\n"
+                        "Press \"Next\" to proceed."), this);
 
   addPage(page1, tr("UIN Registration"));
   setHelpEnabled(page1, false);
