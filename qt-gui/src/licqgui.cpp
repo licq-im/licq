@@ -51,7 +51,6 @@ bool LP_Init(int argc, char **argv)
   char skinName[32] = "";
   char iconsName[32] = "";
   char styleName[32] = "";
-  char *LocaleVal = new char;
 
   // parse command line for arguments
   int i = 0;
