@@ -442,7 +442,7 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   }
   //Setup the argv vector, the plugin as argv[0] ..
   p->localargv = (char **)calloc(sizeof(char *), argccnt + 1);
-  p->localargv[0] = (char *)_szName;
+  p->localargv[0] = argv[0];
   for(int i = argcndx - argccnt; i < argcndx; i++)
   {
     p->localargv[i - argcndx + argccnt + 1] = argv[i];
