@@ -1,3 +1,6 @@
+$(top_srcdir)/acinclude.m4: $(top_srcdir)/acinclude.m4.in $(top_srcdir)/libtool.m4.in
+	@cd $(top_srcdir) && cat acinclude.m4.in libtool.m4.in > acinclude.m4
+
 # don't warn about missing AUTHORS, NEWS, ChangeLog .. files
 AUTOMAKE_OPTIONS = foreign 1.4
 

@@ -4,8 +4,10 @@ config.h
 config.cache
 config.status
 Makefile
+Makefile.in
 config.h.in
 aclocal.m4
+acinclude.m4
 stamp-h.in
 stamp-h
 libtool
