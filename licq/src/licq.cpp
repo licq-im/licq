@@ -310,7 +310,8 @@ bool CLicq::Init(int argc, char **argv)
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
   snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
   szConf[MAX_FILENAME_LEN - 1] = '\0';
-  licqConf.LoadFile(szConf);
+  if (licqConf.LoadFile(szConf) == false)
+    return false;
 
   // Verify the version
   licqConf.SetSection("licq");
