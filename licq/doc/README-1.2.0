@@ -1,0 +1,25 @@
+      LICQ v1.2.0 README
+      http://www.licq.org
+      #Licq on irc.openprojects.net
+
+Please check doc/ for the older README which has detailed instructions!
+
+This is the first release of Licq that supports the new TCP based ICQ server protocol (OSCAR).  A lot has changed since the last release of Licq, but this release is believed to be stable enough for a stable release. 
+
+Licq supports server side contact lists somewhat.  It is not complete, so it is disabled by default.  If you decide to enable it you should know the following:
+
+  o  THERE IS NO DIRECT CONNECTION SUPPORT FOR v7 and v8 CLIENTS!  Do not expect Licq to be able to connect directly to these clients.  In some cases it will, but that is because the client is set up for using v6.
+
+  o  Most users can export their current list to the server without a problem.
+
+  o  Licq will flawlessly download groups and contacts from the server to your local list.
+
+  o  Licq does not use the server side aliases.
+
+  o  Changing a group locally will not change what group they are on the server.
+
+  o  Adding users that require authorization will not be added to the server list until the authorization request is complete.
+
+Enjoy this long awaited release and feel free to come by #Licq!
+
+- Jon Keating <jon@licq.org>
