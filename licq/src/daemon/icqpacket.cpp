@@ -786,10 +786,10 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_nHideEmail = bHideEmail ? 1 : 0;
 
   m_nSize += strlen(szAlias) + strlen(szFirstName) + strlen(szLastName) +
-             strlen(szEmail1) + strlen(szEmail2) + strlen(szCity) +
+             strlen(szEmail1) * 2 + strlen(szEmail2) + strlen(szCity) +
              strlen(szState) + strlen(szPhoneNumber) +
              strlen(szFaxNumber) + strlen(szAddress) +
-             strlen(szCellularNumber) + 33 + 12;
+             strlen(szCellularNumber) + 36 + 12;
   InitBuffer();
 
   buffer->PackUnsignedShort(m_nMetaCommand);
