@@ -599,7 +599,7 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through server "
    "if direct connection fails"));
   chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"), boxMainWin);
-  QWhatsThis::add(chkAutoSendThroughServer, tr("Lets you drag around the main window "
+  QWhatsThis::add(chkEnableMainwinMouseMovement, tr("Lets you drag around the main window "
    "with your mouse"));
 
   l = new QVBoxLayout(l);
