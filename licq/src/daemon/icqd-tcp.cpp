@@ -819,6 +819,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         //CPT_AckReadAwayMsg p(newCommand, theSequence, true, u);
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);
         AckTCP(p, pSock);
+
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, checkUin));
         break;
       }
 
