@@ -135,6 +135,7 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 
 	/* The text box */
 	uaw->text_box = gtk_text_new(NULL, NULL);
+	gtk_widget_set_usize(uaw->text_box, 235, 60);
 	gtk_text_set_editable(GTK_TEXT(uaw->text_box), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(uaw->text_box), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(uaw->text_box), TRUE);
