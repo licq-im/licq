@@ -26,6 +26,7 @@
 #include <qtimer.h>
 
 #include "licq_icqd.h"
+#include "licq_icq.h"
 #include "keyrequestdlg.h"
 #include "sigman.h"
 #include "licq_user.h"
@@ -45,14 +46,27 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
-  QLabel *lbl = new QLabel(tr(
-    "Secure channel is established using\n"
-    "Diffie-Hellman key exchange, and \n"
-    "encrypted using DES XCBC encryption.\n"
-    "This only works with other Licq clients."), this);
+  QString t1 = tr("Secure channel is established using\n"
+                  "Diffie-Hellman key exchange, and \n"
+                  "encrypted using DES XCBC encryption.\n\n");
+  QString t2;
+  if((u->ClientTimestamp() & 0xFFFF0000) == LICQ_WITHSSL)
+    t2 = tr("The remote uses Licq v0.%1/OpenSSL.").arg(u->ClientTimestamp() & 0xFFFF);
+  else if ((u->ClientTimestamp() & 0xFFFF0000) == LICQ_WITHOUTSSL)
+    t2 = tr("The remote uses Licq v0.%1, however it\n"
+            "has no secure channel support compiled in.\n"
+            "This won't work.").arg(u->ClientTimestamp() & 0xFFFF);
+  else
+    t2 = tr("This only works with other Licq clients >= v0.85\n"
+            "The remote doesn't seem to use such a client.\n"
+            "This might not work.");
+
+  QLabel *lbl = new QLabel(t1 + t2, this);
   top_lay->addWidget(lbl);
 
   lblStatus = new QLabel(this);
+  lblStatus->setFrameStyle(QFrame::Box | QFrame::Sunken);
+  lblStatus->setAlignment(Qt::AlignCenter);
   top_lay->addWidget(lblStatus);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay);
