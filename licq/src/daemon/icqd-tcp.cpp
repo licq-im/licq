@@ -612,7 +612,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   char licqChar, junkChar;
 
   // Static variables to keep track of repeating chat/file ack packets
-  // THIS IS SHIT AND NEEDS TO BE CHANGED
+  // THIS IS SHIT AND NEEDS TO BE CHANGED FIXME
   static unsigned long s_nChatUin, s_nChatSequence, s_nFileUin, s_nFileSequence;
 
   packet >> checkUin
@@ -625,7 +625,15 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   ;
 
   // Some simple validation of the packet
-  if (checkUin == 0 || command == 0 || newCommand == 0)
+  if (version != ICQ_VERSION_TCP)
+  {
+    char *buf;
+    gLog.Unknown("%sInvalid TCP version (%d):\n%s\n", L_UNKNOWNxSTR, version,
+       packet.print(buf));
+    delete buf;
+    return false;
+  }
+  else if (checkUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
     gLog.Unknown("%sInvalid TCP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
