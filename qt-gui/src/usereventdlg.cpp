@@ -526,6 +526,11 @@ void UserEventCommon::gotTyping(unsigned short nTyping)
 
 void UserEventCommon::slot_updatetyping()
 {
+  // MSN needs this, ICQ/AIM don't send additional packets
+  // This does need to be verified with the official AIM client, there is a
+  // packet for it, but ICQ isn't using it apparently.
+  if (m_nPPID == LICQ_PPID) return;
+
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
   u->SetTyping(ICQ_TYPING_INACTIVEx0);
   nfoStatus->unsetPalette();
