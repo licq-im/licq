@@ -67,12 +67,12 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   lblUin = new QLabel(tr("&Uin:"), passwordBox);
   edtUin = new QLineEdit(passwordBox);
   QWhatsThis::add(edtUin, tr("Enter the UIN which you want to use.  "
-                             "Only available if \"Local changes only\" is"
+                             "Only available if \"Local changes only\" is "
                              "checked.")); 
   lblPassword = new QLabel(tr("&Password:"), passwordBox);
   edtFirst = new QLineEdit(passwordBox);
   QWhatsThis::add(edtFirst, tr("Enter your ICQ password here."));
-  lblVerify = new QLabel(tr("&Verify"), passwordBox);
+  lblVerify = new QLabel(tr("&Verify:"), passwordBox);
   edtSecond = new QLineEdit(passwordBox);
   QWhatsThis::add(edtSecond, tr("Verify your ICQ password here."));
   chkOnlyLocal = new QCheckBox(tr("&Local changes only"), passwordBox);
