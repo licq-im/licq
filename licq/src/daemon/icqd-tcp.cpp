@@ -602,7 +602,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         break;
     }
     //printf("%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
-    if (ns != ICQ_STATUS_OFFLINE &&
+    if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
     {
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
