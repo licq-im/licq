@@ -215,12 +215,6 @@ Siehe Netzwerkfenster für Details</translation>
         <translation>Dateiübertragung abgebrochen.</translation>
     </message>
     <message>
-        <source>Handshaking error
-</source>
-        <translation type="obsolete">Handshake Fehler
-</translation>
-    </message>
-    <message>
         <source>Receiving file...</source>
         <translation>Empfange Datei...</translation>
     </message>
@@ -356,6 +350,14 @@ Siehe Netzwerkfenster für Details.</translation>
         <source>Join Multiparty Chat</source>
         <translation>An Gruppenchat teilnehmen</translation>
     </message>
+    <message>
+        <source>&amp;Invite</source>
+        <translation>&amp;Einladen</translation>
+    </message>
+    <message>
+        <source>&amp;Join</source>
+        <translation>&amp;Betreten</translation>
+    </message>
 </context>
 <context>
     <name>CMMSendDlg</name>
@@ -418,6 +420,10 @@ Siehe Netzwerkfenster für Details.</translation>
         <source>Add All</source>
         <translation>Alle hinzufügen</translation>
     </message>
+    <message>
+        <source>Drag&apos;n&apos;Drop didn&apos;t work</source>
+        <translation>Drag und Drop hat nicht funktioniert</translation>
+    </message>
 </context>
 <context>
     <name>CMainWindow</name>
@@ -460,10 +466,6 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <source>&amp;Info</source>
         <translation>&amp;Informationen</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation>&amp;Zuletzt...</translation>
     </message>
     <message>
         <source>U&amp;tilities</source>
@@ -827,16 +829,8 @@ Siehe Netzwerkfenster für Details.</translation>
 </translation>
     </message>
     <message>
-        <source>&amp;More Info</source>
-        <translation>&amp;Mehr</translation>
-    </message>
-    <message>
         <source>Warnings</source>
         <translation>Warnun&amp;gen</translation>
-    </message>
-    <message>
-        <source>&amp;Work Info</source>
-        <translation>A&amp;rbeit</translation>
     </message>
     <message>
         <source>Debug Level</source>
@@ -901,10 +895,6 @@ Doppelklick - Auto Antwort setzen</translation>
         <translation>Bei &apos;Nicht stören&apos; akzeptieren</translation>
     </message>
     <message>
-        <source>&amp;Security Options</source>
-        <translation type="obsolete">&amp;Sicherheitseinstellungen</translation>
-    </message>
-    <message>
         <source>Use Real Ip (LAN)</source>
         <translation>Benutze echte IP (LAN)</translation>
     </message>
@@ -945,10 +935,6 @@ Doppelklick - Auto Antwort setzen</translation>
         <translation>Nicht &amp;stören</translation>
     </message>
     <message>
-        <source>Change &amp;Password</source>
-        <translation type="obsolete">&amp;Passwort ändern</translation>
-    </message>
-    <message>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -981,10 +967,6 @@ Doppelklick - Nächste Nachricht</translation>
     <message>
         <source>&amp;Invisible</source>
         <translation>Uns&amp;ichtbar</translation>
-    </message>
-    <message>
-        <source>&amp;General Info</source>
-        <translation>&amp;Allgemeines</translation>
     </message>
     <message>
         <source>Send &amp;File Transfer</source>
@@ -1027,14 +1009,6 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Benutzer &amp;suchen</translation>
     </message>
     <message>
-        <source>Next &amp;Server</source>
-        <translation>Nä&amp;chster Server</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation>&amp;Verlauf</translation>
-    </message>
-    <message>
         <source>Not Available to User</source>
         <translation>Immer &apos;Nicht verfügbar&apos;</translation>
     </message>
@@ -1057,10 +1031,6 @@ Doppelklick - Nächste Nachricht</translation>
     <message>
         <source>&amp;Security/Password Options</source>
         <translation>&amp;Sicherheit / Passwort</translation>
-    </message>
-    <message>
-        <source>&amp;Import Users</source>
-        <translation>Benutzer &amp;importieren</translation>
     </message>
     <message>
         <source>Unable to open extended icons file
@@ -1101,20 +1071,12 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Spiele</translation>
     </message>
     <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Frauen suchen Männer</translation>
-    </message>
-    <message>
         <source>20 Something</source>
         <translation>Über 20</translation>
     </message>
     <message>
         <source>30 Something</source>
         <translation>Über 30</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Männer suchen Frauen</translation>
     </message>
     <message>
         <source>40 Something</source>
@@ -1207,10 +1169,6 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Spiele</translation>
     </message>
     <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Frauen suchen Männer</translation>
-    </message>
-    <message>
         <source>error</source>
         <translation>fehler</translation>
     </message>
@@ -1221,10 +1179,6 @@ Doppelklick - Nächste Nachricht</translation>
     <message>
         <source>30 Something</source>
         <translation>Über 30</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Männer suchen Frauen</translation>
     </message>
     <message>
         <source>40 Something</source>
@@ -1290,44 +1244,12 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>S</translation>
     </message>
     <message>
-        <source>Thai</source>
-        <translation type="obsolete">Thailändisch</translation>
-    </message>
-    <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;Ip: </translation>
     </message>
     <message>
-        <source>Greek</source>
-        <translation type="obsolete">Griechisch</translation>
-    </message>
-    <message>
-        <source>Tamil</source>
-        <translation type="obsolete">Tamil</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="obsolete">Kyrillisch</translation>
-    </message>
-    <message>
         <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
         <translation>&lt;br&gt;&lt;u&gt;Auto Antwort:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>Baltic</source>
-        <translation type="obsolete">Baltisch</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="obsolete">Arabisch</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Hebräisch</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="obsolete">Koreanisch</translation>
     </message>
     <message>
         <source>Online</source>
@@ -1336,14 +1258,6 @@ Doppelklick - Nächste Nachricht</translation>
     <message>
         <source>Offline</source>
         <translation>Offline</translation>
-    </message>
-    <message>
-        <source>Western European</source>
-        <translation type="obsolete">Westeuropäisch</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="obsolete">Esperanto</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
@@ -1366,10 +1280,6 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>&lt;br&gt;&lt;nobr&gt;Online: </translation>
     </message>
     <message>
-        <source>Central European</source>
-        <translation type="obsolete">Zentraleuropäisch</translation>
-    </message>
-    <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
         <translation>&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
     </message>
@@ -1382,20 +1292,8 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>&lt;br&gt;&lt;b&gt;Geburtstag&amp;nbsp;Heute!&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>Japanese</source>
-        <translation type="obsolete">Japanisch</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="obsolete">Ukrainisch</translation>
-    </message>
-    <message>
         <source>%1 Floaty (%2)</source>
         <translation>%1 schwebend (%2)</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="obsolete">Chinesisch</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
@@ -1404,18 +1302,6 @@ Doppelklick - Nächste Nachricht</translation>
     <message>
         <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
         <translation>&lt;br&gt;Verschlüsselte&amp;nbsp;Verbindung</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="obsolete">Türkisch</translation>
-    </message>
-    <message>
-        <source>Unicode</source>
-        <translation type="obsolete">Unicode</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="obsolete">Traditionelles Chinesisch</translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
@@ -1507,38 +1393,6 @@ Doppelklick - Nächste Nachricht</translation>
 </context>
 <context>
     <name>ChangePassDlg</name>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Passwort:</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;Wiederholung:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Tragen Sie hier Ihr ICQ Passwort ein.</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Geben Sie hier Ihr ICQ Passwort zur Bestätigung nochmal ein.</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Ab&amp;brechen</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">Ungültiges Passwort. Es muss zwischen 1 und 8 Zeichen haben.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Passworte stimmen nicht überein. Versuchen Sie es erneut.</translation>
-    </message>
 </context>
 <context>
     <name>ChatDlg</name>
@@ -1631,20 +1485,12 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Lokal - %1</translation>
     </message>
     <message>
-        <source>/%1.%2.chat</source>
-        <translation>/%1.%2.chat</translation>
-    </message>
-    <message>
         <source>Remote - Not connected</source>
         <translation>Gegenstelle - Nicht verbunden</translation>
     </message>
     <message>
         <source>&amp;Close Chat</source>
         <translation>S&amp;chließen</translation>
-    </message>
-    <message>
-        <source>Remote - %1</source>
-        <translation>Gegenstelle - %1</translation>
     </message>
     <message>
         <source>Underline</source>
@@ -1697,6 +1543,36 @@ Siehe Netzwerkfenster für Details.</translation>
 %1</source>
         <translation>Fehler beim öffnen der Datei:
 %1</translation>
+    </message>
+    <message>
+        <source>StrikeOut</source>
+        <translation>Durchgestrichen</translation>
+    </message>
+    <message>
+        <source>Toggles StrikeOut font</source>
+        <translation>Schaltet durchgestrichenen Text ein/aus</translation>
+    </message>
+    <message>
+        <source>Set Encoding</source>
+        <translation>Setze Kodierung</translation>
+    </message>
+    <message>
+        <source>
+&lt;--BEEP--&gt;
+</source>
+        <translation>
+&lt;--BEEP--&gt;
+</translation>
+    </message>
+    <message>
+        <source>&gt; &lt;--BEEP--&gt;
+</source>
+        <translation>&gt; &lt;--BEEP--&gt;
+</translation>
+    </message>
+    <message>
+        <source>/%1.chat</source>
+        <translation>/%1.chat</translation>
     </message>
 </context>
 <context>
@@ -2048,6 +1924,14 @@ This might not work.</source>
 oder höher. Der entfernte Benutzer scheint keinen solchen Client zu
 verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
     </message>
+    <message>
+        <source>Ready to close channel</source>
+        <translation>Bereit Verbindung zu schliessen</translation>
+    </message>
+    <message>
+        <source>Ready to request channel</source>
+        <translation>Bereit Verbindung anzufordern</translation>
+    </message>
 </context>
 <context>
     <name>MLView</name>
@@ -2271,11 +2155,6 @@ Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopiere
         <translation>ICQ Server Port:</translation>
     </message>
     <message>
-        <source>The main window will start hidden. Only the dock icon will be visible.</source>
-        <translation type="obsolete">Das Hauptfenster wird beim Start nicht angezeigt.
-Nur das Docking Symbol ist beim Start sichtbar.</translation>
-    </message>
-    <message>
         <source>Parameter for online notification</source>
         <translation>Parameter für Online Meldung</translation>
     </message>
@@ -2297,7 +2176,7 @@ Nur das Docking Symbol ist beim Start sichtbar.</translation>
     </message>
     <message>
         <source>&amp;Apply</source>
-        <translation>Ü&amp;bernehmen</translation>
+        <translation>Über&amp;nehmen</translation>
     </message>
     <message>
         <source>Determines if new users are automatically added to your list or must first request authorization.</source>
@@ -2512,14 +2391,6 @@ Nur das Docking Symbol ist beim Start sichtbar.</translation>
         <translation>Verschiedenes</translation>
     </message>
     <message>
-        <source>All incoming messages automatically open when received, if we are online (or free for chat)</source>
-        <translation type="obsolete">Ankommende Nachrichten automatisch öffnen bei &apos;Online&apos; oder &apos;Frei für Chat&apos;.</translation>
-    </message>
-    <message>
-        <source>Automatically send messages through server if direct connection fails</source>
-        <translation type="obsolete">Nachrichten automatisch über den Server senden, fals die direkte Verbindung scheitert.</translation>
-    </message>
-    <message>
         <source>Perform OnEvent command in do not disturb mode</source>
         <translation>Kommando auch bei Status &apos;nicht stören&apos; ausführen</translation>
     </message>
@@ -2550,14 +2421,6 @@ Nur das Docking Symbol ist beim Start sichtbar.</translation>
     <message>
         <source>Default Icon</source>
         <translation>Standard-Symbol</translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you firstsend an event to them</source>
-        <translation type="obsolete">Wenn deaktiviert, werden Benutzer bei der ersten gesendeten Nachricht automatisch von der Gruppe &quot;Neue Benutzer&quot; entfernt.</translation>
-    </message>
-    <message>
-        <source>The main window will raise on incoming messages</source>
-        <translation type="obsolete">Das Hauptfenster bei eingehenden Nachrichten anzeigen</translation>
     </message>
     <message>
         <source>Check Clipboard For Urls/Files</source>
@@ -2670,10 +2533,6 @@ Folgende Parameter können verwendet werden:
     <message>
         <source>Select Font</source>
         <translation>Schriftart auswählen</translation>
-    </message>
-    <message>
-        <source>The message info label will be bold if there are incoming messages</source>
-        <translation type="obsolete">Das Nachrichten-Info Label ist fett, wenn neue Nachrichten vorhanden sind</translation>
     </message>
     <message>
         <source>Auto-Popup Incoming Msg</source>
@@ -2806,10 +2665,6 @@ Folgende Parameter können verwendet werden:
     <message>
         <source>Draw boxes around each square in the user list</source>
         <translation>Rahmen um jedes Rechteck der Kontaktliste zeichnen</translation>
-    </message>
-    <message>
-        <source>Sets the default behavior for auto closing the user function window after a succesful event</source>
-        <translation type="obsolete">Setzt das Standardverhalten für das automatische schließen des Funktionsfensters nach einem erfolgreichen Ereignis.</translation>
     </message>
     <message>
         <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
@@ -2955,73 +2810,13 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
         <source>Idle Time</source>
         <translation>Leerlaufzeit</translation>
     </message>
+    <message>
+        <source>I am behind a firewall</source>
+        <translation>Ich befinde mich hinter einer Firewall</translation>
+    </message>
 </context>
 <context>
     <name>PasswordDlg</name>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">fehler</translation>
-    </message>
-    <message>
-        <source>Set Password [Setting...</source>
-        <translation type="obsolete">Setze Passwort...</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">Zeitüberschreitung</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Geben Sie hier Ihr ICQ Passwort zur Bestätigung nochmal ein.</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">fehlgeschlagen</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Passworte stimmen nicht überein. Versuchen Sie es erneut.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">Ungültiges Passwort. Es muss zwischen 1 und 8 Zeichen haben.</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">Passwort ändern</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Ab&amp;brechen</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Passwort:</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;Wiederholung:</translation>
-    </message>
-    <message>
-        <source>Set Password</source>
-        <translation type="obsolete">Setze Passwort</translation>
-    </message>
-    <message>
-        <source>ICQ Password [Setting...]</source>
-        <translation type="obsolete">Setze ICQ Passwort...</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Tragen Sie hier Ihr ICQ Passwort ein.</translation>
-    </message>
-    <message>
-        <source>Licq - Set Password</source>
-        <translation type="obsolete">Licq - Setze Passwort</translation>
-    </message>
 </context>
 <context>
     <name>PluginDlg</name>
@@ -3098,297 +2893,9 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
 </context>
 <context>
     <name>QFileDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nein</translation>
-    </message>
-    <message>
-        <source>Dir</source>
-        <translation type="obsolete">Verz.</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
-    </message>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">Zurück</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Datum</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Datei</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Öffnen</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Speichern</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Größe</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">Sortieren</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">Ö&amp;ffnen</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Speichern</translation>
-    </message>
-    <message>
-        <source>ERROR</source>
-        <translation type="obsolete">FEHLER</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Size</source>
-        <translation type="obsolete">Sortiere nach &amp;Größe</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Date</source>
-        <translation type="obsolete">Sortiere nach &amp;Datum</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Name</source>
-        <translation type="obsolete">Sortiere nach &amp;Name</translation>
-    </message>
-    <message>
-        <source>New Folder 1</source>
-        <translation type="obsolete">Neuer Ordner 1</translation>
-    </message>
-    <message>
-        <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;Wollen Sie %1 &quot;%2&quot; wirklich löschen?&lt;/qt&gt;</translation>
-    </message>
-    <message>
-        <source>the directory</source>
-        <translation type="obsolete">das Verzeichnis</translation>
-    </message>
-    <message>
-        <source>File &amp;type:</source>
-        <translation type="obsolete">Datei&amp;typ:</translation>
-    </message>
-    <message>
-        <source>File &amp;name:</source>
-        <translation type="obsolete">Datei&amp;name:</translation>
-    </message>
-    <message>
-        <source>Delete %1</source>
-        <translation type="obsolete">Lösche %1</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Abbrechen</translation>
-    </message>
-    <message>
-        <source>R&amp;eload</source>
-        <translation type="obsolete">Erneut &amp;laden</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">Neuer Ordner</translation>
-    </message>
-    <message>
-        <source>&amp;Unsorted</source>
-        <translation type="obsolete">&amp;Unsortiert</translation>
-    </message>
-    <message>
-        <source>Look &amp;in:</source>
-        <translation type="obsolete">Suche &amp;in:</translation>
-    </message>
-    <message>
-        <source>Preview File Contents</source>
-        <translation type="obsolete">Vorschau des Dateiinhalts</translation>
-    </message>
-    <message>
-        <source>New Folder %1</source>
-        <translation type="obsolete">Neuer Ordner %1</translation>
-    </message>
-    <message>
-        <source>Read-write</source>
-        <translation type="obsolete">Lesen-schreiben</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="obsolete">Nur-lesen</translation>
-    </message>
-    <message>
-        <source>Find Directory</source>
-        <translation type="obsolete">Suche Verzeichnis</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">Eigenschaften</translation>
-    </message>
-    <message>
-        <source>Show &amp;hidden files</source>
-        <translation type="obsolete">Zeige &amp;versteckte Dateien</translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="obsolete">Speichern unter</translation>
-    </message>
-    <message>
-        <source>Inaccessible</source>
-        <translation type="obsolete">Nicht zugreifbar</translation>
-    </message>
-    <message>
-        <source>%1
-File not found.
-Check path and filename.</source>
-        <translation type="obsolete">%1
-Datei nicht gefunden.
-Prüfen Sie Pfad und Dateiname.</translation>
-    </message>
-    <message>
-        <source>List View</source>
-        <translation type="obsolete">Listenansicht</translation>
-    </message>
-    <message>
-        <source>Special</source>
-        <translation type="obsolete">Spezial</translation>
-    </message>
-    <message>
-        <source>Write-only</source>
-        <translation type="obsolete">Nur-schreiben</translation>
-    </message>
-    <message>
-        <source>the symlink</source>
-        <translation type="obsolete">die Verknüpfung</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Löschen</translation>
-    </message>
-    <message>
-        <source>All files (*)</source>
-        <translation type="obsolete">Alle Dateien (*)</translation>
-    </message>
-    <message>
-        <source>Directories</source>
-        <translation type="obsolete">Verzeichnisse</translation>
-    </message>
-    <message>
-        <source>Symlink to Special</source>
-        <translation type="obsolete">Symbolische Verknüpfung zu Spezial</translation>
-    </message>
-    <message>
-        <source>&amp;Rename</source>
-        <translation type="obsolete">&amp;Umbenennen</translation>
-    </message>
-    <message>
-        <source>One directory up</source>
-        <translation type="obsolete">Ein Verzeichnis höher</translation>
-    </message>
-    <message>
-        <source>Preview File Info</source>
-        <translation type="obsolete">Vorschau der Dateiinformationen</translation>
-    </message>
-    <message>
-        <source>the file</source>
-        <translation type="obsolete">die Datei</translation>
-    </message>
-    <message>
-        <source>Create New Folder</source>
-        <translation type="obsolete">Neues Verzeichnis erstellen</translation>
-    </message>
-    <message>
-        <source>Symlink to File</source>
-        <translation type="obsolete">Symbolische Verknüpfung zu Datei</translation>
-    </message>
-    <message>
-        <source>Symlink to Directory</source>
-        <translation type="obsolete">Symbolische Verknüpfung zu Verzeichnis</translation>
-    </message>
-    <message>
-        <source>Detail View</source>
-        <translation type="obsolete">Detailansicht</translation>
-    </message>
 </context>
 <context>
     <name>QFontDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Font</source>
-        <translation type="obsolete">&amp;Schrift</translation>
-    </message>
-    <message>
-        <source>&amp;Size</source>
-        <translation type="obsolete">&amp;Größe</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Übernehmen</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Schließen</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">&amp;Farbe</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Abbrechen</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Beispiel</translation>
-    </message>
-    <message>
-        <source>Font st&amp;yle</source>
-        <translation type="obsolete">Schrift&amp;stil</translation>
-    </message>
-    <message>
-        <source>Scr&amp;ipt</source>
-        <translation type="obsolete">Skr&amp;ipt</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Wähle Schrift</translation>
-    </message>
-    <message>
-        <source>&amp;Underline</source>
-        <translation type="obsolete">&amp;Unterstreichen</translation>
-    </message>
-    <message>
-        <source>Effects</source>
-        <translation type="obsolete">Effekte</translation>
-    </message>
-    <message>
-        <source>Stri&amp;keout</source>
-        <translation type="obsolete">Durch&amp;streichen</translation>
-    </message>
 </context>
 <context>
     <name>QMessageBox</name>
@@ -3411,35 +2918,9 @@ Prüfen Sie Pfad und Dateiname.</translation>
 </context>
 <context>
     <name>QString</name>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Öffnen der Datei fehlgeschlagen:
-%1</translation>
-    </message>
 </context>
 <context>
     <name>QWizard</name>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Hilfe</translation>
-    </message>
-    <message>
-        <source>&lt; Back</source>
-        <translation type="obsolete">&lt; Zurück</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Abbrechen</translation>
-    </message>
-    <message>
-        <source>Finish</source>
-        <translation type="obsolete">Fertigstellen</translation>
-    </message>
-    <message>
-        <source>Next &gt;</source>
-        <translation type="obsolete">Weiter &gt;</translation>
-    </message>
 </context>
 <context>
     <name>RegisterUserDlg</name>
@@ -3537,6 +3018,10 @@ Bitte klicken Sie jetzt auf &apos;Weiter&apos;.</translation>
     <message>
         <source>UIN Registration</source>
         <translation>UIN Registrierung</translation>
+    </message>
+    <message>
+        <source>&amp;Save Password</source>
+        <translation>Passwort &amp;speichern</translation>
     </message>
 </context>
 <context>
@@ -3724,6 +3209,10 @@ Bitte klicken Sie jetzt auf &apos;Weiter&apos;.</translation>
         <source>Licq - User Search</source>
         <translation>Licq - Benutzer Suchen</translation>
     </message>
+    <message>
+        <source>Search complete.</source>
+        <translation>Suche abgeschlossen.</translation>
+    </message>
 </context>
 <context>
     <name>SearchUserView</name>
@@ -3865,20 +3354,12 @@ um Einstellungen ändern zu können.</translation>
         <translation>&amp;Uin:</translation>
     </message>
     <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; ischecked.</source>
-        <translation type="obsolete">Geben Sie die UIN ein die Sie benutzen möchten. Dies ist nur möglich wenn &quot;Nur lokale Änderungen&quot; aktiviert ist.</translation>
-    </message>
-    <message>
         <source>&amp;Password:</source>
         <translation>&amp;Passwort:</translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
         <translation>Tragen Sie hier Ihr ICQ Passwort ein.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify</source>
-        <translation type="obsolete">&amp;Bestätigung</translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
@@ -3959,52 +3440,96 @@ um Einstellungen ändern zu können.</translation>
         <source>%1 Response for %2</source>
         <translation>%1 Antwort für %2</translation>
     </message>
+    <message>
+        <source>refused</source>
+        <translation>abgelehnt</translation>
+    </message>
 </context>
 <context>
     <name>SkinBrowserDlg</name>
-    <message>
-        <source>Name</source>
-        <translation>Name</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation>S&amp;chließen</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Bearbeiten</translation>
-    </message>
     <message>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>Icons</source>
-        <translation>Verfügbare Symbole</translation>
-    </message>
-    <message>
-        <source>Skins</source>
-        <translation>Verfügbare Oberflächen</translation>
-    </message>
-    <message>
         <source>&amp;Apply</source>
-        <translation>&amp;Übernehmen</translation>
-    </message>
-    <message>
-        <source>A&amp;pply</source>
-        <translation>Ü&amp;bernehmen</translation>
+        <translation>Über&amp;nehmen</translation>
     </message>
     <message>
         <source>Licq Skin Browser</source>
         <translation>Licq Design Verwaltung</translation>
     </message>
     <message>
-        <source>Extended Icons</source>
-        <translation>Verfügbare Erweiterte Symbole</translation>
+        <source>Skin selection</source>
+        <translation>Skin Auswahl</translation>
     </message>
     <message>
-        <source>App&amp;ly</source>
-        <translation>Ü&amp;bernehmen</translation>
+        <source>Preview</source>
+        <translation>Vorschau</translation>
+    </message>
+    <message>
+        <source>S&amp;kins:</source>
+        <translation>S&amp;kins:</translation>
+    </message>
+    <message>
+        <source>&amp;Icons:</source>
+        <translation>S&amp;ymbole:</translation>
+    </message>
+    <message>
+        <source>E&amp;xtended Icons:</source>
+        <translation>Er&amp;w. Symbole:</translation>
+    </message>
+    <message>
+        <source>Skin:</source>
+        <translation>Skin:</translation>
+    </message>
+    <message>
+        <source>Icons:</source>
+        <translation>Symbole:</translation>
+    </message>
+    <message>
+        <source>Extended Icons:</source>
+        <translation>Erweiterte Symbole:</translation>
+    </message>
+    <message>
+        <source>&amp;Edit Skin</source>
+        <translation>Skin b&amp;earbeiten</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>Ab&amp;brechen</translation>
+    </message>
+    <message>
+        <source>Unable to open icons file
+%1
+Iconset &apos;%2&apos; has been disabled.</source>
+        <translation>Kann Symboldatei nicht öffnen:
+%1
+Symbol Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
+    </message>
+    <message>
+        <source>Unable to open extended icons file
+%1
+Extended Iconset &apos;%2&apos; has been disabled.</source>
+        <translation>Kann erweiterte Symboldatei nicht öffnen:
+%1
+Erweitertes Symbol Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
+    </message>
+    <message>
+        <source>Unable to open icons file
+%1</source>
+        <translation>Kann Symboldatei nicht öffnen:
+%1</translation>
+    </message>
+    <message>
+        <source>Unable to open extended icons file
+%1</source>
+        <translation>Kann erweiterte Symboldatei nicht öffnen:
+%1</translation>
     </message>
 </context>
 <context>
@@ -4095,12 +3620,6 @@ um Einstellungen ändern zu können.</translation>
     <message>
         <source>Show User Info</source>
         <translation>Informationen zu diesem Benutzer einblenden</translation>
-    </message>
-    <message>
-        <source>Secure channel information</source>
-        <translation type="obsolete">Das Symbol zeigt an, ob die aktuelle Verbindung verschlüsselt wird.
-
-Durch klicken auf das Symbol wird die Verschlüsselung auf- bzw. abgebaut.</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
@@ -4518,10 +4037,6 @@ Beschreibung: %2</translation>
         <translation>Dateiübertragung</translation>
     </message>
     <message>
-        <source>%1 refused %2, send through server.</source>
-        <translation>%1 lehnt %2 ab, sende über Server.</translation>
-    </message>
-    <message>
         <source>Urgent</source>
         <translation>Dringend</translation>
     </message>
@@ -4598,6 +4113,10 @@ through the server!</source>
     <message>
         <source>Se&amp;nd through server</source>
         <translation>Sende über S&amp;erver</translation>
+    </message>
+    <message>
+        <source>%1 refused %2, send through server</source>
+        <translation>%1 lehnte ab %2, sende über Server</translation>
     </message>
 </context>
 <context>
