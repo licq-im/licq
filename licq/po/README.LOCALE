@@ -1,14 +1,16 @@
 Licq Daemon Translation Support
 
 
-Creating a Translation File
+1. Creating a new Translation File
+==================================
 
-First update the basic template by doing "make update-po". 
-Afterwards copy licq.pot to a new file that matches your language, 
+First update the main template by running "make update-po" inside 
+the licq/src/po directory.
+Afterwards rename licq.pot to a filename that matches your language, 
 for example ru.po for russian or de.po for german.
-Edit your newly created .po file headers so that it matches your 
+Edit the headers of your newly created .po file to match your 
 environment. Don't forget to remove the ", fuzzy" entry at the top
-of the headers. It should look similar to this example:
+of the headers. Finally it should look similar to this example:
 
 
 --- BEGIN de.po file example header ---
@@ -33,13 +35,15 @@ msgstr ""
 Now you can edit your new file and translate it. We recommend 
 using a tool like KBabel for doing the translation. It will 
 automatically keep track of copyright notices and other stuff.
+(if correctly configured to do so...)
 
 
 
-Using a translation File
+2. Using an existing translation File
+=====================================
 
 Once the .po file has been created, it must be converted into a gmo file.
-Edit the LINGUAS file and add your new translation to it. Afterwards run
+Edit the file LINGUAS and add your new translation to it. Afterwards run
 "make update-po". This will do the conversion for you.
 
 A simple "make install" will install your new translation into the 
@@ -47,18 +51,24 @@ appropriate location.
 
 
 
-Updating a Translation File
+3. Updating a Translation File
+==============================
 
-All the text strings are updated with each new Licq release, it is necessary
+Many text strings are beeing updated with each new Licq release, it is necessary
 to update the .po files.  This is done simply running "make update-po" in the 
 po directory. The new .po file can now be edited and any necessary 
 translations added.
 
 
 
-Contributing a translation
+4. Contributing a new/updated translation
+=========================================
 
-Once you have created a new translation or update an outdated one, please 
+Once you have created a new translation or updated an outdated one, please 
 contribute it to the public by sending your translation to the licq 
 development mailinglist.
 Please send your <language>.po file to licq-devel@licq.org
+
+
+Thanks to all translation contributors :-)
+Thomas Reitelbach <thomas@licq.org>
