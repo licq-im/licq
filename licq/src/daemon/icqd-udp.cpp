@@ -1603,6 +1603,24 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
      break;
   }
+  case ICQ_CMDxSUB_AUTHxREFUSED:  // system message : authorization refused
+  {
+     gLog.Info("%sAuthorization refused by %ld.\n", L_SBLANKxSTR, nUin);
+
+     // Translating string with Translation Table
+     gTranslator.ServerToClient(szMessage);
+
+     CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
+                                 timeSent, 0);
+
+     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+     AddUserEvent(o, e);
+     gUserManager.DropOwner();
+     e->AddToHistory(NULL, D_RECEIVER);
+     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+     break;
+  }
+
   case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
   {
     gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR,
