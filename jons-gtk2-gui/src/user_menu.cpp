@@ -19,6 +19,7 @@
  */
 
 #include "licq_gtk.h"
+#include "utilities.h"
 
 #include <gtk/gtk.h>
 
@@ -37,17 +38,10 @@ struct send_url
 	struct e_tag_data *etag;
 };
 
-struct delete_user
-{
-	GtkWidget *window;
-	ICQUser *user;
-};
-
 void url_send(GtkWidget *, struct send_url *);
 void url_cancel(GtkWidget *, struct send_url *);
 void url_close(GtkWidget *, struct send_url *);
 void url_verified_close(GtkWidget *, guint, gchar*, struct send_url *);
-void delete_user_callback(GtkWidget *widget, struct delete_user *d);
 void destroy_dialog(GtkWidget *, gpointer);
 
 void list_send_url(GtkWidget *widget, ICQUser *user)
@@ -283,58 +277,20 @@ void url_verified_close(GtkWidget *statusbar, guint id,
 	}
 }
 
-void list_delete_user(GtkWidget *widget, ICQUser *user)
+void
+list_delete_user(GtkWidget *widget, ICQUser *user)
 {
-	GtkWidget *yes;
-	GtkWidget *no;
-	GtkWidget *label;
-	GtkWidget *h_box;
-	GtkWidget *v_box;
-	struct delete_user *d = g_new0(struct delete_user, 1);
+	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
+      GTK_DIALOG_DESTROY_WITH_PARENT,
+      GTK_MESSAGE_QUESTION,
+      GTK_BUTTONS_YES_NO,
+      "Are you sure you would like to delete %s (UIN %ld) from your list?",
+      s_convert_to_utf8(user->GetAlias()).c_str(), 
+			user->Uin());
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_YES)
+		icq_daemon->RemoveUserFromList(user->Uin());
 
-	d->user = user;
-
-	const gchar *text = g_strdup_printf("Are you sure you want to delete\n%s (UIN: %ld)\nfrom your list?", d->user->GetAlias(), d->user->Uin());
-
-	/* Make the dialog window */
-	d->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(d->window), "Licq - Delete User");
-	gtk_window_set_position(GTK_WINDOW(d->window), GTK_WIN_POS_CENTER);
-
-	/* The main box */
-	v_box = gtk_vbox_new(FALSE, 5);
-
-	/* The first box */
-	h_box = gtk_hbox_new(FALSE, 5);
-	label = gtk_label_new(text);
-	gtk_box_pack_start(GTK_BOX(h_box), label, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 5);
-
-	/* The second box, with buttons */
-	h_box = gtk_hbox_new(FALSE, 10);
-	yes = gtk_button_new_from_stock(GTK_STOCK_YES);
-	gtk_box_pack_start(GTK_BOX(h_box), yes, TRUE, TRUE, 0);
-	no = gtk_button_new_from_stock(GTK_STOCK_NO);
-	gtk_box_pack_start(GTK_BOX(h_box), no, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 5);
-
-	/* Connect the signals */
-	g_signal_connect(G_OBJECT(no), "clicked",
-			   G_CALLBACK(window_close), d->window);
-	g_signal_connect(G_OBJECT(d->window), "destroy",
-			   G_CALLBACK(window_close), d->window);
-	g_signal_connect(G_OBJECT(yes), "clicked",
-			   G_CALLBACK(delete_user_callback), d);
-	
-	/* Show the widgets */
-	gtk_container_add(GTK_CONTAINER(d->window), v_box);
-	gtk_widget_show_all(d->window);
-}
-
-void delete_user_callback(GtkWidget *widget, struct delete_user *d)
-{
-	icq_daemon->RemoveUserFromList(d->user->Uin());
-	gtk_widget_destroy(d->window);
+  gtk_widget_destroy (dialog);
 }
 
 void destroy_dialog(GtkWidget *widget, gpointer data)
