@@ -712,7 +712,7 @@ void ICQFunctions::SetMoreInfo(ICQUser *u)
   if (m_bOwner)
   {
     spnBirthDay->setValue((unsigned short)u->GetBirthDay());
-    spnBirthMonth->setValue((unsigned short)u->GetBirthYear());
+    spnBirthMonth->setValue((unsigned short)u->GetBirthMonth());
     spnBirthYear->setValue((unsigned short)u->GetBirthYear() + 1900);
   }
   else
@@ -1295,10 +1295,6 @@ void ICQFunctions::specialFcn(int theFcn)
 //-----ICQFunctions::callFcn-------------------------------------------------
 void ICQFunctions::callFcn()
 {
-  // disable user input
-  btnOk->setEnabled(false);
-  btnCancel->setText(tr("Cancel"));
-
   // do nothing if a command is already being processed
   if (icqEventTag != NULL) return;
 
@@ -1351,12 +1347,17 @@ void ICQFunctions::callFcn()
      }
      else if (rdbFile->isChecked())   // send file transfer
      {
-        m_sProgressMsg = tr("Sending file transfer ");
-        m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-        m_sProgressMsg += "...";
-        icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
-                                           chkSendServer->isChecked() ? false : true,
-                                           chkUrgent->isChecked() ? true : false);
+       if (edtItem->text().isEmpty())
+       {
+         WarnUser(this, tr("You must specify a file to transfer!"));
+         break;
+       }
+       m_sProgressMsg = tr("Sending file transfer ");
+       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+       m_sProgressMsg += "...";
+       icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+                         chkSendServer->isChecked() ? false : true,
+                         chkUrgent->isChecked() ? true : false);
      }
 
      if (icqEventTag == NULL)
@@ -1451,14 +1452,17 @@ void ICQFunctions::callFcn()
      break;
   case TAB_HISTORY:
     ShowHistoryNext();
-    btnOk->setEnabled(true);
-    btnCancel->setText(tr("&Close"));
     break;
   }
 
-  QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
-  setCaption(title);
-  if (icqEventTag != NULL) setCursor(waitCursor);
+  if (icqEventTag != NULL)
+  {
+    QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
+    setCaption(title);
+    setCursor(waitCursor);
+    btnOk->setEnabled(false);
+    btnCancel->setText(tr("Cancel"));
+  }
 }
 
 
