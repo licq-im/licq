@@ -294,8 +294,6 @@ void CUserView::slot_flash()
 
 void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int column, int width, int align )
 {
-  //QListViewItem::paintCell(p, cgdefault, column, width, align);
-
   QFont newFont(p->font());
   newFont.setWeight(m_nWeight);
   if (s_bFontStyles)
@@ -311,8 +309,6 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 
   const QPixmap *pix = NULL;
 
-  /*if (!listView()->verticalScrollBar()->isVisible() &&
-      ((CUserView *)listView())->m_bTransparent)*/
   if (listView()->contentsHeight() < listView()->viewport()->height() &&
       ((CUserView *)listView())->m_bTransparent)
     pix = listView()->parentWidget()->backgroundPixmap();
@@ -327,8 +323,6 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   {
     p->fillRect( 0, 0, width, height(), cg.base());
   }
-
-  //QListViewItem::paintCell(p, cg, column, width, align);
 
   //-----QListViewItem::paintCell------
 
@@ -366,8 +360,16 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 
   //-----------------------------------
 
-  // Make the dividing line between online and offline users
-  if (m_nUin == 0)
+  /*
+  if (m_nUin != 0)
+  {
+    cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
+    QListViewItem::paintCell(p, cg, column, width, align);
+  }
+  else
+  */
+
+  if (m_nUin == 0) // Make the dividing lines
   {
     QFont newFont(p->font());
     newFont.setBold(false);
@@ -389,7 +391,8 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       if (m_sPrefix == "0")
         sz = CUserView::tr("Online");
 
-      if (pix) {
+      if (pix)
+      {
         QPoint pd(p->xForm(QPoint(5,0)).x(), p->xForm(QPoint(5,0)).y());
         QPoint pp(listView()->mapToParent(pd));
         p->drawPixmap(5, 0, *pix, pp.x(), pp.y(), p->fontMetrics().width(sz) + 6, height());
