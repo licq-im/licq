@@ -750,8 +750,8 @@ void CFileDlg::fileSendFile()
     return;
   }
   CBuffer xSendBuf(nBytesToSend + 1);
-  xSendBuf.add((char)0x06);
-  xSendBuf.add(pSendBuf, nBytesToSend);
+  xSendBuf.PackChar(0x06);
+  xSendBuf.Pack(pSendBuf, nBytesToSend);
   if (!m_xSocketFile.SendPacket(&xSendBuf))
   {
     gLog.Error("%sFile send error:\n%s%s\n", L_ERRORxSTR, L_BLANKxSTR,
