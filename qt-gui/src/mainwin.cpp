@@ -1032,6 +1032,7 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
 CMainWindow::~CMainWindow()
 {
   delete licqIcon;
+  delete emoticons;
   gMainWindow = NULL;
   if (m_szUserMenuId)
     free(m_szUserMenuId);
