@@ -253,13 +253,17 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 
 bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
 {
-  char szCommand[4096];
-
-  char *buf = szCommand;
-  buf += sprintf(buf, "%s ", m_szProgram);
+  char *szCommand;
+  char buf[4096];
+  char *tmp;
+  sprintf(buf, "%s ", m_szProgram);
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  u->usprintf(buf, m_szArguments);
+  tmp = u->usprintf(m_szArguments);
   gUserManager.DropUser(u);
+  szCommand = new char[strlen(buf) + strlen(tmp) + 1];
+  strcpy(szCommand, buf);
+  strcat(szCommand, tmp);
+  free(tmp);
 
   if (!POpen(szCommand))
   {
@@ -287,6 +291,7 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
   {
     gLog.Warn("%s%s returned abnormally: exit code %d\n", L_AUTOREPxSTR,
      szCommand, r);
+    delete [] szCommand;
     return !m_bAbortDeleteOnExitCode;
   }
 
@@ -295,6 +300,7 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
   unsigned long tag = licqDaemon->icqSendMessage(nUin, szText, true,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
+  delete [] szCommand;
 
   u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return false;
