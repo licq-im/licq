@@ -789,19 +789,14 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EEventResult
  *----------------------------------------------------------------------------*/
 void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 {
+#if ICQ_VERSION != 5
   static unsigned short s_nPingTimeOuts = 0;
+#endif
 
   // Determine this now as later we might have deleted the event
   unsigned short nCommand = e->m_nCommand;
   EEventResult eResult = e->m_eResult;
-/*
-  // Check if the event was cancelled (this is not how it should work)
-  if (e->m_bCancelled)
-  {
-    delete e;
-    return;
-  }
-*/
+
   // Write the event to the history file if appropriate
   if (e->m_xUserEvent != NULL &&
       e->m_eResult == EVENT_ACKED &&
@@ -820,6 +815,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   {
   // Ping is always sent by the daemon
   case ICQ_CMDxSND_PING:
+#if ICQ_VERSION != 5
     if (e->m_eResult == EVENT_ACKED)
       s_nPingTimeOuts = 0;
     else
@@ -831,8 +827,8 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
         icqRelogon();
       }
     }
+#endif
     break;
-
   // Regular events
   case ICQ_CMDxSND_SETxSTATUS:
   case ICQ_CMDxTCP_START:
@@ -890,7 +886,13 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     ChangeUserStatus(o, m_nDesiredStatus);
     gUserManager.DropOwner();
   }
-
+#if ICQ_VERSION == 5
+  else if (e->m_nCommand != ICQ_CMDxTCP_START &&
+           e->m_eResult == EVENT_TIMEDOUT)
+  {
+    icqRelogon();
+  }
+#endif
 }
 
 
