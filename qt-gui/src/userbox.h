@@ -90,6 +90,9 @@ protected:
 
   friend class CUserView;
   friend class CUserViewTips;
+public: 
+  unsigned short Status() const { return m_nStatus; };
+
 };
 
 //=====UserView====================================================================================
