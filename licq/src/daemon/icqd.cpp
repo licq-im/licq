@@ -1104,6 +1104,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   case ICQ_CMDxSND_AUTHORIZE:
   case ICQ_CMDxSND_VISIBLExLIST:
   case ICQ_CMDxSND_INVISIBLExLIST:
+  case ICQ_CMDxSND_MODIFYxVIEWxLIST:
     PushPluginEvent(e);
     break;
 
