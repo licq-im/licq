@@ -169,6 +169,7 @@ const unsigned short ICQ_TCPxACK_AWAY              = 0x0004;
 const unsigned short ICQ_TCPxACK_OCCUPIED          = 0x0009;
 const unsigned short ICQ_TCPxACK_DND               = 0x000A;
 const unsigned short ICQ_TCPxACK_OCCUPIEDxCAR      = 0x000B;
+//const unsigned short ICQ_TCPxACK_OCCUPIEDx...      = 0x000C; // received when sending to contact list when other side is occupied
 const unsigned short ICQ_TCPxACK_NA                = 0x000E;
 const unsigned short ICQ_TCPxACK_DNDxCAR           = 0x000F;
 const unsigned short ICQ_TCPxACK_ACCEPT            = 0x0000;
