@@ -99,13 +99,13 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   strcpy(m_szICQServer, szICQServer);
   licqConf.ReadNum("ICQServerPort", m_nICQServerPort, DEFAULT_SERVER_PORT);
 
-  bool bTcpEnabled;
   unsigned short nTCPPortsLow, nTCPPortsHigh;
   licqConf.ReadNum("TCPPortsLow", nTCPPortsLow, 0);
   licqConf.ReadNum("TCPPortsHigh", nTCPPortsHigh, 0);
   SetTCPPorts(nTCPPortsLow, nTCPPortsHigh);
-  licqConf.ReadBool("TCPEnabled", bTcpEnabled, true);
-  SetTCPEnabled(bTcpEnabled);
+  licqConf.ReadBool("TCPEnabled", m_bTCPEnabled, true);
+  licqConf.ReadBool("Firewall", m_bFirewall, false);
+  SetTCPEnabled(!m_bFirewall || (m_bFirewall && m_bTCPEnabled));
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
   unsigned long nColor;
@@ -546,7 +546,8 @@ void CICQDaemon::SaveConf()
 
   licqConf.WriteNum("TCPPortsLow", m_nTCPPortsLow);
   licqConf.WriteNum("TCPPortsHigh", m_nTCPPortsHigh);
-  licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
+  licqConf.WriteBool("TCPEnabled", m_bTCPEnabled);
+  licqConf.WriteBool("Firewall", m_bFirewall);
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
   licqConf.WriteNum("ForegroundColor", CICQColor::DefaultForeground());
@@ -693,17 +694,11 @@ void CICQDaemon::SetTCPPorts(unsigned short p, unsigned short r)
   }
 }
 
-bool CICQDaemon::TCPEnabled()
+void CICQDaemon::SetDirectMode()
 {
-  return CPacket::Mode() == MODE_DIRECT;
+  bool bDirect = (!m_bFirewall || (m_bFirewall && m_bTCPEnabled));
+  CPacket::SetMode(bDirect ? MODE_DIRECT : MODE_INDIRECT);
 }
-
-
-void CICQDaemon::SetTCPEnabled(bool b)
-{
-  CPacket::SetMode(b ? MODE_DIRECT : MODE_INDIRECT);
-}
-
 
 void CICQDaemon::InitProxy()
 {

@@ -267,9 +267,18 @@ void OptionsDlg::SetupOptions()
 
   edtICQServer->setText(QString(mainwin->licqDaemon->ICQServer()));
   spnICQServerPort->setValue(mainwin->licqDaemon->ICQServerPort());
+  chkFirewall->setChecked(mainwin->licqDaemon->Firewall());
   chkTCPEnabled->setChecked(mainwin->licqDaemon->TCPEnabled());
   spnPortLow->setValue(mainwin->licqDaemon->TCPPortsLow());
   spnPortHigh->setValue(mainwin->licqDaemon->TCPPortsHigh());
+
+  if (!mainwin->licqDaemon->Firewall())
+  {
+    chkTCPEnabled->setEnabled(false);
+    spnPortLow->setEnabled(false);
+    spnPortHigh->setEnabled(false); 
+  }
+
   chkProxyEnabled->setChecked(mainwin->licqDaemon->ProxyEnabled());
   cmbProxyType->setCurrentItem(mainwin->licqDaemon->ProxyType() - 1);
   edtProxyHost->setText(QString(mainwin->licqDaemon->ProxyHost()));
@@ -499,6 +508,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetICQServerPort(spnICQServerPort->value());
   mainwin->licqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
   mainwin->licqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
+  mainwin->licqDaemon->SetFirewall(chkFirewall->isChecked());
   mainwin->licqDaemon->SetProxyEnabled(chkProxyEnabled->isChecked());
   mainwin->licqDaemon->SetProxyType(cmbProxyType->currentItem() + 1);
   mainwin->licqDaemon->SetProxyHost(edtProxyHost->text().local8Bit());
@@ -882,6 +892,9 @@ QWidget *OptionsDlg::new_network_options()
   lay->addWidget(gbFirewall);
   gbFirewall->setTitle(tr("Firewall"));
 
+  chkFirewall = new QCheckBox(tr("I am behind a firewall"), gbFirewall);
+  connect(chkFirewall, SIGNAL(toggled(bool)), SLOT(slot_useFirewall(bool)));
+  new QWidget(gbFirewall);
   chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
   new QWidget(gbFirewall);
   QLabel *lbl = new QLabel(tr("Port Range:"), gbFirewall);
@@ -928,6 +941,13 @@ QWidget *OptionsDlg::new_network_options()
   lay->addStretch(1);
 
   return w;
+}
+
+void OptionsDlg::slot_useFirewall(bool b)
+{
+  chkTCPEnabled->setEnabled(b);
+  spnPortLow->setEnabled(b);
+  spnPortHigh->setEnabled(b);
 }
 
 void OptionsDlg::slot_useProxy(bool b)

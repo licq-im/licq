@@ -258,8 +258,11 @@ public:
   void SetICQServerPort(unsigned short p) {  m_nICQServerPort = p; }
   
   // Firewall options
-  bool TCPEnabled();
-  void SetTCPEnabled(bool b);
+  bool TCPEnabled() { return m_bTCPEnabled; }
+  void SetTCPEnabled(bool b) { m_bTCPEnabled = b; SetDirectMode(); }
+  bool Firewall() { return m_bFirewall; }
+  void SetFirewall(bool b) { m_bFirewall = b; SetDirectMode(); }
+  void SetDirectMode();
 
   // Proxy options
   void InitProxy();
@@ -338,7 +341,9 @@ protected:
        m_bLoggingOn,
        m_bRegistering,
        m_bOnlineNotifies,
-       m_bAlwaysOnlineNotify;
+       m_bAlwaysOnlineNotify,
+       m_bTCPEnabled,
+       m_bFirewall;
   time_t m_tLogonTime;
   
   // ICQ Server

@@ -865,7 +865,7 @@ CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
   buffer->PackUnsignedLongBE(0x000c0025);    // TLV
   buffer->PackUnsignedLong(s_nLocalIp);    // direct connection info
   buffer->PackUnsignedLongBE(s_nLocalPort);
-  buffer->PackChar(MODE_DIRECT);
+  buffer->PackChar(s_nMode);
   buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
   buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
   buffer->PackUnsignedLongBE(0x00000050);

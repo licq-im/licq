@@ -62,7 +62,7 @@ protected:
       *spnAutoOffline, *spnPortLow, *spnPortHigh, *spnICQServerPort, *spnProxyPort;
    QLineEdit *edtICQServer, *edtProxyHost, *edtProxyLogin, *edtProxyPasswd;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible, *chkTCPEnabled, *chkProxyEnabled, *chkProxyAuthEnabled;
+   QCheckBox  *chkAutoLogonInvisible, *chkFirewall, *chkTCPEnabled, *chkProxyEnabled, *chkProxyAuthEnabled;
 
    // appearance tab
    QWidget* new_appearance_options();
@@ -143,6 +143,7 @@ protected slots:
   void slot_SARsave_act();
   void slot_useProxy(bool);
   void slot_useDockToggled(bool);
+  void slot_useFirewall(bool);
   void slot_ok();
 };
 
