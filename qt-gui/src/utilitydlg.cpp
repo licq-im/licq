@@ -21,7 +21,8 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qsocketnotifier.h> 
+#include <qsocketnotifier.h>
+#include <qlayout.h>
 
 #include "utilitydlg.h"
 #include "ewidgets.h"
@@ -43,41 +44,62 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 
   m_xUtility->SetFields(m_nUin);
 
+  QGridLayout *lay = new QGridLayout(this, 1, 2, 10, 5);
+
   char sz[64];
   sprintf(sz, "Licq Utility: %s", m_xUtility->Name());
   setCaption(sz);
   lblUtility = new QLabel(tr("Command:"), this);
-  lblUtility->setGeometry(10, 10, 60, 20);
+  lay->addWidget(lblUtility, 0, 0);
   nfoUtility = new CInfoField(this, true);
-  nfoUtility->setGeometry(75, 10, width() - 85, 20);
+  lay->addWidget(nfoUtility, 0, 1);
   nfoUtility->setText(m_xUtility->FullCommand());
-#if 0
-  nfoWinType = new CInfoField(10, 35, 60, 5, width() - 85, "Window:", true, this);
+
+  lay->addWidget(new QLabel(tr("Window:"), this), 1, 0);
+  nfoWinType = new CInfoField(this, true);
+  lay->addWidget(nfoWinType, 1, 1);
   switch (m_xUtility->WinType())
   {
   case UtilityWinGui: nfoWinType->setText("GUI"); break;
   case UtilityWinTerm: nfoWinType->setText("Terminal"); break;
   case UtilityWinLicq: nfoWinType->setText("Internal"); break;
   }
-  nfoDesc = new CInfoField(10, 60, 60, 5, width() - 80, "Description:", true, this);
-#endif
+
+  lay->addWidget(new QLabel(tr("Description:"), this), 2, 0);
+  nfoDesc = new CInfoField(this, true);
+  lay->addWidget(nfoDesc, 2, 1);
   nfoDesc->setText(m_xUtility->Description());
+
   chkEditFinal = new QCheckBox(tr("Edit final command"), this);
+  lay->addMultiCellWidget(chkEditFinal, 3, 3, 0, 1);
+
   boxFields = new QGroupBox("User Fields", this);
+  lay->addMultiCellWidget(boxFields, 4, 4, 0, 1);
+  QGridLayout *blay = new QGridLayout(boxFields, 1, 2, 20, 5);
   mleCommand = new MLEditWrap(true, boxFields);
   mleCommand->setReadOnly(true);
   mleCommand->hide();
+  blay->addMultiCellWidget(mleCommand, 0, 0, 0, 1);
   for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
   {
     sprintf(sz, "%s (%%%d):", m_xUtility->UserField(i)->Title(), i + 1);
-    lblFields.push_back(new QLabel(sz, boxFields));
+    QLabel *lbl = new QLabel(sz, boxFields);
+    lblFields.push_back(lbl);
+    blay->addWidget(lbl, i + 1, 0);
     QLineEdit *edt = new QLineEdit(boxFields);
     edt->setText(m_xUtility->UserField(i)->FullDefault());
     edtFields.push_back(edt);
+    blay->addWidget(edt, i + 1, 1);
   }
   if (m_xUtility->NumUserFields() == 0) boxFields->hide();
+
+  QHBoxLayout *hlay = new QHBoxLayout(lay);
   btnRun = new QPushButton("Run", this);
+  hlay->addWidget(btnRun, 0, AlignRight);
+  hlay->addSpacing(20);
   btnCancel = new QPushButton("Cancel", this);
+  hlay->addWidget(btnCancel, 0, AlignLeft);
+  lay->addMultiCell(hlay, 5, 5, 0, 1);
 
   connect(btnRun, SIGNAL(clicked()), SLOT(slot_run()));
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
@@ -122,24 +144,6 @@ void CUtilityDlg::hide()
 }
 
 
-void CUtilityDlg::resizeEvent(QResizeEvent *e)
-{
-#if 0
-  nfoUtility->setGeometry(10, 10, 80, 5, width() - 105);
-  nfoWinType->setGeometry(10, 35, 80, 5, width() - 105);
-  nfoDesc->setGeometry(10, 60, 80, 5, width() - 105);
-#endif
-  boxFields->setGeometry(10, 90, width() - 20, height() - 170);
-  mleCommand->setGeometry(10, 20, boxFields->width() - 20, boxFields->height() - 30);
-  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
-  {
-    lblFields[i]->setGeometry(10, (i+1) * 25 - 5, 140, 20);
-    edtFields[i]->setGeometry(150, (i+1) * 25 - 5, boxFields->width() - 160, 20);
-  }
-  chkEditFinal->setGeometry(10, height() - 75, width() - 20, 30);
-  btnRun->setGeometry(width() / 2 - 100, height() - 40, 80, 30);
-  btnCancel->setGeometry(width() / 2 + 20, height() - 40, 80, 30);
-}
 
 void CUtilityDlg::slot_run()
 {

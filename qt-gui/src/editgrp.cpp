@@ -33,9 +33,9 @@
 EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
-  QGridLayout *lay = new QGridLayout(this, 2, 2, 15, 10);
+  QGridLayout *lay = new QGridLayout(this, 2, 1, 15, 10);
   grpGroups = new QGroupBox(tr("Groups"), this);
-  lay->addMultiCellWidget(grpGroups, 0, 0, 0, 2);
+  lay->addWidget(grpGroups, 0, 0);
 
   QGridLayout *glay = new QGridLayout(grpGroups, 4, 3, 20, 5);
   lstGroups = new QListBox(grpGroups);
@@ -72,11 +72,14 @@ EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   edtName->setEnabled(false);
   glay->addMultiCellWidget(edtName, 3, 3, 0, 2);
 
+  QHBoxLayout *hlay = new QHBoxLayout;
   btnWhat = new QPushButton(tr("Help"), this);
-  lay->addWidget(btnWhat, 1, 0, AlignLeft);
   connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
+  hlay->addWidget(btnWhat, 0, AlignRight);
+  hlay->addSpacing(20);
   btnDone = new QPushButton(tr("Done"), this);
-  lay->addWidget(btnDone, 1, 1, AlignRight);
+  hlay->addWidget(btnDone, 0, AlignLeft);
+  lay->addLayout(hlay, 1, 0);
 
   RefreshList();
 

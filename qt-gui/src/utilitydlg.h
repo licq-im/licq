@@ -11,7 +11,6 @@ class QCheckBox;
 class QLineEdit;
 class QLabel;
 class QSocketNotifier;
-class QScrollView;
 class QGroupBox;
 
 class CICQDaemon;
@@ -34,17 +33,15 @@ protected:
   unsigned long m_nUin;
   bool m_bIntWin;
 
-  QLabel *lblUtility, *lblWinType, *lblDesc;
+  QLabel *lblUtility;
   CInfoField *nfoUtility, *nfoWinType, *nfoDesc;
   QCheckBox *chkEditFinal;
-  QScrollView *scrFields;
   QGroupBox *boxFields;
-  vector <QLineEdit *> edtFields;
   vector <QLabel *> lblFields;
+  vector <QLineEdit *> edtFields;
   QPushButton *btnRun, *btnCancel;
   MLEditWrap *mleCommand;
   QSocketNotifier *snCommand;
-  void resizeEvent (QResizeEvent *);
 protected slots:
   void slot_run();
   void slot_cancel();
