@@ -404,7 +404,6 @@ public:
 
 protected:
   ICQUser() { /* ICQOwner inherited constructor - does nothing */ };
-  void StupidLinkageFix();
   void LoadGeneralInfo();
   void LoadMoreInfo();
   void LoadWorkInfo();
