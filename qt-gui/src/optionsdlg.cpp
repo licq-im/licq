@@ -15,6 +15,10 @@
  
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <qdir.h>
 #include <qlayout.h>
 #include <qpushbutton.h>

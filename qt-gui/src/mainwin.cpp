@@ -2,6 +2,20 @@
 #include "config.h"
 #endif
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#ifdef USE_SCRNSAVER
+#include <X11/extensions/scrnsaver.h>
+#endif
+
+#undef Bool
+#undef None
+#undef KeyPress
+#undef KeyRelease
+#undef FocusIn
+#undef FocusOut
+
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kwm.h>
@@ -36,14 +50,6 @@
 #endif
 
 #include "licq_qt-gui.conf.h"
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
-#ifdef USE_SCRNSAVER
-#include <X11/extensions/scrnsaver.h>
-#endif
-
 
 static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border border)
 {

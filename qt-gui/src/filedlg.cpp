@@ -12,6 +12,7 @@
 #else
 #include <qfiledialog.h>
 #endif
+#include <qdir.h>
 #include <qgroupbox.h>
 
 #include "filedlg.h"
