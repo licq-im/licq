@@ -44,6 +44,9 @@ protected:
   virtual void mouseReleaseEvent( QMouseEvent *e );
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
+#ifdef USE_KDE
+  void setupGeometry(Orientation orientation, int width, int height);
+#endif
   WharfIcon wharfIcon;
   int m_nNewMsg, m_nSysMsg;
   bool m_bFortyEight;

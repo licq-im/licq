@@ -91,6 +91,15 @@ IconManager::~IconManager()
 
 void IconManager::closeEvent( QCloseEvent*) {}
 
+#ifdef USE_KDE
+
+void IconManager::setupGeometry(Orientation orientation, int width, int height)
+{
+    setMinimumSize(64,48);
+
+    KApplet::setupGeometry(orientation, minimumSize().width(), minimumSize().height());
+}
+#endif
 
 //-----CMainWindow::setDockIconStatus-------------------------------------------
 void IconManager::setDockIconStatus()
