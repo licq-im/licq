@@ -212,6 +212,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
+  // we need spacing, but for some reason the main widget has a frame which
+  // leaves odd lines on the screen...that needs to be fixed FIXME
+  lay->addSpacing(10);
   lay->addWidget(h_action);
   btnRead1 = new CEButton(h_action);
   btnRead2 = new QPushButton(h_action);
@@ -229,9 +232,6 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_btnRead4()));
 
   QBoxLayout *h_lay = new QHBoxLayout(top_lay);
-  chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
-  chkAutoClose->setChecked(gMainWindow->m_bAutoClose);
-  h_lay->addWidget(chkAutoClose);
 #if 0
   cmbSendType = new QComboBox(this);
   cmbSendType->insertItem(tr("Message"));
@@ -247,6 +247,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
     h_lay->addWidget(btnMenu);
     connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
     btnMenu->setPopup(gMainWindow->UserMenu());
+    chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
+    chkAutoClose->setChecked(gMainWindow->m_bAutoClose);
+    h_lay->addWidget(chkAutoClose);
   }
   h_lay->addStretch(1);
   btnClose = new CEButton(tr("&Close"), this);
@@ -671,10 +674,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *hlay = new QHBoxLayout(vlay);
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (chkSendServer->isEnabled())
-  {
-    chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
-  }
+  chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
   if (u->Ip() == 0)
   {
     chkSendServer->setChecked(true);
