@@ -16,6 +16,7 @@
 
 */
 #include <ctype.h>
+#include <stdio.h>
 
 #include <qpainter.h>
 #include <qpopupmenu.h>
@@ -680,12 +681,14 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   }
   else
   {
+    char szClass[16];
+    sprintf(szClass, "Floaty%d", floaties->size() + 1);
     setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);
     XClassHint classhint;
     classhint.res_name = "licq";
-    classhint.res_class = "Floaty";
+    classhint.res_class = szClass;
     XSetClassHint(x11Display(), winId(), &classhint);
     XWMHints *hints = XGetWMHints(x11Display(), winId());
     hints->window_group = winId();
