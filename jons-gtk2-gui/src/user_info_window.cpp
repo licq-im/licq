@@ -19,12 +19,16 @@
  */
 
 #include "licq_gtk.h"
+#include "utilities.h"
 
 #include "licq_countrycodes.h"
 #include "licq_languagecodes.h"
 
 #include <gtk/gtk.h>
 #include <stdlib.h>
+
+#include <iostream>
+using namespace std;
 
 struct info_user
 {
@@ -71,7 +75,7 @@ struct info_user
 	GtkWidget *about;
 	GtkWidget *update;
 	GtkWidget *cancel;
-	ICQUser *user;
+  unsigned long uin;
 	struct e_tag_data *etag;
 };
 
@@ -81,7 +85,7 @@ void user_info_save(GtkWidget *widget, struct info_user *iu);
 gboolean user_info_close(GtkWidget *widget, struct info_user *iu);
 void update_user_info(GtkWidget *widget, struct info_user *iu);
 void cancel_user_info(GtkWidget *widget, struct info_user *iu);
-struct info_user *iu_new(ICQUser *u);
+struct info_user *iu_new(unsigned long uin);
 struct info_user *iu_find(unsigned long uin);
 void verify_user_info(GtkWidget *widget, guint id, gchar *text,
 		      struct info_user *iu);
@@ -90,27 +94,50 @@ void do_entry(GtkWidget *&, const gchar *, gboolean);
 void do_label_and_entry(GtkWidget *&, const gchar *,
 	const gchar *, GtkWidget *&, gint, gint, gboolean);
 
-void list_info_user(GtkWidget *window, ICQUser *user)
+void
+list_info_user_uin(GtkWidget *window, unsigned long uin);
+
+void
+list_info_user(GtkWidget *window, ICQUser *user)
 {
-	gboolean is_o = FALSE;
+  if (user != NULL)
+    list_info_user_uin(window, user->Uin());
+  else  
+    list_info_user_uin(window, 0);
+}
 
-	// Check to see if it's for the owner 
-	if(user == 0)
-	{
-		user = gUserManager.FetchOwner(LOCK_R);
-		is_o = TRUE;
-	}
+void
+list_info_user_uin(GtkWidget *window, unsigned long uin)
+{
+	struct info_user *iu = iu_find(uin);
 
-	struct info_user *iu = iu_find(user->Uin());
-
-	if(iu != 0)
-	{
-		gdk_window_show(iu->window->window);
-		gdk_window_raise(iu->window->window);
+	if (iu != NULL) {
+		gtk_widget_show(iu->window);
 		return;
 	}
 
-	iu = iu_new(user);
+	gboolean is_o;
+
+	ICQUser *user;
+  // Check to see if it's for the owner 
+	if (uin == 0)	{
+		user = gUserManager.FetchOwner(LOCK_R);
+		is_o = TRUE;
+	}
+  else {
+	  user = gUserManager.FetchUser(uin, LOCK_R);
+		is_o = FALSE;
+  }
+
+  if (user == NULL)
+    return;
+
+	iu = iu_new(uin);
+	/* Take care of the e_tag_data stuff */
+	iu->etag = g_new0(struct e_tag_data, 1);
+
+  iu->uin = user->Uin();
+
 
 	GtkWidget *label;
 	GtkWidget *entry;
@@ -119,18 +146,14 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	GtkWidget *save;
 	GtkWidget *close;
 	GtkWidget *statusbar;
-	const gchar *title = g_strdup_printf("Info for %s", user->GetAlias());
-	const gchar *uin = g_strdup_printf("%ld", user->Uin());
+	
+  gchar *title = g_strdup_printf("Info for %s", user->GetAlias());
+	gchar *c_uin = g_strdup_printf("%ld", user->Uin());
 	gchar real_ip[32];
 	const gulong _realip = user->RealIp();
 	gchar buf[32];
 	strcpy(real_ip, inet_ntoa_r(*(struct in_addr *)&_realip, buf));
 	
-	/* Take care of the e_tag_data stuff */
-	iu->etag = g_new0(struct e_tag_data, 1);
-
-	iu->user = user;
-
 	/* Make the window */
 	iu->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(iu->window), title);
@@ -149,91 +172,138 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	/* The notebook */
 	iu->notebook = gtk_notebook_new();
 
-//------ START THE GENERAL TAB ---------------------------
+  //------ START THE GENERAL TAB ---------------------------
 
-	GtkWidget *general_table = gtk_table_new(6, 4, false);
+	
+  GtkWidget *general_table = gtk_table_new(6, 4, false);
 
 	// Alias (always editable)
-	do_label_and_entry(iu->alias, user->GetAlias(), "Alias:",
-		general_table, 0, 0, true);
+	do_label_and_entry(
+      iu->alias, 
+      user->GetAlias(), 
+      "Alias:",
+		  general_table, 
+      0, 0, 
+      true);
 
 	// UIN (never editable)
-	do_label_and_entry(entry, uin, "UIN:", general_table, 
-		2, 0, false);
+	do_label_and_entry(
+      entry, 
+      c_uin,
+      "UIN:",
+      general_table, 
+		  2, 0, 
+      false);
 
 	// Full Name
-	do_label_and_entry(iu->fname, user->GetFirstName(), "First Name:",
-		general_table, 0, 1, is_o);
+	do_label_and_entry(
+      iu->fname, 
+      user->GetFirstName(),
+      "First Name:",
+		  general_table, 
+      0, 1, 
+      is_o);
 	
 	// Last Name
-	do_label_and_entry(iu->lname, user->GetLastName(), "Last Name:",
-		general_table, 2, 1, is_o);
+	do_label_and_entry(
+      iu->lname, 
+      user->GetLastName(),
+      "Last Name:",
+		  general_table, 
+      2, 1, 
+      is_o);
 	
 	// IP (never editable)
-        char szIPPort[64];
-        char portBuf[32];
+  char szIPPort[64];
+  char portBuf[32];
 	snprintf(szIPPort, 64, "%s:%s", user->IpStr(buf), user->PortStr(portBuf));
-	do_label_and_entry(entry, szIPPort, "IP:", 
-		general_table, 0, 2, false);
+	do_label_and_entry(
+      entry, 
+      szIPPort,
+      "IP:", 
+		  general_table, 
+      0, 2, 
+      false);
 
 	// Real IP (never editable)
-	do_label_and_entry(entry, real_ip, "Real IP:", general_table,
-		2, 2, false);
+	do_label_and_entry(
+      entry, 
+      real_ip, 
+      "Real IP:", 
+      general_table,
+		  2, 2, 
+      false);
 	
 	// Primary e-mail
-	do_label_and_entry(iu->email1, user->GetEmailPrimary(),
-		"Primary E-Mail:", general_table, 0, 3, is_o);
+	do_label_and_entry(
+      iu->email1, 
+      user->GetEmailPrimary(),
+		  "Primary E-Mail:",
+      general_table, 
+      0, 3, 
+      is_o);
 
 	// Secondary e-mail
-	do_label_and_entry(iu->email2, user->GetEmailSecondary(),
-		"Secondary E-mail:", general_table, 2, 3, is_o);
+	do_label_and_entry(
+      iu->email2, 
+      user->GetEmailSecondary(),
+		  "Secondary E-mail:",
+      general_table, 
+      2, 3, 
+      is_o);
 
 	// Old e-mail
-	do_label_and_entry(iu->oldemail, user->GetEmailOld(),
-		"Old E-mail:", general_table, 0, 4, is_o);
+	do_label_and_entry(
+      iu->oldemail, 
+      user->GetEmailOld(),
+		  "Old E-mail:",
+      general_table, 
+      0, 4, 
+      is_o);
 
 	// Hide e-mail is needed anyways.. use an if statement to decide
 	// where it goes..
-	iu->hide_email = gtk_check_button_new_with_label(
-		"Hide E-mail Address");
+	iu->hide_email = gtk_check_button_new_with_label("Hide E-mail Address");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(iu->hide_email),
-		user->GetHideEmail());
+		  user->GetHideEmail());
 		
 	// If it's not the owner, show last seen
-	if(!is_o)
-	{
+	if (!is_o)	{
 		gchar online[28];
 		
-		if(!iu->user->StatusOffline())
+		if (!user->StatusOffline())
 			strcpy(online, "Now");
-		else if(iu->user->LastOnline() == 0)
+		else if (user->LastOnline() == 0)
 			strcpy(online, "Unknown");
-		else
-		{
-			time_t last = iu->user->LastOnline();
+		else {
+			time_t last = user->LastOnline();
 			strcpy(online, ctime(&last));
 		}
 	
-		do_label_and_entry(entry, online, "Last Seen:", general_table,
-			2, 4, FALSE);
+		do_label_and_entry(
+        entry,
+        online,
+        "Last Seen:",
+        general_table,
+			  2, 4, 
+        FALSE);
 
 		iu->need_auth = gtk_check_button_new_with_label(
-			"Need Authorization To Add");
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
-			iu->need_auth), iu->user->GetAuthorization());
+        "Need Authorization To Add");
+		gtk_toggle_button_set_active(
+        GTK_TOGGLE_BUTTON(iu->need_auth), user->GetAuthorization());
 		gtk_widget_set_sensitive(iu->need_auth, false);
 		gtk_table_attach(GTK_TABLE(general_table), iu->need_auth, 0, 2,
-			5, 6, GTK_FILL, GTK_FILL, 3, 1);
+			  5, 6, GTK_FILL, GTK_FILL, 3, 1);
 
 		gtk_widget_set_sensitive(iu->hide_email, false);
 		gtk_table_attach(GTK_TABLE(general_table), iu->hide_email, 2, 4,
-			5, 6,
-			GtkAttachOptions(0),
-			GtkAttachOptions(0), 3, 1);
+			  5, 6,
+			  GtkAttachOptions(0),
+			  GtkAttachOptions(0), 3, 1);
 	}
 	// It's the owner
-	else
-	{
+	else {
 		gtk_table_attach(GTK_TABLE(general_table), iu->hide_email,
 			0, 2, 5, 6, GTK_FILL, GTK_FILL, 3, 1);
 	}
@@ -265,19 +335,15 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	SCountry *sc = (SCountry *)GetCountryByCode(user->GetCountryCode());
 	gchar country[32];
 
-	if(sc == 0)
+	if (sc == 0)
 		strcpy(country, "Unspecified");
-
 	else
 		strcpy(country, sc->szName);
 
-	if(!is_o)
-	{
+	if (!is_o)
 		do_label_and_entry(iu->country, country, "Country:",
 			address_table, 0, 2, FALSE);
-	}
-	else
-	{
+	else {
 		iu->o_country = gtk_combo_new();
 		GList *country_strings = 0;
 
@@ -335,21 +401,19 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		0, 0, is_o);
 
 	// Gender
-	if(!is_o)
-	{
-		gchar gender[12];
+	if (!is_o) {
+		const gchar *gender;
 		if(user->GetGender() == 1)
-			strcpy(gender, "Female");
+			gender = "Female";
 		else if(user->GetGender() == 2)
-			strcpy(gender, "Male");
+			gender = "Male";
 		else
-			strcpy(gender, "Unspecified");
+			gender = "Unspecified";
 
 		do_label_and_entry(iu->gender, gender, "Gender:", more_table,
 			2, 0, FALSE);
 	}
-	else
-	{
+	else {
 		iu->o_gender = gtk_combo_new();
 		GList *gender_strings = 0;
 		gender_strings = g_list_append(gender_strings, const_cast<char *>("(None)"));
@@ -378,22 +442,19 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		 more_table, 0, 1, is_o);
 
 	// Birthday
-	if(!is_o)
-	{
+	if (!is_o) {
 		gchar bday[11];
 
 		if(user->GetBirthMonth() == 0 || user->GetBirthDay() == 0)
 			strcpy(bday, "N/A");
-
 		else
 			sprintf(bday, "%d/%d/%d", user->GetBirthMonth(),
-				user->GetBirthDay(), user->GetBirthYear());
+				  user->GetBirthDay(), user->GetBirthYear());
 
 		do_label_and_entry(iu->bday, bday, "Birthday:", more_table,
 			2, 1, FALSE);
 	}
-	else
-	{
+	else {
 		label = gtk_label_new("Birthday:");
 		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 		gtk_table_attach(GTK_TABLE(more_table), label, 2, 3, 1, 2,
@@ -451,38 +512,30 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	// Languages
 	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
 	
-	if(!is_o)
-	{
-		for(unsigned short i = 0; i < 3; i++)
-		{
-			const SLanguage *lang =
-				GetLanguageByCode(user->GetLanguage(i));
-			
-		  	label =
-				gtk_label_new(
-					g_strdup_printf("Language %d:", i + 1));
+	if (!is_o) {
+		for (unsigned short i = 0; i < 3; i++) {
+			const SLanguage *lang =	GetLanguageByCode(user->GetLanguage(i));
+			char *lng = g_strdup_printf("Language %d:", i + 1);
+		  label =	gtk_label_new(lng);
+      g_free(lng);
 			if (lang)
 			  do_entry(iu->lang[i], lang->szName, FALSE);
 			else
 			  do_entry(iu->lang[i], "", false);
 
 			gtk_widget_set_size_request(iu->lang[i], 75, 20);
-			gtk_box_pack_start(GTK_BOX(h_box), label, FALSE,
-				FALSE, 5);
-			gtk_box_pack_start(GTK_BOX(h_box), iu->lang[i],
-				FALSE, FALSE, 2);
+			gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
+			gtk_box_pack_start(GTK_BOX(h_box), iu->lang[i],	FALSE, FALSE, 2);
 		}
 	}
-	else
-	{
+	else {
 		GList *lang_strings = 0;
 		
 		for(unsigned short j = 0; j < NUM_LANGUAGES; j++)
 			lang_strings = g_list_append(lang_strings,
 				const_cast<char *>(GetLanguageByIndex(j)->szName));
 
-		for(unsigned short i = 0; i < 3; i++)
-		{
+		for(unsigned short i = 0; i < 3; i++) {
 			label = gtk_label_new(
 				g_strdup_printf("Language %d:", i + 1));
 
@@ -630,11 +683,12 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(iu->window), v_box);
 
 	gtk_widget_show_all(iu->window);
+  gUserManager.DropUser(user);
 }
 
 void user_info_save(GtkWidget *widget, struct info_user *iu)
 {
-	ICQUser *user = gUserManager.FetchUser(iu->user->Uin(), LOCK_R);
+	ICQUser *user = gUserManager.FetchUser(iu->uin, LOCK_R);
 	user->SetAlias(gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1));
 	gUserManager.DropUser(user);
 	contact_list_refresh();
@@ -645,9 +699,6 @@ gboolean user_info_close(GtkWidget *widget, struct info_user *iu)
 	/* Remove from the lists */
 	iu_list = g_slist_remove(iu_list, iu);
 	catcher = g_slist_remove(catcher, iu->etag);
-
-	/* Drop the user (or owner) */
-	gUserManager.DropUser(iu->user);
 
 	/* Destroy the window */
 	gtk_widget_destroy(iu->window);
@@ -660,56 +711,41 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 //	gtk_widget_set_sensitive(iu->update, FALSE);
 //	gtk_widget_set_sensitive(iu->cancel, TRUE);
 
-	guint id =
-	    gtk_statusbar_get_context_id(GTK_STATUSBAR(iu->etag->statusbar), "sta");
-	gtk_statusbar_pop(GTK_STATUSBAR(iu->etag->statusbar), id);
-	gtk_statusbar_push(GTK_STATUSBAR(iu->etag->statusbar), id, "Updating .. ");
-
-	strcpy(iu->etag->buf, "");
 	strcpy(iu->etag->buf, "Updating .. ");
+	status_change(iu->etag->statusbar, "sta", iu->etag->buf);
 
-	if(iu->user->Uin() == gUserManager.OwnerUin())
-	{
-		if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
-		   == 0 || gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
-		   == 1)
-		{
-			const gchar *_country = gtk_editable_get_chars(
-				GTK_EDITABLE(GTK_COMBO(iu->o_country)->entry),
-				0, -1);
+	if (iu->uin == gUserManager.OwnerUin()) {
+		if (gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook)) == 0 || 
+        gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook)) == 1) {
+			string country = entry_get_chars(GTK_COMBO(iu->o_country)->entry);
 			unsigned short cc;
 			
-			if(strcmp("Unspecified", _country) == 0)
+			if (strcmp("Unspecified", country.c_str()) == 0)
 				cc = COUNTRY_UNSPECIFIED;
-			else
-			{
-				const SCountry *NewCountry =
-					GetCountryByName(_country);
+			else {
+				const SCountry *NewCountry = GetCountryByName(country.c_str());
 				cc = NewCountry->nCode;
 			}
 
-	   		iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->fname), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->lname), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->email1), 0, -1),
-		  	//gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
-		  	//gtk_editable_get_chars(GTK_EDITABLE(iu->oldemail), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->city), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->state), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->phone), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->faxnumber), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->address), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->cellphone), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
-		  	cc, 
-	 	  	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(iu->hide_email)));
-
+   		iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
+		  	  entry_get_chars(iu->alias).c_str(),
+		  	  entry_get_chars(iu->fname).c_str(),
+		  	  entry_get_chars(iu->lname).c_str(),
+		  	  entry_get_chars(iu->email1).c_str(),
+		  	  //entry_get_chars(iu->email2).c_str(),
+		  	  //entry_get_chars(iu->oldemail).c_str(),
+		  	  entry_get_chars(iu->city).c_str(),
+		  	  entry_get_chars(iu->state).c_str(),
+		  	  entry_get_chars(iu->phone).c_str(),
+		  	  entry_get_chars(iu->faxnumber).c_str(),
+		  	  entry_get_chars(iu->address).c_str(),
+		  	  entry_get_chars(iu->cellphone).c_str(),
+		  	  entry_get_chars(iu->zip).c_str(),
+		  	  cc, 
+	 	  	  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(iu->hide_email)));
 		}
 
-		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
-			== 2)
-		{
+		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))	== 2)	{
 			const SLanguage *l1 = GetLanguageByName(
 				gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(
 				iu->o_lang[0])->entry), 0, -1));
@@ -787,12 +823,8 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 					iu->about), 0, -1));
 		}
 	}
-
 	else
-	{
-		iu->etag->e_tag =
-			icq_daemon->icqRequestMetaInfo(iu->user->Uin());
-	}
+		iu->etag->e_tag =	icq_daemon->icqRequestMetaInfo(iu->uin);
 	
 	catcher = g_slist_append(catcher, iu->etag);
 }
@@ -827,13 +859,11 @@ void verify_user_info(GtkWidget *widget, guint id, gchar *text,
 	}
 }
 
-struct info_user *iu_new(ICQUser *u)
+struct info_user *iu_new(unsigned long uin)
 {
-	struct info_user *iu;
+	struct info_user *iu = g_new0(struct info_user, 1);
 
-	iu = g_new0(struct info_user, 1);
-
-	iu->user = u;
+	iu->uin = uin;
 
 	iu_list = g_slist_append(iu_list, iu);
 
@@ -845,10 +875,9 @@ struct info_user *iu_find(unsigned long uin)
 	struct info_user *iu;
 	GSList *temp_iu_list = iu_list;
 
-	while(temp_iu_list)
-	{
+	while (temp_iu_list) {
 		iu = (struct info_user *)temp_iu_list->data;
-		if(iu->user->Uin() == uin)
+		if (iu->uin == uin)
 			return iu;
 
 		temp_iu_list = temp_iu_list->next;
@@ -893,60 +922,54 @@ void do_label_and_entry(GtkWidget *&entry,
 
 void finish_info(CICQSignal *signal)
 {
-	/* Only do the info.. */
+	cerr << "finish_info\n";
+  /* Only do the info.. */
 	unsigned long type = signal->SubSignal();
-	
+  
 	if(!(type == USER_GENERAL || type == USER_BASIC || type == USER_EXT ||
 	   type == USER_MORE || type == USER_ABOUT))
 		return;
 
-	struct info_user *iu = g_new0(struct info_user, 1);
-
-	iu = iu_find(signal->Uin());
-
-	if(iu == 0)
+	struct info_user *iu = iu_find(signal->Uin());
+	if (iu == NULL)
 		return;
+    
+  ICQUser *user = gUserManager.FetchUser(iu->uin, LOCK_R);
 
-	const SCountry *country = GetCountryByCode(iu->user->GetCountryCode());
-//	const SLanguage *l1 = GetLanguageByCode(iu->user->GetLanguage(0));
-//	const SLanguage *l2 = GetLanguageByCode(iu->user->GetLanguage(1));
-//	const SLanguage *l3 = GetLanguageByCode(iu->user->GetLanguage(2));
+	const SCountry *country = GetCountryByCode(user->GetCountryCode());
+//	const SLanguage *l1 = GetLanguageByCode(user->GetLanguage(0));
+//	const SLanguage *l2 = GetLanguageByCode(user->GetLanguage(1));
+//	const SLanguage *l3 = GetLanguageByCode(user->GetLanguage(2));
 
 	gchar bday[11];
 	gchar age[6];
 
-	if(iu->user->GetAge() != 65535)
-		sprintf(age, "%hd", iu->user->GetAge());
+	if(user->GetAge() != 65535)
+		sprintf(age, "%hd", user->GetAge());
 	else
 		strcpy(age, "N/A");
 
-	if(iu->user->GetBirthMonth() == 0 || iu->user->GetBirthDay() == 0)
+	if(user->GetBirthMonth() == 0 || user->GetBirthDay() == 0)
 		strcpy(bday, "N/A");
 	else
-		sprintf(bday, "%d/%d/%d", iu->user->GetBirthMonth(),
-			iu->user->GetBirthDay(), iu->user->GetBirthYear());
+		sprintf(bday, "%d/%d/%d", user->GetBirthMonth(),
+			user->GetBirthDay(), user->GetBirthYear());
 
 	switch(type)
 	{
 	case USER_GENERAL:
 	case USER_BASIC:
 	case USER_EXT:
-		gtk_entry_set_text(GTK_ENTRY(iu->alias), iu->user->GetAlias());
-		gtk_entry_set_text(GTK_ENTRY(iu->fname),
-				   iu->user->GetFirstName());
-		gtk_entry_set_text(GTK_ENTRY(iu->lname),
-				   iu->user->GetLastName());
-		gtk_entry_set_text(GTK_ENTRY(iu->email1),
-				   iu->user->GetEmailPrimary());
-		gtk_entry_set_text(GTK_ENTRY(iu->email2),
-				   iu->user->GetEmailSecondary());
-		gtk_entry_set_text(GTK_ENTRY(iu->oldemail),
-				   iu->user->GetEmailOld());
-		gtk_entry_set_text(GTK_ENTRY(iu->address),
-				   iu->user->GetAddress());
-		gtk_entry_set_text(GTK_ENTRY(iu->city), iu->user->GetCity());
-		gtk_entry_set_text(GTK_ENTRY(iu->state), iu->user->GetState());
-		gtk_entry_set_text(GTK_ENTRY(iu->zip), iu->user->GetZipCode());
+		gtk_entry_set_text(GTK_ENTRY(iu->alias), user->GetAlias());
+		gtk_entry_set_text(GTK_ENTRY(iu->fname), user->GetFirstName());
+		gtk_entry_set_text(GTK_ENTRY(iu->lname), user->GetLastName());
+		gtk_entry_set_text(GTK_ENTRY(iu->email1), user->GetEmailPrimary());
+		gtk_entry_set_text(GTK_ENTRY(iu->email2), user->GetEmailSecondary());
+		gtk_entry_set_text(GTK_ENTRY(iu->oldemail), user->GetEmailOld());
+		gtk_entry_set_text(GTK_ENTRY(iu->address), user->GetAddress());
+		gtk_entry_set_text(GTK_ENTRY(iu->city), user->GetCity());
+		gtk_entry_set_text(GTK_ENTRY(iu->state), user->GetState());
+		gtk_entry_set_text(GTK_ENTRY(iu->zip), user->GetZipCode());
 		
 		if(country == 0)
 			gtk_entry_set_text(GTK_ENTRY(iu->country),
@@ -956,16 +979,16 @@ void finish_info(CICQSignal *signal)
 					   country->szName);
 
 		gtk_entry_set_text(GTK_ENTRY(iu->phone),
-				   iu->user->GetPhoneNumber());
+				   user->GetPhoneNumber());
 		gtk_entry_set_text(GTK_ENTRY(iu->cellphone),
-				   iu->user->GetCellularNumber());
+				   user->GetCellularNumber());
 		gtk_entry_set_text(GTK_ENTRY(iu->faxnumber),
-				   iu->user->GetFaxNumber());
+				   user->GetFaxNumber());
 		break;
 	case USER_MORE:
-		if(iu->user->GetGender() == 1)
+		if(user->GetGender() == 1)
 			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Female");
-		else if(iu->user->GetGender() == 2)
+		else if(user->GetGender() == 2)
 			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Male");
 		else 
 			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Unspecified");
@@ -975,10 +998,10 @@ void finish_info(CICQSignal *signal)
 		gtk_entry_set_text(GTK_ENTRY(iu->bday), bday);
 
 		gtk_entry_set_text(GTK_ENTRY(iu->homepage),
-				   iu->user->GetHomepage());
+				   user->GetHomepage());
 
 		for(unsigned short i = 0; i < 3; i++) {
-		const SLanguage *l = GetLanguageByCode(iu->user->GetLanguage(i));
+		const SLanguage *l = GetLanguageByCode(user->GetLanguage(i));
 		if(l == 0)
 			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), "Unknown");
 		else
@@ -997,27 +1020,28 @@ void finish_info(CICQSignal *signal)
 	*/	break;
 	case USER_WORK:
 		gtk_entry_set_text(GTK_ENTRY(iu->company),
-				   iu->user->GetCompanyName());
+				   user->GetCompanyName());
 		gtk_entry_set_text(GTK_ENTRY(iu->dept),
-				   iu->user->GetCompanyDepartment());
+				   user->GetCompanyDepartment());
 		gtk_entry_set_text(GTK_ENTRY(iu->pos),
-				   iu->user->GetCompanyPosition());
+				   user->GetCompanyPosition());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_homepage),
-				   iu->user->GetCompanyHomepage());
+				   user->GetCompanyHomepage());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_address),
-				   iu->user->GetCompanyAddress());
+				   user->GetCompanyAddress());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_phone),
-				   iu->user->GetCompanyPhoneNumber());
+				   user->GetCompanyPhoneNumber());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_fax),
-				   iu->user->GetCompanyFaxNumber());
+				   user->GetCompanyFaxNumber());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_city),
-				   iu->user->GetCompanyCity());
+				   user->GetCompanyCity());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_state),
-				   iu->user->GetCompanyState());
+				   user->GetCompanyState());
 		break;
 	case USER_ABOUT:
 		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(iu->about));
-		gtk_text_buffer_set_text(tb, iu->user->GetAbout(), -1);
+		gtk_text_buffer_set_text(tb, user->GetAbout(), -1);
 		break;
 	}
+  gUserManager.DropUser(user);
 }
