@@ -1486,7 +1486,8 @@ bool UserSendCommon::checkSecure()
     {
       send_ok = false;
     }
-    u->SetAutoSecure( false );
+    else
+      u->SetAutoSecure( false );
   }
   gUserManager.DropUser(u);
   return send_ok;

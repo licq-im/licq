@@ -202,13 +202,16 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
     else
       btnSend->setEnabled(true);
 
-    if ( m_bOpen ) {
-      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-      if ( u ) {
-        u->SetAutoSecure( e->Result() == EVENT_SUCCESS );
-        gUserManager.DropUser( u );
-      }
-    }
+/*
+ * Disabled
+ *   if ( m_bOpen ) {
+ *     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+ *     if ( u ) {
+ *       u->SetAutoSecure( e->Result() == EVENT_SUCCESS );
+ *       gUserManager.DropUser( u );
+ *     }
+ *   }
+ */
   }
 
   lblStatus->setText(result);
