@@ -35,6 +35,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	/* Make the window */
 	iu->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(iu->window), title);
+	gtk_window_set_position(GTK_WINDOW(iu->window), GTK_WIN_POS_CENTER);
 
 	/* Make the scroll window for the about box */
 	v_scroll = gtk_scrolled_window_new(NULL, NULL);

@@ -22,6 +22,7 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 	/* Make the window */
 	mw->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(mw->window), title);
+	gtk_window_set_position(GTK_WINDOW(mw->window), GTK_WIN_POS_CENTER);
 
 	/* Make the boxes */
 	h_box = gtk_hbox_new(FALSE, 5);	
@@ -119,4 +120,4 @@ void more_ok_callback(GtkWidget *widget, struct more_window *mw)
 		mw->user->SetInvisibleList(FALSE);
 
 	dialog_close(NULL, mw->window);
-}	
+}
