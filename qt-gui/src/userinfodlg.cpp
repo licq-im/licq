@@ -1086,17 +1086,17 @@ void UserInfoDlg::ShowHistory()
   {
     tempIter = m_iHistorySIter;
   }
-  QString s, st;
-  QDateTime d;
+  QString s;
+  QDateTime date;
   m_nHistoryShowing = 0;
-  QString n = tr("server");
+  QString contactName = tr("server");
   QTextCodec * codec = QTextCodec::codecForLocale();
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u != NULL)
   {
       codec = UserCodec::codecForICQUser(u);
       if (!m_bOwner)
-         n = codec->toUnicode(u->GetAlias());
+         contactName = codec->toUnicode(u->GetAlias());
       gUserManager.DropUser(u);
   }
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
@@ -1106,54 +1106,72 @@ void UserInfoDlg::ShowHistory()
   {
     if(UserInfoDlg::chkContains((*tempIter)->Text(), ftxt, flen))
     {
-      d.setTime_t((*tempIter)->Time());
-#if QT_VERSION >= 300
-
+      date.setTime_t((*tempIter)->Time());
       QString messageText;
       if ((*tempIter)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
         messageText = QString::fromUtf8((*tempIter)->Text());
       else
         messageText = codec->toUnicode((*tempIter)->Text());
 
+#if QT_VERSION >= 300
       // We cannot use QStyleSheet::convertFromPlainText
       // since it has a bug in Qt 3 which causes line breaks to mix up.
       messageText = QStyleSheet::escape(messageText);
       messageText.replace(QRegExp("\n"), "<br>");
-      messageText.replace(QRegExp(" "), "&nbsp;");
-      messageText.replace(QRegExp("\t"), "&nbsp;&nbsp;&nbsp;&nbsp;");
+      // We keep the first space character as-is (to allow line wrapping)
+      // and convert the next characters to &nbsp;s (to preserve multiple
+      // spaces).
+      QRegExp longSpaces(" ([ ]+)");
+      int pos;
+      QString cap;
+      while ((pos = longSpaces.search(messageText)) > -1)
+      {
+         cap = longSpaces.cap(1);
+         cap.replace(QRegExp(" "), "&nbsp;");
+         messageText.replace(pos+1, longSpaces.matchedLength()-1, cap); 
+      }
+      messageText.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
 
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
 
-      // We don't use paragraphs (<p>) for now since their line break semantics
-      // seem to be buggy in Qt 3 at the time of writing.
-      // This can potentially make BiDi support worser, so this string needs to be
-      // rewritten to use a separate paragraph for each message when Qt gets fixed.
+      // QTextEdit::append inserts paragraph breaks, so we don't have to.
       s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b><br><br>%s</font><br><br>",
       		color,
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
-                  .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(n)).utf8().data(),
-                d.toString().utf8().data(),
+                  .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(contactName)).utf8().data(),
+                date.toString().utf8().data(),
                 (*tempIter)->IsDirect() ? 'D' : '-',
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
                 messageText.utf8().data()
       );
+#if QT_VERSION < 0x030005
+      // This Qt version has a bug, causing QTextEdit::append()
+      // not to add a paragraph break, so we simulate one.
+      // Yes, we don't use <p> on purpose, since <p> is buggy in those versions.
+      s += "<br><br>";
+#endif
 #else
+      // See CHistoryWidget::paintCell for reference on those Qt 2-only
+      // formatting escape codes.
       s.sprintf("%c%s\n%c%s [%c%c%c%c]\n\n%s\n\n",
                 ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
-                  .arg(EventDescription(*tempIter)).arg(n).utf8().data(),
+                  .arg(EventDescription(*tempIter)).arg(contactName).utf8().data(),
                 ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
-                d.toString().utf8().data(),
+                date.toString().utf8().data(),
                 (*tempIter)->IsDirect() ? 'D' : '-',
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
-                (codec->toUnicode((*tempIter)->Text())).utf8().data()
+                messageText.utf8().data()
       );
 #endif
-      st.append(s);
+      mleHistory->setWordWrap(QTextEdit::WidgetWidth);
+      mleHistory->setWrapPolicy(QTextEdit::AtWordBoundary);
+      qDebug("History string:\n%s", s.utf8().data());
+      mleHistory->append(s);
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
     }
@@ -1188,7 +1206,6 @@ void UserInfoDlg::ShowHistory()
                         .arg(COLOR_RECEIVED).arg(COLOR_SENT)
                         .arg(m_nHistoryShowing)
                         .arg(m_lHistoryList.size()));
-  mleHistory->setText(st);
   if(!m_bHistoryReverse)
     mleHistory->GotoEnd();
   else

@@ -566,13 +566,23 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   // since it has a bug in Qt 3 and mixed up line breaks.
   QString messageText = QStyleSheet::escape(codec->toUnicode(e->Text()));
   messageText.replace(QRegExp("\n"), "<br>");
+  // We keep the first space character as-is (to allow line wrapping)
+  // and convert the next characters to &nbsp;s (to preserve multiple
+  // spaces).
+  QRegExp longSpaces(" ([ ]+)");
+  int pos;
+  QString cap;
+  while ((pos = longSpaces.search(messageText)) > -1)
+  {
+     cap = longSpaces.cap(1);
+     cap.replace(QRegExp(" "), "&nbsp;");
+     messageText.replace(pos+1, longSpaces.matchedLength()-1, cap); 
+  }
+  messageText.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
   
   const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
 
-  // We don't use paragraphs (<p>) for now since their line break semantics
-  // seem to be buggy in Qt 3 at the time of writing.
-  // This can potentially make BiDi support worser, so this string needs to be
-  // rewritten to use a separate paragraph for each message when Qt gets fixed.
+  // QTextEdit::append adds a paragraph break so we don't have to.
   s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b><br>%s</font>",
             color,
             e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
@@ -586,7 +596,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             messageText.utf8().data()
            );
 #if QT_VERSION < 0x030005
-  // This Qt version has a bug, causing append() in QTextEdit
+  // This Qt version has a bug, causing QTextEdit::append()
   // not to add a paragraph break, so we simulate one.
   // Yes, we don't use <p> on purpose, since <p> is buggy in those versions.
   s += "<br><br>";
