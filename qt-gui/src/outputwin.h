@@ -11,6 +11,7 @@
 #include <qmessagebox.h>
 
 #include "mledit.h"
+#include "ewidgets.h"
 #include "log.h"
 
 //=====OutputWin===================================================================================
@@ -20,11 +21,13 @@ class CQtLogWindow : public QDialog, public CPluginLog
 public:
   CQtLogWindow (QWidget *parent = 0, const char *name = 0);
 protected:
-  MLEditWrap *outputBox;
-  QPushButton *btnHide, *btnClear;
+  //MLEditWrap *outputBox;
+  CLogWidget *outputBox;
+  QPushButton *btnHide, *btnClear, *btnSave;
   QSocketNotifier *sn;
 protected slots:
   void slot_log(int);
+  void slot_save();
 
   virtual void showEvent(QShowEvent*);
 };

@@ -337,7 +337,7 @@ void CInfoField::setEnabled(bool _b)
 // -----------------------------------------------------------------------------
 
 CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
-  : MLEditWrap(true, parent, true, name)
+  : MLEditWrap(false, parent, true, name)
 {
   setReadOnly(true);
 };
@@ -368,6 +368,50 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
       pal.setColor(QColorGroup::Text, Qt::red);
       break;
     }
+  }
+
+
+  MLEditWrap::paintCell(p, row, col);
+}
+
+
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+
+CLogWidget::CLogWidget(QWidget* parent, const char* name)
+  : MLEditWrap(true, parent, true, name)
+{
+  setReadOnly(true);
+}
+
+
+// -----------------------------------------------------------------------------
+
+void CLogWidget::paintCell(QPainter* p, int row, int col)
+{
+  QPalette& pal = const_cast<QPalette&>(palette());
+
+  pal.setColor(QColorGroup::Text, Qt::black);
+
+  /*if (col < 9)
+  {
+    pal.setColor(QColorGroup::Text, Qt::darkGreen);
+  }
+  else*/
+  {
+    QString s;
+    int i = row;
+    while ( i >= 0 && (s = stringShown(i).mid(11, 3)) == "   ") i--;
+
+    if (s == "WRN")
+      pal.setColor(QColorGroup::Text, Qt::darkYellow);
+    else if (s == "ERR")
+      pal.setColor(QColorGroup::Text, Qt::darkRed);
+    else if (s == "PKT")
+      pal.setColor(QColorGroup::Text, Qt::darkBlue);
+    else if (s == "???")
+      pal.setColor(QColorGroup::Text, Qt::magenta);
   }
 
 

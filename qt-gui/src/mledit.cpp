@@ -17,6 +17,10 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
     setWordWrap(WidgetWidth);
     setWrapPolicy(AtWhiteSpace);
   }
+  else
+  {
+    setWordWrap(NoWrap);
+  }
   setFont(editFont);
 }
 

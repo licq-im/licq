@@ -5,6 +5,9 @@
 #include <unistd.h>
 
 #include <qlayout.h>
+#include <qfiledialog.h>
+#include <qfile.h>
+#include <qtextstream.h>
 
 #include "outputwin.h"
 #include "icq-defines.h"
@@ -18,15 +21,16 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
-  outputBox = new MLEditWrap(false, this);
+  outputBox = new CLogWidget(this);
   outputBox->setMinimumHeight(outputBox->frameWidth()*2
                               + 16*outputBox->fontMetrics().lineSpacing());
   outputBox->setMinimumWidth((outputBox->minimumHeight()*3)/2);
-  outputBox->setReadOnly(true);
   top_lay->addWidget(outputBox);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
 
+  btnSave = new QPushButton(tr("&Save"), this);
+  connect(btnSave, SIGNAL(clicked()), SLOT(slot_save()));
   btnClear = new QPushButton(tr("C&lear"), this);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
   btnHide = new QPushButton(tr("&Close"), this);
@@ -35,9 +39,12 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
   int bw = 75;
   bw = QMAX(bw, btnClear->sizeHint().width());
   bw = QMAX(bw, btnHide->sizeHint().width());
+  bw = QMAX(bw, btnSave->sizeHint().width());
   btnClear->setFixedWidth(bw);
   btnHide->setFixedWidth(bw);
+  btnSave->setFixedWidth(bw);
   lay->addStretch(1);
+  lay->addWidget(btnSave);
   lay->addWidget(btnClear);
   lay->addWidget(btnHide);
 
@@ -73,6 +80,34 @@ void CQtLogWindow::slot_log(int s)
     (void) new CLicqMessageBox(str, QMessageBox::Critical);
 
   ClearLog();
+}
+
+void CQtLogWindow::slot_save()
+{
+  QString fn;
+#ifdef USE_KDE
+  fn = KFileDialog::getSaveFileName(
+         QString(QDir::homeDirPath() + "/licq.log"),
+         QString::null, this);
+#else
+  fn = QFileDialog::getSaveFileName(
+         QString(QDir::homeDirPath() + "/licq.log"),
+         QString::null, this);
+#endif
+  if (fn.isNull()) return;
+
+  QFile f(fn);
+  if (!f.open(IO_WriteOnly))
+  {
+    WarnUser(this, tr("Failed to open file:\n%1").arg(fn));
+  }
+  else
+  {
+    QTextStream t(&f);
+    t << outputBox->text();
+    f.close();
+  }
+
 }
 
 #include "outputwin.moc"

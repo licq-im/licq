@@ -111,4 +111,18 @@ protected:
 
 /* ----------------------------------------------------------------------------- */
 
+class CLogWidget : public MLEditWrap
+{
+public:
+  CLogWidget(QWidget* parent = 0, const char* name = 0);
+  virtual ~CLogWidget() {};
+
+protected:
+  virtual void paintCell(QPainter* p, int row, int col);
+};
+
+
+/* ----------------------------------------------------------------------------- */
+
+
 #endif
