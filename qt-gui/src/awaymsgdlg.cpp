@@ -45,7 +45,7 @@ static const char hints[] = QT_TR_NOOP(
  "The command is parsed by /bin/sh so any shell commands or meta-characters "
  "are allowed.  For security reasons, any % expansions are automatically "
  "passed to the command surrounded by single quotes to prevent shell parsing "
- "of any meta-characters included in an alias (such as \">\" or \"&\").<br>"
+ "of any meta-characters included in an alias.<br>"
  "Examples of popular uses include:"
  "<ul>"
  "<li><tt>|date</tt>: Will replace that line by the current date</li>"
