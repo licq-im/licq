@@ -33,6 +33,7 @@ class MsgView;
 class MLEditWrap;
 class CUserEvent;
 class CMainWindow;
+class CEButton;
 
 //=====ICQFunctions=============================================================
 
@@ -72,10 +73,11 @@ protected:
   CSignalManager *sigman;
   QString m_sBaseTitle, m_sProgressMsg;
   CICQEventTag *icqEventTag;
-  bool m_bOwner;
+  bool m_bOwner, m_bDeleteUser;
   QCheckBox *chkAutoClose;
   QTabWidget *tabs;
-  QPushButton *btnSave, *btnOk, *btnCancel;
+  QPushButton *btnSave, *btnOk;
+  CEButton *btnCancel;
 
   // Read Event tab
   void CreateReadEventTab();
@@ -192,6 +194,8 @@ protected slots:
    void slot_readbtn3();
    void slot_sendbtn();
    void slot_aboutToShow(QWidget *);
+   void slot_close();
+   void slot_resettitle();
 
 signals:
    void signal_finished(unsigned long);

@@ -60,6 +60,7 @@
 #include "refusedlg.h"
 #include "forwarddlg.h"
 #include "chatjoin.h"
+#include "mainwin.h"
 
 #include "licq_user.h"
 #include "mledit.h"
@@ -90,6 +91,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_xCurrentReadEvent = NULL;
   m_nMPChatPort = 0;
+  m_bDeleteUser = false;
 
   for (unsigned short i = 0; i < 8; i++)
   {
@@ -137,7 +139,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   int bw = 75;
   btnSave = new QPushButton(tr("&Save"), this);
   btnOk = new QPushButton(tr("O&k"), this);
-  btnCancel = new QPushButton(tr("&Close"), this);
+  btnCancel = new CEButton(tr("&Close"), this);
   bw = QMAX(bw, btnSave->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnCancel->sizeHint().width());
@@ -159,7 +161,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(slot_updatedUser(CICQSignal *)));
-  connect (btnCancel, SIGNAL(clicked()), this, SLOT(close()));
+  connect (btnCancel, SIGNAL(clicked()), this, SLOT(slot_close()));
   connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
   connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
 
@@ -2090,6 +2092,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
     case EVENT_ACKED:
     case EVENT_SUCCESS:
       result = tr("done");
+      QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
       break;
     case EVENT_FAILED:
       result = tr("failed");
@@ -2106,6 +2109,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   }
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
   setCaption(title);
+
   setCursor(arrowCursor);
   btnOk->setEnabled(true);
   btnCancel->setText(tr("&Close"));
@@ -2244,6 +2248,20 @@ void ICQFunctions::doneFcn(ICQEvent *e)
 
 }
 
+
+void ICQFunctions::slot_resettitle()
+{
+  setCaption(m_sBaseTitle);
+}
+
+
+void ICQFunctions::slot_close()
+{
+  m_bDeleteUser = btnCancel->MouseEvent()->state() & ControlButton;
+  close();
+}
+
+
 void ICQFunctions::closeEvent(QCloseEvent *e)
 {
   if (icqEventTag != NULL)
@@ -2261,6 +2279,10 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     s_nX = x();
     s_nY = y();
     emit signal_finished(m_nUin);
+    if (m_bDeleteUser)
+    {
+      mainwin->RemoveUserFromList(m_nUin, this);
+    }
     e->accept();
     delete this;
   }
