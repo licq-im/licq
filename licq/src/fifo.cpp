@@ -112,7 +112,7 @@ struct command_t
 static int process_tok(const command_t *table,const char *tok);
 
 unsigned long
-StringToStatus(const char *_szStatus)
+StringToStatus(char *_szStatus)
 {	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 	unsigned long nStatus = o->AddStatusFlags(0);
 	int i =0;
@@ -197,7 +197,7 @@ fifo_status( int argc, const char *const *argv, void *data)
 	o = gUserManager.FetchOwner(LOCK_R);
 	bOffline = o->StatusOffline();
 	gUserManager.DropOwner();
-	nStatus = StringToStatus(szStatus);
+	nStatus = StringToStatus(const_cast<char *>(szStatus));
 
 	if (nStatus == INT_MAX)
 	{ 	gLog.Warn("%s%s %s: command with invalid status \"%s\".\n",
