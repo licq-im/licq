@@ -86,6 +86,7 @@ public:
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
   void ProcessDoneEvent(CWindow *win, ICQEvent *e);
+  void ProcessDoneSearch(CWindow *win, ICQEvent *e);
   void ProcessStdin();
   void ProcessLog();
   void ProcessFile(list<CFileTransferManager *>::iterator iter);
@@ -102,6 +103,7 @@ public:
   void InputInfo(int cIn);
   void InputAutoResponse(int cIn);
   void InputFileChatOffer(int cIn);
+  void InputSearch(int cIn);
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
   char *Input_Line(char *sz, unsigned short &n, int cIn, bool bEcho = true);
 
@@ -138,7 +140,7 @@ public:
   void MenuClear(char *);
   void MenuAdd(char *);
   void MenuDefine(char *);
-
+  void MenuSearch(char *);
 
   void TabUser(char *, struct STabCompletion &);
   void TabOwner(char *, struct STabCompletion &);
@@ -157,6 +159,7 @@ public:
   void UserCommand_FetchAutoResponse(unsigned long nUin, char *);
   void UserCommand_SetAutoResponse(unsigned long nUin, char *);
   void UserCommand_Secure(unsigned long nUin, char *);
+  void Command_Search();
 
   void Beep() { printf("\a"); fflush(stdout); }
   void FileChatOffer(unsigned long, unsigned long);

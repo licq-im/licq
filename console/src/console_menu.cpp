@@ -2,7 +2,7 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 14;
+const unsigned short NUM_COMMANDS = 15;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
@@ -43,6 +43,8 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Set your status, prefix with \"*\" for invisible mode." },
   { "last", &CLicqConsole::MenuLast, &CLicqConsole::TabLast,
     "Perform the given command on the last user." },
+  { "search", &CLicqConsole::MenuSearch, NULL,
+    "Perform a search of the ICQ network." },
   { "set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
     "Allows the setting and viewing of options.  With no arguments\n"
     "will print all current set'able values.  With one argument will\n"
@@ -699,12 +701,12 @@ void CLicqConsole::MenuSet(char *_szArg)
 void CLicqConsole::MenuFileStat(char *sz)
 {
   bool bNum = false;
-  
+
   // Go through the list and print out the info on each file
   list<CFileTransferManager *>::iterator iter;
   for(iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
   {
-    bNum = true; 
+    bNum = true;
     PrintFileStat(*iter);
   }
 
@@ -720,3 +722,14 @@ void CLicqConsole::MenuClear(char *)
 {
   winMain->wprintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
+
+
+/*-----------------------------------------------------------------------
+ * CLicqConsole::MenuSearch
+ *---------------------------------------------------------------------*/
+void CLicqConsole::MenuSearch(char *)
+{
+  Command_Search();
+}
+
+

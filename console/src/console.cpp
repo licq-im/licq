@@ -472,6 +472,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     break;
   }
   case SIGNAL_LOGON:
+  case SIGNAL_LOGOFF:
     PrintStatus();
     break;
   default:
@@ -541,7 +542,21 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
 
   case ICQ_CMDxSND_SEARCHxINFO:
   case ICQ_CMDxSND_SEARCHxUIN:
+  {
+    unsigned short i;
+    for (i = 1; i <= MAX_CON; i++)
+    {
+      if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
+      {
+        ProcessDoneSearch(winCon[i], e);
+        break;
+      }
+    }
+    if (i > MAX_CON)
+      gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
+                L_WARNxSTR, e->Command());
     break;
+  }
 
   default:
     gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event command received from daemon: %d.\n",
@@ -794,6 +809,53 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
   }
   win->state = STATE_COMMAND;
 
+}
+
+
+/*---------------------------------------------------------------------------
+* CLicqConsole::ProcessDoneSearch
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::ProcessDoneSearch(CWindow *win, ICQEvent *e)
+{
+  if (e->Result() == EVENT_ACKED)
+  {
+    win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %lu\n",
+     COLOR_WHITE,
+     e->SearchAck()->Alias(),
+     A_BOLD, A_BOLD,
+     e->SearchAck()->FirstName(),
+     e->SearchAck()->LastName(),
+     A_BOLD, A_BOLD,
+     e->SearchAck()->Email(),
+     A_BOLD, A_BOLD,
+     e->SearchAck()->Uin());
+    return;
+  }
+
+  if (e->Result() == EVENT_SUCCESS)
+  {
+    if (e->SearchAck()->More())
+    {
+      win->wprintf("%A%CSearch complete.  More users found, narrow search.\n",
+       m_cColorInfo->nAttr, m_cColorInfo->nColor);
+    }
+    else
+    {
+      win->wprintf("%A%CSearch complete.\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
+    }
+  }
+  else
+  {
+    win->wprintf("%CSearch failed.\n", COLOR_RED);
+  }
+
+  win->fProcessInput = &CLicqConsole::InputCommand;
+  if (win->data != NULL)
+  {
+    delete win->data;
+    win->data = NULL;
+  }
+  win->state = STATE_COMMAND;
 }
 
 
@@ -2055,6 +2117,169 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
 
   return NULL;
 
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::Command_Search
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::Command_Search()
+{
+
+  // Get the input now
+  winMain->fProcessInput = &CLicqConsole::InputSearch;
+  winMain->state = STATE_LE;
+  winMain->data = new DataSearch();
+
+  winMain->wprintf("%A%CSearch for User (leave field blank if unknown)\n"
+                   "Enter uin: ",
+                   m_cColorQuery->nAttr, m_cColorQuery->nColor);
+
+  return;
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::InputSearch
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::InputSearch(int cIn)
+{
+  DataSearch *data = (DataSearch *)winMain->data;
+  char *sz;
+
+  switch(winMain->state)
+  {
+    case STATE_PENDING:
+    {
+      if (cIn == CANCEL_KEY)
+      {
+        if (winMain->event != NULL)
+          licqDaemon->CancelEvent(winMain->event);
+      }
+      return;
+    }
+
+    case STATE_LE:
+    {
+      switch (data->nState)
+      {
+        // UIN
+        case 0:
+        {
+          // If we get NULL back, then we're not done yet
+          if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+            return;
+
+          // Back to 0 for you!
+          data->nPos = 0;
+
+          data->nUin = atol(sz);
+
+          if (data->nUin != 0)
+          {
+            winMain->wprintf("%C%ASearching:\n",
+                             m_cColorInfo->nColor, m_cColorInfo->nAttr);
+
+            winMain->event = licqDaemon->icqSearchByUin(data->nUin);
+            winMain->state = STATE_PENDING;
+
+            return;
+          }
+
+          winMain->wprintf("%A%CAlias: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 1;
+
+          return;
+        }
+
+        case 1:
+        {
+          // If we get NULL back, then we're not done yet
+          if ((sz = Input_Line(data->szAlias, data->nPos, cIn)) == NULL)
+            return;
+
+          // Back to 0 for you!
+          data->nPos = 0;
+
+          winMain->wprintf("%A%CFirst Name: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 2;
+
+          return;
+        }
+
+        // First Name
+        case 2:
+        {
+          // If we get NULL back, then we're not done yet
+          if ((sz = Input_Line(data->szFirstName, data->nPos, cIn)) == NULL)
+            return;
+
+          // Back to 0 for you!
+          data->nPos = 0;
+
+          winMain->wprintf("%A%CLast Name: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 3;
+
+          return;
+        }
+
+        // Last Name
+        case 3:
+        {
+          // If we get NULL back, then we're not done yet
+          if ((sz = Input_Line(data->szLastName, data->nPos, cIn)) == NULL)
+            return;
+
+          // Back to 0 for you!
+          data->nPos = 0;
+
+          winMain->wprintf("%A%CEmail: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 4;
+
+          return;
+        }
+
+        // Last Name
+        case 4:
+        {
+          // If we get NULL back, then we're not done yet
+          if ((sz = Input_Line(data->szEmail, data->nPos, cIn)) == NULL)
+            return;
+
+          // Back to 0 for you!
+          data->nPos = 0;
+
+          if (data->szAlias[0] == '\0' && data->szFirstName[0] == '\0' &&
+              data->szLastName[0] =='\0' && data->szEmail[0] == '\0')
+          {
+            winMain->fProcessInput = &CLicqConsole::InputCommand;
+            if (winMain->data != NULL)
+            {
+              delete winMain->data;
+              winMain->data = NULL;
+            }
+            winMain->state = STATE_COMMAND;
+            winMain->wprintf("%C%ASearch aborted.\n",
+                             m_cColorInfo->nColor, m_cColorInfo->nAttr);
+            return;
+          }
+
+          winMain->wprintf("%C%ASearching:\n",
+                           m_cColorInfo->nColor, m_cColorInfo->nAttr);
+
+          winMain->event = licqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
+           data->szLastName, data->szEmail);
+          winMain->state = STATE_PENDING;
+
+          return;
+        }
+
+      }
+    }
+
+    default:
+      break;
+  }
 }
 
 

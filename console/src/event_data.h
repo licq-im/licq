@@ -9,7 +9,7 @@ public:
     { nUin = n; nPos = 0; szQuery[0] = '\0'; }
   unsigned long nUin;
   unsigned short nPos;
-  char szQuery[32];
+  char szQuery[80];
 };
 
 
@@ -66,6 +66,19 @@ public:
   char szPassword2[80];
   char szUin[10];
   int nState;
+};
+
+
+class DataSearch : public CData
+{
+public:
+  DataSearch() : CData(0)
+      {  szAlias[0] = szFirstName[0] = szLastName[0] = szEmail[0] = '\0'; nState = 0; }
+  char szAlias[80];
+  char szFirstName[80];
+  char szLastName[80];
+  char szEmail[80];
+  unsigned short nState;
 };
 
 
