@@ -71,13 +71,21 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetPassword(_szPasswd);
   gUserManager.DropOwner();
-  CPU_Register *p = new CPU_Register(_szPasswd);
+  m_bRegistering = true;
+  CPU_RegisterFirst *p = new CPU_RegisterFirst();
   gLog.Info("%sRegistering a new user (#%ld)...\n", L_SRVxSTR, p->Sequence());
-  m_nServerAck = p->Sequence() - 1;
-  m_nServerSequence = 0;
   SendExpectEvent_Server(0, p, NULL);
 }
 
+//-----ICQ::icqRegisterFinish------------------------------------------------
+void CICQDaemon::icqRegisterFinish()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  char *szPasswd = o->Password();
+  gUserManager.DropOwner();
+  CPU_Register *p = new CPU_Register(szPasswd);
+  SendExpectEvent_Server(0, p, NULL);
+}
 
 //-----ICQ::icqRelogon-------------------------------------------------------
 void CICQDaemon::icqRelogon(bool bChangeServer)
@@ -856,8 +864,11 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
   switch (nChannel)
   {
   case ICQ_CHNxNEW:
-    // DAW can we really ignore those packets??
-    //gLog.Warn("%sPacket on unhandled Channel 'New' received!\n", L_SRVxSTR);
+    if (m_bRegistering)
+    {
+      icqRegisterFinish();
+      m_bRegistering = false;
+    }
     break;
 
   case ICQ_CHNxDATA:
@@ -2227,6 +2238,46 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
   }
 }
 
+//--------ProcessNewUINFam-----------------------------------------------------
+void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
+{
+  if (nSubtype != ICQ_SNACxNEW_UIN)
+  {
+    char *buf;
+    gLog.Unknown("%sUnknow New UIN Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
+    		nSubtype, packet.print(buf));
+    delete [] buf;
+    return;
+  }
+
+  packet.UnpackUnsignedShort(); // flags
+  packet.UnpackUnsignedLong();  // id
+
+  // 46 bytes of shit
+  for (int x = 0; x < 11; x++)
+    packet.UnpackUnsignedLong();
+  packet.UnpackUnsignedShort();
+
+  unsigned long nNewUin = packet.UnpackUnsignedLong();
+
+  if (gUserManager.OwnerUin() != 0)
+  {
+    gLog.Warn("%sReceived new uin (%ld) when already have a uin (%ld).\n", L_WARNxSTR,
+    	nNewUin, gUserManager.OwnerUin());
+    return;
+  }
+
+  gLog.Info("%sReceived new uin: %ld\n", L_SRVxSTR, nNewUin);
+  gUserManager.SetOwnerUin(nNewUin);
+
+  // Reconnect now
+  int nSD = m_nTCPSrvSocketDesc;
+  m_nTCPSrvSocketDesc = -1;
+  gSocketManager.CloseSocket(nSD);
+
+  icqLogon(ICQ_STATUS_ONLINE);
+}
+
 //--------ProcessDataChannel---------------------------------------------------
 
 void CICQDaemon::ProcessDataChannel(CBuffer &packet)
@@ -2263,6 +2314,10 @@ void CICQDaemon::ProcessDataChannel(CBuffer &packet)
     ProcessVariousFam(packet, nSubtype);
     break;
 
+  case ICQ_SNACxFAM_NEWUIN:
+    ProcessNewUINFam(packet, nSubtype);
+    break;
+    
   default:
     gLog.Warn("%sUnknown Family on data channel: %04hx\n", L_SRVxSTR, nFamily);
     break;

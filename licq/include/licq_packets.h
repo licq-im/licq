@@ -129,13 +129,60 @@ protected:
    static unsigned long  s_nSessionId;
 };
 
+//-----Logon--------------------------------------------------------------------
+class CPU_Logon : public CSrvPacketTcp
+{
+public:
+  CPU_Logon(const char *_szPassword, const char *_szUin, unsigned short _nLogonStatus);
+protected:
+  unsigned long  m_nLogonStatus;
+  unsigned long  m_nTcpVersion;
+};
 
+//-----Logoff-------------------------------------------------------------------
+class CPU_Logoff : public CSrvPacketTcp
+{
+public:
+   CPU_Logoff();
+};
 
-#if ICQ_VERSION == 2 || ICQ_VERSION > 6
+//-----SendCookie---------------------------------------------------------------
+class CPU_SendCookie : public CSrvPacketTcp
+{
+public:
+  CPU_SendCookie(const char *, int len);
+  virtual ~CPU_SendCookie();
+
+protected:
+  char *m_szCookie;
+};
+
+//-----CommonFamily----------------------------------------------------------
+class CPU_CommonFamily : public CSrvPacketTcp
+{
+public:
+  CPU_CommonFamily(unsigned short Family, unsigned short SubType);
+
+protected:
+  void InitBuffer();
+
+private:
+    unsigned short m_nFamily;
+    unsigned short m_nSubType;
+};
+
+class CPU_GenericFamily : public CPU_CommonFamily
+{
+public:
+    CPU_GenericFamily(unsigned short Family, unsigned short SubType);
+
+};
+
+#if ICQ_VERSION == 2 || ICQ_VERSION == 6
 //-----Register----------------------------------------------------------------
 // Doesn't actually descend from CPacketUdp in version 2 but we keep the
 // name the same for simplicity
-class CPU_Register : public CPacket
+class CPU_Register : public CPacketUdp
 {
 public:
   CPU_Register(const char *_szPasswd);
@@ -165,58 +212,19 @@ class CPU_Register : public CPacketUdp
 public:
   CPU_Register(const char *_szPasswd);
 };
+#elif ICQ_VERSION > 6
+class CPU_RegisterFirst : public CSrvPacketTcp
+{
+public:
+  CPU_RegisterFirst();
+};
+
+class CPU_Register : public CPU_CommonFamily
+{
+public:
+  CPU_Register(const char *_szPasswd);
+};
 #endif
-
-//-----Logon--------------------------------------------------------------------
-class CPU_Logon : public CSrvPacketTcp
-{
-public:
-  CPU_Logon(const char *_szPassword, const char *_szUin, unsigned short _nLogonStatus);
-protected:
-  unsigned long  m_nLogonStatus;
-  unsigned long  m_nTcpVersion;
-};
-
-//-----Logoff-------------------------------------------------------------------
-class CPU_Logoff : public CSrvPacketTcp
-{
-public:
-   CPU_Logoff();
-};
-
-//-----SendCookie---------------------------------------------------------------
-class CPU_SendCookie : public CSrvPacketTcp
-{
-public:
-  CPU_SendCookie(const char *, int len);
-  virtual ~CPU_SendCookie();
-
-protected:
-  char *m_szCookie;
-};
-
-
-
-//-----CommonFamily----------------------------------------------------------
-class CPU_CommonFamily : public CSrvPacketTcp
-{
-public:
-  CPU_CommonFamily(unsigned short Family, unsigned short SubType);
-
-protected:
-  void InitBuffer();
-
-private:
-    unsigned short m_nFamily;
-    unsigned short m_nSubType;
-};
-
-class CPU_GenericFamily : public CPU_CommonFamily
-{
-public:
-    CPU_GenericFamily(unsigned short Family, unsigned short SubType);
-
-};
 
 //-----ImICQ------------------------------------------------------------------
 class CPU_ImICQ : public CPU_CommonFamily

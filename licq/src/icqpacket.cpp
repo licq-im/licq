@@ -562,7 +562,7 @@ void CPacketUdp::InitBuffer()
 }
 
 //-----Register----------------------------------------------------------------
-#if ICQ_VERSION == 2 || ICQ_VERSION > 6
+#if ICQ_VERSION == 2 || ICQ_VERSION == 6
 CPU_Register::CPU_Register(const char *_szPasswd)
 {
   m_nVersion = ICQ_VERSION;
@@ -615,9 +615,39 @@ CPU_Register::CPU_Register(const char *szPasswd)
 
 #elif ICQ_VERSION >= 7
 
-CPU_Register::CPU_Register(const char *szPasswd)
-	: CPU_CommonFamily()
+CPU_RegisterFirst::CPU_RegisterFirst()
+	: CSrvPacketTcp(ICQ_CHNxNEW)
 {
+  m_nSize = 4;
+
+  s_nSequence = rand() & 0x7fff;
+  s_bRegistered = true;
+  m_nSequence = s_nSequence++;
+
+  InitBuffer();
+
+  buffer->PackUnsignedLongBE(1);
+}
+
+CPU_Register::CPU_Register(const char *szPasswd)
+	: CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER)
+{
+  m_nSize += 55 + strlen(szPasswd);
+  m_nSubSequence = 0;
+
+  InitBuffer();
+
+  buffer->PackUnsignedLongBE(0x0001003b);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x28000300);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0x8a4c0000);
+  buffer->PackUnsignedLongBE(0x8a4c0000);
+  for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
+  buffer->PackLNTS(szPasswd);
+  buffer->PackUnsignedLongBE(0x8a4c0000);
+  buffer->PackUnsignedLongBE(0x00000602);
 }
 
 #endif

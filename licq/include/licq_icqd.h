@@ -125,7 +125,7 @@ public:
   unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
 
-  // UDP (server) functions
+  // Server functions
   void icqRegister(const char *_szPasswd);
   unsigned long icqLogon(unsigned short logonStatus);
   unsigned long icqUserBasicInfo(unsigned long);
@@ -276,6 +276,7 @@ protected:
       m_nTCPSocketDesc;
   bool m_bShuttingDown,
        m_bLoggingOn,
+       m_bRegistering,
        m_bOnlineNotifies,
        m_bAlwaysOnlineNotify;
   time_t m_tLogonTime;
@@ -301,6 +302,7 @@ protected:
   void RejectEvent(unsigned long, CUserEvent *);
   ICQUser *FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e, const char *);
 
+  void icqRegisterFinish();
   void icqPing();
   void icqSendVisibleList();
   void icqSendInvisibleList();
@@ -341,6 +343,7 @@ protected:
   void ProcessMessageFam(CBuffer&, unsigned short);
   void ProcessVariousFam(CBuffer&, unsigned short);
   void ProcessBOSFam(CBuffer&, unsigned short);
+  void ProcessNewUINFam(CBuffer &, unsigned short);
 
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);

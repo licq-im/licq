@@ -28,6 +28,7 @@ const unsigned short ICQ_SNACxFAM_MESSAGE          = 0x0004;
 const unsigned short ICQ_SNACxFAM_BOS              = 0x0009;
 const unsigned short ICQ_SNACxFAM_LISTS            = 0x0013;
 const unsigned short ICQ_SNACxFAM_VARIOUS          = 0x0015;
+const unsigned short ICQ_SNACxFAM_NEWUIN	   = 0x0017;
 
 // Subtypes for service family
 const unsigned short ICQ_SNACxSUB_ERROR            = 0x0001; // server
@@ -81,7 +82,11 @@ const unsigned short ICQ_SNACxBOS_REMxINVISIBxLIST = 0x0008;
 const unsigned short ICQ_SNACxOFF_SYSMSG           = 0x0002; // client
 const unsigned short ICQ_SNACxOFF_SYSMSGxACK       = 0x0002;
 const unsigned short ICQ_SNACxMETA_INFO            = 0x0002; // client
-const unsigned short ICQ_SNACxSEARCH							 = 0x0002; // client
+const unsigned short ICQ_SNACxSEARCH  		   = 0x0002; // client
+
+// Subtypes for new uin family
+const unsigned short ICQ_SNACxREGISTER_USER	   = 0x0004; // client
+const unsigned short ICQ_SNACxNEW_UIN		   = 0x0005; // server
 
 // messagetypes
 const unsigned short ICQ_MSGxAUTHORIZE             = 0x0008;

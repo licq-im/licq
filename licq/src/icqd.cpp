@@ -80,6 +80,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_nTCPSrvSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
   m_bShuttingDown = false;
+  m_bRegistering = false;
   m_nServerAck = 0;
   m_szFirewallHost = NULL;
   m_bLoggingOn = false;
