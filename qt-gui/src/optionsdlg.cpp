@@ -197,6 +197,7 @@ void OptionsDlg::SetupOptions()
   chkManualNewUser->setChecked(mainwin->m_bManualNewUser);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
+  chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   switch(mainwin->m_nDockMode)
   {
     case DockNone:
@@ -376,6 +377,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
+  mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
 #ifndef USE_KDE
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
@@ -579,6 +581,10 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkManualNewUser, tr("If not checked, a user will be automatically "
                                        "removed from \"New User\" group when you first"
                                        "send an event to them"));
+  chkSendFromClipboard = new QCheckBox(tr("Check Clipboard For Urls/Files"), boxMainWin);
+  QWhatsThis::add(chkSendFromClipboard, tr("When double-clicking on a user to send a message "
+   "check for urls/files in the clipboard"));
+
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
   lblTrans = new QLabel(tr("Translation:"), boxLocale);

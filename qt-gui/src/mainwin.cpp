@@ -315,6 +315,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("TVGroupStates", m_nGroupStates, 0xFFFFFFFE);
   licqConf.ReadBool("ShowExtIcons", m_bShowExtendedIcons, true);
   licqConf.ReadBool("SystemBackground", m_bSystemBackground, false);
+  licqConf.ReadBool("SendFromClipboard", m_bSendFromClipboard, true);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -1538,7 +1539,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   gUserManager.DropUser(u);
 
   // See if the clipboard contains a url
-  if (fcn == mnuUserSendMsg)
+  if (fcn == mnuUserSendMsg && m_bSendFromClipboard)
   {
     QString c = QApplication::clipboard()->text();
     if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
@@ -1565,7 +1566,6 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
       QApplication::clipboard()->clear();
       return;
     }
-
   }
 
   callFunction(fcn, nUin);
@@ -2165,6 +2165,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("AutoRaise", m_bAutoRaise);
   licqConf.WriteBool("ShowExtIcons", m_bShowExtendedIcons);
   licqConf.WriteBool("SystemBackground", m_bSystemBackground);
+  licqConf.WriteBool("SendFromClipboard", m_bSendFromClipboard);
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)
