@@ -48,7 +48,6 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, i
 }
 
 
-
 //-----MsgView::constructor------------------------------------------------------------------------
 MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
@@ -80,19 +79,21 @@ CUserEvent *MsgView::currentMsg(void)
 }
 
 
-void MsgView::resizeEvent(QResizeEvent *e)
+QSize MsgView::sizeHint() const
 {
-  QListView::resizeEvent(e);
-  QScrollBar *s = verticalScrollBar();
-  setColumnWidth(2, width() - 240 - s->width());
+  QSize s = QListView::sizeHint();
+  s.setHeight(minimumHeight());
+
+  return s;
 }
 
 
-//-----MsgView::mouseReleaseEvent------------------------------------------------------------------
-void MsgView::mouseReleaseEvent(QMouseEvent *e)
+void MsgView::resizeEvent(QResizeEvent *e)
 {
-   // does nothing special
-   QListView::mouseReleaseEvent(e);
+  QListView::resizeEvent(e);
+// FIXME: broken for some reason. the cell's don't get repainted
+//  QScrollBar *s = verticalScrollBar();
+//  setColumnWidth(2, width() - 240 - s->width());
 }
 
 

@@ -28,9 +28,9 @@ public:
    MsgView (QWidget *parent = 0, const char *name = 0);
    CUserEvent *currentMsg(void);
    void markRead(short);
+   QSize sizeHint() const;
 protected:
    virtual void resizeEvent(QResizeEvent *e);
-   void mouseReleaseEvent(QMouseEvent *e);
 };
 
 
