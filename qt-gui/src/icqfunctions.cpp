@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1807,6 +1808,7 @@ void ICQFunctions::generateReply()
      s += QString("> ") + mleRead->textLine(i) + "\n";
   mleSend->setText(s);
   mleSend->GotoEnd();
+  mleSend->setEdited(false);
   tabs->showPage(tabList[TAB_SEND].tab);
 }
 
@@ -1890,10 +1892,16 @@ void ICQFunctions::callFcn()
   case TAB_READ: close(); return;
   case TAB_SEND:
   {
+    if(!mleSend->edited() &&
+       !QueryUser(this, tr("You didn't edit the message.\n"
+                           "Do you really want to send it?"), tr("&Yes"), tr("&No")))
+      break;
+
     unsigned short nMsgLen = mleSend->text().length();
     if (nMsgLen > MAX_MESSAGE_SIZE && chkSendServer->isChecked()
         && !QueryUser(this, tr("Message is %1 characters, over the ICQ server limit of %2.\n"
-                               "The message will be truncated if sent through the server.").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
+                               "The message will be truncated if sent through the server.")
+                      .arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
                       tr("C&ontinue"), tr("&Cancel")))
         break;
 
@@ -1901,6 +1909,10 @@ void ICQFunctions::callFcn()
                          edtSpoof->text().toULong() : 0);
     if (rdbMsg->isChecked())  // send a message
     {
+      // don't let the user send empty messages
+      if(mleSend->text().stripWhiteSpace().isEmpty())
+        break;
+
       if (chkMass->isChecked())
       {
         CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
