@@ -1807,7 +1807,7 @@ static bool SendDirect(unsigned long nUin, char c)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u != NULL)
   {
-    if (u->SocketDesc() == -1 &&
+    if (u->SocketDesc(ICQ_CHNxNONE) == -1 &&
         (u->Ip() == 0 || u->Port() == 0 || u->StatusOffline()))
       bDirect = false;
     else if (u->SendServer() && c != 'd' && c != 'u')
