@@ -1408,6 +1408,8 @@ void ICQFunctions::slot_readbtn3()
       {
         ChatDlg *chatDlg = NULL;
         CJoinChatDlg *j = new CJoinChatDlg(this);
+	//MAX
+	printf("LocalPort: %d\n", chatDlg->LocalPort());
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
         delete j;

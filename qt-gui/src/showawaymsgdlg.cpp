@@ -71,7 +71,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   // Check if this is an active request or not
   if (sigman == NULL || server == NULL)
   {
-    mleAwayMsg->setText(u->AutoResponse());
+    mleAwayMsg->setText(QString::fromLocal8Bit(u->AutoResponse()));
     gUserManager.DropUser(u);
     icqEventTag = NULL;
   }
@@ -155,7 +155,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   if (isOk && e->Command() == ICQ_CMDxTCP_START)
   {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    mleAwayMsg->setText(u->AutoResponse());
+    mleAwayMsg->setText(QString::fromLocal8Bit(u->AutoResponse()));
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(true);
   }
