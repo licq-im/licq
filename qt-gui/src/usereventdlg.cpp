@@ -488,6 +488,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   btnRead2->setEnabled(false);
   btnRead3->setEnabled(false);
   btnRead4->setEnabled(false);
+  btnEncoding->setEnabled(true);
 
   CUserEvent *m = e->msg;
   m_xCurrentReadEvent = m;
@@ -533,6 +534,10 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
         btnRead2->setText(tr("&Quote"));
         btnRead3->setText(tr("&Forward"));
         btnRead4->setText(tr("Start Chat"));
+        break;
+        
+      case ICQ_CMDxSUB_SMS:
+        btnEncoding->setEnabled(false);
         break;
 
       case ICQ_CMDxSUB_URL:   // view a url
@@ -1924,6 +1929,7 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass->setEnabled(false);
   btnForeColor->setEnabled(false);
   btnBackColor->setEnabled(false);
+  btnEncoding->setEnabled(false); // SMSs are always UTF-8
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   lay->addWidget(splView);
