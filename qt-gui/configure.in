@@ -96,8 +96,9 @@ dnl   AC_MSG_RESULT(yes)
 dnl fi
 
 AC_PATH_QT_MOC
-dnl QTKDE_MOC="./qtmoc.sh $QT_MOC"
-dnl GUINAME="qt-gui"
+AC_PATH_QT_FINDTR
+AC_PATH_QT_MSGTOQM
+AC_PATH_QT_MERGETR
 
 AC_PATH_KDE
 if test "$have_kde" = yes; then
@@ -108,13 +109,6 @@ if test "$have_kde" = yes; then
    dnl GUINAME="kde-gui"
    AC_SUBST(KDE_LIBS)
 fi
-
-dnl AC_DEFINE(USE_UKEXT)
-
-dnl AC_SUBST(QTKDE_MOC)
-dnl AC_SUBST(GUINAME)
-
-AC_CHECK_SOCKS5
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
@@ -132,6 +126,7 @@ AC_C_CONST
 AC_C_SOCKLEN_T
 
 AC_OUTPUT(
+  po/Makefile
   src/Makefile
   share/Makefile
 	Makefile)
