@@ -465,7 +465,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   char szEmoticons[MAX_FILENAME_LEN];
   licqConf.ReadStr("Emoticons", szEmoticons, "Default" );
   QString s =  QString::fromLatin1(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
-  emoticons = new CEmoticons(s.latin1());
+  QString alt = QString::fromLatin1(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
+  emoticons = new CEmoticons(s.latin1(), alt.latin1());
   if (*szEmoticons)
      if (emoticons->SetTheme(szEmoticons) < 0)
        gLog.Error("%s Loading emoticons theme `%s'\n", L_ERRORxSTR,

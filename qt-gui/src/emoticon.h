@@ -11,7 +11,7 @@ public:
 	 * \param basedir  base dir for icons
 	 * \param theme    sets the current theme
 	 */
-	CEmoticons(const char *basedir, const char *theme = 0 );
+	CEmoticons(const char *basedir, const char *altdir=0, const char *theme = 0 );
 	~CEmoticons();
 
 	/*! \returns the list of themes available */

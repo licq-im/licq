@@ -31,16 +31,19 @@ typedef std::list<struct node> node_list_t;
 /*! private definition of CEmotions */
 struct Emoticons
 {
-  QString basedir;  /* base directory for resourses */
-  QString theme;    /* current theme */
+  QString basedir;     /* base directory for resourses */
+  QString altbasedir;  /* alternative base directory for resourses */
+  QString theme;       /* current theme */
 
   node_list_t emoticons;
 };
 
-CEmoticons::CEmoticons(const char *basedir, const char *theme  )
+CEmoticons::CEmoticons(const char *basedir, const char *altbasedir, 
+                       const char *theme  )
 {
   this->data = new struct Emoticons;
   data->basedir = basedir;
+  data->altbasedir = altbasedir;
 }
 
 CEmoticons::~CEmoticons()
@@ -50,9 +53,24 @@ CEmoticons::~CEmoticons()
 
 QStringList CEmoticons::Themes()
 {
-  QDir dir(data->basedir, "*", 0, QDir::Dirs);
+  QDir    dir(data->basedir,    "*", 0, QDir::Dirs);
+  QDir altdir(data->altbasedir, "*", 0, QDir::Dirs);
+  QStringList list = dir.entryList().grep(QRegExp("^[^.].*")) + 
+                     altdir.entryList().grep(QRegExp("^[^.].*"));
 
-  return dir.entryList().grep(QRegExp("^[^.].*"));
+  // unique 
+  QString last = "";
+  list.sort();
+  for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
+  {
+     // std::cout << "\t" << *it << "\n";
+     if( *it == last )
+        it = list.remove(it);
+     else
+        last = *it;
+  }
+  
+  return list;
 }
 
 /*! 
@@ -211,18 +229,24 @@ static unsigned loadTheme(const struct Emoticons *data,
 
 int CEmoticons::SetTheme(const char *theme)
 {
-  QString szdir = data->basedir + "/" + theme + "/";
+  QString szdir1 = data->altbasedir + "/" + theme + "/";
+  QString szdir2 = data->basedir    + "/" + theme + "/";
+  QDir d1(szdir1);
+  QDir d2(szdir2);
   node_list_t list;
-  QDir d(szdir);
   int ret = -1;
-  unsigned n;
+  unsigned n = 0;
 
-  if (d.exists())
-  {
-    n = loadTheme(data, szdir.ascii(), list);
-    ret = n;
-    data->theme = theme;
-    data->emoticons = list;
+  if (d1.exists())
+    n = loadTheme(data, szdir1.ascii(), list);
+  else if(d2.exists())
+    n = loadTheme(data, szdir2.ascii(), list);
+
+
+   if( n ) {
+     ret = n;
+     data->theme = theme;
+     data->emoticons = list;
   }
 
   return ret;
@@ -253,18 +277,23 @@ QStringList CEmoticons::fileList()
 QStringList CEmoticons::fileList(const char *theme)
 {
   QString szdir = data->basedir + "/" + theme + "/";
+  QString szaltdir = data->altbasedir + "/" + theme + "/";
   QStringList ret;
   QDir d(szdir);
+  QDir altd(szaltdir);
   node_list_t list;
   node_list_t::iterator iter;
   struct node n;
 
   if (d.exists())
-  {
     loadTheme(data, szdir.ascii(), list);
+  else if (altd.exists())
+    loadTheme(data, szaltdir.ascii(), list);
 
-    for( iter  = list.begin();
-         iter != list.end() ; iter++ )
+  if (d.exists() || altd.exists())
+  {
+    for (iter  = list.begin();
+         iter != list.end(); iter++)
     {
       n = *iter;
       ret << n.file;
@@ -309,7 +338,7 @@ main(int argc, char **argv)
   CEmoticons *e;
 
   if (argc != 1)
-    e = new CEmoticons(argv[1]);
+    e = new CEmoticons(argv[1], argv[2]);
   else
   {
     std::cout << "missing theme dir\n";
