@@ -1087,6 +1087,7 @@ void ICQUser::LoadLicqInfo()
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
   m_fConf.ReadNum("SID", m_nSID, 0);
+  m_fConf.ReadNum("GSID", m_nGSID, 0);
 
   if (nNewMessages > 0)
   {
@@ -1294,6 +1295,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_szCustomAutoResponse = NULL;
   m_bConnectionInProgress = false;
   m_nSID = 0;
+  m_nGSID = 0;
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -2059,6 +2061,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
    m_fConf.WriteNum("SID", m_nSID);
+   m_fConf.WriteNum("GSID", m_nGSID);
 
    if (!m_fConf.FlushFile())
    {

@@ -1211,6 +1211,121 @@ CPU_RequestList::CPU_RequestList()
   gUserManager.DropOwner();
 }
 
+//-----AddToServerList----------------------------------------------------------
+CPU_AddToServerList::CPU_AddToServerList(unsigned long _nUin)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD)
+{
+  char szUin[13];
+  int nUinLen = snprintf(szUin, 12, "%lu", _nUin);
+
+  m_nSize += 10+nUinLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(nUinLen);
+  buffer->Pack(szUin, nUinLen);
+  
+  // Generate a SID
+  srand(time(NULL));
+  // Lets use the high order bits
+  unsigned short nSID = 1+(int)(65535.0*rand()/(RAND_MAX+1.0));
+
+  // Make sure we have a unique number
+  bool bDone;
+  do
+  {
+    bDone = true;
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (pUser->GetSID() == nSID)
+      {
+        nSID++;
+	bDone = false;
+	FOR_EACH_USER_BREAK;
+      }
+    }
+    FOR_EACH_USER_END
+  } while (!bDone);
+
+  // Save it
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+  u->SetSID(nSID);
+  gUserManager.DropUser(u);
+}
+
+//-----RemoveFromServerList-----------------------------------------------------
+CPU_RemoveFromServerList::CPU_RemoveFromServerList(unsigned long _nUin)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
+{
+  char szUin[13];
+  int nUinLen = snprintf(szUin, 12, "%lu", _nUin);
+
+  m_nSize += 10+nUinLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(nUinLen);
+  buffer->Pack(szUin, nUinLen);
+
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  if (u)
+  {
+    buffer->PackUnsignedShortBE(u->GetGSID());
+    buffer->PackUnsignedShortBE(u->GetSID());
+  }
+  gUserManager.DropUser(u);
+
+  buffer->PackUnsignedShortBE(0);
+  buffer->PackUnsignedShortBE(0);
+}
+
+//-----UpdateGroupToServerList--------------------------------------------------
+CPU_UpdateGroupToServerList::CPU_UpdateGroupToServerList(unsigned short nGSID)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
+{
+  int nCount = 0;
+  int nGroup = gUserManager.GetGroupFromID(nGSID);
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetGSID() == nGSID)
+      nCount++;
+  }
+  FOR_EACH_USER_END
+
+  GroupList *g = gUserManager.LockGroupList(LOCK_R);
+  int nStrLen = strlen((*g)[nGroup-1]);
+
+  if (nCount) //Hack to include the 4 bytes of TLV header if there will be a TLV
+    nCount += 2;
+  nCount *= 2; // everything item is 2 bytes, not 1
+
+  m_nSize += nStrLen+nCount+10;
+  InitBuffer();
+  
+  buffer->PackUnsignedShortBE(nStrLen);
+  buffer->Pack((*g)[nGroup-1], nStrLen);
+  buffer->PackUnsignedShortBE(nGSID);
+  buffer->PackUnsignedShortBE(0);
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(nCount); // bytes remaining
+
+  if (nCount)
+  {
+    CBuffer tlvData;
+
+    nCount -= 4; // shave off bytes remaining
+    tlvData.Create(nCount);
+
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (pUser->GetGSID() == nGSID)
+        tlvData.PackUnsignedShortBE(pUser->GetSID());
+    }
+    FOR_EACH_USER_END
+
+    buffer->PackTLV(0x00C8, nCount, &tlvData);
+  }
+}
+
+
 //-----SearchByInfo--------------------------------------------------------------
 CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
                                  const char *szLastName, const char *szEmail)

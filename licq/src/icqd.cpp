@@ -835,10 +835,10 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
 //-----RemoveUserFromList-------------------------------------------------------
 void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 {
+  if (m_nTCPSrvSocketDesc != -1) icqRemoveUser(_nUin);
+
   gUserManager.RemoveUser(_nUin);
   SaveUserList();
-
-  if (m_nTCPSrvSocketDesc != -1) icqRemoveUser(_nUin);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, _nUin));
 }

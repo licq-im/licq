@@ -38,6 +38,31 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
 //-----icqRemoveUser-------------------------------------------------------
 void CICQDaemon::icqRemoveUser(unsigned long _nUin)
 {
+  // Server side contact list
+  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+  	ICQ_SNACxLIST_ROSTxEDITxSTART);
+  SendExpectEvent_Server(0, pStart, NULL);
+
+  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_nUin);
+  SendExpectEvent_Server(0, pRemove, NULL);
+
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+  unsigned short nGSID = 0;
+  if (u)
+  {
+    nGSID = u->GetGSID();
+    u->SetGSID(0);
+  }
+  gUserManager.DropUser(u);
+
+  CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(nGSID);
+  SendExpectEvent_Server(0, pUpdateGroup, NULL);
+
+  CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+  	ICQ_SNACxLIST_ROSTxEDITxEND);
+  SendExpectEvent_Server(0, pEnd, NULL);
+
+  // Tell server they are no longer with us.
   CSrvPacketTcp *p = new CPU_GenericUinList(_nUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST);
   gLog.Info("%sAlerting server to remove user (#%ld)...\n", L_SRVxSTR,
             p->Sequence());
@@ -1751,6 +1776,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             if (u)
             {
               u->SetSID(nID);
+              u->SetGSID(nTag);
 
               if (nType == ICQ_ROSTxINVISIBLE)  u->SetInvisibleList(true);
               else if (nType == ICQ_ROSTxVISIBLE) u->SetVisibleList(true);
