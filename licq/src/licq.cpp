@@ -2,7 +2,7 @@
 #include "config.h"
 #endif
 
-#include <iostream.h>
+//#include <iostream.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -30,7 +30,7 @@ extern int errno;
 #include "licq_log.h"
 #include "licq_countrycodes.h"
 #include "licq_utility.h"
-#include "daemon/support.h"
+#include "support.h"
 #include "licq_sar.h"
 #include "licq_user.h"
 #include "licq_icqd.h"
