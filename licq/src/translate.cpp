@@ -253,6 +253,59 @@ char *CTranslator::FromUnicode(char *_sz)
   return szNewStr;
 }
 
+bool CTranslator::utf16to8(unsigned long c, string &s)
+{
+    if (c <= 0x7F)
+    {
+        /* Leave ASCII encoded */
+        s += (char)c;
+    }
+    else if (c <= 0x07FF)
+    {
+        /* 110xxxxx 10xxxxxx */
+        s += (char)(0xC0 | (c >> 6));
+        s += (char)(0x80 | (c & 0x3F));
+    }
+    else if (c <= 0xFFFF)
+    {
+        /* 1110xxxx + 2 */
+        s += (char)(0xE0 | (c >> 12));
+        s += (char)(0x80 | ((c >> 6) & 0x3F));
+        s += (char)(0x80 | (c & 0x3F));
+    }
+    else if (c <= 0x1FFFFF)
+    {
+        /* 11110xxx + 3 */
+        s += (char)(0xF0 | (c >> 18));
+        s += (char)(0x80 | ((c >> 12) & 0x3F));
+        s += (char)(0x80 | ((c >> 6) & 0x3F));
+        s += (char)(0x80 | (c & 0x3F));
+    }
+    else if (c <= 0x3FFFFFF)
+    {
+        /* 111110xx + 4 */
+        s += (char)(0xF8 | (c >> 24));
+        s += (char)(0x80 | ((c >> 18) & 0x3F));
+        s += (char)(0x80 | ((c >> 12) & 0x3F));
+        s += (char)(0x80 | ((c >> 6) & 0x3F));
+        s += (char)(0x80 | (c & 0x3F));
+    }
+    else if (c <= 0x7FFFFFFF)
+    {
+        /* 1111110x + 5 */
+        s += (char)(0xFC | (c >> 30));
+        s += (char)(0x80 | ((c >> 24) & 0x3F));
+        s += (char)(0x80 | ((c >> 18) & 0x3F));
+        s += (char)(0x80 | ((c >> 12) & 0x3F));
+        s += (char)(0x80 | ((c >> 6) & 0x3F));
+        s += (char)(0x80 | (c & 0x3F));
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
 
 //-----NToRN--------------------------------------------------------------------
 char *CTranslator::NToRN(const char *_szOldStr)

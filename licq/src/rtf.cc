@@ -2307,7 +2307,7 @@ string RTF2HTML::Parse(const char *rtf)
         case UNICODE_CHAR:{
                 cur_level.flush();
                 string s;
-                /*icq->utf16to8(atol(yytext + 2), s);*/
+                gTranslator.utf16to8(atol(yytext + 2), s);
                 PrintQuoted(s.c_str());
                 break;
             }
