@@ -1648,6 +1648,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
 
   if (m_nIntIp == 0) m_nIntIp = s->RemoteIp();
   if (m_nPort == 0) m_nPort = s->RemotePort();
+  SetSendServer(false);
 }
 
 
