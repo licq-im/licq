@@ -3,12 +3,15 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 23;
+const unsigned short NUM_COMMANDS = 24;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
     " %B%cco%bntacts",
     "Force a refresh of the contact list." },
+  { "console", &CLicqConsole::MenuSwitchConsole, NULL,
+	" %B%ccons%bole <num>",
+	"Switch to a console." },
   { "group", &CLicqConsole::MenuGroup, NULL,
     " %B%cg%broup [ %B#%b ]",
     "Prints the group list or changes to the given group number." },
@@ -102,6 +105,110 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Quit Licq." }
 };
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuPopupWrapper
+ *
+ * Callback function for when SPACE is pressed on the cdkUserList
+ *-------------------------------------------------------------------------*/
+int CLicqConsole::MenuPopupWrapper(EObjectType cdktype, void *object, void *clientData, chtype key)
+{
+  CLicqConsole *me = (CLicqConsole *)clientData;
+  me->MenuPopup(me->cdkUserList->currentItem);
+  return 1;
+}
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuPopup
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuPopup(int userSelected) {
+  list <SScrollUser *>::iterator it;
+  for (it = m_lScrollUsers.begin(); it != m_lScrollUsers.end(); it++)
+  {
+    if ((*it)->pos == userSelected)
+    {
+      int choice;
+      ICQUser *u = gUserManager.FetchUser((*it)->szId, (*it)->nPPID, LOCK_R);
+      if (u == NULL) return;
+
+      PrintContactPopup(u->GetAlias());
+      gUserManager.DropUser(u);
+      nl();
+      choice = activateCDKScroll(cdkContactPopup, NULL);
+      eraseCDKScroll(cdkContactPopup);
+      destroyCDKScroll(cdkContactPopup);
+      winMain->RefreshWin();
+      if (cdkContactPopup->exitType == vNORMAL)
+      {
+        nonl();
+        switch (choice)
+        {
+          case 0:
+            UserCommand_Msg((*it)->szId, (*it)->nPPID, NULL);
+            break;
+          case 1:
+            UserCommand_View((*it)->szId, (*it)->nPPID, NULL);
+            break;
+        }
+	  }
+	  break;
+    }
+  }
+}
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuSwitchConsole
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuSwitchConsole(char *_szArg)
+{
+  int i;
+  if (!_szArg)
+    return;
+  i = atoi(_szArg);
+  if (i <= 0 || i > 9)
+    winMain->wprintf("Invalid console number - valid numbers are 1-9\n");
+  else
+    if (i == 9)
+      SwitchToCon(0); 
+    else
+      SwitchToCon(i);
+}
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuList
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuList(char *_szArg)
+{
+  int userSelected;
+  UserListHighlight(A_REVERSE);
+  nl();
+  userSelected = activateCDKScroll(cdkUserList, NULL);
+  nonl();
+  UserListHighlight(A_NORMAL);
+  drawCDKScroll(cdkUserList, TRUE);
+  if (cdkUserList->exitType == vNORMAL)
+  {
+    list <SScrollUser *>::iterator it;
+	for (it = m_lScrollUsers.begin(); it != m_lScrollUsers.end(); it++)
+    {
+      if ((*it)->pos == userSelected)
+      {
+        ICQUser *u = gUserManager.FetchUser((*it)->szId, (*it)->nPPID, LOCK_R);
+        if (u == NULL) return;
+        if (u->NewMessages() > 0)
+        {
+          gUserManager.DropUser(u);
+          UserCommand_View((*it)->szId, (*it)->nPPID, NULL);
+        }
+        else
+        {
+          gUserManager.DropUser(u);
+          UserCommand_Msg((*it)->szId, (*it)->nPPID, NULL);
+        }
+        break;
+      }
+    }
+  }
+}
 
 
 /*---------------------------------------------------------------------------
@@ -153,7 +260,7 @@ void CLicqConsole::MenuPlugins(char *_szArg)
   ProtoPluginsList p1;
   ProtoPluginsListIter pit;
   licqDaemon->ProtoPluginList(p1);
-  PrintBoxTop("Plugins", COLOR_BLUE, 70);
+  PrintBoxTop("Plugins", 40, 70);
   for (it = l.begin(); it != l.end(); it++)
   {
     PrintBoxLeft();
@@ -206,7 +313,7 @@ void CLicqConsole::MenuDefine(char *szArg)
         return;
       }
     }
-    winMain->wprintf("%CNo such macro \"%A%s%Z\"\n", COLOR_RED, A_BOLD,
+    winMain->wprintf("%CNo such macro \"%A%s%Z\"\n", 16, A_BOLD,
       szArg, A_BOLD);
     return;
   }
@@ -264,7 +371,7 @@ void CLicqConsole::MenuGroup(char *_szArg)
 
     if (nCurrentGroup > NUM_GROUPS_SYSTEM || nCurrentGroup == 0)
     {
-      winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
+      winMain->wprintf("%CInvalid group number (0 - %d)\n", 16,
                        NUM_GROUPS_SYSTEM);
       return;
     }
@@ -282,7 +389,7 @@ void CLicqConsole::MenuGroup(char *_szArg)
 
     if (nCurrentGroup > gUserManager.NumGroups())
     {
-      winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
+      winMain->wprintf("%CInvalid group number (0 - %d)\n", 16,
                        gUserManager.NumGroups());
       return;
     }
@@ -310,7 +417,7 @@ void CLicqConsole::MenuAdd(char *szArg)
 {
   if (szArg == NULL)
   {
-    winMain->wprintf("%CSpecify a UIN to add.\n", COLOR_RED);
+    winMain->wprintf("%CSpecify a UIN to add.\n", 16);
     return;
   }
 
@@ -328,7 +435,7 @@ void CLicqConsole::MenuAdd(char *szArg)
   if (!licqDaemon->AddUserToList(szArg, LICQ_PPID))
   {
     winMain->wprintf("%CAdding user %s failed (duplicate user or invalid uin).\n",
-     COLOR_RED, szArg);
+     16, szArg);
     return;
   }
 
@@ -355,7 +462,7 @@ void CLicqConsole::MenuAuthorize(char *szArg)
 {
   if (szArg == NULL)
   {
-    winMain->wprintf("%CSpecify \"grant/refuse\" and a UIN/Screen Name to authorize.\n", COLOR_RED);
+    winMain->wprintf("%CSpecify \"grant/refuse\" and a UIN/Screen Name to authorize.\n", 16);
     return;
   }
 
@@ -396,7 +503,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
 
   if (_szArg == NULL)
   {
-    winMain->wprintf("%CSpecify status.\n", COLOR_RED);
+    winMain->wprintf("%CSpecify status.\n", 16);
     return;
   }
 
@@ -418,7 +525,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
   // Check that we found it
   if (i == NUM_STATUS)
   {
-    winMain->wprintf("%CInvalid status: %A%s\n", COLOR_RED, A_BOLD, _szArg);
+    winMain->wprintf("%CInvalid status: %A%s\n", 16, A_BOLD, _szArg);
     return;
   }
 
@@ -503,7 +610,7 @@ unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
     szCmd = strchr(&szArg[1], '"');
     if (szCmd == NULL)
     {
-      winMain->wprintf("%CUnbalanced quotes.\n", COLOR_RED);
+      winMain->wprintf("%CUnbalanced quotes.\n", 16);
       return (unsigned long)-1;
     }
     *szCmd++ = '\0';
@@ -554,7 +661,7 @@ unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
     FOR_EACH_PROTO_USER_END
     if (nUin == 0)
     {
-      winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
+      winMain->wprintf("%CInvalid user: %A%s\n", 16, A_BOLD, szAlias);
       return (unsigned long)-1;
     }
   }
@@ -562,7 +669,7 @@ unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
   {
     if (!gUserManager.IsOnList(nUin))
     {
-      winMain->wprintf("%CInvalid uin: %A%lu\n", COLOR_RED, A_BOLD, nUin);
+      winMain->wprintf("%CInvalid uin: %A%lu\n", 16, A_BOLD, nUin);
       return (unsigned long)-1;
     }
   }
@@ -598,7 +705,7 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
     szCmd = strchr(&szArg[1], '"');
     if (szCmd == NULL)
     {
-      winMain->wprintf("%CUnbalanced quotes.\n", COLOR_RED);
+      winMain->wprintf("%CUnbalanced quotes.\n", 16);
       return scon;
     }
     *szCmd++ = '\0';
@@ -643,7 +750,7 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
   FOR_EACH_USER_END
   if (scon.szId == NULL)
   {
-    winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
+    winMain->wprintf("%CInvalid user: %A%s\n", 16, A_BOLD, szAlias);
     scon.szId = NULL;
     scon.nPPID = (unsigned long)-1;
     return scon;
@@ -675,7 +782,7 @@ void CLicqConsole::MenuMessage(char *szArg)
   struct SContact scon = GetContactFromArg(&sz);
 
   if (!scon.szId && scon.nPPID != (unsigned long)-1)
-    winMain->wprintf("%CYou must specify a user to send a message to.\n", COLOR_RED);
+    winMain->wprintf("%CYou must specify a user to send a message to.\n", 16);
   else if (scon.nPPID != (unsigned long)-1)
     UserCommand_Msg(scon.szId, scon.nPPID, sz);
 }
@@ -691,7 +798,7 @@ void CLicqConsole::MenuInfo(char *szArg)
   unsigned long nUin = GetUinFromArg(&sz);
 
   if (nUin == gUserManager.OwnerUin())
-    winMain->wprintf("%CSetting personal info not implemented yet.\n", COLOR_RED);
+    winMain->wprintf("%CSetting personal info not implemented yet.\n", 16);
   else if (nUin == 0) {
     char szUin[24];
     sprintf(szArg, "%lu", gUserManager.OwnerUin());
@@ -712,9 +819,9 @@ void CLicqConsole::MenuUrl(char *szArg)
   unsigned long nUin = GetUinFromArg(&sz);
 
   if (nUin == gUserManager.OwnerUin())
-    winMain->wprintf("%CYou can't send URLs to yourself!\n", COLOR_RED);
+    winMain->wprintf("%CYou can't send URLs to yourself!\n", 16);
   else if (nUin == 0)
-    winMain->wprintf("%CYou must specify a user to send a URL to.\n", COLOR_RED);
+    winMain->wprintf("%CYou must specify a user to send a URL to.\n", 16);
   else if (nUin != (unsigned long)-1)
     sprintf(szArg, "%lu", nUin);
     UserCommand_Url(szArg, LICQ_PPID, sz);
@@ -732,7 +839,7 @@ void CLicqConsole::MenuSms(char *szArg)
   unsigned long nUin = GetUinFromArg(&sz);
 
   if (nUin == 0)
-    winMain->wprintf("%CInvalid user\n", COLOR_RED);
+    winMain->wprintf("%CInvalid user\n", 16);
   else if (nUin != (unsigned long)-1)
   {
     sprintf(szArg, "%lu", nUin);
@@ -803,9 +910,9 @@ void CLicqConsole::MenuSecure(char *szArg)
   unsigned long nUin = GetUinFromArg(&sz);
 
   if (nUin == gUserManager.OwnerUin())
-    winMain->wprintf("%CYou can't establish a secure connection to yourself!\n", COLOR_RED);
+    winMain->wprintf("%CYou can't establish a secure connection to yourself!\n", 16);
   else if (nUin == 0)
-    winMain->wprintf("%CYou must specify a user to talk to.\n", COLOR_RED);
+    winMain->wprintf("%CYou must specify a user to talk to.\n", 16);
   else if (nUin != (unsigned long)-1)
   {
     sprintf(szArg, "%lu", nUin);
@@ -823,7 +930,7 @@ void CLicqConsole::MenuFile(char *szArg)
   unsigned long nUin = GetUinFromArg(&sz);
 
   if (nUin == gUserManager.OwnerUin())
-    winMain->wprintf("%CYou can't send files to yourself!\n", COLOR_RED);
+    winMain->wprintf("%CYou can't send files to yourself!\n", 16);
   else if (nUin == 0)
   {
     bool bNum = false;
@@ -867,7 +974,7 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
     waddch(winMain->Win(), '\n');
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     winMain->wprintf("%B%CAuto response:\n%b%s\n",
-                     COLOR_WHITE, o->AutoResponse());
+                     8, o->AutoResponse());
     gUserManager.DropOwner();
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
@@ -893,9 +1000,9 @@ void CLicqConsole::MenuRemove(char *szArg)
   unsigned long nUin = GetUinFromArg(&sz);
 
   if (nUin == gUserManager.OwnerUin())
-    winMain->wprintf("%CYou can't remove yourself!\n", COLOR_RED);
+    winMain->wprintf("%CYou can't remove yourself!\n", 16);
   else if (nUin == 0)
-    winMain->wprintf("%CYou must specify a user to remove.\n", COLOR_RED);
+    winMain->wprintf("%CYou must specify a user to remove.\n", 16);
   else if (nUin != (unsigned long)-1)
   {
     sprintf(szArg, "%lu", nUin);
@@ -913,7 +1020,7 @@ void CLicqConsole::MenuHistory(char *szArg)
   struct SContact scon = GetContactFromArg(&sz);
 
   if (!scon.szId && scon.nPPID != (unsigned long)-1)
-    winMain->wprintf("%CYou must specify a user to view history.\n", COLOR_RED);
+    winMain->wprintf("%CYou must specify a user to view history.\n", 16);
   else if (scon.nPPID != (unsigned long)-1)
     UserCommand_History(scon.szId, scon.nPPID, sz);
 }
@@ -955,7 +1062,7 @@ void CLicqConsole::MenuSet(char *_szArg)
   }
   if (i == NUM_VARIABLES)
   {
-    winMain->wprintf("%CNo such variable: %A%s\n", COLOR_RED, A_BOLD, szVariable);
+    winMain->wprintf("%CNo such variable: %A%s\n", 16, A_BOLD, szVariable);
     return;
   }
 
@@ -985,7 +1092,7 @@ void CLicqConsole::MenuSet(char *_szArg)
     }
     if (i == NUM_COLORMAPS)
     {
-      winMain->wprintf("%CNo such color: %A%s\n", COLOR_RED, A_BOLD, szValue);
+      winMain->wprintf("%CNo such color: %A%s\n", 16, A_BOLD, szValue);
       break;
     }
 
@@ -1008,7 +1115,7 @@ void CLicqConsole::MenuSet(char *_szArg)
   case STRING:
     if (szValue[0] != '"' || szValue[strlen(szValue) - 1] != '"')
     {
-      winMain->wprintf("%CString values must be enclosed by double quotes (\").\n", COLOR_RED);
+      winMain->wprintf("%CString values must be enclosed by double quotes (\").\n", 16);
       return;
     }
     szValue[strlen(szValue) - 1] = '\0';

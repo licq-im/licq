@@ -17,8 +17,40 @@ you want to go back to the gui, use "licq -p qt-gui" the first time at least.
 
 For help using the console, type "/help" once inside.  F1-F8 will toggle between
 8 different virtual screens, PgUp/PgDown will scroll the screen, 
-and F9 is the standard Licq log (network window).
+and F9 is the standard Licq log (network window). Press F10 to activate the
+contact list. Up/down/right/left will scroll the list, pressing space when
+a contact is selected will bring up another window with options to choose from.
+Pressing Enter when a user is selected will message the user, or, if events
+are pending (e.g. a message), will view the event.
 
-Address any questions to Jon Keating <jon@licq.org>, uin 16325723.
+Here is a list of key bindings when the userlist is activated:
+
+          Key         Action
+          Left Arrow  Shifts the whole list left one character.
+          Right Arrow Shifts the whole list right one character.
+          Up Arrow    Selects the next item up in the list.
+          Down Arrow  Selects the next item down in the list.
+          Prev Page   Moves one page backwards.
+          Ctrl-B      Moves one page backwards.
+          Next Page   Moves one page forwards.
+          Ctrl-F      Moves one page forwards.
+          g           Moves to the first element in the list.
+          1           Moves to the first element in the list.
+          G           Moves to the last element in the list.
+          $           Shifts the whole list to the far right.
+          |           Shifts the whole list to the far left.
+          Return      Sends a message to the user, or, if events
+                      are pending (e.g. a message), will view
+                      the event. 
+          Tab         Same as Return.
+          Space       Brings up a popup window with extra options
+                      to choose from.
+          Escape      Exits the widget.
+
+
+
+Address any questions to Philip Nelson <phatfil@optusnet.com.au>, uin 16385042, msn
+phatagrajag@hotmail.com or Jon Keating <jon@licq.org>, uin 16325723 or on irc in #licq
+on irc.freenode.net.
 
 

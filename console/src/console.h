@@ -36,6 +36,17 @@ struct SUser
   const struct SColorMap *color;
 };
 
+
+// for keeping track of where a user is
+// in the cdkUserList
+struct SScrollUser
+{
+  int pos;
+  unsigned long nPPID;
+  char szId[32];
+  const struct SColorMap *color;
+};
+
 struct SMacro
 {
   char szMacro[32];
@@ -57,7 +68,8 @@ protected:
   bool m_bExit;
   fd_set fdSet;
   list <SUser *> m_lUsers;
-
+  list <SScrollUser *> m_lScrollUsers;
+		  
   // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
   unsigned short m_nColorOnline, m_nColorOffline, m_nColorAway, m_nColorNew,
@@ -81,8 +93,11 @@ protected:
   CICQDaemon *licqDaemon;
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
           *winConStatus, *winUsers, *winBar;
+  CDKSCROLL *cdkUserList;
+  CDKSCROLL *cdkContactPopup;
   CPluginLog *log;
 
+	
 public:
   void DoneOptions();
   void ProcessPipe();
@@ -131,7 +146,14 @@ public:
   void PrintInfo_About(const char *, unsigned long);
   void PrintFileStat(CFileTransferManager *);
   void PrintMacros();
+  void PrintContactPopup(char *);
 
+  static int UserListCallback(EObjectType, void *, void *, chtype);
+  static int MenuPopupWrapper(EObjectType, void *, void *, chtype);
+  void UserListHighlight(chtype, chtype = 'a');
+  void MenuPopup(int);
+  void MenuSwitchConsole(char *);
+  void MenuList(char *);
   void MenuHelp(char *);
   void MenuContactList(char *);
   void MenuUins(char *);

@@ -62,6 +62,14 @@ I can't find the ncurses library. This is needed if you want
 to compile this plugin. Sorry.
 ]))
 
+dnl check for cdk
+AC_CHECK_LIB(cdk, initCDKScreen,,
+  AC_MSG_ERROR([
+
+I can't find the cdk library. This is needed if you want
+to compile this plugin. Sorry.
+]))
+
 AC_OUTPUT(
   src/Makefile \
   Makefile

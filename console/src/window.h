@@ -2,7 +2,9 @@
 #define WINDOW_H
 
 #include <iostream>
-#include <curses.h>
+extern "C" {
+#include <cdk.h>
+}
 
 #define COLOR_YELLOW_BLUE COLOR_YELLOW + 8
 #define COLOR_WHITE_BLUE  COLOR_WHITE + 8
@@ -25,7 +27,7 @@ struct SContact
 class CWindow
 {
 public:
-  CWindow(int _rows, int _cols, int _y, int _x, int _scrollback);
+  CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _useCDK = false);
   ~CWindow();
   void RefreshWin();
   void ScrollUp();
@@ -39,6 +41,7 @@ public:
   CWindow& operator<<(unsigned short d);
   void wprintf(char *formatIn, ...);
   WINDOW *Win()  { return win; }
+  CDKSCREEN *CDKScreen() { return cdkscreen; } 
   static void StartScreen();
   static void EndScreen();
   int Rows() { return rows; }
@@ -53,6 +56,7 @@ public:
   unsigned short nLastHistory;
 protected:
   WINDOW *win;
+  CDKSCREEN *cdkscreen;
   bool pad, active;
   int rows, cols, x, y, height, cur_y;
 };

@@ -22,6 +22,7 @@ void CWindow::StartScreen()
    nonl();                /* tell curses not to do NL->CR/NL on output */
    cbreak();              /* take input chars one at a time, no wait for \n */
    noecho();              /* don't echo input */
+   /*
    if (has_colors())
    {
       start_color();
@@ -37,6 +38,7 @@ void CWindow::StartScreen()
       init_pair(COLOR_WHITE_BLUE, COLOR_WHITE, COLOR_BLUE);
       init_pair(COLOR_CYAN_BLUE, COLOR_CYAN, COLOR_BLUE);
    }
+   */
 }
 
 void CWindow::EndScreen()
@@ -44,7 +46,7 @@ void CWindow::EndScreen()
    endwin();
 }
 
-CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback)
+CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _useCDK)
 {
   rows = _rows;
   cols = _cols;
@@ -60,11 +62,25 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback)
   }
   else
   {
-    win = newwin(rows, cols, y, x);
+	win = newwin(rows, cols, y, x);
     wmove(win, 0, 0);
   }
+
   keypad(win, TRUE);
-  wbkgd(win, COLOR_PAIR(COLOR_WHITE));
+  wbkgd(win, COLOR_PAIR(8));
+
+  cdkscreen = NULL;
+  if (_useCDK)
+  { 
+	initCDKColor();
+    cdkscreen = initCDKScreen(win);
+    if (cdkscreen == NULL)
+    {
+      printf("Couldn't create cdk screen!\n");
+      exit(1);
+    }
+  }
+	
   nLastUin = 0;
   sLastContact.szId = 0;
   sLastContact.nPPID = 0;
@@ -88,6 +104,12 @@ void CWindow::RefreshWin()
   }
   else
     wnoutrefresh(win);
+
+  if (cdkscreen)
+  {
+    refreshCDKScreen(cdkscreen);
+  }
+  
   doupdate();
 }
 
