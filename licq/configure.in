@@ -216,6 +216,13 @@ else
   echo "OpenSSL secure channel support is enabled."
 fi
 
+dnl Check for msgfmt and gmsgfmt
+if test "$GMSGFMT" = ":"; then 
+  if test "$MSGFMT" = ":"; then
+    echo "** msgfmt and gmsgfmt could not be found. You're loosing daemon localization."
+  fi
+fi
+
 echo ""
 echo "--- Now type \"gmake\" to build Licq ---"
 echo "--- If gmake is not working, try \"make\" ---"
