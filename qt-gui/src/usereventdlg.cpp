@@ -1173,7 +1173,6 @@ void UserSendCommon::massMessageToggled(bool b)
   else
   {
     grpMR->hide();
-    adjustSize();
   }
 }
 
