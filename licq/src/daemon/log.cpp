@@ -15,6 +15,23 @@ extern int errno;
 
 CLogServer gLog;
 
+const char *COLOR_NORMAL = "[37m";
+const char *COLOR_PREFIX = "[32m";
+const char *COLOR_INFO = COLOR_NORMAL;
+const char *COLOR_UNKNOWN = "[35m";
+const char *COLOR_WARN = "[33m";
+const char *COLOR_ERROR = "[31m";
+const char *COLOR_PACKET = "[34m";
+const char *COLOR_MSG[17] =
+{
+"",
+COLOR_INFO,
+COLOR_UNKNOWN, "",
+COLOR_ERROR, "", "", "",
+COLOR_WARN, "", "", "", "", "", "", "",
+COLOR_PACKET
+};
+
 //-----CLogService---------------------------------------------------------------
 CLogService::CLogService(unsigned short _nLogTypes)
 {
@@ -61,18 +78,25 @@ void CLogService::RemoveLogType(unsigned short _nLogType)
 
 
 //-----StdOut-------------------------------------------------------------------
-CLogService_StdOut::CLogService_StdOut(unsigned short _nLogTypes)
+CLogService_StdOut::CLogService_StdOut(unsigned short _nLogTypes, bool _bUseColor)
    : CLogService(_nLogTypes)
 {
    m_nServiceType = S_STDOUT;
+   m_bUseColor = _bUseColor;
 }
+
+
 
 inline
 void CLogService_StdOut::lprintf(unsigned short _nLogType, const char *_szPrefix,
                                  const char *_szFormat, va_list argp)
 {
-  printf("%s", _szPrefix);
+  if (m_bUseColor)
+    printf("%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType]);
+  else
+    printf("%s", _szPrefix);
   vprintf(_szFormat, argp);
+  if (m_bUseColor) printf("%s", COLOR_NORMAL);
   fflush(stdout);
 }
 

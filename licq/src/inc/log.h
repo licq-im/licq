@@ -45,6 +45,7 @@ const unsigned short S_PLUGIN   = 4;
 
 const unsigned short MAX_MSG_SIZE = 2048;
 
+
 //-----CLogService---------------------------------------------------------------
 class CLogService
 {
@@ -70,9 +71,11 @@ protected:
 class CLogService_StdOut : public CLogService
 {
 public:
-   CLogService_StdOut(unsigned short _nLogTypes);
-   virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
-                        const char *_szFormat, va_list argp);
+  CLogService_StdOut(unsigned short _nLogTypes, bool _bUseColor);
+  virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
+                       const char *_szFormat, va_list argp);
+protected:
+  bool m_bUseColor;
 };
 
 
