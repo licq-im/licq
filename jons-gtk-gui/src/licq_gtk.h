@@ -1,3 +1,23 @@
+/*
+ * Licq GTK GUI Plugin
+ *
+ * Copyright (C) 2000, Jon Keating <jonkeating@norcom2000.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 #ifndef __LICQ_GTK_H
 #define __LICQ_GTK_H
 
@@ -11,7 +31,7 @@
 #define PLUGIN_VERSION	"0.10"
 #define STATUS		"Running"
 #define USAGE		"None yet"
-#define DESCRIPTION	"GTK+ plugin for licq 0.75"
+#define DESCRIPTION	"GTK+ plugin for licq"
 
 /********** Structures ******************/
 
@@ -96,6 +116,17 @@ struct more_window
 	GtkWidget *visible;
 	GtkWidget *invisible;
 	GtkWidget *ignore;
+	GtkWidget *accept_away;
+	GtkWidget *accept_na;
+	GtkWidget *accept_dnd;
+	GtkWidget *accept_occ;
+	GtkWidget *online_to;
+	GtkWidget *away_to;
+	GtkWidget *na_to;
+	GtkWidget *dnd_to;
+	GtkWidget *occ_to;
+	GtkWidget *custom_check;
+	GtkWidget *custom_text;
 	ICQUser *user;
 };
 
@@ -106,10 +137,28 @@ struct history
 	ICQUser *user;
 };
 
+struct user_away_window
+{
+	GtkWidget *window;
+	GtkWidget *show_again;
+	ICQUser *user;
+	CICQEventTag *e_tag;
+	gchar progress[40];
+};
+
+struct file_accept
+{
+	GtkWidget *window;
+	ICQUser *user;
+	CEventFile *e;
+	GtkWidget *window2;  /* This is for the refuse part... */
+	GtkWidget *textbox;  /* This is for the refuse part... */
+};
 
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
+extern GList *uaw_list;
 
 
 /* Globals in contact_list.cpp */
@@ -172,6 +221,8 @@ extern void auth_user_callback(GtkWidget *, struct auth_user *);
 extern void away_msg_window(gushort);
 extern void set_away_msg(GtkWidget *, struct away_dialog *);
 extern void away_close(GtkWidget *, GtkWidget *);
+extern void list_read_message(GtkWidget *, ICQUser *);
+extern void close_away_window(GtkWidget *, struct user_away_window *);
 
 
 /* Functions in contact_list.cpp */
@@ -200,6 +251,13 @@ extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void user_function(ICQEvent *);
 extern void check_event(ICQEvent *, GtkWidget *, guint &, gchar *);
 extern void check_other_event(ICQEvent *, GtkWidget *, guint &);
+
+
+/* Functions in file_window.cpp */
+extern void file_accept_window(ICQUser *, CEventFile *);
+extern void refuse_file(GtkWidget *, struct file_accept *);
+extern void accept_file(GtkWidget *, struct file_accept *);
+extern void refuse_ok(GtkWidget *, struct file_accept *);
 
 
 /* Functions in history_window.cpp */

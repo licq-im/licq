@@ -92,3 +92,93 @@ void away_close(GtkWidget *widget, GtkWidget *window)
 	gtk_grab_remove(window);
 	gtk_widget_destroy(window);
 }
+
+void list_read_message(GtkWidget *widget, ICQUser *user)
+{
+	/* Keep track of this event.. we need this */
+	struct main_progress *m_prog = g_new0(main_progress, 1);
+
+	GtkWidget *h_box;
+	GtkWidget *v_box;
+	GtkWidget *scroll;
+	GtkWidget *text_box;
+	GtkWidget *close;
+	struct user_away_window *uaw = g_new0(struct user_away_window, 1);
+	const gchar *title = g_strdup_printf("Auto Response for %s", user->GetAlias());
+
+	uaw->user = user;
+
+	/* Make the window */
+	uaw->window = gtk_window_new(GTK_WINDOW_DIALOG);
+	gtk_window_set_title(GTK_WINDOW(uaw->window), title);
+	gtk_window_set_position(GTK_WINDOW(uaw->window), GTK_WIN_POS_CENTER);
+
+	/* Make the boxes */
+	h_box = gtk_hbox_new(FALSE, 5);
+	v_box = gtk_vbox_new(FALSE, 5);
+
+	/* The scrolling window */
+	scroll = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+				       GTK_POLICY_NEVER,
+				       GTK_POLICY_AUTOMATIC);
+
+	/* The text box */
+	text_box = gtk_text_new(NULL, NULL);
+	gtk_text_set_editable(GTK_TEXT(text_box), FALSE);
+	gtk_text_set_word_wrap(GTK_TEXT(text_box), TRUE);
+	gtk_text_set_line_wrap(GTK_TEXT(text_box), TRUE);
+
+	/* Add the text box to the scrolling window */
+	gtk_container_add(GTK_CONTAINER(scroll), text_box);
+
+	/* Pack the scrolled window into the v_box */
+	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 5);
+
+	/* The Show Again check button */
+	uaw->show_again = gtk_check_button_new_with_label("Show Again");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(uaw->show_again),
+				     user->ShowAwayMsg());
+
+	/* The close button */
+	close = gtk_button_new_with_label("Close");
+	gtk_signal_connect(GTK_OBJECT(close), "clicked",
+			   GTK_SIGNAL_FUNC(close_away_window), uaw);
+
+	/* Pack everything */
+	gtk_box_pack_start(GTK_BOX(h_box), uaw->show_again, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
+
+	gtk_container_add(GTK_CONTAINER(uaw->window), v_box);
+	gtk_widget_show_all(uaw->window);
+
+	/* Get the response... put it in the main progress bar */
+	m_prog->e_tag = icq_daemon->icqFetchAutoResponse(user->Uin());
+	
+	gchar *temp = g_strdup_printf("A/R for %s .. ", user->GetAlias());
+	strcpy(m_prog->buffer, temp);
+
+	/* Add it to the GList */
+	m_prog_list = g_list_append(m_prog_list, m_prog);
+
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress),
+						"main_prog");
+	gtk_statusbar_pop(GTK_STATUSBAR(status_progress), id);
+	gtk_statusbar_push(GTK_STATUSBAR(status_progress), id, m_prog->buffer);
+
+	if(strcmp("", user->AutoResponse()))
+	{
+		gtk_text_freeze(GTK_TEXT(text_box));
+		gtk_text_insert(GTK_TEXT(text_box), 0, 0, 0,
+				user->AutoResponse(), -1);
+		gtk_text_thaw(GTK_TEXT(text_box));
+	}	
+}
+
+void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
+{
+	uaw->user->SetShowAwayMsg(gtk_toggle_button_get_active(
+					GTK_TOGGLE_BUTTON(uaw->show_again)));
+	dialog_close(NULL, uaw->window);
+}

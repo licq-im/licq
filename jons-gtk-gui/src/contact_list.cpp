@@ -202,6 +202,7 @@ void contact_list_click(GtkWidget *contact_list,
 {
 	gint row;
 	gint column;
+	gchar str_status[30];
 	ICQUser *user;
 	struct conversation *c = NULL;
 
@@ -246,6 +247,17 @@ void contact_list_click(GtkWidget *contact_list,
 
 		add_to_popup("Send URL", _menu,
 			     GTK_SIGNAL_FUNC(list_send_url), user);
+
+		if(user->Status() != ICQ_STATUS_ONLINE && 
+		   user->Status() != ICQ_STATUS_OFFLINE)
+		{
+			strcpy(str_status, "Read ");
+			strcat(str_status, user->StatusStrShort());
+			strcat(str_status, " Message");
+
+			add_to_popup(str_status, _menu,
+				     GTK_SIGNAL_FUNC(list_read_message), user);
+		}
 
 		add_to_popup("Info", _menu,
 			GTK_SIGNAL_FUNC(list_info_user), user);
