@@ -2607,7 +2607,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
     
     bool bHandled = false;
-    if (e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER))
+    if (e && e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER))
     {
       bHandled = true;
       ICQUser *u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
