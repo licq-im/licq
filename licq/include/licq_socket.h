@@ -9,8 +9,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <vector.h>
-#include <list.h>
+#include <strings.h>
+#include <vector>
+#include <list>
 
 #include "pthread_rdwr.h"
 
@@ -156,7 +157,7 @@ public:
 
 protected:
   unsigned short HashValue(int _nSd);
-  vector < list<INetSocket *> > m_vlTable;
+  std::vector < std::list<INetSocket *> > m_vlTable;
 
   void Lock(unsigned short _nLockType);
   void Unlock();
@@ -184,7 +185,7 @@ public:
 
 protected:
   fd_set sFd;
-  list <int> lFd;
+  std::list <int> lFd;
   void Set (int _nSD);
   void Clear (int _nSD);
   void Lock();

@@ -320,6 +320,16 @@ protected:
    unsigned short m_nSubCommand;
 };
 
+//-----ReverseTCPRequest--------------------------------------------------------
+
+class CPU_ReverseTCPRequest : public CPacketUdp
+{
+public:
+   CPU_ReverseTCPRequest(unsigned long _nDestinationUin, unsigned long _nIP,
+                         unsigned short _nPort, unsigned short _nPort2);
+protected:
+   unsigned long  m_nDestinationUin;
+};
 
 //-----SetStatus----------------------------------------------------------------
 class CPU_SetStatus : public CPacketUdp

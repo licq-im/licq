@@ -161,10 +161,10 @@ protected:
 friend class CFileTransferManager;
 };
 
-typedef list<CFileTransferEvent *> FileTransferEventList;
-typedef list<const char *> ConstFileList;
-typedef list<char *> FileList;
-typedef list<class CFileTransferManager *> FileTransferManagerList;
+typedef std::list<CFileTransferEvent *> FileTransferEventList;
+typedef std::list<const char *> ConstFileList;
+typedef std::list<char *> FileList;
+typedef std::list<class CFileTransferManager *> FileTransferManagerList;
 
 
 class CFileTransferManager

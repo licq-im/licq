@@ -1,7 +1,7 @@
 #ifndef CHAT_H
 #define CHAT_H
 
-#include <deque.h>
+#include <deque>
 
 #include "licq_packets.h"
 class CICQDaemon;
@@ -121,7 +121,7 @@ struct SVoteInfo
   unsigned short nYes;
   unsigned short nNo;
 };
-typedef list<SVoteInfo *> VoteInfoList;
+typedef std::list<SVoteInfo *> VoteInfoList;
 
 //=====Chat=====================================================================
 class CPacketChat : public CPacket
@@ -203,8 +203,8 @@ protected:
 friend class CPChat_ColorFont;
 };
 
-typedef list<CChatClient> ChatClientList;
-typedef list<CChatClient *> ChatClientPList;
+typedef std::list<CChatClient> ChatClientList;
+typedef std::list<CChatClient *> ChatClientPList;
 
 
 /* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
@@ -422,7 +422,7 @@ protected:
 
   CChatClient client;
   TCPSocket sock;
-  deque <unsigned char> chatQueue;
+  std::deque <unsigned char> chatQueue;
   unsigned short state;
   char linebuf[1024];
 
@@ -433,7 +433,7 @@ friend class CChatEvent;
 friend void *ChatManager_tep(void *);
 };
 
-typedef list<CChatUser *> ChatUserList;
+typedef std::list<CChatUser *> ChatUserList;
 
 
 //=====ChatEvent=============================================================
@@ -457,11 +457,11 @@ protected:
 friend class CChatManager;
 };
 
-typedef list <CChatEvent *> ChatEventList;
+typedef std::list <CChatEvent *> ChatEventList;
 
 
 //=====ChatManager===========================================================
-typedef list<class CChatManager *> ChatManagerList;
+typedef std::list<class CChatManager *> ChatManagerList;
 
 class CChatManager
 {

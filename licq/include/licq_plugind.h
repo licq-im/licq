@@ -2,13 +2,13 @@
 #define PLUGIND_H
 
 #include <pthread.h>
-#include <list.h>
+#include <list>
 
 #include "licq_constants.h"
 
 class CICQDaemon;
-typedef list <class ICQEvent *> EventList;
-typedef list <class CICQSignal *> SignalList;
+typedef std::list <class ICQEvent *> EventList;
+typedef std::list <class CICQSignal *> SignalList;
 
 //=====CPlugin==================================================================
 class CPlugin
@@ -80,8 +80,8 @@ friend class CLicq;
 };
 
 
-typedef list<CPlugin *> PluginsList;
-typedef list<CPlugin *>::iterator PluginsListIter;
+typedef std::list<CPlugin *> PluginsList;
+typedef std::list<CPlugin *>::iterator PluginsListIter;
 
 
 #endif

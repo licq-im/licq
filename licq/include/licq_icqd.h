@@ -6,9 +6,9 @@ header file containing all the main procedures to interface with the ICQ server 
 #ifndef ICQD_H
 #define ICQD_H
 
-#include <vector.h>
-#include <list.h>
-#include <deque.h>
+#include <vector>
+#include <list>
+#include <deque>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -65,7 +65,7 @@ protected:
 friend class CICQDaemon;
 };
 
-typedef vector<CDaemonStats> DaemonStatsList;
+typedef std::vector<CDaemonStats> DaemonStatsList;
 #define STATS_EventsSent 0
 #define STATS_EventsReceived 1
 #define STATS_EventsRejected 2
@@ -290,9 +290,9 @@ protected:
   DaemonStatsList m_sStats;
   time_t m_nStartTime, m_nResetTime;
 
-  list <ICQEvent *> m_lxRunningEvents;
+  std::list <ICQEvent *> m_lxRunningEvents;
   pthread_mutex_t mutex_runningevents;
-  list <ICQEvent *> m_lxExtendedEvents;
+  std::list <ICQEvent *> m_lxExtendedEvents;
   pthread_mutex_t mutex_extendedevents;
   pthread_t thread_monitorsockets,
             thread_ping;

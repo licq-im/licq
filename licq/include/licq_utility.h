@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <vector.h>
+#include <vector>
 
 class ICQUser;
 
@@ -68,7 +68,7 @@ public:
   EWinType WinType()  { return m_eWinType; }
 
   bool SetFields(unsigned long _nUin);
-  void SetUserFields(const vector<const char *> &_vszUserFields);
+  void SetUserFields(const std::vector<const char *> &_vszUserFields);
   void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }
   const char *FullCommand() { return m_szFullCommand; }
 
@@ -83,7 +83,7 @@ protected:
   EWinType m_eWinType;
   char *m_szCommand;
   char *m_szFullCommand;
-  vector <CUtilityUserField *> m_vxUserField;
+  std::vector <CUtilityUserField *> m_vxUserField;
   bool bException;
 };
 
@@ -97,7 +97,7 @@ public:
   CUtility *Utility(unsigned short n)  { return m_vxUtilities[n]; }
   unsigned short NumUtilities()  { return m_vxUtilities.size(); }
 protected:
-  vector <CUtility *> m_vxUtilities;
+  std::vector <CUtility *> m_vxUtilities;
 };
 
 extern CUtilityManager gUtilityManager;

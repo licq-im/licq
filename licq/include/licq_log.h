@@ -2,9 +2,9 @@
 #define LOG_H
 
 #include <stdarg.h>
-#include <vector.h>
+#include <vector>
 #include <stdio.h>
-#include <list.h>
+#include <list>
 #include <pthread.h>
 
 #include "licq_constants.h"
@@ -110,8 +110,8 @@ public:
   int Pipe()  { return pipe_log[PIPE_READ]; }
 protected:
   pthread_mutex_t mutex;
-  list <char *> m_vszLogs;
-  list <unsigned short> m_vnLogTypes;
+  std::list <char *> m_vszLogs;
+  std::list <unsigned short> m_vnLogTypes;
   int pipe_log[2];
 };
 
@@ -204,7 +204,7 @@ public:
 ;
 
 protected:
-  vector <CLogService *> m_vxLogServices;
+  std::vector <CLogService *> m_vxLogServices;
   pthread_mutex_t mutex;
   void Log(const unsigned short _nLogType, const char *_szFormat, va_list argp);
   void Log(const unsigned short _nServiceTypes, const unsigned short _nLogType, const char *_szFormat, va_list argp);

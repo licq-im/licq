@@ -1,7 +1,7 @@
 #ifndef REMOTESERVER_H
 #define REMOTESERVER_H
 
-#include <vector.h>
+#include <vector>
 
 class RemoteServer
 {
@@ -29,7 +29,7 @@ public:
    void next();
    void setServer(unsigned short newCurrent);
 //protected:
-   vector <RemoteServer *> servers;
+   std::vector <RemoteServer *> servers;
    short currentServerNum;
 };
 

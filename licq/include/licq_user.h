@@ -1,8 +1,8 @@
 #ifndef USER_H
 #define USER_H
 
-#include <vector.h>
-#include <list.h>
+#include <vector>
+#include <list>
 #include <time.h>
 
 #include "pthread_rdwr.h"
@@ -87,10 +87,10 @@ class TCPSocket;
           continue;                      \
         }
 
-typedef list<ICQUser *> UserList;
-typedef vector<char *> GroupList;
-typedef list<unsigned long> UinList;
-typedef vector <class CUserEvent *> UserEventList;
+typedef std::list<ICQUser *> UserList;
+typedef std::vector<char *> GroupList;
+typedef std::list<unsigned long> UinList;
+typedef std::vector <class CUserEvent *> UserEventList;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
 extern "C" void SetString(char **, const char *);
@@ -554,7 +554,7 @@ protected:
   void Lock(unsigned short _nLockType);
   void Unlock();
 
-  vector < UserList > m_vlTable;
+  std::vector < UserList > m_vlTable;
 
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;

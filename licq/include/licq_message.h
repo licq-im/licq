@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <list.h>
+#include <list>
 #include <time.h>
 #include "licq_buffer.h"
 #include "licq_constants.h"
@@ -356,7 +356,7 @@ protected:
   unsigned long m_nUin;
   char *m_szAlias;
 };
-typedef list<CContact *> ContactList;
+typedef std::list<CContact *> ContactList;
 
 
 class CEventContactList : public CUserEvent

@@ -2,7 +2,7 @@
 #define SAR_H
 
 #include <stdio.h>
-#include <vector.h>
+#include <vector>
 #include <pthread.h>
 
 #include "licq_file.h"
@@ -32,8 +32,8 @@ protected:
   char *m_szAutoResponse;
 };
 
-typedef vector<CSavedAutoResponse *> SARList;
-typedef vector<CSavedAutoResponse *>::iterator SARListIter;
+typedef std::vector<CSavedAutoResponse *> SARList;
+typedef std::vector<CSavedAutoResponse *>::iterator SARListIter;
 
 
 /*---------------------------------------------------------------------------

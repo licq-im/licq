@@ -6,7 +6,7 @@
 #endif
 
 #include <pthread.h>
-#include <list.h>
+#include <list>
 #include "licq_plugind.h"
 
 extern char **global_argv;

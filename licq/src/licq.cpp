@@ -40,6 +40,8 @@ extern int errno;
 
 #include "licq.conf.h"
 
+using namespace std;
+
 /*-----Start OpenSSL code--------------------------------------------------*/
 
 #ifdef USE_OPENSSL

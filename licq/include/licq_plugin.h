@@ -11,7 +11,7 @@ class CICQDaemon;
  * plugin.
  *----------------------------------------------------------------------------*/
 #include <pthread.h>
-#include <list.h>
+#include <list>
 
 #ifdef __cplusplus
 extern "C" {
@@ -109,7 +109,7 @@ const char *LP_ConfigFile();
 
 extern pthread_cond_t LP_IdSignal;
 extern pthread_mutex_t LP_IdMutex;
-extern list<unsigned short> LP_Ids;
+extern std::list<unsigned short> LP_Ids;
 unsigned short LP_Id;
 
 

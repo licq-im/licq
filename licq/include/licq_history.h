@@ -1,12 +1,12 @@
 #ifndef USERHISTORY_H
 #define USERHISTORY_H
 
-#include <list.h>
+#include <list>
 
 class CUserEvent;
 
-typedef list<CUserEvent *> HistoryList;
-typedef list<CUserEvent *>::iterator HistoryListIter;
+typedef std::list<CUserEvent *> HistoryList;
+typedef std::list<CUserEvent *>::iterator HistoryListIter;
 
 class CUserHistory
 {
