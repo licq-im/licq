@@ -42,6 +42,7 @@
 #include "licq_languagecodes.h"
 #include "licq_user.h"
 #include "licq_icqd.h"
+#include "licq_socket.h"
 
 #include "editfile.h"
 #include "ewidgets.h"
@@ -266,7 +267,12 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoEmail1->setData(u->GetEmail1());
   nfoEmail2->setData(u->GetEmail2());
   nfoUin->setData(u->Uin());
-  nfoIp->setData(u->IpPortStr(buf));
+  QString ip = QString(u->IpPortStr(buf));
+  if (u->Ip() != u->RealIp() && u->RealIp() != 0)
+  {
+    ip.append(QString(" / %1").arg(ip_ntoa(u->RealIp(), buf)));
+  }
+  nfoIp->setData(ip);
   if (u->GetTimezone() == TIMEZONE_UNKNOWN)
     nfoTime->setText(tr("Unknown"));
   else
