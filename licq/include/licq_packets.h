@@ -679,24 +679,27 @@ protected:
 
 
 //-----SetRandomChatGroup----------------------------------------------------
-class CPU_SetRandomChatGroup : public CPacketUdp
+class CPU_SetRandomChatGroup : public CPU_CommonFamily
 {
 public:
   CPU_SetRandomChatGroup(unsigned long nGroup);
   unsigned long Group() { return m_nGroup; }
+  virtual const unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
   unsigned long m_nGroup;
+  unsigned long m_nMetaCommand;
 };
 
 
 
 //-----RandomChatSearch----------------------------------------------------
-class CPU_RandomChatSearch : public CPacketUdp
+class CPU_RandomChatSearch : public CPU_CommonFamily
 {
 public:
   CPU_RandomChatSearch(unsigned long nGroup);
+  virtual const unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
-  unsigned long m_nGroup;
+  unsigned long m_nMetaCommand;
 };
 
 

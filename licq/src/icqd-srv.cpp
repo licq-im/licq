@@ -394,17 +394,27 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
 //-----icqSetRandomChatGroup----------------------------------------------------
 unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
 {
-  gLog.Warn("%sThis feature is currently not implemented.\n", L_WARNxSTR);
-
-  return 0;
+  CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(_nGroup);
+  gLog.Info("%sSetting random chat group (#%ld)...\n", L_SRVxSTR,
+            p->Sequence());
+ 
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+ 
+  return e->EventId();
 }
 
 //-----icqRandomChatSearch------------------------------------------------------
 unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
 {
-  gLog.Warn("%sThis feature is currently not implemented.\n", L_WARNxSTR);
+  CPU_RandomChatSearch *p = new CPU_RandomChatSearch(_nGroup);
+  gLog.Info("%sSearching for random chat user (#%ld)...\n", L_SRVxSTR,
+            p->Sequence());
 
-  return 0;
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+ 
+  return e->EventId();
 }
 
 //-----NextServer---------------------------------------------------------------
@@ -3522,6 +3532,78 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 		  ProcessDoneEvent(e);
 		}
 	      }
+      }
+      else if (nSubtype == ICQ_CMDxMETA_SETxRANDxCHATxRSP)
+      {
+        ICQEvent *e = DoneExtendedServerEvent(nSubSequence,
+                        nResult == META_SUCCESS ? EVENT_ACKED : EVENT_FAILED);
+        if (e == NULL)
+          break;
+
+        if (nResult == META_SUCCESS)
+          gLog.Info("%sRandom chat group updated.\n", L_SRVxSTR);
+
+        DoneEvent(e, nResult == META_SUCCESS ? EVENT_ACKED : EVENT_FAILED);
+        e->m_nCommand = ICQ_CMDxSND_SETxRANDOMxCHAT;
+        ProcessDoneEvent(e);
+      }
+      else if (nSubtype == ICQ_CMDxMETA_RANDOMxUSERxRSP)
+      {
+        ICQEvent *e = DoneExtendedServerEvent(nSubSequence,
+                        nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+        if (e == NULL)
+        {
+          gLog.Warn("%sReceived random chat user when no search in progress.\n",
+                    L_WARNxSTR);
+          break;
+        }
+
+        DoneEvent(e, nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+        e->m_nCommand = ICQ_CMDxSND_RANDOMxSEARCH;
+        if (nResult == META_SUCCESS)
+        {
+          unsigned long nUin, nIp;
+          char nMode;
+          msg >> nUin;
+          gLog.Info("%sRandom chat user found (%ld).\n", L_SRVxSTR, nUin);
+          ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+          bool bNewUser = false;
+          if (u == NULL)
+          {
+             u = new ICQUser(nUin);
+             bNewUser = true;
+          }
+
+          msg.UnpackUnsignedShort(); // chat group
+
+          nIp = msg.UnpackUnsignedLongBE();
+          nIp = PacketIpToNetworkIp(nIp);
+          u->SetIpPort(nIp, msg.UnpackUnsignedLong());
+
+          nIp = msg.UnpackUnsignedLongBE();
+          nIp = PacketIpToNetworkIp(nIp);
+          u->SetIntIp(nIp);
+
+          msg >> nMode;
+          u->SetMode(nMode);
+          if (nMode != MODE_DIRECT)
+            u->SetSendServer(true);
+
+          u->SetVersion(msg.UnpackUnsignedShort());
+
+          gUserManager.DropUser(u);
+
+          if (bNewUser)
+          {
+            AddUserToList(nUin);
+            icqRequestMetaInfo(nUin);
+          }
+
+          e->m_pSearchAck = new CSearchAck(nUin);
+        }
+        else
+          gLog.Info("%sNo random chat user found.\n", L_SRVxSTR);
+        ProcessDoneEvent(e);
       }
       // Search results need to be processed differently
       else if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {

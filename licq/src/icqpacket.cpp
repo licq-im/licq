@@ -253,7 +253,7 @@ pthread_mutex_t CSrvPacketTcp::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
 {
   m_nChannel = nChannel;
-  pthread_mutex_lock(&s_xMuxtex);
+  pthread_mutex_lock(&s_xMutex);
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
   pthread_mutex_unlock(&s_xMutex);
@@ -2444,27 +2444,61 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short nId)
 
 //-----CPU_SetRandomChatGroup------------------------------------------------
 CPU_SetRandomChatGroup::CPU_SetRandomChatGroup(unsigned long nGroup)
- : CPacketUdp(ICQ_CMDxSND_SETxRANDOMxCHAT)
+ : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, 0x0002)
 {
   m_nGroup = nGroup;
+  m_nMetaCommand = ICQ_CMDxMETA_SETxRANDOMxCHAT;
+  unsigned short nPacketSize = 18;
+  if (nGroup)
+    nPacketSize += 33;
 
-  m_nSize += 4;
+  m_nSize += nPacketSize;
   InitBuffer();
 
-  buffer->PackUnsignedLong(m_nGroup);
+  // TLV 1
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nPacketSize - 4);
+  buffer->PackUnsignedShort(nPacketSize - 6); // bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); // type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nMetaCommand); // sub type
+
+  buffer->PackUnsignedShort(nGroup);
+  if (nGroup)
+  {
+    buffer->PackUnsignedLongBE(0x00000300);
+    buffer->PackUnsignedLong(RealIp());
+    buffer->PackUnsignedLong(0); // port
+    buffer->PackUnsignedLong(LocalIp());
+    buffer->PackChar(Mode());
+    buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00000050);
+    buffer->PackUnsignedLong(0x00000003);
+  }
 }
 
 
 //-----CPU_RandomChatSearch--------------------------------------------------
 CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
- : CPacketUdp(ICQ_CMDxSND_RANDOMxSEARCH)
+ : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
 {
-  m_nGroup = nGroup;
+  m_nMetaCommand = ICQ_CMDxMETA_RANDOMxSEARCH;
+  unsigned short nPacketSize = 18;
 
-  m_nSize += 4;
+  m_nSize += nPacketSize;
   InitBuffer();
 
-  buffer->PackUnsignedLong(m_nGroup);
+  // TLV 1
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nPacketSize - 4);
+  buffer->PackUnsignedShort(nPacketSize - 6); //bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); // type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nMetaCommand); // sub type
+  buffer->PackUnsignedShort(nGroup);
 }
 
 
