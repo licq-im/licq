@@ -169,7 +169,7 @@ void OptionsDlg::SetupOptions()
 
   spnAutoAway->setValue(mainwin->autoAwayTime);
   spnAutoNa->setValue(mainwin->autoNATime);
-  cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon >= 10 ? mainwin->m_nAutoLogon - 10 : mainwin->m_nAutoLogon);
+  cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon > 10 ? mainwin->m_nAutoLogon - 10 : mainwin->m_nAutoLogon);
   chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon > 10);
 
   /*ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -335,7 +335,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->autoAwayTime = spnAutoAway->value();
   mainwin->autoNATime = spnAutoNa->value();
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
-                          (chkAutoLogonInvisible->isChecked() ? 10 : 0);
+                          (chkAutoLogonInvisible->isChecked() &&
+                           cmbAutoLogon->currentItem() ? 10 : 0);
   /*ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   if (chkWebPresence->isChecked())
     o->SetStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
