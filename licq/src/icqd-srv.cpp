@@ -2611,9 +2611,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     {
       bHandled = true;
       ICQUser *u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
-      gLog.Info(tr("%s%s (%s) is Invisible.\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
-      u->SetOnlineSince(time(NULL));
-      ChangeUserStatus(u, ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE);
+      if (u->StatusOffline())
+      {
+        gLog.Info(tr("%s%s (%s) is Invisible.\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+        u->SetOnlineSince(time(NULL));
+        ChangeUserStatus(u, ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE);
+      }
       gUserManager.DropUser(u);
     }
     
