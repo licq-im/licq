@@ -762,7 +762,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
     {
       if (_nUin == gUserManager.OwnerUin())
       {
-        if (_nSubSignal == USER_STATUS) break;
+        if (_nSubSignal == USER_STATUS || _nSubSignal == USER_EXT) break;
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
         m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
         gUserManager.DropOwner();
