@@ -888,6 +888,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
   {
     case USER_EVENTS:
     {
+      // Skip all this if it was just an away message check
+      if (sig->Argument() == 0) break;
+      // Otherwise an event was added or removed
       updateEvents();
       if (m_bAutoPopup && sig->Argument() > 0)
       {
@@ -903,7 +906,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         }
         else
         {
-          if (u != NULL) gUserManager.DropUser(u);
+          gUserManager.DropUser(u);
         }
       }
       // Come to the top

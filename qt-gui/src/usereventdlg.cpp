@@ -310,11 +310,13 @@ void UserViewEvent::updateNextButton()
 {
   int num = 0;
 
-  MsgViewItem* it = static_cast<MsgViewItem*>(msgView->firstChild());
-  MsgViewItem* e = NULL;
+  MsgViewItem *it = static_cast<MsgViewItem*>(msgView->firstChild());
+  MsgViewItem *e = NULL;
 
-  while(it) {
-    if(it->m_nEventId != -1) {
+  while (it)
+  {
+    if (it->m_nEventId != -1)
+    {
       e = it;
       num++;
     }
@@ -323,7 +325,7 @@ void UserViewEvent::updateNextButton()
 
   btnReadNext->setEnabled(num > 0);
 
-  if(num > 1)
+  if (num > 1)
     btnReadNext->setText(tr("Nex&t (%1)").arg(num));
   else if (num == 1)
     btnReadNext->setText(tr("Nex&t"));
@@ -674,7 +676,7 @@ void UserViewEvent::slot_btnReadNext()
 
 void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 {
-  if(sig->SubSignal() == USER_EVENTS)
+  if (sig->SubSignal() == USER_EVENTS)
   {
     CUserEvent* e = NULL;
 
@@ -688,7 +690,7 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
       }
     }
 
-    updateNextButton();
+    if (sig->Argument() != 0) updateNextButton();
   }
 }
 
