@@ -2,7 +2,7 @@
 #hack, fix this in a clean manner
 libdir = $(prefix)/lib/licq
 
-INCLUDES = -Wall -D_REENTRANT -fno-check-new \
+INCLUDES = -Wall -D_REENTRANT \
 	-I$(prefix)/include/licq -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
 	`gtk-config --cflags`
 
