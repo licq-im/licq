@@ -204,8 +204,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
   fi
 
   dnl Check if we have the right moc
-  output=`eval "fgrep QCString $MOC"`
-  if test -z "$output"; then
+  if ! fgrep QCString "$MOC" > /dev/null; then
     AC_MSG_ERROR([
 
         The Qt meta object compiler (moc)
