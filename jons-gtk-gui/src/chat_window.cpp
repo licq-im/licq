@@ -1,7 +1,7 @@
 /*
  * Licq GTK GUI Plugin
  *
- * Copyright (C) 2000, Jon Keating <jonkeating@norcom2000.com>
+ * Copyright (C) 2000, Jon Keating <jon@licq.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	GtkWidget *scroll;
 	GtkWidget *statusbar;
 	GtkWidget *multiparty;
+	GtkWidget *single;
 	GtkWidget *ok;
 	GtkWidget *cancel;
 	GtkWidget *table;
@@ -85,6 +86,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 3, 3);
+	gtk_widget_show(scroll);
 
 	/* The send as buttons */
 	rc->send_norm = gtk_radio_button_new_with_label(NULL, "Send Normal");
@@ -102,7 +104,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 1, 2,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
-
+	
 	/* Progress bar */
 	statusbar = gtk_statusbar_new();
 	gtk_table_attach(GTK_TABLE(table), statusbar, 0, 2, 2, 3,
@@ -112,28 +114,46 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	/* e_tag stuff */
 	rc->etd->statusbar = statusbar;
 	strcpy(rc->etd->buf, "");
-	
+
+	// Ok.. this is where the combo box for multi party chats goes
+	// but it isn't shown until it's needed
+	h_box = gtk_hbox_new(FALSE, 5);
+	GtkWidget *label = gtk_label_new("Current Chats:");
+	rc->chat_list = gtk_combo_new();
+	gtk_box_pack_start(GTK_BOX(h_box), label, false, false, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), rc->chat_list, false, false, 0);
+	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
+
 	/* The button box */
 	h_box = gtk_hbox_new(TRUE, 5);
 	multiparty = gtk_button_new_with_label("Multi-Party");
-	ok = gtk_button_new_with_label("Single-Party");
+	single = gtk_button_new_with_label("Single-Party");
+	ok = gtk_button_new_with_label("Invite");
 	cancel = gtk_button_new_with_label("Cancel");
-	gtk_box_pack_start(GTK_BOX(h_box), multiparty, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
+	gtk_box_pack_start(GTK_BOX(h_box), multiparty, true, true, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), single, true, true, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), ok, true, true, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), cancel, true, true, 0);
+	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 4, 5,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
 	
 	/* Connect the signals */
 	gtk_signal_connect(GTK_OBJECT(multiparty), "clicked",
 			   GTK_SIGNAL_FUNC(multi_request_chat), (gpointer)rc);
+	gtk_signal_connect(GTK_OBJECT(single), "clicked",
+			   GTK_SIGNAL_FUNC(single_request_chat), (gpointer)rc);
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
 			   GTK_SIGNAL_FUNC(ok_request_chat), (gpointer)rc);
 	gtk_signal_connect(GTK_OBJECT(cancel), "clicked",
 			   GTK_SIGNAL_FUNC(cancel_request_chat), (gpointer)rc);
 
+	// Set chat list sensitive till needed and show everything
+	gtk_widget_set_sensitive(rc->chat_list, false);
 	gtk_widget_show_all(rc->window);
+	
 	g_free(title);
 }
 
@@ -176,16 +196,35 @@ struct request_chat *rc_find(gulong uin)
 void multi_request_chat(GtkWidget *widget, gpointer _rc)
 {
 	struct request_chat *rc = (struct request_chat *)_rc;
-	// I'm tired now... good night... 
-	// Here's the plan:
-	// Make a multi_request_chat struct
-	// Make it have a window
-	// a CLIST of the current chats with names
-	// and an ok and cancel button
-	// OK sends it
-	// cancel goes back to the rc->window
-	// ok?
-	// ok.
+
+	// Save some time by checking to see if we should be here
+	if(GTK_WIDGET_SENSITIVE(rc->chat_list))
+		return;
+
+	// Make a GList with the current chats in it
+	GList *items = NULL;
+
+	ChatDlgList::iterator iter;
+	for(iter = chat_list.begin(); iter != chat_list.end(); iter++)
+		items = g_list_append(items, (*iter)->chatman->ClientsStr());
+
+	// Make sure there are chats to show
+	if(items == NULL)
+		return;
+		
+	gtk_combo_set_popdown_strings(GTK_COMBO(rc->chat_list), items);
+
+	// Allright show it
+	gtk_widget_set_sensitive(rc->chat_list, true);
+}
+
+void single_request_chat(GtkWidget *widget, gpointer _rc)
+{
+	struct request_chat *rc = (struct request_chat *)_rc;
+
+	// Just take care of it.. I think it'll take some more time
+	// to check if we should be here or not.
+	gtk_widget_set_sensitive(rc->chat_list, false);
 }
 
 void ok_request_chat(GtkWidget *widget, gpointer _rc)
@@ -208,10 +247,56 @@ void ok_request_chat(GtkWidget *widget, gpointer _rc)
 	strcpy(rc->etd->buf, "");
 	strcpy(rc->etd->buf, "Requesting Chat ... ");
 
-	/* Actually send the chat request */
-	rc->etd->e_tag = icq_daemon->icqChatRequest(rc->user->Uin(),
-		gtk_editable_get_chars(GTK_EDITABLE(rc->text_box), 0, -1),
-		send_as);
+	// Are we doing single or multi?
+	if(GTK_WIDGET_SENSITIVE(rc->chat_list))
+	{
+		// Multi
+		unsigned short nPort = 0;
+
+		// Find the chat
+		ChatDlgList::iterator iter;
+		for(iter = chat_list.begin(); iter != chat_list.end(); iter++)
+		{
+			if(strcmp((*iter)->chatman->ClientsStr(),
+				  gtk_entry_get_text(GTK_ENTRY(
+				  	GTK_COMBO(rc->chat_list)->entry)) )
+				== 0)
+			{
+				nPort = (*iter)->chatman->LocalPort();
+				g_print("Found port!!!: %hu\n", nPort);
+				break;
+			}
+		}
+
+		if(iter == chat_list.end())
+		{
+			gtk_statusbar_pop(GTK_STATUSBAR(rc->etd->statusbar),
+				id);
+			gtk_statusbar_push(GTK_STATUSBAR(rc->etd->statusbar),
+				id, "Requesting Chat ... Invalid Chat");
+			message_box("Invalid Multi-Party Chat");
+			return;
+		}
+
+		rc->etd->e_tag = icq_daemon->icqMultiPartyChatRequest(
+			rc->user->Uin(), 
+			gtk_editable_get_chars(GTK_EDITABLE(rc->text_box),
+				0, -1),
+			gtk_entry_get_text(GTK_ENTRY(
+				GTK_COMBO(rc->chat_list)->entry)),
+			nPort,
+			send_as);
+	}
+	
+	else
+	{
+		// Single
+		rc->etd->e_tag = icq_daemon->icqChatRequest(rc->user->Uin(),
+			gtk_editable_get_chars(GTK_EDITABLE(rc->text_box),
+				0, -1),
+			send_as);
+	}
+
 
 	/* The event catcher list */
 	catcher = g_slist_append(catcher, rc->etd);

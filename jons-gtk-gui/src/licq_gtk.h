@@ -1,7 +1,7 @@
 /*
  * Licq GTK GUI Plugin
  *
- * Copyright (C) 2000, Jon Keating <jonkeating@norcom2000.com>
+ * Copyright (C) 2000, Jon Keating <jon@licq.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -307,6 +307,7 @@ struct request_chat
 	GtkWidget *send_norm;
 	GtkWidget *send_urg;
 	GtkWidget *send_list;
+	GtkWidget *chat_list;
 	ICQUser *user;
 	struct e_tag_data *etd;
 };
@@ -434,6 +435,7 @@ extern void list_request_chat(GtkWidget *, ICQUser *);
 extern struct request_chat *rc_new(ICQUser *);
 extern struct request_chat *rc_find(gulong);
 extern void multi_request_chat(GtkWidget *, gpointer);
+extern void single_request_chat(GtkWidget *, gpointer);
 extern void ok_request_chat(GtkWidget *, gpointer);
 extern void cancel_request_chat(GtkWidget *, gpointer);
 extern void close_request_chat(struct request_chat *);
