@@ -10,7 +10,7 @@
 #include <qlabel.h>
 #include <qlined.h>
 
-#include "icq.h"
+class CICQDaemon;
 
 class AuthUserDlg : public QDialog
 {

@@ -143,9 +143,13 @@ bool CFileDlg::GetLocalFileName(void)
   while(!bValid)
   {
 #ifdef USE_KDE
-    f = QFileDialog::getSaveFileName(m_sFileInfo.szName, QString::null, this);
+    f = KFileDialog::getSaveFileName(
+          QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName),
+          QString::null, this);
 #else
-    f = QFileDialog::getSaveFileName(m_sFileInfo.szName, QString::null, this);
+    f = QFileDialog::getSaveFileName(
+          QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName),
+          QString::null, this);
 #endif
     if (f.isNull()) return (false);
     struct stat buf;
@@ -519,9 +523,14 @@ void CFileDlg::fileRecvFile()
     // File transfer done perfectly
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
+    /*char msg[1024];
+    sprintf(msg, _("%sFile transfer of\n'%s'\nfrom %s completed successfully.\n"),
+            L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
+    InformUser(this, msg);*/
     QString msg = QString(_("File '%1' from %2 received successfully."))
-      .arg(m_sFileInfo.szName).arg(m_szRemoteName);
+                          .arg(m_sFileInfo.szName).arg(m_szRemoteName);
     lblStatus->setText(msg);
+
   }
   else // nBytesLeft < 0
   {
@@ -771,6 +780,10 @@ void CFileDlg::fileSendFile()
   if (nBytesLeft == 0)
   {
     // File transfer done perfectly
+    /*char msg[1024];
+    sprintf(msg, _("%sFile transfer of\n'%s'\nto %s completed successfully.\n"),
+            L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
+    InformUser(this, msg);*/
     QString msg = QString(_("Sending of file '%1' to %2 completed successfully."))
       .arg(m_sFileInfo.szName).arg(m_szRemoteName);
     lblStatus->setText(msg);

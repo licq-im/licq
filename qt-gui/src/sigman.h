@@ -9,7 +9,7 @@ class CICQSignal;
 class ICQEvent;
 
 //=====CSignalManager===========================================================
-class CSignalManager: public QObject  
+class CSignalManager: public QObject
 {
   Q_OBJECT
 public:
@@ -28,8 +28,8 @@ protected slots:
 
 signals:
   // Signal signals
-  void signal_updatedUsers();
-  void signal_updatedUser(unsigned long, unsigned short);
+  void signal_updatedList(unsigned long, unsigned long);
+  void signal_updatedUser(unsigned long, unsigned long);
   void signal_updatedStatus();
   void signal_logon();
 

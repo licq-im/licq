@@ -7,6 +7,8 @@
 #include "authuserdlg.h"
 #include "licq-locale.h"
 
+#include "icqd.h"
+
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent = 0, const char *name = 0 ) : QDialog(parent, name)
 {
    server = s;

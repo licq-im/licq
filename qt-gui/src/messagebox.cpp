@@ -57,6 +57,7 @@ MsgView::MsgView (QWidget *parent = 0, const char *name = 0) : QListView(parent,
   setColumnAlignment(3, AlignCenter);
   setColumnAlignment(4, AlignRight);
   setAllColumnsShowFocus (true);
+  setVScrollBarMode(AlwaysOn);
 
   QPalette pal(palette());
   QColorGroup normal(pal.normal());

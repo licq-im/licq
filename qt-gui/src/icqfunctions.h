@@ -19,14 +19,15 @@
 #include <qcombobox.h>
 #include <qsplitter.h>
 
-#include "user.h"
 #include "userfcndlg.h"
-#include "mledit.h"
 #include "messagebox.h"
-#include "icqevent.h"
-#include "icq.h"
 #include "ewidgets.h"
-#include "sigman.h"
+
+class ICQUser;
+class CICQDaemon;
+class ICQEvent;
+class CSignalManager;
+class MLEditWrap;
 
 
 //=====ICQFunctions=============================================================
@@ -112,7 +113,7 @@ public slots:
 protected slots:
    void callFcn();
    void doneFcn(ICQEvent *);
-   void slot_updatedUser(unsigned long, unsigned short);
+   void slot_updatedUser(unsigned long, unsigned long);
    void tabSelected(const QString &);
    void showHistory();
    void printMessage(QListViewItem *);
@@ -121,7 +122,7 @@ protected slots:
    void specialFcn(int);
 
 signals:
-   void signal_updatedUser();
+   void signal_updatedUser(unsigned long, unsigned long);
    void signal_finished(unsigned long);
 };
 

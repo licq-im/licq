@@ -8,16 +8,15 @@
 //#include <qdialog.h>
 #include <qmlined.h>
 
-#include "icq.h"
-#include "user.h"
-#include "mledit.h"
+class CICQDaemon;
+class MLEditWrap;
 
 class CChatAcceptDlg : public QWidget
 {
    Q_OBJECT
 public:
-   CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin, 
-                  unsigned long _nSequence, QWidget *parent = 0, 
+   CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
+                  unsigned long _nSequence, QWidget *parent = 0,
                   const char *name = 0);
 protected:
    CICQDaemon *m_xServer;

@@ -3,7 +3,7 @@
 #include "sigman.h"
 #include "log.h"
 #include "icqevent.h"
-#include "icq.h"
+#include "icqd.h"
 
 //=====CSignalManager===========================================================
 
@@ -52,14 +52,14 @@ void CSignalManager::slot_incoming()
 
 void CSignalManager::ProcessSignal(CICQSignal *s)
 {
-  switch (s->m_eSignalType)
+  switch (s->Signal())
   {
-  case SIGNAL_UPDATExUSERS:
-    emit signal_updatedUsers();
+  case SIGNAL_UPDATExLIST:
+    emit signal_updatedList(s->SubSignal(), s->Uin());
     break;
   case SIGNAL_UPDATExUSER:
-    emit signal_updatedUser(s->m_nData1, s->m_nData2);
-    if (s->m_nData1 == gUserManager.OwnerUin() && s->m_nData2 == UPDATE_STATUS)
+    emit signal_updatedUser(s->SubSignal(), s->Uin());
+    if (s->Uin() == gUserManager.OwnerUin() && s->SubSignal() == USER_STATUS)
     {
       emit signal_updatedStatus();
     }
@@ -69,7 +69,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     break;
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %d.\n", 
-              L_WARNxSTR, s->m_eSignalType);
+              L_WARNxSTR, s->Signal());
     break;
   }
 

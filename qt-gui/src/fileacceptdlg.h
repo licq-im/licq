@@ -7,16 +7,16 @@
 
 #include <qmlined.h>
 
-#include "icq.h"
-#include "user.h"
-#include "mledit.h"
+class CICQDaemon;
+class MLEditWrap;
+class CEventFile;
 
 class CFileAcceptDlg : public QWidget
 {
    Q_OBJECT
 public:
-   CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin, 
-                  CEventFile *e, QWidget *parent = 0, 
+   CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
+                  CEventFile *e, QWidget *parent = 0,
                   const char *name = 0);
    ~CFileAcceptDlg(void);
 protected:

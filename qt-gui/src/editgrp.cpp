@@ -68,7 +68,7 @@ void EditGrpDlg::slot_remove()
   char warning[256];
   sprintf(warning, _("Are you sure you want to remove\nthe group \"%s\"?"), g->Name());
   gUserManager.DropGroup(g);
-  if(!QueryUser(this, warning, _("Ok"), _("Cancel"))) return;
+  if(!QueryUser(this, warning, ("Ok"), _("Cancel"))) return;
   gUserManager.RemoveGroup(n);
   RefreshList();
   emit (signal_updateGroups());

@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "utilitydlg.h"
+#include "icqd.h"
+#include "user.h"
 
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)

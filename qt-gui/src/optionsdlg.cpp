@@ -28,7 +28,7 @@ extern int errno;
 #include "support.h"
 #include "mainwin.h"
 #include "licq-locale.h"
-#include "icq.h"
+#include "icqd.h"
 #include "userbox.h"
 #include "wharf.h"
 
@@ -491,12 +491,14 @@ void OptionsDlg::ApplyOptions()
     {
       mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
       mainwin->updateStatus();
+      mainwin->updateEvents();
     }
     else if (mainwin->m_bDockIcon48 != chkDockFortyEight->isChecked())
     {
       delete mainwin->licqIcon;
       mainwin->licqIcon = new IconManager(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
       mainwin->updateStatus();
+      mainwin->updateEvents();
     }
   }
   else

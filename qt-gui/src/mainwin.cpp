@@ -24,7 +24,7 @@
 #include "registeruser.h"
 #include "skinbrowser.h"
 #include "licq-locale.h"
-#include "icq.h"
+#include "icqd.h"
 #include "userbox.h"
 #include "awaymsgdlg.h"
 #include "outputwin.h"
@@ -315,7 +315,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
    connect (&autoAwayTimer, SIGNAL(timeout()), this, SLOT(autoAway()));
-   connect (licqSigMan, SIGNAL(signal_updatedUsers()), this, SLOT(updateUserWin()));
+   connect (licqSigMan, SIGNAL(signal_updatedList(unsigned long, unsigned long)),
+            this, SLOT(slot_updatedList(unsigned long, unsigned long)));
+   connect (licqSigMan, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
+            this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
    connect (licqSigMan, SIGNAL(signal_updatedStatus()), this, SLOT(updateStatus()));
    connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
@@ -325,6 +328,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
    inMiniMode = false;
    updateStatus();
+   updateEvents();
    updateGroups();
    manualAway = 0;
 
@@ -487,6 +491,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial = false)
     lblMsg->show();
     if (menu != NULL) menu->show();
     updateUserWin();
+    updateEvents();
     updateStatus();
   }
 }
@@ -669,11 +674,45 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 }
 
 
+//-----CMainWindow::slot_updatedUser-----------------------------------------------
+void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUin)
+{
+  // Call this using LIST_REORDER so we trigger an update only if necessary
+  // We only need to check for USER_BASIC as USER_STATUS and USER_EVENTS will
+  // both be followed by LIST_REORDER anyway
+  if (_nSubSignal == USER_BASIC)
+    slot_updatedList(LIST_REORDER, _nUin);
+  else if (_nSubSignal == USER_EVENTS)
+    updateEvents();
+}
+
+
+//-----CMainWindow::slot_updatedList-----------------------------------------------
+void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUin)
+{
+  bool bUpdateWin = true;
+  if (_nSubSignal == LIST_REORDER || _nSubSignal == LIST_ADD)
+  {
+    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+    if (u == NULL)
+    {
+      gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
+                 L_ERRORxSTR, _nUin);
+      return;
+    }
+    if (!u->getIsInGroup(m_nCurrentGroup))
+      bUpdateWin = false;
+    gUserManager.DropUser(u);
+  }
+  if (bUpdateWin) updateUserWin();
+  if (_nSubSignal == LIST_REMOVE)
+    updateEvents();
+}
+
 
 //-----CMainWindow::updateUserWin-----------------------------------------------
-void CMainWindow::updateUserWin()
+void CMainWindow::updateUserWin(void)
 {
-  static char szCaption[132];
   unsigned short i;
 
   // set the pixmap and color for each user and add them to the view
@@ -704,6 +743,12 @@ void CMainWindow::updateUserWin()
   gUserManager.DropGroup(g);
   userView->setUpdatesEnabled(true);
   userView->repaint();
+}
+
+
+void CMainWindow::updateEvents(void)
+{
+  static char szCaption[132];
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short nNumOwnerEvents = o->getNumMessages();
@@ -711,9 +756,7 @@ void CMainWindow::updateUserWin()
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
   {
-    char msgsText[16];
-    sprintf (msgsText, _("SysMsg"));
-    lblMsg->setText(msgsText);
+    lblMsg->setText(_("SysMsg"));
     sprintf(szCaption, "* %s", m_szCaption);
   }
   else if (nNumUserEvents > 0)
@@ -816,9 +859,9 @@ void CMainWindow::changeStatusManual(int id)
 {
   int index = mnuStatus->indexOf(id);
   if (index != MNUxITEM_STATUSxINVISIBLE) manualAway = index;
-  changeStatus(index);
   if (index == 1 || index == 2 || index == 3 || index == 4)
     awayMsgDlg->show();
+  changeStatus(index);
 }
 
 
@@ -1007,10 +1050,8 @@ ICQFunctions *CMainWindow::callFunction(int fcn, bool isUser, unsigned long _nUi
        f = new ICQFunctions(licqDaemon, licqSigMan, _nUin, !isUser, autoClose);
        u->fcnDlg = f;
        isUser ? gUserManager.DropUser(u) : gUserManager.DropOwner();
-       connect (f, SIGNAL(signal_updatedUser()), this, SLOT(updateUserWin()));
+       connect (f, SIGNAL(signal_updatedUser(unsigned long, unsigned long)), this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
        f->setupTabs(fcn);
-       /*connect (f, SIGNAL(signal_finished(unsigned long)),
-                this, SLOT(killICQFunction(unsigned long)));*/
     }
     else
     {
@@ -1518,6 +1559,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial = false)
      userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
                           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
      updateUserWin();
+     updateEvents();
    }
 }
 

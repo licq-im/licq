@@ -148,6 +148,7 @@ protected slots:
   void addUserToGroup(int);
   void saveAllUsers();
   void updateUserWin();
+  void updateEvents();
   void updateStatus();
   void updateGroups();
   void changeStatus(int index);
@@ -178,6 +179,8 @@ protected slots:
   void nextServer();
   void autoAway();
   void aboutBox();
+  void slot_updatedList(unsigned long, unsigned long);
+  void slot_updatedUser(unsigned long, unsigned long);
   void slot_updateContactList();
   void slot_updateAllUsers();
   void slot_shutdown();

@@ -12,7 +12,6 @@
 #endif
 
 #include "mainwin.h"
-#include "icq.h"
 
 #ifdef USE_KDE
 class CLicqGui : public KApplication

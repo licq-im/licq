@@ -7,7 +7,11 @@
 #include <qlabel.h>
 #include "chatacceptdlg.h"
 #include "chatdlg.h"
+#include "mledit.h"
 #include "licq-locale.h"
+
+#include "icqd.h"
+#include "user.h"
 
 CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin, 
                          unsigned long _nSequence,

@@ -7,11 +7,16 @@
 
 #include "fileacceptdlg.h"
 #include "filedlg.h"
+#include "mledit.h"
 #include "licq-locale.h"
 
-CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,  
+#include "icqd.h"
+#include "user.h"
+#include "message.h"
+
+CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
                                CEventFile *e,
-                               QWidget *parent = 0, const char *name = 0) 
+                               QWidget *parent = 0, const char *name = 0)
    : QWidget(parent, name)
 {
    m_xServer = _xServer;
@@ -23,7 +28,7 @@ CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
    lblRefuse->setGeometry(5, 5, 200, 20);
    mleRefuseMsg = new MLEditWrap(true, this);
    mleRefuseMsg->setGeometry(5, 30, 290, 50);
-   
+
    QPushButton *btnAccept, *btnRefuse, *btnIgnore;
    btnAccept = new QPushButton(_("Accept"), this );
    btnAccept->setGeometry(10, 85, 80, 30 );

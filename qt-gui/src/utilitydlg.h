@@ -12,8 +12,8 @@
 
 #include "ewidgets.h"
 #include "utility.h"
-#include "icq.h"
-#include "user.h"
+
+class CICQDaemon;
 
 class CUtilityDlg : public QWidget
 {

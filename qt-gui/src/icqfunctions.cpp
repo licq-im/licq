@@ -4,7 +4,6 @@
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
-#include <qfiledialog.h>
 #else
 #include <qfiledialog.h>
 #endif
@@ -20,6 +19,12 @@
 #include "countrycodes.h"
 #include "log.h"
 #include "licq-locale.h"
+#include "sigman.h"
+
+#include "user.h"
+#include "mledit.h"
+#include "icqevent.h"
+#include "icqd.h"
 
 #define MARGIN_LEFT 5
 #define MARGIN_RIGHT 30
@@ -150,7 +155,8 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
    connect (this, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
-   connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned short)), this, SLOT(slot_updatedUser(unsigned long, unsigned short)));
+   connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
+            this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
    connect (btnCancel, SIGNAL(clicked()), this, SLOT(close()));
    connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
    connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
@@ -228,7 +234,7 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
   chkEditHistory->setGeometry(5, height() - 100, 150, 20);
 
-  chkAutoClose->setGeometry(10, height() - 30, 180, 20);
+  chkAutoClose->setGeometry(10, height() - 30, 100, 20);
   btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
   btnOk->setGeometry(btnCancel->x() - 86, btnCancel->y(), btnCancel->width(), btnCancel->height());
   btnSave->setGeometry(btnOk->x() - 86, btnOk->y(), btnOk->width(), btnOk->height());
@@ -238,7 +244,12 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
 //-----ICQFunctions::keyPressEvent----------------------------------------------
 void ICQFunctions::keyPressEvent(QKeyEvent *e)
 {
-  if (e->key() == Key_Enter || e->key() == Key_Return)
+  if (e->key() == Key_Escape)
+  {
+    close();
+    return;
+  }
+  else if (e->key() == Key_Enter || e->key() == Key_Return)
   {
     callFcn();
     return;
@@ -300,7 +311,7 @@ void ICQFunctions::setupTabs(int index)
     u = gUserManager.FetchUser(m_nUin, LOCK_W);
     u->setIsNew(false);
     gUserManager.DropUser(u);
-    emit signal_updatedUser();
+    emit signal_updatedUser(USER_BASIC, m_nUin);
   }
   show();
   // Post a resize event to force proper geometry setting, again because qt sucks
@@ -475,13 +486,13 @@ void ICQFunctions::tabSelected(const QString &tab)
 
 
 //-----slot_updatedUser---------------------------------------------------------
-void ICQFunctions::slot_updatedUser(unsigned long _nUin, unsigned short _nUpdateType)
+void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _nUin)
 {
   if (m_nUin != _nUin) return;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   switch (_nUpdateType)
   {
-  case UPDATE_STATUS:
+  case USER_STATUS:
   {
     char szStatus[32];
     u->getStatusStr(szStatus);
@@ -497,7 +508,7 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUin, unsigned short _nUpdate
     }
     break;
   }
-  case UPDATE_EVENTS:
+  case USER_EVENTS:
   {
     MsgViewItem *e = (MsgViewItem *)msgView->firstChild();
     short index = -1;
@@ -513,10 +524,10 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUin, unsigned short _nUpdate
     (void) new MsgViewItem(u->GetEvent(index), index, msgView);
     break;
   }
-  case UPDATE_BASIC:
+  case USER_BASIC:
     setBasicInfo(u);
     break;
-  case UPDATE_EXT:
+  case USER_EXT:
     setExtInfo(u);
     break;
   }
@@ -571,7 +582,10 @@ void ICQFunctions::printMessage(QListViewItem *e)
     u->ClearEvent(index);
     gUserManager.DropUser(u);
     msgView->markRead(index);
-    emit signal_updatedUser();
+    // Use USER_BASIC as it ensures that the main window will update the
+    // view if necessary, use USER_EVENTS as well
+    emit signal_updatedUser(USER_BASIC, m_nUin);
+    emit signal_updatedUser(USER_EVENTS, m_nUin);
   }
 }
 
@@ -594,7 +608,7 @@ void ICQFunctions::save()
     saveHistory();
     break;
   default:
-    gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %s.\n",
+    gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %d.\n",
               L_WARNxSTR, tabLabel[currentTab].ascii());
     break;
   }
@@ -672,8 +686,7 @@ void ICQFunctions::saveHistory()
 void ICQFunctions::generateReply()
 {
   mleSend->clear();
-  for (int i = 0; i < mleRead->numLines(); i++) 
-    // TODO: Make quotechar configurable
+  for (int i = 0; i < mleRead->numLines(); i++)
     mleSend->insertLine( QString("> ") + mleRead->textLine(i));
 
   mleSend->insertLine("\n");
@@ -791,8 +804,9 @@ void ICQFunctions::callFcn()
         gUserManager.DropUser(u);
         //sprintf(m_sProgressMsg, _("Sending msg %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqSendMessage(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
-        m_sProgressMsg = _("Sending msg...");
+        m_sProgressMsg = _("Sending msg ");
         m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += "...";
         icqEvent = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
@@ -809,8 +823,9 @@ void ICQFunctions::callFcn()
      {
         //sprintf(m_sProgressMsg, _("Sending URL %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
-        m_sProgressMsg = _("Sending URL...");
+        m_sProgressMsg = _("Sending URL ");
         m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += "...";
         icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                       chkSendServer->isChecked() ? false : true,
                                       chkUrgent->isChecked() ? true : false, uin);
@@ -819,8 +834,9 @@ void ICQFunctions::callFcn()
      {
         //sprintf(m_sProgressMsg, _("Sending chat request %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqChatRequest(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
-        m_sProgressMsg = _("Sending chat request...");
+        m_sProgressMsg = _("Sending chat request ");
         m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += "...";
         icqEvent = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
@@ -829,8 +845,9 @@ void ICQFunctions::callFcn()
      {
         //sprintf(m_sProgressMsg, _("Sending file transfer %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
-        m_sProgressMsg = _("Sending file transfer...");
+        m_sProgressMsg = _("Sending file transfer ");
         m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += "...";
         icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                            chkSendServer->isChecked() ? false : true,
                                            chkUrgent->isChecked() ? true : false, uin);
@@ -929,9 +946,8 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         char status[32];
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         u->getStatusStr(status);
-        sprintf(msg, _("%s is in %s mode.\nSend \"urgent\" to ignore."),
-                     u->getAlias(),
-                     status);
+        sprintf(msg, _("%s is in %s mode:\n%s\n[Send \"urgent\" to ignore]"),
+                     u->getAlias(), status, u->getAwayMessage());
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;
