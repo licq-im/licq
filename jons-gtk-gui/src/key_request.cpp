@@ -192,7 +192,4 @@ void close_key_request(GtkWidget *widget, gpointer _kr)
 	struct key_request *kr = (struct key_request *)_kr;
 	kr_list = g_slist_remove(kr_list, kr);
 	gtk_widget_destroy(kr->window);
-
-	g_free(kr->etag);
-	g_free(kr);
 }
