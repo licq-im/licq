@@ -195,6 +195,7 @@ void OptionsDlg::SetupOptions()
   chkBoldOnMsg->setChecked(mainwin->m_bBoldOnMsg);
   chkManualNewUser->setChecked(mainwin->m_bManualNewUser);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
+  chkSysBack->setChecked(mainwin->m_bSystemBackground);
   switch(mainwin->m_nDockMode)
   {
     case DockNone:
@@ -372,6 +373,7 @@ void OptionsDlg::ApplyOptions()
                       chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
+  mainwin->m_bSystemBackground = chkSysBack->isChecked();
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
   {
@@ -1050,6 +1052,7 @@ QWidget* OptionsDlg::new_column_options()
                                     " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
                                     " + 240 (Shadow)"));
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
+  chkSysBack = new QCheckBox(tr("Use System Background Color"), boxUserWin);
 
 
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);

@@ -219,7 +219,7 @@ CSkin::CSkin(const char *skinname)
      colors.offline = strdup(temp);
    skinFile.ReadStr("colors.background", temp, "default");
    if (strncmp(temp, "default", 7) == 0)
-     colors.background = strdup("grey76");
+     colors.background = NULL;//strdup("grey76");
    else
      colors.background = strdup(temp);
    skinFile.ReadStr("colors.gridlines", temp, "default");

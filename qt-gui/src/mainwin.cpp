@@ -313,6 +313,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("UseThreadView", m_bThreadView, false);
   licqConf.ReadNum("TVGroupStates", m_nGroupStates, 0xFFFFFFFE);
   licqConf.ReadBool("ShowExtIcons", m_bShowExtendedIcons, true);
+  licqConf.ReadBool("SystemBackground", m_bSystemBackground, false);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -2150,6 +2151,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("AlwaysShowONU", m_bAlwaysShowONU);
   licqConf.WriteBool("AutoRaise", m_bAutoRaise);
   licqConf.WriteBool("ShowExtIcons", m_bShowExtendedIcons);
+  licqConf.WriteBool("SystemBackground", m_bSystemBackground);
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)

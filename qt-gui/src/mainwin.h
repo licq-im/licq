@@ -92,7 +92,8 @@ public:
        m_bManualNewUser,
        m_bThreadView,
        m_bScrollBar,
-       m_bShowExtendedIcons;
+       m_bShowExtendedIcons,
+       m_bSystemBackground;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

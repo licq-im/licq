@@ -59,7 +59,8 @@ protected:
              *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg,
              *chkAutoPopup, *chkAutoRaise, *chkFlashUrgent, *chkFlashAll,
              *chkBoldOnMsg, *chkManualNewUser,
-             *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons;
+             *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
+             *chkSysBack;
    QRadioButton *rdbDockDefault, *rdbDockThemed;
    QComboBox *cmbDockTheme;
 
