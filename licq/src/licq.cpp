@@ -63,7 +63,7 @@ CLicq::CLicq(int argc, char **argv)
   else
   {
     int i = 0;
-    while( (i = getopt(argc, argv, "hd:b:p:iso:f")) > 0)
+    while( (i = getopt(argc, argv, "hd:b:p:io:f")) > 0)
     {
       switch (i)
       {
@@ -84,8 +84,6 @@ CLicq::CLicq(int argc, char **argv)
         break;
       case 'p':  // new plugin
         vszPlugins.push_back(strdup(optarg));
-        break;
-      case 's':  // save plugin settings
         bSavePlugins = true;
         break;
       case 'o':  // redirect stdout and stderr
@@ -160,8 +158,6 @@ CLicq::CLicq(int argc, char **argv)
       licqConf.WriteStr(szKey, *iter);
     }
     licqConf.FlushFile();
-    licqException = 255;
-    return;
   }
 
   // Load up the plugins
@@ -454,7 +450,6 @@ void CLicq::PrintUsage(void)
          " -b : set the base directory for the config and data files (~/.licq by default)\n"
          " -i : force initialization of the given base directory\n"
          " -p : load the given plugin library\n"
-         " -s : automatically load the current plugins at next startup\n"
          " -o : redirect stdout and stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
          PACKAGE, VERSION);
 }
