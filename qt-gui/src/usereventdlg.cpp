@@ -88,7 +88,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   m_nPPID = _nPPID;
   m_bOwner = (gUserManager.FindOwner(m_szId, m_nPPID) != NULL);
   m_bDeleteUser = false;
-  
+
   top_hlay = new QHBoxLayout(this, 6);
   top_lay = new QVBoxLayout(top_hlay);
   top_hlay->setStretchFactor(top_lay, 1);
@@ -343,6 +343,8 @@ void UserEventTabDlg::moveLeft()
   int index = tabw->currentPageIndex();
   if (index > 0)
     tabw->setCurrentPage(index - 1);
+  else // leftmost tab is selected, rotate!
+    tabw->setCurrentPage(tabw->count() - 1);
 #endif
 }
 
@@ -352,6 +354,8 @@ void UserEventTabDlg::moveRight()
   int index = tabw->currentPageIndex();
   if (index < tabw->count() - 1)
     tabw->setCurrentPage(index + 1);
+  else // rightmost tab is selected, rotate!
+    tabw->setCurrentPage(0);
 #endif
 }
 
@@ -560,7 +564,7 @@ UserEventCommon::~UserEventCommon()
   //TODO for CMainWindow
   if (m_bDeleteUser && !m_bOwner)
     mainwin->RemoveUserFromList(strdup(m_szId), m_nPPID, this);
-    
+
   free(m_szId);
 #else
   emit finished(m_nUin);
@@ -1837,7 +1841,7 @@ void UserSendCommon::slot_ClearNewEvents()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
 #endif
 
-  if (mainwin->m_bMsgChatView 
+  if (mainwin->m_bMsgChatView
 #if QT_VERSION >= 300
       && isActiveWindow() && (!mainwin->userEventTabDlg ||
        (mainwin->userEventTabDlg &&
@@ -1980,7 +1984,7 @@ void UserSendCommon::massMessageToggled(bool b)
       (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in CMMUserView
-      lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader, 
+      lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
                                   strtoul(m_szId, (char **)NULL, 10), mainwin, grpMR);
 #else
       lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
@@ -1997,7 +2001,7 @@ void UserSendCommon::massMessageToggled(bool b)
     if (grpMR != NULL && m_bGrpMRIsVisible ) /* only resize if really necessary! */
     {
       int grpMRWidth = grpMR->width();
-      
+
       grpMR->hide();
       m_bGrpMRIsVisible = false;
 
@@ -2612,7 +2616,7 @@ void UserSendMsgEvent::sendButton()
       messageRaw = tmp;
       delete [] tmp;
       message = codec->toUnicode(messageRaw);
-        
+
       if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
       {
           // We try to find the optimal place to cut
@@ -2786,10 +2790,10 @@ void UserSendUrlEvent::sendButton()
 
   unsigned long icqEventTag;
 #ifdef QT_PROTOCOL_PLUGIN
-  icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, edtItem->text().latin1(), 
+  icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, edtItem->text().latin1(),
                 codec->fromUnicode(mleSend->text()),
 #else
-  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), 
+  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(),
                 codec->fromUnicode(mleSend->text()),
 #endif
                 chkSendServer->isChecked() ? false : true,
@@ -2944,9 +2948,9 @@ void UserSendFileEvent::browseFile()
 void UserSendFileEvent::editFileList()
 {
   CEditFileListDlg *dlg;
-  
+
   dlg = new CEditFileListDlg(&m_lFileList);
-  
+
   connect(dlg,SIGNAL(file_deleted(unsigned)), this, SLOT(slot_filedel(unsigned)));
 }
 
@@ -3489,7 +3493,7 @@ void UserSendSmsEvent::sendButton()
     icqEventTag = m_lnEventTag.front();
 
   // do nothing if a command is already being processed
-  if (icqEventTag != 0) 
+  if (icqEventTag != 0)
     return;
 
   if(!mleSend->edited() &&
@@ -3498,16 +3502,16 @@ void UserSendSmsEvent::sendButton()
     return;
 
   // don't let the user send empty messages
-  if (mleSend->text().stripWhiteSpace().isEmpty()) 
+  if (mleSend->text().stripWhiteSpace().isEmpty())
     return;
 
 #ifdef QT_PROTOCOL_PLUGIN
   //TODO in daemon
-  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), 
+  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(),
                 mleSend->text().utf8().data(),
                 strtoul(m_szId, (char **)NULL, 10));
 #else
-  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), 
+  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(),
                 mleSend->text().utf8().data(), m_nUin);
 #endif
   m_lnEventTag.push_back(icqEventTag);
