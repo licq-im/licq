@@ -2,6 +2,7 @@
 #include "config.h"
 #endif
 
+#include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 #include <vector.h>

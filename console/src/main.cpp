@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <locale.h>
+#include <getopt.h>
 #include "console.h"
 #include "licq_plugin.h"
 
