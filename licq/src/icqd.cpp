@@ -95,12 +95,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // ICQ Server
   char szICQServer[MAX_HOSTNAME_LEN];
-  
+
   licqConf.ReadStr("ICQServer", szICQServer, DEFAULT_SERVER_HOST);
   m_szICQServer = new char[strlen(szICQServer) + 1];
   strcpy(m_szICQServer, szICQServer);
   licqConf.ReadNum("ICQServerPort", m_nICQServerPort, DEFAULT_SERVER_PORT);
-  
+
   bool bTcpEnabled;
   unsigned short nTCPPortsLow, nTCPPortsHigh;
   licqConf.ReadNum("TCPPortsLow", nTCPPortsLow, 0);
@@ -168,8 +168,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Proxy
   m_xProxy = NULL;
-  char t_str[MAX_HOSTNAME_LEN]; 
-  
+  char t_str[MAX_HOSTNAME_LEN];
+
   licqConf.ReadBool("ProxyEnabled", m_bProxyEnabled, false);
   licqConf.ReadNum("ProxyServerType", m_nProxyType, PROXY_TYPE_HTTP);
   licqConf.ReadStr("ProxyServer", t_str, "");
@@ -183,7 +183,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadStr("ProxyPassword", t_str, "");
   m_szProxyPasswd = new char[strlen(t_str) + 1];
   strcpy(m_szProxyPasswd, t_str);
-  
+
   // -----OnEvent configuration-----
   char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
   unsigned short nOnEventCmdType;
@@ -526,7 +526,7 @@ void CICQDaemon::SaveConf()
   if (!licqConf.LoadFile(m_szConfigFile)) return;
 
   licqConf.SetSection("network");
-  
+
   // ICQ Server
   licqConf.WriteStr("ICQServer", m_szICQServer);
   licqConf.WriteNum("ICQServerPort", m_nICQServerPort);
@@ -559,7 +559,7 @@ void CICQDaemon::SaveConf()
     pc++;
     licqConf.WriteStr("Rejects", pc);
   }
-  
+
   // Proxy
   licqConf.WriteBool("ProxyEnabled", m_bProxyEnabled);
   licqConf.WriteNum("ProxyServerType", m_nProxyType);
@@ -568,7 +568,7 @@ void CICQDaemon::SaveConf()
   licqConf.WriteBool("ProxyAuthEnabled", m_bProxyAuthEnabled);
   licqConf.WriteStr("ProxyLogin", m_szProxyLogin);
   licqConf.WriteStr("ProxyPassword", m_szProxyPasswd);
-  
+
   // save the sound stuff
   licqConf.SetSection("onevent");
   COnEventManager *oem = OnEventManager();
@@ -696,7 +696,7 @@ void CICQDaemon::InitProxy()
     delete m_xProxy;
     m_xProxy = NULL;
   }
-  
+
   switch (m_nProxyType)
   {
     case PROXY_TYPE_HTTP :
@@ -711,18 +711,18 @@ void CICQDaemon::InitProxy()
     gLog.Info("%sResolving proxy: %s:%d...\n", L_INITxSTR, m_szProxyHost, m_nProxyPort);
     if (!m_xProxy->SetProxyAddr(m_szProxyHost, m_nProxyPort)) {
       char buf[128];
-      
+
       gLog.Warn("%sUnable to resolve proxy server %s:\n%s%s.\n", L_ERRORxSTR,
                  m_szProxyHost, L_BLANKxSTR, m_xProxy->ErrorStr(buf, 128));
       delete m_xProxy;
       m_xProxy = NULL;
     }
-   
+
     if (m_xProxy)
     {
       if (m_bProxyAuthEnabled)
         m_xProxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
-    
+
       m_xProxy->InitProxy();
     }
   }
@@ -837,7 +837,7 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 {
   gUserManager.RemoveUser(_nUin);
   SaveUserList();
-  
+
   if (m_nTCPSrvSocketDesc != -1) icqRemoveUser(_nUin);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, _nUin));
@@ -1099,6 +1099,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
     }
   }
 
+#if 0
   if (m_lxRunningEvents.size()) {
     gLog.Info("doneevents: for: %p pending: \n", e);
     for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
@@ -1108,6 +1109,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
                 (*iter)->Uin());
     }
   }
+#endif
 
   //bool bFound = (iter == m_lxRunningEvents.end());
   pthread_mutex_unlock(&mutex_runningevents);
@@ -1439,9 +1441,10 @@ void CICQDaemon::PushExtendedEvent(ICQEvent *e)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
+#if 0
   gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %ld SubSequence: %d: Uin: %ld\n", e,
             e->Command(), e->SubCommand(), e->Sequence(), e->SubSequence(), e->Uin());
-
+#endif
   pthread_mutex_unlock(&mutex_extendedevents);
 }
 
