@@ -1220,6 +1220,32 @@ CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
   buffer->Pack(szEmail, nLenEmail);
 }
 
+//-----SearchByKeyword----------------------------------------------------------
+CPU_SearchByKeyword::CPU_SearchByKeyword(const char *szKeyword)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
+{
+  int nLenKeyword = strlen_safe(szKeyword) +3;
+  int packetSize = 2+2+2+4+2+2+2 + nLenKeyword + 2 + 2;
+  m_nMetaCommand = 0x5F05;
+  m_nSize += packetSize;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(m_nMetaCommand); 		// subtype
+  
+  gTranslator.ClientToServer((char *) szKeyword);
+  
+  buffer->PackUnsignedShortBE(0x2602);
+  buffer->PackUnsignedShort(nLenKeyword);
+  buffer->PackString(szKeyword);
+}
+
 //-----SearchByUin--------------------------------------------------------------
 CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)

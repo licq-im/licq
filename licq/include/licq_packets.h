@@ -346,12 +346,22 @@ protected:
    unsigned long m_nMetaCommand;
 };
 
+//-----SearchByKeyword----------------------------------------------------------
+class CPU_SearchByKeyword : public CPU_CommonFamily
+{
+public:
+   CPU_SearchByKeyword(const char *_szKeyword);
+   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+protected:
+   unsigned long m_nMetaCommand;
+};
 
 //-----SearchByUin--------------------------------------------------------------
 class CPU_SearchByUin : public CPU_CommonFamily
 {
 public:
    CPU_SearchByUin(unsigned long nUin);
+   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
 protected:
    unsigned long m_nMetaCommand;
 };
@@ -368,10 +378,10 @@ public:
                    const char *szState, unsigned short nCountryCode,
                    const char *szCoName, const char *szCoDept,
                    const char *szCoPos, bool bOnlineOnly);
-	  virtual const unsigned short SubCommand()		{ return m_nMetaCommand; }
-	  unsigned long Uin()  { return 0; }
+   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+   unsigned long Uin()  { return 0; }
 protected:
-		unsigned long m_nMetaCommand;
+   unsigned long m_nMetaCommand;
 };
 
 

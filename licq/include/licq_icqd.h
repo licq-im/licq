@@ -165,6 +165,7 @@ public:
   unsigned long icqSetRandomChatGroup(unsigned long nGroup);
   unsigned long icqRandomChatSearch(unsigned long nGroup);
   unsigned long icqSearchByInfo(const char *, const char *, const char *, const char *);
+  unsigned long icqSearchByKeyword(const char *);
   unsigned long icqSearchByUin(unsigned long);
   unsigned long icqSearchWhitePages(const char *szFirstName,
                             const char *szLastName, const char *szAlias,

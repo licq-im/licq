@@ -203,6 +203,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   search_tab->addTab(email_tab, tr("&Email"));
 
   //-- third tab: search by UIN
+  
   uin_tab = new QWidget(this);
   lay2 = new QHBoxLayout(uin_tab, 10);
   lay2->addWidget(new QLabel(tr("UIN#:"), uin_tab));
@@ -212,6 +213,16 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
 
   search_tab->addTab(uin_tab, tr("&Uin#"));
 
+  //-- 4 tab: search by keyword
+
+  keyword_tab  = new QWidget(this);
+  lay2 = new QHBoxLayout(keyword_tab, 10);
+  lay2->addWidget(new QLabel(tr("Keyword:"), keyword_tab));
+  edtKeyword = new QLineEdit(keyword_tab);
+  lay2->addWidget(edtKeyword);
+
+  search_tab->addTab(keyword_tab, tr("&Keyword"));
+  
   lay->addWidget(search_tab, 1);
   lay2 = new QVBoxLayout(lay, 10);
   lay2->addStretch(1);
@@ -281,6 +292,7 @@ void SearchUserDlg::startSearch()
   edtLast->setEnabled(false);
   */
   edtEmail->setEnabled(false);
+  edtKeyword->setEnabled(false);
   edtUin->setEnabled(false);
   btnSearch->setEnabled(false);
   btnReset->setEnabled(true);
@@ -301,6 +313,10 @@ void SearchUserDlg::startSearch()
      edtEmail->text().local8Bit().data(),
      0, 0, GENDER_UNSPECIFIED, LANGUAGE_UNSPECIFIED,
      "", "", COUNTRY_UNSPECIFIED, "", "", "", false);
+  } else if (search_tab->currentPage() == keyword_tab)
+  {
+    searchTag = server->icqSearchByKeyword(
+     edtKeyword->text().local8Bit().data());
   }
   else
   {
@@ -333,6 +349,7 @@ void SearchUserDlg::resetSearch()
   else
   {
     edtEmail->clear();
+    edtKeyword->clear();
     edtLast->clear();
     edtFirst->clear();
     edtNick->clear();
@@ -346,6 +363,7 @@ void SearchUserDlg::resetSearch()
   edtFirst->setEnabled(true);
   edtLast->setEnabled(true);
   edtEmail->setEnabled(true);
+  edtKeyword->setEnabled(true);
   edtUin->setEnabled(true);
   btnSearch->setEnabled(true);
   btnAdd->setEnabled(false);
@@ -363,6 +381,7 @@ void SearchUserDlg::searchResult(ICQEvent *e)
   edtFirst->setEnabled(true);
   edtLast->setEnabled(true);
   edtEmail->setEnabled(true);
+  edtKeyword->setEnabled(true);
   edtUin->setEnabled(true);
 
   if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)

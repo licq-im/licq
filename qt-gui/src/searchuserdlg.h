@@ -76,11 +76,11 @@ protected:
    QTabWidget* search_tab;
 
    QLabel *lblSearch;
-   QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin,
+   QLineEdit *edtEmail, *edtKeyword, *edtFirst, *edtLast, *edtNick, *edtUin,
      *edtCity, *edtState, *edtCoName, *edtCoDept, *edtCoPos;
    QComboBox *cmbAge, *cmbCountry, *cmbGender, *cmbLanguage;
    
-   QWidget *alias_tab, *email_tab, *uin_tab;
+   QWidget *alias_tab, *email_tab, *uin_tab, *keyword_tab;
    QCheckBox *chkOnlineOnly;
 
    unsigned long searchTag;
