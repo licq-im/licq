@@ -89,8 +89,8 @@ void CLogService::RemoveLogType(unsigned short _nLogType)
 CLogService_StdOut::CLogService_StdOut(unsigned short _nLogTypes, bool _bUseColor)
    : CLogService(_nLogTypes)
 {
-   m_nServiceType = S_STDOUT;
-   m_bUseColor = _bUseColor;
+  m_nServiceType = S_STDOUT;
+  m_bUseColor = _bUseColor;
 }
 
 
@@ -100,7 +100,7 @@ void CLogService_StdOut::lprintf(unsigned short _nLogType, const char *_szPrefix
                                  const char *_szFormat, va_list argp)
 {
   if (m_bUseColor)
-    printf("%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType]);
+    printf("%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType == L_MESSAGE ? L_INFO : _nLogType]);
   else
     printf("%s", _szPrefix);
   vprintf(_szFormat, argp);
@@ -364,6 +364,22 @@ void CLogServer::Packet(unsigned short _nServiceTypes, const char *_szFormat, ..
    va_list argp;
    va_start(argp, _szFormat);
    Log(_nServiceTypes, L_PACKET, _szFormat, argp);
+   va_end(argp);
+}
+
+
+void CLogServer::Message(const char *_szFormat, ...)
+{
+   va_list argp;
+   va_start(argp, _szFormat);
+   Log(L_MESSAGE, _szFormat, argp);
+   va_end(argp);
+}
+void CLogServer::Message(unsigned short _nServiceTypes, const char *_szFormat, ...)
+{
+   va_list argp;
+   va_start(argp, _szFormat);
+   Log(_nServiceTypes, L_MESSAGE, _szFormat, argp);
    va_end(argp);
 }
 

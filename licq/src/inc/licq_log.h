@@ -23,8 +23,11 @@ const unsigned short L_ERROR    = 0x0004;
 const unsigned short L_WARN     = 0x0008;
 // Packet: packet dumps
 const unsigned short L_PACKET   = 0x0010;
+// Message: popup messages from plugins to be displayed to the user
+const unsigned short L_MESSAGE  = 0x8000;
 
-const unsigned short L_ALL      = L_INFO | L_UNKNOWN | L_ERROR | L_WARN | L_PACKET;
+const unsigned short L_MOST     = L_INFO | L_UNKNOWN | L_ERROR | L_WARN | L_MESSAGE;
+const unsigned short L_ALL      = L_MOST | L_PACKET;
 const unsigned short L_NONE     = 0;
 
 const char L_WARNxSTR[]    = "[WRN] ";
@@ -151,6 +154,8 @@ public:
   void Warn(unsigned short _nServiceTypes, const char *_szFormat, ...);
   void Packet(const char *_szFormat, ...);
   void Packet(unsigned short _nServiceTypes, const char *_szFormat, ...);
+  void Message(const char *_szFormat, ...);
+  void Message(unsigned short _nServiceTypes, const char *_szFormat, ...);
 
 protected:
   vector <CLogService *> m_vxLogServices;
