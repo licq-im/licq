@@ -158,6 +158,7 @@ public:
        m_bPopLastOnline,
        m_bPopOnlineSince,
        m_bPopIdleTime,
+       m_bPopID,
        m_bShowAllEncodings,
        m_bTabbedChatting,
        m_bShowHistory,

@@ -173,12 +173,10 @@ CUserViewItem::~CUserViewItem()
 {
   CUserView *v = (CUserView *)listView();
 
-  if (v == NULL || m_szId == 0) return;
-
   if (m_szId)
-    free (m_szId);
-  else
-    return;
+    free(m_szId);
+
+  if (v == NULL) return;
 
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
@@ -1549,6 +1547,16 @@ void CUserView::maybeTip(const QPoint& c)
         s += tr("<br><nobr>Idle: ") + temp + tr("</nobr>");
         tip (r, s);
       }
+    }
+   
+    if (gMainWindow->m_bPopID)
+    {
+      char *szTemp;
+      szTemp = u->usprintf("%u");
+      QString temp(szTemp);
+      free(szTemp);
+      s += tr("<br><nobr>ID: ") + temp + tr("</nobr>");
+      tip (r, s);
     }
 
     tip(r, s);

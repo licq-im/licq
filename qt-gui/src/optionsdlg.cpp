@@ -232,6 +232,7 @@ void OptionsDlg::SetupOptions()
   popLastOnline->setChecked(mainwin->m_bPopLastOnline);
   popOnlineSince->setChecked(mainwin->m_bPopOnlineSince);
   popIdleTime->setChecked(mainwin->m_bPopIdleTime);
+  popID->setChecked(mainwin->m_bPopID);
 
   switch(mainwin->m_nDockMode)
   {
@@ -512,6 +513,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bPopLastOnline= popLastOnline->isChecked();
   mainwin->m_bPopOnlineSince = popOnlineSince->isChecked();
   mainwin->m_bPopIdleTime = popIdleTime->isChecked();
+  mainwin->m_bPopID = popID->isChecked();
 
 
 #ifndef USE_KDE
@@ -1396,6 +1398,7 @@ QWidget* OptionsDlg::new_column_options()
   popLastOnline = new QCheckBox(tr("Last online"), boxPopWin);
   popOnlineSince = new QCheckBox(tr("Online Time"), boxPopWin);
   popIdleTime = new QCheckBox(tr("Idle Time"), boxPopWin);
+  popID = new QCheckBox(tr("Protocol ID"), boxPopWin);
 
 
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);

@@ -431,6 +431,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("showPopLastOnelin",m_bPopLastOnline, false);
   licqConf.ReadBool("showPopOnlineSince", m_bPopOnlineSince, false);
   licqConf.ReadBool("showPopIdleTime", m_bPopIdleTime, true);
+  licqConf.ReadBool("showPopID", m_bPopID, true);
   
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -1032,7 +1033,11 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
 CMainWindow::~CMainWindow()
 {
   delete licqIcon;
-  delete emoticons;
+  if (emoticons) delete emoticons;
+  if (skin) delete skin;
+  if (m_szExtendedIconSet) free(m_szExtendedIconSet);
+  if (pmBorder) delete pmBorder;
+  if (pmMask) delete pmMask;
   gMainWindow = NULL;
   if (m_szUserMenuId)
     free(m_szUserMenuId);
@@ -3365,6 +3370,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("showPopLastOnelin",m_bPopLastOnline);
   licqConf.WriteBool("showPopOnlineSince", m_bPopOnlineSince);
   licqConf.WriteBool("showPopIdleTime", m_bPopIdleTime);
+  licqConf.WriteBool("showPopID", m_bPopID);
 
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)
