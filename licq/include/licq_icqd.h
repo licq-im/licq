@@ -204,7 +204,7 @@ public:
   unsigned short BirthdayRange() { return m_nBirthdayRange; }
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
-  void AddUserToList(unsigned long _nUin);
+  bool AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
 
