@@ -45,7 +45,7 @@ const char *LP_Usage(void)
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE)\n";
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE), ignored by KDE support\n";
   return usage;
 }
 
@@ -123,6 +123,7 @@ int LP_Main(CICQDaemon *_licqDaemon)
 
 QStyle *CLicqGui::SetStyle(const char *_szStyle)
 {
+#ifndef USE_KDE
   QStyle *s = NULL;
   if (strncmp(_szStyle, "MOTIF", 3) == 0)
     s = new QMotifStyle;
@@ -132,11 +133,11 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = new QPlatinumStyle;
   else if (strncmp(_szStyle, "CDE", 3) == 0)
     s = new QCDEStyle;
-#ifdef USE_KDE
-  else if (strncmp(_szStyle, "KDE", 3) == 0)
-    s = new KThemeStyle;
-#endif
   return s;
+#else
+  if(_szStyle); // no warning
+  return &kapp->style();
+#endif
 }
 
 
@@ -165,9 +166,7 @@ CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIc
   // Otherwise try and load it from the file
   else
   {
-#ifdef USE_KDE
-    style = new KThemeStyle;
-#else
+#ifndef USE_KDE
     FILE *f = fopen(buf, "r");
     if (f != NULL)
     {
