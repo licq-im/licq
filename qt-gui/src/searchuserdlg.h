@@ -32,7 +32,7 @@
 #include <qchkbox.h>
 #include <qlistview.h>
 
-#include "icq.h"
+#include "icqd.h"
 #include "user.h"
 #include "sigman.h"
 

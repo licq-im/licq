@@ -16,6 +16,8 @@
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
 
+#include "icqd.h"
+
 CLicqGui *licqQtGui;
 
 void LP_Usage(void)
