@@ -85,6 +85,8 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   conf.ReadBool("FailOnExitCode", m_bFailOnExitCode, false);
   conf.ReadBool("AbortDeleteOnExitCode", m_bAbortDeleteOnExitCode, false);
   conf.ReadBool("SendThroughServer", m_bSendThroughServer, true);
+  conf.ReadBool("StartEnabled", m_bEnabled, false);
+  conf.ReadBool("DeleteMessage", m_bDelete, false);
   conf.CloseFile();
 
   // Log on if necessary
