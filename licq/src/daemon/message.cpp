@@ -465,13 +465,12 @@ CEventContactList::CEventContactList(vector <char *> &_vszFields,
   for (unsigned short i = 0; i < _vszFields.size(); i++)
     m_vszFields.push_back(strdup(_vszFields[i]));
 
-  m_szText = new char [m_vszFields.size() * 16 + 128];
-  sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size() / 2);
-  char *szEnd;
-  for (unsigned short i = 0; i < m_vszFields.size(); i += 2)
+  m_szText = new char [m_vszFields.size() * 32 + 128];
+  char *szEnd = m_szText;
+  szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size() / 2);
+  for (unsigned short i = 0; i < m_vszFields.size() - 1; i += 2)
   {
-    szEnd = &m_szText[strlen(m_szText)];
-    sprintf(szEnd, "%s (%s)\n", m_vszFields[i + 1], m_vszFields[i]);
+    szEnd += sprintf(szEnd, "%s (%s)\n", m_vszFields[i + 1], m_vszFields[i]);
   }
 
 }
