@@ -998,7 +998,7 @@ void CMainWindow::mousePressEvent(QMouseEvent *m)
 
 void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 {
-  if (m_bEnableMainwinMouseMovement && m->button() == QButton::Left)
+  if (m_bEnableMainwinMouseMovement && m->button() == LeftButton)
   {
     int deltaX = m->x() - mouseX;
     int deltaY = m->y() - mouseY;
