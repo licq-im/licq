@@ -1,7 +1,8 @@
 CXXFLAGS += -fno-rtti -fno-exceptions
 LDFLAGS += -shared -nostdlib
 INCLUDES += -I$(top_srcdir) -I$(includedir) \
-		-DG_LOG_DOMAIN=\"licq_gtk\" -I/home/jon/licq/licq-0.75-991218-old/src/inc
+		-DG_LOG_DOMAIN=\"licq_gtk\" -I../../../src/inc
+CFLAGS += `gtk-config --cflags`
 
 bin_PROGRAMS = licq_gtk.so
 
@@ -20,5 +21,5 @@ licq_gtk_so_SOURCES = \
 	system_status.cpp \
 	user_menu.cpp 
 
-licq_gtk_so_LDFLAGS += -rdynamic
-licq_gtk_so_LDADD = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm 
+licq_gtk_so_LDFLAGS += `gtk-config --libs`
+licq_gtk_so_LDADD = 

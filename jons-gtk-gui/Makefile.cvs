@@ -1,0 +1,17 @@
+all:
+	@echo "*** Concatenating configure tests into acinclude.m4"
+	@-rm -f acinclude.m4
+	@$(MAKE) -f Makefile.am top_srcdir=. acinclude.m4
+	@echo "*** Retrieving configure tests needed by configure.in"
+	@aclocal
+	@echo "*** Scanning for include statements"
+	@autoheader
+	@echo "*** Building Makefile templates (step one)"
+	@automake
+	@echo "*** Building Makefile templates (step two)"
+	@autoconf
+	@echo "*** Create date/time stamp"
+	@touch stamp-h.in
+	@echo "*** Finished"
+	@echo "    Don't forget to run ./configure"
+	@echo "    If you haven't done so in a while, run ./configure --help"
