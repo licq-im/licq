@@ -38,30 +38,36 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   ICQEvent *dummy = (ICQEvent *)p;
   CICQDaemon *d = dummy->m_pDaemon;
+  static unsigned short nNext = 0;
 
   // Must send packets in sequential order
   pthread_mutex_lock(&d->mutex_sendqueue_server);
 
-  list<ICQEvent *>::iterator iter, smallestIter;
-  smallestIter = d->m_lxSendQueue_Server.begin();
-  bool bDirty = false;
+  list<ICQEvent *>::iterator iter;
+  ICQEvent *e = NULL;
 
-  do
+  for (iter = d->m_lxSendQueue_Server.begin();
+       iter != d->m_lxSendQueue_Server.end(); iter++)
   {
-    bDirty = false;
-    for (iter = d->m_lxSendQueue_Server.begin();
-         iter != d->m_lxSendQueue_Server.end(); iter++)
+    if ((*iter)->Channel() == ICQ_CHNxNEW)
     {
-      if ((*iter)->Sequence() < (*smallestIter)->Sequence())
-      {
-        bDirty = true;
-        smallestIter = iter;
-      }
+      e = *iter;
+      nNext = e->Sequence() + 1;
+      break;
     }
-  } while (bDirty);
 
-  ICQEvent *e = *smallestIter;
-  d->m_lxSendQueue_Server.erase(smallestIter);
+    if ((*iter)->Sequence() == nNext)
+    {
+      e = *iter;
+      nNext++;
+      break;
+    }
+  }
+
+  if (e == NULL)
+    return NULL;
+
+  d->m_lxSendQueue_Server.erase(iter);
 
   pthread_mutex_unlock(&d->mutex_sendqueue_server);
   //struct timeval tv;
@@ -72,7 +78,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     // Connect to the server if we are logging on
-    if (e->m_pPacket->Command() == ICQ_CHNxNEW)
+    if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
     {
       gLog.Info("%sConnecting to login server.\n", L_SRVxSTR);
       e->m_nSocketDesc = d->ConnectToLoginServer();
@@ -335,7 +341,7 @@ void *MonitorSockets_tep(void *p)
         }
 
         // Message from the server ---------------------------------------------
-	else if (nCurrentSocket == d->m_nTCPSrvSocketDesc)
+        else if (nCurrentSocket == d->m_nTCPSrvSocketDesc)
         {
           DEBUG_THREADS("[MonitorSockets_tep] Data on TCP server socket.\n");
           SrvSocket *srvTCP = static_cast<SrvSocket*>(gSocketManager.FetchSocket(nCurrentSocket));
@@ -350,7 +356,7 @@ void *MonitorSockets_tep(void *p)
             CBuffer packet(srvTCP->RecvBuffer());
             srvTCP->ClearRecvBuffer();
             gSocketManager.DropSocket(srvTCP);
-	    if (!d->ProcessSrvPacket(packet));// d->icqRelogon();
+            if (!d->ProcessSrvPacket(packet));// d->icqRelogon();
           }
           else {
             // probably server closed socket, try to relogon after a while
