@@ -1720,7 +1720,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmOnline = new QPixmap(sFilepath);
    if (pmOnline->isNull())
-     gLog.Warn("%sUnable to open 'online' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'online' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("FFC", sFilename, "");
@@ -1728,7 +1728,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmFFC = new QPixmap(sFilepath);
    if (pmFFC->isNull())
    {
-     gLog.Warn("%sUnable to open 'free for chat' pixmap '%s'.\n%sUsing 'online' pixmap.\n",
+     gLog.Warn("%sUnable to open 'free for chat' pixmap.\n",
                 L_WARNxSTR, sFilepath, L_BLANKxSTR);
      pmFFC = pmOnline;
    }
@@ -1737,49 +1737,49 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmOffline = new QPixmap(sFilepath);
    if (pmOffline->isNull())
-     gLog.Warn("%sUnable to open 'offline' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'offline' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("Away", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmAway = new QPixmap(sFilepath);
    if (pmAway->isNull())
-     gLog.Warn("%sUnable to open 'away' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'away' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("NA", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmNa = new QPixmap(sFilepath);
    if (pmNa->isNull())
-     gLog.Warn("%sUnable to open 'N/A' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'N/A' pixmap.\n",
                 L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("Occupied", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmOccupied = new QPixmap(sFilepath);
    if (pmOccupied->isNull())
-     gLog.Warn("%sUnable to open 'occupied' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'occupied' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("DND", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmDnd = new QPixmap(sFilepath);
    if (pmDnd->isNull())
-     gLog.Warn("%sUnable to open 'DND' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'DND' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("Private", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmPrivate = new QPixmap(sFilepath);
    if (pmPrivate->isNull())
-     gLog.Warn("%sUnable to open 'private' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'private' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
-   fIconsConf.ReadStr("Message", sFilename, "");
+   fIconsConf.ReadStr("Message", sFilename, "none");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmMessage = new QPixmap(sFilepath);
    if (pmMessage->isNull())
-     gLog.Warn("%sUnable to open 'message' pixmap '%s'.\n%sUsing blank.\n",
+     gLog.Warn("%sUnable to open 'message' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
 
    fIconsConf.ReadStr("Url", sFilename, "");
@@ -1787,7 +1787,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmUrl = new QPixmap(sFilepath);
    if (pmUrl->isNull())
    {
-     gLog.Warn("%sUnable to open 'url' pixmap '%s'.\n%sUsing 'message' pixmap.\n",
+     gLog.Warn("%sUnable to open 'url' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
      pmUrl = pmMessage;
    }
@@ -1797,7 +1797,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmChat = new QPixmap(sFilepath);
    if (pmChat->isNull())
    {
-     gLog.Warn("%sUnable to open 'chat' pixmap '%s'.\n%sUsing 'message' pixmap.\n",
+     gLog.Warn("%sUnable to open 'chat' pixmap.\n",
                L_WARNxSTR, sFilepath, L_BLANKxSTR);
      pmChat = pmMessage;
    }
@@ -1807,7 +1807,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmFile = new QPixmap(sFilepath);
    if (pmFile->isNull())
    {
-     gLog.Warn("%sUnable to open 'file' pixmap '%s'.\n%sUsing 'message' pixmap.\n",
+     gLog.Warn("%sUnable to open 'file' pixmap.\n",
                 L_WARNxSTR, sFilepath, L_BLANKxSTR);
      pmFile = pmMessage;
    }
@@ -1822,10 +1822,10 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuStatus->changeItem(*pmFFC, tr("Free for C&hat"), mnuStatus->idAt(5));
      mnuStatus->changeItem(*pmOffline, tr("O&ffline"), mnuStatus->idAt(6));
      mnuStatus->changeItem(*pmPrivate, tr("&Invisible"), mnuStatus->idAt(8));
-     mnuUser->changeItem(*pmMessage, tr("&Send Message"), mnuUser->idAt(1));
-     mnuUser->changeItem(*pmUrl, tr("Send &Url"), mnuUser->idAt(2));
-     mnuUser->changeItem(*pmChat, tr("Send &Chat Request"), mnuUser->idAt(3));
-     mnuUser->changeItem(*pmFile, tr("Send &File Transfer"), mnuUser->idAt(4));
+     mnuUser->changeItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
+     mnuUser->changeItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
+     mnuUser->changeItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+     mnuUser->changeItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
                           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
      updateUserWin();
