@@ -52,7 +52,9 @@ struct search_user
 	GtkWidget *online_only;
 	GtkWidget *uin;
 	GtkWidget *list;
-	GtkWidget *clear;
+	GtkWidget *clearBtn;
+	GtkWidget *doneBtn;
+	GtkWidget *searchBtn;
 	GtkWidget *statusbar;
 	unsigned long e_tag;
 };
@@ -62,9 +64,7 @@ static gint num_found_users = 0;
 
 void search_callback(GtkWidget *, gpointer);
 void search_list_double_click(GtkWidget *, GdkEventButton *, gpointer);
-void search_done(bool);
 void search_found(CSearchAck *);
-void search_failed();
 void search_close(GtkWidget *, gpointer);
 void clear_callback(GtkWidget *, gpointer);
 
@@ -233,26 +233,26 @@ void search_user_window()
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 5);
 
 	/* The "Search" button */
-	GtkWidget *search = gtk_button_new_with_mnemonic("_Search");
-	g_signal_connect(G_OBJECT(search), "clicked",
+	su->searchBtn = gtk_button_new_with_mnemonic("_Search");
+	g_signal_connect(G_OBJECT(su->searchBtn), "clicked",
 			G_CALLBACK(search_callback), 0);
 
 	/* The "Clear List" button */
-	su->clear = gtk_button_new_with_mnemonic("     _Clear List     ");
-	g_signal_connect(G_OBJECT(su->clear), "clicked",
+	su->clearBtn = gtk_button_new_with_mnemonic("     _Clear List     ");
+	g_signal_connect(G_OBJECT(su->clearBtn), "clicked",
 			G_CALLBACK(clear_callback), 0);
 	// disabled until there's something to clear
-	gtk_widget_set_sensitive(su->clear, FALSE);
+	gtk_widget_set_sensitive(su->clearBtn, FALSE);
 	
 	/* The "Done" button */
-	GtkWidget *done = gtk_button_new_with_mnemonic("_Done");
-	g_signal_connect(G_OBJECT(done), "clicked",
+	su->doneBtn = gtk_button_new_with_mnemonic("_Done");
+	g_signal_connect(G_OBJECT(su->doneBtn), "clicked",
 			G_CALLBACK(search_close), 0);
 	
 	/* we want these at the bottom */
-	gtk_box_pack_end(GTK_BOX(vbox), done, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), su->clear, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), search, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), su->doneBtn, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), su->clearBtn, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), su->searchBtn, FALSE, FALSE, 0);
 
   gtk_box_pack_start(GTK_BOX(top_hbox), vbox, TRUE, TRUE, 5);
 	
@@ -317,7 +317,7 @@ void clear_callback(GtkWidget *widget, gpointer data)
 	GtkListStore *store = 
 			GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(su->list)));
 	gtk_list_store_clear(store);
-	gtk_widget_set_sensitive(su->clear, FALSE);
+	gtk_widget_set_sensitive(su->clearBtn, FALSE);
 	status_change(su->statusbar, "sta", "");
 }
 
@@ -363,6 +363,7 @@ search_callback(GtkWidget *widget, gpointer data)
 				get_text(su->c_position),
 				get_text(su->keyword),
 				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(su->online_only)));
+	gtk_widget_set_sensitive(su->searchBtn, FALSE);
 }
 
 void 
@@ -404,23 +405,22 @@ void search_result(ICQEvent *event)
 
 	CSearchAck *search_ack = event->SearchAck();
 
-	if (event->Result() == EVENT_SUCCESS)
-		search_done(search_ack->More());
-	else if (event->Result() == EVENT_ACKED)
+	if (search_ack != NULL && search_ack->Uin() != 0)
 		search_found(search_ack);
-	else
-		search_failed();
-}
 
-void 
-search_done(bool more)
-{
-	if (more)
-		status_change(su->statusbar, "sta",
-			"More users found, narrow your search and try again.");
-	else
-		status_change(su->statusbar, "sta",
-			"Search complete, double click user to add her/him.");
+	if (event->Result() == EVENT_SUCCESS) {
+		if (search_ack->More())
+			status_change(su->statusbar, "sta",
+				"More users found, narrow your search and try again.");
+		else
+			status_change(su->statusbar, "sta",
+				"Search complete, double click user to add her/him.");
+		gtk_widget_set_sensitive(su->searchBtn, TRUE);
+	}
+	else if (event->Result() != EVENT_ACKED) {
+		status_change(su->statusbar, "sta", "Search failed.");
+		gtk_widget_set_sensitive(su->searchBtn, TRUE);
+	}
 }
 
 void 
@@ -473,12 +473,7 @@ search_found(CSearchAck *s)
 		gtk_list_store_set(store, &iter, 6, "Yes", -1);
 	
 	num_found_users++;
-	gtk_widget_set_sensitive(su->clear, TRUE);
-}
-
-void search_failed()
-{
-	status_change(su->statusbar, "sta", "Search failed.");
+	gtk_widget_set_sensitive(su->clearBtn, TRUE);
 }
 
 void 
