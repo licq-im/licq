@@ -70,6 +70,7 @@
 #include "securitydlg.h"
 #include "passworddlg.h"
 #include "plugindlg.h"
+#include "randomchatdlg.h"
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
@@ -256,6 +257,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   licqConf.SetSection("functions");
   licqConf.ReadBool("AutoClose", autoClose, true);
+  licqConf.ReadBool("AutoPopup", m_bAutoPopup, false);
 
   m_nCurrentGroup = gUserManager.DefaultGroup();
   m_nGroupType = GROUPS_USER;
@@ -812,6 +814,7 @@ void CMainWindow::updateEvents()
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short nNumOwnerEvents = o->NewMessages();
+  unsigned short nStatus = o->Status();
   gUserManager.DropOwner();
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
@@ -841,6 +844,11 @@ void CMainWindow::updateEvents()
 #ifdef USE_DOCK
   if (licqIcon != NULL) licqIcon->SetDockIconMsg(nNumUserEvents, nNumOwnerEvents);
 #endif
+
+  //auto popup if wanted
+  if (m_bAutoPopup && nNumUserEvents > 0 &&
+      (nStatus == ICQ_STATUS_ONLINE || nStatus == ICQ_STATUS_FREEFORCHAT) )
+    callMsgFunction();
 }
 
 
@@ -1346,6 +1354,7 @@ void CMainWindow::saveOptions()
 
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", autoClose);
+  licqConf.WriteBool("AutoPopup", m_bAutoPopup);
 
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", skin->szSkinName);
@@ -1849,6 +1858,7 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()));
    mnuUserAdm->insertItem(tr("S&earch for User"), this, SLOT(showSearchUserDlg()));
    mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
+   mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("Edit Groups"), this, SLOT(showEditGrpDlg()));
    //mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
@@ -2020,6 +2030,11 @@ void CMainWindow::showSkinBrowser()
 void CMainWindow::showPluginDlg()
 {
   (void) new PluginDlg(licqDaemon);
+}
+
+void CMainWindow::slot_randomchatsearch()
+{
+  (void) new CRandomChatDlg(this, licqDaemon, licqSigMan);
 }
 
 

@@ -51,6 +51,7 @@ public:
               const char *skinName, const char *iconsName,
               QWidget *parent = 0, const char *name = 0);
   virtual ~CMainWindow();
+  ICQFunctions *callFunction(int fcn, unsigned long _nUin);
 
 protected:
   // Command Tools
@@ -116,6 +117,7 @@ protected:
        m_bShowGroupIfNoMsg,
        showHeader,
        autoClose,
+       m_bAutoPopup,
        m_bShowOffline,
        m_bSortByStatus,
        m_bShowDividers;
@@ -131,7 +133,6 @@ protected:
   void CreateUserView();
   void resizeEvent (QResizeEvent *);
   void initMenu();
-  ICQFunctions *callFunction(int fcn, unsigned long _nUin);
 
   virtual void mouseMoveEvent (QMouseEvent *);
   virtual void mousePressEvent (QMouseEvent *);
@@ -181,6 +182,7 @@ protected slots:
   void changeDebug(int);
   void slot_utility(int);
   void slot_awaymodes(int);
+  void slot_randomchatsearch();
   void miniMode();
   void ToggleShowOffline();
   void nextServer();
