@@ -100,9 +100,9 @@ const unsigned short ICQ_SNACxLIST_ROSTxACK        = 0x0007; // client
 const unsigned short ICQ_SNACxLIST_ROSTxADD        = 0x0008; // client
 const unsigned short ICQ_SNACxLIST_ROSTxUPD_GROUP  = 0x0009; // client
 const unsigned short ICQ_SNACxLIST_ROSTxREM        = 0x000A; // client
-const unsigned short ICQ_SNACxLIST_ROSTxEDITxSTART = 0x000B; // client
-const unsigned short ICQ_SNACxLIST_ROSTxEDITxEND   = 0x000C; // client
-const unsigned short ICQ_SNACxLIST_REMxACK         = 0x000E; // server
+const unsigned short ICQ_SNACxLIST_UPDxACK         = 0x000E; // server
+const unsigned short ICQ_SNACxLIST_ROSTxEDITxSTART = 0x0011; // client
+const unsigned short ICQ_SNACxLIST_ROSTxEDITxEND   = 0x0012; // client
 const unsigned short ICQ_SNACxLIST_AUTHxREQ2       = 0x0014; // client
 const unsigned short ICQ_SNACxLIST_AUTHxREQ        = 0x0018; // client
 

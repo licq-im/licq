@@ -625,7 +625,10 @@ public:
   void RemoveGroupID(unsigned short);
   void ModifyGroupID(char *, unsigned short);
   void SaveGroupIDs();
+	unsigned short GetIDFromGroup(const char *);
   unsigned short GetGroupFromID(unsigned short);
+
+  unsigned short GenerateSID();
 
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);

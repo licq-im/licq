@@ -28,6 +28,9 @@ public:
    virtual const unsigned short SubSequence() = 0;
    virtual const unsigned short Command() = 0;
    virtual const unsigned short SubCommand() = 0;
+   virtual const unsigned short SubType() { return 0; }
+   virtual const unsigned short ExtraInfo() { return 0; }
+
 
    static void SetMode(char c) { s_nMode = c; }
    static char Mode()  { return s_nMode; }
@@ -65,7 +68,14 @@ public:
   virtual const unsigned short Command()  { return m_nChannel; }
   virtual const unsigned short SubCommand()  { return 0; }
 
+  // should be command and subcommand.... FIXME
+  virtual const unsigned short SubType() { return m_nSubType; }
+  virtual const unsigned short ExtraInfo() { return m_nExtraInfo; }
+
   virtual CBuffer *Finalize(INetSocket *);
+
+  void SetSubType(unsigned short s)    { m_nSubType = s; }
+  void SetExtraInfo(unsigned short e)  { m_nExtraInfo = e; }
 
 protected:
   CSrvPacketTcp(unsigned char);
@@ -78,6 +88,8 @@ protected:
   unsigned char m_nChannel;
   unsigned short m_nSequence;
   unsigned short m_nSubSequence;
+  unsigned short m_nSubType;
+  unsigned short m_nExtraInfo;
 
   char *m_szSequenceOffset;
 };
@@ -273,11 +285,25 @@ protected:
   unsigned short m_nRecords;
 };
 
+//-----ExportContactStart-------------------------------------------------------
+class CPU_ExportContactStart : public CPU_CommonFamily
+{
+public:
+  CPU_ExportContactStart();
+};
+
+//-----ExportToServerList-------------------------------------------------------
+class CPU_ExportToServerList : public CPU_CommonFamily
+{
+public:
+  CPU_ExportToServerList(UinList &);
+};
+
 //-----AddToServerList----------------------------------------------------------
 class CPU_AddToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_AddToServerList(const char *_szName, unsigned short _nType);
+  CPU_AddToServerList(const char *_szName, unsigned short _nType, bool _bExport = false);
   
   unsigned short GetSID()   { return m_nSID; }
   unsigned short GetGSID()  { return m_nGSID; }
@@ -291,7 +317,8 @@ protected:
 class CPU_RemoveFromServerList : public CPU_CommonFamily
 {
 public:
-  CPU_RemoveFromServerList(unsigned long _nUin);
+  CPU_RemoveFromServerList(const char * _szName, unsigned short _nGSID,
+													 unsigned short _nSID, unsigned short _nType);
 };
 
 //-----UpdateGroupToServerList--------------------------------------------------

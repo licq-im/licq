@@ -165,6 +165,8 @@ public:
   unsigned short SubCommand()  { return m_nSubCommand; }
   unsigned long Sequence()     { return m_nSequence; }
   unsigned short SubSequence() { return m_nSubSequence; }
+  unsigned short SubType()     { return m_nSubType; }
+  unsigned short ExtraInfo()   { return m_nExtraInfo; }
   unsigned long Uin()          { return m_nDestinationUin; }
   CSearchAck *SearchAck()      { return m_pSearchAck; }
   CExtendedAck *ExtendedAck()  { return m_pExtendedAck; }
@@ -189,6 +191,7 @@ protected:
   // Compare this event to another one
   bool CompareEvent(int, unsigned long) const;
   bool CompareEvent(unsigned long) const;
+  bool CompareSubSequence(unsigned long) const;
   unsigned long EventId() const;
 
   ConnectType    m_eConnect;
@@ -202,6 +205,8 @@ protected:
   unsigned long  m_nDestinationUin;
   unsigned long  m_nSequence;
   unsigned short m_nSubSequence;
+  unsigned short m_nSubType;
+  unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
   CPacket        *m_pPacket;
   pthread_t      thread_send;

@@ -302,6 +302,9 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
     UnlockGroupList();
   }
 
+  if (bNewGroup && !nID && gLicqDaemon)
+    gLicqDaemon->icqAddGroup(_szName);
+
   return bNewGroup;
 }
 
@@ -319,7 +322,17 @@ void CUserManager::RemoveGroup(unsigned short n)
     return;
   }
 
-  GroupList *g = LockGroupList(LOCK_W);
+  GroupList *g = LockGroupList(LOCK_R);	
+
+	// Must be called when there are no locks on GroupID and Group lists
+	char szName[128];
+	strncpy(szName, m_vszGroups[n-1], 128);
+	UnlockGroupList();
+	gLicqDaemon->icqRemoveGroup(szName);
+
+	// Lock it back up
+	g = LockGroupList(LOCK_W);
+
   // Erase the group from the vector
   m_vszGroups.erase(m_vszGroups.begin()+n-1);
 
@@ -389,6 +402,13 @@ void CUserManager::RenameGroup(unsigned short n, const char *_sz)
   (*g)[n - 1] = strdup(_sz);
   SaveGroups();
   UnlockGroupList();
+
+  LockGroupIDList(LOCK_R);
+  unsigned short nGSID = m_vnGroupsID[n-1];
+  UnlockGroupIDList();
+
+  if (gLicqDaemon)
+    gLicqDaemon->icqRenameGroup(nGSID);
 }
 
 
@@ -437,7 +457,6 @@ void CUserManager::AddGroupID(unsigned short nID)
 {
   LockGroupIDList(LOCK_W);
   m_vnGroupsID.push_back(nID);
-  //SaveGroupIDs();
   UnlockGroupIDList();
 }
 
@@ -450,6 +469,32 @@ void CUserManager::RemoveGroupID(unsigned short n)
   m_vnGroupsID.erase(m_vnGroupsID.begin()+n-1);
   SaveGroupIDs();
   UnlockGroupIDList();
+}
+
+/*---------------------------------------------------------------------------
+ * CUserManager::GetIDFromGroup
+ *-------------------------------------------------------------------------*/
+unsigned short CUserManager::GetIDFromGroup(const char *_szName)
+{
+  unsigned short nID = 0;
+  unsigned short nGroup = 0;
+
+  LockGroupList(LOCK_R);
+  LockGroupIDList(LOCK_R);
+  for (GroupList::iterator i = m_vszGroups.begin(); i != m_vszGroups.end();
+    ++i)
+  {
+    if (strcmp(_szName, *i) == 0)
+    {			
+      nID = m_vnGroupsID[nGroup];
+      break;
+    }
+    nGroup++;
+  }
+  UnlockGroupIDList();
+  UnlockGroupList();
+
+  return nID;
 }
 
 /*---------------------------------------------------------------------------
@@ -525,6 +570,64 @@ void CUserManager::SaveGroupIDs()
 
   licqConf.FlushFile();
   licqConf.CloseFile();
+}
+
+/*---------------------------------------------------------------------------
+ * CUserManager::GenerateSID
+ *
+ * Generate a random number.  Make sure no user has that random number.  If
+ * a user does have that number, increment and check against all users.  When
+ * a number is created that is not owned by a current user, check against all
+ * the groups.  If it is owned by a group, increment and start back with checking
+ * the users.
+ *-------------------------------------------------------------------------*/
+unsigned short CUserManager::GenerateSID()
+{
+  bool bCheckGroup, bDone;
+  int nSID;
+
+  // Generate a SID
+  srand(time(NULL));
+  nSID = 1+(int)(65535.0*rand()/(RAND_MAX+1.0));
+
+  // Make sure we have a unique number - a map would be better
+  do
+  {
+    bDone = true;
+    bCheckGroup = true;
+
+    if (nSID == 0) nSID++;
+
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (pUser->GetSID() == nSID)
+      {
+        nSID++;
+        bDone = false;	// Restart
+        bCheckGroup = false;	// Don't waste time now
+        FOR_EACH_USER_BREAK;
+      }
+    }
+    FOR_EACH_USER_END
+
+    if (bCheckGroup)
+    {
+      // Check our groups too!
+      GroupIDList *gID = gUserManager.LockGroupIDList(LOCK_R);
+      for (unsigned short j = 0; j < gID->size(); j++)
+      {
+        if ((*gID)[j] == nSID)
+        {
+          nSID++;
+          bDone = false;
+          break;
+        }
+      }
+      gUserManager.UnlockGroupIDList();
+    }
+  } while (!bDone);
+
+  return nSID;
 }
 
 /*---------------------------------------------------------------------------

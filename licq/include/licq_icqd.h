@@ -22,6 +22,7 @@ class CPlugin;
 class CPacket;
 class CPacketTcp;
 class CLicq;
+class CUserManager;
 class ICQUser;
 class CICQEventTag;
 class TCPSocket;
@@ -180,9 +181,12 @@ public:
   unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
-  void icqAddUser(unsigned long);
+  void icqAddUser(unsigned long, bool _bServerOnly = false);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
+  void icqRemoveGroup(const char *);
+  void icqRenameGroup(unsigned short _nGSID);
+  void icqExportUsers(UinList &);
   void icqUpdateContactList();
 
   // Visible/Invisible list functions
@@ -358,6 +362,7 @@ protected:
   void SaveUserList();
 
   void FailEvents(int sd, int err);
+  ICQEvent *DoneServerEvent(unsigned long, EventResult);
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);
   ICQEvent *DoneEvent(unsigned long tag, EventResult _eResult);
@@ -421,6 +426,7 @@ protected:
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class COnEventManager;
+	friend class CUserManager;
 };
 
 // Global pointer

@@ -57,6 +57,8 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_nSubCommand = p->SubCommand();
   m_nSequence = p->Sequence();
   m_nSubSequence = p->SubSequence();
+  m_nSubType = p->SubType();
+  m_nExtraInfo = p->ExtraInfo();
   m_nDestinationUin = _nUin;
   m_eConnect = _eConnect;
   m_pUserEvent = e;
@@ -89,6 +91,8 @@ ICQEvent::ICQEvent(ICQEvent *e)
   m_nSubCommand = e->m_nSubCommand;
   m_nSequence = e->m_nSequence;
   m_nSubSequence = e->m_nSubSequence;
+  m_nSubType = e->m_nSubType;
+  m_nExtraInfo = e->m_nExtraInfo;
   m_nDestinationUin = e->m_nDestinationUin;
   m_eConnect = e->m_eConnect;
   m_eResult = e->m_eResult;
@@ -132,6 +136,11 @@ bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence) const
 bool ICQEvent::CompareEvent(unsigned long nEventId) const
 {
   return (m_nEventId == nEventId);
+}
+
+bool ICQEvent::CompareSubSequence(unsigned long _nSubSequence) const
+{
+  return (m_nSubSequence == _nSubSequence);
 }
 
 bool ICQEvent::Equals(unsigned long nEventId) const

@@ -999,8 +999,6 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 
   assert(e);
 
-  gLog.Info("appending: %p\n", e);
-
   int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
   if (nResult != 0)
   {
@@ -1085,6 +1083,43 @@ void CICQDaemon::FailEvents(int sd, int err)
   } while (e != NULL);
 }
 
+
+/*-----------------------------------------------------------------------------
+ * DoneSrvEvent
+ *
+ * Marks the given event as done and removes it from the running events list.
+ * This is for new OSCAR server events.
+ * Basically this is DoneEvent (2)
+ *----------------------------------------------------------------------------*/
+ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResult)
+{
+  pthread_mutex_lock(&mutex_runningevents);
+  ICQEvent *e = NULL;
+  list<ICQEvent *>::iterator iter;
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++
+)
+  {
+    if ((*iter)->CompareSubSequence(_nSubSeq) )
+    {
+      e = *iter;
+      m_lxRunningEvents.erase(iter);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_runningevents);
+
+  // If we didn't find the event, it must have already been removed, we are too late
+
+  if (e == NULL) return (NULL);
+
+  e->m_eResult = _eResult;
+
+  // Check if we should cancel a processing thread
+  if (!pthread_equal(e->thread_send, pthread_self()))
+    pthread_cancel(e->thread_send);
+
+  return(e);
+}
 
 /*------------------------------------------------------------------------------
  * DoneEvent
