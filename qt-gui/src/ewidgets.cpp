@@ -534,14 +534,29 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 
   QString n;
   QTextCodec *codec = QTextCodec::codecForLocale();
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u != NULL)
-  {
-    codec = UserCodec::codecForICQUser(u);
-    n = codec->toUnicode(u->GetAlias());
-    gUserManager.DropUser(u);
-  }
+  ICQUser *u = NULL;
 
+  if (e->Direction() == D_RECEIVER)
+  {
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u != NULL)
+    {
+      codec = UserCodec::codecForICQUser(u);
+      n = codec->toUnicode(u->GetAlias());
+      gUserManager.DropUser(u);
+    }
+  }
+  else
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    if (o != NULL)
+    {
+      codec = UserCodec::codecForICQUser(o);
+      n = codec->toUnicode(o->GetAlias());
+      gUserManager.DropOwner();
+    }
+  }
+     
   QString s;
 
 #if QT_VERSION >= 300
@@ -556,25 +571,29 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   // seem to be buggy in Qt 3 at the time of writing.
   // This can potentially make BiDi support worser, so this string needs to be
   // rewritten to use a separate paragraph for each message when Qt gets fixed.
-  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s</font><br>",
+  s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b><br>%s</font><br>",
             color,
-            EventDescription(e).utf8().data(),
+            e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
+              (EventDescription(e) + " ").utf8().data(),
             sd.utf8().data(),
             e->IsDirect() ? 'D' : '-',
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
+            n.utf8().data(),
             messageText.utf8().data()
            );
 #else
-  s.sprintf("%c%s %s [%c%c%c%c]\n%s",
+  s.sprintf("%c%s%s [%c%c%c%c] %s:\n%s",
             (e->Direction() == D_RECEIVER) ? '\001' : '\002',
-            EventDescription(e).utf8().data(),
+            e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
+              (EventDescription(e) + " ").utf8().data(),
             sd.utf8().data(),
             e->IsDirect() ? 'D' : '-',
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
+            n.utf8().data(),
             codec->toUnicode(e->Text()).utf8().data()
            );
 #endif
