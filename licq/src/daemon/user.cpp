@@ -78,6 +78,23 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
   m_nOwnerUin = 0;
 }
 
+
+CUserManager::~CUserManager()
+{
+  /* while technically we should do this, nothing interesting happens
+     in the user destructor so we don't bother
+  UserList::iterator iter;
+  for (iter = m_vpcUsers.begin(); iter != m_vpcUsers.end(); iter++)
+  {
+    delete *iter;
+  }
+  */
+
+  // Owner destructor saves the current auto response though
+  delete m_xOwner;
+}
+
+
 void CUserManager::SetOwnerUin(unsigned long _nUin)
 {
   char buf[24];
@@ -927,7 +944,7 @@ void ICQUser::Init(unsigned long _nUin)
   SetAutoResponse("");
   SetSendServer(false);
   SetShowAwayMsg(false);
-  SetSequence(1);
+  SetSequence(0xFFFFFFFF);
   ClearSocketDesc();
   m_nIp = m_nPort = m_nRealIp = 0;
   m_nMode = MODE_DIRECT;
@@ -1007,7 +1024,7 @@ void ICQUser::SetStatusOffline()
 unsigned long ICQUser::Sequence(bool increment)
 {
    if (increment)
-      return (m_nSequence++);
+      return (m_nSequence--);
    else
       return (m_nSequence);
 }
@@ -1440,6 +1457,30 @@ void ICQUser::SaveLicqInfo()
 
 
 
+void ICQUser::SaveNewMessagesInfo()
+{
+   if (!EnableSave()) return;
+
+   if (!m_fConf.ReloadFile())
+   {
+      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+      return;
+   }
+   m_fConf.SetSection("user");
+   m_fConf.WriteNum("NewMessages", NewMessages());
+   if (!m_fConf.FlushFile())
+   {
+     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+     return;
+   }
+
+   m_fConf.CloseFile();
+}
+
+
+
 //-----ICQUser::SaveBasicInfo---------------------------------------------------
 void ICQUser::SaveBasicInfo()
 {
@@ -1537,7 +1578,7 @@ void ICQUser::EventPush(CUserEvent *e)
 {
   m_vcMessages.push_back(e);
   incNumUserEvents();
-  SaveLicqInfo();
+  SaveNewMessagesInfo();
 }
 
 
@@ -1594,7 +1635,7 @@ CUserEvent *ICQUser::EventPop()
     m_vcMessages[i] = m_vcMessages[i + 1];
   m_vcMessages.pop_back();
   decNumUserEvents();
-  SaveLicqInfo();
+  SaveNewMessagesInfo();
   return e;
 }
 
@@ -1608,7 +1649,7 @@ void ICQUser::EventClear(unsigned short index)
     m_vcMessages[i] = m_vcMessages[i + 1];
   m_vcMessages.pop_back();
   decNumUserEvents();
-  SaveLicqInfo();
+  SaveNewMessagesInfo();
 }
 
 
@@ -1622,7 +1663,7 @@ void ICQUser::EventClearId(unsigned long id)
       delete *iter;
       m_vcMessages.erase(iter);
       decNumUserEvents();
-      SaveLicqInfo();
+      SaveNewMessagesInfo();
       break;
     }
   }
@@ -1686,7 +1727,7 @@ void ICQUser::decNumUserEvents()
 ICQOwner::ICQOwner()
 {
   gLog.Info("%sOwner configuration.\n", L_INITxSTR);
-  char szTemp[32];
+  char szTemp[MAX_DATA_LEN];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
   m_szPassword = NULL;
@@ -1712,6 +1753,8 @@ ICQOwner::ICQOwner()
   m_fConf.ReadBool("WebPresence", m_bWebAware, false);
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
+  m_fConf.ReadStr("AutoResponse", szTemp, "");
+  SetAutoResponse(szTemp);
 
   m_fConf.CloseFile();
 
@@ -1727,6 +1770,29 @@ ICQOwner::ICQOwner()
 
   SetEnableSave(true);
 }
+
+
+ICQOwner::~ICQOwner()
+{
+  // Save the current auto response
+  if (!m_fConf.ReloadFile())
+  {
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+     return;
+  }
+  m_fConf.SetSection("user");
+  m_fConf.WriteStr("AutoResponse", AutoResponse());
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+    return;
+  }
+  m_fConf.CloseFile();
+
+}
+
 
 
 unsigned long ICQOwner::AddStatusFlags(unsigned long s)

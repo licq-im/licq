@@ -96,6 +96,7 @@ public:
   void SaveAboutInfo();
   void SaveBasicInfo();
   void SaveExtInfo();
+  void SaveNewMessagesInfo();
 
   // General Info
   char *GetAlias()                      {  return m_szAlias;  }
@@ -160,7 +161,6 @@ public:
   unsigned short StatusToUser()         { return m_nStatusToUser; }
   char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
 
-
   void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
   char *IpPortStr(char *rbuf);
 
@@ -224,6 +224,7 @@ public:
   void SetAcceptInDND(bool s)         { s ? m_nAutoAccept |= ACCEPT_IN_DND : m_nAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
+  void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
 
   // Status
   unsigned short Status();
@@ -389,6 +390,7 @@ class ICQOwner : public ICQUser
 {
 public:
   ICQOwner();
+  virtual ~ICQOwner();
   bool Exception()  { return m_bException; }
 
   // Owner specific functions
@@ -441,7 +443,7 @@ class CUserManager
 {
 public:
   CUserManager();
-  ~CUserManager() {};
+  ~CUserManager();
   bool Load();
 
   unsigned long AddUser(ICQUser *);
