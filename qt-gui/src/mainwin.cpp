@@ -1725,9 +1725,7 @@ void CMainWindow::saveOptions()
 
   licqConf.SetSection("floaties");
   licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
-  unsigned short i = 0;
-  char key[32];
-  for (; i < CUserView::floaties->size(); )
+  for (unsigned short i = 0; i < CUserView::floaties->size(); i++)
   {
     CUserView* iter = CUserView::floaties->at(i);
     sprintf(key, "Floaty%d.Uin", i);
@@ -1738,7 +1736,6 @@ void CMainWindow::saveOptions()
     licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
     sprintf(key, "Floaty%d.W", i);
     licqConf.WriteNum(key, (unsigned short)iter->width());
-    i++;
   }
 
   licqConf.FlushFile();
