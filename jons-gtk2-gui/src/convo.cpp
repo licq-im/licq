@@ -29,82 +29,100 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include <list>
 using namespace std; // for std::list
-GSList *cnv;
 
-struct conversation *convo_new(ICQUser *u, gboolean events)
+struct conversation
 {
-	struct conversation *c;
+	GtkWidget *window;
+	GtkWidget *entry;
+	GtkWidget *text;
+	GtkWidget *send;
+	GtkWidget *close_or_cancel;
+	GtkWidget *send_server;
+	GtkWidget *send_urgent;
+	GtkWidget *send_list;
+	GtkWidget *progress;
+	GdkColor *clrFore;
+	GdkColor *clrBack;
+	gchar prog_buf[60];
+	gchar *for_user;
+	ICQUser *user;
+	struct e_tag_data *etag;
+};
 
-	if(!events)
-	{
-		c = convo_find(u->Uin());
+list<conversation *> cnv;
 
-		if(c != 0)
-		{
-			if(u->Status() == ICQ_STATUS_OFFLINE)
-				gtk_toggle_button_set_active(
-				GTK_TOGGLE_BUTTON(c->send_server), true);
-			return c;
-		}
-	}
+/********** Structures ******************/
+/* Functions in convo.cpp */
+conversation *convo_find(unsigned long);
+void convo_show(conversation *);
+void convo_nick_timestamp(GtkWidget *, const char *, time_t, GdkColor *);
+void convo_send(GtkWidget *, gpointer);
+gboolean key_press_convo(GtkWidget *, GdkEventKey *, gpointer);
+void verify_convo_send(GtkWidget *, guint, gchar *, conversation *);
+void convo_cancel(GtkWidget *, conversation *);
+gint convo_delete(GtkWidget *, GdkEvent *, conversation *);
+void convo_close(GtkWidget *, conversation *);
 
-	c = g_new0(struct conversation, 1);
-
-	c->user = u;
-	c->clrBack = new GdkColor;
-	c->clrFore = new GdkColor;
-	c->for_user = 0;
-
-	cnv = g_slist_append(cnv, c);
-
-	if(events)
-	{
-		convo_show(c);
-
-		while(c->user->NewMessages() > 0)
-			convo_recv(c->user->Uin());
-	}
-
-	else
-		convo_show(c);
-
-	if(u->Status() == ICQ_STATUS_OFFLINE)
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_server),
-			true);
-
-	return c;
+void convo_open_cb(ICQUser *user)
+{
+	convo_open(user, true);
 }
 
-struct conversation *convo_find(unsigned long uin)
+void convo_open(ICQUser *user, bool refresh)
 {
-	struct conversation *c;
-	GSList *conversations = cnv;
+	conversation *c = convo_find(user->Uin());
 
-	while(conversations)
+	if(c != 0)
+		gdk_window_raise(c->window->window);
+	else
 	{
-		c = (struct conversation *)conversations->data;
-		if(c->user->Uin() == uin)
-		{
-			return c;
-		}
-	
-		conversations = conversations->next;
+		c = g_new0(conversation, 1);
+
+		c->window = 0;
+		c->user = user;
+		c->clrBack = new GdkColor;
+		c->clrFore = new GdkColor;
+		c->for_user = 0;
+
+		cnv.push_back(c);
+		convo_show(c);
+
+		while (c->user->NewMessages() > 0)
+			convo_recv(c->user->Uin());
+		
+		if (refresh)
+			system_status_refresh();
+
+		// Stop the flashing if necessary
+		if (flash_events)
+			stop_flashing(c->user);
 	}
+
+	if (c->user->Status() == ICQ_STATUS_OFFLINE)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_server), TRUE);
+}
+
+conversation *convo_find(unsigned long uin)
+{
+	for (list<conversation *>::iterator i = cnv.begin(); i != cnv.end(); ++i)
+		if ((*i)->user->Uin() == uin)
+			return *i;
 
 	return 0;
 }
 
 void
-toggle_close_cancel(struct conversation *c, int which)
+toggle_close_cancel(conversation *c, int which)
 {
 	if (which == 1)
-		gtk_button_set_label(GTK_BUTTON(c->cancel), GTK_STOCK_CLOSE);
+		gtk_button_set_label(GTK_BUTTON(c->close_or_cancel), GTK_STOCK_CLOSE);
 	else
-		gtk_button_set_label(GTK_BUTTON(c->cancel), GTK_STOCK_CANCEL);
+		gtk_button_set_label(GTK_BUTTON(c->close_or_cancel), GTK_STOCK_CANCEL);
 }
 
-void convo_close_or_cancel(GtkWidget *widget, struct conversation *c)
+void convo_close_or_cancel(GtkWidget *widget, conversation *c)
 {
 	if (strcmp(gtk_button_get_label(GTK_BUTTON(widget)), GTK_STOCK_CANCEL) == 0)
 		convo_cancel(widget, c);
@@ -112,12 +130,11 @@ void convo_close_or_cancel(GtkWidget *widget, struct conversation *c)
 		convo_close(widget, c);
 }
 
-void convo_show(struct conversation *c)
+void convo_show(conversation *c)
 {
 	GtkWidget *scroll;
 	GtkWidget *button_box;
 	GtkWidget *options_box;
-	GtkWidget *vertical_box;
 	
 	/* Handle the etag stuff */
 	c->etag = g_new0(struct e_tag_data, 1);
@@ -125,110 +142,99 @@ void convo_show(struct conversation *c)
 	/* Make the convo window */
 	c->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_resizable(GTK_WINDOW(c->window), TRUE);
-	gtk_widget_realize(c->window);
-
-	/* Make new buttons with labels */
-	c->send = gtk_button_new_with_mnemonic("_Send");
-	c->cancel = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-
-	/* Set cancel to grayed out at first */
-	//gtk_widget_set_sensitive(c->cancel, FALSE);
 
 	/* Make the boxes */
-	button_box = gtk_hbox_new(TRUE, 0);
-	vertical_box = gtk_vbox_new(FALSE, 0);
-	options_box = gtk_hbox_new(FALSE, 5);
-
-	/* The entry box */
-	c->entry = gtk_text_view_new();
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(c->entry), TRUE);
-  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(c->entry), GTK_WRAP_WORD);
-	g_signal_connect(G_OBJECT(c->entry), "key_press_event",
-			  G_CALLBACK(key_press_convo), (gpointer)c);
-
-	gtk_widget_set_size_request(c->entry, 320, 75); 
-
-	GtkWidget *frame1 = gtk_frame_new(0);
-	gtk_frame_set_shadow_type(GTK_FRAME(frame1), GTK_SHADOW_IN); 
-	gtk_container_add(GTK_CONTAINER(frame1), c->entry);
-	gtk_widget_show(frame1);
+	GtkWidget *vertical_box = gtk_vbox_new(FALSE, 0);
 
 	/* The viewing messages box area */
 	c->text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(c->text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(c->text), GTK_WRAP_WORD);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(c->text), FALSE);
 
-	/* Scroll bar for the messages that are being viewed */
+	// Insert some tags we'll use later on
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->text));
+	gtk_text_buffer_create_tag(tb, "local", "foreground-gdk", blue, NULL);
+	gtk_text_buffer_create_tag(tb, "remote", "foreground-gdk", red, NULL);
+	GtkTextIter iter;
+	gtk_text_buffer_get_end_iter(tb, &iter);
+	gtk_text_buffer_create_mark(tb, "last_pos", &iter, TRUE);
+
+	/* Scrolled window for the messages that are being viewed */
 	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-				       GTK_POLICY_NEVER,
+				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_ALWAYS);
-	gtk_widget_show(scroll);
 	gtk_container_add(GTK_CONTAINER(scroll), c->text);
-	gtk_widget_show(c->text);
-	gtk_widget_set_size_request(scroll, 320, 150);
+	gtk_widget_set_size_request(scroll, -1, 150);
 
 	GtkWidget *frame = gtk_frame_new(0);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN); 
-	gtk_widget_show(frame);
 	gtk_container_add(GTK_CONTAINER(frame), scroll);
-  
-	/* Get the signals connected for the buttons */
-	g_signal_connect(G_OBJECT(c->cancel), "clicked",
-			   G_CALLBACK(convo_close_or_cancel), c);
-	g_signal_connect(G_OBJECT(c->send), "clicked",
-			   G_CALLBACK(convo_send), (gpointer)c);
-	
-	gtk_box_pack_start(GTK_BOX(button_box), c->cancel, TRUE, TRUE, 5);
-	gtk_box_pack_start(GTK_BOX(button_box), c->send, TRUE, TRUE, 5);
-
-	/* Take care of the rest of the widgets */
 	gtk_box_pack_start(GTK_BOX(vertical_box), frame, TRUE, TRUE, 5);
-	gtk_box_pack_start(GTK_BOX(vertical_box), frame1, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(vertical_box), button_box, FALSE, FALSE, 5);
+  
+	/* The entry box */
+	c->entry = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(c->entry), TRUE);
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(c->entry), GTK_WRAP_WORD);
+	g_signal_connect(G_OBJECT(c->entry), "key_press_event",
+			G_CALLBACK(key_press_convo), (gpointer)c);
+
+	gtk_widget_set_size_request(c->entry, -1, 75); 
+
+	frame = gtk_frame_new(0);
+	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN); 
+	gtk_container_add(GTK_CONTAINER(frame), c->entry);
+	gtk_box_pack_start(GTK_BOX(vertical_box), frame, FALSE, FALSE, 5);
+
+	options_box = gtk_hbox_new(FALSE, 5);
 
 	/* Add the send through server button */
 	c->send_server = gtk_check_button_new_with_mnemonic("Se_nd through server");
-
-	/* Send the message normal */
-	c->send_normal = gtk_radio_button_new_with_label(0, "Normal");
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_server, FALSE, FALSE, 5);
 
 	/* Send the message urgently */
-	c->send_urgent = gtk_radio_button_new_with_mnemonic_from_widget(
-				GTK_RADIO_BUTTON(c->send_normal),
-				"U_rgent");
+	c->send_urgent = gtk_check_button_new_with_mnemonic("U_rgent");
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent, FALSE, FALSE, 0);
 
 	/* Send the message to contact list */
-	c->send_list = gtk_radio_button_new_with_mnemonic_from_widget(
-				GTK_RADIO_BUTTON(c->send_normal),
-				"To Contact _List");
-
-	/* Let's pack them now! */
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_server,
-			   FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_normal,
-			   FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent,
-			   FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_list,
-			   FALSE, FALSE, 0);
+	c->send_list = gtk_check_button_new_with_mnemonic("M_ultiple recipients");
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_list, FALSE, FALSE, 0);
 
 	/* Now pack the options_box */
 	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
 
-	/* If the user is in occupied or dnd mode, set the urgent button */
-	if(c->user->Status() == ICQ_STATUS_DND ||
-           c->user->Status() == ICQ_STATUS_OCCUPIED)
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_urgent),
-				TRUE);
-
+	// Box with progress bar and the 2 buttons
+	button_box = gtk_hbox_new(FALSE, 0);
 	/* Progress of message */
 	c->progress = gtk_statusbar_new();
 	g_signal_connect(G_OBJECT(c->progress), "text-pushed",
 			   G_CALLBACK(verify_convo_send), c);
+	gtk_widget_set_size_request(c->progress, 300, -1); 
 	
-	/* Pack it */
-	gtk_box_pack_start(GTK_BOX(vertical_box), c->progress, FALSE, FALSE, 5);
+	/* Make new buttons with labels */
+	c->send = gtk_button_new_with_mnemonic("_Send");
+	c->close_or_cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+
+	/* Get the signals connected for the buttons */
+	g_signal_connect(G_OBJECT(c->close_or_cancel), "clicked",
+			   G_CALLBACK(convo_close_or_cancel), c);
+	g_signal_connect(G_OBJECT(c->send), "clicked",
+			   G_CALLBACK(convo_send), (gpointer)c);
+	
+	gtk_box_pack_start(GTK_BOX(button_box), c->progress, TRUE, TRUE, 5);
+	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(bbox), c->close_or_cancel, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(bbox), c->send, TRUE, TRUE, 5);
+	gtk_box_pack_end(GTK_BOX(button_box), bbox, FALSE, FALSE, 0);
+
+	/* Take care of the rest of the widgets */
+	gtk_box_pack_start(GTK_BOX(vertical_box), button_box, FALSE, FALSE, 5);
+
+	/* If the user is in occupied or dnd mode, set the urgent button */
+	if(c->user->Status() == ICQ_STATUS_DND || 
+			c->user->Status() == ICQ_STATUS_OCCUPIED)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_urgent),	TRUE);
 
 	/* Add the main box into the window */
 	gtk_container_add(GTK_CONTAINER(c->window), vertical_box);
@@ -244,54 +250,29 @@ void convo_show(struct conversation *c)
 
 	/* Don't forget the delete_event signal */
 	g_signal_connect(G_OBJECT(c->window), "delete_event",
-			   G_CALLBACK(convo_delete), c);
+			G_CALLBACK(convo_delete), c);
 	
 	/* More e_tag_data stuff */
 	c->etag->statusbar = c->progress;
 	strcpy(c->etag->buf, c->prog_buf);
 
 	gtk_widget_show_all(c->window);
-
-	// Stop the flashing if necessary
-	if((c->user->NewMessages() > 0) && flash_events)
-	{
-		// Stop the flashing for this user
-		nToFlash--;
-		list<SFlash *>::iterator it;
-		int x = 0;
-		for(it = FlashList.begin(); it != FlashList.end(); it++)
-		{
-			x++;
-			if((*it)->nUin == c->user->Uin())
-			{
-				gtk_tree_path_free((*it)->path);
-				g_free(*it);
-				FlashList.erase(it);
-				break;
-			}                
-		}
-	}
-
-	// Clear the flash list
-	else if((c->user->NewMessages() > 0) && !flash_events)
-	{
-		nToFlash = -1;
-		FlashList.clear();
-	}
+	gtk_button_set_label(GTK_BUTTON(c->close_or_cancel), GTK_STOCK_CLOSE);
+	
 }
 
 gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 {
-	struct conversation *c = (struct conversation *)data;
-	guint state;
-
-	state = eventkey->state;
 	if(eventkey->keyval == GDK_Return)
 	{
-		if(!enter_sends && (state & GDK_SHIFT_MASK))
-			convo_send(0, (gpointer)c);
-		if(enter_sends && !(state & GDK_SHIFT_MASK) &&
-		    !(state & GDK_CONTROL_MASK))
+		conversation *c = (conversation *)data;
+		guint state = eventkey->state;
+		
+		// We send when:
+		// - enter_sends is true and plain Enter was presses
+		// - enter_sends is false and Shift/Ctrl+Enter was pressed
+		if((!enter_sends && (state & GDK_SHIFT_MASK)) ||
+				(enter_sends && !(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK))))
 		{
 			convo_send(0, (gpointer)c);
 			return TRUE;
@@ -301,10 +282,12 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 	return FALSE;
 }
 
-void convo_nick_timestamp(GtkWidget *text, const char *nick, time_t message_time, GdkColor *color)
+void convo_nick_timestamp(GtkWidget *text, const char *nick, 
+		time_t message_time, const char *color)
 {
 	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	bool addnl = (gtk_text_buffer_get_char_count(tb) > 0);
+	GtkTextIter iter;
 	
 	// How about their alias and an optional timestamp?
 	if (show_convo_timestamp)
@@ -315,7 +298,6 @@ void convo_nick_timestamp(GtkWidget *text, const char *nick, time_t message_time
 		szTime[25] = '\0';
 
 		char *szTempStamp = g_strdup_printf("[%s] ", szTime);
-		GtkTextIter iter;
 		gtk_text_buffer_get_end_iter(tb, &iter);
 		if (addnl) {
 			gtk_text_buffer_insert(tb, &iter, "\n", 1);
@@ -326,22 +308,20 @@ void convo_nick_timestamp(GtkWidget *text, const char *nick, time_t message_time
 		g_free(szTempStamp);
 	}
 	
-	GtkTextIter iter;
 	gtk_text_buffer_get_end_iter(tb, &iter);
 	if (addnl) {
 		gtk_text_buffer_insert(tb, &iter, "\n", 1);
 		gtk_text_buffer_get_end_iter(tb, &iter);
 	}
-	GtkTextTag *color_tag = 
-			gtk_text_buffer_create_tag(tb, NULL, "foreground-gdk", color, NULL);
-	gtk_text_buffer_insert_with_tags(tb, &iter, nick, -1, color_tag, NULL);
+
+	gtk_text_buffer_insert_with_tags_by_name(tb, &iter, nick, -1, color, NULL);
 	gtk_text_buffer_get_end_iter(tb, &iter);
-	gtk_text_buffer_insert_with_tags(tb, &iter, " : ", 3, color_tag, NULL);
+	gtk_text_buffer_insert_with_tags_by_name(tb, &iter, ": ", 2, color, NULL);
 }
 
 void convo_send(GtkWidget *widget, gpointer _c)
 {
-	struct conversation *c = (struct conversation *)_c;
+	conversation *c = (conversation *)_c;
 
 	/* Set the 2 button widgets */
 	if(GTK_WIDGET_IS_SENSITIVE(c->send))
@@ -367,7 +347,7 @@ void convo_send(GtkWidget *widget, gpointer _c)
  	** urgently unless the user says to send it to the contact list*/	
 	if((c->user->Status() == ICQ_STATUS_DND ||
 	   c->user->Status() == ICQ_STATUS_OCCUPIED) &&
-	   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_normal)))
+	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)))
 		urgent = TRUE;
 
 	strcpy(c->prog_buf, "Sending message ");
@@ -412,7 +392,7 @@ void convo_send(GtkWidget *widget, gpointer _c)
 }
 
 void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
-		       struct conversation *c)
+		       conversation *c)
 {
 	gchar temp[60];
 	strcpy(temp, text);
@@ -427,7 +407,7 @@ void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
 	}
 }
 
-void convo_cancel(GtkWidget *widget, struct conversation *c)
+void convo_cancel(GtkWidget *widget, conversation *c)
 {
 	/* Set the buttons sensitivity accordingly */
 	gtk_widget_set_sensitive(c->send, TRUE);
@@ -440,10 +420,39 @@ void convo_cancel(GtkWidget *widget, struct conversation *c)
 	catcher = g_slist_remove(catcher, c->etag);
 }
 
+#include <iostream>
+using namespace std;
+
+gchar *
+convert_to_utf8(const gchar *input_text, const gchar *input_enc)
+{
+	const gchar *end_valid;
+
+	if (!g_utf8_validate(input_text, -1, &end_valid)) {
+		if (input_enc && *input_enc && strcmp(input_enc, "UTF-8") != 0)
+			return g_convert(input_text, strlen(input_text), "UTF-8", 
+					input_enc, NULL, NULL, NULL);
+		else
+			return g_locale_to_utf8(input_text, -1, NULL, NULL, NULL);
+	}
+	
+	return g_strdup(input_text);
+}
+
+void
+scroll_to_the_end(GtkWidget *tv)
+{
+	GtkTextIter iter;
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(tv));
+	gtk_text_buffer_get_end_iter(tb, &iter);
+	GtkTextMark *mark = gtk_text_buffer_get_mark(tb, "last_pos");
+	gtk_text_buffer_move_mark(tb, mark, &iter);
+	gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(tv), mark, 0, FALSE, 0, 0);
+}
+
 void convo_recv(gulong uin)
 {
-	struct conversation *c;
-	c = convo_find(uin);
+	conversation *c = convo_find(uin);
 
 	/* If the window doesn't exist, don't show anything */
 	if(c == 0)
@@ -456,9 +465,7 @@ void convo_recv(gulong uin)
 
 	/* Make sure we really have an event */
 	if(u_event == 0)
-	{
 		return;
-	}
 
 	// Use theme colors if it is black on white
 	bool bIgnoreBW = false;
@@ -467,22 +474,15 @@ void convo_recv(gulong uin)
 	if (recv_colors)
 	{
 		if (!c->clrBack)
-		{
 			c->clrBack = new GdkColor;
-		}
-		
 		if (!c->clrFore)
-		{
 			c->clrFore = new GdkColor;
-		}
 
 		CICQColor *pIcqColor = u_event->Color();
 
 		if (pIcqColor->Foreground() == 0x00000000 &&
-		    pIcqColor->Background() == 0x00FFFFFF)
-		{
+				pIcqColor->Background() == 0x00FFFFFF)
 			bIgnoreBW = true;
-		}
 		else
 		{
 			c->clrFore->red   = pIcqColor->ForeRed() * 257;
@@ -512,116 +512,97 @@ void convo_recv(gulong uin)
 
 	// How about their alias and an optional timestamp?
 	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->text));
-	convo_nick_timestamp(c->text, c->user->GetAlias(), u_event->Time(), red);
-
+	convo_nick_timestamp(c->text, c->user->GetAlias(), u_event->Time(), "remote");
+	GtkTextIter iter;
+	gtk_text_buffer_get_end_iter(tb, &iter);
+	gchar *txt;
+	
 	switch (u_event->SubCommand())
 	{
 	  case ICQ_CMDxSUB_MSG:
-	  {
-		GtkTextIter iter;
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		if (!bIgnoreBW)
-		{
-			GtkTextTag *tag = gtk_text_buffer_create_tag(tb, NULL, 
-					"foreground-gdk", c->clrFore,
-					"background-gdk", c->clrBack,
-					NULL);
-			gtk_text_buffer_insert_with_tags(tb, &iter, u_event->Text(), -1,
-					tag, NULL);
-		}
-		else
-			gtk_text_buffer_insert(tb, &iter, u_event->Text(), -1);
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		GtkTextMark *mark = gtk_text_buffer_create_mark(tb, NULL, &iter, TRUE);
-		gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(c->text), mark, 0, FALSE, 0, 0);
-		break;
- 	  }
+			txt = convert_to_utf8(u_event->Text(), c->user->UserEncoding());
+			if (!bIgnoreBW)
+			{
+				GtkTextTag *tag = gtk_text_buffer_create_tag(tb, NULL, 
+						"foreground-gdk", c->clrFore,
+						"background-gdk", c->clrBack,
+						NULL);
+				gtk_text_buffer_insert_with_tags(tb, &iter, txt, -1, tag, NULL);
+			}
+			else
+				gtk_text_buffer_insert(tb, &iter, txt, -1);
+			g_free(txt);
+			break;
 
 	  case ICQ_CMDxSUB_URL:
-	  {	
-		const gchar *for_user_u =
-		   g_strdup_printf("\n%s has sent you a URL!\n%s\n",
-					c->user->GetAlias(),
-					u_event->Text());
+			txt = convert_to_utf8(u_event->Text(), c->user->UserEncoding());
+			if (true) {
+				gchar *for_user_u =
+			  	 g_strdup_printf("\n%s has sent you a URL!\n%s\n",
+							c->user->GetAlias(),
+							txt);
 
-		GtkTextIter iter;
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		gtk_text_buffer_insert(tb, &iter, for_user_u, -1);
-		g_free(const_cast<char *>(for_user_u));
-		break;
-	  }
+				gtk_text_buffer_insert(tb, &iter, for_user_u, -1);
+				g_free(for_user_u);
+			}
+			g_free(txt);
+			break;
 
 	  case ICQ_CMDxSUB_CHAT:
-	  {	
-		const gchar *chat_d = u_event->Text();
+			txt = convert_to_utf8(u_event->Text(), c->user->UserEncoding());
 
-		if(u_event->IsCancelled())
-		{
-			GtkTextIter iter;
-			gtk_text_buffer_get_end_iter(tb, &iter);
-			gtk_text_buffer_insert(tb, &iter, chat_d, -1);
-		}
+			if(u_event->IsCancelled())
+				gtk_text_buffer_insert(tb, &iter, txt, -1);
+			else
+			{
+				gchar *for_user_c =
+					g_strdup_printf("\n%s requests to chat with you!\n%s\n",
+					c->user->GetAlias(), txt);
+				gtk_text_buffer_insert(tb, &iter, for_user_c, -1);
 
-		else
-		{
-			const gchar *for_user_c =
-				g_strdup_printf("\n%s requests to chat with you!\n%s\n",
-				c->user->GetAlias(), chat_d);
-			GtkTextIter iter;
-			gtk_text_buffer_get_end_iter(tb, &iter);
-			gtk_text_buffer_insert(tb, &iter, for_user_c, -1);
-	
-			CEventChat *c_event = (CEventChat *)u_event;
-			chat_accept_window(c_event, uin);
-		}
-		break;
-	  }
+				CEventChat *c_event = (CEventChat *)u_event;
+				chat_accept_window(c_event, uin);
+				g_free(for_user_c);
+			}
+			g_free(txt);
+			break;
 
 	  case ICQ_CMDxSUB_FILE:
-	  {
-		const gchar *file_d = u_event->Text();
-		
-		if(u_event->IsCancelled())
-		{
-			GtkTextIter iter;
-			gtk_text_buffer_get_end_iter(tb, &iter);
-			gtk_text_buffer_insert(tb, &iter, file_d, -1);
-		}
+			if(u_event->IsCancelled())
+				gtk_text_buffer_insert(tb, &iter, u_event->Text(), -1);
+			else
+			{
+				gchar *for_user_f =
+		    		g_strdup_printf("\n%s requests to send you a file!\n%s\n",
+				    	c->user->GetAlias(), u_event->Text());
 
-		else
-		{
-			const gchar *for_user_f =
-		    	g_strdup_printf("\n%s requests to send you a file!\n%s\n",
-				    c->user->GetAlias(), file_d);
-
-			GtkTextIter iter;
-			gtk_text_buffer_get_end_iter(tb, &iter);
-			gtk_text_buffer_insert(tb, &iter, for_user_f, -1);
-			file_accept_window(c->user, u_event);
-		}
-		break;
-	  }
+				gtk_text_buffer_insert(tb, &iter, for_user_f, -1);
+				file_accept_window(c->user, u_event);
+				g_free(for_user_f);
+			}
+			break;
 
 	  default: // Not good
-		break;
+			break;
 	} // switch
+
+	scroll_to_the_end(c->text);
 }
 
-gboolean convo_delete(GtkWidget *widget, GdkEvent *event, struct conversation *c)
+gboolean convo_delete(GtkWidget *widget, GdkEvent *event, conversation *c)
 {
 	convo_close(0, c);
 	return false;
 }
 
-void convo_close(GtkWidget *widget, struct conversation *c)
+void convo_close(GtkWidget *widget, conversation *c)
 {
 	if (c->clrBack)
-		delete (c->clrBack);
-
+		delete c->clrBack;
 	if (c->clrFore)
-		delete (c->clrFore);
+		delete c->clrFore;
 
-	cnv = g_slist_remove(cnv, c);
+	cnv.remove(c);
 	catcher = g_slist_remove(catcher, c->etag);
 
 	gtk_widget_destroy(c->window);
@@ -631,3 +612,34 @@ void convo_close(GtkWidget *widget, struct conversation *c)
 	g_free(c->etag);
 	g_free(c);
 }
+
+void finish_message(ICQEvent *event)
+{
+	conversation *c = convo_find(event->Uin());
+
+	/* If the window isn't open, there isn't anything left to do */
+	if(c == 0)
+		return;
+
+	/* Check to make sure it sent, and if it did, put the text in */
+	g_strreverse(c->etag->buf);
+
+	if(strncmp(c->etag->buf, "en", 2) == 0)
+	{
+		ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+		const gchar *name = owner->GetAlias();
+		gUserManager.DropOwner();
+
+		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->entry));
+		gtk_text_buffer_set_text(tb, "", -1);
+		gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
+		
+		convo_nick_timestamp(c->text, name, time(NULL), "local");
+		tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(c->text));
+		GtkTextIter iter;
+		gtk_text_buffer_get_end_iter(tb, &iter);
+		gtk_text_buffer_insert(tb, &iter, c->for_user, -1);
+		scroll_to_the_end(c->text);
+	}
+}
+
