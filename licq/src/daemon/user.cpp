@@ -16,6 +16,7 @@
 #include "constants.h"
 #include "user.h"
 #include "countrycodes.h"
+#include "languagecodes.h"
 #include "log.h"
 #include "icqpacket.h"
 
@@ -817,9 +818,9 @@ void ICQUser::LoadMoreInfo(void)
   m_fConf.ReadNum("BirthYear", m_nBirthYear, 0);
   m_fConf.ReadNum("BirthMonth", m_nBirthMonth, 0);
   m_fConf.ReadNum("BirthDay", m_nBirthDay, 0);
-  m_fConf.ReadNum("Language1", m_nLanguage1, 0);
-  m_fConf.ReadNum("Language2", m_nLanguage2, 0);
-  m_fConf.ReadNum("Language3", m_nLanguage3, 0);
+  m_fConf.ReadNum("Language1", m_nLanguage[0], 0);
+  m_fConf.ReadNum("Language2", m_nLanguage[1], 0);
+  m_fConf.ReadNum("Language3", m_nLanguage[2], 0);
 }
 
 
@@ -932,9 +933,9 @@ void ICQUser::Init(unsigned long _nUin)
   m_nBirthYear = 0;
   m_nBirthMonth = 0;
   m_nBirthDay = 0;
-  m_nLanguage1 = 0;
-  m_nLanguage2 = 0;
-  m_nLanguage3 = 0;
+  m_nLanguage[0] = 0;
+  m_nLanguage[1] = 0;
+  m_nLanguage[2] = 0;
 
   // Work Info
   m_szCompanyCity = NULL;
@@ -996,23 +997,6 @@ void ICQUser::SetDefaults(void)
   SetAbout(szTemp);
 }
 
-/*
-char *ICQUser::getCountry(char *buf)
-{
-  if (m_nCountryCode == COUNTRY_UNSPECIFIED)
-  {
-     strcpy(buf, "Unspecified");
-     return (buf);
-  }
-
-  const struct SCountry *country = GetCountryByCode(m_nCountryCode);
-  if (country == NULL)
-    sprintf(buf, "Unknown (%d)", m_nCountryCode);
-  else
-    strcpy(buf, country->szName);
-  return (buf);
-}
-*/
 
 
 unsigned short ICQUser::Status(void)
@@ -1105,28 +1089,27 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 
 char *ICQUser::StatusStr(char *sz)
 {
-  return StatusToStatusStr(Status(), StatusInvisible(), sz);
+  return StatusToStatusStr(m_nStatus, StatusInvisible(), sz);
 }
 
 char *ICQUser::StatusStrShort(char *sz)
 {
-  return StatusToStatusStrShort(Status(), StatusInvisible(), sz);
+  return StatusToStatusStrShort(m_nStatus, StatusInvisible(), sz);
 }
 
 
 char *ICQUser::StatusToStatusStr(unsigned short n, bool b, char *sz)
 {
-  switch(n)
-  {
-  case ICQ_STATUS_OFFLINE:     strcpy(sz, "Offline");  break;
-  case ICQ_STATUS_ONLINE:      strcpy(sz, "Online");   break;
-  case ICQ_STATUS_AWAY:        strcpy(sz, "Away");     break;
-  case ICQ_STATUS_NA:          strcpy(sz, "Not Available"); break;
-  case ICQ_STATUS_OCCUPIED:    strcpy(sz, "Occupied"); break;
-  case ICQ_STATUS_DND:         strcpy(sz, "Do Not Disturb"); break;
-  case ICQ_STATUS_FREEFORCHAT: strcpy(sz, "Free for Chat"); break;
-  default:                     sprintf(sz, "0x%04X", n); break;
-  }
+  if (n == ICQ_STATUS_OFFLINE) strcpy(sz, "Offline");
+  else if (n & ICQ_STATUS_DND) strcpy(sz, "Do Not Disturb");
+  else if (n & ICQ_STATUS_OCCUPIED) strcpy(sz, "Occupied");
+  else if (n & ICQ_STATUS_NA) strcpy(sz, "Not Available");
+  else if (n & ICQ_STATUS_AWAY) strcpy(sz, "Away");
+  else if (n & ICQ_STATUS_FREEFORCHAT) strcpy(sz, "Free for Chat");
+  else if (n << 24 == 0x00) strcpy(sz, "Online");
+  else
+    sprintf(sz, "0x%04X", n);
+
   if (b)
   {
     memmove(sz + 1, sz, strlen(sz) + 1);
@@ -1138,17 +1121,16 @@ char *ICQUser::StatusToStatusStr(unsigned short n, bool b, char *sz)
 
 char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b, char *sz)
 {
-  switch(n)
-  {
-  case ICQ_STATUS_OFFLINE:     strcpy(sz, "Off");  break;
-  case ICQ_STATUS_ONLINE:      strcpy(sz, "On");   break;
-  case ICQ_STATUS_AWAY:        strcpy(sz, "Away"); break;
-  case ICQ_STATUS_NA:          strcpy(sz, "NA"); break;
-  case ICQ_STATUS_OCCUPIED:    strcpy(sz, "Occ"); break;
-  case ICQ_STATUS_DND:         strcpy(sz, "DND"); break;
-  case ICQ_STATUS_FREEFORCHAT: strcpy(sz, "FFC"); break;
-  default:                     sprintf(sz, "0x%02X", n); break;
-  }
+  if (n == ICQ_STATUS_OFFLINE) strcpy(sz, "Off");
+  else if (n & ICQ_STATUS_DND) strcpy(sz, "DND");
+  else if (n & ICQ_STATUS_OCCUPIED) strcpy(sz, "Occ");
+  else if (n & ICQ_STATUS_NA) strcpy(sz, "N/A");
+  else if (n & ICQ_STATUS_AWAY) strcpy(sz, "Away");
+  else if (n & ICQ_STATUS_FREEFORCHAT) strcpy(sz, "FFC");
+  else if (n << 24 == 0x00) strcpy(sz, "On");
+  else
+    sprintf(sz, "0x%04X", n);
+
   if (b)
   {
     memmove(sz + 1, sz, strlen(sz) + 1);
@@ -1158,96 +1140,6 @@ char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b, char *sz)
   return sz;
 }
 
-/*
-//-----ICQUser::getBasicInfo----------------------------------------------------
-void ICQUser::getBasicInfo(struct UserBasicInfo &us)
-{
-   strcpy(us.alias, GetAlias());
-   sprintf(us.uin, "%ld", Uin());
-   strcpy(us.firstname, GetFirstName());
-   strcpy(us.lastname, GetLastName());
-   sprintf(us.name, "%s %s", us.firstname, us.lastname);
-   strcpy(us.email, GetEmail1());
-   getStatusStr(us.status);
-
-   // Track down the current ip and port
-   char buf[32];
-   if (SocketDesc() > 0)    // First check if we are connected
-   {
-     INetSocket *s = gSocketManager.FetchSocket(SocketDesc());
-     if (s != NULL)
-     {
-       if (User())
-       {
-         strcpy(us.ip, s->RemoteIpStr(buf));
-         sprintf(us.port, "%d", s->RemotePort());
-       }
-       else
-       {
-         strcpy(us.ip, s->LocalIpStr(buf));
-         sprintf(us.port, "%d", s->LocalPort());
-       }
-       gSocketManager.DropSocket(s);
-     }
-     else
-     {
-       strcpy(us.ip, "invalid");
-       strcpy(us.port, "invalid");
-     }
-   }
-   else
-   {
-     if (Ip() > 0)     // Default to the given ip
-       strcpy(us.ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
-     else                   // Otherwise we don't know
-       strcpy(us.ip, "???");
-
-     if (Port() > 0)
-       sprintf(us.port, "%d", Port());
-     else
-       strcpy(us.port, "??");
-   }
-
-   if (getStatusHideIp())
-   {
-     strcpy(buf, us.ip);
-     sprintf(us.ip, "(%s)", buf);
-   }
-   sprintf(us.ip_port, "%s:%s", us.ip, us.port);
-   strcpy(us.history, m_fHistory.Description());
-   strncpy(us.awayMessage, AutoResponse(), MAX_MESSAGE_SIZE);
-}
-
-
-//-----ICQUser::getExtInfo---------------------------------------------------
-void ICQUser::getExtInfo(struct UserExtInfo &ud)
-{
-   strcpy(ud.city, GetCity());
-   strcpy(ud.state, GetState());
-   getCountry(ud.country);
-   sprintf(ud.timezone, "%d", GetTimezone());
-   strcpy(ud.phone, GetPhoneNumber());
-   if (GetAge() == 0 || GetAge() == AGE_UNDEFINED)
-      strcpy(ud.age, "N/A");
-   else
-      sprintf(ud.age, "%d", GetAge());
-   switch(GetGender())
-   {
-     case UNKNOWN:
-       strcpy(ud.sex, "Unknown");
-       break;
-     case FEMALE:
-       strcpy(ud.sex, "Female");
-       break;
-     case MALE:
-       strcpy(ud.sex, "Male");
-       break;
-   }
-   strcpy(ud.homepage, GetHomepage());
-   strcpy(ud.about, getAbout());
-   sprintf(ud.zipcode, "%05ld", GetZipCode());
-}
-*/
 
 char *ICQUser::IpPortStr(char *rbuf)
 {
@@ -1481,9 +1373,9 @@ void ICQUser::SaveMoreInfo(void)
   m_fConf.WriteNum("BirthYear", m_nBirthYear);
   m_fConf.WriteNum("BirthMonth", m_nBirthMonth);
   m_fConf.WriteNum("BirthDay", m_nBirthDay);
-  m_fConf.WriteNum("Language1", m_nLanguage1);
-  m_fConf.WriteNum("Language2", m_nLanguage2);
-  m_fConf.WriteNum("Language3", m_nLanguage3);
+  m_fConf.WriteNum("Language1", m_nLanguage[0]);
+  m_fConf.WriteNum("Language2", m_nLanguage[1]);
+  m_fConf.WriteNum("Language3", m_nLanguage[2]);
 
   if (!m_fConf.FlushFile())
   {
@@ -1848,4 +1740,6 @@ void ICQOwner::SaveLicqInfo(void)
 
 
 void ICQUser::StupidLinkageFix(void)
-  {  printf("%s", gCountries[0].szName); }
+  {  printf("%s", gCountries[0].szName);
+     printf("%s", gLanguages[0].szName); }
+

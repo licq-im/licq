@@ -118,9 +118,10 @@ public:
   char GetBirthYear(void)                   {  return m_nBirthYear;  }
   char GetBirthMonth(void)                  {  return m_nBirthMonth;  }
   char GetBirthDay(void)                    {  return m_nBirthDay;  }
-  char GetLanguage1(void)                   {  return m_nLanguage1;  }
-  char GetLanguage2(void)                   {  return m_nLanguage2;  }
-  char GetLanguage3(void)                   {  return m_nLanguage3;  }
+  char GetLanguage1(void)                   {  return m_nLanguage[0];  }
+  char GetLanguage2(void)                   {  return m_nLanguage[1];  }
+  char GetLanguage3(void)                   {  return m_nLanguage[2];  }
+  char GetLanguage(const char l)            {  return m_nLanguage[l];  }
 
   // Work Info
   char *GetCompanyCity(void)                {  return m_szCompanyCity;  }
@@ -175,9 +176,10 @@ public:
   void SetBirthYear (const char n)           {  m_nBirthYear = n;  SaveMoreInfo();  }
   void SetBirthMonth (const char n)          {  m_nBirthMonth = n;  SaveMoreInfo();  }
   void SetBirthDay (const char n)            {  m_nBirthDay = n;  SaveMoreInfo();  }
-  void SetLanguage1 (const char n)           {  m_nLanguage1 = n;  SaveMoreInfo();  }
-  void SetLanguage2 (const char n)           {  m_nLanguage2 = n;  SaveMoreInfo();  }
-  void SetLanguage3 (const char n)           {  m_nLanguage3 = n;  SaveMoreInfo();  }
+  void SetLanguage1 (const char n)           {  m_nLanguage[0] = n;  SaveMoreInfo();  }
+  void SetLanguage2 (const char n)           {  m_nLanguage[1] = n;  SaveMoreInfo();  }
+  void SetLanguage3 (const char n)           {  m_nLanguage[2] = n;  SaveMoreInfo();  }
+  void SetLanguage (const char l, const char n) {  m_nLanguage[l] = n;  SaveMoreInfo();  }
 
   // Work Info
   void SetCompanyCity (const char *n)        {  SetString(&m_szCompanyCity, n);  SaveWorkInfo();  }
@@ -321,9 +323,7 @@ protected:
   char m_nBirthYear;
   char m_nBirthMonth;
   char m_nBirthDay;
-  char m_nLanguage1;
-  char m_nLanguage2;
-  char m_nLanguage3;
+  char m_nLanguage[3];
 
   // Work Info
   char *m_szCompanyCity;
