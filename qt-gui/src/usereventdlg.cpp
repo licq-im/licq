@@ -1367,8 +1367,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       if (u->GetHistory(lHistoryList))
       {
         // Rewind to the starting point. This will be the first message shown in the dialog.
+        // Make sure we don't show the new messages waiting.
+        unsigned short nNewMessages = u->NewMessages();
         HistoryListIter lHistoryIter = lHistoryList.end();
-        for (int i = 0; i < SHOW_RECENT_NUM && lHistoryIter != lHistoryList.begin(); i++)
+        for (int i = 0; i < (SHOW_RECENT_NUM + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
           lHistoryIter--;
           
         bool bUseHTML = !isdigit(m_szId[1]); 
