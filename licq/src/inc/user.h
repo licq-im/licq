@@ -80,6 +80,7 @@ struct UserExtInfo
    char state[32];
    char country[64];
    char timezone[4];
+   char zipcode[8];
    char phone[32];
    char age[16];
    char sex[10];

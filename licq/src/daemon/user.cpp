@@ -1152,6 +1152,7 @@ void ICQUser::getExtInfo(struct UserExtInfo &ud)
    getSex(ud.sex);
    strcpy(ud.homepage, getHomepage());
    strcpy(ud.about, getAbout());
+   sprintf(ud.zipcode, "%05ld", getZipcode());
 }
 
 

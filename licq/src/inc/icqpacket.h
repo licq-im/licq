@@ -276,7 +276,8 @@ public:
    CPU_UpdatePersonalExtInfo(const char *_sCity, unsigned short _nCountry,
                              const char *_sState, unsigned short _nAge,
                              char _cSex, const char *_sPhone,
-                             const char *_sHomepage, const char *_sAbout);
+                             const char *_sHomepage, const char *_sAbout,
+                             unsigned long _nZipcode);
    virtual ~CPU_UpdatePersonalExtInfo(void);
 
    const char *City(void)  { return m_sCity; }
@@ -287,6 +288,7 @@ public:
    const char *PhoneNumber(void)  { return m_sPhone; }
    const char *Homepage(void)  { return m_sHomepage; }
    const char *About(void)  { return m_sAbout; }
+   unsigned long Zipcode(void) { return m_nZipcode; }
 protected:
    virtual unsigned long getSize(void);
 
@@ -294,7 +296,7 @@ protected:
    unsigned short m_nCityLength;
    char           *m_sCity;
    unsigned short m_nCountry;
-   char           m_cCountryStatus;
+   char           m_cTimezone;
    unsigned short m_nStateLength;
    char           *m_sState;
    unsigned short m_nAge;
@@ -305,6 +307,7 @@ protected:
    char           *m_sHomepage;
    unsigned short m_nAboutLength;
    char           *m_sAbout;
+   unsigned long  m_nZipcode;
 };
 
 

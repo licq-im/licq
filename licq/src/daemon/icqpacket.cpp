@@ -546,7 +546,13 @@ CPU_UpdatePersonalBasicInfo::~CPU_UpdatePersonalBasicInfo(void)
 unsigned long CPU_UpdatePersonalExtInfo::getSize(void)
 {
   return (CPacketUdp::getSize() + m_nCityLength + m_nStateLength +
-          m_nPhoneLength + m_nHomepageLength + m_nAboutLength + 18);
+          m_nPhoneLength + m_nHomepageLength + m_nAboutLength +
+#if ICQ_VERSION == 2
+          22
+#elif ICQ_VERSION == 4
+          20
+#endif
+          );
 }
 
 CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *_sCity,
@@ -556,14 +562,18 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *_sCity,
                                                     char _cSex,
                                                     const char *_sPhone,
                                                     const char *_sHomepage,
-                                                    const char *_sAbout)
+                                                    const char *_sAbout,
+                                                    unsigned long _nZipcode)
   : CPacketUdp(ICQ_CMDxSND_UPDATExDETAIL)
 {
 
   m_sCity = strdup(_sCity == NULL ? "" : _sCity);
   m_nCityLength = strlen(m_sCity) + 1;
   m_nCountry = _nCountry;
-  m_cCountryStatus = (m_nCountry == 0xFFFF ? 0xFE : 0x10);
+  struct timezone tz;
+  gettimeofday(NULL, &tz);
+  m_cTimezone = tz.tz_minuteswest / 30;
+  //if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;
   m_sState = strdup(_sState == NULL ? "" : _sState);
   m_nStateLength = strlen(m_sState) + 1;
   if (m_nStateLength > 6)  // State is max 5 characters + NULL
@@ -579,6 +589,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *_sCity,
   m_nHomepageLength = strlen(m_sHomepage) + 1;
   m_sAbout = strdup(_sAbout == NULL ? "" : _sAbout);
   m_nAboutLength = strlen(m_sAbout) + 1;
+  m_nZipcode = _nZipcode;
 
   InitBuffer();
 
@@ -588,7 +599,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *_sCity,
   buffer->add(m_nCityLength);
   buffer->add(m_sCity, m_nCityLength);
   buffer->add(m_nCountry);
-  buffer->add(m_cCountryStatus);
+  buffer->add(m_cTimezone);
   buffer->add(m_nStateLength);
   buffer->add(m_sState, m_nStateLength);
   buffer->add(m_nAge);
@@ -599,6 +610,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *_sCity,
   buffer->add(m_sHomepage, m_nHomepageLength);
   buffer->add(m_nAboutLength);
   buffer->add(m_sAbout, m_nAboutLength);
+  buffer->add(m_nZipcode);
 
   Encrypt();
 }

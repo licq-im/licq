@@ -386,11 +386,12 @@ ICQEvent *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirs
 ICQEvent *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _nCountry,
                                    const char *_sState, unsigned short _nAge,
                                    char _cSex, const char *_sPhone,
-                                   const char *_sHomepage, const char *_sAbout)
+                                   const char *_sHomepage, const char *_sAbout,
+                                   unsigned long _nZipcode)
 {
   CPU_UpdatePersonalExtInfo *p =
     new CPU_UpdatePersonalExtInfo(_sCity, _nCountry, _sState, _nAge, _cSex,
-                                  _sPhone, _sHomepage, _sAbout);
+                                  _sPhone, _sHomepage, _sAbout, _nZipcode);
    gLog.Info("%sUpdating personal extended info (#%d)...\n", L_UDPxSTR,
              p->getSequence());
    return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
@@ -607,6 +608,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        67 65 6E 2E 73 65 2F 67 72 72 2F 00 1E 00 49 27 6D 20 6A 75 73 74 20 61
        20 67 69 72 6C 20 69 6E 20 61 20 77 6F 72 6C 64 2E 2E 2E 00 FF FF FF FF */
     unsigned short country_code, nAge, i;
+    unsigned long zipcode;
     char timezone, cSex;
 
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
@@ -658,6 +660,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> sTemp[i];
     u->setAbout(sTemp);
+    packet >> zipcode;
+    u->setZipcode(zipcode);
 
     // translating string with Translation Table
     gTranslator.ServerToClient(u->getCity());
@@ -735,6 +739,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     o->setPhoneNumber(p->PhoneNumber());
     o->setHomepage(p->Homepage());
     o->setAbout(p->About());
+    o->setZipcode(p->Zipcode());
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                     USER_EXT, o->getUin()));
     gUserManager.DropOwner();
@@ -953,7 +958,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 
   case ICQ_CMDxRCV_ERROR:  // icq says go away
   {
-    gLog.Info("%sServer says you are not logged on (%d).\n", L_UDPxSTR, nSequence);
+    gLog.Info("%sServer says you are not logged on (#%d).\n", L_UDPxSTR, nSequence);
     ICQEvent *e = DoneEvent(m_nUDPSocketDesc, nSequence, EVENT_FAILED);
     if (e != NULL) ProcessDoneEvent(e);
     icqRelogon();

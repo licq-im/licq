@@ -18,6 +18,10 @@
 extern int errno;
 #endif
 
+#include "icq-defines.h"
+#include "user.h"
+#include "constants.h"
+#include "file.h"
 #include "log.h"
 #include "translate.h"
 #include "plugind.h"

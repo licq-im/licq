@@ -17,11 +17,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <pthread.h>
 #include <stdio.h>
 
-#include "icq-defines.h"
-#include "constants.h"
 #include "socket.h"
-#include "file.h"
-#include "user.h"
 #include "icqevent.h"
 #include "remoteserver.h"
 #include "onevent.h"
@@ -30,6 +26,7 @@ class CPlugin;
 class CPacket;
 class CPacketTcp;
 class CLicq;
+class ICQUser;
 
 class CPluginFunctions
 {
@@ -100,7 +97,7 @@ public:
                                        const char *, bool);
   ICQEvent *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
                                 unsigned short, char, const char *,
-                                const char *, const char *_sAbout);
+                                const char *, const char *_sAbout, unsigned long);
   unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
   void icqLogoff(void);
   ICQEvent *icqSetStatus(unsigned long newStatus);
