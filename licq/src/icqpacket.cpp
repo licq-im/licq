@@ -3074,9 +3074,17 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
 
   ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
-  buffer->PackUnsignedLong(u->Cookie());
-  m_nSessionId = u->Cookie();
-  gUserManager.DropUser(u);
+  if (u)
+  {
+    buffer->PackUnsignedLong(u->Cookie());
+    m_nSessionId = u->Cookie();
+    gUserManager.DropUser(u);
+  }
+  else
+  {
+    m_nSessionId = 0;
+    buffer->PackUnsignedLong(0);
+  }
 
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
@@ -3123,9 +3131,17 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
 
   ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
-  buffer->PackUnsignedLong(u->Cookie());
-  m_nSessionId = u->Cookie();
-  gUserManager.DropUser(u);
+  if (u)
+  {
+    buffer->PackUnsignedLong(u->Cookie());
+    m_nSessionId = u->Cookie();
+    gUserManager.DropUser(u);
+  }
+  else
+  {
+    m_nSessionId = 0;
+    buffer->PackUnsignedLong(0);
+  }
 
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
