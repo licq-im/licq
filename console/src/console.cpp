@@ -2417,8 +2417,8 @@ void CLicqConsole::InputSearch(int cIn)
           if (data->szQuery[0] == '?')
           {
             winMain->wprintf("%C0 %A-%Z Unknown\n"
-                             "1 %A-%Z Male\n"
-                             "2 %A-%Z Female\n"
+                             "1 %A-%Z Female\n"
+                             "2 %A-%Z Male\n"
                              "%A%CGender: ",
              COLOR_WHITE, A_BOLD, A_BOLD, A_BOLD, A_BOLD,
              A_BOLD, A_BOLD, m_cColorQuery->nAttr, m_cColorQuery->nColor);
@@ -2553,6 +2553,21 @@ void CLicqConsole::InputSearch(int cIn)
           // Back to 0 for you!
           data->nPos = 0;
 
+          winMain->wprintf("%A%COnline Only [y/n]: ", m_cColorQuery->nAttr,
+	    m_cColorQuery->nColor);
+	  data->nState = 15;
+	  return;
+        }
+
+	case 15:
+	{
+	  if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+	    return;
+          data->nPos = 0;
+	  
+	  if (data->szQuery[0] == 'y' || data->szQuery[0] == 'Y')
+	    data->bOnlineOnly = true;
+
           /*if (data->szAlias[0] == '\0' && data->szFirstName[0] == '\0' &&
               data->szLastName[0] =='\0' && data->szEmail[0] == '\0')
           {
@@ -2577,7 +2592,7 @@ void CLicqConsole::InputSearch(int cIn)
            data->szLastName, data->szAlias, data->szEmail,
            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
            data->szCity, data->szState, data->nCountryCode,
-           data->szCoName, data->szCoDept, data->szCoPos, false);
+           data->szCoName, data->szCoDept, data->szCoPos, data->bOnlineOnly);
           winMain->state = STATE_PENDING;
 
           return;
