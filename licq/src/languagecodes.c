@@ -3,6 +3,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 #include "licq_languagecodes.h"
 
@@ -88,7 +89,7 @@ const struct SLanguage *GetLanguageByIndex(unsigned short _nIndex)
 const struct SLanguage *GetLanguageByName(const char *_szName)
 {
    unsigned short i = 0;
-   while (i < NUM_LANGUAGES && strcmp(gLanguages[i].szName, _szName)) i++;
+   while (i < NUM_LANGUAGES && strcasecmp(gLanguages[i].szName, _szName)) i++;
    if (i == NUM_LANGUAGES) return NULL;
    return &gLanguages[i];
 }

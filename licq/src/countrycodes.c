@@ -3,6 +3,7 @@
 #endif
 
 #include <string.h>
+#include <string.h>
 
 #include "licq_countrycodes.h"
 
@@ -273,7 +274,7 @@ const struct SCountry *GetCountryByIndex(unsigned short _nIndex)
 const struct SCountry *GetCountryByName(const char *_szName)
 {
    unsigned short i = 0;
-   while (i < NUM_COUNTRIES && strcmp(gCountries[i].szName, _szName)) i++;
+   while (i < NUM_COUNTRIES && strcasecmp(gCountries[i].szName, _szName)) i++;
    if (i == NUM_COUNTRIES) return NULL;
    return &gCountries[i];
 }
