@@ -434,7 +434,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     ICQUser *u = gUserManager.FetchUser(s->Uin(), LOCK_R);
     if (u != NULL)
     {
-      if (u->GetInGroup(GROUPS_USER, m_nCurrentGroup))
+      if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
         CreateUserList();
         PrintUsers();
@@ -1155,16 +1155,23 @@ char *CLicqConsole::CurrentGroupName()
 {
   static char szGroupName[64];
 
-  if (m_nCurrentGroup == 0)
-    strcpy(szGroupName, "All Users");
+  if (m_nGroupType == GROUPS_USER)
+  {
+    if (m_nCurrentGroup == 0)
+      strcpy(szGroupName, "All Users");
+    else
+    {
+      GroupList *g = gUserManager.LockGroupList(LOCK_R);
+      if (m_nCurrentGroup > g->size())
+        strcpy(szGroupName, "Invalid Group");
+      else
+        strcpy(szGroupName, (*g)[m_nCurrentGroup - 1]);
+      gUserManager.UnlockGroupList();
+    }
+  }
   else
   {
-    GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    if (m_nCurrentGroup > g->size())
-      strcpy(szGroupName, "Invalid Group");
-    else
-      strcpy(szGroupName, (*g)[m_nCurrentGroup - 1]);
-    gUserManager.UnlockGroupList();
+    strcpy(szGroupName, GroupsSystemNames[m_nCurrentGroup]);
   }
   return szGroupName;
 }
@@ -1260,7 +1267,7 @@ void CLicqConsole::InputInfo(int cIn)
 void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u->NewUser()) u->SetNewUser(false);
+  //if (u->NewUser()) u->SetNewUser(false);
 
   if (u->NewMessages() > 0)
   {
@@ -1906,9 +1913,16 @@ char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn,
   }
 
   default:
-    sz[n++] = (unsigned char)cIn;
-    if (bEcho)
-      *winMain << (unsigned char)cIn;
+    if (isprint(cIn))
+    {
+      sz[n++] = (unsigned char)cIn;
+      if (bEcho)
+        *winMain << (unsigned char)cIn;
+    }
+    else
+    {
+      Beep();
+    }
 
   } // switch
 
@@ -1969,8 +1983,13 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
   }
 
   default:
-    sz[n++] = (unsigned char)cIn;
-    *winMain << (unsigned char)cIn;
+    if (isprint(cIn))
+    {
+      sz[n++] = (unsigned char)cIn;
+      *winMain << (unsigned char)cIn;
+    }
+    else
+      Beep();
     break;
 
   } // switch

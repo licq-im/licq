@@ -153,26 +153,53 @@ void CLicqConsole::MenuGroup(char *_szArg)
     return;
   }
 
+  GroupType nGroupType;
+  unsigned short nCurrentGroup;
+
   // Try to change groups
-  int nCurrentGroup = atol(_szArg);
-  if (nCurrentGroup > gUserManager.NumGroups())
+  if (_szArg[0] == '*')
   {
-    winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
-                     gUserManager.NumGroups());
+    _szArg++;
+    nGroupType = GROUPS_SYSTEM;
+    nCurrentGroup = atol(_szArg);
+
+    if (nCurrentGroup > NUM_GROUPS_SYSTEM || nCurrentGroup == 0)
+    {
+      winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
+                       NUM_GROUPS_SYSTEM);
+      return;
+    }
+    m_nCurrentGroup = nCurrentGroup;
+    m_nGroupType = nGroupType;
+    winMain->wprintf("%C%ASwitching to group *%d (%s).\n",
+                     m_cColorInfo->nColor, m_cColorInfo->nAttr,
+                     m_nCurrentGroup,
+                     GroupsSystemNames[m_nCurrentGroup]);
   }
   else
   {
+    nGroupType = GROUPS_USER;
+    nCurrentGroup = atol(_szArg);
+
+    if (nCurrentGroup > gUserManager.NumGroups())
+    {
+      winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
+                       gUserManager.NumGroups());
+      return;
+    }
     m_nCurrentGroup = nCurrentGroup;
+    m_nGroupType = nGroupType;
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     winMain->wprintf("%C%ASwitching to group %d (%s).\n",
                      m_cColorInfo->nColor, m_cColorInfo->nAttr,
                      m_nCurrentGroup,
                      m_nCurrentGroup == 0 ? "All Users" : (*g)[m_nCurrentGroup - 1]);
     gUserManager.UnlockGroupList();
-    PrintStatus();
-    CreateUserList();
-    PrintUsers();
   }
+
+  PrintStatus();
+  CreateUserList();
+  PrintUsers();
 }
 
 

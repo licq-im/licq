@@ -203,6 +203,21 @@ void CLicqConsole::PrintGroups()
     PrintBoxRight(26);
   }
   gUserManager.UnlockGroupList();
+
+  waddch(winMain->Win(), ACS_LTEE);
+  for (k = 0; k < 24; k++) waddch(winMain->Win(), ACS_HLINE);
+  waddch(winMain->Win(), ACS_RTEE);
+  waddch(winMain->Win(), '\n');
+
+  for (unsigned short i = 1; i <= NUM_GROUPS_SYSTEM; i++)
+  {
+    PrintBoxLeft();
+    winMain->wprintf("%A%C*%2d. %-19s",
+        m_cColorGroupList->nAttr,
+        m_cColorGroupList->nColor, i, GroupsSystemNames[i]);
+    PrintBoxRight(26);
+  }
+
   PrintBoxBottom(26);
 
 }
