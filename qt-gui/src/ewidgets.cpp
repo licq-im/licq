@@ -518,7 +518,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   // seem to be buggy in Qt 3 at the time of writing.
   // This can potentially make BiDi support worser, so this string needs to be
   // rewritten to use a separate paragraph for each message when Qt gets fixed.
-  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s</font>",
+  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s</font><br>",
             color,
             EventDescription(e).utf8().data(),
             sd.utf8().data(),
