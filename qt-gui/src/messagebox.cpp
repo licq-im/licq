@@ -45,7 +45,8 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, i
 
 
 //-----MsgView::constructor------------------------------------------------------------------------
-MsgView::MsgView (QWidget *parent = 0, const char *name = 0) : QListView(parent, name)
+MsgView::MsgView (QWidget *parent, const char *name)
+  : QListView(parent, name)
 {
   addColumn(tr("N"), 20);
   addColumn(tr("Event Type"), 115);

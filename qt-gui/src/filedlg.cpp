@@ -37,7 +37,7 @@ extern int errno;
 CFileDlg::CFileDlg(unsigned long _nUin,
                    const char *_szTransferFileName, unsigned long _nFileSize,
                    bool _bServer, unsigned short _nPort,
-                   QWidget *parent = NULL, char *name = NULL)
+                   QWidget *parent, char *name)
    : QWidget(parent, name)
 {
    // If we are the server, then we are receiving a file

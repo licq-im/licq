@@ -15,7 +15,7 @@
 
 CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
                                CEventFile *e,
-                               QWidget *parent = 0, const char *name = 0)
+                               QWidget *parent, const char *name)
    : QWidget(parent, name)
 {
    m_xServer = _xServer;

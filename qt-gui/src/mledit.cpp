@@ -6,7 +6,7 @@
 #include <iostream.h>
 
 
-MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent=NULL, const char *name=NULL)
+MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent, const char *name)
   : QMultiLineEditNew(parent, name)
 {
   if (wordWrap) setWordWrap(DynamicWrap);

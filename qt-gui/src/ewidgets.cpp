@@ -25,7 +25,8 @@ void InformUser(QWidget *q, QString szInfo)
 }
 
 //-----CELabel------------------------------------------------------------------
-CELabel::CELabel(bool _bTransparent, QPopupMenu *m = NULL, QWidget *parent = 0, char *name = 0) : QLabel(parent, name)
+CELabel::CELabel(bool _bTransparent, QPopupMenu *m = NULL, QWidget *parent, char *name)
+  : QLabel(parent, name)
 {
    mnuPopUp = m;
    m_bTransparent = _bTransparent;
@@ -211,7 +212,7 @@ void CEButton::setNamedBgColor(char *theColor)
 
 
 //-----CEComboBox---------------------------------------------------------------
-CEComboBox::CEComboBox(bool _bAppearEnabledAlways, QWidget *parent = 0, char *name = 0)
+CEComboBox::CEComboBox(bool _bAppearEnabledAlways, QWidget *parent, char *name)
    : QComboBox(parent, name)
 {
    m_bAppearEnabledAlways = _bAppearEnabledAlways;

@@ -6,7 +6,7 @@
 #include "ewidgets.h"
 #include "icqd.h"
 
-RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent = 0, const char *name = 0 )
+RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
   server = s;
