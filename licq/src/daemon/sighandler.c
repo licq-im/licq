@@ -6,7 +6,10 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef __GLIBC__
+
+//#define HAVE_BACKTRACE
+
+#ifdef HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
 
@@ -57,7 +60,7 @@ void licq_handle_sigsegv(const char *s, siginfo_t *si, void *context)
   fprintf(stderr, "Licq Segmentation Violation Detected [%s]:\n", s);
   fprintf(stderr, "Fault Address: [0x%08lX]\n", (unsigned long)si->si_addr);
 
-#ifdef __GLIBC__
+#ifdef HAVE_BACKTRACE
   fprintf(stderr, "Backtrace:\n");
   {
     void *array[32];
@@ -73,8 +76,6 @@ void licq_handle_sigsegv(const char *s, siginfo_t *si, void *context)
   }
   fprintf(stderr, "Attempting to generate core file.\n");
   pthread_kill_other_threads_np();
-#else
-  fprintf(stderr, "No backtrace available.\n");
 #endif
 
   /* stupid line to stop useless warning */
