@@ -302,7 +302,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
   licqConf.ReadBool("ManualNewUser", m_bManualNewUser, false);
   licqConf.ReadBool("UseThreadView", m_bThreadView, false);
-  licqConf.ReadNum("ThreadViewGroupStates", m_nGroupStates, 0xFFFFFFFE);
+  licqConf.ReadNum("TVGroupStates", m_nGroupStates, 0xFFFFFFFE);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -2092,7 +2092,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
   licqConf.WriteBool("UseThreadView", m_bThreadView);
-  licqConf.WriteNum("ThreadViewGroupStates", m_nGroupStates);
+  licqConf.WriteNum("TVGroupStates", m_nGroupStates);
   licqConf.WriteBool("BoldOnMsg", m_bBoldOnMsg);
   licqConf.WriteBool("ManualNewUser", m_bManualNewUser);
   licqConf.WriteBool("Transparent", skin->frame.transparent);
@@ -2951,25 +2951,42 @@ void CMainWindow::slot_hints()
 "o  View system messages by double clicking on the message label.\n"
 "o  Change groups by right clicking on the message label.\n"
 "o  Use the following shortcuts from the contact list:\n"
-"   Ctrl-M : Toggle mini-mode\n"
-"   Ctrl-O : Toggle show offline users\n"
-"   Ctrl-X : Exit\n"
-"   Ctrl-H : Hide\n"
-"   Ctrl-I : View the next message\n"
-"   Ctrl-V : View message\n"
-"   Ctrl-S : Send message\n"
-"   Ctrl-U : Send Url\n"
-"   Ctrl-C : Send chat request\n"
-"   Ctrl-F : Send File\n"
-"   Ctrl-A : Check Auto response\n"
-"   Ctrl-P : Popup all messages\n"
-"   Ctrl-L : Redraw user window\n"
-"   Delete : Delete user from current group\n"
-"   Ctrl-Delete : Delete user from contact list\n"
+"     Ctrl-M : Toggle mini-mode\n"
+"     Ctrl-O : Toggle show offline users\n"
+"     Ctrl-X : Exit\n"
+"     Ctrl-H : Hide\n"
+"     Ctrl-I : View the next message\n"
+"     Ctrl-V : View message\n"
+"     Ctrl-S : Send message\n"
+"     Ctrl-U : Send Url\n"
+"     Ctrl-C : Send chat request\n"
+"     Ctrl-F : Send File\n"
+"     Ctrl-A : Check Auto response\n"
+"     Ctrl-P : Popup all messages\n"
+"     Ctrl-L : Redraw user window\n"
+"     Delete : Delete user from current group\n"
+"     Ctrl-Delete : Delete user from contact list\n"
 "o  Hold control while clicking on close in the function window to remove\n"
 "   the user from your contact list.\n"
 "o  Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\".\n"
-"   For example in the send tab of the user function window.\n");
+"   For example in the send tab of the user function window.\n"
+"o  Here is the complete list of user % options, which can be used in OnEvent\n"
+"   parameters, auto responses, and utilities:\n"
+"     %a - user alias\n"
+"     %e - email\n"
+"     %f - first name\n"
+"     %h - phone number\n"
+"     %i - user ip\n"
+"     %l - last name\n"
+"     %m - # pending messages\n"
+"     %n - full name\n"
+"     %o - last seen online"
+"     %p - user port\n"
+"     %s - full status\n"
+"     %S - abbrieviated status\n"
+"     %u - uin\n"
+"     %w - webpage\n"
+);
 
   InformUser(NULL, hints);
 }
