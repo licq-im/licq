@@ -4,6 +4,11 @@
 
 #include <iostream.h>
 #include <qapplication.h>
+#if QT_VERSION < 210
+#define private public
+#endif
+#include <qfontdatabase.h>
+#undef private
 #include <ctype.h>
 #include <qlayout.h>
 #include <stdlib.h>
@@ -18,7 +23,6 @@
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qclipboard.h>
-#include <qfontdatabase.h>
 #include <qwindowsstyle.h>
 
 #include "chatdlg.h"
@@ -151,7 +155,9 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   // Toolbar
   QToolBar* barChat = new QToolBar("label", this);
   addToolBar(barChat, "label");
+#if QT_VERSION >= 210
   barChat->setHorizontalStretchable(true);
+#endif
 
   barChat->addSeparator();
 
@@ -198,19 +204,25 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   tbtBold = new QToolButton(*pixBold, tr("Bold"), tr("Toggles Bold font"),
                             this, SLOT(fontStyleChanged()), barChat);
   tbtBold->setToggleButton(true);
+#if QT_VERSION >= 210
   tbtBold->setAutoRaise(false);
+#endif
 
   QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
   tbtItalic = new QToolButton(*pixItalic, tr("Italic"), tr("Toggles Italic font"),
                               this, SLOT(fontStyleChanged()), barChat);
   tbtItalic->setToggleButton(true);
+#if QT_VERSION >= 210
   tbtItalic->setAutoRaise(false);
+#endif
 
   QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
   tbtUnderline = new QToolButton(*pixUnder, tr("Underline"), tr("Toggles Bold font"),
                                  this, SLOT(fontStyleChanged()), barChat);
   tbtUnderline->setToggleButton(true);
+#if QT_VERSION >= 210
   tbtUnderline->setAutoRaise(false);
+#endif
 
   barChat->addSeparator();
 
