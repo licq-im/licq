@@ -546,7 +546,7 @@ bool TCPSocket::SendPacket(CBuffer *b)
   while (nTotalBytesSent < 2)
   {
     nBytesSent = send(m_nDescriptor, pcSize + nTotalBytesSent, 2 - nTotalBytesSent, 0);
-    if (nBytesSent == -1)
+    if (nBytesSent <= 0)
     {
       delete[] pcSize;
       // errno has been set
@@ -564,7 +564,7 @@ bool TCPSocket::SendPacket(CBuffer *b)
   {
     nBytesSent = send(m_nDescriptor, b->getDataStart() + nTotalBytesSent,
                       b->getDataSize() - nTotalBytesSent, 0);
-    if (nBytesSent == -1)
+    if (nBytesSent <= 0)
     {
       // errno has been set
       h_errno = -1;
@@ -612,7 +612,7 @@ bool TCPSocket::RecvPacket()
     while (nTwoBytes != 2)
     {
       nBytesReceived = recv(m_nDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
-      if (nBytesReceived == -1)
+      if (nBytesReceived <= 0)
       {
         // errno has been set
         h_errno = -1;
@@ -632,7 +632,7 @@ bool TCPSocket::RecvPacket()
                              m_xRecvBuffer.getDataMaxSize() -
                              m_xRecvBuffer.getDataPosWrite();
   nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, MSG_DONTWAIT);
-  if (nBytesReceived == -1)
+  if (nBytesReceived <= 0)
   {
     // errno has been set
     h_errno = -1;

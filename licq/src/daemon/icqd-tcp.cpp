@@ -480,7 +480,10 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
 
 sock_error:
   char buf[128];
-  gLog.Warn("%sHandshake socket error:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+  if (s->Error() == 0)
+    gLog.Warn("%sHandshake error, remote side closed connection.\n", L_WARNxSTR);
+  else
+    gLog.Warn("%sHandshake socket error:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
   return false;
 }
 
@@ -1544,7 +1547,10 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
 
 sock_error:
   char buf[128];
-  gLog.Warn("%sHandshake socket error:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+  if (s->Error() == 0)
+    gLog.Warn("%sHandshake error, remote side closed connection.\n", L_WARNxSTR);
+  else
+    gLog.Warn("%sHandshake socket error:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
   return false;
 }
 
