@@ -962,7 +962,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             }
             if(it == NULL) {
               if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) || !u->StatusOffline()) &&
-                   (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
+                   ((i->GroupId() != 0 && u->GetInGroup(GROUPS_USER, i->GroupId())) ||
+                    (i->GroupId() == 0 && !u->IgnoreList())))
                 (void) new CUserViewItem(u, i);
             }
           }
