@@ -17,8 +17,18 @@ AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
-#ALL_LINGUIAS="es"
-#AM_GNU_GETTEXT
+dnl Check for header files
+AC_CHECK_LICQ
+
+if test "$have_licq_inc" = no; then
+  AC_MSG_ERROR([
+
+I can't find the Licq header files.
+You must unpack this archive into the plugins/ directory off of the
+main Licq source tree.  In other words, we should be in
+/some/dir/licq-0.xx/plugins/jons-gtk-gui right now.
+])
+fi
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)

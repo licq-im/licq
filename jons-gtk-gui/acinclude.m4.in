@@ -1,2 +1,33 @@
+AC_DEFUN(AC_FIND_FILE,
+[
+$3=no
+for i in $2;
+do
+  for j in $1;
+  do
+    if test -r "$i/$j"; then
+      $3=$i
+      break 2
+    fi
+  done
+done
+])
 
-dnl nothing's here yet
+AC_DEFUN(AC_CHECK_LICQ,
+[
+  AC_MSG_CHECKING([for licq header files])
+
+  AC_FIND_FILE(licq_icqd.h, "$prefix/include/licq", licq_inc)
+  if test "$licq_inc" = no; then
+    have_licq_inc=no
+  else
+    have_licq_inc=yes
+  fi
+  if test "$have_licq_inc" = yes; then
+    AC_MSG_RESULT(["found"])
+    LICQ_INCLUDES="$licq_inc"
+    AC_SUBST(LICQ_INCLUDES)
+  else
+    AC_MSG_RESULT(["not found"])
+  fi
+])

@@ -3,7 +3,7 @@
 libdir = $(prefix)/lib/licq
 
 INCLUDES = -Wall -fno-rtti -fno-exceptions -D_REENTRANT \
-	-I$(top_srcdir)/../../src/inc -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
+	-I$(prefix)/include/licq -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
 	`gtk-config --cflags`
 
 lib_LTLIBRARIES = licq_jons-gtk-gui.la
