@@ -63,9 +63,6 @@
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
 
-// -----------------------------------------------------------------------------
-
-#define PARTLEN (MAX_MESSAGE_SIZE - 5)
 
 // -----------------------------------------------------------------------------
 
@@ -619,7 +616,7 @@ void UserViewEvent::slot_btnRead3()
       {
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
-        server->icqChatRequestRefuse(m_nUin, r->RefuseMessage().local8Bit(),
+        server->icqChatRequestRefuse(m_nUin, r->RefuseMessage().local8Bit().data(),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
@@ -633,7 +630,7 @@ void UserViewEvent::slot_btnRead3()
       {
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
-        server->icqFileTransferRefuse(m_nUin, r->RefuseMessage().local8Bit(),
+        server->icqFileTransferRefuse(m_nUin, r->RefuseMessage().local8Bit().data(),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
@@ -764,20 +761,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   hlay->addWidget(chkMass);
   connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(massMessageToggled(bool)));
 
-#ifdef USE_SPOOFING
-  hlay = new QHBoxLayout(vlay);
-  chkSpoof = new QCheckBox(tr("S&poof UIN:"), box);
-  hlay->addWidget(chkSpoof);
-  edtSpoof = new QLineEdit(box);
-  hlay->addWidget(edtSpoof);
-  edtSpoof->setEnabled(false);
-  edtSpoof->setValidator(new QIntValidator(10000, 2000000000, edtSpoof));
-  connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
-#else
-  edtSpoof = NULL;
-  chkSpoof = NULL;
-#endif
-
   QBoxLayout* h_lay = new QHBoxLayout(top_lay);
   if (!m_bOwner)
   {
@@ -855,6 +838,40 @@ void UserSendCommon::changeEventType(int id)
   }
 }
 
+
+// -----------------------------------------------------------------------------
+QString UserSendCommon::generatePart(const QString& text)
+{
+#define PARTLEN (MAX_MESSAGE_SIZE - 10)
+
+  QString msgTextCurrent;
+
+  if(m_msgTextTotal.isEmpty() )
+    m_msgTextTotal = text;
+
+  if(chkSendServer->isChecked()) {
+    int msgNextOffset = QMIN(m_msgTextTotal.length(), PARTLEN);
+    int found_index = m_msgTextTotal.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
+    if(found_index > 0)
+      msgNextOffset = found_index;
+
+    m_msgTextCurrent = m_msgTextTotal.left(msgNextOffset);
+
+    msgTextCurrent = m_msgTextCurrent;
+    if(m_msgTextCurrent.length() < m_msgTextTotal.length())
+    {
+//    msgTextCurrent.prepend("-L--- multipart ---\n");
+      msgTextCurrent.append("...");
+    }
+  }
+  else {
+    msgTextCurrent = m_msgTextTotal;
+    m_msgTextCurrent = msgTextCurrent = m_msgTextTotal;
+  }
+
+  return msgTextCurrent;
+}
+
 //-----UserSendCommon::massMessageToggled------------------------------------
 void UserSendCommon::massMessageToggled(bool b)
 {
@@ -901,6 +918,12 @@ void UserSendCommon::sendButton()
 
   if (icqEventTag != NULL)
   {
+    m_sProgressMsg = tr("Sending ");
+    bool via_server = chkSendServer->isChecked();
+    if(via_server && m_msgTextCurrent.length() != m_msgTextTotal.length())
+      m_sProgressMsg += tr("partial ");
+    m_sProgressMsg += via_server ? tr("via server") : tr("direct");
+    m_sProgressMsg += "...";
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
     setCaption(title);
     setCursor(waitCursor);
@@ -1030,34 +1053,46 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_MSG:
     {
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
-      m_sProgressMsg = tr("Sending ");
-      m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
-      m_sProgressMsg += "...";
-      icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
+
+      QString msgTextCurrent;
+      msgTextCurrent = generatePart(QString(ue->Message()));
+
+      icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit().data(), bOnline,
          nLevel);
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
       CEventUrl *ue = (CEventUrl *)e->UserEvent();
-      m_sProgressMsg = tr("Sending ");
-      m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
-      m_sProgressMsg += "...";
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
          bOnline, nLevel);
+      break;
+    }
+    case ICQ_CMDxSUB_CONTACTxLIST:
+    {
+      CEventContactList* ue = (CEventContactList *) e->UserEvent();
+      const ContactList& clist = ue->Contacts();
+      UinList uins;
+
+      for(ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
+        uins.push_back((*i)->Uin());
+
+      if(uins.size() == 0)
+        break;
+
+      icqEventTag = server->icqSendContactList(m_nUin, uins,
+                                               bOnline, nLevel);
       break;
     }
     case ICQ_CMDxSUB_CHAT:
     {
       CEventChat *ue = (CEventChat *)e->UserEvent();
-      m_sProgressMsg = tr("Sending...");
       icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel);
       break;
     }
     case ICQ_CMDxSUB_FILE:
     {
       CEventFile *ue = (CEventFile *)e->UserEvent();
-      m_sProgressMsg = tr("Sending...");
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
          ue->FileDescription(), nLevel);
       break;
@@ -1152,30 +1187,8 @@ void UserSendMsgEvent::sendButton()
   // don't let the user send empty messages
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
 
-  if(m_msgTextTotal.isEmpty() )
-    m_msgTextTotal = mleSend->text().local8Bit().copy();
-
   QString msgTextCurrent;
-
-  if(chkSendServer->isChecked()) {
-    int msgNextOffset = QMIN(m_msgTextTotal.length(), PARTLEN+1);
-    int found_index = m_msgTextTotal.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
-    if(found_index > 0)
-      msgNextOffset = found_index;
-
-    m_msgTextCurrent = m_msgTextTotal.left(msgNextOffset);
-
-    msgTextCurrent = m_msgTextCurrent;
-    if(m_msgTextCurrent.length() < m_msgTextTotal.length())
-    {
-//    msgTextCurrent.prepend("-L--- multipart ---\n");
-      msgTextCurrent.append("...");
-    }
-  }
-  else {
-    msgTextCurrent = m_msgTextTotal.local8Bit();
-    m_msgTextCurrent = msgTextCurrent = m_msgTextTotal;
-  }
+  msgTextCurrent = generatePart(mleSend->text());
 
   if (chkMass->isChecked())
   {
@@ -1185,12 +1198,6 @@ void UserSendMsgEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
-  m_sProgressMsg = tr("Sending ");
-  if(chkSendServer->isChecked())
-    m_sProgressMsg = (msgTextCurrent.length() != m_msgTextTotal.length()) ?
-      tr("partial ") : tr("complete ");
-  m_sProgressMsg += chkSendServer->isChecked() ? tr("via server") : tr("direct");
-  m_sProgressMsg += "...";
   icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit(),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
@@ -1269,9 +1276,6 @@ void UserSendUrlEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
-  m_sProgressMsg = tr("Sending ");
-  m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-  m_sProgressMsg += "...";
   icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
@@ -1361,7 +1365,6 @@ void UserSendFileEvent::sendButton()
     WarnUser(this, tr("You must specify a file to transfer!"));
     return;
   }
-  m_sProgressMsg = tr("Sending...");
   icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
      mleSend->text().local8Bit(),
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
@@ -1463,7 +1466,6 @@ void UserSendChatEvent::InviteUser()
 //-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
 {
-  m_sProgressMsg = tr("Sending...");
   if (m_nMPChatPort == 0)
     icqEventTag = server->icqChatRequest(m_nUin,
                                          mleSend->text().local8Bit(),

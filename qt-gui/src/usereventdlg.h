@@ -149,9 +149,8 @@ signals:
   void signal_msgtypechanged(UserSendCommon *, UserSendCommon *);
 
 protected:
-  QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
+  QCheckBox *chkSendServer, *chkUrgent, *chkMass;
   QPushButton *btnSend, *btnCancel;
-  QLineEdit *edtSpoof;
   QGroupBox *grpMR;
   QButtonGroup *grpCmd;
   QComboBox* cmbSendType;
@@ -160,6 +159,7 @@ protected:
   QString m_msgTextTotal, m_msgTextCurrent;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
+  QString generatePart(const QString& text);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
   virtual bool sendDone(ICQEvent *) = 0;
 
