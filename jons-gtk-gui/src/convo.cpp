@@ -427,13 +427,6 @@ void convo_recv(gulong uin)
 		CEventChat *c_event = (CEventChat *)u_event;
 
 		chat_accept_window(c_event, uin);
-
-		/* Join a multiparty chat (we connect to them) */
-//		if(c_event->Port() != 0)
-//			chat_join_multiparty();
-		/* Single party chat (they connect to us) */
-//		else
-//			chat_start_as_server(uin, c_event);
 	}
 
 	else if(u_event->SubCommand() == ICQ_CMDxSUB_FILE)
