@@ -55,7 +55,7 @@ bool CMSNBuffer::ParseHeaders()
   char ctmp = 0;
   int counter = 0;
 
-  std::string stmp = "", strHeader, strData;
+  string stmp = "", strHeader, strData;
   if (m_lHeader.size() > 0)
     ClearHeaders();
   
@@ -123,10 +123,10 @@ bool CMSNBuffer::ParseHeaders()
   return true;
 }
 
-std::string CMSNBuffer::GetValue(std::string strKey)
+string CMSNBuffer::GetValue(string strKey)
 {
-  std::string strReturn = "";
-  std::list<SHeader *>::iterator it;
+  string strReturn = "";
+  list<SHeader *>::iterator it;
   for (it = m_lHeader.begin(); it != m_lHeader.end(); it++)
   {
     if ((*it)->strHeader == strKey)
@@ -138,9 +138,9 @@ std::string CMSNBuffer::GetValue(std::string strKey)
   return strReturn;
 }
 
-bool CMSNBuffer::HasHeader(std::string strKey)
+bool CMSNBuffer::HasHeader(string strKey)
 {
-  std::list<SHeader *>::iterator it;
+  list<SHeader *>::iterator it;
   for (it = m_lHeader.begin(); it != m_lHeader.end(); it++)
   {
     if ((*it)->strHeader == strKey)
@@ -154,7 +154,7 @@ bool CMSNBuffer::HasHeader(std::string strKey)
 
 void CMSNBuffer::ClearHeaders()
 {
-  std::list<SHeader *>::iterator it;
+  list<SHeader *>::iterator it;
   for (it = m_lHeader.begin(); it != m_lHeader.end(); ++it)
   {
     delete *it;
@@ -179,10 +179,10 @@ void CMSNBuffer::SkipParameter()
     *this>> cCheck;
 }
 
-std::string CMSNBuffer::GetParameter()
+string CMSNBuffer::GetParameter()
 {
   char cCheck;
-  std::string strParam;
+  string strParam;
   *this >> cCheck;
   
   if (cCheck == ' ')

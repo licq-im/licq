@@ -23,11 +23,16 @@
 
 #include <string>
 #include <list>
+#include <cctype>
+
+using std::isalnum;
+using std::list;
+using std::string;
 
 struct SHeader
 {
-  std::string strHeader;
-  std::string strValue;
+  string strHeader;
+  string strValue;
 };
 
 
@@ -41,16 +46,16 @@ public:
   CMSNBuffer(CBuffer &);
   
   bool ParseHeaders();
-  std::string GetValue(std::string);
-  bool HasHeader(std::string);
+  string GetValue(string);
+  bool HasHeader(string);
   void ClearHeaders();
   
   void SkipParameter();
-  std::string GetParameter();
+  string GetParameter();
   void SkipPacket();
   
 private:
-  std::list<SHeader *> m_lHeader;  
+  list<SHeader *> m_lHeader;  
 };
 
 #endif // __MSNBUFFER_H

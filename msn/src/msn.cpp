@@ -171,7 +171,7 @@ string CMSN::Decode(const string &strIn)
 {
   string strOut = "";
   
-  for (int i = 0; i < strIn.length(); i++)
+  for (unsigned int i = 0; i < strIn.length(); i++)
   {
     if (strIn[i] == '%')
     {
@@ -190,7 +190,7 @@ string CMSN::Encode(const string &strIn)
 {
   string strOut = "";
 
-  for (int i = 0; i < strIn.length(); i++)
+  for (unsigned int i = 0; i < strIn.length(); i++)
   {
     if (isalnum(strIn[i]))
       strOut += strIn[i];
@@ -456,6 +456,10 @@ void CMSN::ProcessSignal(CSignal *s)
       MSNGrantAuth(sig->Id());
       break;
     }
+
+    case PROTOxSENDxREFUSExAUTH:
+    default:
+      break;  //Do nothing now...
   }
 }
 
@@ -483,10 +487,10 @@ void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
   
   char *szLogin = strstr(m_pNexusBuff->GetValue("PassportURLs").c_str(), "DALogin=");
   szLogin += 8; // skip to the tag
-  char *szEndURL = strchr(szLogin, '/');
-  char *szServer = strndup(szLogin, szEndURL - szLogin); // this is all we need
-  char *szEnd = strchr(szLogin, ',');
-  char *szURL = strndup(szEndURL, szEnd - szEndURL);
+  //char *szEndURL = strchr(szLogin, '/');
+  //char *szServer = strndup(szLogin, szEndURL - szLogin); // this is all we need
+  //char *szEnd = strchr(szLogin, ',');
+  //char *szURL = strndup(szEndURL, szEnd - szEndURL);
 
   MSNAuthenticate(m_szCookie);
 }

@@ -40,11 +40,13 @@ const unsigned short FLAG_REVERSE_LIST = 8;
 #include <string>
 #include <list>
 #include <vector>
+#include <cctype>
 #include <pthread.h>
 
 using std::string;
 using std::list;
 using std::vector;
+using std::isalnum;
 
 class CMSNPacket;
 
