@@ -1043,7 +1043,7 @@ void ICQUser::SetAlias(const char *s)
 {
   if (s[0] == '\0')
   {
-    if (m_szFirstName[0] != '\0')
+    if (m_szFirstName != NULL && m_szFirstName[0] != '\0')
       SetString(&m_szAlias, m_szFirstName);
     else
     {
