@@ -518,23 +518,23 @@ void CFileDlg::fileRecvFile()
     // More bytes to come so go away and wait for them
     return;
   }
-  else if (nBytesLeft == 0)
+
+  QString msg;
+  if (nBytesLeft == 0)
   {
     // File transfer done perfectly
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
-    QString msg = QString(tr("File '%1' from %2 received successfully."))
-                          .arg(m_sFileInfo.szName).arg(m_szRemoteName);
-    lblStatus->setText(msg);
-
+    msg = QString(tr("File '%1' from %2 received successfully."))
+            .arg(m_sFileInfo.szName).arg(m_szRemoteName);
   }
   else // nBytesLeft < 0
   {
     // Received too many bytes for the given size of the current file
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
-    gLog.Error("%sFile transfer of\n'%s'\nfrom %s received %d too many bytes.\n%sClosing file, recommend check for errors.\n",
-               L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName, -nBytesLeft, L_BLANKxSTR);
+    msg = QString(tr("File transfer of\n'%1'\nfrom %2 received %3 too many bytes.\n%sClosing file, recommend check for errors.")
+            .arg(m_sFileInfo.szName).arg(m_szRemoteName).arg(-nBytesLeft));
   }
   // Only get here if the current file is done
   m_nCurrentFile++;
@@ -546,6 +546,8 @@ void CFileDlg::fileRecvFile()
   // Now wait for a disconnect or another file
   m_nState = STATE_RECVxFILExINFO;
   connect(snFile, SIGNAL(activated(int)), this, SLOT(StateServer()));
+
+  InformUser(this, msg);
 }
 
 
@@ -638,9 +640,10 @@ void CFileDlg::StateClient()
     CPFile_Info p(nfoTransferFileName->text().local8Bit());
     if (!p.IsValid())
     {
-      gLog.Error("%sFile read error '%s':\n%s%s\n.", L_ERRORxSTR, nfoTransferFileName->text().local8Bit(),
-                 L_BLANKxSTR, p.ErrorStr());
       fileCancel();
+      InformUser(this, tr("File read error '%1':\n%2.")
+         .arg(nfoTransferFileName->text().local8Bit())
+         .arg(p.ErrorStr()));
       return;
     }
     m_xSocketFile.SendPacket(p.getBuffer());
@@ -776,34 +779,29 @@ void CFileDlg::fileSendFile()
   ::close(m_nFileDesc);
   m_nFileDesc = 0;
   m_tUpdate.stop();
-  btnCancel->setText(tr("Ok"));
-  lblStatus->setText(tr("File sent."));
 
+  QString msg;
   if (nBytesLeft == 0)
   {
     // File transfer done perfectly
-    /*char msg[1024];
-    sprintf(msg, tr("%sFile transfer of\n'%s'\nto %s completed successfully.\n"),
-            L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    InformUser(this, msg);*/
-    QString msg = QString(tr("Sending of file '%1' to %2 completed successfully."))
+    msg = QString(tr("Sending of file '%1' to %2 completed successfully."))
       .arg(m_sFileInfo.szName).arg(m_szRemoteName);
-    lblStatus->setText(msg);
   }
   else // nBytesLeft < 0
   {
     // Sent too many bytes for the given size of the current file, can't really happen
-    gLog.Error("%sFile transfer of\n'%s'\n to %s received %d too many bytes.\n%sClosing file, recommend check for errors.\n",
-               L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName, -nBytesLeft,
-               L_BLANKxSTR);
+    msg = QString(tr("File transfer of\n'%1'\n to %2 received %3 too many bytes.\n%sClosing file, recommend check for errors.\n")
+            .arg(m_sFileInfo.szName).arg(m_szRemoteName).arg(-nBytesLeft));
   }
-
 
   m_xSocketFileServer.CloseConnection();
   m_xSocketFile.CloseConnection();
   if (m_snSend != NULL) m_snSend->setEnabled(false);
+
   lblStatus->setText(tr("File transfer complete."));
   btnCancel->setText(tr("Done"));
+
+  InformUser(this, msg);
 }
 
 
