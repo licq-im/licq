@@ -325,7 +325,7 @@ void CICQDaemon::icqExportGroups(GroupList &groups)
 void CICQDaemon::ProtoRemoveUser(const char *_szId, unsigned long _nPPID)
 {
   if (_nPPID == LICQ_PPID)
-    icqRemoveUser(strtoul(_szId, (char **)NULL, 10));
+    icqRemoveUser(_szId);
   else
     PushProtoSignal(new CRemoveUserSignal(_szId), _nPPID);
 }
@@ -3652,6 +3652,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
       // Let's update server with local info!
       CheckExport();
+
+      gLog.Info(tr("%sActivate server contact list.\n"), L_SRVxSTR);
+      CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
+      SendEvent_Server(p);
+
       
       break;
     } // case rost reply
@@ -3660,6 +3665,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     {
       // The server says we are up to date, let's double check
       CheckExport();
+
+      gLog.Info(tr("%sActivate server contact list.\n"), L_SRVxSTR);
+      CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
+      SendEvent_Server(p);
+
       break;
     }
 
