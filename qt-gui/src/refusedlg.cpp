@@ -15,7 +15,7 @@ CRefuseDlg::CRefuseDlg(unsigned long _nUin, QString t,
    : QDialog(parent, name, true)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  QLabel *lbl = new QLabel(tr("Refuse %1 with ").arg(t) + QString::fromLocal8Bit(u->GetAlias()) + " ?", this);
+  QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromLocal8Bit(u->GetAlias()) + ":", this);
   gUserManager.DropUser(u);
 
   mleRefuseMsg = new MLEditWrap(true, this);
@@ -30,7 +30,7 @@ CRefuseDlg::CRefuseDlg(unsigned long _nUin, QString t,
   btnRefuse->setFixedWidth(bw);
   btnCancel->setFixedWidth(bw);
 
-  QGridLayout *lay = new QGridLayout(this, 3, 5);
+  QGridLayout *lay = new QGridLayout(this, 3, 5, 15, 10);
   lay->addMultiCellWidget(lbl, 0, 0, 0, 4);
   lay->addMultiCellWidget(mleRefuseMsg, 1, 1, 0, 4);
   lay->addWidget(btnRefuse, 2, 1);

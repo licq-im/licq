@@ -97,9 +97,9 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
 
-  if(!isVisible()) {
-    if(!snPos.isNull())
-      move(snPos);
+  if (!isVisible())
+  {
+    if (!snPos.isNull()) move(snPos);
     show();
   }
 }
