@@ -1919,6 +1919,21 @@ void CChatManager::ChangeColorBg(int r, int g, int b)
 //----CChatManager::CloseChat------------------------------------------------
 void CChatManager::CloseChat()
 {
+  // Close the chat thread
+  // We must do it before trying to close the socket to avoid
+  // the chat thread trying to close the socket itself once
+  // it notices it cannot read from it
+  if (pipe_thread[PIPE_WRITE] != -1)
+  {
+    write(pipe_thread[PIPE_WRITE], "X", 1);
+    pthread_join(thread_chat, NULL);
+
+    close(pipe_thread[PIPE_READ]);
+    close(pipe_thread[PIPE_WRITE]);
+
+    pipe_thread[PIPE_READ] = pipe_thread[PIPE_WRITE] = -1;
+  }
+
   CChatUser *u = NULL;
   CBuffer buf;
   SendBuffer(&buf, CHAT_DISCONNECTION);
@@ -1934,18 +1949,6 @@ void CChatManager::CloseChat()
   }
 
   sockman.CloseSocket(chatServer.Descriptor(), false, false);
-
-  // Close the chat thread
-  if (pipe_thread[PIPE_WRITE] != -1)
-  {
-    write(pipe_thread[PIPE_WRITE], "X", 1);
-    pthread_join(thread_chat, NULL);
-
-    close(pipe_thread[PIPE_READ]);
-    close(pipe_thread[PIPE_WRITE]);
-
-    pipe_thread[PIPE_READ] = pipe_thread[PIPE_WRITE] = -1;
-  }
 }
 
 
