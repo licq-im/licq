@@ -1183,6 +1183,8 @@ void CMainWindow::updateGroups()
   mnuUserGroups->insertItem(tr("Invisible List"));
   cmbUserGroups->insertItem(tr("Ignore List"));
   mnuUserGroups->insertItem(tr("Ignore List"));
+  cmbUserGroups->insertItem(tr("New Users"));
+  mnuUserGroups->insertItem(tr("New Users"));
 
   int index = m_nCurrentGroup;
   if (m_nGroupType == GROUPS_SYSTEM)
@@ -2531,11 +2533,11 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
    mnuUser->insertSeparator();
-   mnuUser->insertItem(tr("New User"), mnuUserNewUser);
    mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
    mnuUser->insertItem(tr("Invisible List"), mnuUserInvisibleList);
    mnuUser->insertItem(tr("Visible List"), mnuUserVisibleList);
    mnuUser->insertItem(tr("Ignore List"), mnuUserIgnoreList);
+   mnuUser->insertItem(tr("New User"), mnuUserNewUser);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Remove"), mnuRemove);
    mnuUser->insertItem(tr("Add To Group"), mnuGroup);
@@ -2575,11 +2577,11 @@ void CMainWindow::slot_usermenu()
     mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
 
-  mnuUser->setItemChecked(mnuUserNewUser, u->NewUser());
   mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
   mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
   mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
   mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
+  mnuUser->setItemChecked(mnuUserNewUser, u->NewUser());
   // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
   mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
   mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());

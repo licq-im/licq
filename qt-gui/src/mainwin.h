@@ -69,8 +69,8 @@ public:
   QPopupMenu *UserMenu() { return mnuUser; }
   void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
 
-  static QPixmap& iconForStatus(unsigned long FullStatus);
-  static QPixmap& iconForEvent(unsigned short SubCommand);
+  static QPixmap &iconForStatus(unsigned long FullStatus);
+  static QPixmap &iconForEvent(unsigned short SubCommand);
 
   // global configuration data
   // Toggles
@@ -175,6 +175,7 @@ protected:
 friend class WharfIcon;
 friend class IconManager_Default;
 friend class OptionsDlg;
+friend class CUserViewItem;
 //friend class UserViewEvent;
 //friend class UserEventCommon;
 //friend class UserSendCommon;

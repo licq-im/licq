@@ -188,7 +188,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
        (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT)))
      v->msgTimerId = v->startTimer(FLASH_TIME);
 
-   if (u->NewUser())
+   if (u->NewUser() &&
+       !(gMainWindow->m_nGroupType == GROUPS_SYSTEM && gMainWindow->m_nCurrentGroup == GROUP_NEW_USERS) )
       m_cFore = s_cNew;
 
    m_cBack = s_cBack;
