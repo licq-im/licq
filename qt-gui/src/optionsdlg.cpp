@@ -724,7 +724,7 @@ QWidget* OptionsDlg::new_status_options()
   edtSARtext = new MLEditWrap(true, gbStatus);
   l->addWidget(edtSARtext);
   // ICQ99b allows 37 chars per line, so we do the same
-  edtSARtext->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
+  edtSARtext->setWordWrap(QMultiLineEditNew::FixedColumnWidth);
   edtSARtext->setWrapColumnOrWidth(37);
 
   QPushButton* btnSaveIt = new QPushButton(tr("Save"), gbStatus);

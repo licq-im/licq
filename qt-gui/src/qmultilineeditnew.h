@@ -33,7 +33,12 @@
 #endif // QT_H
 
 struct QMultiLineData;
+class QMultiLineEditNewCommand;
 class QValidator;
+
+#if 0
+Q_OBJECT
+#endif
 
 class Q_EXPORT QMultiLineEditNew : public QTableView
 {
@@ -50,6 +55,7 @@ public:
     QSizePolicy sizePolicy() const;
 
     virtual void setFont( const QFont &font );
+
     virtual void insertLine( const QString &s, int line = -1 );
     virtual void insertAt( const QString &s, int line, int col, bool mark = FALSE );
     virtual void removeLine( int line );
@@ -88,36 +94,49 @@ public:
     int maxLines() const;
     virtual void setHMargin(int);
     int hMargin() const;
+
     virtual void setSelection( int row_from, int col_from, int row_to, int col_t );
 
-
-    // word wrap
-    enum Wrapping {
-	NoWrap = 0,
-	DynamicWrap = 1,
-	FixedWidthWrap = 2,
-	FixedColumnWrap = 3,
-	BreakWithinWords = 0x0100
+    enum WordWrap {
+	NoWrap,
+	WidgetWidth,
+	FixedPixelWidth,
+	FixedColumnWidth
     };
-
-    void setWordWrap( int mode );
-    int wordWrap() const;
+    void setWordWrap( WordWrap mode );
+    WordWrap wordWrap() const;
     void setWrapColumnOrWidth( int );
     int wrapColumnOrWidth() const;
+
+    enum WrapPolicy {
+	AtWhiteSpace,
+	Anywhere
+    };
+    void setWrapPolicy( WrapPolicy policy );
+    WrapPolicy wrapPolicy() const;
 
     bool autoUpdate()	const;
     virtual void setAutoUpdate( bool );
 
+    void setUndoEnabled( bool );
+    bool isUndoEnabled() const;
+    void setUndoDepth( int );
+    int undoDepth() const;
+
     bool isReadOnly() const;
     bool isOverwriteMode() const;
+
     QString text() const;
+
     int length() const;
 
-public slots:
     virtual void       setText( const QString &);
     virtual void       setReadOnly( bool );
     virtual void       setOverwriteMode( bool );
 
+    static void setDefaultTabStop( int ex );
+    static int defaultTabStop();
+public slots:
     void       clear();
     void       append( const QString &);
     void       deselect();
@@ -127,10 +146,14 @@ public slots:
     void       copy() const;
     void       cut();
     void       insert( const QString& );
+    void       undo();
+    void       redo();
 
 signals:
     void	textChanged();
     void	returnPressed();
+    void	undoAvailable( bool );
+    void	redoAvailable( bool );
 
 protected:
     void	paintCell( QPainter *, int row, int col );
@@ -173,12 +196,12 @@ protected:
     virtual void home( bool mark=FALSE );
     virtual void end( bool mark=FALSE );
 
-    bool	getMarkedRegion( int *line1, int *col1,
-				 int *line2, int *col2 ) const;
-    int		lineLength( int row ) const;
-    QString	*getString( int row ) const;
-    bool		isEndOfParagraph( int row ) const;
-    QString     stringShown( int row ) const;
+    bool getMarkedRegion( int *line1, int *col1,
+			  int *line2, int *col2 ) const;
+    int lineLength( int row ) const;
+    QString *getString( int row ) const;
+    bool isEndOfParagraph( int row ) const;
+    QString stringShown( int row ) const;
 
 protected:
     bool	cursorOn;	
@@ -254,12 +277,22 @@ private:
     void	wrapLine( int line, int removed = 0);
     void	rebreakParagraph( int line, int removed = 0 );
     void	rebreakAll();
+    void	insertAtAux( const QString &s, int line, int col, bool mark = FALSE );
+    void	killLineAux();
+    void	delAux();
+    int	positionToOffsetInternal( int row, int col ) const;
+    void	offsetToPositionInternal( int position, int *row, int *col ) const;
+    void	deleteNextChar( int offset, int row, int col );
 
 private:	// Disabled copy constructor and operator=
 #if defined(Q_DISABLE_COPY)
     QMultiLineEditNew( const QMultiLineEditNew & );
     QMultiLineEditNew &operator=( const QMultiLineEditNew & );
 #endif
+
+    void addUndoCmd( QMultiLineEditNewCommand* );
+    void addRedoCmd( QMultiLineEditNewCommand* );
+    void processCmd( QMultiLineEditNewCommand*, bool );
 };
 
 inline bool QMultiLineEditNew::isReadOnly() const { return readOnly; }

@@ -9,7 +9,11 @@
 MLEditWrap::MLEditWrap (bool wordWrap, QWidget *parent, const char *name)
   : QMultiLineEditNew(parent, name)
 {
-  if (wordWrap) setWordWrap(DynamicWrap);
+  if (wordWrap)
+  {
+    setWordWrap(WidgetWidth);
+    setWrapPolicy(AtWhiteSpace);
+  }
 }
 
 

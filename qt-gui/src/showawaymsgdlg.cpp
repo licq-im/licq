@@ -42,7 +42,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
   mleAwayMsg = new MLEditWrap(true, this);
   // ICQ99b allows 37 chars per line, so we do the same
-  mleAwayMsg->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
+  mleAwayMsg->setWordWrap(QMultiLineEditNew::FixedColumnWidth);
   mleAwayMsg->setWrapColumnOrWidth(37);
   mleAwayMsg->setReadOnly(true);
   mleAwayMsg->setMinimumSize(230, 110);
@@ -92,7 +92,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
 
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
-  // nothing to do yet
   if (icqEventTag != NULL)
     delete icqEventTag;
 }
