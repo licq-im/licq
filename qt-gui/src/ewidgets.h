@@ -11,6 +11,7 @@
 #include "mledit.h"
 
 bool QueryUser(QWidget *, QString, QString, QString);
+int QueryUser(QWidget *, QString, QString, QString, QString);
 void InformUser(QWidget *q, QString);
 void WarnUser(QWidget *q, QString szInfo);
 

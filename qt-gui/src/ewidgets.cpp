@@ -15,7 +15,13 @@
 
 bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 {
-  return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2) == 0 );
+  return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2) == 0);
+}
+
+
+int QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, QString szBtn3)
+{
+  return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2, szBtn3));
 }
 
 
@@ -73,11 +79,13 @@ void CELabel::setNamedFgColor(char *theColor)
    if (!c.isValid()) return;
 
    QPalette pal(palette());
+#if 0
    QColorGroup normal(pal.normal());
    QColorGroup newNormal(c, normal.background(), normal.light(), normal.dark(),
                          normal.mid(), c, normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
-#if 0
+#endif
+
 #if QT_VERSION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Foreground, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Foreground, c);
@@ -87,7 +95,6 @@ void CELabel::setNamedFgColor(char *theColor)
 #endif
 
    setPalette(pal);
-#endif
 }
 
 
