@@ -502,7 +502,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 		NULL,
 		gtk_editable_get_chars(GTK_EDITABLE(iu->address), 0, -1),
 		NULL,
-		atol(gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1)),
+		gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
 		0, FALSE);
 	}
 
