@@ -3425,7 +3425,7 @@ void CMainWindow::slot_stats()
 
 void CMainWindow::showSearchUserDlg()
 {
-  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan, this);
+  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan);
   searchUserDlg->show();
 }
 

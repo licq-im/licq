@@ -124,9 +124,8 @@ unsigned long SearchItem::uin()
 
 // -----------------------------------------------------------------------------
 
-SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
-                             QWidget *parent)
-  : QWidget(parent, "SearchUserDialog", WDestructiveClose)
+SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan)
+  : QWidget(NULL, "SearchUserDialog", WDestructiveClose)
 {
   server = s;
   sigman = theSigMan;

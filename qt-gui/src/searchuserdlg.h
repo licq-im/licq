@@ -60,8 +60,7 @@ class SearchUserDlg : public QWidget
 {
    Q_OBJECT
 public:
-   SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan,
-                  QWidget *parent =0);
+   SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan);
    ~SearchUserDlg();
 
 private:
