@@ -45,7 +45,6 @@
 #endif
 
 #include "optionsdlg.h"
-#include "licq_translate.h"
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "mainwin.h"
