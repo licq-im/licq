@@ -722,12 +722,12 @@ void UserViewEvent::slot_btnRead2()
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         if (chatDlg->StartAsClient(c->Port()))
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
         if (chatDlg->StartAsServer())
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       break;
     }
@@ -740,7 +740,7 @@ void UserViewEvent::slot_btnRead2()
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
       CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
       if (fileDlg->ReceiveFiles())
-        server->icqFileTransferAccept(m_nUin, fileDlg->LocalPort(), f->Sequence(), false);
+        server->icqFileTransferAccept(m_nUin, fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect());
       break;
     }
 
@@ -774,10 +774,11 @@ void UserViewEvent::slot_btnRead3()
       if (r->exec())
       {
         m_xCurrentReadEvent->SetPending(false);
+        CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
         server->icqChatRequestRefuse(m_nUin, codec->fromUnicode(r->RefuseMessage()),
-           m_xCurrentReadEvent->Sequence());
+           m_xCurrentReadEvent->Sequence(), c->MessageID(), c->IsDirect());
       }
       delete r;
       break;
@@ -789,10 +790,11 @@ void UserViewEvent::slot_btnRead3()
       if (r->exec())
       {
         m_xCurrentReadEvent->SetPending(false);
+        CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
         server->icqFileTransferRefuse(m_nUin, codec->fromUnicode(r->RefuseMessage()),
-           m_xCurrentReadEvent->Sequence());
+           m_xCurrentReadEvent->Sequence(), f->MessageID(), f->IsDirect());
       }
       delete r;
       break;
@@ -822,14 +824,14 @@ void UserViewEvent::slot_btnRead4()
       {
         ChatDlg *chatDlg = new ChatDlg(m_nUin, server, mainwin);
         if (chatDlg->StartAsClient(c->Port()))
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
         ChatDlg *chatDlg = NULL;
         CJoinChatDlg *j = new CJoinChatDlg(this);
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence());
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }
       break;
@@ -1683,7 +1685,7 @@ void UserSendFileEvent::sendButton()
   icqEventTag = server->icqFileTransfer(m_nUin, codec->fromUnicode(edtItem->text()),
      codec->fromUnicode(mleSend->text()),
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-     chkSendServer->isChecked() ? true : false);
+     chkSendServer->isChecked());
 
   UserSendCommon::sendButton();
 }
