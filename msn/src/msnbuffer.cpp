@@ -54,13 +54,12 @@ bool CMSNBuffer::ParseHeaders()
 {
   char ctmp = 0;
   int counter = 0;
-
   string stmp = "", strHeader, strData;
-  if (m_lHeader.size() > 0)
-    ClearHeaders();
-  
   struct SHeader *pHeader = 0;
   
+  if (m_lHeader.size() > 0)
+    ClearHeaders();
+
   while (!End())
   {
     *this >> ctmp;
@@ -93,7 +92,6 @@ bool CMSNBuffer::ParseHeaders()
     *this >> ctmp; // skip ':'
     
     strHeader = stmp;
-    
     // Skip whitespace
     while (ctmp == ' ' && ctmp != 0) *this >> ctmp;
     
@@ -167,16 +165,27 @@ void CMSNBuffer::SkipParameter()
   char cCheck;
   *this >> cCheck;
   
-  if (cCheck == ' ')
+  if (isspace(cCheck))
   {
     // Leading space to next paramater
-    while (cCheck == ' ' && !End())
+    while (isspace(cCheck) && !End())
       *this >> cCheck;
   }
   
   // Now skip the paramater
-  while (cCheck != ' ' && !End())
+  while (!isspace(cCheck) && !End())
     *this>> cCheck;
+}
+
+void CMSNBuffer::SkipRN()
+{
+  char cCheck;
+  *this >> cCheck;
+  
+  while ((cCheck == '\r' || cCheck == '\n') && !End())
+    *this >> cCheck;
+
+  setDataPosRead(getDataPosRead() - 1);
 }
 
 string CMSNBuffer::GetParameter()
@@ -203,6 +212,19 @@ string CMSNBuffer::GetParameter()
   return strParam;
 }
 
+unsigned short CMSNBuffer::GetParameterUnsignedShort()
+{
+  string strValue = GetParameter();
+  unsigned short nValue = (unsigned short)atoi(strValue.c_str());
+  return nValue;
+}
+
+unsigned long CMSNBuffer::GetParameterUnsignedLong()
+{
+  string strValue = GetParameter();
+  unsigned long nValue = strtoul(strValue.c_str(), (char **)NULL, 10);
+  return nValue;
+}
 void CMSNBuffer::SkipPacket()
 {
   char cCheck = 0;

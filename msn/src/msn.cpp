@@ -72,6 +72,7 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_szUserName = 0;
   m_szPassword = 0;
+  m_nSessionStart = 0;
   
   // Config file
   char szFileName[MAX_FILENAME_LEN];

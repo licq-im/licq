@@ -51,7 +51,10 @@ public:
   void ClearHeaders();
   
   void SkipParameter();
+  void SkipRN();
   string GetParameter();
+  unsigned short GetParameterUnsignedShort();
+  unsigned long GetParameterUnsignedLong();
   void SkipPacket();
   
 private:

@@ -45,6 +45,7 @@
 #include <ctype.h>
 
 #ifdef USE_KDE
+#include <kapp.h>
 #include <kfiledialog.h>
 #include <kcolordialog.h>
 #else
@@ -958,6 +959,11 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
           btnRead1->setText(tr("A&dd User"));
         break;
       }
+      case ICQ_CMDxSUB_EMAILxALERT:
+      {
+        btnRead1->setText(tr("&View Email"));
+        break;
+      }
     } // switch
   }  // if
 
@@ -1085,6 +1091,54 @@ void UserViewEvent::slot_btnRead1()
         gUserManager.DropUser(u);
       }
       btnRead1->setEnabled(false);
+      break;
+    }
+
+    case ICQ_CMDxSUB_EMAILxALERT:
+    {
+      //XXX For now assume MSN protocol, will need to be fixed soon.
+      CEventEmailAlert *p = (CEventEmailAlert *)m_xCurrentReadEvent;
+      
+      // Create the HTML 
+      QString url = BASE_DIR;
+      url += ".msn_email";
+      
+      QString strUser = p->To();
+      QString strHTML = QString("<html><head><noscript><meta http-equiv=Refresh content=\"0; url=http://www.hotmail.com\">"
+                     "</noscript></head><body onload=\"document.pform.submit(); \"><form name=\"pform\" action=\""
+                     "%1\" method=\"POST\"><input type=\"hidden\" name=\"mode\" value=\"ttl\">"
+                     "<input type=\"hidden\" name=\"login\" value=\"%2\"><input type=\"hidden\" name=\"username\""
+                     "value=\"%3\"><input type=\"hidden\" name=\"sid\" value=\"%4\"><input type=\"hidden\" name=\"kv\" value=\""
+                     "%5\"><input type=\"hidden\" name=\"id\" value=\"%6\"><input type=\"hidden\" name=\"sl\" value=\"9\"><input "
+                     "type=\"hidden\" name=\"rru\" value=\"%7\"><input type=\"hidden\" name=\"auth\" value=\"%8\""
+                     "><input type=\"hidden\" name=\"creds\" value=\"%9\"><input type=\"hidden\" name=\"svc\" value=\"mail\">"
+                      "<input type=\"hidden\" name=\"js\"value=\"yes\"></form></body></html>")
+                        .arg(p->PostURL())
+                        .arg(strUser.left(strUser.find("@")))
+                        .arg(strUser)
+                        .arg(p->SID())
+                        .arg(p->KV())
+                        .arg(p->Id())
+                        .arg(p->MsgURL())
+                        .arg(p->MSPAuth())
+                        .arg((char *)p->Creds());
+      QFile fileHTML(url);
+      fileHTML.open(IO_WriteOnly);
+      fileHTML.writeBlock(strHTML, strHTML.length());
+      fileHTML.close();
+#ifdef USE_KDE
+      KApplication* app = static_cast<KApplication*>(qApp);
+      // If no URL viewer is set, use KDE default
+      if (mainwin->licqDaemon && (!mainwin->licqDaemon->getUrlViewer()))
+        app->invokeBrowser(url);
+      else
+#endif
+      {
+        if (mainwin->licqDaemon == NULL)
+          WarnUser(this, tr("Licq is unable to find a browser application due to an internal error."));
+        else if (!mainwin->licqDaemon->ViewUrl(url.local8Bit().data()))
+          WarnUser(this, tr("Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."));
+      }
     }
   } // switch
 }

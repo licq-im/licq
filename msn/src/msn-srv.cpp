@@ -319,6 +319,68 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       
       MSNSBConnectAnswer(strServer, strSessionID, strCookie, strUser);
     }
+    else if (strCmd == "MSG")
+    {
+      m_pPacketBuf->SkipParameter(); // 'Hotmail'
+      m_pPacketBuf->SkipParameter(); // 'Hotmail' again
+      m_pPacketBuf->SkipParameter(); // size
+      m_pPacketBuf->SkipRN(); // Skip \r\n
+      m_pPacketBuf->ParseHeaders();
+      
+      string strType = m_pPacketBuf->GetValue("Content-Type");
+      
+      if (strType.find("text/x-msmsgsprofile") != string::npos)
+      {
+        m_strMSPAuth = m_pPacketBuf->GetValue("MSPAuth");
+        m_strSID = m_pPacketBuf->GetValue("sid");
+        m_strKV = m_pPacketBuf->GetValue("kv");
+        m_nSessionStart = time(0);
+      }
+      else if (strType.find("text/x-msmsgsinitialemailnotification") != string::npos)
+      {
+        // Email alert when we sign in
+        
+        // Get the next part..
+        m_pPacketBuf->SkipRN();
+        m_pPacketBuf->ParseHeaders();
+      }
+      else if (strType.find("text/x-msmsgsemailnotification") != string::npos)
+      {
+        // Email we get while signed in
+        
+        // Get the next part..
+        m_pPacketBuf->SkipRN();
+        m_pPacketBuf->ParseHeaders();
+        
+        string strFrom = m_pPacketBuf->GetValue("From");
+        string strFromAddr = m_pPacketBuf->GetValue("From-Addr");
+        string strSubject = m_pPacketBuf->GetValue("Subject");
+        
+        string strToHash = m_strMSPAuth + "9" + m_szPassword;
+        unsigned char szDigest[16];
+        char szHexOut[32];
+        MD5((const unsigned char *)strToHash.c_str(), strToHash.size(), szDigest);
+        for (int i = 0; i < 16; i++)
+          sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
+    
+        gLog.Info("%sNew email from %s (%s)\n", L_MSNxSTR, strFrom.c_str(), strFromAddr.c_str());
+        CEventEmailAlert *pEmailAlert = new CEventEmailAlert(strFrom.c_str(), m_szUserName,
+          strFromAddr.c_str(), strSubject.c_str(), time(0), m_strMSPAuth.c_str(), m_strSID.c_str(),
+          m_strKV.c_str(), m_pPacketBuf->GetValue("id").c_str(),
+          m_pPacketBuf->GetValue("Post-URL").c_str(), m_pPacketBuf->GetValue("Message-URL").c_str(),
+          szHexOut, m_nSessionStart);
+          
+        ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
+        if (m_pDaemon->AddUserEvent(o, pEmailAlert))
+        {
+          gUserManager.DropOwner(MSN_PPID);
+          pEmailAlert->AddToHistory(NULL, D_RECEIVER);
+          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+        }
+        else
+          gUserManager.DropOwner(MSN_PPID);
+      }
+    }
     
     // Get the next packet
     m_pPacketBuf->SkipPacket();

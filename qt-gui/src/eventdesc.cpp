@@ -42,7 +42,9 @@ static const char *szEventTypes[27] =
 QString EventDescription(CUserEvent *e)
 {
   QString desc;
-  if (e->SubCommand() > MAX_EVENT ||
+  if (e->SubCommand() == ICQ_CMDxSUB_EMAILxALERT)
+    desc = "New Email Alert";
+  else if (e->SubCommand() > MAX_EVENT ||
       szEventTypes[e->SubCommand()][0] == '\0')
     desc = qApp->translate("Event", "Unknown Event");
   else

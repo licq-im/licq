@@ -133,8 +133,12 @@ private:
   StartList m_lStart;
   
   // Server variables
-  unsigned long m_nStatus;
-
+  unsigned long m_nStatus,
+                m_nSessionStart;
+  string m_strMSPAuth,
+         m_strSID,
+         m_strKV;
+         
   pthread_t m_tMSNPing;
   
   char *m_szUserName,

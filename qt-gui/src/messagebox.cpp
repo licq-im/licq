@@ -92,6 +92,10 @@ void MsgViewItem::SetEventLine()
       text = m_codec->toUnicode(((CEventFile *)msg)->Filename());
       break;
 
+    case ICQ_CMDxSUB_EMAILxALERT:
+      text = m_codec->toUnicode(((CEventEmailAlert *)msg)->From());
+      break;
+
     default:
       break;
   }
