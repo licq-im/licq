@@ -178,7 +178,6 @@ void ICQFunctions::CreateReadEventTab()
   //p->addSpacing(5);
   QWidget *dummy = new QWidget(fcnTab[TAB_READ]);
   dummy->setMinimumHeight(5);
-  //dummy->hide();
 
   QHBox *h = new QHBox(fcnTab[TAB_READ]);
   h->setSpacing(10);
@@ -283,17 +282,17 @@ void ICQFunctions::CreateGeneralInfoTab()
   lay->addWidget(nfoIp, CR, 4);
 
   lay->addWidget(new QLabel(tr("Name:"), p), ++CR, 0);
-  nfoFirstName = new CInfoField(p, !m_bOwner);
+  nfoFirstName = new CInfoField(p, false);
   lay->addWidget(nfoFirstName, CR, 1);
-  nfoLastName = new CInfoField(p, !m_bOwner);
+  nfoLastName = new CInfoField(p, false);
   lay->addMultiCellWidget(nfoLastName, CR, CR, 2, 4);
 
   lay->addWidget(new QLabel(tr("EMail 1:"), p), ++CR, 0);
-  nfoEmail1 = new CInfoField(p, !m_bOwner);
+  nfoEmail1 = new CInfoField(p, false);
   lay->addMultiCellWidget(nfoEmail1, CR, CR, 1, 4);
 
   lay->addWidget(new QLabel(tr("EMail 2:"), p), ++CR, 0);
-  nfoEmail2 = new CInfoField(p, !m_bOwner);
+  nfoEmail2 = new CInfoField(p, false);
   lay->addMultiCellWidget(nfoEmail2, CR, CR, 1, 4);
 
   lay->addWidget(new QLabel(tr("State:"), p), ++CR, 0);
@@ -895,8 +894,6 @@ void ICQFunctions::tabSelected(const QString &tab)
   else if (tab == tabLabel[TAB_READ])
   {
      btnOk->setText(tr("Ok"));
-     //btnSave->setText(tr("&Quote"));
-     //m_bOwner ? btnSave->hide() : btnSave->show();
      btnSave->hide();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
@@ -1023,49 +1020,58 @@ void ICQFunctions::printMessage(QListViewItem *e)
   {
     switch (m->SubCommand())
     {
-    case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-      (void) new CChatAcceptDlg(server, m_nUin, m->Sequence());
-      //btnRead1->setText(tr("Accept"));
-      //btnRead2->setText(tr("Refuse"));
-      break;
+      case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
+        (void) new CChatAcceptDlg(server, m_nUin, m->Sequence());
+        btnRead1->setText(tr("Accept"));
+        btnRead2->setText(tr("Refuse"));
+        break;
 
-    case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-      (void) new CFileAcceptDlg(server, m_nUin, (CEventFile *)m);
-      //btnRead1->setText(tr("Accept"));
-      //btnRead2->setText(tr("Refuse"));
-      break;
+      case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
+        (void) new CFileAcceptDlg(server, m_nUin, (CEventFile *)m);
+        btnRead1->setText(tr("Accept"));
+        btnRead2->setText(tr("Refuse"));
+        break;
 
-    case ICQ_CMDxSUB_MSG:
-      btnRead1->setText(tr("Quote"));
-      btnRead2->setText(tr("Forward"));
-      break;
+      case ICQ_CMDxSUB_MSG:
+        btnRead1->setText(tr("Quote"));
+        btnRead2->setText(tr("Forward"));
+        break;
 
-    case ICQ_CMDxSUB_URL:   // view a url
-      btnRead1->setText(tr("Quote"));
-      btnRead2->setText(tr("Forward"));
-      if (server->getUrlViewer() != NULL)
-        btnRead3->setText(tr("View"));
-      break;
+      case ICQ_CMDxSUB_URL:   // view a url
+        btnRead1->setText(tr("Quote"));
+        btnRead2->setText(tr("Forward"));
+        if (server->getUrlViewer() != NULL)
+          btnRead3->setText(tr("View"));
+        break;
 
-    case ICQ_CMDxSUB_REQxAUTH:
-    {
-      btnRead1->setText(tr("Authorize"));
-      ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
-      if (u == NULL)
-        btnRead2->setText(tr("Add User"));
-      else
-        gUserManager.DropUser(u);
-      break;
-    }
-    case ICQ_CMDxSUB_AUTHORIZED:
-    {
-      ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
-      if (u == NULL)
-        btnRead1->setText(tr("Add User"));
-      else
-        gUserManager.DropUser(u);
-      break;
-    }
+      case ICQ_CMDxSUB_REQxAUTH:
+      {
+        btnRead1->setText(tr("Authorize"));
+        ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+        if (u == NULL)
+          btnRead2->setText(tr("Add User"));
+        else
+          gUserManager.DropUser(u);
+        break;
+      }
+      case ICQ_CMDxSUB_AUTHORIZED:
+      {
+        ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+        if (u == NULL)
+          btnRead1->setText(tr("Add User"));
+        else
+          gUserManager.DropUser(u);
+        break;
+      }
+      case ICQ_CMDxSUB_ADDEDxTOxLIST:
+      {
+        ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+        if (u == NULL)
+          btnRead1->setText(tr("Add User"));
+        else
+          gUserManager.DropUser(u);
+        break;
+      }
     } // switch
   }  // if
 
@@ -1114,6 +1120,10 @@ void ICQFunctions::slot_readbtn1()
 
     case ICQ_CMDxSUB_AUTHORIZED:
       server->AddUserToList( ((CEventAuth *)m_xCurrentReadEvent)->Uin());
+      break;
+
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+      server->AddUserToList( ((CEventAdded *)m_xCurrentReadEvent)->Uin());
       break;
   } // switch
 
