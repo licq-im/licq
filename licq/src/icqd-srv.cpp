@@ -1653,6 +1653,15 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     break;
   }
 
+	case ICQ_SNACxSUB_PAUSE:
+	{
+		// Server is going to disconnect/pause (maintainance?)
+		// lets change servers and reconnect.
+		gLog.Info("%sServer is going to disconnect/pause. Lets reconnect to another one.\n", L_SRVxSTR);
+		icqRelogon(true);
+		break;
+	}
+
   default:
     gLog.Warn("%sUnknown Service Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
     break;
