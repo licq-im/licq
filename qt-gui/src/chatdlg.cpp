@@ -829,14 +829,31 @@ void CChatWindow::keyPressEvent (QKeyEvent *e)
 
 // -----------------------------------------------------------------------------
 
+void CChatWindow::mousePressEvent( QMouseEvent * )
+{
+  // a user might not change the cursor position
+  // and marking / cutting away text is not allowed
+
+  // so ignore the event.
+}
+
+void CChatWindow::mouseMoveEvent( QMouseEvent*)
+{
+  // ignore it
+}
+
+void CChatWindow::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( e->button() == MidButton && !isReadOnly() )
+    paste();
+}
+
+// -----------------------------------------------------------------------------
+
 void CChatWindow::paste()
 {
-#if 0
   QString t = QApplication::clipboard()->text();
-
   QApplication::clipboard()->clear();
-
-  QMultiLineEdit::paste();
 
   if ( !t.isEmpty() ) {
 
@@ -846,12 +863,11 @@ void CChatWindow::paste()
     }
 
     for(int i=0; (unsigned) i<t.length(); i++) {
-      QKeyEvent press(QEvent::KeyPress, 0, t[i].latin1(), 0, QString(t[i]));
+      QKeyEvent press(QEvent::KeyPress, t[i].latin1() == '\n' ? Key_Enter : 0, t[i].latin1(), 0, QString(t[i]));
 
       keyPressEvent(&press);
     }
   }
-#endif
 }
 
 
