@@ -3757,6 +3757,234 @@ msgstr ""
 "Средняя кнопка - Показать следующее сообщение\n"
 "Правая кнопка - Системное меню\n"
 
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
+msgstr "%1\nФайл не найден.\nПроверьте путь и имя файла."
+
+#: dialogs/qfiledialog.cpp:3252
+msgid "QFileDialog::&Delete"
+msgstr "Удалить"
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&No"
+msgstr "Нет"
+
+#: dialogs/qfiledialog.cpp:3247
+msgid "QFileDialog::&Open"
+msgstr "Открыть"
+
+#: dialogs/qfiledialog.cpp:3251
+msgid "QFileDialog::&Rename"
+msgstr "Переименовать"
+
+#: dialogs/qfiledialog.cpp:3246
+msgid "QFileDialog::&Save"
+msgstr "Сохранить"
+
+#: dialogs/qfiledialog.cpp:3285
+msgid "QFileDialog::&Unsorted"
+msgstr "Без сортировки"
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&Yes"
+msgstr "Да"
+
+#: dialogs/qfiledialog.cpp:3342
+msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
+msgstr "<qt>Вы действительно хотите удалить %1 \"%2\"?</qt>"
+
+#: dialogs/qfiledialog.cpp:1904
+msgid "QFileDialog::All files (*)"
+msgstr "Все файлы (*)"
+
+#: dialogs/qfiledialog.cpp:1967
+msgid "QFileDialog::Attributes"
+msgstr "Атрибуты"
+
+#: dialogs/qfiledialog.cpp:2053
+msgid "QFileDialog::Back"
+msgstr "Назад"
+
+#: dialogs/qfiledialog.cpp:2007
+msgid "QFileDialog::Cancel"
+msgstr "Отменить"
+
+#: dialogs/qfiledialog.cpp:2079
+msgid "QFileDialog::Create New Folder"
+msgstr "Создать новый каталог"
+
+#: dialogs/qfiledialog.cpp:1966
+msgid "QFileDialog::Date"
+msgstr "Дата"
+
+#: dialogs/qfiledialog.cpp:3341
+msgid "QFileDialog::Delete %1"
+msgstr "Удалить %1"
+
+#: dialogs/qfiledialog.cpp:2109
+msgid "QFileDialog::Detail View"
+msgstr "Подробно"
+
+#: dialogs/qfiledialog.cpp:2235
+msgid "QFileDialog::Dir"
+msgstr "Каталог"
+
+#: dialogs/qfiledialog.cpp:3442
+msgid "QFileDialog::Directories"
+msgstr "Каталоги"
+
+#: dialogs/qfiledialog.cpp:4388
+msgid "QFileDialog::ERROR"
+msgstr "ОШИБКА"
+
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::Error"
+msgstr "Ошибка"
+
+#: dialogs/qfiledialog.cpp:2042
+msgid "QFileDialog::File &name:"
+msgstr "Имя файла:"
+
+#: dialogs/qfiledialog.cpp:2043
+msgid "QFileDialog::File &type:"
+msgstr "Тип файла:"
+
+#: dialogs/qfiledialog.cpp:2234
+msgid "QFileDialog::File"
+msgstr "Файл"
+
+#: dialogs/qfiledialog.cpp:3437
+msgid "QFileDialog::Find Directory"
+msgstr "Найти каталог"
+
+#: dialogs/qfiledialog.cpp:2229
+msgid "QFileDialog::Inaccessible"
+msgstr "Недоступен"
+
+#: dialogs/qfiledialog.cpp:2099
+msgid "QFileDialog::List View"
+msgstr "Список"
+
+#: dialogs/qfiledialog.cpp:2041
+msgid "QFileDialog::Look &in:"
+msgstr "Смотреть в:"
+
+#: dialogs/qfiledialog.cpp:1962
+msgid "QFileDialog::Name"
+msgstr "Имя"
+
+#: dialogs/qfiledialog.cpp:3390
+msgid "QFileDialog::New Folder %1"
+msgstr "Новый каталог %1"
+
+#: dialogs/qfiledialog.cpp:3380
+msgid "QFileDialog::New Folder 1"
+msgstr "Новый каталог 1"
+
+#: dialogs/qfiledialog.cpp:3385
+msgid "QFileDialog::New Folder"
+msgstr "Новый каталог"
+
+#: dialogs/qfiledialog.cpp:2003
+msgid "QFileDialog::OK"
+msgstr "Да"
+
+#: dialogs/qfiledialog.cpp:2068
+msgid "QFileDialog::One directory up"
+msgstr "На один каталог вверх"
+
+#: dialogs/qfiledialog.cpp:4249
+msgid "QFileDialog::Open"
+msgstr "Открыть"
+
+#: dialogs/qfiledialog.cpp:2131
+msgid "QFileDialog::Preview File Contents"
+msgstr "Предварительный просмотр содержания"
+
+#: dialogs/qfiledialog.cpp:2120
+msgid "QFileDialog::Preview File Info"
+msgstr "Предварительный просмотр информации"
+
+#: dialogs/qfiledialog.cpp:3276
+msgid "QFileDialog::R&eload"
+msgstr "Перегрузить"
+
+#: dialogs/qfiledialog.cpp:2227
+msgid "QFileDialog::Read-only"
+msgstr "Только для чтения"
+
+#: dialogs/qfiledialog.cpp:2226
+msgid "QFileDialog::Read-write"
+msgstr "Чтение-запись"
+
+#: dialogs/qfiledialog.cpp:2699
+msgid "QFileDialog::Save as"
+msgstr "Сохранить как"
+
+#: dialogs/qfiledialog.cpp:3536
+msgid "QFileDialog::Save"
+msgstr "Сохранить"
+
+#: dialogs/qfiledialog.cpp:3304
+msgid "QFileDialog::Show &hidden files"
+msgstr "Показывать скрытые файлы"
+
+#: dialogs/qfiledialog.cpp:1963
+msgid "QFileDialog::Size"
+msgstr "Размер"
+
+#: dialogs/qfiledialog.cpp:3283
+msgid "QFileDialog::Sort by &Date"
+msgstr "Сортировать по дате"
+
+#: dialogs/qfiledialog.cpp:3280
+msgid "QFileDialog::Sort by &Name"
+msgstr "Сортировать по имени"
+
+#: dialogs/qfiledialog.cpp:3282
+msgid "QFileDialog::Sort by &Size"
+msgstr "Сортировать по размеру"
+
+#: dialogs/qfiledialog.cpp:3300
+msgid "QFileDialog::Sort"
+msgstr "Сортировка"
+
+#: dialogs/qfiledialog.cpp:2236
+msgid "QFileDialog::Special"
+msgstr "Специальный файл"
+
+#: dialogs/qfiledialog.cpp:2232
+msgid "QFileDialog::Symlink to Directory"
+msgstr "Ссылка на каталог"
+
+#: dialogs/qfiledialog.cpp:2231
+msgid "QFileDialog::Symlink to File"
+msgstr "Ссылка на файл"
+
+#: dialogs/qfiledialog.cpp:2233
+msgid "QFileDialog::Symlink to Special"
+msgstr "Ссылка на специальный файл"
+
+#: dialogs/qfiledialog.cpp:1965
+msgid "QFileDialog::Type"
+msgstr "Тип"
+
+#: dialogs/qfiledialog.cpp:2228
+msgid "QFileDialog::Write-only"
+msgstr "Только для записи"
+
+#: dialogs/qfiledialog.cpp:3336
+msgid "QFileDialog::the directory"
+msgstr "каталог"
+
+#: dialogs/qfiledialog.cpp:3334
+msgid "QFileDialog::the file"
+msgstr "файл"
+
+#: dialogs/qfiledialog.cpp:3338
+msgid "QFileDialog::the symlink"
+msgstr "ссылку"
+
 #: dialogs/qfontdialog.cpp:121
 msgid "QFontDialog::&Color"
 msgstr "Цвет"

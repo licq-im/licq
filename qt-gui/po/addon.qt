@@ -1,3 +1,231 @@
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3252
+msgid "QFileDialog::&Delete"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&No"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3247
+msgid "QFileDialog::&Open"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3251
+msgid "QFileDialog::&Rename"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3246
+msgid "QFileDialog::&Save"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3285
+msgid "QFileDialog::&Unsorted"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&Yes"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3342
+msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:1904
+msgid "QFileDialog::All files (*)"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:1967
+msgid "QFileDialog::Attributes"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2053
+msgid "QFileDialog::Back"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2007
+msgid "QFileDialog::Cancel"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2079
+msgid "QFileDialog::Create New Folder"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:1966
+msgid "QFileDialog::Date"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3341
+msgid "QFileDialog::Delete %1"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2109
+msgid "QFileDialog::Detail View"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2235
+msgid "QFileDialog::Dir"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3442
+msgid "QFileDialog::Directories"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:4388
+msgid "QFileDialog::ERROR"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::Error"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2042
+msgid "QFileDialog::File &name:"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2043
+msgid "QFileDialog::File &type:"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2234
+msgid "QFileDialog::File"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3437
+msgid "QFileDialog::Find Directory"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2229
+msgid "QFileDialog::Inaccessible"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2099
+msgid "QFileDialog::List View"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2041
+msgid "QFileDialog::Look &in:"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:1962
+msgid "QFileDialog::Name"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3390
+msgid "QFileDialog::New Folder %1"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3380
+msgid "QFileDialog::New Folder 1"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3385
+msgid "QFileDialog::New Folder"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2003
+msgid "QFileDialog::OK"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2068
+msgid "QFileDialog::One directory up"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:4249
+msgid "QFileDialog::Open"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2131
+msgid "QFileDialog::Preview File Contents"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2120
+msgid "QFileDialog::Preview File Info"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3276
+msgid "QFileDialog::R&eload"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2227
+msgid "QFileDialog::Read-only"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2226
+msgid "QFileDialog::Read-write"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2699
+msgid "QFileDialog::Save as"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3536
+msgid "QFileDialog::Save"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3304
+msgid "QFileDialog::Show &hidden files"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:1963
+msgid "QFileDialog::Size"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3283
+msgid "QFileDialog::Sort by &Date"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3280
+msgid "QFileDialog::Sort by &Name"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3282
+msgid "QFileDialog::Sort by &Size"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3300
+msgid "QFileDialog::Sort"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2236
+msgid "QFileDialog::Special"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2232
+msgid "QFileDialog::Symlink to Directory"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2231
+msgid "QFileDialog::Symlink to File"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2233
+msgid "QFileDialog::Symlink to Special"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:1965
+msgid "QFileDialog::Type"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:2228
+msgid "QFileDialog::Write-only"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3336
+msgid "QFileDialog::the directory"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3334
+msgid "QFileDialog::the file"
+msgstr ""
+
+#: dialogs/qfiledialog.cpp:3338
+msgid "QFileDialog::the symlink"
+msgstr ""
+
 #: dialogs/qfontdialog.cpp:121
 msgid "QFontDialog::&Color"
 msgstr ""
