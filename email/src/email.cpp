@@ -16,7 +16,6 @@ extern int errno;
 #include "icqd.h"
 #include "file.h"
 #include "user.h"
-#include "event_data.h"
 #include "eventdesc.h"
 
 extern "C" { const char *LP_Version(void); }
@@ -257,7 +256,7 @@ void CLicqEmail::ProcessUserEvent(unsigned long nUin)
     if (!ForwardEvent(u, e)) break;
     // Erase the event
     u->ClearEvent(0);
-    gLog.Info("%sForwarded message from %s (%ld) to %s.\n", L_EMAILxSTR, u->getAlias(), nUin, m_szSMTPTo);
+    gLog.Info("%sForwarded message from %s (%ld) to %s.\n", L_EMAILxSTR, u->GetAlias(), nUin, m_szSMTPTo);
   }
 
   gUserManager.DropUser(u);
@@ -276,17 +275,17 @@ bool CLicqEmail::ForwardEvent(ICQUser *u, CUserEvent *e)
   // Fill in the strings
   if (!u->User())
   {
-    sprintf(szTo, "To: %s <%s>", u->getAlias(), m_szSMTPTo);
+    sprintf(szTo, "To: %s <%s>", u->GetAlias(), m_szSMTPTo);
     sprintf (szFrom, "From: ICQ System Message <support@mirabilis.com>");
     sprintf (szReplyTo, "Reply-To: Mirabilis <support@mirabilis.com>");
   }
   else
   {
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    sprintf(szTo, "To: %s <%s>", o->getAlias(), m_szSMTPTo);
+    sprintf(szTo, "To: %s <%s>", o->GetAlias(), m_szSMTPTo);
     gUserManager.DropOwner();
-    sprintf (szFrom, "From: \"%s\" <%ld@pager.mirabilis.com>", u->getAlias(), u->getUin());
-    sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->getFirstName(), u->getLastName(), u->getEmail());
+    sprintf (szFrom, "From: \"%s\" <%ld@pager.mirabilis.com>", u->GetAlias(), u->getUin());
+    sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmail1());
   }
   sprintf (szDate, "Date: %s", ctime(&t));
 
