@@ -147,5 +147,4 @@ void PasswordDlg::slot_doneUserFcn(ICQEvent *e)
   }
 }
 
-
-#include "moc/moc_passworddlg.h"
+#include "passworddlg.moc"

@@ -126,4 +126,4 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
   delete e;
 }
 
-#include "moc/moc_sigman.h"
+#include "sigman.moc"

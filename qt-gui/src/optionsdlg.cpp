@@ -847,4 +847,4 @@ QWidget* OptionsDlg::new_misc_options()
 
 // -----------------------------------------------------------------------------
 
-#include "moc/moc_optionsdlg.h"
+#include "optionsdlg.moc"

@@ -49,4 +49,4 @@ void MLEditWrap::keyPressEvent (QKeyEvent *e)
    QMultiLineEditNew::keyPressEvent(e);
 }
 
-#include "moc/moc_mledit.h"
+#include "mledit.moc"

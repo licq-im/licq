@@ -344,4 +344,4 @@ void SearchUserDlg::addUser()
   resetSearch();
 }
 
-#include "moc/moc_searchuserdlg.h"
+#include "searchuserdlg.moc"

@@ -174,4 +174,4 @@ void AwayMsgDlg::slot_selectMessage()
 
 // -----------------------------------------------------------------------------
 
-#include "moc/moc_awaymsgdlg.h"
+#include "awaymsgdlg.moc"

@@ -240,4 +240,4 @@ void EditGrpDlg::hide()
 }
 
 
-#include "moc/moc_editgrp.h"
+#include "editgrp.moc"

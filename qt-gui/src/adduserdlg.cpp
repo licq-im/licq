@@ -78,4 +78,4 @@ void AddUserDlg::ok()
    accept();
 }
 
-#include "moc/moc_adduserdlg.h"
+#include "adduserdlg.moc"

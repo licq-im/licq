@@ -94,5 +94,4 @@ void EditSkinDlg::slot_save()
 
 }
 
-
-#include "moc/moc_editskin.h"
+#include "editskin.moc"

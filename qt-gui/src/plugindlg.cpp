@@ -186,4 +186,4 @@ void PluginDlg::hide()
 }
 
 
-#include "moc/moc_plugindlg.h"
+#include "plugindlg.moc"

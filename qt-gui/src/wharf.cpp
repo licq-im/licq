@@ -310,4 +310,4 @@ void IconManager::paintEvent( QPaintEvent * )
   DrawIcon();
 }
 
-#include "moc/moc_wharf.h"
+#include "wharf.moc"

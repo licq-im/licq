@@ -138,5 +138,4 @@ void RegisterUserDlg::accept()
   }
 }
 
-
-#include "moc/moc_registeruser.h"
+#include "registeruser.moc"

@@ -246,4 +246,4 @@ void CUtilityDlg::slot_command()
   }
 }
 
-#include "moc/moc_utilitydlg.h"
+#include "utilitydlg.moc"

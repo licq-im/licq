@@ -95,4 +95,4 @@ void CFileAcceptDlg::ignore()
    delete this;
 }
 
-#include "moc/moc_fileacceptdlg.h"
+#include "fileacceptdlg.moc"

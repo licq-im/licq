@@ -85,4 +85,4 @@ void CChatAcceptDlg::ignore()
    delete this;
 }
 
-#include "moc/moc_chatacceptdlg.h"
+#include "chatacceptdlg.moc"

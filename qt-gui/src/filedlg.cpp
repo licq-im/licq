@@ -837,5 +837,4 @@ QString CFileDlg::encodeFSize(unsigned long size)
   return QString("%1.%2 %3").arg(size/10).arg(size%10).arg(unit);
 }
 
-
-#include "moc/moc_filedlg.h"
+#include "filedlg.moc"

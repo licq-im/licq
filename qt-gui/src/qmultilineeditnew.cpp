@@ -3865,4 +3865,3 @@ int QMultiLineEditNew::undoDepth() const
     return d->undodepth;
 }
 
-#include "moc/moc_qmultilineeditnew.h"

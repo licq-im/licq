@@ -71,4 +71,4 @@ void AuthUserDlg::ok()
   accept();
 }
 
-#include "moc/moc_authuserdlg.h"
+#include "authuserdlg.moc"

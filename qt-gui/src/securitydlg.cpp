@@ -154,4 +154,4 @@ void SecurityDlg::slot_doneUserFcn(ICQEvent *e)
 }
 
 
-#include "moc/moc_securitydlg.h"
+#include "securitydlg.moc"

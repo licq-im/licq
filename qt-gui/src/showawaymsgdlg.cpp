@@ -154,5 +154,4 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   }
 }
 
-
-#include "moc/moc_showawaymsgdlg.h"
+#include "showawaymsgdlg.moc"

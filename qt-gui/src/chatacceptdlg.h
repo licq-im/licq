@@ -1,6 +1,8 @@
 #ifndef CHATACCEPTDLG_H
 #define CHATACCEPTDLG_H
 
+#include <qwidget.h>
+
 class CICQDaemon;
 class MLEditWrap;
 

@@ -1,6 +1,8 @@
 #ifndef FILEACCEPTDLG_H
 #define FILEACCEPTDLG_H
 
+#include <qwidget.h>
+
 class CICQDaemon;
 class MLEditWrap;
 class CEventFile;

@@ -130,5 +130,4 @@ void SkinBrowserDlg::slot_editskin()
   (void) new EditSkinDlg(lstSkins->currentItem()->text(0));
 }
 
-
-#include "moc/moc_skinbrowser.h"
+#include "skinbrowser.moc"

@@ -1,10 +1,7 @@
 #ifndef PLUGINDLG_H
 #define PLUGINDLG_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include <qwidget.h>
 
 class QListView;
 class QListBox;

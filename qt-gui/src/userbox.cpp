@@ -743,5 +743,4 @@ void CUserViewTips::maybeTip(const QPoint& c)
   }
 }
 
-
-#include "moc/moc_userbox.h"
+#include "userbox.moc"

@@ -570,4 +570,4 @@ void ChatDlg::resizeEvent (QResizeEvent *)
    mleRemote->repaint();
 }
 
-#include "moc/moc_chatdlg.h"
+#include "chatdlg.moc"

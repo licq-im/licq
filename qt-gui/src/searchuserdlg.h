@@ -26,6 +26,7 @@
 
 class QTabWidget;
 class QCheckBox;
+class QLabel;
 class QLineEdit;
 
 class CICQDaemon;

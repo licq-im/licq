@@ -333,5 +333,4 @@ void CInfoField::setEnabled(bool _b)
   QLineEdit::setEnabled(_b);
 }
 
-
-#include "moc/moc_ewidgets.h"
+#include "ewidgets.moc"

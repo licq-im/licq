@@ -1700,4 +1700,4 @@ ICQFunctions::~ICQFunctions()
   delete icqEventTag;
 }
 
-#include "moc/moc_icqfunctions.h"
+#include "icqfunctions.moc"

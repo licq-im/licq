@@ -1908,4 +1908,4 @@ void CMainWindow::slot_register()
   connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
 }
 
-#include "moc/moc_mainwin.h"
+#include "mainwin.moc"

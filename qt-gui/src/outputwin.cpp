@@ -75,5 +75,4 @@ void CQtLogWindow::slot_log(int s)
   ClearLog();
 }
 
-
-#include "moc/moc_outputwin.h"
+#include "outputwin.moc"

@@ -1,10 +1,7 @@
 #ifndef EDITSKIN_H
 #define EDITSKIN_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include <qwidget.h>
 #include <qstring.h>
 
 class QMultiLineEdit;
