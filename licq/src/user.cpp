@@ -2070,13 +2070,6 @@ ICQOwner::ICQOwner()
 
   m_fConf.CloseFile();
 
-  if (strlen(Password()) > 8)
-  {
-    gLog.Error("%sPassword must be 8 characters or less.  Check %s.\n", L_ERRORxSTR, m_fConf.FileName());
-    m_bException = true;
-    return;
-  }
-
   sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   SetHistoryFile(filename);
 
