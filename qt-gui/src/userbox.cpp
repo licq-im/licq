@@ -60,7 +60,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewGroupItem* item)
   : QListViewItem(item)
 {
-  qDebug("inserting item %ld in %x", _cUser->Uin(), item);
+  qDebug("inserting item %ld in group %s", _cUser->Uin(), item->text(1).latin1());
 
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
@@ -470,7 +470,10 @@ CUserViewGroupItem::~CUserViewGroupItem()
 
 QString CUserViewGroupItem::key(int column, bool ascending) const
 {
-  return QString("1") +  QListViewItem::key(column, ascending);
+  if(column == 0)
+    return QString("1") +  QString::number(m_nId);
+  else
+    return QString("1") + QListViewItem::key(column, ascending);
 }
 
 void  CUserViewGroupItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
@@ -531,7 +534,7 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
 
   setRootIsDecorated(gMainWindow->m_bThreadView);
   setAllColumnsShowFocus (true);
-  setTreeStepSize(0);
+//  setTreeStepSize(0);
   setSorting(0);
 
   if (parent != NULL)

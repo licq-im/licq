@@ -297,7 +297,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
   licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
-  m_bThreadView = false;
+  licqConf.ReadBool("ManualNewUser", m_bManualNewUser, false);
+  licqConf.ReadBool("UseThreadView", m_bThreadView, false);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -957,12 +958,14 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           }
           i = static_cast<CUserViewGroupItem*>(i->nextSibling());
         }
+#if 0
         if(i != NULL) {
           if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) ||
                 !u->StatusOffline()) && (!u->IgnoreList()
                || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, i);
         }
+#endif
       }
       else if(u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
@@ -1934,7 +1937,9 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
+  licqConf.WriteBool("UseThreadView", m_bThreadView);
   licqConf.WriteBool("BoldOnMsg", m_bBoldOnMsg);
+  licqConf.WriteBool("ManualNewUser", m_bManualNewUser);
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);

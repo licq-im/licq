@@ -86,6 +86,7 @@ public:
        m_bShowDividers,
        m_bAutoRaise,
        m_bBoldOnMsg,
+       m_bManualNewUser,
        m_bThreadView;
 
   ColumnInfos colInfo;

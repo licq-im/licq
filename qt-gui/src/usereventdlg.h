@@ -88,7 +88,6 @@ protected slots:
 
 signals:
   void finished(unsigned long);
-  void updateUser(CICQSignal*);
 };
 
 
@@ -144,6 +143,7 @@ public:
 
 signals:
   void autoCloseNotify();
+  void updateUser(CICQSignal*);
 
 protected:
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;

@@ -160,6 +160,8 @@ void OptionsDlg::SetupOptions()
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
   chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
   chkBoldOnMsg->setChecked(mainwin->m_bBoldOnMsg);
+  chkManualNewUser->setChecked(mainwin->m_bManualNewUser);
+  chkUseThreadView->setChecked(mainwin->m_bThreadView);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   switch(mainwin->m_nDockMode)
   {
@@ -321,6 +323,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
   mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
+  mainwin->m_bManualNewUser = chkManualNewUser->isChecked();
+  mainwin->m_bThreadView = chkUseThreadView->isChecked();
   mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
                       chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
@@ -512,7 +516,10 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
   chkBoldOnMsg = new QCheckBox(tr("Bold Message Label on Incoming Msg"), boxMainWin);
   QWhatsThis::add(chkBoldOnMsg, tr("The message info label will be bold if there are incoming messages"));
-
+  chkManualNewUser = new QCheckBox(tr("Manual \"New User\" group handling"), boxMainWin);
+  QWhatsThis::add(chkManualNewUser, tr("If not checked, a user will be automatically "
+                                       "removed from \"New User\" group when you first"
+                                       "send an event to him"));
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
@@ -995,6 +1002,9 @@ QWidget* OptionsDlg::new_column_options()
   QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
   chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);
   QWhatsThis::add(chkFlashUrgent, tr("Only urgent events will flash"));
+  chkUseThreadView = new QCheckBox(tr("Use Group View"), boxUserWin);
+  QWhatsThis::add(chkUseThreadView, tr("Users will be arranged in groups for "
+                                       "contact list"));
   QHBox *hlay = new QHBox(boxUserWin);
   lblFrameStyle = new QLabel(tr("Frame Style: "), hlay);
   edtFrameStyle = new QLineEdit(hlay);

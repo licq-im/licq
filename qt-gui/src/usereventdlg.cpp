@@ -214,6 +214,8 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   msgView = new MsgView(splRead);
   mleRead = new MLEditWrap(true, splRead, true);
   mleRead->setReadOnly(true);
+  splRead->setResizeMode(msgView, QSplitter::FollowSizeHint);
+  splRead->setResizeMode(mleRead, QSplitter::Stretch);
 
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 
@@ -485,10 +487,7 @@ void UserViewEvent::slot_btnRead1()
     case ICQ_CMDxSUB_URL:
     case ICQ_CMDxSUB_CHAT:
     case ICQ_CMDxSUB_FILE:
-      if (btnRead1->stateWhenPressed() & ControlButton)
-        generateReply();
-      else
-        sendMsg("");
+      sendMsg("");
       break;
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
@@ -763,6 +762,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
+  connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
 }
 
 
@@ -777,31 +777,35 @@ void UserSendCommon::changeEventType(int id)
   switch(id)
   {
   case 0:
-    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendMsg, m_nUin));
+    e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
     break;
   case 1:
-    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendUrl, m_nUin));
+    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
     break;
   case 2:
-    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendChat, m_nUin));
+    e = new UserSendChatEvent(server, sigman, mainwin, m_nUin);
     break;
   case 3:
-    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendFile, m_nUin));
+    e = new UserSendFileEvent(server, sigman, mainwin, m_nUin);
     break;
   case 4:
-    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendContact, m_nUin));
+    e = new UserSendContactEvent(server, sigman, mainwin, m_nUin);
     break;
   }
 
   if (e != NULL)
   {
     QPoint p = topLevelWidget()->pos();
+    qDebug("here it goes. existing pos: %d, %d", p.x(), p.y());
     if (e->mleSend && mleSend)
       e->mleSend->setText(mleSend->text());
     e->move(p);
+    qDebug("move finished. pos now: %d, %d", e->pos().x(), e->pos().y());
     e->show();
+    qDebug("show finished");
 
     close();
+    qDebug("close finished");
   }
 }
 
@@ -832,6 +836,21 @@ void UserSendCommon::massMessageToggled(bool b)
 //-----UserSendCommon::sendButton--------------------------------------------
 void UserSendCommon::sendButton()
 {
+  if(!gMainWindow->m_bManualNewUser) {
+    ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_W);
+
+    if(u->NewUser())
+    {
+      u->SetNewUser(false);
+      gUserManager.DropUser(u);
+
+      CICQSignal s(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+      emit updateUser(&s);
+    }
+    else
+      gUserManager.DropUser(u);
+  }
+
   if (icqEventTag != NULL)
   {
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
