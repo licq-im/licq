@@ -18,3 +18,9 @@ SecureOff = secureoff.xpm
 SecureOn = secureon.xpm
 History = history.xpm
 Info = info.xpm
+MSNOnline = msnonline.png
+MSNOffline = msnoffline.png
+MSNAway = msnaway.png
+MSNPrivate = msnprivate.png
+MSNOccupied = msnoccupied.png
+
