@@ -496,6 +496,7 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
 
   // Some IP, Real IP and last seen stuff
   char buf[32];
+  char szPort[32];
   char szRealIp[32];
   const unsigned long nRealIp = u->RealIp();
   strcpy(szRealIp, inet_ntoa_r(*(struct in_addr *)&nRealIp, buf));
@@ -513,8 +514,8 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
 
   winMain->wprintf("%C%AName: %Z%s %s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->GetFirstName(), u->GetLastName());
-  winMain->wprintf("%C%AIp: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
-                   u->IpPortStr(buf));
+  winMain->wprintf("%C%AIp: %Z%s:%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
+                   u->IpStr(buf), u->PortStr(szPort));
   winMain->wprintf("%C%AReal Ip: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    szRealIp);
   winMain->wprintf("%C%AEmail 1: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetEmailPrimary());
