@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-void licq_segv_handler();
+void licq_signal_handler();
 
 #ifdef __cplusplus
 }

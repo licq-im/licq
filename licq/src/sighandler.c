@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <wait.h>
 
 #if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
 #define HAVE_BACKTRACE
@@ -18,6 +19,7 @@
 
 
 void licq_handle_sigsegv(int);
+void licq_handle_sigchld(int);
 
 /*
 void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
@@ -30,9 +32,10 @@ void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 }
 */
 
-void licq_segv_handler()
+void licq_signal_handler()
 {
   signal(SIGSEGV, &licq_handle_sigsegv);
+  signal(SIGCHLD, &licq_handle_sigchld);
   /*struct sigaction sa;
   memset(&sa, 0, sizeof(sa));
   sa.sa_handler = f;
@@ -73,5 +76,19 @@ void licq_handle_sigsegv(int s)
 
   abort();
 }
+
+
+
+void licq_handle_sigchld(int s)
+{
+  if (s != SIGCHLD)
+  {
+    fprintf(stderr, "Unknown signal.\n");
+    return;
+  }
+
+  wait(NULL);
+}
+
 
 

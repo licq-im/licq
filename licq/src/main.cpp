@@ -32,7 +32,7 @@ int main(int argc, char **argv)
    SOCKSinit(argv[0]);
 #endif
 
-  licq_segv_handler();
+  licq_signal_handler();
 
   CLicq licq;
   if (!licq.Init(argc, argv)) return 1;
