@@ -627,10 +627,14 @@ void CUserView::setSortByStatus(bool s)
 unsigned long CUserView::SelectedItemUin()
 {
   return s_nUin;
-  /*
+}
+
+
+unsigned long CUserView::MainWindowSelectedItemUin()
+{
    CUserViewItem *i = (CUserViewItem *)currentItem();
    if (i == NULL) return (0);
-   return i->ItemUin();*/
+   return i->ItemUin();
 }
 
 
@@ -729,6 +733,9 @@ void CUserView::keyPressEvent(QKeyEvent *e)
          nMenuWidth = 120;
       // Calculate where to position the menu
       const QListViewItem *pcItem = currentItem();
+      s_pItem = (CUserViewItem *)pcItem;
+      s_nUin = s_pItem->ItemUin();
+      s_bFloaty = parent() == NULL;
       QPoint cRelPos( (width() - nMenuWidth)/2,
                      itemPos(pcItem) + pcItem->height() );
       QPoint cPos( mapToGlobal( cRelPos ) );
@@ -824,17 +831,6 @@ void CUserView::resizeEvent(QResizeEvent *e)
     setHScrollBarMode(AlwaysOff);
     setColumnWidth(nNumCols - 1, newWidth);
   }
-  /*
-  if (newWidth < colInfo[nNumCols - 2]->m_nWidth)
-  {
-    setHScrollBarMode(Auto);
-    setColumnWidth(nNumCols - 1, colInfo[nNumCols - 2]->m_nWidth);
-  }
-  else
-  {
-    setHScrollBarMode(AlwaysOff);
-    setColumnWidth(nNumCols - 1, newWidth);
-  }*/
 }
 
 
@@ -854,6 +850,7 @@ void CUserView::UpdateFloaties()
   {
     CUserViewItem *i = (*iter)->firstChild();
     ICQUser *u = gUserManager.FetchUser(i->ItemUin(), LOCK_R);
+    if (u == NULL) return;
     i->setGraphics(u);
     gUserManager.DropUser(u);
     (*iter)->triggerUpdate();

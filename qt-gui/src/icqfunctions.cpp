@@ -128,7 +128,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
   QBoxLayout* l = new QHBoxLayout(lay, 8);
 
-  chkAutoClose = new QCheckBox(tr("A&uto Close"), this);
+  chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
   chkAutoClose->setChecked(isAutoClose);
   l->addWidget(chkAutoClose);
   l->addSpacing(15);
@@ -136,7 +136,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
   int bw = 75;
   btnSave = new QPushButton(tr("&Save"), this);
-  btnOk = new QPushButton(tr("&Ok"), this);
+  btnOk = new QPushButton(tr("O&k"), this);
   btnCancel = new QPushButton(tr("&Close"), this);
   bw = QMAX(bw, btnSave->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
@@ -195,7 +195,7 @@ void ICQFunctions::CreateReadEventTab()
   btnRead1 = new QPushButton(h);
   btnRead2 = new QPushButton(h);
   btnRead3 = new QPushButton(h);
-  btnRead4 = new QPushButton(tr("Next"), h);
+  btnRead4 = new QPushButton(tr("Nex&t"), h);
 
   btnRead1->setEnabled(false);
   btnRead2->setEnabled(false);
@@ -217,10 +217,10 @@ void ICQFunctions::CreateSendEventTab()
   tabList[TAB_SEND].loaded = true;
 
   grpCmd = new QButtonGroup(1, Vertical, tr("Select Function"), tabList[TAB_SEND].tab);
-  rdbMsg = new QRadioButton(tr("Message"), grpCmd);
-  rdbUrl = new QRadioButton(tr("URL"), grpCmd);
-  rdbChat = new QRadioButton(tr("Chat Request"), grpCmd);
-  rdbFile = new QRadioButton(tr("File Transfer"), grpCmd);
+  rdbMsg = new QRadioButton(tr("&Message"), grpCmd);
+  rdbUrl = new QRadioButton(tr("&URL"), grpCmd);
+  rdbChat = new QRadioButton(tr("Chat Re&quest"), grpCmd);
+  rdbFile = new QRadioButton(tr("&File Transfer"), grpCmd);
   connect(grpCmd, SIGNAL(clicked(int)), this, SLOT(specialFcn(int)));
 #if QT_VERSION < 210
   QWidget* dummy_w = new QWidget(grpCmd);
@@ -252,14 +252,14 @@ void ICQFunctions::CreateSendEventTab()
 
   QBoxLayout *hlay = new QHBoxLayout(vlay);
 
-  chkSendServer = new QCheckBox(tr("Send through server"), box);
+  chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   hlay->addWidget(chkSendServer);
-  chkUrgent = new QCheckBox(tr("Urgent"), box);//tabList[TAB_SEND].tab);
+  chkUrgent = new QCheckBox(tr("U&rgent"), box);//tabList[TAB_SEND].tab);
   hlay->addWidget(chkUrgent);
 
 #ifdef USE_SPOOFING
   hlay = new QHBoxLayout(vlay);//selay);
-  chkSpoof = new QCheckBox(tr("Spoof UIN:"), box);//tabList[TAB_SEND].tab);
+  chkSpoof = new QCheckBox(tr("S&poof UIN:"), box);//tabList[TAB_SEND].tab);
   hlay->addWidget(chkSpoof);
   edtSpoof = new QLineEdit(box);//tabList[TAB_SEND].tab);
   hlay->addWidget(edtSpoof);
@@ -276,7 +276,7 @@ void ICQFunctions::CreateSendEventTab()
 
 void ICQFunctions::CreateGeneralInfoTab()
 {
-  tabList[TAB_GENERALINFO].label = tr("General");
+  tabList[TAB_GENERALINFO].label = tr("&General");
   tabList[TAB_GENERALINFO].tab = new QWidget(this, tabList[TAB_GENERALINFO].label.latin1());
   tabList[TAB_GENERALINFO].loaded = false;
 }
@@ -367,7 +367,7 @@ void ICQFunctions::InitGeneralInfoTab()
 
 void ICQFunctions::CreateMoreInfoTab()
 {
-  tabList[TAB_MOREINFO].label = tr("More");
+  tabList[TAB_MOREINFO].label = tr("&More");
   tabList[TAB_MOREINFO].tab = new QWidget(this, tabList[TAB_MOREINFO].label.latin1());
   tabList[TAB_MOREINFO].loaded = false;
 }
@@ -469,7 +469,7 @@ void ICQFunctions::InitMoreInfoTab()
 
 void ICQFunctions::CreateWorkInfoTab()
 {
-  tabList[TAB_WORKINFO].label = tr("Work");
+  tabList[TAB_WORKINFO].label = tr("&Work");
   tabList[TAB_WORKINFO].tab = new QWidget(this, tabList[TAB_WORKINFO].label.latin1());
   tabList[TAB_WORKINFO].loaded = false;
 }
@@ -524,7 +524,7 @@ void ICQFunctions::InitWorkInfoTab()
 
 void ICQFunctions::CreateAboutTab()
 {
-  tabList[TAB_ABOUT].label = tr("About");
+  tabList[TAB_ABOUT].label = tr("&About");
   tabList[TAB_ABOUT].tab = new QVBox(this, tabList[TAB_ABOUT].label.latin1());
   tabList[TAB_ABOUT].loaded = false;
 }
@@ -546,7 +546,7 @@ void ICQFunctions::InitAboutTab()
 
 void ICQFunctions::CreateHistoryTab()
 {
-  tabList[TAB_HISTORY].label = tr("History");
+  tabList[TAB_HISTORY].label = tr("&History");
   tabList[TAB_HISTORY].tab = new QWidget(this, tabList[TAB_HISTORY].label.latin1());
   tabList[TAB_HISTORY].loaded = false;
 }
@@ -587,7 +587,7 @@ void ICQFunctions::InitHistoryTab()
   lblHistory->setAlignment(AlignLeft | AlignVCenter);
   l->addWidget(lblHistory);
 
-  chkHistoryReverse = new QCheckBox(tr("Reverse"), p);
+  chkHistoryReverse = new QCheckBox(tr("Rever&se"), p);
   connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
   chkHistoryReverse->setChecked(true);
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
@@ -1037,53 +1037,61 @@ void ICQFunctions::tabSelected(const QString &tab)
      mleSend->setFocus();
      btnOk->setText(tr("&Send"));
      btnSave->hide();
+     btnOk->show();
      currentTab = TAB_SEND;
   }
   else if (tab == tabList[TAB_GENERALINFO].label)
   {
-     btnOk->setText(tr("Update"));
-     btnSave->setText(tr("Save"));
+     btnOk->setText(tr("&Update"));
+     btnSave->setText(tr("&Save"));
      btnSave->show();
+     btnOk->show();
      currentTab = TAB_GENERALINFO;
   }
   else if (tab == tabList[TAB_READ].label)
   {
      btnOk->setText(tr("Ok"));
+     btnOk->hide();
      btnSave->hide();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
   }
   else if (tab == tabList[TAB_MOREINFO].label)
   {
-     btnOk->setText(tr("Update"));
-     btnSave->setText(tr("Save"));
+     btnOk->setText(tr("&Update"));
+     btnOk->show();
+     btnSave->setText(tr("&Save"));
      btnSave->show();
      currentTab = TAB_MOREINFO;
   }
   else if (tab == tabList[TAB_WORKINFO].label)
   {
-     btnOk->setText(tr("Update"));
-     btnSave->setText(tr("Save"));
+     btnOk->setText(tr("&Update"));
+     btnOk->show();
+     btnSave->setText(tr("&Save"));
      btnSave->show();
      currentTab = TAB_WORKINFO;
   }
   else if (tab == tabList[TAB_ABOUT].label)
   {
-     btnOk->setText(tr("Update"));
-     btnSave->setText(tr("Save"));
+     btnOk->setText(tr("&Update"));
+     btnOk->show();
+     btnSave->setText(tr("&Save"));
      btnSave->show();
      currentTab = TAB_ABOUT;
   }
   else if (tab == tabList[TAB_HISTORY].label)
   {
-     btnOk->setText(tr("Next"));
-     btnSave->setText(tr("Prev"));
+     btnOk->setText(tr("Nex&t"));
+     btnOk->show();
+     btnSave->setText(tr("P&rev"));
      btnSave->show();
      currentTab = TAB_HISTORY;
   }
   else
   {
-     btnOk->setText(tr("Ok"));
+     btnOk->setText(tr("&Ok"));
+     btnOk->show();
   }
 }
 
@@ -1118,17 +1126,17 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
     if (u->NewMessages() > 1)
     {
       btnRead4->setEnabled(true);
-      btnRead4->setText(tr("Next (%1)").arg(u->NewMessages()));
+      btnRead4->setText(tr("Nex&t (%1)").arg(u->NewMessages()));
     }
     else if (u->NewMessages() == 1)
     {
       btnRead4->setEnabled(true);
-      btnRead4->setText(tr("Next"));
+      btnRead4->setText(tr("Nex&t"));
     }
     else
     {
       btnRead4->setEnabled(false);
-      btnRead4->setText(tr("Next"));
+      btnRead4->setText(tr("Nex&t"));
     }
     break;
   }
@@ -1164,17 +1172,17 @@ void ICQFunctions::slot_nextMessage()
   if (u->NewMessages() > 1)
   {
     btnRead4->setEnabled(true);
-    btnRead4->setText(tr("Next (%1)").arg(u->NewMessages()));
+    btnRead4->setText(tr("Nex&t (%1)").arg(u->NewMessages()));
   }
   else if (u->NewMessages() == 1)
   {
     btnRead4->setEnabled(true);
-    btnRead4->setText(tr("Next"));
+    btnRead4->setText(tr("Nex&t"));
   }
   else
   {
     btnRead4->setEnabled(false);
-    btnRead4->setText(tr("Next"));
+    btnRead4->setText(tr("Nex&t"));
   }
 
   gUserManager.DropUser(u);
@@ -1214,7 +1222,7 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
         }
         else
         {
-          btnRead1->setText(tr("&Accept"));
+          btnRead1->setText(tr("A&ccept"));
           btnRead2->setText(tr("&Refuse"));
           // If this is a chat, and we already have chats going, and this is
           // not a join request, then we can join
@@ -1243,7 +1251,7 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
         btnRead2->setText(tr("&Refuse"));
         ICQUser *u = gUserManager.FetchUser( ((CEventAuthRequest *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead3->setText(tr("&Add User"));
+          btnRead3->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -1252,7 +1260,7 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
       {
         ICQUser *u = gUserManager.FetchUser( ((CEventAuthGranted *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead1->setText(tr("&Add User"));
+          btnRead1->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -1261,7 +1269,7 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
       {
         ICQUser *u = gUserManager.FetchUser( ((CEventAdded *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead1->setText(tr("&Add User"));
+          btnRead1->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -1774,7 +1782,7 @@ void ICQFunctions::setSpoofed()
                             "In clicking OK you absolve the author from any \n"
                             "responsibility for your actions.\n"
                             "Do you want to continue?"),
-                   tr("Ok"), tr("Cancel")))
+                   tr("&Ok"), tr("&Cancel")))
     {
       chkSpoof->setChecked(false);
     }
@@ -1843,7 +1851,7 @@ void ICQFunctions::callFcn()
     if (nMsgLen > MAX_MESSAGE_SIZE && chkSendServer->isChecked()
         && !QueryUser(this, tr("Message is %1 characters, over the ICQ server limit of %2.\n"
                                "The message will be truncated if sent through the server.").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
-                      tr("Continue"), tr("Cancel")))
+                      tr("C&ontinue"), tr("&Cancel")))
         break;
 
     unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
@@ -1996,7 +2004,7 @@ void ICQFunctions::callFcn()
     setCaption(title);
     setCursor(waitCursor);
     btnOk->setEnabled(false);
-    btnCancel->setText(tr("Cancel"));
+    btnCancel->setText(tr("&Cancel"));
   }
 }
 
@@ -2005,7 +2013,7 @@ void ICQFunctions::callFcn()
 void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 {
   btnOk->setEnabled(false);
-  btnCancel->setText(tr("Cancel"));
+  btnCancel->setText(tr("&Cancel"));
   if (!bOnline)
   {
     chkSendServer->setChecked(true);

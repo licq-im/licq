@@ -746,28 +746,68 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 // Ctrl-H : hide window
 // Ctrl-I : next message
 // Ctrl-X : exit
+// Ctrl-V : View message
+// Ctrl-S : Send message
+// Ctrl-U : Send Url
+// Ctrl-C : Send chat request
+// Ctrl-F : Send File
+// Ctrl-A : Check Auto response
+
 void CMainWindow::keyPressEvent(QKeyEvent *e)
 {
-  if (e->key() == Qt::Key_M && e->state() & ControlButton)
-  {
-    miniMode();
-  }
-  else if (e->key() == Qt::Key_H && e->state() & ControlButton)
-  {
-    hide();
-  }
-  else if (e->key() == Qt::Key_I && e->state() & ControlButton)
-  {
-    callMsgFunction();
-  }
-  else if (e->key() == Qt::Key_X && e->state() & ControlButton)
-  {
-    slot_shutdown();
-  }
-  else
+  if (! (e->state() & ControlButton))
   {
     e->ignore();
     QWidget::keyPressEvent(e);
+    return;
+  }
+
+  switch(e->key())
+  {
+    case Qt::Key_M:
+      miniMode();
+      break;
+
+    case Qt::Key_H:
+      hide();
+      break;
+
+    case Qt::Key_I:
+      callMsgFunction();
+      break;
+
+    case Qt::Key_X:
+      slot_shutdown();
+      break;
+
+    case Qt::Key_V:
+      callFunction(mnuUserView, userView->MainWindowSelectedItemUin());
+      break;
+
+    case Qt::Key_S:
+      callFunction(mnuUserSendMsg, userView->MainWindowSelectedItemUin());
+      break;
+
+    case Qt::Key_U:
+      callFunction(mnuUserSendUrl, userView->MainWindowSelectedItemUin());
+      break;
+
+    case Qt::Key_C:
+      callFunction(mnuUserSendChat, userView->MainWindowSelectedItemUin());
+      break;
+
+    case Qt::Key_F:
+      callFunction(mnuUserSendFile, userView->MainWindowSelectedItemUin());
+      break;
+
+    case Qt::Key_A:
+      callFunction(mnuUserCheckResponse, userView->MainWindowSelectedItemUin());
+      break;
+
+    default:
+      e->ignore();
+      QWidget::keyPressEvent(e);
+      break;
   }
 
 }

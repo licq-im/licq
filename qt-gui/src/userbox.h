@@ -145,6 +145,8 @@ public:
   void setShowHeader(bool);
   void setShowBars(bool);
 
+  unsigned long MainWindowSelectedItemUin();
+
   static unsigned long SelectedItemUin();
   static bool SelectedItemFloaty();
   static CUserViewItem *SelectedItem();
