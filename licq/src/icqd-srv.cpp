@@ -1168,9 +1168,11 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     if (packet.getTLVLen(0x000a) == 4) {
       unsigned long userIP = packet.UnpackUnsignedLongTLV(0x000a);
-      rev_e_long(userIP);
-      userIP = PacketIpToNetworkIp(userIP);
-      u->SetIpPort(userIP, u->Port());
+      if (userIP) {
+        rev_e_long(userIP);
+        userIP = PacketIpToNetworkIp(userIP);
+        u->SetIpPort(userIP, u->Port());
+      }
     }
 
     if (packet.getTLVLen(0x0003) == 4) {
@@ -1209,9 +1211,13 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
 
       }
-      realIP = PacketIpToNetworkIp(realIP);
+
+      if (realIP) {
+        realIP = PacketIpToNetworkIp(realIP);
+	u->SetRealIp(realIP);
+      }
+
       u->SetIpPort(u->Ip(), userPort);
-      u->SetRealIp(realIP);
       u->SetVersion(tcpVersion);
       u->SetCookie(nCookie);
       u->SetClientTimestamp(timestamp);
