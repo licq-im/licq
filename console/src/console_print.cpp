@@ -500,6 +500,7 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
   const unsigned long nRealIp = u->RealIp();
   strcpy(szRealIp, inet_ntoa_r(*(struct in_addr *)&nRealIp, buf));
   time_t nLast = u->LastOnline();
+  time_t nOnSince = u->OnlineSince();
 
   wattron(winMain->Win(), A_BOLD);
   for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
@@ -542,6 +543,11 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
                    u->GetTimezone() % 2 ? "30" : "00");
   winMain->wprintf("%C%ALast Seen: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
     ctime(&nLast));
+  if (!u->StatusOffline())
+  {
+    winMain->wprintf("%C%AOnline Since: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
+      (nOnSince ? ctime(&nOnSince) : "Unknown"));
+  }
 
   wattron(winMain->Win(), A_BOLD);
   for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
@@ -619,13 +625,25 @@ void CLicqConsole::PrintInfo_Work(unsigned long nUin)
                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
 
   winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyName());
-  winMain->wprintf("%C%ACompany City: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyCity());
-  winMain->wprintf("%C%ACompany State: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyState());
-  winMain->wprintf("%C%ACompany Phone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyPhoneNumber());
-  winMain->wprintf("%C%ACompany Fax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyFaxNumber());
-  winMain->wprintf("%C%ACompany Address: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyAddress());
   winMain->wprintf("%C%ACompany Department: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyDepartment());
   winMain->wprintf("%C%ACompany Position: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyPosition());
+  winMain->wprintf("%C%ACompany Phone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyPhoneNumber());
+  winMain->wprintf("%C%ACompany Fax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyFaxNumber());
+  winMain->wprintf("%C%ACompany City: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyCity());
+  winMain->wprintf("%C%ACompany State: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyState());
+  winMain->wprintf("%C%ACompany Address: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyAddress());
+  winMain->wprintf("%C%ACompany Zip Code: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyZip());
+  winMain->wprintf("%C%ACompany Country: ", COLOR_WHITE, A_BOLD);
+  if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
+    winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
+  else
+  {
+    const SCountry *c = GetCountryByCode(u->GetCountryCode());
+    if (c == NULL)
+      winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, u->GetCountryCode());
+    else  // known
+      winMain->wprintf("%C%s\n", COLOR_WHITE, c->szName);
+  }
   winMain->wprintf("%C%ACompany Homepage: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyHomepage());
 
   gUserManager.DropUser(u);
