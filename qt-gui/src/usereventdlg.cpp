@@ -1294,7 +1294,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   if (mainwin->m_bMsgChatView)
   {
     splView->setResizeMode(mleSend, QSplitter::KeepSize);
-    mleSend->resize(mleSend->width(), 90);
+    mleSend->resize(mleSend->width(), 70);
   }
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
