@@ -68,7 +68,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     " %B%csea%brch",
     "Perform a search of the ICQ network." },
   { "uins", &CLicqConsole::MenuUins, NULL,
-    " %B%cu%bins",
+    " %B%cui%bns",
     "Print out the uins of the users in the current group.\n"
     "Useful if the user has odd characters in their alias." },
   { "set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
@@ -885,7 +885,8 @@ void CLicqConsole::MenuSet(char *_szArg)
  *---------------------------------------------------------------------*/
 void CLicqConsole::MenuClear(char *)
 {
-  winMain->wprintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+  for (unsigned short i = 0; i < winMain->Rows(); i++)
+    winMain->wprintf("\n");
 }
 
 
