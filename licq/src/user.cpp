@@ -396,6 +396,14 @@ void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
     pUser->SetInGroup(GROUPS_USER, g2, bInG1);
   }
   FOR_EACH_USER_END
+
+  // swap the group ids
+  LockGroupIDList(LOCK_W);
+  unsigned short nTmp = m_vnGroupsID[g1 - 1];
+  m_vnGroupsID[g1 - 1] = m_vnGroupsID[g2 - 1];
+  m_vnGroupsID[g2 - 1] = nTmp;  
+  SaveGroupIDs();
+  UnlockGroupIDList();
 }
 
 
