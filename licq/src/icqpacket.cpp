@@ -828,7 +828,7 @@ CPU_GenericUinList::CPU_GenericUinList(UinList &uins, unsigned short family, uns
 {
   char len[2];
   len[1] = '\0';
-  char contacts[uins.size()*13];
+  char contacts[uins.size()*13+1];
   contacts[0] = '\0';
 
   for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++) {
