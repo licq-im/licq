@@ -3615,11 +3615,11 @@ msgstr "Email"
 
 #: searchuserdlg.cpp:88
 msgid "SearchUserView::F"
-msgstr "М"
+msgstr "Ж"
 
 #: searchuserdlg.cpp:91
 msgid "SearchUserView::M"
-msgstr "Ж"
+msgstr "М"
 
 #: searchuserdlg.cpp:42
 msgid "SearchUserView::Name"
