@@ -9,15 +9,20 @@ extern "C" {
 #include "config.h"
 #endif
 
-const unsigned short COUNTRY_UNSPECIFIED = 0xFFFF;
-const unsigned short COUNTRY_UNKNOWN     = 0xFFFE;
+#define COUNTRY_UNSPECIFIED  0xFFFF
+#define COUNTRY_UNKNOWN      0xFFFE
+#define NUM_COUNTRIES 242
 
-void InitCountryCodes(void);
-const char **GetCountryList(void);
-const char *GetCountryByCode(unsigned short _nCountryCode);
-const char *GetCountryByIndex(unsigned short _nIndex);
-unsigned short GetIndexByCountryCode(unsigned short _nCountryCode);
-unsigned short GetCountryCodeByIndex(unsigned short _nIndex);
+struct SCountry
+{
+  char *szName;          /* Name of the country */
+  unsigned short nCode;  /* Country code */
+  unsigned short nIndex; /* Index in array */
+};
+extern const struct SCountry gCountries[];
+
+const struct SCountry *GetCountryByCode(unsigned short _nCountryCode);
+const struct SCountry *GetCountryByIndex(unsigned short _nIndex);
 
 #ifdef __cplusplus
 }

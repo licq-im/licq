@@ -6,640 +6,266 @@
 
 #include "countrycodes.h"
 
-#define NUM_COUNTRIES 242
-char *szCountries[NUM_COUNTRIES + 1];
-unsigned short nCountryCodes[NUM_COUNTRIES];
-
-void InitCountryCodes(void)
+const struct SCountry gCountries[NUM_COUNTRIES + 1] =
 {
-  static int s_bInitDone = 0;
-
-  if (s_bInitDone) return;
-
-  szCountries[0] = strdup ("USA");
-  szCountries[1] = strdup ("Russia");
-  szCountries[2] = strdup ("Egypt");
-  szCountries[3] = strdup ("South Africa");
-  szCountries[4] = strdup ("Greece");
-  szCountries[5] = strdup ("Netherlands");
-  szCountries[6] = strdup ("Belgium");
-  szCountries[7] = strdup ("France");
-  szCountries[8] = strdup ("Spain");
-  szCountries[9] = strdup ("Hungary");
-  szCountries[10] = strdup ("Italy");
-  szCountries[11] = strdup ("Romania");
-  szCountries[12] = strdup ("Switzerland");
-  szCountries[13] = strdup ("Czech Republic");
-  szCountries[14] = strdup ("Austria");
-  szCountries[15] = strdup ("United Kingdom");
-  szCountries[16] = strdup ("Denmark");
-  szCountries[17] = strdup ("Sweden");
-  szCountries[18] = strdup ("Norway");
-  szCountries[19] = strdup ("Poland");
-  szCountries[20] = strdup ("Germany");
-  szCountries[21] = strdup ("Peru");
-  szCountries[22] = strdup ("Mexico");
-  szCountries[23] = strdup ("Cuba");
-  szCountries[24] = strdup ("Argentina");
-  szCountries[25] = strdup ("Brazil");
-  szCountries[26] = strdup ("Chile");
-  szCountries[27] = strdup ("Columbia");
-  szCountries[28] = strdup ("Venezuela");
-  szCountries[29] = strdup ("Malaysia");
-  szCountries[30] = strdup ("Australia");
-  szCountries[31] = strdup ("Indonesia");
-  szCountries[32] = strdup ("Philippines");
-  szCountries[33] = strdup ("New Zealand");
-  szCountries[34] = strdup ("Singapore");
-  szCountries[35] = strdup ("Thailand");
-  szCountries[36] = strdup ("Japan");
-  szCountries[37] = strdup ("Korea (Republic of)");
-  szCountries[38] = strdup ("Vietnam");
-  szCountries[39] = strdup ("China");
-  szCountries[40] = strdup ("Turkey");
-  szCountries[41] = strdup ("India");
-  szCountries[42] = strdup ("Pakistan");
-  szCountries[43] = strdup ("Afghanistan");
-  szCountries[44] = strdup ("Sri Lanka");
-  szCountries[45] = strdup ("Myanmar");
-  szCountries[46] = strdup ("Iran");
-  szCountries[47] = strdup ("Anguilla");
-  szCountries[48] = strdup ("Antigua");
-  szCountries[49] = strdup ("Bahamas");
-  szCountries[50] = strdup ("Barbados");
-  szCountries[51] = strdup ("Bermuda");
-  szCountries[52] = strdup ("British Virgin Islands");
-  szCountries[53] = strdup ("Canada");
-  szCountries[54] = strdup ("Cayman Islands");
-  szCountries[55] = strdup ("Dominica");
-  szCountries[56] = strdup ("Dominican Republic");
-  szCountries[57] = strdup ("Grenada");
-  szCountries[58] = strdup ("Jamaica");
-  szCountries[59] = strdup ("Montserrat");
-  szCountries[60] = strdup ("Nevis");
-  szCountries[61] = strdup ("St. Kitts");
-  szCountries[62] = strdup ("St. Vincent and the Grenadines");
-  szCountries[63] = strdup ("Trinidad and Tobago");
-  szCountries[64] = strdup ("Turks and Caicos Islands");
-  szCountries[65] = strdup ("Barbuda");
-  szCountries[66] = strdup ("Puerto Rico");
-  szCountries[67] = strdup ("Saint Lucia");
-  szCountries[68] = strdup ("United States Virgin Islands");
-  szCountries[69] = strdup ("Morocco");
-  szCountries[70] = strdup ("Algeria");
-  szCountries[71] = strdup ("Tunisia");
-  szCountries[72] = strdup ("Libya");
-  szCountries[73] = strdup ("Gambia");
-  szCountries[74] = strdup ("Senegal Republic");
-  szCountries[75] = strdup ("Mauritania");
-  szCountries[76] = strdup ("Mali");
-  szCountries[77] = strdup ("Guinea");
-  szCountries[78] = strdup ("Ivory Coast");
-  szCountries[79] = strdup ("Burkina Faso");
-  szCountries[80] = strdup ("Niger");
-  szCountries[81] = strdup ("Togo");
-  szCountries[82] = strdup ("Benin");
-  szCountries[83] = strdup ("Mauritius");
-  szCountries[84] = strdup ("Liberia");
-  szCountries[85] = strdup ("Sierra Leone");
-  szCountries[86] = strdup ("Ghana");
-  szCountries[87] = strdup ("Nigeria");
-  szCountries[88] = strdup ("Chad");
-  szCountries[89] = strdup ("Central African Republic");
-  szCountries[90] = strdup ("Cameroon");
-  szCountries[91] = strdup ("Cape Verde Islands");
-  szCountries[92] = strdup ("Sao Tome and Principe");
-  szCountries[93] = strdup ("Equatorial Guinea");
-  szCountries[94] = strdup ("Gabon");
-  szCountries[95] = strdup ("Congo");
-  szCountries[96] = strdup ("Zaire");
-  szCountries[97] = strdup ("Angola");
-  szCountries[98] = strdup ("Guinea-Bissau");
-  szCountries[99] = strdup ("Diego Garcia");
-  szCountries[100] = strdup ("Ascension Island");
-  szCountries[101] = strdup ("Seychelle Islands");
-  szCountries[102] = strdup ("Sudan");
-  szCountries[103] = strdup ("Rwanda");
-  szCountries[104] = strdup ("Ethiopia");
-  szCountries[105] = strdup ("Somalia");
-  szCountries[106] = strdup ("Djibouti");
-  szCountries[107] = strdup ("Kenya");
-  szCountries[108] = strdup ("Tanzania");
-  szCountries[109] = strdup ("Uganda");
-  szCountries[110] = strdup ("Burundi");
-  szCountries[111] = strdup ("Mozambique");
-  szCountries[112] = strdup ("Zambia");
-  szCountries[113] = strdup ("Madagascar");
-  szCountries[114] = strdup ("Reunion Island");
-  szCountries[115] = strdup ("Zimbabwe");
-  szCountries[116] = strdup ("Namibia");
-  szCountries[117] = strdup ("Malawi");
-  szCountries[118] = strdup ("Lesotho");
-  szCountries[119] = strdup ("Botswana");
-  szCountries[120] = strdup ("Swaziland");
-  szCountries[121] = strdup ("Mayotte Island");
-  szCountries[122] = strdup ("St. Helena");
-  szCountries[123] = strdup ("Eritrea");
-  szCountries[124] = strdup ("Aruba");
-  szCountries[125] = strdup ("Faeroe Islands");
-  szCountries[126] = strdup ("Greenland");
-  szCountries[127] = strdup ("Gibraltar");
-  szCountries[128] = strdup ("Portugal");
-  szCountries[129] = strdup ("Luxembourg");
-  szCountries[130] = strdup ("Ireland");
-  szCountries[131] = strdup ("Iceland");
-  szCountries[132] = strdup ("Albania");
-  szCountries[133] = strdup ("Malta");
-  szCountries[134] = strdup ("Cyprus");
-  szCountries[135] = strdup ("Finland");
-  szCountries[136] = strdup ("Bulgaria");
-  szCountries[137] = strdup ("Lithuania");
-  szCountries[138] = strdup ("Latvia");
-  szCountries[139] = strdup ("Estonia");
-  szCountries[140] = strdup ("Moldova");
-  szCountries[141] = strdup ("Armenia");
-  szCountries[142] = strdup ("Belarus");
-  szCountries[143] = strdup ("Andorra");
-  szCountries[144] = strdup ("Monaco");
-  szCountries[145] = strdup ("San Marino");
-  szCountries[146] = strdup ("Vatican City");
-  szCountries[147] = strdup ("Ukraine");
-  szCountries[148] = strdup ("Yugoslavia");
-  szCountries[149] = strdup ("Croatia");
-  szCountries[150] = strdup ("Slovenia");
-  szCountries[151] = strdup ("Bosnia and Herzegovina");
-  szCountries[152] = strdup ("Former Yugoslav Republic of Macedonia");
-  szCountries[153] = strdup ("Falkland Islands");
-  szCountries[154] = strdup ("Belize");
-  szCountries[155] = strdup ("Guatemala");
-  szCountries[156] = strdup ("El Salvador");
-  szCountries[157] = strdup ("Honduras");
-  szCountries[158] = strdup ("Nicaragua");
-  szCountries[159] = strdup ("Costa Rica");
-  szCountries[160] = strdup ("Panama");
-  szCountries[161] = strdup ("St. Pierre and Miquelon");
-  szCountries[162] = strdup ("Haiti");
-  szCountries[163] = strdup ("Guadeloupe");
-  szCountries[164] = strdup ("Bolivia");
-  szCountries[165] = strdup ("Guyana");
-  szCountries[166] = strdup ("Ecuador");
-  szCountries[167] = strdup ("French Guiana");
-  szCountries[168] = strdup ("Paraguay");
-  szCountries[169] = strdup ("Martinique");
-  szCountries[170] = strdup ("Suriname");
-  szCountries[171] = strdup ("Uruguay");
-  szCountries[172] = strdup ("Netherlands Antilles");
-  szCountries[173] = strdup ("Saipan Island");
-  szCountries[174] = strdup ("Guam");
-  szCountries[175] = strdup ("Christmas Island");
-  szCountries[176] = strdup ("Brunei");
-  szCountries[177] = strdup ("Nauru");
-  szCountries[178] = strdup ("Papua New Guinea");
-  szCountries[179] = strdup ("Tonga");
-  szCountries[180] = strdup ("Solomon Islands");
-  szCountries[181] = strdup ("Vanuatu");
-  szCountries[182] = strdup ("Fiji Islands");
-  szCountries[183] = strdup ("Palau");
-  szCountries[184] = strdup ("Wallis and Futuna Islands");
-  szCountries[185] = strdup ("Cook Islands");
-  szCountries[186] = strdup ("Niue");
-  szCountries[187] = strdup ("American Samoa");
-  szCountries[188] = strdup ("Western Samoa");
-  szCountries[189] = strdup ("Kiribati Republic");
-  szCountries[190] = strdup ("New Caledonia");
-  szCountries[191] = strdup ("Tuvalu");
-  szCountries[192] = strdup ("French Polynesia");
-  szCountries[193] = strdup ("Tokelau");
-  szCountries[194] = strdup ("Micronesia, Federated States of");
-  szCountries[195] = strdup ("Marshall Islands");
-  szCountries[196] = strdup ("Kazakhstan");
-  szCountries[197] = strdup ("Kyrgyz Republic");
-  szCountries[198] = strdup ("Tajikistan");
-  szCountries[199] = strdup ("Turkmenistan");
-  szCountries[200] = strdup ("Uzbekistan");
-  szCountries[201] = strdup ("International Freephone Service");
-  szCountries[202] = strdup ("Korea (North)");
-  szCountries[203] = strdup ("Hong Kong");
-  szCountries[204] = strdup ("Macau");
-  szCountries[205] = strdup ("Cambodia");
-  szCountries[206] = strdup ("Laos");
-  szCountries[207] = strdup ("INMARSAT");
-  szCountries[208] = strdup ("INMARSAT (Atlantic-East)");
-  szCountries[209] = strdup ("INMARSAT (Pacific)");
-  szCountries[210] = strdup ("INMARSAT (Indian)");
-  szCountries[211] = strdup ("INMARSAT (Atlantic-West)");
-  szCountries[212] = strdup ("Bangladesh");
-  szCountries[213] = strdup ("Taiwan, Republic of China");
-  szCountries[214] = strdup ("Maldives");
-  szCountries[215] = strdup ("Lebanon");
-  szCountries[216] = strdup ("Jordan");
-  szCountries[217] = strdup ("Syria");
-  szCountries[218] = strdup ("Iraq");
-  szCountries[219] = strdup ("Kuwait");
-  szCountries[220] = strdup ("Saudi Arabia");
-  szCountries[221] = strdup ("Yemen");
-  szCountries[222] = strdup ("Oman");
-  szCountries[223] = strdup ("United Arab Emirates");
-  szCountries[224] = strdup ("Israel");
-  szCountries[225] = strdup ("Bahrain");
-  szCountries[226] = strdup ("Qatar");
-  szCountries[227] = strdup ("Bhutan");
-  szCountries[228] = strdup ("Mongolia");
-  szCountries[229] = strdup ("Nepal");
-  szCountries[230] = strdup ("Azerbaijan");
-  szCountries[231] = strdup ("Georgia");
-  szCountries[232] = strdup ("Comoros");
-  szCountries[233] = strdup ("Liechtenstein");
-  szCountries[234] = strdup ("Slovak Republic");
-  szCountries[235] = strdup ("Guantanamo Bay");
-  szCountries[236] = strdup ("French Antilles");
-  szCountries[237] = strdup ("Cocos-Keeling Islands");
-  szCountries[238] = strdup ("Rota Island");
-  szCountries[239] = strdup ("Tinian Island");
-  szCountries[240] = strdup ("Australian Antarctic Territory");
-  szCountries[241] = strdup ("Norfolk Island");
-  szCountries[242] = NULL;
-
-  nCountryCodes[0] = 1;
-  nCountryCodes[1] = 7;
-  nCountryCodes[2] = 20;
-  nCountryCodes[3] = 27;
-  nCountryCodes[4] = 30;
-  nCountryCodes[5] = 31;
-  nCountryCodes[6] = 32;
-  nCountryCodes[7] = 33;
-  nCountryCodes[8] = 34;
-  nCountryCodes[9] = 36;
-  nCountryCodes[10] = 39;
-  nCountryCodes[11] = 40;
-  nCountryCodes[12] = 41;
-  nCountryCodes[13] = 42;
-  nCountryCodes[14] = 43;
-  nCountryCodes[15] = 44;
-  nCountryCodes[16] = 45;
-  nCountryCodes[17] = 46;
-  nCountryCodes[18] = 47;
-  nCountryCodes[19] = 48;
-  nCountryCodes[20] = 49;
-  nCountryCodes[21] = 51;
-  nCountryCodes[22] = 52;
-  nCountryCodes[23] = 53;
-  nCountryCodes[24] = 54;
-  nCountryCodes[25] = 55;
-  nCountryCodes[26] = 56;
-  nCountryCodes[27] = 57;
-  nCountryCodes[28] = 58;
-  nCountryCodes[29] = 60;
-  nCountryCodes[30] = 61;
-  nCountryCodes[31] = 62;
-  nCountryCodes[32] = 63;
-  nCountryCodes[33] = 64;
-  nCountryCodes[34] = 65;
-  nCountryCodes[35] = 66;
-  nCountryCodes[36] = 81;
-  nCountryCodes[37] = 82;
-  nCountryCodes[38] = 84;
-  nCountryCodes[39] = 86;
-  nCountryCodes[40] = 90;
-  nCountryCodes[41] = 91;
-  nCountryCodes[42] = 92;
-  nCountryCodes[43] = 93;
-  nCountryCodes[44] = 94;
-  nCountryCodes[45] = 95;
-  nCountryCodes[46] = 98;
-  nCountryCodes[47] = 101;
-  nCountryCodes[48] = 102;
-  nCountryCodes[49] = 103;
-  nCountryCodes[50] = 104;
-  nCountryCodes[51] = 105;
-  nCountryCodes[52] = 106;
-  nCountryCodes[53] = 107;
-  nCountryCodes[54] = 108;
-  nCountryCodes[55] = 109;
-  nCountryCodes[56] = 110;
-  nCountryCodes[57] = 111;
-  nCountryCodes[58] = 112;
-  nCountryCodes[59] = 113;
-  nCountryCodes[60] = 114;
-  nCountryCodes[61] = 115;
-  nCountryCodes[62] = 116;
-  nCountryCodes[63] = 117;
-  nCountryCodes[64] = 118;
-  nCountryCodes[65] = 120;
-  nCountryCodes[66] = 121;
-  nCountryCodes[67] = 122;
-  nCountryCodes[68] = 123;
-  nCountryCodes[69] = 212;
-  nCountryCodes[70] = 213;
-  nCountryCodes[71] = 216;
-  nCountryCodes[72] = 218;
-  nCountryCodes[73] = 220;
-  nCountryCodes[74] = 221;
-  nCountryCodes[75] = 222;
-  nCountryCodes[76] = 223;
-  nCountryCodes[77] = 224;
-  nCountryCodes[78] = 225;
-  nCountryCodes[79] = 226;
-  nCountryCodes[80] = 227;
-  nCountryCodes[81] = 228;
-  nCountryCodes[82] = 229;
-  nCountryCodes[83] = 230;
-  nCountryCodes[84] = 231;
-  nCountryCodes[85] = 232;
-  nCountryCodes[86] = 233;
-  nCountryCodes[87] = 234;
-  nCountryCodes[88] = 235;
-  nCountryCodes[89] = 236;
-  nCountryCodes[90] = 237;
-  nCountryCodes[91] = 238;
-  nCountryCodes[92] = 239;
-  nCountryCodes[93] = 240;
-  nCountryCodes[94] = 241;
-  nCountryCodes[95] = 242;
-  nCountryCodes[96] = 243;
-  nCountryCodes[97] = 244;
-  nCountryCodes[98] = 245;
-  nCountryCodes[99] = 246;
-  nCountryCodes[100] = 247;
-  nCountryCodes[101] = 248;
-  nCountryCodes[102] = 249;
-  nCountryCodes[103] = 250;
-  nCountryCodes[104] = 251;
-  nCountryCodes[105] = 252;
-  nCountryCodes[106] = 253;
-  nCountryCodes[107] = 254;
-  nCountryCodes[108] = 255;
-  nCountryCodes[109] = 256;
-  nCountryCodes[110] = 257;
-  nCountryCodes[111] = 258;
-  nCountryCodes[112] = 260;
-  nCountryCodes[113] = 261;
-  nCountryCodes[114] = 262;
-  nCountryCodes[115] = 263;
-  nCountryCodes[116] = 264;
-  nCountryCodes[117] = 265;
-  nCountryCodes[118] = 266;
-  nCountryCodes[119] = 267;
-  nCountryCodes[120] = 268;
-  nCountryCodes[121] = 269;
-  nCountryCodes[122] = 290;
-  nCountryCodes[123] = 291;
-  nCountryCodes[124] = 297;
-  nCountryCodes[125] = 298;
-  nCountryCodes[126] = 299;
-  nCountryCodes[127] = 350;
-  nCountryCodes[128] = 351;
-  nCountryCodes[129] = 352;
-  nCountryCodes[130] = 353;
-  nCountryCodes[131] = 354;
-  nCountryCodes[132] = 355;
-  nCountryCodes[133] = 356;
-  nCountryCodes[134] = 357;
-  nCountryCodes[135] = 358;
-  nCountryCodes[136] = 359;
-  nCountryCodes[137] = 370;
-  nCountryCodes[138] = 371;
-  nCountryCodes[139] = 372;
-  nCountryCodes[140] = 373;
-  nCountryCodes[141] = 374;
-  nCountryCodes[142] = 375;
-  nCountryCodes[143] = 376;
-  nCountryCodes[144] = 377;
-  nCountryCodes[145] = 378;
-  nCountryCodes[146] = 379;
-  nCountryCodes[147] = 380;
-  nCountryCodes[148] = 381;
-  nCountryCodes[149] = 385;
-  nCountryCodes[150] = 386;
-  nCountryCodes[151] = 387;
-  nCountryCodes[152] = 389;
-  nCountryCodes[153] = 500;
-  nCountryCodes[154] = 501;
-  nCountryCodes[155] = 502;
-  nCountryCodes[156] = 503;
-  nCountryCodes[157] = 504;
-  nCountryCodes[158] = 505;
-  nCountryCodes[159] = 506;
-  nCountryCodes[160] = 507;
-  nCountryCodes[161] = 508;
-  nCountryCodes[162] = 509;
-  nCountryCodes[163] = 590;
-  nCountryCodes[164] = 591;
-  nCountryCodes[165] = 592;
-  nCountryCodes[166] = 593;
-  nCountryCodes[167] = 594;
-  nCountryCodes[168] = 595;
-  nCountryCodes[169] = 596;
-  nCountryCodes[170] = 597;
-  nCountryCodes[171] = 598;
-  nCountryCodes[172] = 599;
-  nCountryCodes[173] = 670;
-  nCountryCodes[174] = 671;
-  nCountryCodes[175] = 672;
-  nCountryCodes[176] = 673;
-  nCountryCodes[177] = 674;
-  nCountryCodes[178] = 675;
-  nCountryCodes[179] = 676;
-  nCountryCodes[180] = 677;
-  nCountryCodes[181] = 678;
-  nCountryCodes[182] = 679;
-  nCountryCodes[183] = 680;
-  nCountryCodes[184] = 681;
-  nCountryCodes[185] = 682;
-  nCountryCodes[186] = 683;
-  nCountryCodes[187] = 684;
-  nCountryCodes[188] = 685;
-  nCountryCodes[189] = 686;
-  nCountryCodes[190] = 687;
-  nCountryCodes[191] = 688;
-  nCountryCodes[192] = 689;
-  nCountryCodes[193] = 690;
-  nCountryCodes[194] = 691;
-  nCountryCodes[195] = 692;
-  nCountryCodes[196] = 705;
-  nCountryCodes[197] = 706;
-  nCountryCodes[198] = 708;
-  nCountryCodes[199] = 709;
-  nCountryCodes[200] = 711;
-  nCountryCodes[201] = 800;
-  nCountryCodes[202] = 850;
-  nCountryCodes[203] = 852;
-  nCountryCodes[204] = 853;
-  nCountryCodes[205] = 855;
-  nCountryCodes[206] = 856;
-  nCountryCodes[207] = 870;
-  nCountryCodes[208] = 871;
-  nCountryCodes[209] = 872;
-  nCountryCodes[210] = 873;
-  nCountryCodes[211] = 874;
-  nCountryCodes[212] = 880;
-  nCountryCodes[213] = 886;
-  nCountryCodes[214] = 960;
-  nCountryCodes[215] = 961;
-  nCountryCodes[216] = 962;
-  nCountryCodes[217] = 963;
-  nCountryCodes[218] = 964;
-  nCountryCodes[219] = 965;
-  nCountryCodes[220] = 966;
-  nCountryCodes[221] = 967;
-  nCountryCodes[222] = 968;
-  nCountryCodes[223] = 971;
-  nCountryCodes[224] = 972;
-  nCountryCodes[225] = 973;
-  nCountryCodes[226] = 974;
-  nCountryCodes[227] = 975;
-  nCountryCodes[228] = 976;
-  nCountryCodes[229] = 977;
-  nCountryCodes[230] = 994;
-  nCountryCodes[231] = 995;
-  nCountryCodes[232] = 2691;
-  nCountryCodes[233] = 4101;
-  nCountryCodes[234] = 4201;
-  nCountryCodes[235] = 5399;
-  nCountryCodes[236] = 5901;
-  nCountryCodes[237] = 6101;
-  nCountryCodes[238] = 6701;
-  nCountryCodes[239] = 6702;
-  nCountryCodes[240] = 6721;
-  nCountryCodes[241] = 6722;
-  /*
-  szCountries[ 0] = strdup("United States");
-  szCountries[ 1] = strdup("Russia (CIS)");
-  szCountries[ 2] = strdup("Egypt");
-  szCountries[ 3] = strdup("South Africa");
-  szCountries[ 4] = strdup("Greece");
-  szCountries[ 5] = strdup("Netherlands");
-  szCountries[ 6] = strdup("Belgium");
-  szCountries[ 7] = strdup("France");
-  szCountries[ 8] = strdup("Spain");
-  szCountries[ 9] = strdup("Italy");
-  szCountries[10] = strdup("Romania");
-  szCountries[11] = strdup("Switzerland");
-  szCountries[12] = strdup("Czechoslovakia");
-  szCountries[13] = strdup("Austria");
-  szCountries[14] = strdup("United Kingdom");
-  szCountries[15] = strdup("Denmark");
-  szCountries[16] = strdup("Sweden");
-  szCountries[17] = strdup("Norway");
-  szCountries[18] = strdup("Poland");
-  szCountries[19] = strdup("Germany");
-  szCountries[20] = strdup("Mexico");
-  szCountries[21] = strdup("Argentina");
-  szCountries[22] = strdup("Brazil");
-  szCountries[23] = strdup("Chile");
-  szCountries[24] = strdup("Columbia");
-  szCountries[25] = strdup("Venezuela");
-  szCountries[26] = strdup("Australia");
-  szCountries[27] = strdup("Indonesia");
-  szCountries[28] = strdup("Philippines");
-  szCountries[29] = strdup("New Zealand");
-  szCountries[30] = strdup("Singapore");
-  szCountries[31] = strdup("Japan");
-  szCountries[32] = strdup("China");
-  szCountries[33] = strdup("Turkey");
-  szCountries[34] = strdup("India");
-  szCountries[35] = strdup("Pakistan");
-  szCountries[36] = strdup("Iran");
-  szCountries[37] = strdup("Canada");
-  szCountries[38] = strdup("Algeria");
-  szCountries[39] = strdup("Portugal");
-  szCountries[40] = strdup("Ireland");
-  szCountries[41] = strdup("Finland");
-  szCountries[42] = strdup("Haiti");
-  szCountries[43] = strdup("Hong Kong");
-  szCountries[44] = strdup("Taiwan");
-  szCountries[45] = strdup("Israel");
-  szCountries[46] = strdup("Dominican Republic");
-  szCountries[47] = NULL;
-
-  nCountryCodes[0] = 0;
-  nCountryCodes[1] = 7;
-  nCountryCodes[2] =  20;
-  nCountryCodes[3] =  27;
-  nCountryCodes[4] =  30;
-  nCountryCodes[5] =  31;
-  nCountryCodes[6] =  32;
-  nCountryCodes[7] =  33;
-  nCountryCodes[8] =  34;
-  nCountryCodes[9] =  39;
-  nCountryCodes[10] =  40;
-  nCountryCodes[11] =  41;
-  nCountryCodes[12] =  42;
-  nCountryCodes[13] =  43;
-  nCountryCodes[14] =  44;
-  nCountryCodes[15] =  45;
-  nCountryCodes[16] =  46;
-  nCountryCodes[17] =  47;
-  nCountryCodes[18] =  48;
-  nCountryCodes[19] =  49;
-  nCountryCodes[20] =  52;
-  nCountryCodes[21] =  54;
-  nCountryCodes[22] =  55;
-  nCountryCodes[23] =  56;
-  nCountryCodes[24] =  57;
-  nCountryCodes[25] =  58;
-  nCountryCodes[26] =  61;
-  nCountryCodes[27] =  62;
-  nCountryCodes[28] =  63;
-  nCountryCodes[29] =  64;
-  nCountryCodes[30] =  65;
-  nCountryCodes[31] =  81;
-  nCountryCodes[32] =  86;
-  nCountryCodes[33] =  90;
-  nCountryCodes[34] =  91;
-  nCountryCodes[35] =  92;
-  nCountryCodes[36] =  98;
-  nCountryCodes[37] = 107;
-  nCountryCodes[38] = 213;
-  nCountryCodes[39] = 351;
-  nCountryCodes[40] = 353;
-  nCountryCodes[41] = 358;
-  nCountryCodes[42] = 509;
-  nCountryCodes[43] = 852;
-  nCountryCodes[44] = 886;
-  nCountryCodes[45] = 972;
-  nCountryCodes[46] = 110;
-  */
-
-  s_bInitDone = 1;
-}
+  { "USA", 1, 0 },
+  { "Russia", 7, 1 },
+  { "Egypt", 20, 2 },
+  { "South Africa", 27, 3 },
+  { "Greece", 30, 4 },
+  { "Netherlands", 31, 5 },
+  { "Belgium", 32, 6 },
+  { "France", 33, 7 },
+  { "Spain", 34, 8 },
+  { "Hungary", 36, 9 },
+  { "Italy", 39, 10 },
+  { "Romania", 40, 11 },
+  { "Switzerland", 41, 12 },
+  { "Czech Republic", 42, 13 },
+  { "Austria", 43, 14 },
+  { "United Kingdom", 44, 15 },
+  { "Denmark", 45, 16 },
+  { "Sweden", 46, 17 },
+  { "Norway", 47, 18 },
+  { "Poland", 48, 19 },
+  { "Germany", 49, 20 },
+  { "Peru", 51, 21 },
+  { "Mexico", 52, 22 },
+  { "Cuba", 53, 23 },
+  { "Argentina", 54, 24 },
+  { "Brazil", 55, 25 },
+  { "Chile", 56, 26 },
+  { "Columbia", 57, 27 },
+  { "Venezuela", 58, 28 },
+  { "Malaysia", 60, 29 },
+  { "Australia", 61, 30 },
+  { "Indonesia", 62, 31 },
+  { "Philippines", 63, 32 },
+  { "New Zealand", 64, 33 },
+  { "Singapore", 65, 34 },
+  { "Thailand", 66, 35 },
+  { "Japan", 81, 36 },
+  { "Korea (Republic of)", 82, 37 },
+  { "Vietnam", 84, 38 },
+  { "China", 86, 39 },
+  { "Turkey", 90, 40 },
+  { "India", 91, 41 },
+  { "Pakistan", 92, 42 },
+  { "Afghanistan", 93, 43 },
+  { "Sri Lanka", 94, 44 },
+  { "Myanmar", 95, 45 },
+  { "Iran", 98, 46 },
+  { "Anguilla", 101, 47 },
+  { "Antigua", 102, 48 },
+  { "Bahamas", 103, 49 },
+  { "Barbados", 104, 50 },
+  { "Bermuda", 105, 51 },
+  { "British Virgin Islands", 106, 52 },
+  { "Canada", 107, 53 },
+  { "Cayman Islands", 108, 54 },
+  { "Dominica", 109, 55 },
+  { "Dominican Republic", 110, 56 },
+  { "Grenada", 111, 57 },
+  { "Jamaica", 112, 58 },
+  { "Montserrat", 113, 59 },
+  { "Nevis", 114, 60 },
+  { "St. Kitts", 115, 61 },
+  { "St. Vincent and the Grenadines", 116, 62 },
+  { "Trinidad and Tobago", 117, 63 },
+  { "Turks and Caicos Islands", 118, 64 },
+  { "Barbuda", 120, 65 },
+  { "Puerto Rico", 121, 66 },
+  { "Saint Lucia", 122, 67 },
+  { "United States Virgin Islands", 123, 68 },
+  { "Morocco", 212, 69 },
+  { "Algeria", 213, 70 },
+  { "Tunisia", 216, 71 },
+  { "Libya", 218, 72 },
+  { "Gambia", 220, 73 },
+  { "Senegal Republic", 221, 74 },
+  { "Mauritania", 222, 75 },
+  { "Mali", 223, 76 },
+  { "Guinea", 224, 77 },
+  { "Ivory Coast", 225, 78 },
+  { "Burkina Faso", 226, 79 },
+  { "Niger", 227, 80 },
+  { "Togo", 228, 81 },
+  { "Benin", 229, 82 },
+  { "Mauritius", 230, 83 },
+  { "Liberia", 231, 84 },
+  { "Sierra Leone", 232, 85 },
+  { "Ghana", 233, 86 },
+  { "Nigeria", 234, 87 },
+  { "Chad", 235, 88 },
+  { "Central African Republic", 236, 89 },
+  { "Cameroon", 237, 90 },
+  { "Cape Verde Islands", 238, 91 },
+  { "Sao Tome and Principe", 239, 92 },
+  { "Equatorial Guinea", 240, 93 },
+  { "Gabon", 241, 94 },
+  { "Congo", 242, 95 },
+  { "Zaire", 243, 96 },
+  { "Angola", 244, 97 },
+  { "Guinea-Bissau", 245, 98 },
+  { "Diego Garcia", 246, 99 },
+  { "Ascension Island", 247, 100 },
+  { "Seychelle Islands", 248, 101 },
+  { "Sudan", 249, 102 },
+  { "Rwanda", 250, 103 },
+  { "Ethiopia", 251, 104 },
+  { "Somalia", 252, 105 },
+  { "Djibouti", 253, 106 },
+  { "Kenya", 254, 107 },
+  { "Tanzania", 255, 108 },
+  { "Uganda", 256, 109 },
+  { "Burundi", 257, 110 },
+  { "Mozambique", 258, 111 },
+  { "Zambia", 260, 112 },
+  { "Madagascar", 261, 113 },
+  { "Reunion Island", 262, 114 },
+  { "Zimbabwe", 263, 115 },
+  { "Namibia", 264, 116 },
+  { "Malawi", 265, 117 },
+  { "Lesotho", 266, 118 },
+  { "Botswana", 267, 119 },
+  { "Swaziland", 268, 120 },
+  { "Mayotte Island", 269, 121 },
+  { "St. Helena", 290, 122 },
+  { "Eritrea", 291, 123 },
+  { "Aruba", 297, 124 },
+  { "Faeroe Islands", 298, 125 },
+  { "Greenland", 299, 126 },
+  { "Gibraltar", 350, 127 },
+  { "Portugal", 351, 128 },
+  { "Luxembourg", 352, 129 },
+  { "Ireland", 353, 130 },
+  { "Iceland", 354, 131 },
+  { "Albania", 355, 132 },
+  { "Malta", 356, 133 },
+  { "Cyprus", 357, 134 },
+  { "Finland", 358, 135 },
+  { "Bulgaria", 359, 136 },
+  { "Lithuania", 370, 137 },
+  { "Latvia", 371, 138 },
+  { "Estonia", 372, 139 },
+  { "Moldova", 373, 140 },
+  { "Armenia", 374, 141 },
+  { "Belarus", 375, 142 },
+  { "Andorra", 376, 143 },
+  { "Monaco", 377, 144 },
+  { "San Marino", 378, 145 },
+  { "Vatican City", 379, 146 },
+  { "Ukraine", 380, 147 },
+  { "Yugoslavia", 381, 148 },
+  { "Croatia", 385, 149 },
+  { "Slovenia", 386, 150 },
+  { "Bosnia and Herzegovina", 387, 151 },
+  { "Former Yugoslav Republic of Macedonia", 389, 152 },
+  { "Falkland Islands", 500, 153 },
+  { "Belize", 501, 154 },
+  { "Guatemala", 502, 155 },
+  { "El Salvador", 503, 156 },
+  { "Honduras", 504, 157 },
+  { "Nicaragua", 505, 158 },
+  { "Costa Rica", 506, 159 },
+  { "Panama", 507, 160 },
+  { "St. Pierre and Miquelon", 508, 161 },
+  { "Haiti", 509, 162 },
+  { "Guadeloupe", 590, 163 },
+  { "Bolivia", 591, 164 },
+  { "Guyana", 592, 165 },
+  { "Ecuador", 593, 166 },
+  { "French Guiana", 594, 167 },
+  { "Paraguay", 595, 168 },
+  { "Martinique", 596, 169 },
+  { "Suriname", 597, 170 },
+  { "Uruguay", 598, 171 },
+  { "Netherlands Antilles", 599, 172 },
+  { "Saipan Island", 670, 173 },
+  { "Guam", 671, 174 },
+  { "Christmas Island", 672, 175 },
+  { "Brunei", 673, 176 },
+  { "Nauru", 674, 177 },
+  { "Papua New Guinea", 675, 178 },
+  { "Tonga", 676, 179 },
+  { "Solomon Islands", 677, 180 },
+  { "Vanuatu", 678, 181 },
+  { "Fiji Islands", 679, 182 },
+  { "Palau", 680, 183 },
+  { "Wallis and Futuna Islands", 681, 184 },
+  { "Cook Islands", 682, 185 },
+  { "Niue", 683, 186 },
+  { "American Samoa", 684, 187 },
+  { "Western Samoa", 685, 188 },
+  { "Kiribati Republic", 686, 189 },
+  { "New Caledonia", 687, 190 },
+  { "Tuvalu", 688, 191 },
+  { "French Polynesia", 689, 192 },
+  { "Tokelau", 690, 193 },
+  { "Micronesia, Federated States of", 691, 194 },
+  { "Marshall Islands", 692, 195 },
+  { "Kazakhstan", 705, 196 },
+  { "Kyrgyz Republic", 706, 197 },
+  { "Tajikistan", 708, 198 },
+  { "Turkmenistan", 709, 199 },
+  { "Uzbekistan", 711, 200 },
+  { "International Freephone Service", 800, 201 },
+  { "Korea (North)", 850, 202 },
+  { "Hong Kong", 852, 203 },
+  { "Macau", 853, 204 },
+  { "Cambodia", 855, 205 },
+  { "Laos", 856, 206 },
+  { "INMARSAT", 870, 207 },
+  { "INMARSAT (Atlantic-East)", 871, 208 },
+  { "INMARSAT (Pacific)", 872, 209 },
+  { "INMARSAT (Indian)", 873, 210 },
+  { "INMARSAT (Atlantic-West)", 874, 211 },
+  { "Bangladesh", 880, 212 },
+  { "Taiwan, Republic of China", 886, 213 },
+  { "Maldives", 960, 214 },
+  { "Lebanon", 961, 215 },
+  { "Jordan", 962, 216 },
+  { "Syria", 963, 217 },
+  { "Iraq", 964, 218 },
+  { "Kuwait", 965, 219 },
+  { "Saudi Arabia", 966, 220 },
+  { "Yemen", 967, 221 },
+  { "Oman", 968, 222 },
+  { "United Arab Emirates", 971, 223 },
+  { "Israel", 972, 224 },
+  { "Bahrain", 973, 225 },
+  { "Qatar", 974, 226 },
+  { "Bhutan", 975, 227 },
+  { "Mongolia", 976, 228 },
+  { "Nepal", 977, 229 },
+  { "Azerbaijan", 994, 230 },
+  { "Georgia", 995, 231 },
+  { "Comoros", 2691, 232 },
+  { "Liechtenstein", 4101, 233 },
+  { "Slovak Republic", 4201, 234 },
+  { "Guantanamo Bay", 5399, 235 },
+  { "French Antilles", 5901, 236 },
+  { "Cocos-Keeling Islands", 6101, 237 },
+  { "Rota Island", 6701, 238 },
+  { "Tinian Island", 6702, 239 },
+  { "Australian Antarctic Territory", 6721, 240 },
+  { "Norfolk Island", 6722, 241 },
+  { "Unspecified", 0xFFFF, 242 }
+};
 
 
-const char *GetCountryByCode(unsigned short _nCountryCode)
+const struct SCountry *GetCountryByCode(unsigned short _nCountryCode)
 {
    // do a simple linear search as there aren't too many countries
    unsigned short i = 0;
-   while (i < NUM_COUNTRIES && nCountryCodes[i] != _nCountryCode) i++;
+   while (i < NUM_COUNTRIES && gCountries[i].nCode != _nCountryCode) i++;
    if (i == NUM_COUNTRIES) return NULL;
-   return szCountries[i];
+   return &gCountries[i];
 }
 
-const char **GetCountryList(void)
-{
-   return (const char **)szCountries;
-}
-
-const char *GetCountryByIndex(unsigned short _nIndex)
+const struct SCountry *GetCountryByIndex(unsigned short _nIndex)
 {
    if (_nIndex >= NUM_COUNTRIES) return NULL;
-   return (szCountries[_nIndex]);
-}
-
-unsigned short GetIndexByCountryCode(unsigned short _nCountryCode)
-{
-   unsigned short i = 0;
-   // make sure the value is sane
-   if (_nCountryCode > 1000) return COUNTRY_UNSPECIFIED;
-
-   // do a simple linear search as there aren't too many countries
-   while (i < NUM_COUNTRIES && nCountryCodes[i] != _nCountryCode) i++;
-   if (i == NUM_COUNTRIES) return COUNTRY_UNKNOWN;
-   return i;
-}
-
-unsigned short GetCountryCodeByIndex(unsigned short _nIndex)
-{
-   if (_nIndex >= NUM_COUNTRIES) return COUNTRY_UNSPECIFIED;
-   return nCountryCodes[_nIndex];
+   return (&gCountries[_nIndex]);
 }
 

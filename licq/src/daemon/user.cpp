@@ -915,11 +915,11 @@ char *ICQUser::getCountry(char *buf)
      return (buf);
   }
 
-  const char *szCountry = GetCountryByCode(m_nCountryCode);
-  if (szCountry == NULL)
+  const struct SCountry *country = GetCountryByCode(m_nCountryCode);
+  if (country == NULL)
     sprintf(buf, "Unknown (%d)", m_nCountryCode);
   else
-    strcpy(buf, szCountry);
+    strcpy(buf, country->szName);
   return (buf);
 }
 
