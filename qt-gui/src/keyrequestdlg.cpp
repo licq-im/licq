@@ -46,7 +46,8 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   QLabel *lbl = new QLabel(tr(
   "Secure channel is established using\n"
   "Diffie-Hellman key exchange, and encrypted\n"
-  "using DES XCBC encryption."
+  "using DES XCBC encryption.\n"
+  "This only works with other Licq clients."
   ), this);
   top_lay->addWidget(lbl);
 
