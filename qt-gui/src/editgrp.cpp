@@ -202,7 +202,7 @@ void EditGrpDlg::slot_editok()
   RefreshList();
 
   lstGroups->setEnabled(true);
-  btnEdit->setText(tr("Edit"));
+  btnEdit->setText(tr("Edit Name"));
   edtName->clear();
   edtName->setEnabled(false);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editok()));
@@ -213,7 +213,7 @@ void EditGrpDlg::slot_editok()
 void EditGrpDlg::slot_editcancel()
 {
   lstGroups->setEnabled(true);
-  btnEdit->setText(tr("Edit"));
+  btnEdit->setText(tr("Edit Name"));
   edtName->clear();
   edtName->setEnabled(false);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editcancel()));
