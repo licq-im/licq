@@ -54,7 +54,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   setOkButton(tr("&OK"));
   setApplyButton(tr("&Apply"));
   setCancelButton(tr("&Cancel"));
-  setHelpButton(tr("&What's This?"));
+  setHelpButton(tr("&Help"));
   connect (this, SIGNAL(applyButtonPressed()), this, SLOT(slot_apply()));
   connect(this, SIGNAL(helpButtonPressed()), this, SLOT(slot_whatsthis()));
 
@@ -172,10 +172,10 @@ void OptionsDlg::SetupOptions()
   cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon >= 10 ? mainwin->m_nAutoLogon - 10 : mainwin->m_nAutoLogon);
   chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon > 10);
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  /*ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   chkHideIp->setChecked(o->StatusHideIp());
   chkWebPresence->setChecked(o->StatusWebPresence());
-  gUserManager.DropOwner();
+  gUserManager.DropOwner();*/
   chkIgnoreNewUsers->setChecked(mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
   chkIgnoreMassMsg->setChecked(mainwin->licqDaemon->Ignore(IGNORE_MASSMSG));
   chkIgnoreWebPanel->setChecked(mainwin->licqDaemon->Ignore(IGNORE_WEBPANEL));
@@ -336,7 +336,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->autoNATime = spnAutoNa->value();
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
                           (chkAutoLogonInvisible->isChecked() ? 10 : 0);
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  /*ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   if (chkWebPresence->isChecked())
     o->SetStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
   else
@@ -345,7 +345,7 @@ void OptionsDlg::ApplyOptions()
     o->SetStatusFlag(ICQ_STATUS_FxHIDExIP);
   else
     o->ClearStatusFlag(ICQ_STATUS_FxHIDExIP);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner();*/
 
   // set up the columns stuff
   unsigned short i, j = mainwin->colInfo.size();
@@ -814,8 +814,8 @@ QWidget* OptionsDlg::new_misc_options()
   boxParanoia = new QGroupBox(3, Vertical, tr("Paranoia"), w);
   lay->addWidget(boxParanoia);
 
-  chkHideIp = new QCheckBox(tr("Hide IP"), boxParanoia);
-  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
+  /*chkHideIp = new QCheckBox(tr("Hide IP"), boxParanoia);
+  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));*/
   chkIgnoreNewUsers = new QCheckBox(tr("Ignore New Users"), boxParanoia);
   QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added "
                                       "to your list or must first request authorization."));
@@ -828,9 +828,9 @@ QWidget* OptionsDlg::new_misc_options()
   chkIgnoreEmailPager = new QCheckBox(tr("Ignore Email Pager"), boxParanoia);
   QWhatsThis::add(chkIgnoreEmailPager, tr("Determines if email pager messages are ignored or not."));
 
-  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), boxParanoia);
+  /*chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), boxParanoia);
   QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
-                                    "through your web indicator."));
+                                    "through your web indicator."));*/
 
 #if QT_VERSION < 210
   QWidget* dummy_w= new QWidget(boxParanoia);
