@@ -49,14 +49,13 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   setCaption(tr("Licq Options"));
 
   mainwin = _mainwin;
-  setOkButton(tr("Ok"));
-  setApplyButton(tr("Apply"));
-  setCancelButton(tr("Cancel"));
+  setOkButton(tr("&OK"));
+  setApplyButton(tr("&Apply"));
+  setCancelButton(tr("&Cancel"));
+  setHelpButton(tr("&What's This?"));
   connect (this, SIGNAL(applyButtonPressed()), this, SLOT(slot_apply()));
 
-  QPushButton *btnWhat = new QPushButton(tr("What's This?"), this);
-  btnWhat->setGeometry(6, height() - 30, 80, 23);
-  connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
+  connect(this, SIGNAL(helpButtonPressed()), this, SLOT(slot_whatsthis()));
 
   // appearance tab
   tab[0] = new QWidget(this);
@@ -92,39 +91,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
                                   "the user function window after a succesful event"));
 
-  tab[1] = new QWidget(this);
-  lblColTitle = new QLabel (tr("Title"), tab[1]);
-  lblColTitle->setGeometry(80, 10, 80, 20);
-  QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
-  lblColFormat = new QLabel (tr("Format"), tab[1]);
-  lblColFormat->setGeometry(170, 10, 90, 20);
-  QWhatsThis::add(lblColFormat, tr("The format string used to define what will"
-                                  "appear in each column, see OnEvent Command for"
-                                  "more information about valid % values"));
-  lblColWidth = new QLabel (tr("Width"), tab[1]);
-  lblColWidth->setGeometry(270, 10, 60, 20);
-  QWhatsThis::add(lblColWidth, tr("The width of the column"));
-  lblColAlign = new QLabel(tr("Alignment"), tab[1]);
-  lblColAlign->setGeometry(340, 10, 80, 20);
-  QWhatsThis::add(lblColAlign, tr("The alignment of the column"));
-  for (unsigned short i = 0; i < 4; i++)
-  {
-     chkColEnabled[i] = new QCheckBox(tr("Column %1").arg(i), tab[1]);
-     chkColEnabled[i]->setGeometry(10, 40 + i * 25, 75, 20);
-     edtColTitle[i] = new QLineEdit(tab[1]);
-     edtColTitle[i]->setGeometry(80, 40 + i * 25, 80, 20);
-     edtColFormat[i] = new QLineEdit(tab[1]);
-     edtColFormat[i]->setGeometry(170, 40 + i * 25, 90, 20);
-     spnColWidth[i] = new QSpinBox(tab[1]);
-     spnColWidth[i]->setGeometry(270, 40 + i * 25, 60, 20);
-     spnColWidth[i]->setRange(0, 2048);
-     cmbColAlign[i] = new QComboBox(tab[1]);
-     cmbColAlign[i]->setGeometry(340, 40 + i * 25, 80, 20);
-     cmbColAlign[i]->insertItem(tr("Left"));
-     cmbColAlign[i]->insertItem(tr("Right"));
-     cmbColAlign[i]->insertItem(tr("Center"));
-     connect(chkColEnabled[i], SIGNAL(toggled(bool)), this, SLOT(colEnable(bool)));
-  }
+  tab[1] = new_column_options();
 
   tab[2] = new QWidget(this);
   chkOnEvents = new QCheckBox(tr("OnEvents Enabled"), tab[2]);
@@ -184,12 +151,10 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   edtSndSysMsg->setGeometry(90, 145, 280, 20);
 
   // Network tab
-  tab[3] = new QWidget(this);
-  new_network_options();
+  tab[3] = new_network_options();
 
   // Status tab
-//  tab[4] = new QWidget(this);
-//  new_status_options();
+//  tab[4] = new_status_options();
 
   tab[5] = new QWidget(this);
   lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[5]);
@@ -301,7 +266,7 @@ void OptionsDlg::colEnable(bool isOn)
    {
       // i is the next column, i - 1 is the clicked on column
       if (i > 1) chkColEnabled[i - 2]->setEnabled(false);
-      if (i < 4) chkColEnabled[i]->setEnabled(true);
+      if (i < 4 && i > 0) chkColEnabled[i]->setEnabled(true);
       if (i > 0)
       {
          edtColTitle[i - 1]->setEnabled(true);
@@ -314,7 +279,7 @@ void OptionsDlg::colEnable(bool isOn)
    {
       // i is clicked on column which is now unchecked
       if (i < 3) chkColEnabled[i + 1]->setEnabled(false);
-      if (i > 0) chkColEnabled[i - 1]->setEnabled(true);
+      if (i > 1) chkColEnabled[i - 1]->setEnabled(true);
       if (i < 4)
       {
          edtColTitle[i]->setEnabled(false);
@@ -397,7 +362,8 @@ void OptionsDlg::SetupOptions()
    // set up the columns stuff
    for (i = 0; i < mainwin->colInfo.size(); i++)
    {
-      chkColEnabled[i]->setChecked(true);
+      if(i)
+        chkColEnabled[i]->setChecked(true);
       edtColTitle[i]->setText(mainwin->colInfo[i]->m_sTitle);
       edtColFormat[i]->setText(mainwin->colInfo[i]->m_szFormat);
       spnColWidth[i]->setValue(mainwin->userView->columnWidth(i + 1));
@@ -576,10 +542,16 @@ void OptionsDlg::slot_selectfont()
     nfoFont->setData(f.rawName());
 }
 
-void OptionsDlg::new_network_options()
+
+// -----------------------------------------------------------------------------
+
+QWidget* OptionsDlg::new_network_options()
 {
-  QGridLayout* lay = new QGridLayout(tab[3], 5, 5, 10);
-  QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, tab[3]);
+  QWidget* w = new QWidget(this);
+  
+  QGridLayout* lay = new QGridLayout(w, 5, 4, 10);
+  lay->setRowStretch(4, 1);
+  QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, w);
   gbServer->setTitle(tr("Server settings"));
   lay->addWidget(gbServer, 1, 1);
   
@@ -607,7 +579,7 @@ void OptionsDlg::new_network_options()
   spnMaxUsersPerPacket = new QSpinBox(gbServer);
   spnMaxUsersPerPacket->setRange(10, 125);
 
-  QGroupBox* gbAuto = new QGroupBox(2, QGroupBox::Horizontal, tab[3]);
+  QGroupBox* gbAuto = new QGroupBox(2, QGroupBox::Horizontal, w);
   gbAuto->setTitle(tr("Network startup"));
   lay->addWidget(gbAuto, 1, 3);
 
@@ -640,19 +612,8 @@ void OptionsDlg::new_network_options()
                                "to disable."));
   spnAutoNa = new QSpinBox(gbAuto);
   spnAutoNa->setSpecialValueText(tr("Disable"));
-
-  /*QGroupBox* gbGeneral = new QGroupBox(1, QGroupBox::Vertical, tab[3]);
-  lay->addMultiCellWidget(gbGeneral, 3, 3, 1, 3);
-
-  chkHideIp = new QCheckBox(tr("Hide IP"), gbGeneral);
-  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
-  chkIgnoreNewUsers = new QCheckBox(tr("Allow New Users"), gbGeneral);
-
-  QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added"
-                                      "to your list or must first request authorization."));
-  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), gbGeneral);
-  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
-                                    "through your web indicator."));*/
+  
+  return w;
 }
 
 // -----------------------------------------------------------------------------
@@ -670,10 +631,11 @@ void OptionsDlg::slot_SARmsg_act(int n)
 
 // -----------------------------------------------------------------------------
 
-void OptionsDlg::new_status_options()
+QWidget* OptionsDlg::new_status_options()
 {
-  QBoxLayout* lay = new QVBoxLayout(tab[4], 10);
-  QGroupBox* gbStatus = new QGroupBox(1, QGroupBox::Horizontal, tab[4]);
+  QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QVBoxLayout(w, 10);
+  QGroupBox* gbStatus = new QGroupBox(1, QGroupBox::Horizontal, w);
   lay->addWidget(gbStatus);
   gbStatus->setTitle(tr("Default Auto Responses"));
 
@@ -692,6 +654,62 @@ void OptionsDlg::new_status_options()
   gSARManager.Drop();
 
   edtSARtext = new MLEditWrap(true, gbStatus);
+  return w;
+}
+
+
+// -----------------------------------------------------------------------------
+
+QWidget* OptionsDlg::new_column_options() {
+
+  QWidget* w = new QWidget(this);
+  
+  QGridLayout* lay1 = new QGridLayout(w, 7, 5, 10);
+  lay1->setRowStretch(6, 1);
+
+  lblColTitle = new QLabel (tr("Title"), w);
+  QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
+  lblColFormat = new QLabel (tr("Format"), w);
+  QWhatsThis::add(lblColFormat, tr("The format string used to define what will"
+                                   "appear in each column, see OnEvent Command for"
+                                   "more information about valid % values"));
+  lblColWidth = new QLabel (tr("Width"), w);
+  QWhatsThis::add(lblColWidth, tr("The width of the column"));
+  lblColAlign = new QLabel(tr("Alignment"), w);
+  QWhatsThis::add(lblColAlign, tr("The alignment of the column"));
+
+  lay1->addWidget(lblColTitle, 1, 1);
+  lay1->addWidget(lblColFormat, 1, 2);
+  lay1->addWidget(lblColWidth, 1, 3);
+  lay1->addWidget(lblColAlign, 1, 4);
+  
+  for (unsigned short i = 0; i < 4; i++) {
+    chkColEnabled[i] = new QCheckBox(tr("Column %1").arg(i), w);
+    edtColTitle[i] = new QLineEdit(w);
+    QWhatsThis::add(edtColTitle[i], QWhatsThis::textFor(lblColTitle));
+    edtColFormat[i] = new QLineEdit(w);
+    QWhatsThis::add(edtColFormat[i], QWhatsThis::textFor(lblColFormat));
+    spnColWidth[i] = new QSpinBox(w);
+    QWhatsThis::add(spnColWidth[i], QWhatsThis::textFor(lblColWidth));
+    spnColWidth[i]->setRange(0, 2048);
+    cmbColAlign[i] = new QComboBox(w);
+    QWhatsThis::add(cmbColAlign[i], QWhatsThis::textFor(lblColAlign));    
+    cmbColAlign[i]->insertItem(tr("Left"));
+    cmbColAlign[i]->insertItem(tr("Right"));
+    cmbColAlign[i]->insertItem(tr("Center"));
+    lay1->addWidget(chkColEnabled[i], 2+i, 0);
+    lay1->addWidget(edtColTitle[i], 2+i, 1);
+    lay1->addWidget(edtColFormat[i], 2+i, 2);
+    lay1->addWidget(spnColWidth[i], 2+i, 3);
+    lay1->addWidget(cmbColAlign[i], 2+i, 4);
+    connect(chkColEnabled[i], SIGNAL(toggled(bool)), this, SLOT(colEnable(bool)));
+  }
+  lay1->activate();
+
+  // unchecking the first tab is evil, so forbit it 
+  chkColEnabled[0]->setEnabled(false);
+  
+  return w;
 }
 
 // -----------------------------------------------------------------------------
