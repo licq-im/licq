@@ -55,6 +55,7 @@ extern "C" {
 #include "user.h"
 #include "ewidgets.h"
 #include <qpainter.h>
+#include <qtimer.h>
 
 #ifdef USE_KDE
 #include <kwin.h>
@@ -65,7 +66,7 @@ extern "C" {
   Constructs a WharfIcon widget.
 */
 IconManager::IconManager(QWidget *parent, const char *name )
-  : KApplet(parent, name)
+  : KApplet(parent, "IconManager")
 {
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
@@ -85,11 +86,11 @@ void IconManager::X11Init()
   XSetClassHint(dsp, win, &classhint); // set the class hints
   hints = XGetWMHints(dsp, win);  // init hints
   hints->initial_state = WithdrawnState;
-  //hints->icon_x = 0;
-  //hints->icon_y = 0;
+  hints->icon_x = 0;
+  hints->icon_y = 0;
   hints->icon_window = wharfIcon->winId();
   hints->window_group = win;  // set the window hint
-  hints->flags = WindowGroupHint | IconWindowHint | StateHint; // set the window group hint
+  hints->flags = WindowGroupHint | IconWindowHint | IconPositionHint | StateHint; // set the window group hint
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
 
@@ -107,6 +108,7 @@ void IconManager::X11Init()
 }
 
 
+
 IconManager::~IconManager()
 {
   delete wharfIcon;
@@ -122,13 +124,21 @@ void IconManager::setupGeometry(Orientation orientation, int width, int height)
 }
 #endif
 
+
+
 void IconManager::mouseReleaseEvent( QMouseEvent *e )
 {
+#ifdef DEBUG_WHARF
+  printf("icon release\n");
+#endif
   wharfIcon->mouseReleaseEvent(e);
 }
 
 void IconManager::paintEvent( QPaintEvent * )
 {
+#ifdef DEBUG_WHARF
+  printf("icon paint\n");
+#endif
   QPainter painter(this);
   painter.drawPixmap(0, 0, *wharfIcon->vis);
   painter.end();
@@ -137,6 +147,10 @@ void IconManager::paintEvent( QPaintEvent * )
 
 void IconManager::mousePressEvent(QMouseEvent *m)
 {
+#ifdef DEBUG_WHARF
+  printf("icon press\n");
+#endif
+
   if (m->button() != LeftButton) return;
 
   mouseX = m->x();
@@ -167,7 +181,7 @@ IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_men
     QBitmap b;
     b = QPixmap((const char **)iconMask_48_xpm);
     pix->setMask(b);
-    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
+    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this, "wharfIcon");
   }
   else
   {
@@ -175,7 +189,7 @@ IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_men
     QBitmap b;
     b = QPixmap((const char **)iconMask_64_xpm);
     pix->setMask(b);
-    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
+    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this, "wharfIcon");
   }
   X11Init();
 }
@@ -439,7 +453,7 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   }
   dockFile.CloseFile();
 
-  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this);
+  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this, "wharfIcon");
   X11Init();
 }
 
@@ -502,12 +516,12 @@ void IconManager_Themed::SetDockIconMsg(unsigned short nNewMsg, unsigned short n
   }
   else if (nNewMsg > 0)
   {
-    if (!(m_nNewMsg > 0))
+    if (!(m_nNewMsg > 0) || m_nSysMsg > 0)
       p = pixRegularMessages;
   }
   else if (nSysMsg > 0)
   {
-    if (!(m_nSysMsg > 0))
+    if (!(m_nSysMsg > 0) || m_nNewMsg > 0)
       p = pixSystemMessages;
   }
   else
@@ -562,6 +576,9 @@ WharfIcon::~WharfIcon()
 
 void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
 {
+#ifdef DEBUG_WHARF
+  printf("wharf release\n");
+#endif
   switch(e->button())
   {
     case LeftButton:
@@ -583,6 +600,9 @@ void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
 
 void WharfIcon::paintEvent( QPaintEvent * )
 {
+#ifdef DEBUG_WHARF
+  printf("wharf paint\n");
+#endif
   QPainter painter(this);
   painter.drawPixmap(0, 0, *vis);
   painter.end();
@@ -591,6 +611,9 @@ void WharfIcon::paintEvent( QPaintEvent * )
 
 void WharfIcon::mousePressEvent(QMouseEvent *m)
 {
+#ifdef DEBUG_WHARF
+  printf("wharf press\n");
+#endif
   ((IconManager *)parentWidget())->mousePressEvent(m);
   /*mouseX = m->x();
   mouseY = m->y();*/
