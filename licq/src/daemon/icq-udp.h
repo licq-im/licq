@@ -605,7 +605,7 @@ void CICQDaemon::icqRequestSystemMsg()
 
 
 //-----ProcessUdpPacket---------------------------------------------------------
-unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
+unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMultiPacket)
 {
   unsigned short version, nCommand, nSequence, nSubSequence,
                  junkShort;
@@ -683,7 +683,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     {
       packet >> nLen;
       buf = packet.getDataPosRead() + nLen;
-      ProcessUdpPacket(packet, true);
+      ProcessUdpPacket(packet, nLen);
       packet.setDataPosRead(buf);
     }
     break;
@@ -731,6 +731,35 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     u->SetAutoResponse(NULL);
     if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
+    /*
+    // Test of going online bytes
+    unsigned char c1 = 0;
+    if (bMultiPacket == 0)
+    {
+      unsigned short i = 0;
+      while (!packet.End())
+      {
+        packet >> c1;
+        printf("%02X", c1);
+        i++;
+        if (i % 4 == 0) printf(" | ");
+        if (i % 28 == 0) printf("\n");
+      }
+    }
+    else
+    {
+      unsigned short j = 0;
+      for (unsigned short i = 46; i < bMultiPacket; i++)
+      {
+        packet >> c1;
+        printf("%02X", c1);
+        j++;
+        if (j % 4 == 0) printf(" | ");
+        if (j % 28 == 0) { printf("\n"); }
+      }
+    }
+    printf("\n");
+    */
     break;
   }
 
@@ -1280,13 +1309,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     icqSendVisibleList();
 #if ICQ_VERSION != 5
     icqRequestSystemMsg();
+#endif
     // Send an update status packet to force hideip/webpresence
     if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS)
     {
       CICQEventTag *t = icqSetStatus(m_nDesiredStatus);
       if (t != NULL) delete t;
     }
-#endif
 
     break;
   }
