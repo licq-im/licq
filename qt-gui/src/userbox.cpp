@@ -880,7 +880,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
         if(!(text = QUriDrag::uriToLocalFile(lst.first())).isEmpty()) {
           UserSendFileEvent* e = static_cast<UserSendFileEvent*>
             (gMainWindow->callFunction(mnuUserSendFile, it->ItemUin()));
-          e->setFile(text.mid(5), QString::null);
+          e->setFile(text, QString::null);
           e->show();
         }
         else {
