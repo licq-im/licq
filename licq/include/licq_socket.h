@@ -125,6 +125,7 @@ public:
   void TransferConnectionFrom(TCPSocket &from);
 
   bool Secure() { return m_pSSL != NULL; }
+  bool SSL_Pending();
 
   bool SecureConnect();
   bool SecureListen();

@@ -799,6 +799,16 @@ TCPSocket::~TCPSocket()
 }
 
 
+bool TCPSocket::SSL_Pending()
+{
+#ifdef USE_OPENSSL
+  return (m_pSSL && SSL_pending(m_pSSL));
+#else
+  return false;
+#endif;
+}
+
+
 
 #ifdef USE_OPENSSL /*-----Start of OpenSSL code----------------------------*/
 

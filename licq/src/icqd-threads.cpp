@@ -353,9 +353,9 @@ void *MonitorSockets_tep(void *p)
     while (nSocketsAvailable > 0 && nCurrentSocket < l)
     {
       if (FD_ISSET(nCurrentSocket, &f)
-#ifdef USE_OPENSSL
+/*#ifdef USE_OPENSSL
           || FD_ISSET(nCurrentSocket, &gSSL_pending)
-#endif
+#endif*/
          )
       {
         // New socket event ----------------------------------------------------
@@ -425,99 +425,104 @@ void *MonitorSockets_tep(void *p)
         else
         {
           DEBUG_THREADS("[MonitorSockets_tep] Data on TCP user socket.\n");
+
+          ssl_recv:
+
           tcp = (TCPSocket *)gSocketManager.FetchSocket(nCurrentSocket);
+
           // If tcp is NULL then the socket is no longer in the set, hence it
           // must have been closed by us and we can ignore it.
           if (tcp == NULL)
+            goto socket_done;
+
+          if (!tcp->RecvPacket())
           {
-            //gLog.Warn("%sInvalid user TCP socket in set.\n", L_WARNxSTR);
-            //close(nCurrentSocket);
+            int err = tcp->Error();
+            if (err == 0)
+              gLog.Info("%sConnection to %ld was closed.\n", L_TCPxSTR, tcp->Owner());
+            else
+            {
+              char buf[128];
+              gLog.Info("%sConnection to %ld lost:\n%s%s.\n", L_TCPxSTR, tcp->Owner(),
+                        L_BLANKxSTR, tcp->ErrorStr(buf, 128));
+            }
+            gSocketManager.DropSocket(tcp);
+            gSocketManager.CloseSocket(nCurrentSocket);
+            d->FailEvents(nCurrentSocket, err);
+            /*
+            // Go through all running events and fail all from this socket
+            ICQEvent *e = NULL;
+            do
+            {
+              e = NULL;
+              pthread_mutex_lock(&d->mutex_runningevents);
+              list<ICQEvent *>::iterator iter;
+              for (iter = d->m_lxRunningEvents.begin(); iter != d->m_lxRunningEvents.end(); iter++)
+              {
+                if ((*iter)->m_nSocketDesc == nCurrentSocket)
+                {
+                  e = *iter;
+                  break;
+                }
+              }
+              pthread_mutex_unlock(&d->mutex_runningevents);
+              if (e != NULL && d->DoneEvent(e, EVENT_ERROR) != NULL)
+              {
+                // If the connection was reset, we can try again
+                if (err == ECONNRESET)
+                {
+                  e->m_nSocketDesc = -1;
+                  d->SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
+                }
+                else
+                {
+                  d->ProcessDoneEvent(e);
+                }
+              }
+            } while (e != NULL);
+            */
+
+            //goto socket_done;
+            break;
+          }
+
+          // Save the bytes pending status of the socket
+          bool bPending = tcp->SSL_Pending();
+          bool r = true;
+
+          // Process the packet if the buffer is full
+          if (tcp->RecvBufferFull())
+          {
+            if (tcp->Owner() == 0)
+              r = d->ProcessTcpHandshake(tcp);
+            else
+              r = d->ProcessTcpPacket(tcp);
+            tcp->ClearRecvBuffer();
+          }
+
+          // Kill the socket if there was a problem
+          if (!r)
+          {
+            gLog.Info("%sClosing connection to %ld.\n", L_TCPxSTR, tcp->Owner());
+            gSocketManager.DropSocket(tcp);
+            gSocketManager.CloseSocket(nCurrentSocket);
+            d->FailEvents(nCurrentSocket, 0);
+            bPending = false;
           }
           else
           {
-            if (!tcp->RecvPacket())
-            {
-              int err = tcp->Error();
-              if (err == 0)
-                gLog.Info("%sConnection to %ld was closed.\n", L_TCPxSTR, tcp->Owner());
-              else
-              {
-                char buf[128];
-                gLog.Info("%sConnection to %ld lost:\n%s%s.\n", L_TCPxSTR, tcp->Owner(),
-                          L_BLANKxSTR, tcp->ErrorStr(buf, 128));
-              }
-              gSocketManager.DropSocket(tcp);
-              gSocketManager.CloseSocket(nCurrentSocket);
-              // Go through all running events and fail all from this socket
-              ICQEvent *e = NULL;
-              do
-              {
-                e = NULL;
-                pthread_mutex_lock(&d->mutex_runningevents);
-                list<ICQEvent *>::iterator iter;
-                for (iter = d->m_lxRunningEvents.begin(); iter != d->m_lxRunningEvents.end(); iter++)
-                {
-                  if ((*iter)->m_nSocketDesc == nCurrentSocket)
-                  {
-                    e = *iter;
-                    break;
-                  }
-                }
-                pthread_mutex_unlock(&d->mutex_runningevents);
-                if (e != NULL && d->DoneEvent(e, EVENT_ERROR) != NULL)
-                {
-                  // If the connection was reset, we can try again
-                  if (err == ECONNRESET)
-                  {
-                    e->m_nSocketDesc = -1;
-                    d->SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
-                  }
-                  else
-                  {
-                    d->ProcessDoneEvent(e);
-                  }
-                }
-              } while (e != NULL);
-
-              break;
-            }
-            if (tcp->RecvBufferFull())
-            {
-              bool r = false;
-              if (tcp->Owner() == 0)
-                r = d->ProcessTcpHandshake(tcp);
-              else
-                r = d->ProcessTcpPacket(tcp);
-              tcp->ClearRecvBuffer();
-              if (!r)
-              {
-                gLog.Info("%sClosing connection to %ld.\n", L_TCPxSTR, tcp->Owner());
-                gSocketManager.DropSocket(tcp);
-                gSocketManager.CloseSocket(nCurrentSocket);
-              }
-              else
-                gSocketManager.DropSocket(tcp);
-            }
-            else
-              gSocketManager.DropSocket(tcp);
+            gSocketManager.DropSocket(tcp);
           }
+
+          // If there is more data pending then go again
+          if (bPending) goto ssl_recv;
         }
 
-#ifdef USE_OPENSSL
-        // Only reduce the number of sockets if we aren't still pending
-        if (!FD_ISSET(nCurrentSocket, &gSSL_pending))
-          nSocketsAvailable--;
-#else
+        socket_done:
+
         nSocketsAvailable--;
-#endif
       }
-#ifdef USE_OPENSSL
-      // Only increase the socket number if we aren't still pending
-      if (!FD_ISSET(nCurrentSocket, &gSSL_pending))
-        nCurrentSocket++;
-#else
       nCurrentSocket++;
-#endif
     }
   }
   return NULL;

@@ -346,6 +346,7 @@ protected:
   void icqRequestSystemMsg();
   void SaveUserList();
 
+  void FailEvents(int sd, int err);
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);
   ICQEvent *DoneEvent(CICQEventTag *tag, EventResult _eResult);

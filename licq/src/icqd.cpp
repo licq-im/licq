@@ -1003,6 +1003,46 @@ bool CICQDaemon::SendEvent(INetSocket *pSock, CPacket &p, bool d)
 
 
 /*------------------------------------------------------------------------------
+ * FailEvents
+ *
+ * Fails all events on the given socket.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::FailEvents(int sd, int err)
+{
+  // Go through all running events and fail all from this socket
+  ICQEvent *e = NULL;
+  do
+  {
+    e = NULL;
+    pthread_mutex_lock(&mutex_runningevents);
+    list<ICQEvent *>::iterator iter;
+    for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+    {
+      if ((*iter)->m_nSocketDesc == sd)
+      {
+        e = *iter;
+        break;
+      }
+    }
+    pthread_mutex_unlock(&mutex_runningevents);
+    if (e != NULL && DoneEvent(e, EVENT_ERROR) != NULL)
+    {
+      // If the connection was reset, we can try again
+      if (err == ECONNRESET)
+      {
+        e->m_nSocketDesc = -1;
+        SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
+      }
+      else
+      {
+        ProcessDoneEvent(e);
+      }
+    }
+  } while (e != NULL);
+}
+
+
+/*------------------------------------------------------------------------------
  * DoneEvent
  *
  * Marks the given event as done and removes it from the running events list.
