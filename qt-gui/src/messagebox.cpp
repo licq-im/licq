@@ -107,7 +107,7 @@ void MsgViewItem::SetEventLine()
     {
       width -= fm.width(sz[n]);
       if (width <= 0) break;
-      s += sz[n++];
+      s += QString::fromLocal8Bit( &sz[n++], 1 );
     }
     if (sz[n] != '\0')
       s += "...]";
