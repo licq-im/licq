@@ -898,6 +898,8 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
   m_fConf.ReadBool("SendRealIp", m_bSendRealIp, false);
+  m_fConf.ReadStr( "UserCharset", m_szCharset, "" );
+
   SetCustomAutoResponse(szTemp);
 
   m_fConf.ReadStr("History", szTemp, "default");
@@ -948,31 +950,54 @@ ICQUser::~ICQUser()
        USER_EVENTS, m_nUin, nId));
   }
 
-  /* FIXME memory leak, but requires calling free, and that's a lot of typing
-  m_szAutoResponse = NULL;
-  m_szAlias = NULL;
-  m_szFirstName = NULL;
-  m_szLastName = NULL;
-  m_szEmail1 = NULL;
-  m_szEmail2 = NULL;
-  m_szCity = NULL;
-  m_szState = NULL;
-  m_szPhoneNumber = NULL;
-  m_szFaxNumber = NULL;
-  m_szAddress = NULL;
-  m_szCellularNumber = NULL;
-  m_szHomepage = NULL;
-  m_szCompanyCity = NULL;
-  m_szCompanyState = NULL;
-  m_szCompanyPhoneNumber = NULL;
-  m_szCompanyFaxNumber = NULL;
-  m_szCompanyAddress = NULL;
-  m_szCompanyName = NULL;
-  m_szCompanyDepartment = NULL;
-  m_szCompanyPosition = NULL;
-  m_szCompanyHomepage = NULL;
-  m_szAbout = NULL;
-  m_szCustomAutoResponse = NULL;*/
+  if ( m_szAutoResponse )
+      free( m_szAutoResponse );
+  if ( m_szCharset )
+      free( m_szCharset );
+  if ( m_szAlias )
+      free( m_szAlias );
+  if ( m_szFirstName )
+      free( m_szFirstName );
+  if ( m_szLastName )
+      free( m_szLastName );
+  if ( m_szEmailPrimary )
+      free( m_szEmailPrimary );
+  if ( m_szEmailSecondary )
+      free( m_szEmailSecondary );
+  if ( m_szCity )
+      free( m_szCity );
+  if ( m_szState )
+      free( m_szState );
+  if ( m_szPhoneNumber )
+      free( m_szPhoneNumber );
+  if ( m_szFaxNumber )
+      free( m_szFaxNumber );
+  if ( m_szAddress )
+      free( m_szAddress );
+  if ( m_szCellularNumber )
+      free( m_szCellularNumber );
+  if ( m_szCompanyCity )
+      free( m_szCompanyCity );
+  if ( m_szCompanyState )
+      free( m_szCompanyState );
+  if ( m_szCompanyPhoneNumber )
+      free( m_szCompanyPhoneNumber );
+  if ( m_szCompanyFaxNumber )
+      free( m_szCompanyFaxNumber );
+  if ( m_szCompanyAddress )
+      free( m_szCompanyAddress );
+  if ( m_szCompanyName )
+      free( m_szCompanyName );
+  if ( m_szCompanyDepartment )
+      free( m_szCompanyDepartment );
+  if ( m_szCompanyPosition )
+      free( m_szCompanyPosition );
+  if ( m_szCompanyHomepage )
+      free( m_szCompanyHomepage );
+  if ( m_szAbout )
+      free( m_szAbout );
+  if ( m_szCustomAutoResponse )
+      free( m_szCustomAutoResponse );
 
 /*
   // Destroy the mutex
@@ -1013,6 +1038,7 @@ void ICQUser::Init(unsigned long _nUin)
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
+  m_szCharset = NULL;
   m_bSecure = false;
 
   // General Info
@@ -1829,6 +1855,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
+   m_fConf.WriteStr("UserCharset", m_szCharset );
 
    if (!m_fConf.FlushFile())
    {
