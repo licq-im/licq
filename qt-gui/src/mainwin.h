@@ -60,7 +60,11 @@ public:
               const char *skinName, const char *iconsName,
               QWidget *parent = 0);
   virtual ~CMainWindow();
+<<<<<<< mainwin.h
+  UserEventCommon *callFunction(int fcn, unsigned long nUin);
+=======
   UserEventCommon* callFunction(int fcn, unsigned long _nUin);
+>>>>>>> 1.44
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(unsigned long, QWidget *);
   void ApplySkin(const char *, bool = false);

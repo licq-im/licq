@@ -50,6 +50,7 @@ extern "C" {
 #include <qimage.h>
 #include <qwindowsstyle.h>
 #include <qdatetime.h>
+#include <qclipboard.h>
 
 #include "mainwin.h"
 #include "licq_icq.h"
@@ -1327,6 +1328,22 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   int fcn = (u->NewMessages() == 0 ? mnuUserSendMsg : mnuUserView);
   gUserManager.DropUser(u);
 
+  // See if the clipboard contains a url
+  if (fcn == mnuUserSendMsg)
+  {
+    QString c = QApplication::clipboard()->text();
+    if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(5) == "file:")
+    {
+      UserSendUrlEvent *e = (UserSendUrlEvent *)callFunction(mnuUserSendUrl, nUin);
+      if (e == NULL) return;
+      // Set the url
+      e->setUrl(c, "");
+      // Clear the buffer now
+      QApplication::clipboard()->clear();
+      return;
+    }
+  }
+
   callFunction(fcn, nUin);
 }
 
@@ -1547,9 +1564,9 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 
 
 //-----CMainWindow::callICQFunction-------------------------------------------
-UserEventCommon* CMainWindow::callFunction(int fcn, unsigned long nUin)
+UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
-  if (nUin == 0) return 0;
+  if (nUin == 0) return NULL;
 
   UserEventCommon *e = NULL;
 
