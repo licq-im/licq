@@ -55,7 +55,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   QGroupBox *box = new QGroupBox(1, QGroupBox::Horizontal, tr("Options"), this);
   lay->addWidget(box);
 
-  QGroupBox *passwordBox = new QGroupBox(2, QGroupBox::Horizontal, 
+  QGroupBox *passwordBox = new QGroupBox(2, QGroupBox::Horizontal,
     tr("Password/UIN settings"), this);
 #if QT_VERSION > 300
   box->setInsideSpacing(1);
@@ -68,7 +68,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   edtUin = new QLineEdit(passwordBox);
   QWhatsThis::add(edtUin, tr("Enter the UIN which you want to use.  "
                              "Only available if \"Local changes only\" is "
-                             "checked.")); 
+                             "checked."));
   lblPassword = new QLabel(tr("&Password:"), passwordBox);
   edtFirst = new QLineEdit(passwordBox);
   QWhatsThis::add(edtFirst, tr("Enter your ICQ password here."));
@@ -240,8 +240,8 @@ void SecurityDlg::ok()
           chkHideIp->isChecked(), chkWebAware->isChecked());
       if (pasUpdateNeeded)
         ePasswordChange = server->icqSetPassword(edtFirst->text().local8Bit());
+      setCaption(tr("ICQ Security Options [Setting...]"));
     }
-    setCaption(tr("ICQ Security Options [Setting...]"));
   }
   else
     close();
