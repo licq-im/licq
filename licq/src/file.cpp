@@ -22,9 +22,10 @@ extern int errno;
 
 
 //=====Pre class helper functions==============================================
-/*-----Trim--------------------------------------------------------------------
- * Removes leading and trailing spaces from a string
- *---------------------------------------------------------------------------*/
+
+//---Trim----------------------------------------------------------------------
+/*! \brief Removes leading and trailing spaces from a string 
+ */
 void Trim(char *_sz)
 {
   if (_sz == NULL)
@@ -62,9 +63,9 @@ void Trim(char *_sz)
 }
 
 
-/*-----AddNewLines-------------------------------------------------------------
- * Replaces all occurences of "\n" in a string by '\n'
- *---------------------------------------------------------------------------*/
+//---AddNewLines---------------------------------------------------------------
+/*! \brief Replaces all occurences of "\n" in a string by '\n'
+ */
 void AddNewLines(char *_szDest, const char *_szSource)
 {
   if (_szSource == NULL || _szDest == NULL)
@@ -90,9 +91,9 @@ void AddNewLines(char *_szDest, const char *_szSource)
 }
 
 
-/*-----RemoveNewLines----------------------------------------------------------
- * Replaces all occurences of '\n' in a string by "\n"
- *---------------------------------------------------------------------------*/
+//---RemoveNewLines------------------------------------------------------------
+/*! \brief Replaces all occurences of '\n' in a string by "\n"
+ */
 void RemoveNewLines(char *_szDest, int _nDestSize, const char *_szSource)
 {
   if (_szSource == NULL || _szDest == NULL)
@@ -155,6 +156,12 @@ CIniFile::~CIniFile()
 
 
 //-----CloseFile---------------------------------------------------------------
+/*! \brief Free's the buffer which contains the file content.
+ *
+ * Free's all memory that is occupied by the current buffer.
+ * No file descriptors are closed herein because the file is closed 
+ * immediately after beeing loaded at CIniFile::LoadFile.
+ */
 void CIniFile::CloseFile()
 {
   if (m_szBuffer != NULL)
@@ -178,6 +185,13 @@ void CIniFile::CloseFile()
 
 
 //-----LoadFile----------------------------------------------------------------
+/*! \brief Loads file _szFilename into a buffer and closes it afterwards
+ *
+ * Loads the specified file. If it does not already exist and INI_FxALLOWxCREATE 
+ * is set it will be created. If file does not exist and it cannot be created 
+ * a warning is generated and "false" is beeing returned.
+ * After the file has been loaded into memory it is closed immediately.
+ */
 bool CIniFile::LoadFile(const char *_szFilename)
 {
   CloseFile();
@@ -234,6 +248,8 @@ bool CIniFile::LoadFile(const char *_szFilename)
 
 
 //-----ReloadFile--------------------------------------------------------------
+/*! \brief Reloads currently loaded file.
+ */
 bool CIniFile::ReloadFile()
 {
   return(LoadFile(m_szFilename));
@@ -243,6 +259,14 @@ bool CIniFile::ReloadFile()
 //-----FlushFile---------------------------------------------------------------
 /* FlushFile is susceptible to a symlink attack. If [m_szFilename].new
  * already exists, it will be truncated and removed. */
+
+/*! \brief Writes the buffer to disk.
+ *
+ * Writes the current buffer contents to disk. Everything is written to
+ * <filename>.new first and on success the resulting file is renamed to
+ * <filename>. The permissions of the original file are beeing preserved.
+ * Returns true on success, otherwise returns false.
+ */
 bool CIniFile::FlushFile()
 {
   // Write files atomically to avoid config trashing.
@@ -311,10 +335,12 @@ void CIniFile::SetFileName(const char *_szFilename)
 }
 
 
-/*-----Warn--------------------------------------------------------------------
- * Print out an error message using the standard log.  Can output warnings
- * and/or errors.  If the fatal flag is set, the program will terminate.
- *---------------------------------------------------------------------------*/
+//-----Warn--------------------------------------------------------------------
+/*! \brief Print out an error message.
+ *
+ * Print out an error message using the standard log. Can output warnings
+ * and/or errors. If the INI_FxFATAL flag is set, the program will terminate.
+ */
 void CIniFile::Warn(int nError, const char *_sz)
 {
   switch(nError)
@@ -379,11 +405,13 @@ void CIniFile::Warn(int nError, const char *_sz)
 }
 
 
-/*-----ReadLine----------------------------------------------------------------
- * Reads in characters from the file starting with the current position and
- * ending at the first new line.  Returns NULL if we are already at the EOF
+//-----ReadLine----------------------------------------------------------------
+/*! \brief Reads in characters from the file.
+ *
+ * Reads in characters from the file starting with the current position and 
+ * ending at the first new line.  Returns NULL if we are already at the EOF 
  * or EOS.  Will not return lines beginning with a # (comments)
- *---------------------------------------------------------------------------*/
+ */
 char *CIniFile::ReadLine(char *_szDest, int _nDestSize)
 {
   int i = 0;
@@ -411,11 +439,13 @@ char *CIniFile::ReadLine(char *_szDest, int _nDestSize)
 }
 
 
-/*-----GetSectionFromLine------------------------------------------------------
- * Extracts the section name from a given line of text.  Returns an empty
- * string if the line does not contain a section, or NULL if the given line
+//-----GetSectionFromLine------------------------------------------------------
+/*! \brief Extracts the section name from a given line of text.
+ *
+ * Extracts the section name from a given line of text.  Returns an empty 
+ * string if the line does not contain a section, or NULL if the given line 
  * is NULL or there is an open ([) with no closing (]).
- *---------------------------------------------------------------------------*/
+ */
 char *CIniFile::GetSectionFromLine(char *_szBuffer, const char *_szLine)
 {
   //static char s_szSectionName[MAX_SECTIONxNAME_LEN];
@@ -445,10 +475,12 @@ char *CIniFile::GetSectionFromLine(char *_szBuffer, const char *_szLine)
 }
 
 
-/*-----GetKeyFromLine----------------------------------------------------------
+//-----GetKeyFromLine----------------------------------------------------------
+/*! \brief Extracts a key name from a given line of text.
+ *
  * Extracts a key name from a given line of text.  Returns NULL if the given
  * line is NULL or if there is no = on a non-empty the line.
- *---------------------------------------------------------------------------*/
+ */
 char *CIniFile::GetKeyFromLine(char *_szBuffer, const char *_szLine)
 {
   if (_szLine == NULL) return NULL;
@@ -478,10 +510,12 @@ char *CIniFile::GetKeyFromLine(char *_szBuffer, const char *_szLine)
 }
 
 
-/*-----GetDataFromLine---------------------------------------------------------
+//-----GetDataFromLine---------------------------------------------------------
+/*! \brief Extracts data from a given line.
+ *
  * Extracts the data from a given line, ie the characters after the '='.
  * Returns NULL if the given line is NULL or there is no '=' on the line.
- *---------------------------------------------------------------------------*/
+ */
 char *CIniFile::GetDataFromLine(char *_szBuffer, const char *_szLine,
                                 bool bTrim)
 {
@@ -517,11 +551,13 @@ char *CIniFile::GetDataFromLine(char *_szBuffer, const char *_szLine,
 }
 
 
-/*-----SetSection--------------------------------------------------------------
+//-----SetSection--------------------------------------------------------------
+/*! \brief Sets the section pointer to the relevant position.
+ *
  * Sets the section pointers to the relevant positions in the buffer.
  * Returns false if the section name is NULL or the section cannot be found
  * and ALLOWxCREATE is not set.
- *---------------------------------------------------------------------------*/
+ */
 bool CIniFile::SetSection(const char *_szSection)
 {
   if (_szSection == NULL) return (false);
@@ -583,9 +619,9 @@ bool CIniFile::SetSection(const char *_szSection)
 }
 
 
-/*-----ReadStr-----------------------------------------------------------------
- * Finds a key and sets the data.  Returns false if the key does not exist.
- *---------------------------------------------------------------------------*/
+//-----ReadStr-----------------------------------------------------------------
+/*! \brief Finds a key and sets the data.  Returns false if the key does not exist.
+ */
 bool CIniFile::ReadStr(const char *szKey, char *szData,
                        const char *szDefault, bool bTrim)
 {
@@ -615,10 +651,12 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
 }
 
 
-/*-----ReadNum-----------------------------------------------------------------
+//-----ReadNum-----------------------------------------------------------------
+/*! \brief Reads numeric data from a key.
+ *
  * Finds a key and sets the numeric data.  Returns false if the key does not
  * exist.
- *---------------------------------------------------------------------------*/
+ */
 bool CIniFile::ReadNum(const char *_szKey, unsigned long &data,
                        const unsigned long _nDefault)
 {
@@ -676,6 +714,12 @@ bool CIniFile::ReadNum(const char *_szKey, signed short &data,
 }
 
 
+//-----ReadBool----------------------------------------------------------------
+/*! \brief Reads bool info from a key.
+ *
+ * Finds a key and sets true or false. "0" means false, all other values 
+ * mean true.  Returns false if the key does not exist.
+ */
 bool CIniFile::ReadBool(const char *_szKey, bool &data, const bool _bDefault)
 {
   char szData[MAX_LINE_LEN];
@@ -692,15 +736,17 @@ bool CIniFile::ReadBool(const char *_szKey, bool &data, const bool _bDefault)
 
 
 
-/*-----InsertStr---------------------------------------------------------------
- * Inserts a string into the buffer, creating a new buffer in the process.
+//-----InsertStr---------------------------------------------------------------
+/*! \brief Insert a string into the buffer
+ *
+ * Inserts a string into the buffer, creating a new buffer in the process. 
  * Used by WriteStr and CreateSection.
- *---------------------------------------------------------------------------*/
+ */
 void CIniFile::InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd)
 {
   int nNewStrLen = strlen(_szNewStr);
   int nNewBufSize = _nCutStart + nNewStrLen + m_nBufSize - _nCutEnd;
-
+  
   char *szNewBuffer = (char *)malloc(nNewBufSize + 1);
   memcpy(szNewBuffer, m_szBuffer, _nCutStart);
   memcpy(szNewBuffer + _nCutStart, _szNewStr, nNewStrLen);
@@ -714,13 +760,15 @@ void CIniFile::InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd)
 }
 
 
-/*-----CreateSection-----------------------------------------------------------
+//-----CreateSection-----------------------------------------------------------
+/*! \brief Creates a new section in the buffer.
+ *
  * Creates a new section in the buffer.  Checks first to see if the section
  * exists.  Returns true if a new section was created.
- *---------------------------------------------------------------------------*/
+ */
 bool CIniFile::CreateSection(const char *_szSectionName)
 {
-  // Try setting the section, if we succeed the the section exists already
+  // Try setting the section, if we succeed the section exists already
   // First remove the warning flag so that we don't spit out useless warnings
   unsigned short nFlags = m_nFlags;
   ClearFlag(INI_FxWARN | INI_FxALLOWxCREATE);
@@ -745,10 +793,12 @@ bool CIniFile::CreateSection(const char *_szSectionName)
 }
 
 
-/*-----WriteStr----------------------------------------------------------------
- * Writes a string to the buffer replacing the given key or creating a new
+//-----WriteStr----------------------------------------------------------------
+/*! \brief Writes a string to the buffer.
+ *
+ * Writes a string to the buffer replacing the given key or creating a new 
  * key at the end of the current section.  Always returns true.
- *---------------------------------------------------------------------------*/
+ */
 bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
