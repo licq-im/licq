@@ -5,7 +5,7 @@ dnl Copyright (c) 2000 Dirk A. Mueller
 AC_DEFUN(AC_PATH_QT,
 [
   AC_ARG_WITH(qt,
-    [  --with-qt               where QT v2.1.x or higher is located. ],
+    [  --with-qt               where QT v3.x or higher is located. ],
     [  QTDIR="$withval" ])
 ])
 
@@ -150,7 +150,7 @@ AC_DEFUN(AC_PATH_QT_INC,
         if test -r "$qt_dir/qbig5codec.h"; then
           if test -r "$qt_dir/qtranslatordialog.h"; then
             AC_MSG_ERROR([
-              This is not Qt 2.1.0 or later. Somebody cheated you.
+              This is not Qt 3.x or later. Somebody cheated you.
 
               Most likely this is because you've installed a crappy
               outdated Redhat 6.2 RPM. Go to ftp://people.redhat.com/bero/qt
@@ -185,7 +185,7 @@ AC_DEFUN(AC_PATH_QT_INC,
 AC_DEFUN(AC_PATH_QT_MOC,
 [
   AC_ARG_WITH(qt-moc,
-    [  --with-qt-moc           where the QT 2.1.x moc is located. ],
+    [  --with-qt-moc           where the QT 3.x moc is located. ],
     [  ac_qt_moc="$withval" ], ac_qt_moc="")
 
   if test -z "$ac_qt_moc"; then
@@ -225,14 +225,14 @@ AC_DEFUN(AC_PATH_QT_MOC,
 
         The Qt meta object compiler (moc)
         $MOC
-        found by configure is not the one part of Qt 2.1.x.
+        found by configure is not the one part of Qt 3.x.
 
         It's likely that the found one is the one shipped with
-        Qt 1.xx. That one will not work.
+        Qt 1.x or Qt 2.x. That one will not work.
 
         Please check your installation.
         Use the --with-qt-moc option to specify the path and name
-        of the moc compiler shipped with your Qt 2.1 lib.
+        of the moc compiler shipped with your Qt 3.x lib.
         Some distributions rename it to "moc2", maybe you find that
         on your system.
 
@@ -245,7 +245,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
 
 AC_DEFUN(AC_CHECK_QT_SETUP,
 [
-  AC_MSG_CHECKING(for QT >= 2.1)
+  AC_MSG_CHECKING(for QT >= 3.x)
 
   AC_CACHE_VAL(ac_cv_qt_setup, 
   [
@@ -277,7 +277,7 @@ AC_DEFUN(AC_CHECK_QT_SETUP,
 
   if test "$ac_cv_qt_setup" != "yes"; then
     AC_MSG_ERROR([
-      Sorry, but you need QT version 2.1 or higher to compile the Qt gui plugin.
+      Sorry, but you need QT version 3.x or higher to compile the Qt gui plugin.
     ])
   fi
 ])
