@@ -65,7 +65,7 @@
 /*
   Constructs a WharfIcon widget.
 */
-IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent = 0)
+IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent)
   : QWidget(parent, "LicqWharf", WType_TopLevel)
 {
   setCaption("LicqWharf");

@@ -465,7 +465,7 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 
 //- Message View Widget ---------------------------------------------------------
 
-CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, const char * name =0)
+CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent, const char * name)
 :CHistoryWidget(parent,name)
 {
   m_nUin= _nUin;
