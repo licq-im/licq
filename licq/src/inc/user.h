@@ -145,6 +145,9 @@ public:
   bool ShowAwayMsg(void)                    { return m_bShowAwayMsg; }
   unsigned long Uin(void)                   { return m_nUin; }
   unsigned long Sequence(bool = false);
+  unsigned long RealIp(void)                { return m_nRealIp; }
+  char Mode(void)                           { return m_nMode; }
+  unsigned long Version(void)               { return m_nVersion; }
 
   unsigned long SortKey(void);
   static void SetSortKey(ESortKey);
@@ -202,6 +205,9 @@ public:
   void SetNewUser(bool s)             { m_bNewUser = s; SaveLicqInfo(); }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
+  void SetRealIp(unsigned long s)     { m_nRealIp = s; }
+  void SetMode(char s)                { m_nMode = s; }
+  void SetVersion(unsigned long s)    { m_nVersion = s; }
 
   // Status
   unsigned short Status(void);
@@ -282,12 +288,13 @@ protected:
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nSocketDesc;
-  unsigned long m_nIp;
+  unsigned long m_nIp, m_nRealIp, m_nVersion;
   unsigned short m_nPort;
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,
                 m_nGroups[2];
+  char m_nMode;
   char *m_szAutoResponse;
   bool m_bOnline,
        m_bNewUser,

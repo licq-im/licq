@@ -958,7 +958,9 @@ void ICQUser::Init(unsigned long _nUin)
   SetSequence(1);
   ClearSocketDesc();
   fcnDlg = NULL;
-  m_nIp = m_nPort = 0;
+  m_nIp = m_nPort = m_nRealIp = 0;
+  m_nMode = MODE_DIRECT;
+  m_nVersion = 0x03;
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -1342,7 +1344,7 @@ void ICQUser::SaveGeneralInfo(void)
   m_fConf.WriteStr("CellularNumber", m_szCellularNumber);
   m_fConf.WriteNum("Zipcode", m_nZipCode);
   m_fConf.WriteNum("Country", m_nCountryCode);
-  m_fConf.WriteNum("Timezone", (signed short)m_nTimezone);
+  m_fConf.WriteNum("Timezone", m_nTimezone);
   m_fConf.WriteBool("Authorization", m_bAuthorization);
   m_fConf.WriteBool("HideEmail", m_bHideEmail);
 
