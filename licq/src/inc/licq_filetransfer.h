@@ -168,6 +168,7 @@ friend class CFileTransferManager;
 typedef list<CFileTransferEvent *> FileTransferEventList;
 typedef list<const char *> ConstFileList;
 typedef list<char *> FileList;
+typedef list<class CFileTransferManager *> FileTransferManagerList;
 
 
 class CFileTransferManager
@@ -212,7 +213,12 @@ public:
   int Pipe() { return pipe_events[PIPE_READ]; }
   CFileTransferEvent *PopFileTransferEvent();
 
+  void AcceptReverseConnection(TCPSocket *);
+  static CFileTransferManager *FindByPort(unsigned short);
+
 protected:
+  static FileTransferManagerList ftmList;
+
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
   FileTransferEventList ftEvents;

@@ -526,6 +526,9 @@ CChatEvent::~CChatEvent()
 
 
 //=====ChatManager===========================================================
+ChatManagerList CChatManager::cmList;
+
+
 CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   const char *fontFamily, unsigned short fontSize, bool fontBold,
   bool fontItalic, bool fontUnderline, int fr, int fg, int fb,
@@ -557,6 +560,8 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   m_nColorBack[2] = bb;
   m_bFocus = true;
   m_bSleep = false;
+
+  cmList.push_back(this);
 }
 
 
@@ -655,6 +660,36 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   sockman.DropSocket(&u->sock);
 
   return true;
+}
+
+
+//-----CChatManager::AcceptReverseConnection---------------------------------
+void CChatManager::AcceptReverseConnection(TCPSocket *s)
+{
+  CChatUser *u = new CChatUser;
+  u->sock.TransferConnectionFrom(*s);
+
+  u->client.m_nVersion = s->Version();
+  u->client.m_nUin = s->Owner();
+  u->client.m_nIp = s->RemoteIp();
+  u->client.m_nRealIp = s->RemoteIp();
+  u->client.m_nMode = MODE_DIRECT;
+  u->client.m_nHandshake = 0x64;
+
+  // These will still need to be set
+  u->client.m_nPort = 0;
+  u->client.m_nSession = 0;
+
+  u->uin = u->client.m_nUin;
+  u->state = CHAT_STATE_WAITxFORxCOLOR;
+  chatUsers.push_back(u);
+
+  // Reload the socket information
+  sockman.AddSocket(&u->sock);
+  sockman.DropSocket(&u->sock);
+  write(pipe_thread[PIPE_WRITE], "R", 1);
+
+  gLog.Info("%sChat: Received reverse connection.\n", L_TCPxSTR);
 }
 
 
@@ -1640,6 +1675,16 @@ void *ChatManager_tep(void *arg)
 }
 
 
+CChatManager *CChatManager::FindByPort(unsigned short p)
+{
+  ChatManagerList::iterator iter;
+  for (iter = cmList.begin(); iter != cmList.end(); iter++)
+  {
+    if ( (*iter)->LocalPort() == p) return *iter;
+  }
+  return NULL;
+}
+
 
 CChatManager::~CChatManager()
 {
@@ -1662,5 +1707,12 @@ CChatManager::~CChatManager()
     delete e;
     chatEvents.pop_front();
   }
+
+  ChatManagerList::iterator iter;
+  for (iter = cmList.begin(); iter != cmList.end(); iter++)
+  {
+    if (*iter == this) break;
+  }
+  if (iter != cmList.end()) cmList.erase(iter);
 }
 

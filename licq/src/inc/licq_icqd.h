@@ -373,7 +373,7 @@ protected:
   int ConnectToServer();
   int ConnectToUser(unsigned long);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
-                           unsigned short nPort, unsigned short nVersion);
+     unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort);
 
   void StupidChatLinkageFix();
 

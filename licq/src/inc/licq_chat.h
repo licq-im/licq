@@ -432,6 +432,7 @@ typedef list <CChatEvent *> ChatEventList;
 
 
 //=====ChatManager===========================================================
+typedef list<class CChatManager *> ChatManagerList;
 
 class CChatManager
 {
@@ -479,7 +480,12 @@ public:
   int Pipe() { return pipe_events[PIPE_READ]; }
   CChatEvent *PopChatEvent();
 
+  void AcceptReverseConnection(TCPSocket *);
+  static CChatManager *FindByPort(unsigned short);
+
 protected:
+  static ChatManagerList cmList;
+
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
   unsigned long m_nUin;

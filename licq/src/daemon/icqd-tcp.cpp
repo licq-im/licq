@@ -511,7 +511,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
   {
     gUserManager.DropUser(u);
     struct timeval tv = { 2, 0 };
-    select(0, NULL, NULL, NULL, &tv);
+    if (select(0, NULL, NULL, NULL, &tv) == -1 && errno == EINTR) return -1;
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL) return -1;
   }
@@ -656,7 +656,7 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
 int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
-                                     unsigned short nPort, unsigned short nVersion)
+   unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort)
 {
   TCPSocket *s = new TCPSocket(nUin);
   char buf[32];
@@ -676,39 +676,59 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   }
 
   gLog.Info("%sReverse shaking hands with %ld.\n", L_TCPxSTR, nUin);
-  nPort = s->LocalPort();
-
   if (!Handshake_Send(s, nUin, nVersion))
   {
     delete s;
     return -1;
   }
-
-  /*CPacketTcp_Handshake_v2 p(nPort);
-  if (!s->SendPacket(p.getBuffer()))
-  {
-    char buf[128];
-    gLog.Warn("%sReverse handshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
-    delete s;
-    return -1;
-  }*/
-
-  // Add the new socket to the socket manager
-  gSocketManager.AddSocket(s);
-  int nSD = s->Descriptor();
   s->SetVersion(nVersion);
-  gSocketManager.DropSocket(s);
+  int nSD = s->Descriptor();
 
-  // Set the socket descriptor in the user if this user is on our list
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u != NULL)
+  // Find which socket this is for
+  TCPSocket *tcp = (TCPSocket *)gSocketManager.FetchSocket(m_nTCPSocketDesc);
+  unsigned short tcpPort = tcp ? tcp->LocalPort() : 0;
+  gSocketManager.DropSocket(tcp);
+
+  CFileTransferManager *ftm = NULL;
+  CChatManager *cm = NULL;
+
+  // Check if it's the main port
+  if (nFailedPort == tcpPort)
   {
-    u->SetSocketDesc(nSD, nPort, nVersion);
-    gUserManager.DropUser(u);
+    // Set the socket descriptor in the user if this user is on our list
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u != NULL)
+    {
+      u->SetSocketDesc(nSD, s->LocalPort(), nVersion);
+      gUserManager.DropUser(u);
+    }
+
+    // Add the new socket to the socket manager, alert the thread
+    gSocketManager.AddSocket(s);
+    gSocketManager.DropSocket(s);
+    write(pipe_newsocket[PIPE_WRITE], "S", 1);
   }
 
-  // Alert the select thread that there is a new socket
-  write(pipe_newsocket[PIPE_WRITE], "S", 1);
+  // File transfer port
+  else if ( (ftm = CFileTransferManager::FindByPort(nFailedPort)) != NULL)
+  {
+     ftm->AcceptReverseConnection(s);
+     delete s;
+  }
+
+  // Chat port
+  else if ( (cm = CChatManager::FindByPort(nFailedPort)) != NULL)
+  {
+     cm->AcceptReverseConnection(s);
+     delete s;
+  }
+
+  // What the--?
+  else
+  {
+    gLog.Warn("%sReverse connection to unknown port (%d).\n", L_WARNxSTR, nFailedPort);
+    delete s;
+  }
 
   return nSD;
 }
@@ -1299,24 +1319,25 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           u->GetAlias(), -theSequence, l);
       }
 
-      switch(ackFlags) {
-      case ICQ_TCPxACK_ONLINE:
-      case ICQ_TCPxACK_AWAY:
-      case ICQ_TCPxACK_NA:
-        gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
-          -theSequence, l);
-        nSubResult = ICQ_TCPxACK_ACCEPT;
-        break;
-      case ICQ_TCPxACK_OCCUPIED:
-      case ICQ_TCPxACK_DND:
-        gLog.Info("%sReturned from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
-          -theSequence, l);
-        nSubResult = ICQ_TCPxACK_RETURN;
-        break;
-      default:
-        gLog.Unknown("%sUnk Ack flags from %s (#%ld): %04x %s.\n", L_UNKNOWNxSTR,
-                     u->GetAlias(), -theSequence, ackFlags, l);
-        nSubResult = ICQ_TCPxACK_ACCEPT;
+      switch(ackFlags)
+      {
+        case ICQ_TCPxACK_ONLINE:
+        case ICQ_TCPxACK_AWAY:
+        case ICQ_TCPxACK_NA:
+          gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
+            -theSequence, l);
+          nSubResult = ICQ_TCPxACK_ACCEPT;
+          break;
+        case ICQ_TCPxACK_OCCUPIED:
+        case ICQ_TCPxACK_DND:
+          gLog.Info("%sReturned from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
+            -theSequence, l);
+          nSubResult = ICQ_TCPxACK_RETURN;
+          break;
+        default:
+          gLog.Unknown("%sUnknown ack flags from %s (#%ld): %04x %s.\n", L_UNKNOWNxSTR,
+                       u->GetAlias(), -theSequence, ackFlags, l);
+          nSubResult = ICQ_TCPxACK_ACCEPT;
       }
     }
 

@@ -143,6 +143,8 @@ CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d = NULL)
 
 
 
+FileTransferManagerList CFileTransferManager::ftmList;
+
 
 CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
 {
@@ -166,6 +168,8 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
 
   m_szFileName[0] = m_szPathName[0] = '\0';
   sprintf(m_szRemoteName, "%ld", m_nUin);
+
+  ftmList.push_back(this);
 }
 
 
@@ -270,8 +274,6 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   gLog.Info("%sFile Transfer: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
-  //CPacketTcp_Handshake_v2 p_handshake(ftSock.LocalPort());
-  //if (!SendPacket(&p_handshake)) return false;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned short nVersion = u->ConnectionVersion();
   gUserManager.DropUser(u);
@@ -289,6 +291,29 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   sockman.DropSocket(&ftSock);
 
   return true;
+}
+
+
+//-----CFileTransferManager::AcceptReverseConnection-------------------------
+void CFileTransferManager::AcceptReverseConnection(TCPSocket *s)
+{
+  if (ftSock.Descriptor() != -1)
+  {
+    gLog.Warn("%sFile Transfer: Attempted reverse connection when already connected.\n",
+       L_WARNxSTR);
+    return;
+  }
+
+  ftSock.TransferConnectionFrom(*s);
+  sockman.AddSocket(&ftSock);
+  sockman.DropSocket(&ftSock);
+
+  m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
+
+  // Reload socket info
+  write(pipe_thread[PIPE_WRITE], "R", 1);
+
+  gLog.Info("%sFile Transfer: Received reverse connection.\n", L_TCPxSTR);
 }
 
 
@@ -319,8 +344,6 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_HANDSHAKE:
     {
-      //unsigned char cHandshake = b.UnpackChar();
-      //if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
       if (!CICQDaemon::Handshake_Recv(&ftSock)) break;
       gLog.Info("%sFile Transfer: Received handshake.\n", L_TCPxSTR);
       m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
@@ -978,6 +1001,16 @@ void *FileTransferManager_tep(void *arg)
 }
 
 
+CFileTransferManager *CFileTransferManager::FindByPort(unsigned short p)
+{
+  FileTransferManagerList::iterator iter;
+  for (iter = ftmList.begin(); iter != ftmList.end(); iter++)
+  {
+    if ( (*iter)->LocalPort() == p ) return *iter;
+  }
+  return NULL;
+}
+
 
 CFileTransferManager::~CFileTransferManager()
 {
@@ -997,5 +1030,12 @@ CFileTransferManager::~CFileTransferManager()
   {
     free(*iter);
   }
+
+  FileTransferManagerList::iterator fiter;
+  for (fiter = ftmList.begin(); fiter != ftmList.end(); fiter++)
+  {
+    if (*fiter == this) break;
+  }
+  if (fiter != ftmList.end()) ftmList.erase(fiter);
 }
 
