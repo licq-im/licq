@@ -28,8 +28,8 @@
 #include "pixmaps/dnd.xpm"
 #include "pixmaps/message.xpm"
 
-#include "icqd.h"
-#include "icqevent.h"
+#include "licq_icqd.h"
+#include "licq_events.h"
 
 #include <ctype.h>
 #include <gtk/gtk.h>

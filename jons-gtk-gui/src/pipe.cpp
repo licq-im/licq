@@ -20,7 +20,7 @@
 
 #include "licq_gtk.h"
 
-#include "icqd.h"
+#include "licq_icqd.h"
 
 #include <gtk/gtk.h>
 

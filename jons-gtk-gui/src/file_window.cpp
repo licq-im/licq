@@ -20,9 +20,9 @@
 
 #include "licq_gtk.h"
 
-#include "icqd.h"
-#include "message.h"
-#include "user.h"
+#include "licq_icqd.h"
+#include "licq_message.h"
+#include "licq_user.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

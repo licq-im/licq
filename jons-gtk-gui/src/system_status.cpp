@@ -20,8 +20,8 @@
 
 #include "licq_gtk.h"
 
-#include "user.h"
-#include "icqd.h"
+#include "licq_user.h"
+#include "licq_icqd.h"
 
 #include <gtk/gtk.h>
 

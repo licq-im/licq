@@ -20,10 +20,10 @@
 
 #include "licq_gtk.h"
 
-#include "icqevent.h"
-#include "icqd.h"
-#include "user.h"
-#include "history.h"
+#include "licq_events.h"
+#include "licq_icqd.h"
+#include "licq_user.h"
+#include "licq_history.h"
 
 #include <gtk/gtk.h>
 

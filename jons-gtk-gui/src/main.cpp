@@ -20,10 +20,10 @@
 
 #include "licq_gtk.h"
 
-#include "plugin.h"
-#include "icqd.h"
-#include "log.h"
-#include "user.h"
+#include "licq_plugin.h"
+#include "licq_icqd.h"
+#include "licq_log.h"
+#include "licq_user.h"
 
 #include <sys/time.h>
 #include <gtk/gtk.h>

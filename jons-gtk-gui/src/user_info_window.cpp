@@ -1,9 +1,9 @@
 #include "licq_gtk.h"
 
-#include "user.h"
-#include "icqd.h"
-#include "countrycodes.h"
-#include "languagecodes.h"
+#include "licq_user.h"
+#include "licq_icqd.h"
+#include "licq_countrycodes.h"
+#include "licq_languagecodes.h"
 
 #include <gtk/gtk.h>
 

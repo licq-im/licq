@@ -20,9 +20,9 @@
 
 #include "licq_gtk.h"
 
-#include "user.h"
-#include "icqd.h"
-#include "icq-defines.h"
+#include "licq_user.h"
+#include "licq_icqd.h"
+#include "licq_icq.h"
 
 #include <gtk/gtk.h>
 
@@ -82,7 +82,8 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 		menu_new_item(_menu, "Away", GTK_SIGNAL_FUNC(status_away));
 
 	_menu_item =
-		menu_new_item(_menu, "Not Available", GTK_SIGNAL_FUNC(status_na));
+		menu_new_item(_menu, "Not Available",
+				GTK_SIGNAL_FUNC(status_na));
 
 	_menu_item =
 		menu_new_item(_menu, "Occupied", GTK_SIGNAL_FUNC(status_occ));
