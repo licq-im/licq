@@ -23,6 +23,9 @@ public:
    virtual const unsigned short getCommand() = 0;
    virtual const unsigned short getSubCommand() = 0;
 
+   static void SetMode(char c) { s_nMode = c; }
+   static char Mode()  { return s_nMode; }
+
 protected:
    CBuffer *buffer;
    unsigned short m_nSize;
