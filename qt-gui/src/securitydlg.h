@@ -16,7 +16,7 @@ class SecurityDlg : public QDialog
    Q_OBJECT
 public:
   SecurityDlg (CICQDaemon *s, CSignalManager *, QWidget* parent = 0);
-  SecurityDlg::~SecurityDlg();
+  ~SecurityDlg();
 protected:
   CICQDaemon *server;
   CSignalManager *sigman;
