@@ -679,6 +679,12 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     o->SetLastName(p->LastName());
     o->SetEmail1(p->Email());
     o->SetAuthorization(p->Authorization());
+
+    // translating string with Translation Table
+    gTranslator.ServerToClient(o->GetAlias());
+    gTranslator.ServerToClient(o->GetFirstName());
+    gTranslator.ServerToClient(o->GetLastName());
+
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                     USER_BASIC, o->Uin()));
     gUserManager.DropOwner();
@@ -1423,6 +1429,15 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           // Unknown (web panel ?)
           packet.UnpackChar();
           u->SetHideEmail(packet.UnpackChar());
+
+
+         // translating string with Translation Table
+         gTranslator.ServerToClient(u->GetAlias()); 
+         gTranslator.ServerToClient(u->GetFirstName());
+         gTranslator.ServerToClient(u->GetLastName());
+         gTranslator.ServerToClient(u->GetCity());
+         gTranslator.ServerToClient(u->GetAddress());
+
           u->SetEnableSave(true);
           u->SaveGeneralInfo();
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
@@ -1445,6 +1460,12 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetCompanyPosition(packet.UnpackString(szTemp));
           packet.UnpackUnsignedShort();
           u->SetCompanyHomepage(packet.UnpackString(szTemp));
+
+          // translating string with Translation Table
+          gTranslator.ServerToClient(u->GetCompanyCity());
+          gTranslator.ServerToClient(u->GetCompanyState());
+          gTranslator.ServerToClient(u->GetCompanyAddress());
+
           u->SetEnableSave(true);
           u->SaveWorkInfo();
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
