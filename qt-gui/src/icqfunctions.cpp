@@ -661,7 +661,8 @@ void ICQFunctions::saveExtInfo()
 void ICQFunctions::showHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  char *buf;
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+/*  char *buf;
   u->GetHistory(buf);
   if (buf != NULL)
   {
@@ -669,7 +670,29 @@ void ICQFunctions::showHistory()
     mleHistory->setText(QString::fromLocal8Bit(buf));
     mleHistory->goToEnd();
     delete []buf;
+  }*/
+  HistoryList h;
+  if (u->GetHistory(h) != HISTORY_OK)
+  {
+    mleHistory->setText(_("Error loading history"));
   }
+  else
+  {
+    mleHistory->clear();
+    QString s;
+    for (HistoryListIter i = h.begin(); i != h.end(); i++)
+    {
+      s.sprintf("%s -> %s: %s (%s) [%c%c%c]\n%s",
+                (*i)->Dir() == 'R' ? u->getAlias() : o->getAlias(),
+                (*i)->Dir() == 'R' ? o->getAlias() : u->getAlias(),
+                (*i)->Description(), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
+                (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-',
+                (*i)->Text());
+      mleHistory->append(s);
+    }
+  }
+  gUserManager.DropOwner();
+  gUserManager.DropUser(u);
 }
 
 
@@ -688,6 +711,7 @@ void ICQFunctions::generateReply()
   mleSend->clear();
   for (int i = 0; i < mleRead->numLines(); i++)
     mleSend->insertLine( QString("> ") + mleRead->textLine(i));
+  mleSend->append("\n");
   mleSend->goToEnd();
   showPage(fcnTab[1]);
 }
