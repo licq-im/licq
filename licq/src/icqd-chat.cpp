@@ -1539,6 +1539,12 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
             // Add to the users irc line buffer
             strcat(u->linebuf, tempStr);
             PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, tempStr));
+	    if (strlen(u->linebuf) > 1000) // stop a little early
+	    {
+		u->linebuf[1000] = '\0';
+                PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, u->linebuf));
+		u->linebuf[0] = '\0';
+	    } 
           }
           break;
         }
