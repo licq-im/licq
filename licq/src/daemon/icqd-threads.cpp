@@ -26,6 +26,8 @@
  *----------------------------------------------------------------------------*/
 void *ProcessRunningEvent_Server_tep(void *p)
 {
+  //static time_t s_nTimeLastSent = LONG_MAX;
+
   pthread_detach(pthread_self());
 
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
@@ -65,6 +67,15 @@ void *ProcessRunningEvent_Server_tep(void *p)
   pthread_cleanup_pop(1);
 #endif
 
+  // Check that we aren't sending too fast
+  /*
+  while (time(NULL) <= s_nTimeLastSent + MIN_SEND_DELAY)
+  {
+    struct timeval tv = { MIN_SEND_DELAY, 0 };
+    select(0, NULL, NULL, NULL, &tv);
+  }
+  */
+
   // Start sending the event
   for (int i = 0; i <= MAX_SERVER_RETRIES; i++)
   {
@@ -96,6 +107,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     }
     delete buf;
     gSocketManager.DropSocket(s);
+    //s_nTimeLastSent = time(NULL);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
 

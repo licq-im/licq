@@ -25,7 +25,7 @@
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
-   bool online, unsigned short nLevel)
+   bool online, unsigned short nLevel, bool bMultipleRecipients)
 {
   ICQEvent *result = NULL;
   char *mDos = NULL;
@@ -36,27 +36,31 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   }
   CEventMsg *e = NULL;
 
+  unsigned long f = INT_VERSION;
+  if (online) f |= E_DIRECT;
+  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+  if (bMultipleRecipients) f |= E_MULTIxREC;
+
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   if (!online) // send offline
   {
-     e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+     e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
      if (strlen(mDos) > MAX_MESSAGE_SIZE)
      {
        gLog.Warn("%sTruncating message to %d characters to send through server.\n",
                  L_WARNxSTR, MAX_MESSAGE_SIZE);
        mDos[MAX_MESSAGE_SIZE] = '\0';
      }
-     CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_MSG, mDos);
+     CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
+        ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), mDos);
      gLog.Info("%sSending message through server (#%ld).\n", L_UDPxSTR, p->getSequence());
      result = SendExpectEvent_Server(_nUin, p, e);
   }
   else        // send direct
   {
     if (u == NULL) return NULL;
-    unsigned long f = E_DIRECT | INT_VERSION;
-    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_Message *p = new CPT_Message(mDos, nLevel, u);
+    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, u);
     gLog.Info("%sSending %smessage to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->getSequence());
@@ -97,7 +101,8 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 
 //-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
-   const char *description, bool online, unsigned short nLevel)
+   const char *description, bool online, unsigned short nLevel,
+   bool bMultipleRecipients)
 {
    // make the URL info string
   char *szDescDos = NULL;
@@ -112,21 +117,25 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
 
   ICQEvent *result = NULL;
 
+  unsigned long f = INT_VERSION;
+  if (online) f |= E_DIRECT;
+  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+  if (bMultipleRecipients) f |= E_MULTIxREC;
+
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   if (!online) // send offline
   {
-    e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-    CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_URL, m);
+    e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
+    CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
+       ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
     gLog.Info("%sSending url through server (#%ld).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent_Server(_nUin, p, e);
   }
   else
   {
     if (u == NULL) return NULL;
-    unsigned long f = E_DIRECT | INT_VERSION;
-    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_Url *p = new CPT_Url(m, nLevel, u);
+    CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, u);
     gLog.Info("%sSending %sURL to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->getSequence());
@@ -194,7 +203,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
 //-----CICQDaemon::sendContactList-------------------------------------------
 CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
-   UinList &uins, bool online, unsigned short nLevel)
+   UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients)
 {
   char *m = new char[3 + uins.size() * 80];
   int p = sprintf(m, "%d%c", uins.size(), char(0xFE));
@@ -221,21 +230,25 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   CEventContactList *e = NULL;
   ICQEvent *result = NULL;
 
+  unsigned long f = INT_VERSION;
+  if (online) f |= E_DIRECT;
+  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+  if (bMultipleRecipients) f |= E_MULTIxREC;
+
   u = gUserManager.FetchUser(nUin, LOCK_W);
   if (!online) // send offline
   {
-    e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-    CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_CONTACTxLIST, m);
+    e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
+    CPU_ThroughServer *p = new CPU_ThroughServer(nUin,
+       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
     gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent_Server(nUin, p, e);
   }
   else
   {
     if (u == NULL) return NULL;
-    unsigned long f = E_DIRECT | INT_VERSION;
-    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_ContactList *p = new CPT_ContactList(m, nLevel, u);
+    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, u);
     gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->getSequence());
@@ -398,7 +411,7 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
  * Shake hands on the given socket with the given user.
  *-------------------------------------------------------------------------*/
 bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
-   unsigned short nVersion)
+   unsigned short nPort, unsigned short nVersion)
 {
   s->SetVersion(nVersion);
   s->SetOwner(nUin);
@@ -422,7 +435,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
     case 7:
     {
       // Send the hanshake
-      CPacketTcp_Handshake_v6 p(nUin, 0);
+      CPacketTcp_Handshake_v6 p(nUin, 0, nPort);
       if (!s->SendPacket(p.getBuffer())) goto sock_error;
 
       // Wait for the handshake ack
@@ -454,7 +467,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
 
       // Send the hanshake ack
       CPacketTcp_Handshake_Ack p_ack;
-      s->SendPacket(p_ack.getBuffer());
+      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
 
       return true;
     }
@@ -527,7 +540,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
      szAlias, nUin, nVersion);
   nPort = s->LocalPort();
 
-  if (!Handshake_Send(s, nUin, nVersion))
+  if (!Handshake_Send(s, nUin, 0, nVersion))
   {
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u != NULL) u->SetConnectionInProgress(false);
@@ -669,7 +682,7 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   }
 
   gLog.Info("%sReverse shaking hands with %ld.\n", L_TCPxSTR, nUin);
-  if (!Handshake_Send(s, nUin, nVersion))
+  if (!Handshake_Send(s, nUin, 0, nVersion))
   {
     delete s;
     return -1;
@@ -1442,7 +1455,7 @@ void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
 }
 
 
-bool CICQDaemon::Handshake_Recv(TCPSocket *s)
+bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
 {
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
@@ -1475,7 +1488,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
       if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
 
       // Send the handshake
-      CPacketTcp_Handshake_v6 p_out(nUin, p_in.SessionId());
+      CPacketTcp_Handshake_v6 p_out(nUin, p_in.SessionId(), nPort);
       if (!s->SendPacket(p_out.getBuffer())) goto sock_error;
 
       // Wait for the ack (this is very bad form...blocking recv here)
@@ -1544,7 +1557,7 @@ sock_error:
  *----------------------------------------------------------------------------*/
 bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
 {
-  if (!Handshake_Recv(s)) return false;
+  if (!Handshake_Recv(s, 0)) return false;
   unsigned long nUin = s->Owner();
   if (nUin == 0) return false;
 

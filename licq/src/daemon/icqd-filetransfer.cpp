@@ -277,7 +277,8 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned short nVersion = u->ConnectionVersion();
   gUserManager.DropUser(u);
-  if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, nVersion)) return false;
+  if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, LocalPort(), nVersion))
+    return false;
 
   // Send init packet:
   CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
@@ -344,7 +345,7 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_HANDSHAKE:
     {
-      if (!CICQDaemon::Handshake_Recv(&ftSock)) break;
+      if (!CICQDaemon::Handshake_Recv(&ftSock, LocalPort())) break;
       gLog.Info("%sFile Transfer: Received handshake.\n", L_TCPxSTR);
       m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
       break;

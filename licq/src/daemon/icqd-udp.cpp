@@ -813,21 +813,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
 
   if (nCommand != ICQ_CMDxRCV_ACK && nCommand != ICQ_CMDxRCV_ERROR)
   {
-#if 0
-    if (nSequence > m_nServerSequence ||
-        (m_nServerSequence == 0 && nSequence == 0) ||
-        (bMultiPacket && nSequence == m_nServerSequence) )
-    {
-      m_nServerSequence = nSequence;
-    }
-    else
-    {
-      gLog.Warn("%sDuplicate packet received, command %d (#%d, expecting #%d).\n",
-                L_WARNxSTR, nCommand, nSequence, m_nServerSequence + 1);
-      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
-      return nCommand;
-    }
-#endif
     if (nSequence == m_nServerSequence + 1 ||
         (m_nServerSequence == 0 && nSequence == 0) ||
         (bMultiPacket && nSequence == m_nServerSequence) )

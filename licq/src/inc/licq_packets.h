@@ -30,6 +30,7 @@ public:
    static void SetMode(char c) { s_nMode = c; }
    static char Mode()  { return s_nMode; }
    static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
+   static void SetLocalPort(unsigned short n)  {  s_nLocalPort = n; }
    static void SetIps(INetSocket *s);
    static bool Firewall() { return s_nLocalIp != s_nRealIp; }
    static unsigned long RealIp() { return s_nRealIp; }
@@ -41,6 +42,7 @@ protected:
 
    static unsigned long s_nLocalIp;
    static unsigned long s_nRealIp;
+   static unsigned short s_nLocalPort;
    static char s_nMode;
 };
 
@@ -605,13 +607,15 @@ protected:
 class CPacketTcp_Handshake_v6 : public CPacketTcp_Handshake
 {
 public:
-  CPacketTcp_Handshake_v6(unsigned long nDestinationUin, unsigned long nSessionId);
+  CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
+     unsigned long nSessionId, unsigned short nLocalPort = 0);
   CPacketTcp_Handshake_v6(CBuffer *);
 
   char Handshake() { return m_nHandshake; }
   unsigned short VersionMajor() { return m_nVersionMajor; }
   unsigned short VersionMinor() { return m_nVersionMinor; }
   unsigned long DestinationUin() { return m_nDestinationUin; }
+  unsigned short LocalPort() { return m_nLocalPort; }
   unsigned long SourceUin() { return m_nSourceUin; }
   unsigned long LocalIp()  { return m_nLocalIp; }
   unsigned long RealIp()  { return m_nRealIp; }
@@ -624,6 +628,7 @@ protected:
   unsigned short m_nVersionMinor;
   unsigned long m_nDestinationUin;
   unsigned long m_nSourceUin;
+  unsigned short m_nLocalPort;
   unsigned long m_nLocalIp;
   unsigned long m_nRealIp;
   char m_nMode;
@@ -685,7 +690,8 @@ protected:
 class CPT_Message : public CPacketTcp
 {
 public:
-   CPT_Message(char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
+   CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
+      ICQUser *_cUser);
 };
 
 
@@ -696,14 +702,15 @@ public:
 class CPT_Url : public CPacketTcp
 {
 public:
-   CPT_Url(char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
+   CPT_Url(char *_sMessage, unsigned short nLevel, bool bMR, ICQUser *_cUser);
 };
 
 
 class CPT_ContactList : public CPacketTcp
 {
 public:
-   CPT_ContactList(char *szMessage, unsigned short nLevel, ICQUser *pUser);
+   CPT_ContactList(char *szMessage, unsigned short nLevel, bool bMR,
+      ICQUser *pUser);
 };
 
 

@@ -134,13 +134,14 @@ public:
   // TCP (user) functions
   // Message
   CICQEventTag *icqSendMessage(unsigned long nUin, const char *szMessage,
-     bool bOnline, unsigned short nLevel);
+     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false);
   // Url
   CICQEventTag *icqSendUrl(unsigned long nUin, const char *szUrl,
-     const char *szDescription, bool bOnline, unsigned short nLevel);
+     const char *szDescription, bool bOnline, unsigned short nLevel,
+     bool bMultipleRecipients = false);
   // Contact List
   CICQEventTag *icqSendContactList(unsigned long nUin, UinList &uins,
-     bool bOnline, unsigned short nLevel);
+     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false);
   // Auto Response
   CICQEventTag *icqFetchAutoResponse(unsigned long nUin);
   // Chat Request
@@ -224,6 +225,7 @@ public:
   bool PluginLoad(const char *, int, char **);
 
   void UpdateAllUsers();
+  void UpdateAllUsersInGroup(unsigned short);
   void SwitchServer();
   void CancelEvent(CICQEventTag *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
@@ -367,8 +369,8 @@ protected:
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
-  static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short);
-  static bool Handshake_Recv(TCPSocket *);
+  static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short, unsigned short);
+  static bool Handshake_Recv(TCPSocket *, unsigned short);
   int ConnectToServer();
   int ConnectToUser(unsigned long);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,

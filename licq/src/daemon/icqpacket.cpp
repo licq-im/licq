@@ -409,6 +409,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
 
 unsigned long CPacket::s_nLocalIp = 0;
 unsigned long CPacket::s_nRealIp = 0;
+unsigned short CPacket::s_nLocalPort = 0;
 char CPacket::s_nMode = MODE_DIRECT;
 
 //----SetIps-----------------------------------------------------------------
@@ -1288,7 +1289,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
 
 //=====PacketTcp_Handshake======================================================
 CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
-   unsigned long nSessionId)
+   unsigned long nSessionId, unsigned short nLocalPort)
 {
   m_nDestinationUin = nDestinationUin;
   m_nSessionId = nSessionId;
@@ -1300,13 +1301,13 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedLong(0x00270006);
   buffer->PackUnsignedLong(m_nDestinationUin);
-  buffer->PackUnsignedLong(0);
   buffer->PackUnsignedShort(0);
+  buffer->PackUnsignedLong(nLocalPort);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
-  buffer->PackUnsignedLong(0x00001B92); // port of some kind
+  buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
   buffer->PackUnsignedLong(m_nSessionId);
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
@@ -1561,8 +1562,11 @@ void CPacketTcp::PostBuffer_v6()
 }
 
 //-----Message------------------------------------------------------------------
-CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, ICQUser *_cUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, _sMessage, true, nLevel, _cUser)
+CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
+   ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START,
+       ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
+       _sMessage, true, nLevel, _cUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -1574,8 +1578,11 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, ICQUser *_cUser
 }
 
 //-----Url----------------------------------------------------------------------
-CPT_Url::CPT_Url(char *_sMessage, unsigned short nLevel, ICQUser *_cUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_URL, _sMessage, true, nLevel, _cUser)
+CPT_Url::CPT_Url(char *szMessage, unsigned short nLevel, bool bMR,
+   ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START,
+       ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
+       szMessage, true, nLevel, _cUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -1588,9 +1595,11 @@ CPT_Url::CPT_Url(char *_sMessage, unsigned short nLevel, ICQUser *_cUser)
 
 
 //-----ContactList-----------------------------------------------------------
-CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel,
-                ICQUser *pUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_CONTACTxLIST, sz, true, nLevel, pUser)
+CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
+   ICQUser *pUser)
+  : CPacketTcp(ICQ_CMDxTCP_START,
+       ICQ_CMDxSUB_CONTACTxLIST | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
+       sz, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
