@@ -376,6 +376,13 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     bNewUser = true;
   }
 
+  // Check for spoofing
+  if (u->SocketDesc() != sockfd)
+  {
+    gLog.Warn("%sUser %s (%ld) socket (%d) does not match incoming message (%d).\n",
+              L_TCPxSTR, u->GetAlias(), u->Uin(), u->SocketDesc(), sockfd);
+  }
+
   unsigned long nMask = E_DIRECT
                         | ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                         | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
@@ -756,8 +763,11 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       ProcessDoneEvent(e);
       return true;
     }
-    else if (sExtendedAck != NULL)
-      delete sExtendedAck;
+    else
+    {
+      gLog.Warn("%sAck for unknown event.\n", L_TCPxSTR);
+      if (sExtendedAck != NULL) delete sExtendedAck;
+    }
     break;
   }
 
@@ -855,10 +865,17 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   if (u != NULL)
   {
     gLog.Info("%sConnection from %s (%d).\n", L_TCPxSTR, u->GetAlias(), nUin);
-    if (u->SocketDesc() != -1)
-      gLog.Warn("%sUser %s (%d) already has an associated socket.\n",
-                L_WARNxSTR, u->GetAlias(), nUin);
-    u->SetSocketDesc(s->Descriptor());
+    if (u->SocketDesc() != s->Descriptor())
+    {
+      if (u->SocketDesc() != -1)
+      {
+        gLog.Warn("%sUser %s (%d) already has an associated socket.\n",
+                  L_WARNxSTR, u->GetAlias(), nUin);
+        gSocketManager.CloseSocket(u->SocketDesc(), false);
+        u->ClearSocketDesc();
+      }
+      u->SetSocketDesc(s->Descriptor());
+    }
     gUserManager.DropUser(u);
   }
   else
