@@ -208,7 +208,7 @@ void finish_message(ICQEvent *event)
 	struct conversation *c =
 		(struct conversation *)g_new0(struct conversation, 1);
 
-	c = convo_find(event->DestinationUin());
+	c = convo_find(event->Uin());
 
 	/* If the window isn't open, there isn't anything left to do */
 	if(c == NULL)
