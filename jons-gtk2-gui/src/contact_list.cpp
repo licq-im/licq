@@ -322,7 +322,7 @@ GdkColor *get_status_color(unsigned long nStatus)
 	return online_color;
 }
 
-void convo_open_cb(ICQUser *user);
+void convo_open(ICQUser *user);
 void list_send_url(GtkWidget *, ICQUser *);
 void list_request_file(GtkWidget *, ICQUser *);
 void list_request_chat(GtkWidget *, ICQUser *);
@@ -355,7 +355,7 @@ gboolean contact_list_click(GtkWidget *contact_list,
 
 	/* A left mouse double-click */
 	if (event->button == 1 && event->type == GDK_2BUTTON_PRESS)
-		convo_open(user, true);
+		convo_open(user);
 	/* A right click.. make the popup menu */
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
@@ -373,7 +373,7 @@ gboolean contact_list_click(GtkWidget *contact_list,
 		menu_separator(_menu);
 		
 		menu_new_item_with_pixmap(_menu, "Start Conversation",
-					GTK_SIGNAL_FUNC(convo_open_cb), message_icon, user);
+					GTK_SIGNAL_FUNC(convo_open), message_icon, user);
 
 		menu_new_item_with_pixmap(_menu, "Send URL",
 					GTK_SIGNAL_FUNC(list_send_url), url_icon, user);
