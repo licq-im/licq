@@ -27,11 +27,12 @@ const unsigned short SUBJ_CHARS = 20;
 /*---------------------------------------------------------------------------
  * CLicqForwarder::Constructor
  *-------------------------------------------------------------------------*/
-CLicqForwarder::CLicqForwarder(bool _bEnable, char *_szStatus)
+CLicqForwarder::CLicqForwarder(bool _bEnable, bool _bDelete, char *_szStatus)
 {
   tcp = new TCPSocket;
   m_bExit = false;
   m_bEnabled = _bEnable;
+  m_bDelete = _bDelete;
   m_szStatus = _szStatus == NULL ? NULL : strdup(_szStatus);
 }
 
@@ -263,14 +264,28 @@ void CLicqForwarder::ProcessUserEvent(unsigned long nUin)
   }
 
   CUserEvent *e = NULL;
-  while (u->NewMessages() > 0)
+
+  if (m_bDelete)
   {
-    // Fetch the event
-    e = u->GetEvent(0);
+    while (u->NewMessages() > 0)
+    {
+      // Fetch the event
+      e = u->EventPop();
+      // Forward it
+      if (!ForwardEvent(u, e))
+      {
+        delete e;
+        break;
+      }
+      // Erase the event
+      delete e;
+    }
+  }
+  else
+  {
+    e = u->EventPeekLast();
     // Forward it
-    if (!ForwardEvent(u, e)) break;
-    // Erase the event
-    u->ClearEvent(0);
+    ForwardEvent(u, e);
   }
 
   gUserManager.DropUser(u);
@@ -279,6 +294,8 @@ void CLicqForwarder::ProcessUserEvent(unsigned long nUin)
 
 bool CLicqForwarder::ForwardEvent(ICQUser *u, CUserEvent *e)
 {
+  if (e == NULL) return false;
+
   bool s = false;
   switch (m_nForwardType)
   {

@@ -12,10 +12,11 @@ CLicqForwarder *licqForwarder;
 const char *LP_Usage()
 {
   static const char usage[] =
-    "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <staus> ]\n"
+    "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <staus> ] [ -d ]\n"
     "         -h          : help\n"
     "         -e          : start enabled\n"
-    "         -l <status> : log on at startup\n";
+    "         -l <status> : log on at startup\n"
+    "         -d          : delete new messages after forwarding\n";
   return usage;
 }
 
@@ -35,7 +36,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = "0.50";
+  static const char version[] = "0.55";
   return version;
 }
 
@@ -55,10 +56,10 @@ bool LP_Init(int argc, char **argv)
   //textdomain (PACKAGE);
 
   // parse command line for arguments
-  bool bEnable = false;
+  bool bEnable = false, bDelete = false;
   char *szStatus = NULL;
   int i = 0;
-  while( (i = getopt(argc, argv, "hel:")) > 0)
+  while( (i = getopt(argc, argv, "hel:d")) > 0)
   {
     switch (i)
     {
@@ -71,9 +72,12 @@ bool LP_Init(int argc, char **argv)
     case 'l': //log on
       szStatus = strdup(optarg);
       break;
+    case 'd':
+      bDelete = true;
+      break;
     }
   }
-  licqForwarder = new CLicqForwarder(bEnable, szStatus);
+  licqForwarder = new CLicqForwarder(bEnable, bDelete, szStatus);
   if (szStatus != NULL) free(szStatus);
   return (licqForwarder != NULL);
 }

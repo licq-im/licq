@@ -18,7 +18,7 @@ class ICQEvent;
 class CLicqForwarder
 {
 public:
-  CLicqForwarder(bool, char *);
+  CLicqForwarder(bool, bool, char *);
   ~CLicqForwarder();
   int Run(CICQDaemon *);
   void Shutdown();
@@ -26,7 +26,7 @@ public:
 
 protected:
   int m_nPipe;
-  bool m_bExit, m_bEnabled;
+  bool m_bExit, m_bEnabled, m_bDelete;
   char *m_szStatus;
 
   unsigned short m_nSMTPPort;
