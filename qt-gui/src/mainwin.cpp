@@ -1016,12 +1016,14 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                    L_ERRORxSTR, nUin);
         break;
       }
-      if(m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
+      if (m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
       {
         CUserViewItem* i = userView->firstChild();
 
-        while(i) {
-          if(u->GetInGroup(GROUPS_USER, i->GroupId())) {
+        while (i)
+        {
+          if (u->GetInGroup(GROUPS_USER, i->GroupId()))
+          {
             CUserViewItem* it = i->firstChild();
 
             while (it)
@@ -1035,7 +1037,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
               }
               it = it->nextSibling();
             }
-            if(it == NULL)
+            if (it == NULL)
             {
               if ( show_user(u) &
                    ((i->GroupId() != 0 && u->GetInGroup(GROUPS_USER, i->GroupId())) ||
@@ -1046,7 +1048,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           i = i->nextSibling();
         }
       }
-      else if(u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+      else if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
         // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
@@ -1237,32 +1239,47 @@ void CMainWindow::updateEvents()
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
 
   lblMsg->setBold(false);
+  QString s, l;
 
   if (nNumOwnerEvents > 0)
   {
-    lblMsg->setText(tr("SysMsg"));
-    if (m_bBoldOnMsg)
-      lblMsg->setBold(true);
+    //lblMsg->setText(tr("SysMsg"));
+    s = tr("SysMsg");
+    l = tr("System Message");
+    if (m_bBoldOnMsg) lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
   }
   else if (nNumUserEvents > 0)
   {
-    lblMsg->setText(tr("%1 msg%2")
-                    .arg(nNumUserEvents)
-                    .arg(nNumUserEvents == 1 ? tr(" ") : tr("s")));
-    if (m_bBoldOnMsg)
-      lblMsg->setBold(true);
+    //lblMsg->setText(tr("%1 msg%2")
+    //                .arg(nNumUserEvents)
+    //                .arg(nNumUserEvents == 1 ? tr(" ") : tr("s")));
+    s = tr("%1 msg%2").arg(nNumUserEvents).arg(nNumUserEvents == 1 ? tr(" ") : tr("s"));
+    l = tr("%1 message%2").arg(nNumUserEvents).arg(nNumUserEvents == 1 ? tr(" ") : tr("s"));
+    if (m_bBoldOnMsg) lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
   }
   else
   {
     // Update the msg label if necessary
     if (m_bShowGroupIfNoMsg && ICQUser::getNumUserEvents() == 0)
-      lblMsg->setText(cmbUserGroups->currentText());
+    {
+      //lblMsg->setText(cmbUserGroups->currentText());
+      s = cmbUserGroups->currentText();
+      l = cmbUserGroups->currentText();
+    }
     else
-      lblMsg->setText(tr("No msgs"));
+    {
+      //lblMsg->setText(tr("No msgs"));
+      s = tr("No msgs");
+      l = tr("No messages");
+    }
     szCaption = m_szCaption;
   }
+  if (lblMsg->fontMetrics().width(l) > lblMsg->width())
+    lblMsg->setText(s);
+  else
+    lblMsg->setText(l);
   lblMsg->update();
   setCaption(szCaption);
 
