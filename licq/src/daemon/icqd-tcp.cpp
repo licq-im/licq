@@ -423,65 +423,58 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
    unsigned long nRealIp, TCPSocket *sock, unsigned short nPort, bool bSendRealIp)
 {
   char buf[128];
-  bool worked = false;
 
-  // If we fail to set the remote address, the ip must be 0
   // Sending to internet ip
   if (!bSendRealIp)
   {
-     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-	       ip_ntoa(nIp, buf), nPort);
-     bool b = sock->SetRemoteAddr(nIp, nPort);
-     if (!b) return false;
+    gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+	     ip_ntoa(nIp, buf), nPort);
+    // If we fail to set the remote address, the ip must be 0
+    if (!sock->SetRemoteAddr(nIp, nPort)) return false;
+
+    if (!sock->OpenConnection())
+    {
+      gLog.Warn("%sConnect to %s failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+                L_BLANKxSTR, sock->ErrorStr(buf, 128));
+
+      // Now try the real ip if it is different from this one and we are behind a firewall
+      if (sock->Error() != EINTR && nRealIp != nIp &&
+          nRealIp != 0 && m_szFirewallHost[0] != '\0')
+      {
+        gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+                  ip_ntoa(nRealIp, buf), nPort);
+        sock->SetRemoteAddr(nRealIp, nPort);
+
+        if (!sock->OpenConnection())
+        {
+          char buf[128];
+          gLog.Warn("%sConnect to %s real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+                    L_BLANKxSTR, sock->ErrorStr(buf, 128));
+          return false;
+        }
+      }
+      else
+      {
+        return false;
+      }
+    }
   }
 
   // Sending to Real IP
   else
   {
-     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-               ip_ntoa(nRealIp, buf), nPort);
-     worked = sock->SetRemoteAddr(nRealIp, nPort);
-     if (!worked) return false;
-  }
+    gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+       ip_ntoa(nRealIp, buf), nPort);
+    if (!sock->SetRemoteAddr(nRealIp, nPort)) return false;
 
-  // Being sent to Real IP.. skip the other stuff, that's for internet ip..
-  if (worked)
-  {
-  	if (!sock->OpenConnection())
-        {
-             gLog.Warn("%sConnect to %s failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-                       L_BLANKxSTR, sock->ErrorStr(buf, 128));
-	     return false;
-        }
-	return true;
-  }
-
-  if (!sock->OpenConnection())
-  {
-    gLog.Warn("%sConnect to %s failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-              L_BLANKxSTR, sock->ErrorStr(buf, 128));
-
-    // Now try the real ip if it is different from this one and we are behind a firewall
-    if (sock->Error() != EINTR && nRealIp != nIp &&
-        nRealIp != 0 && m_szFirewallHost[0] != '\0')
+    if (!sock->OpenConnection())
     {
-      gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-                ip_ntoa(nRealIp, buf), nPort);
-      sock->SetRemoteAddr(nRealIp, nPort);
-
-      if (!sock->OpenConnection())
-      {
-        char buf[128];
-        gLog.Warn("%sConnect to %s real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-                  L_BLANKxSTR, sock->ErrorStr(buf, 128));
-        return false;
-      }
-    }
-    else
-    {
+      gLog.Warn("%sConnect to %s real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+         L_BLANKxSTR, sock->ErrorStr(buf, 128));
       return false;
     }
   }
+
 
   return true;
 }
@@ -670,8 +663,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         break;
     }
     //printf("%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
-    if (!bNewUser && ns != ICQ_STATUS_OFFLINE && 
-        !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))
+    /*if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
+        !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))*/
+    if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
+        ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
     {
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
       gLog.Info("%s%s (%ld) is %s to us.\n", L_TCPxSTR, u->GetAlias(),
