@@ -56,14 +56,14 @@ update_user(CICQSignal *sig)
 {
 	if (sig->SubSignal() == USER_EVENTS) {
 		ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
-		if (u == 0) {
+		if (u == NULL) {
 			gUserManager.DropUser(u);
 			return;
 		}
 		CUserEvent *ue = u->EventPeekLast();
 		gUserManager.DropUser(u);
 
-		if(ue == 0) {
+		if (ue == NULL) {
 			gUserManager.DropUser(u);
 			return;
 		}
@@ -153,11 +153,12 @@ void pipe_event(ICQEvent *event)
 				owner_function(event);
 			else
 				user_function(event);
+      break;
 
 		case ICQ_CMDxSND_LOGON:
 		case ICQ_CMDxSND_USERxLIST:
 		case ICQ_CMDxSND_REGISTERxUSER:
-			if(event->Command() != ICQ_CMDxSND_REGISTERxUSER)
+			if (event->Command() != ICQ_CMDxSND_REGISTERxUSER)
 				contact_list_refresh();
 			owner_function(event);
 			break;
