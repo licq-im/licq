@@ -233,7 +233,7 @@ bool CIniFile::FlushFile()
      return false;
   }
 
-  if (write(nFD, m_szBuffer, m_nBufSize) < 0)
+  if (write(nFD, m_szBuffer, m_nBufSize) != m_nBufSize) 
   {
     // something went wrong, clean up temp file
     m_nError = errno;
