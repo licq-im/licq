@@ -8,6 +8,7 @@
 
 class ICQUser;
 
+
 //=====CUtilityInternalWindow================================================
 class CUtilityInternalWindow
 {
@@ -16,7 +17,7 @@ public:
   ~CUtilityInternalWindow();
 
   bool POpen(const char *cmd);
-  void PClose();
+  int PClose();
 
   bool Running() { return fStdOut != NULL; }
 

@@ -265,13 +265,6 @@ bool CUtilityInternalWindow::POpen(const char *cmd)
         close(pdes_err[1]);
       }
       close(pdes_err[0]);
-#if 0
-      /* POSIX.2 B.3.2.2 "popen() shall ensure that any streams
-         from previous popen() calls that remain open in the
-         parent process are closed in the new child process. */
-      for (cur = pidlist; cur; cur = cur->next)
-              close(fileno(cur->fp));
-#endif
       execl(_PATH_BSHELL, "sh", "-c", cmd, NULL);
       _exit(127);
       /* NOTREACHED */
@@ -292,9 +285,10 @@ bool CUtilityInternalWindow::POpen(const char *cmd)
 }
 
 
-void CUtilityInternalWindow::PClose()
+int CUtilityInternalWindow::PClose()
 {
    int r, pstat;
+   struct timeval tv = { 0, 200000 };
 
    // Close the file descriptors
    fclose(fStdOut);
@@ -304,18 +298,17 @@ void CUtilityInternalWindow::PClose()
    // See if the child is still there
    r = waitpid(pid, &pstat, WNOHANG);
    // Return if child has exited or there was an error
-   if (r == pid || r == -1) return;
+   if (r == pid || r == -1) goto pclose_leave;
 
    // Give the process another .2 seconds to die
-   struct timeval tv = { 0, 200000 };
    select(0, NULL, NULL, NULL, &tv);
 
    // Still there?
    r = waitpid(pid, &pstat, WNOHANG);
-   if (r == pid || r == -1) return;
+   if (r == pid || r == -1) goto pclose_leave;
 
    // Try and kill the process
-   if (kill(pid, SIGTERM) == -1) return;
+   if (kill(pid, SIGTERM) == -1) return -1;
 
    // Give it 1 more second to die
    tv.tv_sec = 1;
@@ -324,12 +317,20 @@ void CUtilityInternalWindow::PClose()
 
    // See if the child is still there
    r = waitpid(pid, &pstat, WNOHANG);
-   if (r == pid || r == -1) return;
+   if (r == pid || r == -1) goto pclose_leave;
 
    // Kill the bastard
    kill(pid, SIGKILL);
    // Now he will die for sure
-   waitpid(pid, &pstat, 0);
+   r = waitpid(pid, &pstat, 0);
+
+pclose_leave:
+
+   if (r == -1 || !WIFEXITED(pstat))
+     return -1;
+   return WEXITSTATUS(pstat);
+
 }
+
 
 
