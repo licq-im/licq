@@ -4,7 +4,8 @@ AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = share src include bin
 
-EXTRA_DIST = doc upgrade
+EXTRA_DIST = doc upgrade README-1.2.0 README.FREEBSD README.OPENSSL \
+             README.ICS
 
 $(top_srcdir)/acinclude.m4: $(top_srcdir)/acinclude.m4.in $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in
 	@cd $(top_srcdir) && cat $(top_srcdir)/acinclude.m4.in $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in > acinclude.m4
