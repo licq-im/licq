@@ -2,7 +2,7 @@
 # don't warn about missing AUTHORS, NEWS, ChangeLog .. files
 AUTOMAKE_OPTIONS = foreign 1.4
 
-SUBDIRS = share src include
+SUBDIRS = share src include bin
 
 EXTRA_DIST = doc upgrade
 

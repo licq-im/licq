@@ -1,0 +1,55 @@
+#!/bin/sh
+
+if test $# -eq 0
+  then
+    echo "micqToLicq v1.21"
+    echo "Usage: micqToLicq <micq user file (~/.micqrc)>"
+    echo "Warning: the program will not work if there exists a line in the micqrc file beginning with a number that is
+not a uin...you will have to comment out that line for the script to work properly."
+    exit 1
+fi
+echo Converting micq to Licq using $1...
+
+# create the users.conf file
+awk -F" " '
+             BEGIN { print "[users]"
+                     print "NumOfUsers = "
+                     count = 1 }
+             $1 <= "9" && $1 >= "0" { print "User"count" = "$1 }
+             $1 <= "9" && $1 >= "0" { count++ } 
+             ' $1 > users.conf
+
+# create a script to build the user files
+awk -F" " '
+          BEGIN { print "#!/bin/sh" }
+          $1 <= "9" && $1 >= "0" { 
+             print "echo [user] > "$1".uin" 
+             print "echo Alias = "$2" "$3" "$4" >> "$1".uin" 
+             print "echo FirstName = none >> "$1".uin" 
+             print "echo LastName = none >> "$1".uin" 
+             print "echo EMail = none >> "$1".uin"  
+             print "echo History = default >> "$1".uin" 
+             print "echo NewMessages = 0 >> "$1".uin"
+	     print "echo Authorization = 0 >> "$1".uin"
+	     print "echo City = 0 >> "$1".uin"
+	     print "echo State = 0 >> "$1".uin"
+	     print "echo Country = 0 >> "$1".uin"
+	     print "echo PhoneNumber = 0 >> "$1".uin"
+	     print "echo Age = 0 >> "$1".uin"
+	     print "echo Sex = 0 >> "$1".uin"
+	     print "echo Homepage = 0 >> "$1".uin"
+	     print "echo About = 0 >> "$1".uin"
+	     print "echo OnlineNotify = 0 >> "$1".uin"
+	     print "echo NewUser = 0 >> "$1".uin"
+	     print "echo Group = 0 >> "$1".uin"
+	     print "echo VisibleList = 0 >> "$1".uin"
+	     print "echo InvisibleList = 0 >> "$1".uin"}
+          ' $1 > createUsers
+
+# run it
+chmod a+x createUsers
+./createUsers
+rm -f ./createUsers          
+echo "Done!"
+echo "Now edit the users.conf file and put the number of users you have into the NumOfUsers field.  Then put the users.conf and *.uin files into the conf/ directory in Licq."
+

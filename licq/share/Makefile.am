@@ -1,6 +1,6 @@
 
 # include the subdirs in the distribution
-DIST_SUBDIRS = translations utilities
+DIST_SUBDIRS = translations utilities sounds
 
 sharedir = @datadir@/licq
 plugindir = @libdir@/licq
@@ -26,5 +26,11 @@ install-data-local:
 	  fi \
 	done
 	$(mkinstalldirs) $(sharedir)/sounds
+	@for i in $(srcdir)/sounds/*; do \
+	  if test -f $$i; then \
+	    echo "$(INSTALL_DATA) $$i $(sharedir)/sounds;"; \
+	    $(INSTALL_DATA) $$i $(sharedir)/sounds; \
+	  fi \
+	done
 #       $(mkinstalldirs) $(mandir)
 #       $(INSTALL_DATA) licq.1 $(mandir)
