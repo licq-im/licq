@@ -279,8 +279,11 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     nResult = select(nNumDesc, &fdSet, NULL, NULL, NULL);
     if (nResult == -1)
     {
-      gLog.Error("Error in select(): %s.\n", strerror(errno));
-      m_bExit = true;
+      if (errno != EINTR)
+      {
+        gLog.Error("Error in select(): %s.\n", strerror(errno));
+        m_bExit = true;
+      }
     }
     else
     {
