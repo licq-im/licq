@@ -951,12 +951,20 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
 {
   m_nMetaCommand = ICQ_CMDxMETA_ABOUTxSET;
 
-  m_nSize += strlen(szAbout) + 5;
+  m_nSize += strlen_safe(szAbout) + 5;
   InitBuffer();
 
+  m_szAbout = szAbout == NULL ? strdup("") : strdup(szAbout);
   buffer->PackUnsignedShort(m_nMetaCommand);
-  m_szAbout = buffer->PackString(szAbout);
+  char *sz = gTranslator.NToRN(szAbout);
+  gTranslator.ClientToServer(sz);
+  buffer->PackString(sz);
+  if (sz != NULL) free(sz);
+}
 
+CPU_Meta_SetAbout::~CPU_Meta_SetAbout()
+{
+  free(m_szAbout);
 }
 
 

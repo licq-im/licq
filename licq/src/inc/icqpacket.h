@@ -485,6 +485,7 @@ class CPU_Meta_SetAbout : public CPacketUdp
 {
 public:
   CPU_Meta_SetAbout(const char *szAbout);
+  ~CPU_Meta_SetAbout();
   virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
