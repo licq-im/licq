@@ -354,10 +354,12 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
   unsigned char style = STYLE_DONTCARE;
+#if QT_VERSION >= 230
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
     style |= STYLE_FIXEDxPITCH;
   else
     style |= STYLE_VARIABLExPITCH;
+#endif
   unsigned char encoding = UserCodec::charsetForName(codec->name());
   chatman = new CChatManager(daemon, _nUin, fi.family().local8Bit(),
      encoding, style, fi.pointSize(), fi.bold(), fi.italic(), fi.underline(),
@@ -466,10 +468,12 @@ void ChatDlg::sendFontInfo()
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
   unsigned char style = STYLE_DONTCARE;
+#if QT_VERSION >= 230
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
     style |= STYLE_FIXEDxPITCH;
   else
     style |= STYLE_VARIABLExPITCH;
+#endif
 
   unsigned char encoding = UserCodec::charsetForName(codec->name());
 
@@ -824,7 +828,9 @@ void ChatDlg::slot_chat()
         if (tbtIgnore->state() == QButton::Off)
         {
           QFont f(GetWindow(u)->font());
+#if QT_VERSION >= 230
           f.setFixedPitch(u->FontStyle() & 0x0F == STYLE_FIXEDxPITCH);
+#endif
           switch (u->FontStyle() & 0xF0)
           {
           case STYLE_ROMAN:
