@@ -3964,7 +3964,7 @@ void CMainWindow::initMenu()
 
    mnuStatus = new QPopupMenu(NULL);
    mnuPFM = new QPopupMenu(NULL);
-   mnuPFM->insertItem(tr("Don't Show"), ICQ_PLUGIN_STATUSxINACTIVE);
+   mnuPFM->insertItem(tr("Don't Show"), (int)ICQ_PLUGIN_STATUSxINACTIVE);
    mnuPFM->insertItem(tr("Available"), ICQ_PLUGIN_STATUSxACTIVE);
    mnuPFM->insertItem(tr("Busy"), ICQ_PLUGIN_STATUSxBUSY);
    connect(mnuPFM, SIGNAL(activated(int)), this, SLOT(changePFMStatus(int)));
