@@ -677,13 +677,13 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 //-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {
-  unsigned short oldstatus = u->Status();
+  unsigned short oldstatus = u->Status() | (u->StatusInvisible() << 8);
   if (s == ICQ_STATUS_OFFLINE)
     u->SetStatusOffline();
   else
     u->SetStatus(s);
 
-  if(oldstatus != u->Status()) {
+  if(oldstatus != (u->Status() | (u->StatusInvisible() << 8))) {
     u->Touch();
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                     USER_STATUS, u->Uin()));
