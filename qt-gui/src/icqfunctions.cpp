@@ -224,7 +224,7 @@ void ICQFunctions::CreateSendEventTab()
   QBoxLayout* selay = new QVBoxLayout(tabList[TAB_SEND].tab, 8);
   tabList[TAB_SEND].loaded = true;
 
-  grpCmd = new QButtonGroup(1, Vertical, tr("Select Function"), tabList[TAB_SEND].tab);
+  grpCmd = new QButtonGroup(1, Vertical,/*tr("Select Function"),*/ tabList[TAB_SEND].tab);
   rdbMsg = new QRadioButton(tr("&Message"), grpCmd);
   rdbUrl = new QRadioButton(tr("&URL"), grpCmd);
   rdbChat = new QRadioButton(tr("Chat Re&quest"), grpCmd);
@@ -1162,6 +1162,9 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
       btnReadNext->setEnabled(false);
       btnReadNext->setText(tr("Nex&t"));
     }
+    // If this is a new message, go to the view tab
+    if (sig->Argument() > 0 && mleSend->text().length() == 0)
+      tabs->showPage(tabList[TAB_READ].tab);
     break;
   }
   case USER_GENERAL:
@@ -2104,8 +2107,12 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     }
   }
 
-  QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
-  setCaption(title);
+  if (icqEventTag != NULL)
+  {
+    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
+    QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
+    setCaption(title);
+  }
 }
 
 
