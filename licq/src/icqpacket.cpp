@@ -878,12 +878,31 @@ CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus)
 {
   m_nNewStatus = _nNewStatus;
 
-  m_nSize += 8;
+  m_nSize += 8 + 47;
 
   InitBuffer();
 
+  //ICQ 4.0 doesn't like this
+  m_nNewStatus &= ~(ICQ_STATUS_FxPFM | ICQ_STATUS_FxPFMxAVAILABLE);
+
   buffer->PackUnsignedLongBE(0x00060004);     // TLV
   buffer->PackUnsignedLongBE(m_nNewStatus);  // ICQ status
+  buffer->PackUnsignedLongBE(0x000C0025); // TLV
+  buffer->PackUnsignedLong(0);    // direct connection info
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
+  buffer->PackUnsignedLongBE(0x00000050);
+  buffer->PackUnsignedLongBE(0x00000003);
+  buffer->PackUnsignedLongBE(0);
+   // some kind of timestamp ?
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedShort(0);
+
+  buffer->PackUnsignedLongBE(0x00080002); // TLV
+  buffer->PackUnsignedShort(0); // Error code
 }
 
 CPU_SetStatusFamily::CPU_SetStatusFamily()
@@ -896,12 +915,15 @@ void CPU_SetStatusFamily::InitBuffer()
 {
   CPU_CommonFamily::InitBuffer();
 
+  //ICQ 4.0 doesn't like this
+  m_nNewStatus &= ~(ICQ_STATUS_FxPFM | ICQ_STATUS_FxPFMxAVAILABLE);
+
   buffer->PackUnsignedLongBE(0x00060004);     // TLV
   buffer->PackUnsignedLongBE(m_nNewStatus);  // ICQ status
   buffer->PackUnsignedLongBE(0x00080002);    // TLV
   buffer->PackUnsignedShortBE(0);            // error code ?
   buffer->PackUnsignedLongBE(0x000c0025);    // TLV
-  buffer->PackUnsignedLong(s_nLocalIp);    // direct connection info
+  buffer->PackUnsignedLong(s_nLocalIp);      // direct connection info
   buffer->PackUnsignedLongBE(s_nLocalPort);
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
@@ -963,11 +985,12 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
 }
 
 CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
-                                                     unsigned long nState)
+                                                     unsigned long nState,
+                                                     unsigned long nStatus)
   : CPU_SetStatusFamily()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  m_nNewStatus = o->StatusFull();
+  m_nNewStatus = nStatus != ICQ_STATUS_OFFLINE ? nStatus : o->StatusFull();
   gUserManager.DropOwner();
 
   m_nSize += 4 + 1 + 4 + 6 + GUID_LENGTH + 1 + 4 + 4 + 6;

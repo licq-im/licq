@@ -663,7 +663,7 @@ public:
   unsigned long ICQphoneStatus()      { return m_nICQphoneStatus; }
   unsigned long SharedFilesStatus()   { return m_nSharedFilesStatus; }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
-  void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; }
+  void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; SaveLicqInfo(); }
   void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
   void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
   virtual void SetStatusOffline();

@@ -637,6 +637,7 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   // Set the status flags
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->AddStatusFlags(newStatus);
+  unsigned long pfm = o->PhoneFollowMeStatus();
   bool Invisible = o->StatusInvisible();
   bool goInvisible = (newStatus & ICQ_STATUS_FxPRIVATE);
   bool isLogon = o->StatusOffline();
@@ -656,6 +657,12 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   m_nDesiredStatus = s;
 
   SendEvent_Server(p);
+
+  if (pfm)
+  {
+    p = new CPU_UpdateStatusTimestamp(PLUGIN_FOLLOWxME, pfm, s);
+    SendEvent_Server(p);
+  }
 
   if (Invisible && !goInvisible)
     icqSendInvisibleList();
@@ -2036,10 +2043,10 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     // T(1) unknown
     // T(2) member since
     // T(3) online since
-    // T(4) idle time ?
+    // T(4) idle time
     // T(6) status code
     // T(A) IP
-    // T(C) direct connection info (???)
+    // T(C) direct connection info
     if (packet.getTLVLen(0x0006) == 4)
       m_nDesiredStatus = packet.UnpackUnsignedLongTLV(0x0006);
     if (packet.getTLVLen(0x000a) == 4) {
@@ -2059,6 +2066,12 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
 
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    unsigned long nPFM = o->PhoneFollowMeStatus();
+    // Workaround for the ICQ4.0 problem of it not liking the PFM flags
+    if (nPFM != ICQ_PLUGIN_STATUSxINACTIVE)
+      m_nDesiredStatus |= ICQ_STATUS_FxPFM;
+    if (nPFM == ICQ_PLUGIN_STATUSxACTIVE)
+      m_nDesiredStatus |= ICQ_STATUS_FxPFMxAVAILABLE;
     ChangeUserStatus(o, m_nDesiredStatus);
     o->SetOnlineSince(nOnlineSince);
     gLog.Info(tr("%sServer says we're now: %s\n"), L_SRVxSTR, ICQUser::StatusToStatusStr(o->Status(), o->StatusInvisible()));

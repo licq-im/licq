@@ -429,7 +429,8 @@ public:
 class CPU_UpdateStatusTimestamp : public CPU_SetStatusFamily
 {
 public:
-  CPU_UpdateStatusTimestamp(const char *GUID, unsigned long nState);
+  CPU_UpdateStatusTimestamp(const char *GUID, unsigned long nState,
+    unsigned long nStatus = ICQ_STATUS_OFFLINE);
 };
 
 class CPU_UpdateTimestamp : public CPU_SetStatusFamily
