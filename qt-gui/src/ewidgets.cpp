@@ -420,9 +420,9 @@ void CInfoField::setData(const unsigned long data)
 CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
   : MLEditWrap(true, parent, true, name)
 {
-  #if QT_VERSION >= 300
+#if QT_VERSION >= 300
   setTextFormat(RichText);
-  #endif
+#endif
   setReadOnly(true);
 };
 
@@ -525,7 +525,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 #endif
 
   append(s);
-  setCursorPosition(numLines(),0);
+  GotoEnd();
 
   if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG){
     u = gUserManager.FetchUser(m_nUin, LOCK_R );

@@ -70,6 +70,9 @@ void MLEditWrap::appendNoNewLine(QString s)
 
 void MLEditWrap::GotoEnd()
 {
+#if QT_VERSION >= 300
+  scrollToBottom();
+#endif
    setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 }
 
