@@ -181,7 +181,7 @@ void ICQFunctions::CreateReadEventTab()
 
   splRead = new QSplitter(QSplitter::Vertical, p);
   msgView = new MsgView(splRead);
-  mleRead = new MLEditWrap(true, splRead);
+  mleRead = new MLEditWrap(true, splRead, true);
   mleRead->setReadOnly(true);
   splRead->setOpaqueResize(true);
   splRead->setResizeMode(msgView, QSplitter::KeepSize);
@@ -228,7 +228,7 @@ void ICQFunctions::CreateSendEventTab()
 #endif
   selay->addWidget(grpCmd);
 
-  mleSend = new MLEditWrap(true, tabList[TAB_SEND].tab);
+  mleSend = new MLEditWrap(true, tabList[TAB_SEND].tab, true);
   mleSend->setMinimumHeight(150);
   selay->addWidget(mleSend);
   selay->setStretchFactor(mleSend, 1);
@@ -544,48 +544,6 @@ void ICQFunctions::CreateHistoryTab()
   tabList[TAB_HISTORY].loaded = false;
 }
 
-class HistoryWidget : public MLEditWrap
-{
-public:
-  HistoryWidget(QWidget* parent = 0, const char* name = 0)
-    : MLEditWrap(true, parent, name)
-    {
-      setReadOnly(true);
-    };
-
-protected:
-
-  virtual void paintCell(QPainter* p, int row, int col)
-  {
-    QFont f(p->font());
-    QPalette& pal = const_cast<QPalette&>(palette());
-
-    QString s = stringShown(row);
-    f.setBold (s[0] == '\001' || s[0] == '\002');
-    int i= row;
-    pal.setColor(QColorGroup::Text, Qt::blue);
-    while(i >= 0)
-    {
-      QString s2 = stringShown(i--);
-      if (s2[0] == '\002')  break;
-      if (s2[0] == '\003')
-      {
-        pal.setColor(QColorGroup::Text, Qt::black);
-        break;
-      }
-      else if(s2[0] == '\001')
-      {
-        pal.setColor(QColorGroup::Text, Qt::red);
-        break;
-      }
-    }
-
-    p->setFont(f);
-    MLEditWrap::paintCell(p, row, col);
-  }
-};
-
-
 
 void ICQFunctions::InitHistoryTab()
 {
@@ -628,7 +586,7 @@ void ICQFunctions::InitHistoryTab()
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
-  mleHistory = new HistoryWidget(p);
+  mleHistory = new CHistoryWidget(p);
   lay->addWidget(mleHistory, 1);
 }
 
