@@ -22,7 +22,7 @@
 
 #include <gtk/gtk.h>
 
-void menu_system_auth_user(GtkWidget *widget, gpointer data)
+void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 {
 	GtkWidget *label;
 	GtkWidget *ok;
@@ -36,22 +36,22 @@ void menu_system_auth_user(GtkWidget *widget, gpointer data)
 	gtk_window_set_title(GTK_WINDOW(au->window), "Licq - Authorize User");
 	
 	/* Make the boxes */
-	h_box = gtk_hbox_new(TRUE, 5);
+	h_box = gtk_hbox_new(FALSE, 5);
 	v_box = gtk_vbox_new(FALSE, 5);
 
 	/* Make the label and entry and pack them */
-	label = gtk_label_new("Authorize UIN: ");
+	label = gtk_label_new("Authorize UIN:");
 	au->entry = gtk_entry_new_with_max_length(8);
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 3);
-	gtk_box_pack_start(GTK_BOX(h_box), au->entry, FALSE, FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), au->entry, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* Make the buttons and pack them */
 	h_box = gtk_hbox_new(FALSE, 5);
 	ok = gtk_button_new_with_label("OK");
 	cancel = gtk_button_new_with_label("Cancel");
-	gtk_box_pack_start(GTK_BOX(h_box), ok, FALSE, FALSE, 10);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, FALSE, FALSE, 10);
+	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 30);
+	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 30);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* Connect the signals */
@@ -66,6 +66,12 @@ void menu_system_auth_user(GtkWidget *widget, gpointer data)
 	gtk_container_add(GTK_CONTAINER(au->window), v_box);
 	gtk_widget_show_all(au->window);
 	gtk_window_set_focus(GTK_WINDOW(au->window), au->entry);
+
+	if(uin != 0)
+	{
+		const gchar *s_uin = g_strdup_printf("%ld", uin);
+		gtk_entry_set_text(GTK_ENTRY(au->entry), s_uin);
+	}
 }
 
 void auth_user_callback(GtkWidget *widget, struct auth_user *au)
