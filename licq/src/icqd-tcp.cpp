@@ -22,7 +22,7 @@
 #include "licq_filetransfer.h"
 #include "support.h"
 
-//-----ICQ::sendMessage----------------------------------------------------------------------------
+//-----ICQ::sendMessage--------------------------------------------------------
 unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
@@ -43,7 +43,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+	ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   if (!online) // send offline
   {
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
@@ -84,7 +84,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
 }
 
 
-//-----CICQDaemon::sendReadAwayMsg------------------------------------------------------------------------
+//-----CICQDaemon::sendReadAwayMsg---------------------------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 {
   if (nUin == gUserManager.OwnerUin()) return 0;
@@ -100,7 +100,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 }
 
 
-//-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
+//-----CICQDaemon::sendUrl-----------------------------------------------------
 unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
@@ -158,9 +158,9 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
 }
 
 
-//-----CICQDaemon::sendFile------------------------------------------------------------
+//-----CICQDaemon::sendFile---------------------------------------------------
 unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
-                        const char *szDescription, unsigned short nLevel)
+                        const char *szDescription, unsigned short nLevel, bool bServer)
 {
   if (nUin == gUserManager.OwnerUin()) return 0;
 
@@ -176,32 +176,61 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return 0;
 
-  CPT_FileTransfer *p = new CPT_FileTransfer(szFilename, szDosDesc, nLevel, u);
-  if (!p->IsValid())
-  {
-    delete p;
-    result = NULL;
-  }
-  else
-  {
-    unsigned long f = E_DIRECT | INT_VERSION;
-    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-    if (u->Secure()) f |= E_ENCRYPTED;
-    e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-                       p->Sequence(), TIME_NOW, f);
-    gLog.Info("%sSending %sfile transfer to %s (#%ld).\n", L_TCPxSTR,
-       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, e);
-  }
-  u->SetSendServer(false);
+	if (bServer)
+	{
+		CPU_FileTransfer *p = new CPU_FileTransfer(u, szFilename, szDosDesc);
+
+		if (!p->IsValid())
+		{
+			delete p;
+			result = NULL;
+		}
+		else
+		{
+			e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+								p->Sequence(), TIME_NOW, INT_VERSION);
+			gLog.Info("%sSending file transfer to %s (#%ld).\n", L_SRVxSTR,
+				u->GetAlias(), -p->Sequence());
+
+			result = SendExpectEvent_Server(u->Uin(), p, e);
+		}
+	}
+	else
+	{
+		CPT_FileTransfer *p = new CPT_FileTransfer(szFilename, szDosDesc, nLevel, u);
+
+		if (!p->IsValid())
+		{
+			delete p;
+			result = NULL;
+		}
+		else
+		{
+			unsigned long f = E_DIRECT | INT_VERSION;
+			if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+			if (u->Secure()) f |= E_ENCRYPTED;
+
+			e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+												 p->Sequence(), TIME_NOW, f);
+			gLog.Info("%sSending %sfile transfer to %s (#%ld).\n", L_TCPxSTR,
+				nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+				u->GetAlias(), -p->Sequence());
+			
+			result = SendExpectEvent_Client(u, p, e);
+		}
+	}
+
+  u->SetSendServer(bServer);
   u->SetSendLevel(nLevel);
   gUserManager.DropUser(u);
 
   if (szDosDesc)
     delete [] szDosDesc;
 
-  return result->EventId();
+	if (result)
+		return result->EventId();
+	else
+		return 0;
 }
 
 
@@ -290,15 +319,22 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequen
 
 //-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-   unsigned long nSequence)
+   unsigned long nSequence, bool bServer)
 {
    // basically a fancy tcp ack packet which is sent late
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sAccepting file transfer from %s (#%ld).\n", L_TCPxSTR,
-     u->GetAlias(), -nSequence);
-  CPT_AckFileAccept p(nPort, nSequence, u);
-  AckTCP(p, u->SocketDesc());
+	gLog.Info("%sAccepting file transfer from %s (#%ld).\n",
+						bServer ? L_SRVxSTR : L_TCPxSTR, u->GetAlias(), -nSequence);
+	if (bServer)
+	{
+	}
+	else
+	{
+		CPT_AckFileAccept p(nPort, nSequence, u);
+		AckTCP(p, u->SocketDesc());
+	}
+
   gUserManager.DropUser(u);
 }
 
@@ -326,15 +362,15 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
 
 //-----CICQDaemon::sendChat------------------------------------------------------------
 unsigned long CICQDaemon::icqChatRequest(unsigned long nUin, const char *szReason,
-   unsigned short nLevel)
+																				 unsigned short nLevel, bool bServer)
 {
-  return icqMultiPartyChatRequest(nUin, szReason, NULL, 0, nLevel);
+  return icqMultiPartyChatRequest(nUin, szReason, NULL, 0, nLevel, bServer);
 }
 
 
 unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
    const char *reason, const char *szChatUsers, unsigned short nPort,
-   unsigned short nLevel)
+   unsigned short nLevel, bool bServer)
 {
   if (nUin == gUserManager.OwnerUin()) return 0;
 
@@ -342,19 +378,36 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
   if (u == NULL) return 0;
   char *szReasonDos = gTranslator.NToRN(reason);
   gTranslator.ClientToServer(szReasonDos);
-  CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos,
-     szChatUsers, nPort, nLevel, u);
 
-  unsigned long f = E_DIRECT | INT_VERSION;
-  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  if (u->Secure()) f |= E_ENCRYPTED;
-  CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
-     TIME_NOW, f);
-  gLog.Info("%sSending %schat request to %s (#%ld).\n", L_TCPxSTR,
-     nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-     u->GetAlias(), -p->Sequence());
-  ICQEvent *result = SendExpectEvent_Client(u, p, e);
-  u->SetSendServer(false);
+	unsigned long f;
+	ICQEvent *result = NULL;
+	if (bServer)
+	{
+		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos, szChatUsers, u);
+		f = INT_VERSION;
+		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
+																	 TIME_NOW, f);
+		gLog.Info("%sSending chat request to %s (#%ld).\n", L_SRVxSTR,
+							u->GetAlias(), -p->Sequence());
+
+		result = SendExpectEvent_Server(u->Uin(), p, e);
+	}
+	else
+	{
+		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, szChatUsers, nPort,
+																						 nLevel, u);
+		f = E_DIRECT | INT_VERSION;
+		if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+		if (u->Secure()) f |= E_ENCRYPTED;
+		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
+																	 TIME_NOW, f);
+		gLog.Info("%sSending %schat request to %s (#%ld).\n", L_TCPxSTR,
+							nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+							u->GetAlias(), -p->Sequence());
+		result = SendExpectEvent_Client(u, p, e);
+	}
+	
+	u->SetSendServer(bServer);
   u->SetSendLevel(nLevel);
   gUserManager.DropUser(u);
 
@@ -525,7 +578,7 @@ void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nS
  * Shake hands on the given socket with the given user.
  *-------------------------------------------------------------------------*/
 bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
-   unsigned short nPort, unsigned short nVersion)
+   unsigned short nPort, unsigned short nVersion, bool bConfirm)
 {
   s->SetVersion(nVersion);
   s->SetOwner(nUin);
@@ -622,6 +675,24 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       // Send the hanshake ack
       CPacketTcp_Handshake_Ack p_ack;
       if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+
+			// Files and chats don't get this.
+			// They do in icq2002a but for some reason icq2002a does not
+			// reply to this when licq sends it.  It will reply from a normal
+			// handshake though, just not file or chat...
+			if (bConfirm)
+			{
+				// Send handshake accepted
+				CPacketTcp_Handshake_Confirm p_confirm;
+				if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
+
+				// Wait for reverse handshake accepted
+				do
+				{
+					if (!s->RecvPacket()) goto sock_error;
+				} while (!s->RecvBufferFull());
+				s->ClearRecvBuffer();
+			}
 
       return true;
     }
@@ -977,10 +1048,28 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       break;
     }
     case 7:
+    case 8:
     {
-      char *buf;
-      gLog.Unknown("%sUnknown TCPv7 packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
-      delete [] buf;
+      nUin = pSock->Owner();
+      if (!Decrypt_Client(&packet, nInVersion))
+      {
+        char *buf;
+        gLog.Unknown("%sUnknown TCPv%d packet:\n%s\n", L_UNKNOWNxSTR, nInVersion, packet.print(buf));
+        delete [] buf;
+        break;
+      }
+
+      packet.UnpackChar(); // 0x02
+      packet.UnpackUnsignedLong(); // Checksum
+      command = packet.UnpackUnsignedShort(); // Command
+      packet.UnpackUnsignedShort(); // 0x000E
+      theSequence = (signed short)packet.UnpackUnsignedShort();
+      unsigned long junkLong1, junkLong2, junkLong3;
+      packet >> junkLong1 >> junkLong2 >> junkLong3; // always zero
+      newCommand = packet.UnpackUnsignedShort();
+      ackFlags = packet.UnpackUnsignedShort();
+      msgFlags = packet.UnpackUnsignedShort();
+      packet >> messageLen;
       break;
     }
     default:
@@ -1401,6 +1490,181 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         break;
       }
 
+			// Yuck, ICBM
+			// XXX If we are in DND or OCC, don't accept the message!
+			case ICQ_CMDxSUB_ICBM:
+			{
+				unsigned short nLen;
+				unsigned long nLongLen;
+
+				packet >> nLen;
+				packet.incDataPosRead(18);
+				packet >> nLongLen; // plugin name len
+
+				char szPlugin[nLongLen+1];
+				for (unsigned long i = 0; i < nLongLen; i++)
+					packet >> szPlugin[i];
+				szPlugin[nLongLen] = '\0';
+
+				packet.incDataPosRead(nLen - 22 - nLongLen);
+				packet.incDataPosRead(4); // bytes left in packet
+				packet >> nLongLen; // message len
+
+				int nICBMCommand = 0;
+				if (strstr(szPlugin, "File"))
+					nICBMCommand = ICQ_CMDxSUB_FILE;
+				else if (strstr(szPlugin, "URL"))
+					nICBMCommand = ICQ_CMDxSUB_URL;
+				else if (strstr(szPlugin, "Chat"))
+					nICBMCommand = ICQ_CMDxSUB_CHAT;
+				else if (strstr(szPlugin, "Contacts"))
+					nICBMCommand = ICQ_CMDxSUB_CONTACTxLIST;
+				else
+				{
+					gLog.Info("%sUnknown ICBM plugin type: %s\n", L_TCPxSTR, szPlugin);
+					break;
+				}
+
+				char szMessage[nLongLen+1];
+				for (unsigned long i = 0; i < nLongLen; i++)
+					packet >> szMessage[i];
+				szMessage[nLongLen] = '\0';
+
+				switch (nICBMCommand)
+				{
+				case ICQ_CMDxSUB_FILE:
+				{
+					unsigned long nFileSize;
+					packet.incDataPosRead(2); // port (BE)
+					packet.incDataPosRead(2); // unknown
+					packet >> nLen; // filename len, including NULL
+					char szFilename[nLen];
+					for (unsigned short i = 0; i < nLen; i++)
+						packet >> szFilename[i];
+					packet >> nFileSize;
+					packet.incDataPosRead(2); // reversed port (BE)
+
+					gLog.Info("%sFile transfer request from %s (%ld).\n", L_TCPxSTR,
+										u->GetAlias(), nUin);
+
+					// translating string with translation table
+					gTranslator.ServerToClient(szMessage);
+					CEventFile *e = new CEventFile(szFilename, szMessage, nFileSize,
+																				 theSequence, TIME_NOW, nMask);
+					if (bNewUser)
+					{
+						if (Ignore(IGNORE_NEWUSERS))
+						{
+							RejectEvent(nUin, e);
+							break;
+						}
+						AddUserToList(u);
+						bNewUser = false;
+					}
+
+					if (!AddUserEvent(u, e)) break;
+					m_xOnEventManager.Do(ON_EVENT_FILE, u);
+					break;
+				}
+				case ICQ_CMDxSUB_CHAT:
+				{
+					char szChatClients[1024];
+ 					packet.UnpackString(szChatClients, sizeof(szChatClients));
+					nPortReversed = packet.UnpackUnsignedShortBE();
+					packet >> nPort;
+
+					if (nPort == 0)
+						nPort = nPortReversed;
+
+					gLog.Info("%sChat request from %s (%ld).\n", L_TCPxSTR,
+										u->GetAlias(), nUin);
+					
+					// translating string with translation table
+					gTranslator.ServerToClient(szMessage);
+					CEventChat *e = new CEventChat(szMessage, szChatClients, nPort,
+																				 theSequence, TIME_NOW, nMask);
+					if (bNewUser)
+					{
+						if (Ignore(IGNORE_NEWUSERS))
+						{
+							RejectEvent(nUin, e);
+							break;
+						}
+						AddUserToList(u);
+						bNewUser = false;
+					}
+
+					if (!AddUserEvent(u, e)) break;
+					m_xOnEventManager.Do(ON_EVENT_CHAT, u);
+					break;
+				}
+				case ICQ_CMDxSUB_URL:
+				{
+					gLog.Info("%sURL from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
+					CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxTCP_START,
+																					TIME_NOW, nMask);
+					if (e == NULL)
+					{
+						char *buf;
+						gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR,
+											packet.print(buf));
+						delete [] buf;
+						errorOccured = true;
+						break;
+					}
+
+					if (bNewUser)
+					{
+						if (Ignore(IGNORE_NEWUSERS))
+						{
+							RejectEvent(nUin, e);
+							break;
+						}
+						AddUserToList(u);
+						bNewUser = false;
+					}
+
+					if (!AddUserEvent(u, e)) break;
+					m_xOnEventManager.Do(ON_EVENT_URL, u);
+					break;
+				}
+				case ICQ_CMDxSUB_CONTACTxLIST:
+				{
+					gLog.Info("%sContact list from %s (%ld).\n", L_TCPxSTR,
+										u->GetAlias(), nUin);
+					CEventContactList *e = CEventContactList::Parse(szMessage,
+																													ICQ_CMDxTCP_START,
+																													TIME_NOW, nMask);
+					if (e == NULL)
+					{
+						char *buf;
+						gLog.Warn("%sInvalid contact list message:\n%s\n", L_TCPxSTR,
+											packet.print(buf));
+						delete [] buf;
+						errorOccured = true;
+						break;
+					}
+
+					if (bNewUser)
+					{
+						if (Ignore(IGNORE_NEWUSERS))
+						{
+							RejectEvent(nUin, e);
+							break;
+						}
+						AddUserToList(u);
+						bNewUser = false;
+					}
+
+					if (!AddUserEvent(u, e)) break;
+					m_xOnEventManager.Do(ON_EVENT_MSG, u);					
+					break;
+				}
+				} // switch nICBMCommand
+
+				break;
+			}
+
       // Old-style encryption request:
       case ICQ_CMDxSUB_SECURExOLD:
       {
@@ -1586,6 +1850,77 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
          pExtendedAck = new CExtendedAck(nPort != 0, nPort, message);
          break;
       }
+
+		  case ICQ_CMDxSUB_ICBM:
+			{
+				unsigned short nLen;
+				unsigned long nLongLen;
+
+				packet >> nLen;
+				packet.incDataPosRead(18); // eh?
+				packet >> nLongLen; // Plugin name len
+
+				char szPlugin[nLongLen+1];
+				for (unsigned long i = 0; i < nLongLen; i++)
+					packet >> szPlugin[i];
+				szPlugin[nLongLen] = '\0';
+				
+				packet.incDataPosRead(nLen - 22 - nLongLen);
+				packet.incDataPosRead(4); // left in packet
+
+				int nICBMCommand = 0;
+				if (strstr(szPlugin, "File"))
+					nICBMCommand = ICQ_CMDxSUB_FILE;
+				else if (strstr(szPlugin, "Chat"))
+					nICBMCommand = ICQ_CMDxSUB_CHAT;
+				else
+				{
+					gLog.Info("%sUnknown direct ack ICBM plugin type: %s\n", L_TCPxSTR,
+										szPlugin);
+					gUserManager.DropUser(u);
+					return true;
+				}
+
+				packet >> nLongLen;
+				char szMessage[nLongLen+1];
+				for (unsigned short i = 0; i < nLongLen; i++)
+					packet >> szMessage[i];
+				szMessage[nLongLen] = '\0';
+
+				switch (nICBMCommand)
+				{
+				case ICQ_CMDxSUB_FILE:
+				{
+					nPort = packet.UnpackUnsignedShortBE();
+					packet.incDataPosRead(2); // unknown
+					packet >> nLen; // filename len, including NULL
+					packet.incDataPosRead(nLen); // filename
+					packet.incDataPosRead(4); // file size
+					packet >> nPortReversed;
+
+					if (nPort == 0)
+						nPort = nPortReversed;
+
+					pExtendedAck = new CExtendedAck(nPort != 0, nPort, szMessage);
+					break;
+				}
+				case ICQ_CMDxSUB_CHAT:
+				{
+					char ul[1024];
+					packet.UnpackString(ul, sizeof(ul));
+					nPort = packet.UnpackUnsignedShortBE();
+					packet >> nPortReversed;
+
+					if (nPort == 0)
+						nPort = nPortReversed;
+
+					pExtendedAck = new CExtendedAck(nPort != 0, nPort, szMessage);
+					break;
+				}
+				} // switch nICBMCommand
+
+				break;
+			}
 
 #ifdef USE_OPENSSL
       case ICQ_CMDxSUB_SECURExOPEN:
@@ -1880,14 +2215,10 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
 
   switch (VersionToUse(nVersionMajor))
   {
+    case 8:
     case 7:
     {
       b.Reset();
-      char *buf;
-      gLog.Unknown("%sTCP handshake packet v7 (command = 0x%02X):\n%s\n",
-                   L_UNKNOWNxSTR, cHandshake, b.print(buf));
-      delete [] buf;
-
       CPacketTcp_Handshake_v7 p_in(&b);
       nUin = p_in.SourceUin();
 
@@ -1906,13 +2237,33 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
       unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
-      s->ClearRecvBuffer();
       if (nOk != 1)
       {
         gLog.Warn("%sBad handshake ack: %ld.\n", L_WARNxSTR, nOk);
         return false;
       }
-      nVersion = 7;
+
+      // Get handshake confirmation
+      CPacketTcp_Handshake_Confirm p_confirm;
+      int nGot = s->RecvBuffer().getDataSize();
+      s->ClearRecvBuffer();
+      
+      if (nGot > 4)
+      {
+				if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
+      }
+      else
+      {
+        do
+				{
+					if (!s->RecvPacket()) goto sock_error;
+				} while (!s->RecvBufferFull());
+
+        if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
+      }
+
+      nVersion = VersionToUse(nVersionMajor);
+
       break;
     }
 
