@@ -351,20 +351,19 @@ CPU_Register::CPU_Register(const char *_szPasswd)
   m_nPasswdLen = strlen(_szPasswd) + 1;
   m_szPasswd = strdup(_szPasswd);
 
-  m_nSize = strlen (m_szPasswd) + 1 + 18
+  m_nSize = strlen (m_szPasswd) + 1 + 18;
   buffer = new CBuffer(m_nSize);
 
-  buffer->add(m_nVersion);
-  buffer->add(m_nCommand);
-  buffer->add(m_nSequence);
-  buffer->add(0x002);
-  buffer->add(m_nPasswdLen);
-  buffer->add(m_szPasswd, m_nPasswdLen);
-  buffer->add(0x72);
-  buffer->add(0x00);
+  buffer->PackUnsignedShort(m_nVersion);
+  buffer->PackUnsignedShort(m_nCommand);
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedShort(0x02);
+  buffer->PackString(m_szPasswd);
+  buffer->PackUnsignedShort(0x72);
+  buffer->PackUnsignedShort(0x00);
 }
 
-CPU_Register::~CPacketRegister()
+CPU_Register::~CPU_Register()
 {
   free (m_szPasswd);
   if (buffer != NULL) delete buffer;
