@@ -29,7 +29,8 @@ CC	 = @CC@
 CFLAGS	 = @CFLAGS@
 CXX	 = @CXX@
 CXXFLAGS = -fno-rtti -fno-exceptions @CXXFLAGS@ @X_CFLAGS@ @QT_INCLUDES@ @KDE_INCLUDES@
-CPPFLAGS = -Wall -fPIC -DPIC -D_REENTRANT @CPPFLAGS@ -I$(srcdir) -I$(top_srcdir) -I$(licq_incdir) -I$(top_srcdir)/intl @DEFS@ -DLOCALEDIR="\"$(localedir)\"" @X_CFLAGS@ @QT_INCLUDES@ @KDE_INCLUDES@
+CPPFLAGS = -Wall -fPIC -DPIC -D_REENTRANT -I$(srcdir) -I$(top_srcdir) -I$(licq_incdir) -I$(top_srcdir)/intl \
+           @CPPFLAGS@ @DEFS@ -DLOCALEDIR="\"$(localedir)\"" @X_CFLAGS@ @QT_INCLUDES@ @KDE_INCLUDES@
 LDFLAGS  = -shared -nostdlib @X_LIBS@ @QT_LDFLAGS@ @KDE_LDFLAGS@
 LDLIBS   = @INTLLIBS@ -lqt @X_PRE_LIBS@ -lX11 -lXext @XSS_LIBS@ @X_EXTRA_LIBS@ @INTLLIBS@ @KDE_LIBS@
 MOC      = @QT_MOC@
