@@ -674,17 +674,19 @@ void ICQFunctions::showHistory()
   }
   else
   {
-    QString s;
+    QString s, st;
     mleHistory->clear();
     for (HistoryListIter i = h.begin(); i != h.end(); i++)
     {
-      s.sprintf("%s -> %s: %s (%s) [%c%c%c]\n",
+      s.sprintf("| %s -> %s: %s\n"
+                "| %s [%c%c%c]\n",
                 (*i)->Dir() == 'R' ? sz : o->getAlias(),
                 (*i)->Dir() == 'R' ? o->getAlias() : sz,
                 (const char *)EventDescription(*i), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
                 (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-');
-      mleHistory->append(s + QString::fromLocal8Bit( (*i)->Text() ));
+      st.append(s + QString::fromLocal8Bit( (*i)->Text() ));
     }
+    mleHistory->setText(st);
   }
   gUserManager.DropOwner();
   gUserManager.DropUser(u);
@@ -777,11 +779,19 @@ void ICQFunctions::specialFcn(int theFcn)
       mleSend->setEnabled(true);
       mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
 #ifdef USE_KDE
-      QString f = KFileDialog::getOpenFileName(NULL, NULL, this);
+      QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
-      QString f = QFileDialog::getOpenFileName(NULL, NULL, this);
+      QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #endif
-      if (!f.isNull()) edtItem->setText(f);
+      QStringList::Iterator it;
+      QString f;
+      for( it = fl.begin(); it != fl.end(); it++ )
+      {
+        if (it != fl.begin())
+          f += ", ";
+        f += (*it);
+      }
+      edtItem->setText(f);
       break;
    }
 }
@@ -938,7 +948,38 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   btnCancel->setText(tr("Close"));
   icqEvent = NULL;
 
-  if (isOk)
+  if (!isOk)
+  {
+    if (e->m_nCommand == ICQ_CMDxTCP_START &&
+        (e->m_nSubCommand == ICQ_CMDxSUB_MSG ||
+         e->m_nSubCommand == ICQ_CMDxSUB_URL) &&
+        QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
+    {
+      btnOk->setEnabled(false);
+      btnCancel->setText(tr("Cancel"));
+      chkSendServer->setChecked(true);
+      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+      u->setSendServer(true);
+      gUserManager.DropUser(u);
+      if (e->m_nSubCommand == ICQ_CMDxSUB_MSG)
+      {
+        CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
+        m_sProgressMsg = tr("Sending msg through server...");
+        icqEvent = server->icqSendMessage(m_nUin, ue->Message(), true,
+                                          false, 0);
+      }
+      else
+      {
+        CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
+        m_sProgressMsg = tr("Sending URL through server...");
+        icqEvent = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(), true,
+                                      false, 0);
+      }
+      QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
+      setCaption(title);
+    }
+  }
+  else
   {
     switch(e->m_nCommand)
     {
@@ -1017,7 +1058,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         }
         else
           gUserManager.DropUser(u);
-        
+
         mleSend->clear();
       }
 
