@@ -569,8 +569,8 @@ protected:
 
 
 //=====TCP======================================================================
-bool Decrypt_Client(CBuffer *pkt);
-void Encrypt_Client(CBuffer *pkt);
+bool Decrypt_Client(CBuffer *pkt, unsigned long version);
+void Encrypt_Client(CBuffer *pkt, unsigned long version);
 
 //-----PacketTcp_Handshake------------------------------------------------------
 class CPacketTcp_Handshake : public CPacket

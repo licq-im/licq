@@ -244,57 +244,99 @@ static unsigned char client_check_data[] = {
 };
 
 
-void Encrypt_Client(CBuffer *pkt)
+void Encrypt_Client(CBuffer *pkt, unsigned long version)
 {
-  unsigned long hex, key, B1, M1, check;
+  unsigned long B1, M1, check;
   unsigned int i;
   unsigned char X1, X2, X3;
   unsigned char *buf = (unsigned char*)pkt->getDataStart();
+  unsigned char bak[6];
+  unsigned long offset;
   unsigned long size = pkt->getDataSize();
 
-  // calculate checkcode
-  DEBUG_ENCRYPTION(("encrypt size is %d, %04x\n", size, size));
-  unsigned long arg = (size < 255 ? size : 255)-10;
-  DEBUG_ENCRYPTION(("arg is %ld, %08lx\n", arg, arg));
-  M1 = (rand() % arg) +10;
-  DEBUG_ENCRYPTION(("M1 is %d, %04x\n", M1, M1));
+  if(version < 4)
+    return;  // no encryption necessary.
+
+  switch(version) {
+  case 4:
+  case 5:
+    offset = 6;
+    break;
+  case 6:
+  case 7:
+  default:
+    offset = 0;
+  }
+
+  // calculate verification data
+  M1 = (rand() % ((size < 255 ? size : 255)-10))+10;
   X1 = buf[M1] ^ 0xFF;
   X2 = rand() % 220;
   X3 = client_check_data[X2] ^ 0xFF;
-  B1 = (buf[4]<<24)|(buf[6]<<16)|(buf[4]<<8)|(buf[6]);
+  if(offset) {
+    for(i=0;i<6;i++)  bak[i] = buf[i];
+    B1 = (buf[offset+4]<<24)|(buf[offset+6]<<16)|(buf[2]<<8)|buf[0];
+  }
+  else
+    B1 = (buf[4]<<24)|(buf[6]<<16)|(buf[4]<<8)|(buf[6]);
+
+  // calculate checkcode
   check = (M1 << 24) | (X1 << 16) | (X2 << 8) | X3;
-  DEBUG_ENCRYPTION(("original check %08lx\nB1 is %08lx\n", check, B1));
   check ^= B1;
   DEBUG_ENCRYPTION(("complete check %08lx\n", check));
 
   // main XOR key
-  key = 0x67657268 * size + check;
+  unsigned long key = 0x67657268 * size + check;
 
   // XORing the actual data
   for(i=0;i<(size+3)/4;i+=4){
-    hex = key + client_check_data[i&0xFF];
+    unsigned long hex = key + client_check_data[i&0xFF];
     buf[i+0] ^= hex&0xFF;buf[i+1] ^= (hex>>8)&0xFF;
     buf[i+2] ^= (hex>>16)&0xFF;buf[i+3] ^= (hex>>24)&0xFF;
   }
 
+  // in TCPv4 are the first 6 bytes unencrypted
+  // so restore them
+  if(offset)  for(i=0;i<6;i++) buf[i] = bak[i];
+
   // storing the checkcode
-  buf[3] = (check>>24)&0xFF;
-  buf[2] = (check>>16)&0xFF;
-  buf[1] = (check>>8)&0xFF;
-  buf[0] = check&0xFF;
+  buf[offset+3] = (check>>24)&0xFF;
+  buf[offset+2] = (check>>16)&0xFF;
+  buf[offset+1] = (check>>8)&0xFF;
+  buf[offset+0] = check&0xFF;
 }
 
 
-bool Decrypt_Client(CBuffer *pkt)
+bool Decrypt_Client(CBuffer *pkt, unsigned long version)
 {
   unsigned long hex, key, B1, M1, check;
   unsigned int i;
   unsigned char X1, X2, X3;
   unsigned char *buf = (unsigned char*)pkt->getDataStart();
+  unsigned char bak[6];
   unsigned long size = pkt->getDataSize();
+  unsigned long offset;
+
+  if(version < 4)
+    return true;  // no decryption necessary.
+
+  switch(version) {
+  case 4:
+  case 5:
+    offset = 6;
+    break;
+  case 6:
+  case 7:
+  default:
+    offset = 0;
+  }
+
+  // backup the first 6 bytes
+  if(offset)
+    for(i=0;i<6;i++)  bak[i] = buf[i];
 
   // retrieve checkcode
-  check = (buf[3]<<24)|(buf[2]<<16)|(buf[1]<<8)|(buf[0]);
+  check = (buf[offset+3]<<24)|(buf[offset+2]<<16)|(buf[offset+1]<<8)|(buf[offset+0]);
 
   DEBUG_ENCRYPTION(("size %d, check %08lx\n", size, check));
 
@@ -308,9 +350,19 @@ bool Decrypt_Client(CBuffer *pkt)
   }
 
   // retrive validate data
-  B1 = (buf[4]<<24) | (buf[6]<<16) | (buf[4]<<8) | (buf[6]<<0);
+  if(offset) {
+    // in TCPv4 are the first 6 bytes unencrypted
+    // so restore them
+    for(i=0;i<6;i++) buf[i] = bak[i];
+    B1 = (buf[offset+4]<<24)|(buf[offset+6]<<16)|(buf[2]<<8)|buf[0];
+  }
+  else
+    B1 = (buf[4]<<24) | (buf[6]<<16) | (buf[4]<<8) | (buf[6]<<0);
+
+  // special decryption
   B1 ^= check;
 
+  // validate packet
   M1 = (B1 >> 24) & 0xFF;
   if(M1 < 10 || M1 >= size) {
     DEBUG_ENCRYPTION(("range check failed, M1 is %02x, returning false\n", M1));
@@ -349,7 +401,6 @@ bool Decrypt_Client(CBuffer *pkt)
 unsigned long CPacket::s_nLocalIp = 0;
 unsigned long CPacket::s_nRealIp = 0;
 char CPacket::s_nMode = MODE_DIRECT;
-bool CPacketUdp::s_bRegistered = false;
 
 //----SetIps-----------------------------------------------------------------
 void CPacket::SetIps(INetSocket *s)
@@ -365,7 +416,7 @@ void CPacket::SetIps(INetSocket *s)
 unsigned short CPacketUdp::s_nSequence = 0;
 unsigned short CPacketUdp::s_nSubSequence = 0;
 unsigned long  CPacketUdp::s_nSessionId = 0;
-
+bool CPacketUdp::s_bRegistered = false;
 
 CBuffer *CPacketUdp::Finalize(INetSocket *)
 {
@@ -1278,7 +1329,7 @@ CBuffer *CPacketTcp::Finalize(INetSocket *s)
     LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
   }
 
-  if (m_nVersion == 4) Encrypt_Client(buffer);
+  Encrypt_Client(buffer, m_nVersion);
   return buffer;
 }
 
