@@ -1185,7 +1185,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
   if (m_bSecure != s->Secure())
   {
     m_bSecure = s->Secure();
-    if (gLicqDaemon != NULL)
+    if (gLicqDaemon != NULL && m_bOnContactList)
       gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, m_bSecure ? 1 : 0));
   }
 
@@ -1200,7 +1200,7 @@ void ICQUser::ClearSocketDesc()
   m_nLocalPort = 0;
   m_nConnectionVersion = 0;
   m_bSecure = false;
-  if (gLicqDaemon != NULL)
+  if (gLicqDaemon != NULL && m_bOnContactList)
     gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, 0));
 }
 
