@@ -1180,13 +1180,13 @@ void CUserView::maybeTip(const QPoint& c)
     if (u != NULL)
     {
       if (u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED)
-        s += tr("<br>Licq&nbsp;%1/SSL.").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
+        s += tr("<br>Licq&nbsp;%1/SSL").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
       else if (u->SecureChannelSupport() == SECURE_CHANNEL_NOTSUPPORTED)
-        s += tr("<br>Licq&nbsp;%1.").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
+        s += tr("<br>Licq&nbsp;%1").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
 
-      if(u->AutoResponse() && *u->AutoResponse() &&
-         item->m_nStatus != ICQ_STATUS_OFFLINE &&
-         item->m_nStatus != ICQ_STATUS_ONLINE)
+      if (u->AutoResponse() && *u->AutoResponse() &&
+          item->m_nStatus != ICQ_STATUS_OFFLINE &&
+          item->m_nStatus != ICQ_STATUS_ONLINE)
         s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(QString::fromLocal8Bit(u->AutoResponse()));
 
       gUserManager.DropUser(u);
