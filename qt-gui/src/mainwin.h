@@ -278,6 +278,7 @@ protected slots:
   void changeStatusManual(int index);
   void setCurrentGroupMenu(int id);
   void setCurrentGroup(int);
+  void callDefaultFunction(unsigned long _nUin);
   void callDefaultFunction(QListViewItem *);
   void callOwnerFunction(int);
   void callMsgFunction();

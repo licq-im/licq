@@ -1123,7 +1123,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_V:
-      callFunction(mnuUserView, nUin);
+      callDefaultFunction(nUin);
       break;
 
     case Qt::Key_S:
@@ -1809,17 +1809,9 @@ void CMainWindow::changeStatus(int id)
 
 // -----------------------------------------------------------------------------
 
-void CMainWindow::callDefaultFunction(QListViewItem *i)
+void CMainWindow::callDefaultFunction(unsigned long _nUin)
 {
-  if(i == NULL)
-    return;
-
-#if 0
-  char *szId = ((CUserViewItem *)i)->ItemId();
-  unsigned long nPPID = ((CUserViewItem *)i)->ItemPPID();
-#else 
-  unsigned long nUin = ((CUserViewItem *)i)->ItemUin();
-  //userView->SelectedItemUin();
+  unsigned long nUin = _nUin;
   if (nUin == 0) return;
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   // set default function to read or send depending on whether or not
@@ -1871,6 +1863,18 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   }
 
   callFunction(fcn, nUin);
+}
+
+void CMainWindow::callDefaultFunction(QListViewItem *i)
+{
+  if(i == NULL)
+    return;
+
+#if 0
+  char *szId = ((CUserViewItem *)i)->ItemId();
+  unsigned long nPPID = ((CUserViewItem *)i)->ItemPPID();
+#else
+  callDefaultFunction(((CUserViewItem *)i)->ItemUin());
 #endif
 }
 
@@ -4063,7 +4067,7 @@ void CMainWindow::slot_popupall()
 
   for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++)
   {
-    callFunction(mnuUserView, *iter);
+    callDefaultFunction(*iter);
   }
 }
 
