@@ -606,8 +606,13 @@ void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
   switch(e->button())
   {
     case LeftButton:
-      mainwin->show();
-      mainwin->raise();
+      if(mainwin->isVisible())
+        mainwin->hide();
+      else
+      {
+        mainwin->show();
+        mainwin->raise();
+      }
       break;
     case MidButton:
       mainwin->callMsgFunction();
