@@ -229,8 +229,8 @@ void CICQDaemon::icqUpdateContactList(void)
   FOR_EACH_USER_END
   if (n != 0)
   {
-    CPU_ContactList *p = new CPU_ContactList(uins);
     gLog.Info("%sUpdating contact list (#%d)...\n", L_UDPxSTR, p->getSequence());
+    CPU_ContactList *p = new CPU_ContactList(uins);
     SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
     m_nAllowUpdateUsers++;
   }
@@ -254,9 +254,8 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
   FOR_EACH_USER_END
   if (uins.size() == 0 && !_bSendIfEmpty) return;
 
-  CPU_VisibleList *p = new CPU_VisibleList(uins);
-
   gLog.Info("%sSending visible list (#%d)...\n", L_UDPxSTR, p->getSequence());
+  CPU_VisibleList *p = new CPU_VisibleList(uins);
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
 
@@ -273,8 +272,8 @@ void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty = false)
   FOR_EACH_USER_END
   if (uins.size() == 0 && !_bSendIfEmpty) return;
 
-  CPU_InvisibleList *p = new CPU_InvisibleList(uins);
   gLog.Info("%sSending invisible list (#%d)...\n", L_UDPxSTR, p->getSequence());
+  CPU_InvisibleList *p = new CPU_InvisibleList(uins);
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
 
