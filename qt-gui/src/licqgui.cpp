@@ -21,7 +21,7 @@
 #endif
 
 #ifdef USE_KDE
-#include <kapplication.h>
+#include <kapp.h>
 #if KDE_VERSION < 290
 #include <kthemestyle.h>
 #endif
