@@ -11,3 +11,9 @@ Message = message.ppm
 Url = message.ppm
 Chat = message.ppm
 File = message.ppm
+MSNOnline = msnonline.png
+MSNOffline = msnoffline.png
+MSNAway = msnaway.png
+MSNPrivate = msnprivate.png
+MSNOccupied = msnoccupied.png
+
