@@ -15,7 +15,8 @@ class AuthUserDlg : public QDialog
 {
    Q_OBJECT
 public:
-   AuthUserDlg (CICQDaemon *s, unsigned long UIN, QWidget *parent = 0, const char *name = 0 );
+   AuthUserDlg (CICQDaemon *s, unsigned long nUin, bool bGrant,
+      QWidget *parent = 0, const char *name = 0 );
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;
@@ -23,6 +24,9 @@ protected:
    QGroupBox *grpResponse;
    QLineEdit *edtUin;
    MLEditWrap* mleResponse;
+
+   unsigned long m_nUin;
+   bool m_bGrant;
 protected slots:
    void ok();
 };

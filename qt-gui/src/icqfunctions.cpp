@@ -64,6 +64,7 @@
 #include "mainwin.h"
 #include "mmlistview.h"
 #include "mmsenddlg.h"
+#include "authuserdlg.h"
 
 #include "licq_user.h"
 #include "mledit.h"
@@ -1353,7 +1354,8 @@ void ICQFunctions::slot_readbtn1()
       break;
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
-      server->icqAuthorizeGrant( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
+      //server->icqAuthorizeGrant( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
+      (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), true);
       break;
 
     case ICQ_CMDxSUB_AUTHxGRANTED:
@@ -1411,8 +1413,11 @@ void ICQFunctions::slot_readbtn2()
     }
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
-      server->icqAuthorizeRefuse( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
+    {
+      //server->icqAuthorizeRefuse( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
+      (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), false);
       break;
+    }
   } // switch
 
 }

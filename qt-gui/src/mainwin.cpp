@@ -1381,7 +1381,7 @@ void CMainWindow::callUserFunction(int index)
   {
     case mnuUserAuthorize:
       {
-        (void) new AuthUserDlg(licqDaemon, nUin);
+        (void) new AuthUserDlg(licqDaemon, nUin, true);
       }
       break;
     case mnuUserCheckResponse:
@@ -2336,7 +2336,7 @@ void CMainWindow::showAddUserDlg()
 
 void CMainWindow::showAuthUserDlg()
 {
-  (void) new AuthUserDlg(licqDaemon, 0);
+  (void) new AuthUserDlg(licqDaemon, 0, true);
 }
 
 

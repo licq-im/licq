@@ -30,33 +30,49 @@
 #include "authuserdlg.h"
 #include "mledit.h"
 
+#include "licq_user.h"
 #include "licq_icqd.h"
 
-AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long UIN, QWidget *parent, const char *name)
+AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
+   QWidget *parent, const char *name)
   : QDialog(parent, name, false, WDestructiveClose)
 {
   server = s;
-  setCaption(tr("Licq - Authorisation"));
+  m_nUin = nUin;
+  m_bGrant = bGrant;
+
+  setCaption(tr("Licq - Authorisation %1").arg(bGrant ? tr("Grant"):tr("Refuse")));
   QBoxLayout* toplay = new QVBoxLayout(this, 8, 8);
   QBoxLayout* lay = new QHBoxLayout(toplay);
 
-  lblUin = new QLabel(tr("Authorize which user (UIN):"), this);
+  lblUin = new QLabel(this);
   lay->addWidget(lblUin);
-  edtUin = new QLineEdit(this);
-  edtUin->setMinimumWidth(90);
-  edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
-  if(UIN)
-      edtUin->setText(QString::number(UIN));
-  lay->addWidget(edtUin);
+
+  if (m_nUin == 0)
+  {
+    lblUin->setText(tr("Authorize which user (UIN):"));
+    edtUin = new QLineEdit(this);
+    edtUin->setMinimumWidth(90);
+    edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
+    lay->addWidget(edtUin);
+  }
+  else
+  {
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    lblUin->setText(tr("%1 authorization to %2")
+       .arg(bGrant ? tr("Grant"):tr("Refuse"))
+       .arg(u->GetAlias()) );
+    gUserManager.DropUser(u);
+  }
 
   toplay->addSpacing(6);
 
-  grpResponse = new QVGroupBox(tr("Authorisation response: "), this);
+  grpResponse = new QVGroupBox(tr("Response"), this);
   toplay->addWidget(grpResponse);
   toplay->setStretchFactor(grpResponse, 2);
 
   mleResponse = new MLEditWrap(true, grpResponse);
-  mleResponse->setText(tr("Authorisation granted"));
+  //mleResponse->setText(tr("Authorisation granted"));
 
   lay = new QHBoxLayout(toplay);
   lay->addStretch(1);
@@ -70,11 +86,11 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long UIN, QWidget *parent, cons
   connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
-  if(UIN) {
+  /*if (UIN) {
     mleResponse->selectAll();
     mleResponse->setFocus();
   }
-  else
+  else*/
     edtUin->setFocus();
 
   show();
@@ -82,11 +98,18 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long UIN, QWidget *parent, cons
 
 void AuthUserDlg::ok()
 {
-  unsigned long nUin = edtUin->text().toULong();
+  unsigned long nUin = m_nUin;
+  if (nUin == 0) nUin = edtUin->text().toULong();
+
   if (nUin != 0)
+  {
+    if (m_bGrant)
       server->icqAuthorizeGrant(nUin, mleResponse->text().local8Bit().data());
-  accept();
-  close();
+    else
+      server->icqAuthorizeRefuse(nUin, mleResponse->text().local8Bit().data());
+    accept();
+    close();
+  }
 }
 
 #include "authuserdlg.moc"
