@@ -1111,7 +1111,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gUserManager.DropOwner();
      e->AddToHistory(NULL, D_RECEIVER);
      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+     //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
      delete[] szFields;
      break;
   }
@@ -1138,7 +1138,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gUserManager.DropOwner();
      e->AddToHistory(NULL, D_RECEIVER);
      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+     //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
      delete[] szFields;
      break;
   }
@@ -1164,7 +1164,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szFields;
     break;
   }
@@ -1191,7 +1191,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szFields;
     break;
   }
@@ -1225,7 +1225,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szFields;
     break;
   }
