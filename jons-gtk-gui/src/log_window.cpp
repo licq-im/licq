@@ -29,11 +29,10 @@ struct network_window *nw;
 gboolean nw_shown = FALSE;
 gboolean hidden = FALSE;
 
-void menu_log_window(GtkWidget *widget, gpointer data)
+void new_log_window()
 {
 	if(nw_shown)
 	{
-		gdk_window_raise(nw->window->window);
 		return;
 	}
 
@@ -98,17 +97,30 @@ void menu_log_window(GtkWidget *widget, gpointer data)
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
 
 	gtk_container_add(GTK_CONTAINER(nw->window), table);
-	gtk_widget_show_all(nw->window);
+}
 
-	hidden = FALSE;
-	nw_shown = TRUE;
+void log_window_show(GtkWidget *widget, gpointer data)
+{
+	if(nw == NULL)
+	{
+		new_log_window();
+		log_window_show(NULL, NULL);
+	}
+
+	else if(!nw_shown)
+	{
+		gtk_widget_show_all(nw->window);
+		nw_shown = TRUE;
+		hidden = FALSE;
+	}
+
 }
 
 void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 {
 	/* If the window doesn't exist, wait for it to exist */
 	if(nw == NULL)
-		return;
+		new_log_window();
 
 	gchar buf[4];
 	gchar *for_user; /* The text for the window */

@@ -305,7 +305,8 @@ extern void reverse_history(GtkWidget *, struct history *);
 
 
 /* Functions in log_window.cpp */
-extern void menu_log_window(GtkWidget *, gpointer);
+extern void new_log_window();
+extern void log_window_show(GtkWidget *, gpointer);
 extern void log_pipe_callback(gpointer, gint, GdkInputCondition);
 extern gint log_window_close(GtkWidget *, GtkWidget *);
 extern void log_window_clear(GtkWidget *, gpointer);
