@@ -752,6 +752,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     skin->AdjustForMenuBar(menu->height());
   }
 
+  
   // Message Label
   delete lblMsg;
   lblMsg = new CELabel(skin->lblMsg.transparent, mnuUserGroups, this);
@@ -821,9 +822,30 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     // Update all the floaties
     CUserView::UpdateFloaties();
 
-    if (btnSystem != NULL) btnSystem->show();
-    lblStatus->show();
-    lblMsg->show();
+    // btnSystem
+    if (btnSystem != NULL)
+      if ((skin->btnSys.rect.x1 == skin->btnSys.rect.x2) && (skin->btnSys.rect.y1 == skin->btnSys.rect.y2))
+        btnSystem->hide();
+      else
+        btnSystem->show();
+    // lblStatus
+    if (lblStatus != NULL)
+      if ((skin->lblStatus.rect.x1 == skin->lblStatus.rect.x2) && (skin->lblStatus.rect.y1 == skin->lblStatus.rect.y2))
+        lblStatus->hide();
+      else
+        lblStatus->show();
+    // lblMsg
+    if (lblMsg != NULL)
+      if ((skin->lblMsg.rect.x1 == skin->lblMsg.rect.x2) && (skin->lblMsg.rect.y1 == skin->lblMsg.rect.y2))
+        lblMsg->hide();
+      else
+        lblMsg->show();
+    // cmbGroups
+    if (cmbUserGroups != NULL)
+      if ((skin->cmbGroups.rect.x1 == skin->cmbGroups.rect.x2) && (skin->cmbGroups.rect.y1 == skin->cmbGroups.rect.y2))
+        cmbUserGroups->hide();
+      else
+        cmbUserGroups->show();
     if (menu != NULL) menu->show();
     updateUserWin();
     updateEvents();
@@ -924,9 +946,33 @@ void CMainWindow::resizeEvent (QResizeEvent *)
     delete p;
   }
 
-  cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, this));
-  lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, this));
-  lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, this));
+/*  Set geometry of our widgets
+  Hide the widget if all position values are equal because this would result
+  in a unusable 1-pixel widget*/
+  // cmbUserGroups
+  if (cmbUserGroups != NULL)
+    if ((skin->cmbGroups.rect.x1 == skin->cmbGroups.rect.x2) && (skin->cmbGroups.rect.y1 == skin->cmbGroups.rect.y2))
+      cmbUserGroups->hide();
+    else
+      cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, this));
+  // lblMsg
+  if (lblMsg != NULL)
+    if ((skin->lblMsg.rect.x1 == skin->lblMsg.rect.x2) && (skin->lblMsg.rect.y1 == skin->lblMsg.rect.y2))
+      lblMsg->hide();
+    else
+      lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, this));
+  // lblStatus
+  if (lblStatus != NULL)
+    if ((skin->lblStatus.rect.x1 == skin->lblStatus.rect.x2) && (skin->lblStatus.rect.y1 == skin->lblStatus.rect.y2))
+      lblStatus->hide();
+    else
+      lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, this));
+  // btnSystem
+  if (btnSystem != NULL)
+    if ((skin->btnSys.rect.x1 == skin->btnSys.rect.x2) && (skin->btnSys.rect.y1 == skin->btnSys.rect.y2))
+      btnSystem->hide();
+    else
+      btnSystem->setGeometry(skin->borderToRect(&skin->btnSys, this));
 }
 
 void CMainWindow::moveEvent(QMoveEvent* e)
