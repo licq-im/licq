@@ -133,7 +133,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
      cmbCountry->insertItem(tr("Unknown (unspecified)"));
      m_nUnknownCountryCode = 0xFFFF; // set the unknown value to default to unspecified
      for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
-       cmbCountry->insertItem(gCountries[i].szName);
+       cmbCountry->insertItem(GetCountryByIndex(i)->szName);
    }
    else
    {
@@ -1019,7 +1019,7 @@ void ICQFunctions::callFcn()
      {
         m_sProgressMsg = tr("Updating server...");
         unsigned short i = cmbCountry->currentItem();
-        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : (i == 1 ? m_nUnknownCountryCode : gCountries[i - 2].nCode) );
+        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : (i == 1 ? m_nUnknownCountryCode : GetCountryByIndex(i - 2)->nCode) );
         icqEvent = server->icqUpdateExtendedInfo(nfoCity->text().local8Bit(), cc,
                                          nfoState->text().local8Bit(), atol(nfoAge->text()),
                                          cmbSex->currentItem(), nfoPhone->text(),
