@@ -160,6 +160,7 @@ CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char 
    pmUpNoFocus = p2;
    pmDown = p3;
    pmCurrent = pmUpNoFocus;
+   mouseEvent = NULL;
 }
 
 CEButton::CEButton(QString label, QWidget *parent, char *name) : QPushButton(label, parent, name)
@@ -210,6 +211,7 @@ void CEButton::mousePressEvent(QMouseEvent *e)
 {
    pmCurrent = pmDown;
    if (pmCurrent != NULL) repaint();
+   mouseEvent = e;
    QPushButton::mousePressEvent(e);
 }
 
