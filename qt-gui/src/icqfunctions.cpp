@@ -1138,7 +1138,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         if (u->isAway() && u->ShowAwayMsg()) {
           gUserManager.DropUser(u);
-          (void) new ShowAwayMsgDlg(server, sigman, m_nUin);
+          (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
         }
         else
           gUserManager.DropUser(u);

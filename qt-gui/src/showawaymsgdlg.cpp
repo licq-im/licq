@@ -63,18 +63,25 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   char szStatus[32];
   u->getStatusStr(szStatus);
   setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
-  mleAwayMsg->setEnabled(false);
-
-  gUserManager.DropUser(u);
 
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setDefault(true);
   connect(btnOk, SIGNAL(clicked()), SLOT(accept()));
   lay->addWidget(btnOk);
 
-  connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+  // Check if this is an active request or not
+  if (sigman == NULL || server == NULL)
+  {
+    mleAwayMsg->setText(u->AutoResponse());
+  }
+  else
+  {
+    mleAwayMsg->setEnabled(false);
+    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+    icqEvent = server->icqFetchAutoResponse(m_nUin);
+  }
 
-  icqEvent = server->icqFetchAutoResponse(m_nUin);
+  gUserManager.DropUser(u);
 
   show();
 }
@@ -130,7 +137,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
     setCaption(caption() + title);
   }
 
-  icqEvent = 0;
+  icqEvent = NULL;
 
   if (isOk && e->m_nCommand == ICQ_CMDxTCP_START)
   {
