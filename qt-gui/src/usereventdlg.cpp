@@ -474,7 +474,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   mleRead->setText(codec->toUnicode(m->Text()));
   mleRead->setCursorPosition(0, 0);
 
-  if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE))
+  if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE || m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))
   {
     switch (m->SubCommand())
     {
