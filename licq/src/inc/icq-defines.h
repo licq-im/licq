@@ -14,6 +14,7 @@ const unsigned short ICQ_VERSION_TCP               = 0x0003;
 
 // UDP commands
 const unsigned short ICQ_CMDxRCV_ACK               = 0x000A; //  10
+const unsigned short ICQ_CMDxRCV_SERVERxDOWN       = 0x001E; //  30
 const unsigned short ICQ_CMDxRCV_SETxOFFLINE       = 0x0028; //  40
 const unsigned short ICQ_CMDxRCV_NEWxUIN           = 0x0046; //  70
 const unsigned short ICQ_CMDxRCV_HELLO             = 0x005A; //  90
