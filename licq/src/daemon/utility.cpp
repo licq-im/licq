@@ -6,6 +6,11 @@
 #include <string.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <paths.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include "time-fix.h"
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
@@ -207,6 +212,117 @@ bool CUtilityUserField::SetFields(ICQUser *u)
   m_szFullDefault = new char[MAX_CMD_LEN];
   u->usprintf(m_szFullDefault, m_szDefault, USPRINTF_NOFW);
   return true;
+}
+
+//===========================================================================
+
+CUtilityInternalWindow::CUtilityInternalWindow()
+{
+  fStdOut = fStdErr = NULL;
+  pid = -1;
+}
+
+CUtilityInternalWindow::~CUtilityInternalWindow()
+{
+  if (Running()) PClose();
+}
+
+
+bool CUtilityInternalWindow::POpen(const char *cmd)
+{
+  int pdes_out[2], pdes_err[2];
+
+  if (pipe(pdes_out) < 0) return false;
+  if (pipe(pdes_err) < 0) return false;
+
+  switch (pid = vfork())
+  {
+    case -1:                        /* Error. */
+    {
+      close(pdes_out[0]);
+      close(pdes_out[1]);
+      close(pdes_err[0]);
+      close(pdes_err[1]);
+      return false;
+      /* NOTREACHED */
+    }
+    case 0:                         /* Child. */
+    {
+      if (pdes_out[1] != STDOUT_FILENO)
+      {
+        dup2(pdes_out[1], STDOUT_FILENO);
+        close(pdes_out[1]);
+      }
+      close(pdes_out[0]);
+      if (pdes_err[1] != STDERR_FILENO)
+      {
+        dup2(pdes_err[1], STDERR_FILENO);
+        close(pdes_err[1]);
+      }
+      close(pdes_err[0]);
+#if 0
+      /* POSIX.2 B.3.2.2 "popen() shall ensure that any streams
+         from previous popen() calls that remain open in the
+         parent process are closed in the new child process. */
+      for (cur = pidlist; cur; cur = cur->next)
+              close(fileno(cur->fp));
+#endif
+      execl(_PATH_BSHELL, "sh", "-c", cmd, NULL);
+      _exit(127);
+      /* NOTREACHED */
+    }
+  }
+
+  /* Parent; assume fdopen can't fail. */
+  fStdOut = fdopen(pdes_out[0], "r");
+  close(pdes_out[1]);
+  fStdErr = fdopen(pdes_err[0], "r");
+  close(pdes_err[1]);
+
+  // Set both streams to line buffered
+  setvbuf(fStdOut, (char*)NULL, _IOLBF, 0);
+  setvbuf(fStdErr, (char*)NULL, _IOLBF, 0);
+
+  return true;
+}
+
+
+void CUtilityInternalWindow::PClose()
+{
+   int r, pstat;
+
+   // Close the file descriptors
+   fclose(fStdOut);
+   fclose(fStdErr);
+   fStdOut = fStdErr = NULL;
+
+   // See if the child is still there
+   r = waitpid(pid, &pstat, WNOHANG);
+   // Return if child has exited or there was an error
+   if (r == pid || r == -1) return;
+
+   // Give the process another .2 seconds to die
+   struct timeval tv = { 0, 200000 };
+   select(0, NULL, NULL, NULL, &tv);
+
+   // Still there?
+   r = waitpid(pid, &pstat, WNOHANG);
+   if (r == pid || r == -1) return;
+
+   // Try and kill the process
+   if (kill(pid, SIGTERM) == -1) return;
+
+   // Give it 1 more second to die
+   tv.tv_sec = 1;
+   tv.tv_usec = 0;
+   select(0, NULL, NULL, NULL, &tv);
+
+   // See if the child is still there
+   r = waitpid(pid, &pstat, WNOHANG);
+   if (r == pid || r == -1) return;
+
+   // Kill the bastard
+   kill(pid, SIGKILL);
 }
 
 

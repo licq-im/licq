@@ -6,10 +6,32 @@
 #endif
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <vector.h>
 
 class ICQUser;
+
+//=====CUtilityInternalWindow================================================
+class CUtilityInternalWindow
+{
+public:
+  CUtilityInternalWindow();
+  ~CUtilityInternalWindow();
+
+  bool POpen(const char *cmd);
+  void PClose();
+
+  bool Running() { return fStdOut != NULL; }
+
+  FILE *StdOut()  { return fStdOut; }
+  FILE *StdErr()  { return fStdErr; }
+protected:
+  int pid;
+  FILE *fStdOut;
+  FILE *fStdErr;
+};
+
 
 //=====CUtilityUserField=========================================================
 class CUtilityUserField
