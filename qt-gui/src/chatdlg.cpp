@@ -184,8 +184,8 @@ void ChatDlg::StateServer()
                                QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue));
     mleRemote->setPalette(QPalette(newColorGroup, mleRemote->palette().disabled(), newColorGroup));
 
-    CPChat_ColorFont p_colorfont(getLocalName(), getLocalPort(), 0xFFFFFF,
-                                 0x000000, 0x0C, 0x00, "courier");
+    CPChat_ColorFont p_colorfont(getLocalName(), getLocalPort(), 0x000000,
+                                 0xFFFFFF, 0x0C, 0x00, "courier");
     if (!m_cSocketChat.SendPacket(p_colorfont.getBuffer()))
     {
       char buf[128];
@@ -260,7 +260,7 @@ bool ChatDlg::startAsClient()
   m_cSocketChat.SendPacket(p_handshake.getBuffer());
 
   // Send color packet
-  CPChat_Color p_color(getLocalName(), getLocalPort(), 0xFFFFFF, 0x000000);
+  CPChat_Color p_color(getLocalName(), getLocalPort(), 0x000000, 0xFFFFFF);
   m_cSocketChat.SendPacket(p_color.getBuffer());
 
   boxRemote->setTitle(tr("Remote - Connected, waiting for response..."));
