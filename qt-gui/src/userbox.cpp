@@ -33,8 +33,9 @@
 
 #include "user.h"
 
-bool    CUserViewItem::s_bGridLines,
-        CUserViewItem::s_bFontStyles;
+bool    CUserViewItem::s_bGridLines = false,
+        CUserViewItem::s_bFontStyles = true,
+        CUserViewItem::s_bSortByStatus = true;
 QPixmap *CUserViewItem::s_pOnline = NULL,
         *CUserViewItem::s_pOffline = NULL,
         *CUserViewItem::s_pAway = NULL,
@@ -224,7 +225,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
 
    // Set the user tag
-   m_sSortKey.sprintf("%05u%010lu", m_nStatus, u->Touched() ^ 0xFFFFFFFF);
+   if (s_bSortByStatus)
+     m_sSortKey.sprintf("%05u%010lu", m_nStatus, u->Touched() ^ 0xFFFFFFFF);
+   else
+     m_sSortKey.sprintf("%010lu", u->Touched() ^ 0xFFFFFFFF);
 }
 
 
@@ -388,7 +392,7 @@ QString CUserViewItem::key (int column, bool ascending) const
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
-                    bool bTransparent, bool bShowBars,
+                    bool bTransparent, bool bShowBars, bool bSortByStatus,
                     QWidget *parent, const char *name)
    : QListView(parent, name)
 {
@@ -414,6 +418,7 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
    setShowHeader(isHeader);
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
+   setSortByStatus(bSortByStatus);
 }
 
 // -----------------------------------------------------------------------------
@@ -488,6 +493,11 @@ void CUserView::setShowHeader(bool isHeader)
 
 void CUserView::setShowBars(bool s)
 {
+}
+
+void CUserView::setSortByStatus(bool s)
+{
+  CUserViewItem::s_bSortByStatus = s;
 }
 
 

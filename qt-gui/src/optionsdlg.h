@@ -49,7 +49,8 @@ protected:
    QLineEdit *edtFont, *edtEditFont, *edtFrameStyle;
    QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
-             *chkFontStyles, *chkUseDock, *chkDockFortyEight, *chkTransparent;
+             *chkFontStyles, *chkUseDock, *chkDockFortyEight,
+             *chkTransparent, *chkSortByStatus;
 
    // columns tab
    QWidget* new_column_options();

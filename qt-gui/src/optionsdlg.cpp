@@ -139,6 +139,7 @@ void OptionsDlg::SetupOptions()
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
   chkHeader->setChecked(mainwin->showHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
+  chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
   chkAutoClose->setChecked(mainwin->autoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
@@ -261,6 +262,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bFontStyles = chkFontStyles->isChecked();
   mainwin->showHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
+  mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
   mainwin->autoClose = chkAutoClose->isChecked();
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
@@ -408,6 +410,8 @@ QWidget* OptionsDlg::new_appearance_options()
   chkShowDividers = new QCheckBox(tr("Show User Dividers"), boxUserWin);
   QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
                                      "in the contact list"));
+  chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
+  QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
   chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxUserWin);
   QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
                                   "the user function window after a succesful event"));

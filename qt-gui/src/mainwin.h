@@ -116,6 +116,7 @@ protected:
        showHeader,
        autoClose,
        m_bShowOffline,
+       m_bSortByStatus,
        m_bShowDividers,
        m_bDockIcon48;
   unsigned long m_nCurrentGroup;

@@ -235,6 +235,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowHeader", showHeader, true);
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
+  licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   bool bFrameTransparent;
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
@@ -552,8 +553,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 void CMainWindow::CreateUserView()
 {
   userView = new CUserView(mnuUser, mnuGroup, colInfo, showHeader, gridLines,
-                           m_bFontStyles, skin->frame.transparent, m_bShowDividers,
-                           this);
+                           m_bFontStyles, skin->frame.transparent,
+                           m_bShowDividers, m_bSortByStatus, this);
   userView->setFrameStyle(skin->frame.frameStyle);
   userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
                        pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
@@ -1340,6 +1341,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
+  licqConf.WriteBool("SortByStatus", m_bSortByStatus);
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);

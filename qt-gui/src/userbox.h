@@ -69,7 +69,7 @@ protected:
   bool m_bItalic, m_bStrike;
   QString m_sPrefix, m_sSortKey;
 
-  static bool    s_bGridLines, s_bFontStyles;
+  static bool    s_bGridLines, s_bFontStyles, s_bSortByStatus;
   static QPixmap *s_pOnline,
                  *s_pOffline,
                  *s_pAway,
@@ -103,7 +103,7 @@ class CUserView : public QListView
 public:
   CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
-             bool bTransparent, bool bShowBars,
+             bool bTransparent, bool bShowBars, bool bSortByStatus,
              QWidget *parent = 0, const char *name = 0);
   virtual ~CUserView();
 
@@ -117,6 +117,7 @@ public:
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines);
 
+  void setSortByStatus(bool);
   void setShowHeader(bool);
   void setShowBars(bool);
   unsigned long SelectedItemUin();
