@@ -529,6 +529,20 @@ void CICQDaemon::setUrlViewer(const char *s)
 }
 
 
+bool CICQDaemon::ViewUrl(const char *u)
+{
+  if (strcmp(m_szUrlViewer, "none") == 0) return false;
+
+  char *szCmd = new char[strlen(m_szUrlViewer) + strlen(u) + 8];
+  sprintf(szCmd, "%s '%s' &", m_szUrlViewer, u);
+  int r = system(szCmd);
+  delete [] szCmd;
+
+  if (r != 0) return false;
+  return true;
+}
+
+
 void CICQDaemon::SetFirewallHost(const char *s)
 {
   if (s == NULL || s[0] == '\0')

@@ -187,6 +187,8 @@ public:
   void setDefaultRemotePort(unsigned short n)  { n == 0 ? m_nDefaultRemotePort = 4000 : m_nDefaultRemotePort = n; }
   void setUrlViewer(const char *s);
 
+  bool ViewUrl(const char *url);
+
   // Firewall options
   unsigned short TCPEnabled();
   void SetTCPEnabled(bool b);
