@@ -861,7 +861,7 @@ void UserSendCommon::changeEventType(int id)
 // -----------------------------------------------------------------------------
 QString UserSendCommon::generatePart(const QString& text)
 {
-#define PARTLEN (MAX_MESSAGE_SIZE - 10)
+#define PARTLEN (MAX_MESSAGE_SIZE - 14)
 
   QString msgTextCurrent;
 
