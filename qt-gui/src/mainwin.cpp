@@ -2930,6 +2930,11 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmAuthorize.load(sFilepath);
    if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
 
+   fIconsConf.ReadStr("SMS", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmSMS.load(sFilepath);
+   if(pmSMS.isNull()) pmSMS = pmMessage;
+
    if (!_bInitial)
    {
      mnuStatus->changeItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
@@ -2946,7 +2951,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-     mnuUser->changeItem(tr("Send &SMS"), mnuUserSendSms);
+     mnuUser->changeItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
      mnuUser->changeItem(tr("Request &Secure Channel"), mnuUserSendKey);
      CUserView::UpdateFloaties();
      updateUserWin();
@@ -3097,7 +3102,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
    mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-   mnuSend->insertItem(tr("Send &SMS"), mnuUserSendSms);
+   mnuSend->insertItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
    mnuSend->insertSeparator();
    mnuSend->insertItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
