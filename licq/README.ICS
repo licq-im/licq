@@ -1,0 +1,77 @@
+From alex060@optushome.com.au Mon May 29 10:43:03 2000
+Date: Fri, 26 May 2000 22:47:35 -0400
+From: Alex Salmon <alex060@optushome.com.au>
+Reply-To: licq-main@lists.sourceforge.net
+To: licq-main@lists.sourceforge.net
+Subject: Re: [Licq-main] Connection problem - there is hope i got it 
+
+hi
+i have a simple sort of effective system working 
+i have pretty much exactlly the same system, the answer is to pipe the udp as
+ics dont like udp connectins from linux icq clients (is this a war or what)
+abc
+
+a) go to cnet downloads and search for a
+udp tunnel proggie for win i found pppshar (shareware but no timebomb) to be
+the best easyest download it (win) in the folder there is a settings.ini file
+and down the bottem add
+
+#icq
+service=icq1
+map=udp
+host-icq.mirabilis.com
+listen=4
+remote=4000
+enable=yes
+
+tb)hen in your licq config file set the number of servers to 1 and the default
+port to 4 and change server 1 from icq.miribilis.com to <ipofyouricsserver>
+save it 
+
+c)run pppshar then run licq
+
+messages and url's gothrough the udp pipe and file chat etc go through the
+server. it took me about a month to get it working but once i did this i had it
+up in 10 mins lucky guess i guess.. :-)
+
+e-mail me with any probs 
+
+alex
+
+btw
+makers of licq  - u may want to add somthing lto this effect to the doc/
+dir as i have had many friends do the same thing. 
+0.81 rocks
+
+
+On Wed, 10 May 2000,
+you wrote: > > I just came home from college and hooked up to my home lan.  Now
+LICQ is not > > connecting properly.  When I try to connect, it connects to the
+server on > > 4000 UDP, but then times out when trying to open the socket.
+> > Here is my setup:
+> > Family computer with dial-up connection run Win98 and ICS to share the
+> > connection
+> 
+> ICS is the worst piece of software ever written.  It doesn't work with
+> many icq clients, including Licq for some reason.  Use a real operating
+> system for your firewall.
+> I'm sort of looking into the possible reason, but since it's an issue with
+> ICS there isn't much I can do.
+> 
+> _____________________________________________________________________
+> Graham Roff                         graham@licq.org 
+> University of Waterloo              ICQ #2127503
+> Computer Engineering                Canada
+> 
+> Nolites tes bastardes carborundorum
+> 
+> 
+> _______________________________________________
+> Licq-main mailing list
+> Licq-main@licq.org
+> http://lists.sourceforge.net/mailman/listinfo/licq-main
+
+_______________________________________________
+Licq-main mailing list
+Licq-main@licq.org
+http://lists.sourceforge.net/mailman/listinfo/licq-main
