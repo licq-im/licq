@@ -78,7 +78,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   else
   {
     gUserManager.DropUser(u);
-    mleAwayMsg->setEnabled(false);
+    mleAwayMsg->setBackgroundMode(PaletteBackground);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
     icqEventTag = server->icqFetchAutoResponse(m_nUin);
   }
@@ -157,7 +157,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
     mleAwayMsg->setText(QString::fromLocal8Bit(u->AutoResponse()));
     gUserManager.DropUser(u);
-    mleAwayMsg->setEnabled(true);
+    mleAwayMsg->setBackgroundMode(PaletteBase);
   }
 }
 
