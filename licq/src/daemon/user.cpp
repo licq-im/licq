@@ -1014,7 +1014,7 @@ unsigned short ICQUser::Status()
    else if (m_nStatus & ICQ_STATUS_NA) return ICQ_STATUS_NA;
    else if (m_nStatus & ICQ_STATUS_AWAY) return ICQ_STATUS_AWAY;
    else if (m_nStatus & ICQ_STATUS_FREEFORCHAT) return ICQ_STATUS_FREEFORCHAT;
-   else if (m_nStatus << 24 == 0x00) return ICQ_STATUS_ONLINE;
+   else if ((m_nStatus & 0xFF) == 0x00) return ICQ_STATUS_ONLINE;
    else return (ICQ_STATUS_OFFLINE - 1);
 }
 
