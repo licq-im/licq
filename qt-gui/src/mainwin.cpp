@@ -1332,7 +1332,20 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   if (fcn == mnuUserSendMsg)
   {
     QString c = QApplication::clipboard()->text();
-    if (c.left(5) == "http:" || c.left(4) == "ftp:")
+    if(c.toULong() >= 10000)
+    {
+      UserSendContactEvent *e = (UserSendContactEvent *)callFunction(mnuUserSendContact, nUin);
+      if(e == NULL) return;
+      ICQUser* u = gUserManager.FetchUser(c.toULong(), LOCK_R);
+      if(u != NULL) {
+        QString alias = u->GetAlias();
+        gUserManager.DropUser(u);
+        e->setContact(c.toULong(), alias);
+        QApplication::clipboard()->clear();
+        return;
+      }
+    }
+    else if (c.left(5) == "http:" || c.left(4) == "ftp:")
     {
       UserSendUrlEvent *e = (UserSendUrlEvent *)callFunction(mnuUserSendUrl, nUin);
       if (e == NULL) return;
