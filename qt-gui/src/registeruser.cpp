@@ -30,11 +30,10 @@
 #include "licq_icqd.h"
 #include "licq_user.h"
 
-RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)
 #ifdef USE_KDE
-  : KWizard
+RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : KWizard
 #else
-  : QWizard
+RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
 #endif
            (parent, "RegisterUserDialog", false, WDestructiveClose)
 {
