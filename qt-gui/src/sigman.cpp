@@ -112,7 +112,8 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
     emit signal_doneOwnerFcn(e);
     break;
 
-  case ICQ_CMDxSND_SEARCHxSTART:
+  case ICQ_CMDxSND_SEARCHxINFO:
+  case ICQ_CMDxSND_SEARCHxUIN:
     emit signal_searchResult(e);
     break;
 
