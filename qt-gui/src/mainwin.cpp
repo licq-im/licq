@@ -81,6 +81,7 @@
 #include "keyrequestdlg.h"
 #include "usercodec.h"
 #include "emoticon.h"
+#include "ownermanagerdlg.h"
 
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
@@ -2145,6 +2146,9 @@ void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
   else if (index == OwnerMenuRandomChat)
     (void) new CSetRandomChatGroupDlg(licqDaemon, licqSigMan);
 
+  else if (index == OwnerMenuManager)
+    showOwnerManagerDlg();
+    
   else
     gLog.Warn("%sInternal Error: CMainWindow::callOwnerFunction(): Unknown index (%d).\n",
               L_WARNxSTR, index);
@@ -3872,6 +3876,7 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertItem(pmInfo, tr("&Info"), OwnerMenuGeneral);
    mnuOwnerAdm->insertItem(pmHistory, tr("View &History"), OwnerMenuHistory);
    mnuOwnerAdm->insertSeparator();
+   mnuOwnerAdm->insertItem(tr("&Owner Manager"), OwnerMenuManager);
    mnuOwnerAdm->insertItem(tr("&Security/Password Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("&Random Chat Group"), OwnerMenuRandomChat);
    mnuOwnerAdm->insertSeparator();
@@ -4095,6 +4100,12 @@ void CMainWindow::slot_stats()
 #endif
 }
 
+
+void CMainWindow::showOwnerManagerDlg()
+{
+  OwnerManagerDlg *ownerManagerDlg = new OwnerManagerDlg(licqDaemon);
+  ownerManagerDlg->show();
+}
 
 void CMainWindow::showSearchUserDlg()
 {

@@ -38,7 +38,8 @@ enum OwnerMenu_Identifiers {
   OwnerMenuGeneral = mnuUserGeneral,
   OwnerMenuHistory = mnuUserHistory,
   OwnerMenuSecurity,
-  OwnerMenuRandomChat
+  OwnerMenuRandomChat,
+  OwnerMenuManager
 };
 
 const unsigned short MNUxITEM_MINIxMODE            = 7;

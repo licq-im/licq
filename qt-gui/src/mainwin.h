@@ -321,6 +321,7 @@ protected slots:
   void showReqAuthDlg(int);
   void showReqAuthDlg(const char *, unsigned long);
   void showSearchUserDlg();
+  void showOwnerManagerDlg();
   void popupSystemMenu();
   void changeDebug(int);
   void slot_utility(int);
