@@ -1793,8 +1793,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    fIconsConf.ReadStr("FFC", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmFFC.load(sFilepath);
-   if (pmFFC.isNull())
-     pmFFC = pmOnline;
+   if (pmFFC.isNull()) pmFFC = pmOnline;
 
    fIconsConf.ReadStr("Offline", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
@@ -1827,26 +1826,18 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    fIconsConf.ReadStr("Url", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmUrl.load(sFilepath);
-   if (pmUrl.isNull())
-     pmUrl = pmMessage;
 
    fIconsConf.ReadStr("Chat", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmChat.load(sFilepath);
-   if (pmChat.isNull())
-     pmChat = pmMessage;
 
    fIconsConf.ReadStr("File", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmFile.load(sFilepath);
-   if (pmFile.isNull())
-     pmFile = pmMessage;
 
    fIconsConf.ReadStr("Authorize", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmAuthorize.load(sFilepath);
-   if (pmAuthorize.isNull())
-     pmAuthorize = pmMessage;
 
    if (!_bInitial)
    {
