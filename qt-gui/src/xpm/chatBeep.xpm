@@ -1,5 +1,5 @@
 /* XPM */
-static const char * const chatBeep_xpm[] = {
+static const char * chatBeep_xpm[] = {
 "24 24 2 1",
 " 	c None",
 ".	c #000000",
