@@ -1,7 +1,7 @@
 =======================================
 Licq Skins Howto
 
-February 6 2000, v1.4
+February 6 2000, v1.5
 
 Graham Roff
 
@@ -13,6 +13,8 @@ Revision 1.5: (2003-03, by Thomas Reitelbach)
     - colors.scrollbarFg = #22436a
     - colors.scrollbarBg = #22436a
     - colors.btnTxt = #e6e6e6
+	Note: Some Kde-Styles do not support this. At least .NET style does _not_
+	      care for colored scrollbars.
 
 Revision 1.4:
   - when using a menu bar, all position height positions can be set
