@@ -3,7 +3,7 @@ Licq Qt-GUI Translation Support
 
 Creating a Translation File
 
-First create the basic template by doing "make template.po".  Then rename
+First create the basic template by doing "make template".  Then rename
 this file to something a bit more descriptive, such as ru.po.  Edit your
 new file and fill in all the necessary translations.
 
