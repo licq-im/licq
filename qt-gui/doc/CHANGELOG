@@ -1,5 +1,10 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 1.0.4
+o  Bug fixes
+o  KDE gui is now called licq_kde-gui.so
+
+
 New in 1.0.3
 o  Bug fixes
 
