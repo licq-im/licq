@@ -196,13 +196,15 @@ protected slots:
   virtual void sendButton();
   virtual void sendDone_common(ICQEvent *);
 
-  void changeEventType(int);
   void cancelSend();
   void massMessageToggled(bool);
   void slot_resettitle() { setCaption(m_sBaseTitle); }
   void slot_SetForegroundICQColor();
   void slot_SetBackgroundICQColor();
   void trySecure();
+
+public slots:
+  void changeEventType(int);
 
 private:
   int tmpWidgetWidth;

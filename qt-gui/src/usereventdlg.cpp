@@ -1151,6 +1151,11 @@ void UserSendCommon::changeEventType(int id)
     }
     e->move(p);
 
+    disconnect(this, SIGNAL(finished(unsigned long)), mainwin, SLOT(slot_sendfinished(unsigned long)));
+    mainwin->slot_sendfinished(m_nUin);
+    connect(e, SIGNAL(finished(unsigned long)), mainwin, SLOT(slot_sendfinished(unsigned long)));
+    mainwin->licqUserSend.append(e);
+
     emit signal_msgtypechanged(this, e);
 
     QTimer::singleShot( 10, e, SLOT( show() ) );

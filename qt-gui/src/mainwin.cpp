@@ -2033,10 +2033,26 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
         if (!m_bMsgChatView) break;
 
+        UserSendCommon *e = NULL;
         for (; it.current(); ++it)
           if ((*it)->Uin() == nUin)
           {
-            e = *it;
+            e = static_cast<UserSendCommon*>(*it);
+            e->changeEventType(fcn - 1);
+            break;
+          }
+
+        if (e != NULL)
+        {
+#if QT_VERSION < 300
+          QListIterator<UserSendCommon> it(licqUserSend);
+#else
+          QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+          for (; it.current(); ++it)
+            if ((*it)->Uin() == nUin)
+            {
+              e = static_cast<UserSendCommon*>(*it);
             e->show();
             if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
             {
@@ -2046,6 +2062,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
 #endif
             }
             return e;
+            }
           }
     }
   default:
