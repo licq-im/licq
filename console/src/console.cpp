@@ -952,7 +952,10 @@ char *CLicqConsole::CurrentGroupName()
   else
   {
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    strcpy(szGroupName, (*g)[m_nCurrentGroup - 1]);
+    if (m_nCurrentGroup > g->size())
+      strcpy(szGroupName, "Invalid Group");
+    else
+      strcpy(szGroupName, (*g)[m_nCurrentGroup - 1]);
     gUserManager.UnlockGroupList();
   }
   return szGroupName;
