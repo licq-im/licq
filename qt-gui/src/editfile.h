@@ -4,7 +4,7 @@
 #include <qwidget.h>
 #include <qstring.h>
 
-class QMultiLineEdit;
+class MLEditWrap;
 class QPushButton;
 
 class EditFileDlg: public QWidget
@@ -15,7 +15,7 @@ public:
   virtual void hide();
 protected:
   QString sFile;
-  QMultiLineEdit *mleFile;
+  MLEditWrap *mleFile;
   QPushButton *btnSave, *btnClose;
 protected slots:
   void slot_save();

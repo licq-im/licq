@@ -5,13 +5,13 @@
 #include <unistd.h>
 
 #include <qpushbutton.h>
-#include <qmultilineedit.h>
 #include <qlayout.h>
 #include <qtextstream.h>
 #include <qfile.h>
 #include <qfileinfo.h>
 
 #include "editfile.h"
+#include "mledit.h"
 #include "ewidgets.h"
 #include "constants.h"
 
@@ -24,7 +24,7 @@ EditFileDlg::EditFileDlg(QString fname, QWidget *parent, const char *name)
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
-  mleFile = new QMultiLineEdit(this);
+  mleFile = new MLEditWrap(this);
   mleFile->setMinimumHeight(mleFile->frameWidth() * 2
                             + 20 * mleFile->fontMetrics().lineSpacing());
   mleFile->setMinimumWidth(mleFile->fontMetrics().width("_") * 80);
