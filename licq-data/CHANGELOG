@@ -1,5 +1,11 @@
 ChangeLog for licq-data Package
 
+New in 1.4
+
+o  Added BlueHeart skin
+o  Added converter for zicq
+
+
 New in 1.3
 
 o  Reversed the viewurl-xxx fix as it resulted in the scripts not working.
