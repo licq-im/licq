@@ -1332,7 +1332,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   if (fcn == mnuUserSendMsg)
   {
     QString c = QApplication::clipboard()->text();
-    if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(5) == "file:")
+    if (c.left(5) == "http:" || c.left(4) == "ftp:")
     {
       UserSendUrlEvent *e = (UserSendUrlEvent *)callFunction(mnuUserSendUrl, nUin);
       if (e == NULL) return;
@@ -1342,6 +1342,20 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
       QApplication::clipboard()->clear();
       return;
     }
+    else if (c.left(5) == "file:")
+    {
+      UserSendFileEvent *e = (UserSendFileEvent *)callFunction(mnuUserSendFile, nUin);
+      if (e == NULL) return;
+      // Set the file
+      c.remove(0, 5);
+      while (c[0] == '/') c.remove(0, 1);
+      c.prepend('/');
+      e->setFile(c, "");
+      // Clear the buffer now
+      QApplication::clipboard()->clear();
+      return;
+    }
+
   }
 
   callFunction(fcn, nUin);
