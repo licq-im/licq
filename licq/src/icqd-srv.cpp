@@ -1637,6 +1637,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     {
       struct tm sendTM;
       unsigned long nUin;
+      unsigned long nTimeSent;
+      
       nUin = msg.UnpackUnsignedLong();
 
       sendTM.tm_year = msg.UnpackUnsignedShort() - 1900;
@@ -1644,42 +1646,210 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       sendTM.tm_mday = msg.UnpackChar();
       sendTM.tm_hour = msg.UnpackChar();
       sendTM.tm_min = msg.UnpackChar();
-      sendTM.tm_sec = msg.UnpackChar();
+      sendTM.tm_sec = 0;
       sendTM.tm_isdst = -1;
-      msg.UnpackChar(); // flags
-
+      nTimeSent = mktime(&sendTM);
+      
+      // Msg type & flags
+      unsigned short nType = msg.UnpackUnsignedShort();
+      unsigned long nMask = ((nType & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
+      nType &= ~ICQ_CMDxSUB_FxMULTIREC;
+      
       // DAW fix the timezone problem
       char* szMessage = new char[msg.getDataMaxSize()];
       msg.UnpackString(szMessage); // 2 byte length little endian + string
-      gLog.Info("%sgot Offline Message through server:\n", L_SRVxSTR);
-
-      // now send the message to the user
-      CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, mktime(&sendTM), 0);
-      delete [] szMessage;
-
-      // Lock the user to add the message to their queue
-      ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (u == NULL)
+      
+      char *szType = NULL;
+      unsigned short nTypeEvent = 0;
+      CUserEvent *eEvent = NULL;
+            
+      switch(nType)
       {
-        if (Ignore(IGNORE_NEWUSERS))
+        case ICQ_CMDxSUB_MSG:
+	{
+          CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  szType = strdup("Message");
+	  nTypeEvent = ON_EVENT_MSG;
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_URL:
+	{
+          CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  if (e == NULL)
+	  {
+	    char *buf;
+	    
+	    gLog.Warn("%sInvalid offline URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
+	  szType = strdup("URL");
+	  nTypeEvent = ON_EVENT_URL;
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_AUTHxREQUEST:
+	{
+	  gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
+	  
+	  char **szFields = new char*[6];  // alias, first name, last name, email, auth, comment
+          
+	  if (!ParseFE(szMessage, &szFields, 6))
+          {
+            char *buf;
+	    
+            gLog.Warn("%sInvalid offline authorization request system message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+            delete [] szFields;
+            break;
+          }
+
+          // translating string with Translation Table
+          gTranslator.ServerToClient (szFields[0]);  // alias
+          gTranslator.ServerToClient (szFields[1]);  // first name
+          gTranslator.ServerToClient (szFields[2]);  // last name
+          gTranslator.ServerToClient (szFields[5]);  // comment
+
+          CEventAuthRequest *e = new CEventAuthRequest(nUin, szFields[0], szFields[1],
+                                                       szFields[2], szFields[3], szFields[5],
+                                            	       ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
+	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
-          gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
-          RejectEvent(nUin, e);
-          break;
-        }
-        gLog.Info("%sMessage from new user (%ld).\n",
-                  L_SBLANKxSTR, nUin);
-        AddUserToList(nUin);
-        u = gUserManager.FetchUser(nUin, LOCK_W);
+          gLog.Info("%sAuthorization granted by %ld.\n", L_SBLANKxSTR, nUin);
+
+          // translating string with Translation Table
+          gTranslator.ServerToClient (szMessage);
+
+          CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
+                                                       nTimeSent, 0);
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
+        {
+          gLog.Info("%sAuthorization refused by %ld.\n", L_SBLANKxSTR, nUin);
+
+          // Translating string with Translation Table
+          gTranslator.ServerToClient(szMessage);
+
+          CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage,
+			ICQ_CMDxRCV_SYSxMSGxONLINE,
+			nTimeSent, 0);
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
+        {
+          gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR, nUin);
+
+          char **szFields = new char*[6]; // alias, first name, last name, email, auth, comment
+          
+	  if (!ParseFE(szMessage, &szFields, 6))
+          {
+            char *buf;
+            gLog.Warn("%sInvalid offline added to list system message:\n%s\n", L_WARNxSTR,
+                      packet.print(buf));
+            delete [] buf;
+            delete [] szFields;
+            break;
+          }
+
+          // translating string with Translation Table
+          gTranslator.ServerToClient (szFields[0]);  // alias
+          gTranslator.ServerToClient (szFields[1]);  // first name
+          gTranslator.ServerToClient (szFields[2]);  // last name
+
+          CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
+                                           szFields[2], szFields[3],
+                                           ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
+	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_CONTACTxLIST:
+        {
+	  CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+          if (e == NULL)
+          {
+            char *buf;
+ 
+            gLog.Warn("%sInvalid offline Contact List message:\n%s\n", L_WARNxSTR, packet.print(buf));
+            delete [] buf;
+            break;
+          }
+	  szType = strdup("Contacts");
+	  nTypeEvent = ON_EVENT_MSG;
+	  eEvent = e;
+	  break;
+	}
+	default:
+	{
+	  char *buf;
+	  
+          gLog.Unknown("%sUnknown offline message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
+                       nType, packet.print(buf));
+          delete [] buf;
+          CEventUnknownSysMsg *e = new CEventUnknownSysMsg(nType, ICQ_CMDxRCV_SYSxMSGxONLINE,
+                                                           nUin, szMessage, nTimeSent, 0);
+          
+	  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+          AddUserEvent(o, e);
+          gUserManager.DropOwner();
+	}
       }
-      else
-        gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
-                  u->GetAlias(), nUin);
 
-      if (AddUserEvent(u, e))
-        m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      gUserManager.DropUser(u);
+      if (eEvent)
+        switch(nType)
+        {
+	  case ICQ_CMDxSUB_MSG:
+	  case ICQ_CMDxSUB_URL:
+	  case ICQ_CMDxSUB_CONTACTxLIST:
+	  {
+    	    // Lock the user to add the message to their queue
+    	    ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
+    	    if (u == NULL)
+    	    {
+    	      if (Ignore(IGNORE_NEWUSERS))
+    	      {
+        	gLog.Info("%sOffline %s from new user (%ld), ignoring.\n", L_SBLANKxSTR, szType, nUin);
+		if (szType)  free(szType);
+        	RejectEvent(nUin, eEvent);
+        	break;
+    	      }
+    	      gLog.Info("%sOffline %s from new user (%ld).\n", L_SBLANKxSTR, szType, nUin);
+    	      AddUserToList(nUin);
+    	      u = gUserManager.FetchUser(nUin, LOCK_W);
+    	    }
+    	    else
+    	      gLog.Info("%sOffline %s through server from %s (%ld).\n", L_SBLANKxSTR,
+                        szType, u->GetAlias(), nUin);
 
+            if (szType)  free(szType);
+    	    if (AddUserEvent(u, eEvent))
+    	      m_xOnEventManager.Do(nTypeEvent, u);
+    	    gUserManager.DropUser(u);
+	    break;
+	  }
+	  case ICQ_CMDxSUB_AUTHxREQUEST:
+	  case ICQ_CMDxSUB_AUTHxGRANTED:
+	  case ICQ_CMDxSUB_AUTHxREFUSED:
+	  case ICQ_CMDxSUB_ADDEDxTOxLIST:
+	  {
+	    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+            AddUserEvent(o, eEvent);
+            gUserManager.DropOwner();
+            eEvent->AddToHistory(NULL, D_RECEIVER);
+            m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+            break;
+	  }
+	}
+	
+      delete [] szMessage;
       break;
     }
     case 0x0042:
