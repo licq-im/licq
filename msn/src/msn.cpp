@@ -341,6 +341,8 @@ void CMSN::ProcessSignal(CSignal *s)
     
     case PROTOxREM_USER:
     {
+      CRemoveUserSignal *sig = static_cast<CRemoveUserSignal *>(s);
+      MSNRemoveUser(sig->Id());
       break;
     }
     
@@ -710,12 +712,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     {
       m_pPacketBuf->SkipParameter(); // What's this?
       string strList = m_pPacketBuf->GetParameter();
-      m_pPacketBuf->SkipParameter(); // What's this?
+      string strVersion = m_pPacketBuf->GetParameter();
       string strUser = m_pPacketBuf->GetParameter();
       string strNick = m_pPacketBuf->GetParameter();
+      m_nListVersion = atol(strVersion.c_str());
       
       if (strList == "RL")
       {
+        gLog.Info("%sAuthorization request from %s.\n", L_MSNxSTR, strUser.c_str());
+        
         CUserEvent *e = new CEventAuthRequest(strUser.c_str(), MSN_PPID,
           strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       
@@ -729,6 +734,18 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         else
           gUserManager.DropOwner(MSN_PPID);
       }
+      else
+        gLog.Info("%sAdded %s to contact list.\n", L_MSNxSTR, strUser.c_str());
+    }
+    else if (strCmd == "REM")
+    {      
+      m_pPacketBuf->SkipParameter(); // seq
+      m_pPacketBuf->SkipParameter(); // list
+      string strVersion = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
+      m_nListVersion = atol(strVersion.c_str());
+    
+      gLog.Info("%sRemoved %s from contact list.\n", L_MSNxSTR, strUser.c_str()); 
     }
     else if (strCmd == "CHG")
     {
@@ -1084,6 +1101,12 @@ void CMSN::MSNLogoff()
 void CMSN::MSNAddUser(char *szUser)
 {
   CMSNPacket *pSend = new CPS_MSNAddUser(szUser, CONTACT_LIST);
+  SendPacket(pSend);
+}
+
+void CMSN::MSNRemoveUser(char *szUser)
+{
+  CMSNPacket *pSend = new CPS_MSNRemoveUser(szUser, CONTACT_LIST);
   SendPacket(pSend);
 }
 

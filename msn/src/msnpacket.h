@@ -155,6 +155,17 @@ protected:
   char *m_szList;
 };
 
+class CPS_MSNRemoveUser : public CMSNPacket
+{
+public:
+  CPS_MSNRemoveUser(const char *, const char *szList);
+  virtual ~CPS_MSNRemoveUser() { if (m_szUser) free(m_szUser); if (m_szList) free (m_szList); }
+  
+protected:
+  char *m_szUser;
+  char *m_szList;
+};
+
 class CPS_MSN_SBStart : public CMSNPacket
 {
 public:

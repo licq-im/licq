@@ -273,6 +273,22 @@ CPS_MSNAddUser::CPS_MSNAddUser(const char *szUser, const char *szList)
   m_pBuffer->Pack("\r\n", 2);
 }
 
+CPS_MSNRemoveUser::CPS_MSNRemoveUser(const char *szUser, const char *szList)
+  : CMSNPacket()
+{
+  m_szCommand = strdup("REM");
+  m_nSize += strlen(szList) + strlen(szUser) + 1;
+  InitBuffer();
+  
+  m_szUser = strdup(szUser);
+  m_szList = strdup(szList);
+  
+  m_pBuffer->Pack(m_szList, strlen(m_szList));
+  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->Pack(m_szUser, strlen(m_szUser));
+  m_pBuffer->Pack("\r\n", 2);
+}
+
 CPS_MSN_SBStart::CPS_MSN_SBStart(const char *szCookie, const char *szUser)
   : CMSNPacket()
 {

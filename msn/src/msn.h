@@ -97,6 +97,7 @@ private:
   void MSNChangeStatus(unsigned long);
   void MSNLogoff();
   void MSNAddUser(char *);
+  void MSNRemoveUser(char *);
   void MSNGrantAuth(char *);
   
   // Internal functions
