@@ -17,7 +17,7 @@ AM_PROG_LIBTOOL
 AC_LIBTOOL_CXX
 
 dnl Check for libraries
-AM_PATH_GTK(1.2.0,,AC_MSG_ERROR(JonsGtkPlugin 0.10 needs GTK))
+dnl AM_PATH_GTK(1.2.0,,AC_MSG_ERROR(JonsGtkPlugin 0.10 needs GTK))
 
 dnl Check for header files
 LICQ_CHECK_LICQ
