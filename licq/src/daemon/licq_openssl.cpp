@@ -2,6 +2,7 @@
 #include "config.h"
 #endif
 
+#include "licq_openssl.h"
 
 #ifdef USE_OPENSSL
 
@@ -11,7 +12,9 @@
 #include <openssl/bn.h>
 #include <string.h>
 
-#include "licq_openssl.h"
+#include "licq_buffer.h"
+//#include "licq_log.h"
+
 
 CDHKey::CDHKey()
 {
@@ -25,17 +28,17 @@ CDHKey::CDHKey()
 
 CBuffer *CDHKey::DesXEncrypt(CBuffer *inbuf)
 {
-  unsigned char *data_in = inbuf->getDataStart();
+  unsigned char *data_in = (unsigned char *)inbuf->getDataStart();
 
   if (data_in == NULL) return (NULL);
 
   int data_size = inbuf->getDataSize();
   CBuffer *outbuf = new CBuffer(data_size);
-  unsigned char *data_out = outbuf->getDataStart();
+  unsigned char *data_out = (unsigned char *)outbuf->getDataStart();
   memset(data_out, 0, data_size);
 
   des_cblock iv;
-  des_m_gab_schedule ks;
+  des_key_schedule ks;
   unsigned char wholebinkey[DES_KEY_SZ * 3];
   des_cblock binkey;
   des_cblock xin;
@@ -60,16 +63,15 @@ CBuffer *CDHKey::DesXEncrypt(CBuffer *inbuf)
   memcpy(iv, xout, DES_KEY_SZ); // iv (cbc)
 
   printf("------------\nDoing desx.cbc\n");
-  if ((int j = des_set_key_checked(binkey, ks)) != 0)
+  int j;
+  if ((j = des_set_key_checked(&binkey, ks)) != 0)
   {
 	  printf("ERR: %d\n", j);
     return NULL;
   }
 
-  int r = des_xcbc_encrypt(data_in, data_out, data_size, ks, &iv, &xin,
+  des_xcbc_encrypt(data_in, data_out, data_size, ks, &iv, &xin,
      &xout, DES_ENCRYPT);
-
-  printf("en (%d)\n", r);
 
   return outbuf;
 }
@@ -77,13 +79,13 @@ CBuffer *CDHKey::DesXEncrypt(CBuffer *inbuf)
 
 CBuffer *CDHKey::DesXDecrypt(CBuffer *inbuf)
 {
-  unsigned char *data_in = inbuf->getDataStart();
+  unsigned char *data_in = (unsigned char *)inbuf->getDataStart();
 
-  if (data_in == NULL) return;
+  if (data_in == NULL) return NULL;
 
   int data_size = inbuf->getDataSize();
   CBuffer *outbuf = new CBuffer(data_size);
-  unsigned char *data_out = outbuf->getDataStart();
+  unsigned char *data_out = (unsigned char *)outbuf->getDataStart();
   memset(data_out, 0, data_size);
 
   des_cblock iv;
@@ -112,16 +114,17 @@ CBuffer *CDHKey::DesXDecrypt(CBuffer *inbuf)
   memcpy(iv, xout, DES_KEY_SZ); // iv (cbc)
 
   printf("------------\nDoing desx.cbc\n");
-  if ((int j = des_set_key_checked(&binkey, ks)) != 0)
+  int j;
+  if ((j = des_set_key_checked(&binkey, ks)) != 0)
   {
 	  printf("ERR: %d\n",j);
     return NULL;
   }
 
-  int r = des_xcbc_encrypt(data_in, data_out, data_size, ks, &iv, &xin,
-     &xout, DES_DECRYPT);
+  des_xcbc_encrypt(data_in, data_out, data_size, ks, &iv, &xin,
+   &xout, DES_DECRYPT);
 
-  printf("de (%d):\n[%s]\n--\n", r, data_out);
+  printf("de:\n[%s]\n--\n", data_out);
 
   return outbuf;
 }

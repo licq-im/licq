@@ -11,6 +11,8 @@
 
 #include <openssl/bn.h>
 
+class CBuffer;
+
 // Cypto Status
 enum CRYPTO_STATUS
 {
