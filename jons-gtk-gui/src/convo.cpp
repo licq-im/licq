@@ -254,7 +254,7 @@ void convo_recv(gulong uin)
 	struct conversation *c;
 	c = convo_find(uin);
 
-	/* If the window deson't exist, don't show anything */
+	/* If the window doesn't exist, don't show anything */
 	if(c == NULL)
 	{
 		system_status_refresh();
@@ -283,13 +283,36 @@ void convo_recv(gulong uin)
 		const char *url = u_event->Text();
 
 		const gchar *for_user_u =
-		   g_strdup_printf("%s has sent you a URL!\n%s\n",
+		   g_strdup_printf("\n%s has sent you a URL!\n%s\n",
 					c->user->GetAlias(), url);
 
 		gtk_text_freeze(GTK_TEXT(c->text));
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_u, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
 
+	}
+
+	else if(u_event->SubCommand() == ICQ_CMDxSUB_FILE)
+	{
+		const gchar *file_d = u_event->Text();
+		
+		if(u_event->Command() == ICQ_CMDxTCP_CANCEL)
+		{
+			gtk_text_freeze(GTK_TEXT(c->text));
+			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, file_d, -1);
+			gtk_text_thaw(GTK_TEXT(c->text));
+			return;
+		}
+
+		const gchar *for_user_f =
+		    g_strdup_printf("\n%s requests to send you a file!\n%s\n",
+				    c->user->GetAlias(), file_d);
+
+		gtk_text_freeze(GTK_TEXT(c->text));
+		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_f, -1);
+		gtk_text_thaw(GTK_TEXT(c->text));
+
+		file_accept_window(c->user, (CEventFile *)u_event);
 	}
 
 	c->user->ClearEvent(0);	
