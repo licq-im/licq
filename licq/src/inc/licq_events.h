@@ -211,6 +211,8 @@ friend class CICQEventTag;
 class CICQEventTag
 {
 public:
+  /* Called to verify if this is the tag for the given event.  Note that
+   * (NULL)->Equals(e) is a valid call and returns true if e is also NULL. */
   bool Equals(const ICQEvent *e);
 
   unsigned long Uin() { return m_nUin; }

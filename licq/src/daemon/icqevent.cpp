@@ -123,7 +123,9 @@ CICQEventTag::CICQEventTag(const ICQEvent *e)
 
 bool CICQEventTag::Equals(const ICQEvent *e)
 {
-  if (e == NULL) return false;
+  if (this == NULL && e == NULL) return true;
+  if (this == NULL || e == NULL) return false;
+
   if (m_nSocketDesc == -1)
   {
     if (m_nUin == 0) return (e->m_nSequence == m_nSequence);
