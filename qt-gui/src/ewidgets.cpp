@@ -530,6 +530,9 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 #endif
 
   append(s);
+#if QT_VERSION < 300
+  repaint(false);
+#endif 
   GotoEnd();
 
   if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG){
