@@ -33,6 +33,14 @@ struct SUser
   const struct SColorMap *color;
 };
 
+struct SMacro
+{
+  char szMacro[32];
+  char szCommand[128];
+};
+typedef list<SMacro *> MacroList;
+
+
 class CLicqConsole
 {
 public:
@@ -65,6 +73,7 @@ protected:
   list<char *> m_lCmdHistory;
   list<char *>::iterator m_lCmdHistoryIter;
   list<CFileTransferManager *> m_lFileStat;
+  MacroList listMacros;
 
   CICQDaemon *licqDaemon;
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
@@ -113,6 +122,7 @@ public:
   void PrintInfo_Work(unsigned long);
   void PrintInfo_About(unsigned long);
   void PrintFileStat(CFileTransferManager *);
+  void PrintMacros();
 
   void MenuHelp(char *);
   void MenuContactList(char *);
@@ -127,6 +137,7 @@ public:
   void MenuFileStat(char *);
   void MenuClear(char *);
   void MenuAdd(char *);
+  void MenuDefine(char *);
 
 
   void TabUser(char *, struct STabCompletion &);
@@ -151,6 +162,7 @@ public:
   void FileChatOffer(unsigned long, unsigned long);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
+  bool ParseMacro(char *);
 };
 
 

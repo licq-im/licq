@@ -128,6 +128,22 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   licqConf.ReadStr("OfflineFormat", m_szOfflineFormat, "%-20a");
   licqConf.ReadStr("CommandCharacter", m_szCommandChar, "/");
 
+  if (licqConf.SetSection("macros"))
+  {
+    char sz[32];
+    unsigned short n = 0;
+    licqConf.ReadNum("NumMacros", n, 0);
+    for (unsigned short i = 1; i <= n; i++)
+    {
+      SMacro *mac = new SMacro;
+      sprintf(sz, "Macro.%d", i);
+      licqConf.ReadStr(sz, mac->szMacro);
+      sprintf(sz, "Command.%d", i);
+      licqConf.ReadStr(sz, mac->szCommand);
+      listMacros.push_back(mac);
+    }
+  }
+
   // Set the colors
   m_cColorOnline    = &aColorMaps[m_nColorOnline];
   m_cColorAway      = &aColorMaps[m_nColorAway];
@@ -305,7 +321,7 @@ void CLicqConsole::DoneOptions()
 {
   char szFileName[MAX_FILENAME_LEN];
   sprintf(szFileName, "%s/licq_console.conf", BASE_DIR);
-  CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
+  CIniFile licqConf(INI_FxALLOWxCREATE);
   if(!licqConf.LoadFile(szFileName))
     return;
 
@@ -327,6 +343,18 @@ void CLicqConsole::DoneOptions()
   licqConf.WriteStr("AwayFormat", m_szAwayFormat);
   licqConf.WriteStr("OfflineFormat", m_szOfflineFormat);
   licqConf.WriteStr("CommandCharacter", m_szCommandChar);
+
+  licqConf.SetSection("macros");
+  char sz[32];
+  unsigned short i = 1;
+  licqConf.WriteNum("NumMacros", (unsigned short)listMacros.size());
+  for (MacroList::iterator iter = listMacros.begin(); iter != listMacros.end(); iter++, i++)
+  {
+    sprintf(sz, "Macro.%d", i);
+    licqConf.WriteStr(sz, (*iter)->szMacro);
+    sprintf(sz, "Command.%d", i);
+    licqConf.WriteStr(sz, (*iter)->szCommand);
+  }
 
   licqConf.FlushFile();
   licqConf.CloseFile();
@@ -1076,11 +1104,13 @@ void CLicqConsole::InputCommand(int cIn)
     }
     m_lCmdHistoryIter = m_lCmdHistory.end();
 
+    bool valid = true;
     if (szIn[0] != m_szCommandChar[0])
-    { // User command
-      MenuUser(szIn);
+    {
+      valid = ParseMacro(szIn);
     }
-    else
+
+    if (valid)
     { // Regular command
       char *szArg = strchr(szIn, ' ');
       if (szArg != NULL)
@@ -1146,6 +1176,35 @@ void CLicqConsole::InputCommand(int cIn)
   }
   if (nTabs > 0) nTabs--;
 }
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::ParseMacro
+ *-------------------------------------------------------------------------*/
+bool CLicqConsole::ParseMacro(char *szMacro)
+{
+  MacroList::iterator iter;
+  for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
+  {
+    if (strcmp((*iter)->szMacro, szMacro) == 0)
+    {
+      sprintf(szMacro, "%c%s", m_szCommandChar[0], (*iter)->szMacro);
+      break;
+    }
+  }
+
+  if (iter == listMacros.end())
+  {
+    winMain->wprintf("%CNo such macro \"%A%s%Z\"\n", COLOR_RED, A_BOLD,
+     szMacro, A_BOLD);
+    szMacro[0] = '\0';
+    return false;
+  }
+
+  return true;
+}
+
+
 
 
 /*---------------------------------------------------------------------------

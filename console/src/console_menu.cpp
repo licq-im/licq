@@ -2,7 +2,7 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 13;
+const unsigned short NUM_COMMANDS = 14;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
@@ -52,6 +52,13 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "bright_<color> for bright colors." },
   { "plugins", &CLicqConsole::MenuPlugins, NULL,
     "List the currently loaded plugins." },
+  { "define", &CLicqConsole::MenuDefine, NULL,
+    "Define a new macro, enter macros by not using '/'.\n"
+    "A macro can be any string of characters not containing\n"
+    "a space.  The command can be any valid command, do not\n"
+    "prepend the command character when defining.\n"
+    "Example: \"/define r last message\" creates a macro \"r\"\n"
+    "which replies to the last user you talked to."},
   { "help", &CLicqConsole::MenuHelp, NULL,
     "This help screen, can also be passed a command for detailed\n"
     "information about it." },
@@ -106,8 +113,8 @@ void CLicqConsole::MenuHelp(char *_szArg)
     PrintBadInput(_szArg);
     return;
   }
-  winMain->wprintf("Help on %s:\n%s\n", aCommands[i].szName,
-                   aCommands[i].szHelp);
+  winMain->wprintf("%AHelp on \"%Z%s%A\":%Z\n%s\n", A_BOLD, A_BOLD,
+   aCommands[i].szName, A_BOLD, A_BOLD, aCommands[i].szHelp);
 
 }
 
@@ -140,6 +147,74 @@ void CLicqConsole::MenuPlugins(char *_szArg)
   }
   PrintBoxBottom(70);
 }
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuDefine
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuDefine(char *szArg)
+{
+  MacroList::iterator iter;
+  char *szCmd = szArg;
+
+  if (szArg == NULL)
+  {
+    PrintMacros();
+    return;
+  }
+
+  while (*szCmd != '\0' && *szCmd != ' ') szCmd++;
+
+  // Check if we are undefining a macro
+  if (*szCmd == '\0')
+  {
+    for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
+    {
+      if (strcmp((*iter)->szMacro, szArg) == 0)
+      {
+        winMain->wprintf("%C%AErased macro \"%s -> %s\"\n",
+         m_cColorInfo->nColor, m_cColorInfo->nAttr,
+         (*iter)->szMacro, (*iter)->szCommand);
+        delete *iter;
+#undef erase
+        listMacros.erase(iter);
+        DoneOptions();
+        return;
+      }
+    }
+    winMain->wprintf("%CNo such macro \"%A%s%Z\"\n", COLOR_RED, A_BOLD,
+      szArg, A_BOLD);
+    return;
+  }
+
+  *szCmd++ = '\0';
+  while (*szCmd == ' ') szCmd++;
+
+  // See if this is a double macro definition
+  for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
+  {
+    if (strcmp((*iter)->szMacro, szArg) == 0)
+    {
+      delete *iter;
+#undef erase
+        listMacros.erase(iter);
+      listMacros.erase(iter);
+    }
+  }
+
+  // Set the macro
+  SMacro *macro = new SMacro;
+  strcpy(macro->szMacro, szArg);
+  strcpy(macro->szCommand, szCmd);
+  listMacros.push_back(macro);
+
+  winMain->wprintf("%A%CAdded macro \"%s -> %s\"\n",
+   m_cColorInfo->nAttr, m_cColorInfo->nColor,
+   macro->szMacro, macro->szCommand);
+
+  DoneOptions();
+}
+
 
 
 /*---------------------------------------------------------------------------
@@ -582,19 +657,19 @@ void CLicqConsole::MenuSet(char *_szArg)
       winMain->wprintf("%CNo such color: %A%s\n", COLOR_RED, A_BOLD, szValue);
       break;
     }
- 
+
     switch(nVariable)
     {
-    case 2: m_nColorOnline = i;    break;
-    case 3: m_nColorAway = i;      break;
-    case 4: m_nColorOffline = i;   break;
-    case 5: m_nColorNew = i;       break;
-    case 6: m_nColorGroupList = i; break;
-    case 7: m_nColorQuery = i;     break;
-    case 8: m_nColorInfo = i;      break;
-    case 9: m_nColorError = i;     break;
-    default: break;
-    }   
+      case 2: m_nColorOnline = i;    break;
+      case 3: m_nColorAway = i;      break;
+      case 4: m_nColorOffline = i;   break;
+      case 5: m_nColorNew = i;       break;
+      case 6: m_nColorGroupList = i; break;
+      case 7: m_nColorQuery = i;     break;
+      case 8: m_nColorInfo = i;      break;
+      case 9: m_nColorError = i;     break;
+      default: break;
+    }
 
     *(const struct SColorMap **)aVariables[nVariable].pData = &aColorMaps[i];
     break;

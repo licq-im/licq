@@ -468,6 +468,12 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A%cd%Zefine [ %A<macro>%Z [ %A<command>%Z ] ]",
+                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD,
+                   A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+
+  waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A%ch%Zelp [ %A<command>%Z ]", A_BOLD, m_szCommandChar[0],
                    A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
@@ -707,7 +713,7 @@ void CLicqConsole::PrintInfo_About(unsigned long nUin)
   wattroff(winMain->Win(), A_BOLD); 
 }
 
-/*---------------------------------------------------------------------------- 
+/*----------------------------------------------------------------------------
  * CLicqConsole::PrintFileStat
  *--------------------------------------------------------------------------*/
 void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
@@ -716,7 +722,7 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   ICQUser *u = gUserManager.FetchUser(ftman->Uin(), LOCK_R);
   const char *szAlias = u->GetAlias();
   gUserManager.DropUser(u);
-  
+
   // Make the title
   char szTitle[30];
   ftman->Direction() == D_RECEIVER ? strcpy(szTitle, "File from ") :
@@ -771,3 +777,28 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   PrintBoxBottom(48);
   winMain->RefreshWin();
 }
+
+
+/*----------------------------------------------------------------------------
+ * CLicqConsole::PrintMacros
+ *--------------------------------------------------------------------------*/
+void CLicqConsole::PrintMacros()
+{
+  MacroList::iterator iter;
+
+  PrintBoxTop("Macros", COLOR_WHITE, 40);
+
+  for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
+  {
+    PrintBoxLeft();
+    winMain->wprintf("%A%C%-10s %Z->%A %-19s",
+        A_BOLD,
+        COLOR_WHITE,
+        (*iter)->szMacro, A_BOLD, A_BOLD, (*iter)->szCommand);
+    PrintBoxRight(40);
+  }
+
+  PrintBoxBottom(40);
+}
+
+
