@@ -374,11 +374,11 @@ void ChatDlg::chatSend(QKeyEvent *e)
 {
    CBuffer buffer(1);
    if (e->key() == Key_Enter)
-      buffer.PackChar('\x0D');
+      buffer.PackChar(0x0D);
    else if (e->key() == Key_Return)
-      buffer.PackChar('\x0D');
+      buffer.PackChar(0x0D);
    else if (e->key() == Key_Backspace)
-      buffer.PackChar('\x08');
+      buffer.PackChar(0x08);
    else if (e->key() == Key_unknown || e->key() == Key_Tab)
    {
       e->ignore();
