@@ -172,18 +172,12 @@ AC_DEFUN(AC_PATH_QT_INC,
 AC_DEFUN(AC_PATH_QT_MOC,
 [
   AC_PATH_PROG(
-    QT_MOC,
+    MOC,
     moc,
     $QTDIR/bin/moc,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 
-  dnl output=`eval "nm $QT_MOC | grep QCString"`
-  dnl if test -z "$output"; then
-  dnl  AC_MSG_ERROR([The Qt meta object compiler found is not for Qt 2!
-  dnl      Please check whether $QT_MOC is indeed the Qt moc compiler
-  dnl      part of your Qt 2.0 (or higher) lib.
-  dnl  ])
-  dnl fi
+  AC_SUBST(MOC)
 ])
 
 AC_DEFUN(AC_PATH_QT_FINDTR,
@@ -193,6 +187,8 @@ AC_DEFUN(AC_PATH_QT_FINDTR,
     findtr,
     $QTDIR/bin/findtr,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+
+  AC_SUBST(QT_FINDTR)
 ])
 
 AC_DEFUN(AC_PATH_QT_MSGTOQM,
@@ -202,6 +198,8 @@ AC_DEFUN(AC_PATH_QT_MSGTOQM,
     msg2qm,
     $QTDIR/bin/msg2qm,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+
+  AC_SUBST(QT_MSG2QM)
 ])
 
 AC_DEFUN(AC_PATH_QT_MERGETR,
@@ -211,6 +209,8 @@ AC_DEFUN(AC_PATH_QT_MERGETR,
     mergetr,
     $QTDIR/bin/mergetr,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+
+  AC_SUBST(QT_MERGETR)
 ])
 
 ## ------------------------------------------------------------------------

@@ -5,4 +5,7 @@ config.cache
 config.status
 Makefile
 config.h.in
+libtool
 aclocal.m4
+stamp-h.in
+stamp-h
