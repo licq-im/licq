@@ -670,8 +670,8 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         break;
     }
     //printf("%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
-    if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
-        ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
+    if (!bNewUser && ns != ICQ_STATUS_OFFLINE && 
+        !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))
     {
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
       gLog.Info("%s%s (%ld) is %s to us.\n", L_TCPxSTR, u->GetAlias(),
