@@ -5,7 +5,11 @@
 #include <unistd.h>
 
 #include <qlayout.h>
+#if USE_KDE
+#include <kfiledialog.h>
+#else
 #include <qfiledialog.h>
+#endif
 #include <qfile.h>
 #include <qtextstream.h>
 
@@ -90,9 +94,9 @@ void CQtLogWindow::slot_save()
 {
   QString fn;
 #ifdef USE_KDE
-  fn = KFileDialog::getSaveFileName(
-         QString(QDir::homeDirPath() + "/licq.log"),
-         QString::null, this);
+  KURL u = KFileDialog::getSaveURL(
+      QString(QDir::homeDirPath() + "/licq.log"),QString::null, this);
+  fn = u.path();
 #else
   fn = QFileDialog::getSaveFileName(
          QString(QDir::homeDirPath() + "/licq.log"),

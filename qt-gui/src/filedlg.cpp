@@ -170,9 +170,10 @@ bool CFileDlg::GetLocalFileName()
   while(!bValid)
   {
 #ifdef USE_KDE
-    f = KFileDialog::getSaveFileName(
+    KURL u = KFileDialog::getSaveURL(
           QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName),
           QString::null, this);
+    f = u.path();
 #else
     f = QFileDialog::getSaveFileName(
           QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName),
