@@ -87,6 +87,10 @@ void MLEditWrap::setForeground(const QColor& c)
   setPalette(pal);
 }
 
+bool MLEditWrap::focusNextPrevChild( bool f)
+{
+    return QWidget::focusNextPrevChild(f);
+}
 
 
 // -----------------------------------------------------------------------------
