@@ -2734,7 +2734,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             break;
 
           default:
-            gLog.Error("%sUnknown error modyifing server list: 0x%02X\n",
+            gLog.Error("%sUnknown error modifying server list: 0x%02X\n",
                        L_ERRORxSTR, nError & 0xFF);
         }
 
