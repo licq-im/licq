@@ -39,6 +39,7 @@
 #include <qaccel.h>
 #include <qtimer.h>
 #include <qwhatsthis.h>
+#include <ctype.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
