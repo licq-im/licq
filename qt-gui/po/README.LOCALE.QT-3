@@ -2,29 +2,45 @@ Licq Qt-GUI Translation Support with Qt3
 
 
 Creating a Translation File
+===========================
 
-Use the template.ts file as a base template.  Rename it properly and open it
-with QT Linguist to start editing (example: ru.ts for Russian).
+Use the template.ts file as a base template. If it does not exist you 
+can creaty it by yourself:
+- Add "template.ts" to the TRANSLATIONS section in qt-gui.pro (you find
+  it inside your qt-gui base directory)
+- Run "lupdate qt-gui.pro" in the qt-gui base directory
+
+Now rename it properly and open it with QT Linguist to start editing 
+(example: ru.ts for Russian).
+
+
 
 Using a translation File
+========================
 
-Once the .ts file has been created, it must be converted into a Qt qm file.
-This is done using the lrelease routine, which can be invoked using 
-"lrealease <lang>.ts" assuming <lang>.ts exists.  Once you have the .qm file,
-simply copy it to <licq prefix>/share/licq/qt-gui/locale/<lang>.qm.  Then set
-the environment variable LANGUAGE (or LANG) to the language code
-(as per GNU gettext standard) and it will be loaded next time the Qt-GUI
-is started.  For example, to use a russian translation do:
+Once the .ts file has been created and translated, it must be converted 
+into a Qt qm file. This is done using the program lrelease 
+(it comes with your QT-3.x), which can be invoked by using 
+"lrelease <lang>.ts" assuming <lang>.ts exists. Once you have 
+the .qm file, simply copy it to 
+<licq prefix>/share/licq/qt-gui/locale/<lang>.qm. 
+Then set the environment variable LANGUAGE (or LANG) to the desired 
+language code (as per GNU gettext standard) and it will be loaded 
+next time the Qt-GUI is started. For example, to use a russian translation do:
+
 > cd po
 > cp /the/dir/ru.ts .
 > lrelease ru.ts
 > cp ru.qm /usr/local/share/licq/qt-gui/locale
 > export LANG="ru"
+> licq
 
 
 Updating a Translation File
+===========================
 
 All the text strings are updated with each new Licq release, it is necessary
 to update the .ts files.  This is done simply by placing the old .ts file
-in the po directory and running "lupdate qt-gui.pro" from the qt-gui directory.
-The new .ts file can now be edited and any necessary translations added.
+in the po directory and running "lupdate qt-gui.pro" from the qt-gui base 
+directory. The new .ts file can now be edited and any necessary 
+translations added.
