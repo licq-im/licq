@@ -1605,7 +1605,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
     // 0 if not set -> Online
     unsigned long nNewStatus = packet.UnpackUnsignedLongTLV(0x0006);
-    bool bChangedStatus = false;
+    unsigned short nOldStatus = u->Status();
       
     if (packet.getTLVLen(0x000a) == 4) {
       unsigned long userIP = packet.UnpackUnsignedLongTLV(0x000a);
@@ -1667,7 +1667,6 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
       if (u->StatusFull() != nNewStatus)
       {
-        bChangedStatus = true;
         ChangeUserStatus(u, nNewStatus);
         gLog.Info("%s%s (%ld) changed status: %s (v%01x)%s.\n", L_SRVxSTR, u->GetAlias(),
                   nUin, u->StatusStr(), tcpVersion & 0x0F, szExtraInfo);
@@ -1714,7 +1713,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     // We are no longer able to differentiate oncoming users from the
     // users that are on when we sign on.. so try the online since flag
     if ((m_bAlwaysOnlineNotify || (u->OnlineSince()+60 >= time(NULL))) &&
-        bChangedStatus && u->OnlineNotify())
+        nOldStatus == ICQ_STATUS_OFFLINE && u->OnlineNotify())
       m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
     break;
