@@ -3996,7 +3996,7 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
   if (nSubtype != ICQ_SNACxNEW_UIN)
   {
     char *buf;
-    gLog.Unknown("%sUnknow New UIN Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
+    gLog.Unknown("%sUnknown New UIN Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
     		nSubtype, packet.print(buf));
     delete [] buf;
     return;
