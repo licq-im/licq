@@ -229,6 +229,12 @@ static unsigned loadTheme(const struct Emoticons *data,
 
 int CEmoticons::SetTheme(const char *theme)
 {
+  if (strcmp(theme, "None") == 0)
+  {
+    data->theme = QString("None");
+    return 1;
+  }
+
   QString szdir1 = data->altbasedir + "/" + theme + "/";
   QString szdir2 = data->basedir    + "/" + theme + "/";
   QDir d1(szdir1);
@@ -243,10 +249,11 @@ int CEmoticons::SetTheme(const char *theme)
     n = loadTheme(data, szdir2.ascii(), list);
 
 
-   if( n ) {
-     ret = n;
-     data->theme = theme;
-     data->emoticons = list;
+  if (n)
+  {
+    ret = n;
+    data->theme = theme;
+    data->emoticons = list;
   }
 
   return ret;
@@ -312,7 +319,7 @@ void CEmoticons::ParseMessage(QString &msg)
   node_list_t::iterator iter;
   struct node n;
 
-  if (data->theme != QString::null)
+  if (data->theme != QString::null && data->theme != "None")
   {
     QString r;
     for( iter  = data->emoticons.begin();

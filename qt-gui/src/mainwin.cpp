@@ -3186,7 +3186,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("ExtendedIcons", m_szExtendedIconSet);
-  licqConf.WriteStr("Emoticons", emoticons->Theme() ? emoticons->Theme() : "");
+  licqConf.WriteStr("Emoticons", emoticons->Theme() ? emoticons->Theme() : "None");
 
 #if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
