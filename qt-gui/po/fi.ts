@@ -7,96 +7,96 @@
     </message>
     <message>
         <source>none</source>
-        <translation>ei mitään</translation>
+        <translation>Licq-varoitus</translation>
     </message>
 </context>
 <context>
     <name>@default</name>
     <message>
         <source>File(s): </source>
-        <translation>Tiedosto(t): </translation>
+        <translation type="obsolete">Tiedosto(t): </translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation>Selaa</translation>
+        <translation type="obsolete">Selaa</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Muokkaa</translation>
+        <translation type="obsolete">Muokkaa</translation>
     </message>
     <message>
         <source> - File Transfer</source>
-        <translation>- tiedostonsiirto</translation>
+        <translation type="obsolete"> - tiedostonsiirto</translation>
     </message>
     <message>
         <source>Select files to send</source>
-        <translation>Valitse lähetettävät tiedostot</translation>
+        <translation type="obsolete">Valitse lähetettävät tiedostot</translation>
     </message>
     <message>
         <source>You must specify a file to transfer!</source>
-        <translation>Sinun tulee valita tiedosto joka siirretään!</translation>
+        <translation type="obsolete">Sinun tulee valita tiedosto joka siirretään!</translation>
     </message>
     <message>
         <source>File transfer with %2 refused:
 %3</source>
-        <translation>%2 kieltäytyi vastaanottamasta tiedostoa:
+        <translation type="obsolete">%2 kieltäytyi vastaanottamasta tiedostoa:
 %3</translation>
     </message>
     <message>
         <source>Multiparty: </source>
-        <translation>Ryhmä: </translation>
+        <translation type="obsolete">Ryhmä: </translation>
     </message>
     <message>
         <source>Invite</source>
-        <translation>Kutsu</translation>
+        <translation type="obsolete">Kutsu</translation>
     </message>
     <message>
         <source> - Chat Request</source>
-        <translation>- chat-pyyntö</translation>
+        <translation type="obsolete"> - chat-pyyntö</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>Tyhjennä</translation>
+        <translation type="obsolete">Tyhjennä</translation>
     </message>
     <message>
         <source>Chat with %2 refused:
 %3</source>
-        <translation>%2 kieltäytyi chatistä:
+        <translation type="obsolete">%2 kieltäytyi chatistä:
 %3</translation>
     </message>
     <message>
         <source>Drag Users Here - Right Click for Options</source>
-        <translation>Raahaa käyttäjät tähän - valikko oikeasta napista</translation>
+        <translation type="obsolete">Raahaa käyttäjät tähän - valikko oikeasta napista</translation>
     </message>
     <message>
         <source> - Contact List</source>
-        <translation>- kontaktilista</translation>
+        <translation type="obsolete"> - kontaktilista</translation>
     </message>
     <message>
         <source>Phone : </source>
-        <translation>Puhelin : </translation>
+        <translation type="obsolete">Puhelin : </translation>
     </message>
     <message>
         <source>Chars left : </source>
-        <translation>Kirjaimia jäljellä : </translation>
+        <translation type="obsolete">Kirjaimia jäljellä : </translation>
     </message>
     <message>
         <source> - SMS</source>
-        <translation>- SMS</translation>
+        <translation type="obsolete"> - SMS</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation>Et muokannut SMS:ää.
+        <translation type="obsolete">Et muokannut SMS:ää.
 Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation>&amp;Kyllä</translation>
+        <translation type="obsolete">&amp;Kyllä</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation>&amp;En</translation>
+        <translation type="obsolete">&amp;En</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@ Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
         <source>New User UIN:</source>
-        <translation>Uuden käyttäjän UIN:</translation>
+        <translation type="obsolete">Uuden käyttäjän UIN:</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
@@ -123,7 +123,15 @@ Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
         <source>New User Id:</source>
-        <translation>Uuden käyttäjän id:</translation>
+        <translation type="obsolete">Uuden käyttäjän id:</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation>Protokolla:</translation>
+    </message>
+    <message>
+        <source>New User ID:</source>
+        <translation>Uuden käyttäjän ID:</translation>
     </message>
 </context>
 <context>
@@ -317,7 +325,7 @@ See Network Window for details.</source>
         <translation>Tiedosto-I/O-virhe:
 %1
 
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Handshaking error.
@@ -329,7 +337,7 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
         <source>Handshake Error.
 See Network Window for details.</source>
         <translation>Kättelyvirhe.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Connection error.
@@ -341,7 +349,7 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
         <source>Unable to reach remote host.
 See Network Window for details.</source>
         <translation>Vastapäähän ei saada yhteyttä.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Bind error.
@@ -353,7 +361,7 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Porttia ei voida sitoa.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Not enough resources.
@@ -365,7 +373,7 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
         <source>Unable to create a thread.
 See Network Window for details.</source>
         <translation>Säiettä ei voida luoda.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Connecting to remote...</source>
@@ -658,7 +666,7 @@ Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
         <source>Logon failed.
 See network window for details.</source>
         <translation>Kirjautuminen epäonnistui.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Successfully registered, your user identification
@@ -670,7 +678,7 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation>Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkoikkunasta.</translation>
+        <translation>Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
@@ -831,7 +839,7 @@ ei voida avata.</translation>
     </message>
     <message>
         <source>Request &amp;Secure Channel</source>
-        <translation>Pyydä &amp;salattua yhteyttä</translation>
+        <translation>Pyydä &amp;suojattua yhteyttä</translation>
     </message>
     <message>
         <source>&amp;Info</source>
@@ -967,7 +975,7 @@ ei voida avata.</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
-        <translation>Verkkoikku&amp;na</translation>
+        <translation>Verkko&amp;loki</translation>
     </message>
     <message>
         <source>&amp;Mini Mode</source>
@@ -1031,7 +1039,7 @@ ei voida avata.</translation>
     </message>
     <message>
         <source>Auto Request Secure</source>
-        <translation>Pyydä salattua yhteyttä automaattisesti</translation>
+        <translation>Pyydä suojattua yhteyttä automaattisesti</translation>
     </message>
     <message>
         <source>Use Real Ip (LAN)</source>
@@ -1099,7 +1107,7 @@ ei voida avata.</translation>
     </message>
     <message>
         <source>Close &amp;Secure Channel</source>
-        <translation>Katkaise &amp;salattu yhteys</translation>
+        <translation>Katkaise &amp;suojattu yhteys</translation>
     </message>
     <message>
         <source>Daemon Statistics
@@ -1193,8 +1201,56 @@ You will need to start the browser and open the URL manually.</source>
 Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
-        <source> </source>
-        <translation type="unfinished"></translation>
+        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
+        <translation>&lt;b&gt;%1&lt;/b&gt; on onlinessa</translation>
+    </message>
+    <message>
+        <source>Don&apos;t Show</source>
+        <translation>Älä näytä</translation>
+    </message>
+    <message>
+        <source>Available</source>
+        <translation>Paikalla</translation>
+    </message>
+    <message>
+        <source>Busy</source>
+        <translation>Varattu</translation>
+    </message>
+    <message>
+        <source>Phone &quot;Follow Me&quot;</source>
+        <translation>Puhelin &quot;seuraa minua&quot;</translation>
+    </message>
+    <message>
+        <source>&amp;Owner Manager</source>
+        <translation>&amp;Omistajan hallinta</translation>
+    </message>
+    <message>
+        <source>Update Info Plugin List</source>
+        <translation>Päivitä info-plugin-lista</translation>
+    </message>
+    <message>
+        <source>Update Status Plugin List</source>
+        <translation>Päivitä tila-plugin-lista</translation>
+    </message>
+    <message>
+        <source>Update Phone &quot;Follow Me&quot; Status</source>
+        <translation>Päivitä Puhelin &quot;seuraa minua&quot; -tila</translation>
+    </message>
+    <message>
+        <source>Update ICQphone Status</source>
+        <translation>Päivitä ICQphone:n tila</translation>
+    </message>
+    <message>
+        <source>Update File Server Status</source>
+        <translation>Päivitä tiedostopalvelimen tila</translation>
+    </message>
+    <message>
+        <source>Do you really want to reset your stats?</source>
+        <translation>Haluatko varmasti nollata tilastotietosi?</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1226,7 +1282,7 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     <name>CRandomChatDlg</name>
     <message>
         <source>Random Chat Search</source>
-        <translation>SokkoChat-haku</translation>
+        <translation>Random Chat -haku</translation>
     </message>
     <message>
         <source>&amp;Search</source>
@@ -1278,26 +1334,26 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>Searching for Random Chat Partner...</source>
-        <translation>SokkoChatin kumppania haetaan...</translation>
+        <translation>Etsitään Random Chatin kumppania...</translation>
     </message>
     <message>
         <source>No random chat user found in that group.</source>
-        <translation>SokkoChatin kumppania ei löytynyt tästä ryhmästä.</translation>
+        <translation>Random Chatin kumppania ei löytynyt tästä ryhmästä.</translation>
     </message>
     <message>
         <source>Random chat search timed out.</source>
-        <translation>SokkoChatin haku aikakatkaistiin.</translation>
+        <translation>Random Chatin haku aikakatkaistiin.</translation>
     </message>
     <message>
         <source>Random chat search had an error.</source>
-        <translation>SokkoChatin haussa tapahtui virhe.</translation>
+        <translation>Random Chatin haussa tapahtui virhe.</translation>
     </message>
 </context>
 <context>
     <name>CRefuseDlg</name>
     <message>
         <source>Refusal message for %1 with </source>
-        <translation>Kieltäytymisviesti käyttäjälle %1</translation>
+        <translation>Kieltäytymisviesti käyttäjälle %1 </translation>
     </message>
     <message>
         <source>Refuse</source>
@@ -1316,7 +1372,7 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     <name>CSetRandomChatGroupDlg</name>
     <message>
         <source>Set Random Chat Group</source>
-        <translation>Aseta SokkoChatin ryhmä</translation>
+        <translation>Aseta Random Chatin ryhmä</translation>
     </message>
     <message>
         <source>&amp;Set</source>
@@ -1376,7 +1432,7 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>Setting Random Chat Group...</source>
-        <translation>SokkoChatin ryhmää asetetaan...</translation>
+        <translation>Asetetaan Random Chatin ryhmää...</translation>
     </message>
     <message>
         <source>failed</source>
@@ -1419,7 +1475,7 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation>&lt;br&gt;Salattu&amp;nbsp;yhteys</translation>
+        <translation>&lt;br&gt;Suojattu&amp;nbsp;yhteys</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
@@ -1427,11 +1483,11 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation>&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
+        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation>&lt;br&gt;Licq&amp;nbsp;%1</translation>
+        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
@@ -1439,7 +1495,7 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;S:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;S: </translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
@@ -1447,55 +1503,55 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;P:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;P: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;M:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;M: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;F:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;F: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Ip:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Ip: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;O:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;O: </translation>
     </message>
     <message>
         <source> weeks</source>
-        <translation>viikkoa</translation>
+        <translation> viikkoa</translation>
     </message>
     <message>
         <source> week</source>
-        <translation>viikko</translation>
+        <translation> viikko</translation>
     </message>
     <message>
         <source> days</source>
-        <translation>päivää</translation>
+        <translation> päivää</translation>
     </message>
     <message>
         <source> day</source>
-        <translation>päivä</translation>
+        <translation> päivä</translation>
     </message>
     <message>
         <source> hours</source>
-        <translation>tuntia</translation>
+        <translation> tuntia</translation>
     </message>
     <message>
         <source> hour</source>
-        <translation>tunti</translation>
+        <translation> tunti</translation>
     </message>
     <message>
         <source> minutes</source>
-        <translation>minuuttia</translation>
+        <translation> minuuttia</translation>
     </message>
     <message>
         <source> minute</source>
-        <translation>minuutti</translation>
+        <translation> minuutti</translation>
     </message>
     <message>
         <source>0 minutes</source>
@@ -1503,11 +1559,35 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Kirjautunut:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Kirjautunut: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Ollut poissa:</translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Ollut poissa: </translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <translation>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbps;Vapaa</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <translation>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Varattu</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <translation>&lt;br&gt;ICQphone:&amp;nbsp;Vapaa</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <translation>&lt;br&gt;ICQphone:&amp;nbsp;Varattu</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <translation>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Päällä</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <translation>&lt;br&gt;&lt;nobr&gt;</translation>
     </message>
 </context>
 <context>
@@ -1703,19 +1783,19 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Porttia ei voi sitoa.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Unable to connect to the remote chat.
 See Network Window for details.</source>
         <translation>Vastapäähän ei saada yhteyttä.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Unable to create new thread.
 See Network Window for details.</source>
         <translation>Uutta säiettä ei voida luoda.
-Katso tarkempia tietoja Verkkoikkunasta.</translation>
+Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>%1 closed connection.</source>
@@ -1793,6 +1873,21 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
 You can leave me a message.</source>
         <translation>Olen tällä hetkellä %1.
 Voit jättää minulle viestin.</translation>
+    </message>
+</context>
+<context>
+    <name>EditCategoryDlg</name>
+    <message>
+        <source>Unspecified</source>
+        <translation>Määrittelemätön</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Peruuta</translation>
     </message>
 </context>
 <context>
@@ -1914,6 +2009,113 @@ ryhmän &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
+    <name>EditPhoneDlg</name>
+    <message>
+        <source>Description:</source>
+        <translation>Kuvaus:</translation>
+    </message>
+    <message>
+        <source>Home Phone</source>
+        <translation>Kotipuhelin</translation>
+    </message>
+    <message>
+        <source>Work Phone</source>
+        <translation>Työpuhelin</translation>
+    </message>
+    <message>
+        <source>Private Cellular</source>
+        <translation>Oma matkapuhelin</translation>
+    </message>
+    <message>
+        <source>Work Cellular</source>
+        <translation>Työmatkapuhelin</translation>
+    </message>
+    <message>
+        <source>Home Fax</source>
+        <translation>Faksinumero kotiin</translation>
+    </message>
+    <message>
+        <source>Work Fax</source>
+        <translation>Faksinumero töihin</translation>
+    </message>
+    <message>
+        <source>Wireless Pager</source>
+        <translation>Hakulaite</translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation>Tyyppi:</translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation>Puhelin</translation>
+    </message>
+    <message>
+        <source>Cellular</source>
+        <translation>Matkapuhelin</translation>
+    </message>
+    <message>
+        <source>Cellular SMS</source>
+        <translation>Matkapuhelin SMS</translation>
+    </message>
+    <message>
+        <source>Fax</source>
+        <translation>Faksi</translation>
+    </message>
+    <message>
+        <source>Pager</source>
+        <translation>Hakulaite</translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation>Maa:</translation>
+    </message>
+    <message>
+        <source>Network #/Area code:</source>
+        <translation>Suuntanumero:</translation>
+    </message>
+    <message>
+        <source>Number:</source>
+        <translation>Numero:</translation>
+    </message>
+    <message>
+        <source>Extension:</source>
+        <translation>Liite:</translation>
+    </message>
+    <message>
+        <source>Provider:</source>
+        <translation>Tarjoaja:</translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation>Oma</translation>
+    </message>
+    <message>
+        <source>E-mail Gateway:</source>
+        <translation>Sähköpostin yhdyskäytävä:</translation>
+    </message>
+    <message>
+        <source>Remove leading 0s from Area Code/Network #</source>
+        <translation>Poista etunollat suuntanumerosta</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Peruuta</translation>
+    </message>
+    <message>
+        <source>@</source>
+        <translation>@</translation>
+    </message>
+    <message>
+        <source>Please enter a phone number</source>
+        <translation>Anna puhelinnumero</translation>
+    </message>
+</context>
+<context>
     <name>Event</name>
     <message>
         <source>Plugin Event</source>
@@ -1979,6 +2181,10 @@ ryhmän &apos;%1&apos;?</translation>
         <source>System Server Message</source>
         <translation>Järjestelmäviesti palvelimelta</translation>
     </message>
+    <message>
+        <source></source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>HintsDlg</name>
@@ -1999,7 +2205,7 @@ ryhmän &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>&lt;br&gt;%1 msgs</source>
-        <translation>&lt;br&gt;%1 vst</translation>
+        <translation>&lt;br&gt;%1 vstä</translation>
     </message>
     <message>
         <source>&lt;br&gt;1 msg</source>
@@ -2031,7 +2237,7 @@ ryhmän &apos;%1&apos;?</translation>
     <name>KeyRequestDlg</name>
     <message>
         <source>Licq - Secure Channel with %1</source>
-        <translation>Licq - salattu yhteys käyttäjään %1</translation>
+        <translation>Licq - suojattu yhteys käyttäjään %1</translation>
     </message>
     <message>
         <source>Secure channel is established using SSL
@@ -2039,7 +2245,7 @@ with Diffie-Hellman key exchange and
 the TLS version 1 protocol.
 
 </source>
-        <translation>Salattu yhteys on muodostettu käyttäen SSL:ää
+        <translation>Suojattu yhteys on muodostettu käyttäen SSL:ää
 ja Diffie-Hellmanin avainvaihtoa sekä
 TLS:n versio 1 -protokollaa.</translation>
     </message>
@@ -2073,11 +2279,11 @@ Tämä luultavasti ei toimi.</translation>
     </message>
     <message>
         <source>Ready to close channel</source>
-        <translation>Valmis sulkemaan salattu yhteys</translation>
+        <translation>Valmis sulkemaan suojattu yhteys</translation>
     </message>
     <message>
         <source>Ready to request channel</source>
-        <translation>Valmis pyytämään salattua yhteyttä</translation>
+        <translation>Valmis pyytämään suojattua yhteyttä</translation>
     </message>
     <message>
         <source>Client does not support OpenSSL.
@@ -2087,22 +2293,22 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
     </message>
     <message>
         <source>Requesting secure channel...</source>
-        <translation>Salattua yhteyttä pyydetään...</translation>
+        <translation>Pyydetään suojattua yhteyttä...</translation>
     </message>
     <message>
         <source>Closing secure channel...</source>
-        <translation>Salattua yhteyttä suljetaan...</translation>
+        <translation>Suljetaan suojattua yhteyttä...</translation>
     </message>
     <message>
         <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
 </source>
-        <translation>&lt;font color=&quot;yellow&quot;&gt;Salattu yhteys muodostettu.&lt;/font&gt;
+        <translation>&lt;font color=&quot;yellow&quot;&gt;Suojattu yhteys muodostettu.&lt;/font&gt;
 </translation>
     </message>
     <message>
         <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
 </source>
-        <translation>&lt;font color=&quot;yellow&quot;&gt;Salattua yhteyttä ei muodostettu.&lt;/font&gt;
+        <translation>&lt;font color=&quot;yellow&quot;&gt;Suojattua yhteyttä ei muodostettu.&lt;/font&gt;
 </translation>
     </message>
     <message>
@@ -2116,13 +2322,13 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
     <message>
         <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
 </source>
-        <translation>&lt;font color=&quot;ForestGreen&quot;&gt;Salattu yhteys muodostettu.&lt;/font&gt;
+        <translation>&lt;font color=&quot;ForestGreen&quot;&gt;Suojattu yhteys muodostettu.&lt;/font&gt;
 </translation>
     </message>
     <message>
         <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
 </source>
-        <translation>&lt;font color=&quot;blue&quot;&gt;Salattu yhteys suljettu.&lt;/font&gt;
+        <translation>&lt;font color=&quot;blue&quot;&gt;Suojattu yhteys suljettu.&lt;/font&gt;
 </translation>
     </message>
 </context>
@@ -2845,7 +3051,7 @@ Voit käyttää seuraavia parametrejä:
     </message>
     <message>
         <source>Frame Style: </source>
-        <translation>Kehystyyppi:</translation>
+        <translation>Kehystyyppi: </translation>
     </message>
     <message>
         <source>Override the skin setting for the frame style of the user window:
@@ -3016,6 +3222,127 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
 &lt;b&gt;tila + viimeisin tapahtuma&lt;/b&gt; - Järjestä online-käyttäjät tilan ja viimeisen tapahtuman mukaan&lt;br&gt;
 &lt;b&gt;tila + uudet viestit&lt;/b&gt; - Järjestä online-käyttäjät tilan ja tulleiden viestien lukumäärän mukaan</translation>
     </message>
+    <message>
+        <source>Small Icon</source>
+        <translation>Pieni ikoni</translation>
+    </message>
+    <message>
+        <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
+        <translation>Käyttää freedesktop.org-standardia pienen ikonin telakoimisessa. Toimii monella eri ikkunanhallinnalla.</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Yhteys</translation>
+    </message>
+    <message>
+        <source>Reconnect after Uin clash</source>
+        <translation>Yhdistä uudelleen Uin-varauksen jälkeen</translation>
+    </message>
+    <message>
+        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
+        <translation>Licq voi yhdistää uudelleen, jos sinun yhteytesi katkaistaan toisen ottaessa Uin käyttöösi eri koneesta. Aseta tämä päälle jos haluat Licq:n yhdistävän uudelleen automaattisesti.</translation>
+    </message>
+    <message>
+        <source>Auto Update</source>
+        <translation>Automaattinen päivitys</translation>
+    </message>
+    <message>
+        <source>Auto Update Info</source>
+        <translation>Automaattisen päivityksen tiedot</translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; server stored information.</source>
+        <translation>Päivitä käyttäjien tiedot palvelimelle automaattisesti.</translation>
+    </message>
+    <message>
+        <source>Auto Update Info Plugins</source>
+        <translation>Päivitä Info-pluginit automaattisesti</translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone Book and Picture.</source>
+        <translation>Päivitä käyttäjien osoitekirja ja kuva automaattisesti.</translation>
+    </message>
+    <message>
+        <source>Auto Update Status Plugins</source>
+        <translation>Päivitä tila-pluginit automaattisesti</translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
+        <translation>Päivitä käyttäjien Puhelin &quot;Seuraa minua&quot;, tiedostopalvelimen ja ICQphonen tila.</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerEditDlg</name>
+    <message>
+        <source>Edit Owner</source>
+        <translation>Muokkaa omistajaa</translation>
+    </message>
+    <message>
+        <source>User ID:</source>
+        <translation>Käyttäjän ID:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Salasana:</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation>Protokolla:</translation>
+    </message>
+    <message>
+        <source>Currently only one owner per protocol is supported.</source>
+        <translation>Tällä hetkellä vain yksi protokolla per käyttäjä on tuettu.</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Peruuta</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerManagerDlg</name>
+    <message>
+        <source>Licq - Owner Manager</source>
+        <translation>Licq - Omistajan hallinta</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Lisää</translation>
+    </message>
+    <message>
+        <source>&amp;Modify</source>
+        <translation>&amp;Muokkaa</translation>
+    </message>
+    <message>
+        <source>D&amp;elete</source>
+        <translation>&amp;Poista</translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation>&amp;Valmis</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerView</name>
+    <message>
+        <source>User ID</source>
+        <translation>Käyttäjän ID</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Protokolla</translation>
+    </message>
+    <message>
+        <source>(Invalid ID)</source>
+        <translation>(Virheellinen ID)</translation>
+    </message>
+    <message>
+        <source>Invalid Protocol</source>
+        <translation>Virheellinen protokolla</translation>
+    </message>
 </context>
 <context>
     <name>PluginDlg</name>
@@ -3087,7 +3414,7 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     </message>
     <message>
         <source>Plugin %1 has no configuration file</source>
-        <translation>Konfiguraatiotiedostoa ei ole pluginille %1</translation>
+        <translation>Pluginilla %1 ei ole konfiguraatiotiedostoa</translation>
     </message>
 </context>
 <context>
@@ -3108,6 +3435,14 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
         <source>Licq Error</source>
         <translation>Licq-virhe</translation>
     </message>
+    <message>
+        <source>Yes</source>
+        <translation>Kyllä</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Ei</translation>
+    </message>
 </context>
 <context>
     <name>RegisterUserDlg</name>
@@ -3125,7 +3460,7 @@ Press &quot;Next&quot; to proceed.</source>
 
 Voit rekisteröidä uuden käyttäjän täällä tai konfiguroida Licq:n käyttämään jo olemassa olevaa UIN:ia.
 
-Jos haluat rekisteröidä uuden UIN:in, keksi salasana ja paina &quot;Finish&quot;.
+Jos haluat rekisteröidä uuden UIN:in, keksi salasana ja paina &quot;Valmis&quot;.
 Jos sinulla on jo UIN, rastita &quot;Rekisteröi vanha käyttäjä&quot;,
 kirjoita UIN-numerosi ja salasanasi ja paina &quot;OK&quot;.
 
@@ -3169,7 +3504,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation>Kun haluat rekisteröidä vanhan käyttäjän, sinun tulee antaa oikea UIN.</translation>
+        <translation>Sinun tulee antaa oikea UIN rekisteröitäessäsi jo olemassa olevan käyttäjän. </translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -3177,7 +3512,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>The passwords don&apos;t seem to match.</source>
-        <translation>Salasanat eivät täsmää.</translation>
+        <translation>Salasanat eivät näytä täsmäävän.</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
@@ -3189,11 +3524,11 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>Invalid UIN.  Try again.</source>
-        <translation>Virheellinen UIN. Yritä uudelleen.</translation>
+        <translation>Virheellinen UIN.  Yritä uudelleen.</translation>
     </message>
     <message>
         <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation>Rekisteröiminen onnistui. Kirjaudu sisään ja päivitä henkilökohtaiset tietosi.</translation>
+        <translation>Rekisteröiminen onnistui.  Kirjaudu sisään ja päivitä henkilökohtaiset tietosi.</translation>
     </message>
     <message>
         <source>User Registration in Progress...</source>
@@ -3315,7 +3650,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>Company Position:</source>
-        <translation>Asema yrityksessä:</translation>
+        <translation>Titteli:</translation>
     </message>
     <message>
         <source>Email Address:</source>
@@ -3383,7 +3718,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>%1 more users found. Narrow search.</source>
-        <translation>%1 käyttäjää enemmän löyty vielä. Tarkenna hakua.</translation>
+        <translation>%1 käyttäjää löytyi lisää. Tarkenna hakua.</translation>
     </message>
     <message>
         <source>Search failed.</source>
@@ -3422,7 +3757,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>Authorize</source>
-        <translation>Valtuutus</translation>
+        <translation>Valtuuta</translation>
     </message>
     <message>
         <source>Offline</source>
@@ -3473,7 +3808,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
-        <translation>Kirjoita UIN jota haluat käyttää. Käytössä vain jos &quot;Muutokset vain paikallisesti&quot; on valittuna.</translation>
+        <translation>Kirjoita UIN jota haluat käyttää.  Käytössä vain jos &quot;Muutokset vain paikallisesti&quot; on valittuna.</translation>
     </message>
     <message>
         <source>&amp;Password:</source>
@@ -3537,7 +3872,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation>Väärä salasana, sen pituus täytyy olla 1-8 kirjainta.</translation>
+        <translation>Kelvoton salasana, pituus täytyy olla 1-8 kirjainta.</translation>
     </message>
     <message>
         <source>Passwords do not match, try again.</source>
@@ -3645,19 +3980,19 @@ tulee olla yhteys ICQ-verkkoon.</translation>
     </message>
     <message>
         <source>&amp;Icons:</source>
-        <translation>&amp;Ikonit:</translation>
+        <translation>&amp;Kuvakkeet:</translation>
     </message>
     <message>
         <source>Use this combo box to select one of the available icon sets</source>
-        <translation>Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista ikoniseteistä</translation>
+        <translation>Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista kuvakevalikoimista</translation>
     </message>
     <message>
         <source>E&amp;xtended Icons:</source>
-        <translation>&amp;Laajennusikonit:</translation>
+        <translation>&amp;Lisäkuvakkeet:</translation>
     </message>
     <message>
         <source>Use this combo box to select one of the available extended icon sets</source>
-        <translation>Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista laajennusikoniseteistä</translation>
+        <translation>Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista lisäkuvakevalikoimista</translation>
     </message>
     <message>
         <source>Skin:</source>
@@ -3665,11 +4000,11 @@ tulee olla yhteys ICQ-verkkoon.</translation>
     </message>
     <message>
         <source>Icons:</source>
-        <translation>Ikonit:</translation>
+        <translation>Kuvakkeet:</translation>
     </message>
     <message>
         <source>Extended Icons:</source>
-        <translation>Laajennusikonit:</translation>
+        <translation>Lisäkuvakkeet:</translation>
     </message>
     <message>
         <source>&amp;Edit Skin</source>
@@ -3695,33 +4030,45 @@ tulee olla yhteys ICQ-verkkoon.</translation>
         <source>Unable to open icons file
 %1
 Iconset &apos;%2&apos; has been disabled.</source>
-        <translation>Ei voi avata ikonitiedostoa
+        <translation>Ei voi avata kuvaketiedostoa
 %1
-Ikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
+Kuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Unable to open extended icons file
 %1
 Extended Iconset &apos;%2&apos; has been disabled.</source>
-        <translation>Ei voi avata laajennusikonitiedostoa
+        <translation>Ei voi avata lisäkuvaketiedostoa
 %1
-Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
+Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Licq Skin Browser</source>
-        <translation>Licq:n nahkaselain</translation>
+        <translation>Licq-nahkaselain</translation>
     </message>
     <message>
         <source>Unable to open icons file
 %1</source>
-        <translation>Ei voi avata ikonitiedostoa
+        <translation>Ei voi avata kuvaketiedostoa
 %1</translation>
     </message>
     <message>
         <source>Unable to open extended icons file
 %1</source>
-        <translation>Ei voi avata laajennusikonitiedostoa
+        <translation>Ei voi avata lisäkuvaketiedostoa
 %1</translation>
+    </message>
+    <message>
+        <source>E&amp;moticons</source>
+        <translation>Hy&amp;miöt</translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available emoticon icon sets</source>
+        <translation>Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista hymiövalikoimista</translation>
+    </message>
+    <message>
+        <source>Emoticons:</source>
+        <translation>Hymiöt:</translation>
     </message>
 </context>
 <context>
@@ -3748,7 +4095,7 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation>perinteinen kiina</translation>
+        <translation>kiina perinteinen</translation>
     </message>
     <message>
         <source>Cyrillic</source>
@@ -3803,11 +4150,11 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Time:</source>
-        <translation>Kello:</translation>
+        <translation>Aika:</translation>
     </message>
     <message>
         <source>Open / Close secure channel</source>
-        <translation>Avaa/sulje salattu yhteys</translation>
+        <translation>Avaa / sulje suojattu yhteys</translation>
     </message>
     <message>
         <source>Show User History</source>
@@ -3819,15 +4166,15 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Change user text encoding</source>
-        <translation>Näytä käyttäjän tekstin enkoodaus</translation>
+        <translation>Näytä käyttäjän tekstin koodaus</translation>
     </message>
     <message>
         <source>This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language.</source>
-        <translation>Tämä nappi valitsee tekstienkoodauksen, jota käytetään käyttäjän kanssa kommunikoidessa. Sinun tulee ehkä vaihtaa enkoodausta jotta voit kommunikoida eri kielellä.</translation>
+        <translation>Tämä nappi valitsee tekstien koodauksen, jota käytetään käyttäjän kanssa kommunikoidessa. Sinun tulee ehkä vaihtaa koodausta jotta voit kommunikoida eri kielellä.</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation>Enkoodausta &lt;b&gt;%1&lt;/b&gt; ei voi ladata. Viestien sisällöt voivat näyttää sekavilta.</translation>
+        <translation>Koodausta &lt;b&gt;%1&lt;/b&gt; ei voi ladata. Viestien sisällöt voivat näyttää sekavilta.</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -3854,7 +4201,7 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Licq - Info </source>
-        <translation>Licq - tiedot</translation>
+        <translation>Licq - tiedot </translation>
     </message>
     <message>
         <source>INVALID USER</source>
@@ -3870,7 +4217,7 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>UIN:</source>
-        <translation>UIN:</translation>
+        <translation type="obsolete">UIN:</translation>
     </message>
     <message>
         <source>IP:</source>
@@ -3914,7 +4261,7 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>Fax:</source>
-        <translation>Fax:</translation>
+        <translation>Faksi:</translation>
     </message>
     <message>
         <source>City:</source>
@@ -3982,15 +4329,15 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source> Day:</source>
-        <translation>Päivä:</translation>
+        <translation> Päivä:</translation>
     </message>
     <message>
         <source> Month:</source>
-        <translation>Kuukausi:</translation>
+        <translation> Kuukausi:</translation>
     </message>
     <message>
         <source> Year:</source>
-        <translation>Vuosi:</translation>
+        <translation> Vuosi:</translation>
     </message>
     <message>
         <source>Language 1:</source>
@@ -4026,7 +4373,7 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation>&amp;Tietoa</translation>
+        <translation>Tieto&amp;a</translation>
     </message>
     <message>
         <source>About:</source>
@@ -4070,7 +4417,7 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
     </message>
     <message>
         <source>&amp;Filter: </source>
-        <translation>&amp;Suodata:</translation>
+        <translation>&amp;Suodata: </translation>
     </message>
     <message>
         <source>Error loading history file: %1
@@ -4080,7 +4427,7 @@ Kuvaus: %2</translation>
     </message>
     <message>
         <source>Sorry, history is disabled for this person.</source>
-        <translation>Valitettavasti historia ei ole toiminnassa tälle henkilölle.</translation>
+        <translation>Valitettavasti historia ei ole asetettu päälle tälle henkilölle.</translation>
     </message>
     <message>
         <source>server</source>
@@ -4164,6 +4511,116 @@ Check this if you want to keep your changes to the Alias.</source>
         <translation>Normaalisti Licq ylikirjoittaa käyttäjänimen päivitettäessä käyttäjän tietoja.
 Valitse tämä jos haluat säilyttää tekemäsi muutokset käyttäjänimessä.</translation>
     </message>
+    <message>
+        <source>Retrieve</source>
+        <translation>Hae palvelimelta</translation>
+    </message>
+    <message>
+        <source>ID:</source>
+        <translation>ID:</translation>
+    </message>
+    <message>
+        <source>Category:</source>
+        <translation>Kategoria:</translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation>Kuvaus:</translation>
+    </message>
+    <message>
+        <source>User has an ICQ Homepage </source>
+        <translation>Käyttäjällä on ICQ-kotisivu </translation>
+    </message>
+    <message>
+        <source>User has no ICQ Homepage</source>
+        <translation>Käyttäjällä ei ole ICQ-kotisivua</translation>
+    </message>
+    <message>
+        <source>M&amp;ore II</source>
+        <translation>Lisätied&amp;ot II</translation>
+    </message>
+    <message>
+        <source>(none)</source>
+        <translation>(ei mitään)</translation>
+    </message>
+    <message>
+        <source>Occupation:</source>
+        <translation>Ammatti:</translation>
+    </message>
+    <message>
+        <source>&amp;Phone</source>
+        <translation>&amp;Puhelin</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Tyyppi</translation>
+    </message>
+    <message>
+        <source>Number/Gateway</source>
+        <translation>Numero/yhdyskäytävä</translation>
+    </message>
+    <message>
+        <source>Country/Provider</source>
+        <translation>Maa/tarjoaja</translation>
+    </message>
+    <message>
+        <source>Currently at:</source>
+        <translation>Tällä hetkellä:</translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation>(</translation>
+    </message>
+    <message>
+        <source>) </source>
+        <translation>) </translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <source>P&amp;icture</source>
+        <translation>&amp;Kuva</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation>Ei saatavilla</translation>
+    </message>
+    <message>
+        <source>Failed to Load</source>
+        <translation>Lataus epäonnistui</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Lisää</translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation>&amp;Tyhjennä</translation>
+    </message>
+    <message>
+        <source>&amp;Browse</source>
+        <translation>&amp;Selaa</translation>
+    </message>
+    <message>
+        <source>Select your picture</source>
+        <translation>Valitse kuvasi</translation>
+    </message>
+    <message>
+        <source> is over %1 bytes.
+Select another picture?</source>
+        <translation> on yli %1 tavua.
+Valitaanko toinen kuva?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Kyllä</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Ei</translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -4194,6 +4651,35 @@ Valitse tämä jos haluat säilyttää tekemäsi muutokset käyttäjänimessä.<
     <message>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
+    </message>
+</context>
+<context>
+    <name>UserSendChatEvent</name>
+    <message>
+        <source>Multiparty: </source>
+        <translation>Ryhmä: </translation>
+    </message>
+    <message>
+        <source>Invite</source>
+        <translation>Kutsu</translation>
+    </message>
+    <message>
+        <source> - Chat Request</source>
+        <translation> - chat-pyyntö</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Tyhjennä</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation>Syytä ei annettu</translation>
+    </message>
+    <message>
+        <source>Chat with %2 refused:
+%3</source>
+        <translation>%2 kieltäytyi chatistä:
+%3</translation>
     </message>
 </context>
 <context>
@@ -4249,7 +4735,7 @@ Valitse tämä jos haluat säilyttää tekemäsi muutokset käyttäjänimessä.<
     <message>
         <source>Drag Users Here
 Right Click for Options</source>
-        <translation>Raahaa käyttäjät tähän
+        <translation>Raahaa käyttäjät tähän hiirellä
 Valikko oikeasta napista</translation>
     </message>
     <message>
@@ -4306,7 +4792,7 @@ lähetetäänkö palvelimen kautta?</translation>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
-        <translation>%1 on %2-tilassa:
+        <translation>%1 on %2 tilassa:
 %3
 Lähetä...</translation>
     </message>
@@ -4316,7 +4802,7 @@ Lähetä...</translation>
     </message>
     <message>
         <source> to Contact List</source>
-        <translation>kontaktilistalle</translation>
+        <translation> kontaktilistalle</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -4324,12 +4810,12 @@ Lähetä...</translation>
     </message>
     <message>
         <source>%1 refused %2, send through server</source>
-        <translation>%1 kieltäytyi %2, lähetä palvelimen kautta</translation>
+        <translation type="obsolete">%1 kieltäytyi %2, lähetä palvelimen kautta</translation>
     </message>
     <message>
         <source>Warning: Message can&apos;t be sent securely
 through the server!</source>
-        <translation>Varoitus: viestiä ei voi lähettää salatusti
+        <translation>Varoitus: viestiä ei voi lähettää suojatusti
 palvelimen kautta!</translation>
     </message>
     <message>
@@ -4338,15 +4824,92 @@ palvelimen kautta!</translation>
     </message>
 </context>
 <context>
+    <name>UserSendContactEvent</name>
+    <message>
+        <source>Drag Users Here - Right Click for Options</source>
+        <translation>Raahaa käyttäjät tähän hiirellä - valikko oikeasta napista</translation>
+    </message>
+    <message>
+        <source> - Contact List</source>
+        <translation> - kontaktilista</translation>
+    </message>
+</context>
+<context>
+    <name>UserSendFileEvent</name>
+    <message>
+        <source>File(s): </source>
+        <translation>Tiedosto(t): </translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Selaa</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Muokkaa</translation>
+    </message>
+    <message>
+        <source> - File Transfer</source>
+        <translation> - tiedostonsiirto</translation>
+    </message>
+    <message>
+        <source>Select files to send</source>
+        <translation>Valitse lähetettävät tiedostot</translation>
+    </message>
+    <message>
+        <source>You must specify a file to transfer!</source>
+        <translation>Sinun tulee valita tiedosto joka siirretään!</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation>Syytä ei annettu</translation>
+    </message>
+    <message>
+        <source>File transfer with %2 refused:
+%3</source>
+        <translation>%2 kieltäytyi vastaanottamasta tiedostoa:
+%3</translation>
+    </message>
+</context>
+<context>
     <name>UserSendMsgEvent</name>
     <message>
         <source> - Message</source>
-        <translation>- viesti</translation>
+        <translation> - viesti</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the message.
 Do you really want to send it?</source>
         <translation>Et muokannut viestiä.
+Haluatko varmasti lähettää sen?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Kyllä</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;En</translation>
+    </message>
+</context>
+<context>
+    <name>UserSendSmsEvent</name>
+    <message>
+        <source>Phone : </source>
+        <translation>Puhelin : </translation>
+    </message>
+    <message>
+        <source>Chars left : </source>
+        <translation>Kirjaimia jäljellä : </translation>
+    </message>
+    <message>
+        <source> - SMS</source>
+        <translation> - SMS</translation>
+    </message>
+    <message>
+        <source>You didn&apos;t edit the SMS.
+Do you really want to send it?</source>
+        <translation>Et muokannut SMS-viestiä.
 Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
@@ -4366,7 +4929,7 @@ Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
         <source> - URL</source>
-        <translation>- URL</translation>
+        <translation> - URL</translation>
     </message>
     <message>
         <source>No URL specified</source>
@@ -4411,7 +4974,7 @@ Haluatko varmasti lähettää sen?</translation>
 Request was cancelled.</source>
         <translation>
 --------------------
-Pyyntö peruutettiin.</translation>
+Pyyntö peruttu.</translation>
     </message>
     <message>
         <source>A&amp;ccept</source>
