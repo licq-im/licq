@@ -592,7 +592,7 @@ void ICQFunctions::InitHistoryTab()
   tabList[TAB_HISTORY].loaded = true;
   QWidget *p = tabList[TAB_HISTORY].tab;
 
-  QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
+  /*QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
 
   lblHistory = new QLabel(p);
   lblHistory->setAutoResize(true);
@@ -611,8 +611,9 @@ void ICQFunctions::InitHistoryTab()
   connect(btnHistoryEdit, SIGNAL(clicked()), SLOT(slot_historyEdit()));
   chkHistoryReverse = new QCheckBox(tr("Reverse"), box);
   connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
-  chkHistoryReverse->setChecked(true);
-/*  QBoxLayout* lay = new QVBoxLayout(p, 8, 8);
+  chkHistoryReverse->setChecked(true);*/
+
+  QBoxLayout* lay = new QVBoxLayout(p, 8, 8);
 
   QBoxLayout* l = new QHBoxLayout(lay);
 
@@ -627,7 +628,7 @@ void ICQFunctions::InitHistoryTab()
   l->addWidget(chkHistoryReverse);
 
   mleHistory = new HistoryWidget(p);
-  lay->addWidget(mleHistory, 1);*/
+  lay->addWidget(mleHistory, 1);
 }
 
 
@@ -1628,8 +1629,7 @@ void ICQFunctions::ShowHistory()
   {
 
     d.setTime_t((*tempIter)->Time());
-    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n\003"
-              "---------------------------------------\n",
+    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n\n",
               (*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002',
               (const char *)EventDescription(*tempIter),
               (const char *)d.toString(),
