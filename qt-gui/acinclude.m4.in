@@ -404,7 +404,7 @@ AC_DEFUN(AC_CHECK_X_HEADER, [
     CPPFLAGS="$CPPFLAGS -I$includedir"
   fi
   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-  AC_CHECK_HEADER([$1],[$2],[$3])
+  AC_CHECK_HEADER([$1],[$2],[$3], [#include <X11/Xlib.h>])
   CPPFLAGS="$ac_save_CPPFLAGS"
 ])
 
