@@ -1512,6 +1512,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetEmail2(packet.UnpackString(szTemp));
           // Old email address
           packet.UnpackString(szTemp);
+          if (u->GetEmail1()[0] == '\0')
+            u->SetEmail1(szTemp);
           u->SetCity(packet.UnpackString(szTemp));
           u->SetState(packet.UnpackString(szTemp));
           u->SetPhoneNumber(packet.UnpackString(szTemp));
