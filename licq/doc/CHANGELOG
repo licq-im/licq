@@ -1,5 +1,17 @@
 Change log for Licq.
 
+
+New in 0.70.1
+o  Changed CICQSignal class to be much more informative and logical
+o  Minor bug fixes
+o  Improved unknown system message support
+
+
+New in 0.70 final
+o  Various bug fixes including segfault on exit and segfault on empty urls
+o  Slight portability improvements
+
+
 New in 0.70h
 o  Fixed some small bugs with sending empty messages
 o  Better cross-platform support

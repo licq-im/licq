@@ -1,6 +1,6 @@
 =======================================
 Licq FAQ
-July 28, 1999
+September 17, 1999
 
 author: Graham Roff
 =======================================
@@ -38,6 +38,8 @@ Section 3: Using
    3.12: How do I change the colors of the Qt-Gui?
 Section 4: Plugins
    4.1: Why do I get "undefined symbol" errors when loading a plugin?
+   4.2: I get something about "undefined symbol: setmask..." when I try and
+        load the Qt-GUI plugin.
 
 
 =======================================
@@ -299,5 +301,17 @@ Section 4: Plugins
 compiled without this flag will have undefined symbols at runtime.  The fix is
 to ensure that the plugin is compiled with -fno-rtti (typically in the
 Makefile on the CXXFLAGS line).
+
+
+4.2: I get something about "undefined symbol: setmask..." when I try and
+     load the Qt-GUI plugin.
+
+  This problem occurs if you have a copy of qt 1.4 somewhere on your system
+and Licq is linked to it.  Verify this using "ldd licq_qt-gui.so" and see
+which qt library it's linked to.  If it is qt 1.4 then this library will have
+to be moved to somewhere after the location of the qt 2.0 library, as listed
+in /etc/ld.so.conf.  Read the README-QT-1.4-AND-2.0 for more information.
+
+
 
 
