@@ -29,32 +29,6 @@ protected:
 
 //=====UDP======================================================================
 
-//-----Register----------------------------------------------------------------
-class CPacketRegister : public CPacket
-{
-public:
-  CPacketRegister(const char *_szPasswd);
-  virtual ~CPacketRegister(void);
-  virtual void Create(void) {}
-
-  virtual const unsigned long  getSequence(void) { return m_nSequence; }
-  virtual const unsigned short SubSequence(void) { return 0; }
-  virtual const unsigned short getCommand(void)  { return m_nCommand; }
-  virtual const unsigned short getSubCommand(void) { return 0; }
-protected:
-  virtual unsigned long getSize(void);
-
-  /* 02 00 FC 03 01 00 02 00 04 00 65 66 67 00 72 00 00 00 00 00 00 00 */
-  unsigned short m_nVersion;
-  unsigned short m_nCommand;
-  unsigned short m_nSequence;
-  unsigned short m_nUnknown1;
-  unsigned short m_nPasswdLen;
-  char          *m_szPasswd;
-  unsigned long  m_nUnknown2;
-  unsigned long  m_nUnknown3;
-};
-
 
 //-----PacketUdp----------------------------------------------------------------
 class CPacketUdp : public CPacket
@@ -94,6 +68,26 @@ protected:
    unsigned long  m_nSourceUin;
    unsigned long  m_nCheckSum;
 #endif
+};
+
+//-----Register----------------------------------------------------------------
+class CPU_Register : public CPacketUdp
+{
+public:
+  CPU_Register(const char *_szPasswd);
+  virtual ~CPU_Register(void);
+
+protected:
+  virtual unsigned long getSize(void);
+
+  /* 02 00 FC 03 01 00 02 00 04 00 65 66 67 00 72 00 00 00 00 00 00 00 */
+  unsigned short m_nUnknown1;
+  unsigned short m_nPasswdLen;
+  char          *m_szPasswd;
+  unsigned long  m_nUnknown2;
+  unsigned long  m_nUnknown3;
+  unsigned long  m_nUnknown4;
+  unsigned long  m_nUnknown5;
 };
 
 

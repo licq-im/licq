@@ -56,42 +56,6 @@ unsigned char icq_check_data[256] = {
 };
 #endif
 
-//=====Packet===================================================================
-CPacketRegister::CPacketRegister(const char *_szPasswd)
-{
-  m_nVersion = ICQ_VERSION;
-  m_nCommand = ICQ_CMDxSND_REGISTERxUSER;
-  m_nSequence = 0x001;
-  m_nUnknown1 = 0x0002;
-  m_nPasswdLen = strlen(_szPasswd) + 1;
-  m_szPasswd = strdup(_szPasswd);
-  m_nUnknown2 = 0x00000072;
-  m_nUnknown3 = 0x00000000;
-
-  buffer = new CBuffer(getSize());
-  buffer->add(m_nVersion);
-  buffer->add(m_nCommand);
-  buffer->add(m_nSequence);
-  buffer->add(m_nUnknown1);
-  buffer->add(m_nPasswdLen);
-  buffer->add(m_szPasswd, m_nPasswdLen);
-  buffer->add(m_nUnknown2);
-  buffer->add(m_nUnknown3);
-}
-
-
-CPacketRegister::~CPacketRegister(void)
-{
-  free (m_szPasswd);
-  if (buffer != NULL) delete buffer;
-}
-
-unsigned long CPacketRegister::getSize(void)
-{
-  return (strlen (m_szPasswd) + 1 + 18);
-}
-
-
 
 //=====UDP======================================================================
 void CPacketUdp::Encrypt(void)
@@ -197,6 +161,44 @@ void CPacketUdp::InitBuffer(void)
   buffer->add(m_nCheckSum);
 #endif;
 }
+
+//-----Register--------------------------------------------------------------
+CPU_Register::CPU_Register(const char *_szPasswd)
+  : CPacketUdp(ICQ_CMDxSND_REGISTERxUSER)
+{
+  m_nUnknown1 = 0x0002;
+  m_nPasswdLen = strlen(_szPasswd) + 1;
+  m_szPasswd = strdup(_szPasswd);
+  m_nUnknown2 = 0x000000A0;
+  m_nUnknown3 = 0x00002461;
+  m_nUnknown4 = 0x00A00000;
+  m_nUnknown5 = 0x00000000;
+
+  InitBuffer();
+
+  buffer = new CBuffer(getSize());
+  buffer->add(m_nUnknown1);
+  buffer->add(m_nPasswdLen);
+  buffer->add(m_szPasswd, m_nPasswdLen);
+  buffer->add(m_nUnknown2);
+  buffer->add(m_nUnknown3);
+  buffer->add(m_nUnknown4);
+  buffer->add(m_nUnknown5);
+
+  Encrypt();
+}
+
+
+CPU_Register::~CPU_Register(void)
+{
+  free (m_szPasswd);
+}
+
+unsigned long CPU_Register::getSize(void)
+{
+  return (strlen (m_szPasswd) + 1 + 20);
+}
+
 
 
 //-----Logon--------------------------------------------------------------------
