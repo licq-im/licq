@@ -63,8 +63,8 @@ distclean: clean
 
 install: all
 	$(MKINSTALLDIRS) $(plugindir)
-	$(INSTALL_PROGRAM) $(srcdir)/licq_console.so $(plugindir)
-	$(STRIP) $(plugindir)/licq_console.so
+	$(INSTALL_PROGRAM) $(srcdir)/licq_email.so $(plugindir)
+	$(STRIP) $(plugindir)/licq_email.so
 
 licq_email.so: $(OBJECTS) $(METAOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
