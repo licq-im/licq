@@ -40,8 +40,10 @@ install-data-local:
 	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
           fi \
 	done; \
-        cd $(localedir) && ln -sf ru_RU.KOI8-R.qm ru.qm; \
-        cd $(localedir) && ln -sf cs_CZ.qm cs.qm
+	cd $(localedir) && rm -f ru.qm; \
+	cd $(localedir) && rm -f cs.qm; \
+        cd $(localedir) && ln -s ru_RU.KOI8-R.qm ru.qm; \
+        cd $(localedir) && ln -s cs_CZ.qm cs.qm
 
 template: 
 	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_builddir)/po/template.po
