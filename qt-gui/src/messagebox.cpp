@@ -19,7 +19,7 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   else
     msg = theMsg->Copy();
 
-  m_nEventId = theMsg->Id();
+  m_nEventId = msg->Direction() == D_SENDER ? -1 : theMsg->Id();
   QDateTime d;
   d.setTime_t(msg->Time());
   QString sd = d.toString();

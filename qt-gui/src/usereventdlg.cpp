@@ -327,7 +327,7 @@ void UserViewEvent::updateNextButton()
 
   while (it)
   {
-    if (it->m_nEventId != -1)
+    if (it->m_nEventId != -1 && it->msg->Direction() == D_RECEIVER)
     {
       e = it;
       num++;
