@@ -244,18 +244,23 @@ void ICQFunctions::CreateSendEventTab()
 #endif
   grpOpt->hide();
 
-  QBoxLayout* hlay = new QHBoxLayout(selay);
+  QGroupBox *box = new QGroupBox(tabList[TAB_SEND].tab);
+  selay->addWidget(box);
 
-  chkSendServer = new QCheckBox(tr("Send through server"), tabList[TAB_SEND].tab);
+  QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
+
+  QBoxLayout *hlay = new QHBoxLayout(vlay);
+
+  chkSendServer = new QCheckBox(tr("Send through server"), box);//tabList[TAB_SEND].tab);
   hlay->addWidget(chkSendServer);
-  chkUrgent = new QCheckBox(tr("Urgent"), tabList[TAB_SEND].tab);
+  chkUrgent = new QCheckBox(tr("Urgent"), box);//tabList[TAB_SEND].tab);
   hlay->addWidget(chkUrgent);
 
 #ifdef USE_SPOOFING
-  hlay = new QHBoxLayout(selay);
-  chkSpoof = new QCheckBox(tr("Spoof UIN:"), tabList[TAB_SEND].tab);
+  hlay = new QHBoxLayout(vlay);//selay);
+  chkSpoof = new QCheckBox(tr("Spoof UIN:"), box);//tabList[TAB_SEND].tab);
   hlay->addWidget(chkSpoof);
-  edtSpoof = new QLineEdit(tabList[TAB_SEND].tab);
+  edtSpoof = new QLineEdit(box);//tabList[TAB_SEND].tab);
   hlay->addWidget(edtSpoof);
   edtSpoof->setEnabled(false);
   edtSpoof->setValidator(new QIntValidator(1, 100000000, edtSpoof));
@@ -613,6 +618,7 @@ void ICQFunctions::setupTabs(int index)
   tabs->setTabEnabled(tabList[TAB_SEND].tab, !m_bOwner);
 
   // Info tabs
+  SetInfo(u);
   /*SetGeneralInfo(u);
   SetMoreInfo(u);
   SetWorkInfo(u);
@@ -683,6 +689,45 @@ void ICQFunctions::setupTabs(int index)
 
 }
 
+void ICQFunctions::SetInfo(ICQUser *u)
+{
+  bool bDropUser = false;
+
+  if (u == NULL)
+  {
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    bDropUser = true;
+  }
+
+  nfoStatus->setData(u->StatusStr());
+  time_t te = time(NULL);
+#ifndef __FreeBSD__
+  localtime(&te);
+  m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
+#else
+  struct tm *tzone = localtime(&te);
+  m_nRemoteTimeOffset = -(tzone->tm_gmtoff) - u->GetTimezone() * 1800;
+#endif
+  QDateTime t;
+  t.setTime_t(te + m_nRemoteTimeOffset);
+  nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
+                       .arg(t.time().toString())
+                       .arg(u->GetTimezone() > 0 ? "-" : "+")
+                       .arg(abs(u->GetTimezone() / 2))
+                       .arg(u->GetTimezone() % 2 ? "30" : "00") );
+  tmrTime = new QTimer(this);
+  connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
+  tmrTime->start(3000);
+
+  m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
+                 QString::fromLocal8Bit(u->GetFirstName()) + " " +
+                 QString::fromLocal8Bit(u->GetLastName())+ ")";
+  setCaption(m_sBaseTitle);
+  setIconText(u->GetAlias());
+
+  if (bDropUser) gUserManager.DropUser(u);
+}
+
 
 //-----ICQFunctions::setGeneralInfo-----------------------------------------------
 void ICQFunctions::SetGeneralInfo(ICQUser *u)
@@ -697,7 +742,6 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   }
 
   nfoAlias->setData(u->GetAlias());
-  nfoStatus->setData(u->StatusStr());
   nfoFirstName->setData(u->GetFirstName());
   nfoLastName->setData(u->GetLastName());
   nfoEmail1->setData(u->GetEmail1());
@@ -736,7 +780,7 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   nfoFax->setData(u->GetFaxNumber());
   nfoCellular->setData(u->GetCellularNumber());
   nfoZipCode->setData(u->GetZipCode());
-  time_t te = time(NULL);
+/*  time_t te = time(NULL);
 #ifndef __FreeBSD__
   localtime(&te);
   m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
@@ -753,7 +797,7 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
                        .arg(u->GetTimezone() % 2 ? "30" : "00") );
   tmrTime = new QTimer(this);
   connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
-  tmrTime->start(3000);
+  tmrTime->start(3000);*/
 
   if (!u->StatusOffline())
     nfoLastOnline->setData(tr("Now"));
@@ -761,17 +805,20 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
     nfoLastOnline->setData(tr("Unknown"));
   else
   {
+    QDateTime t;
     t.setTime_t(u->LastOnline());
     QString ds = t.toString();
     ds.truncate(ds.length() - 8);
     nfoLastOnline->setData(ds);
   }
 
-  m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
+  /*m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
                  QString::fromLocal8Bit(u->GetFirstName()) + " " +
                  QString::fromLocal8Bit(u->GetLastName())+ ")";
   setCaption(m_sBaseTitle);
-  setIconText(u->GetAlias());
+  setIconText(u->GetAlias());*/
+
+  SetInfo(u);
 
   if (bDropUser) gUserManager.DropUser(u);
 }

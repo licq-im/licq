@@ -142,6 +142,7 @@ protected:
 
   virtual void keyPressEvent(QKeyEvent *);
   virtual void closeEvent(QCloseEvent *);
+  void SetInfo(ICQUser *);
   void SetGeneralInfo(ICQUser *);
   void SetMoreInfo(ICQUser *);
   void SetWorkInfo(ICQUser *);
