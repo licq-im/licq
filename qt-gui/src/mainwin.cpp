@@ -794,6 +794,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
                    L_ERRORxSTR, _nUin);
         break;
       }
+      // Update this user if they are in the current group
       if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
@@ -812,6 +813,13 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
+      }
+      // Update their floaty
+      CUserView *v = CUserView::FindFloaty(u->Uin());
+      if (v != NULL)
+      {
+        v->firstChild()->setGraphics(u);
+        v->triggerUpdate();
       }
       gUserManager.DropUser(u);
       break;
@@ -1285,21 +1293,16 @@ void CMainWindow::callUserFunction(int index)
     {
       if (CUserView::SelectedItemFloaty())
       {
-        // delete the floaty, should just delete the item, and only delete
-        // the view if it's empty...
+        // Delete the floaty
         CUserView *v = (CUserView *)CUserView::SelectedItem()->listView();
-        delete v;
+        delete v->firstChild();
+        if (v->childCount() == 0) delete v;
       }
       else
       {
-        // Should check that the floaty does not already exist
-        UserFloatyList::iterator iter;
-        for (iter = CUserView::floaties.begin(); iter != CUserView::floaties.end(); iter++)
-        {
-          // Should go through the entire userview...
-          if (((CUserViewItem *)(*iter)->firstChild())->ItemUin() == nUin) break;
-        }
-        if (iter == CUserView::floaties.end()) CreateUserFloaty(nUin);
+        // Check that the floaty does not already exist
+        CUserView *v = CUserView::FindFloaty(nUin);
+        if (v == NULL) CreateUserFloaty(nUin);
       }
       break;
     }

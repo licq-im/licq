@@ -132,6 +132,8 @@ public:
   virtual void clear();
   //void maxLastColumn();
 
+  virtual CUserViewItem *firstChild() { return (CUserViewItem *)QListView::firstChild(); }
+
   void setPixmaps(QPixmap *_pOnline, QPixmap *_pOffline, QPixmap *_pAway,
                   QPixmap *_pNa, QPixmap *_pOccupied, QPixmap *_pDnd,
                   QPixmap *_pPrivate, QPixmap *_pFFC, QPixmap *_pMessage,
@@ -154,6 +156,7 @@ public:
   void setFontStyles(bool _b)  { CUserViewItem::s_bFontStyles = _b; };
 
   static UserFloatyList floaties;
+  static CUserView *FindFloaty(unsigned long);
 
 protected:
   QPopupMenu *mnuUser, *mnuGroup, *mnuAwayModes;

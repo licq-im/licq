@@ -199,6 +199,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
    m_pIconStatus = m_pIcon;
 
+   // Disconnect any old flash slot
+   if (m_bUrgent)
+     disconnect(s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
+
    if (u->NewMessages() > 0)
    {
      m_pIcon = NULL;
@@ -526,6 +530,19 @@ CUserView::~CUserView()
       }
     }
   }
+}
+
+
+CUserView *CUserView::FindFloaty(unsigned long nUin)
+{
+  UserFloatyList::iterator iter;
+  for (iter = floaties.begin(); iter != floaties.end(); iter++)
+  {
+    if ( (*iter)->firstChild()->ItemUin() == nUin ) break;
+  }
+  if (iter != floaties.end()) return *iter;
+
+  return NULL;
 }
 
 
