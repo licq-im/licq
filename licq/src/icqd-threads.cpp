@@ -815,7 +815,7 @@ void *MonitorSockets_tep(void *p)
               gSocketManager.CloseSocket(nCurrentSocket);
               d->FailEvents(nCurrentSocket, err);
 
-//              break;
+              break;
             }
 
             // Save the bytes pending status of the socket
