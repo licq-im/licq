@@ -6,26 +6,25 @@
 #endif
 
 #include <qdialog.h>
-#include <qmlined.h>
 
 #include "user.h"
 #include "mledit.h"
 
 class QPushButton;
+class QStringList;
 
 class AwayMsgDlg : public QDialog
 {
   Q_OBJECT
 public:
-  AwayMsgDlg(QWidget *parent = 0, const char *name = 0);
+  AwayMsgDlg(QStringList& _respHeader, QStringList& _respText, QWidget *parent = 0, const char *name = 0);
+
+  void selectAutoResponse(unsigned short status);
+  
   virtual void show();
   virtual void hide();
 protected:
-#if QT_VERSION >= 210
-  QMultiLineEdit* mleAwayMsg;
-#else  
   MLEditWrap *mleAwayMsg;
-#endif  
 
   static int s_nX, s_nY;
 protected slots:
@@ -33,8 +32,10 @@ protected slots:
   void selectMessage();
   
 private:
-  
   QPushButton* btnSelect;
+  QStringList& responseHeader;
+  QStringList& responseText;
+  unsigned short status;
 };
 
 

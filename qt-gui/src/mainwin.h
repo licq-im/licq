@@ -19,6 +19,7 @@
 #include <qtimer.h>
 #include <qimage.h>
 #include <qbitmap.h>
+#include <qstringlist.h>
 #include <qwindowsstyle.h>
 
 #include <vector.h>
@@ -103,6 +104,10 @@ protected:
   QPixmap *pmOnline, *pmOffline, *pmAway, *pmDnd, *pmOccupied, *pmNa,
           *pmPrivate, *pmFFC, *pmMessage, *pmUrl, *pmChat, *pmFile;
   ColumnInfos colInfo;
+
+  // Auto responses
+  QStringList responseHeader;
+  QStringList responseText;
 
   // AutoAway
   QTimer autoAwayTimer;

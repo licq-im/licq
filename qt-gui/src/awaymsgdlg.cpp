@@ -6,6 +6,7 @@
 #include <qarray.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
+#include <qmultilineedit.h>
 #include <qpopupmenu.h>
 #include <qstringlist.h>
 #include <qvaluelist.h>
@@ -16,26 +17,25 @@
 int AwayMsgDlg::s_nX = 100;
 int AwayMsgDlg::s_nY = 100;
 
-AwayMsgDlg::AwayMsgDlg(QWidget *parent = 0, const char *name = 0)
-  : QDialog(parent, name)
+AwayMsgDlg::AwayMsgDlg(QStringList& _respHeader, QStringList& _respText, QWidget *parent = 0, const char *name = 0)
+    : QDialog(parent, name),
+      responseHeader(_respHeader),
+      responseText(_respText)
 {
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
-#if QT_VERSION >= 210
-  mleAwayMsg = new QMultiLineEdit(this);
+  mleAwayMsg = new MLEditWrap(true, this);
   // ICQ99b allows 37 chars per line, so we do the same
   mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWrap);
   mleAwayMsg->setWrapColumnOrWidth(37);
-#else  
-  mleAwayMsg = new MLEditWrap(true, this);
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
-#endif  
   top_lay->addWidget(mleAwayMsg);
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
 
   btnSelect = new QPushButton(_("&Select"), this);
-  btnSelect->setIsMenuButton(true);
+  // this doesn't work yet (Qt bug)
+  //btnSelect->setIsMenuButton(true);
   connect(btnSelect, SIGNAL(clicked()), SLOT(selectMessage()));
   l->addWidget(btnSelect);
   
@@ -53,13 +53,28 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent = 0, const char *name = 0)
   l->addWidget(cancel);
 }
 
-
-void AwayMsgDlg::show()
+void AwayMsgDlg::selectAutoResponse(unsigned short _status)
 {
   char s[32];
-  
+
+  status = _status;
+
+  // Yeah, I know this is plain ugly, it's just a hack
+  // but getStatusStr() can't be used because it returns
+  // the wrong (old status) value and it can't be called
+  // with an arbitary status. 
+
+  // Needs to be moved to somewhere else (Dirk)
+  switch(status) {
+    case ICQ_STATUS_FREEFORCHAT: strcpy(s, _("Free For Chat")); break;
+    case ICQ_STATUS_OCCUPIED:    strcpy(s, _("Occupied"));      break;
+    case ICQ_STATUS_DND:         strcpy(s, _("DND"));           break;
+    case ICQ_STATUS_NA:          strcpy(s, _("N/A"));           break;
+    case ICQ_STATUS_AWAY:        strcpy(s, _("Away"));          break;
+    default:                     strcpy(s, _("default"));       break;
+  }
+
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  o->getStatusStr(s);
   
   setCaption(QString(_("Set %1 Response for %2"))
              .arg(s).arg(QString::fromLocal8Bit(o->getAlias())));
@@ -72,7 +87,17 @@ void AwayMsgDlg::show()
   move(s_nX, s_nY);
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
+
   QDialog::show();
+}
+
+void AwayMsgDlg::show()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short status = o->getStatus();
+  gUserManager.DropOwner();
+  
+  selectAutoResponse(status);
 }
 
 void AwayMsgDlg::hide()
@@ -93,19 +118,27 @@ void AwayMsgDlg::ok()
 
 void AwayMsgDlg::selectMessage()
 {
-
   QPopupMenu* menu = new QPopupMenu(this);
 
-  QStringList lst;
   int result = 0;
+  int offset = 0;
 
-  lst << "bin gleich wieder da" << "Uni" << "Spocht" << "Physickern";
+  // Select auto response group
+  switch(status) {
+    case ICQ_STATUS_FREEFORCHAT: offset = 32; break;
+    case ICQ_STATUS_OCCUPIED:    offset = 16; break;
+    case ICQ_STATUS_DND:         offset = 24; break;
+    case ICQ_STATUS_NA:          offset =  8; break;
+    case ICQ_STATUS_AWAY:
+    default:                     offset =  0; break;
+  }
 
-  for(QStringList::Iterator it = lst.begin(); it != lst.end(); ++it)
-      menu->insertItem(*it, result++);
+  for(int i = 0; i<8; i++)
+      menu->insertItem(responseHeader[i+offset], i);
 
   menu->insertSeparator();
-  menu->insertItem(_("&Edit Items"), -2);
+  // as this is not yet implemented, give user feedback
+  menu->setItemEnabled(menu->insertItem(_("&Edit Items"), -2), false);
   
   result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
 
@@ -113,9 +146,9 @@ void AwayMsgDlg::selectMessage()
     // TODO: open options menu
   }
   else {
-    // (unsigned) -1 >= lst.count() !
-    if ((unsigned) result < lst.count())
-      mleAwayMsg->setText(lst[result]);
+    // (unsigned) -1 > 8 !
+    if ((unsigned) result < 8)
+      mleAwayMsg->setText(responseText[result+offset]);
   }
 
   delete menu;

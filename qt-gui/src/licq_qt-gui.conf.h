@@ -15,6 +15,8 @@ Column1.Format = %a
 Column1.Width = 90
 Column1.Align = 0
 
+[autoresponse]
+
 [startup]
 Logon = 0
 AutoAway = 5
