@@ -35,6 +35,7 @@ public:
    const char *Description();
    time_t Time()  {  return m_tTime; }
    const char *LicqVersionStr();
+   static const char *LicqVersionToString(unsigned long);
    unsigned long Sequence()  { return m_nSequence; }
    unsigned short Command()  { return m_nCommand; }
    unsigned short SubCommand()  { return m_nSubCommand; }
