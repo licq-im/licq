@@ -49,7 +49,7 @@ extern "C" {
 #include <iostream>
 using namespace std;
 
-GtkWidget *contact_list_new(gint, gint);
+GtkWidget *contact_list_new();
 GtkWidget *status_bar_new(gint border_width);
 GtkWidget *system_status_new(gint border_width);
 GObject *licq_init_tray();
@@ -133,7 +133,7 @@ GtkWidget* main_window_new(const gchar* window_title)
 				       GTK_POLICY_AUTOMATIC);
 
 	/* Add in the contact list */
-	contact_list = contact_list_new(windowH - 56, windowW - 37);
+	contact_list = contact_list_new();
 	
 	gtk_container_add(GTK_CONTAINER(scroll_bar), contact_list);
 	gtk_box_pack_start(GTK_BOX(vertical_box), scroll_bar, 
