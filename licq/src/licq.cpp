@@ -169,7 +169,11 @@ bool CLicq::Init(int argc, char **argv)
   else
   {
     int i = 0;
+#ifdef __GLIBC__
+    while( (i = getopt(argc, argv, "--hd:b:p:Io:fc")) > 0)
+#else
     while( (i = getopt(argc, argv, "hd:b:p:Io:fc")) > 0)
+#endif
     {
       switch (i)
       {
