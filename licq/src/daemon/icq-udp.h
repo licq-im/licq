@@ -1656,6 +1656,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
         {
           gLog.Info("%sAbout info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
           u->SetAbout(packet.UnpackString(szTemp));
+          gTranslator.ServerToClient(u->GetAbout());
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                           USER_ABOUT, nUin));
           break;
