@@ -214,7 +214,8 @@ protected:
                 m_nIgnoreTypes;
   unsigned short m_nTCPBasePort,
                  m_nDefaultRemotePort,
-                 m_nMaxUsersPerPacket;
+                 m_nMaxUsersPerPacket,
+                 m_nServerSequence;
   char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;

@@ -134,6 +134,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
   free (passwd);
   gLog.Info("%sRequesting logon (#%d)...\n", L_UDPxSTR, p->getSequence());
   m_nServerAck = p->getSequence() - 1;
+  m_nServerSequence = 0;
   m_nDesiredStatus = status;
   m_tLogonTime = time(NULL);
   ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
@@ -594,6 +595,22 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
   }
 #endif
 
+  if (nCommand != ICQ_CMDxRCV_ACK)
+  {
+    if (nSequence > m_nServerSequence || nCommand == ICQ_CMDxRCV_HELLO ||
+        (bMultiPacket && nSequence == m_nServerSequence) )
+    {
+      m_nServerSequence = nSequence;
+    }
+    else
+    {
+      gLog.Warn("%sDuplicate packet received, command %d (#%d).\n",
+                L_UDPxSTR, nCommand, nSequence);
+      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+      return nCommand;
+    }
+  }
+
   switch (nCommand)
   {
   case ICQ_CMDxRCV_MULTIxPACKET:  // Multi-packet
@@ -1041,6 +1058,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
   {
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
     gLog.Info("%sOnline system message.\n", L_UDPxSTR);
+
     unsigned short newCommand;
     packet >> nUin
            >> newCommand;
