@@ -110,6 +110,8 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
   gUserManager.DropOwner();
   CPU_Register *p = new CPU_Register(_szPasswd);
   gLog.Info("%sRegistering a new user (#%d)...\n", L_UDPxSTR, p->getSequence());
+  m_nServerAck = p->getSequence() - 1;
+  m_nServerSequence = 0;
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
 }
 
