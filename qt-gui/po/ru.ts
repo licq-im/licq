@@ -30,7 +30,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Авторизовать пользователя с UIN:</translation>
+        <translation>Авторизовать пользователя (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -96,15 +96,15 @@ You can leave me a message.
     <name>CFileDlg</name>
     <message>
         <source>KB</source>
-        <translation>Кб</translation>
+        <translation>КБ</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation>Мб</translation>
+        <translation>МБ</translation>
     </message>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">Да</translation>
+        <source>OK</source>
+        <translation>ОК</translation>
     </message>
     <message>
         <source>Byte</source>
@@ -117,6 +117,16 @@ You can leave me a message.
     <message>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
+    </message>
+    <message>
+        <source>Not enough resources.
+</source>
+        <translation>Недостаточно ресурсов.
+</translation>
+    </message>
+    <message>
+        <source>Connecting to remote...</source>
+        <translation>Устанавливается соединение...</translation>
     </message>
     <message>
         <source>Bytes</source>
@@ -139,42 +149,26 @@ You can leave me a message.
         <translation>Время:</translation>
     </message>
     <message>
-        <source>Remote side disconnected</source>
-        <translation type="obsolete">Удаленная сторона отсоединилась</translation>
-    </message>
-    <message>
         <source>Licq - File Transfer (%1)</source>
         <translation>Licq - Передача файла(ов) (%1)</translation>
     </message>
     <message>
-        <source>Remote side disconnected
+        <source>Connection error.
 </source>
-        <translation type="obsolete">Удаленная сторона отсоединилась
+        <translation>Ошибка соединения
 </translation>
     </message>
     <message>
-        <source>Sent
-%1
-to %2 successfully
-</source>
-        <translation type="obsolete">%1
-отправлен к %2 успешно
-</translation>
+        <source>Remote side disconnected.</source>
+        <translation>Удаленная сторона отсоединилась.</translation>
     </message>
     <message>
-        <source>Connecting to remote...
-</source>
-        <translation type="obsolete">Устанавливается соединение...
-</translation>
+        <source>Sent %1 to %2 successfully.</source>
+        <translation>%1 отправлен к %2 успешно.</translation>
     </message>
     <message>
-        <source>Received
-%1
-from %2 successfully
-</source>
-        <translation type="obsolete">%1
-принят от %2 успешно
-</translation>
+        <source>Waiting for connection...</source>
+        <translation>Ожидание установления соединения...</translation>
     </message>
     <message>
         <source>File already exists and appears incomplete.</source>
@@ -193,68 +187,62 @@ from %2 successfully
         <translation>Отменить</translation>
     </message>
     <message>
-        <source>Waiting for connection...
-</source>
-        <translation type="obsolete">Ожидается соединение...
-</translation>
-    </message>
-    <message>
-        <source>Sending file...
-</source>
-        <translation type="obsolete">Отправляется файл...
-</translation>
-    </message>
-    <message>
         <source>Resume</source>
         <translation>Возобновить</translation>
     </message>
     <message>
-        <source>Done %1
+        <source>Unable to create a thread.
+See Network Window for details.</source>
+        <translation>Невозможно создать нить.
+Подробности в окне сети.</translation>
+    </message>
+    <message>
+        <source>Handshaking error.
 </source>
-        <translation type="obsolete">Завершено (%1)
+        <translation>Ошибка устнановления соединения.
 </translation>
+    </message>
+    <message>
+        <source>Handshake Error.
+See Network Window for details.</source>
+        <translation>Ошибка установления соединения
+Подробности в окне сети.</translation>
     </message>
     <message>
         <source>File name:</source>
         <translation>Имя файла:</translation>
     </message>
     <message>
-        <source>Receiving file...
+        <source>Bind error.
 </source>
-        <translation type="obsolete">Принимается файл...
+        <translation>Ошибка привязки сокета
 </translation>
     </message>
     <message>
-        <source>File I/O error: %1
-</source>
-        <translation type="obsolete">Ошибка ввода/вывода: %1
-</translation>
+        <source>Sending file...</source>
+        <translation>Отправляется файл...</translation>
     </message>
     <message>
-        <source>Handshake Error
-See Network Window for Details</source>
-        <translation type="obsolete">Ошибка протокола
-Подробности в Окне Сети</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled
-</source>
-        <translation type="obsolete">Передача файла(ов) прервана
-</translation>
+        <source>File I/O error: %1.</source>
+        <translation>Ошибка ввода/вывода: %1.</translation>
     </message>
     <message>
         <source>File I/O Error:
 %1
-See Network Window for Details</source>
-        <translation type="obsolete">Ошибка ввода/вывода:
+
+See Network Window for details.</source>
+        <translation>Ошибка ввода/вывода:
 %1
+
 Подробности в Окне Сети</translation>
     </message>
     <message>
-        <source>Handshaking error
-</source>
-        <translation type="obsolete">Ошибка протокола
-</translation>
+        <source>File transfer cancelled.</source>
+        <translation>Передача файла(ов) прервана.</translation>
+    </message>
+    <message>
+        <source>Receiving file...</source>
+        <translation>Принимается файл...</translation>
     </message>
     <message>
         <source>Current:</source>
@@ -273,101 +261,24 @@ See Network Window for Details</source>
         <translation>&amp;Отменить передачу</translation>
     </message>
     <message>
-        <source>File transfer complete
-</source>
-        <translation type="obsolete">Передача файла(ов) закончена
-</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waiting for connection...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Receiving file...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sending file...</source>
-        <translation type="unfinished"></translation>
+        <source>Unable to bind to a port.
+See Network Window for details.</source>
+        <translation>Невозможно сделать привязку к порту.
+Подробности в окне сети.</translation>
     </message>
     <message>
         <source>Received %1 from %2 successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sent %1 to %2 successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File transfer complete.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished">Да</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File I/O error: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-
-See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Handshaking error.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Handshake Error.
-See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connection error.
-</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 принят от %2 успешно.</translation>
     </message>
     <message>
         <source>Unable to reach remote host.
 See Network Window for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Удаленная машина недостижима.
+Подробности в окне сети.</translation>
     </message>
     <message>
-        <source>Bind error.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to bind to a port.
-See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not enough resources.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to create a thread.
-See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connecting to remote...</source>
-        <translation type="unfinished"></translation>
+        <source>File transfer complete.</source>
+        <translation>Передача файла(ов) закончена</translation>
     </message>
 </context>
 <context>
@@ -502,8 +413,12 @@ See Network Window for details.</source>
 <context>
     <name>CMainWindow</name>
     <message>
+        <source> </source>
+        <translation> </translation>
+    </message>
+    <message>
         <source>s</source>
-        <translation></translation>
+        <translation> </translation>
     </message>
     <message>
         <source>Ok</source>
@@ -542,6 +457,10 @@ See Network Window for details.</source>
         <translation>&amp;Информация</translation>
     </message>
     <message>
+        <source>&amp;Last</source>
+        <translation>&amp;Последний раз</translation>
+    </message>
+    <message>
         <source>U&amp;tilities</source>
         <translation>&amp;Утилиты</translation>
     </message>
@@ -576,6 +495,10 @@ See Network Window for details.</source>
 </translation>
     </message>
     <message>
+        <source>Re&amp;quest Authorization</source>
+        <translation>Запросит&amp;ь авторизацию</translation>
+    </message>
+    <message>
         <source>Check %1 Response</source>
         <translation>Посмотреть &apos;%1&apos; авто-ответ</translation>
     </message>
@@ -603,7 +526,7 @@ UIN: %1
     </message>
     <message>
         <source>Send &amp;Authorization</source>
-        <translation>&amp;Отправить авторизацию</translation>
+        <translation>&amp;Авторизовать пользователя</translation>
     </message>
     <message>
         <source>Auto Accept Chats</source>
@@ -619,7 +542,7 @@ UIN: %1
     </message>
     <message>
         <source>&amp;About</source>
-        <translation>&amp;О ...</translation>
+        <translation>&amp;Информация</translation>
     </message>
     <message>
         <source>&amp;Group</source>
@@ -636,6 +559,34 @@ UIN: %1
     <message>
         <source>Custom Auto Response...</source>
         <translation>Персональный авто-ответ</translation>
+    </message>
+    <message>
+        <source>Licq version %1%8.
+Qt GUI plugin version %2.
+Compiled on: %7
+%6
+Maintainer: Jon Keating
+Contributions by Dirk A. Mueller
+Original Author: Graham Roff
+
+http://www.licq.org
+#licq on irc.openprojects.net
+
+%3 (%4)
+%5 contacts.</source>
+        <translation>Версия Licq %1%8.
+Версия Qt GUI модуля %2.
+Дата сборки: %7
+%6
+Ведущий разработчик: Jon Keating
+При содействии Dirk A. Mueller
+Автор: Graham Roff
+
+http://www.licq.org
+Канал #licq на сервере irc.openprojects.net
+
+%3 (%4)
+%5 в списке контактов.</translation>
     </message>
     <message>
         <source>Online Notify</source>
@@ -694,7 +645,7 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Send &amp;SMS</source>
-        <translation>Send &amp;SMS</translation>
+        <translation>Послать &amp;SMS</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -719,28 +670,6 @@ Now set your personal information.</source>
     <message>
         <source>No msgs</source>
         <translation>Нет сообщений</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Author: Graham Roff
-Contributions by Dirk A. Mueller
-http://www.licq.org
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Версия Licq: %1%8.
-Версия Qt GUI модуля: %2.
-Дата сборки: %7
-%6
-Автор: Graham Roff
-При содействии Dirk Mueller
-http://www.licq.org
-
-%3 (%4)
-%5 в списке контактов.</translation>
     </message>
     <message>
         <source>Up since %1
@@ -777,6 +706,10 @@ http://www.licq.org
     <message>
         <source>System</source>
         <translation>Система</translation>
+    </message>
+    <message>
+        <source>Send Authorization Re&amp;quest</source>
+        <translation>Послат&amp;ь запрос авторизации</translation>
     </message>
     <message>
         <source>Last reset %1
@@ -967,8 +900,8 @@ Double click - Set auto response</source>
         <translation>Принимать, если в режиме &quot;Не беспокоить&quot;</translation>
     </message>
     <message>
-        <source>&amp;Security Options</source>
-        <translation type="obsolete">&amp;Настройки безопасности</translation>
+        <source>Use Real Ip (LAN)</source>
+        <translation>Использовать реальный IP адрес</translation>
     </message>
     <message>
         <source>&amp;Statistics</source>
@@ -1005,10 +938,6 @@ Double click - Set auto response</source>
     <message>
         <source>&amp;Do Not Disturb</source>
         <translation>&amp;Не беспокоить</translation>
-    </message>
-    <message>
-        <source>Change &amp;Password</source>
-        <translation type="obsolete">&amp;Изменить пароль</translation>
     </message>
     <message>
         <source>Are you sure you want to remove
@@ -1081,6 +1010,10 @@ Double click - Show next message</source>
         <translation>&amp;Выбор внешнего вида</translation>
     </message>
     <message>
+        <source>&amp;Security/Password Options</source>
+        <translation>Настройки &amp;безопасности/пароля</translation>
+    </message>
+    <message>
         <source>Request &amp;Secure Channel</source>
         <translation>&amp;Запросить защищенный канал</translation>
     </message>
@@ -1112,46 +1045,6 @@ Double click - Show next message</source>
         <source>Away to User</source>
         <translation>Виден в режиме &quot;Отошел&quot;</translation>
     </message>
-    <message>
-        <source> </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.openprojects.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Send Authorization Re&amp;quest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="unfinished">&amp;Последний раз</translation>
-    </message>
-    <message>
-        <source>&amp;Security/Password Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Re&amp;quest Authorization</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use Real Ip (LAN)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
@@ -1181,12 +1074,12 @@ http://www.licq.org
 <context>
     <name>CRandomChatDlg</name>
     <message>
-        <source>Games</source>
-        <translation>Игры</translation>
+        <source>Seeking Men</source>
+        <translation>Поиск мужчин</translation>
     </message>
     <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Женщины ищущие мужчин</translation>
+        <source>Games</source>
+        <translation>Игры</translation>
     </message>
     <message>
         <source>20 Something</source>
@@ -1197,12 +1090,12 @@ http://www.licq.org
         <translation>30+</translation>
     </message>
     <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Мужчины ищущие женщин</translation>
-    </message>
-    <message>
         <source>40 Something</source>
         <translation>40+</translation>
+    </message>
+    <message>
+        <source>Seeking Women</source>
+        <translation>Поиск женщин</translation>
     </message>
     <message>
         <source>Random chat search timed out.</source>
@@ -1249,14 +1142,6 @@ http://www.licq.org
         <source>Random Chat Search</source>
         <translation>Поиск случайного собеседника</translation>
     </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CRefuseDlg</name>
@@ -1288,12 +1173,12 @@ http://www.licq.org
         <translation>готово</translation>
     </message>
     <message>
-        <source>Games</source>
-        <translation>Игры</translation>
+        <source>Seeking Men</source>
+        <translation>Поиск мужчин</translation>
     </message>
     <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Женщины ищущие мужчин</translation>
+        <source>Games</source>
+        <translation>Игры</translation>
     </message>
     <message>
         <source>error</source>
@@ -1308,12 +1193,12 @@ http://www.licq.org
         <translation>30+</translation>
     </message>
     <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Мужчины ищущие женщин</translation>
-    </message>
-    <message>
         <source>40 Something</source>
         <translation>40+</translation>
+    </message>
+    <message>
+        <source>Seeking Women</source>
+        <translation>Поиск женщин</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -1359,14 +1244,6 @@ http://www.licq.org
         <source>Setting Random Chat Group...</source>
         <translation>Устанавливается группа для случайных разговоров...</translation>
     </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CUserView</name>
@@ -1376,7 +1253,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Thai</source>
-        <translation type="obsolete">Тайский</translation>
+        <translation>Тайский</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
@@ -1384,15 +1261,19 @@ http://www.licq.org
     </message>
     <message>
         <source>Greek</source>
-        <translation type="obsolete">Греческий</translation>
+        <translation>Греческий</translation>
     </message>
     <message>
         <source>Tamil</source>
-        <translation type="obsolete">Тамильский</translation>
+        <translation>Тамильский</translation>
     </message>
     <message>
         <source>Cyrillic</source>
-        <translation type="obsolete">Кирилица</translation>
+        <translation>Кирилица</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
+        <translation>&lt;br&gt;&lt;nobr&gt;Не занят: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
@@ -1400,19 +1281,19 @@ http://www.licq.org
     </message>
     <message>
         <source>Baltic</source>
-        <translation type="obsolete">Балтийский</translation>
+        <translation>Балтийский</translation>
     </message>
     <message>
         <source>Arabic</source>
-        <translation type="obsolete">Арабский</translation>
+        <translation>Арабский</translation>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation type="obsolete">Иврит</translation>
+        <translation>Иврит</translation>
     </message>
     <message>
         <source>Korean</source>
-        <translation type="obsolete">Корейский</translation>
+        <translation>Корейский</translation>
     </message>
     <message>
         <source>Online</source>
@@ -1424,11 +1305,11 @@ http://www.licq.org
     </message>
     <message>
         <source>Western European</source>
-        <translation type="obsolete">Западная европа</translation>
+        <translation>Западная европа</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation type="obsolete">Эсперанто</translation>
+        <translation>Эсперанто</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
@@ -1452,7 +1333,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Central European</source>
-        <translation type="obsolete">Центральная европа</translation>
+        <translation>Центральная европа</translation>
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
@@ -1468,11 +1349,11 @@ http://www.licq.org
     </message>
     <message>
         <source>Japanese</source>
-        <translation type="obsolete">Японский</translation>
+        <translation>Японский</translation>
     </message>
     <message>
         <source>Ukrainian</source>
-        <translation type="obsolete">Украинский</translation>
+        <translation>Украинский</translation>
     </message>
     <message>
         <source>%1 Floaty (%2)</source>
@@ -1480,7 +1361,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Chinese</source>
-        <translation type="obsolete">Китайский</translation>
+        <translation>Китайский</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
@@ -1492,15 +1373,15 @@ http://www.licq.org
     </message>
     <message>
         <source>Turkish</source>
-        <translation type="obsolete">Турецкий</translation>
+        <translation>Турецкий</translation>
     </message>
     <message>
         <source>Unicode</source>
-        <translation type="obsolete">Уникод</translation>
+        <translation>Уникод</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation type="obsolete">Китайский традиционный</translation>
+        <translation>Китайский традиционный</translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
@@ -1509,10 +1390,6 @@ http://www.licq.org
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;В сети: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1593,52 +1470,52 @@ http://www.licq.org
 <context>
     <name>ChangePassDlg</name>
     <message>
-        <source>Licq - Set UIN/Password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Login Information</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Ok</source>
+        <translation>&amp;ОК</translation>
     </message>
     <message>
         <source>&amp;UIN:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="unfinished">&amp;Пароль:</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="unfinished">&amp;Еще раз:</translation>
+        <translation>&amp;UIN</translation>
     </message>
     <message>
         <source>Enter your UIN here.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="unfinished">Введите здесь ваш ICQ пароль.</translation>
+        <translation>Введите Ваш UIN.</translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
-        <translation type="unfinished">Введите здесь свой ICQ пароль для проверки.</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;Да</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Отменить</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="unfinished">Пароль должен быть не больше 8 символов.</translation>
+        <translation>Повторно введите Ваш пароль ICQ.</translation>
     </message>
     <message>
         <source>Passwords do not match, try again.</source>
-        <translation type="unfinished">Пароли не совпадают, попробуйте еще раз.</translation>
+        <translation>Пароли не совпадают, повторите еще.</translation>
+    </message>
+    <message>
+        <source>Invalid password, must be 8 characters or less.</source>
+        <translation>Неправильный пароль, должен быть не больше 8 символов.</translation>
+    </message>
+    <message>
+        <source>Login Information</source>
+        <translation>Информация входа в систему</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>Отм&amp;ена</translation>
+    </message>
+    <message>
+        <source>&amp;Password:</source>
+        <translation>&amp;Пароль:</translation>
+    </message>
+    <message>
+        <source>&amp;Verify:</source>
+        <translation>&amp;Проверка:</translation>
+    </message>
+    <message>
+        <source>Enter your ICQ password here.</source>
+        <translation>Введите Ваш пароль ICQ.</translation>
+    </message>
+    <message>
+        <source>Licq - Set UIN/Password</source>
+        <translation>Licq - Установка UIN/пароля</translation>
     </message>
 </context>
 <context>
@@ -1694,6 +1571,12 @@ http://www.licq.org
     <message>
         <source>Sends a Beep to all recipients</source>
         <translation>Отправить &quot;звонок&quot; всем</translation>
+    </message>
+    <message>
+        <source>Unable to create new thread.
+See Network Window for details.</source>
+        <translation>Невозможно создать новую нить.
+Подробности в окне сети.</translation>
     </message>
     <message>
         <source>&amp;Pane Mode</source>
@@ -1772,28 +1655,20 @@ http://www.licq.org
         <translation>Цвет текста</translation>
     </message>
     <message>
+        <source>Unable to bind to a port.
+See Network Window for details.</source>
+        <translation>Невозможно выполнить привязку сокета к порту.
+Подробности в окне сети.</translation>
+    </message>
+    <message>
         <source>Ignore user settings</source>
         <translation>Игнорировать установки пользователя</translation>
     </message>
     <message>
-        <source>Unable to bind to a port.
-See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unable to connect to the remote chat.
 See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to create new thread.
-See Network Window for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно присоединиться к разговору.
+Подробности в окне сети.</translation>
     </message>
 </context>
 <context>
@@ -1861,16 +1736,20 @@ You can leave me a message.</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <source>Edit</source>
-        <translation type="obsolete">Изменить имя</translation>
-    </message>
-    <message>
         <source>&amp;Done</source>
         <translation>&amp;Завершить</translation>
     </message>
     <message>
+        <source>&amp;Save</source>
+        <translation>&amp;Сохранить</translation>
+    </message>
+    <message>
         <source>Edit Name</source>
         <translation>Изменить имя</translation>
+    </message>
+    <message>
+        <source>Set New Users</source>
+        <translation>Для новых пользователей</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1893,6 +1772,18 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>noname</source>
         <translation>новая</translation>
+    </message>
+    <message>
+        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
+        <translation>Группа, в которую будут добавляться новые пользователи.  Все новые пользователи будут в локальной группе &quot;Новые пользователи&quot;, но для серверного списка контактов они будут в этой группе.</translation>
+    </message>
+    <message>
+        <source>Save the name of a group being modified.</source>
+        <translation>Сохранить имя модифицируемой группы.</translation>
+    </message>
+    <message>
+        <source>New User:</source>
+        <translation>Группа новых пользователей:</translation>
     </message>
     <message>
         <source>Set Default</source>
@@ -1925,26 +1816,6 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>Shift Up</source>
         <translation>Вверх</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Сохранить</translation>
-    </message>
-    <message>
-        <source>Save the name of a group being modified.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2153,13 +2024,14 @@ This might not work.</source>
 <context>
     <name>MLView</name>
     <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq не в состоянии запустить браузер и открыть ссылку.
+Вам небходимо запустить браузер вручную.</translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation>Licq не в состоянии найти приложение-браузер в следствии внутренней ошибки.</translation>
     </message>
 </context>
 <context>
@@ -2343,6 +2215,10 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Включает и выключает показ названий столбцов в списке пользователей</translation>
     </message>
     <message>
+        <source>Auto close the user function window after a succesful event</source>
+        <translation>Автоматически закрывать окна сообщений после удачных событий</translation>
+    </message>
+    <message>
         <source>Start Hidden</source>
         <translation>При запуске скрыть главное окно</translation>
     </message>
@@ -2356,7 +2232,8 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Blink Urgent Events</source>
-        <translation>Все срочные сообщения должны мигать</translation>
+        <translation>Все срочные сообщения
+должны мигать</translation>
     </message>
     <message>
         <source>Ignore Mass Messages</source>
@@ -2371,8 +2248,8 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Порт сервера ICQ:</translation>
     </message>
     <message>
-        <source>The main window will start hidden. Only the dock icon will be visible.</source>
-        <translation type="obsolete">При старте основное окно будет скрыто. Отображаться будет только иконка дока.</translation>
+        <source>Start main window hidden. Only the dock icon will be visible.</source>
+        <translation>Скрывать главное окно после запуска. Только иконка дока будет на экране.</translation>
     </message>
     <message>
         <source>Parameter for online notification</source>
@@ -2389,6 +2266,10 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>Online Notify:</source>
         <translation>При появлении:</translation>
+    </message>
+    <message>
+        <source>Idle Time</source>
+        <translation>Время бездействия</translation>
     </message>
     <message>
         <source>Not Available</source>
@@ -2427,6 +2308,10 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Заготовки:</translation>
     </message>
     <message>
+        <source>Automatically send messages through the server if direct connection fails</source>
+        <translation>Автоматиматически посылать сообщения через сервер если прямое соединение не удалось установить</translation>
+    </message>
+    <message>
         <source>Licq Options</source>
         <translation>Настройки Licq</translation>
     </message>
@@ -2440,7 +2325,8 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Bold Message Label on Incoming Msg</source>
-        <translation>Выделять утолщенным шрифтом при приходе сообщения</translation>
+        <translation>Выделять утолщенным шрифтом
+при приходе сообщения</translation>
     </message>
     <message>
         <source>Column %1</source>
@@ -2573,7 +2459,15 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Allow dragging main window</source>
-        <translation>Разрешить DND для основного окна</translation>
+        <translation>Разрешить перенос объектов для основного окна</translation>
+    </message>
+    <message>
+        <source>Show the message info label in bold font if there are incoming messages</source>
+        <translation>Выделять жирным шрифтом входящие сообщения</translation>
+    </message>
+    <message>
+        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you first send an event to them</source>
+        <translation>Если не установлен, то пользователь будет автоматически удален из группы &quot;Новые пользователи&quot; после первой отправки ему сообщения, файла и т.д.</translation>
     </message>
     <message>
         <source>Default Encoding:</source>
@@ -2597,7 +2491,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Hot key: </source>
-        <translation>Горячая клавиша</translation>
+        <translation>Горячая клавиша: </translation>
     </message>
     <message>
         <source>I can receive direct connections</source>
@@ -2610,14 +2504,6 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>Miscellaneous</source>
         <translation>Разное</translation>
-    </message>
-    <message>
-        <source>All incoming messages automatically open when received, if we are online (or free for chat)</source>
-        <translation type="obsolete">Все входящие сообщения автоматически открываются при получении, если ваш статус &quot;В сети&quot; (или &quot;Свободен для разговора&quot;)</translation>
-    </message>
-    <message>
-        <source>Automatically send messages through server if direct connection fails</source>
-        <translation type="obsolete">Сообщение автоматически будет отправлено через сервер, если не удастся установить прямое соединение</translation>
     </message>
     <message>
         <source>Perform OnEvent command in do not disturb mode</source>
@@ -2650,14 +2536,6 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>Default Icon</source>
         <translation>Значок по умолчанию</translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you firstsend an event to them</source>
-        <translation type="obsolete">Если не установлен, то пользователь будет автоматически удален из группы &quot;Новые пользователи&quot; после первой отправки ему сообщения, файла и т.д.</translation>
-    </message>
-    <message>
-        <source>The main window will raise on incoming messages</source>
-        <translation type="obsolete">Главное окно будет &quot;всплывать&quot; при приходе сообщений</translation>
     </message>
     <message>
         <source>Check Clipboard For Urls/Files</source>
@@ -2693,8 +2571,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Auto-Raise on Incoming Msg</source>
-        <translation>Авто-всплытие
-при приходе сообщения</translation>
+        <translation>Авто-всплытие при приходе сообщения</translation>
     </message>
     <message>
         <source>Position a new reply window just underneath the message view window</source>
@@ -2742,7 +2619,8 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Show User Dividers</source>
-        <translation>Показывать разделители пользователей</translation>
+        <translation>Показывать разделители
+пользователей</translation>
     </message>
     <message>
         <source>OnEvent in Occupied</source>
@@ -2773,13 +2651,8 @@ The following parameters can be used:
         <translation>Выбор шрифта</translation>
     </message>
     <message>
-        <source>The message info label will be bold if there are incoming messages</source>
-        <translation type="obsolete">Пользователь будет выделен утолщенным шрифтом, если есть сообщения от него</translation>
-    </message>
-    <message>
         <source>Auto-Popup Incoming Msg</source>
-        <translation>Авто-показ
-приходящих сообщений</translation>
+        <translation>Авто-показ приходящих сообщений</translation>
     </message>
     <message>
         <source>64 x 48 Dock Icon</source>
@@ -2827,8 +2700,7 @@ The following parameters can be used:
     </message>
     <message>
         <source>Auto Close Function Window</source>
-        <translation>Авто-закрытие
-функциональных окон</translation>
+        <translation>Авто-закрытие функциональных окон</translation>
     </message>
     <message>
         <source>Perform OnEvent command in away mode</source>
@@ -2877,7 +2749,7 @@ The following parameters can be used:
     </message>
     <message>
         <source>Popup info</source>
-        <translation>Информация во всплывающей подсказке</translation>
+        <translation>Всплывающая подсказка</translation>
     </message>
     <message>
         <source>Cellular</source>
@@ -2912,10 +2784,6 @@ The following parameters can be used:
         <translation>Определяет, рисовать ли рамку вокруг каждого пользователя в списке</translation>
     </message>
     <message>
-        <source>Sets the default behavior for auto closing the user function window after a succesful event</source>
-        <translation type="obsolete">Устанавливает автоматическое закрывание  окна пользователя после успешного события</translation>
-    </message>
-    <message>
         <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
         <translation>Отображает все доступные кодировки в меню выбора кодировки пользователя. Обычно отображаются только наиболее часто используемые кодировки.</translation>
     </message>
@@ -2926,6 +2794,10 @@ The following parameters can be used:
     <message>
         <source>Invisible</source>
         <translation>Невидимый</translation>
+    </message>
+    <message>
+        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
+        <translation>Открывать все входящие сообщения автоматически только если мы в сети (или доступны для разговора)</translation>
     </message>
     <message>
         <source>General</source>
@@ -2951,6 +2823,10 @@ The following parameters can be used:
     <message>
         <source>Proxy Server:</source>
         <translation>Прокси сервер:</translation>
+    </message>
+    <message>
+        <source>Raise the main window on incoming messages</source>
+        <translation>Поднимать основное окно при получении входящих сообщений</translation>
     </message>
     <message>
         <source>Contact List</source>
@@ -3010,50 +2886,11 @@ The following parameters can be used:
     </message>
     <message>
         <source>Use server side contact list</source>
-        <translation>Использовать серверный список контактов</translation>
+        <translation>Хранить список контактов на сервере</translation>
     </message>
     <message>
         <source>Alignment</source>
         <translation>Выравнивание</translation>
-    </message>
-    <message>
-        <source>Auto close the user function window after a succesful event</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raise the main window on incoming messages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Start main window hidden. Only the dock icon will be visible.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show the message info label in bold font if there are incoming messages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you first send an event to them</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Automatically send messages through the server if direct connection fails</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hotkey pops up the next pending message
-Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
-changes here require a Restart to take effect!
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Idle Time</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3099,6 +2936,10 @@ changes here require a Restart to take effect!
         <translation>&amp;Пароль:</translation>
     </message>
     <message>
+        <source>&amp;Update</source>
+        <translation>&amp;Обновить</translation>
+    </message>
+    <message>
         <source>&amp;Verify:</source>
         <translation>&amp;Еще раз:</translation>
     </message>
@@ -3117,10 +2958,6 @@ changes here require a Restart to take effect!
     <message>
         <source>Licq - Set Password</source>
         <translation>Licq - Установка пароля</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="unfinished">&amp;Обновить</translation>
     </message>
 </context>
 <context>
@@ -3200,294 +3037,294 @@ changes here require a Restart to take effect!
     <name>QFileDialog</name>
     <message>
         <source>OK</source>
-        <translation type="obsolete">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation type="obsolete">&amp;Нет</translation>
+        <translation>&amp;Нет</translation>
     </message>
     <message>
         <source>Dir</source>
-        <translation type="obsolete">Каталог</translation>
+        <translation>Каталог</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Да</translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <source>Back</source>
-        <translation type="obsolete">Назад</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation type="obsolete">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="obsolete">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="obsolete">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="obsolete">Сохранить</translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Размер</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="obsolete">Сортировка</translation>
+        <translation>Сортировка</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="obsolete">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Открыть</translation>
+        <translation>&amp;Открыть</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Сохранить</translation>
+        <translation>&amp;Сохранить</translation>
     </message>
     <message>
         <source>ERROR</source>
-        <translation type="obsolete">ОШИБКА</translation>
+        <translation>ОШИБКА</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>Sort by &amp;Size</source>
-        <translation type="obsolete">&amp;Сортировать по размеру</translation>
+        <translation>&amp;Сортировать по размеру</translation>
     </message>
     <message>
         <source>Sort by &amp;Date</source>
-        <translation type="obsolete">&amp;Сортировать по дате</translation>
+        <translation>&amp;Сортировать по дате</translation>
     </message>
     <message>
         <source>Sort by &amp;Name</source>
-        <translation type="obsolete">&amp;Сортировать по имени</translation>
+        <translation>&amp;Сортировать по имени</translation>
     </message>
     <message>
         <source>New Folder 1</source>
-        <translation type="obsolete">Новый каталог 1</translation>
+        <translation>Новый каталог 1</translation>
     </message>
     <message>
         <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;Вы действительно хотите удалить %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
+        <translation>&lt;qt&gt;Вы действительно хотите удалить %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>the directory</source>
-        <translation type="obsolete">каталог</translation>
+        <translation>каталог</translation>
     </message>
     <message>
         <source>File &amp;type:</source>
-        <translation type="obsolete">&amp;Тип файла:</translation>
+        <translation>&amp;Тип файла:</translation>
     </message>
     <message>
         <source>File &amp;name:</source>
-        <translation type="obsolete">&amp;Имя файла:</translation>
+        <translation>&amp;Имя файла:</translation>
     </message>
     <message>
         <source>Delete %1</source>
-        <translation type="obsolete">Удалить %1</translation>
+        <translation>Удалить %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <source>R&amp;eload</source>
-        <translation type="obsolete">&amp;Перегрузить</translation>
+        <translation>&amp;Перегрузить</translation>
     </message>
     <message>
         <source>New Folder</source>
-        <translation type="obsolete">Новый каталог</translation>
+        <translation>Новый каталог</translation>
     </message>
     <message>
         <source>&amp;Unsorted</source>
-        <translation type="obsolete">&amp;Без сортировки</translation>
+        <translation>&amp;Без сортировки</translation>
     </message>
     <message>
         <source>Look &amp;in:</source>
-        <translation type="obsolete">&amp;Смотреть в:</translation>
+        <translation>&amp;Смотреть в:</translation>
     </message>
     <message>
         <source>Preview File Contents</source>
-        <translation type="obsolete">Предварительный просмотр содержания</translation>
+        <translation>Предварительный просмотр содержания</translation>
     </message>
     <message>
         <source>New Folder %1</source>
-        <translation type="obsolete">Новый каталог %1</translation>
+        <translation>Новый каталог %1</translation>
     </message>
     <message>
         <source>Read-write</source>
-        <translation type="obsolete">Чтение-запись</translation>
+        <translation>Чтение-запись</translation>
     </message>
     <message>
         <source>Read-only</source>
-        <translation type="obsolete">Только для чтения</translation>
+        <translation>Только для чтения</translation>
     </message>
     <message>
         <source>Find Directory</source>
-        <translation type="obsolete">Найти каталог</translation>
+        <translation>Найти каталог</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="obsolete">Атрибуты</translation>
+        <translation>Атрибуты</translation>
     </message>
     <message>
         <source>Show &amp;hidden files</source>
-        <translation type="obsolete">&amp;Показывать скрытые файлы</translation>
+        <translation>&amp;Показывать скрытые файлы</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation type="obsolete">Сохранить как</translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <source>Inaccessible</source>
-        <translation type="obsolete">Недоступен</translation>
+        <translation>Недоступен</translation>
     </message>
     <message>
         <source>%1
 File not found.
 Check path and filename.</source>
-        <translation type="obsolete">%1
+        <translation>%1
 Файл не найден.
 Проверьте путь и имя файла.</translation>
     </message>
     <message>
         <source>List View</source>
-        <translation type="obsolete">Список</translation>
+        <translation>Список</translation>
     </message>
     <message>
         <source>Special</source>
-        <translation type="obsolete">Специальный файл</translation>
+        <translation>Специальный файл</translation>
     </message>
     <message>
         <source>Write-only</source>
-        <translation type="obsolete">Только для записи</translation>
+        <translation>Только для записи</translation>
     </message>
     <message>
         <source>the symlink</source>
-        <translation type="obsolete">ссылку</translation>
+        <translation>ссылку</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Удалить</translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation type="obsolete">Все файлы (*)</translation>
+        <translation>Все файлы (*)</translation>
     </message>
     <message>
         <source>Directories</source>
-        <translation type="obsolete">Каталоги</translation>
+        <translation>Каталоги</translation>
     </message>
     <message>
         <source>Symlink to Special</source>
-        <translation type="obsolete">Ссылка на специальный файл</translation>
+        <translation>Ссылка на специальный файл</translation>
     </message>
     <message>
         <source>&amp;Rename</source>
-        <translation type="obsolete">&amp;Переименовать</translation>
+        <translation>&amp;Переименовать</translation>
     </message>
     <message>
         <source>One directory up</source>
-        <translation type="obsolete">На один каталог вверх</translation>
+        <translation>На один каталог вверх</translation>
     </message>
     <message>
         <source>Preview File Info</source>
-        <translation type="obsolete">Предварительный просмотр информации</translation>
+        <translation>Предварительный просмотр информации</translation>
     </message>
     <message>
         <source>the file</source>
-        <translation type="obsolete">файл</translation>
+        <translation>файл</translation>
     </message>
     <message>
         <source>Create New Folder</source>
-        <translation type="obsolete">Создать новый каталог</translation>
+        <translation>Создать новый каталог</translation>
     </message>
     <message>
         <source>Symlink to File</source>
-        <translation type="obsolete">Ссылка на файл</translation>
+        <translation>Ссылка на файл</translation>
     </message>
     <message>
         <source>Symlink to Directory</source>
-        <translation type="obsolete">Ссылка на каталог</translation>
+        <translation>Ссылка на каталог</translation>
     </message>
     <message>
         <source>Detail View</source>
-        <translation type="obsolete">Подробно</translation>
+        <translation>Подробно</translation>
     </message>
 </context>
 <context>
     <name>QFontDialog</name>
     <message>
         <source>OK</source>
-        <translation type="obsolete">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>&amp;Font</source>
-        <translation type="obsolete">&amp;Шрифт</translation>
+        <translation>&amp;Шрифт</translation>
     </message>
     <message>
         <source>&amp;Size</source>
-        <translation type="obsolete">&amp;Размер</translation>
+        <translation>&amp;Размер</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="obsolete">Применить</translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <source>&amp;Color</source>
-        <translation type="obsolete">&amp;Цвет</translation>
+        <translation>&amp;Цвет</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <source>Sample</source>
-        <translation type="obsolete">Пример</translation>
+        <translation>Пример</translation>
     </message>
     <message>
         <source>Font st&amp;yle</source>
-        <translation type="obsolete">&amp;Стиль шрифта</translation>
+        <translation>&amp;Стиль шрифта</translation>
     </message>
     <message>
         <source>Scr&amp;ipt</source>
-        <translation type="obsolete">&amp;Набор символов</translation>
+        <translation>&amp;Набор символов</translation>
     </message>
     <message>
         <source>Select Font</source>
-        <translation type="obsolete">Выбор шрифта</translation>
+        <translation>Выбор шрифта</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation type="obsolete">&amp;Подчеркнутый</translation>
+        <translation>&amp;Подчеркнутый</translation>
     </message>
     <message>
         <source>Effects</source>
-        <translation type="obsolete">Эффекты</translation>
+        <translation>Эффекты</translation>
     </message>
     <message>
         <source>Stri&amp;keout</source>
-        <translation type="obsolete">&amp;Перечеркнутый</translation>
+        <translation>&amp;Перечеркнутый</translation>
     </message>
 </context>
 <context>
@@ -3514,7 +3351,7 @@ Check path and filename.</source>
     <message>
         <source>Failed to open file:
 %1</source>
-        <translation type="obsolete">Ошибка открытия файла:
+        <translation>Ошибка открытия файла:
 %1</translation>
     </message>
 </context>
@@ -3522,23 +3359,23 @@ Check path and filename.</source>
     <name>QWizard</name>
     <message>
         <source>Help</source>
-        <translation type="obsolete">Помощь</translation>
+        <translation>Помощь</translation>
     </message>
     <message>
         <source>&lt; Back</source>
-        <translation type="obsolete">&lt; Назад</translation>
+        <translation>&lt; Назад</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <source>Finish</source>
-        <translation type="obsolete">Завершить</translation>
+        <translation>Завершить</translation>
     </message>
     <message>
         <source>Next &gt;</source>
-        <translation type="obsolete">Дальше &gt;</translation>
+        <translation>Дальше &gt;</translation>
     </message>
 </context>
 <context>
@@ -3633,24 +3470,24 @@ Press &quot;Next&quot; to proceed.</source>
 <context>
     <name>ReqAuthDlg</name>
     <message>
-        <source>Licq - Request Authorization</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Ok</source>
+        <translation>&amp;ОК</translation>
     </message>
     <message>
         <source>Request authorization from (UIN):</source>
-        <translation type="unfinished"></translation>
+        <translation>Запросить авторизацию от (UIN):</translation>
+    </message>
+    <message>
+        <source>Licq - Request Authorization</source>
+        <translation>Licq - Запрос авторизации</translation>
     </message>
     <message>
         <source>Request</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;Да</translation>
+        <translation>Запрос</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Отменить</translation>
+        <translation>&amp;Отменить</translation>
     </message>
 </context>
 <context>
@@ -3692,20 +3529,12 @@ Press &quot;Next&quot; to proceed.</source>
         <translation>Введите параметры поиска и нажмите кнопку &apos;Поиск&apos;</translation>
     </message>
     <message>
-        <source>&amp;Keyword</source>
-        <translation type="obsolete">&amp;Ключевое слово</translation>
-    </message>
-    <message>
         <source>Company Position:</source>
         <translation>Должность:</translation>
     </message>
     <message>
         <source>Searching (this can take awhile)...</source>
         <translation>Идет поиск (это может занять некоторое время)...</translation>
-    </message>
-    <message>
-        <source>&amp;Email</source>
-        <translation type="obsolete">&amp;Email</translation>
     </message>
     <message>
         <source>%1 more users found. Narrow search.</source>
@@ -3827,6 +3656,18 @@ Press &quot;Next&quot; to proceed.</source>
 <context>
     <name>SearchUserView</name>
     <message>
+        <source>?</source>
+        <translation>?</translation>
+    </message>
+    <message>
+        <source>F</source>
+        <translation>М</translation>
+    </message>
+    <message>
+        <source>M</source>
+        <translation>Ж</translation>
+    </message>
+    <message>
         <source>UIN</source>
         <translation>UIN</translation>
     </message>
@@ -3843,52 +3684,40 @@ Press &quot;Next&quot; to proceed.</source>
         <translation>Email</translation>
     </message>
     <message>
+        <source>Online</source>
+        <translation>В сети</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
+        <source>Offline</source>
+        <translation>Отключен</translation>
+    </message>
+    <message>
         <source>Sex &amp; Age</source>
-        <translation type="unfinished"></translation>
+        <translation>Пол и возраст</translation>
     </message>
     <message>
         <source>Authorize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="unfinished">В сети</translation>
+        <translation>Авторизация</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Неизвестно</translation>
-    </message>
-    <message>
-        <source>F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>M</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="unfinished">Нет</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Неизвестно</translation>
     </message>
 </context>
 <context>
     <name>SecurityDlg</name>
+    <message>
+        <source>&amp;Uin:</source>
+        <translation>&amp;UIN:</translation>
+    </message>
+    <message>
+        <source>Timeout while setting security options.</source>
+        <translation>Таймаут при сохранении настроек безопасности.</translation>
+    </message>
     <message>
         <source>error</source>
         <translation>ошибка</translation>
@@ -3896,6 +3725,18 @@ Press &quot;Next&quot; to proceed.</source>
     <message>
         <source>ICQ Security Options [Setting...]</source>
         <translation>Настройки безопасности ICQ [Устанавливаются...]</translation>
+    </message>
+    <message>
+        <source>Internal error while setting security options.</source>
+        <translation>Произошла внутренняя ошибка при сохранении настроек безопасности.</translation>
+    </message>
+    <message>
+        <source>&amp;Local changes only</source>
+        <translation>&amp;Сохранять только локально</translation>
+    </message>
+    <message>
+        <source>Password/UIN settings</source>
+        <translation>Установки пароля/UIN</translation>
     </message>
     <message>
         <source>ICQ Security Options</source>
@@ -3912,6 +3753,22 @@ ICQ Network to change the settings.</source>
         <translation>время вышло</translation>
     </message>
     <message>
+        <source>Verify your ICQ password here.</source>
+        <translation>Введите еще раз Ваш пароль ICQ.</translation>
+    </message>
+    <message>
+        <source>If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq.</source>
+        <translation>Если установленно, изменения пароля/UIN будут применятся только локально.  Полезно, если Ваш пароль неправильно сохранен в файле конфигурации Licq.</translation>
+    </message>
+    <message>
+        <source>Invalid password, must be between 1 and 8 characters.</source>
+        <translation>Неправильный пароль, должен быть от 1 до 8 символов.</translation>
+    </message>
+    <message>
+        <source>Timeout while changing password.</source>
+        <translation>Таймаут при смене пароля.</translation>
+    </message>
+    <message>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
@@ -3924,20 +3781,48 @@ ICQ Network to change the settings.</source>
         <translation>неудачно</translation>
     </message>
     <message>
+        <source>Passwords do not match, try again.</source>
+        <translation>Пароли не совпадают, попробуйте еще раз.</translation>
+    </message>
+    <message>
         <source>Authorization Required</source>
         <translation>Требуется авторизация</translation>
+    </message>
+    <message>
+        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; ischecked.</source>
+        <translation>Введите UIN, который Вы хотите использовать.  Доступно только если опция &quot;Сохранять только локально&quot; установлена.</translation>
+    </message>
+    <message>
+        <source>Internal error while changing password.</source>
+        <translation>Произошла внутренняя ошибка при смене пароля.</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Отменить</translation>
     </message>
     <message>
+        <source>&amp;Password:</source>
+        <translation>&amp;Пароль:</translation>
+    </message>
+    <message>
         <source>&amp;Update</source>
         <translation>&amp;Обновить</translation>
     </message>
     <message>
+        <source>Changing password failed.</source>
+        <translation>Не удалось сменить пароль.</translation>
+    </message>
+    <message>
+        <source>&amp;Verify</source>
+        <translation>&amp;Проверка</translation>
+    </message>
+    <message>
         <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
         <translation>Эта опция позволяет скрыть ваш IP адрес. Но при этом она не гарантирует, что его невозможно будет узнать.</translation>
+    </message>
+    <message>
+        <source>Setting security options failed.</source>
+        <translation>Не удалось сохранить настройки безопасности.</translation>
     </message>
     <message>
         <source>Web Presence</source>
@@ -3948,80 +3833,16 @@ ICQ Network to change the settings.</source>
         <translation>Настройки безопасности ICQ [Устанавливаются...</translation>
     </message>
     <message>
+        <source>Enter your ICQ password here.</source>
+        <translation>Введите Ваш ICQ пароль.</translation>
+    </message>
+    <message>
         <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
         <translation>Вынуждает ICQ-клиента запрашивать Ваше подтверждение на добавление Вас в чей-либо список контактов.</translation>
     </message>
     <message>
         <source>Hide IP</source>
         <translation>Скрыть IP</translation>
-    </message>
-    <message>
-        <source>Password/UIN settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Uin:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; ischecked.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="unfinished">&amp;Пароль:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="unfinished">Введите здесь ваш ICQ пароль.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="unfinished">Введите здесь свой ICQ пароль для проверки.</translation>
-    </message>
-    <message>
-        <source>&amp;Local changes only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="unfinished">Пароли не совпадают, попробуйте еще раз.</translation>
-    </message>
-    <message>
-        <source>Setting security options failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Changing password failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Timeout while setting security options.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Timeout while changing password.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Internal error while setting security options.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Internal error while changing password.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4091,77 +3912,6 @@ ICQ Network to change the settings.</source>
     </message>
 </context>
 <context>
-    <name>UserCodec</name>
-    <message>
-        <source>Unicode</source>
-        <translation type="unfinished">Уникод</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="unfinished">Арабский</translation>
-    </message>
-    <message>
-        <source>Baltic</source>
-        <translation type="unfinished">Балтийский</translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="unfinished">Центральная европа</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="unfinished">Китайский</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="unfinished">Китайский традиционный</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="unfinished">Кирилица</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="unfinished">Эсперанто</translation>
-    </message>
-    <message>
-        <source>Greek</source>
-        <translation type="unfinished">Греческий</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="unfinished">Иврит</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="unfinished">Японский</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="unfinished">Корейский</translation>
-    </message>
-    <message>
-        <source>Western European</source>
-        <translation type="unfinished">Западная европа</translation>
-    </message>
-    <message>
-        <source>Tamil</source>
-        <translation type="unfinished">Тамильский</translation>
-    </message>
-    <message>
-        <source>Thai</source>
-        <translation type="unfinished">Тайский</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="unfinished">Турецкий</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="unfinished">Украинский</translation>
-    </message>
-</context>
-<context>
     <name>UserEventCommon</name>
     <message>
         <source>Time:</source>
@@ -4178,10 +3928,6 @@ ICQ Network to change the settings.</source>
     <message>
         <source>Show User Info</source>
         <translation>Показать информацию о пользователе</translation>
-    </message>
-    <message>
-        <source>Secure channel information</source>
-        <translation type="obsolete">Информация о защищенном соединении</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
@@ -4201,7 +3947,7 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Open / Close secure channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть/закрыть безопасное соединение</translation>
     </message>
 </context>
 <context>
@@ -4765,12 +4511,12 @@ Do you really want to send it?</source>
 Вы действительно хотите его отослать?</translation>
     </message>
     <message>
-        <source>Phone : </source>
-        <translation type="unfinished"></translation>
+        <source>Chars left : </source>
+        <translation>Осталось символов : </translation>
     </message>
     <message>
-        <source>Chars left : </source>
-        <translation type="unfinished"></translation>
+        <source>Phone : </source>
+        <translation>Телефон : </translation>
     </message>
 </context>
 <context>
