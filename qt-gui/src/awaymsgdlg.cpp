@@ -35,7 +35,7 @@
 #include "licq_user.h"
 #include "licq_icqd.h"
 
-static const char hints[] = QT_TR_NOOP(
+static const char hints[] = QT_TRANSLATE_NOOP("AwayMsgDlg",
  "<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
  "<ul>"
  "<li>You can include any of the % expansions (described in the main hints page).</li>"
