@@ -387,7 +387,9 @@ void chat_refuse(GtkWidget *widget, gpointer data)
 	struct remote_chat_request *r_cr = (struct remote_chat_request *)data;
 	/* Refuse the chat */
 	icq_daemon->icqChatRequestRefuse(r_cr->uin, "",
-					 r_cr->c_event->Sequence());
+					 r_cr->c_event->Sequence(),
+					 r_cr->c_event->MessageID(),
+					 r_cr->c_event->IsDirect());
 
 	/* Close the request window */
 	gtk_widget_destroy(r_cr->dialog);
@@ -402,7 +404,9 @@ void chat_join_multiparty(struct remote_chat_request *r_cr)
 		return;
 
 	icq_daemon->icqChatRequestAccept(r_cr->uin, cw->chatman->LocalPort(),
-					 r_cr->c_event->Sequence());
+					 r_cr->c_event->Sequence(),
+					 r_cr->c_event->MessageID(),
+					 r_cr->c_event->IsDirect());
 }
 
 void chat_start_as_server(gulong uin, CEventChat *c)
@@ -414,7 +418,8 @@ void chat_start_as_server(gulong uin, CEventChat *c)
 		return;
 
 	icq_daemon->icqChatRequestAccept(uin, cw->chatman->LocalPort(),
-					 c->Sequence());
+					 c->Sequence(),
+					 c->MessageID(), c->IsDirect());
 }
 
 void chat_start_as_client(ICQEvent *event)

@@ -127,19 +127,26 @@ void refusal_ok(GtkWidget *widget, gpointer _fa)
 	struct file_accept *fa = (struct file_accept *)_fa;
 	const char *reason = gtk_editable_get_chars(GTK_EDITABLE(fa->text),
 				0, -1);
+	CEventFile *f = (CEventFile *)fa->e;
+	
 
 	// The user gave a reason
 	if((strcmp(reason, "") != 0))
 	{
 		icq_daemon->icqFileTransferRefuse(fa->user->Uin(),
-			reason, fa->e->Sequence());
+			reason, fa->e->Sequence(), 
+			f->MessageID(),
+			f->IsDirect());
 	}
 	
 	// Use a default reason
 	else
 	{
 		icq_daemon->icqFileTransferRefuse(fa->user->Uin(),
-			"No reason given.", fa->e->Sequence());
+			"No reason given.", fa->e->Sequence(),
+			f->MessageID(),
+			f->IsDirect()
+			);
 	}
 
 	dialog_close(0, fa->window2);
@@ -159,6 +166,7 @@ void accept_file(GtkWidget *widget, gpointer _fa)
 void save_file(struct file_accept *fa)
 {
 	struct file_window *fw;
+	CEventFile *f = (CEventFile *)fa->e;
 	
 	fw = g_new0(struct file_window, 1);
 	fw->uin = fa->user->Uin();
@@ -180,8 +188,10 @@ void save_file(struct file_accept *fa)
 
 	// Actually accept the file
 	icq_daemon->icqFileTransferAccept(fw->uin,
-					  fw->ftman->LocalPort(), fw->sequence,
-					  false);
+					  fw->ftman->LocalPort(),
+					  fw->sequence,
+					  f->MessageID(),
+					  f->IsDirect());
 }
 
 void create_file_window(struct file_window *fw)
