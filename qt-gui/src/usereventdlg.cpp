@@ -168,8 +168,11 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   // populate the popup menu
   UserCodec::encoding_t *it = &UserCodec::m_encodings[0];
   while(it->encoding != NULL) {
-
-    if (QString::fromLatin1(it->encoding).lower() == codec_name) {
+  // Use check_codec since the QTextCodec name will be different from the
+  // user codec. But QTextCodec will recognize both, so let's make it standard
+  // for the purpose of checking for the same string.
+  QTextCodec *check_codec = QTextCodec::codecForName(it->encoding);
+    if (QString::fromLatin1(check_codec->name()).lower() == codec_name) {
       if (mainwin->m_bShowAllEncodings || it->isMinimal) {
         popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
       } else {
