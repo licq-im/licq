@@ -603,12 +603,17 @@ bool CICQDaemon::ViewUrl(const char *u)
 {
   if (strcmp(m_szUrlViewer, "none") == 0) return false;
 
-  char *szCmd = new char[strlen(m_szUrlViewer) + strlen(u) + 8];
-  sprintf(szCmd, "%s '%s' &", m_szUrlViewer, u);
-  int r = system(szCmd);
-  delete [] szCmd;
+  char **arglist = (char**)malloc( 3*sizeof(char*));
+  arglist[0] = m_szUrlViewer;
+  arglist[1] = (char*)u;
+  arglist[2] = NULL;
 
-  if (r != 0) return false;
+  if(!fork()) {
+    execvp(arglist[0], arglist);
+    _exit(-1);
+  }
+  free(arglist);
+
   return true;
 }
 
