@@ -34,8 +34,8 @@ done
 
 AC_DEFUN(LICQ_CHECK_GETHOSTBYNAME,
 [
-  AC_CHECK_LIB(nsl, gethostbyname, LIBS="$LIBS -lnsl",
-    AC_CHECK_FUNC(gethostbyname, ,AC_MSG_ERROR([Unable to find gethostbyname on your system!])))
+  AC_CHECK_LIB(nsl, gethostbyname, LIBS="$LIBS -lnsl")
+dnl             AC_CHECK_FUNC(gethostbyname, ,AC_MSG_ERROR([Unable to find gethostbyname on your system!])))
 ])
 
 AC_DEFUN(LICQ_CHECK_LICQ,
