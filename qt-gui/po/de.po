@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: qt-gui-1.02\n"
 "POT-Creation-Date: 2000-08-03 22:46+0200\n"
-"PO-Revision-Date: 2000-12-20 09:06GMT\n"
+"PO-Revision-Date: 2001-01-14 00:35GMT\n"
 "Last-Translator: Martin Pley <Licq@Pley.de>\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Language-Team: German\n"
@@ -38,7 +38,6 @@ msgstr "&Ok"
 
 #: awaymsgdlg.cpp:23
 msgid ""
-"AuthUserDlg::"
 "<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
 "<ul>"
 "<li>You can include any of the % expansions (described in the main hints page).</li>"
@@ -60,6 +59,28 @@ msgid ""
 "text can be mixed line by line.</li>"
 "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr ""
+"<h2>Tips für das Einstellen der Auto-Antwort</h2><br><hr><br>"
+"<ul>"
+"<li>Sie können jede %-Erweiterung, die im Haupt-Tipfenster beschrieben ist, verwenden.</li>"
+"<li>Jede Zeile, die mit einer Pipe (|) beginnt, wird als Befehl behandelt. Die Zeile wird dann durch "
+"dessen Ausgabe ersetzt. Der Befehl wird durch /bin/sh interpretiert, es sind also alle "
+"Shell-Kommandos und Meta-Zeichen erlaubt.<br>"
+"Die %-Erweiterungen werden dabei automatisch in einfachen Anführungszeichen an die Shell "
+"weitergegeben, um die Interpretation von Meta-Zeichen, die z.B. der Alias enthalten kann, zu "
+"verhindern. (wie z.B. \">\" oder \"&\").<br>"
+"Beispiele beliebter Anwendungen:"
+"<ul>"
+"<li><tt>|date</tt>: Ersetzt die Zeile durch das aktuelle Datum</li>"
+"<li><tt>|fortune</tt>: Zeigt einen Spruch (z.B. als Fußzeile)</li>"
+"<li><tt>|myscript.sh %u %a</tt>: Führt ein Script mit UIN und Alias als Parameter aus</li>"
+"<li><tt>|myscript.sh %u %a > /dev/null</tt>: Führt dasselbe Script aus, ignoriert jedoch die "
+"Ausgabe (z.B. um die Auto-Antwort-Abfragen zu protokollieren, oder ähnliches)</li>"
+"<li><tt>|if [ %u -lt 100000 ]; then echo \"Du bist etwas Besonderes\"; fi</tt>: Sinnlos, "
+"aber es zeigt, wie man ein Shellscript benutzen kann.</li>"
+"</ul>"
+"Natürlich können auch mehrere \"|\" in einer Auto-Antwort auftauchen, und Befehle und normaler "
+"Text können zeilenweise gemischt werden.</li>"
+"<hr><p> Für weitere Information, siehe Licq Homepage (<tt>http://www.licq.org</tt>).</p>"
 
 #: authuserdlg.cpp:40
 msgid "AuthUserDlg::Authorize which user (UIN):"
@@ -3436,7 +3457,7 @@ msgstr "Monat:"
 msgid "UserInfoDlg:: Year:"
 msgstr "Jahr:"
 
-#: userinfodlg.cpp:673
+#: userinfodlg.cpp:674
 msgid "UserInfoDlg::&About"
 msgstr "&Über"
 
@@ -3444,7 +3465,7 @@ msgstr "&Über"
 msgid "UserInfoDlg::&Close"
 msgstr "S&chließen"
 
-#: userinfodlg.cpp:840
+#: userinfodlg.cpp:841
 msgid "UserInfoDlg::&Filter: "
 msgstr "&Filter: "
 
@@ -3452,11 +3473,11 @@ msgstr "&Filter: "
 msgid "UserInfoDlg::&General"
 msgstr "A&llgemein"
 
-#: userinfodlg.cpp:814
+#: userinfodlg.cpp:815
 msgid "UserInfoDlg::&History"
 msgstr "&Verlauf"
 
-#: userinfodlg.cpp:721
+#: userinfodlg.cpp:722
 msgid "UserInfoDlg::&Last"
 msgstr "&Letzter"
 
@@ -3471,11 +3492,11 @@ msgstr "Me&hr"
 # #: userinfodlg.cpp:73
 # msgid "UserInfoDlg::&OK"
 # msgstr "&OK"
-#: userinfodlg.cpp:1104
+#: userinfodlg.cpp:1105
 msgid "UserInfoDlg::&Save"
 msgstr "&Speichern"
 
-#: userinfodlg.cpp:1103
+#: userinfodlg.cpp:1104
 msgid "UserInfoDlg::&Update"
 msgstr "&Erneuern"
 
@@ -3483,11 +3504,11 @@ msgstr "&Erneuern"
 msgid "UserInfoDlg::&Work"
 msgstr "&Arbeit"
 
-#: userinfodlg.cpp:682
+#: userinfodlg.cpp:683
 msgid "UserInfoDlg::About:"
 msgstr "Über:"
 
-#: userinfodlg.cpp:628
+#: userinfodlg.cpp:629
 msgid "UserInfoDlg::Address:"
 msgstr "Adresse:"
 
@@ -3535,11 +3556,11 @@ msgstr "Email 1:"
 msgid "UserInfoDlg::EMail 2:"
 msgstr "Email 2:"
 
-#: userinfodlg.cpp:859
+#: userinfodlg.cpp:860
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
 msgstr "Fehler beim laden der Verlaufs-Datei: %1\nBeschreibung: %2"
 
-#: userinfodlg.cpp:635
+#: userinfodlg.cpp:636
 msgid "UserInfoDlg::Fax:"
 msgstr "Fax:"
 
@@ -3555,7 +3576,7 @@ msgstr "GMT%1%1%1"
 msgid "UserInfoDlg::Gender:"
 msgstr "Geschlecht:"
 
-#: userinfodlg.cpp:639
+#: userinfodlg.cpp:640
 msgid "UserInfoDlg::Homepage:"
 msgstr "Homepage:"
 
@@ -3579,19 +3600,19 @@ msgstr "Sprache 2:"
 msgid "UserInfoDlg::Language 3:"
 msgstr "Sprache 3:"
 
-#: userinfodlg.cpp:743
+#: userinfodlg.cpp:744
 msgid "UserInfoDlg::Last Checked Auto Response:"
 msgstr "Auto-Antwort gelesen am:"
 
-#: userinfodlg.cpp:731
+#: userinfodlg.cpp:732
 msgid "UserInfoDlg::Last Online:"
 msgstr "Online gesehen am:"
 
-#: userinfodlg.cpp:739
+#: userinfodlg.cpp:740
 msgid "UserInfoDlg::Last Received Event:"
 msgstr "Ereignis empfangen am:"
 
-#: userinfodlg.cpp:735
+#: userinfodlg.cpp:736
 msgid "UserInfoDlg::Last Sent Event:"
 msgstr "Ereignis gesendet am:"
 
@@ -3610,11 +3631,11 @@ msgstr "Männlich"
 msgid "UserInfoDlg::Name:"
 msgstr "Name:"
 
-#: userinfodlg.cpp:1113
+#: userinfodlg.cpp:1114
 msgid "UserInfoDlg::Nex&t"
 msgstr "&Nächster"
 
-#: userinfodlg.cpp:766
+#: userinfodlg.cpp:767
 msgid "UserInfoDlg::Now"
 msgstr "Jetzt"
 
@@ -3625,11 +3646,11 @@ msgstr "Alte Email:"
 # #: userinfodlg.cpp:180
 # msgid "UserInfoDlg::Online:"
 # msgstr "Online:"
-#: userinfodlg.cpp:1114
+#: userinfodlg.cpp:1115
 msgid "UserInfoDlg::P&rev"
 msgstr "&Vorher"
 
-#: userinfodlg.cpp:632
+#: userinfodlg.cpp:633
 msgid "UserInfoDlg::Phone:"
 msgstr "Telefon:"
 
@@ -3637,18 +3658,18 @@ msgstr "Telefon:"
 msgid "UserInfoDlg::Position:"
 msgstr ""
 
-#: userinfodlg.cpp:1104
+#: userinfodlg.cpp:1105
 msgid "UserInfoDlg::Retrieve"
 msgstr "Empfangen"
 
-#: userinfodlg.cpp:828
+#: userinfodlg.cpp:829
 msgid "UserInfoDlg::Rever&se"
 msgstr "&Umkehren"
 
 # #: userinfodlg.cpp:1103
 # msgid "UserInfoDlg::Server"
 # msgstr "Server"
-#: userinfodlg.cpp:862
+#: userinfodlg.cpp:863
 msgid "UserInfoDlg::Sorry, history is disabled for this person."
 msgstr "Verlauf ist für diese Person ausgeschaltet."
 
@@ -3672,7 +3693,7 @@ msgstr "UIN:"
 msgid "UserInfoDlg::Unknown (%1)"
 msgstr "Unbekannt (%1)"
 
-#: userinfodlg.cpp:798
+#: userinfodlg.cpp:799
 msgid "UserInfoDlg::Unknown"
 msgstr "Unbekannt"
 
@@ -3683,15 +3704,15 @@ msgstr "Nicht angegeben"
 # #: userinfodlg.cpp:1103
 # msgid "UserInfoDlg::Update local or server information?"
 # msgstr "Lokale oder Server information aktualisieren?"
-#: userinfodlg.cpp:1270
+#: userinfodlg.cpp:1271
 msgid "UserInfoDlg::Updating server..."
 msgstr "Ändere Information auf dem Server..."
 
-#: userinfodlg.cpp:1196
+#: userinfodlg.cpp:1197
 msgid "UserInfoDlg::Updating..."
 msgstr "Ändern..."
 
-#: userinfodlg.cpp:1215
+#: userinfodlg.cpp:1216
 msgid ""
 "UserInfoDlg::"
 "You need to be connected to the\n"
@@ -3700,7 +3721,7 @@ msgstr ""
 "Sie müssen mit dem ICQ-Netzwerk verbunden"
 "sein, um Ihre Einstellungen zu ändern."
 
-#: userinfodlg.cpp:1174
+#: userinfodlg.cpp:1175
 msgid ""
 "UserInfoDlg::"
 "You need to be connected to the\n"
@@ -3713,7 +3734,7 @@ msgstr ""
 msgid "UserInfoDlg::Zip:"
 msgstr "PLZ:"
 
-#: userinfodlg.cpp:1043
+#: userinfodlg.cpp:1044
 msgid ""
 "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
@@ -3724,7 +3745,7 @@ msgstr ""
 "[<font color=\"%2\">Gesendet</font>] "
 "%3 von %4 Übereinstimmungen"
 
-#: userinfodlg.cpp:1035
+#: userinfodlg.cpp:1036
 msgid ""
 "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
@@ -3735,31 +3756,31 @@ msgstr ""
 "[<font color=\"%2\">Gesendet</font>] "
 "%3 bis %4 von %5"
 
-#: userinfodlg.cpp:1291
+#: userinfodlg.cpp:1292
 msgid "UserInfoDlg::done"
 msgstr "fertig"
 
-#: userinfodlg.cpp:1300
+#: userinfodlg.cpp:1301
 msgid "UserInfoDlg::error"
 msgstr "Fehler"
 
-#: userinfodlg.cpp:1294
+#: userinfodlg.cpp:1295
 msgid "UserInfoDlg::failed"
 msgstr "fehlgeschlagen"
 
-#: userinfodlg.cpp:995
+#: userinfodlg.cpp:996
 msgid "UserInfoDlg::from"
 msgstr "von"
 
-#: userinfodlg.cpp:974
+#: userinfodlg.cpp:975
 msgid "UserInfoDlg::server"
 msgstr "Server"
 
-#: userinfodlg.cpp:1297
+#: userinfodlg.cpp:1298
 msgid "UserInfoDlg::timed out"
 msgstr "Zeit überschritten"
 
-#: userinfodlg.cpp:1006
+#: userinfodlg.cpp:1007
 msgid "UserInfoDlg::to"
 msgstr "zu"
 
