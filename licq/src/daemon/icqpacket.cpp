@@ -756,6 +756,112 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _
 }
 #endif
 
+//-----Meta_SetWorkInfo------------------------------------------------------
+CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
+    const char *_szCity,
+    const char *_szState,
+    const char *_szFax,
+    const char *_szAddress,
+    const char *_szName,
+    const char *_szDepartment,
+    const char *_szPosition,
+    const char *_szHomepage) : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
+  m_nCityLength = strlen(_szCity) + 1;
+  m_szCity = strdup(_szCity);
+  m_nStateLength = strlen(_szState) + 1;
+  m_szState = strdup(_szState);
+  m_nFaxLength = strlen(_szFax) + 1;
+  m_szFax = strdup(_szFax);
+  m_nAddressLength = strlen(_szAddress) + 1;
+  m_szAddress = strdup(_szAddress);
+  m_nUnknown1 = 0x0100;
+  m_nUnknown2 = 0xffff;
+  m_nNameLength = strlen(_szName) + 1;
+  m_szName = strdup(_szName);
+  m_nDepartmentLength = strlen(_szDepartment) + 1;
+  m_szDepartment = strdup(_szDepartment);
+  m_nPositionLength = strlen(_szPosition) + 1;
+  m_szPosition = strdup(_szPosition);
+  m_nUnknown3 = 0x04;
+  m_nHomepageLength = strlen(_szHomepage) + 1;
+  m_szHomepage = strdup(_szHomepage);
+
+  InitBuffer();
+
+  buffer->add(m_nMetaCommand);
+  buffer->add(m_nCityLength);
+  buffer->add(m_szCity, m_nCityLength);
+  buffer->add(m_nStateLength);
+  buffer->add(m_szState, m_nStateLength);
+  buffer->add(m_nFaxLength);
+  buffer->add(m_szFax, m_nFaxLength);
+  buffer->add(m_nAddressLength);
+  buffer->add(m_szAddress, m_nAddressLength);
+  buffer->add(m_nUnknown1);
+  buffer->add(m_nUnknown2);
+  buffer->add(m_nNameLength);
+  buffer->add(m_szName, m_nNameLength);
+  buffer->add(m_nDepartmentLength);
+  buffer->add(m_szDepartment, m_nDepartmentLength);
+  buffer->add(m_nPositionLength);
+  buffer->add(m_szPosition, m_nPositionLength);
+  buffer->add(m_nUnknown3);
+  buffer->add(m_nHomepageLength);
+  buffer->add(m_szHomepage, m_nHomepageLength);
+
+  Encrypt();
+}
+
+
+CPU_Meta_SetWorkInfo::~CPU_Meta_SetWorkInfo(void)
+{
+  free(m_szCity);
+  free(m_szState);
+  free(m_szFax);
+  free(m_szAddress);
+  free(m_szName);
+  free(m_szDepartment);
+  free(m_szPosition);
+  free(m_szHomepage);
+}
+
+unsigned long CPU_Meta_SetWorkInfo::getSize(void)
+{
+  return CPacketUdp::getSize() + m_nCityLength + m_nStateLength +
+         m_nFaxLength + m_nAddressLength + m_nNameLength +
+         m_nDepartmentLength + m_nPositionLength + m_nHomepageLength + 26;
+}
+
+
+//-----Meta_SetSecurityInfo--------------------------------------------------
+CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
+    bool _bAuthorization,
+    bool _bHideIp,
+    bool _bWebAware)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_SECURITYxSET;
+  m_bAuthorization = _bAuthorization ? 0 : 1;
+  m_bHideIp =  _bHideIp ? 1 : 0;
+  m_bWebAware = _bWebAware ? 1 : 0;
+
+  InitBuffer();
+
+  buffer->add(m_nMetaCommand);
+  buffer->add(m_bAuthorization);
+  buffer->add(m_bHideIp);
+  buffer->add(m_bWebAware);
+
+  Encrypt();
+}
+
+
+unsigned long CPU_Meta_SetSecurityInfo::getSize(void)
+{
+  return CPacketUdp::getSize() + 5;
+}
 
 
 //=====PacketTcp_Handshake======================================================

@@ -100,6 +100,11 @@ public:
   ICQEvent *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
                                 unsigned short, char, const char *,
                                 const char *, const char *_sAbout, unsigned long);
+  ICQEvent *icqSetWorkInfo(const char *_szCity, const char *_szState,
+                           const char *_szFax, const char *_szAddress,
+                           const char *_szName, const char *_szDepartment,
+                           const char *_szPosition, const char *_szHomepage);
+  ICQEvent *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
   unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
   void icqLogoff(void);
   ICQEvent *icqSetStatus(unsigned long newStatus);

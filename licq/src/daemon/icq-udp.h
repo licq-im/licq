@@ -407,6 +407,32 @@ ICQEvent *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _
 }
 
 
+//-----icqSetWorkInfo--------------------------------------------------------
+ICQEvent *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
+                                     const char *_szFax, const char *_szAddress,
+                                     const char *_szName, const char *_szDepartment,
+                                     const char *_szPosition, const char *_szHomepage)
+{
+  CPU_Meta_SetWorkInfo *p =
+    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szFax, _szAddress,
+                             _szName, _szDepartment, _szPosition, _szHomepage);
+  gLog.Info("%sUpdating personal work info (#%d)...\n", L_UDPxSTR,
+            p->getSequence());
+  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+}
+
+
+//-----icqSetSecurityInfo----------------------------------------------------
+ICQEvent *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+{
+  CPU_Meta_SetSecurityInfo *p =
+    new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
+  gLog.Info("%sUpdating security info (#%d)...\n", L_UDPxSTR,
+            p->getSequence());
+  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+}
+
+
 //-----icqAuthorize-------------------------------------------------------------
 void CICQDaemon::icqAuthorize(unsigned long uinToAuthorize)
 // authorize a user to add you to their contact list

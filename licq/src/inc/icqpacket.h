@@ -419,6 +419,64 @@ protected:
 };
 
 
+
+//-----Meta_SetWorkInfo------------------------------------------------------
+class CPU_Meta_SetWorkInfo : public CPacketUdp
+{
+public:
+  CPU_Meta_SetWorkInfo(const char *_szCity,
+                       const char *_szState,
+                       const char *_szFax,
+                       const char *_szAddress,
+                       const char *_szName,
+                       const char *_szDepartment,
+                       const char *_szPosition,
+                       const char *_szHomepage);
+  ~CPU_Meta_SetWorkInfo(void);
+protected:
+  unsigned long getSize(void);
+
+  unsigned short m_nMetaCommand;
+
+  unsigned short m_nCityLength;
+  char          *m_szCity;
+  unsigned short m_nStateLength;
+  char          *m_szState;
+  unsigned short m_nFaxLength;
+  char          *m_szFax;
+  unsigned short m_nAddressLength;
+  char          *m_szAddress;
+  unsigned long  m_nUnknown1;  // 0x0100
+  unsigned short m_nUnknown2;  // 0xffff
+  unsigned short m_nNameLength;
+  char          *m_szName;
+  unsigned short m_nDepartmentLength;
+  char          *m_szDepartment;
+  unsigned short m_nPositionLength;
+  char          *m_szPosition;
+  unsigned short m_nUnknown3;  // 0x04
+  unsigned short m_nHomepageLength;
+  char          *m_szHomepage;
+};
+
+
+//-----Meta_SetSecurityInfo--------------------------------------------------
+class CPU_Meta_SetSecurityInfo : public CPacketUdp
+{
+public:
+  CPU_Meta_SetSecurityInfo(bool _bAuthorization,
+                           bool _bHideIp,
+                           bool _bWebAware);
+protected:
+  unsigned long getSize(void);
+
+  unsigned short m_nMetaCommand;
+  char           m_bAuthorization;
+  char           m_bHideIp;
+  char           m_bWebAware;
+};
+
+
 //=====TCP======================================================================
 
 //-----PacketTcp_Handshake------------------------------------------------------
