@@ -324,8 +324,13 @@ void OptionsDlg::SetupOptions()
   chkIgnoreEmailPager->setChecked(mainwin->licqDaemon->Ignore(IGNORE_EMAILPAGER));
 
   // plugins tab
+#if QT_VERSION > 300
   cmbUrlViewer->setCurrentText(mainwin->licqDaemon->getUrlViewer() == NULL ?
-			       DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()));
+             DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()));
+#else
+  cmbUrlViewer->changeItem(mainwin->licqDaemon->getUrlViewer() == NULL ?
+             DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()), cmbUrlViewer->currentItem());
+#endif
   edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ?
                        tr("none") : QString(mainwin->licqDaemon->Terminal()));
 
