@@ -640,30 +640,7 @@ CICQEventTag *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
 //-----icqSetAbout-----------------------------------------------------------
 CICQEventTag *CICQDaemon::icqSetAbout(const char *_szAbout)
 {
-  unsigned long nLen = strlen(_szAbout);
-  unsigned long nNewLen = 0;
-  for(unsigned long i = 0; i <= nLen; i++)
-    if(_szAbout[i] == '\n') nNewLen++;
-  nNewLen += nLen;
-  char *szAbout = new char[nNewLen];
-
-  unsigned long k = 0;
-
-  for(unsigned long j = 0; j <= nLen; j++)
-  {
-    if(_szAbout[j] == '\n')
-    {
-      szAbout[k] = '\r';
-      k++;
-      szAbout[k] = '\n';
-      k++;
-      continue;
-    }
-
-    szAbout[k] = _szAbout[j];
-    k++;
-  }
-
+  char *szAbout = gTranslator.NToRN(_szAbout);
   CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
   gLog.Info("%sUpdating about (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
