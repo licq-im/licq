@@ -256,14 +256,7 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 
 bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
 {
-  char m_szMessage[4096], szCommand[4096];
-  char c;
-  int pos = 0;
-
-  for (int i = 0; i < 4096; i++)
-  {
-    m_szMessage[i] = '\0';
-  }
+  char szCommand[4096];
 
   char *buf = szCommand;
   buf += sprintf(buf, "%s ", m_szProgram);
@@ -283,10 +276,15 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
     fStdIn = NULL;
   }
 
+  int pos = 0;
+  int c;
+  char m_szMessage[4097];
   while (((c = fgetc(fStdOut)) != EOF) && (pos < 4096))
   {
     m_szMessage[pos++] = c;
   }
+  m_szMessage[pos] = '\0';
+
   int r = 0;
   if ((r = PClose()) != 0 && m_bFailOnExitCode)
   {
