@@ -207,7 +207,11 @@ CLicqGui::CLicqGui(int argc, char **argv)
   // store command line arguments for session management
   cmdLineParams += QString(argv[0]);
   cmdLineParams += QString("-p");
+#ifdef USE_KDE
+  cmdLineParams += QString("kde-gui");
+#else
   cmdLineParams += QString("qt-gui");
+#endif
   cmdLineParams += QString("--");
   for(int i=1;i<argc;i++)
     cmdLineParams += QString(argv[i]);
