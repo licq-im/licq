@@ -64,6 +64,7 @@ public:
   static CSocketManager sockman;
 
   int Process_QUIT();
+  int Process_TERM();
   int Process_INFO();
   int Process_STATUS();
   int Process_HELP();

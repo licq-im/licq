@@ -73,13 +73,15 @@ struct Command
   char *help;
 };
 
-static const unsigned short NUM_COMMANDS = 11;
+static const unsigned short NUM_COMMANDS = 12;
 static struct Command commands[NUM_COMMANDS] =
 {
   { "HELP", &CRMSClient::Process_HELP,
     "Print out help on commands." },
   { "QUIT", &CRMSClient::Process_QUIT,
     "Close the connection.  With an argument of 1 causes the plugin to unload." },
+  { "TERM", &CRMSClient::Process_TERM,
+    "Terminate the licq daemon." },
   { "INFO", &CRMSClient::Process_INFO,
     "Print out user information.  Argument is the uin, or none for personal." },
   { "STATUS", &CRMSClient::Process_STATUS,
@@ -675,6 +677,16 @@ int CRMSClient::Process_QUIT()
   fprintf(fs, "%d Aurevoir.\n", CODE_QUIT);
   fflush(fs);
   if (atol(data_arg) > 0) licqRMS->m_bExit = true;
+  return -1;
+}
+
+
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_TERM
+ *-------------------------------------------------------------------------*/
+int CRMSClient::Process_TERM()
+{
+  licqDaemon->Shutdown();
   return -1;
 }
 
