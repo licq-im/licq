@@ -28,6 +28,7 @@ public:
 
    OptionsDlg (CMainWindow *, tabs tab = ODlgAppearance,
                QWidget *parent = NULL, char *name = NULL);
+   virtual ~OptionsDlg();
 
 protected:
    QWidget *tab[6];
@@ -93,11 +94,11 @@ signals:
   void signal_done();
 
 protected:
-  void hideEvent(QHideEvent*) { emit signal_done(); close(true); };
   void SetupOptions();
   void setupFontName(QLineEdit*, const QFont&);
 
 protected slots:
+  virtual void accept();
   void colEnable(bool);
   void ApplyOptions();
   void slot_selectfont();

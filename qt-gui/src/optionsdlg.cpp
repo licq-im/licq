@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,7 +53,7 @@
 
 
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent, char *name)
-  : QTabDialog(parent, name)
+  : QTabDialog(parent, name, false, WDestructiveClose)
 {
   setCaption(tr("Licq Options"));
 
@@ -62,6 +63,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent, char
   setCancelButton(tr("&Cancel"));
   setHelpButton(tr("&Help"));
   connect (this, SIGNAL(applyButtonPressed()), this, SLOT(ApplyOptions()));
+  connect (this, SIGNAL(cancelButtonPressed()), this, SLOT(close()));
   connect(this, SIGNAL(helpButtonPressed()), this, SLOT(slot_whatsthis()));
 
   tab[0] = new_appearance_options();
@@ -81,6 +83,17 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent, char
   SetupOptions();
   showPage(tab[settab]);
   show();
+}
+
+OptionsDlg::~OptionsDlg()
+{
+  emit signal_done();
+}
+
+void OptionsDlg::accept()
+{
+  QDialog::accept();
+  close();
 }
 
 void OptionsDlg::slot_whatsthis()
