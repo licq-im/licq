@@ -818,8 +818,9 @@ void UserInfoDlg::SaveAbout()
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
+  QString str = mleAbout->text();
 
-  u->SetAbout(codec->fromUnicode(mleAbout->text()));
+  u->SetAbout(codec->fromUnicode(str.left(450)));
   gUserManager.DropUser(u);
 }
 
