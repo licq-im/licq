@@ -27,6 +27,8 @@
 #include <qpainter.h>
 #include <qaccel.h>
 
+#include "ewidgets.h"
+
 #include "mlview.h"
 
 MLViewQt2::MLViewQt2 (QWidget* parent, const char *name)
@@ -137,18 +139,18 @@ void MLViewQt2::setCellWidth ( int cellW )
 
 #include <qregexp.h>
 #if USE_KDE
-#include <kapp.h>
 #include <kurl.h>
 #endif
 
+#include "licq_icqd.h"
+
 MLViewQt3::MLViewQt3 (QWidget* parent, const char *name)
-  : QTextBrowser(parent, name), m_handleLinks(true)
+  : QTextBrowser(parent, name), m_handleLinks(true), m_licqDaemon(NULL)
 {
   setWordWrap(WidgetWidth);
   setWrapPolicy(AtWhiteSpace);
   setReadOnly(true);
 }
-
 
 void MLViewQt3::appendNoNewLine(const QString& s)
 {
@@ -250,9 +252,14 @@ void MLViewQt3::setForeground(const QColor& c)
   setPalette(pal);
 }
 
-void MLViewQt3::handleLinks(bool enable)
+void MLViewQt3::setHandleLinks(bool enable)
 {
   m_handleLinks = enable;
+}
+
+void MLViewQt3::setICQDaemon(CICQDaemon* licqDaemon)
+{
+  m_licqDaemon = licqDaemon;
 }
 
 void MLViewQt3::setSource(const QString& name)
@@ -267,8 +274,12 @@ void MLViewQt3::setSource(const QString& name)
        app->invokeMailer( KURL(name) );
 #else
     if (name.find(QRegExp("^\\w+:")) > -1)
-       if (!server->ViewUrl(name.local8Bit().data()))
-          WarnUser(this, tr("Unable to go to URL."));
+    {
+       if (m_licqDaemon == NULL)
+           WarnUser(this, tr("Licq is unable to find a browser application due to an internal error."));
+       else if (!m_licqDaemon->ViewUrl(name.local8Bit().data()))
+           WarnUser(this, tr("Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."));
+    }
 #endif
   }
 }
