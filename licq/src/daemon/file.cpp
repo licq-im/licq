@@ -27,20 +27,33 @@ extern int errno;
  *---------------------------------------------------------------------------*/
 void Trim(char *_sz)
 {
-  int i = 0, j = strlen(_sz) - 1;
-  // Check for leading spaces
-  while (isspace((int)_sz[i])) i++;
-  // Check if the entire string is spaces or empty
-  if (_sz[i] == '\0')
-  {
-    _sz[0] = '\0';
+  char* b, *e;
+
+  b = _sz; while(*b && isspace(*b))  b++;
+
+  // b is now on the first non space character
+  e = b; while(*e)  e++;
+
+  // zero string
+  if(b == e) {
+    *_sz = '\0';
     return;
   }
-  // Check for trailing spaces, we know there is at least one non-space
-  // character so we don't need to check that j >= 0
-  while (isspace((int)_sz[j])) j--;
-  memmove(_sz, &_sz[i], (unsigned int)(j - i + 1));
-  _sz[j - i + 1] = '\0';
+
+  // e is now on the last character
+  e--;  while(e != b && isspace(*e))  e--;  e++;
+
+  // now b is the beginning and e on the supposed 0 byte
+  // of the new string, lets copy if necessary
+  if(b != _sz) {
+    char* p = _sz;
+    while(b != e)
+      *p++ = *b++;
+    *p = '\0';
+  }
+
+  // and now fix the end byte
+  *e = '\0';
 }
 
 
