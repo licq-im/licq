@@ -30,12 +30,11 @@ gint flash_icons(gpointer);
 
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
+	save_window_pos();
 	gtk_main_quit();
 }
 
-GtkWidget* main_window_new(const gchar* window_title,
-			   gint height,
-			   gint width)
+GtkWidget* main_window_new(const gchar* window_title)
 {
 	gtk_timeout_add(1000, flash_icons, 0);
 
@@ -63,6 +62,10 @@ GtkWidget* main_window_new(const gchar* window_title,
 
 	/* Create the main window */
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
+	/* set the position if that option is enabled */
+	if (remember_window_pos)
+		gtk_widget_set_uposition (main_window, windowX, windowY);
 
 	/* Set the title */
 	gtk_window_set_title(GTK_WINDOW(main_window), window_title);
@@ -94,10 +97,10 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_bar),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_usize(scroll_bar, width - 77, height - 61);
+	gtk_widget_set_usize(scroll_bar, windowW - 77, windowH - 87);
 
 	/* Add in the contact list */
-	contact_list = contact_list_new(height - 30, width - 37);
+	contact_list = contact_list_new(windowH - 56, windowW - 37);
 	
 	gtk_container_add(GTK_CONTAINER(scroll_bar), contact_list);
 	gtk_box_pack_start(GTK_BOX(vertical_box), scroll_bar, 
@@ -108,7 +111,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 	event_box = gtk_event_box_new();
 
 	/* Add in the status bar menu */
-	status_bar = status_bar_new(25, width, 2);
+	status_bar = status_bar_new(25, windowW, 2);
 
 	/* Add the status bar to the event box */
 	gtk_container_add(GTK_CONTAINER(event_box), status_bar);
@@ -122,7 +125,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 	event_box2 = gtk_event_box_new();
 
 	/* Add the system status bar */
-	system_status = system_status_new(25, width, 2);
+	system_status = system_status_new(25, windowW, 2);
 
 	/* Add the system status bar into the event box */
 	gtk_container_add(GTK_CONTAINER(event_box2), system_status);

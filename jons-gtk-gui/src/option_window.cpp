@@ -33,6 +33,13 @@ bool enter_sends;
 bool flash_events;
 char timestamp_format[50];
 unsigned long auto_logon;
+bool remember_window_pos;
+
+// Global variables for window position and size
+short int windowX;
+short int windowY;
+short int windowH;
+short int windowW;
 
 // The "Options" selection under the menu in the main window
 void menu_options_create()
@@ -105,6 +112,12 @@ void menu_options_create()
 	// Receive colors
 	ow->chkRecvColors = gtk_check_button_new_with_label("Receive Colors");
 	gtk_table_attach(GTK_TABLE(table), ow->chkRecvColors, 0, 1, 3, 4,
+		GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+		GTK_FILL, 3, 3);
+
+	// Remember window position
+	ow->chkRememberWindowPos = gtk_check_button_new_with_label("Save Window Size and Position");
+	gtk_table_attach(GTK_TABLE(table), ow->chkRememberWindowPos, 1, 2, 3, 4,
 		GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 		GTK_FILL, 3, 3);
 
@@ -353,6 +366,8 @@ void set_options(struct options_window *ow)
 		timestamp_format);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->chkRecvColors),
 		recv_colors);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->chkRememberWindowPos),
+		remember_window_pos);
 
 	// Clist of servers
 
@@ -427,6 +442,8 @@ void done_options(GtkWidget *widget, gpointer data)
 	g_free(temp);
 	recv_colors = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
 		ow->chkRecvColors));
+	remember_window_pos = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
+		ow->chkRememberWindowPos));
 	
 	// Save the daemon options
 	icq_daemon->setDefaultRemotePort(
@@ -495,6 +512,7 @@ void done_options(GtkWidget *widget, gpointer data)
 	licqConf.WriteBool("FlashEvents", flash_events);
 	licqConf.WriteBool("RecvColors", recv_colors);
 	licqConf.WriteBool("ShowTimestamp", show_convo_timestamp);
+	licqConf.WriteBool("RememberWindowPos", remember_window_pos);
 	licqConf.WriteStr("TimestampFormat", timestamp_format);
 
 	licqConf.FlushFile();
@@ -505,6 +523,29 @@ void done_options(GtkWidget *widget, gpointer data)
 
 	// Refresh contact list
 	contact_list_refresh();
+}
+
+void save_window_pos (void)
+{
+	char filename[MAX_FILENAME_LEN];
+	sprintf (filename, "%s/licq_jons-gtk-gui.conf", BASE_DIR);
+	CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
+	if(!licqConf.LoadFile(filename))
+		return;
+	gint x, y, w, h;
+
+	gdk_window_get_root_origin(main_window->window, &x, &y);
+	gdk_window_get_size(main_window->window, &w, &h);
+
+	licqConf.SetSection("appearance");
+
+	licqConf.WriteNum("windowX", (short int)x);
+	licqConf.WriteNum("windowY", (short int)y);
+	licqConf.WriteNum("windowW", (short int)w);
+	licqConf.WriteNum("windowH", (short int)h);
+	
+	licqConf.FlushFile();
+	licqConf.CloseFile();
 }
 
 // load_options() is only called if the file exists
@@ -547,6 +588,13 @@ void load_options()
 	licqConf.ReadBool("RecvColors", recv_colors, true);
 	licqConf.ReadBool("ShowTimestamp", show_convo_timestamp, true);
 	licqConf.ReadStr("TimestampFormat", timestamp_format, "%H:%M:%S");
+	licqConf.ReadBool("RememberWindowPos", remember_window_pos, true);
+
+	// Window size & position
+	licqConf.ReadNum("windowX", windowX, 0);
+	licqConf.ReadNum("windowY", windowY, 0);
+	licqConf.ReadNum("windowH", windowH, 245);
+	licqConf.ReadNum("windowW", windowW, 160);
 	
 	// Auto logon
 	licqConf.ReadNum("AutoLogon", auto_logon, ICQ_STATUS_OFFLINE);

@@ -184,6 +184,7 @@ void menu_create()
 
 void menu_system_quit(GtkWidget *blah, gpointer data)
 {
+	save_window_pos();
 	gtk_main_quit();
 } 
 

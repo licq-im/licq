@@ -306,6 +306,7 @@ struct options_window
 	GtkWidget *enter_sends;
 	GtkWidget *flash_events;
 	GtkWidget *chkRecvColors;
+	GtkWidget *chkRememberWindowPos;
 
 	// Network section
 	GtkWidget *lstServers;
@@ -505,6 +506,13 @@ extern char timestamp_format[50];
 extern bool enter_sends;
 extern bool flash_events;
 extern unsigned long auto_logon;
+extern bool remember_window_pos;
+
+/* Globals for window dimensions / location */
+extern short int windowX;
+extern short int windowY;
+extern short int windowH;
+extern short int windowW;
 
 /* Globals in random_chat.cpp */
 extern struct random_chat *rcw;
@@ -672,7 +680,7 @@ extern void log_window_clear(GtkWidget *, gpointer);
 
 
 /* Functions in main_window.cpp */
-extern GtkWidget *main_window_new(const gchar *, gint, gint);
+extern GtkWidget *main_window_new(const gchar *);
 extern void main_window_show();
 
 
@@ -703,6 +711,7 @@ extern void show_on_color_dlg(GtkWidget *, gpointer);
 extern void color_dlg_ok(GtkWidget *, gpointer);
 extern void color_dlg_cancel(GtkWidget *, gpointer);
 extern void SOCKSClicked(GtkWidget *, gpointer);
+extern void save_window_pos (void);
 
 
 /* Functions in pipe.cpp */

@@ -135,8 +135,7 @@ void wizard_ok(GtkWidget *widget, gpointer data)
 
 		wizard_message(6);
 
-		main_window = main_window_new(g_strdup_printf("%ld", _uin),
-			445, 200);
+		main_window = main_window_new(g_strdup_printf("%ld", _uin));
 		main_window_show();
 		system_status_refresh();
 		dialog_close(0, register_window);

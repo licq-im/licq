@@ -163,7 +163,7 @@ void owner_function(ICQEvent *event)
 		if(event->Result() == EVENT_SUCCESS)
 		{
 			wizard_message(5);
-			main_window = main_window_new(title, 445, 200);
+			main_window = main_window_new(title);
 			main_window_show();
 			system_status_refresh();
 			dialog_close(0, register_window);
