@@ -411,9 +411,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     int socket = -1;
     if (nVersion > 6 && nMode != MODE_DIRECT)
     {
-      int nId = 0;
-    /* FIXME: not yet
-      nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
+      int nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
                                             nLocalPort, nRemotePort);
       if (nId != -1)
       {
@@ -434,7 +432,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
         socket = u->SocketDesc(nChannel);
         gUserManager.DropUser(u);
       }
-      *********/
+      
       // if we failed, try direct anyway
       if (socket == -1)
       {
@@ -452,7 +450,6 @@ void *ProcessRunningEvent_Client_tep(void *p)
       // if we failed, try through server
       if (socket == -1)
       {
-      /**FIXME not yet
         pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
@@ -478,7 +475,6 @@ void *ProcessRunningEvent_Client_tep(void *p)
           socket = u->SocketDesc(nChannel);
           gUserManager.DropUser(u);
         }
-        ****/
       }
     }
 
@@ -604,7 +600,7 @@ void *ReverseConnectToUser_tep(void *v)
   CReverseConnectToUserData *p = (CReverseConnectToUserData *)v;
 
   gLicqDaemon->ReverseConnectToUser(p->nUin, p->nIp, p->nPort, p->nVersion,
-    p->nFailedPort);
+    p->nFailedPort, p->nId, p->nMsgID1, p->nMsgID2);
 
   delete p;
 

@@ -544,7 +544,7 @@ bool CUserManager::Load()
 
   unsigned short nOwners;
   licqConf.SetSection("owners");
-  licqConf.ReadNum("NumOfOwners", nOwners);
+  licqConf.ReadNum("NumOfOwners", nOwners, 0);
 
   m_bAllowSave = false;
   char sOwnerIDKey[MAX_KEYxNAME_LEN], sOwnerID[MAX_KEYxNAME_LEN],

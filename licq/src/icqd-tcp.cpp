@@ -1415,12 +1415,28 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
 int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
-   unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort)
+   unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
+   unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
+  // Find which socket this is for
+  TCPSocket *tcp = (TCPSocket *)gSocketManager.FetchSocket(m_nTCPSocketDesc);
+  unsigned short tcpPort = tcp ? tcp->LocalPort() : 0;
+  gSocketManager.DropSocket(tcp);
+
+  CFileTransferManager *ftm = CFileTransferManager::FindByPort(nFailedPort);
+  CChatManager *cm = CChatManager::FindByPort(nFailedPort);
+
+  if (nFailedPort != tcpPort && nFailedPort != 0 && cm == NULL && ftm == NULL)
+  {
+    gLog.Warn("%sReverse connection to unknown port (%d).\n", L_WARNxSTR,
+                                                              nFailedPort);
+    return -1;
+  }
+
   TCPSocket *s = new TCPSocket(nUin);
   char buf[32];
 
-  gLog.Info(tr("%sReverse connecting to %ld at %s:%d.\n"), L_TCPxSTR, nUin,
+  gLog.Info(tr("%sReverse connecting to %lu at %s:%d.\n"), L_TCPxSTR, nUin,
             ip_ntoa(nIp, buf), nPort);
 
   // If we fail to set the remote address, the ip must be 0
@@ -1429,13 +1445,23 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   if (!s->OpenConnection())
   {
     char buf[128];
-    gLog.Warn(tr("%sReverse connect to %ld failed:\n%s%s.\n"), L_WARNxSTR,
+    gLog.Warn(tr("%sReverse connect to %lu failed:\n%s%s.\n"), L_WARNxSTR,
               nUin, L_BLANKxSTR, s->ErrorStr(buf, 128));
+              
+    CPU_ReverseConnectFailed *p = new CPU_ReverseConnectFailed(nUin, nMsgID1,
+                                                     nMsgID2, nPort,
+                                                     nFailedPort, nId);
+    SendEvent_Server(p);
     return -1;
   }
 
-  gLog.Info(tr("%sReverse shaking hands with %ld.\n"), L_TCPxSTR, nUin);
-  if (!Handshake_Send(s, nUin, 0, nVersion))
+  gLog.Info(tr("%sReverse shaking hands with %lu.\n"), L_TCPxSTR, nUin);
+  bool bConfirm = ftm == NULL && cm == NULL;
+
+  // Make sure we use the right version
+  nVersion = VersionToUse(nVersion);
+
+  if (!Handshake_Send(s, nUin, 0, nVersion, bConfirm, nId))
   {
     delete s;
     return -1;
@@ -1443,16 +1469,22 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
   s->SetVersion(nVersion);
   int nSD = s->Descriptor();
 
-  // Find which socket this is for
-  TCPSocket *tcp = (TCPSocket *)gSocketManager.FetchSocket(m_nTCPSocketDesc);
-  unsigned short tcpPort = tcp ? tcp->LocalPort() : 0;
-  gSocketManager.DropSocket(tcp);
+  // File transfer port
+  if (ftm != NULL)
+  {
+     ftm->AcceptReverseConnection(s);
+     delete s;
+  }
 
-  CFileTransferManager *ftm = NULL;
-  CChatManager *cm = NULL;
+  // Chat port
+  else if (cm != NULL)
+  {
+     cm->AcceptReverseConnection(s);
+     delete s;
+  }
 
-  // Check if it's the main port
-  if (nFailedPort == tcpPort || nFailedPort == 0)
+  // It's the main port
+  else
   {
     // Set the socket descriptor in the user if this user is on our list
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -1466,27 +1498,6 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
     gSocketManager.AddSocket(s);
     gSocketManager.DropSocket(s);
     write(pipe_newsocket[PIPE_WRITE], "S", 1);
-  }
-
-  // File transfer port
-  else if ( (ftm = CFileTransferManager::FindByPort(nFailedPort)) != NULL)
-  {
-     ftm->AcceptReverseConnection(s);
-     delete s;
-  }
-
-  // Chat port
-  else if ( (cm = CChatManager::FindByPort(nFailedPort)) != NULL)
-  {
-     cm->AcceptReverseConnection(s);
-     delete s;
-  }
-
-  // What the--?
-  else
-  {
-    gLog.Warn(tr("%sReverse connection to unknown port (%d).\n"), L_WARNxSTR, nFailedPort);
-    delete s;
   }
 
   return nSD;
@@ -3649,28 +3660,42 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
         return false;
       }
 
-			if (bConfirm)
-			{
-				// Get handshake confirmation
-                                //FIXME reverse connections
-				CPacketTcp_Handshake_Confirm p_confirm(ICQ_CHNxNONE, 0);
-				int nGot = s->RecvBuffer().getDataSize();
-				s->ClearRecvBuffer();
-      
-				if (nGot > 4)
-				{
-					if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
-				}
-				else
-				{
-					do
-					{
-						if (!s->RecvPacket()) goto sock_error;
-					} while (!s->RecvBufferFull());
-
-					if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
-				}
-			}
+      if (bConfirm)
+      {
+        if (p_in.Id() == 0)
+        {
+          if (!Handshake_RecvConfirm_v7(s))
+          goto sock_error;
+        }
+        else
+        {
+          pthread_mutex_lock(&mutex_reverseconnect);
+          std::list<CReverseConnectToUserData *>::iterator iter;
+          for (iter = m_lReverseConnect.begin(); ; iter++)
+          {
+            if (iter == m_lReverseConnect.end())
+            {
+              gLog.Warn("%sReverse connection with unknown id (%lu)",
+                L_WARNxSTR, p_in.Id());
+              pthread_mutex_unlock(&mutex_reverseconnect);
+              return false;
+            }
+            if ((*iter)->nId == p_in.Id() && (*iter)->nUin == nUin)
+            {
+              s->SetChannel((*iter)->nData);
+              (*iter)->bSuccess = true;
+              (*iter)->bFinished = true;
+              if (!Handshake_SendConfirm_v7(s))
+              {
+                pthread_mutex_unlock(&mutex_reverseconnect);
+                return false;
+              }
+              break;
+            }
+          }
+          pthread_mutex_unlock(&mutex_reverseconnect);
+        }
+      }
 
       nVersion = VersionToUse(nVersionMajor);
 
@@ -3722,6 +3747,22 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
         return false;
       }
       nVersion = 6;
+     
+      pthread_mutex_lock(&mutex_reverseconnect);
+      std::list<CReverseConnectToUserData *>::iterator iter;
+      for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+        iter++)
+      {
+        // For v6 there is no connection id, so just use uin
+        if ((*iter)->nUin == nUin)
+        {
+          (*iter)->bSuccess = true;
+          (*iter)->bFinished = true;
+          break;
+        }
+      }
+      pthread_mutex_unlock(&mutex_reverseconnect);
+
       break;
     }
 
@@ -3753,6 +3794,21 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
         return false;
       }
       
+      pthread_mutex_lock(&mutex_reverseconnect);
+      std::list<CReverseConnectToUserData *>::iterator iter;
+      for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+        iter++)
+      {
+        // For v4 there is no connection id, so just use uin
+        if ((*iter)->nUin == nUin)
+        {
+          (*iter)->bSuccess = true;
+          (*iter)->bFinished = true;
+          break;
+        }
+      }
+      pthread_mutex_unlock(&mutex_reverseconnect);
+
       break;
     }
 
@@ -3784,6 +3840,21 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
                   s->RemoteIpStr(ipbuf), nUin);
         return false;
       }
+
+      pthread_mutex_lock(&mutex_reverseconnect);
+      std::list<CReverseConnectToUserData *>::iterator iter;
+      for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+        iter++)
+      {
+        // For v2 there is no connection id, so just use uin
+        if ((*iter)->nUin == nUin)
+        {
+          (*iter)->bSuccess = true;
+          (*iter)->bFinished = true;
+          break;
+        }
+      }
+      pthread_mutex_unlock(&mutex_reverseconnect);
 
       break;
     }
@@ -3921,6 +3992,9 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
     gLog.Info(tr("%sConnection from new user (%ld) [v%ld].\n"), L_TCPxSTR,
        nUin, s->Version());
   }
+
+  //awaken waiting threads, maybe unnecessarily, but doesn't hurt
+  pthread_cond_broadcast(&cond_reverseconnect_done);
 
   return true;
 }

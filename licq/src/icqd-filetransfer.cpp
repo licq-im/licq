@@ -158,6 +158,8 @@ CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d)
 
 FileTransferManagerList CFileTransferManager::ftmList;
 
+pthread_mutex_t CFileTransferManager::thread_cancel_mutex
+                                                   = PTHREAD_MUTEX_INITIALIZER;
 
 CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
 {
@@ -280,6 +282,13 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
   strcpy(m_szPathName, *m_iPathName);
   m_nPort = nPort;
 
+  // start the server anyway, may need to do reverse connect
+  if (!StartFileTransferServer())
+  {
+    PushFileTransferEvent(FT_ERRORxBIND);
+    return;
+  }
+
   // Create the socket manager thread
   if (pthread_create(&thread_ft, NULL, &FileTransferManager_tep, this) == -1)
   {
@@ -292,12 +301,53 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
-  gLog.Info(tr("%sFile Transfer: Connecting to server.\n"), L_TCPxSTR);
-  if (!licqDaemon->OpenConnectionToUser(m_nUin, &ftSock, nPort))
-  {
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u == NULL)
     return false;
-  }
 
+  bool bTryDirect = u->Version() <= 6 || u->Mode() == MODE_DIRECT;
+  bool bSendIntIp = u->SendIntIp();
+  gUserManager.DropUser(u);
+
+  bool bSuccess = false;
+  if (bTryDirect)
+  {
+    gLog.Info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
+    bSuccess = licqDaemon->OpenConnectionToUser(m_nUin, &ftSock, nPort);
+   }
+ 
+  bool bResult = false;
+  if (!bSuccess)
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
+    gUserManager.DropOwner();
+
+    // try reverse connect
+    int nId = licqDaemon->RequestReverseConnection(m_nUin, 0, nIp, LocalPort(),
+                                                                        nPort);
+
+    if (nId != -1)
+    {
+      struct SFileReverseConnectInfo *r = new struct SFileReverseConnectInfo;
+      r->nId = nId;
+      r->m = this;
+      r->bTryDirect = !bTryDirect;
+      pthread_mutex_lock(&thread_cancel_mutex);
+      pthread_create(&m_tThread, NULL, FileWaitForSignal_tep, r);
+      m_bThreadRunning = true;
+      pthread_mutex_unlock(&thread_cancel_mutex);
+      bResult = true;
+    }
+  }
+  else
+    bResult = SendFileHandshake();
+
+  return bResult;
+}
+
+bool CFileTransferManager::SendFileHandshake()
+{
   gLog.Info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
@@ -372,8 +422,55 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_HANDSHAKE:
     {
+      CBuffer tmp(b); // we need to save a copy for later
+      
       if (!CICQDaemon::Handshake_Recv(&ftSock, LocalPort(), false)) break;
       gLog.Info(tr("%sFile Transfer: Received handshake.\n"), L_TCPxSTR);
+      
+      unsigned long nId = 0;
+      if (ftSock.Version() == 7 || ftSock.Version() == 8)
+      {
+        CPacketTcp_Handshake_v7 hand(&tmp);
+        nId = hand.Id();
+      }
+
+      if (nId != 0)
+      {
+        pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
+        std::list<CReverseConnectToUserData *>::iterator iter;
+        bool bFound = false;
+        for (iter = licqDaemon->m_lReverseConnect.begin();
+                          iter != licqDaemon->m_lReverseConnect.end();  iter++)
+        {
+          if ((*iter)->nId == nId && (*iter)->nUin == m_nUin)
+          {
+            bFound = true;
+            (*iter)->bSuccess = true;
+            (*iter)->bFinished = true;
+            pthread_cond_broadcast(&licqDaemon->cond_reverseconnect_done);
+            break;
+          }
+        }
+        pthread_mutex_unlock(&licqDaemon->mutex_reverseconnect);
+
+        if (bFound)
+        {
+          // Send init packet:
+          CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
+          if (!SendPacket(&p))
+          {
+            m_nResult = FT_ERRORxCLOSED;
+            return false;
+          }
+
+          gLog.Info("%sFile Transfer: Waiting for server to respond.\n",
+            L_TCPxSTR);
+
+          m_nState = FT_STATE_WAITxFORxSERVERxINIT;
+          break;
+        }
+      }
+
       m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
       break;
     }
@@ -873,7 +970,7 @@ bool CFileTransferManager::SendFilePacket()
 
 
 
-//-----CFileTransferManager::PopChatEvent------------------------------------
+//-----CFileTransferManager::PopFileTransferEvent------------------------------
 CFileTransferEvent *CFileTransferManager::PopFileTransferEvent()
 {
   if (ftEvents.size() == 0) return NULL;
@@ -885,7 +982,7 @@ CFileTransferEvent *CFileTransferManager::PopFileTransferEvent()
 }
 
 
-//-----CFileTransferManager::PushChatEvent-------------------------------------------
+//-----CFileTransferManager::PushFileTransferEvent-----------------------------
 void CFileTransferManager::PushFileTransferEvent(unsigned char t)
 {
   PushFileTransferEvent(new CFileTransferEvent(t));
@@ -1105,6 +1202,92 @@ void *FileTransferManager_tep(void *arg)
   return NULL;
 }
 
+void *FileWaitForSignal_tep(void *arg)
+{
+  pthread_detach(pthread_self());
+
+  CICQDaemon *d;
+  unsigned long nUin;
+  unsigned short nPort;
+  struct SFileReverseConnectInfo *rc = (struct SFileReverseConnectInfo *)arg;
+  pthread_mutex_t *cancel_mutex = &CFileTransferManager::thread_cancel_mutex;
+
+  pthread_mutex_lock(cancel_mutex);
+  pthread_cleanup_push(FileWaitForSignal_cleanup, arg);
+    pthread_testcancel();
+  pthread_cleanup_pop(0);
+  d = rc->m->licqDaemon;
+  nUin = rc->m->Uin();
+  nPort = rc->m->m_nPort;
+  pthread_mutex_unlock(cancel_mutex);
+
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  gLog.Info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
+  bool bConnected = d->WaitForReverseConnection(rc->nId, nUin);
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+
+  pthread_mutex_lock(cancel_mutex);
+  pthread_cleanup_push(FileWaitForSignal_cleanup, arg);
+    pthread_testcancel();
+  pthread_cleanup_pop(0);
+
+  if (bConnected || !rc->bTryDirect)
+  {
+    if (!bConnected)
+      rc->m->PushFileTransferEvent(FT_ERRORxCONNECT);
+
+    rc->m->m_bThreadRunning = false;
+    pthread_mutex_unlock(cancel_mutex);
+
+    delete rc;
+    pthread_exit(NULL);
+  }
+
+  pthread_mutex_unlock(cancel_mutex);
+
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  gLog.Info("%sFile Transfer: Reverse connection failed, trying direct.\n",
+                                                                    L_TCPxSTR);
+  TCPSocket s;
+  bConnected = d->OpenConnectionToUser(nUin, &s, nPort);
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+
+  pthread_mutex_lock(cancel_mutex);
+  pthread_cleanup_push(FileWaitForSignal_cleanup, arg);
+    pthread_testcancel();
+  pthread_cleanup_pop(0);
+
+  if (bConnected)
+  {
+    if (rc->m->ftSock.Descriptor() != -1)
+    {
+      gLog.Warn("%sFile Transfer: Attempted connection when already"
+                " connected.\n", L_WARNxSTR);
+    }
+    else
+    {
+      rc->m->ftSock.TransferConnectionFrom(s);
+      bConnected = rc->m->SendFileHandshake();
+    }
+  }
+
+  if (!bConnected)
+    rc->m->PushFileTransferEvent(FT_ERRORxCONNECT);
+
+  rc->m->m_bThreadRunning = false;
+
+  pthread_mutex_unlock(cancel_mutex);
+  delete rc;
+  pthread_exit(NULL);
+}
+
+void FileWaitForSignal_cleanup(void *arg)
+{
+  struct SFileReverseConnectInfo *rc = (struct SFileReverseConnectInfo *)arg;
+  delete rc;
+
+  pthread_mutex_unlock(&CFileTransferManager::thread_cancel_mutex);
+}
 
 CFileTransferManager *CFileTransferManager::FindByPort(unsigned short p)
 {
@@ -1119,6 +1302,12 @@ CFileTransferManager *CFileTransferManager::FindByPort(unsigned short p)
 
 CFileTransferManager::~CFileTransferManager()
 {
+  // cancel the waiting thread first
+  pthread_mutex_lock(&thread_cancel_mutex);
+  if (m_bThreadRunning)
+    pthread_cancel(m_tThread);
+  pthread_mutex_unlock(&thread_cancel_mutex);
+
   CloseFileTransfer();
 
   // Delete any pending events

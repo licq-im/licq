@@ -1601,6 +1601,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_lock(&mutex_sendqueue_server);
   pthread_mutex_lock(&mutex_extendedevents);
   pthread_mutex_lock(&mutex_cancelthread);
+  pthread_mutex_lock(&mutex_reverseconnect);
   std::list<ICQEvent *>::iterator iter;
 
   // Cancel all events
@@ -1652,6 +1653,15 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   if (cancelledEvent != NULL)
     m_lxSendQueue_Server.push_back(cancelledEvent);
 
+  std::list<CReverseConnectToUserData *>::iterator rciter;
+  for (rciter = m_lReverseConnect.begin(); rciter != m_lReverseConnect.end();
+                                           rciter++)
+  {
+    delete *rciter;
+  }
+  m_lReverseConnect.clear();
+
+  pthread_mutex_unlock(&mutex_reverseconnect);    
   pthread_mutex_unlock(&mutex_cancelthread);
   pthread_mutex_unlock(&mutex_extendedevents);
   pthread_mutex_unlock(&mutex_sendqueue_server);
@@ -2472,7 +2482,38 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     if (e)
       ProcessDoneEvent(e);
     else
-      gLog.Warn(tr("%sICBM error for unknown event.\n"), L_WARNxSTR);
+    {
+      pthread_mutex_lock(&mutex_reverseconnect);
+      bool bFound = false;
+      std::list<CReverseConnectToUserData *>::iterator iter;
+      for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+                                             iter++)
+      {
+        if ((*iter)->nId == nSubSequence)
+        {
+          ICQUser *u = gUserManager.FetchUser((*iter)->nUin, LOCK_R);
+          if (u == NULL)
+            gLog.Warn("%sReverse connection from %lu failed.\n", L_WARNxSTR,
+                      (*iter)->nUin);
+          else
+          {
+            gLog.Warn("%sReverse connection from %s failed.\n", L_WARNxSTR,
+                      u->GetAlias());
+            gUserManager.DropUser(u);
+          }
+
+          (*iter)->bSuccess = false;
+          (*iter)->bFinished = true;
+          pthread_cond_broadcast(&cond_reverseconnect_done);
+          bFound = true;
+          break;
+        }
+      }
+      pthread_mutex_unlock(&mutex_reverseconnect);
+
+      if (!bFound)
+        gLog.Warn("%sICBM error for unknown event.\n", L_WARNxSTR);
+    }
 
     break;
   }
@@ -2601,7 +2642,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       
       if (memcmp(cap, ICQ_CAPABILITY_DIRECT, CAP_LENGTH) == 0)
       {
-#if 0        // reverse connect request
+        // reverse connect request
         if (advMsg.getDataSize() != 27) break;
 
         unsigned long nUin, nIp, nPort, nFailedPort, nPort2, nId;
@@ -2621,10 +2662,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                                nVersion, nFailedPort, nMsgID[0], nMsgID[1]);
         pthread_create(&t, NULL, &ReverseConnectToUser_tep, data);
         break;
-
-#else
-        break; // not handled yet
-#endif
       }
       else if (memcmp(cap, ICQ_CAPABILITY_SRVxRELAY, CAP_LENGTH) != 0) break;
 
@@ -3204,7 +3241,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
 		unsigned short nFormat, nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
 		unsigned long nUin, nMsgID;
-                int nSubResult;
                 CExtendedAck *pExtendedAck = 0;
 		ICQUser *u = NULL;
 
@@ -3220,6 +3256,34 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 								nSubtype);
 			break;
 		}
+
+    pthread_mutex_lock(&mutex_reverseconnect);
+    std::list<CReverseConnectToUserData *>::iterator iter;
+    bool bFound = false;
+    for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
+                                           iter++)
+    {
+      if ((*iter)->nId == nMsgID && (*iter)->nUin == nUin)
+      {
+        gLog.Warn("%sReverse connection from %s failed.\n", L_WARNxSTR,
+                  u->GetAlias());
+        (*iter)->bSuccess = false;
+        (*iter)->bFinished = true;
+        bFound = true;
+        break;
+      }
+    }
+    pthread_mutex_unlock(&mutex_reverseconnect);
+    
+    int nSubResult;
+    if (bFound)
+    {
+      nSubResult = ICQ_TCPxACK_REFUSE;
+      pExtendedAck = NULL;
+      pthread_cond_broadcast(&cond_reverseconnect_done);
+      gUserManager.DropUser(u);
+      return;
+    }
 
     packet.incDataPosRead(2);
     packet >> nLen;
@@ -5414,3 +5478,37 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
 
   return true;
 }
+
+int CICQDaemon::RequestReverseConnection(unsigned long nUin,
+                                         unsigned long nData,
+                                         unsigned long nLocalIP,
+                                         unsigned short nLocalPort,
+                                         unsigned short nRemotePort)
+{
+  if (nUin == gUserManager.OwnerUin()) return -1;
+
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL) return -1;
+
+
+  CPU_ReverseConnect *p = new CPU_ReverseConnect(u, nLocalIP, nLocalPort,
+                                                 nRemotePort);
+  int nId = p->SubSequence();
+
+  pthread_mutex_lock(&mutex_reverseconnect);
+
+  m_lReverseConnect.push_back(
+            new CReverseConnectToUserData(nUin, nId, nData, nLocalIP,
+                                          nLocalPort, ICQ_VERSION_TCP,
+                                          nRemotePort, 0, nId));
+  pthread_mutex_unlock(&mutex_reverseconnect);
+
+  gLog.Info("%sRequesting reverse connection from %s.\n", L_TCPxSTR,
+            u->GetAlias());
+  SendEvent_Server(p);
+  
+  gUserManager.DropUser(u);
+
+  return nId;
+}
+ 

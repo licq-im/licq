@@ -1404,6 +1404,65 @@ void CPU_Type2Message::InitBuffer()
   gUserManager.DropOwner();
 }
 
+//-----ReverseConnect-----------------------------------------------------------
+CPU_ReverseConnect::CPU_ReverseConnect(ICQUser *u, unsigned long nLocalIP,
+                                       unsigned short nLocalPort,
+                                       unsigned short nRemotePort)
+  : CPU_Type2Message(u, false, false, ICQ_CAPABILITY_DIRECT)
+{
+  m_nSize += 4 + 4 + 4 + 1 + 4 + 4 + 2 + 4;
+//  m_nExtraLen += 4; m_nSize += 4;
+
+  CPU_Type2Message::InitBuffer();
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+
+  buffer->PackUnsignedLong(o->Uin());
+  buffer->PackUnsignedLong(nLocalIP);
+  buffer->PackUnsignedLong(nLocalPort);
+  buffer->PackChar(MODE_DIRECT); /* why would you set it to anything else?
+                                    if you do icq just sends you back the
+                                    same ip and port number to connect to */
+  buffer->PackUnsignedLong(nRemotePort);
+  buffer->PackUnsignedLong(nLocalPort);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(m_nSubSequence);
+//  buffer->PackUnsignedLongBE(0x00030000);
+  gUserManager.DropOwner();
+}
+
+CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(unsigned long nUin,
+                                                   unsigned long nMsgID1,
+                                                   unsigned long nMsgID2,
+                                                   unsigned short nFailedPort,
+                                                   unsigned short nOurPort,
+                                                   unsigned long nConnectID)
+  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
+{
+  char szUin[13];
+  int nUinLen = snprintf(szUin, 12, "%lu", nUin);
+
+  m_nSize += 8 + 2 + 1 + nUinLen + 2 + 4 + 4 + 4 + 2 + 4;
+
+  InitBuffer();
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+
+  buffer->PackUnsignedLongBE(nMsgID1);
+  buffer->PackUnsignedLongBE(nMsgID2);
+  buffer->PackUnsignedShortBE(0x0002);
+  buffer->PackChar(nUinLen);
+  buffer->Pack(szUin, nUinLen);
+  buffer->PackUnsignedShortBE(0x0003);
+  buffer->PackUnsignedLong(o->Uin());
+  buffer->PackUnsignedLong(nFailedPort);
+  buffer->PackUnsignedLong(nOurPort);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(nConnectID);
+
+  gUserManager.DropOwner();
+}
+
 //-----PluginMessage-----------------------------------------------------------
 CPU_PluginMessage::CPU_PluginMessage(ICQUser *u, bool bAck,
                                      const char *PluginGUID,

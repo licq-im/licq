@@ -611,6 +611,9 @@ CChatEvent::~CChatEvent()
 
 //=====ChatManager===========================================================
 ChatManagerList CChatManager::cmList;
+pthread_mutex_t CChatManager::cmList_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t CChatManager::waiting_thread_cancel_mutex
+                                                  = PTHREAD_MUTEX_INITIALIZER;
 
 
 CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
@@ -657,7 +660,11 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   m_bSleep = false;
   m_pChatClient = NULL;
 
+  pthread_mutex_init(&thread_list_mutex, NULL);
+
+  pthread_mutex_lock(&cmList_mutex);
   cmList.push_back(this);
+  pthread_mutex_unlock(&cmList_mutex);
 }
 
 
@@ -729,23 +736,66 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   u->nPPID = c->m_nPPID;
 
   bool bSendIntIp = false;
+  bool bTryDirect = true;
+  bool bResult = false;
   ICQUser *temp_user = gUserManager.FetchUser(u->uin, LOCK_R);
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();
+    bTryDirect = temp_user->Version() <= 6 || temp_user->Mode() == MODE_DIRECT;
     gUserManager.DropUser(temp_user);
   }
 
-  gLog.Info(tr("%sChat: Connecting to server.\n"), L_TCPxSTR);
-  if (!licqDaemon->OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp, &u->sock,
-          c->m_nPort, bSendIntIp))
+  bool bSuccess = false;
+  if (bTryDirect)
   {
-    delete u;
-    return false;
+    gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
+    bSuccess = licqDaemon->OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp,
+                                            &u->sock, c->m_nPort, bSendIntIp);
   }
 
-  chatUsers.push_back(u);
+  if (!bSuccess)
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
+    gUserManager.DropOwner();
+  
+    // try reverse connect
+    int nId = licqDaemon->RequestReverseConnection(c->m_nUin, c->m_nSession,
+                                                 nIp, LocalPort(), c->m_nPort);
+    if (nId != -1)
+    {
+      pthread_t t;
+      struct SChatReverseConnectInfo *r = new struct SChatReverseConnectInfo;
+      r->nId = nId;
+      r->u = u;
+      r->m = this;
+      r->bTryDirect = !bTryDirect;
+      pthread_mutex_lock(&thread_list_mutex);
+      pthread_create(&t, NULL, ChatWaitForSignal_tep, r);
+      waitingThreads.push_back(t);
+      pthread_mutex_unlock(&thread_list_mutex);
+      bResult = true;
+    }
+    else
+    {
+      delete u->m_pClient;
+      delete u;
+    }
+  }
+  else
+  {
+    chatUsers.push_back(u);
+    bResult = SendChatHandshake(u);
+  }
+ 
+  return bResult;
+}
 
+bool CChatManager::SendChatHandshake(CChatUser *u)
+{
+  CChatClient *c = u->m_pClient;
+  
   gLog.Info(tr("%sChat: Shaking hands [v%d].\n"), L_TCPxSTR, VersionToUse(c->m_nVersion));
 
   // Send handshake packet:
@@ -776,6 +826,7 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   CChatUser *u = new CChatUser;
   u->sock.TransferConnectionFrom(*s);
 
+  u->m_pClient = new CChatClient();
   u->m_pClient->m_nVersion = s->Version();
   u->m_pClient->m_nUin = s->Owner();
   u->m_pClient->m_szId = s->OwnerId();
@@ -871,7 +922,45 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       if (u->szId)  free(u->szId);
       u->szId = strdup(u->m_pClient->m_szId);
       u->nPPID = u->m_pClient->m_nPPID;
-      u->state = CHAT_STATE_WAITxFORxCOLOR;
+      
+      bool bFound = false;
+      if (u->m_pClient->m_nId != 0)
+      {
+        pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
+        std::list<CReverseConnectToUserData *>::iterator iter;
+        for (iter = licqDaemon->m_lReverseConnect.begin();
+                         iter != licqDaemon->m_lReverseConnect.end();  iter++)
+        {
+          if ((*iter)->nId == u->m_pClient->m_nId && (*iter)->nUin == u->uin)
+          {
+            bFound = true;
+            (*iter)->bSuccess = true;
+            (*iter)->bFinished = true;
+            u->m_pClient->m_nSession = (*iter)->nData;
+            u->m_pClient->m_nPort = (*iter)->nPort;
+            pthread_cond_broadcast(&licqDaemon->cond_reverseconnect_done);
+            break;
+          }
+        }
+        pthread_mutex_unlock(&licqDaemon->mutex_reverseconnect);
+      }
+
+      if (bFound)
+      {
+        // Send color packet
+        CPChat_Color p_color(m_szName, LocalPort(),
+        m_nColorFore[0], m_nColorFore[1], m_nColorFore[2],
+        m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
+        u->sock.SendPacket(p_color.getBuffer());
+
+        gLog.Info("%sChat: Waiting for color/font response.\n", L_TCPxSTR);
+
+        u->state = CHAT_STATE_WAITxFORxCOLORxFONT;
+      }
+      else
+      {
+        u->state = CHAT_STATE_WAITxFORxCOLOR;
+      }
       break;
     }
 
@@ -2198,7 +2287,6 @@ void *ChatManager_tep(void *arg)
     if (!chatman->ConnectToChat(chatman->m_pChatClient))
     {
       chatman->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
-      delete chatman->m_pChatClient;
       return NULL;
     }
     chatman->m_pChatClient = 0;
@@ -2289,20 +2377,186 @@ void *ChatManager_tep(void *arg)
   return NULL;
 }
 
+void *ChatWaitForSignal_tep(void *arg)
+{
+  pthread_detach(pthread_self());
+
+  CICQDaemon *d;
+  struct SChatReverseConnectInfo *rc = (struct SChatReverseConnectInfo *)arg;
+  pthread_mutex_t *cancel_mutex = &CChatManager::waiting_thread_cancel_mutex;
+
+  pthread_mutex_lock(cancel_mutex);
+  pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
+    pthread_testcancel();
+  pthread_cleanup_pop(0);
+  d = rc->m->licqDaemon;
+  pthread_mutex_unlock(cancel_mutex);
+
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  gLog.Info("%sChat: Waiting for reverse connection.\n", L_TCPxSTR);
+  bool bConnected = d->WaitForReverseConnection(rc->nId, rc->u->Uin());
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+
+  pthread_mutex_lock(cancel_mutex);
+  pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
+    pthread_testcancel();
+  pthread_cleanup_pop(0);
+
+  if (bConnected || !rc->bTryDirect)
+  {
+    if (!bConnected && rc->m->chatUsers.empty())
+      rc->m->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
+
+
+    pthread_mutex_lock(&rc->m->thread_list_mutex);
+    ThreadList::iterator iter;
+    for (iter = rc->m->waitingThreads.begin();
+                                 iter != rc->m->waitingThreads.end(); iter++)
+    {
+      if (pthread_equal(*iter, pthread_self()))
+      {
+        rc->m->waitingThreads.erase(iter);
+        break;
+      }
+    }
+    pthread_mutex_unlock(&rc->m->thread_list_mutex);
+    pthread_mutex_unlock(cancel_mutex);
+
+    delete rc->u->m_pClient;
+    delete rc->u;
+    delete rc;
+    pthread_exit(NULL);
+  }
+
+  pthread_mutex_unlock(cancel_mutex);
+
+  bool bSendIntIp = false;
+  ICQUser *temp_user = gUserManager.FetchUser(rc->u->Uin(), LOCK_R);
+  if (temp_user != NULL)
+  {
+    bSendIntIp = temp_user->SendIntIp();
+    gUserManager.DropUser(temp_user);
+
+    pthread_mutex_lock(cancel_mutex);
+    pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
+      pthread_testcancel();
+    pthread_cleanup_pop(0);
+
+    unsigned long nIp = rc->u->m_pClient->m_nIp;
+    unsigned long nIntIp = rc->u->m_pClient->m_nIntIp;
+    unsigned short nPort = rc->u->m_pClient->m_nPort;
+    pthread_mutex_unlock(cancel_mutex);
+
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    gLog.Info("%sChat: Reverse connection failed, trying direct.\n", L_TCPxSTR);
+    bool bSuccess = d->OpenConnectionToUser("chat", nIp, nIntIp, &rc->u->sock,
+                                            nPort, bSendIntIp);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    if (bSuccess)
+    {
+      pthread_mutex_lock(cancel_mutex);
+      pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
+        pthread_testcancel();
+      pthread_cleanup_pop(0);
+
+      if (rc->m->SendChatHandshake(rc->u))
+      {
+        rc->m->chatUsers.push_back(rc->u);
+
+        pthread_mutex_lock(&rc->m->thread_list_mutex);
+        ThreadList::iterator iter;
+        for (iter = rc->m->waitingThreads.begin();
+                                   iter != rc->m->waitingThreads.end(); iter++)
+        {
+          if (pthread_equal(*iter, pthread_self()))
+          {
+            rc->m->waitingThreads.erase(iter);
+            break;
+          }
+        }
+        pthread_mutex_unlock(&rc->m->thread_list_mutex);
+        pthread_mutex_unlock(cancel_mutex);
+
+        delete rc;
+        pthread_exit(NULL);
+      }
+
+      pthread_mutex_unlock(cancel_mutex);
+    }
+  }
+
+  pthread_mutex_lock(cancel_mutex);
+  pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
+    pthread_testcancel();
+  pthread_cleanup_pop(0);
+
+  if (rc->m->chatUsers.empty())
+    rc->m->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
+
+  pthread_mutex_lock(&rc->m->thread_list_mutex);
+  ThreadList::iterator iter2;
+  for (iter2 = rc->m->waitingThreads.begin();
+                                  iter2 != rc->m->waitingThreads.end(); iter2++)
+  {
+    if (pthread_equal(*iter2, pthread_self()))
+    {
+      rc->m->waitingThreads.erase(iter2);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&rc->m->thread_list_mutex);
+  pthread_mutex_unlock(cancel_mutex);
+
+
+  delete rc->u->m_pClient;
+  delete rc->u;
+  delete rc;
+  
+  pthread_exit(NULL);
+}
+
+void ChatWaitForSignal_cleanup(void *arg)
+{
+  struct SChatReverseConnectInfo *rc = (struct SChatReverseConnectInfo *)arg;
+
+  delete rc->u->m_pClient;
+  delete rc->u;
+  delete rc;
+  pthread_mutex_unlock(&CChatManager::waiting_thread_cancel_mutex);
+}
 
 CChatManager *CChatManager::FindByPort(unsigned short p)
 {
+  pthread_mutex_lock(&cmList_mutex);
   ChatManagerList::iterator iter;
+  CChatManager *cm = NULL;
   for (iter = cmList.begin(); iter != cmList.end(); iter++)
   {
-    if ( (*iter)->LocalPort() == p) return *iter;
+    if ( (*iter)->LocalPort() == p)
+    {
+      cm = *iter;
+      break;
+    }    
   }
-  return NULL;
+  pthread_mutex_unlock(&cmList_mutex);
+  return cm;
 }
 
 
 CChatManager::~CChatManager()
 {
+  // cancel all waiting threads first
+  pthread_mutex_lock(&waiting_thread_cancel_mutex);
+  pthread_mutex_lock(&thread_list_mutex);
+  ThreadList::iterator t_iter;
+  for (t_iter = waitingThreads.begin(); t_iter != waitingThreads.end();)
+  {
+    pthread_cancel(*t_iter);
+    t_iter = waitingThreads.erase(t_iter);
+  }
+  pthread_mutex_unlock(&thread_list_mutex);
+  pthread_mutex_unlock(&waiting_thread_cancel_mutex);
+
   CloseChat();
 
   // Delete all the users
@@ -2325,13 +2579,15 @@ CChatManager::~CChatManager()
     chatEvents.pop_front();
   }
 
+  pthread_mutex_lock(&cmList_mutex);
   ChatManagerList::iterator iter;
   for (iter = cmList.begin(); iter != cmList.end(); iter++)
   {
     if (*iter == this) break;
   }
   if (iter != cmList.end()) cmList.erase(iter);
-
+  pthread_mutex_unlock(&cmList_mutex);
+  
   if (m_szId) free(m_szId);
 }
 
