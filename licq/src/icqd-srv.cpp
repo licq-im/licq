@@ -1366,11 +1366,11 @@ void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID
 
 //-----icqSendThroughServer-----------------------------------------------------
 ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
-  unsigned char format, char *_sMessage, CUserEvent* ue)
+  unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short nCharset)
 {
   ICQEvent* result;
 
-  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage);
+  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset);
 
   switch (format)
   {
@@ -1400,11 +1400,11 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
   return result;
 }
 
-ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent* ue)
+ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short _nCharset)
 {
   char szUin[24];
   sprintf(szUin, "%lu", nUin);
-  return icqSendThroughServer(szUin, format, _sMessage, ue);
+  return icqSendThroughServer(szUin, format, _sMessage, ue, _nCharset);
 }
 
 //-----icqSendSms---------------------------------------------------------------

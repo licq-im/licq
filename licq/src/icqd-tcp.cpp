@@ -78,6 +78,12 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   ICQUser *u;
   if (!online) // send offline
   {
+     unsigned short nCharset = 0;
+     u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+     if (u && (strcmp(u->UserEncoding(), "ISO 8859-1") == 0))
+       nCharset = 3;
+     gUserManager.DropUser(u);
+
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
      if (strlen(mDos) > MAX_MESSAGE_SIZE)
      {
@@ -86,7 +92,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
        mDos[MAX_MESSAGE_SIZE] = '\0';
      }
      result = icqSendThroughServer(szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
-                                   cipher ? cipher : mDos, e);
+                                   cipher ? cipher : mDos, e, nCharset);
      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   }
   else        // send direct
@@ -281,8 +287,14 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   ICQUser *u;
   if (!online) // send offline
   {
+    unsigned short nCharset = 0;
+    u = gUserManager.FetchUser(_nUin, LOCK_R);
+    if (u && (strcmp(u->UserEncoding(), "ISO 8859-1") == 0))
+      nCharset = 3;
+    gUserManager.DropUser(u);
+
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e);
+    result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
     u = gUserManager.FetchUser(_nUin, LOCK_W);
   }
   else

@@ -612,8 +612,8 @@ protected:
   void icqSendInvisibleList();
   void icqRequestSystemMsg();
   ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
-    CUserEvent *);
-  ICQEvent* icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent* );
+    CUserEvent *, unsigned short = 0);
+  ICQEvent* icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent *, unsigned short = 0);
   void SaveUserList();
 
   void FailEvents(int sd, int err);

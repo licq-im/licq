@@ -1198,7 +1198,8 @@ CPU_TypingNotification::CPU_TypingNotification(const char *szId, bool bActive)
 }
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const char *szId,
-																		 unsigned char msgType, char *szMessage)
+                                     unsigned char msgType, char *szMessage,
+                                     unsigned short nCharset)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
 	m_nSubCommand = msgType;
@@ -1254,7 +1255,8 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
 		tlvData.PackUnsignedShortBE(0x0101);
  		tlvData.PackChar(0x01);
 		tlvData.PackUnsignedShortBE(msgLen + 4);
- 		tlvData.PackUnsignedLongBE(0);
+                tlvData.PackUnsignedShortBE(nCharset);
+ 		tlvData.PackUnsignedShortBE(0);
 		tlvData.Pack(szMessage, msgLen);
  		break;
 
