@@ -422,11 +422,14 @@ void OptionsDlg::SetupOptions()
    oem->Unlock();
    //TODO make general for all plugins
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   chkOEAway->setChecked(o->AcceptInAway());
-   chkOENA->setChecked(o->AcceptInNA());
-   chkOEOccupied->setChecked(o->AcceptInOccupied());
-   chkOEDND->setChecked(o->AcceptInDND());
-   gUserManager.DropOwner();
+   if (o)
+   {
+     chkOEAway->setChecked(o->AcceptInAway());
+     chkOENA->setChecked(o->AcceptInNA());
+     chkOEOccupied->setChecked(o->AcceptInOccupied());
+     chkOEDND->setChecked(o->AcceptInDND());
+     gUserManager.DropOwner();
+   }
    chkAlwaysOnlineNotify->setChecked(mainwin->licqDaemon->AlwaysOnlineNotify());
 }
 
@@ -516,6 +519,7 @@ void OptionsDlg::ApplyOptions()
       if (mainwin->m_nDockMode != DockDefault ||
           ((IconManager_Default *)mainwin->licqIcon)->FortyEight() != chkDockFortyEight->isChecked() )
       {
+        mainwin->licqIcon->close();
         delete mainwin->licqIcon;
         mainwin->licqIcon = new IconManager_Default(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
         mainwin->m_nDockMode = DockDefault;
@@ -525,7 +529,11 @@ void OptionsDlg::ApplyOptions()
     {
       if (mainwin->m_nDockMode != DockThemed)
       {
-        delete mainwin->licqIcon;
+        if (mainwin->licqIcon)
+        {
+          mainwin->licqIcon->close();
+          delete mainwin->licqIcon; 
+        }
         mainwin->licqIcon = new IconManager_Themed(mainwin, mainwin->mnuSystem, cmbDockTheme->currentText().local8Bit());
         mainwin->m_nDockMode = DockThemed;
       }
@@ -538,7 +546,11 @@ void OptionsDlg::ApplyOptions()
     {
       if (mainwin->m_nDockMode != DockSmall)
       {
-        delete mainwin->licqIcon;
+        if (mainwin->licqIcon)
+        {
+	  mainwin->licqIcon->close();
+          delete mainwin->licqIcon;
+        }
         mainwin->licqIcon = new IconManager_KDEStyle(mainwin, mainwin->mnuSystem);
         mainwin->m_nDockMode = DockSmall;
       }
@@ -553,7 +565,8 @@ void OptionsDlg::ApplyOptions()
   }
   else
   {
-    delete mainwin->licqIcon;
+    if (mainwin->licqIcon)
+      delete mainwin->licqIcon;
     mainwin->licqIcon = NULL;
     mainwin->m_nDockMode = DockNone;
   }
@@ -645,14 +658,17 @@ void OptionsDlg::ApplyOptions()
   oem->SetParameters(txtSndPlayer.latin1(), oemparams);
   //TODO Make general for all plugins
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetEnableSave(false);
-  o->SetAcceptInAway(chkOEAway->isChecked());
-  o->SetAcceptInNA(chkOENA->isChecked());
-  o->SetAcceptInOccupied(chkOEOccupied->isChecked());
-  o->SetAcceptInDND(chkOEDND->isChecked());
-  o->SetEnableSave(true);
-  o->SaveLicqInfo();
-  gUserManager.DropOwner();
+  if (o)
+  {
+    o->SetEnableSave(false);
+    o->SetAcceptInAway(chkOEAway->isChecked());
+    o->SetAcceptInNA(chkOENA->isChecked());
+    o->SetAcceptInOccupied(chkOEOccupied->isChecked());
+    o->SetAcceptInDND(chkOEDND->isChecked());
+    o->SetEnableSave(true);
+    o->SaveLicqInfo();
+    gUserManager.DropOwner();
+  }
   mainwin->licqDaemon->SetAlwaysOnlineNotify(chkAlwaysOnlineNotify->isChecked());
 }
 
