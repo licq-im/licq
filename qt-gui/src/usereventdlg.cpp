@@ -1928,12 +1928,13 @@ void UserSendCommon::changeEventType(int id)
 
 //-----UserSendCommon::massMessageToggled------------------------------------
 /*! This slot creates/removes a little widget into the usereventdlg
- *	which enables the user to collect users for mass messaging.
+ *  which enables the user to collect users for mass messaging.
  */
 void UserSendCommon::massMessageToggled(bool b)
 {
   if (b)
   {
+    chkMass->setChecked(true);
 #if QT_VERSION >= 300
     if (mainwin->userEventTabDlg &&
         mainwin->userEventTabDlg->tabIsSelected(this))
@@ -1961,13 +1962,12 @@ void UserSendCommon::massMessageToggled(bool b)
   }
   else
   {
+    chkMass->setChecked(false);
     if (grpMR != NULL)
     {
       int grpMRWidth = grpMR->width();
-
+      
       grpMR->hide();
-      grpMR->close(true);
-      grpMR = NULL;
 
       // resize the widget to it's origin width.
       // This is a workaroung and not perfect, but resize() does not
