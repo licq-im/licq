@@ -56,7 +56,7 @@ struct conversation
 	gchar prog_buf[60];
 	gchar *for_user;
 	ICQUser *user;
-	CICQEventTag *e_tag;
+	struct e_tag_data *etag;
 };
 
 struct send_url
@@ -71,6 +71,7 @@ struct send_url
 	GtkWidget *spoof_button;
 	GtkWidget *spoof_uin;
 	ICQUser *user;
+	struct e_tag_data *etag;
 };
 
 struct info_user
@@ -156,9 +157,9 @@ struct user_away_window
 	GtkWidget *show_again;
 	GtkWidget *text_box;
 	ICQUser *user;
-	CICQEventTag *e_tag;
 	GtkWidget *progress;
 	gchar buffer[30];
+	struct e_tag_data *etag;
 };
 
 struct file_accept
@@ -190,10 +191,27 @@ struct network_window
 	GtkWidget *text;
 };
 
+struct security_window
+{
+        GtkWidget *window;
+        GtkWidget *check_auth;
+        GtkWidget *check_web;
+        GtkWidget *check_hideip;
+        GtkTooltips *tooltips;
+	struct e_tag_data *etag;
+};
+
+struct e_tag_data
+{
+	GtkWidget *statusbar;
+	gchar buf[60];
+	CICQEventTag *e_tag;
+};
+
+
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
-extern GList *uaw_list;
 
 
 /* Globals in contact_list.cpp */
@@ -218,13 +236,13 @@ extern gint _pipe;
 extern CPluginLog *log;
 extern gint log_pipe;
 extern struct timeval timer;
+extern GSList *catcher;
 
 
 /* Globals in main_window.cpp */
 extern GtkWidget *vertical_box;
 extern GtkWidget *contact_list;
 extern GtkWidget *status_progress;
-extern GList *m_prog_list;
 
 
 /* Globals in menu.cpp */
@@ -289,8 +307,8 @@ extern void do_colors();
 extern void do_pixmaps();
 extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void user_function(ICQEvent *);
-extern void check_event(ICQEvent *, GtkWidget *, guint &, gchar *);
-extern void check_other_event(ICQEvent *, GtkWidget *, guint &);
+extern void finish_event(struct e_tag_data *, ICQEvent *);
+extern void finish_message(ICQEvent *);
 
 
 /* Functions in file_window.cpp */
@@ -343,7 +361,7 @@ extern void clear_callback(GtkWidget *, gpointer);
 extern void search_callback(GtkWidget *, gpointer);
 extern void search_list_double_click(GtkWidget *, GdkEventButton *, gpointer);
 extern void search_result(ICQEvent *);
-extern void search_done(char);
+extern void search_done(bool);
 extern void search_found(CSearchAck *);
 extern void search_failed();
 extern void search_close(GtkWidget *, gpointer);
