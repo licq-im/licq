@@ -199,6 +199,7 @@ CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin
   if ( (p = setlocale(LC_MESSAGES, NULL) ))
 #endif
   {
+    gLog.Info("%sAttempting to load %s Qt-GUI translation.\n", L_INITxSTR, p);
     QString str;
     str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, p);
     QTranslator *trans = new QTranslator(this);
