@@ -1,3 +1,4 @@
+## -*- mode: m4 -*-
 dnl Copyright (c) 1998 N. D. Bellamy
 
 AC_DEFUN(AC_CHECK_SOCKS5,
@@ -110,5 +111,44 @@ AC_CACHE_VAL(ac_cv_sys_errlist,
 AC_MSG_RESULT($ac_cv_sys_errlist)
 if test $ac_cv_sys_errlist = yes; then
 AC_DEFINE(HAVE_SYS_ERRLIST)
+fi
+])
+
+dnl Check if struct tm contains long int tm_gmtoff
+AC_DEFUN(LICQ_CHECK_GMTOFF,
+[AC_CACHE_CHECK(for tm_gmtoff, licq_tm_gmtoff,
+  [ AC_TRY_COMPILE([
+#include <time.h>
+], [
+long int foo;
+struct tm bar;
+foo = bar.tm_gmtoff;
+], [
+  licq_tm_gmtoff=yes
+], [
+  licq_tm_gmtoff=no
+])
+])
+if test $licq_tm_gmtoff = yes; then
+  AC_DEFINE(USE_GMTOFF)
+fi
+])
+
+dnl Check if long timezone is somewhere defined (i.e. AIX)
+AC_DEFUN(LICQ_CHECK_TIMEZONE,
+  [AC_CACHE_CHECK(for extern long timezone, licq_extern_timezone,
+    [ AC_TRY_LINK([
+#include <time.h>
+], [
+  long foo;
+  foo = timezone;
+], [
+  licq_extern_timezone=yes
+], [
+  licq_extern_timezone=no
+])
+])
+if test $licq_extern_timezone = yes; then
+  AC_DEFINE(USE_TIMEZONE)
 fi
 ])

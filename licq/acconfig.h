@@ -14,11 +14,6 @@
 /* Undefine this if the compile complains about scandir_r and alphasort */
 #define ALPHASORT_VOID
 
-/* Change these if the compiler complains about no tm_gmtoff field */
-/* If the compiler then complains about timezone, comment out both */
-#define USE_GMTOFF
-/*#define USE_TIMEZONE*/
-
 /* The name of the package we're compiling */
 #undef PACKAGE
 
@@ -41,5 +36,11 @@
 #undef DLOPEN_POLICY
 @TOP@
 @BOTTOM@
+
+/* define this if your struct tm has a tm_gmtoff field */
+#undef USE_GMTOFF
+
+/* define this if your system has a global extern long timezone */
+#undef USE_TIMEZONE
 
 #endif	/* _CONFIG_H */
