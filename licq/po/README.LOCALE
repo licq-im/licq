@@ -1,0 +1,64 @@
+Licq Daemon Translation Support
+
+
+Creating a Translation File
+
+First update the basic template by doing "make update-po". 
+Afterwards copy licq.pot to a new file that matches your language, 
+for example ru.po for russian or de.po for german.
+Edit your newly created .po file headers so that it matches your 
+environment. Don't forget to remove the ", fuzzy" entry at the top
+of the headers. It should look similar to this example:
+
+
+--- BEGIN de.po file example header ---
+# translation of de.po to German
+# This file is distributed under the same license as the Licq package.
+# Copyright (C) 2004 Licq Developers.
+# Thomas Reitelbach <thomas@licq.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Licq\n"
+"Report-Msgid-Bugs-To: licq-devel@licq.org\n"
+"POT-Creation-Date: 2004-04-16 14:48+0200\n"
+"PO-Revision-Date: 2004-03-08 09:36+0100\n"
+"Last-Translator: Your Name <you@yourdomain.org>\n"
+"Language-Team: Language <licq-devel@licq.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+--- END de.po file example header ---
+
+Now you can edit your new file and translate it. We recommend 
+using a tool like KBabel for doing the translation. It will 
+automatically keep track of copyright notices and other stuff.
+
+
+
+Using a translation File
+
+Once the .po file has been created, it must be converted into a gmo file.
+Edit the LINGUAS file and add your new translation to it. Afterwards run
+"make update-po". This will do the conversion for you.
+
+A simple "make install" will install your new translation into the 
+appropriate location.
+
+
+
+Updating a Translation File
+
+All the text strings are updated with each new Licq release, it is necessary
+to update the .po files.  This is done simply running "make update-po" in the 
+po directory. The new .po file can now be edited and any necessary 
+translations added.
+
+
+
+Contributing a translation
+
+Once you have created a new translation or update an outdated one, please 
+contribute it to the public by sending your translation to the licq 
+development mailinglist.
+Please send your <language>.po file to licq-devel@licq.org
