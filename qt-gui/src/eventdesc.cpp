@@ -1,9 +1,10 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qapplication.h>
+
 #include "eventdesc.h"
-#include "message.h"
-#include "icq-defines.h"
+#include "licq_message.h"
+#include "licq_icq.h"
 
 
 static const int MAX_EVENT = 26;

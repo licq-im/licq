@@ -1,11 +1,11 @@
 #include <qapplication.h>
 
 #include "sigman.h"
-#include "log.h"
-#include "icqevent.h"
-#include "icqd.h"
-#include "user.h"
-#include "icq-defines.h"
+#include "licq_log.h"
+#include "licq_events.h"
+#include "licq_icqd.h"
+#include "licq_user.h"
+#include "licq_icq.h"
 
 //=====CSignalManager===========================================================
 

@@ -25,8 +25,8 @@
 #include "skinbrowser.h"
 #include "skin.h"
 #include "mainwin.h"
-#include "constants.h"
-#include "log.h"
+#include "licq_constants.h"
+#include "licq_log.h"
 #include "editfile.h"
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const char *name)

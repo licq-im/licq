@@ -29,7 +29,7 @@
 
 #include "editgrp.h"
 #include "ewidgets.h"
-#include "user.h"
+#include "licq_user.h"
 
 EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   : QWidget(parent, name)

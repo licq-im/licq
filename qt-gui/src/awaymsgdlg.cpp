@@ -24,11 +24,11 @@
 #include <qlayout.h>
 
 #include "awaymsgdlg.h"
-#include "log.h"
+#include "licq_log.h"
 #include "mledit.h"
 #include "optionsdlg.h"
-#include "sar.h"
-#include "user.h"
+#include "licq_sar.h"
+#include "licq_user.h"
 
 
 // -----------------------------------------------------------------------------

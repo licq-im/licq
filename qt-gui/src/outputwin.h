@@ -12,7 +12,7 @@
 
 #include "mledit.h"
 #include "ewidgets.h"
-#include "log.h"
+#include "licq_log.h"
 
 //=====OutputWin===================================================================================
 class CQtLogWindow : public QDialog, public CPluginLog

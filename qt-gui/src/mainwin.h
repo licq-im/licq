@@ -18,7 +18,7 @@
 #include <qbitmap.h>
 
 #include "userbox.h"
-#include "user.h"
+#include "licq_user.h"
 #include "gui-defines.h"
 
 class QStyle;

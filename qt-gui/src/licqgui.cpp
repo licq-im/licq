@@ -35,10 +35,10 @@
 #include "licqgui.h"
 #include "sigman.h"
 #include "outputwin.h"
-#include "log.h"
-#include "plugin.h"
+#include "licq_log.h"
+#include "licq_plugin.h"
 
-#include "icqd.h"
+#include "licq_icqd.h"
 
 CLicqGui *licqQtGui;
 

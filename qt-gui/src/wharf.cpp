@@ -41,7 +41,7 @@
 
 #include "wharf.h"
 #include "mainwin.h"
-#include "user.h"
+#include "licq_user.h"
 #include "ewidgets.h"
 
 #include <X11/Xlib.h>

@@ -23,11 +23,11 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-#include "icqd.h"
+#include "licq_icqd.h"
 #include "mledit.h"
 #include "showawaymsgdlg.h"
 #include "sigman.h"
-#include "user.h"
+#include "licq_user.h"
 
 
 // -----------------------------------------------------------------------------

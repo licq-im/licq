@@ -50,9 +50,9 @@
 #include "messagebox.h"
 #include "filedlg.h"
 #include "showawaymsgdlg.h"
-#include "countrycodes.h"
-#include "languagecodes.h"
-#include "log.h"
+#include "licq_countrycodes.h"
+#include "licq_languagecodes.h"
+#include "licq_log.h"
 #include "sigman.h"
 #include "editfile.h"
 #include "eventdesc.h"
@@ -61,10 +61,10 @@
 #include "forwarddlg.h"
 #include "chatjoin.h"
 
-#include "user.h"
+#include "licq_user.h"
 #include "mledit.h"
-#include "icqevent.h"
-#include "icqd.h"
+#include "licq_events.h"
+#include "licq_icqd.h"
 
 #define NUM_MSG_PER_HISTORY 20
 #define COLOR_SENT "blue"

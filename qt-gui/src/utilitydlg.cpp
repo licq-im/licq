@@ -27,9 +27,9 @@
 #include "ewidgets.h"
 #include "mledit.h"
 
-#include "icqd.h"
-#include "utility.h"
-#include "user.h"
+#include "licq_icqd.h"
+#include "licq_utility.h"
+#include "licq_user.h"
 
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)

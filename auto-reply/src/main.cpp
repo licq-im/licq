@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "plugin.h"
+#include "licq_plugin.h"
 #include "autoreply.h"
 
 CLicqAutoReply *licqAutoReply;

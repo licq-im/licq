@@ -26,8 +26,8 @@
 
 #include "registeruser.h"
 #include "ewidgets.h"
-#include "icqd.h"
-#include "user.h"
+#include "licq_icqd.h"
+#include "licq_user.h"
 
 RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
   : QWizard(parent, name, false)

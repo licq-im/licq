@@ -14,7 +14,7 @@
 #include "plugindlg.h"
 #include "ewidgets.h"
 
-#include "icqd.h"
+#include "licq_icqd.h"
 
 PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
 {

@@ -9,8 +9,8 @@
 #include "randomchatdlg.h"
 #include "sigman.h"
 #include "mainwin.h"
-#include "icqd.h"
-#include "icqevent.h"
+#include "licq_icqd.h"
+#include "licq_events.h"
 #include "gui-defines.h"
 #include "ewidgets.h"
 

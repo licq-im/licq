@@ -31,9 +31,9 @@
 #include "sigman.h"
 #include "ewidgets.h"
 
-#include "icqd.h"
-#include "icqevent.h"
-#include "user.h"
+#include "licq_icqd.h"
+#include "licq_events.h"
+#include "licq_user.h"
 
 PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
                          QWidget *parent, const char *name)

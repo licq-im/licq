@@ -27,7 +27,7 @@
 
 #include "adduserdlg.h"
 
-#include "icqd.h"
+#include "licq_icqd.h"
 
 AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
    : QDialog(parent, name)

@@ -13,10 +13,10 @@
 #include <deque.h>
 
 #include "mledit.h"
-#include "socket.h"
-#include "icq-defines.h"
-#include "buffer.h"
-#include "icqpacket.h"
+#include "licq_socket.h"
+#include "licq_icq.h"
+#include "licq_buffer.h"
+#include "licq_packets.h"
 
 class QLabel;
 class QListBox;

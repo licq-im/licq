@@ -35,7 +35,7 @@
 #include "userbox.h"
 #include "gui-defines.h"
 
-#include "user.h"
+#include "licq_user.h"
 
 bool    CUserViewItem::s_bGridLines = false,
         CUserViewItem::s_bFontStyles = true,
@@ -244,6 +244,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
 void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int column, int width, int align )
 {
+  //QListViewItem::paintCell(p, cgdefault, column, width, align);
+
   QFont newFont(p->font());
   newFont.setWeight(m_nWeight);
   if (s_bFontStyles)
@@ -256,7 +258,9 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   QColorGroup cg(cgdefault.foreground(), cgdefault.background(),
                  cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
                  *m_cFore, *m_cBack);
+
   const QPixmap *pix = NULL;
+
   /*if (!listView()->verticalScrollBar()->isVisible() &&
       ((CUserView *)listView())->m_bTransparent)*/
   if (listView()->contentsHeight() < listView()->viewport()->height() &&
@@ -422,6 +426,8 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
    setSortByStatus(bSortByStatus);
+
+   //setAutoMask(true);
 }
 
 // -----------------------------------------------------------------------------

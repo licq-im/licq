@@ -17,12 +17,12 @@
 
 
 #include "chatdlg.h"
-#include "icqpacket.h"
-#include "log.h"
-#include "translate.h"
-#include "user.h"
-#include "icqd.h"
 #include "ewidgets.h"
+#include "licq_packets.h"
+#include "licq_log.h"
+#include "licq_translate.h"
+#include "licq_user.h"
+#include "licq_icqd.h"
 
 #define STATE_RECVxHANDSHAKE 1
 #define STATE_RECVxCOLOR 2

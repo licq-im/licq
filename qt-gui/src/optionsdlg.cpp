@@ -38,14 +38,14 @@
 #endif
 
 #include "optionsdlg.h"
-#include "translate.h"
-#include "log.h"
-#include "constants.h"
+#include "licq_translate.h"
+#include "licq_log.h"
+#include "licq_constants.h"
 #include "mainwin.h"
 #include "mledit.h"
-#include "icqd.h"
+#include "licq_icqd.h"
 #include "userbox.h"
-#include "sar.h"
+#include "licq_sar.h"
 #include "wharf.h"
 #include "skin.h"
 

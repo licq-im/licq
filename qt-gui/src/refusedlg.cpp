@@ -8,7 +8,7 @@
 #include "refusedlg.h"
 #include "mledit.h"
 
-#include "user.h"
+#include "licq_user.h"
 
 CRefuseDlg::CRefuseDlg(unsigned long _nUin, QString t,
                        QWidget *parent, const char *name)

@@ -7,7 +7,7 @@
 #include <qstring.h>
 #include <qheader.h>
 
-#include "message.h"
+#include "licq_message.h"
 #include "messagebox.h"
 #include "eventdesc.h"
 

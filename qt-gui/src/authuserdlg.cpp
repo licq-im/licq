@@ -27,7 +27,7 @@
 
 #include "authuserdlg.h"
 
-#include "icqd.h"
+#include "licq_icqd.h"
 
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
   : QDialog(parent, name)

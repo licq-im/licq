@@ -8,9 +8,9 @@
 #include <qdialog.h>
 #include <qtimer.h>
 
-#include "user.h"
-#include "socket.h"
-#include "buffer.h"
+#include "licq_user.h"
+#include "licq_socket.h"
+#include "licq_buffer.h"
 #include "ewidgets.h"
 
 class QPushButton;

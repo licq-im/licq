@@ -37,8 +37,8 @@
 #include "searchuserdlg.h"
 #include "sigman.h"
 
-#include "user.h"
-#include "icqd.h"
+#include "licq_user.h"
+#include "licq_icqd.h"
 
 
 SearchUserView::SearchUserView(QWidget *parent, char *name)

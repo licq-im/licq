@@ -3,7 +3,7 @@
 
 #include <qdialog.h>
 
-#include "history.h"
+#include "licq_history.h"
 
 class QBoxLayout;
 class QSplitter;

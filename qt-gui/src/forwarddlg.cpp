@@ -11,7 +11,7 @@
 #include "mainwin.h"
 #include "gui-defines.h"
 #include "ewidgets.h"
-#include "user.h"
+#include "licq_user.h"
 #include "icqfunctions.h"
 #include "ewidgets.h"
 

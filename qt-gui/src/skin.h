@@ -10,9 +10,9 @@
 #include <qrect.h>
 #include <qpixmap.h>
 
-#include "file.h"
+#include "gui-defines.h"
+#include "licq_file.h"
 
-#define QTGUI_DIR "qt-gui/"
 
 class Border
 {

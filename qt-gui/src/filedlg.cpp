@@ -37,11 +37,11 @@
 #include <qsocketnotifier.h>
 
 #include "filedlg.h"
-#include "icqpacket.h"
-#include "log.h"
-#include "translate.h"
+#include "licq_packets.h"
+#include "licq_log.h"
+#include "licq_translate.h"
 #include "ewidgets.h"
-#include "icqd.h"
+#include "licq_icqd.h"
 
 extern int errno;
 

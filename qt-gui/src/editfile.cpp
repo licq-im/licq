@@ -13,7 +13,7 @@
 #include "editfile.h"
 #include "mledit.h"
 #include "ewidgets.h"
-#include "constants.h"
+#include "licq_constants.h"
 
 //---------------------------------------------------------------------------
 

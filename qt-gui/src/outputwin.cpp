@@ -14,7 +14,7 @@
 #include <qtextstream.h>
 
 #include "outputwin.h"
-#include "icq-defines.h"
+#include "licq_icq.h"
 
 //---------------------------------------------------------------------------
 

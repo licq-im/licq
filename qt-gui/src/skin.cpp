@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "skin.h"
-#include "constants.h"
+#include "licq_constants.h"
 
 CSkin::CSkin(const char *skinname)
 {
