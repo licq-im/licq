@@ -157,6 +157,8 @@ public:
   void UpdateAllUsers();
   void SwitchServer();
   void CancelEvent(CICQEventTag *);
+  bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
+                            unsigned short nPort);
 
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);

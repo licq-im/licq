@@ -268,16 +268,24 @@ void CICQDaemon::icqChatRequestAccept(unsigned long _nUin, unsigned short _nPort
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int CICQDaemon::ConnectToUser(unsigned long _nUin)
+int CICQDaemon::ConnectToUser(unsigned long nUin)
 {
-  TCPSocket *s = new TCPSocket(_nUin);
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  if (u == NULL)
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return -1;
+
+  char szAlias[64];
+  strcpy(szAlias, u->GetAlias());
+  unsigned short nPort = u->Port();
+  gUserManager.DropUser(u);
+
+  TCPSocket *s = new TCPSocket(nUin);
+  if (!OpenConnectionToUser(nUin, s, nPort))
   {
     delete s;
     return -1;
   }
-  char *szAlias = strdup(u->GetAlias());
+
+/*
   char buf[32];
 
   gLog.Info("%sConnecting to %s (%d) at %s:%d.\n", L_TCPxSTR, szAlias,
@@ -324,14 +332,14 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
       return -1;
     }
   }
-
-  gLog.Info("%sShaking hands with %s (%d).\n", L_TCPxSTR, szAlias, _nUin);
+*/
+  gLog.Info("%sShaking hands with %s (%d).\n", L_TCPxSTR, szAlias, nUin);
   CPacketTcp_Handshake p(s->LocalPort());
   if (!s->SendPacket(p.getBuffer()))
   {
     char buf[128];
     gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
-    delete s; free (szAlias);
+    delete s;
     return -1;
   }
 
@@ -341,15 +349,72 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
   gSocketManager.DropSocket(s);
 
   // Set the socket descriptor in the user
-  u = gUserManager.FetchUser(_nUin, LOCK_W);
+  u = gUserManager.FetchUser(nUin, LOCK_W);
   u->SetSocketDesc(nSD);
   gUserManager.DropUser(u);
-  free (szAlias);
 
   // Alert the select thread that there is a new socket
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
 
   return nSD;
+}
+
+
+
+/*------------------------------------------------------------------------------
+ * OpenConnectionToUser
+ *
+ * Connects a socket to a given user on a given port.
+ *----------------------------------------------------------------------------*/
+bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
+                                      unsigned short nPort)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return false;
+
+  char szAlias[64];
+  strcpy(szAlias, u->GetAlias());
+  char buf[128];
+
+  gLog.Info("%sConnecting to %s (%ld) at %s:%d.\n", L_TCPxSTR, szAlias,
+            nUin, ip_ntoa(u->Ip(), buf), nPort);
+
+  // If we fail to set the remote address, the ip must be 0
+  bool b = sock->SetRemoteAddr(u->Ip(), nPort);
+  gUserManager.DropUser(u);
+  if (!b) return false;
+
+  if (!sock->OpenConnection())
+  {
+    gLog.Warn("%sConnect to %s (%ld) failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+              nUin, L_BLANKxSTR, sock->ErrorStr(buf, 128));
+
+    // Now try the real ip if it is different from this one and we are behind a firewall
+    u = gUserManager.FetchUser(nUin, LOCK_R);
+    if (sock->Error() != EINTR && u != NULL && u->RealIp() != u->Ip() &&
+        u->RealIp() != 0 && m_szFirewallHost[0] != '\0')
+    {
+      gLog.Info("%sConnecting to %s (%ld) at %s:%d.\n", L_TCPxSTR, szAlias,
+                nUin, ip_ntoa(u->RealIp(), buf), nPort);
+      sock->SetRemoteAddr(u->RealIp(), nPort);
+      gUserManager.DropUser(u);
+
+      if (!sock->OpenConnection())
+      {
+        char buf[128];
+        gLog.Warn("%sConnect to %s (%ld) real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+                  nUin, L_BLANKxSTR, sock->ErrorStr(buf, 128));
+        return false;
+      }
+    }
+    else
+    {
+      if (u != NULL) gUserManager.DropUser(u);
+      return false;
+    }
+  }
+
+  return true;
 }
 
 
