@@ -372,7 +372,7 @@ void CLicqConsole::CreateUserList()
 void CLicqConsole::PrintUsers()
 {
   char *title = "<C></B/40>Contacts";
-  char *ulist[10000];
+  char *ulist[1024];
   int i = 0;
   struct SScrollUser *s = NULL;
   

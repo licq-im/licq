@@ -1903,8 +1903,9 @@ void CLicqConsole::InputMessage(int cIn)
                          m_cColorInfo->nAttr);
         return;
       }
+      sz--;
       *sz = '\0';
-      sz++;
+      sz += 2;
       bool bDirect = SendDirect(data->szId, data->nPPID, *sz);
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,

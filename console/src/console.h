@@ -28,8 +28,8 @@ struct SColorMap
 
 struct SUser
 {
-  char szKey[32];
-  char szId[32];
+  char szKey[256];
+  char szId[256];
   unsigned long nPPID;
   char *szLine;
   bool bOffline;
@@ -43,7 +43,7 @@ struct SScrollUser
 {
   int pos;
   unsigned long nPPID;
-  char szId[32];
+  char szId[256];
   const struct SColorMap *color;
 };
 
