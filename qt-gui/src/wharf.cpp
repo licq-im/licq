@@ -624,30 +624,14 @@ IconManager_KDEStyle::IconManager_KDEStyle(CMainWindow *_mainwin, QPopupMenu *_m
   KWin::setSystemTrayWindowFor( winId(), _mainwin ? _mainwin->topLevelWidget()->winId() : qt_xrootwin() );
   setBackgroundMode(X11ParentRelative);
 #else
-  char buffer[128];
   Display *dsp = x11Display();  // get the display
+  char buffer[128];
   XEvent ev;
-
-  WId win = winId();     // get the window
-  XWMHints *hints;  // hints
-  XClassHint classhint;  // class hints
-  classhint.res_name = "licq";  // res_name
-  classhint.res_class = "Wharf";  // res_class
-  XSetClassHint(dsp, win, &classhint); // set the class hints
-  hints = XGetWMHints(dsp, win);  // init hints
-  hints->initial_state = WithdrawnState;
-  hints->icon_x = 0;
-  hints->icon_y = 0;
-  hints->icon_window = wharfIcon->winId();
-  hints->window_group = win;  // set the window hint
-  hints->flags = WindowGroupHint | IconWindowHint | IconPositionHint | StateHint
-; // set the window group hint
-  XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
-  XFree( hints );
 
   snprintf(buffer, sizeof(buffer), "_NET_SYSTEM_TRAY_S%d", x11Screen());
   Atom a = XInternAtom(dsp, buffer, False);
   Window systray = XGetSelectionOwner(dsp, a);
+
 
   memset(&ev, 0, sizeof(ev));
   ev.xclient.type = ClientMessage;
