@@ -36,13 +36,34 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
 
-	ICQEvent *dummy = (ICQEvent *)p;
-	CICQDaemon *d = dummy->m_pDaemon;
- 
-	pthread_mutex_lock(&d->mutex_sendqueue_server);
-	ICQEvent *e = d->m_lxSendQueue_Server.front();
-	d->m_lxSendQueue_Server.pop_front();
-	pthread_mutex_unlock(&d->mutex_sendqueue_server);
+  ICQEvent *dummy = (ICQEvent *)p;
+  CICQDaemon *d = dummy->m_pDaemon;
+
+  // Must send packets in sequential order
+  pthread_mutex_lock(&d->mutex_sendqueue_server);
+
+  list<ICQEvent *>::iterator iter, smallestIter;
+  smallestIter = d->m_lxSendQueue_Server.begin();
+  bool bDirty = false;
+
+  do
+  {
+    bDirty = false;
+    for (iter = d->m_lxSendQueue_Server.begin();
+         iter != d->m_lxSendQueue_Server.end(); iter++)
+    {
+      if ((*iter)->Sequence() < (*smallestIter)->Sequence())
+      {
+        bDirty = true;
+        smallestIter = iter;
+      }
+    }
+  } while (bDirty);
+
+  ICQEvent *e = *smallestIter;
+  d->m_lxSendQueue_Server.erase(smallestIter);
+
+  pthread_mutex_unlock(&d->mutex_sendqueue_server);
   //struct timeval tv;
 
   // Check if the socket is connected
