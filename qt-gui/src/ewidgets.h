@@ -45,6 +45,7 @@ class CEButton : public QPushButton
 public:
   CEButton(QPixmap *, QPixmap *, QPixmap *, QWidget *parent = 0, char *name = 0);
   CEButton(QString, QWidget *parent = 0, char *name = 0);
+  CEButton(QWidget *parent = 0, char *name = 0);
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
   ButtonState stateWhenPressed() { return whenPressed; }

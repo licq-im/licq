@@ -67,9 +67,9 @@ void CriticalUser(QWidget *q, QString sz)
 CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
   : QLabel(parent, name)
 {
-   mnuPopUp = m;
-   m_bTransparent = _bTransparent;
-   if (_bTransparent) setAutoMask(true);
+  mnuPopUp = m;
+  m_bTransparent = _bTransparent;
+  if (_bTransparent) setAutoMask(true);
 }
 
 
@@ -135,7 +135,7 @@ void CELabel::setNamedBgColor(char *theColor)
                          normal.mid(), normal.text(), normal.base());
    pal = QPalette(newNormal, newNormal, newNormal);
 #if 0
-#if QT_VESION >= 210
+#if QT_VERSION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Background, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Background, c);
 #else
@@ -192,6 +192,12 @@ CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char 
 }
 
 CEButton::CEButton(QString label, QWidget *parent, char *name) : QPushButton(label, parent, name)
+{
+   pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
+}
+
+CEButton::CEButton(QWidget *parent, char *name)
+  : QPushButton(parent, name)
 {
    pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
 }
