@@ -92,7 +92,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_bUrgent = false;
   m_nOnlCount = 0;
   // Other users group is sorted at the end
-  m_sSortKey = m_nGroupId ? QString::number(m_nGroupId) : QString("9999999999");
+  m_sSortKey = m_nGroupId ? QString::number((int)m_nGroupId) : QString("9999999999");
   m_sPrefix = "1";
   setPixmap(0, *listView()->pixCollapsed);
   setText(1, name);
@@ -129,11 +129,13 @@ CUserViewItem::~CUserViewItem()
 
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
-  else {
-    if(parent()) {
-      CUserViewItem* i = static_cast<CUserViewItem*>(parent());
+  else
+  {
+    if (parent())
+    {
+      CUserViewItem *i = static_cast<CUserViewItem*>(parent());
       i->m_nOnlCount--;
-      if(i->m_nOnlCount)
+      if (i->m_nOnlCount)
         i->setText(1, QString(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
                    + QString(")"));
       else
@@ -336,12 +338,12 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
     // If this is a floaty then don't draw the highlight box
-    if (listView()->parent() == NULL)
+    if (listView()->parent() == NULL || isGroupItem())
     {
       cg.setBrush(QColorGroup::Highlight, QBrush(NoBrush));
       cg.setColor(QColorGroup::HighlightedText, cg.text());
     }
-    if(isGroupItem())
+    if (isGroupItem())
     {
       QFont f(p->font());
       f.setPointSize(f.pointSize() - 2);
