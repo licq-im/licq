@@ -268,6 +268,7 @@ const unsigned short ICQ_CMDxSUB_SECURExOPEN       = 0x00EF;  // Licq extension
 
 // Special UINs
 const unsigned short ICQ_UINxPAGER		   = 0x000A;
+const unsigned short ICQ_UINxSMS                   = 0x03EA;
 
 // Status constants
 // Statuses must be checked in the following order:
