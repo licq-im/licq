@@ -899,8 +899,8 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
   m_fConf.ReadBool("SendRealIp", m_bSendRealIp, false);
   SetCustomAutoResponse(szTemp);
-  m_fConf.ReadStr( "UserCharset", szTemp, "" );
-  SetString( &m_szCharset, szTemp );
+  m_fConf.ReadStr( "UserEncoding", szTemp, "" );
+  SetString( &m_szEncoding, szTemp );
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
@@ -951,8 +951,8 @@ ICQUser::~ICQUser()
 
   if ( m_szAutoResponse )
       free( m_szAutoResponse );
-  if ( m_szCharset )
-      free( m_szCharset );
+  if ( m_szEncoding )
+      free( m_szEncoding );
   if ( m_szAlias )
       free( m_szAlias );
   if ( m_szFirstName )
@@ -1037,7 +1037,7 @@ void ICQUser::Init(unsigned long _nUin)
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
-  m_szCharset = NULL;
+  m_szEncoding = NULL;
   m_bSecure = false;
 
   // General Info
@@ -1854,7 +1854,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
-   m_fConf.WriteStr("UserCharset", m_szCharset );
+   m_fConf.WriteStr("UserEncoding", m_szEncoding);
 
    if (!m_fConf.FlushFile())
    {

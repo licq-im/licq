@@ -212,7 +212,7 @@ public:
 
   // Licq Info
   char *AutoResponse()                  { return m_szAutoResponse; }
-  char *UserCharset()                   { return m_szCharset; }
+  char *UserEncoding()                  { return m_szEncoding; }
   bool SendRealIp()                     { return m_bSendRealIp; }
   bool SendServer()                     { return m_bSendServer; }
   unsigned short SendLevel()            { return m_nSendLevel; }
@@ -296,7 +296,7 @@ public:
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
-  void SetUserCharset(const char* s)  { SetString(&m_szCharset, s); }
+  void SetUserEncoding(const char* s) { SetString(&m_szEncoding, s); }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
@@ -439,7 +439,7 @@ protected:
                 m_nGroups[2];
   char m_nMode;
   char *m_szAutoResponse;
-  char *m_szCharset;
+  char *m_szEncoding;
   char *m_szCustomAutoResponse;
   bool m_bOnlineNotify,
        m_bSendRealIp,
