@@ -1,5 +1,11 @@
 ChangeLog for licq-data Package
 
+New in 1.4.1
+
+o  Added RecreateUserList.sh script to rebuild the user list from the current
+   user configuration files
+
+
 New in 1.4
 
 o  Added BlueHeart skin
