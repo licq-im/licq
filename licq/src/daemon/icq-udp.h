@@ -340,12 +340,12 @@ void CICQDaemon::icqPing()
 
 
 //-----icqSetStatus-------------------------------------------------------------
-void CICQDaemon::icqSetStatus(unsigned long newStatus)
+ICQEvent *CICQDaemon::icqSetStatus(unsigned long newStatus)
 {
   CPU_SetStatus *p = new CPU_SetStatus(newStatus);
   gLog.Info("%sChanging status (#%d)...\n", L_UDPxSTR, p->getSequence());
-  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
   m_nDesiredStatus = newStatus;
+  return SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
 
 
@@ -1087,7 +1087,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL)
     {
-      if (!AllowNewUsers())
+      if (Ignore(IGNORE_NEWUSERS))
       {
         gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
         RejectEvent(nUin, e);
@@ -1132,7 +1132,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL)
     {
-      if (!AllowNewUsers())
+      if (Ignore(IGNORE_NEWUSERS))
       {
         gLog.Info("%sURL from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
         RejectEvent(nUin, e);
@@ -1251,10 +1251,14 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     CEventWebPanel *e = new CEventWebPanel(szFields[0], szFields[3], szFields[5],
                                            ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    AddUserEvent(o, e);
-    gUserManager.DropOwner();
-    e->AddToHistory(NULL, D_RECEIVER);
-    m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+    if (AddUserEvent(o, e))
+    {
+      gUserManager.DropOwner();
+      e->AddToHistory(NULL, D_RECEIVER);
+      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+    }
+    else
+      gUserManager.DropOwner();
     delete[] szFields;
     break;
   }
@@ -1277,10 +1281,14 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3], szFields[5],
                                                ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    AddUserEvent(o, e);
-    gUserManager.DropOwner();
-    e->AddToHistory(NULL, D_RECEIVER);
-    m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+    if (AddUserEvent(o, e))
+    {
+      gUserManager.DropOwner();
+      e->AddToHistory(NULL, D_RECEIVER);
+      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+    }
+    else
+      gUserManager.DropOwner();
     delete[] szFields;
     break;
   }
@@ -1328,11 +1336,11 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     delete [] buf;
     CEventUnknownSysMsg *e =
       new CEventUnknownSysMsg(newCommand, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                              nUin, szMessage, 0, timeSent, 0);
+                              nUin, szMessage, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     AddUserEvent(o, e);
     gUserManager.DropOwner();
-    e->AddToHistory(NULL, D_RECEIVER);
+    //e->AddToHistory(NULL, D_RECEIVER);
   }
   } // switch
 }

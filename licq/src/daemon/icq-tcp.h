@@ -400,7 +400,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers())
+        if (Ignore(IGNORE_NEWUSERS))
         {
           RejectEvent(checkUin, e);
           break;
@@ -462,7 +462,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers())
+        if (Ignore(IGNORE_NEWUSERS))
         {
           RejectEvent(checkUin, e);
           break;
@@ -512,7 +512,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers())
+        if (Ignore(IGNORE_NEWUSERS))
         {
           RejectEvent(checkUin, e);
           break;
@@ -555,7 +555,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers())
+        if (Ignore(IGNORE_NEWUSERS))
         {
           RejectEvent(checkUin, e);
           break;
@@ -603,7 +603,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
-        if (!AllowNewUsers())
+        if (Ignore(IGNORE_NEWUSERS))
         {
           RejectEvent(checkUin, e);
           break;
@@ -679,7 +679,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       s_nChatSequence = theSequence;
       s_nChatUin = checkUin;
 
-      sExtendedAck = new struct SExtendedAck;
+      sExtendedAck = new SExtendedAck;
       sExtendedAck->nPort = nPort;
       sExtendedAck->bAccepted = (ackFlags != ICQ_TCPxACK_REFUSE);
       sExtendedAck->szResponse = strdup(message);
@@ -706,7 +706,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
        s_nFileSequence = theSequence;
        s_nFileUin = checkUin;
 
-       sExtendedAck = new struct SExtendedAck;
+       sExtendedAck = new SExtendedAck;
        sExtendedAck->nPort = nPort;
        sExtendedAck->bAccepted = (ackFlags != ICQ_TCPxACK_REFUSE);
        sExtendedAck->szResponse = strdup(message);
