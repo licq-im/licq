@@ -23,8 +23,8 @@
 **
 *****************************************************************************/
 
-#ifndef QMULTILINEEDITNEW_H
-#define QMULTILINEEDITNEW_H
+#ifndef QMULTILINEEDIT_H
+#define QMULTILINEEDIT_H
 
 #ifndef QT_H
 #include "qtableview.h"
@@ -262,8 +262,6 @@ private:
     bool	inMark( int posx, int posy ) const;
     bool	beforeMark( int posx, int posy ) const;
     bool	afterMark( int posx, int posy ) const;
-
-    void	repaintDelayed( bool erase = TRUE );
 
     void	doDrag();
     void	startAutoScroll();

@@ -210,8 +210,8 @@ static const int scroll_margin = 16;     // auto-scroll edge in DND
 #define WORD_WRAP ( d->wordwrap != QMultiLineEditNew::NoWrap )
 #define DYNAMIC_WRAP ( d->wordwrap == QMultiLineEditNew::WidgetWidth )
 #define FIXED_WIDTH_WRAP ( d->wordwrap == QMultiLineEditNew::FixedPixelWidth )
-#define FIXED_COLUMN_WRAP ( d->wordwrap == QMultiLineEditNew::FixedColumnWidth ) 
-#define BREAK_WITHIN_WORDS ( d->wrappolicy == QMultiLineEditNew::Anywhere ) 
+#define FIXED_COLUMN_WRAP ( d->wordwrap == QMultiLineEditNew::FixedColumnWidth )
+#define BREAK_WITHIN_WORDS ( d->wrappolicy == QMultiLineEditNew::Anywhere )
 
 static int defTabStop = 8;
 
@@ -330,7 +330,7 @@ static int xPosToCursorPos( const QString &s, const QFontMetrics &fm,
 */
 
 QMultiLineEditNew::QMultiLineEditNew( QWidget *parent , const char *name )
-    :QTableView( parent, name, WNorthWestGravity )
+    :QTableView( parent, name, WNorthWestGravity | WRepaintNoErase )
 {
     d = new QMultiLineData;
     QFontMetrics fm( font() );
@@ -434,6 +434,22 @@ QMultiLineEditNew::QMultiLineEditNew( QWidget *parent , const char *name )
   key. It is not emitted if isReadOnly() is TRUE.
 
   \sa textChanged()
+*/
+
+/*!
+  \fn void QMultiLineEditNew::undoAvailable (bool yes)
+
+  This signal is emitted when the availability of undo changes.
+  If \a yes is TRUE, then undo() will work until
+  undoAvailable(FALSE) is next emitted.
+*/
+
+/*!
+  \fn void QMultiLineEditNew::redoAvailable (bool yes)
+
+  This signal is emitted when the availability of redo changes.
+  If \a yes is TRUE, then redo() will work until
+  redoAvailable(FALSE) is next emitted.
 */
 
 
@@ -904,7 +920,6 @@ void QMultiLineEditNew::selectAll()
     markDragY = numLines() - 1;
     markDragX = lineLength( markDragY );
     markIsOn = ( markDragX != markAnchorX ||  markDragY != markAnchorY );
-    repaintDelayed();
 }
 
 
@@ -935,7 +950,7 @@ void QMultiLineEditNew::setText( const QString &s )
     emit textChanged();
     setAutoUpdate(oldAuto);
     if ( autoUpdate() )
-	repaintDelayed( FALSE );
+	update();
     setUndoEnabled( oldUndo );
 }
 
@@ -1236,7 +1251,7 @@ void QMultiLineEditNew::pageDown( bool mark )
 	if ( mark )
 	    newMark( cursorX, cursorY, FALSE );
 	setTopCell( newTopCell );
-    } else { // just move the cursor
+    } else if ( cursorY != (int)contents->count() - 1) { // just move the cursor
 	cursorY = QMIN( cursorY + pageSize, numLines() - 1);
 	cursorX = mapFromView( curXPos, cursorY );
 	if ( mark )
@@ -1246,7 +1261,7 @@ void QMultiLineEditNew::pageDown( bool mark )
     if ( oldAuto )
 	if ( mark ) {
 	    setAutoUpdate( TRUE );
-	    repaintDelayed( FALSE );
+	    update();
 	} else {
 	    updateCell( oldY, 0, FALSE );
 	}
@@ -1299,7 +1314,7 @@ void QMultiLineEditNew::pageUp( bool mark )
     if ( oldAuto )
 	if ( mark ) {
 	    setAutoUpdate( TRUE );
-	    repaintDelayed( FALSE );
+	    update();
 	} else {
 	    updateCell( oldY, 0, FALSE );
 	}
@@ -1366,7 +1381,7 @@ void QMultiLineEditNew::insertAtAux( const QString &txt, int line, int col, bool
 	setAutoUpdate( FALSE );
 	rebreakAll();
 	setAutoUpdate( TRUE );
-	repaintDelayed( FALSE );
+	update();
     }
 
 }
@@ -1427,7 +1442,7 @@ void QMultiLineEditNew::removeLine( int line )
 	updateCellWidth();
     makeVisible();
     if (updt)
-	repaintDelayed( FALSE );
+	update();
     textDirty = TRUE;
     d->edited = TRUE;
 }
@@ -1691,7 +1706,7 @@ void QMultiLineEditNew::turnMarkOff()
 {
     if ( markIsOn ) {
 	markIsOn = FALSE;
-	repaintDelayed( FALSE );
+	update();
     }
 }
 
@@ -1770,7 +1785,7 @@ void QMultiLineEditNew::delAux()
 	    updateCellWidth();
 	    setAutoUpdate( oldAuto );
 	    if ( autoUpdate() )
-		repaintDelayed( FALSE );
+		update();
 	}
 	markAnchorY = markDragY = cursorY;
 	markAnchorX = markDragX = cursorX;
@@ -1809,7 +1824,7 @@ void QMultiLineEditNew::delAux()
 	    setAutoUpdate( oldAuto );
 	}
 	if ( autoUpdate() )
-	    repaintDelayed( FALSE );
+	    update();
     }
     curXPos  = 0;
     makeVisible();
@@ -1967,7 +1982,7 @@ void QMultiLineEditNew::setCursorPixelPosition(QPoint p, bool clear_mark)
 	markIsOn       = FALSE;
 	if ( markWasOn ) {
 	    cursorY = newY;
-	    repaintDelayed( FALSE );
+	    update();
 	    d->isHandlingEvent = FALSE;
 	    return;
 	}
@@ -2377,7 +2392,7 @@ void QMultiLineEditNew::clear()
     dummy = TRUE;
     markIsOn = FALSE;
     if ( autoUpdate() )
-	repaintDelayed();
+	update();
     if ( !d->isHandlingEvent ) //# && not already empty
 	emit textChanged();
 }
@@ -2557,7 +2572,7 @@ void QMultiLineEditNew::clipboardChanged()
     disconnect( QApplication::clipboard(), SIGNAL(dataChanged()),
 		this, SLOT(clipboardChanged()) );
     markIsOn = FALSE;
-    repaintDelayed( FALSE );
+    update();
 #endif
 }
 
@@ -2579,7 +2594,7 @@ void QMultiLineEditNew::setWidth( int w )
 	setCellWidth( QMAX( w, contentsRect().width() ) );
     setAutoUpdate( u );
     if ( autoUpdate() && d->align != AlignLeft )
-	repaintDelayed( FALSE );
+	update();
 }
 
 
@@ -2801,16 +2816,6 @@ void QMultiLineEditNew::resizeEvent( QResizeEvent *e )
 	d->maxLineWidth = 0; // trigger update
 	updateCellWidth();
     }
-}
-
-/*!
-  Post a paint event
- */
-void  QMultiLineEditNew::repaintDelayed( bool erase)
-{
-    if ( isVisible() )
-	QApplication::postEvent( this, new QPaintEvent( viewRect(), erase ) );
-
 }
 
 /*!
@@ -3364,8 +3369,8 @@ void QMultiLineEditNew::rebreakAll()
 /*! \enum QMultiLineEditNew::WordWrap
 
   This enum describes the multiline edit's word wrap mode.
-  
-  The following values are valid: 
+
+  The following values are valid:
     <ul>
     <li> \c NoWrap - no word wrap at all.
     <li> \c WidgetWidth - word wrap depending on the current
@@ -3446,23 +3451,23 @@ int QMultiLineEditNew::wrapColumnOrWidth() const
 
 
 /*! \enum QMultiLineEditNew::WrapPolicy
-  
+
   Defines where text can be wrapped in word wrap mode.
-  
+
   The following values are valid:
   <ul>
   <li> \c AtWhiteSpace - break only after whitespace
-  <li> \c Anywhere - break anywhere 
+  <li> \c Anywhere - break anywhere
    </ul>
 
    \sa setWrapPolicy()
-*/   
+*/
 
 /*!
   Defines where text can be wrapped in word wrap mode.
-  
+
    The default is \c AtWhiteSpace.
-   
+
   /sa setWordWrap(), wrapPolicy()
  */
 void QMultiLineEditNew::setWrapPolicy( WrapPolicy policy )
@@ -3478,9 +3483,9 @@ void QMultiLineEditNew::setWrapPolicy( WrapPolicy policy )
 }
 
 /*!
-  
+
   Returns the current word wrap policy.
-  
+
   \sa setWrapPolicy()
  */
 QMultiLineEditNew::WrapPolicy QMultiLineEditNew::wrapPolicy() const
