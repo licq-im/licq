@@ -715,7 +715,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 void CICQDaemon::RemoveUserEvent(ICQUser *u, unsigned long nId)
 {
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-                                  u->Uin(), -nId));
+                                  u->Uin(), nId, true));
 }
 
 
