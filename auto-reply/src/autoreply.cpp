@@ -176,19 +176,13 @@ void CLicqAutoReply::ProcessSignal(CICQSignal *s)
 {
   switch (s->Signal())
   {
-  case SIGNAL_UPDATExUSER:
-    if (s->SubSignal() == USER_EVENTS && s->Uin() != gUserManager.OwnerUin() && s->Argument() > 0)
-      ProcessUserEvent(s->Uin(), s->Argument());
-    break;
-  // We should never get any other signal
-  case SIGNAL_UPDATExLIST:
-    break;
-  case SIGNAL_LOGON:
-    break;
-  default:
-    gLog.Warn("%sInternal error: CLicqiAutoReply::ProcessSignal(): Unknown signal command received from daemon: %ld.\n", 
-              L_WARNxSTR, s->Signal());
-    break;
+    case SIGNAL_UPDATExUSER:
+      if (s->SubSignal() == USER_EVENTS && s->Uin() != gUserManager.OwnerUin() && s->Argument() > 0)
+        ProcessUserEvent(s->Uin(), s->Argument());
+      break;
+    // We should never get any other signal
+    default:
+      break;
   }
   delete s;
 }
@@ -199,41 +193,13 @@ void CLicqAutoReply::ProcessSignal(CICQSignal *s)
  *-------------------------------------------------------------------------*/
 void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 {
-/*  switch (e->m_nCommand)
-  {
-  case ICQ_CMDxTCP_START:
-  case ICQ_CMDxSND_THRUxSERVER:
-  case ICQ_CMDxSND_USERxGETINFO:
-  case ICQ_CMDxSND_USERxGETDETAILS:
-  case ICQ_CMDxSND_UPDATExDETAIL:
-  case ICQ_CMDxSND_UPDATExBASIC:
-  case ICQ_CMDxSND_LOGON:
-  case ICQ_CMDxSND_REGISTERxUSER:
-  case ICQ_CMDxSND_SETxSTATUS:
-  case ICQ_CMDxSND_AUTHORIZE:
-  case ICQ_CMDxSND_USERxLIST:
-  case ICQ_CMDxSND_VISIBLExLIST:
-  case ICQ_CMDxSND_INVISIBLExLIST:
-  case ICQ_CMDxSND_PING:
-  case ICQ_CMDxSND_USERxADD:
-  case ICQ_CMDxSND_SYSxMSGxREQ:
-  case ICQ_CMDxSND_SYSxMSGxDONExACK:
-  case ICQ_CMDxSND_SEARCHxINFO:
-  case ICQ_CMDxSND_SEARCHxUIN:
-    break;
-
-  default:
-    gLog.Warn("%sInternal error: CLicqAutoReply::ProcessEvent(): Unknown event command received from daemon: %d.\n",
-              L_WARNxSTR, e->m_nCommand);
-    break;
-  }*/
   delete e;
 }
 
 
 void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL)
   {
     gLog.Warn("%sInvalid uin received from daemon (%ld).\n", L_AUTOREPxSTR, nUin);
@@ -241,6 +207,7 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
   }
 
   CUserEvent *e = u->EventPeekId(nId);
+  gUserManager.DropUser(u);
 
   if (e == NULL)
   {
@@ -248,23 +215,23 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin, unsigned long nId)
   }
   else
   {
-    bool r = AutoReplyEvent(u, e);
+    bool r = AutoReplyEvent(nUin);
     if (m_bDelete && r)
+    {
+      u = gUserManager.FetchUser(nUin, LOCK_W);
       u->EventClearId(nId);
+      gUserManager.DropUser(u);
+    }
   }
-
-  gUserManager.DropUser(u);
 }
 
 
-bool CLicqAutoReply::AutoReplyEvent(ICQUser *u, CUserEvent *e)
+bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin)
 {
   FILE *output;
   char m_szMessage[4096];
   char c;
   int pos = 0;
-
-  if (e == NULL) return false;
 
   for (int i = 0; i < 4096; i++)
   {
@@ -283,18 +250,26 @@ bool CLicqAutoReply::AutoReplyEvent(ICQUser *u, CUserEvent *e)
   pclose (output);
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  CICQEventTag *tag = licqDaemon->icqSendMessage(u->Uin(), szText, false,
+  CICQEventTag *tag = licqDaemon->icqSendMessage(nUin, szText, false,
      ICQ_TCPxMSG_NORMAL);
   delete []szText;
+
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return false;
+
   if (tag == NULL)
   {
     gLog.Warn("%sSending message to %s (%ld) failed.\n", L_AUTOREPxSTR,
-u->GetAlias(), u->Uin());
-    return false;
+     u->GetAlias(), nUin);
   }
-  gLog.Info("%sSent autoreply to %s (%ld).\n", L_AUTOREPxSTR, u->GetAlias(),
-u->Uin());
+  else
+  {
+    gLog.Info("%sSent autoreply to %s (%ld).\n", L_AUTOREPxSTR, u->GetAlias(),
+     nUin);
+  }
+
+  gUserManager.DropUser(u);
   delete tag;
-  return true;
+  return tag != NULL;
 }
 

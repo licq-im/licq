@@ -36,7 +36,7 @@ public:
   void ProcessEvent(ICQEvent *);
 
   void ProcessUserEvent(unsigned long, unsigned long);
-  bool AutoReplyEvent(ICQUser *, CUserEvent *);
+  bool AutoReplyEvent(unsigned long);
 
 };
 
