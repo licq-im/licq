@@ -118,10 +118,12 @@ GtkWidget *main_window_new(const gchar *);
 void main_window_show();
 
 /* Functions in menu.cpp */
-GtkWidget *menu_new_item(GtkWidget *, const char *, GtkSignalFunc);
+GtkWidget *menu_new_item(GtkWidget *, const char *, GtkSignalFunc, 
+		bool sensitive = true);
 GtkWidget *menu_new_item_with_pixmap(GtkWidget *, const char *,
-		GtkSignalFunc, GdkPixbuf *);
+		GtkSignalFunc, GdkPixbuf *, gpointer data = NULL);
 void menu_create();
+void menu_separator(GtkWidget *_menu);
 
 /* Functions in option_window.cpp */
 void load_options();
