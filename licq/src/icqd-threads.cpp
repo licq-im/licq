@@ -47,8 +47,6 @@ void *ProcessRunningEvent_Server_tep(void *p)
   static unsigned short nNext = 0;
   static pthread_mutex_t send_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-
-
   /* want to be cancelled immediately so we don't try to derefrence the event
      after it has been deleted */
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -60,6 +58,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
   if (!d) pthread_exit(NULL);
 
   // Must send packets in sequential order
+  pthread_mutex_lock(&send_mutex);
   pthread_mutex_lock(&d->mutex_sendqueue_server);
 
   list<ICQEvent *>::iterator iter;
@@ -88,6 +87,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
     if (e == NULL)
     {
+      pthread_mutex_unlock(&send_mutex);
       pthread_mutex_unlock(&d->mutex_sendqueue_server);
       pthread_exit(NULL);
     }
@@ -106,7 +106,8 @@ void *ProcessRunningEvent_Server_tep(void *p)
   e->thread_send = pthread_self();
   e->thread_running = true;
 
-  pthread_mutex_lock(&send_mutex);
+  // Done reading the queue now
+  pthread_mutex_unlock(&d->mutex_sendqueue_server);
 
   // declared here because pthread_cleanup_push starts a new block
   CBuffer *buf;
@@ -115,7 +116,6 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   pthread_cleanup_push(cleanup_mutex, &send_mutex);
 
-    pthread_mutex_unlock(&d->mutex_sendqueue_server);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
 
