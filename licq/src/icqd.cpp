@@ -770,7 +770,7 @@ void CICQDaemon::SaveUserList()
  
   snprintf(szFilename, nLen, "%s/%s", BASE_DIR, file);
   strcpy(szTmpName, szFilename);
-  strcpy(szTmpName, suffix);
+  strcat(szTmpName, suffix);
 
   fd = open(szTmpName, O_WRONLY | O_CREAT | O_TRUNC, 00664);
   if (fd == -1)
