@@ -14,6 +14,8 @@
 #include "gui-defines.h"
 #include "ewidgets.h"
 
+//=====CRandomChatDlg========================================================
+
 CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
                                CSignalManager *_sigman,
                                QWidget *p, const char *n)
@@ -31,7 +33,7 @@ CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
   lay->addMultiCellWidget(lstGroups, 0, 0, 0, 4);
 
   lay->setColStretch(0, 2);
-  btnOk = new QPushButton(tr("&Ok"), this);
+  btnOk = new QPushButton(tr("&Search"), this);
   lay->addWidget(btnOk, 1, 1);
 
   lay->addColSpacing(2, 10);
@@ -132,6 +134,151 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     mainwin->callFunction(mnuUserSendChat, e->m_sSearchAck->nUin);
     hide();
     return;
+  }
+
+}
+
+//=====CSetRandomChatGroupDlg================================================
+
+CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
+                               CSignalManager *_sigman,
+                               QWidget *p, const char *n)
+  : QWidget(p, n)
+{
+  server = s;
+  sigman = _sigman;
+  tag = NULL;
+
+  setCaption(tr("Set Random Chat Group"));
+
+  QGridLayout *lay = new QGridLayout(this, 2, 5, 10, 5);
+  lstGroups = new QListBox(this);
+  lay->addMultiCellWidget(lstGroups, 0, 0, 0, 4);
+
+  lay->setColStretch(0, 2);
+  btnOk = new QPushButton(tr("&Set"), this);
+  lay->addWidget(btnOk, 1, 1);
+
+  lay->addColSpacing(2, 10);
+  btnCancel = new QPushButton(tr("&Close"), this);
+  lay->addWidget(btnCancel, 1, 3);
+  lay->setColStretch(4, 2);
+
+  int bw = 75;
+  bw = QMAX(bw, btnOk->sizeHint().width());
+  bw = QMAX(bw, btnCancel->sizeHint().width());
+  btnOk->setFixedWidth(bw);
+  btnCancel->setFixedWidth(bw);
+
+  connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
+  connect(btnCancel, SIGNAL(clicked()), SLOT(hide()));
+
+  // Fill in the combo box
+  lstGroups->insertItem(tr("(none)"));
+  lstGroups->insertItem(tr("General"));
+  lstGroups->insertItem(tr("Romance"));
+  lstGroups->insertItem(tr("Games"));
+  lstGroups->insertItem(tr("Students"));
+  lstGroups->insertItem(tr("20 Something"));
+  lstGroups->insertItem(tr("30 Something"));
+  lstGroups->insertItem(tr("40 Something"));
+  lstGroups->insertItem(tr("50 Plus"));
+  lstGroups->insertItem(tr("Men Seeking Women"));
+  lstGroups->insertItem(tr("Women Seeking Men"));
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  switch(o->RandomChatGroup())
+  {
+    case ICQ_RANDOMxCHATxGROUP_GENERAL: lstGroups->setCurrentItem(1); break;
+    case ICQ_RANDOMxCHATxGROUP_ROMANCE: lstGroups->setCurrentItem(2); break;
+    case ICQ_RANDOMxCHATxGROUP_GAMES: lstGroups->setCurrentItem(3); break;
+    case ICQ_RANDOMxCHATxGROUP_STUDENTS: lstGroups->setCurrentItem(4); break;
+    case ICQ_RANDOMxCHATxGROUP_20SOME: lstGroups->setCurrentItem(5); break;
+    case ICQ_RANDOMxCHATxGROUP_30SOME: lstGroups->setCurrentItem(6); break;
+    case ICQ_RANDOMxCHATxGROUP_40SOME: lstGroups->setCurrentItem(7); break;
+    case ICQ_RANDOMxCHATxGROUP_50PLUS: lstGroups->setCurrentItem(8); break;
+    case ICQ_RANDOMxCHATxGROUP_MxSEEKxF: lstGroups->setCurrentItem(9); break;
+    case ICQ_RANDOMxCHATxGROUP_FxSEEKxM: lstGroups->setCurrentItem(10); break;
+    case ICQ_RANDOMxCHATxGROUP_NONE:
+    default:
+      lstGroups->setCurrentItem(0); break;
+  }
+  gUserManager.DropOwner();
+
+  show();
+}
+
+
+CSetRandomChatGroupDlg::~CSetRandomChatGroupDlg()
+{
+  if (tag != NULL)
+    server->CancelEvent(tag);
+  delete tag;
+}
+
+
+
+void CSetRandomChatGroupDlg::hide()
+{
+  QWidget::hide();
+  delete this;
+}
+
+
+void CSetRandomChatGroupDlg::slot_ok()
+{
+  if (lstGroups->currentItem() == -1) return;
+
+  btnOk->setEnabled(false);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  QObject::connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)),
+                   this, SLOT(slot_doneUserFcn(ICQEvent *)));
+  unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
+  switch(lstGroups->currentItem())
+  {
+    case 0: nGroup = ICQ_RANDOMxCHATxGROUP_NONE; break;
+    case 1: nGroup = ICQ_RANDOMxCHATxGROUP_GENERAL; break;
+    case 2: nGroup = ICQ_RANDOMxCHATxGROUP_ROMANCE; break;
+    case 3: nGroup = ICQ_RANDOMxCHATxGROUP_GAMES; break;
+    case 4: nGroup = ICQ_RANDOMxCHATxGROUP_STUDENTS; break;
+    case 5: nGroup = ICQ_RANDOMxCHATxGROUP_20SOME; break;
+    case 6: nGroup = ICQ_RANDOMxCHATxGROUP_30SOME; break;
+    case 7: nGroup = ICQ_RANDOMxCHATxGROUP_40SOME; break;
+    case 8: nGroup = ICQ_RANDOMxCHATxGROUP_50PLUS; break;
+    case 9: nGroup = ICQ_RANDOMxCHATxGROUP_MxSEEKxF; break;
+    case 10: nGroup = ICQ_RANDOMxCHATxGROUP_FxSEEKxM; break;
+  }
+  tag = server->icqSetRandomChatGroup(nGroup);
+  setCaption(tr("Setting Random Chat Group..."));
+}
+
+
+void CSetRandomChatGroupDlg::slot_doneUserFcn(ICQEvent *e)
+{
+  if (!tag->Equals(e)) return;
+
+  btnOk->setEnabled(true);
+  btnCancel = new QPushButton(tr("&Close"), this);
+  if (tag != NULL)
+  {
+    delete tag;
+    tag = NULL;
+  }
+
+  switch (e->m_eResult)
+  {
+  case EVENT_FAILED:
+    setCaption(caption() + tr("failed"));
+    break;
+  case EVENT_TIMEDOUT:
+    setCaption(caption() + tr("timed out"));
+    break;
+  case EVENT_ERROR:
+    setCaption(caption() + tr("error"));
+    break;
+  default:
+    setCaption(caption() + tr("done"));
+    break;
   }
 
 }

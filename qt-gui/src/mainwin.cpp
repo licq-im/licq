@@ -1133,6 +1133,9 @@ void CMainWindow::callOwnerFunction(int index)
   else if (index == OwnerMenuPassword)
     (void) new PasswordDlg(licqDaemon, licqSigMan);
 
+  else if (index == OwnerMenuRandomChat)
+    (void) new CSetRandomChatGroupDlg(licqDaemon, licqSigMan);
+
   else
     gLog.Warn("%sInternal Error: CMainWindow::callOwnerFunction(): Unknown index (%d).\n",
               L_WARNxSTR, index);
@@ -1950,6 +1953,7 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
+   mnuOwnerAdm->insertItem(tr("&Random Chat Group"), OwnerMenuRandomChat);
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("Debug Level"), mnuDebug);
    connect (mnuOwnerAdm, SIGNAL(activated(int)), this, SLOT(callOwnerFunction(int)));

@@ -30,7 +30,8 @@ enum OwnerMenu_Identifiers {
   OwnerMenuAbout = mnuUserAbout,
   OwnerMenuHistory = mnuUserHistory,
   OwnerMenuSecurity,
-  OwnerMenuPassword
+  OwnerMenuPassword,
+  OwnerMenuRandomChat
 };
 
 const unsigned short MNUxITEM_MINIxMODE            = 7;

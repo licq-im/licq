@@ -36,4 +36,26 @@ protected slots:
   void slot_doneUserFcn(ICQEvent *);
 };
 
+
+class CSetRandomChatGroupDlg : public QWidget
+{
+Q_OBJECT
+public:
+  CSetRandomChatGroupDlg(CICQDaemon *s, CSignalManager *_sigman,
+                 QWidget *p = NULL, const char *n = NULL);
+  ~CSetRandomChatGroupDlg();
+protected:
+  CMainWindow *mainwin;
+  CICQEventTag *tag;
+  CICQDaemon *server;
+  CSignalManager *sigman;
+  QListBox *lstGroups;
+  QPushButton *btnOk, *btnCancel;
+protected slots:
+  virtual void hide();
+  void slot_ok();
+  void slot_doneUserFcn(ICQEvent *);
+};
+
+
 #endif
