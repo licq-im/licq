@@ -187,6 +187,7 @@ public:
   void icqRemoveGroup(const char *);
   void icqRenameGroup(unsigned short _nGSID);
   void icqExportUsers(UinList &);
+  void icqExportGroups(GroupList &);
   void icqUpdateContactList();
 
   // Visible/Invisible list functions

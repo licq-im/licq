@@ -299,6 +299,13 @@ public:
   CPU_ExportToServerList(UinList &);
 };
 
+//-----ExportGroupsToServerList-------------------------------------------------
+class CPU_ExportGroupsToServerList : public CPU_CommonFamily
+{
+public:
+  CPU_ExportGroupsToServerList(GroupList &);
+};
+
 //-----AddToServerList----------------------------------------------------------
 class CPU_AddToServerList : public CPU_CommonFamily
 {
