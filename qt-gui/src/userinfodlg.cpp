@@ -509,7 +509,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
 
 void UserInfoDlg::SaveGeneralInfo()
 {
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -542,7 +542,8 @@ void UserInfoDlg::SaveGeneralInfo()
   gUserManager.DropUser(u);
 
   if (!m_bOwner)
-    server->icqRenameUser(m_nUin);
+    // TODO change the daemon to use szId and PPID
+    server->icqRenameUser(strtoul(m_szId, (char**)NULL, 10));
 }
 
 // -----------------------------------------------------------------------------
