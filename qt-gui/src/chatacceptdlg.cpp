@@ -53,7 +53,8 @@ void CChatAcceptDlg::accept()
    if (port == -1)   // assign the chat port
    {
      WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
-     delete this;
+     hide();
+     return;
    }
    ChatDlg *chatDlg = new ChatDlg(m_nUin, true, m_xServer, port);
    if (chatDlg->getPort() != 0)
@@ -65,14 +66,12 @@ void CChatAcceptDlg::accept()
       chatDlg->hide();
 
    hide();
-   delete this;
 }
 
 void CChatAcceptDlg::refuse()
 {
    m_xServer->icqChatRequestRefuse(m_nUin, (const char *)mleRefuseMsg->text(), m_nSequence);
    hide();
-   delete this;
 }
 
 
@@ -80,7 +79,12 @@ void CChatAcceptDlg::ignore()
 {
    // do nothing
    hide();
-   delete this;
+}
+
+void CChatAcceptDlg::hide()
+{
+  QWidget::hide();
+  delete this;
 }
 
 #include "chatacceptdlg.moc"

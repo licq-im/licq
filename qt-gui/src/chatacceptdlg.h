@@ -13,6 +13,9 @@ public:
    CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
                   unsigned long _nSequence, QWidget *parent = 0,
                   const char *name = 0);
+public slots:
+   virtual void hide();
+
 protected:
    CICQDaemon *m_xServer;
    unsigned long m_nUin;

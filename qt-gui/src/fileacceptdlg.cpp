@@ -56,10 +56,11 @@ CFileAcceptDlg::~CFileAcceptDlg(void)
 void CFileAcceptDlg::accept()
 {
    int port = m_xServer->GetTCPPort();
-   if (port != 0)   // assign the file port
+   if (port == -1)   // assign the file port
    {
      WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
-     delete this;
+     hide();
+     return;
    }
    CFileDlg *fileDlg = new CFileDlg(m_nUin, m_xEventFile->Filename(),
                                     m_xEventFile->FileSize(), m_xServer,
@@ -73,7 +74,6 @@ void CFileAcceptDlg::accept()
       fileDlg->hide();
 
    hide();
-   delete this;
 }
 
 void CFileAcceptDlg::refuse()
@@ -81,7 +81,6 @@ void CFileAcceptDlg::refuse()
    m_xServer->icqFileTransferRefuse(m_nUin, (const char *)mleRefuseMsg->text(),
                          m_xEventFile->Sequence());
    hide();
-   delete this;
 }
 
 
@@ -89,7 +88,12 @@ void CFileAcceptDlg::ignore()
 {
    // do nothing
    hide();
-   delete this;
+}
+
+void CFileAcceptDlg::hide()
+{
+  QWidget::hide();
+  delete this;
 }
 
 #include "fileacceptdlg.moc"
