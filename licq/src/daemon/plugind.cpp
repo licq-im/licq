@@ -1,4 +1,5 @@
 #include "plugind.h"
+#include "licq_socket.h"
 
 CPlugin::CPlugin(unsigned long _nSignalMask)
 {

@@ -3,8 +3,11 @@
 
 #include <pthread.h>
 #include <list.h>
-#include "licq_events.h"
 
+#include "licq_constants.h"
+
+class ICQEvent;
+class CICQSignal;
 
 //=====CPlugin==================================================================
 class CPlugin

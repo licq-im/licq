@@ -1,12 +1,5 @@
-#ifndef CBUFFER_H
-#define CBUFFER_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <sys/types.h>
-#include <netinet/in.h>
+#ifndef LICQ_BUFFER_H
+#define LICQ_BUFFER_H
 
 /*------------------------------------------------------------------------------
  * PacketIpToNetworkIp
@@ -17,10 +10,7 @@
  * Big endian machine:
  *  Packet returns ip in little-endian -> reverse digits -> call htonl (does nothing)
  *----------------------------------------------------------------------------*/
-static unsigned long PacketIpToNetworkIp(unsigned long l)
-{
-	return htonl((l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24));
-}
+extern unsigned long PacketIpToNetworkIp(unsigned long l);
 
 /*------------------------------------------------------------------------------
  * NetworkIpToPacketIp
@@ -31,12 +21,7 @@ static unsigned long PacketIpToNetworkIp(unsigned long l)
  * Big endian machine:
  *  Packet returns ip in little-endian -> reverse digits -> call htonl (does nothing)
  *----------------------------------------------------------------------------*/
-static unsigned long NetworkIpToPacketIp(unsigned long l)
-{
-	l = ntohl(l);
-	return (l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24);
-}
-
+extern unsigned long NetworkIpToPacketIp(unsigned long l);
 
 //=====CBuffer==================================================================
 class CBuffer

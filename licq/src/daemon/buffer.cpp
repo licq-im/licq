@@ -1,15 +1,31 @@
+// -*- c-basic-offset: 2 -*-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 
 #include "licq_buffer.h"
 #include "licq_log.h"
 
 
 //=====Utilities=================================================================
+
+// Takes an ip from the buffer class and converts it to network byte order:
+unsigned long PacketIpToNetworkIp(unsigned long l)
+{
+  return htonl((l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24));
+}
+
+//  Takes an ip in network order and converts it to the packet class format
+unsigned long NetworkIpToPacketIp(unsigned long l)
+{
+	l = ntohl(l);
+	return (l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24);
+}
 
 // Endianness utility routines: Unlike Real Internet Protocols, this
 // heap of dung uses little-endian byte sex.

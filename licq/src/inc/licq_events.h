@@ -1,16 +1,12 @@
 #ifndef ICQEVENT_H
 #define ICQEVENT_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-
-#include "licq_socket.h"
-#include "licq_message.h"
+#include "pthread_rdwr.h"
 
 class CPacket;
 class CICQDaemon;
+class CUserEvent;
+class ICQUser;
 
 //-----CExtendedAck----------------------------------------------------------
 class CExtendedAck

@@ -16,7 +16,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "licq_socket.h"
 #include "licq_events.h"
 #include "licq_remoteserver.h"
 #include "licq_onevent.h"
@@ -28,6 +27,9 @@ class CPacketTcp;
 class CLicq;
 class ICQUser;
 class CICQEventTag;
+class TCPSocket;
+class INetSocket;
+class UDPSocket;
 
 class CPluginFunctions
 {
