@@ -29,6 +29,7 @@ class QLabel;
 class QCheckBox;
 class QPushButton;
 class QTabWidget;
+class QProgressBar;
 
 class CInfoField;
 class CICQDaemon;
@@ -113,11 +114,12 @@ protected:
   // History tab
   void CreateHistory();
   void SetupHistory();
-  void ShowHistory();
   void SaveHistory();
   CInfoField *nfoHistory;
   MLEditWrap *mleHistory;
-  QLabel *lblHistory;
+  QLabel *lblHistory, *lblFilter;
+  QLineEdit* lneFilter;
+  QProgressBar* barFiltering;
   QCheckBox *chkHistoryReverse;
   HistoryList m_lHistoryList;
   HistoryListIter m_iHistorySIter;
@@ -136,6 +138,7 @@ protected:
   void SaveAbout();
 
 protected slots:
+  void ShowHistory();
   void ShowHistoryPrev();
   void ShowHistoryNext();
   void HistoryReverse(bool);
@@ -152,6 +155,9 @@ protected slots:
 signals:
   void finished(unsigned long);
   void signal_updatedUser(CICQSignal *);
+
+private:
+  static bool chkContains(const char* text, const char* filter, int filterlen);
 };
 
 #endif

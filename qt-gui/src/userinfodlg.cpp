@@ -34,6 +34,8 @@
 #include <qspinbox.h>
 #include <qtabwidget.h>
 #include <qtimer.h>
+#include <qprogressbar.h>
+#include <qapplication.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -243,6 +245,7 @@ void UserInfoDlg::CreateGeneralInfo()
   nfoFax = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoFax, CR, 4);
 
+  lay->setRowStretch(++CR, 5);
 }
 
 void UserInfoDlg::SetGeneralInfo(ICQUser *u)
@@ -701,6 +704,17 @@ void UserInfoDlg::CreateHistory()
 
   mleHistory = new CHistoryWidget(p);
   lay->addWidget(mleHistory, 1);
+
+  l = new QHBoxLayout(lay);
+
+  lneFilter = new QLineEdit(p);
+  lblFilter = new QLabel(lneFilter, tr("&Filter: "), p);
+  l->addWidget(lblFilter);
+  l->addWidget(lneFilter, 1);
+  l->addSpacing(50);
+  connect(lneFilter, SIGNAL(textChanged(const QString&)), this, SLOT(ShowHistory()));
+  barFiltering = new QProgressBar(p);
+  l->addWidget(barFiltering, 1);
 }
 
 void UserInfoDlg::SetupHistory()
@@ -795,6 +809,17 @@ void UserInfoDlg::ShowHistoryNext()
   }
 }
 
+bool UserInfoDlg::chkContains(const char* d, const char* filter, int len)
+{
+  if ( !d ) return false;
+  while ( *d ) {
+    if ( strnicmp(d, filter, len) == 0 )
+      return true;
+    d++;
+  }
+  return false;
+}
+
 void UserInfoDlg::ShowHistory()
 {
   // Last check (should never be true)
@@ -824,54 +849,75 @@ void UserInfoDlg::ShowHistory()
       gUserManager.DropUser(u);
     }
   }
+  barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
+  char* ftxt = qstrdup(lneFilter->text().local8Bit().data());
+  int flen = strlen(ftxt);
   while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
   {
-    d.setTime_t((*tempIter)->Time());
-    if ((*tempIter)->Direction() == D_RECEIVER)
-      s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
-                '\001', EventDescription(*tempIter).data(),
-                tr("from").utf8().data(), n.utf8().data(), '\001',
-                d.toString().utf8().data(),
-                (*tempIter)->IsDirect() ? 'D' : '-',
-                (*tempIter)->IsMultiRec() ? 'M' : '-',
-                (*tempIter)->IsUrgent() ? 'U' : '-',
+    if(UserInfoDlg::chkContains((*tempIter)->Text(), ftxt, flen))
+    {
+      d.setTime_t((*tempIter)->Time());
+      if ((*tempIter)->Direction() == D_RECEIVER)
+        s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
+                  '\001', EventDescription(*tempIter).data(),
+                  tr("from").utf8().data(), n.utf8().data(), '\001',
+                  d.toString().utf8().data(),
+                  (*tempIter)->IsDirect() ? 'D' : '-',
+                  (*tempIter)->IsMultiRec() ? 'M' : '-',
+                  (*tempIter)->IsUrgent() ? 'U' : '-',
+                  (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
+//                  (*tempIter)->Text());
+      else
+        s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
+                  '\002', EventDescription(*tempIter).data(),
+                  tr("to").utf8().data(), n.utf8().data(), '\002',
+                  d.toString().utf8().data(),
+                  (*tempIter)->IsDirect() ? 'D' : '-',
+                  (*tempIter)->IsMultiRec() ? 'M' : '-',
+                  (*tempIter)->IsUrgent() ? 'U' : '-',
                 (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
-    else
-      s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
-                '\002', EventDescription(*tempIter).data(),
-                tr("to").utf8().data(), n.utf8().data(), '\002',
-                d.toString().utf8().data(),
-                (*tempIter)->IsDirect() ? 'D' : '-',
-                (*tempIter)->IsMultiRec() ? 'M' : '-',
-                (*tempIter)->IsUrgent() ? 'U' : '-',
-                (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
-    st.append(s);
-    m_nHistoryShowing++;
+//                  (*tempIter)->Text());
+      st.append(s);
+      m_nHistoryShowing++;
+      barFiltering->setProgress(m_nHistoryShowing);
+    }
     if(m_bHistoryReverse)
     {
-      if (tempIter == m_iHistorySIter)
+      if (tempIter == (lneFilter->text().isEmpty() ?
+                       m_iHistorySIter : m_lHistoryList.begin()))
         break;
       tempIter--;
     }
     else
     {
        tempIter++;
-       if (tempIter == m_iHistoryEIter)
+       if (tempIter == (lneFilter->text().isEmpty() ?
+                        m_iHistoryEIter : m_lHistoryList.end()))
          break;
     }
   }
-  lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
-                         "[<font color=\"%2\">Sent</font>] "
-                         "%3 to %4 of %5")
-                      .arg(COLOR_RECEIVED).arg(COLOR_SENT)
-                      .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
-                      .arg(m_nHistoryIndex)
-                      .arg(m_lHistoryList.size()));
+  delete ftxt;
+  if(lneFilter->text().isEmpty())
+    lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
+                           "[<font color=\"%2\">Sent</font>] "
+                           "%3 to %4 of %5")
+                        .arg(COLOR_RECEIVED).arg(COLOR_SENT)
+                        .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
+                        .arg(m_nHistoryIndex)
+                        .arg(m_lHistoryList.size()));
+  else
+    lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
+                           "[<font color=\"%2\">Sent</font>] "
+                           "%3 out of %4 matches")
+                        .arg(COLOR_RECEIVED).arg(COLOR_SENT)
+                        .arg(m_nHistoryShowing)
+                        .arg(m_lHistoryList.size()));
   mleHistory->setText(st);
   if(!m_bHistoryReverse)
     mleHistory->GotoEnd();
   else
     mleHistory->setCursorPosition(0, 0);
+  barFiltering->reset();
 }
 
 
@@ -924,8 +970,9 @@ void UserInfoDlg::updateTab(const QString& txt)
     btnOk->setText(tr("Nex&t"));
     btnSave->setText(tr("P&rev"));
     currentTab = HistoryInfo;
-     if (!tabList[HistoryInfo].loaded)
-       SetupHistory();
+    if (!tabList[HistoryInfo].loaded)
+      SetupHistory();
+    mleHistory->setFocus();
   }
 }
 
