@@ -5,7 +5,7 @@ dnl Copyright (c) 2000 Dirk A. Mueller
 AC_DEFUN(AC_PATH_QT,
 [
   AC_ARG_WITH(qt,
-    [  --with-qt               where QT v2 is located. ],
+    [  --with-qt               where QT v2.1.x is located. ],
     [  QTDIR="$withval" ])
 ])
 
@@ -15,22 +15,17 @@ AC_DEFUN(AC_PATH_QT_LIB,
   AC_REQUIRE([AC_PATH_X])
   AC_MSG_CHECKING(for QT libraries)
 
-  ac_qt_libraries="no"
-
   AC_ARG_WITH(qt-libraries,
     [  --with-qt-libraries     where the QT libraries are located. ],
-    [  ac_qt_libraries="$withval" ])
+    [  ac_qt_libraries="$withval" ], ac_qt_libraries="")
 
   AC_CACHE_VAL(ac_cv_lib_qtlib, [
 
     dnl Did the user give --with-qt-libraries?
-
-    if test "$ac_qt_libraries" = "no"; then
+    if test -z "$ac_qt_libraries"; then
 
       dnl No they didn't, so lets look for them...
-
       dnl If you need to add extra directories to check, add them here.
-
       qt_library_dirs="\
         /usr/lib/qt2/lib \
         /usr/lib \
@@ -44,11 +39,11 @@ AC_DEFUN(AC_PATH_QT_LIB,
         /usr/X11R6/lib \
         /usr/X11R6/lib/qt"
 
-      if test "x$QTDIR" != x; then
+      if test -n "$QTDIR"; then
         qt_library_dirs="$QTDIR/lib $qt_library_dirs"
       fi
 
-      if test "x$QTLIB" != x; then
+      if test -n "$QTLIB"; then
         qt_library_dirs="$QTLIB $qt_library_dirs"
       fi
 
@@ -65,20 +60,28 @@ AC_DEFUN(AC_PATH_QT_LIB,
     ac_cv_lib_qtlib=$ac_qt_libraries
   ])
 
+
   dnl Define a shell variable for later checks
 
-  if test "$ac_cv_lib_qtlib" = "no"; then
+  if test -z "$ac_cv_lib_qtlib"; then
     have_qt_lib="no"
   else
     have_qt_lib="yes"
     dnl Check if we have the right lib
     output=`eval "strings $ac_cv_lib_qtlib/libqt.so | grep -l QCString"`
     if test -z "$output"; then
-      AC_MSG_ERROR([The Qt lib directory
-          $ac_cv_lib_qtlib
-          found by configure doesn't contain a Qt 2.xx lib.
+      AC_MSG_ERROR([
+          The Qt lib directory "$ac_cv_lib_qtlib"
+          found by configure doesn't contain a Qt 2.1.x library.
+
+          To overcome special features of the GNU ld (aka bugs), the
+          libqt.so file _needs_ to point to libqt.so.2 which needs
+          to point to a Qt 2.1 library.
+          (this is only needed during compiling and linking, not at runtime)
+
           Please check your installation.
-          Use the --with-qt-libraries option to overwrite the check.
+
+          Use the --with-qt-libraries option if we found the wrong Qt lib.
       ])
     fi
   fi
@@ -96,22 +99,17 @@ AC_DEFUN(AC_PATH_QT_INC,
   AC_REQUIRE([AC_PATH_X])
   AC_MSG_CHECKING(for QT includes)
 
-  ac_qt_includes="no"
-
   AC_ARG_WITH(qt-includes,
     [  --with-qt-includes      where the QT headers are located. ],
-    [  ac_qt_includes="$withval" ])
+    [  ac_qt_includes="$withval" ], ac_qt_includes="")
 
   AC_CACHE_VAL(ac_cv_header_qtinc, [
 
     dnl Did the user give --with-qt-includes?
-
-    if test "$ac_qt_includes" = no; then
+    if test -z "$ac_qt_includes"; then
 
       dnl No they didn't, so lets look for them...
-
       dnl If you need to add extra directories to check, add them here.
-
       qt_include_dirs="\
         /usr/lib/qt2/include \
         /usr/lib/qt/include \
@@ -138,9 +136,13 @@ AC_DEFUN(AC_PATH_QT_INC,
           if test -r "$qt_dir/qtranslatordialog.h"; then
             AC_MSG_ERROR([
               This is not Qt 2.1.0 or later. Somebody cheated you.
+
               Most likely this is because you've installed a crappy
               outdated Redhat 6.2 RPM. Go to ftp://people.redhat.com/bero/qt
               and update to the correct one.
+
+              If you think something is terribly wrong, write me an
+              email (dirk@licq.org).
             ])
           else
             ac_qt_includes=$qt_dir
@@ -154,7 +156,7 @@ AC_DEFUN(AC_PATH_QT_INC,
 
   ])
 
-  if test "$ac_cv_header_qtinc" = no; then
+  if test -z "$ac_cv_header_qtinc"; then
     have_qt_inc="no"
   else
     have_qt_inc="yes"
@@ -170,13 +172,11 @@ AC_DEFUN(AC_PATH_QT_INC,
 
 AC_DEFUN(AC_PATH_QT_MOC,
 [
-  ac_qt_moc="no"
-
   AC_ARG_WITH(qt-moc,
-    [  --with-qt-moc           where the QT 2.xx moc is located. ],
-    [  ac_qt_moc="$withval" ])
+    [  --with-qt-moc           where the QT 2.1.x moc is located. ],
+    [  ac_qt_moc="$withval" ], ac_qt_moc="")
 
-  if test "$ac_qt_moc" = "no"; then
+  if test -z "$ac_qt_moc"; then
     dnl search on our own
 
     if test -z "$QTDIR"; then
@@ -214,7 +214,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
 
         The Qt meta object compiler (moc)
         $MOC
-        found by configure is not the one part of Qt 2.1.
+        found by configure is not the one part of Qt 2.1.x.
 
         It's likely that the found one is the one shipped with
         Qt 1.xx. That one will not work.
@@ -222,6 +222,9 @@ AC_DEFUN(AC_PATH_QT_MOC,
         Please check your installation.
         Use the --with-qt-moc option to specify the path and name
         of the moc compiler shipped with your Qt 2.1 lib.
+        Some distributions rename it to "moc2", maybe you find that
+        on your system.
+
         see ./configure --help for details.
     ])
   fi
@@ -275,108 +278,72 @@ AC_DEFUN(AC_PATH_QT_MERGETR,
 ])
 
 ## ------------------------------------------------------------------------
-## Now, the same with KDE
-## $(KDE_LDFLAGS) will be the kdeliblocation (if needed)
-## and $(kde_includes) will be the kdehdrlocation (if needed)
+## KDE 2 detection. Terribly simple.
 ## ------------------------------------------------------------------------
-##
 AC_DEFUN(AC_PATH_KDE,
 [
-AC_REQUIRE([AC_PATH_QT_LIB])
-AC_REQUIRE([AC_PATH_QT_INC])
+  AC_REQUIRE([AC_PATH_QT_LIB])
+  AC_REQUIRE([AC_PATH_QT_INC])
 
-AC_ARG_WITH(kde,
-  [  --with-kde              compile with KDE support. ],
-  [  ac_kde="$withval" ])
+  AC_MSG_CHECKING([for KDE])
 
+  ac_kde_includes=""
+  ac_kde_libraries=""
+  kde_libraries=""
+  kde_includes=""
 
-AC_MSG_CHECKING([for KDE])
-dnl if test "${prefix}" != NONE; then
-dnl   kde_libraries=${prefix}/lib
-dnl   kde_includes=${prefix}/include
-dnl   AC_MSG_RESULT(["will be installed in" $prefix])
-dnl else
-ac_kde_includes=NO ac_kde_libraries=NO
-kde_libraries=""
-kde_includes=""
-AC_CACHE_VAL(ac_cv_have_kde,
-[#try to guess kde locations
+  AC_ARG_WITH(kde,
+    [  --with-kde              compile with KDE support. ],
+    [  ac_kde="$withval" ])
 
-kde_incdirs="/opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
-
-test -n "$KDEDIR" && kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
-LICQ_FIND_FILE(kaction.h, $kde_incdirs, kde_incdir)
-ac_kde_includes=$kde_incdir
-
-kde_libdirs="/opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
-test -n "$KDEDIR" && kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
-LICQ_FIND_FILE(libksycoca.la, $kde_libdirs, kde_libdir)
-ac_kde_libraries=$kde_libdir
-
-if test "$ac_kde_includes" = NO || test "$ac_kde_libraries" = NO; then
-  ac_cv_have_kde="have_kde=no"
-else
-  ac_cv_have_kde="have_kde=yes \
-    ac_kde_includes=$ac_kde_includes ac_kde_libraries=$ac_kde_libraries"
-fi])
-
-eval "$ac_cv_have_kde"
-
-if test "$have_kde" != yes; then
-  if test "${prefix}" = NONE; then
-    ac_kde_prefix=$ac_default_prefix
-  else
-    ac_kde_prefix=$prefix
+  dnl check for KDE 2 includes
+  kde_incdirs="/opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
+  if test -n "$KDEDIR"; then
+    kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
   fi
-  dnl  AC_MSG_RESULT(["will be installed in" $ac_kde_prefix])
-  kde_libraries=${ac_kde_prefix}/lib
-  kde_includes=${ac_kde_prefix}/include
-else
-  ac_cv_have_kde="have_kde=yes \
-    ac_kde_includes=$ac_kde_includes ac_kde_libraries=$ac_kde_libraries"
-  dnl   AC_MSG_RESULT([libraries $ac_kde_libraries, headers $ac_kde_includes])
-  kde_libraries=$ac_kde_libraries
-  kde_includes=$ac_kde_includes
-fi
 
-AC_SUBST(kde_libraries)
-AC_SUBST(kde_includes)
+  LICQ_FIND_FILE(kaction.h, $kde_incdirs, kde_incdir)
+  kde_includes=$kde_incdir
 
-if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes" ; then
- KDE_INCLUDES=""
-else
- KDE_INCLUDES="-I$kde_includes"
- all_includes="$all_includes $KDE_INCLUDES"
-fi
+  dnl check for KDE 2 libraries
+  kde_libdirs="/opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
+  if test -n "$KDEDIR"; then
+    kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
+  fi
 
-if test "$kde_libraries" = "$x_libraries" || test "$kde_libraries" = "$qt_libraries" ; then
- KDE_LDFLAGS=""
-else
- KDE_LDFLAGS="-L$kde_libraries"
- all_libraries="$all_libraries $KDE_LDFLAGS"
-fi
+  LICQ_FIND_FILE(libksycoca.la, $kde_libdirs, kde_libdir)
+  kde_libraries=$kde_libdir
 
-AC_SUBST(KDE_LDFLAGS)
-AC_SUBST(KDE_INCLUDES)
-AC_SUBST(all_includes)
-AC_SUBST(all_libraries)
+  if test -n "$kde_includes" && test -n "$kde_libraries" && test -n "$ac_kde"; then
+    if test "$kde_includes" != "$x_includes" && test "$kde_includes" != "$qt_includes"; then
+      KDE_INCLUDES="-I$kde_includes"
+    fi
 
-test -n "$ac_kde" && have_kde=$ac_kde
-test -n "$ac_kde" || have_kde=no
-if test "$have_kde" = yes; then
-  AC_MSG_RESULT([libraries $ac_kde_libraries, headers $ac_kde_includes])
-  AC_DEFINE(USE_KDE)
-  KDE_LIBS="-lkfile"
-  AC_SUBST(KDE_LIBS)
-else
-  AC_MSG_RESULT(["no"])
-fi
+    if test "$kde_libraries" != "$x_libraries" && test "$kde_libraries" != "$qt_libraries"; then
+      KDE_LDFLAGS="-L$kde_libraries"
+    fi
 
+    AC_MSG_RESULT([libraries $kde_libraries, headers $kde_includes])
+    AC_DEFINE(USE_KDE)
+    KDE_LIBS="-lkfile"
+    AC_SUBST(KDE_LIBS)
+    have_kde=yes
+    AC_SUBST(have_kde)
+  else
+    AC_MSG_RESULT(["no"])
+    KDE_LDFLAGS=""
+    KDE_LIBS=""
+    KDE_INCLUDES=""
+  fi
+
+  AC_SUBST(KDE_LDFLAGS)
+  AC_SUBST(KDE_INCLUDES)
+  AC_SUBST(kde_libraries)
+  AC_SUBST(kde_includes)
 ])
 
 
 dnl Like AC_CHECK_HEADER, but it uses the already-computed -I directories.
-
 AC_DEFUN(AC_CHECK_X_HEADER, [
   ac_save_CPPFLAGS="$CPPFLAGS"
   if test \! -z "$includedir" ; then
