@@ -4,7 +4,7 @@ plugindir = $(libdir)
 licq_incdir = @LICQ_INCLUDES@
 
 
-INCLUDES = -Wall -fno-rtti -fno-exceptions -I$(srcdir) -I$(licq_incdir)
+INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir)
 
 noinst_HEADERS = forwarder.h
 

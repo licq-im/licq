@@ -22,6 +22,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_CXXCPP
+LICQ_CXX_FLAGS
 AC_ISC_POSIX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
@@ -46,7 +47,7 @@ if test "$have_licq_inc" = no; then
 I can't find the Licq header files.
 You must unpack this archive into the plugins/ directory off of the
 main Licq source tree.  In other words, we should be in
-/some/dir/licq-0.xx/plugins/forwarder-0.xx right now.
+/some/dir/licq-0.xx/plugins/email-0.xx right now.
 ])
 fi
 
