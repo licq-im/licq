@@ -173,7 +173,7 @@ struct request_chat *rc_find(gulong uin)
 	return NULL;
 }
 
-void multi_request_chat(GtkWiget *widget, gpointer _rc)
+void multi_request_chat(GtkWidget *widget, gpointer _rc)
 {
 	struct request_chat *rc = (struct request_chat *)_rc;
 	// I'm tired now... good night... 
