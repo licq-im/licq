@@ -491,6 +491,11 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   if (newStatus & ICQ_STATUS_DND)
     newStatus |= 0x10; // quick compat hack
 
+  // icq go wants the mask set when we truly are away
+  if (newStatus & ICQ_STATUS_DND || newStatus & ICQ_STATUS_OCCUPIED ||
+      newStatus & ICQ_STATUS_NA)
+    newStatus |= ICQ_STATUS_AWAY;
+
   // Set the status flags
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->AddStatusFlags(newStatus);
