@@ -149,6 +149,9 @@ protected:
   unsigned long carPPID;
   unsigned long onlPPID;
 
+  QString m_typeAhead;	    /*! type-ahead buffer  */
+  unsigned int m_typePos;   /*! hmmm */
+
   QPopupMenu *mnuUser;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;

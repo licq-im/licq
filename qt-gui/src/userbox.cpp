@@ -458,7 +458,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         f.setPointSize(f.pointSize() - 2);
       p->setFont(f);
     }
-
+    
     QListViewItem::paintCell(p, cg, column, width, align);
 
     if (isGroupItem())
@@ -784,6 +784,9 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   barOnline = barOffline = NULL;
   numOnline = numOffline = 0;
 
+  m_typeAhead = "";
+  m_typePos   = 0;
+
   addColumn(tr("S"), 20);
 
   for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
@@ -949,11 +952,14 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
   QListView::viewportMousePressEvent(e);
 
   if (e->button() == LeftButton)
-  {
+  { 
     mousePressPos = e->pos();
     CUserViewItem *clickedItem = static_cast<CUserViewItem*>(itemAt(e->pos()));
-    if (clickedItem != NULL && e->pos().x() < header()->sectionSize(0) && clickedItem->isGroupItem())
+    if (clickedItem != NULL && e->pos().x() < header()->sectionSize(0) && 
+        clickedItem->isGroupItem())
       clickedItem->setOpen(!clickedItem->isOpen());
+    m_typeAhead = "";
+    m_typePos = 0;
   }
   else if (e->button() == MidButton)
   {
@@ -965,6 +971,8 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
       setCurrentItem(clickedItem);
       emit doubleClicked(clickedItem);
     }
+    m_typeAhead = "";
+    m_typePos = 0;
   }
 #if QT_VERSION < 300
   else if (e->button() == RightButton)
@@ -980,6 +988,8 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
         mnuUser->popup(viewport()->mapToGlobal(e->pos()), 1);
       }
     }
+    m_typeAhead = "";
+    m_typePos = 0;
   }
 #endif
 }
@@ -990,6 +1000,8 @@ void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
   CUserViewItem *clickedItem = (CUserViewItem *)itemAt(contentsToViewport( e->pos()) );
   if (clickedItem != NULL)
   {
+    m_typeAhead = "";
+    m_typePos = 0;
     setSelected(clickedItem, true);
     setCurrentItem(clickedItem);
     if (clickedItem->ItemId())
@@ -1123,6 +1135,8 @@ void CUserView::keyPressEvent(QKeyEvent *e)
             ((CUserViewItem *)(it.current()))->ItemId() == 0) ++it;
       setSelected(it.current(), true);
       ensureItemVisible(it.current());
+      m_typeAhead = "";
+      m_typePos = 0;
       return;
     }
 
@@ -1140,44 +1154,44 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       while (it.current() && ((CUserViewItem *)(it.current()))->ItemId() == 0) --it;
       setSelected(it.current(), true);
       ensureItemVisible(it.current());
+      m_typeAhead = "";
+      m_typePos = 0;
       return;
     }
 
+    case Key_Backspace:
+      if (m_typePos > 0)
+      {
+        m_typeAhead.truncate(m_typeAhead.length()-1);
+	m_typePos--;
+      }
+      /* fall through */
+      
     default:
     {
-      char ascii = tolower(e->ascii());
-      if (!isalnum(ascii))
+      int ascii = tolower(e->ascii());
+      if (!isalnum(ascii) && e->key() != Key_Backspace)
       {
         QListView::keyPressEvent(e);
+	m_typeAhead = "";
+	m_typePos = 0 ;
         return;
       }
 
-      QListViewItemIterator it(currentItem() != NULL ? currentItem() : firstChild());
-      if(currentItem() != NULL)  ++it;
+      m_typeAhead+=ascii;
+      m_typePos++;
 
+      QListViewItemIterator it(firstChild());
+      
       while (it.current() != NULL)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
-        if (item->text(1).at(0).lower().latin1() == ascii)
         {
-          setSelected(item, true);
-          ensureItemVisible(item);
-          return;
-        }
-        it++;
-      }
-
-      // Check the first elements if we didn't find anything yet
-      if (currentItem() != NULL)
-      {
-        it = firstChild();
-        while (it.current() != NULL && it.current() != currentItem())
-        {
-          CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
-          if (item->text(1).at(0).lower().latin1() == ascii)
-          {
+	  if (item->text(1).lower().startsWith(m_typeAhead))
+	  {
             setSelected(item, true);
             ensureItemVisible(item);
+	    item->repaint();
             return;
           }
           ++it;
@@ -1186,6 +1200,8 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 
       // If we are here we didn't find any names
       QListView::keyPressEvent(e);
+      m_typeAhead = ascii;
+      m_typePos = 1 ;
     }
   }
 }
