@@ -259,6 +259,12 @@ void contact_list_click(GtkWidget *contact_list,
 		gtk_menu_append(GTK_MENU(_menu), _item);
 		gtk_widget_show(_item);
 
+		_item = gtk_menu_item_new_with_label("More...");
+		gtk_signal_connect(GTK_OBJECT(_item), "activate",
+				   GTK_SIGNAL_FUNC(list_more_window), user);
+		gtk_menu_append(GTK_MENU(_menu), _item);
+		gtk_widget_show(_item);
+
 		_item = gtk_menu_item_new_with_label("Delete User");
 		gtk_signal_connect(GTK_OBJECT(_item), "activate",
 				   GTK_SIGNAL_FUNC(list_delete_user), user);

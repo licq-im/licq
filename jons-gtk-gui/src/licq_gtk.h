@@ -89,6 +89,15 @@ struct main_progress
 	gchar buffer[55];
 };
 
+struct more_window
+{
+	GtkWidget *window;
+	GtkWidget *notify;
+	GtkWidget *visible;
+	GtkWidget *invisible;
+	GtkWidget *ignore;
+	ICQUser *user;
+};
 
 /******************* Global Variables ******************/
 
@@ -190,6 +199,11 @@ extern GtkWidget *menu_new_item(GtkWidget *, const char *, GtkSignalFunc);
 extern void menu_create();
 extern void menu_system_quit(GtkWidget *, gpointer);
 extern void menu_system_refresh(GtkWidget *, gpointer);
+
+
+/* Functions in more_window.cpp */
+extern void list_more_window(GtkWidget *, ICQUser *);
+extern void more_ok_callback(GtkWidget *, struct more_window *);
 
 
 /* Functions in pipe.cpp */

@@ -19,6 +19,7 @@ licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
 				extras.cpp \
 				main_window.cpp \
 				menu.cpp \
+				more_window.cpp \
 				pipe.cpp \
 				status.cpp \
 				system_message.cpp \
