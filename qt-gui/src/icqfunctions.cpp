@@ -19,6 +19,9 @@
 #include "config.h"
 #endif
 
+#include <time.h>
+extern long int timezone;
+
 #ifdef USE_KDE
 #warning !!!! FIXME !!!!
 #include <qfiledialog.h>
@@ -933,6 +936,8 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
     {
       chkSendServer->setEnabled(true);
     }
+    if (u->StatusOffline())
+      chkSendServer->setChecked(true);
     break;
   }
   case USER_EVENTS:
