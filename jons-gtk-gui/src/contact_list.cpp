@@ -61,7 +61,7 @@ GtkWidget *contact_list_new(gint height, gint width)
 	return _contact_l;
 }
 
-GtkWidget *contact_list_refresh()
+void contact_list_refresh()
 {
 	gchar *blah[3];
 	gint num_users = 0;
@@ -237,42 +237,41 @@ void contact_list_click(GtkWidget *contact_list,
 	/* A right click.. make the popup menu */
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		GtkWidget *_menu, *_item;
+		GtkWidget *_menu;
 
 		_menu = gtk_menu_new();
 
-		_item = gtk_menu_item_new_with_label("Start Conversation");
-		gtk_signal_connect(GTK_OBJECT(_item), "activate",
-				   GTK_SIGNAL_FUNC(list_start_convo), user);
-		gtk_menu_append(GTK_MENU(_menu), _item);
-		gtk_widget_show(_item);
+		add_to_popup("Start Conversation", _menu,
+			     GTK_SIGNAL_FUNC(list_start_convo), user);
 
-		_item = gtk_menu_item_new_with_label("Send URL");
-		gtk_signal_connect(GTK_OBJECT(_item), "activate",
-				   GTK_SIGNAL_FUNC(list_send_url), user);
-		gtk_menu_append(GTK_MENU(_menu), _item);
-		gtk_widget_show(_item);
+		add_to_popup("Send URL", _menu,
+			     GTK_SIGNAL_FUNC(list_send_url), user);
 
-		_item = gtk_menu_item_new_with_label("Info");
-		gtk_signal_connect(GTK_OBJECT(_item), "activate",
-				   GTK_SIGNAL_FUNC(list_info_user), user);
-		gtk_menu_append(GTK_MENU(_menu), _item);
-		gtk_widget_show(_item);
+		add_to_popup("Info", _menu,
+			GTK_SIGNAL_FUNC(list_info_user), user);
 
-		_item = gtk_menu_item_new_with_label("More...");
-		gtk_signal_connect(GTK_OBJECT(_item), "activate",
-				   GTK_SIGNAL_FUNC(list_more_window), user);
-		gtk_menu_append(GTK_MENU(_menu), _item);
-		gtk_widget_show(_item);
+		add_to_popup("History", _menu,
+			     GTK_SIGNAL_FUNC(list_history), user);
 
-		_item = gtk_menu_item_new_with_label("Delete User");
-		gtk_signal_connect(GTK_OBJECT(_item), "activate",
-				   GTK_SIGNAL_FUNC(list_delete_user), user);
-		gtk_menu_append(GTK_MENU(_menu), _item);
-		gtk_widget_show(_item);
-		
+		add_to_popup("More...", _menu,
+			     GTK_SIGNAL_FUNC(list_more_window), user);
+
+		add_to_popup("Delete User", _menu,
+			     GTK_SIGNAL_FUNC(list_delete_user), user);
+	
 		gtk_menu_popup(GTK_MENU(_menu), NULL, NULL, NULL, NULL, 
 			       event->button, event->time);
 	
 	}
 }
+
+void add_to_popup(const gchar *label, GtkWidget *menu,
+		  GtkSignalFunc func, ICQUser *user)
+{
+	GtkWidget *item = gtk_menu_item_new_with_label(label);
+	gtk_signal_connect(GTK_OBJECT(item), "activate",
+			   GTK_SIGNAL_FUNC(func), user);
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_widget_show(item);
+}
+
