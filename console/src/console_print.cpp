@@ -161,7 +161,7 @@ void CLicqConsole::PrintGroups()
   waddch(winMain->Win(), '\n');
 
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (GroupListIter i = g->begin(); i != g->end(); i++, j++)
+  for (GroupList::iterator i = g->begin(); i != g->end(); i++, j++)
   {
     PrintBoxLeft();
     winMain->wprintf("%A%C%3d. %-19s",
