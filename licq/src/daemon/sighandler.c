@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <signal.h>
 
-//#define HAVE_BACKTRACE
+/*#if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
+#define HAVE_BACKTRACE
+#endif*/
 
 #ifdef HAVE_BACKTRACE
 #include <execinfo.h>
@@ -28,6 +30,11 @@ void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 void licq_segv_handler(void (*f)(int))
 {
   signal(SIGSEGV, f);
+  /*struct sigaction sa;
+  memset(&sa, 0, sizeof(sa));
+  sa.sa_handler = f;
+  sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
+  sigaction(SIGSEGV, &sa, NULL);*/
 }
 
 
