@@ -677,7 +677,8 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 }
 
 
-//-----CMainWindow::slot_updatedUser-----------------------------------------------
+// ---------------------------------------------------------------------------
+
 void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUin)
 {
   switch(_nSubSignal)
@@ -698,24 +699,19 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
                  L_ERRORxSTR, _nUin);
       break;
     }
-    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
-    {
+    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup)) {
       CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-      while (i != NULL && i->ItemUin() != _nUin)
+      while (i && i->ItemUin() != _nUin)
         i = (CUserViewItem *)i->nextSibling();
-      if (i != NULL)
-      {
-        //i->setGraphics(u);
-        //i->repaint();
-        userView->setUpdatesEnabled(false);
-        delete i;
-        if (m_bShowOffline || !u->StatusOffline())
+      if (i) {
+        if ((u->Status() != i->Status()) &&
+            (m_bShowOffline || !u->StatusOffline())) {
+          delete i; i = 0;
           (void) new CUserViewItem(u, userView);
-        userView->setUpdatesEnabled(true);
-        userView->repaint();
+          userView->triggerUpdate();
+        }
       }
-      else
-      {
+      else {
         if ( (m_bShowOffline || !u->StatusOffline()) &&
              (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
           (void) new CUserViewItem(u, userView);
@@ -728,7 +724,8 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
 }
 
 
-//-----CMainWindow::slot_updatedList-----------------------------------------------
+// ---------------------------------------------------------------------------
+
 void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUin)
 {
   switch(_nSubSignal)
@@ -788,7 +785,7 @@ void CMainWindow::updateUserWin()
   }
   FOR_EACH_USER_END
   userView->setUpdatesEnabled(true);
-  userView->repaint();
+  userView->triggerUpdate();
 }
 
 /*
@@ -1036,7 +1033,8 @@ void CMainWindow::changeStatus(int id)
 }
 
 
-//-----CMainWindow::callDefaultFunction-------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
 void CMainWindow::callDefaultFunction()
 {
   unsigned long nUin = userView->SelectedItemUin();
@@ -1044,7 +1042,7 @@ void CMainWindow::callDefaultFunction()
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   // set default function to read or send depending on whether or not
   // there are new messages
-  int fcn = (u->NewMessages() == 0 ? MENU_USER_SENDxMSG : MENU_USER_VIEW);
+  int fcn = (u->NewMessages() == 0 ? mnuUserSendMsg : mnuUserView);
   gUserManager.DropUser(u);
 
   callFunction(fcn, nUin);
@@ -1052,18 +1050,15 @@ void CMainWindow::callDefaultFunction()
 
 void CMainWindow::callOwnerFunction(int index)
 {
-  if (index == MENU_OWNER_VIEW ||
-      index == MENU_OWNER_GENERAL ||
-      index == MENU_OWNER_MORE ||
-      index == MENU_OWNER_WORK ||
-      index == MENU_OWNER_ABOUT ||
-      index == MENU_OWNER_HISTORY)
+  if (index == OwnerMenuView  || index == OwnerMenuGeneral ||
+      index == OwnerMenuMore  || index == OwnerMenuWork ||
+      index == OwnerMenuAbout || index == OwnerMenuHistory)
     callFunction(index, gUserManager.OwnerUin());
 
-  else if (index == MENU_OWNER_SECURITY)
+  else if (index == OwnerMenuSecurity)
     (void) new SecurityDlg(licqDaemon, licqSigMan);
 
-  else if (index == MENU_OWNER_PASSWORD)
+  else if (index == OwnerMenuPassword)
     (void) new PasswordDlg(licqDaemon, licqSigMan);
 
   else
@@ -1096,7 +1091,7 @@ void CMainWindow::callMsgFunction()
   gUserManager.DropOwner();
   if (nNumMsg > 0)
   {
-    callOwnerFunction(MENU_OWNER_VIEW);
+    callOwnerFunction(OwnerMenuView);
     return;
   }
 
@@ -1111,7 +1106,7 @@ void CMainWindow::callMsgFunction()
     }
   }
   FOR_EACH_USER_END
-  if (nUin != 0) callFunction(MENU_USER_VIEW, nUin);
+  if (nUin != 0) callFunction(mnuUserView, nUin);
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
@@ -1120,13 +1115,16 @@ void CMainWindow::callUserFunction(int index)
   if(userView->SelectedItemUin() == 0)
     return;
 
-  if (index == MENU_USER_AUTHORIZE)
+  switch(index) {
+  case mnuUserAuthorize:
     licqDaemon->icqAuthorize(userView->SelectedItemUin());
-
-  else if (index == MENU_USER_CHECKxRESPONSE)
-    (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
-
-  else if (index == MENU_USER_ONLINExNOTIFY)
+    break;
+  case mnuUserCheckResponse:
+    {
+      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
+    }
+    break;
+  case mnuUserOnlineNotify:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (!u) return;
@@ -1134,8 +1132,8 @@ void CMainWindow::callUserFunction(int index)
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
   }
-
-  else if (index == MENU_USER_INVISIBLExLIST)
+  break;
+  case mnuUserInvisibleList:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (!u) return;
@@ -1144,8 +1142,8 @@ void CMainWindow::callUserFunction(int index)
     if (m_bFontStyles) updateUserWin();
     licqDaemon->icqSendInvisibleList(true);
   }
-
-  else if (index == MENU_USER_VISIBLExLIST)
+  break;
+  case mnuUserVisibleList:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (!u) return;
@@ -1155,8 +1153,8 @@ void CMainWindow::callUserFunction(int index)
       updateUserWin();
     licqDaemon->icqSendVisibleList(true);
   }
-
-  else if (index == MENU_USER_IGNORExLIST)
+  break;
+  case mnuUserIgnoreList:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (!u) return;
@@ -1164,14 +1162,15 @@ void CMainWindow::callUserFunction(int index)
     gUserManager.DropUser(u);
     updateUserWin();
   }
-
-  else
+  break;
+  default:
     callFunction(index, userView->SelectedItemUin());
+  }
 
 }
 
 
-//-----CMainWindow::callICQFunction---------------------------------------------
+//-----CMainWindow::callICQFunction-------------------------------------------
 ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
   ICQUser *u = NULL;
@@ -1220,7 +1219,7 @@ void CMainWindow::slot_shutdown()
   licqDaemon->Shutdown();
 }
 
-//-----CMainWindow::slot_logon--------------------------------------------------
+//-----CMainWindow::slot_logon------------------------------------------------
 void CMainWindow::slot_logon()
 {
   updateStatus();
@@ -1272,7 +1271,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
 
 
 
-//-----CMainWindow::removeUser--------------------------------------------------
+//-----CMainWindow::removeUser-------------------------------------------------
 void CMainWindow::removeUserFromList()
 {
   ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
@@ -1310,13 +1309,13 @@ void CMainWindow::removeUserFromGroup()
 }
 
 
-//-----CMainWindow::saveAllUsers------------------------------------------------
+//-----CMainWindow::saveAllUsers-----------------------------------------------
 void CMainWindow::saveAllUsers()
 {
    gUserManager.SaveAllUsers();
 }
 
-//-----CMainWindow::addUserToGroup----------------------------------------------
+//-----CMainWindow::addUserToGroup---------------------------------------------
 void CMainWindow::addUserToGroup(int _nId)
 {
    gUserManager.AddUserToGroup(userView->SelectedItemUin(),
@@ -1335,7 +1334,7 @@ void CMainWindow::slot_updateAllUsers()
 
 
 
-//-----CMainWindow::saveOptions------------------------------------------------------------------------
+//-----CMainWindow::saveOptions-----------------------------------------------
 void CMainWindow::saveOptions()
 {
   // Tell the daemon to save it's options
@@ -1398,7 +1397,7 @@ void CMainWindow::saveOptions()
 }
 
 
-//-----CMainWindow::aboutBox----------------------------------------------------
+//-----CMainWindow::aboutBox--------------------------------------------------
 void CMainWindow::aboutBox()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -1415,7 +1414,7 @@ void CMainWindow::aboutBox()
 }
 
 
-//-----CMainWindow::changeDebug------------------------------------------------------------------------
+//-----CMainWindow::changeDebug-----------------------------------------------
 void CMainWindow::changeDebug(int _nId)
 {
   int nLevel = mnuDebug->indexOf(_nId);
@@ -1449,7 +1448,7 @@ void CMainWindow::changeDebug(int _nId)
 }
 
 
-//-----CMainWindow::slot_utility-------------------------------------------------
+//-----CMainWindow::slot_utility----------------------------------------------
 void CMainWindow::slot_utility(int _nId)
 {
   int nUtility = mnuUtilities->indexOf(_nId);
@@ -1460,7 +1459,7 @@ void CMainWindow::slot_utility(int _nId)
 }
 
 
-//-----CMainWindow::nextServer--------------------------------------------------
+//-----CMainWindow::nextServer------------------------------------------------
 void CMainWindow::nextServer()
 {
   // Error reporting is done at the server level
@@ -1468,7 +1467,7 @@ void CMainWindow::nextServer()
 }
 
 
-//-----ToggleShowOffline--------------------------------------------------------
+//-----ToggleShowOffline------------------------------------------------------
 void CMainWindow::ToggleShowOffline()
 {
   m_bShowOffline = !m_bShowOffline;
@@ -1477,7 +1476,7 @@ void CMainWindow::ToggleShowOffline()
 }
 
 
-//-----CMainWindow::miniMode---------------------------------------------------------------------------
+//-----CMainWindow::miniMode--------------------------------------------------
 void CMainWindow::miniMode()
 {
 
@@ -1502,7 +1501,7 @@ void CMainWindow::miniMode()
 }
 
 
-//-----CMainWindow::autoAway-----------------------------------------------------------
+//-----CMainWindow::autoAway--------------------------------------------------
 void CMainWindow::autoAway()
 {
 #ifdef USE_SCRNSAVER
@@ -1581,7 +1580,7 @@ void CMainWindow::popupSystemMenu()
 }
 
 
-//-----CMainWindow::loadIcons---------------------------------------------------
+//-----CMainWindow::loadIcons-------------------------------------------------
 void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 // load the pixmaps
 {
@@ -1725,35 +1724,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 }
 
 
-// Create the menu constants
-int MENU_USER_VIEW = -1;
-int MENU_USER_SENDxMSG = -1;
-int MENU_USER_SENDxURL = -1;
-int MENU_USER_SENDxCHAT = -1;
-int MENU_USER_SENDxFILE = -1;
-int MENU_USER_AUTHORIZE = -1;
-int MENU_USER_CHECKxRESPONSE = -1;
-int MENU_USER_GENERAL = -1;
-int MENU_USER_MORE = -1;
-int MENU_USER_WORK = -1;
-int MENU_USER_ABOUT = -1;
-int MENU_USER_HISTORY = -1;
-int MENU_USER_ONLINExNOTIFY = -1;
-int MENU_USER_INVISIBLExLIST = -1;
-int MENU_USER_VISIBLExLIST = -1;
-int MENU_USER_IGNORExLIST = -1;
-
-int MENU_OWNER_VIEW = -1;
-int MENU_OWNER_GENERAL = -1;
-int MENU_OWNER_MORE = -1;
-int MENU_OWNER_WORK = -1;
-int MENU_OWNER_ABOUT = -1;
-int MENU_OWNER_HISTORY = -1;
-int MENU_OWNER_SECURITY = -1;
-int MENU_OWNER_PASSWORD = -1;
-
-
-//-----CMainWindow::initMenu----------------------------------------------------
+//-----CMainWindow::initMenu--------------------------------------------------
 void CMainWindow::initMenu()
 {
    int mnuId;
@@ -1781,16 +1752,16 @@ void CMainWindow::initMenu()
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
    mnuOwnerAdm = new QPopupMenu(NULL);
-   MENU_OWNER_VIEW = mnuOwnerAdm->insertItem(tr("&View System Messages"));
+   mnuOwnerAdm->insertItem(tr("&View System Messages"), OwnerMenuView);
    mnuOwnerAdm->insertSeparator();
-   MENU_OWNER_GENERAL = mnuOwnerAdm->insertItem(tr("&General Info"));
-   MENU_OWNER_MORE = mnuOwnerAdm->insertItem(tr("&More Info"));
-   MENU_OWNER_WORK = mnuOwnerAdm->insertItem(tr("&Work Info"));
-   MENU_OWNER_ABOUT = mnuOwnerAdm->insertItem(tr("&About"));
-   MENU_OWNER_HISTORY = mnuOwnerAdm->insertItem(tr("&History"));
+   mnuOwnerAdm->insertItem(tr("&General Info"), OwnerMenuGeneral);
+   mnuOwnerAdm->insertItem(tr("&More Info"), OwnerMenuMore);
+   mnuOwnerAdm->insertItem(tr("&Work Info"), OwnerMenuWork);
+   mnuOwnerAdm->insertItem(tr("&About"), OwnerMenuAbout);
+   mnuOwnerAdm->insertItem(tr("&History"), OwnerMenuHistory);
    mnuOwnerAdm->insertSeparator();
-   MENU_OWNER_SECURITY = mnuOwnerAdm->insertItem(tr("&Security Options"));
-   MENU_OWNER_PASSWORD = mnuOwnerAdm->insertItem(tr("Change &Password"));
+   mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
+   mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
    connect (mnuOwnerAdm, SIGNAL(activated(int)), this, SLOT(callOwnerFunction(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
@@ -1861,24 +1832,24 @@ void CMainWindow::initMenu()
 
    mnuUser = new QPopupMenu(NULL);
    mnuUser->setCheckable(true);
-   MENU_USER_VIEW = mnuUser->insertItem(tr("&View Event"));
-   MENU_USER_SENDxMSG = mnuUser->insertItem(*pmMessage, tr("&Send Message"));
-   MENU_USER_SENDxURL = mnuUser->insertItem(*pmUrl, tr("Send &Url"));
-   MENU_USER_SENDxCHAT = mnuUser->insertItem(*pmChat, tr("Send &Chat Request"));
-   MENU_USER_SENDxFILE = mnuUser->insertItem(*pmFile, tr("Send &File Transfer"));
-   MENU_USER_AUTHORIZE = mnuUser->insertItem(tr("Send Authorization"));
-   MENU_USER_CHECKxRESPONSE = mnuUser->insertItem(tr("Check &Auto Response"));
+   mnuUser->insertItem(tr("&View Event"), mnuUserView);
+   mnuUser->insertItem(*pmMessage, tr("&Send Message"), mnuUserSendMsg);
+   mnuUser->insertItem(*pmUrl, tr("Send &Url"), mnuUserSendUrl);
+   mnuUser->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+   mnuUser->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+   mnuUser->insertItem(tr("Send Authorization"), mnuUserAuthorize);
+   mnuUser->insertItem(tr("Check &Auto Response"), mnuUserCheckResponse);
    mnuUser->insertSeparator();
-   MENU_USER_GENERAL = mnuUser->insertItem(tr("&General Info"));
-   MENU_USER_MORE = mnuUser->insertItem(tr("&More Info"));
-   MENU_USER_WORK = mnuUser->insertItem(tr("&Work Info"));
-   MENU_USER_ABOUT = mnuUser->insertItem(tr("&About"));
-   MENU_USER_HISTORY = mnuUser->insertItem(tr("View &History"));
+   mnuUser->insertItem(tr("&General Info"), mnuUserGeneral);
+   mnuUser->insertItem(tr("&More Info"), mnuUserMore);
+   mnuUser->insertItem(tr("&Work Info"), mnuUserWork);
+   mnuUser->insertItem(tr("&About"), mnuUserAbout);
+   mnuUser->insertItem(tr("View &History"), mnuUserHistory);
    mnuUser->insertSeparator();
-   MENU_USER_ONLINExNOTIFY = mnuUser->insertItem(tr("Online Notify"));
-   MENU_USER_INVISIBLExLIST = mnuUser->insertItem(tr("Invisible List"));
-   MENU_USER_VISIBLExLIST = mnuUser->insertItem(tr("Visible List"));
-   MENU_USER_IGNORExLIST = mnuUser->insertItem(tr("Ignore List"));
+   mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
+   mnuUser->insertItem(tr("Invisible List"), mnuUserInvisibleList);
+   mnuUser->insertItem(tr("Visible List"), mnuUserVisibleList);
+   mnuUser->insertItem(tr("Ignore List"), mnuUserIgnoreList);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Remove"), mnuRemove);
    mnuUser->insertItem(tr("Add To Group"), mnuGroup);
