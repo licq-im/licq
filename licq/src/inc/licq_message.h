@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-#include <vector.h>
+#include <list.h>
 #include "licq_buffer.h"
 #include "licq_constants.h"
 
@@ -86,6 +86,8 @@ public:
       { return (new CEventMsg(m_szMessage, m_nCommand, m_tTime, m_nFlags)); };
    const char *Message()  { return m_szMessage; }
    virtual void AddToHistory(ICQUser *, direction);
+
+   static CEventMsg *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
    void CreateDescription();
    char *m_szMessage;
@@ -115,21 +117,6 @@ protected:
    unsigned long m_nFileSize;
 };
 
-#if 0
-//-----CEventFileCancel---------------------------------------------------------
-class CEventFileCancel : public CUserEvent
-{
-public:
-   CEventFileCancel(unsigned long _nSequence, time_t _tTime,
-                    unsigned long _nFlags);
-   virtual ~CEventFileCancel();
-   virtual void AddToHistory(ICQUser *, direction);
-   virtual CEventFileCancel *Copy()
-      { return (new CEventFileCancel(m_nSequence, m_tTime, m_nFlags)); };
-protected:
-   void CreateDescription();
-};
-#endif
 
 //-----CEventUrl----------------------------------------------------------------
 class CEventUrl : public CUserEvent
@@ -145,6 +132,8 @@ public:
                               m_nFlags)); }
    const char *Url()  { return m_szUrl; }
    const char *Description()  { return m_szUrlDescription; }
+
+   static CEventUrl *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
    void CreateDescription();
    char *m_szUrl;
@@ -174,21 +163,6 @@ protected:
   unsigned short m_nPort;
 };
 
-#if 0
-//-----CEventChatCancel---------------------------------------------------------
-class CEventChatCancel : public CUserEvent
-{
-public:
-   CEventChatCancel(unsigned long _nSequence, time_t _tTime,
-                    unsigned long _nFlags);
-   virtual ~CEventChatCancel();
-   virtual void AddToHistory(ICQUser *, direction);
-   virtual CEventChatCancel *Copy()
-      { return (new CEventChatCancel(m_nSequence, m_tTime, m_nFlags)); };
-protected:
-   void CreateDescription();
-};
-#endif
 
 //-----CEventAdded--------------------------------------------------------------
 class CEventAdded : public CUserEvent
@@ -317,19 +291,38 @@ protected:
 
 
 //-----CEventContactList----------------------------------------------------------
+class CContact
+{
+public:
+  CContact(unsigned long n, const char *a) { m_nUin = n; m_szAlias = strdup(a); }
+  ~CContact() { free(m_szAlias); }
+
+  unsigned long Uin() { return m_nUin; }
+  const char *Alias() { return m_szAlias; }
+protected:
+  unsigned long m_nUin;
+  char *m_szAlias;
+};
+typedef list<CContact *> ContactList;
+
+
 class CEventContactList : public CUserEvent
 {
 public:
-  CEventContactList(vector <char *> &_vszFields,
-                    unsigned short _nCommand,
-                    time_t _tTime, unsigned long _nFlags);
+  CEventContactList(ContactList &cl,
+                    unsigned short nCommand,
+                    time_t tTime, unsigned long nFlags);
   virtual ~CEventContactList();
   virtual void AddToHistory(ICQUser *, direction);
   virtual CEventContactList *Copy()
     { return (new CEventContactList(m_vszFields, m_nCommand, m_tTime, m_nFlags)); }
+
+  const ContactList &Contacts() { return m_vszFields; }
+
+  static CEventContactList *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
-   void CreateDescription();
-  vector <char *> m_vszFields;
+  void CreateDescription();
+  ContactList m_vszFields;
 };
 
 

@@ -1305,7 +1305,7 @@ void CICQDaemon::UpdateAllUsers()
 
 
 //-----ParseFE------------------------------------------------------------------
-bool CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
+bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {
    char *pcEnd = szBuffer, *pcStart;
    unsigned short i = 0;
@@ -1329,7 +1329,7 @@ bool CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 }
 
 
-unsigned long CICQDaemon::StringToStatus(char *_szStatus)
+unsigned long StringToStatus(char *_szStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long nStatus = o->AddStatusFlags(0);

@@ -8,19 +8,21 @@
 
 #include "licq_message.h"
 #include "licq_user.h"
+#include "licq_translate.h"
+#include "licq_icqd.h"
 
 int CUserEvent::s_nId = 1;
 
 //----CUserEvent::constructor---------------------------------------------------
-CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
-                       unsigned long _nSequence, time_t _tTime,
-                       unsigned long _nFlags)
+CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
+                       unsigned long nSequence, time_t tTime,
+                       unsigned long nFlags)
 {
-   m_nSubCommand = _nSubCommand;
-   m_nCommand = _nCommand;
-   m_nSequence = _nSequence;
-   m_tTime = (_tTime == 0 ? time(NULL) : _tTime);
-   m_nFlags = _nFlags;
+   m_nSubCommand = nSubCommand;
+   m_nCommand = nCommand;
+   m_nSequence = nSequence;
+   m_tTime = (tTime == TIME_NOW ? time(NULL) : tTime);
+   m_nFlags = nFlags;
    m_eDir = D_RECEIVER;
    m_szText = NULL;
    // race condition here, but so unlikely that I don't care
@@ -126,6 +128,17 @@ void CEventMsg::AddToHistory(ICQUser *u, direction _nDir)
 }
 
 
+CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
+{
+  gTranslator.ServerToClient (sz);
+  return new CEventMsg(sz, nCmd, nTime, nFlags);
+}
+
+
+
+
+
+
 //=====CEventFile===============================================================
 
 CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
@@ -165,35 +178,6 @@ void CEventFile::AddToHistory(ICQUser *u, direction _nDir)
   delete [] szOut;
 }
 
-#if 0
-//=====CEventFileCancel=========================================================
-
-CEventFileCancel::CEventFileCancel(unsigned long _nSequence, time_t _tTime,
-                                   unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_CANCEL, _nSequence, _tTime, _nFlags)
-{
-}
-
-void CEventFileCancel::CreateDescription()
-{
-  m_szText = new char[32];
-  strcpy(m_szText, "Transfer cancelled.");
-}
-
-
-CEventFileCancel::~CEventFileCancel()
-{
-   // Do nothing
-}
-
-void CEventFileCancel::AddToHistory(ICQUser *u, direction _nDir)
-{
-  char *szOut = new char[EVENT_HEADER_SIZE];
-  AddToHistory_Header(_nDir, szOut);
-  AddToHistory_Flush(u, szOut);
-  delete [] szOut;
-}
-#endif
 
 
 //=====CEventUrl================================================================
@@ -232,6 +216,24 @@ void CEventUrl::AddToHistory(ICQUser *u, direction _nDir)
   delete [] szOut;
 }
 
+
+CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
+{
+  // parse the message into url and url description
+  char **szUrl = new char*[2]; // desc, url
+  if (!ParseFE(sz, &szUrl, 2))
+  {
+    delete []szUrl;
+    return NULL;
+  }
+
+  // translating string with Translation Table
+  gTranslator.ServerToClient(szUrl[0]);
+  CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], nCmd, nTime, nFlags);
+  delete []szUrl;
+
+  return e;
+}
 
 //=====CEventChat===============================================================
 
@@ -285,36 +287,6 @@ void CEventChat::AddToHistory(ICQUser *u, direction _nDir)
   delete [] szOut;
 }
 
-#if 0
-//=====CEventChatCancel=========================================================
-
-CEventChatCancel::CEventChatCancel(unsigned long _nSequence, time_t _tTime,
-                                   unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_CANCEL, _nSequence, _tTime,
-                _nFlags)
-{
-}
-
-void CEventChatCancel::CreateDescription()
-{
-  m_szText = new char[32];
-  strcpy(m_szText, "Request cancelled.\n");
-}
-
-
-CEventChatCancel::~CEventChatCancel()
-{
-   // Do nothing
-}
-
-void CEventChatCancel::AddToHistory(ICQUser *u, direction _nDir)
-{
-  char *szOut = new char[EVENT_HEADER_SIZE];
-  AddToHistory_Header(_nDir, szOut);
-  AddToHistory_Flush(u, szOut);
-  delete [] szOut;
-}
-#endif
 
 //=====CEventAdded==============================================================
 CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
@@ -565,23 +537,23 @@ void CEventEmailPager::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //====CEventContactList========================================================
-CEventContactList::CEventContactList(vector <char *> &_vszFields,
-                                     unsigned short _nCommand,
-                                     time_t _tTime, unsigned long _nFlags)
-  : CUserEvent(ICQ_CMDxSUB_CONTACTxLIST, _nCommand, 0, _tTime, _nFlags)
+CEventContactList::CEventContactList(ContactList &cl,
+                                     unsigned short nCommand,
+                                     time_t tTime, unsigned long nFlags)
+  : CUserEvent(ICQ_CMDxSUB_CONTACTxLIST, nCommand, 0, tTime, nFlags)
 {
-  for (unsigned short i = 0; i < _vszFields.size(); i++)
-    m_vszFields.push_back(strdup(_vszFields[i]));
+  m_vszFields = cl;
 }
 
 void CEventContactList::CreateDescription()
 {
   m_szText = new char [m_vszFields.size() * 32 + 128];
   char *szEnd = m_szText;
-  szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size() / 2);
-  for (unsigned short i = 0; i < m_vszFields.size() - 1; i += 2)
+  szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size());
+  ContactList::iterator iter;
+  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
   {
-    szEnd += sprintf(szEnd, "%s (%s)\n", m_vszFields[i + 1], m_vszFields[i]);
+    szEnd += sprintf(szEnd, "%s (%ld)\n", (*iter)->Alias(), (*iter)->Uin());
   }
 
 }
@@ -589,8 +561,9 @@ void CEventContactList::CreateDescription()
 
 CEventContactList::~CEventContactList()
 {
-  for (unsigned short i = 0; i < m_vszFields.size(); i++)
-    free(m_vszFields[i]);
+  ContactList::iterator iter;
+  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
+    delete *iter;
 }
 
 
@@ -598,11 +571,41 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
 {
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  for (unsigned short i = 0; i < m_vszFields.size(); i++)
-    nPos += sprintf(&szOut[nPos], ":%s\n", m_vszFields[i]);
+  ContactList::iterator iter;
+  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
+    nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n", (*iter)->Uin(), (*iter)->Alias());
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
+
+
+CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
+{
+  unsigned short i = 0;
+  while ((unsigned char)sz[i++] != 0xFE);
+  sz[--i] = '\0';
+  int nNumContacts = atoi(sz);
+  char **szFields = new char*[nNumContacts * 2 + 1];
+  if (!ParseFE(&sz[++i], &szFields, nNumContacts * 2 + 1))
+  {
+    delete []szFields;
+    return NULL;
+  }
+
+  // Translate the aliases
+  ContactList vc;
+  for (i = 0; i < nNumContacts * 2; i += 2)
+  {
+    gTranslator.ServerToClient(szFields[i + 1]);
+    vc.push_back(new CContact(atoi(szFields[i]), szFields[i + 1]));
+  }
+  delete[] szFields;
+
+  return new CEventContactList(vc, nCmd, nTime, nFlags);
+}
+
+
+
 
 
 

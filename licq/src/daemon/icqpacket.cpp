@@ -1277,6 +1277,17 @@ CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLev
 }
 
 
+//-----ContactList-----------------------------------------------------------
+CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel,
+                ICQUser *pUser)
+  : CPacketTcp(0, ICQ_CMDxTCP_START, ICQ_CMDxSUB_CONTACTxLIST, sz,
+               true, nLevel, pUser)
+{
+  InitBuffer();
+  PostBuffer();
+}
+
+
 //-----ReadAwayMessage----------------------------------------------------------
 CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG, "",
@@ -1379,6 +1390,17 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
 }
 
 
+//-----AckGeneral---------------------------------------------------------------
+CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
+   bool bAccept, bool nLevel, ICQUser *pUser)
+  : CPT_Ack(nCmd, nSequence, bAccept, nLevel, pUser)
+{
+  InitBuffer();
+  PostBuffer();
+}
+
+
+#if 0
 //-----AckMessage---------------------------------------------------------------
 CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
                                bool nLevel, ICQUser *_cUser)
@@ -1411,7 +1433,7 @@ CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool nLevel,
 }
 
 
-//-----AckUrl-------------------------------------------------------------------
+//-----AckContactList--------------------------------------------------------
 CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
                                        bool nLevel, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, nLevel, _cUser)
@@ -1419,7 +1441,7 @@ CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
   InitBuffer();
   PostBuffer();
 }
-
+#endif
 
 //-----AckChatRefuse------------------------------------------------------------
 CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,

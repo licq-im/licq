@@ -1618,10 +1618,12 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   {
     case ICQ_CMDxSUB_MSG:  // system message: message through the server
     {
-      // translating string with Translation Table
+      CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
+
+      /*// translating string with Translation Table
       gTranslator.ServerToClient (szMessage);
       CEventMsg *e = new CEventMsg(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                   timeSent, nMask);
+                                   timeSent, nMask);*/
 
       // Lock the user to add the message to their queue
       u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -1649,7 +1651,16 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     }
     case ICQ_CMDxSUB_URL:  // system message: url through the server
     {
-      // parse the message into url and url description
+      CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
+      if (e == NULL)
+      {
+        char *buf;
+        gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
+        delete []buf;
+        break;
+      }
+
+      /*// parse the message into url and url description
       char **szUrl = new char*[2];  // description, url
       if (!ParseFE(szMessage, &szUrl, 2))
       {
@@ -1665,6 +1676,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       gTranslator.ServerToClient (szUrl[0]);
       CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0],
                                    ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
+      delete[] szUrl;*/
 
       u = gUserManager.FetchUser(nUin, LOCK_W);
       if (u == NULL)
@@ -1673,11 +1685,9 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
         {
           gLog.Info("%sURL from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
           RejectEvent(nUin, e);
-          delete []szUrl;
           break;
         }
-        gLog.Info("%sURL from new user (%ld).\n",
-                  L_SBLANKxSTR, nUin);
+        gLog.Info("%sURL from new user (%ld).\n", L_SBLANKxSTR, nUin);
         AddUserToList(nUin);
         u = gUserManager.FetchUser(nUin, LOCK_W);
       }
@@ -1688,7 +1698,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       if (AddUserEvent(u, e))
         m_xOnEventManager.Do(ON_EVENT_URL, u);
       gUserManager.DropUser(u);
-      delete[] szUrl;
       break;
     }
     case ICQ_CMDxSUB_AUTHxREQUEST:  // system message: authorisation request
@@ -1878,7 +1887,16 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
          FE 00 */
       gLog.Info("%sContact list.\n", L_SBLANKxSTR);
 
-      i = 0;
+      CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
+      if (e == NULL)
+      {
+        char *buf;
+        gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
+        delete []buf;
+        break;
+      }
+
+      /*i = 0;
       while ((unsigned char)szMessage[i++] != 0xFE);
       szMessage[--i] = '\0';
       int nNumContacts = atoi(szMessage);
@@ -1894,22 +1912,21 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       }
 
       // Translate the aliases
-      vector <char *> vszFields;
+      ContactList vc;
       for (i = 0; i < nNumContacts * 2; i += 2)
       {
-        vszFields.push_back(szFields[i]);  // uin
-        gTranslator.ServerToClient(szFields[i + 1]); // alias
-        vszFields.push_back(szFields[i + 1]);
+        gTranslator.ServerToClient(szFields[i + 1]);
+        vc.push_back(new CContact(atoi(szFields[i]), szFields[i + 1]));
       }
+      delete[] szFields;
+      CEventContactList *e = new CEventContactList(vc, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);*/
 
-      gLog.Info("%s%s contacts.\n", L_SBLANKxSTR, szMessage);
-      CEventContactList *e = new CEventContactList(vszFields, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
+      gLog.Info("%s%s contacts.\n", L_SBLANKxSTR, e->Contacts().size());
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       AddUserEvent(o, e);
       gUserManager.DropOwner();
       e->AddToHistory(NULL, D_RECEIVER);
       m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-      delete[] szFields;
       break;
     }
     default:

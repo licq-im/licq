@@ -211,6 +211,7 @@ public:
 };
 
 
+
 //-----SearchByInfo--------------------------------------------------------------
 class CPU_SearchByInfo : public CPacketUdp
 {
@@ -632,14 +633,23 @@ public:
 
 
 //-----Url----------------------------------------------------------------------
+/* BA 95 47 00 03 00 EE 07 00 00 BA 95 47 00 04 00 24 00 67 6F 6F 64 20 70 6F
+   72 6E 20 73 69 74 65 FE 68 74 74 70 3A 2F 2F 63 6F 6F 6C 70 6F 72 74 6E 2E
+   63 6F 6D 00 81 61 1D 9E 7F 00 00 01 3F 07 00 00 04 00 00 10 00 03 00 00 00 */
 class CPT_Url : public CPacketTcp
 {
 public:
    CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
-   /* BA 95 47 00 03 00 EE 07 00 00 BA 95 47 00 04 00 24 00 67 6F 6F 64 20 70 6F
-      72 6E 20 73 69 74 65 FE 68 74 74 70 3A 2F 2F 63 6F 6F 6C 70 6F 72 74 6E 2E
-      63 6F 6D 00 81 61 1D 9E 7F 00 00 01 3F 07 00 00 04 00 00 10 00 03 00 00 00 */
 };
+
+
+class CPT_ContactList : public CPacketTcp
+{
+public:
+   CPT_ContactList(char *szMessage, unsigned short nLevel, ICQUser *pUser);
+};
+
+
 
 
 //-----ReadAwayMessage----------------------------------------------------------
@@ -688,24 +698,32 @@ protected:
 };
 
 
-//++++Ack+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 01 00 01 00 00 CF 60 AD D3 CF
+   60 AD D3 60 12 00 00 04 00 00 00 00 02 00 00 00 */
 class CPT_Ack : public CPacketTcp
 {
 protected:
   CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
-          bool _bAccept, bool _bUrgent, ICQUser *_cUser);
-  /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 01 00 01 00 00 CF 60 AD D3 CF
-     60 AD D3 60 12 00 00 04 00 00 00 00 02 00 00 00 */
+     bool _bAccept, bool _bUrgent, ICQUser *_cUser);
 };
 
 
-//-----AckMessage---------------------------------------------------------------
+//-----AckGeneral------------------------------------------------------------
+class CPT_AckGeneral : public CPT_Ack
+{
+public:
+  CPT_AckGeneral(unsigned short nSubCommand, unsigned long nSequence,
+     bool bAccept, bool bUrgent, ICQUser *pUser);
+};
+
+
+#if 0
+//-----AckMessage------------------------------------------------------------
 class CPT_AckMessage : public CPT_Ack
 {
 public:
   CPT_AckMessage(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
-  /* 8F 76 20 00 03 00 DA 07 00 00 8F 76 20 00 01 00 01 00 00 CF 60 AD D3 7F
-     00 00 01 5A 12 00 00 04 00 00 00 00 14 00 00 00 */
 };
 
 
@@ -733,7 +751,7 @@ public:
   CPT_AckContactList(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
                      ICQUser *_cUser);
 };
-
+#endif
 
 //-----AckChatRefuse------------------------------------------------------------
 class CPT_AckChatRefuse : public CPT_Ack

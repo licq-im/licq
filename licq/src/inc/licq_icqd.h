@@ -20,6 +20,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_events.h"
 #include "licq_remoteserver.h"
 #include "licq_onevent.h"
+#include "licq_user.h"
 
 class CPlugin;
 class CPacket;
@@ -90,17 +91,30 @@ public:
   void SaveConf();
 
   // TCP (user) functions
+  // Message
   CICQEventTag *icqSendMessage(unsigned long nUin, const char *szMessage,
      bool bOnline, unsigned short nLevel, unsigned long nSpoofUin = 0);
+  // Url
   CICQEventTag *icqSendUrl(unsigned long nUin, const char *szUrl,
      const char *szDescription, bool bOnline, unsigned short nLevel,
      unsigned long nSpoofUin = 0);
+  // Contact List
+  CICQEventTag *icqSendContactList(unsigned long nUin, UinList &uins,
+     bool bOnline, unsigned short nLevel);
+  // Auto Response
   CICQEventTag *icqFetchAutoResponse(unsigned long nUin);
+  // Chat Request
   CICQEventTag *icqChatRequest(unsigned long nUin, const char *szReason,
      unsigned short nLevel);
   CICQEventTag *icqMultiPartyChatRequest(unsigned long nUin,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel);
+  void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
+     unsigned long nSequence);
+  void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
+     unsigned long nSequence);
+  void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
+  // File Transfer
   CICQEventTag *icqFileTransfer(unsigned long nUin, const char *szFilename,
      const char *szDescription, unsigned short nLevel);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
@@ -108,11 +122,6 @@ public:
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
      unsigned long nSequence);
-  void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-     unsigned long nSequence);
-  void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-     unsigned long nSequence);
-  void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);
@@ -211,7 +220,6 @@ public:
   void SetTerminal(const char *s);
   bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
-  unsigned long StringToStatus(char *_szStatus);
 
   COnEventManager *OnEventManager()  { return &m_xOnEventManager; }
   bool AlwaysOnlineNotify();
@@ -260,7 +268,6 @@ protected:
   pthread_mutex_t mutex_serverack;
   unsigned short m_nServerAck;
 
-  bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *, CUserEvent *);
   void RemoveUserEvent(ICQUser *, int);
@@ -312,6 +319,10 @@ protected:
   friend void *Shutdown_tep(void *p);
   friend class ICQUser;
 };
+
+// Helper functions for the daemon
+bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
+unsigned long StringToStatus(char *_szStatus);
 
 
 #endif

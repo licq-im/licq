@@ -256,15 +256,19 @@ bool CUserHistory::Load(HistoryList &lHistory)
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      vector<char *> vsz;
+      ContactList vc;
+      bool b = true;
+      unsigned long nUin = 0;
       while (true)
       {
         GET_VALID_LINE_OR_BREAK;
-        vsz.push_back(strdup(&szResult[1]));
+        if (b)
+          nUin = atoi(&szResult[1]);
+        else if (nUin != 0)
+          vc.push_back(new CContact(nUin, &szResult[1]));
+        b = !b;
       }
-      e = new CEventContactList(vsz, nCommand, tTime, nFlags);
-      for (unsigned short i = 0; i < vsz.size(); i++)
-        free(vsz[i]);
+      e = new CEventContactList(vc, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_USERxINFO:
