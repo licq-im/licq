@@ -27,14 +27,20 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <list.h>
 
 GSList *rc_list;
+
+// Only needs to be in this scope
+typedef list<chat_window *> ChatDlgList;
+ChatDlgList chat_list;
 
 void list_request_chat(GtkWidget *widget, ICQUser *user)
 {
 	/* Do we even want to be here? */
 	struct request_chat *rc = rc_find(user->Uin());
 
+	// No get outta here, bitch!
 	if(rc != NULL)
 		return;
 
@@ -42,6 +48,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 
 	GtkWidget *scroll;
 	GtkWidget *statusbar;
+	GtkWidget *multiparty;
 	GtkWidget *ok;
 	GtkWidget *cancel;
 	GtkWidget *table;
@@ -76,7 +83,8 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(scroll), rc->text_box);
 	gtk_table_attach(GTK_TABLE(table), scroll, 0, 2, 0, 1,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 3, 3);
 
 	/* The send as buttons */
 	rc->send_norm = gtk_radio_button_new_with_label(NULL, "Send Normal");
@@ -107,8 +115,10 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	
 	/* The button box */
 	h_box = gtk_hbox_new(TRUE, 5);
-	ok = gtk_button_new_with_label("OK");
+	multiparty = gtk_button_new_with_label("Multi-Party");
+	ok = gtk_button_new_with_label("Single-Party");
 	cancel = gtk_button_new_with_label("Cancel");
+	gtk_box_pack_start(GTK_BOX(h_box), multiparty, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
@@ -116,10 +126,12 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 			 GTK_FILL, 3, 3);
 	
 	/* Connect the signals */
+	gtk_signal_connect(GTK_OBJECT(multiparty), "clicked",
+			   GTK_SIGNAL_FUNC(multi_request_chat), (gpointer)rc);
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-			   GTK_SIGNAL_FUNC(ok_request_chat), rc);
+			   GTK_SIGNAL_FUNC(ok_request_chat), (gpointer)rc);
 	gtk_signal_connect(GTK_OBJECT(cancel), "clicked",
-			   GTK_SIGNAL_FUNC(cancel_request_chat), rc);
+			   GTK_SIGNAL_FUNC(cancel_request_chat), (gpointer)rc);
 
 	gtk_widget_show_all(rc->window);
 	g_free(title);
@@ -161,8 +173,24 @@ struct request_chat *rc_find(gulong uin)
 	return NULL;
 }
 
-void ok_request_chat(GtkWidget *widget, struct request_chat *rc)
+void multi_request_chat(GtkWiget *widget, gpointer _rc)
 {
+	struct request_chat *rc = (struct request_chat *)_rc;
+	// I'm tired now... good night... 
+	// Here's the plan:
+	// Make a multi_request_chat struct
+	// Make it have a window
+	// a CLIST of the current chats with names
+	// and an ok and cancel button
+	// OK sends it
+	// cancel goes back to the rc->window
+	// ok?
+	// ok.
+}
+
+void ok_request_chat(GtkWidget *widget, gpointer _rc)
+{
+	struct request_chat *rc = (struct request_chat *)_rc;
 	guint id;
 	guint send_as = ICQ_TCPxMSG_NORMAL;
 
@@ -189,8 +217,9 @@ void ok_request_chat(GtkWidget *widget, struct request_chat *rc)
 	catcher = g_slist_append(catcher, rc->etd);
 }
 
-void cancel_request_chat(GtkWidget *widget, struct request_chat *rc)
+void cancel_request_chat(GtkWidget *widget, gpointer _rc)
 {
+	struct request_chat *rc = (struct request_chat *)_rc;
 	icq_daemon->CancelEvent(rc->etd->e_tag);
 	catcher = g_slist_remove(catcher, rc->etd);
 	close_request_chat(rc);
@@ -334,6 +363,9 @@ struct chat_window *chat_window_create(gulong uin)
 	struct chat_window *cw;
 
 	cw = g_new0(struct chat_window, 1);
+
+	// Add to the chat list
+	chat_list.push_back(cw);
 
 	/* Take care of the chat manager stuff */
 	cw->chatman = new CChatManager(icq_daemon, uin);
