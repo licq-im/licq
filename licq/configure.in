@@ -41,6 +41,9 @@ AC_PROG_RANLIB
 AC_PATH_PROG(PROG_STRIP,strip,:)
 AC_PATH_PROG(PROG_SIZE,size,:)
 
+dnl Required for GPGME...
+AC_SYS_LARGEFILE
+
 dnl Set up some operating system specific options
 case "$host" in
 	*-*-openbsd*)
