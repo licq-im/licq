@@ -259,6 +259,10 @@ void contact_list_click(GtkWidget *contact_list,
 	/* A right click.. make the popup menu */
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
+		/* A blank space was selected */
+		if(user == NULL)
+			return;
+
 		GtkWidget *_menu;
 		GtkWidget *item;
 		GtkWidget *separator;
