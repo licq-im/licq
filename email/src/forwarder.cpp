@@ -210,7 +210,7 @@ void CLicqForwarder::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGON:
     break;
   default:
-    gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %ld.\n", 
+    gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());
     break;
   }
@@ -342,7 +342,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     sprintf(szTo, "To: %s <%s>", o->GetAlias(), m_szSMTPTo);
     gUserManager.DropOwner();
     sprintf (szFrom, "From: \"%s\" <%ld@pager.mirabilis.com>", u->GetAlias(), u->Uin());
-    sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmail1());
+    sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmailPrimary());
   }
   sprintf (szDate, "Date: %s", ctime(&t));
   int l = strlen(szDate);
