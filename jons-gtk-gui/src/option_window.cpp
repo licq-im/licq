@@ -1,14 +1,30 @@
+/*
+ * Licq GTK GUI Plugin
+ *
+ * Copyright (C) 2000, Jon Keating <jon@licq.org>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */		 
+
 #include "licq_gtk.h"
 #include "licq_file.h"
 
 #include <gtk/gtk.h>
 #include <fstream.h>
 
-/* Global variables for use in other files */
-//gushort general_options;
-//const gushort SHOW_IGN 		= 0x0001;
-//const gushort SHOW_OFFLINE	= 0x0002;
-//const gushort ENTER_SENDS	= 0x0004;
+// Global variables for use in other files
 bool show_offline_users;
 bool show_ignored_users;
 bool enter_sends;
@@ -172,6 +188,10 @@ void done_options(GtkWidget *widget, gpointer data)
 	licqConf.WriteNum("ColorOffline_Green", offline_color->green);
 	licqConf.WriteNum("ColorOffline_Blue", offline_color->blue);
 	licqConf.WriteNum("ColorOffline_Pixel", offline_color->pixel);
+	licqConf.WriteNum("ColorAway_Red", away_color->red);
+	licqConf.WriteNum("ColorAway_Green", away_color->green);
+	licqConf.WriteNum("ColorAway_Blue", away_color->blue);
+	licqConf.WriteNum("ColorAway_Pixel", away_color->pixel);
 	licqConf.WriteBool("ShowOfflineUsers", show_offline_users);
 	licqConf.WriteBool("ShowIgnoredUsres", show_ignored_users);
 	licqConf.WriteBool("EnterSends", enter_sends);
@@ -185,11 +205,14 @@ void load_options()
 {
 	online_color = new GdkColor;
 	offline_color = new GdkColor;
+	away_color = new GdkColor;
 
 	CIniFile licqConf;
 	licqConf.LoadFile(g_strdup_printf("%s/licq_jons-gtk-gui.conf",
 				          BASE_DIR));
 	licqConf.SetSection("appearance");
+
+	gLog.Info("%sLoading Jon's GTK+ GUI configuration", L_INITxSTR);
 
 	// Online color
 	licqConf.ReadNum("ColorOnline_Red", online_color->red, 8979);
@@ -203,77 +226,16 @@ void load_options()
 	licqConf.ReadNum("ColorOffline_Blue", offline_color->blue, 1660);
 	licqConf.ReadNum("ColorOffline_Pixel", offline_color->pixel, 0);
 
+	// Away color
+	licqConf.ReadNum("ColorAway_Red", away_color->red, 0);
+	licqConf.ReadNum("ColorAway_Green", away_color->green, 30000);
+	licqConf.ReadNum("ColorAway_Blue", away_color->blue, 0);
+	licqConf.ReadNum("ColorAway_Pixel", away_color->pixel, 0);
+
 	// General options
 	licqConf.ReadBool("ShowOfflineUsers", show_offline_users, true);
 	licqConf.ReadBool("ShowIgnoredUsers", show_ignored_users, false);
 	licqConf.ReadBool("EnterSends", enter_sends, true);
-//
-//	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
-//					       BASE_DIR);
-//	ifstream file(filename);
-//	char buffer[20];
-//
-//	/* Read in the variables */
-//	while(!file.eof())
-//	{
-//		file.getline(buffer, 20);
-//
-//		parse_line(buffer, file);
-//	}
-//
-//	/* Close the file, we're done with it */
-//	file.close();
-}
-
-void parse_line(char *buffer, ifstream &file)
-{
-/*	switch(buffer[0])
-	{
-	case 'G':
-		*buffer++;
-		general_options = atoi(buffer);
-		break;
-	case 'O':
-		*buffer++;
-		online_color->red = atoi(buffer);
-		file.getline(color_buffer, 15);
-		online_color->green = atoi(color_buffer);
-		file.getline(color_buffer, 15);
-		online_color->blue = atoi(color_buffer);
-		file.getline(color_buffer, 15);
-		online_color->pixel = (gulong)atoi(color_buffer);
-		break;
-	case 'o':
-		*buffer++;
-		offline_color->red = atoi(buffer);
-		file.getline(color_buffer, 15);
-		offline_color->green = atoi(color_buffer);
-		file.getline(color_buffer, 15);
-		offline_color->blue = atoi(color_buffer);
-		file.getline(color_buffer, 15);
-		offline_color->pixel = (gulong)atoi(color_buffer);
-		break;
-	}*/
-}
-
-void set_default_options()
-{
-	//general_options = SHOW_OFFLINE;
-
-	/* Contact list colors */
-	online_color = new GdkColor;
-	online_color->red = 0;
-	online_color->green = 0;
-	online_color->blue = 30000;
-	online_color->pixel = (gulong)(255 * 256);
-
-	offline_color = new GdkColor;
-	offline_color->red = 30000;
-	offline_color->green = 0;
-	offline_color->blue = 0;
-	offline_color->pixel = (gulong)(255 * 256);
-
-	save_options();
 }
 
 void show_on_color_dlg(GtkWidget *widget, gpointer data)

@@ -387,7 +387,6 @@ void convo_recv(gulong uin)
 
 	else if(u_event->SubCommand() == ICQ_CMDxSUB_CHAT)
 	{
-		const gchar *chat_reason = u_event->Text();
 		CEventChat *c_event = (CEventChat *)u_event;
 
 		chat_accept_window(c_event, uin);

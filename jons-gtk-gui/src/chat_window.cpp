@@ -18,16 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "licq_gtk.h"
-
-#include "licq_buffer.h"
-#include "licq_chat.h"
-#include "licq_icq.h"
-#include "licq_icqd.h"
-
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <list.h>
+
+#include "licq_icq.h"
+#include "licq_gtk.h"
 
 GSList *rc_list;
 
@@ -263,7 +259,6 @@ void ok_request_chat(GtkWidget *widget, gpointer _rc)
 				== 0)
 			{
 				nPort = (*iter)->chatman->LocalPort();
-				g_print("Found port!!!: %hu\n", nPort);
 				break;
 			}
 		}

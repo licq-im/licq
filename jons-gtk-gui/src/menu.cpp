@@ -100,6 +100,9 @@ void menu_create()
 	item = menu_new_item(sub_menu, "Search For User",
 			     GTK_SIGNAL_FUNC(search_user_window));
 
+	item = menu_new_item(sub_menu, "Search For Random User",
+			     GTK_SIGNAL_FUNC(random_chat_search_window));
+
 	/* The rest of the menu options */
 	item = menu_new_item(menu, "Options",
 			     GTK_SIGNAL_FUNC(menu_options_create));

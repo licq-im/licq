@@ -27,6 +27,9 @@
 #include "pixmaps/occ.xpm"
 #include "pixmaps/dnd.xpm"
 #include "pixmaps/message.xpm"
+#include "pixmaps/file.xpm"
+#include "pixmaps/chat.xpm"
+#include "pixmaps/url.xpm"
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -39,18 +42,12 @@
 void do_colors()
 {
         red = new GdkColor;
-        green = new GdkColor;
         blue = new GdkColor;
  
         red->red = 30000;
         red->green = 0;
         red->blue = 0;
         red->pixel = (gulong)(255);
- 
-        green->red = 0;
-        green->green = 30000;
-        green->blue = 0;
-        green->pixel = (gulong)(255*256);
  
         blue->red = 0;
         blue->green = 0;
@@ -67,7 +64,10 @@ void do_pixmaps()
 	occ = make_pixmap(occ, (gchar **)occ_xpm);
 	dnd = make_pixmap(dnd, (gchar **)dnd_xpm);
 	offline = make_pixmap(offline, (gchar **)offline_xpm);
-	message = make_pixmap(message, (gchar **)message_xpm);
+	message_icon = make_pixmap(message_icon, (gchar **)message_xpm);
+	url_icon = make_pixmap(url_icon, (gchar **)url_xpm);
+	file_icon = make_pixmap(file_icon, (gchar **)file_xpm);
+	chat_icon = make_pixmap(chat_icon, (gchar **)chat_xpm);
 }
 
 struct status_icon *make_pixmap(struct status_icon *icon, gchar **file)
@@ -221,6 +221,8 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 			break;
 		case EVENT_FAILED:
 			strcat(temp, "failed");
+			if(event->SubCommand() == ICQ_CMDxSND_RANDOMxSEARCH)
+				message_box("No random chat user found!");
 			break;
 		case EVENT_TIMEDOUT:
 			strcat(temp, "timed out");
@@ -267,6 +269,10 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 		finish_away(event);
 		break;
 	}
+
+	// No sub command for this..
+	if(event->Command() == ICQ_CMDxSND_RANDOMxSEARCH)
+		finish_random(event);
 }
 
 /********************** Finishing Events *******************************/
@@ -342,6 +348,17 @@ void finish_away(ICQEvent *event)
 	gtk_text_insert(GTK_TEXT(uaw->text_box), 0, 0, 0,
 			uaw->user->AutoResponse(), -1);
 	gtk_text_thaw(GTK_TEXT(uaw->text_box));
+}
+
+void finish_random(ICQEvent *event)
+{
+	// They can search again!
+	gtk_widget_set_sensitive(rcw->search, true);
+
+	// Show the person's info window
+	ICQUser *u = gUserManager.FetchUser(event->SearchAck()->Uin(), LOCK_R);
+	list_info_user(NULL, u);
+	gUserManager.DropUser(u);
 }
 
 /*************** Finishing Signals *****************************/

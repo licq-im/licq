@@ -9,9 +9,6 @@ Stuff on the top has a higher priority
 
 * Sending multi-recipient messages.
 
-* Changing from my option file to use the class that is in licq.. CIniFile I
-  think.
-
 * Sending contacts.
 
 * Pretty up the file window (the one that shows the stats)
@@ -19,7 +16,7 @@ Stuff on the top has a higher priority
 * Add some buttons to the conversation window, to send a url, chat, file,
   read their info, history, and anything else worthwhile.
 
-* Add in icon themes or packs, whatever they're called.
+* Add in icon themes and maybe sound themes.
 
 * SOCKS5 Configuration and lots of other options
 

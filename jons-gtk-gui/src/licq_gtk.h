@@ -342,6 +342,14 @@ struct chat_window
 	gint input_tag;
 };
 
+struct random_chat
+{
+	GtkWidget *window;
+	GtkWidget *group_list;
+	GtkWidget *search;
+	struct e_tag_data *etag;
+};
+
 struct e_tag_data
 {
 	GtkWidget *statusbar;
@@ -361,8 +369,9 @@ struct status_icon
 extern GSList *uaw_list;
 
 /* Globals in contact_list.cpp */
-extern GdkColor *red, *green, *blue, *online_color, *offline_color;
-extern struct status_icon *online, *away, *na, *dnd, *occ, *offline, *message;
+extern GdkColor *red, *blue, *online_color, *offline_color, *away_color;
+extern struct status_icon *online, *away, *na, *dnd, *occ, *offline,
+	*message_icon, *file_icon, *chat_icon, *url_icon;
 
 /* Globals in chat_window.cpp */
 extern GSList *rc_list;
@@ -395,6 +404,9 @@ extern GtkWidget *user_list_menu;
 extern bool show_offline_users;
 extern bool show_ignored_users;
 extern bool enter_sends;
+
+/* Globals in random_chat.cpp */
+extern struct random_chat *rcw;
 
 /* Globals in register_user.cpp */
 extern GtkWidget *register_window;
@@ -488,6 +500,7 @@ extern void finish_message(ICQEvent *);
 extern void finish_chat(ICQEvent *);
 extern void finish_file(ICQEvent *);
 extern void finish_away(ICQEvent *);
+extern void finish_random(ICQEvent *);
 extern void finish_info(CICQSignal *);
 
 
@@ -560,6 +573,13 @@ extern void color_dlg_cancel(GtkWidget *, gpointer);
 extern void pipe_callback(gpointer, gint, GdkInputCondition);
 extern void pipe_signal(CICQSignal *);
 extern void pipe_event(ICQEvent *);
+
+
+/* Functions in random_chat.cpp */
+extern void random_chat_search_window();
+extern void random_search_callback(GtkWidget *, gpointer);
+extern void random_cancel_callback(GtkWidget *, gpointer);
+extern void random_close_callback(GtkWidget *, gpointer);
 
 
 /* Functions in register_user.cpp */

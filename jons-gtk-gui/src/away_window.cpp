@@ -18,11 +18,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "licq_gtk.h"
-
-#include "licq_user.h"
-
 #include <gtk/gtk.h>
+
+#include "licq_icqd.h"
+#include "licq_gtk.h"
 
 GSList *uaw_list;
 

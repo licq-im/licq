@@ -168,28 +168,27 @@ void wizard_message(int mes)
 	GtkWidget *dialog;
 	GtkWidget *label;
 	GtkWidget *ok;
-	gchar *message;
-	gchar *buf;
+	gchar message[45];
 	
 	switch(mes)
 	{
 	case 1:
-		message="Invalid password, must be 8 characters or less.";
+		strcpy(message, "Invalid password, must be 8 characters or less.");
 		break;
 	case 2:
-		message = "Passwords do not match, try again.";
+		strcpy(message, "Passwords do not match, try again.");
 		break;
 	case 3:
-		message = "Invalid UIN, try again.";
+		strcpy(message, "Invalid UIN, try again.");
 		break;
 	case 4:
-		message = "Registration failed.\nSee network window for details.";
+		strcpy(message, "Registration failed.\nSee network window for details.");
 		break;
 	case 5:
-		message = "Successfuly registered.";
+		strcpy(message, "Successfuly registered.");
 		break;
 	case 6:
-		message = "Registered successfully.";
+		strcpy(message, "Registered successfully.");
 	default:
 		break;
 	}

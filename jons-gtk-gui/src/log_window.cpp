@@ -50,7 +50,7 @@ void new_log_window()
 	GtkWidget *table;
 	GtkWidget *h_box;
 
-	nw = (struct network_window *)g_new0(struct network_window, 1);
+	nw = g_new0(struct network_window, 1);
 
 	/* Create the window */
 	nw->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
