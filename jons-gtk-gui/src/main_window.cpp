@@ -87,7 +87,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_container_add(GTK_CONTAINER(event_box), status_bar);
 
 	/* Get any events for it */
-	gtk_signal_connect(GTK_OBJECT(event_box), "button-release-event",
+	gtk_signal_connect(GTK_OBJECT(event_box), "button_press_event",
 			   GTK_SIGNAL_FUNC(status_popup_menu),
 			   GTK_OBJECT(_status_menu));
 
