@@ -2225,8 +2225,8 @@ void CMainWindow::autoAway()
     {
       changeStatus(ICQ_STATUS_OFFLINE);
       bAutoOffline = true;
-      bAutoAway = (status == ICQ_STATUS_ONLINE);
-      bAutoNA = (status == ICQ_STATUS_AWAY || bAutoAway);
+      bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
+      bAutoNA = ((status == ICQ_STATUS_AWAY && bAutoAway) || bAutoNA);
     }
   }
   else if ( (autoNATime > 0) &&
@@ -2236,7 +2236,7 @@ void CMainWindow::autoAway()
     {
       changeStatus(ICQ_STATUS_NA);
       bAutoNA = true;
-      bAutoAway = (status == ICQ_STATUS_ONLINE);
+      bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
     }
   }
   else if ( (autoAwayTime > 0) &&
@@ -2250,22 +2250,6 @@ void CMainWindow::autoAway()
   }
   else
   {
-    /*if (bAutoNA && bAutoAway)
-    {
-      changeStatus(ICQ_STATUS_ONLINE);
-      bAutoNA = false;
-      bAutoAway = false;
-    }
-    else if (bAutoNA)
-    {
-      changeStatus(ICQ_STATUS_AWAY);
-      bAutoNA = false;
-    }
-    else if (bAutoAway)
-    {
-      changeStatus(ICQ_STATUS_ONLINE);
-      bAutoAway = false;
-    }*/
     if (bAutoOffline)
     {
       if (bAutoNA && bAutoAway)
