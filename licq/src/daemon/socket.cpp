@@ -639,16 +639,14 @@ bool TCPSocket::RecvPacket()
 
 
 //=====Locking==================================================================
-static void LockSocket(INetSocket *s)
+void INetSocket::Lock()
 {
-  if (s == NULL) return;
-  pthread_mutex_lock (&s->mutex);
+  pthread_mutex_lock (&mutex);
 }
 
-static void UnlockSocket(INetSocket *s)
+void INetSocket::Unlock()
 {
-  if (s == NULL) return;
-  pthread_mutex_unlock (&s->mutex);
+  pthread_mutex_unlock (&mutex);
 }
 
 
@@ -703,9 +701,9 @@ INetSocket *CSocketHashTable::Retrieve(int _nSd)
   list<INetSocket *>::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
-    LockSocket(*iter);
+    (*iter)->Lock();
     nSd = (*iter)->Descriptor();
-    UnlockSocket(*iter);
+    (*iter)->Unlock();
     if (nSd == _nSd)
     {
       s = (*iter);
@@ -734,9 +732,9 @@ void CSocketHashTable::Remove(int _nSd)
   list<INetSocket *>::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
-    LockSocket(*iter);
+    (*iter)->Lock();
     nSd = (*iter)->Descriptor();
-    UnlockSocket(*iter);
+    (*iter)->Unlock();
     if (nSd == _nSd)
     {
       l.erase(iter);
@@ -761,50 +759,50 @@ CSocketManager::CSocketManager() : m_hSockets(SOCKET_HASH_SIZE)
 INetSocket *CSocketManager::FetchSocket(int _nSd)
 {
   INetSocket *s = m_hSockets.Retrieve(_nSd);
-  if (s != NULL) LockSocket(s);
+  if (s != NULL) s->Lock();
   return s;
 }
 
 
 void CSocketManager::DropSocket(INetSocket *s)
 {
-  if (s != NULL) UnlockSocket(s);
+  if (s != NULL) s->Unlock();
 }
 
 
 void CSocketManager::AddSocket(INetSocket *s)
 {
-  LockSocket(s);
+  s->Lock();
   m_hSockets.Store(s, s->Descriptor());
   m_sSockets.Set(s->Descriptor());
 }
 
 
-void CSocketManager::CloseSocket (int _nSd, bool _bClearUser)
+void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
 {
   // Quick check that the socket is valid
-  if (_nSd == -1) return;
+  if (nSd == -1) return;
 
   // Clear from the socket list
-  m_sSockets.Clear(_nSd);
+  m_sSockets.Clear(nSd);
 
   // Fetch the actual socket
-  INetSocket *s = FetchSocket(_nSd);
+  INetSocket *s = FetchSocket(nSd);
   if (s == NULL) return;
   unsigned long nOwner = s->Owner();
   DropSocket(s);
 
   // First remove the socket from the hash table so it won't be fetched anymore
-  m_hSockets.Remove(_nSd);
+  m_hSockets.Remove(nSd);
 
   // Now close the connection (we don't have to lock it first, because the
   // Remove function above guarantees that no one has a lock on the socket
   // before removing it from the hash table, and once removed from the has
   // table, no one can get a lock again.
   s->CloseConnection();
-  delete s;
+  if (bDelete) delete s;
 
-  if (_bClearUser)
+  if (bClearUser)
   {
     ICQUser *u = gUserManager.FetchUser(nOwner, LOCK_W);
     if (u != NULL)

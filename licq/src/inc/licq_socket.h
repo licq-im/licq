@@ -60,6 +60,8 @@ public:
   virtual bool Send(CBuffer *b) = 0;
   virtual bool Recv() = 0;
 
+  void Lock();
+  void Unlock();
   pthread_mutex_t mutex;
 
   static unsigned long GetIpByName(const char *_szHostName);
@@ -176,7 +178,7 @@ public:
   INetSocket *FetchSocket (int _nSd);
   void DropSocket (INetSocket *s);
   void AddSocket(INetSocket *s);
-  void CloseSocket (int _nSd, bool _bClearUser = true);
+  void CloseSocket (int nSd, bool bClearUser = true, bool bDelete = true);
 
   fd_set SocketSet()   {  return m_sSockets.SocketSet(); }
   int LargestSocket()  {  return m_sSockets.Largest(); }
