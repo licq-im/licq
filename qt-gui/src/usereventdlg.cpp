@@ -180,10 +180,10 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 }
 #endif
 
-#if QT_VERSION >= 300
 UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
   : QWidget(parent, name, WDestructiveClose)
 {
+#if QT_VERSION >= 300
   QBoxLayout *lay = new QVBoxLayout(this);
   tabw = new QTabWidget(this);
   lay->addWidget(tabw);
@@ -191,15 +191,19 @@ UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
 	  this, SLOT(updateTitle(QWidget *)));
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
           this, SLOT(clearEvents(QWidget *)));
+#endif
 }
 
 UserEventTabDlg::~UserEventTabDlg()
 {
+#if QT_VERSION >= 300
   emit signal_done();
+#endif
 }
 
 void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
 {
+#if QT_VERSION >= 300
   QString label;
   ICQUser *u = gUserManager.FetchUser(tab->Uin(), LOCK_W);
   if (u == NULL) return;
@@ -211,49 +215,65 @@ void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
   updateTabLabel(u);
   gUserManager.DropUser(u);
   tabw->showPage(tab);
+#endif
 }
 
 void UserEventTabDlg::removeTab(QWidget *tab)
 {
+#if QT_VERSION >= 300
   if (tabw->count() > 1)
   {
     tabw->removePage(tab);
-    tab->close(true);
+    tab->close();
   }
   else
     close();
+#endif
 }
 
 void UserEventTabDlg::selectTab(QWidget *tab)
 {
+#if QT_VERSION >= 300
   tabw->showPage(tab);
   updateTitle(tab);
+#endif
 }
 
 void UserEventTabDlg::replaceTab(QWidget *oldTab,
 				 UserEventCommon *newTab)
 {
+#if QT_VERSION >= 300
   addTab(newTab, tabw->indexOf(oldTab));
   removeTab(oldTab);
+#endif
 }
 
 bool UserEventTabDlg::tabIsSelected(QWidget *tab)
 {
+#if QT_VERSION >= 300
   if (tabw->currentPageIndex() == tabw->indexOf(tab))
     return true;
   else
     return false;
+#else
+  return false; //should never be used with QT < 3!
+#endif
 }
 
 bool UserEventTabDlg::tabExists(QWidget *tab)
 {
+#if QT_VERSION >= 300
   if (tabw->indexOf(tab) != -1)
     return true;
   else return false;
+#else
+  return false; //should never be used with QT < 3!
+#endif
 }
 
 void UserEventTabDlg::updateTabLabel(ICQUser *u)
 {
+#if QT_VERSION >= 300
   for (int index = 0; index < tabw->count(); index++)
   {
     UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
@@ -295,16 +315,20 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       return;
     }
   }
+#endif
 }
 
 void UserEventTabDlg::updateTitle(QWidget *tab)
 {
+#if QT_VERSION >= 300
   if (tab->caption())
     setCaption(tab->caption());
+#endif
 }
 
 void UserEventTabDlg::clearEvents(QWidget *tab)
 {
+#if QT_VERSION >= 300
   if (!isActiveWindow()) return;
   UserEventCommon *e = static_cast<UserEventCommon*>(tab);
   ICQUser *u = gUserManager.FetchUser(e->Uin(), LOCK_R);
@@ -322,22 +346,26 @@ void UserEventTabDlg::clearEvents(QWidget *tab)
       u->EventClearId(idList[i]);
   }
   gUserManager.DropUser(u);
+#endif
 }
 
 void UserEventTabDlg::moveLeft()
 {
+#if QT_VERSION >= 300
   int index = tabw->currentPageIndex();
   if (index > 0)
     tabw->setCurrentPage(index - 1);
+#endif
 }
 
 void UserEventTabDlg::moveRight()
 {
+#if QT_VERSION >= 300
   int index = tabw->currentPageIndex();
   if (index < tabw->count() - 1)
     tabw->setCurrentPage(index + 1);
-}
 #endif
+}
 
 // -----------------------------------------------------------------------------
 

@@ -2324,8 +2324,8 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
 		KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
 	      }
-#endif
 	      else
+#endif
 	      {
 		e->show();
 		if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
@@ -2453,12 +2453,12 @@ void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 
 
 // -----------------------------------------------------------------------------
-#if QT_VERSION >= 300
 void CMainWindow::slot_doneUserEventTabDlg()
 {
+#if QT_VERSION >= 300
   userEventTabDlg = NULL;
-}
 #endif
+}
 
 void CMainWindow::slot_userfinished(unsigned long nUin)
 {

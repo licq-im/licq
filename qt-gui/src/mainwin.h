@@ -329,9 +329,7 @@ protected slots:
   void slot_popupall();
   void slot_aboutToQuit();
   void UserInfoDlg_finished(unsigned long);
-#if QT_VERSION >= 300
   void slot_doneUserEventTabDlg();
-#endif
 
 signals:
   void changeDockStatus(unsigned short);

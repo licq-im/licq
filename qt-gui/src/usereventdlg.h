@@ -55,7 +55,6 @@ class CMessageViewWidget;
 class MLView;
 
 /* ----------------------------------------------------------------------------- */
-#if QT_VERSION >= 300
 class UserEventTabDlg : public QWidget
 {
   Q_OBJECT
@@ -83,7 +82,6 @@ public slots:
 signals:
   void signal_done();
 };
-#endif
 /* ----------------------------------------------------------------------------- */
 
 class UserEventCommon : public QWidget
