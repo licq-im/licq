@@ -10,6 +10,7 @@
 #else
 #include <qapplication.h>
 #endif
+#include <qstringlist.h>
 
 class CICQDaemon;
 class CMainWindow;
@@ -28,12 +29,17 @@ public:
   int Run(CICQDaemon *);
   void Shutdown(void);
   //virtual bool x11EventFilter(XEvent *);
+
+  virtual void commitData(QSessionManager& sm);
+  virtual void saveState(QSessionManager& sm);
+
 protected:
   char *m_szSkin, *m_szIcons;
   bool m_bStartHidden;
   CMainWindow *licqMainWindow;
   CSignalManager *licqSignalManager;
   CQtLogWindow *licqLogWindow;
+  QStringList cmdLineParams;
 
   QStyle *SetStyle(const char *_szStyle);
 };

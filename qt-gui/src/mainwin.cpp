@@ -231,6 +231,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqDaemon = theDaemon;
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
+  positionChanges = 0;
 
   // Overwrite Qt's event handler
   old_handler = XSetErrorHandler(licq_xerrhandler);
@@ -248,6 +249,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   hints->flags = WindowGroupHint;  // set the window group hint
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
+
+  connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(slot_aboutToQuit()));
 
   // read in info from file
   char szTemp[MAX_FILENAME_LEN];
@@ -674,7 +677,7 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
 CMainWindow::~CMainWindow()
 {
 #ifdef USE_DOCK
-  if (licqIcon != NULL) delete licqIcon;
+  delete licqIcon;
 #endif
 
   gMainWindow = NULL;
@@ -711,6 +714,12 @@ void CMainWindow::resizeEvent (QResizeEvent *)
   }
 }
 
+void CMainWindow::moveEvent(QMoveEvent* e)
+{
+  if(isVisible())  positionChanges++;
+
+  QWidget::moveEvent(e);
+}
 
 void CMainWindow::closeEvent( QCloseEvent *e )
 {
@@ -721,7 +730,7 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     qDebug(" toGlobal: x %d, y %d", mapToGlobal(QPoint(0,0)).x(), mapToGlobal(QPoint(0,0)).y());
 #endif
 
-  if(isVisible())
+  if(isVisible() && positionChanges > 1)
   {
     // save window position and size
     char buf[MAX_FILENAME_LEN];
@@ -1811,6 +1820,12 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
 void CMainWindow::slot_shutdown()
 {
   licqDaemon->Shutdown();
+}
+
+void CMainWindow::slot_aboutToQuit()
+{
+  // nothing to do
+//  qDebug("aboutToQuit!");
 }
 
 //-----CMainWindow::slot_logon------------------------------------------------

@@ -151,6 +151,7 @@ protected:
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmAuthorize;
   unsigned long m_nUserMenuUin;
+  unsigned int positionChanges;
 
   // AutoAway
   QTimer autoAwayTimer;
@@ -170,13 +171,15 @@ protected:
   void initMenu();
   bool show_user(ICQUser *);
 
-  void resizeEvent (QResizeEvent *);
+  virtual void resizeEvent (QResizeEvent *);
+  virtual void moveEvent(QMoveEvent*);
   virtual void mouseMoveEvent (QMouseEvent *);
   virtual void mousePressEvent (QMouseEvent *);
   virtual void closeEvent (QCloseEvent *);
   virtual void keyPressEvent(QKeyEvent *e);
 
   friend class WharfIcon;
+  friend class IconManager;
   friend class IconManager_Default;
   friend class OptionsDlg;
   friend class CUserViewItem;
@@ -184,6 +187,8 @@ protected:
 
 public slots:
   void updateUserWin();
+  void slot_shutdown();
+  void saveOptions();
 
 protected slots:
   void slot_hints();
@@ -212,7 +217,6 @@ protected slots:
   void slot_doneOwnerFcn(ICQEvent *);
   void slot_doneAwayMsgDlg();
   void slot_stats();
-  void saveOptions();
   void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
@@ -240,7 +244,7 @@ protected slots:
   void slot_updateAllUsers();
   void slot_updateAllUsersInGroup();
   void slot_popupall();
-  void slot_shutdown();
+  void slot_aboutToQuit();
   void UserInfoDlg_finished(unsigned long);
 
 signals:

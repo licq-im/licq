@@ -27,6 +27,7 @@
 #include <qmotifstyle.h>
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
+#include <qsessionmanager.h>
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -128,6 +129,29 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
 }
 
 
+// -----------------------------------------------------------------------------
+
+void CLicqGui::commitData(QSessionManager& sm)
+{
+  if(sm.allowsInteraction()) {
+    gMainWindow->saveOptions();
+    sm.release();
+  }
+
+  QStringList restartCmd;
+  restartCmd  = cmdLineParams;
+  restartCmd += QString("-session");
+  restartCmd += sm.sessionId();
+  sm.setRestartCommand(restartCmd);
+}
+
+void CLicqGui::saveState(QSessionManager& sm)
+{
+  sm.setRestartHint(QSessionManager::RestartIfRunning);
+}
+
+// -----------------------------------------------------------------------------
+
 CLicqGui::CLicqGui(int argc, char **argv)
 #ifdef USE_KDE
 : KApplication(argc, argv, "Licq")
@@ -139,6 +163,14 @@ CLicqGui::CLicqGui(int argc, char **argv)
   char iconsName[32] = "";
   char styleName[32] = "";
   bool bStartHidden = false;
+
+  // store command line arguments for session management
+  cmdLineParams += QString(argv[0]);
+  cmdLineParams += QString("-p");
+  cmdLineParams += QString("qt-gui");
+  cmdLineParams += QString("--");
+  for(int i=1;i<argc;i++)
+    cmdLineParams += QString(argv[i]);
 
   // parse command line for arguments
   int i = 0;

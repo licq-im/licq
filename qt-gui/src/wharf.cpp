@@ -105,9 +105,15 @@ void IconManager::X11Init()
 IconManager::~IconManager()
 {
   delete wharfIcon;
+  // clean up behind us the prevent segfaults
+  gMainWindow->licqIcon = NULL;
 }
 
-void IconManager::closeEvent( QCloseEvent*) {}
+void IconManager::closeEvent( QCloseEvent* e)
+{
+  gMainWindow->slot_shutdown();
+  e->accept();
+}
 
 #ifdef USE_KDE
 int IconManager::widthForHeight(int)
