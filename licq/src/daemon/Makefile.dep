@@ -37,6 +37,8 @@ obj/plugind.o: plugind.cpp plugind.h ../inc/icqevent.h ../../config.h \
  ../inc/time-fix.h
 obj/remoteserver.o: remoteserver.cpp ../../config.h ../inc/remoteserver.h \
  ../inc/constants.h
+obj/sar.o: sar.cpp ../../config.h ../inc/sar.h ../inc/file.h \
+ ../inc/pthread_rdwr.h ../inc/log.h ../inc/constants.h sar.conf.h
 obj/socket.o: socket.cpp ../../config.h ../inc/socket.h ../inc/buffer.h \
  ../inc/pthread_rdwr.h ../inc/support.h ../inc/constants.h \
  ../inc/icq-defines.h ../inc/log.h ../inc/user.h ../inc/file.h \
