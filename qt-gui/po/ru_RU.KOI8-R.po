@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: example-Qt-message-extraction\n"
 "POT-Creation-Date: 1999-02-23 15:38+0200\n"
-"PO-Revision-Date: 1999-12-19 17:59+0300\n"
-"Last-Translator: "Max Kosmach" <murk@chat.ru>\n"
+"PO-Revision-Date: 2000-02-17 17:59+0300\n"
+"Last-Translator: "Max Kosmach" <max@licq.org>\n"
 "Content-Type: text/plain; charset=koi8-r\n"
 
 #: adduserdlg.cpp:27
@@ -21,21 +21,21 @@ msgstr "Отменить"
 msgid "AddUserDlg::New User UIN:"
 msgstr "UIN нового пользователя"
 
-#: authuserdlg.cpp:29
+#: authuserdlg.cpp:38
 msgid "AuthUserDlg::&Cancel"
 msgstr "Отменить"
 
-#: authuserdlg.cpp:27
+#: authuserdlg.cpp:35
 msgid "AuthUserDlg::&Ok"
 msgstr "Да"
 
-#: authuserdlg.cpp:22
+#: authuserdlg.cpp:25
 msgid "AuthUserDlg::Authorize which user (UIN):"
 msgstr "Авторизовать пользователя с UIN:"
 
-#: authuserdlg.cpp:20
-msgid "AuthUserDlg::Licq"
-msgstr ""
+#: authuserdlg.cpp:21
+msgid "AuthUserDlg::Licq - Authorisation"
+msgstr "Licq - Авторизация"
 
 #: awaymsgdlg.cpp:46
 msgid "AwayMsgDlg::&Cancel"
@@ -60,56 +60,6 @@ msgstr "Я сейчас %1.\nВы можете оставить мне сообщение."
 #: awaymsgdlg.cpp:73
 msgid "AwayMsgDlg::Set %1 Response for %2"
 msgstr "Установить ответ %1 для %2"
-
-# #: chatacceptdlg.cpp:43
-# msgid "CChatAcceptDlg::Accept chat with "
-# msgstr "Подтвердить разговор с "
-
-# #: chatacceptdlg.cpp:32
-# msgid "CChatAcceptDlg::Accept"
-# msgstr "Подтвердить"
-
-# #: chatacceptdlg.cpp:38
-# msgid "CChatAcceptDlg::Ignore"
-# msgstr "Игнорировать"
-
-# #: chatacceptdlg.cpp:55
-# msgid "CChatAcceptDlg::No more ports available, add more\nor close open chat/file sessions."
-# msgstr "Нет больше свободных портов, добавьте еще или закройте\n"
-# "один или несколько разговоров и/или передач файлов."
-
-# #: chatacceptdlg.cpp:26
-# msgid "CChatAcceptDlg::Refusal Reason (if applicable):"
-# msgstr "Причина отказа (если есть):"
-
-# #: chatacceptdlg.cpp:35
-# msgid "CChatAcceptDlg::Refuse"
-# msgstr "Отказать"
-
-# #: fileacceptdlg.cpp:43
-# msgid "CFileAcceptDlg::Accept file transfer from "
-# msgstr "Прием файла от "
-
-# #: fileacceptdlg.cpp:32
-# msgid "CFileAcceptDlg::Accept"
-# msgstr "Подтвердить"
-
-# #: fileacceptdlg.cpp:38
-# msgid "CFileAcceptDlg::Ignore"
-# msgstr "Игнорировать"
-
-# #: fileacceptdlg.cpp:61
-# msgid "CFileAcceptDlg::No more ports available, add more\nor close open chat/file sessions."
-# msgstr "Нет больше свободных портов, добавьте еще или закройте\n"
-# "один или несколько разговоров и/или передач файлов."
-
-# #: fileacceptdlg.cpp:26
-# msgid "CFileAcceptDlg::Refusal Reason (if applicable):"
-# msgstr "Причина отказа (если есть):"
-
-# #: fileacceptdlg.cpp:35
-# msgid "CFileAcceptDlg::Refuse"
-# msgstr "Отказать"
 
 #: filedlg.cpp:264
 msgid "CFileDlg::%1/%2"
@@ -142,10 +92,6 @@ msgstr "Соединились, договариваемся..."
 #: filedlg.cpp:579
 msgid "CFileDlg::Connected, waiting for response..."
 msgstr "Соединились, ожидаем ответ..."
-
-# #: filedlg.cpp:563
-# msgid "CFileDlg::Connecting to remote..."
-# msgstr "Соединяемся с удаленной стороной..."
 
 #: filedlg.cpp:71
 msgid "CFileDlg::Current:"
@@ -284,10 +230,6 @@ msgstr ""
 "Не удалось установить соединение с удаленным файловым сервером.\n"
 "Подробности можно увидеть в окне протокола сети."
 
-# #: filedlg.cpp:567
-# msgid "CFileDlg::Unable to connect to remote file server:\n%1."
-# msgstr "Не удалось соединиться с удаленным файл-сервером:\n%1."
-
 #: filedlg.cpp:294
 msgid "CFileDlg::Unknown"
 msgstr "Неизвестно"
@@ -345,87 +287,87 @@ msgstr ""
 msgid "CMainWindow::%1 msg%2"
 msgstr "%1 сообщ%2"
 
-#: mainwin.cpp:1999
+#: mainwin.cpp:1990
 msgid "CMainWindow::&About"
 msgstr ""
 
-#: mainwin.cpp:1915
+#: mainwin.cpp:1906
 msgid "CMainWindow::&Add User"
 msgstr "Добавить пользователя"
 
-#: mainwin.cpp:1992
+#: mainwin.cpp:1983
 msgid "CMainWindow::&Away Modes"
 msgstr "Режимы видимости"
 
-#: mainwin.cpp:1864
+#: mainwin.cpp:1855
 msgid "CMainWindow::&Away"
 msgstr "Отошел"
 
-#: mainwin.cpp:1870
+#: mainwin.cpp:1861
 msgid "CMainWindow::&Do Not Disturb"
 msgstr "Не беспокоить"
 
-#: mainwin.cpp:1996
+#: mainwin.cpp:1987
 msgid "CMainWindow::&General Info"
 msgstr "Общая информация"
 
-#: mainwin.cpp:1933
+#: mainwin.cpp:1924
 msgid "CMainWindow::&Group"
 msgstr "Группа"
 
-#: mainwin.cpp:1905
+#: mainwin.cpp:1896
 msgid "CMainWindow::&History"
 msgstr "История"
 
-#: mainwin.cpp:2001
+#: mainwin.cpp:1992
 msgid "CMainWindow::&Info"
 msgstr "Информация"
 
-#: mainwin.cpp:1877
+#: mainwin.cpp:1868
 msgid "CMainWindow::&Invisible"
 msgstr "Невидимый"
 
-#: mainwin.cpp:1997
+#: mainwin.cpp:1988
 msgid "CMainWindow::&More Info"
 msgstr "Подробнее"
 
-#: mainwin.cpp:1866
+#: mainwin.cpp:1857
 msgid "CMainWindow::&Not Available"
 msgstr "Недоступен"
 
-#: mainwin.cpp:1862
+#: mainwin.cpp:1853
 msgid "CMainWindow::&Online"
 msgstr "В сети"
 
-#: mainwin.cpp:1939
+#: mainwin.cpp:1930
 msgid "CMainWindow::&Options..."
 msgstr "Настройки..."
 
-#: mainwin.cpp:1941
+#: mainwin.cpp:1932
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "Менеджер модулей..."
 
-#: mainwin.cpp:1909
+#: mainwin.cpp:1900
 msgid "CMainWindow::&Random Chat Group"
 msgstr "Случайные собеседники"
 
-#: mainwin.cpp:1923
+#: mainwin.cpp:1914
 msgid "CMainWindow::&Redraw User Window"
 msgstr "Обновить окно пользователей"
 
-#: mainwin.cpp:1924
+#: mainwin.cpp:1915
 msgid "CMainWindow::&Save All Users"
 msgstr "Сохранить всех пользователей"
 
-#: mainwin.cpp:1907
+#: mainwin.cpp:1898
 msgid "CMainWindow::&Security Options"
 msgstr "Настройки безопасности"
 
-#: mainwin.cpp:1984
+#: mainwin.cpp:1975
 msgid "CMainWindow::&Send Message"
 msgstr "Отправить сообщение"
 
-#: mainwin.cpp:1932
+#: mainwin.cpp:1923
 msgid "CMainWindow::&Status"
 msgstr "Статус"
 
@@ -433,19 +375,19 @@ msgstr "Статус"
 msgid "CMainWindow::&System"
 msgstr "Система"
 
-#: mainwin.cpp:1921
+#: mainwin.cpp:1912
 msgid "CMainWindow::&Update Contact List"
 msgstr "Обновить контакт-лист"
 
-#: mainwin.cpp:1982
+#: mainwin.cpp:1973
 msgid "CMainWindow::&View Event"
 msgstr "Просмотр событий"
 
-#: mainwin.cpp:1899
+#: mainwin.cpp:1890
 msgid "CMainWindow::&View System Messages"
 msgstr "Просмотр системных сообщений"
 
-#: mainwin.cpp:1998
+#: mainwin.cpp:1989
 msgid "CMainWindow::&Work Info"
 msgstr "Информация о работе"
 
@@ -453,27 +395,27 @@ msgstr "Информация о работе"
 msgid "CMainWindow::(with KDE support)\n"
 msgstr "(с поддержкой KDE)"
 
-#: mainwin.cpp:1917
+#: mainwin.cpp:1908
 msgid "CMainWindow::A&uthorize User"
 msgstr "Авторизовать пользователя"
 
-#: mainwin.cpp:1966
+#: mainwin.cpp:1957
 msgid "CMainWindow::Accept in Away"
 msgstr "Принимать, если в режиме \"Отошел\""
 
-#: mainwin.cpp:1969
+#: mainwin.cpp:1960
 msgid "CMainWindow::Accept in Do Not Disturb"
 msgstr "Принимать, если в режиме \"Не беспокоить\""
 
-#: mainwin.cpp:1967
+#: mainwin.cpp:1958
 msgid "CMainWindow::Accept in Not Available"
 msgstr "Принимать, если в режиме \"Недоступен\""
 
-#: mainwin.cpp:1968
+#: mainwin.cpp:1959
 msgid "CMainWindow::Accept in Occupied"
 msgstr "Принимать, если в режиме \"Занят\""
 
-#: mainwin.cpp:2010
+#: mainwin.cpp:2001
 msgid "CMainWindow::Add To Group"
 msgstr "Добавить в группу"
 
@@ -493,7 +435,7 @@ msgstr "Вы уверены, что хотите удалить\n%1 (%2)\nиз контакт-листа?"
 msgid "CMainWindow::Authorization granted."
 msgstr "Авторизация подтверждена."
 
-#: mainwin.cpp:1972
+#: mainwin.cpp:1963
 msgid "CMainWindow::Away to User"
 msgstr "Виден в режиме \"Отошел\""
 
@@ -501,39 +443,39 @@ msgstr "Виден в режиме \"Отошел\""
 msgid "CMainWindow::Cancel"
 msgstr "Отменить"
 
-#: mainwin.cpp:1908
+#: mainwin.cpp:1899
 msgid "CMainWindow::Change &Password"
 msgstr "Изменить пароль"
 
-#: mainwin.cpp:2036
+#: mainwin.cpp:2027
 msgid "CMainWindow::Check %1 Response"
 msgstr "Проверить '%1' авто-ответ"
 
-#: mainwin.cpp:2031
+#: mainwin.cpp:2022
 msgid "CMainWindow::Check Auto Response"
 msgstr "Проверить Авто-ответ"
 
-#: mainwin.cpp:1892
+#: mainwin.cpp:1883
 msgid "CMainWindow::Clear All"
 msgstr "Очистить все"
 
-#: mainwin.cpp:1977
+#: mainwin.cpp:1968
 msgid "CMainWindow::Custom Away Message..."
 msgstr ""
 
-#: mainwin.cpp:1911
+#: mainwin.cpp:1902
 msgid "CMainWindow::Debug Level"
 msgstr "Уровень отладки"
 
-#: mainwin.cpp:1975
+#: mainwin.cpp:1966
 msgid "CMainWindow::Do Not Disturb to User"
 msgstr "Виден в режиме \"Не беспокоить\""
 
-#: mainwin.cpp:1947
+#: mainwin.cpp:1938
 msgid "CMainWindow::E&xit"
 msgstr "Выход"
 
-#: mainwin.cpp:1920
+#: mainwin.cpp:1911
 msgid "CMainWindow::Edit Groups"
 msgstr "Редактировать группы"
 
@@ -541,27 +483,27 @@ msgstr "Редактировать группы"
 msgid "CMainWindow::Error sending autorization."
 msgstr "Ошибка при отправке авторизации."
 
-#: mainwin.cpp:1887
+#: mainwin.cpp:1878
 msgid "CMainWindow::Errors"
 msgstr "Ошибки"
 
-#: mainwin.cpp:1872
+#: mainwin.cpp:1863
 msgid "CMainWindow::Free for C&hat"
 msgstr "Свободен для разговора"
 
-#: mainwin.cpp:1952
+#: mainwin.cpp:1943
 msgid "CMainWindow::From Contact List"
 msgstr "Из контакт-листа"
 
-#: mainwin.cpp:1951
+#: mainwin.cpp:1942
 msgid "CMainWindow::From Current Group"
 msgstr "Из текущей группы"
 
-#: mainwin.cpp:2007
+#: mainwin.cpp:1998
 msgid "CMainWindow::Ignore List"
 msgstr "В списке игнорируемых"
 
-#: mainwin.cpp:2005
+#: mainwin.cpp:1996
 msgid "CMainWindow::Invisible List"
 msgstr "В списке невидимости"
 
@@ -593,7 +535,7 @@ msgstr ""
 msgid "CMainWindow::Logon failed.\nSee network window for details."
 msgstr "Вход в сеть не удался.\nПодробности в окне протокола сети."
 
-#: mainwin.cpp:1943
+#: mainwin.cpp:1934
 msgid "CMainWindow::Next &Server"
 msgstr "Следующий сервер"
 
@@ -601,19 +543,19 @@ msgstr "Следующий сервер"
 msgid "CMainWindow::No msgs"
 msgstr "Нет сообщений"
 
-#: mainwin.cpp:1973
+#: mainwin.cpp:1964
 msgid "CMainWindow::Not Available to User"
 msgstr "Виден в режиме \"Недоступен\""
 
-#: mainwin.cpp:1868
+#: mainwin.cpp:1859
 msgid "CMainWindow::O&ccupied"
 msgstr "Занят"
 
-#: mainwin.cpp:1874
+#: mainwin.cpp:1865
 msgid "CMainWindow::O&ffline"
 msgstr "Отключен"
 
-#: mainwin.cpp:1974
+#: mainwin.cpp:1965
 msgid "CMainWindow::Occupied to User"
 msgstr "Виден в режиме \"Занят\""
 
@@ -621,23 +563,23 @@ msgstr "Виден в режиме \"Занят\""
 msgid "CMainWindow::Ok"
 msgstr "Да"
 
-#: mainwin.cpp:2004
+#: mainwin.cpp:1995
 msgid "CMainWindow::Online Notify"
 msgstr "Оповещать о появлении"
 
-#: mainwin.cpp:1971
+#: mainwin.cpp:1962
 msgid "CMainWindow::Online to User"
 msgstr "Виден в режиме \"В сети\""
 
-#: mainwin.cpp:1889
+#: mainwin.cpp:1880
 msgid "CMainWindow::Packets"
 msgstr "Пакеты"
 
-#: mainwin.cpp:1918
+#: mainwin.cpp:1909
 msgid "CMainWindow::R&andom Chat"
 msgstr "Случайный разговор"
 
-#: mainwin.cpp:1926
+#: mainwin.cpp:1917
 msgid "CMainWindow::Register User"
 msgstr "Зарегистрировать пользователя"
 
@@ -645,7 +587,7 @@ msgstr "Зарегистрировать пользователя"
 msgid "CMainWindow::Registration failed.  See network window for details."
 msgstr "Регистрация не удалась. Подробности в окне протокола сети."
 
-#: mainwin.cpp:2009
+#: mainwin.cpp:2000
 msgid "CMainWindow::Remove"
 msgstr "Удалить"
 
@@ -665,55 +607,55 @@ msgstr ""
 "Правая кнопка - Группы пользователей\n"
 "Двойной щелчок - Показать следующее сообщение"
 
-#: mainwin.cpp:1916
+#: mainwin.cpp:1907
 msgid "CMainWindow::S&earch for User"
 msgstr "Поиск пользователя"
 
-#: mainwin.cpp:1940
+#: mainwin.cpp:1931
 msgid "CMainWindow::S&kin Browser..."
 msgstr "Выбор внешнего вида"
 
-#: mainwin.cpp:1945
+#: mainwin.cpp:1936
 msgid "CMainWindow::Sa&ve Options"
 msgstr "Сохранить настройки"
 
-#: mainwin.cpp:1988
+#: mainwin.cpp:1979
 msgid "CMainWindow::Send &Authorization"
 msgstr "Отправить авторизацию"
 
-#: mainwin.cpp:1986
+#: mainwin.cpp:1977
 msgid "CMainWindow::Send &Chat Request"
 msgstr "Запросить разговор"
 
-#: mainwin.cpp:1987
+#: mainwin.cpp:1978
 msgid "CMainWindow::Send &File Transfer"
 msgstr "Отправить файл"
 
-#: mainwin.cpp:1985
+#: mainwin.cpp:1976
 msgid "CMainWindow::Send &Url"
 msgstr "Отправить URL"
 
-#: mainwin.cpp:1990
+#: mainwin.cpp:1981
 msgid "CMainWindow::Send"
 msgstr "Отправить"
 
-#: mainwin.cpp:1934
+#: mainwin.cpp:1925
 msgid "CMainWindow::Set &Auto Response..."
 msgstr "Установить Авто-ответ"
 
-#: mainwin.cpp:1891
+#: mainwin.cpp:1882
 msgid "CMainWindow::Set All"
 msgstr "Установить все"
 
-#: mainwin.cpp:1936
+#: mainwin.cpp:1927
 msgid "CMainWindow::Show &Network Window"
 msgstr "Показать окно протокола сети"
 
-#: mainwin.cpp:1938
+#: mainwin.cpp:1929
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Показывать пользователей не в сети"
 
-#: mainwin.cpp:1885
+#: mainwin.cpp:1876
 msgid "CMainWindow::Status Info"
 msgstr "Статус"
 
@@ -731,7 +673,7 @@ msgstr ""
 msgid "CMainWindow::SysMsg"
 msgstr "Сист. сообщ"
 
-#: mainwin.cpp:1930
+#: mainwin.cpp:1921
 msgid "CMainWindow::System Functions"
 msgstr "Системные операции"
 
@@ -739,47 +681,43 @@ msgstr "Системные операции"
 msgid "CMainWindow::System"
 msgstr "Система"
 
-#: mainwin.cpp:1993
+#: mainwin.cpp:1984
 msgid "CMainWindow::U&tilities"
 msgstr "Утилиты"
-
-# #: mainwin.cpp:1169
-# msgid "CMainWindow::Unable to find user (uin %1)."
-# msgstr "Найти пользователя (uin %1) не удалось."
 
 #: mainwin.cpp:1767
 msgid "CMainWindow::Unable to open icons file\n%1."
 msgstr "Ошибка при открытии файла иконки\n%1."
 
-#: mainwin.cpp:1886
+#: mainwin.cpp:1877
 msgid "CMainWindow::Unknown Packets"
 msgstr "Неизвестные пакеты"
 
-#: mainwin.cpp:1922
+#: mainwin.cpp:1913
 msgid "CMainWindow::Update All Users"
 msgstr "Обновить информацию о пользователях"
 
-#: mainwin.cpp:1937
+#: mainwin.cpp:1928
 msgid "CMainWindow::Use &Mini Mode"
 msgstr "Использовать мини-режим"
 
-#: mainwin.cpp:1931
+#: mainwin.cpp:1922
 msgid "CMainWindow::User Functions"
 msgstr "Пользовательские функции"
 
-#: mainwin.cpp:2002
+#: mainwin.cpp:1993
 msgid "CMainWindow::View &History"
 msgstr "Просмотр истории"
 
-#: mainwin.cpp:2006
+#: mainwin.cpp:1997
 msgid "CMainWindow::Visible List"
 msgstr "В списке видимости"
 
-#: mainwin.cpp:1888
+#: mainwin.cpp:1879
 msgid "CMainWindow::Warnings"
 msgstr "Предупреждения"
 
-#: mainwin.cpp:2112
+#: mainwin.cpp:2102
 msgid "CMainWindow::"
 "You are currently registered as\n"
 "UIN: %1\n"
@@ -792,17 +730,6 @@ msgstr ""
 "Базовый каталог: %2\n"
 "Укажите новую базовую директорию, перезапустив licq с опцией -b\n"
 "После этого Вы сможете зарегистрировать новый UIN.\n"
-
-# #: ../src/mainwin.cpp:383
-# msgid "CMainWindow::"
-# "You have not yet registered a uin.  Select the\n"
-# " \"Register\" option from the system menu to\n"
-# "register an existing uin or create a new one."
-# msgstr ""
-# "У вас нет зарегистрированного UIN. Выберите пункт\n"
-# "\"Зарегистрировать пользователя\" из меню\n"
-# "\"Система\" \\ \"Пользовательские функции\"\n"
-# "для регистрации существующего UIN или создания нового."
 
 #: mainwin.cpp:862
 msgid "CMainWindow::s"
@@ -847,10 +774,6 @@ msgstr "Licq: Протокол сети"
 #: randomchatdlg.cpp:40
 msgid "CRandomChatDlg::&Cancel"
 msgstr "Отменить"
-
-# #: randomchatdlg.cpp:34
-# msgid "CRandomChatDlg::&Ok"
-# msgstr "Да"
 
 #: randomchatdlg.cpp:36
 msgid "CRandomChatDlg::&Search"
@@ -1170,7 +1093,11 @@ msgstr "[ Только для чтения ]"
 msgid "EditGrpDlg::"
 msgstr ""
 
-#: editgrp.cpp:31
+#: editgrp.cpp:64
+msgid "EditGrpDlg::&Done"
+msgstr "Завершить"
+
+#: editgrp.cpp:32
 msgid "EditGrpDlg::Add"
 msgstr "Добавить"
 
@@ -1178,13 +1105,17 @@ msgstr "Добавить"
 msgid "EditGrpDlg::Added to Contact List"
 msgstr "Добавлен в контакт-лист"
 
-#: editgrp.cpp:89
+#: editgrp.cpp:90
 msgid "EditGrpDlg::All Users"
 msgstr "Все пользователи"
 
-#: editgrp.cpp:115
-msgid "EditGrpDlg::Are you sure you want to remove\nthe group '"
-msgstr "Вы уверены, что хотите удалить\nгруппу '"
+#: editgrp.cpp:120
+msgid "EditGrpDlg::"
+"Are you sure you want to remove\n"
+"the group '%1'?"
+msgstr ""
+"Вы уверены, что хотите удалить\n"
+"группу '%1'?"
 
 #: eventdesc.cpp:20
 msgid "EditGrpDlg::Authorization Granted"
@@ -1198,7 +1129,7 @@ msgstr "Отказ в авторизации"
 msgid "EditGrpDlg::Authorization Request"
 msgstr "Запрос авторизации"
 
-#: editgrp.cpp:189
+#: editgrp.cpp:177
 msgid "EditGrpDlg::Cancel"
 msgstr "Отменить"
 
@@ -1206,39 +1137,23 @@ msgstr "Отменить"
 msgid "EditGrpDlg::Chat Request"
 msgstr "Запрос разговора"
 
-#: editgrp.cpp:165
-msgid "EditGrpDlg::Clear or Set?"
-msgstr "Очистить или установить?"
-
-#: editgrp.cpp:165
-msgid "EditGrpDlg::Clear"
-msgstr "Очистить"
-
 #: eventdesc.cpp:31
 msgid "EditGrpDlg::Contact List"
 msgstr "Список пользователей"
-
-#: editgrp.cpp:37
-msgid "EditGrpDlg::Default"
-msgstr "По умолчанию"
 
 #: editgrp.cpp:50
 msgid "EditGrpDlg::Default:"
 msgstr "По умолчанию:"
 
-#: editgrp.cpp:64
-msgid "EditGrpDlg::Done"
-msgstr "Завершить"
-
-#: editgrp.cpp:35
+#: editgrp.cpp:36
 msgid "EditGrpDlg::Edit Name"
 msgstr "Изменить имя"
 
-#: editgrp.cpp:36
+#: editgrp.cpp:37
 msgid "EditGrpDlg::Edit group name (hit enter to save)."
 msgstr "Изменение имени группы (Нажмите Enter для сохранения)."
 
-#: editgrp.cpp:214
+#: editgrp.cpp:201
 msgid "EditGrpDlg::Edit"
 msgstr "Изменить имя"
 
@@ -1250,9 +1165,13 @@ msgstr "E-Mail пэйджер"
 msgid "EditGrpDlg::File Transfer"
 msgstr "Передача файлов"
 
-#: editgrp.cpp:23
+#: editgrp.cpp:24
 msgid "EditGrpDlg::Groups"
 msgstr "Группы"
+
+#: editgrp.cpp:22
+msgid "EditGrpDlg::Licq - Edit Groups"
+msgstr "Licq - Редактирование групп"
 
 #: eventdesc.cpp:13
 msgid "EditGrpDlg::Message"
@@ -1262,15 +1181,11 @@ msgstr "Сообщение"
 msgid "EditGrpDlg::New User:"
 msgstr "Новый пользователь:"
 
-#: editgrp.cpp:39
-msgid "EditGrpDlg::New Users"
-msgstr "Новые пользователи"
-
-#: editgrp.cpp:118
+#: editgrp.cpp:124
 msgid "EditGrpDlg::Ok"
 msgstr "Да"
 
-#: editgrp.cpp:32
+#: editgrp.cpp:33
 msgid "EditGrpDlg::Remove"
 msgstr "Удалить"
 
@@ -1278,23 +1193,27 @@ msgstr "Удалить"
 msgid "EditGrpDlg::Saved Event"
 msgstr "Сохраненное событие"
 
-#: editgrp.cpp:165
-msgid "EditGrpDlg::Set"
-msgstr "Установить"
+#: editgrp.cpp:38
+msgid "EditGrpDlg::Set Default"
+msgstr "Установить по умолчанию"
 
-#: editgrp.cpp:34
+#: editgrp.cpp:40
+msgid "EditGrpDlg::Set New Users"
+msgstr ""
+
+#: editgrp.cpp:35
 msgid "EditGrpDlg::Shift Down"
 msgstr "Сдвинуть вниз"
 
-#: editgrp.cpp:33
+#: editgrp.cpp:34
 msgid "EditGrpDlg::Shift Up"
 msgstr "Сдвинуть вверх"
 
-#: editgrp.cpp:38
+#: editgrp.cpp:39
 msgid "EditGrpDlg::The default group to start up in."
 msgstr "Группа по умолчанию при старте"
 
-#: editgrp.cpp:40
+#: editgrp.cpp:41
 msgid "EditGrpDlg::The group to which new users will be automatically added."
 msgstr "Группа, куда будут по умолчанию добавляться новые пользователи."
 
@@ -1310,7 +1229,7 @@ msgstr "Информация о пользователе"
 msgid "EditGrpDlg::Web Panel"
 msgstr "Web-панель"
 
-#: editgrp.cpp:104
+#: editgrp.cpp:105
 msgid "EditGrpDlg::noname"
 msgstr "новая"
 
@@ -1358,10 +1277,6 @@ msgstr "Закрыть"
 msgid "ICQFunctions::&Ok"
 msgstr "Да"
 
-# #: icqfunctions.cpp:841
-# msgid "ICQFunctions::&Quote"
-# msgstr "Цитировать"
-
 #: icqfunctions.cpp:121
 msgid "ICQFunctions::&Save"
 msgstr "Сохранить"
@@ -1373,10 +1288,6 @@ msgstr "Отправить"
 #: icqfunctions.cpp:159
 msgid "ICQFunctions::&View"
 msgstr "Просмотр"
-
-# #: icqfunctions.cpp:871
-# msgid "ICQFunctions::<- Prev"
-# msgstr "<- Пред"
 
 #: icqfunctions.cpp:114
 msgid "ICQFunctions::A&uto Close"
@@ -1398,10 +1309,6 @@ msgstr "Принять"
 msgid "ICQFunctions::Add User"
 msgstr "Добавить пользователя"
 
-# #: icqfunctions.cpp:996
-# msgid "ICQFunctions::Add?"
-# msgstr "Добавить?"
-
 #: icqfunctions.cpp:484
 msgid "ICQFunctions::Address:"
 msgstr "Адрес:"
@@ -1417,10 +1324,6 @@ msgstr "Ник:"
 #: icqfunctions.cpp:1157
 msgid "ICQFunctions::Authorize"
 msgstr "Авторизовать"
-
-# #: icqfunctions.cpp:975
-# msgid "ICQFunctions::Authorize?"
-# msgstr "Авторизовать?"
 
 #: icqfunctions.cpp:389
 msgid "ICQFunctions::Birthday:"
@@ -1501,14 +1404,6 @@ msgstr "Общая информация"
 #: icqfunctions.cpp:525
 msgid "ICQFunctions::History"
 msgstr "История"
-
-# #: icqfunctions.cpp:476
-# msgid "ICQFunctions::History File:"
-# msgstr "Файл истории:"
-
-# #: icqfunctions.cpp:459
-# msgid "ICQFunctions::History"
-# msgstr "История"
 
 #: icqfunctions.cpp:495
 msgid "ICQFunctions::Homepage:"
@@ -1728,10 +1623,6 @@ msgstr "Просмотр URL не удался."
 #: icqfunctions.cpp:1152
 msgid "ICQFunctions::View"
 msgstr "Просмотр"
-
-# #: icqfunctions.cpp:965
-# msgid "ICQFunctions::View URL?"
-# msgstr "Посмотреть URL?"
 
 #: icqfunctions.cpp:448
 msgid "ICQFunctions::Work"
@@ -2029,10 +1920,6 @@ msgstr "Межсетевой экран"
 msgid "OptionsDlg::Firewall/Proxy Host:"
 msgstr "Адрес межсетевого экрана/прокси:"
 
-# #: optionsdlg.cpp:407
-# msgid "OptionsDlg::Font"
-# msgstr "Шрифт"
-
 #: optionsdlg.cpp:586
 msgid "OptionsDlg::Font used in message editor etc."
 msgstr "Шрифт, используемый редактором сообщений и т.д."
@@ -2116,10 +2003,6 @@ msgid "OptionsDlg::"
 msgstr ""
 "Делает окно пользователей прозрачным, "
 "когда нет полосы прокрутки"
-
-# #: optionsdlg.cpp:565
-# msgid "OptionsDlg::Max Users per Packet:"
-# msgstr "Max кол-во ников в пакете:"
 
 #: optionsdlg.cpp:660
 msgid "OptionsDlg::Message:"
@@ -2681,17 +2564,6 @@ msgstr "Отменить"
 #: registeruser.cpp:37
 msgid "RegisterUserDlg::&Register Existing User"
 msgstr "Зарегистрировать существующего пользователя"
-
-# #: ../src/registeruser.cpp:51
-# msgid "RegisterUserDlg::"
-# "If you are registering a new uin, choose a password and click \"OK\".\n"
-# "If you already have a uin, then toggle \"Register Existing User\",\n"
-# "enter your uin and your password, and click \"OK\""
-# msgstr ""
-# "Если вы регистрируете новый UIN, введите пароль и нажмите \"Да\".\n"
-# "Если у вас уже есть UIN, используйте\n"
-# "\"Зарегистрировать существующего пользователя\",\n"
-# "Введите свой UIN и пароль и нажмите \"Да\"."
 
 #: registeruser.cpp:108
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
