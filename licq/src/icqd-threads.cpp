@@ -36,9 +36,10 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
 
-  ICQEvent *dummy = (ICQEvent *)p;
-  CICQDaemon *d = dummy->m_pDaemon;
+  CICQDaemon *d = gLicqDaemon;
   static unsigned short nNext = 0;
+
+  if (!d) return NULL;
 
   // Must send packets in sequential order
   pthread_mutex_lock(&d->mutex_sendqueue_server);
