@@ -1,0 +1,14 @@
+To install the cvs version
+==========================
+
+The normal stuff: 
+
+If the directory doesn't contain a "configure" script, then please run
+
+make -f Makefile.cvs
+
+else, just do the normal
+
+./configure; make; su -c "make install"
+
+

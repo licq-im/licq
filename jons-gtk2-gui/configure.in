@@ -1,0 +1,32 @@
+AC_INIT(src/contact_list.cpp)
+AC_CONFIG_AUX_DIR(admin)
+AM_CONFIG_HEADER(config.h)
+
+AM_INIT_AUTOMAKE(JonsGtk2Plugin, 0.01)
+
+AC_PROG_CC
+AC_PROG_CXX
+AC_ISC_POSIX
+AC_HEADER_STDC
+AC_ARG_PROGRAM
+
+dnl libtool stuff
+AC_LIBTOOL_DLOPEN
+AC_DISABLE_STATIC
+AM_PROG_LIBTOOL
+AC_LIBTOOL_CXX
+
+dnl Check for libraries
+PKG_CHECK_MODULES(JonsGtk2Plugin, gtk+-2.0 >= 2.0.0)
+
+dnl Check for header files
+LICQ_CHECK_LICQ
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+
+AC_OUTPUT([
+  Makefile
+  src/Makefile
+])
