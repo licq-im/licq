@@ -67,3 +67,15 @@ s_convert_to_utf8(const char *input_text, const char *input_enc)
 	return ret;
 }
 
+std::string
+entry_get_chars(GtkWidget *w)
+{
+	char *et = gtk_editable_get_chars(GTK_EDITABLE(w), 0, -1);
+	if (et != NULL) {
+		std::string s(et);
+		g_free(et);
+		return s;
+	}
+	return std::string();
+}
+

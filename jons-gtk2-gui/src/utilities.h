@@ -9,4 +9,7 @@ convert_to_utf8(const char *input_text, const char *input_enc = NULL);
 std::string
 s_convert_to_utf8(const char *input_text, const char *input_enc = NULL);
 
+std::string
+entry_get_chars(GtkWidget *w);
+
 #endif
