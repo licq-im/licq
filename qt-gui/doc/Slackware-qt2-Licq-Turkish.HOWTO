@@ -23,7 +23,7 @@
     
     # mv qt-2.0.2.tar.gz /usr/local/qt2.tar.gz
     # cd /usr/local
-    # tar -zxcvf qt2.tar.gz
+    # tar -zxvf qt2.tar.gz
     # mv qt-2.0.2 qt2
     # cd qt2
     
