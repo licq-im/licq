@@ -2,7 +2,7 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 12;
+const unsigned short NUM_COMMANDS = 13;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
@@ -13,6 +13,8 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Clears the current window." },
   { "filestat", &CLicqConsole::MenuFileStat, NULL,
     "Print out statistics on all current file transfers." },
+  { "add", &CLicqConsole::MenuAdd, NULL,
+    "Add a user to your list by uin." },
   { "user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
     "User commands deal with indiviual users:\n"
     "info - print user information\n\n"
@@ -171,6 +173,51 @@ void CLicqConsole::MenuGroup(char *_szArg)
     CreateUserList();
     PrintUsers();
   }
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuAdd
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuAdd(char *szArg)
+{
+  if (szArg == NULL)
+  {
+    winMain->wprintf("%CSpecify a UIN to add.\n", COLOR_RED);
+    return;
+  }
+
+  // Try to change groups
+  int nUin = atol(szArg);
+  bool bAlert = false;
+
+  while (*szArg != '\0' && *szArg != ' ') szArg++;
+  if (*szArg == ' ')
+  {
+    while (*szArg == ' ') szArg++;
+    if (strcasecmp(szArg, "alert") == 0)
+      bAlert = true;
+  }
+
+  if (!licqDaemon->AddUserToList(nUin))
+  {
+    winMain->wprintf("%CAdding user %lu failed (duplicate user or invalid uin).\n",
+     COLOR_RED, nUin);
+    return;
+  }
+
+  winMain->wprintf("%C%AAdded user %ld.\n",
+                     m_cColorInfo->nColor, m_cColorInfo->nAttr,
+                     nUin);
+
+  if (bAlert)
+  {
+    licqDaemon->icqAlertUser(nUin);
+    winMain->wprintf("%C%AAlerted user %ld they were added.\n",
+                     m_cColorInfo->nColor, m_cColorInfo->nAttr,
+                     nUin);
+  }
+
 }
 
 

@@ -403,6 +403,11 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A%ca%Zdd %A<uin>%Z [ alert ]", A_BOLD, m_szCommandChar[0],
+    A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+
+  waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" [ %A%cu%Zser ] %A<alias>%Z <info | view | message |",
                    A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
@@ -410,12 +415,18 @@ void CLicqConsole::PrintHelp()
   winMain->wprintf("                    sendfile | url |");
   PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("                    history | remove>");
+  winMain->wprintf("                    history | remove |");
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("                    auto-response>");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%co%Zwner [ view | info | history <n[,n]> ]",
+  winMain->wprintf(" %A%co%Zwner <view | info | history <n[,n]>",
                    A_BOLD, m_szCommandChar[0], A_BOLD);
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("         auto-response>");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);

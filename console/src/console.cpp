@@ -111,7 +111,9 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadNum("CurrentGroup", m_nCurrentGroup, 0);
-  licqConf.ReadNum("GroupType", (unsigned short)m_nGroupType, (unsigned short)GROUPS_USER);
+  unsigned short nGroupType;
+  licqConf.ReadNum("GroupType", nGroupType, (unsigned short)GROUPS_USER);
+  m_nGroupType = (GroupType)nGroupType;
   licqConf.ReadNum("ColorOnline", m_nColorOnline, 5);
   licqConf.ReadNum("ColorAway", m_nColorAway, 0);
   licqConf.ReadNum("ColorOffline", m_nColorOffline, 1);
@@ -265,17 +267,17 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     {
       if (FD_ISSET(STDIN_FILENO, &fdSet))
       {
-	ProcessStdin();
+  ProcessStdin();
         continue;
       }
       else if (FD_ISSET(m_nPipe, &fdSet))
       {
-	ProcessPipe();
+  ProcessPipe();
         continue;
       }
       else if (FD_ISSET(log->Pipe(), &fdSet))
       {
-	ProcessLog();
+  ProcessLog();
         continue;
       }
 
@@ -283,10 +285,10 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
       for (iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
       {
         if (FD_ISSET((*iter)->Pipe(), &fdSet))
-	{
-	  ProcessFile(iter);
-	  break;
-	}
+  {
+    ProcessFile(iter);
+    break;
+  }
       }
     }
   }
@@ -540,7 +542,7 @@ void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
 
     case FT_DONExBATCH:
       winMain->wprintf("%C%AFile transfer successfuly finished.%C%Z\n",
-      	COLOR_GREEN, A_BOLD, COLOR_WHITE, A_BOLD);
+        COLOR_GREEN, A_BOLD, COLOR_WHITE, A_BOLD);
       (*iter)->CloseFileTransfer();
       delete *iter;
 #undef erase()
@@ -657,40 +659,40 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
       {
         CExtendedAck *ea = e->ExtendedAck();
 
-	if( ea == NULL || ue == NULL)
-	{
-	   gLog.Error("%sInternal error: file request acknowledgement without extended result.\n", L_ERRORxSTR);
-	   return;
-	}
+  if( ea == NULL || ue == NULL)
+  {
+     gLog.Error("%sInternal error: file request acknowledgement without extended result.\n", L_ERRORxSTR);
+     return;
+  }
 
-	if(!ea->Accepted())
-	{
-	   u = gUserManager.FetchUser(e->Uin(), LOCK_R);
-	   win->wprintf("%s refused file: %s\n",
-	   		u->GetAlias(), ea->Response());
-	   gUserManager.DropUser(u);
-	}
+  if(!ea->Accepted())
+  {
+     u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+     win->wprintf("%s refused file: %s\n",
+         u->GetAlias(), ea->Response());
+     gUserManager.DropUser(u);
+  }
 
-	else
-	{
-	  // For now don't check for a chat subcommand..
-	  // Invoke a file transfer manager here
-	  CEventFile *f = (CEventFile *)ue;
-	  CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
-	  							 e->Uin());
-	  m_lFileStat.push_back(ftman);
-	
-	  // Now watch the file pipe
-	  ftman->SetUpdatesEnabled(1);
-	  FD_SET(ftman->Pipe(), &fdSet);
-	  
-	  ConstFileList fl;
-	  fl.push_back(f->Filename());
-	  if(!ftman->SendFiles(fl, ea->Port()))
-	     return;
-	}	  
+  else
+  {
+    // For now don't check for a chat subcommand..
+    // Invoke a file transfer manager here
+    CEventFile *f = (CEventFile *)ue;
+    CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
+                   e->Uin());
+    m_lFileStat.push_back(ftman);
+  
+    // Now watch the file pipe
+    ftman->SetUpdatesEnabled(1);
+    FD_SET(ftman->Pipe(), &fdSet);
+    
+    ConstFileList fl;
+    fl.push_back(f->Filename());
+    if(!ftman->SendFiles(fl, ea->Port()))
+       return;
+  }    
       }
-	/*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
+  /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
       {
         struct SExtendedAck *ea = e->m_sExtendedAck;
         if (ea == NULL || ue == NULL)
@@ -1613,7 +1615,7 @@ void CLicqConsole::UserCommand_SendFile(unsigned long nUin, char *)
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%AEnter file to send to %s (%ld):%Z\n", A_BOLD,
-		   u->GetAlias(), nUin, A_BOLD);
+       u->GetAlias(), nUin, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1637,7 +1639,7 @@ void CLicqConsole::InputSendFile(int cIn)
   {
     // If we get NULL back, then we're not done yet
     if((sz = Input_Line(data->szFileName, data->nPos, cIn)) == NULL)
-    	return;
+      return;
 
     // Check to make sure the file exists, if it doesn't then tell the
     // user it doesn't and quit sending the file.
@@ -1663,7 +1665,7 @@ void CLicqConsole::InputSendFile(int cIn)
 
     // The input is done
     winMain->wprintf("%A%CEnter description:\n%s\n", A_BOLD, COLOR_WHITE,
-    		     MLE_HELP);
+             MLE_HELP);
     winMain->state = STATE_MLE;
     data->nPos = 0;
     break;
@@ -1681,23 +1683,22 @@ void CLicqConsole::InputSendFile(int cIn)
       if(winMain->data != NULL)
       {
          delete winMain->data;
-	 winMain->data = NULL;
+   winMain->data = NULL;
       }
 
-	winMain->state = STATE_COMMAND;
-	winMain->wprintf("%C%AFile Transfer aborted.\n", 
-			 m_cColorInfo->nColor, m_cColorInfo->nAttr);
-	return;
+  winMain->state = STATE_COMMAND;
+  winMain->wprintf("%C%AFile Transfer aborted.\n", 
+       m_cColorInfo->nColor, m_cColorInfo->nAttr);
+  return;
    }
 
    *sz = '\0';
    sz++;
    winMain->wprintf("%C%ASending File direct...",
-   		    m_cColorInfo->nColor, m_cColorInfo->nAttr);
+                    m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
    winMain->event = licqDaemon->icqFileTransfer(data->nUin, data->szFileName,
-   						data->szDescription,
-						ICQ_TCPxMSG_NORMAL);
+            data->szDescription, ICQ_TCPxMSG_NORMAL);
      break;
    case STATE_QUERY:
      break;
@@ -1874,7 +1875,7 @@ void CLicqConsole::InputUrl(int cIn)
  * CLicqConsole::Input_Line
  *-------------------------------------------------------------------------*/
 char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn,
-	bool bEcho = true)
+  bool bEcho = true)
 {
   // Now check for keys
   switch (cIn)
@@ -2004,7 +2005,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 {
   DataRegWizard *data = (DataRegWizard *)winMain->data;
   char *sz;
-  
+
   switch(winMain->state)
   {
     case STATE_PENDING:
@@ -2016,136 +2017,131 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       }
       return;
     }
-  
+
     case STATE_LE:
     {
       // Make sure we need to get this
-      if(data->nState == 0)
+      if (data->nState == 0)
       {
         // If we get NULL back, then we're not done yet
-        if((sz = Input_Line(data->szOption, data->nPos, cIn)) == NULL)
+        if ((sz = Input_Line(data->szOption, data->nPos, cIn)) == NULL)
           return;
-      
-	// Back to 0 for you!
-	data->nPos = 0;
-	
-	if(data->szOption[0] == '1')
-	{
-	  winMain->wprintf("Please enter your password: ");
-	  data->nState = 1;
-	}
-	else if(data->szOption[0] == '2')
-	{
-	  winMain->wprintf("Please enter your UIN: ");
-	  data->nState = 10;
-	}
 
-	return;
+        // Back to 0 for you!
+        data->nPos = 0;
+        if (data->szOption[0] == '1')
+        {
+          winMain->wprintf("Please enter your password: ");
+          data->nState = 1;
+        }
+        else if(data->szOption[0] == '2')
+        {
+          winMain->wprintf("Please enter your UIN: ");
+          data->nState = 10;
+        }
+
+        return;
       }
-     
+
       // The option to register a new UIN or use an existing is in szOption now
       switch(data->szOption[0])
       {
         case '1':
+        {
           // Register a new UIN
-	  if(data->nState == 1)
-	  {
-	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn, false))
-	        == NULL)
+          if (data->nState == 1)
+          {
+            if ((sz = Input_Line(data->szPassword1, data->nPos, cIn, false)) == NULL)
+                    return;
+
+            // Time to go on to the next state
+            data->nState = 2;
+            data->nPos = 0;
+
+            winMain->wprintf("Verify Password: ");
+            break;
+          }
+
+          if(data->nState == 2)
+          {
+            if((sz = Input_Line(data->szPassword2, data->nPos, cIn, false))
+                     == NULL)
               return;
-	   
-	    // Time to go on to the next state
-	    data->nState = 2;
-	    data->nPos = 0;
 
-	    winMain->wprintf("Verify Password: ");
-	    break;
-	  }
+            if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
+            {
+              winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
+              data->nState = 1;
+              data->nPos = 0;
+              return;
+            }
 
-	  if(data->nState == 2)
-	  {
-	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn, false))
-               == NULL)
-	      return;
+            winMain->wprintf("\nRegistering you as a new user...\n");
+            licqDaemon->icqRegister(data->szPassword1);
+            winMain->state = STATE_PENDING;
+          }
+          break;
+        }
 
-	    if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
-	    {
-	      winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
-	      data->nState = 1;
-	      data->nPos = 0;
-	      return;
-	    }
-           
-	    winMain->wprintf("\nRegistering you as a new user...\n");
-	    licqDaemon->icqRegister(data->szPassword1);
-	    winMain->state = STATE_PENDING;
-
-	  }
-	  
-	  break;
-    
         case '2':
-	{
+        {
           // Use an existing
-	  if(data->nState == 10)
-	  {
-	    if((sz = Input_Line(data->szUin, data->nPos, cIn)) == NULL)
-	      return;
+          if (data->nState == 10)
+          {
+            if ((sz = Input_Line(data->szUin, data->nPos, cIn)) == NULL)
+              return;
 
-	    data->nState = 11;
-	    data->nPos = 0;
+            data->nState = 11;
+            data->nPos = 0;
 
-	    winMain->wprintf("Enter your password: ");
-	    return;
+            winMain->wprintf("Enter your password: ");
+            return;
           }
 
           if(data->nState == 11)
-	  {
-	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn, false))
-               == NULL)
-	      return;
+          {
+            if ((sz = Input_Line(data->szPassword1, data->nPos, cIn, false)) == NULL)
+              return;
 
-	    data->nState = 12;
-	    data->nPos = 0;
+            data->nState = 12;
+            data->nPos = 0;
 
-	    winMain->wprintf("Verify your password: ");
-	    return;
-	  }
+            winMain->wprintf("Verify your password: ");
+            return;
+          }
 
-	  if(data->nState == 12)
-	  {
-	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn, false))
-               == NULL)
-	      return;
+          if (data->nState == 12)
+          {
+            if ((sz = Input_Line(data->szPassword2, data->nPos, cIn, false)) == NULL)
+              return;
 
-	    // Compare the 2 passwords
-	    if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
-	    {
-	      winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
-	      data->nState = 11;
-              data->nPos = 0;
-	      return;
-	    }
+            // Compare the 2 passwords
+            if (strcasecmp(data->szPassword1, data->szPassword2) != 0)
+            {
+              winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
+              data->nState = 11;
+                    data->nPos = 0;
+              return;
+            }
 
-	    // Passwords match if we are this far, now set up the new user
-	    gUserManager.SetOwnerUin(atol(data->szUin));
-	    ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
-	    owner->SetPassword(data->szPassword1);
-	    gUserManager.DropOwner();
-	    winMain->wprintf("Registration complete for user %s\n",
-	                     data->szUin);
-	    winMain->fProcessInput = &CLicqConsole::InputCommand;
-          }	
+            // Passwords match if we are this far, now set up the new user
+            gUserManager.SetOwnerUin(atol(data->szUin));
+            ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
+            owner->SetPassword(data->szPassword1);
+            gUserManager.DropOwner();
+            winMain->wprintf("Registration complete for user %s\n", data->szUin);
+            winMain->fProcessInput = &CLicqConsole::InputCommand;
+          }
           break;
         }
-        STATE_COMMAND:
-        STATE_MLE:
-        STATE_QUERY:
-          break;
+
         default:
            winMain->wprintf("Invalid option: %c\n", data->szOption[0]);
       }
     }
+
+    default:
+      break;
   }
 }
 
@@ -2163,7 +2159,7 @@ void CLicqConsole::FileChatOffer(unsigned long _nSequence, unsigned long _nUin)
   winMain->RefreshWin();
 
   return;
-} 
+}
 
 /*--------------------------------------------------------------------------
  * CLicqConsole::InputFileChatOffer
@@ -2175,70 +2171,72 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
   switch(winMain->state)
   {
-   case STATE_QUERY:
-   {   
-     switch(tolower(cIn)) 
-     {
-       case 'y':
-       {
-         winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
+    case STATE_QUERY:
+    {
+      switch(tolower(cIn))
+      {
+        case 'y':
+        {
+          winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
 
-         // Make the ftman
-         CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
-           data->nUin);
-         ftman->SetUpdatesEnabled(1);  
-         m_lFileStat.push_back(ftman);
- 
-         // Accept the file
-         const char *home = getenv("HOME");
-         ftman->ReceiveFiles(home);
-         licqDaemon->icqFileTransferAccept(data->nUin, ftman->LocalPort(),
-           data->nSequence);
-         winMain->fProcessInput = &CLicqConsole::InputCommand;
+          // Make the ftman
+          CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
+            data->nUin);
+          ftman->SetUpdatesEnabled(1);
+          m_lFileStat.push_back(ftman);
 
-         if(winMain->data)
-           delete winMain->data;
+          // Accept the file
+          const char *home = getenv("HOME");
+          ftman->ReceiveFiles(home);
+          licqDaemon->icqFileTransferAccept(data->nUin, ftman->LocalPort(),
+            data->nSequence);
+          winMain->fProcessInput = &CLicqConsole::InputCommand;
 
-         break;
-       }
+          if(winMain->data)
+            delete winMain->data;
 
-       case 'n':
-       default:
-       {
-          winMain->state = STATE_MLE;
-          winMain->wprintf("\n%AEnter a refusal reason:\n%s%Z\n",
-            A_BOLD, MLE_HELP, A_BOLD);
-          return;
-       }
-     }
+          break;
+        }
 
-     break;
-   }
-  
-   case STATE_MLE:
-   {
-     if((sz = Input_MultiLine(data->szReason, data->nPos, cIn)) == NULL)
-       return;
+        case 'n':
+        default:
+        {
+           winMain->state = STATE_MLE;
+           winMain->wprintf("\n%AEnter a refusal reason:\n%s%Z\n",
+             A_BOLD, MLE_HELP, A_BOLD);
+           return;
+        }
+      }
 
-     // Don't send the "."
-     data->szReason[data->nPos - 1] = '\0';
+      break;
+    }
 
-     licqDaemon->icqFileTransferRefuse(data->nUin, data->szReason,
-       data->nSequence);
+    case STATE_MLE:
+    {
+      if((sz = Input_MultiLine(data->szReason, data->nPos, cIn)) == NULL)
+        return;
 
-     // We are done now
-     winMain->wprintf("%ARefusing file from %ld with reason: %Z%s\n",
-       A_BOLD, data->nUin, A_BOLD, data->szReason);
-     winMain->fProcessInput = &CLicqConsole::InputCommand;
+      // Don't send the "."
+      data->szReason[data->nPos - 1] = '\0';
 
-     if(winMain->data)
-       delete winMain->data;
+      licqDaemon->icqFileTransferRefuse(data->nUin, data->szReason,
+        data->nSequence);
 
-     break;
-   }
+      // We are done now
+      winMain->wprintf("%ARefusing file from %ld with reason: %Z%s\n",
+        A_BOLD, data->nUin, A_BOLD, data->szReason);
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
 
-  } 
-} 
+      if(winMain->data)
+        delete winMain->data;
+
+      break;
+    }
+
+    default:
+      break;
+  }
+}
 
 /*-------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Secure
