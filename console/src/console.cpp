@@ -633,7 +633,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
   unsigned short i;
   for (i = 1; i <= MAX_CON; i++)
   {
-    if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
+    if (winCon[i]->event != 0 && e->Equals(winCon[i]->event))
     {
       win = winCon[i];
       break;
@@ -674,8 +674,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
       break;
     }
   }
-  delete win->event;
-  win->event = NULL;
+  win->event = 0;
   if (e == NULL) return;
 
   if (!isOk)
@@ -838,7 +837,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
   unsigned short i;
   for (i = 1; i <= MAX_CON; i++)
   {
-    if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
+    if (winCon[i]->event != 0 && e->Equals(winCon[i]->event))
     {
       win = winCon[i];
       break;
@@ -2299,7 +2298,7 @@ void CLicqConsole::InputSearch(int cIn)
     {
       if (cIn == CANCEL_KEY)
       {
-        if (winMain->event != NULL)
+        if (winMain->event != 0)
           licqDaemon->CancelEvent(winMain->event);
       }
       return;
@@ -2650,7 +2649,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
     {
       if(cIn == CANCEL_KEY)
       {
-        if(winMain->event != NULL)
+        if(winMain->event != 0)
           licqDaemon->CancelEvent(winMain->event);
       }
       return;

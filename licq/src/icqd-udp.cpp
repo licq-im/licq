@@ -87,8 +87,7 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
   SendExpectEvent_Server(p);
 
   // update the users info from the server
-  CICQEventTag *t = icqUserBasicInfo(_nUin);
-  if (t != NULL) delete t;
+  icqUserBasicInfo(_nUin);
 }
 
 
@@ -129,25 +128,25 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 
 
 //-----ICQ::Logon---------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
+unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
 {
   if (m_bLoggingOn)
   {
     gLog.Warn("%sAttempt to logon while already logged or logging on.\n", L_WARNxSTR);
-    return NULL;
+    return 0;
   }
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o->Uin() == 0)
   {
     gUserManager.DropOwner();
     gLog.Error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
-    return NULL;
+    return 0;
   }
   char *passwd = strdup(o->Password());
   unsigned long status = o->AddStatusFlags(logonStatus);
   gUserManager.DropOwner();
   INetSocket *s = gSocketManager.FetchSocket(m_nTCPSocketDesc);
-  if (s == NULL) return NULL;
+  if (s == NULL) return 0;
   CPU_Logon *p = new CPU_Logon(s->LocalPort(), passwd, status);
   gSocketManager.DropSocket(s);
   free (passwd);
@@ -159,9 +158,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
   m_bLoggingOn = true;
   m_tLogonTime = time(NULL);
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
@@ -187,8 +184,7 @@ void CICQDaemon::icqRelogon(bool bChangeServer)
     icqLogoff();
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
-  CICQEventTag *t = icqLogon(status);
-  delete t;
+  icqLogon(status);
 
   m_eStatus = STATUS_OFFLINE_FORCED;
 }
@@ -406,7 +402,7 @@ void CICQDaemon::icqRemoveFromInvisibleList(unsigned long nUin)
 
 
 //-----icqSearchByInfo-----------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
+unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
 {
   CPU_SearchByInfo *p = new CPU_SearchByInfo(nick, first, last, email);
@@ -414,30 +410,23 @@ CICQEventTag *CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
 
-  CICQEventTag *t = NULL;
-  if (e!= NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqSearchByUin-----------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSearchByUin(unsigned long nUin)
+unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
 {
   CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
   gLog.Info("%sStarting search by uin for user (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-
-  CICQEventTag *t = NULL;
-  if (e!= NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqSearchWhitePages--------------------------------------------------
-CICQEventTag *CICQDaemon::icqSearchWhitePages(const char *szFirstName,
+unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
     const char *szLastName, const char *szAlias, const char *szEmail,
     unsigned short nMinAge, unsigned short nMaxAge, char nGender,
     char nLanguage, const char *szCity, const char *szState,
@@ -453,37 +442,29 @@ CICQEventTag *CICQDaemon::icqSearchWhitePages(const char *szFirstName,
   gLog.Info("%sStarting white pages search (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqSetRandomChatGroup-------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetRandomChatGroup(unsigned long nGroup)
+unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long nGroup)
 {
   CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(nGroup);
   gLog.Info("%sSetting random chat group (#%ld)...\n", L_UDPxSTR,
             p->Sequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqRandomChatSearch---------------------------------------------------
-CICQEventTag *CICQDaemon::icqRandomChatSearch(unsigned long nGroup)
+unsigned long CICQDaemon::icqRandomChatSearch(unsigned long nGroup)
 {
   CPU_RandomChatSearch *p = new CPU_RandomChatSearch(nGroup);
   gLog.Info("%sSearching for random chat user (#%ld)...\n", L_UDPxSTR,
             p->Sequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
@@ -497,7 +478,7 @@ void CICQDaemon::icqPing()
 
 
 //-----icqSetStatus-------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetStatus(unsigned short newStatus)
+unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
 {
   // Set the status flags
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -509,40 +490,34 @@ CICQEventTag *CICQDaemon::icqSetStatus(unsigned short newStatus)
             ICQUser::StatusToStatusStr(newStatus, invisible), p->Sequence());
   m_nDesiredStatus = s;
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqGetUserBasicInfo------------------------------------------------------
-CICQEventTag *CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
+unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
 {
   CPU_GetUserBasicInfo *p = new CPU_GetUserBasicInfo(_nUin);
   gLog.Info("%sRequesting user info (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqGetUserExtInfo--------------------------------------------------------
-CICQEventTag *CICQDaemon::icqUserExtendedInfo(unsigned long _nUin)
+unsigned long CICQDaemon::icqUserExtendedInfo(unsigned long _nUin)
 {
   CPU_GetUserExtInfo *p = new CPU_GetUserExtInfo(_nUin);
   gLog.Info("%sRequesting extended user info (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqUpdatePersonalBasicInfo-----------------------------------------------
-CICQEventTag *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirstName,
+unsigned long CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirstName,
                                      const char *_sLastName, const char *_sEmail,
                                      bool _bAuthorization)
 {
@@ -552,14 +527,12 @@ CICQEventTag *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_s
   gLog.Info("%sUpdating personal information (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqUpdatePersonalExtInfo-------------------------------------------------
-CICQEventTag *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _nCountry,
+unsigned long CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _nCountry,
                                    const char *_sState, unsigned short _nAge,
                                    char _cSex, const char *_sPhone,
                                    const char *_sHomepage, const char *_sAbout,
@@ -571,14 +544,12 @@ CICQEventTag *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned sho
    gLog.Info("%sUpdating personal extended info (#%ld/#%d)...\n", L_UDPxSTR,
              p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqSetWorkInfo--------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
+unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
                                      const char *_szPhone,
                                      const char *_szFax, const char *_szAddress,
                                      const char *_szName, const char *_szDepartment,
@@ -590,14 +561,12 @@ CICQEventTag *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szSta
   gLog.Info("%sUpdating work info (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqSetGeneralInfo----------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetGeneralInfo(
+unsigned long CICQDaemon::icqSetGeneralInfo(
                           const char *szAlias, const char *szFirstName,
                           const char *szLastName, const char *szEmailPrimary,
                           const char *szEmailSecondary, const char *szEmailOld, const char *szCity,
@@ -618,14 +587,12 @@ CICQEventTag *CICQDaemon::icqSetGeneralInfo(
   gLog.Info("%sUpdating general info (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqSetMoreInfo----------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
+unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
                               char nGender, const char *szHomepage,
                               unsigned short nBirthYear, char nBirthMonth,
                               char nBirthDay, char nLanguage1,
@@ -641,29 +608,24 @@ CICQEventTag *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
             p->Sequence(), p->SubSequence());
 
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL) t = new CICQEventTag(e);
-  return t;
+  return e->EventId();
 }
 
 
 //-----icqSetSecurityInfo----------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
   CPU_Meta_SetSecurityInfo *p =
     new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
   gLog.Info("%sUpdating security info (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqSetAbout-----------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetAbout(const char *_szAbout)
+unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
 {
   char *szAbout = gTranslator.NToRN(_szAbout);
   CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
@@ -671,43 +633,34 @@ CICQEventTag *CICQDaemon::icqSetAbout(const char *_szAbout)
             p->Sequence(), p->SubSequence());
   delete [] szAbout;
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t =  new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqSetPassword--------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetPassword(const char *szPassword)
+unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
 {
   CPU_Meta_SetPassword *p = new CPU_Meta_SetPassword(szPassword);
   gLog.Info("%sUpdating password (#%ld/#%d)...\n", L_UDPxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t =  new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqRequestMetaInfo----------------------------------------------------
-CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
+unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 {
   CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(nUin);
   gLog.Info("%sRequesting meta info for %ld (#%ld/#%d)...\n", L_UDPxSTR, nUin,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 ///-----icqAuthorize-------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szMessage)
+unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szMessage)
 // authorize a user to add you to their contact list
 {
   char *sz = NULL;
@@ -720,17 +673,14 @@ CICQEventTag *CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const 
   gLog.Info("%sAuthorizing user %ld (#%ld)...\n", L_UDPxSTR, uinToAuthorize,
      p->Sequence());
   delete sz;
-  
+
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
 //-----icqAuthorize-------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
+unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
 // refuseto authorize a user to add you to their contact list
 {
   char *sz = NULL;
@@ -743,12 +693,9 @@ CICQEventTag *CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   gLog.Info("%sRefusing authorization to user %ld (#%ld)...\n", L_UDPxSTR,
      nUin, p->Sequence());
   delete sz;
-  
+
   ICQEvent *e = SendExpectEvent_Server(p);
-  CICQEventTag *t = NULL;
-  if (e != NULL)
-    t = new CICQEventTag(e);
-  return (t);
+  return e->EventId();
 }
 
 
@@ -1383,8 +1330,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       if (bNewUser)
       {
         AddUserToList(u);
-        CICQEventTag *t = icqRequestMetaInfo(nUin);
-        delete t;
+        icqRequestMetaInfo(nUin);
       }
       gUserManager.DropUser(u);
 
@@ -1618,8 +1564,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       // Send an update status packet to force hideip/webpresence
       if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS)
       {
-        CICQEventTag *t = icqSetStatus(m_nDesiredStatus);
-        if (t != NULL) delete t;
+        icqSetStatus(m_nDesiredStatus);
       }
 
       break;
@@ -1665,8 +1610,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_REGISTERxUSER, 1, EVENT_SUCCESS);
       if (e != NULL) ProcessDoneEvent(e);
       // Logon as an ack
-      CICQEventTag *t = icqLogon(ICQ_STATUS_ONLINE);
-      if (t != NULL) delete t;
+      icqLogon(ICQ_STATUS_ONLINE);
       break;
     }
 
@@ -2336,8 +2280,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       unsigned short s = o->StatusFull();
       gUserManager.DropOwner();
       // Set status to ensure the status flags are set
-      CICQEventTag *t = icqSetStatus(s);
-      delete t;
+      icqSetStatus(s);
       e->m_nSubResult = META_DONE;
       break;
     }

@@ -19,7 +19,6 @@ class CSignalManager;
 class CMMUserView;
 class CMMUserViewItem;
 class CICQDaemon;
-class CICQEventTag;
 class ICQEvent;
 
 class CMMSendDlg : public QDialog
@@ -45,7 +44,7 @@ protected:
   CMMUserView *mmv;
   CMMUserViewItem *mmvi;
   CICQDaemon *server;
-  CICQEventTag *icqEventTag;
+  unsigned long icqEventTag;
 
   void SendNext();
 protected slots:

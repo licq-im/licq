@@ -91,21 +91,21 @@ public:
 
   // TCP (user) functions
   // Message
-  CICQEventTag *icqSendMessage(unsigned long nUin, const char *szMessage,
+  unsigned long icqSendMessage(unsigned long nUin, const char *szMessage,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false);
   // Url
-  CICQEventTag *icqSendUrl(unsigned long nUin, const char *szUrl,
+  unsigned long icqSendUrl(unsigned long nUin, const char *szUrl,
      const char *szDescription, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false);
   // Contact List
-  CICQEventTag *icqSendContactList(unsigned long nUin, UinList &uins,
+  unsigned long icqSendContactList(unsigned long nUin, UinList &uins,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false);
   // Auto Response
-  CICQEventTag *icqFetchAutoResponse(unsigned long nUin);
+  unsigned long icqFetchAutoResponse(unsigned long nUin);
   // Chat Request
-  CICQEventTag *icqChatRequest(unsigned long nUin, const char *szReason,
+  unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
      unsigned short nLevel);
-  CICQEventTag *icqMultiPartyChatRequest(unsigned long nUin,
+  unsigned long icqMultiPartyChatRequest(unsigned long nUin,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel);
   void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
@@ -114,55 +114,55 @@ public:
      unsigned long nSequence);
   void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
   // File Transfer
-  CICQEventTag *icqFileTransfer(unsigned long nUin, const char *szFilename,
+  unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
      const char *szDescription, unsigned short nLevel);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
      unsigned long nSequence);
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
      unsigned long nSequence);
-  CICQEventTag *icqOpenSecureChannel(unsigned long nUin);
-  CICQEventTag *icqCloseSecureChannel(unsigned long nUin);
+  unsigned long icqOpenSecureChannel(unsigned long nUin);
+  unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);
-  CICQEventTag *icqLogon(unsigned short logonStatus);
-  CICQEventTag *icqUserBasicInfo(unsigned long);
-  CICQEventTag *icqUserExtendedInfo(unsigned long);
-  CICQEventTag *icqRequestMetaInfo(unsigned long);
+  unsigned long icqLogon(unsigned short logonStatus);
+  unsigned long icqUserBasicInfo(unsigned long);
+  unsigned long icqUserExtendedInfo(unsigned long);
+  unsigned long icqRequestMetaInfo(unsigned long);
 
-  CICQEventTag *icqUpdateBasicInfo(const char *, const char *, const char *,
+  unsigned long icqUpdateBasicInfo(const char *, const char *, const char *,
                                        const char *, bool);
-  CICQEventTag *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
+  unsigned long icqUpdateExtendedInfo(const char *, unsigned short, const char *,
                                 unsigned short, char, const char *,
                                 const char *, const char *_sAbout, const char *);
-  CICQEventTag *icqSetWorkInfo(const char *_szCity, const char *_szState,
+  unsigned long icqSetWorkInfo(const char *_szCity, const char *_szState,
                            const char *_szPhone,
                            const char *_szFax, const char *_szAddress,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
-  CICQEventTag *icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
+  unsigned long icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
                               const char *szLastName, const char *szEmailPrimary,
                               const char *szEmailSecondary, const char *szEmailOld, const char *szCity,
                               const char *szState, const char *szPhoneNumber,
                               const char *szFaxNumber, const char *szAddress,
                               const char *szCellularNumber, const char *szZipCode,
                               unsigned short nCountryCode, bool bHideEmail);
-  CICQEventTag *icqSetMoreInfo(unsigned short nAge,
+  unsigned long icqSetMoreInfo(unsigned short nAge,
                            char nGender, const char *szHomepage,
                            unsigned short nBirthYear, char nBirthMonth,
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);
-  CICQEventTag *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
-  CICQEventTag *icqSetAbout(const char *szAbout);
-  CICQEventTag *icqSetPassword(const char *szPassword);
-  CICQEventTag *icqSetStatus(unsigned short newStatus);
-  CICQEventTag *icqSetRandomChatGroup(unsigned long nGroup);
-  CICQEventTag *icqRandomChatSearch(unsigned long nGroup);
-  CICQEventTag *icqSearchByInfo(const char *, const char *, const char *, const char *);
-  CICQEventTag *icqSearchByUin(unsigned long);
-  CICQEventTag *icqSearchWhitePages(const char *szFirstName,
+  unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
+  unsigned long icqSetAbout(const char *szAbout);
+  unsigned long icqSetPassword(const char *szPassword);
+  unsigned long icqSetStatus(unsigned short newStatus);
+  unsigned long icqSetRandomChatGroup(unsigned long nGroup);
+  unsigned long icqRandomChatSearch(unsigned long nGroup);
+  unsigned long icqSearchByInfo(const char *, const char *, const char *, const char *);
+  unsigned long icqSearchByUin(unsigned long);
+  unsigned long icqSearchWhitePages(const char *szFirstName,
                             const char *szLastName, const char *szAlias,
                             const char *szEmail, unsigned short nMinAge,
                             unsigned short nMaxAge, char nGender,
@@ -173,8 +173,8 @@ public:
 
   void icqLogoff();
   void icqRelogon(bool bChangeServer = false);
-  CICQEventTag *icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
-  CICQEventTag *icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
+  unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
+  unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
   void icqUpdateContactList();
@@ -196,7 +196,7 @@ public:
   void UpdateAllUsers();
   void UpdateAllUsersInGroup(GroupType, unsigned short);
   void SwitchServer();
-  void CancelEvent(CICQEventTag *);
+  void CancelEvent(unsigned long );
   void CancelEvent(ICQEvent *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
      unsigned short nPort);
@@ -256,8 +256,6 @@ public:
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
-  //vector<CPlugin *> m_vPlugins;
-  //pthread_mutex_t mutex_plugins;
   int pipe_newsocket[2], fifo_fd;
   FILE *fifo_fs;
   EDaemonStatus m_eStatus;
@@ -315,10 +313,10 @@ protected:
   void FailEvents(int sd, int err);
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);
-  ICQEvent *DoneEvent(CICQEventTag *tag, EventResult _eResult);
+  ICQEvent *DoneEvent(unsigned long tag, EventResult _eResult);
   ICQEvent *DoneExtendedEvent(const unsigned short, const unsigned short, EventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
-  ICQEvent *DoneExtendedEvent(CICQEventTag *tag, EventResult _eResult);
+  ICQEvent *DoneExtendedEvent(unsigned long tag, EventResult _eResult);
   void ProcessDoneEvent(ICQEvent *);
   void PushExtendedEvent(ICQEvent *);
   void PushPluginSignal(CICQSignal *);

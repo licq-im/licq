@@ -1509,12 +1509,10 @@ void CMainWindow::changeStatus(int id)
   // call the right function
   bool b = o->StatusOffline();
   gUserManager.DropOwner();
-  CICQEventTag *t = NULL;
   if (b)
-     t = licqDaemon->icqLogon(newStatus);
+    licqDaemon->icqLogon(newStatus);
   else
-     t = licqDaemon->icqSetStatus(newStatus);
-  if (t != NULL) delete t;
+    licqDaemon->icqSetStatus(newStatus);
 }
 
 

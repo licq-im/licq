@@ -22,7 +22,6 @@
 
 class CSignalManager;
 class ICQEvent;
-class CICQEventTag;
 
 class QLabel;
 class QPushButton;
@@ -41,7 +40,7 @@ protected:
   bool m_bOpen;
 
   CSignalManager *sigman;
-  CICQEventTag *icqEventTag;
+  unsigned long icqEventTag;
 
 protected slots:
   void startSend();

@@ -71,7 +71,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   server = s;
   mainwin = m;
   sigman = theSigMan;
-  icqEventTag = NULL;
+  icqEventTag = 0;
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_bDeleteUser = false;
@@ -957,7 +957,7 @@ void UserSendCommon::sendButton()
       gUserManager.DropUser(u);
   }
 
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     m_sProgressMsg = tr("Sending ");
     bool via_server = chkSendServer->isChecked();
@@ -988,7 +988,7 @@ void UserSendCommon::setText(const QString& txt)
 //-----UserSendCommon::sendDone_common---------------------------------------
 void UserSendCommon::sendDone_common(ICQEvent *e)
 {
-  if ( !icqEventTag->Equals(e) )
+  if ( !e->Equals(icqEventTag) )
     return;
 
   QString title, result;
@@ -1024,8 +1024,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   setCursor(arrowCursor);
   btnSend->setEnabled(true);
   btnCancel->setText(tr("&Close"));
-  delete icqEventTag;
-  icqEventTag = NULL;
+  icqEventTag = 0;
   disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
 
   if (e == NULL || e->Result() != EVENT_ACKED)
@@ -1161,8 +1160,7 @@ void UserSendCommon::cancelSend()
 
   setCaption(m_sBaseTitle);
   server->CancelEvent(icqEventTag);
-  delete icqEventTag;
-  icqEventTag = NULL;
+  icqEventTag = 0;
   btnSend->setEnabled(true);
   btnCancel->setText(tr("&Close"));
   setCursor(arrowCursor);
@@ -1234,7 +1232,7 @@ UserSendMsgEvent::~UserSendMsgEvent()
 void UserSendMsgEvent::sendButton()
 {
   // do nothing if a command is already being processed
-  if (icqEventTag != NULL) return;
+  if (icqEventTag != 0) return;
 
   if(!mleSend->edited() &&
      !QueryUser(this, tr("You didn't edit the message.\n"

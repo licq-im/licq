@@ -39,7 +39,7 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
 {
   m_nUin = nUin;
   sigman = _sigman;
-  icqEventTag = NULL;
+  icqEventTag = 0;
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   setCaption(tr("Licq - Secure Channel with %1").arg(u->GetAlias()));
@@ -119,11 +119,10 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
 
 KeyRequestDlg::~KeyRequestDlg()
 {
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     gLicqDaemon->CancelEvent(icqEventTag);
-    delete icqEventTag;
-    icqEventTag = NULL;
+    icqEventTag = 0;
   }
 }
 
@@ -162,7 +161,7 @@ void KeyRequestDlg::closeConnection()
 
 void KeyRequestDlg::doneEvent(ICQEvent *e)
 {
-  if ( !icqEventTag->Equals(e))
+  if ( !e->Equals(icqEventTag))
     return;
 
 
@@ -205,11 +204,7 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
 
   lblStatus->setText(result);
 
-  if (icqEventTag != NULL)
-  {
-    delete icqEventTag;
-    icqEventTag = NULL;
-  }
+  icqEventTag = 0;
 }
 
 

@@ -7,7 +7,6 @@
 
 
 class CMainWindow;
-class CICQEventTag;
 class CICQDaemon;
 class CSignalManager;
 class QListBox;
@@ -24,7 +23,7 @@ public:
   ~CRandomChatDlg();
 protected:
   CMainWindow *mainwin;
-  CICQEventTag *tag;
+  unsigned long tag;
   CICQDaemon *server;
   CSignalManager *sigman;
   QListBox *lstGroups;
@@ -44,7 +43,7 @@ public:
   ~CSetRandomChatGroupDlg();
 protected:
   CMainWindow *mainwin;
-  CICQEventTag *tag;
+  unsigned long tag;
   CICQDaemon *server;
   CSignalManager *sigman;
   QListBox *lstGroups;

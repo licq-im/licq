@@ -33,7 +33,6 @@ class QProgressBar;
 
 class CInfoField;
 class CICQDaemon;
-class CICQEventTag;
 class ICQEvent;
 class CSignalManager;
 class CMainWindow;
@@ -80,7 +79,7 @@ protected:
   CICQDaemon *server;
   CMainWindow *mainwin;
   CSignalManager *sigman;
-  CICQEventTag *icqEventTag;
+  unsigned long icqEventTag;
   QTabWidget* tabs;
   QPushButton* btnMain1, *btnMain2, *btnMain3, *btnMain4;
 

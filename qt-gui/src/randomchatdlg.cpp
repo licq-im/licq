@@ -23,7 +23,7 @@ CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
   mainwin = _mainwin;
   server = s;
   sigman = _sigman;
-  tag = NULL;
+  tag = 0;
 
   setCaption(tr("Random Chat Search"));
 
@@ -67,9 +67,8 @@ CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
 
 CRandomChatDlg::~CRandomChatDlg()
 {
-  if (tag != NULL)
+  if (tag != 0)
     server->CancelEvent(tag);
-  delete tag;
 }
 
 
@@ -101,14 +100,10 @@ void CRandomChatDlg::slot_ok()
 
 void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
 {
-  if (!tag->Equals(e)) return;
+  if (!e->Equals(tag)) return;
 
   btnOk->setEnabled(true);
-  if (tag != NULL)
-  {
-    delete tag;
-    tag = NULL;
-  }
+  tag = 0;
 
   switch (e->Result())
   {
@@ -137,7 +132,7 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
 {
   server = s;
   sigman = _sigman;
-  tag = NULL;
+  tag = 0;
 
   setCaption(tr("Set Random Chat Group"));
 
@@ -201,9 +196,8 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
 
 CSetRandomChatGroupDlg::~CSetRandomChatGroupDlg()
 {
-  if (tag != NULL)
+  if (tag != 0)
     server->CancelEvent(tag);
-  delete tag;
 }
 
 
@@ -237,15 +231,11 @@ void CSetRandomChatGroupDlg::slot_ok()
 
 void CSetRandomChatGroupDlg::slot_doneUserFcn(ICQEvent *e)
 {
-  if (!tag->Equals(e)) return;
+  if (!e->Equals(tag)) return;
 
   btnOk->setEnabled(true);
   btnCancel = new QPushButton(tr("&Close"), this);
-  if (tag != NULL)
-  {
-    delete tag;
-    tag = NULL;
-  }
+  tag = 0;
 
   switch (e->Result())
   {

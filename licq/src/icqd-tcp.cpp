@@ -24,7 +24,7 @@
 
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
+unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients)
 {
   if (_nUin == gUserManager.OwnerUin()) return NULL;
@@ -60,7 +60,7 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   }
   else        // send direct
   {
-    if (u == NULL) return NULL;
+    if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, u);
@@ -78,15 +78,12 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   gUserManager.DropUser(u);
 
   delete mDos;
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t = new CICQEventTag(result);
-  return (t);
+  return result->EventId();
 }
 
 
 //-----CICQDaemon::sendReadAwayMsg------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
+unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 {
   if (nUin == gUserManager.OwnerUin()) return NULL;
 
@@ -97,15 +94,12 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
   ICQEvent *result = SendExpectEvent_Client(u, p, NULL);
   gUserManager.DropUser(u);
 
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t =  new CICQEventTag(result);
-  return (t);
+  return result->EventId();
 }
 
 
 //-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
+unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients)
 {
@@ -140,7 +134,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   }
   else
   {
-    if (u == NULL) return NULL;
+    if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
     CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, u);
@@ -157,15 +151,12 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   gUserManager.DropUser(u);
 
   delete szDescDos;
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t =  new CICQEventTag(result);
-  return (t);
+  return result->EventId();
 }
 
 
 //-----CICQDaemon::sendFile------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
+unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
                         const char *szDescription, unsigned short nLevel)
 {
   if (nUin == gUserManager.OwnerUin()) return NULL;
@@ -180,7 +171,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   CEventFile *e = NULL;
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u == NULL) return NULL;
+  if (u == NULL) return 0;
 
   CPT_FileTransfer *p = new CPT_FileTransfer(szFilename, szDosDesc, nLevel, u);
   if (!p->IsValid())
@@ -205,15 +196,12 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   gUserManager.DropUser(u);
 
   delete szDosDesc;
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t =  new CICQEventTag(result);
-  return (t);
+  return result->EventId();
 }
 
 
 //-----CICQDaemon::sendContactList-------------------------------------------
-CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
+unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
    UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients)
 {
   if (nUin == gUserManager.OwnerUin()) return NULL;
@@ -237,7 +225,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   {
     gLog.Warn("%sContact list too large to send through server.\n", L_WARNxSTR);
     delete []m;
-    return NULL;
+    return 0;
   }
 
   CEventContactList *e = NULL;
@@ -259,7 +247,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   }
   else
   {
-    if (u == NULL) return NULL;
+    if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, u);
@@ -276,10 +264,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   gUserManager.DropUser(u);
 
   delete []m;
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t =  new CICQEventTag(result);
-  return (t);
+  return result->EventId();
 }
 
 
@@ -333,21 +318,21 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
 
 
 //-----CICQDaemon::sendChat------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqChatRequest(unsigned long nUin, const char *szReason,
+unsigned long CICQDaemon::icqChatRequest(unsigned long nUin, const char *szReason,
    unsigned short nLevel)
 {
   return icqMultiPartyChatRequest(nUin, szReason, NULL, 0, nLevel);
 }
 
 
-CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
+unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel)
 {
-  if (nUin == gUserManager.OwnerUin()) return NULL;
+  if (nUin == gUserManager.OwnerUin()) return 0;
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u == NULL) return NULL;
+  if (u == NULL) return 0;
   char *szReasonDos = gTranslator.NToRN(reason);
   gTranslator.ClientToServer(szReasonDos);
   CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos,
@@ -367,10 +352,7 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
   gUserManager.DropUser(u);
 
   delete szReasonDos;
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t =  new CICQEventTag(result);
-  return (t);
+  return result->EventId();
 }
 
 
@@ -425,9 +407,9 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
  * OpenSSL stuff
  *-------------------------------------------------------------------------*/
 
-CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
+unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
 {
-  if (nUin == gUserManager.OwnerUin()) return NULL;
+  if (nUin == gUserManager.OwnerUin()) return 0;
 
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
@@ -437,7 +419,7 @@ CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
   {
     gLog.Warn("%sCannot send secure channel request to user not on list (%ld).\n",
        L_WARNxSTR, nUin);
-    return NULL;
+    return 0;
   }
 
   // Check that the user doesn't already have a secure channel
@@ -446,7 +428,7 @@ CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
     gLog.Warn("%s%s (%ld) already has a secure channel.\n", L_WARNxSTR,
        u->GetAlias(), nUin);
     gUserManager.DropUser(u);
-    return NULL;
+    return 0;
   }
 
   CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(u);
@@ -456,24 +438,20 @@ CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
 
   u->SetSendServer(false);
 
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t = new CICQEventTag(result);
-
   gUserManager.DropUser(u);
 
-  return (t);
+  return result->EventId();
 
 #else // No OpenSSL
   gLog.Warn("%sicqOpenSecureChannel() to %ld called when we do not support OpenSSL.\n",
      L_WARNxSTR, nUin);
-  return NULL;
+  return 0;
 
 #endif
 }
 
 
-CICQEventTag *CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
+unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
 {
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
@@ -483,7 +461,7 @@ CICQEventTag *CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
   {
     gLog.Warn("%sCannot send secure channel request to user not on list (%ld).\n",
        L_WARNxSTR, nUin);
-    return NULL;
+    return 0;
   }
 
   // Check that the user doesn't already have a secure channel
@@ -492,7 +470,7 @@ CICQEventTag *CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
     gLog.Warn("%s%s (%ld) does not have a secure channel.\n", L_WARNxSTR,
        u->GetAlias(), nUin);
     gUserManager.DropUser(u);
-    return NULL;
+    return 0;
   }
 
   CPT_CloseSecureChannel *pkt = new CPT_CloseSecureChannel(u);
@@ -502,18 +480,14 @@ CICQEventTag *CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
 
   u->SetSendServer(false);
 
-  CICQEventTag *t = NULL;
-  if (result != NULL)
-    t = new CICQEventTag(result);
-
   gUserManager.DropUser(u);
 
-  return (t);
+  return result->EventId();
 
 #else // No OpenSSL
   gLog.Warn("%sicqCloseSecureChannel() to %ld called when we do not support OpenSSL.\n",
      L_WARNxSTR, nUin);
-  return NULL;
+  return 0;
 
 #endif
 }

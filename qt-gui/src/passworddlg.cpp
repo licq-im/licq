@@ -41,7 +41,7 @@ PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
 {
   server = s;
   sigman = _sigman;
-  tag = NULL;
+  tag = 0;
 
   setCaption(tr("Licq - Set Password"));
 
@@ -85,7 +85,6 @@ PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
 
 PasswordDlg::~PasswordDlg()
 {
-  delete tag;
 }
 
 
@@ -113,14 +112,10 @@ void PasswordDlg::accept()
 
 void PasswordDlg::slot_doneUserFcn(ICQEvent *e)
 {
-  if (!tag->Equals(e)) return;
+  if (!e->Equals(tag)) return;
 
   btnUpdate->setEnabled(true);
-  if (tag != NULL)
-  {
-    delete tag;
-    tag = NULL;
-  }
+  tag = 0;
 
   QString result;
   switch (e->Result())

@@ -73,7 +73,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   {
     mleAwayMsg->setText(QString::fromLocal8Bit(u->AutoResponse()));
     gUserManager.DropUser(u);
-    icqEventTag = NULL;
+    icqEventTag = 0;
   }
   else
   {
@@ -92,7 +92,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
 
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
-  delete icqEventTag;
 }
 
 
@@ -104,11 +103,10 @@ void ShowAwayMsgDlg::accept()
   u->SetShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 
-  if (server != NULL && icqEventTag != NULL)
+  if (server != NULL && icqEventTag != 0)
   {
     server->CancelEvent(icqEventTag);
-    delete icqEventTag;
-    icqEventTag = NULL;
+    icqEventTag = 0;
   }
 
   QDialog::accept();
@@ -119,8 +117,7 @@ void ShowAwayMsgDlg::accept()
 
 void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
 {
-  if ( (icqEventTag == NULL && e != NULL) ||
-       (icqEventTag != NULL && !icqEventTag->Equals(e)) )
+  if ( !e->Equals(icqEventTag) )
     return;
 
   bool isOk = (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS);
@@ -147,11 +144,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
     setCaption(caption() + title);
   }
 
-  if (icqEventTag != NULL)
-  {
-    delete icqEventTag;
-    icqEventTag = NULL;
-  }
+  icqEventTag = 0;
 
   if (isOk && e->Command() == ICQ_CMDxTCP_START)
   {

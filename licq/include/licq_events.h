@@ -172,6 +172,9 @@ public:
   CSearchAck *GrabSearchAck();
   ICQUser *GrabUnknownUser();
 
+  // Compare this event to the id, can be called with this==NULL (returns false)
+  bool Equals(unsigned long) const;
+
   ~ICQEvent();
 
 protected:
@@ -182,6 +185,7 @@ protected:
   // Compare this event to another one
   bool CompareEvent(int, unsigned long) const;
   bool CompareEvent(unsigned long) const;
+  unsigned long EventId() const;
 
   ConnectType    m_eConnect;
   EventResult    m_eResult;
@@ -212,26 +216,6 @@ friend void *ProcessRunningEvent_Client_tep(void *p);
 friend void *ProcessRunningEvent_Server_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
 friend class CICQEventTag;
-};
-
-
-//=====CICQEventTag==========================================================
-class CICQEventTag
-{
-public:
-  /* Called to verify if this is the tag for the given event.  Note that
-   * (NULL)->Equals(e) is a valid call and returns true if e is also NULL. */
-  bool Equals(const ICQEvent *e);
-
-  unsigned long Uin() { return m_nUin; }
-  unsigned long EventId() { return m_nEventId; }
-protected:
-  CICQEventTag(const ICQEvent *e);
-
-  unsigned long m_nEventId;
-  unsigned long m_nUin;
-
-friend class CICQDaemon;
 };
 
 

@@ -6,7 +6,6 @@
 class QPushButton;
 class QCheckBox;
 class ICQEvent;
-class CICQEventTag;
 
 class CICQDaemon;
 class CSignalManager;
@@ -23,7 +22,7 @@ protected:
   QPushButton *btnUpdate, *btnCancel;
   QCheckBox *chkWebAware, *chkAuthorization, *chkHideIp;
 
-  CICQEventTag *tag;
+  unsigned long tag;
 
 public slots:
   void slot_doneUserFcn(ICQEvent *);

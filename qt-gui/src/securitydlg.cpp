@@ -41,7 +41,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
 {
   server = s;
   sigman = _sigman;
-  tag = NULL;
+  tag = 0;
 
   QVBoxLayout *lay = new QVBoxLayout(this, 8);
   QGroupBox *box = new QGroupBox(tr("Options"), this);
@@ -92,7 +92,6 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
 
 SecurityDlg::~SecurityDlg()
 {
-  delete tag;
 }
 
 
@@ -121,14 +120,10 @@ void SecurityDlg::ok()
 
 void SecurityDlg::slot_doneUserFcn(ICQEvent *e)
 {
-  if (!tag->Equals(e)) return;
+  if (!e->Equals(tag)) return;
 
   btnUpdate->setEnabled(true);
-  if (tag != NULL)
-  {
-    delete tag;
-    tag = NULL;
-  }
+  tag = 0;
 
   QString result;
   switch (e->Result())

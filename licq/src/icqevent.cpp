@@ -122,8 +122,20 @@ bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence) const
 
 bool ICQEvent::CompareEvent(unsigned long nEventId) const
 {
-   return(m_nEventId == nEventId);
+  return (m_nEventId == nEventId);
 }
+
+bool ICQEvent::Equals(unsigned long nEventId) const
+{
+  return (this == NULL && nEventId == 0) || CompareEvent(nEventId);
+}
+
+
+unsigned long ICQEvent::EventId() const
+{
+  return this == NULL ? 0 : m_nEventId;
+}
+
 
 // Returns the event and transfers ownership to the calling function
 CUserEvent *ICQEvent::GrabUserEvent()
@@ -141,20 +153,6 @@ ICQUser *ICQEvent::GrabUnknownUser()
   ICQUser *u = m_pUnknownUser; m_pUnknownUser = NULL; return u;
 }
 
-//=====CICQEventTag==========================================================
-CICQEventTag::CICQEventTag(const ICQEvent *e)
-    : m_nEventId(e->m_nEventId),
-      m_nUin(e->m_nDestinationUin)
-{
-}
-
-bool CICQEventTag::Equals(const ICQEvent *e)
-{
-  if (this == NULL && e == NULL) return true;
-  if (this == NULL || e == NULL) return false;
-
-  return (e->CompareEvent(m_nEventId));
-}
 
 
 //=====CICQSignal===============================================================

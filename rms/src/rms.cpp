@@ -380,11 +380,11 @@ bool CRMSClient::ProcessEvent(ICQEvent *e)
   TagList::iterator iter;
   for (iter = tags.begin(); iter != tags.end(); iter++)
   {
-    if ( (*iter)->Equals(e) ) break;
+    if ( e->Equals(*iter) ) break;
   }
   if (iter == tags.end()) return false;
 
-  CICQEventTag *tag = *iter;
+  unsigned long tag = *iter;
   tags.erase(iter);
 
   unsigned short nCode = 0;
@@ -413,9 +413,8 @@ bool CRMSClient::ProcessEvent(ICQEvent *e)
       szr = "cancelled";
       break;
   }
-  fprintf(fs, "%d [%ld] Event %s.\n", nCode, tag->EventId(), szr);
+  fprintf(fs, "%d [%ld] Event %s.\n", nCode, tag, szr);
   fflush(fs);
-  delete tag;
 
   return true;
 }
@@ -641,16 +640,16 @@ int CRMSClient::Process_STATUS()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   bool b = o->StatusOffline();
   gUserManager.DropOwner();
-  CICQEventTag *tag = NULL;
+  unsigned long tag = 0;
   if (b)
   {
     tag = licqDaemon->icqLogon(nStatus);
-    fprintf(fs, "%d [%ld] Logging on.\n", CODE_COMMANDxSTART, tag->EventId());
+    fprintf(fs, "%d [%ld] Logging on.\n", CODE_COMMANDxSTART, tag);
   }
   else
   {
     tag = licqDaemon->icqSetStatus(nStatus);
-    fprintf(fs, "%d [%ld] Setting status.\n", CODE_COMMANDxSTART, tag->EventId());
+    fprintf(fs, "%d [%ld] Setting status.\n", CODE_COMMANDxSTART, tag);
   }
   tags.push_back(tag);
 
@@ -826,10 +825,10 @@ int CRMSClient::Process_MESSAGE()
 
 int CRMSClient::Process_MESSAGE_text()
 {
-  CICQEventTag *tag = licqDaemon->icqSendMessage(m_nUin, m_szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->icqSendMessage(m_nUin, m_szText, false, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending message to %ld.\n", CODE_COMMANDxSTART,
-     tag->EventId(), m_nUin);
+     tag, m_nUin);
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;
@@ -893,10 +892,10 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  CICQEventTag *tag = licqDaemon->icqSendUrl(m_nUin, m_szLine, m_szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->icqSendUrl(m_nUin, m_szLine, m_szText, false, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending URL to %ld.\n", CODE_COMMANDxSTART,
-     tag->EventId(), m_nUin);
+     tag, m_nUin);
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;

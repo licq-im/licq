@@ -91,7 +91,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   server = s;
   sigman = theSigMan;
   setCaption(tr("Licq - User Search"));
-  searchTag = NULL;
+  searchTag = 0;
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 6);
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
@@ -245,7 +245,6 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
 
 SearchUserDlg::~SearchUserDlg()
 {
-  delete searchTag;
 }
 
 
@@ -301,10 +300,9 @@ void SearchUserDlg::startSearch()
 
 void SearchUserDlg::resetSearch()
 {
-  if(searchTag)
+  if (searchTag)
   {
-    delete searchTag;
-    searchTag = NULL;
+    searchTag = 0;
     btnReset->setText(tr("Reset Search"));
   }
   else
@@ -332,7 +330,7 @@ void SearchUserDlg::resetSearch()
 
 void SearchUserDlg::searchResult(ICQEvent *e)
 {
-  if (!searchTag->Equals(e)) return;
+  if (!e->Equals(searchTag)) return;
 
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
@@ -366,8 +364,7 @@ void SearchUserDlg::searchDone(CSearchAck *sa)
   else
     lblSearch->setText(tr("%1 more users found. Narrow search.").arg(sa->More()));
 
-  delete searchTag;
-  searchTag = NULL;
+  searchTag = 0;
   btnReset->setText(tr("Reset Search"));
 }
 
@@ -375,8 +372,7 @@ void SearchUserDlg::searchDone(CSearchAck *sa)
 void SearchUserDlg::searchFailed()
 {
   lblSearch->setText(tr("Search failed."));
-  delete searchTag;
-  searchTag = NULL;
+  searchTag = 0;
   btnReset->setText(tr("Reset Search"));
 }
 

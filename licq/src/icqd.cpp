@@ -1109,14 +1109,14 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EventResult 
 }
 
 
-ICQEvent *CICQDaemon::DoneEvent(CICQEventTag *tag, EventResult _eResult)
+ICQEvent *CICQDaemon::DoneEvent(unsigned long tag, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
   {
-    if (tag->Equals(*iter))
+    if ((*iter)->Equals(tag))
     {
       e = *iter;
       m_lxRunningEvents.erase(iter);
@@ -1337,14 +1337,14 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EventResult _eResult)
 }
 
 
-ICQEvent *CICQDaemon::DoneExtendedEvent(CICQEventTag *tag, EventResult _eResult)
+ICQEvent *CICQDaemon::DoneExtendedEvent(unsigned long tag, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
   {
-    if (tag->Equals(*iter))
+    if ((*iter)->Equals(tag))
     {
       e = *iter;
       m_lxExtendedEvents.erase(iter);
@@ -1460,7 +1460,7 @@ ICQEvent *CICQDaemon::PopPluginEvent()
 
 
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
-void CICQDaemon::CancelEvent(CICQEventTag *t)
+void CICQDaemon::CancelEvent(unsigned long t)
 {
   ICQEvent *e = NULL;
   if ( (e = DoneEvent(t, EVENT_CANCELLED)) == NULL &&
@@ -1491,12 +1491,9 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
 //-----updateAllUsers-------------------------------------------------------------------------
 void CICQDaemon::UpdateAllUsers()
 {
-  CICQEventTag *tag;
-
   FOR_EACH_UIN_START
   {
-    tag = icqRequestMetaInfo(nUin);
-    delete tag;
+    icqRequestMetaInfo(nUin);
   }
   FOR_EACH_UIN_END
 }
@@ -1504,14 +1501,11 @@ void CICQDaemon::UpdateAllUsers()
 
 void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
 {
-  CICQEventTag *tag;
-
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->GetInGroup(g, nGroup))
     {
-      tag = icqRequestMetaInfo(pUser->Uin());
-      delete tag;
+      icqRequestMetaInfo(pUser->Uin());
     }
   }
   FOR_EACH_USER_END
@@ -1634,12 +1628,10 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     }
     else
     {
-      CICQEventTag *t = NULL;
       if (b)
-        t = icqLogon(nStatus);
+        icqLogon(nStatus);
       else
-        t = icqSetStatus(nStatus);
-      if (t == NULL) delete t;
+        icqSetStatus(nStatus);
     }
 
     // Now set the auto response

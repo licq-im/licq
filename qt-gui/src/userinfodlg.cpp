@@ -59,7 +59,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   server = s;
   mainwin = m;
   sigman = theSigMan;
-  icqEventTag = NULL;
+  icqEventTag = 0;
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
 
@@ -151,11 +151,10 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 
 UserInfoDlg::~UserInfoDlg()
 {
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     server->CancelEvent(icqEventTag);
-    delete icqEventTag;
-    icqEventTag = NULL;
+    icqEventTag = 0;
   }
   emit finished(m_nUin);
   ICQUser::ClearHistory(m_lHistoryList);
@@ -1208,7 +1207,7 @@ void UserInfoDlg::slotRetrieve()
     case AboutInfo:   icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
   }
 
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     setCursor(waitCursor);
     m_sProgressMsg = tr("Updating...");
@@ -1283,7 +1282,7 @@ void UserInfoDlg::slotUpdate()
   case HistoryInfo:  ShowHistoryNext();  break;
   }
 
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     m_sProgressMsg = tr("Updating server...");
     setCursor(waitCursor);
@@ -1294,7 +1293,7 @@ void UserInfoDlg::slotUpdate()
 
 void UserInfoDlg::doneFunction(ICQEvent* e)
 {
-  if ( !icqEventTag->Equals(e) )
+  if ( !e->Equals(icqEventTag) )
     return;
 
   QString title, result;
@@ -1325,8 +1324,7 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
   setCaption(m_sBasic + " [" + m_sProgressMsg + result + "]");
   QTimer::singleShot(5000, this, SLOT(resetCaption()));
   setCursor(arrowCursor);
-  delete icqEventTag;
-  icqEventTag = NULL;
+  icqEventTag = 0;
   disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
 }
 

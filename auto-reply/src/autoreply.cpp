@@ -215,9 +215,8 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      CICQEventTag *tag = licqDaemon->icqSendMessage(e->Uin(), user_event->Text(), false,
+      licqDaemon->icqSendMessage(e->Uin(), user_event->Text(), false,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
-	    delete tag;
     }
   }
 
@@ -295,14 +294,14 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
 
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  CICQEventTag *tag = licqDaemon->icqSendMessage(nUin, szText, true,
+  unsigned long tag = licqDaemon->icqSendMessage(nUin, szText, true,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
 
   u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return false;
 
-  if (tag == NULL)
+  if (tag == 0)
   {
     gLog.Warn("%sSending message to %s (%ld) failed.\n", L_AUTOREPxSTR,
      u->GetAlias(), nUin);
@@ -314,8 +313,7 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
   }
 
   gUserManager.DropUser(u);
-  delete tag;
-  return tag != NULL;
+  return tag != 0;
 }
 
 

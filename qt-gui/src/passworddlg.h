@@ -7,7 +7,6 @@ class QPushButton;
 class QLineEdit;
 class QLabel;
 class ICQEvent;
-class CICQEventTag;
 
 class CICQDaemon;
 class CSignalManager;
@@ -25,7 +24,7 @@ protected:
   QLineEdit *edtFirst, *edtSecond;
   QLabel *lblPassword, *lblVerify;
 
-  CICQEventTag *tag;
+  unsigned long tag;
 
 public slots:
   void slot_doneUserFcn(ICQEvent *);

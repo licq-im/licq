@@ -39,7 +39,6 @@ class MLEditWrap;
 class MsgView;
 class CInfoField;
 class CICQDaemon;
-class CICQEventTag;
 class CSignalManager;
 class CMainWindow;
 class CUserEvent;
@@ -66,7 +65,7 @@ protected:
   CICQDaemon *server;
   CMainWindow *mainwin;
   CSignalManager *sigman;
-  CICQEventTag *icqEventTag;
+  unsigned long icqEventTag;
   QWidget *mainWidget;
   QPushButton *btnHistory, *btnInfo, *btnSecure;
 

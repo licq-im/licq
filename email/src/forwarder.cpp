@@ -307,15 +307,14 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (ICQ#%ld) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->Uin(), szTime, e->Text());
-  CICQEventTag *tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, ICQ_TCPxMSG_NORMAL);
   delete []szText;
-  if (tag == NULL)
+  if (tag == 0)
   {
     gLog.Warn("%sSending message to %ld failed.\n", L_FORWARDxSTR, m_nUINTo);
     return false;
   }
   gLog.Info("%sForwarded message from %s (%ld) to %ld.\n", L_FORWARDxSTR, u->GetAlias(), u->Uin(), m_nUINTo);
-  delete tag;
   return true;
 }
 

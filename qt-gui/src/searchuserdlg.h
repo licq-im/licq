@@ -35,7 +35,6 @@ class QCheckBox;
 class CICQDaemon;
 class CSignalManager;
 class ICQEvent;
-class CICQEventTag;
 class ICQUser;
 class CSearchAck;
 
@@ -84,7 +83,7 @@ protected:
    QWidget *alias_tab, *email_tab, *uin_tab;
    QCheckBox *chkOnlineOnly;
 
-   CICQEventTag *searchTag;
+   unsigned long searchTag;
    QPushButton *btnDone, *btnAdd;
    SearchUserView *foundView;
 

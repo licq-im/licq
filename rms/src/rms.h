@@ -20,7 +20,7 @@ const unsigned short MAX_LINE_LENGTH = 1024 * 1;
 const unsigned short MAX_TEXT_LENGTH = 1024 * 8;
 
 typedef list<class CRMSClient *> ClientList;
-typedef list<class CICQEventTag *> TagList;
+typedef list<unsigned long> TagList;
 
 class CLicqRMS
 {

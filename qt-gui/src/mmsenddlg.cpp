@@ -24,7 +24,7 @@ CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   : QDialog(p, "MMSendDialog", true)
 {
   m_nUin = 0;
-  icqEventTag = NULL;
+  icqEventTag = 0;
   mmv = _mmv;
   server = _server;
 
@@ -97,13 +97,12 @@ int CMMSendDlg::go_contact(UinList &_uins)
 
 void CMMSendDlg::slot_done(ICQEvent *e)
 {
-  if ( !icqEventTag->Equals(e) )
+  if ( !e->Equals(icqEventTag) )
     return;
 
   bool isOk = (e != NULL && e->Result() == EVENT_ACKED);
 
-  delete icqEventTag;
-  icqEventTag = NULL;
+  icqEventTag = 0;
 
   if (!isOk)
   {
@@ -163,28 +162,26 @@ void CMMSendDlg::SendNext()
     }
   }
 
-  if (icqEventTag == NULL) slot_done(NULL);
+  if (icqEventTag == 0) slot_done(NULL);
 }
 
 
 CMMSendDlg::~CMMSendDlg()
 {
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     server->CancelEvent(icqEventTag);
-    delete icqEventTag;
-    icqEventTag = NULL;
+    icqEventTag = 0;
   }
 }
 
 
 void CMMSendDlg::slot_cancel()
 {
-  if (icqEventTag != NULL)
+  if (icqEventTag != 0)
   {
     server->CancelEvent(icqEventTag);
-    delete icqEventTag;
-    icqEventTag = NULL;
+    icqEventTag = 0;
   }
   //disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(slot_done(ICQEvent *)));
 
