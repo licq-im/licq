@@ -12,6 +12,36 @@ class CICQColor;
 unsigned short ReversePort(unsigned short p);
 unsigned short LengthField(const char *szField);
 
+//
+// These classes, CPX_*, are general classes for different packets that do the
+// same function that may be sent through the server or directly to the client.
+// This gives the direct and server packets a multiple inheritence.
+//
+
+//-----FileTransfer------------------------------------------------------------
+class CPX_FileTransfer
+{
+public:
+	CPX_FileTransfer(const char *_szFilename);
+
+	virtual ~CPX_FileTransfer()	{ }
+
+	bool IsValid()	{ return m_bValid; }
+	const char *GetFilename()	{ return m_szFilename; }
+	const char *GetDescription() { return m_szDesc; }
+	unsigned long GetFileSize()	{ return m_nFileSize; }
+
+protected:
+	CPX_FileTransfer();
+
+	bool					m_bValid;
+	char					*m_szDesc;
+	char					*m_szFilename;
+	unsigned long m_nFileSize;
+};
+
+
+
 //=====Packet===================================================================
 
 class CPacket
@@ -504,10 +534,51 @@ public:
 class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
-   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned char format, char *_sMessage);
+   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned char format,
+			char *_sMessage);
 protected:
-   unsigned long  m_nDestinationUin;
+	 unsigned char  m_nMsgType;
 };
+
+
+//-----AdvancedMessage---------------------------------------------------------
+class CPU_AdvancedMessage : public CPU_CommonFamily
+{
+public:
+	CPU_AdvancedMessage(ICQUser *u, unsigned char _nMsgType,
+											unsigned char _nMsgFlags, bool _bAck);
+protected:
+	void InitBuffer();
+	bool m_bAck;
+	ICQUser				 *m_pUser;
+	unsigned char  m_nMsgType;
+	unsigned char  m_nMsgFlags;
+};
+
+//-----ChatRequest-------------------------------------------------------------
+class CPU_ChatRequest : public CPU_AdvancedMessage
+{
+public:
+	CPU_ChatRequest(char *szReason, const char *szChatUsers,
+			ICQUser *pUser);
+};
+
+//-----FileTransfer------------------------------------------------------------
+class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
+{
+public:
+	CPU_FileTransfer(ICQUser *, const char *_szFile, const char *_szDesc);
+};
+
+
+//-----AcceptFile--------------------------------------------------------------
+class CPU_AcceptFile : public CPU_AdvancedMessage
+{
+public:
+	CPU_AcceptFile(ICQUser *u, unsigned short _nPort,
+								 unsigned short _nSequence);
+};
+
 
 //-----AckThroughServer--------------------------------------------------------
 class CPU_AckThroughServer : public CPU_CommonFamily
@@ -890,6 +961,11 @@ public:
   CPacketTcp_Handshake_Ack();
 };
 
+class CPacketTcp_Handshake_Confirm : public CPacketTcp_Handshake
+{
+public:
+  CPacketTcp_Handshake_Confirm();
+};
 
 
 //-----CPacketTcp---------------------------------------------------------------
@@ -918,6 +994,8 @@ protected:
    void PostBuffer_v4();
    void InitBuffer_v6();
    void PostBuffer_v6();
+   void InitBuffer_v7();
+   void PostBuffer_v7();
 
    unsigned long  m_nSourceUin;
    unsigned long  m_nCommand;
@@ -988,24 +1066,17 @@ public:
 
 
 //-----FileTransfer-------------------------------------------------------------
-class CPT_FileTransfer : public CPacketTcp
+class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
 {
 public:
    CPT_FileTransfer(const char *_szFilename, const char *_szDescription,
       unsigned short nLevel, ICQUser *pUser);
-   bool IsValid()  { return m_bValid; };
-   const char *GetFilename()  { return m_szFilename; };
-   const char *GetDescription()  { return m_szMessage; };
-   unsigned long GetFileSize()  { return m_nFileSize; };
+	 const char *GetDescription() { return m_szMessage; }
 protected:
-   bool m_bValid;
-
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
       73 20 61 20 66 69 6C 65 00 CF 60 AD D3 CF 60 AD D3 60 12 00 00 04 00 00
       10 00 00 00 00 00 09 00 4D 61 6B 65 66 69 6C 65 00 55 0C 00 00 00 00 00
       00 04 00 00 00 */
-   char           *m_szFilename;
-   unsigned long  m_nFileSize;
 };
 
 
@@ -1188,7 +1259,6 @@ public:
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
 };
-
 
 
 #endif
