@@ -141,6 +141,7 @@ CLogWidget::CLogWidget(QWidget* parent, const char* name)
 
 void CLogWidget::paintCell(QPainter* p, int row, int col)
 {
+#if QT_VERSION < 300
   QColorGroup& cg = const_cast<QColorGroup&>(colorGroup());
   QColor cgback = cg.text();
 
@@ -160,6 +161,7 @@ void CLogWidget::paintCell(QPainter* p, int row, int col)
   MLEditWrap::paintCell(p, row, col);
 
   cg.setColor(QColorGroup::Text, cgback);
+#endif
 }
 
 

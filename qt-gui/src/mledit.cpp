@@ -119,7 +119,7 @@ bool MLEditWrap::focusNextPrevChild( bool f)
 void MLEditWrap::paintCell(QPainter* p, int row, int col)
 {
 
-#if QT_VERSION >= 210
+#if QT_VERSION >= 210 && QT_VERSION < 300
   if (m_bDoQuotes)
   {
     QString s = stringShown(row);
@@ -135,7 +135,9 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
   }
 #endif
 
+#if QT_VERSION < 300
   QMultiLineEdit::paintCell(p, row, col);
+#endif
 }
 
 void MLEditWrap::keyPressEvent( QKeyEvent *e )
@@ -173,7 +175,9 @@ void MLEditWrap::setCellWidth ( int cellW )
     if ( autoUpdate() && isVisible() )
         repaint();
 #else
-    QTableView::setCellWidth(cellW);
+#if QT_VERSION < 300
+    QMultiLineEdit::setCellWidth( cellW );
+#endif
 #endif
 }
 
