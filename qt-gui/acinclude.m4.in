@@ -435,3 +435,72 @@ if test $ac_cv_sys_errlist = yes; then
 AC_DEFINE(HAVE_SYS_ERRLIST)
 fi
 ])
+
+dnl check if a given compiler flag works
+AC_DEFUN(KDE_CHECK_COMPILER_FLAG,
+[
+AC_MSG_CHECKING(whether $CXX supports -$1)
+kde_cache=`echo $1 | sed 'y%.=/+-%___p_%'`
+AC_CACHE_VAL(ac_cv_prog_cxx_$kde_cache,
+[
+echo 'void f(){}' >conftest.cc
+if test -z "`$CXX -$1 -c conftest.cc 2>&1`"; then
+  eval "ac_cv_prog_cxx_$kde_cache=yes"
+else
+  eval "ac_cv_prog_cxx_$kde_cache=no"
+fi
+rm -f conftest*
+])
+if eval "test \"`echo '$ac_cv_prog_cxx_'$kde_cache`\" = yes"; then
+ AC_MSG_RESULT(yes)
+ :
+ $2
+else
+ AC_MSG_RESULT(no)
+ :
+ $3
+fi
+])
+
+dnl Check if we can include the X11 headers without -fpermissive
+AC_DEFUN(LICQ_CHECK_X11HEADERS,
+[
+AC_LANG_CPLUSPLUS
+save_CXXFLAGS="$CXXFLAGS"
+if test "$GCC" = "yes"; then
+CXXFLAGS="$CXXFLAGS -pedantic-errors"
+fi
+CXXFLAGS="$CXXFLAGS $X_CFLAGS"
+AC_MSG_CHECKING(for good X11 headers)
+AC_CACHE_VAL(ac_cv_good_x11headers,
+[
+AC_TRY_COMPILE([
+
+extern "C" {
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+}
+],
+[
+/* elvis is alive */
+],
+ac_cv_good_x11headers=yes,
+ac_cv_good_x11headers=no)
+])
+AC_MSG_RESULT($ac_cv_good_x11headers)
+CXXFLAGS="$save_CXXFLAGS"
+if eval "test \"`echo $ac_cv_good_x11headers`\" = no"; then
+   KDE_CHECK_COMPILER_FLAG(fpermissive,
+        [
+          CXXFLAGS="$CXXFLAGS -fpermissive"
+        ], [
+        AC_MSG_WARN([
+the configure script found broken X11 headers. But your compiler doesn't
+seem to support -fpermissive. Compilation is likely to fail.
+
+You can either use/install a newer compiler or (better) install correct
+X11 header files.
+        ])
+      ])
+fi
+])

@@ -32,8 +32,6 @@ AC_PATH_PROG(PROG_SIZE,size,:)
 dnl libtool stuff
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
-LIBTOOL="$(LIBTOOL) --silent"
-AC_SUBST(LIBTOOL)
 AM_PROG_LIBTOOL
 
 dnl Checks for header files.
@@ -47,6 +45,9 @@ AC_PATH_XTRA
 if test "$no_x" = yes; then
   AC_MSG_ERROR(You need to have the X11 libraries and headers installed)
 fi
+
+dnl solaris has broken x11 headers, lets check for them
+LICQ_CHECK_X11HEADERS
 
 XSS_LIBS="no"
 AC_CHECK_X_LIB(Xext, XScreenSaverRegister,[XSS_LIBS=""],[], [-lX11 -lXext -lm])
