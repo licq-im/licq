@@ -167,7 +167,7 @@ uaw_new(ICQUser *u)
 
 	uaw_list = g_slist_append(uaw_list, uaw);
 
-//	list_read_message(0, uaw->user);
+	//list_read_message(0, uaw->user);
 
 	return uaw;
 }
@@ -219,7 +219,7 @@ list_read_message(GtkWidget *widget, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(frame), scroll);
 
 	/* Pack the scrolled window into the v_box */
-	gtk_box_pack_start(GTK_BOX(v_box), scroll, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, TRUE, TRUE, 5);
 
 	/* The Show Again check button */
 	uaw->show_again = gtk_check_button_new_with_label("Show Again");
