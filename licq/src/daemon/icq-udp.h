@@ -119,7 +119,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
 {
   if (m_eStatus != STATUS_OFFLINE_MANUAL)
   {
-    gLog.Warn("%sAttempt to log on while already logged or logging on.\n", L_WARNxSTR);
+    gLog.Warn("%sAttempt to logon while already logged or logging on.\n", L_WARNxSTR);
     return NULL;
   }
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -170,10 +170,12 @@ void CICQDaemon::icqRelogon(bool bChangeServer)
     SwitchServer();
   else
     icqLogoff();
-  m_eStatus = STATUS_OFFLINE_FORCED;
+  m_eStatus = STATUS_OFFLINE_MANUAL;
 
   CICQEventTag *t = icqLogon(status);
-  if (t != NULL) delete t;
+  delete t;
+
+  m_eStatus = STATUS_OFFLINE_FORCED;
 }
 
 
