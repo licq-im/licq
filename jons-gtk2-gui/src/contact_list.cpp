@@ -210,15 +210,13 @@ void contact_list_refresh()
 	{
 		/* If they are on the ignore list and the user has the option
 		 * "Show ignored users" disabled, then don't show them */
-		if(pUser->IgnoreList() && !show_ignored_users)
-		{
+		if (pUser->IgnoreList() && !show_ignored_users) {
 		 	FOR_EACH_USER_CONTINUE
 		}
 
 		/* If they are offline and we do not want to see offline users,
 		 * just keep goin going! */
-		if(pUser->Status() == ICQ_STATUS_OFFLINE && !show_offline_users)
-		{
+		if (pUser->Status() == ICQ_STATUS_OFFLINE && !show_offline_users) {
 			FOR_EACH_USER_CONTINUE
 		}
 		
@@ -229,13 +227,11 @@ void contact_list_refresh()
 		gulong user_status = pUser->StatusFull();
 
 		// The icon to set
-		if (pUser->NewMessages() > 0)
-		{
+		if (pUser->NewMessages() > 0) {
 			CUserEvent *ue = pUser->EventPeekFirst();
 			GdkPixbuf *icon;
 
-			switch(ue->SubCommand())
-			{
+			switch(ue->SubCommand()) {
 				case ICQ_CMDxSUB_MSG:
 					icon = message_icon;
 					break;
@@ -268,8 +264,7 @@ void contact_list_refresh()
 				FlashList[pUser->Uin()] = flash;
 			}
 		} 
-   	else
-		{
+   	else {
 			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, 
 					status_icon(user_status), -1);
 			gtk_list_store_set(store, &iter, COL_SORT, 
@@ -280,10 +275,9 @@ void contact_list_refresh()
 				get_status_color(user_status), -1);
 
 		// See if they are not offline and want to be auto secured
-		if(pUser->Status() != ICQ_STATUS_OFFLINE && pUser->AutoSecure())
-		{
+		if (pUser->Status() != ICQ_STATUS_OFFLINE && pUser->AutoSecure()) {
 			// Ok, now *can* they be auto secured?
-			if((pUser->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED) && 
+			if ((pUser->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED) && 
 					!pUser->Secure())
 				AutoSecureList.push_back(pUser->Uin());
 		}
