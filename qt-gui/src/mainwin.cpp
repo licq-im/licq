@@ -1934,7 +1934,6 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
   }
   if(e) {
     e->show();
-
     // there might be more than one send window open
     // make sure we only remember one, or it will get compliated
     slot_sendfinished( nUin );

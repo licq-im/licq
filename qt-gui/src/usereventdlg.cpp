@@ -546,7 +546,7 @@ void UserViewEvent::sendMsg(QString txt)
       yp = QApplication::desktop()->height() - e->height() - 8;
     e->move(x(), yp);
   }
-  e->show();
+  QTimer::singleShot( 10, e, SLOT( show() ) );
 
   connect(e, SIGNAL(autoCloseNotify()), this, SLOT(slot_autoClose()));
   connect(e, SIGNAL(signal_msgtypechanged(UserSendCommon *, UserSendCommon *)),
@@ -975,9 +975,9 @@ void UserSendCommon::changeEventType(int id)
 
     emit signal_msgtypechanged(this, e);
 
-    e->show();
+    QTimer::singleShot( 10, e, SLOT( show() ) );
 
-    close();
+    QTimer::singleShot( 100, this, SLOT( close() ) );
   }
 }
 
@@ -1172,9 +1172,8 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
       emit mainwin->signal_sentevent(e);
 
       if (mainwin->m_bMsgChatView) {
-        mleSend->clear();
         mleHistory->GotoEnd();
-        mleSend->setFocus();
+        resetSettings();
       } else
         close();
     }
@@ -1306,7 +1305,7 @@ bool UserSendCommon::checkSecure()
 {
   ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
   bool send_ok = true;
-  if (chkSendServer->isChecked() && u->Secure())
+  if (chkSendServer->isChecked() && ( u->Secure() || u->AutoSecure()) )
   {
     if (!QueryUser(this, tr("Warning: Message will not be sent securely!"), tr("Send anyway"), tr("Cancel")))
     {
@@ -1394,6 +1393,12 @@ bool UserSendMsgEvent::sendDone(ICQEvent *e)
 
 }
 
+void UserSendMsgEvent::resetSettings()
+{
+  mleSend->clear();
+  mleSend->setFocus();
+  massMessageToggled( false );
+}
 
 //=====UserSendUrlEvent======================================================
 UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
@@ -1425,6 +1430,15 @@ void UserSendUrlEvent::setUrl(const QString& url, const QString& description)
   edtItem->setText(url);
   setText(description);
 }
+
+void UserSendUrlEvent::resetSettings()
+{
+  mleSend->clear();
+  edtItem->clear();
+  mleSend->setFocus();
+  massMessageToggled( false );
+}
+
 
 //-----UserSendUrlEvent::sendButton------------------------------------------
 void UserSendUrlEvent::sendButton()
@@ -1548,6 +1562,14 @@ void UserSendFileEvent::setFile(const QString& file, const QString& description)
   setText(description);
 }
 
+void UserSendFileEvent::resetSettings()
+{
+  mleSend->clear();
+  edtItem->clear();
+  mleSend->setFocus();
+  massMessageToggled( false );
+}
+
 //-----UserSendFileEvent::sendDone-------------------------------------------
 bool UserSendFileEvent::sendDone(ICQEvent *e)
 {
@@ -1635,6 +1657,13 @@ void UserSendChatEvent::InviteUser()
   }
 }
 
+void UserSendChatEvent::resetSettings()
+{
+  mleSend->clear();
+  edtItem->clear();
+  mleSend->setFocus();
+  massMessageToggled( false );
+}
 
 //-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
@@ -1737,6 +1766,11 @@ void UserSendContactEvent::sendButton()
   UserSendCommon::sendButton();
 }
 
+void UserSendContactEvent::resetSettings()
+{
+  lstContacts->clear();
+  massMessageToggled( false );
+}
 
 //-----UserSendMsgEvent::sendDone--------------------------------------------
 bool UserSendContactEvent::sendDone(ICQEvent *e)

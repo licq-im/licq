@@ -171,6 +171,8 @@ protected:
   virtual bool sendDone(ICQEvent *) = 0;
   bool checkSecure();
 
+  virtual void resetSettings() = 0;
+
 protected slots:
   virtual void sendButton();
   virtual void sendDone_common(ICQEvent *);
@@ -199,6 +201,8 @@ public:
 protected:
   virtual bool sendDone(ICQEvent *);
 
+  virtual void resetSettings();
+  
 protected slots:
   virtual void sendButton();
 };
@@ -220,6 +224,8 @@ protected:
   QLabel *lblItem;
   CInfoField *edtItem;
   virtual bool sendDone(ICQEvent *);
+
+  virtual void resetSettings();
 
 protected slots:
   virtual void sendButton();
@@ -244,7 +250,9 @@ protected:
   CInfoField *edtItem;
   QPushButton *btnBrowse;
   virtual bool sendDone(ICQEvent*);
-
+  
+  virtual void resetSettings();
+  
 protected slots:
   void browseFile();
   virtual void sendButton();
@@ -270,6 +278,8 @@ protected:
   unsigned short m_nMPChatPort;
   virtual bool sendDone(ICQEvent *);
 
+  virtual void resetSettings();
+
 protected slots:
   virtual void sendButton();
 
@@ -294,6 +304,8 @@ protected:
   CMMUserView *lstContacts;
 
   virtual bool sendDone(ICQEvent *);
+
+  virtual void resetSettings();
 
 protected slots:
   virtual void sendButton();
