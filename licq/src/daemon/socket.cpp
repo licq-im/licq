@@ -612,7 +612,7 @@ bool TCPSocket::RecvPacket()
     while (nTwoBytes != 2)
     {
       nBytesReceived = recv(m_nDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
-      if (nBytesReceived <= 0)
+      if (nBytesReceived == -1)
       {
         // errno has been set
         h_errno = -1;
@@ -632,7 +632,7 @@ bool TCPSocket::RecvPacket()
                              m_xRecvBuffer.getDataMaxSize() -
                              m_xRecvBuffer.getDataPosWrite();
   nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, MSG_DONTWAIT);
-  if (nBytesReceived <= 0)
+  if (nBytesReceived == -1)
   {
     // errno has been set
     h_errno = -1;
