@@ -1,11 +1,8 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <list.h>
+#include <time.h>
 #include "licq_buffer.h"
 #include "licq_constants.h"
 

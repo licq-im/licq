@@ -23,6 +23,7 @@
 #include "licq_packets.h"
 #include "licq_icqd.h"
 #include "support.h"
+#include "pthread_rdwr.h"
 
 class CUserManager gUserManager;
 
