@@ -2195,7 +2195,7 @@ void CMainWindow::saveOptions()
 void CMainWindow::aboutBox()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  QString about(tr("Licq version %1.\n"
+  QString about(tr("Licq version %1%8.\n"
                    "Qt GUI plugin version %2.\n"
                    "Compiled on: %7\n"
                    "%6\n"
@@ -2211,7 +2211,7 @@ void CMainWindow::aboutBox()
 #else
                    .arg("\n")
 #endif
-                   .arg(__DATE__));
+                   .arg(__DATE__).arg(CICQDaemon::CryptoEnabled() ? "/SSL" : ""));
   gUserManager.DropOwner();
   InformUser(this, about);
 }
