@@ -83,7 +83,11 @@ void licq_handle_sigsegv(int s)
     fprintf(stderr, "%s\n", res[0]);*/
   }
   fprintf(stderr, "Attempting to generate core file.\n");
+
+  #ifdef HAVE_PTHREAD_KILL_OTHER_THREADS_NP
+	// only available in LinuxThreads, not in NPTL
   pthread_kill_other_threads_np();
+  #endif
 #endif
 
   abort();
