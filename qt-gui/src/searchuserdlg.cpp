@@ -117,15 +117,17 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   grid_lay->addWidget(new QLabel(tr("Last Name:"), alias_tab), ++CR, 1);
   edtLast = new QLineEdit(alias_tab);
   grid_lay->addWidget(edtLast, CR, 3);
-
-  grid_lay->addWidget(new QLabel(tr("Minimum Age:"), alias_tab), ++CR, 1);
-  spnMinAge = new QSpinBox(alias_tab);
-  spnMinAge->setSpecialValueText(tr("Unspecified"));
-  grid_lay->addWidget(spnMinAge, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("Maximum Age:"), alias_tab), ++CR, 1);
-  spnMaxAge = new QSpinBox(alias_tab);
-  spnMaxAge->setSpecialValueText(tr("Unspecified"));
-  grid_lay->addWidget(spnMaxAge, CR, 3);
+  grid_lay->addWidget(new QLabel(tr("Age Range:"), alias_tab), ++CR, 1);
+  cmbAge = new QComboBox(false, alias_tab);
+  cmbAge->insertItem(tr("Unspecified"), 0);
+  cmbAge->insertItem(tr("18 - 22"), 1);
+  cmbAge->insertItem(tr("23 - 29"), 2);
+  cmbAge->insertItem(tr("30 - 39"), 3);
+  cmbAge->insertItem(tr("40 - 49"), 4);
+  cmbAge->insertItem(tr("50 - 59"), 5);
+  cmbAge->insertItem(tr("69+"), 6);
+  cmbAge->setFixedWidth(cmbAge->sizeHint().width());
+  grid_lay->addWidget(cmbAge, CR, 3);
   grid_lay->addWidget(new QLabel(tr("Gender:"), alias_tab), ++CR, 1);
   cmbGender = new QComboBox(false, alias_tab);
   cmbGender->insertItem(tr("Unspecified"), GENDER_UNSPECIFIED);
@@ -250,6 +252,9 @@ SearchUserDlg::~SearchUserDlg()
 
 void SearchUserDlg::startSearch()
 {
+  unsigned short mins[7] = {0, 18, 23, 30, 40, 50, 60};
+  unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
+
   foundView->clear();
   /* FIXME
   edtNick->setEnabled(false);
@@ -280,12 +285,13 @@ void SearchUserDlg::startSearch()
   }
   else
   {
-    searchTag = server->icqSearchWhitePages(
+     searchTag = server->icqSearchWhitePages(
      edtFirst->text().local8Bit().data(),
      edtLast->text().local8Bit().data(),
      edtNick->text().local8Bit().data(),
      "",
-     spnMinAge->value(), spnMaxAge->value(),
+     mins[cmbAge->currentItem()],
+     maxs[cmbAge->currentItem()],
      cmbGender->currentItem(),
      GetLanguageByIndex(cmbLanguage->currentItem())->nCode,
      edtCity->text().local8Bit().data(),

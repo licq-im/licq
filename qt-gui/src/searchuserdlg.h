@@ -78,8 +78,8 @@ protected:
    QLabel *lblSearch;
    QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin,
      *edtCity, *edtState, *edtCoName, *edtCoDept, *edtCoPos;
-   QSpinBox *spnMinAge, *spnMaxAge;
-   QComboBox *cmbCountry, *cmbGender, *cmbLanguage;
+   QComboBox *cmbAge, *cmbCountry, *cmbGender, *cmbLanguage;
+   
    QWidget *alias_tab, *email_tab, *uin_tab;
    QCheckBox *chkOnlineOnly;
 
