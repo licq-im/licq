@@ -1418,7 +1418,7 @@ void UserSendMsgEvent::sendButton()
 
   // the part is generated according to the raw data's length (number of bytes,
   // not number of glyphs), so we use a QCString
-  QCString msgTextCurrent = generatePart(codec->fromUnicode(mleSend->text()));
+  QCString msgTextCurrent = generatePart(mleSend->text());
 
   if (chkMass->isChecked())
   {
