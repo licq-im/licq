@@ -208,7 +208,10 @@ void OptionsDlg::SetupOptions()
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
 #if QT_VERSION >= 300
-  chkTabbedChatting->setChecked(mainwin->m_bTabbedChatting);
+  if (mainwin->m_bMsgChatView)
+    chkTabbedChatting->setChecked(mainwin->m_bTabbedChatting);
+  else
+    chkTabbedChatting->setEnabled(false);
 #endif
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
