@@ -7,6 +7,7 @@
 #include <qpushbutton.h>
 #include <qmultilinedit.h>
 #include <qsocketnotifier.h>
+#include <qcheckbox.h>
 
 #include <vector.h>
 
@@ -30,6 +31,7 @@ protected:
   bool m_bIntWin;
 
   CInfoField *nfoUtility, *nfoWinType, *nfoDesc;
+  QCheckBox *chkEditFinal;
   QScrollView *scrFields;
   QGroupBox *boxFields;
   vector <QLineEdit *> edtFields;
