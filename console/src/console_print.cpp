@@ -1,4 +1,5 @@
 #include "console.h"
+#include "eventdesc.h"
 
 
 /*---------------------------------------------------------------------------
@@ -297,58 +298,98 @@ void CLicqConsole::PrintUsers(void)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::PrintHelp(void)
 {
-  PrintBoxTop("Menu", COLOR_WHITE, 60);
+  PrintBoxTop("Menu", COLOR_WHITE, 48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/c%Z%s", A_BOLD, A_BOLD, "ontacts");
-  PrintBoxRight(60);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/g%Zroup [ %A#%Z%s", A_BOLD, A_BOLD, A_BOLD, A_BOLD, " ]");
-  PrintBoxRight(60);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" [ %A/u%Zser ] %A<alias>%Z %Ai%Znfo|%Av%Ziew|%Am%Zessage|%Au%Zrl",
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD,
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(60);
+  winMain->wprintf(" [ %A/u%Zser ] %A<alias>%Z <info | view | message |",
+                   A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("                    url | history>",
+                   A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/o%Zwner [ %Av%Ziew|%Ai%Znfo ]",
                    A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(60);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/l%Zast [ %A<user-command>%Z ]",
                    A_BOLD, A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(60);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/st%Z%s", A_BOLD, A_BOLD,
-                   "atus [*]online|away|na|dnd|occupied|ffc|offline");
-  PrintBoxRight(60);
+  winMain->wprintf(" %A/st%Zatus [*]<online | away | na | dnd |"
+                   "              occupied | ffc | offline>", A_BOLD, A_BOLD);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/se%Z%s [ %A<variable>%Z [ = %A<value>%Z ] ]",
                    A_BOLD, A_BOLD, "t", A_BOLD, A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(60);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/h%Z%s [ %A<command>%Z ]", A_BOLD, A_BOLD, "elp",
+  winMain->wprintf(" %A/h%Zelp [ %A<command>%Z ]", A_BOLD, A_BOLD,
                    A_BOLD, A_BOLD);
-  PrintBoxRight(60);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/q%Z%s", A_BOLD, A_BOLD, "uit");
-  PrintBoxRight(60);
+  winMain->wprintf(" %A/q%Zuit", A_BOLD, A_BOLD);
+  PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %AF(1-%d)%Z to change between consoles", A_BOLD, MAX_CON,
                    A_BOLD);
-  PrintBoxRight(60);
+  PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %AF%d%Z to see the log", A_BOLD, MAX_CON + 1, A_BOLD);
-  PrintBoxRight(60);
-  PrintBoxBottom(60);
+  PrintBoxRight(48);
+  PrintBoxBottom(48);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::PrintHistory
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
+                                unsigned short nEnd, const char *szFrom)
+{
+  HistoryListIter it = lHistory.begin();
+  unsigned short n = 0;
+  for (n = 0; n < nStart && it != lHistory.end(); n++, it++);
+  while (n <= nEnd && it != lHistory.end())
+  {
+    wattron(winMain->Win(), A_BOLD);
+    for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
+      waddch(winMain->Win(), ACS_HLINE);
+    waddch(winMain->Win(), '\n');
+    time_t t = (*it)->Time();
+    char *szTime = ctime(&t);
+    szTime[16] = '\0';
+    winMain->wprintf("%A%C[%d of %d] %s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
+                     COLOR_WHITE, n + 1, lHistory.size(), EventDescription(*it),
+                     szFrom,
+                     szTime, (*it)->IsDirect() ? 'D' : '-',
+                     (*it)->IsMultiRec() ? 'M' : '-', (*it)->IsUrgent() ? 'U' : '-',
+                     A_BOLD, (*it)->Text());
+
+    n++;
+    it++;
+  }
+  wattron(winMain->Win(), A_BOLD);
+  for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
+    waddch(winMain->Win(), ACS_HLINE);
+  waddch(winMain->Win(), '\n');
+  winMain->RefreshWin();
+  wattroff(winMain->Win(), A_BOLD);
 }
 
 

@@ -74,6 +74,9 @@ const struct SColorMap aColorMaps[NUM_COLORMAPS] =
   { "bright_yellow", COLOR_YELLOW, true }
 };
 
+const char MLE_HELP[] =
+  "[ '.' send | '.s' send server | '.u' send urgent | ',' abort ]";
+
 
 
 /*---------------------------------------------------------------------------
@@ -723,7 +726,7 @@ char *CLicqConsole::CurrentGroupName(void)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Info
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Info(unsigned long nUin)
+void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
 {
   // Print the users info to the main window
   struct UserBasicInfo ubi;
@@ -747,7 +750,7 @@ void CLicqConsole::UserCommand_Info(unsigned long nUin)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_View
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_View(unsigned long nUin)
+void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
 
@@ -791,7 +794,7 @@ void CLicqConsole::UserCommand_View(unsigned long nUin)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Msg
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Msg(unsigned long nUin)
+void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputMessage;
@@ -799,11 +802,114 @@ void CLicqConsole::UserCommand_Msg(unsigned long nUin)
   winMain->data = new DataMsg(nUin);
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%AEnter message to %s (%ld):\n", A_BOLD, u->getAlias(),
-                   nUin);
+  winMain->wprintf("%AEnter message to %s (%ld):\n%s\n", A_BOLD, u->getAlias(),
+                   nUin, MLE_HELP);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
+
+
+int StrToRange(char *sz, int nLast, int nStart)
+{
+  int n;
+  if (*sz == '$')
+  {
+    n = nLast;
+    sz++;
+  }
+  else if (*sz == '+' || *sz == '-')
+  {
+    n = nStart;
+  }
+  else
+  {
+    n = atoi(sz);
+    while (isdigit(*sz)) sz++;
+  }
+  STRIP(sz);
+
+  if (*sz == '+')
+  {
+    sz++;
+    STRIP(sz);
+    n += atoi(sz);
+    while (isdigit(*sz)) sz++;
+  }
+  else if (*sz == '-')
+  {
+    sz++;
+    STRIP(sz);
+    n -= atoi(sz);
+    while (isdigit(*sz)) sz++;
+  }
+  STRIP(sz);
+  if (*sz != '\0' || n > nLast || n < 1)
+  {
+    return -1;
+  }
+  return n;
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::UserCommand_History
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  HistoryList lHistory;
+  if (!u->GetHistory(lHistory))
+  {
+    winMain->wprintf("Error loading history.\n");
+    gUserManager.DropUser(u);
+    return;
+  }
+  char szFrom[32];
+  if (gUserManager.OwnerUin() == nUin)
+    strcpy(szFrom, "Server");
+  else
+    strcpy(szFrom, u->getAlias());
+  gUserManager.DropUser(u);
+
+  unsigned short nLast = lHistory.size();
+
+  // Process the argument
+  char *szStart = szArg;
+  char *szEnd = strchr(szStart, ',');
+  int nStart, nEnd;
+
+  if (szEnd != NULL)
+  {
+    *szEnd++ = '\0';
+    STRIP(szEnd);
+  }
+  nStart = StrToRange(szStart, nLast, winMain->nLastHistory);
+  if (nStart == -1)
+  {
+    winMain->wprintf("%CInvalid start range: %A%s\n", COLOR_RED,
+                     A_BOLD, szStart);
+    return;
+  }
+
+  if (szEnd != NULL)
+  {
+    nEnd = StrToRange(szEnd, nLast, nStart);
+    if (nEnd == -1)
+    {
+      winMain->wprintf("%CInvalid end range: %A%s\n", COLOR_RED,
+                       A_BOLD, szEnd);
+      return;
+    }
+  }
+  else
+  {
+    nEnd = nStart;
+  }
+
+  winMain->nLastHistory = nEnd;
+  PrintHistory(lHistory, nStart - 1, nEnd - 1, szFrom);
+}
+
 
 
 /*---------------------------------------------------------------------------
@@ -826,6 +932,14 @@ void CLicqConsole::InputMessage(int cIn)
       return;
 
     // The input is done, so process it, sz points to the '.'
+    if (*sz == ',')
+    {
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+      if (winMain->data != NULL) delete winMain->data;
+      winMain->state = STATE_COMMAND;
+      winMain->wprintf("%CMessage aborted.\n", COLOR_BLUE);
+      return;
+    }
     *sz = '\0';
     sz++;
     winMain->wprintf("%C%ASending message %s...", COLOR_BLUE, A_BOLD,
@@ -845,7 +959,7 @@ void CLicqConsole::InputMessage(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Url
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Url(unsigned long nUin)
+void CLicqConsole::UserCommand_Url(unsigned long nUin, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputUrl;
@@ -879,7 +993,7 @@ void CLicqConsole::InputUrl(int cIn)
     if ((sz = Input_Line(data->szUrl, data->nPos, cIn)) == NULL)
       return;
     // The input is done
-    winMain->wprintf("%AEnter description:\n", A_BOLD);
+    winMain->wprintf("%AEnter description:\n%s\n", A_BOLD, MLE_HELP);
     winMain->state = STATE_MLE;
     data->nPos = 0;
     break;
@@ -891,6 +1005,14 @@ void CLicqConsole::InputUrl(int cIn)
       return;
 
     // The input is done, so process it, sz points to the '.'
+    if (*sz == ',')
+    {
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+      if (winMain->data != NULL) delete winMain->data;
+      winMain->state = STATE_COMMAND;
+      winMain->wprintf("%CURL aborted.\n", COLOR_BLUE);
+      return;
+    }
     *sz = '\0';
     sz++;
     winMain->wprintf("%C%ASending URL %s...", COLOR_BLUE, A_BOLD,

@@ -10,9 +10,31 @@ const struct SCommand aCommands[NUM_COMMANDS] =
   { "/group", &CLicqConsole::MenuGroup, NULL,
     "Prints the group list or changes to the given group number." },
   { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
-    "User commands deal with indiviual users." },
+    "User commands deal with indiviual users:\n"
+    "info - print user information\n"
+    "message - send a message to the user\n"
+    "url - send a url to the user\n"
+    "view - view any new events from the user\n"
+    "history - print the given range of events from\n"
+    "  the history.\n"
+    "  '$' represents the last message, and +/- can\n"
+    "  be used to specify an offset.  For example\n"
+    "  \"/history $-5,$\" will print from the\n"
+    "  fifth-to-last event to the end.\n"
+    "  If only the start range is specified then one\n"
+    "  event will be printed.\n"
+    "  If the start range begins with +/- then the index\n"
+    "  of the last message printed will be modified by\n"
+    "  the operation.  If the end range begins with +/-\n"
+    "  then it will modify the start range value.\n"
+    "  To cycle through the last 10 events in the history\n"
+    "  try the following:\n"
+    "  \"history $ - 10\"\n"
+    "  \"history +1\"\n"
+    "  \"history +1\"\n"
+    "  ...\n" },
   { "/owner", &CLicqConsole::MenuOwner, &CLicqConsole::TabOwner,
-    "Commands dealing with yourself." },
+    "Commands dealing with yourself.  See /user help for details." },
   { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
     "Set your status, prefix with \"*\" for invisible mode." },
   { "/last", &CLicqConsole::MenuLast, &CLicqConsole::TabLast,
@@ -33,23 +55,24 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Quit Licq." }
 };
 
-const unsigned short NUM_USER_COMMANDS = 4;
+const unsigned short NUM_USER_COMMANDS = 5;
 const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
 {
   { "info", &CLicqConsole::UserCommand_Info },
   { "view", &CLicqConsole::UserCommand_View },
   { "message", &CLicqConsole::UserCommand_Msg },
-  { "url", &CLicqConsole::UserCommand_Url }
+  { "url", &CLicqConsole::UserCommand_Url },
+  { "history", &CLicqConsole::UserCommand_History }
 };
 
-const unsigned short NUM_OWNER_COMMANDS = 2;
+const unsigned short NUM_OWNER_COMMANDS = 3;
 const struct SOwnerCommand aOwnerCommands[NUM_OWNER_COMMANDS] =
 {
   { "info", &CLicqConsole::UserCommand_Info },
   { "view", &CLicqConsole::UserCommand_View },
+  { "history", &CLicqConsole::UserCommand_History }
 };
 
-#define STRIP(x) while(isspace(*(x)) && *(x) != '\0') (x)++;
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::MenuHelp
@@ -78,6 +101,7 @@ void CLicqConsole::MenuHelp(char *_szArg)
                    aCommands[i].szHelp);
 
 }
+
 
 
 
@@ -288,7 +312,7 @@ void CLicqConsole::MenuContactList(char *)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuUser(char *_szArg)
 {
-  char *szAlias, *szCmd;
+  char *szAlias, *szCmd, *szUserArg;
   unsigned long nUin = 0;
   unsigned short nCmd = 0;
 
@@ -314,15 +338,24 @@ void CLicqConsole::MenuUser(char *_szArg)
   if (szCmd == NULL)
   {
     nCmd = 0;
+    szUserArg = NULL;
   }
   else
   {
     *szCmd++ = '\0';
     STRIP(szCmd);
+    // Find any command args
+    szUserArg = strchr(szCmd, ' ');
+    if (szUserArg != NULL)
+    {
+      *szUserArg++ = '\0';
+      STRIP(szUserArg);
+      if (*szUserArg == '\0') szUserArg = NULL;
+    }
     unsigned short i;
     for (i = 0; i < NUM_USER_COMMANDS; i++)
     {
-      if (strcasecmp(szCmd, aUserCommands[i].szName) == 0)
+      if (strncasecmp(szCmd, aUserCommands[i].szName, strlen(szCmd)) == 0)
       {
         nCmd = i;
         break;
@@ -358,7 +391,7 @@ void CLicqConsole::MenuUser(char *_szArg)
     PrintStatus();
   }
   // Run the command
-  (this->*(aUserCommands[nCmd].fProcessCommand))(nUin);
+  (this->*(aUserCommands[nCmd].fProcessCommand))(nUin, szUserArg);
 }
 
 
@@ -368,6 +401,7 @@ void CLicqConsole::MenuUser(char *_szArg)
 void CLicqConsole::MenuLast(char *_szArg)
 {
   unsigned short nCmd = 0;
+  char *szUserArg;
 
   if (winMain->nLastUin == 0)
   {
@@ -378,12 +412,21 @@ void CLicqConsole::MenuLast(char *_szArg)
   if (_szArg == NULL)
   {
     nCmd = 0;
+    szUserArg = NULL;
   }
   else
   {
+    // Find any command args
+    szUserArg = strchr(_szArg, ' ');
+    if (szUserArg != NULL)
+    {
+      *szUserArg++ = '\0';
+      STRIP(szUserArg);
+      if (*szUserArg == '\0') szUserArg = NULL;
+    }
     for (nCmd = 0; nCmd < NUM_USER_COMMANDS; nCmd++)
     {
-      if (strcasecmp(_szArg, aUserCommands[nCmd].szName) == 0)
+      if (strncasecmp(_szArg, aUserCommands[nCmd].szName, strlen(_szArg)) == 0)
         break;
     }
     if (nCmd == NUM_USER_COMMANDS)
@@ -394,7 +437,7 @@ void CLicqConsole::MenuLast(char *_szArg)
   }
 
   // Run the command
-  (this->*(aUserCommands[nCmd].fProcessCommand))(winMain->nLastUin);
+  (this->*(aUserCommands[nCmd].fProcessCommand))(winMain->nLastUin, szUserArg);
 }
 
 
@@ -404,10 +447,20 @@ void CLicqConsole::MenuLast(char *_szArg)
 void CLicqConsole::MenuOwner(char *_szArg)
 {
   unsigned short nCmd = 0;
+  char *szUserArg;
+
+  // Find any command args
+  szUserArg = strchr(_szArg, ' ');
+  if (szUserArg != NULL)
+  {
+    *szUserArg++ = '\0';
+    STRIP(szUserArg);
+    if (*szUserArg == '\0') szUserArg = NULL;
+  }
 
   for (nCmd = 0; nCmd < NUM_OWNER_COMMANDS; nCmd++)
   {
-    if (strcasecmp(_szArg, aOwnerCommands[nCmd].szName) == 0)
+    if (strncasecmp(_szArg, aOwnerCommands[nCmd].szName, strlen(_szArg)) == 0)
       break;
   }
   if (nCmd == NUM_OWNER_COMMANDS)
@@ -417,7 +470,7 @@ void CLicqConsole::MenuOwner(char *_szArg)
   }
 
   // Run the command
-  (this->*(aOwnerCommands[nCmd].fProcessCommand))(gUserManager.OwnerUin());
+  (this->*(aOwnerCommands[nCmd].fProcessCommand))(gUserManager.OwnerUin(), szUserArg);
 }
 
 

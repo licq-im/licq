@@ -75,6 +75,7 @@ public:
   void PrintVariable(unsigned short);
   void PrintUsers(void);
   void PrintHelp(void);
+  void PrintHistory(HistoryList &, unsigned short, unsigned short, const char *);
 
   void MenuHelp(char *);
   void MenuContactList(char *);
@@ -94,10 +95,11 @@ public:
   void TabSet(char *, struct STabCompletion &);
   void TabLast(char *, struct STabCompletion &);
 
-  void UserCommand_Info(unsigned long nUin);
-  void UserCommand_Msg(unsigned long nUin);
-  void UserCommand_View(unsigned long nUin);
-  void UserCommand_Url(unsigned long nUin);
+  void UserCommand_Info(unsigned long nUin, char *);
+  void UserCommand_Msg(unsigned long nUin, char *);
+  void UserCommand_View(unsigned long nUin, char *);
+  void UserCommand_Url(unsigned long nUin, char *);
+  void UserCommand_History(unsigned long nUin, char *);
 
   void Beep(void) { printf("\a"); fflush(stdout); }
 };
@@ -130,7 +132,7 @@ extern const struct SStatus aStatus[];
 struct SUserCommand
 {
   char szName[16];
-  void (CLicqConsole::*fProcessCommand)(unsigned long);
+  void (CLicqConsole::*fProcessCommand)(unsigned long, char *);
 };
 extern const unsigned short NUM_USER_COMMANDS;
 extern const struct SUserCommand aUserCommands[];
@@ -138,7 +140,7 @@ extern const struct SUserCommand aUserCommands[];
 struct SOwnerCommand
 {
   char szName[16];
-  void (CLicqConsole::*fProcessCommand)(unsigned long);
+  void (CLicqConsole::*fProcessCommand)(unsigned long, char *);
 };
 extern const unsigned short NUM_OWNER_COMMANDS;
 extern const struct SOwnerCommand aOwnerCommands[];
@@ -157,5 +159,6 @@ extern const struct SColorMap aColorMaps[];
 extern const unsigned short NUM_VARIABLES;
 extern struct SVariable aVariables[];
 
+#define STRIP(x) while(isspace(*(x)) && *(x) != '\0') (x)++;
 
 #endif
