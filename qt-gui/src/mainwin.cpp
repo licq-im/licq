@@ -37,7 +37,6 @@
 #endif
 
 #include "licq_qt-gui.conf.h"
-#include "autoresponse.conf.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -180,22 +179,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     licqConf.LoadFile(filename);
   }
 
-  // Load auto-responses
-  licqConf.SetSection("autoresponse");
-  
-  for(int i=0; i<40; i++) {
-    char sData[256];
-    char key[64];
-
-    sprintf(key, "ResponseHeader%d", i);
-    licqConf.ReadStr(key, sData, default_autoResponseHeader[i]);
-    responseHeader << sData;
-    
-    sprintf(key, "ResponseText%d", i);
-    licqConf.ReadStr(key, sData, default_autoResponseText[i]);
-    responseText << sData;
-  }
-
   licqConf.SetSection("appearance");
   char szFont[256];
   licqConf.ReadStr("Font", szFont, "default");
@@ -264,7 +247,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     strcpy(szSkin, skinName);
 
   winstyle = new QWindowsStyle;
-  awayMsgDlg = new AwayMsgDlg(responseHeader, responseText);
+  awayMsgDlg = new AwayMsgDlg;
   optionsDlg = NULL;
   registerUserDlg = NULL;
   m_nRealHeight = 0;
@@ -359,9 +342,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       if (m_nAutoLogon >= 10)
         mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), true);
       if (m_nAutoLogon > 10 && m_nAutoLogon < 17)
-        changeStatus(m_nAutoLogon - 11);
+        changeStatusManual(m_nAutoLogon - 11);
       else if (m_nAutoLogon > 0 && m_nAutoLogon < 7)
-        changeStatus(m_nAutoLogon - 1);
+        changeStatusManual(m_nAutoLogon - 1);
    }
 
    // verify we exist
@@ -872,7 +855,8 @@ void CMainWindow::updateStatus()
    char sStatus[32];
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    o->getStatusStr(sStatus);
-   switch (o->getStatus())
+   unsigned long status = o->getStatus();
+   switch (status)
    {
    case ICQ_STATUS_OFFLINE:
      theColor = skin->colors.offline;
@@ -895,6 +879,9 @@ void CMainWindow::updateStatus()
    lblStatus->setText(sStatus);
    lblStatus->update();
 
+   if (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE)
+     awayMsgDlg->show();
+
    // set the color if it isn't set by the skin
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);
 
@@ -908,10 +895,9 @@ void CMainWindow::changeStatusManual(int id)
 {
   int index = mnuStatus->indexOf(id);
   if (index != MNUxITEM_STATUSxINVISIBLE) manualAway = index;
+  /*if (index == 1 || index == 2 || index == 3 || index == 4)
+    awayMsgDlg->show();*/
   changeStatus(index);
-  
-  if (index >= 1 && index <= 4)
-    awayMsgDlg->selectAutoResponse(id);
 }
 
 
@@ -947,7 +933,6 @@ void CMainWindow::changeStatus(int index)
         newStatus = o->getStatusFull() & (~ICQ_STATUS_FxPRIVATE);
      break;
   default:
-     gUserManager.DropOwner();
      gLog.Error("%sInternal error: CMainWindow::changeStatus(): bad index value %d.\n",
                 L_ERRORxSTR, index);
      return;
@@ -1291,22 +1276,6 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("AutoAway", autoAwayTime);
   licqConf.WriteNum("AutoNA", autoNATime);
 
-  // Save auto-responses
-  licqConf.SetFlags(INI_FxALLOWxCREATE);
-  licqConf.SetSection("autoresponse");
-  for(int i=0; i<40; i++) {
-    char sData[256];
-    char key[64];
-
-    sprintf(key, "ResponseHeader%d", i);
-    licqConf.ReadStr(key, sData, "Empty");
-    responseHeader << sData;
-    
-    sprintf(key, "ResponseText%d", i);
-    licqConf.ReadStr(key, sData, "Enter your own message here");
-    responseText << sData;
-  }
-
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", autoClose);
 
@@ -1649,19 +1618,19 @@ void CMainWindow::initMenu(void)
 {
    int mnuId;
    mnuStatus = new QPopupMenu(NULL);
-   mnuId = mnuStatus->insertItem(*pmOnline, _("&Online"), ICQ_STATUS_ONLINE);
+   mnuId = mnuStatus->insertItem(*pmOnline, _("&Online"));
    //mnuStatus->setAccel(ALT + Key_O,mnuId);
-   mnuId = mnuStatus->insertItem(*pmAway, _("&Away"), ICQ_STATUS_AWAY);
+   mnuId = mnuStatus->insertItem(*pmAway, _("&Away"));
    //mnuStatus->setAccel(ALT + Key_A,mnuId);
-   mnuId = mnuStatus->insertItem(*pmNa, _("&Not Available"), ICQ_STATUS_NA);
+   mnuId = mnuStatus->insertItem(*pmNa, _("&Not Available"));
    //mnuStatus->setAccel(ALT + Key_N,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOccupied, _("O&ccupied"), ICQ_STATUS_OCCUPIED);
+   mnuId = mnuStatus->insertItem(*pmOccupied, _("O&ccupied"));
    //mnuStatus->setAccel(ALT + Key_C,mnuId);
-   mnuId = mnuStatus->insertItem(*pmDnd, _("&Do Not Disturb"), ICQ_STATUS_NA);
+   mnuId = mnuStatus->insertItem(*pmDnd, _("&Do Not Disturb"));
    //mnuStatus->setAccel(ALT + Key_D,mnuId);
-   mnuId = mnuStatus->insertItem(*pmFFC, _("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
+   mnuId = mnuStatus->insertItem(*pmFFC, _("Free for C&hat"));
    //mnuStatus->setAccel(ALT + Key_H,mnuId);
-   mnuId = mnuStatus->insertItem(*pmOffline, _("O&ffline"), ICQ_STATUS_OFFLINE);
+   mnuId = mnuStatus->insertItem(*pmOffline, _("O&ffline"));
    //mnuStatus->setAccel(ALT + Key_F,mnuId);
    mnuStatus->insertSeparator();
    mnuId = mnuStatus->insertItem(*pmPrivate, _("&Invisible"));
