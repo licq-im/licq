@@ -1209,6 +1209,11 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     waddch(winMain->Win(), '\n');
     winMain->RefreshWin();
     wattroff(winMain->Win(), A_BOLD);
+
+    // Do we want to accept the file transfer?
+    if(e->SubCommand() == ICQ_CMDxSUB_FILE)
+      FileChatOffer(e->Sequence(), u->Uin());
+  
     delete e;
     gUserManager.DropUser(u);
     //PrintUsers();
@@ -1533,8 +1538,8 @@ void CLicqConsole::UserCommand_SendFile(unsigned long nUin, char *)
   winMain->data = new DataSendFile(nUin);
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%AEnter file to send to %s (%ld):\n%s\n", A_BOLD,
-		   u->GetAlias(), nUin);
+  winMain->wprintf("%AEnter file to send to %s (%ld):%Z\n", A_BOLD,
+		   u->GetAlias(), nUin, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -2059,9 +2064,105 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
           }	
           break;
         }
+        STATE_COMMAND:
+        STATE_MLE:
+        STATE_QUERY:
+          break;
         default:
            winMain->wprintf("Invalid option: %c\n", data->szOption[0]);
       }
     }
   }
 }
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::FileChatOffer
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::FileChatOffer(unsigned long _nSequence, unsigned long _nUin)
+{
+  // Get y or n
+  winMain->fProcessInput = &CLicqConsole::InputFileChatOffer;
+  winMain->state = STATE_QUERY;
+  winMain->data = new DataFileChatOffer(_nSequence, _nUin);
+  winMain->wprintf("%C%ADo you wish to accept this request? (y/N) %C%Z",
+    m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE, A_BOLD);
+  winMain->RefreshWin();
+
+  return;
+} 
+
+/*--------------------------------------------------------------------------
+ * CLicqConsole::InputFileChatOffer
+ *------------------------------------------------------------------------*/
+void CLicqConsole::InputFileChatOffer(int cIn)
+{
+  DataFileChatOffer *data = (DataFileChatOffer *)winMain->data;
+  char *sz;
+
+  switch(winMain->state)
+  {
+   case STATE_QUERY:
+   {   
+     switch(tolower(cIn)) 
+     {
+       case 'y':
+       {
+         winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
+
+         // Make the ftman
+         CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
+           data->nUin);
+         ftman->SetUpdatesEnabled(1);  
+         m_lFileStat.push_back(ftman);
+ 
+         // Accept the file
+         const char *home = getenv("HOME");
+         ftman->ReceiveFiles(home);
+         licqDaemon->icqFileTransferAccept(data->nUin, ftman->LocalPort(),
+           data->nSequence);
+         winMain->fProcessInput = &CLicqConsole::InputCommand;
+
+         if(winMain->data)
+           delete winMain->data;
+
+         break;
+       }
+
+       case 'n':
+       default:
+       {
+          winMain->state = STATE_MLE;
+          winMain->wprintf("\n%AEnter a refusal reason:\n%s%Z\n",
+            A_BOLD, MLE_HELP, A_BOLD);
+          return;
+       }
+     }
+
+     break;
+   }
+  
+   case STATE_MLE:
+   {
+     if((sz = Input_MultiLine(data->szReason, data->nPos, cIn)) == NULL)
+       return;
+
+     // Don't send the "."
+     data->szReason[data->nPos - 1] = '\0';
+
+     licqDaemon->icqFileTransferRefuse(data->nUin, data->szReason,
+       data->nSequence);
+
+     // We are done now
+     winMain->wprintf("%ARefusing file from %ld with reason: %Z%s\n",
+       A_BOLD, data->nUin, A_BOLD, data->szReason);
+     winMain->fProcessInput = &CLicqConsole::InputCommand;
+
+     if(winMain->data)
+       delete winMain->data;
+
+     break;
+   }
+
+  } 
+} 
+

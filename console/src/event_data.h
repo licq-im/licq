@@ -69,4 +69,14 @@ public:
 };
 
 
+class DataFileChatOffer : public CData
+{
+public:
+  DataFileChatOffer(unsigned long _nSeq, unsigned long _nUin) : CData(_nUin)
+    { szReason[0] = '\0'; nSequence = _nSeq; }
+  char szReason[256];
+  unsigned long nSequence;
+}; 
+
+  
 #endif

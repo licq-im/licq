@@ -87,6 +87,7 @@ public:
   void InputRemove(int cIn);
   void InputInfo(int cIn);
   void InputAutoResponse(int cIn);
+  void InputFileChatOffer(int cIn);
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
   char *Input_Line(char *sz, unsigned short &n, int cIn, bool bEcho = true);
 
@@ -137,6 +138,7 @@ public:
   void UserCommand_SetAutoResponse(unsigned long nUin, char *);
 
   void Beep() { printf("\a"); fflush(stdout); }
+  void FileChatOffer(unsigned long, unsigned long);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
 };

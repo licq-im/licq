@@ -35,6 +35,7 @@ char *EncodeFileSize(unsigned long nSize)
   sprintf(buf, "%ld.%ld %s", (nSize / 10), (nSize % 10), szUnit);
   return strdup(buf);
 }
+
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintBadInput
  *-------------------------------------------------------------------------*/
@@ -659,21 +660,15 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   // Current progress, current file xferred slash total current file size
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("%ACurrent Progress: %Z", A_BOLD, A_BOLD);
-  float fCurPercent = (float)ftman->FilePos() / ftman->FileSize();
-  fCurPercent *= 100.0;
-  char szCurPercent[3];
-  snprintf(szCurPercent, 3, "%03f", fCurPercent); 
-  winMain->wprintf("%s Percent", szCurPercent);
+  unsigned long fCurPercent = (100 * ftman->FilePos()) / ftman->FileSize();
+  winMain->wprintf("%02ld Percent", fCurPercent);
   PrintBoxRight(48);
 
   // Batch progress, current batch xferred slash total batch size
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("%ABatch Progress: %Z", A_BOLD, A_BOLD);
-  float fBatchPercent = (float)ftman->BatchPos() / ftman->BatchSize();
-  fBatchPercent *= 100.0;
-  char szBatchPercent[3];
-  snprintf(szBatchPercent, 3, "%03f", fBatchPercent);
-  winMain->wprintf("%s Percent", szBatchPercent);
+  unsigned long fBatchPercent = (100 * ftman->BatchPos()) / ftman->BatchSize();
+  winMain->wprintf("%02ld Percent", fBatchPercent);
   PrintBoxRight(48);
 
   // Time, ETA, BPS
@@ -681,12 +676,22 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   time_t Time = time(NULL) - ftman->StartTime();
   winMain->wprintf("%ATime: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
     Time / 3600, (Time % 3600)/ 60, (Time % 60));
-  unsigned long nBytesLeft = ftman->FileSize() - ftman->FilePos();
-  time_t nETA = (time_t)(nBytesLeft / (ftman->BytesTransfered() / Time));
-  winMain->wprintf("%AETA: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
-    nETA / 3600, (nETA % 3600)/60, (nETA % 60));
-  winMain->wprintf("%ABPS: %Z%s", A_BOLD, A_BOLD, EncodeFileSize(
-    ftman->BytesTransfered() / Time));
+
+  if(ftman->BytesTransfered() == 0 || Time == 0)
+  {
+    winMain->wprintf("%AETA: %Z--:--:--:   ", A_BOLD, A_BOLD);
+    winMain->wprintf("%ABPS: %Z---", A_BOLD, A_BOLD);
+  }
+  else
+  {
+    unsigned long nBytesLeft = ftman->FileSize() - ftman->FilePos();
+    time_t nETA = (time_t)(nBytesLeft / (time_t)(ftman->BytesTransfered() / Time));
+    winMain->wprintf("%AETA: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
+      nETA / 3600, (nETA % 3600)/60, (nETA % 60));
+    winMain->wprintf("%ABPS: %Z%s", A_BOLD, A_BOLD, EncodeFileSize(
+      ftman->BytesTransfered() / Time));
+  }
+
   PrintBoxRight(48);
 
   // Close this box
