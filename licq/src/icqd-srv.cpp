@@ -3138,6 +3138,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
 		unsigned short nFormat, nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
 		unsigned long nUin, nMsgID;
+                int nSubResult;
+                CExtendedAck *pExtendedAck = 0;
 		ICQUser *u = NULL;
 
 	 	packet.incDataPosRead(4); // msg id
@@ -3153,39 +3155,78 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 			break;
 		}
 
-		packet.incDataPosRead(2);
-		packet >> nLen;
-		packet.incDataPosRead(nLen);
-		packet >> nLen;
-		nSequence = packet.UnpackUnsignedShortBE();
-		packet.incDataPosRead(nLen-2);
-		packet >> nMsgType >> nAckFlags >> nMsgFlags >> nLen;
-
-		char szMessage[nLen+1];
-		for (unsigned short i = 0; i < nLen; i++)
-			packet >> szMessage[i];
-		szMessage[nLen] = '\0';
-		gTranslator.ServerToClient(szMessage);
-
-		CExtendedAck *pExtendedAck;
-		int nSubResult;
-		if (nAckFlags == ICQ_TCPxACK_REFUSE)
-		{
-			pExtendedAck = new CExtendedAck(false, 0, szMessage);
-			nSubResult = ICQ_TCPxACK_ACCEPT;
-			gLog.Info(tr("%sRefusal from %s (#%ld).\n"), L_SRVxSTR, u->GetAlias(),
-								nMsgID);
-		}
-		else
-		{
-			// Update the away message if it's changed
-			if (strcmp(u->AutoResponse(), szMessage))
-			{
-				u->SetAutoResponse(szMessage);
-				u->SetShowAwayMsg(*szMessage);
-				gLog.Info(tr("%sAuto response from %s (#%ld).\n"), L_SRVxSTR, u->GetAlias(),
-									nMsgID);
-			}
+    packet.incDataPosRead(2);
+    packet >> nLen;
+    if (nLen == 0x0200)
+    {
+      gLog.Warn(tr("%s%s doesn't have a manager for this event.\n"), L_WARNxSTR,
+        u->GetAlias());
+      gUserManager.DropUser(u);  
+      
+      ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ERROR);
+      if (e)
+      {
+        ProcessDoneEvent(e);
+        return;
+      }
+      else
+      {
+        gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
+        break;
+      }
+    }
+    
+    packet.UnpackUnsignedShort(); //tcp version
+    
+    char GUID[GUID_LENGTH];
+    for (unsigned short i = 0; i < GUID_LENGTH; i++)
+      packet >> GUID[i];
+    
+    packet.incDataPosRead(nLen - GUID_LENGTH - 2);
+    packet >> nLen;
+    nSequence = packet.UnpackUnsignedShortBE();
+    packet.incDataPosRead(nLen - 2);
+    packet >> nMsgType;
+    
+    if (memcmp(GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0)
+    {
+      unsigned char nChannel = ICQ_CHNxUNKNOWN;
+      if (memcmp(GUID, PLUGIN_INFOxMANAGER, GUID_LENGTH) == 0)
+        nChannel = ICQ_CHNxINFO;
+      else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, GUID_LENGTH) == 0)
+        nChannel = ICQ_CHNxSTATUS;
+        
+      ProcessPluginMessage(packet, u, nChannel, true, 0, nMsgID, nSequence, 0);
+      
+      gUserManager.DropUser(u);
+      break;
+    }
+    
+    packet >> nAckFlags >> nMsgFlags >> nLen;
+    
+    char szMessage[nLen + 1];
+    for (unsigned short i = 0; i < nLen; i++)
+      packet >> szMessage[i];
+    szMessage[nLen] = '\0';
+    gTranslator.ServerToClient(szMessage);
+    
+    if (nAckFlags == ICQ_TCPxACK_REFUSE)
+    {
+      pExtendedAck = new CExtendedAck(false, 0, szMessage);
+      nSubResult = ICQ_TCPxACK_REFUSE;
+      gLog.Info(tr("%sRefusal from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
+        nMsgID);
+    }
+    else
+    {
+      // Update the away message if it's changed
+      if (strcmp(u->AutoResponse(), szMessage))
+      {
+        u->SetAutoResponse(szMessage);
+        u->SetShowAwayMsg(*szMessage);
+        gLog.Info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR,
+          u->GetAlias(), nMsgID);
+      }
 
       if (nMsgType != ICQ_CMDxTCP_READxAWAYxMSG &&
           nMsgType != ICQ_CMDxTCP_READxOCCUPIEDxMSG &&
@@ -3203,24 +3244,24 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         nSubResult = ICQ_TCPxACK_RETURN;
       }
 
-			pExtendedAck = new CExtendedAck(nSubResult == ICQ_TCPxACK_RETURN, 0,
+      pExtendedAck = new CExtendedAck(nSubResult == ICQ_TCPxACK_RETURN, 0,
                                       szMessage);
-		}
-
-		gUserManager.DropUser(u);
-		ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ACKED);
-		if (e)
-		{
-			e->m_pExtendedAck = pExtendedAck;
-			e->m_nSubResult = nSubResult;
-			ProcessDoneEvent(e);
-			return;
-		}
-		else
-		{
-			gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
-			break;
-		}
+    }
+    gUserManager.DropUser(u);
+    
+    ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ACKED);
+    if (e)
+    {
+      e->m_pExtendedAck = pExtendedAck;
+      e->m_nSubResult = nSubResult;
+      ProcessDoneEvent(e);
+      return;
+    }
+    else
+    {
+      gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
+      break;
+    }
 
 		break;
 	}
@@ -3237,8 +3278,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	      e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
       ProcessDoneEvent(e);
     }
-    else
-      gLog.Warn(tr("%sAck for unknown event.\n"), L_WARNxSTR);
+      
+    gLog.Info(tr("%sMessage was sent to an offline user. It will be delivered"
+                " when the user logs on.\n"), L_SRVxSTR);
 
     break;
   }
