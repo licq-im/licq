@@ -127,6 +127,11 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   QWidget* widCentral = new QWidget(this);
   setCentralWidget(widCentral);
 
+  setOpaqueMoving(true);
+  setToolBarsMovable(true);
+  setDockEnabled(Bottom, true);
+  setUsesBigPixmaps(false);
+
   // Panel mode setup
   boxPane = new QGroupBox(widCentral);
   QGridLayout *play = new QGridLayout(boxPane, 5, 1, 4);
@@ -183,10 +188,10 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // Toolbar
   QToolBar* barChat = new QToolBar("label", this);
-  addToolBar(barChat, "label");
-#if QT_VERSION >= 210
-  barChat->setHorizontalStretchable(true);
-#endif
+  addToolBar(barChat, "ChatDialog Toolbar");
+  barChat->setHorizontalStretchable(false);
+  barChat->setVerticalStretchable(true);
+  barChat->setFixedHeight(barChat->height()+2);
 
   barChat->addSeparator();
 
@@ -272,9 +277,13 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   QStringList sl = fb.families();
   while(sl.at(55) != sl.end())  sl.remove(sl.at(55));
 #endif
+//  cmbFontName->setFixedSize(cmbFontName->sizeHint());
   cmbFontName->insertStringList(fb.families());
   barChat->setStretchableWidget(cmbFontName);
   connect(cmbFontName, SIGNAL(activated(const QString&)), SLOT(fontNameChanged(const QString&)));
+
+//  QWidget* dummy = new QWidget(barChat);
+//  barChat->setStretchableWidget(dummy);
 
   QGridLayout *g = new QGridLayout(widCentral, 2, 1, 6, 4);
   g->addWidget(boxPane, 0, 0);
