@@ -131,10 +131,12 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   cmbGender->insertItem(tr("Unspecified"), GENDER_UNSPECIFIED);
   cmbGender->insertItem(tr("Female"), GENDER_FEMALE);
   cmbGender->insertItem(tr("Male"), GENDER_MALE);
+  cmbGender->setFixedWidth(cmbGender->sizeHint().width());
   grid_lay->addWidget(cmbGender, CR, 3);
 
   grid_lay->addWidget(new QLabel(tr("Language:"), alias_tab), ++CR, 1);
   cmbLanguage = new QComboBox(alias_tab);
+  cmbLanguage->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_LANGUAGES; i++)
     cmbLanguage->insertItem(gLanguages[i].szName);
   grid_lay->addWidget(cmbLanguage, CR, 3);
@@ -148,6 +150,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
 
   grid_lay->addWidget(new QLabel(tr("Country:"), alias_tab), ++CR, 1);
   cmbCountry = new QComboBox(alias_tab);
+  cmbCountry->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
     cmbCountry->insertItem(gCountries[i].szName);
   grid_lay->addWidget(cmbCountry, CR, 3);
