@@ -1742,10 +1742,9 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     return;
   }
   char szFrom[32];
-  //TODO: FIX THIS:
-  //if (gUserManager.OwnerUin() == nUin)
-  //  strcpy(szFrom, "Server");
-  //else
+  if (gUserManager.FindOwner(szId, nPPID))
+    strcpy(szFrom, "Server");
+  else
     strcpy(szFrom, u->GetAlias());
   gUserManager.DropUser(u);
 
