@@ -947,25 +947,26 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         CUserViewGroupItem* i = static_cast<CUserViewGroupItem*>(userView->firstChild());
 
         while(i) {
-          CUserViewItem* it = static_cast<CUserViewItem*>(i->firstChild());
+          if(u->GetInGroup(GROUPS_USER, i->GroupId())) {
+            CUserViewItem* it = static_cast<CUserViewItem*>(i->firstChild());
 
-          if(it && it->ItemUin() == nUin) {
-            delete it;
-            if (m_bShowOffline || !u->StatusOffline() ||
-                (!m_bShowOffline && u->NewMessages() > 0))
-              (void) new CUserViewItem(u, i);
-            break;
+            while(it) {
+              if(it->ItemUin() == nUin) {
+                delete it;
+                if (m_bShowOffline || !u->StatusOffline() || (!m_bShowOffline && u->NewMessages() > 0))
+                  (void) new CUserViewItem(u, i);
+                break;
+              }
+              it = static_cast<CUserViewItem*>(it->nextSibling());
+            }
+            if(it == NULL) {
+              if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) || !u->StatusOffline()) &&
+                   (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
+                (void) new CUserViewItem(u, i);
+            }
           }
           i = static_cast<CUserViewGroupItem*>(i->nextSibling());
         }
-#if 0
-        if(i != NULL) {
-          if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) ||
-                !u->StatusOffline()) && (!u->IgnoreList()
-               || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
-            (void) new CUserViewItem(u, i);
-        }
-#endif
       }
       else if(u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
@@ -1088,12 +1089,12 @@ void CMainWindow::updateUserWin()
   FOR_EACH_USER_START(LOCK_R)
   {
     // Only show users on the current group and not on the ignore list
-    if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
-        (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
+    if (!m_bThreadView && (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+      (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) ))
       FOR_EACH_USER_CONTINUE
 
     // Ignore offline users if necessary
-    if (!m_bShowOffline && pUser->StatusOffline())
+    if (!m_bShowOffline && pUser->StatusOffline() && pUser->NewMessages() == 0)
       FOR_EACH_USER_CONTINUE;
 
     if(m_bThreadView) {
@@ -1102,15 +1103,8 @@ void CMainWindow::updateUserWin()
       while(gi) {
         if(pUser->GetInGroup(GROUPS_USER, gi->GroupId()))
         {
-          qDebug("in name %s", gi->Name());
+          qDebug("adding in group %s", gi->Name());
           (void) new CUserViewItem(pUser, gi);
-          break;
-        }
-        if(pUser->GetInGroup(GROUPS_SYSTEM, gi->GroupId()))
-        {
-          qDebug("in name %s", gi->Name());
-          (void) new CUserViewItem(pUser, gi);
-          break;
         }
         qDebug("finished group %d", gi->GroupId());
 
@@ -1386,6 +1380,8 @@ void CMainWindow::changeStatus(int id)
 
 void CMainWindow::callDefaultFunction(QListViewItem *i)
 {
+  if(i == NULL || (m_bThreadView && i->parent() == NULL))
+     return;
   unsigned long nUin = ((CUserViewItem *)i)->ItemUin();
   //userView->SelectedItemUin();
   if (nUin == 0) return;

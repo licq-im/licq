@@ -60,7 +60,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewGroupItem* item)
   : QListViewItem(item)
 {
-  qDebug("inserting item %ld in group %s", _cUser->Uin(), item->text(1).latin1());
+//  qDebug("inserting item %ld in group %s", _cUser->Uin(), item->text(1).latin1());
 
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
@@ -365,6 +365,10 @@ void CUserViewItem::drawCAROverlay(QPainter* p)
 
 void CUserView::timerEvent(QTimerEvent* e)
 {
+#warning FIXME
+  if(gMainWindow->m_bThreadView)
+    return;
+
   CUserViewItem* it = static_cast<CUserViewItem*>(firstChild());
 
   if(e->timerId() == carTimerId)
@@ -471,21 +475,19 @@ CUserViewGroupItem::~CUserViewGroupItem()
 QString CUserViewGroupItem::key(int column, bool ascending) const
 {
   if(column == 0)
-    return QString("1") +  QString::number(m_nId);
+    return QString("1") +  QString::number((int)m_nId);
   else
     return QString("1") + QListViewItem::key(column, ascending);
 }
 
 void  CUserViewGroupItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
 {
+  QFont newFont(p->font());
+  newFont.setBold(true);
+  p->setFont(newFont);
   QListViewItem::paintCell(p, cg, column, width, align);
 
 #if 0
-  QFont newFont(p->font());
-  newFont.setBold(false);
-  newFont.setItalic(false);
-  newFont.setStrikeOut(false);
-  p->setFont(newFont);
   int x1 = 0, x2 = width;
   if (column == 0)
     x1 = 5;
@@ -533,8 +535,8 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
   viewport()->setAcceptDrops(true);
 
   setRootIsDecorated(gMainWindow->m_bThreadView);
-  setAllColumnsShowFocus (true);
-//  setTreeStepSize(0);
+  setAllColumnsShowFocus(true);
+  setTreeStepSize(12);
   setSorting(0);
 
   if (parent != NULL)
@@ -956,6 +958,8 @@ void CUserViewTips::maybeTip(const QPoint& c)
     p.setY(p.y()-w->header()->height());
 
   CUserViewItem* item = (CUserViewItem*) w->itemAt(p);
+  if(gMainWindow->m_bThreadView && item->parent() == NULL)
+    return;
 
   if(item && item->m_nUin)
   {
