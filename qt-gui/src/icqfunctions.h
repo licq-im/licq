@@ -152,6 +152,7 @@ protected slots:
    void printMessage(QListViewItem *);
    void save();
    void specialFcn(int);
+   void slot_updatetime();
 
 signals:
    void signal_updatedUser(unsigned long, unsigned long);

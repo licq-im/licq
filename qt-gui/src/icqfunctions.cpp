@@ -40,6 +40,7 @@
 #include <qstylesheet.h>
 #include <qlayout.h>
 #include <qdatetime.h>
+#include <qtimer.h>
 #include <qspinbox.h>
 
 #include "icqfunctions.h"
@@ -232,9 +233,9 @@ void ICQFunctions::CreateGeneralInfoTab()
   lay->addWidget(new QLabel(tr("Alias:"), p), CR, 0);
   nfoAlias = new CInfoField(p, false);
   lay->addWidget(nfoAlias, CR, 1);
-  //lay->addWidget(new QLabel(tr("Status:"), p), CR, 3);
-  //nfoStatus = new CInfoField(p, true);
-  //lay->addWidget(nfoStatus, CR, 4);
+  lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
+  nfoLastOnline = new CInfoField(p, true);
+  lay->addWidget(nfoLastOnline, CR, 4);
 
   lay->addWidget(new QLabel(tr("UIN:"), p), ++CR, 0);
   nfoUin = new CInfoField(p, true);
@@ -297,13 +298,6 @@ void ICQFunctions::CreateGeneralInfoTab()
   nfoFax = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoFax, CR, 4);
 
-  //lay->addWidget(new QLabel(tr("Time:"), p), ++CR, 0);
-  //nfoTimezone = new CInfoField(p, true);
-  //lay->addWidget(nfoTimezone, CR, 1);
-  CR = 0;
-  lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
-  nfoLastOnline = new CInfoField(p, true);
-  lay->addWidget(nfoLastOnline, CR, 4);
 }
 
 
@@ -662,11 +656,21 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
                        .arg(u->GetTimezone() < 0 ? "" : "+")
                        .arg(u->GetTimezone() / 2)
                        .arg(u->GetTimezone() % 2 ? "30" : "00") );
+  tmrTime = new QTimer(this);
+  connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
+  tmrTime->start(3000);
 
-  if (u->StatusOffline())
+  if (!u->StatusOffline())
+    nfoLastOnline->setData(tr("Now"));
+  else if (u->LastOnline() == 0)
     nfoLastOnline->setData(tr("Unknown"));
   else
-    nfoLastOnline->setData(tr("Now"));
+  {
+    t.setTime_t(u->LastOnline());
+    QString ds = t.toString();
+    ds.truncate(ds.length() - 8);
+    nfoLastOnline->setData(ds);
+  }
 
   m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
                  QString::fromLocal8Bit(u->GetFirstName()) + " " +
@@ -675,6 +679,14 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   setIconText(u->GetAlias());
 
   if (bDropUser) gUserManager.DropUser(u);
+}
+
+
+void ICQFunctions::slot_updatetime()
+{
+  QDateTime t;
+  t.setTime_t(time(NULL) + m_nRemoteTimeOffset);
+  nfoTimezone->setText(nfoTimezone->text().replace(0, t.time().toString().length(), t.time().toString()));
 }
 
 
