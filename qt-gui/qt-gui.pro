@@ -33,6 +33,7 @@ HEADERS += src/adduserdlg.h \
            src/mmlistview.h \
            src/mmsenddlg.h \
            src/optionsdlg.h \
+           src/ownermanagerdlg.h \
            src/outputwin.h \
            src/plugindlg.h \
            src/randomchatdlg.h \
@@ -77,6 +78,7 @@ SOURCES += src/adduserdlg.cpp \
            src/mmlistview.cpp \
            src/mmsenddlg.cpp \
            src/optionsdlg.cpp \
+           src/ownermanagerdlg.cpp \ 
            src/outputwin.cpp \
            src/plugindlg.cpp \
            src/randomchatdlg.cpp \
@@ -96,7 +98,7 @@ SOURCES += src/adduserdlg.cpp \
            src/userselectdlg.cpp \
            src/utilitydlg.cpp \
            src/wharf.cpp \
-           src/wrap_kde_malloc.cpp
+           src/wrap_kde_malloc.cpp \
 
 TRANSLATIONS = po/cs_CZ.ts \
                po/de.ts \

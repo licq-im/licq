@@ -36,7 +36,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = "1.0.2";
+  static const char version[] = "1.3.0";
   return version;
 }
 
@@ -69,7 +69,7 @@ bool LP_Init(int argc, char **argv)
     switch (i)
     {
     case 'h':  // help
-      LP_Usage();
+      puts(LP_Usage());
       return false;
     case 'e': // enable
       bEnable = true;

@@ -68,7 +68,7 @@ bool LP_Init(int argc, char **argv)
     switch (i)
     {
     case 'h':  // help
-      LP_Usage();
+      puts(LP_Usage());
       return false;
     case 'd': // enable
       bEnable = false;
