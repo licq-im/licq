@@ -1270,25 +1270,23 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           {
             bool bCallUserView = false, bCallSendMsg = false;
 
-            if (m_bMsgChatView)
+            for (unsigned short i = 0; i < u->NewMessages(); i++)
             {
-              for (unsigned short i = 0; i < u->NewMessages(); i++)
+              if (m_bMsgChatView &&
+                  u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
               {
-                if (m_bMsgChatView &&
-                    u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
-                {
-                  bCallSendMsg = true;
-                  if (bCallUserView)
-                    break;
-                }
-                else
-                {
-                  bCallUserView = true;
-                  if (!m_bMsgChatView || bCallSendMsg)
-                    break;
-                }
+                bCallSendMsg = true;
+                if (bCallUserView)
+                  break;
+              }
+              else
+              {
+                bCallUserView = true;
+                if (!m_bMsgChatView || bCallSendMsg)
+                  break;
               }
             }
+            
             gUserManager.DropUser(u);
 
             if (bCallUserView)
