@@ -37,8 +37,11 @@ Section 3: Using
    3.11: What happened to the "beep" OnEvent option?
    3.12: How do I change the colors of the Qt-Gui?
    3.13: Licq appears 5 times in my process list, what's going on?
+   3.14: I get "[ERR] Unable to allocate TCP port for local server (Unknown
+         host)" when I start Licq.
 Section 4: Plugins
-   4.1: Why do I get "undefined symbol" errors when loading a plugin?
+   4.1: I get something about being unable to load a plugin because "file not found"
+        or "no such file or directory".
    4.2: I get something about "undefined symbol: setmask..." when I try and
         load the Qt-GUI plugin.
    4.3: Licq starts up but then exists with "licq: Fatal IO error: client killed".
@@ -306,16 +309,27 @@ at a time, multiple process entries will appear.
 
 
 
+3.14: I get "[ERR] Unable to allocate TCP port for local server (Unknown
+      host)" when I start Licq.
+
+  This will happen if you have not set up your hostname properly.  This is a
+necessary step for running many network applications.  Make sure your hostname
+(which can be found by typing "hostname") resolves to a valid ip.  Typically
+this involves adding it to /etc/hosts and setting the ip to your static ip or
+to 127.0.0.1 if you don't have one.
+
+         
 
 =======================================
 Section 4: Plugins
 
-4.1: Why do I get "undefined symbol" errors when loading a plugin?
+4.1: I get something about being unable to load a plugin because "file not found"
+     or "no such file or directory".
 
-  The licq daemon is compiled with the -fno-rtti compiler flag.  Any plugins
-compiled without this flag will have undefined symbols at runtime.  The fix is
-to ensure that the plugin is compiled with -fno-rtti (typically in the
-Makefile on the CXXFLAGS line).
+  This is most likely due to the plugin not being able to find a necessary library.
+Use "ldd" on the offending plugin to see which library it can't find.  Then add
+the directory containing that missing library to your /etc/ld.so.conf file or
+LD_LIBRARY_PATH environment variable (see 4.2).
 
 
 4.2: I get something about "undefined symbol: setmask..." when I try and
@@ -325,7 +339,11 @@ Makefile on the CXXFLAGS line).
 and Licq is linked to it.  Verify this using "ldd licq_qt-gui.so" and see
 which qt library it's linked to.  If it is qt 1.4 then this library will have
 to be moved to somewhere after the location of the qt 2.0 library, as listed
-in /etc/ld.so.conf.  Read the README-QT-1.4-AND-2.0 for more information.
+in /etc/ld.so.conf.  Read the README-QT-1.4-AND-2.0 for more information.  One
+other solution is simply to add the directory with Qt 2.0 in it to your
+LD_LIBRARY_PATH environment variable like so:
+export LD_LIBRARY_PATH=/usr/local/qt/lib
+which can be added to /etc/profile as per the Qt installation instructions.
 
 
 4.3: Licq starts up but then exists with "licq: Fatal IO error: client killed".
