@@ -1927,7 +1927,7 @@ void UserSendSmsEvent::sendButton()
   // don't let the user send empty messages
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
 
-  icqEventTag = server->icqSendSms(m_nUin, codec->fromUnicode(mleSend->text()));
+  icqEventTag = server->icqSendSms(m_nUin, mleSend->text().utf8().data());
 
   UserSendCommon::sendButton();
 }
