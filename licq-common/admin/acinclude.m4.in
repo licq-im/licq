@@ -3,7 +3,7 @@ dnl Copyright (c) 2000 Dirk Mueller <dirk@licq.org>
 
 dnl Check for sys_errlist[] and sys_nerr, check for declaration
 dnl Check nicked from aclocal.m4 used by GNU bash 2.01
-AC_DEFUN(LICQ_SYS_ERRLIST,
+AC_DEFUN([LICQ_SYS_ERRLIST],
 [AC_MSG_CHECKING([for sys_errlist and sys_nerr])
 AC_CACHE_VAL(ac_cv_sys_errlist,
 [AC_TRY_LINK([#include <errno.h>],
@@ -17,7 +17,7 @@ if test $ac_cv_sys_errlist = yes; then
 fi
 ])
 
-AC_DEFUN(LICQ_FIND_FILE,
+AC_DEFUN([LICQ_FIND_FILE],
 [
 $3=""
 for i in $2;
@@ -32,13 +32,13 @@ do
 done
 ])
 
-AC_DEFUN(LICQ_CHECK_GETHOSTBYNAME,
+AC_DEFUN([LICQ_CHECK_GETHOSTBYNAME],
 [
   AC_CHECK_LIB(nsl, gethostbyname, LIBS="$LIBS -lnsl")
 dnl             AC_CHECK_FUNC(gethostbyname, ,AC_MSG_ERROR([Unable to find gethostbyname on your system!])))
 ])
 
-AC_DEFUN(LICQ_CHECK_LICQ,
+AC_DEFUN([LICQ_CHECK_LICQ],
 [
   AC_MSG_CHECKING([for licq header files])
 
@@ -95,7 +95,7 @@ AC_DEFUN(LICQ_CHECK_LICQ,
 ])
 
 dnl Check if it is possible to turn off exceptions/rtti support
-AC_DEFUN(LICQ_CXX_FLAGS,
+AC_DEFUN([LICQ_CXX_FLAGS],
 [AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-rtti -fno-exceptions -fno-check-new, licq_prog_cxx_fno_exceptions,
 [echo 'void f(){}' > conftest.cc
 if test -z "`${CXX-g++} -fno-rtti -fno-exceptions -fno-check-new -c conftest.cc 2>&1`"; then
@@ -125,7 +125,7 @@ fi
 
 
 dnl Check if it is possible to turn off exceptions support
-AC_DEFUN(LICQDAEMON_CXX_FLAGS,
+AC_DEFUN([LICQDAEMON_CXX_FLAGS],
 [AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-exceptions -fno-check-new, licqdaemon_prog_cxx_fno_exceptions,
 [echo 'void f(){}' > conftest.cc
 if test -z "`${CXX-g++} -fno-exceptions -fno-check-new -c conftest.cc 2>&1`"; then
@@ -154,7 +154,7 @@ fi
 ])
 
 dnl Check if the type socklen_t is defined anywhere
-AC_DEFUN(AC_C_SOCKLEN_T,
+AC_DEFUN([AC_C_SOCKLEN_T],
 [AC_CACHE_CHECK(for socklen_t, ac_cv_c_socklen_t,
 [ 
   AC_TRY_COMPILE([
@@ -175,7 +175,7 @@ fi
 ])
 
 dnl Check if the type socklen_t is defined anywhere
-AC_DEFUN(AC_C_SOCKLEN_T_AND_SOCKS,
+AC_DEFUN([AC_C_SOCKLEN_T_AND_SOCKS],
   [AC_CACHE_CHECK(for SOCKS socklen_t, ac_cv_c_socklen_t,
 
   ]);
