@@ -751,7 +751,7 @@ int CLicq::Main()
 void CLicq::PrintUsage()
 {
   printf("%s version %s.\n"
-         "Usage:  Licq [-h] [-d #] [-b configdir] [-i] [-p plugin] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
+         "Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
          " -h : this help screen (and any plugin help screens as well)\n"
          " -d : set what information is logged to standard output:\n"
          "        1  status information\n"
