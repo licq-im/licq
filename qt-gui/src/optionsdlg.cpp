@@ -376,9 +376,14 @@ void OptionsDlg::ApplyOptions()
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
+#ifndef USE_KDE
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
+#else
+  if (chkUseDock->isChecked())
+#endif
   {
+#ifndef USE_KDE
     if (rdbDockDefault->isChecked())
     {
       if (mainwin->m_nDockMode != DockDefault ||
@@ -402,6 +407,11 @@ void OptionsDlg::ApplyOptions()
         ((IconManager_Themed *)mainwin->licqIcon)->SetTheme(cmbDockTheme->currentText().local8Bit());
       }
     }
+#else
+    if(!mainwin->licqIcon)
+      mainwin->licqIcon = new IconManager_KDEStyle(mainwin, mainwin->mnuSystem);
+    mainwin->m_nDockMode = DockDefault;
+#endif
     mainwin->updateStatus();
     mainwin->updateEvents();
   }
