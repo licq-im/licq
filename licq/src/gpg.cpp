@@ -25,7 +25,9 @@ CGPGHelper::CGPGHelper()
 
 CGPGHelper::~CGPGHelper()
 {
+#ifdef HAVE_LIBGPGME
   if (mCtx) gpgme_release(mCtx);
+#endif
   if (mGPGPassphrase) free(mGPGPassphrase);
   mKeysIni.CloseFile();
 }
@@ -33,6 +35,7 @@ CGPGHelper::~CGPGHelper()
 
 char *CGPGHelper::Decrypt(const char *szCipher)
 {
+#ifdef HAVE_LIBGPGME
   if (!mCtx) return 0;
 
   size_t nRead = 0;
@@ -61,12 +64,16 @@ char *CGPGHelper::Decrypt(const char *szCipher)
   buf = (char *)realloc(buf, nRead+1);
   buf[nRead] = 0;
   return buf;
+#else
+  return 0;
+#endif
 }
 
 
 char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
                           unsigned long nPPID)
 {
+#ifdef HAVE_LIBGPGME
   if (!mCtx) return 0;
   if (!szPlain) return 0;
 
@@ -112,11 +119,15 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
 
   gpgme_recipients_release(rcps);
   return szCipher;
+#else
+  return 0;
+#endif
 }
 
 
 void CGPGHelper::Start()
 {
+#ifdef HAVE_LIBGPGME
   char buf[MAX_LINE_LEN];
   snprintf(buf, MAX_LINE_LEN, "%s/licq_gpg.conf", BASE_DIR);
   mKeysIni.LoadFile(buf);
@@ -134,6 +145,7 @@ void CGPGHelper::Start()
   gpgme_set_protocol(mCtx, GPGME_PROTOCOL_OpenPGP);
   gpgme_set_armor(mCtx, 1);
   gpgme_set_passphrase_cb(mCtx, PassphraseCallback, 0);
+#endif
 }
 
 

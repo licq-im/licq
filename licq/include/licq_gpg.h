@@ -2,7 +2,9 @@
 #ifndef _LICQ_GPG_H_INCLUDED_
 #define _LICQ_GPG_H_INCLUDED_
 
+#ifdef HAVE_LIBGPGME
 #include <gpgme.h>
+#endif
 #include <pthread.h>
 
 class CGPGHelper
@@ -17,12 +19,14 @@ public:
 
 protected:
   CIniFile mKeysIni;
+#ifdef HAVE_LIBGPGME
   GpgmeCtx mCtx;
+#endif
   char *mGPGPassphrase;
 
-void gpgmeLock();
-void gpgmeUnlock();
-static const char *PassphraseCallback(void *, const char *, void **);
+  void gpgmeLock();
+  void gpgmeUnlock();
+  static const char *PassphraseCallback(void *, const char *, void **);
 };
 
 class CGPGMEMutex
