@@ -20,6 +20,8 @@ public:
   unsigned short Id()   { if (nId) return *nId; else return 0xFFFF; }
   unsigned long PPID()  { return m_nPPID; }
   
+  unsigned long SendFunctions() { return m_nSendFunctions; }
+
   int Pipe() { return pipe_plugin[PIPE_READ]; }
   void SetSignals(bool b) { m_bSignals = b; }
   
@@ -44,6 +46,9 @@ protected:
   int pipe_plugin[2];
   bool m_bSignals;
   
+  // Plugin info for the UI
+  unsigned long m_nSendFunctions;
+
   // DLL items
   void *m_pHandle;
   pthread_t thread_plugin;

@@ -21,6 +21,7 @@ CProtoPlugin::CProtoPlugin(const char *_szLibName)
   fName = 0;
   fVersion = 0;
   m_bSignals = false;
+  m_nSendFunctions = 0;
 }
 
 CProtoPlugin::CProtoPlugin()
@@ -33,6 +34,7 @@ CProtoPlugin::CProtoPlugin()
   fVersion = 0;
   m_bSignals = false;
   nId = 0;
+  m_nSendFunctions = 0;
 }
 
 CProtoPlugin::~CProtoPlugin()

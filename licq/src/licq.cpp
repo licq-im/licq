@@ -898,6 +898,16 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
     return NULL;
   }
 
+  unsigned long (*fSendFuncs)() = (unsigned long (*)())FindFunction(handle, "LProto_SendFuncs");
+  if (fSendFuncs == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LP_SendFuncs in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
   if (!(*p->fInit)())
   {
     gLog.Error("%sFailed to initialize plugin (%s).\n", L_ERRORxSTR, p->Name());
@@ -907,6 +917,9 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
 
   // PPID
   p->m_nPPID = p->fPPID()[0] << 24 | p->fPPID()[1] << 16 | p->fPPID()[2] << 8 | p->fPPID()[3];
+
+  // Other info
+  p->m_nSendFunctions = fSendFuncs();
 
   // Finish it up
   *p->nId = m_nNextId++;

@@ -3,6 +3,16 @@
 
 class CICQDaemon;
 
+const unsigned long PP_SEND_MSG      = 0x00000001;
+const unsigned long PP_SEND_URL      = 0x00000002;
+const unsigned long PP_SEND_FILE     = 0x00000004;
+const unsigned long PP_SEND_CHAT     = 0x00000008;
+const unsigned long PP_SEND_CONTACT  = 0x00000010;
+const unsigned long PP_SEND_AUTH     = 0x00000020;
+const unsigned long PP_SEND_AUTHxREQ = 0x00000040;
+const unsigned long PP_SEND_SMS      = 0x00000080;
+const unsigned long PP_SEND_SECURE   = 0x00000100;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,6 +24,8 @@ char *LProto_Version();
 char *LProto_PPID();
 
 bool LProto_Init();
+
+unsigned long LProto_SendFuncs();
 
 int LProto_Main(CICQDaemon *);
 
