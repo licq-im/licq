@@ -5,10 +5,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: qt-gui-1.03\n"
 "POT-Creation-Date: 2000-08-03 22:46+0200\n"
-"PO-Revision-Date: 2001-12-19 23:33GMT\n"
+"PO-Revision-Date: 2001-12-30 01:14GMT\n"
 "Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
-"Language-Team: German\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
@@ -3498,7 +3498,7 @@ msgstr "Dieser Knopf wählt den zu benutzenden Zeichensatz für die Kommunikation 
 
 #: usereventdlg.cpp:84
 msgid "UserEventCommon::Time:"
-msgstr "Zeit:"
+msgstr "Ortszeit:"
 
 #: usereventdlg.cpp:179
 msgid "UserEventCommon::Unknown"
@@ -3522,7 +3522,7 @@ msgstr "%1 von %2"
 
 #: userinfodlg.cpp:1024
 msgid "UserInfoDlg::%1 to %1"
-msgstr "%1 bis %1"
+msgstr "%1 an %1"
 
 #: userinfodlg.cpp:683
 msgid "UserInfoDlg::&About"
