@@ -1160,6 +1160,7 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
 
   lay->addWidget(mleSend);
+  mleSend->setFocus ();
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
   lblItem = new QLabel(tr("URL : "), mainWidget);
