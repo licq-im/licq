@@ -66,4 +66,7 @@ colors.offline = default
 colors.newuser = default
 colors.background = default 
 colors.gridlines = default
+colors.scrollbarFg = #bbbbbb
+colors.scrollbarBg = #dddddd
+colors.btnTxt = default
 

@@ -2,17 +2,17 @@
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or   
-    (at your option) any later version.                              
-                                       
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
     This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-    GNU General Public License for more details.                 
-                                                
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software      
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
@@ -264,6 +264,21 @@ CSkin::CSkin(const char *skinname)
      colors.newuser = strdup("yellow");
    else
      colors.newuser = strdup(temp);
+   skinFile.ReadStr("colors.scrollbarFg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.scrollbarFg = NULL;
+   else
+     colors.scrollbarFg = strdup(temp);
+   skinFile.ReadStr("colors.scrollbarBg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.scrollbarBg = NULL;
+   else
+     colors.scrollbarBg = strdup(temp);
+   skinFile.ReadStr("colors.btnTxt", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.btnTxt = NULL;
+   else
+     colors.btnTxt = strdup(temp);
 }
 
 
@@ -292,6 +307,9 @@ CSkin::~CSkin(void)
   free (colors.background);
   free (colors.gridlines);
   free (colors.newuser);
+  free (colors.scrollbarFg);
+  free (colors.scrollbarBg);
+  free (colors.btnTxt);
 }
 
 
@@ -349,6 +367,9 @@ void CSkin::SetDefaultValues()
   colors.newuser = strdup("yellow");
   colors.background = strdup("grey76");
   colors.gridlines = strdup("black");
+  colors.scrollbarFg = NULL;
+  colors.scrollbarBg = NULL;
+  colors.btnTxt = NULL;
 
 }
 
@@ -418,4 +439,30 @@ QRect CSkin::borderToRect(CShapeSkin *s, QWidget *w)
       rect.setHeight((w->height() + r->y2) - rect.y() + 1);
 
    return (rect);
+}
+
+/*! \brief Returns a palette with color scrollbars
+ *
+ *  This method creates a palette with skin specific scrollbar colors.
+ *  Parent should be a widget that holds a "default" active palette, which will
+ *  be used as basis for the resulting palette.
+ *  The returned QPalette is a copy of the parent palette but with modified
+ *  scrollbar colors: QColorGroup::Highlight, QColorGroup::Button
+ *  and QColorGroup::ButtonText.
+ */
+QPalette CSkin::palette(QWidget *parent)
+{
+  QPalette pal;
+  QColorGroup cg;
+  cg = parent->QWidget::palette().active(); // copy active palette from parent
+  if (colors.scrollbarFg)
+    cg.setColor(QColorGroup::Highlight, QColor(colors.scrollbarFg));
+  if (colors.scrollbarBg)
+    cg.setColor(QColorGroup::Button, QColor(colors.scrollbarBg));
+  if (colors.btnTxt)
+    cg.setColor(QColorGroup::ButtonText, QColor(colors.btnTxt));
+  pal.setActive(cg);
+  pal.setInactive(cg);
+  pal.setDisabled(cg);
+  return pal;
 }

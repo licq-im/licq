@@ -79,5 +79,8 @@ cmbGroups.rect.x2 = 1
 cmbGroups.rect.y2 = 1
 cmbGroups.color.fg = #000000
 cmbGroups.color.bg = #000000
+colors.scrollbarFg = #828282
+colors.scrollbarBg = #c8c8c8
+colors.btnTxt = default
 
 

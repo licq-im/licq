@@ -51,12 +51,12 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	// The result of these two lists is used to load the icons, the order of
 	// this list will be the order that the icons get rendered in the preview.
 	*lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA" << "Occupied"
-						 << "DND" << "Private" << "Message" << "Url" << "Chat" << "File" 
-						 << "SMS" << "Contact" << "Authorize" << "SecureOff" << "SecureOn" 
+						 << "DND" << "Private" << "Message" << "Url" << "Chat" << "File"
+						 << "SMS" << "Contact" << "Authorize" << "SecureOff" << "SecureOn"
 						 << "History" << "Info";
 	*lstAExtIcons << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
 								<< "CustomAR" << "Invisible" << "Phone";
-	
+
 	// Main Box
 	QVBoxLayout *toplay = new QVBoxLayout(this);
 	QFrame *frmMain = new QFrame(this);
@@ -95,7 +95,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	layPrevSkin->addWidget(lblPrevSkin, 0, Qt::AlignHCenter);
 	layPrevSkin->addWidget(lblPaintSkin, 0, Qt::AlignHCenter);
 	layPrevSkin->addStretch();
-	
+
 	QFrame *frmPrevIcon = new QFrame(boxPreview);
 	QVBoxLayout *layPrevIcon = new QVBoxLayout(frmPrevIcon);
 	QLabel *lblPrevIcon = new QLabel(tr("Icons:"), frmPrevIcon);
@@ -105,7 +105,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	layPrevIcon->addWidget(lblPrevIcon, 0, Qt::AlignHCenter);
 	layPrevIcon->addWidget(lblPaintIcon, 0, Qt::AlignHCenter);
 	layPrevIcon->addStretch();
-	
+
 	QFrame *frmPrevExtIcon = new QFrame(boxPreview);
 	QVBoxLayout *layPrevExtIcon = new QVBoxLayout(frmPrevExtIcon);
 	QLabel *lblPrevExtIcon = new QLabel(tr("Extended Icons:"), frmPrevExtIcon);
@@ -331,8 +331,8 @@ SkinBrowserDlg::~SkinBrowserDlg()
 
 /*!	\brief Applies skin/iconsets and closes the dialog
  *
- *	slot_ok() applies all selected options that differ from the currently 
- *	activated settings. Afterwards it saves the new skin and iconset 
+ *	slot_ok() applies all selected options that differ from the currently
+ *	activated settings. Afterwards it saves the new skin and iconset
  *	settings to the config file and closes the window.
  */
 void SkinBrowserDlg::slot_ok()
@@ -351,12 +351,12 @@ void SkinBrowserDlg::slot_apply()
 {
 	if (cmbSkin->currentText() != mainwin->skin->szSkinName)
 		mainwin->ApplySkin(cmbSkin->currentText().local8Bit());
-	
+
 	if (cmbIcon->currentText() != mainwin->m_szIconSet)
 		mainwin->ApplyIcons(cmbIcon->currentText().local8Bit());
-	
+
 	if (cmbExtIcon->currentText() != mainwin->m_szExtendedIconSet)
-		mainwin->ApplyExtendedIcons(cmbExtIcon->currentText().local8Bit());  
+		mainwin->ApplyExtendedIcons(cmbExtIcon->currentText().local8Bit());
 }
 
 /*!	\brief Creates a new skin editor dialog
@@ -480,8 +480,8 @@ SkinBrowserPreviewArea::SkinBrowserPreviewArea(QWidget *parent)
 
 /*! \brief Sets the pixmap set for preview
  *
- *	You have to call this slot if you want to set or update the iconset 
- *	that is drawn on the widget. It updates the widget itself, no manual update 
+ *	You have to call this slot if you want to set or update the iconset
+ *	that is drawn on the widget. It updates the widget itself, no manual update
  *	is necessary.
  */
 void SkinBrowserPreviewArea::setPixmapList(QValueList<QPixmap> *_lstPm)
@@ -644,6 +644,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	char * c_background = mainwin->skin->colors.background;
 	char * c_gridlines  = mainwin->skin->colors.gridlines;
 
+  userView.QListView::setPalette(skin->palette(this));
 	userView.setColors(skin->colors.online, skin->colors.away,
 											skin->colors.offline, skin->colors.newuser,
 											skin->colors.background, skin->colors.gridlines);
@@ -671,7 +672,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	delete skin;
 	delete menu;
 	delete cmbUserGroups;
-	
+
 	return ret;
 }
 

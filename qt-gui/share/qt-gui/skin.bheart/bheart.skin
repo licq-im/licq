@@ -59,5 +59,8 @@ colors.offline = grey80
 colors.newuser = yellow
 colors.background = #191970
 colors.gridlines = grey76
+colors.scrollbarFg = #4c525f
+colors.scrollbarBg = #6d7e9b
+colors.btnTxt = #f2f2f2
 
 # EOF

@@ -51,7 +51,7 @@ struct Color
 
 struct CColors
 {
-  char *online, *offline, *away, *background, *gridlines, *newuser;
+  char *online, *offline, *away, *background, *gridlines, *newuser, *scrollbarFg, *scrollbarBg, *btnTxt;
 };
 
 class CShapeSkin
@@ -99,6 +99,7 @@ public:
    QRect borderToRect(CShapeSkin *, QWidget *);
    int frameWidth(void);
    int frameHeight(void);
+   QPalette palette(QWidget *parent);
 
 protected:
    unsigned short m_nMenuBarHeight;

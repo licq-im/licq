@@ -793,6 +793,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   {
     resizeEvent(NULL);
     userView->setFrameStyle(skin->frame.frameStyle);
+    userView->QListView::setPalette(skin->palette(this));
     userView->setColors(skin->colors.online, skin->colors.away,
                         skin->colors.offline, skin->colors.newuser,
                         skin->colors.background, skin->colors.gridlines);
@@ -814,6 +815,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 void CMainWindow::CreateUserView()
 {
   userView = new CUserView(mnuUser, this);
+  userView->QListView::setPalette(skin->palette(this));
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
   connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));

@@ -71,5 +71,8 @@ colors.offline = grey67
 colors.newuser = yellow
 colors.background = #7a7d8a
 colors.gridlines = grey76
+colors.scrollbarFg = lightgrey
+colors.scrollbarBg = lightblue
+colors.btnTxt = default
 
 # End of file
