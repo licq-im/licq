@@ -324,8 +324,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
   while (!packet->End())
   {
     packet->UnpackRaw(szCommand, 3);
+    string strCmd(szCommand);
     
-    if (strcmp(szCommand, "IRO") == 0)
+    if (strCmd == "IRO")
     {
       packet->SkipParameter(); // Seq
       packet->SkipParameter(); // current user to add
@@ -334,12 +335,12 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
     }
-    else if (strcmp(szCommand, "ANS") == 0)
+    else if (strCmd == "ANS")
     {
       // just OK, ready to talk
       // we can ignore this
     }
-    else if (strcmp(szCommand, "MSG") == 0)
+    else if (strCmd == "MSG")
     {
       string strUser = packet->GetParameter();
       packet->SkipParameter(); // Nick
@@ -369,7 +370,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
         gUserManager.DropUser(u);
       }
     }
-    else if (strcmp(szCommand, "ACK") == 0)
+    else if (strCmd == "ACK")
     {
       string strId = packet->GetParameter();
       unsigned long nSeq = (unsigned long)atoi(strId.c_str());
@@ -393,7 +394,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
 
       m_pDaemon->PushPluginEvent(e);
     }
-    else if (strcmp(szCommand, "BYE") == 0)
+    else if (strCmd == "BYE")
     {
       // closed the window
     }
@@ -430,18 +431,19 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
   {
     pReply = 0;
     m_pPacketBuf->UnpackRaw(szCommand, 3);
-  
-    if (strcmp(szCommand, "VER") == 0)
+    string strCmd(szCommand);
+    
+    if (strCmd == "VER")
     {
       // Don't really care about this packet's data.
       pReply = new CPS_MSNClientVersion(m_szUserName);
     }
-    else if (strcmp(szCommand, "CVR") == 0)
+    else if (strCmd == "CVR")
     {
       // Don't really care about this packet's data.
       pReply = new CPS_MSNUser(m_szUserName);
     }
-    else if (strcmp(szCommand, "XFR") == 0)
+    else if (strCmd == "XFR")
     {
       //Time to transfer to a new server (assuming notification server always should be safe)
       m_pPacketBuf->SkipParameter(); // Seq
@@ -461,7 +463,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       // Make the new connection
       MSNLogon(szNewServer, atoi(szPort));
     }
-    else if (strcmp(szCommand, "USR") == 0)
+    else if (strCmd == "USR")
     {
       m_pPacketBuf->SkipParameter(); // Seq
       string strType = m_pPacketBuf->GetParameter();
@@ -483,31 +485,31 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         MSNAuthenticate(strdup(strParam.c_str()));
       }
     }
-    else if (strcmp(szCommand, "CHL") == 0)
+    else if (strCmd == "CHL")
     {
       m_pPacketBuf->SkipParameter(); // Seq
       string strHash = m_pPacketBuf->GetParameter();
       
       pReply = new CPS_MSNChallenge(strHash.c_str());
     }
-    else if (strcmp(szCommand, "SYN") == 0)
+    else if (strCmd == "SYN")
     {
       m_pPacketBuf->SkipParameter();
       string strVersion = m_pPacketBuf->GetParameter();
       
       pReply = new CPS_MSNChangeStatus();
     }
-    else if (strcmp(szCommand, "LST") == 0)
+    else if (strCmd == "LST")
     {
       // Add user
       string strUser = m_pPacketBuf->GetParameter();
       m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
     }
-    else if (strcmp(szCommand, "LSG") == 0)
+    else if (strCmd == "LSG")
     {
       // Add group
     }
-    else if (strcmp(szCommand, "CHG") == 0)
+    else if (strCmd == "CHG")
     {
       // Send our local list now
       FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
@@ -519,34 +521,26 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       
       pReply = 0;
     }
-    else if (strcmp(szCommand, "ILN") == 0)
+    else if (strCmd == "ILN" || strCmd == "NLN")
     {
-      m_pPacketBuf->SkipParameter(); // seq
-      m_pPacketBuf->SkipParameter(); //status
+      if (strCmd == "ILN")
+        m_pPacketBuf->SkipParameter(); // seq
+      string strStatus = m_pPacketBuf->GetParameter();
       string strUser = m_pPacketBuf->GetParameter();
+      unsigned short nStatus = ICQ_STATUS_AWAY;
       
+      if (strStatus == "NLN")
+        nStatus = ICQ_STATUS_ONLINE;
+        
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
-        gLog.Info("%s%s changed status ().\n", L_SRVxSTR, u->GetAlias());
-        m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
+        gLog.Info("%s%s changed status (%s).\n", L_SRVxSTR, u->GetAlias(), strStatus.c_str());
+        m_pDaemon->ChangeUserStatus(u, nStatus);
       }
       gUserManager.DropUser(u);
     }
-    else if (strcmp(szCommand, "NLN") == 0)
-    {
-      m_pPacketBuf->SkipParameter(); //status
-      string strUser = m_pPacketBuf->GetParameter();
-      
-      ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-      if (u)
-      {
-        gLog.Info("%s%s changed status ().\n", L_MSNxSTR, u->GetAlias());
-        m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
-      }
-      gUserManager.DropUser(u);
-    }
-    else if (strcmp(szCommand, "FLN") == 0)
+    else if (strCmd == "FLN")
     {
       string strUser = m_pPacketBuf->GetParameter();
       
@@ -558,7 +552,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       }
       gUserManager.DropUser(u);
     }
-    else if (strcmp(szCommand, "RNG") == 0)
+    else if (strCmd == "RNG")
     {
       string strSessionID = m_pPacketBuf->GetParameter();
       string strServer = m_pPacketBuf->GetParameter();
@@ -595,9 +589,9 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, bool bDelete)
 {
   ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_R);
   if (!u) return;
-  
+
   int nSock = u->SocketDesc();
-  gUserManager.DropUser(u);
+  gUserManager.DropUser(u);  
   INetSocket *s = gSocketMan.FetchSocket(nSock);
   TCPSocket *sock = static_cast<TCPSocket *>(s);
   sock->SendRaw(p->getBuffer());
@@ -718,8 +712,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
   string strUser(_szUser);
   
- 
-  CEventMsg *m = new CEventMsg(_szMsg, 0, time(0), 0);
+  CEventMsg *m = new CEventMsg(_szMsg, 0, TIME_NOW, 0);
   m->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
   m_pEvents.push_back(e);
