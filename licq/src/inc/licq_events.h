@@ -217,6 +217,7 @@ public:
   bool Equals(const ICQEvent *e);
 
   unsigned long Uin() { return m_nUin; }
+  unsigned long EventId() { return m_nEventId; }
 protected:
   CICQEventTag(const ICQEvent *e);
 

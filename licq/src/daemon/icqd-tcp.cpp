@@ -684,7 +684,6 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
 
 
 //-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
-//bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 {
   unsigned long checkUin, theSequence, senderIp, localIp,
@@ -729,7 +728,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
       packet.UnpackUnsignedShort(); // 0x000E
-      theSequence = 0xFFFF0000 | packet.UnpackUnsignedShort();
+      theSequence = (signed short)packet.UnpackUnsignedShort();
       unsigned long junkLong1, junkLong2, junkLong3;
       packet >> junkLong1 >> junkLong2 >> junkLong3; // maybe always zero ??!
       newCommand = packet.UnpackUnsignedShort();
@@ -862,7 +861,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     {
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
-        if (nInVersion == 2) packet >> theSequence;
+        if (nInVersion == 2)
+          packet >> theSequence;
+        else
+          packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -911,6 +913,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxTCP_READxAWAYxMSG:  // read away message
       {
         if (nInVersion == 2) packet >> theSequence;
+        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
         if (licqChar == 'L')
           gLog.Info("%s%s (%ld) requested auto response [Licq v0.%d].\n", L_TCPxSTR,
@@ -930,6 +933,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_URL:  // url sent
       {
         if (nInVersion == 2) packet >> theSequence;
+        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -980,6 +984,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_CONTACTxLIST:
       {
         if (nInVersion == 2) packet >> theSequence;
+        else packet >> junkLong >> junkLong;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1140,6 +1145,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     case ICQ_CMDxSUB_URL:
     case ICQ_CMDxSUB_CONTACTxLIST:
       if (nInVersion == 2) packet >> theSequence;
+      else packet >> junkLong >> junkLong;
       packet >> licqChar >> licqVersion;
       break;
 

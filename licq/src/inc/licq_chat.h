@@ -151,7 +151,8 @@ public:
 
   // Initialize from the handshake buffer (does not set the session
   // or port fields however
-  bool LoadFromHandshake(CBuffer &);
+  bool LoadFromHandshake_v2(CBuffer &);
+  bool LoadFromHandshake_v4(CBuffer &);
 
   unsigned long m_nVersion;
   unsigned short m_nPort;

@@ -689,7 +689,7 @@ void CICQDaemon::SetTCPPorts(unsigned short p, unsigned short r)
   }
 }
 
-unsigned short CICQDaemon::TCPEnabled()
+bool CICQDaemon::TCPEnabled()
 {
   return CPacket::Mode() == MODE_DIRECT;
 }

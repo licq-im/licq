@@ -259,8 +259,12 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   gLog.Info("%sFile Transfer: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
-  CPacketTcp_Handshake_v2 p_handshake(ftSock.LocalPort());
-  if (!SendPacket(&p_handshake)) return false;
+  //CPacketTcp_Handshake_v2 p_handshake(ftSock.LocalPort());
+  //if (!SendPacket(&p_handshake)) return false;
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  unsigned short nVersion = u->ConnectionVersion();
+  gUserManager.DropUser(u);
+  if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, nVersion)) return false;
 
   // Send init packet:
   CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
@@ -304,13 +308,9 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_HANDSHAKE:
     {
-      unsigned char cHandshake = b.UnpackChar();
-      if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
-      {
-        gLog.Warn("%sFile Transfer: Bad handshake (%04X).\n", L_WARNxSTR, cHandshake);
-        break;
-      }
-
+      //unsigned char cHandshake = b.UnpackChar();
+      //if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
+      if (!CICQDaemon::Handshake_Recv(&ftSock)) break;
       gLog.Info("%sFile Transfer: Received handshake.\n", L_TCPxSTR);
       m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
       break;

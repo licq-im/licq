@@ -247,7 +247,7 @@ public:
   bool ViewUrl(const char *url);
 
   // Firewall options
-  unsigned short TCPEnabled();
+  bool TCPEnabled();
   void SetTCPEnabled(bool b);
   const char *FirewallHost()  { return m_szFirewallHost; }
   void SetFirewallHost(const char *);
@@ -364,8 +364,8 @@ protected:
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
-  bool Handshake_Send(TCPSocket *, unsigned long, unsigned short);
-  bool Handshake_Recv(TCPSocket *);
+  static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short);
+  static bool Handshake_Recv(TCPSocket *);
   int ConnectToServer();
   int ConnectToUser(unsigned long);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
@@ -382,6 +382,8 @@ protected:
   friend void *Shutdown_tep(void *p);
   friend class ICQUser;
   friend class CSocketManager;
+  friend class CChatManager;
+  friend class CFileTransferManager;
 };
 
 // Global pointer

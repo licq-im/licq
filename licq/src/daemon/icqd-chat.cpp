@@ -133,7 +133,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
 }
 
 
-bool CChatClient::LoadFromHandshake(CBuffer &b)
+bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 {
   //b.Reset
 
@@ -145,6 +145,25 @@ bool CChatClient::LoadFromHandshake(CBuffer &b)
   m_nIp = b.UnpackUnsignedLong();
   m_nRealIp = b.UnpackUnsignedLong();
   m_nMode = b.UnpackChar();
+  m_nHandshake = 0x64;
+
+  // These will still need to be set
+  m_nPort = 0;
+  m_nSession = 0;
+
+  return true;
+}
+
+
+bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
+{
+  CPacketTcp_Handshake_v4 hand(&b);
+
+  m_nVersion = hand.VersionMajor();
+  m_nUin = hand.SourceUin();
+  m_nIp = hand.LocalIp();
+  m_nRealIp = hand.RealIp();
+  m_nMode = hand.Mode();
   m_nHandshake = 0x64;
 
   // These will still need to be set
@@ -593,8 +612,10 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   gLog.Info("%sChat: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
-  CPacketTcp_Handshake_v2 p_handshake(u->sock.LocalPort());
-  u->sock.SendPacket(p_handshake.getBuffer());
+  //CPacketTcp_Handshake_v2 p_handshake(u->sock.LocalPort());
+  //u->sock.SendPacket(p_handshake.getBuffer());
+  if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nIp, VersionToUse(c.m_nVersion)))
+    return false;
 
   // Send color packet
   CPChat_Color p_color(m_szName, LocalPort(),
@@ -649,11 +670,17 @@ bool CChatManager::ProcessPacket(CChatUser *u)
     case CHAT_STATE_HANDSHAKE:
     {
       // get the handshake packet
-      if (!u->client.LoadFromHandshake(u->sock.RecvBuffer()))
+      CBuffer hbuf(u->sock.RecvBuffer());
+      //if (!u->client.LoadFromHandshake(u->sock.RecvBuffer()))
+      if (!CICQDaemon::Handshake_Recv(&u->sock))
       {
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
         return false;
       }
+      if (u->sock.Version() == 2)
+        u->client.LoadFromHandshake_v2(hbuf);
+      else
+        u->client.LoadFromHandshake_v4(hbuf);
       gLog.Info("%sChat: Received handshake from %ld.\n", L_TCPxSTR, u->client.m_nUin);
       u->uin = u->client.m_nUin;
       u->state = CHAT_STATE_WAITxFORxCOLOR;

@@ -1311,8 +1311,6 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
       }
       if (o->StatusInvisible())
         m_nMsgType |= ICQ_TCPxMSG_FxINVISIBLE;
-      m_nTail1 = 0x00000000;
-      m_nTail2 = 0x00FFFFFF;
       break;
     }
 
@@ -1339,8 +1337,6 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
           default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
         }
       }
-      m_nTail1 = 0x00000000;
-      m_nTail2 = 0x00000000;
       break;
     }
   }
@@ -1444,8 +1440,6 @@ void CPacketTcp::InitBuffer_v4()
 
 void CPacketTcp::PostBuffer_v4()
 {
-  buffer->PackUnsignedLong(m_nTail1);
-  buffer->PackUnsignedLong(m_nTail2);
   buffer->PackChar('L');
   buffer->PackUnsignedShort(INT_VERSION);
 }
@@ -1457,6 +1451,11 @@ CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned sh
                true, nLevel, _cUser)
 {
   InitBuffer();
+  if (m_nVersion == 4)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00FFFFFF);
+  }
   PostBuffer();
 }
 
@@ -1467,6 +1466,11 @@ CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLev
                true, nLevel, _cUser)
 {
   InitBuffer();
+  if (m_nVersion == 4)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00FFFFFF);
+  }
   PostBuffer();
 }
 
@@ -1478,6 +1482,11 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel,
                true, nLevel, pUser)
 {
   InitBuffer();
+  if (m_nVersion == 4)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00FFFFFF);
+  }
   PostBuffer();
 }
 
@@ -1497,10 +1506,13 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
     case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
     default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
   }
-  m_nTail1 = 0xFFFFFFFF;
-  m_nTail2 = 0xFFFFFFFF;
 
   InitBuffer();
+  if (m_nVersion == 4)
+  {
+    buffer->PackUnsignedLong(0xFFFFFFFF);
+    buffer->PackUnsignedLong(0xFFFFFFFF);
+  }
   PostBuffer();
 }
 
@@ -1592,6 +1604,11 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
   : CPT_Ack(nCmd, nSequence, bAccept, nLevel, pUser)
 {
   InitBuffer();
+  if (m_nVersion == 4)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00000000);
+  }
   PostBuffer();
 }
 

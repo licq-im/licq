@@ -667,9 +667,6 @@ protected:
    unsigned short m_nMsgType;
    unsigned long  m_nSequence;
 
-   unsigned long m_nTail1;
-   unsigned long m_nTail2;
-
    char *m_szLocalPortOffset;
    unsigned short m_nLevel;
    unsigned short m_nVersion;
