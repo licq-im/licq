@@ -74,9 +74,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
 
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
   
-  u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->setShowAwayMsg(true);
-  gUserManager.DropUser(u);
   icqEvent = server->icqFetchAutoResponse(m_nUin);
   
   show();
