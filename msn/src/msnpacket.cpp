@@ -103,10 +103,10 @@ CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, char *_szPassword, c
   int i;
   for (i = 0; i < strlen(_szPassword); i++)
     sprintf(&szPassword[i * 3], "%%%02X", _szPassword[i]); 
-  szPassword[(i * 3) + 1] = '\0';
+  szPassword[(i * 3)] = '\0';
   for (i = 0; i < strlen(_szUserName); i++)
     sprintf(&szUserName[i * 3], "%%%02X", _szUserName[i]);
-  szUserName[(i * 3) + 1] = '\0';
+  szUserName[(i * 3)] = '\0';
   
   char szParams1[] = "GET /login2.srf\r\n"
                     "Authorization: Passport1.4 OrgVerb=GET,OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom,"
