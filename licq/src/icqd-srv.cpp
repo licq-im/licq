@@ -1914,7 +1914,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       // read the message in, except for DOS \r's
       char junkChar;
-      char message[nLen+1];
+      char *message = new char[nLen+1];
       unsigned short j = 0;
       for (unsigned short i = 0; i < nLen; i++)
       {
@@ -1923,8 +1923,11 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
       message[j] = '\0'; // ensure null terminated
 
+      char *szMsg = gTranslator.RNToN(message);
+      delete [] message;
+
       // translate now
-      gTranslator.ServerToClient(message);
+      gTranslator.ServerToClient(szMsg);
 
       bool bNewUser = false;
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -1947,9 +1950,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       // Handle it
-      ProcessMessage(u, advMsg, message, nMsgType, nMask, nMsgID,
+      ProcessMessage(u, advMsg, szMsg, nMsgType, nMask, nMsgID,
                      nSequence, bIsAck, bNewUser);
 
+      delete [] szMsg;
       if (bNewUser) // can be changed in ProcessMessage
       {
         delete u;
