@@ -495,7 +495,10 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   mleRead->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
   mleRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
   // Set the text
-  mleRead->setText(codec->toUnicode(m->Text()));
+  if (m->SubCommand() == ICQ_CMDxSUB_SMS)
+     mleRead->setText(QString::fromUtf8(m->Text()));
+  else
+     mleRead->setText(codec->toUnicode(m->Text()));
   mleRead->setCursorPosition(0, 0);
 
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE || m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))
