@@ -498,9 +498,9 @@ void ChatDlg::chatSend(QKeyEvent *e)
 
     default:
     {
-      char c = e->ascii();
-      gTranslator.ClientToServer(c);
-      buffer.PackChar(c);
+      QCString charbuf = e->text().local8Bit();
+      gTranslator.ClientToServer(charbuf[0]);
+      buffer.PackChar(charbuf[0]);
       linebuf += e->text();
       if (m_nMode == CHAT_IRC) mlePaneLocal->appendNoNewLine(e->text());
       break;
@@ -722,7 +722,7 @@ void ChatDlg::chatRecv(int sd)
           tempStr[0] = chatChar;
           tempStr[1] = 0;
           // Add to the users irc line buffer
-          u->linebuf += chatChar;
+          u->linebuf += QString::fromLocal8Bit(tempStr);
           if (u == chatUser)
             mlePaneRemote->appendNoNewLine(QString::fromLocal8Bit(tempStr));
         }
