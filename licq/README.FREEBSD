@@ -1,0 +1,47 @@
+How to Compile Licq CVS Snapshots under FreeBSD
+From: "Muhannad Asfour" <muhannad07@cogeco.ca>
+
+For FreeBSD 4.x
+
+I made these instructions for getting Licq CVS snapshots to compile under FreeBSD if anyone is interested. A user on IRC (irc.openprojects.net), helped me compile it, and I therefore thought it would be handy to have these instructions for all the Licq + FreeBSD users out there. His nick was "Keihin" if anyone interested. 
+
+Download the latest CVS snapshot from here: 
+
+http://www-user.rhrk.uni-kl.de/~dmuell/licq/ 
+
+Anyway, here they are, 
+
+Licq CVS Instructions: 
+
+Make sure you have QT2 (/usr/ports/x11-toolkits/qt23) installed for the qt-gui plugin to work. 
+
+Compile the main licq binary and install it. (Remember, use gmake, not make) 
+"./configure && gmake && gmake install". Make sure you are root when you run "gmake install". 
+
+And also make sure you have the following symlinks before running the configure script for the qt-gui plugin: 
+
+ln -s /usr/X11R6/lib/libqt2-mt.so4 /usr/X11R6/lib/libqt-mt.so 
+
+ln -s /usr/X11R6/lib/libqt2.so.4 /usr/X11R6/lib/libqt.so 
+
+ln -s /usr/X11R6/bin/moc2 /usr/X11R6/bin/moc 
+
+Therefore, when you run "ls -al /usr/X11R6/lib/libqt.so /usr/X11R6/lib/libqt-mt.so /usr/X11R6/bin/moc" 
+
+You get: 
+
+lrwxr-xr-x 1 root wheel 29 Jul 1 16:56 /usr/X11R6/lib/libqt-mt.so -> /usr/X11R6/lib/libqt2-mt.so.4 
+
+lrwxr-xr-x 1 root wheel 26 Jul 1 16:57 /usr/X11R6/lib/libqt.so -> /usr/X11R6/lib/libqt2.so.4 
+
+lrwxr-xr-x 1 root wheel 19 Jul 2 13:02 /usr/X11R6/bin/moc@ -> /usr/X11R6/bin/moc2 
+
+Make sure to run "ldconfig -m" as root to update the libraries, then... 
+
+Enter the plugins/qt-gui directory and type: 
+
+"./configure --with-qt-includes=/usr/X11R6/include/qt2 --with-qt-moc=/usr/X11R6/bin/moc", then "gmake", then "gmake install". Make sure you are root when you run "gmake install". 
+
+And you should be all set. 
+
+Enjoy
