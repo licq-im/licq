@@ -515,6 +515,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
       switch (m_nAutoLogon % 10)
       {
+      case 0: break;
       case 1: changeStatus(ICQ_STATUS_ONLINE); break;
       case 2: changeStatus(ICQ_STATUS_AWAY); break;
       case 3: changeStatus(ICQ_STATUS_NA); break;

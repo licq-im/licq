@@ -245,8 +245,9 @@ void OptionsDlg::SetupOptions()
   spnAutoAway->setValue(mainwin->autoAwayTime);
   spnAutoNa->setValue(mainwin->autoNATime);
   spnAutoOffline->setValue(mainwin->autoOfflineTime);
-  cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon > 10 ? mainwin->m_nAutoLogon - 10 : mainwin->m_nAutoLogon);
-  chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon > 10);
+  cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon % 10);
+  chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon >= 10);
+
 
   chkIgnoreNewUsers->setChecked(mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
   chkIgnoreMassMsg->setChecked(mainwin->licqDaemon->Ignore(IGNORE_MASSMSG));
@@ -450,8 +451,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->autoNATime = spnAutoNa->value();
   mainwin->autoOfflineTime = spnAutoOffline->value();
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
-                          (chkAutoLogonInvisible->isChecked() &&
-                           cmbAutoLogon->currentItem() ? 10 : 0);
+   chkAutoLogonInvisible->isChecked() * 10;
 
   mainwin->autoAwayMess = cmbAutoAwayMess->currentItem();
   mainwin->autoNAMess = cmbAutoNAMess->currentItem();
