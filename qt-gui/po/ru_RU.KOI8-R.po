@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: example-Qt-message-extraction\n"
 "POT-Creation-Date: 1999-02-23 15:38+0200\n"
 "PO-Revision-Date: 2000-02-17 17:59+0300\n"
-"Last-Translator: "Max Kosmach" <max@licq.org>\n"
+"Last-Translator: "Max Kosmach" <max@licq.org> & Anatoly Meluk <gorthaur@mordor.net.ru>\n"
 "Content-Type: text/plain; charset=koi8-r\n"
 
 #: adduserdlg.cpp:28
@@ -47,7 +47,7 @@ msgstr "Licq - Авторизация"
 
 #: authuserdlg.cpp:32
 msgid "AuthUserDlg::Licq - Refuse Authorisation"
-msgstr "Licq - отказ в авторизации"
+msgstr "Licq - Отказ в авторизации"
 
 #: authuserdlg.cpp:60
 msgid "AuthUserDlg::Refuse authorization to %1"
@@ -133,7 +133,7 @@ msgstr "ОВП:"
 
 #: filedlg.cpp:276
 msgid "CFileDlg::File I/O Error:\n%1\nSee Network Window for Details"
-msgstr "Ошибка ввода/вывода:\n%1\nПодробности в окне сети"
+msgstr "Ошибка ввода/вывода:\n%1\nПодробности в Окне Сети"
 
 #: filedlg.cpp:274
 msgid "CFileDlg::File I/O error: %1\n"
@@ -153,7 +153,7 @@ msgstr "Имя файла:"
 
 #: filedlg.cpp:129
 msgid "CFileDlg::File transfer cancelled\n"
-msgstr "Передача файла прервана\n"
+msgstr "Передача файла(ов) прервана\n"
 
 #: filedlg.cpp:256
 msgid "CFileDlg::File transfer complete\n"
@@ -165,7 +165,7 @@ msgstr "Файл:"
 
 #: filedlg.cpp:286
 msgid "CFileDlg::Handshake Error\nSee Network Window for Details"
-msgstr "Ошибка протокола\nПодробности в окне сети"
+msgstr "Ошибка протокола\nПодробности в Окне Сети"
 
 #: filedlg.cpp:284
 msgid "CFileDlg::Handshaking error\n"
@@ -290,7 +290,7 @@ msgstr "Вступить в разговор с несколькими людьми"
 
 #: chatjoin.cpp:36
 msgid "CJoinChatDlg::Select chat to invite:"
-msgstr "Выбрать разговор:"
+msgstr "Выберите разговор:"
 
 #: chatjoin.cpp:43
 msgid "CJoinChatDlg::Select chat to join:"
@@ -702,7 +702,7 @@ msgstr ""
 
 #: mainwin.cpp:1900
 msgid "CMainWindow::Logon failed.\nSee network window for details."
-msgstr "Вход в сеть не удался.\nПодробности в окне протокола сети."
+msgstr "Вход в сеть не удался.\nПодробности в Окне Сети."
 
 #: mainwin.cpp:1367
 msgid "CMainWindow::New Users"
@@ -766,7 +766,7 @@ msgstr "Зарегистрировать пользователя"
 
 #: mainwin.cpp:1914
 msgid "CMainWindow::Registration failed.  See network window for details."
-msgstr "Регистрация не удалась. Подробности в окне протокола сети."
+msgstr "Регистрация не удалась. Подробности в Окне Сети."
 
 #: mainwin.cpp:2797
 msgid "CMainWindow::Remove From List"
@@ -1271,7 +1271,7 @@ msgstr "Цвет фона"
 
 #: chatdlg.cpp:192
 msgid "ChatDlg::Beep"
-msgstr ""
+msgstr "Звонок"
 
 #: chatdlg.cpp:228
 msgid "ChatDlg::Bold"
@@ -1343,7 +1343,7 @@ msgstr "Удаленный - ожидаем участников..."
 
 #: chatdlg.cpp:193
 msgid "ChatDlg::Sends a Beep to all recipients"
-msgstr "Отправить {beep} всем"
+msgstr "Отправить \"звонок\" всем"
 
 #: chatdlg.cpp:239
 msgid "ChatDlg::Toggles Bold font"
@@ -1467,11 +1467,11 @@ msgstr "Группа по умолчанию"
 
 #: editgrp.cpp:35
 msgid "EditGrpDlg::Shift Down"
-msgstr "Сдвинуть вниз"
+msgstr "Вниз"
 
 #: editgrp.cpp:34
 msgid "EditGrpDlg::Shift Up"
-msgstr "Сдвинуть вверх"
+msgstr "Вверх"
 
 #: editgrp.cpp:39
 msgid "EditGrpDlg::The default group to start up in."
@@ -1515,7 +1515,7 @@ msgstr "Список контактов"
 
 #: eventdesc.cpp:27
 msgid "Event::Email Pager"
-msgstr ""
+msgstr "Email-пейджер"
 
 #: eventdesc.cpp:16
 msgid "Event::File Transfer"
@@ -1543,7 +1543,7 @@ msgstr "Информация о пользователе"
 
 #: eventdesc.cpp:26
 msgid "Event::Web Panel"
-msgstr ""
+msgstr "Web-панель"
 
 #: mainwin.cpp:3069
 msgid "HintsDlg::&Close"
@@ -1589,7 +1589,7 @@ msgstr "<h2>Советы по использованию<br> QT-модуля для Licq</h2><br><hr><br>"
 "<li><tt>Ctrl-M : </tt>Включение/выключение мини-режима</li>"
 "<li><tt>Ctrl-O : </tt>Показывать/не показывать пользователей не в сети</li>"
 "<li><tt>Ctrl-X : </tt>Выход</li>"
-"<li><tt>Ctrl-H : </tt>Спрятать</li>"
+"<li><tt>Ctrl-H : </tt>Скрыть</li>"
 "<li><tt>Ctrl-I : </tt>Просмотр следующего сообщения</li>"
 "<li><tt>Ctrl-V : </tt>Просмотр сообщения</li>"
 "<li><tt>Ctrl-S : </tt>Отправить сообщение</li>"
@@ -1597,22 +1597,22 @@ msgstr "<h2>Советы по использованию<br> QT-модуля для Licq</h2><br><hr><br>"
 "<li><tt>Ctrl-C : </tt>Отправить запрос разговора</li>"
 "<li><tt>Ctrl-F : </tt>Отправить файл(ы)</li>"
 "<li><tt>Ctrl-A : </tt>Проверить авто-ответ</li>"
-"<li><tt>Ctrl-P : </tt>Popup all messages</li>"
+"<li><tt>Ctrl-P : </tt>Открыть все сообщения</li>"
 "<li><tt>Ctrl-L : </tt>Обновить окно пользователей</li>"
 "<li><tt>Delete : </tt>Удалить пользователя из текущей группы</li>"
 "<li><tt>Ctrl-Delete : </tt>Удалить пользователя из списка контактов</li></ul>"
 "<li>Если нажать кнопку \"закрыть\" удерживая клавишу Ctrl,"
 "   то можно сразу же удалить пользователя из списка контактов.</li>"
 "<li>Можно использовать Ctrl-Enter во многих полях ввода чтобы вызвать"
-"   нажатие \"Да\" или \"Accept\". Например в диалоге отправки сообщения.</li>"
+"   нажатие \"Да\" или \"Подтвердить\". Например в диалоге отправки сообщения.</li>"
 "<li>Здесь полный список всех %-переменных, которые могут быть использованы"
 "    в качестве параметров в <b>команде на событие</b>, <b>авто-ответах</b>"
 "    и строчке запуска  <b>утилит</b>:\n"
 
 #: mainwin.cpp:3062
 msgid "HintsDlg::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
-msgstr "<hr><p> Для получения более подробной информации используйте "
-"web-сайт (<tt>http://www.licq.org</tt>) или его русское зеркало "
+msgstr "<hr><p> Более подробную информацию можно получить на "
+"web-сайте (<tt>http://www.licq.org</tt>) или его русском зеркале "
 "(<tt>http://www.ru.licq.org</tt>).</p>"
 
 #: mainwin.cpp:3026
@@ -1815,7 +1815,7 @@ msgstr "Разрешает вертикальную полосу прокрутки в списке пользователей"
 #: optionsdlg.cpp:997
 msgid "OptionsDlg::Always show online notify users"
 msgstr "Всегда показывать пользователей, \n"
-"для которых разрешено оповещение."
+"для которых включено оповещение."
 
 #: optionsdlg.cpp:1075
 msgid "OptionsDlg::Auto Away Messages"
@@ -2039,7 +2039,7 @@ msgstr "Игнорировать новых пользователей"
 
 #: optionsdlg.cpp:1064
 msgid "OptionsDlg::Ignore Web Panel"
-msgstr "Игнорировать Web панель"
+msgstr "Игнорировать Web-панель"
 
 #: optionsdlg.cpp:904
 msgid "OptionsDlg::Invisible"
@@ -2051,7 +2051,7 @@ msgstr "Слева"
 
 #: optionsdlg.cpp:47
 msgid "OptionsDlg::Licq Options"
-msgstr "Licq: Настройки"
+msgstr "Настройки Licq"
 
 #: optionsdlg.cpp:729
 msgid "OptionsDlg::List of servers to connect to (read-only for now)"
@@ -2128,7 +2128,7 @@ msgid "OptionsDlg::"
 "to disable."
 msgstr ""
 "Время бездействия (в минутах), после которого "
-"Ваш статус автоматически меняется на \"Не в сети\". "
+"Ваш статус автоматически меняется на \"Отключен\". "
 "Введите \"0\" чтобы отключить."
 
 #: optionsdlg.cpp:898
@@ -2190,7 +2190,12 @@ msgid "OptionsDlg::"
 "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
 " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
 " + 240 (Shadow)"
-msgstr ""
+msgstr "Использовать указанный стиль рамки, "
+"взамен того, что записан в конфигурации текущего \"Внешнего вида\"\n"
+"Подсказка:\n"
+"   0 (Нет рамки), 1 (Коробка), 2 (Панель), 3 (Панель в стиле Windows)\n"
+" + 16 (Простая), 32 (Рельефная), 48 (Утопленная)\n"
+" + 240 (С тенью)"
 
 #: optionsdlg.cpp:689
 msgid "OptionsDlg::Parameter for online notification"
@@ -2226,19 +2231,19 @@ msgstr "Паранойя"
 
 #: optionsdlg.cpp:699
 msgid "OptionsDlg::Perform OnEvent command in away mode"
-msgstr "Выполнять команды на событие в режиме \"отошел\""
+msgstr "Выполнять команды на событие в режиме \"Отошел\""
 
 #: optionsdlg.cpp:705
 msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
-msgstr "Выполнять команды на событие в режиме \"не беспокоить\""
+msgstr "Выполнять команды на событие в режиме \"Не беспокоить\""
 
 #: optionsdlg.cpp:701
 msgid "OptionsDlg::Perform OnEvent command in not available mode"
-msgstr "Выполнять команды на событие в режиме \"недоступен\""
+msgstr "Выполнять команды на событие в режиме \"Недоступен\""
 
 #: optionsdlg.cpp:703
 msgid "OptionsDlg::Perform OnEvent command in occupied mode"
-msgstr "Выполнять команды на событие в режиме \"занят\""
+msgstr "Выполнять команды на событие в режиме \"Занят\""
 
 #: optionsdlg.cpp:707
 msgid "OptionsDlg::"
@@ -2307,8 +2312,8 @@ msgid "OptionsDlg::"
 "Sets the default behavior for auto closing "
 "the user function window after a succesful event"
 msgstr ""
-"Устанавливает поведение по умолчанию для пользовательских окон. "
-"Закрывать ли их автоматически при успешном завершении передачи"
+"Устанавливает поведение по умолчанию для пользовательских окон "
+"(Закрывать ли их автоматически при успешном завершении передачи)"
 
 #: optionsdlg.cpp:555
 msgid "OptionsDlg::"
@@ -2322,7 +2327,7 @@ msgstr "Показывать заголовки столбцов"
 
 #: optionsdlg.cpp:1012
 msgid "OptionsDlg::Show Extended Icons"
-msgstr "Показывать расширенные иконки"
+msgstr "Показывать дополнительные иконки"
 
 #: optionsdlg.cpp:987
 msgid "OptionsDlg::Show Grid Lines"
@@ -2336,8 +2341,8 @@ msgstr "Показывать разделители пользователей"
 msgid "OptionsDlg::"
 "Show birthday, invisible, and custom auto response "
 "icons to the right of users in the list"
-msgstr "Показывать специальные иконки (день рождения, "
-"невидимость, специальный авто-ответ) справа от пользователя."
+msgstr "Показывать дополнительные иконки (день рождения, "
+"невидимость, специальный авто-ответ) справа от имени пользователя."
 
 #: optionsdlg.cpp:534
 msgid "OptionsDlg::Show group name if no messages"
@@ -2468,7 +2473,7 @@ msgid "OptionsDlg::"
 "To enable socks proxy support, install NEC Socks or Dante\n"
 "then configure the Licq daemon with \"--enable-socks5\"."
 msgstr ""
-"Для разрешения поддержки SOCKS прокси установите NEC SOCKS или Dante\n"
+"Для разрешения поддержки SOCKS-прокси установите NEC SOCKS или Dante\n"
 "и сконфигурируйте licq демона с ключом \"--enable-socks5\"."
 
 #: optionsdlg.cpp:554
@@ -2501,7 +2506,7 @@ msgstr "Иконка для дока"
 
 #: optionsdlg.cpp:1003
 msgid "OptionsDlg::Use Font Styles"
-msgstr "Использовать стили"
+msgstr "Использовать стили шрифтов"
 
 #: optionsdlg.cpp:1025
 msgid "OptionsDlg::Use System Background Color"
@@ -2526,15 +2531,15 @@ msgstr "\tдо"
 
 #: optionsdlg.cpp:482
 msgid "OptionsDlg::default (%1)"
-msgstr "По умолчанию (%1)"
+msgstr "по умолчанию (%1)"
 
 #: optionsdlg.cpp:341
 msgid "OptionsDlg::default"
-msgstr "По умолчанию"
+msgstr "по умолчанию"
 
 #: optionsdlg.cpp:562
 msgid "OptionsDlg::none"
-msgstr "Не перекодировать"
+msgstr "не перекодировать"
 
 #: passworddlg.cpp:53
 msgid "PasswordDlg::&Cancel"
@@ -2558,7 +2563,7 @@ msgstr "Пароль ICQ [Устанавливается...]"
 
 #: passworddlg.cpp:81
 msgid "PasswordDlg::Invalid password, must be 8 characters or less."
-msgstr "Неправильный пароль. Должен быть не больше 8 символов."
+msgstr "Пароль должен быть не больше 8 символов."
 
 #: passworddlg.cpp:31
 msgid "PasswordDlg::Licq - Set Password"
@@ -2666,19 +2671,19 @@ msgstr "Версия"
 
 #: ewidgets.cpp:64
 msgid "QMessageBox::Licq Error"
-msgstr "Licq - Ошибка"
+msgstr "Ошибка Licq"
 
 #: ewidgets.cpp:44
 msgid "QMessageBox::Licq Information"
-msgstr "Licq - Информация"
+msgstr "Информация Licq"
 
 #: ewidgets.cpp:34
 msgid "QMessageBox::Licq Question"
-msgstr "Licq - Вопрос"
+msgstr "Вопрос Licq"
 
 #: ewidgets.cpp:54
 msgid "QMessageBox::Licq Warning"
-msgstr "Licq - Предупреждение"
+msgstr "Предупреждение Licq"
 
 #: chatdlg.cpp:787
 msgid "QString::Failed to open file:\n%1"
@@ -2852,7 +2857,7 @@ msgstr "EMail адрес:"
 
 #: searchuserdlg.cpp:308
 msgid "SearchUserDlg::Enter search parameters and select 'Search'"
-msgstr "Введите параметры поиска и нажмите 'Поиск'"
+msgstr "Введите параметры поиска и нажмите кнопку 'Поиск'"
 
 #: searchuserdlg.cpp:117
 msgid "SearchUserDlg::Female"
@@ -2962,7 +2967,7 @@ msgstr ""
 
 #: securitydlg.cpp:43
 msgid "SecurityDlg::Hide IP"
-msgstr "Спрятать IP"
+msgstr "Скрыть IP"
 
 #: securitydlg.cpp:44
 msgid "SecurityDlg::Hiding ip stops users from seeing your ip."
@@ -3066,7 +3071,7 @@ msgstr "значки"
 
 #: skinbrowser.cpp:61
 msgid "SkinBrowserDlg::Licq Skin Browser"
-msgstr "Licq: Выбор внешнего вида"
+msgstr "Выбор внешнего вида Licq"
 
 #: skinbrowser.cpp:43
 msgid "SkinBrowserDlg::Name"
@@ -3187,6 +3192,7 @@ msgstr "День рождения:"
 #: userinfodlg.cpp:258
 msgid "UserInfoDlg::Cellular:"
 msgstr "Сотовый:"
+#Может все-таки "Мабила:" ?
 
 #: userinfodlg.cpp:621
 msgid "UserInfoDlg::City:"
@@ -3202,11 +3208,11 @@ msgstr "Отдел:"
 
 #: userinfodlg.cpp:225
 msgid "UserInfoDlg::EMail 1:"
-msgstr "Первый EMail:"
+msgstr "Основной EMail:"
 
 #: userinfodlg.cpp:229
 msgid "UserInfoDlg::EMail 2:"
-msgstr "Второй EMail:"
+msgstr "Дополнительный EMail:"
 
 #: userinfodlg.cpp:859
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
@@ -3234,7 +3240,7 @@ msgstr "Домашняя страница:"
 
 #: userinfodlg.cpp:121
 msgid "UserInfoDlg::INVALID USER"
-msgstr "НЕПРАВИЛЬНЫЙ ПОЛЬЗОВТЕЛЬ"
+msgstr "НЕПРАВИЛЬНЫЙ ПОЛЬЗОВАТЕЛЬ"
 
 #: userinfodlg.cpp:208
 msgid "UserInfoDlg::IP:"
@@ -3426,7 +3432,7 @@ msgstr " - Запрос разговора"
 
 #: usereventdlg.cpp:1530
 msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
-msgstr "В разговоре с %1 отказано:\n%3"
+msgstr "В разговоре с %2 отказано:\n%3"
 
 #: usereventdlg.cpp:1495
 msgid "UserSendChatEvent::Clear"
@@ -3511,7 +3517,7 @@ msgstr "Отправить через сервер"
 
 #: usereventdlg.cpp:1182
 msgid "UserSendCommon::Send anyway"
-msgstr ""
+msgstr "Отправить любым способом"
 
 #: usereventdlg.cpp:943
 msgid "UserSendCommon::Sending "
@@ -3637,7 +3643,8 @@ msgstr "Переслать"
 
 #: usereventdlg.cpp:392
 msgid "UserViewEvent::&Join"
-msgstr "Вступить"
+msgstr "Присоединиться"
+#а вступают только в партию ;)
 
 #: usereventdlg.cpp:251
 msgid "UserViewEvent::&Menu"
