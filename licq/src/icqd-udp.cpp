@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -96,8 +97,9 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
-  sprintf(sz, "%s%c%s%c%s%c%s%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
-      0xFE, o->GetLastName(), 0xFE, o->GetEmailPrimary(), 0xFE, o->GetAuthorization() ? '0' : '1');
+  sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
+          0xFE, o->GetLastName(), 0xFE, o->GetEmailPrimary(), 0xFE,
+          o->GetAuthorization() ? '0' : '1', 0xFE);
   gUserManager.DropOwner();
   CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info("%sAlerting user they were added (#%ld)...\n", L_UDPxSTR, p->Sequence());
@@ -1794,8 +1796,8 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR,
                 nUin);
 
-      char **szFields = new char*[5]; // alias, first name, last name, email, auth
-      if (!ParseFE(szMessage, &szFields, 5))
+      char **szFields = new char*[6]; // alias, first name, last name, email, auth, text
+      if (!ParseFE(szMessage, &szFields, 6))
       {
         char *buf;
         gLog.Warn("%sInvalid added to list system message:\n%s\n", L_WARNxSTR,
