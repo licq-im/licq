@@ -20,7 +20,6 @@
 #endif
 
 #include <time.h>
-extern long int timezone;
 
 #ifdef USE_KDE
 #warning !!!! FIXME !!!!
@@ -670,8 +669,13 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   nfoCellular->setData(u->GetCellularNumber());
   nfoZipCode->setData(u->GetZipCode());
   time_t te = time(NULL);
+#ifndef __FreeBSD__
   localtime(&te);
   m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
+#else
+  struct tm *tzone = localtime(&te);
+  m_nRemoteTimeOffset = -(tzone->tm_gmtoff) - u->GetTimezone() * 1800;
+#endif
   QDateTime t;
   t.setTime_t(te + m_nRemoteTimeOffset);
   nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
