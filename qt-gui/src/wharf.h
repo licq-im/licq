@@ -18,7 +18,6 @@
 
 class WharfIcon : public QWidget
 {
-  Q_OBJECT
 public:
   WharfIcon(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
   virtual ~WharfIcon(void);
@@ -36,7 +35,6 @@ friend class IconManager;
 
 class IconManager : public KApplet
 {
-  Q_OBJECT
 public:
   IconManager(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
   virtual ~IconManager(void);
