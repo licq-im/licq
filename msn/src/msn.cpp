@@ -452,10 +452,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
     {
       string strUser = packet->GetParameter();
       packet->SkipParameter(); // Nick
-      string strSize = packet->GetParameter();
+      packet->SkipParameter(); // Size
       packet->SkipPacket(); // Skip \r\n
       packet->ParseHeaders();
-      int nSize = atoi(strSize.c_str());
       
       string strType = packet->GetValue("Content-Type");
       if (strType == "text/x-msmsgscontrol")
@@ -756,6 +755,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       if (u)
       {
         u->SetOnlineSince(time(NULL)); // Not in this protocol
+        u->SetSendServer(true); // no direct connections
         gLog.Info("%s%s changed status (%s).\n", L_SRVxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
       }
