@@ -177,7 +177,8 @@ public:
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
      unsigned short nPort);
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
-     unsigned long nRealIp, TCPSocket *sock, unsigned short nPort);
+     unsigned long nRealIp, TCPSocket *sock, unsigned short nPort,
+     bool bSendRealIp);
   int StartTCPServer(TCPSocket *);
 
   void AddUserToList(unsigned long _nUin);

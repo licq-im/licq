@@ -147,6 +147,7 @@ public:
   // Licq Info
   char *AutoResponse()                  { return m_szAutoResponse; }
   bool NewUser()                        { return m_bNewUser; }
+  bool SendRealIp()			{ return m_bSendRealIp; }
   bool SendServer()                     { return m_bSendServer; }
   unsigned short SendLevel()            { return m_nSendLevel; }
   bool EnableSave()                     { return m_bEnableSave; }
@@ -215,6 +216,7 @@ public:
 
   // Licq Info
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
+  void SetSendRealIp(bool s)	      { m_bSendRealIp = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }
@@ -336,6 +338,7 @@ protected:
   char *m_szCustomAutoResponse;
   bool m_bNewUser,
        m_bOnlineNotify,
+       m_bSendRealIp,
        m_bSendServer,
        m_bEnableSave,
        m_bShowAwayMsg;
