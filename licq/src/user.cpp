@@ -680,6 +680,26 @@ void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
   delete u;
 }
 
+// Need to call CICQDaemon::SaveConf() after this
+void CUserManager::RemoveOwner(unsigned long _nPPID)
+{
+  ICQOwner *o = FetchOwner(_nPPID, LOCK_W);
+  if (o == NULL) return;
+  o->RemoveFiles();
+  LockOwnerList(LOCK_W);
+  OwnerList::iterator iter = m_vpcOwners.begin();
+  while (iter != m_vpcOwners.end() && o != (*iter)) iter++;
+  if (iter == m_vpcOwners.end())
+    gLog.Warn("%sInternal Error: CUserManager::RemoveOwner():\n"
+              "%sOwner not found in vector.\n",
+              L_WARNxSTR, L_BLANKxSTR);
+  else
+    m_vpcOwners.erase(iter);
+  UnlockOwnerList();
+  DropOwner(_nPPID);
+  delete o;
+}
+
 ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
                                  unsigned short _nLockType)
 {
@@ -3600,6 +3620,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
 
   // Get the id before init
   m_fConf.SetFileName(filename);
+  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
   m_fConf.ReloadFile();
   m_fConf.SetFlags(0);
   m_fConf.SetSection("user");

@@ -756,23 +756,35 @@ void CICQDaemon::SaveConf()
 
   licqConf.FlushFile();
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  if (o != NULL)
+  licqConf.SetSection("owners");
+  OwnerList *ol = gUserManager.LockOwnerList(LOCK_R);
+  licqConf.WriteNum("NumOfOwners", (unsigned long)ol->size());
+  gUserManager.UnlockOwnerList();
+
+  int n = 1;
+  FOR_EACH_OWNER_START(LOCK_R)
   {
-    o->SaveLicqInfo();
-    // TODO: Make this work with multiple owners
-    if (strcmp(o->IdString(), "0") != 0)
+    char szOwnerId[11], szOwnerPPID[11];
+    char szPPID[5];
+    sprintf(szOwnerId, "Owner%d.Id", n);
+    sprintf(szOwnerPPID, "Owner%d.PPID", n++);
+
+    szPPID[0] = (pOwner->PPID() & 0xFF000000) >> 24;
+    szPPID[1] = (pOwner->PPID() & 0x00FF0000) >> 16;
+    szPPID[2] = (pOwner->PPID() & 0x0000FF00) >> 8;
+    szPPID[3] = (pOwner->PPID() & 0x000000FF);
+    szPPID[4] = '\0';
+
+    pOwner->SaveLicqInfo();
+    if (strcmp(pOwner->IdString(), "0") != 0)
     {
-      licqConf.SetSection("owners");
-      OwnerList *ol = gUserManager.LockOwnerList(LOCK_R);
-      licqConf.WriteNum("NumOfOwners", (unsigned long)ol->size());
-      gUserManager.UnlockOwnerList();
-      licqConf.WriteStr("Owner1.Id", o->IdString());
-      licqConf.FlushFile();
+      licqConf.WriteStr(szOwnerId, pOwner->IdString());
+      licqConf.WriteStr(szOwnerPPID, szPPID);
     }
-    
-    gUserManager.DropOwner();
   }
+  FOR_EACH_OWNER_END
+
+  licqConf.FlushFile();
 }
 
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -937,7 +937,8 @@ public:
   virtual void SetWebAwareStatus(unsigned char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
-  void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
+  void SetUin(unsigned long n) { m_nUin = n; SaveLicqInfo(); }
+  void SetId(const char *s)    { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
   bool WebAware()             { return m_bWebAware; }
   bool HideIp()               { return m_bHideIp; }
@@ -1013,6 +1014,7 @@ public:
   void AddOwner(const char *, unsigned long);
   void AddUser(ICQUser *, const char *, unsigned long);
   void RemoveUser(const char *, unsigned long);
+  void RemoveOwner(unsigned long);
   ICQUser *FetchUser(const char *, unsigned long, unsigned short);
   ICQOwner *FetchOwner(unsigned long, unsigned short);
   void DropOwner(unsigned long);
