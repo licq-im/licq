@@ -881,7 +881,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
              strlen(szEmail) + strlen(szCity) + strlen(szState) +
 	     strlen(szCoName) + strlen(szCoDept) + strlen(szCoPos) + 60;
   InitBuffer();
-  
+
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
@@ -916,7 +916,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
   // This will just leave them blank.. I don't see them as necessary
   buffer->PackChar(0x00);
   buffer->PackUnsignedShort(0x0000);
-  
+
   for (unsigned short i = 0; i < 3; i++)
   {
     buffer->PackChar(0x01);
@@ -997,7 +997,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
   gTranslator.ClientToServer((char *) szPhone);
   gTranslator.ClientToServer((char *) szState);
 //  gTranslator.ClientToServer((char *) szAbout);
-  
+
   m_szCity = buffer->PackString(szCity);
   buffer->PackUnsignedShort(m_nCountry);
   buffer->PackChar(m_cTimezone);
@@ -1148,7 +1148,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   InitBuffer();
 
   buffer->PackUnsignedShort(m_nMetaCommand);
-  
+
   gTranslator.ClientToServer((char *) szAlias);
   gTranslator.ClientToServer((char *) szFirstName);
   gTranslator.ClientToServer((char *) szLastName);
@@ -1524,8 +1524,14 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
         {
           case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
           case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
-          case ICQ_STATUS_DND: m_nStatus = ICQ_TCPxACK_DND; break;
-          case ICQ_STATUS_OCCUPIED: m_nStatus = ICQ_TCPxACK_OCCUPIED; break;
+          case ICQ_STATUS_DND:
+            m_nStatus = (*user->CustomAutoResponse() && _nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
+              ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
+            break;
+          case ICQ_STATUS_OCCUPIED:
+            m_nStatus = (*user->CustomAutoResponse() && _nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
+              ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
+            break;
           case ICQ_STATUS_ONLINE:
           case ICQ_STATUS_FREEFORCHAT:
           default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
@@ -1839,35 +1845,27 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
   free(m_szMessage);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 
+  // don't sent out AutoResponse if we're online
+  // it could contain stuff the other site shouldn't be able to read
+  // also some clients always pop up the auto response
+  // window when they receive one, annoying for them..
   if(((pUser->StatusToUser() != ICQ_STATUS_OFFLINE &&
        pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
       pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
   {
-    if (pUser->CustomAutoResponse()[0] != '\0')
+    if (*pUser->CustomAutoResponse())
     {
-      char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
-      char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
-      pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN);
-      m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
-      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
-      free(cus);
-      free(def);
+      m_szMessage = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
+      pUser->usprintf(m_szMessage, pUser->CustomAutoResponse(), USPRINTF_NTORN);
     }
     else
     {
-        m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
-        pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
+      m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
     }
   }
   else
-  {
-    // don't sent out AutoResponse if we're online
-    // it could contain stuff the other site shouldn't read
-    // also some clients always pop up the auto response
-    // window when they receive one, annoying for them..
     m_szMessage = strdup("");
-  }
 
   gUserManager.DropOwner();
   gTranslator.ClientToServer(m_szMessage);
