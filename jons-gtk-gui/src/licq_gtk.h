@@ -130,6 +130,7 @@ struct auth_user
 {
 	GtkWidget *window;
 	GtkWidget *entry;
+	GtkWidget *text;
 };
 
 struct away_dialog
@@ -292,7 +293,8 @@ extern void dialog_close(GtkWidget *, GtkWidget *);
 
 /* Functions in auth_user_window.cpp */
 extern void menu_system_auth_user(GtkWidget *, const unsigned long);
-extern void auth_user_callback(GtkWidget *, struct auth_user *);
+extern void auth_user_grant(GtkWidget *, struct auth_user *);
+extern void auth_user_refuse(GtkWidget *, struct auth_user *);
 
 
 /* Functions in away_window.cpp */

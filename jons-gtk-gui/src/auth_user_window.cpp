@@ -25,8 +25,10 @@
 void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 {
 	GtkWidget *label;
+	GtkWidget *scroll;
 	GtkWidget *ok;
 	GtkWidget *cancel;
+	GtkWidget *refuse;
 	GtkWidget *h_box;
 	GtkWidget *v_box;
 	struct auth_user *au = g_new0(struct auth_user, 1);
@@ -50,12 +52,26 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 	gtk_signal_connect(GTK_OBJECT(au->entry), "insert-text",
 			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
 
+	/* Make the scrolled text box */
+	au->text = gtk_text_new(NULL, NULL);
+	gtk_text_set_editable(GTK_TEXT(au->text), TRUE);
+	gtk_text_set_word_wrap(GTK_TEXT(au->text), TRUE);
+	gtk_text_set_line_wrap(GTK_TEXT(au->text), TRUE);
+
+	scroll = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(scroll), au->text);
+	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 5);
+
 	/* Make the buttons and pack them */
 	h_box = gtk_hbox_new(FALSE, 5);
 	ok = gtk_button_new_with_label("OK");
+	refuse = gtk_button_new_with_label("Refuse");
 	cancel = gtk_button_new_with_label("Cancel");
-	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 30);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 30);
+	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 15);
+	gtk_box_pack_start(GTK_BOX(h_box), refuse, TRUE, TRUE, 15);
+	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 15);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* Connect the signals */
@@ -64,7 +80,9 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 	gtk_signal_connect(GTK_OBJECT(au->window), "destroy",
 			   GTK_SIGNAL_FUNC(dialog_close), au->window);
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-			   GTK_SIGNAL_FUNC(auth_user_callback), au);
+			   GTK_SIGNAL_FUNC(auth_user_grant), au);
+	gtk_signal_connect(GTK_OBJECT(refuse), "clicked",
+			   GTK_SIGNAL_FUNC(auth_user_refuse), au);
 
 	/* Show the window */
 	gtk_container_add(GTK_CONTAINER(au->window), v_box);
@@ -78,11 +96,25 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 	}
 }
 
-void auth_user_callback(GtkWidget *widget, struct auth_user *au)
+void auth_user_grant(GtkWidget *widget, struct auth_user *au)
 {
-	gulong uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(au->entry), 0, -1));
+	gulong uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(
+					au->entry), 0, -1));
+	gchar *reason = gtk_editable_get_chars(GTK_EDITABLE(au->text), 0, -1);
 
-	icq_daemon->icqAuthorize(uin);
+	icq_daemon->icqAuthorizeGrant(uin, reason);
+
+	dialog_close(au->window, au->window);
+}
+
+void auth_user_refuse(GtkWidget *widget, struct auth_user *au)
+{
+	gulong uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(
+					au->entry), 0, -1));
+	gchar *reason = gtk_editable_get_chars(GTK_EDITABLE(au->text), 0, -1);
+
+	/* Refuse it */
+	icq_daemon->icqAuthorizeRefuse(uin, reason);
 
 	dialog_close(au->window, au->window);
 }
