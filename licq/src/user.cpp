@@ -1428,7 +1428,12 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         sz = StatusStr();
         break;
       case 'o':
-	if(m_nLastOnline == 0) break;
+	if(m_nLastOnline == 0) 
+	{
+	  strcpy(szTemp, "Never");
+	  sz = szTemp;
+	  break;
+	}
         strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastOnline));
         sz = szTemp;
         break;
