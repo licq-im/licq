@@ -118,9 +118,7 @@ void chat_kick_no_vote(struct chat_window *, guint, GtkWidget *);
 void kick_callback(GtkWidget *, gpointer);
 void kick_no_vote_callback(GtkWidget *, gpointer);
 
-void chat_save(gpointer, guint, GtkWidget *);
-void save_chat_ok(GtkWidget *, gpointer);
-void save_chat_cancel(GtkWidget *, gpointer);
+void chat_save(struct chat_window *cw, guint, GtkWidget *);
 
 void chat_close(struct chat_window *, guint, GtkWidget *);
 void chat_pipe_callback(struct chat_window *cw, gint, GdkInputCondition);
@@ -603,9 +601,26 @@ chat_close_base(chat_window *cw)
       cw->chat_user = 0;
   }
   // We are unwanted now
-  if (cw->chatman->ConnectedUsers() == 0)
-    return true;
+  if (cw->chatman->ConnectedUsers() == 0) {
+		string txt(textview_get_chars(cw->text_irc));
+		if (txt.size() > 0) {
+			GtkWidget *msg = 
+					gtk_message_dialog_new(GTK_WINDOW(cw->window),
+							GTK_DIALOG_DESTROY_WITH_PARENT,
+							GTK_MESSAGE_QUESTION,
+							GTK_BUTTONS_YES_NO,
+							"Would you like to save this chat session?");
+			if (gtk_dialog_run(GTK_DIALOG(msg)) == GTK_RESPONSE_YES) {
+				gtk_widget_destroy(msg);
+				chat_save(cw, 0, 0);
+			}
+			else
+				gtk_widget_destroy(msg);
+		}
 
+    return true;
+	}
+	
   return false;
 }
 
@@ -633,6 +648,12 @@ cchatuser_utf8(const char *txt, CChatUser *user)
 	string utf8_txt(s_convert_to_utf8(txt, u->UserEncoding()));
   gUserManager.DropUser(u);
 	return utf8_txt;
+}
+
+void
+cw_destroy_cb(GtkWidget *, struct chat_window *cw)
+{
+  g_free(cw);
 }
 
 struct chat_window *
@@ -773,6 +794,8 @@ chat_window_create(gulong uin)
 			G_CALLBACK(chat_send), cw);
   g_signal_connect(G_OBJECT(cw->window), "delete_event",
 			G_CALLBACK(call_chat_close), cw);
+  g_signal_connect(G_OBJECT(cw->window), "destroy",
+			G_CALLBACK(cw_destroy_cb), cw);
   
   gtk_widget_show_all(cw->window);
 
@@ -961,40 +984,76 @@ kick_no_vote_callback(GtkWidget *widget, gpointer _cw)
 }
 
 void
-chat_save(gpointer _cw, guint action, GtkWidget *widget)
+chat_save(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  GtkWidget *dlg_save_chat = gtk_file_selection_new("Licq - Save Chat");
+  GtkWidget *file_sel = gtk_file_selection_new("Licq - Save Chat");
 
-  // Connect the signals
-  g_signal_connect(
-    G_OBJECT(GTK_FILE_SELECTION(dlg_save_chat)->ok_button),
-    "clicked", GTK_SIGNAL_FUNC(save_chat_ok),
-    _cw);
-  g_signal_connect(
-    G_OBJECT(GTK_FILE_SELECTION(dlg_save_chat)->cancel_button),
-    "clicked", G_CALLBACK(save_chat_cancel),
-    0);
-  g_signal_connect(G_OBJECT(dlg_save_chat), "delete_event",
-    G_CALLBACK(save_chat_cancel), 0);
-  
-  gtk_widget_show_all(dlg_save_chat);
-}
-
-void save_chat_ok(GtkWidget *widget, gpointer _cw)
-{
-}
-
-void save_chat_cancel(GtkWidget *widget, gpointer data)
-{
+	FILE *fo = NULL;
+	while (fo == NULL) {
+		int response = gtk_dialog_run(GTK_DIALOG(file_sel));
+		if (response != GTK_RESPONSE_OK)
+			break;
+		const char *file_name = 
+				gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_sel));
+		if (g_file_test(file_name, G_FILE_TEST_EXISTS)) {
+			if (!g_file_test(file_name, G_FILE_TEST_IS_DIR)) {
+				GtkWidget *msg = 
+						gtk_message_dialog_new(GTK_WINDOW(file_sel),
+								GTK_DIALOG_DESTROY_WITH_PARENT,
+								GTK_MESSAGE_QUESTION,
+								GTK_BUTTONS_YES_NO,
+								"File %s already exists, overwrite?",
+								file_name);
+				if (gtk_dialog_run(GTK_DIALOG(msg)) == GTK_RESPONSE_YES) {
+					fo = fopen(file_name, "wt");
+					gtk_widget_destroy(msg);
+				}
+				else {
+					gtk_widget_destroy(msg);
+					continue;
+				}
+			}
+			else {
+				GtkWidget *msg = 
+						gtk_message_dialog_new(GTK_WINDOW(file_sel),
+								GTK_DIALOG_DESTROY_WITH_PARENT,
+								GTK_MESSAGE_ERROR,
+								GTK_BUTTONS_CLOSE,
+								"Invalid selection, %s is a directory",
+								file_name);
+				gtk_dialog_run(GTK_DIALOG(msg));
+				gtk_widget_destroy(msg);
+				continue;
+			}
+		}
+		else
+			fo = fopen(file_name, "wt");
+		if (fo == NULL) {
+			GtkWidget *msg = 
+					gtk_message_dialog_new(GTK_WINDOW(file_sel),
+							GTK_DIALOG_DESTROY_WITH_PARENT,
+							GTK_MESSAGE_ERROR,
+							GTK_BUTTONS_CLOSE,
+							"Couldn't open %s for writing",
+							file_name);
+			gtk_dialog_run(GTK_DIALOG(msg));
+			gtk_widget_destroy(msg);
+		}
+	}
+	
+	if (fo != NULL) {
+		string txt(textview_get_chars(cw->text_irc));
+		fwrite(txt.c_str(), 1, txt.size(), fo);
+		fclose(fo);
+	}
+	gtk_widget_destroy(GTK_WIDGET(file_sel));
 }
 
 void
 chat_close(struct chat_window *cw, guint action, GtkWidget *widget)
 {
-  if (chat_close_base(cw)) {
+  if (chat_close_base(cw))
     gtk_widget_destroy(cw->window);
-    g_free(cw);
-  }
 }
 
 void
