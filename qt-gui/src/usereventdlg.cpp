@@ -1137,10 +1137,12 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   QString msg;
   if (e->SubResult() == ICQ_TCPxACK_RETURN)
   {
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    u = gUserManager.FetchUser(m_nUin, LOCK_W);
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
              .arg(u->GetAlias()).arg(u->StatusStr())
              .arg(QString::fromLocal8Bit(u->AutoResponse()));
+
+    u->SetShowAwayMsg( false );
     gUserManager.DropUser(u);
     switch (QueryUser(this, msg, tr("Urgent"), tr(" to Contact List"), tr("Cancel")))
     {
