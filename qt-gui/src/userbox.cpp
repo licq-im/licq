@@ -439,15 +439,14 @@ CUserView::CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
    setShowHeader(isHeader);
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
-   setSortByStatus(bSortByStatus);
 
-   // Flash stuff
    if (parent != NULL)
    {
      CUserViewItem::s_tFlash = new QTimer(this);
      CUserViewItem::s_nFlash = nFlash;
      connect(CUserViewItem::s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
      CUserViewItem::s_tFlash->start(FLASH_TIME);
+     setSortByStatus(bSortByStatus);
    }
    else
    {
@@ -466,8 +465,6 @@ CUserView::CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
      floaties->resize(floaties->size()+1);
      floaties->insert(floaties->size()-1, this);
    }
-
-   //setAutoMask(true);
 }
 
 // -----------------------------------------------------------------------------
