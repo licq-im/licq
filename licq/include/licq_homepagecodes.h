@@ -25,3 +25,4 @@ const struct SHomepageCat *GetHomepageCatByName(const char *_szName);
 #endif
 
 #endif // HOMEPAGE_H
+

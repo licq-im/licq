@@ -28,3 +28,4 @@ const struct SCategory *GetBackgroundByName(const char *_szName);
 #endif
 
 #endif // BACKGROUND_H
+

@@ -28,3 +28,4 @@ const struct SCategory *GetInterestByName(const char *_szName);
 #endif
 
 #endif // INTEREST_H
+

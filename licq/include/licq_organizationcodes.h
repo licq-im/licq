@@ -28,3 +28,4 @@ const struct SCategory *GetOrganizationByName(const char *_szName);
 #endif
 
 #endif // ORGANIZATION_H
+
