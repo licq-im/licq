@@ -875,8 +875,7 @@ QString UserSendCommon::generatePart(const QString& text)
   if (m_msgTextTotal.isEmpty())
     m_msgTextTotal = text;
 
-#if QT_VERSION < 220
-  if (chkSendServer->isChecked())
+  if (chkSendServer->isChecked() && m_msgTextTotal.length() > PARTLEN)
   {
     int msgNextOffset = QMIN(m_msgTextTotal.length(), PARTLEN);
     int found_index = m_msgTextTotal.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
@@ -893,7 +892,6 @@ QString UserSendCommon::generatePart(const QString& text)
     }
   }
   else
-#endif
   {
     msgTextCurrent = m_msgTextTotal;
     m_msgTextCurrent = msgTextCurrent = m_msgTextTotal;
