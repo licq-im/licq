@@ -2072,7 +2072,6 @@ void CMainWindow::showAddUserDlg()
 void CMainWindow::showAuthUserDlg()
 {
   AuthUserDlg *authUserDlg = new AuthUserDlg(licqDaemon);
-  authUserDlg->show();
 }
 
 

@@ -58,6 +58,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
   connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
 
   edtUin->setFocus();
+  show();
 }
 
 
