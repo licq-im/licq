@@ -473,6 +473,7 @@ CICQDaemon::~CICQDaemon()
   if(m_szProxyHost)   delete []m_szProxyHost;
   if(m_szProxyLogin)  delete []m_szProxyLogin;
   if(m_szProxyPasswd) delete []m_szProxyPasswd;
+  if(m_szTerminal)    delete []m_szTerminal;
   if(fifo_fs)         fclose(fifo_fs);
   gLicqDaemon = NULL;
 }
