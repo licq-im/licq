@@ -921,9 +921,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       break;
 
     case ICQ_CMDxSUB_CHAT:
-      packet >> junkShort
-             >> junkChar
-             >> nPortReversed   // port backwards
+    {
+      char ul[1024];
+      packet.UnpackString(ul);
+      packet >> nPortReversed   // port backwards
              >> nPort    // port to connect to for chat
              >> theSequence >> licqChar >> licqVersion;
       if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
@@ -938,6 +939,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       pExtendedAck = new CExtendedAck (ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
       break;
+    }
 
     case ICQ_CMDxSUB_FILE:
        /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
