@@ -144,14 +144,14 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* The primary e-mails */
-	do_entry(iu->email1, label, "E-mail 1:", user->GetEmail1(), is_o);
+	do_entry(iu->email1, label, "E-mail 1:", user->GetEmailPrimary(), is_o);
 
 	/* Pack the email1 */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), iu->email1, FALSE, FALSE, 0);
 
 	/* The secondary e-mail */
-	do_entry(iu->email2, label, "E-mail 2:", user->GetEmail2(), is_o);
+	do_entry(iu->email2, label, "E-mail 2:", user->GetEmailSecondary(), is_o);
 
 	/* Pack the email2 */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
