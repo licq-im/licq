@@ -899,12 +899,13 @@ protected:
 class CPU_Meta_RequestAllInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestAllInfo(unsigned long _nUin);
+  CPU_Meta_RequestAllInfo(const char *_szId);
+  virtual ~CPU_Meta_RequestAllInfo() { free(m_szId); }
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
-  unsigned long Uin()  {  return m_nUin; }
+  const char *Id()  {  return m_szId; }
 protected:
   unsigned short m_nMetaCommand;
-  unsigned long  m_nUin;
+  char *m_szId;
 };
 
 
@@ -912,12 +913,13 @@ protected:
 class CPU_Meta_RequestBasicInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestBasicInfo(unsigned long _nUin);
+  CPU_Meta_RequestBasicInfo(const char *_szId);
+  virtual ~CPU_Meta_RequestBasicInfo() { free(m_szId); }
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
-  unsigned long Uin()  {  return m_nUin; }
+  const char *Id()  {  return m_szId; }
 protected:
   unsigned short m_nMetaCommand;
-  unsigned long  m_nUin;
+  char *m_szId;
 };
 
 

@@ -234,6 +234,7 @@ const unsigned short ICQ_CMDxMETA_SEARCHxUIN       = 0x0569;
 const unsigned short ICQ_CMDxMETA_RANDOMxSEARCH    = 0x074E; // 1870
 const unsigned short ICQ_CMDxMETA_SETxRANDOMxCHAT  = 0x0758; // 1880
 const unsigned short ICQ_CMDxMETA_SENDxSMS         = 0x1482;
+const unsigned short ICQ_CMDxMETA_WPxINFOxSET      = 0x0C3A;
 
 // Meta commands (white page searches) - Jon
 //const unsigned short ICQ_CMDxMETA_SEARCHxWP           = 0x0533; // 1331

@@ -183,8 +183,11 @@ public:
   void icqRegister(const char *_szPasswd);
   unsigned long icqFetchAutoResponseServer(unsigned long);
   unsigned long icqLogon(unsigned short logonStatus);
+  unsigned long icqUserBasicInfo(const char *);
   unsigned long icqUserBasicInfo(unsigned long);
+  unsigned long icqUserExtendedInfo(const char *);
   unsigned long icqUserExtendedInfo(unsigned long);
+  unsigned long icqRequestMetaInfo(const char *);
   unsigned long icqRequestMetaInfo(unsigned long);
 
   unsigned long icqUpdateBasicInfo(const char *, const char *, const char *,
@@ -235,9 +238,10 @@ public:
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
-  void icqAddUser(unsigned long, bool _bAuthReq = false);
-  void icqAddUser(const char *, bool _bAuthReq = false);
-  void icqAddUserServer(unsigned long, bool);
+  void icqAddUser(unsigned long _nUin, bool _bAuthReq = false);
+  void icqAddUser(const char *_szId, bool _bAuthReq = false);
+  void icqAddUserServer(const char *_szId, bool _bAuthReq);
+  void icqAddUserServer(unsigned long _nUin, bool _bAuthReq);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
   void icqRemoveUser(const char *);
@@ -482,7 +486,7 @@ protected:
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
   ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *, bool = false);
-  ICQEvent *SendExpectEvent_Server(const char *, unsigned long, CPacket *, CUserEvent *);
+  ICQEvent *SendExpectEvent_Server(const char *, unsigned long, CPacket *, CUserEvent *, bool = false);
   ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);
