@@ -64,8 +64,8 @@ void put_le_long(char *p, unsigned long x)
 }
 
 
-//=====Buffer===================================================================   
-   
+//=====Buffer================================================================
+
 CBuffer::CBuffer(void)
 {
   m_pDataStart = m_pDataPosRead = m_pDataPosWrite = NULL;
@@ -74,7 +74,7 @@ CBuffer::CBuffer(void)
 
 
 CBuffer::CBuffer(unsigned long _nDataSize)
-{                                  
+{
   m_nDataSize = _nDataSize;
   m_pDataStart = new char[m_nDataSize];
   m_pDataPosRead = m_pDataPosWrite = m_pDataStart;
@@ -98,7 +98,7 @@ CBuffer::CBuffer(CBuffer *b)
      m_nDataSize = 0;
   }
   else
-  {    
+  {
     m_nDataSize = b->getDataMaxSize();
     m_pDataStart = new char[m_nDataSize];
     memcpy(m_pDataStart, b->getDataStart(), m_nDataSize);
@@ -121,7 +121,7 @@ void CBuffer::Create(unsigned long _nDataSize = 0)
 //----->>-----------------------------------------------------------------------
 CBuffer& CBuffer::operator>>(char &in)
 {
-   if(getDataPosRead() + sizeof(char) > (getDataStart() + getDataSize())) 
+   if(getDataPosRead() + sizeof(char) > (getDataStart() + getDataSize()))
       in = 0;
    else
    {
@@ -235,28 +235,41 @@ CBuffer::~CBuffer(void)
 }
 
 //-----add----------------------------------------------------------------------
-void CBuffer::add(const unsigned short &data)
+unsigned short CBuffer::add(const unsigned short &data)
 {
   put_le_short(getDataPosWrite(), data);
   incDataPosWrite(sizeof(unsigned short));
+  return sizeof(unsigned short);
 }
 
-void CBuffer::add(const unsigned long &data)
+unsigned short CBuffer::add(const unsigned long &data)
 {
   put_le_long(getDataPosWrite(), data);
   incDataPosWrite(sizeof(unsigned long));
+  return sizeof(unsigned long);
 }
 
-void CBuffer::add(const char &data)
+unsigned short CBuffer::add(const char &data)
 {
   *getDataPosWrite() = data;
   incDataPosWrite(sizeof(char));
+  return sizeof(char);
 }
 
-void CBuffer::add(const char *data, int size)
+unsigned short CBuffer::add(const char *data, int size)
 {
    memcpy(getDataPosWrite(), data, size);
    incDataPosWrite(size);
+   return size;
+}
+
+unsigned short CBuffer::PackString(const char *data)
+{
+   unsigned short n = strlen(data) + 1;
+   add(n);
+   add(data, n);
+   // We just added n+2 bytes to the packet
+   return n + 2;
 }
 
 
