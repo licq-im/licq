@@ -40,6 +40,16 @@ class CEComboBox;
 class IconManager;
 #endif
 
+class CUserData
+{
+public:
+  CUserData(unsigned long n, ICQFunctions *p) : uin(n), win(p) {}
+  unsigned long uin;
+  ICQFunctions *win;
+};
+typedef list <CUserData> UserDataList;
+typedef list <CUserData>::iterator UserDataListIter;
+
 
 //=====CMainWindow==============================================================
 class CMainWindow : public QWidget
@@ -62,6 +72,7 @@ protected:
 #ifdef USE_DOCK
   IconManager *licqIcon;
 #endif
+  UserDataList licqUserData;
 
   // Dialog boxes
   AwayMsgDlg *awayMsgDlg;
@@ -163,6 +174,7 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
+  void slot_userfinished(unsigned long);
   void changeAutoResponse();
   void slot_logon();
   void slot_register();

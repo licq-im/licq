@@ -1196,40 +1196,50 @@ void CMainWindow::callUserFunction(int index)
 //-----CMainWindow::callICQFunction-------------------------------------------
 ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
-  ICQUser *u = NULL;
   ICQFunctions *f = NULL;
-  if (nUin == gUserManager.OwnerUin())
-    u = gUserManager.FetchOwner(LOCK_W);
-  else
-    u = gUserManager.FetchUser(nUin, LOCK_W);
 
-  if (u != NULL)
+  UserDataListIter it;
+  for (it = licqUserData.begin(); it != licqUserData.end(); it++)
   {
-    if (u->fcnDlg == NULL)
+    if (it->uin == nUin)
     {
-       f = new ICQFunctions(licqDaemon, licqSigMan, nUin, autoClose);
-       u->fcnDlg = f;
-       gUserManager.DropUser(u);
-       connect (f, SIGNAL(signal_updatedUser(unsigned long, unsigned long)), this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
-       f->setupTabs(fcn);
+      f = it->win;
+      break;
     }
-    else
-    {
-      f = (ICQFunctions *)u->fcnDlg;
-#ifdef USE_KDE
-      Window win = ((ICQFunctions *)u->fcnDlg)->winId();
-      KWin::setActiveWindow(win);
-#endif
-      f->raise();
-    }
-    // DropUser works for the owner too
-    gUserManager.DropUser(u);
+  }
+
+  if (f == NULL)
+  {
+     f = new ICQFunctions(licqDaemon, licqSigMan, nUin, autoClose);
+     connect (f, SIGNAL(signal_updatedUser(unsigned long, unsigned long)), SLOT(slot_updatedUser(unsigned long, unsigned long)));
+     connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
+     f->setupTabs(fcn);
+     licqUserData.push_back(CUserData(nUin, f));
   }
   else
   {
-    WarnUser(this, tr("Unable to find user (uin %1).").arg(nUin));
+#ifdef USE_KDE
+    KWin::setActiveWindow(f->winId());
+#endif
+    f->raise();
   }
   return f;
+}
+
+//-----CMainWindow::slot_userfinished------------------------------------------------
+void CMainWindow::slot_userfinished(unsigned long nUin)
+{
+  UserDataListIter it;
+  for (it = licqUserData.begin(); it != licqUserData.end(); it++)
+  {
+    if (it->uin == nUin)
+    {
+      licqUserData.erase(it);
+      return;
+    }
+  }
+  gLog.Warn("%sUser finished signal for user with no window (%ld)!",
+            L_WARNxSTR, nUin);
 }
 
 
