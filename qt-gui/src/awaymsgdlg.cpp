@@ -29,14 +29,12 @@
 #include "sar.h"
 #include "user.h"
 
-int AwayMsgDlg::s_nX = 100;
-int AwayMsgDlg::s_nY = 100;
-
 // -----------------------------------------------------------------------------
 
 AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
     : QDialog(parent, name)
 {
+  nX = nY = 0;
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
   mleAwayMsg = new MLEditWrap(true, this);
@@ -87,7 +85,8 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
                         .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
   gUserManager.DropOwner();
 
-  move(s_nX, s_nY);
+  if(nX && nY)
+    move(nX, nY);
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
 
@@ -109,8 +108,8 @@ void AwayMsgDlg::show()
 
 void AwayMsgDlg::hide()
 {
-  s_nX = x();
-  s_nY = y();
+  nX = x();
+  nY = y();
   QDialog::hide();
 }
 
