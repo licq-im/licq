@@ -1024,9 +1024,9 @@ void UserInfoDlg::ShowHistory()
     if(UserInfoDlg::chkContains((*tempIter)->Text(), ftxt, flen))
     {
       d.setTime_t((*tempIter)->Time());
-      #if QT_VERSION >= 300
-      s.sprintf("<p><font color=\"%s\">%s<br>%s [%c%c%c%c]</font></p><p>%s</p><br>",
-                ((*tempIter)->Direction() == D_RECEIVER ? "blue" : "red"),
+#if QT_VERSION >= 300
+      s.sprintf("<font color=\"%s\">%s<br>%s [%c%c%c%c]<br>%s</font><br>",
+                ((*tempIter)->Direction() == D_RECEIVER ? "red" : "blue"),
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
                   .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(n)).utf8().data(),
                 d.toString().utf8().data(),
@@ -1035,7 +1035,7 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
                 QStyleSheet::convertFromPlainText(codec->toUnicode((*tempIter)->Text())).utf8().data());
-      #else
+#else
       s.sprintf("%c%s\n%c%s [%c%c%c%c]\n\n%s\n\n",
                 ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
@@ -1047,7 +1047,7 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
                 (codec->toUnicode((*tempIter)->Text())).utf8().data());
-      #endif
+#endif
       st.append(s);
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
