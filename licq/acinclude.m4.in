@@ -151,6 +151,23 @@ fi
 ])
 
 
+AC_DEFUN(LICQ_CHECK_GPGME,
+[
+  AC_MSG_CHECKING(if GPGME support is desired)
+
+  AC_ARG_ENABLE(
+    gpgme,
+    [  --disable-gpgme         disable GPGME support],
+    WITH_GPGME="$enableval", WITH_GPGME="yes")
+
+    if test "$WITH_GPGME" = "yes"; then
+      AC_CHECK_LIB(gpgme,gpgme_check_version)
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+    fi
+])
+
 AC_DEFUN(LICQ_CHECK_OPENSSL,
 [
   AC_MSG_CHECKING(if OpenSSL support is desired)
