@@ -42,11 +42,13 @@ protected:
    QLabel *lblUrlViewer, *lblTrans;
    QLineEdit *edtUrlViewer;
    QComboBox *cmbTrans;
-   CInfoField *nfoTerminal;
+   QLabel *lblTerminal;
+   QLineEdit *edtTerminal;
 
    // appearance tab
    QGroupBox *boxFont;
-   CInfoField *nfoFont;
+   QLabel *lblFont;
+   QLineEdit *edtFont;
    QPushButton *btnFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight;

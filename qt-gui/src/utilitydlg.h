@@ -34,6 +34,7 @@ protected:
   unsigned long m_nUin;
   bool m_bIntWin;
 
+  QLabel *lblUtility, *lblWinType, *lblDesc;
   CInfoField *nfoUtility, *nfoWinType, *nfoDesc;
   QCheckBox *chkEditFinal;
   QScrollView *scrFields;

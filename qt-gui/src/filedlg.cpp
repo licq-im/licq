@@ -59,37 +59,48 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    setCaption(tr("ICQ file transfer"));
    setGeometry(100, 100, 500, 325);
 
-   nfoTransferFileName = new CInfoField(10, 15, 100, 5, 290, tr("Current file:"), true, this);
-   nfoTransferFileName->setData(_szTransferFileName);
-   nfoTotalFiles = new CInfoField(410, 15, 0, 0, 60, NULL, true, this);
+   lblTransferFileName = new QLabel(tr("Current file:"), this);
+   lblTransferFileName->setGeometry(10, 15, 100, 20);
+   nfoTransferFileName = new CInfoField(this, true);
+   nfoTransferFileName->setGeometry(120, 15, 290, 20);
+   nfoTransferFileName->setText(_szTransferFileName);
+   nfoTotalFiles = new CInfoField(this, true);
+   nfoTotalFiles->setGeometry(410, 15, 60, 20);
 
-   nfoLocalFileName = new CInfoField(10, 40, 100, 5, 355, tr("Local file name:"), true, this);
-   nfoLocalFileName->setData(IsServer() ? tr("Unset") : tr("N/A"));
+   lblLocalFileName = new QLabel(tr("Local file name:"), this);
+   lblLocalFileName->setGeometry(10, 40, 100, 20);
+   nfoLocalFileName = new CInfoField(this, true);
+   nfoLocalFileName->setGeometry(120, 40, 355, 20);
+   nfoLocalFileName->setText(IsServer() ? tr("Unset") : tr("N/A"));
    nfoLocalFileName->setEnabled(IsServer());
 
    // Information stuff about the current file
    QGroupBox *boxCurrent = new QGroupBox(tr("Current File"), this);
    boxCurrent->setGeometry(10, 80, 220, 170);
-   nfoFileSize = new CInfoField(10, 15, 35, 5, 150, tr("Size:"), true, boxCurrent);
+   lblFileSize = new QLabel(tr("Size:"), boxCurrent);
+   lblFileSize->setGeometry(10, 15, 35, 20);
+   nfoFileSize = new CInfoField(boxCurrent, true);
+   nfoFileSize->setGeometry(50, 15, 150, 20);
    sprintf(t, "%ld bytes", m_nFileSize);
-   nfoFileSize->setData(t);
-   nfoTrans = new CInfoField(10, 40, 35, 5, 150, tr("Trans:"), true, boxCurrent);
-   nfoTime = new CInfoField(10, 65, 35, 5, 150, tr("Time:"), true, boxCurrent);
-   nfoBPS = new CInfoField(10, 90, 35, 5, 150, tr("BPS:"), true, boxCurrent);
-   nfoETA = new CInfoField(10, 115, 35, 5, 150, tr("ETA:"), true, boxCurrent);
+   nfoFileSize->setText(t);
+#if 0
+   nfoTrans = new CInfoField(10, 40, 35, 150, tr("Trans:"), true, boxCurrent);
+   nfoTime = new CInfoField(10, 65, 35, 150, tr("Time:"), true, boxCurrent);
+   nfoBPS = new CInfoField(10, 90, 35, 150, tr("BPS:"), true, boxCurrent);
+   nfoETA = new CInfoField(10, 115, 35, 150, tr("ETA:"), true, boxCurrent);
    barTransfer = new QProgressBar(boxCurrent);
    barTransfer->setGeometry(10, 140, 200, 20);
 
    QGroupBox *boxBatch = new QGroupBox(tr("Batch"), this);
    boxBatch->setGeometry(250, 80, 220, 170);
-   nfoBatchSize = new CInfoField(10, 15, 35, 5, 150, tr("Size:"), true, boxBatch);
-   nfoBatchTrans = new CInfoField(10, 40, 35, 5, 150, tr("Trans:"), true, boxBatch);
-   nfoBatchTime = new CInfoField(10, 65, 35, 5, 150, tr("Time:"), true, boxBatch);
-   nfoBatchBPS = new CInfoField(10, 90, 35, 5, 150, tr("BPS:"), true, boxBatch);
-   nfoBatchETA = new CInfoField(10, 115, 35, 5, 150, tr("ETA:"), true, boxBatch);
+   nfoBatchSize = new CInfoField(10, 15, 35, 150, tr("Size:"), true, boxBatch);
+   nfoBatchTrans = new CInfoField(10, 40, 35, 150, tr("Trans:"), true, boxBatch);
+   nfoBatchTime = new CInfoField(10, 65, 35, 150, tr("Time:"), true, boxBatch);
+   nfoBatchBPS = new CInfoField(10, 90, 35, 150, tr("BPS:"), true, boxBatch);
+   nfoBatchETA = new CInfoField(10, 115, 35, 150, tr("ETA:"), true, boxBatch);
    barBatchTransfer = new QProgressBar(boxBatch);
    barBatchTransfer->setGeometry(10, 140, 200, 20);
-
+#endif
    lblStatus = new QLabel(this);
    lblStatus->setFrameStyle(QFrame::Box | QFrame::Raised);
 
@@ -101,17 +112,17 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    if (IsServer())
    {
       sprintf(t, "%d / ?", m_nCurrentFile + 1);
-      nfoTotalFiles->setData(t);
-      nfoBatchSize->setData(tr("Unknown"));
+      nfoTotalFiles->setText(t);
+      nfoBatchSize->setText(tr("Unknown"));
       show();
       if (!startAsServer()) setPort(0);
    }
    else
    {
       sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
-      nfoTotalFiles->setData(t);
+      nfoTotalFiles->setText(t);
       sprintf(t, tr("%ld bytes"), m_nBatchSize);
-      nfoBatchSize->setData(t);
+      nfoBatchSize->setText(t);
       show();
       if (!startAsClient()) setPort(0);
    }
@@ -188,7 +199,7 @@ bool CFileDlg::GetLocalFileName(void)
       bValid = true;
   }
 
-  nfoLocalFileName->setData(f);
+  nfoLocalFileName->setText(f);
   m_nBytesTransfered = 0;
   barTransfer->setTotalSteps(m_sFileInfo.nSize);
   barTransfer->setProgress(0);
@@ -223,16 +234,16 @@ void CFileDlg::fileUpdate()
     sprintf(sz, tr("%0.2f kb"), m_nFilePos / 1024.0);
   else
     sprintf(sz, tr("%ld b"), m_nFilePos);
-  nfoTrans->setData(sz);
+  nfoTrans->setText(sz);
 
   // Time
   time_t nTime = time(NULL) - m_nStartTime;
   sprintf(sz, "%02ld:%02ld:%02ld", nTime / 3600, (nTime % 3600) / 60, (nTime % 60));
-  nfoTime->setData(sz);
+  nfoTime->setText(sz);
   if (nTime == 0 || m_nBytesTransfered == 0)
   {
-    nfoBPS->setData("---");
-    nfoETA->setData("---");
+    nfoBPS->setText("---");
+    nfoETA->setText("---");
     return;
   }
 
@@ -242,13 +253,13 @@ void CFileDlg::fileUpdate()
     sprintf(sz, tr("%.2f k"), fBPS / 1024);
   else
     sprintf(sz, "%.2f", fBPS);
-  nfoBPS->setData(sz);
+  nfoBPS->setText(sz);
 
   // ETA
   int nBytesLeft = m_sFileInfo.nSize - m_nFilePos;
   time_t nETA = (time_t)(nBytesLeft / fBPS);
   sprintf(sz, "%02ld:%02ld:%02ld", nETA / 3600, (nETA % 3600) / 60, (nETA % 60));
-  nfoETA->setData(sz);
+  nfoETA->setText(sz);
 
 
   // Batch
@@ -258,17 +269,17 @@ void CFileDlg::fileUpdate()
     sprintf(sz, tr("%0.2f kb"), m_nBatchPos / 1024.0);
   else
     sprintf(sz, tr("%ld b"), m_nBatchPos);
-  nfoBatchTrans->setData(sz);
+  nfoBatchTrans->setText(sz);
 
   // Time
   time_t nBatchTime = time(NULL) - m_nBatchStartTime;
   sprintf(sz, "%02ld:%02ld:%02ld", nBatchTime / 3600, (nBatchTime % 3600) / 60,
          (nBatchTime % 60));
-  nfoBatchTime->setData(sz);
+  nfoBatchTime->setText(sz);
   if (nBatchTime == 0 || m_nBatchBytesTransfered == 0)
   {
-    nfoBatchBPS->setData("---");
-    nfoBatchETA->setData("---");
+    nfoBatchBPS->setText("---");
+    nfoBatchETA->setText("---");
     return;
   }
 
@@ -278,14 +289,14 @@ void CFileDlg::fileUpdate()
     sprintf(sz, tr("%.2f k"), fBatchBPS / 1024);
   else
     sprintf(sz, "%.2f", fBatchBPS);
-  nfoBatchBPS->setData(sz);
+  nfoBatchBPS->setText(sz);
 
   // ETA
   int nBatchBytesLeft = m_nBatchSize - m_nBatchPos;
   time_t nBatchETA = (time_t)(nBatchBytesLeft / fBatchBPS);
   sprintf(sz, "%02ld:%02ld:%02ld", nBatchETA / 3600, (nBatchETA % 3600) / 60,
           (nBatchETA % 60));
-  nfoBatchETA->setData(sz);
+  nfoBatchETA->setText(sz);
 
 }
 
@@ -382,9 +393,9 @@ void CFileDlg::StateServer()
     for (int i = 0; i < nRemoteNameLen; i++)
        m_xSocketFile.RecvBuffer() >> m_szRemoteName[i];
     sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
-    nfoTotalFiles->setData(t);
+    nfoTotalFiles->setText(t);
     sprintf(t, "%ld bytes", m_nBatchSize);
-    nfoBatchSize->setData(t);
+    nfoBatchSize->setText(t);
     m_nBatchStartTime = time(NULL);
     m_nBatchBytesTransfered = m_nBatchPos = 0;
     barBatchTransfer->setTotalSteps(m_nBatchSize);
@@ -423,9 +434,9 @@ void CFileDlg::StateServer()
     m_xSocketFile.RecvBuffer() >> m_sFileInfo.nSize;
 
     m_nCurrentFile++;
-    nfoTransferFileName->setData(m_sFileInfo.szName);
+    nfoTransferFileName->setText(m_sFileInfo.szName);
     sprintf(t, tr("%ld bytes"), m_sFileInfo.nSize);
-    nfoFileSize->setData(t);
+    nfoFileSize->setText(t);
     barTransfer->setTotalSteps(m_sFileInfo.nSize);
 
     // Get the local filename and set the file offset (for resume)

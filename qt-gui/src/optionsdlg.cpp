@@ -65,7 +65,10 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   boxFont = new QGroupBox(tr("Font"), tab[0]);
   boxFont->setGeometry(10, 125, 410, 90);
   QWhatsThis::add(boxFont, tr("The font used for all widgets"));
-  nfoFont = new CInfoField(10, 20, 40, 5, 340, tr("Font:"), false, boxFont);
+  lblFont = new QLabel(tr("Font:"), boxFont);
+  lblFont->setGeometry(10, 20, 40, 20);
+  edtFont = new QLineEdit(boxFont);
+  edtFont->setGeometry(55, 20, 340, 20);
   btnFont = new QPushButton(tr("Select Font"), boxFont);
   btnFont->setGeometry(10, 45, 100, 30);
   QWhatsThis::add(btnFont, tr("Select a font from the system list"));
@@ -164,8 +167,11 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
                                   "as a parameter."));
   edtUrlViewer = new QLineEdit(tab[5]);
   edtUrlViewer->setGeometry(100, 10, 200, 20);
-  nfoTerminal = new CInfoField(10, 35, 80, 10, 200, tr("Terminal:"), false, tab[5]);
-  QWhatsThis::add(nfoTerminal, tr("The command to run to start your terminal program."));
+  lblTerminal = new QLabel(tr("Terminal:"), tab[5]);
+  lblTerminal->setGeometry(10, 35, 80, 20);
+  edtTerminal = new QLineEdit(tr("Terminal:"), tab[5]);
+  edtTerminal->setGeometry(95, 35, 200, 20);
+  QWhatsThis::add(edtTerminal, tr("The command to run to start your terminal program."));
   lblTrans = new QLabel(tr("Translation:"), tab[5]);
   lblTrans->setGeometry(10, 85, 80, 20);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
@@ -298,14 +304,14 @@ void OptionsDlg::SetupOptions()
 {
 #ifdef USE_KDE
   if (mainwin->defaultFont == kapp->font())
-    nfoFont->setData("default");
+    edtFont->setText("default");
   else
-    nfoFont->setData(kapp->font().rawName());
+    edtFont->setText(kapp->font().rawName());
 #else
   if (mainwin->defaultFont == qApp->font())
-    nfoFont->setData("default");
+    edtFont->setText("default");
   else
-    nfoFont->setData(qApp->font().rawName());
+    edtFont->setText(qApp->font().rawName());
 #endif
 
   chkGridLines->setChecked(mainwin->gridLines);
@@ -341,7 +347,7 @@ void OptionsDlg::SetupOptions()
 
   // plugins tab
   edtUrlViewer->setText(mainwin->licqDaemon->getUrlViewer() == NULL ? "none" : mainwin->licqDaemon->getUrlViewer());
-  nfoTerminal->setData(mainwin->licqDaemon->Terminal() == NULL ? "none" : mainwin->licqDaemon->Terminal());
+  edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ? "none" : mainwin->licqDaemon->Terminal());
   const char *pc = gTranslator.getMapName();
   if (strcmp(pc, "none") == 0)
   {
@@ -413,7 +419,7 @@ void OptionsDlg::SetupOptions()
 //-----OptionsDlg::ApplyOptions--------------------------------------------------
 void OptionsDlg::ApplyOptions()
 {
-  if (strcmp(nfoFont->text(), "default") == 0)
+  if (strcmp(edtFont->text(), "default") == 0)
 #ifdef USE_KDE
     kapp->setFont(mainwin->defaultFont, true);
 #else
@@ -422,7 +428,7 @@ void OptionsDlg::ApplyOptions()
   else
   {
     QFont f;
-    f.setRawName(nfoFont->text());
+    f.setRawName(edtFont->text());
 #ifdef USE_KDE
     kapp->setFont(f, true);
 #else
@@ -471,7 +477,7 @@ void OptionsDlg::ApplyOptions()
 
   // Plugin tab
   mainwin->licqDaemon->setUrlViewer(edtUrlViewer->text());
-  mainwin->licqDaemon->SetTerminal(nfoTerminal->text());
+  mainwin->licqDaemon->SetTerminal(edtTerminal->text());
   if (cmbTrans->isEnabled())
   {
     if (cmbTrans->currentItem() == 0)
@@ -541,7 +547,7 @@ void OptionsDlg::slot_selectfont()
   bool fontOk;
   QFont f = QFontDialog::getFont(&fontOk, this);
   if (fontOk)
-    nfoFont->setData(f.rawName());
+    edtFont->setText(f.rawName());
 }
 
 

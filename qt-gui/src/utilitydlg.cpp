@@ -46,18 +46,22 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   char sz[64];
   sprintf(sz, "Licq Utility: %s", m_xUtility->Name());
   setCaption(sz);
-
-  nfoUtility = new CInfoField(10, 10, 60, 5, width() - 85, "Command:", true, this);
-  nfoUtility->setData(m_xUtility->FullCommand());
+  lblUtility = new QLabel(tr("Command:"), this);
+  lblUtility->setGeometry(10, 10, 60, 20);
+  nfoUtility = new CInfoField(this, true);
+  nfoUtility->setGeometry(75, 10, width() - 85, 20);
+  nfoUtility->setText(m_xUtility->FullCommand());
+#if 0
   nfoWinType = new CInfoField(10, 35, 60, 5, width() - 85, "Window:", true, this);
   switch (m_xUtility->WinType())
   {
-  case UtilityWinGui: nfoWinType->setData("GUI"); break;
-  case UtilityWinTerm: nfoWinType->setData("Terminal"); break;
-  case UtilityWinLicq: nfoWinType->setData("Internal"); break;
+  case UtilityWinGui: nfoWinType->setText("GUI"); break;
+  case UtilityWinTerm: nfoWinType->setText("Terminal"); break;
+  case UtilityWinLicq: nfoWinType->setText("Internal"); break;
   }
   nfoDesc = new CInfoField(10, 60, 60, 5, width() - 80, "Description:", true, this);
-  nfoDesc->setData(m_xUtility->Description());
+#endif
+  nfoDesc->setText(m_xUtility->Description());
   chkEditFinal = new QCheckBox(tr("Edit final command"), this);
   boxFields = new QGroupBox("User Fields", this);
   mleCommand = new MLEditWrap(true, boxFields);
@@ -101,7 +105,7 @@ void CUtilityDlg::slot_cancel()
       fclose(fsCommand);
       fsCommand = NULL;
     }
-    nfoUtility->setTitle(tr("Done:"));
+    lblUtility->setText(tr("Done:"));
     btnCancel->setText(tr("Close"));
     m_bIntWin = false;
   }
@@ -120,9 +124,11 @@ void CUtilityDlg::hide()
 
 void CUtilityDlg::resizeEvent(QResizeEvent *e)
 {
+#if 0
   nfoUtility->setGeometry(10, 10, 80, 5, width() - 105);
   nfoWinType->setGeometry(10, 35, 80, 5, width() - 105);
   nfoDesc->setGeometry(10, 60, 80, 5, width() - 105);
+#endif
   boxFields->setGeometry(10, 90, width() - 20, height() - 170);
   mleCommand->setGeometry(10, 20, boxFields->width() - 20, boxFields->height() - 30);
   for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
@@ -150,10 +156,10 @@ void CUtilityDlg::slot_run()
       vszFields[i++] = (*iter)->text();
     }
     m_xUtility->SetUserFields(vszFields);
-    nfoUtility->setData(m_xUtility->FullCommand());
+    nfoUtility->setText(m_xUtility->FullCommand());
     if (chkEditFinal->isChecked())
     {
-      nfoUtility->setTitle(tr("Edit:"));
+      lblUtility->setText(tr("Edit:"));
       nfoUtility->SetReadOnly(false);
       chkEditFinal->setEnabled(false);
       return;
@@ -161,7 +167,7 @@ void CUtilityDlg::slot_run()
   }
 
   nfoUtility->SetReadOnly(true);
-  nfoUtility->setTitle(tr("Running:"));
+  lblUtility->setText(tr("Running:"));
 
   // Run the command
   int nSystemResult = 0;
@@ -209,7 +215,7 @@ void CUtilityDlg::slot_run()
 
   if (nSystemResult == -1)
   {
-    nfoUtility->setTitle(tr("Failed:"));
+    lblUtility->setText(tr("Failed:"));
     m_xUtility->SetFields(m_nUin);
   }
   else

@@ -45,8 +45,10 @@ EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   btnNewUser = new QPushButton(tr("New Users"), grpGroups);
   QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added."));
   btnDone = new QPushButton(tr("Done"), this);
-  nfoDefault = new CInfoField(0, 0, 5, 5, 5, tr("Default:"), true, grpGroups);
+#if 0
+  nfoDefault = new CInfoField(0, 0, 5, 5, tr("Default:"), true, grpGroups);
   nfoNewUser = new CInfoField(0, 0, 5, 5, 5, tr("New User:"), true, grpGroups);
+#endif
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
 
@@ -73,17 +75,17 @@ void EditGrpDlg::RefreshList()
   lstGroups->clear();
   lstGroups->insertItem(tr("All Users"));
   if (gUserManager.DefaultGroup() == 0)
-    nfoDefault->setData(tr("All Users"));
+    nfoDefault->setText(tr("All Users"));
   if (gUserManager.NewUserGroup() == 0)
-    nfoNewUser->setData(tr("All Users"));
+    nfoNewUser->setText(tr("All Users"));
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
   {
     lstGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
     if (i + 1 == gUserManager.DefaultGroup())
-      nfoDefault->setData(QString::fromLocal8Bit((*g)[i]));
+      nfoDefault->setText(QString::fromLocal8Bit((*g)[i]));
     if (i + 1== gUserManager.NewUserGroup())
-      nfoNewUser->setData(QString::fromLocal8Bit((*g)[i]));
+      nfoNewUser->setText(QString::fromLocal8Bit((*g)[i]));
   }
   gUserManager.UnlockGroupList();
 }
@@ -232,9 +234,10 @@ void EditGrpDlg::resizeEvent (QResizeEvent *)
   btnDefault->setGeometry(btnAdd->x(), btnEdit->y() + 40, 80, 30);
   btnNewUser->setGeometry(btnAdd->x(), btnDefault->y() + 40, 80, 30);
   edtName->setGeometry(10, grpGroups->height() - 80, grpGroups->width() - 120, 20);
+#if 0
   nfoDefault->setGeometry(10, grpGroups->height() - 55, 70, 5, grpGroups->width() - 195);
   nfoNewUser->setGeometry(10, grpGroups->height() - 30, 70, 5, grpGroups->width() - 195);
-
+#endif
   btnWhat->setGeometry(10, height() - 38, 90, 26);
   btnDone->setGeometry((width() - 90) / 2 + 40, height() - 40, 100, 30);
 }

@@ -48,6 +48,7 @@ public slots:
 protected:
    void resizeEvent (QResizeEvent *);
 
+   QLabel *lblTransferFileName, *lblLocalFileName, *lblFileSize;
    CInfoField *nfoFileSize,
               *nfoTransferFileName,
               *nfoTotalFiles,
