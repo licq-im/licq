@@ -168,6 +168,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   m_nBytesTransfered = m_nBatchBytesTransfered = 0;
   m_nStartTime = m_nBatchStartTime = 0;
   m_nFileDesc = -1;
+  m_nState = FT_STATE_DISCONNECTED;
 
   m_szFileName[0] = m_szPathName[0] = '\0';
   sprintf(m_szRemoteName, "%ld", m_nUin);
@@ -423,6 +424,12 @@ bool CFileTransferManager::ProcessPacket()
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
         gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
+        break;
+      }
+      if (nCmd == 0x06 && b.getDataSize() == 1)
+      {
+        gLog.Info("%sFile Transfer: Ignoring a possible erroneous packet.\n",
+                  L_WARNxSTR);
         break;
       }
       if (nCmd != 0x02)
