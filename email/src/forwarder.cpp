@@ -231,7 +231,7 @@ void CLicqForwarder::ProcessSignal(CICQSignal *s)
   {
   case SIGNAL_UPDATExUSER:
     if (s->SubSignal() == USER_EVENTS && s->Argument() > 0)
-      ProcessUserEvent(s->Uin(), s->Argument());
+      ProcessUserEvent(s->Id(), s->PPID(), s->Argument());
     break;
   // We should never get any other signal
   case SIGNAL_UPDATExLIST:
@@ -284,12 +284,12 @@ void CLicqForwarder::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqForwarder::ProcessUserEvent(unsigned long nUin, unsigned long nId)
+void CLicqForwarder::ProcessUserEvent(const char *szId, unsigned long nPPID, unsigned long nId)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("%sInvalid uin received from daemon (%ld).\n", L_FORWARDxSTR, nUin);
+    gLog.Warn("%sInvalid user received from daemon (%s).\n", L_FORWARDxSTR, szId);
     return;
   }
 
@@ -334,8 +334,8 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
-  sprintf(szText, "[ %s from %s (ICQ#%ld) sent %s ]\n\n%s\n", e->Description(),
-          u->GetAlias(), u->Uin(), szTime, e->Text());
+  sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
+          u->GetAlias(), u->IdString(), szTime, e->Text());
   unsigned long tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
@@ -343,7 +343,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
     gLog.Warn("%sSending message to %ld failed.\n", L_FORWARDxSTR, m_nUINTo);
     return false;
   }
-  gLog.Info("%sForwarded message from %s (%ld) to %ld.\n", L_FORWARDxSTR, u->GetAlias(), u->Uin(), m_nUINTo);
+  gLog.Info("%sForwarded message from %s (%s) to %ld.\n", L_FORWARDxSTR, u->GetAlias(), u->IdString(), m_nUINTo);
   return true;
 }
 
@@ -361,15 +361,18 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
   if (!u->User())
   {
     sprintf(szTo, "To: %s <%s>", u->GetAlias(), m_szSMTPTo);
-    sprintf (szFrom, "From: ICQ System Message <support@mirabilis.com>");
-    sprintf (szReplyTo, "Reply-To: Mirabilis <support@mirabilis.com>");
+    sprintf (szFrom, "From: ICQ System Message <support@icq.com>");
+    sprintf (szReplyTo, "Reply-To: Mirabilis <support@icq.com>");
   }
   else
   {
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
     sprintf(szTo, "To: %s <%s>", o->GetAlias(), m_szSMTPTo);
     gUserManager.DropOwner();
-    sprintf (szFrom, "From: \"%s\" <%ld@pager.mirabilis.com>", u->GetAlias(), u->Uin());
+    if (u->PPID() == LICQ_PPID)
+      sprintf (szFrom, "From: \"%s\" <%s@pager.icq.com>", u->GetAlias(), u->IdString());
+    else
+      sprintf (szFrom, "From: \"%s\" <%s>", u->GetEmailPrimary());
     sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmailPrimary());
   }
   sprintf (szDate, "Date: %s", ctime(&t));
@@ -507,7 +510,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
   // Close our connection
   tcp->CloseConnection();
 
-  gLog.Info("%sForwarded message from %s (%ld) to %s.\n", L_FORWARDxSTR, u->GetAlias(), u->Uin(), m_szSMTPTo);
+  gLog.Info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR, u->GetAlias(), u->IdString(), m_szSMTPTo);
   return true;
 }
 

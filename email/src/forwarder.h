@@ -43,7 +43,7 @@ public:
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
 
-  void ProcessUserEvent(unsigned long, unsigned long);
+  void ProcessUserEvent(const char *, unsigned long, unsigned long);
   bool ForwardEvent(ICQUser *, CUserEvent *);
   bool ForwardEvent_ICQ(ICQUser *, CUserEvent *);
   bool ForwardEvent_Email(ICQUser *, CUserEvent *);
