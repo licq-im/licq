@@ -1160,6 +1160,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     if (u != NULL)
     {
       e->m_pUserEvent->AddToHistory(u, D_SENDER);
+      u->SetLastSentEvent();
       gUserManager.DropUser(u);
     }
     m_sStats[STATS_EventsSent].Inc();

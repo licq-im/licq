@@ -136,6 +136,11 @@ const unsigned short AUTO_SECURE        = 0x0400;
 const unsigned short USPRINTF_NTORN     = 1;
 const unsigned short USPRINTF_NOFW      = 2;
 
+const unsigned short LAST_ONLINE        = 0;
+const unsigned short LAST_RECV_EVENT    = 1;
+const unsigned short LAST_SENT_EVENT    = 2;
+const unsigned short LAST_CHECKED_AR    = 3;
+
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -219,7 +224,10 @@ public:
   SecureChannelSupport_et SecureChannelSupport();
   unsigned short LicqVersion();
   unsigned short ConnectionVersion();
-  time_t LastOnline()                   { return m_nLastOnline; }
+  time_t LastOnline()                   { return m_nLastCounters[LAST_ONLINE]; }
+  time_t LastSentEvent()                { return m_nLastCounters[LAST_SENT_EVENT]; }
+  time_t LastReceivedEvent()            { return m_nLastCounters[LAST_RECV_EVENT]; }
+  time_t LastCheckedAutoResponse()      { return m_nLastCounters[LAST_CHECKED_AR]; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
   bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
   bool AutoSecure()                     { return m_nAutoAccept & AUTO_SECURE; }
@@ -409,10 +417,15 @@ protected:
   void SetConnectionInProgress(bool c)  { m_bConnectionInProgress = c; }
   void SetSecure(bool s) { m_bSecure = s; }
 
+  void SetLastSentEvent()           { m_nLastCounters[LAST_SENT_EVENT] = time(NULL); }
+  void SetLastReceivedEvent()       { m_nLastCounters[LAST_RECV_EVENT] = time(NULL); }
+  void SetLastCheckedAutoResponse() { m_nLastCounters[LAST_CHECKED_AR] = time(NULL); }
+
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nSocketDesc;
-  time_t m_nTouched, m_nLastOnline;
+  time_t m_nTouched;
+  time_t m_nLastCounters[4];
   bool m_bOnContactList;
   unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;

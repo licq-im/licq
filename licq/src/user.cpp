@@ -863,7 +863,7 @@ void ICQUser::LoadLicqInfo()
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
   unsigned short nNewMessages;
-  unsigned long nLastOnline;
+  unsigned long nLast;
   m_fConf.SetSection("user");
   m_fConf.ReadNum("Groups.System", m_nGroups[GROUPS_SYSTEM], 0);
   m_fConf.ReadNum("Groups.User", m_nGroups[GROUPS_USER], 0);
@@ -874,8 +874,14 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("Port", m_nPort, 0);
   //m_fConf.ReadBool("NewUser", m_bNewUser, false);
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);
-  m_fConf.ReadNum("LastOnline", nLastOnline, 0);
-  m_nLastOnline = nLastOnline;
+  m_fConf.ReadNum("LastOnline", nLast, 0);
+  m_nLastCounters[LAST_ONLINE] = nLast;
+  m_fConf.ReadNum("LastSent", nLast, 0);
+  m_nLastCounters[LAST_SENT_EVENT] = nLast;
+  m_fConf.ReadNum("LastRecv", nLast, 0);
+  m_nLastCounters[LAST_RECV_EVENT] = nLast;
+  m_fConf.ReadNum("LastCheckAR", nLast, 0);
+  m_nLastCounters[LAST_CHECKED_AR] = nLast;
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
@@ -1045,7 +1051,8 @@ void ICQUser::Init(unsigned long _nUin)
   m_nVersion = 0x03;
   m_nClientTimestamp = 0;
   Touch();
-  m_nLastOnline = 0;
+  for (unsigned short i = 0; i < 4; i++)
+    m_nLastCounters[i] = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
@@ -1115,7 +1122,7 @@ void ICQUser::SetStatusOffline()
 {
   if (!StatusOffline())
   {
-    m_nLastOnline = time(NULL);
+    m_nLastCounters[LAST_ONLINE] = time(NULL);
     SaveLicqInfo();
   }
   SetStatus(ICQ_STATUS_OFFLINE);
@@ -1520,13 +1527,13 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         sz = StatusStr();
         break;
       case 'o':
-	if(m_nLastOnline == 0)
+	if(m_nLastCounters[LAST_ONLINE] == 0)
 	{
 	  strcpy(szTemp, "Never");
 	  sz = szTemp;
 	  break;
 	}
-        strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastOnline));
+        strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
         sz = szTemp;
         break;
       case 'm':
@@ -1734,9 +1741,11 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
    m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
    m_fConf.WriteNum("Port", Port());
-   //m_fConf.WriteBool("NewUser", NewUser());
    m_fConf.WriteNum("NewMessages", NewMessages());
    m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
+   m_fConf.WriteNum("LastSent", (unsigned long)LastSentEvent());
+   m_fConf.WriteNum("LastRecv", (unsigned long)LastReceivedEvent());
+   m_fConf.WriteNum("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
@@ -1876,6 +1885,7 @@ void ICQUser::EventPush(CUserEvent *e)
   incNumUserEvents();
   SaveNewMessagesInfo();
   Touch();
+  SetLastReceivedEvent();
 
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
      USER_EVENTS, m_nUin, e->Id()));

@@ -1143,11 +1143,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
              u->GetAlias(), nUin, licqVersion);
         else
           gLog.Info("%s%s (%ld) requested auto response.\n", L_TCPxSTR, u->GetAlias(), nUin);
-        m_sStats[STATS_AutoResponseChecked].Inc();
 
         //CPT_AckReadAwayMsg p(newCommand, theSequence, true, u);
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);
         AckTCP(p, pSock);
+
+        m_sStats[STATS_AutoResponseChecked].Inc();
+        u->SetLastCheckedAutoResponse();
 
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, nUin));
         break;
