@@ -1402,6 +1402,7 @@ CPU_UpdateGroupToServerList::CPU_UpdateGroupToServerList(unsigned short nGSID)
 {
   int nCount = 0;
   int nGroup = gUserManager.GetGroupFromID(nGSID);
+  if (nGroup == 0) return; 
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->GetGSID() == nGSID)
