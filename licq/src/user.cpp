@@ -805,7 +805,7 @@ void ICQUser::LoadGeneralInfo()
   m_fConf.ReadStr("FaxNumber", szTemp, "");  SetFaxNumber(szTemp);
   m_fConf.ReadStr("Address", szTemp, "");  SetAddress(szTemp);
   m_fConf.ReadStr("CellularNumber", szTemp, "");  SetCellularNumber(szTemp);
-  m_fConf.ReadNum("Zipcode", m_nZipCode, 0);
+  m_fConf.ReadStr("Zipcode", szTemp, "");  SetZipCode(szTemp);
   m_fConf.ReadNum("Country", m_nCountryCode, 0);
   m_fConf.ReadNum("Timezone", m_nTimezone, TIMEZONE_UNKNOWN);
   m_fConf.ReadBool("Authorization", m_bAuthorization, false);
@@ -999,7 +999,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_szFaxNumber = NULL;
   m_szAddress = NULL;
   m_szCellularNumber = NULL;
-  m_nZipCode = 0;
+  m_szZipCode = NULL;
   m_nCountryCode = COUNTRY_UNSPECIFIED;
   m_nTimezone = TIMEZONE_UNKNOWN;
   m_bAuthorization = false;
@@ -1253,6 +1253,28 @@ int ICQUser::LocalTimeOffset()
 inline time_t ICQUser::LocalTime()
 {
   return time(NULL) + LocalTimeOffset();
+}
+
+
+SecureChannelSupport_et ICQUser::SecureChannelSupport()
+{
+  if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
+    return SECURE_CHANNEL_SUPPORTED;
+  else if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+    return SECURE_CHANNEL_NOTSUPPORTED;
+  else
+    return SECURE_CHANNEL_UNKNOWN;
+}
+
+
+
+unsigned short ICQUser::LicqVersion()
+{
+  if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL ||
+       (m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+    return m_nClientTimestamp & 0x0000FFFF;
+
+  return LICQ_VERSION_UNKNOWN;
 }
 
 
@@ -1517,7 +1539,7 @@ void ICQUser::SaveGeneralInfo()
   m_fConf.WriteStr("FaxNumber", m_szFaxNumber);
   m_fConf.WriteStr("Address", m_szAddress);
   m_fConf.WriteStr("CellularNumber", m_szCellularNumber);
-  m_fConf.WriteNum("Zipcode", m_nZipCode);
+  m_fConf.WriteStr("Zipcode", m_szZipCode);
   m_fConf.WriteNum("Country", m_nCountryCode);
   m_fConf.WriteNum("Timezone", m_nTimezone);
   m_fConf.WriteBool("Authorization", m_bAuthorization);
@@ -1760,7 +1782,7 @@ void ICQUser::SaveExtInfo()
    m_fConf.WriteStr("State", GetState());
    m_fConf.WriteNum("Country", GetCountryCode());
    m_fConf.WriteNum("Timezone", (signed short)GetTimezone());
-   m_fConf.WriteNum("Zipcode", GetZipCode());
+   m_fConf.WriteStr("Zipcode", GetZipCode());
    m_fConf.WriteStr("PhoneNumber", GetPhoneNumber());
    m_fConf.WriteNum("Age", GetAge());
    m_fConf.WriteNum("Sex", (unsigned short)GetGender());

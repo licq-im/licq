@@ -109,6 +109,13 @@ typedef enum EGender
 } Gender;
 const unsigned short AGE_UNSPECIFIED = 0xFFFF;
 const char TIMEZONE_UNKNOWN = -100;
+const unsigned short LICQ_VERSION_UNKNOWN = 0;
+
+typedef enum SecureChannelSupport_et_ {
+  SECURE_CHANNEL_UNKNOWN = 0,
+  SECURE_CHANNEL_NOTSUPPORTED = 1,
+  SECURE_CHANNEL_SUPPORTED = 2
+} SecureChannelSupport_et;
 
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
 
@@ -162,7 +169,7 @@ public:
   char *GetFaxNumber()                  {  return m_szFaxNumber;  }
   char *GetAddress()                    {  return m_szAddress;  }
   char *GetCellularNumber()             {  return m_szCellularNumber;  }
-  unsigned long GetZipCode()            {  return m_nZipCode;  }
+  char *GetZipCode()                    {  return m_szZipCode;  }
   unsigned short GetCountryCode()       {  return m_nCountryCode;  }
   char GetTimezone()                    {  return m_nTimezone;  }
   bool GetAuthorization()               {  return m_bAuthorization;  }
@@ -207,6 +214,8 @@ public:
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
   unsigned long ClientTimestamp()       { return m_nClientTimestamp; }
+  SecureChannelSupport_et SecureChannelSupport();
+  unsigned short LicqVersion();
   unsigned short ConnectionVersion();
   time_t LastOnline()                   { return m_nLastOnline; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
@@ -233,7 +242,7 @@ public:
   void SetFaxNumber (const char *n)          {  SetString(&m_szFaxNumber, n);  SaveGeneralInfo();  }
   void SetAddress (const char *n)            {  SetString(&m_szAddress, n);  SaveGeneralInfo();  }
   void SetCellularNumber (const char *n)     {  SetString(&m_szCellularNumber, n);  SaveGeneralInfo();  }
-  void SetZipCode (unsigned long n)          {  m_nZipCode = n;  SaveGeneralInfo();  }
+  void SetZipCode (const char *n)            {  SetString(&m_szZipCode, n);  SaveGeneralInfo();  }
   void SetCountryCode (unsigned short n)     {  m_nCountryCode = n;  SaveGeneralInfo();  }
   void SetTimezone (const char n)            {  m_nTimezone = n;  SaveGeneralInfo();  }
   void SetAuthorization (bool n)             {  m_bAuthorization = n;  SaveGeneralInfo();  }
@@ -431,7 +440,7 @@ protected:
   char *m_szFaxNumber;
   char *m_szAddress;
   char *m_szCellularNumber;
-  unsigned long m_nZipCode;
+  char *m_szZipCode;
   unsigned short m_nCountryCode;
   char m_nTimezone;
   bool m_bAuthorization;
