@@ -225,6 +225,7 @@ void UserEventTabDlg::removeTab(QWidget *tab)
   {
     tabw->removePage(tab);
     tab->close();
+    tab->deleteLater();
   }
   else
     close();
