@@ -82,6 +82,8 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
         /* nPos += snprintf(&szMsg[nPos], MAX_HISTORY_MSG_SIZE - nPos, "%s", &sz[1]); */ \
       } \
     } \
+    if (szMsg[nPos - 1] == '\n') \
+      szMsg[nPos - 1] = '\0'; \
   }
 
 bool CUserHistory::Load(HistoryList &lHistory)
