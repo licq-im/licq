@@ -56,27 +56,6 @@ signals:
 };
 
 
-//=====CChatUser=============================================================
-class CChatUser
-{
-public:
-  CChatUser()  { sn = NULL; }
-  ~CChatUser() { if (sn != NULL) delete sn; }
-
-  TCPSocket sock;
-  unsigned long uin;
-  QString chatname, linebuf;
-  deque <unsigned char> chatQueue;
-  QSocketNotifier *sn;
-  unsigned short state;
-
-  QColor colorFore, colorBack;
-  QFont font;
-
-  CChatClient client;
-};
-
-typedef list<CChatUser *> ChatUserList;
 class ChatDlg;
 typedef list<ChatDlg *> ChatDlgList;
 
@@ -96,7 +75,7 @@ public:
   bool StartAsClient(unsigned short nPort);
   bool StartAsServer();
 
-  unsigned short LocalPort() { return m_cSocketChatServer.LocalPort(); }
+  unsigned short LocalPort() { return chatman->LocalPort(); }
   unsigned long Uin()  { return m_nUin; };
 
   QString ChatClients();
@@ -104,9 +83,7 @@ public:
   static ChatDlgList chatDlgs;
 
 protected:
-  bool StartChatServer();
-  bool ConnectToChat(CChatClient &);
-  CChatUser *FindChatUser(int sd);
+  CChatManager *chatman;
 
   CChatWindow *mlePaneLocal, *mlePaneRemote, *mleIRCRemote, *mleIRCLocal;
   QGroupBox *boxPane, *boxIRC;
@@ -118,16 +95,13 @@ protected:
   QToolButton* tbtBold, *tbtItalic, *tbtUnderline;
   QToolButton* tbtLaugh, *tbtBeep, *tbtFg, *tbtBg;
 
-  QString chatname, linebuf;
+  QString linebuf, chatname;
   QComboBox *cmbFontName, *cmbFontSize;
 
   ChatMode m_nMode;
-  ChatUserList chatUsers;
   CChatUser *chatUser;
   unsigned long m_nUin;
-  unsigned short m_nSession;
-  TCPSocket m_cSocketChatServer;
-  QSocketNotifier *snChatServer;
+  QSocketNotifier *sn;
   bool m_bAudio;
 
   virtual void hideEvent(QHideEvent*);
@@ -136,13 +110,10 @@ protected:
 
 protected slots:
   void chatSend(QKeyEvent *);
-  void chatSendBuffer(const CBuffer*);
   void chatSendBeep();
-  void chatRecv(int);
-  void StateServer(int);
-  void StateClient(int);
-  void chatRecvConnection();
   void chatClose(CChatUser *);
+
+  void slot_chat();
 
   void fontSizeChanged(const QString&);
   void fontNameChanged(const QString&);

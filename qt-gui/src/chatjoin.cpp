@@ -54,8 +54,8 @@ CJoinChatDlg::CJoinChatDlg(QWidget *p, const char *n)
     }
     else
     {
-      n = (*iter)->chatUser->chatname;
-      if (n.isEmpty()) n.setNum((*iter)->chatUser->uin);
+      n = (*iter)->chatUser->Name();
+      if (n.isEmpty()) n.setNum((*iter)->chatUser->Uin());
     }
     QString c = (*iter)->ChatClients();
     if (!c.isEmpty())
