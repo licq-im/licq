@@ -78,11 +78,10 @@ IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyE
   setMinimumWidth(wharfIcon.width());
   setMinimumHeight(wharfIcon.height());
 #else
-  resize (wharfIcon.width(), wharfIcon.height());
   iconify();
 #endif
+  resize (wharfIcon.width(), wharfIcon.height());
   setMask(wharfIcon.mask);
-  DrawIcon();
   show();
 }
 
@@ -94,7 +93,7 @@ void IconManager::closeEvent( QCloseEvent*) {}
 
 
 //-----CMainWindow::setDockIconStatus-------------------------------------------
-void IconManager::setDockIconStatus(void)
+void IconManager::setDockIconStatus()
 {
   QPixmap m;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -133,13 +132,13 @@ void IconManager::setDockIconStatus(void)
     painter.drawPixmap(0, 27, m);
   painter.end();
 
-  wharfIcon.DrawIcon();
-  DrawIcon();
+  wharfIcon.repaint(false);
+  repaint(false);
 }
 
 
 //-----IconManager::GetDockIconStatusIcon--------------------------------------
-QPixmap *IconManager::GetDockIconStatusIcon(void)
+QPixmap *IconManager::GetDockIconStatusIcon()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->Status();
@@ -229,8 +228,8 @@ void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
   }
   p.end();
 
-  wharfIcon.DrawIcon();
-  DrawIcon();
+  wharfIcon.repaint(false);
+  repaint(false);
 }
 
 void IconManager::mouseReleaseEvent( QMouseEvent *e )
@@ -259,7 +258,6 @@ WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight
   resize(vis->width(), vis->height());
   setMask(mask);
 
-  DrawIcon();
   show();
 }
 
@@ -268,28 +266,13 @@ WharfIcon::~WharfIcon()
   delete vis;
 }
 
-void WharfIcon::DrawIcon(void)
-{
-  QPainter painter(this);
-  painter.drawPixmap(0, 0, *vis);
-  painter.end();
-}
-
-
-void IconManager::DrawIcon(void)
-{
-  QPainter painter(this);
-  painter.drawPixmap(0, 0, *wharfIcon.vis);
-  painter.end();
-}
-
-
 void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
 {
   switch(e->button())
   {
   case LeftButton:
     mainwin->show();
+    mainwin->raise();
     break;
   case MidButton:
     mainwin->callMsgFunction();
@@ -305,12 +288,16 @@ void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
 
 void WharfIcon::paintEvent( QPaintEvent * )
 {
-  DrawIcon();
+  QPainter painter(this);
+  painter.drawPixmap(0, 0, *vis);
+  painter.end();
 }
 
 void IconManager::paintEvent( QPaintEvent * )
 {
-  DrawIcon();
+  QPainter painter(this);
+  painter.drawPixmap(0, 0, *wharfIcon.vis);
+  painter.end();
 }
 
 #include "wharf.moc"
