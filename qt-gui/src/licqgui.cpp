@@ -246,10 +246,6 @@ CLicqGui::CLicqGui(int argc, char **argv)
   m_szIcons = strdup(iconsName);
   m_bStartHidden = bStartHidden;
 
-#if QT_VERSION >= 220
-  QApplication::setEffectEnabled(Qt::UI_FadeTooltip);
-#endif
-
   // Try and load a translation
   char *p;
 #ifndef HAVE_LOCALE_H
