@@ -193,6 +193,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 {
 	gchar *buf;
 	gchar *buf2;
+	gboolean urgent = FALSE;
 
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 
@@ -214,11 +215,26 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	{
 		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(c->spoof_uin), 0, -1));
 	}
+	
+	if(c->user->Status() == ICQ_STATUS_DND ||
+	   c->user->Status() == ICQ_STATUS_OCCUPIED)
+		urgent = TRUE;
+
+	strcpy(c->prog_buf, "Sending message ");
+
+	if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)))
+		strcat(c->prog_buf, "directly ... ");
+	else
+		strcat(c->prog_buf, "through server ... ");
 
 	/* Send the message */
 	c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
 	   (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-	   FALSE, uin);
+	   urgent, uin);
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress),
+						"prog");
+	gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+	gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
 
 	/* Put the text into the convo window */
 	gtk_text_freeze(GTK_TEXT(c->text));
