@@ -13,6 +13,8 @@ extern int errno;
 #include <unistd.h>
 #include "licq_log.h"
 
+using namespace std;
+
 CLogServer gLog;
 
 const char *COLOR_NORMAL = "[39m";

@@ -30,6 +30,8 @@ extern int errno;
 
 CUtilityManager gUtilityManager;
 
+using namespace std;
+
 //=====CUtilityManager==========================================================
 int SelectUtility(const struct dirent *d)
 {
