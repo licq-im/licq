@@ -2815,7 +2815,9 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
     }
   }
 
-  s->SetOwner(nUin);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  s->SetOwner(szUin, LICQ_PPID);
   s->SetVersion(nVersion);
 
   return true;

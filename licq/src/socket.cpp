@@ -167,7 +167,16 @@ char *INetSocket::RemoteIpStr(char *buf)
   return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf));
 }
 
-
+//-----INetSocket::SetOwner---------------------------------------------------
+void INetSocket::SetOwner(const char *_szOwnerId, unsigned long _nOwnerPPID)
+{
+  m_szOwnerId = strdup(_szOwnerId);
+  m_nOwnerPPID = _nOwnerPPID;
+  if (m_nOwnerPPID == LICQ_PPID)
+    m_nOwner = strtoul(_szOwnerId, (char **)NULL, 10);
+  else
+    m_nOwner = 0;
+}
 
 //-----INetSocket::Error------------------------------------------------------
 int INetSocket::Error()
