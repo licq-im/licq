@@ -1034,7 +1034,7 @@ void CMainWindow::callUserFunction(int index)
     
   case MNUxITEM_CHECKxRESPONSE:
   {
-    ShowAwayMsgDlg* dummy = new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
+    (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
     break;
   }
   case MNUxITEM_ONLINExNOTIFY:
