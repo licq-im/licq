@@ -812,8 +812,7 @@ QWidget* OptionsDlg::new_misc_options()
   edtTerminal = new QLineEdit(tr("Terminal:"), boxExtensions);
   QWhatsThis::add(edtTerminal, tr("The command to run to start your terminal program."));
 
-//  boxParanoia = new QGroupBox(3, Vertical, tr("Paranoia"), w);
-  boxParanoia = new QGroupBox(3, Vertical, w);
+  boxParanoia = new QGroupBox(3, Vertical, tr("Paranoia"), w);
   lay->addWidget(boxParanoia);
 
   chkHideIp = new QCheckBox(tr("Hide IP"), boxParanoia);
