@@ -1790,6 +1790,26 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  eEvent = e;
 	  break;
 	}
+
+	case ICQ_CMDxSUB_MSGxSERVER:
+	{
+	  gLog.Info("%sServer message.\n", L_BLANKxSTR);
+	  CEventServerMessage *e = CEventServerMessage::Parse(szMessage,
+	  	ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
+	
+	  if (e == NULL)
+	  {
+	    char *buf;
+	    gLog.Warn("%sInvalid Server Message:\n%s\n", L_WARNxSTR,
+	      packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
+
+	  eEvent = e;
+	  break;
+	}
+	
 	default:
 	{
 	  char *szFE, *buf;
@@ -1846,6 +1866,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_ADDEDxTOxLIST:
 	  case ICQ_CMDxSUB_WEBxPANEL:
 	  case ICQ_CMDxSUB_EMAILxPAGER:
+	  case ICQ_CMDxSUB_MSGxSERVER:
 	  {
 	    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
             if (AddUserEvent(o, eEvent))

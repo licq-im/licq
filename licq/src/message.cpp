@@ -90,7 +90,8 @@ const char *CUserEvent::LicqVersionStr()
 //-----CUserEvent::destructor---------------------------------------------------
 CUserEvent::~CUserEvent()
 {
-  delete[] m_szText;
+  if (m_szText)
+    delete[] m_szText;
 }
 
 
@@ -693,6 +694,62 @@ CEventSms *CEventSms::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 {
   gTranslator.ServerToClient (sz);
   return new CEventSms(sz, nCmd, nTime, nFlags);
+}
+
+
+//=====CEventServerMessage=====================================================
+CEventServerMessage::CEventServerMessage(const char *_szName,
+                                         const char *_szEmail,
+					 const char *_szMessage,
+					 time_t _tTime)
+   : CUserEvent(ICQ_CMDxSUB_MSGxSERVER, 0, 0, _tTime, 0)
+{
+  m_szName = strdup(_szName == NULL ? "" : _szName);
+  m_szEmail = strdup(_szEmail == NULL ? "" : _szEmail);
+  m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
+}
+
+CEventServerMessage::~CEventServerMessage()
+{
+  free(m_szName);
+  free(m_szEmail);
+  free(m_szMessage);
+}
+
+void CEventServerMessage::CreateDescription()
+{
+  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
+  sprintf(m_szText, "System Server Message from %s (%s):\n%s\n", m_szName,
+          m_szEmail, m_szMessage);
+}
+
+void CEventServerMessage::AddToHistory(ICQUser *u, direction _nDir)
+{
+  char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
+                         (strlen(m_szMessage) * 2) + EVENT_HEADER_SIZE)];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s\n%s\n", m_szName, m_szEmail);
+  AddStrWithColons(&szOut[nPos], m_szMessage);
+  AddToHistory_Flush(u, szOut);
+  delete [] szOut;
+}
+
+
+CEventServerMessage *CEventServerMessage::Parse(char *sz, unsigned short nCmd,
+                                                time_t nTime,
+						unsigned long nFlags)
+{
+  char **szMsg = new char*[6]; // name, email, msg
+  if (!ParseFE(sz, &szMsg, 6))
+  { 
+    delete [] szMsg;
+    return NULL;
+  }
+
+  CEventServerMessage *e = new CEventServerMessage(szMsg[0], szMsg[3], szMsg[5],
+                                                   nTime);
+  delete [] szMsg;
+  return e;
 }
 
 

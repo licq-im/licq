@@ -280,6 +280,7 @@ const unsigned short ICQ_CMDxSUB_URL               = 0x0004;
 const unsigned short ICQ_CMDxSUB_AUTHxREQUEST      = 0x0006;
 const unsigned short ICQ_CMDxSUB_AUTHxREFUSED      = 0x0007;
 const unsigned short ICQ_CMDxSUB_AUTHxGRANTED      = 0x0008;
+const unsigned short ICQ_CMDxSUB_MSGxSERVER        = 0x0009;
 const unsigned short ICQ_CMDxSUB_ADDEDxTOxLIST     = 0x000C;
 const unsigned short ICQ_CMDxSUB_WEBxPANEL         = 0x000D;
 const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;

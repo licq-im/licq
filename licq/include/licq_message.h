@@ -405,6 +405,33 @@ protected:
    char *m_szMessage;
 };
 
+//-----CEventServerMessage-----------------------------------------------------
+class CEventServerMessage : public CUserEvent
+{
+public:
+  CEventServerMessage(const char *_szName, const char *_szEmail,
+                      const char *_szMessage, time_t _tTime);
+  virtual ~CEventServerMessage();
+
+  virtual void AddToHistory(ICQUser *, direction);
+
+  virtual CEventServerMessage *Copy()
+  {
+    CEventServerMessage *e = new CEventServerMessage(m_szName, m_szEmail,
+		    m_szMessage, m_tTime);
+    e->CopyBase(this);
+    return e;
+  }
+
+  static CEventServerMessage *Parse(char *, unsigned short, time_t, unsigned long);
+
+protected:
+  void CreateDescription();
+
+  char *m_szName,
+       *m_szEmail,
+       *m_szMessage;
+};
 
 //-----CEventPlugin------------------------------------------------------------
 class CEventPlugin : public CUserEvent
