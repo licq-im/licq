@@ -272,12 +272,12 @@ void menu_options_create()
 	
 	// Combox box with the options
 	GList *lItems = 0;
-	lItems = g_list_append(lItems, "(None)");
-	lItems = g_list_append(lItems, "Online");
-	lItems = g_list_append(lItems, "Away");
-	lItems = g_list_append(lItems, "Not Available");
-	lItems = g_list_append(lItems, "Occupied");
-	lItems = g_list_append(lItems, "Do Not Disturb");
+	lItems = g_list_append(lItems, const_cast<char *>("(None)"));
+	lItems = g_list_append(lItems, const_cast<char *>("Online"));
+	lItems = g_list_append(lItems, const_cast<char *>("Away"));
+	lItems = g_list_append(lItems, const_cast<char *>("Not Available"));
+	lItems = g_list_append(lItems, const_cast<char *>("Occupied"));
+	lItems = g_list_append(lItems, const_cast<char *>("Do Not Disturb"));
 
 	ow->cmbAutoLogon = gtk_combo_new();
 	gtk_combo_set_popdown_strings(GTK_COMBO(ow->cmbAutoLogon), lItems);
