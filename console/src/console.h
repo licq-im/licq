@@ -79,14 +79,18 @@ public:
   void MenuGroup(char *);
   void MenuQuit(char *);
   void MenuUser(char *);
+  void MenuOwner(char *);
   void MenuStatus(char *);
   void MenuPlugins(char *);
   void MenuSet(char *);
+  void MenuLast(char *);
 
   void TabUser(char *, struct STabCompletion &);
+  void TabOwner(char *, struct STabCompletion &);
   void TabCommand(char *, struct STabCompletion &);
   void TabStatus(char *, struct STabCompletion &);
   void TabSet(char *, struct STabCompletion &);
+  void TabLast(char *, struct STabCompletion &);
 
   void UserCommand_Info(unsigned long nUin);
   void UserCommand_Msg(unsigned long nUin);
@@ -112,6 +116,7 @@ struct SCommand
 };
 extern const unsigned short NUM_COMMANDS;
 extern const struct SCommand aCommands[];
+
 struct SStatus
 {
   char szName[16];
@@ -119,6 +124,7 @@ struct SStatus
 };
 extern const unsigned short NUM_STATUS;
 extern const struct SStatus aStatus[];
+
 struct SUserCommand
 {
   char szName[16];
@@ -126,6 +132,14 @@ struct SUserCommand
 };
 extern const unsigned short NUM_USER_COMMANDS;
 extern const struct SUserCommand aUserCommands[];
+
+struct SOwnerCommand
+{
+  char szName[16];
+  void (CLicqConsole::*fProcessCommand)(unsigned long);
+};
+extern const unsigned short NUM_OWNER_COMMANDS;
+extern const struct SOwnerCommand aOwnerCommands[];
 
 typedef enum { INT, BOOL, STRING, COLOR } VarType;
 struct SVariable

@@ -90,6 +90,7 @@ void CLicqConsole::PrintStatus(void)
 {
   static char szStatusStr[32];
   static char szMsgStr[16];
+  static char szLastUser[32];
 
   werase(winStatus->Win());
 
@@ -104,6 +105,18 @@ void CLicqConsole::PrintStatus(void)
   else
     strcpy(szMsgStr, "No Messages");
 
+  if (winMain->nLastUin != 0)
+  {
+    ICQUser *u = gUserManager.FetchUser(winMain->nLastUin, LOCK_R);
+    if (u == NULL)
+      strcpy(szLastUser, "<Removed>");
+    else
+      strcpy(szLastUser, u->getAlias());
+    gUserManager.DropUser(u);
+  }
+  else
+    strcpy(szLastUser, "<None>");
+
   o = gUserManager.FetchOwner(LOCK_R);
   o->getStatusStr(szStatusStr);
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
@@ -112,12 +125,13 @@ void CLicqConsole::PrintStatus(void)
   wmove(winStatus->Win(), 1, 0);
 
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
-  winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - %C%s %C- %C%s %C- %C%s %C]", COLOR_YELLOW_BLUE,
+  winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", COLOR_YELLOW_BLUE,
                      A_BOLD, COLOR_WHITE_BLUE, o->getAlias(), COLOR_YELLOW_BLUE,
                      COLOR_WHITE_BLUE, o->getUin(), COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, szStatusStr, COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE);
+                     COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE, COLOR_CYAN_BLUE,
+                     szLastUser, COLOR_YELLOW_BLUE);
   gUserManager.DropOwner();
   wclrtoeol(winStatus->Win());
   winStatus->RefreshWin();
@@ -288,16 +302,28 @@ void CLicqConsole::PrintHelp(void)
   PrintBoxRight(60);
 
   waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A/o%Zwner [ %Av%Ziew|%Ai%Znfo ]",
+                   A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(60);
+
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A/l%Zast [ %A<user-command>%Z ]",
+                   A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(60);
+
+  waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/st%Z%s", A_BOLD, A_BOLD,
                    "atus [*]online|away|na|dnd|occupied|ffc|offline");
   PrintBoxRight(60);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/se%Z%s [ variable [ = value ] ]", A_BOLD, A_BOLD, "t");
+  winMain->wprintf(" %A/se%Z%s [ %A<variable>%Z [ = %A<value>%Z ] ]",
+                   A_BOLD, A_BOLD, "t", A_BOLD, A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(60);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/h%Z%s [ command ]", A_BOLD, A_BOLD, "elp");
+  winMain->wprintf(" %A/h%Z%s [ %A<command>%Z ]", A_BOLD, A_BOLD, "elp",
+                   A_BOLD, A_BOLD);
   PrintBoxRight(60);
 
   waddch(winMain->Win(), ACS_VLINE);

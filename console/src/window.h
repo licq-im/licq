@@ -37,6 +37,7 @@ public:
   ICQEvent *event;
   InputState state;
   CData *data;
+  unsigned long nLastUin;
 protected:
   WINDOW *win;
   bool pad, active;

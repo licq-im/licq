@@ -48,7 +48,7 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
 {
   char szMatch[32] = "";
   unsigned short nLen;
-  char *szSubCmd = NULL;
+/*  char *szSubCmd = NULL;
 
   if (_szPartialMatch[0] == '"')
   {
@@ -61,7 +61,7 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
     szSubCmd = strchr(_szPartialMatch, ' ');
   }
 
-  if (szSubCmd == NULL)
+  if (szSubCmd == NULL)*/
   {
     nLen = strlen(_szPartialMatch);
     FOR_EACH_USER_START(LOCK_R)
@@ -76,8 +76,13 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
       }
     }
     FOR_EACH_USER_END
+
+    if (nLen == 0)
+      _sTabCompletion.szPartialMatch[0] = '\0';
+    else
+      strcpy(_sTabCompletion.szPartialMatch, szMatch);
   }
-  else // Sub command time
+/*  else // Sub command time
   {
     // Remove any leading spaces
     while(isspace(*szSubCmd) && szSubCmd[0] != '\0') szSubCmd++;
@@ -92,6 +97,58 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
           szMatch[StrMatchLen(szMatch, aUserCommands[i].szName, nLen)] = '\0';
         _sTabCompletion.vszPartialMatch.push_back(strdup(aUserCommands[i].szName));
       }
+    }
+    if (nLen == 0)
+      _sTabCompletion.szPartialMatch[0] = '\0';
+    else
+      sprintf(_sTabCompletion.szPartialMatch, "%s%s", _szPartialMatch, &szMatch[nLen]);
+  }*/
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::TabOwner
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::TabOwner(char *_szPartialMatch,
+                            struct STabCompletion &_sTabCompletion)
+{
+  char szMatch[32] = "";
+  unsigned short nLen = strlen(_szPartialMatch);
+  for (unsigned short i = 0; i < NUM_OWNER_COMMANDS; i++)
+  {
+    if (strncasecmp(_szPartialMatch, aOwnerCommands[i].szName, nLen) == 0)
+    {
+      if (szMatch[0] == '\0')
+        strcpy(szMatch, aOwnerCommands[i].szName);
+      else
+        szMatch[StrMatchLen(szMatch, aOwnerCommands[i].szName, nLen)] = '\0';
+      _sTabCompletion.vszPartialMatch.push_back(strdup(aOwnerCommands[i].szName));
+    }
+  }
+  if (nLen == 0)
+    _sTabCompletion.szPartialMatch[0] = '\0';
+  else
+    strcpy(_sTabCompletion.szPartialMatch, szMatch);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::TabLast
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::TabLast(char *_szPartialMatch,
+                           struct STabCompletion &_sTabCompletion)
+{
+  char szMatch[32] = "";
+  unsigned short nLen = strlen(_szPartialMatch);
+  for (unsigned short i = 0; i < NUM_USER_COMMANDS; i++)
+  {
+    if (strncasecmp(_szPartialMatch, aUserCommands[i].szName, nLen) == 0)
+    {
+      if (szMatch[0] == '\0')
+        strcpy(szMatch, aUserCommands[i].szName);
+      else
+        szMatch[StrMatchLen(szMatch, aUserCommands[i].szName, nLen)] = '\0';
+      _sTabCompletion.vszPartialMatch.push_back(strdup(aUserCommands[i].szName));
     }
   }
   if (nLen == 0)

@@ -2,7 +2,7 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 8;
+const unsigned short NUM_COMMANDS = 10;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "/contacts", &CLicqConsole::MenuContactList, NULL,
@@ -11,8 +11,12 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Prints the group list or changes to the given group number." },
   { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
     "User commands deal with indiviual users." },
+  { "/owner", &CLicqConsole::MenuOwner, &CLicqConsole::TabOwner,
+    "Commands dealing with yourself." },
   { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
     "Set your status, prefix with \"*\" for invisible mode." },
+  { "/last", &CLicqConsole::MenuLast, &CLicqConsole::TabLast,
+    "Perform the given command on the last user." },
   { "/set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
     "Allows the setting and viewing of options.  With no arguments\n"
     "will print all current set'able values.  With one argument will\n"
@@ -36,6 +40,13 @@ const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
   { "view", &CLicqConsole::UserCommand_View },
   { "message", &CLicqConsole::UserCommand_Msg },
   { "url", &CLicqConsole::UserCommand_Url }
+};
+
+const unsigned short NUM_OWNER_COMMANDS = 2;
+const struct SOwnerCommand aOwnerCommands[NUM_OWNER_COMMANDS] =
+{
+  { "info", &CLicqConsole::UserCommand_Info },
+  { "view", &CLicqConsole::UserCommand_View },
 };
 
 #define STRIP(x) while(isspace(*(x)) && *(x) != '\0') (x)++;
@@ -339,8 +350,73 @@ void CLicqConsole::MenuUser(char *_szArg)
     return;
   }
 
+  // Save this as the last user
+  if (winMain->nLastUin != nUin)
+  {
+    winMain->nLastUin = nUin;
+    PrintStatus();
+  }
   // Run the command
   (this->*(aUserCommands[nCmd].fProcessCommand))(nUin);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuLast
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuLast(char *_szArg)
+{
+  unsigned short nCmd = 0;
+
+  if (winMain->nLastUin == 0)
+  {
+    winMain->wprintf("%CNo last user.\n", COLOR_RED);
+    return;
+  }
+
+  if (_szArg == NULL)
+  {
+    nCmd = 0;
+  }
+  else
+  {
+    for (nCmd = 0; nCmd < NUM_USER_COMMANDS; nCmd++)
+    {
+      if (strcasecmp(_szArg, aUserCommands[nCmd].szName) == 0)
+        break;
+    }
+    if (nCmd == NUM_USER_COMMANDS)
+    {
+      winMain->wprintf("%CInvalid user command: %A%s\n", COLOR_RED, A_BOLD, _szArg);
+      return;
+    }
+  }
+
+  // Run the command
+  (this->*(aUserCommands[nCmd].fProcessCommand))(winMain->nLastUin);
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuOwner
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuOwner(char *_szArg)
+{
+  unsigned short nCmd = 0;
+
+  for (nCmd = 0; nCmd < NUM_OWNER_COMMANDS; nCmd++)
+  {
+    if (strcasecmp(_szArg, aOwnerCommands[nCmd].szName) == 0)
+      break;
+  }
+  if (nCmd == NUM_OWNER_COMMANDS)
+  {
+    winMain->wprintf("%CInvalid owner command: %A%s\n", COLOR_RED, A_BOLD, _szArg);
+    return;
+  }
+
+  // Run the command
+  (this->*(aOwnerCommands[nCmd].fProcessCommand))(gUserManager.OwnerUin());
 }
 
 

@@ -423,6 +423,9 @@ void CLicqConsole::SwitchToCon(unsigned short nCon)
   mvwhline(winConStatus->Win(), 1, 0, ACS_HLINE, COLS);
   mvwaddch(winConStatus->Win(), 1, COLS - USER_WIN_WIDTH - 1, ACS_TTEE);
   winConStatus->RefreshWin();
+
+  // Refresh the last user field
+  PrintStatus();
 }
 
 
@@ -751,7 +754,8 @@ void CLicqConsole::UserCommand_View(unsigned long nUin)
       waddch(winMain->Win(), ACS_HLINE);
     waddch(winMain->Win(), '\n');
     winMain->wprintf("%A%C%s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
-                     COLOR_WHITE, EventDescription(e), u->getAlias(),
+                     COLOR_WHITE, EventDescription(e),
+                     u->User() ? u->getAlias() : "Server",
                      e->Time(), e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
                      A_BOLD, e->Text());

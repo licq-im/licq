@@ -51,6 +51,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, bool _pad)
   keypad(win, TRUE);
   wbkgd(win, COLOR_PAIR(COLOR_WHITE));
   wmove(win, 0, 0);
+  nLastUin = 0;
 }
 
 CWindow::~CWindow(void)
