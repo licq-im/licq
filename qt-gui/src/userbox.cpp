@@ -1327,35 +1327,45 @@ void CUserView::maybeTip(const QPoint& c)
       QString ds, temp;
       if (nWeek)
       {
-      	ds += temp.setNum(nWeek);
-	ds += " ";
-      	ds += (nWeek > 1 ? " weeks" : " week");
+        ds += temp.setNum(nWeek);
+        ds += " ";
+        ds += (nWeek > 1 ? " weeks" : " week");
       }
       if (nDay)
       {
-        if (nWeek) ds += ", ";
+        if (nWeek) ds += " ";
         ds += temp.setNum(nDay);
-	ds += " ";
+        ds += " ";
         ds += (nDay > 1 ? " days" : " day");
       }
       if (nHour)
       {
-        if (nWeek || nDay) ds += ", ";
-	ds += temp.setNum(nHour);
+        if (nWeek || nDay) ds += " ";
+        ds += temp.setNum(nHour);
         ds += (nHour > 1 ? " hours" : " hour");
       }
       if (nMinute)
       {
-        if (nWeek || nDay || nHour) ds += ", ";
-	ds += temp.setNum(nMinute);
+        if (nWeek || nDay || nHour) ds += " ";
+        ds += temp.setNum(nMinute);
         ds += (nMinute > 1 ? " minutes" : " minute");
       }
       if (!nWeek && !nDay && !nHour && !nMinute)
-	ds += "0 minutes";
-
-      ds += ".";
+        ds += "0 minutes";
 
       s += tr("<br><nobr>Logged In: ") + ds + tr("</nobr>");
+    }
+
+    if (u->Away() && gMainWindow->m_bPopIdleTime)
+    {
+      if (u->IdleSince())
+      {
+        char szTemp[128];
+        u->usprintf(szTemp, "%I");
+        QString temp(szTemp);
+        s += tr("<br><nobr>Idle: ") + temp + tr("</nobr>");
+        tip (r, s);
+      }
     }
 
     tip(r, s);

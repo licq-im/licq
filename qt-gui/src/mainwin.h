@@ -118,6 +118,7 @@ public:
        m_bPopIP, 
        m_bPopLastOnline,
        m_bPopOnlineSince,
+       m_bPopIdleTime,
        m_bShowAllEncodings;
 
   QString m_MsgAutopopupKey;

@@ -215,6 +215,7 @@ void OptionsDlg::SetupOptions()
   popIP->setChecked(mainwin->m_bPopIP);
   popLastOnline->setChecked(mainwin->m_bPopLastOnline);
   popOnlineSince->setChecked(mainwin->m_bPopOnlineSince);
+  popIdleTime->setChecked(mainwin->m_bPopIdleTime);
 
   switch(mainwin->m_nDockMode)
   {
@@ -444,6 +445,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bPopIP= popIP->isChecked();
   mainwin->m_bPopLastOnline= popLastOnline->isChecked();
   mainwin->m_bPopOnlineSince = popOnlineSince->isChecked();
+  mainwin->m_bPopIdleTime = popIdleTime->isChecked();
 
 
 #ifndef USE_KDE
@@ -1206,6 +1208,7 @@ QWidget* OptionsDlg::new_column_options()
   popIP     = new QCheckBox(tr("IP"), boxPopWin);
   popLastOnline = new QCheckBox(tr("Last online"), boxPopWin);
   popOnlineSince = new QCheckBox(tr("Online Time"), boxPopWin);
+  popIdleTime = new QCheckBox(tr("Idle Time"), boxPopWin);
 
 
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);

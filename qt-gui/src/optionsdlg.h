@@ -117,7 +117,7 @@ protected:
    QWidget* new_popup_options();
    QGroupBox *boxPopWin;
    QCheckBox *popEmail, *popPhone, *popFax, *popCellular, *popIP,
-	*popLastOnline, *popOnlineSince;
+	*popLastOnline, *popOnlineSince, *popIdleTime;
 
    // Phone & celluar tab
    QWidget* new_phone_options();

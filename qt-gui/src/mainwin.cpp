@@ -349,6 +349,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("showPopIP",m_bPopIP, false);
   licqConf.ReadBool("showPopLastOnelin",m_bPopLastOnline, false);
   licqConf.ReadBool("showPopOnlineSince", m_bPopOnlineSince, false);
+  licqConf.ReadBool("showPopIdleTime", m_bPopIdleTime, true);
 
 
   unsigned short nFlash;
@@ -2302,6 +2303,7 @@ void CMainWindow::UserGroupToggled(int id)
       }
       u->SetIgnoreList(!u->IgnoreList());
       gUserManager.DropUser(u);
+      licqDaemon->icqToggleIgnoreList(m_nUserMenuUin); // network only
       updateUserWin();
       break;
     }
@@ -2450,6 +2452,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("showPopIP",m_bPopIP);
   licqConf.WriteBool("showPopLastOnelin",m_bPopLastOnline);
   licqConf.WriteBool("showPopOnlineSince", m_bPopOnlineSince);
+  licqConf.WriteBool("showPopIdleTime", m_bPopIdleTime);
 
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
