@@ -546,10 +546,10 @@ void ChatDlg::StateServer(int sd)
         l.push_back(&(*iter)->client);
       }
 
-      CPChat_ColorFont p_colorfont(chatname, LocalPort(), m_nSession,
+      CPChat_ColorFont p_colorfont(chatname.local8Bit(), LocalPort(), m_nSession,
          0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
          mlePaneLocal->font().pointSize(), false, false, false,
-         mlePaneLocal->font().family(), l);
+         mlePaneLocal->font().family().local8Bit(), l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
         char buf[128];
@@ -652,7 +652,7 @@ bool ChatDlg::ConnectToChat(CChatClient &c)
   u->sock.SendPacket(p_handshake.getBuffer());
 
   // Send color packet
-  CPChat_Color p_color(chatname, LocalPort(), 0x00, 0x00, 0x00,
+  CPChat_Color p_color(chatname.local8Bit(), LocalPort(), 0x00, 0x00, 0x00,
      0xFF, 0xFF, 0xFF);
   u->sock.SendPacket(p_color.getBuffer());
 
@@ -743,7 +743,7 @@ void ChatDlg::StateClient(int sd)
       // send the reply (font packet)
       CPChat_Font p_font(LocalPort(), m_nSession,
          mlePaneRemote->font().pointSize(),
-         false, false, false, mlePaneLocal->font().family());
+         false, false, false, mlePaneLocal->font().family().local8Bit());
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
         char buf[128];

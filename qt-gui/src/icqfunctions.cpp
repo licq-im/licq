@@ -173,7 +173,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 void ICQFunctions::CreateReadEventTab()
 {
   tabList[TAB_READ].label = tr("&View");
-  QVBox *p = new QVBox(this, tabList[TAB_READ].label);
+  QVBox *p = new QVBox(this, tabList[TAB_READ].label.latin1());
   p->setMargin(8);
   tabList[TAB_READ].tab = p;
   tabList[TAB_READ].loaded = true;
@@ -211,7 +211,7 @@ void ICQFunctions::CreateReadEventTab()
 void ICQFunctions::CreateSendEventTab()
 {
   tabList[TAB_SEND].label = tr("S&end");
-  tabList[TAB_SEND].tab = new QWidget(this, tabList[TAB_SEND].label);
+  tabList[TAB_SEND].tab = new QWidget(this, tabList[TAB_SEND].label.latin1());
   QBoxLayout* selay = new QVBoxLayout(tabList[TAB_SEND].tab, 8);
   tabList[TAB_SEND].loaded = true;
 
@@ -274,7 +274,7 @@ void ICQFunctions::CreateSendEventTab()
 void ICQFunctions::CreateGeneralInfoTab()
 {
   tabList[TAB_GENERALINFO].label = tr("General");
-  tabList[TAB_GENERALINFO].tab = new QWidget(this, tabList[TAB_GENERALINFO].label);
+  tabList[TAB_GENERALINFO].tab = new QWidget(this, tabList[TAB_GENERALINFO].label.latin1());
   tabList[TAB_GENERALINFO].loaded = false;
 }
 
@@ -365,7 +365,7 @@ void ICQFunctions::InitGeneralInfoTab()
 void ICQFunctions::CreateMoreInfoTab()
 {
   tabList[TAB_MOREINFO].label = tr("More");
-  tabList[TAB_MOREINFO].tab = new QWidget(this, tabList[TAB_MOREINFO].label);
+  tabList[TAB_MOREINFO].tab = new QWidget(this, tabList[TAB_MOREINFO].label.latin1());
   tabList[TAB_MOREINFO].loaded = false;
 }
 
@@ -467,7 +467,7 @@ void ICQFunctions::InitMoreInfoTab()
 void ICQFunctions::CreateWorkInfoTab()
 {
   tabList[TAB_WORKINFO].label = tr("Work");
-  tabList[TAB_WORKINFO].tab = new QWidget(this, tabList[TAB_WORKINFO].label);
+  tabList[TAB_WORKINFO].tab = new QWidget(this, tabList[TAB_WORKINFO].label.latin1());
   tabList[TAB_WORKINFO].loaded = false;
 }
 
@@ -522,7 +522,7 @@ void ICQFunctions::InitWorkInfoTab()
 void ICQFunctions::CreateAboutTab()
 {
   tabList[TAB_ABOUT].label = tr("About");
-  tabList[TAB_ABOUT].tab = new QVBox(this, tabList[TAB_ABOUT].label);
+  tabList[TAB_ABOUT].tab = new QVBox(this, tabList[TAB_ABOUT].label.latin1());
   tabList[TAB_ABOUT].loaded = false;
 }
 
@@ -544,7 +544,7 @@ void ICQFunctions::InitAboutTab()
 void ICQFunctions::CreateHistoryTab()
 {
   tabList[TAB_HISTORY].label = tr("History");
-  tabList[TAB_HISTORY].tab = new QWidget(this, tabList[TAB_HISTORY].label);
+  tabList[TAB_HISTORY].tab = new QWidget(this, tabList[TAB_HISTORY].label.latin1());
   tabList[TAB_HISTORY].loaded = false;
 }
 
@@ -1339,7 +1339,7 @@ void ICQFunctions::slot_readbtn2()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("Chat"), this);
       if (r->exec())
       {
-        server->icqChatRequestRefuse(m_nUin, (const char *)r->RefuseMessage(),
+        server->icqChatRequestRefuse(m_nUin, r->RefuseMessage().local8Bit(),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
@@ -1351,7 +1351,7 @@ void ICQFunctions::slot_readbtn2()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("File Transfer"), this);
       if (r->exec())
       {
-        server->icqFileTransferRefuse(m_nUin, (const char *)r->RefuseMessage(),
+        server->icqFileTransferRefuse(m_nUin, r->RefuseMessage().local8Bit(),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
@@ -1465,14 +1465,14 @@ void ICQFunctions::SaveGeneralInfo()
   u->SetAlias(nfoAlias->text().local8Bit());
   u->SetFirstName(nfoFirstName->text().local8Bit());
   u->SetLastName(nfoLastName->text().local8Bit());
-  u->SetEmail1(nfoEmail1->text());
-  u->SetEmail2(nfoEmail2->text());
+  u->SetEmail1(nfoEmail1->text().local8Bit());
+  u->SetEmail2(nfoEmail2->text().local8Bit());
   u->SetCity(nfoCity->text().local8Bit());
   u->SetState(nfoState->text().local8Bit());
   u->SetAddress(nfoAddress->text().local8Bit());
-  u->SetPhoneNumber(nfoPhone->text());
-  u->SetFaxNumber(nfoFax->text());
-  u->SetCellularNumber(nfoCellular->text());
+  u->SetPhoneNumber(nfoPhone->text().local8Bit());
+  u->SetFaxNumber(nfoFax->text().local8Bit());
+  u->SetCellularNumber(nfoCellular->text().local8Bit());
   u->SetZipCode(nfoZipCode->text().toULong());
   if (m_bOwner)
   {
@@ -1495,8 +1495,8 @@ void ICQFunctions::SaveMoreInfo()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   u->SetEnableSave(false);
 
-  u->SetAge(atol(nfoAge->text()));
-  u->SetHomepage(nfoHomepage->text());
+  u->SetAge(nfoAge->text().toULong());
+  u->SetHomepage(nfoHomepage->text().local8Bit());
   //u->SetBirthYear();
   //u->SetBirthMonth();
   //u->SetBirthDay();
@@ -1645,18 +1645,18 @@ void ICQFunctions::ShowHistory()
     d.setTime_t((*tempIter)->Time());
     if ((*tempIter)->Direction() == D_RECEIVER)
       s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
-                '\001', (const char *)EventDescription(*tempIter),
-                (const char *)tr("from"), (const char *)n, '\001',
-                (const char *)d.toString(),
+                '\001', EventDescription(*tempIter).data(),
+                tr("from").utf8().data(), n.utf8().data(), '\001',
+                d.toString().utf8().data(),
                 (*tempIter)->IsDirect() ? 'D' : '-',
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
     else
       s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
-                '\002', (const char *)EventDescription(*tempIter),
-                (const char *)tr("to"), (const char *)n, '\002',
-                (const char *)d.toString(),
+                '\002', EventDescription(*tempIter).data(),
+                tr("to").utf8().data(), n.utf8().data(), '\002',
+                d.toString().utf8().data(),
                 (*tempIter)->IsDirect() ? 'D' : '-',
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
@@ -1819,7 +1819,7 @@ void ICQFunctions::callFcn()
       m_sProgressMsg = tr("Sending URL ");
       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
       m_sProgressMsg += "...";
-      icqEventTag = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+      icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
          chkSendServer->isChecked() ? false : true,
          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
     }
@@ -1837,7 +1837,7 @@ void ICQFunctions::callFcn()
         break;
       }
       m_sProgressMsg = tr("Sending file transfer...");
-      icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(),
+      icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
          mleSend->text().local8Bit(),
          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
     }
@@ -1887,7 +1887,7 @@ void ICQFunctions::callFcn()
       unsigned short lc3 = GetLanguageByIndex(i)->nCode;
       icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
                                            cmbGender->currentItem(),
-                                           nfoHomepage->text(),
+                                           nfoHomepage->text().local8Bit(),
                                            spnBirthYear->value() - 1900,
                                            spnBirthMonth->value(),
                                            spnBirthDay->value(),

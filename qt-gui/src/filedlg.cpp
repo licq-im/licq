@@ -183,7 +183,7 @@ bool CFileDlg::GetLocalFileName()
     struct stat buf;
     int nFlags = O_WRONLY;
     m_nFilePos = 0;
-    if (stat(f, &buf) == 0)  // file already exists
+    if (stat(QFile::encodeName(f), &buf) == 0)  // file already exists
     {
       if ((unsigned long)buf.st_size >= m_sFileInfo.nSize)
       {
@@ -208,7 +208,7 @@ bool CFileDlg::GetLocalFileName()
       nFlags |= O_CREAT;
     }
 
-    m_nFileDesc = open (f, nFlags, 00664);
+    m_nFileDesc = open (QFile::encodeName(f), nFlags, 00664);
     if (m_nFileDesc < 0)
     {
       if (!QueryUser(this, tr("Open error - unable to open file for writing."), tr("Retry"), tr("Cancel")))
@@ -635,10 +635,10 @@ void CFileDlg::StateClient()
     setCaption(tr("ICQ file transfer %1 %2").arg(m_bServer ? tr("from") : tr("to")).arg(m_szRemoteName));
 
     // Send file info packet
-    CPFile_Info p(nfoTransferFileName->text());
+    CPFile_Info p(nfoTransferFileName->text().local8Bit());
     if (!p.IsValid())
     {
-      gLog.Error("%sFile read error '%s':\n%s%s\n.", L_ERRORxSTR, (const char *)nfoTransferFileName->text(),
+      gLog.Error("%sFile read error '%s':\n%s%s\n.", L_ERRORxSTR, nfoTransferFileName->text().local8Bit(),
                  L_BLANKxSTR, p.ErrorStr());
       fileCancel();
       return;
@@ -647,7 +647,7 @@ void CFileDlg::StateClient()
     lblStatus->setText(tr("Sent batch info, waiting for ack..."));
 
     // Set up local batch info
-    strcpy(m_sFileInfo.szName, nfoTransferFileName->text());
+    strcpy(m_sFileInfo.szName, nfoTransferFileName->text().local8Bit());
     m_sFileInfo.nSize = p.GetFileSize();
     m_nCurrentFile++;
 

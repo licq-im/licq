@@ -68,7 +68,7 @@ void AddUserDlg::hide()
 
 void AddUserDlg::ok()
 {
-   unsigned long nUin = atol((const char *)edtUin->text());
+   unsigned long nUin = edtUin->text().toULong();
    if (nUin != 0)
    {
      server->AddUserToList(nUin);

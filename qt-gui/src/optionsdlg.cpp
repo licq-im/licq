@@ -365,8 +365,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetIgnore(IGNORE_EMAILPAGER, chkIgnoreEmailPager->isChecked());
 
   // Plugin tab
-  mainwin->licqDaemon->setUrlViewer(edtUrlViewer->text());
-  mainwin->licqDaemon->SetTerminal(edtTerminal->text());
+  mainwin->licqDaemon->setUrlViewer(edtUrlViewer->text().local8Bit());
+  mainwin->licqDaemon->SetTerminal(edtTerminal->text().local8Bit());
   if (cmbTrans->isEnabled())
   {
     if (cmbTrans->currentItem() == 0)
@@ -394,8 +394,8 @@ void OptionsDlg::ApplyOptions()
   i = 0;
   while (i < 4 && chkColEnabled[i]->isChecked())
   {
-     mainwin->colInfo.push_back(new CColumnInfo(edtColTitle[i]->text(),
-                                                edtColFormat[i]->text(),
+     mainwin->colInfo.push_back(new CColumnInfo(edtColTitle[i]->text().local8Bit(),
+                                                edtColFormat[i]->text().local8Bit(),
                                                 spnColWidth[i]->value(),
                                                 cmbColAlign[i]->currentItem()));
      i++;
@@ -409,10 +409,10 @@ void OptionsDlg::ApplyOptions()
   // set up the sound stuff
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
-  const char *oemparams[6] = { edtSndMsg->text(), edtSndUrl->text(),
-                               edtSndChat->text(), edtSndFile->text(),
-                               edtSndNotify->text(), edtSndSysMsg->text() };
-  oem->SetParameters(edtSndPlayer->text(), oemparams);
+  const char *oemparams[6] = { edtSndMsg->text().local8Bit(), edtSndUrl->text().local8Bit(),
+                               edtSndChat->text().local8Bit(), edtSndFile->text().local8Bit(),
+                               edtSndNotify->text().local8Bit(), edtSndSysMsg->text().local8Bit() };
+  oem->SetParameters(edtSndPlayer->text().local8Bit(), oemparams);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetEnableSave(false);
   o->SetAcceptInAway(chkOEAway->isChecked());

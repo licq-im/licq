@@ -1437,12 +1437,9 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       registerUserDlg = NULL;
       if (e->Result() == EVENT_SUCCESS)
       {
-        char buf[256];
-        sprintf(buf, tr("Successfully registered, your user identification\n"
-                       "number (UIN) is %ld.\n"
-                       "Now set your personal information."),
-                     gUserManager.OwnerUin());
-        InformUser(this, QString::fromLocal8Bit(buf));
+        InformUser(this, tr("Successfully registered, your user identification\n"
+                            "number (UIN) is %ld.\n"
+                            "Now set your personal information.").arg(gUserManager.OwnerUin()));
         callFunction(mnuUserGeneral, gUserManager.OwnerUin());
       }
       else
@@ -1563,11 +1560,11 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
-                    QString("default") : qApp->font().rawName());
+                    "default" : qApp->font().rawName().latin1());
   licqConf.WriteStr("EditFont",
                     (MLEditWrap::editFont == NULL ||
                      *MLEditWrap::editFont == defaultFont) ?
-                     QString("default") : MLEditWrap::editFont->rawName());
+                     "default" : MLEditWrap::editFont->rawName().latin1());
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
@@ -1587,7 +1584,7 @@ void CMainWindow::saveOptions()
       licqConf.WriteBool("Dock64x48", ((IconManager_Default *)licqIcon)->FortyEight());
       break;
     case DockThemed:
-      licqConf.WriteStr("DockTheme", (const char *)((IconManager_Themed *)licqIcon)->Theme());
+      licqConf.WriteStr("DockTheme", ((IconManager_Themed *)licqIcon)->Theme().latin1());
       break;
     case DockNone:
       break;
