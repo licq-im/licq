@@ -2973,8 +2973,8 @@ void CMainWindow::slot_usermenu()
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(1), u->AcceptInNA());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(2), u->AcceptInOccupied());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(3), u->AcceptInDND());
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(4), u->AutoChatAccept());
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(5), u->AutoFileAccept());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(4), u->AutoFileAccept());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(5), u->AutoChatAccept());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(6), u->AutoSecure());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(8), u->StatusToUser() == ICQ_STATUS_ONLINE);
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(9), u->StatusToUser() == ICQ_STATUS_AWAY);
