@@ -170,6 +170,7 @@ bool CUserManager::Load()
 {
 #ifdef PROTOCOL_PLUGIN
   //FIXME load owner of protocol plugins that are currently loaded
+  AddOwner("16325723", LICQ_PPID);
 #else
   // Create the owner
   m_xOwner = new ICQOwner;
@@ -343,11 +344,6 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
     if (strcmp(_szId, u->IdString()))
       gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
                  L_ERRORxSTR, _szId, u->IdString());
-  }
-  else
-  {
-     char *p = PPIDSTRING(_nPPID);
-     delete [] p;
   }
 
   return u;
