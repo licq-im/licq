@@ -204,7 +204,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
   fi
 
   dnl Check if we have the right moc
-  output=`eval "strings $MOC | grep -l QCString"`
+  output=`eval "fgrep QCString $MOC"`
   if test -z "$output"; then
     AC_MSG_ERROR([
 
