@@ -33,5 +33,5 @@ install-data-local:
 	done
 
 template: 
-	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(srcdir)/template.po
+	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_srcdir)/po/template.po
 
