@@ -2,58 +2,63 @@
 #include "config.h"
 #endif
 
+#include <qlayout.h>
+
 #include <stdio.h>
 #include "showawaymsgdlg.h"
 #include "user.h"
 #include "licq-locale.h"
 
 ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const char *name = 0)
-  : QWidget(parent, name)
+  : QDialog(parent, name)
 {
   m_nUin= _nUin;
-  mleAwayMsg = new MLEditWrap(true, this);
-  mleAwayMsg->setReadOnly(true);
-  connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
-  btnOk = new QPushButton(_("&Ok"), this);
-  connect(btnOk, SIGNAL(clicked()), SLOT(ok()));
+
+  QBoxLayout* top_lay = new QVBoxLayout(this, 10);
+  
+#if QT_VERSION >= 210
+  qleAwayMsg = new QMultiLineEdit(this);
+  qleAwayMsg->setWordWrap(QMultiLineEdit::DynamicWrap);
+  qleAwayMsg->setMinimumSize(280, 90);
+#else  
+  qleAwayMsg = new MLEditWrap(true, this);
+#endif  
+  qleAwayMsg->setReadOnly(true);
+  top_lay->addWidget(qleAwayMsg);
+
+  QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
+  
   chkShowAgain = new QCheckBox(_("&Show Again"), this);
+  lay->addWidget(chkShowAgain);
+
+  lay->addStretch(1);
+  lay->addSpacing(30);
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
-  char title[128];
   char szStatus[32];
   u->getStatusStr(szStatus);
-  sprintf(title, _("%s Message for %s"), szStatus, u->getAlias());
-  setCaption(title);
-  mleAwayMsg->setText(u->getAwayMessage());
+  setCaption(QString(_("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
+  qleAwayMsg->setText(u->getAwayMessage());
 
   gUserManager.DropUser(u);
-  resize(300, 160);
+
+  btnOk = new QPushButton(_("&Ok"), this);
+  btnOk->setDefault(true);
+  connect(btnOk, SIGNAL(clicked()), SLOT(accept()));
+  lay->addWidget(btnOk);
+
   show();
 }
 
-
-void ShowAwayMsgDlg::resizeEvent (QResizeEvent *)
-{
-  mleAwayMsg->setGeometry(5, 5, width() - 10, height() - 80);
-  chkShowAgain->setGeometry(10, height() - 70, width() - 10, 20);
-  btnOk->setGeometry((width() >> 1) - 50, height() - 40, 100, 30 );
-}
-
-void ShowAwayMsgDlg::hide()
-{
-  QWidget::hide();
-  delete this;
-}
-
-
-void ShowAwayMsgDlg::ok()
+void ShowAwayMsgDlg::accept()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   u->setShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
-  hide();
+  
+  QDialog::accept();
 }
 
 #include "moc/moc_showawaymsgdlg.h"

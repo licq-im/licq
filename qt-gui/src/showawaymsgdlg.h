@@ -5,15 +5,14 @@
 #include "config.h"
 #endif
 
-#include <qwidget.h>
-#include <qmlined.h>
+#include <qdialog.h>
+#include <qmultilineedit.h>
 #include <qcheckbox.h>
-#include <qpushbt.h>
+#include <qpushbutton.h>
 
 #include "user.h"
-#include "mledit.h"
 
-class ShowAwayMsgDlg : public QWidget
+class ShowAwayMsgDlg : public QDialog
 {
   Q_OBJECT
 public:
@@ -21,14 +20,13 @@ public:
 
 protected:
   unsigned long m_nUin;
-  MLEditWrap *mleAwayMsg;
+  QMultiLineEdit *qleAwayMsg;
   QCheckBox *chkShowAgain;
   QPushButton *btnOk;
-  void resizeEvent (QResizeEvent *);
-
+  
 protected slots:
-  virtual void hide(); 
-  void ok();
+  virtual void accept();
+
 };
 
 
