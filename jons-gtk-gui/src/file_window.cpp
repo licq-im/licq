@@ -24,6 +24,10 @@
 #include "message.h"
 #include "user.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 void file_accept_window(ICQUser *user, CUserEvent *e)
 {
 	GtkWidget *accept;
@@ -78,6 +82,58 @@ void file_accept_window(ICQUser *user, CUserEvent *e)
 
 void accept_file(GtkWidget *widget, struct file_accept *fa)
 {
+	/* Close the unnecesarry open window */
+	dialog_close(NULL, fa->window);
+
+	/* Get the place to save it as */
+	fa->file_selection = gtk_file_selection_new("Licq - Save File");
+
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fa->file_selection)->ok_button),
+			   "clicked", GTK_SIGNAL_FUNC(save_file), fa);
+
+	/* Make sure that the box is closed when the user selects a button */
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fa->file_selection)->ok_button),
+			   "clicked", GTK_SIGNAL_FUNC(dialog_close),
+			   (gpointer)fa->file_selection);
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fa->file_selection)->cancel_button),
+			   "clicked", GTK_SIGNAL_FUNC(dialog_close),
+			   (gpointer)fa->file_selection);
+
+	gtk_widget_show(fa->file_selection);
+}
+
+void save_file(GtkWidget *widget, struct file_accept *fa)
+{
+	const gchar *file_name = g_strdup_printf("%s\n",
+				 gtk_file_selection_get_filename(
+                      		 GTK_FILE_SELECTION(fa->file_selection)));
+	int flags = O_WRONLY;
+	struct stat buffer;
+
+	/* Check to see if the file exists already */
+	if( stat(file_name, &buffer) == 0)
+	{
+		/* If the incoming file is <= than the current file, truncate?*/
+		if((unsigned long)buffer.st_size >= fa->e->FileSize())
+		{
+			flags |= O_TRUNC;
+		}
+
+		else
+		{
+			flags |= O_APPEND;
+		}
+	}
+	
+	/* Create it, it doesn't exist */
+	else
+		flags |= O_CREAT;
+	
+	int file_desc = open(file_name, flags, 00664); 
+
+	if(file_desc < 0)
+		g_print("Error opening file\n");
+
 }
 
 void refuse_file(GtkWidget *widget, struct file_accept *fa)

@@ -119,5 +119,6 @@ void system_status_click(GtkWidget *w, GdkEventButton *event, gpointer d)
 
 	gUserManager.DropUser(user);
 
+	contact_list_refresh();
 	system_status_refresh();
 }

@@ -47,54 +47,67 @@ void list_start_convo(GtkWidget *widget, ICQUser *user)
 void list_send_url(GtkWidget *widget, ICQUser *user)
 {
 	GtkWidget *label;
+	GtkWidget *table;
+	GtkWidget *h_box;
 	GtkWidget *send;
 	GtkWidget *close;
-	GtkWidget *h_box;
-	GtkWidget *v_box;
 
-	struct send_url *url = g_new0(struct send_url, 1);
+	struct send_url *url = (struct send_url *)g_new0(struct send_url, 1);
 
 	url->user = user;
 
-	/* Work on the title */
+	/* Create the hbox for use late on */
+	h_box = gtk_hbox_new(FALSE, 3);
+
+	/* Make the title */
 	const gchar *title = g_strdup_printf("URL to %s", user->GetAlias());
 
-	/* Set up the window */
-	url->window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_container_border_width(GTK_CONTAINER(url->window), 10);
+	/* Create the window */
+	url->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(url->window), title);
-	gtk_signal_connect(GTK_OBJECT(url->window), "delete_event",
-			   GTK_SIGNAL_FUNC(destroy_dialog), url->window);
 	gtk_window_set_position(GTK_WINDOW(url->window), GTK_WIN_POS_CENTER);
 
-	/* Set up the boxes */
-	h_box = gtk_hbox_new(FALSE, 0);
-	v_box = gtk_vbox_new(FALSE, 5);
+	/* The delete_event signal for the window */
+	gtk_signal_connect(GTK_OBJECT(url->window), "delete_event",
+			   GTK_SIGNAL_FUNC(destroy_dialog), url->window);
 
-	/* Make the entries */
+	/* Create the table */
+	table = gtk_table_new(5, 2, FALSE);
+	gtk_container_add(GTK_CONTAINER(url->window), table);
+
+	/* Make the url label and entry */
+	label = gtk_label_new("URL:");
+	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
+			 GTK_FILL, GTK_FILL, 3, 3);
+
 	url->entry_u = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), url->entry_u, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+
+	/* Make the description label and entry */
+	label = gtk_label_new("Description:");
+	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
+			 GTK_FILL, GTK_FILL, 3, 3);
+
 	url->entry_d = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), url->entry_d, 1, 2, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
 
-	label = gtk_label_new("         URL: ");
-	gtk_box_pack_start(GTK_BOX(h_box), label, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), url->entry_u, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
-
-	h_box = gtk_hbox_new(FALSE, 0);
-
-	label = gtk_label_new("Description: ");
-	gtk_box_pack_start(GTK_BOX(h_box), label, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), url->entry_d, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
-
-	h_box = gtk_hbox_new(FALSE, 0);
-
-	/* The send through server and spoof area */
+	/* Make send through server and spoof box */
 	url->send_server = gtk_check_button_new_with_label("Server");
-	url->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
-	url->spoof_uin = gtk_entry_new_with_max_length(8);
+	gtk_table_attach(GTK_TABLE(table), url->send_server, 0, 1, 2, 3,
+			 GTK_FILL, GTK_FILL, 3, 3);
 
-	gtk_widget_set_usize(url->spoof_uin, 80, 20);
+	url->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
+	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_button, FALSE, FALSE, 0);
+
+	url->spoof_uin = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
+	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_uin, FALSE, FALSE, 0);
+
+	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 2, 3,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
 
 	/* Verify that the url->spoof_uin is digits only */
 	gtk_signal_connect(GTK_OBJECT(url->spoof_uin), "insert-text", 
@@ -103,26 +116,29 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	/* No UIN can be entered unless url->spoof_button is checked */
 	gtk_entry_set_editable(GTK_ENTRY(url->spoof_uin), FALSE);
 
-	/* Connect signal */
+	/* Connect spoof_button's toggled signal */
 	gtk_signal_connect(GTK_OBJECT(url->spoof_button), "toggled",
 			   GTK_SIGNAL_FUNC(url_spoof_button_callback), url);
 
-	/* Pack them */
-	gtk_box_pack_start(GTK_BOX(h_box), url->send_server, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_button, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_uin, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
+	/* New hbox */
+	h_box = gtk_hbox_new(FALSE, 3);
 
-	h_box = gtk_hbox_new(FALSE, 0);
-
-	/* Normal, Urgent, or to Contact list */
+	/* Normal, Urgent, or to Contact List */
 	url->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_normal, FALSE, FALSE, 0);
+
 	url->send_urgent = gtk_radio_button_new_with_label_from_widget(
 				GTK_RADIO_BUTTON(url->send_normal),
 				"Send Urgent");
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_urgent, FALSE, FALSE, 0);
+
 	url->send_list = gtk_radio_button_new_with_label_from_widget(
 				GTK_RADIO_BUTTON(url->send_normal),
 				"Send to Contact List");
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_list, FALSE, FALSE, 0);
+
+	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3); 
 
 	/* If the user is in occ or dnd mode, set the urgent button as def */
 	if(url->user->Status() == ICQ_STATUS_DND ||
@@ -130,27 +146,23 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(url->send_urgent),
 				            TRUE);
 
-	gtk_box_pack_start(GTK_BOX(h_box), url->send_normal, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), url->send_urgent, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), url->send_list, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
-
-	h_box = gtk_hbox_new(FALSE, 0);
-
+	/* New hbox */
+	h_box = gtk_hbox_new(FALSE, 5);
+ 
 	/* Make the buttons */
 	close = gtk_button_new_with_label("Close");
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
 			   GTK_SIGNAL_FUNC(url_close), url);
+
 	send = gtk_button_new_with_label("Send");
 	gtk_signal_connect(GTK_OBJECT(send), "clicked",
 			   GTK_SIGNAL_FUNC(url_send), url);
 
 	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), send, TRUE, TRUE, 5);
-	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
 
-	/* All the h_boxes are in v_box.. so add v_box to add them all */
-	gtk_container_add(GTK_CONTAINER(url->window), v_box);
+	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 4, 5,
+			 GTK_FILL, GTK_FILL, 3, 3);
 
 	/* Show all the widgets at once */
 	gtk_widget_show_all(url->window);
