@@ -393,16 +393,22 @@ void CMSN::MSNLogoff()
   SendPacket(pSend);
   m_nStatus = ICQ_STATUS_OFFLINE;
  
-  // Close the socket
+  // Close the server socket
   INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
   int nSD = m_nServerSocket;
   m_nServerSocket = -1;
   gSocketMan.DropSocket(s);
   gSocketMan.CloseSocket(nSD);
+
   
-  // Update the daemon
+  // Close user sockets and update the daemon
   FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_W)
   {
+    if (pUser->SocketDesc(ICQ_CHNxNONE) != -1)
+    {
+      gSocketMan.CloseSocket(pUser->SocketDesc(ICQ_CHNxNONE));
+      pUser->ClearSocketDesc();
+    }
     if (!pUser->StatusOffline())
       m_pDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
