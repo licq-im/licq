@@ -765,6 +765,10 @@ void OptionsDlg::slot_useDockToggled(bool b)
     chkHidden->setChecked(false);
     return;
   }
+  else
+  {
+    chkHidden->setEnabled(true);
+  }
 
   // Turned on
 #ifndef USE_KDE
