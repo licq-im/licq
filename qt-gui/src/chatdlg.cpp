@@ -28,7 +28,7 @@
 #include "chatdlg.h"
 #include "ewidgets.h"
 #include "mledit.h"
-#include "licq_packets.h"
+#include "licq_chat.h"
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "licq_user.h"
@@ -181,8 +181,9 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   mnuBg = new QPopupMenu(this);
 
-  for(int i = 0; i < NUM_COLORS; i++) {
-    QPixmap* pix = new QPixmap(48, 14);
+  for(int i = 0; i < NUM_COLORS; i++)
+  {
+    QPixmap *pix = new QPixmap(48, 14);
     QPainter p(pix);
     QColor c (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
@@ -201,26 +202,23 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   barChat->addSeparator();
 
   QPixmap* pixBold = new QPixmap(chatBold_xpm);
-  tbtBold = new QToolButton(*pixBold, tr("Bold"), tr("Toggles Bold font"),
-                            this, SLOT(fontStyleChanged()), barChat);
+  tbtBold = new QToolButton(*pixBold, tr("Bold"),
+     tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
   tbtBold->setToggleButton(true);
-#if QT_VERSION >= 210
-  tbtBold->setAutoRaise(false);
-#endif
 
   QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
-  tbtItalic = new QToolButton(*pixItalic, tr("Italic"), tr("Toggles Italic font"),
-                              this, SLOT(fontStyleChanged()), barChat);
+  tbtItalic = new QToolButton(*pixItalic, tr("Italic"),
+     tr("Toggles Italic font"), this, SLOT(fontStyleChanged()), barChat);
   tbtItalic->setToggleButton(true);
-#if QT_VERSION >= 210
-  tbtItalic->setAutoRaise(false);
-#endif
 
   QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
-  tbtUnderline = new QToolButton(*pixUnder, tr("Underline"), tr("Toggles Bold font"),
-                                 this, SLOT(fontStyleChanged()), barChat);
+  tbtUnderline = new QToolButton(*pixUnder, tr("Underline"),
+     tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
   tbtUnderline->setToggleButton(true);
+
 #if QT_VERSION >= 210
+  tbtBold->setAutoRaise(false);
+  tbtItalic->setAutoRaise(false);
   tbtUnderline->setAutoRaise(false);
 #endif
 
@@ -297,16 +295,14 @@ void ChatDlg::fontSizeChanged(const QString& txt)
   mleIRCLocal->setFont(f);
 
   // transmit to remote
-  CBuffer buffer(5);
-  buffer.PackChar(0x12);
-  buffer.PackUnsignedLong(txt.toULong());
-  chatSendBuffer(&buffer);
+  CPChat_ChangeFontSize p(txt.toULong());
+  chatSendBuffer(p.getBuffer());
 }
 
 
 // -----------------------------------------------------------------------------
 
-void ChatDlg::fontNameChanged(const QString& txt)
+void ChatDlg::fontNameChanged(const QString &txt)
 {
   QFont f(mlePaneLocal->font());
 
@@ -316,27 +312,14 @@ void ChatDlg::fontNameChanged(const QString& txt)
   mleIRCLocal->setFont(f);
 
   // transmit to remote
-  const char* name = txt.ascii();
-  CBuffer buffer(txt.length() + 5);
-  buffer.PackChar(0x10);
-  buffer.PackString(name);
-  buffer.PackUnsignedShort(0x2200);
-  // 0x2200 west
-  // 0x22a2 turkey
-  // 0x22cc cyrillic
-  // 0x22a1 greek
-  // 0x22ba baltic
-  chatSendBuffer(&buffer);
+  CPChat_ChangeFontFamily p(txt.ascii());
+  chatSendBuffer(p.getBuffer());
 }
 
 // -----------------------------------------------------------------------------
 
 void ChatDlg::fontStyleChanged()
 {
-  unsigned long style = (tbtBold->state() == QButton::On ? 1 : 0) |
-    (tbtItalic->state() == QButton::On ? 2 : 0) |
-    (tbtUnderline->state() == QButton::On ? 4 : 0);
-
   QFont f(mlePaneLocal->font());
 
   f.setBold(tbtBold->state() == QButton::On);
@@ -347,10 +330,10 @@ void ChatDlg::fontStyleChanged()
   mleIRCLocal->setFont(f);
 
   // transmit to remote
-  CBuffer buffer(5);
-  buffer.PackChar(0x11);
-  buffer.PackUnsignedLong(style);
-  chatSendBuffer(&buffer);
+  CPChat_ChangeFontFace p(tbtBold->state() == QButton::On,
+    tbtItalic->state() == QButton::On,
+    tbtUnderline->state() == QButton::On);
+  chatSendBuffer(p.getBuffer());
 }
 
 
@@ -358,9 +341,8 @@ void ChatDlg::fontStyleChanged()
 
 void ChatDlg::chatSendBeep()
 {
-  CBuffer buffer(1);
-  buffer.PackChar(0x07);
-  chatSendBuffer(&buffer);
+  CPChat_Beep p;
+  chatSendBuffer(p.getBuffer());
   QApplication::beep();
 }
 
@@ -369,21 +351,15 @@ void ChatDlg::chatSendBeep()
 void ChatDlg::changeFrontColor()
 {
   int i = mnuFg->exec(tbtFg->mapToGlobal(QPoint(0,tbtFg->height()+2)));
-  if (i<0) return;
+  if (i < 0) return;
 
   QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
   mlePaneLocal->setForeground(color);
 
   // sent to remote
-  CBuffer buffer(5);
-  buffer.PackChar(0x00);
-  buffer.PackChar(color.red());
-  buffer.PackChar(color.green());
-  buffer.PackChar(color.blue());
-  buffer.PackChar(0x00);
-
-  chatSendBuffer(&buffer);
+  CPChat_ChangeColorFg p(color.red(), color.green(), color.blue());
+  chatSendBuffer(p.getBuffer());
 }
 
 
@@ -392,7 +368,7 @@ void ChatDlg::changeFrontColor()
 void ChatDlg::changeBackColor()
 {
   int i = mnuBg->exec(tbtBg->mapToGlobal(QPoint(0,tbtBg->height()+2)));
-  if (i<0) return;
+  if (i < 0) return;
 
   QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
@@ -400,14 +376,8 @@ void ChatDlg::changeBackColor()
   mleIRCLocal->setBackground(color);
 
   // sent to remote
-  CBuffer buffer(5);
-  buffer.PackChar(0x01);
-  buffer.PackChar(color.red());
-  buffer.PackChar(color.green());
-  buffer.PackChar(color.blue());
-  buffer.PackChar(0x00);
-
-  chatSendBuffer(&buffer);
+  CPChat_ChangeColorBg p(color.red(), color.green(), color.blue());
+  chatSendBuffer(p.getBuffer());
 }
 
 
@@ -788,7 +758,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
     case Key_Enter:
     case Key_Return:
     {
-      buffer.PackChar(0x0D);
+      buffer.PackChar(CHAT_NEWLINE);
       mleIRCRemote->append(chatname + "> " + linebuf);
       mleIRCRemote->GotoEnd();
       linebuf = "";
@@ -798,7 +768,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
     }
     case Key_Backspace:
     {
-      buffer.PackChar(0x08);
+      buffer.PackChar(CHAT_BACKSPACE);
       if (m_nMode == CHAT_IRC) mlePaneLocal->backspace();
       if (linebuf.length() > 0)
         linebuf.remove(linebuf.length() - 1, 1);
@@ -913,7 +883,7 @@ void ChatDlg::chatRecv(int sd)
     chatChar = *u->chatQueue.begin(); // first character in queue (not dequeued)
     switch (chatChar)
     {
-      case 0x0D:   // new line
+      case CHAT_NEWLINE:   // new line
         // add to irc window
         mleIRCRemote->append(u->chatname + "> " + u->linebuf);
         mleIRCRemote->GotoEnd();
@@ -922,7 +892,7 @@ void ChatDlg::chatRecv(int sd)
         u->chatQueue.pop_front();
         break;
 
-      case 0x07:  // beep
+      case CHAT_BEEP:  // beep
       {
         if (m_bAudio)
           QApplication::beep();
@@ -933,7 +903,7 @@ void ChatDlg::chatRecv(int sd)
         break;
       }
 
-      case 0x08:   // backspace
+      case CHAT_BACKSPACE:   // backspace
       {
         if (u->linebuf.length() > 0)
           u->linebuf.remove(u->linebuf.length() - 1, 1);
@@ -942,7 +912,7 @@ void ChatDlg::chatRecv(int sd)
         break;
       }
 
-      case 0x00: // change foreground color
+      case CHAT_COLORxFG: // change foreground color
       {
         if (u->chatQueue.size() < 5) return;
         unsigned char colorForeRed, colorForeGreen, colorForeBlue;
@@ -959,7 +929,7 @@ void ChatDlg::chatRecv(int sd)
         break;
       }
 
-      case 0x01:  // change background color
+      case CHAT_COLORxBG:  // change background color
       {
         if (u->chatQueue.size() < 5) return;
         unsigned char colorBackRed, colorBackGreen, colorBackBlue;
@@ -975,7 +945,7 @@ void ChatDlg::chatRecv(int sd)
 
         break;
       }
-      case 0x10: // change font type
+      case CHAT_FONTxFAMILY: // change font type
       {
          if (u->chatQueue.size() < 3) return;
          unsigned short sizeFontName, encodingFont, i;
@@ -997,16 +967,16 @@ void ChatDlg::chatRecv(int sd)
          break;
       }
 
-      case 0x11: // change font style
+      case CHAT_FONTxFACE: // change font style
       {
         if (u->chatQueue.size() < 5) return;
         unsigned long styleFont;
         styleFont = u->chatQueue[1] | (u->chatQueue[2] << 8) |
                     (u->chatQueue[3] << 16) | (u->chatQueue[4] << 24);
 
-        u->font.setBold(styleFont & 1);
-        u->font.setItalic(styleFont & 2);
-        u->font.setUnderline(styleFont & 4);
+        u->font.setBold(styleFont & FONT_BOLD);
+        u->font.setItalic(styleFont & FONT_ITALIC);
+        u->font.setUnderline(styleFont & FONT_UNDERLINE);
 
         if(u == chatUser)
           mlePaneRemote->setFont(u->font);
@@ -1017,7 +987,7 @@ void ChatDlg::chatRecv(int sd)
         break;
       }
 
-      case 0x12: // change font size
+      case CHAT_FONTxSIZE: // change font size
       {
         if (u->chatQueue.size() < 5) return;
         unsigned long sizeFont;

@@ -17,7 +17,7 @@
 #include "licq_socket.h"
 #include "licq_icq.h"
 #include "licq_buffer.h"
-#include "licq_packets.h"
+#include "licq_chat.h"
 
 class QLabel;
 class QListBox;
