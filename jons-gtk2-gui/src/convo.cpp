@@ -432,8 +432,14 @@ convert_to_utf8(const gchar *input_text, const gchar *input_enc)
 		if (input_enc && *input_enc && strcmp(input_enc, "UTF-8") != 0)
 			return g_convert(input_text, strlen(input_text), "UTF-8", 
 					input_enc, NULL, NULL, NULL);
-		else
-			return g_locale_to_utf8(input_text, -1, NULL, NULL, NULL);
+		else {
+			const char *cs;
+			if (g_get_charset(&cs)) // locale is already utf8 so conversion won't help
+				return g_convert(input_text, strlen(input_text), "UTF-8", 
+						"ISO8859-1", NULL, NULL, NULL);
+			else
+				return g_locale_to_utf8(input_text, -1, NULL, NULL, NULL);
+		}
 	}
 	
 	return g_strdup(input_text);
