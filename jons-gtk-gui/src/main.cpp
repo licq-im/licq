@@ -34,6 +34,7 @@ gint _pipe;
 CPluginLog *log;
 gint log_pipe;
 struct timeval timer;
+GSList *catcher;
 
 const char *LP_Name()
 {

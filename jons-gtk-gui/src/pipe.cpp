@@ -63,7 +63,6 @@ void pipe_signal(CICQSignal *sig)
 	{
 	  case SIGNAL_LOGON:
 	  {
-		g_print("GOT SIGNAL_LOGON\n");
 		status_bar_refresh();
 		contact_list_refresh();
 		break;
@@ -71,14 +70,12 @@ void pipe_signal(CICQSignal *sig)
 
 	  case SIGNAL_UPDATExLIST:
 	  {
-		g_print("GOT SIGNAL_UPDATExLIST\n");
 		contact_list_refresh();
 		break;
 	  }
 
 	  case SIGNAL_UPDATExUSER:
 	  {
-		g_print("GOT SIGNAL_UPDATExUSER\n");
 		if(sig->SubSignal() == USER_EVENTS)
 			convo_recv(sig->Uin());
 		contact_list_refresh();
@@ -94,7 +91,7 @@ void pipe_signal(CICQSignal *sig)
 
 void pipe_event(ICQEvent *event)
 {
-	switch(event->m_nCommand)
+	switch(event->Command())
 	{
 	/* Event commands for a user */
 	case ICQ_CMDxTCP_START:
@@ -121,7 +118,7 @@ void pipe_event(ICQEvent *event)
 		break;
 
 	default:
-		g_print("Error: pipe_event(): Unknown event from daemon: %d.\n", event->m_nCommand);
+		g_print("Error: pipe_event(): Unknown event from daemon: %d.\n", event->Command());
 	}
 
 	delete event;

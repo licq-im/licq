@@ -40,6 +40,7 @@ void list_start_convo(GtkWidget *widget, ICQUser *user)
 			c = convo_new(user, TRUE);
 
 		else
+
 			c = convo_new(user, FALSE);
 	}
 }
@@ -51,8 +52,11 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	GtkWidget *h_box;
 	GtkWidget *send;
 	GtkWidget *close;
+	GtkWidget *statusbar;
+	const gchar *buffer = "Enter data and send a url";
 
 	struct send_url *url = (struct send_url *)g_new0(struct send_url, 1);
+	url->etag = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
 
 	url->user = user;
 
@@ -72,7 +76,7 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 			   GTK_SIGNAL_FUNC(destroy_dialog), url->window);
 
 	/* Create the table */
-	table = gtk_table_new(5, 2, FALSE);
+	table = gtk_table_new(6, 2, FALSE);
 	gtk_container_add(GTK_CONTAINER(url->window), table);
 
 	/* Make the url label and entry */
@@ -164,6 +168,18 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 4, 5,
 			 GTK_FILL, GTK_FILL, 3, 3);
 
+	/* The status bar */
+	statusbar = gtk_statusbar_new();
+	gtk_table_attach(GTK_TABLE(table), statusbar, 0, 2, 5, 6,
+			 GTK_FILL, GTK_FILL, 3, 3);
+
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "sta");
+	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), id, buffer);
+
+	url->etag->statusbar = statusbar;
+	strcpy(url->etag->buf, buffer);
+	
 	/* Show all the widgets at once */
 	gtk_widget_show_all(url->window);
 
@@ -172,7 +188,7 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 void url_send(GtkWidget *widget, struct send_url *url)
 {
-	struct main_progress *m_prog = g_new0(main_progress, 1);
+	gchar temp[60];
 
 	const char *url_to_send = gtk_entry_get_text(GTK_ENTRY(url->entry_u));
 	const char *desc = gtk_entry_get_text(GTK_ENTRY(url->entry_d));
@@ -193,7 +209,7 @@ void url_send(GtkWidget *widget, struct send_url *url)
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_urgent)) ||
 	   urgent)
 	{
-		m_prog->e_tag =
+		url->etag->e_tag =
 			icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
        	  	(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
 	  	ICQ_TCPxMSG_URGENT, uin);
@@ -202,7 +218,7 @@ void url_send(GtkWidget *widget, struct send_url *url)
 	/* Send to contact list */
 	else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_list)))
 	{
-		m_prog->e_tag = icq_daemon->icqSendUrl(url->user->Uin(),
+		url->etag->e_tag = icq_daemon->icqSendUrl(url->user->Uin(),
 					url_to_send, desc,
 		(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
 					ICQ_TCPxMSG_LIST, uin);
@@ -210,29 +226,30 @@ void url_send(GtkWidget *widget, struct send_url *url)
 
 	else /* Just send it normally */
 	{
-		m_prog->e_tag = icq_daemon->icqSendUrl(url->user->Uin(), 
+		url->etag->e_tag = icq_daemon->icqSendUrl(url->user->Uin(), 
 					url_to_send, desc,
 					(!gtk_toggle_button_get_active(
 						GTK_TOGGLE_BUTTON(url->send_server))),
 					ICQ_TCPxMSG_NORMAL, uin);
 	}
 
-	gchar *temp = g_strdup_printf("URL -> %s ", url->user->GetAlias());
-	
-	strcpy(m_prog->buffer, temp);
-	
+	strcpy(temp, "Sending URL ");
+
 	if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server)))
-		strcat(m_prog->buffer, "(direct) .. ");
+		strcat(temp, "(direct) .. ");
 	else
-		strcat(m_prog->buffer, "(server) .. ");
+		strcat(temp, "(server) .. ");
 
-	/* Add it to the GList */
-	m_prog_list = g_list_append(m_prog_list, m_prog);
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(url->etag->statusbar), "sta");
+	gtk_statusbar_pop(GTK_STATUSBAR(url->etag->statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(url->etag->statusbar), id, temp);
 
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress),
-						"main_prog");
-	gtk_statusbar_pop(GTK_STATUSBAR(status_progress), id);
-	gtk_statusbar_push(GTK_STATUSBAR(status_progress), id, m_prog->buffer);
+	/* Take care of the url's etag buffer */
+	strcpy(url->etag->buf, "");
+	strcpy(url->etag->buf, temp);
+
+	/* The event catcher list */
+	catcher = g_slist_append(catcher, url->etag);
 }
 
 void url_spoof_button_callback(GtkWidget *widget, struct send_url *url)

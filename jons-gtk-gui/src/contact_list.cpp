@@ -62,7 +62,6 @@ GtkWidget *contact_list_new(gint height, gint width)
 
 void contact_list_refresh()
 {
-	g_print("Refresh\n");
 	gchar *blah[3];
 	gint num_users = 0;
 

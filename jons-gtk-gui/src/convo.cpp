@@ -86,6 +86,11 @@ void convo_show(struct conversation *c)
 	GtkWidget *options_box;
 	GtkWidget *vertical_box;
 
+	/* Handle the etag stuff */
+	struct e_tag_data *etd = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
+	
+	c->etag = etd;
+
 	/* Make the convo window */
 	c->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_policy(GTK_WINDOW(c->window), TRUE, TRUE, TRUE);
@@ -211,6 +216,10 @@ void convo_show(struct conversation *c)
 	gtk_signal_connect(GTK_OBJECT(c->window), "destroy",
 			   GTK_SIGNAL_FUNC(convo_close), c);
 
+	/* More e_tag_data stuff */
+	c->etag->statusbar = c->progress;
+	strcpy(c->etag->buf, c->prog_buf);
+
 	gtk_widget_show_all(c->window);
 }
 
@@ -259,7 +268,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)) ||
 	   urgent)
 	{ 
-	   c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+	   c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
 	     (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
 	     ICQ_TCPxMSG_URGENT, uin);
 	}
@@ -267,14 +276,14 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	/* Send to contact list */
 	else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
 	{
-	  c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
              (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
              ICQ_TCPxMSG_LIST, uin);
 	}
 
 	else /* Just send it normally */
 	{
-	  c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
              (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
              ICQ_TCPxMSG_NORMAL, uin);
 	}
@@ -283,6 +292,10 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 						"prog");
 	gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
 	gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
+
+	/* Take care of the etd buffer and add it to the slist */
+	c->etag->buf = c->prog_buf;
+	catcher = g_slist_append(catcher, c->etag);
 }
 
 void convo_recv(gulong uin)
@@ -351,15 +364,13 @@ void convo_recv(gulong uin)
 			file_accept_window(c->user, u_event);
 		}
 	}
-
-	/* Why does this screw up file transfers?? */
-	/* delete u_event; */
 }
 
 gboolean convo_close(GtkWidget *widget, struct conversation *c)
 {
 	gtk_widget_destroy(c->window);
 	cnv = g_list_remove(cnv, c);
+	catcher = g_slist_remove(catcher, c->etag);
 	return TRUE;
 }
 

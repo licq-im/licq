@@ -110,7 +110,11 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	GtkWidget *close;
 	const gchar *title = g_strdup_printf("Auto Response for %s", user->GetAlias());
 
+	struct e_tag_data *etd = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
+	
 	uaw->user = user;
+	uaw->etag = etd;
+	
 
 	/* Make the window */
 	uaw->window = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -171,8 +175,15 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	gtk_container_add(GTK_CONTAINER(uaw->window), v_box);
 	gtk_widget_show_all(uaw->window);
 
+	/* etd stuff */
+	uaw->etag->statusbar = uaw->progress;
+	strcpy(uaw->etag->buf, uaw->buffer);
+	
 	/* Get the response */
-	uaw->e_tag = icq_daemon->icqFetchAutoResponse(user->Uin());
+	uaw->etag->e_tag = icq_daemon->icqFetchAutoResponse(user->Uin());
+
+	/* Append it to gslist */
+	catcher = g_slist_append(catcher, uaw->etag); 
 }
 
 void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
@@ -180,6 +191,7 @@ void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
 	uaw->user->SetShowAwayMsg(gtk_toggle_button_get_active(
 					GTK_TOGGLE_BUTTON(uaw->show_again)));
 	uaw_list = g_list_remove(uaw_list, uaw);
+	catcher = g_slist_remove(catcher, uaw->etag);
 	dialog_close(NULL, uaw->window);
 }
 

@@ -25,7 +25,6 @@
 GtkWidget *vertical_box;
 GtkWidget *contact_list;
 GtkWidget *status_progress;
-GList *m_prog_list = NULL;
 
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {

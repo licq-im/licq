@@ -119,150 +119,120 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
 
 void user_function(ICQEvent *event)
 {
-	struct conversation *c =
-		(struct conversation *)g_new0(struct conversation, 1);
-	struct user_away_window *uaw =
-		(struct user_away_window *)g_new0(struct user_away_window, 1);
+	GSList *temp = catcher;
+	struct e_tag_data *etd;
+
+	while(temp)
+	{
+		etd = (struct e_tag_data *)temp->data;
+
+		if(etd->e_tag->Equals(event))
+		{
+			finish_event(etd, event);
+			return;
+		}
+
+		/* Not this one, go on to the next */
+		temp = temp->next;
+	}
+
+	return;
+}
+
+void finish_event(struct e_tag_data *etd, ICQEvent *event)
+{
+	/* Make sure we have the right event and event tag */
+	if( (etd->e_tag == NULL && event != NULL) ||
+	    (etd->e_tag != NULL && !etd->e_tag->Equals(event)) )
+	    	return;
 
 	guint id;
-
-	c = convo_find(event->m_nDestinationUin);
-	uaw = uaw_find(event->m_nDestinationUin);
-
-	/* Have a status bar on the contact list for this to go to... */
-	if(c == NULL && uaw == NULL)
-	{
-		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress)
-						  , "prog");
-		check_other_event(event, status_progress, id);
-		return;
-	}
-
-	/* It's for the convo window */
-	if(uaw == NULL)
-	{	
-		/* Make sure we have the right event and event tag */
-		if( (c->e_tag == NULL && event != NULL) ||
-	    	    (c->e_tag != NULL && !c->e_tag->Equals(event)) )
-			return;
-
-		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress),
-						  "prog");
-
-		if(event == NULL)
-		{
-			strcat(c->prog_buf, "error");
-			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
-					   c->prog_buf);
-		}
-
-		check_event(event, c->progress, id, c->prog_buf);
-
-		/* Check to make sure it sent, and if it did, put the text */
-		g_strreverse(c->prog_buf);
-
-		if(strncmp(c->prog_buf, "en", 2) == 0)
-		{
-			ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
-			const gchar *name = g_strdup_printf("%s",
-							owner->GetAlias());
-			gUserManager.DropOwner();
-		
-			gtk_editable_delete_text(GTK_EDITABLE(c->entry), 0, -1);
-			gtk_editable_delete_text(GTK_EDITABLE(c->spoof_uin),
-						 0, -1);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->spoof_button), FALSE);
-			gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
-			gtk_text_freeze(GTK_TEXT(c->entry));
-			gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
-			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, c->for_user,
-					-1);
-			gtk_text_thaw(GTK_TEXT(c->entry));
-		}
-
-		return;
-	}
-
-	/* It must be a user_away_window then */
-	if( (uaw->e_tag == NULL && event != NULL) ||
-	    (uaw->e_tag != NULL && !uaw->e_tag->Equals(event)) )
-		return;
-
-	gtk_text_freeze(GTK_TEXT(uaw->text_box));
-	gtk_text_insert(GTK_TEXT(uaw->text_box), 0, 0, 0,
-			uaw->user->AutoResponse(), -1);
-	gtk_text_thaw(GTK_TEXT(uaw->text_box));
-
-	check_event(event, uaw->progress, id, uaw->buffer);
-}
-
-void check_event(ICQEvent *event, GtkWidget *widget,
-		 guint &id, gchar *p_buf)
-{
-	switch(event->m_eResult)
-	{
-	case EVENT_ACKED:
-	case EVENT_SUCCESS:
-		strcat(p_buf, "done");
-		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
-		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
-				   p_buf);	
-		break;
-	case EVENT_FAILED:
-		strcat(p_buf, "failed");
-		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
-		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
-				   p_buf);
-		break;
-	case EVENT_TIMEDOUT:
-		strcat(p_buf, "timed out");
-		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
-		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
-				   p_buf);
-		break;
-	case EVENT_ERROR:
-		strcat(p_buf, "error");
-		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
-		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
-				   p_buf);
-		break;
-	default:
-		break;
-	}
-}
-
-void check_other_event(ICQEvent *event, GtkWidget *widget, guint &id)
-{
-	struct main_progress *mp;
-	GList *mpl = m_prog_list;
-	guint flag = 0;
-
-	while(mpl)
-	{
-		mp = (struct main_progress *)mpl->data;
-		
-		if(! ((mp->e_tag == NULL && event != NULL) ||
-		      (mp->e_tag != NULL && !mp->e_tag->Equals(event))) )
-		{
-			flag = 1;
-			break;
-		}
-
-		mpl = mpl->next;
-	}	
+	gchar temp[60];
 	
-	if(flag == 0)
-		return;
-
+	/* Get the id for the status bar */
+	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(etd->statusbar), "sta");
+	
+	/* Get the current text */
+	strcpy(temp, etd->buf);
+	
 	if(event == NULL)
 	{
-		strcat(mp->buffer, "error");
-		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
-		gtk_statusbar_push(GTK_STATUSBAR(widget), id, mp->buffer);
+		strcat(temp, "error");
 	}
 
-	check_event(event, widget, id, mp->buffer);
+	else
+	{
+	/* Pop and then push the current text by the right event result */
+		switch(event->Result())
+		{
+		case EVENT_ACKED:
+		case EVENT_SUCCESS:
+			strcat(temp, "done");
+			break;
+		case EVENT_FAILED:
+			strcat(temp, "failed");
+			break;
+		case EVENT_TIMEDOUT:
+			strcat(temp, "timed out");
+			break;
+		case EVENT_ERROR:
+			strcat(temp, "error");
+			break;
+		default:
+			strcat(temp, "unknown");
+			break;
+		}
+	}
 
-	m_prog_list = g_list_remove(m_prog_list, mp);
+	gtk_statusbar_pop(GTK_STATUSBAR(etd->statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(etd->statusbar), id, temp);
+	
+	/* Update the buffer for the e_tag_data */
+	strcpy(etd->buf, "");
+	strcpy(etd->buf, temp);
+
+	/* Remove this item from the GSList */
+	catcher = g_slist_remove(catcher, etd);
+	
+	/* Get the sub command and see if do more work if needed */
+	switch(event->SubCommand())
+	{
+	case ICQ_CMDxSUB_MSG:
+		finish_message(event);
+		break;
+	}
+}
+
+void finish_message(ICQEvent *event)
+{
+	struct conversation *c =
+		(struct conversation *)g_new0(struct conversation, 1);
+
+	c = convo_find(event->DestinationUin());
+
+	/* If the window isn't open, there isn't anything left to do */
+	if(c == NULL)
+		return;
+
+	/* Check to make sure it sent, and if it did, put the text in */
+	g_strreverse(c->etag->buf);
+
+	if(strncmp(c->etag->buf, "en", 2) == 0)
+	{
+		ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+		const gchar *name = g_strdup_printf("%s",
+						owner->GetAlias());
+		gUserManager.DropOwner();
+
+		gtk_editable_delete_text(GTK_EDITABLE(c->entry), 0, -1);
+		gtk_editable_delete_text(GTK_EDITABLE(c->spoof_uin), 0, -1);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->spoof_button),
+					     FALSE);
+		gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
+		
+		gtk_text_freeze(GTK_TEXT(c->entry));
+		gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
+		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, c->for_user, -1);
+		gtk_text_thaw(GTK_TEXT(c->entry));
+	}
 }

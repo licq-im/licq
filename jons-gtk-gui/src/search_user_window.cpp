@@ -279,21 +279,23 @@ void search_list_double_click(GtkWidget *widget,
 
 void search_result(ICQEvent *event)
 {
+	CSearchAck *search_ack = event->SearchAck();
+
 	/* Make sure it's the right event */
-	if(event->m_nSubSequence != su->sequence)
+	if(event->SubSequence() != su->sequence)
 		return;
 	
-	if(event->m_eResult == EVENT_SUCCESS)
-		search_done(event->m_sSearchAck->cMore);
-	else if(event->m_eResult == EVENT_ACKED)
-		search_found(event->m_sSearchAck);
+	if(event->Result() == EVENT_SUCCESS)
+		search_done(search_ack->More());
+	else if(event->Result() == EVENT_ACKED)
+		search_found(search_ack);
 	else
 		search_failed();
 }
 
-void search_done(char more)
+void search_done(bool more)
 {
-	if(more == (char)1)
+	if(more)
 		gtk_label_set_text(GTK_LABEL(su->label),
 			"More users found, narrow your search and try again.");
 	else
@@ -304,19 +306,19 @@ void search_done(char more)
 void search_found(CSearchAck *ack)
 {
 	gchar *found_user[4];
-	gchar *name = g_strdup_printf("%s %s", ack->szFirstName,
-			              ack->szLastName);	
+	gchar *name = g_strdup_printf("%s %s", ack->FirstName(),
+			              ack->LastName());	
 
 	gtk_clist_freeze(GTK_CLIST(su->list));
 
-	found_user[0] = g_strdup_printf("%ld", ack->nUin);
-	found_user[1] = ack->szAlias;
+	found_user[0] = g_strdup_printf("%ld", ack->Uin());
+	found_user[1] = ack->Alias();
 	found_user[2] = name;
-	found_user[3] = ack->szEmail; 
+	found_user[3] = ack->Email(); 
 
 	gtk_clist_insert(GTK_CLIST(su->list), num_found_users, found_user);
 	gtk_clist_set_row_data(GTK_CLIST(su->list), num_found_users,
-			       (gpointer)ack->nUin);
+			       (gpointer)ack->Uin());
 
 	num_found_users++;
 	gtk_clist_thaw(GTK_CLIST(su->list));
