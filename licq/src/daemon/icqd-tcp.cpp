@@ -42,7 +42,12 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
                  L_WARNxSTR, MAX_MESSAGE_SIZE);
        mDos[MAX_MESSAGE_SIZE] = '\0';
      }
-     CPU_ThroughServer *p = new CPU_ThroughServer(_nSourceUin, _nUin, ICQ_CMDxSUB_MSG, mDos);
+     if (_nSourceUin != 0 && _nSourceUin != gUserManager.OwnerUin())
+     {
+       gLog.Error("%sSpoofing does not work through the server, send aborted.\n");
+       return NULL;
+     }
+     CPU_ThroughServer *p = new CPU_ThroughServer(0, _nUin, ICQ_CMDxSUB_MSG, mDos);
      gLog.Info("%sSending message through server (#%d).\n", L_UDPxSTR, p->getSequence());
      result = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE, _nUin, e);
   }
@@ -104,7 +109,12 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
   if (!online) // send offline
   {
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-    CPU_ThroughServer *p = new CPU_ThroughServer(_nSourceUin, _nUin, ICQ_CMDxSUB_URL, m);
+    if (_nSourceUin != 0 && _nSourceUin != gUserManager.OwnerUin())
+    {
+      gLog.Error("%sSpoofing does not work through the server, send aborted.\n");
+      return NULL;
+    }
+    CPU_ThroughServer *p = new CPU_ThroughServer(0, _nUin, ICQ_CMDxSUB_URL, m);
     gLog.Info("%sSending url through server (#%d).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE, _nUin, e);
   }

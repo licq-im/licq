@@ -590,14 +590,59 @@ CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 
 
 //-----icqAuthorize-------------------------------------------------------------
-void CICQDaemon::icqAuthorize(unsigned long uinToAuthorize)
+void CICQDaemon::icqAuthorize(unsigned long)
+{
+  fprintf(stderr, "icqAuthorize(uin): This function is depreciated.\n"
+                  "Use \"icqAuthorizeGrant(uin, message)\" "
+                  "or icqAuthorizeRefuse(uin, message)\" instead.\n");
+}
+
+
+///-----icqAuthorize-------------------------------------------------------------
+void CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szMessage)
 // authorize a user to add you to their contact list
 {
-  CPU_Authorize *p = new CPU_Authorize(uinToAuthorize);
+  /*CPU_Authorize *p = new CPU_Authorize(uinToAuthorize);
   gLog.Info("%sAuthorizing user %ld (#%d)...\n", L_UDPxSTR,
              uinToAuthorize, p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);*/
+
+  char *sz = NULL;
+  if (szMessage != NULL)
+  {
+    sz = gTranslator.NToRN(szMessage);
+    gTranslator.ClientToServer(sz);
+  }
+  CPU_ThroughServer *p = new CPU_ThroughServer(0, uinToAuthorize,
+     ICQ_CMDxSUB_AUTHxGRANTED, sz);
+  gLog.Info("%sAuthorizing user %ld (#%d)...\n", L_UDPxSTR, uinToAuthorize,
+     p->getSequence());
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+
+  delete sz;
 }
+
+
+//-----icqAuthorize-------------------------------------------------------------
+void CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
+// refuseto authorize a user to add you to their contact list
+{
+  char *sz = NULL;
+  if (szMessage != NULL)
+  {
+    sz = gTranslator.NToRN(szMessage);
+    gTranslator.ClientToServer(sz);
+  }
+  CPU_ThroughServer *p = new CPU_ThroughServer(0, nUin,
+     ICQ_CMDxSUB_AUTHxREFUSED, sz);
+  gLog.Info("%sRefusing authorization to user %ld (#%d)...\n", L_UDPxSTR,
+     nUin, p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+
+  delete sz;
+}
+
+
 
 
 //-----icqRequestSystemMsg------------------------------------------------------

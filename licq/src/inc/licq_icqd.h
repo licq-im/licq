@@ -149,6 +149,8 @@ public:
   unsigned short icqSearchByUin(unsigned long);
   void icqLogoff();
   void icqAuthorize(unsigned long uinToAuthorize);
+  void icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
+  void icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
   void icqUpdateContactList();
