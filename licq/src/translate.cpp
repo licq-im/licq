@@ -19,12 +19,6 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_log.h"
 
-#ifdef USE_HEBREW
-extern "C" {
-extern char *hebrev (char* pszStr);
-}
-#endif
-
 CTranslator gTranslator;
 
 //============ CTranslator ============//
@@ -158,11 +152,6 @@ void CTranslator::ServerToClient(char *szString)
       pC++;
     }
   }
-#ifdef USE_HEBREW
-  char *p = hebrev(szString);
-  strcpy(szString, p);
-  free(p);
-#endif
 }
 
 

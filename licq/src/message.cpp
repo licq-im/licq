@@ -13,6 +13,13 @@
 #include "licq_translate.h"
 #include "licq_icqd.h"
 
+#ifdef USE_HEBREW
+extern "C" {
+extern char *hebrev (char* pszStr);
+}
+#endif
+
+
 int CUserEvent::s_nId = 1;
 
 //----CUserEvent::constructor---------------------------------------------------
@@ -36,7 +43,14 @@ CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
 const char *CUserEvent::Text()
 {
   if (m_szText == NULL)
+  {
     CreateDescription();
+#ifdef USE_HEBREW
+    char *p = hebrev(m_szText);
+    strcpy(m_szText, p);
+    free(p);
+#endif
+  }
 
   return m_szText;
 }
