@@ -489,6 +489,20 @@ void CLicqConsole::MenuSet(char *_szArg)
       winMain->wprintf("%CNo such color: %A%s\n", COLOR_RED, A_BOLD, szValue);
       break;
     }
+ 
+    switch(nVariable)
+    {
+    case 2: m_nColorOnline = i;    break;
+    case 3: m_nColorAway = i;      break;
+    case 4: m_nColorOffline = i;   break;
+    case 5: m_nColorNew = i;       break;
+    case 6: m_nColorGroupList = i; break;
+    case 7: m_nColorQuery = i;     break;
+    case 8: m_nColorInfo = i;      break;
+    case 9: m_nColorError = i;     break;
+    default: break;
+    }   
+
     *(const struct SColorMap **)aVariables[nVariable].pData = &aColorMaps[i];
     break;
 
@@ -507,7 +521,8 @@ void CLicqConsole::MenuSet(char *_szArg)
     break;
   }
 
-
+  // Save it all
+  DoneOptions();
 }
 
 /*--------------------------------------------------------------------------

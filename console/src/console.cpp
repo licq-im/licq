@@ -14,6 +14,7 @@ extern int errno
 #endif
 
 #include "console.h"
+#include "licq_file.h"
 #include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_icqd.h"
@@ -42,22 +43,23 @@ const struct SStatus aStatus[NUM_STATUS] =
   { "*ffc", ICQ_STATUS_FREEFORCHAT }
 };
 
-const unsigned short NUM_VARIABLES = 13;
+const unsigned short NUM_VARIABLES = 14;
 struct SVariable aVariables[NUM_VARIABLES] =
 {
-  { "show_offline_users", BOOL, NULL },
-  { "show_dividers", BOOL, NULL },
-  { "color_online", COLOR, NULL },
-  { "color_away", COLOR, NULL },
-  { "color_offline", COLOR, NULL },
-  { "color_new", COLOR, NULL },
-  { "color_group_list", COLOR, NULL },
-  { "color_query", COLOR, NULL },
-  { "color_info", COLOR, NULL },
-  { "user_online_format", STRING, NULL },
-  { "user_other_online_format", STRING, NULL },
-  { "user_away_format", STRING, NULL },
-  { "user_offline_format", STRING, NULL }
+  { "show_offline_users", BOOL, NULL },           // 0
+  { "show_dividers", BOOL, NULL },                // 1
+  { "color_online", COLOR, NULL },                // 2
+  { "color_away", COLOR, NULL },                  // 3
+  { "color_offline", COLOR, NULL },               // 4
+  { "color_new", COLOR, NULL },                   // 5
+  { "color_group_list", COLOR, NULL },            // 6
+  { "color_query", COLOR, NULL },                 // 7
+  { "color_info", COLOR, NULL },                  // 8
+  { "color_error", COLOR, NULL },                 // 9
+  { "user_online_format", STRING, NULL },         // 10
+  { "user_other_online_format", STRING, NULL },   // 11
+  { "user_away_format", STRING, NULL },           // 12
+  { "user_offline_format", STRING, NULL }         // 13
 };
 
 const unsigned short NUM_COLORMAPS = 15;
@@ -90,25 +92,48 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
 {
   CWindow::StartScreen();
 
-  // XXX Change this to CIniFile.. oh yeah, add in a variable for the
+  // oh yeah, add in a variable for the
   // status window text and colors.. that'd be cool
+  char szFileName[MAX_FILENAME_LEN];
+  sprintf(szFileName, "%s/licq_console.conf", BASE_DIR);
+  CIniFile licqConf;
+  if(!licqConf.LoadFile(szFileName))
+  {
+    FILE *f = fopen(szFileName, "w");
+    fprintf(f, "[appearance]");
+    fclose(f);
+    licqConf.LoadFile(szFileName);
+  }
 
-  m_bShowOffline = true;
-  m_bShowDividers = true;
-  m_nCurrentGroup = 0;
-  m_nGroupType = GROUPS_USER;
-  m_cColorOnline = &aColorMaps[5];
-  m_cColorAway = &aColorMaps[0];
-  m_cColorOffline = &aColorMaps[1];
-  m_cColorNew = &aColorMaps[14];
-  m_cColorGroupList = &aColorMaps[13];
-  m_cColorQuery = &aColorMaps[8];
-  m_cColorInfo = &aColorMaps[13];
-  m_cColorError = &aColorMaps[9];
-  strcpy(m_szOnlineFormat, "%-20a");
-  strcpy(m_szOtherOnlineFormat, "%-20a[%6S]");
-  strcpy(m_szAwayFormat, "%-20a[%6S]");
-  strcpy(m_szOfflineFormat, "%-20a");
+  licqConf.SetSection("appearance");
+
+  licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
+  licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
+  licqConf.ReadNum("CurrentGroup", m_nCurrentGroup, 0);
+  licqConf.ReadNum("GroupType", (unsigned short)m_nGroupType, (unsigned short)GROUPS_USER);
+  licqConf.ReadNum("ColorOnline", m_nColorOnline, 5);
+  licqConf.ReadNum("ColorAway", m_nColorAway, 0);
+  licqConf.ReadNum("ColorOffline", m_nColorOffline, 1);
+  licqConf.ReadNum("ColorNew", m_nColorNew, 14);
+  licqConf.ReadNum("ColorGroupList", m_nColorGroupList, 13);
+  licqConf.ReadNum("ColorQuery", m_nColorQuery, 8);
+  licqConf.ReadNum("ColorInfo", m_nColorInfo, 13);
+  licqConf.ReadNum("ColorError", m_nColorError, 9);
+  licqConf.ReadStr("OnlineFormat", m_szOnlineFormat, "%-20a");
+  licqConf.ReadStr("OtherOnlineFormat", m_szOtherOnlineFormat, "%-20a[%6S]");
+  licqConf.ReadStr("AwayFormat", m_szAwayFormat, "%-20a[%6S]");
+  licqConf.ReadStr("OfflineFormat", m_szOfflineFormat, "%-20a");
+
+  // Set the colors
+  m_cColorOnline    = &aColorMaps[m_nColorOnline];
+  m_cColorAway      = &aColorMaps[m_nColorAway];
+  m_cColorOffline   = &aColorMaps[m_nColorOffline];
+  m_cColorNew       = &aColorMaps[m_nColorNew];
+  m_cColorGroupList = &aColorMaps[m_nColorGroupList];
+  m_cColorQuery     = &aColorMaps[m_nColorQuery];
+  m_cColorInfo      = &aColorMaps[m_nColorInfo];
+  m_cColorError     = &aColorMaps[m_nColorError];
+
   m_lCmdHistoryIter = m_lCmdHistory.end();
 
   // Set the variable data pointers
@@ -122,6 +147,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   aVariables[i++].pData = &m_cColorGroupList;
   aVariables[i++].pData = &m_cColorQuery;
   aVariables[i++].pData = &m_cColorInfo;
+  aVariables[i++].pData = &m_cColorError;
   aVariables[i++].pData = m_szOnlineFormat;
   aVariables[i++].pData = m_szOtherOnlineFormat;
   aVariables[i++].pData = m_szAwayFormat;
@@ -267,6 +293,38 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 }
 
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::DoneOptions
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::DoneOptions()
+{
+  char szFileName[MAX_FILENAME_LEN];
+  sprintf(szFileName, "%s/licq_console.conf", BASE_DIR);
+  CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
+  if(!licqConf.LoadFile(szFileName))
+    return;
+
+  licqConf.SetSection("appearance");
+  licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
+  licqConf.WriteBool("ShowDividers", m_bShowDividers);
+  licqConf.WriteNum("CurrentGroup", m_nCurrentGroup);
+  licqConf.WriteNum("GroupType", (unsigned short)m_nGroupType);
+  licqConf.WriteNum("ColorOnline", m_nColorOnline);
+  licqConf.WriteNum("ColorAway", m_nColorAway);
+  licqConf.WriteNum("ColorOffline", m_nColorOffline);
+  licqConf.WriteNum("ColorNew", m_nColorNew);
+  licqConf.WriteNum("ColorGroupList", m_nColorGroupList);
+  licqConf.WriteNum("ColorQuery", m_nColorQuery);
+  licqConf.WriteNum("ColorInfo", m_nColorInfo);
+  licqConf.WriteNum("ColorError", m_nColorError);
+  licqConf.WriteStr("OnlineFormat", m_szOnlineFormat);
+  licqConf.WriteStr("OtherOnlineFormat", m_szOtherOnlineFormat);
+  licqConf.WriteStr("AwayFormat", m_szAwayFormat);
+  licqConf.WriteStr("OfflineFormat", m_szOfflineFormat);
+
+  licqConf.FlushFile();
+  licqConf.CloseFile();
+}
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessLog

@@ -48,6 +48,8 @@ protected:
 
   // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
+  unsigned short m_nColorOnline, m_nColorOffline, m_nColorAway, m_nColorNew,
+    m_nColorGroupList, m_nColorQuery, m_nColorInfo, m_nColorError;
   const struct SColorMap *m_cColorOnline, *m_cColorOffline,
                    *m_cColorAway, *m_cColorGroupList, *m_cColorNew,
                    *m_cColorQuery, *m_cColorInfo, *m_cColorError;
@@ -68,6 +70,7 @@ protected:
   CPluginLog *log;
 
 public:
+  void DoneOptions();
   void ProcessPipe();
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
