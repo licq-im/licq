@@ -118,7 +118,7 @@ protected:
 class CEventFileCancel : public CUserEvent
 {
 public:
-   CEventFileCancel(unsigned long _nSequence, time_t _tTime, 
+   CEventFileCancel(unsigned long _nSequence, time_t _tTime,
                     unsigned long _nFlags);
    virtual ~CEventFileCancel(void);
    virtual CEventFileCancel *Copy(void)
@@ -176,11 +176,11 @@ class CEventAdded : public CUserEvent
 {
 public:
    CEventAdded(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
-               const char *_szLastName, const char *_szEmail, 
+               const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAdded(void);
    virtual CEventAdded *Copy(void)
-      { return (new CEventAdded(m_nUin, m_szAlias, m_szFirstName, m_szLastName, 
+      { return (new CEventAdded(m_nUin, m_szAlias, m_szFirstName, m_szLastName,
                                 m_szEmail, m_nCommand, m_tTime, m_nFlags)); };
 
 protected:
@@ -193,17 +193,17 @@ protected:
 
 
 
-//-----CEventAuth---------------------------------------------------------------
-class CEventAuth : public CUserEvent
+//-----CEventAuthReq---------------------------------------------------------
+class CEventAuthReq : public CUserEvent
 {
 public:
-   CEventAuth(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
-              const char *_szLastName, const char *_szEmail, const char *_szReason, 
-              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-   virtual ~CEventAuth(void);
-   virtual CEventAuth *Copy(void)
-      { return (new CEventAuth(m_nUin, m_szAlias, m_szFirstName, m_szLastName, 
-                               m_szEmail, m_szReason, m_nCommand, m_tTime, 
+   CEventAuthReq(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
+                 const char *_szLastName, const char *_szEmail, const char *_szReason,
+                 unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+   virtual ~CEventAuthReq(void);
+   virtual CEventAuthReq *Copy(void)
+      { return (new CEventAuthReq(m_nUin, m_szAlias, m_szFirstName, m_szLastName,
+                               m_szEmail, m_szReason, m_nCommand, m_tTime,
                                m_nFlags)); };
    unsigned long Uin(void)  { return m_nUin; };
 protected:
@@ -213,6 +213,23 @@ protected:
    char *m_szLastName;
    char *m_szEmail;
    char *m_szReason;
+};
+
+
+//-----CEventAuth------------------------------------------------------------
+class CEventAuth : public CUserEvent
+{
+public:
+   CEventAuth(unsigned long _nUin, const char *_szMessage,
+              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+   virtual ~CEventAuth(void);
+   virtual CEventAuth *Copy(void)
+      { return (new CEventAuth(m_nUin, m_szMessage, m_nCommand, m_tTime,
+                               m_nFlags)); };
+   unsigned long Uin(void)  { return m_nUin; };
+protected:
+   unsigned long m_nUin;
+   char *m_szMessage;
 };
 
 

@@ -17,7 +17,7 @@ CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
    m_nSubCommand = _nSubCommand;
    m_nCommand = _nCommand;
    m_nSequence = _nSequence;
-   m_tTime = _tTime;
+   m_tTime = (_tTime == 0 ? time(NULL) : _tTime);
    m_nFlags = _nFlags;
 }
 
@@ -28,10 +28,7 @@ const char *CUserEvent::Time(void)
   static char s_szTime[32];
 
   // set the time received: "Mon Apr 27 20:49:08 1998\n"
-  if (m_tTime == 0) m_tTime = time(NULL);
   strcpy(s_szTime, ctime(&m_tTime));
-  // Remove the trailing newline
-  //s_szTime[24] = '\0';
   s_szTime[16] = '\0';
 
   return s_szTime;
@@ -251,8 +248,8 @@ CEventAdded::~CEventAdded(void)
 }
 
 
-//=====CEventAuth===============================================================
-CEventAuth::CEventAuth(unsigned long _nUin, const char *_szAlias,
+//=====CEventAuthReq===============================================================
+CEventAuthReq::CEventAuthReq(unsigned long _nUin, const char *_szAlias,
                        const char *_szFirstName,const char *_szLastName,
                        const char *_szEmail, const char *_szReason,
                        unsigned short _nCommand, time_t _tTime,
@@ -274,7 +271,7 @@ CEventAuth::CEventAuth(unsigned long _nUin, const char *_szAlias,
 }
 
 
-CEventAuth::~CEventAuth(void)
+CEventAuthReq::~CEventAuthReq(void)
 {
    free (m_szAlias);
    free (m_szFirstName);
@@ -282,6 +279,31 @@ CEventAuth::~CEventAuth(void)
    free (m_szEmail);
    free (m_szReason);
 }
+
+
+//=====CEventAuth===============================================================
+CEventAuth::CEventAuth(unsigned long _nUin, const char *_szMessage,
+                       unsigned short _nCommand, time_t _tTime,
+                       unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_REQxAUTH, _nCommand, 0, _tTime, _nFlags)
+{
+  if (_szMessage == NULL)
+    m_szMessage = strdup("");
+  else
+    m_szMessage = strdup(_szMessage);
+  m_nUin = _nUin;
+
+  m_szText = new char[strlen(m_szMessage) + 128];
+  sprintf(m_szText, "Uin %ld has authorized you:\n%s\n",
+          _nUin, _szMessage);
+}
+
+
+CEventAuth::~CEventAuth(void)
+{
+  free (m_szMessage);
+}
+
 
 
 //====CEventHtmlPanel===========================================================
