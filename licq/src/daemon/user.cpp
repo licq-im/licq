@@ -1172,6 +1172,15 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 }
 
 
+unsigned short ICQUser::ConnectionVersion()
+{
+  // If we are already connected, use that version
+  if (m_nConnectionVersion != 0) return m_nConnectionVersion;
+  // We aren't connected, see if we know their version
+  return VersionToUse(m_nVersion);
+}
+
+
 inline int ICQUser::LocalTimeGMTOffset()
 {
   return GetTimezone() * 1800;

@@ -344,36 +344,41 @@ protected:
   void PushExtendedEvent(ICQEvent *);
   void PushPluginSignal(CICQSignal *);
   void PushPluginEvent(ICQEvent *);
-  bool SendEvent(int nSD, CPacket &);
-  bool SendEvent(INetSocket *, CPacket &);
-  ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect);
+  bool SendEvent(int nSD, CPacket &, bool);
+  bool SendEvent(INetSocket *, CPacket &, bool);
+  /*ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
-                            unsigned long _nDestinationUin, CUserEvent *e);
-  ICQEvent *SendExpectEvent(ICQEvent *);
+                            unsigned long _nDestinationUin, CUserEvent *e);*/
+  ICQEvent *SendExpectEvent_Server(CPacket *packet);
+  ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *);
+  ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
+  ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckUDP(unsigned short, unsigned short, UDPSocket *);
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, TCPSocket *);
 
-  //unsigned short ProcessUdpPacket(CBuffer &packet, unsigned short = 0);
   unsigned short ProcessUdpPacket(UDPSocket *, unsigned short = 0);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
-  //bool ProcessTcpPacket(CBuffer &packet, int sockfd);
   bool ProcessTcpPacket(TCPSocket *);
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
+  bool Handshake_Send(TCPSocket *, unsigned long, unsigned short);
+  bool Handshake_Recv(TCPSocket *);
   int ConnectToServer();
   int ConnectToUser(unsigned long);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
-                           unsigned short nPort);
+                           unsigned short nPort, unsigned short nVersion);
 
   void StupidChatLinkageFix();
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
   friend void *MonitorSockets_tep(void *p);
-  friend void *ProcessRunningEvent_tep(void *p);
+  //friend void *ProcessRunningEvent_tep(void *p);
+  friend void *ProcessRunningEvent_Client_tep(void *p);
+  friend void *ProcessRunningEvent_Server_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend class ICQUser;
   friend class CSocketManager;
@@ -385,6 +390,7 @@ extern CICQDaemon *gLicqDaemon;
 // Helper functions for the daemon
 bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
 unsigned long StringToStatus(char *_szStatus);
+unsigned short VersionToUse(unsigned short);
 
 
 #endif

@@ -201,7 +201,8 @@ protected:
   static unsigned long s_nNextEventId;
 
 friend class CICQDaemon;
-friend void *ProcessRunningEvent_tep(void *p);
+friend void *ProcessRunningEvent_Client_tep(void *p);
+friend void *ProcessRunningEvent_Server_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
 friend class CICQEventTag;
 };

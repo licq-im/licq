@@ -32,6 +32,8 @@ public:
   bool DestinationSet()     { return (RemoteIp() != 0); }
   unsigned long Owner()     { return (m_nOwner); }
   void SetOwner(unsigned long _nOwner)  { m_nOwner = _nOwner; }
+  unsigned long Version()     { return (m_nVersion); }
+  void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
   int Error();
   char *ErrorStr(char *, int);
@@ -79,6 +81,7 @@ protected:
   char m_szID[4];
   int m_nSockType;
   unsigned long m_nOwner;
+  unsigned short m_nVersion;
 };
 
 

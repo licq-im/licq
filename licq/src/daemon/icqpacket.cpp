@@ -259,17 +259,17 @@ void Encrypt_Client(CBuffer *pkt)
   X3 = client_check_data[X2] ^ 0xFF;
   B1 = (buf[4]<<24)|(buf[6]<<16)|(buf[4]<<8)|(buf[6]);
   check = ((M1 << 24) | (X1 << 16) | (X2 << 8) | X3) ^ B1;
-  
+
   // main XOR key
   key = 0x67657268 * size + check;
-  
+
   // XORing the actual data
   for(i=0;i<(size+3)/4;i+=4){
     hex = key + client_check_data[i&0xFF];
     buf[i+0] ^= hex&0xFF;buf[i+1] ^= (hex>>8)&0xFF;
     buf[i+2] ^= (hex>>16)&0xFF;buf[i+3] ^= (hex>>24)&0xFF;
   }
-  
+
   // storing the checkcode
   buf[3] = (check>>24)&0xFF;
   buf[2] = (check>>16)&0xFF;
@@ -285,13 +285,13 @@ bool Decrypt_Client(CBuffer *pkt)
   unsigned char X1, X2, X3;
   char *buf = pkt->getDataStart();
   unsigned long size = pkt->getDataSize();
-  
+
   // retrieve checkcode
   check = (buf[3]<<24)|(buf[2]<<16)|(buf[1]<<8)|(buf[0]);
-  
+
   // main XOR key
   key = 0x67657268 * size + check;
-  
+
   for(i=4; i<(size+3)/4; i+=4) {
     hex = key + client_check_data[i&0xFF];
     buf[i+0] ^= hex&0xFF;buf[i+1] ^= (hex>>8)&0xFF;
@@ -314,7 +314,7 @@ bool Decrypt_Client(CBuffer *pkt)
     DEBUG_ENCRYPTION(("calculated X1 (%02lx) != %02x\n", X1, (B1 >> 16) & 0xFF));
     return false;
   }
-  
+
   X2 = ((B1 >> 8) & 0xFF);
   if(X2 < 220) {
     X3 = client_check_data[X2] ^ 0xFF;
@@ -331,6 +331,8 @@ bool Decrypt_Client(CBuffer *pkt)
        pkt->print(b));
     delete [] b;
   }
+
+  return true;
 }
 
 
@@ -356,7 +358,7 @@ unsigned short CPacketUdp::s_nSubSequence = 0;
 unsigned long  CPacketUdp::s_nSessionId = 0;
 
 
-CBuffer *CPacketUdp::Finalize()
+CBuffer *CPacketUdp::Finalize(INetSocket *)
 {
   CBuffer *newbuf = new CBuffer(getBuffer());
   Encrypt_Server(newbuf);
@@ -596,7 +598,7 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
 }
 
 
-CBuffer *CPU_Logon::Finalize()
+CBuffer *CPU_Logon::Finalize(INetSocket *s)
 {
   char *sz = buffer->getDataPosWrite();
 
@@ -604,7 +606,7 @@ CBuffer *CPU_Logon::Finalize()
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->setDataPosWrite(sz);
 
-  return CPacketUdp::Finalize();
+  return CPacketUdp::Finalize(s);
 }
 
 
@@ -1229,7 +1231,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
-  buffer->PackUnsignedLong(0x00001B92); // tcp flags?
+  buffer->PackUnsignedLong(0x00001B92); // port of some kind
   buffer->PackUnsignedLong(m_nSessionId);
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
@@ -1248,7 +1250,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(CBuffer *inbuf)
   m_nLocalIp = inbuf->UnpackUnsignedLong();
   m_nRealIp = inbuf->UnpackUnsignedLong();
   m_nMode = inbuf->UnpackChar();
-  inbuf->UnpackUnsignedLong(); // tcp flags?
+  inbuf->UnpackUnsignedLong(); // port of some kind...?
   m_nSessionId = inbuf->UnpackUnsignedLong();
   //inbuf->UnpackUnsignedLong(); // constant
   //inbuf->UnpackUnsignedLong(); // constant
@@ -1265,11 +1267,17 @@ CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
 
 
 //=====PacketTcp================================================================
-CBuffer *CPacketTcp::Finalize()
+CBuffer *CPacketTcp::Finalize(INetSocket *s)
 {
-  CBuffer *newbuf = new CBuffer(getBuffer());
-  Encrypt_Client(newbuf);
-  return newbuf;
+  // Set the local port in the tcp packet now
+  if (s != NULL && LocalPortOffset() != NULL)
+  {
+    LocalPortOffset()[0] = s->LocalPort() & 0xFF;
+    LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+  }
+
+  if (m_nVersion == 4) Encrypt_Client(buffer);
+  return buffer;
 }
 
 CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
@@ -1301,6 +1309,8 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
       }
       if (o->StatusInvisible())
         m_nMsgType |= ICQ_TCPxMSG_FxINVISIBLE;
+      m_nTail1 = 0x00000000;
+      m_nTail2 = 0x00FFFFFF;
       break;
     }
 
@@ -1327,6 +1337,8 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
           default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
         }
       }
+      m_nTail1 = 0x00000000;
+      m_nTail2 = 0x00000000;
       break;
     }
   }
@@ -1337,20 +1349,13 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   m_nSubCommand = _nSubCommand;
   m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
   m_nLocalPort = user->LocalPort();
-  /*m_nLocalPort = 0;
-  if (user->SocketDesc() != -1)
-  {
-    INetSocket *s = gSocketManager.FetchSocket(user->SocketDesc());
-    if (s != NULL)
-    {
-      m_nLocalPort = s->LocalPort();
-      gSocketManager.DropSocket(s);
-    }
-  }*/
 
   // don't increment the sequence if this is an ack and cancel packet
   if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = user->Sequence(true);
 
+  m_nVersion = user->ConnectionVersion();
+
+  // v4 packets are smaller then v2 so we just set the size based on a v2 packet
   m_nSize = 18 + strlen(m_szMessage) + 25;
   buffer = NULL;
 }
@@ -1363,6 +1368,33 @@ CPacketTcp::~CPacketTcp()
 
 
 void CPacketTcp::InitBuffer()
+{
+  switch (m_nVersion)
+  {
+  case 4:
+    InitBuffer_v4();
+    break;
+  case 2:
+    InitBuffer_v2();
+    break;
+  }
+}
+
+void CPacketTcp::PostBuffer()
+{
+  switch (m_nVersion)
+  {
+  case 4:
+    PostBuffer_v4();
+    break;
+  case 2:
+    PostBuffer_v2();
+    break;
+  }
+}
+
+
+void CPacketTcp::InitBuffer_v2()
 {
   buffer = new CBuffer(m_nSize + 4);
 
@@ -1381,9 +1413,37 @@ void CPacketTcp::InitBuffer()
   buffer->PackUnsignedShort(m_nMsgType);
 }
 
-void CPacketTcp::PostBuffer()
+void CPacketTcp::PostBuffer_v2()
 {
   buffer->PackUnsignedLong(m_nSequence);
+  buffer->PackChar('L');
+  buffer->PackUnsignedShort(INT_VERSION);
+}
+
+
+void CPacketTcp::InitBuffer_v4()
+{
+  buffer = new CBuffer(m_nSize + 4);
+
+  buffer->PackUnsignedLong(0); // Checksum
+  buffer->PackUnsignedShort(m_nCommand);
+  buffer->PackUnsignedShort(0x000E);  //???
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedLong(0); // Always zero, probably decryption validation
+  buffer->PackUnsignedLong(0); //   ""
+  buffer->PackUnsignedLong(0); //   ""
+  buffer->PackUnsignedShort(m_nSubCommand);
+  buffer->PackUnsignedShort(m_nStatus);
+  buffer->PackUnsignedShort(m_nMsgType);
+  buffer->PackString(m_szMessage);
+
+  m_szLocalPortOffset = NULL;
+}
+
+void CPacketTcp::PostBuffer_v4()
+{
+  buffer->PackUnsignedLong(m_nTail1);
+  buffer->PackUnsignedLong(m_nTail2);
   buffer->PackChar('L');
   buffer->PackUnsignedShort(INT_VERSION);
 }
@@ -1435,6 +1495,8 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
     case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
     default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
   }
+  m_nTail1 = 0xFFFFFFFF;
+  m_nTail2 = 0xFFFFFFFF;
 
   InitBuffer();
   PostBuffer();

@@ -20,7 +20,7 @@ class CPacket
 {
 public:
    CBuffer *getBuffer()  { return buffer; };
-   virtual CBuffer *Finalize() { return NULL; }
+   virtual CBuffer *Finalize(INetSocket *) { return NULL; }
 
    virtual const unsigned long  getSequence() = 0;
    virtual const unsigned short SubSequence() = 0;
@@ -52,7 +52,7 @@ class CPacketUdp : public CPacket
 public:
    virtual ~CPacketUdp();
 
-   virtual CBuffer *Finalize();
+   virtual CBuffer *Finalize(INetSocket *);
    virtual const unsigned long  getSequence() { return m_nSequence; }
    virtual const unsigned short SubSequence() { return m_nSubSequence; }
    virtual const unsigned short getCommand()  { return m_nCommand; }
@@ -137,7 +137,7 @@ public:
   CPU_Logon(unsigned short nLocalPort, const char *_szPassword,
      unsigned short _nLogonStatus);
 
-  virtual CBuffer *Finalize();
+  virtual CBuffer *Finalize(INetSocket *);
 protected:
   /* 02 00 E8 03 08 00 8F 76 20 00 34 4A 00 00 08 00 5B 63 65 50 61 62 43 00
      72 00 04 00 7F 00 00 01 04 00 00 00 00 03 00 00 00 02 00 00 00 00 00 04
@@ -570,6 +570,7 @@ protected:
 
 //=====TCP======================================================================
 bool Decrypt_Client(CBuffer *pkt);
+void Encrypt_Client(CBuffer *pkt);
 
 //-----PacketTcp_Handshake------------------------------------------------------
 class CPacketTcp_Handshake : public CPacket
@@ -639,7 +640,7 @@ class CPacketTcp : public CPacket
 public:
    virtual ~CPacketTcp();
 
-   virtual CBuffer *Finalize();
+   virtual CBuffer *Finalize(INetSocket *);
    virtual const unsigned long  getSequence()   { return m_nSequence; }
    virtual const unsigned short SubSequence()   { return 0; }
    virtual const unsigned short getCommand()    { return m_nCommand; }
@@ -647,12 +648,17 @@ public:
 
    char *LocalPortOffset()  {  return m_szLocalPortOffset; }
    unsigned short Level()  { return m_nLevel; }
+   unsigned short Version()  { return m_nVersion; }
 protected:
    CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
               unsigned short _nSubCommand, const char *szMessage, bool _bAccept,
               unsigned short nLevel, ICQUser *_cUser);
    void InitBuffer();
    void PostBuffer();
+   void InitBuffer_v2();
+   void PostBuffer_v2();
+   void InitBuffer_v4();
+   void PostBuffer_v4();
 
    unsigned long  m_nSourceUin;
    unsigned long  m_nCommand;
@@ -663,8 +669,12 @@ protected:
    unsigned short m_nMsgType;
    unsigned long  m_nSequence;
 
+   unsigned long m_nTail1;
+   unsigned long m_nTail2;
+
    char *m_szLocalPortOffset;
    unsigned short m_nLevel;
+   unsigned short m_nVersion;
 };
 
 

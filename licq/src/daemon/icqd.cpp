@@ -700,6 +700,15 @@ void CICQDaemon::SetTCPEnabled(bool b)
   CPacket::SetMode(b ? MODE_DIRECT : MODE_INDIRECT);
 }
 
+
+unsigned short VersionToUse(unsigned short v)
+{
+  if (ICQ_VERSION_TCP & 4 && v & 4) return 4;
+  if (ICQ_VERSION_TCP & 2 && v & 2) return 2;
+  gLog.Warn("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
+  return 2;
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -848,6 +857,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 }
 
 
+
 /*----------------------------------------------------------------------------
  * CICQDaemon::RejectEvent
  *
@@ -872,6 +882,29 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
 }
 
 
+/*---------------------------------------------------------------------------
+ * CheckBirthdays
+ *
+ * Send a signal for each user whose birthday occurs in the next few days.
+ *-------------------------------------------------------------------------*/
+ /*
+void CICQDaemon::CheckBirthdays(void)
+{
+  time_t t = time(NULL);
+  struct *tm = localtime(&t);
+  char nMonth, nDay;
+
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetBirthMonth() == nMonth && pUser->GetBirthDay() == nDay)
+    {
+      PushPluginSignal(new CICQSignal(SIGNAL_BIRTHDAY, 0, nUin));
+    }
+  }
+  FOR_EACH_USER_END
+}
+*/
+
 /*----------------------------------------------------------------------------
  * CICQDaemon::SendExpectEvent
  *
@@ -879,11 +912,11 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
  * an event structure and sticks it on the pending events queue.  Then signals
  * that it's there.
  *--------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect)
+ICQEvent *CICQDaemon::SendExpectEvent_Server(CPacket *packet)
 {
-  return SendExpectEvent(_nSD, packet, _eConnect, 0, NULL);
+  return SendExpectEvent_Server(0, packet, NULL);
 }
-
+/*
 ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
                                       unsigned long _nDestinationUin, CUserEvent *ue)
 {
@@ -895,19 +928,45 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eC
   ICQEvent *e = new ICQEvent(this, _nSD, packet, _eConnect, _nDestinationUin, ue);
 
   return SendExpectEvent(e);
+}*/
+
+
+ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,
+   CUserEvent *ue)
+{
+  // If we are already shutting down, don't start any events
+  if (m_bShuttingDown) return NULL;
+
+  if (ue != NULL) ue->m_eDir = D_SENDER;
+  ICQEvent *e = new ICQEvent(this, m_nUDPSocketDesc, packet, CONNECT_SERVER, nUin, ue);
+  return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 }
 
-ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e)
+
+ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
+   CUserEvent *ue)
+{
+  // If we are already shutting down, don't start any events
+  if (m_bShuttingDown) return NULL;
+
+  if (ue != NULL) ue->m_eDir = D_SENDER;
+  ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(), packet,
+     CONNECT_USER, pUser->Uin(), ue);
+  return SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
+}
+
+
+ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 {
   pthread_mutex_lock(&mutex_runningevents);
   m_lxRunningEvents.push_back(e);
   pthread_mutex_unlock(&mutex_runningevents);
 
-  int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_tep, e);
+  int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
   if (nResult != 0)
   {
     gLog.Error("%sUnable to start event thread (#%ld):\n%s%s.\n", L_ERRORxSTR,
-              e->m_nSequence, L_BLANKxSTR, strerror(nResult));
+       e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     e->m_eResult = EVENT_ERROR;
     ProcessDoneEvent(e);
     return NULL;
@@ -927,20 +986,20 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e)
  * Note that the user who owns the given socket is probably read-locked at
  * this point.
  *----------------------------------------------------------------------------*/
-bool CICQDaemon::SendEvent(int nSD, CPacket &p)
+bool CICQDaemon::SendEvent(int nSD, CPacket &p, bool d)
 {
   INetSocket *s = gSocketManager.FetchSocket(nSD);
   if (s == NULL) return false;
-  bool r = SendEvent(s, p);
+  bool r = SendEvent(s, p, d);
   gSocketManager.DropSocket(s);
   return r;
 }
 
-bool CICQDaemon::SendEvent(INetSocket *pSock, CPacket &p)
+bool CICQDaemon::SendEvent(INetSocket *pSock, CPacket &p, bool d)
 {
-  CBuffer *buf = p.Finalize();
+  CBuffer *buf = p.Finalize(pSock);
   pSock->Send(buf);
-  delete buf;
+  if (d) delete buf;
   return true;
 }
 

@@ -199,6 +199,7 @@ public:
   unsigned long RealIp()                { return m_nRealIp; }
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
+  unsigned short ConnectionVersion();
   time_t LastOnline()                   { return m_nLastOnline; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
   bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
@@ -267,6 +268,7 @@ public:
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
+  void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
   void SetAutoChatAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_CHAT : m_nAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
   void SetAutoFileAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_FILE : m_nAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
   void SetAcceptInAway(bool s)        { s ? m_nAutoAccept |= ACCEPT_IN_AWAY : m_nAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
@@ -345,8 +347,8 @@ public:
   void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
   // Don't call these:
   int SocketDesc()          { return m_nSocketDesc; }
-  void ClearSocketDesc()    { SetSocketDesc(-1, 0); }
-  void SetSocketDesc(int s, unsigned short p)  { m_nSocketDesc = s; m_nLocalPort = p; }
+  void ClearSocketDesc()    { SetSocketDesc(-1, 0, 0); }
+  void SetSocketDesc(int s, unsigned short p, unsigned short v)  { m_nSocketDesc = s; m_nLocalPort = p; m_nConnectionVersion = v; }
 
   // Events functions
   static unsigned short getNumUserEvents();
@@ -383,7 +385,7 @@ protected:
   time_t m_nTouched, m_nLastOnline;
   bool m_bOnContactList;
   unsigned long m_nIp, m_nRealIp, m_nVersion;
-  unsigned short m_nPort, m_nLocalPort;
+  unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,

@@ -24,6 +24,7 @@
  * function.  Then sends the event, retrying after a timeout.  If an ack is
  * received, the thread will be cancelled by the receiving thread.
  *----------------------------------------------------------------------------*/
+ #if 0
 void *ProcessRunningEvent_tep(void *p)
 {
   pthread_detach(pthread_self());
@@ -51,8 +52,11 @@ void *ProcessRunningEvent_tep(void *p)
           // Set the local port in the tcp packet now
           INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
           if (s == NULL) break;
-          ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
-          ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+          if (((CPacketTcp *)e->m_pPacket)->LocalPortOffset() != NULL)
+          {
+            ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
+            ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+          }
           gSocketManager.DropSocket(s);
         }
         break;
@@ -140,6 +144,157 @@ void *ProcessRunningEvent_tep(void *p)
   // Avoid compiler warnings
   return NULL;
 }
+#endif
+
+void *ProcessRunningEvent_Server_tep(void *p)
+{
+  pthread_detach(pthread_self());
+
+  DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
+
+  ICQEvent *e = (ICQEvent *)p;
+  CICQDaemon *d = e->m_pDaemon;
+  struct timeval tv;
+
+  // Check if the socket is connected
+  if (e->m_nSocketDesc == -1)
+  {
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+    // Connect to the server if we are logging on
+    if (e->m_pPacket->getCommand() == ICQ_CMDxSND_LOGON ||
+        e->m_pPacket->getCommand() == ICQ_CMDxSND_REGISTERxUSER)
+      e->m_nSocketDesc = d->ConnectToServer();
+
+    // Check again, if still -1, fail the event
+    if (e->m_nSocketDesc == -1)
+    {
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+      pthread_exit(NULL);
+    }
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+  }
+
+#if ICQ_VERSION == 5
+  // Make sure we are the next ack in line
+  pthread_cleanup_push( (void (*)(void *))&pthread_mutex_unlock, &d->mutex_serverack);
+  pthread_mutex_lock(&d->mutex_serverack);
+  while (e->m_nSequence > (unsigned short)(d->m_nServerAck + 1))
+  {
+    pthread_cond_wait(&d->cond_serverack, &d->mutex_serverack);
+  }
+  pthread_cleanup_pop(1);
+#endif
+
+  // Start sending the event
+  for (int i = 0; i <= MAX_SERVER_RETRIES; i++)
+  {
+    if (i > 0)
+      gLog.Info("%sTimed out after %d seconds (#%ld), retry %d of %d...\n",
+                L_WARNxSTR, MAX_WAIT_ACK, e->m_nSequence, i, MAX_SERVER_RETRIES);
+
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
+    if (s == NULL)
+    {
+      gLog.Warn("%sSocket not connected or invalid (#%ld).\n", L_WARNxSTR, e->m_nSequence);
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+      pthread_exit(NULL);
+    }
+    CBuffer *buf = e->m_pPacket->Finalize(s);
+    // We should delay here if the last packet was sent within the previous second
+    // FIXME
+    if (!s->Send(buf))
+    {
+      delete buf;
+      char szErrorBuf[128];
+      gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
+                e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
+      // We don't close the socket as it should be closed by the server thread
+      gSocketManager.DropSocket(s);
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+      pthread_exit(NULL);
+    }
+    delete buf;
+    gSocketManager.DropSocket(s);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+
+    // Sleep a bit before retrying
+    // We use select because sleep() awakes on every signal, including all
+    // the thread ones
+    tv.tv_sec = MAX_WAIT_ACK;
+    tv.tv_usec = 0;
+    select(0, NULL, NULL, NULL, &tv);
+    pthread_testcancel();
+  }
+
+  // We timed out
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  gLog.Warn("%sTimed out (#%ld).\n", L_WARNxSTR, e->m_nSequence);
+  if (d->DoneEvent(e, EVENT_TIMEDOUT) != NULL) d->ProcessDoneEvent(e);
+  pthread_exit(NULL);
+  // Avoid compiler warnings
+  return NULL;
+}
+
+
+void *ProcessRunningEvent_Client_tep(void *p)
+{
+  pthread_detach(pthread_self());
+
+  DEBUG_THREADS("[ProcessRunningEvent_Client_tep] Caught event.\n");
+
+  ICQEvent *e = (ICQEvent *)p;
+  CICQDaemon *d = e->m_pDaemon;
+
+  // Check if the socket is connected
+  if (e->m_nSocketDesc == -1)
+  {
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    e->m_nSocketDesc = d->ConnectToUser(e->m_nDestinationUin);
+    // Check again, if still -1, fail the event
+    if (e->m_nSocketDesc == -1)
+    {
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+      pthread_exit(NULL);
+    }
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+  }
+
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
+  if (s == NULL)
+  {
+    gLog.Warn("%sSocket %d does not exist (#%ld).\n", L_WARNxSTR, e->m_nSocketDesc,
+       e->m_nSequence);
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+    pthread_exit(NULL);
+  }
+  CBuffer *buf = e->m_pPacket->Finalize(s);
+  if (!s->Send(buf))
+  {
+    //delete buf;
+    char szErrorBuf[128];
+    gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
+              e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
+    // We don't close the socket as it should be closed by the server thread
+    //gSocketManager.DropSocket(s);
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+    //pthread_exit(NULL);
+  }
+  //delete buf;
+  gSocketManager.DropSocket(s);
+  //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+  //pthread_testcancel();
+
+  pthread_exit(NULL);
+  // Avoid compiler warnings
+  return NULL;
+}
+
 
 #if 0
 /*------------------------------------------------------------------------------
@@ -346,10 +501,6 @@ void *MonitorSockets_tep(void *p)
           else
           {
             udp->RecvRaw();
-            /*CBuffer b(udp->RecvBuffer());
-            udp->ClearRecvBuffer();
-            gSocketManager.DropSocket(udp);
-            d->ProcessUdpPacket(b);*/
             bool r = d->ProcessUdpPacket(udp);
             udp->ClearRecvBuffer();
             gSocketManager.DropSocket(udp);
@@ -426,7 +577,7 @@ void *MonitorSockets_tep(void *p)
                   if (err == ECONNRESET)
                   {
                     e->m_nSocketDesc = -1;
-                    d->SendExpectEvent(e);
+                    d->SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
                   }
                   else
                   {
@@ -447,28 +598,6 @@ void *MonitorSockets_tep(void *p)
               tcp->ClearRecvBuffer();
               gSocketManager.DropSocket(tcp);
               if (!r) gSocketManager.CloseSocket(nCurrentSocket);
-              /*
-              if (tcp->Owner() == 0)
-              {
-                if (!d->ProcessTcpHandshake(tcp))
-                {
-                  gSocketManager.DropSocket(tcp);
-                  gSocketManager.CloseSocket(nCurrentSocket, false);
-                }
-                else
-                {
-                  tcp->ClearRecvBuffer();
-                  gSocketManager.DropSocket(tcp);
-                }
-              }
-              else
-              {
-                CBuffer b(tcp->RecvBuffer());
-                tcp->ClearRecvBuffer();
-                gSocketManager.DropSocket(tcp);
-                if (!d->ProcessTcpPacket(b, nCurrentSocket))
-                  gSocketManager.CloseSocket(nCurrentSocket);
-              }*/
             }
             else
               gSocketManager.DropSocket(tcp);
