@@ -65,6 +65,10 @@
 
 // -----------------------------------------------------------------------------
 
+#define PARTLEN (MAX_MESSAGE_SIZE - 5)
+
+// -----------------------------------------------------------------------------
+
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
                                  CMainWindow *m, unsigned long _nUin,
                                  QWidget* parent, const char* name)
@@ -263,6 +267,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   btnReadNext = new QPushButton(tr("Nex&t"), this);
   setTabOrder(btnRead4, btnReadNext);
   btnClose = new CEButton(tr("&Close"), this);
+  QToolTip::add(btnClose, tr("Normal Click - Close Window\n<CTRL>+Click - also delete User"));
   setTabOrder(btnReadNext, btnClose);
   bw = QMAX(bw, btnReadNext->sizeHint().width());
   bw = QMAX(bw, btnClose->sizeHint().width());
@@ -366,6 +371,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   CUserEvent *m = e->msg;
   m_xCurrentReadEvent = m;
   mleRead->setText(QString::fromLocal8Bit(m->Text()));
+  mleRead->setCursorPosition(0, 0);
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE))
   {
     switch (m->SubCommand())
@@ -394,6 +400,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
         btnRead1->setText(tr("&Reply"));
         btnRead2->setText(tr("&Quote"));
         btnRead3->setText(tr("&Forward"));
+        btnRead4->setText(tr("Start Chat"));
         break;
 
       case ICQ_CMDxSUB_URL:   // view a url
@@ -647,6 +654,9 @@ void UserViewEvent::slot_btnRead4()
 
   switch (m_xCurrentReadEvent->SubCommand())
   {
+    case ICQ_CMDxSUB_MSG:
+      gMainWindow->callFunction(mnuUserSendChat, Uin());
+      break;
     case ICQ_CMDxSUB_CHAT:  // join to current chat
     {
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
@@ -786,9 +796,13 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
-  h_lay->addWidget(btnSend);
+  int w = QMAX(btnSend->sizeHint().width(), 75);
   connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
   btnCancel = new QPushButton(tr("&Close"), this);
+  w = QMAX(btnCancel->sizeHint().width(), w);
+  btnSend->setFixedWidth(w);
+  btnCancel->setFixedWidth(w);
+  h_lay->addWidget(btnSend);
   h_lay->addWidget(btnCancel);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
   mleSend = new MLEditWrap(true, mainWidget, true);
@@ -859,8 +873,10 @@ void UserSendCommon::massMessageToggled(bool b)
   else {
     // doesn't work right TODO investigate why
     int w = grpMR->width();
+    qDebug("width is %d", w);
     grpMR->hide();
-    top_hlay->setGeometry(QRect(x(), y(), width()-w, height()));
+    resize(width()-w, height());
+    //top_hlay->setGeometry(QRect(x(), y(), width()-w, height()));
   }
 }
 
@@ -1133,29 +1149,49 @@ void UserSendMsgEvent::sendButton()
                          "Do you really want to send it?"), tr("&Yes"), tr("&No")))
     return;
 
-  unsigned short nMsgLen = mleSend->text().length();
-  if (nMsgLen > MAX_MESSAGE_SIZE && chkSendServer->isChecked()
-      && !QueryUser(this, tr("Message is %1 characters, over the ICQ server limit of %2.\n"
-                             "The message will be truncated if sent through the server.")
-                    .arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
-                    tr("C&ontinue"), tr("&Cancel")))
-    return;
-
   // don't let the user send empty messages
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
+
+  if(m_msgTextTotal.isEmpty() )
+    m_msgTextTotal = mleSend->text().local8Bit().copy();
+
+  QString msgTextCurrent;
+
+  if(chkSendServer->isChecked()) {
+    int msgNextOffset = QMIN(m_msgTextTotal.length(), PARTLEN+1);
+    int found_index = m_msgTextTotal.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
+    if(found_index > 0)
+      msgNextOffset = found_index;
+
+    m_msgTextCurrent = m_msgTextTotal.left(msgNextOffset);
+
+    msgTextCurrent = m_msgTextCurrent;
+    if(m_msgTextCurrent.length() < m_msgTextTotal.length())
+    {
+//    msgTextCurrent.prepend("-L--- multipart ---\n");
+      msgTextCurrent.append("...");
+    }
+  }
+  else {
+    msgTextCurrent = m_msgTextTotal.local8Bit();
+    m_msgTextCurrent = msgTextCurrent = m_msgTextTotal;
+  }
 
   if (chkMass->isChecked())
   {
     CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
-    int r = m->go_message(mleSend->text());
+    int r = m->go_message(msgTextCurrent);
     delete m;
     if (r != QDialog::Accepted) return;
   }
 
   m_sProgressMsg = tr("Sending ");
-  m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+  if(chkSendServer->isChecked())
+    m_sProgressMsg = (msgTextCurrent.length() != m_msgTextTotal.length()) ?
+      tr("partial ") : tr("complete ");
+  m_sProgressMsg += chkSendServer->isChecked() ? tr("via server") : tr("direct");
   m_sProgressMsg += "...";
-  icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
+  icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit(),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
 
@@ -1166,7 +1202,11 @@ void UserSendMsgEvent::sendButton()
 //-----UserSendMsgEvent::sendDone--------------------------------------------
 bool UserSendMsgEvent::sendDone(ICQEvent *e)
 {
-  if (e->Command() != ICQ_CMDxTCP_START) return true;
+  if (e->Command() != ICQ_CMDxTCP_START) {
+    m_msgTextTotal = m_msgTextTotal.mid(m_msgTextCurrent.length());
+    mleSend->setText(QString::fromLocal8Bit(m_msgTextTotal));
+    return m_msgTextTotal.isEmpty();
+  }
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u->Away() && u->ShowAwayMsg())
@@ -1178,6 +1218,7 @@ bool UserSendMsgEvent::sendDone(ICQEvent *e)
     gUserManager.DropUser(u);
 
   return true;
+
 }
 
 

@@ -157,6 +157,7 @@ protected:
   QComboBox* cmbSendType;
   CMMUserView *lstMultipleRecipients;
   MLEditWrap *mleSend;
+  QString m_msgTextTotal, m_msgTextCurrent;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
