@@ -640,6 +640,7 @@ void UserInfoDlg::CreateWorkInfo()
   lay->addWidget(nfoCompanyCity, CR, 1);
   lay->addWidget(new QLabel(tr("State:"), p), CR, 3);
   nfoCompanyState = new CInfoField(p, !m_bOwner);
+  nfoCompanyState->setMaxLength(5);
   lay->addWidget(nfoCompanyState, CR, 4);
 
   lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
