@@ -32,12 +32,13 @@ protected:
    // network tab
    QWidget* new_network_options();
    QLabel *lblServers, *lblDefServerPort, *lblTcpServerPort,
-          *lblAutoAway, *lblAutoNa, *lblAutoLogon, *lblMaxUsersPerPacket;
+          *lblAutoAway, *lblAutoNa, *lblAutoLogon;
    QComboBox *cmbServers, *cmbAutoLogon;
    QSpinBox *spnDefServerPort, *spnTcpServerPort, *spnAutoAway, *spnAutoNa,
-            *spnMaxUsersPerPacket;
+            *spnPortLow, *spnPortHigh;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible;
+   QCheckBox  *chkAutoLogonInvisible, *chkFirewall, *chkTCPEnabled;
+   QLineEdit *edtFirewallHost;
 
    // appearance tab
    QWidget* new_appearance_options();
@@ -95,6 +96,7 @@ protected slots:
   void slot_SARmsg_act(int);
   void slot_SARgroup_act(int);
   void slot_SARsave_act();
+  void slot_socks();
 };
 
 

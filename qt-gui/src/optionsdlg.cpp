@@ -159,8 +159,16 @@ void OptionsDlg::SetupOptions()
   chkDockFortyEight->setEnabled(chkUseDock->isChecked());
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
-  spnTcpServerPort->setValue(mainwin->licqDaemon->getTcpServerPort());
-  spnMaxUsersPerPacket->setValue(mainwin->licqDaemon->getMaxUsersPerPacket());
+  chkFirewall->setChecked(mainwin->licqDaemon->FirewallHost()[0] == '\0');
+  chkTCPEnabled->setChecked(mainwin->licqDaemon->TCPEnabled());
+  edtFirewallHost->setText(mainwin->licqDaemon->FirewallHost());
+  spnPortLow->setValue(mainwin->licqDaemon->TCPBasePort());
+  if (mainwin->licqDaemon->TCPBaseRange() == 0)
+    spnPortHigh->setValue(0);
+  else
+    spnPortHigh->setValue(mainwin->licqDaemon->TCPBasePort() +
+                          mainwin->licqDaemon->TCPBaseRange() - 1);
+  chkFirewall->toggle();
 
   cmbServers->clear();
   unsigned short i;
@@ -172,10 +180,6 @@ void OptionsDlg::SetupOptions()
   cmbAutoLogon->setCurrentItem(mainwin->m_nAutoLogon > 10 ? mainwin->m_nAutoLogon - 10 : mainwin->m_nAutoLogon);
   chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon > 10);
 
-  /*ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  chkHideIp->setChecked(o->StatusHideIp());
-  chkWebPresence->setChecked(o->StatusWebPresence());
-  gUserManager.DropOwner();*/
   chkIgnoreNewUsers->setChecked(mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
   chkIgnoreMassMsg->setChecked(mainwin->licqDaemon->Ignore(IGNORE_MASSMSG));
   chkIgnoreWebPanel->setChecked(mainwin->licqDaemon->Ignore(IGNORE_WEBPANEL));
@@ -308,8 +312,18 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bDockIcon48 = chkDockFortyEight->isChecked();
 
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
-  mainwin->licqDaemon->setTcpServerPort(spnTcpServerPort->value());
-  mainwin->licqDaemon->setMaxUsersPerPacket(spnMaxUsersPerPacket->value());
+  if (chkFirewall->isChecked())
+  {
+    mainwin->licqDaemon->SetTCPBasePort(spnPortLow->value(), spnPortHigh->value() - spnPortLow->value() + 1);
+    mainwin->licqDaemon->SetFirewallHost(edtFirewallHost->text());
+    mainwin->licqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
+  }
+  else
+  {
+    mainwin->licqDaemon->SetTCPBasePort(0, 0);
+    mainwin->licqDaemon->SetFirewallHost("");
+    mainwin->licqDaemon->SetTCPEnabled(true);
+  }
   mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
@@ -337,16 +351,6 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
                           (chkAutoLogonInvisible->isChecked() &&
                            cmbAutoLogon->currentItem() ? 10 : 0);
-  /*ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  if (chkWebPresence->isChecked())
-    o->SetStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
-  else
-    o->ClearStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
-  if (chkHideIp->isChecked())
-    o->SetStatusFlag(ICQ_STATUS_FxHIDExIP);
-  else
-    o->ClearStatusFlag(ICQ_STATUS_FxHIDExIP);
-  gUserManager.DropOwner();*/
 
   // set up the columns stuff
   unsigned short i, j = mainwin->colInfo.size();
@@ -582,61 +586,59 @@ QWidget* OptionsDlg::new_network_options()
   spnDefServerPort = new QSpinBox(gbServer);
   spnDefServerPort->setRange(0, 0xFFFF);
   spnDefServerPort->setSpecialValueText(tr("Default"));
-  lblTcpServerPort = new QLabel(tr("TCP Server Port:"), gbServer);
-  QWhatsThis::add(lblTcpServerPort, tr("TCP port for local server.  Set to \"0\" for "
-                                      "system assigned port.  Use if you are behind"
-                                      "a firewall or using ip masquerading."));
-  spnTcpServerPort = new QSpinBox(gbServer);
-  spnTcpServerPort->setRange(0, 0xFFFF);
-  spnTcpServerPort->setSpecialValueText(tr("Auto"));
-  lblMaxUsersPerPacket = new QLabel(tr("Max Users per Packet:"), gbServer);
-  QWhatsThis::add(lblMaxUsersPerPacket, tr("Leave at 125 unless all your users appear "
-                                          "offline when they should not be.  Then lower "
-                                          "it until they appear again (try ~100)."));
-  spnMaxUsersPerPacket = new QSpinBox(gbServer);
-  spnMaxUsersPerPacket->setRange(10, 125);
 
-  QGroupBox* gbAuto = new QGroupBox(2, QGroupBox::Horizontal, w);
-  gbAuto->setTitle(tr("Network startup"));
+  QGroupBox *gbFirewall = new QGroupBox(2, QGroupBox::Horizontal, w);
+  lay->addWidget(gbFirewall);
+  gbFirewall->setTitle(tr("Firewall"));
 
-  lblAutoLogon = new QLabel(tr("Auto Logon:"), gbAuto);
-  QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
+  chkFirewall = new QCheckBox(tr("I am behind a firewall/proxy"), gbFirewall);
+  QPushButton *socks = new QPushButton(tr("SOCKS5 Proxy"), gbFirewall);
+  connect(socks, SIGNAL(clicked()), this, SLOT(slot_socks()));
+  QLabel *lbl = new QLabel(tr("Firewall/Proxy Host:"), gbFirewall);
+  connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
+  edtFirewallHost = new QLineEdit(gbFirewall);
+  chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
+  QWidget *dummy = new QWidget(gbFirewall);
+  lbl = new QLabel(tr("Port Range:"), gbFirewall);
+  connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
+  QWhatsThis::add(lbl, tr("Starting port for incoming connections."));
+  spnPortLow = new QSpinBox(gbFirewall);
+  spnPortLow->setRange(0, 0xFFFF);
+  spnPortLow->setSpecialValueText(tr("Auto"));
+  lbl = new QLabel(tr("\tto"), gbFirewall);
+  connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
+  spnPortHigh = new QSpinBox(gbFirewall);
+  spnPortHigh->setRange(0, 0xFFFF);
+  spnPortHigh->setSpecialValueText(tr("None"));
 
-  cmbAutoLogon = new QComboBox(gbAuto);
-  cmbAutoLogon->insertItem(tr("Offline"));
-  cmbAutoLogon->insertItem(tr("Online"));
-  cmbAutoLogon->insertItem(tr("Away"));
-  cmbAutoLogon->insertItem(tr("Not Available"));
-  cmbAutoLogon->insertItem(tr("Occupied"));
-  cmbAutoLogon->insertItem(tr("Do Not Disturb"));
-  cmbAutoLogon->insertItem(tr("Free for Chat"));
+  connect(chkFirewall, SIGNAL(toggled(bool)), edtFirewallHost, SLOT(setEnabled(bool)));
+  connect(chkFirewall, SIGNAL(toggled(bool)), chkTCPEnabled, SLOT(setEnabled(bool)));
+  connect(chkFirewall, SIGNAL(toggled(bool)), spnPortLow, SLOT(setEnabled(bool)));
+  connect(chkFirewall, SIGNAL(toggled(bool)), spnPortHigh, SLOT(setEnabled(bool)));
 
-  // dummy widget for layout
-  QWidget* dummy = new QWidget(gbAuto);
-  chkAutoLogonInvisible = new QCheckBox(tr("Invisible"), gbAuto);
-  dummy->setMinimumHeight(chkAutoLogonInvisible->sizeHint().height()+10);
-
-  lblAutoAway = new QLabel(tr("Auto Away:"), gbAuto);
-  QWhatsThis::add(lblAutoAway, tr("Number of minutes of inactivity after which to "
-                                 "automatically be marked \"away\".  Set to \"0\" "
-                                 "to disable."));
-  spnAutoAway = new QSpinBox(gbAuto);
-  spnAutoAway->setSpecialValueText(tr("Disable"));
-  lblAutoNa = new QLabel(tr("Auto N/A:"), gbAuto);
-  QWhatsThis::add(lblAutoNa, tr("Number of minutes of inactivity after which to "
-                               "automatically be marked \"not available\".  Set to \"0\" "
-                               "to disable."));
-  spnAutoNa = new QSpinBox(gbAuto);
-  spnAutoNa->setSpecialValueText(tr("Disable"));
-  lay->addWidget(gbAuto);
-  lay->addStretch(1);
-
-#if QT_VERSION < 210
-  QWidget* dummy_w= new QWidget(gbAuto);
-  dummy_w->setMinimumHeight(10);
-#endif
 
   return w;
+}
+
+void OptionsDlg::slot_socks()
+{
+  if (mainwin->licqDaemon->SocksEnabled())
+  {
+    char *env = mainwin->licqDaemon->SocksServer();
+    if (env == NULL)
+      InformUser(this, tr("SOCKS5 support is built in but disabled.\n"
+                          "To enable it, set the SOCKS5_SERVER\n"
+                          "environment variable to <server>:<port>."));
+    else
+      InformUser(this, tr("SOCKS5 support is built in and enabled at\n"
+                          "\"%1\".").arg(env));
+  }
+  else
+  {
+    InformUser(this, tr("To enable socks proxy support, install NEC Socks or Dante\n"
+                        "then configure the Licq daemon with \"--enable-socks5\"."));
+  }
+
 }
 
 // ---------------------------------------------------------------------------
@@ -736,6 +738,46 @@ QWidget* OptionsDlg::new_status_options()
   lay->addStretch(1);
 
   slot_SARgroup_act(SAR_AWAY);
+
+  QGroupBox* gbAuto = new QGroupBox(2, QGroupBox::Horizontal, w);
+  gbAuto->setTitle(tr("Startup"));
+
+  lblAutoLogon = new QLabel(tr("Auto Logon:"), gbAuto);
+  QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
+
+  cmbAutoLogon = new QComboBox(gbAuto);
+  cmbAutoLogon->insertItem(tr("Offline"));
+  cmbAutoLogon->insertItem(tr("Online"));
+  cmbAutoLogon->insertItem(tr("Away"));
+  cmbAutoLogon->insertItem(tr("Not Available"));
+  cmbAutoLogon->insertItem(tr("Occupied"));
+  cmbAutoLogon->insertItem(tr("Do Not Disturb"));
+  cmbAutoLogon->insertItem(tr("Free for Chat"));
+
+  // dummy widget for layout
+  QWidget *dummy = new QWidget(gbAuto);
+  chkAutoLogonInvisible = new QCheckBox(tr("Invisible"), gbAuto);
+  dummy->setMinimumHeight(chkAutoLogonInvisible->sizeHint().height()+10);
+
+  lblAutoAway = new QLabel(tr("Auto Away:"), gbAuto);
+  QWhatsThis::add(lblAutoAway, tr("Number of minutes of inactivity after which to "
+                                 "automatically be marked \"away\".  Set to \"0\" "
+                                 "to disable."));
+  spnAutoAway = new QSpinBox(gbAuto);
+  spnAutoAway->setSpecialValueText(tr("Disable"));
+  lblAutoNa = new QLabel(tr("Auto N/A:"), gbAuto);
+  QWhatsThis::add(lblAutoNa, tr("Number of minutes of inactivity after which to "
+                               "automatically be marked \"not available\".  Set to \"0\" "
+                               "to disable."));
+  spnAutoNa = new QSpinBox(gbAuto);
+  spnAutoNa->setSpecialValueText(tr("Disable"));
+  //lay->addWidget(gbAuto);
+  //lay->addStretch(1);
+
+#if QT_VERSION < 210
+  dummy = new QWidget(gbAuto);
+  dummy->setMinimumHeight(10);
+#endif
 
   return w;
 }
