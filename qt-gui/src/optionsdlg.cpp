@@ -344,14 +344,14 @@ void OptionsDlg::SetupOptions()
    COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
    chkOnEvents->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
    oem->Lock();
-   edtSndPlayer->setText(oem->Command());
-   edtSndMsg->setText(oem->Parameter(ON_EVENT_MSG));
-   edtSndUrl->setText(oem->Parameter(ON_EVENT_URL));
-   edtSndChat->setText(oem->Parameter(ON_EVENT_CHAT));
-   edtSndFile->setText(oem->Parameter(ON_EVENT_FILE));
-   edtSndNotify->setText(oem->Parameter(ON_EVENT_NOTIFY));
-   edtSndSysMsg->setText(oem->Parameter(ON_EVENT_SYSMSG));
-   edtSndMsgSent->setText(oem->Parameter(ON_EVENT_MSGSENT));
+   edtSndPlayer->setURL(oem->Command());
+   edtSndMsg->setURL(oem->Parameter(ON_EVENT_MSG));
+   edtSndUrl->setURL(oem->Parameter(ON_EVENT_URL));
+   edtSndChat->setURL(oem->Parameter(ON_EVENT_CHAT));
+   edtSndFile->setURL(oem->Parameter(ON_EVENT_FILE));
+   edtSndNotify->setURL(oem->Parameter(ON_EVENT_NOTIFY));
+   edtSndSysMsg->setURL(oem->Parameter(ON_EVENT_SYSMSG));
+   edtSndMsgSent->setURL(oem->Parameter(ON_EVENT_MSGSENT));
    oem->Unlock();
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    chkOEAway->setChecked(o->AcceptInAway());
@@ -541,14 +541,14 @@ void OptionsDlg::ApplyOptions()
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
 
-  QString txtSndPlayer = edtSndPlayer->text();
-  QString txtSndMsg = edtSndMsg->text();
-  QString txtSndUrl = edtSndUrl->text();
-  QString txtSndChat = edtSndChat->text();
-  QString txtSndFile = edtSndFile->text();
-  QString txtSndNotify = edtSndNotify->text();
-  QString txtSndSysMsg = edtSndSysMsg->text();
-  QString txtSndMsgSent = edtSndMsgSent->text();
+  QString txtSndPlayer = edtSndPlayer->url();
+  QString txtSndMsg = edtSndMsg->url();
+  QString txtSndUrl = edtSndUrl->url();
+  QString txtSndChat = edtSndChat->url();
+  QString txtSndFile = edtSndFile->url();
+  QString txtSndNotify = edtSndNotify->url();
+  QString txtSndSysMsg = edtSndSysMsg->url();
+  QString txtSndMsgSent = edtSndMsgSent->url();
 
   const char *oemparams[7] = { txtSndMsg.latin1(), txtSndUrl.latin1(),
    txtSndChat.latin1(), txtSndFile.latin1(),
