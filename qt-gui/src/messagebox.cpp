@@ -25,10 +25,9 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   QString sd = d.toString();
   sd.truncate(sd.length() - 5);
 
-  setText(0, msg->Direction() == D_SENDER ? "" : "*");
-  setText(1, msg->Direction() == D_SENDER ? "S" : "R");
-  setText(2, EventDescription(msg));
-  setText(3, sd);
+  setText(0, msg->Direction() == D_SENDER ? "S" : "*R");
+  setText(1, EventDescription(msg));
+  setText(2, sd);
 }
 
 MsgViewItem::~MsgViewItem(void)
@@ -40,7 +39,7 @@ MsgViewItem::~MsgViewItem(void)
 void MsgViewItem::MarkRead()
 {
   m_nEventId = -1;
-  setText(0, "");
+  setText(0, msg->Direction() == D_SENDER ? "S" : "R");
 }
 
 
@@ -49,14 +48,25 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup &cgdefault,
 {
   QColorGroup cg(cgdefault);
   if (msg->Direction() == D_SENDER)
+  {
     cg.setColor(QColorGroup::Text, COLOR_SENT);
+    cg.setColor(QColorGroup::HighlightedText, COLOR_SENT);
+  }
   else
+  {
     cg.setColor(QColorGroup::Text, COLOR_RECEIVED);
+    cg.setColor(QColorGroup::HighlightedText, COLOR_RECEIVED);
+  }
+  QFont f(p->font());
+  f.setBold(m_nEventId != -1 && msg->Direction() == D_RECEIVER);
+  p->setFont(f);
+
+  cg.setColor(QColorGroup::Highlight, cg.color(QColorGroup::Mid));
 
   QListViewItem::paintCell(p, cg, column, width, align);
 
   // add line to bottom and right side
-  p->setPen(cg.mid());
+  p->setPen(cg.dark());
   p->drawLine(0, height() - 1, width - 1, height() - 1);
   p->drawLine(width - 1, 0, width - 1, height() - 1);
 }
@@ -66,11 +76,11 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup &cgdefault,
 MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
 {
-  addColumn(tr("N"), 20);
   addColumn(tr("D"), 20);
   addColumn(tr("Event Type"), 180);
-  addColumn(tr("Time Received"), 130);
-  //setAllColumnsShowFocus (true);
+  addColumn(tr("Time"), 130);
+  setAllColumnsShowFocus (true);
+  setColumnAlignment(0, AlignHCenter);
   setVScrollBarMode(AlwaysOn);
   setHScrollBarMode(AlwaysOff);
   setSorting(-1);
@@ -78,10 +88,11 @@ MsgView::MsgView (QWidget *parent, const char *name)
   header()->hide();
 
   QPalette pal(palette());
-  QColorGroup normal(pal.normal());
-  QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
-                        normal.mid(), normal.text(), QColor(192, 192, 192));
-  setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+  QColor c = pal.color(QPalette::Active, QColorGroup::Background);
+  pal.setColor(QPalette::Active, QColorGroup::Base, c);
+  pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
+  setPalette(pal);
+
   setFrameStyle(QFrame::Panel | QFrame::Sunken);
   setMinimumHeight(40);
 
@@ -107,7 +118,7 @@ QSize MsgView::sizeHint() const
 void MsgView::resizeEvent(QResizeEvent *e)
 {
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(2, width() - 172 - s->width());
+  setColumnWidth(1, width() - 152 - s->width());
   QListView::resizeEvent(e);
 }
 

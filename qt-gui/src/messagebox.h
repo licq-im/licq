@@ -35,7 +35,8 @@ public:
   int m_nEventId;
 
 protected:
-  virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
+  virtual void paintCell(QPainter *, const QColorGroup &, int column, int width, int align);
+  virtual void paintFocus(QPainter *, const QColorGroup &cg, const QRect &r) {}
 
 friend class CMsgViewTips;
 friend class MsgView;
