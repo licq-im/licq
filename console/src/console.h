@@ -100,6 +100,7 @@ public:
   void InputLogWindow(int cIn);
   void InputMessage(int cIn);
   void InputUrl(int cIn);
+  void InputSms(int cIn);
   void InputSendFile(int cIn);
   void InputRemove(int cIn);
   void InputInfo(int cIn);
@@ -148,6 +149,7 @@ public:
   void MenuAuthorize(char *);
   void MenuMessage(char *);
   void MenuUrl(char *);
+  void MenuSms(char *);
   void MenuInfo(char *);
   void MenuSecure(char *);
   void MenuAutoResponse(char *);
@@ -165,6 +167,7 @@ public:
   void UserCommand_View(unsigned long nUin, char *);
   void UserCommand_SendFile(unsigned long nUin, char *);
   void UserCommand_Url(unsigned long nUin, char *);
+  void UserCommand_Sms(unsigned long nUin, char *);
   void UserCommand_History(unsigned long nUin, char *);
   void UserCommand_Remove(unsigned long nUin, char *);
   void UserCommand_FetchAutoResponse(unsigned long nUin, char *);

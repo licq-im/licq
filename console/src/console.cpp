@@ -2174,6 +2174,79 @@ void CLicqConsole::InputUrl(int cIn)
 
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::UserCommand_Sms
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::UserCommand_Sms(unsigned long nUin, char *)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL)
+    return;
+
+  // First put this console into edit mode
+  winMain->fProcessInput = &CLicqConsole::InputSms;
+  winMain->state = STATE_MLE;
+  winMain->data = new DataSms(nUin);
+  winMain->wprintf("%BEnter SMS to %b%s%B (%b%s%B):\n", u->GetAlias(),
+                   u->GetCellularNumber());
+  winMain->RefreshWin();
+  gUserManager.DropUser(u);
+}
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::InputSms
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::InputSms(int cIn)
+{
+  DataSms *data = (DataSms *)winMain->data;
+  char *sz;
+
+  switch(winMain->state)
+  {
+  case STATE_PENDING:
+    if (cIn == CANCEL_KEY)
+      licqDaemon->CancelEvent(winMain->event);
+    return;
+
+  case STATE_MLE:
+    {
+      // Process the character as a multi-line edit window
+      // If we get NULL back then we aren't done yet
+      if ((sz = Input_MultiLine(data->szMsg, data->nPos, cIn)) == NULL)
+        return;
+
+      // The input is done, so process it, sz points to the '.'
+      if (*sz == ',')
+      {
+        winMain->fProcessInput = &CLicqConsole::InputCommand;
+        if (winMain->data != NULL)
+        {
+          delete winMain->data;
+          winMain->data = NULL;
+        }
+        winMain->state = STATE_COMMAND;
+        winMain->wprintf("%C%ASMS aborted.\n", m_cColorInfo->nColor,
+                         m_cColorInfo->nAttr);
+        return;
+      }
+      *sz = '\0';
+      sz++;
+      ICQUser *u = gUserManager.FetchUser(data->nUin, LOCK_R);
+      winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
+                       m_cColorInfo->nAttr, u->GetCellularNumber());
+      winMain->event = licqDaemon->icqSendSms(u->GetCellularNumber(),
+                       data->szMsg, data->nUin);
+      gUserManager.DropUser(u);
+      winMain->state = STATE_PENDING;
+      break;
+    }
+
+  default:
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
+  }
+
+}
+
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::InputAuthorize

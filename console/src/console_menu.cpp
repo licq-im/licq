@@ -3,7 +3,7 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 22;
+const unsigned short NUM_COMMANDS = 23;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
@@ -46,6 +46,9 @@ const struct SCommand aCommands[NUM_COMMANDS] =
   { "file", &CLicqConsole::MenuFile, &CLicqConsole::TabUser,
     " %B%cf%bile [ %B<user>%b ]",
     "Send a file to a user or display file transfer stats." },
+  { "sms", &CLicqConsole::MenuSms, &CLicqConsole::TabUser,
+    " %B%csms%b %B<user>%b",
+    " Send an SMS to a user."},
   { "info", &CLicqConsole::MenuInfo, &CLicqConsole::TabUser,
     " %B%ci%bnfo %B<user>%b",
     "Display user information." },
@@ -616,6 +619,20 @@ void CLicqConsole::MenuUrl(char *szArg)
     UserCommand_Url(nUin, sz);
 }
 
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuSms
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuSms(char *szArg)
+{
+  char *sz = szArg;
+  unsigned long nUin = GetUinFromArg(&sz);
+
+  if (nUin == 0)
+    winMain->wprintf("%CInvalid user\n", COLOR_RED);
+  else if (nUin != (unsigned long)-1)
+    UserCommand_Sms(nUin, sz);   
+}
 
 
 /*---------------------------------------------------------------------------

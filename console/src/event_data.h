@@ -55,7 +55,13 @@ public:
   bool bServer;
 };
 
-
+class DataSms : public CData
+{
+public:
+  DataSms(unsigned long n) : CData(n)
+    { szMsg[0] = '\0'; }
+  char szMsg[1024];
+};
 class DataRegWizard : public CData
 {
 public:
