@@ -622,7 +622,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblMsg->setNamedFgColor(skin->lblMsg.color.fg);
   lblMsg->setNamedBgColor(skin->lblMsg.color.bg);
   if (skin->lblMsg.pixmap != NULL)
+  {
     lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
+  }
   connect(lblMsg, SIGNAL(doubleClicked()), this, SLOT(callMsgFunction()));
   QToolTip::add(lblMsg, tr("Right click - User groups\n"
                            "Double click - Show next message"));
@@ -637,7 +639,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblStatus->setNamedFgColor(skin->lblStatus.color.fg);
   lblStatus->setNamedBgColor(skin->lblStatus.color.bg);
   if (skin->lblStatus.pixmap != NULL)
+  {
     lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
+  }
   connect(lblStatus, SIGNAL(doubleClicked()), this, SLOT(slot_AwayMsgDlg()));
   QToolTip::add(lblStatus, tr("Right click - Status menu\n"
                               "Double click - Set auto response"));
@@ -822,12 +826,16 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     licqConf.CloseFile();
   }
 
-  if (licqIcon != NULL) {
+  if (licqIcon != NULL)
+  {
     e->ignore();
     hide();
   }
   else
-    e->accept();
+  {
+    e->ignore();
+    slot_shutdown();
+  }
 }
 
 
