@@ -159,7 +159,7 @@ void convo_show(struct conversation *c)
 	options_box = gtk_hbox_new(FALSE, 5);
 
 	/* Send the message normal */
-	c->send_normal = gtk_radio_button_new_with_label(NULL, "Send normal");
+	c->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
 
 	/* Send the message urgently */
 	c->send_urgent = gtk_radio_button_new_with_label_from_widget(
@@ -244,7 +244,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
  	** urgently unless the user says to send it to the contact list*/	
 	if((c->user->Status() == ICQ_STATUS_DND ||
 	   c->user->Status() == ICQ_STATUS_OCCUPIED) &&
-	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
+	   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_normal)))
 		urgent = TRUE;
 
 	strcpy(c->prog_buf, "Sending message ");
@@ -255,8 +255,9 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 		strcat(c->prog_buf, "through server ... ");
 
 	/* Send the message */
-	if(urgent)
-	{
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)) ||
+	   urgent)
+	{ 
 	   c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
 	     (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
 	     ICQ_TCPxMSG_URGENT, uin);

@@ -175,10 +175,11 @@ void url_send(GtkWidget *widget, struct send_url *url)
 	/* yay! no pop ups */
 	if((url->user->Status() == ICQ_STATUS_DND ||
 	    url->user->Status() == ICQ_STATUS_OCCUPIED) &&
-	    !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_list)))
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_normal)))
 		urgent = TRUE;	
 
-	if(urgent)
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_urgent)) ||
+	   urgent)
 	{
 		m_prog->e_tag =
 			icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
