@@ -504,6 +504,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   else if (skin->lblMsg.pixmap != NULL)
     lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
   connect(lblMsg, SIGNAL(doubleClicked()), this, SLOT(callMsgFunction()));
+  QToolTip::add(lblMsg, tr("Right click - User groups\n"
+                           "Double click - Show next message"));
 
   // Status Label
   if (lblStatus != NULL) delete lblStatus;
@@ -523,6 +525,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   else if (skin->lblStatus.pixmap != NULL)
     lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
   connect(lblStatus, SIGNAL(doubleClicked()), awayMsgDlg, SLOT(show()));
+  QToolTip::add(lblStatus, tr("Right click - Status menu\n"
+                              "Double click - Set auto response"));
 
   if (!_bInitial)
   {
