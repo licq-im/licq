@@ -171,6 +171,20 @@ static QPixmap *MakeTransparentBg(QPixmap *_pm, const QRect &r)
 }
 
 
+static XErrorHandler old_handler = 0;
+static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
+{
+  // XScreenSaverQueryInfo produces a BadDrawable error
+  // if it cannot connect to the extension. This happens i.e. when
+  // client runs on a 64bit machine and the server on a 32bit one.
+  // We need to catch that here and tell the Xlib that we
+  // ignore it, otherwise Qt's handler will terminate us. :-(
+  if(err->error_code == BadDrawable)
+    return 0;
+
+  return (*old_handler)(dpy, err);
+}
+
 
 //-----CMainWindow::constructor-------------------------------------------------
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
@@ -181,6 +195,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqDaemon = theDaemon;
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
+
+  // Overwrite Qt's event handler
+  old_handler = XSetErrorHandler(licq_xerrhandler);
 
   // set up appicon and docking, code supplied by Mark Deneed
   WId win = winId();     // get the window
@@ -1672,7 +1689,7 @@ void CMainWindow::autoAway()
     }
   }
 
-  if (!XScreenSaverQueryInfo(x11Display(), DefaultRootWindow (x11Display()), mit_info)) {
+  if (!XScreenSaverQueryInfo(x11Display(), qt_xrootwin(), mit_info)) {
     gLog.Warn("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
               L_WARNxSTR);
     autoAwayTimer.stop();
