@@ -100,15 +100,13 @@ void RegisterUserDlg::dataChanged()
 
 void RegisterUserDlg::accept()
 {
-  const char *szPassword = nfoPassword1->text().local8Bit();
-  const char *szPassword2 = nfoPassword2->text().local8Bit();
   // Validate password
-  if (szPassword == NULL || strlen(szPassword) > 8)
+  if(nfoPassword1->text().length() == 0)
   {
-    InformUser (this, tr("Invalid password, must be 8 characters or less."));
+    InformUser (this, tr("You need to enter a password first."));
     return;
   }
-  if (szPassword2 == NULL || strcmp(szPassword, szPassword2) != 0)
+  if (nfoPassword2->text() != nfoPassword1->text())
   {
     InformUser (this, tr("Passwords do not match, try again."));
     return;
@@ -118,14 +116,14 @@ void RegisterUserDlg::accept()
   {
     unsigned long nUin = nfoUin->text().toULong();
     // Validate uin
-    if (nUin <= 0)
+    if (nUin <= 1000000)
     {
       InformUser (this, tr("Invalid UIN.  Try again."));
       return;
     }
     gUserManager.SetOwnerUin(nUin);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    o->SetPassword(szPassword);
+    o->SetPassword(nfoPassword1->text().latin1());
     gUserManager.DropOwner();
     InformUser (this, tr("Registered succesfully.  Now log on and update your personal info."));
     hide();
@@ -133,7 +131,7 @@ void RegisterUserDlg::accept()
   else
   {
     setCaption(tr("User Registration in Progress..."));
-    server->icqRegister(szPassword);
+    server->icqRegister(nfoPassword1->text().latin1());
     finishButton()->setEnabled(false);
     cancelButton()->setEnabled(false);
     nfoUin->setEnabled(false);
