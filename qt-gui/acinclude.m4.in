@@ -509,6 +509,8 @@ ac_cv_good_x11headers=yes,
 ac_cv_good_x11headers=no)
 ])
 AC_MSG_RESULT($ac_cv_good_x11headers)
+rm -f conftest*
+AC_LANG_RESTORE
 CXXFLAGS="$save_CXXFLAGS"
 if eval "test \"`echo $ac_cv_good_x11headers`\" = no"; then
    KDE_CHECK_COMPILER_FLAG(fpermissive,
