@@ -10,4 +10,6 @@ aclocal.m4
 acinclude.m4
 stamp-h.in
 stamp-h
+ltmain.sh
+ltconfig
 libtool
