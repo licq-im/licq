@@ -1278,7 +1278,11 @@ void CUserView::maybeTip(const QPoint& c)
       if (u->AutoResponse() && *u->AutoResponse() &&
           item->m_nStatus != ICQ_STATUS_OFFLINE &&
           item->m_nStatus != ICQ_STATUS_ONLINE)
+#if QT_VERSION >= 300
         s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(codec->toUnicode(u->AutoResponse()), QStyleSheetItem::WhiteSpaceNormal);
+#else
+        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(codec->toUnicode(u->AutoResponse()));
+#endif
 
       gUserManager.DropUser(u);
     }
