@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <signal.h>
 
-/*#if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
+#if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
 #define HAVE_BACKTRACE
-#endif*/
+#endif
 
 #ifdef HAVE_BACKTRACE
 #include <execinfo.h>
