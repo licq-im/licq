@@ -183,6 +183,9 @@ CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, char *_szPassword, c
   m_pBuffer->Pack("\r\n", 2);
   m_pBuffer->Pack(szParams3, strlen(szParams3));
   m_pBuffer->Pack("\r\n", 2);
+
+  delete [] szPassword;
+  delete [] szUserName;
 }
 
 CPS_MSNSendTicket::CPS_MSNSendTicket(const char *szTicket) : CMSNPacket()

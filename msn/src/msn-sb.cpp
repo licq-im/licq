@@ -392,7 +392,7 @@ void CMSN::MSNSendTypingNotification(char *_szUser, int nSockDesc)
   CMSNPacket *pSend = new CPS_MSNTypingNotification(m_szUserName);
     
   if (nSockDesc > 0)
-    Send_SB_Packet(strUser, pSend, nSockDesc, false);
+    Send_SB_Packet(strUser, pSend, nSockDesc);
 #if 0
   else
   {
