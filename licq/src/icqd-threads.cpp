@@ -815,6 +815,7 @@ void *MonitorSockets_tep(void *p)
                 tcp->OwnerPPID(), LOCK_W);
               if (u && u->Secure())
               {
+                u->ClearSocketDesc(ICQ_CHNxNONE);
                 u->SetSecure(false);
                 d->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                   USER_SECURITY, u->IdString(), u->PPID(), 0));
