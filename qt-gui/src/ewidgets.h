@@ -9,6 +9,7 @@
 #include <qvalidator.h>
 
 #include "mledit.h"
+#include "mlview.h"
 
 class CUserEvent;
 class ICQEvent;
@@ -110,7 +111,7 @@ protected:
 
 /* ----------------------------------------------------------------------------- */
 
-class CHistoryWidget : public MLEditWrap
+class CHistoryWidget : public MLView
 {
   Q_OBJECT
 public:
@@ -118,7 +119,9 @@ public:
   virtual ~CHistoryWidget() {};
       
 protected:
+#if QT_VERSION < 300
   virtual void paintCell(QPainter* p, int row, int col);
+#endif
 };
 
 class CMessageViewWidget : public CHistoryWidget

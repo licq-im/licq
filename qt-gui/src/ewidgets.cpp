@@ -461,19 +461,18 @@ void CInfoField::setData(const unsigned long data)
 // -----------------------------------------------------------------------------
 
 CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
-  : MLEditWrap(true, parent, true, name)
+  : MLView(parent, name)
 {
 #if QT_VERSION >= 300
   setTextFormat(RichText);
 #endif
-  setReadOnly(true);
 };
 
 // -----------------------------------------------------------------------------
 
+#if QT_VERSION < 300
 void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 {
-#if QT_VERSION < 300
   QPalette& pal = const_cast<QPalette&>(palette());
 
   QString s = stringShown(row);
@@ -496,10 +495,10 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
       break;
     }
   }
-#endif
 
-  MLEditWrap::paintCell(p, row, col);
+  MLView::paintCell(p, row, col);
 }
+#endif
 
 //- Message View Widget ---------------------------------------------------------
 
