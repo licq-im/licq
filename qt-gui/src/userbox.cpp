@@ -483,9 +483,7 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
 
 void CUserView::setShowHeader(bool isHeader)
 {
-   QHeader *h = header();
-   if (!isHeader) h->hide();
-   else h->show();
+  isHeader ? header()->show() : header()->hide();
 }
 
 void CUserView::setShowBars(bool s)
@@ -734,12 +732,19 @@ CUserViewTips::CUserViewTips(CUserView* parent)
 
 void CUserViewTips::maybeTip(const QPoint& c)
 {
+  QPoint p(c);
   QListView* w = (QListView*) parentWidget();
-  CUserViewItem* item = (CUserViewItem*) w->itemAt(c);
+  if(w->header()->isVisible())
+    p.setY(p.y()-w->header()->height());
+
+  CUserViewItem* item = (CUserViewItem*) w->itemAt(p);
 
   if(item && item->m_nUin)
   {
-    tip(w->itemRect(item), QString(ICQUser::StatusToStatusStr(item->m_nStatus, false)));
+    QRect r(w->itemRect(item));
+    if(w->header()->isVisible())
+      r.moveBy(0, w->header()->height());
+    tip(r, QString(ICQUser::StatusToStatusStr(item->m_nStatus, false)));
   }
 }
 
