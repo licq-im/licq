@@ -1,0 +1,4 @@
+[utility]
+Window = GUI
+Command = kmail --composer "%n <%e>"
+Description = Email the user using KMail.

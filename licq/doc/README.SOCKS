@@ -1,6 +1,45 @@
 Licq with socks5 support
 ------------------------------------------------------------------------
 
+Download socks5-v1.0r??.tar.gz from www.socks.nec.com via the link "Socks5
+reference implementation". Compile and install it manually, don't use any binary
+(rpm deb) because you need the header files and not just socks.h.
+Download licq-1.0.2.tar.gz
+Say you extracted socks5 in /usr/local/src/socks5-v1.0r11
+Then configure licq with 
+./configure --enable-socks5
+--with-socks5-inc=/usr/local/src/socks5-v1.0r11/include
+The libraries should be found automatically if you did a proper make install on
+the socks5 package.
+Add the  following to src/main.cpp after line 12 (#define SOCKS)
+#define INCLUDE_PROTOTYPES
+Copy lines 12 and 13 from this file (so the #defines) to src/socket.cpp in the
+beginning.
+Also in socket.cpp:
+change at lines 293 and 509 "socklen_t" by "int"
+Change line 418:
+Because of a bug in the socks5 implementation your local ip behind the firewall
+doesn't get assigned properly , so either set your IP manually or do a regular
+OS call ( youll have to do this if you're on dhcp and get a different ip from
+time to time). 
+I changed it to
+m_sLocalAddr.sin_addr.s_addr = 0x1E10430A
+Where the number is my local intranet IP reversed, so its 10.67.16.30.
+I know this is dirty but it's fast :-)
+Check your Makefile in src/ if it includes the -lsocks5 directive. Then do a
+make and make install like always. Don't forget to update your
+/etc/libsocks5.conf.
+
+Jeroen Ost
+jeroen.ost@ubizen.com
+
+
+
+
+
+Other possibly useful information:
+
+
 I've spent lots of time trying to get Licq working with Linux machine,
 which happens to be located behind a firewall/proxy running on a Windows machine
 . I
