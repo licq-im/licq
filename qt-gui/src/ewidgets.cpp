@@ -91,7 +91,17 @@ void CELabel::polish()
 void CELabel::setPrependPixmap(const QPixmap& p)
 {
   addPix = p;
-  setIndent(p.width()+4);
+  addIndent = indent();
+  setIndent(indent() + p.width() + 2);
+  update();
+}
+
+void CELabel::clearPrependPixmap()
+{
+  if (addPix.isNull()) return;
+
+  setIndent(addIndent);
+  addPix = QPixmap();
   update();
 }
 
@@ -158,7 +168,7 @@ void CELabel::setNamedBgColor(char *theColor)
 void CELabel::drawContents(QPainter* p)
 {
   if(!addPix.isNull())
-    p->drawPixmap(2, height()/2-addPix.height()/2, addPix);
+    p->drawPixmap(addIndent, height() / 2 - addPix.height() / 2, addPix);
 
   QLabel::drawContents(p);
 }

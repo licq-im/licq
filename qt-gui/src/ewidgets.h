@@ -27,6 +27,7 @@ public:
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
   void setPrependPixmap(const QPixmap&);
+  void clearPrependPixmap();
 public slots:
   void polish();
 protected:
@@ -37,6 +38,7 @@ protected:
   bool m_bTransparent;
   QPopupMenu *mnuPopUp;
   QPixmap addPix;
+  int addIndent;
 signals:
   void doubleClicked();
 };
