@@ -67,13 +67,11 @@
 #include "optionsdlg.h"
 #include "skin.h"
 #include "securitydlg.h"
-#include "passworddlg.h"
 #include "plugindlg.h"
 #include "randomchatdlg.h"
 #include "userinfodlg.h"
 #include "usereventdlg.h"
 #include "reqauthdlg.h"
-#include "chgpassdlg.h"
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
@@ -1684,13 +1682,13 @@ void CMainWindow::callOwnerFunction(int index)
 
   else if (index == OwnerMenuSecurity)
     (void) new SecurityDlg(licqDaemon, licqSigMan);
-
+/*
   else if (index == OwnerMenuPassword)
     (void) new PasswordDlg(licqDaemon, licqSigMan);
 
   else if (index == OwnerMenuSavedPassword)
     (void) new ChangePassDlg();
-
+*/
   else if (index == OwnerMenuRandomChat)
     (void) new CSetRandomChatGroupDlg(licqDaemon, licqSigMan);
 
@@ -3022,9 +3020,7 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertItem(pmHistory, tr("&History"), OwnerMenuHistory);
    mnuOwnerAdm->insertItem(tr("&Last"), OwnerMenuLast);
    mnuOwnerAdm->insertSeparator();
-   mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
-   mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
-   mnuOwnerAdm->insertItem(tr("&Change Saved UIN/Password"), OwnerMenuSavedPassword);
+   mnuOwnerAdm->insertItem(tr("&Security/Password Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("&Random Chat Group"), OwnerMenuRandomChat);
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("Debug Level"), mnuDebug);

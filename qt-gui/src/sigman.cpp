@@ -26,7 +26,7 @@
 #include "licq_user.h"
 #include "licq_socket.h"
 #include "licq_icq.h"
-#include "chgpassdlg.h"
+#include "securitydlg.h"
 
 //=====CSignalManager===========================================================
 
@@ -97,9 +97,8 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGOFF:
     if( s->SubSignal() == LOGOFF_PASSWORD)
     {
-    	ChangePassDlg *pass = new ChangePassDlg();
-    	pass->exec();
-    	delete pass;
+    	SecurityDlg *sec = new SecurityDlg(licqDaemon, this);
+    	sec->show();
     }
 
     emit signal_logoff();

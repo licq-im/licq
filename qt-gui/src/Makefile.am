@@ -14,23 +14,23 @@ lib_LTLIBRARIES = @LIB_NAME@
 noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	chatdlg.h editgrp.h editfile.h eventdesc.h ewidgets.h \
 	filedlg.h gui-defines.h licq_qt-gui.conf.h licqgui.h \
-	mainwin.h messagebox.h mledit.h mlview.h mlview2.h mlview3.h optionsdlg.h outputwin.h passworddlg.h\
+	mainwin.h messagebox.h mledit.h mlview.h mlview2.h mlview3.h optionsdlg.h outputwin.h\
 	plugindlg.h registeruser.h searchuserdlg.h \
 	securitydlg.h showawaymsgdlg.h sigman.h skin.h skinbrowser.h userbox.h\
 	utilitydlg.h wharf.h randomchatdlg.h forwarddlg.h chatjoin.h \
 	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h \
-  jfcstyle.h usercodec.h reqauthdlg.h chgpassdlg.h
+  jfcstyle.h usercodec.h reqauthdlg.h
 
 licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
 	ewidgets.cpp filedlg.cpp \
 	licqgui.cpp mainwin.cpp messagebox.cpp mledit.cpp mlview2.cpp mlview3.cpp optionsdlg.cpp \
-	outputwin.cpp passworddlg.cpp plugindlg.cpp \
+	outputwin.cpp plugindlg.cpp \
 	registeruser.cpp searchuserdlg.cpp securitydlg.cpp showawaymsgdlg.cpp \
 	sigman.cpp skin.cpp skinbrowser.cpp userbox.cpp utilitydlg.cpp \
 	wharf.cpp randomchatdlg.cpp forwarddlg.cpp chatjoin.cpp mmlistview.cpp \
   mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
-  jfcstyle.cpp usercodec.cpp reqauthdlg.cpp chgpassdlg.cpp
+  jfcstyle.cpp usercodec.cpp reqauthdlg.cpp
 
 licq_qt_gui_la_SOURCES = $(licq_gui)
 licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp
