@@ -91,7 +91,8 @@ public:
        m_bBoldOnMsg,
        m_bManualNewUser,
        m_bThreadView,
-       m_bScrollBar;
+       m_bScrollBar,
+       m_bShowExtendedIcons;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

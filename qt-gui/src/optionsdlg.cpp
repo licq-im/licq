@@ -177,6 +177,7 @@ void OptionsDlg::SetupOptions()
 
   chkGridLines->setChecked(mainwin->m_bGridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
+  chkShowExtIcons->setChecked(mainwin->m_bShowExtIcons);
   chkHeader->setChecked(mainwin->m_bShowHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
@@ -354,6 +355,7 @@ void OptionsDlg::ApplyOptions()
 
   mainwin->m_bGridLines = chkGridLines->isChecked();
   mainwin->m_bFontStyles = chkFontStyles->isChecked();
+  mainwin->m_bShowExtIcons = chkShowExtIcons->isChecked();
   mainwin->m_bShowHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
   mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
@@ -1038,6 +1040,9 @@ QWidget* OptionsDlg::new_column_options()
                                        "contact list"));
   chkScrollBar = new QCheckBox(tr("Allow scroll bar"), boxUserWin);
   QWhatsThis::add(chkScrollBar, tr("Allow the vertical scroll bar in the user list"));
+  chkShowExtIcons = new QCheckBox(tr("Show Extended Icons"), boxUserWin);
+  QWhatsThis::add(chkShowExtIcons, tr("Show birthday, invisible, and custom auto response "
+     "icons to the right of users in the list"));
 
   QHBox *hlay = new QHBox(boxUserWin);
   lblFrameStyle = new QLabel(tr("Frame Style: "), hlay);

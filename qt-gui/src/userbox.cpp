@@ -399,24 +399,32 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       }
     }
     // If this is the first column then add some extra icons after the text
-    else if (column == 1)
+    else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
     {
       int w = p->fontMetrics().width(text(1)) + 3;
 
       if (width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY))
       {
         p->drawPixmap(w, 0, *listView()->pixBirthday);
-        w += listView()->pixBirthday->width() + 2; //18;
+        w += listView()->pixBirthday->width() + 2;
       }
       if (width - w > 8 && m_bStatusInvisible)
       {
-        p->drawPixmap(w, 0, *listView()->pixInvisible);
-        w += listView()->pixInvisible->width() + 2; //18;
+        if (gMainWindow->pmPrivate.isNull())
+        {
+          p->drawPixmap(w, 0, *listView()->pixInvisible);
+          w += listView()->pixInvisible->width() + 2;
+        }
+        else
+        {
+          p->drawPixmap(w, 0, gMainWindow->pmPrivate);
+          w += gMainWindow->pmPrivate.width() + 2;
+        }
       }
       if (width - w > 8 && m_bCustomAR)
       {
         p->drawPixmap(w, 0, *listView()->pixCustomAR);
-        w += listView()->pixCustomAR->width() + 2; //18;
+        w += listView()->pixCustomAR->width() + 2;
       }
     }
   }
