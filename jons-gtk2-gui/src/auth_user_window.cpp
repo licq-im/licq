@@ -36,17 +36,29 @@ struct auth_user
 static void 
 auth_user_cb(GtkWidget *widget, struct auth_user *au)
 {
-	gulong uin = strtoul(entry_get_chars(au->entry).c_str(), 
-											 NULL, 
-											 10);
-	std::string reason = entry_get_chars(au->text);
+	gulong uin = strtoul(entry_get_chars(au->entry).c_str(), NULL, 10);
 
-	if (widget == au->grant)
-		icq_daemon->icqAuthorizeGrant(uin, reason.c_str());
-	else
-		icq_daemon->icqAuthorizeRefuse(uin, reason.c_str());
+	if (uin != 0) {
+    std::string reason = textview_get_chars(au->text);
 
-	window_close(NULL, au->window);
+	  if (widget == au->grant)
+		  icq_daemon->icqAuthorizeGrant(uin, reason.c_str());
+	  else
+		  icq_daemon->icqAuthorizeRefuse(uin, reason.c_str());
+
+  	window_close(NULL, au->window);
+  }
+  else {
+	  GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(au->window),
+                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    GTK_MESSAGE_ERROR,
+                                    GTK_BUTTONS_CLOSE,
+                                    "Invalid UIN entered: %s",
+                                    entry_get_chars(au->entry).c_str());
+    gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_destroy (dialog);
+  	gtk_window_set_focus(GTK_WINDOW(au->window), au->entry);
+  }
 }
 
 void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
@@ -56,7 +68,7 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 	if (au == NULL)
 		au = g_new0(struct auth_user, 1);
 	else {
-		gtk_widget_show(au->window);
+		gtk_window_present(GTK_WINDOW(au->window));
 		return;
 	}
 
@@ -95,16 +107,18 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(scroll), au->text);
-	gtk_box_pack_start(GTK_BOX(v_box), scroll, FALSE, FALSE, 5);
+  GtkWidget *frame = gtk_frame_new("Message:");
+  gtk_container_add(GTK_CONTAINER(frame), scroll);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, FALSE, FALSE, 5);
 
 	/* Make the buttons and pack them */
-	h_box = gtk_hbox_new(FALSE, 5);
+	h_box = hbutton_box_new();
 	au->grant = gtk_button_new_from_stock(GTK_STOCK_OK);
 	au->refuse = gtk_button_new_with_mnemonic("_Refuse");
 	cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_box_pack_start(GTK_BOX(h_box), au->grant, TRUE, TRUE, 15);
-	gtk_box_pack_start(GTK_BOX(h_box), au->refuse, TRUE, TRUE, 15);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 15);
+	gtk_container_add(GTK_CONTAINER(h_box), au->grant);
+	gtk_container_add(GTK_CONTAINER(h_box), au->refuse);
+	gtk_container_add(GTK_CONTAINER(h_box), cancel);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* Connect the signals */
@@ -118,6 +132,7 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 			   G_CALLBACK(auth_user_cb), au);
 
 	/* Show the window */
+	gtk_container_set_border_width(GTK_CONTAINER(au->window), 10);
 	gtk_container_add(GTK_CONTAINER(au->window), v_box);
 	gtk_widget_show_all(au->window);
 	gtk_window_set_focus(GTK_WINDOW(au->window), au->entry);

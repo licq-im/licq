@@ -99,7 +99,7 @@ void search_user_window()
 {
 	/* Only one search window */
 	if (su != NULL) {
-		gdk_window_raise(su->window->window);
+		gtk_window_present(GTK_WINDOW(su->window));
 		return;
 	}
 
@@ -229,16 +229,13 @@ void search_user_window()
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), uin_hbox,
 			gtk_label_new("UIN:"));
 
-	/* The v_box for the clear and search buttons */
-	GtkWidget *vbox = gtk_vbox_new(FALSE, 5);
-
 	/* The "Search" button */
 	su->searchBtn = gtk_button_new_with_mnemonic("_Search");
 	g_signal_connect(G_OBJECT(su->searchBtn), "clicked",
 			G_CALLBACK(search_callback), 0);
 
 	/* The "Clear List" button */
-	su->clearBtn = gtk_button_new_with_mnemonic("     _Clear List     ");
+	su->clearBtn = gtk_button_new_with_mnemonic("_Clear List");
 	g_signal_connect(G_OBJECT(su->clearBtn), "clicked",
 			G_CALLBACK(clear_callback), 0);
 	// disabled until there's something to clear
@@ -249,10 +246,12 @@ void search_user_window()
 	g_signal_connect(G_OBJECT(su->doneBtn), "clicked",
 			G_CALLBACK(search_close), 0);
 	
-	/* we want these at the bottom */
-	gtk_box_pack_end(GTK_BOX(vbox), su->doneBtn, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), su->clearBtn, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), su->searchBtn, FALSE, FALSE, 0);
+	GtkWidget *vbox = gtk_vbutton_box_new();
+  gtk_button_box_set_layout(GTK_BUTTON_BOX(vbox), GTK_BUTTONBOX_END);
+  gtk_box_set_spacing(GTK_BOX(vbox), 5);
+  gtk_container_add(GTK_CONTAINER(vbox), su->searchBtn);
+  gtk_container_add(GTK_CONTAINER(vbox), su->clearBtn);
+  gtk_container_add(GTK_CONTAINER(vbox), su->doneBtn);
 
   gtk_box_pack_start(GTK_BOX(top_hbox), vbox, TRUE, TRUE, 5);
 	
@@ -301,13 +300,10 @@ void search_user_window()
 	su->statusbar = gtk_statusbar_new();
   gtk_box_pack_start(GTK_BOX(main_vbox), su->statusbar, TRUE, TRUE, 5);
 	
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(su->statusbar),
-			"sta");
-	gtk_statusbar_pop(GTK_STATUSBAR(su->statusbar), id);
-	gtk_statusbar_push(GTK_STATUSBAR(su->statusbar), id,
-			"Enter Search Parameters");
+	status_change(su->statusbar, "sta", "Enter Search Parameters");
 
 	//gtk_widget_set_size_request(GTK_WIDGET(su->window), 435, 465); 
+	gtk_container_set_border_width(GTK_CONTAINER(su->window), 10);
 	gtk_widget_show_all(su->window);
 }
 

@@ -51,14 +51,26 @@ add_user_callback(GtkWidget *widget, struct add_user *au)
 {
 	unsigned long uin =	strtoul(entry_get_chars(au->entry).c_str(), NULL, 10);
 
-	if (uin != 0) {
+
+  if (uin != 0) {
 		icq_daemon->AddUserToList(uin);
 
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(au->check_box)))
 			icq_daemon->icqAlertUser(uin);
+  	
+  	window_close(NULL, au->window);
 	}
-	
-	window_close(NULL, au->window);
+  else {
+	  GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(au->window),
+                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    GTK_MESSAGE_ERROR,
+                                    GTK_BUTTONS_CLOSE,
+                                    "Invalid UIN entered: %s",
+                                    entry_get_chars(au->entry).c_str());
+    gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_destroy (dialog);
+  	gtk_window_set_focus(GTK_WINDOW(au->window), au->entry);
+  }
 }
 
 void
@@ -69,7 +81,7 @@ menu_system_add_user(GtkWidget *window, gpointer data)
 	if (au == NULL)
 		au = g_new0(struct add_user, 1);
 	else {
-		gtk_widget_show(au->window);
+		gtk_window_present(GTK_WINDOW(au->window));
 		return;
 	}
 
@@ -105,25 +117,26 @@ menu_system_add_user(GtkWidget *window, gpointer data)
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
 
 	/* Work on the third hbox, with the buttons */
-	h_box = gtk_hbox_new(FALSE, 5);
+	h_box = hbutton_box_new();
 	GtkWidget *ok = gtk_button_new_with_mnemonic("_Add");
-	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 10);
 	GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 10);
+	gtk_container_add(GTK_CONTAINER(h_box), ok);
+	gtk_container_add(GTK_CONTAINER(h_box), cancel);
 
 	/* Add the third and final hbox to the vbox */
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 5);
 
 	/* Connect all the signals to functions */
   g_signal_connect(G_OBJECT(cancel), "clicked",
-			   G_CALLBACK(window_close), NULL);
+			   G_CALLBACK(window_close), au->window);
 	g_signal_connect(G_OBJECT(au->window), "destroy",
 			   G_CALLBACK(destroy_cb), &au);
 	g_signal_connect(G_OBJECT(ok), "clicked",
 			   G_CALLBACK(add_user_callback), au);
 
 	/* Show the widgets and grab the focus */
+	gtk_container_set_border_width(GTK_CONTAINER(au->window), 10);
 	gtk_container_add(GTK_CONTAINER(au->window), v_box);
-	gtk_widget_show_all(au->window);
 	gtk_window_set_focus(GTK_WINDOW(au->window), au->entry);
+	gtk_widget_show_all(au->window);
 }
