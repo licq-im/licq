@@ -143,7 +143,6 @@ void UserEventCommon::slot_updatetime()
 
 UserEventCommon::~UserEventCommon()
 {
-  qDebug("UserEventCommon::~UserEventCommon()");
   emit finished(m_nUin);
 
   if (m_bDeleteUser && !m_bOwner)
@@ -699,7 +698,6 @@ void UserSendCommon::massMessageToggled(bool b)
 //-----UserSendCommon::sendButton--------------------------------------------
 void UserSendCommon::sendButton()
 {
-  qDebug("UserSendCommon::sendButton()");
   if (icqEventTag != NULL)
   {
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
@@ -715,8 +713,6 @@ void UserSendCommon::sendButton()
 //-----UserSendCommon::sendDone_common---------------------------------------
 void UserSendCommon::sendDone_common(ICQEvent *e)
 {
-  qDebug("UserSendCommon::sendDone()");
-
   if ( !icqEventTag->Equals(e) )
     return;
 
@@ -732,7 +728,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     case EVENT_ACKED:
     case EVENT_SUCCESS:
       result = tr("done");
-//      QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
+      QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
       break;
     case EVENT_FAILED:
       result = tr("failed");
@@ -859,7 +855,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     }
   }
 
-  sendButton();
+  UserSendCommon::sendButton();
 }
 
 
@@ -938,8 +934,6 @@ void UserSendMsgEvent::setText(const QString& txt)
 //-----UserSendMsgEvent::sendButton------------------------------------------
 void UserSendMsgEvent::sendButton()
 {
-  qDebug("UserSendMsgEvent::sendButton() called!");
-
   // do nothing if a command is already being processed
   if (icqEventTag != NULL) return;
 

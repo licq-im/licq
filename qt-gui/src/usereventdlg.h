@@ -152,6 +152,8 @@ protected slots:
 
   void cancelSend();
   void massMessageToggled(bool);
+  void slot_resettitle() { setCaption(m_sBaseTitle); }
+
 };
 
 
