@@ -594,10 +594,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 //-----CMainWindow::CreateUserView---------------------------------------------
 void CMainWindow::CreateUserView()
 {
-  userView = new CUserView(mnuUser, mnuGroup, mnuAwayModes, colInfo, showHeader,
-                           gridLines, m_bFontStyles, skin->frame.transparent,
-                           m_bShowDividers, m_bSortByStatus, m_nFlash,
-                           this);
+  userView = new CUserView(mnuUser, colInfo, showHeader, gridLines,
+     m_bFontStyles, skin->frame.transparent, m_bShowDividers,
+     m_bSortByStatus, m_nFlash, this);
   userView->setFrameStyle(skin->frame.frameStyle);
   userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
                        &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
@@ -616,9 +615,8 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
 
-  CUserView *f = new CUserView(mnuUser, mnuGroup, mnuAwayModes, colInfo, false,
-                           false, m_bFontStyles, false,
-                           false, false, m_nFlash, NULL);
+  CUserView *f = new CUserView(mnuUser, colInfo, false,
+     false, m_bFontStyles, false, false, false, m_nFlash, NULL);
   f->setFrameStyle(33);
   connect (f, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 
@@ -2235,19 +2233,19 @@ void CMainWindow::initMenu()
    mnuUser = new QPopupMenu(NULL);
    mnuUser->setCheckable(true);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
-   QPopupMenu *m = new QPopupMenu(this);
-   m->insertItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
-   m->insertItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
-   m->insertItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
-   m->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-   m->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-   connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
-   mnuUser->insertItem(tr("Send"), m);
+   mnuSend = new QPopupMenu(this);
+   mnuSend->insertItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
+   mnuSend->insertItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
+   mnuSend->insertItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
+   mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+   mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+   connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
+   mnuUser->insertItem(tr("Send"), mnuSend);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
    mnuUser->insertItem(tr("&Away Modes"), mnuAwayModes);
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    mnuUser->insertSeparator();
-   m = new QPopupMenu(this);
+   QPopupMenu *m = new QPopupMenu(this);
    m->insertItem(tr("&General Info"), mnuUserGeneral);
    m->insertItem(tr("&More Info"), mnuUserMore);
    m->insertItem(tr("&Work Info"), mnuUserWork);
@@ -2265,21 +2263,23 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Remove"), mnuRemove);
    mnuUser->insertItem(tr("Add To Group"), mnuGroup);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
-   connect (mnuUser, SIGNAL(aboutToShow()), this, SLOT(changeAutoResponse()));
+   connect (mnuUser, SIGNAL(aboutToShow()), this, SLOT(slot_usermenu()));
 }
 
 
-void CMainWindow::changeAutoResponse()
+void CMainWindow::slot_usermenu()
 {
   ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
-  const char *szStatus = 0;
-  unsigned short status = ICQ_STATUS_OFFLINE;
 
-  if(u) {
-    szStatus = u->StatusStrShort();
-    status = u->Status() & 0xffff;
-    gUserManager.DropUser(u);
+  if (u == NULL)
+  {
+    mnuUser->changeItem(mnuUserCheckResponse, tr("Check Auto Response"));
+    mnuUser->setItemEnabled(mnuUserCheckResponse, false);
+    return;
   }
+
+  const char *szStatus = u->StatusStrShort();
+  unsigned short status = u->Status();
 
   if ( status == ICQ_STATUS_OFFLINE ||
        status == ICQ_STATUS_ONLINE)
@@ -2292,7 +2292,33 @@ void CMainWindow::changeAutoResponse()
     mnuUser->changeItem(mnuUserCheckResponse, QString(tr("Check %1 Response")).arg(szStatus));
     mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
+
+  mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
+  mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
+  mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
+  mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
+  mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? tr("Disable") : tr("Enable")));
+  // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(2), u->AcceptInOccupied());
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(3), u->AcceptInDND());
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(5), u->StatusToUser() == ICQ_STATUS_ONLINE);
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(6), u->StatusToUser() == ICQ_STATUS_AWAY);
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(7), u->StatusToUser() == ICQ_STATUS_NA);
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(8), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(9), u->StatusToUser() == ICQ_STATUS_DND);
+  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(11), u->CustomAutoResponse()[0] != '\0');
+  // Send modes
+  mnuSend->setItemEnabled(mnuUserSendChat, !u->StatusOffline());
+  mnuSend->setItemEnabled(mnuUserSendFile, !u->StatusOffline());
+
+  for (unsigned short i = 0; i < mnuGroup->count(); i++)
+    mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
+
+  gUserManager.DropUser(u);
 }
+
 
 void CMainWindow::showSearchUserDlg()
 {

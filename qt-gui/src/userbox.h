@@ -122,7 +122,7 @@ class CUserView : public QListView
 {
   Q_OBJECT
 public:
-  CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos &_colInfo,
+  CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
              bool bTransparent, bool bShowBars, bool bSortByStatus,
              FlashType nFlash,
@@ -130,7 +130,6 @@ public:
   virtual ~CUserView();
 
   virtual void clear();
-  //void maxLastColumn();
 
   virtual CUserViewItem *firstChild() { return (CUserViewItem *)QListView::firstChild(); }
 
@@ -163,7 +162,7 @@ public:
   static void UpdateFloaties();
 
 protected:
-  QPopupMenu *mnuUser, *mnuGroup, *mnuAwayModes;
+  QPopupMenu *mnuUser;
   bool m_bTransparent, m_bShowBars;
   CUserViewTips *m_tips;
   ColumnInfos colInfo;

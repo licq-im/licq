@@ -97,7 +97,8 @@ protected:
              *mnuDebug,
              *mnuRemove,
              *mnuUtilities,
-             *mnuAwayModes;
+             *mnuAwayModes,
+             *mnuSend;
   CELabel *lblStatus, *lblMsg;
   CEButton *btnSystem;
   CEComboBox *cmbUserGroups;
@@ -180,7 +181,7 @@ protected slots:
   void callUrlFunction (const char *);
   void callUserFunction(int);
   void slot_userfinished(unsigned long);
-  void changeAutoResponse();
+  void slot_usermenu();
   void slot_logon();
   void slot_register();
   void slot_doneregister();

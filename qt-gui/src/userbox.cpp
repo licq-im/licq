@@ -411,16 +411,14 @@ CUserViewItem *CUserView::s_pItem = NULL;
 
 
 //-----UserList::constructor-----------------------------------------------------------------------
-CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos &_colInfo,
-                    bool isHeader, bool _bGridLines, bool _bFontStyles,
-                    bool bTransparent, bool bShowBars, bool bSortByStatus,
-                    FlashType nFlash,
-                    QWidget *parent, const char *name)
+CUserView::CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
+   bool isHeader, bool _bGridLines, bool _bFontStyles,
+   bool bTransparent, bool bShowBars, bool bSortByStatus,
+   FlashType nFlash,
+   QWidget *parent, const char *name)
    : QListView(parent, name)
 {
    mnuUser = m;
-   mnuGroup = mg;
-   mnuAwayModes = ma;
    colInfo = _colInfo;
    m_bTransparent = bTransparent;
    m_bShowBars = bShowBars;
@@ -640,31 +638,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
       setSelected(clickedItem, true);
       setCurrentItem(clickedItem);
       if (SelectedItemUin() != 0)
-      {
-        ICQUser *u = gUserManager.FetchUser(SelectedItemUin(), LOCK_R);
-        if (u == NULL) return;
-        mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
-        mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
-        mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
-        mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
-        mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? tr("Disable") : tr("Enable")));
-        // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(2), u->AcceptInOccupied());
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(3), u->AcceptInDND());
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(5), u->StatusToUser() == ICQ_STATUS_ONLINE);
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(6), u->StatusToUser() == ICQ_STATUS_AWAY);
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(7), u->StatusToUser() == ICQ_STATUS_NA);
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(8), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(9), u->StatusToUser() == ICQ_STATUS_DND);
-        mnuAwayModes->setItemChecked(mnuAwayModes->idAt(11), u->CustomAutoResponse()[0] != '\0');
-
-        for (unsigned short i = 0; i < mnuGroup->count(); i++)
-          mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
-        gUserManager.DropUser(u);
         mnuUser->popup(mapToGlobal(e->pos()) + QPoint(4,-5), 1);
-      }
     }
   }
 }
