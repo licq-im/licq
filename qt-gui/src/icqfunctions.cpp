@@ -493,10 +493,13 @@ void ICQFunctions::CreateHistoryTab()
 //-----ICQFunctions::keyPressEvent----------------------------------------------
 void ICQFunctions::keyPressEvent(QKeyEvent *e)
 {
-  if (e->key() == Key_Escape) {
+  if (e->key() == Key_Escape)
+  {
     close();
     return;
-  } else if (tabs->currentPage() == fcnTab[TAB_READ]) {
+  }
+  else if (tabs->currentPage() == fcnTab[TAB_READ] && !e->text().isEmpty())
+  {
     tabs->showPage(fcnTab[TAB_SEND]);
     return;
   }
