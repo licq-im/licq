@@ -1,5 +1,9 @@
 static const char LICQ_CONF[] =
-"[plugins]
+"
+[licq]
+Version = 710
+
+[plugins]
 NumPlugins = 1
 Plugin1 = qt-gui
 
@@ -35,7 +39,4 @@ Group1.name = New Users
 Group2.name = Friends
 Group3.name = Family
 ";
-
-
-
 

@@ -58,6 +58,7 @@ bool CLicq::Init(int argc, char **argv)
   bool bBaseDir = false;
   bool bForceInit = false;
   bool bCmdLinePlugins = false;
+  bool bUseColor = true;
   // Check the no one is trying session management on us
   if (argc > 1 && strcmp(argv[1], "-session") == 0)
   {
@@ -66,7 +67,7 @@ bool CLicq::Init(int argc, char **argv)
   else
   {
     int i = 0;
-    while( (i = getopt(argc, argv, "hd:b:p:io:f")) > 0)
+    while( (i = getopt(argc, argv, "hd:b:p:io:fc")) > 0)
     {
       switch (i)
       {
@@ -80,6 +81,9 @@ bool CLicq::Init(int argc, char **argv)
         break;
       case 'd':  // DEBUG_LEVEL
         DEBUG_LEVEL = atol(optarg);
+        break;
+      case 'c':  // use color
+        bUseColor = false;
         break;
       case 'i':  // force init
         bForceInit = true;
@@ -103,7 +107,7 @@ bool CLicq::Init(int argc, char **argv)
 
   // Initialise the log server for standard output and dump all initial errors
   // and warnings to it regardless of DEBUG_LEVEL
-  gLog.AddService(new CLogService_StdOut(DEBUG_LEVEL | L_ERROR | L_WARN));
+  gLog.AddService(new CLogService_StdOut(DEBUG_LEVEL | L_ERROR | L_WARN, bUseColor));
 
   // Redirect stdout and stderr if asked to
   if (szRedirect != NULL)
@@ -136,16 +140,36 @@ bool CLicq::Init(int argc, char **argv)
     return false;
 
   // Define the directory for all the shared data
-  sprintf(SHARE_DIR, "%s/%s", INSTALL_DIR, BASE_SHARE_DIR);
-  sprintf(LIB_DIR, "%s/%s", INSTALL_DIR, BASE_LIB_DIR);
+  sprintf(SHARE_DIR, "%s/%s", INSTALL_PREFIX, BASE_SHARE_DIR);
+  sprintf(LIB_DIR, "%s/%s", INSTALL_PREFIX, BASE_LIB_DIR);
+
+  // Open the config file
+  CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
+  char szConf[MAX_FILENAME_LEN], szKey[32];
+  sprintf(szConf, "%s/licq.conf", BASE_DIR);
+  licqConf.LoadFile(szConf);
+
+  // Verify the version
+  licqConf.SetSection("licq");
+  unsigned short nVersion;
+  licqConf.ReadNum("Version", nVersion, 0);
+  if (nVersion < 710)
+  {
+    fprintf(stderr, "Previous Licq config files detected.\n"
+                    "Manual upgrade is necessary.  Follow the instructions\n"
+                    "in the UPGRADE file included with the source tree or\n"
+                    "in /usr/doc/licq-xxx/upgrade.\n");
+    return false;
+  }
+  if (nVersion < INT_VERSION)
+  {
+    licqConf.WriteNum("Version", (unsigned short)INT_VERSION);
+    licqConf.FlushFile();
+  }
 
   // Save the plugins if necessary
   if (bCmdLinePlugins)
   {
-    CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
-    char szConf[MAX_FILENAME_LEN], szKey[32];
-    sprintf(szConf, "%s/licq.conf", BASE_DIR);
-    licqConf.LoadFile(szConf);
     licqConf.SetSection("plugins");
     licqConf.WriteNum("NumPlugins", (unsigned short)vszPlugins.size());
     vector <char *>::iterator iter;
@@ -175,11 +199,8 @@ bool CLicq::Init(int argc, char **argv)
   // Find and load the plugins from the conf file
   if (!bHelp && !bCmdLinePlugins)
   {
-    CIniFile licqConf(INI_FxWARN);
     unsigned short nNumPlugins = 0;
-    char szConf[MAX_FILENAME_LEN], szKey[32], szData[MAX_FILENAME_LEN];
-    sprintf(szConf, "%s/licq.conf", BASE_DIR);
-    licqConf.LoadFile(szConf);
+    char szData[MAX_FILENAME_LEN];
     if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumPlugins", nNumPlugins))
     {
       for (int i = 0; i < nNumPlugins; i++)
@@ -190,6 +211,9 @@ bool CLicq::Init(int argc, char **argv)
       }
     }
   }
+
+  // Close the conf file
+  licqConf.CloseFile();
 
   // Start things going
   InitCountryCodes();
@@ -443,6 +467,7 @@ void CLicq::PrintUsage(void)
          "        8  warnings\n"
          "       16  all packets\n"
          "      add values together for multiple options\n"
+         " -c : disable color at standard output\n"
          " -b : set the base directory for the config and data files (~/.licq by default)\n"
          " -i : force initialization of the given base directory\n"
          " -p : load the given plugin library\n"
