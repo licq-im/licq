@@ -2015,8 +2015,9 @@ void CPacketTcp::InitBuffer_v6()
 
 void CPacketTcp::PostBuffer_v6()
 {
-  buffer->PackChar('L');
-  buffer->PackUnsignedShort(INT_VERSION);
+// don't break ICQ2000
+//   buffer->PackChar('L');
+//   buffer->PackUnsignedShort(INT_VERSION);
 }
 
 
