@@ -1486,7 +1486,8 @@ void CMainWindow::autoAway()
   Time idleTime = mit_info->idle;
 
   // Check no one changed the status behind our back
-  if ( (bAutoNA && status != ICQ_STATUS_NA) || (bAutoAway && status != ICQ_STATUS_AWAY) )
+  if ( (bAutoNA && status != ICQ_STATUS_NA) ||
+       (bAutoAway && status != ICQ_STATUS_AWAY && !bAutoNA) )
   {
     bAutoNA = false;
     bAutoAway = false;
@@ -1530,6 +1531,7 @@ void CMainWindow::autoAway()
       bAutoAway = false;
     }
   }
+
 
 #endif // USE_SCRNSAVER
 }
