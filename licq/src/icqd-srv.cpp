@@ -1559,10 +1559,6 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     }
     if (packet.getTLVLen(0x0003) == 4)
       nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
-    if (packet.getTLVLen(0x000c)) {
-      gLog.Unknown("%sServer send us direct conn info,len: %d\n", L_UNKNOWNxSTR,
-                   packet.getTLVLen(0x000c));
-    }
 
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     ChangeUserStatus(o, m_nDesiredStatus);
