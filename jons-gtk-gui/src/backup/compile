@@ -1,0 +1,1 @@
+g++ *.cpp -g -fno-rtti -shared -nostdlib -I/home/jon/licq/licq-0.75-991218-old/src/inc -I/usr/X11R6/include -I/usr/lib/glib/include -I. -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXext -lX11 -lm -Wall -o licq_gtk.so

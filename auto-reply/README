@@ -1,0 +1,52 @@
+Licq ICQ Auto Replyer Plugin
+___________________________
+
+
+QUICK INSTALLATION
+
+To get up and running quickly (assuming you are familiar with loading
+plugins for Licq), simple run
+
+configure
+make
+make install
+
+And then move licq_autoreply.conf to ~/.licq/licq_autoreply.conf and edit this
+file appropriately.
+
+
+DESCRIPTION
+
+This program is an ICQ auto replyer.  It is a plugin for the Licq
+daemon and must run on it's own.
+This program is distributed under the GPL, see the accompanying COPYING
+file for more information.
+Any events (messages, urls...) received while the plugin is enabled will
+cause the plugin to reply with the output from any specified program
+(fortune by default).
+
+RUNNING
+
+Loading and running the plugin is simply a matter of running Licq like so:
+"licq -p autoreply -- -e -l <status>"
+
+<ststus> is equivalent (and uses the same status strings as)
+the fifo command "status" (see the FAQ under FIFO).
+
+For example, to start Licq using the auto replyer and have it start in
+enabled mode and logon, run:
+licq -f -p autoreply -- -e -l online
+
+CONFIGURING
+
+The plugin uses a small configuration file (~/.licq/licq_autoreply.conf) which must
+be set up by hand.  A sample is included with the source, and includes help on
+the various settings.
+
+
+PROBLEMS
+
+If there are any problems, report them to 031233v@dragon.acadiau.ca
+
+
+
