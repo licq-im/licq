@@ -195,7 +195,7 @@ void AuthUserDlg::ok()
   if (edtUin != NULL)
   {
     if (edtUin->text().isEmpty()) return;
-    m_nUin = edtUin->text().toUShort();
+    m_nUin = edtUin->text().toULong();
   }  
 
 #ifdef QT_PROTOCOL_PLUGIN
