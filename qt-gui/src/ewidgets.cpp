@@ -84,13 +84,17 @@ CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
 {
   mnuPopUp = m;
   m_bTransparent = _bTransparent;
-  if (_bTransparent) setAutoMask(true);
+  if (_bTransparent)
+  {
+#if QT_VERSION < 300
+    setAutoMask(true);
+#endif
+  }
 }
 
 
 void CELabel::polish()
 {
-
   if (!testWState(WState_Polished))
   {
     setWState(WState_Polished);
@@ -194,6 +198,19 @@ void CELabel::drawContents(QPainter* p)
 
 void CELabel::resizeEvent (QResizeEvent *)
 {
+#if QT_VERSION >= 300
+  if (paletteBackgroundPixmap() != NULL)
+  {
+    // Scale it if it is not transparent
+    if (!m_bTransparent)
+    {
+      QImage im = (paletteBackgroundPixmap()->convertToImage()).smoothScale(width(), height());
+      QPixmap pm;
+      pm.convertFromImage(im);
+      setPaletteBackgroundPixmap(pm);
+    }
+  }
+#else 
   // Resize the background pixmap properly
   if (autoMask()) updateMask();
 
@@ -204,6 +221,7 @@ void CELabel::resizeEvent (QResizeEvent *)
     pm.convertFromImage(im);
     setBackgroundPixmap(pm);
   }
+#endif
 }
 
 void CELabel::mousePressEvent(QMouseEvent* e)

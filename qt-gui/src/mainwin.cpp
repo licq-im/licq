@@ -697,8 +697,20 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblMsg->setNamedBgColor(skin->lblMsg.color.bg);
   if (skin->lblMsg.pixmap != NULL)
   {
+#if QT_VERSION < 300
     lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
   }
+#else
+    lblMsg->setBackgroundOrigin(WidgetOrigin);
+    lblMsg->setPaletteBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
+  }
+  else if (skin->lblMsg.transparent && skin->frame.pixmap)
+  {
+    lblMsg->setBackgroundOrigin(ParentOrigin);
+    lblMsg->setPaletteBackgroundPixmap(QPixmap(skin->frame.pixmap));
+  }
+#endif
+
   connect(lblMsg, SIGNAL(doubleClicked()), this, SLOT(callMsgFunction()));
   QToolTip::add(lblMsg, tr("Right click - User groups\n"
                            "Double click - Show next message"));
@@ -714,8 +726,20 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblStatus->setNamedBgColor(skin->lblStatus.color.bg);
   if (skin->lblStatus.pixmap != NULL)
   {
+#if QT_VERSION < 300
     lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
   }
+#else
+    lblStatus->setBackgroundOrigin(WidgetOrigin);
+    lblStatus->setPaletteBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
+  }
+  else if (skin->lblStatus.transparent && skin->frame.pixmap)
+  {
+    lblStatus->setBackgroundOrigin(ParentOrigin);
+    lblStatus->setPaletteBackgroundPixmap(QPixmap(skin->frame.pixmap));
+  }
+#endif
+
   connect(lblStatus, SIGNAL(doubleClicked()), this, SLOT(slot_AwayMsgDlg()));
   QToolTip::add(lblStatus, tr("Right click - Status menu\n"
                               "Double click - Set auto response"));
@@ -801,16 +825,23 @@ void CMainWindow::resizeEvent (QResizeEvent *)
   if (!skin->frame.hasMenuBar)
     btnSystem->setGeometry(skin->borderToRect(&skin->btnSys, this));
 
-  cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, this));
-  lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, this));
-  lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, this));
-
   // Resize the background pixmap and mask
   QPixmap *p;
   if (skin->frame.pixmap != NULL)
   {
     p = ScaleWithBorder(*pmBorder, width(), height(), skin->frame.border);
+#if QT_VERSION >= 300
+    setPaletteBackgroundPixmap(*p);
+
+    // set the palette for the labels here as well
+    if (skin->lblMsg.transparent)
+      lblMsg->setPaletteBackgroundPixmap(*p);
+
+    if (skin->lblStatus.transparent)
+      lblStatus->setPaletteBackgroundPixmap(*p);
+#else
     setBackgroundPixmap(*p);
+#endif
     delete p;
   }
   if (skin->frame.mask != NULL)
@@ -820,6 +851,10 @@ void CMainWindow::resizeEvent (QResizeEvent *)
     setMask(bmMask);
     delete p;
   }
+
+  cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, this));
+  lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, this));
+  lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, this));
 }
 
 void CMainWindow::moveEvent(QMoveEvent* e)

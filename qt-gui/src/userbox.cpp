@@ -400,7 +400,12 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
   if ((listView()->contentsHeight() < listView()->viewport()->height() ||
        listView()->vScrollBarMode() == QListView::AlwaysOff) &&
       listView()->parent() && gMainWindow->skin->frame.transparent )
+#if QT_VERSION >= 300
+    pix = listView()->QListView::parentWidget()->paletteBackgroundPixmap();
+#else
     pix = listView()->QListView::parentWidget()->backgroundPixmap();
+#endif
+
 #endif
 
   if (pix != NULL)
