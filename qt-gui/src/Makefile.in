@@ -44,7 +44,7 @@ OBJECTS	= obj/icqfunctions.o obj/outputwin.o obj/awaymsgdlg.o obj/adduserdlg.o \
           obj/fileacceptdlg.o obj/filedlg.o obj/showawaymsgdlg.o obj/sigman.o \
           obj/skin.o obj/utilitydlg.o obj/wharf.o obj/editgrp.o \
           obj/skinbrowser.o obj/registeruser.o obj/qmultilineeditnew.o \
-          obj/eventdesc.o obj/securitydlg.o obj/passworddlg.o
+          obj/eventdesc.o obj/securitydlg.o obj/passworddlg.o obj/editskin.o
 
 METAOBJ	= 
 

@@ -21,7 +21,7 @@ public:
 protected:
   QListBox *lstSkins, *lstIcons;
   QGroupBox *grpSkins, *grpIcons;
-  QPushButton *btnApplySkin, *btnApplyIcons, *btnDone;
+  QPushButton *btnApplySkin, *btnApplyIcons, *btnDone, *btnEditSkin;
 
   CInfoField *nfoSkin, *nfoIcons;
   CMainWindow *mainwin;
@@ -31,6 +31,7 @@ public slots:
   virtual void hide();
 protected slots:
   void slot_applyskin();
+  void slot_editskin();
   void slot_applyicons();
 };
 

@@ -25,6 +25,7 @@
 #include "mainwin.h"
 #include "constants.h"
 #include "log.h"
+#include "editskin.h"
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const char *name)
   : QWidget(parent, name)
@@ -34,6 +35,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
   grpSkins = new QGroupBox(tr("Skins"), this);
   lstSkins = new QListBox(grpSkins);
   btnApplySkin = new QPushButton(tr("Apply"), grpSkins);
+  btnEditSkin = new QPushButton(tr("Edit"), grpSkins);
   grpIcons = new QGroupBox(tr("Icons"), this);
   lstIcons = new QListBox(grpIcons);
   btnApplyIcons = new QPushButton(tr("Apply"), grpIcons);
@@ -75,6 +77,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
               150 + (lstSkins->count() > lstIcons->count() ? lstSkins->count() : lstIcons->count()) * 15);
 
   connect(btnApplySkin, SIGNAL(clicked()), this, SLOT(slot_applyskin()));
+  connect(btnEditSkin, SIGNAL(clicked()), this, SLOT(slot_editskin()));
   connect(btnApplyIcons, SIGNAL(clicked()), this, SLOT(slot_applyicons()));
   connect(btnDone, SIGNAL(clicked()), this, SLOT(hide()));
 }
@@ -94,6 +97,13 @@ void SkinBrowserDlg::slot_applyicons()
 }
 
 
+void SkinBrowserDlg::slot_editskin()
+{
+  if (lstSkins->currentItem() == -1) return;
+  (void) new EditSkinDlg(lstSkins->text(lstSkins->currentItem()));
+}
+
+
 void SkinBrowserDlg::hide()
 {
    QWidget::hide();
@@ -104,11 +114,12 @@ void SkinBrowserDlg::hide()
 void SkinBrowserDlg::resizeEvent (QResizeEvent *)
 {
   grpSkins->setGeometry(10, 10, width() / 2 - 20, height() - 60);
-  lstSkins->setGeometry(10, 20, grpSkins->width() - 20, grpSkins->height() - 70);
-  btnApplySkin->setGeometry(grpSkins->width() / 2 - 50, grpSkins->height() - 40, 100, 30);
+  lstSkins->setGeometry(10, 20, grpSkins->width() - 20, grpSkins->height() - 105);
+  btnApplySkin->setGeometry(grpSkins->width() / 2 - 50, grpSkins->height() - 75, 100, 30);
+  btnEditSkin->setGeometry(grpSkins->width() / 2 - 50, grpSkins->height() - 40, 100, 30);
   grpIcons->setGeometry(width() / 2 + 5, 10, width() / 2 - 20, height() - 60);
-  lstIcons->setGeometry(10, 20, grpIcons->width() - 20, grpIcons->height() - 70);
-  btnApplyIcons->setGeometry(grpIcons->width() / 2 - 50, grpIcons->height() - 40, 100, 30);
+  lstIcons->setGeometry(10, 20, grpIcons->width() - 20, grpIcons->height() - 105);
+  btnApplyIcons->setGeometry(grpIcons->width() / 2 - 50, grpIcons->height() - 75, 100, 30);
   btnDone->setGeometry(width() / 2 - 50, height() - 40, 100, 30);
 }
 
