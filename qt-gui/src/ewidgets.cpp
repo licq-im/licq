@@ -90,6 +90,8 @@ void CELabel::polish()
 
 void CELabel::setPrependPixmap(const QPixmap& p)
 {
+  if (!addPix.isNull()) clearPrependPixmap();
+
   addPix = p;
   addIndent = indent();
   setIndent(indent() + p.width() + 2);
