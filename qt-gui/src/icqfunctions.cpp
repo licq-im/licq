@@ -551,48 +551,50 @@ void ICQFunctions::setupTabs(int index)
   move(s_nX, s_nY);
   printf("just shown 2: %d %d\n", x(), y());
 #endif
-  if (index == MENU_USER_VIEW || index == MENU_OWNER_VIEW)
+
+  switch(index) {
+  case mnuUserView:
     tabs->showPage(fcnTab[TAB_READ]);
-  else if (index == MENU_USER_SENDxMSG)
-  {
+    break;
+  case mnuUserSendMsg:
     tabs->showPage(fcnTab[TAB_SEND]);
     rdbMsg->setChecked(true);
     specialFcn(0);
-  }
-  else if (index == MENU_USER_SENDxURL)
-  {
+    break;
+  case mnuUserSendUrl:
     tabs->showPage(fcnTab[TAB_SEND]);
     rdbUrl->setChecked(true);
     specialFcn(1);
-  }
-  else if (index == MENU_USER_SENDxCHAT)
-  {
+    break;
+  case mnuUserSendChat:
     tabs->showPage(fcnTab[TAB_SEND]);
     rdbChat->setChecked(true);
     specialFcn(2);
-  }
-  else if (index == MENU_USER_SENDxFILE)
-  {
+    break;
+  case mnuUserSendFile:
     tabs->showPage(fcnTab[TAB_SEND]);
     rdbFile->setChecked(true);
     specialFcn(3);
-  }
-  else if (index == MENU_USER_GENERAL || index == MENU_OWNER_GENERAL)
+    break;
+  case mnuUserGeneral:
     tabs->showPage(fcnTab[TAB_GENERALINFO]);
-  else if (index == MENU_USER_MORE || index == MENU_OWNER_MORE)
+    break;
+  case mnuUserMore:
     tabs->showPage(fcnTab[TAB_MOREINFO]);
-  else if (index == MENU_USER_WORK || index == MENU_OWNER_WORK)
+    break;
+  case mnuUserWork:
     tabs->showPage(fcnTab[TAB_WORKINFO]);
-  else if (index == MENU_USER_ABOUT || index == MENU_OWNER_ABOUT)
+    break;
+  case mnuUserAbout:
     tabs->showPage(fcnTab[TAB_ABOUT]);
-  else if (index == MENU_USER_HISTORY || index == MENU_OWNER_HISTORY)
+    break;
+  case mnuUserHistory:
     tabs->showPage(fcnTab[TAB_HISTORY]);
-  else
-  {
+    break;
+  default:
     gLog.Warn("%sInternal Error: ICQFunctions::setupTabs(): Invalid index (%d).\n",
               L_WARNxSTR, index);
   }
-
 
 }
 
