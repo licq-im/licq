@@ -1,26 +1,28 @@
 #HACK, FIXME in a more clean manner
 localedir = $(prefix)/share/licq/qt-gui/locale
 
-TRANSLATIONS = de es pl it ru_RU.KOI8-R
+all-local:
+	@for i in $(srcdir)/*.po; do \
+	  f=$(srcdir)/`basename $$i .po`; \
+          if test ! -r $$f.qm || test $$f.po -nt $$f.qm; then \
+	    echo "$(QT_MSG2QM) $$f.po $$f.qm"; \
+	    $(QT_MSG2QM) $$f.po $$f.qm; \
+          fi \
+        done
 
-%.qm: %.po
-	@$(QT_MSG2QM) $< $@ >/dev/null 2>&1
+clean-local:
+	-rm -f *.qm
 
 merge: template
-	@for i in *.po; do \
+	@for i in $(srcdir)/*.po; do \
 	  $(QT_MERGETR) $$i template.po; \
 	done
 
 install-data-local:
 	$(mkinstalldirs) $(localedir)
-	@rm -f *.qm
-	@for i in $(TRANSLATIONS); do \
-	  $(QT_MSG2QM) $$i.po $$i.qm >/dev/null 2>&1; \
-	done
-	@for i in *.qm; do \
+	@for i in $(srcdir)/*.qm; do \
 	  echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
 	  $(INSTALL_DATA) $$i $(localedir)/$$i; \
-	  rm -f $$i; \
 	done
 
 template:
