@@ -2623,26 +2623,6 @@ bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWid
   return false;
 }
 
-#ifdef QT_PROTOCOL_PLUGIN
-bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWidget *p)
-{
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-  if (u == NULL) return true;
-  QTextCodec *codec = UserCodec::codecForICQUser(u);
-  QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-                     .arg(codec->toUnicode(u->GetAlias()))
-                     .arg(u->IdString()) );
-  gUserManager.DropUser(u);
-  if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
-  {
-    //TODO
-    licqDaemon->RemoveUserFromList(strtoul(szId, (char **)NULL, 10));
-    return true;
-  }
-  return false;
-}
-#endif
-
 bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);

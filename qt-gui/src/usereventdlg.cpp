@@ -1735,20 +1735,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   }
 /*  else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
   {
-<<<<<<< usereventdlg.cpp
-#ifdef QT_PROTOCOL_PLUGIN
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-#else
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-#endif
-    msg = tr("%1 refused %2,\n%3")
-          .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue))
-          .arg(codec->toUnicode(e->ExtendedAck()->Response()));
-=======
     u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
     msg = tr("%1 refused %2, send through server")
           .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue));
->>>>>>> 1.115.2.7
     InformUser(this, msg);
     gUserManager.DropUser(u);
     return;

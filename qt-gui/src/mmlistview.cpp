@@ -91,41 +91,6 @@ enum mnuMM_ids
 };
 
 //-----UserList::constructor-----------------------------------------------------------------------
-#ifdef QT_PROTOCOL_PLUGIN
-CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
-   char *szId, unsigned long nPPID, CMainWindow *pMainwin,
-   QWidget *parent)
-   : QListView(parent, "MMUserView")
-{
-  mnuMM = new QPopupMenu(NULL);
-  mnuMM->insertItem(tr("Remove"), mnuMM_remove);
-  mnuMM->insertItem(tr("Crop"), mnuMM_crop);
-  mnuMM->insertItem(tr("Clear"), mnuMM_clear);
-  mnuMM->insertSeparator();
-  mnuMM->insertItem(tr("Add Group"), mnuMM_addgroup);
-  mnuMM->insertItem(tr("Add All"), mnuMM_addall);
-  connect(mnuMM, SIGNAL(activated(int)), SLOT(slot_menu(int)));
-
-  colInfo = _colInfo;
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
-  mainwin = pMainwin;
-
-  for (unsigned short i = 0; i < colInfo.size(); i++)
-  {
-    addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);
-    setColumnAlignment(i, 1<<colInfo[i]->m_nAlign);
-  }
-
-  setAllColumnsShowFocus (true);
-  setSelectionMode(Extended);
-  setSorting(0);
-  bHeader ? header()->show() : header()->hide();
-
-  setAcceptDrops(true);
-}
-#endif
-
 CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
    char *szId, unsigned long nPPID, CMainWindow *pMainwin,
    QWidget *parent)

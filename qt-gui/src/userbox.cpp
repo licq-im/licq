@@ -199,11 +199,6 @@ CUserViewItem::~CUserViewItem()
     delete v->barOnline;
     v->barOnline = NULL;
   }
-  
-#ifdef QT_PROTOCOL_PLUGIN
-  if (m_szId)
-    free(m_szId);
-#endif
 }
 
 //-----CUserViewItem::setGraphics-----------------------------------------------
