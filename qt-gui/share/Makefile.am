@@ -1,6 +1,7 @@
 top_srcdir = @top_srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+srcdir = @srcdir@
 
 bindir = @bindir@
 sharedir = @datadir@/licq/
@@ -11,47 +12,52 @@ install-data-local:
 	@if test "$(KDEDIR)" != ""; then \
 	   if test -w "$(KDEDIR)"; then \
 	     $(mkinstalldirs) $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
-	     $(INSTALL_DATA) licq.desktop $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
+	     $(INSTALL_DATA) $(srcdir)/licq.desktop \
+	                          $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
 	   else \
 	     $(mkinstalldirs) $(HOME)/.kde/share/applnk/Internet; \
-	     $(INSTALL_DATA) licq.desktop $(HOME)/.kde/share/applnk/Internet; \
+	     $(INSTALL_DATA) $(srcdir)/licq.desktop $(HOME)/.kde/share/applnk/Internet; \
 	   fi  \
 	fi
 	$(mkinstalldirs) $(DESTDIR)$(sharedir)
 	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/locale
-	@for j in qt-gui/skin.*; do \
-	  echo "Installing skin $$j"; \
-	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
+	@for j in $(srcdir)/qt-gui/skin.*; do \
+	  jj="qt-gui/`basename $$j`" ; \
+	  echo "Installing $$jj"; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
-	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
+	       $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
 	    fi \
 	  done; \
 	done
-	@for j in qt-gui/dock.*; do \
-	  echo "Installing dock theme $$j"; \
-	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
+	@for j in $(srcdir)/qt-gui/dock.*; do \
+	  jj="qt-gui/`basename $$j`" ; \
+	  echo "Installing dock theme $$jj"; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
-	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
+	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
 	    fi \
 	  done; \
 	done
-	@for j in qt-gui/icons.*; do \
-	  echo "Installing icons $$j"; \
-	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
+	@for j in $(srcdir)/qt-gui/icons.*; do \
+	  jj="qt-gui/`basename $$j`" ; \
+	  echo "Installing icons $$jj"; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
-	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
+	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
 			fi \
 	  done; \
         done
-	@for j in qt-gui/extended.icons.*; do \
-          echo "Installing extended icons $$j"; \
-          $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
+	@for j in $(srcdir)/qt-gui/extended.icons.*; do \
+	  jj="qt-gui/`basename $$j`" ; \
+          echo "Installing extended icons $$jj"; \
+          $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
           for i in $$j/*; do \
             if test -f $$i; then \
-              $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
+              $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
             fi \
           done; \
 	done
