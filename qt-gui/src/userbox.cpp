@@ -1317,29 +1317,29 @@ void CUserView::maybeTip(const QPoint& c)
       {
         ds += temp.setNum(nWeek);
         ds += " ";
-        ds += (nWeek > 1 ? " weeks" : " week");
+        ds += (nWeek > 1 ? tr(" weeks") : tr(" week"));
       }
       if (nDay)
       {
         if (nWeek) ds += " ";
         ds += temp.setNum(nDay);
         ds += " ";
-        ds += (nDay > 1 ? " days" : " day");
+        ds += (nDay > 1 ? tr(" days") : tr(" day"));
       }
       if (nHour)
       {
         if (nWeek || nDay) ds += " ";
         ds += temp.setNum(nHour);
-        ds += (nHour > 1 ? " hours" : " hour");
+        ds += (nHour > 1 ? tr(" hours") : tr(" hour"));
       }
       if (nMinute)
       {
         if (nWeek || nDay || nHour) ds += " ";
         ds += temp.setNum(nMinute);
-        ds += (nMinute > 1 ? " minutes" : " minute");
+        ds += (nMinute > 1 ? tr(" minutes") : tr(" minute"));
       }
       if (!nWeek && !nDay && !nHour && !nMinute)
-        ds += "0 minutes";
+        ds += tr("0 minutes");
 
       s += tr("<br><nobr>Logged In: ") + ds + tr("</nobr>");
     }
