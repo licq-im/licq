@@ -1,24 +1,13 @@
 
 all:
-	@echo "*** Concatenating configure tests into acinclude.m4"
-	@-rm -f acinclude.m4
-	@$(MAKE) -f Makefile.am  top_srcdir=. acinclude.m4
-	@echo "*** Fetching libtool"
-	@-rm -f ltmain.sh && cp ../../ltmain.sh ltmain.sh
-	@-rm -f ltconfig && cp ../../ltconfig ltconfig
-	@-rm -f libtool
-	@echo "*** Retrieving configure tests needed by configure.in"
-	@aclocal
-	@echo "*** Scanning for include statements"
-	@autoheader
-	@echo "*** Building Makefile templates (step one)"
-	@automake
-	@echo "*** Building Makefile templates (step two)"
-	@autoconf
-	@if grep "ac_kw foo" configure &>/dev/null; then perl -p -i -e "s/ac_kw foo/ac_kw int foo/" configure; fi
-	@echo "*** Create date/time stamp"
-	@touch stamp-h.in
-	@echo "*** Finished"
-	@echo "    Don't forget to run ./configure"
-	@echo "    If you haven't done so in a while, run ./configure --help"
-	@-rm -f config.h config.cache
+	@echo "This Makefile is only for the CVS repository"
+	@echo "This will be deleted before making the distribution"
+	@echo ""
+	@if test ! -d admin; then \
+	   echo "Please recheckout this module!" ;\
+	   echo "for cvs: use checkout once and after that update again" ;\
+	   exit 1 ;\
+	fi
+	$(MAKE) -f admin/Makefile.common cvs
+
+.SILENT:
