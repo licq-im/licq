@@ -13,6 +13,7 @@ int main(int argc, char **argv)
   if (d != NULL)
   {
     if (argc > 1) v = atoi(argv[1]);
+    if (!v ) v = 100;
     XBell(d, v);
     XCloseDisplay(d);
   }
