@@ -116,11 +116,17 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_USERxGETDETAILS:
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
-  case ICQ_CMDxSND_META:
   case ICQ_CMDxSND_RANDOMxSEARCH:
   case ICQ_CMDxSND_SETxRANDOMxCHAT:
     emit signal_doneUserFcn(e);
     break;
+
+  case ICQ_CMDxSND_META:
+    if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
+        e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
+      emit signal_searchResult(e);
+    else
+      emit signal_doneUserFcn(e);
 
   // Commands related to the basic operation
   case ICQ_CMDxSND_LOGON:
