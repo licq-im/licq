@@ -372,33 +372,34 @@ void ChatDlg::StateClient()
 //-----chatSend-----------------------------------------------------------------
 void ChatDlg::chatSend(QKeyEvent *e)
 {
-   CBuffer buffer(1);
-   if (e->key() == Key_Enter)
-      buffer.PackChar(0x0D);
-   else if (e->key() == Key_Return)
-      buffer.PackChar(0x0D);
-   else if (e->key() == Key_Backspace)
-      buffer.PackChar(0x08);
-   else if (e->key() == Key_unknown || e->key() == Key_Tab)
-   {
-      e->ignore();
-      return;
-   }
-   else if ((unsigned char)e->ascii() >= 32 || (unsigned char) e->ascii() == 7)
-   {
-      char c = e->ascii();
-      gTranslator.ClientToServer(c);
-      buffer.PackChar(c);
-   }
-   else return;
+  // If the socket was closed, ignore the key event
+  if (m_cSocketChat.Descriptor() == -1) return;
 
-   if (!m_cSocketChat.SendRaw(&buffer))
-   {
-     char buf[128];
-     gLog.Error("%sChat send error:\n%s%s\n", L_ERRORxSTR, L_BLANKxSTR,
-                m_cSocketChat.ErrorStr(buf, 128));
-     chatClose();
-   }
+  CBuffer buffer(1);
+  if (e->key() == Key_Enter || e->key() == Key_Return)
+     buffer.PackChar(0x0D);
+  else if (e->key() == Key_Backspace)
+     buffer.PackChar(0x08);
+  else if (e->key() == Key_unknown || e->key() == Key_Tab)
+  {
+     e->ignore();
+     return;
+  }
+  else if ((unsigned char)e->ascii() >= 32 || (unsigned char) e->ascii() == 7)
+  {
+     char c = e->ascii();
+     gTranslator.ClientToServer(c);
+     buffer.PackChar(c);
+  }
+  else return;
+
+  if (!m_cSocketChat.SendRaw(&buffer))
+  {
+    char buf[128];
+    gLog.Error("%sChat send error:\n%s%s\n", L_ERRORxSTR, L_BLANKxSTR,
+               m_cSocketChat.ErrorStr(buf, 128));
+    chatClose();
+  }
 }
 
 
@@ -546,6 +547,7 @@ void ChatDlg::chatClose()
 {
   m_cSocketChat.CloseConnection();
   mleLocal->setReadOnly(true);
+  disconnect(mleLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
 }
 
 
