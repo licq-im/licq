@@ -3950,7 +3950,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (pEvent->Result() == EVENT_SUCCESS)
             gLog.Info("%s%s updated.\n", L_SRVxSTR, szType);
           else
-            gLog.Info("%s%S update failed.\n", L_SRVxSTR, szType);
+            gLog.Info("%s%s update failed.\n", L_SRVxSTR, szType);
           ProcessDoneEvent(pEvent);
         }
         else
