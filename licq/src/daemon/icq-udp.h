@@ -873,7 +873,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     packet >> nUin;
 
     // find which user it is, verify we have them on our list
-    char s[128];
     unsigned long nNewStatus;
     packet >> nNewStatus;
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -885,7 +884,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     }
     ChangeUserStatus(u, nNewStatus);
     gLog.Info("%s%s (%ld) changed status: %s.\n", L_WARNxSTR,
-              u->GetAlias(), nUin, u->StatusStr(s));
+              u->GetAlias(), nUin, u->StatusStr());
     gUserManager.DropUser(u);
     break;
   }

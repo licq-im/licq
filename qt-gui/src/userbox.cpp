@@ -739,10 +739,7 @@ void CUserViewTips::maybeTip(const QPoint& c)
 
   if(item && item->m_nUin)
   {
-    char s[64];
-
-    ICQUser::StatusToStatusStr(item->m_nStatus, false, s);
-    tip(w->itemRect(item), QString(s));
+    tip(w->itemRect(item), QString(ICQUser::StatusToStatusStr(item->m_nStatus, false)));
   }
 }
 

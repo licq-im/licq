@@ -151,14 +151,14 @@ void CLicqEmail::ProcessPipe(void)
 
   case '0':  // disable
   {
-    gLog.Info("%sDisabling.\b", L_EMAILxSTR);
+    gLog.Info("%sDisabling.\n", L_EMAILxSTR);
     m_bEnabled = false;
     break;
   }
 
   case '1':  // enable
   {
-    gLog.Info("%sEnabling.\b", L_EMAILxSTR);
+    gLog.Info("%sEnabling.\n", L_EMAILxSTR);
     m_bEnabled = true;
     break;
   }

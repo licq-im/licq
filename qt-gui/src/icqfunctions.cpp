@@ -606,7 +606,7 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   }
 
   nfoAlias->setData(u->GetAlias());
-  nfoStatus->setData(u->StatusStr(buf));
+  nfoStatus->setData(u->StatusStr());
   nfoFirstName->setData(u->GetFirstName());
   nfoLastName->setData(u->GetLastName());
   nfoEmail1->setData(u->GetEmail1());
@@ -903,9 +903,7 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
   {
   case USER_STATUS:
   {
-    char szStatus[32];
-    u->StatusStr(szStatus);
-    nfoStatus->setData(szStatus);
+    nfoStatus->setData(u->StatusStr());
     if (u->Ip() == 0)
     {
       chkSendServer->setChecked(true);
@@ -1568,11 +1566,9 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       QString msg;
       if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
       {
-        char status[32];
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        u->StatusStr(status);
         msg = tr("%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]")
-                 .arg(u->GetAlias()).arg(status).arg(u->AutoResponse());
+                 .arg(u->GetAlias()).arg(u->StatusStr()).arg(u->AutoResponse());
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;

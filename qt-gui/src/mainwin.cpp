@@ -905,9 +905,7 @@ void CMainWindow::updateGroups()
 void CMainWindow::updateStatus()
 {
    char *theColor = skin->colors.offline;
-   char sStatus[32];
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   o->StatusStr(sStatus);
    unsigned long status = o->Status();
    switch (status)
    {
@@ -927,10 +925,11 @@ void CMainWindow::updateStatus()
      break;
    }
    mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->StatusInvisible());
-   gUserManager.DropOwner();
 
-   lblStatus->setText(sStatus);
+   lblStatus->setText(o->StatusStr());
    lblStatus->update();
+
+   gUserManager.DropOwner();
 
    // set the color if it isn't set by the skin
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);

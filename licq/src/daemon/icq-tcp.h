@@ -450,10 +450,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       }
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
     case ICQ_CMDxTCP_READxNAxMSG:

@@ -60,9 +60,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
-  char szStatus[32];
-  u->StatusStr(szStatus);
-  setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->GetAlias()));
+  setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(u->GetAlias()));
 
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setMinimumWidth(75);

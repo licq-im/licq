@@ -75,18 +75,16 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 
 void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 {
-  char s[32];
   m_nStatus = _status;
-  ICQUser::StatusToStatusStr(m_nStatus, false, s);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   setCaption(QString(tr("Set %1 Response for %2"))
-             .arg(s).arg(QString::fromLocal8Bit(o->GetAlias())));
+             .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromLocal8Bit(o->GetAlias())));
   if (*o->AutoResponse())
     mleAwayMsg->setText(QString::fromLocal8Bit(o->AutoResponse()));
   else
     mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
-                        .arg(s));
+                        .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
   gUserManager.DropOwner();
 
   move(s_nX, s_nY);
