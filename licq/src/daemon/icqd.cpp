@@ -146,7 +146,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   gLog.Info("%sOnEvent configuration.\n", L_INITxSTR);
   licqConf.SetSection("onevent");
   licqConf.ReadNum("Enable", nOnEventCmdType, 0);
-  licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, true);
+  licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, false);
   m_xOnEventManager.SetCommandType(nOnEventCmdType);
   for (int i = 0; i < MAX_ON_EVENT; i++)
     szOnParams[i] = new char[MAX_FILENAME_LEN];
