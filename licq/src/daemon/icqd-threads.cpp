@@ -279,7 +279,7 @@ void *MonitorSockets_tep(void *p)
 
   fd_set f;
   int nSocketsAvailable, nCurrentSocket, l;
-  char buf[128];
+  char buf[1024];
   TCPSocket *tcp;
   UDPSocket *udp;
 
@@ -330,7 +330,7 @@ void *MonitorSockets_tep(void *p)
         if (nCurrentSocket == d->fifo_fd)
         {
           DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
-          fgets(buf, 128, d->fifo_fs);
+          fgets(buf, 1024, d->fifo_fs);
           d->ProcessFifo(buf);
         }
 
