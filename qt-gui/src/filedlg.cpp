@@ -357,9 +357,9 @@ void CFileDlg::StateServer()
   {
   case STATE_RECVxHANDSHAKE:
   {
-    char cHandshake;
+    unsigned char cHandshake;
     m_xSocketFile.RecvBuffer() >> cHandshake;
-    if ((unsigned short)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
+    if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
     {
       gLog.Error("%sReceive error - bad handshake (%04X).\n", L_ERRORxSTR, cHandshake);
       fileCancel();
