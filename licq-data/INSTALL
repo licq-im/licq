@@ -1,0 +1,22 @@
+This package contains various data files for use with Licq.
+Installation is easy:
+
+qt-gui: These are some nice additional skins and icon packs.
+        Simply copy all the files from this directory to
+        /usr/local/share/licq/qt-gui (or wherever you installed
+        the qt-gui plugin, possibly /usr/share/licq/qt-gui).
+
+sounds: These are contributed sounds file for use with OnEvents.
+        They can be placed anywhere, and then just use the Options
+        dialog box to set them as parameters for the relevant event.
+
+contrib: These are various scripts and contributed files for use with
+         Licq.  In particular are the licq.xxxconvert scripts for
+         converting contact lists to licq format.  No installation is
+         necessary beyond copying to a useful directory.
+
+translations: These files are for translating character sets.  To install
+              one simply copy it to /usr/local/share/licq/translations and
+              then select it from the Options dialog box (using the Qt-GUI
+              plugin).
+

@@ -1,0 +1,17 @@
+# licq history file finder:
+#     Converts an alias to the corresponding history file path
+# lf alias [alias alias ...]
+
+local a
+if [[ "${#@}" == "0" ]]; then
+  echo "$0 (licq find): licq alias to history file converter
+Usage:
+  $0 <alias> [alias alias ...]"
+else
+  reply=()
+  for a in $@
+  do
+    reply=($reply "$HOME/.licq/history/${$(tail "+${$(grep -n $a /tmp/icqaliase$  done
+  print $reply
+fi
+

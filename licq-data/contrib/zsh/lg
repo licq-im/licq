@@ -1,0 +1,37 @@
+# licq grep: greps messages from licq historyfiles
+# The script variable in this one needs to be modified to point to the
+# correct path of the awk script supplied below
+# Usage:
+#   lg [grep options] <extended regexp> <alias> [alias alias ...]
+local script arg regexp aliases alias file
+script=$HOME/bin/lg.awk
+if [[ "${#@}" == "0" ]]; then
+  echo "$0 (licq grep): greps messages from licq historyfiles
+Usage:
+  $0 [grep options] <extended regexp> <alias> [alias alias ...]
+
+If the first argument starts in a dash ('-'), it will be forwarded to egrep.
+When more than one alias is given, a header will be printed as well, showing
+which alias/file is currently being processed. Matching messages will be shown
+only once, even when the regexp matches several times within the message."
+else
+  arg=$1
+  if [[ "$arg[1]" == "-" ]];then
+    regexp=$2
+    arg=${arg}n
+    aliases=($@[3,-1])
+  else
+    regexp=$arg
+    arg=-n
+    aliases=($@[2,-1])
+  fi
+  #print "Arg is $arg, Regexp is $regexp, Aliases are $aliases"
+  for alias in $aliases
+  do
+    file=$(lf $alias)
+    if [[ "${#aliases}" != "1" ]];then
+      print "********** $alias ($file) **********"
+    fi
+    awk -f ~/.zsh/user/lg.awk -v r="$(egrep $arg "$regexp" $file|cut -f1 -d':')" $file
+  done
+fi
