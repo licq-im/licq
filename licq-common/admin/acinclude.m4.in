@@ -44,9 +44,17 @@ AC_DEFUN(LICQ_CHECK_LICQ,
   if test -n "$licq_licq_includes"; then
     licq_inc=$licq_licq_includes
   else
-    LICQ_FIND_FILE(licq_icqd.h, $prefix/include/licq \
-                                /usr/local/include/licq \
-	                        /usr/include/licq           , licq_inc)
+    licq_paths="$prefix/include/licq \
+                /usr/local/include/licq \
+                /usr/include/licq"
+
+    relpath=`cd $srcdir/../../include && pwd`
+
+    if test -r $relpath/licq_icqd.h; then
+      licq_inc=$relpath
+    else
+      LICQ_FIND_FILE(licq_icqd.h, $licq_paths, licq_inc)
+    fi
   fi
 
   if test -z "$licq_inc"; then
