@@ -137,8 +137,8 @@ CFileDlg::CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
     connect(btnOpen, SIGNAL(clicked()), SLOT(slot_open()));
     connect(btnOpenDir, SIGNAL(clicked()), SLOT(slot_opendir()));
   #else
-    btnOpen = NULL;
-    btnOpenDir = NULL; 
+    btnOpen = 0;
+    btnOpenDir = 0;
   #endif
 }
 
@@ -229,8 +229,8 @@ CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
     connect(btnOpen, SIGNAL(clicked()), SLOT(slot_open()));
     connect(btnOpenDir, SIGNAL(clicked()), SLOT(slot_opendir()));
   #else
-    btnOpen = NULL;
-    btnOpenDir = NULL; 
+    btnOpen = 0;
+    btnOpenDir = 0;
   #endif
 }
 
