@@ -72,7 +72,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   lay->addWidget(lblStatus);
 
   tabs = new QTabWidget(this);
-  lay->addWidget(tabs);
+  lay->addWidget(tabs, 2);
 
   tabs->addTab(tabList[GeneralInfo].tab, tabList[GeneralInfo].label);
   tabs->addTab(tabList[MoreInfo].tab, tabList[MoreInfo].label);
