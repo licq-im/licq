@@ -414,8 +414,9 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
 #endif
+  if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
+    s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
   s_nRealIp = NetworkIpToPacketIp(_s->LocalIp());
-  s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
   s_nMode = MODE_DIRECT;
   m_nLocalPort = _s->LocalPort();
   m_nLogonStatus = _nLogonStatus;
