@@ -27,6 +27,10 @@
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
 
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 #include "mainwin.h"
 #include "licqgui.h"
 #include "sigman.h"
@@ -184,7 +188,11 @@ CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIc
 
   // Try and load a translation
   char *p;
-  if ( (p = getenv("LANGUAGE")) || (p = getenv("LANG")) );
+#ifndef HAVE_LOCALE_H
+  if ( (p = getenv("LANGUAGE")) || (p = getenv("LANG")) )
+#else
+  if ( (p = setlocale(LC_MESSAGES, NULL) ))
+#endif
   {
     QString str;
     str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, p);
