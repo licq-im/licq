@@ -44,7 +44,7 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
   delete mDos;
   CICQEventTag *t = NULL;
   if (result != NULL)
-    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+    t = new CICQEventTag(result);
   return (t);
 }
 
@@ -61,7 +61,7 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned lon
 
   CICQEventTag *t = NULL;
   if (result != NULL)
-    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+    t =  new CICQEventTag(result);
   return (t);
 }
 
@@ -103,7 +103,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
   delete szDescDos;
   CICQEventTag *t = NULL;
   if (result != NULL)
-    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+    t =  new CICQEventTag(result);
   return (t);
 }
 
@@ -145,7 +145,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFi
   delete szDosDesc;
   CICQEventTag *t = NULL;
   if (result != NULL)
-    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+    t =  new CICQEventTag(result);
   return (t);
 }
 
@@ -213,7 +213,7 @@ CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason
   delete szReasonDos;
   CICQEventTag *t = NULL;
   if (result != NULL)
-    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+    t =  new CICQEventTag(result);
   return (t);
 }
 
