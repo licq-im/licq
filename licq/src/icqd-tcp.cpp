@@ -1075,8 +1075,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4)
           packet >> theSequence;
-        else
+        else {
           packet >> fore >> back;
+          if( fore == back ) {
+            back = 0xFFFFFF;
+            fore = 0x000000;
+          }
+        }
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1148,7 +1153,14 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> fore >> back;
+        else {
+          packet >> fore >> back;
+          if(fore == back)
+          {
+            fore = 0x000000;
+            back = 0xFFFFFF;
+          }
+        }
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1202,7 +1214,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> fore >> back;
+        else {
+          packet >> fore >> back;
+          if(fore == back) {
+            fore = 0x000000;
+            back = 0xFFFFFF;
+          }
+        }
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
