@@ -15,6 +15,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
+#include <ctype.h>
 
 #include <qpainter.h>
 #include <qpopupmenu.h>
@@ -153,7 +154,23 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
      for (unsigned short i = 0; i < u->NewMessages(); i++)
      {
-       SubCommand = QMAX(SubCommand, u->EventPeek(i)->SubCommand());
+       switch(u->EventPeek(i)->SubCommand())
+       {
+         case ICQ_CMDxSUB_FILE:
+           SubCommand = ICQ_CMDxSUB_FILE;
+           break;
+         case ICQ_CMDxSUB_CHAT:
+           if (SubCommand != ICQ_CMDxSUB_FILE) SubCommand = ICQ_CMDxSUB_CHAT;
+           break;
+         case ICQ_CMDxSUB_URL:
+           if (SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT)
+             SubCommand = ICQ_CMDxSUB_URL;
+           break;
+         case ICQ_CMDxSUB_MSG:
+         default:
+           if (SubCommand == 0) SubCommand = ICQ_CMDxSUB_MSG;
+           break;
+       }
        if (u->EventPeek(i)->IsUrgent()) m_bUrgent = true;
      }
      if(SubCommand)
@@ -375,10 +392,14 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
   setSorting(0);
 
   if (parent != NULL)
+  {
     setShowHeader(gMainWindow->m_bShowHeader);
+    setFrameStyle(gMainWindow->skin->frame.frameStyle);
+  }
   else
   {
     setShowHeader(false);
+    setFrameStyle(33);
     WId win = winId();
     Display *dsp = x11Display();
     XWMHints *hints;
