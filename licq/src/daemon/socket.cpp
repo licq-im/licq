@@ -510,13 +510,15 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
 
 /*-----TCPSocket::TransferConnectionFrom---------------------------------------
  * Transfers a connection from the given socket to the current one and closes
- * and resets the given socket (not used anymore)
+ * and resets the given socket
  *---------------------------------------------------------------------------*/
 void TCPSocket::TransferConnectionFrom(TCPSocket &from)
 {
   m_nDescriptor = from.m_nDescriptor;
   m_sLocalAddr = from.m_sLocalAddr;
   m_sRemoteAddr = from.m_sRemoteAddr;
+  m_nOwner = from.m_nOwner;
+  m_nVersion = from.m_nVersion;
   ClearRecvBuffer();
   from.m_nDescriptor = -1;
   from.CloseSocket();
