@@ -11,7 +11,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
+    along with this program; if n<ot, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
@@ -319,6 +319,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowExtIcons", m_bShowExtendedIcons, true);
   licqConf.ReadBool("SystemBackground", m_bSystemBackground, false);
   licqConf.ReadBool("SendFromClipboard", m_bSendFromClipboard, true);
+  licqConf.ReadBool("MsgChatView", m_bMsgChatView, true );
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
@@ -2186,6 +2187,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowExtIcons", m_bShowExtendedIcons);
   licqConf.WriteBool("SystemBackground", m_bSystemBackground);
   licqConf.WriteBool("SendFromClipboard", m_bSendFromClipboard);
+  licqConf.WriteBool("MsgChatView", m_bMsgChatView);
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);

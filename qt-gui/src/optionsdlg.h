@@ -61,7 +61,7 @@ protected:
              *chkAutoPopup, *chkAutoRaise, *chkFlashUrgent, *chkFlashAll,
              *chkBoldOnMsg, *chkManualNewUser,
              *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
-             *chkSysBack, *chkSendFromClipboard, *chkAutoPosReplyWin,
+             *chkSysBack, *chkSendFromClipboard, *chkMsgChatView, *chkAutoPosReplyWin,
 	     *chkAutoSendThroughServer, *chkEnableMainwinMouseMovement;
    QRadioButton *rdbDockDefault, *rdbDockThemed;
    QComboBox *cmbDockTheme;

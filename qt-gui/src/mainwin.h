@@ -95,6 +95,7 @@ public:
        m_bShowExtendedIcons,
        m_bSystemBackground,
        m_bSendFromClipboard,
+       m_bMsgChatView,
        m_bAutoPosReplyWin,
        m_bAutoSendThroughServer,
        m_bEnableMainwinMouseMovement;

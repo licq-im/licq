@@ -199,6 +199,7 @@ void OptionsDlg::SetupOptions()
   edtHotKey->setText(mainwin->m_MsgAutopopupKey);
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
+  chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
@@ -395,6 +396,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_MsgAutopopupKey = edtHotKey->text();
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
+  mainwin->m_bSendFromClipboard = chkMsgChatView->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
@@ -614,6 +616,9 @@ QWidget* OptionsDlg::new_appearance_options()
   chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"), boxMainWin);
   QWhatsThis::add(chkEnableMainwinMouseMovement, tr("Lets you drag around the main window "
    "with your mouse"));
+
+  chkMsgChatView = new QCheckBox(tr("Chatmode Messageview"), boxMainWin);
+  QWhatsThis::add(chkMsgChatView, tr("Show the current chat history in Send Window"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
