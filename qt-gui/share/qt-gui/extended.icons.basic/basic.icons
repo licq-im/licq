@@ -1,0 +1,11 @@
+# Default extended icon pack file
+# Jon Keating
+
+[icons]
+Collapsed = itemCollapsed.xpm
+Expanded = itemExpanded.xpm
+Birthday = pixBirthday.xpm
+Cellular = pixCellular.xpm
+CustomAR = pixCustomAR.xpm
+Invisible = pixInvisible.xpm
+Phone = pixPhone.xpm
