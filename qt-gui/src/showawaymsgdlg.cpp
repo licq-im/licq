@@ -3,16 +3,16 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- 
+
 */
 
 // written by Graham Roff <graham@licq.org>
@@ -73,9 +73,9 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   lay->addWidget(btnOk);
 
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
-  
+
   icqEvent = server->icqFetchAutoResponse(m_nUin);
-  
+
   show();
 }
 
@@ -102,10 +102,10 @@ void ShowAwayMsgDlg::accept()
 
 // -----------------------------------------------------------------------------
 
-void ShowAwayMsgDlg::doneEvent(ICQEvent *e) 
+void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
 {
   if (e != icqEvent) return;
-  
+
   bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
 
   QString title, result;
@@ -123,15 +123,17 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   default:
     break;
   }
-  
-  if(!result.isEmpty()) {
+
+  if(!result.isEmpty())
+  {
     title = " [" + result + "]";
     setCaption(caption() + title);
   }
-  
+
   icqEvent = 0;
 
-  if (isOk && e->m_nCommand == ICQ_CMDxTCP_START) {
+  if (isOk && e->m_nCommand == ICQ_CMDxTCP_START)
+  {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
     mleAwayMsg->setText(u->AutoResponse());
     gUserManager.DropUser(u);

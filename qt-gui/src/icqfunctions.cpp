@@ -34,8 +34,8 @@
 #define TM 6
 #define BM 42
 #define NUM_MSG_PER_HISTORY 20
-#define COLOR_SENT "red"
-#define COLOR_RECEIVED "blue"
+#define COLOR_SENT "blue"
+#define COLOR_RECEIVED "red"
 
 unsigned short ICQFunctions::s_nX = 100;
 unsigned short ICQFunctions::s_nY = 100;
@@ -76,8 +76,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    rdbMsg->setChecked(true);
    rdbUrl = new QRadioButton(tr("URL"), grpCmd);
    rdbUrl->setChecked(true);
-   rdbAway = new QRadioButton(tr("Check Auto Response"), grpCmd);
-   rdbAway->setChecked(true);
    rdbChat = new QRadioButton(tr("Chat Request"), grpCmd);
    rdbFile = new QRadioButton(tr("File Transfer"), grpCmd);
    connect(grpCmd, SIGNAL(clicked(int)), this, SLOT(specialFcn(int)));
@@ -211,7 +209,6 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   grpCmd->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, 60);
   rdbMsg->setGeometry(10, 15, 90, 20);
   rdbUrl->setGeometry(125, 15, 90, 20);
-  rdbAway->setGeometry(205, 15, 160, 20);
   rdbChat->setGeometry(10, 35, 110, 20);
   rdbFile->setGeometry(125, 35, 100, 20);
   lblDescription->setGeometry(5, 70, 120, 20);
@@ -297,7 +294,6 @@ void ICQFunctions::setupTabs(int index)
   }
 
   // Send tab
-  rdbAway->setEnabled(u->isAway());
   rdbFile->setEnabled(!u->getStatusOffline());
   rdbChat->setEnabled(!u->getStatusOffline());
   if (chkSendServer->isEnabled())
@@ -345,17 +341,8 @@ void ICQFunctions::setupTabs(int index)
   case 0: showPage(fcnTab[0]); break;
   case 1: showPage(fcnTab[1]); rdbMsg->setChecked(true); specialFcn(0); break;
   case 2: showPage(fcnTab[1]); rdbUrl->setChecked(true); specialFcn(1); break;
-  case 3: showPage(fcnTab[1]); rdbChat->setChecked(true); specialFcn(3); break;
-  case 4: showPage(fcnTab[1]); rdbFile->setChecked(true); specialFcn(4); break;
-  case 6:
-     showPage(fcnTab[1]);
-     if (rdbAway->isEnabled())
-     {
-        rdbAway->setChecked(true);
-        specialFcn(2);
-        callFcn();
-     }
-     break;
+  case 3: showPage(fcnTab[1]); rdbChat->setChecked(true); specialFcn(2); break;
+  case 4: showPage(fcnTab[1]); rdbFile->setChecked(true); specialFcn(3); break;
   case 8: showPage(fcnTab[2]); break;
   case 9: showPage(fcnTab[3]); break;
   case 10: showPage(fcnTab[4]); break;
@@ -447,7 +434,7 @@ void ICQFunctions::SendFile(const char *file, const char *desc)
 {
   showPage(fcnTab[1]);
   rdbFile->setChecked(true);
-  specialFcn(4);
+  specialFcn(3);
   edtItem->setText(file);
   mleSend->setText(desc);
 }
@@ -860,22 +847,13 @@ void ICQFunctions::specialFcn(int theFcn)
    case 2:
       lblItem->hide();
       edtItem->hide();
-      lblDescription->setText(tr("Check Auto Response"));
-      chkSendServer->setChecked(false);
-      chkSendServer->setEnabled(false);
-      mleSend->setEnabled(false);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
-      break;
-   case 3:
-      lblItem->hide();
-      edtItem->hide();
       lblDescription->setText(tr("Reason:"));
       mleSend->setEnabled(true);
       chkSendServer->setChecked(false);
       chkSendServer->setEnabled(false);
       mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 210);
       break;
-   case 4:
+   case 3:
       lblItem->setText(tr("Filename:"));
       lblItem->show();
       edtItem->show();
@@ -941,11 +919,6 @@ void ICQFunctions::callFcn()
         icqEvent = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
-     }
-     else if (rdbAway->isChecked()) // check away message
-     {
-        m_sProgressMsg = tr("Fetching...");
-        icqEvent = server->icqFetchAutoResponse(m_nUin, uin);
      }
      else if (rdbUrl->isChecked()) // send URL
      {

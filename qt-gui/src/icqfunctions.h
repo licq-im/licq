@@ -75,7 +75,7 @@ protected:
   QLineEdit *edtSpoof, *edtItem;
   QLabel *lblItem, *lblDescription;
   QButtonGroup *grpCmd;
-  QRadioButton *rdbUrl, *rdbChat, *rdbFile, *rdbMsg, *rdbAway;
+  QRadioButton *rdbUrl, *rdbChat, *rdbFile, *rdbMsg;
 
   // User Info tab
   CInfoField *nfoFirstName, *nfoLastName, *nfoEMail, *nfoAlias,
