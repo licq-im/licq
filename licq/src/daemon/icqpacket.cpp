@@ -1479,7 +1479,7 @@ void CPacketTcp::InitBuffer_v2()
   buffer = new CBuffer(m_nSize + 4);
 
   buffer->PackUnsignedLong(m_nSourceUin);
-  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedShort(m_nVersion == 2 ? 2 : ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nCommand);
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nSubCommand);
@@ -1694,6 +1694,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
   m_nSequence = _nSequence;
   free(m_szMessage);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+
   if (pUser->CustomAutoResponse()[0] != '\0')
   {
     char *cus = gTranslator.NToRN(pUser->CustomAutoResponse());
@@ -1703,8 +1704,19 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
     free(cus);
     free(def);
   }
-  else
-    m_szMessage = gTranslator.NToRN(o->AutoResponse());
+  else {
+    if(((pUser->StatusToUser() != ICQ_STATUS_OFFLINE &&
+         pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
+        pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
+      m_szMessage = gTranslator.NToRN(o->AutoResponse());
+    else
+      // don't sent out AutoResponse if we're online
+      // it could contain stuff the other site shouldn't read
+      // also some clients always pop up the auto response
+      // window when they receive one, annoying for them..
+      m_szMessage = strdup("");
+  }
+
   gUserManager.DropOwner();
   gTranslator.ClientToServer(m_szMessage);
 
