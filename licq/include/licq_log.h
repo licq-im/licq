@@ -213,8 +213,16 @@ public:
 protected:
   std::vector <CLogService *> m_vxLogServices;
   pthread_mutex_t mutex;
-  void Log(const unsigned short _nLogType, const char *_szFormat, va_list argp);
-  void Log(const unsigned short _nServiceTypes, const unsigned short _nLogType, const char *_szFormat, va_list argp);
+  void Log(const unsigned short _nLogType, const char *_szFormat, va_list argp)
+#ifdef __GNUC__
+    __attribute__ ((format (printf, 3, 0)))
+#endif
+;
+  void Log(const unsigned short _nServiceTypes, const unsigned short _nLogType, const char *_szFormat, va_list argp)
+#ifdef __GNUC__
+    __attribute__ ((format (printf, 4, 0)))
+#endif
+;
 };
 
 

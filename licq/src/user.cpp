@@ -2115,7 +2115,7 @@ int ICQUser::Birthday(unsigned short nRange)
   }
   else
   {
-    char nMonth, nDayMin, nDayMax, nMonthNext, nDayMaxNext;
+    unsigned char nMonth, nDayMin, nDayMax, nMonthNext, nDayMaxNext;
 
     nMonth = ts->tm_mon + 1;
     nMonthNext = nDayMaxNext = 0;
