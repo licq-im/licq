@@ -46,7 +46,7 @@ void CELabel::polish()
     if (extraData() != NULL && extraData()->style != NULL)
       extraData()->style->polish(this);
     else
-	    qApp->polish(this);
+      qApp->polish(this);
   }
 }
 
@@ -135,7 +135,7 @@ CEButton::CEButton(QString label, QWidget *parent, char *name) : QPushButton(lab
    pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
 }
 
-CEButton::~CEButton(void)
+CEButton::~CEButton()
 {
   if (pmUpFocus != NULL) delete pmUpFocus;
   if (pmUpNoFocus != NULL) delete pmUpNoFocus;
@@ -332,5 +332,49 @@ void CInfoField::setEnabled(bool _b)
 {
   QLineEdit::setEnabled(_b);
 }
+
+
+// -----------------------------------------------------------------------------
+
+CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
+  : MLEditWrap(true, parent, true, name)
+{
+  setReadOnly(true);
+};
+
+
+// -----------------------------------------------------------------------------
+
+void CHistoryWidget::paintCell(QPainter* p, int row, int col)
+{
+  QPalette& pal = const_cast<QPalette&>(palette());
+
+  QString s = stringShown(row);
+  bool bold = (s[0] == '\001' || s[0] == '\002');
+  if(bold ^ p->font().bold()) {
+    QFont f(p->font());
+    f.setBold(bold);
+    p->setFont(f);
+  }
+
+  int i= row;
+  pal.setColor(QColorGroup::Text, Qt::blue);
+  while(i >= 0)
+  {
+    QString s2 = stringShown(i--);
+    if (s2[0] == '\002')  break;
+    if(s2[0] == '\001')
+    {
+      pal.setColor(QColorGroup::Text, Qt::red);
+      break;
+    }
+  }
+
+
+  MLEditWrap::paintCell(p, row, col);
+}
+
+
+// -----------------------------------------------------------------------------
 
 #include "ewidgets.moc"

@@ -1,10 +1,6 @@
 #ifndef EWIDGETS_H
 #define EWIDGETS_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qpopupmenu.h>
@@ -12,6 +8,7 @@
 #include <qlineedit.h>
 #include <qvalidator.h>
 
+#include "mledit.h"
 
 bool QueryUser(QWidget *, QString, QString, QString);
 void InformUser(QWidget *q, QString);
@@ -48,7 +45,7 @@ public:
   CEButton(QString , QWidget *parent = 0, char *name = 0);
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
-  ~CEButton(void);
+  ~CEButton();
 public slots:
   void polish();
 protected:
@@ -63,6 +60,8 @@ protected:
 };
 
 
+/* ----------------------------------------------------------------------------- */
+
 class CEComboBox : public QComboBox
 {
 //   Q_OBJECT
@@ -75,9 +74,8 @@ protected:
 };
 
 
+/* ----------------------------------------------------------------------------- */
 
-
-//=====CInfoField===============================================================
 class CInfoField : public QLineEdit
 {
   Q_OBJECT
@@ -87,7 +85,7 @@ public:
   void setData(QString data);
   void setData(const unsigned long data);
   void SetReadOnly(bool);
-  bool ReadOnly(void) { return m_bReadOnly; }
+  bool ReadOnly() { return m_bReadOnly; }
 public slots:
   void setEnabled(bool);
 protected:
@@ -96,5 +94,21 @@ protected:
   void keyPressEvent( QKeyEvent *e );
   void mouseReleaseEvent(QMouseEvent *e);
 };
+
+
+/* ----------------------------------------------------------------------------- */
+
+class CHistoryWidget : public MLEditWrap
+{
+public:
+  CHistoryWidget(QWidget* parent = 0, const char* name = 0);
+  virtual ~CHistoryWidget() {};
+
+protected:
+  virtual void paintCell(QPainter* p, int row, int col);
+};
+
+
+/* ----------------------------------------------------------------------------- */
 
 #endif
