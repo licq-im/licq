@@ -32,6 +32,7 @@
 #define LM 6
 #define TM 6
 #define BM 42
+#define NUM_MSG_PER_HISTORY 5
 
 unsigned short ICQFunctions::s_nX = 100;
 unsigned short ICQFunctions::s_nY = 100;
@@ -140,8 +141,8 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    tabLabel[TAB_HISTORY] = tr("History");
    fcnTab[TAB_HISTORY] = new QWidget(this, tabLabel[TAB_HISTORY]);
    mleHistory = new MLEditWrap(true, fcnTab[TAB_HISTORY]);
-   chkEditHistory = new QCheckBox(tr("History read only"), fcnTab[TAB_HISTORY]);
-   connect(chkEditHistory, SIGNAL(toggled(bool)), mleHistory, SLOT(setReadOnly(bool)));
+   //chkEditHistory = new QCheckBox(tr("History read only"), fcnTab[TAB_HISTORY]);
+   //connect(chkEditHistory, SIGNAL(toggled(bool)), mleHistory, SLOT(setReadOnly(bool)));
 
    addTab(fcnTab[TAB_READ], tabLabel[TAB_READ]);
    addTab(fcnTab[TAB_SEND], tabLabel[TAB_SEND]);
@@ -240,7 +241,7 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   mleAboutMsg->setGeometry(10, 15, boxAboutMsg->width() - 20, boxAboutMsg->height() - 25);
 
   mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
-  chkEditHistory->setGeometry(5, height() - 100, 150, 20);
+  //chkEditHistory->setGeometry(5, height() - 100, 150, 20);
 
   chkAutoClose->setGeometry(10, height() - 30, 180, 20);
   btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
@@ -255,6 +256,11 @@ void ICQFunctions::keyPressEvent(QKeyEvent *e)
   if (e->key() == Key_Escape)
   {
     close();
+    return;
+  }
+  else if (currentPage() == fcnTab[TAB_READ])
+  {
+    showPage(fcnTab[TAB_SEND]);
     return;
   }
   /*else if (e->key() == Key_Enter || e->key() == Key_Return)
@@ -308,7 +314,7 @@ void ICQFunctions::setupTabs(int index)
 
   // History tab
   mleHistory->setReadOnly(true);
-  chkEditHistory->setChecked(true);
+  //chkEditHistory->setChecked(true);
 
   bool bIsNew = u->getIsNew();
   gUserManager.DropUser(u);
@@ -474,9 +480,9 @@ void ICQFunctions::tabSelected(const QString &tab)
   }
   else if (tab == tabLabel[TAB_HISTORY])
   {
-     if (mleHistory->numLines() == 1) showHistory();  // if no history, then get it
-     btnOk->setText(tr("Ok"));
-     btnSave->setText(tr("Save"));
+     if (m_lHistoryList.size() == 0) SetupHistory();  // if no history, then get it
+     btnOk->setText(tr("Next ->"));
+     btnSave->setText(tr("<- Prev"));
      btnSave->show();
      currentTab = TAB_HISTORY;
   }
@@ -623,7 +629,7 @@ void ICQFunctions::save()
     saveExtInfo();
     break;
   case TAB_HISTORY:
-    saveHistory();
+    ShowHistoryPrev();
     break;
   default:
     gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %d.\n",
@@ -675,36 +681,91 @@ void ICQFunctions::saveExtInfo()
 }
 
 
-//-----ICQFunctions::showHistory-------------------------------------------------------------------
-void ICQFunctions::showHistory()
+//-----ICQFunctions::SetupHistory--------------------------------------------
+void ICQFunctions::SetupHistory(void)
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  HistoryList h;
-  char sz[48];
-  strcpy(sz, m_bIsOwner ? "Server" : u->getAlias());
-  if (!u->GetHistory(h))
+  if (!u->GetHistory(m_lHistoryList))
   {
     mleHistory->setText(tr("Error loading history"));
   }
   else
   {
-    QString s, st;
-    mleHistory->clear();
-    for (HistoryListIter i = h.begin(); i != h.end(); i++)
-    {
-      s.sprintf("| %s -> %s: %s\n"
-                "| %s [%c%c%c]\n",
-                (*i)->Dir() == 'R' ? sz : o->getAlias(),
-                (*i)->Dir() == 'R' ? o->getAlias() : sz,
-                (const char *)EventDescription(*i), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
-                (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-');
-      st.append(s + QString::fromLocal8Bit( (*i)->Text() ) + "\n");
-    }
-    mleHistory->setText(st);
+    m_iHistoryIter = m_lHistoryList.end();
+    m_nHistoryIndex = m_lHistoryList.size();
+    m_nHistoryShowing = 0;
+    ShowHistoryPrev();
   }
-  gUserManager.DropOwner();
   gUserManager.DropUser(u);
+}
+
+
+void ICQFunctions::ShowHistoryPrev(void)
+{
+  // Iterate back over what's currently showing
+  while (m_nHistoryShowing > 0)
+  {
+    m_iHistoryIter--;
+    m_nHistoryIndex--;
+    m_nHistoryShowing--;
+  }
+  // Iterate far enough to show the previous messages
+  for (unsigned short i = 0;
+       i < NUM_MSG_PER_HISTORY && m_iHistoryIter != m_lHistoryList.begin();
+       i++)
+  {
+    m_iHistoryIter--;
+    m_nHistoryIndex--;
+  }
+  ShowHistory();
+}
+
+void ICQFunctions::ShowHistoryNext(void)
+{
+  if (m_iHistoryIter != m_lHistoryList.end())
+  {
+    ShowHistory();
+  }
+}
+
+//-----ICQFunctions::ShowHistory--------------------------------------------
+void ICQFunctions::ShowHistory(void)
+{
+  // Last check (should never be true)
+  if (m_lHistoryList.size() == 0) return;
+
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  char sz[48];
+  strcpy(sz, m_bIsOwner ? "Server" : u->getAlias());
+  gUserManager.DropUser(u);
+  QString s, st;
+  m_nHistoryShowing = 0;
+  while (m_nHistoryShowing < NUM_MSG_PER_HISTORY)
+  {
+    s.sprintf("| %s -> %s: %s\n"
+              "| %s [%c%c%c]\n",
+              (*m_iHistoryIter)->Direction() == D_RECEIVER ? sz : o->getAlias(),
+              (*m_iHistoryIter)->Direction() == D_RECEIVER ? o->getAlias() : sz,
+              (const char *)EventDescription(*m_iHistoryIter),
+              (*m_iHistoryIter)->Time(), (*m_iHistoryIter)->IsDirect() ? 'D' : '-',
+              (*m_iHistoryIter)->IsMultiRec() ? 'M' : '-', (*m_iHistoryIter)->IsUrgent() ? 'U' : '-');
+    st.append(s + QString::fromLocal8Bit( (*m_iHistoryIter)->Text() ) + "\n");
+    m_iHistoryIter++;
+    m_nHistoryIndex++;
+    m_nHistoryShowing++;
+    if (m_iHistoryIter == m_lHistoryList.end())
+    {
+      break;
+    }
+  }
+  mleHistory->setText(tr("[Events %1 to %2 of %3]\n--------------------\n\n").arg(m_nHistoryIndex - m_nHistoryShowing + 1)
+    .arg(m_nHistoryIndex).arg(m_lHistoryList.size()) );
+
+  mleHistory->append(st);
+  mleHistory->goToEnd();
+
+  gUserManager.DropOwner();
 }
 
 
@@ -923,7 +984,11 @@ void ICQFunctions::callFcn()
         icqEvent = server->icqUserExtendedInfo(m_nUin);
      }
      break;
-  case TAB_HISTORY: close(); return;
+  case TAB_HISTORY:
+    ShowHistoryNext();
+    btnOk->setEnabled(true);
+    btnCancel->setText(tr("Close"));
+    break;
   }
 
   QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";

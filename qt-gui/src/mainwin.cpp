@@ -1744,7 +1744,8 @@ void CMainWindow::initMenu(void)
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   mnuSystem->insertItem(o->getAlias(), this, SLOT(callOwnerFunction()));
+   mnuSystem->insertItem(tr("Owner") + " (" + QString::fromLocal8Bit(o->getAlias()) + ")",
+                         this, SLOT(callOwnerFunction()));
    gUserManager.DropOwner();
    mnuSystem->insertItem(tr("User Functions"), mnuUserAdm);
    mnuSystem->insertItem(tr("&Status"), mnuStatus);

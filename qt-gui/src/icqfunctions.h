@@ -22,6 +22,7 @@
 #include "userfcndlg.h"
 #include "messagebox.h"
 #include "ewidgets.h"
+#include "history.h"
 
 class ICQUser;
 class CICQDaemon;
@@ -90,7 +91,11 @@ protected:
 
   // History tab
   MLEditWrap *mleHistory;
-  QCheckBox *chkEditHistory;
+  //QCheckBox *chkEditHistory;
+  HistoryList m_lHistoryList;
+  HistoryListIter m_iHistoryIter;
+  //QPushButton *btnHistoryPrev, *btnHistoryNext;
+  unsigned short m_nHistoryIndex, m_nHistoryShowing;
 
   static unsigned short s_nX;
   static unsigned short s_nY;
@@ -104,6 +109,8 @@ protected:
   void saveExtInfo();
   void saveHistory();
   void generateReply();
+  void SetupHistory(void);
+  void ShowHistory(void);
 
 public slots:
   //virtual void hide();
@@ -115,7 +122,8 @@ protected slots:
    void doneFcn(ICQEvent *);
    void slot_updatedUser(unsigned long, unsigned long);
    void tabSelected(const QString &);
-   void showHistory();
+   void ShowHistoryPrev();
+   void ShowHistoryNext();
    void printMessage(QListViewItem *);
    void save();
    void setSpoofed();
