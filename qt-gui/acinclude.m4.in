@@ -57,11 +57,11 @@ AC_DEFUN(AC_PATH_QT_LIB,
         /usr/X11R6/lib/qt"
 
       if test "x$QTDIR" != x; then
-        qt_library_dirs="$qt_library_dirs $QTDIR/lib"
+        qt_library_dirs="$QTDIR/lib $qt_library_dirs"
       fi
 
       if test "x$QTLIB" != x; then
-        qt_library_dirs="$qt_library_dirs $QTLIB"
+        qt_library_dirs="$QTLIB $qt_library_dirs"
       fi
 
       for qt_dir in $qt_library_dirs; do
