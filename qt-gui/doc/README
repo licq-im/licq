@@ -11,9 +11,6 @@ associated with the GPL are applied to the QT library.
 
 INSTALLATION:
 
-(If you have a binary distribution then see the FAQ for how to
- do a manual install.  Don't worry it's very easy, any monkey
- could do it.)
 
 0. Make sure you unpacked the source into the plugins directory of
    the licq source tree.
@@ -37,6 +34,7 @@ INSTALLATION:
 Licq Qt-GUI requires the following:
 Qt >= 2.00 (if you are using rpm then it requires the qt and qt-devel rpm)
 Some C++ compiler
+KDE >= 2.0 (CVS) for KDE support
 
 CONFIGURATION:
 
@@ -62,35 +60,6 @@ and to check system messages.
 PROBLEMS:
 
 See the BUGS file for reports on known bugs and problems.
-
-
-TROUBLE-SHOOTING:
-
-1. COMPILING
-The most common problem with compiling licq is with gcc 2.8 and Qt.  It seems 
-that there are a number of binary incompatibilities between gcc 2.7 and 2.8, 
-so that trying to link source built with gcc 2.8 to a shared library built 
-with 2.7 will most often fail.
-
-The warnings I've seen in regards to this are of the type:
-1. linking errors about "type_info"
-2. linking errors about "QPainter" and "QWidget"
-Both of these problems are best solves by upgrading to a version of libqt.so 
-compiled with gcc 2.8.  The only rpm which works with egcs or gcc 2.8 is the 
-rh51 one from ftp.troll.no.  You can also download the src rpm and do a 
-$ rpm --rebuild <qt version>.src.rpm.
-
-Another possible solution is to add -fno-rtti to the compile line in the Makefile 
-(ie GCC=g++ -fno-rtti) and/or remove the -O2 optimization.  This will mainly work 
-if your error is of the first type above.
-Both of these solutions may result in a successful compile but the program may
-segfault at startup.
-
-2. RUNNING
-o  Segfault at startup.  If this occurs, run licq with the -d 1 switch and tell
-   me how far it gets before segfaulting and I'll try and help.
-
-Good luck.
 
 
 CONTACTS:
