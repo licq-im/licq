@@ -723,7 +723,7 @@ UserFloatyList* CUserView::floaties = 0;
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 #if QT_VERSION >= 220
-  : QListView(parent, name, parent == NULL ? WStyle_Customize | WStyle_NoBorder | WRepaintNoErase /*| WStyle_StaysOnTop*/
+  : QListView(parent, name, parent == NULL ? WStyle_Customize | WStyle_NoBorder | WResizeNoErase | WRepaintNoErase /*| WStyle_StaysOnTop*/
               : WRepaintNoErase),
 #else
   : QListView(parent, name),
@@ -747,7 +747,6 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   viewport()->setAcceptDrops(true);
   #if QT_VERSION < 300
   viewport()->setBackgroundMode(NoBackground);
-  setBackgroundMode(NoBackground);
   #endif
 
 #if QT_VERSION >= 210
