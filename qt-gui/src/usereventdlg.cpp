@@ -93,24 +93,13 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
 
-  connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
   tmrTime = NULL;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   if (u != NULL)
   {
     nfoStatus->setData(u->StatusStr());
     SetGeneralInfo(u);
-
-    if (u->NewUser())
-    {
-      u->SetNewUser(false);
-      gUserManager.DropUser(u);
-
-      CICQSignal s(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
-      emit updateUser(&s);
-    }
-    else
-      gUserManager.DropUser(u);
+    gUserManager.DropUser(u);
   }
 
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
@@ -255,6 +244,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
     h_lay->addWidget(btnMenu);
     connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
     btnMenu->setPopup(gMainWindow->UserMenu());
+    chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
+    chkAutoClose->setChecked(gMainWindow->m_bAutoClose);
+    h_lay->addWidget(chkAutoClose);
   }
   h_lay->addStretch(1);
   int bw = 75;
@@ -303,6 +295,8 @@ void UserViewEvent::slot_close()
 //-----UserViewEvent::slot_autoClose-----------------------------------------
 void UserViewEvent::slot_autoClose()
 {
+  if(!chkAutoClose->isChecked()) return;
+
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   bool doclose = (u->NewMessages() == 0);
   gUserManager.DropUser(u);

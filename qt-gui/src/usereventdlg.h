@@ -103,6 +103,7 @@ protected:
   MLEditWrap *mleRead;
   MsgView *msgView;
   CUserEvent *m_xCurrentReadEvent;
+  QCheckBox* chkAutoClose;
   QPushButton *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
   CEButton *btnRead1, *btnClose;
 
