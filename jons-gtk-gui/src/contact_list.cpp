@@ -42,9 +42,6 @@ GtkWidget *contact_list_new(gint height, gint width)
 {
 	GtkWidget *_contact_l;
 
-#if 1
-// THIS IS HERE BECAUSE I AM CHANGING TO A TREE...
-
 	/* Create the contact list using a 3 column clist */
 	_contact_l = gtk_clist_new(3);
 	gtk_clist_set_row_height(GTK_CLIST(_contact_l), 17);
@@ -61,21 +58,11 @@ GtkWidget *contact_list_new(gint height, gint width)
 	/* Size the contact list */
 	gtk_widget_set_usize(_contact_l, width, height);
 
-#else
-
-	_contact_l = gtk_tree_new();
-	gtk_tree_set_view_mode(GTK_TREE(_contact_l), GTK_TREE_VIEW_ITEM);
-	gtk_tree_set_view_lines(GTK_TREE(_contact_l), false);
-
-	gtk_widget_set_usize(_contact_l, width, height);
-
 	/* A double click on a user name */
 	gtk_signal_connect(GTK_OBJECT(_contact_l), "button_press_event",
 			   GTK_SIGNAL_FUNC(contact_list_click), NULL);
 
 	gtk_clist_set_button_actions(GTK_CLIST(_contact_l), 0, GTK_BUTTON_IGNORED);
-
-#endif
 
 	return _contact_l;
 }
@@ -85,7 +72,7 @@ gint flash_icons(gpointer data)
 	// If we aren't supposed to flash or there are no things to flash
 	if(!flash_events || (nToFlash < 0))
 		return -1;
-/*		
+		
 	list<SFlash *>::iterator it;
 	for(it = FlashList.begin(); it != FlashList.end(); it++)
 	{
@@ -104,7 +91,7 @@ gint flash_icons(gpointer data)
 				(*it)->icon->bm);
 		}
 	}
-*/
+
 	return -1;
 }
 
@@ -147,6 +134,9 @@ void contact_list_refresh()
 		/* Make an empty row first */
 		gtk_clist_insert(GTK_CLIST(contact_list), num_users, blah);
 
+		/* Get the status of the user */
+		gulong user_status = pUser->StatusFull();
+
 		// The icon to set
 		if(pUser->NewMessages() > 0)
 		{
@@ -176,9 +166,6 @@ void contact_list_refresh()
 				break;
 			}
 
-			gtk_clist_set_foreground(GTK_CLIST(contact_list),
-				num_users,
-				get_status_color(pUser->Status()));
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
 				1, icon->pm, icon->bm);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -200,9 +187,6 @@ void contact_list_refresh()
          	else
 		{
 			struct status_icon *cur_icon = offline;
-
-			/* Get the status of the user */
-			gulong user_status = pUser->StatusFull();
 
 			if((gushort)user_status != ICQ_STATUS_OFFLINE &&
 			   (user_status & ICQ_STATUS_FxPRIVATE))
@@ -254,6 +238,13 @@ void contact_list_refresh()
 					num_users, 0, "*");
 		  	}
 		
+		  	else if(user_status & ICQ_STATUS_OCCUPIED)
+		  	{
+				cur_icon = occ;
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "x");
+		  	}
+
 			else
 			{
 				cur_icon = online;
@@ -261,12 +252,12 @@ void contact_list_refresh()
 					num_users, 0, "+");
 			}
 		
-			gtk_clist_set_foreground(GTK_CLIST(contact_list),
-				num_users,
-				get_status_color(pUser->Status()));
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list),
 				num_users, 1, cur_icon->pm, cur_icon->bm);
 		} // else
+
+		gtk_clist_set_foreground(GTK_CLIST(contact_list), num_users,
+			get_status_color(user_status));
 
 		// See if they are not offline and want to be auto secured
 		if(pUser->Status() != ICQ_STATUS_OFFLINE && pUser->AutoSecure())
@@ -325,21 +316,16 @@ void contact_list_refresh()
 	gtk_clist_thaw(GTK_CLIST(contact_list));
 }
 
-GdkColor *get_status_color(unsigned long status)
+GdkColor *get_status_color(unsigned long nStatus)
 {
-	switch(status)
-	{
-	case ICQ_STATUS_OFFLINE:
+	if (nStatus == ICQ_STATUS_OFFLINE)
 		return offline_color;
+	
+	if ((nStatus & ICQ_STATUS_AWAY) || (nStatus & ICQ_STATUS_NA) ||
+	    (nStatus & ICQ_STATUS_DND) || (nStatus & ICQ_STATUS_OCCUPIED))
+	    return away_color;
 
-	case ICQ_STATUS_FxPRIVATE:
-	case ICQ_STATUS_ONLINE:
-	case ICQ_STATUS_FREEFORCHAT:
-		return online_color;
-
-	default:
-		return away_color;
-	}
+	return online_color;
 }
 
 void contact_list_click(GtkWidget *contact_list,
@@ -348,6 +334,7 @@ void contact_list_click(GtkWidget *contact_list,
 {
 	gint row;
 	gint column;
+	gchar str_status[30];
 	ICQUser *user;
 	struct conversation *c = NULL;
 	struct timeval check_timer;
@@ -455,7 +442,6 @@ void contact_list_click(GtkWidget *contact_list,
 		if(user->Status() != ICQ_STATUS_ONLINE && 
 		   user->Status() != ICQ_STATUS_OFFLINE)
 		{
-			gchar str_status[30];
 			strcpy(str_status, "Read ");
 			strcat(str_status, user->StatusStrShort());
 			strcat(str_status, " Message");
