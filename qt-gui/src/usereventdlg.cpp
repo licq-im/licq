@@ -300,10 +300,15 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
   string newLabel = "";
   for (it = lUsers.begin(); it != lUsers.end(); ++it)
   {
+    ICQUser *u = gUserManager.FetchUser((*it).c_str(), tab->PPID(), LOCK_R);
     if (newLabel.size() == 0)
-      newLabel = (*it);
+      newLabel = u->GetAlias();
     else
-      newLabel += ", " + (*it);
+    {
+      newLabel += ", ";
+      newLabel += u->GetAlias();
+    }
+    gUserManager.DropUser(u);
   }
   tabw->changeTab(tab, newLabel.c_str());
 }
