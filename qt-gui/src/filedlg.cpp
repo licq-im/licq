@@ -333,10 +333,14 @@ QString CFileDlg::encodeFSize(unsigned long size)
     size /= 1024/10;
     unit = tr("KB");
   }
-  else if(size != 1)
+  else if(size != 1) {
+    size *= 10;
     unit = tr("Bytes");
-  else
+  }
+  else {
+    size *= 10;
     unit = tr("Byte");
+  }
 
   return QString("%1.%2 %3").arg(size/10).arg(size%10).arg(unit);
 }
