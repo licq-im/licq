@@ -3938,6 +3938,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
+     updateStatus(0); //This shows ICQ status for the status label and dock icon
    }
 }
 
