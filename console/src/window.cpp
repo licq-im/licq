@@ -118,11 +118,12 @@ void CWindow::wprintf(char *formatIn, ...)
       {
       case 'C':   // set color
          i++;
-#if NCURSES_VERSION_PATCH < 990213
-         wattrset(win, COLOR_PAIR(va_arg(argp, short)));
-#else
-         wcolor_set(win, va_arg(argp, short), NULL);
-#endif
+//#if NCURSES_VERSION_PATCH < 990213
+         win->_attrs &= ~A_COLOR;
+         win->_attrs |= COLOR_PAIR(va_arg(argp, short));
+//#else
+//         wcolor_set(win, va_arg(argp, short), NULL);
+//#endif
          while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
