@@ -556,9 +556,10 @@ void ICQFunctions::printMessage(QListViewItem *e)
     case ICQ_CMDxSUB_URL:   // view a url
       if (server->getUrlViewer() != NULL && QueryUser(this, tr("View URL?"), tr("Yes"), tr("No")) )
       {
-        char szCmd[strlen(server->getUrlViewer()) + strlen(((CEventUrl *)m)->Url()) + 8];
+        char* szCmd = new char[strlen(server->getUrlViewer()) + strlen(((CEventUrl *)m)->Url()) + 8];
         sprintf(szCmd, "%s %s &", server->getUrlViewer(), ((CEventUrl *)m)->Url());
         if (system(szCmd) != 0) gLog.Error("%sView URL failed.\n", L_ERRORxSTR);
+        delete szCmd;
       }
       break;
     case ICQ_CMDxSUB_REQxAUTH:

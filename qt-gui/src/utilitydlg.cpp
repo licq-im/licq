@@ -149,9 +149,10 @@ void CUtilityDlg::slot_run()
   }
   case UtilityWinTerm:
   {
-    char szCmd[cmd.length() + strlen(server->Terminal()) + 4];
+    char* szCmd = new char[cmd.length() + strlen(server->Terminal()) + 4];
     sprintf(szCmd, "%s %s &", server->Terminal(), (const char *)cmd);
     nSystemResult = system(szCmd);
+    delete szCmd;
     break;
   }
   case UtilityWinLicq:
