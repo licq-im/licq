@@ -149,7 +149,7 @@ public:
   unsigned long icqSendContactList(const char *szId, UserStringList &users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
-     
+
   unsigned long icqSendContactList(unsigned long nUin, UinList &uins,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
@@ -276,11 +276,11 @@ public:
   int RegisterProtoPlugin();
   char *ProtoPluginName(unsigned long);
 
-  void PluginUIViewEvent(unsigned long nUin) {
-  	PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
+  void PluginUIViewEvent(const char *szId, unsigned long nPPID ) {
+    PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, szId, nPPID, 0, 0));
   }
-  void PluginUIMessage(unsigned long nUin ) {
-  	PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE,0,nUin, 0,0));
+  void PluginUIMessage(const char *szId, unsigned long nPPID) {
+    PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE, 0, szId, nPPID, 0,0));
   }
 
   void UpdateAllUsers();

@@ -160,46 +160,157 @@ StringToStatus(char *_szStatus)
 }
 
 
-/*! \brief Given an ascii string get the uin
+static bool buffer_is_uin(const char *buffer)
+{
+  unsigned len = 0;
+  
+  for( ; buffer && isdigit(*buffer) ; buffer++ , len++ )
+    ;
+
+  return (len>0 && len <= MAX_UIN_DIGITS) && *buffer=='\0';
+}
+
+static bool buffer_get_ids(CICQDaemon *d, char *buffer, 
+                           char **szId, unsigned long *nPPID, 
+                           bool *missing_protocol)
+{
+  bool found = false;
+  char *write = buffer;
+
+  *missing_protocol = true;
+  *szId = write;
+  for( ; *buffer && !found ; buffer++ )
+  {
+    if( *buffer == '@' ) 
+    {
+      if( *(buffer+1)== '@' ) // @@ -> @
+      {
+        buffer++;
+        *write = '@';
+        write++;
+      }
+      else
+        found = true;
+    }
+    else
+    {
+      *write = *buffer;
+      write++;
+    }
+  }
+  *write = 0;
+  
+  if( found )
+  { 
+    ProtoPluginsList l;
+    ProtoPluginsListIter it;
+
+    found = false;
+    *missing_protocol = false;
+    
+    d->ProtoPluginList(l);
+    for( it = l.begin() ; !found && it != l.end() ; it++)
+    {
+      if( !strcmp( (*it)->Name(), buffer) )
+      {
+        *nPPID = (*it)->Id();
+        found = true;
+      }
+    }
+  }
+
+  return found;
+}
+
+/*! \brief Given an ascii string gets the szId and the nPPID
  *
- *  Given an ascii string get the uin
- *  1. If all chars are digits then:
- *    a) if bList flag is on, check if it is in the list
- *    b) else return 
- *  2. If that fail try with alias Params.
+ *  -# If all chars are digits then:
+ *    -# asume it is an icq's uin, and if bList flag is on, then check if it 
+ *       is in the list
+ *  -# If that fail try with alias Params.
  * 
- *  \param  buff     buffer to convert
- *  \param  bOnList  fail if buff is an uin number and it is not in user list
- *  \param  nUin     address where the uin is saved
+ *  \param  buff     string to convert
+ *  \param  bOnList  fail if #buff is not in the list
+ *  \param  szId     address where the szId is returned
+ *  \param  nPPID    address where the nPPID is returned
  *
  * \returns true on success
  */
-bool atouin( const char *buff, bool bOnList, unsigned long *nUin)
-{
-  const char *p;
-
+static bool atoid( const char *buff, bool bOnList, 
+                   char **szId, unsigned long *nPPID,
+                   CICQDaemon *daemon)
+{ 
+  char *_szId = 0;
+  unsigned long _nPPID = 0;
+  bool ret = false, missing_protocol=true;
+  char *s = 0;
+  
   if (buff == NULL) 
-    return false; 
-
-  for( p=buff; isdigit(*p) ; p++ )
-    ;
-  if( *p == '\0' && bOnList && gUserManager.IsOnList(atol(buff)) || 
-      *p == '\0' && !bOnList)
-    *nUin = atol(buff);
+    ret = false; 
+  else if( (s=strdup(buff)) == 0 )
+    ret  = false;
+  else if ( buffer_is_uin(buff) && 
+           ((bOnList && gUserManager.IsOnList(buff, LICQ_PPID)) || !bOnList  ))
+  {
+    _nPPID = LICQ_PPID;
+    _szId = s;
+    ret = true;
+  }
+  else if( buffer_get_ids(daemon, s, &_szId, &_nPPID, &missing_protocol) )
+  {
+    if(bOnList)
+    {
+      FOR_EACH_PROTO_USER_START(_nPPID, LOCK_R)
+      {
+        if( strcasecmp(_szId, pUser->GetAlias()) == 0)
+        {
+          ret = true;
+          FOR_EACH_PROTO_USER_BREAK
+        }
+      }
+      FOR_EACH_PROTO_USER_END
+    }
+    else
+      ret = false;
+  }
+  else if( missing_protocol )
+  {  
+     /* assume ICQ */
+    _nPPID = LICQ_PPID;
+    
+    FOR_EACH_PROTO_USER_START(_nPPID, LOCK_R)
+    {
+        if( strcasecmp(s, pUser->GetAlias()) == 0)
+        {
+          _szId = (char *) malloc(26);
+          if( _szId )
+          { 
+            sprintf(_szId, "%ld", pUser->Uin() );
+            ret = true;
+          }
+          FOR_EACH_PROTO_USER_BREAK
+        }
+    }
+    FOR_EACH_PROTO_USER_END
+    free(s);
+    s = 0;
+  }
   else
   {
-    *nUin = 0; 
-    FOR_EACH_USER_START(LOCK_R)
-    {
-      if (strcasecmp(buff, pUser->GetAlias()) == 0)
-      {
-        *nUin = pUser->Uin();
-        FOR_EACH_USER_BREAK;
-      }
-    }
-    FOR_EACH_USER_END
+    free(s);
+    s = 0;
+    ret = false;
   }
-  return !(*nUin == 0);
+
+  if( ret )
+  {
+    if( szId )
+      *szId = _szId;
+    if( nPPID )
+      *nPPID = _nPPID;
+  }
+  
+  return ret;
 }
 
 // status 
@@ -275,8 +386,8 @@ static int fifo_auto_response( int argc, const char *const *argv, void *data)
 static int fifo_message ( int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;;
-  unsigned long nUin; 
-  const char *szUin = argv[1];
+  unsigned long nPPID;
+  char *szId = 0;
 
   if( argc < 3 )
   {
@@ -284,10 +395,12 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if( atouin(szUin,false,&nUin) )
-    d->icqSendMessage(nUin, argv[2], false, false);
+  if( atoid(argv[1], false, &szId, &nPPID, d) )
+    d->ProtoSendMessage(szId, nPPID, argv[2], false, false);
   else
-    ReportBadBuddy(argv[0],szUin);
+    ReportBadBuddy(argv[0], argv[1]);
+
+  free(szId);
 
   return 0;
 }
@@ -295,9 +408,10 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
 // url <buddy> <url> [<description>]
 static int fifo_url ( int argc, const char *const *argv, void *data)
 {
-  unsigned long nUin;
   const char *szDescr;
   CICQDaemon *d = (CICQDaemon *) data;
+  unsigned long nPPID;
+  char *szId = 0;
 
   if( argc < 3 )
   {
@@ -305,13 +419,15 @@ static int fifo_url ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if( atouin (argv[1],false,&nUin) )
+  if( atoid(argv[1], false, &szId, &nPPID, d) )
   {
     szDescr = (argc > 3) ? argv[3] : "" ;
-    d->icqSendUrl(nUin, argv[2], szDescr, false, false);
+    d->ProtoSendUrl(szId, nPPID, argv[2], szDescr, false, false);
   }
   else
     ReportBadBuddy(argv[0],argv[1]);
+
+  free(szId);
 
   return 0;
 }
@@ -320,8 +436,8 @@ static int fifo_url ( int argc, const char *const *argv, void *data)
 static int fifo_sms(int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  unsigned long nUin;
-  const char *szUin = argv[1];
+  unsigned long nPPID;
+  char *szId = 0;
 
   if (argc < 3)
   {
@@ -329,22 +445,30 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if (atouin(szUin, false, &nUin))
-  {
-    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-    if (u != NULL)
+  if (atoid(argv[1], false, &szId, &nPPID, d) )
+  { 
+    if( nPPID == LICQ_PPID )
     {
-      const char *szNumber = u->GetCellularNumber();
-      if (strlen(szNumber))
-        d->icqSendSms(szNumber, argv[2], nUin);
-      else
-        gLog.Error("%sUnable to send SMS to %lu, no SMS number found.\n", L_ERRORxSTR, nUin);
+      ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+      if (u != NULL)
+      {
+        const char *szNumber = u->GetCellularNumber();
+        if (strlen(szNumber))
+          d->icqSendSms(szNumber, argv[2], u->Uin() );
+        else
+          gLog.Error("%sUnable to send SMS to %s, no SMS number found.\n",
+                     L_ERRORxSTR, szId);
 
-      gUserManager.DropUser(u);
+        gUserManager.DropUser(u);
+      }
     }
+    else
+      gLog.Info("%s `%s': bad protol. ICQ only alowed\n", L_FIFOxSTR, argv[0]);
   }
   else
-    ReportBadBuddy(argv[0],szUin);
+    ReportBadBuddy(argv[0], argv[1]);
+
+  free(szId);
 
   return 0;
 }
@@ -375,14 +499,14 @@ static int fifo_redirect ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  // TODO: its safe to call strerror ?
   if ( !Redirect(argv[1]) )
   {
     gLog.Warn("%s %s: redirection to \"%s\" failed: %s.\n",
               L_WARNxSTR,argv[0], argv[1],strerror(errno));
   }
   else
-    gLog.Info("%s %s: output redirected to \"%s\".\n", L_INITxSTR, argv[0],argv[1]);
+    gLog.Info("%s %s: output redirected to \"%s\".\n", L_INITxSTR, argv[0],
+             argv[1]);
 
   return 0;
 }
@@ -402,9 +526,10 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void *data)
 
 // adduser <buddy>
 static int fifo_adduser ( int argc, const char *const *argv, void *data)
-{
-  unsigned long nUin;
+{ 
   CICQDaemon *d = (CICQDaemon *) data;
+  unsigned long nPPID;
+  char *szId = 0;
 
   if( argc  == 1 )
   {
@@ -412,10 +537,11 @@ static int fifo_adduser ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if( atouin(argv[1],false,&nUin) )
-    d->AddUserToList(nUin);
+  if( atoid(argv[1], false, &szId, &nPPID, d) )
+    d->AddUserToList(szId, nPPID);
   else
     ReportBadBuddy(argv[0],argv[1]);
+  free(szId);
 
   return 0;
 }
@@ -423,33 +549,36 @@ static int fifo_adduser ( int argc, const char *const *argv, void *data)
 // userinfo <buddy>
 static int fifo_userinfo ( int argc, const char *const *argv, void *data)
 {
-  unsigned long nUin;
-  ICQUser *u;
   CICQDaemon *d = (CICQDaemon *) data;
+  unsigned long nPPID;
+  char *szId = 0; 
+  ICQUser *u;
+  int ret = -1; 
 
   if ( argc == 1 )
-  {
     ReportMissingParams(argv[0]);
-    return -1;
-  }
-
-  if( !atouin(argv[1],true,&nUin) )
-  {
+  else if( !atoid(argv[1], true, &szId, &nPPID, d) )
     ReportBadBuddy(argv[0],argv[1]);
-    return -1;
-  }
-
-  u = gUserManager.FetchUser(nUin, LOCK_R);
-  if (u == NULL)
-    gLog.Warn("%s %s: user %ld not on contact list, not retrieving"
-              "info.\n", L_WARNxSTR,argv[0],nUin);
+  else if( nPPID != LICQ_PPID )
+     gLog.Info("%s `%s': bad protol. ICQ only alowed\n", L_FIFOxSTR, argv[0]);
   else
   {
-    gUserManager.DropUser(u);
-    d->icqRequestMetaInfo(nUin);
+    u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+    if (u == NULL)
+      gLog.Warn("%s %s: user %s not on contact list, not retrieving"
+                "info.\n", L_WARNxSTR, argv[0], szId);
+    else
+    {
+      unsigned long nUin = u->Uin();
+      gUserManager.DropUser(u);
+      d->icqRequestMetaInfo(nUin);
+      ret = 0;
+    }
   }
-
-  return 0;
+  
+  free( szId );
+  
+  return ret;
 }
 
 // exit
@@ -464,18 +593,28 @@ static int fifo_exit ( int argc, const char *const *argv, void *data)
 static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data; 
-  unsigned long nUin;
-
-  if( argc ==1 )
-    nUin = 0;
-  else if( !atouin(argv[1],true,&nUin) )
-  {
-    ReportBadBuddy(argv[0],argv[1]);
-    return -1;
-  }
-
-  d->PluginUIViewEvent(nUin);
+  unsigned long nPPID;
+  char *szId = 0; 
+  char *none = "0";
   
+  if( argc ==1 )
+  {
+    szId = none;
+    nPPID = 0;
+  }
+  else if( !atoid(argv[1], true, &szId, &nPPID, d) )
+  {  
+    ReportBadBuddy(argv[0],argv[1]);
+    free(szId);
+
+    return 0;
+  }
+  
+  d->PluginUIViewEvent(szId, nPPID);
+
+  if( szId != none )
+    free(szId);
+
   return 0;
 }
 
@@ -483,21 +622,23 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
 static int fifo_ui_message ( int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  unsigned long nUin;
-  int nRet=0;
+  unsigned long nPPID = 0;
+  char *szId = 0;
+  int nRet = 0;
 
   if ( argc == 1 )
   {
     ReportMissingParams(argv[0]);
     nRet = -1;
-  } 
-  else if( atouin(argv[1],true,&nUin) )
-    d->PluginUIMessage(nUin);
+  }
+  else if( atoid(argv[1], true, &szId, &nPPID, d) )
+    d->PluginUIMessage(szId, nPPID);
   else
   {
     ReportBadBuddy(argv[0],argv[1]);
     return -1;
   }
+  free(szId);
 
   return nRet;
 }
