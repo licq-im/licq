@@ -27,7 +27,7 @@
 #undef USE_SOCKS5
 
 /* Define this if the system headers don't */
-#undef HAVE_SOCKLEN_T
+#undef socklen_t
 
 /* Do we have sys_errlist[] available? */
 #undef HAVE_SYS_ERRLIST
