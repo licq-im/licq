@@ -25,6 +25,8 @@ class COnEventManager
 {
 public:
   COnEventManager();
+  ~COnEventManager();
+
   void Do(unsigned short m_nEvent, ICQUser *u);
   void SetParameters(const char *, const char **);
   void SetCommandType(unsigned short _nCommandType);

@@ -19,6 +19,16 @@ COnEventManager::COnEventManager()
   pthread_mutex_init(&mutex, NULL);
 }
 
+COnEventManager::~COnEventManager()
+{
+  if (m_szCommand)
+    free(m_szCommand);
+
+  for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
+    if (m_aszParameters[i])
+      free(m_aszParameters[i]);
+}
+
 void COnEventManager::SetCommandType(unsigned short _nCommandType)
 {
   pthread_mutex_lock(&mutex);
