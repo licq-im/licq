@@ -80,6 +80,7 @@ public:
   void InputLogWindow(int cIn);
   void InputMessage(int cIn);
   void InputUrl(int cIn);
+  void InputSendFile(int cIn);
   void InputRemove(int cIn);
   void InputInfo(int cIn);
   void InputAutoResponse(int cIn);
@@ -123,6 +124,7 @@ public:
   void UserCommand_Info(unsigned long nUin, char *);
   void UserCommand_Msg(unsigned long nUin, char *);
   void UserCommand_View(unsigned long nUin, char *);
+  void UserCommand_SendFile(unsigned long nUin, char *);
   void UserCommand_Url(unsigned long nUin, char *);
   void UserCommand_History(unsigned long nUin, char *);
   void UserCommand_Remove(unsigned long nUin, char *);

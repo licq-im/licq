@@ -357,8 +357,10 @@ void CLicqConsole::PrintHelp()
                    A_BOLD, A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("                    url | history | remove>",
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD);
+  winMain->wprintf("                    sendfile | url |");
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("                    history | remove>");
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);

@@ -13,6 +13,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "User commands deal with indiviual users:\n"
     "info - print user information\n\n"
     "message - send a message to the user\n\n"
+    "sendfile - send a file to the user\n\n"
     "url - send a url to the user\n\n"
     "view - view any new events from the user\n\n"
     "history - print the given range of events from the history.\n"
@@ -51,12 +52,13 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Quit Licq." }
 };
 
-const unsigned short NUM_USER_COMMANDS = 7;
+const unsigned short NUM_USER_COMMANDS = 8;
 const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
 {
   { "info", &CLicqConsole::UserCommand_Info },
   { "view", &CLicqConsole::UserCommand_View },
   { "message", &CLicqConsole::UserCommand_Msg },
+  { "sendfile", &CLicqConsole::UserCommand_SendFile },
   { "url", &CLicqConsole::UserCommand_Url },
   { "history", &CLicqConsole::UserCommand_History },
   { "auto-response", &CLicqConsole::UserCommand_FetchAutoResponse },

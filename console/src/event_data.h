@@ -24,6 +24,17 @@ public:
 };
 
 
+class DataSendFile : public CData
+{
+public:
+  DataSendFile(unsigned long n) : CData(n)
+    { szFileName[0] = '\0'; szDescription[0] = '\0'; bUrgent = false; }
+  char szFileName[512];
+  char szDescription[512];
+  bool bUrgent;
+};
+
+
 class DataAutoResponse : public CData
 {
 public:

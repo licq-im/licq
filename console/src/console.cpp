@@ -1387,6 +1387,83 @@ void CLicqConsole::InputMessage(int cIn)
 
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::UserCommand_SendFile
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::UserCommand_SendFile(unsigned long nUin, char *)
+{
+  // Get the file name
+  winMain->fProcessInput = &CLicqConsole::InputSendFile;
+  winMain->state = STATE_LE;
+  winMain->data = new DataSendFile(nUin);
+
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  winMain->wprintf("%AEnter file to send to %s (%ld):\n%s\n", A_BOLD,
+		   u->GetAlias(), nUin);
+  winMain->RefreshWin();
+  gUserManager.DropUser(u);
+}
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::InputSendFile
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::InputSendFile(int cIn)
+{
+  DataSendFile *data = (DataSendFile *)winMain->data;
+  char *sz;
+
+  switch(winMain->state)
+  {
+  case STATE_PENDING:
+    if(cIn == CANCEL_KEY)
+      licqDaemon->CancelEvent(winMain->event);
+    return;
+
+  case STATE_LE:
+    // If we get NULL back, then we're not done yet
+    if((sz = Input_Line(data->szFileName, data->nPos, cIn)) == NULL)
+    	return;
+
+    // The input is done
+    winMain->wprintf("%A%CEnter description:\n%s\n", A_BOLD, COLOR_WHITE,
+    		     MLE_HELP);
+    winMain->state = STATE_MLE;
+    data->nPos = 0;
+    break;
+ 
+ case STATE_MLE:
+   // If we get NULL back, then we're not odne yet
+   if((sz = Input_MultiLine(data->szDescription, data->nPos, cIn)) == NULL)
+      return;
+   
+   // The input is done, so process it, sz points to '.'
+   if(*sz == ',')
+   {
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+
+      if(winMain->data != NULL)
+      {
+         delete winMain->data;
+	 winMain->data = NULL;
+      }
+
+	winMain->state = STATE_COMMAND;
+	winMain->wprintf("%C%AFile Transfer aborted.\n", 
+			 m_cColorInfo->nColor, m_cColorInfo->nAttr);
+	return;
+   }
+
+   *sz = '\0';
+   sz++;
+   winMain->wprintf("%C%ASending File direct...",
+   		    m_cColorInfo->nColor, m_cColorInfo->nAttr);
+
+   winMain->event = licqDaemon->icqFileTransfer(data->nUin, data->szFileName,
+   						data->szDescription,
+						ICQ_TCPxMSG_NORMAL);
+   break;
+   }
+}
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_SetAutoResponse
