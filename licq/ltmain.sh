@@ -4181,7 +4181,7 @@ relink_command=\"$relink_command\""
     fi
 
     # Exit here if they wanted silent mode.
-    test "$show" = : && exit 0
+    exit 0
 
     echo "----------------------------------------------------------------------"
     echo "Libraries have been installed in:"
