@@ -13,9 +13,6 @@ public:
 
   static QFont *editFont;
 
-public slots:
-  void clear();
-
 protected:
   bool m_bDoQuotes;
   virtual void paintCell(QPainter *p, int row, int col);
