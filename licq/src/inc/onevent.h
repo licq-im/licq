@@ -14,8 +14,8 @@ const unsigned short ON_EVENT_NOTIFY = 4;
 const unsigned short ON_EVENT_SYSMSG = 5;
 const unsigned short MAX_ON_EVENT = 6;
 
-const unsigned short ON_EVENT_IGNORE = 0;
-const unsigned short ON_EVENT_RUN = 1;
+const unsigned short ON_EVENT_IGNORE =  0;
+const unsigned short ON_EVENT_RUN    =  1;
 
 class COnEventManager
 {
@@ -29,8 +29,10 @@ public:
   const char *Command()  { return m_szCommand; }
   void Lock()     { pthread_mutex_lock(&mutex); }
   void Unlock()   { pthread_mutex_unlock(&mutex); }
+  void Pause(bool _pause); 
 protected:
   unsigned short m_nCommandType;
+  bool m_bPause;
   char *m_szCommand;
   char *m_aszParameters[MAX_ON_EVENT];
   pthread_mutex_t mutex;

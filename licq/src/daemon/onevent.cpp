@@ -8,6 +8,7 @@
 
 COnEventManager::COnEventManager()
 {
+  m_bPause = false;
   m_szCommand = NULL;
   for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
     m_aszParameters[i] = NULL;
@@ -29,6 +30,12 @@ unsigned short COnEventManager::CommandType()
   return n;
 }
 
+void COnEventManager::Pause(bool pause)
+{
+  pthread_mutex_lock(&mutex);
+  m_bPause = pause;
+  pthread_mutex_unlock(&mutex);
+}
 
 //-----COnEventManager::SetParameters-------------------------------------------
 void COnEventManager::SetParameters(const char *_szCommand, const char **_aszParams)
@@ -76,6 +83,13 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 
   case ON_EVENT_RUN:
   {
+    if(m_bPause) 
+    { 
+      if(_nEvent == ON_EVENT_NOTIFY)  
+        break;
+      else
+        m_bPause = false;    // reset as soon we get a offline message etc.
+    }
     char *szParam = m_aszParameters[_nEvent];
     char szFullParam[MAX_CMD_LEN] = {'\0'};
     if (u != NULL)
