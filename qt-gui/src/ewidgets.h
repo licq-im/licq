@@ -10,6 +10,9 @@
 
 #include "mledit.h"
 
+class CUserEvent;
+class ICQEvent;
+
 bool QueryUser(QWidget *, QString, QString, QString);
 int QueryUser(QWidget *, QString, QString, QString, QString);
 void InformUser(QWidget *q, QString);
@@ -117,32 +120,18 @@ protected:
   virtual void paintCell(QPainter* p, int row, int col);
 };
 
-
-/* ----------------------------------------------------------------------------- */
-// If Troll wasn't so fucking lame we could implement a proper font dialog
-// but all the necessary data structures are private
-#if 0
-// MOC_SKIP_BEGIN
-class CFontDialog : public QFontDialog
+class CMessageViewWidget : public CHistoryWidget
 {
 Q_OBJECT
+private:
+  unsigned long m_nUin;
 public:
-  CFontDialog(QWidget *p, const char *n, bool b) : QFontDialog(p, n, b)
-  { updateFamilies(); }
-
-  static QFont GetFontFromFullSet(bool *ok, const QFont &def, QWidget *p = 0, const char *n = 0);
-
-protected:
-  QFontDatabase fdb;
-  QStringList familyNames;
-  virtual void updateFamilies();
-  virtual void updateScripts();
-
-protected slots:
-  virtual void familyHighlighted(int);
+  CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, const char * name =0);
+  virtual ~CMessageViewWidget(){};
+public slots:
+  virtual void addMsg(CUserEvent *);
+  virtual void addMsg(ICQEvent *);
 };
-// MOC_SKIP_END
-#endif
-/* ----------------------------------------------------------------------------- */
+
 
 #endif

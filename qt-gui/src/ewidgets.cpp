@@ -16,7 +16,11 @@
 #include <qmessagebox.h>
 #endif
 #include <qapplication.h>
-
+#include <qdatetime.h>
+#include "licq_history.h"
+#include "licq_events.h"
+#include "mainwin.h"
+#include "eventdesc.h"
 #include "ewidgets.h"
 
 bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
@@ -422,6 +426,7 @@ CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
 
 void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 {
+#if QT_VERSION < 300
   QPalette& pal = const_cast<QPalette&>(palette());
 
   QString s = stringShown(row);
@@ -444,81 +449,91 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
       break;
     }
   }
+#endif
 
   MLEditWrap::paintCell(p, row, col);
 }
 
+//- Message View Widget ---------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-#if 0
-QFont CFontDialog::GetFontFromFullSet(bool *ok, const QFont &def,
-   QWidget *p = 0, const char *n = 0)
+CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, const char * name =0)
+:CHistoryWidget(parent,name)
 {
-// Code almost straight from Qt 2.1 beta 1 source tree
-    QFont result;
-    result = def;
-
-    CFontDialog *dlg = new CFontDialog( p, n, TRUE );
-    //dlg->setFont( def );
-    dlg->setCaption( tr("Select Font") );
-    if ( dlg->exec() == QDialog::Accepted )
+  m_nUin= _nUin;
+  // add all unread messages.
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  if (u != NULL && u->NewMessages() > 0)
+  {
+    addMsg(u->EventPeek(0));
+    for (unsigned short i = 1; i < u->NewMessages(); i++)
     {
-      result = dlg->font();
-      if (ok) *ok = TRUE;
+      addMsg(u->EventPeek(i));
     }
-    else
-    {
-      if (ok) *ok = FALSE;
-    }
-    delete dlg;
-    return result;
+  }
+  gUserManager.DropUser(u);
 }
 
-
-void CFontDialog::updateFamilies()
+void CMessageViewWidget::addMsg(ICQEvent * e)
 {
-// Code almost straight from Qt 2.1 beta 1 source tree
-printf("fuck off\n");
-    familyNames = fdb.families(false);
-    QStringList newList;
-    QString s;
-    QStringList::Iterator it = familyNames.begin();
-    for( ; it != familyNames.end() ; it++ ) {
-        s = *it;
-        if ( s.contains('-') ) {
-            int i = s.find('-');
-            s = s.right( s.length() - i - 1 ) + " [" + s.left( i ) + "]";
-        }
-        s[0] = s[0].upper();
-        newList.append( s );
-    }
-    familyListBox()->insertStringList( newList );
+  cout << "addMsg(ICQEvent for " << e->Uin() << ") looking for: " << m_nUin << endl;
+  if (e->Uin() != m_nUin) return;
+  CUserEvent * ue = e->UserEvent();
+  if (ue->SubCommand()== ICQ_CMDxSUB_MSG){
+    ue = e->GrabUserEvent();
+  }
+  //grab only events we can fully handle
+  addMsg(ue);
 }
 
-void CFontDialog::familyHighlighted( int i )
+void CMessageViewWidget::addMsg(CUserEvent * e)
 {
-  QString s = familyNames[i];
-  QFontDialog::familyHighlighted( s );
-}
+  QDateTime date;
+  date.setTime_t(e->Time());
+  QString sd = date.toString();
+  sd.truncate(sd.length() - 5);
 
+  QString n;
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u != NULL)
+  {
+    n = QString::fromLocal8Bit(u->GetAlias());
+    gUserManager.DropUser(u);
+  }
 
-void CFontDialog::updateScripts()
-{
-    scriptCombo()->clear();
+  QString s;
+  if (e->Direction() == D_RECEIVER){
+    s.sprintf("%c%s %s %s %c %s [%c%c%c%c]\n%s\n",
+              '\001', EventDescription(e).utf8().data(),
+              tr("from").utf8().data(), n.utf8().data(), '\001',
+              date.toString().utf8().data(),
+              e->IsDirect() ? 'D' : '-',
+              e->IsMultiRec() ? 'M' : '-',
+              e->IsUrgent() ? 'U' : '-',
+              e->IsEncrypted() ? 'E' : '-',
+              (QString::fromLocal8Bit(e->Text())).utf8().data());
+  } else {
+    s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n%s\n",
+              '\002', EventDescription(e).utf8().data(),
+              tr("to").utf8().data(), n.utf8().data(), '\002',
+              date.toString().utf8().data(),
+              e->IsDirect() ? 'D' : '-',
+              e->IsMultiRec() ? 'M' : '-',
+              e->IsUrgent() ? 'U' : '-',
+              e->IsEncrypted() ? 'E' : '-',
+              (QString::fromLocal8Bit(e->Text())).utf8().data());
+  }
+  append(s);
+  setCursorPosition(numLines(),0);
 
-    charSetNames = fdb.charSets( d->family );
-
-    if ( charSetNames.isEmpty() ) {
-        qWarning( "QFontDialog::updateFamilies: Internal error, "
-                  "no character sets for family \"%s\"",
-                  (const char *) d->family );
-        return;
+  if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG){
+    cout << "Direction: Receiver" << endl;
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u){
+      cout << "clear eventid" << endl;
+      u->EventClearId(e->Id());
     }
-
-    QStringList::Iterator it = charSetNames.begin();
-    for ( ; it != charSetNames.end() ; ++it )
-        d->scriptCombo->insertItem( fdb.verboseCharSetName(*it) );
+    gUserManager.DropUser(u);
+  }
 }
 
-#endif
 #include "ewidgets.moc"
