@@ -80,7 +80,7 @@ protected:
              *chkSysBack, *chkSendFromClipboard, *chkMsgChatView, *chkAutoPosReplyWin,
 	     *chkAutoSendThroughServer, *chkTabbedChatting,
              *chkEnableMainwinMouseMovement;
-   QRadioButton *rdbDockDefault, *rdbDockThemed;
+   QRadioButton *rdbDockDefault, *rdbDockThemed, *rdbDockSmall;
    QComboBox *cmbDockTheme, *cmbSortBy;
 
    // columns tab

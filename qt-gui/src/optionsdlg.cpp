@@ -232,11 +232,20 @@ void OptionsDlg::SetupOptions()
       cmbDockTheme->setEnabled(false);
       rdbDockDefault->setEnabled(false);
       rdbDockThemed->setEnabled(false);
+      rdbDockSmall->setChecked(false);
+      rdbDockSmall->setEnabled(false);
       chkDockFortyEight->setEnabled(false);
       chkHidden->setEnabled(false);
       chkHidden->setChecked(false);
       break;
 #ifndef USE_KDE
+    case DockSmall:
+      chkUseDock->setChecked(true);
+      rdbDockSmall->setChecked(true);
+      chkDockFortyEight->setEnabled(false);
+      cmbDockTheme->setEnabled(false);
+      chkHidden->setEnabled(true);
+      break;
     case DockDefault:
       chkUseDock->setChecked(true);
       rdbDockDefault->setChecked(true);
@@ -261,12 +270,15 @@ void OptionsDlg::SetupOptions()
       }
       break;
 #else
+    case DockSmall:
     case DockDefault:
     case DockThemed:
       chkUseDock->setChecked(true);
       cmbDockTheme->setEnabled(false);
       rdbDockDefault->setEnabled(false);
       rdbDockThemed->setEnabled(false);
+      rdbDockSmall->setChecked(true);
+      rdbDockSmall->setEnabled(false);
       chkDockFortyEight->setEnabled(false);
       chkHidden->setEnabled(true);
       break;
@@ -492,7 +504,8 @@ void OptionsDlg::ApplyOptions()
 
 #ifndef USE_KDE
   if (chkUseDock->isChecked() &&
-      (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
+      (rdbDockDefault->isChecked() || rdbDockThemed->isChecked() ||
+       rdbDockSmall->isChecked()) )
 #else
   if (chkUseDock->isChecked())
 #endif
@@ -519,6 +532,15 @@ void OptionsDlg::ApplyOptions()
       else if ( ((IconManager_Themed *)mainwin->licqIcon)->Theme() != cmbDockTheme->currentText() )
       {
         ((IconManager_Themed *)mainwin->licqIcon)->SetTheme(cmbDockTheme->currentText().local8Bit());
+      }
+    }
+    else if (rdbDockSmall->isChecked())
+    {
+      if (mainwin->m_nDockMode != DockSmall)
+      {
+        delete mainwin->licqIcon;
+        mainwin->licqIcon = new IconManager_KDEStyle(mainwin, mainwin->mnuSystem);
+        mainwin->m_nDockMode = DockSmall;
       }
     }
 #else
@@ -775,8 +797,11 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
                                         "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
   rdbDockThemed = new QRadioButton(tr("Themed Icon"), boxDocking);
+  rdbDockSmall = new QRadioButton(tr("Small Icon"), boxDocking);
+  QWhatsThis::add(rdbDockSmall, tr("Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers."));
   grpDocking->insert(rdbDockDefault);
   grpDocking->insert(rdbDockThemed);
+  grpDocking->insert(rdbDockSmall);
   (void) new QLabel(tr("Theme:"), boxDocking);
   cmbDockTheme = new QComboBox(boxDocking);
   // Set the currently available themes
@@ -821,6 +846,7 @@ void OptionsDlg::slot_useDockToggled(bool b)
     cmbDockTheme->setEnabled(false);
     rdbDockDefault->setEnabled(false);
     rdbDockThemed->setEnabled(false);
+    rdbDockSmall->setEnabled(false);
     chkDockFortyEight->setEnabled(false);
 #endif
     chkHidden->setEnabled(false);
@@ -836,6 +862,7 @@ void OptionsDlg::slot_useDockToggled(bool b)
 #ifndef USE_KDE
   rdbDockDefault->setEnabled(true);
   rdbDockThemed->setEnabled(true);
+  rdbDockSmall->setEnabled(true);
   if (rdbDockDefault->isChecked())
   {
     cmbDockTheme->setEnabled(false);

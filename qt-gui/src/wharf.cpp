@@ -62,6 +62,7 @@
 #undef FocusOut
 
 //#define DEBUG_WHARF
+#define SYSTEM_TRAY_REQUEST_DOCK    0
 
 /*
   Constructs a WharfIcon widget.
@@ -97,6 +98,28 @@ void IconManager::X11Init()
   hints->flags = WindowGroupHint | IconWindowHint | IconPositionHint | StateHint; // set the window group hint
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
+
+  char buffer[128];
+  XEvent ev;
+
+  snprintf(buffer, sizeof(buffer), "_NET_SYSTEM_TRAY_S%d", x11Screen());
+  Atom a = XInternAtom(dsp, buffer, False);
+  Window systray = XGetSelectionOwner(dsp, a);
+
+  memset(&ev, 0, sizeof(ev));
+  ev.xclient.type = ClientMessage;
+  ev.xclient.window = systray;
+  ev.xclient.message_type = XInternAtom(dsp, "_NET_SYSTEM_TRAY_OPCODE", False);
+  ev.xclient.format = 32;
+  ev.xclient.data.l[0] = CurrentTime;
+  ev.xclient.data.l[1] = SYSTEM_TRAY_REQUEST_DOCK;
+  ev.xclient.data.l[2] = winId();
+  ev.xclient.data.l[3] = 0;
+  ev.xclient.data.l[4] = 0;
+
+  XSendEvent(dsp, systray, False, NoEventMask, &ev);
+  XSync(dsp, False);
+
 #endif
 
   resize (wharfIcon->width(), wharfIcon->height());
@@ -600,6 +623,29 @@ IconManager_KDEStyle::IconManager_KDEStyle(CMainWindow *_mainwin, QPopupMenu *_m
 #ifdef USE_KDE
   KWin::setSystemTrayWindowFor( winId(), _mainwin ? _mainwin->topLevelWidget()->winId() : qt_xrootwin() );
   setBackgroundMode(X11ParentRelative);
+#else
+  char buffer[128];
+  Display *dsp = x11Display();  // get the display
+  XEvent ev;
+
+  snprintf(buffer, sizeof(buffer), "_NET_SYSTEM_TRAY_S%d", x11Screen());
+  Atom a = XInternAtom(dsp, buffer, False);
+  Window systray = XGetSelectionOwner(dsp, a);
+
+  memset(&ev, 0, sizeof(ev));
+  ev.xclient.type = ClientMessage;
+  ev.xclient.window = systray;
+  ev.xclient.message_type = XInternAtom(dsp, "_NET_SYSTEM_TRAY_OPCODE", False);
+  ev.xclient.format = 32;
+  ev.xclient.data.l[0] = CurrentTime;
+  ev.xclient.data.l[1] = SYSTEM_TRAY_REQUEST_DOCK;
+  ev.xclient.data.l[2] = winId();
+  ev.xclient.data.l[3] = 0;
+  ev.xclient.data.l[4] = 0;
+
+  XSendEvent(dsp, systray, False, NoEventMask, &ev);
+  XSync(dsp, False);
+
 #endif
   show();
 }

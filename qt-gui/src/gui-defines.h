@@ -64,7 +64,8 @@ enum DockMode
 {
   DockNone = 0,
   DockDefault = 1,
-  DockThemed = 2
+  DockThemed = 2,
+  DockSmall = 3
 };
 
 

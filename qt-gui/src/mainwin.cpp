@@ -388,7 +388,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("FrameStyle", nFrameStyle, 51);
   bool bDockIcon48;
   unsigned short nDockMode;
+#ifdef USE_KDE
+  licqConf.ReadNum("UseDock", nDockMode, (unsigned short)DockSmall);
+#else
   licqConf.ReadNum("UseDock", nDockMode, (unsigned short)DockNone);
+#endif
   m_nDockMode = (DockMode)nDockMode;
   licqConf.ReadBool("Dock64x48", bDockIcon48, false);
   char szDockTheme[64];
@@ -588,7 +592,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%w - </tt>webpage</li></ul>");
   licqIcon = NULL;
 #ifdef USE_KDE
-  if(m_nDockMode != DockNone)
+  if (m_nDockMode != DockNone)
     licqIcon = new IconManager_KDEStyle(this, mnuSystem);
 #else
   switch (m_nDockMode)
@@ -599,10 +603,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     case DockThemed:
       licqIcon = new IconManager_Themed(this, mnuSystem, szDockTheme);
       break;
+    case DockSmall:
+      licqIcon = new IconManager_KDEStyle(this, mnuSystem);
     case DockNone:
       break;
   }
-#endif // USE_KDE
+#endif
 
    // all settings relating to localization
    licqConf.SetSection("locale");
@@ -663,17 +669,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    }
 
    // verify we exist
-   o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-   bool bRegister = false;
-   if (o != NULL)
-   {
-    bRegister = ( strcmp(o->IdString(), "0") == 0);
-    gUserManager.DropOwner(LICQ_PPID);
-   }
-   else
-     bRegister = true;
-
-   if (bRegister)
+   if (gUserManager.NumOwners() == 0)
      slot_register();
    else
    {
@@ -3195,7 +3191,6 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("showPopIdleTime", m_bPopIdleTime);
 
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
-#ifndef USE_KDE
   switch(m_nDockMode)
   {
     case DockDefault:
@@ -3204,10 +3199,10 @@ void CMainWindow::saveOptions()
     case DockThemed:
       licqConf.WriteStr("DockTheme", ((IconManager_Themed *)licqIcon)->Theme().latin1());
       break;
+    case DockSmall:
     case DockNone:
       break;
   }
-#endif
 
   // save the column info
   licqConf.WriteNum("NumColumns", (unsigned short)colInfo.size());
