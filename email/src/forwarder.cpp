@@ -12,11 +12,11 @@ extern int errno;
 #endif
 
 #include "forwarder.h"
-#include "log.h"
-#include "icqd.h"
-#include "file.h"
-#include "user.h"
-#include "constants.h"
+#include "licq_log.h"
+#include "licq_icqd.h"
+#include "licq_file.h"
+#include "licq_user.h"
+#include "licq_constants.h"
 
 extern "C" { const char *LP_Version(); }
 

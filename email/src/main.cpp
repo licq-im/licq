@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "plugin.h"
+#include "licq_plugin.h"
 #include "forwarder.h"
 
 CLicqForwarder *licqForwarder;
@@ -36,7 +36,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = "0.55";
+  static const char version[] = "0.60";
   return version;
 }
 
