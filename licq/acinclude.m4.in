@@ -18,7 +18,7 @@ AC_DEFUN(AC_CHECK_SOCKS5,
     socks5-inc,
     [  --with-socks5-inc=PATH  include path for SOCKS5 headers],
     socks_incdir="$withval", socks_incdir="no")
-  
+
   AC_ARG_WITH(
     socks5-lib,
     [  --with-socks5-lib=PATH  library path for SOCKS5 libraries],
@@ -51,19 +51,19 @@ AC_DEFUN(AC_CHECK_SOCKS5,
   fi
 
   dnl Substitute these even if they're null, so as not to mess up makefiles
-  
+
   AC_SUBST(SOCKS_LIBS)
   AC_SUBST(SOCKS_LIBDIR)
   AC_SUBST(SOCKS_INCDIR)
 ])
 
 dnl Check if it is possible to turn off run time type information (RTTI)
-AC_DEFUN(AC_PROG_CXX_FNO_RTTI,
-[AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-rtti, ac_cv_prog_cxx_fno_rtti,
+AC_DEFUN(LICQ_CXX_FLAGS,
+[AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-rtti -fno-exceptions, ac_cv_prog_cxx_fno_rtti,
 [echo 'void f(){}' > conftest.cc
-if test -z "`${CXX-g++} -fno-rtti -c conftest.cc 2>&1`"; then
+if test -z "`${CXX-g++} -fno-rtti -fno-exceptions -c conftest.cc 2>&1`"; then
   ac_cv_prog_cxx_fno_rtti=yes
-  CXXFLAGS="${CXXFLAGS} -fno-rtti"
+  CXXFLAGS="${CXXFLAGS} -fno-rtti -fno-exceptions"
 else
   ac_cv_prog_cxx_fno_rtti=no
 fi

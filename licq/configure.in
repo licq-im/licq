@@ -23,6 +23,7 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
+LICQ_CXX_FLAGS
 AC_PROG_CXXCPP
 AC_ISC_POSIX
 AC_PROG_MAKE_SET
@@ -47,12 +48,10 @@ case "$host" in
 		;;
 	*-*-solaris*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -DUSE_SOLARIS -DPIC -fPIC"
-		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions"
 		echo "Setting Solaris compilation options"
 		;;
 	*-*-linux*)
  		CPPFLAGS="$CPPFLAGS -fPIC -DPIC -D_REENTRANT"
-		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions"
 		echo "Setting Linux compilation options"
 		;;
 	*)
