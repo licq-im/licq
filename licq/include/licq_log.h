@@ -42,6 +42,7 @@ const char L_SSLxSTR[]     = "[SSL] ";
 const unsigned short S_STDOUT   = 1;
 const unsigned short S_FILE     = 2;
 const unsigned short S_PLUGIN   = 4;
+const unsigned short S_ALL	= S_STDOUT | S_FILE | S_PLUGIN;
 
 const unsigned short LOG_PREFIX_OFFSET = 10;
 
@@ -53,8 +54,8 @@ class CLogService
 {
 public:
   CLogService(unsigned short _nLogTypes);
-  virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
-                       const char *_szFormat, va_list argp) = 0;
+  virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
+			  unsigned short _nLogType) = 0;
   void SetLogTypes(unsigned short _nLogTypes);
   unsigned short ServiceType();
   unsigned short LogType(unsigned short _nLogType);
@@ -78,8 +79,8 @@ class CLogService_StdOut : public CLogService
 {
 public:
   CLogService_StdOut(unsigned short _nLogTypes, bool _bUseColor);
-  virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
-                       const char *_szFormat, va_list argp);
+  virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
+			  unsigned short _nLogType);
 protected:
   bool m_bUseColor;
 };
@@ -91,8 +92,8 @@ class CLogService_File : public CLogService
 public:
    CLogService_File(unsigned short _nLogTypes);
    bool SetLogFile(const char *_szFile, const char *_szFlags);
-   virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
-                        const char *_szFormat, va_list argp);
+   virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
+			   unsigned short _nLogType);
 protected:
    FILE *m_fLog;
 };
@@ -121,8 +122,8 @@ public:
   CLogService_Plugin(CPluginLog *_xWindow, unsigned short _nLogTypes);
   bool SetLogWindow(CPluginLog *_xWindow);
   CPluginLog *LogWindow() { return m_xLogWindow; }
-  virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
-                       const char *_szFormat, va_list argp);
+  virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
+			  const unsigned short _nLogType);
 protected:
   CPluginLog *m_xLogWindow;
 };
