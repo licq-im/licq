@@ -563,7 +563,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
   {
   case ICQ_CMDxRCV_MULTIxPACKET:  // Multi-packet
   {
-    AckUDP(nSequence, nSubSequence);
+    if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
     unsigned char nPackets;
     unsigned short nLen;
     char *buf;
