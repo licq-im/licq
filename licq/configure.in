@@ -4,8 +4,8 @@ AC_CONFIG_HEADER(config.h)
 
 dnl All versioning is done via these defines
 PACKAGE=Licq
-VERSION=0.71
-INT_VERSION=710
+VERSION=0.75
+INT_VERSION=750
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
