@@ -158,9 +158,29 @@ bool CLicq::Init(int argc, char **argv)
   sprintf(SHARE_DIR, "%s/%s", INSTALL_PREFIX, BASE_SHARE_DIR);
   sprintf(LIB_DIR, "%s/%s", INSTALL_PREFIX, BASE_LIB_DIR);
 
+  // Check pid
+  char szConf[MAX_FILENAME_LEN], szKey[32];
+  sprintf(szConf, "%s/licq.pid", BASE_DIR);
+  FILE *fs = fopen(szConf, "r");
+  if (fs != NULL)
+  {
+    fgets(szKey, 32, fs);
+    pid_t pid = atol(szKey);
+    if (pid != 0)
+    {
+      gLog.Error("%sLicq: Already running at pid %d.\n"
+                 "%s      Kill process or remove %s.\n",
+       L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+      return false;
+    }
+    fclose(fs);
+  }
+  fs = fopen(szConf, "w");
+  fprintf(fs, "%d\n", getpid());
+  fclose(fs);
+
   // Open the config file
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
-  char szConf[MAX_FILENAME_LEN], szKey[32];
   sprintf(szConf, "%s/licq.conf", BASE_DIR);
   licqConf.LoadFile(szConf);
 
@@ -565,6 +585,11 @@ int CLicq::Main()
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
+
+  // Remove the pid flag
+  char sz[MAX_FILENAME_LEN];
+  sprintf(sz, "%s/licq.pid", BASE_DIR);
+  remove(sz);
 
   return m_vPluginFunctions.size();
 }
