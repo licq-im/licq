@@ -135,11 +135,16 @@ void PluginDlg::slot_load()
   if (lstAvailable->currentItem() == -1) return;
 
   char *sz[] = { "licq", NULL };
-#ifdef QT_PROTOCOL_PLUGIN
-  gLicqDaemon->ProtoPluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1()); //, 1, sz);
-#else
-  gLicqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1(), 1, sz);
-#endif
+
+  QString plugin = lstAvailable->text(lstAvailable->currentItem());
+  
+  if (plugin.contains(" (Protocol)"))
+  {
+    plugin.truncate(plugin.length() - 11);
+    gLicqDaemon->ProtoPluginLoad(plugin.latin1()); //, 1, sz);
+  }
+  else
+    gLicqDaemon->PluginLoad(plugin.latin1(), 1, sz);
 
   slot_refresh();
 }
@@ -232,20 +237,22 @@ void PluginDlg::slot_refresh()
   }
 
   lstAvailable->clear();
-#ifdef QT_PROTOCOL_PLUGIN
-  QDir d(LIB_DIR, "protocol_*.so" /*"licq_*.so"*/, QDir::Name, QDir::Files | QDir::Readable);
-#else
-  QDir d(LIB_DIR, "licq_*.so", QDir::Name, QDir::Files | QDir::Readable);
-#endif
+  QDir d(LIB_DIR, "protocol_*.so", QDir::Name, QDir::Files | QDir::Readable);
   QStringList s = d.entryList();
   QStringList::Iterator sit;
   for (sit = s.begin(); sit != s.end(); sit++)
   {
-#ifdef QT_PROTOCOL_PLUGIN
     (*sit).remove(0, 9);
-#else
+    (*sit).truncate((*sit).length() - 3);
+    (*sit).append(" (Protocol)");
+  }
+  lstAvailable->insertStringList(s);
+
+  QDir d2(LIB_DIR, "licq_*.so", QDir::Name, QDir::Files | QDir::Readable);
+  s = d2.entryList();
+  for (sit = s.begin(); sit != s.end(); sit++)
+  {
     (*sit).remove(0, 5);
-#endif
     (*sit).truncate((*sit).length() - 3);
   }
   lstAvailable->insertStringList(s);
