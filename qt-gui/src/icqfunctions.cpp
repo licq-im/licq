@@ -1237,9 +1237,10 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
       case ICQ_CMDxSUB_AUTHxREQUEST:
       {
         btnRead1->setText(tr("A&uthorize"));
+        btnRead2->setText(tr("&Refuse"));
         ICQUser *u = gUserManager.FetchUser( ((CEventAuthRequest *)m)->Uin(), LOCK_R);
         if (u == NULL)
-          btnRead2->setText(tr("&Add User"));
+          btnRead3->setText(tr("&Add User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -1313,7 +1314,7 @@ void ICQFunctions::slot_readbtn1()
       break;
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
-      server->icqAuthorize( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin() );
+      server->icqAuthorizeGrant( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
       break;
 
     case ICQ_CMDxSUB_AUTHxGRANTED:
@@ -1371,9 +1372,8 @@ void ICQFunctions::slot_readbtn2()
     }
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
-      server->AddUserToList( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin());
+      server->icqAuthorizeRefuse( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), "" );
       break;
-
   } // switch
 
 }
@@ -1415,6 +1415,10 @@ void ICQFunctions::slot_readbtn3()
       }
       break;
     }
+
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+      server->AddUserToList( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin());
+      break;
 
   }
 }
