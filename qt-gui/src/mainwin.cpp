@@ -1181,7 +1181,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
   }
   else
   {
-    gLog.Error("%sUnable to find user (uin %ld).\n", L_ERRORxSTR, nUin);
+    WarnUser(this, tr("Unable to find user (uin %1).").arg(nUin));
   }
   return f;
 }
@@ -1216,12 +1216,11 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       {
         char buf[256];
         sprintf(buf, tr("Successfully registered, your user identification\n"
-                       "number (UIN) is %ld.  Now log on and update your\n"
-                       "personal info."),
+                       "number (UIN) is %ld.\n"
+                       "Now set your personal information."),
                      gUserManager.OwnerUin());
         InformUser(this, QString::fromLocal8Bit(buf));
-        changeStatus(ICQ_STATUS_ONLINE);
-        callFunction(8, false);
+        callFunction(mnuUserGeneral, gUserManager.OwnerUin());
       }
       else
       {
@@ -1758,7 +1757,7 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("Edit Groups"), this, SLOT(showEditGrpDlg()));
-   mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
+   //mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
    //mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
    mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
    mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()));
@@ -1951,7 +1950,7 @@ void CMainWindow::slot_register()
   else
   {
     registerUserDlg = new RegisterUserDlg(licqDaemon);
-    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_registerdone()));
+    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
   }
 }
 
