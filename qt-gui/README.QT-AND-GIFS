@@ -12,5 +12,4 @@ Note to other users:
 
 If you compiled Qt yourself, be sure to add "-gif" to the command line
 when configuring, ie run "./configure -gif" instead of just "./configure".
-
-
+Since QT 3 the correct configure option is "./configure -qt-gif"

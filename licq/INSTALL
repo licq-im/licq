@@ -1,0 +1,54 @@
+Basic Installation of Licq daemon
+=================================
+
+Licq installation consists of two main steps:
+
+	1. Install the Licq daemon
+	2. Install one or more plugins
+
+
+Requirements for the daemon:
+	- A C++ compiler and libstc++-devel
+	- GNU make
+
+	Optional it may be helpful to have these:
+	- OpenSSL (for encrypted connections, please read README.OPENSSL)
+	- SOCKS libraries (for SOCKS5 support)
+
+
+These are the installation instructions:
+
+     If there is no "configure" script or you downloaded sources from 
+     CVS then use `make -f Makefile.cvs' to create your configure script. 
+     You will need autoconf and automake for this to work:
+     ftp://ftp.gnu.org/gnu/autoconf/
+     ftp://ftp.gnu.org/gnu/automake/
+
+  1. `cd' to the directory where you unpacked Licq sources and type
+     `./configure' to configure the package for your system.
+
+     Running `configure' takes awhile.  While running, it prints some
+     messages telling which features it is checking for.
+
+     If you are curious as to what possible configurable options, see
+     `./configure --help' for a list of all possible options.
+
+  2. Type `make' to compile the package.
+
+  3. Type `make install' to install the programs and any data files and
+     documentation. You have to be 'root' for this to work. Per default 
+     files are installed in /usr/local/* if you have not defined a different
+     --prefix=/some/directory.
+  
+  4. `cd plugins' to the plugins directory and install a plugin of your choice.
+     Read the included INSTALL and README files to learn how to do this. 
+     You need at least _one_ plugin; without a plugin Licq will not
+     work!
+
+
+USING LICQ
+==========
+
+For information on how to use Licq please have a look into the doc/ directory 
+and read the README file and the others. They include very much useful 
+information.

@@ -1,46 +1,80 @@
-Requirements:
+Basic Installation of Qt-GUI Plugin for Licq
+============================================
 
-- X11 header files (xfree-devel)
-- Qt 2.1 header files, Qt 2.1 lib, Qt 2.1 moc compiler
-  (Qt 2.1.1 will work, Qt 2.3.1 or newer is recommended)
-- Qt 3.x sort of works, but is currently not recommended  
-  (a few incompatibilities have still to be resolved)
+Requirements for Qt-GUI:
 
-Qt can be downloaded from ftp.trolltech.com/pub/qt/source
+	- X11 header files (xfree-devel)
+	- Qt 2.1 or greater (Qt 2.3.1 or newer is recommended). Most distributions
+	  come with packages like Qt and Qt-devel, you need both, please install 
+	  the missing ones!
+	- Qt3.x is recommended
+	- A C++ compiler and libstc++-devel.  This compiler must be the same
+          version that was used to compile Qt with.  If it is not, you will
+          experience a crash on startup.
+	- GNU make
+
+Qt can be downloaded from ftp://ftp.trolltech.com/pub/qt/source 
+(search for qt-x11-free-xxx.tar.gz).
+
+
+These are the installation instructions:
+
+     If there is no "configure" script or you downloaded sources from 
+     CVS then use `make -f Makefile.cvs' to create your configure script. 
+     You will need autoconf and automake for this to work:
+     ftp://ftp.gnu.org/gnu/autoconf/
+     ftp://ftp.gnu.org/gnu/automake/
+
+  1. `cd' to the directory where you unpacked Qt-gui sources and type
+     `./configure' to configure the package for your system.
+
+     Running `configure' takes awhile.  While running, it prints some
+     messages telling which features it is checking for.
+     If you want KDE support, use --with-kde and please read README.KDE !!!
+
+  2. Type `make' to compile the package.
+
+  3. Type `make install' to install the programs and any data files and
+     documentation. You have to be 'root' for this to work. Per default 
+     files are installed in /usr/local/*
+
+
+KDE-SUPPORT:
+============
+
+     If you want to have KDE support, please type
+     `./configure --with-kde' and then proceed with step 2. Please read
+     README.KDE for further details!
 
 NOTE:
+=====
 
-if you get errors like
+If you get errors like
 
-Unable to load plugin (qt-gui): /usr/lib/licq/licq_qt-gui.so:
-+undefined symbol: dragEnterEvent__14QMultiLineEditP15QDragEnterEvent.
-
+     Unable to load plugin (qt-gui): /usr/lib/licq/licq_qt-gui.so:
+     +undefined symbol: dragEnterEvent__14QMultiLineEditP15QDragEnterEvent.
 
 or similiar (text after "undefined symbol: " might vary) then you have
 a older Qt 2.x lib in the paths given in /etc/ld.so.conf. uninstall them or
 make sure that the Qt 2.1 lib is found first.
 
-If you get compilation errors in a file named "*.moc", then you're using
-the wrong moc compiler. you need the one shipped with your Qt 2.1 version.
-NOTE some distros rename it to "moc2". use --with-qt-moc=<path>/moc2 to fix
-this.
+If you get compilation errors in a file named "*.moc", then you're most 
+likely using the wrong moc compiler. You need the one shipped with your 
+Qt 2.1 version.
+NOTE some distributions rename it to "moc2". use --with-qt-moc=<path>/moc2 
+to fix this.
 
-GENERAL INSTALL instructions:
-
-READ AND UNDERSTAND ./configure --help
-
-run
-
-./configure <youroptionsifnecessary>
-make
-make install
-
-
-note if you set the QTDIR environment variable to point to your Qt 2.1
+If you set the QTDIR environment variable to point to your Qt 2.1
 installation before running ./configure, everything should run through
-just fine.
+just fine: 
+     
+     `export QTDIR=/usr/lib/qt2'
 
 Take a look at the other README's as well.
 
 If you have a problem that is not noted here, read through the licq-main
-and licq-devel mailinglist archives.
+and licq-devel mailinglist archives:
+     
+     http://sourceforge.net/mailarchive/forum.php?forum=licq-main
+     http://sourceforge.net/mailarchive/forum.php?forum=licq-devel
+
