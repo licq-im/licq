@@ -85,6 +85,7 @@ public:
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
 
   QString Theme() { return m_szTheme; }
+  void SetTheme(const char *);
 protected:
   QString m_szTheme;
   QPixmap *pixNoMessages, *pixRegularMessages, *pixSystemMessages, *pixBothMessages,

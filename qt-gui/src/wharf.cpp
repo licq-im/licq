@@ -343,8 +343,36 @@ void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short 
 //=====IconManager_Themed===================================================
 
 IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu, const char *theme, QWidget *parent, const char *name )
-  : IconManager(parent, name), m_szTheme(theme)
+  : IconManager(parent, name)
 {
+  pixNoMessages = pixBothMessages = pixRegularMessages = pixSystemMessages = NULL;
+  pixOnline = pixOffline = pixAway = pixNA = pixOccupied = pixDND = pixInvisible = pixFFC = NULL;
+
+  SetTheme(theme);
+
+  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this, "wharfIcon");
+  X11Init();
+}
+
+
+void IconManager_Themed::SetTheme(const char *theme)
+{
+  m_szTheme = theme;
+
+  // Delete old pixmaps
+  delete pixNoMessages;
+  delete pixBothMessages;
+  delete pixRegularMessages;
+  delete pixSystemMessages;
+  delete pixOnline;
+  delete pixOffline;
+  delete pixAway;
+  delete pixNA;
+  delete pixOccupied;
+  delete pixDND;
+  delete pixFFC;
+  delete pixInvisible;
+
   // Open the config file and read it
   char temp[MAX_FILENAME_LEN];
   QString baseDockDir;
@@ -360,8 +388,8 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   CIniFile dockFile(INI_FxWARN);
   if (!dockFile.LoadFile(filename))
   {
-    WarnUser(_mainwin, tr("Unable to load dock theme file\n(%1)\n:%2")
-                       .arg(filename).arg(strerror(dockFile.Error())));
+    WarnUser(NULL, tr("Unable to load dock theme file\n(%1)\n:%2")
+                      .arg(filename).arg(strerror(dockFile.Error())));
     return;
   }
   dockFile.SetSection("background");
@@ -369,7 +397,7 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   dockFile.ReadStr("NoMessages", temp);
   pixNoMessages = new QPixmap(baseDockDir + QString(temp));
   if (pixNoMessages->isNull())
-    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+    WarnUser(NULL, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
   dockFile.ReadStr("NoMessagesMask", temp, "none");
   if (strcmp(temp, "none") != 0)
     pixNoMessages->setMask(QBitmap(baseDockDir + QString(temp)));
@@ -377,7 +405,7 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   dockFile.ReadStr("RegularMessages", temp);
   pixRegularMessages = new QPixmap(baseDockDir + QString(temp));
   if (pixRegularMessages->isNull())
-    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+    WarnUser(NULL, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
   dockFile.ReadStr("RegularMessagesMask", temp, "none");
   if (strcmp(temp, "none") != 0)
     pixRegularMessages->setMask(QBitmap(baseDockDir + QString(temp)));
@@ -385,7 +413,7 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   dockFile.ReadStr("SystemMessages", temp);
   pixSystemMessages = new QPixmap(baseDockDir + QString(temp));
   if (pixSystemMessages->isNull())
-    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+    WarnUser(NULL, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
   dockFile.ReadStr("SystemMessagesMask", temp, "none");
   if (strcmp(temp, "none") != 0)
     pixSystemMessages->setMask(QBitmap(baseDockDir + QString(temp)));
@@ -393,7 +421,7 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   dockFile.ReadStr("BothMessages", temp);
   pixBothMessages = new QPixmap(baseDockDir + QString(temp));
   if (pixBothMessages->isNull())
-    WarnUser(_mainwin, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
+    WarnUser(NULL, tr("Unable to load dock theme image\n%1").arg(baseDockDir));
   dockFile.ReadStr("BothMessagesMask", temp, "none");
   if (strcmp(temp, "none") != 0)
     pixBothMessages->setMask(QBitmap(baseDockDir + QString(temp)));
@@ -453,8 +481,24 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
   }
   dockFile.CloseFile();
 
-  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this, "wharfIcon");
-  X11Init();
+  if (wharfIcon != NULL)
+  {
+    QPixmap *p = NULL;
+    if (m_nNewMsg > 0 && m_nSysMsg > 0)
+      p = pixBothMessages;
+    else if (m_nNewMsg > 0)
+      p = pixRegularMessages;
+    else if (m_nSysMsg > 0)
+      p = pixSystemMessages;
+    else
+      p = pixNoMessages;
+
+    wharfIcon->Set(p);
+    SetDockIconStatus();
+    setMask(*wharfIcon->vis->mask());
+    wharfIcon->repaint(false);
+    repaint(false);
+  }
 }
 
 

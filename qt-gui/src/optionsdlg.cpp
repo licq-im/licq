@@ -304,16 +304,27 @@ void OptionsDlg::ApplyOptions()
   if (chkUseDock->isChecked() &&
       (rdbDockDefault->isChecked() || rdbDockThemed->isChecked()) )
   {
-    delete mainwin->licqIcon;
     if (rdbDockDefault->isChecked())
     {
-      mainwin->licqIcon = new IconManager_Default(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
-      mainwin->m_nDockMode = DockDefault;
+      if (mainwin->m_nDockMode != DockDefault)
+      {
+        delete mainwin->licqIcon;
+        mainwin->licqIcon = new IconManager_Default(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
+        mainwin->m_nDockMode = DockDefault;
+      }
     }
     else if (rdbDockThemed->isChecked())
     {
-      mainwin->licqIcon = new IconManager_Themed(mainwin, mainwin->mnuSystem, cmbDockTheme->currentText());
-      mainwin->m_nDockMode = DockThemed;
+      if (mainwin->m_nDockMode != DockThemed)
+      {
+        delete mainwin->licqIcon;
+        mainwin->licqIcon = new IconManager_Themed(mainwin, mainwin->mnuSystem, cmbDockTheme->currentText());
+        mainwin->m_nDockMode = DockThemed;
+      }
+      else if ( ((IconManager_Themed *)mainwin->licqIcon)->Theme() != cmbDockTheme->currentText() )
+      {
+        ((IconManager_Themed *)mainwin->licqIcon)->SetTheme(cmbDockTheme->currentText());
+      }
     }
     mainwin->updateStatus();
     mainwin->updateEvents();
