@@ -643,6 +643,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     // translating string with Translation Table
     gTranslator.ServerToClient(u->GetCity());
     gTranslator.ServerToClient(u->GetState());
+    gTranslator.ServerToClient(u->GetPhoneNumber());
     gTranslator.ServerToClient(u->GetHomepage());
     gTranslator.ServerToClient(u->GetAbout());
 
@@ -1436,6 +1437,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
          gTranslator.ServerToClient(u->GetFirstName());
          gTranslator.ServerToClient(u->GetLastName());
          gTranslator.ServerToClient(u->GetCity());
+         gTranslator.ServerToClient(u->GetState());
+         gTranslator.ServerToClient(u->GetPhoneNumber());
+         gTranslator.ServerToClient(u->GetFaxNumber());
+         gTranslator.ServerToClient(u->GetCellularNumber());
          gTranslator.ServerToClient(u->GetAddress());
 
           u->SetEnableSave(true);
@@ -1465,6 +1470,12 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetCompanyCity());
           gTranslator.ServerToClient(u->GetCompanyState());
           gTranslator.ServerToClient(u->GetCompanyAddress());
+          gTranslator.ServerToClient(u->GetCompanyPhoneNumber());
+          gTranslator.ServerToClient(u->GetFaxNumber());
+          gTranslator.ServerToClient(u->GetCompanyName());
+          gTranslator.ServerToClient(u->GetCompanyDepartment());
+          gTranslator.ServerToClient(u->GetCompanyPosition());
+          
 
           u->SetEnableSave(true);
           u->SaveWorkInfo();
