@@ -25,9 +25,11 @@
 #include <qlayout.h>
 #include <qtimer.h>
 #include <qcheckbox.h>
+#include <qtooltip.h>
 
 #include "awaymsgdlg.h"
 #include "licq_log.h"
+#include "mainwin.h"
 #include "mledit.h"
 #include "optionsdlg.h"
 #include "licq_sar.h"
@@ -51,6 +53,9 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   top_lay->addWidget(mleAwayMsg);
 
   chkFilter = new QCheckBox(tr("Apply user information filter (% arguments)"), this);
+  QToolTip::add(chkFilter, tr("Certain parameters in the Auto Response will be\n"
+                              "replaced by individual information of the user that\n"
+                              "fetches your auto response:\n") + gMainWindow->usprintfHelp);
   top_lay->addWidget(chkFilter);
 
   mnuSelect = new QPopupMenu(this);
