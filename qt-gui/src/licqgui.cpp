@@ -58,6 +58,19 @@ CLicqGui *licqQtGui;
 
 const char *LP_Usage(void)
 {
+#ifdef USE_KDE
+  static const char usage[] =
+    "Usage:  Licq [options] -p kde-gui -- [-h] [-s skinname] [-i iconpack] [-g gui style]\n"
+    " -h : this help screen\n"
+    " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
+    " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE /"
+#if QT_VERSION < 300
+    " JFC /"
+#endif
+    " GTK / SGI / LCD), ignored by KDE support\n"
+    " -d : start hidden (dock icon only)\n";
+#else
   static const char usage[] =
     "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-g gui style]\n"
     " -h : this help screen\n"
@@ -69,6 +82,8 @@ const char *LP_Usage(void)
 #endif
     " GTK / SGI / LCD), ignored by KDE support\n"
     " -d : start hidden (dock icon only)\n";
+#endif
+
   return usage;
 }
 
