@@ -61,10 +61,12 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
 
   nfoPassword1 = new CInfoField(grpInfo, false);
   nfoPassword1->setEchoMode(QLineEdit::Password);
+  nfoPassword1->setMaxLength(8);
 
   (void) new QLabel(tr("Verify:"), grpInfo);
   nfoPassword2 = new CInfoField(grpInfo, false);
   nfoPassword2->setEchoMode(QLineEdit::Password);
+  nfoPassword2->setMaxLength(8);
 
   addPage(page2, tr("UIN Registration - Step 2"));
 
