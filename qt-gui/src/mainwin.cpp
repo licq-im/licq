@@ -1445,7 +1445,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         }
         else
         {
-          m_szCaption = tr("Licq (%1)").arg(QString("Error! No owner set"));
+          m_szCaption = tr("Licq (%1)").arg(QString(tr("Error! No owner set")));
         }
         if (caption()[0] == '*')
           setCaption(QString("* ") + m_szCaption);
@@ -3542,7 +3542,7 @@ void CMainWindow::aboutBox()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   
   // We might have no owner
-  QString m_Alias = (o == 0) ? QString("(Error! No owner set)") : QString::fromLocal8Bit(o->GetAlias());
+  QString m_Alias = (o == 0) ? QString(tr("(Error! No owner set)")) : QString::fromLocal8Bit(o->GetAlias());
   unsigned long m_Uin = (o == 0) ? 0 : o->Uin();
   
   QString about(tr("Licq version %1%8.\n"
