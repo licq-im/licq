@@ -233,7 +233,6 @@ void CFileDlg::fileCancel()
   if (snFile != NULL) snFile->setEnabled(false);
   if (snFileServer != NULL) snFileServer->setEnabled(false);
   m_xSocketFileServer.CloseConnection();
-  if (m_bServer && m_nPort != 0) licqDaemon->FreeTCPPort(m_nPort);
   m_xSocketFile.CloseConnection();
   lblStatus->setText(tr("File transfer cancelled."));
   btnCancel->setText(tr("Done"));
@@ -289,21 +288,12 @@ void CFileDlg::fileUpdate()
 bool CFileDlg::StartAsServer()
 {
   m_bServer = true;
-  int port = licqDaemon->GetTCPPort();
-  if (port == -1)   // assign the chat port
+  if (licqDaemon->StartTCPServer(&m_xSocketFileServer) == -1)
   {
-     WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
-     return false;
-  }
-  m_nPort = port;
-
-  gLog.Info("%sStarting file server on port %d.\n", L_TCPxSTR, port);
-  if (!m_xSocketFileServer.StartServer(port))
-  {
-    gLog.Error("%sFile transfer - error creating local socket:\n%s%s\n", L_ERRORxSTR,
-               L_BLANKxSTR, m_xSocketFileServer.ErrorStr(buf, 128));
+    WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
     return false;
   }
+  m_nPort = m_xSocketFileServer.LocalPort();
 
   nfoTotalFiles->setText(QString("%1 / ?").arg(m_nCurrentFile + 1));
   nfoBatchSize->setText(tr("Unknown"));

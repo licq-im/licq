@@ -66,19 +66,12 @@ ChatDlg::~ChatDlg()
 bool ChatDlg::StartAsServer()
 {
   m_bServer = true;
-  int port = licqDaemon->GetTCPPort();
-  if (port == -1)   // assign the chat port
+  if (licqDaemon->StartTCPServer(&m_cSocketChatServer) == -1)
   {
-     WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
-     return false;
-  }
-  m_nPort = port;
-  if (!(m_cSocketChatServer.StartServer(port)))
-  {
-    char buf[128];
-    gLog.Error("%sFailed to start local chat server (%s)!\n", L_ERRORxSTR, m_cSocketChatServer.ErrorStr(buf, 128));
+    WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
     return false;
   }
+  m_nPort = m_cSocketChatServer.LocalPort();
 
   snChatServer = new QSocketNotifier(m_cSocketChatServer.Descriptor(), QSocketNotifier::Read);
   connect(snChatServer, SIGNAL(activated(int)), this, SLOT(chatRecvConnection()));
@@ -539,7 +532,6 @@ void ChatDlg::chatRecv()
 void ChatDlg::chatClose()
 {
   m_cSocketChat.CloseConnection();
-  if (m_bServer && m_nPort != 0) licqDaemon->FreeTCPPort(m_nPort);
   mleLocal->setReadOnly(true);
   disconnect(mleLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
 }
