@@ -1205,9 +1205,9 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedShortBE(0);
 	buffer->PackUnsignedLong(0x00000003); // len
 	buffer->PackChar(0x04); // accept connections or firewalled
-	buffer->PackUnsignedShortBE(nSequence); // sequence
+	buffer->PackUnsignedShort(nSequence); // sequence
 	buffer->PackUnsignedShort(0x000E); // len
-	buffer->PackUnsignedShortBE(nSequence); // sequence
+	buffer->PackUnsignedShort(nSequence); // sequence
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
@@ -1469,7 +1469,7 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 #if 1
 	// XXX This is not the ICBM way yet!
 	// XXX It doesnt' even work! Perhaps try ICBM and it'll work?
-	m_nSize += 19;
+	m_nSize += 15;
 	InitBuffer();
 
 	//buffer->PackString(""); // description
@@ -1477,7 +1477,6 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackString(""); // filename
 	buffer->PackUnsignedLong(0); // filesize
 	buffer->PackUnsignedLong(nPort); // port
-	buffer->PackUnsignedLong(0x00030000); // ack request
 #else
 	m_nSize += 80;
 	InitBuffer();
