@@ -1,0 +1,5 @@
+[utility]
+Window = TERM
+Command = vncviewer %i:0 -wmdecoration 0x0 -bgr233
+Description = launch vncviewer
+
