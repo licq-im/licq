@@ -31,8 +31,8 @@ const char *CUserEvent::Time(void)
   if (m_tTime == 0) m_tTime = time(NULL);
   strcpy(s_szTime, ctime(&m_tTime));
   // Remove the trailing newline
-  s_szTime[24] = '\0';
-  //s_szTime[16] = '\0';
+  //s_szTime[24] = '\0';
+  s_szTime[16] = '\0';
 
   return s_szTime;
 }
