@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 // (c) 2000 Keith Brown
 
 // $Source$
