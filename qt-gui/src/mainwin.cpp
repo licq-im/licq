@@ -2475,6 +2475,7 @@ void CMainWindow::saveOptions()
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
+  licqConf.WriteStr("ExtendedIcons", m_szExtendedIconSet);
 #if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
                     "default" : qApp->font().toString().latin1());
