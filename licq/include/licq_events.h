@@ -280,6 +280,7 @@ protected:
   static unsigned long s_nNextEventId;
 
 friend class CICQDaemon;
+friend class CMSN;
 friend void *ProcessRunningEvent_Client_tep(void *p);
 friend void *ProcessRunningEvent_Server_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
@@ -345,6 +346,10 @@ friend void *MonitorSockets_tep(void *p);
  *  The sub-type is the id of the plugin.  This is used as a parameter for all
  *  functions dealing with this new protocol.  The UIN and all other parameters
  *  are 0.
+ *
+ *  SIGNAL_EVENTxID - Returns the event tag of an event from a protocol plugin.
+ *  The UI plugin will use this event to keep track of successfully sent events.
+ *
  *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
@@ -355,6 +360,7 @@ const unsigned long SIGNAL_UI_VIEWEVENT          = 0x00000020;
 const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
 const unsigned long SIGNAL_ADDxSERVERxLIST       = 0x00000080;
 const unsigned long SIGNAL_NEWxPROTO_PLUGIN      = 0x00000100;
+const unsigned long SIGNAL_EVENTxID              = 0x00000200;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // logoff constants
@@ -432,10 +438,12 @@ public:
   virtual ~CSignal();
   SIGNAL_TYPE Type()  { return m_eType; }
   char *Id()          { return m_szId; }
+  pthread_t Thread() { return thread_plugin; }
 
 private:
   char  *m_szId;
   SIGNAL_TYPE m_eType;
+  pthread_t thread_plugin;
 };
 
 class CLogonSignal : public CSignal

@@ -67,6 +67,7 @@ protected:
   char m_szName[32];
 
 friend class CICQDaemon;
+friend class CMSN;
 };
 
 typedef std::vector<CDaemonStats> DaemonStatsList;

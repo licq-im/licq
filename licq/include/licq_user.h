@@ -711,6 +711,7 @@ protected:
   friend class CUserGroup;
   friend class CUserManager;
   friend class CICQDaemon;
+  friend class CMSN;
   friend class CSocketManager;
 };
 

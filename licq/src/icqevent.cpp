@@ -304,6 +304,7 @@ CSignal::CSignal(SIGNAL_TYPE e, const char *szId)
     m_szId = strdup(szId);
   else
     m_szId = 0;
+  thread_plugin = pthread_self();
 }
 
 CSignal::~CSignal()

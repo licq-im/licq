@@ -85,6 +85,7 @@ protected:
    CICQColor      m_sColor;
 
 friend class CICQDaemon;
+friend class CMSN;
 friend class CUserHistory;
 };
 
