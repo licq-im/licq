@@ -26,6 +26,7 @@
 #include "licq_languagecodes.h"
 
 #include <gtk/gtk.h>
+#include <stdlib.h>
 
 GSList *iu_list;
 
@@ -33,7 +34,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 {
 	gboolean is_o = FALSE;
 
-	/* Check to see if it's for the owner */
+	// Check to see if it's for the owner 
 	if(user == NULL)
 	{
 		user = gUserManager.FetchOwner(LOCK_R);
@@ -53,24 +54,17 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	GtkWidget *label;
 	GtkWidget *entry;
-	GtkWidget *h_box;
 	GtkWidget *v_box;
 	GtkWidget *v_scroll;
-	GtkWidget *general_box;
-	GtkWidget *address_box;
-	GtkWidget *more_box;
-	GtkWidget *work_box;
-	GtkWidget *about_box;
 	GtkWidget *save;
 	GtkWidget *close;
-	GtkWidget *notebook;
 	GtkWidget *statusbar;
 	const gchar *title = g_strdup_printf("Info for %s", user->GetAlias());
-	const gchar *name = g_strdup_printf("%s %s", user->GetFirstName(),
-					    user->GetLastName());
 	const gchar *uin = g_strdup_printf("%ld", user->Uin());
-	gchar *online;
+	gchar real_ip[32];
+	const gulong _realip = user->RealIp();
 	gchar buf[32];
+	strcpy(real_ip, inet_ntoa_r(*(struct in_addr *)&_realip, buf));
 	
 	/* Take care of the e_tag_data stuff */
 	iu->etag = g_new0(struct e_tag_data, 1);
@@ -84,306 +78,424 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	/* Make the scroll window for the about box */
 	v_scroll = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_usize(v_scroll, 250, 135);
+	gtk_widget_set_usize(v_scroll, 175, 115);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(v_scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
 
 	/* Create new boxes */
-	h_box = gtk_hbox_new(FALSE, 5);
 	v_box = gtk_vbox_new(FALSE, 5);
-	general_box = gtk_vbox_new(FALSE, 5);
-	address_box = gtk_vbox_new(FALSE, 5);
-	more_box = gtk_vbox_new(FALSE, 5);
-	work_box = gtk_vbox_new(FALSE, 5);
-	about_box = gtk_vbox_new(FALSE, 5);
 
 	/* The notebook */
-	notebook = gtk_notebook_new();
+	iu->notebook = gtk_notebook_new();
 
-	/* START THE GENERAL TAB */
+//------ START THE GENERAL TAB ---------------------------
 
-	/* The Alias entry and label */
-	do_entry(iu->alias, label, "Nick:      ", user->GetAlias(), is_o);
-	gtk_entry_set_editable(GTK_ENTRY(iu->alias), TRUE);
+	GtkWidget *general_table = gtk_table_new(6, 4, false);
 
-	/* Pack the alias */
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->alias, FALSE, FALSE, 0);
+	// Alias (always editable)
+	do_label_and_entry(iu->alias, user->GetAlias(), "Alias:",
+		general_table, 0, 0, true);
 
-	/* The Name box and label */
-	do_entry(iu->name, label, "Name:     ", name, is_o);
+	// UIN (never editable)
+	do_label_and_entry(entry, uin, "UIN:", general_table, 
+		2, 0, false);
 
-	/* Pack the name */
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->name, FALSE, FALSE, 0);
+	// Full Name
+	do_label_and_entry(iu->fname, user->GetFirstName(), "First Name:",
+		general_table, 0, 1, is_o);
+	
+	// Last Name
+	do_label_and_entry(iu->lname, user->GetLastName(), "Last Name:",
+		general_table, 2, 1, is_o);
+	
+	// IP (never editable)
+	do_label_and_entry(entry, user->IpPortStr(buf), "IP:", 
+		general_table, 0, 2, false);
 
-	/* Pack the Alias and Name E&L's in a horizontal line */
-	gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE, FALSE, 5);
+	// Real IP (never editable)
+	do_label_and_entry(entry, real_ip, "Real IP:", general_table,
+		2, 2, false);
+	
+	// Primary e-mail
+	do_label_and_entry(iu->email1, user->GetEmailPrimary(),
+		"Primary E-Mail:", general_table, 0, 3, is_o);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	// Secondary e-mail
+	do_label_and_entry(iu->email2, user->GetEmailSecondary(),
+		"Secondary E-mail:", general_table, 2, 3, is_o);
 
-	/* The UIN box and label */
-	do_entry(entry, label, "UIN:       ", uin, FALSE);
+	// Old e-mail
+	do_label_and_entry(iu->oldemail, user->GetEmailOld(),
+		"Old E-mail:", general_table, 0, 4, is_o);
 
-	/* Pack the UIN */
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), entry , FALSE, FALSE, 0); 
-
-	/* The IP box and label */
-	do_entry(entry, label, "IP:          ", user->IpPortStr(buf),
-		 FALSE);
-
-	/* Pack the IP */
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), entry, FALSE, FALSE, 0);
-
-	/* Pack the UIN and IP in a horizontal line */
-	gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE, FALSE, 5);
-
-	h_box = gtk_hbox_new(FALSE, 5);
-
-	/* The primary e-mails */
-	do_entry(iu->email1, label, "E-mail 1:", user->GetEmailPrimary(), is_o);
-
-	/* Pack the email1 */
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->email1, FALSE, FALSE, 0);
-
-	/* The secondary e-mail */
-	do_entry(iu->email2, label, "E-mail 2:", user->GetEmailSecondary(), is_o);
-
-	/* Pack the email2 */
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->email2, FALSE, FALSE, 0);
-
-	/* Pack e-mail1 and e-mail2 in a horizontal line */
-	gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE, FALSE, 5); 
-
-	h_box = gtk_hbox_new(FALSE, 0);
-
+	// Hide e-mail is needed anyways.. use an if statement to decide
+	// where it goes..
+	iu->hide_email = gtk_check_button_new_with_label(
+		"Hide E-mail Address");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(iu->hide_email),
+		user->GetHideEmail());
+		
+	// If it's not the owner, show last seen
 	if(!is_o)
 	{
+		gchar online[28];
+		
 		if(!iu->user->StatusOffline())
-			online = "Now";
+			strcpy(online, "Now");
 		else if(iu->user->LastOnline() == 0)
-			online = "Unknown";
+			strcpy(online, "Unknown");
 		else
 		{
 			time_t last = iu->user->LastOnline();
-			online = ctime(&last);
+			strcpy(online, ctime(&last));
 		}
 	
-		do_entry(entry, label, "Last Seen:", online, FALSE);
-		pack_hbox(h_box, label, entry);
-	
-	
-		gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE,
-				   FALSE, 0);
+		do_label_and_entry(entry, online, "Last Seen:", general_table,
+			2, 4, FALSE);
+
+		iu->need_auth = gtk_check_button_new_with_label(
+			"Need Authorization To Add");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+			iu->need_auth), iu->user->GetAuthorization());
+		gtk_widget_set_sensitive(iu->need_auth, false);
+		gtk_table_attach(GTK_TABLE(general_table), iu->need_auth, 0, 2,
+			5, 6, GTK_FILL, GTK_FILL, 3, 1);
+
+		gtk_widget_set_sensitive(iu->hide_email, false);
+		gtk_table_attach(GTK_TABLE(general_table), iu->hide_email, 2, 4,
+			5, 6,
+			GtkAttachOptions(0),
+			GtkAttachOptions(0), 3, 1);
 	}
-	
-	/* END GENERAL TAB */
+	// It's the owner
+	else
+	{
+		gtk_table_attach(GTK_TABLE(general_table), iu->hide_email,
+			0, 2, 5, 6, GTK_FILL, GTK_FILL, 3, 1);
+	}
 
-	h_box = gtk_hbox_new(FALSE, 5);
+//------- END GENERAL TAB ----------------------------------
 
-	/* START ADDRESS TAB */
+//------- START ADDRESS TAB --------------------------------
 
-	/* The address and pack it */
-	do_entry(iu->address, label, "Address:", user->GetAddress(), is_o);
-	pack_hbox(h_box, label, iu->address);
+	// Address info table
+	GtkWidget *address_table = gtk_table_new(4, 2, false);
 
-	/* The city and pack it */
-	do_entry(iu->city, label, "City:   ", user->GetCity(), is_o);
-	pack_hbox(h_box, label, iu->city);
+	// Address
+	do_label_and_entry(iu->address, user->GetAddress(), "Address:",
+		address_table, 0, 0, is_o);
 
-	/* Finally pack the address and city */
-	gtk_box_pack_start(GTK_BOX(address_box), h_box, FALSE, FALSE, 5);
+	// City
+	do_label_and_entry(iu->city, user->GetCity(), "City:", 
+		address_table, 2, 0, is_o);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	// State
+	do_label_and_entry(iu->state, user->GetState(), "State:",
+		address_table, 0, 1, is_o);
 
-	/* The state and pack it */
-	do_entry(iu->state, label, "State:    ", user->GetState(), is_o);
-	pack_hbox(h_box, label, iu->state);
+	// Zip
+	do_label_and_entry(iu->zip, user->GetZipCode(), "Zip:",
+		address_table, 2, 1, is_o);
 
-	/* The zip and pack it */
-	do_entry(iu->zip, label, "Zip:    ", user->GetZipCode(), is_o);
-	pack_hbox(h_box, label, iu->zip);
-
-	/* Finally pack the state and zip */
-	gtk_box_pack_start(GTK_BOX(address_box), h_box, FALSE, FALSE, 5);
-
-	h_box = gtk_hbox_new(FALSE, 5);
-
-	/*  The country and pack it*/
+	// Country
 	SCountry *sc = (SCountry *)GetCountryByCode(user->GetCountryCode());
-	gchar *country;
+	gchar country[32];
 
 	if(sc == NULL)
-		country = "Unknown";
+		strcpy(country, "Unspecified");
 
 	else
-		country = g_strdup_printf("%s", sc->szName);
-	
-	do_entry(iu->country, label, "Country:", country, FALSE);
-	pack_hbox(h_box, label, iu->country);
-	
-	/* The Phone Number and pack it */
-	do_entry(iu->phone, label, "Phone:", user->GetPhoneNumber(), is_o);
-	pack_hbox(h_box, label, iu->phone);
+		strcpy(country, sc->szName);
 
-	/* Finally pack the country and phone number */
-	gtk_box_pack_start(GTK_BOX(address_box), h_box, FALSE, FALSE, 5);
+	if(!is_o)
+	{
+		do_label_and_entry(iu->country, country, "Country:",
+			address_table, 0, 2, FALSE);
+	}
+	else
+	{
+		iu->o_country = gtk_combo_new();
+		GList *country_strings = NULL;
 
-	/* END ADDRESS TAB */
+		country_strings = g_list_append(country_strings,
+			"Unspecified");
+		for(unsigned short j = 0; j < NUM_COUNTRIES; j++)
+			country_strings = g_list_append(country_strings,
+				GetCountryByIndex(j)->szName);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+		gtk_combo_set_popdown_strings(GTK_COMBO(iu->o_country),
+			country_strings);
+		gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(iu->o_country)->entry),
+			false);
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(iu->o_country)->entry),
+			country);
 
-	/* START MORE TAB */
+		label = gtk_label_new("Country:");
+		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		
+		gtk_table_attach(GTK_TABLE(address_table), label, 0, 1, 2, 3,
+			GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+			GTK_FILL, 3, 1);
+		gtk_table_attach(GTK_TABLE(address_table), iu->o_country,
+			1, 2, 2, 3,
+			GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+			GTK_FILL, 3, 1);
+	}
+		
+	// Phone number
+	do_label_and_entry(iu->phone, user->GetPhoneNumber(), "Phone Number:",
+		address_table, 2, 2, is_o);
 
-	/* The Age box and pack it */
-	gchar *age;
+	// Cellular number
+	do_label_and_entry(iu->cellphone, user->GetCellularNumber(),
+		"Cellular Number:", address_table, 0, 3, is_o);
+
+	// Fax number
+	do_label_and_entry(iu->faxnumber, user->GetFaxNumber(), "Fax Number:",
+		address_table, 2, 3, is_o);
+
+//------- END ADDRESS TAB ---------------------------------------- 
+
+//------- START MORE TAB -----------------------------------------
+
+	GtkWidget *more_table = gtk_table_new(3, 2, false);
+
+	// Age
+	gchar age[6];
 	if(user->GetAge() != 65535)
-		age = g_strdup_printf("%hd", user->GetAge());
+		sprintf(age, "%hd", user->GetAge());
 	else
-		age = "N/A";
+		strcpy(age, "N/A");
+	
+	do_label_and_entry(iu->age, age, "Age:", more_table,
+		0, 0, is_o);
 
-	do_entry(iu->age, label, "Age:          ", age, is_o);
-	pack_hbox(h_box, label, iu->age);
+	// Gender
+	if(!is_o)
+	{
+		gchar gender[12];
+		if(user->GetGender() == 1)
+			strcpy(gender, "Female");
+		else if(user->GetGender() == 2)
+			strcpy(gender, "Male");
+		else
+			strcpy(gender, "Unspecified");
 
-	/* The gender box */
-	gchar *gender;
-	if(user->GetGender() == 1)
-		gender = "Female";
-	else if(user->GetGender() == 2)
-		gender = "Male";
+		do_label_and_entry(iu->gender, gender, "Gender:", more_table,
+			2, 0, FALSE);
+	}
 	else
-		gender = "Unspecified";
+	{
+		iu->o_gender = gtk_combo_new();
+		GList *gender_strings = NULL;
+		gender_strings = g_list_append(gender_strings, "(None)");
+		gender_strings = g_list_append(gender_strings, "Female");
+		gender_strings = g_list_append(gender_strings, "Male");
+		gtk_combo_set_popdown_strings(GTK_COMBO(iu->o_gender),
+			gender_strings);
+		gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(iu->o_gender)->entry),
+			false);
 
-	do_entry(iu->gender, label, "Gender:  ", gender, FALSE);
-	pack_hbox(h_box, label, iu->gender);
+		label = gtk_label_new("Gender:");
+		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		
+		gtk_table_attach(GTK_TABLE(more_table), label, 2, 3, 0, 1,
+			GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+			GTK_FILL, 3, 1);
+		gtk_table_attach(GTK_TABLE(more_table), iu->o_gender,
+			3, 4, 0, 1,
+			GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+			GTK_FILL, 3, 1);
+	}
 
-	/* Put age and gender on a horizontal line */
-	gtk_box_pack_start(GTK_BOX(more_box), h_box, FALSE, FALSE, 5);
+	// Homepage
+	do_label_and_entry(iu->homepage, user->GetHomepage(), "Homepage:",
+		 more_table, 0, 1, is_o);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	// Birthday
+	if(!is_o)
+	{
+		gchar bday[11];
 
-	/* The Homepage and pack it */
-	do_entry(iu->homepage, label, "Homepage: ", user->GetHomepage(),
-		 is_o);
-	pack_hbox(h_box, label, iu->homepage);
+		if(user->GetBirthMonth() == 0 || user->GetBirthDay() == 0)
+			strcpy(bday, "N/A");
 
-
-	/* The birthday and pack it */
-	gchar *bday;
-
-	if(user->GetBirthMonth() == 0 || user->GetBirthDay() == 0)
-		bday = "N/A";
-
-	else
-		bday = g_strdup_printf("%d/%d/%d", user->GetBirthMonth(),
+		else
+			sprintf(bday, "%d/%d/%d", user->GetBirthMonth(),
 				user->GetBirthDay(), user->GetBirthYear());
 
-	do_entry(iu->bday, label, "Birthday: ", bday, FALSE);
-	pack_hbox(h_box, label, iu->bday);
+		do_label_and_entry(iu->bday, bday, "Birthday:", more_table,
+			2, 1, FALSE);
+	}
+	else
+	{
+		label = gtk_label_new("Birthday:");
+		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		gtk_table_attach(GTK_TABLE(more_table), label, 2, 3, 1, 2,
+			GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+			GTK_FILL, 3, 1);
 
-	/* Put the homepate and birthday on a horz line */
-	gtk_box_pack_start(GTK_BOX(more_box), h_box, FALSE, FALSE, 5);
+		GtkWidget *h_box = gtk_hbox_new(false, 0);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+		label = gtk_label_new("Month:");
+		GtkAdjustment *month_adj =
+			(GtkAdjustment *)gtk_adjustment_new(
+				user->GetBirthMonth(), 1.0, 12.0,
+				1.0, 3.0, 3.0);
+		iu->o_bmonth = gtk_spin_button_new(month_adj, 1.0, 0);
+		gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(iu->o_bmonth),
+			GTK_UPDATE_IF_VALID);
+		gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(iu->o_bmonth),
+			true);
+		
+		gtk_box_pack_start(GTK_BOX(h_box), label, false, false, 3);
+		gtk_box_pack_start(GTK_BOX(h_box), iu->o_bmonth, false, false,
+			3);
 
-	/* The languages and pack it */
-	const SLanguage *lang1 = GetLanguageByCode(user->GetLanguage(0));
-	do_entry(iu->lang1, label, "Language 1:", lang1->szName, FALSE);
-	gtk_widget_set_usize(iu->lang1, 75, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), iu->lang1, FALSE, FALSE, 2);
+		label = gtk_label_new("Day:");
+		GtkAdjustment *day_adj =
+			(GtkAdjustment *)gtk_adjustment_new(
+				user->GetBirthDay(), 1.0, 31.0, 1.0, 5.0, 5.0);
+		iu->o_bday = gtk_spin_button_new(day_adj, 1.0, 0);
+		gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(iu->o_bday),
+			GTK_UPDATE_IF_VALID);
+		gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(iu->o_bday), true);
 
-	/* Second language and pack it*/
-	const SLanguage *lang2 = GetLanguageByCode(user->GetLanguage(1));
-	do_entry(iu->lang2, label, "Language 2:", lang2->szName, FALSE);
-	gtk_widget_set_usize(iu->lang2, 75, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(h_box), iu->lang2, FALSE, FALSE, 2);
+		gtk_box_pack_start(GTK_BOX(h_box), label, false, false, 3);
+		gtk_box_pack_start(GTK_BOX(h_box), iu->o_bday, false, false, 3);
 
-	/* Third language and pack it */
-	const SLanguage *lang3 = GetLanguageByCode(user->GetLanguage(2));
-	do_entry(iu->lang3, label, "Language 3:", lang3->szName, FALSE);
-	gtk_widget_set_usize(iu->lang3, 75, 20);
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(h_box), iu->lang3, FALSE, FALSE, 2);
+		label = gtk_label_new("Year:");
+		GtkAdjustment *year_adj =
+			(GtkAdjustment *)gtk_adjustment_new(
+				user->GetBirthYear(), 1900.0,
+				2020.0, 1.0, 10.0, 10.0);
+		iu->o_byear = gtk_spin_button_new(year_adj, 1.0, 0);
+		gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(iu->o_byear),
+			GTK_UPDATE_IF_VALID);
+		gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(iu->o_byear), true);
 
-	/* Pack the the languages */
-	gtk_box_pack_start(GTK_BOX(more_box), h_box, FALSE, FALSE, 5);
+		gtk_box_pack_start(GTK_BOX(h_box), label, false, false, 3);
+		gtk_box_pack_start(GTK_BOX(h_box), iu->o_byear, false, false,
+			3);
 
-	/* END MORE TAB */
+		gtk_table_attach(GTK_TABLE(more_table), h_box, 3, 4, 1, 2,
+			GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+			GTK_FILL, 3, 1);
+	}
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	// Languages
+	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
+	
+	if(!is_o)
+	{
+		for(unsigned short i = 0; i < 3; i++)
+		{
+			const SLanguage *lang =
+				GetLanguageByCode(user->GetLanguage(i));
+			label =
+				gtk_label_new(
+					g_strdup_printf("Language %d:", i + 1));
+			do_entry(iu->lang[i], lang->szName, FALSE);
+			gtk_widget_set_usize(iu->lang[i], 75, 20);
+			gtk_box_pack_start(GTK_BOX(h_box), label, FALSE,
+				FALSE, 5);
+			gtk_box_pack_start(GTK_BOX(h_box), iu->lang[i],
+				FALSE, FALSE, 2);
+		}
+	}
+	else
+	{
+		GList *lang_strings = NULL;
+		
+		for(unsigned short j = 0; j < NUM_LANGUAGES; j++)
+			lang_strings = g_list_append(lang_strings,
+				GetLanguageByIndex(j)->szName);
 
-	/* START WORK TAB */
+		for(unsigned short i = 0; i < 3; i++)
+		{
+			label = gtk_label_new(
+				g_strdup_printf("Language %d:", i + 1));
 
-	/* Company Name and pack it */
-	do_entry(iu->company, label, "Name:    ", user->GetCompanyName(),
-		 is_o);
-	pack_hbox(h_box, label, iu->company);
+			iu->o_lang[i] = gtk_combo_new();
+			gtk_widget_set_usize(iu->o_lang[i], 100, 20);
+			gtk_combo_set_popdown_strings(GTK_COMBO(iu->o_lang[i]),
+				lang_strings);
+			gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(
+				iu->o_lang[i])->entry), false);
 
-	/* Department and pack it */
-	do_entry(iu->dept, label, "Department:",
-		 user->GetCompanyDepartment(), is_o);
-	pack_hbox(h_box, label, iu->dept);
+			// Set the language now
+			const SLanguage *lang = GetLanguageByCode(
+				user->GetLanguage(i));
+			if(lang == NULL)
+				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(
+					iu->o_lang[i])->entry), "Unspecified");
+			else
+				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(
+					iu->o_lang[i])->entry), lang->szName);
 
-	/* Company Name and Department in a horz line */
-	gtk_box_pack_start(GTK_BOX(work_box), h_box, FALSE, FALSE, 5);	
+			gtk_box_pack_start(GTK_BOX(h_box), label, false, false,
+				5);
+			gtk_box_pack_start(GTK_BOX(h_box), iu->o_lang[i],
+				false, false, 5);
+		}
+	}
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	gtk_table_attach(GTK_TABLE(more_table), h_box, 0, 4, 2, 3,
+		GTK_FILL, GTK_FILL, 3, 1);
 
-	/* Position and pack it */
-	do_entry(iu->pos, label, "Position: ", user->GetCompanyPosition(),
-		 is_o);
-	pack_hbox(h_box, label, iu->pos);
+//------ END MORE TAB -----------------------------------
 
-	/* Company Homepage and pack it */
-	do_entry(iu->co_homepage, label, "Homepage: ",
-		 user->GetCompanyHomepage(), is_o);
-	pack_hbox(h_box, label, iu->co_homepage);
+//------ START WORK TAB ---------------------------------
 
-	/* Pack Position and Homepage in a horz line */
-	gtk_box_pack_start(GTK_BOX(work_box), h_box, FALSE, FALSE, 5);
+	GtkWidget *work_table = gtk_table_new(5, 4, false);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	// Company Name
+	do_label_and_entry(iu->company, user->GetCompanyName(), "Company Name:",
+		work_table, 0, 0, is_o);
 
-	/* Company Address */
-	do_entry(iu->co_address, label, "Address:",
-		 user->GetCompanyAddress(), is_o);
-	pack_hbox(h_box, label, iu->co_address);
+	// Department
+	do_label_and_entry(iu->dept, user->GetCompanyDepartment(), "Department:",
+		work_table, 2, 0, is_o);
 
-	/* Company Phone Number */
-	do_entry(iu->co_phone, label, "Phone Num:",
-		 user->GetCompanyPhoneNumber(), is_o);
-	pack_hbox(h_box, label, iu->co_phone);
+	// Position
+	do_label_and_entry(iu->pos, user->GetCompanyPosition(), "Position:",
+		work_table, 0, 2, is_o);
 
-	gtk_box_pack_start(GTK_BOX(work_box), h_box, FALSE, FALSE, 5);
+	// Homepage
+	do_label_and_entry(iu->co_homepage, user->GetCompanyHomepage(),
+		"Homepage:", work_table, 2, 2, is_o);
 
-	h_box = gtk_hbox_new(FALSE, 5);
+	// Address 
+	do_label_and_entry(iu->co_address, user->GetCompanyAddress(),
+		"Address:", work_table, 0, 3, is_o);
 
-	/* Company City and pack it */
-	do_entry(iu->co_city, label, "City:      ", user->GetCompanyCity(),
-		 is_o);
-	pack_hbox(h_box, label, iu->co_city);
+	// City
+	do_label_and_entry(iu->co_city, user->GetCompanyCity(),
+		"City:", work_table, 2, 3, is_o);
 
-	/* Company State and pack it */
-	do_entry(iu->co_state, label, "State:         ",
-		 user->GetCompanyState(), is_o);
-	pack_hbox(h_box, label, iu->co_state);
+	// State
+	do_label_and_entry(iu->co_state, user->GetCompanyState(), "State:",
+		work_table, 0, 4, is_o);
 
-	gtk_box_pack_start(GTK_BOX(work_box), h_box, FALSE, FALSE, 5);
+	// Phone Number
+	do_label_and_entry(iu->co_phone, user->GetCompanyPhoneNumber(),
+		"Phone Number:", work_table, 0, 5, is_o);
 
-	/* END WORK TAB */
+	// Fax Number
+	do_label_and_entry(iu->co_fax, user->GetCompanyFaxNumber(),
+		"Fax Number:", work_table, 2, 5, is_o);
 
-	/* START ABOUT TAB */
+	
+//------- END WORK TAB --------------------------------------
 
+//------- START ABOUT TAB -----------------------------------
+
+	GtkWidget *about_box = gtk_vbox_new(FALSE, 5);
 	iu->about = gtk_text_new(NULL, NULL);
 	gtk_text_set_word_wrap(GTK_TEXT(iu->about), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(iu->about), TRUE);
+	gtk_text_set_editable(GTK_TEXT(iu->about), is_o);
 	gtk_text_freeze(GTK_TEXT(iu->about));
 	gtk_text_insert(GTK_TEXT(iu->about), 0, 0, 0, user->GetAbout(), -1);
 	gtk_text_thaw(GTK_TEXT(iu->about));
@@ -392,19 +504,21 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	/* Pack the about box */
 	gtk_box_pack_start(GTK_BOX(about_box), v_scroll, FALSE, FALSE, 5);
 
-	/* END ABOUT TAB */
+//------ END ABOUT TAB -------------------------------------
 
 	/* Add everything to the notebook */
 	label = gtk_label_new("General");
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), general_box, label);
+	gtk_notebook_append_page(GTK_NOTEBOOK(iu->notebook), general_table,
+		label);
 	label = gtk_label_new("Address");
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), address_box, label);
+	gtk_notebook_append_page(GTK_NOTEBOOK(iu->notebook), address_table,
+		label);
 	label = gtk_label_new("More");
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), more_box, label);
+	gtk_notebook_append_page(GTK_NOTEBOOK(iu->notebook), more_table, label);
 	label = gtk_label_new("Work");
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), work_box, label);
+	gtk_notebook_append_page(GTK_NOTEBOOK(iu->notebook), work_table, label);
 	label = gtk_label_new("About");
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_box, label);
+	gtk_notebook_append_page(GTK_NOTEBOOK(iu->notebook), about_box, label);
 
 	/* The buttons */
 	save = gtk_button_new_with_label("Save");
@@ -433,7 +547,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_signal_connect(GTK_OBJECT(iu->cancel), "clicked",
 			   GTK_SIGNAL_FUNC(cancel_user_info), iu);
 
-	gtk_box_pack_start(GTK_BOX(v_box), notebook, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(v_box), iu->notebook, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* The status bar */
@@ -454,8 +568,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 void user_info_save(GtkWidget *widget, struct info_user *iu)
 {
 	ICQUser *user = gUserManager.FetchUser(iu->user->Uin(), LOCK_R);
-	user->SetAlias(gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0,
-					      -1));
+	user->SetAlias(gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1));
 	gUserManager.DropUser(user);
 	contact_list_refresh();
 }
@@ -490,21 +603,106 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 
 	if(iu->user->Uin() == gUserManager.OwnerUin())
 	{
-	   iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
-		gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1),
-		gtk_editable_get_chars(GTK_EDITABLE(iu->name), 0, -1),
-		NULL,
-		gtk_editable_get_chars(GTK_EDITABLE(iu->email1), 0, -1),
-		gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
-		NULL,
-		gtk_editable_get_chars(GTK_EDITABLE(iu->city), 0, -1),
-		gtk_editable_get_chars(GTK_EDITABLE(iu->state), 0, -1),
-		gtk_editable_get_chars(GTK_EDITABLE(iu->phone), 0, -1),
-		NULL,
-		gtk_editable_get_chars(GTK_EDITABLE(iu->address), 0, -1),
-		NULL,
-		gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
-		0, false);
+		if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
+		   == 0 || gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
+		   == 1)
+		{
+			const gchar *_country = gtk_editable_get_chars(
+				GTK_EDITABLE(GTK_COMBO(iu->o_country)->entry),
+				0, -1);
+			unsigned short cc;
+			
+			if(strcmp("Unspecified", _country) == 0)
+				cc = COUNTRY_UNSPECIFIED;
+			else
+			{
+				const SCountry *NewCountry =
+					GetCountryByName(_country);
+				cc = NewCountry->nCode;
+			}
+
+	   		iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->fname), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->lname), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->email1), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->oldemail), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->city), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->state), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->phone), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->faxnumber), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->address), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->cellphone), 0, -1),
+		  	gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
+		  	cc, 
+	 	  	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(iu->hide_email)));
+		}
+
+		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
+			== 2)
+		{
+			const SLanguage *l1 = GetLanguageByName(
+				gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(
+				iu->o_lang[0])->entry), 0, -1));
+			unsigned short lang1 = l1->nCode;
+			const SLanguage *l2 = GetLanguageByName(
+				gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(
+				iu->o_lang[1])->entry), 0, -1));
+			unsigned short lang2 =  l2->nCode;
+			const SLanguage *l3 = GetLanguageByName(
+				gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(
+				iu->o_lang[2])->entry), 0, -1));
+			unsigned short lang3 =  l3->nCode;
+		
+			unsigned short sex = 0;
+			const char *_gender = gtk_editable_get_chars(
+				GTK_EDITABLE(GTK_COMBO(iu->o_gender)->entry), 0,
+				-1);
+			if(strcmp(_gender, "Female") == 0)
+				sex = 1;
+			else if (strcmp(_gender, "Male") == 0)
+				sex = 2;
+				
+	   	  iu->etag->e_tag = icq_daemon->icqSetMoreInfo(
+	   		atoi(gtk_editable_get_chars(GTK_EDITABLE(iu->age), 0, -1)),
+			sex,
+			gtk_editable_get_chars(GTK_EDITABLE(iu->homepage), 0, -1),
+			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
+				iu->o_byear)),
+			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
+				iu->o_bmonth)),
+			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
+				iu->o_bday)),
+			lang1,
+			lang2,
+			lang3);
+
+			g_free(const_cast<char *>(_gender));
+		}
+
+		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
+			== 3)
+	   	{
+			iu->etag->e_tag = icq_daemon->icqSetWorkInfo(
+	   			gtk_editable_get_chars(GTK_EDITABLE(iu->co_city), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->co_state), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->co_phone), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->co_fax), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->co_address), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->company), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->dept), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->pos), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->co_homepage), 0, -1));
+		}
+		
+		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
+			== 4)
+		{
+			iu->etag->e_tag = icq_daemon->icqSetAbout(
+				gtk_editable_get_chars(GTK_EDITABLE(
+					iu->about), 0, -1));
+		}
 	}
 
 	else
@@ -576,20 +774,38 @@ struct info_user *iu_find(unsigned long uin)
 	return NULL;
 }
 
-void do_entry(GtkWidget *&entry,
-	      GtkWidget *&label,
-              const gchar *lbl,
-	      const gchar *text,
-	      gboolean is_owner)
+void do_entry(GtkWidget *&entry, const gchar *text, gboolean is_owner)
 {
-	label = gtk_label_new(lbl);
+	// The entry
 	entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(entry), text);
 	gtk_entry_set_editable(GTK_ENTRY(entry), is_owner);
 }
 
-void pack_hbox(GtkWidget *&h_box, GtkWidget *label, GtkWidget *entry)
+void do_label_and_entry(GtkWidget *&entry,
+	      const gchar *text,
+	      const gchar *lbl,
+	      GtkWidget *&table,
+	      gint left,
+	      gint top,
+	      gboolean is_owner)
 {
-	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), entry, FALSE, FALSE, 5);
+	// The entry
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), text);
+	gtk_entry_set_editable(GTK_ENTRY(entry), is_owner);
+
+	// The label
+	GtkWidget *label = gtk_label_new(lbl);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+
+	// Attach it to the table
+	gtk_table_attach(GTK_TABLE(table), label, left, left + 1,
+		top, top + 1,
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+		GTK_FILL, 3, 1);
+	gtk_table_attach(GTK_TABLE(table), entry, left + 1, left + 2,
+		top, top + 1,
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+		 GTK_FILL, 3, 1);
 }

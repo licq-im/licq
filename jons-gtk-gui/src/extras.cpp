@@ -437,25 +437,23 @@ void finish_info(CICQSignal *signal)
 	if(iu == NULL)
 		return;
 
-	const gchar *name = g_strdup_printf("%s %s", iu->user->GetFirstName(),
-					    iu->user->GetLastName());
 	const SCountry *country = GetCountryByCode(iu->user->GetCountryCode());
-	const SLanguage *l1 = GetLanguageByCode(iu->user->GetLanguage(0));
-	const SLanguage *l2 = GetLanguageByCode(iu->user->GetLanguage(1));
-	const SLanguage *l3 = GetLanguageByCode(iu->user->GetLanguage(2));
+//	const SLanguage *l1 = GetLanguageByCode(iu->user->GetLanguage(0));
+//	const SLanguage *l2 = GetLanguageByCode(iu->user->GetLanguage(1));
+//	const SLanguage *l3 = GetLanguageByCode(iu->user->GetLanguage(2));
 
-	gchar *bday;
-	gchar *age;
+	gchar bday[11];
+	gchar age[6];
 
 	if(iu->user->GetAge() != 65535)
-		age = g_strdup_printf("%hd", iu->user->GetAge());
+		sprintf(age, "%hd", iu->user->GetAge());
 	else
-		age = "N/A";
+		strcpy(age, "N/A");
 
 	if(iu->user->GetBirthMonth() == 0 || iu->user->GetBirthDay() == 0)
-		bday = "N/A";
+		strcpy(bday, "N/A");
 	else
-		bday = g_strdup_printf("%d/%d/%d", iu->user->GetBirthMonth(),
+		sprintf(bday, "%d/%d/%d", iu->user->GetBirthMonth(),
 			iu->user->GetBirthDay(), iu->user->GetBirthYear());
 
 	switch(type)
@@ -464,11 +462,16 @@ void finish_info(CICQSignal *signal)
 	case USER_BASIC:
 	case USER_EXT:
 		gtk_entry_set_text(GTK_ENTRY(iu->alias), iu->user->GetAlias());
-		gtk_entry_set_text(GTK_ENTRY(iu->name), name);
+		gtk_entry_set_text(GTK_ENTRY(iu->fname),
+				   iu->user->GetFirstName());
+		gtk_entry_set_text(GTK_ENTRY(iu->lname),
+				   iu->user->GetLastName());
 		gtk_entry_set_text(GTK_ENTRY(iu->email1),
 				   iu->user->GetEmailPrimary());
 		gtk_entry_set_text(GTK_ENTRY(iu->email2),
 				   iu->user->GetEmailSecondary());
+		gtk_entry_set_text(GTK_ENTRY(iu->oldemail),
+				   iu->user->GetEmailOld());
 		gtk_entry_set_text(GTK_ENTRY(iu->address),
 				   iu->user->GetAddress());
 		gtk_entry_set_text(GTK_ENTRY(iu->city), iu->user->GetCity());
@@ -477,14 +480,17 @@ void finish_info(CICQSignal *signal)
 		
 		if(country == NULL)
 			gtk_entry_set_text(GTK_ENTRY(iu->country),
-					   "Unknown");
+					   "Unspecified");
 		else
 			gtk_entry_set_text(GTK_ENTRY(iu->country),
 					   country->szName);
 
-
 		gtk_entry_set_text(GTK_ENTRY(iu->phone),
 				   iu->user->GetPhoneNumber());
+		gtk_entry_set_text(GTK_ENTRY(iu->cellphone),
+				   iu->user->GetCellularNumber());
+		gtk_entry_set_text(GTK_ENTRY(iu->faxnumber),
+				   iu->user->GetFaxNumber());
 		break;
 	case USER_MORE:
 		if(iu->user->GetGender() == 1)
@@ -500,11 +506,15 @@ void finish_info(CICQSignal *signal)
 
 		gtk_entry_set_text(GTK_ENTRY(iu->homepage),
 				   iu->user->GetHomepage());
-		if(l1 == NULL)
-			gtk_entry_set_text(GTK_ENTRY(iu->lang1), "Unknown");
-		else
-			gtk_entry_set_text(GTK_ENTRY(iu->lang1), l1->szName);
 
+		for(unsigned short i = 0; i < 3; i++) {
+		const SLanguage *l = GetLanguageByCode(iu->user->GetLanguage(i));
+		if(l == NULL)
+			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), "Unknown");
+		else
+			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), l->szName);
+		}
+/*
 		if(l2 == NULL)
                         gtk_entry_set_text(GTK_ENTRY(iu->lang2), "Unknown");
                 else
@@ -514,7 +524,7 @@ void finish_info(CICQSignal *signal)
                         gtk_entry_set_text(GTK_ENTRY(iu->lang3), "Unknown");
                 else
                         gtk_entry_set_text(GTK_ENTRY(iu->lang3), l3->szName);
-		break;
+	*/	break;
 	case USER_WORK:
 		gtk_entry_set_text(GTK_ENTRY(iu->company),
 				   iu->user->GetCompanyName());
@@ -528,6 +538,8 @@ void finish_info(CICQSignal *signal)
 				   iu->user->GetCompanyAddress());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_phone),
 				   iu->user->GetCompanyPhoneNumber());
+		gtk_entry_set_text(GTK_ENTRY(iu->co_fax),
+				   iu->user->GetCompanyFaxNumber());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_city),
 				   iu->user->GetCompanyCity());
 		gtk_entry_set_text(GTK_ENTRY(iu->co_state),

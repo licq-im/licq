@@ -80,23 +80,34 @@ struct send_url
 struct info_user
 {
 	GtkWidget *window;
+	GtkWidget *notebook;
 	GtkWidget *alias;
-	GtkWidget *name;
+	GtkWidget *fname;
+	GtkWidget *lname;
 	GtkWidget *email1;
 	GtkWidget *email2;
+	GtkWidget *oldemail;
 	GtkWidget *address;
 	GtkWidget *city;
 	GtkWidget *state;
 	GtkWidget *zip;
 	GtkWidget *country;
+	GtkWidget *o_country;
 	GtkWidget *phone;
+	GtkWidget *cellphone;
+	GtkWidget *faxnumber;
+	GtkWidget *need_auth;
+	GtkWidget *hide_email;
 	GtkWidget *age;
 	GtkWidget *gender;
+	GtkWidget *o_gender;
 	GtkWidget *homepage;
 	GtkWidget *bday;
-	GtkWidget *lang1;
-	GtkWidget *lang2;
-	GtkWidget *lang3;
+	GtkWidget *o_bday;
+	GtkWidget *o_bmonth;
+	GtkWidget *o_byear;
+	GtkWidget *lang[3];
+	GtkWidget *o_lang[3];
 	GtkWidget *company;
 	GtkWidget *dept;
 	GtkWidget *pos;
@@ -105,6 +116,7 @@ struct info_user
 	GtkWidget *co_phone;
 	GtkWidget *co_city;
 	GtkWidget *co_state;
+	GtkWidget *co_fax;
 	GtkWidget *about;
 	GtkWidget *update;
 	GtkWidget *cancel;
@@ -577,6 +589,8 @@ extern void main_window_show();
 
 /* Functions in menu.cpp */
 extern GtkWidget *menu_new_item(GtkWidget *, const char *, GtkSignalFunc);
+extern GtkWidget *menu_new_item_with_pixmap(GtkWidget *, const char *,
+	GtkSignalFunc, struct status_icon *);
 extern void menu_separator(GtkWidget *);
 extern void menu_create();
 extern void menu_system_quit(GtkWidget *, gpointer);
@@ -682,9 +696,9 @@ extern void cancel_user_info(GtkWidget *, struct info_user *);
 extern void verify_user_info(GtkWidget *, guint, gchar *,  struct info_user *);
 extern struct info_user *iu_new(ICQUser *);
 extern struct info_user *iu_find(unsigned long);
-extern void do_entry(GtkWidget *&, GtkWidget *&, const gchar *,
-		     const gchar *, gboolean);
-extern void pack_hbox(GtkWidget *&, GtkWidget *, GtkWidget *);
+extern void do_entry(GtkWidget *&, const gchar *, gboolean);
+extern void do_label_and_entry(GtkWidget *&, const gchar *,
+	const gchar *, GtkWidget *&, gint, gint, gboolean);
 
 
 /* Function in user_menu.cpp */

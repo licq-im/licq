@@ -89,11 +89,6 @@ void system_message_window()
 				"E-mail Pager\n-----------\n\n", -1);
 		break;
 
-	case ICQ_CMDxSUB_CONTACTxLIST:
-		gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0,
-				"Contact\n-------\n\n", -1);
-		break;
-
 	default:
 		g_print("Unknown system message type\n");
 	}

@@ -73,41 +73,43 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 	_menu = gtk_menu_new();
 
 	_menu_item =
-		menu_new_item(_menu, "Free For Chat",
-				GTK_SIGNAL_FUNC(status_ffc));
+		menu_new_item_with_pixmap(_menu, "Free For Chat",
+			GTK_SIGNAL_FUNC(status_ffc), ffc);
 	_menu_item =
-		menu_new_item(_menu, "Online", GTK_SIGNAL_FUNC(status_online));
+		menu_new_item_with_pixmap(_menu, "Online",
+			GTK_SIGNAL_FUNC(status_online), online);
 
 	_menu_item =
-		menu_new_item(_menu, "Away", GTK_SIGNAL_FUNC(status_away));
+		menu_new_item_with_pixmap(_menu, "Away",
+			GTK_SIGNAL_FUNC(status_away), away);
 
 	_menu_item =
-		menu_new_item(_menu, "Not Available",
-				GTK_SIGNAL_FUNC(status_na));
+		menu_new_item_with_pixmap(_menu, "Not Available",
+			GTK_SIGNAL_FUNC(status_na), na);
 
 	_menu_item =
-		menu_new_item(_menu, "Occupied", GTK_SIGNAL_FUNC(status_occ));
+		menu_new_item_with_pixmap(_menu, "Occupied",
+			GTK_SIGNAL_FUNC(status_occ), occ);
 
 	_menu_item =
-		menu_new_item(_menu, "Do Not Disturb",
-				GTK_SIGNAL_FUNC(status_dnd));
+		menu_new_item_with_pixmap(_menu, "Do Not Disturb",
+			GTK_SIGNAL_FUNC(status_dnd), dnd);
 
 	_menu_item =
-		menu_new_item(_menu, "Offline", GTK_SIGNAL_FUNC(status_off));
+		menu_new_item_with_pixmap(_menu, "Offline",
+			GTK_SIGNAL_FUNC(status_off), offline);
 
-	/* The invisible selection */
-	_menu_item = gtk_check_menu_item_new_with_label("Invisible");
+	// Separator
+	GtkWidget *separator = gtk_hseparator_new();
+	_menu_item = gtk_menu_item_new();
 	gtk_menu_append(GTK_MENU(_menu), _menu_item);
-	gtk_signal_connect(GTK_OBJECT(_menu_item), "toggled",
-			   GTK_SIGNAL_FUNC(status_invisible), _menu_item);
-	gtk_widget_show(_menu_item);
+	gtk_container_add(GTK_CONTAINER(_menu_item), separator);
+	gtk_widget_set_sensitive(_menu_item, false);
+	gtk_widget_show_all(_menu_item);
 
-	/* Set the state for the invisible checkmark */
-	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_menu_item),
-			owner->StatusInvisible());
-	gUserManager.DropOwner();
-
+	_menu_item = 
+		menu_new_item_with_pixmap(_menu, "Invisible",
+			GTK_SIGNAL_FUNC(status_invisible), invisible);
 	_root_menu =
 		menu_new_item(NULL, "", NULL);
 
@@ -171,7 +173,7 @@ void status_invisible(GtkWidget *popup, GtkWidget *invisible_check)
 {
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 	
-	if(GTK_CHECK_MENU_ITEM(invisible_check)->active)
+	if(!(owner->StatusFull() & ICQ_STATUS_FxPRIVATE))
 	{
 		icq_daemon->icqSetStatus(owner->StatusFull() | ICQ_STATUS_FxPRIVATE);
 	}
