@@ -23,6 +23,9 @@
 /* The internal Licq version number */
 #undef INT_VERSION
 
+/* The prefix to install to */
+#undef INSTALL_PREFIX
+
 /* Whether or not to include SOCKS5 firewall support */
 #undef USE_SOCKS5
 
