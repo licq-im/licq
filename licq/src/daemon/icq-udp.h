@@ -526,7 +526,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     gTranslator.ServerToClient(u->getLastName());
 
     // print out the user information
-    gLog.Info("%s%s (%s %s), %s.\n", L_BLANKxSTR , u->getAlias(),
+    gLog.Info("%s%s (%s %s), %s.\n", L_SBLANKxSTR , u->getAlias(),
              u->getFirstName(), u->getLastName(), u->getEmail());
 
     // save the user infomation
@@ -608,7 +608,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     gTranslator.ServerToClient(u->getAbout());
 
     // print out the user information
-    gLog.Info("%s%s, %s, %s. %d years old, %s. %s, %s, %s.\n", L_BLANKxSTR,
+    gLog.Info("%s%s, %s, %s. %d years old, %s. %s, %s, %s.\n", L_SBLANKxSTR,
               u->getCity(), u->getState(), u->getCountry(sTemp), u->getAge(),
               u->getSex(buf), u->getPhoneNumber(), u->getHomepage(), u->getAbout());
 

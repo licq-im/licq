@@ -802,7 +802,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
 
   unsigned long ulJunk, nUin;//, localHost;
-  s->RecvBuffer() >> ulJunk >> nUin;
+  b >> ulJunk >> nUin;
                               //>> localHost >> localHost;
                               //>> ulJunk >> ucJunk;
 
