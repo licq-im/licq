@@ -185,15 +185,15 @@ public:
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
   CICQEventTag *icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
-                              const char *szLastName, const char *szEmail1,
-                              const char *szEmail2, const char *szCity,
+                              const char *szLastName, const char *szEmailPrimary,
+                              const char *szEmailSecondary, const char *szEmailOld, const char *szCity,
                               const char *szState, const char *szPhoneNumber,
                               const char *szFaxNumber, const char *szAddress,
                               const char *szCellularNumber, const char *szZipCode,
                               unsigned short nCountryCode, bool bHideEmail);
   CICQEventTag *icqSetMoreInfo(unsigned short nAge,
                            char nGender, const char *szHomepage,
-                           char nBirthYear, char nBirthMonth,
+                           unsigned short nBirthYear, char nBirthMonth,
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);
   CICQEventTag *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);

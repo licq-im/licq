@@ -161,8 +161,9 @@ public:
   char *GetAlias()                      {  return m_szAlias;  }
   char *GetFirstName()                  {  return m_szFirstName;  }
   char *GetLastName()                   {  return m_szLastName;  }
-  char *GetEmail1()                     {  return m_szEmail1;  }
-  char *GetEmail2()                     {  return m_szEmail2;  }
+  char *GetEmailPrimary()               {  return m_szEmailPrimary;  }
+  char *GetEmailSecondary()             {  return m_szEmailSecondary;  }
+  char *GetEmailOld()                   {  return m_szEmailOld;  }
   char *GetCity()                       {  return m_szCity;  }
   char *GetState()                      {  return m_szState;  }
   char *GetPhoneNumber()                {  return m_szPhoneNumber;  }
@@ -179,7 +180,7 @@ public:
   unsigned short GetAge()               {  return m_nAge;  }
   char GetGender()                      {  return m_nGender;  }
   char *GetHomepage()                   {  return m_szHomepage;  }
-  char GetBirthYear()                   {  return m_nBirthYear;  }
+  unsigned short GetBirthYear()         {  return m_nBirthYear;  }
   char GetBirthMonth()                  {  return m_nBirthMonth;  }
   char GetBirthDay()                    {  return m_nBirthDay;  }
   char GetLanguage1()                   {  return m_nLanguage[0];  }
@@ -234,8 +235,9 @@ public:
   void SetAlias (const char *n);//              {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
   void SetFirstName (const char *n)          {  SetString(&m_szFirstName, n);  SaveGeneralInfo();  }
   void SetLastName (const char *n)           {  SetString(&m_szLastName, n);  SaveGeneralInfo();  }
-  void SetEmail1 (const char *n)             {  SetString(&m_szEmail1, n);  SaveGeneralInfo();  }
-  void SetEmail2 (const char *n)             {  SetString(&m_szEmail2, n);  SaveGeneralInfo();  }
+  void SetEmailPrimary (const char *n)       {  SetString(&m_szEmailPrimary, n);  SaveGeneralInfo();  }
+  void SetEmailSecondary (const char *n)     {  SetString(&m_szEmailSecondary, n);  SaveGeneralInfo();  }
+  void SetEmailOld(const char *n)            {  SetString(&m_szEmailOld, n);  SaveGeneralInfo();  }
   void SetCity (const char *n)               {  SetString(&m_szCity, n);  SaveGeneralInfo();  }
   void SetState (const char *n)              {  SetString(&m_szState, n);  SaveGeneralInfo();  }
   void SetPhoneNumber (const char *n)        {  SetString(&m_szPhoneNumber, n);  SaveGeneralInfo();  }
@@ -252,7 +254,7 @@ public:
   void SetAge (unsigned short n)             {  m_nAge = n;  SaveMoreInfo();  }
   void SetGender (const char n)              {  m_nGender = n;  SaveMoreInfo();  }
   void SetHomepage (const char *n)           {  SetString(&m_szHomepage, n);  SaveMoreInfo();  }
-  void SetBirthYear (const char n)           {  m_nBirthYear = n;  SaveMoreInfo();  }
+  void SetBirthYear (unsigned short n)       {  m_nBirthYear = n;  SaveMoreInfo();  }
   void SetBirthMonth (const char n)          {  m_nBirthMonth = n;  SaveMoreInfo();  }
   void SetBirthDay (const char n)            {  m_nBirthDay = n;  SaveMoreInfo();  }
   void SetLanguage1 (const char n)           {  m_nLanguage[0] = n;  SaveMoreInfo();  }
@@ -433,8 +435,9 @@ protected:
   char *m_szAlias;
   char *m_szFirstName;
   char *m_szLastName;
-  char *m_szEmail1;
-  char *m_szEmail2;
+  char *m_szEmailPrimary;
+  char *m_szEmailSecondary;
+  char *m_szEmailOld;
   char *m_szCity;
   char *m_szState;
   char *m_szPhoneNumber;
@@ -451,7 +454,7 @@ protected:
   unsigned short m_nAge;
   char m_nGender;
   char *m_szHomepage;
-  char m_nBirthYear;
+  unsigned short m_nBirthYear;
   char m_nBirthMonth;
   char m_nBirthDay;
   char m_nLanguage[3];

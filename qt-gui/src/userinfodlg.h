@@ -86,7 +86,7 @@ protected:
   // User Info tab
   void CreateGeneralInfo();
   void InitGeneralInfo();
-  CInfoField *nfoFirstName, *nfoLastName, *nfoEmail1, *nfoEmail2,
+  CInfoField *nfoFirstName, *nfoLastName, *nfoEmailPrimary, *nfoEmailSecondary, *nfoEmailOld,
              *nfoAlias, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
              *nfoPhone, *nfoLastOnline, *nfoTime, *nfoStatus;

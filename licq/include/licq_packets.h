@@ -404,8 +404,9 @@ public:
   CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName,
                           const char *szLastName,
-                          const char *szEmail1,
-                          const char *szEmail2,
+                          const char *szEmailPrimary,
+                          const char *szEmailSecondary,
+                          const char *szEmailOld,
                           const char *szCity,
                           const char *szState,
                           const char *szPhoneNumber,
@@ -422,8 +423,9 @@ protected:
   char *m_szAlias;
   char *m_szFirstName;
   char *m_szLastName;
-  char *m_szEmail1;
-  char *m_szEmail2;
+  char *m_szEmailPrimary;
+  char *m_szEmailSecondary;
+  char *m_szEmailOld;
   char *m_szCity;
   char *m_szState;
   char *m_szPhoneNumber;
@@ -446,7 +448,7 @@ public:
   CPU_Meta_SetMoreInfo(unsigned short nAge,
                        char nGender,
                        const char *szHomepage,
-                       char nBirthYear,
+                       unsigned short nBirthYear,
                        char nBirthMonth,
                        char nBirthDay,
                        char nLanguage1,
@@ -459,7 +461,7 @@ protected:
   unsigned short m_nAge;
   char m_nGender;
   char *m_szHomepage;
-  char m_nBirthYear;
+  unsigned short m_nBirthYear;
   char m_nBirthMonth;
   char m_nBirthDay;
   char m_nLanguage1;

@@ -97,7 +97,7 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
   sprintf(sz, "%s%c%s%c%s%c%s%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
-      0xFE, o->GetLastName(), 0xFE, o->GetEmail1(), 0xFE, o->GetAuthorization() ? '0' : '1');
+      0xFE, o->GetLastName(), 0xFE, o->GetEmailPrimary(), 0xFE, o->GetAuthorization() ? '0' : '1');
   gUserManager.DropOwner();
   CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info("%sAlerting user they were added (#%ld)...\n", L_UDPxSTR, p->Sequence());
@@ -572,8 +572,8 @@ CICQEventTag *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szSta
 //-----icqSetGeneralInfo----------------------------------------------------
 CICQEventTag *CICQDaemon::icqSetGeneralInfo(
                           const char *szAlias, const char *szFirstName,
-                          const char *szLastName, const char *szEmail1,
-                          const char *szEmail2, const char *szCity,
+                          const char *szLastName, const char *szEmailPrimary,
+                          const char *szEmailSecondary, const char *szEmailOld, const char *szCity,
                           const char *szState, const char *szPhoneNumber,
                           const char *szFaxNumber, const char *szAddress,
                           const char *szCellularNumber, const char *szZipCode,
@@ -581,8 +581,8 @@ CICQEventTag *CICQDaemon::icqSetGeneralInfo(
 {
   CPU_Meta_SetGeneralInfo *p =
     new CPU_Meta_SetGeneralInfo(szAlias, szFirstName,
-                                szLastName, szEmail1,
-                                szEmail2, szCity,
+                                szLastName, szEmailPrimary,
+                                szEmailSecondary, szEmailOld, szCity,
                                 szState, szPhoneNumber,
                                 szFaxNumber, szAddress,
                                 szCellularNumber, szZipCode,
@@ -600,7 +600,7 @@ CICQEventTag *CICQDaemon::icqSetGeneralInfo(
 //-----icqSetMoreInfo----------------------------------------------------
 CICQEventTag *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
                               char nGender, const char *szHomepage,
-                              char nBirthYear, char nBirthMonth,
+                              unsigned short nBirthYear, char nBirthMonth,
                               char nBirthDay, char nLanguage1,
                               char nLanguage2, char nLanguage3)
 {
@@ -1003,7 +1003,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       u->SetAlias(packet.UnpackString(temp));
       u->SetFirstName(packet.UnpackString(temp));
       u->SetLastName(packet.UnpackString(temp));
-      u->SetEmail1(packet.UnpackString(temp));
+      u->SetEmailPrimary(packet.UnpackString(temp));
       packet >> cAuthorization;
       u->SetAuthorization(cAuthorization == 0 ? true : false);
 
@@ -1112,7 +1112,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       o->SetAlias(p->Alias());
       o->SetFirstName(p->FirstName());
       o->SetLastName(p->LastName());
-      o->SetEmail1(p->Email());
+      o->SetEmailPrimary(p->Email());
       o->SetAuthorization(p->Authorization());
 
       // translating string with Translation Table
@@ -1997,7 +1997,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetAlias(packet.UnpackString(szTemp));
           u->SetFirstName(packet.UnpackString(szTemp));
           u->SetLastName(packet.UnpackString(szTemp));
-          u->SetEmail1(packet.UnpackString(szTemp));
+          u->SetEmailPrimary(packet.UnpackString(szTemp));
           // FIXME how does this packet end?
           //u->SetAuthorization(!packet.UnpackChar());
           //packet.UnpackChar(); // 02, what the?
@@ -2022,10 +2022,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetAlias(packet.UnpackString(szTemp));
           u->SetFirstName(packet.UnpackString(szTemp));
           u->SetLastName(packet.UnpackString(szTemp));
-          u->SetEmail1(packet.UnpackString(szTemp));
-          u->SetEmail2(packet.UnpackString(szTemp));
-          // Old email address
-          packet.UnpackString(szTemp);
+          u->SetEmailPrimary(packet.UnpackString(szTemp));
+          u->SetEmailSecondary(packet.UnpackString(szTemp));
+          u->SetEmailOld(packet.UnpackString(szTemp));
           u->SetCity(packet.UnpackString(szTemp));
           u->SetState(packet.UnpackString(szTemp));
           u->SetPhoneNumber(packet.UnpackString(szTemp));
@@ -2099,7 +2098,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetAge(packet.UnpackUnsignedShort());
           u->SetGender(packet.UnpackChar());
           u->SetHomepage(packet.UnpackString(szTemp));
-          u->SetBirthYear(packet.UnpackChar());
+          u->SetBirthYear(packet.UnpackUnsignedShort());
           u->SetBirthMonth(packet.UnpackChar());
           u->SetBirthDay(packet.UnpackChar());
           u->SetLanguage1(packet.UnpackChar());
@@ -2137,8 +2136,9 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetAlias(p->m_szAlias);
       o->SetFirstName(p->m_szFirstName);
       o->SetLastName(p->m_szLastName);
-      o->SetEmail1(p->m_szEmail1);
-      o->SetEmail2(p->m_szEmail2);
+      o->SetEmailPrimary(p->m_szEmailPrimary);
+      o->SetEmailSecondary(p->m_szEmailSecondary);
+      o->SetEmailOld(p->m_szEmailOld);
       o->SetCity(p->m_szCity);
       o->SetState(p->m_szState);
       o->SetPhoneNumber(p->m_szPhoneNumber);

@@ -104,7 +104,7 @@ const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
 // Meta commands (sent)
 const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E9; // 1001
 const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F2; // 1010
-const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FC; // 1020
+const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FD; // 1020
 const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070

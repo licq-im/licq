@@ -797,8 +797,9 @@ void ICQUser::LoadGeneralInfo()
   m_fConf.ReadStr("Alias", szTemp, "Unknown");  SetAlias(szTemp);
   m_fConf.ReadStr("FirstName", szTemp, "");  SetFirstName(szTemp);
   m_fConf.ReadStr("LastName", szTemp, "");  SetLastName(szTemp);
-  m_fConf.ReadStr("Email1", szTemp, "");  SetEmail1(szTemp);
-  m_fConf.ReadStr("Email2", szTemp, "");  SetEmail2(szTemp);
+  m_fConf.ReadStr("Email1", szTemp, "");  SetEmailPrimary(szTemp);
+  m_fConf.ReadStr("Email2", szTemp, "");  SetEmailSecondary(szTemp);
+  m_fConf.ReadStr("EmailO", szTemp, "");  SetEmailOld(szTemp);
   m_fConf.ReadStr("City", szTemp, "");  SetCity(szTemp);
   m_fConf.ReadStr("State", szTemp, "");  SetState(szTemp);
   m_fConf.ReadStr("PhoneNumber", szTemp, "");  SetPhoneNumber(szTemp);
@@ -991,8 +992,9 @@ void ICQUser::Init(unsigned long _nUin)
   m_szAlias = NULL;
   m_szFirstName = NULL;
   m_szLastName = NULL;
-  m_szEmail1 = NULL;
-  m_szEmail2 = NULL;
+  m_szEmailPrimary = NULL;
+  m_szEmailSecondary = NULL;
+  m_szEmailOld = NULL;
   m_szCity = NULL;
   m_szState = NULL;
   m_szPhoneNumber = NULL;
@@ -1071,8 +1073,9 @@ void ICQUser::SetDefaults()
   szTemp[0] = '\0';
   SetFirstName(szTemp);
   SetLastName(szTemp);
-  SetEmail1(szTemp);
-  SetEmail2(szTemp);
+  SetEmailPrimary(szTemp);
+  SetEmailSecondary(szTemp);
+  SetEmailOld(szTemp);
   SetCity(szTemp);
   SetState(szTemp);
   SetPhoneNumber(szTemp);
@@ -1080,6 +1083,7 @@ void ICQUser::SetDefaults()
   SetAddress(szTemp);
   SetCellularNumber(szTemp);
   SetHomepage(szTemp);
+  SetZipCode(szTemp);
   SetCompanyCity(szTemp);
   SetCompanyState(szTemp);
   SetCompanyPhoneNumber(szTemp);
@@ -1479,7 +1483,13 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         sz = szTemp;
         break;
       case 'e':
-        sz = GetEmail1();
+        sz = GetEmailPrimary();
+        if (sz[0] == '\0')
+        {
+          sz = GetEmailSecondary();
+          if (sz[0] == '\0')
+            sz = GetEmailOld();
+        }
         break;
       case 'n':
         sprintf(szTemp, "%s %s", GetFirstName(), GetLastName());
@@ -1591,8 +1601,9 @@ void ICQUser::SaveGeneralInfo()
   m_fConf.WriteStr("Alias", m_szAlias);
   m_fConf.WriteStr("FirstName", m_szFirstName);
   m_fConf.WriteStr("LastName", m_szLastName);
-  m_fConf.WriteStr("Email1", m_szEmail1);
-  m_fConf.WriteStr("Email2", m_szEmail2);
+  m_fConf.WriteStr("Email1", m_szEmailPrimary);
+  m_fConf.WriteStr("Email2", m_szEmailSecondary);
+  m_fConf.WriteStr("EmailO", m_szEmailOld);
   m_fConf.WriteStr("City", m_szCity);
   m_fConf.WriteStr("State", m_szState);
   m_fConf.WriteStr("PhoneNumber", m_szPhoneNumber);
@@ -1783,7 +1794,7 @@ void ICQUser::SaveBasicInfo()
   m_fConf.WriteStr("Alias", GetAlias());
   m_fConf.WriteStr("FirstName", GetFirstName());
   m_fConf.WriteStr("LastName", GetLastName());
-  m_fConf.WriteStr("Email1", GetEmail1());
+  m_fConf.WriteStr("Email1", GetEmailPrimary());
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

@@ -217,12 +217,16 @@ void UserInfoDlg::CreateGeneralInfo()
   lay->addMultiCellWidget(nfoLastName, CR, CR, 2, 4);
 
   lay->addWidget(new QLabel(tr("EMail 1:"), p), ++CR, 0);
-  nfoEmail1 = new CInfoField(p, false);
-  lay->addMultiCellWidget(nfoEmail1, CR, CR, 1, 4);
+  nfoEmailPrimary = new CInfoField(p, false);
+  lay->addMultiCellWidget(nfoEmailPrimary, CR, CR, 1, 4);
 
   lay->addWidget(new QLabel(tr("EMail 2:"), p), ++CR, 0);
-  nfoEmail2 = new CInfoField(p, false);
-  lay->addMultiCellWidget(nfoEmail2, CR, CR, 1, 4);
+  nfoEmailSecondary = new CInfoField(p, false);
+  lay->addMultiCellWidget(nfoEmailSecondary, CR, CR, 1, 4);
+
+  lay->addWidget(new QLabel(tr("Old Email:"), p), ++CR, 0);
+  nfoEmailOld = new CInfoField(p, false);
+  lay->addMultiCellWidget(nfoEmailOld, CR, CR, 1, 4);
 
   lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
   nfoAddress = new CInfoField(p, !m_bOwner);
@@ -288,8 +292,9 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoAlias->setData(u->GetAlias());
   nfoFirstName->setData(u->GetFirstName());
   nfoLastName->setData(u->GetLastName());
-  nfoEmail1->setData(u->GetEmail1());
-  nfoEmail2->setData(u->GetEmail2());
+  nfoEmailPrimary->setData(u->GetEmailPrimary());
+  nfoEmailSecondary->setData(u->GetEmailSecondary());
+  nfoEmailOld->setData(u->GetEmailOld());
   nfoUin->setData(u->Uin());
   QString ip = QString(u->IpPortStr(buf));
   if (u->Ip() != u->RealIp() && u->RealIp() != 0)
@@ -364,8 +369,9 @@ void UserInfoDlg::SaveGeneralInfo()
   u->SetAlias(nfoAlias->text().local8Bit());
   u->SetFirstName(nfoFirstName->text().local8Bit());
   u->SetLastName(nfoLastName->text().local8Bit());
-  u->SetEmail1(nfoEmail1->text().local8Bit());
-  u->SetEmail2(nfoEmail2->text().local8Bit());
+  u->SetEmailPrimary(nfoEmailPrimary->text().local8Bit());
+  u->SetEmailSecondary(nfoEmailSecondary->text().local8Bit());
+  u->SetEmailOld(nfoEmailOld->text().local8Bit());
   u->SetCity(nfoCity->text().local8Bit());
   u->SetState(nfoState->text().local8Bit());
   u->SetAddress(nfoAddress->text().local8Bit());
@@ -522,7 +528,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
   {
     spnBirthDay->setValue((unsigned short)u->GetBirthDay());
     spnBirthMonth->setValue((unsigned short)u->GetBirthMonth());
-    spnBirthYear->setValue((unsigned short)u->GetBirthYear() + 1900);
+    spnBirthYear->setValue(u->GetBirthYear());
   }
   else
   {
@@ -532,7 +538,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
     }
     else
     {
-      QDate d(u->GetBirthYear() + 1900, u->GetBirthMonth(), u->GetBirthDay());
+      QDate d(u->GetBirthYear(), u->GetBirthMonth(), u->GetBirthDay());
       nfoBirthday->setData(d.toString());
     }
   }
@@ -574,7 +580,7 @@ void UserInfoDlg::SaveMoreInfo()
   if (m_bOwner)
   {
     u->SetGender(cmbGender->currentItem());
-    u->SetBirthYear(spnBirthYear->value() - 1900);
+    u->SetBirthYear(spnBirthYear->value());
     u->SetBirthMonth(spnBirthMonth->value());
     u->SetBirthDay(spnBirthDay->value());
     for (unsigned short i = 0; i < 3; i++)
@@ -1044,8 +1050,9 @@ void UserInfoDlg::slotOk()
       icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
                                               nfoFirstName->text().local8Bit(),
                                               nfoLastName->text().local8Bit(),
-                                              nfoEmail1->text().local8Bit(),
-                                              nfoEmail2->text().local8Bit(),
+                                              nfoEmailPrimary->text().local8Bit(),
+                                              nfoEmailSecondary->text().local8Bit(),
+                                              nfoEmailOld->text().local8Bit(),
                                               nfoCity->text().local8Bit(),
                                               nfoState->text().local8Bit(),
                                               nfoPhone->text().local8Bit(),
@@ -1075,7 +1082,7 @@ void UserInfoDlg::slotOk()
       icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
                                            cmbGender->currentItem(),
                                            nfoHomepage->text().local8Bit(),
-                                           spnBirthYear->value() - 1900,
+                                           spnBirthYear->value(),
                                            spnBirthMonth->value(),
                                            spnBirthDay->value(),
                                            lc1, lc2, lc3);

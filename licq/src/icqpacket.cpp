@@ -1048,7 +1048,8 @@ CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
 //-----Meta_SetGeneralInfo---------------------------------------------------
 CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName, const char *szLastName,
-                          const char *szEmail1, const char *szEmail2,
+                          const char *szEmailPrimary, const char *szEmailSecondary,
+                          const char *szEmailOld,
                           const char *szCity, const char *szState,
                           const char *szPhoneNumber, const char *szFaxNumber,
                           const char *szAddress, const char *szCellularNumber,
@@ -1064,8 +1065,8 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_nHideEmail = bHideEmail ? 1 : 0;
 
   m_nSize += strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
-             strlen_safe(szEmail1) * 2 + strlen_safe(szEmail2) + strlen_safe(szCity) +
-             strlen_safe(szState) + strlen_safe(szPhoneNumber) +
+             strlen_safe(szEmailPrimary) * 2 + strlen_safe(szEmailSecondary) + strlen_safe(szCity) +
+             strlen_safe(szState) + strlen_safe(szPhoneNumber) + strlen_safe(szEmailOld) +
              strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZipCode) +
              strlen_safe(szCellularNumber) + 36 + 12;
   InitBuffer();
@@ -1074,9 +1075,9 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
   m_szLastName = buffer->PackString(szLastName);
-  m_szEmail1 = buffer->PackString(szEmail1);
-  m_szEmail2 = buffer->PackString(szEmail2);
-  buffer->PackString(szEmail1);
+  m_szEmailPrimary = buffer->PackString(szEmailPrimary);
+  m_szEmailSecondary = buffer->PackString(szEmailSecondary);
+  m_szEmailOld = buffer->PackString(szEmailOld);
   m_szCity = buffer->PackString(szCity);
   m_szState = buffer->PackString(szState);
   m_szPhoneNumber = buffer->PackString(szPhoneNumber);
@@ -1103,7 +1104,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
 CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
                        char nGender,
                        const char *szHomepage,
-                       char nBirthYear,
+                       unsigned short nBirthYear,
                        char nBirthMonth,
                        char nBirthDay,
                        char nLanguage1,
@@ -1128,7 +1129,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackUnsignedShort(m_nAge);
   buffer->PackChar(nGender);
   m_szHomepage = buffer->PackString(szHomepage);
-  buffer->PackChar(m_nBirthYear);
+  buffer->PackUnsignedShort(m_nBirthYear);
   buffer->PackChar(m_nBirthMonth);
   buffer->PackChar(m_nBirthDay);
   buffer->PackChar(m_nLanguage1);
