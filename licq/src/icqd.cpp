@@ -778,7 +778,7 @@ void CICQDaemon::SaveUserList()
     // Avoid sending the message to the plugins, a race exists if we are
     // shutting down
     if (!m_bShuttingDown)
-      gLog.Error("%sFailed updating 1 %s: `%s'\n", L_ERRORxSTR,
+      gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
                  szFilename, strerror(errno));
     return;
   }
