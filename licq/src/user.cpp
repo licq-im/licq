@@ -622,6 +622,13 @@ bool CUserManager::Load()
     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR,
              szFile);
     sz = strrchr(szFile, '.');
+    if( !sz )
+    {
+      gLog.Error(tr("%sFatal error reading protocol information for User%d with ID '%s'.\n"
+                    "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i, szFile, 
+                    L_BLANKxSTR, BASE_DIR);
+      exit(1);
+    }
     strncpy(szId, szFile, sz - szFile);
     szId[sz - szFile] = '\0';
     nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));
