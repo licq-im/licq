@@ -98,7 +98,6 @@ colors.newuser = yellow
 colors.background = grey25
 colors.gridlines = white
 #grey76
-colors.scrollbarFg = #9e9fa3
-colors.scrollbarBg = lightgrey
+colors.scrollbar = #9e9fa3
 colors.btnTxt = default
 

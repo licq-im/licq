@@ -59,7 +59,6 @@ colors.offline = #9c3c00
 colors.newuser = yellow
 colors.background = #301000
 colors.gridlines = grey76
-colors.scrollbarFg = #823a04
-colors.scrollbarBg = #080800
+colors.scrollbar = #502000
 colors.btnTxt = white
 

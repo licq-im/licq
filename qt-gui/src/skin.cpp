@@ -264,16 +264,11 @@ CSkin::CSkin(const char *skinname)
      colors.newuser = strdup("yellow");
    else
      colors.newuser = strdup(temp);
-   skinFile.ReadStr("colors.scrollbarFg", temp, "default");
+   skinFile.ReadStr("colors.scrollbar", temp, "default");
    if (strncmp(temp, "default", 7) == 0)
-     colors.scrollbarFg = NULL;
+     colors.scrollbar = NULL;
    else
-     colors.scrollbarFg = strdup(temp);
-   skinFile.ReadStr("colors.scrollbarBg", temp, "default");
-   if (strncmp(temp, "default", 7) == 0)
-     colors.scrollbarBg = NULL;
-   else
-     colors.scrollbarBg = strdup(temp);
+     colors.scrollbar = strdup(temp);
    skinFile.ReadStr("colors.btnTxt", temp, "default");
    if (strncmp(temp, "default", 7) == 0)
      colors.btnTxt = NULL;
@@ -307,8 +302,7 @@ CSkin::~CSkin(void)
   free (colors.background);
   free (colors.gridlines);
   free (colors.newuser);
-  free (colors.scrollbarFg);
-  free (colors.scrollbarBg);
+  free (colors.scrollbar);
   free (colors.btnTxt);
 }
 
@@ -367,8 +361,7 @@ void CSkin::SetDefaultValues()
   colors.newuser = strdup("yellow");
   colors.background = strdup("grey76");
   colors.gridlines = strdup("black");
-  colors.scrollbarFg = NULL;
-  colors.scrollbarBg = NULL;
+  colors.scrollbar = NULL;
   colors.btnTxt = NULL;
 
 }
@@ -441,26 +434,33 @@ QRect CSkin::borderToRect(CShapeSkin *s, QWidget *w)
    return (rect);
 }
 
-/*! \brief Returns a palette with color scrollbars
+/*! \brief Returns a palette with colored scrollbars
  *
  *  This method creates a palette with skin specific scrollbar colors.
  *  Parent should be a widget that holds a "default" active palette, which will
- *  be used as basis for the resulting palette.
+ *  be used as base for the resulting palette.
  *  The returned QPalette is a copy of the parent palette but with modified
- *  scrollbar colors: QColorGroup::Highlight, QColorGroup::Button
- *  and QColorGroup::ButtonText.
+ *  scrollbar colors: QColorGroup::Highlight, QColorGroup::Button,
+ *  QColorGroup::Foreground, QColorGroup::Background and QColorGroup::ButtonText.
  */
 QPalette CSkin::palette(QWidget *parent)
 {
   QPalette pal;
   QColorGroup cg;
   cg = parent->QWidget::palette().active(); // copy active palette from parent
-  if (colors.scrollbarFg)
-    cg.setColor(QColorGroup::Highlight, QColor(colors.scrollbarFg));
-  if (colors.scrollbarBg)
-    cg.setColor(QColorGroup::Button, QColor(colors.scrollbarBg));
+  // ButtonText +  arrow of scrollbar
   if (colors.btnTxt)
+  {
     cg.setColor(QColorGroup::ButtonText, QColor(colors.btnTxt));
+    cg.setColor(QColorGroup::Foreground, cg.buttonText());
+  }
+  // Scrollbar
+  if (colors.scrollbar)
+  {
+    cg.setColor(QColorGroup::Highlight, QColor(colors.scrollbar));
+    cg.setColor(QColorGroup::Button, cg.highlight());
+    cg.setColor(QColorGroup::Background, cg.highlight());
+  }
   pal.setActive(cg);
   pal.setInactive(cg);
   pal.setDisabled(cg);

@@ -51,7 +51,7 @@ struct Color
 
 struct CColors
 {
-  char *online, *offline, *away, *background, *gridlines, *newuser, *scrollbarFg, *scrollbarBg, *btnTxt;
+  char *online, *offline, *away, *background, *gridlines, *newuser, *scrollbar, *btnTxt;
 };
 
 class CShapeSkin
