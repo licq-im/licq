@@ -1061,6 +1061,39 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 
 }
 
+CPU_ReverseTCPRequest::CPU_ReverseTCPRequest(unsigned long nDestinationUin,
+                                             unsigned long nIp,  unsigned short nPort,
+                                             unsigned short nPort2)
+  : CPacketUdp(ICQ_CMDxRCV_REVERSExTCP)
+{
+  m_nDestinationUin = nDestinationUin;
+  m_nSize += 21;
+
+  InitBuffer();
+
+  buffer->PackUnsignedLong( nDestinationUin );
+  buffer->PackUnsignedLong( nIp ); // IP
+  buffer->PackUnsignedShort( nPort ); // port
+  buffer->PackUnsignedShort( nPort ); // junk
+  buffer->PackChar( 6 );
+  buffer->PackUnsignedShort( nPort2 );  //nport2
+  buffer->PackUnsignedShort( nPort2 ); // junk  nport2
+  // junk twice
+  buffer->PackUnsignedLong( nPort );
+}
+#if 0
+      unsigned long nUin, nIp;
+      unsigned short nPort, nJunk, nPort2, nVersion;
+      char cJunk;
+      packet >> nUin >> nIp
+             >> nPort >> nJunk
+             >> cJunk
+             >> nPort2 >> nJunk // port which they tried to connect to
+             >> nJunk >> nJunk // nPort again
+             >> nVersion;
+      nIp = PacketIpToNetworkIp(nIp);
+#endif
+
 
 //-----SetStatus----------------------------------------------------------------
 CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus) : CPacketUdp(ICQ_CMDxSND_SETxSTATUS)
