@@ -48,45 +48,53 @@ CLicq::CLicq(int argc, char **argv)
   char *szRedirect = NULL;
   char szFilename[MAX_FILENAME_LEN];
   vector <char *> vszPlugins;
-  bool licqHelp = false;
-  bool bFork = false;
 
   // parse command line for arguments
+  bool bHelp = false;
+  bool bFork = false;
   bool bBaseDir = false;
   bool bForceInit = false;
   bool bSavePlugins = false;
-  int i = 0;
-  while( (i = getopt(argc, argv, "hd:b:p:iso:f")) > 0)
+  // Check the no one is trying session management on us
+  if (argc > 1 && strcmp(argv[1], "-session") == 0)
   {
-    switch (i)
+    fprintf(stderr, "Session management is not supported by Licq.\n");
+  }
+  else
+  {
+    int i = 0;
+    while( (i = getopt(argc, argv, "hd:b:p:iso:f")) > 0)
     {
-    case 'h':  // help
-      PrintUsage();
-      licqHelp = true;
-      licqException = true;
-      break;
-    case 'b':  // base directory
-      sprintf(BASE_DIR, "%s", optarg);
-      bBaseDir = true;
-      break;
-    case 'd':  // DEBUG_LEVEL
-      DEBUG_LEVEL = atol(optarg);
-      break;
-    case 'i':  // force init
-      bForceInit = true;
-      break;
-    case 'p':  // new plugin
-      vszPlugins.push_back(strdup(optarg));
-      break;
-    case 's':  // save plugin settings
-      bSavePlugins = true;
-      break;
-    case 'o':  // redirect stdout and stderr
-      szRedirect = strdup(optarg);
-      break;
-    case 'f':  // fork
-      bFork = true;
-      break;
+      switch (i)
+      {
+      case 'h':  // help
+        PrintUsage();
+        bHelp = true;
+        licqException = true;
+        break;
+      case 'b':  // base directory
+        sprintf(BASE_DIR, "%s", optarg);
+        bBaseDir = true;
+        break;
+      case 'd':  // DEBUG_LEVEL
+        DEBUG_LEVEL = atol(optarg);
+        break;
+      case 'i':  // force init
+        bForceInit = true;
+        break;
+      case 'p':  // new plugin
+        vszPlugins.push_back(strdup(optarg));
+        break;
+      case 's':  // save plugin settings
+        bSavePlugins = true;
+        break;
+      case 'o':  // redirect stdout and stderr
+        szRedirect = strdup(optarg);
+        break;
+      case 'f':  // fork
+        bFork = true;
+        break;
+      }
     }
   }
 
@@ -162,7 +170,7 @@ CLicq::CLicq(int argc, char **argv)
   for (iter = vszPlugins.begin(); iter != vszPlugins.end(); iter++)
   {
     LoadPlugin(*iter, argc, argv);
-    if (licqHelp)
+    if (bHelp)
     {
       (*(m_vPluginFunctions.back()).Usage)();
       m_vPluginFunctions.pop_back();
@@ -170,7 +178,7 @@ CLicq::CLicq(int argc, char **argv)
   }
 
   // Find and load the plugins from the conf file
-  if (!licqHelp)
+  if (!bHelp)
   {
     CIniFile licqConf(INI_FxWARN);
     unsigned short nNumPlugins = 0;
