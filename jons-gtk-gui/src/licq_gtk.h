@@ -34,7 +34,7 @@
 #include <fstream.h>
 
 /* Program used constants */
-const int MAX_LENGTH_UIN = 8;
+const int MAX_LENGTH_UIN = 10;
 
 /********** Structures ******************/
 

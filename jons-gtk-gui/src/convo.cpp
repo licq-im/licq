@@ -470,6 +470,10 @@ void convo_recv(gulong uin)
 		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, szTempStamp, -1);
 		g_free(szTempStamp);
 	}
+	else
+	{
+		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, " : ", -1);
+	}
 
 	switch (u_event->SubCommand())
 	{
