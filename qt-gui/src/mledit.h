@@ -11,7 +11,7 @@ public:
   virtual ~MLEditWrap() {}
 
   void appendNoNewLine(QString s);
-  void GotoEnd(void);
+  void GotoEnd();
 
   static QFont *editFont;
 

@@ -47,7 +47,7 @@ void MLEditWrap::appendNoNewLine(QString s)
 }
 
 
-void MLEditWrap::GotoEnd(void)
+void MLEditWrap::GotoEnd()
 {
    setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 }
