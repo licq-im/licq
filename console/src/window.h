@@ -12,7 +12,7 @@
 
 enum InputState { STATE_COMMAND, STATE_PENDING, STATE_MLE, STATE_LE, STATE_QUERY };
 
-class ICQEvent;
+class CICQEventTag;
 class CLicqConsole;
 class CData;
 
@@ -38,7 +38,7 @@ public:
   int Cols(void) { return cols; }
 
   void (CLicqConsole::*fProcessInput)(int);
-  ICQEvent *event;
+  CICQEventTag *event;
   InputState state;
   CData *data;
   unsigned long nLastUin;

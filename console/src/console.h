@@ -59,7 +59,7 @@ public:
   void ProcessPipe(void);
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
-  void ProcessDoneEvent(CWindow *win);
+  void ProcessDoneEvent(CWindow *win, ICQEvent *e);
   void ProcessStdin(void);
   void ProcessLog(void);
   char *CurrentGroupName(void);

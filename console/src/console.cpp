@@ -366,9 +366,9 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     unsigned short i;
     for (i = 1; i <= MAX_CON; i++)
     {
-      if (e == winCon[i]->event)
+      if (winCon[i]->event->Equals(e))
       {
-        ProcessDoneEvent(winCon[i]);
+        ProcessDoneEvent(winCon[i], e);
         break;
       }
     }
@@ -414,9 +414,8 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessDoneEvent
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessDoneEvent(CWindow *win)
+void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
 {
-  ICQEvent *e = win->event;
   bool isOk = (e != NULL && (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS));
 
   if (e == NULL)
@@ -425,7 +424,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
   }
   else
   {
-    switch (win->event->m_eResult)
+    switch (e->m_eResult)
     {
     case EVENT_ACKED:
     case EVENT_SUCCESS:
@@ -445,6 +444,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
       break;
     }
   }
+  delete win->event;
   win->event = NULL;
   if (e == NULL) return;
 
