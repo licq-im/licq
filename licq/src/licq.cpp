@@ -153,7 +153,7 @@ CLicq::CLicq(int argc, char **argv)
     licqConf.SetSection("plugins");
     licqConf.WriteNum("NumPlugins", (unsigned short)vszPlugins.size());
     vector <char *>::iterator iter;
-    unsigned i = 1;
+    unsigned short i = 1;
     for (iter = vszPlugins.begin(); iter != vszPlugins.end(); iter++)
     {
       sprintf(szKey, "Plugin%d", i++);
