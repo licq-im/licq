@@ -1099,7 +1099,7 @@ void UserInfoDlg::ShowHistory()
     }
   }
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
-  char* ftxt = qstrdup(lneFilter->text().local8Bit().data());
+  char* ftxt = qstrdup(codec->fromUnicode(lneFilter->text()));
   int flen = strlen(ftxt);
   while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
   {
@@ -1107,7 +1107,7 @@ void UserInfoDlg::ShowHistory()
     {
       d.setTime_t((*tempIter)->Time());
 #if QT_VERSION >= 300
-      s.sprintf("<font color=\"%s\">%s<br>%s [%c%c%c%c]<br><br>%s</font><br>",
+      s.sprintf("<font color=\"%s\">%s<br>%s [%c%c%c%c]<br><br>%s</font><br><br>",
                 ((*tempIter)->Direction() == D_RECEIVER ? "red" : "blue"),
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
                   .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(n)).utf8().data(),
@@ -1116,7 +1116,8 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
-                QStyleSheet::convertFromPlainText(codec->toUnicode((*tempIter)->Text())).utf8().data());
+                QStyleSheet::convertFromPlainText(codec->toUnicode((*tempIter)->Text()), QStyleSheetItem::WhiteSpaceNormal).utf8().data()
+      );                
 #else
       s.sprintf("%c%s\n%c%s [%c%c%c%c]\n\n%s\n\n",
                 ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
@@ -1128,7 +1129,8 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
-                (codec->toUnicode((*tempIter)->Text())).utf8().data());
+                (codec->toUnicode((*tempIter)->Text())).utf8().data()
+      );
 #endif
       st.append(s);
       m_nHistoryShowing++;
