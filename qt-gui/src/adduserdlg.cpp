@@ -32,6 +32,7 @@
 AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
    : QDialog(parent, name)
 {
+   setCaption(tr("Licq - Add User"));
    server = s;
    resize(240, 120);
    lblUin = new QLabel(tr("New User UIN:"), this);
