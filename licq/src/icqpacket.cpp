@@ -1739,7 +1739,14 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       }
 
       if (m_nGSID == 0)
-        m_nGSID = 1; // General (unless user renamed group)
+      {
+        unsigned short nDefault = gUserManager.DefaultGroup();
+        if (nDefault < pID->size());
+          m_nGSID = (*pID)[nDefault];
+
+        if (m_nGSID == 0)
+          m_nGSID = 1; // General (unless user renamed group)
+      }
 
       if (_bExport)
         nExportSize = 4 + strlen(u->GetAlias());
