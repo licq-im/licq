@@ -76,7 +76,38 @@ void pipe_signal(CICQSignal *sig)
 	  case SIGNAL_UPDATExUSER:
 	  {
 		if(sig->SubSignal() == USER_EVENTS)
+		{
+			ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
+			CUserEvent *ue = u->EventPeekLast();
+			gUserManager.DropUser(u);
+			
+			if(ue == NULL)
+			{
+				gUserManager.DropUser(u);
+				return;
+			}
+			else if(ue->SubCommand() == ICQ_CMDxSUB_CHAT &&
+				u->AutoChatAccept())
+			{
+				ue = u->EventPop();
+				gUserManager.DropUser(u);
+				chat_accept_window((CEventChat *)ue, sig->Uin(),
+					true);
+				return;
+				
+			}
+			else if(ue->SubCommand() == ICQ_CMDxSUB_FILE &&
+				u->AutoFileAccept())
+			{
+				ue = u->EventPop();
+				file_accept_window(u, ue, true);
+				gUserManager.DropUser(u);
+				return;
+			}
+
+			gUserManager.DropUser(u);
 			convo_recv(sig->Uin());
+		}
 		else
 			finish_info(sig);
 		contact_list_refresh();

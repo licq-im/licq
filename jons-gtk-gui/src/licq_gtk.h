@@ -454,7 +454,7 @@ extern void single_request_chat(GtkWidget *, gpointer);
 extern void ok_request_chat(GtkWidget *, gpointer);
 extern void cancel_request_chat(GtkWidget *, gpointer);
 extern void close_request_chat(struct request_chat *);
-extern void chat_accept_window(CEventChat *, gulong);
+extern void chat_accept_window(CEventChat *, gulong, bool auto_accept = false);
 extern void chat_accept(GtkWidget *, gpointer);
 extern void chat_refuse(GtkWidget *, gpointer);
 extern void chat_join_multiparty(struct remote_chat_request *);
@@ -509,7 +509,7 @@ extern void finish_info(CICQSignal *);
 
 
 /* Functions in file_window.cpp */
-extern void file_accept_window(ICQUser *, CUserEvent *);
+extern void file_accept_window(ICQUser *, CUserEvent *, bool auto_accept = false);
 extern void accept_file(GtkWidget *, gpointer);
 extern void save_file(struct file_accept *);
 extern void refuse_file(GtkWidget *, gpointer);

@@ -311,7 +311,8 @@ void close_request_chat(struct request_chat *rc)
 	gtk_widget_destroy(rc->window);
 }
 
-void chat_accept_window(CEventChat *c_event, gulong uin)
+void chat_accept_window(CEventChat *c_event, gulong uin,
+	bool auto_accept = false)
 {
 	struct remote_chat_request *r_cr = g_new0(struct remote_chat_request, 1);
 
@@ -322,6 +323,12 @@ void chat_accept_window(CEventChat *c_event, gulong uin)
 	/* Make the dialog window */
 	r_cr->dialog = gtk_dialog_new();
 
+	if(auto_accept)
+	{
+		chat_accept(NULL, (gpointer)r_cr);
+		return;
+	}
+	
 	GtkWidget *label;
 	GtkWidget *accept;
 	GtkWidget *refuse;

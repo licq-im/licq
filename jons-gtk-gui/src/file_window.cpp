@@ -28,19 +28,24 @@
 
 GSList *fs_list;
 
-void file_accept_window(ICQUser *user, CUserEvent *e)
+void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept = false)
 {
+	struct file_accept *fa = (struct file_accept *)g_new0(struct file_accept, 1);
+	fa->user = user;
+	fa->e = e;
+
+	if(auto_accept)
+	{
+		accept_file(NULL, (gpointer)fa);
+		return;
+	}
+
 	GtkWidget *accept;
 	GtkWidget *refuse;
 	GtkWidget *v_box;
 	GtkWidget *h_box;
 	GtkWidget *label;
-	struct file_accept *fa = (struct file_accept *)g_new0(struct file_accept, 1);
 	const gchar *title = g_strdup_printf("File From %s", user->GetAlias());
-
-	fa->user = user;
-	fa->e = e;
-
 
 	// Make the window
 	fa->window = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -145,7 +150,8 @@ void accept_file(GtkWidget *widget, gpointer _fa)
 	struct file_accept *fa = (struct file_accept *)_fa;
 
 	// Close the unnecessary open window
-	dialog_close(NULL, fa->window);
+	if(fa->window)
+		dialog_close(NULL, fa->window);
 
 	save_file(fa);
 }
