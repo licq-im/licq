@@ -246,7 +246,8 @@ public:
   CUserEvent *EventPeekFirst();
   CUserEvent *EventPeekLast();
   CUserEvent *EventPop();
-  void AddEvent(CUserEvent *);
+  void EventClear(unsigned short);
+  void EventPush(CUserEvent *);
   void WriteToHistory(const char *);
   void SetHistoryFile(const char *);
   int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }

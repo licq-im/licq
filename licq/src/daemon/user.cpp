@@ -853,9 +853,7 @@ void ICQUser::LoadLicqInfo()
 //-----ICQUser::destructor------------------------------------------------------
 ICQUser::~ICQUser()
 {
-  //while (NewMessages() > 0) ClearEvent(0);
-  for (unsigned short i = 0; i < m_vcMessages.size(); i++)
-    delete m_vcMessages[i];
+  while (NewMessages() > 0) delete EventPop();
 /*
   // Destroy the mutex
   int nResult = 0;
@@ -1534,12 +1532,12 @@ void ICQUser::SaveExtInfo()
 }
 
 
-//-----ICQUser::AddEvent--------------------------------------------------------
-void ICQUser::AddEvent(CUserEvent *e)
+//-----ICQUser::EventPush--------------------------------------------------------
+void ICQUser::EventPush(CUserEvent *e)
 {
-   m_vcMessages.push_back(e);
-   incNumUserEvents();
-   SaveLicqInfo();
+  m_vcMessages.push_back(e);
+  incNumUserEvents();
+  SaveLicqInfo();
 }
 
 
@@ -1582,14 +1580,18 @@ CUserEvent *ICQUser::EventPop()
   decNumUserEvents();
   SaveLicqInfo();
   return e;
-#if 0
-   delete m_vcMessages[index];
-   for (unsigned short i = index; i < m_vcMessages.size() - 1; i++)
-      m_vcMessages[i] = m_vcMessages[i + 1];
-   m_vcMessages.pop_back();
-   decNumUserEvents();
-   SaveLicqInfo();
-#endif
+}
+
+void ICQUser::EventClear(unsigned short index)
+{
+  if (index >= m_vcMessages.size()) return;
+
+  delete m_vcMessages[index];
+  for (unsigned short i = index; i < m_vcMessages.size() - 1; i++)
+    m_vcMessages[i] = m_vcMessages[i + 1];
+  m_vcMessages.pop_back();
+  decNumUserEvents();
+  SaveLicqInfo();
 }
 
 
