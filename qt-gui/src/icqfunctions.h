@@ -4,7 +4,6 @@
 #include <qtabwidget.h>
 
 #include "userfcndlg.h"
-//#include "ewidgets.h"
 #include "history.h"
 
 class QSplitter;
@@ -16,6 +15,7 @@ class QPushButton;
 class QButtonGroup;
 class QRadioButton;
 class QTextView;
+class QListViewItem;
 
 class ICQUser;
 class CICQDaemon;
