@@ -137,6 +137,8 @@ protected:
   void SaveWorkInfo();
   void SaveAbout();
 
+  virtual void keyPressEvent(QKeyEvent*);
+
 protected slots:
   void ShowHistory();
   void ShowHistoryPrev();
