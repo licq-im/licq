@@ -13,6 +13,9 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef __FreeBSD__
+#include <osreldate.h>
+#endif
 
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
@@ -309,6 +312,8 @@ bool INetSocket::SetLocalAddress(bool bIp)
   // Setup the local structure
 #ifdef USE_SOCKS5
   int sizeofSockaddr = sizeof(struct sockaddr_in);
+#elif defined(__FreeBSD__) && __FreeBSD_version < 400013
+  int sizeofSockaddr = sizeof(struct sockaddr_in);
 #else
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
 #endif
@@ -421,7 +426,11 @@ bool INetSocket::OpenConnection()
     m_sRemoteAddr.sin_family = AF_INET;
 
     // if connect fails then call CloseConnection to clean up before returning
+#if defined(__FreeBSD__) && __FreeBSD_version < 400013
+    int sizeofSockaddr = sizeof(struct sockaddr);
+#else
     socklen_t sizeofSockaddr = sizeof(struct sockaddr);
+#endif
     if (connect(m_nDescriptor, (struct sockaddr *)&m_sRemoteAddr, sizeofSockaddr) < 0)
     {
       // errno has been set
@@ -696,6 +705,8 @@ SrvSocket::~SrvSocket()
 void TCPSocket::RecvConnection(TCPSocket &newSocket)
 {
 #ifdef USE_SOCKS5
+  int sizeofSockaddr = sizeof(struct sockaddr_in);
+#elif defined(__FreeBSD__) && __FreeBSD_version < 400013
   int sizeofSockaddr = sizeof(struct sockaddr_in);
 #else
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
