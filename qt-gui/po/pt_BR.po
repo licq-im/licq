@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt_BR\n"
 "POT-Creation-Date: 2003-04-03 19:26:37 UTC\n"
-"PO-Revision-Date: 2003-04-04 17:05+0000\n"
+"PO-Revision-Date: 2003-05-07 21:21-0300\n"
 "Last-Translator: Gustavo Pichorim Boiko <gustavoboiko@brturbo.com>\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -1113,11 +1113,11 @@ msgstr "Ativo desde %1\n\n"
 
 #: mainwin.cpp:3289
 msgid "CMainWindow::Update All Users"
-msgstr "Atualização Todos os Usuários"
+msgstr "Atualizar Todos os Usuários"
 
 #: mainwin.cpp:3290
 msgid "CMainWindow::Update Current Group"
-msgstr "Atualização Grupo Corrente"
+msgstr "Atualizar Grupo Corrente"
 
 #: mainwin.cpp:3349
 msgid "CMainWindow::Use Real Ip (LAN)"
