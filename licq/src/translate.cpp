@@ -199,8 +199,8 @@ char *CTranslator::ToUnicode(char *_sz)
       szNewStr[j++] = _sz[i];
     else
     {
-      szNewStr[j++] = (_sz[i] >> 6) | 0xC0;
-      szNewStr[j++] = (_sz[i] & 0x3F) | 0x80;
+      szNewStr[j++] = ((unsigned char)_sz[i] >> 6) | 0xC0;
+      szNewStr[j++] = ((unsigned char)_sz[i] & 0x3F) | 0x80;
     }
   }
 
