@@ -1993,6 +1993,8 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
         QPtrListIterator<UserSendCommon> it(licqUserSend);
 #endif
 
+        if (!m_bMsgChatView) break;
+
         for (; it.current(); ++it)
           if ((*it)->Uin() == nUin)
           {
