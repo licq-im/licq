@@ -10,44 +10,44 @@ pkgdatadir = $(datadir)/@PACKAGE@
 install-data-local:
 	@if test "$(KDEDIR)" != ""; then \
 	   if test -w "$(KDEDIR)"; then \
-	     $(mkinstalldirs) $(KDEDIR)/share/applnk/Internet; \
-	     $(INSTALL_DATA) licq.desktop $(KDEDIR)/share/applnk/Internet; \
+	     $(mkinstalldirs) $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
+	     $(INSTALL_DATA) licq.desktop $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
 	   else \
 	     $(mkinstalldirs) $(HOME)/.kde/share/applnk/Internet; \
 	     $(INSTALL_DATA) licq.desktop $(HOME)/.kde/share/applnk/Internet; \
 	   fi  \
 	fi
-	$(mkinstalldirs) $(sharedir)
-	@chmod 0777 $(sharedir)
-	$(mkinstalldirs) $(sharedir)/qt-gui/locale
-	@chmod 0777 $(sharedir)/qt-gui/locale
+	$(mkinstalldirs) $(DESTDIR)$(sharedir)
+	@chmod 0777 $(DESTDIR)$(sharedir)
+	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/locale
+	@chmod 0777 $(DESTDIR)$(sharedir)/qt-gui/locale
 	@for j in qt-gui/skin.*; do \
 	  echo "Installing skin $$j"; \
-	  $(mkinstalldirs) $(sharedir)/$$j; \
-	  chmod 0777 $(sharedir)/$$j; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
+	  chmod 0777 $(DESTDIR)$(sharedir)/$$j; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
-	      $(INSTALL_DATA) $$i $(sharedir)/$$j; \
+	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
 	    fi \
 	  done; \
 	done
 	@for j in qt-gui/dock.*; do \
 	  echo "Installing dock theme $$j"; \
-	  $(mkinstalldirs) $(sharedir)/$$j; \
-	  chmod 0777 $(sharedir)/$$j; \
+	  $(mkinstalldirs) $(DESTOIR)$(sharedir)/$$j; \
+	  chmod 0777 $(DESTDIR)$(sharedir)/$$j; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
-	      $(INSTALL_DATA) $$i $(sharedir)/$$j; \
+	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
 	    fi \
 	  done; \
 	done
 	@for j in qt-gui/icons.*; do \
 	  echo "Installing icons $$j"; \
-	  $(mkinstalldirs) $(sharedir)/$$j; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
           chmod 0777 $(sharedir)/$$j; \
 	  for i in $$j/*; do \
 			if test -f $$i; then \
-	      $(INSTALL_DATA) $$i $(sharedir)/$$j; \
+	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$j; \
 			fi \
 	  done; \
 	done

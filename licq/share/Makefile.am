@@ -2,9 +2,9 @@
 # include the subdirs in the distribution
 DIST_SUBDIRS = translations utilities sounds
 
-sharedir = @datadir@/licq
-plugindir = @libdir@/licq
-mandir = @mandir@/man1
+sharedir = $(DESTDIR)@datadir@/licq
+plugindir = $(DESTDIR)@libdir@/licq
+mandir = $(DESTDIR)@mandir@/man1
 
 #TODO: convert this to something that works better
 #but for now it should be sufficient

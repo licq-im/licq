@@ -3,7 +3,7 @@
 #sorry.. another hack for russian people with non-koi8 charset...
 #will be removed after qt2.1 releases
 
-localedir = $(prefix)/share/licq/qt-gui/locale
+localedir = $(DESTDIR)$(prefix)/share/licq/qt-gui/locale
 
 all-local:
 	@if test -x /usr/bin/test; then \
@@ -35,7 +35,7 @@ merge: template
 
 install-data-local:
 	$(mkinstalldirs) $(localedir)
-	@for i in *.qm; do \
+	@for i in ./*.qm; do \
 	  if test "$$i" != "template.qm"; then \
 	    echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
 	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
