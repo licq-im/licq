@@ -69,7 +69,7 @@ int AddStrWithColons(char *_szNewStr, const char *_szOldStr)
     if (_szOldStr[i] == '\n') _szNewStr[j++] = ':';
     i++;
   }
-  if (_szNewStr[j - 1] == ':') j--;
+  if (j > 1 && _szNewStr[j - 2] == '\n') j--;
   _szNewStr[j] = '\0';
   return (j);
 }
