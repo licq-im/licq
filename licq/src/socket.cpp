@@ -292,6 +292,10 @@ bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemote
   if (_nRemoteIp == 0)
   {
     m_nErrorType = SOCK_ERROR_h_errno;
+    // The Remote IP could be 0 if a proxy could not resolve it.  So let's do
+    // this to fix that.
+    if (m_xProxy)
+      m_sRemoteAddr.sin_port = htons(_nRemotePort);
     return(false);  // if the rIp is invalid, exit
   }
 
