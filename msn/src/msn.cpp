@@ -1,16 +1,20 @@
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
+#include "licq_message.h"
+
+#include <openssl/md5.h>
 
 #include <string>
-#include <openssl/md5.h>
+#include <list>
+#include <vector>
 
 using namespace std;
 
 //Global socket manager
 CSocketManager gSocketMan;
 
-CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe)
+CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 {
   m_pDaemon = _pDaemon;
   m_nPipe = _nPipe;
@@ -30,6 +34,41 @@ CMSN::~CMSN()
     free(m_szPassword);
 }
 
+void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
+{
+  BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
+  b.push_front(_pBuf);
+}
+
+void CMSN::RemovePacket(string _strUser, int _nSock)
+{
+  BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
+  BufferList::iterator it;
+  for (it = b.begin(); it != b.end(); it++)
+  {
+    if ((*it)->m_strUser == _strUser)
+    {
+      b.erase(it);
+      break;
+    }
+  }
+}
+
+SBuffer *CMSN::RetrievePacket(string _strUser, int _nSock)
+{
+  BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
+  BufferList::iterator it;
+  for (it = b.begin(); it != b.end(); it++)
+  {
+    if ((*it)->m_strUser == _strUser)
+    {
+      return *it;
+    }
+  }
+  
+  return 0;
+}
+  
 void CMSN::Run()
 {
   int nResult;
@@ -90,6 +129,67 @@ void CMSN::Run()
         else
         {
           //SB socket
+          INetSocket *s = gSocketMan.FetchSocket(nCurrent);
+          TCPSocket *sock = static_cast<TCPSocket *>(s);
+          if (sock->RecvRaw())
+          {
+            CMSNBuffer packet(sock->RecvBuffer());
+            bool bProcess = false;
+            sock->ClearRecvBuffer();
+            char *szUser = strdup(sock->OwnerId());
+            gSocketMan.DropSocket(sock);
+            
+            // Build the packet with last received portion
+            string strUser(szUser);
+            SBuffer *pBuf = RetrievePacket(strUser, nCurrent);
+            if (pBuf)
+            {
+              *(pBuf->m_pBuf) += packet;
+            }
+            else
+            {
+              pBuf = new SBuffer;
+              pBuf->m_pBuf = new CMSNBuffer(packet);
+              pBuf->m_strUser = strUser;
+            }
+            
+            // Do we have the entire packet?
+            char *szNeedle;
+            if ((szNeedle = strstr((char *)pBuf->m_pBuf->getDataStart(), "\r\n")))
+            {
+              // We have a basic packet, now check for a packet that has a payload
+              if (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0)
+              {
+                pBuf->m_pBuf->SkipParameter(); // command
+                pBuf->m_pBuf->SkipParameter(); // user id
+                pBuf->m_pBuf->SkipParameter(); // alias
+                string strSize = pBuf->m_pBuf->GetParameter();
+                int nSize = atoi(strSize.c_str());
+                  
+                if (nSize == (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
+                {
+                  bProcess = true;
+                }
+                else
+                {
+                  StorePacket(pBuf, nCurrent);
+                }
+                
+                pBuf->m_pBuf->Reset();  
+              }
+              else
+                bProcess = true; // no payload
+            }  
+            
+            if (bProcess)
+            {
+              ProcessSBPacket(szUser, pBuf->m_pBuf);
+              RemovePacket(strUser, nCurrent);
+              delete pBuf;
+            }
+            
+            free(szUser);
+          }
         }
       }
 
@@ -171,6 +271,78 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     SendPacket(pReply);
     free(tag);
   }
+}
+
+void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
+{
+  char szCommand[4];
+  unsigned short nSequence;
+  CMSNPacket *pReply = 0;
+  
+  while (!packet->End())
+  {
+    packet->UnpackRaw(szCommand, 3);
+    
+    if (strcmp(szCommand, "IRO") == 0)
+    {
+      packet->SkipParameter(); // Seq
+      packet->SkipParameter(); // current user to add
+      packet->SkipParameter(); // total usrers in conversation
+      string strUser = packet->GetParameter();
+      
+      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
+    }
+    else if (strcmp(szCommand, "ANS") == 0)
+    {
+      // just OK, ready to talk
+      // we can ignore this
+    }
+    else if (strcmp(szCommand, "MSG") == 0)
+    {
+      string strUser = packet->GetParameter();
+      packet->SkipParameter(); // Nick
+      string strSize = packet->GetParameter();
+      packet->SkipPacket(); // Skip \r\m
+      packet->ParseHeaders();
+      int nSize = atoi(strSize.c_str());
+      
+      string strType = packet->GetValue("Content-Type");
+      if (strType == "text/x-msmsgscontrol")
+      {
+        //printf("%s is typing\n", strUser.c_str());
+      }
+      else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
+      {
+        int nCurrent = packet->getDataPosWrite() - packet->getDataPosRead();
+        char szMsg[nSize - nCurrent - 1];
+        int i;
+        for (i = 0; i < (nSize - nCurrent - 2); i++)
+          (*packet) >> szMsg[i];
+        szMsg[i] = '\0';
+        
+        CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0);
+        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+        if (m_pDaemon->AddUserEvent(u, e))
+          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, u);
+        gUserManager.DropUser(u);
+      }
+    }
+    else if (strcmp(szCommand, "BYE") == 0)
+    {
+      // closed the window
+    }
+  
+    // Get the next packet
+    packet->SkipPacket();
+    
+    if (pReply)
+    {
+      string strTo(szUser);
+      Send_SB_Packet(strTo, pReply);
+    }
+  }
+  
+  delete packet;
 }
 
 void CMSN::ProcessServerPacket(CMSNBuffer &packet)
@@ -327,7 +499,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       string strCookie = m_pPacketBuf->GetParameter();
       string strUser = m_pPacketBuf->GetParameter();
       
-//      MSNSBConnectAnswer(strServer, strSessionID, strCookie, strUser);
+      MSNSBConnectAnswer(strServer, strSessionID, strCookie, strUser);
     }
     
     // Get the next packet
@@ -352,10 +524,20 @@ void CMSN::SendPacket(CMSNPacket *p)
   delete p;
 }
 
-//void CMSN::Send_SB_Packet(CMSNPacket *p)
-//{
-//  INetSocket *s = gSocketMan.FetchSocket();
-//}
+void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p)
+{
+  ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_R);
+  if (!u) return;
+  
+  int nSock = u->SocketDesc();
+  gUserManager.DropUser(u);
+  INetSocket *s = gSocketMan.FetchSocket(nSock);
+  TCPSocket *sock = static_cast<TCPSocket *>(s);
+  sock->SendRaw(p->getBuffer());
+  gSocketMan.DropSocket(sock);
+  
+  delete p;
+}
 
 void CMSN::MSNLogon(const char *_szServer, int _nPort)
 {
@@ -420,11 +602,10 @@ void CMSN::MSNAuthenticate(char *szCookie)
   free(szCookie);
 }
 
-/*
-bool CMSN::MSNSBConnectAnswer(string strServer, string strSessionId, string strCookie,
-                              string strUser)
+bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &strCookie,
+                              string &strUser)
 {
-  char *szParam = strServer.c_str();
+  const char *szParam = strServer.c_str();
   char szServer[16];
   char *szPort;
   if ((szPort = strchr(szParam, ':')))
@@ -434,10 +615,10 @@ bool CMSN::MSNSBConnectAnswer(string strServer, string strSessionId, string strC
     *szPort++ = '\0';
   }
   
-  TCPSocket *sock = new TCPSocket(strUsr.c_str(), MSN_PPID);
-  sock->SetRemoteAddr(szNewServer, aoti(szPort));
+  TCPSocket *sock = new TCPSocket(strUser.c_str(), MSN_PPID);
+  sock->SetRemoteAddr(szServer, atoi(szPort));
   char ipbuf[32];
-  gLog.Info("%Connecting to Switchboard at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
+  gLog.Info("%sConnecting to Switchboard at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
     sock->RemotePort());
   
   if (!sock->OpenConnection())
@@ -449,7 +630,7 @@ bool CMSN::MSNSBConnectAnswer(string strServer, string strSessionId, string strC
   
   gSocketMan.AddSocket(sock);
   CMSNPacket *pReply = new CPS_MSN_SBAnswer(strSessionId.c_str(),
-    strCookie.c_str(), strUser.c_str());
+    strCookie.c_str(), m_szUserName);
   ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
   if (u)
   {
@@ -459,6 +640,7 @@ bool CMSN::MSNSBConnectAnswer(string strServer, string strSessionId, string strC
   
   gSocketMan.DropSocket(sock);
   
+  Send_SB_Packet(strUser, pReply);
+  
   return true;
 }
-*/

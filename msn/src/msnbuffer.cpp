@@ -35,6 +35,8 @@ CMSNBuffer::CMSNBuffer(CBuffer &b)
 bool CMSNBuffer::ParseHeaders()
 {
   char ctmp = 0;
+  int counter = 0;
+  
   std::string stmp = "", strHeader, strData;
   if (m_lHeader.size() > 0) return false;
   
@@ -45,10 +47,28 @@ bool CMSNBuffer::ParseHeaders()
     *this >> ctmp;
     
     // Get header
-    while (ctmp != ':' && ctmp != 0)
+    while (ctmp != ':' && ctmp != '\r' && ctmp != 0)
     {
       stmp += ctmp;
       *this >> ctmp;
+    }
+    
+    // Check for the end of the headers list
+    if (ctmp == '\r')
+    {
+      while (ctmp == '\r' || ctmp == '\n')
+      {
+        counter++;
+        *this >> ctmp;
+        
+        if (counter == 2)
+        {
+          setDataPosRead(getDataPosRead() - 1);
+          return true;
+        }
+      }
+      
+      counter = 0;
     }
     
     *this >> ctmp; // skip ':'
@@ -144,7 +164,7 @@ std::string CMSNBuffer::GetParameter()
   
   setDataPosRead(getDataPosRead() - 1);
   
-  while (cCheck != ' ' && !End())
+  while (cCheck != ' ' && cCheck != '\n' && !End())
   {
     *this >> cCheck;
     if (cCheck != ' ' && cCheck != '\r' && cCheck != '\n')
