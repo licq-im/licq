@@ -973,13 +973,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 {
   unsigned long nUin, theSequence, senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
-  unsigned short version, command, junkShort, newCommand, messageLen, weird,
-                 ackFlags, msgFlags, licqVersion;
+  unsigned short version, command, junkShort, newCommand, messageLen,
+                headerLen, ackFlags, msgFlags, licqVersion;
   char licqChar, junkChar;
   bool errorOccured = false;
 
-  // only for v7,v8
-	weird = 0;
+  // only used for v7,v8
+	headerLen = 0;
 
   CBuffer &packet = pSock->RecvBuffer();
   int sockfd = pSock->Descriptor();
@@ -1064,10 +1064,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       packet.UnpackChar(); // 0x02
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
-      weird = packet.UnpackUnsignedShort(); // 0x000E
+      headerLen = packet.UnpackUnsignedShort(); // 0x000E
       theSequence = (signed short)packet.UnpackUnsignedShort();
-      unsigned long junkLong1, junkLong2, junkLong3;
-      packet >> junkLong1 >> junkLong2 >> junkLong3; // always zero
+      packet.incDataPosRead(headerLen - 2);
       newCommand = packet.UnpackUnsignedShort();
       ackFlags = packet.UnpackUnsignedShort();
       msgFlags = packet.UnpackUnsignedShort();
@@ -1102,6 +1101,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     delete [] buf;
     return false;
   }
+
+  // Silently leave, this is in v8 clients.  Seems to be saying
+  // that you are on their list
+  if (headerLen == 0x0012)
+    return false;
 
   // read in the message minus any stupid DOS \r's
   char message[messageLen + 1];
@@ -1220,13 +1224,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             fore = 0x000000;
           }
         }
-
-				// Length is 0x12 not 0x0E like usual
-				if (weird == 0x0012)
-				{
-					errorOccured = true;
-					break;
-				}
 
 				packet >> licqChar >> licqVersion;
 				nMask |= licqVersion;
