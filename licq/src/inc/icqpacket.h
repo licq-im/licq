@@ -8,7 +8,7 @@
 #include "user.h"
 #include "buffer.h"
 #include "socket.h"
-
+#include "icq-defines.h"
 
 //=====Packet===================================================================
 
@@ -63,21 +63,37 @@ public:
    virtual ~CPacketUdp(void);
 
    virtual const unsigned long  getSequence(void) { return m_nSequence; }
-   virtual const unsigned short SubSequence(void) { return 0; }
+   virtual const unsigned short SubSequence(void) { return m_nSubSequence; }
    virtual const unsigned short getCommand(void)  { return m_nCommand; }
    virtual const unsigned short getSubCommand(void)  { return 0; }
    virtual void Create(void) {};
 protected:
    CPacketUdp(unsigned short _nCommand);
+#if ICQ_VERSION == 2
    virtual unsigned long getSize(void)     { return 10; };
-   void initBuffer(void);
+#elif ICQ_VERSION == 4
+   virtual unsigned long getSize(void)     { return 20; };
+#endif
+   void InitBuffer(void);
+   void Encrypt(void);
 
+#if ICQ_VERSION == 2
    unsigned short m_nVersion;
    unsigned short m_nCommand;
    unsigned short m_nSequence;
    unsigned long  m_nSourceUin;
-
-   static unsigned short m_nSpecialSequence;
+   // Only used in some packets
+   unsigned short m_nSubSequence;
+#elif ICQ_VERSION == 4
+   unsigned short m_nVersion;
+   unsigned short m_nRandom;
+   unsigned short m_nZero;
+   unsigned short m_nCommand;
+   unsigned short m_nSequence;
+   unsigned short m_nSubSequence;
+   unsigned long  m_nSourceUin;
+   unsigned long  m_nCheckSum;
+#endif
 };
 
 
@@ -94,6 +110,9 @@ protected:
      72 00 04 00 7F 00 00 01 04 00 00 00 00 03 00 00 00 02 00 00 00 00 00 04
      00 72 00 */
   // ... PacketUdp header
+#if ICQ_VERSION == 4
+  unsigned long  m_nTime;
+#endif
   unsigned long  m_nLocalPort;
   unsigned short m_nPasswordLength;
   char           *m_sPassword;
@@ -101,8 +120,8 @@ protected:
   unsigned long  m_nLocalIP;
   char           m_aUnknown_2;
   unsigned long  m_nLogonStatus;
-  unsigned short m_nTcpVersion;
-  char           m_aUnknown_3[12];
+  unsigned long  m_nTcpVersion;
+  char           m_aUnknown_3[10];
 };
 
 
@@ -110,7 +129,11 @@ protected:
 class CPU_Ack : public CPacketUdp
 {
 public:
-   CPU_Ack(unsigned long _nSequence);
+#if ICQ_VERSION == 2
+   CPU_Ack(unsigned short _nSequence);
+#elif ICQ_VERSION == 4
+   CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence);
+#endif
 protected:
    virtual unsigned long getSize(void);
 
@@ -199,16 +222,12 @@ public:
    CPU_StartSearch(const char *_sAlias, const char *_sFirstName,
                    const char *_sLastName, const char *_sEmail);
    virtual ~CPU_StartSearch(void);
-   virtual const unsigned short SubSequence(void)  { return m_nSearchSequence; }
 protected:
    virtual unsigned long getSize(void);
-
-   static unsigned short s_nSearchSequence;
 
    /* 02 00 24 04 04 00 50 A5 82 00 05 00 0B 00 41 70 6F 74 68 65 6F 73 69 73
       00 07 00 47 72 61 68 61 6D 00 05 00 52 6F 66 66 00 01 00 00 */
    // ... PacketUdp header
-   unsigned short m_nSearchSequence;
    unsigned short m_nAliasLength;
    char           *m_sAlias;
    unsigned short m_nFirstNameLength;
@@ -228,7 +247,6 @@ public:
                                const char *_sLastName, const char *_sEmail,
                                bool _bAuthorization);
    virtual ~CPU_UpdatePersonalBasicInfo(void);
-   virtual const unsigned short SubSequence(void)  { return m_nUpdateSequence; };
 
    const char *Alias(void)  { return m_sAlias; }
    const char *FirstName(void)  { return m_sFirstName; }
@@ -239,7 +257,6 @@ protected:
    virtual unsigned long getSize(void);
 
    // ... PacketUdp header
-   unsigned short m_nUpdateSequence;
    unsigned short m_nAliasLength;
    char           *m_sAlias;
    unsigned short m_nFirstNameLength;
@@ -261,7 +278,6 @@ public:
                              char _cSex, const char *_sPhone,
                              const char *_sHomepage, const char *_sAbout);
    virtual ~CPU_UpdatePersonalExtInfo(void);
-   virtual const unsigned short SubSequence(void)  { return m_nUpdateSequence; }
 
    const char *City(void)  { return m_sCity; }
    unsigned short Country(void)  { return m_nCountry; }
@@ -275,7 +291,6 @@ protected:
    virtual unsigned long getSize(void);
 
    // ... PacketUdp header
-   unsigned short m_nUpdateSequence;
    unsigned short m_nCityLength;
    char           *m_sCity;
    unsigned short m_nCountry;
@@ -341,15 +356,11 @@ class CPU_GetUserBasicInfo : public CPacketUdp
 {
 public:
    CPU_GetUserBasicInfo(unsigned long _nUserUin);
-   virtual const unsigned short SubSequence(void)  { return m_nInfoSequence; }
 protected:
    virtual unsigned long getSize(void);
 
-   static unsigned short s_nInfoSequence;
-
    /* 02 00 60 04 B7 00 BA 95 47 00 0A 00 8F 76 20 00 */
    // ... PacketUdp header
-   unsigned short m_nInfoSequence;
    unsigned long  m_nUserUin;
 };
 
@@ -359,15 +370,11 @@ class CPU_GetUserExtInfo : public CPacketUdp
 {
 public:
    CPU_GetUserExtInfo(unsigned long _nUserUin);
-   virtual const unsigned short SubSequence(void)  { return m_nInfoSequence; }
 protected:
    virtual unsigned long getSize(void);
 
-   static unsigned short s_nInfoSequence;
-
    /* 02 00 60 04 B7 00 BA 95 47 00 0A 00 8F 76 20 00 */
    // ... PacketUdp header
-   unsigned short m_nInfoSequence;
    unsigned long  m_nUserUin;
 };
 
@@ -402,12 +409,16 @@ protected:
 class CPU_SysMsgDoneAck : public CPacketUdp
 {
 public:
-   CPU_SysMsgDoneAck(unsigned long _nSequence);
+#if ICQ_VERSION == 2
+  CPU_SysMsgDoneAck(unsigned short _nSequence);
+#elif ICQ_VERSION == 4
+  CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _nSubSequence);
+#endif
 protected:
-   unsigned long getSize(void);
+  unsigned long getSize(void);
 
-   /* 02 00 42 04 04 00 50 A5 82 00 */
-   // ... PacketUdp header
+  /* 02 00 42 04 04 00 50 A5 82 00 */
+  // ... PacketUdp header
 };
 
 
@@ -427,7 +438,7 @@ public:
    void Create(void) {};
 protected:
    virtual unsigned long getSize(void) { return (26); };
-   void initBuffer(void);
+   void InitBuffer(void);
 
    /* FF 03 00 00 00 3D 62 00 00 50 A5 82 00 CF 60 AD 95 CF 60 AD 95 04 3D 62
       00 00 */
@@ -458,7 +469,7 @@ protected:
               unsigned short _nSubCommand, const char *_sMessage, bool _bAccept,
               bool _bUrgent, ICQUser *_cUser);
    virtual unsigned long getSize(void);
-   void initBuffer(void);
+   void InitBuffer(void);
    void postBuffer(void);
    ICQUser *m_cUser;
 
@@ -751,7 +762,7 @@ public:
   virtual void Create(void) {};
 protected:
    virtual unsigned long getSize(void)        { return 0; };
-   void initBuffer(void);
+   void InitBuffer(void);
 };
 
 
@@ -852,7 +863,7 @@ public:
   virtual void Create(void) {};
 protected:
    virtual unsigned long getSize(void)        { return 0; };
-   void initBuffer(void)   { buffer = new CBuffer(getSize()); };
+   void InitBuffer(void)   { buffer = new CBuffer(getSize()); };
 };
 
 //-----File_InitClient----------------------------------------------------------

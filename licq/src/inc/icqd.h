@@ -174,10 +174,10 @@ protected:
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect,
                             unsigned long _nDestinationUin, CUserEvent *e);
-  void AckUDP(unsigned short);
+  void AckUDP(unsigned short, unsigned short);
   void AckTCP(CPacketTcp &, int _nSD);
 
-  unsigned short ProcessUdpPacket(CBuffer &packet);
+  unsigned short ProcessUdpPacket(CBuffer &packet, bool = false);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   bool ProcessTcpPacket(CBuffer &packet, int sockfd);
   bool ProcessTcpHandshake(TCPSocket *);

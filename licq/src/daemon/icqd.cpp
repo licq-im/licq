@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <ctype.h>
@@ -154,6 +155,9 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   // Pipes
   gLog.Info("%sCreating pipes.\n", L_INITxSTR);
   pipe(pipe_newsocket);
+
+  // Initialize the random number generator
+  srand(time(NULL));
 
   // Start up our threads
   gLog.Info("%sInitializing thread data.\n", L_INITxSTR);

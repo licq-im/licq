@@ -7,7 +7,7 @@
 #endif
 
 // Version constants
-const unsigned short ICQ_VERSION                   = 0x0002;
+#define ICQ_VERSION 4
 const unsigned short ICQ_VERSION_TCP               = 0x0003;
 
 // UDP commands
@@ -35,6 +35,7 @@ const unsigned short ICQ_CMDxRCV_USERxINVALIDxUIN  = 0x012C;
 const unsigned short ICQ_CMDxRCV_USERxSTATUS       = 0x01A4;
 //const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x01E0;
 //const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x01EA;
+const unsigned short ICQ_CMDxRCV_MULTIxPACKET      = 0x0212;
 const unsigned short ICQ_CMDxRCV_USERxLISTxDONE    = 0x021C;
 
 const unsigned short ICQ_CMDxSND_ACK               = 0x000A;
@@ -76,7 +77,7 @@ const unsigned short ICQ_CMDxSUB_CHAT              = 0x0002;
 const unsigned short ICQ_CMDxSUB_FILE              = 0x0003;
 const unsigned short ICQ_CMDxSUB_URL               = 0x0004;
 const unsigned short ICQ_CMDxSUB_REQxAUTH          = 0x0006;
-//const unsigned short ICQ_CMDxSUB_???               = 0x0008;
+const unsigned short ICQ_CMDxSUB_AUTHORIZED        = 0x0008;
 const unsigned short ICQ_CMDxSUB_ADDEDxTOxLIST     = 0x000C;
 const unsigned short ICQ_CMDxSUB_WEBxPANEL         = 0x000D;
 const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;
