@@ -1343,7 +1343,7 @@ compiler."
     *) # Anything else should be a program.
       linkmode=prog ;;
     esac
-    
+
     save_deplibs="$deplibs"
     deplibs=
     newdependency_libs=
@@ -1351,10 +1351,10 @@ compiler."
     new_lib_search_path=
     need_relink=no # whether we're linking any uninstalled libtool libraries
     case $linkmode in
-    lib) 
+    lib)
 	passes="link"
 	;;
-    prog) 
+    prog)
 	alldeplibs=no
 	link_against_libtool_libs=
 	passes="scan link"
@@ -1416,7 +1416,7 @@ compiler."
 	      finalize_command="$finalize_command $deplib"
 	    fi
 	    ;;
-	  *) 
+	  *)
 	    $echo "$modename: warning: \`-L' is ignored for archives/objects" 1>&2
 	    ;;
 	  esac
@@ -1529,7 +1529,7 @@ compiler."
 	    case "$deplib" in
 	    -L*) new_lib_search_path="$new_lib_search_path "`$echo "X$deplib" | $Xsed -e 's/^-L//'`;; ### testsuite: skip nested quoting test
 	    esac
-	  
+	
 	    if test "$link_all_deplibs" != no || \
 	       test "$fast_install" != no || \
 	       test "$build_libtool_libs" = no || \
@@ -1615,7 +1615,7 @@ compiler."
 	    *)
 	      case "$compile_rpath " in
 	      *" $absdir "*) ;;
-	      *) compile_rpath="$compile_rpath $absdir" 
+	      *) compile_rpath="$compile_rpath $absdir"
 	      esac
 	      ;;
 	    esac
@@ -1655,7 +1655,7 @@ compiler."
 	    *)
 	      case "$compile_rpath " in
 	      *" $absdir "*) ;;
-	      *) compile_rpath="$compile_rpath $absdir" 
+	      *) compile_rpath="$compile_rpath $absdir"
 	      esac
 	      ;;
 	    esac
@@ -1669,7 +1669,7 @@ compiler."
 	      ;;
 	    esac
 	  fi
-	    
+	
 	  if test -n "$old_archive_from_expsyms_cmds"; then
 	    # figure out the soname
 	    set dummy $library_names
@@ -1684,7 +1684,7 @@ compiler."
 
 	    # Make a new name for the extract_expsyms_cmds to use
 	    newlib="libimp-`echo $soname | sed 's/^lib//;s/\.dll$//'`.a"
-	  
+	
 	    # If the library has no export list, then create one now
 	    if test -f "$output_objdir/$soname-def"; then :
 	    else
@@ -1698,7 +1698,7 @@ compiler."
 	      done
 	      IFS="$save_ifs"
 	    fi
- 
+
 	    # Create $newlib
 	    if test -f "$output_objdir/$newlib"; then :; else
 	      $show "generating import library for \`$soname'"
@@ -1797,7 +1797,7 @@ compiler."
 	    esac
 	  fi
 	  test "$add_name" = yes && deplibs="$deplibs -l$name"
-	  
+	
 	  else
 
 	  lib_linked=yes
@@ -1883,7 +1883,7 @@ compiler."
 	    esac
 	  fi
 	  test "$add_name" = yes && finalize_command="$finalize_command -l$name"
-	  
+	
 	  fi
 	elif test $linkmode = prog; then
 	  # Here we assume that one of hardcode_direct or hardcode_minus_L
@@ -1955,7 +1955,7 @@ compiler."
 	    for deplib in $dependency_libs; do
 	      case "$deplib" in
 	      -L*) path="$deplib" ;;
-	      *.la) 
+	      *.la)
 		if grep "^installed=no" $deplib > /dev/null; then
 		  dir=`$echo "X$deplib" | $Xsed -e 's%/[^/]*$%%'`
 		  test "X$dir" = "X$deplib" && dir="."
@@ -2276,7 +2276,7 @@ compiler."
 	deplibs=`echo "$deplibs " | sed -e 's% -L$path % %g'`
 	dependency_libs=`echo "$dependency_libs " | sed -e 's% -L$path % %g'`
       done
-      
+
       if test -n "$xrpath"; then
 	# If the user specified any rpath flags, then add them.
 	temp_xrpath=
@@ -2417,7 +2417,7 @@ EOF
 		      # Follow soft links.
 		      if ls -lLd "$potent_lib" 2>/dev/null \
 			 | grep " -> " >/dev/null; then
-			continue 
+			continue
 		      fi
 		      # The statement above tries to avoid entering an
 		      # endless loop below, in case of cyclic links.
@@ -2512,7 +2512,7 @@ EOF
       library_names=
       old_library=
       dlname=
-      
+
       # Test again, we may have decided not to build it any more
       if test "$build_libtool_libs" = yes; then
 	if test "$hardcode_into_libs" != no; then
@@ -2569,7 +2569,7 @@ EOF
 	if test -n "$shlibpath"; then
 	  eval "$shlibpath_var='$shlibpath\$$shlibpath_var'; export $shlibpath_var"
 	fi
-  
+
 	# Get the real and link names of the library.
 	eval library_names=\"$library_names_spec\"
 	set dummy $library_names
@@ -2586,23 +2586,6 @@ EOF
 	for link
 	do
 	  linknames="$linknames $link"
-	done
-
-	# Ensure that we have .o objects for linkers which dislike .lo
-	# (e.g. aix) in case we are running --disable-static
-	for obj in $libobjs; do
-	  xdir=`$echo "X$obj" | $Xsed -e 's%/[^/]*$%%'`
-	  if test "X$xdir" = "X$obj"; then
-	    xdir="."
-	  else
-	    xdir="$xdir"
-	  fi
-	  baseobj=`$echo "X$obj" | $Xsed -e 's%^.*/%%'`
-	  oldobj=`$echo "X$baseobj" | $Xsed -e "$lo2o"`
-	  if test ! -f $xdir/$oldobj; then
-	    $show "(cd $xdir && ${LN_S} $baseobj $oldobj)"
-	    $run eval '(cd $xdir && ${LN_S} $baseobj $oldobj)' || exit $?
-	  fi
 	done
 
 	# Use standard objects if they are pic
@@ -2772,7 +2755,7 @@ EOF
       gentop=
       # reload_cmds runs $LD directly, so let us get rid of
       # -Wl from whole_archive_flag_spec
-      wl= 
+      wl=
 
       if test -n "$convenience"; then
 	if test -n "$whole_archive_flag_spec"; then
@@ -2899,9 +2882,9 @@ EOF
 	if test "$dlopen" = unknown && test "$dlopen_self" = unknown &&
 	   test "$dlopen_self_static" = unknown; then
 	  $echo "$modename: warning: \`AC_LIBTOOL_DLOPEN' not used. Assuming no dlopen support."
-	fi 
+	fi
       fi
-    
+
       if test -n "$rpath$xrpath"; then
 	# If the user specified any rpath flags, then add them.
 	for libdir in $rpath $xrpath; do
@@ -3052,7 +3035,7 @@ extern \"C\" {
 	      $run eval 'egrep -v " ($exclude_expsyms)$" "$nlist" > "$nlist"T'
 	      $run eval '$mv "$nlist"T "$nlist"'
 	    fi
-	    
+	
 	    if test -n "$export_symbols_regex"; then
 	      $run eval 'egrep -e "$export_symbols_regex" "$nlist" > "$nlist"T'
 	      $run eval '$mv "$nlist"T "$nlist"'
@@ -3288,7 +3271,7 @@ static const void *lt_preloaded_setup() {
 
       # Replace the output file specification.
       link_command=`$echo "X$link_command" | $Xsed -e 's%@OUTPUT@%'"$output_objdir/$outputname"'%g'`
-      
+
       # Delete the old output files.
       $run $rm $output $output_objdir/$outputname $output_objdir/lt-$outputname
 
@@ -3401,7 +3384,7 @@ else
 	  echo >> $output "\
   program=lt-'$outputname'
   progdir=\"\$thisdir/$objdir\"
-  
+
   if test ! -f \"\$progdir/\$program\" || \\
      { file=\`ls -1dt \"\$progdir/\$program\" \"\$progdir/../\$program\" 2>/dev/null | sed 1q\`; \\
        test \"X\$file\" != \"X\$progdir/\$program\"; }; then
@@ -3532,7 +3515,7 @@ fi\
 	  exit $status
 	fi
 	generated="$generated $gentop"
-	  
+	
 	# Add in members from convenience archives.
 	for xlib in $addlibs; do
 	  # Extract the objects.
@@ -3606,7 +3589,7 @@ fi\
       # Quote the link command for shipping.
       relink_command="cd `pwd`; $SHELL $0 --mode=relink $libtool_args"
       relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
-      
+
       # Only create the output if not a dry run.
       if test -z "$run"; then
 	for installed in no yes; do
@@ -3619,7 +3602,7 @@ fi\
 	    newdependency_libs=
 	    for deplib in $dependency_libs; do
 	      case "$deplib" in
-	      *.la) 
+	      *.la)
 		name=`$echo "X$deplib" | $Xsed -e 's%^.*/%%'`
 		eval libdir=`sed -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
 		if test -z "$libdir"; then
@@ -4083,7 +4066,7 @@ relink_command=\"$relink_command\""
 	$show "$old_striplib $oldlib"
 	$run eval "$old_striplib $oldlib" || exit $?
       fi
-      
+
       # Do each command in the postinstall commands.
       eval cmds=\"$old_postinstall_cmds\"
       IFS="${IFS= 	}"; save_ifs="$IFS"; IFS='~'
