@@ -383,7 +383,8 @@ extern GSList *uaw_list;
 /* Globals in contact_list.cpp */
 extern GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 extern struct status_icon *online, *away, *na, *dnd, *occ, *offline, *ffc,
-	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon;
+	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
+	*secure_icon, *birthday_icon, *securebday_icon;
 
 /* Globals in chat_window.cpp */
 extern GSList *rc_list;

@@ -29,7 +29,8 @@
 
 GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 struct status_icon *online, *offline, *away, *na, *dnd, *occ, *ffc,
-	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon;
+	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
+	*secure_icon, *birthday_icon, *securebday_icon;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -67,9 +68,6 @@ void contact_list_refresh()
 
 	/* Don't update the clist window, so we can update all the users */
 	gtk_clist_freeze(GTK_CLIST(contact_list));
-
-//	do_colors(); 	/* Make the colors */
-//	do_pixmaps();   /* Make the pixmap */
 
 	blah[0] = "";
 	blah[1] = "";
@@ -229,8 +227,29 @@ void contact_list_refresh()
 				num_users, 1, cur_icon->pm, cur_icon->bm);
 		} // else
 
-		gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
+		if(pUser->Secure() && (pUser->Birthday() == 0))
+		{
+			gtk_clist_set_pixtext(GTK_CLIST(contact_list),
+				num_users, 2, pUser->GetAlias(), 4,
+				securebday_icon->pm, securebday_icon->bm);
+		}
+		else if(pUser->Secure())
+		{
+			gtk_clist_set_pixtext(GTK_CLIST(contact_list),
+				num_users, 2, pUser->GetAlias(), 4,
+				secure_icon->pm, secure_icon->bm);
+		}
+		else if(pUser->Birthday() == 0)
+		{
+			gtk_clist_set_pixtext(GTK_CLIST(contact_list),
+				num_users, 2, pUser->GetAlias(), 4,
+				birthday_icon->pm, birthday_icon->bm);
+		}
+		else
+		{
+			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 				      2, pUser->GetAlias());
+		}
 
 		gtk_clist_set_row_data(GTK_CLIST(contact_list), 
 					 num_users, (gpointer)pUser);
