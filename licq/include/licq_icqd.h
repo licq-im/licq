@@ -355,7 +355,7 @@ protected:
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
   friend void *MonitorSockets_tep(void *p);
-  //friend void *ProcessRunningEvent_tep(void *p);
+  friend void *ReverseConnectToUser_tep(void *p);
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
   friend void *Shutdown_tep(void *p);
@@ -372,6 +372,23 @@ extern CICQDaemon *gLicqDaemon;
 bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
 unsigned long StringToStatus(char *_szStatus);
 unsigned short VersionToUse(unsigned short);
+
+// Data structure for passing information to the reverse connection thread
+class CReverseConnectToUserData
+{
+public:
+  CReverseConnectToUserData(unsigned long uin, unsigned long ip,
+   unsigned short port, unsigned short version, unsigned short failedport) :
+   nUin(uin), nIp(ip), nPort(port), nFailedPort(failedport),
+   nVersion(version) {}
+
+  unsigned long nUin;
+  unsigned long nIp;
+  unsigned short nPort;
+  unsigned short nFailedPort;
+  unsigned short nVersion;
+};
+
 
 
 #endif

@@ -186,83 +186,27 @@ void *ProcessRunningEvent_Client_tep(void *p)
 }
 
 
-#if 0
 /*------------------------------------------------------------------------------
- * ReverseConnectToUser
+ * ReverseConnectToUser_tep
  *
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-class CReverseConnectToUserData
-{
-public:
-  CReverseConnectToUserData(CICQDaemon *d, unsigned long uin,
-                            unsigned long ip, unsigned short port)
-    : xDaemon(d), nUin(uin), nIp(ip), nPort(port) {}
-
-  CICQDaemon *xDaemon;
-  unsigned long nUin;
-  unsigned long nIp;
-  unsigned short nPort;
-}
-
 void *ReverseConnectToUser_tep(void *v)
 {
   pthread_detach(pthread_self());
 
   DEBUG_THREADS("[ReverseConnectToUser_tep] Caught event.\n");
 
-  struct SReverseConnectToUserData *p = (struct SReverseConnectToUserData *)v;
-  CICQDaemon *d = p->xDaemon;
-  unsigned long nUin = p->nUIn;
-  unsigned long nIp = p->nIp;
-  unsigned short nPort = p->nPort;
+  CReverseConnectToUserData *p = (CReverseConnectToUserData *)v;
+
+  gLicqDaemon->ReverseConnectToUser(p->nUin, p->nIp, p->nPort, p->nVersion,
+    p->nFailedPort);
+
   delete p;
 
-  TCPSocket *s = new TCPSocket(nUin);
-
-  gLog.Info("%sReverse connecting to %ld on port %d.\n", L_TCPxSTR, nUin, nPort);
-
-  // If we fail to set the remote address, the ip must be 0
-  s->SetRemoteAddr(nIp, nPort);
-
-  if (!s->OpenConnection())
-  {
-    char buf[128];
-    gLog.Warn("%sReverse connect to %ld failed:\n%s%s.\n", L_WARNxSTR,
-              nUin, L_BLANKxSTR, s->ErrorStr(buf, 128));
-    return -1;
-  }
-
-  gLog.Info("%sReverse shaking hands with %ld.\n", L_TCPxSTR, nUin);
-  CPacketTcp_Handshake p(s->LocalPort());
-  if (!s->SendPacket(p.getBuffer()))
-  {
-    char buf[128];
-    gLog.Warn("%sReverse handshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
-    delete s;
-    return -1;
-  }
-
-  // Add the new socket to the socket manager
-  gSocketManager.AddSocket(s);
-  int nSD = s->Descriptor();
-  gSocketManager.DropSocket(s);
-
-  // Set the socket descriptor in the user if this user is on our list
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u != NULL)
-  {
-    u->SetSocketDesc(nSD, nPort);
-    gUserManager.DropUser(u);
-  }
-
-  // Alert the select thread that there is a new socket
-  write(d->pipe_newsocket[PIPE_WRITE], "S", 1);
-
-  return nSD;
+  return NULL;
 }
-#endif
 
 
 

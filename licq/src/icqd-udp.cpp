@@ -1531,8 +1531,14 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
              >> nVersion;
       nIp = PacketIpToNetworkIp(nIp);
       gLog.Info("%sReverse tcp request from %ld (port %d).\n", L_UDPxSTR, nUin, nPort2);
-      // May block in connect, which would suck, but for it's unlikely
+#ifdef BLOCKING_REVERSE_CONNECT
       ReverseConnectToUser(nUin, nIp, nPort, VersionToUse(nVersion), nPort2);
+#else
+      pthread_t thread_reverseconnect;
+      CReverseConnectToUserData *d =
+       new CReverseConnectToUserData(nUin, nIp, nPort, VersionToUse(nVersion), nPort2);
+      pthread_create(&thread_reverseconnect, NULL, &ReverseConnectToUser_tep, d);
+#endif
       break;
     }
 
