@@ -271,7 +271,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       break;
     default:
       gLog.Warn("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n",
-                m_szFileName, nSubCommand);
+                L_WARNxSTR, m_szFileName, nSubCommand);
       break;
     }
     if (e != NULL)
