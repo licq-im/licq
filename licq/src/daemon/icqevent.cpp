@@ -60,7 +60,7 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_pExtendedAck = NULL;
   m_pSearchAck = NULL;
   m_pUnknownUser = NULL;
-  m_nSubResult = 0;
+  m_nSubResult = ICQ_TCPxACK_ACCEPT;
   m_pDaemon = _pDaemon;
   thread_plugin = pthread_self();
 
