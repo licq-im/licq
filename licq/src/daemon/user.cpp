@@ -951,7 +951,7 @@ void ICQUser::Init(unsigned long _nUin)
   SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
   SetSendServer(false);
-  SetShowAwayMsg(true);
+  SetShowAwayMsg(false);
   SetSequence(1);
   ClearSocketDesc();
   fcnDlg = NULL;
