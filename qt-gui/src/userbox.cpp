@@ -39,6 +39,8 @@
 
 #include "xpm/itemCollapsed.xpm"
 #include "xpm/itemExpanded.xpm"
+#include "xpm/iconCustomAR.xpm"
+#include "xpm/iconBirthday.xpm"
 
 #undef Status
 
@@ -339,16 +341,23 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
     // If this is a floaty then don't draw the highlight box
-    if (listView()->parent() == NULL || isGroupItem())
+    if (listView()->parent() == NULL)
     {
       cg.setBrush(QColorGroup::Highlight, QBrush(NoBrush));
       cg.setColor(QColorGroup::HighlightedText, cg.text());
     }
+
     if (isGroupItem())
     {
       QFont f(p->font());
       f.setPointSize(f.pointSize() - 2);
       p->setFont(f);
+    }
+
+    QListViewItem::paintCell(p, cg, column, width, align);
+
+    if (isGroupItem())
+    {
       if (column == 1)
       {
         listView()->style().drawSeparator(p,
@@ -361,8 +370,14 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
            height() >> 1, cg);
       }
     }
+    else if (column == 1) {
+      int w = p->fontMetrics().width(text(1)) + 3;
 
-    QListViewItem::paintCell(p, cg, column, width, align);
+      if(width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)) {
+        p->drawPixmap(w, 0, *listView()->pixBirthday);
+        w += 11;
+      }
+    }
   }
   else
   {
@@ -584,6 +599,8 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
   pixCollapsed = new QPixmap(itemCollapsed_xpm);
   pixExpanded = new QPixmap(itemExpanded_xpm);
+  pixBirthday = new QPixmap(iconBirthday_xpm);
+  pixCustomAR = new QPixmap(iconCustomAR_xpm);
 
   if (parent != NULL)
   {

@@ -147,7 +147,7 @@ protected:
   CUserViewTips *m_tips;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
-  QPixmap *pixExpanded, *pixCollapsed;
+  QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday;
   int numOnline, numOffline;
   virtual void timerEvent(QTimerEvent*);
   virtual void viewportMousePressEvent(QMouseEvent *e);
