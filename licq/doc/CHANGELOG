@@ -10,6 +10,9 @@ o  User list format totally changed (affects developers only)
 o  Ignore messages from users not on contact list option added
 o  Added two new options to the fifo, "message" and "url".  See the
    FAQ for more info
+o  Added log.rejects for events which get rejected (ignored...)
+o  Support for encrypted ICQ protocol version 4
+o  Thread optimizations improving speed, especially on single CPU systems
 
 
 New in 0.70.1
