@@ -564,7 +564,7 @@ QWidget* OptionsDlg::new_appearance_options()
   chkManualNewUser = new QCheckBox(tr("Manual \"New User\" group handling"), boxMainWin);
   QWhatsThis::add(chkManualNewUser, tr("If not checked, a user will be automatically "
                                        "removed from \"New User\" group when you first"
-                                       "send an event to him"));
+                                       "send an event to them"));
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
@@ -734,7 +734,7 @@ QWidget* OptionsDlg::new_sounds_options()
   QWhatsThis::add(chkOEDND, tr("Perform OnEvent command in do not disturb mode"));
   chkAlwaysOnlineNotify = new QCheckBox(tr("Online Notify when Logging On"), boxAcceptEvents);
   QWhatsThis::add(chkAlwaysOnlineNotify, tr("Perform the online notify OnEvent "
-     " when logging on (this is different from how the Mirabilis client works)"));
+     "when logging on (this is different from how the Mirabilis client works)"));
 
   //lay->addStretch(1);
 
