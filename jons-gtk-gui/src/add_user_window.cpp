@@ -37,6 +37,7 @@ void menu_system_add_user(GtkWidget *window, gpointer data)
 	/* Make up the window for adding users */
 	a->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(a->window), "Licq - Add User");
+	gtk_window_set_position(GTK_WINDOW(a->window), GTK_WIN_POS_CENTER);
 
 	/* The main box */
 	v_box = gtk_vbox_new(FALSE, 5);

@@ -39,6 +39,7 @@ void away_msg_window(gushort status)
 	/* Make the main window */
 	away_d->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(away_d->window), title);
+	gtk_window_set_position(GTK_WINDOW(away_d->window), GTK_WIN_POS_CENTER);
 
 	/* The text box */
 	away_d->text = gtk_text_new(NULL, NULL);

@@ -65,6 +65,7 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	gtk_window_set_title(GTK_WINDOW(url->window), title);
 	gtk_signal_connect(GTK_OBJECT(url->window), "delete_event",
 			   GTK_SIGNAL_FUNC(destroy_dialog), url->window);
+	gtk_window_set_position(GTK_WINDOW(url->window), GTK_WIN_POS_CENTER);
 
 	/* Set up the boxes */
 	h_box = gtk_hbox_new(FALSE, 0);
@@ -198,6 +199,7 @@ void list_delete_user(GtkWidget *widget, ICQUser *user)
 	/* Make the dialog window */
 	d->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(d->window), "Licq - Delete User");
+	gtk_window_set_position(GTK_WINDOW(d->window), GTK_WIN_POS_CENTER);
 
 	/* The main box */
 	v_box = gtk_vbox_new(FALSE, 5);
