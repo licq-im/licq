@@ -1420,7 +1420,6 @@ void CMainWindow::callMsgFunction()
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  //unsigned long nUin = userView->SelectedItemUin();
   unsigned long nUin = m_nUserMenuUin;
 
   if (nUin == 0) return;
@@ -1570,72 +1569,71 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 //-----CMainWindow::callICQFunction-------------------------------------------
 void CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
-  ICQFunctions *f = NULL;
-
   if (nUin == 0) return;
 
-  UserEventCommon* e = 0;
+  UserEventCommon *e = NULL;
   bool doraise = false;
 
-  switch(fcn) {
-  case mnuUserView:
+  switch (fcn)
   {
-    QListIterator<UserViewEvent> it(licqUserView);
-
-    for (; it.current(); ++it)
+    case mnuUserView:
     {
-      if ((*it)->Uin() == nUin)
+      QListIterator<UserViewEvent> it(licqUserView);
+
+      for (; it.current(); ++it)
       {
-        e = *it;
-        break;
+        if ((*it)->Uin() == nUin)
+        {
+          e = *it;
+          break;
+        }
       }
-    }
 
-    if (!e)
+      if (e == NULL)
+      {
+        e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
+        connect (e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
+        licqUserView.append(static_cast<UserViewEvent*>(e));
+      }
+      else
+        doraise = true;
+      break;
+    }
+    case mnuUserSendMsg:
     {
-      e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
-      connect (e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
-      licqUserView.append(static_cast<UserViewEvent*>(e));
+      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
     }
-    else
-      doraise = true;
-
-    break;
-  }
-  case mnuUserSendMsg:
-  {
-    e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
-    break;
-  }
-  case mnuUserSendUrl:
-  {
-    e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, nUin);
-    break;
-  }
-  case mnuUserSendChat:
-  {
-    e = new UserSendChatEvent(licqDaemon, licqSigMan, this, nUin);
-    break;
-  }
-  case mnuUserSendFile:
-  {
-    e = new UserSendFileEvent(licqDaemon, licqSigMan, this, nUin);
-    break;
-  }
-  case mnuUserSendContact:
-  {
-    e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin);
-    break;
-  }
-  default:
-    qDebug("unknown callFunction() fcn: %d", fcn);
+    case mnuUserSendUrl:
+    {
+      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendChat:
+    {
+      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendFile:
+    {
+      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendContact:
+    {
+      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    default:
+      qDebug("unknown callFunction() fcn: %d", fcn);
   }
 
   e->show();
-  if(doraise) {
+  if (doraise)
+  {
     e->raise();
 #ifdef USE_KDE
-    KWin::setActiveWindow(f->winId());
+    KWin::setActiveWindow(e->winId());
 #endif
   }
 }
