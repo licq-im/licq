@@ -90,5 +90,10 @@ public:
   CPS_MSNAddUser(const char *);
 };
 
+class CPS_MSN_SBAnswer : public CMSNPacket
+{
+public:
+  CPS_MSN_SBAnswer(const char *, const char *, const char *sz);
+};
 
 #endif // __MSNPACKET_H

@@ -158,6 +158,7 @@ CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
 
 CPS_MSNSetPrivacy::CPS_MSNSetPrivacy() : CMSNPacket()
 {
+  //TODO
   m_szCommand = strdup("GTC");
   char szParams[] = "N";
   m_nSize += strlen(szParams);
@@ -178,5 +179,21 @@ CPS_MSNAddUser::CPS_MSNAddUser(const char *szUser) : CMSNPacket()
   m_pBuffer->Pack(szUser, strlen(szUser));
   m_pBuffer->Pack(" ", 1);
   m_pBuffer->Pack(szUser, strlen(szUser));
+  m_pBuffer->Pack("\r\n", 2);
+}
+
+CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const char *szSession, const char *szCookie,
+  const char *szUser)
+  : CMSNPacket()
+{
+  m_szCommand = strdup("ANS");
+  m_nSize += strlen(szSession) + strlen(szCookie) + strlen(szUser) + 2;
+  InitBuffer();
+  
+  m_pBuffer->Pack(szUser, strlen(szUser));
+  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->Pack(szCookie, strlen(szCookie));
+  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->Pack(szSession, strlen(szSession));
   m_pBuffer->Pack("\r\n", 2);
 }

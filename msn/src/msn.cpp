@@ -5,6 +5,8 @@
 #include <string>
 #include <openssl/md5.h>
 
+using namespace std;
+
 //Global socket manager
 CSocketManager gSocketMan;
 
@@ -59,7 +61,7 @@ void CMSN::Run()
           ProcessPipe();
         }
         
-        if (nCurrent == m_nServerSocket)
+        else if (nCurrent == m_nServerSocket)
         {
           INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
           TCPSocket *sock = static_cast<TCPSocket *>(s);
@@ -72,7 +74,7 @@ void CMSN::Run()
           }
         }
         
-        if (nCurrent == m_nSSLSocket)
+        else if (nCurrent == m_nSSLSocket)
         {
           INetSocket *s = gSocketMan.FetchSocket(m_nSSLSocket);
           TCPSocket *sock = static_cast<TCPSocket *>(s);
@@ -83,6 +85,11 @@ void CMSN::Run()
             gSocketMan.DropSocket(sock);
             ProcessSSLServerPacket(packet);
           }
+        }
+        
+        else
+        {
+          //SB socket
         }
       }
 
@@ -111,7 +118,7 @@ void CMSN::ProcessSignal(CSignal *s)
 {
   switch (s->Type())
   {
-    case PROTOxADD_USER:
+    case PROTOxLOGON:
     {
       MSNLogon("messenger.hotmail.com", 1863);
       break;
@@ -137,7 +144,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   
   // Now process the packet
   char cTmp = 0;
-  std::string strFirstLine = "";
+  string strFirstLine = "";
   
   sSSLPacket >> cTmp;
   while (cTmp != '\r')
@@ -207,8 +214,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         strncpy(szNewServer, szParam, szPort - szParam);
         szNewServer[szPort - szParam] = '\0';
-      *szPort++ = '\0';
-    }
+        *szPort++ = '\0';
+      }
     
       gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
@@ -218,12 +225,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strcmp(szCommand, "USR") == 0)
     {
       m_pPacketBuf->SkipParameter(); // Seq
-      std::string strType = m_pPacketBuf->GetParameter();
+      string strType = m_pPacketBuf->GetParameter();
       
       if (strType == "OK")
       {
         m_pPacketBuf->SkipParameter(); // email account
-        std::string strNick = m_pPacketBuf->GetParameter();
+        string strNick = m_pPacketBuf->GetParameter();
         gLog.Info("%s%s logged in.\n", L_MSNxSTR, strNick.c_str());
         
         pReply = new CPS_MSNSync();
@@ -231,7 +238,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       else
       {
         m_pPacketBuf->SkipParameter(); // "S"
-        std::string strParam = m_pPacketBuf->GetParameter();
+        string strParam = m_pPacketBuf->GetParameter();
       
         // Make an SSL connection to authenticate
         MSNAuthenticate(strdup(strParam.c_str()));
@@ -240,21 +247,21 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strcmp(szCommand, "CHL") == 0)
     {
       m_pPacketBuf->SkipParameter(); // Seq
-      std::string strHash = m_pPacketBuf->GetParameter();
+      string strHash = m_pPacketBuf->GetParameter();
       
       pReply = new CPS_MSNChallenge(strHash.c_str());
     }
     else if (strcmp(szCommand, "SYN") == 0)
     {
       m_pPacketBuf->SkipParameter();
-      std::string strVersion = m_pPacketBuf->GetParameter();
+      string strVersion = m_pPacketBuf->GetParameter();
       
       pReply = new CPS_MSNChangeStatus();
     }
     else if (strcmp(szCommand, "LST") == 0)
     {
       // Add user
-      std::string strUser = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
       m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
     }
     else if (strcmp(szCommand, "LSG") == 0)
@@ -277,7 +284,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     {
       m_pPacketBuf->SkipParameter(); // seq
       m_pPacketBuf->SkipParameter(); //status
-      std::string strUser = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
@@ -290,19 +297,19 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strcmp(szCommand, "NLN") == 0)
     {
       m_pPacketBuf->SkipParameter(); //status
-      std::string strUser = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
-        gLog.Info("%s%s changed status ().\n", L_SRVxSTR, u->GetAlias());
+        gLog.Info("%s%s changed status ().\n", L_MSNxSTR, u->GetAlias());
         m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
       }
       gUserManager.DropUser(u);
     }
     else if (strcmp(szCommand, "FLN") == 0)
     {
-      std::string strUser = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
@@ -311,6 +318,16 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
       }
       gUserManager.DropUser(u);
+    }
+    else if (strcmp(szCommand, "RNG") == 0)
+    {
+      string strSessionID = m_pPacketBuf->GetParameter();
+      string strServer = m_pPacketBuf->GetParameter();
+      m_pPacketBuf->SkipParameter(); // 'CKI'
+      string strCookie = m_pPacketBuf->GetParameter();
+      string strUser = m_pPacketBuf->GetParameter();
+      
+//      MSNSBConnectAnswer(strServer, strSessionID, strCookie, strUser);
     }
     
     // Get the next packet
@@ -334,6 +351,11 @@ void CMSN::SendPacket(CMSNPacket *p)
   
   delete p;
 }
+
+//void CMSN::Send_SB_Packet(CMSNPacket *p)
+//{
+//  INetSocket *s = gSocketMan.FetchSocket();
+//}
 
 void CMSN::MSNLogon(const char *_szServer, int _nPort)
 {
@@ -369,7 +391,7 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort)
 
 void CMSN::MSNAuthenticate(char *szCookie)
 {
-   TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
+  TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr("loginnet.passport.com", 443);
   char ipbuf[32];
   gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf), sock->RemotePort());
@@ -397,3 +419,46 @@ void CMSN::MSNAuthenticate(char *szCookie)
 
   free(szCookie);
 }
+
+/*
+bool CMSN::MSNSBConnectAnswer(string strServer, string strSessionId, string strCookie,
+                              string strUser)
+{
+  char *szParam = strServer.c_str();
+  char szServer[16];
+  char *szPort;
+  if ((szPort = strchr(szParam, ':')))
+  {
+    strncpy(szServer, szParam, szPort - szParam);
+    szServer[szPort - szParam] = '\0';
+    *szPort++ = '\0';
+  }
+  
+  TCPSocket *sock = new TCPSocket(strUsr.c_str(), MSN_PPID);
+  sock->SetRemoteAddr(szNewServer, aoti(szPort));
+  char ipbuf[32];
+  gLog.Info("%Connecting to Switchboard at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
+    sock->RemotePort());
+  
+  if (!sock->OpenConnection())
+  {
+    gLog.Error("%Connection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    delete sock;
+    return false;
+  }
+  
+  gSocketMan.AddSocket(sock);
+  CMSNPacket *pReply = new CPS_MSN_SBAnswer(strSessionId.c_str(),
+    strCookie.c_str(), strUser.c_str());
+  ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+  if (u)
+  {
+    u->SetSocketDesc(sock);
+    gUserManager.DropUser(u);
+  }
+  
+  gSocketMan.DropSocket(sock);
+  
+  return true;
+}
+*/
