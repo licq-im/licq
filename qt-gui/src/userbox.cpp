@@ -597,8 +597,10 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
     p->drawLine(width - 1, 0, width - 1, height() - 1);
   }
 
-  if (listView()->carTimerId > 0 && (strcmp(listView()->carId, m_szId) == 0) &&
-      listView()->carPPID == m_nPPID)
+  if ((listView()->carTimerId > 0) && 
+      (m_szId != NULL) &&        // Be careful, can be null when repainting a group seperator
+      (strcmp(listView()->carId, m_szId) == 0) &&
+      (listView()->carPPID == m_nPPID))
     drawCAROverlay(p);
 }
 
