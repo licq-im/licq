@@ -1585,9 +1585,7 @@ void UserSendMsgEvent::sendButton()
      if (chkMass->isChecked())
      {
         CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
-        int r = m->go_message(message);
-        delete m;
-        if (r != QDialog::Accepted) return;
+        m->go_message(message);
      }
 
      icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
