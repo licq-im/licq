@@ -5,8 +5,8 @@ AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
 dnl All versioning is done via these defines
-INT_VERSION=841
-AM_INIT_AUTOMAKE(licq, 0.84a)
+INT_VERSION=842
+AM_INIT_AUTOMAKE(licq, 0.84b)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -178,7 +178,8 @@ if test "$WITH_OPENSSL" = "no"; then
   echo "establish secure communication channels.  If you desire this"
   echo "functionality install OpenSSL (libraries and headers) and"
   echo "rebuild Licq.  OpenSSL can be found at http://www.openssl.org"
-  echo "or as RPM from your local distribution site."
+  echo "or as RPM from your local distribution site.  Note you need"
+  echo "version 0.9.5 or greater."
 else
   echo "OpenSSL secure channel support is enabled."
 fi

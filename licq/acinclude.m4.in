@@ -196,7 +196,7 @@ AC_DEFUN(AC_CHECK_OPENSSL,
     if test "$openssl_libdir" != "no"; then
       LIBS="$LIBS -L$openssl_libdir"
     fi
-    AC_CHECK_LIB(crypto, des_xcbc_encrypt, WITH_OPENSSL="yes", WITH_OPENSSL="no")
+    AC_CHECK_LIB(crypto, des_set_key_checked, WITH_OPENSSL="yes", WITH_OPENSSL="no")
     if test "$WITH_OPENSSL" = "no"; then
       LIBS="$temp"
     else
