@@ -21,7 +21,11 @@ static const char QTGUI_CONF[] =
 "AutoNA = 10\n"
 "\n"
 "[functions]\n"
-"AutoClose = 1\n";
+"AutoClose = 1\n"
+"\n"
+"[files]\n"
+"[floaties]\n"
+"[locale]\n";
 
 
 
