@@ -30,7 +30,7 @@
 #include <gtk/gtk.h>
 
 /* Definitions to be passed to the licq daemon */
-#define NAME		"GTK Plugin"
+#define NAME		"Jon's GTK+ GUI"
 #define PLUGIN_VERSION	"0.10"
 #define STATUS		"Running"
 #define USAGE		"Usage: None yet"
@@ -229,6 +229,20 @@ struct security_window
 	struct e_tag_data *etag;
 };
 
+struct user_security
+{
+	GtkWidget *window;
+	GtkWidget *check_auth;
+	GtkWidget *check_web;
+	GtkWidget *check_hideip;
+	GtkWidget *ign_new;
+	GtkWidget *ign_web;
+	GtkWidget *ign_mass;
+	GtkWidget *ign_pager;
+	gint page;
+	struct e_tag_data *etag;
+};
+
 struct e_tag_data
 {
 	GtkWidget *statusbar;
@@ -415,9 +429,13 @@ extern void search_close(GtkWidget *, gpointer);
 
 
 /* Functions in security_window.cpp */
-extern void menu_security_window(GtkWidget *, gpointer);
-extern void ok_security_window(GtkWidget *, gpointer);
-extern void close_security_window(GtkWidget *, gpointer);
+extern void menu_security_users_window(GtkWidget *, gpointer);
+extern GtkWidget *make_user_security_clist();
+extern void switch_page(GtkNotebook *, GtkNotebookPage *, gint, gpointer);
+extern void refresh_clist(GtkCList *, gint);
+extern void close_user_security_window(GtkWidget *, gpointer);
+extern void ok_user_security(GtkWidget *, gpointer);
+extern void remove_user_security(GtkWidget *, GdkEventButton *, gpointer);
 
 
 /* Functions in status.cpp */
