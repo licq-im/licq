@@ -46,6 +46,7 @@ extern "C" {
 }
 #endif // SOCKS5
 
+using namespace std;
 
 char *ip_ntoa(unsigned long in, char *buf)
 {
