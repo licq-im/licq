@@ -238,7 +238,7 @@ public:
      unsigned long nRealIp, TCPSocket *sock, unsigned short nPort,
      bool bSendRealIp);
   int StartTCPServer(TCPSocket *);
-  void CheckBirthdays();
+  void CheckBirthdays(UinList &);
   unsigned short BirthdayRange() { return m_nBirthdayRange; }
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 

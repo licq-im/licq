@@ -1115,7 +1115,67 @@ void ICQUser::SetStatusOffline()
     m_nLastOnline = time(NULL);
     SaveLicqInfo();
   }
-  SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
+  SetStatus(ICQ_STATUS_OFFLINE);
+}
+
+
+
+/* Birthday: checks to see if the users birthday is within the next nRange
+   days.  Returns -1 if not, or the number of days until their bday */
+int ICQUser::Birthday(unsigned short nRange)
+{
+  static const char nMonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+  time_t t = time(NULL);
+  struct tm *ts = localtime(&t);
+  int nDays = -1;
+
+  if (GetBirthMonth() == 0 || GetBirthDay() == 0)
+  {
+    if (StatusBirthday() && User()) return 0;
+    return -1;
+  }
+
+  if (nRange == 0)
+  {
+    if (ts->tm_mon + 1 == GetBirthMonth() && ts->tm_mday == GetBirthDay())
+      nDays = 0;
+  }
+  else
+  {
+    char nMonth, nDayMin, nDayMax, nMonthNext, nDayMaxNext;
+
+    nMonth = ts->tm_mon + 1;
+    nMonthNext = nDayMaxNext = 0;
+    nDayMin = ts->tm_mday;
+    nDayMax = nDayMin + nRange;
+    if (nDayMax > nMonthDays[nMonth])
+    {
+      nMonthNext = nMonth + 1;
+      if (nMonthNext == 13) nMonth = 1;
+      nDayMaxNext = nDayMax - nMonthDays[nMonth];
+      nDayMax = nMonthDays[nMonth];
+    }
+
+    if (GetBirthMonth() == nMonth && GetBirthDay() >= nDayMin &&
+         GetBirthDay() <= nDayMax)
+    {
+      nDays = GetBirthDay() - nDayMin;
+    }
+    else if (nMonthNext != 0 && GetBirthMonth() == nMonthNext &&
+        GetBirthDay() <= nDayMaxNext)
+    {
+      nDays = GetBirthDay() + (nMonthDays[nMonth] - nDayMin);
+    }
+
+    /*struct tm tb = *ts;
+    tm_mday = GetBirthDay() - 1;
+    tm_mon = GetBirthMonth() - 1;
+    mktime(&tb);
+    nDays = tb.tm_yday - ts->tm_yday;*/
+  }
+
+  return nDays;
 }
 
 
@@ -2052,12 +2112,7 @@ unsigned long ICQOwner::AddStatusFlags(unsigned long s)
     s |= ICQ_STATUS_FxWEBxPRESENCE;
   if (HideIp())
     s |= ICQ_STATUS_FxHIDExIP;
-
-  // check if today is user's birthday
-  time_t t = LocalTime();
-  struct tm *tzone = localtime(&t);
-  if(tzone->tm_mon+1 == GetBirthMonth() &&
-     tzone->tm_mday == GetBirthDay())
+  if (Birthday() == 0)
     s |= ICQ_STATUS_FxBIRTHDAY;
 
   return s;
@@ -2094,6 +2149,12 @@ void ICQOwner::SaveLicqInfo()
 
   m_fConf.CloseFile();
 }
+
+void ICQOwner::SetStatusOffline()
+{
+  SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
+}
+
 
 
 void ICQUser::StupidLinkageFix()

@@ -306,12 +306,13 @@ public:
   bool StatusBirthday()        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
   bool StatusOffline()         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
-  void SetStatusOffline();
+  virtual void SetStatusOffline();
   const char *StatusStr();
   const char *StatusStrShort();
   bool Away();
   static const char *StatusToStatusStr(unsigned short, bool);
   static const char *StatusToStatusStrShort(unsigned short, bool);
+  int Birthday(unsigned short nDayRange = 0);
 
   // Message/History functions
   unsigned short NewMessages()   { return(m_vcMessages.size()); }
@@ -506,6 +507,7 @@ public:
 
   // Virtual overloaded functions
   virtual void SaveLicqInfo();
+  virtual void SetStatusOffline();
 
   virtual bool User()  { return false; }
 protected:

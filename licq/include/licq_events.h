@@ -268,16 +268,11 @@ friend class CICQDaemon;
  *
  *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
  *
- *  SIGNAL_BIRTHDAY - Indicates that the users birthday is within the given
- *  range of days away.  The uin is that of the user, the sub-type is 0,
- *  and the argument is the number of days before their birthday.
- *
  *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
 const unsigned long SIGNAL_LOGOFF                = 0x00000008;
-const unsigned long SIGNAL_BIRTHDAY              = 0x00000010;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // User information update constants
