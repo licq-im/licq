@@ -884,6 +884,27 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
 	     strlen(szCoName) + strlen(szCoDept) + strlen(szCoPos) + 60;
   InitBuffer();
 
+  // Fix invalid ages. Ensure that the plugin doesn't make an invalid request
+  if (nMinAge != 0 || nMaxAge != 0)
+  {
+    if (nMinAge <= 18) nMinAge = 18;
+    else if (nMinAge <= 23) nMinAge = 23;
+    else if (nMinAge <= 30) nMinAge = 30;
+    else if (nMinAge <= 40) nMinAge = 40;
+    else if (nMinAge <= 50) nMinAge = 50;
+    else nMinAge = 60;
+
+    switch (nMinAge)
+    {
+    case 18: nMaxAge = 22;  break;
+    case 23: nMaxAge = 29;  break;
+    case 30: nMaxAge = 39;  break;
+    case 40: nMaxAge = 49;  break;
+    case 50: nMaxAge = 59;  break;
+    case 60: nMaxAge = 120; break;
+    }
+  }
+
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
