@@ -270,12 +270,22 @@ void CFileDlg::slot_ft()
         break;
       }
 
-      case FT_ERROR:
+      case FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
-        lblStatus->setText(tr("I/O error"));
+        lblStatus->setText(tr("File I/O error: %1").arg(ftman->PathName()));
         ftman->CloseFileTransfer();
-        WarnUser(this, tr("File Transfer I/O Error\nSee Network Window for Details"));
+        WarnUser(this, tr("File I/O Error:\n%1\nSee Network Window for Details")
+           .arg(ftman->PathName()));
+        break;
+      }
+
+      case FT_ERRORxHANDSHAKE:
+      {
+        btnCancel->setText(tr("Close"));
+        lblStatus->setText(tr("Handshaking error"));
+        ftman->CloseFileTransfer();
+        WarnUser(this, tr("Handshake Error\nSee Network Window for Details"));
         break;
       }
     }
