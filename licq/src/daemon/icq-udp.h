@@ -97,8 +97,6 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
 void CICQDaemon::SwitchServer()
 {
   icqLogoff();
-  gSocketManager.CloseSocket(m_nUDPSocketDesc);
-  m_nUDPSocketDesc = -1;
   icqServers.next();
 }
 
