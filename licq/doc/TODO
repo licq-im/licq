@@ -1,0 +1,27 @@
+List of things to do and in progress for Licq:
+
+Priorities:
+o  Multi-party chat.
+
+
+Other Things:
+o  Save away message between sessions
+o  Ignore list
+o  Have licq automatically detect the status of ppp0 and go online/offline
+   accordingly
+o  Fix auto-update all users
+o  Make the statuses when sounds appear configurable
+o  Auto accept file option
+o  Send uins to users
+o  System message sound
+o  Get the correct status from the tcp message packet
+
+
+Fields to add to users:
+o  Last seen online (time)
+o  Real IP
+
+
+Plugin Ideas:
+o  ICQ forwarder
+

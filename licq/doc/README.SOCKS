@@ -1,0 +1,70 @@
+Licq with socks5 support
+------------------------------------------------------------------------
+
+I've spent lots of time trying to get Licq working with Linux machine,
+which happens to be located behind a firewall/proxy running on a Windows machine
+. I
+won't spend any explaining this very backwards setup, but
+that's the situation that exists. The JavaICQ, in case you have ever used
+it, is really consuming in resources, has plenty of bugs. It also has not
+been updated in a very long time. Now that AOL has purchased Mirabilis,
+maybe this will change, but I'm not holding my breath. Fortunately, Linux
+users who are tired of waiting for vaporware, will usually do something
+about it. I think this is what makes Linux so great. So we have several ICQ
+'clones'. These can all be checked out at the Linux ICQ Page,
+http://www.portup.com/~gyandl/icq/ In my position, I have the choice of the Java
+version, or Licq, these are the only ones I know of to work through SOCKS. The J
+ava
+one is very simple to run under SOCKS, just provide it with your SOCKS address a
+nd
+port. These are some tips forgetting Licq working. This document is assuming you
+have a working SOCKS server already, and I make no guarantees this will work, or
+even that it won't hose your system. But this is what I did, in this order,
+and I had no real problems.
+  ------------------------------------------------------------------------
+
+First of all, we have to make sure we have all the required
+libraries/headers to get Licq compiled and working. The first thing is the
+Qt user interface library from Troll Tech. They have source and several
+binary packages available there. I personally used the RPM's provided. If
+you're using the K Desktop Environment, you will most likely already have
+this running.                 
+
+Next, we need some header files in order to get Licq compiled with SOCKS5
+support. I found the RPM of this at rufus.w3.org. There's also a source RPM
+there as well. I'm hunting the source tar.gz down, if you know where to find
+it, e-mail the link to me at pennywise01@my-dejanews.com
+
+The next step is to get our SOCKS daemon running. Head over to
+www.socks.nec.com. There's lots of info here you might want to read, but if
+you're impatient, go ahead and download socks5 v1.0 release 8 - UNIX source.
+This package will also let you set up your Linux box as a SOCKS server in
+the case that your networked computers are not as backwards as mine. Read
+the included documentation on getting this installed, the standard
+configure, make, make install should suffice. Once this is installed, if you
+look in /usr/local/bin you will notice a few new programs here, like
+rtelnet, rftp, and a few others. These programs with their respective names
+already use the SOCKS setup. Once this is installed, we need to set up the
+socks configuration file, /etc/libsocks5.conf. If your setup is similar to
+mine, maybe 2 or 3 people in the house where security is not really a
+concern, it will probably look similar to this:
+
+socks5 - - - - cr91204-a:1080
+
+Where cr91204-a:1080 is the socks5 host and the port number. Regardless do a
+man libsocks5.conf for exact configuration details.
+
+There is now an alternative to using the NEC socks proxy, it is called Dante and
+ is
+available at: http://www.inet.no/dante/
+Also available for it is an RPM version.
+I haven't had the time to play with this one so I'm blind as to setting this up.
+
+
+Next step is getting Licq running. Download the source if you haven't done
+it already. Read all the docs with it, it contains some information you will
+need to know for getting Licq compiled and running. The most important step
+here is ./configure --enable-socks5. If it compiles successfully, then you
+should be set ok, just follow the rest of the docs with Licq normally.
+
+Comments or suggestions to pennywise01@my-dejanews.com

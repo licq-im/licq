@@ -1,0 +1,6 @@
+[utility]
+Window = LICQ
+Command = finger %1@%i
+Description = Finger the remote user.
+User1.Title = Remote user name
+User1.Default = %f

@@ -1,0 +1,63 @@
+#
+# Make any modifications to Makefile.in *NOT* Makefile, as it will be
+# overwritten by configure.
+#
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+mandir = @mandir@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+MKINSTALLDIRS = $(top_srcdir)/mkinstalldirs
+RANLIB = @RANLIB@
+
+CC	 = @CC@
+CFLAGS	 = @CFLAGS@
+CXX	 = @CXX@
+CXXFLAGS = @CXXFLAGS@ -Wall
+CPPFLAGS = @CPPFLAGS@ -I$(srcdir) -I$(top_srcdir) -I.. -I../inc @DEFS@ 
+
+OBJECTS	= obj/icqpacket.o obj/socket.o obj/icq.o obj/remoteserver.o \
+          obj/icqevent.o obj/buffer.o obj/user.o obj/history.o obj/utility.o \
+          obj/countrycodes.o obj/log.o obj/translate.o obj/file.o \
+          obj/message.o obj/support.o obj/pthread_rdwr.o obj/onevent.o \
+          obj/plugind.o
+
+SUFFIXES = .o .c .cpp
+
+obj/%.o: %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+obj/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
+
+.PHONY: all clean distclean install
+all: licq-daemon.a
+
+dep:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -MM *.cpp |\
+		sed '/^[^ ]/{s@^@obj/@;}' > Makefile.dep
+	
+clean:
+	$(RM) core obj/*.o *.core licq-daemon.a
+
+distclean: clean
+	$(RM) *~ moc_*.cpp Makefile tags
+
+install: all
+	@echo Run make install from a higher directory.
+
+licq-daemon.a: $(OBJECTS)
+	rm -f $@
+	ar cruv $@ $^
+	$(RANLIB) $@
+
+# Include dependancy information
+include Makefile.dep

@@ -1,0 +1,4 @@
+[utility]
+Window = TERM
+Command = ftp %i
+Description = Attempt an FTP connection to the user's system.

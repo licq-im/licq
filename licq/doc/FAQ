@@ -1,0 +1,303 @@
+=======================================
+Licq FAQ
+July 28, 1999
+
+author: Graham Roff
+=======================================
+
+
+---------------------------------------
+Section 1: Basics
+   1.1: Who wrote Licq?
+   1.2: What does Licq stand for anyway?
+   1.3: Is Licq based on micq code like many of the other clones? 
+   1.4: What Qt and not GTK?
+Section 2: Compiling / Installing
+   2.1: What is needed to compile Licq?
+   2.2: How do I get socks working?
+   2.3: How do I do a manual install (ie I have a binary distribution)?
+   2.4: I am trying to compile with Solaris and the compilation freezes
+        at the "moc" line.
+   2.5: I am compiling under Solaris and I get an internal error.
+   2.6: I am using an older compiler (ie gcc 2.7) and get errors about
+         ANSI C++ not allowing implicit casting of "void *".
+   2.7: What is socklen_t?
+Section 3: Using
+   3.1: Where do I get a uin from?
+   3.2: I get "No route to host" when I try to logon.
+   3.3: Where did my sound go?
+   3.4: What happened to the status icons?
+   3.5: Licq locks up sometimes when I try and logon or send a message...
+   3.6: I have a lot of users and now my contact list never gets 
+        updated...
+   3.7: Does multi-party chat work?
+   3.8: How come I can't see ascii 8-bit characters in chat windows?
+   3.9: Licq says it is unable to load <file>.xpm or <file>.gif, but the file is there!
+   3.10: What is, and how do I use, the licq fifo?
+   3.11: What happened to the "beep" OnEvent option?
+   3.12: How do I change the colors of the Qt-Gui?
+Section 4: Plugins
+   4.1: Why do I get "undefined symbol" errors when loading a plugin?
+
+
+=======================================
+Section 1: Basics
+
+
+1.1: Who wrote Licq?
+
+  Licq was first begun as a text mode client to ICQ in February 1998 by
+myself, Graham Roff, and one other programmer who wishes for some strange
+reason to remain anonoymous.  He's from Nova Scotia, perhaps that explains
+things.  The Qt port was written by myself starting in June 1998.  The other
+programmer assists occasionally and is currently in the process of making
+Licq fully multithreaded.
+
+
+1.2: What does Licq stand for anyway?
+
+  Contrary to popular belief, it does not stand for Linux ICQ.  This
+would be (a) a bit conceited, and (b) way too obvious a name for a linux
+program.
+
+
+1.3: Is Licq based on micq code like many of the other clones? 
+
+	Licq was begun a long time before micq was released and is based
+completely on original source code.  It is also done in C++ as opposed to C
+like micq and most of the other clones.
+
+1.4: What Qt and not GTK?
+
+	GTK is becoming more and more popular with developers.  It has very nice
+widgets and actually does include a couple of features which are lacking in Qt.
+However, there are a number of advantages to Qt.  First of all, Qt is written
+in pure C++.  As Licq was written in C++, this made the graphical port much
+easier.  There is a C++ wrapper for GTK but quite frankly it's terrible.  Qt
+is very professionally done and is by far the most advanced of the gui sets for
+X-Windows.  It also has much better support for certain things which I felt were
+essential to Licq.  If GTK even becomes as full featured as Qt and a good C++
+wrapper comes out, then I will probably convert to GTK simply because the
+licensing agreement is more to my liking.
+	With the news that Qt 2.0 will be GPL, I'm a happier person.
+
+
+
+=======================================
+Section 2: Compiling and Installing
+   
+
+2.1: What is needed to compile Licq?
+	Licq needs the Qt library and header files from ftp.troll.no >= 1.41. 
+It also will use XScreenSaver extensions (libXext and libXss) if you have them.
+If you use Redhat then you will need qt...rpm, qt-devel...rpm, and 
+XFree86-devel...rpm.
+	As Licq is written in c++, it obviously requires a c++ compiler.  I
+highly recommend using egcs-c++ as it gives the best performance.
+
+
+2.2: How do I get socks working?
+	
+	I do not use socks, and didn't write the code to make Licq work with
+socks.  After configuring with --enable-socks5 you have to set some environment
+variables as well, follow the guidelines that come with the socks5 client.
+Other than that, I can't help you.
+
+
+2.3: How do I do a manual install (ie I have a binary distribution)?
+
+<= 0.61
+	Easy, first copy the binary to somewhere nice (like /usr/local/bin).
+Then copy licq-base.tar.gz to /usr/local/share.  There are some other
+interesting documents to look at if you want as well.  Then run licq and it 
+should finish the install for you.  See, it's easy.
+>= 0.70
+	Copy the binary somewhere nice like above.  Then copy everything from the 
+share/ directory to /usr/local/share/licq.  To manually install a plugin simply
+copy it to /usr/local/share/licq/plugins.
+
+
+2.4: I am trying to compile with Solaris and the compilation freezes
+     at the "moc" line.
+
+	Licq requires GNU make to compiler properly.  Alternatively,
+you can compile all the moc files by hand doing:
+$> moc <infile> -o <outfile>
+The list of files to moc is in the Makefile.  If you do this, you will
+still have to replace the $^ in the following section:
+++ licq: $(OBJECTS) $(METAOBJ)
+++         $(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+to be:
+++ licq: $(OBJECTS) $(METAOBJ)
+++         $(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(METAOBJ) $(LDFLAGS) $(LDLIBS)
+  
+
+2.5: I am compiling under Solaris and I get an internal error.
+
+	This is a problem with some versions of g++.  Simply remove -O2 
+from the relevant compile line and it should work fine.
+
+
+2.6: I am using an older compiler (ie gcc 2.7) and get errors about
+      ANSI C++ not allowing implicit casting of "void *".
+
+	Some older implementations of c++ erroneously define NULL as being
+((void *)0), which causes some compilers to complain.  If this is the case,
+you can either upgrade to a newer compiler or simply go into the src/ 
+directory and run "remove-null.sh", which will replace all NULL's with zeros.
+
+
+2.7: What is socklen_t?
+
+	If you get compile errors refering to socklen_t simply edit config.h and
+add "#define socklen_t int" to it somewhere.
+
+
+
+=======================================
+Section 3: Using
+
+3.1: How do I get a uin?
+
+	Licq cannot register a new user with Mirabilis *yet*.  For now you
+have to use a real ICQ client to register and get a uin, and to change your
+personal stats as well.  See http://www.mirabilis.com for more info.
+
+
+3.2: I get "No route to Host" error.
+
+	This occurs for some people for some unknown reason.  I means that
+gethostbyname() is unable to get an ip for icq.mirabilis.com.  The solution
+is simply to replace the server hostnames in licq.conf with their actual
+ip addresses.  Then it should work fine.
+
+   
+3.3: Where did my sound go?
+
+	As of 0.44 the entire pathname to the wav file must be entered in 
+licq.conf.  This is to allow placing of these files anywhere you want.
+
+   
+3.4: What happened to the status icons?
+
+	Status icons need to be in ~/.licq/data/icons.xxx in order to be found
+where xxx is the name of the icon set being used (set in licq.conf). Make sure 
+they are there.
+
+
+3.5: Licq locks up sometimes when I try and logon or send a message...
+
+	This is due to the fact that Licq is single-threaded and gethostbyname()
+and connect() are blocking calls.  Thus if the system is unable to get an ip
+for a hostname or to find a route to an ip then it will lock up Licq until it
+does or the network times out (about 2 minutes).  Wait and hopefully Licq will
+come back up in after a minute or two.
+	This will be solved when Licq goes multi-threaded.
+
+
+3.6: I have a lot of users and now my contact list never gets updated...
+
+	If you have more then 125 users on your contact list then mirabilis
+will ignore it.  The solution is simply to remove some users.  When Licq
+starts supporting multi-packet messages eventually this limit will go 
+away.
+	Update: Licq now supports more then 125 users on your contact list, however
+this may still occur for some people.  The fix is to reduce MaxUsersPerPacket to
+100 (or less).  Either edit ~/.licq/conf/licq.conf by hand or use the options 
+dialog to do this.
+
+
+3.7: Does multi-party chat work?
+
+	No, but this is very high on the list of things for me to get working.
+
+
+3.8: How come I can't see ascii 8-bit characters in chat windows?
+
+	I'm not totally sure...The problem used to be the isprint() command
+which does not work as documented, but even with that fixed, it appears that
+extended characters do not appear.  I'm working on it, and hopefully 0.50 has
+fixed the problem.
+	Update: as of 0.51 chat works fully.
+
+
+3.9: Licq says it is unable to load <file>.xpm or <file>.gif, but the file is there!
+
+	Qt has problems loading certain formats of xpm.  The solution is simply
+to save the pixmap in question as a gif and edit the skin file appropriately.	 If the
+file in question is a gif, then make sure that you compiled qt with gif support
+enabled (it is enabled in the rpm).  Edit $QTDIR/src/kernel/qt_gif.h and change the 0
+to a 1.
+
+
+3.10: What is, and how do I use, the licq fifo?
+
+  There is a file called licq_fifo in the base directory, typically ~/.licq.  
+This is a special device called a FIFO (for First-In-First-Out).  You can 
+write to this file just like any other file, although typically one uses 
+"echo something > licq_fifo".
+Licq accepts certain commands on the fifo:
+  - status [*]<online, offline, na, away, occupied, dnd, ffc> [auto response]
+    Sets the status of the current licq session to that given (precede the 
+		status by a "*" for invisible mode), for example:
+	  "echo status na gone outside > licq_fifo" will put licq into N/A mode with 
+	  the auto response set to "gone outside".  
+		"echo status *online > licq_fifo" will put licq into invisible/online mode,
+		maintaining the previous auto response.
+		Licq will automatically logon if offline when asked to go into another
+    status.
+  - auto_response <auto response>
+    Sets the auto response message without changing the current status.  Be
+    careful of shell special characters like '"[],; etc.  Escape these
+    characters with a "\".
+  - redirect <file>
+    Redirects the stdout and stderr for licq to the given file, which can be
+    a device (ie /dev/tty8).
+  - exit
+    Causes the licq session to shutdown.
+
+
+
+3.11: What happened to the "beep" OnEvent option?
+
+  The beep command did not work properly and so was incorporated into a
+self-contained executable (build beep.c in the contrib directory using the
+instructions contained therein) which can be called instead of "play" (or
+whatever) in order to generate a beep.
+  So to rephrase, instead of a beep option, you can build a "beep" executable,
+and enter "beep" as the OnEvent Command (the parameters are irrelevant for
+this command).
+
+
+
+3.12: How do I change the colors of the Qt-Gui?
+
+  Colors are now integrated into the skin file.  To change colors you must
+edit the skin file (found in /usr/local/share/licq/qt-gui/skin.<name>) and
+add the following:
+
+# --- colors ---
+colors.online = #ff0000 
+colors.away = dark green
+colors.offline = firebrick
+colors.newuser = yellow
+colors.background = default 
+colors.gridlines = black
+
+Of course you get to select your own colors!
+
+
+
+
+
+=======================================
+Section 4: Plugins
+
+4.1: Why do I get "undefined symbol" errors when loading a plugin?
+
+  The licq daemon is compiled with the -fno-rtti compiler flag.  Any plugins
+compiled without this flag will have undefined symbols at runtime.  The fix is
+to ensure that the plugin is compiled with -fno-rtti (typically in the
+Makefile on the CXXFLAGS line).
+
+

@@ -1,0 +1,62 @@
+#! /bin/sh
+#
+# Version 1.00
+# 
+# Written by Firebird (based on licq.javaconvert)
+#
+
+BASEDIR=${HOME}/.icq
+OUTDIR=${HOME}/.licq/conf
+CONFFILE=${OUTDIR}/users.conf
+
+if [ ! -d ${BASEDIR} ]; then
+  echo "gicq does not appear to be installed in ${BASEDIR}"
+  exit 1
+fi
+
+if [ ! -d ${OUTDIR} ]; then
+  echo "You do not appear to have installed Licq properly. Please run"
+  echo "licq once before proceeding."
+  exit 1
+fi
+
+echo "Converting gicq files to Licq format..."
+echo ""
+echo "WARNING: This procedure will overwrite your existing Licq config
+files."
+echo ""
+echo "         Do you want to continue (y/n)?"
+read ANSWER
+if [ ${ANSWER} != 'Y' -a ${ANSWER} != 'y' ]; then
+  echo "Exiting..."
+  exit 1
+fi
+
+UINSTOTAL=`cat ${BASEDIR}/contacts.rc | grep "# ICQ contact list" -v | grep [0-9] | wc -l`
+UINS=0
+
+echo ""
+echo -n "Converting ${UINSTOTAL} UINs to Licq format..."
+echo ""
+
+echo "[users]" > ${CONFFILE}
+echo "NumOfUsers = ${UINSTOTAL}" >> ${CONFFILE}
+
+for i in `cat ${BASEDIR}/contacts.rc | grep "# ICQ contact list" -v | grep [0-9] | cut -d " " -f 1`; do
+  UIN=`cat ${BASEDIR}/contacts.rc | grep "# ICQ contact list" -v | cut -d " " -f 1 | grep ${i}`
+  ALIAS=`cat ${BASEDIR}/contacts.rc | grep "# ICQ contact list" -v | grep ${i} | cut -d " " -f 2`
+      UINS=$[UINS+1]
+      echo "User${UINS} = ${UIN}" >> ${CONFFILE}
+      OUTFILE=${OUTDIR}/${UIN}.uin
+      echo ${CONFFILE}
+      echo ${OUTFILE}
+      echo "[user]" > ${OUTFILE}
+      echo "Alias = ${ALIAS}" >> ${OUTFILE}
+      echo "FirstName = none" >> ${OUTFILE}
+      echo "LastName = none" >> ${OUTFILE}
+      echo "EMail = none" >> ${OUTFILE}
+      echo "History = default" >> ${OUTFILE}
+      echo "NewMessages = 0" >> ${OUTFILE}
+done
+
+echo " done."

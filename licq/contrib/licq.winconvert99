@@ -1,0 +1,246 @@
+#!/usr/bin/perl
+#
+# ICQ99a contact list converter
+# (tested with builds 1547, 1677 and 1700)
+#
+# (c)1999 Erwin Aitenbichler <eait@gmx.at>
+# This program is released under the terms of the GPL.
+#
+
+$str="";
+$path=(getpwuid($<))[7]."/.licq/";
+$pathUsers=$path."users/";
+$fnOwner=$path."owner.uin";
+$fnUsers=$path."users.conf";
+$verbose=1;
+
+foreach $arg (@ARGV)
+ {
+  if ($arg eq "-q")
+   { $verbose=0; }
+  elsif ($arg eq "-v")
+   { $verbose=2; }
+  elsif ($arg eq "-vv")
+   { $verbose=3; }
+  else
+   { $fn=$arg; }
+ }
+
+if (!defined($fn))
+ {
+  print STDERR "\nsyntax: licq.winconvert99 [options] <your_uin>.dat\n";
+  print STDERR "Extracts all UINs out of an ICQ99a database and creates licq .uin files.\n";
+  print STDERR "\nThe .dat-file is usually located in: <your_win_drive>/Program Files/icq/NewDB/\n";
+  print STDERR "\noptions:\n";
+  print STDERR "   -q   quiet\n";
+  print STDERR "   -v   verbose\n";
+  print STDERR "   -vv  verbose more\n";
+  print STDERR "\n";
+  exit 0;
+ }
+
+# get owner uin
+
+open(INFH, "<$fnOwner") || die "can´t open ´$fnOwner´.\n";
+while(<INFH>)
+ {
+  if ($_=~/Uin = (\d+)/)
+   {
+    $own_uin=$1;
+   }
+ }
+close(INFH);
+die "can´t determine owner uin.\n" if (!defined($own_uin));
+print "owner uin: $own_uin\n\n" if $verbose>=2;
+
+# read users from users.conf
+
+if (open(INFH, "<$fnUsers"))
+ {
+  while (<INFH>)
+   {
+    $uins{$1}=1 if ($_=~/User\d+ = (\d+)/);
+   }
+  close(INFH);
+ }
+else
+ {
+  print "´$fnUsers´ not found - will create a new one.\n" if $verbose>=1;
+ }
+
+# import users
+ 
+$count=0;
+readFile($ARGV[0]);
+
+# write new users.conf
+
+open(OUTFH, ">$fnUsers") || die "can´t open ´$fnUsers´ for writing.\n";
+@list=sort {$a <=> $b} (keys %uins);
+print OUTFH "[users]\nNumOfUsers = ", $#list+1, "\n";
+$i=1;
+foreach $key (@list)
+ {
+  print OUTFH "User", $i++, " = ", $key, "\n";
+ }
+close(OUTFH);
+
+print "$count users add.\n" if $verbose>=1;
+
+if ($verbose>=1)
+ {
+  print "NOTE: This script doesn´t support all user information fields.\n";
+  print "Select ´Users/Update All Users´ in licq to get full user information.\n";
+ }
+
+
+
+sub readFile()
+ {
+  my $fn=shift;
+  open(INFH, "<$fn") || die "can´t open file ´$fn´\n";
+  my $c=0, $p, $hd, $v, $i;
+  while (1)
+   {
+    $p=$c;
+    $c=get();
+    last if !defined($c);
+    next if ($c!=0xC8 && $c!=0xCB && $c!=0xD5);
+    $hd=$c;
+    next if ($p!=0);
+    next if (($c=get())!=0);
+    $v=get();
+    next if (($c=get())!=0);
+    next if (($c=get())!=0);
+    next if (($c=get())!=0);
+    if ($hd==0xC8)
+     {
+      for ($i=0; $i<$v; $i++)
+       {
+        last if !readField1();
+       }
+     }
+    else
+     {
+      for ($i=0; $i<$v; $i++)
+       {
+        last if !readField2();
+       }
+     }
+    next if ($i<$v);
+    next if !readString();             # display name
+    my $displayName=$str;
+    next if !readString();             # nick name
+    next if $str eq "";
+    my $nickName=$str;
+    next if !readString();             # first name
+    my $firstName=$str;
+    next if !readString();             # last name
+    my $lastName=$str;
+    next if !readString();             # email
+    my $email=$str;
+    read(INFH, $buffer, 4);
+    $uin=unpack("V", $buffer);
+    next if ($uin==$own_uin);
+    $count++ if (!$uins{$uin});
+    $uins{$uin}=1;
+    
+    my $fnUIN=$pathUsers.$uin.".uin";
+    if (!-f $fnUIN)
+     {
+      open(OUTFH, ">$fnUIN") || die "can´t open ´$fnUIN´ for writing.\n";
+      print OUTFH "[user]\n";
+      print OUTFH "Alias = ", $displayName ne "" ? $displayName : $nickName;
+      print OUTFH "\nFirstName = $firstName\n";
+      print OUTFH "LastName = $lastName\n";
+      print OUTFH "EMail = $email\n";
+      print OUTFH "History = default\nAuthorization =\nOnlineNotify =\nNewUser =\n";
+      print OUTFH "NewMessages =\nGroup =\nCity =\nState =\nHomepage =\n";
+      print OUTFH "Age =\nSex =\nAbout =\nPhoneNumber =\nCountry =\n";
+      print OUTFH "VisibleList =\nInvisibleList =\n";
+     }
+    
+    if ($verbose>=2)
+     {
+      print "display name : $displayName\n";
+      print "nick name    : $nickName\n";
+      print "first name   : $firstName\n";
+      print "last name    : $lastName\n";
+      print "email        : $email\n";
+      print "uin          : $uin\n\n";
+     }
+   }
+  close(INFH);
+ }
+
+# read ´old style´ fields
+sub readField1()
+ {
+  if (readString())
+   {
+    if ($str ne "")
+     {
+      print "$str\n" if $verbose>=3;
+      my $n=2;
+      $n=5 if ($str eq "ClientFeatures" ||
+               $str eq "Picture Update Date");
+      $n=3 if ($str eq "UserHomepageDescription" ||
+               $str eq "UserHomepageCategory");
+      read(INFH, $buffer, $n);
+      return 1;
+     }
+   }
+  return 0;
+ }
+
+# read ´new style´ fields
+sub readField2()
+ {
+  if (readString())
+   {
+    if ($str ne "")
+     {
+      print "$str\n" if $verbose>=3;
+      my $c=getc(INFH);
+      my $n=-1;
+      $n=1 if $c eq "e";
+      $n=2 if $c eq "f";
+      $n=4 if ($c eq "i" || $c eq "h");
+      if ($c eq "k")
+       {
+        $n=get();
+        get();
+       }
+      return 0 if $n==-1;
+      read(INFH, $buffer, $n) if $n>0;
+      return 1;
+     }
+   }
+  return 0;
+ }
+  
+sub readString()
+ {
+  $str="";
+  my $len=get();
+  return 0 if get()!=0;
+  return 1 if ($len==0);
+  my $i, $c;
+  for ($i=0; $i<$len-1; $i++)
+   {
+    $c=getc(INFH);
+    return 0 if (ord($c)==0);
+    $str.=$c;
+   }
+  return 0 if get()!=0;
+  return 1;
+ }
+
+sub get()
+ {
+  my $c=getc(INFH);
+  return $c if !defined($c);
+  $c=ord($c);
+  return $c;
+ }
+

@@ -1,0 +1,10 @@
+licq.o: licq.cpp ../config.h inc/icq-defines.h licq.h inc/icq.h \
+ inc/constants.h inc/socket.h inc/buffer.h inc/pthread_rdwr.h \
+ inc/support.h inc/file.h inc/user.h inc/message.h inc/time-fix.h \
+ inc/history.h inc/userfcndlg.h inc/icqevent.h inc/remoteserver.h \
+ inc/onevent.h inc/log.h inc/countrycodes.h inc/utility.h licq.conf.h
+main.o: main.cpp ../config.h licq.h inc/icq.h inc/icq-defines.h \
+ inc/constants.h inc/socket.h inc/buffer.h inc/pthread_rdwr.h \
+ inc/support.h inc/file.h inc/user.h inc/message.h inc/time-fix.h \
+ inc/history.h inc/userfcndlg.h inc/icqevent.h inc/remoteserver.h \
+ inc/onevent.h

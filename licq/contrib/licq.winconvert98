@@ -1,0 +1,128 @@
+#!/usr/bin/perl -w
+#
+#Copyright (C) 1998 Brett A. Thomas <quark@baz.com>
+#
+#Program to copy all known UINs from your Windows client to Licq.
+#This program released under the terms of the GNU Public License (GPL).
+
+if($#ARGV < 0)
+{
+    print STDERR "licq.winconvert <windows_msg_index>\n";
+    print STDERR 
+	"Copies all the UINs out of your Window ICQ client into Licq.\n";
+    print STDERR 
+	"It's very important you give convert_uins the message index file,\n";
+    print STDERR "and not some other file.  This file us usually called:\n\n";
+    print STDERR '  "/mnt/msdos/Program Files/icq/db/<your_uin>msg.idx"';
+    print STDERR "\n";
+    exit 0;
+}
+
+foreach $Arg (@ARGV)
+{
+    open(MSGS, $Arg) || die "Can't read $Arg: $!";
+
+    sysread(MSGS, $Entry, 8);
+
+    while(sysread(MSGS, $Entry, 8))
+    {
+	($_, $_, $UIN) = unpack("cclcc", $Entry);
+	if($UIN)
+	{
+	    $UINs{$UIN} = 1;
+	}
+    }
+}
+
+$HomeDir = &GetHomeDir;
+$File = "$HomeDir/.licq/users.conf";
+$Pre = $Post = "";
+
+if(open(USERS, "$File"))
+{
+    $FoundIt = 0;
+    while(!$FoundIt && (!eof(USERS)))
+    {
+	$_ = <USERS>;
+	if($_ eq "[users]\n")
+	{
+	    $FoundIt = 1;
+	}
+	else
+	{
+	    $Pre .= $_;
+	}
+    }
+
+    if($FoundIt)
+    {
+	#Skip the NumOfUsers thing
+	$_ = <USERS>;
+
+	$Continue = 1;
+	while($Continue)
+	{
+	    if($_ = <USERS>)
+	    {
+		chomp($_);
+		if($_ =~ /^\[/)
+		{
+		    $Continue = 0;
+		}
+		else
+		{
+		    if($_ =~ /^User(\d+)\s+=\s+(\d+)$/)
+		    {
+			$UINs{$2} = 1;
+		    }
+		    else
+		    {
+			die "Malformed line in $File:  $_";
+		    }
+		}
+	    }
+	    else
+	    {
+		$Continue = 0;
+	    }
+	}
+
+	if(!eof(USERS))
+	{
+	    while(<USERS>)
+	    {
+		$Post .= $_;
+	    }
+	}
+    }
+    close(USERS);
+}
+
+foreach $UIN (sort(keys(%UINs)))
+{
+    $Users[$#Users + 1] = $UIN;
+}
+
+#$File = "&STDOUT";
+open(USERS, ">$File") || die "Can't write $File: $!";
+
+$NumUsers = $#Users + 1;
+print USERS "[users]\n";
+print USERS "NumOfUsers = $NumUsers\n";
+
+for($x = 0, $y = 1; $x <= $#Users; ++$x, ++$y)
+{
+    print USERS "User$y = $Users[$x]\n";
+}
+
+print STDERR "Note:  After running this, run Licq, again.  You will receive\n";
+print STDERR "warning messages on startup, which may be ignored.  Once Licq\n";
+print STDERR "comes up, select \"Users/Update All Users\" from the menu,\n";
+print STDERR "and all users' info should be updated.\n";
+
+sub GetHomeDir
+{
+    my(@PWInfo) = getpwuid($<);
+
+    $PWInfo[7];
+}

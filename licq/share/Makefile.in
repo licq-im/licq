@@ -1,0 +1,47 @@
+#
+# Make any modifications to Makefile.in *NOT* Makefile, as it will be
+# overwritten by configure.
+#
+
+SHELL = /bin/sh
+
+top_srcdir = @top_srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sharedir = @datadir@/licq
+plugindir = @libdir@/licq
+mandir = @mandir@/man1
+
+pkgdatadir = $(datadir)/@PACKAGE@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+MKINSTALLDIRS = $(top_srcdir)/mkinstalldirs
+
+.PHONY: all clean distclean install
+
+all:
+
+clean:
+	$(RM) *~
+
+distclean: clean
+	$(RM) Makefile
+
+install:
+	$(MKINSTALLDIRS) $(plugindir)
+	$(MKINSTALLDIRS) $(sharedir)
+	$(MKINSTALLDIRS) $(sharedir)/utilities
+	for i in utilities/*; do \
+	  $(INSTALL_DATA) $$i $(sharedir)/utilities; \
+  done
+	$(MKINSTALLDIRS) $(sharedir)/translations
+	for i in translations/*; do \
+	  $(INSTALL_DATA) $$i $(sharedir)/translations; \
+  done
+#	$(MKINSTALLDIRS) $(mandir)
+#	$(INSTALL_DATA) licq.1 $(mandir)
+

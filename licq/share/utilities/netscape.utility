@@ -1,0 +1,4 @@
+[utility]
+Window = GUI
+Command = viewurl-netscape.sh %w
+Description = View the user's homepage in Netscape.

@@ -1,0 +1,4 @@
+[utility]
+Window = LICQ
+Command = ping %i
+Description = Ping the user's system.

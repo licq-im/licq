@@ -1,0 +1,75 @@
+# licq list news:
+#     Lists aliases with recent history file activity
+# Usage:
+#   ll [time specification]
+if [[ "${#@}" == "0" ]]; then
+  echo "$0 (licq list news): Lists aliases with recent history file
+activity
+Usage:
+  $0 [time specification]
+
+A time specification is plain english, such as \"last hour\", \"past four days\",
+\"over two minutes ago\", \"since 20 hours\", \"more than 3 minutes ago\" et cetera.
+References to minutes, hours, days, weeks or months are possible. Any number up
+to 24 may be written in plain english, and any number may be given as a number.
+When given nothing, $0 will by default show activity the past hour."
+
+else
+  local time sign period uins files
+  sign=()
+  number=1
+  period=hour
+  until [[ "$1" == "" ]]
+  do
+    #print "parsing argument: $1"
+    case $1 in
+      more)        sign=+    ;; # more than five hours ago
+      over)        sign=+    ;; # over five hours ago
+      last)        sign=-    ;; # last five hours
+      past)        sign=-    ;; # past five hours
+      since)       sign=-    ;; # since five hours ago
+      month*)      period=M  ;; # ... month(s)
+      week*)       period=w  ;; # ... week(s)
+      hour*)       period=h  ;; # ... hour(s)
+      minute*)     period=m  ;; # ... minute(s)
+      day*)        period=() ;; # ... day(s)
+      <->)         number=$1 ;; # any number reference
+      one)         number=1  ;; # ... one ...
+      two)         number=2  ;; # ... two ...
+      three)       number=3  ;; # ... ... ...
+      four)        number=4  ;;
+      five)        number=5  ;;
+      six)         number=6  ;;
+      seven)       number=7  ;;
+      eight)       number=8  ;;
+      nine)        number=9  ;;
+      ten)         number=10 ;;
+      eleven)      number=11 ;;
+      twelve)      number=12 ;;
+      thirteen)    number=13 ;;
+      fourteen)    number=14 ;;
+      fifteen)     number=15 ;;
+      sizteen)     number=16 ;;
+      seventeen)   number=17 ;;
+      eighteen)    number=18 ;;
+      nineteen)    number=19 ;;
+      twenty)      number=20 ;;
+      twentyone)   number=21 ;;
+      twentytwo)   number=22 ;;
+      twentythree) number=23 ;;
+      twentyfour)  number=24 ;;
+      zero)        number=0  ;;
+    esac
+    shift
+  done
+
+  time=c$period$sign$number
+  #print "time: $time"
+
+  files=($HOME/.licq/history/<->.history(N$time))
+  if [[ "${#files}" != "0" ]]; then
+    uins=($(\ls -t $files))
+    uins="${${${(@)uins}##*/}%*.history}"
+    lu $(print $uins)
+  fi
+fi

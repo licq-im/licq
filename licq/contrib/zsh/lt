@@ -1,0 +1,61 @@
+# A small shell function that writes the [n] most recent
+# licq message[s] to/from a certain alias.
+# Usage:
+#   lt <alias> [number] [alias [number] alias [number] ...]
+# If only one alias is given, the order of alias and number
+# does not matter (never seem to remember the order myself ;-)
+local default alias aliases msgs file awk_code
+
+if [[ "${#@}" == "0" ]]; then
+  echo "$0 (licq tail): Write the [n] most recent licq messages to/from a
+given user
+Usage:
+  $0 [default number] <alias> [number] [alias [number] alias [number] ...]
+
+If no number is given for an alias, a default of one is used. This number
+is either one or the number given before the first alias. Aliases are case
+sensitive. When more than one alias is given, a header will be given
+specifying which alias/history file is being operated on for each alias."
+else
+awk_code='
+BEGIN {
+    ARGC = 3
+    ARGV[2] = ARGV[1]
+}
+
+/.+ from .* (received|sent) .+:/ {
+    (ARGIND == 1) ? i++ : j++
+}
+
+(ARGIND == 2) && ((j+num) > i) {
+    print
+}'
+
+  if [[ "$[$1]" != "0" ]]; then # First argument is a number
+    default=$1
+  else
+    default=1
+  fi
+  alias=()
+  msgs=()
+  for arg in $@
+  do
+    if [[ "$[$arg]" != "0" ]]; then # It was a number
+      msgs=$arg
+    else # It was not a number; it must be an alias
+      if [[ "$alias" != "" ]]; then # Alias already set!
+  	file=$(lf $alias)
+  	print "********** $alias ($file) **********"
+  	awk -v num=${msgs:-$default} "$awk_code" $file
+  	msgs=()
+      fi
+      alias=$arg
+    fi
+  done
+  if [[ "$alias" != "" ]]; then
+    if [[ "$file" != "" ]]; then
+      print "********** $alias ($file) **********"
+    fi
+    awk -v num=${msgs:-1} "$awk_code" $(lf $alias)
+  fi
+fi

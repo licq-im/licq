@@ -1,0 +1,5 @@
+[utility]
+Window = TERM
+Command = pine %e
+Description = Email the user using PINE.
+

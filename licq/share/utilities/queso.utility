@@ -1,0 +1,4 @@
+[utility]
+Window = LICQ
+Command = queso -p %p %i
+Description = Query the user's operating system.

@@ -1,0 +1,7 @@
+[utility]
+Window = TERM
+Command = talk %1@%i
+Description = Send a talk request to the user.
+User1.Title = Remote user name
+User1.Default = %f
+

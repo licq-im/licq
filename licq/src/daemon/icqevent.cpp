@@ -1,0 +1,106 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "icqevent.h"
+#include "icqpacket.h"
+#include "log.h"
+
+
+//-----ICQEvent::constructor----------------------------------------------------
+ICQEvent::ICQEvent(int _nSocketDesc, CPacket *p, EConnect _eConnect,
+                   unsigned long _nUin, CUserEvent *e)
+//   : m_xBuffer(p.getBuffer())
+{
+  // set up internal variables
+  m_xPacket = p;
+  m_nCommand = p->getCommand();
+  m_nSubCommand = p->getSubCommand();
+  m_nSequence = p->getSequence();
+  m_nSubSequence = p->SubSequence();
+  m_nDestinationUin = _nUin;
+  m_eConnect = _eConnect;
+  m_xUserEvent = e;
+  m_nSocketDesc = _nSocketDesc;
+  m_sExtendedAck = NULL;
+  m_sSearchAck = NULL;
+  m_nSubResult = 0;
+  thread_plugin = pthread_self();
+}
+
+
+//-----ICQEvent::constructor----------------------------------------------------
+ICQEvent::ICQEvent(ICQEvent *e)
+//   : m_xBuffer(e->m_xBuffer)
+{
+  // set up internal variables
+  m_xPacket = NULL; //e->m_xPacket;
+  m_nCommand = e->m_nCommand;
+  m_nSubCommand = e->m_nSubCommand;
+  m_nSequence = e->m_nSequence;
+  m_nSubSequence = e->m_nSubSequence;
+  m_nDestinationUin = e->m_nDestinationUin;
+  m_eConnect = e->m_eConnect;
+  m_eResult = e->m_eResult;
+  m_nSubResult = e->m_nSubResult;
+  if (e->m_xUserEvent != NULL)
+    m_xUserEvent = e->m_xUserEvent->Copy();
+  else
+    m_xUserEvent = NULL;
+  m_nSocketDesc = e->m_nSocketDesc;
+  m_sExtendedAck = NULL;
+  m_sSearchAck = NULL;
+  thread_plugin = e->thread_plugin;
+  thread_send = e->thread_send;
+}
+
+
+
+//-----ICQEvent::destructor-----------------------------------------------------
+ICQEvent::~ICQEvent(void)
+{
+  if (m_xPacket != NULL) delete m_xPacket;
+  if (m_xUserEvent != NULL) delete m_xUserEvent;
+  if (m_sExtendedAck != NULL)
+  {
+    free (m_sExtendedAck->szResponse);
+    delete (m_sExtendedAck);
+  }
+  if (m_sSearchAck != NULL)
+  {
+    if (m_sSearchAck->sBasicInfo != NULL) delete m_sSearchAck->sBasicInfo;
+    delete m_sSearchAck;
+  }
+}
+
+
+//-----ICQEvent::CompareEvent---------------------------------------------------
+bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence)
+{
+   return(m_nSocketDesc == sockfd && m_nSequence == _nSequence);
+}
+
+
+//=====CICQSignal===============================================================
+CICQSignal::CICQSignal(ESignalType _eSignalType, unsigned long _nData1, unsigned long _nData2)
+{
+  m_eSignalType = _eSignalType;
+  m_nData1 = _nData1;
+  m_nData2 = _nData2;
+}
+
+
+CICQSignal::CICQSignal(CICQSignal *s)
+{
+  m_eSignalType = s->m_eSignalType;
+  m_nData1 = s->m_nData1;
+  m_nData2 = s->m_nData2;
+}
+
+
+CICQSignal::~CICQSignal(void)
+{
+  //if (m_vData1 != NULL) delete (m_vData1);
+  //if (m_vData2 != NULL) delete (m_vData2);
+}
+
