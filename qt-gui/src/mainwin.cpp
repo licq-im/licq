@@ -749,7 +749,7 @@ void CMainWindow::updateUserWin(void)
         FOR_EACH_USER_BREAK
 
       if (m_bShowDividers)
-        (void) new CUserViewItem(NULL, i, userView);
+        (void) new CUserViewItem(NULL, -2, userView);
       bOfflineUsers = true;
     }
     (void) new CUserViewItem(pUser, i, userView);
@@ -1026,12 +1026,12 @@ void CMainWindow::callUserFunction(int index)
 {
   if(!userView->SelectedItemUin())
     return;
-  
+
   switch(mnuUser->indexOf(index)) {
   case MNUxITEM_AUTHxUSER:
     licqDaemon->icqAuthorize(userView->SelectedItemUin());
     break;
-    
+
   case MNUxITEM_CHECKxRESPONSE:
   {
     (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());

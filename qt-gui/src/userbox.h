@@ -52,6 +52,7 @@ protected:
   short m_nIndex;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike;
+  QString m_sPrefix;
 
   static bool    s_bGridLines, s_bFontStyles;
   static QPixmap *s_pOnline,

@@ -50,6 +50,8 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex, QListView *parent)
     m_nWeight = QFont::Normal;
     setSelectable(false);
     setHeight(10);
+    if (m_nIndex == -1) m_sPrefix = "0";
+    else m_sPrefix = "2";
   }
   else
   {
@@ -65,6 +67,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
 {
    static char sTemp[128];
 
+   m_sPrefix = "1";
    switch (u->getStatus())
    {
    case ICQ_STATUS_FREEFORCHAT:
@@ -94,6 +97,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    case ICQ_STATUS_OFFLINE:
       m_pIcon = s_pOffline;
       m_cFore = s_cOffline;
+      m_sPrefix = "3";
       break;
    default:
       m_pIcon = s_pOnline;
@@ -226,25 +230,14 @@ QString CUserViewItem::key (int column, bool ascending) const
 {
   if (column == 0)
   {
-    if (m_nIndex == -1)  // online bar
-      return("     ");
-    else if (m_nUin == 0) // offline bar
-    {
-      char s[8];
-      sprintf(s, "%04d", m_nIndex);
-      return (s);
-    }
-    else
-    {
-      char s[8];
-      sprintf(s, "%04da", m_nIndex);
-      return (s);
-    }
+    if (m_nIndex < 0)  // bar
+      return(m_sPrefix);
+    char s[8];
+    sprintf(s, "%04d", m_nIndex);
+    return (m_sPrefix + s);
   }
-  else if (m_nUin == 0)
-    return("{{{{");
   else
-    return(QListViewItem::key(column, ascending));
+    return(m_sPrefix + QListViewItem::key(column, ascending));
 }
 
 
@@ -342,7 +335,18 @@ unsigned long CUserView::SelectedItemUin(void)
 void CUserView::viewportMousePressEvent(QMouseEvent *e)
 {
    QListView::viewportMousePressEvent(e);
-   if (e->button() == RightButton)
+   if (e->button() == MidButton)
+   {
+      QPoint clickPoint(e->x(), e->y());
+      QListViewItem *clickedItem = itemAt(clickPoint);
+      if (clickedItem != NULL)
+      {
+         setSelected(clickedItem, true);
+         setCurrentItem(clickedItem);
+         doubleClicked(clickedItem);
+      }
+   }
+   else if (e->button() == RightButton)
    {
       QPoint clickPoint(e->x(), e->y());
       QListViewItem *clickedItem = itemAt(clickPoint);
