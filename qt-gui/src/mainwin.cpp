@@ -755,12 +755,23 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
       if (m_bAutoRaise) raise();
       // Fall through
     }
-    case USER_STATUS:
     case USER_BASIC:
     case USER_GENERAL:
     case USER_EXT:
+    case USER_STATUS:
     {
-      if (_nUin == gUserManager.OwnerUin()) break;
+      if (_nUin == gUserManager.OwnerUin())
+      {
+        if (_nSubSignal == USER_STATUS) break;
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
+        gUserManager.DropOwner();
+        if (caption()[0] == '*')
+          setCaption(QString("* ") + m_szCaption);
+        else
+          setCaption(m_szCaption);
+        break;
+      }
       ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
       if (u == NULL)
       {
@@ -2062,7 +2073,7 @@ void CMainWindow::showAddUserDlg()
 
 void CMainWindow::showAuthUserDlg()
 {
-  AuthUserDlg *authUserDlg = new AuthUserDlg(licqDaemon);
+  (void) new AuthUserDlg(licqDaemon);
 }
 
 
