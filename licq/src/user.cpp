@@ -2545,7 +2545,7 @@ void ICQUser::ClearSocketDesc(unsigned char nChannel)
   if (m_nStatusSocketDesc == m_nInfoSocketDesc == m_nNormalSocketDesc == -1)
     ClearSocketDesc();
   else if (gLicqDaemon != NULL && m_bOnContactList)
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, 0));
+    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_szId, m_nPPID, 0));
 }
 
 unsigned short ICQUser::ConnectionVersion()
