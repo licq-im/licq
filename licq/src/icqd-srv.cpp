@@ -1822,7 +1822,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         u = gUserManager.FetchUser(nUin, LOCK_W);
       }
       else
-        gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
+        gLog.Info("%sMessage through server from %s (%ld).\n", L_SRVxSTR,
                   u->GetAlias(), nUin);
 
       if (AddUserEvent(u, e))
