@@ -18,6 +18,7 @@ class QRadioButton;
 class QTextView;
 class QTabWidget;
 class QListViewItem;
+class QTimer;
 
 class ICQUser;
 class CICQDaemon;
@@ -88,10 +89,13 @@ protected:
              *nfoPhone, *nfoTimezone, *nfoLastOnline;
   CEComboBox *cmbCountry;
   QCheckBox *chkAuthorization;
+  time_t m_nRemoteTimeOffset;
+  QTimer *tmrTime;
 
   // More info
   void CreateMoreInfoTab();
-  CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage;
+  CInfoField *nfoAge, *nfoBirthday, *nfoLanguage[3], *nfoHomepage,
+             *nfoGender;
   CEComboBox *cmbLanguage[3], *cmbGender;
 
   // Work info

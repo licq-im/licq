@@ -90,6 +90,15 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   CreateHistoryTab();
 
   QBoxLayout* lay = new QVBoxLayout(this, 8);
+
+  QBoxLayout *layt = new QHBoxLayout(lay, 8);
+  layt->addWidget(new QLabel(tr("Status:"), this));
+  nfoStatus = new CInfoField(this, true);
+  layt->addWidget(nfoStatus);
+  layt->addWidget(new QLabel(tr("Time:"), this));
+  nfoTimezone = new CInfoField(this, true);
+  layt->addWidget(nfoTimezone);
+
   tabs = new QTabWidget(this);
   lay->addWidget(tabs);
 
@@ -221,9 +230,9 @@ void ICQFunctions::CreateGeneralInfoTab()
   lay->addWidget(new QLabel(tr("Alias:"), p), CR, 0);
   nfoAlias = new CInfoField(p, false);
   lay->addWidget(nfoAlias, CR, 1);
-  lay->addWidget(new QLabel(tr("Status:"), p), CR, 3);
-  nfoStatus = new CInfoField(p, true);
-  lay->addWidget(nfoStatus, CR, 4);
+  //lay->addWidget(new QLabel(tr("Status:"), p), CR, 3);
+  //nfoStatus = new CInfoField(p, true);
+  //lay->addWidget(nfoStatus, CR, 4);
 
   lay->addWidget(new QLabel(tr("UIN:"), p), ++CR, 0);
   nfoUin = new CInfoField(p, true);
@@ -285,9 +294,10 @@ void ICQFunctions::CreateGeneralInfoTab()
   nfoFax = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoFax, CR, 4);
 
-  lay->addWidget(new QLabel(tr("Time:"), p), ++CR, 0);
-  nfoTimezone = new CInfoField(p, true);
-  lay->addWidget(nfoTimezone, CR, 1);
+  //lay->addWidget(new QLabel(tr("Time:"), p), ++CR, 0);
+  //nfoTimezone = new CInfoField(p, true);
+  //lay->addWidget(nfoTimezone, CR, 1);
+  CR = 0;
   lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
   nfoLastOnline = new CInfoField(p, true);
   lay->addWidget(nfoLastOnline, CR, 4);
@@ -309,12 +319,19 @@ void ICQFunctions::CreateMoreInfoTab()
   nfoAge = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoAge, CR, 1);
   lay->addWidget(new QLabel(tr("Gender:"), p), CR, 3);
-  cmbGender = new CEComboBox(true, p);
-  cmbGender->insertItem(tr("Unspecified"));
-  cmbGender->insertItem(tr("Female"));
-  cmbGender->insertItem(tr("Male"));
-  cmbGender->setEnabled(m_bOwner);
-  lay->addWidget(cmbGender, CR, 4);
+  if (m_bOwner)
+  {
+    cmbGender = new CEComboBox(true, p);
+    cmbGender->insertItem(tr("Unspecified"));
+    cmbGender->insertItem(tr("Female"));
+    cmbGender->insertItem(tr("Male"));
+    lay->addWidget(cmbGender, CR, 4);
+  }
+  else
+  {
+    nfoGender = new CInfoField(p, true);
+    lay->addWidget(nfoGender, CR, 4);
+  }
 
   lay->addWidget(new QLabel(tr("Homepage:"), p), ++CR, 0);
   nfoHomepage = new CInfoField(p, !m_bOwner);
@@ -582,12 +599,13 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   nfoZipCode->setData(u->GetZipCode());
   struct timeb tb;
   ftime(&tb);
-  time_t nRemoteTimeOffset = tb.timezone * 60 - u->GetTimezone() * 30 * 60;
+  localtime(&tb.time);
+  m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
   QDateTime t;
-  t.setTime_t(tb.time + nRemoteTimeOffset);
+  t.setTime_t(tb.time + m_nRemoteTimeOffset);
   nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
                        .arg(t.time().toString())
-                       .arg(u->GetTimezone() < 0 ? "-" : "+")
+                       .arg(u->GetTimezone() < 0 ? "" : "+")
                        .arg(u->GetTimezone() / 2)
                        .arg(u->GetTimezone() % 2 ? "30" : "00") );
 
@@ -617,7 +635,19 @@ void ICQFunctions::SetMoreInfo(ICQUser *u)
     bDropUser = true;
   }
 
-  cmbGender->setCurrentItem(u->GetGender());
+  if (m_bOwner)
+  {
+    cmbGender->setCurrentItem(u->GetGender());
+  }
+  else
+  {
+    if (u->GetGender() == 1)
+      nfoGender->setData(tr("Female"));
+    else if (u->GetGender() == 2)
+      nfoGender->setData(tr("Male"));
+    else
+      nfoGender->setData(tr("Unspecified"));
+  }
   if (u->GetAge() == AGE_UNSPECIFIED)
     nfoAge->setData(tr("Unspecified"));
   else
@@ -1293,7 +1323,7 @@ void ICQFunctions::callFcn()
         unsigned short lc1 = GetLanguageByIndex(i)->nCode;
         i = cmbLanguage[1]->currentItem();
         unsigned short lc2 = GetLanguageByIndex(i)->nCode;
-        i = cmbLanguage[3]->currentItem();
+        i = cmbLanguage[2]->currentItem();
         unsigned short lc3 = GetLanguageByIndex(i)->nCode;
         icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
                                           cmbGender->currentItem(),
