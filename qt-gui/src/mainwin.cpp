@@ -1663,13 +1663,6 @@ void CMainWindow::autoAway()
     int event_base, error_base;
     if(XScreenSaverQueryExtension(x11Display(), &event_base, &error_base)) {
       mit_info = XScreenSaverAllocInfo ();
-
-      if (!XScreenSaverQueryInfo(x11Display(), DefaultRootWindow (x11Display()), mit_info)) {
-        gLog.Warn("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
-                  L_WARNxSTR);
-        autoAwayTimer.stop();
-        return;
-      }
     }
     else {
       gLog.Warn("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
@@ -1677,6 +1670,13 @@ void CMainWindow::autoAway()
       autoAwayTimer.stop();
       return;
     }
+  }
+
+  if (!XScreenSaverQueryInfo(x11Display(), DefaultRootWindow (x11Display()), mit_info)) {
+    gLog.Warn("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
+              L_WARNxSTR);
+    autoAwayTimer.stop();
+    return;
   }
   Time idleTime = mit_info->idle;
 
