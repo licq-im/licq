@@ -973,7 +973,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   //splView->setOpaqueResize();
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
-    mleHistory = new CMessageViewWidget(_nUin,splView);
+    mleHistory = new CMessageViewWidget(_nUin, splView);
     connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
@@ -1317,7 +1317,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventSms *ue = (CEventSms *)e->UserEvent();
 
-      icqEventTag = server->icqSendSms(m_nUin, ue->Message());
+      icqEventTag = server->icqSendSms(ue->Number(), ue->Message(), m_nUin);
       break;
     }
     default:
@@ -1953,10 +1953,32 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   btnBackColor->setEnabled(false);
   btnEncoding->setEnabled(false); // SMSs are always UTF-8
 
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
+  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
   lay->addWidget(splView);
-  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
-  mleSend->setFocus ();
+  mleSend->setFocus();
+  
+  QBoxLayout* h_lay = new QHBoxLayout(lay);
+  lblNumber = new QLabel(tr("Phone : "), mainWidget);
+  h_lay->addWidget(lblNumber);
+  nfoNumber = new CInfoField(mainWidget, false);
+  h_lay->addWidget(nfoNumber);
+  nfoNumber->setFixedWidth(QMAX(140, nfoNumber->sizeHint().width()));
+  h_lay->addStretch(1);
+  lblCount = new QLabel(tr("Chars left : "), mainWidget);
+  h_lay->addWidget(lblCount);
+  nfoCount = new CInfoField(mainWidget, false);
+  h_lay->addWidget(nfoCount);
+  nfoCount->setFixedWidth(40);
+  nfoCount->setAlignment(AlignCenter);
+  slot_count();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_count()));
+
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  if (u != NULL)
+  {
+    nfoNumber->setData(codec->toUnicode(u->GetCellularNumber()));
+    gUserManager.DropUser(u);
+  }
 
   m_sBaseTitle += tr(" - SMS");
   setCaption(m_sBaseTitle);
@@ -1982,7 +2004,7 @@ void UserSendSmsEvent::sendButton()
   // don't let the user send empty messages
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
 
-  icqEventTag = server->icqSendSms(m_nUin, mleSend->text().utf8().data());
+  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(), m_nUin);
 
   UserSendCommon::sendButton();
 }
@@ -1992,15 +2014,22 @@ void UserSendSmsEvent::resetSettings()
 {
   mleSend->clear();
   mleSend->setFocus();
-  massMessageToggled( false );
+  massMessageToggled(false);
 }
 
-//-----UserSendSmsEvent::sendDone--------------------------------------------
+//-----UserSendSmsEvent::sendDone----------------------------------------------
 bool UserSendSmsEvent::sendDone(ICQEvent *e)
 {
   return true;
 }
 
-// -----------------------------------------------------------------------------
+//-----UserSendSmsEvent::slot_count--------------------------------------------
+void UserSendSmsEvent::slot_count()
+{
+  int len = 160 - strlen(mleSend->text().utf8().data());
+  nfoCount->setData((len >= 0) ? len : 0);
+}
+
+// ----------------------------------------------------------------------------
 
 #include "usereventdlg.moc"

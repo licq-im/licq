@@ -719,10 +719,11 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
   return result;
 }
 
-unsigned long CICQDaemon::icqSendSms(unsigned long nUin, const char *szMessage)
+unsigned long CICQDaemon::icqSendSms(const char *szNumber, const char *szMessage,
+				     unsigned long nUin)
 {
-  CEventSms *ue = new CEventSms(szMessage, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-  CPU_SendSms *p = new CPU_SendSms(nUin, szMessage);
+  CEventSms *ue = new CEventSms(szNumber, szMessage, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+  CPU_SendSms *p = new CPU_SendSms(szNumber, szMessage);
   gLog.Info("%sSending SMS through server (#%ld/#%d)...\n", L_SRVxSTR,
 	    p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(nUin, p, ue);
@@ -1040,6 +1041,24 @@ ICQUser *CICQDaemon::FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e,
   gLog.Info("%sReceived %s information for %s (%ld).\n", L_SRVxSTR, t,
             u->GetAlias(), nUin);
   return u;
+}
+
+//-----FindUinByCellular-------------------------------------------------------
+unsigned long CICQDaemon::FindUinByCellular(const char *szCellular)
+{
+  char szParsedNumber1[16], szParsedNumber2[16];
+  unsigned long nUin = 0;
+  
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    ParseDigits(szParsedNumber1, pUser->GetCellularNumber(), 15);
+    ParseDigits(szParsedNumber2, szCellular, 15);
+    if (!strcmp(szParsedNumber1, szParsedNumber2))
+	nUin = pUser->Uin();
+  }
+  FOR_EACH_USER_END
+
+  return nUin;
 }
 
 //-----ProcessSrvPacket---------------------------------------------------------
@@ -1612,40 +1631,40 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
         unsigned short nTypeSMS = msgTxt.UnpackUnsignedShort();
         switch (nTypeSMS)
-				{
-        case 0x0000:
-					// SMS
-					break;
-				case 0x0002:
-					// SMS Receipt: Success (meanwhile, we handle it in a rather lame way)
-					gLog.Unknown("%sReceived SMS receipt indicating success.\n", L_UNKNOWNxSTR);
-					return;
-					break;
-				case 0x0003:
-					// SMS Receipt : Failure
-					gLog.Unknown("%sReceived SMS receipt indicating failure.\n", L_UNKNOWNxSTR);
-					return;
-					break;
-				default:
-					char *buf;
-					gLog.Unknown("%sUnknown SMS subtype (0x%04x):\n%s\n", L_UNKNOWNxSTR, nTypeSMS, packet.print(buf));
-					delete [] buf;
-					return;
+	{
+          case 0x0000:
+	    // SMS
+	    break;
+	  case 0x0002:
+	    // SMS Receipt: Success (meanwhile, we handle it in a rather lame way)
+	    gLog.Unknown("%sReceived SMS receipt indicating success.\n", L_UNKNOWNxSTR);
+	    return;
+	  case 0x0003:
+	    // SMS Receipt : Failure
+	    gLog.Unknown("%sReceived SMS receipt indicating failure.\n", L_UNKNOWNxSTR);
+	    return;
+	  default:
+	    char *buf;
+	    gLog.Unknown("%sUnknown SMS subtype (0x%04x):\n%s\n", L_UNKNOWNxSTR, nTypeSMS, packet.print(buf));
+	    delete [] buf;
+	    return;
         }
 
-        unsigned long nTagLength = msgTxt.UnpackUnsignedLong();
-        // Refuse irreasonable tag sizes
-        if (nTagLength > 255)
-				{
-          gLog.Unknown("%sInvalid tag in SMS message.", L_UNKNOWNxSTR);
-          return;
-        }
-        char* szTag = new char[nTagLength+1];
-        for (unsigned long i = 0; i < nTagLength; ++i)
-          szTag[i] = msgTxt.UnpackChar();
-        szTag[nTagLength] = '\0';
-        if (strcmp(szTag, "ICQSMS") != 0)
-				{
+	unsigned long nTagLength = msgTxt.UnpackUnsignedLong();
+	// Refuse irreasonable tag sizes
+	if (nTagLength > 255)
+	{
+	  gLog.Unknown("%sInvalid tag in SMS message.", L_UNKNOWNxSTR);
+	  return;
+	}
+	
+	char* szTag = new char[nTagLength + 1];
+	for (unsigned long i = 0; i < nTagLength; ++i)
+	  szTag[i] = msgTxt.UnpackChar();
+	szTag[nTagLength] = '\0';
+        
+	if (strcmp(szTag, "ICQSMS") != 0)
+	{
           gLog.Unknown("%sUnknown tag in SMS message:\n%s\n", L_UNKNOWNxSTR, szTag);
           delete [] szTag;
           return;
@@ -1658,7 +1677,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         unsigned long nSMSLength = msgTxt.UnpackUnsignedLong();
         // Refuse irreasonable SMS sizes (something must've went wrong)
         if (nSMSLength > 0x7fff)
-				{
+	{
           gLog.Unknown("%sSMS message packet was too large (claimed size: %lu bytes)\n", L_UNKNOWNxSTR, nSMSLength);
           return;
         }
@@ -1666,10 +1685,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         for (unsigned long i = 0; i < nSMSLength; ++i)
           szMessage[i] = msgTxt.UnpackChar();
         szMessage[nSMSLength] = '\0';
-
       }
-			else
-			{
+      else
+      {
         // new unpack the message
         nMsgLen = msgTxt.UnpackUnsignedShort();
         char* szMsg = new char[nMsgLen];
@@ -1686,325 +1704,338 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       
       switch(nTypeMsg)
       {
-			case ICQ_CMDxSUB_MSG:
-			{
-				CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
-				szType = strdup("Message");
-				nTypeEvent = ON_EVENT_MSG;
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_SMS:
-			{
-				CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
-				szType = strdup("SMS");
-				nTypeEvent = ON_EVENT_SMS;
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_URL:
-			{
-				CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
-				if (e == NULL)
-				{
-					char *buf;
-	    
-					gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
-					delete [] buf;
-					break;
-				}
-				szType = strdup("URL");
-				nTypeEvent = ON_EVENT_URL;
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_AUTHxREQUEST:
-			{
-				gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
-	  
-				char **szFields = new char *[6];  // alias, first name, last name, email, auth, comment
-          
-				if (!ParseFE(szMessage, &szFields, 6))
-				{
-					char *buf;
-	    
-					gLog.Warn("%sInvalid authorization request system message:\n%s\n", L_WARNxSTR,
-										packet.print(buf));
-					delete [] buf;
-					delete [] szFields;
-					break;
-				}
-
-				// translating string with Translation Table
-				gTranslator.ServerToClient (szFields[0]);  // alias
-				gTranslator.ServerToClient (szFields[1]);  // first name
-				gTranslator.ServerToClient (szFields[2]);  // last name
-				gTranslator.ServerToClient (szFields[5]);  // comment
-
-				CEventAuthRequest *e = new CEventAuthRequest(nUin, szFields[0],
-																										 szFields[1],
-                                                     szFields[2], szFields[3],
-																										 szFields[5],
-                                            	       ICQ_CMDxRCV_SYSxMSGxONLINE,
-																										 nTimeSent, 0);
-				delete [] szFields;	
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
-			{
-				gLog.Info("%sAuthorization granted by %ld.\n", L_SBLANKxSTR, nUin);
-
-				// translating string with Translation Table
-				gTranslator.ServerToClient (szMessage);
-
-				CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage,
-																										 ICQ_CMDxRCV_SYSxMSGxONLINE,
-																										 nTimeSent, 0);
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
-			{
-				gLog.Info("%sAuthorization refused by %ld.\n", L_SBLANKxSTR, nUin);
-
-				// Translating string with Translation Table
-				gTranslator.ServerToClient(szMessage);
-
-				CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage,
-																										 ICQ_CMDxRCV_SYSxMSGxONLINE,
-																										 nTimeSent, 0);
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_ADDEDxTOxLIST: // system message: added to a contact list
-			{
-				gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR, nUin);
-
-				char **szFields = new char*[6]; // alias, first name, last name, email, auth, comment
-          
-				if (!ParseFE(szMessage, &szFields, 6))
-				{
-					char *buf;
-	    
-					gLog.Warn("%sInvalid added to list system message:\n%s\n", L_WARNxSTR,
-										packet.print(buf));
-					delete [] buf;
-					delete [] szFields;
-					break;
-				}
-
-				// translating string with Translation Table
-				gTranslator.ServerToClient (szFields[0]);  // alias
-				gTranslator.ServerToClient (szFields[1]);  // first name
-				gTranslator.ServerToClient (szFields[2]);  // last name
-
-				CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
-																				 szFields[2], szFields[3],
-																				 ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent,
-																				 0);
-				delete [] szFields;	
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_CONTACTxLIST:
-			{
-				CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,nTimeSent, nMask);
-				if (e == NULL)
-				{
-					char *buf;
- 
-					gLog.Warn("%sInvalid Contact List message:\n%s\n", L_WARNxSTR, packet.print(buf));
-					delete [] buf;
-					break;
-				}
-				szType = strdup("Contacts");
-				nTypeEvent = ON_EVENT_MSG;
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_WEBxPANEL:
-			{
-				gLog.Info("%sMessage through web panel.\n", L_SBLANKxSTR);
-
-				char **szFields = new char *[6];	// name, ?, ?, email, ?, message
-        
-				if (!ParseFE(szMessage, &szFields, 6))
-				{
-					char *buf;
-	    
-					gLog.Warn("%sInvalid web panel system message:\n%s\n", L_WARNxSTR,
-										packet.print(buf));
-					delete [] buf;
-					delete [] szFields;
-					break;
-				}
-
-				// translating string with Translation Table
-				gTranslator.ServerToClient(szFields[0]);  // name
-				gTranslator.ServerToClient(szFields[3]);  // email
-				gTranslator.ServerToClient(szFields[5]);  // message
-
-				gLog.Info("%sFrom %s (%s).\n", L_SBLANKxSTR, szFields[0], szFields[3]);
-				CEventWebPanel *e = new CEventWebPanel(szFields[0], szFields[3],
-																							 szFields[5],
-                                               ICQ_CMDxRCV_SYSxMSGxONLINE,
-																							 nTimeSent, 0);
-				delete [] szFields;	
-				eEvent = e;
-				break;
-			}
-			case ICQ_CMDxSUB_EMAILxPAGER:
-			{
-				gLog.Info("%sEmail pager message.\n", L_SBLANKxSTR);
-
-				char **szFields = new char *[6];	// name, ?, ?, email, ?, message
-        
-				if (!ParseFE(szMessage, &szFields, 6))
-				{
-					char *buf;
-	    
-					gLog.Warn("%sInvalid email pager system message:\n%s\n", L_WARNxSTR,
-										packet.print(buf));
-					delete [] buf;
-					delete [] szFields;
-					break;
-				}
-
-				// translating string with Translation Table
-				gTranslator.ServerToClient(szFields[0]);  // name
-				gTranslator.ServerToClient(szFields[3]);  // email
-				gTranslator.ServerToClient(szFields[5]);  // message
-
-				gLog.Info("%sFrom %s (%s).\n", L_SBLANKxSTR, szFields[0], szFields[3]);
-				CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3],
-																									 szFields[5],
-                                                   ICQ_CMDxRCV_SYSxMSGxONLINE,
-																									 nTimeSent, 0);
-				delete [] szFields;	
-				eEvent = e;
-				break;
-			}
-
-			case ICQ_CMDxSUB_MSGxSERVER:
-			{
-				gLog.Info("%sServer message.\n", L_BLANKxSTR);
-				CEventServerMessage *e = CEventServerMessage::Parse(szMessage,
-																		 ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
-	
-				if (e == NULL)
-				{
-					char *buf;
-					gLog.Warn("%sInvalid Server Message:\n%s\n", L_WARNxSTR,
-										packet.print(buf));
-					delete [] buf;
-					break;
-				}
-
-				eEvent = e;
-				break;
-			}
-	
-			default:
-			{
-				char *szFE, *buf;
-
-				while ((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
-	  
-				gLog.Unknown("%sUnknown system message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
-										 nTypeMsg, packet.print(buf));
-				delete [] buf;
-				CEventUnknownSysMsg *e = new CEventUnknownSysMsg(nTypeMsg,
-																	 ICQ_CMDxRCV_SYSxMSGxONLINE, nUin, szMessage,
-																	 nTimeSent, 0);
-          
-				ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-				AddUserEvent(o, e);
-				gUserManager.DropOwner();
-			}
-			}
-
-			if (eEvent)
-				switch(nTypeMsg)
-				{
-				case ICQ_CMDxSUB_MSG:
-				case ICQ_CMDxSUB_URL:
-				case ICQ_CMDxSUB_CONTACTxLIST:
-				{
-					// Lock the user to add the message to their queue
-					ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
-					if (u == NULL)
-					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
-							gLog.Info("%s%s from new user (%ld), ignoring.\n", L_SBLANKxSTR, szType, nUin);
-							if (szType) free(szType);
-							RejectEvent(nUin, eEvent);
-							break;
-						}
-						gLog.Info("%s%s from new user (%ld).\n", L_SBLANKxSTR, szType, nUin);
-						AddUserToList(nUin);
-						u = gUserManager.FetchUser(nUin, LOCK_W);
-					}
-					else
-						gLog.Info("%s%s through server from %s (%ld).\n", L_SRVxSTR,
-											szType, u->GetAlias(), nUin);
-
-					if (szType) free(szType);
-					if (AddUserEvent(u, eEvent))
-						m_xOnEventManager.Do(nTypeEvent, u);
-					gUserManager.DropUser(u);
-					break;
-				}
-				case ICQ_CMDxSUB_AUTHxREQUEST:
-				case ICQ_CMDxSUB_AUTHxGRANTED:
-				case ICQ_CMDxSUB_AUTHxREFUSED:
-				case ICQ_CMDxSUB_ADDEDxTOxLIST:
-				case ICQ_CMDxSUB_WEBxPANEL:
-				case ICQ_CMDxSUB_EMAILxPAGER:
-				case ICQ_CMDxSUB_MSGxSERVER:
-				{
-					ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-					if (AddUserEvent(o, eEvent))
-					{
-						gUserManager.DropOwner();
-						eEvent->AddToHistory(NULL, D_RECEIVER);
-						m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-					}
-					else
-						gUserManager.DropOwner();
-					break;
-				}
-				case ICQ_CMDxSUB_SMS:
-				{
-					ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-					if (AddUserEvent(o, eEvent))
-					{
-						gUserManager.DropOwner();
-						eEvent->AddToHistory(NULL, D_RECEIVER);
-						m_xOnEventManager.Do(nTypeEvent, NULL);
-					}
-					else
-						gUserManager.DropOwner();
-					break;
-				}
-				}
-
-			delete [] szMessage;
-			break;
-		}
-
-		default:
-			char *buf;
-			gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n",
-									 L_ERRORxSTR, mFormat, packet.print(buf));
-			delete [] buf;
-			break;
-		}
-		break;
-	}
-	case ICQ_SNACxMSG_SERVERxREPLYxMSG:
+	case ICQ_CMDxSUB_MSG:
 	{
+	  CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  szType = strdup("Message");
+	  nTypeEvent = ON_EVENT_MSG;
+	  eEvent = e;
+	break;
+	}
+	case ICQ_CMDxSUB_URL:
+	{
+	  CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  if (e == NULL)
+	  {
+	    char *buf;
+
+	    gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
+	  szType = strdup("URL");
+	  nTypeEvent = ON_EVENT_URL;
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_AUTHxREQUEST:
+	{
+	  gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
+
+	  char **szFields = new char *[6];  // alias, first name, last name, email, auth, comment
+ 
+	  if (!ParseFE(szMessage, &szFields, 6))
+	  {
+	    char *buf;
+
+	    gLog.Warn("%sInvalid authorization request system message:\n%s\n", L_WARNxSTR,
+									packet.print(buf));
+
+	    delete [] buf;
+	    delete [] szFields;
+	    break;
+	  }
+
+	  // translating string with Translation Table
+	  gTranslator.ServerToClient (szFields[0]);  // alias
+	  gTranslator.ServerToClient (szFields[1]);  // first name
+	  gTranslator.ServerToClient (szFields[2]);  // last name
+	  gTranslator.ServerToClient (szFields[5]);  // comment
+
+	  CEventAuthRequest *e = new CEventAuthRequest(nUin, szFields[0],
+						       szFields[1], szFields[2],
+						       szFields[3], szFields[5],
+                                            	       ICQ_CMDxRCV_SYSxMSGxONLINE,
+						       nTimeSent, 0);
+	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
+	{
+	  gLog.Info("%sAuthorization refused by %ld.\n", L_SBLANKxSTR, nUin);
+
+	  // Translating string with Translation Table
+	  gTranslator.ServerToClient(szMessage);
+
+	  CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage,
+						       ICQ_CMDxRCV_SYSxMSGxONLINE,
+						       nTimeSent, 0);
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
+	{
+	  gLog.Info("%sAuthorization granted by %ld.\n", L_SBLANKxSTR, nUin);
+
+	  // translating string with Translation Table
+	  gTranslator.ServerToClient (szMessage);
+
+	  CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage,
+						       ICQ_CMDxRCV_SYSxMSGxONLINE,
+						       nTimeSent, 0);
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_MSGxSERVER:
+	{
+	  gLog.Info("%sServer message.\n", L_BLANKxSTR);
+	  
+	  CEventServerMessage *e = CEventServerMessage::Parse(szMessage, ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
+	  if (e == NULL)
+	  {
+	    char *buf;
+	    
+	    gLog.Warn("%sInvalid Server Message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_ADDEDxTOxLIST: // system message: added to a contact list
+	{
+	  gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR, nUin);
+
+	  char **szFields = new char*[6]; // alias, first name, last name, email, auth, comment
+          
+	  if (!ParseFE(szMessage, &szFields, 6))
+	  {
+	    char *buf;
+	    
+	    gLog.Warn("%sInvalid added to list system message:\n%s\n", L_WARNxSTR,
+								packet.print(buf));
+	    delete [] buf;
+	    delete [] szFields;
+	    break;
+	  }
+
+	  // translating string with Translation Table
+	  gTranslator.ServerToClient (szFields[0]);  // alias
+	  gTranslator.ServerToClient (szFields[1]);  // first name
+	  gTranslator.ServerToClient (szFields[2]);  // last name
+
+	  CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
+					   szFields[2], szFields[3],
+					   ICQ_CMDxRCV_SYSxMSGxONLINE,
+					   nTimeSent, 0);
+	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_WEBxPANEL:
+	{
+	  gLog.Info("%sMessage through web panel.\n", L_SBLANKxSTR);
+
+	  char **szFields = new char *[6];	// name, ?, ?, email, ?, message
+
+	  if (!ParseFE(szMessage, &szFields, 6))
+	  {
+	    char *buf;
+	    gLog.Warn("%sInvalid web panel system message:\n%s\n", L_WARNxSTR,
+							    packet.print(buf));
+	    delete [] buf;
+	    delete [] szFields;
+	    break;
+	  }
+
+	  // translating string with Translation Table
+	  gTranslator.ServerToClient(szFields[0]);  // name
+	  gTranslator.ServerToClient(szFields[3]);  // email
+	  gTranslator.ServerToClient(szFields[5]);  // message
+
+	  gLog.Info("%sFrom %s (%s).\n", L_SBLANKxSTR, szFields[0], szFields[3]);
+	  CEventWebPanel *e = new CEventWebPanel(szFields[0], szFields[3],
+						 szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
+						 nTimeSent, 0);
+	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_EMAILxPAGER:
+	{
+	  gLog.Info("%sEmail pager message.\n", L_SBLANKxSTR);
+
+	  char **szFields = new char *[6];	// name, ?, ?, email, ?, message
+        
+	  if (!ParseFE(szMessage, &szFields, 6))
+	  {
+	    char *buf;
+
+	    gLog.Warn("%sInvalid email pager system message:\n%s\n", L_WARNxSTR,
+							    packet.print(buf));
+	    delete [] buf;
+	    delete [] szFields;
+	    break;
+	  }
+
+	  // translating string with Translation Table
+	  gTranslator.ServerToClient(szFields[0]);  // name
+	  gTranslator.ServerToClient(szFields[3]);  // email
+	  gTranslator.ServerToClient(szFields[5]);  // message
+
+	  gLog.Info("%sFrom %s (%s).\n", L_SBLANKxSTR, szFields[0], szFields[3]);
+	  CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3],
+						     szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
+						     nTimeSent, 0);
+	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_CONTACTxLIST:
+	{
+	  CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,nTimeSent, nMask);
+	  if (e == NULL)
+	  {
+	    char *buf;
+
+	    gLog.Warn("%sInvalid Contact List message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
+	  szType = strdup("Contacts");
+	  nTypeEvent = ON_EVENT_MSG;
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_SMS:
+	{
+	  CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  if (e == NULL)
+	  {
+	    char *buf;
+
+	    gLog.Warn("%sInvalid SMS message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
+	  eEvent = e;
+	  break;
+	}
+	default:
+	{
+	  char *szFE, *buf;
+
+	  while ((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
+	  
+	  gLog.Unknown("%sUnknown system message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
+						    nTypeMsg, packet.print(buf));
+	  delete [] buf;
+	  CEventUnknownSysMsg *e = new CEventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
+							   nUin, szMessage, nTimeSent, 0);
+
+	  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+	  AddUserEvent(o, e);
+	  gUserManager.DropOwner();
+	}
+      }
+
+      if (eEvent)
+	switch(nTypeMsg)
+	{
+	  case ICQ_CMDxSUB_MSG:
+	  case ICQ_CMDxSUB_URL:
+	  case ICQ_CMDxSUB_CONTACTxLIST:
+	  {
+	    // Lock the user to add the message to their queue
+	    ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
+	    if (u == NULL)
+	    {
+	      if (Ignore(IGNORE_NEWUSERS))
+	      {
+		gLog.Info("%s%s from new user (%ld), ignoring.\n", L_SBLANKxSTR, szType, nUin);
+		if (szType) free(szType);
+		RejectEvent(nUin, eEvent);
+		break;
+	      }
+	      gLog.Info("%s%s from new user (%ld).\n", L_SBLANKxSTR, szType, nUin);
+	      AddUserToList(nUin);
+	      u = gUserManager.FetchUser(nUin, LOCK_W);
+	    }
+	    else
+	      gLog.Info("%s%s through server from %s (%ld).\n", L_SBLANKxSTR,
+	    					szType, u->GetAlias(), nUin);
+	    if (szType) free(szType);
+	    if (AddUserEvent(u, eEvent))
+	      m_xOnEventManager.Do(nTypeEvent, u);
+	    gUserManager.DropUser(u);
+	    break;
+	  }
+	  case ICQ_CMDxSUB_AUTHxREQUEST:
+	  case ICQ_CMDxSUB_AUTHxREFUSED:
+	  case ICQ_CMDxSUB_AUTHxGRANTED:
+	  case ICQ_CMDxSUB_MSGxSERVER:
+	  case ICQ_CMDxSUB_ADDEDxTOxLIST:
+	  case ICQ_CMDxSUB_WEBxPANEL:
+	  case ICQ_CMDxSUB_EMAILxPAGER:
+	  {
+	    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+	    if (AddUserEvent(o, eEvent))
+	    {
+	      gUserManager.DropOwner();
+	      eEvent->AddToHistory(NULL, D_RECEIVER);
+	      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+	    }
+	    else
+	      gUserManager.DropOwner();
+	    break;
+	  }
+	  case ICQ_CMDxSUB_SMS:
+	  {
+	    CEventSms *eSms = (CEventSms *)eEvent; 
+	    unsigned long nUinSms = FindUinByCellular(eSms->Number());
+	    
+	    if (nUinSms != 0)
+	    {
+	      ICQUser* u = gUserManager.FetchUser(nUinSms, LOCK_W);
+	      gLog.Info("%sSMS from %s - %s (%ld).\n", L_SBLANKxSTR, eSms->Number(), u->GetAlias(), nUinSms);
+	      if (AddUserEvent(u, eEvent))
+	        m_xOnEventManager.Do(ON_EVENT_SMS, u);
+	      gUserManager.DropUser(u);
+	    }
+	    else
+	    {  
+	      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+	      gLog.Info("%sSMS from %s.\n", L_BLANKxSTR, eSms->Number());
+	      if (AddUserEvent(o, eEvent))
+	      {
+	        gUserManager.DropOwner();
+	        eEvent->AddToHistory(NULL, D_RECEIVER);
+	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
+	      }
+	      else
+	        gUserManager.DropOwner();
+	    }
+	    break;
+	  }
+	}
+
+      delete [] szMessage;
+      break;
+    }
+
+    default:
+      char *buf;
+      
+      gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n",
+				    L_ERRORxSTR, mFormat, packet.print(buf));
+      delete [] buf;
+      break;
+    }
+    break;
+  }
+  case ICQ_SNACxMSG_SERVERxREPLYxMSG:
+  {
 		unsigned short nFormat, nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
 		unsigned long nUin, nMsgID;
 		ICQUser *u = NULL;
@@ -2080,9 +2111,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	{
 		gLog.Info("%sReceived rights for Instant Messaging..\n", L_SRVxSTR);
 		break;
-  }
+	}
 	default:
-  {
+	{
 		gLog.Warn("%sUnknown Message Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
 		break;
 	}
@@ -2452,6 +2483,18 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  eEvent = e;
 	  break;
 	}
+	case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
+        {
+          gLog.Info("%sOffline authorization refused by %ld.\n", L_SBLANKxSTR, nUin);
+
+          // Translating string with Translation Table
+          gTranslator.ServerToClient(szMessage);
+
+          CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
+						       nTimeSent, 0);
+	  eEvent = e;
+	  break;
+	}
 	case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
           gLog.Info("%sOffline authorization granted by %ld.\n", L_SBLANKxSTR, nUin);
@@ -2464,15 +2507,19 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  eEvent = e;
 	  break;
 	}
-	case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
-        {
-          gLog.Info("%sOffline authorization refused by %ld.\n", L_SBLANKxSTR, nUin);
+	case ICQ_CMDxSUB_MSGxSERVER:
+	{
+	  gLog.Info("%sOffline server message.\n", L_BLANKxSTR);
+	  
+	  CEventServerMessage *e = CEventServerMessage::Parse(szMessage, ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
+	  if (e == NULL)
+	  {
+	    char *buf;
 
-          // Translating string with Translation Table
-          gTranslator.ServerToClient(szMessage);
-
-          CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
-						       nTimeSent, 0);
+	    gLog.Warn("%sInvalid Server Message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
 	  eEvent = e;
 	  break;
 	}
@@ -2502,23 +2549,6 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                                            szFields[2], szFields[3],
                                            ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  delete [] szFields;	
-	  eEvent = e;
-	  break;
-	}
-	case ICQ_CMDxSUB_CONTACTxLIST:
-        {
-	  CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
-          if (e == NULL)
-          {
-            char *buf;
- 
-            gLog.Warn("%sInvalid offline Contact List message:\n%s\n", L_WARNxSTR,
-		      packet.print(buf));
-            delete [] buf;
-            break;
-          }
-	  szType = strdup("Contacts");
-	  nTypeEvent = ON_EVENT_MSG;
 	  eEvent = e;
 	  break;
 	}
@@ -2580,11 +2610,34 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  eEvent = e;
 	  break;
 	}
+	case ICQ_CMDxSUB_CONTACTxLIST:
+        {
+	  CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+          if (e == NULL)
+          {
+            char *buf;
+ 
+            gLog.Warn("%sInvalid offline Contact List message:\n%s\n", L_WARNxSTR,
+		      packet.print(buf));
+            delete [] buf;
+            break;
+          }
+	  szType = strdup("Contacts");
+	  nTypeEvent = ON_EVENT_MSG;
+	  eEvent = e;
+	  break;
+	}
 	case ICQ_CMDxSUB_SMS:
 	{
-    CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
-	  szType = strdup("SMS");
-	  nTypeEvent = ON_EVENT_SMS;
+	  CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  if (e == NULL)
+          {
+	    char *buf;
+
+	    gLog.Warn("%sInvalid SMS message:\n%s\n", L_WARNxSTR, packet.print(buf));
+	    delete [] buf;
+	    break;
+	  }
 	  eEvent = e;
 	  break;
 	}
@@ -2639,8 +2692,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    break;
 	  }
 	  case ICQ_CMDxSUB_AUTHxREQUEST:
-	  case ICQ_CMDxSUB_AUTHxGRANTED:
 	  case ICQ_CMDxSUB_AUTHxREFUSED:
+	  case ICQ_CMDxSUB_AUTHxGRANTED:
+	  case ICQ_CMDxSUB_MSGxSERVER:
 	  case ICQ_CMDxSUB_ADDEDxTOxLIST:
 	  case ICQ_CMDxSUB_WEBxPANEL:
 	  case ICQ_CMDxSUB_EMAILxPAGER:
@@ -2655,6 +2709,34 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    else
 	      gUserManager.DropOwner();
             break;
+	  }
+	  case ICQ_CMDxSUB_SMS:
+	  {
+	    CEventSms *eSms = (CEventSms *)eEvent; 
+	    unsigned long nUinSms = FindUinByCellular(eSms->Number());
+	    
+	    if (nUinSms != 0)
+	    {
+	      ICQUser* u = gUserManager.FetchUser(nUinSms, LOCK_W);
+	      gLog.Info("%sOffline SMS from %s - %s (%ld).\n", L_SBLANKxSTR, eSms->Number(), u->GetAlias(), nUin);
+	      if (AddUserEvent(u, eEvent))
+	        m_xOnEventManager.Do(ON_EVENT_SMS, u);
+	      gUserManager.DropUser(u);
+	    }
+	    else
+	    {  
+	      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+	      gLog.Info("%sOffline SMS from %s.\n", L_BLANKxSTR, eSms->Number());
+	      if (AddUserEvent(o, eEvent))
+	      {
+	        gUserManager.DropOwner();
+	        eEvent->AddToHistory(NULL, D_RECEIVER);
+	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
+	      }
+	      else
+	        gUserManager.DropOwner();
+	    }
+	    break;
 	  }
 	}
 	
@@ -2908,14 +2990,84 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     		else /* META_FAILURE */
     			gLog.Info("%sAbout not updated.\n", L_SRVxSTR);    	
       } else if (nSubtype == ICQ_CMDxMETA_SENDxSMSxRSP) {
-    		if (nResult == META_SUCCESS) {
-    			gLog.Info("%sSMS through server acked.\n", L_SRVxSTR);
- 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
-    			DoneEvent(e, EVENT_ACKED);
-			ProcessDoneEvent(e);
-    		}
-    		else /* META_FAILURE */
-    			gLog.Info("%sSMS through server failed.\n", L_SRVxSTR);
+	      if (nResult == META_SUCCESS) {
+    		char *szTag, *szXml, *szSmsResponse;
+		
+    		msg.UnpackUnsignedShortBE();
+    		msg.UnpackUnsignedShortBE();
+    		msg.UnpackUnsignedShortBE();
+
+		szTag = msg.UnpackStringBE();
+		szXml = msg.UnpackStringBE();
+		
+		szSmsResponse = GetXmlTag(szXml, "sms_response");
+		if (szSmsResponse != NULL) {
+		  char *szDeliverable;
+		    
+		  szDeliverable = GetXmlTag(szSmsResponse, "deliverable");
+		  if (szDeliverable != NULL) {
+		    if (!strcmp(szDeliverable, "Yes")) {
+		      gLog.Info("%sSMS delivered.\n", L_SRVxSTR);
+ 	   	      ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
+    		      if (e != NULL) {
+		        DoneEvent(e, EVENT_ACKED);
+		        ProcessDoneEvent(e);
+		      }
+		    } else if (!strcmp(szDeliverable, "No")) {
+		      char *szId, *szParam;
+		      
+		      szId = GetXmlTag(szSmsResponse, "id");
+		      szParam = GetXmlTag(szSmsResponse, "param");
+		      gLog.Warn("%sSMS not delivered, error #%s, param: %s\n", L_SRVxSTR, szId, szParam);
+		      if (szId != NULL) free(szId);
+		      if (szParam != NULL) free(szParam);
+ 	   	      ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
+    		      if (e != NULL) {
+		        DoneEvent(e, EVENT_FAILED);
+		        ProcessDoneEvent(e);
+		      }
+		    } else if (!strcmp(szDeliverable, "SMTP")) {
+		      char *szFrom, *szTo, *szSubject;
+		      
+		      gLog.Info("%sSending SMS via SMTP not supported yet.\n", L_SRVxSTR);
+		      
+		      szFrom = GetXmlTag(szSmsResponse, "from");
+		      if (szFrom != NULL) {
+		        gLog.Info("%sFrom: %s\n", L_SRVxSTR, szFrom);
+			free(szFrom);
+		      }
+		      szTo = GetXmlTag(szSmsResponse, "to");
+		      if (szTo != NULL) {
+		        gLog.Info("%sTo: %s\n", L_SRVxSTR, szTo);
+			free(szTo);
+		      }
+		      szSubject = GetXmlTag(szSmsResponse, "subject");
+		      if (szSubject != NULL) {
+		        gLog.Info("%sSubject: %s\n", L_SRVxSTR, szSubject);
+			free(szSubject);
+		      }
+		      ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
+    		      if (e != NULL) {
+		        DoneEvent(e, EVENT_FAILED);
+		        ProcessDoneEvent(e);
+		      }
+		    }
+		    free(szDeliverable);
+		  }
+		  free(szSmsResponse);
+		}
+    		
+		delete [] szTag;
+		delete [] szXml;
+
+    	      } else { /* META_FAILURE */
+    		gLog.Info("%sSMS through server failed.\n", L_SRVxSTR);
+		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
+    		if (e != NULL) {
+		  DoneEvent(e, EVENT_FAILED);
+		  ProcessDoneEvent(e);
+		}
+	      }
       }
       // Search results need to be processed differently
       else if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {

@@ -1438,26 +1438,22 @@ CPU_AckChatRefuse::CPU_AckChatRefuse(unsigned long nUin, unsigned long nMsgID[2]
 }
 
 //-----SendSms-----------------------------------------------------------------
-CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
+CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
   m_nMetaCommand = 0x8214;
-  m_nDestinationUin = nDestinationUin;
 
   char szXmlStr[460];
 
-  char szTime[26];
+  char szTime[30];
   time_t tTime;
+  struct tm *tmTime;
   time(&tTime);
-  ctime_r(&tTime, szTime);
-  char *p = strchr(szTime, '\n');
-  *p = '\0';
+  tmTime = gmtime(&tTime);
+  strftime(szTime, 30, "%a, %d %b %Y %T %Z", tmTime);
   
-  ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
-  char szCellularNumber[16];
-  szCellularNumber[0] = '+';
-  ParseDigits(&szCellularNumber[1], 15, u->GetCellularNumber());
-  gUserManager.DropUser(u);
+  char szParsedNumber[16] = "+";
+  ParseDigits(&szParsedNumber[1], szNumber, 15);
   
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   char szUin[13];
@@ -1465,7 +1461,7 @@ CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
   snprintf(szUin, 12, "%lu", o->Uin());
 
   snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
-	   szCellularNumber, szMessage, szUin, o->GetAlias(), szTime);
+	   szParsedNumber, szMessage, szUin, o->GetAlias(), szTime);
   gUserManager.DropOwner();
   
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;

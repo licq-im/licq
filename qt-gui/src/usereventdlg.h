@@ -328,12 +328,19 @@ public:
   virtual ~UserSendSmsEvent();
 
 protected:
+  QLabel *lblNumber;
+  CInfoField *nfoNumber;
+  QLabel *lblCount;
+  CInfoField *nfoCount;
+
   virtual bool sendDone(ICQEvent *);
 
   virtual void resetSettings();
 
 protected slots:
   virtual void sendButton();
+  
+  void slot_count();
 };
 
 /* ----------------------------------------------------------------------------- */

@@ -25,7 +25,9 @@ extern "C" {
 
 void SetString(char **szDest, const char *szSource);
 
-void ParseDigits(char *szDest, unsigned int nLen, const char *szSource);
+char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen);
+
+char *GetXmlTag(const char *szXmlSource, const char *szTagName);
 
 int Redirect(const char *);
 

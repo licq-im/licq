@@ -393,21 +393,23 @@ protected:
 class CEventSms : public CUserEvent
 {
 public:
-   CEventSms(const char *_szMessage, unsigned short _nCommand,
-             time_t _tTime, unsigned long _nFlags);
+   CEventSms(const char *_szNumber, const char *_szMessage, 
+	     unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventSms();
    virtual CEventSms *Copy()
-      {
-        CEventSms *e = new CEventSms(m_szMessage, m_nCommand, m_tTime, m_nFlags);
-        e->CopyBase(this);
-        return e;
-      }
+   {
+     CEventSms *e = new CEventSms(m_szNumber, m_szMessage, m_nCommand, m_tTime, m_nFlags);
+     e->CopyBase(this);
+     return e;
+   }
+   const char *Number()  { return m_szNumber; }
    const char *Message()  { return m_szMessage; }
    virtual void AddToHistory(ICQUser *, direction);
 
    static CEventSms *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
    void CreateDescription();
+   char *m_szNumber;
    char *m_szMessage;
 };
 

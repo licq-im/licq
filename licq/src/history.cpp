@@ -299,8 +299,11 @@ bool CUserHistory::Load(HistoryList &lHistory)
     }
     case ICQ_CMDxSUB_SMS:
     {
+      GET_VALID_LINE_OR_BREAK;
+      char *szNum = strdup(&szResult[1]);
       GET_VALID_LINES;
-      e = new CEventSms(szMsg, nCommand, tTime, nFlags);
+      e = new CEventSms(szNum, szMsg, nCommand, tTime, nFlags);
+      free(szNum);
       break;
     }
     default:

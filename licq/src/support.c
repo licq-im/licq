@@ -37,22 +37,65 @@ void SetString(char **szDest, const char *szSource)
     *szDest = strdup(szSource);
 }
 
-void ParseDigits(char *szDest, unsigned int nLen, const char *szSource)
+char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen)
 {
   int n = 0;
+  char *szCur = szDest;
 
   while ((*szSource) && (n < nLen))
   {
     if (isdigit(*szSource))
     {
-      *szDest++ = *szSource++;
+      *szCur++ = *szSource++;
       n++;
     } else
       szSource++;
   }
-  *szDest = '\0';
+  *szCur = '\0';
+  
+  return szDest;
 }
-      
+
+char *GetXmlTag(const char *szXmlSource, const char *szTagName)
+{
+  int n = 0, i;
+  char *szBegin, *szEnd, *szDest, *szCur, *szOpenTag, *szCloseTag;
+  
+  szOpenTag = (char *)malloc(strlen(szTagName) + 3);
+  if (szOpenTag == NULL) return NULL;
+  szCloseTag = (char *)malloc(strlen(szTagName) + 4);
+  if (szCloseTag == NULL) return NULL;
+  
+  strcpy(szOpenTag, "<");
+  strcat(szOpenTag, szTagName);
+  strcat(szOpenTag, ">");
+  strcpy(szCloseTag, "</");
+  strcat(szCloseTag, szTagName);
+  strcat(szCloseTag, ">");
+  
+  szBegin = strstr(szXmlSource, szOpenTag);
+  szEnd = strstr(szXmlSource, szCloseTag);
+  free(szOpenTag);
+  free(szCloseTag);
+  if (szBegin == NULL) return NULL;
+  if (szEnd == NULL) return NULL;
+
+  while (*szBegin++ != '>');
+  szCur = szBegin;
+  
+  while ((*szCur) && (szCur++ != szEnd)) n++;
+
+  szDest = (char *)malloc(n + 1);
+  if (szDest == NULL) return NULL;
+
+  szCur = szDest;
+  for (i = 0; i < n; i++)
+    *szCur++ = *szBegin++;
+  *szCur = '\0';
+  
+  return szDest;
+}
+    
 int Redirect(const char *_szFile)
 {
   int fd = open(_szFile, O_WRONLY | O_CREAT | O_APPEND, 00660);

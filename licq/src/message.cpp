@@ -12,6 +12,7 @@
 #include "licq_user.h"
 #include "licq_translate.h"
 #include "licq_icqd.h"
+#include "support.h"
 
 #ifdef USE_HEBREW
 extern "C" {
@@ -198,6 +199,7 @@ CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
 
 void CEventFile::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
   sprintf(m_szText, "File: %s (%ld bytes)\nDescription:\n%s\n", m_szFilename,
           m_nFileSize, m_szFileDescription);
@@ -238,6 +240,7 @@ CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
 
 void CEventUrl::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
   sprintf(m_szText, "Url: %s\nDescription:\n%s\n", m_szUrl, m_szUrlDescription);
 }
@@ -311,6 +314,7 @@ CEventChat::CEventChat(const char *szReason, const char *szClients,
 
 void CEventChat::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   if (m_szClients == NULL) {
     m_szText = new char [strlen(m_szReason) + 1];
     strcpy(m_szText, m_szReason);
@@ -356,6 +360,7 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
 
 void CEventAdded::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
                       strlen(m_szLastName) + strlen(m_szEmail) + 512];
   //sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
@@ -405,6 +410,7 @@ CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
 
 void CEventAuthRequest::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
                       + strlen(m_szReason) + 256];
@@ -455,6 +461,7 @@ CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage
 
 void CEventAuthGranted::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szMessage) + 128];
   int pos = sprintf(m_szText, "User %ld authorized you", m_nUin);
   if (m_szMessage[0] != '\0')
@@ -494,6 +501,7 @@ CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage
 
 void CEventAuthRefused::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szMessage) + 128];
   int pos = sprintf(m_szText, "User %ld refused to authorize you", m_nUin);
   if (m_szMessage[0] != '\0')
@@ -534,6 +542,7 @@ CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
 
 void CEventWebPanel::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
   sprintf(m_szText, "Message from %s (%s) through web panel:\n%s\n",
           m_szName, m_szEmail, m_szMessage);
@@ -574,6 +583,7 @@ CEventEmailPager::CEventEmailPager(const char *_szName, char *_szEmail,
 
 void CEventEmailPager::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
   sprintf(m_szText, "Message from %s (%s) through email pager:\n%s\n",
           m_szName, m_szEmail, m_szMessage);
@@ -615,6 +625,7 @@ CEventContactList::CEventContactList(ContactList &cl, bool bDeep,
 
 void CEventContactList::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char [m_vszFields.size() * 32 + 128];
   char *szEnd = m_szText;
   szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size());
@@ -672,28 +683,34 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
 }
 
 //=====CEventSms===============================================================
-CEventSms::CEventSms(const char *_szMessage, unsigned short _nCommand,
-                     time_t _tTime, unsigned long _nFlags)
+CEventSms::CEventSms(const char *_szNumber, const char *_szMessage,
+		     unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_SMS, _nCommand, 0, _tTime, _nFlags)
 {
+  m_szNumber = strdup(_szNumber == NULL ? "" : _szNumber);
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
 }
 
 void CEventSms::CreateDescription()
 {
-  m_szText = new char[strlen(m_szMessage) + 1];
-  strcpy(m_szText, m_szMessage);
+  if (m_szText) delete [] m_szText;
+  m_szText = new char[strlen(m_szNumber) + strlen(m_szMessage) + 32];
+  sprintf(m_szText, "Phone: %s\n%s\n", m_szNumber, m_szMessage);
 }
 
 CEventSms::~CEventSms()
 {
-  free (m_szMessage);
+  free(m_szNumber);
+  free(m_szMessage);
 }
 
 void CEventSms::AddToHistory(ICQUser *u, direction _nDir)
 {
-  char *szOut = new char[ (strlen(m_szMessage) << 1) + EVENT_HEADER_SIZE];
+  char *szOut = new char[ (strlen(m_szNumber) << 1) + 
+			  (strlen(m_szMessage) << 1) +
+			  + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s\n", m_szNumber);
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
@@ -701,8 +718,21 @@ void CEventSms::AddToHistory(ICQUser *u, direction _nDir)
 
 CEventSms *CEventSms::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
 {
-  gTranslator.ServerToClient (sz);
-  return new CEventSms(sz, nCmd, nTime, nFlags);
+  char *szXmlSms, *szNum, *szTxt;
+  
+  szXmlSms = GetXmlTag(sz, "sms_message");
+  if (szXmlSms == NULL) return NULL;
+  
+  szNum = GetXmlTag(szXmlSms, "sender");
+  szTxt = GetXmlTag(szXmlSms, "text");
+  
+  CEventSms *e = new CEventSms(szNum, szTxt, nCmd, nTime, nFlags);
+  
+  if (szNum) free(szNum);
+  if (szTxt) free(szTxt);
+  free(szXmlSms);
+  
+  return e;
 }
 
 
@@ -727,6 +757,7 @@ CEventServerMessage::~CEventServerMessage()
 
 void CEventServerMessage::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
   sprintf(m_szText, "System Server Message from %s (%s):\n%s\n", m_szName,
           m_szEmail, m_szMessage);
@@ -772,6 +803,7 @@ CEventPlugin::CEventPlugin(const char *sz, unsigned short nSubCommand,
 
 void CEventPlugin::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_sz) + 1];
   strcpy(m_szText, m_sz);
 }
@@ -801,6 +833,7 @@ CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
 
 void CEventUnknownSysMsg::CreateDescription()
 {
+  if (m_szText) delete [] m_szText;
   m_szText = new char [strlen(m_szMsg) + 128];
   sprintf(m_szText, "Unknown system message (0x%04X) from %ld:\n%s\n",
           m_nSubCommand, m_nUin, m_szMsg);
@@ -839,7 +872,7 @@ static const char *szEventTypes[27] =
   "Authorization Request",
   "AUthorization Refused",
   "Authorization Granted",
-  "",
+  "Server Message",
   "",
   "",
   "Added to Contact List",

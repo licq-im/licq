@@ -637,10 +637,9 @@ public:
 class CPU_SendSms : public CPU_CommonFamily
 {
 public:
-   CPU_SendSms(unsigned long nDestinationUin, const char *szMessage);
+   CPU_SendSms(const char *szNumber, const char *szMessage);
 protected:
    unsigned long m_nMetaCommand;
-   unsigned long m_nDestinationUin;
 };
 
 //-----ReverseTCPRequest--------------------------------------------------------

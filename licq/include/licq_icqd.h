@@ -232,7 +232,8 @@ public:
   void RemoveUserFromList(unsigned long _nUin);
 
   // SMS
-  unsigned long icqSendSms(unsigned long nUin, const char *szMessage);
+  unsigned long icqSendSms(const char *szNumber, const char *szMessage,
+			   unsigned long nUin);
   
   // NOT MT SAFE
   const char *getUrlViewer();
@@ -367,6 +368,7 @@ protected:
   bool AddUserEvent(ICQUser *, CUserEvent *);
   void RejectEvent(unsigned long, CUserEvent *);
   ICQUser *FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e, const char *);
+  unsigned long FindUinByCellular(const char *_szCellular);
 
   void icqRegisterFinish();
   void icqPing();
