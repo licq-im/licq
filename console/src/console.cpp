@@ -1274,7 +1274,7 @@ void CLicqConsole::InputCommand(int cIn)
   }
 
   default:
-    if (isascii(cIn) && isprint(cIn))
+    if (isprint(cIn))
     {
       szIn[nPos++] = (unsigned char)cIn;
       *winPrompt << (unsigned char)cIn;
