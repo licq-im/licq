@@ -210,3 +210,5 @@ bool CUtilityUserField::SetFields(ICQUser *u)
   u->usprintf(m_szFullDefault, m_szDefault, false);
   return true;
 }
+
+

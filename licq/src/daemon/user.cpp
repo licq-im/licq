@@ -1038,7 +1038,8 @@ void ICQUser::setHistoryFile(const char *s)
 
 void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
-  if (SocketDesc() != -1 && (Ip() != _nIp || Port() != _nPort))
+  if (SocketDesc() != -1 &&
+      ( (Ip() != 0 && Ip() != _nIp) || (Port() != 0 && Port() != _nPort)) )
   {
     // Close our socket, but don't let socket manager try and clear
     // our socket descriptor
@@ -1212,8 +1213,8 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
       {
         if (isdigit(_szFormat[i]))
         {
-          strncat(_sz, &_szFormat[i - 1], 2);
-          i++;
+          _sz[nPos++] = _szFormat[i - 1];
+          _sz[nPos++] = _szFormat[i++];
           continue;
         }
       }
