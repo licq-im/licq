@@ -129,6 +129,11 @@ AC_CHECK_HEADER(vector.h,,
 
 AC_LANG_RESTORE
 
+dnl spoofing compile option
+AC_ARG_ENABLE(spoofing,
+  [  --enable-spoofing       Enable UIN spoofing. ],
+  AC_DEFINE(USE_SPOOFING))
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_SOCKLEN_T

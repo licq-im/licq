@@ -225,7 +225,7 @@ AC_REQUIRE([AC_PATH_QT_LIB])
 AC_REQUIRE([AC_PATH_QT_INC])
 
 AC_ARG_WITH(kde,
-  [  --with-kde       compile with KDE support. ],
+  [  --with-kde              compile with KDE support. ],
   [  ac_kde="$withval" ])
 
 

@@ -35,6 +35,9 @@
 /* Whether or not to include SOCKS5 support */
 #undef USE_SOCKS5
 
+/* Whether or not to include spoofing support */
+#undef USE_SPOOFING
+
 /* Define this if the system headers don't */
 #undef socklen_t
 
@@ -43,7 +46,6 @@
 
 /* This gets defined if the system has the MIT X11 screensaver extensions */
 #undef USE_SCRNSAVER
-
 
 @TOP@
 @BOTTOM@

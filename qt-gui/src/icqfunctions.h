@@ -75,8 +75,8 @@ protected:
   // Send Event tab
   void CreateSendEventTab();
   MLEditWrap *mleSend;
-  QCheckBox *chkSendServer, *chkUrgent;
-  QLineEdit *edtItem;
+  QCheckBox *chkSendServer, *chkSpoof, *chkUrgent;
+  QLineEdit *edtSpoof, *edtItem;
   QLabel *lblItem;
   QGroupBox *grpOpt;
   QButtonGroup *grpCmd;
@@ -154,6 +154,7 @@ protected slots:
    void ShowHistoryNext();
    void printMessage(QListViewItem *);
    void save();
+   void setSpoofed();
    void specialFcn(int);
    void ReverseHistory(bool);
    void slot_updatetime();

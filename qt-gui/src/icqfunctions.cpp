@@ -139,6 +139,9 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   setTabOrder(mleSend, btnOk);
 
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnOk, SIGNAL(clicked()));
+#ifdef USE_SPOOFING
+  connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
+#endif
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
   connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
@@ -204,11 +207,27 @@ void ICQFunctions::CreateSendEventTab()
 #endif
   grpOpt->hide();
 
-  QGroupBox* boxOptions = new QGroupBox(2, Horizontal, fcnTab[TAB_SEND]);
-  selay->addWidget(boxOptions);
+  QBoxLayout* hlay = new QHBoxLayout(selay);
 
-  chkSendServer = new QCheckBox(tr("Send through server"), boxOptions);
-  chkUrgent = new QCheckBox(tr("Urgent"), boxOptions);
+  chkSendServer = new QCheckBox(tr("Send through server"), fcnTab[TAB_SEND]);
+  hlay->addWidget(chkSendServer);
+  chkUrgent = new QCheckBox(tr("Urgent"), fcnTab[TAB_SEND]);
+  hlay->addWidget(chkUrgent);
+
+#ifdef USE_SPOOFING
+  hlay = new QHBoxLayout(selay);
+  chkSpoof = new QCheckBox(tr("Spoof UIN:"), fcnTab[TAB_SEND]);
+  hlay->addWidget(chkSpoof);
+  edtSpoof = new QLineEdit(fcnTab[TAB_SEND]);
+  hlay->addWidget(edtSpoof);
+  edtSpoof->setEnabled(false);
+  edtSpoof->setValidator(new QIntValidator(1, 100000000, edtSpoof));
+  connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
+#else
+  edtSpoof = 0;
+  chkSpoof = 0;
+#endif
+
 #if QT_VERSION < 210
   QWidget* dummy_w3 = new QWidget(boxOptions);
   dummy_w3->setMinimumHeight(2);
@@ -1136,13 +1155,13 @@ void ICQFunctions::SetupHistory()
   else
   {
     m_bHistoryReverse = true;
-    m_iHistoryEIter = m_lHistoryList.end(); 
-    m_iHistorySIter = m_iHistoryEIter;     
-    for (unsigned short i = 0;               
+    m_iHistoryEIter = m_lHistoryList.end();
+    m_iHistorySIter = m_iHistoryEIter;
+    for (unsigned short i = 0;
     (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
     i++)
     {
-	 m_iHistorySIter--;  
+	 m_iHistorySIter--;
     }
     m_nHistoryIndex = m_lHistoryList.size();
     ShowHistory();
@@ -1171,7 +1190,7 @@ void ICQFunctions::ShowHistoryPrev()
       (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
        i++)
   {
-	 m_iHistorySIter--;  
+	 m_iHistorySIter--;
   }
   ShowHistory();
   }
@@ -1186,7 +1205,7 @@ void ICQFunctions::ShowHistoryNext()
       (i < NUM_MSG_PER_HISTORY) && (m_iHistoryEIter != m_lHistoryList.end());
        i++)
       {
-	 m_iHistoryEIter++;  
+	 m_iHistoryEIter++;
 	 m_nHistoryIndex++;
       }
     ShowHistory();
@@ -1231,7 +1250,7 @@ HistoryListIter tempIter;
   m_nHistoryShowing = 0;
   while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
   {
-    
+
     d.setTime_t((*tempIter)->Time());
     s.sprintf("<font color=\"%s\"><b>%s (%s) [%c%c%c]</b><br><br>",
               (*tempIter)->Direction() == D_RECEIVER ? COLOR_RECEIVED : COLOR_SENT,
@@ -1295,6 +1314,22 @@ void ICQFunctions::generateReply()
   mleSend->append("\n");
   mleSend->goToEnd();
   tabs->showPage(fcnTab[1]);
+}
+
+//---------------------------------------------------------------------------
+void ICQFunctions::setSpoofed()
+{
+  if (chkSpoof && chkSpoof->isChecked())
+  {
+    if (!QueryUser(this, tr("Spoofing messages is immoral and possibly illegal\n"
+                            "In clicking OK you absolve the author from any \n"
+                            "responsibility for your actions.\n"
+                            "Do you want to continue?"),
+                   tr("Ok"), tr("Cancel")))
+    {
+      chkSpoof->setChecked(false);
+    }
+  }
 }
 
 
@@ -1362,151 +1397,159 @@ void ICQFunctions::callFcn()
   {
     unsigned short nMsgLen = mleSend->text().length();
     if (nMsgLen > MAX_MESSAGE_SIZE)
-     {
-        if(!QueryUser(this, tr("Message is %1 characters, over the ICQ98 limit of %2.\n"
-                               "Licq, ICQ99, and other clones support longer messages \n"
-                               "however ICQ98 will not. Continue?").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
-                      tr("Ok"), tr("Cancel")))
-        {
-          btnOk->setEnabled(true);
-          break;
-        }
-     }
-     if (rdbMsg->isChecked())  // send a message
-     {
-        ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-        u->SetSendServer(chkSendServer->isChecked());
-        gUserManager.DropUser(u);
-        m_sProgressMsg = tr("Sending msg ");
-        m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-        m_sProgressMsg += "...";
-        icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
-                                          chkSendServer->isChecked() ? false : true,
-                                          chkUrgent->isChecked() ? true : false);
-     }
-     else if (rdbUrl->isChecked()) // send URL
-     {
-        m_sProgressMsg = tr("Sending URL ");
-        m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-        m_sProgressMsg += "...";
-        icqEventTag = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
-                                      chkSendServer->isChecked() ? false : true,
-                                      chkUrgent->isChecked() ? true : false);
-     }
-     else if (rdbChat->isChecked())   // send chat request
-     {
-        m_sProgressMsg = tr("Sending chat request ");
-        m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-        m_sProgressMsg += "...";
-        icqEventTag = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
-                                          chkSendServer->isChecked() ? false : true,
-                                          chkUrgent->isChecked() ? true : false);
-     }
-     else if (rdbFile->isChecked())   // send file transfer
-     {
-       if (edtItem->text().isEmpty())
-       {
-         WarnUser(this, tr("You must specify a file to transfer!"));
-         break;
-       }
-       m_sProgressMsg = tr("Sending file transfer ");
-       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
-       m_sProgressMsg += "...";
-       icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
-                         chkSendServer->isChecked() ? false : true,
-                         chkUrgent->isChecked() ? true : false);
-     }
+    {
+      if(!QueryUser(this, tr("Message is %1 characters, over the ICQ98 limit of %2.\n"
+                             "Licq, ICQ99, and other clones support longer messages \n"
+                             "however ICQ98 will not. Continue?").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
+                    tr("Ok"), tr("Cancel")))
+      {
+        btnOk->setEnabled(true);
+        break;
+      }
+    }
 
-     if (icqEventTag == NULL)
-        doneFcn(NULL);
+    unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
+                         edtSpoof->text().toULong() : 0);
+    if (rdbMsg->isChecked())  // send a message
+    {
+      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+      u->SetSendServer(chkSendServer->isChecked());
+      gUserManager.DropUser(u);
+      m_sProgressMsg = tr("Sending msg ");
+      m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+      m_sProgressMsg += "...";
+      icqEventTag =
+        server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
+                               chkSendServer->isChecked() ? false : true,
+                               chkUrgent->isChecked() ? true : false, uin);
+    }
+    else if (rdbUrl->isChecked()) // send URL
+    {
+      m_sProgressMsg = tr("Sending URL ");
+      m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+      m_sProgressMsg += "...";
+      icqEventTag =
+        server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+                           chkSendServer->isChecked() ? false : true,
+                           chkUrgent->isChecked() ? true : false, uin);
+    }
+    else if (rdbChat->isChecked())   // send chat request
+    {
+      m_sProgressMsg = tr("Sending chat request ");
+      m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+      m_sProgressMsg += "...";
+      icqEventTag =
+        server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
+                               chkSendServer->isChecked() ? false : true,
+                               chkUrgent->isChecked() ? true : false, uin);
+    }
+    else if (rdbFile->isChecked())   // send file transfer
+    {
+      if (edtItem->text().isEmpty())
+      {
+        WarnUser(this, tr("You must specify a file to transfer!"));
+        break;
+      }
+      m_sProgressMsg = tr("Sending file transfer ");
+      m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+      m_sProgressMsg += "...";
+      icqEventTag =
+        server->icqFileTransfer(m_nUin, edtItem->text(),
+                                mleSend->text().local8Bit(),
+                                chkSendServer->isChecked() ? false : true,
+                                chkUrgent->isChecked() ? true : false, uin);
+    }
 
-     break;
+    if (icqEventTag == NULL)
+      doneFcn(NULL);
+
+    break;
   }
 
   case TAB_GENERALINFO:
-     if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-     {
-        m_sProgressMsg = tr("Updating server...");
-        unsigned short i = cmbCountry->currentItem();
-        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
-        icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
-                                             nfoFirstName->text().local8Bit(),
-                                             nfoLastName->text().local8Bit(),
-                                             nfoEmail1->text().local8Bit(),
-                                             nfoEmail2->text().local8Bit(),
-                                             nfoCity->text().local8Bit(),
-                                             nfoState->text().local8Bit(),
-                                             nfoPhone->text().local8Bit(),
-                                             nfoFax->text().local8Bit(),
-                                             nfoAddress->text().local8Bit(),
-                                             nfoCellular->text().local8Bit(),
-                                             nfoZipCode->text().toULong(),
-                                             cc, false);
-     }
-     else
-     {
-        m_sProgressMsg = tr("Updating...");
-        icqEventTag = server->icqRequestMetaInfo(m_nUin);
-     }
-     break;
+    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
+    {
+      m_sProgressMsg = tr("Updating server...");
+      unsigned short i = cmbCountry->currentItem();
+      unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : GetCountryByIndex(i - 1)->nCode);
+      icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
+                                              nfoFirstName->text().local8Bit(),
+                                              nfoLastName->text().local8Bit(),
+                                              nfoEmail1->text().local8Bit(),
+                                              nfoEmail2->text().local8Bit(),
+                                              nfoCity->text().local8Bit(),
+                                              nfoState->text().local8Bit(),
+                                              nfoPhone->text().local8Bit(),
+                                              nfoFax->text().local8Bit(),
+                                              nfoAddress->text().local8Bit(),
+                                              nfoCellular->text().local8Bit(),
+                                              nfoZipCode->text().toULong(),
+                                              cc, false);
+    }
+    else
+    {
+      m_sProgressMsg = tr("Updating...");
+      icqEventTag = server->icqRequestMetaInfo(m_nUin);
+    }
+    break;
   case TAB_MOREINFO:
-     if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-     {
-        m_sProgressMsg = tr("Updating server...");
-        unsigned short i;
-        i = cmbLanguage[0]->currentItem();
-        unsigned short lc1 = GetLanguageByIndex(i)->nCode;
-        i = cmbLanguage[1]->currentItem();
-        unsigned short lc2 = GetLanguageByIndex(i)->nCode;
-        i = cmbLanguage[2]->currentItem();
-        unsigned short lc3 = GetLanguageByIndex(i)->nCode;
-        icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
-                                          cmbGender->currentItem(),
-                                          nfoHomepage->text(),
-                                          spnBirthYear->value() - 1900,
-                                          spnBirthMonth->value(),
-                                          spnBirthDay->value(),
-                                          lc1, lc2, lc3);
-     }
-     else
-     {
-        m_sProgressMsg = tr("Updating...");
-        icqEventTag = server->icqRequestMetaInfo(m_nUin);
-     }
-     break;
+    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
+    {
+      m_sProgressMsg = tr("Updating server...");
+      unsigned short i;
+      i = cmbLanguage[0]->currentItem();
+      unsigned short lc1 = GetLanguageByIndex(i)->nCode;
+      i = cmbLanguage[1]->currentItem();
+      unsigned short lc2 = GetLanguageByIndex(i)->nCode;
+      i = cmbLanguage[2]->currentItem();
+      unsigned short lc3 = GetLanguageByIndex(i)->nCode;
+      icqEventTag = server->icqSetMoreInfo(nfoAge->text().toUShort(),
+                                           cmbGender->currentItem(),
+                                           nfoHomepage->text(),
+                                           spnBirthYear->value() - 1900,
+                                           spnBirthMonth->value(),
+                                           spnBirthDay->value(),
+                                           lc1, lc2, lc3);
+    }
+    else
+    {
+      m_sProgressMsg = tr("Updating...");
+      icqEventTag = server->icqRequestMetaInfo(m_nUin);
+    }
+    break;
   case TAB_WORKINFO:
-     if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-     {
-        m_sProgressMsg = tr("Updating server...");
-        icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
-                                          nfoCompanyState->text().local8Bit(),
-                                          nfoCompanyPhone->text().local8Bit(),
-                                          nfoCompanyFax->text().local8Bit(),
-                                          nfoCompanyAddress->text().local8Bit(),
-                                          nfoCompanyName->text().local8Bit(),
-                                          nfoCompanyDepartment->text().local8Bit(),
-                                          nfoCompanyPosition->text().local8Bit(),
-                                          nfoCompanyHomepage->text().local8Bit());
+    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
+    {
+      m_sProgressMsg = tr("Updating server...");
+      icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
+                                           nfoCompanyState->text().local8Bit(),
+                                           nfoCompanyPhone->text().local8Bit(),
+                                           nfoCompanyFax->text().local8Bit(),
+                                           nfoCompanyAddress->text().local8Bit(),
+                                           nfoCompanyName->text().local8Bit(),
+                                           nfoCompanyDepartment->text().local8Bit(),
+                                           nfoCompanyPosition->text().local8Bit(),
+                                           nfoCompanyHomepage->text().local8Bit());
 
-     }
-     else
-     {
-        m_sProgressMsg = tr("Updating...");
-        icqEventTag = server->icqRequestMetaInfo(m_nUin);
-     }
-     break;
+    }
+    else
+    {
+      m_sProgressMsg = tr("Updating...");
+      icqEventTag = server->icqRequestMetaInfo(m_nUin);
+    }
+    break;
   case TAB_ABOUT:
-     if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
-     {
-        m_sProgressMsg = tr("Updating server...");
-        icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());
-     }
-     else
-     {
-        m_sProgressMsg = tr("Updating...");
-        icqEventTag = server->icqRequestMetaInfo(m_nUin);
-     }
-     break;
+    if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
+    {
+      m_sProgressMsg = tr("Updating server...");
+      icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());
+    }
+    else
+    {
+      m_sProgressMsg = tr("Updating...");
+      icqEventTag = server->icqRequestMetaInfo(m_nUin);
+    }
+    break;
   case TAB_HISTORY:
     ShowHistoryNext();
     break;
