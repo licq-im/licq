@@ -75,7 +75,7 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   chkEditFinal = new QCheckBox(tr("Edit final command"), this);
   lay->addMultiCellWidget(chkEditFinal, 3, 3, 0, 2);
 
-  boxFields = new QGroupBox(2, Horizontal, tr("User Fields"), this);
+  boxFields = new QGroupBox(1, Horizontal, tr("User Fields"), this);
   lay->addMultiCellWidget(boxFields, 4, 4, 0, 2);
   for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
   {
