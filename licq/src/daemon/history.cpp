@@ -280,7 +280,6 @@ bool CUserHistory::Load(HistoryList &lHistory)
       lHistory.push_back(e);
     }
     if (szResult == NULL) break;
-    sz[0] = '\0';
   }
 
   // Close the file
