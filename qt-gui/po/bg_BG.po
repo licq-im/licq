@@ -6,26 +6,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq-qt-gui 1.0\n"
 "POT-Creation-Date: 2002-04-12 19:13:42 EEST\n"
-"PO-Revision-Date: 2002-04-25 18:05+0200\n"
-"Last-Translator: George Danchev <danchev@spnet.net>\n"
-"Language-Team: lug-bg localization team <na@na.com>\n"
+"PO-Revision-Date: 2002-11-22 12:15+0200\n"
+"Last-Translator: Иван Димитров <dobber@bastun.net>\n"
+"Language-Team: lug-bg localization team <dobber@bastun.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=windows-1251\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: adduserdlg.cpp:28
+#: adduserdlg.cpp:26
 msgid "AddUserDlg::&Alert User"
 msgstr "Предупреди потребител"
 
-#: adduserdlg.cpp:32
+#: adduserdlg.cpp:43
 msgid "AddUserDlg::&Cancel"
 msgstr "Отказ"
 
-#: adduserdlg.cpp:20
+#: adduserdlg.cpp:42
+msgid "AddUserDlg::&Ok"
+msgstr ""
+
+#: adduserdlg.cpp:49
 msgid "AddUserDlg::Licq - Add User"
 msgstr "Licq - Добавяне на нов потребител"
 
-#: adduserdlg.cpp:23
+#: adduserdlg.cpp:35
 msgid "AddUserDlg::New User UIN:"
 msgstr "Нов потребител (UIN):"
 
@@ -131,25 +135,33 @@ msgstr "Откажи трансфера"
 msgid "CFileDlg::Batch:"
 msgstr ""
 
-#: filedlg.cpp:341
+#: filedlg.cpp:314
+msgid "CFileDlg::Bind error.\n"
+msgstr ""
+
+#: filedlg.cpp:369
 msgid "CFileDlg::Byte"
 msgstr "Байт"
 
-#: filedlg.cpp:337
+#: filedlg.cpp:365
 msgid "CFileDlg::Bytes"
 msgstr "Байта"
 
-#: filedlg.cpp:406
+#: filedlg.cpp:434
 msgid "CFileDlg::Cancel"
 msgstr "Отказ"
 
-#: filedlg.cpp:295
+#: filedlg.cpp:322
 msgid "CFileDlg::Close"
 msgstr "Затвори"
 
-#: filedlg.cpp:316
+#: filedlg.cpp:344
 msgid "CFileDlg::Connecting to remote..."
 msgstr "Свързвам се към отсрещната страна..."
+
+#: filedlg.cpp:305
+msgid "CFileDlg::Connection error.\n"
+msgstr ""
 
 #: filedlg.cpp:47
 msgid "CFileDlg::Current:"
@@ -167,11 +179,11 @@ msgstr ""
 msgid "CFileDlg::File I/O error: %1."
 msgstr ""
 
-#: filedlg.cpp:389
+#: filedlg.cpp:417
 msgid "CFileDlg::File already exists and appears incomplete."
 msgstr "Файлът вече съществува но изглежда не е цял."
 
-#: filedlg.cpp:382
+#: filedlg.cpp:410
 msgid "CFileDlg::File already exists and is at least as big as the incoming file."
 msgstr Файлът вече съществура и е поне толкова голям колкото пристигащият файл.""
 
@@ -195,11 +207,15 @@ msgstr "Файл:"
 msgid "CFileDlg::Handshake Error.\nSee Network Window for details."
 msgstr ""
 
+# #: filedlg.cpp:296
+# msgid "CFileDlg::Handshaking error\n"
+# msgstr ""
+
 #: filedlg.cpp:296
-msgid "CFileDlg::Handshaking error\n"
+msgid "CFileDlg::Handshaking error.\n"
 msgstr ""
 
-#: filedlg.cpp:333
+#: filedlg.cpp:361
 msgid "CFileDlg::KB"
 msgstr "KB"
 
@@ -207,9 +223,13 @@ msgstr "KB"
 msgid "CFileDlg::Licq - File Transfer (%1)"
 msgstr "Licq - Файлов трансфер (%1)"
 
-#: filedlg.cpp:329
+#: filedlg.cpp:357
 msgid "CFileDlg::MB"
 msgstr "MB"
+
+#: filedlg.cpp:323
+msgid "CFileDlg::Not enough resources.\n"
+msgstr ""
 
 #: filedlg.cpp:269
 msgid "CFileDlg::OK"
@@ -219,11 +239,11 @@ msgstr "Добре"
 # msgid "CFileDlg::Ok"
 # msgstr "Добре"
 
-#: filedlg.cpp:406
+#: filedlg.cpp:434
 msgid "CFileDlg::Open error - unable to open file for writing."
 msgstr "Грешка. Файлът не може да бъде отворен за писане."
 
-#: filedlg.cpp:389
+#: filedlg.cpp:417
 msgid "CFileDlg::Overwrite"
 msgstr "Презапис"
 
@@ -239,11 +259,11 @@ msgstr "Получавам файл..."
 msgid "CFileDlg::Remote side disconnected."
 msgstr ""
 
-#: filedlg.cpp:389
+#: filedlg.cpp:417
 msgid "CFileDlg::Resume"
 msgstr "Продължи"
 
-#: filedlg.cpp:406
+#: filedlg.cpp:434
 msgid "CFileDlg::Retry"
 msgstr "Опитай отново"
 
@@ -258,6 +278,18 @@ msgstr "Успешно изпратени %1 от %2 ."
 #: filedlg.cpp:79
 msgid "CFileDlg::Time:"
 msgstr "Време:"
+
+#: filedlg.cpp:317
+msgid "CFileDlg::Unable to bind to a port.\nSee Network Window for details."
+msgstr ""
+
+#: filedlg.cpp:326
+msgid "CFileDlg::Unable to create a thread.\nSee Network Window for details."
+msgstr ""
+
+#: filedlg.cpp:308
+msgid "CFileDlg::Unable to reach remote host.\nSee Network Window for details."
+msgstr ""
 
 #: filedlg.cpp:199
 msgid "CFileDlg::Waiting for connection..."
@@ -375,127 +407,127 @@ msgstr ""
 msgid "CMMUserView::Remove"
 msgstr "Премахни"
 
-#: mainwin.cpp:1355
+#: mainwin.cpp:1427
 msgid "CMainWindow:: "
 msgstr " "
 
-#: mainwin.cpp:1355
+#: mainwin.cpp:1427
 msgid "CMainWindow::%1 message%2"
 msgstr "%1 съобщение%2"
 
-#: mainwin.cpp:1354
+#: mainwin.cpp:1426
 msgid "CMainWindow::%1 msg%2"
 msgstr "%1 съобщение%2"
 
-#: mainwin.cpp:3211
+#: mainwin.cpp:3387
 msgid "CMainWindow::%1: %2 / %3\n"
 msgstr ""
 
-#: mainwin.cpp:3225
+#: mainwin.cpp:3401
 msgid "CMainWindow::%1: %2\n"
 msgstr ""
 
-#: mainwin.cpp:3121
+#: mainwin.cpp:3297
 msgid "CMainWindow::&About"
 msgstr "Относно"
 
-#: mainwin.cpp:3022
+#: mainwin.cpp:3198
 msgid "CMainWindow::&Add User"
 msgstr "Добави потребител"
 
-#: mainwin.cpp:2970
+#: mainwin.cpp:3146
 msgid "CMainWindow::&Away"
 msgstr "Няма ме"
 
-#: mainwin.cpp:2973
+#: mainwin.cpp:3149
 msgid "CMainWindow::&Do Not Disturb"
 msgstr "Моля не ме безпокойте"
 
-#: mainwin.cpp:3118
+#: mainwin.cpp:3294
 msgid "CMainWindow::&General Info"
 msgstr "Обща информация"
 
-#: mainwin.cpp:3048
+#: mainwin.cpp:3224
 msgid "CMainWindow::&Group"
 msgstr "Група"
 
-#: mainwin.cpp:3062
+#: mainwin.cpp:3238
 msgid "CMainWindow::&Help"
 msgstr "Помощ"
 
-#: mainwin.cpp:3039
+#: mainwin.cpp:3215
 msgid "CMainWindow::&Hints"
 msgstr "Съвети"
 
-#: mainwin.cpp:3012
+#: mainwin.cpp:3188
 msgid "CMainWindow::&History"
 msgstr "История"
 
-#: mainwin.cpp:3124
+#: mainwin.cpp:3300
 msgid "CMainWindow::&Info"
 msgstr "Информация"
 
-#: mainwin.cpp:2977
+#: mainwin.cpp:3153
 msgid "CMainWindow::&Invisible"
 msgstr "Невидим"
 
-#: mainwin.cpp:3122
+#: mainwin.cpp:3298
 msgid "CMainWindow::&Last"
 msgstr "Последен"
 
-#: mainwin.cpp:3052
+#: mainwin.cpp:3228
 msgid "CMainWindow::&Mini Mode"
 msgstr "Мини режим"
 
-#: mainwin.cpp:3119
+#: mainwin.cpp:3295
 msgid "CMainWindow::&More Info"
 msgstr "Повече информация"
 
-#: mainwin.cpp:3051
+#: mainwin.cpp:3227
 msgid "CMainWindow::&Network Window"
 msgstr "Мрежова статистика"
 
-#: mainwin.cpp:2285
+#: mainwin.cpp:2359
 msgid "CMainWindow::&No"
 msgstr "&Не"
 
-#: mainwin.cpp:2971
+#: mainwin.cpp:3147
 msgid "CMainWindow::&Not Available"
 msgstr "Липсвам в момента"
 
-#: mainwin.cpp:3213
+#: mainwin.cpp:3389
 msgid "CMainWindow::&Ok"
 msgstr "&Добре"
 
-#: mainwin.cpp:2969
+#: mainwin.cpp:3145
 msgid "CMainWindow::&Online"
 msgstr "Включен"
 
-#: mainwin.cpp:3055
+#: mainwin.cpp:3231
 msgid "CMainWindow::&Options..."
 msgstr "Настройки..."
 
-#: mainwin.cpp:3057
+#: mainwin.cpp:3233
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "Plugin менажер"
 
-#: mainwin.cpp:3028
+#: mainwin.cpp:3204
 msgid "CMainWindow::&Popup All Messages"
 msgstr "Покажи всички съобщения"
 
-#: mainwin.cpp:3016
+#: mainwin.cpp:3192
 msgid "CMainWindow::&Random Chat Group"
 msgstr ""
 
-#: mainwin.cpp:3033
+#: mainwin.cpp:3209
 msgid "CMainWindow::&Redraw User Window"
 msgstr "Преподреди потребителския позорец"
 
-#: mainwin.cpp:3213
+#: mainwin.cpp:3389
 msgid "CMainWindow::&Reset"
 msgstr ""
 
-#: mainwin.cpp:3034
+#: mainwin.cpp:3210
 msgid "CMainWindow::&Save All Users"
 msgstr "Запази всички потребители"
 
@@ -503,47 +535,47 @@ msgstr "Запази всички потребители"
 # msgid "CMainWindow::&Security Options"
 # msgstr "Настройки на сигурността"
 
-#: mainwin.cpp:3015
+#: mainwin.cpp:3191
 msgid "CMainWindow::&Security/Password Options"
-msgstr ""
+msgstr "Настройки на сигурността и паролата"
 
-#: mainwin.cpp:3041
+#: mainwin.cpp:3217
 msgid "CMainWindow::&Statistics"
 msgstr "&Статистики"
 
-#: mainwin.cpp:3047
+#: mainwin.cpp:3223
 msgid "CMainWindow::&Status"
 msgstr "&Статус"
 
-#: mainwin.cpp:668
+#: mainwin.cpp:687
 msgid "CMainWindow::&System"
 msgstr "Системни"
 
-#: mainwin.cpp:3054
+#: mainwin.cpp:3230
 msgid "CMainWindow::&Thread Group View"
 msgstr ""
 
-#: mainwin.cpp:3098
+#: mainwin.cpp:3274
 msgid "CMainWindow::&View Event"
 msgstr "Виж събитието"
 
-#: mainwin.cpp:3006
+#: mainwin.cpp:3182
 msgid "CMainWindow::&View System Messages"
 msgstr "Системни съобщения"
 
-#: mainwin.cpp:3120
+#: mainwin.cpp:3296
 msgid "CMainWindow::&Work Info"
 msgstr "Информация/Работа"
 
-#: mainwin.cpp:2285
+#: mainwin.cpp:2359
 msgid "CMainWindow::&Yes"
 msgstr "&Да"
 
-#: mainwin.cpp:2518
+#: mainwin.cpp:2592
 msgid "CMainWindow::(with KDE support)\n"
 msgstr "(с поддръжка за KDE)\n"
 
-#: mainwin.cpp:3364
+#: mainwin.cpp:3540
 msgid "CMainWindow::"
 "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
 "<ul>"
@@ -575,11 +607,11 @@ msgid "CMainWindow::"
 "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
 msgstr ""
 
-#: mainwin.cpp:3393
+#: mainwin.cpp:3569
 msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr "<hr><p> За повече информация се обърнете към web сайтът на Licq (<tt>http://www.licq.org</tt>).</p>"
 
-#: mainwin.cpp:495
+#: mainwin.cpp:511
 msgid "CMainWindow::"
 "<ul>"
 "<li><tt>%a - </tt>user alias</li>"
@@ -599,65 +631,65 @@ msgid "CMainWindow::"
 "<li><tt>%w - </tt>webpage</li></ul>"
 msgstr ""
 
-#: mainwin.cpp:3024
+#: mainwin.cpp:3200
 msgid "CMainWindow::A&uthorize User"
 msgstr "Ауторизирай потребител"
 
-#: mainwin.cpp:3081
+#: mainwin.cpp:3257
 msgid "CMainWindow::Accept in Away"
 msgstr "Приемай в 'Няма ме за малко'"
 
-#: mainwin.cpp:3084
+#: mainwin.cpp:3260
 msgid "CMainWindow::Accept in Do Not Disturb"
 msgstr "Приемай в 'Не ме притеснявайте'"
 
-#: mainwin.cpp:3082
+#: mainwin.cpp:3258
 msgid "CMainWindow::Accept in Not Available"
 msgstr "Приемай, когато липсвам за момента"
 
-#: mainwin.cpp:3083
+#: mainwin.cpp:3259
 msgid "CMainWindow::Accept in Occupied"
 msgstr "Приемай, когато съм зает"
 
-#: mainwin.cpp:1440
+#: mainwin.cpp:1512
 msgid "CMainWindow::All Users"
 msgstr "Всички потребители"
 
-#: mainwin.cpp:2313
+#: mainwin.cpp:2387
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
 msgstr ""
 "CMainWindow::Сигурен/сигурна ли сте, че искате да изтриете\n"
 "%1 (%2)\n"
 "от групата '%3'?"
 
-#: mainwin.cpp:2201
+#: mainwin.cpp:2275
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
 msgstr ""
 "CMainWindow::Сигурен/сигурна ли сте, че искате да изтриете\n"
 "%1 (%2)\n"
 "от списъка с контактите Ви?"
 
-#: mainwin.cpp:2188
+#: mainwin.cpp:2262
 msgid "CMainWindow::Authorization granted."
 msgstr "Дадена ауторизация"
 
-#: mainwin.cpp:3086
+#: mainwin.cpp:3262
 msgid "CMainWindow::Auto Accept Chats"
 msgstr "Автоматично приемане на разговори"
 
-#: mainwin.cpp:3085
+#: mainwin.cpp:3261
 msgid "CMainWindow::Auto Accept Files"
 msgstr "Автоматично приемане на файлове"
 
-#: mainwin.cpp:3087
+#: mainwin.cpp:3263
 msgid "CMainWindow::Auto Request Secure"
 msgstr ""
 
-#: mainwin.cpp:3091
+#: mainwin.cpp:3267
 msgid "CMainWindow::Away to User"
 msgstr "'Няма ме в момента' за този потребител"
 
-#: mainwin.cpp:2318
+#: mainwin.cpp:2392
 msgid "CMainWindow::Cancel"
 msgstr "Отказ"
 
@@ -665,89 +697,89 @@ msgstr "Отказ"
 # msgid "CMainWindow::Change &Password"
 # msgstr "Смяна на &паролата"
 
-#: mainwin.cpp:3162
+#: mainwin.cpp:3338
 msgid "CMainWindow::Check %1 Response"
 msgstr ""
 
-#: mainwin.cpp:3157
+#: mainwin.cpp:3333
 msgid "CMainWindow::Check Auto Response"
 msgstr "Провери автоматичният отговор"
 
-#: mainwin.cpp:2999
+#: mainwin.cpp:3175
 msgid "CMainWindow::Clear All"
 msgstr "Изчисти всичко"
 
-#: mainwin.cpp:3191
+#: mainwin.cpp:3367
 msgid "CMainWindow::Close &Secure Channel"
 msgstr ""
 
-#: mainwin.cpp:3115
+#: mainwin.cpp:3291
 msgid "CMainWindow::Custom Auto Response..."
 msgstr "Собствен автоматичен отговор"
 
-#: mainwin.cpp:3202
+#: mainwin.cpp:3378
 msgid "CMainWindow::Daemon Statistics\n(Today/Total)\n"
 msgstr ""
 
-#: mainwin.cpp:3218
+#: mainwin.cpp:3394
 msgid "CMainWindow::Daemon Statistics\n\n"
 msgstr "Статистика за демона\n\n"
 
-#: mainwin.cpp:3018
+#: mainwin.cpp:3194
 msgid "CMainWindow::Debug Level"
 msgstr "Ниво на трасиране"
 
-#: mainwin.cpp:3094
+#: mainwin.cpp:3270
 msgid "CMainWindow::Do Not Disturb to User"
 msgstr "'Не ме безпокой' за този потребител"
 
-#: mainwin.cpp:2284
+#: mainwin.cpp:2358
 msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
 msgstr ""
 "Наистина ли искате да добавите \n%1 (%2)\n"
 "в списъка с игнорираните потребители?"
 
-#: mainwin.cpp:3063
+#: mainwin.cpp:3239
 msgid "CMainWindow::E&xit"
 msgstr "Из&ход"
 
-#: mainwin.cpp:3029
+#: mainwin.cpp:3205
 msgid "CMainWindow::Edit &Groups"
 msgstr "Редактиране/Групи"
 
-#: mainwin.cpp:3127
+#: mainwin.cpp:3303
 msgid "CMainWindow::Edit User Group"
 msgstr "Промени потребителската група"
 
-#: mainwin.cpp:2186
+#: mainwin.cpp:2260
 msgid "CMainWindow::Error sending authorization."
 msgstr ""
 
-#: mainwin.cpp:2994
+#: mainwin.cpp:3170
 msgid "CMainWindow::Errors"
 msgstr "Грешки"
 
-#: mainwin.cpp:2974
+#: mainwin.cpp:3150
 msgid "CMainWindow::Free for C&hat"
 msgstr "Свободен за разговор"
 
-#: mainwin.cpp:1465
+#: mainwin.cpp:1537
 msgid "CMainWindow::Ignore List"
 msgstr "Игнорирани потребители"
 
-#: mainwin.cpp:1462
+#: mainwin.cpp:1534
 msgid "CMainWindow::Invisible List"
 msgstr "Списък с невидими потребители"
 
-#: mainwin.cpp:3207
+#: mainwin.cpp:3383
 msgid "CMainWindow::Last reset %1\n\n"
 msgstr ""
 
-#: mainwin.cpp:1073
+#: mainwin.cpp:1143
 msgid "CMainWindow::Licq (%1)"
 msgstr "Licq (%1)"
 
-#: mainwin.cpp:2504
+#: mainwin.cpp:2578
 msgid "CMainWindow::"
 "Licq version %1%8.\n"
 "Qt GUI plugin version %2.\n"
@@ -762,244 +794,248 @@ msgid "CMainWindow::"
 "%5 contacts."
 msgstr ""
 
-#: mainwin.cpp:2167
+#: mainwin.cpp:2241
 msgid "CMainWindow::Logon failed.\nSee network window for details."
 msgstr ""
 
-#: mainwin.cpp:3112
+#: mainwin.cpp:3288
 msgid "CMainWindow::Misc Modes"
 msgstr ""
 
-#: mainwin.cpp:1468
+#: mainwin.cpp:1540
 msgid "CMainWindow::New Users"
 msgstr "Нови потребители"
 
-#: mainwin.cpp:3059
+#: mainwin.cpp:3235
 msgid "CMainWindow::Next &Server"
 msgstr "Следващ сървър"
 
-#: mainwin.cpp:1373
+#: mainwin.cpp:1445
 msgid "CMainWindow::No messages"
 msgstr "Няма съобщения"
 
-#: mainwin.cpp:1372
+#: mainwin.cpp:1444
 msgid "CMainWindow::No msgs"
 msgstr "Няма съобщения"
 
-#: mainwin.cpp:3092
+#: mainwin.cpp:3268
 msgid "CMainWindow::Not Available to User"
 msgstr "'Липсвам в момента' за този потребител"
 
-#: mainwin.cpp:2972
+#: mainwin.cpp:3148
 msgid "CMainWindow::O&ccupied"
 msgstr "Зает съм!"
 
-#: mainwin.cpp:2975
+#: mainwin.cpp:3151
 msgid "CMainWindow::O&ffline"
 msgstr "Изключен(а)"
 
-#: mainwin.cpp:3093
+#: mainwin.cpp:3269
 msgid "CMainWindow::Occupied to User"
 msgstr "'Зает съм' за този потребител"
 
-#: mainwin.cpp:2318
+#: mainwin.cpp:2392
 msgid "CMainWindow::Ok"
 msgstr "Добре"
 
-#: mainwin.cpp:1456
+#: mainwin.cpp:1528
 msgid "CMainWindow::Online Notify"
 msgstr ""
 
-#: mainwin.cpp:3090
+#: mainwin.cpp:3266
 msgid "CMainWindow::Online to User"
 msgstr "'Винаги достъпен/достъпна' за този потребител"
 
-#: mainwin.cpp:1292
+#: mainwin.cpp:1364
 msgid "CMainWindow::Other Users"
 msgstr "Други потребители"
 
-#: mainwin.cpp:2996
+#: mainwin.cpp:3172
 msgid "CMainWindow::Packets"
 msgstr "Пакети"
 
-#: mainwin.cpp:3026
+#: mainwin.cpp:3202
 msgid "CMainWindow::R&andom Chat"
 msgstr ""
 
-#: mainwin.cpp:3025
+#: mainwin.cpp:3201
 msgid "CMainWindow::Re&quest Authorization"
 msgstr ""
 
-#: mainwin.cpp:3036
+#: mainwin.cpp:3212
 msgid "CMainWindow::Reg&ister User"
 msgstr "Регистриране на потребител"
 
-#: mainwin.cpp:2181
+#: mainwin.cpp:2255
 msgid "CMainWindow::Registration failed.  See network window for details."
 msgstr "Регистрацията не може да бъде осъществена. За повече информация погледнете мрежовата статистика."
 
-#: mainwin.cpp:3129
+#: mainwin.cpp:3305
 msgid "CMainWindow::Remove From List"
 msgstr "Премахни от списъка"
 
-#: mainwin.cpp:3193
+#: mainwin.cpp:3369
 msgid "CMainWindow::Request &Secure Channel"
 msgstr ""
 
-#: mainwin.cpp:705
+#: mainwin.cpp:748
 msgid "CMainWindow::"
 "Right click - Status menu\n"
 "Double click - Set auto response"
 msgstr ""
 
-#: mainwin.cpp:688
+#: mainwin.cpp:719
 msgid "CMainWindow::"
 "Right click - User groups\n"
 "Double click - Show next message"
 msgstr ""
 
-#: mainwin.cpp:3023
+#: mainwin.cpp:3199
 msgid "CMainWindow::S&earch for User"
 msgstr "Търсене на потребител"
 
-#: mainwin.cpp:3056
+#: mainwin.cpp:3232
 msgid "CMainWindow::S&kin Browser..."
 msgstr "Скин менажер"
 
-#: mainwin.cpp:3061
+#: mainwin.cpp:3237
 msgid "CMainWindow::Sa&ve Settings"
 msgstr "Запази настройките"
 
-#: mainwin.cpp:3105
+#: mainwin.cpp:3281
 msgid "CMainWindow::Send &Authorization"
 msgstr ""
 
-#: mainwin.cpp:3102
+#: mainwin.cpp:3278
 msgid "CMainWindow::Send &Chat Request"
 msgstr ""
 
-#: mainwin.cpp:3103
+#: mainwin.cpp:3279
 msgid "CMainWindow::Send &File Transfer"
 msgstr "Изпращане на файл"
 
-#: mainwin.cpp:3100
+#: mainwin.cpp:3276
 msgid "CMainWindow::Send &Message"
 msgstr "Изпращане на съобщение"
 
-#: mainwin.cpp:3107
+#: mainwin.cpp:3283
 msgid "CMainWindow::Send &SMS"
 msgstr "Изпращане на SMS"
 
-#: mainwin.cpp:3101
+#: mainwin.cpp:3277
 msgid "CMainWindow::Send &URL"
 msgstr "Изпращане на URL"
 
-#: mainwin.cpp:3106
+#: mainwin.cpp:3282
 msgid "CMainWindow::Send Authorization Re&quest"
 msgstr ""
 
-#: mainwin.cpp:3104
+#: mainwin.cpp:3280
 msgid "CMainWindow::Send Contact &List"
 msgstr "Изпращане списък с потребители"
 
-#: mainwin.cpp:3111
+#: mainwin.cpp:3287
 msgid "CMainWindow::Send"
 msgstr "Изпращане"
 
-#: mainwin.cpp:3049
+#: mainwin.cpp:3225
 msgid "CMainWindow::Set &Auto Response..."
 msgstr "Постави автоматичен отговор"
 
-#: mainwin.cpp:2998
+#: mainwin.cpp:3174
 msgid "CMainWindow::Set All"
 msgstr "Всички"
 
-#: mainwin.cpp:3053
+#: mainwin.cpp:3229
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Показвай и изключените потребители"
 
-#: mainwin.cpp:2992
+#: mainwin.cpp:3168
 msgid "CMainWindow::Status Info"
 msgstr "Статус"
 
-#: mainwin.cpp:2174
+#: mainwin.cpp:2248
 msgid "CMainWindow::"
 "Successfully registered, your user identification\n"
 "number (UIN) is %1.\n"
 "Now set your personal information."
 msgstr ""
 
-#: mainwin.cpp:1346
+#: mainwin.cpp:1418
 msgid "CMainWindow::SysMsg"
 msgstr "Системно съобщение"
 
-#: mainwin.cpp:3045
+#: mainwin.cpp:3221
 msgid "CMainWindow::System Functions"
 msgstr "Системни функции"
 
-#: mainwin.cpp:1347
+#: mainwin.cpp:1419
 msgid "CMainWindow::System Message"
 msgstr "Системно съобщение"
 
-#: mainwin.cpp:645
+#: mainwin.cpp:664
 msgid "CMainWindow::System"
 msgstr "Системни"
 
-#: mainwin.cpp:3126
+#: mainwin.cpp:3302
 msgid "CMainWindow::Toggle &Floaty"
 msgstr ""
 
-#: mainwin.cpp:3113
+#: mainwin.cpp:3289
 msgid "CMainWindow::U&tilities"
 msgstr "Инструменти"
 
-#: mainwin.cpp:2869
+#: mainwin.cpp:2942
+msgid "CMainWindow::Unable to open extended icons file\n%1."
+msgstr ""
+
+#: mainwin.cpp:3045
 msgid "CMainWindow::Unable to open icons file\n%1."
 msgstr "Файлът с иконите не може да бъде отворен\n"
 "%1."
 
-#: mainwin.cpp:2993
+#: mainwin.cpp:3169
 msgid "CMainWindow::Unknown Packets"
 msgstr "Непознати пакети"
 
-#: mainwin.cpp:3206
+#: mainwin.cpp:3382
 msgid "CMainWindow::Up since %1\n"
 msgstr "Включен(а) от %1\n"
 
-#: mainwin.cpp:3221
+#: mainwin.cpp:3397
 msgid "CMainWindow::Up since %1\n\n"
 msgstr "Включен(а) от %1\n"
 "\n"
 
-#: mainwin.cpp:3031
+#: mainwin.cpp:3207
 msgid "CMainWindow::Update All Users"
 msgstr "Обновяване на всички потребители"
 
-#: mainwin.cpp:3032
+#: mainwin.cpp:3208
 msgid "CMainWindow::Update Current Group"
 msgstr "Обновяване на текущата група"
 
-#: mainwin.cpp:3088
+#: mainwin.cpp:3264
 msgid "CMainWindow::Use Real Ip (LAN)"
 msgstr "Използваи истински IP адрес (LAN)"
 
-#: mainwin.cpp:3046
+#: mainwin.cpp:3222
 msgid "CMainWindow::User Functions"
 msgstr "Потребителски функции"
 
-#: mainwin.cpp:3125
+#: mainwin.cpp:3301
 msgid "CMainWindow::View &History"
 msgstr "История"
 
-#: mainwin.cpp:1459
+#: mainwin.cpp:1531
 msgid "CMainWindow::Visible List"
 msgstr ""
 
-#: mainwin.cpp:2995
+#: mainwin.cpp:3171
 msgid "CMainWindow::Warnings"
 msgstr "Предупреждения"
 
-#: mainwin.cpp:3340
+#: mainwin.cpp:3516
 msgid "CMainWindow::"
 "You are currently registered as\n"
 "UIN: %1\n"
@@ -1008,7 +1044,7 @@ msgid "CMainWindow::"
 "base directory and then register a new user."
 msgstr ""
 
-#: mainwin.cpp:1355
+#: mainwin.cpp:1427
 msgid "CMainWindow::s"
 msgstr ""
 
@@ -1064,9 +1100,9 @@ msgstr "Игри"
 msgid "CRandomChatDlg::General"
 msgstr "Общи"
 
-#: randomchatdlg.cpp:61
-msgid "CRandomChatDlg::Men Seeking Women"
-msgstr "Мъж търсещ жена"
+# #: randomchatdlg.cpp:61
+# msgid "CRandomChatDlg::Men Seeking Women"
+# msgstr "Мъж търсещ жена"
 
 #: randomchatdlg.cpp:111
 msgid "CRandomChatDlg::No random chat user found in that group."
@@ -1092,13 +1128,21 @@ msgstr "Романтика"
 msgid "CRandomChatDlg::Searching for Random Chat Partner..."
 msgstr ""
 
+#: randomchatdlg.cpp:62
+msgid "CRandomChatDlg::Seeking Men"
+msgstr ""
+
+#: randomchatdlg.cpp:61
+msgid "CRandomChatDlg::Seeking Women"
+msgstr ""
+
 #: randomchatdlg.cpp:56
 msgid "CRandomChatDlg::Students"
 msgstr "Студенти"
 
-#: randomchatdlg.cpp:62
-msgid "CRandomChatDlg::Women Seeking Men"
-msgstr "Жена търсеща мъж"
+# #: randomchatdlg.cpp:62
+# msgid "CRandomChatDlg::Women Seeking Men"
+# msgstr "Жена търсеща мъж"
 
 #: refusedlg.cpp:24
 msgid "CRefuseDlg::Cancel"
@@ -1154,15 +1198,23 @@ msgstr "Игри"
 
 #: randomchatdlg.cpp:163
 msgid "CSetRandomChatGroupDlg::General"
-msgstr ""
+msgstr "Общи"
 
-#: randomchatdlg.cpp:171
-msgid "CSetRandomChatGroupDlg::Men Seeking Women"
-msgstr "Мъж търсещ жена"
+# #: randomchatdlg.cpp:171
+# msgid "CSetRandomChatGroupDlg::Men Seeking Women"
+# msgstr "Мъж търсещ жена"
 
 #: randomchatdlg.cpp:164
 msgid "CSetRandomChatGroupDlg::Romance"
 msgstr "Романтика"
+
+#: randomchatdlg.cpp:172
+msgid "CSetRandomChatGroupDlg::Seeking Men"
+msgstr ""
+
+#: randomchatdlg.cpp:171
+msgid "CSetRandomChatGroupDlg::Seeking Women"
+msgstr ""
 
 #: randomchatdlg.cpp:137
 msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
@@ -1176,9 +1228,9 @@ msgstr ""
 msgid "CSetRandomChatGroupDlg::Students"
 msgstr "Студенти"
 
-#: randomchatdlg.cpp:172
-msgid "CSetRandomChatGroupDlg::Women Seeking Men"
-msgstr "Жена търсеща мъж"
+# #: randomchatdlg.cpp:172
+# msgid "CSetRandomChatGroupDlg::Women Seeking Men"
+# msgstr "Жена търсеща мъж"
 
 #: randomchatdlg.cpp:252
 msgid "CSetRandomChatGroupDlg::done"
@@ -1196,67 +1248,67 @@ msgstr ""
 msgid "CSetRandomChatGroupDlg::timed out"
 msgstr ""
 
-#: userbox.cpp:58
+#: userbox.cpp:49
 msgid "CUserView::%1 Floaty (%2)"
 msgstr ""
 
-#: userbox.cpp:1358
+#: userbox.cpp:1338
 msgid "CUserView::</nobr>"
 msgstr "</nobr>"
 
-#: userbox.cpp:1253
+#: userbox.cpp:1233
 msgid "CUserView::<br><b>Birthday&nbsp;Today!</b>"
 msgstr "<br><b>Рожден Ден!!</b>"
 
-#: userbox.cpp:1288
+#: userbox.cpp:1268
 msgid "CUserView::<br><nobr>C: "
 msgstr ""
 
-#: userbox.cpp:1282
+#: userbox.cpp:1262
 msgid "CUserView::<br><nobr>E: "
 msgstr ""
 
-#: userbox.cpp:1291
+#: userbox.cpp:1271
 msgid "CUserView::<br><nobr>F: "
 msgstr ""
 
-#: userbox.cpp:1358
+#: userbox.cpp:1338
 msgid "CUserView::<br><nobr>Idle: "
 msgstr ""
 
-#: userbox.cpp:1301
+#: userbox.cpp:1281
 msgid "CUserView::<br><nobr>Ip: "
 msgstr "<br><nobr>I"
 
-#: userbox.cpp:1348
+#: userbox.cpp:1328
 msgid "CUserView::<br><nobr>Logged In: "
 msgstr ""
 
-#: userbox.cpp:1308
+#: userbox.cpp:1288
 msgid "CUserView::<br><nobr>O: "
 msgstr ""
 
-#: userbox.cpp:1285
+#: userbox.cpp:1265
 msgid "CUserView::<br><nobr>P: "
 msgstr ""
 
-#: userbox.cpp:1276
+#: userbox.cpp:1256
 msgid "CUserView::<br><u>Auto Response:</u>"
 msgstr ""
 
-#: userbox.cpp:1259
+#: userbox.cpp:1239
 msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
 msgstr ""
 
-#: userbox.cpp:1268
+#: userbox.cpp:1248
 msgid "CUserView::<br>Licq&nbsp;%1"
 msgstr ""
 
-#: userbox.cpp:1266
+#: userbox.cpp:1246
 msgid "CUserView::<br>Licq&nbsp;%1/SSL"
 msgstr ""
 
-#: userbox.cpp:1256
+#: userbox.cpp:1236
 msgid "CUserView::<br>Secure&nbsp;connection"
 msgstr ""
 
@@ -1304,15 +1356,15 @@ msgstr "Японски"
 msgid "CUserView::Korean"
 msgstr "Корейски"
 
-#: userbox.cpp:524
+#: userbox.cpp:520
 msgid "CUserView::Offline"
 msgstr "Изключен(а)"
 
-#: userbox.cpp:526
+#: userbox.cpp:522
 msgid "CUserView::Online"
 msgstr "Включен(а)"
 
-#: userbox.cpp:723
+#: userbox.cpp:719
 msgid "CUserView::S"
 msgstr ""
 
@@ -1378,11 +1430,11 @@ msgstr ""
 
 #: utilitydlg.cpp:159
 msgid "CUtilityDlg::Edit:"
-msgstr ""
+msgstr "Промени"
 
 #: utilitydlg.cpp:218
 msgid "CUtilityDlg::Failed:"
-msgstr ""
+msgstr "Неуспешен"
 
 #: utilitydlg.cpp:50
 msgid "CUtilityDlg::GUI"
@@ -1390,7 +1442,7 @@ msgstr "GUI"
 
 #: utilitydlg.cpp:52
 msgid "CUtilityDlg::Internal"
-msgstr ""
+msgstr "Вътрешен"
 
 #: utilitydlg.cpp:37
 msgid "CUtilityDlg::Licq Utility: %1"
@@ -1412,57 +1464,57 @@ msgstr ""
 msgid "CUtilityDlg::Window:"
 msgstr "Прозорец:"
 
-#: chgpassdlg.cpp:69
-msgid "ChangePassDlg::&Cancel"
-msgstr ""
+# #: chgpassdlg.cpp:69
+# msgid "ChangePassDlg::&Cancel"
+# msgstr "Откажи"
 
-#: chgpassdlg.cpp:65
-msgid "ChangePassDlg::&Ok"
-msgstr ""
+# #: chgpassdlg.cpp:65
+# msgid "ChangePassDlg::&Ok"
+# msgstr "Добре"
 
-#: chgpassdlg.cpp:41
-msgid "ChangePassDlg::&Password:"
-msgstr ""
+# #: chgpassdlg.cpp:41
+# msgid "ChangePassDlg::&Password:"
+# msgstr "Парола"
 
-#: chgpassdlg.cpp:40
-msgid "ChangePassDlg::&UIN:"
-msgstr ""
+# #: chgpassdlg.cpp:40
+# msgid "ChangePassDlg::&UIN:"
+# msgstr "UIN"
 
-#: chgpassdlg.cpp:42
-msgid "ChangePassDlg::&Verify:"
-msgstr ""
+# #: chgpassdlg.cpp:42
+# msgid "ChangePassDlg::&Verify:"
+# msgstr "Потвърди"
 
-#: chgpassdlg.cpp:56
-msgid "ChangePassDlg::Enter your ICQ password here."
-msgstr ""
+# #: chgpassdlg.cpp:56
+# msgid "ChangePassDlg::Enter your ICQ password here."
+# msgstr "Тук напиши твоята ICQ парола."
 
-#: chgpassdlg.cpp:54
-msgid "ChangePassDlg::Enter your UIN here."
-msgstr ""
+# #: chgpassdlg.cpp:54
+# msgid "ChangePassDlg::Enter your UIN here."
+# msgstr "Тук напиши твоя UIN."
 
-#: chgpassdlg.cpp:93
-msgid "ChangePassDlg::Invalid password, must be 8 characters or less."
-msgstr ""
+# #: chgpassdlg.cpp:93
+# msgid "ChangePassDlg::Invalid password, must be 8 characters or less."
+# msgstr "Невалидна парола. Трябва да бъде 8 или по малко символа."
 
-#: chgpassdlg.cpp:23
-msgid "ChangePassDlg::Licq - Set UIN/Password"
-msgstr ""
+# #: chgpassdlg.cpp:23
+# msgid "ChangePassDlg::Licq - Set UIN/Password"
+# msgstr ""
 
-#: chgpassdlg.cpp:32
-msgid "ChangePassDlg::Login Information"
-msgstr ""
+# #: chgpassdlg.cpp:32
+# msgid "ChangePassDlg::Login Information"
+# msgstr ""
 
-#: chgpassdlg.cpp:95
-msgid "ChangePassDlg::Passwords do not match, try again."
-msgstr ""
+# #: chgpassdlg.cpp:95
+# msgid "ChangePassDlg::Passwords do not match, try again."
+# msgstr "Паролите не съвпадат. Опитаи отново"
 
-#: chgpassdlg.cpp:58
-msgid "ChangePassDlg::Verify your ICQ password here."
-msgstr ""
+# #: chgpassdlg.cpp:58
+# msgid "ChangePassDlg::Verify your ICQ password here."
+# msgstr "Тук потвърди твоята ICQ парола."
 
-#: chatdlg.cpp:605
+#: chatdlg.cpp:629
 msgid "ChatDlg::%1 closed connection."
-msgstr ""
+msgstr "1 затворена връска."
 
 #: chatdlg.cpp:166
 msgid "ChatDlg::&Audio"
@@ -1484,7 +1536,7 @@ msgstr ""
 msgid "ChatDlg::&Save Chat"
 msgstr "Запази чата"
 
-#: chatdlg.cpp:872
+#: chatdlg.cpp:896
 msgid "ChatDlg::/%1.%2.chat"
 msgstr ""
 
@@ -1494,7 +1546,7 @@ msgstr "Фонов цвят"
 
 #: chatdlg.cpp:194
 msgid "ChatDlg::Beep"
-msgstr ""
+msgstr "Бип"
 
 #: chatdlg.cpp:230
 msgid "ChatDlg::Bold"
@@ -1512,7 +1564,7 @@ msgstr "Променяне цвета на форграунда"
 msgid "ChatDlg::Chat"
 msgstr "Чат"
 
-#: chatdlg.cpp:841
+#: chatdlg.cpp:865
 msgid "ChatDlg::Do you want to save the chat session?"
 msgstr "Иската ли да запазите чат сесията?"
 
@@ -1532,7 +1584,7 @@ msgstr "Игнорира потребителските цветови настройки"
 msgid "ChatDlg::Italic"
 msgstr "Курсив"
 
-#: chatdlg.cpp:621
+#: chatdlg.cpp:645
 msgid "ChatDlg::Licq - Chat %1"
 msgstr "Licq - Чат %1"
 
@@ -1548,11 +1600,11 @@ msgstr ""
 msgid "ChatDlg::Mode"
 msgstr "Режим"
 
-#: chatdlg.cpp:842
+#: chatdlg.cpp:866
 msgid "ChatDlg::No"
 msgstr "Не"
 
-#: chatdlg.cpp:620
+#: chatdlg.cpp:644
 msgid "ChatDlg::Remote - %1"
 msgstr ""
 
@@ -1580,7 +1632,25 @@ msgstr "Удебелен шрифт"
 msgid "ChatDlg::Toggles Italic font"
 msgstr "Курсив"
 
-#: chatdlg.cpp:932
+#: chatdlg.cpp:601
+msgid "ChatDlg::"
+"Unable to bind to a port.\nSee Network Window "
+"for details."
+msgstr ""
+
+#: chatdlg.cpp:609
+msgid "ChatDlg::"
+"Unable to connect to the remote chat.\nSee Network "
+"Window for details."
+msgstr ""
+
+#: chatdlg.cpp:617
+msgid "ChatDlg::"
+"Unable to create new thread.\nSee Network Window "
+"for details."
+msgstr ""
+
+#: chatdlg.cpp:956
 msgid "ChatDlg::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
 msgstr ""
 
@@ -1588,7 +1658,7 @@ msgstr ""
 msgid "ChatDlg::Underline"
 msgstr "Подчертан"
 
-#: chatdlg.cpp:842
+#: chatdlg.cpp:866
 msgid "ChatDlg::Yes"
 msgstr "Да"
 
@@ -1642,7 +1712,7 @@ msgstr "Готово"
 
 #: editgrp.cpp:64
 msgid "EditGrpDlg::&Save"
-msgstr ""
+msgstr "Запиши"
 
 #: editgrp.cpp:32
 msgid "EditGrpDlg::Add"
@@ -1684,7 +1754,7 @@ msgstr "Редактиране/Групи"
 
 #: editgrp.cpp:53
 msgid "EditGrpDlg::New User:"
-msgstr ""
+msgstr "Нов потребител"
 
 #: editgrp.cpp:130
 msgid "EditGrpDlg::Ok"
@@ -1696,11 +1766,11 @@ msgstr "Премахни"
 
 #: editgrp.cpp:67
 msgid "EditGrpDlg::Save the name of a group being modified."
-msgstr ""
+msgstr "Запиши името на групата която се модифицира."
 
 #: editgrp.cpp:38
 msgid "EditGrpDlg::Set Default"
-msgstr ""
+msgstr "Направи по подразбиране"
 
 #: editgrp.cpp:40
 msgid "EditGrpDlg::Set New Users"
@@ -1716,7 +1786,7 @@ msgstr "Нагоре"
 
 #: editgrp.cpp:39
 msgid "EditGrpDlg::The default group to start up in."
-msgstr ""
+msgstr "Групата по подразбиране с която се стартира."
 
 #: editgrp.cpp:41
 msgid "EditGrpDlg::The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group."
@@ -1790,11 +1860,11 @@ msgstr ""
 msgid "Event::Web Panel"
 msgstr "Web Панел"
 
-#: mainwin.cpp:3417
+#: mainwin.cpp:3593
 msgid "HintsDlg::&Close"
 msgstr "Затвори"
 
-#: mainwin.cpp:3404
+#: mainwin.cpp:3580
 msgid "HintsDlg::Licq - Hints"
 msgstr "Licq - Трикове"
 
@@ -1831,7 +1901,7 @@ msgstr "Затвори"
 
 #: keyrequestdlg.cpp:70
 msgid "KeyRequestDlg::&Send"
-msgstr "Изпрати"
+msgstr "Изпр&ати"
 
 #: keyrequestdlg.cpp:175
 msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
@@ -1862,6 +1932,8 @@ msgid "KeyRequestDlg::"
 "Client does not support OpenSSL.\n"
 "Rebuild Licq with OpenSSL support."
 msgstr ""
+"Клиентът не поддържа OpenSSL.\n"
+"Направи отново Licq с поддръжка на OpenSSL."
 
 #: keyrequestdlg.cpp:131
 msgid "KeyRequestDlg::Closing secure channel..."
@@ -1938,7 +2010,7 @@ msgstr "Сървър"
 
 #: messagebox.cpp:160
 msgid "MsgView::Time"
-msgstr ""
+msgstr "Време"
 
 #: messagebox.cpp:231
 msgid "MsgView::Urgent"
@@ -2006,7 +2078,7 @@ msgstr ""
 
 #: optionsdlg.cpp:1250
 msgid "OptionsDlg::Auto Away Messages"
-msgstr ""
+msgstr "Автоматично съобщение "Няма ме""
 
 #: optionsdlg.cpp:1058
 msgid "OptionsDlg::Auto Away:"
@@ -2026,7 +2098,7 @@ msgstr ""
 
 #: optionsdlg.cpp:1070
 msgid "OptionsDlg::Auto Offline:"
-msgstr ""
+msgstr "Автоматично Изключен(а):"
 
 #: optionsdlg.cpp:655
 msgid "OptionsDlg::Auto Position the Reply Window"
@@ -2282,15 +2354,15 @@ msgstr "Игнорирай E-Mail пейджъра"
 
 #: optionsdlg.cpp:1236
 msgid "OptionsDlg::Ignore Mass Messages"
-msgstr ""
+msgstr "Игнорирай Масови Съобщения "
 
 #: optionsdlg.cpp:1233
 msgid "OptionsDlg::Ignore New Users"
-msgstr ""
+msgstr "Игнорирай Нови Потребители"
 
 #: optionsdlg.cpp:1239
 msgid "OptionsDlg::Ignore Web Panel"
-msgstr ""
+msgstr "Игнорирай Web Панел"
 
 #: optionsdlg.cpp:1055
 msgid "OptionsDlg::Invisible"
@@ -2298,7 +2370,7 @@ msgstr "Невидим"
 
 #: optionsdlg.cpp:1194
 msgid "OptionsDlg::Last online"
-msgstr ""
+msgstr "Последно включен"
 
 #: optionsdlg.cpp:1123
 msgid "OptionsDlg::Left"
@@ -2844,69 +2916,69 @@ msgstr ""
 msgid "OptionsDlg::none"
 msgstr ""
 
-#: passworddlg.cpp:53
-msgid "PasswordDlg::&Cancel"
-msgstr "Отказ"
+# #: passworddlg.cpp:53
+# msgid "PasswordDlg::&Cancel"
+# msgstr "Отказ"
 
-#: passworddlg.cpp:37
-msgid "PasswordDlg::&Password:"
-msgstr "&Парола:"
+# #: passworddlg.cpp:37
+# msgid "PasswordDlg::&Password:"
+# msgstr "&Парола:"
 
-#: passworddlg.cpp:50
-msgid "PasswordDlg::&Update"
-msgstr ""
+# #: passworddlg.cpp:50
+# msgid "PasswordDlg::&Update"
+# msgstr ""
 
-#: passworddlg.cpp:38
-msgid "PasswordDlg::&Verify:"
-msgstr "П&отвърждение:"
+# #: passworddlg.cpp:38
+# msgid "PasswordDlg::&Verify:"
+# msgstr "П&отвърждение:"
 
-#: passworddlg.cpp:41
-msgid "PasswordDlg::Enter your ICQ password here."
-msgstr "Въведете вашата ICQ парола тук."
+# #: passworddlg.cpp:41
+# msgid "PasswordDlg::Enter your ICQ password here."
+# msgstr "Въведете вашата ICQ парола тук."
 
-#: passworddlg.cpp:94
-msgid "PasswordDlg::ICQ Password [Setting...]"
-msgstr ""
+# #: passworddlg.cpp:94
+# msgid "PasswordDlg::ICQ Password [Setting...]"
+# msgstr ""
 
-#: passworddlg.cpp:81
-msgid "PasswordDlg::Invalid password, must be 8 characters or less."
-msgstr "Паролата не може да бъде по-голяма от 8 символа."
+# #: passworddlg.cpp:81
+# msgid "PasswordDlg::Invalid password, must be 8 characters or less."
+# msgstr "Паролата не може да бъде по-голяма от 8 символа."
 
-#: passworddlg.cpp:31
-msgid "PasswordDlg::Licq - Set Password"
-msgstr "Licq - Установяване на нова парола"
+# #: passworddlg.cpp:31
+# msgid "PasswordDlg::Licq - Set Password"
+# msgstr "Licq - Установяване на нова парола"
 
-#: passworddlg.cpp:34
-msgid "PasswordDlg::Password"
-msgstr "Парола"
+# #: passworddlg.cpp:34
+# msgid "PasswordDlg::Password"
+# msgstr "Парола"
 
-#: passworddlg.cpp:86
-msgid "PasswordDlg::Passwords do not match, try again."
-msgstr "Паролите не съвпадат. Опитайте отново."
+# #: passworddlg.cpp:86
+# msgid "PasswordDlg::Passwords do not match, try again."
+# msgstr "Паролите не съвпадат. Опитайте отново."
 
-#: passworddlg.cpp:122
-msgid "PasswordDlg::Set Password [Setting..."
-msgstr ""
+# #: passworddlg.cpp:122
+# msgid "PasswordDlg::Set Password [Setting..."
+# msgstr ""
 
-#: passworddlg.cpp:125
-msgid "PasswordDlg::Set Password"
-msgstr ""
+# #: passworddlg.cpp:125
+# msgid "PasswordDlg::Set Password"
+# msgstr ""
 
-#: passworddlg.cpp:44
-msgid "PasswordDlg::Verify your ICQ password here."
-msgstr "Потвърдете Вашата ICQ парола тук."
+# #: passworddlg.cpp:44
+# msgid "PasswordDlg::Verify your ICQ password here."
+# msgstr "Потвърдете Вашата ICQ парола тук."
 
-#: passworddlg.cpp:115
-msgid "PasswordDlg::error"
-msgstr "грешка"
+# #: passworddlg.cpp:115
+# msgid "PasswordDlg::error"
+# msgstr "грешка"
 
-#: passworddlg.cpp:109
-msgid "PasswordDlg::failed"
-msgstr ""
+# #: passworddlg.cpp:109
+# msgid "PasswordDlg::failed"
+# msgstr ""
 
-#: passworddlg.cpp:112
-msgid "PasswordDlg::timed out"
-msgstr ""
+# #: passworddlg.cpp:112
+# msgid "PasswordDlg::timed out"
+# msgstr ""
 
 #: plugindlg.cpp:50
 msgid "PluginDlg::Available"
@@ -2992,7 +3064,7 @@ msgstr "Licq Въпрос"
 msgid "QMessageBox::Licq Warning"
 msgstr "Licq Предупреждение"
 
-#: chatdlg.cpp:893
+#: chatdlg.cpp:917
 msgid "QString::Failed to open file:\n%1"
 msgstr "Файлът ''%1' не може да бъде отворен!"
 
@@ -3148,7 +3220,11 @@ msgstr "50 - 59"
 
 #: searchuserdlg.cpp:153
 msgid "SearchUserDlg::60+"
-msgstr "60+"
+msgstr ""
+
+# #: searchuserdlg.cpp:153
+# msgid "SearchUserDlg::69+"
+# msgstr "69+"
 
 #: searchuserdlg.cpp:252
 msgid "SearchUserDlg::A&lert User"
@@ -3276,11 +3352,11 @@ msgstr "E-Mail"
 
 #: searchuserdlg.cpp:88
 msgid "SearchUserView::F"
-msgstr ""
+msgstr "Ж"
 
 #: searchuserdlg.cpp:91
 msgid "SearchUserView::M"
-msgstr ""
+msgstr "М"
 
 #: searchuserdlg.cpp:42
 msgid "SearchUserView::Name"
@@ -3288,15 +3364,15 @@ msgstr "Име"
 
 #: searchuserdlg.cpp:74
 msgid "SearchUserView::Offline"
-msgstr ""
+msgstr "Изключен"
 
 #: searchuserdlg.cpp:77
 msgid "SearchUserView::Online"
-msgstr ""
+msgstr "Включен"
 
 #: searchuserdlg.cpp:45
 msgid "SearchUserView::Sex & Age"
-msgstr ""
+msgstr "Пол и Възраст"
 
 #: searchuserdlg.cpp:44
 msgid "SearchUserView::Status"
@@ -3320,19 +3396,23 @@ msgstr ""
 
 #: securitydlg.cpp:57
 msgid "SecurityDlg::&Password:"
-msgstr ""
+msgstr "&Парола"
 
 #: securitydlg.cpp:52
 msgid "SecurityDlg::&Uin:"
-msgstr ""
+msgstr "&UIN"
 
 #: securitydlg.cpp:98
 msgid "SecurityDlg::&Update"
 msgstr "Обнови"
 
+# #: securitydlg.cpp:60
+# msgid "SecurityDlg::&Verify"
+# msgstr "П%отвърди"
+
 #: securitydlg.cpp:60
-msgid "SecurityDlg::&Verify"
-msgstr ""
+msgid "SecurityDlg::&Verify:"
+msgstr "П%отвърди"
 
 #: securitydlg.cpp:85
 msgid "SecurityDlg::Authorization Required"
@@ -3352,13 +3432,20 @@ msgstr ""
 #: securitydlg.cpp:54
 msgid "SecurityDlg::"
 "Enter the UIN which you want to use.  "
-"Only available if \"Local changes only\" is"
+"Only available if \"Local changes only\" is "
 "checked."
 msgstr ""
 
+# #: securitydlg.cpp:54
+# msgid "SecurityDlg::"
+# "Enter the UIN which you want to use.  "
+# "Only available if \"Local changes only\" is"
+# "checked."
+# msgstr ""
+
 #: securitydlg.cpp:59
 msgid "SecurityDlg::Enter your ICQ password here."
-msgstr ""
+msgstr "Тук напиши твоята ICQ парола."
 
 #: securitydlg.cpp:93
 msgid "SecurityDlg::Hide IP stops users from seeing your IP address. It doesn't guarantee it will be hidden though."
@@ -3378,7 +3465,7 @@ msgstr ""
 
 #: securitydlg.cpp:267
 msgid "SecurityDlg::ICQ Security Options"
-msgstr ""
+msgstr "ICQ настоики на сигурността"
 
 #: securitydlg.cpp:64
 msgid "SecurityDlg::"
@@ -3389,7 +3476,7 @@ msgstr ""
 
 #: securitydlg.cpp:250
 msgid "SecurityDlg::Internal error while changing password."
-msgstr ""
+msgstr "Вътрешна грешка, докато се променяше паролата."
 
 #: securitydlg.cpp:249
 msgid "SecurityDlg::Internal error while setting security options."
@@ -3397,7 +3484,7 @@ msgstr ""
 
 #: securitydlg.cpp:157
 msgid "SecurityDlg::Invalid password, must be between 1 and 8 characters."
-msgstr ""
+msgstr "Невалидна парола, трябва да бъде между 1 и 8 символа."
 
 #: securitydlg.cpp:40
 msgid "SecurityDlg::Options"
@@ -3405,11 +3492,11 @@ msgstr "Настройки"
 
 #: securitydlg.cpp:44
 msgid "SecurityDlg::Password/UIN settings"
-msgstr ""
+msgstr "Настроики на парола/UIN"
 
 #: securitydlg.cpp:162
 msgid "SecurityDlg::Passwords do not match, try again."
-msgstr ""
+msgstr "Паролите не съвпадат, моля опитаите отново"
 
 #: securitydlg.cpp:239
 msgid "SecurityDlg::Setting security options failed."
@@ -3425,7 +3512,7 @@ msgstr ""
 
 #: securitydlg.cpp:62
 msgid "SecurityDlg::Verify your ICQ password here."
-msgstr ""
+msgstr "Потвърди твоята ICQ парола тук."
 
 #: securitydlg.cpp:90
 msgid "SecurityDlg::"
@@ -3449,7 +3536,7 @@ msgstr "грешка"
 
 #: securitydlg.cpp:238
 msgid "SecurityDlg::failed"
-msgstr ""
+msgstr "неуспешно"
 
 #: securitydlg.cpp:243
 msgid "SecurityDlg::timed out"
@@ -3457,7 +3544,7 @@ msgstr ""
 
 #: showawaymsgdlg.cpp:51
 msgid "ShowAwayMsgDlg::%1 Response for %2"
-msgstr ""
+msgstr "%1 отговор за %2"
 
 #: showawaymsgdlg.cpp:53
 msgid "ShowAwayMsgDlg::&Ok"
@@ -3467,15 +3554,19 @@ msgstr "Добре"
 msgid "ShowAwayMsgDlg::&Show Again"
 msgstr "Покажи отново"
 
-#: showawaymsgdlg.cpp:123
+#: showawaymsgdlg.cpp:128
 msgid "ShowAwayMsgDlg::error"
 msgstr "грешка"
 
-#: showawaymsgdlg.cpp:117
+#: showawaymsgdlg.cpp:122
 msgid "ShowAwayMsgDlg::failed"
-msgstr ""
+msgstr "неуспешно"
 
-#: showawaymsgdlg.cpp:120
+#: showawaymsgdlg.cpp:116
+msgid "ShowAwayMsgDlg::refused"
+msgstr "отказ"
+
+#: showawaymsgdlg.cpp:125
 msgid "ShowAwayMsgDlg::timed out"
 msgstr ""
 
@@ -3483,7 +3574,7 @@ msgstr ""
 msgid "SkinBrowserDlg::&Apply"
 msgstr "Приложи"
 
-#: skinbrowser.cpp:57
+#: skinbrowser.cpp:71
 msgid "SkinBrowserDlg::&Done"
 msgstr "Готово"
 
@@ -3495,19 +3586,27 @@ msgstr "Редактирай"
 msgid "SkinBrowserDlg::A&pply"
 msgstr "Приложи"
 
-#: skinbrowser.cpp:85
+#: skinbrowser.cpp:67
+msgid "SkinBrowserDlg::App&ly"
+msgstr "Приложи"
+
+#: skinbrowser.cpp:113
 msgid "SkinBrowserDlg::Error"
 msgstr "Грешки"
+
+#: skinbrowser.cpp:55
+msgid "SkinBrowserDlg::Extended Icons"
+msgstr "Разширени Икони"
 
 #: skinbrowser.cpp:41
 msgid "SkinBrowserDlg::Icons"
 msgstr "Икони"
 
-#: skinbrowser.cpp:62
+#: skinbrowser.cpp:76
 msgid "SkinBrowserDlg::Licq Skin Browser"
 msgstr "Licq скин менажер"
 
-#: skinbrowser.cpp:44
+#: skinbrowser.cpp:58
 msgid "SkinBrowserDlg::Name"
 msgstr "Име"
 
@@ -3517,11 +3616,11 @@ msgstr "Скинове"
 
 #: usereventdlg.cpp:105
 msgid "UserEventCommon::Change user text encoding"
-msgstr ""
+msgstr "Смени енкодинга на потребителски текст"
 
 #: usereventdlg.cpp:90
 msgid "UserEventCommon::Open / Close secure channel"
-msgstr ""
+msgstr "Отвори / Затвори сигурен канал"
 
 # #: usereventdlg.cpp:91
 # msgid "UserEventCommon::Secure channel information"
@@ -3545,7 +3644,7 @@ msgstr ""
 
 #: usereventdlg.cpp:83
 msgid "UserEventCommon::Time:"
-msgstr ""
+msgstr "Време"
 
 #: usereventdlg.cpp:169
 msgid "UserEventCommon::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
@@ -3553,343 +3652,353 @@ msgstr ""
 
 #: usereventdlg.cpp:202
 msgid "UserEventCommon::Unknown"
-msgstr ""
+msgstr "Незнаино:)"
 
-#: userinfodlg.cpp:449
+#: userinfodlg.cpp:455
 msgid "UserInfoDlg:: Day:"
 msgstr " Ден:"
 
-#: userinfodlg.cpp:452
+#: userinfodlg.cpp:458
 msgid "UserInfoDlg:: Month:"
 msgstr " Месец:"
 
-#: userinfodlg.cpp:455
+#: userinfodlg.cpp:461
 msgid "UserInfoDlg:: Year:"
 msgstr " Година:"
 
-#: userinfodlg.cpp:1134
+#: userinfodlg.cpp:1270
+msgid "UserInfoDlg::"
+msgstr ""
+
+#: userinfodlg.cpp:1148
 msgid "UserInfoDlg::%1 from %2"
 msgstr "%1 от %2"
 
-#: userinfodlg.cpp:1134
+#: userinfodlg.cpp:1148
 msgid "UserInfoDlg::%1 to %2"
-msgstr ""
+msgstr "%1 до %2"
 
-#: userinfodlg.cpp:758
+#: userinfodlg.cpp:764
 msgid "UserInfoDlg::&About"
 msgstr "Относно"
 
-#: userinfodlg.cpp:79
+#: userinfodlg.cpp:81
 msgid "UserInfoDlg::&Close"
 msgstr "&Затвори"
 
-#: userinfodlg.cpp:950
+#: userinfodlg.cpp:957
 msgid "UserInfoDlg::&Filter: "
-msgstr "&Филтъ"
+msgstr "&Филтър"
 
-#: userinfodlg.cpp:191
+#: userinfodlg.cpp:197
 msgid "UserInfoDlg::&General"
 msgstr "Обща Информация"
 
-#: userinfodlg.cpp:921
+#: userinfodlg.cpp:928
 msgid "UserInfoDlg::&History"
 msgstr "История"
 
-#: userinfodlg.cpp:812
+#: userinfodlg.cpp:819
 msgid "UserInfoDlg::&Last"
-msgstr ""
+msgstr "Последен"
 
-#: userinfodlg.cpp:92
+#: userinfodlg.cpp:1287
 msgid "UserInfoDlg::&Menu"
 msgstr "&Меню"
 
-#: userinfodlg.cpp:411
+#: userinfodlg.cpp:417
 msgid "UserInfoDlg::&More"
 msgstr "Още"
 
-#: userinfodlg.cpp:1237
+#: userinfodlg.cpp:1287
 msgid "UserInfoDlg::&Save"
 msgstr "Запази"
 
-#: userinfodlg.cpp:1236
+#: userinfodlg.cpp:1256
 msgid "UserInfoDlg::&Update"
 msgstr "Обнови"
 
-#: userinfodlg.cpp:614
+#: userinfodlg.cpp:620
 msgid "UserInfoDlg::&Work"
 msgstr "Работа"
 
-#: userinfodlg.cpp:767
+#: userinfodlg.cpp:773
 msgid "UserInfoDlg::About:"
 msgstr "Относно:"
 
-#: userinfodlg.cpp:645
+#: userinfodlg.cpp:651
 msgid "UserInfoDlg::Address:"
 msgstr "Адрес:"
 
-#: userinfodlg.cpp:422
+#: userinfodlg.cpp:428
 msgid "UserInfoDlg::Age:"
 msgstr "Възраст:"
 
-#: userinfodlg.cpp:202
+#: userinfodlg.cpp:208
 msgid "UserInfoDlg::Alias:"
 msgstr "Прякор:"
 
-#: userinfodlg.cpp:580
+#: userinfodlg.cpp:586
 msgid "UserInfoDlg::Authorization Not Required"
-msgstr ""
+msgstr "Потвърждение Не Е Необходимо"
 
-#: userinfodlg.cpp:578
+#: userinfodlg.cpp:584
 msgid "UserInfoDlg::Authorization Required"
-msgstr ""
+msgstr "Необходимо Потвърждение"
 
-#: userinfodlg.cpp:444
+#: userinfodlg.cpp:450
 msgid "UserInfoDlg::Birthday:"
 msgstr "Рожден ден:"
 
-#: userinfodlg.cpp:261
+#: userinfodlg.cpp:267
 msgid "UserInfoDlg::Cellular:"
 msgstr "Мобилен телефон"
 
-#: userinfodlg.cpp:637
+#: userinfodlg.cpp:643
 msgid "UserInfoDlg::City:"
 msgstr "Град:"
 
-#: userinfodlg.cpp:652
+#: userinfodlg.cpp:658
 msgid "UserInfoDlg::Country:"
 msgstr "Държава:"
 
-#: userinfodlg.cpp:629
+#: userinfodlg.cpp:635
 msgid "UserInfoDlg::Department:"
 msgstr "Отдел:"
 
-#: userinfodlg.cpp:228
+#: userinfodlg.cpp:234
 msgid "UserInfoDlg::EMail 1:"
 msgstr "E-Mail 1"
 
-#: userinfodlg.cpp:232
+#: userinfodlg.cpp:238
 msgid "UserInfoDlg::EMail 2:"
 msgstr "E-Mail 2"
 
-#: userinfodlg.cpp:969
+#: userinfodlg.cpp:987
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
-msgstr ""
+msgstr "Грешка при зареждане на файла с историята: %1\nОписание: %2"
 
-#: userinfodlg.cpp:670
+#: userinfodlg.cpp:676
 msgid "UserInfoDlg::Fax:"
 msgstr "Факс:"
 
-#: userinfodlg.cpp:525
+#: userinfodlg.cpp:531
 msgid "UserInfoDlg::Female"
-msgstr "жена"
+msgstr "Жена"
 
-#: userinfodlg.cpp:325
+#: userinfodlg.cpp:331
 msgid "UserInfoDlg::GMT%1%1%1"
 msgstr "GMT%1%1%1"
 
-#: userinfodlg.cpp:425
+#: userinfodlg.cpp:431
 msgid "UserInfoDlg::Gender:"
 msgstr "Пол:"
 
-#: userinfodlg.cpp:674
+#: userinfodlg.cpp:680
 msgid "UserInfoDlg::Homepage:"
 msgstr "WEB страница:"
 
-#: userinfodlg.cpp:125
+#: userinfodlg.cpp:131
 msgid "UserInfoDlg::INVALID USER"
 msgstr "НЕВАЛИДЕН ПОТРЕБИТЕЛ"
 
-#: userinfodlg.cpp:211
+#: userinfodlg.cpp:217
 msgid "UserInfoDlg::IP:"
 msgstr "IP:"
 
-#: userinfodlg.cpp:488
+#: userinfodlg.cpp:494
 msgid "UserInfoDlg::Language 1:"
 msgstr "Език 1:"
 
-#: userinfodlg.cpp:491
+#: userinfodlg.cpp:497
 msgid "UserInfoDlg::Language 2:"
 msgstr "Език 2:"
 
-#: userinfodlg.cpp:495
+#: userinfodlg.cpp:501
 msgid "UserInfoDlg::Language 3:"
 msgstr "Език 3:"
 
-#: userinfodlg.cpp:834
+#: userinfodlg.cpp:841
 msgid "UserInfoDlg::Last Checked Auto Response:"
-msgstr ""
+msgstr "Последно Проверен Автоматичен Отговор:"
 
-#: userinfodlg.cpp:822
+#: userinfodlg.cpp:829
 msgid "UserInfoDlg::Last Online:"
-msgstr ""
+msgstr "Последно Включен"
 
-#: userinfodlg.cpp:830
+#: userinfodlg.cpp:837
 msgid "UserInfoDlg::Last Received Event:"
-msgstr ""
+msgstr "Последно Получено Събитие:"
 
-#: userinfodlg.cpp:826
+#: userinfodlg.cpp:833
 msgid "UserInfoDlg::Last Sent Event:"
-msgstr ""
+msgstr "Последно Изпратено Събитие:"
 
-#: userinfodlg.cpp:130
+#: userinfodlg.cpp:136
 msgid "UserInfoDlg::Licq - Info "
 msgstr "Licq - Информация "
 
-#: userinfodlg.cpp:527
+#: userinfodlg.cpp:533
 msgid "UserInfoDlg::Male"
-msgstr "мъж"
+msgstr "Мъж"
 
-#: userinfodlg.cpp:625
+#: userinfodlg.cpp:631
 msgid "UserInfoDlg::Name:"
 msgstr "Име:"
 
-#: userinfodlg.cpp:1246
+#: userinfodlg.cpp:1268
 msgid "UserInfoDlg::Nex&t"
 msgstr "Напред"
 
-#: userinfodlg.cpp:861
+#: userinfodlg.cpp:868
 msgid "UserInfoDlg::Now"
 msgstr "Сега"
 
-#: userinfodlg.cpp:903
+#: userinfodlg.cpp:910
 msgid "UserInfoDlg::Offline"
 msgstr "Изключен(а)"
 
-#: userinfodlg.cpp:236
+#: userinfodlg.cpp:242
 msgid "UserInfoDlg::Old Email:"
 msgstr "Стар E-Mail"
 
-#: userinfodlg.cpp:838
+#: userinfodlg.cpp:845
 msgid "UserInfoDlg::Online Since:"
-msgstr ""
+msgstr "Включен от:"
 
-#: userinfodlg.cpp:1247
+#: userinfodlg.cpp:1269
 msgid "UserInfoDlg::P&rev"
 msgstr "Назад"
 
-#: userinfodlg.cpp:667
+#: userinfodlg.cpp:673
 msgid "UserInfoDlg::Phone:"
 msgstr "Телефон:"
 
-#: userinfodlg.cpp:633
+#: userinfodlg.cpp:639
 msgid "UserInfoDlg::Position:"
 msgstr "Позиция:"
 
-#: userinfodlg.cpp:1237
+#: userinfodlg.cpp:1257
 msgid "UserInfoDlg::Retrieve"
-msgstr ""
+msgstr "Изтегли"
 
-#: userinfodlg.cpp:935
+#: userinfodlg.cpp:942
 msgid "UserInfoDlg::Rever&se"
-msgstr ""
+msgstr "Обурни"
 
-#: userinfodlg.cpp:972
+#: userinfodlg.cpp:990
 msgid "UserInfoDlg::Sorry, history is disabled for this person."
-msgstr ""
+msgstr "Съжелявам, историата за този потребител е изключена."
 
-#: userinfodlg.cpp:640
+#: userinfodlg.cpp:646
 msgid "UserInfoDlg::State:"
 msgstr "Щат:"
 
-#: userinfodlg.cpp:215
+#: userinfodlg.cpp:221
 msgid "UserInfoDlg::Status:"
 msgstr "Статус:"
 
-#: userinfodlg.cpp:218
+#: userinfodlg.cpp:224
 msgid "UserInfoDlg::Timezone:"
 msgstr "Времева зона:"
 
-#: userinfodlg.cpp:208
+#: userinfodlg.cpp:214
 msgid "UserInfoDlg::UIN:"
 msgstr "UIN:"
 
-#: userinfodlg.cpp:712
+#: userinfodlg.cpp:718
 msgid "UserInfoDlg::Unknown (%1)"
-msgstr ""
+msgstr "Незнаино (%1)"
 
-#: userinfodlg.cpp:905
+#: userinfodlg.cpp:912
 msgid "UserInfoDlg::Unknown"
-msgstr ""
+msgstr "Незнаино"
 
-#: userinfodlg.cpp:549
+#: userinfodlg.cpp:555
 msgid "UserInfoDlg::Unspecified"
 msgstr "Не е указан"
 
-#: userinfodlg.cpp:1412
+#: userinfodlg.cpp:1445
 msgid "UserInfoDlg::Updating server..."
-msgstr ""
+msgstr "Обновяване на сървъра..."
 
-#: userinfodlg.cpp:1329
+#: userinfodlg.cpp:1362
 msgid "UserInfoDlg::Updating..."
 msgstr "Моля изчакайте. Данните се обновяват..."
 
-#: userinfodlg.cpp:1351
+#: userinfodlg.cpp:1384
 msgid "UserInfoDlg::"
 "You need to be connected to the\n"
 "ICQ Network to change your settings."
-msgstr ""
+msgstr "Трябва да бъдеш свързан с\nICQ Мрежата за да промениш своите настроики"
 
-#: userinfodlg.cpp:1307
+#: userinfodlg.cpp:1337
 msgid "UserInfoDlg::"
 "You need to be connected to the\n"
 "ICQ Network to retrieve your settings."
-msgstr ""
+msgstr "Трябва да бъдеш свързан с\nICQ Мрежата за да получиш своите настроики"
 
-#: userinfodlg.cpp:649
+#: userinfodlg.cpp:655
 msgid "UserInfoDlg::Zip:"
 msgstr "Пощ. код:"
 
-#: userinfodlg.cpp:1174
+#: userinfodlg.cpp:1188
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
 "%3 out of %4 matches"
 msgstr ""
+"[<font color=\"%1\">Получени</font>] "
+"[<font color=\"%2\">Изпрати</font>] "
+"%3 от %4 съвпадения"
 
-#: userinfodlg.cpp:1166
+#: userinfodlg.cpp:1180
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
 "%3 to %4 of %5"
 msgstr ""
+"[<font color=\"%1\">Получени</font>] "
+"[<font color=\"%2\">Изпрати</font>] "
+"%3 до %4 от %5"
 
-#: userinfodlg.cpp:1433
+#: userinfodlg.cpp:1466
 msgid "UserInfoDlg::done"
-msgstr ""
+msgstr "готово"
 
-#: userinfodlg.cpp:1442
+#: userinfodlg.cpp:1475
 msgid "UserInfoDlg::error"
 msgstr "грешка"
 
-#: userinfodlg.cpp:1436
+#: userinfodlg.cpp:1469
 msgid "UserInfoDlg::failed"
-msgstr ""
+msgstr "неуспешен"
 
-#: userinfodlg.cpp:1084
+#: userinfodlg.cpp:1098
 msgid "UserInfoDlg::server"
 msgstr "сървър"
 
-#: userinfodlg.cpp:1439
+#: userinfodlg.cpp:1472
 msgid "UserInfoDlg::timed out"
 msgstr ""
 
-#: usereventdlg.cpp:1825
+#: usereventdlg.cpp:1826
 msgid "UserSendChatEvent:: - Chat Request"
 msgstr ""
 
-#: usereventdlg.cpp:1899
+#: usereventdlg.cpp:1900
 msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
 msgstr ""
 
-#: usereventdlg.cpp:1850
+#: usereventdlg.cpp:1851
 msgid "UserSendChatEvent::Clear"
 msgstr "Изчисти"
 
-#: usereventdlg.cpp:1858
+#: usereventdlg.cpp:1859
 msgid "UserSendChatEvent::Invite"
 msgstr "Покани"
 
-#: usereventdlg.cpp:1815
+#: usereventdlg.cpp:1816
 msgid "UserSendChatEvent::Multiparty: "
 msgstr ""
 
@@ -4019,87 +4128,87 @@ msgstr ""
 msgid "UserSendCommon::via server"
 msgstr "през сървъра"
 
-#: usereventdlg.cpp:1935
+#: usereventdlg.cpp:1936
 msgid "UserSendContactEvent:: - Contact List"
 msgstr " - Списък с контактите"
 
-#: usereventdlg.cpp:1928
+#: usereventdlg.cpp:1929
 msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
 msgstr ""
 
-#: usereventdlg.cpp:1713
+#: usereventdlg.cpp:1714
 msgid "UserSendFileEvent:: - File Transfer"
 msgstr " - Файлов трансфер"
 
-#: usereventdlg.cpp:1709
+#: usereventdlg.cpp:1710
 msgid "UserSendFileEvent::Browse"
 msgstr ""
 
-#: usereventdlg.cpp:1783
+#: usereventdlg.cpp:1784
 msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
 msgstr ""
 
-#: usereventdlg.cpp:1703
+#: usereventdlg.cpp:1704
 msgid "UserSendFileEvent::File(s): "
 msgstr "Файл(ове"
 
-#: usereventdlg.cpp:1725
+#: usereventdlg.cpp:1726
 msgid "UserSendFileEvent::Select files to send"
 msgstr "Изберете файлове за изпращане"
 
-#: usereventdlg.cpp:1749
+#: usereventdlg.cpp:1750
 msgid "UserSendFileEvent::You must specify a file to transfer!"
 msgstr ""
 
-#: usereventdlg.cpp:1479
+#: usereventdlg.cpp:1480
 msgid "UserSendMsgEvent:: - Message"
 msgstr " - съобщение"
 
-#: usereventdlg.cpp:1504
+#: usereventdlg.cpp:1505
 msgid "UserSendMsgEvent::&No"
 msgstr "&Не"
 
-#: usereventdlg.cpp:1504
+#: usereventdlg.cpp:1505
 msgid "UserSendMsgEvent::&Yes"
 msgstr "&Да"
 
-#: usereventdlg.cpp:1503
+#: usereventdlg.cpp:1504
 msgid "UserSendMsgEvent::"
 "You didn't edit the message.\n"
 "Do you really want to send it?"
 msgstr ""
 
-#: usereventdlg.cpp:2060
+#: usereventdlg.cpp:2061
 msgid "UserSendSmsEvent:: - SMS"
 msgstr ""
 
-#: usereventdlg.cpp:2083
+#: usereventdlg.cpp:2084
 msgid "UserSendSmsEvent::&No"
 msgstr ""
 
-#: usereventdlg.cpp:2083
+#: usereventdlg.cpp:2084
 msgid "UserSendSmsEvent::&Yes"
 msgstr ""
 
-#: usereventdlg.cpp:2044
+#: usereventdlg.cpp:2045
 msgid "UserSendSmsEvent::Chars left : "
 msgstr ""
 
-#: usereventdlg.cpp:2038
+#: usereventdlg.cpp:2039
 msgid "UserSendSmsEvent::Phone : "
 msgstr ""
 
-#: usereventdlg.cpp:2082
+#: usereventdlg.cpp:2083
 msgid "UserSendSmsEvent::"
 "You didn't edit the SMS.\n"
 "Do you really want to send it?"
 msgstr ""
 
-#: usereventdlg.cpp:1619
+#: usereventdlg.cpp:1620
 msgid "UserSendUrlEvent:: - URL"
 msgstr " - URL"
 
-#: usereventdlg.cpp:1614
+#: usereventdlg.cpp:1615
 msgid "UserSendUrlEvent::URL : "
 msgstr "UR"
 
@@ -4177,7 +4286,7 @@ msgstr ""
 
 #: usereventdlg.cpp:536
 msgid "UserViewEvent::Start Chat"
-msgstr ""
+msgstr "Започни чат"
 
 #: usereventdlg.cpp:837
 msgid "UserViewEvent::View URL failed"
@@ -4200,31 +4309,31 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:3252
 msgid "QFileDialog::&Delete"
-msgstr ""
+msgstr "Изтрии"
 
 #: dialogs/qfiledialog.cpp:3344
 msgid "QFileDialog::&No"
-msgstr ""
+msgstr "Не"
 
 #: dialogs/qfiledialog.cpp:3247
 msgid "QFileDialog::&Open"
-msgstr ""
+msgstr "Отвори"
 
 #: dialogs/qfiledialog.cpp:3251
 msgid "QFileDialog::&Rename"
-msgstr ""
+msgstr "Преименуваи"
 
 #: dialogs/qfiledialog.cpp:3246
 msgid "QFileDialog::&Save"
-msgstr ""
+msgstr "Запиши"
 
 #: dialogs/qfiledialog.cpp:3285
 msgid "QFileDialog::&Unsorted"
-msgstr ""
+msgstr "Несортирани"
 
 #: dialogs/qfiledialog.cpp:3344
 msgid "QFileDialog::&Yes"
-msgstr ""
+msgstr "Да"
 
 #: dialogs/qfiledialog.cpp:3342
 msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
@@ -4232,35 +4341,35 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:1904
 msgid "QFileDialog::All files (*)"
-msgstr ""
+msgstr "Всички файлове (*)"
 
 #: dialogs/qfiledialog.cpp:1967
 msgid "QFileDialog::Attributes"
-msgstr ""
+msgstr "Атрибути"
 
 #: dialogs/qfiledialog.cpp:2053
 msgid "QFileDialog::Back"
-msgstr ""
+msgstr "Назад"
 
 #: dialogs/qfiledialog.cpp:2007
 msgid "QFileDialog::Cancel"
-msgstr ""
+msgstr "Отказ"
 
 #: dialogs/qfiledialog.cpp:2079
 msgid "QFileDialog::Create New Folder"
-msgstr ""
+msgstr "Направи нова директориа"
 
 #: dialogs/qfiledialog.cpp:1966
 msgid "QFileDialog::Date"
-msgstr ""
+msgstr "Дата"
 
 #: dialogs/qfiledialog.cpp:3341
 msgid "QFileDialog::Delete %1"
-msgstr ""
+msgstr "Изтрии %1"
 
 #: dialogs/qfiledialog.cpp:2109
 msgid "QFileDialog::Detail View"
-msgstr ""
+msgstr "Подробен изглед"
 
 #: dialogs/qfiledialog.cpp:2235
 msgid "QFileDialog::Dir"
@@ -4268,35 +4377,35 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:3442
 msgid "QFileDialog::Directories"
-msgstr ""
+msgstr "Директории"
 
 #: dialogs/qfiledialog.cpp:4388
 msgid "QFileDialog::ERROR"
-msgstr ""
+msgstr "ГРЕШКА"
 
 #: dialogs/qfiledialog.cpp:3560
 msgid "QFileDialog::Error"
-msgstr ""
+msgstr "Грешка"
 
 #: dialogs/qfiledialog.cpp:2042
 msgid "QFileDialog::File &name:"
-msgstr ""
+msgstr "Име на файла"
 
 #: dialogs/qfiledialog.cpp:2043
 msgid "QFileDialog::File &type:"
-msgstr ""
+msgstr "Тип на файла"
 
 #: dialogs/qfiledialog.cpp:2234
 msgid "QFileDialog::File"
-msgstr ""
+msgstr "Файл"
 
 #: dialogs/qfiledialog.cpp:3437
 msgid "QFileDialog::Find Directory"
-msgstr ""
+msgstr "Намери директориа"
 
 #: dialogs/qfiledialog.cpp:2229
 msgid "QFileDialog::Inaccessible"
-msgstr ""
+msgstr "Недостъпен"
 
 #: dialogs/qfiledialog.cpp:2099
 msgid "QFileDialog::List View"
@@ -4304,35 +4413,35 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:2041
 msgid "QFileDialog::Look &in:"
-msgstr ""
+msgstr "Погрелдни в:"
 
 #: dialogs/qfiledialog.cpp:1962
 msgid "QFileDialog::Name"
-msgstr ""
+msgstr "Име"
 
 #: dialogs/qfiledialog.cpp:3390
 msgid "QFileDialog::New Folder %1"
-msgstr ""
+msgstr "Нова директориа %1"
 
 #: dialogs/qfiledialog.cpp:3380
 msgid "QFileDialog::New Folder 1"
-msgstr ""
+msgstr "Нова директориа 1"
 
 #: dialogs/qfiledialog.cpp:3385
 msgid "QFileDialog::New Folder"
-msgstr ""
+msgstr "Нова директориа"
 
 #: dialogs/qfiledialog.cpp:2003
 msgid "QFileDialog::OK"
-msgstr ""
+msgstr "ОК"
 
 #: dialogs/qfiledialog.cpp:2068
 msgid "QFileDialog::One directory up"
-msgstr ""
+msgstr "Една директориа нагоре"
 
 #: dialogs/qfiledialog.cpp:4249
 msgid "QFileDialog::Open"
-msgstr ""
+msgstr "Отвори"
 
 #: dialogs/qfiledialog.cpp:2131
 msgid "QFileDialog::Preview File Contents"
@@ -4344,47 +4453,47 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:3276
 msgid "QFileDialog::R&eload"
-msgstr ""
+msgstr "Презареди"
 
 #: dialogs/qfiledialog.cpp:2227
 msgid "QFileDialog::Read-only"
-msgstr ""
+msgstr "Само за четене"
 
 #: dialogs/qfiledialog.cpp:2226
 msgid "QFileDialog::Read-write"
-msgstr ""
+msgstr "Четене и писане"
 
 #: dialogs/qfiledialog.cpp:2699
 msgid "QFileDialog::Save as"
-msgstr ""
+msgstr "Запиши като"
 
 #: dialogs/qfiledialog.cpp:3536
 msgid "QFileDialog::Save"
-msgstr ""
+msgstr "Запиши"
 
 #: dialogs/qfiledialog.cpp:3304
 msgid "QFileDialog::Show &hidden files"
-msgstr ""
+msgstr "Покажи скритите файлове"
 
 #: dialogs/qfiledialog.cpp:1963
 msgid "QFileDialog::Size"
-msgstr ""
+msgstr "Големина"
 
 #: dialogs/qfiledialog.cpp:3283
 msgid "QFileDialog::Sort by &Date"
-msgstr ""
+msgstr "Сортиране по дата"
 
 #: dialogs/qfiledialog.cpp:3280
 msgid "QFileDialog::Sort by &Name"
-msgstr ""
+msgstr "Сортиране по име"
 
 #: dialogs/qfiledialog.cpp:3282
 msgid "QFileDialog::Sort by &Size"
-msgstr ""
+msgstr "Сортиране по големина"
 
 #: dialogs/qfiledialog.cpp:3300
 msgid "QFileDialog::Sort"
-msgstr ""
+msgstr "Сортиране"
 
 #: dialogs/qfiledialog.cpp:2236
 msgid "QFileDialog::Special"
@@ -4392,11 +4501,11 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:2232
 msgid "QFileDialog::Symlink to Directory"
-msgstr ""
+msgstr "Символична връска до директовиа"
 
 #: dialogs/qfiledialog.cpp:2231
 msgid "QFileDialog::Symlink to File"
-msgstr ""
+msgstr "Символична връска до файл"
 
 #: dialogs/qfiledialog.cpp:2233
 msgid "QFileDialog::Symlink to Special"
@@ -4404,67 +4513,67 @@ msgstr ""
 
 #: dialogs/qfiledialog.cpp:1965
 msgid "QFileDialog::Type"
-msgstr ""
+msgstr "Тип"
 
 #: dialogs/qfiledialog.cpp:2228
 msgid "QFileDialog::Write-only"
-msgstr ""
+msgstr "Само за писане"
 
 #: dialogs/qfiledialog.cpp:3336
 msgid "QFileDialog::the directory"
-msgstr ""
+msgstr "директорията"
 
 #: dialogs/qfiledialog.cpp:3334
 msgid "QFileDialog::the file"
-msgstr ""
+msgstr "файлът"
 
 #: dialogs/qfiledialog.cpp:3338
 msgid "QFileDialog::the symlink"
-msgstr ""
+msgstr "символичната връска"
 
 #: dialogs/qfontdialog.cpp:121
 msgid "QFontDialog::&Color"
-msgstr ""
+msgstr "Цвят"
 
 #: dialogs/qfontdialog.cpp:91
 msgid "QFontDialog::&Font"
-msgstr ""
+msgstr "Шрифт"
 
 #: dialogs/qfontdialog.cpp:107
 msgid "QFontDialog::&Size"
-msgstr ""
+msgstr "Големина"
 
 #: dialogs/qfontdialog.cpp:115
 msgid "QFontDialog::&Underline"
-msgstr ""
+msgstr "Подчертавка"
 
 #: dialogs/qfontdialog.cpp:214
 msgid "QFontDialog::Apply"
-msgstr ""
+msgstr "Обнови"
 
 #: dialogs/qfontdialog.cpp:225
 msgid "QFontDialog::Cancel"
-msgstr ""
+msgstr "Отказ"
 
 #: dialogs/qfontdialog.cpp:225
 msgid "QFontDialog::Close"
-msgstr ""
+msgstr "Затвори"
 
 #: dialogs/qfontdialog.cpp:111
 msgid "QFontDialog::Effects"
-msgstr ""
+msgstr "Ефекти"
 
 #: dialogs/qfontdialog.cpp:99
 msgid "QFontDialog::Font st&yle"
-msgstr ""
+msgstr "Стил на шрифта"
 
 #: dialogs/qfontdialog.cpp:214
 msgid "QFontDialog::OK"
-msgstr ""
+msgstr "ОК"
 
 #: dialogs/qfontdialog.cpp:125
 msgid "QFontDialog::Sample"
-msgstr ""
+msgstr "Пример"
 
 #: dialogs/qfontdialog.cpp:139
 msgid "QFontDialog::Scr&ipt"
@@ -4472,7 +4581,7 @@ msgstr ""
 
 #: dialogs/qfontdialog.cpp:274
 msgid "QFontDialog::Select Font"
-msgstr ""
+msgstr "Избери шрифт"
 
 #: dialogs/qfontdialog.cpp:113
 msgid "QFontDialog::Stri&keout"
@@ -4480,21 +4589,21 @@ msgstr ""
 
 #: dialogs/qwizard.cpp:94
 msgid "QWizard::< Back"
-msgstr ""
+msgstr "< Назад"
 
 #: dialogs/qwizard.cpp:93
 msgid "QWizard::Cancel"
-msgstr ""
+msgstr "Отказ"
 
 #: dialogs/qwizard.cpp:96
 msgid "QWizard::Finish"
-msgstr ""
+msgstr "Край"
 
 #: dialogs/qwizard.cpp:97
 msgid "QWizard::Help"
-msgstr ""
+msgstr "Помощ"
 
 #: dialogs/qwizard.cpp:95
 msgid "QWizard::Next >"
-msgstr ""
+msgstr "Напред >"
 
