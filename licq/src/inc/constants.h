@@ -41,7 +41,7 @@ const unsigned short USER_HASH_SIZE                = 128;
 const unsigned short SOCKET_HASH_SIZE              = 127;
 const unsigned long  LOCALHOST                     = 0x0100007F;
 const unsigned short LOGON_ATTEMPT_DELAY           = 300;
-const unsigned short MAX_PING_TIMEOUTS             = 1;
+const unsigned short MAX_PING_TIMEOUTS             = 3;
 
 // Thread constants
 const unsigned short LOCK_N                        = 0;
