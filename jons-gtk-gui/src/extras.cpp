@@ -161,8 +161,8 @@ void user_function(ICQEvent *event)
 
 		/* Check to make sure it sent, and if it did, put the text */
 		g_strreverse(c->prog_buf);
-	
-		if(strncmp(c->prog_buf, "en", 2))
+
+		if(strncmp(c->prog_buf, "en", 2) == 0)
 		{
 			ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 			const gchar *name = g_strdup_printf("%s",
