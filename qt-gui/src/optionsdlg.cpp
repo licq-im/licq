@@ -1241,7 +1241,7 @@ QWidget* OptionsDlg::new_column_options()
                                 "Enter the hotkey literally, like \"shift+f10\", "
                                 "\"none\" for disabling\n"
                                 "changes here require a Restart to take effect!\n"));
-  lblSortBy = new QLabel(tr("Sort users &by:"), boxUserWin);
+  lblSortBy = new QLabel(tr("Additional &sorting:"), boxUserWin);
   cmbSortBy = new QComboBox(boxUserWin);
   cmbSortBy->insertItem(tr("none"), 0);
   cmbSortBy->insertItem(tr("status"), 1);
