@@ -67,6 +67,7 @@ AC_CHECK_LIB(nsl, gethostbyname)
 AC_CHECK_FUNCS(inet_addr inet_aton strerror)
 
 dnl Check for QT
+AC_PATH_QT
 AC_PATH_QT_LIB
 
 if test "$have_qt_lib" = no; then

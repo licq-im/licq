@@ -20,6 +20,12 @@ do
 done
 ])
 
+AC_DEFUN(AC_PATH_QT,
+[
+  AC_ARG_WITH(qt,
+    [  --with-qt               where QT v2 is located. ],
+    [  QTDIR="$withval" ])
+])
 
 AC_DEFUN(AC_PATH_QT_LIB,
 [
@@ -242,7 +248,7 @@ AC_DEFUN(AC_PATH_QT_FINDTR,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 
   if test "$QT_FINDTR" = "echo"; then
-    echo "** findtr could not be found. You're loosing the localisation."
+    echo "** findtr could not be found. You're losing the localisation."
   fi
 
   AC_SUBST(QT_FINDTR)
@@ -257,7 +263,7 @@ AC_DEFUN(AC_PATH_QT_MSGTOQM,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 
   if test "$QT_MSG2QM" = "echo"; then
-    echo "** msg2qm could not be found. You're loosing the localisation."
+    echo "** msg2qm could not be found. You're losing the localisation."
   fi
 
   AC_SUBST(QT_MSG2QM)
@@ -272,7 +278,7 @@ AC_DEFUN(AC_PATH_QT_MERGETR,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 
   if test "$QT_MERGETR" = "echo"; then
-    echo "** mergetr could not be found. You're loosing the localisation."
+    echo "** mergetr could not be found. You're losing the localisation."
   fi
 
   AC_SUBST(QT_MERGETR)
