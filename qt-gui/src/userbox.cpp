@@ -748,6 +748,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
     setColumnAlignment(i + 1, 1 << gMainWindow->colInfo[i]->m_nAlign);
   }
 
+  setAcceptDrops(true);
   viewport()->setAcceptDrops(true);
   #if QT_VERSION < 300
   viewport()->setBackgroundMode(NoBackground);
