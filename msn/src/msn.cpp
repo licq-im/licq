@@ -188,6 +188,12 @@ string CMSN::Decode(const string &strIn)
   return strOut;
 }
 
+unsigned long CMSN::SocketToCID(int _nSocket)
+{
+  CConversation *pConv = m_pDaemon->FindConversation(_nSocket);
+  return pConv ? pConv->CID() : 0;
+}
+
 string CMSN::Encode(const string &strIn)
 {
   string strOut = "";
@@ -360,6 +366,13 @@ void CMSN::Run()
             
             free(szUser);
           }
+          else
+          {
+            // Shouldn't get here, as we close the socket with a BYE command.
+            // But just to be safe..
+            gSocketMan.DropSocket(sock);
+            gSocketMan.CloseSocket(nCurrent);
+          }
         }
       }
 
@@ -447,14 +460,14 @@ void CMSN::ProcessSignal(CSignal *s)
       CTypingNotificationSignal *sig =
         static_cast<CTypingNotificationSignal *>(s);
       if (sig->Active())
-        MSNSendTypingNotification(sig->Id(), sig->Socket());
+        MSNSendTypingNotification(sig->Id(), sig->CID());
       break;
     }
     
     case PROTOxSENDxMSG:
     {
       CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
-      MSNSendMessage(sig->Id(), sig->Message(), sig->Thread(), sig->Socket());
+      MSNSendMessage(sig->Id(), sig->Message(), sig->Thread(), sig->CID());
       break;
     }
 

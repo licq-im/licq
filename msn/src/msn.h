@@ -97,8 +97,8 @@ private:
   bool MSNSBConnectStart(string &, string &);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
-  void MSNSendMessage(char *, char *, pthread_t, int);
-  void MSNSendTypingNotification(char *, int);
+  void MSNSendMessage(char *, char *, pthread_t, unsigned long);
+  void MSNSendTypingNotification(char *, unsigned long);
   void MSNChangeStatus(unsigned long);
   void MSNLogoff();
   void MSNAddUser(char *);
@@ -112,9 +112,10 @@ private:
   void RemovePacket(string, int);
   SBuffer *RetrievePacket(string, int);
   ICQEvent *RetrieveEvent(unsigned long);
+  unsigned long SocketToCID(int);
   static string Decode(const string &);
   static string Encode(const string &);
-
+  
   // Config
   unsigned long m_nListVersion;
     

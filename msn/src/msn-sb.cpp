@@ -53,8 +53,17 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       packet->SkipParameter(); // total users in conversation
       string strUser = packet->GetParameter();
 
+      // Add the user to the conversation
+      if (!m_pDaemon->FindConversation(nSock))
+        m_pDaemon->AddConversation(nSock, MSN_PPID);  
+      m_pDaemon->AddUserConversation(nSock, strUser.c_str());
+            
+      // Notify the plugins of the new CID
+      m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_SOCKET, 0,
+        strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
+
       m_pDaemon->PushPluginSignal(new
-        CICQSignal(SIGNAL_CONVOxJOIN, 0, strdup(strUser.c_str()), MSN_PPID, nSock));
+        CICQSignal(SIGNAL_CONVOxJOIN, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
         
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
     }
@@ -85,7 +94,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           u->SetTyping(ICQ_TYPING_ACTIVE);
           gUserManager.DropUser(u);
           m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-            USER_TYPING, strUser.c_str(), MSN_PPID, nSock));
+            USER_TYPING, strUser.c_str(), MSN_PPID, SocketToCID(nSock)));
         }
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
@@ -99,7 +108,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           (*packet) >> szMsg[i];
         szMsg[i] = '\0';
         
-        CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0, nSock);
+        CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0, SocketToCID(nSock));
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
         if (u)
           u->SetTyping(0);
@@ -118,13 +127,33 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         e->m_eResult = EVENT_ACKED;
         if (e->m_pUserEvent)
         {
-          ICQUser *u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_R);
-          if (u != NULL)
+          CConversation *pConv = m_pDaemon->FindConversation(nSock);
+          if (pConv)
           {
-            e->m_pUserEvent->AddToHistory(u, D_SENDER);
-            u->SetLastSentEvent();
-            m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
-            gUserManager.DropUser(u);
+            for (int i = 0; i < pConv->NumUsers(); i++)
+            {
+              string strUser = pConv->GetUser(i);
+              ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
+              if (u)
+              {
+                e->m_pUserEvent->AddToHistory(u, D_SENDER);
+                u->SetLastSentEvent();
+                if (strcmp(u->IdString(), e->m_szId) == 0)
+                  m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
+                gUserManager.DropUser(u);
+              }
+            }
+          }
+          else
+          {
+            ICQUser *u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_R);
+            if (u != NULL)
+            {
+              e->m_pUserEvent->AddToHistory(u, D_SENDER);
+              u->SetLastSentEvent();
+              m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
+              gUserManager.DropUser(u);
+            }
           }
           m_pDaemon->m_sStats[STATS_EventsSent].Inc();
         }
@@ -142,8 +171,19 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       string strUser = packet->GetParameter();
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
 
+      // Add the user to the conversation
+      if (!m_pDaemon->FindConversation(nSock))
+        m_pDaemon->AddConversation(nSock, MSN_PPID);
+        
+      m_pDaemon->AddUserConversation(nSock, strUser.c_str());
+      
+      // Notify the plugins of the new CID
+      m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_SOCKET, 0,
+        strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
+
+      // Notify the plugins
       m_pDaemon->PushPluginSignal(new
-        CICQSignal(SIGNAL_CONVOxJOIN, 0, strdup(strUser.c_str()), MSN_PPID, nSock));
+        CICQSignal(SIGNAL_CONVOxJOIN, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
   
       SStartMessage *pStart = 0;
       StartList::iterator it;
@@ -177,19 +217,30 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       string strUser = packet->GetParameter();
       gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, strUser.c_str());
 
+      m_pDaemon->PushPluginSignal(new
+        CICQSignal(SIGNAL_CONVOxLEAVE, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
+
+      m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
+      CConversation *pConv = m_pDaemon->FindConversation(nSock);
+            
       ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_W);
       if (u)
       {
-        int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
         u->ClearSocketDesc(ICQ_CHNxNONE);
-        gUserManager.DropUser(u);
-        INetSocket *s = gSocketMan.FetchSocket(nThisSock);
-        gSocketMan.DropSocket(s);  
-        gSocketMan.CloseSocket(nThisSock);
+        if (!pConv->IsEmpty())
+        {
+          gUserManager.DropUser(u);
+        }
+        else
+        {
+          int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
+          gUserManager.DropUser(u);
+          INetSocket *s = gSocketMan.FetchSocket(nThisSock);
+          gSocketMan.DropSocket(s);  
+          gSocketMan.CloseSocket(nSock);
+          m_pDaemon->RemoveConversation(pConv->CID());
+        }
       }
-
-      m_pDaemon->PushPluginSignal(new
-        CICQSignal(SIGNAL_CONVOxLEAVE, 0, strdup(strUser.c_str()), MSN_PPID, nSock));
     }
   
     // Get the next packet
@@ -259,8 +310,6 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
   {
     u->SetSocketDesc(sock);
     gUserManager.DropUser(u);
-    m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_SOCKET, 0, strdup(pStart->m_szUser),
-      MSN_PPID, sock->Descriptor()));
   }
   gSocketMan.DropSocket(sock);
   
@@ -316,9 +365,6 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   }
   gUserManager.DropUser(u);
   
-  m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_SOCKET, 0, strdup(strUser.c_str()),
-      MSN_PPID, sock->Descriptor()));
-      
   if (bNewUser)
     MSNAddUser(const_cast<char *>(strUser.c_str()));
 
@@ -330,13 +376,20 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
 }
 
 
-void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, int nSockDesc)
+void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsigned long _nCID)
 {
   string strUser(_szUser);
+  int nSocket = -1;
+  
+  if (_nCID)
+  {
+    CConversation *pConv = m_pDaemon->FindConversation(_nCID);
+    if (pConv)
+      nSocket = pConv->Socket();
+  } 
   
   ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
-  int nSocket = nSockDesc != -1 ? nSockDesc : u->SocketDesc(ICQ_CHNxNONE);
   bool bCantSend = u->StatusOffline() || (m_nStatus & ICQ_STATUS_FxPRIVATE);
   gUserManager.DropUser(u);
   
@@ -386,10 +439,18 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, int n
   }  
 }
 
-void CMSN::MSNSendTypingNotification(char *_szUser, int nSockDesc)
+void CMSN::MSNSendTypingNotification(char *_szUser, unsigned long _nCID)
 {
   string strUser(_szUser);
   CMSNPacket *pSend = new CPS_MSNTypingNotification(m_szUserName);
+  int nSockDesc = -1;
+  
+  if (_nCID)
+  {
+    CConversation *pConv = m_pDaemon->FindConversation(_nCID);
+    if (pConv)
+      nSockDesc = pConv->Socket();
+  } 
     
   if (nSockDesc > 0)
     Send_SB_Packet(strUser, pSend, nSockDesc);
