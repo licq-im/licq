@@ -4077,7 +4077,7 @@ void CMainWindow::slot_stats()
     s += tr("%1: %2 / %3\n").arg(iter->Name()).arg(iter->Today()).arg(iter->Total());
   }
   
-  if (QueryUser(this, s, tr("&Ok"), tr("&Reset"), false, NULL, true, tr("Do you really want to reset your stats?")))
+  if (QueryUser(this, s, tr("&Reset"), tr("&Ok"), true, tr("Do you really want to reset your stats?"), false, NULL))
     licqDaemon->ResetStats();
 #else
   QString s = tr("Daemon Statistics\n\n");
