@@ -92,6 +92,10 @@ static unsigned char icq_check_data[256] = {
 #endif
 
 
+unsigned long CPacket::s_nLocalIp = 0;
+unsigned long CPacket::s_nRealIp = 0;
+char CPacket::s_nMode = MODE_DIRECT;
+
 //=====UDP======================================================================
 unsigned short CPacketUdp::s_nSequence = 0;
 unsigned short CPacketUdp::s_nSubSequence = 0;
@@ -158,7 +162,7 @@ void CPacketUdp::Encrypt(void)
   // Make sure packet is long enough
   if (l == 24)
   {
-    buffer->add((unsigned long)rand());
+    buffer->PackUnsignedLong(rand());
     l = buffer->getDataSize();
   }
 
@@ -263,6 +267,13 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
   m_nSourceUin = gUserManager.OwnerUin();
 
   buffer = NULL;
+#if ICQ_VERSION == 2
+  m_nSize = 10;
+#elif ICQ_VERSION == 4
+  m_nSize = 20;
+#elif ICQ_VERSION == 5
+  m_nSize = 24;
+#endif
 }
 
 
@@ -274,12 +285,12 @@ CPacketUdp::~CPacketUdp(void)
 
 void CPacketUdp::InitBuffer(void)
 {
-  buffer = new CBuffer(getSize() + 8);
+  buffer = new CBuffer(m_nSize + 8);
 #if ICQ_VERSION == 2
-  buffer->add(m_nVersion);
-  buffer->add(m_nCommand);
-  buffer->add(m_nSequence);
-  buffer->add(m_nSourceUin);
+  buffer->PackUnsignedShort(m_nVersion);
+  buffer->PackUnsignedShort(m_nCommand);
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedLong(m_nSourceUin);
 #elif ICQ_VERSION == 4
   buffer->add(m_nVersion);
   buffer->add(m_nRandom);
@@ -290,14 +301,14 @@ void CPacketUdp::InitBuffer(void)
   buffer->add(m_nSourceUin);
   buffer->add(m_nCheckSum);
 #elif ICQ_VERSION == 5
-  buffer->add(m_nVersion);
-  buffer->add(m_nZero);
-  buffer->add(m_nSourceUin);
-  buffer->add(m_nSessionId);
-  buffer->add(m_nCommand);
-  buffer->add(m_nSequence);
-  buffer->add(m_nSubSequence);
-  buffer->add(m_nCheckSum);
+  buffer->PackUnsignedShort(m_nVersion);
+  buffer->PackUnsignedLong(m_nZero);
+  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedLong(m_nSessionId);
+  buffer->PackUnsignedShort(m_nCommand);
+  buffer->PackUnsignedShort(m_nSequence);
+  buffer->PackUnsignedShort(m_nSubSequence);
+  buffer->PackUnsignedLong(m_nCheckSum);
 #endif;
 }
 
@@ -308,21 +319,20 @@ CPU_Register::CPU_Register(const char *_szPasswd)
   m_nVersion = ICQ_VERSION;
   m_nCommand = ICQ_CMDxSND_REGISTERxUSER;
   m_nSequence = 0x001;
-  m_nUnknown1 = 0x0002;
   m_nPasswdLen = strlen(_szPasswd) + 1;
   m_szPasswd = strdup(_szPasswd);
-  m_nUnknown2 = 0x00000072;
-  m_nUnknown3 = 0x00000000;
 
-  buffer = new CBuffer(getSize());
+  m_nSize = strlen (m_szPasswd) + 1 + 18
+  buffer = new CBuffer(m_nSize);
+
   buffer->add(m_nVersion);
   buffer->add(m_nCommand);
   buffer->add(m_nSequence);
-  buffer->add(m_nUnknown1);
+  buffer->add(0x002);
   buffer->add(m_nPasswdLen);
   buffer->add(m_szPasswd, m_nPasswdLen);
-  buffer->add(m_nUnknown2);
-  buffer->add(m_nUnknown3);
+  buffer->add(0x72);
+  buffer->add(0x00);
 }
 
 CPU_Register::~CPacketRegister(void)
@@ -331,83 +341,44 @@ CPU_Register::~CPacketRegister(void)
   if (buffer != NULL) delete buffer;
 }
 
-unsigned long CPU_Register::getSize(void)
-{
-  return (strlen (m_szPasswd) + 1 + 18);
-}
-
 #elif ICQ_VERSION == 4 || ICQ_VERSION == 5
 
-CPU_Register::CPU_Register(const char *_szPasswd)
+CPU_Register::CPU_Register(const char *szPasswd)
   : CPacketUdp(ICQ_CMDxSND_REGISTERxUSER)
 {
-  m_nUnknown1 = 0x0002;
-  m_nPasswdLen = strlen(_szPasswd) + 1;
-  m_szPasswd = strdup(_szPasswd);
-  m_nUnknown2 = 0x000000A0;
-  m_nUnknown3 = 0x00002461;
-  m_nUnknown4 = 0x00A00000;
-  m_nUnknown5 = 0x00000000;
-
+  m_nSize += strlen (szPasswd) + 1 + 20;
   InitBuffer();
 
-  buffer = new CBuffer(getSize());
-  buffer->add(m_nUnknown1);
-  buffer->add(m_nPasswdLen);
-  buffer->add(m_szPasswd, m_nPasswdLen);
-  buffer->add(m_nUnknown2);
-  buffer->add(m_nUnknown3);
-  buffer->add(m_nUnknown4);
-  buffer->add(m_nUnknown5);
+  buffer = new CBuffer(m_nSize);
+  buffer->PackUnsignedShort(0x0002);
+  buffer->PackString(szPasswd);
+  buffer->PackUnsignedLong(0x000000A0);
+  buffer->PackUnsignedLong(0x00002461);
+  buffer->PackUnsignedLong(0x00A00000);
+  buffer->PackUnsignedLong(0x00000000);
 
   Encrypt();
 }
 
-
-CPU_Register::~CPU_Register(void)
-{
-  free (m_szPasswd);
-}
-
-unsigned long CPU_Register::getSize(void)
-{
-  return (strlen (m_szPasswd) + 1 + 20);
-}
 #endif
 
 //-----Logon--------------------------------------------------------------------
-unsigned long CPU_Logon::getSize(void)
-{
-#if ICQ_VERSION == 2
-  return (CPacketUdp::getSize() + 6 + m_nPasswordLength + 27);
-#elif ICQ_VERSION == 4
-  return (CPacketUdp::getSize() + 6 + m_nPasswordLength + 31);
-#elif ICQ_VERSION == 5
-  return (CPacketUdp::getSize() + 6 + m_nPasswordLength + 41);
-#endif
-}
-
-CPU_Logon::CPU_Logon(INetSocket *_s, const char *_szPassword, unsigned short _nLogonStatus)
+CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLogonStatus)
   : CPacketUdp(ICQ_CMDxSND_LOGON)
 {
 #if ICQ_VERSION == 2
-  m_nUnknown_1 = 0x00040072;
+  unsigned long nUnknown = 0x00040072;
   char temp[10] = { 2, 0, 0, 0, 0, 0, 4, 0, 0x72, 0 };
-  memcpy(m_aUnknown_2, temp_3, 10);
 #elif ICQ_VERSION == 4
-  m_nUnknown_1 = 0x98;
+  unsigned long nUnknown = 0x98;
   char temp[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0x98, 0 };
-  memcpy(m_aUnknown_2, temp_3, 10);
-  m_nTime = time(NULL);
 #elif ICQ_VERSION == 5
-  m_nUnknown_1 = 0xD5;
+  unsigned long nUnknown = 0xD5;
   char temp[20] = { 0x00, 0x00, 0x00, 0x00,
                     0xEC, 0x01, 0x2C, 0x82,
                     0x50, 0x00, 0x00, 0x00,
                     0x03, 0x00, 0x00, 0x00,
                     0x00, 0x16, 0xD6, 0x36 };
-  memcpy(m_aUnknown_2, temp, 20);
-  m_nTime = time(NULL);
   s_nSessionId = rand() & 0x3FFFFFFF;
   s_nSequence = rand() & 0x7FFF;
   s_nSubSequence = 1;
@@ -415,48 +386,43 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *_szPassword, unsigned short _nL
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
 #endif
+  s_nRealIp = LOCALHOST;
+  s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
+  s_nMode = MODE_DIRECT;
   m_nLocalPort = _s->LocalPort();
-  m_sPassword = strdup(_szPassword);
-  m_nPasswordLength = strlen(m_sPassword) + 1;
-  m_nLocalIP = NetworkIpToPacketIp(_s->LocalIp());
-  m_nMode = MODE_DIRECT;
   m_nLogonStatus = _nLogonStatus;
   m_nTcpVersion = 0x06;//ICQ_VERSION_TCP;
 
+#if ICQ_VERSION == 2
+  m_nSize += 6 + strlen(szPassword) + 28;
+#elif ICQ_VERSION == 4
+  m_nSize += 6 + strlen(szPassword) + 32;
+#elif ICQ_VERSION == 5
+  m_nSize += 6 + strlen(szPassword) + 42;
+#endif
   InitBuffer();
 
 #if ICQ_VERSION == 4 || ICQ_VERSION == 5
-  buffer->add(m_nTime);
+  buffer->PackUnsignedLong(time(NULL));
 #endif
-  buffer->add(m_nLocalPort);
-  buffer->add(m_nPasswordLength);
-  buffer->add(m_sPassword, m_nPasswordLength);
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_nLocalIP);
-  buffer->add(m_nMode);
-  buffer->add(m_nLogonStatus);
-  buffer->add(m_nTcpVersion);
+  buffer->PackUnsignedLong(m_nLocalPort);
+  buffer->PackString(szPassword);
+  buffer->PackUnsignedLong(nUnknown);
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedLong(m_nLogonStatus);
+  buffer->PackUnsignedLong(m_nTcpVersion);
 #if ICQ_VERSION == 2 || ICQ_VERSION == 4
-  buffer->add(m_aUnknown_2, 10);
+  buffer->Pack(temp, 10);
 #else
-  buffer->add(m_aUnknown_2, 20);
+  buffer->Pack(temp, 20);
 #endif
 
   Encrypt();
 }
 
-CPU_Logon::~CPU_Logon(void)
-{
-  free (m_sPassword);
-}
 
-
-//-----Ack----------------------------------------------------------------------
-unsigned long CPU_Ack::getSize(void)
-{
-  return (CPacketUdp::getSize());
-}
-
+//-----Ack-------------------------------------------------------------------
 #if ICQ_VERSION == 2
 CPU_Ack::CPU_Ack(unsigned short _nSequence) : CPacketUdp(ICQ_CMDxSND_ACK)
 {
@@ -476,160 +442,118 @@ CPU_Ack::CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence)
 #endif
 
 //-----GetUserBasicInfo---------------------------------------------------------
-unsigned long CPU_GetUserBasicInfo::getSize(void)
-{
-  return (CPacketUdp::getSize() + 6);
-}
-
 CPU_GetUserBasicInfo::CPU_GetUserBasicInfo(unsigned long _nUserUin)
   : CPacketUdp(ICQ_CMDxSND_USERxGETINFO)
 {
   m_nUserUin = _nUserUin;
 
+  m_nSize += 6;
   InitBuffer();
+
 #if ICQ_VERSION == 2
-  buffer->add(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nSubSequence);
 #endif
-  buffer->add(m_nUserUin);
+  buffer->PackUnsignedLong(m_nUserUin);
 
   Encrypt();
 }
 
 
-//-----GetUserExtInfo-----------------------------------------------------------
-unsigned long CPU_GetUserExtInfo::getSize(void)
-{
-  return (CPacketUdp::getSize() + 6);
-}
 
 CPU_GetUserExtInfo::CPU_GetUserExtInfo(unsigned long _nUserUin)
   : CPacketUdp(ICQ_CMDxSND_USERxGETDETAILS)
 {
   m_nUserUin = _nUserUin;
 
+  m_nSize += 6;
   InitBuffer();
 
 #if ICQ_VERSION == 2
-  buffer->add(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nSubSequence);
 #endif
-  buffer->add(m_nUserUin);
+  buffer->PackUnsignedLong(m_nUserUin);
   Encrypt();
 }
 
 
 //-----AddUser------------------------------------------------------------------
-unsigned long CPU_AddUser::getSize(void)
-{
-  return (CPacketUdp::getSize() + 4);
-}
-
 CPU_AddUser::CPU_AddUser(unsigned long _nAddedUin)
   : CPacketUdp(ICQ_CMDxSND_USERxADD)
 {
   m_nAddedUin = _nAddedUin;
 
+  m_nSize += 4;
   InitBuffer();
 
-  buffer->add(m_nAddedUin);
+  buffer->PackUnsignedLong(m_nAddedUin);
   Encrypt();
 }
 
 
 //-----Logoff-------------------------------------------------------------------
-unsigned long CPU_Logoff::getSize(void)
-{
-  return (CPacketUdp::getSize() + 24);
-}
-
 CPU_Logoff::CPU_Logoff(void) : CPacketUdp(ICQ_CMDxSND_LOGOFF)
 {
-  char temp_1[2] = { 0x14, 0x00 };
-  memcpy(m_aUnknown_1, temp_1, sizeof(m_aUnknown_1));
-  strcpy(m_aDisconnect, "B_USER_DISCONNECTED");
-  char temp_2[2] = { 0x05, 0x00 };
-  memcpy(m_aUnknown_2, temp_2, sizeof(m_aUnknown_2));
-
+  m_nSize += 24;
   InitBuffer();
 
-  buffer->add(m_aUnknown_1, 2);
-  buffer->add(m_aDisconnect, 20);
-  buffer->add(m_aUnknown_2, 2);
+  buffer->PackString("B_USER_DISCONNECTED");
+  buffer->PackUnsignedShort(0x0005);
   Encrypt();
 }
 
 
 //-----ContactList--------------------------------------------------------------
 
-unsigned long CPU_ContactList::getSize(void)
-{
-  return(CPacketUdp::getSize() + 1 + (m_vnUins.size() * sizeof(unsigned long)));
-}
-
 CPU_ContactList::CPU_ContactList(UinList &uins)
-  : CPacketUdp(ICQ_CMDxSND_USERxLIST), m_vnUins(uins)
+  : CPacketUdp(ICQ_CMDxSND_USERxLIST)
 {
-  m_nNumUsers = m_vnUins.size();
-
+  m_nSize += 1 + (uins.size() * sizeof(unsigned long));
   InitBuffer();
 
-  buffer->add(m_nNumUsers);
-  for (unsigned short i  = 0; i < m_vnUins.size(); i++)
-    buffer->add(m_vnUins[i]);
+  buffer->PackChar(uins.size());
+  for (unsigned short i  = 0; i < uins.size(); i++)
+    buffer->PackUnsignedLong(uins[i]);
   Encrypt();
 }
 
 CPU_ContactList::CPU_ContactList(unsigned long _nUin)
   : CPacketUdp(ICQ_CMDxSND_USERxLIST)
 {
-  m_vnUins.push_back(_nUin);
-  m_nNumUsers = m_vnUins.size();
-
+  m_nSize += 5;
   InitBuffer();
 
-  buffer->add(m_nNumUsers);
-  for (unsigned short i  = 0; i < m_vnUins.size(); i++)
-     buffer->add(m_vnUins[i]);
+  buffer->PackChar(0x01);
+  buffer->PackUnsignedLong(_nUin);
+
   Encrypt();
 }
 
 
 //-----VisibleList--------------------------------------------------------------
-unsigned long CPU_VisibleList::getSize(void)
-{
-  return(CPacketUdp::getSize() + 1 + (m_vnUins.size() * sizeof(unsigned long)));
-}
-
 CPU_VisibleList::CPU_VisibleList(UinList &uins)
-  : CPacketUdp(ICQ_CMDxSND_VISIBLExLIST), m_vnUins(uins)
+  : CPacketUdp(ICQ_CMDxSND_VISIBLExLIST)
 {
-  m_nNumUsers = m_vnUins.size();
-
+  m_nSize += 1 + (uins.size() * 4);
   InitBuffer();
 
-  buffer->add(m_nNumUsers);
-  for (unsigned short i  = 0; i < m_vnUins.size(); i++)
-    buffer->add(m_vnUins[i]);
+  buffer->PackChar(uins.size());
+  for (unsigned short i  = 0; i < uins.size(); i++)
+    buffer->PackUnsignedLong(uins[i]);
 
   Encrypt();
 }
 
 
 //-----InvisibleList--------------------------------------------------------------
-unsigned long CPU_InvisibleList::getSize(void)
-{
-  return(CPacketUdp::getSize() + 1 + (m_vnUins.size() * sizeof(unsigned long)));
-}
-
 CPU_InvisibleList::CPU_InvisibleList(UinList &uins)
-  : CPacketUdp(ICQ_CMDxSND_INVISIBLExLIST), m_vnUins(uins)
+  : CPacketUdp(ICQ_CMDxSND_INVISIBLExLIST)
 {
-  m_nNumUsers = m_vnUins.size();
-
+  m_nSize += 1 + (uins.size() * 4);
   InitBuffer();
 
-  buffer->add(m_nNumUsers);
-  for (unsigned short i  = 0; i < m_vnUins.size(); i++)
-    buffer->add(m_vnUins[i]);
+  buffer->PackChar(uins.size());
+  for (unsigned short i  = 0; i < uins.size(); i++)
+    buffer->PackUnsignedLong(uins[i]);
 
   Encrypt();
 }
@@ -637,193 +561,101 @@ CPU_InvisibleList::CPU_InvisibleList(UinList &uins)
 
 
 //-----StartSearch--------------------------------------------------------------
-unsigned long CPU_StartSearch::getSize(void)
-{
-  return (CPacketUdp::getSize() + 10 + m_nAliasLength + m_nFirstNameLength +
-          m_nLastNameLength + m_nEmailLength);
-}
-
-CPU_StartSearch::CPU_StartSearch(const char *_sAlias, const char *_sFirstName,
-                                const char *_sLastName, const char *_sEmail)
+CPU_StartSearch::CPU_StartSearch(const char *szAlias, const char *szFirstName,
+                                const char *szLastName, const char *szEmail)
   : CPacketUdp(ICQ_CMDxSND_SEARCHxSTART)
 {
-  m_nAliasLength = strlen(_sAlias) + 1;
-  m_sAlias = strdup(_sAlias);
-  m_nFirstNameLength = strlen(_sFirstName) + 1;
-  m_sFirstName = strdup(_sFirstName);
-  m_nLastNameLength = strlen(_sLastName) + 1;
-  m_sLastName = strdup(_sLastName);
-  m_nEmailLength = strlen(_sEmail) + 1;
-  m_sEmail = strdup(_sEmail);
 
+  m_nSize += 14 + strlen(szAlias) + strlen(szFirstName) +
+             strlen(szLastName) + strlen(szEmail);
   InitBuffer();
 
 #if ICQ_VERSION == 2
-  buffer->add(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nSubSequence);
 #endif
-  buffer->add(m_nAliasLength);
-  buffer->add(m_sAlias, m_nAliasLength);
-  buffer->add(m_nFirstNameLength);
-  buffer->add(m_sFirstName, m_nFirstNameLength);
-  buffer->add(m_nLastNameLength);
-  buffer->add(m_sLastName, m_nLastNameLength);
-  buffer->add(m_nEmailLength);
-  buffer->add(m_sEmail, m_nEmailLength);
+  buffer->PackString(szAlias);
+  buffer->PackString(szFirstName);
+  buffer->PackString(szLastName);
+  buffer->PackString(szEmail);
 
   Encrypt();
-}
-
-CPU_StartSearch::~CPU_StartSearch(void)
-{
-  free (m_sAlias);
-  free (m_sFirstName);
-  free (m_sLastName);
-  free (m_sEmail);
 }
 
 
 //-----UpdatePersonalInfo-------------------------------------------------------
-unsigned long CPU_UpdatePersonalBasicInfo::getSize(void)
-{
-  return (CPacketUdp::getSize() + 11 + m_nAliasLength + m_nFirstNameLength +
-          m_nLastNameLength + m_nEmailLength);
-}
-
-CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const char *_sAlias,
-                                                        const char *_sFirstName,
-                                                        const char *_sLastName,
-                                                        const char *_sEmail,
-                                                        bool _bAuthorization)
+CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const char *szAlias,
+                                                        const char *szFirstName,
+                                                        const char *szLastName,
+                                                        const char *szEmail,
+                                                        bool bAuthorization)
   : CPacketUdp(ICQ_CMDxSND_UPDATExBASIC)
 {
-  m_nAliasLength = strlen(_sAlias) + 1;
-  m_sAlias = strdup(_sAlias);
-  m_nFirstNameLength = strlen(_sFirstName) + 1;
-  m_sFirstName = strdup(_sFirstName);
-  m_nLastNameLength = strlen(_sLastName) + 1;
-  m_sLastName = strdup(_sLastName);
-  m_nEmailLength = strlen(_sEmail) + 1;
-  m_sEmail = strdup(_sEmail);
-  m_nAuthorization = (_bAuthorization ? 0 : 1);  // 0 for require authorization
 
+  m_nAuthorization = bAuthorization ? 0 : 1;
+
+  m_nSize += 15 + strlen(szAlias) + strlen(szFirstName) +
+             strlen(szLastName) + strlen(szEmail);
   InitBuffer();
 
 #if ICQ_VERSION == 2
-  buffer->add(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nSubSequence);
 #endif
-  buffer->add(m_nAliasLength);
-  buffer->add(m_sAlias, m_nAliasLength);
-  buffer->add(m_nFirstNameLength);
-  buffer->add(m_sFirstName, m_nFirstNameLength);
-  buffer->add(m_nLastNameLength);
-  buffer->add(m_sLastName, m_nLastNameLength);
-  buffer->add(m_nEmailLength);
-  buffer->add(m_sEmail, m_nEmailLength);
-  buffer->add(m_nAuthorization);
+  m_szAlias = buffer->PackString(szAlias);
+  m_szFirstName = buffer->PackString(szFirstName);
+  m_szLastName = buffer->PackString(szLastName);
+  m_szEmail = buffer->PackString(szEmail);
+  buffer->PackChar(m_nAuthorization);
 
   Encrypt();
-}
-
-
-CPU_UpdatePersonalBasicInfo::~CPU_UpdatePersonalBasicInfo(void)
-{
-  free (m_sAlias);
-  free (m_sFirstName);
-  free (m_sLastName);
-  free (m_sEmail);
 }
 
 
 //-----UpdatePersonalExtInfo-------------------------------------------------------
-unsigned long CPU_UpdatePersonalExtInfo::getSize(void)
-{
-  return (CPacketUdp::getSize() + m_nCityLength + m_nStateLength +
-          m_nPhoneLength + m_nHomepageLength + m_nAboutLength +
-#if ICQ_VERSION == 2
-          22
-#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
-          20
-#endif
-          );
-}
-
-CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *_sCity,
-                                                    unsigned short _nCountry,
-                                                    const char *_sState,
-                                                    unsigned short _nAge,
-                                                    char _cSex,
-                                                    const char *_sPhone,
-                                                    const char *_sHomepage,
-                                                    const char *_sAbout,
-                                                    unsigned long _nZipcode)
+CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
+                                                    unsigned short nCountry,
+                                                    const char *szState,
+                                                    unsigned short nAge,
+                                                    char cSex,
+                                                    const char *szPhone,
+                                                    const char *szHomepage,
+                                                    const char *szAbout,
+                                                    unsigned long nZipcode)
   : CPacketUdp(ICQ_CMDxSND_UPDATExDETAIL)
 {
 
-  m_sCity = strdup(_sCity == NULL ? "" : _sCity);
-  m_nCityLength = strlen(m_sCity) + 1;
-  m_nCountry = _nCountry;
+  m_nCountry = nCountry;
   struct timezone tz;
   gettimeofday(NULL, &tz);
   m_cTimezone = tz.tz_minuteswest / 30;
-  //if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;
-  m_sState = strdup(_sState == NULL ? "" : _sState);
-  m_nStateLength = strlen(m_sState) + 1;
-  if (m_nStateLength > 6)  // State is max 5 characters + NULL
-  {
-     m_sState[5] = '\0';
-     m_nStateLength = 6;
-  }
-  m_nAge = _nAge;
-  m_cSex = _cSex;
-  m_sPhone = strdup(_sPhone == NULL ? "" : _sPhone);
-  m_nPhoneLength = strlen(m_sPhone) + 1;
-  m_sHomepage = strdup(_sHomepage == NULL ? "" : _sHomepage);
-  m_nHomepageLength = strlen(m_sHomepage) + 1;
-  m_sAbout = strdup(_sAbout == NULL ? "" : _sAbout);
-  m_nAboutLength = strlen(m_sAbout) + 1;
-  m_nZipcode = _nZipcode;
+  if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;
+  m_nAge = nAge;
+  m_cSex = cSex;
+  m_nZipcode = nZipcode;
 
+  m_nSize += strlen(szCity) + strlen(szState) +
+             strlen(szPhone) + strlen(szHomepage) + strlen(szAbout) + 27;
   InitBuffer();
 
 #if ICQ_VERSION == 2
-  buffer->add(m_nSubSequence);
+  buffer->PackUnsignedShort(m_nSubSequence);
 #endif
-  buffer->add(m_nCityLength);
-  buffer->add(m_sCity, m_nCityLength);
-  buffer->add(m_nCountry);
-  buffer->add(m_cTimezone);
-  buffer->add(m_nStateLength);
-  buffer->add(m_sState, m_nStateLength);
-  buffer->add(m_nAge);
-  buffer->add(m_cSex);
-  buffer->add(m_nPhoneLength);
-  buffer->add(m_sPhone, m_nPhoneLength);
-  buffer->add(m_nHomepageLength);
-  buffer->add(m_sHomepage, m_nHomepageLength);
-  buffer->add(m_nAboutLength);
-  buffer->add(m_sAbout, m_nAboutLength);
-  buffer->add(m_nZipcode);
+  m_szCity = buffer->PackString(szCity);
+  buffer->PackUnsignedShort(m_nCountry);
+  buffer->PackChar(m_cTimezone);
+  m_szState = buffer->PackString(szState, 5);
+  buffer->PackUnsignedShort(m_nAge);
+  buffer->PackChar(m_cSex);
+  m_szPhone = buffer->PackString(szPhone);
+  m_szHomepage = buffer->PackString(szHomepage);
+  m_szAbout = buffer->PackString(szAbout);
+  buffer->PackUnsignedLong(m_nZipcode);
 
   Encrypt();
 }
 
 
-CPU_UpdatePersonalExtInfo::~CPU_UpdatePersonalExtInfo(void)
-{
-  free (m_sCity);
-  free (m_sState);
-  free (m_sPhone);
-  free (m_sHomepage);
-  free (m_sAbout);
-}
-
 
 //-----Ping---------------------------------------------------------------------
-unsigned long CPU_Ping::getSize(void)
-{
-  return (CPacketUdp::getSize());
-}
-
 CPU_Ping::CPU_Ping(void) : CPacketUdp(ICQ_CMDxSND_PING)
 {
   InitBuffer();
@@ -832,88 +664,54 @@ CPU_Ping::CPU_Ping(void) : CPacketUdp(ICQ_CMDxSND_PING)
 
 
 //-----ThroughServer------------------------------------------------------------
-unsigned long CPU_ThroughServer::getSize(void)
-{
-  return (CPacketUdp::getSize() + 8 + strlen(m_sMessage) + 1);
-}
-
-CPU_ThroughServer::CPU_ThroughServer(unsigned long _nSourceUin,
-                                    unsigned long _nDestinationUin,
-                                    unsigned short _nSubCommand,
-                                    char *_sMessage)
+CPU_ThroughServer::CPU_ThroughServer(unsigned long nSourceUin,
+                                    unsigned long nDestinationUin,
+                                    unsigned short nSubCommand,
+                                    char *szMessage)
   : CPacketUdp(ICQ_CMDxSND_THRUxSERVER)
 {
-  m_nSourceUin = (_nSourceUin == 0 ? gUserManager.OwnerUin() : _nSourceUin);
-  m_nDestinationUin = _nDestinationUin;
-  m_nSubCommand = _nSubCommand;
-  if (_sMessage != NULL)
-  {
-    m_nMsgLength = strlen(_sMessage) + 1;
-    m_sMessage = strdup(_sMessage);
-  }
-  else
-  {
-    m_nMsgLength = 1;
-    m_sMessage = strdup("");
-  }
+  m_nSourceUin = (nSourceUin == 0 ? gUserManager.OwnerUin() : nSourceUin);
+  m_nSubCommand = nSubCommand;
+  m_nDestinationUin = nDestinationUin;
 
+  m_nSize += 8 + strlen(szMessage) + 1;
   InitBuffer();
 
-  buffer->add(m_nDestinationUin);
-  buffer->add(m_nSubCommand);
-  buffer->add(m_nMsgLength);
-  buffer->add(m_sMessage, m_nMsgLength);
+  buffer->PackUnsignedLong(nDestinationUin);
+  buffer->PackUnsignedShort(nSubCommand);
+  buffer->PackString(szMessage);
 
   Encrypt();
 }
 
-CPU_ThroughServer::~CPU_ThroughServer(void)
-{
-  free (m_sMessage);
-}
 
 //-----SetStatus----------------------------------------------------------------
-unsigned long CPU_SetStatus::getSize(void)
-{
-  return (CPacketUdp::getSize() + 4);
-}
-
 CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus) : CPacketUdp(ICQ_CMDxSND_SETxSTATUS)
 {
   m_nNewStatus = _nNewStatus;
 
+  m_nSize += 4;
   InitBuffer();
 
-  buffer->add(m_nNewStatus);
+  buffer->PackUnsignedLong(m_nNewStatus);
   Encrypt();
 }
 
 //-----Authorize----------------------------------------------------------------
-unsigned long CPU_Authorize::getSize(void)
+CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxSND_AUTHORIZE)
 {
-  return (CPacketUdp::getSize() + 9);
-}
+  char temp[5] = { 0x08, 0x00, 0x01, 0x00, 0x00 };
 
-CPU_Authorize::CPU_Authorize(unsigned long _nAuthorizeUin) : CPacketUdp(ICQ_CMDxSND_AUTHORIZE)
-{
-  m_nAuthorizeUin = _nAuthorizeUin;
-  char temp_1[5] = { 0x08, 0x00, 0x01, 0x00, 0x00 };
-  memcpy(m_aUnknown_1, temp_1, sizeof(m_aUnknown_1));
-
+  m_nSize += 9;
   InitBuffer();
 
-  buffer->add(m_nAuthorizeUin);
-  buffer->add(m_aUnknown_1, 5);
+  buffer->PackUnsignedLong(nAuthorizeUin);
+  buffer->Pack(temp, 5);
   Encrypt();
 }
 
 
 //-----RequestSysMsg------------------------------------------------------------
-unsigned long CPU_RequestSysMsg::getSize(void)
-{
-  return(CPacketUdp::getSize());
-}
-
 CPU_RequestSysMsg::CPU_RequestSysMsg(void) : CPacketUdp(ICQ_CMDxSND_SYSxMSGxREQ)
 {
   InitBuffer();
@@ -922,11 +720,6 @@ CPU_RequestSysMsg::CPU_RequestSysMsg(void) : CPacketUdp(ICQ_CMDxSND_SYSxMSGxREQ)
 
 
 //-----SysMsgDoneAck------------------------------------------------------------
-unsigned long CPU_SysMsgDoneAck::getSize(void)
-{
-  return(CPacketUdp::getSize());
-}
-
 #if ICQ_VERSION == 2
 CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence)
   : CPacketUdp(ICQ_CMDxSND_SYSxMSGxDONExACK)
@@ -967,17 +760,6 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(char *szAlias,
 {
   m_nMetaCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
 
-  m_szAlias = strdup(szAlias);
-  m_szFirstName = strdup(szFirstName);
-  m_szLastName = strdup(szLastName);
-  m_szEmail1 = strdup(szEmail1);
-  m_szEmail2 = strdup(szEmail2);
-  m_szCity = strdup(szCity);
-  m_szState = strdup(szState);
-  m_szPhoneNumber = strdup(szPhoneNumber);
-  m_szFaxNumber = strdup(szFaxNumber);
-  m_szAddress = strdup(szAddress);
-  m_szCellularNumber = strdup(szCellularNumber);
   m_nZipCode = nZipCode;
   m_nCountryCode = nCountryCode;
   struct timezone tz;
@@ -985,175 +767,115 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(char *szAlias,
   m_nTimezone = tz.tz_minuteswest / 30;
   //if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  m_bAuthorization = o->GetAuthorization() ? 0 : 1;
+  m_nAuthorization = o->GetAuthorization() ? 0 : 1;
   gUserManager.DropOwner();
-  m_nUnknown_1 = 1;
-  m_bHideEmail = bHideEmail;
+  m_nHideEmail = bHideEmail ? 1 : 0;
 
+  m_nSize += strlen(szAlias) + strlen(szFirstName) + strlen(szLastName) +
+             strlen(szEmail1) + strlen(szEmail2) + strlen(szCity) +
+             strlen(szState) + strlen(szPhoneNumber) +
+             strlen(szFaxNumber) + strlen(szAddress) +
+             strlen(szCellularNumber) + 33 + 12;
   InitBuffer();
 
-  buffer->add(m_nMetaCommand);
-  buffer->PackString(m_szAlias);
-  buffer->PackString(m_szFirstName);
-  buffer->PackString(m_szLastName);
-  buffer->PackString(m_szEmail1);
-  buffer->PackString(m_szEmail2);
-  buffer->PackString(m_szCity);
-  buffer->PackString(m_szState);
-  buffer->PackString(m_szPhoneNumber);
-  buffer->PackString(m_szFaxNumber);
-  buffer->PackString(m_szAddress);
-  buffer->PackString(m_szCellularNumber);
-  buffer->add(m_nZipCode);
-  buffer->add(m_nCountryCode);
-  buffer->add(m_nTimezone);
-  buffer->add(m_bAuthorization);
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_bHideEmail);
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  m_szAlias = buffer->PackString(szAlias);
+  m_szFirstName = buffer->PackString(szFirstName);
+  szLastName = buffer->PackString(szLastName);
+  szEmail1 = buffer->PackString(szEmail1);
+  szEmail2 = buffer->PackString(szEmail2);
+  szCity = buffer->PackString(szCity);
+  szState = buffer->PackString(szState);
+  szPhoneNumber = buffer->PackString(szPhoneNumber);
+  szFaxNumber = buffer->PackString(szFaxNumber);
+  szAddress = buffer->PackString(szAddress);
+  szCellularNumber = buffer->PackString(szCellularNumber);
+  buffer->PackUnsignedLong(m_nZipCode);
+  buffer->PackUnsignedShort(m_nCountryCode);
+  buffer->PackChar(m_nTimezone);
+  buffer->PackChar(m_nAuthorization);
+  buffer->PackChar(1);
+  buffer->PackChar(m_nHideEmail);
 
   Encrypt();
 }
-
-CPU_Meta_SetGeneralInfo::~CPU_Meta_SetGeneralInfo()
-{
-  free(m_szAlias);
-  free(m_szFirstName);
-  free(m_szLastName);
-  free(m_szEmail1);
-  free(m_szEmail2);
-  free(m_szCity);
-  free(m_szState);
-  free(m_szPhoneNumber);
-  free(m_szFaxNumber);
-  free(m_szAddress);
-  free(m_szCellularNumber);
-}
-
-unsigned long CPU_Meta_SetGeneralInfo::getSize(void)
-{
-  return CPacketUdp::getSize() + strlen(m_szAlias) +
-    strlen(m_szFirstName) + strlen(m_szLastName) + strlen(m_szEmail1) +
-    strlen(m_szEmail2) + strlen(m_szCity) + strlen(m_szState) +
-    strlen(m_szPhoneNumber) + strlen(m_szFaxNumber) + strlen(m_szAddress) +
-    strlen(m_szCellularNumber) + 33 + 12;
-}
-
-
 
 
 //-----Meta_SetWorkInfo------------------------------------------------------
 CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
-    const char *_szCity,
-    const char *_szState,
-    const char *_szFax,
-    const char *_szAddress,
-    const char *_szName,
-    const char *_szDepartment,
-    const char *_szPosition,
-    const char *_szHomepage) : CPacketUdp(ICQ_CMDxSND_META)
+    const char *szCity,
+    const char *szState,
+    const char *szFax,
+    const char *szAddress,
+    const char *szName,
+    const char *szDepartment,
+    const char *szPosition,
+    const char *szHomepage) : CPacketUdp(ICQ_CMDxSND_META)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
-  m_szCity = strdup(_szCity);
-  m_szState = strdup(_szState);
-  m_szFax = strdup(_szFax);
-  m_szAddress = strdup(_szAddress);
-  m_nUnknown1 = 0x0100;
-  m_nUnknown2 = 0xffff;
-  m_szName = strdup(_szName);
-  m_szDepartment = strdup(_szDepartment);
-  m_szPosition = strdup(_szPosition);
-  m_nUnknown3 = 0x04;
-  m_szHomepage = strdup(_szHomepage);
 
+  m_nSize += strlen(szCity) + strlen(szState) +
+             strlen(szFax) + strlen(szAddress) + strlen(szName) +
+             strlen(szDepartment) + strlen(szPosition) +
+             strlen(szHomepage) + 8 + 26;
   InitBuffer();
 
-  buffer->add(m_nMetaCommand);
-  buffer->PackString(m_szCity);
-  buffer->PackString(m_szState);
-  buffer->PackString(m_szFax);
-  buffer->PackString(m_szAddress);
-  buffer->add(m_nUnknown1);
-  buffer->add(m_nUnknown2);
-  buffer->PackString(m_szName);
-  buffer->PackString(m_szDepartment);
-  buffer->PackString(m_szPosition);
-  buffer->add(m_nUnknown3);
-  buffer->PackString(m_szHomepage);
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  m_szCity = buffer->PackString(szCity);
+  m_szState = buffer->PackString(szState);
+  m_szFax = buffer->PackString(szFax);
+  m_szAddress = buffer->PackString(szAddress);
+  buffer->PackUnsignedShort(0x0100);
+  buffer->PackUnsignedShort(0xFFFF);
+  m_szName = buffer->PackString(szName);
+  m_szDepartment = buffer->PackString(szDepartment);
+  m_szPosition = buffer->PackString(szPosition);
+  buffer->PackChar(0x04);
+  m_szHomepage = buffer->PackString(szHomepage);
 
   Encrypt();
-}
-
-
-CPU_Meta_SetWorkInfo::~CPU_Meta_SetWorkInfo(void)
-{
-  free(m_szCity);
-  free(m_szState);
-  free(m_szFax);
-  free(m_szAddress);
-  free(m_szName);
-  free(m_szDepartment);
-  free(m_szPosition);
-  free(m_szHomepage);
-}
-
-unsigned long CPU_Meta_SetWorkInfo::getSize(void)
-{
-  return CPacketUdp::getSize() + strlen(m_szCity) + strlen(m_szState) +
-         strlen(m_szFax) + strlen(m_szAddress) + strlen(m_szName) +
-         strlen(m_szDepartment) + strlen(m_szPosition) +
-         strlen(m_szHomepage) + 8 + 26;
 }
 
 
 //-----Meta_SetSecurityInfo--------------------------------------------------
 CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
-    bool _bAuthorization,
-    bool _bHideIp,
-    bool _bWebAware)
+    bool bAuthorization,
+    bool bHideIp,
+    bool bWebAware)
   : CPacketUdp(ICQ_CMDxSND_META)
 {
   m_nMetaCommand = ICQ_CMDxMETA_SECURITYxSET;
-  m_bAuthorization = _bAuthorization ? 0 : 1;
-  m_bHideIp =  _bHideIp ? 1 : 0;
-  m_bWebAware = _bWebAware ? 1 : 0;
+  m_nAuthorization = bAuthorization ? 0 : 1;
+  m_nHideIp =  bHideIp ? 1 : 0;
+  m_nWebAware = bWebAware ? 1 : 0;
 
+  m_nSize += 5;
   InitBuffer();
 
-  buffer->add(m_nMetaCommand);
-  buffer->add(m_bAuthorization);
-  buffer->add(m_bHideIp);
-  buffer->add(m_bWebAware);
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  buffer->PackChar(m_nAuthorization);
+  buffer->PackChar(m_nHideIp);
+  buffer->PackChar(m_nWebAware);
 
   Encrypt();
-}
-
-
-unsigned long CPU_Meta_SetSecurityInfo::getSize(void)
-{
-  return CPacketUdp::getSize() + 5;
 }
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long _nUin)
+CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long nUin)
   : CPacketUdp(ICQ_CMDxSND_META)
 {
   m_nMetaCommand = ICQ_CMDxMETA_REQUESTxINFO;
-  m_nUin = _nUin;
+  m_nUin = nUin;
 
+  m_nSize += 6;
   InitBuffer();
 
-  buffer->add(m_nMetaCommand);
-  buffer->add(m_nUin);
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  buffer->PackUnsignedLong(m_nUin);
 
   Encrypt();
 }
-
-unsigned long CPU_Meta_RequestInfo::getSize(void)
-{
-  return CPacketUdp::getSize() + 6;
-}
-
 
 
 //=====PacketTcp_Handshake======================================================
@@ -1165,36 +887,33 @@ CPacketTcp_Handshake::~CPacketTcp_Handshake(void)
 
 CPacketTcp_Handshake::CPacketTcp_Handshake(unsigned long _nLocalPort)
 {
-  m_cHandshakeCommand = ICQ_CMDxTCP_HANDSHAKE;
-  m_nTcpVersion = ICQ_VERSION_TCP;
   m_nLocalPort = _nLocalPort;
   m_nSourceUin = gUserManager.OwnerUin();
-  m_nLocalHost = LOCALHOST;
-  m_aUnknown_2 = 0x04;
 
+  m_nSize = 26;
   InitBuffer();
 }
 
 
 void CPacketTcp_Handshake::InitBuffer(void)
 {
-  buffer = new CBuffer(getSize());
+  buffer = new CBuffer(m_nSize);
 
-  buffer->add(m_cHandshakeCommand);
-  buffer->add(m_nTcpVersion);
-  buffer->add(m_nLocalPort);
-  buffer->add(m_nSourceUin);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_aUnknown_2);
-  buffer->add(m_nLocalPort);
+  buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(m_nLocalPort);
+  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackUnsignedLong(s_nRealIp);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedLong(m_nLocalPort);
 }
 
 
 //=====PacketTcp================================================================
 CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
-                      unsigned short _nSubCommand, const char *_sMessage,
-                      bool _bAccept, bool _bUrgent, ICQUser *_cUser)
+                      unsigned short _nSubCommand, const char *szMessage,
+                      bool _bAccept, bool _bUrgent, ICQUser *user)
 {
   // Setup the message type and status fields using our online status
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -1245,144 +964,82 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   gUserManager.DropOwner();
 
   m_nSourceUin = (_nSourceUin == 0 ? gUserManager.OwnerUin() : _nSourceUin);
-  m_nTcpVersion = ICQ_VERSION_TCP;
   m_nCommand = _nCommand;
   m_nSubCommand = _nSubCommand;
-  if (_sMessage != NULL)
-  {
-   m_nMsgLength = strlen(_sMessage) + 1;
-   m_sMessage = strdup(_sMessage);
-  }
-  else
-  {
-   m_nMsgLength = 1;
-   m_sMessage = strdup("");
-  }
-  m_nLocalIP = 0;
-  m_nLocalHost = LOCALHOST;
+  m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
   m_nLocalPort = 0;
-  m_aUnknown_1 = 0x04;
-
-  m_sLicqTag = 'L';
-  m_nLicqVersion = INT_VERSION;
+  if (user->SocketDesc() != -1)
+  {
+    INetSocket *s = gSocketManager.FetchSocket(user->SocketDesc());
+    if (s != NULL)
+    {
+      m_nLocalPort = s->LocalPort();
+      gSocketManager.DropSocket(s);
+    }
+  }
 
   // don't increment the sequence if this is an ack and cancel packet
-  if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = _cUser->Sequence(true);
+  if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = user->Sequence(true);
 
-  m_cUser = _cUser;
+  m_nSize = 18 + strlen(m_szMessage) + 25;
   buffer = NULL;
 }
 
 CPacketTcp::~CPacketTcp(void)
 {
-  free (m_sMessage);
+  free (m_szMessage);
   if (buffer != NULL) delete buffer;
-}
-
-
-void CPacketTcp::Create(void)
-{
-  // This is bad because the user might have been deleted between the
-  // constructor and this call...
-  INetSocket *s = gSocketManager.FetchSocket(m_cUser->SocketDesc());
-  if (s == NULL)
-  {
-    gLog.Error("%sNo socket found for %s (%ld) while creating packet.\n", L_ERRORxSTR,
-              m_cUser->GetAlias(), m_cUser->Uin());
-    m_nLocalIP = LOCALHOST;
-    m_nLocalPort = 0;
-  }
-  else
-  {
-    m_nLocalIP = NetworkIpToPacketIp(s->LocalIp());
-    m_nLocalPort = s->LocalPort();
-    gSocketManager.DropSocket(s);
-  }
 }
 
 
 void CPacketTcp::InitBuffer(void)
 {
-  buffer = new CBuffer(getSize());
+  buffer = new CBuffer(m_nSize + 4);
 
-  buffer->add(m_nSourceUin);
-  buffer->add(m_nTcpVersion);
-  buffer->add(m_nCommand);
-  buffer->add(m_nSourceUin);
-  buffer->add(m_nSubCommand);
-  buffer->add(m_nMsgLength);
-  buffer->add(m_sMessage, m_nMsgLength);
-  buffer->add(m_nLocalIP);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_nLocalPort);
-  buffer->add(m_aUnknown_1);
-  buffer->add(m_nStatus);
-  buffer->add(m_nMsgType);
+  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(m_nCommand);
+  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedShort(m_nSubCommand);
+  buffer->PackString(m_szMessage);
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackUnsignedLong(s_nRealIp);
+  m_szLocalPortOffset = buffer->getDataPosWrite();
+  buffer->PackUnsignedLong(m_nLocalPort);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedShort(m_nStatus);
+  buffer->PackUnsignedShort(m_nMsgType);
 }
 
-void CPacketTcp::postBuffer(void)
+void CPacketTcp::PostBuffer(void)
 {
-  buffer->add(m_nSequence);
-  buffer->add(m_sLicqTag);
-  buffer->add(m_nLicqVersion);
-}
-
-unsigned long CPacketTcp::getSize(void)
-{
-  return (18 + m_nMsgLength + 24);
+  buffer->PackUnsignedLong(m_nSequence);
+  buffer->PackChar('L');
+  buffer->PackUnsignedShort(INT_VERSION);
 }
 
 //-----Message------------------------------------------------------------------
-unsigned long CPT_Message::getSize(void)
-{
-  return (CPacketTcp::getSize());
-}
-
 CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent,
                         ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, _sMessage,
                true, _bUrgent, _cUser)
 {
-  //InitBuffer();
-  //postBuffer();
-}
-
-void CPT_Message::Create(void)
-{
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 //-----Url----------------------------------------------------------------------
-unsigned long CPT_Url::getSize(void)
-{
-  return (CPacketTcp::getSize());
-}
-
 CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent,
                 ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_URL, _sMessage,
                true, _bUrgent, _cUser)
 {
-  //InitBuffer();
-  //postBuffer();
-}
-
-void CPT_Url::Create(void)
-{
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 
 //-----ReadAwayMessage----------------------------------------------------------
-unsigned long CPT_ReadAwayMessage::getSize(void)
-{
-  return (CPacketTcp::getSize());
-}
-
 CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG, "",
                true, false, _cUser)
@@ -1396,55 +1053,27 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
   case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
   default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
   }
-  //InitBuffer();
-  //postBuffer();
-}
 
-
-void CPT_ReadAwayMessage::Create(void)
-{
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 //-----ChatRequest--------------------------------------------------------------
-unsigned long CPT_ChatRequest::getSize(void)
-{
-  return (CPacketTcp::getSize() + 11);
-}
-
 CPT_ChatRequest::CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
                                 bool _bUrgent, ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage,
                true, _bUrgent, _cUser)
 {
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  memcpy(m_aUnknown_1, temp_1, 11);
 
-  /*InitBuffer();
-
-  buffer->add(m_aUnknown_1, 11);
-
-  postBuffer();*/
-}
-
-
-void CPT_ChatRequest::Create(void)
-{
-  CPacketTcp::Create();
+  m_nSize += 11;
   InitBuffer();
-  buffer->add(m_aUnknown_1, 11);
-  postBuffer();
+  buffer->Pack(temp_1, 11);
+  PostBuffer();
 }
 
 
 //-----FileTransfer--------------------------------------------------------------
-unsigned long CPT_FileTransfer::getSize(void)
-{
-  return (CPacketTcp::getSize() + 14 + m_nFilenameLength);
-}
-
 CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
                                   const char *_szDescription, bool _bUrgent,
                                   ICQUser *_cUser)
@@ -1469,262 +1098,154 @@ CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFil
   else
      m_szFilename = strdup(_szFilename);
 
-  m_nUnknown_1 = 0;
-  m_nFilenameLength = strlen(m_szFilename) + 1;
-  // m_szFilename set above
-  // m_nFileSize set above
-  m_nUnknown_2 = 0;
-
-  /*InitBuffer();
-
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_nFilenameLength);
-  buffer->add(m_szFilename, m_nFilenameLength);
-  buffer->add(m_nFileSize);
-  buffer->add(m_nUnknown_2);
-
-  postBuffer();*/
-}
-
-
-void CPT_FileTransfer::Create(void)
-{
-  CPacketTcp::Create();
+  m_nSize += 15 + strlen(m_szFilename);
   InitBuffer();
 
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_nFilenameLength);
-  buffer->add(m_szFilename, m_nFilenameLength);
-  buffer->add(m_nFileSize);
-  buffer->add(m_nUnknown_2);
+  buffer->PackUnsignedLong(0);
+  buffer->PackString(m_szFilename);
+  buffer->PackUnsignedLong(m_nFileSize);
+  buffer->PackUnsignedLong(0);
 
-  postBuffer();
+  PostBuffer();
 }
 
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-unsigned long CPT_Ack::getSize(void)
-{
-  return (CPacketTcp::getSize());
-}
-
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
                 bool _bAccept, bool _bUrgent, ICQUser *_cUser)
   : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept, _bUrgent,
                _cUser)
 {
   m_nSequence = _nSequence;
-  free(m_sMessage);
+  free(m_szMessage);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  m_sMessage = gTranslator.NToRN(o->AutoResponse());
+  m_szMessage = gTranslator.NToRN(o->AutoResponse());
   gUserManager.DropOwner();
-  m_nMsgLength = strlen(m_sMessage) + 1;
-  gTranslator.ClientToServer(m_sMessage);
+  gTranslator.ClientToServer(m_szMessage);
+
+  m_nSize += strlen(m_szMessage);
 }
 
 
 //-----AckMessage---------------------------------------------------------------
-unsigned long CPT_AckMessage::getSize(void)
-{
-  return (CPT_Ack::getSize());
-}
-
 CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
                               bool _bUrgent, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, _bUrgent, _cUser)
 {
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 
 
 //-----AckReadAwayMessage-------------------------------------------------------
-unsigned long CPT_AckReadAwayMessage::getSize(void)
-{
-  return (CPT_Ack::getSize());
-}
-
 CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
                                               unsigned long _nSequence,
                                               bool _bAccept, ICQUser *_cUser)
   : CPT_Ack(_nSubCommand, _nSequence, _bAccept, false, _cUser)
 {
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 
 //-----AckUrl-------------------------------------------------------------------
-unsigned long CPT_AckUrl::getSize(void)
-{
-  return (CPT_Ack::getSize());
-}
-
 CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
                       ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, _bUrgent, _cUser)
 {
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 
 //-----AckUrl-------------------------------------------------------------------
-unsigned long CPT_AckContactList::getSize(void)
-{
-  return (CPT_Ack::getSize());
-}
-
 CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
                                       bool _bUrgent, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, _bUrgent, _cUser)
 {
-  CPacketTcp::Create();
   InitBuffer();
-  postBuffer();
+  PostBuffer();
 }
 
 
 //-----AckChatRefuse------------------------------------------------------------
-unsigned long CPT_AckChatRefuse::getSize(void)
-{
-  return (CPT_Ack::getSize() + 11);
-}
-
-CPT_AckChatRefuse::CPT_AckChatRefuse(const char *_sReason,
+CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
                                     unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
-  free (m_sMessage);
-  if (_sReason == NULL)
-  {
-    m_nMsgLength = 1;
-    m_sMessage = strdup("");
-  }
-  else
-  {
-    m_nMsgLength = strlen(_sReason) + 1;
-    m_sMessage = strdup(_sReason);
-  }
+  free (m_szMessage);
+  m_szMessage = szReason == NULL ? strdup("") : strdup(szReason);
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  memcpy(m_aUnknown_1, temp_1, 11);
 
-  CPacketTcp::Create();
+  m_nSize += 11 + strlen(m_szMessage);
   InitBuffer();
-
-  buffer->add(m_aUnknown_1, 11);
-
-  postBuffer();
+  buffer->Pack(temp_1, 11);
+  PostBuffer();
 }
 
 
 //-----AckChatAccept------------------------------------------------------------
-unsigned long CPT_AckChatAccept::getSize(void)
-{
-  return (CPT_Ack::getSize() + 11);
-}
-
 CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort,
                                     unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
 {
-  char temp_1[3] = { 1, 0, 0 };
-  memcpy(m_aUnknown_1, temp_1, sizeof(m_aUnknown_1));
-  m_nPortReversed = ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF);
   m_nPort = _nPort;
   m_nStatus = ICQ_TCPxACK_ONLINE;
 
-  CPacketTcp::Create();
+  m_nSize += 11;
   InitBuffer();
 
-  buffer->add(m_aUnknown_1, sizeof(m_aUnknown_1));
-  buffer->add(m_nPortReversed);
-  buffer->add(m_nPort);
+  buffer->PackString("");
+  buffer->PackUnsignedLong( ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF) );
+  buffer->PackUnsignedLong(m_nPort);
 
-  postBuffer();
+  PostBuffer();
 }
 
 
 //-----AckFileRefuse------------------------------------------------------------
-unsigned long CPT_AckFileRefuse::getSize(void)
-{
-  return (CPT_Ack::getSize() + 15);
-}
-
-CPT_AckFileRefuse::CPT_AckFileRefuse(const char *_sReason,
+CPT_AckFileRefuse::CPT_AckFileRefuse(const char *szReason,
                                     unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, false, _cUser)
 {
-  free (m_sMessage);
-  if (_sReason == NULL)
-  {
-    m_nMsgLength = 1;
-    m_sMessage = strdup("");
-  }
-  else
-  {
-    m_nMsgLength = strlen(_sReason) + 1;
-    m_sMessage = strdup(_sReason);
-  }
-  m_nUnknown_1 = 0;
-  m_nStrLen = 1;
-  m_cEmptyStr = '\0';
-  m_nUnknown_2 = 0;
-  m_nUnknown_3 = 0;
+  free(m_szMessage);
+  m_szMessage = (szReason == NULL ? strdup("") : strdup(szReason));
 
-  CPacketTcp::Create();
+  m_nSize += 15 + strlen(m_szMessage);
   InitBuffer();
 
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_nStrLen);
-  buffer->add(m_cEmptyStr);
-  buffer->add(m_nUnknown_2);
-  buffer->add(m_nUnknown_3);
+  buffer->PackUnsignedLong(0);
+  buffer->PackString("");
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
 
-  postBuffer();
+  PostBuffer();
 }
 
 
 //-----AckFileAccept------------------------------------------------------------
-unsigned long CPT_AckFileAccept::getSize(void)
-{
-  return (CPT_Ack::getSize() + 15);
-}
-
 CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
                                     unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, true, true, _cUser)
 {
-  m_nPortReversed = ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF);
-  m_nStrLength = 1;
-  m_cEmptyStr = '\0';
-  m_nFileSize = 0;  // not used in the ack
+  m_nFileSize = 0;
   m_nPort = _nPort;
   m_nStatus = ICQ_TCPxACK_ONLINE;
 
-  CPacketTcp::Create();
+  m_nSize += 15;
   InitBuffer();
 
-  buffer->add(m_nPortReversed);
-  buffer->add(m_nStrLength);
-  buffer->add(m_cEmptyStr);
-  buffer->add(m_nFileSize);
-  buffer->add(m_nPort);
+  buffer->PackUnsignedLong( ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF) );
+  buffer->PackString("");
+  buffer->PackUnsignedLong(m_nFileSize);
+  buffer->PackUnsignedLong(m_nPort);
 
-  postBuffer();
+  PostBuffer();
 }
 
 
 //+++++Cancel+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-unsigned long CPT_Cancel::getSize(void)
-{
-  return (CPacketTcp::getSize());
-}
-
 CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
                       ICQUser *_cUser)
   : CPacketTcp(0, ICQ_CMDxTCP_CANCEL, _nSubCommand, "", true, false, _cUser)
@@ -1735,58 +1256,38 @@ CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
 
 
 //-----CancelChat---------------------------------------------------------------
-unsigned long CPT_CancelChat::getSize(void)
-{
-  return (CPT_Cancel::getSize() + 11);
-}
-
 CPT_CancelChat::CPT_CancelChat(unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Cancel(ICQ_CMDxSUB_CHAT, _nSequence, _cUser)
 {
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  memcpy(m_aUnknown_1, temp_1, 11);
 
-  CPacketTcp::Create();
+  m_nSize += 11;
   InitBuffer();
-
-  buffer->add(m_aUnknown_1, 11);
-
-  postBuffer();
+  buffer->Pack(temp_1, 11);
+  PostBuffer();
 }
 
 
 //-----CancelFile---------------------------------------------------------------
-unsigned long CPT_CancelFile::getSize(void)
-{
-  return (CPT_Cancel::getSize() + 15);
-}
-
 CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Cancel(ICQ_CMDxSUB_FILE, _nSequence, _cUser)
 {
-  m_nUnknown_1 = 0;
-  m_nStrLen = 1;
-  m_cEmptyStr = '\0';
-  m_nUnknown_2 = 0;
-  m_nUnknown_3 = 0;
-
-  CPacketTcp::Create();
+  m_nSize += 15;
   InitBuffer();
 
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_nStrLen);
-  buffer->add(m_cEmptyStr);
-  buffer->add(m_nUnknown_2);
-  buffer->add(m_nUnknown_3);
+  buffer->PackUnsignedLong(0);
+  buffer->PackString("");
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
 
-  postBuffer();
+  PostBuffer();
 }
 
 
 //=====Chat=====================================================================
 void CPacketChat::InitBuffer(void)
 {
-  buffer = new CBuffer(getSize());
+  buffer = new CBuffer(m_nSize);
 }
 
 //-----ChatColor----------------------------------------------------------------
@@ -1794,29 +1295,16 @@ CPChat_Color::CPChat_Color(char *_sLocalName, unsigned short _nLocalPort,
                           unsigned long _nColorForeground,
                           unsigned long _nColorBackground)
 {
-  m_nCommand = 0x64;
-  char temp_1[4] = { 0xFD, 0xFF, 0xFF, 0xFF };
-  memcpy(m_aUnknown_1, temp_1, sizeof(m_aUnknown_1));
-  m_nSourceUin = gUserManager.OwnerUin();
-  m_nLocalNameLength = strlen(_sLocalName) + 1;
-  m_sLocalName = strdup(_sLocalName);
-  m_aLocalPortReversed[0] = ((char *)(&_nLocalPort))[1];
-  m_aLocalPortReversed[1] = ((char *)(&_nLocalPort))[0];
-  m_nColorForeground = _nColorForeground;
-  m_nColorBackground = _nColorBackground;
-  m_aUnknown_2 = '\0';
-
+  m_nSize = 10 + strlen(_sLocalName) + 16;
   InitBuffer();
 
-  buffer->add(m_nCommand);
-  buffer->add(m_aUnknown_1, sizeof(m_aUnknown_1));
-  buffer->add(m_nSourceUin);
-  buffer->add(m_nLocalNameLength);
-  buffer->add(m_sLocalName, m_nLocalNameLength);
-  buffer->add(m_aLocalPortReversed, sizeof(m_aLocalPortReversed));
-  buffer->add(m_nColorForeground);
-  buffer->add(m_nColorBackground);
-  buffer->add(m_aUnknown_2);
+  buffer->PackUnsignedLong(0x64);
+  buffer->PackUnsignedLong(0xFFFFFFFD);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShort( ((_nLocalPort & 0xFF) << 8) + ((_nLocalPort >> 8) & 0xFF) );
+  buffer->PackUnsignedLong(_nColorForeground);
+  buffer->PackUnsignedLong(_nColorBackground);
+  buffer->PackChar(0);
 
 }
 
@@ -1828,76 +1316,48 @@ CPChat_ColorFont::CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort
                                   unsigned long _nFontSize,
                                   unsigned long _nFontFace, char *_sFontName)
 {
-  m_nCommand = 0x64;
-  m_nSourceUin = gUserManager.OwnerUin();
-  m_nLocalNameLength = strlen(_sLocalName) + 1;
-  m_sLocalName = strdup(_sLocalName);
-  m_nColorForeground = _nColorForeground;
-  m_nColorBackground = _nColorBackground; 
-  m_nUnknown_1 = 0x00000003;
-  m_nLocalPort = _nLocalPort;
-  m_nLocalHost = LOCALHOST;
-  m_aUnknown_2 = 0x04;
-  m_nUnknown_Port = 0x5A75;
-  m_nFontSize = _nFontSize;
-  m_nFontFace = _nFontFace;
-  m_nFontNameLength = strlen(_sFontName) + 1;
-  m_sFontName = strdup(_sFontName);
-  char temp_3[3] = { 0, 0, 0 };
-  memcpy(m_aUnknown_3, temp_3, sizeof(m_aUnknown_3));
-  
+  m_nSize = 10 + strlen(_sLocalName) + 35 + strlen(_sFontName) + 4;
   InitBuffer();
 
-  buffer->add(m_nCommand);
-  buffer->add(m_nSourceUin);
-  buffer->add(m_nLocalNameLength);
-  buffer->add(m_sLocalName, m_nLocalNameLength);
-  buffer->add(m_nColorForeground);
-  buffer->add(m_nColorBackground);
-  buffer->add(m_nUnknown_1);
-  buffer->add(m_nLocalPort);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_aUnknown_2);
-  buffer->add(m_nUnknown_Port);
-  buffer->add(m_nFontSize);
-  buffer->add(m_nFontFace);
-  buffer->add(m_nFontNameLength);
-  buffer->add(m_sFontName, m_nFontNameLength);
-  buffer->add(m_aUnknown_3, sizeof(m_aUnknown_3));
+  buffer->PackUnsignedLong(0x64);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackString(_sLocalName);
+  buffer->PackUnsignedLong(_nColorForeground);
+  buffer->PackUnsignedLong(_nColorBackground);
+  buffer->PackUnsignedLong(0x03);
+  buffer->PackUnsignedLong(_nLocalPort);
+  buffer->PackUnsignedLong(LOCALHOST);
+  buffer->PackUnsignedLong(LOCALHOST);
+  buffer->PackChar(0x04);
+  buffer->PackUnsignedShort(0x5A75);
+  buffer->PackUnsignedLong(_nFontSize);
+  buffer->PackUnsignedLong(_nFontFace);
+  buffer->PackString(_sFontName);
+  buffer->PackUnsignedShort(0x00);
+  buffer->PackChar(0);
 }
 
 
 
 //-----ChatFont---------------------------------------------------------------------
-CPChat_Font::CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize, 
+CPChat_Font::CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
                         unsigned long _nFontFace, char *_sFontName)
 {
-  m_nCommand = 0x03;
-  m_nLocalPort = _nLocalPort;
-  m_nLocalHost = LOCALHOST;
-  m_aUnknown_2 = 0x04;
-  m_nUnknown_Port = 0x5A75;
-  m_nFontSize = _nFontSize;
-  m_nFontFace = _nFontFace;
-  m_nFontNameLength = strlen(_sFontName) + 1;
-  m_sFontName = strdup(_sFontName);
   char temp_3[3] = { 0, 0, 0 };
-  memcpy(m_aUnknown_3, temp_3, sizeof(m_aUnknown_3));
-  
+
+  m_nSize = 29 + strlen(_sFontName) + 4;
   InitBuffer();
 
-  buffer->add(m_nCommand);
-  buffer->add(m_nLocalPort);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_nLocalHost);
-  buffer->add(m_aUnknown_2);
-  buffer->add(m_nUnknown_Port);
-  buffer->add(m_nFontSize);
-  buffer->add(m_nFontFace);
-  buffer->add(m_nFontNameLength);
-  buffer->add(m_sFontName, m_nFontNameLength);
-  buffer->add(m_aUnknown_3, sizeof(m_aUnknown_3));
+  buffer->PackUnsignedLong(0x03);
+  buffer->PackUnsignedLong(_nLocalPort);
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackUnsignedLong(s_nRealIp);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedShort(0x5A75);
+  buffer->PackUnsignedLong(_nFontSize);
+  buffer->PackUnsignedLong(_nFontFace);
+  buffer->PackString(_sFontName);
+  buffer->Pack(temp_3, 3);
 }
 
 
@@ -1906,40 +1366,27 @@ CPFile_InitClient::CPFile_InitClient(char *_szLocalName,
                                     unsigned long _nNumFiles,
                                     unsigned long _nTotalSize)
 {
-  m_cUnknown1 = 0;
-  m_nUnknown2 = 0;
-  m_nNumFiles = _nNumFiles;
-  m_nTotalSize = _nTotalSize;
-  m_nUnknown3 = 0x64;
-  m_nLocalNameLength = strlen(_szLocalName) + 1;
-  m_szLocalName = strdup(_szLocalName);
-
+  m_nSize = 20 + strlen(_szLocalName);
   InitBuffer();
 
-  buffer->add(m_cUnknown1);
-  buffer->add(m_nUnknown2);
-  buffer->add(m_nNumFiles);
-  buffer->add(m_nTotalSize);
-  buffer->add(m_nUnknown3);
-  buffer->add(m_nLocalNameLength);
-  buffer->add(m_szLocalName, m_nLocalNameLength);
+  buffer->PackChar(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(_nNumFiles);
+  buffer->PackUnsignedLong(_nTotalSize);
+  buffer->PackUnsignedLong(0x64);
+  buffer->PackString(_szLocalName);
 }
 
 
 //-----FileInitServer-----------------------------------------------------------
 CPFile_InitServer::CPFile_InitServer(char *_szLocalName)
 {
-  m_cUnknown1 = 1;
-  m_nUnknown2 = 0x64;
-  m_nLocalNameLength = strlen(_szLocalName) + 1;
-  m_szLocalName = strdup(_szLocalName);
-
+  m_nSize = 8 + strlen(_szLocalName);
   InitBuffer();
 
-  buffer->add(m_cUnknown1);
-  buffer->add(m_nUnknown2);
-  buffer->add(m_nLocalNameLength);
-  buffer->add(m_szLocalName, m_nLocalNameLength);
+  buffer->PackChar(1);
+  buffer->PackUnsignedLong(0x64);
+  buffer->PackString(_szLocalName);
 }
 
 
@@ -1948,7 +1395,6 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
 {
   m_bValid = true;
   m_nError = 0;
-  m_nPacketId = 0x02;
 
   char *pcNoPath = NULL;
   struct stat buf;
@@ -1965,36 +1411,21 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
     m_nError = errno;
     return;
   }
-  m_nUnknown1 = 0x0001;
-  m_cUnknown2 = 0x00;
   m_nFileSize = buf.st_size;
-  m_nUnknown3 = 0x00;
-  m_nUnknown4 = 0x64;
 
+  m_nSize = strlen(m_szFileName) + 21;
   InitBuffer();
 
-  buffer->add(m_nPacketId);
+  buffer->PackUnsignedShort(0x02);
 
   // Add all the file names
-  unsigned short nFilenameLen = strlen(m_szFileName) + 1;
-  buffer->add(nFilenameLen);
-  buffer->add(m_szFileName, nFilenameLen);
+  buffer->PackString(m_szFileName);
   // Add the empty file name
-  buffer->add(m_nUnknown1);
-  buffer->add(m_cUnknown2);
+  buffer->PackString("");
   //Add the file length
-  buffer->add(m_nFileSize);
-  buffer->add(m_nUnknown3);
-  buffer->add(m_nUnknown4);
-}
-
-
-unsigned long CPFile_Info::getSize(void)
-{
-  // Add the length of each file name + 1 for the terminating nulll + 2 for
-  // the short representing the length of the file name + 4 for the file size
-  unsigned short n = strlen(m_szFileName) + 1 + 2 + 4;
-  return (CPacketFile::getSize() + 13 + n);
+  buffer->PackUnsignedLong(m_nFileSize);
+  buffer->PackUnsignedLong(0x00);
+  buffer->PackUnsignedLong(0x64);
 }
 
 
@@ -2007,16 +1438,12 @@ CPFile_Info::~CPFile_Info(void)
 //-----FileStart----------------------------------------------------------------
 CPFile_Start::CPFile_Start(unsigned long _nFilePos)
 {
-  m_cUnknown1 = 3;
-  m_nFilePos = _nFilePos;
-  m_nUnknown2 = 0;
-  m_nUnknown3 = 0x64;
-
+  m_nSize = 13;
   InitBuffer();
 
-  buffer->add(m_cUnknown1);
-  buffer->add(m_nFilePos);
-  buffer->add(m_nUnknown2);
-  buffer->add(m_nUnknown3);
+  buffer->PackChar(0x03);
+  buffer->PackUnsignedLong(_nFilePos);
+  buffer->PackUnsignedLong(0x00);
+  buffer->PackUnsignedLong(0x64);
 }
 

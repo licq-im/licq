@@ -16,7 +16,6 @@ class CPacket
 {
 public:
    CBuffer *getBuffer(void)  { return buffer; };
-   virtual void Create(void) = 0;
 
    virtual const unsigned long  getSequence(void) = 0;
    virtual const unsigned short SubSequence(void) = 0;
@@ -25,6 +24,11 @@ public:
 
 protected:
    CBuffer *buffer;
+   unsigned short m_nSize;
+
+   static unsigned long s_nLocalIp;
+   static unsigned long s_nRealIp;
+   static char s_nMode;
 };
 
 //=====UDP======================================================================
@@ -42,16 +46,8 @@ public:
    virtual const unsigned short SubSequence(void) { return m_nSubSequence; }
    virtual const unsigned short getCommand(void)  { return m_nCommand; }
    virtual const unsigned short getSubCommand(void)  { return 0; }
-   virtual void Create(void) {};
 protected:
    CPacketUdp(unsigned short _nCommand);
-#if ICQ_VERSION == 2
-   virtual unsigned long getSize(void)     { return 10; };
-#elif ICQ_VERSION == 4
-   virtual unsigned long getSize(void)     { return 20; };
-#elif ICQ_VERSION == 5
-   virtual unsigned long getSize(void)     { return 24; };
-#endif
    void InitBuffer(void);
    void Encrypt(void);
 
@@ -95,7 +91,6 @@ class CPU_Register : public CPacket
 public:
   CPU_Register(const char *_szPasswd);
   virtual ~CPU_Register(void);
-  virtual void Create(void) {}
 
   virtual const unsigned long  getSequence(void) { return m_nSequence; }
   virtual const unsigned short SubSequence(void) { return 0; }
@@ -120,19 +115,6 @@ class CPU_Register : public CPacketUdp
 {
 public:
   CPU_Register(const char *_szPasswd);
-  virtual ~CPU_Register(void);
-
-protected:
-  virtual unsigned long getSize(void);
-
-  /* 02 00 FC 03 01 00 02 00 04 00 65 66 67 00 72 00 00 00 00 00 00 00 */
-  unsigned short m_nUnknown1;
-  unsigned short m_nPasswdLen;
-  char          *m_szPasswd;
-  unsigned long  m_nUnknown2;
-  unsigned long  m_nUnknown3;
-  unsigned long  m_nUnknown4;
-  unsigned long  m_nUnknown5;
 };
 #endif
 
@@ -141,30 +123,13 @@ class CPU_Logon : public CPacketUdp
 {
 public:
   CPU_Logon(INetSocket *_s, const char *_szPassword, unsigned short _nLogonStatus);
-  virtual ~CPU_Logon(void);
 protected:
-  virtual unsigned long getSize(void);
-
   /* 02 00 E8 03 08 00 8F 76 20 00 34 4A 00 00 08 00 5B 63 65 50 61 62 43 00
      72 00 04 00 7F 00 00 01 04 00 00 00 00 03 00 00 00 02 00 00 00 00 00 04
      00 72 00 */
-  // ... PacketUdp header
-#if ICQ_VERSION == 4 || ICQ_VERSION == 5
-  unsigned long  m_nTime;
-#endif
   unsigned long  m_nLocalPort;
-  unsigned short m_nPasswordLength;
-  char           *m_sPassword;
-  unsigned long  m_nUnknown_1;
-  unsigned long  m_nLocalIP;
-  char           m_nMode;
   unsigned long  m_nLogonStatus;
   unsigned long  m_nTcpVersion;
-#if ICQ_VERSION == 2 || ICQ_VERSION == 4
-  char           m_aUnknown_2[10];
-#else
-  char           m_aUnknown_2[20];
-#endif
 };
 
 
@@ -177,10 +142,6 @@ public:
 #elif ICQ_VERSION == 4 || ICQ_VERSION == 5
    CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence);
 #endif
-protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
 };
 
 
@@ -190,10 +151,7 @@ class CPU_AddUser : public CPacketUdp
 public:
    CPU_AddUser(unsigned long _nAddedUin);
 protected:
-   virtual unsigned long getSize(void);
-
    /* 02 00 3C 05 06 00 50 A5 82 00 8F 76 20 00 */
-   // ... PacketUdp header
    unsigned long  m_nAddedUin;
 };
 
@@ -203,13 +161,6 @@ class CPU_Logoff : public CPacketUdp
 {
 public:
    CPU_Logoff(void);
-protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
-   char m_aUnknown_1[2];
-   char m_aDisconnect[20];
-   char m_aUnknown_2[2];
 };
 
 
@@ -219,12 +170,6 @@ class CPU_ContactList : public CPacketUdp
 public:
    CPU_ContactList(UinList &uins);
    CPU_ContactList(unsigned long _nUin);
-protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
-   char    m_nNumUsers;
-   UinList m_vnUins;
 };
 
 
@@ -232,14 +177,7 @@ protected:
 class CPU_VisibleList : public CPacketUdp
 {
 public:
-   CPU_VisibleList(UinList &uins);
-   bool empty(void)  { return (m_nNumUsers == 0); };
-protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
-   char    m_nNumUsers;
-   UinList m_vnUins;
+  CPU_VisibleList(UinList &uins);
 };
 
 
@@ -248,13 +186,6 @@ class CPU_InvisibleList : public CPacketUdp
 {
 public:
    CPU_InvisibleList(UinList &uins);
-   bool empty(void)  { return (m_nNumUsers == 0); };
-protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
-   char    m_nNumUsers;
-   UinList m_vnUins;
 };
 
 
@@ -264,21 +195,8 @@ class CPU_StartSearch : public CPacketUdp
 public:
    CPU_StartSearch(const char *_sAlias, const char *_sFirstName,
                    const char *_sLastName, const char *_sEmail);
-   virtual ~CPU_StartSearch(void);
-protected:
-   virtual unsigned long getSize(void);
-
    /* 02 00 24 04 04 00 50 A5 82 00 05 00 0B 00 41 70 6F 74 68 65 6F 73 69 73
       00 07 00 47 72 61 68 61 6D 00 05 00 52 6F 66 66 00 01 00 00 */
-   // ... PacketUdp header
-   unsigned short m_nAliasLength;
-   char           *m_sAlias;
-   unsigned short m_nFirstNameLength;
-   char           *m_sFirstName;
-   unsigned short m_nLastNameLength;
-   char           *m_sLastName;
-   unsigned short m_nEmailLength;
-   char           *m_sEmail;
 };
 
 
@@ -289,26 +207,18 @@ public:
    CPU_UpdatePersonalBasicInfo(const char *_sAlias, const char *_sFirstName,
                                const char *_sLastName, const char *_sEmail,
                                bool _bAuthorization);
-   virtual ~CPU_UpdatePersonalBasicInfo(void);
 
-   const char *Alias(void)  { return m_sAlias; }
-   const char *FirstName(void)  { return m_sFirstName; }
-   const char *LastName(void)  { return m_sLastName; }
-   const char *Email(void)  { return m_sEmail; }
+   const char *Alias(void)  { return m_szAlias; }
+   const char *FirstName(void)  { return m_szFirstName; }
+   const char *LastName(void)  { return m_szLastName; }
+   const char *Email(void)  { return m_szEmail; }
    bool Authorization(void)  { return m_nAuthorization == 0; }
 protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
-   unsigned short m_nAliasLength;
-   char           *m_sAlias;
-   unsigned short m_nFirstNameLength;
-   char           *m_sFirstName;
-   unsigned short m_nLastNameLength;
-   char           *m_sLastName;
-   unsigned short m_nEmailLength;
-   char           *m_sEmail;
-   char           m_nAuthorization;
+   char *m_szAlias;
+   char *m_szFirstName;
+   char *m_szLastName;
+   char *m_szEmail;
+   char m_nAuthorization;
 };
 
 
@@ -321,35 +231,26 @@ public:
                              char _cSex, const char *_sPhone,
                              const char *_sHomepage, const char *_sAbout,
                              unsigned long _nZipcode);
-   virtual ~CPU_UpdatePersonalExtInfo(void);
 
-   const char *City(void)  { return m_sCity; }
+   const char *City(void)  { return m_szCity; }
    unsigned short Country(void)  { return m_nCountry; }
-   const char *State(void)  { return m_sState; }
+   const char *State(void)  { return m_szState; }
    unsigned short Age(void)  { return m_nAge; }
    char Sex(void)  { return m_cSex; }
-   const char *PhoneNumber(void)  { return m_sPhone; }
-   const char *Homepage(void)  { return m_sHomepage; }
-   const char *About(void)  { return m_sAbout; }
+   const char *PhoneNumber(void)  { return m_szPhone; }
+   const char *Homepage(void)  { return m_szHomepage; }
+   const char *About(void)  { return m_szAbout; }
    unsigned long Zipcode(void) { return m_nZipcode; }
 protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
-   unsigned short m_nCityLength;
-   char           *m_sCity;
+   char           *m_szCity;
    unsigned short m_nCountry;
    char           m_cTimezone;
-   unsigned short m_nStateLength;
-   char           *m_sState;
+   char           *m_szState;
    unsigned short m_nAge;
    char           m_cSex;
-   unsigned short m_nPhoneLength;
-   char           *m_sPhone;
-   unsigned short m_nHomepageLength;
-   char           *m_sHomepage;
-   unsigned short m_nAboutLength;
-   char           *m_sAbout;
+   char           *m_szPhone;
+   char           *m_szHomepage;
+   char           *m_szAbout;
    unsigned long  m_nZipcode;
 };
 
@@ -359,10 +260,6 @@ class CPU_Ping : public CPacketUdp
 {
 public:
    CPU_Ping(void);
-protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
 };
 
 
@@ -370,18 +267,12 @@ protected:
 class CPU_ThroughServer : public CPacketUdp
 {
 public:
-   CPU_ThroughServer(unsigned long _nSourceUin, unsigned long _nDestinationUin, 
+   CPU_ThroughServer(unsigned long _nSourceUin, unsigned long _nDestinationUin,
                      unsigned short _nSubCommand, char *_sMessage);
    virtual const unsigned short getSubCommand(void)  { return m_nSubCommand; }
-   virtual ~CPU_ThroughServer(void);
 protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
    unsigned long  m_nDestinationUin;
    unsigned short m_nSubCommand;
-   unsigned short m_nMsgLength;
-   char           *m_sMessage;
 };
 
 
@@ -391,9 +282,6 @@ class CPU_SetStatus : public CPacketUdp
 public:
    CPU_SetStatus(unsigned long _nNewStatus);
 protected:
-   virtual unsigned long getSize(void);
-
-   // ... PacketUdp header
    unsigned long m_nNewStatus;
 };
 
@@ -404,10 +292,7 @@ class CPU_GetUserBasicInfo : public CPacketUdp
 public:
    CPU_GetUserBasicInfo(unsigned long _nUserUin);
 protected:
-   virtual unsigned long getSize(void);
-
    /* 02 00 60 04 B7 00 BA 95 47 00 0A 00 8F 76 20 00 */
-   // ... PacketUdp header
    unsigned long  m_nUserUin;
 };
 
@@ -418,10 +303,7 @@ class CPU_GetUserExtInfo : public CPacketUdp
 public:
    CPU_GetUserExtInfo(unsigned long _nUserUin);
 protected:
-   virtual unsigned long getSize(void);
-
    /* 02 00 60 04 B7 00 BA 95 47 00 0A 00 8F 76 20 00 */
-   // ... PacketUdp header
    unsigned long  m_nUserUin;
 };
 
@@ -432,12 +314,8 @@ class CPU_Authorize : public CPacketUdp
 public:
    CPU_Authorize(unsigned long _nAuthorizeUin);
 protected:
-   virtual unsigned long getSize(void);
-
    /* 02 00 56 04 05 00 50 A5 82 00 A7 B8 19 00 08 00 01 00 00 */
-   // ... PacketUdp header
    unsigned long m_nAuthorizeUin;
-   char          m_aUnknown_1[5];
 };
 
 //-----RequestSysMsg------------------------------------------------------------
@@ -445,10 +323,6 @@ class CPU_RequestSysMsg : public CPacketUdp
 {
 public:
    CPU_RequestSysMsg(void);
-protected:
-   unsigned long getSize(void);
-   /* 02 00 4C 04 02 00 50 A5 82 00 */
-   // ... PacketUdp header
 };
 
 
@@ -463,11 +337,6 @@ public:
 #elif ICQ_VERSION == 5
   CPU_SysMsgDoneAck(void);
 #endif
-protected:
-  unsigned long getSize(void);
-
-  /* 02 00 42 04 04 00 50 A5 82 00 */
-  // ... PacketUdp header
 };
 
 
@@ -490,11 +359,8 @@ public:
                           unsigned long nZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail);
-  ~CPU_Meta_SetGeneralInfo();
   virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
 protected:
-  unsigned long getSize(void);
-
   unsigned short m_nMetaCommand;
 
   char *m_szAlias;
@@ -511,9 +377,8 @@ protected:
   unsigned long m_nZipCode;
   unsigned short m_nCountryCode;
   char m_nTimezone;
-  char m_bAuthorization;
-  char m_nUnknown_1;
-  char m_bHideEmail;
+  char m_nAuthorization;
+  char m_nHideEmail;
 };
 
 
@@ -521,32 +386,26 @@ protected:
 class CPU_Meta_SetWorkInfo : public CPacketUdp
 {
 public:
-  CPU_Meta_SetWorkInfo(const char *_szCity,
-                       const char *_szState,
-                       const char *_szFax,
-                       const char *_szAddress,
-                       const char *_szName,
-                       const char *_szDepartment,
-                       const char *_szPosition,
-                       const char *_szHomepage);
-  ~CPU_Meta_SetWorkInfo(void);
+  CPU_Meta_SetWorkInfo(const char *szCity,
+                       const char *szState,
+                       const char *szFax,
+                       const char *szAddress,
+                       const char *szName,
+                       const char *szDepartment,
+                       const char *szPosition,
+                       const char *szHomepage);
   virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
 protected:
-  unsigned long getSize(void);
-
   unsigned short m_nMetaCommand;
 
-  char          *m_szCity;
-  char          *m_szState;
-  char          *m_szFax;
-  char          *m_szAddress;
-  unsigned long  m_nUnknown1;  // 0x0100
-  unsigned short m_nUnknown2;  // 0xffff
-  char          *m_szName;
-  char          *m_szDepartment;
-  char          *m_szPosition;
-  unsigned short m_nUnknown3;  // 0x04
-  char          *m_szHomepage;
+  char *m_szCity;
+  char *m_szState;
+  char *m_szFax;
+  char *m_szAddress;
+  char *m_szName;
+  char *m_szDepartment;
+  char *m_szPosition;
+  char *m_szHomepage;
 };
 
 
@@ -554,21 +413,19 @@ protected:
 class CPU_Meta_SetSecurityInfo : public CPacketUdp
 {
 public:
-  CPU_Meta_SetSecurityInfo(bool _bAuthorization,
-                           bool _bHideIp,
-                           bool _bWebAware);
+  CPU_Meta_SetSecurityInfo(bool bAuthorization,
+                           bool bHideIp,
+                           bool bWebAware);
   virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
 
-  bool Authorization(void)  { return !m_bAuthorization; }
-  bool HideIp(void)         { return m_bHideIp; }
-  bool WebAware(void)       { return m_bWebAware; }
+  bool Authorization(void)  { return m_nAuthorization == 0; }
+  bool HideIp(void)         { return m_nHideIp == 1; }
+  bool WebAware(void)       { return m_nWebAware == 1; }
 protected:
-  unsigned long getSize(void);
-
   unsigned short m_nMetaCommand;
-  char           m_bAuthorization;
-  char           m_bHideIp;
-  char           m_bWebAware;
+  char m_nAuthorization;
+  char m_nHideIp;
+  char m_nWebAware;
 };
 
 
@@ -577,13 +434,9 @@ class CPU_Meta_RequestInfo : public CPacketUdp
 {
 public:
   CPU_Meta_RequestInfo(unsigned long _nUin);
-
   virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
-
   unsigned long Uin(void)  {  return m_nUin; }
 protected:
-  unsigned long getSize(void);
-
   unsigned short m_nMetaCommand;
   unsigned long  m_nUin;
 };
@@ -600,23 +453,16 @@ public:
 
    virtual const unsigned long  getSequence(void)   { return 0; }
    virtual const unsigned short SubSequence(void)   { return 0; }
-   virtual const unsigned short getCommand(void)    { return m_cHandshakeCommand; }
+   virtual const unsigned short getCommand(void)    { return ICQ_CMDxTCP_HANDSHAKE; }
    virtual const unsigned short getSubCommand(void) { return 0; }
-   void Create(void) {};
 protected:
-   virtual unsigned long getSize(void) { return (26); };
    void InitBuffer(void);
 
    /* FF 03 00 00 00 3D 62 00 00 50 A5 82 00 CF 60 AD 95 CF 60 AD 95 04 3D 62
       00 00 */
-   char  m_cHandshakeCommand;
-   unsigned long  m_nTcpVersion;
    unsigned long  m_nLocalPort;
    unsigned long  m_nSourceUin;
-   unsigned long  m_nLocalHost;  // local ip
-   //             m_nLocalHost;  // local real ip
-   char           m_aUnknown_2;
-   //             m_nLocalPort;
+   unsigned long  m_nLocalHost;
 };
 
 
@@ -630,33 +476,25 @@ public:
    virtual const unsigned short SubSequence(void)   { return 0; }
    virtual const unsigned short getCommand(void)    { return m_nCommand; }
    virtual const unsigned short getSubCommand(void) { return m_nSubCommand; }
-   virtual void Create(void);
+
+   char *LocalPortOffset(void)  {  return m_szLocalPortOffset; }
 protected:
    CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
-              unsigned short _nSubCommand, const char *_sMessage, bool _bAccept,
+              unsigned short _nSubCommand, const char *szMessage, bool _bAccept,
               bool _bUrgent, ICQUser *_cUser);
-   virtual unsigned long getSize(void);
    void InitBuffer(void);
-   void postBuffer(void);
-   ICQUser *m_cUser;
+   void PostBuffer(void);
 
    unsigned long  m_nSourceUin;
-   unsigned short m_nTcpVersion;
    unsigned long  m_nCommand;
- //unsigned long  m_nSourceUin;
    unsigned short m_nSubCommand;
-   unsigned short m_nMsgLength;
-   char           *m_sMessage;
-   unsigned long  m_nLocalIP;
-   unsigned long  m_nLocalHost;
+   char          *m_szMessage;
    unsigned long  m_nLocalPort;
-   char           m_aUnknown_1;
    unsigned short m_nStatus;
    unsigned short m_nMsgType;
-   // ...
    unsigned long  m_nSequence;
-   char           m_sLicqTag;
-   unsigned short m_nLicqVersion;
+
+   char *m_szLocalPortOffset;
 };
 
 
@@ -665,9 +503,6 @@ class CPT_Message : public CPacketTcp
 {
 public:
    CPT_Message(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent, ICQUser *_cUser);
-   virtual void Create(void);
-protected:
-   virtual unsigned long getSize(void);
 };
 
 
@@ -676,9 +511,6 @@ class CPT_Url : public CPacketTcp
 {
 public:
    CPT_Url(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent, ICQUser *_cUser);
-   virtual void Create(void);
-protected:
-   virtual unsigned long getSize(void);
    /* BA 95 47 00 03 00 EE 07 00 00 BA 95 47 00 04 00 24 00 67 6F 6F 64 20 70 6F
       72 6E 20 73 69 74 65 FE 68 74 74 70 3A 2F 2F 63 6F 6F 6C 70 6F 72 74 6E 2E
       63 6F 6D 00 81 61 1D 9E 7F 00 00 01 3F 07 00 00 04 00 00 10 00 03 00 00 00 */
@@ -690,9 +522,6 @@ class CPT_ReadAwayMessage : public CPacketTcp
 {
 public:
    CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cUser);
-   virtual void Create(void);
-protected:
-   virtual unsigned long getSize(void);
    /* 76 1E 3F 00 03 00 EE 07 00 00 76 1E 3F 00 E8 03 01 00 00 81 61 1D 9D 81 61
       1D 9D C9 05 00 00 04 00 00 10 00 FE FF FF FF */
 };
@@ -703,13 +532,9 @@ class CPT_ChatRequest : public CPacketTcp
 {
 public:
    CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent, ICQUser *_cUser);
-   virtual void Create(void);
-protected:
-   virtual unsigned long getSize(void);
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 02 00 0D 00 63 68 61 74 20 72
       65 71 75 65 73 74 00 CF 60 AD D3 CF 60 AD D3 28 12 00 00 04 00 00 10 00
       01 00 00 00 00 00 00 00 00 00 00 06 00 00 00 */
-   char m_aUnknown_1[11];
 };
 
 
@@ -719,25 +544,19 @@ class CPT_FileTransfer : public CPacketTcp
 public:
    CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
                     const char *_szDescription, bool _bUrgent, ICQUser *_cUser);
-   virtual void Create(void);
    bool IsValid(void)  { return m_bValid; };
    const char *GetFilename(void)  { return m_szFilename; };
-   const char *GetDescription(void)  { return m_sMessage; };
+   const char *GetDescription(void)  { return m_szMessage; };
    unsigned long GetFileSize(void)  { return m_nFileSize; };
 protected:
-   virtual unsigned long getSize(void);
    bool m_bValid;
 
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
       73 20 61 20 66 69 6C 65 00 CF 60 AD D3 CF 60 AD D3 60 12 00 00 04 00 00
       10 00 00 00 00 00 09 00 4D 61 6B 65 66 69 6C 65 00 55 0C 00 00 00 00 00
       00 04 00 00 00 */
-   // TCP header stuff
-   unsigned long  m_nUnknown_1;
-   unsigned short m_nFilenameLength;
    char           *m_szFilename;
    unsigned long  m_nFileSize;
-   unsigned long  m_nUnknown_2;
 };
 
 
@@ -747,8 +566,6 @@ class CPT_Ack : public CPacketTcp
 protected:
   CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
           bool _bAccept, bool _bUrgent, ICQUser *_cUser);
-  virtual unsigned long getSize(void);
-
   /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 01 00 01 00 00 CF 60 AD D3 CF
      60 AD D3 60 12 00 00 04 00 00 00 00 02 00 00 00 */
 };
@@ -759,8 +576,6 @@ class CPT_AckMessage : public CPT_Ack
 {
 public:
   CPT_AckMessage(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
-protected:
-  virtual unsigned long getSize(void);
   /* 8F 76 20 00 03 00 DA 07 00 00 8F 76 20 00 01 00 01 00 00 CF 60 AD D3 7F
      00 00 01 5A 12 00 00 04 00 00 00 00 14 00 00 00 */
 };
@@ -772,8 +587,6 @@ class CPT_AckReadAwayMessage : public CPT_Ack
 public:
    CPT_AckReadAwayMessage(unsigned short _nSubCommand, unsigned long _nSequence,
                           bool _bAccept, ICQUser *_cUser);
-protected:
-   virtual unsigned long getSize(void);
 };
 
 
@@ -782,8 +595,6 @@ class CPT_AckUrl : public CPT_Ack
 {
 public:
   CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
-protected:
-   virtual unsigned long getSize(void);
 };
 
 
@@ -793,8 +604,6 @@ class CPT_AckContactList : public CPT_Ack
 public:
   CPT_AckContactList(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
                      ICQUser *_cUser);
-protected:
-  virtual unsigned long getSize(void);
 };
 
 
@@ -803,13 +612,9 @@ class CPT_AckChatRefuse : public CPT_Ack
 {
 public:
   CPT_AckChatRefuse(const char *_sReason, unsigned long _nSequence, ICQUser *_cUser);
-protected:
-   virtual unsigned long getSize(void);
-
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 03 00 6E 6F 00 CF 60 AD
       95 CF 60 AD 95 1E 3C 00 00 04 01 00 00 00 01 00 00 00 00 00 00 00 00 00
       00 01 00 00 00 */
-   char m_aUnknown_1[11];
 };
 
 
@@ -819,14 +624,9 @@ class CPT_AckChatAccept : public CPT_Ack
 public:
   CPT_AckChatAccept(unsigned short _nPort, unsigned long _nSequence,
                     ICQUser *_cUser);
-protected:
-   virtual unsigned long getSize(void);
-
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD 95 CF
       60 AD 95 1E 3C 00 00 04 00 00 00 00 01 00 00 40 78 00 00 78 40 00 00 02
       00 00 00 */
-   char          m_aUnknown_1[3];  // actually a 0 length string
-   unsigned long m_nPortReversed;
    unsigned long m_nPort;
 };
 
@@ -839,15 +639,10 @@ public:
   CPT_AckFileAccept(unsigned short _nPort, unsigned long _nSequence,
                     ICQUser *_cUser);
 protected:
-   virtual unsigned long getSize(void);
-
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 01 00 00 D1 EF 04 9F 7F
       00 00 01 4A 1F 00 00 04 00 00 00 00 20 3A 00 00 01 00 00 00 00 00 00 3A
       20 00 00 05 00 00 00 */
 
-   unsigned long  m_nPortReversed;
-   unsigned short m_nStrLength;
-   char           m_cEmptyStr;
    unsigned long  m_nFileSize;  // not used in the ack
    unsigned long  m_nPort;
 
@@ -860,17 +655,9 @@ class CPT_AckFileRefuse : public CPT_Ack
 public:
   CPT_AckFileRefuse(const char *_sReason, unsigned long _nSequence, ICQUser *_cUser);
 protected:
-   virtual unsigned long getSize(void);
-
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
       6E 6B 73 00 D1 EF 04 9F 7F 00 00 01 4A 1F 00 00 04 01 00 00 00 00 00 00
       00 01 00 00 00 00 00 00 00 00 00 00 03 00 00 00 */
-
-   unsigned long  m_nUnknown_1;
-   unsigned short m_nStrLen;
-   char           m_cEmptyStr;
-   unsigned long  m_nUnknown_2;
-   unsigned long  m_nUnknown_3;
 };
 
 
@@ -880,7 +667,6 @@ class CPT_Cancel : public CPacketTcp
 protected:
    CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
               ICQUser *_cUser);
-   virtual unsigned long getSize(void);
 };
 
 
@@ -889,13 +675,9 @@ class CPT_CancelChat : public CPT_Cancel
 {
 public:
    CPT_CancelChat(unsigned long _nSequence, ICQUser *_cUser);
-protected:
-   virtual unsigned long getSize(void);
-
    /* 50 A5 82 00 03 00 D0 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD D3 CF
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
-   char m_aUnknown_1[11];
 };
 
 
@@ -904,17 +686,9 @@ class CPT_CancelFile : public CPT_Cancel
 {
 public:
    CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser);
-protected:
-   virtual unsigned long getSize(void);
-
    /* 50 A5 82 00 03 00 D0 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD D3 CF
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
-   unsigned long  m_nUnknown_1;
-   unsigned short m_nStrLen;
-   char           m_cEmptyStr;
-   unsigned long  m_nUnknown_2;
-   unsigned long  m_nUnknown_3;
 };
 
 
@@ -926,9 +700,7 @@ public:
   virtual const unsigned short SubSequence(void)   { return 0; };
   virtual const unsigned short getCommand(void)    { return 0; };
   virtual const unsigned short getSubCommand(void) { return 0; };
-  virtual void Create(void) {};
 protected:
-   virtual unsigned long getSize(void)        { return 0; };
    void InitBuffer(void);
 };
 
@@ -939,21 +711,8 @@ class CPChat_Color : public CPacketChat  // First info packet after handshake
 public:
    CPChat_Color(char *_sLocalName, unsigned short _nLocalPort,
                 unsigned long _nColorForeground, unsigned long _nColorBackground);
-protected:
-   virtual unsigned long getSize(void)
-      { return (CPacketChat::getSize() + 10 + m_nLocalNameLength + 15); };
-
    /* 64 00 00 00 FD FF FF FF 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 62 3D
       FF FF FF 00 00 00 00 00 00 */
-   unsigned long  m_nCommand;
-   char           m_aUnknown_1[4];
-   unsigned long  m_nSourceUin;
-   unsigned short m_nLocalNameLength;
-   char           *m_sLocalName;
-   char           m_aLocalPortReversed[2];
-   unsigned long  m_nColorForeground;  // rr gg bb 00
-   unsigned long  m_nColorBackground;  // rr gg bb 00
-   char           m_aUnknown_2;
 };
 
 
@@ -966,31 +725,9 @@ public:
                     unsigned long _nColorBackground,
                     unsigned long _nFontSize, unsigned long _nFontFace,
                     char *_sFontName);
-protected:
-   virtual unsigned long getSize(void)
-      { return (CPacketChat::getSize() + 10 + m_nLocalNameLength + 34 +
-                m_nFontNameLength + 3); };
-
    /* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
       00 00 03 00 00 00 DB 64 00 00 CF 60 AD 95 CF 60 AD 95 04 75 5A 0C 00 00
       00 00 00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 00 */
-   unsigned long  m_nCommand;
-   unsigned long  m_nSourceUin;
-   unsigned short m_nLocalNameLength;
-   char           *m_sLocalName;
-   unsigned long  m_nColorForeground;  // rr gg bb 00
-   unsigned long  m_nColorBackground;  // rr gg bb 00
-   unsigned long  m_nUnknown_1;
-   unsigned long  m_nLocalPort;
-   unsigned long  m_nLocalHost;
-   //             m_nLocalHost;
-   char           m_aUnknown_2;
-   unsigned short m_nUnknown_Port;
-   unsigned long  m_nFontSize;
-   unsigned long  m_nFontFace;
-   unsigned short m_nFontNameLength;
-   char           *m_sFontName;
-   char           m_aUnknown_3[3];
 };
 
 
@@ -1000,23 +737,8 @@ class CPChat_Font : public CPacketChat  // First info packet after handshake
 public:
    CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
                unsigned long _nFontFace, char *_sFontName);
-protected:
-   virtual unsigned long getSize(void)
-      { return (CPacketChat::getSize() + 29 + m_nFontNameLength + 3); };
-
    /* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00
       00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 */
-   unsigned long  m_nCommand;
-   unsigned long  m_nLocalPort;
-   unsigned long  m_nLocalHost;
-   //             m_nLocalHost;
-   char           m_aUnknown_2;
-   unsigned short m_nUnknown_Port;
-   unsigned long  m_nFontSize;
-   unsigned long  m_nFontFace;
-   unsigned short m_nFontNameLength;
-   char           *m_sFontName;
-   char           m_aUnknown_3[3];
 };
 
 //=====File=====================================================================
@@ -1027,10 +749,8 @@ public:
   virtual const unsigned short SubSequence(void)   { return 0; };
   virtual const unsigned short getCommand(void)    { return 0; };
   virtual const unsigned short getSubCommand(void) { return 0; };
-  virtual void Create(void) {};
 protected:
-   virtual unsigned long getSize(void)        { return 0; };
-   void InitBuffer(void)   { buffer = new CBuffer(getSize()); };
+   void InitBuffer(void)   { buffer = new CBuffer(m_nSize); };
 };
 
 //-----File_InitClient----------------------------------------------------------
@@ -1039,21 +759,8 @@ class CPFile_InitClient : public CPacketFile
 public:
    CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
                      unsigned long _nTotalSize);
-   virtual ~CPFile_InitClient(void)
-      { free (m_szLocalName); };
-protected:
-   virtual unsigned long getSize(void)
-      { return (CPacketFile::getSize() + 19 + m_nLocalNameLength); };
-
    /* 00 00 00 00 00 01 00 00 00 45 78 00 00 64 00 00 00 08 00 38 35 36 32 30
       30 30 00 */
-   char           m_cUnknown1;
-   unsigned long  m_nUnknown2;
-   unsigned long  m_nNumFiles;
-   unsigned long  m_nTotalSize;
-   unsigned long  m_nUnknown3;
-   unsigned short m_nLocalNameLength;
-   char           *m_szLocalName;
 };
 
 
@@ -1062,17 +769,7 @@ class CPFile_InitServer : public CPacketFile
 {
 public:
    CPFile_InitServer(char *_szLocalName);
-   virtual ~CPFile_InitServer(void)
-      { free (m_szLocalName); };
-protected:
-   virtual unsigned long getSize(void)
-      { return (CPacketFile::getSize() + 7 + m_nLocalNameLength); };
-
    /* 01 64 00 00 00 08 00 38 35 36 32 30 30 30 00 */
-   char           m_cUnknown1;
-   unsigned long  m_nUnknown2;
-   unsigned short m_nLocalNameLength;
-   char           *m_szLocalName;
 };
 
 
@@ -1090,19 +787,12 @@ public:
    const char *ErrorStr(void)
      { return strerror(m_nError); }
 protected:
-   virtual unsigned long getSize(void);
-
    bool m_bValid;
    int m_nError;
    /* 02 00 0D 00 63 75 72 72 65 6E 74 2E 64 69 66 66 00 01 00 00 45 78 00 00
       00 00 00 00 64 00 00 00 */
-   unsigned short m_nPacketId;
    char *m_szFileName;
-   unsigned short m_nUnknown1;
-   char m_cUnknown2;
    unsigned long m_nFileSize;
-   unsigned long m_nUnknown3;
-   unsigned long m_nUnknown4;
 };
 
 
@@ -1111,15 +801,7 @@ class CPFile_Start : public CPacketFile
 {
 public:
    CPFile_Start(unsigned long _nFilePos);
-protected:
-   virtual unsigned long getSize(void)
-      { return 13; };
-
    /* 03 00 00 00 00 00 00 00 00 64 00 00 00 */
-   char m_cUnknown1;
-   unsigned long m_nFilePos;
-   unsigned long m_nUnknown2;
-   unsigned long m_nUnknown3;
 };
 
 

@@ -35,6 +35,15 @@ void *ProcessRunningEvent_tep(void *p)
       break;
     case CONNECT_USER:
       e->m_nSocketDesc = d->ConnectToUser(e->m_nDestinationUin);
+      if (e->m_nSocketDesc != -1)
+      {
+        // Set the local port in the tcp packet now
+        INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
+        if (s == NULL) break;
+        ((CPacketTcp *)e->m_xPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
+        ((CPacketTcp *)e->m_xPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+        gSocketManager.DropSocket(s);
+      }
       break;
     case CONNECT_NONE:
       break;
@@ -67,8 +76,6 @@ void *ProcessRunningEvent_tep(void *p)
   }
 #endif
 
-  // Finalize the creation of the packet
-  e->m_xPacket->Create();
 
   // Start sending the event
   for (int i = 0; i <= MAX_SERVER_RETRIES; i++)
