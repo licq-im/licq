@@ -1518,7 +1518,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         gLog.Info("%sReceived secure channel closed from %s (%ld) but we do not support OpenSSL.\n",
            L_TCPxSTR, u->GetAlias(), nUin);
         // Send the nack back
-        CPT_AckCloseSecureChannel p(theSequence, "", u);
+        CPT_AckCloseSecureChannel p(theSequence, u);
         AckTCP(p, pSock);
         break;
 #endif
