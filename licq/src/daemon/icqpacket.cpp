@@ -801,6 +801,46 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(char *szAlias,
 }
 
 
+//-----Meta_SetMoreInfo------------------------------------------------------
+CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
+                       char nGender,
+                       char *szHomepage,
+                       char nBirthYear,
+                       char nBirthMonth,
+                       char nBirthDay,
+                       char nLanguage1,
+                       char nLanguage2,
+                       char nLanguage3)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_MORExINFOxSET;
+  m_nAge = nAge;
+  m_nGender = nGender;
+  m_nBirthYear = nBirthYear;
+  m_nBirthMonth = nBirthMonth;
+  m_nBirthDay = nBirthDay;
+  m_nLanguage1 = nLanguage1;
+  m_nLanguage2 = nLanguage2;
+  m_nLanguage3 = nLanguage3;
+
+  m_nSize += strlen(szHomepage) + 14;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  buffer->PackUnsignedShort(m_nAge);
+  m_szHomepage = buffer->PackString(szHomepage);
+  buffer->PackChar(nGender);
+  buffer->PackChar(m_nBirthYear);
+  buffer->PackChar(m_nBirthMonth);
+  buffer->PackChar(m_nBirthDay);
+  buffer->PackChar(m_nLanguage1);
+  buffer->PackChar(m_nLanguage2);
+  buffer->PackChar(m_nLanguage3);
+
+  Encrypt();
+}
+
+
 //-----Meta_SetWorkInfo------------------------------------------------------
 CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szCity,
@@ -832,6 +872,22 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   m_szPosition = buffer->PackString(szPosition);
   buffer->PackChar(0x04);
   m_szHomepage = buffer->PackString(szHomepage);
+
+  Encrypt();
+}
+
+
+//-----Meta_SetAbout---------------------------------------------------------
+CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_ABOUTxSET;
+
+  m_nSize += strlen(szAbout) + 5;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  m_szAbout = buffer->PackString(szAbout);
 
   Encrypt();
 }

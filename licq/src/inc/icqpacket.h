@@ -379,6 +379,39 @@ protected:
   char m_nTimezone;
   char m_nAuthorization;
   char m_nHideEmail;
+
+friend class CICQDaemon;
+};
+
+
+//-----Meta_SetMoreInfo------------------------------------------------------
+class CPU_Meta_SetMoreInfo : public CPacketUdp
+{
+public:
+  CPU_Meta_SetMoreInfo(unsigned short nAge,
+                       char nGender,
+                       char *szHomepage,
+                       char nBirthYear,
+                       char nBirthMonth,
+                       char nBirthDay,
+                       char nLanguage1,
+                       char nLanguage2,
+                       char nLanguage3);
+  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+protected:
+  unsigned short m_nMetaCommand;
+
+  unsigned short m_nAge;
+  char m_nGender;
+  char *m_szHomepage;
+  char m_nBirthYear;
+  char m_nBirthMonth;
+  char m_nBirthDay;
+  char m_nLanguage1;
+  char m_nLanguage2;
+  char m_nLanguage3;
+
+friend class CICQDaemon;
 };
 
 
@@ -406,6 +439,22 @@ protected:
   char *m_szDepartment;
   char *m_szPosition;
   char *m_szHomepage;
+
+friend class CICQDaemon;
+};
+
+//-----Meta_SetAbout---------------------------------------------------------
+class CPU_Meta_SetAbout : public CPacketUdp
+{
+public:
+  CPU_Meta_SetAbout(const char *szAbout);
+  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+protected:
+  unsigned short m_nMetaCommand;
+
+  char *m_szAbout;
+
+friend class CICQDaemon;
 };
 
 
