@@ -481,6 +481,7 @@ extern gboolean convo_close(GtkWidget *, struct conversation *);
 extern void do_colors();
 extern void do_pixmaps();
 extern struct status_icon *make_pixmap(struct status_icon *, gchar **);
+extern void message_box(const char *);
 extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void owner_function(ICQEvent *);
 extern void user_function(ICQEvent *);

@@ -342,7 +342,9 @@ void create_file_window(struct file_window *fw)
 	// Cancel button
 	fw->cancel = gtk_button_new_with_label("Cancel");
 	gtk_table_attach(GTK_TABLE(table), fw->cancel, 1, 2, 5, 6,
-			 GTK_SHRINK, GTK_SHRINK, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 3, 3);
 	gtk_signal_connect(GTK_OBJECT(fw->cancel), "clicked",
 			  GTK_SIGNAL_FUNC(cancel_file), (gpointer)fw);
 
@@ -416,34 +418,33 @@ void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
 		  case FT_DONExFILE:
 		  {
 		  	update_file_info(fw);
-			g_print("File done\n");
 			break;
 		  }
 
 		  case FT_DONExBATCH:
 		  {
-		  	g_print("Batch Done\n");
+		  	message_box("File Transfer:\nBatch Done");
 			fw->ftman->CloseFileTransfer();
 			break;
 		  }
 
 		  case FT_ERRORxCLOSED:
 		  {
-		  	g_print("Remote side disconnected\n");
+		  	message_box("File Transfer:\nRemote side disconnected");
 			fw->ftman->CloseFileTransfer();
 			break;
 		  }
 
 		  case FT_ERRORxFILE:
 		  {
-		  	g_print("File I/O Error\n");
+		  	message_box("File Transfer:\nFile I/0 Error");
 			fw->ftman->CloseFileTransfer();
 			break;
 		  }
 		  
 		  case FT_ERRORxHANDSHAKE:
 		  {
-		  	g_print("Handshake error\n");
+		  	message_box("File Transfer:\nHandshake error");
 			fw->ftman->CloseFileTransfer();
 			break;
 		  }
@@ -500,27 +501,27 @@ void update_file_info(struct file_window *fw)
 
 gchar *encode_file_size(unsigned long size)
 {
-	gchar *unit;
+	gchar unit[6];
 	
 	if(size >= (1024 * 1024))
 	{
 		size /= (1024*1024) / 10;
-		unit = "MB";
+		strcpy(unit, "MB");
 	}
 	else if(size >= 1024)
 	{
 		size /= (1024 / 10);
-		unit = "KB";
+		strcpy(unit, "KB");
 	}
 	else if(size != 1)
 	{
 		size *= 10;
-		unit = "Bytes";
+		strcpy(unit, "Bytes");
 	}
 	else
 	{
 		size *= 10;
-		unit = "Byte";
+		strcpy(unit, "Byte");
 	}
 
 	return g_strdup_printf("%ld.%ld %s", (size / 10), (size % 10), unit);
@@ -554,17 +555,24 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(fs->window), v_box);
 
-	// Description text box
+	// VBox with the description label and text box
+	GtkWidget *desc_v_box = gtk_vbox_new(FALSE, 0);
+	GtkWidget *label = gtk_label_new("Description:");
+	gtk_box_pack_start(GTK_BOX(desc_v_box), label, FALSE, FALSE, 0);
 	fs->description = gtk_text_new(NULL, NULL);
+	gtk_widget_set_usize(fs->description, 100, 75);
 	gtk_text_set_editable(GTK_TEXT(fs->description), TRUE);
-	gtk_box_pack_start(GTK_BOX(v_box), fs->description, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(desc_v_box), fs->description, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(v_box), desc_v_box, FALSE, FALSE, 0);
 
-	// HBox with a file path entry box and a browse button
+	// HBox with a "File:" label, file path entry box and a browse button
 	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
+	label = gtk_label_new("File:");
+	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
 	fs->file_path = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(h_box), fs->file_path, FALSE, FALSE, 0);
 	fs->browse = gtk_button_new_with_label("Browse");
-	gtk_box_pack_start(GTK_BOX(h_box), fs->browse, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), fs->browse, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// Send normal, urgent, to list, in an hbox
@@ -585,8 +593,8 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 	fs->ok = gtk_button_new_with_label("OK");
 	fs->cancel = gtk_button_new_with_label("Cancel");
-	gtk_box_pack_start(GTK_BOX(h_box), fs->ok, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(h_box), fs->cancel, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), fs->ok, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(h_box), fs->cancel, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	// Connect the signals for the browse, ok, and cancel buttons
@@ -649,7 +657,7 @@ void fs_ok_click(GtkWidget *widget, gpointer _fs)
 
 	if(strcmp(file_name, "") == 0)
 	{
-		g_print("You must specify a file to send\n");
+		message_box("File Transfer:\nYou must specify a file to send.");
 		return;
 	}
 
@@ -700,6 +708,11 @@ void file_start_send(ICQEvent *event)
 
 	if(!ea->Accepted())
 	{
+		ICQUser *u = gUserManager.FetchUser(event->Uin(), LOCK_R);
+		const char *mes = g_strdup_printf("File Transfer with %s "
+			"Refused:\n%s", u->GetAlias(), ea->Response());
+		gUserManager.DropUser(u);
+		message_box(mes);
 		return;
 	}
 

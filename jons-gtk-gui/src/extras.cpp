@@ -82,6 +82,35 @@ struct status_icon *make_pixmap(struct status_icon *icon, gchar **file)
 	return icon;
 }
 
+
+/* Used to create a message box ... will be improved down the road */
+void message_box(const char *message)
+{
+	GtkWidget *dialog;
+	GtkWidget *label;
+	GtkWidget *ok;
+
+	/* Create the dialog */
+	dialog = gtk_dialog_new();
+
+	/* The label */
+	label = gtk_label_new(message);
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
+
+	/* The ok button */
+	ok = gtk_button_new_with_label("OK");
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
+			  ok);
+
+	/* Close the window on the OK button */
+	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
+			   GTK_SIGNAL_FUNC(dialog_close), dialog);
+
+	
+	/* Show the message box*/
+	gtk_widget_show_all(dialog);
+}
+
 void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d)
 {
 	int i;
