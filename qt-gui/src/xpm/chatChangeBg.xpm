@@ -1,5 +1,5 @@
 /* XPM */
-static const char * chatChangeBg_xpm[] = {
+static const char * const chatChangeBg_xpm[] = {
 "32 24 2 1",
 " 	c None",
 ".	c #000000",
