@@ -4,7 +4,7 @@ if test $# -eq 0
   then
     echo "micqToLicq v1.21"
     echo "Usage: micqToLicq <micq user file (~/.micqrc)>"
-    echo "Warning: the program not work if there exists a line in the micqrc file beginning with a number that is
+    echo "Warning: the program will not work if there exists a line in the micqrc file beginning with a number that is
 not a uin...you will have to comment out that line for the script to work properly."
     exit 1
 fi
