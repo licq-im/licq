@@ -127,3 +127,28 @@ void CLicqConsole::TabStatus(char *_szPartialMatch,
 }
 
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::TabSet
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::TabSet(char *_szPartialMatch,
+                          struct STabCompletion &_sTabCompletion)
+{
+  char szMatch[32] = "";
+  unsigned short nLen = strlen(_szPartialMatch);
+  for (unsigned short i = 0; i < NUM_VARIABLES; i++)
+  {
+    if (strncasecmp(_szPartialMatch, aVariables[i].szName, nLen) == 0)
+    {
+      if (szMatch[0] == '\0')
+        strcpy(szMatch, aVariables[i].szName);
+      else
+        szMatch[StrMatchLen(szMatch, aVariables[i].szName, nLen)] = '\0';
+      _sTabCompletion.vszPartialMatch.push_back(strdup(aVariables[i].szName));
+    }
+  }
+  if (nLen == 0)
+    _sTabCompletion.szPartialMatch[0] = '\0';
+  else
+    strcpy(_sTabCompletion.szPartialMatch, szMatch);
+}
+

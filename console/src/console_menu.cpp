@@ -2,13 +2,14 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 7;
+const unsigned short NUM_COMMANDS = 8;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "/contacts", &CLicqConsole::MenuContactList, NULL },
   { "/group", &CLicqConsole::MenuGroup, NULL },
   { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser },
   { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus },
+  { "/set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet },
   { "/plugins", &CLicqConsole::MenuPlugins, NULL },
   { "/help", &CLicqConsole::MenuHelp, NULL },
   { "/quit", &CLicqConsole::MenuQuit, NULL }
@@ -212,7 +213,9 @@ void CLicqConsole::MenuContactList(char *)
     {
       waddch(winMain->Win(), ACS_LTEE);
       for (j = 0; j < 11; j++) waddch(winMain->Win(), ACS_HLINE);
-      winMain->wprintf("%C Online ", COLOR_BLUE);
+      winMain->wprintf("%A%C Online ",
+            m_cColorOnline->bBright ? A_BOLD : A_NORMAL,
+            m_cColorOnline->nColor);
       for (j = 0; j < 19; j++) waddch(winMain->Win(), ACS_HLINE);
       waddch(winMain->Win(), ACS_RTEE);
       waddch(winMain->Win(), '\n');
@@ -227,7 +230,9 @@ void CLicqConsole::MenuContactList(char *)
       {
         waddch(winMain->Win(), ACS_LTEE);
         for (j = 0; j < 11; j++) waddch(winMain->Win(), ACS_HLINE);
-        winMain->wprintf("%C Offline ", COLOR_RED);
+        winMain->wprintf("%A%C Offline ",
+            m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
+            m_cColorOffline->nColor);
         for (j = 0; j < 18; j++) waddch(winMain->Win(), ACS_HLINE);
         waddch(winMain->Win(), ACS_RTEE);
         waddch(winMain->Win(), '\n');
@@ -236,10 +241,22 @@ void CLicqConsole::MenuContactList(char *)
     }
     pUser->getStatusStr(szStatusStr);
     waddch(winMain->Win(), ACS_VLINE);
-    winMain->wprintf("%A%C%-20s%16s",
-                     pUser->getNumMessages() > 0 ? A_BOLD : A_NORMAL,
-                     bOfflineUsers ? COLOR_RED : COLOR_BLUE,
-                     pUser->getAlias(), szStatusStr);
+    if (bOfflineUsers)
+    {
+      winMain->wprintf("%A%C%c %-20s%16s",
+                       m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
+                       m_cColorOffline->nColor,
+                       pUser->getNumMessages() > 0 ? '*' : ' ',
+                       pUser->getAlias(), szStatusStr);
+    }
+    else
+    {
+      winMain->wprintf("%A%C%c %-20s%16s",
+                       m_cColorOnline->bBright ? A_BOLD : A_NORMAL,
+                       m_cColorOnline->nColor,
+                       pUser->getNumMessages() > 0 ? '*' : ' ',
+                       pUser->getAlias(), szStatusStr);
+    }
     PrintBoxRight(40);
 
     i++;
@@ -324,3 +341,86 @@ void CLicqConsole::MenuUser(char *_szArg)
 }
 
 
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuUser
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuSet(char *_szArg)
+{
+  char *szVariable, *szValue;
+  unsigned short nVariable = 0, i;
+
+  // If no argument then print all variables and return
+  if (_szArg == NULL)
+  {
+    for (i = 0; i < NUM_VARIABLES; i++)
+      PrintVariable(i);
+    return;
+  }
+
+  szVariable = _szArg;
+  szValue = strchr(_szArg, ' ');
+
+  if (szValue != NULL)
+  {
+    *szValue++ = '\0';
+    STRIP(szValue);
+  }
+
+  // Find the variable
+  for (i = 0; i < NUM_VARIABLES; i++)
+  {
+    if (strcasecmp(szVariable, aVariables[i].szName) == 0)
+    {
+      nVariable = i;
+      break;
+    }
+  }
+  if (i == NUM_VARIABLES)
+  {
+    winMain->wprintf("%CNo such variable: %A%s\n", COLOR_RED, A_BOLD, szVariable);
+    return;
+  }
+
+  // If there is no value then print the current one
+  if (szValue == NULL)
+  {
+    PrintVariable(nVariable);
+    return;
+  }
+
+  // Set the variable
+  switch(aVariables[nVariable].nType)
+  {
+  case BOOL:
+    *(bool *)aVariables[nVariable].pData =
+      ( strcasecmp(szValue, "yes") == 0 ||
+        strcasecmp(szValue, "on") == 0 ||
+        strcasecmp(szValue, "true") == 0 );
+    break;
+
+  case COLOR:
+    for (i = 0; i < NUM_COLORMAPS; i++)
+    {
+      if (strcasecmp(szValue, aColorMaps[i].szName) == 0)
+        break;
+    }
+    if (i == NUM_COLORMAPS)
+    {
+      winMain->wprintf("%CNo such color: %A%s\n", COLOR_RED, A_BOLD, szValue);
+      break;
+    }
+    *(const struct SColorMap **)aVariables[nVariable].pData = &aColorMaps[i];
+    break;
+
+  case STRING:
+    strcpy(*(char **)aVariables[nVariable].pData, szValue);
+    break;
+
+  case INT:
+    *(int *)aVariables[nVariable].pData = atoi(szValue);
+    break;
+  }
+
+
+}

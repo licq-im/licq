@@ -34,6 +34,37 @@ const struct SStatus aStatus[NUM_STATUS] =
   { "offline", ICQ_STATUS_OFFLINE }
 };
 
+const unsigned short NUM_VARIABLES = 6;
+struct SVariable aVariables[NUM_VARIABLES] =
+{
+  { "show_offline_users", BOOL, NULL },
+  { "show_dividers", BOOL, NULL },
+  { "color_online", COLOR, NULL },
+  { "color_away", COLOR, NULL },
+  { "color_offline", COLOR, NULL },
+  { "color_group_list", COLOR, NULL }
+};
+
+const unsigned short NUM_COLORMAPS = 15;
+const struct SColorMap aColorMaps[NUM_COLORMAPS] =
+{
+  { "green", COLOR_GREEN, false },
+  { "red", COLOR_RED, false },
+  { "cyan", COLOR_CYAN, false },
+  { "white", COLOR_WHITE, false },
+  { "magenta", COLOR_MAGENTA, false },
+  { "blue", COLOR_BLUE, false },
+  { "yellow", COLOR_YELLOW, false },
+  { "black", COLOR_BLACK, false },
+  { "bright_green", COLOR_GREEN, true },
+  { "bright_red", COLOR_RED, true },
+  { "bright_cyan", COLOR_CYAN, true },
+  { "bright_white", COLOR_WHITE, true },
+  { "bright_magenta", COLOR_MAGENTA, true },
+  { "bright_blue", COLOR_BLUE, true },
+  { "bright_yellow", COLOR_YELLOW, true }
+};
+
 
 
 /*---------------------------------------------------------------------------
@@ -47,6 +78,18 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   m_bShowDividers = true;
   m_nCurrentGroup = 2;
   m_nGroupType = GROUPS_USER;
+  m_cColorOnline = &aColorMaps[5];
+  m_cColorAway = &aColorMaps[0];
+  m_cColorOffline = &aColorMaps[1];
+  m_cColorGroupList = &aColorMaps[13];
+
+  // Set the variable data pointers
+  aVariables[0].pData = &m_bShowOffline;
+  aVariables[1].pData = &m_bShowDividers;
+  aVariables[2].pData = &m_cColorOnline;
+  aVariables[3].pData = &m_cColorAway;
+  aVariables[4].pData = &m_cColorOffline;
+  aVariables[5].pData = &m_cColorGroupList;
 
   m_bExit = false;
 }
@@ -1065,10 +1108,11 @@ void CLicqConsole::PrintGroups(void)
 
   PrintBoxTop("Groups", COLOR_WHITE, 26);
 
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("%C%3d. %-19s", COLOR_BLUE, 0, "All Users");
-  waddch(winMain->Win(), ACS_VLINE);
-  waddch(winMain->Win(), '\n');
+  PrintBoxLeft();
+  winMain->wprintf("%A%C%3d. %-19s",
+      m_cColorGroupList->bBright ? A_BOLD : A_NORMAL,
+      m_cColorGroupList->nColor, 0, "All Users");
+  PrintBoxRight(26);
   waddch(winMain->Win(), ACS_LTEE);
   for (k = 0; k < 24; k++) waddch(winMain->Win(), ACS_HLINE);
   waddch(winMain->Win(), ACS_RTEE);
@@ -1078,10 +1122,44 @@ void CLicqConsole::PrintGroups(void)
   for (GroupListIter i = g->begin(); i != g->end(); i++, j++)
   {
     PrintBoxLeft();
-    winMain->wprintf("%C%3d. %-19s", COLOR_BLUE, j, *i);
+    winMain->wprintf("%A%C%3d. %-19s",
+        m_cColorGroupList->bBright ? A_BOLD : A_NORMAL,
+        m_cColorGroupList->nColor, j, *i);
     PrintBoxRight(26);
   }
   gUserManager.UnlockGroupList();
   PrintBoxBottom(26);
 
 }
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::PrintVariable
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::PrintVariable(unsigned short nVar)
+{
+  winMain->wprintf("%s = ", aVariables[nVar].szName);
+
+  switch(aVariables[nVar].nType)
+  {
+  case INT:
+    winMain->wprintf("%d\n", *(int *)aVariables[nVar].pData);
+    break;
+
+  case BOOL:
+    winMain->wprintf("%s\n", *(bool *)aVariables[nVar].pData == true
+        ? "YES" : "NO");
+    break;
+
+  case STRING:
+    winMain->wprintf("\"%s\"\n", *(char **)aVariables[nVar].pData);
+    break;
+
+  case COLOR:
+    winMain->wprintf("%s\n",
+        (*(struct SColorMap **)aVariables[nVar].pData)->szName );
+    break;
+  }
+}
+
+

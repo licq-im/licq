@@ -13,6 +13,13 @@
 #define MAX_CON 8
 const char L_CONSOLExSTR[] = "[CON] ";
 
+struct SColorMap
+{
+  char szName[16];
+  int nColor;
+  bool bBright;
+};
+
 
 class CLicqConsole
 {
@@ -25,7 +32,11 @@ protected:
   int m_nPipe;
   bool m_bExit;
 
+  // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
+  const struct SColorMap *m_cColorOnline, *m_cColorOffline,
+                   *m_cColorAway, *m_cColorGroupList;
+
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;
 
@@ -57,6 +68,7 @@ public:
   void PrintBoxBottom(short _nLength);
   void PrintBoxRight(short _nLength);
   void PrintBoxLeft(void);
+  void PrintVariable(unsigned short);
 
   void MenuHelp(char *);
   void MenuContactList(char *);
@@ -65,10 +77,12 @@ public:
   void MenuUser(char *);
   void MenuStatus(char *);
   void MenuPlugins(char *);
+  void MenuSet(char *);
 
   void TabUser(char *, struct STabCompletion &);
   void TabCommand(char *, struct STabCompletion &);
   void TabStatus(char *, struct STabCompletion &);
+  void TabSet(char *, struct STabCompletion &);
 
   void UserCommand_Info(unsigned long nUin);
   void UserCommand_Msg(unsigned long nUin);
@@ -107,5 +121,20 @@ struct SUserCommand
 };
 extern const unsigned short NUM_USER_COMMANDS;
 extern const struct SUserCommand aUserCommands[];
+
+typedef enum { INT, BOOL, STRING, COLOR } VarType;
+struct SVariable
+{
+  char szName[32];
+  VarType nType;
+  void *pData;
+};
+
+extern const unsigned short NUM_COLORMAPS;
+extern const struct SColorMap aColorMaps[];
+
+extern const unsigned short NUM_VARIABLES;
+extern struct SVariable aVariables[];
+
 
 #endif
