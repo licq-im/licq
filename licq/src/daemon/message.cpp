@@ -23,18 +23,6 @@ CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
 }
 
 
-//-----CUserEvent::Time---------------------------------------------------------
-const char *CUserEvent::Time(void)
-{
-  static char s_szTime[32];
-
-  // set the time received: "Mon Apr 27 20:49:08 1998\n"
-  strcpy(s_szTime, ctime(&m_tTime));
-  s_szTime[16] = '\0';
-
-  return s_szTime;
-}
-
 
 //-----CUserEvent::LicqVersionStr-----------------------------------------------
 const char *CUserEvent::LicqVersionStr(void)

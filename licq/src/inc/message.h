@@ -37,8 +37,8 @@ public:
    int AddToHistory_Header(direction, char *);
    void AddToHistory_Flush(ICQUser *, char *);
 
-   const char *Text(void)  {  return m_szText; };
-   const char *Time(void);
+   const char *Text(void)  {  return m_szText; }
+   time_t Time(void)  {  return m_tTime; }
    const char *LicqVersionStr(void);
    unsigned long Sequence(void)  { return m_nSequence; }
    unsigned short Command(void)  { return m_nCommand; }
@@ -47,7 +47,7 @@ public:
    bool IsMultiRec(void)  { return m_nFlags & E_MULTIxREC; }
    bool IsUrgent(void)    { return m_nFlags & E_URGENT; }
    bool IsLicq(void)  { return LicqVersion() != 0; };
-   unsigned short LicqVersion(void)  { return m_nFlags & E_LICQxVER; };
+   unsigned short LicqVersion(void)  { return m_nFlags & E_LICQxVER; }
    direction Direction(void)  {  return m_eDir; }
    void SetDirection(direction d)  { m_eDir = d; }
 
@@ -61,29 +61,6 @@ protected:
    unsigned long  m_nFlags;
 };
 
-/*
-class CEventHistory: public CUserEvent
-{
-public:
-  CEventHistory(const char *_sz, char _cDir, unsigned short _nSubCommand,
-                unsigned short _nCommand, time_t _tTime,
-                unsigned long _nFlags)
-    : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags)
-  {
-    m_szText = strdup(_sz);
-    m_cDir = _cDir;
-  }
-
-  virtual CEventHistory *Copy(void)
-  {
-    return new CEventHistory(m_szText, m_cDir, m_nCommand, m_nSubCommand, m_tTime, m_nFlags);
-  }
-
-  char Dir(void)  { return m_cDir; }
-protected:
-  char m_cDir;
-};
-*/
 
 //-----CEventMsg----------------------------------------------------------------
 class CEventMsg : public CUserEvent
