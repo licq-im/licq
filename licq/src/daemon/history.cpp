@@ -68,7 +68,7 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
 #define GET_VALID_LINES \
   { \
     while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') \
-        strcat(szMsg, &sz[1]); \
+      strcat(szMsg, &sz[1]); \
   }
 
 bool CUserHistory::Load(HistoryList &lHistory)
@@ -94,7 +94,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
   }
 
   // Now read in a line at a time
-  char sz[MAX_LINE_LEN], *szResult, szMsg[4096];
+  char sz[MAX_LINE_LEN], *szResult, szMsg[8192];
   unsigned long nFlags;
   unsigned short nCommand, nSubCommand;
   time_t tTime;
