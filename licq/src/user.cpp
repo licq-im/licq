@@ -608,7 +608,10 @@ unsigned short CUserManager::GenerateSID()
     {
       if (pUser->GetSID() == nSID)
       {
-        nSID++;
+        if (nSID == 0x7FFF)
+          nSid = 1;
+        else
+          nSID++;
         bDone = false;	// Restart
         bCheckGroup = false;	// Don't waste time now
         FOR_EACH_USER_BREAK;
@@ -624,7 +627,10 @@ unsigned short CUserManager::GenerateSID()
       {
         if ((*gID)[j] == nSID)
         {
-          nSID++;
+          if (nSID == 0x7FFF)
+            nSid = 1;
+          else
+            nSID++;
           bDone = false;
           break;
         }
