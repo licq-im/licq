@@ -313,8 +313,9 @@ void *ProcessRunningEvent_Client_tep(void *p)
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)
   {
+    unsigned long nDestinationUin = e->m_nDestinationUin;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    int socket = d->ConnectToUser(e->m_nDestinationUin);
+    int socket = d->ConnectToUser(nDestinationUin);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
     e->m_nSocketDesc = socket;
