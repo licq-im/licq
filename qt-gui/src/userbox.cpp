@@ -78,7 +78,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
-  m_nStatus = _cUser->Status();
+  m_nStatus = ICQ_STATUS_OFFLINE;
   setGraphics(_cUser);
 }
 
@@ -99,7 +99,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_bCellular = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
-  m_nStatus = _cUser->Status();
+  m_nStatus = ICQ_STATUS_OFFLINE;
   setGraphics(_cUser);
 }
 
@@ -189,7 +189,7 @@ CUserViewItem::~CUserViewItem()
   if (parent())
   {
     CUserViewItem *i = static_cast<CUserViewItem*>(parent());
-    if (m_nStatus != ICQ_STATUS_OFFLINE) i->m_nOnlCount--;
+    if (m_nPPID && m_nStatus != ICQ_STATUS_OFFLINE) i->m_nOnlCount--;
     i->m_nEvents -= m_nEvents;
     i->SetThreadViewGroupTitle();
   }
