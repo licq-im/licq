@@ -30,7 +30,7 @@ const char PLUGIN_SHUTDOWN                         = 'X';
 // Miscellaneous constants
 extern unsigned short DEBUG_LEVEL;
 const unsigned short MAX_FILENAME_LEN              = 255;
-const unsigned short MAX_CMD_LEN                   = 255;
+const unsigned short MAX_CMD_LEN                   = 1024;
 const unsigned short MAX_DATA_LEN                  = 1024;
 const unsigned short MAX_MESSAGE_SIZE              = 450;
 const unsigned short TIME_NOW                      = 0;
