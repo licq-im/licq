@@ -39,7 +39,7 @@ clean:
 distclean: clean
 	$(RM) *~ Makefile tags
 
-merge: template.po
+merge: template
 	for i in *.po; do \
 	  $(MERGETR) $$i template.po; \
 	done
@@ -50,7 +50,7 @@ install: $(TRANSLATIONS)
 	  $(INSTALL_DATA) $$i $(sharedir)/locale/$$i; \
 	done
 
-template.po:
+template:
 	$(FINDTR) $(qt_srcdir)/*.cpp $(qt_srcdir)/*.h > template.po
 
 %.qm: %.po
