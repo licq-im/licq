@@ -16,6 +16,18 @@ dnl Also substitute PACKAGE and VERSION in the AC_OUTPUT files
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AC_ISC_POSIX
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+AC_PATH_PROG(PROG_STRIP,strip,:)
+AC_PATH_PROG(PROG_SIZE,size,:)
+
 dnl Set up some operating system specific options
 AC_CANONICAL_SYSTEM
 case "$host" in
@@ -48,18 +60,6 @@ case "$host" in
 		echo "Licq may not compile on this system. Good luck :-)"
 		;;
 esac
-
-dnl Checks for programs.
-AC_PROG_CC
-AC_PROG_CPP
-AC_PROG_CXX
-dnl AC_PROG_CXX_FNO_RTTI
-AC_PROG_CXXCPP
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
-AC_PROG_RANLIB
-AC_PATH_PROG(PROG_STRIP,strip,:)
-AC_PATH_PROG(PROG_SIZE,size,:)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
