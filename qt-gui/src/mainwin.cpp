@@ -4360,19 +4360,22 @@ void CMainWindow::slot_popupall()
     callOwnerFunction(OwnerMenuView);
   }
 
-  UinList uins;
+  UserStringList users;
+  std::list<unsigned long> ppids;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
     {
-      uins.push_back(pUser->Uin());
+      users.push_back(pUser->IdString());
+      ppids.push_back(pUser->PPID());
     }
   }
   FOR_EACH_USER_END
 
-  for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++)
+  for (UserStringList::iterator iter = users.begin(); iter != users.end(); iter++)
   {
-    callDefaultFunction(*iter);
+    callDefaultFunction(*iter, ppids.front());
+    ppids.pop_front();
   }
 }
 
