@@ -181,7 +181,7 @@ CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIc
   if ( (p = getenv("LANGUAGE")) || (p = getenv("LANG")) );
   {
     QString str;
-    str.sprintf("%s/qt-gui/locale/%s.qm", SHARE_DIR, p);
+    str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, p);
     QTranslator *trans = new QTranslator(this);
     trans->load(str);
     installTranslator(trans);
