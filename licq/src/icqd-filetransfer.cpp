@@ -27,6 +27,7 @@ const unsigned short FT_STATE_WAITxFORxSTART = 4;
 const unsigned short FT_STATE_WAITxFORxFILExINFO = 5;
 const unsigned short FT_STATE_RECEIVINGxFILE = 6;
 const unsigned short FT_STATE_SENDINGxFILE = 7;
+const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
 
 
@@ -430,46 +431,18 @@ bool CFileTransferManager::ProcessPacket()
 
       m_nBytesTransfered = 0;
       m_nCurrentFile++;
-
-      // Get the local filename and set the file offset (for resume)
-      struct stat buf;
-      m_nFileDesc = -1;
-      snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s", m_szDirectory, m_szFileName);
-      while (m_nFileDesc == -1)
-      {
-        if (stat(m_szPathName, &buf) != -1)
-        {
-          if ((unsigned long)buf.st_size >= m_nFileSize)
-          {
-            snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%ld", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
-            continue;
-          }
-          m_nFileDesc = open(m_szPathName, O_WRONLY | O_APPEND, 00664);
-          m_nFilePos = buf.st_size;
-        }
-        else
-        {
-          m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT, 00664);
-          m_nFilePos = 0;
-        }
-        if (m_nFileDesc == -1)
-        {
-          gLog.Error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
-             L_ERRORxSTR, m_szPathName, L_BLANKxSTR, strerror(errno));
-          m_nResult = FT_ERRORxFILE;
-          return false;
-        }
-      }
-
-      // Send response
-      CPFile_Start p(m_nFilePos, m_nCurrentFile);
-      if (!SendPacket(&p))
-      {
-        m_nResult = FT_ERRORxCLOSED;
-        return false;
-      }
-
-      m_nState = FT_STATE_RECEIVINGxFILE;
+      
+      gLog.Info("File Transfer: Waiting for plugin to confirm file receive.\n");
+      
+      m_nState = FT_STATE_CONFIRMINGxFILE;
+      PushFileTransferEvent(new CFileTransferEvent(FT_CONFIRMxFILE, m_szPathName));
+      break;
+    }
+    
+    case FT_STATE_CONFIRMINGxFILE:
+    {
+      // Still waiting for the plugin to confirm
+      gLog.Warn("File Transfer: Still waiting for the plugin to confirm file receive...");
       break;
     }
 
@@ -551,7 +524,6 @@ bool CFileTransferManager::ProcessPacket()
 
       // Now wait for a disconnect or another file
       m_nState = FT_STATE_WAITxFORxFILExINFO;
-
       break;
     }
 
@@ -683,6 +655,65 @@ bool CFileTransferManager::ProcessPacket()
   return true;
 }
 
+// This function gives a callback opportunity for the plugin, just before
+// the actual transfer begins
+bool CFileTransferManager::StartReceivingFile(char *szFileName)
+{
+  gLog.Info("%sFile Transfer: Received plugin confirmation.\n", L_ERRORxSTR);
+      
+  if (m_nState != FT_STATE_CONFIRMINGxFILE)
+  {
+     gLog.Warn("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n",
+        L_ERRORxSTR);
+     return false;
+  }
+
+  // If a different filename was specified, use it
+  if (szFileName != NULL)
+  {
+    strncpy(m_szFileName, szFileName, sizeof(m_szFileName)-1);
+    m_szFileName[sizeof(m_szFileName)-1] = '\0';
+  }
+
+  // Get the local filename and set the file offset (for resume)
+  struct stat buf;
+  m_nFileDesc = -1;
+  snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s", m_szDirectory, m_szFileName);
+  while (m_nFileDesc == -1)
+  {
+    if (stat(m_szPathName, &buf) != -1)
+    {
+      if ((unsigned long)buf.st_size >= m_nFileSize)
+        snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%ld", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
+      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT | O_APPEND, 00664);
+      m_nFilePos = buf.st_size;
+    }
+    else
+    {
+      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT, 00664);
+      m_nFilePos = 0;
+    }
+    if (m_nFileDesc == -1)
+    {
+      gLog.Error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
+         L_ERRORxSTR, m_szPathName, L_BLANKxSTR, strerror(errno));
+      m_nResult = FT_ERRORxFILE;
+      return false;
+    }
+  }
+
+  // Send response
+  CPFile_Start p(m_nFilePos, m_nCurrentFile);
+  if (!SendPacket(&p))
+  {
+    gLog.Error("%sFile Transfer: Unable to send file receive start packet.\n", L_ERRORxSTR);
+    m_nResult = FT_ERRORxCLOSED;
+    return false;
+  }
+
+  m_nState = FT_STATE_RECEIVINGxFILE;
+  return true;
+}
 
 //-----CFileTransferManager::SendFilePacket----------------------------------
 bool CFileTransferManager::SendFilePacket()

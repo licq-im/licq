@@ -41,8 +41,11 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
     gLog.Info("%sAdding %ld to server list...\n", L_SRVxSTR, _nUin);
     SendExpectEvent_Server(0, pAdd, NULL);
 
-    CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(pAdd->GetGSID());
-    SendExpectEvent_Server(0, pUpdateGroup, NULL);
+    if (pAdd->GetGSID() != 0) // there is no group with zero GSID
+    {
+      CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(pAdd->GetGSID());
+      SendExpectEvent_Server(0, pUpdateGroup, NULL);
+    }
 
     CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
       ICQ_SNACxLIST_ROSTxEDITxEND);
@@ -98,8 +101,11 @@ void CICQDaemon::icqRemoveUser(unsigned long _nUin)
     u->SetGSID(0);
     gUserManager.DropUser(u);
 
-    CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(nGSID);
-    SendExpectEvent_Server(0, pUpdateGroup, NULL);
+    if (nGSID != 0) // there's no zero GSID
+    {
+      CSrvPacketTcp *pUpdateGroup = new CPU_UpdateGroupToServerList(nGSID);
+      SendExpectEvent_Server(0, pUpdateGroup, NULL);
+    }
 
     CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
       ICQ_SNACxLIST_ROSTxEDITxEND);
