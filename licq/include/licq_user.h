@@ -672,6 +672,7 @@ public:
   bool Away();
   static const char *StatusToStatusStr(unsigned short, bool);
   static const char *StatusToStatusStrShort(unsigned short, bool);
+  static char *MakeRealId(const char *, unsigned long, char *&);
   int Birthday(unsigned short nDayRange = 0);
 
   // Message/History functions

@@ -716,9 +716,14 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
   if (u != NULL)
   {
     u->Lock(_nLockType);
-    if (strcmp(_szId, u->IdString()))
+    char *szId, *szIdString;
+    ICQUser::MakeRealId(_szId, _nPPID, szId);
+    ICQUser::MakeRealId(u->IdString(), u->PPID(), szIdString);
+    if (strcmp(szId, szIdString))
       gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
-                 L_ERRORxSTR, _szId, u->IdString());
+                 L_ERRORxSTR, szId, szIdString);
+    delete [] szId;
+    delete [] szIdString;
   }
 
   return u;
@@ -1550,22 +1555,27 @@ ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
   Lock(LOCK_R);
 
   ICQUser *u = NULL;
-  UserList &l = m_vlTable[HashValue(_szId)];
-
-  char *szId;
+  char *szRealId;
+  ICQUser::MakeRealId(_szId, _nPPID, szRealId);
+  UserList &l = m_vlTable[HashValue(szRealId)];
+  char *szTempId = 0;
   unsigned long nPPID;
   UserList::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
-    szId = (*iter)->IdString();
     nPPID = (*iter)->PPID();
-    if (_nPPID == nPPID && strcmp(szId, _szId) == 0)
+    ICQUser::MakeRealId((*iter)->IdString(), nPPID, szTempId);
+    if (_nPPID == nPPID && strcasecmp(szTempId, szRealId) == 0)
     {
       u = (*iter);
       break;
     }
+    delete [] szTempId; szTempId = 0;
   }
   if (iter == l.end()) u = NULL;
+
+  delete [] szRealId;
+  if (szTempId) delete [] szTempId;
 
   Unlock();
   return u;
@@ -1574,7 +1584,10 @@ ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
 void CUserHashTable::Store(ICQUser *u, const char *_szId, unsigned long _nPPID)
 {
   Lock(LOCK_W);
-  UserList &l = m_vlTable[HashValue(_szId)];
+  char *szRealId;
+  ICQUser::MakeRealId(_szId, _nPPID, szRealId);
+  UserList &l = m_vlTable[HashValue(szRealId)];
+  delete [] szRealId;
   l.push_front(u);
   Unlock();
 }
@@ -1583,7 +1596,10 @@ void CUserHashTable::Remove(const char *_szId, unsigned long _nPPID)
 {
   Lock(LOCK_W);
 
-  UserList &l = m_vlTable[HashValue(_szId)];
+  char *szRealId;
+  ICQUser::MakeRealId(_szId, _nPPID, szRealId);
+  UserList &l = m_vlTable[HashValue(szRealId)];
+  delete [] szRealId;
   char *szId;
   unsigned long nPPID;
   UserList::iterator iter;
@@ -3014,6 +3030,33 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
   _sz[nPos] = '\0';
 
   return _sz;
+}
+
+//Return value must be delete []'d
+char *ICQUser::MakeRealId(const char *_szId, unsigned long _nPPID,
+                                char *&szRealId)
+{
+  if (!(_szId == 0 || strlen(_szId) == 0))
+    szRealId = new char[strlen(_szId) + 1];
+  else
+  {
+    szRealId = new char[1];
+    szRealId[0] = '\0';
+    return szRealId;
+  }
+
+  int j = 0;
+  if (_nPPID == LICQ_PPID && !isdigit(_szId[0]))
+  {
+    for (unsigned int i = 0; i < strlen(_szId); i++)
+      if (_szId[i] != ' ')
+        szRealId[j++] = tolower(_szId[i]);
+    szRealId[j] = '\0';
+  }
+  else
+    strcpy(szRealId, _szId);
+
+  return szRealId;
 }
 
 //-----ICQUser::SaveGeneralInfo----------------------------------------------

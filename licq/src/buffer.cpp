@@ -22,6 +22,7 @@
 
 #include "licq_buffer.h"
 #include "licq_log.h"
+#include "support.h"
 
 //=====Utilities=================================================================
 
