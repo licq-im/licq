@@ -20,16 +20,6 @@
 
 #include "licq_gtk.h"
 
-/***********************************
-#include "pixmaps/online.xpm"
-#include "pixmaps/offline.xpm"
-#include "pixmaps/away.xpm"
-#include "pixmaps/na.xpm"
-#include "pixmaps/occ.xpm"
-#include "pixmaps/dnd.xpm"
-#include "pixmaps/message.xpm"
-*************************************/
-
 #include "icqd.h"
 #include "user.h"
 
@@ -76,50 +66,12 @@ GtkWidget *contact_list_refresh()
 	gchar *blah[3];
 	gint num_users = 0;
 
-/*************************
-	GdkBitmap *bm;
-	GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
-	GtkStyle *style;
-*************************/
-
 	do_colors(); /* Make the colors */
 	do_pixmaps();    /* Make the pixmap */
 
 	blah[0] = "";
 	blah[1] = "";
 	blah[2] = "";
-
-/*****************************************************
-	style = gtk_widget_get_style(main_window);
-
-	online = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					      &style->bg[GTK_STATE_NORMAL],
-					      (gchar **)online_xpm);
-
-	away = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					    &style->bg[GTK_STATE_NORMAL],
-					    (gchar **)away_xpm);
-
-	na = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					  &style->bg[GTK_STATE_NORMAL],
-					  (gchar **)na_xpm);
-
-	dnd = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					   &style->bg[GTK_STATE_NORMAL],
-					   (gchar **)dnd_xpm);
-
-	occ = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					   &style->bg[GTK_STATE_NORMAL],
-					   (gchar **)occ_xpm);
-
-	offline = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					       &style->bg[GTK_STATE_NORMAL],
-					       (gchar **)offline_xpm);
-
-	message = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-					       &style->bg[GTK_STATE_NORMAL],
-					       (gchar **)message_xpm);
-*******************************************************/
 
 	/* Don't update the clist window, so we can update all the users */
 	gtk_clist_freeze(GTK_CLIST(contact_list));
