@@ -155,7 +155,9 @@ void CLicqConsole::MenuGroup(char *_szArg)
   {
     m_nCurrentGroup = nCurrentGroup;
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    winMain->wprintf("Switching to group %d (%s).\n", m_nCurrentGroup,
+    winMain->wprintf("%C%ASwitching to group %d (%s).\n",
+                     m_cColorInfo->nColor, m_cColorInfo->nAttr,
+                     m_nCurrentGroup,
                      m_nCurrentGroup == 0 ? "All Users" : (*g)[m_nCurrentGroup - 1]);
     gUserManager.UnlockGroupList();
     PrintStatus();
@@ -285,7 +287,7 @@ void CLicqConsole::MenuContactList(char *)
                        m_cColorOffline->bBright ? A_BOLD : A_NORMAL,
                        m_cColorOffline->nColor,
                        pUser->getNumMessages() > 0 ? '*' : ' ',
-                       pUser->getAlias(), szStatusStr);
+                       pUser->GetAlias(), szStatusStr);
     }
     else
     {
@@ -293,7 +295,7 @@ void CLicqConsole::MenuContactList(char *)
                        m_cColorOnline->bBright ? A_BOLD : A_NORMAL,
                        m_cColorOnline->nColor,
                        pUser->getNumMessages() > 0 ? '*' : ' ',
-                       pUser->getAlias(), szStatusStr);
+                       pUser->GetAlias(), szStatusStr);
     }
     PrintBoxRight(40);
 
@@ -370,7 +372,7 @@ void CLicqConsole::MenuUser(char *_szArg)
   // Find the user
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (strcasecmp(szAlias, pUser->getAlias()) == 0)
+    if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
     {
       nUin = pUser->getUin();
       FOR_EACH_USER_BREAK;

@@ -66,13 +66,13 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
     nLen = strlen(_szPartialMatch);
     FOR_EACH_USER_START(LOCK_R)
     {
-      if (strncasecmp(_szPartialMatch, pUser->getAlias(), nLen) == 0)
+      if (strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
       {
         if (szMatch[0] == '\0')
-          strcpy(szMatch, pUser->getAlias());
+          strcpy(szMatch, pUser->GetAlias());
         else
-          szMatch[StrMatchLen(szMatch, pUser->getAlias(), nLen)] = '\0';
-        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->getAlias()));
+          szMatch[StrMatchLen(szMatch, pUser->GetAlias(), nLen)] = '\0';
+        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->GetAlias()));
       }
     }
     FOR_EACH_USER_END

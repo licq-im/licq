@@ -113,7 +113,7 @@ void CLicqConsole::PrintStatus(void)
       strcpy(szLastUser, "<Removed>");
     else
     {
-      strcpy(szLastUser, u->getAlias());
+      strcpy(szLastUser, u->GetAlias());
       gUserManager.DropUser(u);
     }
   }
@@ -129,7 +129,7 @@ void CLicqConsole::PrintStatus(void)
 
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
   winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", COLOR_YELLOW_BLUE,
-                     A_BOLD, COLOR_WHITE_BLUE, o->getAlias(), COLOR_YELLOW_BLUE,
+                     A_BOLD, COLOR_WHITE_BLUE, o->GetAlias(), COLOR_YELLOW_BLUE,
                      COLOR_WHITE_BLUE, o->getUin(), COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, szStatusStr, COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
@@ -375,9 +375,9 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
     time_t t = (*it)->Time();
     char *szTime = ctime(&t);
     szTime[16] = '\0';
-    winMain->wprintf("%A%C[%d of %d] %s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
+    winMain->wprintf("%A%C[%d of %d] %s %s %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
                      COLOR_WHITE, n + 1, lHistory.size(), EventDescription(*it),
-                     szFrom,
+                     (*it)->Direction() == D_RECEIVER ? "from" : "to", szFrom,
                      szTime, (*it)->IsDirect() ? 'D' : '-',
                      (*it)->IsMultiRec() ? 'M' : '-', (*it)->IsUrgent() ? 'U' : '-',
                      A_BOLD, (*it)->Text());

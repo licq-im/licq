@@ -191,6 +191,12 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   PrintPrompt();
   PrintUsers();
 
+  if (gUserManager.OwnerUin() == 0)
+  {
+    winMain->wprintf("You have not yet registered a uin.\n"
+                     "Use the Qt-GUI plugin to do so.\n");
+  }
+
   fd_set fdSet;
   int nResult;
 
@@ -470,14 +476,14 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
         u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
         u->getStatusStr(status);
         win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
-                     u->getAlias(), status, u->AutoResponse());
+                     u->GetAlias(), status, u->AutoResponse());
         gUserManager.DropUser(u);
       }
       else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)
       {
         u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
         win->wprintf("%s refused %s.\n",
-                     u->getAlias(), EventDescription(ue));
+                     u->GetAlias(), EventDescription(ue));
         gUserManager.DropUser(u);
       }
       /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
@@ -493,7 +499,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
            u = gUserManager.FetchUser(m_nUin, LOCK_R);
            QString result;
            result.sprintf(tr("%s%1 with %2 refused:\n%s%3"), L_TCPxSTR, L_BLANKxSTR);
-           result.arg(EventDescription(ue)).arg(u->getAlias()).arg(ea->szResponse);
+           result.arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->szResponse);
            gUserManager.DropUser(u);
            InformUser(this, result);
         }
@@ -990,7 +996,7 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     szTime[16] = '\0';
     winMain->wprintf("%A%C%s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
                      COLOR_WHITE, EventDescription(e),
-                     u->User() ? u->getAlias() : "Server",
+                     u->User() ? u->GetAlias() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
                      A_BOLD, e->Text());
@@ -1027,7 +1033,7 @@ void CLicqConsole::UserCommand_Remove(unsigned long nUin, char *)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%C%ARemove %s (%ld) from contact list (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-                   u->getAlias(), nUin, COLOR_WHITE, A_BOLD);
+                   u->GetAlias(), nUin, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1079,7 +1085,7 @@ void CLicqConsole::UserCommand_FetchAutoResponse(unsigned long nUin, char *)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%C%AFetching auto-response for %s (%ld)...",
                    m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                   u->getAlias(), nUin);
+                   u->GetAlias(), nUin);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 
@@ -1153,7 +1159,7 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
   if (gUserManager.OwnerUin() == nUin)
     strcpy(szFrom, "Server");
   else
-    strcpy(szFrom, u->getAlias());
+    strcpy(szFrom, u->GetAlias());
   gUserManager.DropUser(u);
 
   unsigned short nLast = lHistory.size();
@@ -1218,7 +1224,7 @@ void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
   winMain->data = new DataMsg(nUin);
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%AEnter message to %s (%ld):\n%s\n", A_BOLD, u->getAlias(),
+  winMain->wprintf("%AEnter message to %s (%ld):\n%s\n", A_BOLD, u->GetAlias(),
                    nUin, MLE_HELP);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
@@ -1303,8 +1309,7 @@ void CLicqConsole::UserCommand_SetAutoResponse(unsigned long nUin, char *)
   winMain->state = STATE_MLE;
   winMain->data = new DataAutoResponse();
 
-  winMain->wprintf("%A%CEnter auto response:\n%s\n", A_BOLD, COLOR_WHITE,
-                   MLE_HELP);
+  winMain->wprintf("%A%CEnter auto response:\n", A_BOLD, COLOR_WHITE);
   winMain->RefreshWin();
 }
 
@@ -1336,7 +1341,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       o->SetAutoResponse(data->szRsp);
       gUserManager.DropOwner();
-      winMain->wprintf("%CAuto-response set.\n",
+      winMain->wprintf("%C%AAuto-response set.\n",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
     }
     delete winMain->data;
@@ -1363,7 +1368,7 @@ void CLicqConsole::UserCommand_Url(unsigned long nUin, char *)
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   winMain->wprintf("%A%CEnter URL to %s (%ld): ", A_BOLD, COLOR_WHITE,
-                   u->getAlias(), nUin);
+                   u->GetAlias(), nUin);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
