@@ -103,7 +103,7 @@ public:
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
   // Auto Response
-  unsigned long icqFetchAutoResponse(unsigned long nUin);
+  unsigned long icqFetchAutoResponse(unsigned long nUin, bool bServer = false);
   // Chat Request
   unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
      unsigned short nLevel, bool bServer);
