@@ -69,24 +69,30 @@ void CELabel::setItalic(bool isItalic)
 void CELabel::setNamedFgColor(char *theColor)
 {
    if (theColor == NULL) return;
+   QColor c(theColor);
+   if (!c.isValid()) return;
 
    QPalette pal(palette());
-   QColorGroup normal(pal.normal());
-   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
-                         normal.mid(), QColor(theColor), normal.base());
-   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+
+   pal.setColor(QPalette::Active, QColorGroup::Foreground, c);
+   pal.setColor(QPalette::Inactive, QColorGroup::Foreground, c);
+
+   setPalette(pal);
 }
 
 
 void CELabel::setNamedBgColor(char *theColor)
 {
    if (theColor == NULL) return;
+   QColor c(theColor);
+   if (!c.isValid()) return;
 
    QPalette pal(palette());
-   QColorGroup normal(pal.normal());
-   QColorGroup newNormal(normal.foreground(), QColor(theColor), normal.light(), normal.dark(),
-                         normal.mid(), normal.text(), normal.base());
-   setPalette(QPalette(newNormal, newNormal /*pal.disabled()*/, newNormal));
+
+   pal.setColor(QPalette::Active, QColorGroup::Background, c);
+   pal.setColor(QPalette::Inactive, QColorGroup::Background, c);
+
+   setPalette(pal);
 }
 
 
