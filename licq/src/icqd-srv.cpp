@@ -755,6 +755,8 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       p = new CPU_CapabilitySettings();
       SendEvent_Server(p);
 
+      icqSetStatus(m_nDesiredStatus);
+
       gLog.Info("%sSending client ready...\n", L_SRVxSTR);
       p = new CPU_ClientReady();
       SendEvent_Server(p);
@@ -1187,7 +1189,7 @@ void CICQDaemon::ProcessBOSFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxBOS_RIGHTSxGRANTED:
     gLog.Info("%sReceived BOS rights.\n", L_SRVxSTR);
-    icqSetStatus(m_nDesiredStatus);
+    //icqSetStatus(m_nDesiredStatus);
     break;
 
   default:
