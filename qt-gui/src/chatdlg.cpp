@@ -12,6 +12,7 @@
 #include "translate.h"
 #include "user.h"
 #include "icqd.h"
+#include "ewidgets.h"
 
 #define STATE_RECVxHANDSHAKE 1
 #define STATE_RECVxCOLOR 2
@@ -240,6 +241,7 @@ void ChatDlg::StateServer()
 //-----startAsClient------------------------------------------------------------
 bool ChatDlg::startAsClient()
 {
+/*
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();
   gUserManager.DropUser(u);
@@ -251,6 +253,13 @@ bool ChatDlg::startAsClient()
   {
     gLog.Error("%sUnable to connect to chat:\n%s%s.\n", L_ERRORxSTR,
                L_BLANKxSTR, m_cSocketChat.ErrorStr(buf, 128));
+    return false;
+  }
+*/
+  if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_cSocketChat, getPort()))
+  {
+    WarnUser(this, tr("Unable to connect to remote chat.\n"
+                      "See the network log for details."));
     return false;
   }
 

@@ -570,7 +570,7 @@ void CFileDlg::fileRecvFile()
 //-----startAsClient------------------------------------------------------------
 bool CFileDlg::startAsClient()
 {
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+/*  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();
   gUserManager.DropUser(u);
   gLog.Info("%sFile transfer - connecting to %s:%d.\n", L_TCPxSTR,
@@ -583,23 +583,32 @@ bool CFileDlg::startAsClient()
               .arg(m_xSocketFile.ErrorStr(buf, 128)));
      return false;
    }
+*/
 
-   lblStatus->setText(tr("Connected, shaking hands..."));
+  if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_xSocketFile, getPort()))
+  {
+    WarnUser(this, tr("Unable to connect to remote file server.\n"
+                      "See the network log for details.")
+             .arg(m_xSocketFile.ErrorStr(buf, 128)));
+    return false;
+  }
 
-   // Send handshake packet:
-   CPacketTcp_Handshake p_handshake(getLocalPort());
-   m_xSocketFile.SendPacket(p_handshake.getBuffer());
+  lblStatus->setText(tr("Connected, shaking hands..."));
 
-   // Send init packet:
-   CPFile_InitClient p(m_szLocalName, 1, m_nFileSize);
-   m_xSocketFile.SendPacket(p.getBuffer());
+  // Send handshake packet:
+  CPacketTcp_Handshake p_handshake(getLocalPort());
+  m_xSocketFile.SendPacket(p_handshake.getBuffer());
 
-   lblStatus->setText(tr("Connected, waiting for response..."));
-   m_nState = STATE_RECVxSERVERxINIT;
-   snFile = new QSocketNotifier(m_xSocketFile.Descriptor(), QSocketNotifier::Read);
-   connect(snFile, SIGNAL(activated(int)), this, SLOT(StateClient()));
+  // Send init packet:
+  CPFile_InitClient p(m_szLocalName, 1, m_nFileSize);
+  m_xSocketFile.SendPacket(p.getBuffer());
 
-   return true;
+  lblStatus->setText(tr("Connected, waiting for response..."));
+  m_nState = STATE_RECVxSERVERxINIT;
+  snFile = new QSocketNotifier(m_xSocketFile.Descriptor(), QSocketNotifier::Read);
+  connect(snFile, SIGNAL(activated(int)), this, SLOT(StateClient()));
+
+  return true;
 }
 
 //-----StateClient--------------------------------------------------------------
