@@ -192,9 +192,10 @@ void CMSN::Run()
           {
             // Time to reconnect
             gLog.Info("%sDisconnected from server, reconnecting.\n", L_MSNxSTR);
-            gSocketMan.CloseSocket(m_nServerSocket);
-            gSocketMan.DropSocket(sock);
+            int nSD = m_nServerSocket;
             m_nServerSocket = -1;
+            gSocketMan.DropSocket(sock);
+            gSocketMan.CloseSocket(nSD);
             MSNLogon("messenger.hotmail.com", 1863);
           }
         }
@@ -452,7 +453,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       string strUser = packet->GetParameter();
       packet->SkipParameter(); // Nick
       string strSize = packet->GetParameter();
-      packet->SkipPacket(); // Skip \r\m
+      packet->SkipPacket(); // Skip \r\n
       packet->ParseHeaders();
       int nSize = atoi(strSize.c_str());
       
@@ -471,9 +472,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
       {
         int nCurrent = packet->getDataPosWrite() - packet->getDataPosRead();
-        char szMsg[nSize - nCurrent - 1];
+        char szMsg[nCurrent + 1];
         int i;
-        for (i = 0; i < (nSize - nCurrent - 2); i++)
+        for (i = 0; i < nCurrent; i++)
           (*packet) >> szMsg[i];
         szMsg[i] = '\0';
         
@@ -723,6 +724,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "CHG")
     {
+      m_pPacketBuf->SkipParameter(); // seq
       string strStatus = m_pPacketBuf->GetParameter();
       ICQUser *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
       unsigned long nStatus;
@@ -753,6 +755,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
+        u->SetOnlineSince(0); // Not in this protocol
         gLog.Info("%s%s changed status (%s).\n", L_SRVxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
       }
