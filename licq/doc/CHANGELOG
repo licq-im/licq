@@ -1,5 +1,14 @@
 Change log for Licq.
 
+New in 0.76
+o  Random Chat (set group and search)
+o  Major history speedups 
+o  Bug fixes
+o  New fifo commands (adduser, metauserinfo)
+o  Uses libtool for better cross-platform support
+o  64-bit machine support
+
+
 New in 0.75
 o  Whitepages information support
 o  Lots of bug fixes

@@ -1,6 +1,6 @@
-LICQ v0.75
+LICQ v0.76
 
-An ICQ clone written fully in c++ using a plugin system to allow for
+An ICQ clone written in C and C++ using a plugin system to allow for
 many possible interfaces.  
 See the webpage (http://www.licq.org) for more information.
 Licq implements messages (online and offline), urls, chat, full file
