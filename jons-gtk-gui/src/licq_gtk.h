@@ -377,6 +377,7 @@ extern void main_window_show();
 
 /* Functions in menu.cpp */
 extern GtkWidget *menu_new_item(GtkWidget *, const char *, GtkSignalFunc);
+extern void menu_separator(GtkWidget *);
 extern void menu_create();
 extern void menu_system_quit(GtkWidget *, gpointer);
 extern void menu_system_refresh(GtkWidget *, gpointer);
@@ -453,7 +454,8 @@ extern void cancel_user_info(GtkWidget *, struct info_user *);
 extern void verify_user_info(GtkWidget *, guint, gchar *,  struct info_user *);
 extern struct info_user *iu_new(ICQUser *);
 extern struct info_user *iu_find(unsigned long);
-extern void do_entry(GtkWidget *&, GtkWidget *&, const gchar *, const gchar *);
+extern void do_entry(GtkWidget *&, GtkWidget *&, const gchar *,
+		     const gchar *, gboolean);
 extern void pack_hbox(GtkWidget *&, GtkWidget *, GtkWidget *);
 
 

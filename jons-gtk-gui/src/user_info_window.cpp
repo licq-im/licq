@@ -31,6 +31,15 @@ GSList *iu_list;
 
 void list_info_user(GtkWidget *window, ICQUser *user)
 {
+	gboolean is_o = FALSE;
+
+	/* Check to see if it's for the owner */
+	if(user == NULL)
+	{
+		user = gUserManager.FetchOwner(LOCK_R);
+		is_o = TRUE;
+	}
+
 	struct info_user *iu = iu_find(user->Uin());
 
 	if(iu != NULL)
@@ -95,7 +104,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	/* START THE GENERAL TAB */
 
 	/* The Alias entry and label */
-	do_entry(iu->alias, label, "Nick:      ", user->GetAlias());
+	do_entry(iu->alias, label, "Nick:      ", user->GetAlias(), is_o);
 	gtk_entry_set_editable(GTK_ENTRY(iu->alias), TRUE);
 
 	/* Pack the alias */
@@ -103,7 +112,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(h_box), iu->alias, FALSE, FALSE, 0);
 
 	/* The Name box and label */
-	do_entry(iu->name, label, "Name:     ", name);
+	do_entry(iu->name, label, "Name:     ", name, is_o);
 
 	/* Pack the name */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
@@ -115,14 +124,15 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* The UIN box and label */
-	do_entry(entry, label, "UIN:       ", uin);
+	do_entry(entry, label, "UIN:       ", uin, FALSE);
 
 	/* Pack the UIN */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), entry , FALSE, FALSE, 0); 
 
 	/* The IP box and label */
-	do_entry(entry, label, "IP:          ", user->IpPortStr(buf));
+	do_entry(entry, label, "IP:          ", user->IpPortStr(buf),
+		 FALSE);
 
 	/* Pack the IP */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
@@ -134,14 +144,14 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* The primary e-mails */
-	do_entry(iu->email1, label, "E-mail 1:", user->GetEmail1());
+	do_entry(iu->email1, label, "E-mail 1:", user->GetEmail1(), is_o);
 
 	/* Pack the email1 */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), iu->email1, FALSE, FALSE, 0);
 
 	/* The secondary e-mail */
-	do_entry(iu->email2, label, "E-mail 2:", user->GetEmail2());
+	do_entry(iu->email2, label, "E-mail 2:", user->GetEmail2(), is_o);
 
 	/* Pack the email2 */
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
@@ -152,21 +162,26 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	h_box = gtk_hbox_new(FALSE, 0);
 
-	if(!iu->user->StatusOffline())
-		online = "Now";
-	else if(iu->user->LastOnline() == 0)
-		online = "Unknown";
-	else
+	if(!is_o)
 	{
-		time_t last = iu->user->LastOnline();
-		online = ctime(&last);
+		if(!iu->user->StatusOffline())
+			online = "Now";
+		else if(iu->user->LastOnline() == 0)
+			online = "Unknown";
+		else
+		{
+			time_t last = iu->user->LastOnline();
+			online = ctime(&last);
+		}
+	
+		do_entry(entry, label, "Last Seen:", online, FALSE);
+		pack_hbox(h_box, label, entry);
+	
+	
+		gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE,
+				   FALSE, 0);
 	}
 	
-	do_entry(entry, label, "Last Seen:", online);
-	pack_hbox(h_box, label, entry);
-
-	gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE, FALSE, 0);
-
 	/* END GENERAL TAB */
 
 	h_box = gtk_hbox_new(FALSE, 5);
@@ -174,11 +189,11 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	/* START ADDRESS TAB */
 
 	/* The address and pack it */
-	do_entry(iu->address, label, "Address:", user->GetAddress());
+	do_entry(iu->address, label, "Address:", user->GetAddress(), is_o);
 	pack_hbox(h_box, label, iu->address);
 
 	/* The city and pack it */
-	do_entry(iu->city, label, "City:   ", user->GetCity());
+	do_entry(iu->city, label, "City:   ", user->GetCity(), is_o);
 	pack_hbox(h_box, label, iu->city);
 
 	/* Finally pack the address and city */
@@ -187,12 +202,12 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* The state and pack it */
-	do_entry(iu->state, label, "State:    ", user->GetState());
+	do_entry(iu->state, label, "State:    ", user->GetState(), is_o);
 	pack_hbox(h_box, label, iu->state);
 
 	/* The zip and pack it */
 	const gchar *zip = g_strdup_printf("%ld", user->GetZipCode());
-	do_entry(iu->zip, label, "Zip:    ", zip);
+	do_entry(iu->zip, label, "Zip:    ", zip, is_o);
 	pack_hbox(h_box, label, iu->zip);
 
 	/* Finally pack the state and zip */
@@ -210,11 +225,11 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	else
 		country = g_strdup_printf("%s", sc->szName);
 	
-	do_entry(iu->country, label, "Country:", country);
+	do_entry(iu->country, label, "Country:", country, FALSE);
 	pack_hbox(h_box, label, iu->country);
 	
 	/* The Phone Number and pack it */
-	do_entry(iu->phone, label, "Phone:", user->GetPhoneNumber());
+	do_entry(iu->phone, label, "Phone:", user->GetPhoneNumber(), is_o);
 	pack_hbox(h_box, label, iu->phone);
 
 	/* Finally pack the country and phone number */
@@ -233,7 +248,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	else
 		age = "N/A";
 
-	do_entry(iu->age, label, "Age:          ", age);
+	do_entry(iu->age, label, "Age:          ", age, is_o);
 	pack_hbox(h_box, label, iu->age);
 
 	/* The gender box */
@@ -245,7 +260,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	else
 		gender = "Unspecified";
 
-	do_entry(iu->gender, label, "Gender:  ", gender);
+	do_entry(iu->gender, label, "Gender:  ", gender, FALSE);
 	pack_hbox(h_box, label, iu->gender);
 
 	/* Put age and gender on a horizontal line */
@@ -254,7 +269,8 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* The Homepage and pack it */
-	do_entry(iu->homepage, label, "Homepage: ", user->GetHomepage());
+	do_entry(iu->homepage, label, "Homepage: ", user->GetHomepage(),
+		 is_o);
 	pack_hbox(h_box, label, iu->homepage);
 
 
@@ -268,7 +284,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		bday = g_strdup_printf("%d/%d/%d", user->GetBirthMonth(),
 				user->GetBirthDay(), user->GetBirthYear());
 
-	do_entry(iu->bday, label, "Birthday: ", bday);
+	do_entry(iu->bday, label, "Birthday: ", bday, FALSE);
 	pack_hbox(h_box, label, iu->bday);
 
 	/* Put the homepate and birthday on a horz line */
@@ -278,21 +294,21 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	/* The languages and pack it */
 	const SLanguage *lang1 = GetLanguageByCode(user->GetLanguage(0));
-	do_entry(iu->lang1, label, "Language 1:", lang1->szName);
+	do_entry(iu->lang1, label, "Language 1:", lang1->szName, FALSE);
 	gtk_widget_set_usize(iu->lang1, 75, 20);
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), iu->lang1, FALSE, FALSE, 2);
 
 	/* Second language and pack it*/
 	const SLanguage *lang2 = GetLanguageByCode(user->GetLanguage(1));
-	do_entry(iu->lang2, label, "Language 2:", lang2->szName);
+	do_entry(iu->lang2, label, "Language 2:", lang2->szName, FALSE);
 	gtk_widget_set_usize(iu->lang2, 75, 20);
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
         gtk_box_pack_start(GTK_BOX(h_box), iu->lang2, FALSE, FALSE, 2);
 
 	/* Third language and pack it */
 	const SLanguage *lang3 = GetLanguageByCode(user->GetLanguage(2));
-	do_entry(iu->lang3, label, "Language 3:", lang3->szName);
+	do_entry(iu->lang3, label, "Language 3:", lang3->szName, FALSE);
 	gtk_widget_set_usize(iu->lang3, 75, 20);
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
         gtk_box_pack_start(GTK_BOX(h_box), iu->lang3, FALSE, FALSE, 2);
@@ -307,11 +323,13 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	/* START WORK TAB */
 
 	/* Company Name and pack it */
-	do_entry(iu->company, label, "Name:    ", user->GetCompanyName());
+	do_entry(iu->company, label, "Name:    ", user->GetCompanyName(),
+		 is_o);
 	pack_hbox(h_box, label, iu->company);
 
 	/* Department and pack it */
-	do_entry(iu->dept, label, "Department:", user->GetCompanyDepartment());
+	do_entry(iu->dept, label, "Department:",
+		 user->GetCompanyDepartment(), is_o);
 	pack_hbox(h_box, label, iu->dept);
 
 	/* Company Name and Department in a horz line */
@@ -320,12 +338,13 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* Position and pack it */
-	do_entry(iu->pos, label, "Position: ", user->GetCompanyPosition());
+	do_entry(iu->pos, label, "Position: ", user->GetCompanyPosition(),
+		 is_o);
 	pack_hbox(h_box, label, iu->pos);
 
 	/* Company Homepage and pack it */
 	do_entry(iu->co_homepage, label, "Homepage: ",
-		 user->GetCompanyHomepage());
+		 user->GetCompanyHomepage(), is_o);
 	pack_hbox(h_box, label, iu->co_homepage);
 
 	/* Pack Position and Homepage in a horz line */
@@ -334,12 +353,13 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* Company Address */
-	do_entry(iu->co_address, label, "Address:", user->GetCompanyAddress());
+	do_entry(iu->co_address, label, "Address:",
+		 user->GetCompanyAddress(), is_o);
 	pack_hbox(h_box, label, iu->co_address);
 
 	/* Company Phone Number */
 	do_entry(iu->co_phone, label, "Phone Num:",
-		 user->GetCompanyPhoneNumber());
+		 user->GetCompanyPhoneNumber(), is_o);
 	pack_hbox(h_box, label, iu->co_phone);
 
 	gtk_box_pack_start(GTK_BOX(work_box), h_box, FALSE, FALSE, 5);
@@ -347,12 +367,13 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/* Company City and pack it */
-	do_entry(iu->co_city, label, "City:      ", user->GetCompanyCity());
+	do_entry(iu->co_city, label, "City:      ", user->GetCompanyCity(),
+		 is_o);
 	pack_hbox(h_box, label, iu->co_city);
 
 	/* Company State and pack it */
 	do_entry(iu->co_state, label, "State:         ",
-		 user->GetCompanyState());
+		 user->GetCompanyState(), is_o);
 	pack_hbox(h_box, label, iu->co_state);
 
 	gtk_box_pack_start(GTK_BOX(work_box), h_box, FALSE, FALSE, 5);
@@ -442,9 +463,15 @@ void user_info_save(GtkWidget *widget, struct info_user *iu)
 
 gboolean user_info_close(GtkWidget *widget, struct info_user *iu)
 {
-	gtk_widget_destroy(iu->window);
+	/* Remove from the lists */
 	iu_list = g_slist_remove(iu_list, iu);
 	catcher = g_slist_remove(catcher, iu->etag);
+
+	/* Drop the user (or owner) */
+	gUserManager.DropUser(iu->user);
+
+	/* Destroy the window */
+	gtk_widget_destroy(iu->window);
 	return TRUE;
 }
 
@@ -462,7 +489,30 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 	strcpy(iu->etag->buf, "");
 	strcpy(iu->etag->buf, "Updating .. ");
 
-	iu->etag->e_tag = icq_daemon->icqRequestMetaInfo(iu->user->Uin());
+	if(iu->user->Uin() == gUserManager.OwnerUin())
+	{
+	   iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
+		gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1),
+		gtk_editable_get_chars(GTK_EDITABLE(iu->name), 0, -1),
+		NULL,
+		gtk_editable_get_chars(GTK_EDITABLE(iu->email1), 0, -1),
+		gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
+		gtk_editable_get_chars(GTK_EDITABLE(iu->city), 0, -1),
+		gtk_editable_get_chars(GTK_EDITABLE(iu->state), 0, -1),
+		gtk_editable_get_chars(GTK_EDITABLE(iu->phone), 0, -1),
+		NULL,
+		gtk_editable_get_chars(GTK_EDITABLE(iu->address), 0, -1),
+		NULL,
+		atol(gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1)),
+		0, FALSE);
+	}
+
+	else
+	{
+		iu->etag->e_tag =
+			icq_daemon->icqRequestMetaInfo(iu->user->Uin());
+	}
+	
 	catcher = g_slist_append(catcher, iu->etag);
 }
 
@@ -529,12 +579,13 @@ struct info_user *iu_find(unsigned long uin)
 void do_entry(GtkWidget *&entry,
 	      GtkWidget *&label,
               const gchar *lbl,
-	      const gchar *text)
+	      const gchar *text,
+	      gboolean is_owner)
 {
 	label = gtk_label_new(lbl);
 	entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(entry), text);
-	gtk_entry_set_editable(GTK_ENTRY(entry), FALSE);
+	gtk_entry_set_editable(GTK_ENTRY(entry), is_owner);
 }
 
 void pack_hbox(GtkWidget *&h_box, GtkWidget *label, GtkWidget *entry)
