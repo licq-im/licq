@@ -6,6 +6,7 @@
 # that was introduced in 1.3.0. 
 
 BASE=${HOME}/.licq
+LICQCONF=${BASE}/licq.conf
 CONF=${BASE}/users.conf
 
 if [ ! -d "$BASE" ]; then
@@ -29,7 +30,11 @@ echo ""
 echo "Updating owner file..."
 cd $BASE
 
-UIN=`cat owner.uin | grep Uin | cut -d " " -f 3`
+UIN=`cat $BASE/owner.uin | grep Uin | cut -d " " -f 3`
+echo "[owners]" >> $LICQCONF
+echo "NumOfOwners = 1" >> $LICQCONF
+echo "Owner1.Id = $UIN" >> $LICQCONF
+echo "Owner1.PPID = Licq" >> $LICQCONF
 mv owner.uin owner.Licq
 
 echo "Updating user files..."
