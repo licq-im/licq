@@ -1861,49 +1861,54 @@ void CMainWindow::changeStatus(int id)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
 
-  //TODO Which protocol?
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  if (id == ICQ_STATUS_OFFLINE)
+  ProtoPluginsList pl;
+  ProtoPluginsListIter it;
+  licqDaemon->ProtoPluginList(pl);
+  for (it = pl.begin(); it != pl.end(); it++)
   {
-    gUserManager.DropOwner();
-    licqDaemon->icqLogoff();
-    return;
-  }
-  else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
-  {
-    mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
-                              !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
-    if (o->StatusOffline())
+    unsigned long nPPID = (*it)->Id();
+    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
+    if (id == ICQ_STATUS_OFFLINE)
     {
-      gUserManager.DropOwner();
-      return;
+      gUserManager.DropOwner(nPPID);
+      licqDaemon->ProtoLogoff(nPPID);
+      continue;
     }
-    if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
-       newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
+    else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
+    {
+      mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
+                                !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
+      if (o->StatusOffline())
+      {
+        gUserManager.DropOwner(nPPID);
+        continue;
+      }
+      if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+         newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
+      else
+         newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
+    }
     else
-       newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
+    {
+      newStatus = id;
+    }
+
+    // we may have been offline and gone online with invisible toggled
+    if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+       newStatus |= ICQ_STATUS_FxPRIVATE;
+
+    // disable combo box, flip pixmap...
+    //lblStatus->setEnabled(false);
+
+    // call the right function
+    bool b = o->StatusOffline();
+    gUserManager.DropOwner(nPPID);
+    if (b)
+      licqDaemon->ProtoLogon(nPPID, newStatus);
+    else
+      licqDaemon->ProtoSetStatus(nPPID, newStatus);
   }
-  else
-  {
-    newStatus = id;
-  }
-
-  // we may have been offline and gone online with invisible toggled
-  if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
-     newStatus |= ICQ_STATUS_FxPRIVATE;
-
-  // disable combo box, flip pixmap...
-  //lblStatus->setEnabled(false);
-
-  // call the right function
-  bool b = o->StatusOffline();
-  gUserManager.DropOwner();
-  if (b)
-    licqDaemon->icqLogon(newStatus);
-  else
-    licqDaemon->icqSetStatus(newStatus);
 }
-
 
 // -----------------------------------------------------------------------------
 
