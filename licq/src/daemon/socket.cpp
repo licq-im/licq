@@ -245,7 +245,11 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
     if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
     {
       char szHostName[256];
-      gethostname(szHostName, 256);
+      if (gethostname(szHostName, 256) == -1)
+      {
+        h_errno = -1;
+        return false;
+      }
       struct hostent sLocalHost;
       h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
       if (h_errno != 0)
