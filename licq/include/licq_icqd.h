@@ -106,10 +106,10 @@ public:
   unsigned long icqFetchAutoResponse(unsigned long nUin);
   // Chat Request
   unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
-     unsigned short nLevel);
+     unsigned short nLevel, bool bServer);
   unsigned long icqMultiPartyChatRequest(unsigned long nUin,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
-     unsigned short nLevel);
+     unsigned short nLevel, bool bServer);
   void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
      unsigned long nSequence);
   void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
@@ -117,12 +117,12 @@ public:
   void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
   // File Transfer
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
-     const char *szDescription, unsigned short nLevel);
+     const char *szDescription, unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
      unsigned long nSequence);
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-     unsigned long nSequence);
+     unsigned long nSequence, bool bServer);
   unsigned long icqOpenSecureChannel(unsigned long nUin);
   unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
@@ -413,7 +413,8 @@ protected:
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
-  static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short, unsigned short);
+  static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short,
+                             unsigned short, bool = true);
   static bool Handshake_Recv(TCPSocket *, unsigned short);
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
