@@ -34,31 +34,55 @@
 
 QStringList* UserCodec::m_encodings;
 
-// -----------------------------------------------------------------------------
+
 
 #ifndef USE_KDE
 const char * UserCodec::encodings_array[][2] = {
   { QT_TR_NOOP("Unicode"), "UTF-8" },
-  { QT_TR_NOOP("Western European"), "ISO 8859-1" },
-  { QT_TR_NOOP("Western European"), "ISO 8859-15" },
-  { QT_TR_NOOP("Western European"), "CP 1252" },
-  { QT_TR_NOOP("Central European"), "CP 1250" },
-  { QT_TR_NOOP("Central European"), "ISO 8859-2" },
-  { QT_TR_NOOP("Esperanto"), "ISO 8859-3" },
+
+  { QT_TR_NOOP("Arabic"), "ISO 8859-6" },
+  { QT_TR_NOOP("Arabic"), "CP 1256" },
+
   { QT_TR_NOOP("Baltic"), "ISO 8859-13" },
   { QT_TR_NOOP("Baltic"), "CP 1257" },
+
+  { QT_TR_NOOP("Central European"), "ISO 8859-2" },
+  { QT_TR_NOOP("Central European"), "CP 1250" },
+
+  { QT_TR_NOOP("Chinese"), "GBK" },
+  { QT_TR_NOOP("Chinese Traditional"), "Big5" },
+
   { QT_TR_NOOP("Cyrillic"), "ISO 8859-5" },
   { QT_TR_NOOP("Cyrillic"), "KOI8-R" },
   { QT_TR_NOOP("Cyrillic"), "CP 1251" },
-  { QT_TR_NOOP("Ukrainan"), "KOI8-U" },
-  { QT_TR_NOOP("Arabic"), "ISO 8859-6" },
+
+  { QT_TR_NOOP("Esperanto"), "ISO 8859-3" },
+  
   { QT_TR_NOOP("Greek"), "ISO 8859-7" },
+  { QT_TR_NOOP("Greek"), "CP 1253" },
+  
+  // Visual Hebrew is avoided on purpose -- its not usable for communications
   { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I" },
-  { QT_TR_NOOP("Chinese Traditional"), "Big5" },
-  { QT_TR_NOOP("Chinese Simplified"), "gbk" },
-  { QT_TR_NOOP("Chinese Simplified"), "gbk2312" },
+  { QT_TR_NOOP("Hebrew"), "CP 1255" },
+
+  { QT_TR_NOOP("Japanese"), "Shift-JIS" },
+  { QT_TR_NOOP("Japanese"), "JIS7" },
+  { QT_TR_NOOP("Japanese"), "eucJP" },
+
+  { QT_TR_NOOP("Korean"), "eucKR" },
+
+  { QT_TR_NOOP("Western European"), "ISO 8859-1" },
+  { QT_TR_NOOP("Western European"), "ISO 8859-15" },
+  { QT_TR_NOOP("Western European"), "CP 1252" },
+
+  { QT_TR_NOOP("Tamil"), "TSCII" },
+
+  { QT_TR_NOOP("Thai"), "TIS-620" },
+
   { QT_TR_NOOP("Turkish"), "ISO 8859-9" },
-  { QT_TR_NOOP("Turkish"), "CP 1254" }
+  { QT_TR_NOOP("Turkish"), "CP 1254" },
+
+  { QT_TR_NOOP("Ukrainian"), "KOI8-U" }
 };
 #endif
 
