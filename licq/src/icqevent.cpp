@@ -125,6 +125,21 @@ bool ICQEvent::CompareEvent(unsigned long nEventId) const
    return(m_nEventId == nEventId);
 }
 
+// Returns the event and transfers ownership to the calling function
+CUserEvent *ICQEvent::GrabUserEvent()
+{
+  CUserEvent *e = m_pUserEvent; m_pUserEvent = NULL; return e;
+}
+
+CSearchAck *ICQEvent::GrabSearchAck()
+{
+  CSearchAck *a = m_pSearchAck; m_pSearchAck = NULL; return a;
+}
+
+ICQUser *ICQEvent::GrabUnknownUser()
+{
+  ICQUser *u = m_pUnknownUser; m_pUnknownUser = NULL; return u;
+}
 
 //=====CICQEventTag==========================================================
 CICQEventTag::CICQEventTag(const ICQEvent *e)
