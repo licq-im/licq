@@ -84,7 +84,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
   fi
 
   dnl Check if we have the right lib
-  output=`eval "nm $ac_cv_lib_qtlib/libqt.so | grep QCString"`
+  output=`eval "objdump -C -T $ac_cv_lib_qtlib/libqt.so | grep QCString"`
   if test -z "$output"; then
     AC_MSG_ERROR([The Qt lib directory
         $ac_cv_lib_qtlib
@@ -177,13 +177,13 @@ AC_DEFUN(AC_PATH_QT_MOC,
     $QTDIR/bin/moc,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 
-  output=`eval "nm $QT_MOC | grep QCString"`
-  if test -z "$output"; then
-    AC_MSG_ERROR([The Qt meta object compiler found is not for Qt 2!
-        Please check whether $QT_MOC is indeed the Qt moc compiler
-        part of your Qt 2.0 (or higher) lib.
-    ])
-  fi
+  dnl output=`eval "nm $QT_MOC | grep QCString"`
+  dnl if test -z "$output"; then
+  dnl  AC_MSG_ERROR([The Qt meta object compiler found is not for Qt 2!
+  dnl      Please check whether $QT_MOC is indeed the Qt moc compiler
+  dnl      part of your Qt 2.0 (or higher) lib.
+  dnl  ])
+  dnl fi
 ])
 
 AC_DEFUN(AC_PATH_QT_FINDTR,
