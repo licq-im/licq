@@ -72,10 +72,9 @@ protected:
 
   // Send Event tab
   void CreateSendEventTab();
-  QBoxLayout* m_selay;
   MLEditWrap *mleSend;
-  QCheckBox *chkSendServer, *chkSpoof, *chkUrgent;
-  QLineEdit *edtSpoof, *edtItem;
+  QCheckBox *chkSendServer, *chkUrgent;
+  QLineEdit *edtItem;
   QLabel *lblItem;
   QGroupBox *grpOpt;
   QButtonGroup *grpCmd;
@@ -146,7 +145,6 @@ protected slots:
    void ShowHistoryNext();
    void printMessage(QListViewItem *);
    void save();
-   void setSpoofed();
    void specialFcn(int);
 
 signals:

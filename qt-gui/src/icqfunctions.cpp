@@ -1,3 +1,20 @@
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -52,7 +69,7 @@
 unsigned short ICQFunctions::s_nX = 100;
 unsigned short ICQFunctions::s_nY = 100;
 
-//-----ICQFunctions::constructor-------------------------------------------------------------------
+//-----ICQFunctions::constructor---------------------------------------------
 ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
                            unsigned long _nUin, bool _bIsOwner,
                            bool isAutoClose, QWidget *parent, const char *name)
@@ -110,7 +127,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   setTabOrder(mleSend, btnOk);
 
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnOk, SIGNAL(clicked()));
-  connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
   connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
@@ -139,7 +155,6 @@ void ICQFunctions::CreateReadEventTab()
   mleRead->setReadOnly(true);
   splRead->setOpaqueResize(true);
   splRead->setResizeMode(msgView, QSplitter::KeepSize);
-  //connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
   connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
 }
 
@@ -148,7 +163,7 @@ void ICQFunctions::CreateSendEventTab()
 {
   tabLabel[TAB_SEND] = tr("S&end");
   fcnTab[TAB_SEND] = new QWidget(this, tabLabel[TAB_SEND]);
-  m_selay = new QVBoxLayout(fcnTab[TAB_SEND], 8);
+  QBoxLayout* selay = new QVBoxLayout(fcnTab[TAB_SEND], 8);
 
   grpCmd = new QButtonGroup(1, Vertical, tr("Select Function"), fcnTab[TAB_SEND]);
   rdbMsg = new QRadioButton(tr("Message"), grpCmd);
@@ -156,32 +171,38 @@ void ICQFunctions::CreateSendEventTab()
   rdbChat = new QRadioButton(tr("Chat Request"), grpCmd);
   rdbFile = new QRadioButton(tr("File Transfer"), grpCmd);
   connect(grpCmd, SIGNAL(clicked(int)), this, SLOT(specialFcn(int)));
-  m_selay->addWidget(grpCmd);
+#if QT_VERSION < 210
+  QWidget* dummy_w = new QWidget(grpCmd);
+  dummy_w->setMinimumHeight(2);
+#endif
+  selay->addWidget(grpCmd);
 
   mleSend = new MLEditWrap(true, fcnTab[TAB_SEND]);
   mleSend->setMinimumHeight(150);
-  m_selay->addWidget(mleSend);
-  m_selay->setStretchFactor(mleSend, 10);
+  selay->addWidget(mleSend);
+  selay->setStretchFactor(mleSend, 1);
 
-  grpOpt = new QGroupBox(1, Vertical, fcnTab[TAB_SEND]);
+  grpOpt = new QGroupBox(2, Horizontal, fcnTab[TAB_SEND]);
+  selay->addWidget(grpOpt);
   lblItem = new QLabel(grpOpt);
   edtItem = new QLineEdit(grpOpt);
-  m_selay->addWidget(grpOpt);
+#if QT_VERSION < 210
+  QWidget* dummy_w2 = new QWidget(grpOpt);
+  dummy_w2->setMinimumHeight(2);
+#endif
+  grpOpt->hide();
 
-  QGroupBox* boxOptions = new QGroupBox(1, Vertical, fcnTab[TAB_SEND]);
-  m_selay->addWidget(boxOptions);
+  QGroupBox* boxOptions = new QGroupBox(2, Horizontal, fcnTab[TAB_SEND]);
+  selay->addWidget(boxOptions);
 
   chkSendServer = new QCheckBox(tr("Send through server"), boxOptions);
   chkUrgent = new QCheckBox(tr("Urgent"), boxOptions);
+#if QT_VERSION < 210
+  QWidget* dummy_w3 = new QWidget(boxOptions);
+  dummy_w3->setMinimumHeight(2);
+#endif
 
-  chkSpoof = new QCheckBox(tr("Spoof UIN:"), fcnTab[TAB_SEND]);
-  chkSpoof->hide();
-
-  edtSpoof = new QLineEdit(fcnTab[TAB_SEND]);
-  edtSpoof->setEnabled(false);
-  edtSpoof->hide();
-  edtSpoof->setValidator(new QIntValidator(1000000, 100000000, edtSpoof));
-  connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
+  selay->activate();
 }
 
 
@@ -464,7 +485,6 @@ void ICQFunctions::setupTabs(int index)
     chkSendServer->setChecked(true);
     chkSendServer->setEnabled(false);
   }
-  chkSpoof->setChecked(false);
   rdbMsg->setChecked(true);
   specialFcn(0);
   tabs->setTabEnabled(fcnTab[TAB_SEND], !m_bOwner);
@@ -1114,20 +1134,6 @@ void ICQFunctions::generateReply()
 }
 
 
-//-----ICQFunctions::setSpoofed----------------------------------------------
-void ICQFunctions::setSpoofed()
-{
-  if (chkSpoof->isChecked())
-  {
-    if (!QueryUser(this, tr("Spoofing messages is immoral and possibly illegal.\nIn clicking OK you absolve the author from any \nresponsibility for your actions.\nDo you want to continue?"),
-                   tr("Ok"), tr("Cancel")))
-    {
-      chkSpoof->setChecked(false);
-    }
-  }
-}
-
-
 //-----ICQFunctions::specialFcn----------------------------------------------
 void ICQFunctions::specialFcn(int theFcn)
 {
@@ -1135,20 +1141,20 @@ void ICQFunctions::specialFcn(int theFcn)
   {
   case 0:
     grpOpt->hide();
-    m_selay->activate();
+    tabs->updateGeometry();
     mleSend->setEnabled(true);
     chkSendServer->setEnabled(true);
     break;
   case 1:
     lblItem->setText(tr("URL:"));
     grpOpt->show();
-    m_selay->activate();
+    tabs->updateGeometry();
     mleSend->setEnabled(true);
     chkSendServer->setEnabled(true);
     break;
   case 2:
     grpOpt->hide();
-    m_selay->activate();
+    tabs->updateGeometry();
     mleSend->setEnabled(true);
     chkSendServer->setChecked(false);
     chkSendServer->setEnabled(false);
@@ -1156,7 +1162,7 @@ void ICQFunctions::specialFcn(int theFcn)
   case 3:
     lblItem->setText(tr("Filename:"));
     grpOpt->show();
-    m_selay->activate();
+    tabs->updateGeometry();
     chkSendServer->setChecked(false);
     chkSendServer->setEnabled(false);
     mleSend->setEnabled(true);
@@ -1197,15 +1203,15 @@ void ICQFunctions::callFcn()
     unsigned short nMsgLen = mleSend->text().length();
     if (nMsgLen > MAX_MESSAGE_SIZE)
      {
-        if(!QueryUser(this, tr("Message is %1 characters, over the ICQ98 limit of %2.  \nLicq, ICQ99, and other clones support longer messages \nhowever ICQ98 will not. Continue?").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
+        if(!QueryUser(this, tr("Message is %1 characters, over the ICQ98 limit of %2.\n"
+                               "Licq, ICQ99, and other clones support longer messages \n"
+                               "however ICQ98 will not. Continue?").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
                       tr("Ok"), tr("Cancel")))
         {
           btnOk->setEnabled(true);
           break;
         }
      }
-     unsigned long uin = (chkSpoof->isChecked() ? atoi(edtSpoof->text()) : 0);
-
      if (rdbMsg->isChecked())  // send a message
      {
         ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
@@ -1216,7 +1222,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg += "...";
         icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
-                                          chkUrgent->isChecked() ? true : false, uin);
+                                          chkUrgent->isChecked() ? true : false);
      }
      else if (rdbUrl->isChecked()) // send URL
      {
@@ -1225,7 +1231,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg += "...";
         icqEventTag = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                       chkSendServer->isChecked() ? false : true,
-                                      chkUrgent->isChecked() ? true : false, uin);
+                                      chkUrgent->isChecked() ? true : false);
      }
      else if (rdbChat->isChecked())   // send chat request
      {
@@ -1234,7 +1240,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg += "...";
         icqEventTag = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
-                                          chkUrgent->isChecked() ? true : false, uin);
+                                          chkUrgent->isChecked() ? true : false);
      }
      else if (rdbFile->isChecked())   // send file transfer
      {
@@ -1243,7 +1249,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg += "...";
         icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                            chkSendServer->isChecked() ? false : true,
-                                           chkUrgent->isChecked() ? true : false, uin);
+                                           chkUrgent->isChecked() ? true : false);
      }
 
      if (icqEventTag == NULL)
