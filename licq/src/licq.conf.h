@@ -17,6 +17,7 @@ Server3 = icq3.mirabilis.com
 TCPServerPort = 0
 MaxUsersPerPacket = 100
 Errors = log.errors
+Rejects = log.rejects
 Translation = none
 UrlViewer = viewurl-netscape.sh
 Terminal = xterm -T Licq -e 
