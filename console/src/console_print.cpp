@@ -535,7 +535,7 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
   winMain->wprintf("%C%APhone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetPhoneNumber());
   winMain->wprintf("%C%AFax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetFaxNumber());
   winMain->wprintf("%C%ACellular Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCellularNumber());
-  winMain->wprintf("%C%AZipcode: %Z%sd\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetZipCode());
+  winMain->wprintf("%C%AZipcode: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetZipCode());
   winMain->wprintf("%C%ACountry: ", COLOR_WHITE, A_BOLD);
   if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
     winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
