@@ -63,6 +63,7 @@
 #include "chatjoin.h"
 #include "mainwin.h"
 #include "mmlistview.h"
+#include "mmsenddlg.h"
 
 #include "licq_user.h"
 #include "mledit.h"
@@ -156,7 +157,6 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
 #endif
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
-  connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(slot_updatedUser(CICQSignal *)));
   connect (btnCancel, SIGNAL(clicked()), this, SLOT(slot_close()));
@@ -180,17 +180,6 @@ void ICQFunctions::CreateReadEventTab()
   tabList[TAB_READ].tab = p;
   tabList[TAB_READ].loaded = true;
 
-  /*splRead = new QSplitter(QSplitter::Vertical, p);
-  msgView = new MsgView(splRead);
-  mleRead = new MLEditWrap(true, splRead, true);
-  mleRead->setReadOnly(true);
-  splRead->setOpaqueResize(true);
-  splRead->setResizeMode(msgView, QSplitter::KeepSize);*/
-
-  // This actual really messes stuff up for some reason so for now we
-  // just use fixed size.
-  //splRead = new QSplitter(QSplitter::Vertical, p);
-
   QHGroupBox *h_top = new QHGroupBox(/*tr("Conversation"),*/ p);
   msgView = new MsgView(h_top);
   btnReadNext = new QPushButton(tr("Nex&t"), h_top);
@@ -204,19 +193,12 @@ void ICQFunctions::CreateReadEventTab()
   mleRead->setReadOnly(true);
   p->setStretchFactor(h_msg, 1);
 
-  //splRead->setOpaqueResize(true);
-  //splRead->setResizeMode(msgView, QSplitter::KeepSize);
 #if QT_VERSION >= 210
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 #else
   connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 #endif
 
-  /*QWidget *dummy = new QWidget(p);
-  dummy->setMinimumHeight(5);*/
-
-  //QHBox *h = new QHBox(p);
-  //h->setSpacing(10);
   QHGroupBox *h_action = new QHGroupBox(/*tr("Actions"),*/ p);
   btnRead1 = new QPushButton(h_action);
   btnRead2 = new QPushButton(h_action);
@@ -1260,7 +1242,7 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
       case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
         if (m->IsCancelled())
         {
-          mleRead->append(tr("\n--------------------\nCANCELLED"));
+          mleRead->append(tr("\n--------------------\nRequest was cancelled."));
         }
         else
         {
@@ -1352,8 +1334,8 @@ void ICQFunctions::slot_readbtn1()
     case ICQ_CMDxSUB_FILE:  // accept a file transfer
     {
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
-      CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(), server);
-      if (fileDlg->StartAsServer())
+      CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
+      if (fileDlg->ReceiveFiles())
         server->icqFileTransferAccept(m_nUin, fileDlg->LocalPort(), f->Sequence());
       break;
     }
@@ -1913,7 +1895,10 @@ void ICQFunctions::callFcn()
     {
       if (chkMass->isChecked())
       {
-        InformUser(this, "Multiple recipients is not quite there yet.");
+        CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
+        int r = m->go_message(mleSend->text());
+        delete m;
+        if (r != QDialog::Accepted) break;
       }
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
       u->SetSendServer(chkSendServer->isChecked());
@@ -1929,7 +1914,10 @@ void ICQFunctions::callFcn()
     {
       if (chkMass->isChecked())
       {
-        InformUser(this, "Multiple recipients is not quite there yet.");
+        CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
+        int r = m->go_url(edtItem->text(), mleSend->text());
+        delete m;
+        if (r != QDialog::Accepted) break;
       }
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
       u->SetSendServer(chkSendServer->isChecked());
@@ -2069,6 +2057,7 @@ void ICQFunctions::callFcn()
     setCursor(waitCursor);
     btnOk->setEnabled(false);
     btnCancel->setText(tr("&Cancel"));
+    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
   }
 }
 
@@ -2135,8 +2124,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 //-----ICQFunctions::doneFcn-------------------------------------------------
 void ICQFunctions::doneFcn(ICQEvent *e)
 {
-  if ( (icqEventTag == NULL && e != NULL) ||
-       (icqEventTag != NULL && !icqEventTag->Equals(e)) )
+  if ( !icqEventTag->Equals(e) )
     return;
 
   bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
@@ -2177,6 +2165,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   btnCancel->setText(tr("&Close"));
   delete icqEventTag;
   icqEventTag = NULL;
+  disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
 
   if (e == NULL) return;
 
@@ -2260,8 +2249,8 @@ void ICQFunctions::doneFcn(ICQEvent *e)
             case ICQ_CMDxSUB_FILE:
             {
               CEventFile *f = (CEventFile *)ue;
-              CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(), server);
-              fileDlg->StartAsClient(ea->Port());
+              CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
+              fileDlg->SendFiles(f->Filename(), ea->Port());
               break;
             }
             default:
