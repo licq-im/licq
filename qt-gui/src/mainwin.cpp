@@ -375,7 +375,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   m_szIconSet = NULL;
 
   // Load the skin
-  char szSkin[MAX_FILENAME_LEN];
+  char szSkin[MAX_FILENAME_LEN] = "basic";
   if (strlen(skinName) == 0)
     licqConf.ReadStr("Skin", szSkin);
   else
