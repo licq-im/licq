@@ -29,12 +29,17 @@ struct conversation
 struct send_url
 {
 	GtkWidget *window;
-//	GtkWidget *entry;
 	GtkWidget *entry_u;
 	GtkWidget *entry_d;
 	GtkWidget *send_server;
 	GtkWidget *spoof_button;
 	GtkWidget *spoof_uin;
+	ICQUser *user;
+};
+
+struct info_user
+{
+	GtkWidget *window;
 	ICQUser *user;
 };
 
@@ -82,6 +87,10 @@ struct system_window
 
 
 /* Globals in contact_list.cpp */
+extern GdkColor *red, *green, *blue;
+extern GdkBitmap *bm;
+extern GtkStyle *style;
+extern GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
 
 
 /* Globals in convo.cpp */
@@ -122,7 +131,7 @@ extern void dialog_close(GtkWidget *, GtkWidget *);
 
 
 /* Functions in auth_user_window.cpp */
-extern void menu_system_auth_user(GtkWidget *, gpointer);
+extern void menu_system_auth_user(GtkWidget *, const unsigned long);
 extern void auth_user_callback(GtkWidget *, struct auth_user *);
 
 
@@ -167,6 +176,11 @@ extern void pipe_signal(CICQSignal *);
 extern void pipe_event(ICQEvent *);
 
 
+/* Functions in pix_colors.cpp */
+extern void do_colors();
+extern void do_pixmaps();
+
+
 /* Functions in status.cpp */
 extern GtkWidget *status_bar_new(gint, gint, gint);
 extern void status_bar_refresh();
@@ -189,6 +203,13 @@ extern void system_message_window();
 extern GtkWidget *system_status_new(gint, gint, gint);
 extern void system_status_refresh();
 extern void system_status_click(GtkWidget *, GdkEventButton *, gpointer);
+
+
+/* Functions in user_info_window.cpp */
+extern void list_info_user(GtkWidget *, ICQUser *);
+extern void update_user_info(GtkWidget *, struct info_user *);
+extern void do_entry(GtkWidget *&, GtkWidget *&, const gchar *, const gchar *);
+extern void pack_hbox(GtkWidget *&, GtkWidget *, GtkWidget *);
 
 
 /* Function in user_menu.cpp */

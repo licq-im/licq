@@ -20,6 +20,7 @@
 
 #include "licq_gtk.h"
 
+/***********************************
 #include "pixmaps/online.xpm"
 #include "pixmaps/offline.xpm"
 #include "pixmaps/away.xpm"
@@ -27,12 +28,18 @@
 #include "pixmaps/occ.xpm"
 #include "pixmaps/dnd.xpm"
 #include "pixmaps/message.xpm"
+*************************************/
 
 #include "icqd.h"
 #include "user.h"
 
 #include <string.h>
 #include <gtk/gtk.h>
+
+GdkColor *red, *blue, *green;
+GtkStyle *style;
+GdkBitmap *bm;
+GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -51,9 +58,7 @@ GtkWidget *contact_list_new(gint height, gint width)
 	gtk_clist_set_column_width(GTK_CLIST(_contact_l), 1, 16);
 	gtk_clist_set_column_width(GTK_CLIST(_contact_l), 2, width - 25);
 
-	/* The first column is for sorting only...... do not show it!
-	 * *cough*dirtyhack*cough*
-	 */
+	/* The first column is for sorting only...... do not show it! */
 	gtk_clist_set_column_visibility(GTK_CLIST(_contact_l), 0, FALSE);
 
 	/* Size the contact list */
@@ -70,33 +75,21 @@ GtkWidget *contact_list_refresh()
 {
 	gchar *blah[3];
 	gint num_users = 0;
+
+/*************************
 	GdkBitmap *bm;
 	GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
 	GtkStyle *style;
-	GdkColor *red, *green, *blue;
-	red = new GdkColor;
-	green = new GdkColor;
-	blue = new GdkColor;
+*************************/
 
-	red->red = 30000;
-	red->green = 0;
-	red->blue = 0;
-	red->pixel = (gulong)(255);
-
-	green->red = 0;
-	green->green = 30000;
-	green->blue = 0;
-	green->pixel = (gulong)(255*256);
-
-	blue->red = 0;
-	blue->green = 0;
-	blue->blue = 30000;
-	blue->pixel = (gulong)(255);
+	do_colors(); /* Make the colors */
+	do_pixmaps();    /* Make the pixmap */
 
 	blah[0] = "";
 	blah[1] = "";
 	blah[2] = "";
 
+/*****************************************************
 	style = gtk_widget_get_style(main_window);
 
 	online = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
@@ -126,6 +119,7 @@ GtkWidget *contact_list_refresh()
 	message = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
 					       &style->bg[GTK_STATE_NORMAL],
 					       (gchar **)message_xpm);
+*******************************************************/
 
 	/* Don't update the clist window, so we can update all the users */
 	gtk_clist_freeze(GTK_CLIST(contact_list));
@@ -306,6 +300,12 @@ void contact_list_click(GtkWidget *contact_list,
 		_item = gtk_menu_item_new_with_label("Send URL");
 		gtk_signal_connect(GTK_OBJECT(_item), "activate",
 				   GTK_SIGNAL_FUNC(list_send_url), user);
+		gtk_menu_append(GTK_MENU(_menu), _item);
+		gtk_widget_show(_item);
+
+		_item = gtk_menu_item_new_with_label("Info");
+		gtk_signal_connect(GTK_OBJECT(_item), "activate",
+				   GTK_SIGNAL_FUNC(list_info_user), user);
 		gtk_menu_append(GTK_MENU(_menu), _item);
 		gtk_widget_show(_item);
 
