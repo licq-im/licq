@@ -41,7 +41,8 @@ struct e_tag_data
 extern GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 extern GdkPixbuf *online, *away, *na, *dnd, *occ, *offline, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
-	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
+	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon,
+	*charset_icon;
 extern void stop_flashing(ICQUser *u);
 
 /* Globals in main.cpp */
