@@ -29,6 +29,7 @@ auto-reply auto-reply &admin
 console console &admin
 email email &admin
 jons-gtk-gui jons-gtk-gui &admin
+jons-gtk2-gui jons-gtk2-gui &admin
 qt-gui qt-gui &admin
 rms rms &admin
 licq-plugins &qt-gui &console &auto-reply &email &jons-gtk-gui &rms
