@@ -312,8 +312,9 @@ ChatDlg::~ChatDlg()
   delete chatman;
 
   if (sn != NULL) delete sn;
+  sn = NULL;
 
-  list<ChatDlg *>::iterator iter;
+  ChatDlgList::iterator iter;
   for (iter = chatDlgs.begin(); iter != chatDlgs.end(); iter++)
   {
     if (this == *iter)
@@ -426,11 +427,8 @@ void ChatDlg::changeBackColor()
 //-----ChatDlg::StartAsServer------------------------------------------------
 bool ChatDlg::StartAsServer()
 {
-  if (!chatman->StartAsServer()) return false;
-
   lblRemote->setText(tr("Remote - Waiting for joiners..."));
-  gLog.Info("%sChat: Waiting for joiners.\n", L_TCPxSTR);
-
+  if (!chatman->StartAsServer()) return false;
   return true;
 }
 
@@ -439,8 +437,8 @@ bool ChatDlg::StartAsServer()
 //-----ChatDlg::StartAsClient------------------------------------------------
 bool ChatDlg::StartAsClient(unsigned short nPort)
 {
+  lblRemote->setText(tr("Remote - Connecting..."));
   if (!chatman->StartAsClient(nPort)) return false;
-
   return true;
 }
 
