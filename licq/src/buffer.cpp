@@ -474,6 +474,15 @@ char *CBuffer::Pack(CBuffer *buf)
   return getDataPosWrite() - buf->getDataSize();
 }
 
+char *CBuffer::PackLNTS(const char *data)
+{
+	int size = strlen(data) + 1;
+	if (!size) return getDataPosWrite();
+	PackUnsignedShort(size);
+	Pack(data, size);
+	return getDataPosWrite() - size+2;
+}
+
 char *CBuffer::PackString(const char *data, unsigned short max)
 {
   unsigned short n = (data == NULL ? 0 : strlen(data));

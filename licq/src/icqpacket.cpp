@@ -1072,27 +1072,26 @@ CPU_Logoff::CPU_Logoff()
 //-----SearchByInfo--------------------------------------------------------------
 CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
                                  const char *szLastName, const char *szEmail)
-  : CPacketUdp(ICQ_CMDxSND_SEARCHxINFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
 {
-
-  m_nSize += 14 + strlen(szAlias) + strlen(szFirstName) +
-             strlen(szLastName) + strlen(szEmail);
+  int nLenEmail = strlen(szEmail)+1;
+  m_nMetaCommand = 0x2905;
+  m_nSize += 18 + nLenEmail;
   InitBuffer();
 
-#if ICQ_VERSION == 2
-  buffer->PackUnsignedShort(m_nSubSequence);
-#endif
-  gTranslator.ClientToServer((char *)szAlias);
-  gTranslator.ClientToServer((char *)szFirstName);
-  gTranslator.ClientToServer((char *)szLastName);
   gTranslator.ClientToServer((char *)szEmail);
 
-  buffer->PackString(szAlias);
-  buffer->PackString(szFirstName);
-  buffer->PackString(szLastName);
-  buffer->PackString(szEmail);
+  // Really TLV of type 0x0001
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(14 + nLenEmail);
+  buffer->PackUnsignedShort(12 + nLenEmail);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xd007);
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0x2905);
+  buffer->PackUnsignedShort(nLenEmail);
+  buffer->Pack(szEmail, nLenEmail);
 }
-
 
 //-----SearchByUin--------------------------------------------------------------
 CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
@@ -1116,11 +1115,25 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
     char nLanguage, const char *szCity, const char *szState, unsigned short nCountryCode,
     const char *szCoName, const char *szCoDept, const char *szCoPos,
     bool bOnlineOnly)
-  : CPacketUdp(ICQ_CMDxSND_META)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
 {
-  m_nSize += strlen(szFirstName) + strlen(szLastName) + strlen(szAlias) +
-             strlen(szEmail) + strlen(szCity) + strlen(szState) +
-	     strlen(szCoName) + strlen(szCoDept) + strlen(szCoPos) + 60;
+	unsigned short nLenFName, nLenLName, nLenAlias, nLenEmail, nLenCity, nLenState,
+								 nLenCoName, nLenCoDept, nLenCoPos, nDataLen;
+								
+	nLenFName  = strlen(szFirstName) + 1;
+	nLenLName  = strlen(szLastName) + 1;
+	nLenAlias  = strlen(szAlias) + 1;
+	nLenEmail  = strlen(szEmail) + 1;
+	nLenCity   = strlen(szCity) + 1;
+	nLenState  = strlen(szState) + 1;
+	nLenCoName = strlen(szCoName) + 1;
+	nLenCoDept = strlen(szCoDept) + 1;
+	nLenCoPos  = strlen(szCoPos) + 1;						
+  nDataLen   = nLenFName + nLenLName + nLenAlias +
+               nLenEmail + nLenCity + nLenState +
+	             nLenCoName + nLenCoDept + nLenCoPos;
+	m_nSize += nDataLen + 64;
+  m_nMetaCommand = 0x3305;
   InitBuffer();
 
   // Fix invalid ages. Ensure that the plugin doesn't make an invalid request
@@ -1144,10 +1157,6 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
     }
   }
 
-#if ICQ_VERSION == 2
-  buffer->PackUnsignedShort(m_nSubSequence);
-#endif
-
   gTranslator.ClientToServer((char *) szFirstName);
   gTranslator.ClientToServer((char *) szLastName);
   gTranslator.ClientToServer((char *) szAlias);
@@ -1158,21 +1167,27 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
   gTranslator.ClientToServer((char *) szCoDept);
   gTranslator.ClientToServer((char *) szCoPos);
 
-  buffer->PackUnsignedShort(ICQ_CMDxMETA_SEARCHxWP);
-  buffer->PackString(szFirstName);
-  buffer->PackString(szLastName);
-  buffer->PackString(szAlias);
-  buffer->PackString(szEmail);
-  buffer->PackUnsignedShort(nMinAge);
-  buffer->PackUnsignedShort(nMaxAge);
-  buffer->PackChar(nGender);
-  buffer->PackChar(nLanguage);
-  buffer->PackString(szCity);
-  buffer->PackString(szState, 5);
-  buffer->PackUnsignedShort(nCountryCode);
-  buffer->PackString(szCoName);
-  buffer->PackString(szCoDept);
-  buffer->PackString(szCoPos);
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nDataLen+64 - 4);
+  buffer->PackUnsignedShort(nDataLen+64 - 6);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xd007);
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0x3305);
+  buffer->PackLNTS(szFirstName);
+	buffer->PackLNTS(szLastName);
+	buffer->PackLNTS(szAlias);
+	buffer->PackLNTS(szEmail);
+	buffer->PackUnsignedShort(nMinAge);
+	buffer->PackUnsignedShort(nMaxAge);
+	buffer->PackChar(nGender);
+	buffer->PackChar(nLanguage);
+	buffer->PackLNTS(szCity);
+	buffer->PackLNTS(szState);
+	buffer->PackUnsignedShort(nCountryCode);
+	buffer->PackLNTS(szCoName);
+	buffer->PackLNTS(szCoDept);
+	buffer->PackLNTS(szCoPos);
 
   // Ok, this stuff is Company Field, and all those interest crap
   // This will just leave them blank.. I don't see them as necessary
@@ -1181,12 +1196,13 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
 
   for (unsigned short i = 0; i < 3; i++)
   {
-    buffer->PackChar(0x01);
-    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedShort(0x0001);
+    buffer->PackChar(0x00);
+    buffer->PackUnsignedShort(0x0000);
   }
 
-  buffer->PackChar(0x01);
-  buffer->PackUnsignedShort(0x0000);
+  buffer->PackUnsignedShort(0x0001);
+  buffer->PackChar(0x00);
 
   if (bOnlineOnly)
     buffer->PackChar(0x01);
@@ -1319,15 +1335,8 @@ CPU_ReverseTCPRequest::CPU_ReverseTCPRequest(unsigned long nDestinationUin,
 
 
 //-----Authorize----------------------------------------------------------------
-CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxSND_AUTHORIZE)
+CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxRCV_REVERSExTCP)
 {
-  char temp[5] = { 0x08, 0x00, 0x01, 0x00, 0x00 };
-
-  m_nSize += 9;
-  InitBuffer();
-
-  buffer->PackUnsignedLong(nAuthorizeUin);
-  buffer->Pack(temp, 5);
 }
 
 

@@ -141,6 +141,39 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   return eid;
 }
 
+//-----icqSearchByInfo-----------------------------------------------------------
+unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
+                                          const char *last, const char *email)
+{
+  CPU_SearchByInfo *p = new CPU_SearchByInfo(nick, first, last, email);
+  gLog.Info("%sStarting search by info for user (#%ld/#%d)...\n", L_SRVxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
+//-----icqSearchWhitePages--------------------------------------------------
+unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
+    const char *szLastName, const char *szAlias, const char *szEmail,
+    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
+    char nLanguage, const char *szCity, const char *szState,
+    unsigned short nCountryCode, const char *szCoName, const char *szCoDept,
+    const char *szCoPos, bool bOnlineOnly)
+{
+  // Yes, there are a lot of extra options that you can search by.. but I
+  // don't see a point for the hundreds of items that I can add..  just
+  // use their web page for that shit - Jon
+  CPU_SearchWhitePages *p = new CPU_SearchWhitePages(szFirstName, szLastName,
+    szAlias, szEmail, nMinAge, nMaxAge, nGender, nLanguage, szCity, szState,
+    nCountryCode, szCoName, szCoDept, szCoPos, bOnlineOnly);
+  gLog.Info("%sStarting white pages search (#%ld/#%d)...\n", L_SRVxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
 //-----icqGetUserBasicInfo------------------------------------------------------
 unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
 {
@@ -1448,26 +1481,99 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       unsigned char nResult;
       nSubtype = msg.UnpackUnsignedShort();
       nResult = msg.UnpackChar();
-      if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e)) {
-	// error: empty result or nonexistent user (1E =  readonly???)
-        gLog.Info("%sFailed to update detail info: %x.\n", L_SRVxSTR, nResult);
-        ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
-        if (e != NULL) ProcessDoneEvent(e);
 
-      } else {
-        // Find the relevant event
-        ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
-        if (e == NULL) {
-          gLog.Warn("%smissing matching extended event!\n", L_WARNxSTR);
-          break;
+      // Search results need to be processed differently
+      if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {
+      	ICQEvent *e = NULL;
+      	
+      	if (nResult == 0x32) { // No results found
+      		gLog.Info("%sWP search found no users.\n", L_SRVxSTR);
+      		e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+      		ICQEvent *e2 = new ICQEvent(e);
+      		e2->m_pSearchAck = NULL; // Search ack is null lets plugins know no results found
+      		e2->m_nCommand = ICQ_CMDxSND_META;
+      	  e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
+      	  PushPluginEvent(e2);
+      	  DoneEvent(e, EVENT_SUCCESS);
+      	  break;
+      	}
+      	
+     		e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
+      		
+      	if (e == NULL) {
+      		gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
+      		break;
         }
-        unsigned long nUin = e->Uin();
 
-        ICQUser* u = FindUserForInfoUpdate( nUin, e, "extended");
-        if (u == NULL) {
-          gLog.Warn("%scan't find user for updating!\n", L_WARNxSTR);
-          break;
-        }
+        unsigned long nFoundUin;
+        char szTemp[64];
+        	
+        msg.UnpackUnsignedShort(); // length of the rest of the packet.
+        nFoundUin = msg.UnpackUnsignedLong();
+        CSearchAck *s = new CSearchAck(nFoundUin);;
+        	
+        s->m_szAlias = strdup(msg.UnpackString(szTemp));
+      	s->m_szFirstName = strdup(msg.UnpackString(szTemp));
+      	s->m_szLastName = strdup(msg.UnpackString(szTemp));
+      	s->m_szEmail = strdup(msg.UnpackString(szTemp));
+      	msg.UnpackChar(); // authorization required
+        s->m_nStatus = msg.UnpackChar();
+
+      	// translating string with Translation Table
+      	gTranslator.ServerToClient(s->m_szAlias);
+      	gTranslator.ServerToClient(s->m_szFirstName);
+      	gTranslator.ServerToClient(s->m_szLastName);
+      	
+      	gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_SBLANKxSTR, s->m_szAlias, nFoundUin,
+               s->m_szFirstName, s->m_szLastName, s->m_szEmail);
+
+      	ICQEvent *e2 = new ICQEvent(e);
+      	// JON: Hack it so it is backwards compatible with plugins for now.
+      	e2->m_nCommand = ICQ_CMDxSND_META;
+      	e2->m_pSearchAck = s;
+      	if (nSubtype & 0x0008) {
+      		unsigned long nMore = 0;
+      		e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
+      		msg >> nMore;
+      		e2->m_pSearchAck->m_nMore = nMore;
+      		e2->m_eResult = EVENT_SUCCESS;
+      	} else {
+      		e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;
+      		e2->m_pSearchAck->m_nMore = 0;
+     		}
+     		
+      	PushPluginEvent(e2);
+      	
+      	if (nSubtype & 0x0008)
+      		DoneEvent(e, EVENT_SUCCESS); // Remove it from the running event list
+      	else
+      		PushExtendedEvent(e);
+      }
+      else {
+      	ICQEvent *e = NULL;
+      	ICQUser *u = NULL;
+      	unsigned long nUin = 0;
+      	
+      	if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e)) {
+				// error: empty result or nonexistent user (1E =  readonly???)
+        	gLog.Info("%sFailed to update detail info: %x.\n", L_SRVxSTR, nResult);
+        	e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
+        	if (e != NULL) ProcessDoneEvent(e);
+      	} else {
+        	// Find the relevant event
+        	ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+        	if (e == NULL) {
+          	gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
+          	break;
+        	}
+        	nUin = e->Uin();
+
+        	u = FindUserForInfoUpdate( nUin, e, "extended");
+        	if (u == NULL) {
+        	  gLog.Warn("%scan't find user for updating!\n", L_WARNxSTR);
+        	  break;
+       		}
+       	}
 
       	switch (nSubtype) {
         case ICQ_CMDxMETA_GENERALxINFO:
@@ -1662,15 +1768,15 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
 
         if (e != NULL)
-          ProcessDoneEvent(e);
-        else
-        {
-          gLog.Warn("%sResponse to unknown extended info request for %s (%ld).\n",
-                    L_WARNxSTR, u->GetAlias(), nUin);
-        }
-        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
-           gUserManager.DropUser(u);
+	        ProcessDoneEvent(e);
+  	    else
+    	  {
+      	  gLog.Warn("%sResponse to unknown extended info request for %s (%ld).\n",
+                   L_WARNxSTR, u->GetAlias(), nUin);
+       	}
 
+     		PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
+       	gUserManager.DropUser(u);
       }
       break;
     }
