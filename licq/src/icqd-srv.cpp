@@ -190,6 +190,16 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   return e->EventId();
 }
 
+//-----icqSetSecurityInfo----------------------------------------------------
+unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+{
+    CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
+    gLog.Info("%sUpdating security info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
+    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+    PushExtendedEvent(e);
+    return e->EventId();
+}
+
 //-----icqSearchByInfo-----------------------------------------------------------
 unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
@@ -1560,7 +1570,28 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     		}
     		else /* META_FAILURE */
     			gLog.Info("%sPassword not updated.\n", L_SRVxSTR);    	
-    	}
+      } else if (nSubtype == ICQ_CMDxMETA_SECURITYxRSP) {
+		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sSecurity info updated.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_SECURITYxSET;
+			CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_pPacket;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    			o->SetEnableSave(false);
+			o->SetAuthorization(p->Authorization());
+			o->SetWebAware(p->WebAware());
+			o->SetHideIp(p->HideIp());
+    			o->SetEnableSave(true);
+    			o->SaveLicqInfo();
+    			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sSecurity info not updated.\n", L_SRVxSTR);    	
+      }
       // Search results need to be processed differently
       else if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {
       	ICQEvent *e = NULL;

@@ -1665,21 +1665,30 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
     bool bAuthorization,
     bool bHideIp,
     bool bWebAware)
-  : CPacketUdp(ICQ_CMDxSND_META)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_SECURITYxSET;
+  m_nMetaCommand = 0x2404;
   m_nAuthorization = bAuthorization ? 0 : 1;
   m_nHideIp =  bHideIp ? 1 : 0;
   m_nWebAware = bWebAware ? 1 : 0;
 
-  m_nSize += 5;
+
+  int packetSize = 2+2+2+4+2+2+2+4;
+  m_nSize += packetSize;
   InitBuffer();
 
-  buffer->PackUnsignedShort(m_nMetaCommand);
-  buffer->PackChar(m_nAuthorization);
-  buffer->PackChar(m_nHideIp);
-  buffer->PackChar(m_nWebAware);
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); // TLV 1
 
+  buffer->PackUnsignedShort(packetSize-2-2-2); // bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xd007); // type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(0x2404); // subtype
+  buffer->PackChar(m_nAuthorization);
+  buffer->PackChar(m_nWebAware);
+  buffer->PackChar(m_nHideIp);
+  buffer->PackChar(0);
 }
 
 

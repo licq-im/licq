@@ -632,7 +632,7 @@ friend class CICQDaemon;
 
 
 //-----Meta_SetSecurityInfo--------------------------------------------------
-class CPU_Meta_SetSecurityInfo : public CPacketUdp
+class CPU_Meta_SetSecurityInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetSecurityInfo(bool bAuthorization,
