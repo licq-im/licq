@@ -14,6 +14,10 @@
 #include "mledit.h"
 #include "mlview.h"
 
+#include <list>
+
+using std::list;
+
 class CUserEvent;
 class ICQEvent;
 class CMainWindow;
@@ -37,6 +41,8 @@ public:
   void setNamedBgColor(char *);
   void setPrependPixmap(const QPixmap&);
   void clearPrependPixmap();
+  void addPixmap(const QPixmap&);
+  void clearPixmaps();
 public slots:
   void polish();
 protected:
@@ -47,7 +53,9 @@ protected:
   bool m_bTransparent;
   QPopupMenu *mnuPopUp;
   QPixmap addPix;
-  int addIndent;
+  list<QPixmap> m_lPixmaps;
+  int addIndent,
+      startingIndent;
 signals:
   void doubleClicked();
 };

@@ -2059,10 +2059,36 @@ void CMainWindow::updateStatus(CICQSignal *s)
         o->Status() == ICQ_STATUS_OFFLINE);
     }
 
-    lblStatus->setText(o->StatusStr());
-    lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
-    lblStatus->update();
-  
+    if (m_nProtoNum < 2)
+    {
+      // Only one protocol is loaded, show some text too
+      lblStatus->clearPixmaps();
+      lblStatus->setText(o->StatusStr());
+      lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
+      lblStatus->update();
+    }
+    else
+    {
+      gUserManager.DropOwner(nPPID);
+      
+      // Show multiple icons for each protocol
+      lblStatus->clearPrependPixmap();
+      lblStatus->setText("");
+      lblStatus->clearPixmaps();
+      
+      vector<unsigned long>::iterator it;
+      for (it = m_lnProtMenu.begin(); it != m_lnProtMenu.end(); it++)
+      {
+        o = gUserManager.FetchOwner(*it, LOCK_R);
+        lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(), o->IdString(), *it));
+        gUserManager.DropOwner(*it);
+      }
+      
+      lblStatus->update();
+      
+      o = gUserManager.FetchOwner(nPPID, LOCK_R);
+    }
+    
     // set icon of the licq main widget for window manager
 #ifdef USE_KDE
 #if KDE_VERSION >= 320
@@ -2079,7 +2105,23 @@ void CMainWindow::updateStatus(CICQSignal *s)
   
     gUserManager.DropOwner(nPPID);
    }
-
+   else
+   {
+     lblStatus->clearPrependPixmap();
+     lblStatus->setText("");
+     lblStatus->clearPixmaps();
+     
+     vector<unsigned long>::iterator it;
+     for (it = m_lnProtMenu.begin(); it != m_lnProtMenu.end(); it++)
+     {
+       o = gUserManager.FetchOwner(*it, LOCK_R);
+       lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(), o->IdString(), *it));
+       gUserManager.DropOwner(*it);
+     }
+     
+     lblStatus->update();
+   }
+       
    // set the color if it isn't set by the skin
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);
 
@@ -3006,6 +3048,8 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
     this, SLOT(changeStatusManualProtocol(int)));
   m_lnProtMenu.push_back(nPPID);
   m_nProtoNum++;
+  
+  updateStatus();
 }
 
 //-----slot_eventTag------------------------------------------------------------

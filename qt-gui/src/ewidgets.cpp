@@ -161,6 +161,21 @@ void CELabel::clearPrependPixmap()
   update();
 }
 
+void CELabel::addPixmap(const QPixmap &p)
+{
+  m_lPixmaps.push_back(p);
+  if (m_lPixmaps.size() == 1)
+    startingIndent = indent();
+  update();
+}
+
+void CELabel::clearPixmaps()
+{
+  m_lPixmaps.clear();
+  setIndent(startingIndent);
+  update();
+}
+
 void CELabel::setBold(bool isBold)
 {
    QFont newFont(font());
@@ -229,6 +244,17 @@ void CELabel::drawContents(QPainter* p)
 {
   if(!addPix.isNull())
     p->drawPixmap(addIndent, height() / 2 - addPix.height() / 2, addPix);
+
+  if (m_lPixmaps.size())
+  {
+    list<QPixmap>::iterator it;
+    int i = 2;
+    for (it = m_lPixmaps.begin(); it != m_lPixmaps.end(); it++)
+    {
+      p->drawPixmap(i, height() / 2 - it->height() / 2, *it);
+      i += it->width() + 2;
+    }
+  }
 
   QLabel::drawContents(p);
 }
