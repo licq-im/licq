@@ -1633,7 +1633,7 @@ UserSendCommon::~UserSendCommon()
 
 void UserSendCommon::convoJoin(const char *szId)
 {
-  if (szId == 0) return;
+  if (szId == 0 || mainwin->m_bMsgChatView == 0) return;
   
   QString str = QString(tr("<html><body><font color=\"green\"><b>"
                         "[%1] %2 has joined the conversation.</b></font><br></body></html>"))
@@ -1650,7 +1650,7 @@ void UserSendCommon::convoJoin(const char *szId)
 
 void UserSendCommon::convoLeave(const char *szId)
 {
-  if (szId == 0) return;
+  if (szId == 0 || !mainwin->m_bMsgChatView) return;
   
   QString str = QString(tr("<html><body><font color=\"green\"><b>"
                         "[%1] %2 has left the conversation.</b></font><br></body></html>"))
