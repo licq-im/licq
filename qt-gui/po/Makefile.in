@@ -25,26 +25,25 @@ FINDTR   = @QT_FINDTR@
 MSG2QM   = @QT_MSG2QM@
 MERGETR  = @QT_MERGETR@
 
+TRANSLATIONS = ru_RU.KOI8-R.qm
+
 SUFFIXES = .po
 
 .PHONY: all clean distclean install
-all:
+all: merge qm
 
 clean:
-	$(RM) template.po
+	$(RM) template.po *.qm
 
 distclean: clean
 	$(RM) *~ Makefile tags
 
 merge: template.po
 	for i in *.po; do \
-	  $(MERGETR) $$i template.po \
+	  $(MERGETR) $$i template.po; \
 	done
 
-qm: merge
-	for i in *.po; do \
-	  make $$i \
-	done
+qm: merge $(TRANSLATIONS)
 
 install: all qm
 	$(MKINSTALLDIRS) $(sharedir)
