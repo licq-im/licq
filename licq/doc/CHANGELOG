@@ -1,5 +1,15 @@
 Change log for Licq.
 
+New in 0.75
+o  Whitepages information support
+o  Lots of bug fixes
+o  Firewall support
+o  Attempt to use real ip if local ip fails to connect
+o  Last seen online
+o  Local time for each user
+o  Load up any saved messages from the history
+
+
 New in 0.71
 o  New history format allowing easier parsing and much more informative
    display
