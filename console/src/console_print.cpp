@@ -482,7 +482,7 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
       winMain->wprintf("%C%s\n", COLOR_WHITE, c->szName);
   }
   winMain->wprintf("%C%ATimezone: %ZGMT%c%02d%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
-                   u->GetTimezone() < 0 ? '-' : '+',
+                   u->GetTimezone() > 0 ? '-' : '+',
                    u->GetTimezone() / 2,
                    u->GetTimezone() % 2 ? "30" : "00");
 
