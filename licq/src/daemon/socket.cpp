@@ -140,12 +140,12 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
   if (errno <= 0 && h_errno <= 0)
     strcpy(buf, "No error detected!");
   else if (errno > 0)
-    strcpy(buf, strerror(errno));
+    strncpy(buf, strerror(errno), buflen);
   else if (h_errno > 0)
 #ifndef HAVE_HSTRERROR
     sprintf(buf, "hostname resolution failure (%d)", h_errno);
 #else
-    strcpy(buf, hstrerror(h_errno));
+    strncpy(buf, hstrerror(h_errno), buflen);
 #endif
   return buf;
 }
