@@ -142,7 +142,10 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
   /* 256 should be big enough for a spool directory of any size
      big enough for 128 jobs anyway. */
   if ((*namelist = (struct dirent **) calloc(256, sizeof(struct dirent *))) == NULL)
+  {
+    closedir(dirp);
     return -1;
+  }
 
 
 #ifndef HAVE_READDIR_R
@@ -151,7 +154,10 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
   {
 #else
   if ((entry = (struct dirent *) malloc(tdirsize + _POSIX_PATH_MAX)) == NULL)
+  {
+    closedir(dirp);
     return -1;
+  }
 
   while (readdir_r(dirp, entry, &result) == 0)
   {
@@ -159,8 +165,12 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
 #endif
     if (select == NULL || select(entry))
     {
+
       if (((*namelist)[i] = (struct dirent *)malloc(tdirsize + _POSIX_PATH_MAX)) == NULL)
+      {
+        closedir(dirp);
         return -1;
+      }
       memcpy((*namelist)[i], entry, sizeof(entry)+_POSIX_PATH_MAX);
       i++;
     }
@@ -168,6 +178,7 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
 
   qsort((char *) &((*namelist)[0]), i, sizeof(struct dirent *), my_alphasort);
 
+  closedir(dirp);
   return i;
 }
 
