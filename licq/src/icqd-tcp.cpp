@@ -1234,7 +1234,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
          && u->StatusToUser() != ICQ_STATUS_DND) )
     bAccept = true;
 
-  //printf("status: %04X (%04X)  msgtype: %04X\n", ackFlags, u->Status(), msgFlags);
+  //fprintf(stderr, "status: %04X (%04X)  msgtype: %04X\n", ackFlags, u->Status(), msgFlags);
 
   switch(command)
   {
@@ -1271,7 +1271,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         gLog.Warn("%sUnknown TCP status: %04X\n", L_WARNxSTR, msgFlags);
         break;
     }
-    //printf("%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
+    //fprintf(stderr, "%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
     /*if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))*/
     if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&

@@ -9,12 +9,22 @@ class CUserEvent;
 class ICQUser;
 
 //-----CExtendedAck----------------------------------------------------------
+
+/*! \brief Information on file and chat request responses.
+
+    This class will provide information on what the result of a chat or file
+    transfer request was.
+*/
 class CExtendedAck
 {
 public:
   // Accessors
+  
+  //!Returns true if the remote end accepted the request, otherwise false.
   bool Accepted()         { return m_bAccepted; }
+  //!The port to connect to if the request was accpeted.
   unsigned short Port()   { return m_nPort; }
+  //!The reason for declining the request.
   const char *Response()  { return m_szResponse; }
 
   ~CExtendedAck();
@@ -36,11 +46,11 @@ const unsigned short  SA_OFFLINE = 0;
 const unsigned short  SA_ONLINE = 1;
 const unsigned short  SA_DISABLED = 2;
 
-/*! \brief The response to a search request. 
+/*! \brief The response to a search request.
 
     Each search result is passed to the plugin as a CSearchAck.  If there
-    was no search results, then a single CSearchAck is passed on with 
-    Result() returning EVENT_SUCCESS, which also signifies the search is  
+    was no search results, then a single CSearchAck is passed on with
+    Result() returning EVENT_SUCCESS, which also signifies the search is
     complete.
 */
 class CSearchAck
@@ -92,77 +102,6 @@ friend class CICQDaemon;
 
 
 //=====ICQEvent====================================================================================
-/*---------------------------------------------------------------------------
- * ICQEvent
- *
- * This class is the main event class for talking to the ICQ server and to
- * plugins.  Internally all messages/urls...become ICQEvents with the
- * relevant data fields set.  A plugin will receive an event in response
- * to any asynchronous function call (such as icqSendMessage) eventually.
- * The useful fields are as follows:
- *
- * EventResult Result()
- *   This is the result of the event, can be EVENT_ACKED (this is what most
- *   events will return on success), EVENT_SUCCESS (this is returned when
- *   the command is extended such as searches or info updates and has been
- *   completed successfully), EVENT_FAILED (same, but returned when the
- *   event failed for some reason, should rarely happen), EVENT_TIMEDOUT
- *   (returned if the event timedout trying to talk to the server),
- *   EVENT_ERROR (if an error occured at some point), or EVENT_CANCELLED
- *   (the event was cancelled by a call to icqCancelEvent).
- *
- * int SubResult()
- *   This will be either ICQ_TCPxACK_ACCEPT if the event was accepted by
- *   the other side, ICQ_TCPxACK_REJECT if the event was rejected by the
- *   other side (should never happen really), or ICQ_TCPxACK_RETURN if the
- *   other side returned the event (meaning they are in occupied or dnd so
- *   the message would need to be sent urgent or to contact list).  This
- *   field is only relevant if the command was ICQ_CMDxTCP_START (ie the
- *   message was sent direct).
- *
- * unsigned long SNAC()
- *   The SNAC returned as an unsigned long.  The upper 2 bytes is the family
- *   and the lower 2 bytes is the subtype.  To compare SNAC's use the SNAC
- *   macro to convert it to an unsigned long: SNAC(family, subtype).
- *
- * unsigned short Command()
- *   The command, for example ICQ_CMDxTCP_START, or ICQ_CMDxSND_THRUxSERVER,
- *   or ICQ_CMDxSND_META.
- *
- * unsigned short SubCommand()
- *   The subcommand, relevant only if this was a message/url/chat/file,
- *   in which case Command() will be ICQ_CMDxTCP_START or
- *   ICQ_CMDxSND_THRU_SERVER and this field will be ICQ_CMDxSUB_MSG...
- *
- * unsigned long Sequence()
- * unsigned short SubSequence()
- *   These are used to identify events internally, but are necessary for
- *   accepting/rejecting chat or file requests.
- *
- * unsigned long Uin()
- *   The uin of the user the event was destined for.  Only relevant if
- *   this was a message/url...
- *
- * CSearchAck *SearchAck()
- *   Special structure containing information relevant if this is a
- *   search event.
- *
- * CExtendedAck *ExtendedAck()
- *   Special structure containing information relevant if this is a
- *   chat or file transfer accept or reject.
- *
- * CUserEvent *UserEvent()
- *   Contains the actual CUserEvent containing the message/url...that was
- *   sent to Uin().  Can be used to resend the event.
- *
- * ICQUser *UnknownUser()
- *   If the event was a user information update (basic/extended/meta) and
- *   the user does not exist on the contact list, this will return the user
- *   with the relevant fields set.  This is helpful in searches for example
- *   to avoid having to add the user to the list before checking their
- *   other information.
- *
- *-------------------------------------------------------------------------*/
 
 enum ConnectType
 {
@@ -181,24 +120,85 @@ enum EventResult
   EVENT_CANCELLED
 };
 
+/*! \brief Plugin event messages
+
+    This class is the main event class for talking to the ICQ server and to
+    plugins.  Internally all messages/urls... become ICQEvents with the
+    relevant data fields set.  A plugin will receive an event in response
+    to any asynchronous function call (such as icqSendMessage) eventually.
+*/
 class ICQEvent
 {
 public:
   // Accessors
+
+  //!This is the result of the event, can be EVENT_ACKED (this is what most
+  //!events will return on success), EVENT_SUCCESS (this is returned when
+  //!the command is extended such as searches or info updates and has been
+  //!completed successfully), EVENT_FAILED (same, but returned when the
+  //!event failed for some reason, should rarely happen), EVENT_TIMEDOUT
+  //!(returned if the event timedout trying to talk to the server),
+  //!EVENT_ERROR (if an error occured at some point), or EVENT_CANCELLED
+  //!(the event was cancelled by a call to icqCancelEvent).
   EventResult Result()         { return m_eResult; }
+
+  //!This will be either ICQ_TCPxACK_ACCEPT if the event was accepted by
+  //!the other side, ICQ_TCPxACK_REJECT if the event was rejected by the
+  //!other side (should never happen really), or ICQ_TCPxACK_RETURN if the
+  //!other side returned the event (meaning they are in occupied or dnd so
+  //!the message would need to be sent urgent or to contact list).  This
+  //!field is only relevant if the command was ICQ_CMDxTCP_START (ie the
+  //!message was sent direct).
   int SubResult()              { return m_nSubResult; }
+
+  //!This is used to identify what channel the event was sent on.  This is
+  //!only non-zero for server events.
   unsigned char Channel()      { return m_nChannel; }
+
+  //!The SNAC returned as an unsigned long.  The upper 2 bytes is the family
+  //!and the lower 2 bytes is the subtype.  To compare SNAC's use the SNAC
+  //!macro to convert it to an unsigned long: MAKESNAC(family, subtype).
   unsigned long SNAC()         { return m_nSNAC; }
+
+  //!The command, for example ICQ_CMDxTCP_START.  This is only non-zero
+  //!for direct connection events.
   unsigned short Command()     { return m_nCommand; }
+
+  //!The subcommand, relevant only if this was a message/url/chat/file,
+  //!in which case Command() will be ICQ_CMDxTCP_START or SNAC() will be
+  //!MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_CMDxSND_THRU_SERVER) and this
+  //!field will be ICQ_CMDxSUB_MSG...
   unsigned short SubCommand()  { return m_nSubCommand; }
+
+  //!This is used to identify events internally, but is necessary for
+  //!accepting/rejecting chat or file requests.
   unsigned long Sequence()     { return m_nSequence; }
+
+  //!This is used to identify events internally, is are necessary for
+  //!accepting/rejecting chat or file requests.
   unsigned short SubSequence() { return m_nSubSequence; }
-  unsigned short SubType() { return m_nSubType; }
-  unsigned short ExtraInfo()   { return m_nExtraInfo; }
+
+  //!The uin of the user the event was destined for.  Only relevant if
+  //!this was a message/url...
   unsigned long Uin()          { return m_nDestinationUin; }
+
+  //!Special structure containing information relevant if this is a
+  //!search event.
   CSearchAck *SearchAck()      { return m_pSearchAck; }
+
+  //!Special structure containing information relevant if this is a
+  //!chat or file transfer accept or reject.
   CExtendedAck *ExtendedAck()  { return m_pExtendedAck; }
+  
+  //!Contains the actual CUserEvent containing the message/url...that was
+  //!sent to Uin().  Can be used to resend the event.
   CUserEvent *UserEvent()      { return m_pUserEvent; }
+  
+  //!If the event was a user information update (basic/extended/meta) and
+  //!the user does not exist on the contact list, this will return the user
+  //!with the relevant fields set.  This is helpful in searches for example
+  //!to avoid having to add the user to the list before checking their
+  //!other information.
   ICQUser *UnknownUser()       { return m_pUnknownUser; }
 
   // Returns the event and transfers ownership to the calling function
@@ -206,7 +206,8 @@ public:
   CSearchAck *GrabSearchAck();
   ICQUser *GrabUnknownUser();
 
-  // Compare this event to the id, can be called with this==NULL (returns false)
+  //!Compare this event to the id to see if the plugin matches a waiting
+  //!event with the event that the daemon has signaled to the plugin.
   bool Equals(unsigned long) const;
 
   ~ICQEvent();
@@ -215,6 +216,10 @@ protected:
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
            unsigned long _nUin, CUserEvent *e);
   ICQEvent(ICQEvent *);
+
+  // Daemon only
+  unsigned short SubType()     { return m_nSubType; }
+  unsigned short ExtraInfo()   { return m_nExtraInfo; }
 
   // Compare this event to another one
   bool CompareEvent(int, unsigned long) const;
@@ -256,10 +261,7 @@ friend class CICQDaemon;
 friend void *ProcessRunningEvent_Client_tep(void *p);
 friend void *ProcessRunningEvent_Server_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
-friend class CICQEventTag;
 };
-
-
 
 //=====CICQSignal============================================================
 /*---------------------------------------------------------------------------
@@ -324,9 +326,9 @@ const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // logoff constants
-const unsigned long LOGOFF_REQUESTED		 = 0x00000000;
-const unsigned long LOGOFF_RATE			 = 0x00000001;
-const unsigned long LOGOFF_PASSWORD		 = 0x00000002;
+const unsigned long LOGOFF_REQUESTED             = 0x00000000;
+const unsigned long LOGOFF_RATE                  = 0x00000001;
+const unsigned long LOGOFF_PASSWORD              = 0x00000002;
 
 // User information update constants
 const unsigned long USER_STATUS                 = 1;
@@ -343,15 +345,27 @@ const unsigned long LIST_ADD                     = 1;
 const unsigned long LIST_REMOVE                  = 2;
 const unsigned long LIST_ALL                     = 3;
 
+/*! \brief Plugin notification messages
 
+    This class controls all asynchronous plugin notifications.  When a plugin
+    registers with the Licq daemon it informs the daemon of what signals it
+    is interested in.  From then on, at any time it may receive a signal
+    from the following list.  Each signal contains the signal type, an
+    optional sub-type, uin and signal specific argument.
+*/
 class CICQSignal
 {
 public:
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, int nArgument = 0, char *nParameters = 0);
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
+  
+  //!Returns the signal being posted to the plugin.
   unsigned long Signal() { return m_nSignal; }
+  //!Returns the sub-signal being posted to the plugin.
   unsigned long SubSignal() { return m_nSubSignal; }
+  //!UIN that the signal is related.  See signals to understand how this
+  //!value is set.
   unsigned long Uin() { return m_nUin; }
   int Argument() { return m_nArgument; }
   char *Parameters() { return m_szParameters; }

@@ -153,6 +153,12 @@ const unsigned short LAST_CHECKED_AR    = 3;
 
 
 //=====ICQUser==================================================================
+/*! \brief Details about an ICQ user and operations to perform on them.
+
+    This class contains all the information about an ICQ user.  It can be
+    retrieved with a read lock (LOCK_R) and may be set with a (LOCK_W).
+    Everything about an ICQ user is in this class.
+*/
 class ICQUser
 {
 public:
@@ -170,50 +176,93 @@ public:
   void SaveNewMessagesInfo();
 
   // General Info
+  //!Retrieves the user's alias.
   char *GetAlias()                      {  return m_szAlias;  }
+  //!Retrieves the user's first name.
   char *GetFirstName()                  {  return m_szFirstName;  }
+  //!Retrieves the user's last name.
   char *GetLastName()                   {  return m_szLastName;  }
+  //!Retrieves the user's primary e-mail address.
   char *GetEmailPrimary()               {  return m_szEmailPrimary;  }
+  //!Retrieves the user's secondary e-mail address.
   char *GetEmailSecondary()             {  return m_szEmailSecondary;  }
+  //!Retrieves the user's old e-mail address.
   char *GetEmailOld()                   {  return m_szEmailOld;  }
+  //!Retrieves the user's city.
   char *GetCity()                       {  return m_szCity;  }
+  //!Retrieves the user's state.
   char *GetState()                      {  return m_szState;  }
+  //!Retrieves the user's phone number.
   char *GetPhoneNumber()                {  return m_szPhoneNumber;  }
+  //!Retrieves the user's fax number.
   char *GetFaxNumber()                  {  return m_szFaxNumber;  }
+  //!Retrieves the user's street address.
   char *GetAddress()                    {  return m_szAddress;  }
+  //!Retrieves the user's cellular phone number.
   char *GetCellularNumber()             {  return m_szCellularNumber;  }
+  //!Retrieves the user's zip code.
   char *GetZipCode()                    {  return m_szZipCode;  }
+  //!Retrieves the user's country code.  Used to lookup the country name.
   unsigned short GetCountryCode()       {  return m_nCountryCode;  }
+  //!Retrieves the user's time code.
   char GetTimezone()                    {  return m_nTimezone;  }
+  //!Returns true if the user requires you to be authorized to add
+  //!them to anyone's ICQ list.
   bool GetAuthorization()               {  return m_bAuthorization;  }
+  //!Returns true if the user has attempted to hide the e-mail addresses
+  //!provided in their information.
   bool GetHideEmail()                   {  return m_bHideEmail;  }
 
   // More Info
+  //!Retrieves the user's age.
   unsigned short GetAge()               {  return m_nAge;  }
+  //!Retrieves the user's gender.
   char GetGender()                      {  return m_nGender;  }
+  //!Retrieves the user's homepage URL.
   char *GetHomepage()                   {  return m_szHomepage;  }
+  //!Retrieves the user's year they were born ih.
   unsigned short GetBirthYear()         {  return m_nBirthYear;  }
+  //!Retrieves the user's month they were born in.
   char GetBirthMonth()                  {  return m_nBirthMonth;  }
+  //!Retrieves the user's day they were born in.
   char GetBirthDay()                    {  return m_nBirthDay;  }
+  //!Retrieves the user's first language.
   char GetLanguage1()                   {  return m_nLanguage[0];  }
+  //!Retrieves the user's second language.
   char GetLanguage2()                   {  return m_nLanguage[1];  }
+  //!Retrieves the user's third language.
   char GetLanguage3()                   {  return m_nLanguage[2];  }
+  //!Retrieves the user's language as specified by the parameter.
+  //!Useful when retrieving their languages in a loop.
   char GetLanguage(const char l)        {  return m_nLanguage[l];  }
 
   // Work Info
+  //!Retrieves the city of the company the user is employed by.
   char *GetCompanyCity()                {  return m_szCompanyCity;  }
+  //!Retrieves the state of the company the user is employed by.
   char *GetCompanyState()               {  return m_szCompanyState;  }
+  //!Retrieves the phone number of the company's phone number the user is employed by.
   char *GetCompanyPhoneNumber()         {  return m_szCompanyPhoneNumber; }
+  //!Retrieves the fax bynber of the company the user is employed by.
   char *GetCompanyFaxNumber()           {  return m_szCompanyFaxNumber;  }
+  //!Retrieves the street address of the company the user is employed by.
   char *GetCompanyAddress()             {  return m_szCompanyAddress;  }
+  //!Retrieves the zip code of the company the user is employed by.
   char *GetCompanyZip()			{  return m_szCompanyZip;  }
-  unsigned short GetCompanyCountry()	{  return m_nCompanyCountry;  } 
+  //!Retrieves the country code of the company the user is employed by.
+  //!Used to look up the country name.
+  unsigned short GetCompanyCountry()	{  return m_nCompanyCountry;  }
+  //!Retrieves the name of the company the user is employed by.
   char *GetCompanyName()                {  return m_szCompanyName;  }
+  //!Retrieves the department the user is in.
   char *GetCompanyDepartment()          {  return m_szCompanyDepartment;  }
+  //!Retrieves the user's job title.
   char *GetCompanyPosition()            {  return m_szCompanyPosition;  }
+  //!Retrieves the URL of the company the user is employed by.
   char *GetCompanyHomepage()            {  return m_szCompanyHomepage;  }
 
   // About Info
+  //!Retrieves the self description of the user.
   char *GetAbout()                      { return m_szAbout; }
 
   // Licq Info
@@ -221,7 +270,9 @@ public:
   unsigned short GetInvisibleSID()      { return m_nSID[INV_SID]; }
   unsigned short GetVisibleSID()        { return m_nSID[VIS_SID]; }
   unsigned short GetGSID()              { return m_nGSID; }
+  //!Retrieves the user's auto response message that was last seen.
   char *AutoResponse()                  { return m_szAutoResponse; }
+  //!Retrieves the encoding Licq uses for this user
   char *UserEncoding()                  { return m_szEncoding; }
   bool SendServer()                     { return m_bSendServer; }
   unsigned short SendLevel()            { return m_nSendLevel; }

@@ -4082,7 +4082,7 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
 {
   int nSD = m_nTCPSrvSocketDesc;
   if (nSD < 0) {
-    printf("nsd <0 !\n");
+    fprintf(stderr, "nsd <0 !\n");
   }
   else {
     m_nTCPSrvSocketDesc = -1;

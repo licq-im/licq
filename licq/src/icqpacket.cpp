@@ -44,7 +44,7 @@ unsigned short LengthField(const char *szField)
 }
 
 #define DEBUG_ENCRYPTION(x)
-//#define DEBUG_ENCRYPTION(x) printf x
+//#define DEBUG_ENCRYPTION(x) fprintf(stderr, x)
 
 #if ICQ_VERSION == 4
 static unsigned char icq_check_data[256] = {
@@ -148,7 +148,7 @@ void Encrypt_Server(CBuffer *buffer)
   chk2 ^= 0x00FF00FF;
   nCheckSum = chk1 ^ chk2;
   unsigned long key = l * 0x66756b65 + nCheckSum;
-  //printf("key: 0x%08x\n", key);
+  //fprintf(stderr, "key: 0x%08x\n", key);
 
   unsigned long k = 0;
   unsigned short n = (l + 3) >> 2;

@@ -88,26 +88,26 @@ void CLogService::RemoveLogType(unsigned short _nLogType)
 
 
 
-//-----StdOut-------------------------------------------------------------------
-CLogService_StdOut::CLogService_StdOut(unsigned short _nLogTypes, bool _bUseColor)
+//-----StdErr-------------------------------------------------------------------
+CLogService_StdErr::CLogService_StdErr(unsigned short _nLogTypes, bool _bUseColor)
    : CLogService(_nLogTypes)
 {
-  m_nServiceType = S_STDOUT;
+  m_nServiceType = S_STDERR;
   m_bUseColor = _bUseColor;
 }
 
 
-void CLogService_StdOut::LogMessage(const char *_szPrefix, 
+void CLogService_StdErr::LogMessage(const char *_szPrefix, 
 				    const char *_szMessage,
 				    const unsigned short _nLogType)
 {
   if (m_bUseColor)
-    printf("%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType == L_MESSAGE ? L_INFO : _nLogType]);
+    fprintf(stderr, "%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType == L_MESSAGE ? L_INFO : _nLogType]);
   else
-    printf("%s", _szPrefix);
-  printf("%s", _szMessage);
-  if (m_bUseColor) printf("%s", COLOR_NORMAL);
-  fflush(stdout);
+    fprintf(stderr, "%s", _szPrefix);
+  fprintf(stderr, "%s", _szMessage);
+  if (m_bUseColor) fprintf(stderr, "%s", COLOR_NORMAL);
+  fflush(stderr);
 }
 
 

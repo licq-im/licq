@@ -2552,7 +2552,7 @@ void CMainWindow::changeDebug(int _nId)
   int nLevel = mnuDebug->indexOf(_nId);
   if (nLevel == MNUxITEM_DEBUGxALL)
   {
-    gLog.ModifyService(S_STDOUT, L_ALL);
+    gLog.ModifyService(S_STDERR, L_ALL);
     for (int i = 0; i < 5; i++)
       mnuDebug->setItemChecked(mnuDebug->idAt(i), true);
     return;
@@ -2560,7 +2560,7 @@ void CMainWindow::changeDebug(int _nId)
 
   if (nLevel == MNUxITEM_DEBUGxNONE)
   {
-    gLog.ModifyService(S_STDOUT, L_NONE);
+    gLog.ModifyService(S_STDERR, L_NONE);
     for (int i = 0; i < 5; i++)
       mnuDebug->setItemChecked(mnuDebug->idAt(i), false);
     return;
@@ -2569,12 +2569,12 @@ void CMainWindow::changeDebug(int _nId)
   // First see if we are setting on or off the value
   if (mnuDebug->isItemChecked(_nId))
   {
-    gLog.RemoveLogTypeFromService(S_STDOUT, 1 << nLevel);
+    gLog.RemoveLogTypeFromService(S_STDERR, 1 << nLevel);
     mnuDebug->setItemChecked(_nId, false);
   }
   else
   {
-    gLog.AddLogTypeToService(S_STDOUT, 1 << nLevel);
+    gLog.AddLogTypeToService(S_STDERR, 1 << nLevel);
     mnuDebug->setItemChecked(_nId, true);
   }
 }

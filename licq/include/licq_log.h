@@ -39,10 +39,10 @@ const char L_ENDxSTR[]     = "[END] ";
 const char L_FIFOxSTR[]    = "[FIF] ";
 const char L_SSLxSTR[]     = "[SSL] ";
 
-const unsigned short S_STDOUT   = 1;
+const unsigned short S_STDERR   = 1;
 const unsigned short S_FILE     = 2;
 const unsigned short S_PLUGIN   = 4;
-const unsigned short S_ALL	= S_STDOUT | S_FILE | S_PLUGIN;
+const unsigned short S_ALL	= S_STDERR | S_FILE | S_PLUGIN;
 
 const unsigned short LOG_PREFIX_OFFSET = 10;
 
@@ -76,11 +76,11 @@ protected:
 };
 
 
-//-----StdOut-------------------------------------------------------------------
-class CLogService_StdOut : public CLogService
+//-----StdErr-------------------------------------------------------------------
+class CLogService_StdErr : public CLogService
 {
 public:
-  CLogService_StdOut(unsigned short _nLogTypes, bool _bUseColor);
+  CLogService_StdErr(unsigned short _nLogTypes, bool _bUseColor);
   virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
 			  unsigned short _nLogType);
 protected:

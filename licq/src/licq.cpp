@@ -201,7 +201,7 @@ bool CLicq::Init(int argc, char **argv)
         vszPlugins.push_back(strdup(optarg));
         bCmdLinePlugins = true;
         break;
-      case 'o':  // redirect stdout and stderr
+      case 'o':  // redirect stderr
         szRedirect = strdup(optarg);
         break;
       case 'f':  // fork
@@ -223,12 +223,12 @@ bool CLicq::Init(int argc, char **argv)
   if (szRedirect)
     bRedirect_ok = Redirect(szRedirect);
 
-  if(!isatty(STDOUT_FILENO))
+  if(!isatty(STDERR_FILENO))
     bUseColor = false;
 
   // Initialise the log server for standard output and dump all initial errors
   // and warnings to it regardless of DEBUG_LEVEL
-  gLog.AddService(new CLogService_StdOut(DEBUG_LEVEL | L_ERROR | L_WARN, bUseColor));
+  gLog.AddService(new CLogService_StdErr(DEBUG_LEVEL | L_ERROR | L_WARN, bUseColor));
 
   // Redirect stdout and stderr if asked to
   if (szRedirect) {
@@ -675,7 +675,7 @@ int CLicq::Main()
     StartPlugin(*iter);
   }
 
-  gLog.ModifyService(S_STDOUT, DEBUG_LEVEL);
+  gLog.ModifyService(S_STDERR, DEBUG_LEVEL);
 
   unsigned short nExitId;
   int *nPluginResult;
@@ -764,7 +764,7 @@ void CLicq::PrintUsage()
          " -b : set the base directory for the config and data files (~/.licq by default)\n"
          " -I : force initialization of the given base directory\n"
          " -p : load the given plugin library\n"
-         " -o : redirect stdout and stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
+         " -o : redirect stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
          PACKAGE, VERSION);
 }
 
@@ -817,19 +817,19 @@ bool CLicq::Install()
   // Create the directory if necessary
   if (mkdir(BASE_DIR, 0700) == -1 && errno != EEXIST)
   {
-    printf("Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
     return (false);
   }
   snprintf(cmd, sizeof(cmd) - 1, "%s/%s", BASE_DIR, HISTORY_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
-    printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
   snprintf(cmd, sizeof(cmd) - 1, "%s/%s", BASE_DIR, USER_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
-    printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
 

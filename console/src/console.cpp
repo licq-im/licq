@@ -267,10 +267,10 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 
   log = new CPluginLog;
   unsigned long lt = L_MOST;
-  if (gLog.ServiceLogTypes(S_STDOUT) & L_PACKET)
+  if (gLog.ServiceLogTypes(S_STDERR) & L_PACKET)
     lt |= L_PACKET;
   gLog.AddService(new CLogService_Plugin(log, lt));
-  gLog.ModifyService(S_STDOUT, L_NONE);
+  gLog.ModifyService(S_STDERR, L_NONE);
 
   winMain = winCon[1];
   winLog = winCon[0];

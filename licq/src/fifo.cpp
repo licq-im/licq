@@ -69,7 +69,7 @@ static const char* const HELP_URL =
 	"\t\tSend a url to the given buddy.\n";
 static const char* const HELP_REDIRECT = 
 	"\tredirect <file>\n"
-	"\t\tRedirects the stdout and stderr for\n"
+	"\t\tRedirects stderr for\n"
 	"\t\tlicq to the given file\n";
 static const char* const HELP_DEBUGLVL = 
 	"\tdebuglvl <level>\n"
@@ -316,7 +316,7 @@ fifo_debuglvl ( int argc, const char *const *argv, void *data)
 	if( (nRet = (argc == 1)) )
 		ReportMissingParams(argv[0]);
 	else
-		gLog.ModifyService( S_STDOUT, atoi(argv[1]));
+		gLog.ModifyService( S_STDERR, atoi(argv[1]));
 
 	return -nRet;
 }
