@@ -964,6 +964,13 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
         break;
       }
 
+      case CHAT_LAUGH:  // laugh
+      {
+        PushChatEvent(new CChatEvent(CHAT_LAUGH, u));
+	u->chatQueue.pop_front();
+	break;
+      }
+
       case CHAT_BACKSPACE:   // backspace
       {
         if (strlen(u->linebuf) > 0)
@@ -1135,6 +1142,12 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
         case CHAT_BEEP:  // beep
         {
           PushChatEvent(new CChatEvent(CHAT_BEEP, u));
+          break;
+        }
+
+	case CHAT_LAUGH:  // laugh
+        {
+          PushChatEvent(new CChatEvent(CHAT_LAUGH, u));
           break;
         }
 
@@ -1391,6 +1404,13 @@ void CChatManager::SendBeep()
 {
   CBuffer buf;
   SendBuffer(&buf, CHAT_BEEP);
+}
+
+
+void CChatManager::SendLaugh()
+{
+  CBuffer buf;
+  SendBuffer(&buf, CHAT_LAUGH);
 }
 
 

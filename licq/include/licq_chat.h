@@ -86,6 +86,7 @@ const unsigned char CHAT_FONTxFACE     = 0x11;
 const unsigned char CHAT_FONTxSIZE     = 0x12;
 const unsigned char CHAT_SLEEPxOFF     = 0x16;
 const unsigned char CHAT_SLEEPxON      = 0x17;
+const unsigned char CHAT_LAUGH         = 0x1A;
 
 const unsigned char CHAT_CHARACTER     = 0x7E;
 const unsigned char CHAT_CONNECTION    = 0x7F;
@@ -469,6 +470,7 @@ public:
   void ChangeColorFg(int, int, int);
   void ChangeColorBg(int, int, int);
   void SendBeep();
+  void SendLaugh();
   void SendNewline();
   void SendBackspace();
   void SendCharacter(char);
