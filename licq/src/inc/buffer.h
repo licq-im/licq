@@ -64,6 +64,10 @@ public:
    CBuffer& operator >> (unsigned char &in);
    CBuffer& operator >> (unsigned short &in);
    CBuffer& operator >> (unsigned long &in);
+   char *UnpackString(char *);
+   unsigned long UnpackUnsignedLong(void);
+   unsigned short UnpackUnsignedShort(void);
+   char UnpackChar(void);
 
    char *getDataStart(void)           { return m_pDataStart; };
    char *getDataPosRead(void)         { return m_pDataPosRead; };

@@ -168,6 +168,37 @@ CBuffer& CBuffer::operator>>(unsigned long &in)
 }
 
 
+char *CBuffer::UnpackString(char *sz)
+{
+  unsigned short nLen;
+  sz[0] = '\0';
+  *this >> nLen;
+  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
+  return sz;
+}
+
+unsigned long CBuffer::UnpackUnsignedLong(void)
+{
+  unsigned long n;
+  *this >> n;
+  return n;
+}
+
+unsigned short CBuffer::UnpackUnsignedShort(void)
+{
+  unsigned short n;
+  *this >> n;
+  return n;
+}
+
+char CBuffer::UnpackChar(void)
+{
+  char n;
+  *this >> n;
+  return n;
+}
+
+
 
 //-----clear--------------------------------------------------------------------
 void CBuffer::Clear(void)
