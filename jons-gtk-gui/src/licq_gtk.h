@@ -262,7 +262,7 @@ extern void check_other_event(ICQEvent *, GtkWidget *, guint &);
 
 
 /* Functions in file_window.cpp */
-extern void file_accept_window(ICQUser *, CEventFile *);
+extern void file_accept_window(ICQUser *, CUserEvent *);
 extern void refuse_file(GtkWidget *, struct file_accept *);
 extern void accept_file(GtkWidget *, struct file_accept *);
 extern void refuse_ok(GtkWidget *, struct file_accept *);
