@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2; -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,39 +86,21 @@ const char *LP_Description(void)
 
 bool LP_Init(int argc, char **argv)
 {
-  char skinName[32] = "";
-  char iconsName[32] = "";
-  char styleName[32] = "";
-  bool bStartHidden = false;
-
-  // parse command line for arguments
-  int i = 0;
-  while( (i = getopt(argc, argv, "hs:i:g:d")) > 0)
-  {
-    switch (i)
-    {
-    case 'h':  // help
-      printf("%s\n", LP_Usage());
-      return false;
-    case 's':  // skin name
-      sprintf(skinName, "%s", optarg);
-      break;
-    case 'i':  // icons name
-      sprintf(iconsName, "%s", optarg);
-      break;
-    case 'g': // gui style
-      strcpy(styleName, optarg);
-      break;
-    case 'd': // dock icon
-      bStartHidden = true;
-    }
-  }
   if (qApp != NULL)
   {
     gLog.Error("%sA Qt application is already loaded.\n%sRemove the plugin from the command line.\n", L_ERRORxSTR, L_BLANKxSTR);
     return false;
   }
-  licqQtGui = new CLicqGui(argc, argv, bStartHidden, skinName, iconsName, styleName);
+  int i = argc-1;
+  while(i >= 0) {
+    if(strcmp(argv[i], "-h") == 0) {
+      printf("%s\n", LP_Usage());
+      return false;
+    }
+    i--;
+  }
+
+  licqQtGui = new CLicqGui(argc, argv);
   return (licqQtGui != NULL);
 }
 
@@ -144,18 +127,46 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
 }
 
 
-CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin, const char *_szIcons, const char *_szStyle)
+CLicqGui::CLicqGui(int argc, char **argv)
 #ifdef USE_KDE
 : KApplication(argc, argv, "Licq")
 #else
 : QApplication(argc, argv)
 #endif
 {
+  char skinName[32] = "";
+  char iconsName[32] = "";
+  char styleName[32] = "";
+  bool bStartHidden = false;
+
+  // parse command line for arguments
+  int i = 0;
+  while( (i = getopt(argc, argv, "hs:i:g:d")) > 0)
+  {
+    switch (i)
+    {
+    case 'h':  // help
+      // ignore here
+      break;
+    case 's':  // skin name
+      sprintf(skinName, "%s", optarg);
+      break;
+    case 'i':  // icons name
+      sprintf(iconsName, "%s", optarg);
+      break;
+    case 'g': // gui style
+      strcpy(styleName, optarg);
+      break;
+    case 'd': // dock icon
+      bStartHidden = true;
+    }
+  }
+
 #ifndef USE_KDE
   char buf[64];
   sprintf(buf, "%s/licq_qt-gui.style", BASE_DIR);
 
-  QStyle *style = SetStyle(_szStyle);
+  QStyle *style = SetStyle(styleName);
 
   // Write out the style if not NULL
   if (style != NULL)
@@ -163,7 +174,7 @@ CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin
     FILE *f = fopen(buf, "w");
     if (f != NULL)
     {
-      fprintf(f, "%s\n", _szStyle);
+      fprintf(f, "%s\n", styleName);
       fclose(f);
     }
   }
@@ -182,8 +193,8 @@ CLicqGui::CLicqGui(int argc, char **argv, bool bStartHidden, const char *_szSkin
 
   setStyle(style);
 #endif
-  m_szSkin = strdup(_szSkin);
-  m_szIcons = strdup(_szIcons);
+  m_szSkin = strdup(skinName);
+  m_szIcons = strdup(iconsName);
   m_bStartHidden = bStartHidden;
 
   // Try and load a translation

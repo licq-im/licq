@@ -23,7 +23,7 @@ class CLicqGui : public QApplication
 #endif
 {
 public:
-  CLicqGui(int, char **, bool, const char *, const char *, const char *);
+  CLicqGui(int, char **);
   ~CLicqGui(void);
   int Run(CICQDaemon *);
   void Shutdown(void);
