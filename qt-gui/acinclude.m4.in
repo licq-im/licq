@@ -84,7 +84,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
   fi
 
   dnl Check if we have the right lib
-  output=`eval "objdump -C -T $ac_cv_lib_qtlib/libqt.so | grep QCString"`
+  output=`eval "objdump -C -T $ac_cv_lib_qtlib/libqt.so* | grep QCString"`
   if test -z "$output"; then
     AC_MSG_ERROR([The Qt lib directory
         $ac_cv_lib_qtlib
