@@ -1914,7 +1914,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       if (e == NULL)
       {
         char *buf;
-        gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR, packet.print(buf));
+        gLog.Warn("%sInvalid Contact List  message:\n%s\n", L_WARNxSTR, packet.print(buf));
         delete []buf;
         break;
       }

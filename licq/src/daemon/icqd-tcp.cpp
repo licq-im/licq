@@ -206,8 +206,8 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
    UinList &uins, bool online, unsigned short nLevel)
 {
-  char *m = new char[2 + uins.size() * 80];
-  int p = sprintf(m, "%c%c", (char)uins.size(), char(0xFE));
+  char *m = new char[3 + uins.size() * 80];
+  int p = sprintf(m, "%d%c", uins.size(), char(0xFE));
   ContactList vc;
 
   ICQUser *u = NULL;
