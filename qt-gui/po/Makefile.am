@@ -30,7 +30,7 @@ merge: template
 install-data-local:
 	$(mkinstalldirs) $(localedir)
 	@cd $(srcdir) && for i in *.qm; do \
-	  if test "$$i" != "$(srcdir)/template.qm"; then \
+	  if test "$$i" != "template.qm"; then \
 	    echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
 	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
           fi \
