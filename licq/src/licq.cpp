@@ -344,6 +344,24 @@ bool CLicq::Init(int argc, char **argv)
   if (licqConf.LoadFile(szConf) == false)
     return false;
 
+  // Load up the plugins
+  m_nNextId = 1;
+  vector <char *>::iterator iter;
+  for (iter = vszPlugins.begin(); iter != vszPlugins.end(); iter++)
+  {
+    if (!LoadPlugin(*iter, argc, argv)) return false;
+    if (bHelp)
+    {
+      fprintf(stderr, "Licq Plugin: %s %s\n%s\n----------\n",
+          list_plugins.back()->Name(),
+          list_plugins.back()->Version(),
+          (*(list_plugins.back())->fUsage)() );
+      list_plugins.pop_back();
+    }
+    free(*iter);
+  }
+  if (bHelp) return false;
+
   // Verify the version
   licqConf.SetSection("licq");
   unsigned short nVersion;
@@ -365,24 +383,6 @@ bool CLicq::Init(int argc, char **argv)
     licqConf.WriteNum("Version", (unsigned short)INT_VERSION);
     licqConf.FlushFile();
   }
-
-  // Load up the plugins
-  m_nNextId = 1;
-  vector <char *>::iterator iter;
-  for (iter = vszPlugins.begin(); iter != vszPlugins.end(); iter++)
-  {
-    if (!LoadPlugin(*iter, argc, argv)) return false;
-    if (bHelp)
-    {
-      fprintf(stderr, "Licq Plugin: %s %s\n%s\n----------\n",
-          list_plugins.back()->Name(),
-          list_plugins.back()->Version(),
-          (*(list_plugins.back())->fUsage)() );
-      list_plugins.pop_back();
-    }
-    free(*iter);
-  }
-  if (bHelp) return false;
 
   // Find and load the plugins from the conf file
   if (!bHelp && !bCmdLinePlugins)
