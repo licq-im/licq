@@ -346,6 +346,11 @@ bool CLicq::Init(int argc, char **argv)
         if (LoadPlugin(szData, argc, argv) == NULL) return false;
       }
     }
+    else  // If no plugins, try qt-gui
+    {
+      if (LoadPlugin("qt-gui", argc, argv) == NULL)
+        return false;
+    }
   }
 
   // Close the conf file
