@@ -24,9 +24,6 @@ public:
   void setHandleLinks(bool enable);
   void setICQDaemon(CICQDaemon* licqDaemon);
 
-  int linesCount() const;
-  QString line(int lineNumber) const;
-
   static QString toRichText(const QString& s, bool highlightURLs = false);
 public slots:
   virtual void setSource(const QString& name);

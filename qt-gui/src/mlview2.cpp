@@ -132,16 +132,6 @@ void MLView::setCellWidth ( int cellW )
 #endif
 }
 
-int MLView::linesCount() const
-{
-  return numLines();
-}
-
-QString MLView::line(int lineNumber) const
-{
-  return textLine(lineNumber);
-}
-
 #include "mlview2.moc"
 
 #endif

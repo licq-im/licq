@@ -23,9 +23,6 @@ public:
   // Determines whether "quoted" (begining with ">") lines should be
   // specially formatted.
   void setFormatQuoted(bool enable);
-  
-  int linesCount() const;
-  QString line(int lineNumber) const;
 
 protected:
   virtual void setCellWidth ( int );
