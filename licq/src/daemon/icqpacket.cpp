@@ -648,7 +648,12 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
   m_nCountry = nCountry;
   time_t t = time(NULL);
   localtime(&t);
-  m_cTimezone = timezone / 1800;
+#ifndef BSD
+  m_cTimezone = timezone / 1800; // seconds _west_ of UTC
+#else
+  struct tm *tzone = localtime(&t);
+  m_cTimezone = -(tzone->tm_gmtoff) / 1800; // seconds _east_ of UTC
+#endif
   if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;
   m_nAge = nAge;
   m_cSex = cSex;
@@ -777,7 +782,12 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_nCountryCode = nCountryCode;
   time_t t = time(NULL);
   localtime(&t);
-  m_nTimezone = timezone / 1800;
+#ifndef BSD
+  m_nTimezone = timezone / 1800; // seconds _west_ of UTC
+#else
+  struct tm *tzone = localtime(&t);
+  m_nTimezone = -(tzone->tm_gmtoff) / 1800; // seconds _east_ of UTC
+#endif
   if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_nAuthorization = o->GetAuthorization() ? 0 : 1;
