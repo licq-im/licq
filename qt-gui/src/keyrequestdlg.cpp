@@ -23,6 +23,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+#include <qtextcodec.h>
 #include <qtimer.h>
 
 #include "licq_icqd.h"
@@ -30,6 +31,7 @@
 #include "keyrequestdlg.h"
 #include "sigman.h"
 #include "licq_user.h"
+#include "usercodec.h"
 
 
 // -----------------------------------------------------------------------------
@@ -44,7 +46,8 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
   icqEventTag = 0;
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-  setCaption(tr("Licq - Secure Channel with %1").arg(u->GetAlias()));
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
+  setCaption(tr("Licq - Secure Channel with %1").arg(codec->toUnicode(u->GetAlias())));
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
@@ -126,7 +129,8 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   icqEventTag = 0;
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  setCaption(tr("Licq - Secure Channel with %1").arg(u->GetAlias()));
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
+  setCaption(tr("Licq - Secure Channel with %1").arg(codec->toUnicode(u->GetAlias())));
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
