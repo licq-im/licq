@@ -7,12 +7,14 @@ o  Some bugs fixed including losing personal info every startup and segfault
    on certain system messages
 o  Ignore user list added
 o  User list format totally changed (affects developers only)
-o  Ignore messages from users not on contact list option added
+o  Ignore messages from users not on contact list, mass messages, web panel
+   messages and email pager messages options added
 o  Added two new options to the fifo, "message" and "url".  See the
    FAQ for more info
 o  Added log.rejects for events which get rejected (ignored...)
 o  Support for encrypted ICQ protocol version 4
 o  Thread optimizations improving speed, especially on single CPU systems
+o  Zipcode support
 
 
 New in 0.70.1
