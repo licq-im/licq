@@ -394,7 +394,14 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       string strType = packet->GetValue("Content-Type");
       if (strType == "text/x-msmsgscontrol")
       {
-        //printf("%s is typing\n", strUser.c_str());
+        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+        if (u)
+        {
+          u->SetTyping(1);
+          gUserManager.DropUser(u);
+          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+            USER_TYPING, strUser.c_str(), MSN_PPID));
+        }
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
       {
@@ -407,6 +414,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
         
         CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0);
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+        if (u)
+          u->SetTyping(0);
         if (m_pDaemon->AddUserEvent(u, e))
           m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, u);
         gUserManager.DropUser(u);
