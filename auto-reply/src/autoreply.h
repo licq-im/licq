@@ -37,8 +37,8 @@ public:
   void ProcessSignal(CICQSignal *);
   void ProcessEvent(ICQEvent *);
 
-  void ProcessUserEvent(unsigned long, unsigned long);
-  bool AutoReplyEvent(unsigned long, CUserEvent *);
+  void ProcessUserEvent(const char *, unsigned long, unsigned long);
+  bool AutoReplyEvent(const char *, unsigned long, CUserEvent *);
 
   bool POpen(const char *cmd);
   int PClose();
