@@ -157,7 +157,7 @@ CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
 void CEventFile::CreateDescription()
 {
   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
-  sprintf(m_szText, "File: %s (%ld bytes)\nDescription: %s\n", m_szFilename,
+  sprintf(m_szText, "File: %s (%ld bytes)\nDescription:\n%s\n", m_szFilename,
           m_nFileSize, m_szFileDescription);
 
 }
@@ -197,7 +197,7 @@ CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
 void CEventUrl::CreateDescription()
 {
   m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
-  sprintf(m_szText, "URL: %s\nDescription: %s\n", m_szUrl, m_szUrlDescription);
+  sprintf(m_szText, "Url: %s\nDescription:\n%s\n", m_szUrl, m_szUrlDescription);
 }
 
 
@@ -307,9 +307,11 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
 void CEventAdded::CreateDescription()
 {
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
-                      strlen(m_szLastName) + strlen(m_szEmail) + 128];
-  sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
-          m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin);
+                      strlen(m_szLastName) + strlen(m_szEmail) + 512];
+  //sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
+  //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin);
+  sprintf(m_szText, "Alias: %s\nUin: %ld\nName: %s %s\nEmail: %s\n",
+     m_szAlias, m_nUin, m_szFirstName, m_szLastName, m_szEmail);
 }
 
 
@@ -355,9 +357,13 @@ void CEventAuthRequest::CreateDescription()
 {
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
-                      + strlen(m_szReason) + 128];
-  sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
-          m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
+                      + strlen(m_szReason) + 256];
+  //sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
+  //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
+  int pos = sprintf(m_szText, "Alias: %s\nUin: %ld\nName: %s %s\nEmail: %s\n",
+     m_szAlias, m_nUin, m_szFirstName, m_szLastName, m_szEmail);
+  if (m_szReason[0] != '\0')
+    sprintf(&m_szText[pos], "Authorization Request:\n%s\n", m_szReason);
 }
 
 
@@ -400,8 +406,11 @@ CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage
 void CEventAuthGranted::CreateDescription()
 {
   m_szText = new char[strlen(m_szMessage) + 128];
-  sprintf(m_szText, "Uin %ld has authorized you:\n%s\n",
-          m_nUin, m_szMessage);
+  int pos = sprintf(m_szText, "User %ld authorized you", m_nUin);
+  if (m_szMessage[0] != '\0')
+    sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
+  else
+    sprintf(&m_szText[pos], ".\n");
 }
 
 
@@ -436,8 +445,11 @@ CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage
 void CEventAuthRefused::CreateDescription()
 {
   m_szText = new char[strlen(m_szMessage) + 128];
-  sprintf(m_szText, "Uin %ld has refused to authorized you:\n%s\n",
-          m_nUin, m_szMessage);
+  int pos = sprintf(m_szText, "User %ld refused to authorize you", m_nUin);
+  if (m_szMessage[0] != '\0')
+    sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
+  else
+    sprintf(&m_szText[pos], ".\n");
 }
 
 
