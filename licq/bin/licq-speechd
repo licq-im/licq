@@ -1,0 +1,67 @@
+#!/bin/csh
+# This script is designed to work with Licq and Speechd
+# You must copy the script to the /usr/bin directory.
+# You must also go under icq options and type licq-talk
+# under command, m under message, u under url, c under chat
+# o under online notify and s under system message
+# for the lates version goto www.bostononcampus.com/licqtalk
+# Written  by Joseph Harth 18657727
+
+set U='Incoming site'
+set C='Incoming chat'
+set F='Incoming File'
+set O='Say hi to your friend'
+
+
+if ($1 == "u") then
+echo $U >> /dev/speech
+endif
+
+if ($1 == "o") then
+echo $O >> /dev/speech
+endif
+
+if ($1 == "c") then
+echo $C >> /dev/speech
+endif
+
+if ($1 == "f") then
+echo $F >> /dev/speech
+endif
+
+@ j=1
+while ( $j <= 5000 )
+  @ j = $j + 1
+end
+
+if ($1 == "m") then 
+set plain = `ls -t -r $HOME/.licq/history|tail -n1`
+set h = 0
+set i = 30
+while ( $i > 0 )
+  @ i = $i - 1
+set number = `tail -n$i $HOME/.licq/history/$plain| grep "\[ R |" | wc -l`
+if ($number == 0) then
+  @ h = $i
+  @ i = 0  
+endif
+end  
+tail -n$h $HOME/.licq/history/$plain |cut -c2-1000 >>/dev/speech
+endif
+
+if ($1 == "s") then
+set plain = `ls -t -r $HOME/.licq/history|tail -n1`
+set h = 0
+set i = 30
+while ( $i > 0 )
+  @ i = $i - 1
+set number = `tail -n$i $HOME/.licq/history/$plain| grep "\[ R |" | wc -l`
+if ($number == 0) then
+  @ h = $i
+  @ i = 0  
+endif
+end  
+tail -n$h $HOME/.licq/history/$plain |cut -c2-1000 >>/dev/speech
+endif
+
+
