@@ -42,7 +42,7 @@ licq_qt_gui_la_LIBADD = $(LIB_QT) $(X_PRE_LIBS) -lX11 -lXext \
 
 licq_kde_gui_la_LDFLAGS = $(KDE_LDFLAGS) $(QT_LDFLAGS) $(X_LIBS)   \
         -module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
-licq_kde_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
+licq_kde_gui_la_LIBADD = $(KDE_LIBS) $(LIB_QT) $(X_PRE_LIBS) -lX11 -lXext \
         $(XSS_LIBS) $(X_EXTRA_LIBS)
 
 METASOURCES = AUTO
