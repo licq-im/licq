@@ -665,8 +665,8 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   time_t Time = time(NULL) - ftman->StartTime();
   winMain->wprintf("%ATime: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
     Time / 3600, (Time % 3600)/ 60, (Time % 60));
-  int nBytesLeft = ftman->FileSize() - ftman->FilePos();
-  time_t nETA = (time_t)nBytesLeft / (ftman->BytesTransfered() / Time);
+  unsigned long nBytesLeft = ftman->FileSize() - ftman->FilePos();
+  time_t nETA = (time_t)(nBytesLeft / (ftman->BytesTransfered() / Time));
   winMain->wprintf("%AETA: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
     nETA / 3600, (nETA % 3600)/60, (nETA % 60));
   winMain->wprintf("%ABPS: %Z%s", A_BOLD, A_BOLD, EncodeFileSize(
