@@ -657,16 +657,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       }
    }
 
-   o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-   mnuPFM->setItemChecked(o->PhoneFollowMeStatus(), true);
-   gUserManager.DropOwner();
-
    // verify we exist
-   ICQOwner *owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+   o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
    bool bRegister = false;
    if (o != NULL)
    {
-    bRegister = ( strcmp(owner->IdString(), "0") == 0);
+    bRegister = ( strcmp(o->IdString(), "0") == 0);
     gUserManager.DropOwner(LICQ_PPID);
    }
    else
@@ -677,14 +673,24 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    else
    {
      // Do we need to get a password
-     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-     if(o->Password()[0] == '\0')
+     o = gUserManager.FetchOwner(LOCK_R);
+     if (o != NULL)
      {
-       gUserManager.DropOwner();
-       (void) new UserSelectDlg(licqDaemon);
+      if(o->Password()[0] == '\0')
+      {
+        gUserManager.DropOwner();
+        (void) new UserSelectDlg(licqDaemon);
+      }
+      else
+        gUserManager.DropOwner();
      }
-     else
-       gUserManager.DropOwner();
+   }
+   
+   o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+   if (o != NULL)
+   {
+    mnuPFM->setItemChecked(o->PhoneFollowMeStatus(), true);
+    gUserManager.DropOwner();
    }
 
    m_nProtoNum = 0;
