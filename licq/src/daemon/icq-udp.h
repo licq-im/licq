@@ -957,7 +957,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     gTranslator.ServerToClient(s->szLastName);
 
     packet >> auth;
-    gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_BLANKxSTR, s->szAlias, nUin,
+    gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_SBLANKxSTR, s->szAlias, nUin,
               s->szFirstName, s->szLastName, s->szEmail);
 
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxINFO, nSubSequence, EVENT_ACKED);
