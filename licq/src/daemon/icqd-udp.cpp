@@ -1323,8 +1323,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
   case ICQ_CMDxRCV_SERVERxDOWN: // server down?
   {
-    gLog.Info("%sServer down.\n", L_UDPxSTR);
-    icqRelogon(true);
+    gLog.Info("%sunexpected reply: 0x001E (Server down??)\n", L_UDPxSTR);
+//    icqRelogon(true);
     break;
   }
 
