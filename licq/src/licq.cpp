@@ -110,12 +110,11 @@ bool CLicq::Init(int argc, char **argv)
 
   // See if redirection works, set bUseColor to false if we redirect
   // to a file.
-  if (szRedirect) {
-    int fd = Redirect(szRedirect);
-    if(!isatty(fd))
-      bUseColor = false;
-    bRedirect_ok = fd >= 0;
-  }
+  if (szRedirect)
+    bRedirect_ok = Redirect(szRedirect);
+
+  if(!isatty(STDOUT_FILENO))
+    bUseColor = false;
 
   // Initialise the log server for standard output and dump all initial errors
   // and warnings to it regardless of DEBUG_LEVEL
