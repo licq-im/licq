@@ -120,6 +120,16 @@ void CSocketSet::Unlock()
 
 //=====INetSocket===============================================================
 
+char *INetSocket::LocalIpStr(char *buf)
+{
+  return (inet_ntoa_r(*(struct in_addr *)&m_sLocalAddr.sin_addr.s_addr, buf));
+}
+
+char *INetSocket::RemoteIpStr(char *buf)
+{
+  return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf));
+}
+
 //-----INetSocket::OpenSocket---------------------------------------------------
 void INetSocket::OpenSocket()
 {
@@ -671,33 +681,21 @@ INetSocket *CSocketHashTable::Retrieve(int _nSd)
 
   INetSocket *s = NULL;
   list <INetSocket *> &l = m_vlTable[HashValue(_nSd)];
-  // If no sockets, this is bad
-  if (l.size() == 0)
-    s = NULL;
 
-  // if only one, assume it's the right one (saves having to lock the socket
-  // and checking)
-  else if (l.size() == 1)
-    s = *(l.begin());
-
-  // Otherwise, start iterating and comparing uins
-  else
+  int nSd;
+  list<INetSocket *>::iterator iter;
+  for (iter = l.begin(); iter != l.end(); iter++)
   {
-    int nSd;
-    list<INetSocket *>::iterator iter;
-    for (iter = l.begin(); iter != l.end(); iter++)
+    LockSocket(*iter);
+    nSd = (*iter)->Descriptor();
+    UnlockSocket(*iter);
+    if (nSd == _nSd)
     {
-      LockSocket(*iter);
-      nSd = (*iter)->Descriptor();
-      UnlockSocket(*iter);
-      if (nSd == _nSd) 
-      {
-        s = (*iter);
-        break;
-      }
+      s = (*iter);
+      break;
     }
-    if (iter == l.end()) s = NULL;
   }
+  if (iter == l.end()) s = NULL;
 
   Unlock();
   return s;
@@ -767,6 +765,10 @@ void CSocketManager::AddSocket(INetSocket *s)
 
 void CSocketManager::CloseSocket (int _nSd, bool _bClearUser)
 {
+  // Clear from the socket list
+  m_sSockets.Clear(_nSd);
+
+  // Fetch the actual socket
   INetSocket *s = FetchSocket(_nSd);
   if (s == NULL) return;
   unsigned long nOwner = s->Owner();
@@ -774,7 +776,6 @@ void CSocketManager::CloseSocket (int _nSd, bool _bClearUser)
 
   // First remove the socket from the hash table so it won't be fetched anymore
   m_hSockets.Remove(_nSd);
-  m_sSockets.Clear(_nSd);
 
   // Now close the connection (we don't have to lock it first, because the
   // Remove function above guarantees that no one has a lock on the socket

@@ -14,7 +14,6 @@
 
 #include "buffer.h"
 #include "pthread_rdwr.h"
-#include "support.h"
 #include "constants.h"
 
 
@@ -35,9 +34,9 @@ public:
   char *ErrorStr(char *, int);
 
   unsigned long  LocalIp()     { return (m_sLocalAddr.sin_addr.s_addr);  }
-  char *LocalIpStr(char *buf)      { return (inet_ntoa_r(*(struct in_addr *)&m_sLocalAddr.sin_addr.s_addr, buf)); }
+  char *LocalIpStr(char *buf);
   unsigned long  RemoteIp()    { return (m_sRemoteAddr.sin_addr.s_addr); };
-  char *RemoteIpStr(char *buf)     { return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf)); }
+  char *RemoteIpStr(char *buf);
   unsigned short LocalPort()   { return (ntohs(m_sLocalAddr.sin_port));  };
   unsigned short RemotePort()  { return (ntohs(m_sRemoteAddr.sin_port)); };
 
