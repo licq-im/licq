@@ -36,6 +36,7 @@
 #include <qvalidator.h>
 #include <qcombobox.h>
 #include <qspinbox.h>
+#include <qtextcodec.h>
 
 #include "searchuserdlg.h"
 #include "sigman.h"
@@ -70,7 +71,8 @@ SearchUserView::SearchUserView(QWidget *parent)
 }
 
 
-SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
+SearchItem::SearchItem(CSearchAck *s, const QString &encoding, QListView *parent)
+  : QListViewItem(parent)
 {
   QString qsStatus;
   QString qsGender;
@@ -78,9 +80,10 @@ SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
   QString qsAuth;
   
   uinVal = s->Uin();
-  setText(0, QString::fromLocal8Bit(s->Alias()));
+  QTextCodec *codec = QTextCodec::codecForName(encoding);
+  setText(0, codec->toUnicode(s->Alias()));
   setText(1, QString::number(s->Uin()));
-  setText(2, QString::fromLocal8Bit(s->FirstName()) + QString(" ") + QString::fromLocal8Bit(s->LastName()));
+  setText(2, codec->toUnicode(s->FirstName()) + QString(" ") + codec->toUnicode(s->LastName()));
   setText(3, s->Email());
 
   switch (s->Status())
@@ -124,11 +127,12 @@ unsigned long SearchItem::uin()
 
 // -----------------------------------------------------------------------------
 
-SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan)
+SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan, const QString &encoding)
   : QWidget(NULL, "SearchUserDialog", WDestructiveClose)
 {
   server = s;
   sigman = theSigMan;
+  m_Encoding = encoding;
   setCaption(tr("Licq - User Search"));
   searchTag = 0;
 
@@ -325,22 +329,23 @@ void SearchUserDlg::startSearch()
   }
   else
   {
+     QTextCodec *codec = QTextCodec::codecForName(m_Encoding);
      searchTag = server->icqSearchWhitePages(
-     edtFirst->text().local8Bit().data(),
-     edtLast->text().local8Bit().data(),
-     edtNick->text().local8Bit().data(),
+     codec->fromUnicode(edtFirst->text()),
+     codec->fromUnicode(edtLast->text()),
+     codec->fromUnicode(edtNick->text()),
      edtEmail->text().local8Bit().data(),
      mins[cmbAge->currentItem()],
      maxs[cmbAge->currentItem()],
      cmbGender->currentItem(),
      GetLanguageByIndex(cmbLanguage->currentItem())->nCode,
-     edtCity->text().local8Bit().data(),
-     edtState->text().local8Bit().data(),
+     codec->fromUnicode(edtCity->text()),
+     codec->fromUnicode(edtState->text()),
      GetCountryByIndex(cmbCountry->currentItem())->nCode,
-     edtCoName->text().local8Bit().data(),
-     edtCoDept->text().local8Bit().data(),
-     edtCoPos->text().local8Bit().data(),
-     edtKeyword->text().local8Bit().data(),
+     codec->fromUnicode(edtCoName->text()),
+     codec->fromUnicode(edtCoDept->text()),
+     codec->fromUnicode(edtCoPos->text()),
+     codec->fromUnicode(edtKeyword->text()),
      chkOnlineOnly->isChecked());
   }
   lblSearch->setText(tr("Searching (this can take awhile)..."));
@@ -437,7 +442,7 @@ void SearchUserDlg::searchResult(ICQEvent *e)
 
 void SearchUserDlg::searchFound(CSearchAck *s)
 {
-  (void) new SearchItem(s, foundView);
+  (void) new SearchItem(s, m_Encoding, foundView);
 }
 
 

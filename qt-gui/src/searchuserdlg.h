@@ -52,7 +52,7 @@ public:
 class SearchItem : public QListViewItem
 {
 public:
-   SearchItem(CSearchAck *, QListView *parent);
+   SearchItem(CSearchAck *, const QString &, QListView *parent);
    unsigned long uin();
 protected:
    unsigned long uinVal;
@@ -64,7 +64,7 @@ class SearchUserDlg : public QWidget
 {
    Q_OBJECT
 public:
-   SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan);
+   SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan, const QString &);
    ~SearchUserDlg();
 
 private:
@@ -89,6 +89,7 @@ protected:
    unsigned long searchTag;
    QPushButton *btnDone, *btnAdd;
    SearchUserView *foundView;
+   QString m_Encoding;
 
    void searchFound(CSearchAck *);
    void searchDone(CSearchAck *);

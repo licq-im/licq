@@ -4267,7 +4267,7 @@ void CMainWindow::showOwnerManagerDlg()
 
 void CMainWindow::showSearchUserDlg()
 {
-  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan);
+  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan, m_DefaultEncoding);
   searchUserDlg->show();
 }
 
