@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-#define USE_OPENSSL
+//#define USE_OPENSSL
 
 #ifdef USE_OPENSSL
 
