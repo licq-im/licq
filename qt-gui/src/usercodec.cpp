@@ -50,6 +50,7 @@ const char * UserCodec::encodings_array[][2] = {
   { QT_TR_NOOP("Cyrillic"), "ISO 8859-5" },
   { QT_TR_NOOP("Cyrillic"), "KOI8-R" },
   { QT_TR_NOOP("Cyrillic"), "CP 1251" },
+  { QT_TR_NOOP("Ukrainan"), "KOI8-U" },
   { QT_TR_NOOP("Arabic"), "ISO 8859-6-I" },
   { QT_TR_NOOP("Greek"), "ISO 8859-7" },
   { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I" },
