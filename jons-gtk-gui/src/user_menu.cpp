@@ -95,6 +95,10 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 	gtk_widget_set_usize(url->spoof_uin, 80, 20);
 
+	/* Verify that the url->spoof_uin is digits only */
+	gtk_signal_connect(GTK_OBJECT(url->spoof_uin), "insert-text", 
+			   GTK_SIGNAL_FUNC(verify_numbers), url);
+
 	/* No UIN can be entered unless url->spoof_button is checked */
 	gtk_entry_set_editable(GTK_ENTRY(url->spoof_uin), FALSE);
 

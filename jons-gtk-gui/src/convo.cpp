@@ -137,6 +137,10 @@ void convo_show(struct conversation *c)
 	c->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
 	c->spoof_uin = gtk_entry_new_with_max_length(8);
 
+	/* Verify that the c->spoof_uin is digits only */
+	gtk_signal_connect(GTK_OBJECT(c->spoof_uin), "insert-text",
+			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
+
 	/* No UIN can be entered unless c->spoof_button is checked */
 	gtk_entry_set_editable(GTK_ENTRY(c->spoof_uin), FALSE);
 
