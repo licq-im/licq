@@ -307,6 +307,14 @@ See Network Window for details.</source>
         <translation>Kann keinen neuen Thread erzeugen.
 Siehe Netzwerkfenster für Details.</translation>
     </message>
+    <message>
+        <source>&amp;Open</source>
+        <translation>Ö&amp;ffnen</translation>
+    </message>
+    <message>
+        <source>O&amp;pen Dir</source>
+        <translation>Ver&amp;zeichnis öffnen</translation>
+    </message>
 </context>
 <context>
     <name>CForwardDlg</name>
@@ -1873,6 +1881,11 @@ entfernen wollen?</translation>
         <source>Contact List</source>
         <translation>Kontaktliste</translation>
     </message>
+    <message>
+        <source>System Server Message</source>
+        <translation>Server Nachricht
+</translation>
+    </message>
 </context>
 <context>
     <name>HintsDlg</name>
@@ -3096,6 +3109,10 @@ Bitte klicken Sie jetzt auf &apos;Weiter&apos;.</translation>
     <message>
         <source>&amp;Save Password</source>
         <translation>Passwort &amp;speichern</translation>
+    </message>
+    <message>
+        <source>Invalid password, must be between 1 and 8 characters.</source>
+        <translation>Ungültiges Passwort, es muss zwischen 1 und 8 Zeichen lang sein.</translation>
     </message>
 </context>
 <context>

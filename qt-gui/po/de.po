@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "POT-Creation-Date: 2003-02-03 12:00+0200\n"
-"PO-Revision-Date: 2003-02-27 12:00+0200\n"
+"PO-Revision-Date: 2003-03-14 19:36+0200\n"
 "Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: german <licq-devel@licq.org>\n"
@@ -217,6 +217,12 @@ msgstr "Nicht genügend Ressourcen.\n"
 
 msgid "CFileDlg::Unable to create a thread.\nSee Network Window for details."
 msgstr "Kann keinen neuen Thread erzeugen.\nSiehe Netzwerkfenster für Details."
+
+msgid "CFileDlg::&Open"
+msgstr "Ö&ffnen"
+
+msgid "CFileDlg::O&pen Dir"
+msgstr "Ver&zeichnis öffnen"
 
 msgid "CForwardDlg::URL"
 msgstr "URL"
@@ -1256,6 +1262,9 @@ msgstr "Email Pager"
 msgid "Event::Contact List"
 msgstr "Kontaktliste"
 
+msgid "Event::System Server Message"
+msgstr "Server Nachricht\n"
+
 msgid "HintsDlg::&Close"
 msgstr "S&chließen"
 
@@ -2089,6 +2098,9 @@ msgstr "UIN Registrierung"
 
 msgid "RegisterUserDlg::&Save Password"
 msgstr "Passwort &speichern"
+
+msgid "RegisterUserDlg::Invalid password, must be between 1 and 8 characters."
+msgstr "Ungültiges Passwort, es muss zwischen 1 und 8 Zeichen lang sein."
 
 msgid "ReqAuthDlg::&Ok"
 msgstr "&Ok"
