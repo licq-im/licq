@@ -274,6 +274,37 @@ void CICQDaemon::icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
   SendExpectEvent_Server(0, pRemove, NULL);
 }
 
+//-----icqChangeGroup-----------------------------------------------------------
+void CICQDaemon::icqChangeGroup(const char* _szName, unsigned long _PPID, 
+                                unsigned short _nNewGroup, unsigned short _nOldGSID, 
+                                unsigned short _nNewType, unsigned short _nOldType)
+{
+  if (!UseServerContactList())  return;
+
+  // Get their old SID
+  ICQUser *u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
+  int nSID = u->GetSID();
+  gUserManager.DropUser(u);
+
+  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                                ICQ_SNACxLIST_ROSTxEDITxSTART);
+  SendEvent_Server(pStart);
+
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(strdup(_szName)); // add
+  m_lszModifyServerUsers.push_back(strdup(_szName)); // remove
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+  
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szName, _nNewType,
+                                                      _nNewGroup);
+  gLog.Info("%sChanging group on server list for %s ...\n", L_SRVxSTR, _szName);
+  SendExpectEvent_Server(0, pAdd, NULL);
+
+  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szName, _nOldGSID,
+                                                        nSID, _nOldType);
+  SendExpectEvent_Server(0, pRemove, NULL);
+}
+
 //-----icqExportGroups----------------------------------------------------------
 void CICQDaemon::icqExportGroups(GroupList &groups)
 {

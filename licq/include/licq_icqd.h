@@ -249,6 +249,9 @@ public:
   void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
                       unsigned short _nOldGSID, unsigned short _nNewType,
                       unsigned short _nOldType);
+  void icqChangeGroup(const char* _szName, unsigned long _PPID, 
+                      unsigned short _nNewGroup, unsigned short _nOldGSID, 
+                      unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(unsigned long _nUin);
   void icqExportUsers(UserStringList &, unsigned short);
