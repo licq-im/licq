@@ -12,7 +12,7 @@ CLicqForwarder *licqForwarder;
 const char *LP_Usage()
 {
   static const char usage[] =
-    "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <staus> ] [ -d ]\n"
+    "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
     "         -h          : help\n"
     "         -e          : start enabled\n"
     "         -l <status> : log on at startup\n"
