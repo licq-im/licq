@@ -390,6 +390,13 @@ public:
                          unsigned short _nSID = 0, bool _bAuthReq = false);
 };
 
+//-----SetPrivacy---------------------------------------------------------------
+class CPU_SetPrivacy : public CPU_CommonFamily
+{
+public:
+  CPU_SetPrivacy(unsigned char _nPrivacy);
+};
+
 //-----SetStatus----------------------------------------------------------------
 class CPU_SetStatus : public CPU_CommonFamily
 {

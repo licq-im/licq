@@ -690,7 +690,17 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   gUserManager.DropOwner();
 
   if (!Invisible && goInvisible)
-    icqSendVisibleList();
+  {
+    CPU_SetPrivacy *priv = new CPU_SetPrivacy(ICQ_PRIVACY_ALLOW_FOLLOWING);
+    SendEvent_Server(priv);
+//  icqSendVisibleList();
+  }
+  else if (Invisible && !goInvisible)
+  {
+    CPU_SetPrivacy *priv = new CPU_SetPrivacy(ICQ_PRIVACY_BLOCK_FOLLOWING);
+    SendEvent_Server(priv);
+  }
+ 
 
   CSrvPacketTcp* p;
   if (isLogon)
@@ -3737,6 +3747,18 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 gUserManager.RenameGroup(nGroup, szUnicodeName, false);
               }
             }
+            break;
+          }
+
+          case ICQ_ROSTxPDINFO:
+          {
+            unsigned char cPrivacySettings = packet.UnpackCharTLV(0x00CA);
+
+            ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+            o->SetPDINFO(nID);
+            if (cPrivacySettings == ICQ_PRIVACY_ALLOW_FOLLOWING)
+              ChangeUserStatus(o, o->StatusFull() | ICQ_STATUS_FxPRIVATE);
+            gUserManager.DropOwner(LICQ_PPID);
             break;
           }
         }  // switch (nType)

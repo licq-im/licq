@@ -952,6 +952,8 @@ public:
   void SetSSTime(time_t t)            { m_nSSTime = t; }
   unsigned short GetSSCount()         { return m_nSSCount; }
   void SetSSCount(unsigned short n)   { m_nSSCount = n; }
+  unsigned short GetPDINFO()          { return m_nPDINFO; }
+  void SetPDINFO(unsigned short n)    { m_nPDINFO = n; }
 
   void SetPicture(const char *f);
   
@@ -969,6 +971,7 @@ protected:
   unsigned long  m_nRandomChatGroup;
   unsigned short m_nSSCount;
   time_t unsigned long m_nSSTime;
+  unsigned short m_nPDINFO;
 };
 
 

@@ -1139,6 +1139,11 @@ unsigned short CUserManager::GenerateSID()
 {
   bool bCheckGroup, bDone;
   int nSID;
+  unsigned short nOwnerPDINFO;
+
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  nOwnerPDINFO = o->GetPDINFO();
+  gUserManager.DropOwner(LICQ_PPID);
 
   // Generate a SID
   srand(time(NULL));
@@ -1153,6 +1158,7 @@ unsigned short CUserManager::GenerateSID()
     bCheckGroup = true;
 
     if (nSID == 0) nSID++;
+    if (nSID == nOwnerPDINFO) nSID++;
     FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
     {
       if (pUser->GetSID() == nSID  || pUser->GetInvisibleSID() == nSID ||
@@ -3599,6 +3605,7 @@ ICQOwner::ICQOwner()
   m_bException = false;
   m_bSavePassword = true;
   m_szPassword = NULL;
+  m_nPDINFO = 0;
 
   Init(0);
   //SetOnContactList(true);
@@ -3664,6 +3671,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   m_bException = false;
   m_bSavePassword = true;
   m_szPassword = NULL;
+  m_nPDINFO = 0;
 
   // Get data from the config file
   char *p = PPIDSTRING(_nPPID);

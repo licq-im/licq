@@ -872,13 +872,36 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
 #endif
 }
 
+//-----SetPrivacy---------------------------------------------------------------
+CPU_SetPrivacy::CPU_SetPrivacy(unsigned char _cPrivacy)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
+{
+  m_nSize += 15;
+
+  InitBuffer();
+
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  unsigned short nPDINFO = o->GetPDINFO();
+  gUserManager.DropOwner(LICQ_PPID);
+
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedShortBE(nPDINFO);
+  buffer->PackUnsignedLongBE(0x00040005);
+  buffer->PackUnsignedLongBE(0x00CA0001); // Privacy TLV
+  buffer->PackChar(_cPrivacy);
+}
+
 //-----SetStatus----------------------------------------------------------------
 CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus)
   : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS)
 {
   m_nNewStatus = _nNewStatus;
 
-  m_nSize += 8 + 47;
+  bool bInvis = _nNewStatus & ICQ_STATUS_FxPRIVATE;
+
+  m_nSize += 8;
+  if (!bInvis)
+    m_nSize += 47;
 
   InitBuffer();
 
@@ -887,22 +910,25 @@ CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus)
 
   buffer->PackUnsignedLongBE(0x00060004);     // TLV
   buffer->PackUnsignedLongBE(m_nNewStatus);  // ICQ status
-  buffer->PackUnsignedLongBE(0x000C0025); // TLV
-  buffer->PackUnsignedLong(s_nLocalIp);    // direct connection info
-  buffer->PackUnsignedLongBE(s_nLocalPort);
-  buffer->PackChar(s_nMode);
-  buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
-  buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
-  buffer->PackUnsignedLongBE(0x00000050);
-  buffer->PackUnsignedLongBE(0x00000003);
-  buffer->PackUnsignedLongBE(0);
-   // some kind of timestamp ?
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedShort(0);
+  if (!bInvis)
+  {
+    buffer->PackUnsignedLongBE(0x000C0025); // TLV
+    buffer->PackUnsignedLong(s_nLocalIp);    // direct connection info
+    buffer->PackUnsignedLongBE(s_nLocalPort);
+    buffer->PackChar(s_nMode);
+    buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
+    buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
+    buffer->PackUnsignedLongBE(0x00000050);
+    buffer->PackUnsignedLongBE(0x00000003);
+    buffer->PackUnsignedLongBE(0);
+    // some kind of timestamp ?
+    buffer->PackUnsignedLongBE(0);
+    buffer->PackUnsignedLongBE(0);
+    buffer->PackUnsignedShort(0);
 
-  buffer->PackUnsignedLongBE(0x00080002); // TLV
-  buffer->PackUnsignedShort(0); // Error code
+    buffer->PackUnsignedLongBE(0x00080002); // TLV
+    buffer->PackUnsignedShort(0); // Error code
+  }
 }
 
 CPU_SetStatusFamily::CPU_SetStatusFamily()

@@ -129,6 +129,7 @@ const unsigned short ICQ_ROSTxNORMAL               = 0x0000;
 const unsigned short ICQ_ROSTxGROUP                = 0x0001;
 const unsigned short ICQ_ROSTxVISIBLE              = 0x0002;
 const unsigned short ICQ_ROSTxINVISIBLE            = 0x0003;
+const unsigned short ICQ_ROSTxPDINFO               = 0x0004;
 const unsigned short ICQ_ROSTxICQTIC               = 0x0009;
 const unsigned short ICQ_ROSTxIGNORE               = 0x000E;
 const unsigned short ICQ_ROSTxIMPORT               = 0x0013;
@@ -409,6 +410,13 @@ const unsigned short ICQ_TYPING_INACTIVEx0        = 0; //icq2go sends this
 const unsigned short ICQ_TYPING_INACTIVEx1        = 1; //icqlite sends this
 const unsigned short ICQ_TYPING_INACTIVE          = 1; //for plugins
 const unsigned short ICQ_TYPING_ACTIVE            = 2;
+
+// Privacy settings
+const unsigned char ICQ_PRIVACY_ALLOW_ALL         = 1;
+const unsigned char ICQ_PRIVACY_BLOCK_ALL         = 2;
+const unsigned char ICQ_PRIVACY_ALLOW_FOLLOWING   = 3; //used for invisible
+const unsigned char ICQ_PRIVACY_BLOCK_FOLLOWING   = 4;
+const unsigned char ICQ_PRIVACY_ALLOW_ONLY_LIST   = 5;
 
 const unsigned char ICQ_PLUGIN_REQUEST            = 0;
 const unsigned char ICQ_PLUGIN_SUCCESS            = 1;
