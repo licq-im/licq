@@ -99,8 +99,7 @@ GtkWidget *contact_list_refresh()
 		{
 		  case ICQ_STATUS_FREEFORCHAT:
 		  {
-			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, online, bm);
+			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users					     ,1 , online, bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, blue);
 			break;
@@ -220,7 +219,7 @@ void contact_list_click(GtkWidget *contact_list,
 	if(event->type == GDK_2BUTTON_PRESS && event->button == 1)
 	{
 		c = convo_find(user->Uin());
-
+		
 		if(c != NULL)
 			gdk_window_raise(c->window->window);
 		else
@@ -233,7 +232,6 @@ void contact_list_click(GtkWidget *contact_list,
 
 			system_status_refresh();
 		}
-
 	}
 
 	/* A right click.. make the popup menu */

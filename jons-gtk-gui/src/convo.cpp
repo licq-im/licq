@@ -159,6 +159,12 @@ void convo_show(struct conversation *c)
 	gtk_signal_connect(GTK_OBJECT(c->spoof_button), "toggled",
 			   GTK_SIGNAL_FUNC(spoof_button_callback), c);
 
+	/* Progress of message */
+	c->progress = gtk_statusbar_new();
+
+	/* Pack it */
+	gtk_box_pack_start(GTK_BOX(vertical_box), c->progress, FALSE, FALSE, 5);
+
 	/* Add the main box into the window */
 	gtk_container_add(GTK_CONTAINER(c->window), vertical_box);
 	gtk_container_border_width(GTK_CONTAINER(c->window), 10);
@@ -209,7 +215,8 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(c->spoof_uin), 0, -1));
 	}
 
-	icq_daemon->icqSendMessage(c->user->Uin(), message,
+	/* Send the message */
+	c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
 	   (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
 	   FALSE, uin);
 

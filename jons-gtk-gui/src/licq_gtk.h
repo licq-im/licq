@@ -23,7 +23,9 @@ struct conversation
 	GtkWidget *send_server;
 	GtkWidget *spoof_button;
 	GtkWidget *spoof_uin;
+	GtkWidget *progress;
 	ICQUser *user;
+	CICQEventTag *e_tag;
 };
 
 struct send_url
@@ -163,6 +165,7 @@ extern gboolean convo_delete_event(GtkWidget *,GdkEventAny *,struct conversation
 extern void do_colors();
 extern void do_pixmaps();
 extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
+extern void user_function(ICQEvent *);
 
 
 /* Functions in main_window.cpp */

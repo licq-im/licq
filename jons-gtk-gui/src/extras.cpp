@@ -8,6 +8,9 @@
 #include "pixmaps/dnd.xpm"
 #include "pixmaps/message.xpm"
 
+#include "icqd.h"
+#include "icqevent.h"
+
 #include <ctype.h>
 #include <gtk/gtk.h>
 
@@ -93,3 +96,55 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
 
 	g_free(result);
 }
+
+void user_function(ICQEvent *event)
+{
+	struct conversation *c = g_new(struct conversation, 1);
+	guint id;
+
+	c = convo_find(event->m_nDestinationUin);
+
+	/* Have a status bar on the contact list for this to go to... */
+	if(c == NULL)
+		return;
+	
+//	g_print("%d\n", c->e_tag->Equals(event));
+
+	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress), "prog");
+
+	if(event == NULL)
+	{
+		gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+		gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, "Error");
+	}
+
+	else
+	{
+		switch(event->m_eResult)
+		{
+		case EVENT_ACKED:
+		case EVENT_SUCCESS:
+			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
+					   "Done");	
+			break;
+		case EVENT_FAILED:
+			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
+					   "Failed");
+			break;
+		case EVENT_TIMEDOUT:
+			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
+					   "Timed Out");
+			break;
+		case EVENT_ERROR:
+			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
+			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
+					   "Error");
+			break;
+		default:
+			break;
+		}
+	}
+} 

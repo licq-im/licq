@@ -45,6 +45,13 @@ void pipe_callback(gpointer data, gint _Pipe, GdkInputCondition condition)
 		break;
 	  }
 
+	  case 'X': /* Shutdown */
+	  {
+		g_print("Poop\n");
+		gtk_main_quit();
+		break;
+	  }
+
 	  default: /* What is it.....? */
 		g_print("Unknown signal from daemon: %c.\n", buf[0]);
 	}
@@ -96,7 +103,8 @@ void pipe_event(ICQEvent *event)
 	//case ICQ_CMDxSND_USERxGETDETAILS:
 	//case ICQ_CMDxSND_UPDATExDETAIL:
 	//case ICQ_CMDxSND_UPDATExBASIC:
-	//case ICQ_CMDxSND_META:
+	case ICQ_CMDxSND_META:
+		user_function(event);
 		break;
 	case ICQ_CMDxSND_USERxLIST:
 		g_print("GOT ICQ_CMDxSND_USERxLIST\n");
