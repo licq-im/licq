@@ -14,7 +14,16 @@ install-data-local:
 	  echo "Installing skin $$j"; \
 	  $(mkinstalldirs) $(sharedir)/$$j; \
 	  for i in $$j/*; do \
-            if test -f $$i; then \
+			if test -f $$i; then \
+	      $(INSTALL_DATA) $$i $(sharedir)/$$j; \
+	    fi \
+	  done; \
+	done
+	@for j in qt-gui/dock.*; do \
+	  echo "Installing dock theme $$j"; \
+	  $(mkinstalldirs) $(sharedir)/$$j; \
+	  for i in $$j/*; do \
+			if test -f $$i; then \
 	      $(INSTALL_DATA) $$i $(sharedir)/$$j; \
 	    fi \
 	  done; \
@@ -23,9 +32,9 @@ install-data-local:
 	  echo "Installing icons $$j"; \
 	  $(mkinstalldirs) $(sharedir)/$$j; \
 	  for i in $$j/*; do \
-            if test -f $$i; then \
+			if test -f $$i; then \
 	      $(INSTALL_DATA) $$i $(sharedir)/$$j; \
-            fi \
+			fi \
 	  done; \
 	done
 
