@@ -140,12 +140,12 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
     gUserManager.DropUser(u);
   }
 
-  QString codec_name = QString(codec->name()).lower();
+  QString codec_name = QString( codec->name() ).lower();
   popupCharset->setCheckable(true);
-  UserCodec::initializeEncodingNames();
-  for (uint i=0; i < UserCodec::encodings.count(); i++) {
-    popupCharset->insertItem(UserCodec::encodings[i], this, SLOT(slot_setCharset(int)), 0, i);
-    if (UserCodec::encodingForName(UserCodec::encodings[i]).lower() == codec_name)
+  QStringList enc = UserCodec::encodings();
+  for (uint i=0; i < enc.count(); i++) {
+    popupCharset->insertItem(enc[i], this, SLOT(slot_setCharset(int)), 0, i);
+    if (UserCodec::encodingForName(enc[i]).lower() == codec_name)
       popupCharset->setItemChecked(i, true);
   }
 
@@ -163,7 +163,7 @@ void UserEventCommon::slot_setCharset(int charset_index) {
   }
 
   /* initialize a codec according to the charset menu's value */
-  if ((charset_index >= 0) && ((uint)charset_index < UserCodec::encodings.count())) {
+  if ((charset_index >= 0) && ((uint)charset_index < UserCodec::encodings().count())) {
     codec = QTextCodec::codecForName(UserCodec::encodingForIndex((uint) charset_index).latin1());
 
     /* make the chosen charset checked */

@@ -28,7 +28,7 @@
 #include <kcharsets.h>
 #endif
 
-QStringList UserCodec::encodings;
+QStringList* UserCodec::m_encodings;
 
 // -----------------------------------------------------------------------------
 
@@ -66,20 +66,29 @@ QTextCodec* UserCodec::codecForICQUser(ICQUser *u) {
 }
 
 QString UserCodec::encodingForIndex(uint index) {
+  if ( !m_encodings ) UserCodec::initializeEncodingNames();
+
 #ifdef USE_KDE
-  return KGlobal::charsets()->encodingForName(encodings[index]);
+  return KGlobal::charsets()->encodingForName(( *m_encodings )[index]);
 #else
   return encodings_array[index][1];
 #endif
 }
 
+QStringList UserCodec::encodings()
+{
+  if ( !m_encodings ) UserCodec::initializeEncodingNames();
+  return ( *m_encodings );
+}
+
 void UserCodec::initializeEncodingNames() {
-  if (encodings.count() == 0) {
+  if (!m_encodings) {
+    m_encodings = new QStringList;
 #ifdef USE_KDE
-    encodings = KGlobal::charsets()->descriptiveEncodingNames();
+    ( *m_encodings ) = KGlobal::charsets()->descriptiveEncodingNames();
 #else
     for (uint i=0; i<(sizeof(encodings_array)/sizeof(encodings_array[0])); i++) {
-      encodings.append(qApp->translate("UserCodec", encodings_array[i][0]) + " (" + encodings_array[i][1] + ")");
+      ( *m_encodings ).append(qApp->translate("UserCodec", encodings_array[i][0]) + " ( " + encodings_array[i][1] + " )");
     }
 #endif
   }
@@ -89,8 +98,8 @@ QString UserCodec::encodingForName(QString descriptiveName) {
 #ifdef USE_KDE
   return KGlobal::charsets()->encodingForName(descriptiveName);
 #else
-  int left = descriptiveName.find( "( " );
-  return descriptiveName.mid( left + 2, descriptiveName.find( " )" ) - left - 2 );
+  int left = descriptiveName.find( " ( " );
+  return descriptiveName.mid( left + 3, descriptiveName.find( " )", left ) - left - 3 );
 #endif
 }
 
