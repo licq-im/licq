@@ -587,7 +587,7 @@ void CICQDaemon::SetTCPBasePort(unsigned short p, unsigned short r)
 
   if (p == m_nTCPBasePort)
   {
-    while (m_vbTcpPorts.size() > r) m_vbTcpPorts.erase(m_vbTcpPorts.last());
+    while (m_vbTcpPorts.size() > r) m_vbTcpPorts.pop_back();
     while (m_vbTcpPorts.size() < r) m_vbTcpPorts.push_back(false);
   }
   else
