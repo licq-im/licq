@@ -1782,7 +1782,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxSUB_ONLINExLIST:
   {
-    unsigned long junk1, intIP, userPort, nUin, timestamp, nCookie;
+    unsigned long junk1, intIP, userPort, nUin, timestamp, nCookie, nUserIP;
     unsigned short junk2;
     unsigned char mode;
 
@@ -1797,9 +1797,6 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       return;
     }
 
-//     userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
-//     rev_e_long(userIP);
-
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL)
     {
@@ -1810,15 +1807,17 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     // 0 if not set -> Online
     unsigned long nNewStatus = packet.UnpackUnsignedLongTLV(0x0006);
     unsigned long nOldStatus = u->StatusFull();
-      
+
+    nUserIP = 0;  
     if (packet.getTLVLen(0x000a) == 4) {
-      unsigned long userIP = packet.UnpackUnsignedLongTLV(0x000a);
-      if (userIP) {
-        rev_e_long(userIP);
-        userIP = PacketIpToNetworkIp(userIP);
-        u->SetIp(userIP);
+      nUserIP = packet.UnpackUnsignedLongTLV(0x000a);
+      if (nUserIP) {
+        rev_e_long(nUserIP);
+        nUserIP = PacketIpToNetworkIp(nUserIP);
       }
     }
+    if( u->StatusOffline() || nUserIP )
+      u->SetIp(nUserIP);
 
     if (packet.getTLVLen(0x0003) == 4) {
       time_t nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);

@@ -2941,7 +2941,7 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(2L);
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
@@ -2959,7 +2959,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(4L);
   buffer->PackUnsignedLong(0x00000000);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp); // maybe should be 0
@@ -2979,7 +2979,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedShort(ICQ_VERSION_TCP);
+  buffer->PackUnsignedShort(6L);
   buffer->PackUnsignedShort(0x0027); //size
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
