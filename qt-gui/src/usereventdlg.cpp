@@ -187,9 +187,7 @@ UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
   tabw = new QTabWidget(this);
   lay->addWidget(tabw);
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
-          this, SLOT(updateTitle(QWidget *)));
-  connect(tabw, SIGNAL(currentChanged(QWidget *)),
-          this, SLOT(clearEvents(QWidget *)));
+          this, SLOT(slot_currentChanged(QWidget *)));
 #endif
 }
 
@@ -317,6 +315,16 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
     }
   }
 #endif
+}
+
+/*! This slot should get called when the current tab has 
+ *  changed.
+ */
+void UserEventTabDlg::slot_currentChanged(QWidget *tab)
+{
+  tab->setFocus();  // prevent users from accidently typing in the wrong widget
+  updateTitle(tab);
+  clearEvents(tab);
 }
 
 void UserEventTabDlg::updateTitle(QWidget *tab)
@@ -1296,6 +1304,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     splView->setResizeMode(mleSend, QSplitter::KeepSize);
     mleSend->resize(mleSend->width(), 70);
   }
+  setFocusProxy(mleSend);
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
   icqColor.SetToDefault();

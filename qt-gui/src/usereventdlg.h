@@ -72,10 +72,11 @@ public:
 
 private:
   QTabWidget *tabw;
-
-public slots:
   void updateTitle(QWidget *tab);
   void clearEvents(QWidget *tab);
+
+public slots:
+  void slot_currentChanged(QWidget *tab);
   void moveLeft();
   void moveRight();
 
