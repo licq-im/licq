@@ -840,6 +840,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
+  m_fConf.ReadBool("SendRealIp", m_bSendRealIp, 0);
   SetCustomAutoResponse(szTemp);
 
   m_fConf.ReadStr("History", szTemp, "default");
@@ -1460,6 +1461,8 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
+   m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
+
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
