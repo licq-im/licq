@@ -599,6 +599,18 @@ void CICQDaemon::icqRelogon()
 //  m_eStatus = STATUS_OFFLINE_FORCED;
 }
 
+//-----ProtoRequestInfo------------------------------------------------------
+unsigned long CICQDaemon::ProtoRequestInfo(const char *_szId, unsigned long _nPPID)
+{
+  unsigned long nRet = 0;
+  if (_nPPID == LICQ_PPID)
+    nRet = icqRequestMetaInfo(_szId);
+  else
+    PushProtoSignal(new CRequestInfo(_szId), _nPPID);
+  
+  return nRet;
+}
+
 //-----icqRequestMetaInfo----------------------------------------------------
 unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
 {

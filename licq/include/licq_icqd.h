@@ -211,6 +211,8 @@ public:
   unsigned long ProtoAuthorizeRefuse(const char *szId, unsigned long nPPID,
      const char *szMessage);
 
+  unsigned long ProtoRequestInfo(const char *szId, unsigned long nPPID);
+
   // TCP (user) functions
   // Message
   unsigned long icqSendMessage(const char *szId, const char *szMessage,

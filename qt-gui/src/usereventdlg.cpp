@@ -1502,7 +1502,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       {
         FOR_EACH_PROTO_USER_START(m_nPPID, LOCK_R)
         {
-          if (pUser->NewMessages())// && strcmp(m_lUsers.front().c_str(), pUser->IdString()) != 0)
+          if (pUser->NewMessages() && strcmp(m_lUsers.front().c_str(), pUser->IdString()) != 0)
           {
             for (unsigned short i = 0; i < pUser->NewMessages(); i++)
             {            

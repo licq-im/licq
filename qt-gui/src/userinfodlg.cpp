@@ -2235,7 +2235,7 @@ void UserInfoDlg::slotRetrieve()
   }
   switch(currentTab)
   {
-    //TODO change in the daemon
+    //TODO change in the daemon to support other protocols
     case GeneralInfo:
     {
       // Before retrieving the meta data we have to 
@@ -2251,20 +2251,20 @@ void UserInfoDlg::slotRetrieve()
       u->SaveGeneralInfo();
       gUserManager.DropUser(u);
       
-      icqEventTag = server->icqRequestMetaInfo(m_szId);
+      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
       break;
     }
     case MoreInfo:
-      icqEventTag = server->icqRequestMetaInfo(m_szId);
+      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
       break;
     case More2Info:
-      icqEventTag = server->icqRequestMetaInfo(m_szId);
+      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
       break;
     case WorkInfo:
-      icqEventTag = server->icqRequestMetaInfo(m_szId);
+      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
       break;
     case AboutInfo:
-      icqEventTag = server->icqRequestMetaInfo(m_szId);
+      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
       break;
     case PhoneInfo:
     {

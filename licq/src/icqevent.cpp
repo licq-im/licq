@@ -377,3 +377,8 @@ CRefuseAuthSignal::CRefuseAuthSignal(const char *szId, const char *szMsg)
   m_szMsg = szMsg ? strdup(szMsg) : 0;
 }
 
+CRequestInfo::CRequestInfo(const char *szId)
+  : CSignal(PROTOxREQUESTxINFO, szId)
+{
+}
+

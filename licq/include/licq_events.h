@@ -465,7 +465,9 @@ enum SIGNAL_TYPE
   PROTOxSENDxGRANTxAUTH,
   //! The user refused authorization for a user to add them to his
   //! contact list.
-  PROTOxSENDxREFUSExAUTH
+  PROTOxSENDxREFUSExAUTH,
+  //! The user has requested the user's profile/information.
+  PROTOxREQUESTxINFO
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -592,6 +594,12 @@ public:
 
 private:
   char *m_szMsg;
+};
+
+class CRequestInfo : public CSignal
+{
+public:
+  CRequestInfo(const char *);
 };
 
 #endif
