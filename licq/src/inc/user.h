@@ -71,6 +71,11 @@ const unsigned long GROUP_VISIBLE_LIST    = 2;
 const unsigned long GROUP_INVISIBLE_LIST  = 3;
 const unsigned long GROUP_IGNORE_LIST     = 4;
 
+const unsigned short ACCEPT_IN_AWAY     = 1;
+const unsigned short ACCEPT_IN_NA       = 2;
+const unsigned short ACCEPT_IN_OCCUPIED = 4;
+const unsigned short ACCEPT_IN_DND      = 8;
+
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -150,6 +155,13 @@ public:
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
   time_t LastOnline()                   { return m_nLastOnline; }
+  bool AcceptInAway()                   { return m_nAutoAccept & ACCEPT_IN_AWAY; }
+  bool AcceptInNA()                     { return m_nAutoAccept & ACCEPT_IN_NA; }
+  bool AcceptInOccupied()               { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
+  bool AcceptInDND()                    { return m_nAutoAccept & ACCEPT_IN_DND; }
+  unsigned short StatusToUser()         { return m_nStatusToUser; }
+  char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
+
 
   void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
   char *IpPortStr(char *rbuf);
@@ -208,6 +220,12 @@ public:
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
+  void SetAcceptInAway(bool s)        { s ? m_nAutoAccept |= ACCEPT_IN_AWAY : m_nAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
+  void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
+  void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
+  void SetAcceptInDND(bool s)         { s ? m_nAutoAccept |= ACCEPT_IN_DND : m_nAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
+  void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
+  void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
 
   // Status
   unsigned short Status();
@@ -299,14 +317,14 @@ protected:
                 m_nGroups[2];
   char m_nMode;
   char *m_szAutoResponse;
-  bool m_bOnline,
-       m_bNewUser,
+  char *m_szCustomAutoResponse;
+  bool m_bNewUser,
        m_bOnlineNotify,
        m_bSendServer,
-       m_bVisibleList,
-       m_bInvisibleList,
        m_bEnableSave,
        m_bShowAwayMsg;
+  unsigned short m_nStatusToUser;
+  unsigned short m_nAutoAccept;
 
   // General Info
   char *m_szAlias;

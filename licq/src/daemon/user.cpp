@@ -812,6 +812,12 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);
   m_fConf.ReadNum("LastOnline", nLastOnline, 0);
   m_nLastOnline = nLastOnline;
+  // extra stuff by Andypoo (andypoo@ihug.com.au)
+  m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
+  m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
+  m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
+  SetCustomAutoResponse(szTemp);
+
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
@@ -937,6 +943,9 @@ void ICQUser::Init(unsigned long _nUin)
   m_nVersion = 0x03;
   Touch();
   m_nLastOnline = 0;
+  m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  m_nAutoAccept = 0;
+  m_szCustomAutoResponse = NULL;
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -975,6 +984,7 @@ void ICQUser::SetDefaults()
   SetCompanyPosition(szTemp);
   SetCompanyHomepage(szTemp);
   SetAbout(szTemp);
+  SetCustomAutoResponse(szTemp);
 }
 
 
@@ -1424,6 +1434,9 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteBool("NewUser", NewUser());
    m_fConf.WriteNum("NewMessages", NewMessages());
    m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
+   m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
+   m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
+   m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

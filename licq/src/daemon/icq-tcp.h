@@ -463,6 +463,11 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   senderIp = PacketIpToNetworkIp(senderIp);
   localIp = PacketIpToNetworkIp(localIp);
 
+  // Store our status for later use
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short nOwnerStatus = o->Status();
+  gUserManager.DropOwner();
+
   // find which user was sent
   bool bNewUser = false;
   ICQUser *u = gUserManager.FetchUser(checkUin, LOCK_W);
@@ -486,6 +491,12 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                         | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
   bool bUrgent = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
+  // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
+  if ( ((nOwnerStatus == ICQ_STATUS_OCCUPIED || u->StatusToUser() == ICQ_STATUS_OCCUPIED)
+         && u->AcceptInOccupied() ) ||
+       ((nOwnerStatus == ICQ_STATUS_DND || u->StatusToUser() == ICQ_STATUS_DND)
+         && u->AcceptInDND() ) )
+    bUrgent = true;
 
   switch(command)
   {
@@ -522,10 +533,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // If we are in DND or Occupied and message isn't urgent then we ignore it
       if (!bUrgent)
       {
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-        unsigned long s = o->Status();
-        gUserManager.DropOwner();
-        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
+        if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
         {
           delete e;
           break;
@@ -587,10 +595,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // If we are in DND or Occupied and message isn't urgent then we ignore it
       if (!bUrgent)
       {
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-        unsigned long s = o->Status();
-        gUserManager.DropOwner();
-        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
+        if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
         {
           delete e;
           break;
@@ -600,11 +605,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // format the url and url description into a message and add it to the users list
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_URL, u);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
-
       break;
     }
 
@@ -634,11 +634,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
-
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -677,10 +672,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
       if (!AddUserEvent(u, e)) break;
       m_xOnEventManager.Do(ON_EVENT_FILE, u);
-      //gUserManager.DropUser(u);
-      //u = gUserManager.FetchUser(checkUin, LOCK_R);
-      //gUserManager.Reorder(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
 

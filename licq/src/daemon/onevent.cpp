@@ -48,7 +48,20 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->Status();
   gUserManager.DropOwner();
-  if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) return;
+
+  // Messy Mode / Accept Stuff by Andypoo (andypoo@ihug.com.au)
+  if (u == NULL)
+  {
+    if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) return;
+  }
+  else
+  {
+    if (((s == ICQ_STATUS_AWAY) && (!u->AcceptInAway())) ||
+        ((s == ICQ_STATUS_NA) && (!u->AcceptInNA())) ||
+        ((s == ICQ_STATUS_OCCUPIED) && (!u->AcceptInOccupied())) ||
+        ((s == ICQ_STATUS_DND) && (!u->AcceptInDND()))) return;
+  }
+  //if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) return;
 
   pthread_mutex_lock(&mutex);
 

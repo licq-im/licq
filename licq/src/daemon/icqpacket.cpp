@@ -1060,49 +1060,56 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
 {
   // Setup the message type and status fields using our online status
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short s = o->Status();
+  if (user->StatusToUser() != ICQ_STATUS_OFFLINE) s = user->StatusToUser();
+
   switch(_nCommand)
   {
-  case ICQ_CMDxTCP_CANCEL:
-  case ICQ_CMDxTCP_START:
-   m_nStatus = 0;
-   m_nMsgType = (_bUrgent ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
-   switch (o->Status())
-   {
-   case ICQ_STATUS_AWAY: m_nMsgType |= ICQ_TCPxMSG_FxAWAY; break;
-   case ICQ_STATUS_NA: m_nMsgType |= ICQ_TCPxMSG_FxNA; break;
-   case ICQ_STATUS_DND: m_nMsgType |= ICQ_TCPxMSG_FxDND; break;
-   case ICQ_STATUS_OCCUPIED: m_nMsgType |= ICQ_TCPxMSG_FxOCCUPIED; break;
-   case ICQ_STATUS_ONLINE:
-   case ICQ_STATUS_FREEFORCHAT:
-   default: m_nMsgType |= ICQ_TCPxMSG_FxONLINE; break;
-   }
-   if (o->StatusInvisible())
-     m_nMsgType |= ICQ_TCPxMSG_FxINVISIBLE;
-   break;
+    case ICQ_CMDxTCP_CANCEL:
+    case ICQ_CMDxTCP_START:
+    {
+      m_nStatus = 0;
+      m_nMsgType = (_bUrgent ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+      switch (s)
+      {
+        case ICQ_STATUS_AWAY: m_nMsgType |= ICQ_TCPxMSG_FxAWAY; break;
+        case ICQ_STATUS_NA: m_nMsgType |= ICQ_TCPxMSG_FxNA; break;
+        case ICQ_STATUS_DND: m_nMsgType |= ICQ_TCPxMSG_FxDND; break;
+        case ICQ_STATUS_OCCUPIED: m_nMsgType |= ICQ_TCPxMSG_FxOCCUPIED; break;
+        case ICQ_STATUS_ONLINE:
+        case ICQ_STATUS_FREEFORCHAT:
+        default: m_nMsgType |= ICQ_TCPxMSG_FxONLINE; break;
+      }
+      if (o->StatusInvisible())
+        m_nMsgType |= ICQ_TCPxMSG_FxINVISIBLE;
+      break;
+    }
 
-  case ICQ_CMDxTCP_ACK:
-   m_nMsgType = ICQ_TCPxMSG_AUTOxREPLY;
-   if (!_bAccept)
-     m_nStatus = ICQ_TCPxACK_REFUSE;
-   // If we are accepting a chat or file request then always say we are online
-   else if (_bUrgent ||
-            _nSubCommand == ICQ_CMDxSUB_CHAT ||
-            _nSubCommand == ICQ_CMDxSUB_FILE)
-     m_nStatus = ICQ_TCPxACK_ONLINE;
-   else
-   {
-     switch (o->Status())
-     {
-     case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
-     case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
-     case ICQ_STATUS_DND: m_nStatus = ICQ_TCPxACK_DND; break;
-     case ICQ_STATUS_OCCUPIED: m_nStatus = ICQ_TCPxACK_OCCUPIED; break;
-     case ICQ_STATUS_ONLINE:
-     case ICQ_STATUS_FREEFORCHAT:
-     default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
-     }
-   }
-   break;
+    case ICQ_CMDxTCP_ACK:
+    {
+      m_nMsgType = ICQ_TCPxMSG_AUTOxREPLY;
+      if (!_bAccept)
+        m_nStatus = ICQ_TCPxACK_REFUSE;
+      // If we are accepting a chat or file request then always say we are online
+      else if (_bUrgent ||
+               _nSubCommand == ICQ_CMDxSUB_CHAT ||
+               _nSubCommand == ICQ_CMDxSUB_FILE)
+        m_nStatus = ICQ_TCPxACK_ONLINE;
+      else
+      {
+        switch (s)
+        {
+          case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
+          case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
+          case ICQ_STATUS_DND: m_nStatus = ICQ_TCPxACK_DND; break;
+          case ICQ_STATUS_OCCUPIED: m_nStatus = ICQ_TCPxACK_OCCUPIED; break;
+          case ICQ_STATUS_ONLINE:
+          case ICQ_STATUS_FREEFORCHAT:
+          default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
+        }
+      }
+      break;
+    }
   }
   gUserManager.DropOwner();
 
@@ -1255,14 +1262,17 @@ CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFil
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
-                bool _bAccept, bool _bUrgent, ICQUser *_cUser)
+                bool _bAccept, bool _bUrgent, ICQUser *pUser)
   : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept, _bUrgent,
-               _cUser)
+               pUser)
 {
   m_nSequence = _nSequence;
   free(m_szMessage);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  m_szMessage = gTranslator.NToRN(o->AutoResponse());
+  if (pUser->CustomAutoResponse()[0] != '\0')
+    m_szMessage = gTranslator.NToRN(o->CustomAutoResponse());
+  else
+    m_szMessage = gTranslator.NToRN(o->AutoResponse());
   gUserManager.DropOwner();
   gTranslator.ClientToServer(m_szMessage);
 
