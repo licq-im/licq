@@ -7,6 +7,7 @@
 
 BASE=${HOME}/.licq
 LICQCONF=${BASE}/licq.conf
+TMPLICQCONF=${BASE}/licq.conf.tmp
 CONF=${BASE}/users.conf
 
 if [ ! -d "$BASE" ]; then
@@ -27,14 +28,18 @@ if [ "$CONT" != "y" -a "$CONT" != "Y" ]; then
 fi
 
 echo ""
-echo "Updating owner file..."
+echo "Updating licq.conf file..."
 cd $BASE
 
+sed -e 's/Version = 1027/Version = 1028/g' $LICQCONF > $TMPLICQCONF && mv $TMPLICQCONF $LICQCONF
 UIN=`cat $BASE/owner.uin | grep Uin | cut -d " " -f 3`
 echo "[owners]" >> $LICQCONF
 echo "NumOfOwners = 1" >> $LICQCONF
 echo "Owner1.Id = $UIN" >> $LICQCONF
 echo "Owner1.PPID = Licq" >> $LICQCONF
+
+echo ""
+echo "Updating owner file..."
 mv owner.uin owner.Licq
 
 echo "Updating user files..."
