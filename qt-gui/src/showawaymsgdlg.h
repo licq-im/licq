@@ -18,7 +18,7 @@
 
 */
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 //#include "user.h"
 
@@ -31,7 +31,7 @@ class QPushButton;
 class QCheckBox;
 
 
-class ShowAwayMsgDlg : public QDialog
+class ShowAwayMsgDlg : public LicqDialog
 {
   Q_OBJECT
 public:

@@ -23,6 +23,7 @@
 
 #include "userbox.h"
 #include "licq_user.h"
+#include "licqdialog.h"
 #include "gui-defines.h"
 
 class QStyle;
@@ -296,7 +297,7 @@ signals:
 
 // -----------------------------------------------------------------------------
 
-class HintsDlg : public QDialog
+class HintsDlg : public LicqDialog
 {
 public:
   HintsDlg(QString &);

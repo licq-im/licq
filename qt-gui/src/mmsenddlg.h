@@ -6,9 +6,9 @@
 #endif
 
 
-#include <qdialog.h>
 #include <qstring.h>
 
+#include "licqdialog.h"
 #include "licq_user.h"
 
 class QPushButton;
@@ -21,7 +21,7 @@ class CMMUserViewItem;
 class CICQDaemon;
 class ICQEvent;
 
-class CMMSendDlg : public QDialog
+class CMMSendDlg : public LicqDialog
 {
   Q_OBJECT
 public:

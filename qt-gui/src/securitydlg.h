@@ -2,9 +2,10 @@
 #define SECURITYDLG_H
 
 #include <qwidget.h>
-#include <qdialog.h>
 #include <qlineedit.h>
 #include <qlabel.h>
+
+#include "licqdialog.h"
 
 class QPushButton;
 class QCheckBox;
@@ -13,7 +14,7 @@ class ICQEvent;
 class CICQDaemon;
 class CSignalManager;
 
-class SecurityDlg : public QDialog
+class SecurityDlg : public LicqDialog
 {
    Q_OBJECT
 public:

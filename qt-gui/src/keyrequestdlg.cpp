@@ -35,7 +35,7 @@
 // -----------------------------------------------------------------------------
 
 KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidget *parent)
-  : QDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
+  : LicqDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
 {
   m_nUin = nUin;
   sigman = _sigman;

@@ -12,7 +12,7 @@
 //=====CJoinChatDlg========================================================
 
 CJoinChatDlg::CJoinChatDlg(bool bRequesting, QWidget *p)
-  : QDialog(p, "ChatJoinDialog", true)
+  : LicqDialog(p, "ChatJoinDialog", true)
 {
   QGridLayout *lay = new QGridLayout(this, 3, 5, 10, 5);
 

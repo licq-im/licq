@@ -35,7 +35,7 @@
 // -----------------------------------------------------------------------------
 
 ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, unsigned long _nUin, QWidget *parent)
-  : QDialog(parent, "ShowAwayMessageDialog")
+  : LicqDialog(parent, "ShowAwayMessageDialog")
 {
   m_nUin= _nUin;
   sigman = _sigman;

@@ -11,7 +11,7 @@
 #include "licq_user.h"
 
 CRefuseDlg::CRefuseDlg(unsigned long _nUin, QString t, QWidget* parent)
-   : QDialog(parent, "RefuseDialog", true)
+   : LicqDialog(parent, "RefuseDialog", true)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
   QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromLocal8Bit(u->GetAlias()) + ":", this);

@@ -32,7 +32,7 @@
 #include "licq_icqd.h"
 
 AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
-   : QDialog(parent, "AddUserDialog")
+   : LicqDialog(parent, "AddUserDialog")
 {
 	server = s;
 	

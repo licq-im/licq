@@ -1,7 +1,7 @@
 #ifndef REQAUTHDLG_H
 #define REQAUTHDLG_H
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 class QPushButton;
 class QLabel;
@@ -11,7 +11,7 @@ class QGroupBox;
 class CICQDaemon;
 class MLEditWrap;
 
-class ReqAuthDlg : public QDialog
+class ReqAuthDlg : public LicqDialog
 {
    Q_OBJECT
 public:

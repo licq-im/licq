@@ -1,7 +1,7 @@
 #ifndef AUTHUSERDLG_H
 #define AUTHUSERDLG_H
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 class QPushButton;
 class QLabel;
@@ -11,7 +11,7 @@ class QLineEdit;
 class CICQDaemon;
 class MLEditWrap;
 
-class AuthUserDlg : public QDialog
+class AuthUserDlg : public LicqDialog
 {
    Q_OBJECT
 public:

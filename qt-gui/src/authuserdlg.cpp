@@ -37,7 +37,7 @@
 
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
    QWidget *parent)
-  : QDialog(parent, "AuthUserDialog", false, WDestructiveClose)
+  : LicqDialog(parent, "AuthUserDialog", false, WDestructiveClose)
 {
   server = s;
   m_nUin = nUin;

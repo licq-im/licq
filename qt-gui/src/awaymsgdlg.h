@@ -1,13 +1,13 @@
 #ifndef AWAYMSG_H
 #define AWAYMSG_H
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 class QPushButton;
 class QComboBox;
 class MLEditWrap;
 
-class AwayMsgDlg : public QDialog
+class AwayMsgDlg : public LicqDialog
 {
   Q_OBJECT
 public:
@@ -37,7 +37,7 @@ protected slots:
   void slot_hints();
 };
 
-class CustomAwayMsgDlg : public QDialog
+class CustomAwayMsgDlg : public LicqDialog
 {
   Q_OBJECT
 public:

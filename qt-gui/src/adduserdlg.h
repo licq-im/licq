@@ -1,7 +1,7 @@
 #ifndef ADDUSERDLG_H
 #define ADDUSERDLG_H
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 class QPushButton;
 class QLabel;
@@ -10,7 +10,7 @@ class QCheckBox;
 
 class CICQDaemon;
 
-class AddUserDlg : public QDialog
+class AddUserDlg : public LicqDialog
 {
    Q_OBJECT
 public:

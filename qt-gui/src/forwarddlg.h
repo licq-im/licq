@@ -1,7 +1,7 @@
 #ifndef FORWARDDLG_H
 #define FORWARDDLG_H
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 class CMainWindow;
 class QPushButton;
@@ -10,7 +10,7 @@ class CInfoField;
 class CICQDaemon;
 class CSignalManager;
 
-class CForwardDlg : public QDialog
+class CForwardDlg : public LicqDialog
 {
 Q_OBJECT
 public:

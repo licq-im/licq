@@ -1,14 +1,14 @@
 #ifndef CHATJOINDLG_H
 #define CHATJOINDLG_H
 
-#include <qdialog.h>
 #include <qlistbox.h>
 
+#include "licqdialog.h"
 #include "chatdlg.h"
 
 class QPushButton;
 
-class CJoinChatDlg : public QDialog
+class CJoinChatDlg : public LicqDialog
 {
   Q_OBJECT
 

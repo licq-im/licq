@@ -35,7 +35,7 @@
 #include "usercodec.h"
 
 ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, unsigned long nUin, QWidget *parent)
-  : QDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
+  : LicqDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
 {
   server = s;
 

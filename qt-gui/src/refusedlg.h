@@ -1,11 +1,11 @@
 #ifndef REFUSEDLG_H
 #define REFUSEDLG_H
 
-#include <qdialog.h>
+#include "licqdialog.h" 
 
 class MLEditWrap;
 
-class CRefuseDlg : public QDialog
+class CRefuseDlg : public LicqDialog
 {
 public:
   CRefuseDlg(unsigned long _nUin, QString t, QWidget *parent = 0);

@@ -38,7 +38,7 @@
 
 
 CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
-  : QDialog(p, "UserForwardDialog", false, WDestructiveClose | WType_TopLevel)
+  : LicqDialog(p, "UserForwardDialog", false, WDestructiveClose | WType_TopLevel)
 {
   sigman = sigMan;
 

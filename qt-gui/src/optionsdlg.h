@@ -1,8 +1,8 @@
 #ifndef OPTIONSDLG_H
 #define OPTIONSDLG_H
 
-#include <qdialog.h>
 
+#include "licqdialog.h"
 #include "ewidgets.h"
 
 #include <config.h>
@@ -33,7 +33,7 @@ public:
 };
 #endif
 
-class OptionsDlg : public QDialog
+class OptionsDlg : public LicqDialog
 {
    Q_OBJECT
 friend class CMainWindow;

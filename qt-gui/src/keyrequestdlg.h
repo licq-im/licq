@@ -18,7 +18,7 @@
 
 */
 
-#include <qdialog.h>
+#include "licqdialog.h"
 
 class CSignalManager;
 class ICQEvent;
@@ -26,7 +26,7 @@ class ICQEvent;
 class QLabel;
 class QPushButton;
 
-class KeyRequestDlg : public QDialog
+class KeyRequestDlg : public LicqDialog
 {
   Q_OBJECT
 public:

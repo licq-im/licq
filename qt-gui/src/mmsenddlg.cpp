@@ -22,7 +22,7 @@
 
 CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   CMMUserView *_mmv, QWidget *p)
-  : QDialog(p, "MMSendDialog", true)
+  : LicqDialog(p, "MMSendDialog", true)
 {
   m_nUin = 0;
   icqEventTag = 0;
@@ -61,7 +61,7 @@ int CMMSendDlg::go_message(QString msg)
   // Start
   SendNext();
   show();
-  return result();
+//  return result();
 }
 
 

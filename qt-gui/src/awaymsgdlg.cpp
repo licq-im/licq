@@ -67,7 +67,7 @@ QPoint AwayMsgDlg::snPos = QPoint();
 // -----------------------------------------------------------------------------
 
 AwayMsgDlg::AwayMsgDlg(QWidget *parent)
-  : QDialog(parent, "AwayMessageDialog", false, WDestructiveClose)
+  : LicqDialog(parent, "AwayMessageDialog", false, WDestructiveClose)
 {
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
@@ -220,7 +220,7 @@ void AwayMsgDlg::closeEvent(QCloseEvent *e)
 // -----------------------------------------------------------------------------
 
 CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
-    : QDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
+    : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
 {
   m_nUin = nUin;
 
