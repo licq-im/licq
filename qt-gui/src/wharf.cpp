@@ -245,6 +245,8 @@ void IconManager_Default::SetDockIconStatus()
 QPixmap *IconManager_Default::GetDockIconStatusIcon()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (o == 0) return NULL;
+  
   unsigned long s = o->Status();
   gUserManager.DropOwner();
   switch (s)

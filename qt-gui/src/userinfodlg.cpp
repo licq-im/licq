@@ -1479,6 +1479,7 @@ void UserInfoDlg::SavePicture()
   if (!m_bOwner) return;
   //FIXME other owners too
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+  if (o == 0) return;
 
   o->SetEnableSave(false);
   o->SetPicture(m_sFilename.latin1());

@@ -89,7 +89,8 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
 
   // UIN
   edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
-  if (nUin) edtUin->setText(strUin);
+  if (nUin) 
+    edtUin->setText(strUin);
 
   // Owner password
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -97,6 +98,11 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   {
     edtFirst->setText(o->Password());
     edtSecond->setText(o->Password());
+  }
+  else
+  {
+    edtFirst->setEnabled(false);
+    edtSecond->setEnabled(false);
   }
 
   QVBoxLayout *blay = new QVBoxLayout;
@@ -185,7 +191,7 @@ SecurityDlg::~SecurityDlg()
 void SecurityDlg::ok()
 {
   ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
-  if(o == NULL)  return;
+  if(o == 0) return;
   unsigned short status = o->Status();
   gUserManager.DropOwner();
 

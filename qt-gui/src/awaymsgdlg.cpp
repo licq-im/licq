@@ -141,6 +141,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mnuSelect->insertItem(tr("&Edit Items"), 999);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (o == 0) return;
   setCaption(QString(tr("Set %1 Response for %2"))
              .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromLocal8Bit(o->GetAlias())));
   if (*o->AutoResponse())
@@ -183,6 +184,11 @@ void AwayMsgDlg::ok()
     s.truncate(s.length()-1);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  if (o == 0)
+  {
+    close();
+    return;
+  }
   o->SetAutoResponse(s.local8Bit());
   gUserManager.DropOwner();
   close();

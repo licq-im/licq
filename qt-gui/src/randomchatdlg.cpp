@@ -192,6 +192,11 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
   lstGroups->insertItem(tr("Seeking Men"));
 
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  if (o == 0)
+  {
+    close();
+    return;
+  }
   switch(o->RandomChatGroup())
   {
     case ICQ_RANDOMxCHATxGROUP_GENERAL: lstGroups->setCurrentItem(1); break;

@@ -1378,8 +1378,14 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         QString tmp = "";
         QString contactName = codec->toUnicode(u->GetAlias());
         ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
-        QString ownerName = codec->toUnicode(o->GetAlias());
-        gUserManager.DropOwner(m_nPPID);
+        QString ownerName;
+        if (o)
+        {
+          ownerName = codec->toUnicode(o->GetAlias());
+          gUserManager.DropOwner(m_nPPID);
+        }
+        else
+          ownerName = QString("Error! no owner set");
         QDateTime date;
         
         // Iterate through each message to add

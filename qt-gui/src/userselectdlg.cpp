@@ -81,7 +81,12 @@ UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
 
 	// For now, just have one owner
 	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-	cmbUser->insertItem(tr("%1 (%2)").arg(o->GetAlias()).arg(o->Uin()));
+  if (o == 0)
+  {
+    close();
+    return;
+  }
+	cmbUser->insertItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->Uin()));
 	edtPassword->setText(o->Password());
 	gUserManager.DropOwner();
 
@@ -95,6 +100,11 @@ UserSelectDlg::~UserSelectDlg()
 void UserSelectDlg::slot_ok()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  if (o == 0)
+  {
+    close();
+    return;
+  }
   o->SetSavePassword(chkSavePassword->isChecked());
   o->SetPassword(edtPassword->text().latin1());
   gUserManager.DropOwner();

@@ -1359,8 +1359,16 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         if (u != NULL && u->NewMessages() > 0)
         {
           ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
-          unsigned short s = o->Status();
-          gUserManager.DropOwner(nPPID);
+          unsigned short s;
+          if (o == 0)
+          {
+            s = ICQ_STATUS_OFFLINE; // if we have no owner we're very likely offline ;)
+          }
+          else
+          {  
+            s = o->Status();
+            gUserManager.DropOwner(nPPID);
+          }
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
           {
             bool bCallUserView = false, bCallSendMsg = false;
@@ -1410,8 +1418,15 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       {
         if (sig->SubSignal() == USER_STATUS || sig->SubSignal() == USER_EXT) break;
         ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
-        m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
-        gUserManager.DropOwner(nPPID);
+        if (o != 0)
+        {
+          m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
+          gUserManager.DropOwner(nPPID);
+        }
+        else
+        {
+          m_szCaption = tr("Licq (%1)").arg(QString("Error! No owner set"));
+        }
         if (caption()[0] == '*')
           setCaption(QString("* ") + m_szCaption);
         else
@@ -2199,6 +2214,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
     {
       char *szId = 0;
       ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      if (o == 0) continue;
       szId = strdup(o->IdString());
       unsigned short nNumMsg = o->NewMessages();
       gUserManager.DropOwner((*it)->PPID());
@@ -2221,6 +2237,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
       if ((*it)->PPID() == nPPID)
       {
         ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+        if (o == 0) continue;
         szId = strdup(o->IdString());
         gUserManager.DropOwner((*it)->PPID());
         callInfoTab(index, szId, nPPID);
@@ -2701,6 +2718,7 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
     for (it = pl.begin(); it != pl.end(); it++)
     {
       ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      if (o == 0) continue; // just in case
       unsigned short nNumMsg = o->NewMessages();
       gUserManager.DropOwner((*it)->PPID());
       if (nNumMsg > 0)
@@ -3309,8 +3327,8 @@ void CMainWindow::aboutBox()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   
   // We might have no owner
-  QString m_Alias = (o == NULL) ? tr("(no alias)") : QString::fromLocal8Bit(o->GetAlias());
-  unsigned long m_Uin = (o == NULL) ? 0 : o->Uin();
+  QString m_Alias = (o == 0) ? QString("(Error! No owner set)") : QString::fromLocal8Bit(o->GetAlias());
+  unsigned long m_Uin = (o == 0) ? 0 : o->Uin();
   
   QString about(tr("Licq version %1%8.\n"
                    "Qt GUI plugin version %2.\n"
@@ -3564,9 +3582,12 @@ void CMainWindow::autoAway()
     {
       if (autoNAMess) {
        SARList &sar = gSARManager.Fetch(SAR_NA);
-       ICQUser *u = gUserManager.FetchOwner(LOCK_W);
-       u->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
-       gUserManager.DropOwner();
+       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+       if (o != 0)
+       {
+        o->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
+        gUserManager.DropOwner();
+       }
        gSARManager.Drop();
       }
 
@@ -3582,9 +3603,12 @@ void CMainWindow::autoAway()
     {
       if (autoAwayMess) {
        SARList &sar = gSARManager.Fetch(SAR_AWAY);
-       ICQUser *u = gUserManager.FetchOwner(LOCK_W);
-       u->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
-       gUserManager.DropOwner();
+       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+       if (o != 0)
+       {
+        o->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+        gUserManager.DropOwner();
+       }
        gSARManager.Drop();
       }
 
@@ -4394,8 +4418,13 @@ void CMainWindow::slot_popupall()
 
   // Do system messages first
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumMsg = o->NewMessages();
-  gUserManager.DropOwner();
+  unsigned short nNumMsg = 0;
+  if (o)
+  {
+    nNumMsg = o->NewMessages();
+    gUserManager.DropOwner();
+  }
+  
   if (nNumMsg > 0)
   {
     callOwnerFunction(OwnerMenuView);
