@@ -1235,6 +1235,7 @@ CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
 
 //----RequestAuth------------------------------------------------------------
 CPU_RequestAuth::CPU_RequestAuth(unsigned long _nUin, const char *_szMsg)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_AUTHxREQ)
 {
   char szUin[13];
   int nUinLen = snprintf(szUin, 12, "%lu", _nUin);
@@ -1245,7 +1246,7 @@ CPU_RequestAuth::CPU_RequestAuth(unsigned long _nUin, const char *_szMsg)
   InitBuffer();
 
   buffer->PackChar(nUinLen);
-  buffer->Pack(szUin, nUinLen):
+  buffer->Pack(szUin, nUinLen);
   buffer->PackUnsignedShortBE(nMsgLen);
   buffer->Pack(_szMsg, nMsgLen);
   buffer->PackUnsignedShortBE(0);
