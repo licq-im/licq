@@ -92,11 +92,11 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
     int pos = 0;
     if (highlightURLs && (pos = text.find(reAHREF, pos)) == -1)
     {
-       QRegExp reURL("(\\w+://.+)(\\s+|$)");
+       QRegExp reURL("(\\b|^)(\\w+://\\S+)(\\s|$|\\n)");
        reURL.setMinimal(true);
        pos = 0;
        while ( (pos = text.find(reURL, pos)) != -1 ) {
-          QString url = reURL.cap(1);
+          QString url = reURL.cap(2);
           QString link = QString::fromLatin1("<a href=\"") + url + QString::fromLatin1("\">") + url + QString::fromLatin1("</a>");
           text.replace(pos, url.length(), link);
           pos += reURL.matchedLength() - url.length() + link.length();
