@@ -123,6 +123,7 @@ class CLogService_Plugin : public CLogService
 public:
   CLogService_Plugin(CPluginLog *_xWindow, unsigned short _nLogTypes);
   bool SetLogWindow(CPluginLog *_xWindow);
+  CPluginLog *LogWindow() { return m_xLogWindow; }
   virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
                        const char *_szFormat, va_list argp);
 protected:
