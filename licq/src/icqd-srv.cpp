@@ -2033,7 +2033,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     nLevel = packet.UnpackUnsignedShortBE();
     nUserClass = packet.UnpackUnsignedShortBE();
 
-    gLog.Info(tr("%sUIN: %lu level: %04hx Class: %04hx\n"), L_SRVxSTR,
+    gLog.Info("%sUIN: %lu level: %04hx Class: %04hx\n", L_SRVxSTR,
               nUin, nLevel, nUserClass );
 
     if (!packet.readTLV()) {
@@ -2102,7 +2102,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
   }
 
   default:
-    gLog.Warn(tr("%sUnknown Service Family Subtype: %04hx\n"), L_SRVxSTR, nSubtype);
+    gLog.Warn("%sUnknown Service Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
     break;
   }
 }
@@ -2117,7 +2117,7 @@ void CICQDaemon::ProcessLocationFam(const CBuffer &packet, unsigned short nSubty
     break;
 
   default:
-    gLog.Warn(tr("%sUnknown Location Family Subtype: %04hx\n"), L_SRVxSTR, nSubtype);
+    gLog.Warn("%sUnknown Location Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
     break;
   }
 }
@@ -2539,9 +2539,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   }
   case ICQ_SNACxMSG_SERVERxMESSAGE:
   {
-    unsigned long nMsgID[2], nUin;
+    unsigned long nMsgID[2];
     unsigned long nTimeSent;
-    unsigned short mFormat, nMsgLen, nTLVs;
+    unsigned short mFormat, nMsgLen, nTLVs, nSubEncoding;
     char *szId;
 
     nMsgID[0] = packet.UnpackUnsignedLongBE();
@@ -2579,7 +2579,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       nMsgLen = msgTxt.getDataSize();
 
       unsigned short nEncoding = msgTxt.UnpackUnsignedShort();
-      unsigned short nSubEncoding = msgTxt.UnpackUnsignedShort();
+      nSubEncoding = msgTxt.UnpackUnsignedShort();
       
       nMsgLen -= 4;
 
