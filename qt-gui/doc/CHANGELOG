@@ -1,5 +1,15 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 1.0.1
+o  Search online users only option
+o  Some bug fixes
+o  Send and receive messages in color
+o  Qt 2.2.2 optimizations
+o  Option to disable checking clipboard when double-clicking on a user
+o  New KDE2 dock theme added
+o  KDE2 support fixed up
+
+
 New in 1.0
 o  Whitepages searching added
 o  Stability fixes
