@@ -953,7 +953,9 @@ void UserInfoDlg::CreateHistory()
   l->addWidget(chkHistoryReverse);
 
   mlvHistory = new CHistoryWidget(p, "history");
+#if QT_VERSION >= 300
   mlvHistory->setICQDaemon(server);
+#endif
   lay->addWidget(mlvHistory, 1);
 
   l = new QHBoxLayout(lay);
