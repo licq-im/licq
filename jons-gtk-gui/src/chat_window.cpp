@@ -400,8 +400,7 @@ void chat_join_multiparty(struct remote_chat_request *r_cr)
 	/* Make the window and the chat manager */
 	struct chat_window *cw = chat_window_create(r_cr->uin);
 
-	if(!cw->chatman->StartAsClient(r_cr->c_event->Port()))
-		return;
+	cw->chatman->StartAsClient(r_cr->c_event->Port());
 
 	icq_daemon->icqChatRequestAccept(r_cr->uin, cw->chatman->LocalPort(),
 					 r_cr->c_event->Sequence(),
@@ -441,8 +440,7 @@ void chat_start_as_client(ICQEvent *event)
 	/* Make the window and the chat manager */
 	struct chat_window *cw = chat_window_create(event->Uin());
 
-	if(!cw->chatman->StartAsClient(ea->Port()))
-		return;
+	cw->chatman->StartAsClient(ea->Port());
 
 	gtk_frame_set_label(GTK_FRAME(cw->frame_remote),
 			    "Remote - Waiting for joiners...");
@@ -866,6 +864,30 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 
 		switch(e->Command())
 		{
+      case CHAT_ERRORxBIND:
+      {
+        message_box("Unable to bind to a port.\nSee Network Log for "
+                    "details.");
+        chat_close((gpointer)cw, 0, 0);
+        break;
+      }
+      
+      case CHAT_ERRORxCONNECT:
+      {
+        message_box("Unable to connect to the remote chat.\nSee Network Log "
+                    "for details.");
+        chat_close((gpointer)cw, 0, 0);
+        break;
+      }
+      
+      case CHAT_ERRORxRESOURCES:
+      {
+        message_box("Unable to create new thread.\nSee Network Log for "
+                    "details.");
+        chat_close((gpointer)cw, 0, 0);
+        break;
+      }
+
 			case CHAT_DISCONNECTION:
 			{
 //				list<CChatUser *>::iterator iter;

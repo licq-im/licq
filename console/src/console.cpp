@@ -603,6 +603,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
 void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
 {
   char buf[32];
+  bool bCloseFT = false;
   read((*iter)->Pipe(), buf, 32);
 
   CFileTransferEvent *e = NULL;
@@ -611,46 +612,65 @@ void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
   {
     switch(e->Command())
     {
+    case FT_ERRORxCONNECT:
+      winMain->wprintf("%C%AFile transfer could not connect.  See network "
+                       "window for details.%C%Z\n",
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+
+    case FT_ERRORxBIND:
+      winMain->wprintf("%C%AFile transfer could not bind to a port.  See "
+                       "network window for details.%C%Z\n",
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+
+    case FT_ERRORxRESOURCES:
+      winMain->wprintf("%C%AFile transfer unable to create new thread.  See "
+                       "network window for details.%C%Z\n",
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+           
     case FT_DONExFILE:
       break;
 
     case FT_DONExBATCH:
       winMain->wprintf("%C%AFile transfer successfuly finished.%C%Z\n",
                        COLOR_GREEN, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+
+    case FT_ERRORxCLOSED:
+      winMain->wprintf("%C%AFile transfer closed.%C%Z\n",
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+
+    case FT_ERRORxFILE:
+      winMain->wprintf("%C%AFile transfer I/O error.%C%Z\n",
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+
+    case FT_ERRORxHANDSHAKE:
+      winMain->wprintf("%C%AFile transfer handshake error.%C%Z\n",
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      bCloseFT = true;
+      break;
+    }
+
+    if (bCloseFT)
+    {
       (*iter)->CloseFileTransfer();
       delete *iter;
 #undef erase()
       m_lFileStat.erase(iter);
       delete e;
       return;
-
-    case FT_ERRORxCLOSED:
-      winMain->wprintf("%C%AFile transfer closed.%C%Z\n",
-                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
-      (*iter)->CloseFileTransfer();
-      delete *iter;
-      m_lFileStat.erase(iter);
-      delete e;
-      return;
-
-    case FT_ERRORxFILE:
-      winMain->wprintf("%C%AFile transfer I/O error.%C%Z\n",
-                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
-      (*iter)->CloseFileTransfer();
-      delete *iter;
-      m_lFileStat.erase(iter);
-      delete e;
-      return;
-
-    case FT_ERRORxHANDSHAKE:
-      winMain->wprintf("%C%AFile transfer handshake error.%C%Z\n",
-                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
-      (*iter)->CloseFileTransfer();
-      delete *iter;
-      m_lFileStat.erase(iter);
-      delete e;
-      return;
     }
+
     delete e;
   }
 }
@@ -781,8 +801,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 
             ConstFileList fl;
             fl.push_back(f->Filename());
-            if(!ftman->SendFiles(fl, ea->Port()))
-              return;
+            ftman->SendFiles(fl, ea->Port());
           }
         }
         /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)

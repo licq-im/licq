@@ -400,6 +400,30 @@ void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
 	{
 		switch(e->Command())
 		{
+      case FT_ERRORxBIND:
+      {
+        message_box("Unable to bind to a port.\nSee Network Log for "
+                    "details.");
+        fw->ftman->CloseFileTransfer();
+        break;
+      }
+
+      case FT_ERRORxCONNECT:
+      {
+        message_box("Unable to reach remote host.\nSee Network Log for "
+                    "details.");
+        fw->ftman->CloseFileTransfer();
+        break;
+      }
+
+      case FT_ERRORxRESOURCES:
+      {
+        message_box("Unable to create a thread.\nSee Network Log for "
+                    "details.");
+        fw->ftman->CloseFileTransfer();
+        break;
+      }
+
 		  case FT_STARTxBATCH:
 		  {
 		  	// File 1 out of x files
@@ -760,7 +784,7 @@ void file_start_send(ICQEvent *event)
         CEventFile *f = (CEventFile *)event->UserEvent();
         ConstFileList fl;
         fl.push_back(f->Filename());
-        if(!fw->ftman->SendFiles(fl, ea->Port()))
+        fw->ftman->SendFiles(fl, ea->Port());
 		return;
 
 }
