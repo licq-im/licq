@@ -725,16 +725,14 @@ void CChatWindow::insert(const QString &s)
 
 void CChatWindow::keyPressEvent (QKeyEvent *e)
 {
-  if ( (e->key() < Key_Space ||
-        e->key() > 0xff ||
+  if ( (e->text().length() == 0 ||
         e->state() & ControlButton ||
         e->state() & AltButton) &&
        (e->key() != Key_Tab &&
         e->key() != Key_Backtab &&
         e->key() != Key_Backspace &&
         e->key() != Key_Return &&
-        e->key() != Key_Enter &&
-        e->key() != 0x0000) )
+        e->key() != Key_Enter))
     return;
 
   emit keyPressed(e);
