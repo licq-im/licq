@@ -714,10 +714,11 @@ void fs_ok_click(GtkWidget *widget, gpointer _fs)
 	// We expect to catch the event back
 	catcher = g_slist_append(catcher, fs->etd);
 
+	ConstFileList fl;
+	fl.push_back(file_name);
 	fs->etd->e_tag = icq_daemon->icqFileTransfer(fs->uin, file_name,
-				gtk_editable_get_chars(GTK_EDITABLE(
-					fs->description), 0, -1),
-				ICQ_TCPxMSG_NORMAL, false);
+				gtk_editable_get_chars(GTK_EDITABLE(fs->description), 0, -1),
+				fl, ICQ_TCPxMSG_NORMAL, false);
 }
 
 // Used for the finishing event in extras.cpp
