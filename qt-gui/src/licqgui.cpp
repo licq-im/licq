@@ -226,7 +226,7 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
   // Create the main widgets
   licqSignalManager = new CSignalManager(_licqDaemon, nPipe);
   licqLogWindow = new CQtLogWindow;
-  gLog.AddService(new CLogService_Plugin(licqLogWindow, L_INFO | L_WARN | L_ERROR | L_UNKNOWN));
+  gLog.AddService(new CLogService_Plugin(licqLogWindow, L_MOST));
   licqMainWindow = new CMainWindow(_licqDaemon, licqSignalManager, licqLogWindow,
      m_bStartHidden, m_szSkin, m_szIcons);
 
