@@ -7,8 +7,8 @@ SUBDIRS = m4 share src include bin po
 EXTRA_DIST = admin/config.rpath  admin doc upgrade README-1.2.0 README.FREEBSD README.OPENSSL \
 	 README.ICS post-install acinclude.m4.in plugins
 
-$(top_srcdir)/acinclude.m4: $(top_srcdir)/acinclude.m4.in $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in
-	@cd $(top_srcdir) && cat $(top_srcdir)/acinclude.m4.in $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in > acinclude.m4
+$(top_srcdir)/acinclude.m4: $(top_srcdir)/acinclude.m4.in $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in $(top_srcdir)/m4/gettext.m4
+	@cd $(top_srcdir) && cat $(top_srcdir)/acinclude.m4.in $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in $(top_srcdir)/m4/*.m4 > acinclude.m4
 
 install-data-local:
 	@cat $(srcdir)/post-install
