@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/licqgui.h)
-
+AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
@@ -30,7 +30,7 @@ dnl libtool stuff
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
-dnl AC_LIBTOOL_CXX
+AC_LIBTOOL_CXX
 LIBTOOL="$LIBTOOL --silent"
 dnl AC_SUBST(LIBTOOL)
 

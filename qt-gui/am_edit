@@ -83,7 +83,7 @@ $hExt       = "*.h *.H *.hh *.hxx *.h++";             # used by grep
 $progId     = "KDE tags expanded automatically by " . basename($thisProg);
 $automkCall = "\n";
 $printname  = "";  # used to display the directory the Makefile is in
-$use_final  = 1;        # create code for --enable-final
+$use_final  = 0;        # create code for --enable-final
 $cleantarget = "clean";
 
 while (defined ($ARGV[0]))
