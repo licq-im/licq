@@ -627,6 +627,23 @@ protected:
   unsigned long m_nExtraLen; // length of data following 0x2711 tlv
 };
 
+//-----ReverseConnect-----------------------------------------------------------
+class CPU_ReverseConnect : public CPU_Type2Message
+{
+public:
+  CPU_ReverseConnect(ICQUser *u, unsigned long nLocalIP,
+                     unsigned short nLocalPort, unsigned short nRemotePort);
+};
+
+//-----ReverseConnectFailed-----------------------------------------------------
+class CPU_ReverseConnectFailed : public CPU_CommonFamily
+{
+public:
+  CPU_ReverseConnectFailed(unsigned long nUin, unsigned long nMsgID1,
+                           unsigned long nMsgID2, unsigned short nFailedPort,
+                           unsigned short nOurPort, unsigned long nConnectID);
+};
+
 //-----PluginMessage-----------------------------------------------------------
 class CPU_PluginMessage : public CPU_Type2Message
 {

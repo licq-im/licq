@@ -32,6 +32,7 @@ class TCPSocket;
 class SrvSocket;
 class INetSocket;
 class ProxyServer;
+class CReverseConnectToUserData;
 class CMSN;
 
 const unsigned short IGNORE_MASSMSG    = 1;
@@ -509,7 +510,8 @@ public:
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned long nSequence,
      TCPSocket *pSock);
-
+  bool WaitForReverseConnection(unsigned short id, unsigned long uin);
+  
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
@@ -564,6 +566,10 @@ protected:
   void FlushStats();
   DaemonStatsList m_sStats;
   time_t m_nStartTime, m_nResetTime;
+  
+  static std::list <CReverseConnectToUserData *> m_lReverseConnect;
+  static pthread_mutex_t mutex_reverseconnect;
+  static pthread_cond_t  cond_reverseconnect_done;
 
   std::list <ICQEvent *> m_lxRunningEvents;
   pthread_mutex_t mutex_runningevents;
@@ -654,7 +660,10 @@ protected:
   int ConnectToLoginServer();
   int ConnectToUser(unsigned long, unsigned char);
   int ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
-     unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort);
+     unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
+     unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2);
+  int RequestReverseConnection(unsigned long, unsigned long, unsigned long,
+                               unsigned short, unsigned short);
 
   // Protected plugin related stuff
   unsigned long icqRequestInfoPlugin(ICQUser *, bool, const char *);
@@ -694,16 +703,25 @@ unsigned short VersionToUse(unsigned short);
 class CReverseConnectToUserData
 {
 public:
-  CReverseConnectToUserData(unsigned long uin, unsigned long ip,
-   unsigned short port, unsigned short version, unsigned short failedport) :
-   nUin(uin), nIp(ip), nPort(port), nFailedPort(failedport),
-   nVersion(version) {}
+  CReverseConnectToUserData(unsigned long uin, unsigned long id,
+   unsigned long data, unsigned long ip, unsigned short port,
+   unsigned short version, unsigned short failedport, unsigned long msgid1,
+   unsigned long msgid2) :
+   nUin(uin), nId(id), nData(data), nIp(ip), nPort(port),
+   nFailedPort(failedport), nVersion(version), nMsgID1(msgid1),
+   nMsgID2(msgid2), bSuccess(false), bFinished(false) {}
 
   unsigned long nUin;
+  unsigned long nId;
+  unsigned long nData;
   unsigned long nIp;
   unsigned short nPort;
   unsigned short nFailedPort;
   unsigned short nVersion;
+  unsigned long nMsgID1;
+  unsigned long nMsgID2;
+  bool bSuccess;
+  bool bFinished;
 };
 
 

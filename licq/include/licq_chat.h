@@ -161,6 +161,17 @@ struct SVoteInfo
 };
 typedef std::list<SVoteInfo *> VoteInfoList;
 
+class CChatUser;
+class CChatManager;
+
+struct SChatReverseConnectInfo
+{
+  int nId;
+  bool bTryDirect;
+  CChatUser *u;
+  CChatManager *m;
+};
+
 //=====Chat=====================================================================
 class CPacketChat : public CPacket
 {
@@ -242,7 +253,8 @@ public:
   char m_nMode;
   unsigned short m_nSession;
   unsigned long m_nHandshake;
-
+  unsigned short m_nId;
+  
 protected:
   CChatClient(CBuffer &);
   bool LoadFromBuffer(CBuffer &);
@@ -447,7 +459,12 @@ public:
 
 
 //=====CChatUser=============================================================
-extern "C" { void *ChatManager_tep(void *); }
+extern "C"
+{
+  void *ChatManager_tep(void *);
+  void *ChatWaitForSignal_tep(void *);
+  void ChatWaitForSignal_cleanup(void *);
+}
 
 
 class CChatUser
@@ -499,6 +516,8 @@ protected:
 friend class CChatManager;
 friend class CChatEvent;
 friend void *ChatManager_tep(void *);
+friend void *ChatWaitForSignal_tep(void *);
+friend void ChatWaitForSignal_cleanup(void *);
 };
 
 typedef std::list<CChatUser *> ChatUserList;
@@ -530,6 +549,7 @@ typedef std::list <CChatEvent *> ChatEventList;
 
 //=====ChatManager===========================================================
 typedef std::list<class CChatManager *> ChatManagerList;
+typedef std::list<pthread_t> ThreadList;
 
 class CChatManager
 {
@@ -591,6 +611,8 @@ public:
 
 protected:
   static ChatManagerList cmList;
+  static pthread_mutex_t cmList_mutex;
+  static pthread_mutex_t waiting_thread_cancel_mutex;
 
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
@@ -602,6 +624,8 @@ protected:
   ChatUserList chatUsersClosed;
   ChatEventList chatEvents;
   VoteInfoList voteInfo;
+  ThreadList waitingThreads;
+  pthread_mutex_t thread_list_mutex;
   pthread_t thread_chat;
   CChatClient *m_pChatClient;
 
@@ -618,6 +642,7 @@ protected:
 
   bool StartChatServer();
   bool ConnectToChat(CChatClient *);
+  bool SendChatHandshake(CChatUser *);
   CChatUser *FindChatUser(int);
   void CloseClient(CChatUser *);
   bool ProcessPacket(CChatUser *);
@@ -635,7 +660,8 @@ protected:
   //void SendPacket(CPacket *);
 
 friend void *ChatManager_tep(void *);
-
+friend void *ChatWaitForSignal_tep(void *);
+friend void ChatWaitForSignal_cleanup(void *);
 };
 
 

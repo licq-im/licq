@@ -74,6 +74,15 @@ const unsigned char FT_ERRORxCONNECT   = 0xFC;
 const unsigned char FT_ERRORxBIND      = 0xFB;
 const unsigned char FT_ERRORxRESOURCES = 0xFA;
 
+class CFileTransferManager;
+
+struct SFileReverseConnectInfo
+{
+  int nId;
+  bool bTryDirect;
+  CFileTransferManager *m;
+};
+
 //=====File=====================================================================
 class CPacketFile : public CPacket
 {
@@ -148,7 +157,12 @@ public:
 
 
 //=====FileTransferManager===================================================
-void *FileTransferManager_tep(void *);
+extern "C"
+{
+  void *FileTransferManager_tep(void *);
+  void *FileWaitForSignal_tep(void *);
+  void FileWaitForSignal_cleanup(void *);
+}
 
 class CFileTransferEvent
 {
@@ -227,6 +241,10 @@ public:
 protected:
   static FileTransferManagerList ftmList;
 
+  static pthread_mutex_t thread_cancel_mutex;
+  bool m_bThreadRunning;
+  pthread_t m_tThread;
+
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
   FileTransferEventList ftEvents;
@@ -259,6 +277,7 @@ protected:
 
   bool StartFileTransferServer();
   bool ConnectToFileServer(unsigned short nPort);
+  bool SendFileHandshake();
   bool ProcessPacket();
   bool SendFilePacket();
   void PushFileTransferEvent(unsigned char);
@@ -269,7 +288,8 @@ protected:
   bool SendPacket(CPacket *);
 
 friend void *FileTransferManager_tep(void *);
-
+friend void *FileWaitForSignal_tep(void *);
+friend void FileWaitForSignal_cleanup(void *);
 };
 
 
