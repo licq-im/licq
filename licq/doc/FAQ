@@ -40,6 +40,8 @@ Section 4: Plugins
    4.1: Why do I get "undefined symbol" errors when loading a plugin?
    4.2: I get something about "undefined symbol: setmask..." when I try and
         load the Qt-GUI plugin.
+   4.3: Licq starts up but then exists with "licq: Fatal IO error: client killed".
+   4.4: I get "file not found" when Licq tries to load the qt-gui plugin.
 
 
 =======================================
@@ -316,6 +318,20 @@ which qt library it's linked to.  If it is qt 1.4 then this library will have
 to be moved to somewhere after the location of the qt 2.0 library, as listed
 in /etc/ld.so.conf.  Read the README-QT-1.4-AND-2.0 for more information.
 
+
+4.3: Licq starts up but then exists with "licq: Fatal IO error: client killed".
+
+  Because Licq is multi-threaded, it requires thread-safe X11 libraries.  These
+can be aquired by recompiling your X server with the thread option or by grabbing
+the binaries from the XMMS homepage.
+
+
+4.4: I get "file not found" when Licq tries to load the qt-gui plugin.
+
+  This occurs if some library used by the Qt-GUI plugin cannot be found.  This
+will almost certainly be the Qt library.  Check this using ldd on licq_qt-gui.so
+and if this is the case then add the directory where libqt resides to /etc/ld.so.conf
+or to the LD_LIBRARY_PATH environment variable.
 
 
 

@@ -3,7 +3,8 @@ Change log for Licq.
 New in 0.71
 o  New history format allowing easier parsing and much more informative
    display
-o  Some bugs fixed
+o  Some bugs fixed including losing personal info every startup and segfault
+   on certain system messages
 o  Ignore user list added
 o  User list format totally changed (affects developers only)
 o  Ignore messages from users not on contact list option added
