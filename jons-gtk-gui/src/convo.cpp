@@ -203,7 +203,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	  g_strdup_printf("%s", gtk_editable_get_chars(GTK_EDITABLE(c->entry), 0, -1));
  	const gchar *message = buf;	
 	buf2 = g_strdup_printf(":  %s\n", buf);
-	const gchar *for_user = buf2;
+	c->for_user = buf2;
 
 	gUserManager.DropOwner();
 
@@ -235,12 +235,6 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 						"prog");
 	gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
 	gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
-
-	/* Put the text into the convo window */
-	gtk_text_freeze(GTK_TEXT(c->text));
-	gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
-	gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user, -1);
-	gtk_text_thaw(GTK_TEXT(c->text));
 
 	gtk_editable_delete_text(GTK_EDITABLE(c->entry), 0, -1);
 	gtk_editable_delete_text(GTK_EDITABLE(c->spoof_uin), 0, -1);

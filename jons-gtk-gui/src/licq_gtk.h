@@ -45,6 +45,7 @@ struct conversation
 	GtkWidget *spoof_uin;
 	GtkWidget *progress;
 	gchar prog_buf[60];
+	gchar *for_user;
 	ICQUser *user;
 	CICQEventTag *e_tag;
 };
@@ -303,6 +304,7 @@ extern void status_na(GtkWidget *, gpointer);
 extern void status_occ(GtkWidget *, gpointer);
 extern void status_dnd(GtkWidget *, gpointer);
 extern void status_off(GtkWidget *, gpointer);
+extern void status_invisible(GtkWidget *, GtkWidget *);
 extern void status_change(gushort);
 
 

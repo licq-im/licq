@@ -138,6 +138,7 @@ void user_function(ICQEvent *event)
 		return;
 	}
 
+	/* It's for the convo window */
 	if(uaw == NULL)
 	{	
 		/* Make sure we have the right event and event tag */
@@ -157,6 +158,24 @@ void user_function(ICQEvent *event)
 		}
 
 		check_event(event, c->progress, id, c->prog_buf);
+
+		/* Check to make sure it sent, and if it did, put the text */
+		g_strreverse(c->prog_buf);
+	
+		if(strcmp("en", c->prog_buf))
+		{
+			ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+			const gchar *name = g_strdup_printf("%s",
+							owner->GetAlias());
+			gUserManager.DropOwner();
+
+			gtk_text_freeze(GTK_TEXT(c->entry));
+			gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
+			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, c->for_user,
+					-1);
+			gtk_text_thaw(GTK_TEXT(c->entry));
+		}
+
 		return;
 	}
 
