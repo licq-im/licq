@@ -39,7 +39,7 @@ AC_DEFUN(AC_CHECK_LICQ,
 [
   AC_MSG_CHECKING([for licq header files])
 
-  AC_FIND_FILE(licq_icqd.h, [../../src/inc], licq_inc)
+  AC_FIND_FILE(licq_icqd.h, [$prefix/include/licq], licq_inc)
   if test "$licq_inc" = no; then
     have_licq_inc=no
   else
@@ -47,7 +47,7 @@ AC_DEFUN(AC_CHECK_LICQ,
   fi
   if test "$have_licq_inc" = yes; then
     AC_MSG_RESULT(["found"])
-    LICQ_INCLUDES="../$licq_inc"
+    LICQ_INCLUDES="$licq_inc"
     AC_SUBST(LICQ_INCLUDES)
   else
     AC_MSG_RESULT(["not found"])
