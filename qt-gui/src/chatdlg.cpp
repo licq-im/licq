@@ -287,10 +287,19 @@ void ChatDlg::StateServer(int sd)
         l.push_back(&(*iter)->client);
       }
 
+      QString f;
+      switch (mlePaneLocal->font().styleHint())
+      {
+        case QFont::Helvetica: f = "helvetica"; break;
+        case QFont::Times: f = "times"; break;
+        case QFont::System: f = "system"; break;
+        case QFont::Courier:
+        default: f = "courier"; break;
+      }
       CPChat_ColorFont p_colorfont(chatname, LocalPort(), m_nSession,
          0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
          mlePaneLocal->font().pointSize(), false, false, false,
-         mlePaneLocal->font().family(), l);
+         f, l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
         char buf[128];
@@ -493,9 +502,18 @@ void ChatDlg::StateClient(int sd)
       }
 
       // send the reply (font packet)
+      QString f;
+      switch (mlePaneLocal->font().styleHint())
+      {
+        case QFont::Helvetica: f = "helvetica"; break;
+        case QFont::Times: f = "times"; break;
+        case QFont::System: f = "system"; break;
+        case QFont::Courier:
+        default: f = "courier"; break;
+      }
       CPChat_Font p_font(LocalPort(), m_nSession,
          mlePaneRemote->font().pointSize(),
-         false, false, false, mlePaneRemote->font().family());
+         false, false, false, f);
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
         char buf[128];
