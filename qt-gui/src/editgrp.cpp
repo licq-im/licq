@@ -45,8 +45,8 @@ EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   btnNewUser = new QPushButton(tr("New Users"), grpGroups);
   QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added."));
   btnDone = new QPushButton(tr("Done"), this);
-  nfoDefault = new CInfoField(0, 0, 5, 5, 5, "Default:", true, grpGroups);
-  nfoNewUser = new CInfoField(0, 0, 5, 5, 5, "New User:", true, grpGroups);
+  nfoDefault = new CInfoField(0, 0, 5, 5, 5, tr("Default:"), true, grpGroups);
+  nfoNewUser = new CInfoField(0, 0, 5, 5, 5, tr("New User:"), true, grpGroups);
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
 
