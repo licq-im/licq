@@ -255,7 +255,7 @@ void UserInfoDlg::CreateGeneralInfo()
   nfoAddress = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoAddress, CR, 1);
   lay->addWidget(new QLabel(tr("Phone:"), p), CR, 3);
-  nfoPhone = new CInfoField(p, !m_bOwner);
+  nfoPhone = new CInfoField(p, false);//!m_bOwner);
   lay->addWidget(nfoPhone, CR, 4);
 
   lay->addWidget(new QLabel(tr("State:"), p), ++CR, 0);
@@ -264,7 +264,7 @@ void UserInfoDlg::CreateGeneralInfo()
   setTabOrder(nfoAddress, nfoState);
   lay->addWidget(nfoState, CR, 1);
   lay->addWidget(new QLabel(tr("Fax:"), p), CR, 3);
-  nfoFax = new CInfoField(p, !m_bOwner);
+  nfoFax = new CInfoField(p, false);//!m_bOwner);
   setTabOrder(nfoPhone, nfoFax);
   lay->addWidget(nfoFax, CR, 4);
 
@@ -273,7 +273,7 @@ void UserInfoDlg::CreateGeneralInfo()
   setTabOrder(nfoState, nfoCity);
   lay->addWidget(nfoCity, CR, 1);
   lay->addWidget(new QLabel(tr("Cellular:"), p), CR, 3);
-  nfoCellular = new CInfoField(p, !m_bOwner);
+  nfoCellular = new CInfoField(p, false);//!m_bOwner);
   setTabOrder(nfoFax, nfoCellular);
   lay->addWidget(nfoCellular, CR, 4);
 
