@@ -270,21 +270,37 @@ void CLicqConsole::CreateUserList()
     s->nUin = pUser->Uin();
     s->bOffline = pUser->StatusOffline();
 
-    switch(pUser->Status())
+    unsigned long iStatus = pUser->StatusFull();
+
+    if(iStatus & ICQ_STATUS_FxPRIVATE)
     {
-    case ICQ_STATUS_ONLINE:
-      pUser->usprintf(&s->szLine[1], m_szOnlineFormat);
+      pUser->usprintf(&s->szLine[1], m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
-      break;
-    case ICQ_STATUS_OFFLINE:
+    }
+
+    if((unsigned short)iStatus == ICQ_STATUS_OFFLINE)
+    {
       pUser->usprintf(&s->szLine[1], m_szOfflineFormat);
       s->color = m_cColorOffline;
-      break;
-    default:
+    }
+    else if( (unsigned short) iStatus != ICQ_STATUS_OFFLINE && 
+        ((iStatus & ICQ_STATUS_DND) || (iStatus & ICQ_STATUS_OCCUPIED) ||
+        (iStatus & ICQ_STATUS_NA) || (iStatus & ICQ_STATUS_AWAY)))
+    {
       pUser->usprintf(&s->szLine[1], m_szAwayFormat);
       s->color = m_cColorAway;
-      break;
     }
+    else if((unsigned short)iStatus == ICQ_STATUS_FREEFORCHAT)
+    {
+      pUser->usprintf(&s->szLine[1], m_szOtherOnlineFormat);
+      s->color = m_cColorOnline;
+    }
+    else if((unsigned short)iStatus == ICQ_STATUS_ONLINE)
+    {
+      pUser->usprintf(&s->szLine[1], m_szOnlineFormat);
+      s->color = m_cColorOnline;
+    }
+
     if (pUser->NewUser())
       s->color = m_cColorNew;
     s->szLine[0] = pUser->NewMessages() > 0 ? '*' : ' ';

@@ -52,6 +52,7 @@ protected:
                    *m_cColorAway, *m_cColorGroupList, *m_cColorNew,
                    *m_cColorQuery, *m_cColorInfo, *m_cColorError;
   char m_szOnlineFormat[128];
+  char m_szOtherOnlineFormat[128];
   char m_szAwayFormat[128];
   char m_szOfflineFormat[128];
 

@@ -42,7 +42,7 @@ const struct SStatus aStatus[NUM_STATUS] =
   { "*ffc", ICQ_STATUS_FREEFORCHAT }
 };
 
-const unsigned short NUM_VARIABLES = 12;
+const unsigned short NUM_VARIABLES = 13;
 struct SVariable aVariables[NUM_VARIABLES] =
 {
   { "show_offline_users", BOOL, NULL },
@@ -55,6 +55,7 @@ struct SVariable aVariables[NUM_VARIABLES] =
   { "color_query", COLOR, NULL },
   { "color_info", COLOR, NULL },
   { "user_online_format", STRING, NULL },
+  { "user_other_online_format", STRING, NULL },
   { "user_away_format", STRING, NULL },
   { "user_offline_format", STRING, NULL }
 };
@@ -102,6 +103,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   m_cColorInfo = &aColorMaps[13];
   m_cColorError = &aColorMaps[9];
   strcpy(m_szOnlineFormat, "%-20a");
+  strcpy(m_szOtherOnlineFormat, "%-20a[%6S]");
   strcpy(m_szAwayFormat, "%-20a[%6S]");
   strcpy(m_szOfflineFormat, "%-20a");
   m_lCmdHistoryIter = m_lCmdHistory.end();
@@ -118,6 +120,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   aVariables[i++].pData = &m_cColorQuery;
   aVariables[i++].pData = &m_cColorInfo;
   aVariables[i++].pData = m_szOnlineFormat;
+  aVariables[i++].pData = m_szOtherOnlineFormat;
   aVariables[i++].pData = m_szAwayFormat;
   aVariables[i++].pData = m_szOfflineFormat;
 
