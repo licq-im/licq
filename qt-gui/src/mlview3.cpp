@@ -120,8 +120,6 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
   }
   text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
   
-  qDebug("%s", text.utf8().data());
-  
   return text;
 }
 
