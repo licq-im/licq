@@ -1,5 +1,3 @@
-
-
 ----------------------------------------------------------------------
 Licq daemon installed successfully.
 
@@ -12,9 +10,12 @@ path if you want to be able to view urls from within Licq.
 For more help on running licq and using plugins, see doc/README.
 See HINTS for some Licq advanced features.
 
-*** Now enter the plugins/ directory and build the GUI plugin.
-*** You must do this in order to have a graphical interface!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+**********************************************************************
+*** Now enter the plugins/qt-gui directory and build the GUI plugin. *
+*** You must do this in order to have a graphical interface!         *
+**********************************************************************
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 *** If you are upgrading from 0.61 or 0.70 read upgrade/UPGRADE.
 ----------------------------------------------------------------------
-

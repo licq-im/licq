@@ -9,6 +9,9 @@ EXTRA_DIST = doc upgrade
 $(top_srcdir)/acinclude.m4: $(top_srcdir)/acinclude.m4.in $(top_srcdir)/libtool.m4.in
 	@cd $(top_srcdir) && cat $(top_srcdir)/acinclude.m4.in $(top_srcdir)/libtool.m4.in > acinclude.m4
 
+install-data-local:
+	@cat $(srcdir)/post-install
+
 uninstall-local: 
 	-rm -rf $(libdir)/licq
 	-rm -rf $(prefix)/share/licq
