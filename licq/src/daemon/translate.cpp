@@ -14,6 +14,7 @@
 #else
 extern int errno;
 #endif
+#include <string.h>
 
 #include "licq_translate.h"
 #include "licq_log.h"
@@ -71,11 +72,11 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
 		setDefaultTranslationMap();
 		return true;
 	}
-  
+
   FILE *mapFile = fopen(_szMapFileName, "r");
   if (mapFile == NULL)
   {
-    gLog.Error("%sCould not open the translation file (%s) for reading:\n%s%s.\n", 
+    gLog.Error("%sCould not open the translation file (%s) for reading:\n%s%s.\n",
                L_ERRORxSTR, _szMapFileName, L_BLANKxSTR, strerror(errno));
 		setDefaultTranslationMap();
 		return false;
@@ -101,9 +102,9 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
 
   while(fgets(buffer, 80, mapFile) != NULL && c < 512)
   {
-		if(sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x", 
+		if(sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x",
               inputs+0, inputs+1, inputs+2, inputs+3,
-              inputs+4, inputs+5, inputs+6, inputs+7) < 8) 
+              inputs+4, inputs+5, inputs+6, inputs+7) < 8)
     {
       gLog.Error("%sSyntax error in translation file '%s'.\n", L_ERRORxSTR, _szMapFileName);
       setDefaultTranslationMap();
@@ -123,8 +124,8 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
 			serverToClientTab[c] = temp_table[c];
 			clientToServerTab[c] = temp_table[c | 256];
 		}
-	} 
-  else 
+	}
+  else
   {
 		gLog.Error("%sTranslation file '%s' corrupted.\n", L_ERRORxSTR, _szMapFileName);
 		setDefaultTranslationMap();

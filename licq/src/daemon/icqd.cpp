@@ -332,7 +332,7 @@ void CICQDaemon::PluginList(PluginsList &lPlugins)
   unsigned short nId;
   vector<CPlugin *>::iterator iter;
   PluginsListIter it;
-  lPlugins.clear();
+  lPlugins.erase(lPlugins.begin(), lPlugins.end());;
   pthread_mutex_lock(&mutex_plugins);
   // Go through our list of registered plugins
   for (iter = m_vPlugins.begin(); iter != m_vPlugins.end(); iter++)

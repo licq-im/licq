@@ -7,7 +7,7 @@
 #else
 extern int errno;
 #endif
-
+#include <string.h>
 #include <time.h>
 
 #include <unistd.h>

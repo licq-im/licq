@@ -1,6 +1,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include <string.h>
 
 #include "licq_sar.h"
 #include "licq_log.h"

@@ -270,7 +270,7 @@ void CICQDaemon::icqUpdateContactList()
       CPU_ContactList *p = new CPU_ContactList(uins);
       gLog.Info("%sUpdating contact list (#%d)...\n", L_UDPxSTR, p->getSequence());
       SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-      uins.clear();
+      uins.erase(uins.begin(), uins.end());
       n = 0;
     }
     // Reset all users to offline

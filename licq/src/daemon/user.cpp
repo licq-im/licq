@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <string.h>
 
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
