@@ -3,10 +3,12 @@
 ----------------------------------------------------------------------
 Licq daemon installed successfully.
 
-Be sure to have a look at the contrib/ directory for various
-scripts, in particular, copy the viewurl-netscape.sh (or
-one of the other viewurl scripts) to a directory in your
-path if you want to be able to view urls from within Licq.
+Be sure to download licq-data-x.x.tar.gz as it includes extra
+skins, icon packs, translation files, contact list conversion
+scripts, sound files and more.
+In particular, grab the viewurl-netscape.sh (or one of the other
+viewurl scripts) and copy it to directory in your path if you want
+to be able to view urls from within Licq.
 
 For more help on running licq and using plugins, see doc/README.
 See HINTS for some Licq advanced features.

@@ -4,8 +4,8 @@ AC_CONFIG_HEADER(config.h)
 
 dnl All versioning is done via these defines
 PACKAGE=Licq
-VERSION=0.70h
-INT_VERSION=708
+VERSION=0.70.1
+INT_VERSION=701
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -30,6 +30,7 @@ case "$host" in
 		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
 		CXXFLAGS="$CXXFLAGS -pthread"
 		echo "Setting FreeBSD compilation options"
+    echo "Note you will need to upgrade to a newer pthreads implementation"
 		;;
 	*-*-solaris*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -DUSE_SOLARIS -DPIC -fPIC"
@@ -37,7 +38,7 @@ case "$host" in
 		echo "Setting Solaris compilation options"
 		;;
 	*-*-linux*)
- 		CPPFLAGS="$CPPFLAGS -fPIC -DPIC"
+ 		CPPFLAGS="$CPPFLAGS -fPIC -DPIC -D_REENTRANT"
 		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions"
 		echo "Setting Linux compilation options"
 		;;
@@ -125,7 +126,7 @@ dlopen(NULL, RTLD_LAZY)
   ])
 ])
 
-AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror gethostbyname_r)
+AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror)
 
 AC_CHECK_SOCKS5
 

@@ -76,9 +76,6 @@
 /* Define if you have the hstrerror function.  */
 #undef HAVE_HSTRERROR
 
-/* Define if you have the gethostbyname_r function.  */
-#undef HAVE_GETHOSTBYNAME_R
-
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
