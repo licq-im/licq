@@ -820,7 +820,8 @@ bool ICQUser::LoadData(void)
   setEmail(sTemp);
   m_fConf.ReadBool("Authorization", bTemp, false);
   setAuthorization(bTemp);
-  m_fConf.ReadStr("History", sTemp, "none");
+  m_fConf.ReadStr("History", sTemp, "default");
+  if (sTemp[0] == '\0') strcpy(sTemp, "default");
   setHistoryFile(sTemp);
   m_fConf.ReadBool("OnlineNotify", bTemp, false);
   setOnlineNotify(bTemp);
@@ -1004,17 +1005,17 @@ inline bool ICQUser::getStatusInvisible(void)
 
 inline bool ICQUser::getStatusWebPresence(void)
 {
-   return (/*getStatusOffline() ? false :*/ m_nStatus & ICQ_STATUS_FxWEBxPRESENCE);
+   return (m_nStatus & ICQ_STATUS_FxWEBxPRESENCE);
 }
 
 inline bool ICQUser::getStatusHideIp(void)
 {
-   return (/*getStatusOffline() ? false :*/ m_nStatus & ICQ_STATUS_FxHIDExIP);
+   return (m_nStatus & ICQ_STATUS_FxHIDExIP);
 }
 
 inline bool ICQUser::getStatusBirthday(void)
 {
-   return (/*getStatusOffline() ? false :*/ m_nStatus & ICQ_STATUS_FxBIRTHDAY);
+   return (m_nStatus & ICQ_STATUS_FxBIRTHDAY);
 }
 
 unsigned long ICQUser::SortKey(void)
@@ -1465,10 +1466,10 @@ ICQOwner::ICQOwner(void)
   setUin(nTemp);
   m_fConf.ReadStr("Password", sTemp);
   setPassword(sTemp);
-  m_fConf.ReadBool("WebPresence", bTemp);
-  if (bTemp) setStatus(getStatus() | ICQ_STATUS_FxWEBxPRESENCE);
-  m_fConf.ReadBool("HideIP", bTemp);
-  if (bTemp) setStatus(getStatus() | ICQ_STATUS_FxHIDExIP);
+  m_fConf.ReadBool("WebPresence", bTemp, true);
+  if (bTemp) setStatus(m_nStatus | ICQ_STATUS_FxWEBxPRESENCE);
+  m_fConf.ReadBool("HideIP", bTemp, false);
+  if (bTemp) setStatus(m_nStatus | ICQ_STATUS_FxHIDExIP);
   m_fConf.CloseFile();
   struct timezone tz;
   gettimeofday(NULL, &tz);

@@ -2,14 +2,14 @@ obj/buffer.o: buffer.cpp ../../config.h ../inc/buffer.h ../inc/log.h \
  ../inc/constants.h
 obj/file.o: file.cpp ../../config.h ../inc/file.h ../inc/log.h \
  ../inc/constants.h
-obj/history.o: history.cpp ../inc/history.h ../inc/log.h ../../config.h \
+obj/history.o: history.cpp ../../config.h ../inc/history.h ../inc/log.h \
  ../inc/constants.h
-obj/icq.o: icq.cpp ../../config.h ../inc/time-fix.h ../inc/log.h \
+obj/icqd.o: icqd.cpp ../../config.h ../inc/time-fix.h ../inc/log.h \
  ../inc/constants.h ../inc/translate.h plugind.h ../inc/icqevent.h \
  ../inc/socket.h ../inc/buffer.h ../inc/pthread_rdwr.h \
  ../inc/support.h ../inc/message.h ../inc/icqpacket.h ../inc/user.h \
  ../inc/icq-defines.h ../inc/file.h ../inc/history.h \
- ../inc/userfcndlg.h ../licq.h ../inc/icq.h ../inc/remoteserver.h \
+ ../inc/userfcndlg.h ../licq.h ../inc/icqd.h ../inc/remoteserver.h \
  ../inc/onevent.h icq-udp.h icq-tcp.h icq-threads.h
 obj/icqevent.o: icqevent.cpp ../../config.h ../inc/icqevent.h \
  ../inc/socket.h ../inc/buffer.h ../inc/pthread_rdwr.h \

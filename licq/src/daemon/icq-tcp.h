@@ -10,7 +10,7 @@
 
 #include "time-fix.h"
 
-#include "icq.h"
+#include "icqd.h"
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
 ICQEvent *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
@@ -376,6 +376,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                         | ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                         | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
+  bool bUrgent = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
 
   switch(command)
   {
@@ -397,8 +398,16 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       }
 
       packet >> theSequence >> licqChar >> licqVersion;
-      CPT_AckMessage p(theSequence, true, u);
+      CPT_AckMessage p(theSequence, true, bUrgent, u);
       AckTCP(p, u->SocketDesc());
+      // If we are in DND or Occupied and message isn't urgent then we ignore it
+      if (!bUrgent)
+      {
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long s = o->getStatus();
+        gUserManager.DropOwner();
+        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) break;
+      }
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
       gTranslator.ServerToClient (message);
 
@@ -408,7 +417,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
     case ICQ_CMDxTCP_READxNAxMSG:
@@ -436,8 +445,16 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
-      CPT_AckUrl p(theSequence, true, u);
+      CPT_AckUrl p(theSequence, true, bUrgent, u);
       AckTCP(p, u->SocketDesc());
+      // If we are in DND or Occupied and message isn't urgent then we ignore it
+      if (!bUrgent)
+      {
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long s = o->getStatus();
+        gUserManager.DropOwner();
+        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) break;
+      }
 
       // parse the message into url and url description
       char **szUrl = new char*[2]; // desc, url
@@ -453,7 +470,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       delete []szUrl;
       break;
@@ -482,7 +499,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       break;
     }
@@ -519,7 +536,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
 
@@ -537,8 +554,16 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
-      CPT_AckContactList p(theSequence, true, u);
+      CPT_AckContactList p(theSequence, true, bUrgent, u);
       AckTCP(p, u->SocketDesc());
+      // If we are in DND or Occupied and message isn't urgent then we ignore it
+      if (!bUrgent)
+      {
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        unsigned long s = o->getStatus();
+        gUserManager.DropOwner();
+        if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) break;
+      }
 
       unsigned short i = 0;
       while ((unsigned char)message[i++] != 0xFE);
@@ -563,7 +588,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
 
       delete[] szFields;
       break;
@@ -705,7 +730,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -717,7 +742,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       gUserManager.DropUser(u);
       u = gUserManager.FetchUser(checkUin, LOCK_R);
       gUserManager.Reorder(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, checkUin));
       break;
     }
 

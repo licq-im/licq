@@ -665,17 +665,26 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
 
   case ICQ_CMDxTCP_ACK:
     m_nMsgType = ICQ_TCPxMSG_AUTOxREPLY;
-    switch (o->getStatus())
+    if (!_bAccept)
+      m_nStatus = ICQ_TCPxACK_REFUSE;
+    // If we are accepting a chat or file request then always say we are online
+    else if (_bUrgent ||
+             _nSubCommand == ICQ_CMDxSUB_CHAT ||
+             _nSubCommand == ICQ_CMDxSUB_FILE)
+      m_nStatus = ICQ_TCPxACK_ONLINE;
+    else
     {
-    case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
-    case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
-    case ICQ_STATUS_DND: //m_nStatus = ICQ_TCPxACK_DND; break;
-    case ICQ_STATUS_OCCUPIED: //m_nStatus = ICQ_TCPxACK_OCCUPIED; break;
-    case ICQ_STATUS_ONLINE:
-    case ICQ_STATUS_FREEFORCHAT:
-    default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
+      switch (o->getStatus())
+      {
+      case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
+      case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
+      case ICQ_STATUS_DND: m_nStatus = ICQ_TCPxACK_DND; break;
+      case ICQ_STATUS_OCCUPIED: m_nStatus = ICQ_TCPxACK_OCCUPIED; break;
+      case ICQ_STATUS_ONLINE:
+      case ICQ_STATUS_FREEFORCHAT:
+      default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
+      }
     }
-    if (!_bAccept) m_nStatus = ICQ_TCPxACK_REFUSE;
     break;
   }
   gUserManager.DropOwner();
@@ -940,8 +949,9 @@ unsigned long CPT_Ack::getSize(void)
 }
 
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
-                 bool _bAccept, ICQUser *_cUser)
-   : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept, false, _cUser)
+                 bool _bAccept, bool _bUrgent, ICQUser *_cUser)
+   : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept, _bUrgent,
+                _cUser)
 {
    m_nSequence = _nSequence;
    free(m_sMessage);
@@ -960,8 +970,8 @@ unsigned long CPT_AckMessage::getSize(void)
 }
 
 CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
-                               ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, _cUser)
+                               bool _bUrgent, ICQUser *_cUser)
+   : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, _bUrgent, _cUser)
 {
   CPacketTcp::Create();
   initBuffer();
@@ -979,7 +989,7 @@ unsigned long CPT_AckReadAwayMessage::getSize(void)
 CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
                                                unsigned long _nSequence,
                                                bool _bAccept, ICQUser *_cUser)
-   : CPT_Ack(_nSubCommand, _nSequence, _bAccept, _cUser)
+   : CPT_Ack(_nSubCommand, _nSequence, _bAccept, false, _cUser)
 {
   CPacketTcp::Create();
   initBuffer();
@@ -993,8 +1003,9 @@ unsigned long CPT_AckUrl::getSize(void)
    return (CPT_Ack::getSize());
 }
 
-CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, _cUser)
+CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
+                       ICQUser *_cUser)
+   : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, _bUrgent, _cUser)
 {
   CPacketTcp::Create();
   initBuffer();
@@ -1008,8 +1019,9 @@ unsigned long CPT_AckContactList::getSize(void)
    return (CPT_Ack::getSize());
 }
 
-CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept, ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, _cUser)
+CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
+                                       bool _bUrgent, ICQUser *_cUser)
+   : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, _bUrgent, _cUser)
 {
   CPacketTcp::Create();
   initBuffer();
@@ -1025,7 +1037,7 @@ unsigned long CPT_AckChatRefuse::getSize(void)
 
 CPT_AckChatRefuse::CPT_AckChatRefuse(const char *_sReason,
                                      unsigned long _nSequence, ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, _cUser)
+   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
    free (m_sMessage);
    if (_sReason == NULL)
@@ -1058,7 +1070,7 @@ unsigned long CPT_AckChatAccept::getSize(void)
 
 CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort,
                                      unsigned long _nSequence, ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, true, _cUser)
+   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
 {
    char temp_1[3] = { 1, 0, 0 };
    memcpy(m_aUnknown_1, temp_1, sizeof(m_aUnknown_1));
@@ -1085,7 +1097,7 @@ unsigned long CPT_AckFileRefuse::getSize(void)
 
 CPT_AckFileRefuse::CPT_AckFileRefuse(const char *_sReason,
                                      unsigned long _nSequence, ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, _cUser)
+   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, false, _cUser)
 {
    free (m_sMessage);
    if (_sReason == NULL)
@@ -1125,7 +1137,7 @@ unsigned long CPT_AckFileAccept::getSize(void)
 
 CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
                                      unsigned long _nSequence, ICQUser *_cUser)
-   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, true, _cUser)
+   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, true, true, _cUser)
 {
    m_nPortReversed = ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF);
    m_nStrLength = 1;

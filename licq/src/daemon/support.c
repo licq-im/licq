@@ -170,7 +170,7 @@ inline int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
   char temp[1024];
   int herror;
   h_buf = gethostbyname_r(szHostName, h, temp, 1024, &herror);
-  return herror
+  return herror;
 // not sure about this one (actually pretty sure it's wrong)
 // who uses OSF anyway?
 #elif defined(__osf__)

@@ -253,17 +253,21 @@ protected:
 };
 
 
-class CEventUnknown : public CUserEvent
+class CEventUnknownSysMsg : public CUserEvent
 {
 public:
-   CEventUnknown(CBuffer *_xBuf, unsigned short _nSubCommand, 
-                 unsigned short _nCommand, unsigned long _nSequence, 
+   CEventUnknownSysMsg(unsigned short _nSubCommand,
+                 unsigned short _nCommand, unsigned long _nUin,
+                 const char *_szMsg, unsigned long _nSequence,
                  time_t _tTime, unsigned long _nFlags);
-   virtual CEventUnknown *Copy(void)
-      { return (new CEventUnknown(&m_xBuf, m_nSubCommand, m_nCommand, 
-                                  m_nSequence, m_tTime, m_nFlags)); };
+   ~CEventUnknownSysMsg(void);
+   virtual CEventUnknownSysMsg *Copy(void)
+      { return (new CEventUnknownSysMsg(m_nSubCommand, m_nCommand,
+                                  m_nUin, m_szMsg,
+                                  m_nSequence, m_tTime, m_nFlags)); }
 protected:
-   CBuffer m_xBuf;
+   unsigned long m_nUin;
+   char *m_szMsg;
 };
 
 #endif

@@ -401,17 +401,28 @@ CEventSaved::CEventSaved(unsigned short _nNumEvents)
 }
 
 
-CEventUnknown::CEventUnknown(CBuffer *_xBuf, unsigned short _nSubCommand, 
-                             unsigned short _nCommand, unsigned long _nSequence, 
+CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
+                             unsigned short _nCommand, unsigned long _nUin,
+                             const char *_szMsg, unsigned long _nSequence,
                              time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(_nSubCommand, _nCommand, _nSequence, _tTime, _nFlags), 
-     m_xBuf(_xBuf)
+   : CUserEvent(_nSubCommand, _nCommand, _nSequence, _tTime, _nFlags)
 {
-   m_szText = new char [m_xBuf.getDataSize() * 3 + 128];
-   char *buf = NULL;
-   sprintf(m_szText, "Unknown event (command = %04X, sub-command = %04X):\n%s", 
-           m_nCommand, m_nSubCommand, m_xBuf.print(buf));
-   delete [] buf;
-   m_szDescription = strdup("Unknown Event");
+  if (_szMsg == NULL)
+    m_szMsg = strdup("");
+  else
+    m_szMsg = strdup(_szMsg);
+  m_nUin = _nUin;
+
+  m_szText = new char [strlen(m_szMsg) + 128];
+  sprintf(m_szText, "Unknown system message (0x%04X) from %ld:\n%s\n",
+          m_nSubCommand, m_nUin, m_szMsg);
+  m_szDescription = strdup("Unknown System Message");
 }
+
+
+CEventUnknownSysMsg::~CEventUnknownSysMsg(void)
+{
+  free(m_szMsg);
+}
+
 

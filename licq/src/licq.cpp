@@ -332,11 +332,6 @@ int CLicq::Main(void)
               (*(*iter).Version)());
     pthread_create( &(*iter).thread_plugin, NULL, (*iter).Main_tep, licqDaemon);
   }
-/*  if (m_vPluginFunctions.size() == 0)
-  {
-    gLog.Warn("%sNo plugins specified on the command-line (-p option).\n%sSee the README for more information.\n",
-              L_WARNxSTR, L_BLANKxSTR);
-  }*/
 
   gLog.ModifyService(S_STDOUT, DEBUG_LEVEL);
 
@@ -401,22 +396,22 @@ int CLicq::Main(void)
 
 void CLicq::PrintUsage(void)
 {
-  cerr << PACKAGE << " version " << VERSION << "." << endl
-       << "Usage:  Licq [-h] [-d #] [-b configdir] [-i] [-s] [-p plugin] [-p plugin...] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]" << endl << endl
-       << " -h : this help screen (and any plugin help screens as well)" << endl
-       << " -d : set what information is logged to standard output:" << endl
-       << "        1  status information" << endl
-       << "        2  unknown packets" << endl
-       << "        4  errors" << endl
-       << "        8  warnings" << endl
-       << "       16  all packets" << endl
-       << "      add values together for multiple options" << endl
-       << " -b : set the base directory for the config and data files (~/.licq by default)" << endl
-       << " -i : force initialization of the given base directory" << endl
-       << " -p : load the given plugin library" << endl
-       << " -s : automatically load the current plugins at next startup" << endl
-       << " -o : redirect stdout and stderr to <file>, which can be a device (ie /dev/ttyp4)" << endl
-       << endl;
+  printf("%s version %s.\n"
+         "Usage:  Licq [-h] [-d #] [-b configdir] [-i] [-s] [-p plugin] [-p plugin...] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
+         " -h : this help screen (and any plugin help screens as well)\n"
+         " -d : set what information is logged to standard output:\n"
+         "        1  status information\n"
+         "        2  unknown packets\n"
+         "        4  errors\n"
+         "        8  warnings\n"
+         "       16  all packets\n"
+         "      add values together for multiple options\n"
+         " -b : set the base directory for the config and data files (~/.licq by default)\n"
+         " -i : force initialization of the given base directory\n"
+         " -p : load the given plugin library\n"
+         " -s : automatically load the current plugins at next startup\n"
+         " -o : redirect stdout and stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
+         PACKAGE, VERSION);
 }
 
 
@@ -427,19 +422,19 @@ bool CLicq::Install(void)
   // Create the directory if necessary
   if (mkdir(BASE_DIR, 0700) == -1 && errno != EEXIST)
   {
-    cout << "Couldn't mkdir " << BASE_DIR << " - " << strerror(errno) << endl;
+    printf("Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
     return (false);
   }
   sprintf(cmd, "%s%s", BASE_DIR, HISTORY_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
-    cout << "Couldn't mkdir " << cmd << " - " << strerror(errno) << endl;
+    printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
   sprintf(cmd, "%s%s", BASE_DIR, USER_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
-    cout << "Couldn't mkdir " << cmd << " - " << strerror(errno) << endl;
+    printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
 

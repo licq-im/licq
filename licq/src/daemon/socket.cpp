@@ -36,8 +36,9 @@ extern int h_errno;
 
 #ifdef USE_SOCKS5
 #define SOCKS
-#define INCLUDE_PROTOTYPES
+extern "C" {
 #include <socks.h>
+}
 #endif
 
 
@@ -226,13 +227,11 @@ void INetSocket::ResetSocket(void)
  *---------------------------------------------------------------------------*/
 bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
 {
-  socklen_t sizeofSockaddr;
-
   if (_nFlags & ADDR_LOCAL)
   {
     // Setup the local structure (getsockname() fails under SOCKS apparently)
 #ifndef USE_SOCKS5
-    sizeofSockaddr = sizeof(struct sockaddr_in);
+    socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
     if (getsockname(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, &sizeofSockaddr) < 0)
     {
       // errno has been set

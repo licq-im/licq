@@ -10,7 +10,7 @@
 
 #include "time-fix.h"
 
-#include "icq.h"
+#include "icqd.h"
 #include "translate.h"
 #include "log.h"
 
@@ -20,7 +20,7 @@ int CICQDaemon::ConnectToServer(void)
   // no servers!
   if (icqServers.current() == NULL)
   {
-    gLog.Error("%sInternal error: Attempt to connect to server when no servers are set.\n", 
+    gLog.Error("%sInternal error: Attempt to connect to server when no servers are set.\n",
                L_ERRORxSTR);
     return (-1);
   }
@@ -236,7 +236,7 @@ void CICQDaemon::icqUpdateContactList(void)
   }
 
   gUserManager.DropGroup(g);
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
 }
 
 
@@ -437,7 +437,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     gUserManager.Reorder(u);  // put the user at the top of the list
     gUserManager.DropUser(u);
     if (m_nAllowUpdateUsers <= 0)
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -463,7 +463,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     u = gUserManager.FetchUser(nUin, LOCK_R);
     gUserManager.Reorder(u);
     gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -524,9 +524,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
       PushDoneEvent(e);
     else
       gLog.Warn("%sResponse to unknown event.\n", L_WARNxSTR);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    u->getUin(), UPDATE_BASIC));
+    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->getUin()));
     gUserManager.DropUser(u);
     break;
   }
@@ -606,7 +605,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_USERxGETDETAILS, checkSequence, EVENT_SUCCESS);
     if (e != NULL) PushDoneEvent(e);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    u->getUin(), UPDATE_EXT));
+                                    USER_EXT, u->getUin()));
     gUserManager.DropUser(u);
     break;
   }
@@ -627,7 +626,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     o->setEmail(p->Email());
     o->setAuthorization(p->Authorization());
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    o->getUin(), UPDATE_BASIC));
+                                    USER_BASIC, o->getUin()));
     gUserManager.DropOwner();
     if (e != NULL) PushDoneEvent(e);
     break;
@@ -662,7 +661,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     o->setHomepage(p->Homepage());
     o->setAbout(p->About());
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    o->getUin(), UPDATE_EXT));
+                                    USER_EXT, o->getUin()));
     gUserManager.DropOwner();
     if (e != NULL) PushDoneEvent(e);
     break;
@@ -708,7 +707,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     u = gUserManager.FetchUser(nUin, LOCK_R);
     gUserManager.Reorder(u);
     gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -718,7 +717,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     gLog.Info("%sEnd of online users list.\n", L_UDPxSTR);
     // Possible race condition here...
     m_nAllowUpdateUsers--;
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
     break;
 
   case ICQ_CMDxRCV_SEARCHxFOUND:  // user found in search
@@ -965,10 +964,16 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     delete buf;
   }
 
-  // Swap high and low bytes for strange new icq99
-  if (newCommand > 0x00FF)
+  // Check if uin is backwards, what the fuck is with icq99b?
+  if (nUin > 0x07FFFFFF)
   {
-    newCommand = ((newCommand << 8) & 0xFF00) + ((newCommand >> 8) & 0x00FF);
+    nUin = (nUin & 0x000000FF) << 24 + (nUin & 0x0000FF00) << 8 +
+           (nUin & 0x00FF0000) >> 8  + (nUin & 0xFF000000) >> 24;
+  }
+  // Swap high and low bytes for strange new icq99
+  if ((newCommand > 0x00FF) && !(newCommand & ICQ_CMDxSUB_FxMULTIREC))
+  {
+    newCommand = (newCommand & 0xFF00) >> 8 + (newCommand & 0x00FF) << 8;
   }
 
   unsigned long nMask = ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
@@ -989,6 +994,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
                                  timeSent, nMask);
 
     // Lock the user to add the message to their queue
+    bool bNewUser = false;
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL)
     {
@@ -996,6 +1002,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
                 L_BLANKxSTR, nUin);
       AddUserToList(nUin);
       u = gUserManager.FetchUser(nUin, LOCK_W);
+      bNewUser = true;
     }
     else
       gLog.Info("%sMessage through server from %s (%ld).\n", L_BLANKxSTR,
@@ -1011,7 +1018,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     u = gUserManager.FetchUser(nUin, LOCK_R);
     gUserManager.Reorder(u);
     gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
   case ICQ_CMDxSUB_URL:  // system message: url through the server
@@ -1047,7 +1054,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     u = gUserManager.FetchUser(nUin, LOCK_R);
     gUserManager.Reorder(u);
     gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szUrl;
     break;
   }
@@ -1081,7 +1088,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gUserManager.DropOwner();
      e->AddToHistory(NULL, D_RECEIVER);
      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
      delete[] szFields;
      break;
   }
@@ -1122,7 +1129,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gUserManager.DropOwner();
      e->AddToHistory(NULL, D_RECEIVER);
      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
      delete[] szFields;
      break;
   }
@@ -1154,7 +1161,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szFields;
     break;
   }
@@ -1187,7 +1194,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szFields;
     break;
   }
@@ -1227,18 +1234,26 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     delete[] szFields;
     break;
   }
   default:
   {
+    unsigned short nLen;
+    packet >> nLen;
+    char szMessage[nLen];
+    for (i = 0; i < nLen; i++) packet >> szMessage[i];
+    char *szFE;
+    while((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
+
     char *buf;
-    gLog.Unknown("%sUnknown system message (%04x):\n%s\n", L_UNKNOWNxSTR,
+    gLog.Unknown("%sUnknown system message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
                  newCommand, packet.print(buf));
     delete [] buf;
-    CEventUnknown *e = new CEventUnknown(&packet, newCommand, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                          0, timeSent, 0);
+    CEventUnknownSysMsg *e =
+      new CEventUnknownSysMsg(newCommand, ICQ_CMDxRCV_SYSxMSGxONLINE,
+                              nUin, szMessage, 0, timeSent, 0);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     AddUserEvent(o, e);
     gUserManager.DropOwner();

@@ -61,30 +61,36 @@ public:
 
 
 //=====CICQSignal===============================================================
-const unsigned long SIGNAL_UPDATExUSERS          = 0x00000001;
-//const unsigned long SIGNAL_REORDERxUSER          = 0x00000002;
+const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // User information update constants
-const unsigned short UPDATE_STATUS                 = 1;
-const unsigned short UPDATE_EVENTS                 = 2;
-const unsigned short UPDATE_BASIC                  = 3;
-const unsigned short UPDATE_EXT                    = 4;
+const unsigned long USER_STATUS                 = 1;
+const unsigned long USER_EVENTS                 = 2;
+const unsigned long USER_BASIC                  = 3;
+const unsigned long USER_EXT                    = 4;
 
-typedef unsigned long ESignalType;
+const unsigned long LIST_ADD                     = 1;
+const unsigned long LIST_REMOVE                  = 2;
+const unsigned long LIST_REORDER                 = 3;
+const unsigned long LIST_ALL                     = 4;
+
 
 class CICQSignal
 {
 public:
-  CICQSignal(ESignalType _eSignalType, unsigned long _nData1, unsigned long _nData2);
+  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin);
   CICQSignal(CICQSignal *s);
   ~CICQSignal(void);
-
-  ESignalType m_eSignalType;
-  unsigned long m_nData1;
-  unsigned long m_nData2;
+  unsigned long Signal(void) { return m_nSignal; }
+  unsigned long SubSignal(void) { return m_nSubSignal; }
+  unsigned long Uin(void) { return m_nUin; }
+protected:
+  unsigned long m_nSignal;
+  unsigned long m_nSubSignal;
+  unsigned long m_nUin;
 };
 
 #endif

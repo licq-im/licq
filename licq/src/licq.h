@@ -7,7 +7,7 @@
 
 #include <pthread.h>
 
-#include "icq.h"
+#include "icqd.h"
 
 struct SPluginFunctions
 {

@@ -569,7 +569,7 @@ class CPT_Ack : public CPacketTcp
 {
 protected:
   CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
-          bool _bAccept, ICQUser *_cUser);
+          bool _bAccept, bool _bUrgent, ICQUser *_cUser);
   virtual unsigned long getSize(void);
 
   /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 01 00 01 00 00 CF 60 AD D3 CF
@@ -581,7 +581,7 @@ protected:
 class CPT_AckMessage : public CPT_Ack
 {
 public:
-  CPT_AckMessage(unsigned long _nSequence, bool _bAccept, ICQUser *_cUser);
+  CPT_AckMessage(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
 protected:
   virtual unsigned long getSize(void);
   /* 8F 76 20 00 03 00 DA 07 00 00 8F 76 20 00 01 00 01 00 00 CF 60 AD D3 7F
@@ -604,7 +604,7 @@ protected:
 class CPT_AckUrl : public CPT_Ack
 {
 public:
-  CPT_AckUrl(unsigned long _nSequence, bool _bAccept, ICQUser *_cUser);
+  CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent, ICQUser *_cUser);
 protected:
    virtual unsigned long getSize(void);
 };
@@ -614,7 +614,8 @@ protected:
 class CPT_AckContactList : public CPT_Ack
 {
 public:
-  CPT_AckContactList(unsigned long _nSequence, bool _bAccept, ICQUser *_cUser);
+  CPT_AckContactList(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
+                     ICQUser *_cUser);
 protected:
   virtual unsigned long getSize(void);
 };

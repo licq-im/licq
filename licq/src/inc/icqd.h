@@ -3,8 +3,8 @@ ICQ.H
 header file containing all the main procedures to interface with the ICQ server at mirabilis
 */
 
-#ifndef ICQ_H
-#define ICQ_H
+#ifndef ICQD_H
+#define ICQD_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

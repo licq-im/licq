@@ -82,25 +82,24 @@ bool ICQEvent::CompareEvent(int sockfd, unsigned long _nSequence)
 
 
 //=====CICQSignal===============================================================
-CICQSignal::CICQSignal(ESignalType _eSignalType, unsigned long _nData1, unsigned long _nData2)
+CICQSignal::CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal,
+                       unsigned long _nUin)
 {
-  m_eSignalType = _eSignalType;
-  m_nData1 = _nData1;
-  m_nData2 = _nData2;
+  m_nSignal = _nSignal;
+  m_nSubSignal = _nSubSignal;
+  m_nUin = _nUin;
 }
 
 
 CICQSignal::CICQSignal(CICQSignal *s)
 {
-  m_eSignalType = s->m_eSignalType;
-  m_nData1 = s->m_nData1;
-  m_nData2 = s->m_nData2;
+  m_nSignal = s->Signal();
+  m_nSubSignal = s->SubSignal();
+  m_nUin = s->Uin();
 }
 
 
 CICQSignal::~CICQSignal(void)
 {
-  //if (m_vData1 != NULL) delete (m_vData1);
-  //if (m_vData2 != NULL) delete (m_vData2);
 }
 

@@ -23,7 +23,7 @@ extern int errno;
 #include "icqpacket.h"
 #include "licq.h"
 
-#include "icq.h"
+#include "icqd.h"
 #include "icq-udp.h"
 #include "icq-tcp.h"
 #include "icq-threads.h"
@@ -405,7 +405,7 @@ void CICQDaemon::AddUserToList(unsigned long _nUin)
 
   if (m_nUDPSocketDesc != -1) icqAddUser(_nUin);
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, _nUin));
 }
 
 
@@ -426,7 +426,7 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
 
   if (m_nUDPSocketDesc != -1) icqAddUser(nu->getUin());
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->getUin()));
 }
 
 //-----RemoveUserFromList-------------------------------------------------------
@@ -436,11 +436,11 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
   SaveUserList();
   //icqRemoveUser(id);
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, _nUin));
 }
 
 
-//-----ChangeUserStatus---------------------------------------------------------
+//-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {
   if (s == ICQ_STATUS_OFFLINE)
@@ -448,29 +448,28 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   else
     u->setStatus(s);
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                  u->getUin(), UPDATE_STATUS));
+                                  USER_STATUS, u->getUin()));
 }
 
 
-//-----AddUserEvent-------------------------------------------------------------
+//-----AddUserEvent-----------------------------------------------------------
 void CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 {
   if (u->User()) e->AddToHistory(u, D_RECEIVER);
   u->AddEvent(e);
-  if (u->fcnDlg != NULL)
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    u->getUin(), UPDATE_EVENTS));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
+                                  u->getUin()));
 }
 
 
 
-/*------------------------------------------------------------------------------
+/*----------------------------------------------------------------------------
  * CICQDaemon::SendExpectEvent
  *
  * Sends an event and expects a reply.  Packages the given information into
  * an event structure and sticks it on the pending events queue.  Then signals
  * that it's there.
- *----------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------*/
 ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect)
 {
   return SendExpectEvent(_nSD, packet, _eConnect, 0, NULL);
@@ -695,7 +694,7 @@ void CICQDaemon::PushPluginSignal(CICQSignal *s)
   pthread_mutex_lock(&mutex_plugins);
   for (iter = m_vPlugins.begin(); iter != m_vPlugins.end(); iter++)
   {
-    if ( (*iter)->CompareMask(s->m_eSignalType) )
+    if ( (*iter)->CompareMask(s->Signal()) )
       (*iter)->PushSignal(new CICQSignal(s));
   }
   pthread_mutex_unlock(&mutex_plugins);
