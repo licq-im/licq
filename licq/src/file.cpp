@@ -256,7 +256,9 @@ bool CIniFile::FlushFile()
   strcpy(tempname, m_szFilename);
   strcat(tempname, ".new");
 
-  int nFD = open(tempname, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+  struct stat fStats;
+  stat(m_szFilename, &fStats); // create new file with same mode as original file
+  int nFD = open(tempname, O_WRONLY | O_CREAT | O_TRUNC, fStats.st_mode);
   if (nFD < 0)
   {
      m_nError = errno;
