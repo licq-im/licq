@@ -32,6 +32,7 @@ class CICQDaemon;
 class CSignalManager;
 class ICQEvent;
 class ICQUser;
+class CSearchAck;
 
 class SearchUserView : public QListView
 {
@@ -45,7 +46,7 @@ public:
 class SearchItem : public QListViewItem
 {
 public:
-   SearchItem(struct UserBasicInfo *, QListView *parent);
+   SearchItem(CSearchAck *, QListView *parent);
    unsigned long uin();
 protected:
    unsigned long uinVal;
@@ -82,7 +83,7 @@ protected:
    SearchUserView *foundView;
    QLabel *lblSearch;
 
-   void searchFound(struct UserBasicInfo *);
+   void searchFound(CSearchAck *);
    void searchDone(char);
    void searchFailed(void);
 

@@ -25,7 +25,7 @@
 #endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-
+#undef Status
 
 
 /*
@@ -77,7 +77,7 @@ void IconManager::setDockIconStatus(void)
 {
   QPixmap m;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  switch (o->getStatus())
+  switch (o->Status())
   {
   case ICQ_STATUS_ONLINE: m = QPixmap((const char **)iconOnline_xpm); break;
   case ICQ_STATUS_AWAY: m = QPixmap((const char **)iconAway_xpm); break;
@@ -87,7 +87,7 @@ void IconManager::setDockIconStatus(void)
   case ICQ_STATUS_FREEFORCHAT: m = QPixmap((const char **)iconFFC_xpm); break;
   case ICQ_STATUS_OFFLINE: m = QPixmap((const char **)iconOffline_xpm); break;
   }
-  if (o->getStatusInvisible()) m = QPixmap((const char **)iconInvisible_xpm);
+  if (o->StatusInvisible()) m = QPixmap((const char **)iconInvisible_xpm);
   gUserManager.DropOwner();
   QPainter painter(wharfIcon.vis);
   if (!m_bFortyEight)
@@ -121,7 +121,7 @@ void IconManager::setDockIconStatus(void)
 QPixmap *IconManager::GetDockIconStatusIcon(void)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned long s = o->getStatus();
+  unsigned long s = o->Status();
   gUserManager.DropOwner();
   switch (s)
   {

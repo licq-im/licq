@@ -330,8 +330,8 @@ void OptionsDlg::SetupOptions()
   chkAutoLogonInvisible->setChecked(mainwin->m_nAutoLogon > 10);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  chkHideIp->setChecked(o->getStatusHideIp());
-  chkWebPresence->setChecked(o->getStatusWebPresence());
+  chkHideIp->setChecked(o->StatusHideIp());
+  chkWebPresence->setChecked(o->StatusWebPresence());
   gUserManager.DropOwner();
   chkIgnoreNewUsers->setChecked(mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
   chkIgnoreMassMsg->setChecked(mainwin->licqDaemon->Ignore(IGNORE_MASSMSG));
@@ -496,13 +496,13 @@ void OptionsDlg::ApplyOptions()
                           (chkAutoLogonInvisible->isChecked() ? 10 : 0);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   if (chkWebPresence->isChecked())
-    o->setStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
+    o->SetStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
   else
-    o->clearStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
+    o->ClearStatusFlag(ICQ_STATUS_FxWEBxPRESENCE);
   if (chkHideIp->isChecked())
-    o->setStatusFlag(ICQ_STATUS_FxHIDExIP);
+    o->SetStatusFlag(ICQ_STATUS_FxHIDExIP);
   else
-    o->clearStatusFlag(ICQ_STATUS_FxHIDExIP);
+    o->ClearStatusFlag(ICQ_STATUS_FxHIDExIP);
   gUserManager.DropOwner();
 
   // set up the columns stuff

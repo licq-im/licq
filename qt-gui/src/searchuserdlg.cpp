@@ -62,13 +62,13 @@ unsigned long SearchUserView::currentUin(void)
 }
 
 
-SearchItem::SearchItem(struct UserBasicInfo *us, QListView *parent) : QListViewItem(parent)
+SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
 {
-  uinVal = (unsigned long)atol(us->uin);
-  setText(0, us->alias);
-  setText(1, us->uin);
-  setText(2, us->name);
-  setText(3, us->email);
+  uinVal = s->nUin;
+  setText(0, s->szAlias);
+  setText(1, QString::number(s->nUin));
+  setText(2, QString::fromLocal8Bit(s->szFirstName) + QString::fromLocal8Bit(s->szLastName));
+  setText(3, s->szEmail);
 }
 
 
@@ -236,15 +236,12 @@ void SearchUserDlg::startSearch()
   btnSearch->setEnabled(false);
   btnAdd->setEnabled(false);
 
-  if(uin_search && (uin >= 1000 && uin <= 999999999)) {
+  if(uin_search && (uin >= 1000 && uin <= 999999999))
+  {
     // we should do a uin search here
 
-    UserBasicInfo us;
-    memset(&us, 0, sizeof(UserBasicInfo));
-
-    sprintf(us.uin, "%ld", uin);
-
-    searchFound(&us);
+    CSearchAck s(uin);
+    searchFound(&s);
     searchDone(0);
   }
   else {
@@ -296,14 +293,14 @@ void SearchUserDlg::slot_searchResult(ICQEvent *e)
   if (e->m_eResult == EVENT_SUCCESS)
     searchDone(e->m_sSearchAck->cMore);
   else if (e->m_eResult == EVENT_ACKED)
-    searchFound(e->m_sSearchAck->sBasicInfo);
+    searchFound(e->m_sSearchAck);
   else
     searchFailed();
 }
 
-void SearchUserDlg::searchFound(struct UserBasicInfo *us)
+void SearchUserDlg::searchFound(CSearchAck *s)
 {
-  (void) new SearchItem(us, foundView);
+  (void) new SearchItem(s, foundView);
   if (!btnAdd->isEnabled()) btnAdd->setEnabled(true);
 }
 

@@ -61,7 +61,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
   char szStatus[32];
-  u->getStatusStr(szStatus);
+  u->StatusStr(szStatus);
   setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->GetAlias()));
 
   btnOk = new QPushButton(tr("&Ok"), this);
@@ -100,7 +100,7 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
 void ShowAwayMsgDlg::accept()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->setShowAwayMsg(chkShowAgain->isChecked());
+  u->SetShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 
   QDialog::accept();

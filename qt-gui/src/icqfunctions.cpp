@@ -304,7 +304,7 @@ void ICQFunctions::setupTabs(int index)
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
 
   // read tab
-  for (short i = u->getNumMessages() - 1; i >= 0; i--)
+  for (short i = u->NewMessages() - 1; i >= 0; i--)
      (void) new MsgViewItem(u->GetEvent(i), i, msgView);
 
   // print the first event if it's a message
@@ -318,11 +318,11 @@ void ICQFunctions::setupTabs(int index)
   }
 
   // Send tab
-  rdbFile->setEnabled(!u->getStatusOffline());
-  rdbChat->setEnabled(!u->getStatusOffline());
+  rdbFile->setEnabled(!u->StatusOffline());
+  rdbChat->setEnabled(!u->StatusOffline());
   if (chkSendServer->isEnabled())
   {
-    chkSendServer->setChecked(u->getSendServer() || (u->getStatusOffline() && u->SocketDesc() == -1));
+    chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
   }
   if (u->Ip() == 0)
   {
@@ -341,14 +341,14 @@ void ICQFunctions::setupTabs(int index)
   // History tab
   //mleHistory->setReadOnly(true);
 
-  bool bIsNew = u->getIsNew();
+  bool bNewUser = u->NewUser();
   gUserManager.DropUser(u);
 
   // mark the user as no longer new if they are new
-  if (bIsNew)
+  if (bNewUser)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    u->setIsNew(false);
+    u->SetNewUser(false);
     gUserManager.DropUser(u);
     emit signal_updatedUser(USER_BASIC, m_nUin);
   }
@@ -378,7 +378,7 @@ void ICQFunctions::setupTabs(int index)
 //-----ICQFunctions::setBasicInfo-----------------------------------------------
 void ICQFunctions::setBasicInfo(ICQUser *u)
 {
-  struct UserBasicInfo us;
+  char buf[32];
   bool bDropUser = false;
 
   if (u == NULL)
@@ -387,28 +387,28 @@ void ICQFunctions::setBasicInfo(ICQUser *u)
     bDropUser = true;
   }
   chkAuthorization->setChecked(u->GetAuthorization());
-  u->getBasicInfo(us);
-  if (bDropUser) gUserManager.DropUser(u);
 
-  nfoAlias->setData(us.alias);
-  nfoStatus->setData(us.status);
-  nfoFirstName->setData(us.firstname);
-  nfoLastName->setData(us.lastname);
-  nfoEMail->setData(us.email);
-  nfoHistory->setData(us.history);
-  nfoUin->setData(us.uin);
-  nfoIp->setData(us.ip_port);
-  m_sBaseTitle = QString::fromLocal8Bit(us.alias) + " (" +
-                 QString::fromLocal8Bit(us.name) + ")";
+  nfoAlias->setData(u->GetAlias());
+  nfoStatus->setData(u->StatusStr(buf));
+  nfoFirstName->setData(u->GetFirstName());
+  nfoLastName->setData(u->GetLastName());
+  nfoEMail->setData(u->GetEmail1());
+  nfoHistory->setData(u->HistoryName());
+  nfoUin->setData(u->Uin());
+  nfoIp->setData(u->IpPortStr(buf));
+  m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
+                 QString::fromLocal8Bit(u->GetFirstName()) + " " +
+                 QString::fromLocal8Bit(u->GetLastName())+ ")";
   setCaption(m_sBaseTitle);
-  setIconText(us.alias);
+  setIconText(u->GetAlias());
+
+  if (bDropUser) gUserManager.DropUser(u);
 }
 
 
 //-----ICQFunctions::setExtInfo-------------------------------------------------
 void ICQFunctions::setExtInfo(ICQUser *u)
 {
-  struct UserExtInfo ud;
   bool bDropUser = false;
 
   if (u == NULL)
@@ -416,7 +416,6 @@ void ICQFunctions::setExtInfo(ICQUser *u)
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
     bDropUser = true;
   }
-  u->getExtInfo(ud);
   cmbSex->setCurrentItem(u->GetGender());
 
   if (m_bIsOwner)
@@ -438,18 +437,25 @@ void ICQFunctions::setExtInfo(ICQUser *u)
   }
   else
   {
-    nfoCountry->setData(ud.country);
+    const SCountry *c = GetCountryByCode(u->GetCountryCode());
+    if (c == NULL)
+      nfoCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
+    else  // known
+      nfoCountry->setData(c->szName);
   }
 
-  if (bDropUser) gUserManager.DropUser(u);
+  nfoCity->setData(u->GetCity());
+  nfoState->setData(u->GetState());
+  nfoPhone->setData(u->GetPhoneNumber());
+  nfoZipcode->setData(u->GetZipCode());
+  if (u->GetAge() == AGE_UNSPECIFIED)
+    nfoAge->setData(tr("Unspecified"));
+  else
+    nfoAge->setData(u->GetAge());
+  nfoHomepage->setData(u->GetHomepage());
+  mleAboutMsg->setText(QString::fromLocal8Bit(u->GetAbout()));
 
-  nfoCity->setData(ud.city);
-  nfoState->setData(ud.state);
-  nfoPhone->setData(ud.phone);
-  nfoZipcode->setData(ud.zipcode);
-  nfoAge->setData(ud.age);
-  nfoHomepage->setData(ud.homepage);
-  mleAboutMsg->setText(QString::fromLocal8Bit(ud.about));
+  if (bDropUser) gUserManager.DropUser(u);
 }
 
 
@@ -534,7 +540,7 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
   case USER_STATUS:
   {
     char szStatus[32];
-    u->getStatusStr(szStatus);
+    u->StatusStr(szStatus);
     nfoStatus->setData(szStatus);
     if (u->Ip() == 0)
     {
@@ -670,15 +676,16 @@ void ICQFunctions::save()
 void ICQFunctions::saveBasicInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->setEnableSave(false);
-  u->setAlias(nfoAlias->text().local8Bit());
-  u->setFirstName(nfoFirstName->text().local8Bit());
-  u->setLastName(nfoLastName->text().local8Bit());
-  u->setEmail(nfoEMail->text());
-  u->setHistoryFile(nfoHistory->text());
-  u->setAuthorization(chkAuthorization->isChecked());
-  u->setEnableSave(true);
-  u->saveBasicInfo();
+  u->SetEnableSave(false);
+  u->SetAlias(nfoAlias->text().local8Bit());
+  u->SetFirstName(nfoFirstName->text().local8Bit());
+  u->SetLastName(nfoLastName->text().local8Bit());
+  u->SetEmail1(nfoEMail->text());
+  u->SetHistoryFile(nfoHistory->text());
+  u->SetAuthorization(chkAuthorization->isChecked());
+  u->SetEnableSave(true);
+  u->SaveBasicInfo();
+  u->SaveLicqInfo();
   gUserManager.DropUser(u);
 }
 
@@ -687,27 +694,27 @@ void ICQFunctions::saveBasicInfo()
 void ICQFunctions::saveExtInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->setEnableSave(false);
-  u->setCity(nfoCity->text().local8Bit());
-  u->setState(nfoState->text().local8Bit());
+  u->SetEnableSave(false);
+  u->SetCity(nfoCity->text().local8Bit());
+  u->SetState(nfoState->text().local8Bit());
   if (m_bIsOwner)
   {
     unsigned short i = cmbCountry->currentItem();
     if (i == 0)
-      u->setCountry(COUNTRY_UNSPECIFIED);
+      u->SetCountryCode(COUNTRY_UNSPECIFIED);
     else if (i == 1)
-      u->setCountry(m_nUnknownCountryCode);
+      u->SetCountryCode(m_nUnknownCountryCode);
     else
-      u->setCountry(GetCountryByIndex(i - 2)->nCode);
+      u->SetCountryCode(GetCountryByIndex(i - 2)->nCode);
   }
-  u->setAge(atol(nfoAge->text()));
-  u->setSex(cmbSex->currentItem());
-  u->setPhoneNumber(nfoPhone->text());
-  u->setZipcode(nfoZipcode->text().toULong());
-  u->setHomepage(nfoHomepage->text());
-  u->setAbout(mleAboutMsg->text().local8Bit());
-  u->setEnableSave(true);
-  u->saveExtInfo();
+  u->SetAge(atol(nfoAge->text()));
+  u->SetGender(cmbSex->currentItem());
+  u->SetPhoneNumber(nfoPhone->text());
+  u->SetZipCode(nfoZipcode->text().toULong());
+  u->SetHomepage(nfoHomepage->text());
+  u->SetAbout(mleAboutMsg->text().local8Bit());
+  u->SetEnableSave(true);
+  u->SaveExtInfo();
   gUserManager.DropUser(u);
 }
 
@@ -948,7 +955,7 @@ void ICQFunctions::callFcn()
      if (rdbMsg->isChecked())  // send a message
      {
         ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-        u->setSendServer(chkSendServer->isChecked());
+        u->SetSendServer(chkSendServer->isChecked());
         gUserManager.DropUser(u);
         m_sProgressMsg = tr("Sending msg ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
@@ -1090,7 +1097,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       btnCancel->setText(tr("Cancel"));
       chkSendServer->setChecked(true);
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-      u->setSendServer(true);
+      u->SetSendServer(true);
       gUserManager.DropUser(u);
       if (e->m_nSubCommand == ICQ_CMDxSUB_MSG)
       {
@@ -1123,7 +1130,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       {
         char status[32];
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        u->getStatusStr(status);
+        u->StatusStr(status);
         msg = tr("%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]")
                  .arg(u->GetAlias()).arg(status).arg(u->AutoResponse());
         InformUser(this, msg);
@@ -1183,7 +1190,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       else
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        if (u->isAway() && u->ShowAwayMsg()) {
+        if (u->Away() && u->ShowAwayMsg()) {
           gUserManager.DropUser(u);
           (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
         }

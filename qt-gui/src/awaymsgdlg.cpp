@@ -73,7 +73,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 {
   char s[32];
   m_nStatus = _status;
-  ICQUser::StatusStr(m_nStatus, false, s);
+  ICQUser::StatusToStatusStr(m_nStatus, false, s);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   setCaption(QString(tr("Set %1 Response for %2"))
@@ -97,7 +97,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 void AwayMsgDlg::show()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short m_nStatus = o->getStatus();
+  unsigned short m_nStatus = o->Status();
   gUserManager.DropOwner();
 
   SelectAutoResponse(m_nStatus);

@@ -214,13 +214,13 @@ void CLicqConsole::MenuStatus(char *_szArg)
 
   // maintain the current extended status flags (we aren't changing any of
   // them in this function so it's ok)
-  nStatus |= o->getStatusFlags();
+  nStatus |= o->StatusFlags();
 
   // disable combo box, flip pixmap...
   //lblStatus->setEnabled(false);
 
   // call the right function
-  bool b = o->getStatusOffline();
+  bool b = o->StatusOffline();
   gUserManager.DropOwner();
   if (b)
      licqDaemon->icqLogon(nStatus);
@@ -374,7 +374,7 @@ void CLicqConsole::MenuUser(char *_szArg)
   {
     if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
     {
-      nUin = pUser->getUin();
+      nUin = pUser->Uin();
       FOR_EACH_USER_BREAK;
     }
   }

@@ -96,7 +96,7 @@ void CLicqConsole::PrintStatus(void)
   werase(winStatus->Win());
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumOwnerEvents = o->getNumMessages();
+  unsigned short nNumOwnerEvents = o->NewMessages();
   gUserManager.DropOwner();
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
@@ -121,7 +121,7 @@ void CLicqConsole::PrintStatus(void)
     strcpy(szLastUser, "<None>");
 
   o = gUserManager.FetchOwner(LOCK_R);
-  o->getStatusStr(szStatusStr);
+  o->StatusStr(szStatusStr);
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winStatus->Win(), 0, 0, ACS_HLINE, COLS);
   mvwaddch(winStatus->Win(), 0, COLS - USER_WIN_WIDTH - 1, ACS_BTEE);
@@ -130,7 +130,7 @@ void CLicqConsole::PrintStatus(void)
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
   winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", COLOR_YELLOW_BLUE,
                      A_BOLD, COLOR_WHITE_BLUE, o->GetAlias(), COLOR_YELLOW_BLUE,
-                     COLOR_WHITE_BLUE, o->getUin(), COLOR_YELLOW_BLUE,
+                     COLOR_WHITE_BLUE, o->Uin(), COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, szStatusStr, COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
                      COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE, COLOR_CYAN_BLUE,
@@ -224,7 +224,7 @@ void CLicqConsole::PrintUsers(void)
         (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
       FOR_EACH_USER_CONTINUE
 
-    if (i == 0 && m_bShowDividers && !pUser->getStatusOffline())
+    if (i == 0 && m_bShowDividers && !pUser->StatusOffline())
     {
       int yp, xp;
       getyx(winUsers->Win(), yp, xp);
@@ -236,7 +236,7 @@ void CLicqConsole::PrintUsers(void)
       for (j = 19; j < USER_WIN_WIDTH; j++) waddch(winUsers->Win(), ACS_HLINE);
       waddch(winUsers->Win(), '\n');
     }
-    if (!bOfflineUsers && pUser->getStatusOffline())
+    if (!bOfflineUsers && pUser->StatusOffline())
     {
       if (!m_bShowOffline)
       {
@@ -258,7 +258,7 @@ void CLicqConsole::PrintUsers(void)
     }
     const struct SColorMap *color = NULL;
 
-    switch(pUser->getStatus())
+    switch(pUser->Status())
     {
     case ICQ_STATUS_ONLINE:
       pUser->usprintf(szLine, m_szOnlineFormat);
@@ -273,12 +273,12 @@ void CLicqConsole::PrintUsers(void)
       color = m_cColorAway;
       break;
     }
-    if (pUser->getIsNew())
+    if (pUser->NewUser())
       color = m_cColorNew;
     winUsers->wprintf("%A%C%c%s\n",
                      color->nAttr,
                      color->nColor,
-                     pUser->getNumMessages() > 0 ? '*' : ' ',
+                     pUser->NewMessages() > 0 ? '*' : ' ',
                      szLine);
 
     if (i >= winUsers->Rows() - 3) FOR_EACH_USER_BREAK;

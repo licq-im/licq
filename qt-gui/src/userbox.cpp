@@ -75,7 +75,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex, QListView *parent)
   }
   else
   {
-    m_nUin = _cUser->getUin();
+    m_nUin = _cUser->Uin();
     setGraphics(_cUser);
   }
 
@@ -88,7 +88,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    static char sTemp[128];
 
    m_sPrefix = "1";
-   switch (u->getStatus())
+   switch (u->Status())
    {
    case ICQ_STATUS_FREEFORCHAT:
       m_pIcon = s_pFFC;
@@ -125,16 +125,16 @@ void CUserViewItem::setGraphics(ICQUser *u)
       break;
    }
 
-   if (u->getStatusInvisible())
+   if (u->StatusInvisible())
    {
       m_pIcon = s_pPrivate;
       m_cFore = s_cAway;
    }
 
-   if (u->getNumMessages() > 0)
+   if (u->NewMessages() > 0)
    {
      m_pIcon = NULL;
-     for (unsigned short i = 0; i < u->getNumMessages(); i++)
+     for (unsigned short i = 0; i < u->NewMessages(); i++)
      {
        switch(u->GetEvent(i)->SubCommand())
        {
@@ -160,7 +160,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
      }
    }
 
-   if (u->getIsNew())
+   if (u->NewUser())
       m_cFore = s_cNew;
 
    m_cBack = s_cBack;
@@ -174,7 +174,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
      if (u->InvisibleList()) m_bStrike = true;
      if (u->VisibleList()) m_bItalic = true;
    }
-   if (u->getNumMessages() > 0) m_nWeight = QFont::Bold;
+   if (u->NewMessages() > 0) m_nWeight = QFont::Bold;
 
    CUserView *v = (CUserView *)listView();
    for (unsigned short i = 0; i < v->colInfo.size(); i++)

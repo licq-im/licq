@@ -474,7 +474,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
       {
         char status[32];
         u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
-        u->getStatusStr(status);
+        u->StatusStr(status);
         win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
                      u->GetAlias(), status, u->AutoResponse());
         gUserManager.DropUser(u);
@@ -530,7 +530,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
       else
       {
         u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
-        if (u != NULL && u->isAway() && u->ShowAwayMsg())
+        if (u != NULL && u->Away() && u->ShowAwayMsg())
         {
           win->wprintf("%s\n", u->AutoResponse());
         }
@@ -552,7 +552,11 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win)
   }
 
   win->fProcessInput = &CLicqConsole::InputCommand;
-  if (win->data != NULL) delete win->data;
+  if (win->data != NULL)
+  {
+    delete win->data;
+    win->data = NULL;
+  }
   win->state = STATE_COMMAND;
 
 }
@@ -957,21 +961,19 @@ char *CLicqConsole::CurrentGroupName(void)
 void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
 {
   // Print the users info to the main window
-  struct UserBasicInfo ubi;
-  struct UserExtInfo uei;
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  u->getBasicInfo(ubi);
-  u->getExtInfo(uei);
-  gUserManager.DropUser(u);
+  char buf[32];
 
   PrintBoxTop("User Info", COLOR_WHITE, 50);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("Alias: %s (%s)", ubi.alias, ubi.uin);
+  winMain->wprintf("Alias: %s (%ld)", u->GetAlias(), u->Uin());
   PrintBoxRight(50);
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf("Status: %s", ubi.status);
+  winMain->wprintf("Status: %s", u->StatusStr(buf));
   PrintBoxRight(50);
   PrintBoxBottom(50);
+
+  gUserManager.DropUser(u);
 }
 
 
@@ -981,9 +983,9 @@ void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
 void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-  if (u->getIsNew()) u->setIsNew(false);
+  if (u->NewUser()) u->SetNewUser(false);
 
-  if (u->getNumMessages() > 0)
+  if (u->NewMessages() > 0)
   {
     // Fetch the most recent event
     CUserEvent *e = u->GetEvent(0);
@@ -1065,7 +1067,11 @@ void CLicqConsole::InputRemove(int cIn)
                        m_cColorInfo->nAttr);
     }
     winMain->fProcessInput = &CLicqConsole::InputCommand;
-    if (winMain->data != NULL) delete winMain->data;
+    if (winMain->data != NULL)
+    {
+      delete winMain->data;
+      winMain->data = NULL;
+    }
     winMain->state = STATE_COMMAND;
     break;
 
@@ -1255,7 +1261,11 @@ void CLicqConsole::InputMessage(int cIn)
     if (*sz == ',')
     {
       winMain->fProcessInput = &CLicqConsole::InputCommand;
-      if (winMain->data != NULL) delete winMain->data;
+      if (winMain->data != NULL)
+      {
+        delete winMain->data;
+        winMain->data = NULL;
+      }
       winMain->state = STATE_COMMAND;
       winMain->wprintf("%C%AMessage aborted.\n", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
@@ -1288,6 +1298,7 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       delete winMain->data;
+      winMain->data = NULL;
       winMain->state = STATE_COMMAND;
     }
     break;
@@ -1345,6 +1356,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
     }
     delete winMain->data;
+    winMain->data = NULL;
     winMain->fProcessInput = &CLicqConsole::InputCommand;
     winMain->state = STATE_COMMAND;
     break;
@@ -1411,7 +1423,11 @@ void CLicqConsole::InputUrl(int cIn)
     if (*sz == ',')
     {
       winMain->fProcessInput = &CLicqConsole::InputCommand;
-      if (winMain->data != NULL) delete winMain->data;
+      if (winMain->data != NULL)
+      {
+        delete winMain->data;
+        winMin->data = NULL;
+      }
       winMain->state = STATE_COMMAND;
       winMain->wprintf("%C%AURL aborted.\n",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
@@ -1445,6 +1461,7 @@ void CLicqConsole::InputUrl(int cIn)
     {
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       delete winMain->data;
+      winMain->data = NULL;
       winMain->state = STATE_COMMAND;
     }
     break;

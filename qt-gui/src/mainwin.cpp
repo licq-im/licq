@@ -762,9 +762,9 @@ void CMainWindow::updateUserWin(void)
         (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
       FOR_EACH_USER_CONTINUE
 
-    if (i == 0 && m_bShowDividers && !pUser->getStatusOffline())
+    if (i == 0 && m_bShowDividers && !pUser->StatusOffline())
       (void) new CUserViewItem(NULL, -1, userView);
-    if (!bOfflineUsers && pUser->getStatusOffline())
+    if (!bOfflineUsers && pUser->StatusOffline())
     {
       if (!m_bShowOffline)
         FOR_EACH_USER_BREAK
@@ -787,7 +787,7 @@ void CMainWindow::updateEvents(void)
   QString szCaption;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumOwnerEvents = o->getNumMessages();
+  unsigned short nNumOwnerEvents = o->NewMessages();
   gUserManager.DropOwner();
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
@@ -897,8 +897,8 @@ void CMainWindow::updateStatus()
    char *theColor = skin->colors.offline;
    char sStatus[32];
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   o->getStatusStr(sStatus);
-   unsigned long status = o->getStatus();
+   o->StatusStr(sStatus);
+   unsigned long status = o->Status();
    switch (status)
    {
    case ICQ_STATUS_OFFLINE:
@@ -916,7 +916,7 @@ void CMainWindow::updateStatus()
      theColor = skin->colors.away;
      break;
    }
-   mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->getStatusInvisible());
+   mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->StatusInvisible());
    gUserManager.DropOwner();
 
    lblStatus->setText(sStatus);
@@ -956,15 +956,15 @@ void CMainWindow::changeStatus(int id)
   {
     mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
                               !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
-    if (o->getStatusOffline())
+    if (o->StatusOffline())
     {
       gUserManager.DropOwner();
       return;
     }
     if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
-       newStatus = o->getStatusFull() | ICQ_STATUS_FxPRIVATE;
+       newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
     else
-       newStatus = o->getStatusFull() & (~ICQ_STATUS_FxPRIVATE);
+       newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
   }
   else
   {
@@ -984,13 +984,13 @@ void CMainWindow::changeStatus(int id)
 
   // maintain the current extended status flags (we aren't changing any of
   // them in this function so it's ok)
-  newStatus |= o->getStatusFlags();
+  newStatus |= o->StatusFlags();
 
   // disable combo box, flip pixmap...
   //lblStatus->setEnabled(false);
 
   // call the right function
-  bool b = o->getStatusOffline();
+  bool b = o->StatusOffline();
   gUserManager.DropOwner();
   if (b)
      licqDaemon->icqLogon(newStatus);
@@ -1023,7 +1023,7 @@ void CMainWindow::callMsgFunction()
 
   // Do system messages first
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumMsg = o->getNumMessages();
+  unsigned short nNumMsg = o->NewMessages();
   gUserManager.DropOwner();
   if (nNumMsg > 0)
   {
@@ -1035,8 +1035,8 @@ void CMainWindow::callMsgFunction()
   unsigned long nUin = 0;
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (pUser->getNumMessages() > 0)
-      nUin = pUser->getUin();
+    if (pUser->NewMessages() > 0)
+      nUin = pUser->Uin();
   }
   FOR_EACH_USER_END
   if (nUin != 0) callFunction(0, true, nUin);
@@ -1117,7 +1117,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, bool isUser, unsigned long _nUi
   if (!isUser)
   {
     u = gUserManager.FetchOwner(LOCK_W);
-    _nUin = u->getUin();
+    _nUin = u->Uin();
   }
   else if (_nUin == 0)
   {
@@ -1134,7 +1134,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, bool isUser, unsigned long _nUi
   {
     // set default function to read or send depending on whether or not
     // there are new messages
-    if (fcn < 0) fcn = (u->getNumMessages() == 0 ? 1 : 0);
+    if (fcn < 0) fcn = (u->NewMessages() == 0 ? 1 : 0);
     if (u->fcnDlg == NULL)
     {
        f = new ICQFunctions(licqDaemon, licqSigMan, _nUin, !isUser, autoClose);
@@ -1259,7 +1259,7 @@ void CMainWindow::removeUserFromList()
 {
   ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
   if (u == NULL) return;
-  unsigned long nUin = u->getUin();
+  unsigned long nUin = u->Uin();
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
                      .arg(QString::fromLocal8Bit(u->GetAlias()))
                      .arg(nUin) );
@@ -1276,7 +1276,7 @@ void CMainWindow::removeUserFromGroup()
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
     if (u == NULL) return;
-    unsigned long nUin = u->getUin();
+    unsigned long nUin = u->Uin();
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
                        .arg(QString::fromLocal8Bit(u->GetAlias()))
@@ -1389,7 +1389,7 @@ void CMainWindow::aboutBox()
                   "%3 (%4)\n"
                   "%5 contacts.").arg(licqDaemon->Version())
                    .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))
-                   .arg(o->getUin()).arg(gUserManager.NumUsers())  );
+                   .arg(o->Uin()).arg(gUserManager.NumUsers())  );
   gUserManager.DropOwner();
   InformUser(this, about);
 }
@@ -1487,20 +1487,19 @@ void CMainWindow::autoAway()
 {
 #ifdef USE_SCRNSAVER
   static XScreenSaverInfo *mit_info = NULL;
-  static bool bXScreenSaver = true;
   static bool bAutoAway = false;
   static bool bAutoNA = false;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short status = o->getStatus();
+  unsigned short status = o->Status();
   gUserManager.DropOwner();
 
   if (mit_info == NULL) mit_info = XScreenSaverAllocInfo ();
-  bXScreenSaver = XScreenSaverQueryInfo (x11Display(), DefaultRootWindow (x11Display()), mit_info);
-  if (!bXScreenSaver)
+  if (!XScreenSaverQueryInfo (x11Display(), DefaultRootWindow (x11Display()), mit_info))
   {
     gLog.Warn("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
               L_WARNxSTR);
+    autoAwayTimer.stop();
     return;
   }
   Time idleTime = mit_info->idle;
