@@ -529,8 +529,8 @@ void UserViewEvent::slot_btnRead2()
 
     case ICQ_CMDxSUB_CHAT:  // accept a chat request
     {
-      btnRead1->setEnabled(false);
       btnRead2->setEnabled(false);
+      btnRead3->setEnabled(false);
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
       ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
@@ -548,8 +548,8 @@ void UserViewEvent::slot_btnRead2()
 
     case ICQ_CMDxSUB_FILE:  // accept a file transfer
     {
-      btnRead1->setEnabled(false);
       btnRead2->setEnabled(false);
+      btnRead3->setEnabled(false);
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
       CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
       if (fileDlg->ReceiveFiles())
@@ -587,8 +587,8 @@ void UserViewEvent::slot_btnRead3()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("Chat"), this);
       if (r->exec())
       {
-        btnRead1->setEnabled(false);
         btnRead2->setEnabled(false);
+        btnRead3->setEnabled(false);
         server->icqChatRequestRefuse(m_nUin, r->RefuseMessage().local8Bit(),
            m_xCurrentReadEvent->Sequence());
       }
@@ -601,8 +601,8 @@ void UserViewEvent::slot_btnRead3()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("File Transfer"), this);
       if (r->exec())
       {
-        btnRead1->setEnabled(false);
         btnRead2->setEnabled(false);
+        btnRead3->setEnabled(false);
         server->icqFileTransferRefuse(m_nUin, r->RefuseMessage().local8Bit(),
            m_xCurrentReadEvent->Sequence());
       }
