@@ -71,8 +71,8 @@ SearchUserView::SearchUserView(QWidget *parent)
 
 SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
 {
-  char szStatus[8];
-  char cGender;
+  QString qsStatus;
+  QString qsGender;
   QString qsAge;
   
   uinVal = s->Uin();
@@ -84,30 +84,30 @@ SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
   switch (s->Status())
   {
     case 0:
-      strcpy(szStatus, "Offline");
+      qsStatus = SearchUserView::tr("Offline");
       break;
    case 1:
-      strcpy(szStatus, "Online");
+      qsStatus = SearchUserView::tr("Online");
       break;
    case 2:
    default:
-      strcpy(szStatus, "Unknown");
+      qsStatus = SearchUserView::tr("Unknown");
   }
-  setText(4, QString::fromLocal8Bit(szStatus));
+  setText(4, qsStatus);
   
   switch (s->Gender())
   {
     case 1:
-      cGender = 'F';
+      qsGender = SearchUserView::tr("F");
       break;
     case 2:
-      cGender = 'M';
+      qsGender = SearchUserView::tr("M");
       break;
     default:			// unknown
-      cGender = '-';
+      qsGender = SearchUserView::tr("?");
   }
-  qsAge = (s->Age()) ? QString::number(s->Age()) : QString(QChar('-'));
-  setText(5, QString::fromLocal8Bit(QString(QChar(cGender)) + '/' + qsAge));
+  qsAge = (s->Age()) ? QString::number(s->Age()) : QChar('?');
+  setText(5, qsGender + '/' + qsAge);
 }
 
 
