@@ -124,11 +124,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadStr("Rejects", temp, "log.rejects");
   if (strcmp(temp, "none") != 0)
   {
-    m_szRejectFile = new char[256];
-    snprintf(m_szRejectFile, sizeof(m_szRejectFile), "%s/%s", BASE_DIR, temp);
+    m_szRejectFile = new char[MAX_FILENAME_LEN];
+    snprintf(m_szRejectFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, temp);
   }
   else
     m_szRejectFile = NULL;
+
 
   // Error log file
   licqConf.ReadStr("Errors", m_szErrorFile, "licq.log");
@@ -457,8 +458,8 @@ const char *CICQDaemon::Version()
 //-----ICQ::destructor----------------------------------------------------------
 CICQDaemon::~CICQDaemon()
 {
-  delete []m_szUrlViewer;
-  delete []m_szRejectFile;
+  if(m_szUrlViewer)   delete []m_szUrlViewer;
+  if(m_szRejectFile)  delete []m_szRejectFile;
 }
 
 
