@@ -125,8 +125,9 @@ void CLicqConsole::MenuPlugins(char *_szArg)
   for (it = l.begin(); it != l.end(); it++)
   {
     PrintBoxLeft();
-    winMain->wprintf("[%3d] %s v%s (%s)", (*it)->Id(), (*it)->Name(),
-                     (*it)->Version(), (*it)->Status());
+    winMain->wprintf("[%3d] %s v%s (%s %s) - %s", (*it)->Id(), (*it)->Name(),
+                     (*it)->Version(), (*it)->BuildDate(),
+                     (*it)->BuildTime(), (*it)->Status());
     PrintBoxRight(70);
   }
   PrintBoxBottom(70);
