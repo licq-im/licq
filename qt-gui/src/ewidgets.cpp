@@ -583,7 +583,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
 
   // QTextEdit::append adds a paragraph break so we don't have to.
-  s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b><br>%s</font>",
+  s.sprintf("<font color=\"%s\"><b>%s%s [%c%c%c%c] %s:</b></font>",
             color,
             e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
               (EventDescription(e) + " ").utf8().data(),
@@ -592,16 +592,16 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
-            contactName.utf8().data(),
+            contactName.utf8().data()
+           );
+  append(s);
+  s.sprintf("<font color=\"%s\">%s</font>",
+            color,
             messageText.utf8().data()
            );
-#if QT_VERSION < 0x030005
-  // This Qt version has a bug, causing QTextEdit::append()
-  // not to add a paragraph break, so we simulate one.
-  // Yes, we don't use <p> on purpose, since <p> is buggy in those versions.
-  s += "<br><br>";
-#endif
+  append(s);
 #else
+  QString messageText = codec->toUnicode(e->Text());
   s.sprintf("%c%s%s [%c%c%c%c] %s:\n%s",
             (e->Direction() == D_RECEIVER) ? '\001' : '\002',
             e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
@@ -612,11 +612,10 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
             contactName.utf8().data(),
-            codec->toUnicode(e->Text()).utf8().data()
+            messageText.utf8().data()
            );
-#endif
-
   append(s);
+#endif
 #if QT_VERSION < 300
   repaint(false);
 #endif 
