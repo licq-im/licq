@@ -54,7 +54,7 @@ void CMSNPacket::InitBuffer()
   m_pBuffer->Pack(buf, strlen(buf));
 }
 
-CMSNPayloadPacket::CMSNPayloadPacket() : CMSNPacket()
+CMSNPayloadPacket::CMSNPayloadPacket(bool _bAck) : CMSNPacket(), m_bAck(_bAck)
 {
   m_nPayloadSize = 0;
 }
@@ -65,7 +65,8 @@ void CMSNPayloadPacket::InitBuffer()
     return;
   char buf[32];
   
-  m_nSize = snprintf(buf, 32, "%s %lu A %lu\r\n", m_szCommand, m_nSequence, m_nPayloadSize);
+  m_nSize = snprintf(buf, 32, "%s %lu %c %lu\r\n", m_szCommand, m_nSequence,
+    m_bAck ? 'A' : 'N', m_nPayloadSize);
   m_nSize += m_nPayloadSize;
   
   m_pBuffer = new CMSNBuffer(m_nSize);
@@ -296,7 +297,7 @@ CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const char *szSession, const char *szCookie,
   m_pBuffer->Pack("\r\n", 2);
 }
 
-CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket()
+CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket(true)
 {
   m_szCommand = strdup("MSG");
   char szParams[] = "MIME-Version: 1.0\r\n"
@@ -340,4 +341,21 @@ CPS_MSNCall::CPS_MSNCall(char *szUser) : CMSNPacket()
   
   m_pBuffer->Pack(m_szUser, strlen(m_szUser));
   m_pBuffer->Pack("\r\n", 2);
+}
+
+CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
+  : CMSNPayloadPacket(false)
+{
+  m_szCommand = strdup("MSG");
+  char szParams1[] = "MIME-Version: 1.0\r\n"
+    "Content-Type: text/x-msmsgscontrol\r\n"
+    "TypingUser: ";
+  char szParams2[] = "\r\n\r\n\r\n";    
+  m_nPayloadSize = strlen(szParams1) + strlen(szParams2) +
+    strlen(szEmail);
+  CMSNPayloadPacket::InitBuffer();  
+
+  m_pBuffer->Pack(szParams1, strlen(szParams1));
+  m_pBuffer->Pack(szEmail, strlen(szEmail));
+  m_pBuffer->Pack(szParams2, strlen(szParams2));
 }

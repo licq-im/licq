@@ -49,9 +49,10 @@ typedef list<SBuffer *> BufferList;
 
 struct SStartMessage
 {
+  CMSNPacket *m_pPacket;
+  ICQEvent *m_pEvent;
+  CICQSignal *m_pSignal;
   char *m_szUser;
-  char *m_szMsg;
-  pthread_t m_tPlugin;
 };
 
 typedef list<SStartMessage *> StartList;
@@ -83,8 +84,9 @@ private:
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
   void MSNSendMessage(char *, char *, pthread_t);
+  void MSNSendTypingNotification(char *);
   void MSNChangeStatus(unsigned long);
- 
+  
   
   // Internal functions
   int HashValue(int n) { return n % 211; }

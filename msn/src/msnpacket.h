@@ -57,7 +57,7 @@ protected:
 class CMSNPayloadPacket : public CMSNPacket
 {
 public:
-  CMSNPayloadPacket();
+  CMSNPayloadPacket(bool);
   virtual ~CMSNPayloadPacket() { }
   
   void InitBuffer();
@@ -65,6 +65,7 @@ public:
 protected:
 
   unsigned long m_nPayloadSize;
+  bool m_bAck;
 };
 
 class CPS_MSNVersion : public CMSNPacket
@@ -205,6 +206,12 @@ public:
   
 protected:
   char *m_szUser;
+};
+
+class CPS_MSNTypingNotification : public CMSNPayloadPacket
+{
+public:
+  CPS_MSNTypingNotification(const char *);
 };
 
 #endif // __MSNPACKET_H

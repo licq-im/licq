@@ -297,9 +297,16 @@ void CMSN::ProcessSignal(CSignal *s)
     case PROTOxLOGOFF:
     case PROTOxADD_USER:
     case PROTOxREM_USER:
+    
     case PROTOxSENDxTYPING_NOTIFICATION:
+    {
+      CTypingNotificationSignal *sig =
+        static_cast<CTypingNotificationSignal *>(s);
+      if (sig->Active())
+        MSNSendTypingNotification(sig->Id());
       break;
-
+    }
+    
     case PROTOxSENDxMSG:
     {
       CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
@@ -476,7 +483,15 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       
       if (pStart)
       {
-        MSNSendMessage(pStart->m_szUser, pStart->m_szMsg, pStart->m_tPlugin);
+        if (pStart->m_pEvent)
+          m_pEvents.push_back(pStart->m_pEvent);
+        if (pStart->m_pSignal)
+          m_pDaemon->PushPluginSignal(pStart->m_pSignal);
+        
+        string strUser(pStart->m_szUser);
+        Send_SB_Packet(strUser, pStart->m_pPacket, false);
+        
+        free(pStart->m_szUser);
         delete pStart;
       }
     }
@@ -873,16 +888,16 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   int nSockDesc = u->SocketDesc(ICQ_CHNxNONE);
   gUserManager.DropUser(u);
   
+  CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
+  CEventMsg *m = new CEventMsg(_szMsg, 0, TIME_NOW, 0);
+  m->m_eDir = D_SENDER;
+  ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
+  e->thread_plugin = _tPlugin;  
+  CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
+  
   if (nSockDesc > 0)
   {
-    CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
-    CEventMsg *m = new CEventMsg(_szMsg, 0, TIME_NOW, 0);
-    m->m_eDir = D_SENDER;
-    ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
     m_pEvents.push_back(e);
-    
-    CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
-    e->thread_plugin = _tPlugin;
     m_pDaemon->PushPluginSignal(s);
       
     Send_SB_Packet(strUser, pSend, false);
@@ -890,16 +905,45 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   else
   {
     // Must connect to the SB and call the user
-    CMSNPacket *pSend = new CPS_MSNXfr();
+    CMSNPacket *pSB = new CPS_MSNXfr();
       
     SStartMessage *p = new SStartMessage;
+    p->m_pPacket = pSend;
+    p->m_pEvent = e;
+    p->m_pSignal = s;
     p->m_szUser = strdup(_szUser);
-    p->m_szMsg = strdup(_szMsg);
-    p->m_tPlugin = _tPlugin;
     m_lStart.push_back(p);
    
-    SendPacket(pSend);
+    SendPacket(pSB);
   }  
+}
+
+void CMSN::MSNSendTypingNotification(char *_szUser)
+{
+  ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
+  if (!u) return;
+  int nSockDesc = u->SocketDesc(ICQ_CHNxNONE);
+  gUserManager.DropUser(u);
+  
+  string strUser(_szUser);
+  CMSNPacket *pSend = new CPS_MSNTypingNotification(m_szUserName);
+    
+  if (nSockDesc > 0)
+    Send_SB_Packet(strUser, pSend, false);
+  else
+  {
+    // Must connect to the SB and call the user
+    CMSNPacket *pSB = new CPS_MSNXfr();
+      
+    SStartMessage *p = new SStartMessage;
+    p->m_pPacket = pSend;
+    p->m_pEvent = 0;
+    p->m_pSignal = 0;
+    p->m_szUser = strdup(_szUser);
+    m_lStart.push_back(p);
+   
+    SendPacket(pSB);    
+  }
 }
 
 void CMSN::MSNChangeStatus(unsigned long _nStatus)
