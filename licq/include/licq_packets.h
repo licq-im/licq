@@ -146,6 +146,7 @@ protected:
   unsigned long  m_nTcpVersion;
 
   char *m_szRealIpOffset;
+  char *m_szLocalPortOffset;
 };
 
 

@@ -625,6 +625,7 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
 #if ICQ_VERSION == 4 || ICQ_VERSION == 5
   buffer->PackUnsignedLong(time(NULL));
 #endif
+  m_szLocalPortOffset = buffer->getDataPosWrite();
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackString(szPassword);
   buffer->PackUnsignedLong(nUnknown);
@@ -682,6 +683,8 @@ CBuffer *CPU_Logon::Finalize(INetSocket *s)
 
   buffer->setDataPosWrite(m_szRealIpOffset);
   buffer->PackUnsignedLong(s_nRealIp);
+  buffer->setDataPosWrite(m_szLocalPortOffset);
+  buffer->PackUnsignedShort(s->LocalPort());
   buffer->setDataPosWrite(sz);
 
   return CPacketUdp::Finalize(s);
