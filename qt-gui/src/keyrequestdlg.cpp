@@ -158,13 +158,6 @@ void KeyRequestDlg::closeConnection()
   icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_nUin);
 }
 
-void KeyRequestDlg::done(int r)
-{
-  QDialog::done(r);
-  QTimer::singleShot(0, this, SLOT(close()));
-}
-
-
 // -----------------------------------------------------------------------------
 
 void KeyRequestDlg::doneEvent(ICQEvent *e)

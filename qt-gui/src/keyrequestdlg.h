@@ -44,7 +44,6 @@ protected:
   CICQEventTag *icqEventTag;
 
 protected slots:
-  virtual void done(int);
   void startSend();
   void doneEvent(ICQEvent *);
   void openConnection();
