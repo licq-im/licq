@@ -2900,9 +2900,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       // Let's update server with local info!
       CheckExport();
       
-      // Let's see who is online now
-      icqUpdateContactList();
-      
       break;
     } // case rost reply
 
