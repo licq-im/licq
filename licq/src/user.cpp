@@ -2148,9 +2148,14 @@ ICQOwner::ICQOwner()
 
   m_fConf.SetFileName(filename);
   LoadInfo();
-  m_fConf.ReadNum("Uin", m_nUin);
-  m_fConf.ReadStr("Password", szTemp);
+  m_fConf.ReadNum("Uin", m_nUin, 0);
+  m_fConf.ReadStr("Password", szTemp, "");
   SetPassword(szTemp);
+  if (szTemp[0] == '\0' && m_nUin != 0)
+  {
+    gLog.Error("%sNo password entered.  Edit ~/.licq/owner.uin and fill in the password field.\n",
+     L_ERRORxSTR);
+  }
   m_fConf.ReadBool("WebPresence", m_bWebAware, false);
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);

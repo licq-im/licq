@@ -132,7 +132,7 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
 {
   if (m_bLoggingOn)
   {
-    gLog.Warn("%sAttempt to logon while already logged or logging on.\n", L_WARNxSTR);
+    gLog.Warn("%sAttempt to logon while already logged or logging on, logoff and try again.\n", L_WARNxSTR);
     return 0;
   }
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -140,6 +140,12 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
   {
     gUserManager.DropOwner();
     gLog.Error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
+    return 0;
+  }
+  if (o->Password()[0] == '\0')
+  {
+    gUserManager.DropOwner();
+    gLog.Error("%sNo password set.  Edit ~/.licq/owner.uin and fill in the password field.\n", L_ERRORxSTR);
     return 0;
   }
   char *passwd = strdup(o->Password());
