@@ -75,7 +75,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_container_add(GTK_CONTAINER(scroll_bar), contact_list);
 	gtk_box_pack_start(GTK_BOX(vertical_box), scroll_bar, 
 			   TRUE, TRUE, 0); 
-	contact_list_refresh();
+//	contact_list_refresh();
 
 	/* Add in the event box for the status bar */
 	event_box = gtk_event_box_new();
@@ -90,9 +90,6 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_signal_connect(GTK_OBJECT(event_box), "button_press_event",
 			   GTK_SIGNAL_FUNC(status_popup_menu),
 			   GTK_OBJECT(_status_menu));
-
-	/* Refresh the status */
-	status_bar_refresh();
 
 	/* The event box for new messages */
 	event_box2 = gtk_event_box_new();
@@ -115,7 +112,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 			   FALSE, FALSE, 0);
 
 	/* Refresh the system status */
-	system_status_refresh();
+//	system_status_refresh();
 
 	/* Show the widgets */
 	gtk_widget_show(scroll_bar);

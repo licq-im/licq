@@ -63,7 +63,7 @@ void do_pixmaps()
         style = gtk_widget_get_style(main_window);
  
         online = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                              &style->bg[GTK_STATE_NORMAL],
+                                              NULL,
                                               (gchar **)online_xpm);
  
         away = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
@@ -119,8 +119,32 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
 	g_free(result);
 }
 
+void owner_function(ICQEvent *event)
+{
+	/* For the main window, if it's a new registered users */
+	const gchar *title = g_strdup_printf("%ld", gUserManager.OwnerUin());
+
+	switch(event->Command())
+	{
+	case ICQ_CMDxSND_REGISTERxUSER:
+		if(event->Result() == EVENT_SUCCESS)
+		{
+			wizard_message(5);
+			main_window = main_window_new(title, 445, 200);
+			main_window_show();
+			system_status_refresh();
+			dialog_close(NULL, register_window);
+		}
+		else
+		{
+			wizard_message(4);
+		}
+		break;
+	}
+}
+
 void user_function(ICQEvent *event)
-{	g_print("user_function()\n");
+{
 	GSList *temp = catcher;
 	struct e_tag_data *etd;
 
@@ -142,7 +166,7 @@ void user_function(ICQEvent *event)
 }
 
 void finish_event(struct e_tag_data *etd, ICQEvent *event)
-{	g_print("finish_event()\n");
+{
 	/* Make sure we have the right event and event tag */
 	if( (etd->e_tag == NULL && event != NULL) ||
 	    (etd->e_tag != NULL && !etd->e_tag->Equals(event)) )
@@ -268,7 +292,7 @@ void finish_away(ICQEvent *event)
 /*************** Finishing Signals *****************************/
 
 void finish_info(CICQSignal *signal)
-{	g_print("finish_info()\n");
+{
 	/* Only do the info.. */
 	unsigned long type = signal->SubSignal();
 	

@@ -77,8 +77,9 @@ void pipe_signal(CICQSignal *sig)
 	  {
 		if(sig->SubSignal() == USER_EVENTS)
 			convo_recv(sig->Uin());
+		else
+			finish_info(sig);
 		contact_list_refresh();
-		finish_info(sig);
 		break;
 	  }
 
@@ -104,7 +105,10 @@ void pipe_event(ICQEvent *event)
 		user_function(event);
 		break;
 	case ICQ_CMDxSND_USERxLIST:
-		contact_list_refresh();
+	case ICQ_CMDxSND_REGISTERxUSER:
+		if(event->Command() != ICQ_CMDxSND_REGISTERxUSER)
+			contact_list_refresh();
+		owner_function(event);
 		break;
 
 	case ICQ_CMDxSND_SETxSTATUS:

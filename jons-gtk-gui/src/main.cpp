@@ -80,12 +80,23 @@ int LP_Main(CICQDaemon *icqdaemon)
 	gchar *title = 
 	   g_strdup_printf("%ld", owner->Uin());
 
+	/* Do we need to register a new user? */
+	if(owner->Uin() == 0)
+	{
+		registration_wizard();
+	}
+
+	else
+	{
+		main_window = main_window_new(title, 445, 200);	
+		main_window_show();
+		contact_list_refresh();
+		system_status_refresh();
+		status_bar_refresh();
+	}
+
 	gUserManager.DropOwner();
-
-	main_window = main_window_new(title, 445, 200);	
-
-	main_window_show();
-
+	
 	/* Start the timer for fixing that stupid problem w/ contact list */
 	timer.tv_sec = 0;
 	timer.tv_usec = 0;

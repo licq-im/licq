@@ -147,7 +147,7 @@ void convo_show(struct conversation *c)
 			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
 
 	/* No UIN can be entered unless c->spoof_button is checked */
-	gtk_entry_set_editable(GTK_ENTRY(c->spoof_uin), FALSE);
+	gtk_widget_set_sensitive(c->spoof_uin, FALSE);
 
 	/* Let's pack them now! */
 	gtk_box_pack_start(GTK_BOX(options_box), c->send_server,
@@ -225,7 +225,7 @@ void convo_show(struct conversation *c)
 
 void spoof_button_callback(GtkWidget *widget, struct conversation *c)
 {
-	gtk_editable_set_editable(GTK_EDITABLE(c->spoof_uin),
+	gtk_widget_set_sensitive(c->spoof_uin,
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->spoof_button)));
 }
 
@@ -373,12 +373,3 @@ gboolean convo_close(GtkWidget *widget, struct conversation *c)
 	catcher = g_slist_remove(catcher, c->etag);
 	return TRUE;
 }
-
-/*
-gboolean convo_delete_event(GtkWidget *widget, GdkEventAny *e, struct conversation *c)
-{
-	gtk_widget_destroy(c->window);
-	cnv = g_slist_remove(cnv, c);
-	return FALSE;
-}
-*/

@@ -271,7 +271,8 @@ extern GtkWidget *menu;
 extern GtkWidget *user_list_menu;
 
 
-/* Globals in pipe.cpp */
+/* Globals in register_user.cpp */
+extern GtkWidget *register_window;
 
 
 /* Globals in status.cpp */
@@ -320,13 +321,13 @@ extern void convo_send(GtkWidget *, struct conversation *);
 extern void convo_recv(gulong);
 extern void spoof_button_callback(GtkWidget *, struct conversation *);
 extern gboolean convo_close(GtkWidget *, struct conversation *);
-//extern gboolean convo_delete_event(GtkWidget *,GdkEventAny *,struct conversation *);
 
 
 /* Functions in extras.cpp */
 extern void do_colors();
 extern void do_pixmaps();
 extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
+extern void owner_function(ICQEvent *);
 extern void user_function(ICQEvent *);
 extern void finish_event(struct e_tag_data *, ICQEvent *);
 extern void finish_message(ICQEvent *);
@@ -376,6 +377,14 @@ extern void more_ok_callback(GtkWidget *, struct more_window *);
 extern void pipe_callback(gpointer, gint, GdkInputCondition);
 extern void pipe_signal(CICQSignal *);
 extern void pipe_event(ICQEvent *);
+
+
+/* Functions in register_user.cpp */
+extern void registration_wizard();
+extern void wizard_ok(GtkWidget *, gpointer);
+extern void wizard_cancel(GtkWidget *, gpointer);
+extern void current_button_callback(GtkWidget *, gpointer);
+extern void wizard_message(int);
 
 
 /* Functions in search_user_window.cpp */

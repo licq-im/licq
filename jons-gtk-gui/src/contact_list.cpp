@@ -64,9 +64,10 @@ void contact_list_refresh()
 {
 	gchar *blah[3];
 	gint num_users = 0;
+	GtkWidget *pix;
 
-	do_colors(); /* Make the colors */
-	do_pixmaps();    /* Make the pixmap */
+	do_colors(); 	/* Make the colors */
+	do_pixmaps();   /* Make the pixmap */
 
 	blah[0] = "";
 	blah[1] = "";
@@ -125,6 +126,8 @@ void contact_list_refresh()
  		 
 	  	  case ICQ_STATUS_ONLINE:
 		  {
+			pix = gtk_pixmap_new(online, bm);
+			gtk_widget_show(pix);
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
 					     1, online, bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
