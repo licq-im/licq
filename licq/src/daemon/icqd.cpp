@@ -665,6 +665,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConn
               e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     e->m_eResult = EVENT_ERROR;
     ProcessDoneEvent(e);
+    return NULL;
   }
 
   return (e);
@@ -718,9 +719,25 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EEventResult _eResult)
 
   e->m_eResult = _eResult;
 
-  // Check if we should cancel a processing thread
-  if (!pthread_equal(e->thread_send, pthread_self()))
-    pthread_cancel(e->thread_send);
+#if 0
+#if ICQ_VERSION == 5
+  if (_eResult == EVENT_CANCELLED && e->m_nSocket == m_nUDPSocketDesc)
+  {
+    pthread_mutex_lock(&mutex_runningevents);
+    ICQEvent *e2 = new ICQEvent(e);
+    e2->m_bCancelled = true;
+    e2->m_xPacket = e->m_xPacket;
+    m_lxRunningEvents.push_back(e2);
+    pthread_mutex_unlock(&mutex_runningevents);
+  }
+  else
+#endif
+#endif
+  {
+    // Check if we should cancel a processing thread
+    if (!pthread_equal(e->thread_send, pthread_self()))
+      pthread_cancel(e->thread_send);
+  }
 
   return (e);
 }
@@ -777,7 +794,14 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   // Determine this now as later we might have deleted the event
   unsigned short nCommand = e->m_nCommand;
   EEventResult eResult = e->m_eResult;
-
+/*
+  // Check if the event was cancelled (this is not how it should work)
+  if (e->m_bCancelled)
+  {
+    delete e;
+    return;
+  }
+*/
   // Write the event to the history file if appropriate
   if (e->m_xUserEvent != NULL &&
       e->m_eResult == EVENT_ACKED &&
@@ -912,6 +936,19 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EEventResult _eResult)
   pthread_mutex_unlock(&mutex_extendedevents);
   if (iter == m_lxExtendedEvents.end()) return NULL;
   e->m_eResult = _eResult;
+#if 0
+  // If the event was cancelled we still want to wait internally for the reply
+  if (_eResult == EVENT_CANCELLED)
+  {
+    pthread_mutex_lock(&mutex_extendedevents);
+    ICQEvent *e2 = new ICQEvent(e);
+    e2->m_bCancelled = true;
+    e2->m_xPacket = e->m_xPacket;
+    e->m_xPacket = NULL;
+    m_lxExtendedEvents.push_back(e2);
+    pthread_mutex_unlock(&mutex_extendedevents);
+  }
+#endif
   return(e);
 }
 
@@ -1019,9 +1056,11 @@ ICQEvent *CICQDaemon::PopPluginEvent(void)
 
 
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
-void CICQDaemon::CancelEvent(ICQEvent *e)
+void CICQDaemon::CancelEvent(CICQEventTag *t)
 {
-  if (!DoneEvent(e, EVENT_CANCELLED) && !DoneExtendedEvent(e, EVENT_CANCELLED)) return;
+  ICQEvent *e = NULL;
+  if ( (e = DoneEvent(t->m_nSocketDesc, t->m_nSequence, EVENT_CANCELLED)) == NULL &&
+       (e = DoneExtendedEvent(t->m_nSocketDesc, t->m_nSequence, EVENT_CANCELLED)) == NULL) return;
   ProcessDoneEvent(e);
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
@@ -1158,10 +1197,12 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     }
     else
     {
+      CICQEventTag *t = NULL;
       if (b)
-        icqLogon(nStatus);
+        t = icqLogon(nStatus);
       else
-        icqSetStatus(nStatus);
+        t = icqSetStatus(nStatus);
+      if (t == NULL) delete t;
     }
 
     // Now set the auto response

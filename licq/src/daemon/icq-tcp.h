@@ -13,7 +13,7 @@
 #include "icqd.h"
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
-ICQEvent *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
 {
   ICQEvent *result = NULL;
   char *mDos = NULL;
@@ -42,12 +42,15 @@ ICQEvent *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool on
   }
 
   delete mDos;
-  return (result);
+  CICQEventTag *t = NULL;
+  if (result != NULL)
+    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+  return (t);
 }
 
 
 //-----CICQDaemon::sendReadAwayMsg------------------------------------------------------------------------
-ICQEvent *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned long _nSourceUin = 0)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(_nSourceUin, u);
@@ -56,12 +59,15 @@ ICQEvent *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned long _n
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, NULL);
   gUserManager.DropUser(u);
 
-  return (result);
+  CICQEventTag *t = NULL;
+  if (result != NULL)
+    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+  return (t);
 }
 
 
 //-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
-ICQEvent *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
 {
    // make the URL info string
   char *szDescDos = NULL;
@@ -95,12 +101,15 @@ ICQEvent *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const cha
   }
 
   delete szDescDos;
-  return (result);
+  CICQEventTag *t = NULL;
+  if (result != NULL)
+    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+  return (t);
 }
 
 
 //-----CICQDaemon::sendFile------------------------------------------------------------
-ICQEvent *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFilename,
+CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFilename,
                         const char *_szDescription, bool online, bool _bUrgent,
                         unsigned long _nSourceUin = 0)
 {
@@ -134,7 +143,10 @@ ICQEvent *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFilena
 
 
   delete szDosDesc;
-  return (result);
+  CICQEventTag *t = NULL;
+  if (result != NULL)
+    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+  return (t);
 }
 
 
@@ -183,7 +195,7 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long _nUin, const char *_sReason
 
 
 //-----CICQDaemon::sendChat------------------------------------------------------------
-ICQEvent *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
 {
   online = true;
 
@@ -199,7 +211,10 @@ ICQEvent *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bo
   gUserManager.DropUser(u);
 
   delete szReasonDos;
-  return (result);
+  CICQEventTag *t = NULL;
+  if (result != NULL)
+    t =  new CICQEventTag(result->m_nSocketDesc, result->m_nSequence);
+  return (t);
 }
 
 

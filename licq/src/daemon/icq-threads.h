@@ -115,7 +115,6 @@ void *ProcessRunningEvent_tep(void *p)
     tv.tv_sec = MAX_WAIT_ACK;
     tv.tv_usec = 0;
     select(0, NULL, NULL, NULL, &tv);
-    //sleep (MAX_WAIT_ACK);
     pthread_testcancel();
   }
 

@@ -27,6 +27,7 @@ class CPacket;
 class CPacketTcp;
 class CLicq;
 class ICQUser;
+class CICQEventTag;
 
 class CPluginFunctions
 {
@@ -82,11 +83,11 @@ public:
   void SaveConf(void);
 
   // TCP (user) functions
-  ICQEvent *icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long id = 0);
-  ICQEvent *icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long id = 0);
-  ICQEvent *icqFetchAutoResponse(unsigned long _nUin, unsigned long id = 0);
-  ICQEvent *icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long id = 0);
-  ICQEvent *icqFileTransfer(unsigned long _nUin, const char *_szFilename, const char *_szDescription, bool online, bool _bUrgent, unsigned long id = 0);
+  CICQEventTag *icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long id = 0);
+  CICQEventTag *icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long id = 0);
+  CICQEventTag *icqFetchAutoResponse(unsigned long _nUin, unsigned long id = 0);
+  CICQEventTag *icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long id = 0);
+  CICQEventTag *icqFileTransfer(unsigned long _nUin, const char *_szFilename, const char *_szDescription, bool online, bool _bUrgent, unsigned long id = 0);
   void icqFileTransferRefuse(unsigned long _nUin, const char *reason, unsigned long theSequence);
   void icqFileTransferCancel(unsigned long _nUin, unsigned long seq);
   void icqFileTransferAccept(unsigned long _nUin, unsigned short thePort, unsigned long theSequence);
@@ -96,38 +97,38 @@ public:
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);
-  ICQEvent *icqLogon(unsigned long logonStatus);
-  ICQEvent *icqUserBasicInfo(unsigned long);
-  ICQEvent *icqUserExtendedInfo(unsigned long);
-  ICQEvent *icqRequestMetaInfo(unsigned long);
+  CICQEventTag *icqLogon(unsigned long logonStatus);
+  CICQEventTag *icqUserBasicInfo(unsigned long);
+  CICQEventTag *icqUserExtendedInfo(unsigned long);
+  CICQEventTag *icqRequestMetaInfo(unsigned long);
 
-  ICQEvent *icqUpdateBasicInfo(const char *, const char *, const char *,
+  CICQEventTag *icqUpdateBasicInfo(const char *, const char *, const char *,
                                        const char *, bool);
-  ICQEvent *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
+  CICQEventTag *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
                                 unsigned short, char, const char *,
                                 const char *, const char *_sAbout, unsigned long);
-  ICQEvent *icqSetWorkInfo(const char *_szCity, const char *_szState,
+  CICQEventTag *icqSetWorkInfo(const char *_szCity, const char *_szState,
                            const char *_szFax, const char *_szAddress,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
-  ICQEvent *icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
+  CICQEventTag *icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
                               const char *szLastName, const char *szEmail1,
                               const char *szEmail2, const char *szCity,
                               const char *szState, const char *szPhoneNumber,
                               const char *szFaxNumber, const char *szAddress,
                               const char *szCellularNumber, unsigned long nZipCode,
                               unsigned short nCountryCode, bool bHideEmail);
-  ICQEvent *icqSetMoreInfo(unsigned short nAge,
+  CICQEventTag *icqSetMoreInfo(unsigned short nAge,
                            char nGender, const char *szHomepage,
                            char nBirthYear, char nBirthMonth,
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);
-  ICQEvent *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
-  ICQEvent *icqSetAbout(const char *szAbout);
+  CICQEventTag *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
+  CICQEventTag *icqSetAbout(const char *szAbout);
+  CICQEventTag *icqSetStatus(unsigned long newStatus);
 
   unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
   void icqLogoff(void);
-  ICQEvent *icqSetStatus(unsigned long newStatus);
   void icqAuthorize(unsigned long uinToAuthorize);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
@@ -146,7 +147,7 @@ public:
 
   void UpdateAllUsers();
   void SwitchServer(void);
-  void CancelEvent(ICQEvent *);
+  void CancelEvent(CICQEventTag *);
 
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);

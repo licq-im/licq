@@ -78,7 +78,8 @@ void CICQDaemon::icqAddUser(unsigned long _nUin)
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 
   // update the users info from the server
-  icqUserBasicInfo(_nUin);
+  CICQEventTag *t = icqUserBasicInfo(_nUin);
+  if (t != NULL) delete t;
 }
 
 
@@ -114,7 +115,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 
 
 //-----ICQ::Logon---------------------------------------------------------------
-ICQEvent *CICQDaemon::icqLogon(unsigned long logonStatus)
+CICQEventTag *CICQDaemon::icqLogon(unsigned long logonStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o->Uin() == 0)
@@ -134,7 +135,10 @@ ICQEvent *CICQDaemon::icqLogon(unsigned long logonStatus)
   m_nServerAck = p->getSequence() - 1;
   m_nDesiredStatus = logonStatus;
   m_tLogonTime = time(NULL);
-  return SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
@@ -156,7 +160,8 @@ void CICQDaemon::icqRelogon(void)
   icqLogoff();
   m_eStatus = STATUS_OFFLINE_FORCED;
 
-  icqLogon(status);
+  CICQEventTag *t = icqLogon(status);
+  if (t != NULL) delete t;
 }
 
 
@@ -165,6 +170,7 @@ void CICQDaemon::icqLogoff(void)
 {
   // Kill the udp socket asap to avoid race conditions
   int nSD = m_nUDPSocketDesc;
+  m_nAllowUpdateUsers = 0;
   m_nUDPSocketDesc = -1;
   UDPSocket *s = (UDPSocket *)gSocketManager.FetchSocket(nSD);
   // if not connected then don't both logging off
@@ -300,37 +306,46 @@ void CICQDaemon::icqPing()
 
 
 //-----icqSetStatus-------------------------------------------------------------
-ICQEvent *CICQDaemon::icqSetStatus(unsigned long newStatus)
+CICQEventTag *CICQDaemon::icqSetStatus(unsigned long newStatus)
 {
   CPU_SetStatus *p = new CPU_SetStatus(newStatus);
   gLog.Info("%sChanging status (#%d)...\n", L_UDPxSTR, p->getSequence());
   m_nDesiredStatus = newStatus;
-  return SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqGetUserBasicInfo------------------------------------------------------
-ICQEvent *CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
+CICQEventTag *CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
 {
   CPU_GetUserBasicInfo *p = new CPU_GetUserBasicInfo(_nUin);
   gLog.Info("%sRequesting user info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqGetUserExtInfo--------------------------------------------------------
-ICQEvent *CICQDaemon::icqUserExtendedInfo(unsigned long _nUin)
+CICQEventTag *CICQDaemon::icqUserExtendedInfo(unsigned long _nUin)
 {
   CPU_GetUserExtInfo *p = new CPU_GetUserExtInfo(_nUin);
   gLog.Info("%sRequesting extended user info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqUpdatePersonalBasicInfo-----------------------------------------------
-ICQEvent *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirstName,
+CICQEventTag *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirstName,
                                      const char *_sLastName, const char *_sEmail,
                                      bool _bAuthorization)
 {
@@ -339,12 +354,15 @@ ICQEvent *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirs
                                     (char)_bAuthorization);
   gLog.Info("%sUpdating personal information (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqUpdatePersonalExtInfo-------------------------------------------------
-ICQEvent *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _nCountry,
+CICQEventTag *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _nCountry,
                                    const char *_sState, unsigned short _nAge,
                                    char _cSex, const char *_sPhone,
                                    const char *_sHomepage, const char *_sAbout,
@@ -355,12 +373,15 @@ ICQEvent *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _
                                   _sPhone, _sHomepage, _sAbout, _nZipcode);
    gLog.Info("%sUpdating personal extended info (#%d/#%d)...\n", L_UDPxSTR,
              p->getSequence(), p->SubSequence());
-   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqSetWorkInfo--------------------------------------------------------
-ICQEvent *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
+CICQEventTag *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
                                      const char *_szFax, const char *_szAddress,
                                      const char *_szName, const char *_szDepartment,
                                      const char *_szPosition, const char *_szHomepage)
@@ -370,12 +391,15 @@ ICQEvent *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
                              _szName, _szDepartment, _szPosition, _szHomepage);
   gLog.Info("%sUpdating personal work info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqSetGeneralInfo----------------------------------------------------
-ICQEvent *CICQDaemon::icqSetGeneralInfo(
+CICQEventTag *CICQDaemon::icqSetGeneralInfo(
                           const char *szAlias, const char *szFirstName,
                           const char *szLastName, const char *szEmail1,
                           const char *szEmail2, const char *szCity,
@@ -395,12 +419,15 @@ ICQEvent *CICQDaemon::icqSetGeneralInfo(
 
   gLog.Info("%sUpdating general info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqSetMoreInfo----------------------------------------------------
-ICQEvent *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
+CICQEventTag *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
                               char nGender, const char *szHomepage,
                               char nBirthYear, char nBirthMonth,
                               char nBirthDay, char nLanguage1,
@@ -414,38 +441,54 @@ ICQEvent *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
 
   gLog.Info("%sUpdating more info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL) t = new CICQEventTag(e);
+  return t;
 }
 
 
 //-----icqSetSecurityInfo----------------------------------------------------
-ICQEvent *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+CICQEventTag *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
   CPU_Meta_SetSecurityInfo *p =
     new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
   gLog.Info("%sUpdating security info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t = new CICQEventTag(e);
+  return (t);
 }
 
 
 //-----icqSetAbout-----------------------------------------------------------
-ICQEvent *CICQDaemon::icqSetAbout(const char *szAbout)
+CICQEventTag *CICQDaemon::icqSetAbout(const char *szAbout)
 {
   CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
   gLog.Info("%sUpdating about (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t =  new CICQEventTag(e);
+  return (t);
 }
 
 
 //-----icqRequestMetaInfo----------------------------------------------------
-ICQEvent *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
+CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 {
   CPU_Meta_RequestInfo *p = new CPU_Meta_RequestInfo(nUin);
   gLog.Info("%sRequesting meta info for %ld (#%d/#%d)...\n", L_UDPxSTR, nUin,
             p->getSequence(), p->SubSequence());
-  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+  ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t = new CICQEventTag(e);
+  return (t);
 }
 
 
@@ -1062,7 +1105,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 #endif
 
     // Send an update status packet to force hideip/webpresence
-    if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS) icqSetStatus(m_nDesiredStatus);
+    if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS)
+    {
+      CICQEventTag *t = icqSetStatus(m_nDesiredStatus);
+      if (t != NULL) delete t;
+    }
     break;
   }
 
@@ -1096,7 +1143,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_REGISTERxUSER, 0, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
     // Logon as an ack
-    icqLogon(ICQ_STATUS_ONLINE);
+    CICQEventTag *t = icqLogon(ICQ_STATUS_ONLINE);
+    if (t != NULL) delete t;
     break;
   }
 

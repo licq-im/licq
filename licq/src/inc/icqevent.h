@@ -44,6 +44,7 @@ public:
 };
 
 
+
 //=====ICQEvent====================================================================================
 // wraps a timer event so that the timeout will return the socket and sequence of the packet
 // that timed out
@@ -63,6 +64,7 @@ public:
   EConnect       m_eConnect;
   EEventResult   m_eResult;
   int            m_nSubResult;
+  bool           m_bCancelled;
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;
   unsigned long  m_nDestinationUin;
@@ -81,8 +83,26 @@ public:
 };
 
 
+//=====CICQEventTag==========================================================
+class CICQEventTag
+{
+public:
+  CICQEventTag(int sd, unsigned long se) : m_nSocketDesc(sd), m_nSequence(se) {}
+  CICQEventTag(const ICQEvent *e) : m_nSocketDesc(e->m_nSocketDesc), m_nSequence(e->m_nSequence) {}
+  bool Equals(const ICQEvent *e)
+  {
+    return (e != NULL && e->m_nSocketDesc == m_nSocketDesc && e->m_nSequence == m_nSequence);
+  }
+protected:
+  int m_nSocketDesc;
+  unsigned long m_nSequence;
 
-//=====CICQSignal===============================================================
+friend class CICQDaemon;
+};
+
+
+
+//=====CICQSignal============================================================
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
