@@ -273,6 +273,27 @@ protected:
   unsigned short m_nRecords;
 };
 
+//-----AddToServerList----------------------------------------------------------
+class CPU_AddToServerList : public CPU_CommonFamily
+{
+public:
+  CPU_AddToServerList(unsigned long _nUin);
+};
+
+//-----RemoveFromServerList-----------------------------------------------------
+class CPU_RemoveFromServerList : public CPU_CommonFamily
+{
+public:
+  CPU_RemoveFromServerList(unsigned long _nUin);
+};
+
+//-----UpdateGroupToServerList--------------------------------------------------
+class CPU_UpdateGroupToServerList : public CPU_CommonFamily
+{
+public:
+  CPU_UpdateGroupToServerList(unsigned short _nGSID);
+};
+
 //-----SetStatus----------------------------------------------------------------
 class CPU_SetStatus : public CPU_CommonFamily
 {

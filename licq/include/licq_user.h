@@ -214,6 +214,7 @@ public:
 
   // Licq Info
   unsigned short GetSID()               { return m_nSID; }
+  unsigned short GetGSID()              { return m_nGSID; }
   char *AutoResponse()                  { return m_szAutoResponse; }
   char *UserEncoding()                  { return m_szEncoding; }
   bool SendRealIp()                     { return m_bSendRealIp; }
@@ -297,6 +298,7 @@ public:
 
   // Licq Info
   void SetSID(unsigned short s)       { m_nSID = s; }
+  void SetGSID(unsigned short s)      { m_nGSID = s; }
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendRealIp(bool s)          { m_bSendRealIp = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
@@ -507,8 +509,9 @@ protected:
   // About Info
   char *m_szAbout;
 
-  // Server Side ID
+  // Server Side ID, Group SID
   unsigned short m_nSID;
+  unsigned short m_nGSID;
 
   UserEventList m_vcMessages;
 
