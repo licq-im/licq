@@ -35,7 +35,6 @@
 #include "mainwin.h"
 #include "skin.h"
 #include "skinbrowser.h"
-#include "mainwin.h" /* to get the CMainWindow::emoticons */
 #include "emoticon.h"
 
 enum {
