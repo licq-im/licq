@@ -56,12 +56,9 @@ public:
   };
 
   UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-               unsigned long _nUin, QWidget* parent = 0);
-  UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
     const char *szId, unsigned long nPPID, QWidget *parent = 0);
   virtual ~UserInfoDlg();
 
-  unsigned long Uin() { return m_nUin; }
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
   void showTab(int);
@@ -76,7 +73,6 @@ protected:
   } tabList[InfoTabCount];
   bool m_bOwner;
   int currentTab;
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   QString m_sProgressMsg;

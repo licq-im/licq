@@ -75,7 +75,6 @@ public:
               const char *skinName, const char *iconsName,
               const char *extendedIconsName, QWidget *parent = 0);
   virtual ~CMainWindow();
-  UserEventCommon *callFunction(int fcn, unsigned long nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
   UserEventCommon *callFunction(int fcn, const char *, unsigned long);
@@ -151,7 +150,6 @@ public:
   QString usprintfHelp;
 
 public slots:
-  void callInfoTab(int, unsigned long, bool toggle=false);
   void callInfoTab(int, const char *, unsigned long, bool toggle=false);
 
 public:
@@ -285,13 +283,10 @@ protected slots:
   //void callUserFunction(const char *, unsigned long);
   void slot_userfinished(const char *, unsigned long);
   void slot_sendfinished(const char *, unsigned long);
-  //void slot_ui_message(const char *, unsigned long);
-  void slot_userfinished(unsigned long);
-  void slot_sendfinished(unsigned long);
+  void slot_ui_message(const char *, unsigned long);
   void slot_usermenu();
   void slot_logon();
   //void slot_ui_viewevent(unsigned long);
-  void slot_ui_message(unsigned long);
   void slot_ui_viewevent(const char *);
   void slot_protocolPlugin(unsigned long);
   void slot_register();
@@ -327,7 +322,6 @@ protected slots:
   void slot_updateAllUsersInGroup();
   void slot_popupall();
   void slot_aboutToQuit();
-  void UserInfoDlg_finished(unsigned long);
   void UserInfoDlg_finished(const char *, unsigned long);
   void slot_doneUserEventTabDlg();
 

@@ -16,7 +16,7 @@ class ReqAuthDlg : public LicqDialog
    Q_OBJECT
 public:
    ReqAuthDlg (CICQDaemon *s, unsigned long nUin = 0, QWidget *parent = 0);
-  ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
+   ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
     QWidget *parent = 0);
 
 protected:

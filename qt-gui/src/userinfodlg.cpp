@@ -162,113 +162,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   setTabOrder (btnMain3, btnMain4);
 }
 
-UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                         unsigned long _nUin, QWidget* parent)
-  : QWidget(parent, "UserInfoDialog", WStyle_ContextHelp | WDestructiveClose)
-{
-  server = s;
-  mainwin = m;
-  sigman = theSigMan;
-  icqEventTag = 0;
-  m_nUin = _nUin;
-  m_bOwner = (m_nUin == gUserManager.OwnerUin());
-
-  CreateGeneralInfo();
-  CreateMoreInfo();
-  CreateWorkInfo();
-  CreateAbout();
-  CreateHistory();
-  CreateLastCountersInfo();
-
-  QBoxLayout *lay = new QVBoxLayout(this, 8);
-
-  tabs = new QTabWidget(this);
-  lay->addWidget(tabs, 2);
-
-  tabs->addTab(tabList[GeneralInfo].tab, tabList[GeneralInfo].label);
-  tabs->addTab(tabList[MoreInfo].tab, tabList[MoreInfo].label);
-  tabs->addTab(tabList[WorkInfo].tab, tabList[WorkInfo].label);
-  tabs->addTab(tabList[AboutInfo].tab, tabList[AboutInfo].label);
-  tabs->addTab(tabList[HistoryInfo].tab, tabList[HistoryInfo].label);
-  tabs->addTab(tabList[LastCountersInfo].tab, tabList[LastCountersInfo].label);
-
-  connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
-           this, SLOT(updatedUser(CICQSignal *)));
-
-  btnMain4 = new QPushButton(tr("&Close"), this);
-  connect(btnMain4, SIGNAL(clicked()), this, SLOT(close()));
-
-  if (m_bOwner)
-  {
-    btnMain1 = new QPushButton(tr("&Save"), this);
-    btnMain2 = new QPushButton(tr("&Retrieve"), this);
-    btnMain3 = new QPushButton(tr("S&end"), this);
-    connect(btnMain1, SIGNAL(clicked()), this, SLOT(SaveSettings()));
-    connect(btnMain2, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
-    connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotUpdate()));
-  }
-  else
-  {
-    btnMain1 = new QPushButton(tr("&Menu"), this);
-    btnMain2 = new QPushButton(tr("&Save"), this);
-    btnMain3 = new QPushButton(tr("&Update"), this);
-    connect(btnMain1, SIGNAL(pressed()), this, SLOT(ShowUsermenu()));
-    btnMain1->setPopup(gMainWindow->UserMenu());
-    connect(btnMain2, SIGNAL(clicked()), this, SLOT(SaveSettings()));
-    connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
-  }
-
-  int bw = 80;
-  bw = QMAX(bw, btnMain1->sizeHint().width());
-  bw = QMAX(bw, btnMain2->sizeHint().width());
-  bw = QMAX(bw, btnMain3->sizeHint().width());
-  bw = QMAX(bw, btnMain4->sizeHint().width());
-  btnMain1->setFixedWidth(bw);
-  btnMain2->setFixedWidth(bw);
-  btnMain3->setFixedWidth(bw);
-  btnMain4->setFixedWidth(bw);
-
-  QBoxLayout* l = new QHBoxLayout(lay);
-
-  l->addWidget(btnMain1);
-  l->addStretch(2);
-  l->addWidget(btnMain2);
-  l->addWidget(btnMain3);
-  l->addSpacing(35);
-  l->addWidget(btnMain4);
-  btnMain4->setDefault(true);
-
-  // prepare the timer for the history filter
-  timer = new QTimer(this, "history_filterTimer");
-  connect(timer, SIGNAL(timeout()), this, SLOT(ShowHistory()));
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u == NULL)
-  {
-    m_sBasic = tr("Licq - Info ") + tr("INVALID USER");
-    resetCaption();
-    setIconText(tr("INVALID USER"));
-  }
-  else
-  {
-    QTextCodec * codec = UserCodec::codecForICQUser(u);
-    m_sBasic = tr("Licq - Info ") + codec->toUnicode(u->GetAlias()) + " (" + codec->toUnicode(u->GetFirstName()) + " " + codec->toUnicode(u->GetLastName()) + ")";
-    resetCaption();
-    setIconText(codec->toUnicode(u->GetAlias()));
-    gUserManager.DropUser(u);
-  }
-
-	// Set Tab Order
-	setTabOrder (tabs, btnMain1);
-	setTabOrder (btnMain1, btnMain2);
-	setTabOrder (btnMain2, btnMain3);
-	setTabOrder (btnMain3, btnMain4);
-}
-
-
 // -----------------------------------------------------------------------------
-
 UserInfoDlg::~UserInfoDlg()
 {
   if (icqEventTag != 0)
@@ -341,7 +235,7 @@ void UserInfoDlg::CreateGeneralInfo()
                                            "Check this if you want to keep your changes to the Alias."));
   lay->addMultiCellWidget(chkKeepAliasOnUpdate, CR, CR, 3,4);
 
-  lay->addWidget(new QLabel(tr("UIN:"), p), ++CR, 0);
+  lay->addWidget(new QLabel(tr("ID:"), p), ++CR, 0);
   nfoUin = new CInfoField(p, true);
   lay->addWidget(nfoUin, CR, 1);
   lay->addWidget(new QLabel(tr("IP:"), p), CR, 3);
@@ -447,7 +341,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoEmailPrimary->setData(codec->toUnicode(u->GetEmailPrimary()));
   nfoEmailSecondary->setData(codec->toUnicode(u->GetEmailSecondary()));
   nfoEmailOld->setData(codec->toUnicode(u->GetEmailOld()));
-  nfoUin->setData(u->Uin());
+  nfoUin->setData(u->IdString());
   QString ip = QString(u->IpStr(buf));
   if (u->Ip() != u->IntIp() && u->IntIp() != 0)
   {

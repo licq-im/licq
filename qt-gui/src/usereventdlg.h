@@ -88,22 +88,17 @@ class UserEventCommon : public QWidget
 {
   Q_OBJECT
 public:
-
-  UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                  unsigned long _nUin, QWidget* parent = 0, const char* name =0);
   UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0,
                   const char *name = 0);
   virtual ~UserEventCommon();
 
-  unsigned long Uin() { return m_nUin; }
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
 
 protected:
   QTextCodec *codec;
   bool m_bOwner;
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   QBoxLayout* top_lay, *top_hlay;
@@ -133,13 +128,12 @@ protected slots:
   void slot_updatetime();
   void showHistory();
   void showUserInfo();
-  void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
+  void slot_usermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
   void slot_security();
   void slot_setEncoding(int encodingMib);
 
 signals:
   void finished(const char *, unsigned long);
-  void finished(unsigned long);
   void encodingChanged();
   void viewurl(QWidget*, QString);
 };
@@ -152,8 +146,6 @@ class UserViewEvent : public UserEventCommon
   Q_OBJECT
 public:
 
-  UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                  unsigned long _nUin, QWidget* parent = 0);
   UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserViewEvent();
@@ -200,8 +192,6 @@ class UserSendCommon : public UserEventCommon
   Q_OBJECT
 public:
 
-  UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                 unsigned long _nUin, QWidget* parent = 0, const char* name=0);
   UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0,
                  const char *name = 0);
@@ -292,8 +282,6 @@ class UserSendUrlEvent : public UserSendCommon
 public:
 
   UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                  unsigned long _nUin, QWidget* parent = 0);
-  UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendUrlEvent();
 
@@ -318,8 +306,6 @@ class UserSendFileEvent : public UserSendCommon
   Q_OBJECT
 public:
 
-  UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                  unsigned long _nUin, QWidget* parent = 0);
   UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendFileEvent();
@@ -350,8 +336,6 @@ class UserSendChatEvent : public UserSendCommon
   Q_OBJECT
 public:
 
-  UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                    unsigned long _nUin, QWidget* parent = 0);
   UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendChatEvent();
@@ -407,8 +391,6 @@ class UserSendSmsEvent : public UserSendCommon
   Q_OBJECT
 public:
 
-  UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                  unsigned long _nUin, QWidget* parent = 0);
   UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendSmsEvent();

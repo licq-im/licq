@@ -359,113 +359,6 @@ void UserEventTabDlg::moveRight()
 
 // -----------------------------------------------------------------------------
 
-UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
-                                 CMainWindow *m, unsigned long _nUin,
-                                 QWidget* parent, const char* name)
-  : QWidget(parent, name, WDestructiveClose), m_highestEventId(-1)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
-
-  server = s;
-  mainwin = m;
-  sigman = theSigMan;
-  m_nUin = _nUin;
-  m_bOwner = (m_nUin == gUserManager.OwnerUin());
-  m_bDeleteUser = false;
-
-  top_hlay = new QHBoxLayout(this, 6);
-  top_lay = new QVBoxLayout(top_hlay);
-  top_hlay->setStretchFactor(top_lay, 1);
-
-  // initalize codec
-  codec = QTextCodec::codecForLocale();
-
-  QBoxLayout *layt = new QHBoxLayout(top_lay, 8);
-  layt->addWidget(new QLabel(tr("Status:"), this));
-  nfoStatus = new CInfoField(this, true);
-  nfoStatus->setMinimumWidth(nfoStatus->sizeHint().width()+30);
-  layt->addWidget(nfoStatus);
-  layt->addWidget(new QLabel(tr("Time:"), this));
-  nfoTimezone = new CInfoField(this, true);
-  nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2+10);
-  layt->addWidget(nfoTimezone);
-
-  popupEncoding = new QPopupMenu(this);
-  btnSecure = new QPushButton(this);
-  QToolTip::add(btnSecure, tr("Open / Close secure channel"));
-  layt->addWidget(btnSecure);
-  connect(btnSecure, SIGNAL(clicked()), this, SLOT(slot_security()));
-  btnHistory = new QPushButton(this);
-  btnHistory->setPixmap(mainwin->pmHistory);
-  QToolTip::add(btnHistory, tr("Show User History"));
-  connect(btnHistory, SIGNAL(clicked()), this, SLOT(showHistory()));
-  layt->addWidget(btnHistory);
-  btnInfo = new QPushButton(this);
-  btnInfo->setPixmap(mainwin->pmInfo);
-  QToolTip::add(btnInfo, tr("Show User Info"));
-  connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
-  layt->addWidget(btnInfo);
-  btnEncoding = new QPushButton(this);
-  btnEncoding->setPixmap(mainwin->pmEncoding);
-  QToolTip::add(btnEncoding, tr("Change user text encoding"));
-  QWhatsThis::add(btnEncoding, tr("This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language."));
-  btnEncoding->setPopup(popupEncoding);
-
-  layt->addWidget(btnEncoding);
-
-  tmrTime = NULL;
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  if (u != NULL)
-  {
-    nfoStatus->setData(u->StatusStr());
-    if (u->NewMessages() == 0)
-      setIcon(CMainWindow::iconForStatus(u->StatusFull()));
-    else
-      setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
-    SetGeneralInfo(u);
-
-    // restore prefered encoding
-    codec = UserCodec::codecForICQUser(u);
-
-    gUserManager.DropUser(u);
-  }
-
-  QString codec_name = QString::fromLatin1( codec->name() ).lower();
-  popupEncoding->setCheckable(true);
-
-  // populate the popup menu
-  UserCodec::encoding_t *it = &UserCodec::m_encodings[0];
-  while(it->encoding != NULL) {
-
-    if (QString::fromLatin1(it->encoding).lower() == codec_name) {
-      if (mainwin->m_bShowAllEncodings || it->isMinimal) {
-        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
-      } else {
-        // if the current encoding does not appear in the minimal list
-        popupEncoding->insertSeparator(0);
-        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib, 0);
-      }
-      popupEncoding->setItemChecked(it->mib, true);
-    } else {
-      if (mainwin->m_bShowAllEncodings || it->isMinimal) {
-        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
-      }
-    }
-
-    ++it;
-  }
-
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
-           this, SLOT(slot_userupdated(CICQSignal *)));
-
-  mainWidget = new QWidget(this);
-  top_lay->addWidget(mainWidget);
-}
-
 void UserEventCommon::slot_setEncoding(int encodingMib) {
   /* initialize a codec according to the encoding menu item id */
   QString encoding( UserCodec::encodingForMib(encodingMib) );
@@ -744,128 +637,6 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
 
   connect(this, SIGNAL(encodingChanged()), this, SLOT(slot_setEncoding()));
 }
-
-UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                             CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent")
-{
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  splRead = new QSplitter(Vertical, mainWidget);
-  lay->addWidget(splRead);
-  splRead->setOpaqueResize();
-
-  QAccel *a = new QAccel( this );
-  a->connectItem(a->insertItem(Key_Escape), this, SLOT(close()));
-
-  msgView = new MsgView(splRead);
-  mlvRead = new MLView(splRead, "mlvRead");
-#if QT_VERSION < 300
-  mlvRead->setFormatQuoted(true);
-#else
-  connect(mlvRead, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-#endif
-  splRead->setResizeMode(msgView, QSplitter::FollowSizeHint);
-  splRead->setResizeMode(mlvRead, QSplitter::Stretch);
-
-  connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
-  connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
-
-  QHGroupBox *h_action = new QHGroupBox(mainWidget);
-  lay->addSpacing(10);
-  lay->addWidget(h_action);
-  btnRead1 = new CEButton(h_action);
-  btnRead2 = new QPushButton(h_action);
-  btnRead3 = new QPushButton(h_action);
-  btnRead4 = new QPushButton(h_action);
-
-  btnRead1->setEnabled(false);
-  btnRead2->setEnabled(false);
-  btnRead3->setEnabled(false);
-  btnRead4->setEnabled(false);
-
-  connect(btnRead1, SIGNAL(clicked()), this, SLOT(slot_btnRead1()));
-  connect(btnRead2, SIGNAL(clicked()), this, SLOT(slot_btnRead2()));
-  connect(btnRead3, SIGNAL(clicked()), this, SLOT(slot_btnRead3()));
-  connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_btnRead4()));
-
-  QBoxLayout *h_lay = new QHBoxLayout(top_lay, 4);
-  if (!m_bOwner)
-  {
-    QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
-    h_lay->addWidget(btnMenu);
-    connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
-    btnMenu->setPopup(mainwin->UserMenu());
-    chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
-    chkAutoClose->setChecked(mainwin->m_bAutoClose);
-    h_lay->addWidget(chkAutoClose);
-  }
-  h_lay->addStretch(1);
-  int bw = 75;
-  btnReadNext = new QPushButton(tr("Nex&t"), this);
-  setTabOrder(btnRead4, btnReadNext);
-  btnClose = new CEButton(tr("&Close"), this);
-  QToolTip::add(btnClose, tr("Normal Click - Close Window\n<CTRL>+Click - also delete User"));
-  setTabOrder(btnReadNext, btnClose);
-  bw = QMAX(bw, btnReadNext->sizeHint().width());
-  bw = QMAX(bw, btnClose->sizeHint().width());
-  btnReadNext->setFixedWidth(bw);
-  btnClose->setFixedWidth(bw);
-  h_lay->addWidget(btnReadNext);
-  btnReadNext->setEnabled(false);
-  connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_btnReadNext()));
-  connect(btnClose, SIGNAL(clicked()), SLOT(slot_close()));
-  h_lay->addWidget(btnClose);
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u != NULL && u->NewMessages() > 0)
-  {
-    unsigned short i;
-    /*
-     Create an item for the message we're currently viewing.
-    */
-    if (mainwin->m_bMsgChatView)
-    {
-      for (i = 0; i < u->NewMessages(); i++)
-        if (u->EventPeek(i)->SubCommand() != ICQ_CMDxSUB_MSG)
-          break;
-      if (i == u->NewMessages())
-        i = 0;
-    }
-    else
-      i = 0;
-
-    MsgViewItem *e = new MsgViewItem(u->EventPeek(i), codec, msgView);
-    m_highestEventId = u->EventPeek(i)->Id();
-    /*
-     Create items for all the messages which already await
-     in the queue. We cannot rely on getting CICQSignals for them
-     since they might've arrived before the dialog appeared,
-     possibly being undisplayed messages from previous licq session.
-    */
-    for (i++; i < u->NewMessages(); i++)
-    {
-      CUserEvent* event = u->EventPeek(i);
-      if (!mainwin->m_bMsgChatView ||
-          event->SubCommand() != ICQ_CMDxSUB_MSG)
-      {
-        new MsgViewItem(event, codec, msgView);
-        // Make sure we don't add this message again, even if we'll
-        // receive an userUpdated signal for it.
-        if (m_highestEventId < event->Id())
-           m_highestEventId = event->Id();
-      }
-    }
-    gUserManager.DropUser(u);
-    slot_printMessage(e);
-    msgView->setSelected(e, true);
-    msgView->ensureItemVisible(e);
-  }
-  else
-    gUserManager.DropUser(u);
-
-  connect(this, SIGNAL(encodingChanged()), this, SLOT(slot_setEncoding()));
-}
-
 
 void UserViewEvent::slot_setEncoding() {
   /* if we have an open view, refresh it */
@@ -1533,129 +1304,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
 }
 
-UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
-                               CMainWindow *m, unsigned long _nUin, QWidget* parent, const char* name)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, name)
-{
-  grpMR = NULL;
-  tmpWidgetWidth = 0;
-  m_bGrpMRIsVisible = false;
-  clearDelay = 250;
-
-  QAccel *a = new QAccel( this );
-  a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      parent == mainwin->userEventTabDlg)
-  {
-    a->connectItem(a->insertItem(ALT + Key_Left),  mainwin->userEventTabDlg, SLOT(moveLeft()));
-    a->connectItem(a->insertItem(ALT + Key_Right), mainwin->userEventTabDlg, SLOT(moveRight()));
-  }
-#endif
-
-  QGroupBox *box = new QGroupBox(this);
-  top_lay->addWidget(box);
-  QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
-  QBoxLayout *hlay = new QHBoxLayout(vlay);
-  chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
-
-  if( (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST)) ||
-      (u->Port() == 0 && u->SocketDesc() == -1))
-  {
-    chkSendServer->setChecked(true);
-    chkSendServer->setEnabled(false);
-  }
-  gUserManager.DropUser(u);
-  hlay->addWidget(chkSendServer);
-  chkUrgent = new QCheckBox(tr("U&rgent"), box);
-  hlay->addWidget(chkUrgent);
-  chkMass = new QCheckBox(tr("M&ultiple recipients"), box);
-  hlay->addWidget(chkMass);
-  connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(massMessageToggled(bool)));
-  btnForeColor = new QPushButton(box);
-  btnForeColor->setPixmap(chatChangeFg_xpm);
-  connect(btnForeColor, SIGNAL(clicked()), this, SLOT(slot_SetForegroundICQColor()));
-  hlay->addWidget(btnForeColor);
-  btnBackColor = new QPushButton(box);
-  btnBackColor->setPixmap(chatChangeBg_xpm);
-  connect(btnBackColor, SIGNAL(clicked()), this, SLOT(slot_SetBackgroundICQColor()));
-  hlay->addWidget(btnBackColor);
-
-  QBoxLayout *h_lay = new QHBoxLayout(top_lay);
-  if (!m_bOwner)
-  {
-    QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
-    h_lay->addWidget(btnMenu);
-    connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
-    btnMenu->setPopup(mainwin->UserMenu());
-  }
-  cmbSendType = new QComboBox(this);
-  cmbSendType->insertItem(tr("Message"));
-  cmbSendType->insertItem(tr("URL"));
-  cmbSendType->insertItem(tr("Chat Request"));
-  cmbSendType->insertItem(tr("File Transfer"));
-  cmbSendType->insertItem(tr("Contact List"));
-  cmbSendType->insertItem(tr("SMS"));
-  connect(cmbSendType, SIGNAL(activated(int)), this, SLOT(changeEventType(int)));
-  h_lay->addWidget(cmbSendType);
-  h_lay->addStretch(1);
-  btnSend = new QPushButton(tr("&Send"), this);
-  int w = QMAX(btnSend->sizeHint().width(), 75);
-  // add a wrapper around the send button that
-  // tries to establish a secure connection first.
-  connect( btnSend, SIGNAL( clicked() ), this, SLOT( trySecure() ) );
-
-  btnCancel = new QPushButton(tr("&Close"), this);
-  w = QMAX(btnCancel->sizeHint().width(), w);
-  btnSend->setFixedWidth(w);
-  btnCancel->setFixedWidth(w);
-  h_lay->addWidget(btnSend);
-  h_lay->addWidget(btnCancel);
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
-  splView = new QSplitter(Vertical, mainWidget);
-  //splView->setOpaqueResize();
-  mleHistory=0;
-  if (mainwin->m_bMsgChatView) {
-    mleHistory = new CMessageViewWidget(_nUin, mainwin, splView);
-    // add all unread messages.
-    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-    if (u != NULL && u->NewMessages() > 0)
-    {
-      for (unsigned short i = 0; i < u->NewMessages(); i++)
-      {
-        CUserEvent *e = u->EventPeek(i);
-        if (e->Id() > m_highestEventId)
-          m_highestEventId = e->Id();
-
-        mleHistory->addMsg(e);
-      }
-    }
-    gUserManager.DropUser(u);
-
-#if QT_VERSION >= 300
-    connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-#endif
-    connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
-    //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
-  }
-  mleSend = new MLEditWrap(true, splView, true);
-  if (mainwin->m_bMsgChatView)
-  {
-    splView->setResizeMode(mleSend, QSplitter::KeepSize);
-    mleSend->resize(mleSend->width(), 90);
-  }
-  setTabOrder(mleSend, btnSend);
-  setTabOrder(btnSend, btnCancel);
-  icqColor.SetToDefault();
-  mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
-  mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
-  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
-  connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
-}
-
-
 UserSendCommon::~UserSendCommon()
 {
 }
@@ -1775,7 +1423,7 @@ void UserSendCommon::changeEventType(int id)
 #endif
   switch(id)
   {
-#ifdef QT_PROTOCOL_PLUGIN
+
   case 0:
     e = new UserSendMsgEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
@@ -1794,26 +1442,6 @@ void UserSendCommon::changeEventType(int id)
   case 5:
     e = new UserSendSmsEvent(server, sigman, mainwin, m_szId, m_nPPID);
     break;
-#else
-  case 0:
-    e = new UserSendMsgEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
-    break;
-  case 1:
-    e = new UserSendUrlEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
-    break;
-  case 2:
-    e = new UserSendChatEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
-    break;
-  case 3:
-    e = new UserSendFileEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
-    break;
-  case 4:
-    e = new UserSendContactEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
-    break;
-  case 5:
-    e = new UserSendSmsEvent(server, sigman, mainwin, m_szId, m_nPPID, parent);
-    break;
-#endif
   }
 
   if (e != NULL)
@@ -1834,9 +1462,11 @@ void UserSendCommon::changeEventType(int id)
       e->move(p);
     }
 
-    disconnect(this, SIGNAL(finished(unsigned long)), mainwin, SLOT(slot_sendfinished(unsigned long)));
-    mainwin->slot_sendfinished(m_nUin);
-    connect(e, SIGNAL(finished(unsigned long)), mainwin, SLOT(slot_sendfinished(unsigned long)));
+    disconnect(this, SIGNAL(finished(const char *, unsigned long)), 
+               mainwin, SLOT(slot_sendfinished(const char *,unsigned long)));
+    mainwin->slot_sendfinished(m_szId, m_nPPID);
+    connect(e, SIGNAL(finished(const char *, unsigned long)), mainwin,
+            SLOT(slot_sendfinished(const char *, unsigned long)));
     mainwin->licqUserSend.append(e);
 
     emit signal_msgtypechanged(this, e);
@@ -1876,14 +1506,9 @@ void UserSendCommon::massMessageToggled(bool b)
       top_hlay->addWidget(grpMR);
 
       (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
-#ifdef QT_PROTOCOL_PLUGIN
       //TODO in CMMUserView
       lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
                                   strtoul(m_szId, (char **)NULL, 10), mainwin, grpMR);
-#else
-      lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-                                  m_nUin, mainwin, grpMR);
-#endif
       lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
     }
     grpMR->show();
@@ -2369,8 +1994,15 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
 bool UserSendCommon::checkSecure()
 {
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  if (u == 0)
+    return false;
+ 
+  bool secure = u->Secure() || u->AutoSecure();
   bool send_ok = true;
-  if (chkSendServer->isChecked() && ( u->Secure() || u->AutoSecure()) )
+
+  gUserManager.DropUser(u);
+
+  if (chkSendServer->isChecked() && secure)
   {
     if (!QueryUser(this, tr("Warning: Message can't be sent securely\n"
                              "through the server!"),
@@ -2379,9 +2011,13 @@ bool UserSendCommon::checkSecure()
       send_ok = false;
     }
     else
-      u->SetAutoSecure( false );
+    {
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      if (u)
+        u->SetAutoSecure(false);
+      gUserManager.DropUser(u);
+    }
   }
-  gUserManager.DropUser(u);
   return send_ok;
 }
 
@@ -2404,26 +2040,6 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(0);
 }
-
-UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
-  CMainWindow *m, unsigned long nUin, QWidget *parent)
-  : UserSendCommon(s, theSigMan, m, nUin, parent, "UserSendMsgEvent")
-{
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  lay->addWidget(splView);
-  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
-  mleSend->setFocus ();
-
-  m_sBaseTitle += tr(" - Message");
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
-    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(0);
-}
-
 
 UserSendMsgEvent::~UserSendMsgEvent()
 {
@@ -2548,29 +2164,6 @@ void UserSendMsgEvent::resetSettings()
   massMessageToggled( false );
 }
 
-//=====UserSendUrlEvent======================================================
-#ifdef QT_PROTOCOL_PLUGIN
-UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                   CMainWindow *m, const char *szId,
-                                   unsigned long nPPID, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendUrlEvent")
-{
-  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  lay->addWidget(splView);
-  mleSend->setFocus ();
-
-  QBoxLayout* h_lay = new QHBoxLayout(lay);
-  lblItem = new QLabel(tr("URL : "), mainWidget);
-  h_lay->addWidget(lblItem);
-  edtItem = new CInfoField(mainWidget, false);
-  h_lay->addWidget(edtItem);
-
-  m_sBaseTitle += tr(" - URL");
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(1);
-}
-#endif
-
 UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                    CMainWindow *m, const char *szId,
                                    unsigned long nPPID, QWidget* parent)
@@ -2595,31 +2188,6 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(1);
 }
-
-UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                   CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendUrlEvent")
-{
-  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  lay->addWidget(splView);
-  mleSend->setFocus ();
-
-  QBoxLayout* h_lay = new QHBoxLayout(lay);
-  lblItem = new QLabel(tr("URL : "), mainWidget);
-  h_lay->addWidget(lblItem);
-  edtItem = new CInfoField(mainWidget, false);
-  h_lay->addWidget(edtItem);
-
-  m_sBaseTitle += tr(" - URL");
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
-    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(1);
-}
-
 
 UserSendUrlEvent::~UserSendUrlEvent()
 {
@@ -2689,45 +2257,6 @@ bool UserSendUrlEvent::sendDone(ICQEvent *e)
   return true;
 }
 
-
-//=====UserSendFileEvent=====================================================
-#ifdef QT_PROTOCOL_PLUGIN
-UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                     CMainWindow *m, const char *szId,
-                                     unsigned long nPPID, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendFileEvent")
-{
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
-  btnForeColor->setEnabled(false);
-  btnBackColor->setEnabled(false);
-
-  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  lay->addWidget(splView);
-
-  QBoxLayout* h_lay = new QHBoxLayout(lay);
-  lblItem = new QLabel(tr("File(s): "), mainWidget);
-  h_lay->addWidget(lblItem);
-
-  edtItem = new CInfoField(mainWidget, false);
-  edtItem->SetReadOnly(true);
-  h_lay->addWidget(edtItem);
-
-  btnBrowse = new QPushButton(tr("Browse"), mainWidget);
-  connect(btnBrowse, SIGNAL(clicked()), this, SLOT(browseFile()));
-  h_lay->addWidget(btnBrowse);
-
-  btnEdit = new QPushButton(tr("Edit"), mainWidget);
-  btnEdit->setEnabled(false);
-  connect(btnEdit,  SIGNAL(clicked()), this, SLOT(editFileList()));
-  h_lay->addWidget(btnEdit);
-
-  m_sBaseTitle += tr(" - File Transfer");
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(3);
-}
-#endif
-
 UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                      CMainWindow *m, const char *szId,
                                      unsigned long nPPID, QWidget* parent)
@@ -2767,46 +2296,6 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(3);
 }
-
-UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                     CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendFileEvent")
-{
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
-  btnForeColor->setEnabled(false);
-  btnBackColor->setEnabled(false);
-
-  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  lay->addWidget(splView);
-
-  QBoxLayout* h_lay = new QHBoxLayout(lay);
-  lblItem = new QLabel(tr("File(s): "), mainWidget);
-  h_lay->addWidget(lblItem);
-
-  edtItem = new CInfoField(mainWidget, false);
-  edtItem->SetReadOnly(true);
-  h_lay->addWidget(edtItem);
-
-  btnBrowse = new QPushButton(tr("Browse"), mainWidget);
-  connect(btnBrowse, SIGNAL(clicked()), this, SLOT(browseFile()));
-  h_lay->addWidget(btnBrowse);
-
-  btnEdit = new QPushButton(tr("Edit"), mainWidget);
-  btnEdit->setEnabled(false);
-  connect(btnEdit,  SIGNAL(clicked()), this, SLOT(editFileList()));
-  h_lay->addWidget(btnEdit);
-
-  m_sBaseTitle += tr(" - File Transfer");
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
-    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(3);
-}
-
 
 void UserSendFileEvent::browseFile()
 {
@@ -2982,43 +2471,6 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   cmbSendType->setCurrentItem(2);
 }
 
-UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                     CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendChatEvent")
-{
-  m_nMPChatPort = 0;
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
-  btnForeColor->setEnabled(false);
-  btnBackColor->setEnabled(false);
-
-  QBoxLayout *lay = new QVBoxLayout(mainWidget, 9);
-  lay->addWidget(splView);
-
-  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
-
-  QBoxLayout* h_lay = new QHBoxLayout(lay);
-  lblItem = new QLabel(tr("Multiparty: "), mainWidget);
-  h_lay->addWidget(lblItem);
-
-  edtItem = new CInfoField(mainWidget, false);
-  h_lay->addWidget(edtItem);
-
-  btnBrowse = new QPushButton(tr("Invite"), mainWidget);
-  connect(btnBrowse, SIGNAL(clicked()), this, SLOT(InviteUser()));
-  h_lay->addWidget(btnBrowse);
-
-  m_sBaseTitle += tr(" - Chat Request");
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
-    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(2);
-}
-
-
 UserSendChatEvent::~UserSendChatEvent()
 {
 }
@@ -3125,7 +2577,7 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   lay->addWidget(lblContact);
 
   lstContacts = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-                                m_nUin, mainwin, mainWidget);
+                                m_szId, nPPID, mainwin, mainWidget);
   lay->addWidget(lstContacts);
 
   m_sBaseTitle += tr(" - Contact List");
@@ -3137,32 +2589,6 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(4);
 }
-
-UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                           CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendContactEvent")
-{
-  delete mleSend; mleSend = NULL;
-
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  lay->addWidget(splView);
-  QLabel* lblContact =  new QLabel(tr("Drag Users Here - Right Click for Options"), mainWidget);
-  lay->addWidget(lblContact);
-
-  lstContacts = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-                                m_nUin, mainwin, mainWidget);
-  lay->addWidget(lstContacts);
-
-  m_sBaseTitle += tr(" - Contact List");
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
-    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(4);
-}
-
 
 UserSendContactEvent::~UserSendContactEvent()
 {
@@ -3278,57 +2704,6 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_count()));
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
-  if (u != NULL)
-  {
-    nfoNumber->setData(codec->toUnicode(u->GetCellularNumber()));
-    gUserManager.DropUser(u);
-  }
-
-  m_sBaseTitle += tr(" - SMS");
-#if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
-    mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(5);
-}
-
-UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
-  CMainWindow *m, unsigned long nUin, QWidget *parent)
-  : UserSendCommon(s, theSigMan, m, nUin, parent, "UserSendSmsEvent")
-{
-  chkSendServer->setChecked(true);
-  chkSendServer->setEnabled(false);
-  chkUrgent->setChecked(false);
-  chkUrgent->setEnabled(false);
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
-  btnForeColor->setEnabled(false);
-  btnBackColor->setEnabled(false);
-  btnEncoding->setEnabled(false); // SMSs are always UTF-8
-
-  QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  lay->addWidget(splView);
-  mleSend->setFocus();
-
-  QBoxLayout* h_lay = new QHBoxLayout(lay);
-  lblNumber = new QLabel(tr("Phone : "), mainWidget);
-  h_lay->addWidget(lblNumber);
-  nfoNumber = new CInfoField(mainWidget, false);
-  h_lay->addWidget(nfoNumber);
-  nfoNumber->setFixedWidth(QMAX(140, nfoNumber->sizeHint().width()));
-  h_lay->addStretch(1);
-  lblCount = new QLabel(tr("Chars left : "), mainWidget);
-  h_lay->addWidget(lblCount);
-  nfoCount = new CInfoField(mainWidget, false);
-  h_lay->addWidget(nfoCount);
-  nfoCount->setFixedWidth(40);
-  nfoCount->setAlignment(AlignCenter);
-  slot_count();
-  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_count()));
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   if (u != NULL)
   {
     nfoNumber->setData(codec->toUnicode(u->GetCellularNumber()));

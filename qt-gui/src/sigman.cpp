@@ -108,7 +108,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_UI_MESSAGE:
   //TODO
-    emit signal_ui_message(s->Uin());
+    emit signal_ui_message(s->Id(), s->PPID());
     break;
   case SIGNAL_ADDxSERVERxLIST:
   //TODO

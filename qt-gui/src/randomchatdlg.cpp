@@ -136,7 +136,8 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     break;
   default:
     //TODO when CSearchAck changes
-    mainwin->callFunction(mnuUserSendChat, e->SearchAck()->Uin());
+    mainwin->callFunction(mnuUserSendChat, e->SearchAck()->Id(),
+                          e->SearchAck()->PPID() );
     close();
     return;
   }
