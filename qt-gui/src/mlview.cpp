@@ -85,11 +85,18 @@ void MLViewQt2::setForeground(const QColor& c)
 
 // -----------------------------------------------------------------------------
 
+void MLViewQt2::setFormatQuoted(bool enable)
+{
+  m_bFormatQuoted = enable;
+}
+
+// -----------------------------------------------------------------------------
+
 void MLViewQt2::paintCell(QPainter* p, int row, int col)
 {
 
 #if QT_VERSION >= 210 && QT_VERSION < 300
-  if (m_bDoQuotes)
+  if (m_bFormatQuoted)
   {
     QString s = stringShown(row);
     int i = (s[0] == ' ');

@@ -20,9 +20,16 @@ public:
   void setBackground(const QColor&);
   void setForeground(const QColor&);
 
+  // Determines whether "quoted" (begining with ">") lines should be
+  // specially formatted.
+  void setFormatQuoted(bool enable);
+
 protected:
   virtual void setCellWidth ( int );
   virtual void paintCell(QPainter *p, int row, int col);
+
+private:
+  bool m_bFormatQuoted;
 };
 
 #if QT_VERSION >= 300
