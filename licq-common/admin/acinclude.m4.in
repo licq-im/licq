@@ -115,8 +115,8 @@ fi
     [ licq_use_debug="$enableval"], [licq_use_debug="no"])
 
 if test "$licq_use_debug" = "no"; then
-  CXXFLAGS="`echo $CXXFLAGS | sed s/-g//`"
-  CFLAGS="`echo $CFLAGS | sed s/-g//`"
+  CXXFLAGS="`echo $CXXFLAGS | sed 's/-g[[^ ]]*//'`"
+  CFLAGS="`echo $CFLAGS | sed 's/-g[[^ ]]*//'`"
 fi
 ])
 
@@ -142,8 +142,8 @@ fi
     [ licqdaemon_use_debug="$enableval"], [licqdaemon_use_debug="no"])
 
 if test "$licqdaemon_use_debug" = "no"; then
-  CXXFLAGS="`echo $CXXFLAGS | sed s/-g//`"
-  CFLAGS="`echo $CFLAGS | sed s/-g//`"
+  CXXFLAGS="`echo $CXXFLAGS | sed 's/-g[[^ ]]*//'`"
+  CFLAGS="`echo $CFLAGS | sed 's/-g[[^ ]]*//'`"
 fi
 ])
 
