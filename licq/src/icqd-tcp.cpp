@@ -26,6 +26,8 @@
 CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients)
 {
+  if (_nUin == gUserManager.OwnerUin()) return NULL;
+
   ICQEvent *result = NULL;
   char *mDos = NULL;
   if (m != NULL)
@@ -85,6 +87,8 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
 //-----CICQDaemon::sendReadAwayMsg------------------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 {
+  if (nUin == gUserManager.OwnerUin()) return NULL;
+
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(u);
   gLog.Info("%sRequesting auto response from %s (#%ld).\n", L_TCPxSTR,
@@ -104,6 +108,8 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients)
 {
+  if (_nUin == gUserManager.OwnerUin()) return NULL;
+
    // make the URL info string
   char *szDescDos = NULL;
   CEventUrl *e = NULL;
@@ -161,6 +167,8 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
 CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
                         const char *szDescription, unsigned short nLevel)
 {
+  if (nUin == gUserManager.OwnerUin()) return NULL;
+
   ICQEvent *result = NULL;
   char *szDosDesc = NULL;
   if (szDescription != NULL)
@@ -207,6 +215,8 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
    UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients)
 {
+  if (nUin == gUserManager.OwnerUin()) return NULL;
+
   char *m = new char[3 + uins.size() * 80];
   int p = sprintf(m, "%d%c", uins.size(), char(0xFE));
   ContactList vc;
@@ -333,6 +343,8 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel)
 {
+  if (nUin == gUserManager.OwnerUin()) return NULL;
+
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return NULL;
   char *szReasonDos = gTranslator.NToRN(reason);
@@ -414,6 +426,8 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
 
 CICQEventTag *CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
 {
+  if (nUin == gUserManager.OwnerUin()) return NULL;
+
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
 
