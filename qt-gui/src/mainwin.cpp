@@ -67,6 +67,7 @@
 #include "optionsdlg.h"
 #include "skin.h"
 #include "securitydlg.h"
+#include "userselectdlg.h"
 #include "plugindlg.h"
 #include "randomchatdlg.h"
 #include "userinfodlg.h"
@@ -610,6 +611,19 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
      slot_register();
+   else
+   {
+     // Do we need to get a password
+     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+     if(o->Password()[0] == '\0')
+     {
+       gUserManager.DropOwner();
+       (void) new UserSelectDlg(licqDaemon);
+     }
+     else
+       gUserManager.DropOwner();
+   }
+
 
 #if QT_VERSION > 3
   XClassHint ClassHint;

@@ -72,6 +72,8 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   nfoPassword2 = new CInfoField(grpInfo, false);
   nfoPassword2->setEchoMode(QLineEdit::Password);
 
+  chkSavePassword = new QCheckBox(tr("&Save Password"), grpInfo);
+
   addPage(page2, tr("UIN Registration - Step 2"));
   setHelpEnabled(page2, false);
 
@@ -79,6 +81,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   connect (chkExistingUser, SIGNAL(toggled(bool)), nfoUin, SLOT(setEnabled(bool)));
   connect (nfoPassword2, SIGNAL(textChanged(const QString&)), this, SLOT(dataChanged()));
   chkExistingUser->setChecked(false);
+  chkSavePassword->setChecked(true);
   nfoUin->setEnabled(false);
   setNextEnabled(page2, false);
 
@@ -160,6 +163,7 @@ void RegisterUserDlg::accept()
     }
     gUserManager.SetOwnerUin(nUin);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    o->SetSavePassword(chkSavePassword->isChecked());
     o->SetPassword(nfoPassword1->text().latin1());
     gUserManager.DropOwner();
     InformUser (this, tr("Registered succesfully.  Now log on and update your personal info."));

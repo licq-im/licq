@@ -618,12 +618,14 @@ public:
   // Owner specific functions
   char *Password() { return(m_szPassword); }
   void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
-  void SetWebAware(bool b)  {  m_bWebAware = b; SaveLicqInfo(); }
-  void SetHideIp(bool b)    {  m_bHideIp = b; SaveLicqInfo(); }
+  void SetWebAware(bool b)     {  m_bWebAware = b; SaveLicqInfo(); }
+  void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
+  void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
   void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
   void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
   bool WebAware()             { return m_bWebAware; }
   bool HideIp()               { return m_bHideIp; }
+  bool SavePassword()         { return m_bSavePassword; }
   unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
 
@@ -642,7 +644,8 @@ protected:
   char *m_szPassword;
   bool m_bException,
        m_bWebAware,
-       m_bHideIp;
+       m_bHideIp,
+       m_bSavePassword;
   unsigned long  m_nRandomChatGroup;
   unsigned short m_nSSCount;
   time_t         m_nSSTime;

@@ -35,7 +35,7 @@ protected:
   CICQDaemon *server;
   QGroupBox *grpInfo;
   CInfoField *nfoUin, *nfoPassword1, *nfoPassword2;
-  QCheckBox *chkExistingUser;
+  QCheckBox *chkExistingUser, *chkSavePassword;
   QWidget* page1, *page2, *page3;
   QLabel* lblInfo, *lblInfo2;
 

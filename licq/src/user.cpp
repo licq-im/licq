@@ -2515,6 +2515,7 @@ ICQOwner::ICQOwner()
   char szTemp[MAX_LINE_LEN];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
+  m_bSavePassword = true;
   m_szPassword = NULL;
 
   Init(0);
@@ -2539,11 +2540,6 @@ ICQOwner::ICQOwner()
   m_szUinString[12] = '\0';
   m_fConf.ReadStr("Password", szTemp, "", false);
   SetPassword(&szTemp[1]); // skip leading space since we didn't trim
-  if ((szTemp[0] == '\0' || szTemp[1] =='\0') && m_nUin != 0)
-  {
-    gLog.Error("%sNo password entered.  Edit ~/.licq/owner.uin and fill in the password field.\n",
-     L_ERRORxSTR);
-  }
   m_fConf.ReadBool("WebPresence", m_bWebAware, false);
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
@@ -2625,13 +2621,17 @@ void ICQOwner::SaveLicqInfo()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteNum("Uin", Uin());
-  m_fConf.WriteStr("Password", Password());
   m_fConf.WriteBool("WebPresence", WebAware());
   m_fConf.WriteBool("HideIP", HideIp());
   m_fConf.WriteBool("Authorization", GetAuthorization());
   m_fConf.WriteNum("RCG", RandomChatGroup());
   m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
   m_fConf.WriteNum("SSCount", m_nSSCount);
+
+  if (m_bSavePassword)
+    m_fConf.WriteStr("Password", Password());
+  else
+    m_fConf.WriteStr("Password", "");
 
   if (!m_fConf.FlushFile())
   {
