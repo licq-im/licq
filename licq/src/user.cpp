@@ -262,10 +262,12 @@ void CUserManager::RemoveUser(unsigned long _nUin)
  *-------------------------------------------------------------------------*/
 void CUserManager::AddGroup(char *_szName)
 {
-  LockGroupList(LOCK_W);
-  m_vszGroups.push_back(_szName);
-  SaveGroups();
-  UnlockGroupList();
+  if(_szName) {
+    LockGroupList(LOCK_W);
+    m_vszGroups.push_back(strdup(_szName));
+    SaveGroups();
+    UnlockGroupList();
+  }
 }
 
 
