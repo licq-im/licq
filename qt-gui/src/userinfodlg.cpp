@@ -1115,6 +1115,8 @@ void UserInfoDlg::ShowHistory()
       // since it has a bug in Qt 3 which causes line breaks to mix up.
       messageText = QStyleSheet::escape(messageText);
       messageText.replace(QRegExp("\n"), "<br>");
+      messageText.replace(QRegExp(" "), "&nbsp;");
+      messageText.replace(QRegExp("\t"), "&nbsp;&nbsp;&nbsp;&nbsp;");
 
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
 
