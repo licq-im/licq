@@ -120,10 +120,10 @@ AC_TRY_COMPILE([
 #include <stdio.h>
 #include <dlfcn.h>
 ],[
-dlopen(NULL, RTLD_LAZY)
+dlopen(NULL, RTLD_NOW)
 ],[
-  AC_MSG_RESULT([RTLD_LAZY])
-  AC_DEFINE_UNQUOTED(DLOPEN_POLICY, RTLD_LAZY, [2nd dlopen parameter])
+  AC_MSG_RESULT(RTLD_NOW)
+  AC_DEFINE_UNQUOTED(DLOPEN_POLICY, RTLD_NOW, [2nd dlopen parameter])
 ],[
   AC_TRY_COMPILE([
   #include <stdio.h>
