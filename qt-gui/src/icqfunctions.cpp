@@ -572,6 +572,10 @@ void ICQFunctions::InitAboutTab()
 
   lblAbout = new QLabel(tr("About:"), p);
   mleAbout = new MLEditWrap(true, p);
+  mleAbout->setReadOnly(!m_bOwner);
+  // Windows ICQ seems to limit the about info to 450 chars
+  // so we do the same
+  mleAbout->setMaxLength(450);
 }
 
 
