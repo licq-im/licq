@@ -486,15 +486,14 @@ void convo_recv(gulong uin)
 
 	  case ICQ_CMDxSUB_URL:
 	  {	
-		const char *url = u_event->Text();
-
 		const gchar *for_user_u =
 		   g_strdup_printf("\n%s has sent you a URL!\n%s\n",
-					c->user->GetAlias(), url);
+					c->user->GetAlias(),
+					u_event->Text());
 
-		gtk_text_freeze(GTK_TEXT(c->text));
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_u, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
+		g_free(for_user_u);
 		break;
 	  }
 
@@ -504,7 +503,6 @@ void convo_recv(gulong uin)
 
 		if(u_event->IsCancelled())
 		{
-			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, chat_d, -1);
 			gtk_text_thaw(GTK_TEXT(c->text));
 		}
@@ -514,7 +512,6 @@ void convo_recv(gulong uin)
 			const gchar *for_user_c =
 				g_strdup_printf("\n%s requests to chat with you!\n%s\n",
 				c->user->GetAlias(), chat_d);
-			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_c,
 				-1);
 			gtk_text_thaw(GTK_TEXT(c->text));
@@ -531,7 +528,6 @@ void convo_recv(gulong uin)
 		
 		if(u_event->IsCancelled())
 		{
-			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, file_d, -1);
 			gtk_text_thaw(GTK_TEXT(c->text));
 		}
@@ -542,7 +538,6 @@ void convo_recv(gulong uin)
 		    	g_strdup_printf("\n%s requests to send you a file!\n%s\n",
 				    c->user->GetAlias(), file_d);
 
-			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_f, -1);
 			gtk_text_thaw(GTK_TEXT(c->text));
 			file_accept_window(c->user, u_event);

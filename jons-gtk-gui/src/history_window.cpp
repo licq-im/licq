@@ -123,7 +123,7 @@ void list_history(GtkWidget *widget, ICQUser *user)
 		_time = (*history_iter)->Time();
 		tmStupid = localtime(&_time);
 		strftime(szDate, 29, "%c", tmStupid);
-		szDesc = event_description(*history_iter);
+		strcpy(szDesc, event_description(*history_iter));
 		
 		if ((*history_iter)->Direction() == D_RECEIVER)
 		{

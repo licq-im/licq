@@ -38,9 +38,7 @@ void list_start_convo(GtkWidget *widget, ICQUser *user)
 	{
 		if(user->NewMessages() > 0)
 			c = convo_new(user, TRUE);
-
 		else
-
 			c = convo_new(user, FALSE);
 	}
 }
