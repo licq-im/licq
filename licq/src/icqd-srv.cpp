@@ -2352,7 +2352,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 		// error: empty result or nonexistent user (1E =  readonly???)
         	gLog.Warn("%sFailed to update user info: %x.\n", L_WARNxSTR, nResult);
         	e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
-        	if (e != NULL) ProcessDoneEvent(e);
+		if (e != NULL) {
+		  DoneEvent(e, EVENT_FAILED);
+		  ProcessDoneEvent(e);
+	        }
         	e = NULL;
 		break;
       	} else {
