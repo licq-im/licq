@@ -14,9 +14,6 @@ public:
   void append(const QString& s);
   void GotoEnd();
 
-  using QMultiLineEdit::hasMarkedText;
-  using QMultiLineEdit::markedText;
-
   void setBackground(const QColor&);
   void setForeground(const QColor&);
 
@@ -27,6 +24,9 @@ public:
 protected:
   virtual void setCellWidth ( int );
   virtual void paintCell(QPainter *p, int row, int col);
+
+  using QMultiLineEdit::hasMarkedText;
+  using QMultiLineEdit::markedText;
 
 private:
   bool m_bFormatQuoted;
