@@ -48,7 +48,7 @@ dep:
 
 Makefile.dep:
 	touch Makefile.dep
-	make dep
+	$(MAKE) dep
 
 clean:
 	$(RM) licq core *.o *.core obj/*.o Makefile.dep

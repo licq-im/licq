@@ -47,7 +47,7 @@ dep:
 
 Makefile.dep:
 	touch Makefile.dep
-	make dep
+	$(MAKE) dep
 
 clean:
 	$(RM) core obj/*.o *.core licq-daemon.a Makefile.dep
