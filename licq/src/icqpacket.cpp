@@ -22,6 +22,7 @@ extern int errno;
 #include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
+#include "licq_utility.h"
 #include "support.h"
 
 
@@ -1835,6 +1836,93 @@ CPT_CloseSecureChannel::CPT_CloseSecureChannel(ICQUser *_cUser)
 
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+char *PipeInput(char *m_szMessage)
+{
+  // Check for pipes
+  char *pipe = NULL;
+  if (m_szMessage[0] == '|')
+    pipe = m_szMessage;
+  else
+  {
+    pipe = strstr(m_szMessage, "\n|");
+    if (pipe != NULL) pipe++;
+  }
+
+  while (pipe != NULL)
+  {
+    char *sz = pipe;
+    char szCmd[81];
+    char szCmdOutput[4097];
+    unsigned short i;
+    CUtilityInternalWindow win;
+
+    // Move over the '|'
+    sz++;
+    // Find the end of the command
+    for (i = 0; *sz != '\r' && *sz != '\0'; i++)
+    {
+      if (i < 80) szCmd[i] = *sz;
+      sz++;
+    }
+    szCmd[i] = '\0';
+    // Ensure sz points to after the command and \r\n
+    if (*sz == '\r') sz += 2;
+
+    //gLog.Info("-> \"%s\"\n", szCmd);
+
+    if (!win.POpen(szCmd))
+    {
+      gLog.Warn("%sCould not execute \"%s\" for auto-response.\n", L_WARNxSTR, szCmd);
+      szCmdOutput[0] = '\0';
+    }
+    else
+    {
+      int c;
+      i = 0;
+      while (((c = fgetc(win.StdOut())) != EOF) && (i < 4096))
+      {
+        szCmdOutput[i++] = c;
+      }
+      szCmdOutput[i] = '\0';
+
+      if ((i = win.PClose()) != 0)
+      {
+        gLog.Warn("%s%s returned abnormally: exit code %d\n", L_WARNxSTR, szCmd, i);
+        // do anything to szCmdOutput ???
+      }
+    }
+
+    // Create the new response
+    char *szNewMsg = (char *)malloc(
+     (pipe - m_szMessage) + (strlen(szCmdOutput) << 1) + strlen(sz) );
+    *pipe = '\0';
+    strcpy(szNewMsg, m_szMessage);
+    // Make pipe point to the same place in the new message
+    pipe = &szNewMsg[pipe - m_szMessage];
+    // Copy the command output, converting N to RN and making pipe point to
+    // after the output
+    for (char *p = szCmdOutput; *p != '\0'; p++)
+    {
+      if (*p == '\n') *pipe++ = '\r';
+      *pipe++ = *p;
+    }
+    // Copy the post-command stuff
+    strcpy(pipe, sz);
+    free(m_szMessage);
+    m_szMessage = szNewMsg;
+
+    // Try again now
+    if (pipe[0] != '|')
+    {
+      pipe = strstr(pipe, "\n|");
+      if (pipe != NULL) pipe++;
+    }
+  }
+
+  return m_szMessage;
+}
+
+
 
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
                 bool _bAccept, bool l, ICQUser *pUser)
@@ -1855,19 +1943,32 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
   {
     if (*pUser->CustomAutoResponse())
     {
-      m_szMessage = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
-      pUser->usprintf(m_szMessage, pUser->CustomAutoResponse(), USPRINTF_NTORN);
+      //m_szMessage = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
+      //pUser->usprintf(m_szMessage, pUser->CustomAutoResponse(), USPRINTF_NTORN);
+      char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
+      char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
+      pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN);
+      m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
+      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
+      free(cus);
+      free(def);
     }
     else
     {
       m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
       pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
     }
+
   }
   else
     m_szMessage = strdup("");
 
   gUserManager.DropOwner();
+
+  // Check for pipes, should possibly go after the ClientToServer call
+  m_szMessage = PipeInput(m_szMessage);
+
   gTranslator.ClientToServer(m_szMessage);
 
   m_nSize += strlen(m_szMessage);
