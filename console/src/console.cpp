@@ -1426,7 +1426,7 @@ void CLicqConsole::InputUrl(int cIn)
       if (winMain->data != NULL)
       {
         delete winMain->data;
-        winMin->data = NULL;
+        winMain->data = NULL;
       }
       winMain->state = STATE_COMMAND;
       winMain->wprintf("%C%AURL aborted.\n",
