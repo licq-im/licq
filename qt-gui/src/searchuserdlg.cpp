@@ -445,7 +445,7 @@ void SearchUserDlg::searchFound(CSearchAck *s)
 void SearchUserDlg::searchDone(CSearchAck *sa)
 {
   if (sa == NULL || sa->More() == 0)
-    lblSearch->setText("Search complete.");
+    lblSearch->setText(tr("Search complete."));
   else if (sa->More() == -1)
     lblSearch->setText(tr("More users found. Narrow search."));
   else

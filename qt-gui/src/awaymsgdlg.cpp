@@ -209,6 +209,11 @@ void AwayMsgDlg::slot_selectMessage(int result)
   }
 }
 
+void AwayMsgDlg::closeEvent(QCloseEvent *e)
+{
+  e->accept();
+}
+
 
 // -----------------------------------------------------------------------------
 

@@ -202,7 +202,7 @@ void CMMUserView::dropEvent(QDropEvent * de)
   // extract the text from the event
   if (QTextDrag::decode(de, text) == FALSE)
   {
-    WarnUser(NULL, "Drag'n'Drop didn't work");
+    WarnUser(NULL, tr("Drag'n'Drop didn't work"));
     return;
   }
 

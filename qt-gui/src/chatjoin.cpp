@@ -35,14 +35,14 @@ CJoinChatDlg::CJoinChatDlg(bool bRequesting, QWidget *p)
   {
     l->setText(tr("Select chat to invite:"));
     setCaption(tr("Invite to Join Chat"));
-    btnOk->setText("&Invite");
+    btnOk->setText(tr("&Invite"));
     btnCancel->setText(tr("&Cancel"));
   }
   else
   {
     l->setText(tr("Select chat to join:"));
     setCaption(tr("Join Multiparty Chat"));
-    btnOk->setText("&Join");
+    btnOk->setText(tr("&Join"));
     btnCancel->setText(tr("&Cancel"));
   }
 

@@ -323,7 +323,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   }
 
   tbtEncoding = new QToolButton(barChat);
-  tbtEncoding->setTextLabel("Set Encoding");
+  tbtEncoding->setTextLabel(tr("Set Encoding"));
   tbtEncoding->setPopup(popupEncoding);
   tbtEncoding->setPopupDelay(0);
   tbtEncoding->setPixmap(mainwin->pmEncoding);
@@ -705,8 +705,8 @@ void ChatDlg::slot_chat()
           QApplication::beep();
         else
         {
-          if (u == chatUser) mlePaneRemote->append("\n<--BEEP-->\n");
-          mleIRCRemote->append(chatname + "> <--BEEP-->\n");
+          if (u == chatUser) mlePaneRemote->append(tr("\n<--BEEP-->\n"));
+          mleIRCRemote->append(chatname + tr("> <--BEEP-->\n"));
         }
         break;
       }

@@ -97,9 +97,9 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   {
     m_bOpen = !u->Secure();
     if (u->Secure())
-      lblStatus->setText("Ready to close channel");
+      lblStatus->setText(tr("Ready to close channel"));
     else
-      lblStatus->setText("Ready to request channel");
+      lblStatus->setText(tr("Ready to request channel"));
     btnSend->setFocus();
   }
   else

@@ -24,6 +24,8 @@ protected:
   static QPoint snPos;
   short m_nSAR;
 
+  void closeEvent(QCloseEvent *);
+
 signals:
   void popupOptions(int);
   void done();
