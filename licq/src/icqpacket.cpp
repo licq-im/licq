@@ -1161,7 +1161,7 @@ CPU_TypingNotification::CPU_TypingNotification(const char *szId, bool bActive)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_TYPING)
 {
   int nLen = strlen(szId);
-  unsigned short nTyping = bActive ? ICQ_TYPING_ACTIVE : ICQ_TYPING_INACTIVEx1;
+  unsigned short nTyping = bActive ? ICQ_TYPING_ACTIVE : ICQ_TYPING_INACTIVEx0;
   m_nSize += 13 + nLen;
 
   InitBuffer();

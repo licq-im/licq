@@ -1622,12 +1622,6 @@ void UserSendCommon::massMessageToggled(bool b)
 //-----UserSendCommon::sendButton--------------------------------------------
 void UserSendCommon::sendButton()
 {
-  // Take care of typing notification now
-  tmrTyping->stop();
-  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(m_szId, m_nPPID, false);
-
-  // back to our intentions...
   if(!mainwin->m_bManualNewUser)
   {
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
@@ -2106,6 +2100,11 @@ UserSendMsgEvent::~UserSendMsgEvent()
 //-----UserSendMsgEvent::sendButton------------------------------------------
 void UserSendMsgEvent::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
@@ -2269,6 +2268,11 @@ void UserSendUrlEvent::resetSettings()
 //-----UserSendUrlEvent::sendButton------------------------------------------
 void UserSendUrlEvent::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  
   if (edtItem->text().stripWhiteSpace().isEmpty())
   {
     InformUser(this, tr("No URL specified"));
@@ -2431,6 +2435,11 @@ UserSendFileEvent::~UserSendFileEvent()
 
 void UserSendFileEvent::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  
   if (edtItem->text().stripWhiteSpace().isEmpty())
   {
     WarnUser(this, tr("You must specify a file to transfer!"));
@@ -2571,6 +2580,11 @@ void UserSendChatEvent::resetSettings()
 //-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  
   unsigned long icqEventTag;
 
   if (m_nMPChatPort == 0)
@@ -2656,6 +2670,11 @@ UserSendContactEvent::~UserSendContactEvent()
 //TODO Fix this for new protocol plugin
 void UserSendContactEvent::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  
   CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
   UserStringList users;
 
@@ -2786,6 +2805,11 @@ UserSendSmsEvent::~UserSendSmsEvent()
 //-----UserSendSmsEvent::sendButton--------------------------------------------
 void UserSendSmsEvent::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
     icqEventTag = m_lnEventTag.front();
