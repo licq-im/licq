@@ -41,10 +41,14 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 
 	/* Make the label and entry and pack them */
 	label = gtk_label_new("Authorize UIN:");
-	au->entry = gtk_entry_new_with_max_length(8);
+	au->entry = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
 	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(h_box), au->entry, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
+
+	/* Accept only numbers in au->entry */
+	gtk_signal_connect(GTK_OBJECT(au->entry), "insert-text",
+			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
 
 	/* Make the buttons and pack them */
 	h_box = gtk_hbox_new(FALSE, 5);

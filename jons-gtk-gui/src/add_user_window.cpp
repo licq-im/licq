@@ -45,9 +45,13 @@ void menu_system_add_user(GtkWidget *window, gpointer data)
 	/* Work on the first hbox */
 	h_box = gtk_hbox_new(FALSE, 5);
 	label = gtk_label_new("Add Uin: ");
-	a->entry = gtk_entry_new();
+	a->entry = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
 	gtk_box_pack_start(GTK_BOX(h_box), label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(h_box), a->entry, TRUE, TRUE, 0);
+
+	/* Accept only numbers in the a->entry */
+	gtk_signal_connect(GTK_OBJECT(a->entry), "insert-text",
+			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
 	
 	/* Add the first hbox to the top of the vbox */
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 5);
