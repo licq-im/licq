@@ -132,7 +132,7 @@ void ICQFunctions::CreateReadEventTab()
   mleRead->setReadOnly(true);
   splRead->setOpaqueResize(true);
   splRead->setResizeMode(msgView, QSplitter::KeepSize);
-  connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
+  connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
 }
 
 
