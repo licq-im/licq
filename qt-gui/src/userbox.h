@@ -157,6 +157,7 @@ public:
 
   static UserFloatyList floaties;
   static CUserView *FindFloaty(unsigned long);
+  static void UpdateFloaties();
 
 protected:
   QPopupMenu *mnuUser, *mnuGroup, *mnuAwayModes;

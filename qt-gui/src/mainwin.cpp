@@ -583,6 +583,9 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     userView->setColors(skin->colors.online, skin->colors.away,
                         skin->colors.offline, skin->colors.newuser,
                         skin->colors.background, skin->colors.gridlines);
+    // Update all the floaties
+    CUserView::UpdateFloaties();
+
     if (btnSystem != NULL) btnSystem->show();
     lblStatus->show();
     lblMsg->show();
@@ -606,6 +609,10 @@ void CMainWindow::CreateUserView()
                        &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
+
+  // Update all the floaties
+  CUserView::UpdateFloaties();
+
   connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 }
 
@@ -1980,6 +1987,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
      userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
                           &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
+     CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
    }

@@ -847,6 +847,20 @@ void  CUserView::viewportMouseReleaseEvent(QMouseEvent* me)
 }
 
 
+void CUserView::UpdateFloaties()
+{
+  UserFloatyList::iterator iter;
+  for (iter = CUserView::floaties.begin(); iter != CUserView::floaties.end(); iter++)
+  {
+    CUserViewItem *i = (*iter)->firstChild();
+    ICQUser *u = gUserManager.FetchUser(i->ItemUin(), LOCK_R);
+    i->setGraphics(u);
+    //i->repaint();
+    (*iter)->triggerUpdate();
+  }
+}
+
+
 // -----------------------------------------------------------------------------
 
 void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
