@@ -45,6 +45,7 @@ protected:
   pthread_mutex_t mutex_plugins;
   ProtoPluginsList list_protoplugins;
   pthread_mutex_t mutex_protoplugins;
+  bool m_bDeletePID;
 
 friend class CICQDaemon;
 };

@@ -178,6 +178,7 @@ CLicq::CLicq()
   licqDaemon = NULL;
   pthread_mutex_init(&mutex_plugins, NULL);
   pthread_mutex_init(&mutex_protoplugins, NULL);
+  m_bDeletePID = true;
 
   //FIXME ICQ should be put into its own plugin.
   CProtoPlugin *p = new CProtoPlugin;
@@ -318,6 +319,7 @@ bool CLicq::Init(int argc, char **argv)
         gLog.Error(tr("%sLicq: Already running at pid %d.\n"
                       "%s      Kill process or remove %s.\n"),
                    L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+        m_bDeletePID = false;
         return false;
       }
     }
@@ -452,9 +454,12 @@ CLicq::~CLicq()
   if (licqDaemon != NULL) delete licqDaemon;
 
   // Remove the lock file
-  char szConf[MAX_FILENAME_LEN];
-  snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
-  remove(szConf);
+  if (m_bDeletePID)
+  {
+    char szConf[MAX_FILENAME_LEN];
+    snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
+    remove(szConf);
+  }
 }
 
 
