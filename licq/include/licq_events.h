@@ -259,12 +259,23 @@ friend class CICQEventTag;
  *
  *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
  *
+ *  SIGNAL_ONEVENT - FIXME: MISSING DESCRIPTION
+ *
+ *  SIGNAL_UI_VIEWEVENT - The UIN is that of the user we want to view the
+ *  oldest event of or 0 if we just want to view the oldest pending event.
+ *  All other parameters are 0.
+ *
+ *  SIGNAL_UI_MESSAGE - The UIN is that of the user we want to send a
+ *  message. All other parameters are 0.
+ *
  *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
 const unsigned long SIGNAL_LOGOFF                = 0x00000008;
 const unsigned long SIGNAL_ONEVENT               = 0x00000010;
+const unsigned long SIGNAL_UI_VIEWEVENT          = 0x00000020;
+const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // User information update constants

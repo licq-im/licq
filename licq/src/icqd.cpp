@@ -33,6 +33,8 @@ extern int errno;
 
 #include "licq_icqd.h"
 
+#define STRIP(x) while(isspace(*(x)) && *(x) != '\0') (x)++;
+
 using namespace std;
 
 CDaemonStats::CDaemonStats()
@@ -1588,6 +1590,88 @@ unsigned long StringToStatus(char *_szStatus)
   return nStatus;
 }
 
+int GetUinFromArg(char **p_szArg, unsigned long *nUin)
+{
+  char *szAlias, *szCmd;
+  bool bCheckUin = true; 
+  char *szArg = *p_szArg;
+
+  *nUin = 0;
+
+  if (szArg == NULL) {
+    return 0;
+  }
+   
+  // Check if the alias is quoted
+  if (szArg[0] == '"')
+  {
+    bCheckUin = false;
+    szAlias = &szArg[1];
+    szCmd = strchr(&szArg[1], '"');
+    if (szCmd == NULL)
+    {
+      gLog.Warn("%sUnbalanced quotes.\n", L_WARNxSTR);
+      return -1;
+    }
+    *szCmd++ = '\0';
+    szCmd = strchr(szCmd, ' ');
+  }
+  else if (szArg[0] == '#')
+  {
+    *p_szArg = NULL;
+    *nUin = gUserManager.OwnerUin();
+    return 0;
+  }
+  else
+  {   
+    szAlias = szArg;
+    szCmd = strchr(szArg, ' ');
+  }
+   
+  if (szCmd != NULL)
+  {
+    *szCmd++ = '\0';
+    STRIP(szCmd);   
+  }
+  *p_szArg = szCmd;
+
+  // Find the user
+  // See if all the chars are digits
+  if (bCheckUin)
+  {
+    char *sz = szAlias;
+    while (isdigit(*sz)) sz++;
+    if (*sz == '\0') *nUin = atol(szAlias);
+  }
+   
+  if (*nUin == 0)
+  {
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
+      {
+        *nUin = pUser->Uin();
+        FOR_EACH_USER_BREAK;
+      }
+    }  
+    FOR_EACH_USER_END
+    if (*nUin == 0)   
+    {
+      gLog.Warn("%sInvalid user: %s.\n", L_WARNxSTR, szAlias);
+      return -1;
+    } 
+  }   
+  else
+  {
+    if (!gUserManager.IsOnList(*nUin))
+    {
+      gLog.Warn("%sInvalid uin: %lu.\n", L_WARNxSTR, *nUin);
+      return -1;
+    }
+  }  
+
+  return 0;
+}
 
 //-----ProcessFifo--------------------------------------------------------------
 void CICQDaemon::ProcessFifo(char *_szBuf)
@@ -1768,6 +1852,33 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
   {
     Shutdown();
   }
+  else if (strcasecmp(szCommand, "ui_viewevent") == 0)
+  {
+    unsigned long nUin;
+    /* Empty argument string is acceptable */
+    char *tmp = szRawArgs ? (*szRawArgs ? szRawArgs : NULL) : NULL;
+
+    if (!GetUinFromArg(&tmp, &nUin))
+    {
+      PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
+    }
+  }
+  else if (strcasecmp(szCommand, "ui_message") == 0)
+  {
+    unsigned long nUin;
+
+    if (!GetUinFromArg(szRawArgs ? &szRawArgs : NULL, &nUin))
+    {
+      if (nUin)
+      {
+        PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE, 0, nUin, 0, 0));
+      }
+      else
+      {
+        gLog.Warn("%sMissing argument user.\n", L_WARNxSTR);
+      }
+    }
+  }
   else if (strcasecmp(szCommand, "help") == 0)
   {
     gLog.Info("%sFifo Help:\n"
@@ -1778,8 +1889,11 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
               "%sadduser <uin>\n"
               "%suserinfo <uin>\n"
               "%sredirect <device>\n"
-              "%sexit\n", L_FIFOxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR,
-              L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR);
+              "%sexit\n"
+              "%sui_viewevent [user name]\n"
+              "%sui_message <user name>\n", L_FIFOxSTR, L_BLANKxSTR, L_BLANKxSTR,
+              L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR,
+              L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR);
   }
   else
   {
