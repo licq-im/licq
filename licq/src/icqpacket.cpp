@@ -1648,9 +1648,9 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins)
     // No group yet?  Use default.  No default? Use ID of 1 (general)
     if (m_nGSID == 0)
     {
-      unsigned short nDefault = gUserManager.DefaultGroup();
-      if (nDefault && nDefault <= pID->size())
-        m_nGSID = (*pID)[nDefault-1];
+      unsigned short nNewGroup = gUserManager.NewUserGroup();
+      if (nNewGroup && nNewGroup <= pID->size())
+        m_nGSID = (*pID)[nNewGroup-1];
 
       if (m_nGSID == 0)
         m_nGSID = 1; // General (unless user renamed group)
@@ -1764,9 +1764,9 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       if (m_nGSID == 0)
       {
-        unsigned short nDefault = gUserManager.DefaultGroup();
-        if (nDefault && nDefault <= pID->size())
-          m_nGSID = (*pID)[nDefault-1];
+        unsigned short nNewGroup = gUserManager.NewUserGroup();
+        if (nNewGroup && nNewGroup <= pID->size())
+          m_nGSID = (*pID)[nNewGroup-1];
 
         if (m_nGSID == 0)
           m_nGSID = 1; // General (unless user renamed group)

@@ -105,7 +105,7 @@ CUserManager::~CUserManager()
 
   GroupList::iterator g_iter;
   for (g_iter = m_vszGroups.begin(); g_iter != m_vszGroups.end(); g_iter++)
-    delete *g_iter;
+    free(*g_iter);
 
   // Owner destructor saves the current auto response though
   delete m_xOwner;
@@ -169,7 +169,7 @@ bool CUserManager::Load()
   licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
   if(m_nDefaultGroup >=  1024)
       m_nDefaultGroup = 0;
-  //licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
+  licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
   licqConf.CloseFile();
 
   // Load users from users.conf
@@ -349,7 +349,7 @@ void CUserManager::RemoveGroup(unsigned short n)
   pUser->SetInGroup(GROUPS_USER, j, false);
   FOR_EACH_USER_END;
   if (m_nDefaultGroup >= n) m_nDefaultGroup--;
-  //if (m_nNewUserGroup >= n) m_nNewUserGroup--;
+  if (m_nNewUserGroup >= n) m_nNewUserGroup--;
 
   RemoveGroupID(n);
 
@@ -378,8 +378,8 @@ void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
   m_vszGroups[g2 - 1] = g;
   if (m_nDefaultGroup == g1) m_nDefaultGroup = g2;
   else if (m_nDefaultGroup == g2) m_nDefaultGroup = g1;
-  //if (m_nNewUserGroup == g1) m_nNewUserGroup = g2;
-  //else if (m_nNewUserGroup == g2) m_nNewUserGroup = g1;
+  if (m_nNewUserGroup == g1) m_nNewUserGroup = g2;
+  else if (m_nNewUserGroup == g2) m_nNewUserGroup = g1;
   SaveGroups();
   UnlockGroupList();
 
@@ -450,7 +450,7 @@ void CUserManager::SaveGroups()
   //UnlockGroupList();
 
   licqConf.WriteNum("DefaultGroup", m_nDefaultGroup);
-  //licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
+  licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
   licqConf.FlushFile();
   licqConf.CloseFile();
 }
@@ -887,7 +887,8 @@ void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
   u->AddToGroup(GROUPS_USER, _nGroup);
   int nGSID = u->GetGSID();
   DropUser(u);
-  gLicqDaemon->icqChangeGroup(_nUin, _nGroup, nGSID);
+  if (gLicqDaemon)
+    gLicqDaemon->icqChangeGroup(_nUin, _nGroup, nGSID);
 }
 
 
@@ -898,7 +899,6 @@ void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGro
 {
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
-  int nGSID = u->GetGSID();
   u->RemoveFromGroup(GROUPS_USER, _nGroup);
   DropUser(u);
 }
@@ -1435,10 +1435,11 @@ void ICQUser::SetDefaults()
   sprintf(szTemp, "%ld", Uin());
   SetAlias(szTemp);
   SetHistoryFile("default");
-  //SetGroups(GROUPS_SYSTEM, 0);
-  //SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
-  SetGroups(GROUPS_USER, 0);
   SetGroups(GROUPS_SYSTEM, 0);
+  if (gUserManager.NewUserGroup())
+    SetGroups(GROUPS_USER, (unsigned long)(1 << (gUserManager.NewUserGroup()-1)));
+  else
+    SetGroups(GROUPS_USER, 0);
   SetNewUser(true);
   SetAuthorization(false);
   SetNewUser(true);

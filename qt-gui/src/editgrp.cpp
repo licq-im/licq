@@ -52,22 +52,22 @@ EditGrpDlg::EditGrpDlg(QWidget *parent)
   QWhatsThis::add(btnEdit, tr("Edit group name (hit enter to save)."));
   btnDefault = new QPushButton(tr("Set Default"), grpGroups);
   QWhatsThis::add(btnDefault, tr("The default group to start up in."));
-  //btnNewUser = new QPushButton(tr("Set New Users"), grpGroups);
-  //QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added."));
+  btnNewUser = new QPushButton(tr("Set New Users"), grpGroups);
+  QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group."));
   vlay->addWidget(btnAdd);
   vlay->addWidget(btnRemove);
   vlay->addWidget(btnUp);
   vlay->addWidget(btnDown);
   vlay->addWidget(btnEdit);
   vlay->addWidget(btnDefault);
-  //vlay->addWidget(btnNewUser);
+  vlay->addWidget(btnNewUser);
 
   glay->addWidget(new QLabel(tr("Default:"), grpGroups), 1, 0);
   nfoDefault = new CInfoField(grpGroups, true);
   glay->addMultiCellWidget(nfoDefault, 1, 1, 1, 2);
-  //glay->addWidget(new QLabel(tr("New User:"), grpGroups), 2, 0);
-  //nfoNewUser = new CInfoField(grpGroups, true);
-  //glay->addMultiCellWidget(nfoNewUser, 2, 2, 1, 2);
+  glay->addWidget(new QLabel(tr("New User:"), grpGroups), 2, 0);
+  nfoNewUser = new CInfoField(grpGroups, true);
+  glay->addMultiCellWidget(nfoNewUser, 2, 2, 1, 2);
 
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
@@ -76,6 +76,11 @@ EditGrpDlg::EditGrpDlg(QWidget *parent)
   QHBoxLayout *hlay = new QHBoxLayout;
   hlay->addWidget(QWhatsThis::whatsThisButton(this), 0, AlignLeft);
   hlay->addSpacing(20);
+  btnSave = new QPushButton(tr("&Save"), this);
+  btnSave->setEnabled(false);
+  btnSave->setMinimumWidth(75);
+  QWhatsThis::add(btnSave, tr("Save the name of a group being modified."));
+  hlay->addWidget(btnSave, 0, AlignRight);
   btnDone = new QPushButton(tr("&Done"), this);
   btnDone->setMinimumWidth(75);
   hlay->addWidget(btnDone, 0, AlignRight);
@@ -88,10 +93,11 @@ EditGrpDlg::EditGrpDlg(QWidget *parent)
   connect(btnUp, SIGNAL(clicked()), this, SLOT(slot_up()));
   connect(btnDown, SIGNAL(clicked()), this, SLOT(slot_down()));
   connect(btnDefault, SIGNAL(clicked()), this, SLOT(slot_default()));
-  //connect(btnNewUser, SIGNAL(clicked()), this, SLOT(slot_newuser()));
+  connect(btnNewUser, SIGNAL(clicked()), this, SLOT(slot_newuser()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
   connect(btnDone, SIGNAL(clicked()), this, SLOT(slot_done()));
   connect(edtName, SIGNAL(returnPressed()), this, SLOT(slot_editok()));
+  connect(btnSave, SIGNAL(clicked()), this, SLOT(slot_editok()));
 }
 
 
@@ -101,16 +107,16 @@ void EditGrpDlg::RefreshList()
   lstGroups->insertItem(tr("All Users"));
   if (gUserManager.DefaultGroup() == 0)
     nfoDefault->setText(tr("All Users"));
-  //if (gUserManager.NewUserGroup() == 0)
-  //  nfoNewUser->setText(tr("All Users"));
+  if (gUserManager.NewUserGroup() == 0)
+    nfoNewUser->setText(tr("All Users"));
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
   {
     lstGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
     if (i + 1 == gUserManager.DefaultGroup())
       nfoDefault->setText(QString::fromLocal8Bit((*g)[i]));
-    //if (i + 1== gUserManager.NewUserGroup())
-    //  nfoNewUser->setText(QString::fromLocal8Bit((*g)[i]));
+    if (i + 1== gUserManager.NewUserGroup())
+      nfoNewUser->setText(QString::fromLocal8Bit((*g)[i]));
   }
   gUserManager.UnlockGroupList();
 }
@@ -169,7 +175,6 @@ void EditGrpDlg::slot_default()
   RefreshList();
 }
 
-/*
 void EditGrpDlg::slot_newuser()
 {
   int n = lstGroups->currentItem();
@@ -177,12 +182,13 @@ void EditGrpDlg::slot_newuser()
   gUserManager.SetNewUserGroup(n);
   RefreshList();
 }
-*/
 
 void EditGrpDlg::slot_edit()
 {
   int n = lstGroups->currentItem() - 1;
   if (n < 0) return;
+  btnSave->setEnabled(true);
+  btnDone->setEnabled(false);
   edtName->setEnabled(true);
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   edtName->setText(QString::fromLocal8Bit((*g)[n]));
@@ -205,6 +211,8 @@ void EditGrpDlg::slot_editok()
   btnEdit->setText(tr("Edit Name"));
   edtName->clear();
   edtName->setEnabled(false);
+  btnSave->setEnabled(false);
+  btnDone->setEnabled(true);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editok()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
 }
@@ -216,6 +224,8 @@ void EditGrpDlg::slot_editcancel()
   btnEdit->setText(tr("Edit Name"));
   edtName->clear();
   edtName->setEnabled(false);
+  btnSave->setEnabled(false);
+  btnDone->setEnabled(true);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editcancel()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
 }

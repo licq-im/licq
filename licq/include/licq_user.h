@@ -649,8 +649,8 @@ public:
   unsigned short NumUsers();
   unsigned short DefaultGroup()  { return m_nDefaultGroup; }
   void SetDefaultGroup(unsigned short n)  { m_nDefaultGroup = n; SaveGroups(); }
-  //unsigned short NewUserGroup()  { return m_nNewUserGroup; }
-  //void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
+  unsigned short NewUserGroup()  { return m_nNewUserGroup; }
+  void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
   pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_groupidlist;
@@ -660,7 +660,7 @@ protected:
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
-  unsigned short m_nDefaultGroup, //m_nNewUserGroup,
+  unsigned short m_nDefaultGroup, m_nNewUserGroup,
                  m_nUserListLockType, m_nGroupListLockType,
                  m_nGroupIDListLockType;
   bool m_bAllowSave;
