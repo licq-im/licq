@@ -16,6 +16,7 @@ extern int errno;
 #include "licq_icqd.h"
 #include "licq_file.h"
 #include "licq_user.h"
+#include "licq_socket.h"
 #include "licq_constants.h"
 
 extern "C" { const char *LP_Version(); }
@@ -100,7 +101,7 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
   // Log on if necessary
   if (m_szStatus != NULL)
   {
-    unsigned long s = licqDaemon->StringToStatus(m_szStatus);
+    unsigned long s = StringToStatus(m_szStatus);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
     bool b = o->StatusOffline();
     gUserManager.DropOwner();
@@ -208,7 +209,7 @@ void CLicqForwarder::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGON:
     break;
   default:
-    gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %d.\n", 
+    gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %ld.\n", 
               L_WARNxSTR, s->Signal());
     break;
   }
@@ -266,7 +267,7 @@ void CLicqForwarder::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 
   if (e == NULL)
   {
-    gLog.Warn("%sInvalid message id (%d).\n", L_FORWARDxSTR, nId);
+    gLog.Warn("%sInvalid message id (%ld).\n", L_FORWARDxSTR, nId);
   }
   else
   {
