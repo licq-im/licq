@@ -233,8 +233,7 @@ void CBuffer::Clear()
 //-----reset--------------------------------------------------------------------
 void CBuffer::Reset()
 {
-  setDataPosRead(getDataStart());
-  setDataPosWrite(getDataStart());
+  m_pDataPosRead = m_pDataStart;
 }
 
 //-----Empty--------------------------------------------------------------------
