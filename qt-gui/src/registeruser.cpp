@@ -69,6 +69,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
   nfoPassword2->setMaxLength(8);
 
   addPage(page2, tr("UIN Registration - Step 2"));
+  setHelpEnabled(page2, false);
 
   connect (cancelButton(), SIGNAL(clicked()), SLOT(hide()) );
   connect (chkExistingUser, SIGNAL(toggled(bool)), nfoUin, SLOT(setEnabled(bool)));
@@ -81,12 +82,14 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
   (void) new QLabel(tr("Now click Finish to start the registration process."), page3);
 
   addPage(page3, tr("UIN Registration - Step 3"));
+  setHelpEnabled(page3, false);
 
   setMinimumSize(300, 200);
   setCaption(tr("Licq User Registration"));
 
   show();
 }
+
 
 void RegisterUserDlg::dataChanged()
 {
