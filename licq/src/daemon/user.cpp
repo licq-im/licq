@@ -1836,8 +1836,6 @@ ICQOwner::ICQOwner()
   sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   SetHistoryFile(filename);
 
-  printf("%d %d\n", m_nTimezone, SystemTimezone());
-
   if (m_nTimezone != SystemTimezone())
   {
     gLog.Warn("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
