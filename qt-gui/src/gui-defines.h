@@ -15,6 +15,7 @@ enum UserMenu {
   mnuUserSendChat,
   mnuUserSendFile,
   mnuUserSendContact,
+  mnuUserSendKey,
   mnuUserAuthorize,
   mnuUserCheckResponse,
   mnuUserCustomAutoResponse,

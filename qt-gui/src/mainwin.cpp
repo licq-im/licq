@@ -84,6 +84,7 @@ extern "C" {
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
+#include "keyrequestdlg.h"
 
 #include "licq_qt-gui.conf.h"
 
@@ -1642,6 +1643,13 @@ void CMainWindow::callUserFunction(int index)
     case mnuUserRemoveFromList:
       RemoveUserFromList(m_nUserMenuUin, this);
       break;
+
+    case mnuUserSendKey:
+    {
+      (void) new KeyRequestDlg(licqSigMan, nUin);
+      break;
+    }
+
     default:
       callFunction(index, nUin);
   }
@@ -1791,7 +1799,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
       break;
     }
     default:
-      gLog.Warn("%sunknown callFunction() fcn: %d", L_WARNxSTR, fcn);
+      gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
   if(e != NULL)
     e->show();
@@ -2569,12 +2577,13 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuStatus->changeItem(pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
      mnuStatus->changeItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
      mnuStatus->changeItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
-     mnuUser->changeItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
+     mnuUser->changeItem(pmMessage, tr("Send &Message"), mnuUserSendMsg);
      mnuUser->changeItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
      mnuUser->changeItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-     mnuUser->changeItem(pmContact, tr("Send &Contact List"), mnuUserSendContact);
+     mnuUser->changeItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+     mnuUser->changeItem(tr("Request &Secure Channel"), mnuUserSendKey);
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
@@ -2712,12 +2721,14 @@ void CMainWindow::initMenu()
    mnuUser = new QPopupMenu(NULL);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
    mnuSend = new QPopupMenu(this);
-   mnuSend->insertItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
+   mnuSend->insertItem(pmMessage, tr("Send &Message"), mnuUserSendMsg);
    mnuSend->insertItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
    mnuSend->insertItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
-   mnuSend->insertItem(pmContact, tr("Send Contact List"), mnuUserSendContact);
+   mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+   mnuSend->insertSeparator();
+   mnuSend->insertItem(tr("Request &Secure Channel"), mnuUserSendKey);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("Send"), mnuSend);
    mnuUser->insertItem(tr("&Away Modes"), mnuAwayModes);

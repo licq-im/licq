@@ -16,7 +16,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	plugindlg.h registeruser.h searchuserdlg.h \
 	securitydlg.h showawaymsgdlg.h sigman.h skin.h skinbrowser.h userbox.h\
 	utilitydlg.h wharf.h randomchatdlg.h forwarddlg.h chatjoin.h \
-	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h 
+	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h
 
 licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
@@ -26,7 +26,7 @@ licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	registeruser.cpp searchuserdlg.cpp securitydlg.cpp showawaymsgdlg.cpp \
 	sigman.cpp skin.cpp skinbrowser.cpp userbox.cpp utilitydlg.cpp \
 	wharf.cpp randomchatdlg.cpp forwarddlg.cpp chatjoin.cpp mmlistview.cpp \
-        mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp
+  mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp
 
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
 	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
