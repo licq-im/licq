@@ -169,11 +169,14 @@ protected slots:
   void slot_doneregister();
   void slot_doneOptions();
   void slot_doneOwnerFcn(ICQEvent *);
+  void slot_doneAwayMsgDlg();
   void saveOptions();
   void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
   void showPluginDlg();
+  void slot_AwayMsgDlg();
+  void showAwayMsgDlg(unsigned short status);
   void showOptionsDlg(int);
   void popupOptionsDlg() { emit showOptionsDlg(0); };
   void showAuthUserDlg();

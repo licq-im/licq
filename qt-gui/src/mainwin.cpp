@@ -293,18 +293,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     strcpy(szSkin, skinName);
 
   style = new QWindowsStyle;
-  awayMsgDlg = new AwayMsgDlg;
-  connect(awayMsgDlg, SIGNAL(popupOptions(int)), this, SLOT(showOptionsDlg(int)));
+  awayMsgDlg = NULL;
   optionsDlg = NULL;
   registerUserDlg = NULL;
   m_nRealHeight = 0;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-#ifdef USE_KDE
-  m_szCaption = tr("KLicq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
-#else
   m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
-#endif
   gUserManager.DropOwner();
   setCaption(m_szCaption);
 
@@ -537,7 +532,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   }
   else if (skin->lblStatus.pixmap != NULL)
     lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
-  connect(lblStatus, SIGNAL(doubleClicked()), awayMsgDlg, SLOT(show()));
+  connect(lblStatus, SIGNAL(doubleClicked()), this, SLOT(slot_AwayMsgDlg()));
   QToolTip::add(lblStatus, tr("Right click - Status menu\n"
                               "Double click - Set auto response"));
 
@@ -970,11 +965,42 @@ void CMainWindow::updateStatus()
 }
 
 
+void CMainWindow::slot_AwayMsgDlg()
+{
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if(o != NULL) {
+    showAwayMsgDlg(o->Status());
+    gUserManager.DropOwner();
+  }
+}
+
+
+void CMainWindow::slot_doneAwayMsgDlg()
+{
+  awayMsgDlg = NULL;
+}
+
+
+void CMainWindow::showAwayMsgDlg(unsigned short nStatus)
+{
+  if(awayMsgDlg == NULL) {
+    awayMsgDlg = new AwayMsgDlg();
+    connect(awayMsgDlg, SIGNAL(popupOptions(int)), this, SLOT(showOptionsDlg(int)));
+    connect(awayMsgDlg, SIGNAL(done()), this, SLOT(slot_doneAwayMsgDlg()));
+  }
+  else
+    awayMsgDlg->raise();
+
+  awayMsgDlg->SelectAutoResponse(nStatus);
+}
+
+
 //----CMainWindow::changeStatusManual-------------------------------------------
 void CMainWindow::changeStatusManual(int id)
 {
   if (id != ICQ_STATUS_OFFLINE && (id & 0xFF) != ICQ_STATUS_ONLINE)
-    awayMsgDlg->SelectAutoResponse(id);
+    showAwayMsgDlg(id);
+
   changeStatus(id);
 }
 
@@ -1874,7 +1900,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("User Functions"), mnuUserAdm);
    mnuSystem->insertItem(tr("&Status"), mnuStatus);
    mnuSystem->insertItem(tr("&Group"), mnuUserGroups);
-   mnuSystem->insertItem(tr("Set &Auto Response..."), awayMsgDlg, SLOT(show()));
+   mnuSystem->insertItem(tr("Set &Auto Response..."), this, SLOT(slot_AwayMsgDlg()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Show &Network Window"), licqLogWindow, SLOT(show()));
    mnuSystem->insertItem(tr("Use &Mini Mode"), this, SLOT(miniMode()));

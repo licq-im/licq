@@ -30,12 +30,12 @@
 #include "sar.h"
 #include "user.h"
 
+
 // -----------------------------------------------------------------------------
 
 AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
     : QDialog(parent, name)
 {
-  nX = nY = 0;
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
   mleAwayMsg = new MLEditWrap(true, this);
@@ -70,6 +70,7 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
   l->addWidget(btnCancel);
 }
 
+
 // -----------------------------------------------------------------------------
 
 void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
@@ -86,33 +87,22 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
                         .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
   gUserManager.DropOwner();
 
-  if(nX && nY)
-    move(nX, nY);
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
 
-  QDialog::show();
+  if(!isVisible())
+    show();
 }
+
 
 // -----------------------------------------------------------------------------
 
-void AwayMsgDlg::show()
+void AwayMsgDlg::hideEvent(QHideEvent*)
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short m_nStatus = o->Status();
-  gUserManager.DropOwner();
+  emit done();
+  close(true);
+};
 
-  SelectAutoResponse(m_nStatus);
-}
-
-// -----------------------------------------------------------------------------
-
-void AwayMsgDlg::hide()
-{
-  nX = x();
-  nY = y();
-  QDialog::hide();
-}
 
 // -----------------------------------------------------------------------------
 
@@ -123,6 +113,7 @@ void AwayMsgDlg::ok()
   gUserManager.DropOwner();
   accept();
 }
+
 
 // -----------------------------------------------------------------------------
 
@@ -135,7 +126,6 @@ void AwayMsgDlg::slot_selectMessage()
   // Fill in the menu bar
   switch (m_nStatus)
   {
-
   case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
   case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
   case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
@@ -169,6 +159,7 @@ void AwayMsgDlg::slot_selectMessage()
 
   delete menu;
 }
+
 
 // -----------------------------------------------------------------------------
 
