@@ -561,10 +561,10 @@ void OptionsDlg::ApplyOptions()
   QString txtSndSysMsg = edtSndSysMsg->url();
   QString txtSndMsgSent = edtSndMsgSent->url();
 
-  const char *oemparams[7] = { txtSndMsg.latin1(), txtSndUrl.latin1(),
+  const char *oemparams[8] = { txtSndMsg.latin1(), txtSndUrl.latin1(),
    txtSndChat.latin1(), txtSndFile.latin1(),
    txtSndNotify.latin1(), txtSndSysMsg.latin1(),
-   txtSndMsgSent.latin1() };
+   txtSndMsgSent.latin1(), 0 };
 
   oem->SetParameters(txtSndPlayer.latin1(), oemparams);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
