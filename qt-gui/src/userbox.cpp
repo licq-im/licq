@@ -941,7 +941,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
 #if QT_VERSION >= 300
 void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
 {
-  CUserViewItem *clickedItem = (CUserViewItem *)itemAt(e->pos());
+  CUserViewItem *clickedItem = (CUserViewItem *)itemAt(contentsToViewport( e->pos()) );
   if (clickedItem != NULL)
   {
     setSelected(clickedItem, true);
