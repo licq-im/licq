@@ -1,12 +1,13 @@
-# translation of de.po to finnish
+# translation of de.po to german
 # This is a Qt message file in .po format.  Each msgid starts with
 # a scope.  This scope should *NOT* be translated - eg. "Foo::Bar"
 # would be translated to "Pub", not "Foo::Pub".
+# Thomas Reitelbach <tr@erdfunkstelle.de>, 2003
 msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
-"POT-Creation-Date: 2003-02-27 12:00+0200\n"
-"PO-Revision-Date: 2003-02-27 12:00+0200\n"
+"POT-Creation-Date: 2003-02-03 12:00+0200\n"
+"PO-Revision-Date: 2003-03-14 19:36+0200\n"
 "Last-Translator: Tuomas Jaakola <tuomas.jaakola@iki.fi>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: finnish <licq-devel@licq.org>\n"
@@ -78,6 +79,21 @@ msgstr "Aseta %1-vastaus käyttäjälle %2"
 
 msgid "AwayMsgDlg::I'm currently %1, %a.\nYou can leave me a message.\n(%m messages pending from you)."
 msgstr "Olen tällä hetkellä %1, %a.\nVoit jättää minulle viestin.\n(Sinulta odottaa %m viestiä)."
+
+msgid "CEditFileListDlg::Licq - Files to send"
+msgstr ""
+
+msgid "CEditFileListDlg::&Done"
+msgstr "&Valmis"
+
+msgid "CEditFileListDlg::&Up"
+msgstr ""
+
+msgid "CEditFileListDlg::&Down"
+msgstr ""
+
+msgid "CEditFileListDlg::&Delete"
+msgstr ""
 
 msgid "CFileDlg::Licq - File Transfer (%1)"
 msgstr "Licq - Tiedostonsiirto (%1)"
@@ -201,6 +217,12 @@ msgstr "Avausvirhe - tiedostoa ei voida avata kirjoitusta varten."
 
 msgid "CFileDlg::Retry"
 msgstr "Yritä uudelleen"
+
+msgid "CFileDlg::&Open"
+msgstr ""
+
+msgid "CFileDlg::O&pen Dir"
+msgstr ""
 
 msgid "CForwardDlg::Message"
 msgstr "Viesti"
@@ -693,6 +715,9 @@ msgstr "<h2>Vinkkejä Licq Qt-GUI Pluginnin<br>käyttöön</h2><br><hr><br><ul><
 
 msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr "<hr><p> Lisää tietoa saat Licq:n webbisivulta (<tt>http://www.licq.org</tt>).</p>"
+
+msgid "CMainWindow::"
+msgstr ""
 
 msgid "CQtLogWindow::Licq Network Log"
 msgstr "Licq Verkkoloki"
@@ -1236,6 +1261,9 @@ msgstr "Tuntematon tapahtuma"
 
 msgid "Event::(cancelled)"
 msgstr "(peruutettu)"
+
+msgid "Event::System Server Message"
+msgstr ""
 
 msgid "HintsDlg::Licq - Hints"
 msgstr "Licq - vinkit"
@@ -2071,6 +2099,9 @@ msgstr "Rekisteröiminen onnistui. Kirjaudu sisään ja päivitä henkilökohtai
 msgid "RegisterUserDlg::User Registration in Progress..."
 msgstr "Rekisteröinti käynnissä..."
 
+msgid "RegisterUserDlg::Invalid password, must be between 1 and 8 characters."
+msgstr "Väärä salasana, sen pituus täytyy olla 1-8 kirjainta."
+
 msgid "ReqAuthDlg::Licq - Request Authorization"
 msgstr "Licq - valtuutuspyyntö"
 
@@ -2745,6 +2776,27 @@ msgstr "epäonnistui"
 
 msgid "UserInfoDlg::timed out"
 msgstr "aikakatkaistu"
+
+msgid "UserSelectDlg::&User:"
+msgstr ""
+
+msgid "UserSelectDlg::&Password:"
+msgstr "&Salasana:"
+
+msgid "UserSelectDlg::&Save Password"
+msgstr "&Tallenna salasana"
+
+msgid "UserSelectDlg::&Ok"
+msgstr "&Ok"
+
+msgid "UserSelectDlg::&Cancel"
+msgstr "&Peruuta"
+
+msgid "UserSelectDlg::Licq User Select"
+msgstr ""
+
+msgid "UserSelectDlg::%1 (%2)"
+msgstr ""
 
 msgid "UserSendChatEvent::Multiparty: "
 msgstr "Ryhmä:"
