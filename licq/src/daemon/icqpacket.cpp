@@ -183,7 +183,7 @@ void CPacketUdp::Encrypt(void)
   //static unsigned short r2 = 0;
   //r2 &= 0xFF;
   unsigned short r2 = rand() & 0xFF;
-  printf("r2: %d [%d]\n", r2, icq_check_data[r2]);
+  //printf("r2: %d [%d]\n", r2, icq_check_data[r2]);
   unsigned long chk2 = ( r1 << 24 ) |
                        ( buf[r1] << 16 ) |
                        ( r2 << 8 ) |
@@ -628,9 +628,9 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
 {
 
   m_nCountry = nCountry;
-  struct timezone tz;
-  gettimeofday(NULL, &tz);
-  m_cTimezone = tz.tz_minuteswest / 30;
+  time_t t = time(NULL);
+  localtime(&t);
+  m_cTimezone = timezone / 1800;
   if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;
   m_nAge = nAge;
   m_cSex = cSex;
@@ -766,9 +766,9 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
 
   m_nZipCode = nZipCode;
   m_nCountryCode = nCountryCode;
-  struct timezone tz;
-  gettimeofday(NULL, &tz);
-  m_nTimezone = tz.tz_minuteswest / 30;
+  time_t t = time(NULL);
+  localtime(&t);
+  m_nTimezone = timezone / 1800;
   if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_nAuthorization = o->GetAuthorization() ? 0 : 1;
