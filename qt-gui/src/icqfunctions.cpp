@@ -2279,7 +2279,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     s_nX = x();
     s_nY = y();
     emit signal_finished(m_nUin);
-    if (m_bDeleteUser)
+    if (m_bDeleteUser && !m_bOwner)
     {
       mainwin->RemoveUserFromList(m_nUin, this);
     }
