@@ -191,22 +191,25 @@ CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char 
    whenPressed = NoButton;
 }
 
-CEButton::CEButton(QString label, QWidget *parent, char *name) : QPushButton(label, parent, name)
+CEButton::CEButton(QString label, QWidget *parent, char *name) 
+  : QPushButton(label, parent, name)
 {
    pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
+   whenPressed = NoButton;
 }
 
 CEButton::CEButton(QWidget *parent, char *name)
   : QPushButton(parent, name)
 {
    pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
+   whenPressed = NoButton;
 }
 
 CEButton::~CEButton()
 {
-  if (pmUpFocus != NULL) delete pmUpFocus;
-  if (pmUpNoFocus != NULL) delete pmUpNoFocus;
-  if (pmDown != NULL) delete pmDown;
+  delete pmUpFocus;
+  delete pmUpNoFocus;
+  delete pmDown;
 }
 
 
