@@ -139,6 +139,7 @@ void OptionsDlg::SetupOptions()
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->autoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
+  chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   switch(mainwin->m_nDockMode)
   {
@@ -284,6 +285,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
   mainwin->m_bShowGroupIfNoMsg = chkShowGroupIfNoMsg->isChecked();
   mainwin->autoClose = chkAutoClose->isChecked();
+  mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   if (chkUseDock->isChecked() &&
@@ -450,6 +452,10 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
                                    "indicate special characteristics such as "
                                    "online notify and visible list"));
+  chkAutoPopup= new QCheckBox(tr("Auto-Popup Incoming Msg"), boxUserWin);
+  QWhatsThis::add(chkAutoPopup, tr("All incoming messages automatically "
+                                           "open when received, if we are "
+                                           "online (or free for chat)"));
   lblFrameStyle = new QLabel(tr("Frame Style:"), boxUserWin);
   edtFrameStyle = new QLineEdit(boxUserWin);
   QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "

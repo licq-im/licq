@@ -52,7 +52,8 @@ protected:
    QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight,
-             *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg;
+             *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg,
+             *chkAutoPopup;
    QRadioButton *rdbDockDefault, *rdbDockThemed;
    QComboBox *cmbDockTheme;
 
