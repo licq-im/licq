@@ -60,13 +60,14 @@ public:
 
   pthread_mutex_t mutex;
 
+  static unsigned long GetIpByName(const char *_szHostName);
+
 protected:
   void OpenSocket();
   void CloseSocket();
   const char *GetIDStr()  { return (m_szID); }
   bool SetAddrsFromSocket(unsigned short _nFlags);
   void DumpPacket(CBuffer *b, direction d);
-  unsigned long GetIpByName(char *_szHostName);
 
   int m_nDescriptor;
   struct sockaddr_in m_sRemoteAddr, m_sLocalAddr;
