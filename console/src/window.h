@@ -32,6 +32,7 @@ public:
   WINDOW *Win(void)  { return win; }
   static void StartScreen(void);
   static void EndScreen(void);
+  int Rows(void) { return rows; }
 
   void (CLicqConsole::*fProcessInput)(int);
   ICQEvent *event;
