@@ -2507,9 +2507,11 @@ void CMainWindow::aboutBox()
                    "Qt GUI plugin version %2.\n"
                    "Compiled on: %7\n"
                    "%6\n"
-                   "Author: Graham Roff\n"
+                   "Maintainer: Jon Keating\n"
                    "Contributions by Dirk A. Mueller\n"
-                   "http://www.licq.org\n\n"
+                   "Original Author: Graham Roff\n\n"
+                   "http://www.licq.org\n"
+                   "#licq on irc.openprojects.net\n\n"
                    "%3 (%4)\n"
                    "%5 contacts.").arg(licqDaemon->Version())
                    .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))
