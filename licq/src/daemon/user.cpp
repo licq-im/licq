@@ -194,7 +194,7 @@ void CUserManager::RemoveUser(unsigned long _nUin)
   if (u == NULL) return;
   u->RemoveFiles();
   LockUserList(LOCK_W);
-  UserListIter iter = m_vpcUsers.begin();
+  UserList::iterator iter = m_vpcUsers.begin();
   while (iter != m_vpcUsers.end() && u != (*iter)) iter++;
   if (iter == m_vpcUsers.end())
     gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
@@ -559,7 +559,7 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
   UserList &l = m_vlTable[HashValue(_nUin)];
 
   unsigned long nUin;
-  UserListIter iter;
+  UserList::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
     (*iter)->Lock(LOCK_R);
@@ -591,7 +591,7 @@ void CUserHashTable::Remove(unsigned long _nUin)
 
   UserList &l = m_vlTable[HashValue(_nUin)];
   unsigned long nUin;
-  UserListIter iter;
+  UserList::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
     (*iter)->Lock(LOCK_R);
@@ -1555,6 +1555,22 @@ CUserEvent *ICQUser::EventPeek(unsigned short index)
   return (m_vcMessages[index]);
 }
 
+CUserEvent *ICQUser::EventPeekId(unsigned long id)
+{
+  if (m_vcMessages.size() == 0) return NULL;
+  CUserEvent *e = NULL;
+  UserEventList::iterator iter;
+  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); iter++)
+  {
+    if ((*iter)->Id() == id)
+    {
+      e = *iter;
+      break;
+    }
+  }
+  return e;
+}
+
 //-----ICQUser::EventPeekLast----------------------------------------------------
 CUserEvent *ICQUser::EventPeekLast()
 {
@@ -1569,7 +1585,7 @@ CUserEvent *ICQUser::EventPeekFirst()
   return (m_vcMessages[0]);
 }
 
-//-----ICQUser::ClearEvent------------------------------------------------------
+//-----ICQUser::EventPop-----------------------------------------------------
 CUserEvent *ICQUser::EventPop()
 {
   if (m_vcMessages.size() == 0) return NULL;
@@ -1582,6 +1598,7 @@ CUserEvent *ICQUser::EventPop()
   return e;
 }
 
+//-----ICQUser::EventClear----------------------------------------------------
 void ICQUser::EventClear(unsigned short index)
 {
   if (index >= m_vcMessages.size()) return;
@@ -1592,6 +1609,23 @@ void ICQUser::EventClear(unsigned short index)
   m_vcMessages.pop_back();
   decNumUserEvents();
   SaveLicqInfo();
+}
+
+
+void ICQUser::EventClearId(unsigned long id)
+{
+  UserEventList::iterator iter;
+  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); iter++)
+  {
+    if ((*iter)->Id() == id)
+    {
+      delete *iter;
+      m_vcMessages.erase(iter);
+      decNumUserEvents();
+      SaveLicqInfo();
+      break;
+    }
+  }
 }
 
 

@@ -9,6 +9,8 @@
 #include "message.h"
 #include "user.h"
 
+unsigned long CUserEvent::s_nId = 1;
+
 //----CUserEvent::constructor---------------------------------------------------
 CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
                        unsigned long _nSequence, time_t _tTime,
@@ -21,6 +23,8 @@ CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
    m_nFlags = _nFlags;
    m_eDir = D_RECEIVER;
    m_szText = NULL;
+   // race condition here, but so unlikely that I don't care
+   m_nId = s_nId++;
 }
 
 

@@ -18,7 +18,7 @@
   {                                                      \
     ICQUser *pUser;                                      \
     UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
-    for (UserListIter _i_ = _ul_->begin();               \
+    for (UserList::iterator _i_ = _ul_->begin();         \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
       pUser = *_i_;                                      \
@@ -45,10 +45,9 @@
         }
 
 typedef list<ICQUser *> UserList;
-typedef list<ICQUser *>::iterator UserListIter;
 typedef vector<char *> GroupList;
-typedef vector<char *>::iterator GroupListIter;
 typedef vector<unsigned long> UinList;
+typedef vector <class CUserEvent *> UserEventList;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
 extern "C" void SetString(char **, const char *);
@@ -243,10 +242,12 @@ public:
   // Message/History functions
   unsigned short NewMessages()   { return(m_vcMessages.size()); }
   CUserEvent *EventPeek(unsigned short);
+  CUserEvent *EventPeekId(unsigned long);
   CUserEvent *EventPeekFirst();
   CUserEvent *EventPeekLast();
   CUserEvent *EventPop();
   void EventClear(unsigned short);
+  void EventClearId(unsigned long);
   void EventPush(CUserEvent *);
   void WriteToHistory(const char *);
   void SetHistoryFile(const char *);
@@ -368,7 +369,7 @@ protected:
   // About Info
   char *m_szAbout;
 
-  vector <class CUserEvent *> m_vcMessages;
+  UserEventList m_vcMessages;
 
   static unsigned short s_nNumUserEvents;
 
