@@ -200,8 +200,6 @@ SearchUserDlg::~SearchUserDlg()
 
 void SearchUserDlg::startSearch()
 {
-  unsigned long uin = edtUin->text().toULong(&uin_search);
-
   foundView->clear();
   edtNick->setEnabled(false);
   edtFirst->setEnabled(false);
@@ -214,14 +212,16 @@ void SearchUserDlg::startSearch()
   btnDone->setEnabled(false);
   btnAdd->setEnabled(false);
 
-  if (uin_search && uin)
-  {
-    searchTag = server->icqSearchByUin(uin);
+  if(search_tab->currentPage() == uin_tab) {
+    searchTag = server->icqSearchByUin(edtUin->text().toULong());
   }
-  else
-  {
-    searchTag = server->icqSearchByInfo(edtNick->text().local8Bit(),edtFirst->text().local8Bit(),
-       edtLast->text().local8Bit(), edtEmail->text().local8Bit());
+  else if(search_tab->currentPage() == alias_tab) {
+    searchTag = server->icqSearchByInfo(edtNick->text().local8Bit().data(), edtFirst->text().local8Bit().data(),
+                                        edtLast->text().local8Bit().data(), "");
+  }
+  else {
+    searchTag = server->icqSearchByInfo(edtNick->text().local8Bit().data(),edtFirst->text().local8Bit().data(),
+                                        edtLast->text().local8Bit().data(), edtEmail->text().local8Bit().data());
   }
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
