@@ -832,7 +832,7 @@ void ICQUser::LoadLicqInfo()
       else
       {
         it = hist.end();
-        while (nNewMessages > 0)
+        while (nNewMessages > 0 && it != hist.begin())
         {
           it--;
           nNewMessages--;
