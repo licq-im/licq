@@ -1,4 +1,4 @@
-LICQ v0.70.1
+LICQ v0.71
 
 An ICQ clone written fully in c++ using a plugin system to allow for
 many possible interfaces.  

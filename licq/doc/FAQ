@@ -1,6 +1,6 @@
 =======================================
 Licq FAQ
-September 17, 1999
+October 7, 1999
 
 author: Graham Roff
 =======================================
@@ -103,7 +103,8 @@ highly recommend using egcs-c++ as it gives the best performance.
 	I do not use socks, and didn't write the code to make Licq work with
 socks.  After configuring with --enable-socks5 you have to set some environment
 variables as well, follow the guidelines that come with the socks5 client.
-Other than that, I can't help you.
+Other than that, I can't help you.  Try the SOCKS.HOWTO included with the
+Licq distribution.
 
 
 2.3: How do I do a manual install (ie I have a binary distribution)?
@@ -116,7 +117,7 @@ should finish the install for you.  See, it's easy.
 >= 0.70
 	Copy the binary somewhere nice like above.  Then copy everything from the 
 share/ directory to /usr/local/share/licq.  To manually install a plugin simply
-copy it to /usr/local/share/licq/plugins.
+copy it to /usr/local/lib/licq/plugins.
 
 
 2.4: I am trying to compile with Solaris and the compilation freezes
@@ -161,9 +162,8 @@ Section 3: Using
 
 3.1: How do I get a uin?
 
-	Licq cannot register a new user with Mirabilis *yet*.  For now you
-have to use a real ICQ client to register and get a uin, and to change your
-personal stats as well.  See http://www.mirabilis.com for more info.
+	Licq can register a new user with Mirabilis.  Just select "Register" from
+the user menu.  See http://www.mirabilis.com for more info.
 
 
 3.2: I get "No route to Host" error.
@@ -237,7 +237,7 @@ to a 1.
   There is a file called licq_fifo in the base directory, typically ~/.licq.  
 This is a special device called a FIFO (for First-In-First-Out).  You can 
 write to this file just like any other file, although typically one uses 
-"echo something > licq_fifo".
+"echo something > licq_fifo".  Any "\n" will be replaced by a newline.
 Licq accepts certain commands on the fifo:
   - status [*]<online, offline, na, away, occupied, dnd, ffc> [auto response]
     Sets the status of the current licq session to that given (precede the 
@@ -255,6 +255,10 @@ Licq accepts certain commands on the fifo:
   - redirect <file>
     Redirects the stdout and stderr for licq to the given file, which can be
     a device (ie /dev/tty8).
+  - message <uin> <message>
+    Send a message to the given uin.
+  - url <uin> <url> <description>
+    Send a url to the given uin.
   - exit
     Causes the licq session to shutdown.
 

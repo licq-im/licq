@@ -7,6 +7,8 @@ o  Some bugs fixed
 o  Ignore user list added
 o  User list format totally changed (affects developers only)
 o  Ignore messages from users not on contact list option added
+o  Added two new options to the fifo, "message" and "url".  See the
+   FAQ for more info
 
 
 New in 0.70.1
