@@ -991,7 +991,7 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin, unsigned cha
   	break;
 
   default:
-  	n = Typelen = msgLen = 0;
+  	n = nTypeLen = msgLen = 0;
   	gLog.Warn("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
   }
 
