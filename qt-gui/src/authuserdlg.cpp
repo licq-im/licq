@@ -192,7 +192,11 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
 
 void AuthUserDlg::ok()
 {
-  if (edtUin->text().isEmpty()) return;
+  if (edtUin != NULL)
+  {
+    if (edtUin->text().isEmpty()) return;
+    m_nUin = edtUin->text().toUShort();
+  }  
 
 #ifdef QT_PROTOCOL_PLUGIN
   if (m_szId == 0) m_szId = strdup(edtUin->text().latin1());
