@@ -189,7 +189,7 @@ void OptionsDlg::SetupOptions()
   chkShowExtIcons->setChecked(mainwin->m_bShowExtendedIcons);
   chkHeader->setChecked(mainwin->m_bShowHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
-  chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
+  cmbSortBy->setCurrentItem(mainwin->m_nSortByStatus);
   chkAlwaysShowONU->setChecked(mainwin->m_bAlwaysShowONU);
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->m_bAutoClose);
@@ -278,7 +278,7 @@ void OptionsDlg::SetupOptions()
   {
     chkTCPEnabled->setEnabled(false);
     spnPortLow->setEnabled(false);
-    spnPortHigh->setEnabled(false); 
+    spnPortHigh->setEnabled(false);
   }
   else
   {
@@ -296,7 +296,7 @@ void OptionsDlg::SetupOptions()
   chkProxyAuthEnabled->setChecked(mainwin->licqDaemon->ProxyAuthEnabled());
   edtProxyLogin->setText(QString(mainwin->licqDaemon->ProxyLogin()));
   edtProxyPasswd->setText(QString(mainwin->licqDaemon->ProxyPasswd()));
-  
+
   if (!mainwin->licqDaemon->ProxyEnabled())
   {
     cmbProxyType->setEnabled(false);
@@ -310,7 +310,7 @@ void OptionsDlg::SetupOptions()
     edtProxyLogin->setEnabled(false);
     edtProxyPasswd->setEnabled(false);
   }
-      
+
   spnAutoAway->setValue(mainwin->autoAwayTime);
   spnAutoNa->setValue(mainwin->autoNATime);
   spnAutoOffline->setValue(mainwin->autoOfflineTime);
@@ -328,7 +328,7 @@ void OptionsDlg::SetupOptions()
 			       DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()));
   edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ?
                        tr("none") : QString(mainwin->licqDaemon->Terminal()));
-  
+
   cmbDefaultEncoding->setCurrentItem(0);
   // first combo box item is the locale encoding, so we skip it
   for (int i = 1; i < cmbDefaultEncoding->count(); i++)
@@ -340,7 +340,7 @@ void OptionsDlg::SetupOptions()
     }
   }
   chkShowAllEncodings->setChecked(mainwin->m_bShowAllEncodings);
-  
+
    // set up the columns stuff
    int i;
    for (i = 0; i < int(mainwin->colInfo.size()); i++)
@@ -435,7 +435,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bShowExtendedIcons = chkShowExtIcons->isChecked();
   mainwin->m_bShowHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
-  mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
+  mainwin->m_nSortByStatus = cmbSortBy->currentItem();
   mainwin->m_bAlwaysShowONU = chkAlwaysShowONU->isChecked();
   mainwin->m_bShowGroupIfNoMsg = chkShowGroupIfNoMsg->isChecked();
   mainwin->m_bAutoClose = chkAutoClose->isChecked();
@@ -526,7 +526,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetProxyAuthEnabled(chkProxyAuthEnabled->isChecked());
   mainwin->licqDaemon->SetProxyLogin(edtProxyLogin->text().local8Bit());
   mainwin->licqDaemon->SetProxyPasswd(edtProxyPasswd->text().local8Bit());
-  
+
   mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
@@ -894,13 +894,13 @@ QWidget *OptionsDlg::new_network_options()
   QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, w);
   lay->addWidget(gbServer);
   gbServer->setTitle(tr("Server settings"));
- 
+
   lblICQServer = new QLabel(tr("ICQ Server:"), gbServer);
   edtICQServer = new QLineEdit(tr("ICQ Server:"), gbServer);
   lblICQServerPort = new QLabel(tr("ICQ Server Port:"), gbServer);
   spnICQServerPort = new QSpinBox(gbServer);
   spnICQServerPort->setRange(0, 0xFFFF);
-       
+
 
   QGroupBox *gbFirewall = new QGroupBox(2, QGroupBox::Horizontal, w);
   lay->addWidget(gbFirewall);
@@ -1198,8 +1198,6 @@ QWidget* OptionsDlg::new_column_options()
   chkShowDividers = new QCheckBox(tr("Show User Dividers"), boxUserWin);
   QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
      "in the contact list"));
-  chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
-  QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
   chkAlwaysShowONU = new QCheckBox(tr("Always show online notify users"), boxUserWin);
   QWhatsThis::add(chkAlwaysShowONU, tr("Show online notify users who are offline even "
      "when offline users are hidden."));
@@ -1238,6 +1236,17 @@ QWidget* OptionsDlg::new_column_options()
                                 "Enter the hotkey literally, like \"shift+f10\", "
                                 "\"none\" for disabling\n"
                                 "changes here require a Restart to take effect!\n"));
+  lblSortBy = new QLabel(tr("Sort users &by:"), boxUserWin);
+  cmbSortBy = new QComboBox(boxUserWin);
+  cmbSortBy->insertItem(tr("none"), 0);
+  cmbSortBy->insertItem(tr("status"), 1);
+  cmbSortBy->insertItem(tr("status + last event"), 2);
+  cmbSortBy->insertItem(tr("status + new messages"), 3);
+  lblSortBy->setBuddy(cmbSortBy);
+  QWhatsThis::add(lblSortBy, tr("<b>none:</b> - Don't sort online users by Status<br>\n"
+                                "<b>status</b> - Sort online users by status<br>\n"
+                                "<b>status + last event</b> - Sort online users by status and by last event<br>\n"
+                                "<b>status + new messages</b> - Sort online users by status and number of new messages"));
 
   boxPopWin = new QGroupBox(1, Horizontal, tr("Popup info"), w);
 

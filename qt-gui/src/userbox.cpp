@@ -328,32 +328,42 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
 
    // Set the user tag
-   if (gMainWindow->m_bSortByStatus)
+   int sort = 9;
+   switch (m_nStatus)
    {
-     int sort = 9;
-     switch (m_nStatus)
-     {
-     case ICQ_STATUS_FREEFORCHAT:
-     case ICQ_STATUS_ONLINE:
-       sort = 0;
+   case ICQ_STATUS_FREEFORCHAT:
+   case ICQ_STATUS_ONLINE:
+     sort = 0;
+     break;
+   case ICQ_STATUS_OCCUPIED:
+     sort = 1;
+     break;
+   case ICQ_STATUS_DND:
+     sort = 2;
+     break;
+   case ICQ_STATUS_AWAY:
+     sort = 3;
+     break;
+   case ICQ_STATUS_NA:
+     sort = 4;
+     break;
+   case ICQ_STATUS_OFFLINE:
+     sort = 5;
+     break;
+   }
+   // Set sorting
+   switch (gMainWindow->m_nSortByStatus)
+   {
+     case 0:  // no sorting
        break;
-     case ICQ_STATUS_OCCUPIED:
-       sort = 1;
+     case 1:  // sort by status
+       m_sSortKey.sprintf("%1x", sort);
        break;
-     case ICQ_STATUS_DND:
-       sort = 2;
+     case 2:  // sort by status and last event
+       m_sSortKey.sprintf("%1x%016lx",sort, ULONG_MAX - u->Touched());
        break;
-     case ICQ_STATUS_AWAY:
-       sort = 3;
-       break;
-     case ICQ_STATUS_NA:
-       sort = 4;
-       break;
-     case ICQ_STATUS_OFFLINE:
-       sort = 5;
-       break;
-     }
-     m_sSortKey.sprintf("%1x",sort);
+     case 3:  // sort by status and number of new messages
+       m_sSortKey.sprintf("%1x%016lx",sort, ULONG_MAX - u->NewMessages());
    }
 }
 
@@ -709,7 +719,7 @@ QString CUserViewItem::key (int column, bool ascending) const
   if (column == 0)
     return (m_sPrefix + m_sSortKey + text(1).lower());
   else
-    if(gMainWindow->m_bSortByStatus)
+    if(gMainWindow->m_nSortByStatus > 0)
       return(m_sPrefix + m_sSortKey + QListViewItem::key(column, ascending).lower());
     else
       return(QListViewItem::key(column, ascending).lower());

@@ -335,7 +335,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("AlwaysShowONU", m_bAlwaysShowONU, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
-  licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
+  licqConf.ReadNum("SortByStatus", m_nSortByStatus, 1);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
   licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
   licqConf.ReadBool("ManualNewUser", m_bManualNewUser, false);
@@ -429,7 +429,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szIcons, iconsName);
   m_szIconSet = NULL;
-  
+
   // Load the extended icons
   char szExtendedIcons[MAX_FILENAME_LEN];
   if (strlen(extendedIconsName) == 0)
@@ -437,7 +437,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szExtendedIcons, extendedIconsName);
   m_szExtendedIconSet = NULL;
-  
+
   // Load the skin
   char szSkin[MAX_FILENAME_LEN] = "basic";
   if (strlen(skinName) == 0)
@@ -1119,7 +1119,7 @@ inline bool CMainWindow::show_user(ICQUser *u)
 void CMainWindow::slot_updatedUser(CICQSignal *sig)
 {
   unsigned long nUin = sig->Uin();
-        
+
   switch(sig->SubSignal())
   {
     case USER_EVENTS:
@@ -1154,8 +1154,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                   break;
                 }
             }
-           
-            gUserManager.DropUser(u); 
+
+            gUserManager.DropUser(u);
             callFunction(fcn, nUin);
           }
           else
@@ -2445,7 +2445,7 @@ void CMainWindow::FillServerGroup()
   {
     if (u->GetSID() && (u->GetGSID() == gUserManager.GetIDFromGroup((*g)[i])))
     {
-      mnuServerGroup->setItemChecked(i+1, true); 
+      mnuServerGroup->setItemChecked(i+1, true);
       break;
     }
   }
@@ -2545,7 +2545,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
   licqConf.WriteBool("ShowHeader", m_bShowHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
-  licqConf.WriteBool("SortByStatus", m_bSortByStatus);
+  licqConf.WriteNum("SortByStatus", m_nSortByStatus);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
   licqConf.WriteBool("UseThreadView", m_bThreadView);
   licqConf.WriteNum("TVGroupStates", m_nGroupStates);
@@ -3055,7 +3055,7 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      QPixmap pix(pixCustomAR_xpm);
      pmCustomAR = pix;
    }
-   
+
    fIconsConf.ReadStr("Invisible", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmInvisible.load(sFilepath);
@@ -3228,7 +3228,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 //-----CMainWindow::initMenu--------------------------------------------------
 void CMainWindow::initMenu()
 {
-   // Skins without a menubar (frame.hasMenuBar = 0) cannot use 
+   // Skins without a menubar (frame.hasMenuBar = 0) cannot use
    // QMenuData accelerators, so we need a accel that is available
    // even without a menubar:
    QAccel *a = new QAccel(this, "CMainWindow change Status Accel");
@@ -3244,7 +3244,7 @@ void CMainWindow::initMenu()
 #if QT_VERSION > 0x030006
    connect(a, SIGNAL(activatedAmbiguously(int)), this, SLOT(changeStatusManual(int)));
 #endif
-         
+
    mnuStatus = new QPopupMenu(NULL);
    mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
    mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
@@ -3713,14 +3713,14 @@ void CMainWindow::slot_viewurl(QWidget *q, QString url)
   // If no URL viewer is set, use KDE default
   if (licqDaemon && (!licqDaemon->getUrlViewer()))
     app->invokeBrowser( url );
-  else 
+  else
 #endif
   {
     if (licqDaemon == NULL)
       WarnUser(q, tr("Licq is unable to find a browser application due to an internal error."));
     else if (!licqDaemon->ViewUrl(url.local8Bit().data()))
       WarnUser(q, tr("Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."));
-  }  
+  }
 }
 
 // -----------------------------------------------------------------------------

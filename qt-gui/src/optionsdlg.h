@@ -53,7 +53,7 @@ protected:
 
    // network tab
    QWidget* new_network_options();
-   QLabel *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
+   QLabel *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon, *lblSortBy;
    QLabel *lblICQServer, *lblICQServerPort, *lblProxyType, *lblProxyHost,
           *lblProxyPort, *lblProxyLogin, *lblProxyPasswd;
    QComboBox *cmbAutoLogon, *cmbProxyType;
@@ -72,7 +72,7 @@ protected:
    QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkSSList, *chkGridLines, *chkHeader, *chkAutoClose,
              *chkShowDividers, *chkFontStyles, *chkUseDock, *chkDockFortyEight,
-             *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg,
+             *chkTransparent, *chkShowGroupIfNoMsg,
              *chkAutoPopup, *chkAutoRaise, *chkHidden, *chkFlashUrgent, *chkFlashAll,
              *chkBoldOnMsg, *chkManualNewUser,
              *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
@@ -80,7 +80,7 @@ protected:
 	     *chkAutoSendThroughServer,
              *chkEnableMainwinMouseMovement;
    QRadioButton *rdbDockDefault, *rdbDockThemed;
-   QComboBox *cmbDockTheme;
+   QComboBox *cmbDockTheme, *cmbSortBy;
 
    // columns tab
    QWidget* new_column_options();

@@ -96,7 +96,6 @@ public:
        m_bAutoPopup,
        m_bShowOffline,
        m_bAlwaysShowONU,
-       m_bSortByStatus,
        m_bShowDividers,
        m_bAutoRaise,
        m_bHidden,
@@ -112,10 +111,10 @@ public:
        m_bAutoSendThroughServer,
        m_bEnableMainwinMouseMovement,
        m_bPopEmail,
-       m_bPopPhone, 
-       m_bPopFax, 
-       m_bPopCellular, 
-       m_bPopIP, 
+       m_bPopPhone,
+       m_bPopFax,
+       m_bPopCellular,
+       m_bPopIP,
        m_bPopLastOnline,
        m_bPopOnlineSince,
        m_bPopIdleTime,
@@ -129,6 +128,7 @@ public:
   CSkin *skin;
 
   unsigned long m_nCurrentGroup, m_nGroupStates;
+  unsigned short m_nSortByStatus;
   GroupType m_nGroupType;
   QString usprintfHelp;
 
