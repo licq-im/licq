@@ -293,6 +293,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("FontStyles", m_bFontStyles, true);
   licqConf.ReadBool("ShowHeader", m_bShowHeader, true);
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
+  licqConf.ReadBool("AlwaysShowONU", m_bAlwaysShowONU, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
@@ -430,7 +431,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     if (nUin != 0)
       CreateUserFloaty(nUin, xPosF, yPosF, wValF);
   }
-
 
 #ifdef USE_DOCK
   licqIcon = NULL;
@@ -911,6 +911,12 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 
 
 // ---------------------------------------------------------------------------
+inline bool CMainWindow::show_user(ICQUser *u)
+{
+  return (m_bShowOffline || !u->StatusOffline() || u->NewMessages() > 0 ||
+          (m_bAlwaysShowONU && u->OnlineNotify()));
+}
+
 
 void CMainWindow::slot_updatedUser(CICQSignal *sig)
 {
@@ -980,17 +986,20 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           if(u->GetInGroup(GROUPS_USER, i->GroupId())) {
             CUserViewItem* it = i->firstChild();
 
-            while(it) {
-              if(it->ItemUin() == nUin) {
+            while (it)
+            {
+              if(it->ItemUin() == nUin)
+              {
                 delete it;
-                if (m_bShowOffline || !u->StatusOffline() || (!m_bShowOffline && u->NewMessages() > 0))
+                if (show_user(u))
                   (void) new CUserViewItem(u, i);
                 break;
               }
               it = it->nextSibling();
             }
-            if(it == NULL) {
-              if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) || !u->StatusOffline()) &&
+            if(it == NULL)
+            {
+              if ( show_user(u) &
                    ((i->GroupId() != 0 && u->GetInGroup(GROUPS_USER, i->GroupId())) ||
                     (i->GroupId() == 0 && u->GetGroups(GROUPS_USER) == 0 && !u->IgnoreList())))
                 (void) new CUserViewItem(u, i);
@@ -1008,14 +1017,12 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         if (i != NULL)
         {
           delete i;
-          if (m_bShowOffline || !u->StatusOffline() ||
-              (!m_bShowOffline && u->NewMessages() > 0))
+          if (show_user(u))
             (void) new CUserViewItem(u, userView);
         }
         else
         {
-          if ( (m_bShowOffline || (!m_bShowOffline && u->NewMessages() > 0) ||
-                !u->StatusOffline()) &&
+          if ( show_user(u) &&
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
@@ -1064,8 +1071,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 
         while(i)
         {
-          if(u->GetInGroup(GROUPS_USER, i->GroupId()) &&
-             (m_bShowOffline || !u->StatusOffline() || (!m_bShowOffline && u->NewMessages() > 0)))
+          if(u->GetInGroup(GROUPS_USER, i->GroupId()) && show_user(u))
             (void) new CUserViewItem(u, i);
 
           i = i->nextSibling();
@@ -1074,8 +1080,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       else
       {
 
-        if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
-            (m_bShowOffline || !u->StatusOffline() || (!m_bShowOffline && u->NewMessages() > 0)) )
+        if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) && show_user(u) )
           (void) new CUserViewItem(u, userView);
       }
       gUserManager.DropUser(u);
@@ -1163,7 +1168,7 @@ void CMainWindow::updateUserWin()
       FOR_EACH_USER_CONTINUE
 
     // Ignore offline users if necessary
-    if (!m_bShowOffline && pUser->StatusOffline() && pUser->NewMessages() == 0)
+    if (!show_user(pUser))
       FOR_EACH_USER_CONTINUE;
 
     if (doGroupView)
@@ -2058,6 +2063,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
+  licqConf.WriteBool("AlwaysShowONU", m_bAlwaysShowONU);
   licqConf.WriteBool("AutoRaise", m_bAutoRaise);
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);

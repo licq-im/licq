@@ -158,6 +158,7 @@ void OptionsDlg::SetupOptions()
   chkHeader->setChecked(mainwin->m_bShowHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
+  chkAlwaysShowONU->setChecked(mainwin->m_bAlwaysShowONU);
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->m_bAutoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
@@ -324,6 +325,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bShowHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
   mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
+  mainwin->m_bAlwaysShowONU = chkAlwaysShowONU->isChecked();
   mainwin->m_bShowGroupIfNoMsg = chkShowGroupIfNoMsg->isChecked();
   mainwin->m_bAutoClose = chkAutoClose->isChecked();
   mainwin->m_bAutoPopup = chkAutoPopup->isChecked();
@@ -991,19 +993,21 @@ QWidget* OptionsDlg::new_column_options()
   QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
   chkHeader = new QCheckBox(tr("Show Column Headers"), boxUserWin);
   QWhatsThis::add(chkHeader, tr("Turns on or off the display of headers above "
-                                "each column in the user list"));
+     "each column in the user list"));
   chkShowDividers = new QCheckBox(tr("Show User Dividers"), boxUserWin);
   QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
-                                     "in the contact list"));
+     "in the contact list"));
   chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
   QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
+  chkAlwaysShowONU = new QCheckBox(tr("Always show online notify users"), boxUserWin);
+  QWhatsThis::add(chkAlwaysShowONU, tr("Show online notify users who are offline even "
+     "when offline users are hidden."));
   chkTransparent = new QCheckBox(tr("Transparent when possible"), boxUserWin);
   QWhatsThis::add(chkTransparent, tr("Make the user window transparent when there "
-                                     "is no scroll bar"));
+     "is no scroll bar"));
   chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxUserWin);
   QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
-                                   "indicate special characteristics such as "
-                                   "online notify and visible list"));
+     "indicate special characteristics such as online notify and visible list"));
   chkFlashAll = new QCheckBox(tr("Flash Events"), boxUserWin);
   QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
   chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);

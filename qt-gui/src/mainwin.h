@@ -82,6 +82,7 @@ public:
        m_bAutoClose,
        m_bAutoPopup,
        m_bShowOffline,
+       m_bAlwaysShowONU,
        m_bSortByStatus,
        m_bShowDividers,
        m_bAutoRaise,
@@ -166,6 +167,7 @@ protected:
   void CreateUserFloaty(unsigned long nUin, unsigned short x = 0,
      unsigned short y = 0, unsigned short w = 0);
   void initMenu();
+  bool show_user(ICQUser *);
 
   void resizeEvent (QResizeEvent *);
   virtual void mouseMoveEvent (QMouseEvent *);
