@@ -319,4 +319,24 @@ protected slots:
 
 /* ----------------------------------------------------------------------------- */
 
+class UserSendSmsEvent : public UserSendCommon
+{
+  Q_OBJECT
+public:
+
+  UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  unsigned long _nUin, QWidget* parent = 0);
+  virtual ~UserSendSmsEvent();
+
+protected:
+  virtual bool sendDone(ICQEvent *);
+
+  virtual void resetSettings();
+
+protected slots:
+  virtual void sendButton();
+};
+
+/* ----------------------------------------------------------------------------- */
+
 #endif

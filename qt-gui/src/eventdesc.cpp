@@ -36,7 +36,7 @@ static const char *szEventTypes[27] =
   QT_TRANSLATE_NOOP("Event",""),
   QT_TRANSLATE_NOOP("Event",""),
   QT_TRANSLATE_NOOP("Event",""),
-  QT_TRANSLATE_NOOP("Event","User Info")
+  QT_TRANSLATE_NOOP("Event","SMS")
 };
 
 QString EventDescription(CUserEvent *e)

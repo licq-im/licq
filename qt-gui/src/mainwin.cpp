@@ -1887,6 +1887,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     case mnuUserSendChat:
     case mnuUserSendFile:
     case mnuUserSendContact:
+    case mnuUserSendSms:
     {
         QListIterator<UserSendCommon> it(licqUserSend );
 
@@ -1968,6 +1969,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     case mnuUserSendContact:
     {
       e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendSms:
+    {
+      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, nUin);
       break;
     }
     default:
@@ -2868,6 +2874,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+     mnuUser->changeItem(tr("Send &SMS"), mnuUserSendSms);
      mnuUser->changeItem(tr("Request &Secure Channel"), mnuUserSendKey);
      CUserView::UpdateFloaties();
      updateUserWin();
@@ -3015,6 +3022,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
    mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+   mnuSend->insertItem(tr("Send &SMS"), mnuUserSendSms);
    mnuSend->insertSeparator();
    mnuSend->insertItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
@@ -3089,6 +3097,11 @@ void CMainWindow::slot_usermenu()
   // Send modes
   mnuSend->setItemEnabled(mnuUserSendChat, !u->StatusOffline());
   mnuSend->setItemEnabled(mnuUserSendFile, !u->StatusOffline());
+
+  if (strlen(u->GetCellularNumber()))
+    mnuSend->setItemEnabled(mnuUserSendSms, true);
+  else
+    mnuSend->setItemEnabled(mnuUserSendSms, false);
 
   if (u->Secure())
     mnuSend->changeItem(pmSecureOn, tr("Close &Secure Channel"), mnuUserSendKey);

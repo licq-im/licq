@@ -37,7 +37,22 @@ void SetString(char **szDest, const char *szSource)
     *szDest = strdup(szSource);
 }
 
+void ParseDigits(char *szDest, unsigned int nLen, const char *szSource)
+{
+  int n = 0;
 
+  while ((*szSource) && (n < nLen))
+  {
+    if (isdigit(*szSource))
+    {
+      *szDest++ = *szSource++;
+      n++;
+    } else
+      szSource++;
+  }
+  *szDest = '\0';
+}
+      
 int Redirect(const char *_szFile)
 {
   int fd = open(_szFile, O_WRONLY | O_CREAT | O_APPEND, 00660);

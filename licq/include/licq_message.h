@@ -383,6 +383,30 @@ protected:
 };
 
 
+//-----CEventSms---------------------------------------------------------------
+class CEventSms : public CUserEvent
+{
+public:
+   CEventSms(const char *_szMessage, unsigned short _nCommand,
+             time_t _tTime, unsigned long _nFlags);
+   virtual ~CEventSms();
+   virtual CEventSms *Copy()
+      {
+        CEventSms *e = new CEventSms(m_szMessage, m_nCommand, m_tTime, m_nFlags);
+        e->CopyBase(this);
+        return e;
+      }
+   const char *Message()  { return m_szMessage; }
+   virtual void AddToHistory(ICQUser *, direction);
+
+   static CEventSms *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
+protected:
+   void CreateDescription();
+   char *m_szMessage;
+};
+
+
+//-----CEventPlugin------------------------------------------------------------
 class CEventPlugin : public CUserEvent
 {
 public:
@@ -397,6 +421,8 @@ protected:
   char *m_sz;
 };
 
+
+//-----CEventUnknownSysMsg-----------------------------------------------------
 class CEventUnknownSysMsg : public CUserEvent
 {
 public:

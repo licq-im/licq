@@ -198,6 +198,7 @@ const unsigned short ICQ_CMDxMETA_ABOUTxRSP        = 0x0082; // 130
 const unsigned short ICQ_CMDxMETA_EMAILxINFOxRSP   = 0x0087; // 140
 const unsigned short ICQ_CMDxMETA_SECURITYxRSP     = 0x00A0; // 160
 const unsigned short ICQ_CMDxMETA_PASSWORDxRSP     = 0x00AA; // 170
+const unsigned short ICQ_CMDxMETA_SENDxSMSxRSP	   = 0x0096;
 // Meta commands (user info)
 const unsigned short ICQ_CMDxMETA_GENERALxINFO     = 0x00C8; // 200
 const unsigned short ICQ_CMDxMETA_WORKxINFO        = 0x00D2; // 210
@@ -219,6 +220,7 @@ const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B1; // 1201
 const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO  = 0x04BA; // 1210
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFOx31 = 0x04CF; // 1231
+const unsigned short ICQ_CMDxMETA_SENDxSMS	   = 0x1482;
 
 // Meta commands (white page searches) - Jon
 const unsigned short ICQ_CMDxMETA_SEARCHxWP           = 0x0533; // 1331
@@ -256,7 +258,7 @@ const unsigned short ICQ_CMDxSUB_ADDEDxTOxLIST     = 0x000C;
 const unsigned short ICQ_CMDxSUB_WEBxPANEL         = 0x000D;
 const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;
 const unsigned short ICQ_CMDxSUB_CONTACTxLIST      = 0x0013;
-const unsigned short ICQ_CMDxSUB_USERxINFO         = 0x001A;  // not done
+const unsigned short ICQ_CMDxSUB_SMS               = 0x001A;
 const unsigned short ICQ_CMDxSUB_FxMULTIREC        = 0x8000;
 // Encryption Licq extension command
 const unsigned short ICQ_CMDxSUB_SECURExOLD        = 0x00ED;  // Licq extension

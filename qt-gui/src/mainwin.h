@@ -171,7 +171,7 @@ public:
   unsigned short m_nAutoLogon;
   char *m_szIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
-          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact,
+          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmSms,
           pmAuthorize, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmEncoding;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;

@@ -917,6 +917,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   cmbSendType->insertItem(tr("Chat Request"));
   cmbSendType->insertItem(tr("File Transfer"));
   cmbSendType->insertItem(tr("Contact List"));
+  cmbSendType->insertItem(tr("SMS"));
   connect(cmbSendType, SIGNAL(activated(int)), this, SLOT(changeEventType(int)));
   h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
@@ -1025,6 +1026,9 @@ void UserSendCommon::changeEventType(int id)
     break;
   case 4:
     e = new UserSendContactEvent(server, sigman, mainwin, m_nUin);
+    break;
+  case 5:
+    e = new UserSendSmsEvent(server, sigman, mainwin, m_nUin);
     break;
   }
 
@@ -1295,6 +1299,13 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventFile *ue = (CEventFile *)e->UserEvent();
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
          ue->FileDescription(), nLevel);
+      break;
+    }
+    case ICQ_CMDxSUB_SMS:
+    {
+      CEventSms *ue = (CEventSms *)e->UserEvent();
+
+      icqEventTag = server->icqSendSms(m_nUin, ue->Message());
       break;
     }
     default:
@@ -1841,7 +1852,7 @@ void UserSendContactEvent::resetSettings()
   massMessageToggled( false );
 }
 
-//-----UserSendMsgEvent::sendDone--------------------------------------------
+//-----UserSendContactEvent::sendDone------------------------------------------
 bool UserSendContactEvent::sendDone(ICQEvent *e)
 {
   if (e->Command() != ICQ_CMDxTCP_START) return true;
@@ -1872,6 +1883,68 @@ void UserSendContactEvent::setContact(unsigned long Uin, const QString&)
   }
 }
 
+
+//=====UserSendSmsEvent======================================================
+UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
+  CMainWindow *m, unsigned long nUin, QWidget *parent)
+  : UserSendCommon(s, theSigMan, m, nUin, parent, "UserSendSmsEvent")
+{
+  chkSendServer->setChecked(true);
+  chkSendServer->setEnabled(false);
+  chkUrgent->setChecked(false);
+  chkUrgent->setEnabled(false);
+  chkMass->setChecked(false);
+  chkMass->setEnabled(false);
+  btnForeColor->setEnabled(false);
+  btnBackColor->setEnabled(false);
+
+  QBoxLayout* lay = new QVBoxLayout(mainWidget);
+  lay->addWidget(splView);
+  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
+  mleSend->setFocus ();
+
+  m_sBaseTitle += tr(" - SMS");
+  setCaption(m_sBaseTitle);
+  cmbSendType->setCurrentItem(5);
+}
+
+//-----UserSendSmsEvent::~UserSendSmsEvent-------------------------------------
+UserSendSmsEvent::~UserSendSmsEvent()
+{
+}
+
+//-----UserSendSmsEvent::sendButton--------------------------------------------
+void UserSendSmsEvent::sendButton()
+{
+  // do nothing if a command is already being processed
+  if (icqEventTag != 0) return;
+
+  if(!mleSend->edited() &&
+     !QueryUser(this, tr("You didn't edit the SMS.\n"
+                         "Do you really want to send it?"), tr("&Yes"), tr("&No")))
+    return;
+
+  // don't let the user send empty messages
+  if (mleSend->text().stripWhiteSpace().isEmpty()) return;
+
+  icqEventTag = server->icqSendSms(m_nUin, codec->fromUnicode(mleSend->text()));
+
+  UserSendCommon::sendButton();
+}
+
+//-----UserSendSmsEvent::resetSettings-----------------------------------------
+void UserSendSmsEvent::resetSettings()
+{
+  mleSend->clear();
+  mleSend->setFocus();
+  massMessageToggled( false );
+}
+
+//-----UserSendSmsEvent::sendDone--------------------------------------------
+bool UserSendSmsEvent::sendDone(ICQEvent *e)
+{
+  return true;
+}
 
 // -----------------------------------------------------------------------------
 

@@ -487,7 +487,7 @@ public:
 };
 
 
-//-----ThroughServer------------------------------------------------------------
+//-----ThroughServer-----------------------------------------------------------
 class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
@@ -496,6 +496,7 @@ protected:
    unsigned long  m_nDestinationUin;
 };
 
+//-----AckThroughServer--------------------------------------------------------
 class CPU_AckThroughServer : public CPU_CommonFamily
 {
 public:
@@ -503,6 +504,16 @@ public:
                          unsigned short Cookie, unsigned char msgType, unsigned char msgFlags,
                          unsigned short len);
 
+};
+
+//-----SendSms-----------------------------------------------------------
+class CPU_SendSms : public CPU_CommonFamily
+{
+public:
+   CPU_SendSms(unsigned long nDestinationUin, const char *szMessage);
+protected:
+   unsigned long m_nMetaCommand;
+   unsigned long m_nDestinationUin;
 };
 
 //-----ReverseTCPRequest--------------------------------------------------------

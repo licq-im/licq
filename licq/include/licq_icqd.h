@@ -219,6 +219,9 @@ public:
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
 
+  // SMS
+  unsigned long icqSendSms(unsigned long nUin, const char *szMessage);
+  
   // NOT MT SAFE
   const char *getUrlViewer();
   void setUrlViewer(const char *s);

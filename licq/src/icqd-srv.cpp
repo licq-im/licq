@@ -668,6 +668,17 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
   return result;
 }
 
+unsigned long CICQDaemon::icqSendSms(unsigned long nUin, const char *szMessage)
+{
+  CEventSms *ue = new CEventSms(szMessage, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+  CPU_SendSms *p = new CPU_SendSms(nUin, szMessage);
+  gLog.Info("%sSending SMS through server (#%ld/#%d)...\n", L_SRVxSTR,
+	    p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(nUin, p, ue);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
 /*------------------------------------------------------------------------------
  * ProcessDoneEvent
  *
@@ -2474,6 +2485,15 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     		}
     		else /* META_FAILURE */
     			gLog.Info("%sAbout not updated.\n", L_SRVxSTR);    	
+      } else if (nSubtype == ICQ_CMDxMETA_SENDxSMSxRSP) {
+    		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sSMS through server acked.\n", L_SRVxSTR);
+ 	   		ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
+    			DoneEvent(e, EVENT_ACKED);
+			ProcessDoneEvent(e);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sSMS through server failed.\n", L_SRVxSTR);
       }
       // Search results need to be processed differently
       else if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {

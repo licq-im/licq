@@ -507,7 +507,7 @@ void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
 
 
 
-//====CEventHtmlPanel===========================================================
+//====CEventWebPanel===========================================================
 CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
                                const char *_szMessage, unsigned short _nCommand,
                                time_t _tTime, unsigned long _nFlags)
@@ -657,9 +657,41 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
   return new CEventContactList(vc, false, nCmd, nTime, nFlags);
 }
 
+//=====CEventSms===============================================================
+CEventSms::CEventSms(const char *_szMessage, unsigned short _nCommand,
+                     time_t _tTime, unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_SMS, _nCommand, 0, _tTime, _nFlags)
+{
+  m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
+}
+
+void CEventSms::CreateDescription()
+{
+  m_szText = strdup(m_szMessage);
+}
+
+CEventSms::~CEventSms()
+{
+  free (m_szMessage);
+}
+
+void CEventSms::AddToHistory(ICQUser *u, direction _nDir)
+{
+  char *szOut = new char[ (strlen(m_szMessage) << 1) + EVENT_HEADER_SIZE];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  AddStrWithColons(&szOut[nPos], m_szMessage);
+  AddToHistory_Flush(u, szOut);
+  delete [] szOut;
+}
+
+CEventSms *CEventSms::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
+{
+  gTranslator.ServerToClient (sz);
+  return new CEventSms(sz, nCmd, nTime, nFlags);
+}
 
 
-//-----EventPlugin-----------------------------------------------------------
+//=====EventPlugin=============================================================
 CEventPlugin::CEventPlugin(const char *sz, unsigned short nSubCommand,
    time_t tTime, unsigned long nFlags)
    : CUserEvent(nSubCommand, 0, 0, tTime, nFlags)
@@ -684,9 +716,7 @@ void CEventPlugin::AddToHistory(ICQUser *, direction)
 }
 
 
-
-
-
+//=====CEventUnknownSysMsg=====================================================
 CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
                              unsigned short _nCommand, unsigned long _nUin,
                              const char *_szMsg,
@@ -754,7 +784,7 @@ static const char *szEventTypes[27] =
   "",
   "",
   "",
-  "User Info"
+  "SMS"
 };
 
 

@@ -1160,6 +1160,62 @@ CPU_AckThroughServer::CPU_AckThroughServer(unsigned long Uin, unsigned long time
   buffer->PackUnsignedLongBE(0xffffff00);
 }
 
+//-----SendSms-----------------------------------------------------------------
+CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+{
+  m_nMetaCommand = 0x8214;
+  m_nDestinationUin = nDestinationUin;
+
+  char szXmlStr[460];
+
+  char szTime[26];
+  time_t tTime;
+  time(&tTime);
+  ctime_r(&tTime, szTime);
+  char *p = strchr(szTime, '\n');
+  *p = '\0';
+  
+  ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+  char szCellularNumber[16];
+  szCellularNumber[0] = '+';
+  ParseDigits(&szCellularNumber[1], 15, u->GetCellularNumber());
+  gUserManager.DropUser(u);
+  
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  char szUin[13];
+  szUin[12] = '\0';
+  snprintf(szUin, 12, "%lu", o->Uin());
+
+  snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
+	   szCellularNumber, szMessage, szUin, o->GetAlias(), szTime);
+  gUserManager.DropOwner();
+  
+  int nLenXmlStr = strlen_safe(szXmlStr) + 1;
+  int packetSize = 2+2+2+4+2+2+2 + 22 + 2 + nLenXmlStr;
+  m_nSize += packetSize;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(1);
+  buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
+
+  buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); 			// type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(m_nMetaCommand); 		// subtype
+  
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(0x0016);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedShort(0);
+  
+  buffer->PackUnsignedShortBE(nLenXmlStr);
+  buffer->Pack(szXmlStr, nLenXmlStr);
+}
 
 //-----Ack-------------------------------------------------------------------
 #if ICQ_VERSION == 2
@@ -1417,7 +1473,7 @@ CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
 CPU_SearchByKeyword::CPU_SearchByKeyword(const char *szKeyword)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
 {
-  int nLenKeyword = strlen_safe(szKeyword) +3;
+  int nLenKeyword = strlen_safe(szKeyword) + 3;
   int packetSize = 2+2+2+4+2+2+2 + nLenKeyword + 2 + 2;
   m_nMetaCommand = 0x5F05;
   m_nSize += packetSize;

@@ -283,8 +283,12 @@ bool CUserHistory::Load(HistoryList &lHistory)
       e = new CEventContactList(vc, false, nCommand, tTime, nFlags);
       break;
     }
-    case ICQ_CMDxSUB_USERxINFO:
+    case ICQ_CMDxSUB_SMS:
+    {
+      GET_VALID_LINES;
+      e = new CEventSms(szMsg, nCommand, tTime, nFlags);
       break;
+    }
     default:
       gLog.Warn("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n",
                 L_WARNxSTR, m_szFileName, nSubCommand);
