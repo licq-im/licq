@@ -301,7 +301,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   else
     p->fillRect( 0, 0, width, height(), cg.base());
 
-  if (m_nUin != 0 || (m_nUin == 0 && m_nGroupId < (unsigned short)(-1)))
+  if (m_nUin != 0 || isGroupItem())
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
     // If this is a floaty then don't draw the highlight box
@@ -310,6 +310,16 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       cg.setBrush(QColorGroup::Highlight, QBrush(NoBrush));
       cg.setColor(QColorGroup::HighlightedText, cg.text());
     }
+    if(isGroupItem())
+    {
+      QFont f(p->font());
+      f.setPointSize(f.pointSize() - 2);
+      p->setFont(f);
+      if(column == 1)
+        listView()->style().drawSeparator(p, p->fontMetrics().width(text(column)) + 4,
+          height() >> 1, width-1, height() >> 1, cg);
+    }
+
     QListViewItem::paintCell(p, cg, column, width, align);
   }
   else
@@ -509,7 +519,9 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   barOnline = barOffline = NULL;
   numOnline = numOffline = 0;
 
+//  addColumn(tr("S"), gMainWindow->m_bThreadView ? 40 : 20);
   addColumn(tr("S"), 20);
+
   for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
   {
     addColumn(gMainWindow->colInfo[i]->m_sTitle, gMainWindow->colInfo[i]->m_nWidth);
@@ -523,7 +535,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 #if QT_VERSION >= 210
   setShowSortIndicator(true);
 #endif
-  setRootIsDecorated(gMainWindow->m_bThreadView);
+//  setRootIsDecorated(gMainWindow->m_bThreadView);
   setAllColumnsShowFocus(true);
   setTreeStepSize(0);
   setSorting(0);
