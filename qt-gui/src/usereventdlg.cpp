@@ -100,12 +100,12 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   layt->addWidget(btnSecure);
   connect(btnSecure, SIGNAL(clicked()), this, SLOT(slot_security()));
   btnHistory = new QPushButton(this);
-  btnHistory->setPixmap(gMainWindow->pmHistory);
+  btnHistory->setPixmap(mainwin->pmHistory);
   QToolTip::add(btnHistory, tr("Show User History"));
   connect(btnHistory, SIGNAL(clicked()), this, SLOT(showHistory()));
   layt->addWidget(btnHistory);
   btnInfo = new QPushButton(this);
-  btnInfo->setPixmap(gMainWindow->pmInfo);
+  btnInfo->setPixmap(mainwin->pmInfo);
   QToolTip::add(btnInfo, tr("Show User Info"));
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
@@ -156,9 +156,9 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   }
 
   if (u->Secure())
-    btnSecure->setPixmap(gMainWindow->pmSecureOn);
+    btnSecure->setPixmap(mainwin->pmSecureOn);
   else
-    btnSecure->setPixmap(gMainWindow->pmSecureOff);
+    btnSecure->setPixmap(mainwin->pmSecureOff);
 
   m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
              QString::fromLocal8Bit(u->GetFirstName()) + " " +
@@ -264,7 +264,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead->setResizeMode(mleRead, QSplitter::Stretch);
 
   connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
-  connect (gMainWindow, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
+  connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
   lay->addSpacing(10);
@@ -290,9 +290,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
     QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
     h_lay->addWidget(btnMenu);
     connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
-    btnMenu->setPopup(gMainWindow->UserMenu());
+    btnMenu->setPopup(mainwin->UserMenu());
     chkAutoClose = new QCheckBox(tr("Aut&o Close"), this);
-    chkAutoClose->setChecked(gMainWindow->m_bAutoClose);
+    chkAutoClose->setChecked(mainwin->m_bAutoClose);
     h_lay->addWidget(chkAutoClose);
   }
   h_lay->addStretch(1);
@@ -539,7 +539,7 @@ void UserViewEvent::sendMsg(QString txt)
   e->setText(txt);
 
   // Find a good position for the new window
-  if (gMainWindow->m_bAutoPosReplyWin)
+  if (mainwin->m_bAutoPosReplyWin)
   {
     int yp = btnRead1->parentWidget()->mapToGlobal(QPoint(0, 0)).y();
     if (yp + e->height() + 8 > QApplication::desktop()->height())
@@ -717,7 +717,7 @@ void UserViewEvent::slot_btnRead4()
   switch (m_xCurrentReadEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
-      gMainWindow->callFunction(mnuUserSendChat, Uin());
+      mainwin->callFunction(mnuUserSendChat, Uin());
       break;
     case ICQ_CMDxSUB_CHAT:  // join to current chat
     {
@@ -844,7 +844,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
     h_lay->addWidget(btnMenu);
     connect(btnMenu, SIGNAL(pressed()), this, SLOT(slot_usermenu()));
-    btnMenu->setPopup(gMainWindow->UserMenu());
+    btnMenu->setPopup(mainwin->UserMenu());
   }
   cmbSendType = new QComboBox(this);
   cmbSendType->insertItem(tr("Message"));
@@ -865,14 +865,23 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnSend);
   h_lay->addWidget(btnCancel);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
-  mleSend = new MLEditWrap(true, mainWidget, true);
+  splView = new QSplitter(Vertical, mainWidget);
+  splView->setOpaqueResize();
+  mleHistory=0;
+  if (mainwin->m_bMsgChatView) {
+    mleHistory = new CMessageViewWidget(_nUin,splView);
+    connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
+    splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
+  }
+  mleSend = new MLEditWrap(true, splView, true);
+  splView->setResizeMode(mleSend, QSplitter::Stretch);
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
   icqColor.SetToDefault();
   mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
-  connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
+  connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
 }
 
 
@@ -922,8 +931,7 @@ void UserSendCommon::changeEventType(int id)
     e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
     break;
   case 1:
-    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
-    break;
+    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);    break;
   case 2:
     e = new UserSendChatEvent(server, sigman, mainwin, m_nUin);
     break;
@@ -940,6 +948,10 @@ void UserSendCommon::changeEventType(int id)
     QPoint p = topLevelWidget()->pos();
     if (e->mleSend && mleSend)
       e->mleSend->setText(mleSend->text());
+    if (e->mleHistory && mleHistory){
+      e->mleHistory->setText(mleHistory->text());
+      e->mleHistory->GotoEnd();
+    }
     e->move(p);
 
     emit signal_msgtypechanged(this, e);
@@ -958,30 +970,17 @@ QString UserSendCommon::generatePart(const QString& text)
 
   QString msgTextCurrent;
 
-  if (m_msgTextTotal.isEmpty())
-    m_msgTextTotal = text;
-
-  if (chkSendServer->isChecked() && m_msgTextTotal.length() > PARTLEN)
+  if (chkSendServer->isChecked() && text.length() > PARTLEN)
   {
-    int msgNextOffset = QMIN(m_msgTextTotal.length(), PARTLEN);
-    int found_index = m_msgTextTotal.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
+    int msgNextOffset = QMIN(text.length(), PARTLEN);
+    int found_index = text.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
     if(found_index > 0)
       msgNextOffset = found_index;
 
-    m_msgTextCurrent = m_msgTextTotal.left(msgNextOffset);
-
-    msgTextCurrent = m_msgTextCurrent;
-    if(m_msgTextCurrent.length() < m_msgTextTotal.length())
-    {
-      //msgTextCurrent.prepend("-L--- multipart ---\n");
-      msgTextCurrent.append("...");
-    }
+    msgTextCurrent = text.left( msgNextOffset );
   }
   else
-  {
-    msgTextCurrent = m_msgTextTotal;
-    m_msgTextCurrent = msgTextCurrent = m_msgTextTotal;
-  }
+    msgTextCurrent = text;
 
   return msgTextCurrent;
 }
@@ -995,7 +994,7 @@ void UserSendCommon::massMessageToggled(bool b)
     top_hlay->addWidget(grpMR);
 
     (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
-    lstMultipleRecipients = new CMMUserView(gMainWindow->colInfo, mainwin->m_bShowHeader,
+    lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
                                             m_nUin, mainwin, grpMR);
     lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
   }
@@ -1008,7 +1007,6 @@ void UserSendCommon::massMessageToggled(bool b)
   {
     // doesn't work right TODO investigate why
     int w = grpMR->width();
-    qDebug("width is %d", w);
     grpMR->hide();
     //resize(width()-w, height());
     top_hlay->setGeometry(QRect(0, 0, width()-w, height()));
@@ -1019,7 +1017,7 @@ void UserSendCommon::massMessageToggled(bool b)
 //-----UserSendCommon::sendButton--------------------------------------------
 void UserSendCommon::sendButton()
 {
-  if(!gMainWindow->m_bManualNewUser) {
+  if(!mainwin->m_bManualNewUser) {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_W);
 
     if(u->NewUser())
@@ -1038,8 +1036,6 @@ void UserSendCommon::sendButton()
   {
     m_sProgressMsg = tr("Sending ");
     bool via_server = chkSendServer->isChecked();
-    if(via_server && m_msgTextCurrent.length() != m_msgTextTotal.length())
-      m_sProgressMsg += tr("partial ");
     m_sProgressMsg += via_server ? tr("via server") : tr("direct");
     m_sProgressMsg += "...";
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
@@ -1154,8 +1150,14 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     emit autoCloseNotify();
     if (sendDone(e))
     {
-      emit(gMainWindow->signal_sentevent(e));
-      close();
+      emit(mainwin->signal_sentevent(e));
+
+      if (mainwin->m_bMsgChatView) {
+        mleSend->clear();
+        mleHistory->GotoEnd();
+        mleSend->setFocus();
+      } else
+        close();
     }
   }
 }
@@ -1172,8 +1174,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
 
-      QString msgTextCurrent;
-      msgTextCurrent = generatePart(QString(ue->Message()));
+      QString msgTextCurrent = generatePart(QString(ue->Message()));
 
       icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit().data(), bOnline,
          nLevel, false, &icqColor);
@@ -1265,6 +1266,18 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
         chkSendServer->setChecked(true);
       break;
     }
+    case USER_EVENTS:
+    {
+      CUserEvent *e = 0;
+      if (sig->Argument() > 0 && mleHistory)
+      {
+        e = u->EventPeekId(sig->Argument());
+        if (e != NULL)
+        {
+          mleHistory->addMsg(e);
+        }
+      }
+    }
   }
 }
 
@@ -1291,7 +1304,7 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   : UserSendCommon(s, theSigMan, m, nUin, parent, "UserSendMsgEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  lay->addWidget(mleSend);
+  lay->addWidget(splView);
   mleSend->setMinimumHeight(150);
   mleSend->setFocus ();
 
@@ -1322,8 +1335,7 @@ void UserSendMsgEvent::sendButton()
 
   if (!UserSendCommon::checkSecure()) return;
 
-  QString msgTextCurrent;
-  msgTextCurrent = generatePart(mleSend->text());
+  QString msgTextCurrent = generatePart(mleSend->text());
 
   if (chkMass->isChecked())
   {
@@ -1346,9 +1358,8 @@ void UserSendMsgEvent::sendButton()
 bool UserSendMsgEvent::sendDone(ICQEvent *e)
 {
   if (e->Command() != ICQ_CMDxTCP_START) {
-    m_msgTextTotal = m_msgTextTotal.mid(m_msgTextCurrent.length());
-    mleSend->setText(QString::fromLocal8Bit(m_msgTextTotal));
-    return m_msgTextTotal.isEmpty();
+    mleSend->setText(mleSend->text().mid( generatePart( mleSend->text() ).length()+1));
+    return mleSend->text().isEmpty();
   }
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
@@ -1371,8 +1382,7 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendUrlEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-
-  lay->addWidget(mleSend);
+  lay->addWidget(splView);
   mleSend->setFocus ();
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
@@ -1453,7 +1463,7 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   btnBackColor->setEnabled(false);
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  lay->addWidget(mleSend);
+  lay->addWidget(splView);
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
   lblItem = new QLabel(tr("File(s): "), mainWidget);
@@ -1553,8 +1563,9 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   btnForeColor->setEnabled(false);
   btnBackColor->setEnabled(false);
 
-  QBoxLayout *lay = new QVBoxLayout(mainWidget, 8);
-  lay->addWidget(mleSend);
+  QBoxLayout *lay = new QVBoxLayout(mainWidget, 9);
+  lay->addWidget(splView);
+
   mleSend->setMinimumHeight(150);
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
@@ -1656,10 +1667,11 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   delete mleSend; mleSend = NULL;
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
+  lay->addWidget(splView);
   QLabel* lblContact =  new QLabel(tr("Drag Users Here - Right Click for Options"), mainWidget);
   lay->addWidget(lblContact);
 
-  lstContacts = new CMMUserView(gMainWindow->colInfo, mainwin->m_bShowHeader,
+  lstContacts = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
                                 m_nUin, mainwin, mainWidget);
   lay->addWidget(lstContacts);
 

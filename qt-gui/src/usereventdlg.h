@@ -46,6 +46,8 @@ class CMainWindow;
 class CUserEvent;
 class CMMUserView;
 class CEButton;
+class CMessageViewWidget;
+
 
 /* ----------------------------------------------------------------------------- */
 
@@ -151,6 +153,8 @@ signals:
   void signal_msgtypechanged(UserSendCommon *, UserSendCommon *);
 
 protected:
+  CMessageViewWidget *mleHistory;
+  QSplitter * splView;
   QCheckBox *chkSendServer, *chkUrgent, *chkMass;
   QPushButton *btnSend, *btnCancel;
   QGroupBox *grpMR;
@@ -158,7 +162,7 @@ protected:
   QComboBox* cmbSendType;
   CMMUserView *lstMultipleRecipients;
   MLEditWrap *mleSend;
-  QString m_msgTextTotal, m_msgTextCurrent;
+  //QString m_msgTextCurrent;
   CICQColor icqColor;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
