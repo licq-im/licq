@@ -1,5 +1,11 @@
 Change log for Licq.
 
+New in 1.0.2
+o  Save colors
+o  Install fix for BSD
+o  File transfer fix for icq2000
+
+
 New in 1.0.1
 o  Various small bug fixes
 o  Support for sending messages in color
