@@ -3,7 +3,7 @@
 libdir = $(prefix)/lib/licq
 
 INCLUDES = -Wall -D_REENTRANT \
-	-I$(prefix)/include/licq -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
+	-I$(LICQ_INCLUDES) -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
 	`gtk-config --cflags`
 
 lib_LTLIBRARIES = licq_jons-gtk-gui.la
