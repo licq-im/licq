@@ -1076,6 +1076,7 @@ void UserInfoDlg::ShowHistory()
   // Last check (should never be true)
   if (m_lHistoryList.size() == 0) return;
   HistoryListIter tempIter;
+  mleHistory->clear();
 
   if(m_bHistoryReverse)
   {
