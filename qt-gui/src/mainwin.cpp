@@ -354,22 +354,42 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   setIconText("Licq");
 
   // User List
-   char colKey[16], colTitle[32], colFormat[32];
-   unsigned short colWidth, colAlign, numColumns;
-   licqConf.ReadNum("NumColumns", numColumns, 1);
-   for (unsigned short i = 1; i <= numColumns; i++)
-   {
-      sprintf(colKey, "Column%d.Title", i);
-      licqConf.ReadStr(colKey, colTitle, "Alias");
-      sprintf(colKey, "Column%d.Format", i);
-      licqConf.ReadStr(colKey, colFormat, "%a");
-      sprintf(colKey, "Column%d.Width", i);
-      licqConf.ReadNum(colKey, colWidth, 100);
-      sprintf(colKey, "Column%d.Align", i);
-      licqConf.ReadNum(colKey, colAlign, 0);
-      colInfo.push_back(new CColumnInfo(QString::fromLocal8Bit(colTitle), colFormat, colWidth, colAlign));
-   }
-   CreateUserView();
+  char key[16], colTitle[32], colFormat[32];
+  unsigned short colWidth, colAlign, numColumns;
+  licqConf.ReadNum("NumColumns", numColumns, 1);
+  for (unsigned short i = 1; i <= numColumns; i++)
+  {
+     sprintf(key, "Column%d.Title", i);
+     licqConf.ReadStr(key, colTitle, "Alias");
+     sprintf(key, "Column%d.Format", i);
+     licqConf.ReadStr(key, colFormat, "%a");
+     sprintf(key, "Column%d.Width", i);
+     licqConf.ReadNum(key, colWidth, 100);
+     sprintf(key, "Column%d.Align", i);
+     licqConf.ReadNum(key, colAlign, 0);
+     colInfo.push_back(new CColumnInfo(QString::fromLocal8Bit(colTitle), colFormat, colWidth, colAlign));
+  }
+  CreateUserView();
+
+  unsigned short nFloaties = 0, xPosF, yPosF, wValF;
+  unsigned long nUin;
+  licqConf.SetSection("floaties");
+  licqConf.ReadNum("Num", nFloaties, 0);
+  for (unsigned short i = 0; i < nFloaties; i++)
+  {
+    sprintf(key, "Floaty%d.Uin", i);
+    licqConf.ReadNum(key, nUin, 0);
+    sprintf(key, "Floaty%d.X", i);
+    licqConf.ReadNum(key, xPosF, 0);
+    sprintf(key, "Floaty%d.Y", i);
+    licqConf.ReadNum(key, yPosF, 0);
+    sprintf(key, "Floaty%d.W", i);
+    licqConf.ReadNum(key, wValF, 80);
+
+    if (nUin != 0)
+      CreateUserFloaty(nUin, xPosF, yPosF, wValF);
+  }
+
 
 #ifdef USE_DOCK
   licqIcon = NULL;
@@ -389,16 +409,15 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
    connect (&autoAwayTimer, SIGNAL(timeout()), this, SLOT(autoAway()));
-   connect (licqSigMan, SIGNAL(signal_updatedList(unsigned long, unsigned long)),
-            this, SLOT(slot_updatedList(unsigned long, unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
-            this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
+   connect (licqSigMan, SIGNAL(signal_updatedList(CICQSignal *)),
+            this, SLOT(slot_updatedList(CICQSignal *)));
+   connect (licqSigMan, SIGNAL(signal_updatedUser(CICQSignal *)),
+            this, SLOT(slot_updatedUser(CICQSignal *)));
    connect (licqSigMan, SIGNAL(signal_updatedStatus()), this, SLOT(updateStatus()));
    connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
-   //connect (this, SIGNAL(destroyed()), this, SLOT(slot_shutdown()));
 
    inMiniMode = false;
    updateStatus();
@@ -592,7 +611,8 @@ void CMainWindow::CreateUserView()
 
 
 //-----CMainWindow::CreateUserFloaty---------------------------------------------
-void CMainWindow::CreateUserFloaty(unsigned long nUin)
+void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
+   unsigned short y, unsigned short w)
 {
   if (nUin == 0) return;
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -612,6 +632,13 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin)
   // perhaps use the viewport sizeHint
   f->setFixedHeight(i->height() + f->frameWidth() * 2);
 
+  if (w != 0)
+  {
+    if (y > QApplication::desktop()->height() - 16) y = 0;
+    if (x > QApplication::desktop()->width() - 16) x = 0;
+    f->setGeometry(x, y, w, f->height());
+  }
+
   f->show();
 }
 
@@ -629,8 +656,10 @@ CMainWindow::~CMainWindow()
   CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
   // need some more error checking here...
   licqConf.LoadFile(buf);
+
   licqConf.SetSection("appearance");
   licqConf.WriteBool("Hidden", !isVisible());
+
   licqConf.SetSection("geometry");
 	unsigned short n;
 	n = x() < 0 ? 0 : x();
@@ -641,6 +670,25 @@ CMainWindow::~CMainWindow()
   licqConf.WriteNum("h", n);
   n = width() < 0 ? 0 : width();
   licqConf.WriteNum("w", n);
+
+  licqConf.SetSection("floaties");
+  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties.size());
+  UserFloatyList::iterator iter;
+  unsigned short i = 0;
+  char key[32];
+  for (iter = CUserView::floaties.begin(); iter != CUserView::floaties.end(); iter++)
+  {
+    sprintf(key, "Floaty%d.Uin", i);
+    licqConf.WriteNum(key, (*iter)->firstChild()->ItemUin());
+    sprintf(key, "Floaty%d.X", i);
+    licqConf.WriteNum(key, (unsigned short)((*iter)->x() > 0 ? (*iter)->x() : 0));
+    sprintf(key, "Floaty%d.Y", i);
+    licqConf.WriteNum(key, (unsigned short)((*iter)->y() > 0 ? (*iter)->y() : 0));
+    sprintf(key, "Floaty%d.W", i);
+    licqConf.WriteNum(key, (unsigned short)(*iter)->width());
+    i++;
+  }
+
   licqConf.FlushFile();
   licqConf.CloseFile();
 }
@@ -738,16 +786,17 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 
 // ---------------------------------------------------------------------------
 
-void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUin)
+void CMainWindow::slot_updatedUser(CICQSignal *sig)
 {
-  switch(_nSubSignal)
+  unsigned long nUin = sig->Uin();
+  switch(sig->SubSignal())
   {
     case USER_EVENTS:
     {
       updateEvents();
-      if (m_bAutoPopup)
+      if (m_bAutoPopup && sig->Argument() > 0)
       {
-        ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+        ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
         if (u != NULL && u->NewMessages() > 0)
         {
           gUserManager.DropUser(u);
@@ -755,7 +804,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
           unsigned short s = o->Status();
           gUserManager.DropOwner();
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
-            callFunction(mnuUserView, _nUin);
+            callFunction(mnuUserView, nUin);
         }
         else
         {
@@ -763,7 +812,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
         }
       }
       // Come to the top
-      if (m_bAutoRaise) raise();
+      if (m_bAutoRaise && sig->Argument() > 0) raise();
       // Fall through
     }
     case USER_BASIC:
@@ -771,9 +820,9 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
     case USER_EXT:
     case USER_STATUS:
     {
-      if (_nUin == gUserManager.OwnerUin())
+      if (nUin == gUserManager.OwnerUin())
       {
-        if (_nSubSignal == USER_STATUS || _nSubSignal == USER_EXT) break;
+        if (sig->SubSignal() == USER_STATUS || sig->SubSignal() == USER_EXT) break;
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
         m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
         gUserManager.DropOwner();
@@ -783,18 +832,18 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
           setCaption(m_szCaption);
         break;
       }
-      ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
       if (u == NULL)
       {
         gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid uin received: %ld\n",
-                   L_ERRORxSTR, _nUin);
+                   L_ERRORxSTR, nUin);
         break;
       }
       // Update this user if they are in the current group
       if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-        while (i && i->ItemUin() != _nUin)
+        while (i && i->ItemUin() != nUin)
           i = (CUserViewItem *)i->nextSibling();
         if (i != NULL)
         {
@@ -811,7 +860,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
         }
       }
       // Update their floaty
-      CUserView *v = CUserView::FindFloaty(u->Uin());
+      CUserView *v = CUserView::FindFloaty(nUin);
       if (v != NULL)
       {
         v->firstChild()->setGraphics(u);
@@ -826,9 +875,9 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
 
 // ---------------------------------------------------------------------------
 
-void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUin)
+void CMainWindow::slot_updatedList(CICQSignal *sig)
 {
-  switch(_nSubSignal)
+  switch(sig->SubSignal())
   {
     case LIST_ALL:
     {
@@ -837,11 +886,11 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
     }
     case LIST_ADD:
     {
-      ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+      ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
       if (u == NULL)
       {
         gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
-                   L_ERRORxSTR, _nUin);
+                   L_ERRORxSTR, sig->Uin());
         break;
       }
       if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
@@ -854,14 +903,15 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
     case LIST_REMOVE:
     {
       CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-      while (i != NULL && i->ItemUin() != _nUin) i = (CUserViewItem *)i->nextSibling();
+      while (i != NULL && i->ItemUin() != sig->Uin())
+        i = (CUserViewItem *)i->nextSibling();
       if (i != NULL) delete i;
       updateEvents();
       // If their box is open, kill it
       UserDataListIter it;
       for (it = licqUserData.begin(); it != licqUserData.end(); it++)
       {
-        if ((*it)->Uin() == _nUin)
+        if ((*it)->Uin() == sig->Uin())
         {
           delete *it;
           licqUserData.erase(it);
@@ -1327,7 +1377,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
   if (f == NULL)
   {
      f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose);
-     connect (f, SIGNAL(signal_updatedUser(unsigned long, unsigned long)), SLOT(slot_updatedUser(unsigned long, unsigned long)));
+     connect (f, SIGNAL(signal_updatedUser(CICQSignal *)), SLOT(slot_updatedUser(CICQSignal *)));
      connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
      f->setupTabs(fcn);
      licqUserData.push_back(f);
@@ -1546,18 +1596,19 @@ void CMainWindow::saveOptions()
 
   // save the column info
   licqConf.WriteNum("NumColumns", (unsigned short)colInfo.size());
-  char colKey[32];
+  char key[32];
   for (unsigned short i = 1; i <= colInfo.size(); i++)
   {
-     sprintf(colKey, "Column%d.Title", i);
-     licqConf.WriteStr(colKey, colInfo[i - 1]->m_sTitle.local8Bit());
-     sprintf(colKey, "Column%d.Format", i);
-     licqConf.WriteStr(colKey, colInfo[i - 1]->m_szFormat);
-     sprintf(colKey, "Column%d.Width", i);
-     licqConf.WriteNum(colKey, colInfo[i - 1]->m_nWidth);
-     sprintf(colKey, "Column%d.Align", i);
-     licqConf.WriteNum(colKey, colInfo[i - 1]->m_nAlign);
+     sprintf(key, "Column%d.Title", i);
+     licqConf.WriteStr(key, colInfo[i - 1]->m_sTitle.local8Bit());
+     sprintf(key, "Column%d.Format", i);
+     licqConf.WriteStr(key, colInfo[i - 1]->m_szFormat);
+     sprintf(key, "Column%d.Width", i);
+     licqConf.WriteNum(key, colInfo[i - 1]->m_nWidth);
+     sprintf(key, "Column%d.Align", i);
+     licqConf.WriteNum(key, colInfo[i - 1]->m_nAlign);
   }
+
 
   licqConf.FlushFile();
 }

@@ -21,6 +21,7 @@ class QTimer;
 class QSpinBox;
 
 class ICQUser;
+class CICQSignal;
 class CICQDaemon;
 class CEComboBox;
 class ICQEvent;
@@ -169,7 +170,7 @@ public slots:
 protected slots:
    void callFcn();
    void doneFcn(ICQEvent *);
-   void slot_updatedUser(unsigned long, unsigned long);
+   void slot_updatedUser(CICQSignal *);
    void tabSelected(const QString &);
    void ShowHistoryPrev();
    void ShowHistoryNext();
@@ -189,8 +190,8 @@ protected slots:
    void slot_aboutToShow(QWidget *);
 
 signals:
-   void signal_updatedUser(unsigned long, unsigned long);
    void signal_finished(unsigned long);
+   void signal_updatedUser(CICQSignal *);
 };
 
 

@@ -156,8 +156,8 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 #endif
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
-  connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
-           this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
+  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
+           this, SLOT(slot_updatedUser(CICQSignal *)));
   connect (btnCancel, SIGNAL(clicked()), this, SLOT(close()));
   connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
   connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
@@ -656,7 +656,8 @@ void ICQFunctions::setupTabs(int index)
     u = gUserManager.FetchUser(m_nUin, LOCK_W);
     u->SetNewUser(false);
     gUserManager.DropUser(u);
-    emit signal_updatedUser(USER_BASIC, m_nUin);
+    CICQSignal s(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+    emit signal_updatedUser(&s);
   }
   move (s_nX, s_nY);
   show();
@@ -1085,12 +1086,13 @@ void ICQFunctions::tabSelected(const QString &tab)
 
 
 //-----slot_updatedUser--------------------------------------------------------
-void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _nUin)
+void ICQFunctions::slot_updatedUser(CICQSignal *sig)
 {
-  if (m_nUin != _nUin) return;
+  if (m_nUin != sig->Uin()) return;
+
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if(u == NULL) return;
-  switch (_nUpdateType)
+  switch (sig->SubSignal())
   {
   case USER_STATUS:
   {
@@ -1176,7 +1178,6 @@ void ICQFunctions::slot_nextMessage()
 
   msgView->setSelected(e, true);
   slot_printMessage(e);
-  emit signal_updatedUser(USER_EVENTS, m_nUin);
 }
 
 

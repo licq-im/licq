@@ -28,8 +28,8 @@ protected slots:
 
 signals:
   // Signal signals
-  void signal_updatedList(unsigned long, unsigned long);
-  void signal_updatedUser(unsigned long, unsigned long);
+  void signal_updatedList(CICQSignal *);
+  void signal_updatedUser(CICQSignal *);
   void signal_updatedStatus();
   void signal_logon();
 

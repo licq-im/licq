@@ -61,10 +61,10 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
-    emit signal_updatedList(s->SubSignal(), s->Uin());
+    emit signal_updatedList(s);
     break;
   case SIGNAL_UPDATExUSER:
-    emit signal_updatedUser(s->SubSignal(), s->Uin());
+    emit signal_updatedUser(s);
     if (s->Uin() == gUserManager.OwnerUin() && s->SubSignal() == USER_STATUS)
     {
       emit signal_updatedStatus();

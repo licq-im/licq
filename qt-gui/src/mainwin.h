@@ -41,6 +41,8 @@ class QListViewItem;
 class IconManager;
 #endif
 
+class CICQSignal;
+
 typedef list <ICQFunctions *> UserDataList;
 typedef list <ICQFunctions *>::iterator UserDataListIter;
 
@@ -138,7 +140,8 @@ protected:
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   void CreateUserView();
-  void CreateUserFloaty(unsigned long nUin);
+  void CreateUserFloaty(unsigned long nUin, unsigned short x = 0,
+     unsigned short y = 0, unsigned short w = 0);
   void resizeEvent (QResizeEvent *);
   void initMenu();
 
@@ -201,8 +204,8 @@ protected slots:
   void nextServer();
   void autoAway();
   void aboutBox();
-  void slot_updatedList(unsigned long, unsigned long);
-  void slot_updatedUser(unsigned long, unsigned long);
+  void slot_updatedList(CICQSignal *);
+  void slot_updatedUser(CICQSignal *);
   void slot_updateContactList();
   void slot_updateAllUsers();
   void slot_shutdown();
