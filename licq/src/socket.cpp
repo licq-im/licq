@@ -152,23 +152,47 @@ char *INetSocket::RemoteIpStr(char *buf)
 //-----INetSocket::Error------------------------------------------------------
 int INetSocket::Error()
 {
-  return (errno == -1 ? (h_errno == -1 ? 0 : h_errno) : errno);
+  switch (m_nErrorType)
+  {
+    case SOCK_ERROR_errno: return errno;
+    case SOCK_ERROR_h_errno: return h_errno;
+    case SOCK_ERROR_desx: return -1;
+    case SOCK_ERROR_none: return 0;
+    case SOCK_ERROR_internal: return -2;
+  }
+  return 0;
 }
 
 
 //-----INetSocket::ErrorStr---------------------------------------------------
 char *INetSocket::ErrorStr(char *buf, int buflen)
 {
-  if (errno <= 0 && h_errno <= 0)
-    strcpy(buf, "No error detected!");
-  else if (errno > 0)
-    strncpy(buf, strerror(errno), buflen);
-  else if (h_errno > 0)
+  switch (m_nErrorType)
+  {
+    case SOCK_ERROR_errno:
+      strncpy(buf, strerror(errno), buflen);
+      break;
+
+    case SOCK_ERROR_h_errno:
 #ifndef HAVE_HSTRERROR
-    sprintf(buf, "hostname resolution failure (%d)", h_errno);
+      sprintf(buf, "hostname resolution failure (%d)", h_errno);
 #else
-    strncpy(buf, hstrerror(h_errno), buflen);
+      strncpy(buf, hstrerror(h_errno), buflen);
 #endif
+      break;
+    case SOCK_ERROR_desx:
+      strncpy(buf, "DesX encryption/decryption failure", buflen);
+      break;
+
+    case SOCK_ERROR_none:
+      strncpy(buf, "No error detected", buflen);
+      break;
+
+    case SOCK_ERROR_internal:
+      strncpy(buf, "Internal error", buflen);
+      break;
+  }
+
   return buf;
 }
 
@@ -180,6 +204,7 @@ INetSocket::INetSocket(unsigned long _nOwner)
   m_nOwner = _nOwner;
   m_nVersion = 0;
   m_pDHKey = NULL;
+  m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
 
@@ -262,8 +287,7 @@ bool INetSocket::SetLocalAddress(bool bIp)
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
   if (getsockname(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, &sizeofSockaddr) < 0)
   {
-    // errno has been set
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     return (false);
   }
 
@@ -281,7 +305,7 @@ bool INetSocket::SetLocalAddress(bool bIp)
     h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
     if (h_errno != 0)
     {
-      errno = -1;
+      m_nErrorType = SOCK_ERROR_h_errno;
       return false;
     }
     m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
@@ -303,13 +327,10 @@ unsigned long INetSocket::GetIpByName(const char *_szHostName)
   h_errno = gethostbyname_r_portable(_szHostName, &host);
   if (h_errno == -1) // Couldn't resolve hostname/ip
   {
-     // errno has been set
-     return (0);
+    return (0);
   }
   else if (h_errno > 0)
   {
-    // h_errno has been set
-    errno = -1;
     return (0);
   }
   // return the ip
@@ -321,14 +342,17 @@ unsigned long INetSocket::GetIpByName(const char *_szHostName)
 bool INetSocket::OpenConnection()
 {
   // If no destination set then someone screwed up
-  if(m_sRemoteAddr.sin_addr.s_addr == 0) return(false);
-
-  if (m_nDescriptor < 0)
-    m_nDescriptor = socket(AF_INET, m_nSockType, 0);
-  if (m_nDescriptor < 0)
+  if(m_sRemoteAddr.sin_addr.s_addr == 0)
   {
-    // errno has been set
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_internal;
+    return(false);
+  }
+
+  if (m_nDescriptor == -1)
+    m_nDescriptor = socket(AF_INET, m_nSockType, 0);
+  if (m_nDescriptor == -1)
+  {
+    m_nErrorType = SOCK_ERROR_errno;
     return(false);
   }
 
@@ -336,7 +360,7 @@ bool INetSocket::OpenConnection()
   int i=IP_PORTRANGE_HIGH;
   if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
   {
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     return(false);
   }
 #endif
@@ -348,7 +372,7 @@ bool INetSocket::OpenConnection()
   if (connect(m_nDescriptor, (struct sockaddr *)&m_sRemoteAddr, sizeofSockaddr) < 0)
   {
     // errno has been set
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     CloseConnection();
     return(false);
   }
@@ -367,8 +391,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
   m_nDescriptor = socket(AF_INET, m_nSockType, 0);
   if (m_nDescriptor == -1)
   {
-    // errno has been set
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     return (false);
   }
 
@@ -376,7 +399,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
   int i=IP_PORTRANGE_HIGH;
   if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
   {
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     return(false);
   }
 #endif
@@ -387,7 +410,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
   m_sLocalAddr.sin_addr.s_addr = htonl(INADDR_ANY);
   if (bind(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, sizeof(sockaddr_in)) == -1)
   {
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     return (false);
   }
 
@@ -457,8 +480,7 @@ bool INetSocket::SendRaw(CBuffer *b)
                       b->getDataSize() - nTotalBytesSent, 0);
     if (nBytesSent < 0)
     {
-      // errno has been set
-      h_errno = -1;
+      m_nErrorType = SOCK_ERROR_errno;
       return(false);
     }
     nTotalBytesSent += nBytesSent;
@@ -480,8 +502,7 @@ bool INetSocket::RecvRaw()
   int nBytesReceived = recv(m_nDescriptor, buffer, MAX_RECV_SIZE, 0);
   if (nBytesReceived <= 0)
   {
-    // errno has been set
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     return (false);
   }
   m_xRecvBuffer.Create(nBytesReceived);
@@ -553,7 +574,11 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
 
     gLog.Info("%sEncrypting packet to %ld.\n", L_DESxSTR, m_nOwner);
     b = m_pDHKey->DesXEncrypt(b_in);
-    if (b == NULL) return false;
+    if (b == NULL)
+    {
+      m_nErrorType = SOCK_ERROR_desx;
+      return false;
+    }
   }
 #endif
 
@@ -570,9 +595,8 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
     if (nBytesSent <= 0)
     {
       delete[] pcSize;
-      // errno has been set
       if (b != b_in) delete b;
-      h_errno = -1;
+      m_nErrorType = SOCK_ERROR_errno;
       return (false);
     }
     nTotalBytesSent += nBytesSent;
@@ -587,8 +611,7 @@ bool TCPSocket::SendPacket(CBuffer *b_in)
                       b->getDataSize() - nTotalBytesSent, 0);
     if (nBytesSent <= 0)
     {
-      // errno has been set
-      h_errno = -1;
+      m_nErrorType = SOCK_ERROR_errno;
       if (b != b_in) delete b;
       return(false);
     }
@@ -636,8 +659,7 @@ bool TCPSocket::RecvPacket()
       nBytesReceived = recv(m_nDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
       if (nBytesReceived <= 0)
       {
-        // errno has been set
-        h_errno = -1;
+        m_nErrorType = SOCK_ERROR_errno;
         delete[] buffer;
         return (false);
       }
@@ -655,8 +677,7 @@ bool TCPSocket::RecvPacket()
   nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, MSG_DONTWAIT);
   if (nBytesReceived <= 0)
   {
-    // errno has been set
-    h_errno = -1;
+    m_nErrorType = SOCK_ERROR_errno;
     if (errno == EAGAIN || errno == EWOULDBLOCK) return (true);
     return (false);
   }
@@ -671,7 +692,11 @@ bool TCPSocket::RecvPacket()
     {
       gLog.Info("%sDecrypting packet from %ld.\n", L_DESxSTR, m_nOwner);
       CBuffer *buf = m_pDHKey->DesXDecrypt(&m_xRecvBuffer);
-      if (buf == NULL) return false;
+      if (buf == NULL)
+      {
+        m_nErrorType = SOCK_ERROR_desx;
+        return false;
+      }
       m_xRecvBuffer.Copy(buf);
       delete buf;
 

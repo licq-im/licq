@@ -22,6 +22,16 @@ class CDHKey;
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);
 
+typedef enum SocketError_et_
+{
+  SOCK_ERROR_none,
+  SOCK_ERROR_errno,
+  SOCK_ERROR_h_errno,
+  SOCK_ERROR_desx,
+  SOCK_ERROR_internal
+} SocketError_et;
+
+
 //=====INetSocket==================================================================================
 class INetSocket
 {
@@ -89,6 +99,7 @@ protected:
   int m_nSockType;
   unsigned long m_nOwner;
   unsigned short m_nVersion;
+  SocketError_et m_nErrorType;
 };
 
 
