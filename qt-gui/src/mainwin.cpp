@@ -233,6 +233,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
+  licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
   bool bFrameTransparent;
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
@@ -815,7 +816,11 @@ void CMainWindow::updateEvents()
   }
   else
   {
-    lblMsg->setText(tr("No msgs"));
+    // Update the msg label if necessary
+    if (m_bShowGroupIfNoMsg && ICQUser::getNumUserEvents() == 0)
+      lblMsg->setText(cmbUserGroups->currentText());
+    else
+      lblMsg->setText(tr("No msgs"));
     szCaption = m_szCaption;
   }
   lblMsg->update();
@@ -851,6 +856,9 @@ void CMainWindow::setCurrentGroup(int index)
   }
   // Update the combo box
   cmbUserGroups->setCurrentItem(index);
+  // Update the msg label if necessary
+  if (m_bShowGroupIfNoMsg && ICQUser::getNumUserEvents() == 0)
+    lblMsg->setText(cmbUserGroups->currentText());
 
   // Update the group menu
   for (unsigned short i = 0; i < mnuUserGroups->count(); i++)
@@ -1328,6 +1336,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
+  licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
@@ -1360,7 +1369,7 @@ void CMainWindow::aboutBox()
   QString about(tr("Licq version %1.\n"
                   "Qt GUI plugin version %2.\n"
                   "%6\n"
-                  "Authors: Graham Roff,\nDirk A. Mueller\n"
+                  "Author: Graham Roff\n"
                   "http://www.licq.org\n\n"
                   "%3 (%4)\n"
                   "%5 contacts.").arg(licqDaemon->Version())

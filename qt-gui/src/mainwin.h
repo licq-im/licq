@@ -113,6 +113,7 @@ protected:
   bool inMiniMode,
        gridLines,
        m_bFontStyles,
+       m_bShowGroupIfNoMsg,
        showHeader,
        autoClose,
        m_bShowOffline,
