@@ -114,7 +114,6 @@ CChatClient::CChatClient(CBuffer &b)
   LoadFromBuffer(b);
 }
 
-
 bool CChatClient::LoadFromBuffer(CBuffer &b)
 {
   m_nVersion = b.UnpackUnsignedLong();
@@ -504,6 +503,7 @@ CChatUser::CChatUser()
   fontFace = FONT_PLAIN;
   focus = true;
   sleep = false;
+  m_pClient = NULL;
 
   pthread_mutex_init(&mutex, NULL);
 }
@@ -562,6 +562,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   m_nColorBack[2] = bb;
   m_bFocus = true;
   m_bSleep = false;
+  m_pChatClient = NULL;
 
   cmList.push_back(this);
 }
@@ -587,43 +588,44 @@ bool CChatManager::StartChatServer()
 
 bool CChatManager::StartAsServer()
 {
-  if (!StartChatServer()) return false;
-
   // Create the socket manager thread
   if (pthread_create(&thread_chat, NULL, &ChatManager_tep, this) == -1)
+  {
+    PushChatEvent(new CChatEvent(CHAT_ERRORxRESOURCES, NULL));
     return false;
+  }
 
   return true;
 }
 
 
 //-----CChatManager::StartAsClient-------------------------------------------
-bool CChatManager::StartAsClient(unsigned short nPort)
+void CChatManager::StartAsClient(unsigned short nPort)
 {
-  if (!StartChatServer()) return false;
+  if (!StartChatServer()) return;
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u == NULL) return false;
-  CChatClient c(u);
-  c.m_nPort = nPort;
+  if (u == NULL) return;
+  m_pChatClient = new CChatClient(u);
+  m_pChatClient->m_nPort = nPort;
   gUserManager.DropUser(u);
-  if (!ConnectToChat(c)) return false;
 
   // Create the socket manager thread
   if (pthread_create(&thread_chat, NULL, &ChatManager_tep, this) == -1)
-    return false;
-
-  return true;
+  {
+    PushChatEvent(new CChatEvent(CHAT_ERRORxRESOURCES, NULL));
+    return;
+  }
 }
 
 
 //-----CChatManager::ConnectToChat-------------------------------------------
-bool CChatManager::ConnectToChat(CChatClient &c)
+bool CChatManager::ConnectToChat(CChatClient *c)
 {
   CChatUser *u = new CChatUser;
-  u->client = c;
-  u->client.m_nSession = m_nSession;
-  u->uin = c.m_nUin;
+  u->m_pClient = c;
+  u->m_pClient->m_nSession = m_nSession;
+  u->uin = c->m_nUin;
 
   bool bSendIntIp = false;
   ICQUser *temp_user = gUserManager.FetchUser(u->uin, LOCK_R);
@@ -634,7 +636,8 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   }
 
   gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
-  if (!licqDaemon->OpenConnectionToUser("chat", c.m_nIp, c.m_nIntIp, &u->sock, c.m_nPort, bSendIntIp))
+  if (!licqDaemon->OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp, &u->sock,
+          c->m_nPort, bSendIntIp))
   {
     delete u;
     return false;
@@ -642,14 +645,14 @@ bool CChatManager::ConnectToChat(CChatClient &c)
 
   chatUsers.push_back(u);
 
-  gLog.Info("%sChat: Shaking hands [v%d].\n", L_TCPxSTR, VersionToUse(c.m_nVersion));
+  gLog.Info("%sChat: Shaking hands [v%d].\n", L_TCPxSTR, VersionToUse(c->m_nVersion));
 
   // Send handshake packet:
-  if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nUin, LocalPort(),
-     VersionToUse(c.m_nVersion), false))
+  if (!CICQDaemon::Handshake_Send(&u->sock, c->m_nUin, LocalPort(),
+     VersionToUse(c->m_nVersion), false))
     return false;
 
-  // Send color packet 
+  // Send color packet
   CPChat_Color p_color(m_szName, LocalPort(),
      m_nColorFore[0], m_nColorFore[1], m_nColorFore[2],
      m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
@@ -672,18 +675,18 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   CChatUser *u = new CChatUser;
   u->sock.TransferConnectionFrom(*s);
 
-  u->client.m_nVersion = s->Version();
-  u->client.m_nUin = s->Owner();
-  u->client.m_nIp = s->RemoteIp();
-  u->client.m_nIntIp = s->RemoteIp();
-  u->client.m_nMode = MODE_DIRECT;
-  u->client.m_nHandshake = 0x64;
+  u->m_pClient->m_nVersion = s->Version();
+  u->m_pClient->m_nUin = s->Owner();
+  u->m_pClient->m_nIp = s->RemoteIp();
+  u->m_pClient->m_nIntIp = s->RemoteIp();
+  u->m_pClient->m_nMode = MODE_DIRECT;
+  u->m_pClient->m_nHandshake = 0x64;
 
   // These will still need to be set
-  u->client.m_nPort = 0;
-  u->client.m_nSession = 0;
+  u->m_pClient->m_nPort = 0;
+  u->m_pClient->m_nSession = 0;
 
-  u->uin = u->client.m_nUin;
+  u->uin = u->m_pClient->m_nUin;
   u->state = CHAT_STATE_WAITxFORxCOLOR;
   chatUsers.push_back(u);
 
@@ -741,20 +744,20 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       {
         case 2:
         case 3:
-          u->client.LoadFromHandshake_v2(u->sock.RecvBuffer());
+          u->m_pClient->LoadFromHandshake_v2(u->sock.RecvBuffer());
           break;
         case 4:
-          u->client.LoadFromHandshake_v4(u->sock.RecvBuffer());
+          u->m_pClient->LoadFromHandshake_v4(u->sock.RecvBuffer());
           break;
         case 6:
         case 7:
         case 8:
-          u->client.LoadFromHandshake_v6(u->sock.RecvBuffer());
+          u->m_pClient->LoadFromHandshake_v6(u->sock.RecvBuffer());
           break;
       }
       gLog.Info("%sChat: Received handshake from %ld [v%ld].\n", L_TCPxSTR,
-         u->client.m_nUin, u->sock.Version());
-      u->uin = u->client.m_nUin;
+         u->m_pClient->m_nUin, u->sock.Version());
+      u->uin = u->m_pClient->m_nUin;
       u->state = CHAT_STATE_WAITxFORxCOLOR;
       break;
     }
@@ -768,8 +771,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       strncpy(u->chatname, pin.Name(), 32);
       u->chatname[31] = '\0';
       // Fill in the remaining fields in the client structure
-      u->client.m_nPort = pin.Port();
-      u->client.m_nSession = m_nSession;
+      u->m_pClient->m_nPort = pin.Port();
+      u->m_pClient->m_nSession = m_nSession;
 
       // set up the remote colors
       u->colorFore[0] = pin.ColorForeRed();
@@ -785,8 +788,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
       {
         // Skip this guys client info and anybody we haven't connected to yet
-        if ((*iter)->uin == u->uin || (*iter)->client.m_nUin == 0) continue;
-        l.push_back(&(*iter)->client);
+        if ((*iter)->uin == u->uin || (*iter)->m_pClient->m_nUin == 0) continue;
+        l.push_back((*iter)->m_pClient);
       }
 
       CPChat_ColorFont p_colorfont(m_szName, LocalPort(), m_nSession,
@@ -864,7 +867,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           }
           if (iter2 != chatUsers.end()) continue;
           // Connect to this user
-          ConnectToChat(*iter);
+          CChatClient *p = new CChatClient(*iter);
+          ConnectToChat(p);
         }
       }
 
@@ -909,8 +913,11 @@ CChatEvent *CChatManager::PopChatEvent()
   chatEvents.pop_front();
 
   // Lock the user, will be unlocked in the event destructor
-  pthread_mutex_lock(&e->m_pUser->mutex);
-  e->m_bLocked = true;
+  if (e->m_pUser)
+  {
+    pthread_mutex_lock(&e->m_pUser->mutex);
+    e->m_bLocked = true;
+  }
 
   return e;
 }
@@ -2057,6 +2064,25 @@ void *ChatManager_tep(void *arg)
   int l, nSocketsAvailable, nCurrentSocket;
   char buf[2];
 
+  if (chatman->m_pChatClient)
+  {
+    if (!chatman->ConnectToChat(chatman->m_pChatClient))
+    {
+      chatman->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
+      delete chatman->m_pChatClient;
+      return NULL;
+    }
+    chatman->m_pChatClient = 0;
+  }
+  else
+  {
+    if (!chatman->StartChatServer())
+    {
+      chatman->PushChatEvent(new CChatEvent(CHAT_ERRORxBIND, NULL));
+      return NULL;
+    }
+  }
+
   while (true)
   {
     f = chatman->sockman.SocketSet();
@@ -2093,6 +2119,8 @@ void *ChatManager_tep(void *arg)
         else if (nCurrentSocket == chatman->chatServer.Descriptor())
         {
           CChatUser *u = new CChatUser;
+          u->m_pClient = new CChatClient;
+
           chatman->chatServer.RecvConnection(u->sock);
           chatman->sockman.AddSocket(&u->sock);
           chatman->sockman.DropSocket(&u->sock);
@@ -2161,6 +2189,8 @@ CChatManager::~CChatManager()
   while (chatUsersClosed.size() > 0)
   {
     u = chatUsersClosed.front();
+    if (u->m_pClient)
+      delete u->m_pClient;
     delete u;
     chatUsersClosed.pop_front();
   }

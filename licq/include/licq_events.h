@@ -36,19 +36,38 @@ const unsigned short  SA_OFFLINE = 0;
 const unsigned short  SA_ONLINE = 1;
 const unsigned short  SA_DISABLED = 2;
 
+/*! \brief The response to a search request. 
+
+    Each search result is passed to the plugin as a CSearchAck.  If there
+    was no search results, then a single CSearchAck is passed on with 
+    Result() returning EVENT_SUCCESS, which also signifies the search is  
+    complete.
+*/
 class CSearchAck
 {
 public:
   // Accessors
+  //! Returns the UIN of the search result.
   unsigned long Uin()      { return m_nUin; }
+  //! Returns the alias (nickname) of the search result.
   const char *Alias()      { return m_szAlias; }
+  //! Returns the first name of the search result.
   const char *FirstName()  { return m_szFirstName; }
+  //! Returns the last name of the search result.
   const char *LastName()   { return m_szLastName; }
+  //! Returns the e-mail address of the search result.
   const char *Email()      { return m_szEmail; }
+  //! If non-zero, the number of search results that were found that could not
+  //! be displayed.  The server has a 40 user limit on search results.  This
+  //! is valid when Result() is EVENT_SUCCESS.
   int More()     	   { return m_nMore; }
+  //! The online status of the search result.
   char Status()            { return m_nStatus; }
+  //! The gender of the search result.  Female = 1, Male = 2, Unknown = 3.
   char Gender()		   { return m_nGender; }
+  //! The age of the serach result.
   char Age()		   { return m_nAge; }
+  //! Non-zero if authorization is required to add this user.
   char Auth()		   { return m_nAuth; }
 
   ~CSearchAck();

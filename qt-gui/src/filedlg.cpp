@@ -308,10 +308,38 @@ void CFileDlg::slot_ft()
       case FT_ERRORxHANDSHAKE:
       {
         btnCancel->setText(tr("Close"));
-        mleStatus->appendNoNewLine(tr("Handshaking error\n"));
+        mleStatus->appendNoNewLine(tr("Handshaking error.\n"));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("Handshake Error.\nSee Network Window for details."));
         break;
+      }
+
+      case FT_ERRORxCONNECT:
+      {
+        btnCancel->setText(tr("Close"));
+        mleStatus->appendNoNewLine(tr("Connection error.\n"));
+        ftman->CloseFileTransfer();
+        WarnUser(this,
+          tr("Unable to reach remote host.\nSee Network Window for details."));
+      }
+
+      case FT_ERRORxBIND:
+      {
+        btnCancel->setText(tr("Close"));
+        mleStatus->appendNoNewLine(tr("Bind error.\n"));
+        ftman->CloseFileTransfer();
+        WarnUser(this,
+          tr("Unable to bind to a port.\nSee Network Window for details."));
+      }
+      
+      case FT_ERRORxRESOURCES:
+      {
+        btnCancel->setText(tr("Close"));
+        mleStatus->appendNoNewLine(tr("Not enough resources.\n"));
+        ftman->CloseFileTransfer();
+        WarnUser(this,
+          tr("Unable to create a thread.\nSee Network Window for details."));
+
       }
     }
 
@@ -326,7 +354,7 @@ bool CFileDlg::SendFiles(const char *szFile, unsigned short nPort)
 {
   ConstFileList fl;
   fl.push_back(szFile);
-  if (!ftman->SendFiles(fl, nPort)) return false;
+  ftman->SendFiles(fl, nPort);
 
   mleStatus->append(tr("Connecting to remote..."));
   show();

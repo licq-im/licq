@@ -108,6 +108,10 @@ const unsigned char CHAT_LAUGH                = 0x1A;
 const unsigned char CHAT_CHARACTER            = 0x7E;
 const unsigned char CHAT_CONNECTION           = 0x7F;
 
+const unsigned char CHAT_ERRORxCONNECT        = 0xFF;
+const unsigned char CHAT_ERRORxBIND           = 0xFE;
+const unsigned char CHAT_ERRORxRESOURCES      = 0xFD;
+
 // Font contants (should not need to be used by the plugin)
 const unsigned long FONT_PLAIN     = 0x00000000;
 const unsigned long FONT_BOLD      = 0x00000001;
@@ -420,7 +424,7 @@ protected:
   unsigned long fontFace;
   bool focus, sleep;
 
-  CChatClient client;
+  CChatClient *m_pClient;
   TCPSocket sock;
   std::deque <unsigned char> chatQueue;
   unsigned short state;
@@ -475,7 +479,7 @@ public:
   ~CChatManager();
 
   bool StartAsServer();
-  bool StartAsClient(unsigned short nPort);
+  void StartAsClient(unsigned short nPort);
 
   void CloseChat();
   char *ClientsStr();
@@ -529,6 +533,7 @@ protected:
   ChatEventList chatEvents;
   VoteInfoList voteInfo;
   pthread_t thread_chat;
+  CChatClient *m_pChatClient;
 
   int m_nColorFore[3], m_nColorBack[3];
   char m_szFontFamily[64], m_szName[64];
@@ -541,7 +546,7 @@ protected:
   CSocketManager sockman;
 
   bool StartChatServer();
-  bool ConnectToChat(CChatClient &);
+  bool ConnectToChat(CChatClient *);
   CChatUser *FindChatUser(int);
   void CloseClient(CChatUser *);
   bool ProcessPacket(CChatUser *);

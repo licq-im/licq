@@ -42,8 +42,10 @@
  *       are available in the log.  The type of error is also specified
  *       as FT_ERRORxFILE (file read/write error, PathName() contains the
  *       name of the offending file), FT_ERRORxHANDSHAKE (handshaking error
- *       by the other side), or FT_ERRORxCLOSED (the remote side closed
- *       the connection unexpectedly).
+ *       by the other side), FT_ERRORxCLOSED (the remote side closed
+ *       the connection unexpectedly), FT_ERRORxCONNECT (error reaching
+ *       the remote host), FT_ERRORxBIND (error binding a port when D_RECEIVER)
+ *       or FT_ERRORxRESOURCES (error creating a new thread).
  * 4.  Call CloseFileTransfer() when done or to cancel, or simply delete the
  *       CFileTransferManager object.
  *
@@ -68,7 +70,9 @@ const unsigned char FT_CONFIRMxFILE  = 6;
 const unsigned char FT_ERRORxFILE      = 0xFF;
 const unsigned char FT_ERRORxHANDSHAKE = 0xFE;
 const unsigned char FT_ERRORxCLOSED    = 0xFD;
-
+const unsigned char FT_ERRORxCONNECT   = 0xFC;
+const unsigned char FT_ERRORxBIND      = 0xFB;
+const unsigned char FT_ERRORxRESOURCES = 0xFA;
 
 //=====File=====================================================================
 class CPacketFile : public CPacket
@@ -175,7 +179,7 @@ public:
   ~CFileTransferManager();
 
   bool ReceiveFiles(const char *szDirectory);
-  bool SendFiles(ConstFileList lPathNames, unsigned short nPort);
+  void SendFiles(ConstFileList lPathNames, unsigned short nPort);
 
   void CloseFileTransfer();
 
@@ -238,6 +242,7 @@ protected:
   unsigned short m_nSession, m_nSpeed, m_nState;
 
   char m_szLocalName[64], m_szRemoteName[64];
+  unsigned short m_nPort;
   unsigned long m_nFilePos, m_nBatchPos, m_nBytesTransfered, m_nBatchBytesTransfered;
   unsigned short m_nCurrentFile, m_nBatchFiles;
   unsigned long m_nFileSize, m_nBatchSize;

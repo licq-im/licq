@@ -516,7 +516,7 @@ bool ChatDlg::StartAsServer()
 bool ChatDlg::StartAsClient(unsigned short nPort)
 {
   lblRemote->setText(tr("Remote - Connecting..."));
-  if (!chatman->StartAsClient(nPort)) return false;
+  chatman->StartAsClient(nPort);
   return true;
 }
 
@@ -611,6 +611,30 @@ void ChatDlg::slot_chat()
 
     switch(e->Command())
     {
+      case CHAT_ERRORxBIND:
+      {
+        WarnUser(this, tr("Unable to bind to a port.\nSee Network Window "
+                          "for details."));
+        chatClose(u);
+        break;
+      }
+
+      case CHAT_ERRORxCONNECT:
+      {
+        WarnUser(this, tr("Unable to connect to the remote chat.\nSee Network "
+                          "Window for details."));
+        chatClose(u);
+        break;
+      }
+
+      case CHAT_ERRORxRESOURCES:
+      {
+        WarnUser(this, tr("Unable to create new thread.\nSee Network Window "
+                          "for details."));
+        chatClose(u);
+        break;
+      }
+
       case CHAT_DISCONNECTION:
       {
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());

@@ -216,7 +216,7 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
     strncpy(m_szDirectory, szDirectory, MAX_FILENAME_LEN - 1);
     m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
   }
-    
+
   struct stat buf;
   stat(m_szDirectory, &buf);
   if (!S_ISDIR(buf.st_mode))
@@ -225,23 +225,24 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
     return false;
   }
 
-  if (!StartFileTransferServer()) return false;
-
   // Create the socket manager thread
   if (pthread_create(&thread_ft, NULL, &FileTransferManager_tep, this) == -1)
+  {
+    PushFileTransferEvent(FT_ERRORxRESOURCES);
     return false;
+  }
 
   return true;
 }
 
 
 //-----CFileTransferManager::StartAsClient-------------------------------------------
-bool CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nPort)
+void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nPort)
 {
   m_nDirection = D_SENDER;
 
   // Validate the pathnames
-  if (lPathNames.size() == 0) return false;
+  if (lPathNames.size() == 0) return;
 
   struct stat buf;
   ConstFileList::iterator iter;
@@ -251,7 +252,7 @@ bool CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
     {
       gLog.Warn("%sFile Transfer: File access error %s:\n%s%s.\n", L_WARNxSTR,
          *iter, L_BLANKxSTR, strerror(errno));
-      return false;
+      return;
     }
     m_lPathNames.push_back(strdup(*iter));
     m_nBatchFiles++;
@@ -259,14 +260,14 @@ bool CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
   }
   m_iPathName = m_lPathNames.begin();
   strcpy(m_szPathName, *m_iPathName);
-
-  if (!ConnectToFileServer(nPort)) return false;
+  m_nPort = nPort;
 
   // Create the socket manager thread
   if (pthread_create(&thread_ft, NULL, &FileTransferManager_tep, this) == -1)
-    return false;
-
-  return true;
+  {
+    PushFileTransferEvent(FT_ERRORxRESOURCES);
+    return;
+  }
 }
 
 
@@ -947,6 +948,25 @@ void *FileTransferManager_tep(void *arg)
   struct timeval tv_updates = { 2, 0 };
   int l, nSocketsAvailable, nCurrentSocket;
   char buf[2];
+
+  if (ftman->m_nDirection == D_RECEIVER)
+  {
+    if (!ftman->StartFileTransferServer())
+    {
+      ftman->PushFileTransferEvent(FT_ERRORxBIND);
+      return NULL;
+    }
+  }
+  else if (ftman->m_nDirection == D_SENDER)
+  {
+    if (!ftman->ConnectToFileServer(ftman->m_nPort))
+    {
+      ftman->PushFileTransferEvent(FT_ERRORxCONNECT);
+      return NULL;
+    }
+  }
+  else
+    return NULL;
 
   while (true)
   {
