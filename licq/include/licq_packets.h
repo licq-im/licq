@@ -75,6 +75,8 @@ protected:
 
   unsigned char m_nChannel;
   unsigned short m_nSequence;
+
+  char *m_szSequenceOffset;
 };
 
 //=====UDP======================================================================

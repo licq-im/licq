@@ -55,10 +55,8 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
                  L_WARNxSTR, MAX_MESSAGE_SIZE);
        mDos[MAX_MESSAGE_SIZE] = '\0';
      }
-     CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
-        ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), mDos);
-     gLog.Info("%sSending message through server (#%ld).\n", L_SRVxSTR, p->Sequence());
-     result = SendExpectEvent_Server(_nUin, p, e);
+     result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+                                   mDos, e);
   }
   else        // send direct
   {

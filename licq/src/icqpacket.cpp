@@ -244,6 +244,7 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
 
   buffer = NULL;
   m_nSize = 0;
+  m_szSequenceOffset = NULL;
 }
 
 CSrvPacketTcp::~CSrvPacketTcp()
@@ -253,6 +254,7 @@ CSrvPacketTcp::~CSrvPacketTcp()
 
 CBuffer *CSrvPacketTcp::Finalize(INetSocket *)
 {
+  //  m_szSequenceOffset
   if (!getBuffer()) return new CBuffer;
   return new CBuffer(*getBuffer());
 }
@@ -262,6 +264,7 @@ void CSrvPacketTcp::InitBuffer()
   buffer = new CBuffer(m_nSize+6);
   buffer->PackChar(0x2a);
   buffer->PackChar(m_nChannel);
+  m_szSequenceOffset = buffer->getDataPosWrite();
   buffer->PackUnsignedShortBE(m_nSequence);
   buffer->PackUnsignedShortBE(m_nSize);
 }
@@ -831,8 +834,7 @@ CPU_GenericUinList::CPU_GenericUinList(UinList &uins, unsigned short family, uns
   for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++) {
     char uin[13];
     uin[12] = '\0';
-    int n = snprintf(uin, 12, "%lu", *iter);
-    len[0] = n;
+    len[0] = snprintf(uin, 12, "%lu", *iter);
     strcat(contacts, len);
     strcat(contacts, uin);
   }

@@ -28,8 +28,6 @@ using namespace std;
  *----------------------------------------------------------------------------*/
 void *ProcessRunningEvent_Server_tep(void *p)
 {
-  //static time_t s_nTimeLastSent = LONG_MAX;
-
   pthread_detach(pthread_self());
 
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
@@ -61,7 +59,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     pthread_testcancel();
   }
 
-  // Start sending the event
+// Start sending the event
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
   if (s == NULL)
@@ -70,6 +68,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
     if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
     pthread_exit(NULL);
   }
+
 
 //    tv.tv_sec = 1;
 //    tv.tv_usec = 100000;
@@ -87,8 +86,8 @@ void *ProcessRunningEvent_Server_tep(void *p)
     if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
     pthread_exit(NULL);
   }
-  else {
-    // send successfully
+  else if (e->m_NoAck) {
+    // send successfully and we don't get an answer from the server
     if (d->DoneEvent(e, EVENT_ACKED) != NULL) d->ProcessDoneEvent(e);
   }
   delete buf;

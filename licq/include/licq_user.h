@@ -161,7 +161,6 @@ public:
   void SaveMoreInfo();
   void SaveWorkInfo();
   void SaveAboutInfo();
-  void SaveBasicInfo();
   void SaveExtInfo();
   void SaveNewMessagesInfo();
 

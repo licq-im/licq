@@ -873,30 +873,27 @@ void CICQDaemon::CheckBirthdays(UinList &uins)
 
 
 /*----------------------------------------------------------------------------
- * CICQDaemon::SendExpectEvent
+ * CICQDaemon::SendEvent
  *
- * Sends an event and expects a reply.  Packages the given information into
- * an event structure and sticks it on the pending events queue.  Then signals
- * that it's there.
+ * Sends an event without expecting a reply.
  *--------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::SendExpectEvent_Server(CPacket *packet)
+
+void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
-  return SendExpectEvent_Server(0, packet, NULL);
+#if 1
+  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, 0, NULL);
+  e->m_NoAck = true;
+  int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
+  if (nResult != 0)
+  {
+    gLog.Error("%sUnable to start server event thread (#%ld):\n%s%s.\n", L_ERRORxSTR,
+       e->m_nSequence, L_BLANKxSTR, strerror(nResult));
+    e->m_eResult = EVENT_ERROR;
+  }
+#else
+  SendEvent(m_nTCPSrvSocketDesc, *packet, true);
+#endif
 }
-/*
-ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
-                                      unsigned long _nDestinationUin, CUserEvent *ue)
-{
-  // If we are already shutting down, don't start any events
-  if (m_bShuttingDown) return NULL;
-
-  if (ue != NULL) ue->m_eDir = D_SENDER;
-
-  ICQEvent *e = new ICQEvent(this, _nSD, packet, _eConnect, _nDestinationUin, ue);
-
-  return SendExpectEvent(e);
-}*/
-
 
 ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,
    CUserEvent *ue)
@@ -928,6 +925,14 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
   pthread_mutex_lock(&mutex_runningevents);
   m_lxRunningEvents.push_back(e);
   pthread_mutex_unlock(&mutex_runningevents);
+
+  assert(e);
+
+  gLog.Info("SendExpectEvent: pending: \n");
+  for (list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  {
+    gLog.Info("%p\n", *iter);
+  }
 
   int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
   if (nResult != 0)
@@ -1018,7 +1023,6 @@ void CICQDaemon::FailEvents(int sd, int err)
  * DoneEvent
  *
  * Marks the given event as done and removes it from the running events list.
- * Then calls PushDoneEvent on the event.
  *----------------------------------------------------------------------------*/
 ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
 {
@@ -1034,6 +1038,12 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
       break;
     }
   }
+  gLog.Info("doneevents: pending: \n");
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  {
+    gLog.Info("%p\n", *iter);
+  }
+
   //bool bFound = (iter == m_lxRunningEvents.end());
   pthread_mutex_unlock(&mutex_runningevents);
 

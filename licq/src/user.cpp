@@ -1918,64 +1918,6 @@ void ICQUser::SaveNewMessagesInfo()
 }
 
 
-
-//-----ICQUser::SaveBasicInfo---------------------------------------------------
-void ICQUser::SaveBasicInfo()
-{
-  if (!EnableSave()) return;
-
-  if (!m_fConf.ReloadFile())
-  {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
-     return;
-  }
-  m_fConf.SetSection("user");
-  m_fConf.WriteStr("Alias", GetAlias());
-  m_fConf.WriteStr("FirstName", GetFirstName());
-  m_fConf.WriteStr("LastName", GetLastName());
-  m_fConf.WriteStr("Email1", GetEmailPrimary());
-  if (!m_fConf.FlushFile())
-  {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-    return;
-  }
-
-  m_fConf.CloseFile();
-}
-
-/*
-//-----ICQUser::saveInfo--------------------------------------------------------
-void ICQUser::saveInfo()
-{
-   if (!getEnableSave()) return;
-
-   if (!m_fConf.ReloadFile())
-   {
-      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-      return;
-   }
-   m_fConf.SetSection("user");
-   m_fConf.WriteNum("Groups.System", GetGroups(GROUPS_SYSTEM));
-   m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
-   char buf[64];
-   m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
-   m_fConf.WriteNum("Port", Port());
-   m_fConf.WriteBool("NewUser", getIsNew());
-   m_fConf.WriteNum("NewMessages", getNumMessages());
-   if (!m_fConf.FlushFile())
-   {
-     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-     return;
-   }
-
-   m_fConf.CloseFile();
-}
-*/
-
 //-----ICQUser::SaveExtInfo--------------------------------------------------
 void ICQUser::SaveExtInfo()
 {

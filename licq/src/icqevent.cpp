@@ -2,6 +2,8 @@
 #include "config.h"
 #endif
 
+#include <assert.h>
+
 #include "licq_events.h"
 #include "licq_packets.h"
 #include "licq_log.h"
@@ -49,6 +51,8 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   // set up internal variables
   m_pPacket = p;
   m_bCancelled = false;
+  m_Deleted = false;
+  m_NoAck = false;
   m_nCommand = p->Command();
   m_nSubCommand = p->SubCommand();
   m_nSequence = p->Sequence();
@@ -78,6 +82,8 @@ ICQEvent::ICQEvent(ICQEvent *e)
 
   // set up internal variables
   m_pPacket = NULL;
+  m_Deleted = false;
+  m_NoAck = false;
   m_bCancelled = e->m_bCancelled;
   m_nCommand = e->m_nCommand;
   m_nSubCommand = e->m_nSubCommand;
@@ -106,6 +112,9 @@ ICQEvent::ICQEvent(ICQEvent *e)
 //-----ICQEvent::destructor-----------------------------------------------------
 ICQEvent::~ICQEvent()
 {
+  assert(!m_Deleted);
+  m_Deleted = true;
+
   delete m_pPacket;
   delete m_pUserEvent;
   delete m_pExtendedAck;

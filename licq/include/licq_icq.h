@@ -166,8 +166,9 @@ const unsigned short ICQ_CMDxMETA_GENERALxINFO     = 0x00C8; // 200
 const unsigned short ICQ_CMDxMETA_WORKxINFO        = 0x00D2; // 210
 const unsigned short ICQ_CMDxMETA_MORExINFO        = 0x00DC; // 220
 const unsigned short ICQ_CMDxMETA_ABOUT            = 0x00E6; // 230
+const unsigned short ICQ_CMDxMETA_EMAILxINFO       = 0x00EB; // 235
 const unsigned short ICQ_CMDxMETA_UNKNOWNx240      = 0x00F0; // 240
-const unsigned short ICQ_CMDxMETA_UNKNOWNx250      = 0x00FA; // 250
+const unsigned short ICQ_CMDxMETA_PASTxINFO        = 0x00FA; // 250
 const unsigned short ICQ_CMDxMETA_BASICxINFO       = 0x0104; // 260
 const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
 // Meta commands (sent)
@@ -188,11 +189,11 @@ const unsigned short ICQ_CMDxMETA_SEARCHxWPxLAST_USER = 0x01AE; // 430
 
 const unsigned short META_SUCCESS = 0x0A;
 const unsigned short META_FAILURE = 0x32;
-const unsigned short META_DONE    =
-                      ICQ_CMDxMETA_GENERALxINFO + ICQ_CMDxMETA_WORKxINFO +
-                      ICQ_CMDxMETA_MORExINFO + ICQ_CMDxMETA_ABOUT +
-                      ICQ_CMDxMETA_UNKNOWNx240 + ICQ_CMDxMETA_UNKNOWNx250 +
-                      ICQ_CMDxMETA_UNKNOWNx270;
+// const unsigned short META_DONE    =
+//                       ICQ_CMDxMETA_GENERALxINFO + ICQ_CMDxMETA_WORKxINFO +
+//                       ICQ_CMDxMETA_MORExINFO + ICQ_CMDxMETA_ABOUT +
+//                       ICQ_CMDxMETA_UNKNOWNx240 + ICQ_CMDxMETA_UNKNOWNx250 +
+//                       ICQ_CMDxMETA_UNKNOWNx270;
 
 // TCP commands
 const unsigned short ICQ_CMDxTCP_START             = 0x07EE;

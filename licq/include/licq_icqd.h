@@ -303,6 +303,7 @@ protected:
   void icqSendVisibleList();
   void icqSendInvisibleList();
   void icqRequestSystemMsg();
+  ICQEvent* icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent* );
   void SaveUserList();
 
   void FailEvents(int sd, int err);
@@ -318,10 +319,7 @@ protected:
   void PushPluginEvent(ICQEvent *);
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
-  /*ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect);
-  ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
-                            unsigned long _nDestinationUin, CUserEvent *e);*/
-  ICQEvent *SendExpectEvent_Server(CPacket *packet);
+  void SendEvent_Server(CPacket *packet);
   ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));

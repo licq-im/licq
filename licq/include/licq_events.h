@@ -190,7 +190,9 @@ protected:
   ConnectType    m_eConnect;
   EventResult    m_eResult;
   int            m_nSubResult;
-  bool           m_bCancelled;
+  bool           m_bCancelled : 1;
+  bool           m_Deleted : 1;
+  bool           m_NoAck : 1;
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;
   unsigned long  m_nDestinationUin;
