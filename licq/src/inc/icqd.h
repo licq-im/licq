@@ -257,7 +257,7 @@ protected:
   void AckUDP(unsigned short, unsigned short);
   void AckTCP(CPacketTcp &, int _nSD);
 
-  unsigned short ProcessUdpPacket(CBuffer &packet, bool = false);
+  unsigned short ProcessUdpPacket(CBuffer &packet, unsigned short = 0);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
   bool ProcessTcpPacket(CBuffer &packet, int sockfd);
