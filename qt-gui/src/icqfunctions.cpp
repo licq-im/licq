@@ -625,6 +625,7 @@ void ICQFunctions::InitHistoryTab()
   chkHistoryReverse = new QCheckBox(tr("Reverse"), p);
   connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
   chkHistoryReverse->setChecked(true);
+  chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
   mleHistory = new HistoryWidget(p);
