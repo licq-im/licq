@@ -24,6 +24,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qtextcodec.h>
+#include <qregexp.h>
 
 #include "licq_icqd.h"
 #include "mledit.h"
@@ -31,7 +32,7 @@
 #include "sigman.h"
 #include "licq_user.h"
 #include "usercodec.h"
-
+#include <ctype.h>
 
 // -----------------------------------------------------------------------------
 
@@ -177,7 +178,18 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     const char *szAutoResp = (e->ExtendedAck() && !e->ExtendedAck()->Accepted())?
                               e->ExtendedAck()->Response() : u->AutoResponse();
-    mleAwayMsg->setText(codec->toUnicode(szAutoResp));
+    if (m_nPPID == LICQ_PPID && isalpha(m_szId[0]))
+    {
+      // Strip HTML
+      QString strResponse(codec->toUnicode(szAutoResp));
+      QRegExp regExp("<.*>");
+      regExp.setMinimal(true);
+      strResponse.remove(regExp);
+      mleAwayMsg->setText(strResponse);
+    }
+    else
+      mleAwayMsg->setText(codec->toUnicode(szAutoResp));
+    
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(true);
     mleAwayMsg->setBackgroundMode(PaletteBase);
