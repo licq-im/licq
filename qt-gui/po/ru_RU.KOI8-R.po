@@ -634,31 +634,31 @@ msgstr "Licq: Протокол сети"
 msgid "CUserView::S"
 msgstr ""
 
-#: ../src/utilitydlg.cpp:89
+#: ../src/utilitydlg.cpp:90
 msgid "CUtilityDlg::Close"
 msgstr "Закрыть"
 
-#: ../src/utilitydlg.cpp:202
+#: ../src/utilitydlg.cpp:203
 msgid "CUtilityDlg::Done"
 msgstr "Завершить"
 
-#: ../src/utilitydlg.cpp:88
+#: ../src/utilitydlg.cpp:89
 msgid "CUtilityDlg::Done:"
 msgstr "Завершено:"
 
-#: ../src/utilitydlg.cpp:45
+#: ../src/utilitydlg.cpp:46
 msgid "CUtilityDlg::Edit final command"
 msgstr "Редактировать команду"
 
-#: ../src/utilitydlg.cpp:140
+#: ../src/utilitydlg.cpp:141
 msgid "CUtilityDlg::Edit:"
 msgstr "Редактировать:"
 
-#: ../src/utilitydlg.cpp:196
+#: ../src/utilitydlg.cpp:197
 msgid "CUtilityDlg::Failed:"
 msgstr "Ошибка:"
 
-#: ../src/utilitydlg.cpp:148
+#: ../src/utilitydlg.cpp:149
 msgid "CUtilityDlg::Running:"
 msgstr "Выполняется:"
 
@@ -698,7 +698,7 @@ msgstr "Удаленный - ожидаем участников..."
 msgid "EditGrpDlg::"
 msgstr ""
 
-#: ../src/editgrp.cpp:17
+#: ../src/editgrp.cpp:22
 msgid "EditGrpDlg::Add"
 msgstr "Добавить"
 
@@ -706,11 +706,11 @@ msgstr "Добавить"
 msgid "EditGrpDlg::Added to Contact List"
 msgstr "Добавлен в контакт-лист"
 
-#: ../src/editgrp.cpp:58
+#: ../src/editgrp.cpp:63
 msgid "EditGrpDlg::All Users"
 msgstr "Все пользователи"
 
-#: ../src/editgrp.cpp:84
+#: ../src/editgrp.cpp:89
 msgid "EditGrpDlg::Are you sure you want to remove\nthe group '"
 msgstr "Вы уверены, что хотите удалить\nгруппу '"
 
@@ -718,7 +718,7 @@ msgstr "Вы уверены, что хотите удалить\nгруппу '"
 msgid "EditGrpDlg::Authorization Request"
 msgstr "Запрос авторизации"
 
-#: ../src/editgrp.cpp:158
+#: ../src/editgrp.cpp:163
 msgid "EditGrpDlg::Cancel"
 msgstr "Отменить"
 
@@ -726,11 +726,11 @@ msgstr "Отменить"
 msgid "EditGrpDlg::Chat Request"
 msgstr "Запрос разговора"
 
-#: ../src/editgrp.cpp:134
+#: ../src/editgrp.cpp:139
 msgid "EditGrpDlg::Clear or Set?"
 msgstr "Очистить или установить?"
 
-#: ../src/editgrp.cpp:134
+#: ../src/editgrp.cpp:139
 msgid "EditGrpDlg::Clear"
 msgstr "Очистить"
 
@@ -738,23 +738,23 @@ msgstr "Очистить"
 msgid "EditGrpDlg::Contact List"
 msgstr "Контакт-лист"
 
-#: ../src/editgrp.cpp:23
+#: ../src/editgrp.cpp:28
 msgid "EditGrpDlg::Default"
 msgstr "По умолчанию"
 
-#: ../src/editgrp.cpp:27
+#: ../src/editgrp.cpp:32
 msgid "EditGrpDlg::Done"
 msgstr "Завершить"
 
-#: ../src/editgrp.cpp:21
+#: ../src/editgrp.cpp:26
 msgid "EditGrpDlg::Edit Name"
 msgstr "Изменить имя"
 
-#: ../src/editgrp.cpp:22
+#: ../src/editgrp.cpp:27
 msgid "EditGrpDlg::Edit group name (hit enter to save)."
 msgstr "Изменение имени группы (Нажмите Enter для сохранения)."
 
-#: ../src/editgrp.cpp:183
+#: ../src/editgrp.cpp:188
 msgid "EditGrpDlg::Edit"
 msgstr "Изменить имя"
 
@@ -766,7 +766,7 @@ msgstr "Через Email пейджер"
 msgid "EditGrpDlg::File Transfer"
 msgstr "Передача файла"
 
-#: ../src/editgrp.cpp:15
+#: ../src/editgrp.cpp:20
 msgid "EditGrpDlg::Groups"
 msgstr "Группы"
 
@@ -774,15 +774,15 @@ msgstr "Группы"
 msgid "EditGrpDlg::Message"
 msgstr "Сообщение"
 
-#: ../src/editgrp.cpp:25
+#: ../src/editgrp.cpp:30
 msgid "EditGrpDlg::New Users"
 msgstr "Новые пользователи"
 
-#: ../src/editgrp.cpp:87
+#: ../src/editgrp.cpp:92
 msgid "EditGrpDlg::Ok"
 msgstr "Да"
 
-#: ../src/editgrp.cpp:18
+#: ../src/editgrp.cpp:23
 msgid "EditGrpDlg::Remove"
 msgstr "Удалить"
 
@@ -790,23 +790,23 @@ msgstr "Удалить"
 msgid "EditGrpDlg::Saved Event"
 msgstr "Сохраненное событие"
 
-#: ../src/editgrp.cpp:134
+#: ../src/editgrp.cpp:139
 msgid "EditGrpDlg::Set"
 msgstr "Установить"
 
-#: ../src/editgrp.cpp:20
+#: ../src/editgrp.cpp:25
 msgid "EditGrpDlg::Shift Down"
 msgstr "Сдвинуть вниз"
 
-#: ../src/editgrp.cpp:19
+#: ../src/editgrp.cpp:24
 msgid "EditGrpDlg::Shift Up"
 msgstr "Сдвинуть вверх"
 
-#: ../src/editgrp.cpp:24
+#: ../src/editgrp.cpp:29
 msgid "EditGrpDlg::The default group to start up in."
 msgstr "Группа по умолчанию при старте"
 
-#: ../src/editgrp.cpp:26
+#: ../src/editgrp.cpp:31
 msgid "EditGrpDlg::The group to which new users will be automatically added."
 msgstr "Группа, куда будут по умолчанию добавляться новые пользователи."
 
@@ -822,11 +822,11 @@ msgstr "О пользователе"
 msgid "EditGrpDlg::Web Panel"
 msgstr "Через веб-панель"
 
-#: ../src/editgrp.cpp:33
+#: ../src/editgrp.cpp:38
 msgid "EditGrpDlg::What's This?"
 msgstr "Что это?"
 
-#: ../src/editgrp.cpp:73
+#: ../src/editgrp.cpp:78
 msgid "EditGrpDlg::noname"
 msgstr "новая"
 
@@ -1717,54 +1717,54 @@ msgstr "Ширина"
 msgid "OptionsDlg::none"
 msgstr "Не перекодировать"
 
-#: ../src/registeruser.cpp:22
+#: ../src/registeruser.cpp:24
 msgid "RegisterUserDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/registeruser.cpp:20
+#: ../src/registeruser.cpp:22
 msgid "RegisterUserDlg::&Register Existing User"
 msgstr ""
 
-#: ../src/registeruser.cpp:33
+#: ../src/registeruser.cpp:35
 msgid "RegisterUserDlg::"
 "If you are registering a new uin, choose a password and click \"OK\".\n"
 "If you already have a uin, then toggle \"Register Existing User\",\n"
 "enter your uin and your password, and click \"OK\""
 msgstr ""
 
-#: ../src/registeruser.cpp:69
+#: ../src/registeruser.cpp:71
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
 msgstr ""
 
-#: ../src/registeruser.cpp:54
+#: ../src/registeruser.cpp:56
 msgid "RegisterUserDlg::Invalid password, must be 8 characters or less."
 msgstr ""
 
-#: ../src/registeruser.cpp:30
+#: ../src/registeruser.cpp:32
 msgid "RegisterUserDlg::Licq User Registration"
 msgstr ""
 
-#: ../src/registeruser.cpp:16
+#: ../src/registeruser.cpp:18
 msgid "RegisterUserDlg::Password:"
 msgstr ""
 
-#: ../src/registeruser.cpp:59
+#: ../src/registeruser.cpp:61
 msgid "RegisterUserDlg::Passwords do not match, try again."
 msgstr ""
 
-#: ../src/registeruser.cpp:76
+#: ../src/registeruser.cpp:78
 msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
 msgstr ""
 
-#: ../src/registeruser.cpp:15
+#: ../src/registeruser.cpp:17
 msgid "RegisterUserDlg::Uin:"
 msgstr ""
 
-#: ../src/registeruser.cpp:81
+#: ../src/registeruser.cpp:83
 msgid "RegisterUserDlg::User Registration in Progress..."
 msgstr ""
 
-#: ../src/registeruser.cpp:17
+#: ../src/registeruser.cpp:19
 msgid "RegisterUserDlg::Verify:"
 msgstr ""
 
@@ -1893,27 +1893,27 @@ msgstr "неудачно"
 msgid "ShowAwayMsgDlg::timed out"
 msgstr "вышло время"
 
-#: ../src/skinbrowser.cpp:19
+#: ../src/skinbrowser.cpp:24
 msgid "SkinBrowserDlg::Apply"
 msgstr "Применить"
 
-#: ../src/skinbrowser.cpp:20
+#: ../src/skinbrowser.cpp:25
 msgid "SkinBrowserDlg::Done"
 msgstr "Завершить"
 
-#: ../src/skinbrowser.cpp:44
+#: ../src/skinbrowser.cpp:49
 msgid "SkinBrowserDlg::ERROR"
 msgstr "ОШИБКА"
 
-#: ../src/skinbrowser.cpp:17
+#: ../src/skinbrowser.cpp:22
 msgid "SkinBrowserDlg::Icons"
 msgstr "значки"
 
-#: ../src/skinbrowser.cpp:21
+#: ../src/skinbrowser.cpp:26
 msgid "SkinBrowserDlg::Licq Skin Browser"
 msgstr "Licq: Выбор внешнего вида"
 
-#: ../src/skinbrowser.cpp:14
+#: ../src/skinbrowser.cpp:19
 msgid "SkinBrowserDlg::Skins"
 msgstr "Вид"
 
