@@ -302,6 +302,8 @@ signals:
 
 class HintsDlg : public LicqDialog
 {
+  Q_OBJECT
+
 public:
   HintsDlg(QString &);
 

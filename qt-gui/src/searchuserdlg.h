@@ -40,6 +40,8 @@ class CSearchAck;
 
 class SearchUserView : public QListView
 {
+  Q_OBJECT
+
 public:
    SearchUserView(QWidget *parent = 0);
 };
