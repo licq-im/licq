@@ -1107,6 +1107,20 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       ackFlags = packet.UnpackUnsignedShort();
       msgFlags = packet.UnpackUnsignedShort();
       packet >> messageLen;
+
+      // icq2002a is dumb
+      msgFlags <<= 4;
+      if (msgFlags & ICQ_TCPxMSG_URGENT)
+      {
+        msgFlags &= ~ICQ_TCPxMSG_URGENT;
+        msgFlags |= ICQ_TCPxMSG_LIST;
+      }
+      else if (msgFlags & ICQ_TCPxMSG_LIST)
+      {
+        msgFlags &= ~ICQ_TCPxMSG_LIST;
+        msgFlags |= ICQ_TCPxMSG_URGENT;
+      }
+
       break;
     }
     default:
