@@ -9,6 +9,8 @@
 #include <qdialog.h>
 #include <qstring.h>
 
+#include "licq_user.h"
+
 class QPushButton;
 class QVGroupBox;
 class QProgressBar;
@@ -30,8 +32,11 @@ public:
 
   int go_message(QString);
   int go_url(QString, QString);
+  int go_contact(UinList &_uins);
 protected:
   QString s1, s2;
+  UinList *uins;
+
   unsigned long m_nEventType;
   QVGroupBox *grpSending;
   QPushButton *btnCancel;

@@ -1555,15 +1555,22 @@ void UserSendContactEvent::sendButton()
   CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
   UinList uins;
 
-  while(i) {
-
+  while (i)
+  {
     uins.push_back(i->Uin());
-
     i = static_cast<CMMUserViewItem *>(i->nextSibling());
   }
 
-  if(uins.size() == 0)
+  if (uins.size() == 0)
     return;
+
+  if (chkMass->isChecked())
+  {
+    CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
+    int r = m->go_contact(uins);
+    delete m;
+    if (r != QDialog::Accepted) return;
+  }
 
   icqEventTag = server->icqSendContactList(m_nUin, uins,
     chkSendServer->isChecked() ? false : true,

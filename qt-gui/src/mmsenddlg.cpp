@@ -79,6 +79,22 @@ int CMMSendDlg::go_url(QString url, QString desc)
 }
 
 
+int CMMSendDlg::go_contact(UinList &_uins)
+{
+  m_nEventType = ICQ_CMDxSUB_CONTACTxLIST;
+  uins = &_uins;
+
+  setCaption(tr("Multiple Recipient Contact List"));
+
+  // Start
+  SendNext();
+  show();
+  return result();
+}
+
+
+
+
 void CMMSendDlg::slot_done(ICQEvent *e)
 {
   if ( !icqEventTag->Equals(e) )
@@ -134,6 +150,15 @@ void CMMSendDlg::SendNext()
       gUserManager.DropUser(u);
 
       icqEventTag = server->icqSendUrl(m_nUin, s2.latin1(), s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL, true);
+      break;
+    }
+    case ICQ_CMDxSUB_CONTACTxLIST:
+    {
+      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+      grpSending->setTitle(tr("Sending mass list to %1...").arg(u->GetAlias()));
+      gUserManager.DropUser(u);
+
+      icqEventTag = server->icqSendContactList(m_nUin, *uins, false, ICQ_TCPxMSG_NORMAL);
       break;
     }
   }
