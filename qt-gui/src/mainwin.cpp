@@ -689,6 +689,11 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
   bool bUpdateWin = true;
   switch(_nSubSignal)
   {
+  case LIST_ALL:
+  {
+    updateUserWin();
+    break;
+  }
   case LIST_REORDER:
   case LIST_ADD:
   {
