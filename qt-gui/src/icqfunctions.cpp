@@ -1089,6 +1089,7 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
 {
   if (m_nUin != _nUin) return;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if(u == NULL) return;
   switch (_nUpdateType)
   {
   case USER_STATUS:
@@ -1120,8 +1121,11 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
       } while (e != NULL);
     }
     index++;
-    e = new MsgViewItem(u->GetEvent(index), index, msgView);
-    msgView->ensureItemVisible(e);
+    if(u->GetEvent(index))
+    {
+      e = new MsgViewItem(u->GetEvent(index), index, msgView);
+      msgView->ensureItemVisible(e);
+    }
     break;
   }
   case USER_GENERAL:
