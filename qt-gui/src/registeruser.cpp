@@ -78,7 +78,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   setHelpEnabled(page2, false);
 
   connect (cancelButton(), SIGNAL(clicked()), SLOT(hide()) );
-  connect (chkExistingUser, SIGNAL(toggled(bool)), nfoUin, SLOT(setEnabled(bool)));
+  connect (chkExistingUser, SIGNAL(toggled(bool)), this, SLOT(enableNfoUin(bool)));
   connect (nfoPassword2, SIGNAL(textChanged(const QString&)), this, SLOT(dataChanged()));
   chkExistingUser->setChecked(false);
   chkSavePassword->setChecked(true);
@@ -187,6 +187,13 @@ void RegisterUserDlg::accept()
   }
   server->SaveConf();
   close(true);
+}
+
+void RegisterUserDlg::enableNfoUin(bool b)
+{
+  nfoUin->setEnabled(b);
+  if (b)
+    nfoUin->setFocus();
 }
 
 #include "registeruser.moc"

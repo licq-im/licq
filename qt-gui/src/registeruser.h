@@ -45,6 +45,7 @@ protected slots:
   void accept();
   void dataChanged();
   void nextPage();
+  void enableNfoUin(bool);
 };
 
 
