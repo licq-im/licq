@@ -14,13 +14,13 @@
 frame.pixmap = none
 frame.mask = none
 frame.border.top = 0
-frame.border.bottom = 72
+frame.border.bottom = 48
 frame.border.left = 0
 frame.border.right = 0
 frame.hasMenuBar = 0
 
-lblStatus.rect.x1 = 50   
-lblStatus.rect.y1 = -24  
+lblStatus.rect.x1 = 50
+lblStatus.rect.y1 = -24
 lblStatus.rect.x2 = -2
 lblStatus.rect.y2 = -2
 lblStatus.color.fg = default
@@ -36,7 +36,7 @@ btnSys.pixmapUpFocus = none
 btnSys.pixmapUpNoFocus = none
 btnSys.pixmapDown = none
 btnSys.color.fg = default
-btnSys.color.bg = default  
+btnSys.color.bg = default
 btnSys.caption = Licq
 
 lblMsg.rect.x1 = 2
@@ -48,10 +48,10 @@ lblMsg.color.bg = default
 lblMsg.frameStyle = 51
 lblMsg.pixmap = none
 
-cmbGroups.rect.x1 = 2
-cmbGroups.rect.y1 = -72
-cmbGroups.rect.x2 = -2
-cmbGroups.rect.y2 = -50
+cmbGroups.rect.x1 = 0
+cmbGroups.rect.y1 = 0
+cmbGroups.rect.x2 = 0
+cmbGroups.rect.y2 = 0
 cmbGroups.color.fg = default
 cmbGroups.color.bg = default
 
