@@ -24,6 +24,7 @@
 #include <qwhatsthis.h>
 #include <qgroupbox.h>
 #include <qpushbutton.h>
+#include <qlayout.h>
 
 #include "editgrp.h"
 #include "ewidgets.h"
@@ -32,8 +33,15 @@
 EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
+  QGridLayout *lay = new QGridLayout(this, 2, 2, 15, 10);
   grpGroups = new QGroupBox(tr("Groups"), this);
+  lay->addMultiCellWidget(grpGroups, 0, 0, 0, 2);
+
+  QGridLayout *glay = new QGridLayout(grpGroups, 4, 3, 20, 5);
   lstGroups = new QListBox(grpGroups);
+  glay->addMultiCellWidget(lstGroups, 0, 0, 0, 1);
+
+  QVBoxLayout *vlay = new QVBoxLayout(glay);
   btnAdd = new QPushButton(tr("Add"), grpGroups);
   btnRemove = new QPushButton(tr("Remove"), grpGroups);
   btnUp = new QPushButton(tr("Shift Up"), grpGroups);
@@ -44,18 +52,32 @@ EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   QWhatsThis::add(btnDefault, tr("The default group to start up in."));
   btnNewUser = new QPushButton(tr("New Users"), grpGroups);
   QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added."));
-  btnDone = new QPushButton(tr("Done"), this);
-#if 0
-  nfoDefault = new CInfoField(0, 0, 5, 5, tr("Default:"), true, grpGroups);
-  nfoNewUser = new CInfoField(0, 0, 5, 5, 5, tr("New User:"), true, grpGroups);
-#endif
+  vlay->addWidget(btnAdd);
+  vlay->addWidget(btnRemove);
+  vlay->addWidget(btnUp);
+  vlay->addWidget(btnDown);
+  vlay->addWidget(btnEdit);
+  vlay->addWidget(btnDefault);
+  vlay->addWidget(btnNewUser);
+  glay->addMultiCell(vlay, 0, 0, 2, 2);
+
+  glay->addWidget(new QLabel(tr("Default:"), grpGroups), 1, 0);
+  nfoDefault = new CInfoField(grpGroups, true);
+  glay->addMultiCellWidget(nfoDefault, 1, 1, 1, 2);
+  glay->addWidget(new QLabel(tr("New User:"), grpGroups), 2, 0);
+  nfoNewUser = new CInfoField(grpGroups, true);
+  glay->addMultiCellWidget(nfoNewUser, 2, 2, 1, 2);
+
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
+  glay->addMultiCellWidget(edtName, 3, 3, 0, 2);
 
-  btnWhat = new QPushButton(tr("What's This?"), this);
+  btnWhat = new QPushButton(tr("Help"), this);
+  lay->addWidget(btnWhat, 1, 0, AlignLeft);
   connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
+  btnDone = new QPushButton(tr("Done"), this);
+  lay->addWidget(btnDone, 1, 1, AlignRight);
 
-  resize(320, 360);
   RefreshList();
 
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(slot_add()));
@@ -222,24 +244,5 @@ void EditGrpDlg::slot_whatsthis()
 }
 
 
-void EditGrpDlg::resizeEvent (QResizeEvent *)
-{
-  grpGroups->setGeometry(10, 10, width() - 20, height() - 60);
-  lstGroups->setGeometry(10, 20, grpGroups->width() - 120, grpGroups->height() - 115);
-  btnAdd->setGeometry(grpGroups->width() - 100, 20, 80, 30);
-  btnRemove->setGeometry(btnAdd->x(), btnAdd->y() + 40, 80, 30);
-  btnUp->setGeometry(btnAdd->x(), btnRemove->y() + 40, 80, 30);
-  btnDown->setGeometry(btnAdd->x(), btnUp->y() + 40, 80, 30);
-  btnEdit->setGeometry(btnAdd->x(), btnDown->y() + 40, 80, 30);
-  btnDefault->setGeometry(btnAdd->x(), btnEdit->y() + 40, 80, 30);
-  btnNewUser->setGeometry(btnAdd->x(), btnDefault->y() + 40, 80, 30);
-  edtName->setGeometry(10, grpGroups->height() - 80, grpGroups->width() - 120, 20);
-#if 0
-  nfoDefault->setGeometry(10, grpGroups->height() - 55, 70, 5, grpGroups->width() - 195);
-  nfoNewUser->setGeometry(10, grpGroups->height() - 30, 70, 5, grpGroups->width() - 195);
-#endif
-  btnWhat->setGeometry(10, height() - 38, 90, 26);
-  btnDone->setGeometry((width() - 90) / 2 + 40, height() - 40, 100, 30);
-}
 
 #include "moc/moc_editgrp.h"

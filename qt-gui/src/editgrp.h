@@ -27,9 +27,7 @@ protected:
   unsigned short m_nEditGrp;
 
   void RefreshList();
-  void resizeEvent (QResizeEvent *);
 public slots:
-  //virtual void show();
   virtual void hide();
 protected slots:
   void slot_add();
