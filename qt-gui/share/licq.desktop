@@ -1,6 +1,9 @@
 [Desktop Entry]
+Encoding=UTF-8
 Type=Application
 Exec=licq 
 Icon=licq
 Comment=A Mirabilis ICQ Clone for Unix
 Name=Licq
+GenericName=A Mirabilis ICQ Clone for Unix
+GenericName[de]=ICQ Programm für Unix
