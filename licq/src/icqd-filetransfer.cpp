@@ -1131,7 +1131,7 @@ void *FileTransferManager_tep(void *arg)
         if (nCurrentSocket == ftman->pipe_thread[PIPE_READ])
         {
           read(ftman->pipe_thread[PIPE_READ], buf, 1);
-          if (buf[0] == 'S')
+          if (buf[0] == 'R')
           {
             DEBUG_THREADS("[FileTransferManager_tep] Reloading socket info.\n");
           }
@@ -1268,6 +1268,7 @@ void *FileWaitForSignal_tep(void *arg)
     {
       rc->m->ftSock.TransferConnectionFrom(s);
       bConnected = rc->m->SendFileHandshake();
+      write(rc->m->pipe_thread[PIPE_WRITE], "R", 1);
     }
   }
 
