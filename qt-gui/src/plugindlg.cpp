@@ -118,6 +118,8 @@ void PluginDlg::slot_load()
 
   char *sz[] = { "licq", NULL };
   gLicqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1(), 1, sz);
+
+  slot_refresh();
 }
 
 
@@ -143,6 +145,8 @@ void PluginDlg::slot_enable()
 {
   if (lstLoaded->currentItem() == NULL) return;
   gLicqDaemon->PluginEnable(lstLoaded->currentItem()->text(0).toUShort());
+
+  slot_refresh();
 }
 
 
@@ -150,12 +154,16 @@ void PluginDlg::slot_disable()
 {
   if (lstLoaded->currentItem() == NULL) return;
   gLicqDaemon->PluginDisable(lstLoaded->currentItem()->text(0).toUShort());
+
+  slot_refresh();
 }
 
 void PluginDlg::slot_unload()
 {
   if (lstLoaded->currentItem() == NULL) return;
   gLicqDaemon->PluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
+
+  slot_refresh();
 }
 
 
