@@ -1277,7 +1277,14 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
   free(m_szMessage);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (pUser->CustomAutoResponse()[0] != '\0')
-    m_szMessage = gTranslator.NToRN(o->CustomAutoResponse());
+  {
+    char *cus = gTranslator.NToRN(o->CustomAutoResponse());
+    char *def = gTranslator.NToRN(o->AutoResponse());
+    m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
+    sprintf(m_szMessage, "%s\n--------------------\n%s", def, cus);
+    free(cus);
+    free(def);
+  }
   else
     m_szMessage = gTranslator.NToRN(o->AutoResponse());
   gUserManager.DropOwner();
