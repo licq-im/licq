@@ -25,7 +25,6 @@
 #include "config.h"
 #endif
 
-#include <iostream.h>
 #include <qapplication.h>
 #if QT_VERSION < 210
 #define private public
