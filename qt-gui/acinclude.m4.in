@@ -318,7 +318,7 @@ AC_DEFUN(AC_PATH_QT_MERGETR,
 ])
 
 ## ------------------------------------------------------------------------
-## KDE 2 detection. Terribly simple.
+## KDE detection. Terribly simple.
 ## ------------------------------------------------------------------------
 AC_DEFUN(AC_PATH_KDE,
 [
@@ -336,8 +336,8 @@ AC_DEFUN(AC_PATH_KDE,
     [  --with-kde              compile with KDE support. ],
     [  ac_kde="$withval" ])
 
-  dnl check for KDE 2 includes
-  kde_incdirs="/opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
+  dnl check for KDE includes
+  kde_incdirs="/opt/kde3/include /opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
   if test -n "$KDEDIR"; then
     kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
   fi
@@ -345,8 +345,8 @@ AC_DEFUN(AC_PATH_KDE,
   LICQ_FIND_FILE(kaction.h, $kde_incdirs, kde_incdir)
   kde_includes=$kde_incdir
 
-  dnl check for KDE 2 libraries
-  kde_libdirs="/opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
+  dnl check for KDE libraries
+  kde_libdirs="/opt/kde3/lib /opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
   if test -n "$KDEDIR"; then
     kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
   fi
@@ -366,7 +366,7 @@ AC_DEFUN(AC_PATH_KDE,
     AC_MSG_RESULT([libraries $kde_libraries, headers $kde_includes])
     AC_DEFINE(USE_KDE)
     LIB_NAME="licq_kde-gui.la"
-    KDE_LIBS="-lkfile"
+    KDE_LIBS="-lkdecore -lkdeui -lkio"
     AC_SUBST(KDE_LIBS)
     have_kde=yes
     AC_SUBST(have_kde)

@@ -162,9 +162,9 @@ echo ""
 echo "Install prefix : $prefix"
 echo "Licq Includes  : $LICQ_INCLUDES"
 if test "$have_kde" = yes; then
-  echo "KDE 2          : includes in $kde_includes, libs in $kde_libraries"
+  echo "KDE            : includes in $kde_includes, libs in $kde_libraries"
 else
-  echo "KDE 2          : disabled."
+  echo "KDE            : disabled."
 fi
 echo "Qt includes    : $ac_cv_header_qtinc"
 echo "Qt libraries   : $ac_qt_libdir, $ac_qt_libname"
