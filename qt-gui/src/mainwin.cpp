@@ -303,7 +303,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   // Load the icons
   licqConf.SetSection("appearance");
-  licqConf.SetFlags(INI_FxWARN);
+  licqConf.SetFlags(0);
   char szIcons[MAX_FILENAME_LEN];
   if (strlen(iconsName) == 0)
     licqConf.ReadStr("Icons", szIcons);
@@ -1792,7 +1792,10 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    CIniFile fIconsConf;
    if (!fIconsConf.LoadFile(sFilename))
    {
-     WarnUser(this, tr("Unable to open icons file\n%1.").arg(sFilename));
+     if (_bInitial)
+       gLog.Warn("%sUnable to open icons file %s.\n", L_WARNxSTR, sFilename);
+     else
+       WarnUser(this, tr("Unable to open icons file\n%1.").arg(sFilename));
      return;
    }
 
@@ -1852,19 +1855,27 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 
    if (!_bInitial)
    {
-     mnuStatus->changeItem(pmOnline, tr("&Online"), mnuStatus->idAt(0));
-     mnuStatus->changeItem(pmAway, tr("&Away"), mnuStatus->idAt(1));
-     mnuStatus->changeItem(pmNa, tr("&Not Available"), mnuStatus->idAt(2));
-     mnuStatus->changeItem(pmOccupied, tr("O&ccupied"), mnuStatus->idAt(3));
-     mnuStatus->changeItem(pmDnd, tr("&Do Not Disturb"), mnuStatus->idAt(4));
-     mnuStatus->changeItem(pmFFC, tr("Free for C&hat"), mnuStatus->idAt(5));
-     mnuStatus->changeItem(pmOffline, tr("O&ffline"), mnuStatus->idAt(6));
-     mnuStatus->changeItem(pmPrivate, tr("&Invisible"), mnuStatus->idAt(8));
+     mnuStatus->changeItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
+     mnuStatus->changeItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
+     mnuStatus->changeItem(pmNa, tr("&Not Available"), ICQ_STATUS_NA);
+     mnuStatus->changeItem(pmOccupied, tr("O&ccupied"), ICQ_STATUS_OCCUPIED);
+     mnuStatus->changeItem(pmDnd, tr("&Do Not Disturb"), ICQ_STATUS_DND);
+     mnuStatus->changeItem(pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
+     mnuStatus->changeItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
+     mnuStatus->changeItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
      mnuUser->changeItem(pmMessage, tr("&Send Message"), mnuUserSendMsg);
      mnuUser->changeItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
      mnuUser->changeItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
+     /*mnuStatus->setAccel(ALT + Key_O, ICQ_STATUS_ONLINE);
+     mnuStatus->setAccel(ALT + Key_A, ICQ_STATUS_AWAY);
+     mnuStatus->setAccel(ALT + Key_N, ICQ_STATUS_NA);
+     mnuStatus->setAccel(ALT + Key_C, ICQ_STATUS_OCCUPIED);
+     mnuStatus->setAccel(ALT + Key_D, ICQ_STATUS_DND);
+     mnuStatus->setAccel(ALT + Key_H, ICQ_STATUS_FREEFORCHAT);
+     mnuStatus->setAccel(ALT + Key_F, ICQ_STATUS_OFFLINE);
+     mnuStatus->setAccel(ALT + Key_I, ICQ_STATUS_FxPRIVATE);*/
      userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
                           &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
      updateUserWin();
@@ -1876,25 +1887,24 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 //-----CMainWindow::initMenu--------------------------------------------------
 void CMainWindow::initMenu()
 {
-   int mnuId;
    mnuStatus = new QPopupMenu(NULL);
-   mnuId = mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
-   mnuStatus->setAccel(ALT + Key_O,mnuId);
-   mnuId = mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
-   mnuStatus->setAccel(ALT + Key_A,mnuId);
-   mnuId = mnuStatus->insertItem(pmNa, tr("&Not Available"), ICQ_STATUS_NA);
-   mnuStatus->setAccel(ALT + Key_N,mnuId);
-   mnuId = mnuStatus->insertItem(pmOccupied, tr("O&ccupied"), ICQ_STATUS_OCCUPIED);
-   mnuStatus->setAccel(ALT + Key_C,mnuId);
-   mnuId = mnuStatus->insertItem(pmDnd, tr("&Do Not Disturb"), ICQ_STATUS_DND);
-   mnuStatus->setAccel(ALT + Key_D,mnuId);
-   mnuId = mnuStatus->insertItem(pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
-   mnuStatus->setAccel(ALT + Key_H,mnuId);
-   mnuId = mnuStatus->insertItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
-   mnuStatus->setAccel(ALT + Key_F,mnuId);
+   mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
+   mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
+   mnuStatus->insertItem(pmNa, tr("&Not Available"), ICQ_STATUS_NA);
+   mnuStatus->insertItem(pmOccupied, tr("O&ccupied"), ICQ_STATUS_OCCUPIED);
+   mnuStatus->insertItem(pmDnd, tr("&Do Not Disturb"), ICQ_STATUS_DND);
+   mnuStatus->insertItem(pmFFC, tr("Free for C&hat"), ICQ_STATUS_FREEFORCHAT);
+   mnuStatus->insertItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
    mnuStatus->insertSeparator();
-   mnuId = mnuStatus->insertItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
-   mnuStatus->setAccel(ALT + Key_I,mnuId);
+   mnuStatus->insertItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
+   mnuStatus->setAccel(ALT + Key_O, ICQ_STATUS_ONLINE);
+   mnuStatus->setAccel(ALT + Key_A, ICQ_STATUS_AWAY);
+   mnuStatus->setAccel(ALT + Key_N, ICQ_STATUS_NA);
+   mnuStatus->setAccel(ALT + Key_C, ICQ_STATUS_OCCUPIED);
+   mnuStatus->setAccel(ALT + Key_D, ICQ_STATUS_DND);
+   mnuStatus->setAccel(ALT + Key_H, ICQ_STATUS_FREEFORCHAT);
+   mnuStatus->setAccel(ALT + Key_F, ICQ_STATUS_OFFLINE);
+   mnuStatus->setAccel(ALT + Key_I, ICQ_STATUS_FxPRIVATE);
    connect(mnuStatus, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
 
    mnuUserGroups = new QPopupMenu(NULL);
