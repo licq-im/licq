@@ -2444,14 +2444,14 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
       int yp;
       getyx(winMain->Win(), yp, nLinePos[m_nCon]);
       *winMain << '\n';
-      // Check if the line started with a '.'
+      // Check if the line only contains a '.'
       sz[n] = '\0';
       char *szNL = strrchr(sz, '\n');
       if (szNL == NULL)
         szNL = &sz[0];
       else
         szNL++;
-      if ( *szNL == '.' || *szNL == ',' )
+      if ( ( *szNL == '.' || *szNL == ',' ) && strlen( szNL ) == 1)
         return szNL;
 
       sz[n++] = '\n';
