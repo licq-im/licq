@@ -261,7 +261,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(slot_aboutToQuit()));
 
-  // read in info from file  
+  // read in info from file
   char szTemp[MAX_FILENAME_LEN];
 
 #ifdef USE_KDE
@@ -917,7 +917,8 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_A:
-      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
+      if(nUin)
+        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
       break;
 
     case Qt::Key_P:
