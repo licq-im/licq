@@ -3,7 +3,6 @@
 
 #include <qdialog.h>
 
-#include "userfcndlg.h"
 #include "history.h"
 
 class QBoxLayout;
@@ -51,7 +50,7 @@ struct STab
   bool loaded;
 };
 
-class ICQFunctions : public QWidget, public CUserFunctionDlg
+class ICQFunctions : public QWidget
 {
    Q_OBJECT
 public:
@@ -60,8 +59,10 @@ public:
                QWidget *parent = 0, const char *name = 0);
   virtual ~ICQFunctions();
   void setupTabs(int);
+  unsigned long Uin()  {  return m_nUin;  }
 
 protected:
+  unsigned long m_nUin;
   struct STab tabList[8];
   int currentTab;
   CICQDaemon *server;

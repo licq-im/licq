@@ -9,8 +9,8 @@ INCLUDES = -Wall -fno-rtti -fno-exceptions -D_REENTRANT \
 
 lib_LTLIBRARIES = licq_qt-gui.la
 
-noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h chatacceptdlg.h \
-	chatdlg.h editgrp.h editfile.h eventdesc.h ewidgets.h fileacceptdlg.h \
+noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
+	chatdlg.h editgrp.h editfile.h eventdesc.h ewidgets.h \
 	filedlg.h gui-defines.h icqfunctions.h licq_qt-gui.conf.h licqgui.h \
 	mainwin.h messagebox.h mledit.h optionsdlg.h outputwin.h passworddlg.h\
 	plugindlg.h qmultilineeditnew.h registeruser.h searchuserdlg.h \
@@ -18,8 +18,8 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h chatacceptdlg.h \
 	utilitydlg.h wharf.h randomchatdlg.h
 
 licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
-	chatacceptdlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
-	ewidgets.cpp fileacceptdlg.cpp filedlg.cpp icqfunctions.cpp \
+	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
+	ewidgets.cpp filedlg.cpp icqfunctions.cpp \
 	licqgui.cpp mainwin.cpp messagebox.cpp mledit.cpp optionsdlg.cpp \
 	outputwin.cpp passworddlg.cpp plugindlg.cpp qmultilineeditnew.cpp \
 	registeruser.cpp searchuserdlg.cpp securitydlg.cpp showawaymsgdlg.cpp \

@@ -46,11 +46,9 @@
 #include <qspinbox.h>
 
 #include "icqfunctions.h"
-#include "chatacceptdlg.h"
 #include "chatdlg.h"
 #include "ewidgets.h"
 #include "messagebox.h"
-#include "fileacceptdlg.h"
 #include "filedlg.h"
 #include "showawaymsgdlg.h"
 #include "countrycodes.h"
@@ -60,6 +58,7 @@
 #include "editfile.h"
 #include "eventdesc.h"
 #include "gui-defines.h"
+#include "refusedlg.h"
 
 #include "user.h"
 #include "mledit.h"
@@ -1145,13 +1144,13 @@ void ICQFunctions::printMessage(QListViewItem *e)
     switch (m->SubCommand())
     {
       case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-        (void) new CChatAcceptDlg(server, m_nUin, m->Sequence());
+        //(void) new CChatAcceptDlg(server, m_nUin, m->Sequence());
         btnRead1->setText(tr("Accept"));
         btnRead2->setText(tr("Refuse"));
         break;
 
       case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-        (void) new CFileAcceptDlg(server, m_nUin, (CEventFile *)m);
+        //(void) new CFileAcceptDlg(server, m_nUin, (CEventFile *)m);
         btnRead1->setText(tr("Accept"));
         btnRead2->setText(tr("Refuse"));
         break;
@@ -1222,13 +1221,53 @@ void ICQFunctions::slot_readbtn1()
 
   switch (m_xCurrentReadEvent->SubCommand())
   {
-    case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-      // Accept
-      break;
+    case ICQ_CMDxSUB_CHAT:  // accept a chat request
+    {
+      int port = server->GetTCPPort();
+      if (port == -1)   // assign the chat port
+      {
+         WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
+         break;
+      }
+      ChatDlg *chatDlg = new ChatDlg(m_nUin, true, server, port);
+      if (chatDlg->getPort() != 0)
+      {
+        server->icqChatRequestAccept(m_nUin, chatDlg->getPort(),
+                                     m_xCurrentReadEvent->Sequence());
+        chatDlg->show();
+      }
+      else
+      {
+        chatDlg->hide();
+      }
 
-    case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-      // Accept
       break;
+    }
+
+    case ICQ_CMDxSUB_FILE:  // accept a file transfer
+    {
+      int port = server->GetTCPPort();
+      if (port == -1)   // assign the file port
+      {
+        WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
+        break;
+      }
+      CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
+      CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(),
+                                       server, true, port);
+      if (fileDlg->getPort() != 0)
+      {
+        server->icqFileTransferAccept(m_nUin, fileDlg->getPort(),
+                                         f->Sequence());
+        fileDlg->show();
+      }
+      else
+      {
+        fileDlg->hide();
+      }
+
+      break;
+    }
 
     case ICQ_CMDxSUB_MSG:
       generateReply();
@@ -1260,13 +1299,29 @@ void ICQFunctions::slot_readbtn2()
 
   switch (m_xCurrentReadEvent->SubCommand())
   {
-    case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-      // Refuse
+    case ICQ_CMDxSUB_CHAT:  // refuse a chat request
+    {
+      CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("Chat"), this);
+      if (r->exec())
+      {
+        server->icqChatRequestRefuse(m_nUin, (const char *)r->RefuseMessage(),
+           m_xCurrentReadEvent->Sequence());
+      }
+      delete r;
       break;
+    }
 
-    case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-      // Refuse
+    case ICQ_CMDxSUB_FILE:  // refuse a file transfer
+    {
+      CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("File Transfer"), this);
+      if (r->exec())
+      {
+        server->icqChatRequestRefuse(m_nUin, (const char *)r->RefuseMessage(),
+           m_xCurrentReadEvent->Sequence());
+      }
+      delete r;
       break;
+    }
 
     case ICQ_CMDxSUB_MSG:
       //btnRead2->setText(tr("Forward"));
@@ -2052,12 +2107,13 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     s_nX = x();
     s_nY = y();
     e->accept();
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    emit signal_finished(m_nUin);
+    /*ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
     if (u != NULL)
     {
       u->fcnDlg = NULL;
       gUserManager.DropUser(u);
-    }
+    }*/
     delete this;
   }
 }
