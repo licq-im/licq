@@ -21,6 +21,7 @@
 
 #include <qdir.h>
 #include <qhbox.h>
+#include <qvbox.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #ifdef USE_KDE
@@ -46,7 +47,6 @@
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
     : QTabDialog(parent, name)
 {
-  resize(550, 310);
   setCaption(tr("Licq Options"));
 
   mainwin = _mainwin;
@@ -55,189 +55,21 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   setCancelButton(tr("&Cancel"));
   setHelpButton(tr("&What's This?"));
   connect (this, SIGNAL(applyButtonPressed()), this, SLOT(slot_apply()));
-
   connect(this, SIGNAL(helpButtonPressed()), this, SLOT(slot_whatsthis()));
 
-  // appearance tab
-  tab[0] = new QWidget(this);
-
-  // fonts
-  boxFont = new QGroupBox(tr("Font"), tab[0]);
-  boxFont->setGeometry(10, 125, 410, 90);
-  QWhatsThis::add(boxFont, tr("The font used for all widgets"));
-  lblFont = new QLabel(tr("Font:"), boxFont);
-  lblFont->setGeometry(10, 20, 40, 20);
-  edtFont = new QLineEdit(boxFont);
-  edtFont->setGeometry(55, 20, 340, 20);
-  btnFont = new QPushButton(tr("Select Font"), boxFont);
-  btnFont->setGeometry(10, 45, 100, 30);
-  QWhatsThis::add(btnFont, tr("Select a font from the system list"));
-  connect(btnFont, SIGNAL(clicked()), this, SLOT(slot_selectfont()));
-
-  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxFont);
-  chkFontStyles->setGeometry(120, 45, 180, 20);
-  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
-                                   "indicate special characteristics such as "
-                                   "online notify and visible list"));
-  chkGridLines = new QCheckBox(tr("Show Grid Lines"), tab[0]);
-  chkGridLines->setGeometry(10, 20, 240, 20);
-  QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
-  chkHeader = new QCheckBox(tr("Show Column Headers"), tab[0]);
-  chkHeader->setGeometry(10, 45, 200, 20);
-  QWhatsThis::add(chkHeader, tr("Turns on or off the display of headers above "
-                                "each column in the user list"));
-  chkShowDividers = new QCheckBox(tr("Show User Dividers"), tab[0]);
-  chkShowDividers->setGeometry(10, 70, 240, 20);
-  QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
-                                     "in the contact list"));
-  chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), tab[0]);
-  chkAutoClose->setGeometry(10, 95, 240, 20);
-  QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
-                                  "the user function window after a succesful event"));
-
+  tab[0] = new_appearance_options();
   tab[1] = new_column_options();
-
-  tab[2] = new QWidget(this);
-  chkOnEvents = new QCheckBox(tr("OnEvents Enabled"), tab[2]);
-  chkOnEvents->setGeometry(10, 10, 130, 20);
-  QWhatsThis::add(chkOnEvents, tr("Enable running of \"Command\" when the relevant "
-                                 "event occurs."));
-  lblSndPlayer = new QLabel(tr("Command:"), tab[2]);
-  lblSndPlayer->setGeometry(160, 10, 60, 20);
-  QWhatsThis::add(lblSndPlayer, tr("Command to execute when an event is received.  "
-                                  "It will be passed the relevant parameters from "
-                                  "below.  Parameters can contain the following "
-                                  "expressions which will be replaced with the relevant "
-                                  "information:\n"
-                                  "%a - user alias\n"
-                                  "%i - user ip\n"
-                                  "%p - user port\n"
-                                  "%e - email\n"
-                                  "%n - full name\n"
-                                  "%f - first name\n"
-                                  "%l - last name\n"
-                                  "%u - uin\n"
-                                  "%w - webpage\n"
-                                  "%h - phone number"));
-  edtSndPlayer = new QLineEdit(tab[2]);
-  edtSndPlayer->setGeometry(230, 10, 190, 20);
-  boxSndEvents = new QGroupBox(tr("Parameters"), tab[2]);
-  boxSndEvents->setGeometry(10, 40, 410, 180);
-  lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
-  lblSndMsg->setGeometry(10, 20, 80, 20);
-  QWhatsThis::add(lblSndMsg, tr("Parameter for received messages"));
-  edtSndMsg = new QLineEdit(boxSndEvents);
-  edtSndMsg->setGeometry(90, 20, 280, 20);
-  lblSndUrl = new QLabel(tr("URL:"), boxSndEvents);
-  lblSndUrl->setGeometry(10, 45, 80, 20);
-  QWhatsThis::add(lblSndUrl, tr("Parameter for received URLs"));
-  edtSndUrl = new QLineEdit(boxSndEvents);
-  edtSndUrl->setGeometry(90, 45, 280, 20);
-  lblSndChat = new QLabel(tr("Chat Request:"), boxSndEvents);
-  lblSndChat->setGeometry(10, 70, 80, 20);
-  QWhatsThis::add(lblSndChat, tr("Parameter for received chat requests"));
-  edtSndChat = new QLineEdit(boxSndEvents);
-  edtSndChat->setGeometry(90, 70, 280, 20);
-  lblSndFile = new QLabel(tr("File Transfer:"), boxSndEvents);
-  lblSndFile->setGeometry(10, 95, 80, 20);
-  QWhatsThis::add(lblSndFile, tr("Parameter for received file transfers"));
-  edtSndFile = new QLineEdit(boxSndEvents);
-  edtSndFile->setGeometry(90, 95, 280, 20);
-  lblSndNotify = new QLabel(tr("Online Notify:"), boxSndEvents);
-  lblSndNotify->setGeometry(10, 120, 80, 20);
-  QWhatsThis::add(lblSndNotify, tr("Parameter for online notification"));
-  edtSndNotify = new QLineEdit(boxSndEvents);
-  edtSndNotify->setGeometry(90, 120, 280, 20);
-  lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
-  lblSndSysMsg->setGeometry(10, 145, 80, 20);
-  QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
-  edtSndSysMsg = new QLineEdit(boxSndEvents);
-  edtSndSysMsg->setGeometry(90, 145, 280, 20);
-
-  // Network tab
+  tab[2] = new_sounds_options();
   tab[3] = new_network_options();
-
-  // Status tab
   tab[4] = new_status_options();
-
-  tab[5] = new QWidget(this);
-  lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[5]);
-  lblUrlViewer->setGeometry(10, 10, 80, 20);
-  QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
-                                  "as a parameter."));
-  edtUrlViewer = new QLineEdit(tab[5]);
-  edtUrlViewer->setGeometry(100, 10, 200, 20);
-  lblTerminal = new QLabel(tr("Terminal:"), tab[5]);
-  lblTerminal->setGeometry(10, 35, 80, 20);
-  edtTerminal = new QLineEdit(tr("Terminal:"), tab[5]);
-  edtTerminal->setGeometry(95, 35, 200, 20);
-  QWhatsThis::add(edtTerminal, tr("The command to run to start your terminal program."));
-  lblTrans = new QLabel(tr("Translation:"), tab[5]);
-  lblTrans->setGeometry(10, 85, 80, 20);
-  QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
-                              "translating characters."));
-  cmbTrans = new QComboBox(false, tab[5]);
-  cmbTrans->setGeometry(100, 85, 200, 20);
-
-  QString szTransFilesDir;
-  szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
-  QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
-  if (!dTrans.count())
-  {
-    gLog.Error("%sError reading translation directory %s.\n",
-               L_ERRORxSTR, szTransFilesDir.latin1());
-    cmbTrans->insertItem(tr("ERROR"));
-    cmbTrans->setEnabled(false);
-  }
-  else
-  {
-    cmbTrans->insertItem(tr("none"));
-    cmbTrans->insertStringList(dTrans.entryList());
-  }
-  chkUseDock = new QCheckBox(tr("Use Dock Icon"), tab[5]);
-  chkUseDock->setGeometry(10, 110, 120, 20);
-  QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
-  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), tab[5]);
-  chkDockFortyEight->setGeometry(30, 135, 180, 20);
-  QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
-                                "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
-  connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
-
-  // Paranoia tab
-  tab[6] = new QWidget(this);
-  chkHideIp = new QCheckBox(tr("Hide IP"), tab[6]);
-  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
-
-  chkIgnoreNewUsers = new QCheckBox(tr("Ignore New Users"), tab[6]);
-  QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added "
-                                      "to your list or must first request authorization."));
-  chkIgnoreMassMsg = new QCheckBox(tr("Ignore Mass Messages"), tab[6]);
-  QWhatsThis::add(chkIgnoreMassMsg, tr("Determines if mass messages are ignored or not."));
-
-  chkIgnoreWebPanel = new QCheckBox(tr("Ignore Web Panel"), tab[6]);
-  QWhatsThis::add(chkIgnoreWebPanel, tr("Determines if web panel messages are ignored or not."));
-
-  chkIgnoreEmailPager = new QCheckBox(tr("Ignore Email Pager"), tab[6]);
-  QWhatsThis::add(chkIgnoreEmailPager, tr("Determines if email pager messages are ignored or not."));
-
-  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), tab[6]);
-  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
-                                    "through your web indicator."));
-
-  chkIgnoreNewUsers->setGeometry(10, 20, width() - 20, 20);
-  chkIgnoreMassMsg->setGeometry(10, 45, width() - 20, 20);
-  chkIgnoreWebPanel->setGeometry(10, 70, width() - 20, 20);
-  chkIgnoreEmailPager->setGeometry(10, 95, width() - 20, 20);
-  chkWebPresence->setGeometry(10, 120, width() - 20, 20);
-  chkHideIp->setGeometry(10, 145, width() - 20, 20);
+  tab[5] = new_misc_options();
 
   addTab(tab[0], tr("Appearance"));
   addTab(tab[1], tr("Columns"));
   addTab(tab[2], tr("OnEvent"));
   addTab(tab[3], tr("Network"));
   addTab(tab[4], tr("Status"));
-  addTab(tab[5], tr("Extensions"));
-  addTab(tab[6], tr("Paranoia"));
+  addTab(tab[5], tr("Miscellaneous"));
 
   SetupOptions();
   show();
@@ -321,6 +153,7 @@ void OptionsDlg::SetupOptions()
   chkAutoClose->setChecked(mainwin->autoClose);
   chkUseDock->setChecked(mainwin->licqIcon != NULL);
   chkDockFortyEight->setChecked(mainwin->m_bDockIcon48);
+  chkDockFortyEight->setEnabled(chkUseDock->isChecked());
 
   spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
   spnTcpServerPort->setValue(mainwin->licqDaemon->getTcpServerPort());
@@ -346,8 +179,10 @@ void OptionsDlg::SetupOptions()
   chkIgnoreEmailPager->setChecked(mainwin->licqDaemon->Ignore(IGNORE_EMAILPAGER));
 
   // plugins tab
-  edtUrlViewer->setText(mainwin->licqDaemon->getUrlViewer() == NULL ? "none" : mainwin->licqDaemon->getUrlViewer());
-  edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ? "none" : mainwin->licqDaemon->Terminal());
+  edtUrlViewer->setText(mainwin->licqDaemon->getUrlViewer() == NULL ?
+                        tr("none") : QString(mainwin->licqDaemon->getUrlViewer()));
+  edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ?
+                       tr("none") : QString(mainwin->licqDaemon->Terminal()));
   const char *pc = gTranslator.getMapName();
   if (strcmp(pc, "none") == 0)
   {
@@ -492,11 +327,6 @@ void OptionsDlg::ApplyOptions()
     }
   }
 
-  //optionsDlg->cmbServers->clear();
-  //unsigned short i;
-  //for (i = 0; i < server->icqServers.numServers(); i++)
-  //   optionsDlg->cmbServers->insertItem(server->icqServers.servers[i]->name());
-
   mainwin->autoAwayTime = spnAutoAway->value();
   mainwin->autoNATime = spnAutoNa->value();
   mainwin->m_nAutoLogon = cmbAutoLogon->currentItem() +
@@ -550,6 +380,138 @@ void OptionsDlg::slot_selectfont()
     edtFont->setText(f.rawName());
 }
 
+
+// -----------------------------------------------------------------------------
+
+QWidget* OptionsDlg::new_appearance_options()
+{
+  QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QHBoxLayout(w, 8);
+  QBoxLayout* l = new QVBoxLayout(lay, 8);
+
+  boxUserWin = new QGroupBox(1, Horizontal, tr("User Window"), w);
+  l->addWidget(boxUserWin);
+
+  chkGridLines = new QCheckBox(tr("Show Grid Lines"), boxUserWin);
+  QWhatsThis::add(chkGridLines, tr("Draw boxes around each square in the user list"));
+  chkHeader = new QCheckBox(tr("Show Column Headers"), boxUserWin);
+  QWhatsThis::add(chkHeader, tr("Turns on or off the display of headers above "
+                                "each column in the user list"));
+  chkShowDividers = new QCheckBox(tr("Show User Dividers"), boxUserWin);
+  QWhatsThis::add(chkShowDividers, tr("Show the \"--online--\" and \"--offline--\" bars "
+                                     "in the contact list"));
+  chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxUserWin);
+  QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
+                                  "the user function window after a succesful event"));
+
+  boxDocking = new QGroupBox(1, Horizontal, tr("Docking"), w);
+  chkUseDock = new QCheckBox(tr("Use Dock Icon"), boxDocking);
+  QWhatsThis::add(chkUseDock, tr("Controls whether or not the dockable icon should be displayed."));
+  chkDockFortyEight = new QCheckBox(tr("64 x 48 Dock Icon"), boxDocking);
+  QWhatsThis::add(chkDockFortyEight, tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
+                                        "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
+  connect(chkUseDock, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
+  l->addWidget(boxDocking);
+
+  l = new QVBoxLayout(lay, 8);
+  boxFont = new QGroupBox(1, Horizontal, tr("Font"), w);
+  QWhatsThis::add(boxFont, tr("The font used for all widgets"));
+  lblFont = new QLabel(tr("Font:"), boxFont);
+  edtFont = new QLineEdit(boxFont);
+  btnFont = new QPushButton(tr("Select Font"), boxFont);
+  QWhatsThis::add(btnFont, tr("Select a font from the system list"));
+  connect(btnFont, SIGNAL(clicked()), this, SLOT(slot_selectfont()));
+
+  chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxFont);
+  QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
+                                   "indicate special characteristics such as "
+                                   "online notify and visible list"));
+  l->addWidget(boxFont);
+
+  boxLocale = new QGroupBox(1, Horizontal, tr("Locale"), w);
+
+  lblTrans = new QLabel(tr("Translation:"), boxLocale);
+  QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
+                              "translating characters."));
+  cmbTrans = new QComboBox(false, boxLocale);
+
+  QString szTransFilesDir;
+  szTransFilesDir.sprintf("%sqt-gui/locale", SHARE_DIR);
+  QDir dTrans(szTransFilesDir, "*.qm", QDir::Name, QDir::Files | QDir::Readable);
+  if (!dTrans.count())
+  {
+    gLog.Error("%sError reading translation directory %s.\n",
+               L_ERRORxSTR, szTransFilesDir.latin1());
+    cmbTrans->insertItem(tr("ERROR"));
+    cmbTrans->setEnabled(false);
+  }
+  else
+  {
+    cmbTrans->insertItem(tr("Auto"));
+    cmbTrans->insertStringList(dTrans.entryList());
+  }
+  l->addWidget(boxLocale);
+
+  return w;
+}
+
+
+// -----------------------------------------------------------------------------
+
+QWidget* OptionsDlg::new_sounds_options()
+{
+  QVBox* w = new QVBox(this);
+  w->setSpacing(8);
+  w->setMargin(8);
+
+  QWidget* hor = new QHBox(w);
+  chkOnEvents = new QCheckBox(tr("OnEvents Enabled"), hor);
+  QWidget* dummy = new QWidget(hor);
+  dummy->setFixedSize(50, 1);
+
+  QWhatsThis::add(chkOnEvents, tr("Enable running of \"Command\" when the relevant "
+                                 "event occurs."));
+  lblSndPlayer = new QLabel(tr("Command:"), hor);
+  QWhatsThis::add(lblSndPlayer, tr("Command to execute when an event is received.  "
+                                  "It will be passed the relevant parameters from "
+                                  "below.  Parameters can contain the following "
+                                  "expressions which will be replaced with the relevant "
+                                  "information:\n"
+                                  "%a - user alias\n"
+                                  "%i - user ip\n"
+                                  "%p - user port\n"
+                                  "%e - email\n"
+                                  "%n - full name\n"
+                                  "%f - first name\n"
+                                  "%l - last name\n"
+                                  "%u - uin\n"
+                                  "%w - webpage\n"
+                                  "%h - phone number"));
+  edtSndPlayer = new QLineEdit(hor);
+
+  boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
+
+  lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
+  QWhatsThis::add(lblSndMsg, tr("Parameter for received messages"));
+  edtSndMsg = new QLineEdit(boxSndEvents);
+  lblSndUrl = new QLabel(tr("URL:"), boxSndEvents);
+  QWhatsThis::add(lblSndUrl, tr("Parameter for received URLs"));
+  edtSndUrl = new QLineEdit(boxSndEvents);
+  lblSndChat = new QLabel(tr("Chat Request:"), boxSndEvents);
+  QWhatsThis::add(lblSndChat, tr("Parameter for received chat requests"));
+  edtSndChat = new QLineEdit(boxSndEvents);
+  lblSndFile = new QLabel(tr("File Transfer:"), boxSndEvents);
+  QWhatsThis::add(lblSndFile, tr("Parameter for received file transfers"));
+  edtSndFile = new QLineEdit(boxSndEvents);
+  lblSndNotify = new QLabel(tr("Online Notify:"), boxSndEvents);
+  QWhatsThis::add(lblSndNotify, tr("Parameter for online notification"));
+  edtSndNotify = new QLineEdit(boxSndEvents);
+  lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
+  QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
+  edtSndSysMsg = new QLineEdit(boxSndEvents);
+
+  return w;
+}
 
 // -----------------------------------------------------------------------------
 
@@ -765,6 +727,47 @@ QWidget* OptionsDlg::new_column_options()
 
   return w;
 }
+
+
+// -----------------------------------------------------------------------------
+
+QWidget* OptionsDlg::new_misc_options()
+{
+  QHBox* w = new QHBox(this);
+  w->setSpacing(8);
+  w->setMargin(8);
+
+  boxExtensions = new QGroupBox(2, Horizontal, tr("Extensions"), w);
+  lblUrlViewer = new QLabel(tr("Url Viewer:"), boxExtensions);
+  QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
+                                  "as a parameter."));
+  edtUrlViewer = new QLineEdit(boxExtensions);
+  lblTerminal = new QLabel(tr("Terminal:"), boxExtensions);
+  edtTerminal = new QLineEdit(tr("Terminal:"), boxExtensions);
+  QWhatsThis::add(edtTerminal, tr("The command to run to start your terminal program."));
+
+  boxParanoia = new QGroupBox(1, Horizontal, tr("Paranoia"), w);
+  chkHideIp = new QCheckBox(tr("Hide IP"), boxParanoia);
+  QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
+  chkIgnoreNewUsers = new QCheckBox(tr("Ignore New Users"), boxParanoia);
+  QWhatsThis::add(chkIgnoreNewUsers, tr("Determines if new users are automatically added "
+                                      "to your list or must first request authorization."));
+  chkIgnoreMassMsg = new QCheckBox(tr("Ignore Mass Messages"), boxParanoia);
+  QWhatsThis::add(chkIgnoreMassMsg, tr("Determines if mass messages are ignored or not."));
+
+  chkIgnoreWebPanel = new QCheckBox(tr("Ignore Web Panel"), boxParanoia);
+  QWhatsThis::add(chkIgnoreWebPanel, tr("Determines if web panel messages are ignored or not."));
+
+  chkIgnoreEmailPager = new QCheckBox(tr("Ignore Email Pager"), boxParanoia);
+  QWhatsThis::add(chkIgnoreEmailPager, tr("Determines if email pager messages are ignored or not."));
+
+  chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), boxParanoia);
+  QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
+                                    "through your web indicator."));
+
+  return w;
+}
+
 
 // -----------------------------------------------------------------------------
 

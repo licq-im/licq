@@ -26,10 +26,11 @@ public:
    OptionsDlg (CMainWindow *, QWidget *parent = NULL, char *name = NULL);
 
 protected:
-   QWidget *tab[7];
+   QWidget *tab[6];
    CMainWindow *mainwin;
 
    // network tab
+   QWidget* new_network_options();
    QLabel *lblServers, *lblDefServerPort, *lblTcpServerPort,
           *lblAutoAway, *lblAutoNa, *lblAutoLogon, *lblMaxUsersPerPacket;
    QComboBox *cmbServers, *cmbAutoLogon;
@@ -38,15 +39,9 @@ protected:
    QPushButton *btnAddServer;
    QCheckBox  *chkAutoLogonInvisible;
 
-   // plugin tab
-   QLabel *lblUrlViewer, *lblTrans;
-   QLineEdit *edtUrlViewer;
-   QComboBox *cmbTrans;
-   QLabel *lblTerminal;
-   QLineEdit *edtTerminal;
-
    // appearance tab
-   QGroupBox *boxFont;
+   QWidget* new_appearance_options();
+   QGroupBox *boxFont, *boxUserWin, *boxDocking, *boxLocale;
    QLabel *lblFont;
    QLineEdit *edtFont;
    QPushButton *btnFont;
@@ -54,6 +49,7 @@ protected:
              *chkFontStyles, *chkUseDock, *chkDockFortyEight;
 
    // columns tab
+   QWidget* new_column_options();
    QLabel *lblColWidth, *lblColAlign, *lblColTitle, *lblColFormat;
    QCheckBox *chkColEnabled[4];
    QSpinBox *spnColWidth[4];
@@ -61,6 +57,7 @@ protected:
    QLineEdit *edtColTitle[4], *edtColFormat[4];
 
    // sounds tab
+   QWidget* new_sounds_options();
    QLabel *lblSndPlayer, *lblSndMsg, *lblSndChat, *lblSndUrl,
           *lblSndFile, *lblSndNotify, *lblSndSysMsg;
    QCheckBox *chkOnEvents;
@@ -68,21 +65,25 @@ protected:
              *edtSndFile, *edtSndNotify, *edtSndSysMsg;
    QGroupBox *boxSndEvents;
 
-   // paranoia tab
+   // misc tab
+   QWidget* new_misc_options();
+   QGroupBox *boxParanoia, *boxExtensions;
+   QLabel *lblUrlViewer, *lblTrans;
+   QLineEdit *edtUrlViewer;
+   QComboBox *cmbTrans;
+   QLabel *lblTerminal;
+   QLineEdit *edtTerminal;
    QCheckBox *chkWebPresence, *chkHideIp, *chkIgnoreNewUsers,
              *chkIgnoreWebPanel, *chkIgnoreMassMsg, *chkIgnoreEmailPager;
 
-
    // status tab
+   QWidget* new_status_options();
    QComboBox* cmbSARgroup, *cmbSARmsg;
    MLEditWrap* edtSARtext;
 
    virtual void hide();
 
 protected:
-  QWidget* new_network_options();
-  QWidget* new_status_options();
-  QWidget* new_column_options();
   void SetupOptions();
   void ApplyOptions();
 
