@@ -292,10 +292,13 @@ void CustomAwayMsgDlg::slot_ok()
     s.truncate(s.length()-1);
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->SetCustomAutoResponse(s.local8Bit());
-  gUserManager.DropUser(u);
-  CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
-  gMainWindow->slot_updatedUser(&sig);
+  if (u != NULL)
+  {
+    u->SetCustomAutoResponse(s.local8Bit());
+    gUserManager.DropUser(u);
+    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+    gMainWindow->slot_updatedUser(&sig);
+  }
   close();
 }
 
@@ -303,10 +306,13 @@ void CustomAwayMsgDlg::slot_ok()
 void CustomAwayMsgDlg::slot_clear()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  u->ClearCustomAutoResponse();
-  gUserManager.DropUser(u);
-  CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
-  gMainWindow->slot_updatedUser(&sig);
+  if (u != NULL)
+  {
+    u->ClearCustomAutoResponse();
+    gUserManager.DropUser(u);
+    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+    gMainWindow->slot_updatedUser(&sig);
+  }
   close();
 }
 

@@ -2842,7 +2842,7 @@ void CMainWindow::autoAway()
       if (autoNAMess) {
        SARList &sar = gSARManager.Fetch(SAR_NA);
        ICQUser *u = gUserManager.FetchOwner(LOCK_W);
-       u->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+       u->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
        gUserManager.DropOwner();
        gSARManager.Drop();
       }
