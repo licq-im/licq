@@ -859,7 +859,8 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 void UserViewEvent::slot_sentevent(ICQEvent *e)
 {
   if (e->Uin() != m_nUin) return;
-  (void) new MsgViewItem(e->GrabUserEvent(), codec, msgView);
+  if (!mainwin->m_bMsgChatView)
+    (void) new MsgViewItem(e->GrabUserEvent(), codec, msgView);
 }
 
 
