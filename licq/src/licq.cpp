@@ -686,7 +686,7 @@ int CLicq::Main()
     gLog.Info("%sPlugin %s failed to exit.\n", L_WARNxSTR, (*iter)->Name());
     pthread_cancel( (*iter)->thread_plugin);
   }
-  //pthread_mutex_unlock(&mutex_plugins);
+  pthread_mutex_unlock(&mutex_plugins);
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
