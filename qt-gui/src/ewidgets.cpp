@@ -489,6 +489,7 @@ void CETabBar::paintLabel(QPainter* p, const QRect &br,
     r.setLeft(r.left() + pixw + 4);
     r.setRight(r.right() + 2);
 
+#if QT_VERSION >= 0x030200 
     int xoff = 0, yoff = 0;
     if (!selected)
     {
@@ -497,6 +498,11 @@ void CETabBar::paintLabel(QPainter* p, const QRect &br,
     }
     
     p->drawPixmap(br.left() + 2 + xoff, br.center().y()-pixh/2 + yoff, pixmap);
+#else
+    p->drawPixmap(br.left() + 2 + ((selected == TRUE) ? 0 : 2),
+                  br.center().y()-pixh/2 + ((selected == TRUE) ? 0 : 2),
+                  pixmap);
+#endif
   }
     
   QStyle::SFlags flags = QStyle::Style_Default;
