@@ -61,7 +61,7 @@
   Constructs a WharfIcon widget.
 */
 IconManager::IconManager(QWidget *parent )
-  : KApplet(parent, "IconManager")
+  : KPanelApplet(parent, "LicqWharf")
 {
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
@@ -94,8 +94,6 @@ void IconManager::X11Init()
   init(argc, 0);
   setMinimumWidth(wharfIcon->width());
   setMinimumHeight(wharfIcon->height());
-#else
-  //iconify();
 #endif
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
@@ -112,14 +110,21 @@ IconManager::~IconManager()
 void IconManager::closeEvent( QCloseEvent*) {}
 
 #ifdef USE_KDE
-void IconManager::setupGeometry(Orientation orientation, int width, int height)
+int IconManager::widthForHeight(int)
 {
-  setMinimumSize(64,48);
-  KApplet::setupGeometry(orientation, minimumSize().width(), minimumSize().height());
+  return wharfIcon->width();
+}
+
+int IconManager::heightForWidth(int)
+{
+  return wharfIcon->height();
+}
+
+void IconManager::removedFromPanel()
+{
+  InformUser(this, tr("The applet can be removed by\ndisabling it in the options dialog"));
 }
 #endif
-
-
 
 void IconManager::mouseReleaseEvent( QMouseEvent *e )
 {

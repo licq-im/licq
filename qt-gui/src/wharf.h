@@ -10,9 +10,9 @@
 #include <qpopupmenu.h>
 
 #ifndef USE_KDE
-#define KApplet QWidget
+#define KPanelApplet QWidget
 #else
-#include <kapplet.h>
+#include <kpanelapplet.h>
 #endif
 
 
@@ -34,7 +34,7 @@ friend class IconManager_Themed;
 };
 
 
-class IconManager : public KApplet
+class IconManager : public KPanelApplet
 {
 public:
   IconManager(QWidget *parent = 0);
@@ -47,7 +47,9 @@ protected:
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
 #ifdef USE_KDE
-  void setupGeometry(Orientation orientation, int width, int height);
+  virtual int widthForHeight(int height);
+  virtual int heightForWidth(int width);
+  virtual void removedFromPanel();
 #endif
   WharfIcon *wharfIcon;
   int m_nNewMsg, m_nSysMsg;
