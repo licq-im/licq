@@ -1786,6 +1786,9 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 ICQFunctions::~ICQFunctions()
 {
   delete icqEventTag;
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  u->ClearHistory(m_lHistoryList);
+  gUserManager.DropUser(u);
 }
 
 #include "icqfunctions.moc"
