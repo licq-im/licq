@@ -57,18 +57,30 @@ AC_DEFUN(AC_CHECK_SOCKS5,
   AC_SUBST(SOCKS_INCDIR)
 ])
 
-dnl Check if it is possible to turn off run time type information (RTTI)
+dnl Check if it is possible to turn off exceptions support
 AC_DEFUN(LICQ_CXX_FLAGS,
-[AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-rtti -fno-exceptions, ac_cv_prog_cxx_fno_rtti,
+[AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-exceptions -fno-check-new, licq_prog_cxx_fno_exceptions,
 [echo 'void f(){}' > conftest.cc
-if test -z "`${CXX-g++} -fno-rtti -fno-exceptions -c conftest.cc 2>&1`"; then
-  ac_cv_prog_cxx_fno_rtti=yes
-  CXXFLAGS="${CXXFLAGS} -fno-rtti -fno-exceptions"
+if test -z "`${CXX-g++} -fno-exceptions -fno-check-new -c conftest.cc 2>&1`"; then
+  licq_prog_cxx_fno_exceptions=yes
 else
-  ac_cv_prog_cxx_fno_rtti=no
+  licq_prog_cxx_fno_exceptions=no
 fi
 rm -f conftest*
-])])
+])
+
+if test "$licq_prog_cxx_fno_exceptions" = "yes"; then
+  CXXFLAGS="${CXXFLAGS} -fno-exceptions -fno-check-new"
+fi
+
+  AC_ARG_ENABLE(debug,
+    [  --enable-debug          creates debugging code],
+    [ licq_use_debug="$enableval"], [licq_use_debug="no"])
+
+if test "$licq_use_debug" = "no"; then
+  CXXFLAGS="`echo $CXXFLAGS | sed s/-g//`"
+fi
+])
 
 dnl Check if the type socklen_t is defined anywhere
 AC_DEFUN(AC_C_SOCKLEN_T,
