@@ -59,7 +59,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   blay->addWidget(chkWebAware);
   blay->addWidget(chkHideIp);
 
-  btnUpdate = new QPushButton("&Update", this);
+  btnUpdate = new QPushButton(tr("&Update"), this);
   btnUpdate->setDefault(true);
   btnUpdate->setMinimumWidth(75);
   btnCancel = new QPushButton(tr("&Cancel"), this);
