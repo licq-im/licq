@@ -265,11 +265,18 @@ void convo_show(struct conversation *c)
 gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 {
 	struct conversation *c = (struct conversation *)data;
+	guint state;
 
+	state = eventkey->state;
 	if(eventkey->keyval == GDK_Return)
 	{
-		if(enter_sends && !(eventkey->state & GDK_SHIFT_MASK))
+		if(!enter_sends && (state & GDK_SHIFT_MASK))
+			convo_send(0, (gpointer)c);
+		if (enter_sends && !(state & GDK_SHIFT_MASK) &&
+		    !(state & GDK_CONTROL_MASK))
 		{
+			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry),
+					"key_press_event");
 			convo_send(0, (gpointer)c);
 		}
 		else if(enter_sends)
@@ -283,6 +290,25 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 	}
 
 	return TRUE;
+}
+
+void convo_nick_timestamp(GtkWidget *text, const char *nick, time_t message_time, GdkColor *color)
+{
+	// How about their alias and an optional timestamp?
+	if (show_convo_timestamp)
+	{
+		char szTime[26];
+		struct tm *_tm = localtime(&message_time);
+		strftime(szTime, 26, timestamp_format, _tm);
+		szTime[25] = '\0';
+
+		char *szTempStamp = g_strdup_printf("[%s] ", szTime);
+		gtk_text_insert(GTK_TEXT(text), 0, NULL, 0, szTempStamp, -1);
+		g_free(szTempStamp);
+	}
+	
+	gtk_text_insert(GTK_TEXT(text), 0, color, 0, nick, -1);
+	gtk_text_insert(GTK_TEXT(text), 0, color, 0, " : ", -1);
 }
 
 void convo_send(GtkWidget *widget, gpointer _c)
@@ -456,24 +482,7 @@ void convo_recv(gulong uin)
 
 	// How about their alias and an optional timestamp?
 	gtk_text_freeze(GTK_TEXT(c->text));
-	gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, c->user->GetAlias(), -1);
-
-	if (show_convo_timestamp)
-	{
-		char szTime[26];
-		time_t message_time = u_event->Time();
-		struct tm *_tm = localtime(&message_time);
-		strftime(szTime, 26, timestamp_format, _tm);
-		szTime[25] = '\0';
-	
-		char *szTempStamp = g_strdup_printf(" (%s): ", szTime);
-		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, szTempStamp, -1);
-		g_free(szTempStamp);
-	}
-	else
-	{
-		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, " : ", -1);
-	}
+	convo_nick_timestamp(c->text, c->user->GetAlias(), u_event->Time(), red);
 
 	switch (u_event->SubCommand())
 	{

@@ -180,7 +180,8 @@ void save_file(struct file_accept *fa)
 
 	// Actually accept the file
 	icq_daemon->icqFileTransferAccept(fw->uin,
-					  fw->ftman->LocalPort(), fw->sequence);
+					  fw->ftman->LocalPort(), fw->sequence,
+					  false);
 }
 
 void create_file_window(struct file_window *fw)
@@ -687,7 +688,7 @@ void fs_ok_click(GtkWidget *widget, gpointer _fs)
 	fs->etd->e_tag = icq_daemon->icqFileTransfer(fs->uin, file_name,
 				gtk_editable_get_chars(GTK_EDITABLE(
 					fs->description), 0, -1),
-				ICQ_TCPxMSG_NORMAL);
+				ICQ_TCPxMSG_NORMAL, false);
 }
 
 // Used for the finishing event in extras.cpp

@@ -323,8 +323,13 @@ void finish_message(ICQEvent *event)
 		gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 		
 		gtk_text_freeze(GTK_TEXT(c->entry));
-		gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
-		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, c->for_user, -1);
+		gtk_text_freeze(GTK_TEXT(c->text));
+		convo_nick_timestamp(c->text, name, time(NULL), blue);
+		gtk_text_insert(GTK_TEXT(c->text), 0,
+			0,
+			0,
+			c->for_user, -1);
+		gtk_text_thaw(GTK_TEXT(c->text));
 		gtk_text_thaw(GTK_TEXT(c->entry));
 	}
 }

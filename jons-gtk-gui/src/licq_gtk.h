@@ -608,6 +608,7 @@ extern gint flash_icons(gpointer);
 extern struct conversation *convo_new(ICQUser *, gboolean);
 extern struct conversation *convo_find(unsigned long);
 extern void convo_show(struct conversation *);
+extern void convo_nick_timestamp(GtkWidget *, const char *, time_t, GdkColor *);
 extern void convo_send(GtkWidget *, gpointer);
 extern gboolean key_press_convo(GtkWidget *, GdkEventKey *, gpointer);
 extern void verify_convo_send(GtkWidget *, guint, gchar *,

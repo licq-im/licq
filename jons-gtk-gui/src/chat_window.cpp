@@ -281,7 +281,7 @@ void ok_request_chat(GtkWidget *widget, gpointer _rc)
 			gtk_entry_get_text(GTK_ENTRY(
 				GTK_COMBO(rc->chat_list)->entry)),
 			nPort,
-			send_as);
+			send_as, false);
 	}
 	
 	else
@@ -290,7 +290,7 @@ void ok_request_chat(GtkWidget *widget, gpointer _rc)
 		rc->etd->e_tag = icq_daemon->icqChatRequest(rc->user->Uin(),
 			gtk_editable_get_chars(GTK_EDITABLE(rc->text_box),
 				0, -1),
-			send_as);
+			send_as, false);
 	}
 
 

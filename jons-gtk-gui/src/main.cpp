@@ -73,6 +73,7 @@ const char *LP_ConfigFile()
 
 bool LP_Init(int argc, char **argv)
 {
+	gtk_set_locale();
 	return( gtk_init_check(&argc, &argv) );
 }
 
