@@ -116,7 +116,6 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
 
     }
 
-    text.replace(QRegExp("\n"), "<br>\n");
     // We keep the first space character as-is (to allow line wrapping)
     // and convert the next characters to &nbsp;s (to preserve multiple
     // spaces).
@@ -131,7 +130,10 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
     }
     text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
   }
-  
+
+  // finally convert linebreaks to <br>
+  text.replace(QRegExp("\n"), "<br>\n");
+
   return text;
 }
 
