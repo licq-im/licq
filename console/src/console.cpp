@@ -358,7 +358,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::ProcessEvent(ICQEvent *e)
 {
-  switch (e->m_nCommand)
+  switch (e->Command())
   {
   // Event commands for a user
   case ICQ_CMDxTCP_START:
@@ -380,13 +380,13 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     }
     if (i > MAX_CON)
       gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
-                L_WARNxSTR, e->m_nCommand);
+                L_WARNxSTR, e->Command());
     break;
   }
 
   // Commands related to the basic operation
   case ICQ_CMDxSND_LOGON:
-    if (e->m_eResult != EVENT_SUCCESS)
+    if (e->Result() != EVENT_SUCCESS)
       winMain->wprintf("%CLogon failed.  See the log console for details.\n", COLOR_RED);
     break;
 
@@ -411,7 +411,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
 
   default:
     gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event command received from daemon: %d.\n",
-              L_WARNxSTR, e->m_nCommand);
+              L_WARNxSTR, e->Command());
     break;
   }
   delete e;
@@ -423,7 +423,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
 {
-  bool isOk = (e != NULL && (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS));
+  bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
 
   if (e == NULL)
   {
@@ -431,7 +431,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
   }
   else
   {
-    switch (e->m_eResult)
+    switch (e->Result())
     {
     case EVENT_ACKED:
     case EVENT_SUCCESS:
@@ -457,9 +457,9 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
 
   if (!isOk)
   {
-    if (e->m_nCommand == ICQ_CMDxTCP_START &&
-        (e->m_nSubCommand == ICQ_CMDxSUB_MSG ||
-         e->m_nSubCommand == ICQ_CMDxSUB_URL) )
+    if (e->Command() == ICQ_CMDxTCP_START &&
+        (e->SubCommand() == ICQ_CMDxSUB_MSG ||
+         e->SubCommand() == ICQ_CMDxSUB_URL) )
     {
       win->wprintf("%C%ADirect send failed, send through server (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE,
@@ -471,22 +471,22 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
   }
   else
   {
-    switch(e->m_nCommand)
+    switch(e->Command())
     {
     case ICQ_CMDxTCP_START:
     {
       ICQUser *u = NULL;
-      CUserEvent *ue = e->m_xUserEvent;
-      if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
+      CUserEvent *ue = e->UserEvent();
+      if (e->SubResult() == ICQ_TCPxACK_RETURN)
       {
-        u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+        u = gUserManager.FetchUser(e->Uin(), LOCK_R);
         win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
                      u->GetAlias(), u->StatusStr(), u->AutoResponse());
         gUserManager.DropUser(u);
       }
-      else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)
+      else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
       {
-        u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+        u = gUserManager.FetchUser(e->Uin(), LOCK_R);
         win->wprintf("%s refused %s.\n",
                      u->GetAlias(), ue->Description());
         gUserManager.DropUser(u);
@@ -534,7 +534,7 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
       } // if file or chat*/
       else
       {
-        u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+        u = gUserManager.FetchUser(e->Uin(), LOCK_R);
         if (u != NULL && u->Away() && u->ShowAwayMsg())
         {
           win->wprintf("%s\n", u->AutoResponse());
