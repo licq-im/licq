@@ -230,6 +230,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowHeader", showHeader, true);
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
+  bool bFrameTransparent;
+  licqConf.ReadBool("Transparent", bFrameTransparent, false);
+  unsigned short nFrameStyle;
+  licqConf.ReadNum("FrameStyle", nFrameStyle, 51);
   bool bUseDock;
   licqConf.ReadBool("UseDock", bUseDock, false);
   licqConf.ReadBool("Dock64x48", m_bDockIcon48, false);
@@ -294,7 +298,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   cmbUserGroups = new CEComboBox(false, this);
   connect(cmbUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroup(int)));
 
-
   // Widgets controlled completely by the skin
   btnSystem = NULL;
   lblMsg = NULL;
@@ -307,6 +310,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   ApplyIcons(szIcons, true);
   initMenu();
   ApplySkin(szSkin, true);
+  skin->frame.frameStyle = nFrameStyle;
+  skin->frame.transparent = bFrameTransparent;
 
   // set the icon
 #ifdef USE_KDE
@@ -538,22 +543,15 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 //-----CMainWindow::CreateUserView---------------------------------------------
 void CMainWindow::CreateUserView(void)
 {
-   userView = new CUserView(mnuUser, mnuGroup, colInfo, showHeader, gridLines,
-                            m_bFontStyles, this);
-   userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
-                        pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
-   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
-                       skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
-   connect (userView, SIGNAL(doubleClicked(QListViewItem *)),
-            this, SLOT(callDefaultFunction()));
-#ifdef USE_KDE //Qt 2.0 has dnd support which should be used
-/*   KDNDDropZone *dropzone = new KDNDDropZone(userView, DndURL);
-   connect(dropzone, SIGNAL(dropAction(KDNDDropZone *)), userView, SLOT(slot_dropAction(KDNDDropZone *)));
-   connect(dropzone, SIGNAL(dropEnter(KDNDDropZone *)), userView, SLOT(slot_dropEnter(KDNDDropZone *)));
-   connect(dropzone, SIGNAL(dropLeave(KDNDDropZone *)), userView, SLOT(slot_dropLeave(KDNDDropZone *)));
-   connect(userView, SIGNAL(signal_dropedFile(const char *)), this, SLOT(callFileFunction(const char *)));
-   connect(userView, SIGNAL(signal_dropedURL(const char *)), this, SLOT(callURLFunction(const char *)));*/
-#endif
+  userView = new CUserView(mnuUser, mnuGroup, colInfo, showHeader, gridLines,
+                           m_bFontStyles, skin->frame.transparent, this);
+  userView->setFrameStyle(skin->frame.frameStyle);
+  userView->setPixmaps(pmOnline, pmOffline, pmAway, pmNa, pmOccupied, pmDnd,
+                       pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile);
+  userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
+                      skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
+  connect (userView, SIGNAL(doubleClicked(QListViewItem *)),
+           this, SLOT(callDefaultFunction()));
 }
 
 //-----CMainWindow::destructor--------------------------------------------------
@@ -1355,6 +1353,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
+  licqConf.WriteBool("Transparent", skin->frame.transparent);
+  licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
   licqConf.WriteBool("UseDock", licqIcon != NULL);
   licqConf.WriteBool("Dock64x48", m_bDockIcon48);
