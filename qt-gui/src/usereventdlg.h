@@ -62,7 +62,7 @@ public:
 protected:
   bool m_bOwner;
   unsigned long m_nUin;
-  QBoxLayout* top_lay;
+  QBoxLayout* top_lay, *top_hlay;
   CICQDaemon *server;
   CMainWindow *mainwin;
   CSignalManager *sigman;
@@ -273,8 +273,7 @@ public:
   void setContact(unsigned long uin, const QString& alias);
 
 protected:
-  QLabel *lblItem;
-  CInfoField *edtItem;
+  CMMUserView *lstContacts;
 
   virtual bool sendDone(ICQEvent *);
 

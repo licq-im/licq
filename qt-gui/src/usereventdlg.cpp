@@ -75,7 +75,8 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_bDeleteUser = false;
 
-  top_lay = new QVBoxLayout(this, 8);
+  top_hlay = new QHBoxLayout(this, 6);
+  top_lay = new QVBoxLayout(top_hlay);
 
   QBoxLayout *layt = new QHBoxLayout(top_lay, 8);
   layt->addWidget(new QLabel(tr("Status:"), this));
@@ -209,7 +210,6 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead = new QSplitter(Vertical, mainWidget);
   lay->addWidget(splRead);
   splRead->setOpaqueResize();
-//  splRead->setResizeMode(h_top, QSplitter::KeepSize);
 
   msgView = new MsgView(splRead);
   mleRead = new MLEditWrap(true, splRead, true);
@@ -218,8 +218,6 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
-  // we need spacing, but for some reason the main widget has a frame which
-  // leaves odd lines on the screen...that needs to be fixed FIXME
   lay->addSpacing(10);
   lay->addWidget(h_action);
   btnRead1 = new CEButton(h_action);
@@ -251,7 +249,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addStretch(1);
   int bw = 75;
   btnReadNext = new QPushButton(tr("Nex&t"), this);
+  setTabOrder(btnRead4, btnReadNext);
   btnClose = new CEButton(tr("&Close"), this);
+  setTabOrder(btnReadNext, btnClose);
   bw = QMAX(bw, btnReadNext->sizeHint().width());
   bw = QMAX(bw, btnClose->sizeHint().width());
   btnReadNext->setFixedWidth(bw);
@@ -378,16 +378,16 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 
       case ICQ_CMDxSUB_MSG:
         btnRead1->setText(tr("&Reply"));
-        //btnRead2->setText(tr("&Quote"));
-        btnRead2->setText(tr("&Forward"));
+        btnRead2->setText(tr("&Quote"));
+        btnRead3->setText(tr("&Forward"));
         break;
 
       case ICQ_CMDxSUB_URL:   // view a url
         btnRead1->setText(tr("&Reply"));
-        //btnRead2->setText(tr("&Quote"));
-        btnRead2->setText(tr("&Forward"));
+        btnRead2->setText(tr("&Quote"));
+        btnRead3->setText(tr("&Forward"));
         if (server->getUrlViewer() != NULL)
-          btnRead3->setText(tr("&View"));
+          btnRead4->setText(tr("&View"));
         break;
 
       case ICQ_CMDxSUB_AUTHxREQUEST:
@@ -419,6 +419,15 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
           gUserManager.DropUser(u);
         break;
       }
+      case ICQ_CMDxSUB_CONTACTxLIST:
+      {
+        int s = static_cast<CEventContactList*>(m)->Contacts().size();
+        if(s > 1)
+          btnRead1->setText(tr("A&dd %1 Users").arg(s));
+        else if(s == 1)
+          btnRead1->setText(tr("A&dd User"));
+        break;
+      }
     } // switch
   }  // if
 
@@ -426,6 +435,8 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   if (!btnRead2->text().isEmpty()) btnRead2->setEnabled(true);
   if (!btnRead3->text().isEmpty()) btnRead3->setEnabled(true);
   if (!btnRead4->text().isEmpty()) btnRead4->setEnabled(true);
+
+  btnRead1->setFocus();
 
   if (e->m_nEventId != -1 && e->msg->Direction() == D_RECEIVER)
   {
@@ -441,7 +452,12 @@ void UserViewEvent::generateReply()
 {
   QString s;
   for (int i = 0; i < mleRead->numLines(); i++)
-     s += QString("> ") + mleRead->textLine(i) + " \n";
+    if(!mleRead->textLine(i).stripWhiteSpace().isEmpty())
+      s += QString("> ") + mleRead->textLine(i) + " \n";
+    else
+      s += "\n";
+
+  s = s.stripWhiteSpace()+ " \n";
 
   sendMsg(s);
 }
@@ -484,6 +500,19 @@ void UserViewEvent::slot_btnRead1()
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
       server->AddUserToList( ((CEventAdded *)m_xCurrentReadEvent)->Uin());
       break;
+    case ICQ_CMDxSUB_CONTACTxLIST:
+    {
+      const ContactList& cl = static_cast<CEventContactList*>(m_xCurrentReadEvent)->Contacts();
+
+      ContactList::const_iterator it;
+      for(it = cl.begin(); it != cl.end(); ++it) {
+        ICQUser* u = gUserManager.FetchUser((*it)->Uin(), LOCK_R);
+        if(u == NULL)
+          server->AddUserToList((*it)->Uin());
+        gUserManager.DropUser(u);
+      }
+      btnRead1->setEnabled(false);
+    }
   } // switch
 }
 
@@ -493,6 +522,11 @@ void UserViewEvent::slot_btnRead2()
 
   switch (m_xCurrentReadEvent->SubCommand())
   {
+    case ICQ_CMDxSUB_MSG:  // quote
+    case ICQ_CMDxSUB_URL:
+      generateReply();
+      break;
+
     case ICQ_CMDxSUB_CHAT:  // accept a chat request
     {
       btnRead1->setEnabled(false);
@@ -523,18 +557,6 @@ void UserViewEvent::slot_btnRead2()
       break;
     }
 
-    case ICQ_CMDxSUB_MSG:  // Forward
-    case ICQ_CMDxSUB_URL:
-    {
-      CForwardDlg *f = new CForwardDlg(server, sigman, mainwin, m_xCurrentReadEvent);
-      // Move should go here to avoid flicker, but qt is stupid and
-      // will ignore any move()s until after a show().
-      //f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
-      f->show();
-      f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
-      break;
-    }
-
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       (void) new AuthUserDlg(server, ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin(), false);
@@ -551,6 +573,15 @@ void UserViewEvent::slot_btnRead3()
 
   switch (m_xCurrentReadEvent->SubCommand())
   {
+    case ICQ_CMDxSUB_MSG:  // Forward
+    case ICQ_CMDxSUB_URL:
+    {
+      CForwardDlg *f = new CForwardDlg(server, sigman, mainwin, m_xCurrentReadEvent);
+      f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
+      f->show();
+      break;
+    }
+
     case ICQ_CMDxSUB_CHAT:  // refuse a chat request
     {
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("Chat"), this);
@@ -578,12 +609,6 @@ void UserViewEvent::slot_btnRead3()
       delete r;
       break;
     }
-
-    case ICQ_CMDxSUB_URL:   // view a url
-      if (!server->ViewUrl(((CEventUrl *)m_xCurrentReadEvent)->Url()))
-        WarnUser(this, tr("View URL failed"));
-      break;
-
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
       server->AddUserToList( ((CEventAuthRequest *)m_xCurrentReadEvent)->Uin());
@@ -618,6 +643,10 @@ void UserViewEvent::slot_btnRead4()
       }
       break;
     }
+    case ICQ_CMDxSUB_URL:   // view a url
+      if (!server->ViewUrl(((CEventUrl *)m_xCurrentReadEvent)->Url()))
+        WarnUser(this, tr("View URL failed"));
+      break;
   }
 }
 
@@ -688,7 +717,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   hlay->addWidget(chkSendServer);
   chkUrgent = new QCheckBox(tr("U&rgent"), box);
   hlay->addWidget(chkUrgent);
-  chkMass = new QCheckBox(tr("&Multiple recipients"), box);
+  chkMass = new QCheckBox(tr("M&ultiple recipients"), box);
   hlay->addWidget(chkMass);
   connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(massMessageToggled(bool)));
 
@@ -718,7 +747,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   cmbSendType->insertItem(tr("Message"));
   cmbSendType->insertItem(tr("URL"));
   cmbSendType->insertItem(tr("Chat Request"));
-  cmbSendType->insertItem(tr("File Request"));
+  cmbSendType->insertItem(tr("File Transfer"));
   cmbSendType->insertItem(tr("Contact List"));
   connect(cmbSendType, SIGNAL(activated(int)), this, SLOT(changeEventType(int)));
   h_lay->addWidget(cmbSendType);
@@ -731,6 +760,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
   mleSend = new MLEditWrap(true, mainWidget, true);
   setTabOrder(mleSend, btnSend);
+  setTabOrder(btnSend, btnCancel);
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 }
 
@@ -778,19 +808,23 @@ void UserSendCommon::changeEventType(int id)
 void UserSendCommon::massMessageToggled(bool b)
 {
   if(grpMR == NULL) {
-    grpMR = new QVGroupBox(mainWidget);
+    grpMR = new QVGroupBox(this);
+    top_hlay->addWidget(grpMR);
+
     (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
     lstMultipleRecipients = new CMMUserView(gMainWindow->colInfo, mainwin->m_bShowHeader,
                                             m_nUin, mainwin, grpMR);
     lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
-    //laySend->addWidget(grpMR, 1, 1);
-    //laySend->addMultiCellWidget(grpMR, 1, 2, 1, 1);
   }
 
   if(b)
     grpMR->show();
-  else
-    grpMR->close();
+  else {
+    // doesn't work right TODO investigate why
+    int w = grpMR->width();
+    grpMR->hide();
+    top_hlay->setGeometry(QRect(x(), y(), width()-w, height()));
+  }
 }
 
 
@@ -1019,7 +1053,7 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
-  mleSend->setFocus();
+  mleSend->setFocus ();
 
   m_sBaseTitle += tr(" - Message");
   setCaption(m_sBaseTitle);
@@ -1343,11 +1377,12 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   delete mleSend; mleSend = NULL;
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  // this sucks but is okay just for now FIXME
-  QGroupBox* grpOpt = new QGroupBox(1, Vertical, mainWidget);
-  lay->addWidget(grpOpt);
-  lblItem = new QLabel(tr("Uin: "), grpOpt);
-  edtItem = new CInfoField(grpOpt, false);
+  QLabel* lblContact =  new QLabel(tr("Drag Users Here - Right Click for Options"), mainWidget);
+  lay->addWidget(lblContact);
+
+  lstContacts = new CMMUserView(gMainWindow->colInfo, mainwin->m_bShowHeader,
+                                m_nUin, mainwin, mainWidget);
+  lay->addWidget(lstContacts);
 
   m_sBaseTitle += tr(" - Contact List");
   setCaption(m_sBaseTitle);
@@ -1362,20 +1397,21 @@ UserSendContactEvent::~UserSendContactEvent()
 
 void UserSendContactEvent::sendButton()
 {
-  unsigned long nContactUin = edtItem->text().toULong();
+  CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
+  UinList uins;
 
-  if (nContactUin >= 10000)
-  {
-    UinList uins;
+  while(i) {
 
-    uins.push_back(nContactUin);
+    uins.push_back(i->Uin());
 
-    icqEventTag = server->icqSendContactList(m_nUin, uins,
-       chkSendServer->isChecked() ? false : true,
-       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
-
-    UserSendCommon::sendButton();
+    i = static_cast<CMMUserViewItem *>(i->nextSibling());
   }
+
+  icqEventTag = server->icqSendContactList(m_nUin, uins,
+    chkSendServer->isChecked() ? false : true,
+    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+
+  UserSendCommon::sendButton();
 }
 
 
@@ -1400,8 +1436,16 @@ bool UserSendContactEvent::sendDone(ICQEvent *e)
 //-----UserSendContactEvent::setContact--------------------------------------
 void UserSendContactEvent::setContact(unsigned long Uin, const QString&)
 {
-  edtItem->setText(QString::number(Uin));
+  ICQUser* u = gUserManager.FetchUser(Uin, LOCK_R);
+
+  if(u != NULL)
+  {
+    (void) new CMMUserViewItem(u, lstContacts);
+
+    gUserManager.DropUser(u);
+  }
 }
+
 
 // -----------------------------------------------------------------------------
 
