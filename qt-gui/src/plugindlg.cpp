@@ -6,8 +6,13 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qgroupbox.h>
+#include <qlistbox.h>
+#include <qdir.h>
+#include <qstring.h>
+#include <qstringlist.h>
 
 #include "plugindlg.h"
+#include "ewidgets.h"
 
 #include "icqd.h"
 
@@ -31,16 +36,17 @@ PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
   connect(btnDisable, SIGNAL(clicked()), this, SLOT(slot_disable()));
   QPushButton *btnUnload = new QPushButton(tr("Unload"), lbox);
   connect(btnUnload, SIGNAL(clicked()), this, SLOT(slot_unload()));
+  QPushButton *btnDetails = new QPushButton(tr("Details"), lbox);
+  connect(btnDetails, SIGNAL(clicked()), this, SLOT(slot_details()));
   int bw = 75;
   bw = QMAX(bw, btnEnable->sizeHint().width());
   bw = QMAX(bw, btnDisable->sizeHint().width());
   bw = QMAX(bw, btnUnload->sizeHint().width());
+  bw = QMAX(bw, btnDetails->sizeHint().width());
 
   QGroupBox *abox = new QGroupBox(tr("Available"), this);
 
-  lstAvailable = new QListView(abox);
-  lstAvailable->addColumn(tr("Name"));
-  lstLoaded->setAllColumnsShowFocus (true);
+  lstAvailable = new QListBox(abox);
 
   QPushButton *btnLoad = new QPushButton(tr("Load"), abox);
   connect(btnLoad, SIGNAL(clicked()), this, SLOT(slot_load()));
@@ -53,6 +59,7 @@ PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
   connect(btnDone, SIGNAL(clicked()), this, SLOT(hide()));
   bw = QMAX(bw, btnDone->sizeHint().width());
 
+  btnDetails->setFixedWidth(bw);
   btnEnable->setFixedWidth(bw);
   btnDisable->setFixedWidth(bw);
   btnUnload->setFixedWidth(bw);
@@ -61,7 +68,7 @@ PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
 
   QVBoxLayout *lay = new QVBoxLayout(this, 10, 5);
 
-  QVBoxLayout *llay = new QVBoxLayout(lbox, 20, 5);
+  QVBoxLayout *llay = new QVBoxLayout(lbox, 20);
   llay->addWidget(lstLoaded);
   QHBoxLayout *blay = new QHBoxLayout;
   blay->addStretch(1);
@@ -71,11 +78,13 @@ PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
   blay->addStretch(1);
   blay->addWidget(btnUnload);
   blay->addStretch(1);
+  blay->addWidget(btnDetails);
+  blay->addStretch(1);
   llay->addLayout(blay);
   lay->addWidget(lbox);
   lay->addSpacing(15);
 
-  QVBoxLayout *alay = new QVBoxLayout(abox, 20, 5);
+  QVBoxLayout *alay = new QVBoxLayout(abox, 20);
   alay->addWidget(lstAvailable);
   alay->addWidget(btnLoad);
   lay->addWidget(abox);
@@ -94,7 +103,31 @@ PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
 }
 
 
-void PluginDlg::slot_load() {}
+void PluginDlg::slot_load()
+{
+  if (lstAvailable->currentItem() == -1) return;
+
+  char *sz[] = { "licq", NULL };
+  licqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()), 1, sz);
+}
+
+
+void PluginDlg::slot_details()
+{
+  if (lstLoaded->currentItem() == NULL) return;
+  PluginsList l;
+  PluginsListIter it;
+  licqDaemon->PluginList(l);
+  for (it = l.begin(); it != l.end(); it++)
+  {
+    if ((*it)->Id() == lstLoaded->currentItem()->text(0).toUShort())
+      break;
+  }
+  if (it == l.end()) return;
+
+  InformUser(this, tr("Licq Plugin %1 %2\n").arg( (*it)->Name() )
+      .arg( (*it)->Version() ) + QString((*it)->Usage()));
+}
 
 
 void PluginDlg::slot_enable()
@@ -134,8 +167,15 @@ void PluginDlg::slot_refresh()
   }
 
   lstAvailable->clear();
-  //...
-
+  QDir d(LIB_DIR, "licq_*.so", QDir::Name, QDir::Files | QDir::Readable);
+  QStringList s = d.entryList();
+  QStringList::Iterator sit;
+  for (sit = s.begin(); sit != s.end(); sit++)
+  {
+    (*sit).remove(0, 5);
+    (*sit).truncate((*sit).length() - 3);
+  }
+  lstAvailable->insertStringList(s);
 }
 
 

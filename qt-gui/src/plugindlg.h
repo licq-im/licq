@@ -7,6 +7,7 @@
 
 
 class QListView;
+class QListBox;
 class CICQDaemon;
 
 class PluginDlg : public QWidget
@@ -19,10 +20,12 @@ public slots:
   virtual void hide();
 
 protected:
-  QListView *lstAvailable, *lstLoaded;
+  QListBox *lstAvailable;
+  QListView *lstLoaded;
   CICQDaemon *licqDaemon;
 
 protected slots:
+  void slot_details();
   void slot_load();
   void slot_enable();
   void slot_disable();
