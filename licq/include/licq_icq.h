@@ -69,7 +69,7 @@ const unsigned short ICQ_SNACxMSG_REQUESTxRIGHTS   = 0x0004; // client
 const unsigned short ICQ_SNACxMSG_RIGHTSxGRANTED   = 0x0005; // server
 const unsigned short ICQ_SNACxMSG_SENDxSERVER      = 0x0006; // client
 const unsigned short ICQ_SNACxMSG_SERVERxMESSAGE   = 0x0007; // server
-const unsigned short ICQ_SNACxMSG_SERVERxAWAYxMSG  = 0x000b; // server
+const unsigned short ICQ_SNACxMSG_SERVERxREPLYxMSG = 0x000b; // server
 const unsigned short ICQ_SNACxMSG_SERVERxACK       = 0x000c; // server
 
 // Subtypes for BOS family
