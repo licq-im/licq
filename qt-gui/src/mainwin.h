@@ -222,7 +222,8 @@ public:
              *mnuUtilities,
              *mnuMiscModes,
              *mnuSend,
-             *mnuProtocolStatus[16];
+             *mnuProtocolStatus[16],
+             *mnuProtocolOwnerAdm[16];
   CELabel *lblStatus, *lblMsg;
   CEButton *btnSystem;
   CEComboBox *cmbUserGroups;

@@ -2327,8 +2327,7 @@ void UserInfoDlg::slotUpdate()
     cc = GetCountryByIndex(i)->nCode;
     server->icqSetEmailInfo(codec->fromUnicode(nfoEmailSecondary->text()),
 			    codec->fromUnicode(nfoEmailOld->text()));
-    //TODO in the daemon. along with the rest of the icqSet... family
-    icqEventTag = server->icqSetGeneralInfo(codec->fromUnicode(nfoAlias->text()),
+    icqEventTag = server->ProtoSetGeneralInfo(m_nPPID, codec->fromUnicode(nfoAlias->text()),
                                             codec->fromUnicode(nfoFirstName->text()),
                                             codec->fromUnicode(nfoLastName->text()),
                                             codec->fromUnicode(nfoEmailPrimary->text()),

@@ -2344,6 +2344,10 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
 
 void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
 {
+  int nAt = (index & 0x00FF0000) >> 16;
+  unsigned long nThisPPID = m_lnProtMenu[nAt];
+  index &= 0x0000FFFF;
+  
   if (index == OwnerMenuView)
   {
     ProtoPluginsList pl; 
@@ -2373,13 +2377,13 @@ void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
     licqDaemon->ProtoPluginList(pl);
     for (it = pl.begin(); it != pl.end(); it++)
     {
-      if ((*it)->PPID() == nPPID)
+      if ((*it)->PPID() == nThisPPID)
       {
         ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
         if (o == 0) continue;
         szId = strdup(o->IdString());
         gUserManager.DropOwner((*it)->PPID());
-        callInfoTab(index, szId, nPPID);
+        callInfoTab(index, szId, (*it)->PPID());
         free(szId);
       }
     }
@@ -2993,14 +2997,29 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
     connect(mnuProtocolStatus[m_nProtoNum], SIGNAL(activated(int)),
       this, SLOT(changeStatusManualProtocol(int)));
     m_lnProtMenu.push_back(LICQ_PPID);
+    
+    // System functions menu
+    mnuOwnerAdm->removeItemAt(2);
+    mnuOwnerAdm->removeItemAt(2);
+      
+    mnuProtocolOwnerAdm[m_nProtoNum] = new QPopupMenu(NULL);
+    mnuProtocolOwnerAdm[m_nProtoNum]->insertItem(pmInfo, tr("&Info"), OwnerMenuGeneral);
+    mnuProtocolOwnerAdm[m_nProtoNum]->insertItem(pmHistory, tr("View &History"), OwnerMenuHistory);
+    connect(mnuProtocolOwnerAdm[m_nProtoNum], SIGNAL(activated(int)),
+    this, SLOT(callOwnerFunction(int)));
+    mnuOwnerAdm->insertItem("ICQ", mnuProtocolOwnerAdm[m_nProtoNum], -1, 2);
+      
     m_nProtoNum++;
   }
   else
       mnuStatus->removeItemAt(m_nProtoNum+1); // Move separator
 
+   
+  // Temp pointers that if they are not null, will be in the menu     
   QPixmap *pOnline, *pAway, *pNA, *pOcc,*pDND, *pFFC, *pOffline, *pPrivate;
   pOnline = pAway = pNA = pOcc = pDND = pFFC = pOffline = pPrivate = 0;
   
+  // Set icons per protocol here
   if (bMSN)
   {
     pOnline = &pmMSNOnline;
@@ -3011,6 +3030,8 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   }
   
   char *pName = licqDaemon->ProtoPluginName(nPPID);
+  
+  // Create the menu items now
   mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
   if (pOnline)
     mnuProtocolStatus[m_nProtoNum]->insertItem(*pOnline, tr("&Online"),
@@ -3047,6 +3068,18 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   connect(mnuProtocolStatus[m_nProtoNum], SIGNAL(activated(int)),
     this, SLOT(changeStatusManualProtocol(int)));
   m_lnProtMenu.push_back(nPPID);
+  
+  // Create the system functions now
+  mnuProtocolOwnerAdm[m_nProtoNum] = new QPopupMenu(NULL);
+  mnuProtocolOwnerAdm[m_nProtoNum]->insertItem(pmInfo, tr("&Info"),
+    OwnerMenuGeneral | (m_nProtoNum << 16));
+  mnuProtocolOwnerAdm[m_nProtoNum]->insertItem(pmHistory, tr("View &History"),
+    OwnerMenuHistory | (m_nProtoNum << 16));
+  connect(mnuProtocolOwnerAdm[m_nProtoNum], SIGNAL(activated(int)),
+    this, SLOT(callOwnerFunction(int)));
+  mnuOwnerAdm->insertItem(pName ? pName : "(No Name)", mnuProtocolOwnerAdm[m_nProtoNum], -1,
+    m_nProtoNum + 2);
+  
   m_nProtoNum++;
   
   updateStatus();
