@@ -229,16 +229,15 @@ void ChatDlg::StateServer(int sd)
       if (u == chatUser)
       {
         QPalette pal = mlePaneRemote->palette();
+#if QT_VERSION >= 210
         pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-#if QT_VERSION >= 210
         pal.setColor(QPalette::Inactive, QColorGroup::Text, u->colorFore);
-#else
-        pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
-#endif
         pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-#if QT_VERSION >= 210
         pal.setColor(QPalette::Inactive, QColorGroup::Base, u->colorBack);
 #else
+        pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
+        pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
+        pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
         pal.setColor(QPalette::Normal, QColorGroup::Base, u->colorBack);
 #endif
         mlePaneRemote->setPalette(pal);
@@ -411,16 +410,15 @@ void ChatDlg::StateClient(int sd)
       if (u == chatUser)
       {
         QPalette pal = mlePaneRemote->palette();
+#if QT_VERSION >= 210
         pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
-#if QT_VERSION >= 210
         pal.setColor(QPalette::Inactive, QColorGroup::Text, u->colorFore);
-#else
-        pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
-#endif
         pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
-#if QT_VERSION >= 210
         pal.setColor(QPalette::Inactive, QColorGroup::Base, u->colorBack);
 #else
+        pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
+        pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
+        pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
         pal.setColor(QPalette::Normal, QColorGroup::Base, u->colorBack);
 #endif
         mlePaneRemote->setPalette(pal);
@@ -623,10 +621,11 @@ void ChatDlg::chatRecv(int sd)
         if (u == chatUser)
         {
           QPalette pal = mlePaneRemote->palette();
-          pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
 #if QT_VERSION >= 210
+          pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
           pal.setColor(QPalette::Inactive, QColorGroup::Text, u->colorFore);
 #else
+          pal.setColor(QPalette::Active, QColorGroup::Text, u->colorFore);
           pal.setColor(QPalette::Normal, QColorGroup::Text, u->colorFore);
 #endif
           mlePaneRemote->setPalette(pal);
@@ -648,10 +647,11 @@ void ChatDlg::chatRecv(int sd)
         if (u == chatUser)
         {
           QPalette pal = mlePaneRemote->palette();
-          pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
 #if QT_VERSION >= 210
+          pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
           pal.setColor(QPalette::Inactive, QColorGroup::Base, u->colorBack);
 #else
+          pal.setColor(QPalette::Active, QColorGroup::Base, u->colorBack);
           pal.setColor(QPalette::Normal, QColorGroup::Base, u->colorBack);
 #endif
           mlePaneRemote->setPalette(pal);

@@ -42,6 +42,7 @@ CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
 {
    mnuPopUp = m;
    m_bTransparent = _bTransparent;
+   if (_bTransparent) setAutoMask(true);
 }
 
 
@@ -80,22 +81,15 @@ void CELabel::setNamedFgColor(char *theColor)
    if (!c.isValid()) return;
 
    QPalette pal(palette());
-#if 1
-   QColorGroup normal(pal.normal());
-   QColorGroup newNormal(c, normal.background(), normal.light(), normal.dark(),
-                         normal.mid(), c, normal.base());
-   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
-#else
 #if QT_VERSION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Foreground, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Foreground, c);
 #else
-   pal.setColor(QPalette::Active, QColorGroup::Foreground, c);
-   pal.setColor(QPalette::Normal, QColorGroup::Foreground, c);
+   pal.setColor(QPalette::Active, QColorGroup::Text, c);
+   pal.setColor(QPalette::Normal, QColorGroup::Text, c);
 #endif
 
    setPalette(pal);
-#endif
 }
 
 
@@ -106,12 +100,6 @@ void CELabel::setNamedBgColor(char *theColor)
    if (!c.isValid()) return;
 
    QPalette pal(palette());
-#if 1
-   QColorGroup normal(pal.normal());
-   QColorGroup newNormal(normal.foreground(), c, normal.light(), normal.dark(),
-                         normal.mid(), normal.text(), c);
-   setPalette(QPalette(newNormal, newNormal /*pal.disabled()*/, newNormal));
-#else
 #if QT_VESION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Background, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Background, c);
@@ -119,22 +107,22 @@ void CELabel::setNamedBgColor(char *theColor)
    pal.setColor(QPalette::Active, QColorGroup::Background, c);
    pal.setColor(QPalette::Normal, QColorGroup::Background, c);
 #endif
-
    setPalette(pal);
-#endif
 }
-
 
 void CELabel::resizeEvent (QResizeEvent *)
 {
-   // Resize the background pixmap properly
-   if (backgroundPixmap() == NULL) return;
-   QImage im = (backgroundPixmap()->convertToImage()).smoothScale(width(), height());
-   QPixmap pm;
-   pm.convertFromImage(im);
-   setBackgroundPixmap(pm);
-}
+  // Resize the background pixmap properly
+  if (autoMask()) updateMask();
 
+  if (backgroundPixmap() != NULL)
+  {
+    QImage im = (backgroundPixmap()->convertToImage()).smoothScale(width(), height());
+    QPixmap pm;
+    pm.convertFromImage(im);
+    setBackgroundPixmap(pm);
+  }
+}
 
 
 void CELabel::mouseDoubleClickEvent(QMouseEvent *)
