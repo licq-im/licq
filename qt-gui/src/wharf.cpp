@@ -607,7 +607,7 @@ void IconManager_KDEStyle::SetDockIconStatus()
 
   updateTooltip();
 
-  repaint(false);
+  repaint();
 }
 
 void IconManager_KDEStyle::SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
@@ -626,7 +626,7 @@ void IconManager_KDEStyle::SetDockIconMsg(unsigned short nNewMsg, unsigned short
 
   updateTooltip();
 
-  repaint(false);
+  repaint();
 }
 
 void IconManager_KDEStyle::timerEvent(QTimerEvent* e)
