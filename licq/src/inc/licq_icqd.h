@@ -278,6 +278,7 @@ protected:
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect);
   ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
                             unsigned long _nDestinationUin, CUserEvent *e);
+  ICQEvent *SendExpectEvent(ICQEvent *);
   void AckUDP(unsigned short, unsigned short);
   void AckTCP(CPacketTcp &, int _nSD);
 
