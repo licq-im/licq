@@ -99,11 +99,6 @@ else
 fi
 AC_SUBST(XSS_LIBS)
 
-dnl Checks for library functions.
-AC_CHECK_LIB(xnet,inet_addr)
-AC_CHECK_LIB(socket, socket)
-AC_CHECK_FUNCS(inet_addr inet_aton strerror)
-
 dnl Check for QT
 AC_PATH_QT
 AC_PATH_QT_LIB
