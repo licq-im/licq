@@ -2782,7 +2782,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   char szStatebuf[6];
 
   szStatebuf[5] = '\0';
-  snprintf(szStatebuf, 5, szState);
+  snprintf(szStatebuf, 5, "%s", szState);
 
   int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
 		    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
