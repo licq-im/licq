@@ -20,6 +20,7 @@
 #define USEREVENTDLG_H
 
 #include <qwidget.h>
+#include "licq_color.h"
 
 class QBoxLayout;
 class QGroupBox;
@@ -67,7 +68,7 @@ protected:
   CSignalManager *sigman;
   unsigned long icqEventTag;
   QWidget *mainWidget;
-  QPushButton *btnHistory, *btnInfo, *btnSecure;
+  QPushButton *btnHistory, *btnInfo, *btnSecure, *btnForeColor, *btnBackColor;
 
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
@@ -157,6 +158,7 @@ protected:
   CMMUserView *lstMultipleRecipients;
   MLEditWrap *mleSend;
   QString m_msgTextTotal, m_msgTextCurrent;
+  CICQColor icqColor;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   QString generatePart(const QString& text);
@@ -172,6 +174,9 @@ protected slots:
   void cancelSend();
   void massMessageToggled(bool);
   void slot_resettitle() { setCaption(m_sBaseTitle); }
+  void slot_SetForegroundICQColor();
+  void slot_SetBackgroundICQColor();
+
 };
 
 

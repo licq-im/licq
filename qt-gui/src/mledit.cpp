@@ -53,6 +53,42 @@ void MLEditWrap::GotoEnd()
 }
 
 
+void MLEditWrap::setBackground(const QColor& c)
+{
+  QPalette pal = palette();
+
+#if QT_VERSION >= 210
+  pal.setColor(QPalette::Active, QColorGroup::Base, c);
+  pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
+#else
+  pal.setColor(QPalette::Active, QColorGroup::Base, c);
+  pal.setColor(QPalette::Normal, QColorGroup::Base, c);
+#endif
+
+  setPalette(pal);
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+void MLEditWrap::setForeground(const QColor& c)
+{
+  QPalette pal = palette();
+
+#if QT_VERSION >= 210
+  pal.setColor(QPalette::Active, QColorGroup::Text, c);
+  pal.setColor(QPalette::Inactive, QColorGroup::Text, c);
+#else
+  pal.setColor(QPalette::Active, QColorGroup::Text, c);
+  pal.setColor(QPalette::Normal, QColorGroup::Text, c);
+#endif
+
+  setPalette(pal);
+}
+
+
+
 // -----------------------------------------------------------------------------
 
 void MLEditWrap::paintCell(QPainter* p, int row, int col)

@@ -36,8 +36,10 @@
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
+#include <kcolordialog.h>
 #else
 #include <qfiledialog.h>
+#include <qcolordialog.h>
 #endif
 
 #include "licq_message.h"
@@ -60,6 +62,9 @@
 #include "sigman.h"
 #include "showawaymsgdlg.h"
 #include "keyrequestdlg.h"
+#include "xpm/chatChangeFg.xpm"
+#include "xpm/chatChangeBg.xpm"
+
 
 // -----------------------------------------------------------------------------
 
@@ -383,8 +388,13 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 
   CUserEvent *m = e->msg;
   m_xCurrentReadEvent = m;
+  // Set the color for the message
+  mleRead->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
+  mleRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
+  // Set the text
   mleRead->setText(QString::fromLocal8Bit(m->Text()));
   mleRead->setCursorPosition(0, 0);
+
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE))
   {
     switch (m->SubCommand())
@@ -795,8 +805,16 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass = new QCheckBox(tr("M&ultiple recipients"), box);
   hlay->addWidget(chkMass);
   connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(massMessageToggled(bool)));
+  btnForeColor = new QPushButton(box);
+  btnForeColor->setPixmap(chatChangeFg_xpm);
+  connect(btnForeColor, SIGNAL(clicked()), this, SLOT(slot_SetForegroundICQColor()));
+  hlay->addWidget(btnForeColor);
+  btnBackColor = new QPushButton(box);
+  btnBackColor->setPixmap(chatChangeBg_xpm);
+  connect(btnBackColor, SIGNAL(clicked()), this, SLOT(slot_SetBackgroundICQColor()));
+  hlay->addWidget(btnBackColor);
 
-  QBoxLayout* h_lay = new QHBoxLayout(top_lay);
+  QBoxLayout *h_lay = new QHBoxLayout(top_lay);
   if (!m_bOwner)
   {
     QPushButton *btnMenu = new QPushButton(tr("&Menu"), this);
@@ -826,6 +844,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend = new MLEditWrap(true, mainWidget, true);
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
+  mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
+  mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
 }
@@ -834,6 +854,38 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 UserSendCommon::~UserSendCommon()
 {
 }
+
+//-----UserSendCommon::slot_SetForegroundColor-------------------------------
+void UserSendCommon::slot_SetForegroundICQColor()
+{
+#ifdef USE_KDE
+  QColor c = mleSend->foregroundColor();
+  if (KColorDialog::getColor(c, this) != KColorDialog::Accepted) return;
+#else
+  QColor c = QColorDialog::getColor(mleSend->foregroundColor(), this);
+  if (!c.isValid()) return;
+#endif
+
+  icqColor.SetForeground(c.red(), c.green(), c.blue());
+  mleSend->setForeground(c);
+}
+
+
+//-----UserSendCommon::slot_SetBackgroundColor-------------------------------
+void UserSendCommon::slot_SetBackgroundICQColor()
+{
+#ifdef USE_KDE
+  QColor c = mleSend->backgroundColor();
+  if (KColorDialog::getColor(c, this) != KColorDialog::Accepted) return;
+#else
+  QColor c = QColorDialog::getColor(mleSend->backgroundColor(), this);
+  if (!c.isValid()) return;
+#endif
+
+  icqColor.SetBackground(c.red(), c.green(), c.blue());
+  mleSend->setBackground(c);
+}
+
 
 //-----UserSendCommon::changeEventType---------------------------------------
 void UserSendCommon::changeEventType(int id)
@@ -1098,14 +1150,14 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       msgTextCurrent = generatePart(QString(ue->Message()));
 
       icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit().data(), bOnline,
-         nLevel);
+         nLevel, false, &icqColor);
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
       CEventUrl *ue = (CEventUrl *)e->UserEvent();
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
-         bOnline, nLevel);
+         bOnline, nLevel, false, &icqColor);
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
@@ -1121,7 +1173,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
         break;
 
       icqEventTag = server->icqSendContactList(m_nUin, uins,
-                                               bOnline, nLevel);
+       bOnline, nLevel, false, &icqColor);
       break;
     }
     case ICQ_CMDxSUB_CHAT:
@@ -1258,7 +1310,7 @@ void UserSendMsgEvent::sendButton()
   icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit(),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-     chkMass->isChecked());
+     chkMass->isChecked(), &icqColor);
 
   UserSendCommon::sendButton();
 }
@@ -1338,7 +1390,7 @@ void UserSendUrlEvent::sendButton()
   icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-     chkMass->isChecked());
+     chkMass->isChecked(), &icqColor);
 
   UserSendCommon::sendButton();
 }
@@ -1371,6 +1423,8 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkSendServer->setEnabled(false);
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
+  btnForeColor->setEnabled(false);
+  btnBackColor->setEnabled(false);
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
   lay->addWidget(mleSend);
@@ -1470,6 +1524,8 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkSendServer->setEnabled(false);
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
+  btnForeColor->setEnabled(false);
+  btnBackColor->setEnabled(false);
 
   QBoxLayout *lay = new QVBoxLayout(mainWidget, 8);
   lay->addWidget(mleSend);
@@ -1618,7 +1674,8 @@ void UserSendContactEvent::sendButton()
 
   icqEventTag = server->icqSendContactList(m_nUin, uins,
     chkSendServer->isChecked() ? false : true,
-    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+    chkMass->isChecked(), &icqColor);
 
   UserSendCommon::sendButton();
 }

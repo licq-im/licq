@@ -17,6 +17,10 @@ public:
   bool hasMarkedText() const { return QMultiLineEdit::hasMarkedText(); }
   QString markedText() const { return QMultiLineEdit::markedText(); }
 
+  // Why does Qt not provide this?
+  void setBackground(const QColor&);
+  void setForeground(const QColor&);
+
   static QFont *editFont;
 
 protected:
