@@ -752,24 +752,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
         CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
 
-        /*gTranslator.ServerToClient (message);
-        CEventMsg *e = new CEventMsg(message, ICQ_CMDxTCP_START, TIME_NOW,
-                                     nMask | licqVersion);*/
-
-        // Add the user to our list if they are new
-        if (bNewUser)
-        {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
-            RejectEvent(checkUin, e);
-            break;
-          }
-          u->Unlock();
-          AddUserToList(u);
-          u->Lock(LOCK_W);
-          bNewUser = false;
-        }
-
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, u->SocketDesc());
 
@@ -782,6 +764,23 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
             break;
           }
         }
+        // Add the user to our list if they are new
+        if (bNewUser)
+        {
+          if (Ignore(IGNORE_NEWUSERS))
+          {
+            // FIXME should log a message here or in reject event
+            // FIXME should either refuse the event or have a special auto response
+            // for rejected events instead of pretending to accept the user
+            RejectEvent(checkUin, e);
+            break;
+          }
+          u->Unlock();
+          AddUserToList(u);
+          u->Lock(LOCK_W);
+          bNewUser = false;
+        }
+
         if (!AddUserEvent(u, e)) break;
         m_xOnEventManager.Do(ON_EVENT_MSG, u);
         break;
@@ -825,23 +824,18 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
           break;
         }
 
-        /*// parse the message into url and url description
-        char **szUrl = new char*[2]; // desc, url
-        if (!ParseFE(message, &szUrl, 2))
+        CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
+        AckTCP(p, u->SocketDesc());
+
+        // If we are in DND or Occupied and message isn't urgent then we ignore it
+        if (!bAccept)
         {
-          char *buf;
-          gLog.Warn("%sInvalid URL message:\n%s\n", L_WARNxSTR,
-                    packet.print(buf));
-          delete []buf;
-          delete []szUrl;
-          break;
+          if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
+          {
+            delete e;
+            break;
+          }
         }
-
-        // translating string with Translation Table
-        gTranslator.ServerToClient(szUrl[0]);
-        CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], ICQ_CMDxTCP_START, TIME_NOW, nMask | licqVersion);
-        delete []szUrl;*/
-
         // Add the user to our list if they are new
         if (bNewUser)
         {
@@ -856,8 +850,35 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
           bNewUser = false;
         }
 
+        if (!AddUserEvent(u, e)) break;
+        m_xOnEventManager.Do(ON_EVENT_URL, u);
+        break;
+      }
+
+      // Contact List
+      case ICQ_CMDxSUB_CONTACTxLIST:
+      {
+        packet >> theSequence >> licqChar >> licqVersion;
+        nMask |= licqVersion;
+        if (licqChar == 'L')
+          gLog.Info("%sContact list from %s (%d) [Licq v0.%d].\n", L_BLANKxSTR,
+             u->GetAlias(), checkUin, licqVersion);
+        else
+          gLog.Info("%sContact list from %s (%d).\n", L_BLANKxSTR, u->GetAlias(),
+             checkUin);
+
+        CEventContactList *e = CEventContactList::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
+        if (e == NULL)
+        {
+          char *buf;
+          gLog.Warn("%sInvalid contact list message:\n%s\n", L_WARNxSTR, packet.print(buf));
+          delete []buf;
+          break;
+        }
+
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, u->SocketDesc());
+
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
         {
@@ -867,10 +888,23 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
             break;
           }
         }
+        // Add the user to our list if they are new
+        if (bNewUser)
+        {
+          if (Ignore(IGNORE_NEWUSERS))
+          {
+            RejectEvent(checkUin, e);
+            break;
+          }
+          u->Unlock();
+          AddUserToList(u);
+          u->Lock(LOCK_W);
+          bNewUser = false;
+        }
 
-        // format the url and url description into a message and add it to the users list
         if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_URL, u);
+        m_xOnEventManager.Do(ON_EVENT_MSG, u);
+
         break;
       }
 
@@ -957,84 +991,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         break;
       }
 
-      // Contact List
-      case ICQ_CMDxSUB_CONTACTxLIST:
-      {
-        packet >> theSequence >> licqChar >> licqVersion;
-        nMask |= licqVersion;
-        if (licqChar == 'L')
-          gLog.Info("%sContact list from %s (%d) [Licq v0.%d].\n", L_BLANKxSTR,
-             u->GetAlias(), checkUin, licqVersion);
-        else
-          gLog.Info("%sContact list from %s (%d).\n", L_BLANKxSTR, u->GetAlias(),
-             checkUin);
-
-        CEventContactList *e = CEventContactList::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
-        if (e == NULL)
-        {
-          char *buf;
-          gLog.Warn("%sInvalid contact list message:\n%s\n", L_WARNxSTR, packet.print(buf));
-          delete []buf;
-          break;
-        }
-
-        /*unsigned short i = 0;
-        while ((unsigned char)message[i++] != 0xFE);
-        message[--i] = '\0';
-        int nNumContacts = atoi(message);
-        char **szFields = new char*[nNumContacts * 2 + 1];
-        if (!ParseFE(&message[++i], &szFields, nNumContacts * 2 + 1))
-        {
-          char *buf;
-          gLog.Warn("%sInvalid contact list message:\n%s\n", L_WARNxSTR,
-                    packet.print(buf));
-          delete []buf;
-          delete []szFields;
-          break;
-        }
-
-        // Translate the aliases
-        ContactList vc;
-        for (i = 0; i < nNumContacts * 2; i += 2)
-        {
-          gTranslator.ServerToClient(szFields[i + 1]);
-          vc.push_back(new CContact(atoi(szFields[i]), szFields[i + 1]));
-        }
-        CEventContactList *e = new CEventContactList(vc, ICQ_CMDxTCP_START,
-           TIME_NOW, nMask | licqVersion);
-        delete[] szFields;*/
-
-        // Add the user to our list if they are new
-        if (bNewUser)
-        {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
-            RejectEvent(checkUin, e);
-            break;
-          }
-          u->Unlock();
-          AddUserToList(u);
-          u->Lock(LOCK_W);
-          bNewUser = false;
-        }
-
-        CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
-        AckTCP(p, u->SocketDesc());
-        // If we are in DND or Occupied and message isn't urgent then we ignore it
-        if (!bAccept)
-        {
-          if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
-          {
-            delete e;
-            break;
-          }
-        }
-
-        if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_MSG, u);
-
-        break;
-      }
       default:
          break;
     }
