@@ -481,7 +481,7 @@ void UserInfoDlg::SaveGeneralInfo()
   gUserManager.DropUser(u);
 
   if (!m_bOwner)
-    server->icqRenameUser(m_szId, m_nPPID);
+    server->ProtoRenameUser(m_szId, m_nPPID);
 }
 
 // -----------------------------------------------------------------------------
