@@ -295,19 +295,21 @@ bool CLicqForwarder::ForwardEvent(ICQUser *u, CUserEvent *e)
 
 bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
 {
-  //char szText = new char[strlen(e->Text()) + 128];
-  char szText[500];
-  snprintf(szText, MAX_MESSAGE_SIZE, "---FORWARD---\n[ %s from %s (%ld) ]\n%s\n", EventDescription(e),
-          u->GetAlias(), u->Uin(), e->Text());
-  CICQEventTag *t = licqDaemon->icqSendMessage(m_nUINTo, szText, false, false);
-  //delete []szText;
-  if (t == NULL)
+  char *szText = new char[strlen(e->Text()) + 256];
+  char szTime[64];
+  time_t t = e->Time();
+  strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
+  sprintf(szText, "[ %s from %s (%ld) sent %s ]\n\n%s\n", EventDescription(e),
+          u->GetAlias(), u->Uin(), szTime, e->Text());
+  CICQEventTag *tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, false);
+  delete []szText;
+  if (tag == NULL)
   {
     gLog.Warn("%sSending message to %ld failed.\n", L_FORWARDxSTR, m_nUINTo);
     return false;
   }
   gLog.Info("%sForwarded message from %s (%ld) to %ld.\n", L_FORWARDxSTR, u->GetAlias(), u->Uin(), m_nUINTo);
-  delete t;
+  delete tag;
   return true;
 }
 
