@@ -354,6 +354,12 @@ bool CFileTransferManager::ProcessPacket()
     case FT_STATE_WAITxFORxCLIENTxINIT:
     {
       unsigned char nCmd = b.UnpackChar();
+      if (nCmd == 0x05)
+      {
+        unsigned long nSpeed = b.UnpackUnsignedLong();
+        gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
+        break;
+      }
       if (nCmd != 0x00)
       {
         char *pbuf;
@@ -400,7 +406,8 @@ bool CFileTransferManager::ProcessPacket()
       unsigned char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
-        // set our speed, for now fuckem and go as fast as possible
+        unsigned long nSpeed = b.UnpackUnsignedLong();
+        gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd != 0x02)
@@ -483,7 +490,8 @@ bool CFileTransferManager::ProcessPacket()
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
-        // set speed...
+        unsigned long nSpeed = b.UnpackUnsignedLong();
+        gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
         break;
       }
 
@@ -554,7 +562,8 @@ bool CFileTransferManager::ProcessPacket()
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
-        // set our speed, for now fuckem and go as fast as possible
+        unsigned long nSpeed = b.UnpackUnsignedLong();
+        gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd != 0x01)
@@ -602,7 +611,8 @@ bool CFileTransferManager::ProcessPacket()
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
-        // set our speed, for now fuckem and go as fast as possible
+        unsigned long nSpeed = b.UnpackUnsignedLong();
+        gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd != 0x03)
@@ -646,6 +656,8 @@ bool CFileTransferManager::ProcessPacket()
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
+        unsigned long nSpeed = b.UnpackUnsignedLong();
+        gLog.Info("%sFile Transfer: Speed set to %ld%%.\n", L_TCPxSTR, nSpeed);
         break;
       }
       char *p;
