@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/console.h)
-
+AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
@@ -33,29 +33,16 @@ dnl libtool checks
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
+AC_LIBTOOL_CXX
 
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h dirent.h locale.h malloc.h pwd.h sys/time.h)
 AC_HEADER_TIME
-AC_SYS_ERRLIST
-AC_CHECK_LICQ
-
-if test "$have_licq_inc" = no; then
-  AC_MSG_ERROR([
-
-I can't find the Licq header files.
-You must unpack this archive into the plugins/ directory off of the
-main Licq source tree.  In other words, we should be in
-/some/dir/licq-0.xx/plugins/console-0.xx right now.
-])
-fi
-
+LICQ_SYS_ERRLIST
+LICQ_CHECK_LICQ
 
 dnl Checks for library functions.
-#AC_CHECK_LIB(xnet,inet_addr)
-#AC_CHECK_LIB(socket, socket)
-#AC_CHECK_LIB(nsl, gethostbyname)
 AC_CHECK_FUNCS(inet_addr inet_aton strerror)
 
 dnl Switch to C++ mode and check for needed C++ headers
