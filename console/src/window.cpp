@@ -58,7 +58,7 @@ CWindow::~CWindow(void)
    delwin(win);
 }
 
-void CWindow::RefreshWin(void)
+void CWindow::RefreshWin()
 {
   if (!active) return;
   if (pad)
@@ -102,13 +102,8 @@ void CWindow::wprintf(char *formatIn, ...)
    va_list argp;
    char formatOut[1024], out[1024];
    unsigned short i = 0, j = 0;
-   attr_t a;
-#if NCURSES_VERSION_PATCH < 990213
-   a = wattr_get(win);
-#else
-   short p;
-   wattr_get(win, &a, &p, NULL);
-#endif
+   attr_t save = win->_attrs;
+
    va_start(argp, formatIn);
 
    while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
@@ -124,8 +119,7 @@ void CWindow::wprintf(char *formatIn, ...)
       case 'C':   // set color
          i++;
 #if NCURSES_VERSION_PATCH < 990213
-         (void) va_arg(argp, short);
-//         wcolor_set(win, va_arg(argp, short), NULL);
+         wattrset(win, COLOR_PAIR(va_arg(argp, short)));
 #else
          wcolor_set(win, va_arg(argp, short), NULL);
 #endif
@@ -158,11 +152,8 @@ void CWindow::wprintf(char *formatIn, ...)
       }
    }
    va_end(argp);
-#if NCURSES_VERSION_PATCH < 990213
-   wattr_set(win, a);
-#else
-   wattr_set(win, a, p, NULL);
-#endif
+
+   win->_attrs = save;
 }
 
 
