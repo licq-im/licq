@@ -589,8 +589,8 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
                 "%sPlease try recompiling the plugin.\n"
                 "%sIf you are still having problems, see\n"
                 "%sthe FAQ at www.licq.org\n",
-                L_WARNxSTR, L_SBLANKxSTR, L_SBLANKxSTR, L_SBLANKxSTR,
-                L_SBLANKxSTR);
+                L_WARNxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR,
+                L_BLANKxSTR);
     }
 
     delete p;
