@@ -400,6 +400,7 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
  *-------------------------------------------------------------------------*/
 void CUserManager::DropUser(ICQUser *u)
 {
+  if (u == NULL) return;
   u->Unlock();
 }
 
