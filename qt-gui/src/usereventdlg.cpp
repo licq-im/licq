@@ -762,9 +762,10 @@ void UserSendCommon::changeEventType(int id)
     break;
   }
 
-  if(e != NULL) {
+  if (e != NULL)
+  {
     QPoint p = topLevelWidget()->pos();
-    if(e->mleSend && mleSend)
+    if (e->mleSend && mleSend)
       e->mleSend->setText(mleSend->text());
     e->move(p);
     e->show();
@@ -923,7 +924,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_MSG:
     {
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
-      m_sProgressMsg = tr("Sending msg ");
+      m_sProgressMsg = tr("Sending ");
       m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
@@ -933,7 +934,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_URL:
     {
       CEventUrl *ue = (CEventUrl *)e->UserEvent();
-      m_sProgressMsg = tr("Sending URL ");
+      m_sProgressMsg = tr("Sending ");
       m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
@@ -943,14 +944,14 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_CHAT:
     {
       CEventChat *ue = (CEventChat *)e->UserEvent();
-      m_sProgressMsg = tr("Sending chat request...");
+      m_sProgressMsg = tr("Sending...");
       icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel);
       break;
     }
     case ICQ_CMDxSUB_FILE:
     {
       CEventFile *ue = (CEventFile *)e->UserEvent();
-      m_sProgressMsg = tr("Sending file transfer...");
+      m_sProgressMsg = tr("Sending...");
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
          ue->FileDescription(), nLevel);
       break;
@@ -1019,6 +1020,10 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
   mleSend->setFocus();
+
+  m_sBaseTitle += tr(" - Message");
+  setCaption(m_sBaseTitle);
+  cmbSendType->setCurrentItem(0);
 }
 
 
@@ -1059,7 +1064,7 @@ void UserSendMsgEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
-  m_sProgressMsg = tr("Sending msg ");
+  m_sProgressMsg = tr("Sending ");
   m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
   m_sProgressMsg += "...";
   icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
@@ -1102,6 +1107,10 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(lblItem);
   edtItem = new CInfoField(mainWidget, false);
   h_lay->addWidget(edtItem);
+
+  m_sBaseTitle += tr(" - URL");
+  setCaption(m_sBaseTitle);
+  cmbSendType->setCurrentItem(1);
 }
 
 
@@ -1132,7 +1141,7 @@ void UserSendUrlEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
-  m_sProgressMsg = tr("Sending URL ");
+  m_sProgressMsg = tr("Sending ");
   m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
   m_sProgressMsg += "...";
   icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
@@ -1184,6 +1193,10 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   btnBrowse = new QPushButton(tr("Browse"), mainWidget);
   connect(btnBrowse, SIGNAL(clicked()), this, SLOT(browseFile()));
   h_lay->addWidget(btnBrowse);
+
+  m_sBaseTitle += tr(" - File Transfer");
+  setCaption(m_sBaseTitle);
+  cmbSendType->setCurrentItem(3);
 }
 
 
@@ -1219,7 +1232,7 @@ void UserSendFileEvent::sendButton()
     WarnUser(this, tr("You must specify a file to transfer!"));
     return;
   }
-  m_sProgressMsg = tr("Sending file transfer...");
+  m_sProgressMsg = tr("Sending...");
   icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
                                         mleSend->text().local8Bit(),
                                         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
@@ -1267,6 +1280,10 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *lay = new QVBoxLayout(mainWidget);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
+
+  m_sBaseTitle += tr(" - Chat Request");
+  setCaption(m_sBaseTitle);
+  cmbSendType->setCurrentItem(2);
 }
 
 
@@ -1278,7 +1295,7 @@ UserSendChatEvent::~UserSendChatEvent()
 //-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
 {
-  m_sProgressMsg = tr("Sending chat request...");
+  m_sProgressMsg = tr("Sending...");
   if (m_nMPChatPort == 0)
     icqEventTag = server->icqChatRequest(m_nUin,
                                          mleSend->text().local8Bit(),
@@ -1331,6 +1348,10 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   lay->addWidget(grpOpt);
   lblItem = new QLabel(tr("Uin: "), grpOpt);
   edtItem = new CInfoField(grpOpt, false);
+
+  m_sBaseTitle += tr(" - Contact List");
+  setCaption(m_sBaseTitle);
+  cmbSendType->setCurrentItem(4);
 }
 
 
