@@ -146,14 +146,14 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
 #if defined(__GLIBC__)
   struct hostent *h_buf;
   char temp[1024];
-  int herror;
+  int herror = 0;
   gethostbyname_r(szHostName, h, temp, 1024, &h_buf, &herror);
   return herror;
 // Solaris
 #elif defined(sun)
   struct hostent *h_buf;
   char temp[1024];
-  int herror;
+  int herror = 0;
   h_buf = gethostbyname_r(szHostName, h, temp, 1024, &herror);
   return herror;
 // not sure about this one (actually pretty sure it's wrong)
