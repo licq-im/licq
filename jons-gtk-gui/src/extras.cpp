@@ -60,35 +60,26 @@ void do_colors()
 
 void do_pixmaps()
 {
-        style = gtk_widget_get_style(main_window);
- 
-        online = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                              NULL,
-                                              (gchar **)online_xpm);
- 
-        away = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                            &style->bg[GTK_STATE_NORMAL],
-                                            (gchar **)away_xpm);
- 
-        na = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                          &style->bg[GTK_STATE_NORMAL],
-                                          (gchar **)na_xpm);
- 
-        dnd = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                           &style->bg[GTK_STATE_NORMAL],
-                                           (gchar **)dnd_xpm);
- 
-        occ = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                           &style->bg[GTK_STATE_NORMAL],
-                                           (gchar **)occ_xpm); 
 
-        offline = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                               &style->bg[GTK_STATE_NORMAL],
-                                               (gchar **)offline_xpm);
- 
-        message = gdk_pixmap_create_from_xpm_d(main_window->window, &bm,
-                                               &style->bg[GTK_STATE_NORMAL],
-                                               (gchar **)message_xpm); 
+	online = make_pixmap(online, (gchar **)online_xpm);
+	away = make_pixmap(away, (gchar **)away_xpm);
+	na = make_pixmap(na, (gchar **)na_xpm);
+	occ = make_pixmap(occ, (gchar **)occ_xpm);
+	dnd = make_pixmap(dnd, (gchar **)dnd_xpm);
+	offline = make_pixmap(offline, (gchar **)offline_xpm);
+	message = make_pixmap(message, (gchar **)message_xpm);
+}
+
+struct status_icon *make_pixmap(struct status_icon *icon, gchar **file)
+{
+	if(icon == NULL)
+		icon = g_new0(struct status_icon, 1);
+		
+	icon->pm = gdk_pixmap_create_from_xpm_d(main_window->window,
+					    &icon->bm,
+					    NULL,
+					    file);
+	return icon;
 }
 
 void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d)

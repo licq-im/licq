@@ -28,9 +28,7 @@
 #include <sys/time.h>
 
 GdkColor *red, *blue, *green;
-GtkStyle *style;
-GdkBitmap *bm;
-GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
+status_icon *online, *offline, *away, *na, *dnd, *occ, *message;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -38,6 +36,7 @@ GtkWidget *contact_list_new(gint height, gint width)
 
 	/* Create the contact list using a 3 column clist */
 	_contact_l = gtk_clist_new(3);
+	gtk_clist_set_row_height(GTK_CLIST(_contact_l), 17);
 
 	/* Set the shadow mode and column widths */
 	gtk_clist_set_shadow_type(GTK_CLIST(_contact_l),GTK_SHADOW_ETCHED_IN);
@@ -64,7 +63,6 @@ void contact_list_refresh()
 {
 	gchar *blah[3];
 	gint num_users = 0;
-	GtkWidget *pix;
 
 	do_colors(); 	/* Make the colors */
 	do_pixmaps();   /* Make the pixmap */
@@ -90,7 +88,7 @@ void contact_list_refresh()
 		if(pUser->NewMessages() > 0)
 		{
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, message, bm);
+					     1, message->pm, message->bm);
 
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 					   0, "!");
@@ -104,7 +102,7 @@ void contact_list_refresh()
 		{
 		  case ICQ_STATUS_FREEFORCHAT:
 		  {
-			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users					     ,1 , online, bm);
+			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users					     ,1 , online->pm, online->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, blue);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -115,7 +113,7 @@ void contact_list_refresh()
 		  case ICQ_STATUS_AWAY:
 		  {
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, away, bm);
+					     1, away->pm, away->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, green);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -126,10 +124,8 @@ void contact_list_refresh()
  		 
 	  	  case ICQ_STATUS_ONLINE:
 		  {
-			pix = gtk_pixmap_new(online, bm);
-			gtk_widget_show(pix);
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, online, bm);
+					     1, online->pm, online->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, blue);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -140,7 +136,7 @@ void contact_list_refresh()
 		  case ICQ_STATUS_NA:
 		  {
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, na, bm);
+					     1, na->pm, na->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, green);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -151,7 +147,7 @@ void contact_list_refresh()
 		  case ICQ_STATUS_DND:
 		  {
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, dnd, bm);
+					     1, dnd->pm, dnd->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, green);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -162,7 +158,7 @@ void contact_list_refresh()
 		  case ICQ_STATUS_OCCUPIED:
 		  {
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, occ, bm);
+					     1, occ->pm, occ->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, green);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -173,7 +169,7 @@ void contact_list_refresh()
 		  case ICQ_STATUS_OFFLINE:
 		  {
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
-					     1, offline, bm);
+					     1, offline->pm, offline->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
 						 num_users, red);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,

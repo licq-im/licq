@@ -40,7 +40,7 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 			return c;
 	}
 
-	c = (struct conversation *)g_new0(struct conversation, 1);
+	c = g_new0(struct conversation, 1);
 
 	c->user = u;
 
@@ -69,26 +69,29 @@ struct conversation *convo_find(unsigned long uin)
 	{
 		c = (struct conversation *)conversations->data;
 		if(c->user->Uin() == uin)
+		{
+			g_free(conversations);
 			return c;
+		}
 	
 		conversations = conversations->next;
 	}
 
+	g_free(conversations);
 	return NULL;
 }
 
 void convo_show(struct conversation *c)
 {
 	GtkWidget *scroll;
-	GtkWidget *send;
 	GtkWidget *close;
 	GtkWidget *button_box;
 	GtkWidget *options_box;
 	GtkWidget *vertical_box;
-
-	/* Handle the etag stuff */
-	struct e_tag_data *etd = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
 	
+	/* Handle the etag stuff */
+	struct e_tag_data *etd = g_new0(struct e_tag_data, 1);
+
 	c->etag = etd;
 
 	/* Make the convo window */
@@ -97,8 +100,12 @@ void convo_show(struct conversation *c)
 	gtk_widget_realize(c->window);
 
 	/* Make new buttons with labels */
-	send = gtk_button_new_with_label("Send");
+	c->send = gtk_button_new_with_label("Send");
+	c->cancel = gtk_button_new_with_label("Cancel");
 	close = gtk_button_new_with_label("Close");
+
+	/* Set cancel to grayed out at first */
+	gtk_widget_set_sensitive(c->cancel, FALSE);
 
 	/* Make the boxes */
 	button_box = gtk_hbox_new(TRUE, 0);
@@ -127,10 +134,16 @@ void convo_show(struct conversation *c)
 	gtk_widget_set_usize(scroll, 320, 150);
 
 	/* Get the signals connected for the buttons */
-	gtk_signal_connect(GTK_OBJECT(close), "clicked", GTK_SIGNAL_FUNC(convo_close), c);
-	gtk_signal_connect(GTK_OBJECT(send), "clicked", GTK_SIGNAL_FUNC(convo_send), c);
-	gtk_box_pack_start(GTK_BOX(button_box), close, TRUE, TRUE, 30);
-	gtk_box_pack_start(GTK_BOX(button_box), send, TRUE, TRUE, 30);
+	gtk_signal_connect(GTK_OBJECT(close), "clicked",
+			   GTK_SIGNAL_FUNC(convo_close), c);
+	gtk_signal_connect(GTK_OBJECT(c->cancel), "clicked",
+			   GTK_SIGNAL_FUNC(convo_cancel), c);
+	gtk_signal_connect(GTK_OBJECT(c->send), "clicked",
+			   GTK_SIGNAL_FUNC(convo_send), c);
+
+	gtk_box_pack_start(GTK_BOX(button_box), close, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(button_box), c->cancel, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(button_box), c->send, TRUE, TRUE, 5);
 
 	/* Take care of the rest of the widgets */
 	gtk_box_pack_start(GTK_BOX(vertical_box), scroll, TRUE, TRUE, 5);
@@ -156,7 +169,7 @@ void convo_show(struct conversation *c)
 			   FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(options_box), c->spoof_uin,
 			   FALSE, FALSE, 5);
-
+	
 	/* Now pack the options_box */
 	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
 
@@ -196,6 +209,8 @@ void convo_show(struct conversation *c)
 
 	/* Progress of message */
 	c->progress = gtk_statusbar_new();
+	gtk_signal_connect(GTK_OBJECT(c->progress), "text-pushed",
+			   GTK_SIGNAL_FUNC(verify_convo_send), c);
 
 	/* Pack it */
 	gtk_box_pack_start(GTK_BOX(vertical_box), c->progress, FALSE, FALSE, 5);
@@ -231,6 +246,10 @@ void spoof_button_callback(GtkWidget *widget, struct conversation *c)
 
 void convo_send(GtkWidget *widget, struct conversation *c)
 {
+	/* Set the 2 button widgets */
+	gtk_widget_set_sensitive(c->send, FALSE);
+	gtk_widget_set_sensitive(c->cancel, TRUE);
+
 	gchar *buf;
 	gchar *buf2;
 	gboolean urgent = FALSE;
@@ -296,6 +315,36 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	/* Take care of the etd buffer and add it to the slist */
 	c->etag->buf = c->prog_buf;
 	catcher = g_slist_append(catcher, c->etag);
+}
+
+void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
+		       struct conversation *c)
+{
+	gchar temp[50];
+	strcpy(temp, text);
+	g_strreverse(temp);
+
+	if(strncmp(temp, "en", 2) == 0)
+		return;
+
+	else
+	{
+		gtk_widget_set_sensitive(c->send, TRUE);
+		gtk_widget_set_sensitive(c->cancel, FALSE);
+	}
+}
+
+void convo_cancel(GtkWidget *widget, struct conversation *c)
+{
+	/* Set the buttons sensitivity accordingly */
+	gtk_widget_set_sensitive(c->send, TRUE);
+	gtk_widget_set_sensitive(c->cancel, FALSE);
+
+	/* Actually cancel this event */
+	icq_daemon->CancelEvent(c->etag->e_tag);
+
+	/* Remove the event from the slist */
+	catcher = g_slist_remove(catcher, c->etag);
 }
 
 void convo_recv(gulong uin)

@@ -46,6 +46,8 @@ struct conversation
 	GtkWidget *window;
 	GtkWidget *entry;
 	GtkWidget *text;
+	GtkWidget *send;
+	GtkWidget *cancel;
 	GtkWidget *send_server;
 	GtkWidget *send_normal;
 	GtkWidget *send_urgent;
@@ -64,6 +66,8 @@ struct send_url
 	GtkWidget *window;
 	GtkWidget *entry_u;
 	GtkWidget *entry_d;
+	GtkWidget *send;
+	GtkWidget *cancel;
 	GtkWidget *send_server;
 	GtkWidget *send_normal;
 	GtkWidget *send_urgent;
@@ -103,6 +107,8 @@ struct info_user
 	GtkWidget *co_city;
 	GtkWidget *co_state;
 	GtkWidget *about;
+	GtkWidget *update;
+	GtkWidget *cancel;
 	ICQUser *user;
 	struct e_tag_data *etag;
 };
@@ -230,6 +236,11 @@ struct e_tag_data
 	CICQEventTag *e_tag;
 };
 
+typedef struct
+{
+	GdkPixmap *pm;
+	GdkBitmap *bm;
+} status_icon;
 
 /******************* Global Variables ******************/
 
@@ -238,10 +249,7 @@ extern GSList *uaw_list;
 
 /* Globals in contact_list.cpp */
 extern GdkColor *red, *green, *blue;
-extern GdkBitmap *bm;
-extern GtkStyle *style;
-extern GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
-
+extern status_icon *online, *away, *na, *dnd, *occ, *offline, *message;
 
 /* Globals in convo.cpp */
 extern GSList *cnv;
@@ -320,6 +328,9 @@ extern struct conversation *convo_new(ICQUser *, gboolean);
 extern struct conversation *convo_find(unsigned long);
 extern void convo_show(struct conversation *);
 extern void convo_send(GtkWidget *, struct conversation *);
+extern void verify_convo_send(GtkWidget *, guint, gchar *,
+			      struct conversation *);
+extern void convo_cancel(GtkWidget *, struct conversation *);
 extern void convo_recv(gulong);
 extern void spoof_button_callback(GtkWidget *, struct conversation *);
 extern gboolean convo_close(GtkWidget *, struct conversation *);
@@ -328,6 +339,7 @@ extern gboolean convo_close(GtkWidget *, struct conversation *);
 /* Functions in extras.cpp */
 extern void do_colors();
 extern void do_pixmaps();
+extern struct status_icon *make_pixmap(struct status_icon *, gchar **);
 extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void owner_function(ICQEvent *);
 extern void user_function(ICQEvent *);
@@ -436,6 +448,8 @@ extern void system_status_click(GtkWidget *, GdkEventButton *, gpointer);
 extern void list_info_user(GtkWidget *, ICQUser *);
 extern gboolean user_info_close(GtkWidget *, struct info_user *);
 extern void update_user_info(GtkWidget *, struct info_user *);
+extern void cancel_user_info(GtkWidget *, struct info_user *);
+extern void verify_user_info(GtkWidget *, guint, gchar *,  struct info_user *);
 extern struct info_user *iu_new(ICQUser *);
 extern struct info_user *iu_find(unsigned long);
 extern void do_entry(GtkWidget *&, GtkWidget *&, const gchar *, const gchar *);
@@ -446,7 +460,9 @@ extern void pack_hbox(GtkWidget *&, GtkWidget *, GtkWidget *);
 extern void list_start_convo(GtkWidget *, ICQUser *);
 extern void list_send_url(GtkWidget *, ICQUser *);
 extern void url_send(GtkWidget *, struct send_url *);
+extern void url_cancel(GtkWidget *, struct send_url *);
 extern void url_close(GtkWidget *, struct send_url *);
+extern void url_verified_close(GtkWidget *, guint, gchar*, struct send_url *);
 extern void url_spoof_button_callback(GtkWidget *, struct send_url *);
 extern void list_delete_user(GtkWidget *, ICQUser *);
 extern void delete_user_callback(GtkWidget *, struct delete_user *);

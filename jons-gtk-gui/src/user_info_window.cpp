@@ -1,3 +1,23 @@
+/*
+ * Licq GTK GUI Plugin
+ *
+ * Copyright (C) 2000, Jon Keating <jonkeating@norcom2000.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 #include "licq_gtk.h"
 
 #include "licq_user.h"
@@ -14,7 +34,11 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	struct info_user *iu = iu_find(user->Uin());
 
 	if(iu != NULL)
+	{
+		gdk_window_show(iu->window->window);
+		gdk_window_raise(iu->window->window);
 		return;
+	}
 
 	iu = iu_new(user);
 
@@ -28,7 +52,6 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	GtkWidget *more_box;
 	GtkWidget *work_box;
 	GtkWidget *about_box;
-	GtkWidget *update;
 	GtkWidget *close;
 	GtkWidget *notebook;
 	GtkWidget *statusbar;
@@ -40,7 +63,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gchar buf[32];
 	
 	/* Take care of the e_tag_data stuff */
-	iu->etag = (struct e_tag_data *)g_new0(struct e_tag_data, 1);
+	iu->etag = g_new0(struct e_tag_data, 1);
 
 	iu->user = user;
 
@@ -363,27 +386,35 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_box, label);
 
 	/* The buttons */
-	update = gtk_button_new_with_label("Update");
+	iu->update = gtk_button_new_with_label("Update");
+	iu->cancel = gtk_button_new_with_label("Cancel");
 	close = gtk_button_new_with_label("Close");
+
+	gtk_widget_set_sensitive(iu->cancel, FALSE);
 
 	/* Add them a h_box */
 	h_box = gtk_hbox_new(FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), update, TRUE, TRUE, 35);
-	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 35);
+	gtk_box_pack_start(GTK_BOX(h_box), iu->update, TRUE, TRUE, 30);
+	gtk_box_pack_start(GTK_BOX(h_box), iu->cancel, TRUE, TRUE, 30);
+	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 30);
 
 	/* Connect the signals of the buttons */
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
 			   GTK_SIGNAL_FUNC(user_info_close), iu);
 	gtk_signal_connect(GTK_OBJECT(iu->window), "destroy",
 			   GTK_SIGNAL_FUNC(user_info_close), iu);
-	gtk_signal_connect(GTK_OBJECT(update), "clicked",
+	gtk_signal_connect(GTK_OBJECT(iu->update), "clicked",
 			   GTK_SIGNAL_FUNC(update_user_info), iu);
+	gtk_signal_connect(GTK_OBJECT(iu->cancel), "clicked",
+			   GTK_SIGNAL_FUNC(cancel_user_info), iu);
 
 	gtk_box_pack_start(GTK_BOX(v_box), notebook, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* The status bar */
 	statusbar = gtk_statusbar_new();
+	gtk_signal_connect(GTK_OBJECT(statusbar), "text-pushed",
+			   GTK_SIGNAL_FUNC(verify_user_info), iu);
 	gtk_box_pack_start(GTK_BOX(v_box), statusbar, FALSE, FALSE, 5);
 
 	/* e_tag_data stuff */
@@ -405,6 +436,10 @@ gboolean user_info_close(GtkWidget *widget, struct info_user *iu)
 
 void update_user_info(GtkWidget *widget, struct info_user *iu)
 {
+	/* Set the buttons accordingly */
+	gtk_widget_set_sensitive(iu->update, FALSE);
+	gtk_widget_set_sensitive(iu->cancel, TRUE);
+
 	guint id =
 	    gtk_statusbar_get_context_id(GTK_STATUSBAR(iu->etag->statusbar), "sta");
 	gtk_statusbar_pop(GTK_STATUSBAR(iu->etag->statusbar), id);
@@ -417,11 +452,41 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 	catcher = g_slist_append(catcher, iu->etag);
 }
 
+void cancel_user_info(GtkWidget *widget, struct info_user *iu)
+{
+	/* Take care of the buttons */
+	gtk_widget_set_sensitive(iu->update, TRUE);
+	gtk_widget_set_sensitive(iu->cancel, FALSE);
+
+	/* Actually cancel the event */
+	icq_daemon->CancelEvent(iu->etag->e_tag);
+
+	/* Remove the etag from the catch singly linked list */
+	catcher = g_slist_remove(catcher, iu->etag);
+}
+
+void verify_user_info(GtkWidget *widget, guint id, gchar *text,
+		      struct info_user *iu)
+{
+	gchar temp[25];
+	strcpy(temp, text);
+	g_strreverse(temp);
+
+	if(strncmp(temp, "en", 2) == 0)
+		return;
+
+	else
+	{
+		gtk_widget_set_sensitive(iu->update, TRUE);
+		gtk_widget_set_sensitive(iu->cancel, FALSE);
+	}
+}
+
 struct info_user *iu_new(ICQUser *u)
 {
 	struct info_user *iu;
 
-	iu = (struct info_user *)g_new0(struct info_user, 1);
+	iu = g_new0(struct info_user, 1);
 
 	iu->user = u;
 
