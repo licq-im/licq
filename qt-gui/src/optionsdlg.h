@@ -68,9 +68,9 @@ protected:
    // misc tab
    QWidget* new_misc_options();
    QGroupBox *boxParanoia, *boxExtensions;
-   QLabel *lblUrlViewer, *lblTrans;
+   QLabel *lblUrlViewer, *lblTrans, *lblLocale;
    QLineEdit *edtUrlViewer;
-   QComboBox *cmbTrans;
+   QComboBox *cmbTrans, *cmbLocale;
    QLabel *lblTerminal;
    QLineEdit *edtTerminal;
    QCheckBox *chkWebPresence, *chkHideIp, *chkIgnoreNewUsers,

@@ -428,16 +428,22 @@ QWidget* OptionsDlg::new_appearance_options()
                                    "online notify and visible list"));
   l->addWidget(boxFont);
 
-  boxLocale = new QGroupBox(1, Horizontal, tr("Locale"), w);
+  boxLocale = new QGroupBox(2, Horizontal, tr("Locale"), w);
 
   lblTrans = new QLabel(tr("Translation:"), boxLocale);
   QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
                               "translating characters."));
+  lblLocale = new QLabel(tr("Locale:"), boxLocale);
+  QWhatsThis::add(lblLocale, tr("Sets which locale should be used for "
+                              "all messages."));
+  
   cmbTrans = new QComboBox(false, boxLocale);
-
+  cmbLocale = new QComboBox(false, boxLocale);
+  
   QString szTransFilesDir;
-  szTransFilesDir.sprintf("%sqt-gui/locale", SHARE_DIR);
-  QDir dTrans(szTransFilesDir, "*.qm", QDir::Name, QDir::Files | QDir::Readable);
+  szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
+  QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
+
   if (!dTrans.count())
   {
     gLog.Error("%sError reading translation directory %s.\n",
@@ -447,10 +453,28 @@ QWidget* OptionsDlg::new_appearance_options()
   }
   else
   {
-    cmbTrans->insertItem(tr("Auto"));
+    cmbTrans->insertItem(tr("none"));
     cmbTrans->insertStringList(dTrans.entryList());
   }
+
+  QString szLocaleFilesDir;
+  szLocaleFilesDir.sprintf("%sqt-gui/locale", SHARE_DIR);
+  QDir dLocale(szLocaleFilesDir, "*.qm", QDir::Name, QDir::Files | QDir::Readable);
+
+  if (!dLocale.count())
+  {
+    gLog.Error("%sError reading locale directory %s.\n",
+               L_ERRORxSTR, szLocaleFilesDir.latin1());
+    cmbLocale->insertItem(tr("ERROR"));
+    cmbLocale->setEnabled(false);
+  }
+  else
+  {
+    cmbLocale->insertItem(tr("Auto"));
+    cmbLocale->insertStringList(dLocale.entryList());
+  }
   l->addWidget(boxLocale);
+
 
   return w;
 }
