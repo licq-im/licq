@@ -147,7 +147,7 @@ bool CUserManager::Load()
   licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
   if(m_nDefaultGroup >=  1024)
       m_nDefaultGroup = 0;
-  licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
+  //licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
   licqConf.CloseFile();
 
   // Load users from users.conf
@@ -281,7 +281,7 @@ void CUserManager::RemoveGroup(unsigned short n)
   pUser->SetInGroup(GROUPS_USER, j, false);
   FOR_EACH_USER_END;
   if (m_nDefaultGroup >= n) m_nDefaultGroup--;
-  if (m_nNewUserGroup >= n) m_nNewUserGroup--;
+  //if (m_nNewUserGroup >= n) m_nNewUserGroup--;
   SaveGroups();
   UnlockGroupList();
 }
@@ -307,8 +307,8 @@ void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
   m_vszGroups[g2 - 1] = g;
   if (m_nDefaultGroup == g1) m_nDefaultGroup = g2;
   else if (m_nDefaultGroup == g2) m_nDefaultGroup = g1;
-  if (m_nNewUserGroup == g1) m_nNewUserGroup = g2;
-  else if (m_nNewUserGroup == g2) m_nNewUserGroup = g1;
+  //if (m_nNewUserGroup == g1) m_nNewUserGroup = g2;
+  //else if (m_nNewUserGroup == g2) m_nNewUserGroup = g1;
   SaveGroups();
   UnlockGroupList();
 
@@ -366,7 +366,7 @@ void CUserManager::SaveGroups()
   //UnlockGroupList();
 
   licqConf.WriteNum("DefaultGroup", m_nDefaultGroup);
-  licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
+  //licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
   licqConf.FlushFile();
   licqConf.CloseFile();
 }
@@ -854,7 +854,7 @@ void ICQUser::LoadLicqInfo()
   m_nIp = inet_aton(szTemp, &in);
   if (m_nIp != 0) m_nIp = in.s_addr;
   m_fConf.ReadNum("Port", m_nPort, 0);
-  m_fConf.ReadBool("NewUser", m_bNewUser, false);
+  //m_fConf.ReadBool("NewUser", m_bNewUser, false);
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);
   m_fConf.ReadNum("LastOnline", nLastOnline, 0);
   m_nLastOnline = nLastOnline;
@@ -1039,8 +1039,10 @@ void ICQUser::SetDefaults()
   sprintf(szTemp, "%ld", Uin());
   SetAlias(szTemp);
   SetHistoryFile("default");
-  SetGroups(GROUPS_SYSTEM, 0);
-  SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
+  //SetGroups(GROUPS_SYSTEM, 0);
+  //SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
+  SetGroups(GROUPS_USER, 0);
+  SetGroups(GROUPS_SYSTEM, GROUP_NEW_USERS);
   SetAuthorization(false);
   SetNewUser(true);
 
@@ -1560,7 +1562,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
    m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
    m_fConf.WriteNum("Port", Port());
-   m_fConf.WriteBool("NewUser", NewUser());
+   //m_fConf.WriteBool("NewUser", NewUser());
    m_fConf.WriteNum("NewMessages", NewMessages());
    m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);

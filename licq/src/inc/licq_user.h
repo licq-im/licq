@@ -71,6 +71,7 @@ const unsigned long GROUP_ONLINE_NOTIFY   = 1;
 const unsigned long GROUP_VISIBLE_LIST    = 2;
 const unsigned long GROUP_INVISIBLE_LIST  = 3;
 const unsigned long GROUP_IGNORE_LIST     = 4;
+const unsigned long GROUP_NEW_USERS       = 5;
 
 const unsigned short ACCEPT_IN_AWAY     = 0x0001;
 const unsigned short ACCEPT_IN_NA       = 0x0002;
@@ -147,7 +148,6 @@ public:
 
   // Licq Info
   char *AutoResponse()                  { return m_szAutoResponse; }
-  bool NewUser()                        { return m_bNewUser; }
   bool SendRealIp()			{ return m_bSendRealIp; }
   bool SendServer()                     { return m_bSendServer; }
   unsigned short SendLevel()            { return m_nSendLevel; }
@@ -221,7 +221,6 @@ public:
   void SetSendServer(bool s)          { m_bSendServer = s; }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }
-  void SetNewUser(bool s)             { m_bNewUser = s; SaveLicqInfo(); }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
@@ -283,10 +282,12 @@ public:
   bool VisibleList()   { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
   bool OnlineNotify()  { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
   bool IgnoreList()    { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
+  bool NewUser()       { return GetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS); }
   void SetInvisibleList(bool s)  { SetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST, s); }
   void SetVisibleList(bool s)    { SetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST, s); }
   void SetOnlineNotify(bool s)   { SetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY, s); }
   void SetIgnoreList(bool s)     { SetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST, s); }
+  void SetNewUser(bool s)        { SetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS, s); }
 
   // Time
   time_t LocalTime();
@@ -349,8 +350,7 @@ protected:
   char m_nMode;
   char *m_szAutoResponse;
   char *m_szCustomAutoResponse;
-  bool m_bNewUser,
-       m_bOnlineNotify,
+  bool m_bOnlineNotify,
        m_bSendRealIp,
        m_bSendServer,
        m_bEnableSave,
@@ -504,8 +504,8 @@ public:
   unsigned short NumUsers();
   unsigned short DefaultGroup()  { return m_nDefaultGroup; }
   void SetDefaultGroup(unsigned short n)  { m_nDefaultGroup = n; SaveGroups(); }
-  unsigned short NewUserGroup()  { return m_nNewUserGroup; }
-  void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
+  //unsigned short NewUserGroup()  { return m_nNewUserGroup; }
+  //void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
   pthread_rdwr_t mutex_grouplist, mutex_userlist;
@@ -514,7 +514,7 @@ protected:
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
-  unsigned short m_nDefaultGroup, m_nNewUserGroup,
+  unsigned short m_nDefaultGroup, //m_nNewUserGroup,
                  m_nUserListLockType, m_nGroupListLockType;
   bool m_bAllowSave;
 
