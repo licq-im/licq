@@ -149,7 +149,8 @@ public:
         \param nPPID The protocol ID.
         \param bActive The state of the typing notification. TRUE if active.
   */
-  void ProtoTypingNotification(const char *szId, unsigned long nPPID, bool Active);
+  void ProtoTypingNotification(const char *szId, unsigned long nPPID,
+                               bool Active, int nSocket = -1);
 
   //! Send a message to a user on this protocol.
   /*!
@@ -164,7 +165,8 @@ public:
   */
   unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
      const char *szMessage, bool bOnline, unsigned short nLevel,
-     bool bMultipleRecipients = false, CICQColor *pColor = NULL);
+     bool bMultipleRecipients = false, CICQColor *pColor = NULL,
+     int nSocket = -1);
 
   //! Send a URL to a user on this protocol
   /*!
@@ -399,10 +401,10 @@ public:
   char *ProtoPluginName(unsigned long);
 
   void PluginUIViewEvent(const char *szId, unsigned long nPPID ) {
-    PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, szId, nPPID, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, szId, nPPID, 0));
   }
   void PluginUIMessage(const char *szId, unsigned long nPPID) {
-    PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE, 0, szId, nPPID, 0,0));
+    PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE, 0, szId, nPPID, 0));
   }
 
   void UpdateAllUsers();

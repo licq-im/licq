@@ -711,7 +711,7 @@ void CMessageViewWidget::addMsg(ICQEvent * _e)
     addMsg( _e->UserEvent() );
 }
 
-void CMessageViewWidget::addMsg(CUserEvent* e )
+void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long _nPPID)
 {
   QDateTime date;
   date.setTime_t(e->Time());
@@ -723,8 +723,9 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 
   {
 
-    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-    if (u != NULL)
+    ICQUser *u = _szId ? gUserManager.FetchUser(_szId, _nPPID, LOCK_R) :
+                         gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u)
     {
       codec = UserCodec::codecForICQUser(u);
       if (e->Direction() == D_RECEIVER)
@@ -737,9 +738,8 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
           break;
         }
       }
-
-      gUserManager.DropUser(u);
     }
+    gUserManager.DropUser(u);
   }
 
   if (e->Direction() != D_RECEIVER)

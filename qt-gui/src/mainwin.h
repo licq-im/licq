@@ -103,7 +103,7 @@ public:
   virtual ~CMainWindow();
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
-  UserEventCommon *callFunction(int fcn, const char *, unsigned long);
+  UserEventCommon *callFunction(int fcn, const char *, unsigned long, int = -1);
   bool RemoveUserFromList(const char *, unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType, unsigned long, const char *,
     unsigned long, QWidget *);
@@ -317,6 +317,9 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
+  void slot_socket(const char *, unsigned long, int);
+  void slot_convoJoin(const char *, unsigned long, int);
+  void slot_convoLeave(const char *, unsigned long, int);
   //TODO
   //void callUserFunction(const char *, unsigned long);
   void slot_userfinished(const char *, unsigned long);

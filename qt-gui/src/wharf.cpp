@@ -698,7 +698,7 @@ bool IconManager_KDEStyle::x11Event(XEvent *ev)
   {
     XWindowAttributes a;
     XGetWindowAttributes(qt_xdisplay(), ev->xreparent.parent, &a);
-    move((a.width - width()) / 2, (a.height - height()) / 2);
+  //  move((a.width - width()) / 2, (a.height - height()) / 2);
   }
   return QWidget::x11Event(ev);
 }

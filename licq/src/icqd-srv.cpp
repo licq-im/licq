@@ -1715,12 +1715,12 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 
 //-----ProtoTypingNotification-------------------------------------------------
 void CICQDaemon::ProtoTypingNotification(const char *_szId,
-  unsigned long _nPPID, bool _bActive)
+  unsigned long _nPPID, bool _bActive, int nSocket)
 {
   if (_nPPID == LICQ_PPID)
     icqTypingNotification(_szId, _bActive);
   else
-    PushProtoSignal(new CTypingNotificationSignal(_szId, _bActive), _nPPID);
+    PushProtoSignal(new CTypingNotificationSignal(_szId, _bActive, nSocket), _nPPID);
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

@@ -85,11 +85,11 @@ private:
   void ProcessServerPacket(CMSNBuffer &);
   void ProcessNexusPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
-  void ProcessSBPacket(char *, CMSNBuffer *);
+  void ProcessSBPacket(char *, CMSNBuffer *, int);
   
   // Network functions
   void SendPacket(CMSNPacket *);
-  void Send_SB_Packet(string &, CMSNPacket *, bool = true);
+  void Send_SB_Packet(string &, CMSNPacket *, int = -1, bool = true);
   void MSNLogon(const char *, int);
   void MSNGetServer();
   void MSNAuthenticateRedirect(string &, string &);
@@ -97,8 +97,8 @@ private:
   bool MSNSBConnectStart(string &, string &);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
-  void MSNSendMessage(char *, char *, pthread_t);
-  void MSNSendTypingNotification(char *);
+  void MSNSendMessage(char *, char *, pthread_t, int);
+  void MSNSendTypingNotification(char *, int);
   void MSNChangeStatus(unsigned long);
   void MSNLogoff();
   void MSNAddUser(char *);

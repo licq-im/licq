@@ -20,10 +20,19 @@
 #define USEREVENTDLG_H
 
 #include <qwidget.h>
+#include <functional>
 #include <list>
+#include <string>
+#include <utility>
+
+using std::binary_function;
+using std::list;
+using std::pair;
+using std::string;
 
 #include "licq_color.h"
 #include "licq_filetransfer.h"
+#include "licq_message.h"
 
 class QTabWidget;
 class QBoxLayout;
@@ -56,6 +65,17 @@ class CMessageViewWidget;
 class MLView;
 
 /* ----------------------------------------------------------------------------- */
+typedef pair<CUserEvent *, char *> MessageIter;
+
+struct OrderMessages : public binary_function<const MessageIter &, const MessageIter &, bool>
+{
+  bool operator()(const MessageIter& m1, const MessageIter& m2)
+  {
+    return (m1.first->Time() < m2.first->Time());
+  }
+};
+
+/* ----------------------------------------------------------------------------- */
 class UserEventTabDlg : public QWidget
 {
   Q_OBJECT
@@ -69,8 +89,9 @@ public:
   void replaceTab(QWidget *oldTab, UserEventCommon *newTab);
   bool tabIsSelected(QWidget *tab);
   bool tabExists(QWidget *tab);
+  void updateConvoLabel(UserEventCommon *tab);
   void updateTabLabel(ICQUser *u);
-  void gotTyping(ICQUser *u);
+  void gotTyping(ICQUser *u, int);
 
 private:
   CETabWidget *tabw;
@@ -98,10 +119,14 @@ public:
 
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-
+  int ConvoId() { return m_nConvoId; }
+  list<string>& ConvoUsers() { return m_lUsers; }
+  void SetConvoId(int n)  { m_nConvoId = n; }
+  
+  bool FindUserInConvo(char *);
   void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
   void gotTyping(unsigned short);
- 
+   
   enum type {
   	UC_MESSAGE,
   	UC_URL,
@@ -114,6 +139,7 @@ protected:
   QTextCodec *codec;
   bool m_bOwner;
   char *m_szId;
+  list<string> m_lUsers;
   unsigned long m_nPPID;
   QBoxLayout* top_lay, *top_hlay;
   CICQDaemon *server;
@@ -129,12 +155,13 @@ protected:
   QTimer *tmrTime, *tmrTyping;
   bool m_bDeleteUser;
   QString m_sBaseTitle, m_sProgressMsg;
-
+  int m_nConvoId;
+    
   // ID of the higest event we've processed. Helps determine
   // which events we already processed in the ctor.
   int m_highestEventId;
 
-  virtual void UserUpdated(CICQSignal *, ICQUser *) = 0;
+  virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0) = 0;
   void SetGeneralInfo(ICQUser *);
 
 protected slots:
@@ -183,7 +210,7 @@ protected:
   void generateReply();
   void sendMsg(QString txt);
   void updateNextButton();
-  virtual void UserUpdated(CICQSignal *, ICQUser *);
+  virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0);
 
 protected slots:
   void slot_close();
@@ -214,11 +241,14 @@ public:
   virtual ~UserSendCommon();
 
   void setText(const QString& txt);
+  void convoJoin(const char *);
+  void convoLeave(const char *);
+  
 #if QT_VERSION >= 300
   virtual void windowActivationChange(bool oldActive);
 #endif
   int clearDelay;
-
+  
 signals:
   void autoCloseNotify();
   void updateUser(CICQSignal*);
@@ -239,7 +269,7 @@ protected:
   QTimer *tmrSendTyping;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
-  virtual void UserUpdated(CICQSignal *, ICQUser *);
+  virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0);
   virtual bool sendDone(ICQEvent *) = 0;
   bool checkSecure();
 

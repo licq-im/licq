@@ -3433,7 +3433,7 @@ void ICQUser::EventPush(CUserEvent *e)
   SetLastReceivedEvent();
   
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-    USER_EVENTS, m_szId, m_nPPID, e->Id()));
+    USER_EVENTS, m_szId, m_nPPID, e->Id(), e->Socket()));
 }
 
 

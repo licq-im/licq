@@ -94,13 +94,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   if (no) return;
 
   pthread_mutex_lock(&mutex);
-
-  switch (m_nCommandType)
-  {
-  case ON_EVENT_IGNORE:
-    break;
-
-  case ON_EVENT_RUN:
+  if (m_nCommandType == ON_EVENT_RUN)
   {
     char *szParam = m_aszParameters[_nEvent];
     char *szFullParam;
@@ -109,30 +103,13 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
     else
       szFullParam = strdup(szParam);
 
-    if (!strlen(szFullParam)) break;
-
-    char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
-    sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
-    free(szFullParam);
-    system(szCmd);
-    break;
-  }
-  case ON_EVENT_BY_PLUGIN:
-  {
-    if (gLicqDaemon != NULL)
+    if (strlen(szFullParam))
     {
-      if (u != NULL)
-      {
-        char *szParam = m_aszParameters[_nEvent];
-        char *szFullParam;
-
-        szFullParam = u->usprintf(szParam);
-        gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_ONEVENT,
-         _nEvent, u->IdString(), u->PPID(), 0, szFullParam));
-        free(szFullParam);
-      }
+      char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
+      sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
+      free(szFullParam);
+      system(szCmd);
     }
-  }
   }
   pthread_mutex_unlock(&mutex);
 }

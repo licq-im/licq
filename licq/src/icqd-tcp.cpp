@@ -39,7 +39,7 @@
 //-----ICQ::sendMessage--------------------------------------------------------
 unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPPID,
    const char *m, bool online, unsigned short nLevel, bool bMultipleRecipients,
-   CICQColor *pColor)
+   CICQColor *pColor, int nSocket)
 {
   unsigned long nRet = 0;
 
@@ -47,7 +47,7 @@ unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPP
   if (_nPPID == LICQ_PPID)
     nRet = icqSendMessage(_szId, m, online, nLevel, bMultipleRecipients, pColor);
   else
-    PushProtoSignal(new CSendMessageSignal(_szId, m), _nPPID);
+    PushProtoSignal(new CSendMessageSignal(_szId, m, nSocket), _nPPID);
 
   
   return nRet;

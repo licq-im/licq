@@ -695,7 +695,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_protocolPlugin(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_eventTag(const char *, unsigned long, unsigned long)),
             this, SLOT(slot_eventTag(const char *, unsigned long, unsigned long)));
-
+   connect (licqSigMan, SIGNAL(signal_socket(const char *, unsigned long, int)),
+            this, SLOT(slot_socket(const char *, unsigned long, int)));
+   connect (licqSigMan, SIGNAL(signal_convoJoin(const char *, unsigned long, int)),
+            this, SLOT(slot_convoJoin(const char *, unsigned long, int)));
+   connect (licqSigMan, SIGNAL(signal_convoLeave(const char *, unsigned long, int)),
+            this, SLOT(slot_convoLeave(const char *, unsigned long, int)));
+                        
    m_bInMiniMode = false;
    updateStatus();
    updateEvents();
@@ -1393,9 +1399,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             gUserManager.DropUser(u);
 
             if (bCallUserView)
-              callFunction(mnuUserView, szId, nPPID);
+              callFunction(mnuUserView, szId, nPPID, sig->Argument2());
             if (bCallSendMsg)
-              callFunction(mnuUserSendMsg, szId, nPPID);
+              callFunction(mnuUserSendMsg, szId, nPPID, sig->Argument2());
           }
           else
             gUserManager.DropUser(u);
@@ -1542,13 +1548,14 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       if (m_bTabbedChatting && userEventTabDlg)
       {
         if (sig->SubSignal() == USER_TYPING)
-          userEventTabDlg->gotTyping(u);
+          userEventTabDlg->gotTyping(u, sig->Argument());
         userEventTabDlg->updateTabLabel(u);
       }
       else
 #endif
       if (sig->SubSignal() == USER_TYPING)
       {
+        // First, update the window if available
 #if QT_VERSION < 300
         QListIterator<UserSendCommon> it(licqUserSend );
 #else
@@ -1557,12 +1564,26 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         UserEventCommon *e = 0;
 
         for (; it.current(); ++it)
-          if ((*it)->Id() && strcmp((*it)->Id(), szId) == 0 &&
-             (*it)->PPID() == nPPID)
+        {
+          if ((*it)->PPID() == MSN_PPID)
           {
+            // For protocols that use the convo id
+            if ((*it)->ConvoId() == sig->Argument() && (*it)->PPID() == nPPID)
+            {
+              e = static_cast<UserSendCommon *>(*it);
+              e->gotTyping(u->GetTyping());
+            }
+          }
+          else
+          {
+            // For protocols that don't use a convo id
+            if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+            {
               e = static_cast<UserSendCommon*>(*it);
               e->gotTyping(u->GetTyping());
+            }
           }
+        }
       }
 
       gUserManager.DropUser(u);
@@ -1698,6 +1719,66 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
     }
 
   }  // Switch
+}
+
+void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, int nConvoId)
+{
+  // Add the user to an ongoing conversation
+#if QT_VERSION < 300
+  QListIterator<UserSendCommon> it(licqUserSend);
+#else
+  QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+  for (; it.current(); ++it)
+  {
+    if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+    {
+      if ((*it)->ConvoId() == -1)
+      {
+        (*it)->SetConvoId(nConvoId);
+        break;
+      }
+    }
+  }
+}
+
+void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, int nConvoId)
+{
+  // Add the user to an ongoing conversation
+#if QT_VERSION < 300
+  QListIterator<UserSendCommon> it(licqUserSend);
+#else
+  QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+  for (; it.current(); ++it)
+  {
+    if ((*it)->ConvoId() == nConvoId)
+    {
+      (*it)->convoJoin(szId);
+      return;
+    }
+  }
+  
+  // No conversation shown, so make one
+  
+}
+
+void CMainWindow::slot_convoLeave(const char *szId, unsigned long nPPID, int nConvoId)
+{
+  // Add the user to an ongoing conversation
+#if QT_VERSION < 300
+  QListIterator<UserSendCommon> it(licqUserSend);
+#else
+  QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+  for (; it.current(); ++it)
+  {
+    if ((*it)->ConvoId() == nConvoId)
+    {
+      (*it)->convoLeave(szId);
+      return;
+    }
+  }
 }
 
 //-----CMainWindow::updateUserWin-----------------------------------------------
@@ -2143,6 +2224,9 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
 
   if (u == 0) return;
 
+  // For multi user conversations (i.e. in MSN)
+  int nConvoId = -1;
+  
   // set default function to read or send depending on whether or not
   // there are new messages
   int fcn = (u->NewMessages() == 0 ? mnuUserSendMsg : mnuUserView);
@@ -2153,6 +2237,7 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
     for (unsigned short i = 0; i < u->NewMessages(); i++)
       if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
       {
+        nConvoId = u->EventPeek(i)->Socket();
         fcn = mnuUserSendMsg;
         break;
       }
@@ -2191,7 +2276,7 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
     }
   }
 
-  callFunction(fcn, _szId, _nPPID);
+  callFunction(fcn, _szId, _nPPID, nConvoId);
 }
 
 void CMainWindow::callDefaultFunction(QListViewItem *i)
@@ -2448,7 +2533,7 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
 
 //-----CMainWindow::callICQFunction-------------------------------------------
 UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
-                                           unsigned long nPPID)
+                                           unsigned long nPPID, int nConvoId)
 {
   if (szId == 0 || nPPID == 0) return NULL;
 
@@ -2496,32 +2581,38 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
         if (!m_bMsgChatView) break;
 
         for (; it.current(); ++it)
-          if ((*it)->Id() && strcmp((*it)->Id(), szId) == 0 &&
-             (*it)->PPID() == nPPID)
+          // Protocols (MSN only atm) that support convo ids are differentiated from
+          // the icq protocol because the convo id will be the server socket.. which does
+          // not meet the requirement that convo ids must be unique for each conversation.
+          if ( ((nPPID == MSN_PPID && (*it)->PPID() == MSN_PPID) && ((*it)->FindUserInConvo(const_cast<char *>(szId)) ||
+                 ((*it)->ConvoId() == nConvoId && (*it)->ConvoId() != -1))) ||
+               ((*it)->FindUserInConvo(const_cast<char *>(szId)) && (*it)->PPID() == nPPID))
           {
-	      e = static_cast<UserSendCommon*>(*it);
+            e = static_cast<UserSendCommon*>(*it);
+            //if (!e->FindUserInConvo(const_cast<char *>(szId)))
+            //  e->convoJoin(szId);
 #if QT_VERSION >= 300
-	      if (userEventTabDlg && userEventTabDlg->tabExists(e))
-	      {
-          userEventTabDlg->show();
-          userEventTabDlg->selectTab(e);
-          userEventTabDlg->raise();
+            if (userEventTabDlg && userEventTabDlg->tabExists(e))
+            {
+              userEventTabDlg->show();
+              userEventTabDlg->selectTab(e);
+              userEventTabDlg->raise();
 #ifdef USE_KDE
-          KWin::setActiveWindow(userEventTabDlg->winId());
+              KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
-	      }
-	      else
+            }
+            else
 #endif
-	      {
-          e->show();
-          if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
-          {
-            e->raise();
+            {
+              e->show();
+              if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+              {
+                e->raise();
 #ifdef USE_KDE
-            KWin::setActiveWindow(e->winId());
+                KWin::setActiveWindow(e->winId());
 #endif
-          }
-	      }
+              }
+            }
             return e;
           }
     }
@@ -2779,7 +2870,7 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
         if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
         {
           gUserManager.DropUser(u);
-          callFunction(mnuUserSendMsg, szId, nPPID);
+          callFunction(mnuUserSendMsg, szId, nPPID, u->EventPeek(i)->Socket());
           return;
         }
       }

@@ -17,6 +17,7 @@
 class CUserEvent;
 class ICQEvent;
 class CMainWindow;
+class ICQUser;
 
 bool QueryUser(QWidget *, QString, QString, QString, bool bConfirmYes=false, QString szConfirm=NULL, bool bConfirmNo=false, QString szConfirmNo=NULL);
 int QueryUser(QWidget *, QString, QString, QString, QString);
@@ -167,7 +168,7 @@ public:
 		     QWidget* parent=0, const char * name =0);
   virtual ~CMessageViewWidget();
 public slots:
-  virtual void addMsg(CUserEvent *);
+  virtual void addMsg(CUserEvent *, const char * = 0, unsigned long = 0);
   void addMsg(ICQEvent *);
 };
 

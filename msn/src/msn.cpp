@@ -351,7 +351,7 @@ void CMSN::Run()
             
             if (bProcess)
             {
-              ProcessSBPacket(szUser, pBuf->m_pBuf);
+              ProcessSBPacket(szUser, pBuf->m_pBuf, sock->Descriptor());
               RemovePacket(strUser, nCurrent);
               delete pBuf;
             }
@@ -439,14 +439,14 @@ void CMSN::ProcessSignal(CSignal *s)
       CTypingNotificationSignal *sig =
         static_cast<CTypingNotificationSignal *>(s);
       if (sig->Active())
-        MSNSendTypingNotification(sig->Id());
+        MSNSendTypingNotification(sig->Id(), sig->Socket());
       break;
     }
     
     case PROTOxSENDxMSG:
     {
       CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
-      MSNSendMessage(sig->Id(), sig->Message(), sig->Thread());
+      MSNSendMessage(sig->Id(), sig->Message(), sig->Thread(), sig->Socket());
       break;
     }
 

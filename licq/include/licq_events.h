@@ -5,6 +5,9 @@
 #include "licq_constants.h"
 
 #include <stdlib.h>
+#include <vector>
+
+using std::vector;
 
 class CPacket;
 class CICQDaemon;
@@ -315,6 +318,7 @@ friend void *MonitorSockets_tep(void *p);
  *    USER_EVENTS - Indicates that the user has received or deleted an
  *    event (message, url...).  The argument will be the event id of the
  *    added event, or the negative of the event id if an event was deleted.
+ *    The parameter will be the socket that the message was sent over.
  *    If the user checked our auto-response then the argument will be 0.
  *    USER_SECURITY - The users security status changed.  If the arg is
  *    1 the user is now secure, if it's 0, the user is no longer secure.
@@ -354,6 +358,14 @@ const unsigned long SIGNAL_NEWxPROTO_PLUGIN      = 0x00000100;
 //! The UI plugin will use this event tag to keep track of 
 //! all sent events.
 const unsigned long SIGNAL_EVENTxID              = 0x00000200;
+//! A user has joined a conversation. m_nArgument is the socket
+//! of the conversation that the user has joined.
+const unsigned long SIGNAL_CONVOxJOIN            = 0x00000400;
+//! A user has left a conversation. m_nArgument is the socket
+//! of the conversation that the user has left.
+const unsigned long SIGNAL_CONVOxLEAVE           = 0x00000800;
+//! A socket has been set for this user now.
+const unsigned long SIGNAL_SOCKET                = 0x00010000;
 //! Used by a UI plugin to tell the daemon that all signals should be
 //! sent to the UI plugin.
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
@@ -399,9 +411,10 @@ const unsigned long LIST_ALL                     = 3;
 class CICQSignal
 {
 public:
-  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin, int nArgument = 0, char *nParameters = 0);
+  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin,
+             int nArg1 = 0, int nArg2 = 0);
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
-             unsigned long _nPPID, int nArgument = 0, char *nParameters = 0);
+             unsigned long _nPPID, int nArg1 = 0, int nArg2 = 0);
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
 
@@ -414,16 +427,17 @@ public:
   unsigned long Uin() { return m_nUin; }
   char *Id()            { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-  int Argument() { return m_nArgument; }
-  char *Parameters() { return m_szParameters; }
+  int Argument() { return m_nArgument1; }
+  int Argument1() { return m_nArgument1; }
+  int Argument2() { return m_nArgument2; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
-  int m_nArgument;
-  char * m_szParameters;
+  int m_nArgument1,
+      m_nArgument2;
 };
 
 //! Signals that can be sent to protocol plugins.
@@ -459,7 +473,7 @@ enum SIGNAL_TYPE
 class CSignal
 {
 public:
-  CSignal(SIGNAL_TYPE, const char *);
+  CSignal(SIGNAL_TYPE, const char *, int nSocket = -1);
   CSignal(CSignal *);
   virtual ~CSignal();
 
@@ -467,12 +481,15 @@ public:
   SIGNAL_TYPE Type()  { return m_eType; }
   //! The user id that this signal is being used for.
   char *Id()          { return m_szId; }
+  //! The socket to send the event over
+  int Socket()        { return m_nSocket; }
   //! The calling thread.
   pthread_t Thread() { return thread_plugin; }
 
 private:
   char  *m_szId;
   SIGNAL_TYPE m_eType;
+  int m_nSocket;
   pthread_t thread_plugin;
 };
 
@@ -538,11 +555,11 @@ public:
 class CSendMessageSignal : public CSignal
 {
 public:
-  CSendMessageSignal(const char *szId, const char *szMsg);
+  CSendMessageSignal(const char *szId, const char *szMsg, int nSocket = -1);
   virtual ~CSendMessageSignal() { if (m_szMsg) free(m_szMsg); }
   //! The message to be sent
   char *Message() { return m_szMsg; }
-
+  
 private:
   char *m_szMsg;
 };
@@ -550,9 +567,8 @@ private:
 class CTypingNotificationSignal : public CSignal
 {
 public:
-  CTypingNotificationSignal(const char *szId, bool bActive);
+  CTypingNotificationSignal(const char *szId, bool bActive, int nSocket = -1);
   bool Active() { return m_bActive; }
-
 private:
   bool m_bActive;
 };
