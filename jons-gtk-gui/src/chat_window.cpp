@@ -1404,7 +1404,7 @@ void font_dlg_ok(GtkWidget *widget, gpointer _cw)
 
 		g_print("Final: %s\n", cw->l_font_name);
 
-		cw->chatman->ChangeFontFamily(cw->l_font_name);
+		cw->chatman->ChangeFontFamily(cw->l_font_name, ENCODING_DEFAULT, STYLE_DONTCARE);
 	}
 
 	GdkFont *font_tmp = gtk_font_selection_dialog_get_font(
