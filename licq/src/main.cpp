@@ -25,7 +25,7 @@ int main(int argc, char **argv)
    SOCKSinit(argv[0]);
 #endif
 
-  CLicq licq(argc, argv);
-  if (licq.Exception() != EXIT_SUCCESS) return licq.Exception();
+  CLicq licq;
+  if (!licq.Init(argc, argv)) return 1;
   return licq.Main();
 }
