@@ -708,7 +708,7 @@ void CICQDaemon::InitProxy()
 
   if (m_xProxy != NULL)
   {
-    gLog.Info("%sResolving proxy server %s port %d...\n", L_INITxSTR, m_szProxyHost, m_nProxyPort);
+    gLog.Info("%sResolving proxy: %s:%d...\n", L_INITxSTR, m_szProxyHost, m_nProxyPort);
     if (!m_xProxy->SetProxyAddr(m_szProxyHost, m_nProxyPort)) {
       char buf[128];
       
@@ -717,13 +717,15 @@ void CICQDaemon::InitProxy()
       delete m_xProxy;
       m_xProxy = NULL;
     }
+   
+    if (m_xProxy)
+    {
+      if (m_bProxyAuthEnabled)
+        m_xProxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
     
-    if (m_bProxyAuthEnabled)
-      m_xProxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
-    
-    m_xProxy->InitProxy();
+      m_xProxy->InitProxy();
+    }
   }
-
 }
 
 

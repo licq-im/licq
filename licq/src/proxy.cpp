@@ -109,6 +109,9 @@ char *ProxyServer::ErrorStr(char *buf, int buflen)
     case PROXY_ERROR_internal:
       strncpy(buf, "Internal proxy error", buflen);
       break;
+
+    default:
+      strncpy(buf, "Unknown proxy error", buflen);
   }
   
   return buf;
