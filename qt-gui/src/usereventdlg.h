@@ -202,6 +202,9 @@ protected slots:
   void slot_SetForegroundICQColor();
   void slot_SetBackgroundICQColor();
   void trySecure();
+
+private:
+  int tmpWidgetWidth;
 };
 
 

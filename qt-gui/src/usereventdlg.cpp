@@ -87,6 +87,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
   top_hlay = new QHBoxLayout(this, 6);
   top_lay = new QVBoxLayout(top_hlay);
+  top_hlay->setStretchFactor(top_lay, 1);
 
   // initalize codec
   codec = QTextCodec::codecForLocale();
@@ -937,6 +938,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   : UserEventCommon(s, theSigMan, m, _nUin, parent, name)
 {
   grpMR = NULL;
+  tmpWidgetWidth = 0;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1153,26 +1155,49 @@ void UserSendCommon::changeEventType(int id)
 
 
 //-----UserSendCommon::massMessageToggled------------------------------------
+/*! This slot creates/removes a little widget into the usereventdlg
+ *	which enables the user to collect users for mass messaging.
+ */
 void UserSendCommon::massMessageToggled(bool b)
 {
-  if (grpMR == NULL)
-  {
-    grpMR = new QVGroupBox(this);
-    top_hlay->addWidget(grpMR);
+	if (b)
+	{
+		tmpWidgetWidth = width();
+		if (grpMR == NULL)
+		{
+			grpMR = new QVGroupBox(this);
+			top_hlay->addWidget(grpMR);
 
-    (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
-    lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-                                            m_nUin, mainwin, grpMR);
-    lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
-  }
+			(void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
+			lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
+																	m_nUin, mainwin, grpMR);
+			lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
+		}
+		grpMR->show();
+	}
+	else
+	{
+		if (grpMR != NULL)
+		{
+			int grpMRWidth = grpMR->width();
 
-  if (b)
-  {
-    grpMR->show();
-  }
-  else
-  {
-    grpMR->hide();
+			grpMR->hide();
+			grpMR->close(true);
+			grpMR = NULL;
+
+			// resize the widget to it's origin width.
+			// This is a workaroung and not perfect, but resize() does not
+			// work as expected. Maybe we find a better solution for this in future.
+			QSize tmpMaxSize = maximumSize();
+			if (tmpWidgetWidth == 0)
+				setFixedWidth(width() - grpMRWidth);
+			else
+			{
+				setFixedWidth(tmpWidgetWidth);
+				tmpWidgetWidth = 0;
+			}
+			setMaximumSize(tmpMaxSize);
+		}
   }
 }
 
