@@ -769,7 +769,7 @@ void ICQUser::LoadGeneralInfo()
   m_fConf.ReadStr("CellularNumber", szTemp, "");  SetCellularNumber(szTemp);
   m_fConf.ReadNum("Zipcode", m_nZipCode, 0);
   m_fConf.ReadNum("Country", m_nCountryCode, 0);
-  m_fConf.ReadNum("Timezone", m_nTimezone, 0);
+  m_fConf.ReadNum("Timezone", m_nTimezone, TIMEZONE_UNKNOWN);
   m_fConf.ReadBool("Authorization", m_bAuthorization, false);
   m_fConf.ReadBool("HideEmail", m_bHideEmail, false);
 }
@@ -920,7 +920,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_szCellularNumber = NULL;
   m_nZipCode = 0;
   m_nCountryCode = COUNTRY_UNSPECIFIED;
-  m_nTimezone = 0;
+  m_nTimezone = TIMEZONE_UNKNOWN;
   m_bAuthorization = false;
   m_bHideEmail = false;
 
@@ -1085,6 +1085,31 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   m_nIp = _nIp;
   m_nPort = _nPort;
   SaveLicqInfo();
+}
+
+
+inline int ICQUser::LocalTimeGMTOffset()
+{
+  return GetTimezone() * 1800;
+}
+
+
+int ICQUser::LocalTimeOffset()
+{
+  time_t t = time(NULL);
+#ifndef __FreeBSD__
+  localtime(&t);
+  return timezone - LocalTimeGMTOffset();
+#else
+  struct tm *tzone = localtime(&t);
+  return -(tzone->tm_gmtoff) - LocalTimeGMTOffset();
+#endif
+}
+
+
+inline time_t ICQUser::LocalTime()
+{
+  return time(NULL) + LocalTimeOffset();
 }
 
 

@@ -63,6 +63,7 @@ typedef enum EGender
   GENDER_MALE = 2
 } Gender;
 const unsigned short AGE_UNSPECIFIED = 0xFFFF;
+const char TIMEZONE_UNKNOWN = -100;
 
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
 
@@ -286,6 +287,11 @@ public:
   void SetVisibleList(bool s)    { SetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST, s); }
   void SetOnlineNotify(bool s)   { SetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY, s); }
   void SetIgnoreList(bool s)     { SetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST, s); }
+
+  // Time
+  time_t LocalTime();
+  int LocalTimeGMTOffset();
+  int LocalTimeOffset();
 
   // Socket functions
   int SocketDesc()          { return m_nSocketDesc; }
