@@ -75,6 +75,7 @@ public:
   int Process_LIST();
   int Process_MESSAGE();
   int Process_URL();
+  int Process_SMS();
   int Process_LOG();
   int Process_VIEW();
   int Process_AR();
@@ -106,6 +107,8 @@ protected:
   int Process_MESSAGE_text();
   int Process_URL_url();
   int Process_URL_text();
+  int Process_SMS_number();
+  int Process_SMS_message();
   int Process_AR_text();
 
 
