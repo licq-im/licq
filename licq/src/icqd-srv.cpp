@@ -739,6 +739,28 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
 }
 
 //-----icqSetGeneralInfo----------------------------------------------------
+unsigned long CICQDaemon::ProtoSetGeneralInfo(unsigned long nPPID,
+                          const char *szAlias, const char *szFirstName,
+                          const char *szLastName, const char *szEmailPrimary,
+                          const char *szCity,
+                          const char *szState, const char *szPhoneNumber,
+                          const char *szFaxNumber, const char *szAddress,
+                          const char *szCellularNumber, const char *szZipCode,
+                          unsigned short nCountryCode, bool bHideEmail)
+{
+  unsigned long nRet = 0;
+  if (nPPID == LICQ_PPID)
+    nRet = icqSetGeneralInfo(szAlias, szFirstName, szLastName, szEmailPrimary,
+      szCity, szState, szPhoneNumber, szFaxNumber, szAddress,
+      szCellularNumber, szZipCode, nCountryCode, bHideEmail);
+  else
+    PushProtoSignal(new CUpdateInfoSignal(szAlias, szFirstName, szLastName, szEmailPrimary,
+      szCity, szState, szPhoneNumber, szFaxNumber, szAddress,
+      szCellularNumber, szZipCode), nPPID);
+      
+  return nRet;
+}
+                          
 unsigned long CICQDaemon::icqSetGeneralInfo(
                           const char *szAlias, const char *szFirstName,
                           const char *szLastName, const char *szEmailPrimary,

@@ -382,3 +382,49 @@ CRequestInfo::CRequestInfo(const char *szId)
 {
 }
 
+CUpdateInfoSignal::CUpdateInfoSignal(const char *szAlias, const char *szFirstName,
+  const char *szLastName, const char *szEmail,
+  const char *szCity,
+  const char *szState, const char *szPhoneNumber,
+  const char *szFaxNumber, const char *szAddress,
+  const char *szCellNumber, const char *szZipCode)
+  : CSignal(PROTOxUPDATExINFO, 0)
+{
+  m_szAlias = szAlias ? strdup(szAlias) : 0;
+  m_szFirstName = szFirstName ? strdup(szFirstName) : 0;
+  m_szLastName = szLastName ? strdup(szLastName) : 0;
+  m_szEmail = szEmail ? strdup(szEmail) : 0;
+  m_szCity = szCity ? strdup(szCity) : 0;
+  m_szState = szState ? strdup(szState) : 0;
+  m_szPhoneNumber = szPhoneNumber ? strdup(szPhoneNumber) : 0;
+  m_szFaxNumber = szFaxNumber ? strdup(szFaxNumber) : 0;
+  m_szAddress = szAddress ? strdup(szAddress) : 0;
+  m_szCellNumber = szCellNumber ? strdup(szCellNumber) : 0;
+  m_szZipCode = szZipCode ? strdup(szZipCode) : 0;
+}
+
+CUpdateInfoSignal::~CUpdateInfoSignal()
+{
+  if (m_szAlias)
+    free(m_szAlias);
+  if (m_szFirstName)
+    free(m_szFirstName);
+  if (m_szLastName)
+    free(m_szLastName);
+  if (m_szEmail)
+    free(m_szEmail);
+  if (m_szCity)
+    free(m_szCity);
+  if (m_szState)
+    free(m_szState);
+  if (m_szPhoneNumber)
+    free(m_szPhoneNumber);
+  if (m_szFaxNumber)
+    free(m_szFaxNumber);
+  if (m_szAddress)
+    free(m_szAddress);
+  if (m_szCellNumber)
+    free(m_szCellNumber);
+  if (m_szZipCode)
+    free(m_szZipCode);
+}

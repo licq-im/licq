@@ -466,7 +466,9 @@ enum SIGNAL_TYPE
   //! contact list.
   PROTOxSENDxREFUSExAUTH,
   //! The user has requested the user's profile/information.
-  PROTOxREQUESTxINFO
+  PROTOxREQUESTxINFO,
+  //! The user has requested to update the owner's profile/information.
+  PROTOxUPDATExINFO
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -599,6 +601,43 @@ class CRequestInfo : public CSignal
 {
 public:
   CRequestInfo(const char *);
+};
+
+class CUpdateInfoSignal : public CSignal
+{
+public:
+  CUpdateInfoSignal(const char *szAlias, const char *szFirstName,
+    const char *szLastName, const char *szEmail,
+    const char *szCity,
+    const char *szState, const char *szPhoneNumber,
+    const char *szFaxNumber, const char *szAddress,
+    const char *szCellularNumber, const char *szZipCode);
+  virtual ~CUpdateInfoSignal();
+
+    char *Alias()        { return m_szAlias; }
+    char *FirstName()    { return m_szFirstName; }
+    char *LastName()     { return m_szLastName; }
+    char *Email()        { return m_szEmail; }
+    char *City()         { return m_szCity; }
+    char *State()        { return m_szState; }
+    char *PhoneNumber()  { return m_szPhoneNumber; }
+    char *FaxNumber()    { return m_szFaxNumber; }
+    char *Address()      { return m_szAddress; }
+    char *CellNumber()   { return m_szCellNumber; }
+    char *ZipCode()      { return m_szZipCode; }
+    
+private:
+  char *m_szAlias,
+       *m_szFirstName,
+       *m_szLastName,
+       *m_szEmail,
+       *m_szCity,
+       *m_szState,
+       *m_szPhoneNumber,
+       *m_szFaxNumber,
+       *m_szAddress,
+       *m_szCellNumber,
+       *m_szZipCode;
 };
 
 #endif

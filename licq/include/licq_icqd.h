@@ -251,6 +251,12 @@ public:
 
   unsigned long ProtoRequestInfo(const char *szId, unsigned long nPPID);
 
+  unsigned long ProtoSetGeneralInfo(unsigned long nPPID, const char *szAlias,
+    const char *szFirstName, const char *szLastName, const char *szEmailPrimary,
+    const char *szCity, const char *szState, const char *szPhoneNumber,
+    const char *szFaxNumber, const char *szAddress, const char *szCellularNumber,
+    const char *szZipCode, unsigned short nCountryCode, bool bHideEmail);
+    
   // TCP (user) functions
   // Message
   unsigned long icqSendMessage(const char *szId, const char *szMessage,
