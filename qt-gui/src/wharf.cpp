@@ -200,6 +200,7 @@ void IconManager_Default::SetDockIconStatus()
 {
   QPixmap m;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (o == 0) return;
   switch (o->Status())
   {
     case ICQ_STATUS_ONLINE: m = QPixmap((const char **)iconOnline_xpm); break;
@@ -524,6 +525,7 @@ void IconManager_Themed::SetDockIconStatus()
 {
   QPixmap *p = NULL;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (o == 0) return;
   switch (o->Status())
   {
     case ICQ_STATUS_ONLINE: p = pixOnline; break;
@@ -642,6 +644,7 @@ void IconManager_KDEStyle::SetDockIconStatus()
 {
   //TODO make general for all plugins
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  if (o == 0) return;
   m_statusIcon = CMainWindow::iconForStatus(o->StatusFull());
   m_ownerStatus = o->Status();
   m_bStatusInvisible = o->StatusInvisible();
