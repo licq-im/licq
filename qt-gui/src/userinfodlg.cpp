@@ -146,6 +146,11 @@ void UserInfoDlg::showTab(int tab)
   tabs->showPage(tabList[tab].tab);
 }
 
+bool UserInfoDlg::isTabShown(int tab)
+{
+  return (tabs->currentPage() == tabList[tab].tab);
+}
+
 
 // -----------------------------------------------------------------------------
 

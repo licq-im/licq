@@ -97,7 +97,7 @@ public:
   GroupType m_nGroupType;
 
 public slots:
-  void callInfoTab(int, unsigned long);
+  void callInfoTab(int, unsigned long, bool toggle=false);
 
 protected:
   // Command Tools

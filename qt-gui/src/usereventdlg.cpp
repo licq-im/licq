@@ -200,13 +200,13 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
 
 void UserEventCommon::showHistory()
 {
-  mainwin->callInfoTab(mnuUserHistory, m_nUin);
+  mainwin->callInfoTab(mnuUserHistory, m_nUin, true);
 }
 
 
 void UserEventCommon::showUserInfo()
 {
-  mainwin->callInfoTab(mnuUserGeneral, m_nUin);
+  mainwin->callInfoTab(mnuUserGeneral, m_nUin, true);
 }
 
 

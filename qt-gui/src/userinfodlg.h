@@ -61,6 +61,7 @@ public:
 
   unsigned long Uin() { return m_nUin; }
   void showTab(int);
+  bool isTabShown(int);
 
 protected:
   // common stuff

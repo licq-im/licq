@@ -1611,7 +1611,7 @@ void CMainWindow::callUserFunction(int index)
 
 }
 
-void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
+void CMainWindow::callInfoTab(int fcn, unsigned long nUin, bool toggle)
 {
   if(nUin == 0) return;
 
@@ -1629,8 +1629,33 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 
   if (f)
   {
-    f->show();
-    f->raise();
+    int tab = UserInfoDlg::WorkInfo;
+    switch(fcn) {
+    case mnuUserHistory:
+      tab = UserInfoDlg::HistoryInfo;
+      break;
+    case mnuUserGeneral:
+      tab = UserInfoDlg::GeneralInfo;
+      break;
+    case mnuUserMore:
+      tab = UserInfoDlg::MoreInfo;
+      break;
+    case mnuUserWork:
+      tab = UserInfoDlg::WorkInfo;
+      break;
+    case mnuUserAbout:
+      tab = UserInfoDlg::AboutInfo;
+      break;
+    }
+    if(toggle && f->isTabShown(tab))
+    {
+      delete f; // will notify us about deletion
+      return;
+    }
+    else {
+      f->show();
+      f->raise();
+    }
   }
   else
   {
