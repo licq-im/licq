@@ -560,7 +560,8 @@ void ChatDlg::resizeEvent (QResizeEvent *)
    mleRemote->setGeometry(10, 15, boxRemote->width() - 25, boxRemote->height() - 30);
    boxLocal->setGeometry(10, boxRemote->height() + 20, width() - 20, (height() - 80) / 2);
    mleLocal->setGeometry(10, 15, boxLocal->width() - 25, boxLocal->height() - 30);
-   btnClose->setGeometry((width() / 2) - 50, height() - 40, 100, 30);
+   btnClose->setGeometry((width() / 2) - (btnClose->sizeHint().width()/2), height() - 40,
+                         btnClose->sizeHint().width(), btnClose->sizeHint().height());
    mleRemote->repaint();
 }
 
