@@ -73,6 +73,7 @@ ChatDlgList ChatDlg::chatDlgs;
 #include "xpm/chatItalic.xpm"
 #include "xpm/chatUnder.xpm"
 #include "xpm/chatBeep.xpm"
+#include "xpm/chatIgnore.xpm"
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
 
@@ -191,6 +192,11 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
    // ### FIXME: implement laughing
    // tbtLaugh = new QToolButton(LeftArrow, barChat);
+
+  QPixmap* pixIgnore = new QPixmap(chatIgnore_xpm);
+  tbtIgnore = new QToolButton(*pixIgnore, tr("Ignore user settings"),
+    tr("ignores user color settings"), this, SLOT(toggleSettingsIgnore()), barChat);
+  tbtIgnore->setToggleButton(true);
 
   QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
   tbtBeep = new QToolButton(*pixBeep, tr("Beep"),
@@ -427,6 +433,19 @@ void ChatDlg::changeBackColor()
   chatman->ChangeColorBg(color.red(), color.green(), color.blue());
 }
 
+// -----------------------------------------------------------------------------
+
+void ChatDlg::toggleSettingsIgnore()
+{
+  if(tbtIgnore->state() == QButton::On) {
+    mlePaneRemote->setBackground(white);
+    mlePaneRemote->setForeground(black);
+  }
+  else {
+    // FIXME
+  }
+}
+
 
 //-----ChatDlg::StartAsServer------------------------------------------------
 bool ChatDlg::StartAsServer()
@@ -583,7 +602,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_COLORxFG: // change foreground color
       {
-        if (u == chatUser)
+        if (u == chatUser && tbtIgnore->state() == QButton::Off)
           mlePaneRemote->setForeground(QColor (u->ColorFg()[0],
              u->ColorFg()[1], u->ColorFg()[2]));
         break;
@@ -591,7 +610,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_COLORxBG:  // change background color
       {
-        if (u == chatUser)
+        if (u == chatUser && tbtIgnore->state() == QButton::Off)
           mlePaneRemote->setBackground(QColor (u->ColorBg()[0],
              u->ColorBg()[1], u->ColorBg()[2]));
 
@@ -600,7 +619,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_FONTxFAMILY: // change font type
       {
-        if (u == chatUser)
+        if (u == chatUser && tbtIgnore->state() == QButton::Off)
         {
           QFont f(mlePaneRemote->font());
           f.setFamily(u->FontFamily());
@@ -611,7 +630,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_FONTxFACE: // change font style
       {
-        if (u == chatUser)
+        if (u == chatUser && tbtIgnore->state() == QButton::Off)
         {
           QFont f(mlePaneRemote->font());
           f.setBold(u->FontBold());
@@ -624,7 +643,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_FONTxSIZE: // change font size
       {
-        if (u == chatUser)
+        if (u == chatUser && tbtIgnore->state() == QButton::Off)
         {
           QFont f(mlePaneRemote->font());
           f.setPointSize(u->FontSize());

@@ -95,6 +95,7 @@ protected:
 
   QToolButton* tbtBold, *tbtItalic, *tbtUnderline;
   QToolButton* tbtLaugh, *tbtBeep, *tbtFg, *tbtBg;
+  QToolButton* tbtIgnore;
 
   QString linebuf, chatname;
   QComboBox *cmbFontName, *cmbFontSize;
@@ -123,6 +124,7 @@ protected slots:
   void fontStyleChanged();
   void changeFrontColor();
   void changeBackColor();
+  void toggleSettingsIgnore();
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();
