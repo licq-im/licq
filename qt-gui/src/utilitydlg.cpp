@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,19 +44,20 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 
   m_xUtility->SetFields(m_nUin);
 
-  QGridLayout *lay = new QGridLayout(this, 1, 2, 10, 5);
-
+  QGridLayout *lay = new QGridLayout(this, 1, 3, 8, 4);
+  lay->setColStretch(2, 2);
+  lay->addColSpacing(1, 8);
   setCaption(QString(tr("Licq Utility: %1")).arg(m_xUtility->Name()));
   lblUtility = new QLabel(tr("Command:"), this);
   lay->addWidget(lblUtility, 0, 0);
   nfoUtility = new CInfoField(this, true);
   nfoUtility->setMinimumWidth(nfoUtility->sizeHint().width()*2);
-  lay->addWidget(nfoUtility, 0, 1);
+  lay->addWidget(nfoUtility, 0, 2);
   nfoUtility->setText(m_xUtility->FullCommand());
 
   lay->addWidget(new QLabel(tr("Window:"), this), 1, 0);
   nfoWinType = new CInfoField(this, true);
-  lay->addWidget(nfoWinType, 1, 1);
+  lay->addWidget(nfoWinType, 1, 2);
   switch (m_xUtility->WinType()) {
   case UtilityWinGui: nfoWinType->setText(tr("GUI")); break;
   case UtilityWinTerm: nfoWinType->setText(tr("Terminal")); break;
@@ -64,30 +66,32 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 
   lay->addWidget(new QLabel(tr("Description:"), this), 2, 0);
   nfoDesc = new CInfoField(this, true);
-  lay->addWidget(nfoDesc, 2, 1);
+  lay->addWidget(nfoDesc, 2, 2);
   nfoDesc->setText(m_xUtility->Description());
 
   chkEditFinal = new QCheckBox(tr("Edit final command"), this);
-  lay->addMultiCellWidget(chkEditFinal, 3, 3, 0, 1);
+  lay->addMultiCellWidget(chkEditFinal, 3, 3, 0, 2);
 
-  boxFields = new QGroupBox(1, Horizontal, tr("User Fields"), this);
-  lay->addMultiCellWidget(boxFields, 4, 4, 0, 1);
-  mleCommand = new MLEditWrap(true, boxFields);
-  mleCommand->setReadOnly(true);
-  mleCommand->hide();
+  boxFields = new QGroupBox(2, Horizontal, tr("User Fields"), this);
+  lay->addMultiCellWidget(boxFields, 4, 4, 0, 2);
   for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
   {
-    QLabel *lbl = new QLabel(QString("%1 (%%%2):").arg(
-      m_xUtility->UserField(i)->Title()).arg(i+1), boxFields);
+    QString s;
+    s.sprintf("%s (%%%d): ", m_xUtility->UserField(i)->Title(), i+1);
+    QLabel *lbl = new QLabel(s, boxFields);
     lblFields.push_back(lbl);
     QLineEdit *edt = new QLineEdit(boxFields);
     edt->setText(m_xUtility->UserField(i)->FullDefault());
     edt->setMinimumSize(edt->sizeHint());
     edtFields.push_back(edt);
   }
+  mleCommand = new MLEditWrap(true, boxFields);
+  mleCommand->setReadOnly(true);
+  mleCommand->hide();
   if (m_xUtility->NumUserFields() == 0) boxFields->hide();
 
-  QHBoxLayout *hlay = new QHBoxLayout(lay);
+  QHBoxLayout *hlay = new QHBoxLayout();
+  lay->addMultiCell(hlay, 5, 5, 0, 2);
   hlay->addStretch(1);
   btnRun = new QPushButton(tr("&Run"), this);
   btnRun->setDefault(true);
@@ -97,7 +101,6 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   btnCancel = new QPushButton(tr("&Cancel"), this);
   btnCancel->setMinimumWidth(75);
   hlay->addWidget(btnCancel, 0, AlignLeft);
-  lay->addMultiCell(hlay, 5, 5, 0, 1);
 
   connect(btnRun, SIGNAL(clicked()), SLOT(slot_run()));
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
@@ -108,8 +111,9 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 
 CUtilityDlg::~CUtilityDlg()
 {
+
   if (fsCommand != NULL)
-    fclose(fsCommand);
+    pclose(fsCommand);
 }
 
 
@@ -122,7 +126,7 @@ void CUtilityDlg::slot_cancel()
       mleCommand->append("EOF");
       m_bIntWin = false;
       disconnect(snCommand, SIGNAL(activated(int)), this, SLOT(slot_command()));
-      fclose(fsCommand);
+      pclose(fsCommand);
       fsCommand = NULL;
     }
     lblUtility->setText(tr("Done:"));
@@ -146,9 +150,13 @@ void CUtilityDlg::slot_run()
     unsigned short i = 0;
     for (iter = edtFields.begin(); iter != edtFields.end(); iter++)
     {
-      vszFields[i++] = (*iter)->text().local8Bit();
+      vszFields[i++] = strdup((*iter)->text().local8Bit().data());
     }
     m_xUtility->SetUserFields(vszFields);
+    vector<const char*>::iterator siter;
+    for(siter = vszFields.begin(); siter != vszFields.end(); siter++)
+      free(const_cast<char*>(*siter));
+
     nfoUtility->setText(m_xUtility->FullCommand());
     if (chkEditFinal->isChecked())
     {
@@ -170,7 +178,7 @@ void CUtilityDlg::slot_run()
   case UtilityWinGui:
   {
     m_xUtility->SetBackgroundTask();
-    nSystemResult = system(cmd.local8Bit());
+    nSystemResult = system(cmd.local8Bit().data());
     break;
   }
   case UtilityWinTerm:
@@ -192,9 +200,10 @@ void CUtilityDlg::slot_run()
     boxFields->show();
     mleCommand->show();
     resize(width(), 300);
-    fsCommand = popen(cmd.local8Bit(), "r");
+    fsCommand = popen(cmd.local8Bit().data(), "r");
     if (fsCommand != NULL)
     {
+      setvbuf(fsCommand, (char*)NULL, _IOLBF, 0);
       snCommand = new QSocketNotifier(fileno(fsCommand), QSocketNotifier::Read, this);
       connect(snCommand, SIGNAL(activated(int)), SLOT(slot_command()));
       nSystemResult = 0;
@@ -226,7 +235,7 @@ void CUtilityDlg::slot_command()
     mleCommand->append("EOF");
     if (fsCommand != NULL)
     {
-      fclose(fsCommand);
+      pclose(fsCommand);
       fsCommand = NULL;
     }
     m_bIntWin = false;
