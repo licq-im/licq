@@ -116,8 +116,11 @@ protected:
   CInfoField *nfoHistory;
   QTextView *mleHistory;
   QLabel *lblHistory;
+  QCheckBox *chkHistoryReverse;
   HistoryList m_lHistoryList;
-  HistoryListIter m_iHistoryIter;
+  HistoryListIter m_iHistorySIter;
+  HistoryListIter m_iHistoryEIter;
+  bool m_bHistoryReverse;
   unsigned short m_nHistoryIndex, m_nHistoryShowing;
 
   static unsigned short s_nX;
@@ -152,6 +155,7 @@ protected slots:
    void printMessage(QListViewItem *);
    void save();
    void specialFcn(int);
+   void ReverseHistory(bool);
    void slot_updatetime();
 
 signals:
