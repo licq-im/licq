@@ -2516,6 +2516,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           {
             char *szNewName = packet.UnpackStringTLV(0x0131);
             char *szSMSNumber = packet.UnpackStringTLV(0x013A);
+            bool bAwaitingAuth = packet.hasTLV(0x0066);
+
             unsigned long nUin = atoi(szName);
             unsigned short nInGroup = gUserManager.GetGroupFromID(nTag);
             if (nUin && !gUserManager.IsOnList(nUin))
@@ -2544,6 +2546,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                   delete [] szUnicodeSMS;
                 }
               }
+
+              u->SetAwaitingAuth(bAwaitingAuth);
 
               if (nType == ICQ_ROSTxINVISIBLE)
               {

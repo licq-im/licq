@@ -114,6 +114,7 @@ public:
    void PackTLV(unsigned short, unsigned short, CBuffer *);
 
    unsigned short getTLVLen(unsigned short);
+   bool hasTLV(unsigned short);
 
    unsigned long UnpackUnsignedLongTLV(unsigned short);
    unsigned short UnpackUnsignedShortTLV(unsigned short);

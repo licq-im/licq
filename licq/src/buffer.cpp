@@ -716,6 +716,16 @@ unsigned short CBuffer::getTLVLen(unsigned short nType)
   return 0;
 }
 
+bool CBuffer::hasTLV(unsigned short nType)
+{
+  bool bRet = false;
+  SOscarTLV *pTLV = getTLV(nType);
+  if (pTLV)
+    bRet = true;
+
+  return bRet;
+}
+
 unsigned long CBuffer::UnpackUnsignedLongTLV(unsigned short nType)
 {
   unsigned long nRet = 0;
