@@ -158,6 +158,7 @@ protected slots:
   void doneFunction(ICQEvent*);
   void resetCaption();
   void ShowUsermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
+  void slot_showHistoryTimer();
 
 signals:
   void finished(unsigned long);
@@ -165,6 +166,7 @@ signals:
 
 private:
   static bool chkContains(const char* text, const char* filter, int filterlen);
+  QTimer *timer;
 };
 
 #endif

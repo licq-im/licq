@@ -37,6 +37,7 @@
 #include <qapplication.h>
 #include <qtextcodec.h>
 #include <qaccel.h>
+#include <qtimer.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -132,6 +133,10 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   l->addSpacing(35);
   l->addWidget(btnMain4);
   btnMain4->setDefault(true);
+
+  // prepare the timer for the history filter
+  timer = new QTimer(this, "history_filterTimer");
+  connect(timer, SIGNAL(timeout()), this, SLOT(ShowHistory()));
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u == NULL)
@@ -970,13 +975,29 @@ void UserInfoDlg::CreateHistory()
   l->addWidget(lblFilter);
   l->addWidget(lneFilter, 1);
   l->addSpacing(50);
-  connect(lneFilter, SIGNAL(textChanged(const QString&)), this, SLOT(ShowHistory()));
+  connect(lneFilter, SIGNAL(textChanged(const QString&)), this, SLOT(slot_showHistoryTimer()));
   barFiltering = new QProgressBar(p);
   l->addWidget(barFiltering, 1);
 
   QAccel *a = new QAccel(p);
   a->connectItem(a->insertItem(Key_U + CTRL), this, SLOT(HistoryReload()));
   a->connectItem(a->insertItem(Key_F5), this, SLOT(HistoryReload()));
+}
+
+/*!  \brief Resets and restarts the timeout for the history filter
+ *
+ *   Everytime this slot is called, the timer for the history filter
+ *   is reset.
+ *   The timeout is set to 1000 ms.
+ *   This slot is called everytime the user changes the filter
+ *   string in the history tab.  After 1 second of being idle, the
+ *   filter is invoked because SIGNAL(timeout()) is connected to
+ *   ShowHistory().
+ */
+void UserInfoDlg::slot_showHistoryTimer()
+{
+  timer->stop();
+  timer->start(1000, true);
 }
 
 void UserInfoDlg::SetupHistory()
@@ -1225,8 +1246,10 @@ void UserInfoDlg::updateTab(const QString& txt)
     currentTab = GeneralInfo;
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
     if (!tabList[GeneralInfo].loaded)
       SetGeneralInfo(NULL);
   }
@@ -1234,8 +1257,10 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
     currentTab = MoreInfo;
     if (!tabList[MoreInfo].loaded)
       SetMoreInfo(NULL);
@@ -1244,6 +1269,7 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
     currentTab = WorkInfo;
@@ -1254,8 +1280,10 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
     currentTab = AboutInfo;
     if (!tabList[AboutInfo].loaded)
       SetAbout(NULL);
@@ -1264,8 +1292,10 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("Nex&t"));
     btnMain2->setText(tr("P&rev"));
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(false);
     btnMain2->setEnabled(false);
+    btnMain1->setEnabled(true);
     currentTab = HistoryInfo;
     if (!tabList[HistoryInfo].loaded)
       SetupHistory();
@@ -1276,8 +1306,10 @@ void UserInfoDlg::updateTab(const QString& txt)
     currentTab = LastCountersInfo;
     btnMain3->setText("");
     btnMain2->setText("");
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(false);
     btnMain2->setEnabled(false);
+    btnMain1->setEnabled(true);
     if (!tabList[LastCountersInfo].loaded)
       SetLastCountersInfo(NULL);
   }
@@ -1303,7 +1335,8 @@ void UserInfoDlg::SaveSettings()
     SaveAbout();
     break;
   case HistoryInfo:
-    ShowHistoryPrev();
+    if (!m_bOwner)
+      ShowHistoryPrev();
     break;
   case LastCountersInfo:
     break;
@@ -1330,7 +1363,10 @@ void UserInfoDlg::slotRetrieve()
   }
   else
   {
-    ShowHistoryNext();
+    if (m_bOwner)
+      ShowHistoryPrev();
+    else
+      ShowHistoryNext();
     return;
   }
 
