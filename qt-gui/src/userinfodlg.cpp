@@ -416,9 +416,6 @@ void UserInfoDlg::SaveGeneralInfo()
   u->SaveGeneralInfo();
 
   gUserManager.DropUser(u);
-
-  if (!m_bOwner)
-    server->icqRenameUser(m_nUin);
 }
 
 // -----------------------------------------------------------------------------

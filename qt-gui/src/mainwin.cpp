@@ -1161,7 +1161,12 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         static_cast<CUserViewItem*>(v->firstChild())->setGraphics(u);
         v->triggerUpdate();
       }
+
       gUserManager.DropUser(u);
+
+      if (sig->SubSignal() == USER_GENERAL && licqDaemon)
+        licqDaemon->icqRenameUser(nUin);
+
       break;
     }
   }
