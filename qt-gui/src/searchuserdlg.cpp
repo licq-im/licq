@@ -149,6 +149,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
 
   btnReset = new QPushButton(tr("Reset Search"), this);
   btnReset->setEnabled(false);
+  btnReset->setFixedSize(btnReset->sizeHint());
   lay2->addWidget(btnReset);
 
   btnDone = new QPushButton(tr("&Done"), this);
