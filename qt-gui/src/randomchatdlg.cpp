@@ -58,8 +58,8 @@ CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
   lstGroups->insertItem(tr("30 Something"));
   lstGroups->insertItem(tr("40 Something"));
   lstGroups->insertItem(tr("50 Plus"));
-  lstGroups->insertItem(tr("Men Seeking Women"));
-  lstGroups->insertItem(tr("Women Seeking Men"));
+  lstGroups->insertItem(tr("Seeking Women"));
+  lstGroups->insertItem(tr("Seeking Men"));
 
   show();
 }
@@ -168,8 +168,8 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
   lstGroups->insertItem(tr("30 Something"));
   lstGroups->insertItem(tr("40 Something"));
   lstGroups->insertItem(tr("50 Plus"));
-  lstGroups->insertItem(tr("Men Seeking Women"));
-  lstGroups->insertItem(tr("Women Seeking Men"));
+  lstGroups->insertItem(tr("Seeking Women"));
+  lstGroups->insertItem(tr("Seeking Men"));
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   switch(o->RandomChatGroup())
