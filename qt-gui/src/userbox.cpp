@@ -344,7 +344,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
     // If this is a floaty then don't draw the highlight box
-    if (listView()->parent() == NULL)
+    if (listView()->parent() == NULL || isGroupItem())
     {
       cg.setBrush(QColorGroup::Highlight, QBrush(NoBrush));
       cg.setColor(QColorGroup::HighlightedText, cg.text());
@@ -366,6 +366,11 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
         listView()->style().drawSeparator(p,
            p->fontMetrics().width(text(column)) + 4, height() >> 1,
            width - 1, height() >> 1, cg);
+      }
+      else if (column == listView()->header()->count() - 1)
+      {
+        listView()->style().drawSeparator(p, 0, height() >> 1, width - 5,
+           height() >> 1, cg);
       }
       else if (column > 1)
       {
