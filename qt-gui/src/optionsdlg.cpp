@@ -133,6 +133,7 @@ void OptionsDlg::SetupOptions()
   chkHeader->setChecked(mainwin->showHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
+  chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->autoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
@@ -258,6 +259,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->showHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
   mainwin->m_bSortByStatus = chkSortByStatus->isChecked();
+  mainwin->m_bShowGroupIfNoMsg = chkShowGroupIfNoMsg->isChecked();
   mainwin->autoClose = chkAutoClose->isChecked();
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
@@ -414,6 +416,9 @@ QWidget* OptionsDlg::new_appearance_options()
                                      "in the contact list"));
   chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
   QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
+  chkShowGroupIfNoMsg = new QCheckBox(tr("Show group name if no messages"), boxUserWin);
+  QWhatsThis::add(chkShowGroupIfNoMsg, tr("Show the name of the current group in the "
+                                          "messages label when there are no new messages"));
   chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxUserWin);
   QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
                                   "the user function window after a succesful event"));

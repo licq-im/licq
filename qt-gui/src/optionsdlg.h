@@ -51,7 +51,7 @@ protected:
    QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight,
-             *chkTransparent, *chkSortByStatus;
+             *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg;
 
    // columns tab
    QWidget* new_column_options();
