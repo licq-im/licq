@@ -11,27 +11,40 @@
 
 //=====CJoinChatDlg========================================================
 
-CJoinChatDlg::CJoinChatDlg(QWidget *p, const char *n)
+CJoinChatDlg::CJoinChatDlg(bool bRequesting, QWidget *p, const char *n)
   : QDialog(p, n, true)
 {
-  setCaption(tr("Join Multiparty Chat"));
-
   QGridLayout *lay = new QGridLayout(this, 3, 5, 10, 5);
 
-  QLabel *l = new QLabel(tr("Select chat to join:"), this);
+  QLabel *l = new QLabel(this);
   lay->addMultiCellWidget(l, 0, 0, 0, 4);
 
   lstChats = new QListBox(this);
   lay->addMultiCellWidget(lstChats, 1, 1, 0, 4);
 
   lay->setColStretch(0, 2);
-  btnOk = new QPushButton(tr("&Join"), this);
+  btnOk = new QPushButton(this);
   lay->addWidget(btnOk, 2, 1);
 
   lay->addColSpacing(2, 10);
-  btnCancel = new QPushButton(tr("&Cancel"), this);
+  btnCancel = new QPushButton(this);
   lay->addWidget(btnCancel, 2, 3);
   lay->setColStretch(4, 2);
+
+  if (bRequesting)
+  {
+    l->setText(tr("Select chat to invite:"));
+    setCaption(tr("Invite to Join Chat"));
+    btnOk->setText("&Invite");
+    btnCancel->setText(tr("&Cancel"));
+  }
+  else
+  {
+    l->setText(tr("Select chat to join:"));
+    setCaption(tr("Join Multiparty Chat"));
+    btnOk->setText("&Join");
+    btnCancel->setText(tr("&Cancel"));
+  }
 
   int bw = 75;
   bw = QMAX(bw, btnOk->sizeHint().width());
@@ -47,6 +60,7 @@ CJoinChatDlg::CJoinChatDlg(QWidget *p, const char *n)
   for (iter = ChatDlg::chatDlgs.begin();
        iter != ChatDlg::chatDlgs.end(); iter++)
   {
+  /*
     QString n;
     if ((*iter)->chatUser == NULL)  // check if the first user closed already
     {
@@ -54,6 +68,8 @@ CJoinChatDlg::CJoinChatDlg(QWidget *p, const char *n)
     }
     else
     {
+      // This is bad as the user is not locked at this point...but
+      // should work as the name is never changed
       n = (*iter)->chatUser->Name();
       if (n.isEmpty()) n.setNum((*iter)->chatUser->Uin());
     }
@@ -61,7 +77,8 @@ CJoinChatDlg::CJoinChatDlg(QWidget *p, const char *n)
     if (!c.isEmpty())
     {
       n += " (" + c + ")";
-    }
+    }*/
+    QString n = (*iter)->ChatClients();
     lstChats->insertItem(n);
 
     originalChats.push_back(*iter);

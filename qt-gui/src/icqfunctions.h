@@ -89,11 +89,15 @@ protected:
   void CreateSendEventTab();
   MLEditWrap *mleSend;
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent;
-  QLineEdit *edtSpoof, *edtItem;
+  QLineEdit *edtSpoof;
+  CInfoField *edtItem;
   QLabel *lblItem;
   QGroupBox *grpOpt;
   QButtonGroup *grpCmd;
+  QPushButton *btnItem;
   QRadioButton *rdbUrl, *rdbChat, *rdbFile, *rdbMsg;
+  QString m_szMPChatClients;
+  unsigned short m_nMPChatPort;
 
   // User Info tab
   void CreateGeneralInfoTab();
@@ -186,7 +190,7 @@ protected slots:
    void slot_readbtn1();
    void slot_readbtn2();
    void slot_readbtn3();
-   void slot_readbtn4();
+   void slot_sendbtn();
    void slot_aboutToShow(QWidget *);
 
 signals:

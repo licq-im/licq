@@ -19,9 +19,10 @@ class CJoinChatDlg : public QDialog
   Q_OBJECT
 
 public:
-  CJoinChatDlg(QWidget *p = NULL, const char *n = NULL);
+  CJoinChatDlg(bool bRequesting, QWidget *p = NULL, const char *n = NULL);
   ~CJoinChatDlg() {}
   ChatDlg *JoinedChat();
+  QString ChatClients() { return lstChats->currentText(); }
 protected:
   QListBox *lstChats;
   QPushButton *btnOk, *btnCancel;

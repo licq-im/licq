@@ -255,6 +255,10 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
      chatman->ColorFg()[1], chatman->ColorFg()[2]));
   mleIRCLocal->setBackground(QColor(chatman->ColorBg()[0],
      chatman->ColorBg()[1], chatman->ColorBg()[2]));
+  mleIRCRemote->setForeground(QColor(chatman->ColorFg()[0],
+     chatman->ColorFg()[1], chatman->ColorFg()[2]));
+  mleIRCRemote->setBackground(QColor(chatman->ColorBg()[0],
+     chatman->ColorBg()[1], chatman->ColorBg()[2]));
   chatname = QString::fromLocal8Bit(chatman->Name());
   lstUsers->insertItem(chatname);
   lblLocal->setText(tr("Local - %1").arg(chatname));
@@ -295,6 +299,7 @@ void ChatDlg::fontSizeChanged(const QString& txt)
 
   mlePaneLocal->setFont(f);
   mleIRCLocal->setFont(f);
+  mleIRCRemote->setFont(f);
 
   // transmit to remote
   chatman->ChangeFontSize(txt.toULong());
@@ -311,6 +316,7 @@ void ChatDlg::fontNameChanged(const QString &txt)
 
   mlePaneLocal->setFont(f);
   mleIRCLocal->setFont(f);
+  mleIRCRemote->setFont(f);
 
   // transmit to remote
   chatman->ChangeFontFamily(txt.ascii());
@@ -328,6 +334,7 @@ void ChatDlg::fontStyleChanged()
 
   mlePaneLocal->setFont(f);
   mleIRCLocal->setFont(f);
+  mleIRCRemote->setFont(f);
 
   // transmit to remote
   chatman->ChangeFontFace(tbtBold->state() == QButton::On,
@@ -354,6 +361,8 @@ void ChatDlg::changeFrontColor()
   QColor color (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
 
   mlePaneLocal->setForeground(color);
+  mleIRCLocal->setForeground(color);
+  mleIRCRemote->setForeground(color);
 
   // sent to remote
   chatman->ChangeColorFg(color.red(), color.green(), color.blue());
@@ -371,6 +380,7 @@ void ChatDlg::changeBackColor()
 
   mlePaneLocal->setBackground(color);
   mleIRCLocal->setBackground(color);
+  mleIRCRemote->setBackground(color);
 
   // sent to remote
   chatman->ChangeColorBg(color.red(), color.green(), color.blue());

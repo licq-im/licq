@@ -89,6 +89,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_xCurrentReadEvent = NULL;
+  m_nMPChatPort = 0;
 
   for (unsigned short i = 0; i < 8; i++)
   {
@@ -232,10 +233,12 @@ void ICQFunctions::CreateSendEventTab()
   selay->addWidget(mleSend);
   selay->setStretchFactor(mleSend, 1);
 
-  grpOpt = new QGroupBox(2, Horizontal, tabList[TAB_SEND].tab);
+  grpOpt = new QGroupBox(3, Horizontal, tabList[TAB_SEND].tab);
   selay->addWidget(grpOpt);
   lblItem = new QLabel(grpOpt);
-  edtItem = new QLineEdit(grpOpt);
+  edtItem = new CInfoField(grpOpt, false);
+  btnItem = new QPushButton(grpOpt);
+  connect(btnItem, SIGNAL(clicked()), SLOT(slot_sendbtn()));
 #if QT_VERSION < 210
   QWidget* dummy_w2 = new QWidget(grpOpt);
   dummy_w2->setMinimumHeight(2);
@@ -249,7 +252,7 @@ void ICQFunctions::CreateSendEventTab()
 
   QBoxLayout *hlay = new QHBoxLayout(vlay);
 
-  chkSendServer = new QCheckBox(tr("Send through server"), box);//tabList[TAB_SEND].tab);
+  chkSendServer = new QCheckBox(tr("Send through server"), box);
   hlay->addWidget(chkSendServer);
   chkUrgent = new QCheckBox(tr("Urgent"), box);//tabList[TAB_SEND].tab);
   hlay->addWidget(chkUrgent);
@@ -1386,14 +1389,8 @@ void ICQFunctions::slot_readbtn3()
   switch (m_xCurrentReadEvent->SubCommand())
   {
     case ICQ_CMDxSUB_URL:   // view a url
-      if (server->getUrlViewer() != NULL)
-      {
-        char* szCmd = new char[strlen(server->getUrlViewer()) + strlen(((CEventUrl *)m_xCurrentReadEvent)->Url()) + 8];
-        sprintf(szCmd, "%s '%s' &", server->getUrlViewer(),
-                ((CEventUrl *)m_xCurrentReadEvent)->Url());
-        if (system(szCmd) != 0) WarnUser(this, tr("View URL failed."));
-        delete szCmd;
-      }
+      if (!server->ViewUrl(((CEventUrl *)m_xCurrentReadEvent)->Url()))
+        WarnUser(this, tr("View URL failed"));
       break;
 
     case ICQ_CMDxSUB_CHAT:  // join to current chat
@@ -1424,8 +1421,61 @@ void ICQFunctions::slot_readbtn3()
 }
 
 
-void ICQFunctions::slot_readbtn4()
+void ICQFunctions::slot_sendbtn()
 {
+  if (icqEventTag != NULL) return;
+
+  if (rdbUrl->isChecked())
+  {
+    if (!server->ViewUrl(edtItem->text().local8Bit()))
+      WarnUser(this, tr("View URL failed"));
+  }
+  else if (rdbChat->isChecked())
+  {
+    if (m_nMPChatPort == 0)
+    {
+      if (ChatDlg::chatDlgs.size() > 0)
+      {
+        ChatDlg *chatDlg = NULL;
+        CJoinChatDlg *j = new CJoinChatDlg(true, this);
+        if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
+        {
+          edtItem->setText(j->ChatClients());
+          m_nMPChatPort = chatDlg->LocalPort();
+          m_szMPChatClients = chatDlg->ChatClients();
+        }
+        delete j;
+        btnItem->setText(tr("Clear"));
+      }
+    }
+    else
+    {
+      m_nMPChatPort = 0;
+      m_szMPChatClients = "";
+      edtItem->setText("");
+      btnItem->setText(tr("Invite"));
+    }
+  }
+  else if (rdbFile->isChecked())
+  {
+#ifdef USE_KDE
+    // !!! FIXME !!!!
+    //QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
+    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
+#else
+    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
+#endif
+    if (fl.isEmpty()) return;
+    QStringList::ConstIterator it;
+    QString f;
+    for( it = fl.begin(); it != fl.end(); it++ )
+    {
+      if (it != fl.begin())
+        f += ", ";
+      f += (*it);
+    }
+    edtItem->setText(f);
+  }
 }
 
 
@@ -1740,47 +1790,39 @@ void ICQFunctions::specialFcn(int theFcn)
   case 0:
     grpOpt->hide();
     tabs->updateGeometry();
-    mleSend->setEnabled(true);
     chkSendServer->setEnabled(true);
     break;
-  case 1:
+  case 1:  // Url
     lblItem->setText(tr("URL:"));
+    btnItem->setText(tr("View"));
+    edtItem->clear();
+    edtItem->SetReadOnly(false);
+    btnItem->setEnabled(true);
     grpOpt->show();
     tabs->updateGeometry();
-    mleSend->setEnabled(true);
     chkSendServer->setEnabled(true);
     break;
-  case 2:
-    grpOpt->hide();
-    tabs->updateGeometry();
-    mleSend->setEnabled(true);
-    chkSendServer->setChecked(false);
-    chkSendServer->setEnabled(false);
-    break;
-  case 3:
-    lblItem->setText(tr("Filename:"));
+  case 2: // Chat
+    lblItem->setText(tr("Multiparty:"));
+    btnItem->setText(tr("Invite"));
+    edtItem->SetReadOnly(true);
+    btnItem->setEnabled(ChatDlg::chatDlgs.size() > 0);
+    edtItem->clear();
     grpOpt->show();
     tabs->updateGeometry();
     chkSendServer->setChecked(false);
     chkSendServer->setEnabled(false);
-    mleSend->setEnabled(true);
-    if (icqEventTag != NULL) break;
-#ifdef USE_KDE
-    // !!! FIXME !!!!
-    //QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
-    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
-#else
-    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
-#endif
-    QStringList::ConstIterator it;
-    QString f;
-    for( it = fl.begin(); it != fl.end(); it++ )
-    {
-      if (it != fl.begin())
-        f += ", ";
-      f += (*it);
-    }
-    edtItem->setText(f);
+    break;
+  case 3:  // File transfer
+    lblItem->setText(tr("Filename:"));
+    btnItem->setText(tr("Choose"));
+    edtItem->clear();
+    edtItem->SetReadOnly(false);
+    btnItem->setEnabled(true);
+    grpOpt->show();
+    tabs->updateGeometry();
+    chkSendServer->setChecked(false);
+    chkSendServer->setEnabled(false);
     break;
   }
 }
@@ -1830,8 +1872,15 @@ void ICQFunctions::callFcn()
     else if (rdbChat->isChecked())   // send chat request
     {
       m_sProgressMsg = tr("Sending chat request...");
-      icqEventTag = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
-         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+      if (m_nMPChatPort == 0)
+        icqEventTag = server->icqChatRequest(m_nUin,
+           mleSend->text().local8Bit(),
+           chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+      else
+        icqEventTag = server->icqMultiPartyChatRequest(m_nUin,
+           mleSend->text().local8Bit(), m_szMPChatClients.local8Bit(),
+           m_nMPChatPort,
+           chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
     }
     else if (rdbFile->isChecked())   // send file transfer
     {
