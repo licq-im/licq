@@ -58,19 +58,21 @@ void search_user_window()
 	su->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(su->window), "Licq - Search User");
 
+	gtk_window_set_default_size(GTK_WINDOW(su->window), 550, 350);
+
 	/* destroy event for window */
 	gtk_signal_connect(GTK_OBJECT(su->window), "destroy",
 			   GTK_SIGNAL_FUNC(search_close), su->window);
 
 	/* Create the main table */
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_table_new(4, 3, FALSE);
 	gtk_container_add(GTK_CONTAINER(su->window), table);
 
 	/* Create the notebook */
 	notebook = gtk_notebook_new();
 
 	/* The table inside the name tab */
-	table_in_nb = gtk_table_new(3, 2, FALSE);
+	table_in_nb = gtk_table_new(4, 3, FALSE);
 
 	label = gtk_label_new("Nick Name:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
@@ -102,23 +104,17 @@ void search_user_window()
                          GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
 
-	label = gtk_label_new("Name");
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_in_nb, label);
-
-	/* A new tab (E-Mail Tab), a new table */
-	table_in_nb = gtk_table_new(1, 2, FALSE);
-
 	label = gtk_label_new("E-Mail Address:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-	gtk_table_attach(GTK_TABLE(table_in_nb), label, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 3, 25);
+	gtk_table_attach(GTK_TABLE(table_in_nb), label, 0, 1, 3, 4,
+		GTK_FILL, GTK_FILL, 3, 3);
 
 	su->email = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table_in_nb), su->email, 1, 2, 0, 1,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GTK_FILL, 3, 25);
+	gtk_table_attach(GTK_TABLE(table_in_nb), su->email, 1, 2, 3, 4,
+			 GTK_FILL,
+			 GTK_FILL, 3, 3);
 
-	label = gtk_label_new("E-mail");
+	label = gtk_label_new("Name");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_in_nb, label);
 
 	/* Another new tab (UIN Tab), a new table */
@@ -181,7 +177,7 @@ void search_user_window()
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	su->list = gtk_clist_new(4);
+	su->list = gtk_clist_new(6);
 	gtk_clist_set_selection_mode(GTK_CLIST(su->list), GTK_SELECTION_BROWSE);
 	gtk_clist_set_shadow_type(GTK_CLIST(su->list), GTK_SHADOW_ETCHED_IN);
 
@@ -189,16 +185,20 @@ void search_user_window()
 	gtk_clist_column_titles_passive(GTK_CLIST(su->list));
 
 	/* Set the widths */
-	gtk_clist_set_column_width(GTK_CLIST(su->list), 0, 70);
-	gtk_clist_set_column_width(GTK_CLIST(su->list), 1, 65);
+	gtk_clist_set_column_width(GTK_CLIST(su->list), 0, 65);
+	gtk_clist_set_column_width(GTK_CLIST(su->list), 1, 70);
 	gtk_clist_set_column_width(GTK_CLIST(su->list), 2, 100);
 	gtk_clist_set_column_width(GTK_CLIST(su->list), 3, 100);
+	gtk_clist_set_column_width(GTK_CLIST(su->list), 4, 70);
+	gtk_clist_set_column_width(GTK_CLIST(su->list), 5, 50);
 
 	/* Set the titles */
-	gtk_clist_set_column_title(GTK_CLIST(su->list), 0, "UIN");
-	gtk_clist_set_column_title(GTK_CLIST(su->list), 1, "Nick");
+	gtk_clist_set_column_title(GTK_CLIST(su->list), 0, "Nick");
+	gtk_clist_set_column_title(GTK_CLIST(su->list), 1, "UIN");
 	gtk_clist_set_column_title(GTK_CLIST(su->list), 2, "Name");
 	gtk_clist_set_column_title(GTK_CLIST(su->list), 3, "E-mail");
+	gtk_clist_set_column_title(GTK_CLIST(su->list), 4, "Status");
+	gtk_clist_set_column_title(GTK_CLIST(su->list), 5, "Sex & Age");
 
 	/* Double click on a user */
 	gtk_signal_connect(GTK_OBJECT(su->list), "button_press_event",
@@ -266,8 +266,19 @@ void search_callback(GtkWidget *widget, gpointer data)
                 su->etag->e_tag = icq_daemon->icqSerachWhitePages(first_name,
 						last_name,
 						nick_name,
-						email, 0, 0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0);
+						email,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						false);
 */
 }
 

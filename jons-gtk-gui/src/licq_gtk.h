@@ -109,6 +109,8 @@ struct info_user
 	GtkWidget *pos;
 	GtkWidget *co_homepage;
 	GtkWidget *co_address;
+	GtkWidget *co_zip;
+	GtkWidget *co_country;
 	GtkWidget *co_phone;
 	GtkWidget *co_city;
 	GtkWidget *co_state;

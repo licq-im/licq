@@ -625,14 +625,14 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 					GetCountryByName(_country);
 				cc = NewCountry->nCode;
 			}
-/*
+
 	   		iu->etag->e_tag = icq_daemon->icqSetGeneralInfo(
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->alias), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->fname), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->lname), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->email1), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
-		  	gtk_editable_get_chars(GTK_EDITABLE(iu->oldemail), 0, -1),
+		  	//gtk_editable_get_chars(GTK_EDITABLE(iu->email2), 0, -1),
+		  	//gtk_editable_get_chars(GTK_EDITABLE(iu->oldemail), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->city), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->state), 0, -1),
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->phone), 0, -1),
@@ -642,7 +642,7 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 		  	gtk_editable_get_chars(GTK_EDITABLE(iu->zip), 0, -1),
 		  	cc, 
 	 	  	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(iu->hide_email)));
-*/
+
 		}
 
 		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
@@ -687,21 +687,34 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 			g_free(const_cast<char *>(_gender));
 		}
 
-		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))
-			== 3)
+		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook)) == 3)
 	   	{
-/*
+			const gchar *_co_country = gtk_editable_get_chars(
+				GTK_EDITABLE(GTK_COMBO(iu->co_country)->entry),
+				0, -1);
+			unsigned short cc;
+
+			if (strcmp("Unspecified", _co_country) == 0)
+				cc = COUNTRY_UNSPECIFIED;
+			else
+			{
+				const SCountry *pNewCountry =
+					GetCountryByName(_co_country);
+				cc = pNewCountry->nCode;
+			}
+
 			iu->etag->e_tag = icq_daemon->icqSetWorkInfo(
 	   			gtk_editable_get_chars(GTK_EDITABLE(iu->co_city), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_state), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_phone), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_fax), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_address), 0, -1),
+				gtk_editable_get_chars(GTK_EDITABLE(iu->co_zip), 0, -1),
+				cc,
 				gtk_editable_get_chars(GTK_EDITABLE(iu->company), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->dept), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->pos), 0, -1),
 				gtk_editable_get_chars(GTK_EDITABLE(iu->co_homepage), 0, -1));
-*/
 		}
 		
 		else if(gtk_notebook_get_current_page(GTK_NOTEBOOK(iu->notebook))

@@ -248,6 +248,7 @@ void menu_options_create()
 		GtkAttachOptions(0),
 		GtkAttachOptions(0), 3, 3);
 
+
 	// Box for the firewall host and entry
 	GtkWidget *boxHBox = gtk_hbox_new(false, 0);
 
@@ -700,9 +701,9 @@ void color_dlg_cancel(GtkWidget *widget, gpointer data)
 	delete change;
 }
 
+/*
 void SOCKSClicked(GtkWidget *widget, gpointer data)
 {
-/*
 	if (icq_daemon->SocksEnabled())
 	{
 		const char *env = icq_daemon->SocksServer();
@@ -726,5 +727,6 @@ void SOCKSClicked(GtkWidget *widget, gpointer data)
 		message_box("To enable SOCKS5 support, install NEC Socks or Dante\n"
 			    "then configure the Licq daemon with \"--enable-socks5\".\n");
 	}
-*/
 }
+*/
+
