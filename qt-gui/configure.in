@@ -11,7 +11,7 @@ AM_CONFIG_HEADER(config.h)
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
-AC_DEFINE_UNQUOTED(INT_VERSION,$INT_VERSION)
+AC_DEFINE_UNQUOTED(INT_VERSION,$INT_VERSION, [Qt-GUI version number as int])
 
 dnl Also substitute PACKAGE and VERSION in the AC_OUTPUT files
 AC_SUBST(PACKAGE)
@@ -92,7 +92,7 @@ XSS_LIBS="no"
 AC_CHECK_X_LIB(Xext, XScreenSaverRegister,[XSS_LIBS=""],[], [-lX11 -lXext -lm])
 AC_CHECK_X_LIB(Xss, XScreenSaverRegister,[XSS_LIBS="-lXss"],[],[-lX11 -lXext -lm])
 if test \! "$XSS_LIBS" = "no"; then
-  AC_CHECK_X_HEADER(X11/extensions/scrnsaver.h,[AC_DEFINE(USE_SCRNSAVER)])
+  AC_CHECK_X_HEADER(X11/extensions/scrnsaver.h,[AC_DEFINE(USE_SCRNSAVER, 1, [use X screensaver support])])
 else
   dnl Don't include the screensaver libs if we can't find the header.
   XSS_LIBS=""
