@@ -2345,7 +2345,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
 void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
 {
   int nAt = (index & 0x00FF0000) >> 16;
-  unsigned long nThisPPID = m_lnProtMenu[nAt];
+  unsigned long nThisPPID = nAt > 0 ? m_lnProtMenu[nAt] : 0;
   index &= 0x0000FFFF;
   
   if (index == OwnerMenuView)
