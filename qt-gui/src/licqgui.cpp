@@ -97,7 +97,7 @@ bool LP_Init(int argc, char **argv)
     switch (i)
     {
     case 'h':  // help
-      LP_Usage();
+      printf("%s\n", LP_Usage());
       return false;
     case 's':  // skin name
       sprintf(skinName, "%s", optarg);
