@@ -232,7 +232,7 @@ void PluginDlg::slot_stdConfig(int nRow, int nCol, int, const QPoint &)
   }
 
   QString f;
-  f.sprintf("%s%s", BASE_DIR, (*it)->ConfigFile());
+  f.sprintf("%s/%s", BASE_DIR, (*it)->ConfigFile());
   (void) new EditFileDlg(f);  
 }
 
