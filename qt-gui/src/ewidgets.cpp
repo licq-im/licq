@@ -171,6 +171,7 @@ void CELabel::addPixmap(const QPixmap &p)
 
 void CELabel::clearPixmaps()
 {
+  if (m_lPixmaps.size() == 0) return;
   m_lPixmaps.clear();
   setIndent(startingIndent);
   update();
