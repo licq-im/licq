@@ -35,7 +35,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gboolean is_o = FALSE;
 
 	// Check to see if it's for the owner 
-	if(user == NULL)
+	if(user == 0)
 	{
 		user = gUserManager.FetchOwner(LOCK_R);
 		is_o = TRUE;
@@ -43,7 +43,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	struct info_user *iu = iu_find(user->Uin());
 
-	if(iu != NULL)
+	if(iu != 0)
 	{
 		gdk_window_show(iu->window->window);
 		gdk_window_raise(iu->window->window);
@@ -77,7 +77,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_window_set_position(GTK_WINDOW(iu->window), GTK_WIN_POS_CENTER);
 
 	/* Make the scroll window for the about box */
-	v_scroll = gtk_scrolled_window_new(NULL, NULL);
+	v_scroll = gtk_scrolled_window_new(0, 0);
 	gtk_widget_set_usize(v_scroll, 175, 115);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(v_scroll),
 				       GTK_POLICY_NEVER,
@@ -202,7 +202,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	SCountry *sc = (SCountry *)GetCountryByCode(user->GetCountryCode());
 	gchar country[32];
 
-	if(sc == NULL)
+	if(sc == 0)
 		strcpy(country, "Unspecified");
 
 	else
@@ -216,7 +216,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	else
 	{
 		iu->o_country = gtk_combo_new();
-		GList *country_strings = NULL;
+		GList *country_strings = 0;
 
 		country_strings = g_list_append(country_strings,
 			const_cast<char *>("Unspecified"));
@@ -288,7 +288,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	else
 	{
 		iu->o_gender = gtk_combo_new();
-		GList *gender_strings = NULL;
+		GList *gender_strings = 0;
 		gender_strings = g_list_append(gender_strings, const_cast<char *>("(None)"));
 		gender_strings = g_list_append(gender_strings, const_cast<char *>("Female"));
 		gender_strings = g_list_append(gender_strings, const_cast<char *>("Male"));
@@ -411,7 +411,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	}
 	else
 	{
-		GList *lang_strings = NULL;
+		GList *lang_strings = 0;
 		
 		for(unsigned short j = 0; j < NUM_LANGUAGES; j++)
 			lang_strings = g_list_append(lang_strings,
@@ -432,7 +432,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 			// Set the language now
 			const SLanguage *lang = GetLanguageByCode(
 				user->GetLanguage(i));
-			if(lang == NULL)
+			if(lang == 0)
 				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(
 					iu->o_lang[i])->entry), "Unspecified");
 			else
@@ -497,7 +497,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 //------- START ABOUT TAB -----------------------------------
 
 	GtkWidget *about_box = gtk_vbox_new(FALSE, 5);
-	iu->about = gtk_text_new(NULL, NULL);
+	iu->about = gtk_text_new(0, 0);
 	gtk_text_set_word_wrap(GTK_TEXT(iu->about), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(iu->about), TRUE);
 	gtk_text_set_editable(GTK_TEXT(iu->about), is_o);
@@ -776,7 +776,7 @@ struct info_user *iu_find(unsigned long uin)
 		temp_iu_list = temp_iu_list->next;
 	}
 
-	return NULL;
+	return 0;
 }
 
 void do_entry(GtkWidget *&entry, const gchar *text, gboolean is_owner)

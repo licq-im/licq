@@ -30,7 +30,7 @@ struct plugin_window *pw;
 void create_plugin_window()
 {
 	// Only open a window if it's necessary
-	if(pw != NULL)
+	if(pw != 0)
 	{
 		gdk_window_raise(pw->window->window);
 		return;
@@ -43,7 +43,7 @@ void create_plugin_window()
 	gtk_window_set_title(GTK_WINDOW(pw->window), "Licq - Plugins");
 	gtk_window_set_position(GTK_WINDOW(pw->window), GTK_WIN_POS_CENTER);
 	gtk_signal_connect(GTK_OBJECT(pw->window), "destroy",
-		GTK_SIGNAL_FUNC(plugin_close_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_close_callback), 0);
 
 	// The loaded frame and box inside the frame
 	GtkWidget *l_frame = gtk_frame_new("Loaded");
@@ -71,23 +71,23 @@ void create_plugin_window()
 	// The "Enable", "Disable", "Unload", "Details", and "Configure" buttons
 	GtkWidget *enable = gtk_button_new_with_label("Enable");
 	gtk_signal_connect(GTK_OBJECT(enable), "clicked",
-		GTK_SIGNAL_FUNC(plugin_enable_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_enable_callback), 0);
 
 	GtkWidget *disable = gtk_button_new_with_label("Disable");
 	gtk_signal_connect(GTK_OBJECT(disable), "clicked",
-		GTK_SIGNAL_FUNC(plugin_disable_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_disable_callback), 0);
 
 	GtkWidget *unload = gtk_button_new_with_label("Unload");
 	gtk_signal_connect(GTK_OBJECT(unload), "clicked",
-		GTK_SIGNAL_FUNC(plugin_unload_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_unload_callback), 0);
 		
 	GtkWidget *details = gtk_button_new_with_label("Details");
 	gtk_signal_connect(GTK_OBJECT(details), "clicked",
-		GTK_SIGNAL_FUNC(plugin_details_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_details_callback), 0);
 
 	GtkWidget *configure = gtk_button_new_with_label("Configure");
 	gtk_signal_connect(GTK_OBJECT(configure), "clicked",
-		GTK_SIGNAL_FUNC(plugin_configure_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_configure_callback), 0);
 
 	// Pack the buttons into an hbox then pack the hbox into the vbox
 	GtkWidget *buttons_box = gtk_hbox_new(true, 0);
@@ -115,7 +115,7 @@ void create_plugin_window()
 	// "Load" button
 	GtkWidget *load = gtk_button_new_with_label("Load");
 	gtk_signal_connect(GTK_OBJECT(load), "clicked",
-		GTK_SIGNAL_FUNC(plugin_load_callback), NULL);
+		GTK_SIGNAL_FUNC(plugin_load_callback), 0);
 	
 	// Pack it 
 	buttons_box = gtk_hbox_new(false, 0);

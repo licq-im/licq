@@ -19,7 +19,7 @@ void menu_daemon_stats()
 #ifdef SAVE_STATS
 	strcpy(info, "Daemon Statistics\n(Today/Total)\n");
 
-	time_t uptime = time(NULL) - icq_daemon->StartTime();
+	time_t uptime = time(0) - icq_daemon->StartTime();
 	time_t reset  = icq_daemon->ResetTime();
 
 	// Licq's uptime
@@ -90,7 +90,7 @@ void menu_daemon_stats()
 
 	strcpy(info, "Daemon Statistics\n");
 
-	time_t uptime = time(NULL) - icq_daemon->StartTime();
+	time_t uptime = time(0) - icq_daemon->StartTime();
 	time_t reset  = icq_daemon->ResetTime();
 
 	// Licq's uptime

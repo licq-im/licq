@@ -58,14 +58,14 @@ void list_history(GtkWidget *widget, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	// Make the scrolled window
-	scroll = gtk_scrolled_window_new(NULL, NULL);
+	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_usize(scroll, 300, 225);
 
 	// Make the text box
-	hist->text = gtk_text_new(NULL, NULL);
+	hist->text = gtk_text_new(0, 0);
 	gtk_text_set_word_wrap(GTK_TEXT(hist->text), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(hist->text), TRUE);
 	gtk_container_add(GTK_CONTAINER(scroll), hist->text);
@@ -115,7 +115,7 @@ void list_history(GtkWidget *widget, ICQUser *user)
 
 	// Easy way, small memory
 	GdkColor *clrColor;
-	char *szDesc, szDate[30];
+	char szDesc[36], szDate[30];
 	tm *tmStupid;
 	
 	while(history_iter != hist_list.end())
@@ -160,7 +160,6 @@ void list_history(GtkWidget *widget, ICQUser *user)
 			clrColor, &clrWhite, (*history_iter)->Text(), -1);
 		gtk_text_insert(GTK_TEXT(hist->text), 0, 0, 0, "\n\n", -1);
 
-		delete [] szDesc;
 		history_iter++;
  	}
 

@@ -36,7 +36,7 @@ void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept = false)
 
 	if(auto_accept)
 	{
-		accept_file(NULL, (gpointer)fa);
+		accept_file(0, (gpointer)fa);
 		return;
 	}
 
@@ -92,7 +92,7 @@ void refuse_file(GtkWidget *widget, gpointer _fa)
 	struct file_accept *fa = (struct file_accept *)_fa;
 
 	// Close the unnecessary open window
-	dialog_close(NULL, fa->window);
+	dialog_close(0, fa->window);
 
 	// Create a window to get a reason for not accepting it
 	
@@ -105,7 +105,7 @@ void refuse_file(GtkWidget *widget, gpointer _fa)
 	gtk_container_add(GTK_CONTAINER(fa->window2), v_box);
 
 	// The text for the refusal
-	fa->text = gtk_text_new(NULL, NULL);
+	fa->text = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(fa->text), TRUE);
 	gtk_box_pack_start(GTK_BOX(v_box), fa->text, FALSE, FALSE, 0);
 
@@ -142,7 +142,7 @@ void refusal_ok(GtkWidget *widget, gpointer _fa)
 			"No reason given.", fa->e->Sequence());
 	}
 
-	dialog_close(NULL, fa->window2);
+	dialog_close(0, fa->window2);
 }
 
 void accept_file(GtkWidget *widget, gpointer _fa)
@@ -151,7 +151,7 @@ void accept_file(GtkWidget *widget, gpointer _fa)
 
 	// Close the unnecessary open window
 	if(fa->window)
-		dialog_close(NULL, fa->window);
+		dialog_close(0, fa->window);
 
 	save_file(fa);
 }
@@ -372,7 +372,7 @@ void cancel_file(GtkWidget *widget, gpointer _fw)
 	gdk_input_remove(fw->input_tag);
 
 	// Close this window
-	dialog_close(NULL, fw->window);
+	dialog_close(0, fw->window);
 }
 
 void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
@@ -383,9 +383,9 @@ void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
 	gchar buf[32];
 	read(fw->ftman->Pipe(), buf, 32);
 
-	CFileTransferEvent *e = NULL;
+	CFileTransferEvent *e = 0;
 
-	while((e = fw->ftman->PopFileTransferEvent()) != NULL)
+	while((e = fw->ftman->PopFileTransferEvent()) != 0)
 	{
 		switch(e->Command())
 		{
@@ -472,7 +472,7 @@ void update_file_info(struct file_window *fw)
 	// Current File info
 
 	// Time
-	time_t Time = time(NULL) - fw->ftman->StartTime();
+	time_t Time = time(0) - fw->ftman->StartTime();
 	gtk_entry_set_text(GTK_ENTRY(fw->time), g_strdup_printf("%02ld:%02ld:%02ld",
 								Time / 3600,
 								(Time % 3600) / 60,
@@ -549,7 +549,7 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 	fs = fs_find(user->Uin());
 	
 	// Don't make it if it already exists
-	if(fs != NULL)
+	if(fs != 0)
 		return;
 		
 	fs = g_new0(struct file_send, 1);
@@ -576,7 +576,7 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 	GtkWidget *desc_v_box = gtk_vbox_new(FALSE, 0);
 	GtkWidget *label = gtk_label_new("Description:");
 	gtk_box_pack_start(GTK_BOX(desc_v_box), label, FALSE, FALSE, 0);
-	fs->description = gtk_text_new(NULL, NULL);
+	fs->description = gtk_text_new(0, 0);
 	gtk_widget_set_usize(fs->description, 100, 75);
 	gtk_text_set_editable(GTK_TEXT(fs->description), TRUE);
 	gtk_box_pack_start(GTK_BOX(desc_v_box), fs->description, FALSE, FALSE, 0);
@@ -594,7 +594,7 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 
 	// Send normal, urgent, to list, in an hbox
 	h_box = gtk_hbox_new(FALSE, 5);
-	fs->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
+	fs->send_normal = gtk_radio_button_new_with_label(0, "Send Normal");
 	fs->send_urgent = gtk_radio_button_new_with_label_from_widget(
 		GTK_RADIO_BUTTON(fs->send_normal), "Send Urgent");
 	fs->send_list = gtk_radio_button_new_with_label_from_widget(
@@ -705,8 +705,8 @@ struct file_send *fs_find(gulong uin)
 		temp_fs_list = temp_fs_list->next;
 	}
 
-	// It wasn't found, return NULL
-	return NULL;
+	// It wasn't found, return 0
+	return 0;
 }
 
 // See if the file was accepted or not
@@ -715,7 +715,7 @@ void file_start_send(ICQEvent *event)
 	CExtendedAck *ea = event->ExtendedAck();
 	CUserEvent *ue = event->UserEvent();
 	
-	if(ea == NULL || ue == NULL)
+	if(ea == 0 || ue == 0)
 	{
 		gLog.Error("%sInternal error: file_start_send(): chat or file"
 			   " request acknowledgement without extended "

@@ -35,7 +35,7 @@ void create_key_request_window(GtkWidget *widget, ICQUser *user)
 	struct key_request *kr = kr_find(user->Uin());
 
 	// Nope
-	if(kr != NULL)
+	if(kr != 0)
 		return;
 
 	// Yep, make a new one
@@ -151,7 +151,7 @@ struct key_request *kr_find(gulong uin)
 	}
 
 	// It wasn't found
-	return NULL;
+	return 0;
 }
 
 struct key_request *kr_new(ICQUser *u)

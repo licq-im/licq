@@ -84,12 +84,12 @@ void do_pixmaps()
 
 struct status_icon *make_pixmap(struct status_icon *icon, gchar **file)
 {
-	if(icon == NULL)
+	if(icon == 0)
 		icon = g_new0(struct status_icon, 1);
 		
 	icon->pm = gdk_pixmap_create_from_xpm_d(main_window->window,
 					    &icon->bm,
-					    NULL,
+					    0,
 					    file);
 	return icon;
 }
@@ -166,7 +166,7 @@ void owner_function(ICQEvent *event)
 			main_window = main_window_new(title, 445, 200);
 			main_window_show();
 			system_status_refresh();
-			dialog_close(NULL, register_window);
+			dialog_close(0, register_window);
 		}
 		else
 		{
@@ -201,7 +201,7 @@ void user_function(ICQEvent *event)
 void finish_event(struct e_tag_data *etd, ICQEvent *event)
 {
 	/* Make sure we have the right event and event tag */
-	if( (etd->e_tag == 0 && event != NULL) ||
+	if( (etd->e_tag == 0 && event != 0) ||
 	    (etd->e_tag != 0 && !event->Equals(etd->e_tag)) )
 	    	return;
 
@@ -218,7 +218,7 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	/* Get the current text */
 	strcpy(temp, etd->buf);
 	
-	if(event == NULL)
+	if(event == 0)
 	{
 		strcat(temp, "error");
 	}
@@ -306,7 +306,7 @@ void finish_message(ICQEvent *event)
 	c = convo_find(event->Uin());
 
 	/* If the window isn't open, there isn't anything left to do */
-	if(c == NULL)
+	if(c == 0)
 		return;
 
 	/* Check to make sure it sent, and if it did, put the text in */
@@ -335,7 +335,7 @@ void finish_chat(ICQEvent *event)
 
 	rc = rc_find(event->Uin());
 
-	if(rc == NULL)
+	if(rc == 0)
 		return;
 		
 	close_request_chat(rc);
@@ -348,10 +348,11 @@ void finish_file(ICQEvent *event)
 
 	fs = fs_find(event->Uin());
 
-	if(fs == NULL)
+	if(fs == 0)
 		return;
 		
 //	close_file_send(fs);
+	gtk_widget_destroy(fs->window);
 	file_start_send(event);
 }
 
@@ -362,7 +363,7 @@ void finish_away(ICQEvent *event)
 	uaw = uaw_find(event->Uin());
 
 	/* If the window isn't open, don't bother */
-	if(uaw == NULL)
+	if(uaw == 0)
 		return;
 
 	gtk_text_freeze(GTK_TEXT(uaw->text_box));
@@ -378,7 +379,7 @@ void finish_random(ICQEvent *event)
 
 	// Show the person's info window
 	ICQUser *u = gUserManager.FetchUser(event->SearchAck()->Uin(), LOCK_R);
-	list_info_user(NULL, u);
+	list_info_user(0, u);
 	gUserManager.DropUser(u);
 }
 
@@ -387,7 +388,7 @@ void finish_secure(ICQEvent *event)
 	struct key_request *kr = kr_find(event->Uin());
 
 	// Window isn't open.. cya
-	if(kr == NULL)
+	if(kr == 0)
 		return;
 
 	char result[41];
@@ -437,7 +438,7 @@ void finish_info(CICQSignal *signal)
 
 	iu = iu_find(signal->Uin());
 
-	if(iu == NULL)
+	if(iu == 0)
 		return;
 
 	const SCountry *country = GetCountryByCode(iu->user->GetCountryCode());
@@ -481,7 +482,7 @@ void finish_info(CICQSignal *signal)
 		gtk_entry_set_text(GTK_ENTRY(iu->state), iu->user->GetState());
 		gtk_entry_set_text(GTK_ENTRY(iu->zip), iu->user->GetZipCode());
 		
-		if(country == NULL)
+		if(country == 0)
 			gtk_entry_set_text(GTK_ENTRY(iu->country),
 					   "Unspecified");
 		else
@@ -512,18 +513,18 @@ void finish_info(CICQSignal *signal)
 
 		for(unsigned short i = 0; i < 3; i++) {
 		const SLanguage *l = GetLanguageByCode(iu->user->GetLanguage(i));
-		if(l == NULL)
+		if(l == 0)
 			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), "Unknown");
 		else
 			gtk_entry_set_text(GTK_ENTRY(iu->lang[i]), l->szName);
 		}
 /*
-		if(l2 == NULL)
+		if(l2 == 0)
                         gtk_entry_set_text(GTK_ENTRY(iu->lang2), "Unknown");
                 else
                         gtk_entry_set_text(GTK_ENTRY(iu->lang2), l2->szName);
 
-		if(l3 == NULL)
+		if(l3 == 0)
                         gtk_entry_set_text(GTK_ENTRY(iu->lang3), "Unknown");
                 else
                         gtk_entry_set_text(GTK_ENTRY(iu->lang3), l3->szName);

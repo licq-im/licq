@@ -27,11 +27,11 @@
 
 void list_start_convo(GtkWidget *widget, ICQUser *user)
 {
-	struct conversation *c = NULL;
+	struct conversation *c = 0;
 
 	c = convo_find(user->Uin());
 
-	if(c != NULL)
+	if(c != 0)
 		gdk_window_raise(c->window->window);
 
 	else
@@ -104,7 +104,7 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 			 GTK_FILL, GTK_FILL, 3, 3);
 
 	/* Normal, Urgent, or to Contact List */
-	url->send_normal = gtk_radio_button_new_with_label(NULL, "Normal");
+	url->send_normal = gtk_radio_button_new_with_label(0, "Normal");
 	gtk_box_pack_start(GTK_BOX(h_box), url->send_normal, FALSE, FALSE, 0);
 
 	url->send_urgent = gtk_radio_button_new_with_label_from_widget(

@@ -107,7 +107,7 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 	/* New h_box */
 	h_box = gtk_hbox_new(FALSE, 5);
 	
-	fix_radios = gtk_radio_button_new_with_label(NULL, "None");
+	fix_radios = gtk_radio_button_new_with_label(0, "None");
 
 	/* The visible list */
 	mw->visible = gtk_radio_button_new_with_label_from_widget(
@@ -165,7 +165,7 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 
 	/* THE STATUS TAB */
 
-	fix_radios = gtk_radio_button_new_with_label(NULL, "None");
+	fix_radios = gtk_radio_button_new_with_label(0, "None");
 
 	/* Appear online to user */
 	mw->online_to = gtk_radio_button_new_with_label_from_widget(
@@ -224,7 +224,7 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mw->custom_check),
 					    TRUE);
 
-	mw->custom_text = gtk_text_new(NULL, NULL);
+	mw->custom_text = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(mw->custom_text), TRUE);
 	gtk_text_freeze(GTK_TEXT(mw->custom_text));
 	gtk_text_insert(GTK_TEXT(mw->custom_text), 0, 0, 0,
@@ -333,7 +333,7 @@ void more_ok_callback(GtkWidget *widget, struct more_window *mw)
 			gtk_editable_get_chars(GTK_EDITABLE(mw->custom_text),
 						0, -1));
 	else
-		mw->user->SetCustomAutoResponse(NULL);
+		mw->user->SetCustomAutoResponse(0);
 	
-	dialog_close(NULL, mw->window);
+	dialog_close(0, mw->window);
 }

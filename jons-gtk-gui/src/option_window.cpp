@@ -230,7 +230,7 @@ void menu_options_create()
 
 	ow->btnSOCKS = gtk_button_new_with_label("SOCKS5 Proxy");
 	gtk_signal_connect(GTK_OBJECT(ow->btnSOCKS), "clicked",
-		GTK_SIGNAL_FUNC(SOCKSClicked), NULL);
+		GTK_SIGNAL_FUNC(SOCKSClicked), 0);
 	gtk_table_attach(GTK_TABLE(tblFirewall), ow->btnSOCKS, 0, 1, 1, 2,
 		GtkAttachOptions(0),
 		GtkAttachOptions(0), 3, 3);
@@ -370,11 +370,7 @@ void set_options(struct options_window *ow)
 
 	// Auto Logon
 	char szStatus[15];
-	if (auto_logon == ICQ_STATUS_OFFLINE)
-	{
-		strcpy(szStatus, "(None)");
-	}
-	else if (auto_logon & ICQ_STATUS_DND)
+	if (auto_logon & ICQ_STATUS_DND)
 	{
 		strcpy(szStatus, "Do Not Disturb");
 	}

@@ -60,7 +60,7 @@ GtkWidget *contact_list_new(gint height, gint width)
 
 	/* A double click on a user name */
 	gtk_signal_connect(GTK_OBJECT(_contact_l), "button_press_event",
-			   GTK_SIGNAL_FUNC(contact_list_click), NULL);
+			   GTK_SIGNAL_FUNC(contact_list_click), 0);
 
 	gtk_clist_set_button_actions(GTK_CLIST(_contact_l), 0, GTK_BUTTON_IGNORED);
 
@@ -308,7 +308,7 @@ void contact_list_refresh()
 
 	AutoSecureList.clear();
 
-	gtk_clist_set_compare_func(GTK_CLIST(contact_list), NULL);
+	gtk_clist_set_compare_func(GTK_CLIST(contact_list), 0);
 	gtk_clist_set_sort_column(GTK_CLIST(contact_list), 0);
 	gtk_clist_sort(GTK_CLIST(contact_list));
 
@@ -336,7 +336,7 @@ void contact_list_click(GtkWidget *contact_list,
 	gint column;
 	gchar str_status[30];
 	ICQUser *user;
-	struct conversation *c = NULL;
+	struct conversation *c = 0;
 	struct timeval check_timer;
 
 	/* Get which cell was clicked in to find that user */
@@ -350,14 +350,14 @@ void contact_list_click(GtkWidget *contact_list,
 	user = (ICQUser *)gtk_clist_get_row_data(GTK_CLIST(contact_list), row);
 
 	/* No user was clicked on */
-	if(user == NULL)
+	if(user == 0)
 		return;
 
 	/* A left mouse click */
 	if(event->button == 1)
 	{
 		/* Fix the stupid contact list double click problem */
-		gettimeofday(&check_timer, NULL);
+		gettimeofday(&check_timer, 0);
 
 		if(!((check_timer.tv_sec == timer.tv_sec) &&
 		   (check_timer.tv_usec - timer.tv_usec) < 2000))
@@ -372,7 +372,7 @@ void contact_list_click(GtkWidget *contact_list,
 	
 		c = convo_find(user->Uin());
 		
-		if(c != NULL)
+		if(c != 0)
 			gdk_window_raise(c->window->window);
 		else
 		{
@@ -462,7 +462,7 @@ void contact_list_click(GtkWidget *contact_list,
 		add_to_popup("Delete User", _menu,
 			     GTK_SIGNAL_FUNC(list_delete_user), user);
 	
-		gtk_menu_popup(GTK_MENU(_menu), NULL, NULL, NULL, NULL, 
+		gtk_menu_popup(GTK_MENU(_menu), 0, 0, 0, 0, 
 			       event->button, event->time);
 	
 	}

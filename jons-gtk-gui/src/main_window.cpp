@@ -37,7 +37,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 			   gint height,
 			   gint width)
 {
-	gtk_timeout_add(1000, flash_icons, NULL);
+	gtk_timeout_add(1000, flash_icons, 0);
 
 	/* Here's a good place to start the option defaults */
 	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
@@ -74,7 +74,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 
 	/* Call main_window_delete_event when the delete_event is called */
 	gtk_signal_connect(GTK_OBJECT(main_window), "delete_event",
-			   GTK_SIGNAL_FUNC(main_window_delete_event), NULL);
+			   GTK_SIGNAL_FUNC(main_window_delete_event), 0);
 
 	// After the main window has been created, but before the contact
 	// list or anything is shown, we need to make the colors and pixmaps
@@ -90,7 +90,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 	menu_create();
 
 	/* Add a scroll bar for the contact list */
-	scroll_bar = gtk_scrolled_window_new(NULL, NULL);
+	scroll_bar = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_bar),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
@@ -129,7 +129,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 
 	/* Get any clicks on the system status bar*/
 	gtk_signal_connect(GTK_OBJECT(event_box2), "button_press_event",
-			   GTK_SIGNAL_FUNC(system_status_click), NULL);
+			   GTK_SIGNAL_FUNC(system_status_click), 0);
 
 	/* Pack the system status bar first */
 	gtk_box_pack_start(GTK_BOX(vertical_box), event_box2, FALSE,FALSE,0);

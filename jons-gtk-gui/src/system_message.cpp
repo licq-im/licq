@@ -42,13 +42,13 @@ void system_message_window()
 	v_box = gtk_vbox_new(FALSE, 5);
 
 	/* The scrolling window */
-	scroll = gtk_scrolled_window_new(NULL, NULL);
+	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
 
 	/* The text box to display messages */
-	sm->text = gtk_text_new(NULL, NULL);
+	sm->text = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(sm->text), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(sm->text), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(sm->text), TRUE);
@@ -61,7 +61,7 @@ void system_message_window()
 	case ICQ_CMDxSUB_AUTHxREQUEST:
 		gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0,
 			        "Authorization Request\n-------------------\n\n", -1);
-		menu_system_auth_user(NULL, ((CEventAuthRequest *)event)->Uin());
+		menu_system_auth_user(0, ((CEventAuthRequest *)event)->Uin());
 		break;
 	
 	case ICQ_CMDxSUB_AUTHxGRANTED:

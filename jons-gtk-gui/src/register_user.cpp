@@ -39,11 +39,11 @@ void registration_wizard()
 
 	/* Set the uin entry box back to TRUE if check is check or vice versa */
 	gtk_signal_connect(GTK_OBJECT(check), "toggled",
-			   GTK_SIGNAL_FUNC(current_button_callback), NULL);
+			   GTK_SIGNAL_FUNC(current_button_callback), 0);
 			   
 	/* Validate numbers only in the uin box */
 	gtk_signal_connect(GTK_OBJECT(uin), "insert-text",
-			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
+			   GTK_SIGNAL_FUNC(verify_numbers), 0);
 
 	/* Attach them to the table */
 	gtk_table_attach(GTK_TABLE(table), check, 0, 1, 0, 1,
@@ -81,9 +81,9 @@ void registration_wizard()
 
 	/* The "clicked" signals for both buttons */
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-			   GTK_SIGNAL_FUNC(wizard_ok), NULL);
+			   GTK_SIGNAL_FUNC(wizard_ok), 0);
 	gtk_signal_connect(GTK_OBJECT(cancel), "clicked",
-			   GTK_SIGNAL_FUNC(wizard_cancel), NULL);
+			   GTK_SIGNAL_FUNC(wizard_cancel), 0);
 
 	/* Pack them */
 	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 0);
@@ -93,7 +93,7 @@ void registration_wizard()
 	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 3, 4,
 			 GTK_FILL, GTK_FILL, 3, 3);
 
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, NULL);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, 0);
 
 	gtk_container_add(GTK_CONTAINER(register_window), notebook);
 	gtk_widget_show_all(register_window);
@@ -139,7 +139,7 @@ void wizard_ok(GtkWidget *widget, gpointer data)
 			445, 200);
 		main_window_show();
 		system_status_refresh();
-		dialog_close(NULL, register_window);
+		dialog_close(0, register_window);
 	}
 
 	/* Registering a new user */

@@ -32,7 +32,7 @@ GtkWidget *about_window;
 void create_about_window()
 {
 	// Only one about window
-	if(about_window != NULL)
+	if(about_window != 0)
 	{
 		gdk_window_raise(about_window->window);
 		return;
@@ -45,7 +45,7 @@ void create_about_window()
 
 	// Window delete event
 	gtk_signal_connect(GTK_OBJECT(about_window), "destroy",
-		GTK_SIGNAL_FUNC(close_about_window), NULL);
+		GTK_SIGNAL_FUNC(close_about_window), 0);
 
 	// A vertical box for the label and ok button
 	GtkWidget *v_box = gtk_vbox_new(false, 5);
@@ -78,7 +78,7 @@ void create_about_window()
 
 	GtkWidget *ok = gtk_button_new_with_label("OK");
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-		GTK_SIGNAL_FUNC(close_about_window), NULL);
+		GTK_SIGNAL_FUNC(close_about_window), 0);
 	gtk_box_pack_start(GTK_BOX(v_box), ok, true, true, 0);
 
 	gtk_widget_show_all(about_window);
@@ -87,5 +87,5 @@ void create_about_window()
 void close_about_window(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy(about_window);
-	about_window = NULL;
+	about_window = 0;
 }

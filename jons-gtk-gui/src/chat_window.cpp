@@ -36,7 +36,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	struct request_chat *rc = rc_find(user->Uin());
 
 	// No get outta here, bitch!
-	if(rc != NULL)
+	if(rc != 0)
 		return;
 
 	rc = rc_new(user);
@@ -70,11 +70,11 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 		GTK_SIGNAL_FUNC(cancel_request_chat), (gpointer)rc);
 
 	/*Create the scrolled window with text and attach it to the window */
-	scroll = gtk_scrolled_window_new(NULL, NULL);
+	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
-	rc->text_box = gtk_text_new(NULL, NULL);
+	rc->text_box = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(rc->text_box), TRUE);
 	gtk_text_set_word_wrap(GTK_TEXT(rc->text_box), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(rc->text_box), TRUE);
@@ -86,7 +86,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	gtk_widget_show(scroll);
 
 	/* The send as buttons */
-	rc->send_norm = gtk_radio_button_new_with_label(NULL, "Send Normal");
+	rc->send_norm = gtk_radio_button_new_with_label(0, "Send Normal");
 	rc->send_urg = gtk_radio_button_new_with_label_from_widget(
 			GTK_RADIO_BUTTON(rc->send_norm), "Send Urgent");
 	rc->send_list = gtk_radio_button_new_with_label_from_widget(
@@ -162,7 +162,7 @@ struct request_chat *rc_new(ICQUser *user)
 	rc = rc_find(user->Uin());
 
 	/* Don't make it if it's already there, return it */
-	if(rc != NULL)
+	if(rc != 0)
 		return rc;
 
 	rc = g_new0(struct request_chat, 1);
@@ -187,7 +187,7 @@ struct request_chat *rc_find(gulong uin)
 	}
 
 	/* It wasn't found, return null */
-	return NULL;
+	return 0;
 }
 
 void multi_request_chat(GtkWidget *widget, gpointer _rc)
@@ -199,14 +199,14 @@ void multi_request_chat(GtkWidget *widget, gpointer _rc)
 		return;
 
 	// Make a GList with the current chats in it
-	GList *items = NULL;
+	GList *items = 0;
 
 	ChatDlgList::iterator iter;
 	for(iter = chat_list.begin(); iter != chat_list.end(); iter++)
 		items = g_list_append(items, (*iter)->chatman->ClientsStr());
 
 	// Make sure there are chats to show
-	if(items == NULL)
+	if(items == 0)
 		return;
 		
 	gtk_combo_set_popdown_strings(GTK_COMBO(rc->chat_list), items);
@@ -326,7 +326,7 @@ void chat_accept_window(CEventChat *c_event, gulong uin,
 
 	if(auto_accept)
 	{
-		chat_accept(NULL, (gpointer)r_cr);
+		chat_accept(0, (gpointer)r_cr);
 		return;
 	}
 	
@@ -421,7 +421,7 @@ void chat_start_as_client(ICQEvent *event)
 {
 	CExtendedAck *ea = event->ExtendedAck();
 	
-	if(ea == NULL)
+	if(ea == 0)
 	{
 		gLog.Error("%sInternal error: chat_start_as_client(): chat request acknowledgement without extended result.\n", L_ERRORxSTR);
 		return;
@@ -514,11 +514,11 @@ struct chat_window *chat_window_create(gulong uin)
 
 	/* Create the remote frame with the remote scrolled text window */
 	cw->frame_remote = gtk_frame_new("Remote");
-	cw->text_remote = gtk_text_new(NULL, NULL);
+	cw->text_remote = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(cw->text_remote), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(cw->text_remote), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(cw->text_remote), TRUE);
-	scroll1 = gtk_scrolled_window_new(NULL,
+	scroll1 = gtk_scrolled_window_new(0,
 					  GTK_TEXT(cw->text_remote)->vadj);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll1),
 				       GTK_POLICY_NEVER,
@@ -539,11 +539,11 @@ struct chat_window *chat_window_create(gulong uin)
 	g_free(forLFrame);
 	gUserManager.DropUser(o);
 
-	cw->text_local = gtk_text_new(NULL, NULL);
+	cw->text_local = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(cw->text_local), TRUE);
 	gtk_text_set_word_wrap(GTK_TEXT(cw->text_local), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(cw->text_local), TRUE);
-	scroll2 = gtk_scrolled_window_new(NULL,
+	scroll2 = gtk_scrolled_window_new(0,
 					  GTK_TEXT(cw->text_local)->vadj);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll2),
 				       GTK_POLICY_NEVER,
@@ -562,11 +562,11 @@ struct chat_window *chat_window_create(gulong uin)
 	cw->table_irc = gtk_table_new(2, 2, FALSE);
 
 	/* Create the main text box in a scrolled window */
-	cw->text_irc = gtk_text_new(NULL, NULL);
+	cw->text_irc = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(cw->text_irc), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(cw->text_irc), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(cw->text_irc), TRUE);
-	scroll1 = gtk_scrolled_window_new(NULL,
+	scroll1 = gtk_scrolled_window_new(0,
 					  GTK_TEXT(cw->text_irc)->vadj);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll1),
 				       GTK_POLICY_NEVER,
@@ -615,23 +615,23 @@ GtkWidget *chat_create_menu(struct chat_window *cw)
 {
 	GtkItemFactoryEntry menu_items[] =
 	{
-       		{ "/_Chat",        NULL,         NULL, 0, "<Branch>" },
+       		{ "/_Chat",        0,         0, 0, "<Branch>" },
        		{ "/Chat/_Audio", "<control>A",
 		  GtkItemFactoryCallback(chat_audio), 0, "<ToggleItem>" },
 //		{ "/Chat/_Kick", "<control>K",
-//		  GtkItemFactoryCallback(chat_kick), 0, NULL},
+//		  GtkItemFactoryCallback(chat_kick), 0, 0},
 //		{ "/Chat/Kick _No Vote", "<control>N",
-//		  GtkItemFactoryCallback(chat_kick_no_vote), 0, NULL},
+//		  GtkItemFactoryCallback(chat_kick_no_vote), 0, 0},
 		{ "/Chat/_Save", "<control>S",
-		  GtkItemFactoryCallback(chat_save), 0, NULL},
-       		{ "/Chat/sep1",	   NULL,	 NULL, 0, "<Separator>" },
+		  GtkItemFactoryCallback(chat_save), 0, 0},
+       		{ "/Chat/sep1",	   0,	 0, 0, "<Separator>" },
        		{ "/Chat/_Close",  "<control>C",
-		  GtkItemFactoryCallback(chat_close), 0, NULL},
-		{ "/_More",	   NULL,	 NULL, 0, "<Branch>" },
+		  GtkItemFactoryCallback(chat_close), 0, 0},
+		{ "/_More",	   0,	0, 0, "<Branch>" },
 		{ "/More/_Beep",   "<control>B",
-		  GtkItemFactoryCallback(chat_beep_users), 0, NULL},
-//		{ "/More/Change Font", NULL,
-//		   GtkItemFactoryCallback(chat_change_font), 0, NULL},
+		  GtkItemFactoryCallback(chat_beep_users), 0, 0},
+//		{ "/More/Change Font", 0,
+//		   GtkItemFactoryCallback(chat_change_font), 0, 0},
 	};
 
 	GtkItemFactory *item_factory;
@@ -670,7 +670,7 @@ void start_kick_window(struct chat_window *cw)
 	gtk_window_set_title(GTK_WINDOW(cw->kw->winKick), "Kick User");
 
 	cw->kw->cmbUsers = gtk_combo_new();
-	GList *users = NULL;
+	GList *users = 0;
 
 	list<CChatUser *>::iterator iter;
 	for(iter = cw->ChatUsers.begin(); iter != cw->ChatUsers.end(); iter++)
@@ -797,9 +797,9 @@ void chat_save(gpointer _cw, guint action, GtkWidget *widget)
 	gtk_signal_connect(
 		GTK_OBJECT(GTK_FILE_SELECTION(dlg_save_chat)->cancel_button),
 		"clicked", GTK_SIGNAL_FUNC(save_chat_cancel),
-		NULL);
+		0);
 	gtk_signal_connect(GTK_OBJECT(dlg_save_chat), "delete_event",
-		GTK_SIGNAL_FUNC(save_chat_cancel), NULL);
+		GTK_SIGNAL_FUNC(save_chat_cancel), 0);
 
 	gtk_widget_show_all(dlg_save_chat);
 }
@@ -818,9 +818,9 @@ void chat_close(gpointer temp_cw, guint action, GtkWidget *widget)
 	/* Take the structure and put it in a variable in this scope */
 	struct chat_window *cw = (struct chat_window *)temp_cw;
 
-	if(cw->hold_cuser == NULL)
+	if(cw->hold_cuser == 0)
 	{
-		cw->chat_user = NULL;
+		cw->chat_user = 0;
 		gdk_input_remove(cw->input_tag);
 		cw->chatman->CloseChat();
 	}
@@ -829,7 +829,7 @@ void chat_close(gpointer temp_cw, guint action, GtkWidget *widget)
 	else
 	{
 		if(cw->chat_user == cw->hold_cuser)
-			cw->chat_user = NULL;
+			cw->chat_user = 0;
 	}
 
 	// We are unwanted now
@@ -853,8 +853,8 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 	gchar buf[32];
 	read(pipe, buf, 32);
 
-	CChatEvent *e = NULL;
-	while((e = cw->chatman->PopChatEvent()) != NULL)
+	CChatEvent *e = 0;
+	while((e = cw->chatman->PopChatEvent()) != 0)
 	{
 		CChatUser *user = e->Client();
 		cw->hold_cuser = user;
@@ -876,7 +876,7 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 				message_box(temp);
 				g_free(temp);
 
-				chat_close((gpointer)cw, 0, NULL);
+				chat_close((gpointer)cw, 0, 0);
 				break;
 			}
 
@@ -895,7 +895,7 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 				message_box(temp);
 				g_free(temp);
 
-				chat_close((gpointer)cw, 0, NULL);
+				chat_close((gpointer)cw, 0, 0);
 				break;
 			}
 
@@ -918,7 +918,7 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 						 cw->chatman->ConnectedUsers(),
 						 filler);
 
-				if(cw->chat_user == NULL)
+				if(cw->chat_user == 0)
 				{
 					cw->chat_user = user;
 					gtk_notebook_set_page(GTK_NOTEBOOK(
@@ -1209,7 +1209,7 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 			}
 		}
 
-		cw->hold_cuser = NULL;
+		cw->hold_cuser = 0;
 		delete e;
 	}
 }
@@ -1345,7 +1345,7 @@ void font_dlg_ok(GtkWidget *widget, gpointer _cw)
 	// Get the font name and font if they exist
 	char *tmp = gtk_font_selection_dialog_get_font_name(
 		GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg));
-	if(tmp != NULL)
+	if(tmp != 0)
 	{
 		int len = 0;
 		do
@@ -1380,7 +1380,7 @@ void font_dlg_ok(GtkWidget *widget, gpointer _cw)
 
 	GdkFont *font_tmp = gtk_font_selection_dialog_get_font(
 		GTK_FONT_SELECTION_DIALOG(cw->font_sel_dlg));
-	if(font_tmp != NULL)
+	if(font_tmp != 0)
 		cw->l_font = font_tmp;
 
 	// Ok, close it now

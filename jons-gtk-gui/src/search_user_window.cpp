@@ -32,7 +32,7 @@ static gint num_found_users;
 void search_user_window()
 {
 	/* Only one search window */
-	if(su != NULL)
+	if(su != 0)
 	{
 		gdk_window_raise(su->window->window);
 		return;
@@ -136,7 +136,7 @@ void search_user_window()
 
 	/* Only numbers allowed in the uin entry box */
 	gtk_signal_connect(GTK_OBJECT(su->uin), "insert-text",
-			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
+			   GTK_SIGNAL_FUNC(verify_numbers), 0);
 
 	/* Append to the notebook */
 	label = gtk_label_new("UIN");
@@ -155,7 +155,7 @@ void search_user_window()
 
 	/* The search signal */
 	gtk_signal_connect(GTK_OBJECT(search), "clicked",
-			   GTK_SIGNAL_FUNC(search_callback), NULL);
+			   GTK_SIGNAL_FUNC(search_callback), 0);
 
 	/* The "Clear List" button */
 	clear = gtk_button_new_with_label("Clear List");
@@ -163,20 +163,20 @@ void search_user_window()
 
 	/* The clear signal */
         gtk_signal_connect(GTK_OBJECT(clear), "clicked",
-                           GTK_SIGNAL_FUNC(clear_callback), NULL);
+                           GTK_SIGNAL_FUNC(clear_callback), 0);
 	/* The "Done" button */
 	done = gtk_button_new_with_label("Done");
 	gtk_box_pack_start(GTK_BOX(v_box), done, TRUE, TRUE, 0);
 
 	/* The done signal */
 	gtk_signal_connect(GTK_OBJECT(done), "clicked",
-			   GTK_SIGNAL_FUNC(search_close), NULL);
+			   GTK_SIGNAL_FUNC(search_close), 0);
 
 	gtk_table_attach(GTK_TABLE(table), v_box, 2, 3, 1, 2,
                          GTK_EXPAND, GTK_EXPAND, 3, 3);
 
 	/* Found users list with a scroll bar */
-	scroll = gtk_scrolled_window_new(NULL, NULL);
+	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
@@ -202,7 +202,7 @@ void search_user_window()
 
 	/* Double click on a user */
 	gtk_signal_connect(GTK_OBJECT(su->list), "button_press_event",
-			   GTK_SIGNAL_FUNC(search_list_double_click), NULL);
+			   GTK_SIGNAL_FUNC(search_list_double_click), 0);
  
 	gtk_widget_set_usize(GTK_WIDGET(su->list), 230, 300);
 	gtk_container_add(GTK_CONTAINER(scroll), su->list);
@@ -368,5 +368,5 @@ void search_failed()
 void search_close(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy(su->window);
-	su = NULL;
+	su = 0;
 }

@@ -39,7 +39,7 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 	{
 		c = convo_find(u->Uin());
 
-		if(c != NULL)
+		if(c != 0)
 		{
 			if(u->Status() == ICQ_STATUS_OFFLINE)
 				gtk_toggle_button_set_active(
@@ -90,7 +90,7 @@ struct conversation *convo_find(unsigned long uin)
 		conversations = conversations->next;
 	}
 
-	return NULL;
+	return 0;
 }
 
 void convo_show(struct conversation *c)
@@ -123,7 +123,7 @@ void convo_show(struct conversation *c)
 	options_box = gtk_hbox_new(FALSE, 5);
 
 	/* The entry box */
-	c->entry = gtk_text_new(NULL, NULL);
+	c->entry = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(c->entry), TRUE);
 	gtk_signal_connect(GTK_OBJECT(c->entry), "key_press_event",
 			  GTK_SIGNAL_FUNC(key_press_convo), (gpointer)c);
@@ -131,13 +131,13 @@ void convo_show(struct conversation *c)
 	gtk_widget_set_usize(c->entry, 320, 75); 
 
 	/* The viewing messages box area */
-	c->text = gtk_text_new(NULL, NULL);
+	c->text = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(c->text), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(c->text), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(c->text), TRUE);
 
 	/* Scroll bar for the messages that are being viewed */
-	scroll = gtk_scrolled_window_new(NULL, GTK_TEXT(c->text)->vadj);
+	scroll = gtk_scrolled_window_new(0, GTK_TEXT(c->text)->vadj);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_ALWAYS);
@@ -167,7 +167,7 @@ void convo_show(struct conversation *c)
 	c->send_server = gtk_check_button_new_with_label("Send through server");
 
 	/* Send the message normal */
-	c->send_normal = gtk_radio_button_new_with_label(NULL, "Normal");
+	c->send_normal = gtk_radio_button_new_with_label(0, "Normal");
 
 	/* Send the message urgently */
 	c->send_urgent = gtk_radio_button_new_with_label_from_widget(
@@ -270,7 +270,7 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 	{
 		if(enter_sends && !(eventkey->state & GDK_SHIFT_MASK))
 		{
-			convo_send(NULL, (gpointer)c);
+			convo_send(0, (gpointer)c);
 		}
 		else if(enter_sends)
 		{
@@ -390,7 +390,7 @@ void convo_recv(gulong uin)
 	c = convo_find(uin);
 
 	/* If the window doesn't exist, don't show anything */
-	if(c == NULL)
+	if(c == 0)
 	{
 		system_status_refresh();
                 return;
@@ -399,7 +399,7 @@ void convo_recv(gulong uin)
 	CUserEvent *u_event = c->user->EventPop();
 
 	/* Make sure we really have an event */
-	if(u_event == NULL)
+	if(u_event == 0)
 	{
 		return;
 	}

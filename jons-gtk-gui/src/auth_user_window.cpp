@@ -51,15 +51,15 @@ void menu_system_auth_user(GtkWidget *widget, const unsigned long uin)
 
 	/* Accept only numbers in au->entry */
 	gtk_signal_connect(GTK_OBJECT(au->entry), "insert-text",
-			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
+			   GTK_SIGNAL_FUNC(verify_numbers), 0);
 
 	/* Make the scrolled text box */
-	au->text = gtk_text_new(NULL, NULL);
+	au->text = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(au->text), TRUE);
 	gtk_text_set_word_wrap(GTK_TEXT(au->text), TRUE);
 	gtk_text_set_line_wrap(GTK_TEXT(au->text), TRUE);
 
-	scroll = gtk_scrolled_window_new(NULL, NULL);
+	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(scroll), au->text);

@@ -70,7 +70,7 @@ void new_log_window()
 	box_text = gtk_hbox_new(FALSE, 0);
 
 	/* The text box */
-	nw->text = gtk_text_new(NULL, NULL);
+	nw->text = gtk_text_new(0, 0);
 	gtk_box_pack_start(GTK_BOX(box_text), nw->text, TRUE, TRUE, 0);
 	gtk_widget_set_usize(nw->text, 400, 125);
 
@@ -92,13 +92,13 @@ void new_log_window()
 	// The "Save" button
 	GtkWidget *btnSave = gtk_button_new_with_label("Save");
 	gtk_signal_connect(GTK_OBJECT(btnSave), "clicked",
-			   GTK_SIGNAL_FUNC(log_window_save), NULL);
+			   GTK_SIGNAL_FUNC(log_window_save), 0);
 	gtk_box_pack_start(GTK_BOX(h_box), btnSave, true, true, 5);
 
 	/* The "Clear" button */
 	clear = gtk_button_new_with_label("Clear");
 	gtk_signal_connect(GTK_OBJECT(clear), "clicked",
-			   GTK_SIGNAL_FUNC(log_window_clear), NULL);
+			   GTK_SIGNAL_FUNC(log_window_clear), 0);
 	gtk_box_pack_start(GTK_BOX(h_box), clear, TRUE, TRUE, 5);
 
 	/* Attach the h_box to the table */
@@ -111,10 +111,10 @@ void new_log_window()
 
 void log_window_show(GtkWidget *widget, gpointer data)
 {
-	if(nw == NULL)
+	if(nw == 0)
 	{
 		new_log_window();
-		log_window_show(NULL, NULL);
+		log_window_show(0, 0);
 	}
 
 	else if(!nw_shown)
@@ -129,7 +129,7 @@ void log_window_show(GtkWidget *widget, gpointer data)
 void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 {
 	/* If the window doesn't exist, wait for it to exist */
-	if(nw == NULL)
+	if(nw == 0)
 		new_log_window();
 
 	gchar buf[4];

@@ -29,7 +29,7 @@ struct user_security *us;
 void menu_security_users_window(GtkWidget *widget, gpointer data)
 {
 	/* Check to see if the window is currently open */
-	if(us != NULL)
+	if(us != 0)
 	{
 		gdk_window_raise(us->window->window);
 		return;
@@ -67,7 +67,7 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 
 	/* Destroy signal for the window */	
 	gtk_signal_connect(GTK_OBJECT(us->window), "destroy",
-			   GTK_SIGNAL_FUNC(close_user_security_window), NULL);
+			   GTK_SIGNAL_FUNC(close_user_security_window), 0);
 
 	/* Create the table */
 	table = gtk_table_new(3, 2, FALSE);
@@ -76,10 +76,10 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	/* Create the notebook */
 	notebook = gtk_notebook_new();
 	gtk_signal_connect(GTK_OBJECT(notebook), "switch-page",
-			   GTK_SIGNAL_FUNC(switch_page), NULL);
+			   GTK_SIGNAL_FUNC(switch_page), 0);
 
 	/* The scroll bar for the first clist */
-	scroll1 = gtk_scrolled_window_new(NULL, NULL);
+	scroll1 = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll1),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
@@ -91,7 +91,7 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	refresh_clist(GTK_CLIST(visible_list), 0);
 
 	/* The scroll bar for the second clist */
-	scroll2 = gtk_scrolled_window_new(NULL, NULL);
+	scroll2 = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll2),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
@@ -103,7 +103,7 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	refresh_clist(GTK_CLIST(invisible_list), 1);
 
 	/* The scroll bar for the third clist */
-	scroll3 = gtk_scrolled_window_new(NULL, NULL);
+	scroll3 = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll3),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
@@ -120,19 +120,19 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	/* First option */
 	us->check_auth = gtk_check_button_new_with_label("Authorization Required");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), us->check_auth,
-		"Determines whether regular ICQ clients require your authorization to add you to their contact list.", NULL);
+		"Determines whether regular ICQ clients require your authorization to add you to their contact list.", 0);
 	gtk_box_pack_start(GTK_BOX(v_box), us->check_auth, FALSE, FALSE, 0);
 
 	/* Second option */
 	us->check_web = gtk_check_button_new_with_label("Web Presence");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), us->check_web,
-		"Web Presence allows users to see if you are online through your web indicator.", NULL);	
+		"Web Presence allows users to see if you are online through your web indicator.", 0);	
 	gtk_box_pack_start(GTK_BOX(v_box), us->check_web, FALSE, FALSE, 0);
 
 	/* Third optoin */
 	us->check_hideip = gtk_check_button_new_with_label("Hide IP");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), us->check_hideip,
-		"Hiding IP is a minor prevention for regular ICQ clients to not reveal your IP to users.", NULL);
+		"Hiding IP is a minor prevention for regular ICQ clients to not reveal your IP to users.", 0);
 	gtk_box_pack_start(GTK_BOX(v_box), us->check_hideip, FALSE, FALSE, 0);
 
 	/* Set the check boxes accordingly */
@@ -206,9 +206,9 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 
 	/* Connect button signals */
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-			   GTK_SIGNAL_FUNC(ok_user_security), NULL);
+			   GTK_SIGNAL_FUNC(ok_user_security), 0);
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
-			   GTK_SIGNAL_FUNC(close_user_security_window), NULL);
+			   GTK_SIGNAL_FUNC(close_user_security_window), 0);
 
 	/* Pack them into the h_box */
 	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 0);
@@ -229,7 +229,7 @@ GtkWidget *make_user_security_clist()
 
 	/* Double click on a user to remove from this list */
 	gtk_signal_connect(GTK_OBJECT(clist), "button_press_event",
-			   GTK_SIGNAL_FUNC(remove_user_security), NULL);
+			   GTK_SIGNAL_FUNC(remove_user_security), 0);
 	
 	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_BROWSE);
 	gtk_clist_column_titles_show(GTK_CLIST(clist));
@@ -252,7 +252,7 @@ GtkWidget *make_user_security_clist()
 void switch_page(GtkNotebook *notebook, GtkNotebookPage *_page,
 		 gint page_num, gpointer data)
 {
-	if(us == NULL)
+	if(us == 0)
 		return;
 
 	us->page = page_num;
@@ -332,7 +332,7 @@ void refresh_clist(GtkCList *clist, gint page)
 void close_user_security_window(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy(us->window);
-	us = NULL;
+	us = 0;
 }
 
 void ok_user_security(GtkWidget *widget, gpointer data)
@@ -381,7 +381,7 @@ void remove_user_security(GtkWidget *clist, GdkEventButton *event, gpointer data
 	user = (ICQUser *)gtk_clist_get_row_data(GTK_CLIST(clist), row);
 
 	/* No user selected */
-	if(user == NULL)
+	if(user == 0)
 		return;
 
 	/* What list are they on? */

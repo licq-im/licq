@@ -30,7 +30,7 @@ struct random_chat *src;
 void random_chat_search_window()
 {
 	// Only one window
-	if(rcw != NULL)
+	if(rcw != 0)
 	{
 		gdk_window_raise(rcw->window->window);
 		return;
@@ -64,7 +64,7 @@ void random_chat_search_window()
 		3, 3);
 
 	// Populate the list
-	GList *items = NULL;
+	GList *items = 0;
 	items = g_list_append(items, const_cast<char *>("General"));
 	items = g_list_append(items, const_cast<char *>("Romance"));
 	items = g_list_append(items, const_cast<char *>("Games"));
@@ -100,11 +100,11 @@ void random_chat_search_window()
 
 	// Connect their signals
 	gtk_signal_connect(GTK_OBJECT(rcw->search), "clicked",
-		GTK_SIGNAL_FUNC(random_search_callback), NULL);
+		GTK_SIGNAL_FUNC(random_search_callback), 0);
 	gtk_signal_connect(GTK_OBJECT(cancel), "clicked",
-		GTK_SIGNAL_FUNC(random_cancel_callback), NULL);
+		GTK_SIGNAL_FUNC(random_cancel_callback), 0);
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
-		GTK_SIGNAL_FUNC(random_close_callback), NULL);
+		GTK_SIGNAL_FUNC(random_close_callback), 0);
 
 	// Statusbar
 	rcw->etag->statusbar = gtk_statusbar_new();
@@ -187,7 +187,7 @@ void random_close_callback(GtkWidget *widget, gpointer data)
 void set_random_chat_window()
 {
 	// Only one window
-	if(src != NULL)
+	if(src != 0)
 	{
 		gdk_window_raise(src->window->window);
 		return;
@@ -203,7 +203,7 @@ void set_random_chat_window()
 	// The combo box
 	src->group_list = gtk_combo_new();
 
-	GList *list = NULL;
+	GList *list = 0;
 
 	list = g_list_append(list, const_cast<char *>("(None)"));
 	list = g_list_append(list, const_cast<char *>("General"));

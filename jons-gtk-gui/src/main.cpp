@@ -112,12 +112,12 @@ int LP_Main(CICQDaemon *icqdaemon)
 	timer.tv_usec = 0;
 
 	/* Attach plugin signals to a callback */
-	gdk_input_add( _Pipe, GDK_INPUT_READ, pipe_callback, (gpointer)NULL);
+	gdk_input_add( _Pipe, GDK_INPUT_READ, pipe_callback, (gpointer)0);
 
 	/* The log window */
 	log = new CPluginLog();
 	log_pipe = gdk_input_add(log->Pipe(), GDK_INPUT_READ,
-			         log_pipe_callback, (gpointer)NULL);
+			         log_pipe_callback, (gpointer)0);
 	gLog.AddService(new CLogService_Plugin(log,
 					L_INFO | L_WARN | L_ERROR | L_UNKNOWN));
 

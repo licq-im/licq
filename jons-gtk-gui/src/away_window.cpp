@@ -43,7 +43,7 @@ void away_msg_window(gushort status)
 	gtk_window_set_position(GTK_WINDOW(away_d->window), GTK_WIN_POS_CENTER);
 
 	/* The text box */
-	away_d->text = gtk_text_new(NULL, NULL);
+	away_d->text = gtk_text_new(0, 0);
 	gtk_text_set_editable(GTK_TEXT(away_d->text), TRUE);
 	gtk_widget_set_usize(GTK_WIDGET(away_d->text), 300, 100);
 
@@ -98,7 +98,7 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 {
 	struct user_away_window *uaw = uaw_find(user->Uin());
 	
-	if(uaw != NULL)
+	if(uaw != 0)
 		return;
 
 	uaw = uaw_new(user);
@@ -128,13 +128,13 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	v_box = gtk_vbox_new(FALSE, 5);
 
 	/* The scrolling window */
-	scroll = gtk_scrolled_window_new(NULL, NULL);
+	scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
 
 	/* The text box */
-	uaw->text_box = gtk_text_new(NULL, NULL);
+	uaw->text_box = gtk_text_new(0, 0);
 	gtk_widget_set_usize(uaw->text_box, 235, 60);
 	gtk_text_set_editable(GTK_TEXT(uaw->text_box), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(uaw->text_box), TRUE);
@@ -194,7 +194,7 @@ void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
 					GTK_TOGGLE_BUTTON(uaw->show_again)));
 	uaw_list = g_slist_remove(uaw_list, uaw);
 	catcher = g_slist_remove(catcher, uaw->etag);
-	dialog_close(NULL, uaw->window);
+	dialog_close(0, uaw->window);
 }
 
 /* The following will ensure only one window is open and that when the *
@@ -209,7 +209,7 @@ struct user_away_window *uaw_new(ICQUser *u)
 	uaw = uaw_find(u->Uin());
 
 	/* If it does, return it, if not, make one */
-	if(uaw != NULL) 
+	if(uaw != 0) 
 		return uaw;
 
 	uaw = g_new0(struct user_away_window, 1);
@@ -218,7 +218,7 @@ struct user_away_window *uaw_new(ICQUser *u)
 
 	uaw_list = g_slist_append(uaw_list, uaw);
 
-//	list_read_message(NULL, uaw->user);
+//	list_read_message(0, uaw->user);
 
 	return uaw;
 }
@@ -238,5 +238,5 @@ struct user_away_window *uaw_find(unsigned long uin)
 	}
 
 	/* It wasn't found, return null */
-	return NULL;
+	return 0;
 }

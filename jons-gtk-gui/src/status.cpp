@@ -111,7 +111,7 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 		menu_new_item_with_pixmap(_menu, "Invisible",
 			GTK_SIGNAL_FUNC(status_invisible), invisible);
 	_root_menu =
-		menu_new_item(NULL, "", NULL);
+		menu_new_item(0, "", 0);
 
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(_root_menu), _menu);
 
@@ -120,7 +120,7 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 
 	gtk_menu_bar_append(GTK_MENU_BAR(_menu_bar), _root_menu);
 
-	gtk_menu_popup(GTK_MENU(_menu), NULL, NULL, NULL, NULL,
+	gtk_menu_popup(GTK_MENU(_menu), 0, 0, 0, 0,
 			event->button, event->time); 
 
 	return TRUE;

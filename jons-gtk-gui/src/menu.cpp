@@ -46,7 +46,7 @@ GtkWidget *menu_new_item(GtkWidget *_menu, const char *str,
 		gtk_signal_connect(GTK_OBJECT(menu_item),
 				   "activate",
 				   s_func,
-				   NULL);
+				   0);
 	}
 
 	return menu_item;
@@ -74,7 +74,7 @@ GtkWidget * menu_new_item_with_pixmap(GtkWidget *_menu, const char *text,
 	if(s_func)
 	{
 		gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
-			s_func, NULL);
+			s_func, 0);
 	}
 	
 	return menu_item;
@@ -111,7 +111,7 @@ void menu_create()
 	sub_menu = gtk_menu_new();
 	gtk_widget_show(sub_menu);
 
-	item = menu_new_item(menu, "System Functions", NULL);
+	item = menu_new_item(menu, "System Functions", 0);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
 	gtk_widget_show(item);
 
@@ -125,7 +125,7 @@ void menu_create()
 	sub_menu = gtk_menu_new();
 	gtk_widget_show(sub_menu);
 
-	item = menu_new_item(menu, "User Functions", NULL);
+	item = menu_new_item(menu, "User Functions", 0);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
 	gtk_widget_show(item);
 
@@ -169,7 +169,7 @@ void menu_create()
 				  GTK_SIGNAL_FUNC(menu_system_quit));
 
 	/* The root menu text for the System menu */
-	system_item = menu_new_item(NULL, "System", NULL);
+	system_item = menu_new_item(0, "System", 0);
 	gtk_widget_show(system_item);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(system_item), menu);
 

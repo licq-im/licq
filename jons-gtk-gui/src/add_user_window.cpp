@@ -51,7 +51,7 @@ void menu_system_add_user(GtkWidget *window, gpointer data)
 
 	/* Accept only numbers in the a->entry */
 	gtk_signal_connect(GTK_OBJECT(a->entry), "insert-text",
-			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
+			   GTK_SIGNAL_FUNC(verify_numbers), 0);
 	
 	/* Add the first hbox to the top of the vbox */
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 5);

@@ -78,7 +78,7 @@ void pipe_signal(CICQSignal *sig)
 		if(sig->SubSignal() == USER_EVENTS)
 		{
 			ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
-			if(u == NULL)
+			if(u == 0)
 			{
 				gUserManager.DropUser(u);
 				return;
@@ -86,7 +86,7 @@ void pipe_signal(CICQSignal *sig)
 			CUserEvent *ue = u->EventPeekLast();
 			gUserManager.DropUser(u);
 			
-			if(ue == NULL)
+			if(ue == 0)
 			{
 				gUserManager.DropUser(u);
 				return;
