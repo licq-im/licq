@@ -163,6 +163,7 @@ protected:
   QString generatePart(const QString& text);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
   virtual bool sendDone(ICQEvent *) = 0;
+  bool checkSecure();
 
 protected slots:
   virtual void sendButton();

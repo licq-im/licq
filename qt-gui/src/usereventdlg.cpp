@@ -1185,6 +1185,22 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
 }
 
 
+//-----UserSendCommon::checkSecure-------------------------------------------
+bool UserSendCommon::checkSecure()
+{
+  ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  bool send_ok = true;
+  if (chkSendServer->isChecked() && u->Secure())
+  {
+    if (!QueryUser(this, tr("Warning: Message will not be sent securely!"), tr("Send anyway"), tr("Cancel")))
+    {
+      send_ok = false;
+    }
+  }
+  gUserManager.DropUser(u);
+  return send_ok;
+}
+
 //=====UserSendMsgEvent======================================================
 UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   CMainWindow *m, unsigned long nUin, QWidget *parent)
@@ -1219,6 +1235,8 @@ void UserSendMsgEvent::sendButton()
 
   // don't let the user send empty messages
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
+
+  if (!UserSendCommon::checkSecure()) return;
 
   QString msgTextCurrent;
   msgTextCurrent = generatePart(mleSend->text());
@@ -1300,6 +1318,8 @@ void UserSendUrlEvent::sendButton()
 {
   if (edtItem->text().stripWhiteSpace().isEmpty())
     return;
+
+  if (!UserSendCommon::checkSecure()) return;
 
   if (chkMass->isChecked())
   {
@@ -1399,6 +1419,7 @@ void UserSendFileEvent::sendButton()
     WarnUser(this, tr("You must specify a file to transfer!"));
     return;
   }
+
   icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
      mleSend->text().local8Bit(),
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
@@ -1578,6 +1599,8 @@ void UserSendContactEvent::sendButton()
 
   if (uins.size() == 0)
     return;
+
+  if (!UserSendCommon::checkSecure()) return;
 
   if (chkMass->isChecked())
   {
