@@ -388,7 +388,7 @@ void OptionsDlg::ApplyOptions()
   for (i = 0; i < j; i++) delete mainwin->colInfo[i];  // erase the old array
   mainwin->colInfo.clear();
   i = 0;
-  while (chkColEnabled[i]->isChecked())
+  while (i < 4 && chkColEnabled[i]->isChecked())
   {
      mainwin->colInfo.push_back(new CColumnInfo(edtColTitle[i]->text(),
                                                 edtColFormat[i]->text(),
