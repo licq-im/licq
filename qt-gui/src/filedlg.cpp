@@ -145,9 +145,7 @@ bool CFileDlg::GetLocalFileName(void)
 #ifdef USE_KDE
     f = QFileDialog::getSaveFileName(m_sFileInfo.szName, QString::null, this);
 #else
-    // TODO: take path from configuration
-    f = QFileDialog::getSaveFileName(
-        QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName), QString::null, this);
+    f = QFileDialog::getSaveFileName(m_sFileInfo.szName, QString::null, this);
 #endif
     if (f.isNull()) return (false);
     struct stat buf;
@@ -333,7 +331,7 @@ void CFileDlg::StateServer()
   {
     fileCancel();
     if (m_xSocketFile.Error() == 0)
-      InformUser(this, "Remote end disconnected.");
+      InformUser(this, _("Remote end disconnected."));
     else
       gLog.Error("%sFile transfer receive error - lost remote end:\n%s%s\n", L_ERRORxSTR,
                  L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
@@ -522,9 +520,9 @@ void CFileDlg::fileRecvFile()
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
     char msg[1024];
-    sprintf(msg, _("%sFile '%s' from %s received successfully."),
+    sprintf(msg, _("%sFile transfer of\n'%s'\nfrom %s completed successfully.\n"),
             L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    lblStatus->setText(msg);
+    InformUser(this, msg);
   }
   else // nBytesLeft < 0
   {
@@ -592,7 +590,7 @@ void CFileDlg::StateClient()
   {
     fileCancel();
     if (m_xSocketFile.Error() == 0)
-      InformUser(this, "Remote end disconnected.");
+      InformUser(this, _("Remote end disconnected."));
     else
       gLog.Error("%sFile transfer receive error - lost remote end:\n%s%s\n", L_ERRORxSTR,
                 L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
@@ -775,9 +773,9 @@ void CFileDlg::fileSendFile()
   {
     // File transfer done perfectly
     char msg[1024];
-    sprintf(msg, _("%s Sending of File '%s' to %s completed successfully."),
+    sprintf(msg, _("%sFile transfer of\n'%s'\nto %s completed successfully.\n"),
             L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    lblStatus->setText(msg);
+    InformUser(this, msg);
   }
   else // nBytesLeft < 0
   {
