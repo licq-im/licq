@@ -66,11 +66,13 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
     edtUin = NULL;
     toplay->addWidget(lblUin);
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    if (bGrant)
-      lblUin->setText(tr("Grant authorization to %1").arg(u->GetAlias()));
-    else
-      lblUin->setText(tr("Refuse authorization to %1").arg(u->GetAlias()));
+    QString s = (u != NULL) ? QString("%1 (%2)").arg(u->GetAlias()).arg(m_nUin) : QString::number(m_nUin);
     gUserManager.DropUser(u);
+
+    if (bGrant)
+      lblUin->setText(tr("Grant authorization to %1").arg(s));
+    else
+      lblUin->setText(tr("Refuse authorization to %1").arg(s));
   }
 
   toplay->addSpacing(6);
