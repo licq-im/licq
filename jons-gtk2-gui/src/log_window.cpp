@@ -19,28 +19,28 @@
  */
 
 #include "licq_gtk.h"
+#include "utilities.h"
 
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_countrycodes.h"
 
 #include <gtk/gtk.h>
+#include <iostream>
 
 using namespace std; // for ofstream
 
-struct network_window *nw;
+struct network_window *nw = NULL;
 gboolean nw_shown = FALSE;
 gboolean hidden = FALSE;
 
-void new_log_window()
+void 
+new_log_window()
 {
-	if(nw_shown)
-	{
+	if (nw_shown)
 		return;
-	}
 
-	if(hidden)
-	{
+	if (hidden) {
 		gtk_widget_show_all(nw->window);
 		hidden = FALSE;
 		return; 
@@ -83,9 +83,9 @@ void new_log_window()
 	/* Make the scrolled window part */
 
 	gtk_table_attach(GTK_TABLE(table), box_text, 0, 2, 0, 2,
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-                         3, 3);
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+      3, 3);
 
 	/* The "OK" button */
 	ok = gtk_button_new_from_stock(GTK_STOCK_OK);
@@ -113,15 +113,14 @@ void new_log_window()
 	gtk_container_add(GTK_CONTAINER(nw->window), table);
 }
 
-void log_window_show(GtkWidget *widget, gpointer data)
+void 
+log_window_show(GtkWidget *widget, gpointer data)
 {
-	if(nw == 0)
-	{
+	if (nw == NULL)	{
 		new_log_window();
 		log_window_show(0, 0);
 	}
-	else if(!nw_shown)
-	{
+	else if (!nw_shown) {
 		gtk_widget_show_all(nw->window);
 		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(nw->text));
 		GtkTextIter end;
@@ -131,39 +130,46 @@ void log_window_show(GtkWidget *widget, gpointer data)
 		nw_shown = TRUE;
 		hidden = FALSE;
 	}
-
 }
 
-void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
+void 
+log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 {
-	/* If the window doesn't exist, wait for it to exist */
-	if(nw == 0)
+	/* If the window doesn't exist, create it */
+	if (nw == NULL)
 		new_log_window();
 
 	gchar buf[4];
-	gchar *for_user; /* The text for the window */
-
 	read(pipe, buf, 1);
 
 	/* Get the message */
-	for_user = logg->NextLogMsg();
-
-	/* Insert the message */
-	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(nw->text));
-	GtkTextIter iter;
-	gtk_text_buffer_get_end_iter(tb, &iter);
-	gtk_text_buffer_insert(tb, &iter, for_user, -1);
-
-	/* Scroll down to the new bottom if not hidden */
-	if (hidden == FALSE)
-	{
+	gchar *for_user = convert_to_utf8(logg->NextLogMsg());
+	if (for_user != NULL) {
 		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(nw->text));
-		GtkTextIter end;
-		gtk_text_buffer_get_end_iter(tb, &end);
-		GtkTextMark *tm = gtk_text_buffer_create_mark(tb, NULL, &end, TRUE);
-		gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(nw->text), tm, 0, FALSE, 0, 0);
-	}
+		GtkTextIter iter, end;
 
+    // when we're over 510 lines, we'll cut off the first 500
+		gtk_text_buffer_get_end_iter(tb, &end);
+    if (gtk_text_iter_get_line(&end) > 510) {
+      gtk_text_buffer_get_start_iter(tb, &iter);
+    	gtk_text_buffer_get_iter_at_line(tb, &end, 500);
+      gtk_text_buffer_delete(tb, &iter, &end);
+    }
+
+		/* Insert the message */
+		gtk_text_buffer_get_end_iter(tb, &iter);
+		gtk_text_buffer_insert(tb, &iter, for_user, -1);
+
+		/* Scroll down to the new bottom if not hidden */
+		if (!hidden) {
+			gtk_text_buffer_get_end_iter(tb, &end);
+			GtkTextMark *tm = gtk_text_buffer_create_mark(tb, NULL, &end, TRUE);
+			gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(nw->text), tm, 0, FALSE, 0, 0);
+		}
+		
+    g_free(for_user);
+	}
+	
 	/* Get rid of this message */
 	logg->ClearLog();
 }
@@ -188,15 +194,28 @@ void log_window_save_ok(GtkWidget *widget, gpointer _fs)
 {
 	GtkWidget *fileSelect = (GtkWidget *)_fs;
 	
-	const gchar *szFileName = gtk_file_selection_get_filename(GTK_FILE_SELECTION(
-		fileSelect));
+	const gchar *filename = 
+      gtk_file_selection_get_filename(GTK_FILE_SELECTION(fileSelect));
 
-	ofstream strmFileOut(szFileName, ios::out);
-
-	if (!strmFileOut.fail())
-	{
-		strmFileOut << gtk_editable_get_chars(GTK_EDITABLE(nw->text), 0, -1);
-	}
+	ofstream strmFileOut(filename, ios::out);
+	if (strmFileOut) {
+		GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(nw->text));
+    GtkTextIter start, end;
+    gtk_text_buffer_get_start_iter(tb, &start);
+    gtk_text_buffer_get_end_iter(tb, &end);
+		strmFileOut << gtk_text_buffer_get_text(tb, &start, &end, FALSE);
+  }
+  else {
+    GtkWidget *dialog = 
+        gtk_message_dialog_new(GTK_WINDOW(nw->window), 
+                               GTK_DIALOG_DESTROY_WITH_PARENT,
+                               GTK_MESSAGE_ERROR, 
+                               GTK_BUTTONS_CLOSE, 
+                               "Couldn't save log to file: %s", 
+                               filename);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+  }
 
 	strmFileOut.close();
 	gtk_widget_destroy(fileSelect);
