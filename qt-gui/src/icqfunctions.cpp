@@ -671,16 +671,19 @@ void ICQFunctions::setupTabs(int index)
       slot_nextMessage();
       u = gUserManager.FetchUser(m_nUin, LOCK_R);
     }*/
-    MsgViewItem *e = new MsgViewItem(u->EventPeek(0), msgView);
-    for (unsigned short i = 1; i < u->NewMessages(); i++)
+    if (u->NewMessages() > 0)
     {
-      (void) new MsgViewItem(u->EventPeek(i), msgView);
+      MsgViewItem *e = new MsgViewItem(u->EventPeek(0), msgView);
+      for (unsigned short i = 1; i < u->NewMessages(); i++)
+      {
+        (void) new MsgViewItem(u->EventPeek(i), msgView);
+      }
+      gUserManager.DropUser(u);
+      slot_printMessage(e);
+      u = gUserManager.FetchUser(m_nUin, LOCK_R);
+      msgView->setSelected(e, true);
+      msgView->ensureItemVisible(e);
     }
-    gUserManager.DropUser(u);
-    slot_printMessage(e);
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    msgView->setSelected(e, true);
-    msgView->ensureItemVisible(e);
   }
   //if (u->NewMessages() > 0) btnReadNext->setEnabled(true);
 
