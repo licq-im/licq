@@ -596,7 +596,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_ui_viewevent(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_ui_message(unsigned long)),
             this, SLOT(slot_ui_message(unsigned long)));
-
+#ifdef QT_PROTOCOL_PLUGIN
+   connect (licqSigMan, SIGNAL(signal_protocolPlugin(unsigned long)),
+            this, SLOT(slot_protocolPlugin(unsigned long)));
+#endif
+            
    m_bInMiniMode = false;
    updateStatus();
    updateEvents();
@@ -642,6 +646,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
        gUserManager.DropOwner();
    }
 
+#ifdef QT_PROTOCOL_PLUGIN
+   m_nProtoNum = 0;
+#endif
 
 #if QT_VERSION > 3
   XClassHint ClassHint;
@@ -2000,6 +2007,136 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin, bool toggle)
 
 
 
+#ifdef QT_PROTOCOL_PLUGIN
+//-----CMainWindow::callICQFunction-------------------------------------------
+UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
+                                           unsigned long nPPID)
+{
+  if (szId == 0 || nPPID == 0) return NULL;
+  
+  UserEventCommon *e = NULL;
+  
+  switch (fcn)
+  {
+    case mnuUserView:
+    {
+#if QT_VERSION < 300
+      QListIterator<UserViewEvent> it(licqUserView);
+#else
+      QPtrListIterator<UserViewEvent> it(licqUserView);
+#endif
+
+      for (; it.current(); ++it)
+        if ((*it)->Uin() == nUin) {
+          e = *it;
+          e->show();
+          if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+          {
+            e->raise();
+#ifdef USE_KDE
+            KWin::setActiveWindow(e->winId());
+#endif
+          }
+          return e;
+        }
+    }
+    break;
+    case mnuUserSendMsg:
+    case mnuUserSendUrl:
+    case mnuUserSendChat:
+    case mnuUserSendFile:
+    case mnuUserSendContact:
+    case mnuUserSendSms:
+    {
+#if QT_VERSION < 300
+        QListIterator<UserSendCommon> it(licqUserSend );
+#else
+        QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+
+        if (!m_bMsgChatView) break;
+
+        for (; it.current(); ++it)
+          if ((*it)->Uin() == nUin)
+          {
+            e = *it;
+            e->show();
+            if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+            {
+              e->raise();
+#ifdef USE_KDE
+              KWin::setActiveWindow(e->winId());
+#endif
+            }
+            return e;
+          }
+    }
+  default:
+    break;
+  }
+
+  switch (fcn)
+  {
+    case mnuUserView:
+    {
+      e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendMsg:
+    {
+      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendUrl:
+    {
+      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendChat:
+    {
+      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendFile:
+    {
+      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendContact:
+    {
+      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    case mnuUserSendSms:
+    {
+      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, nUin);
+      break;
+    }
+    default:
+      gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
+  }
+  if(e) {
+    connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
+    e->show();
+    // there might be more than one send window open
+    // make sure we only remember one, or it will get compliated
+    if (fcn == mnuUserView)
+    {
+      slot_userfinished(nUin);
+      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
+      licqUserView.append(static_cast<UserViewEvent*>(e));
+    }
+    else
+    {
+      slot_sendfinished(nUin);
+      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_sendfinished(unsigned long)));
+      licqUserSend.append(static_cast<UserSendCommon*>(e));
+    }
+  }
+
+  return e;
+}
+#endif
 
 //-----CMainWindow::callICQFunction-------------------------------------------
 UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
@@ -2326,6 +2463,73 @@ void CMainWindow::slot_ui_message(unsigned long nUin)
 {
   callFunction(mnuUserSendMsg, nUin);
 }
+
+#ifdef QT_PROTOCOL_PLUIGN
+//-----slot_protocolPlugin------------------------------------------------------
+void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
+{
+  // We can now add the users of this protocol
+  FOR_EACH_PROTO_USER_START(nPPID, LOCK_R)
+  {
+    // Add the user to the list
+    (void) new CUserViewItem(pUser, userView);
+  }
+  FOR_EACH_PROTO_USER_END
+
+  // Menu item for the status of this protocol
+  if (m_nProtoNum == 0)
+  {
+    // Add ICQ status menu
+    mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOnline, tr("&Online"),
+      ICQ_STATUS_ONLINE);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmAway, tr("&Away"),
+      ICQ_STATUS_AWAY);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmNa, tr("&Not Available"),
+      ICQ_STATUS_NA);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOccupied, tr("O&ccupied"),
+      ICQ_STATUS_OCCUPIED);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmDnd, tr("&Do Not Disturb"),
+      ICQ_STATUS_DND);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmFFC, tr("Free for C&hat"),
+      ICQ_STATUS_FREEFORCHAT);
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOffline, tr("O&ffline"),
+      ICQ_STATUS_OFFLINE);
+    mnuProtocolStatus[m_nProtoNum]->insertSeparator();
+    mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
+      ICQ_STATUS_FxPRIVATE);
+    mnuStatus->insertItem("ICQ", mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
+    m_nProtoNum++;
+  }
+  else
+      mnuStatus->removeItemAt(m_nProtoNum+1); // Move separator
+
+  char *pName = licqDaemon->ProtoPluginName(nPPID);
+  mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmOnline, tr("&Online"),
+    ICQ_STATUS_ONLINE);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmAway, tr("&Away"),
+    ICQ_STATUS_AWAY);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmNa, tr("&Not Available"),
+    ICQ_STATUS_NA);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmOccupied, tr("O&ccupied"),
+    ICQ_STATUS_OCCUPIED);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmDnd, tr("&Do Not Disturb"),
+    ICQ_STATUS_DND);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmFFC, tr("Free for C&hat"),
+    ICQ_STATUS_FREEFORCHAT);
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmOffline, tr("O&ffline"),
+    ICQ_STATUS_OFFLINE);
+  mnuProtocolStatus[m_nProtoNum]->insertSeparator();
+  mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
+    ICQ_STATUS_FxPRIVATE);
+  mnuStatus->insertItem(pName ? pName : "(No Name)",
+    mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
+  mnuStatus->insertSeparator(m_nProtoNum + 1);
+
+  m_nProtoNum++;
+}
+#endif
 
 //-----slot_doneOwnerFcn--------------------------------------------------------
 void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)

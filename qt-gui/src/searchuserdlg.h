@@ -38,6 +38,8 @@ class ICQEvent;
 class ICQUser;
 class CSearchAck;
 
+//TODO for protocol plugin support
+
 class SearchUserView : public QListView
 {
   Q_OBJECT

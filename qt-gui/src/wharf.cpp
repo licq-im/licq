@@ -601,6 +601,7 @@ IconManager_KDEStyle::~IconManager_KDEStyle()
 
 void IconManager_KDEStyle::SetDockIconStatus()
 {
+  //TODO make general for all plugins
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_statusIcon = CMainWindow::iconForStatus(o->StatusFull());
   m_ownerStatus = o->Status();

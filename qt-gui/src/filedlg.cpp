@@ -47,9 +47,102 @@
 
 
 //-----Constructor------------------------------------------------------------
+#ifdef QT_PROTOCOL_PLUGIN
+CFileDlg::CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
+  QWidget* parent)
+  : QWidget(parent, "FileDialog", WDestructiveClose)
+{
+  // If we are the server, then we are receiving a file
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  licqDaemon = daemon;
+
+  setCaption(tr("Licq - File Transfer (%1)").arg(m_szId));
+
+  unsigned short CR = 0;
+  QGridLayout* lay = new QGridLayout(this, 8, 3, 8, 8);
+  lay->setColStretch(1, 2);
+
+  lblTransferFileName = new QLabel(tr("Current:"), this);
+  lay->addWidget(lblTransferFileName, CR, 0);
+  nfoTransferFileName = new CInfoField(this, true);
+  nfoTransferFileName->setMinimumWidth(nfoTransferFileName->sizeHint().width()*2);
+  lay->addWidget(nfoTransferFileName, CR, 1);
+  nfoTotalFiles = new CInfoField(this, true);
+  nfoTotalFiles->setMinimumWidth((nfoTotalFiles->sizeHint().width()*3)/2);
+  lay->addWidget(nfoTotalFiles, CR, 2);
+
+  lblLocalFileName = new QLabel(tr("File name:"), this);
+  lay->addWidget(lblLocalFileName, ++CR, 0);
+  nfoLocalFileName = new CInfoField(this, true);
+  lay->addMultiCellWidget(nfoLocalFileName, CR, CR, 1, 2);
+
+  lay->addRowSpacing(++CR, 10);
+
+  // Information stuff about the current file
+  lblTrans = new QLabel(tr("File:"), this);
+  lay->addWidget(lblTrans, ++CR, 0);
+  barTransfer = new QProgressBar(this);
+  lay->addWidget(barTransfer, CR, 1);
+  nfoFileSize = new CInfoField(this, true);
+  lay->addWidget(nfoFileSize, CR, 2);
+
+  // Information about the batch file transfer
+  lblBatch = new QLabel(tr("Batch:"), this);
+  lay->addWidget(lblBatch, ++CR, 0);
+  barBatchTransfer = new QProgressBar(this);
+  lay->addWidget(barBatchTransfer, CR, 1);
+  nfoBatchSize = new CInfoField(this, true);
+  lay->addWidget(nfoBatchSize, CR, 2);
+
+  lblTime = new QLabel(tr("Time:"), this);
+  lay->addWidget(lblTime, ++CR, 0);
+
+  QHBox* hbox = new QHBox(this);
+  hbox->setSpacing(8);
+  lay->addMultiCellWidget(hbox, CR, CR, 0, 1);
+  nfoTime = new CInfoField(hbox, true);
+  nfoBPS = new CInfoField(hbox, true);
+  lblETA = new QLabel(tr("ETA:"), hbox);
+  nfoETA = new CInfoField(this, true);
+  lay->addWidget(nfoETA, CR++, 2);
+  lay->addRowSpacing(++CR, 10);
+
+  mleStatus = new MLEditWrap(true, this);
+  ++CR;
+  lay->addMultiCellWidget(mleStatus, CR, CR, 0, 2);
+  mleStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
+
+  lay->setRowStretch(++CR, 3);
+
+  hbox = new QHBox(this);
+  hbox->setSpacing(8);
+  lay->addMultiCellWidget(hbox, CR, CR, 0, 2);
+  
+  btnCancel = new QPushButton(tr("&Cancel Transfer"), hbox);
+  btnCancel->setMinimumWidth(75);
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
+
+  //TODO fix this
+  ftman = new CFileTransferManager(licqDaemon, strtoul(m_szId, (char **)NULL, 10));
+  ftman->SetUpdatesEnabled(2);
+  sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
+  connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
+
+  #ifdef USE_KDE
+    btnOpen = new QPushButton(tr("&Open"), hbox);
+    btnOpenDir = new QPushButton(tr("O&pen Dir"), hbox);
+    btnOpen->hide();
+    btnOpenDir->hide();
+    connect(btnOpen, SIGNAL(clicked()), SLOT(slot_open()));
+    connect(btnOpenDir, SIGNAL(clicked()), SLOT(slot_opendir()));
+  #endif
+}
+
+#endif
 CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
   : QWidget(parent, "FileDialog", WDestructiveClose)
-{ 
+{
   // If we are the server, then we are receiving a file
   m_nUin = _nUin;
   licqDaemon = daemon;
@@ -255,8 +348,13 @@ void CFileDlg::slot_ft()
   // Read out any pending events
   char buf[32];
   read(ftman->Pipe(), buf, 32);
-  
+
+  //TODO Fix this
+#ifdef QT_PROTOCOL_PLUGIN
+  QTextCodec *codec = UserCodec::codecForUIN(strtoul(m_szId, (char **)NULL, 10));
+#else
   QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
+#endif
 
   CFileTransferEvent *e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
@@ -272,7 +370,7 @@ void CFileDlg::slot_ft()
         barBatchTransfer->setProgress(0);
         break;
       }
-      
+
       case FT_CONFIRMxFILE:
       {
         // Use this opportunity to encode the filename

@@ -110,6 +110,291 @@ enum ChatMenu_Identifiers {
 
 // ---------------------------------------------------------------------------
 
+#ifdef QT_PROTOCOL_PLUGIN
+ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
+                 CMainWindow *m, QWidget *parent)
+  : QMainWindow(parent, "ChatDialog", WDestructiveClose)
+{
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  m_bAudio = true;
+  licqDaemon = daemon;
+  sn = NULL;
+  mainwin = m;
+
+  m_nMode = CHAT_PANE;
+
+  setCaption(tr("Licq - Chat"));
+  statusBar();
+  // central widget
+  QWidget* widCentral = new QWidget(this);
+  setCentralWidget(widCentral);
+
+  setOpaqueMoving(true);
+  setToolBarsMovable(true);
+#if QT_VERSION < 300
+  setDockEnabled(Bottom, true);
+#else
+  setDockEnabled(DockBottom, true);
+#endif
+  setUsesBigPixmaps(false);
+
+  // Pane mode setup
+  boxPane = new QGroupBox(widCentral);
+  paneLayout = new QGridLayout(boxPane, 3, 1, 4);
+  remoteLayout = new QGridLayout(2, 1, 4);
+  paneLayout->addLayout(remoteLayout, 0, 0);
+  lblRemote = new QLabel(tr("Remote - Not connected"), boxPane);
+  remoteLayout->addWidget(lblRemote, 0, 0);
+  remoteLayout->setRowStretch(1, 1);
+
+  paneLayout->addRowSpacing(1, 15);
+
+  QGridLayout *llay = new QGridLayout(2, 1, 4);
+  paneLayout->addLayout(llay, 2, 0);
+  lblLocal = new QLabel(boxPane);
+  mlePaneLocal = new CChatWindow(boxPane);
+  mlePaneLocal->setMinimumHeight(100);
+  mlePaneLocal->setMinimumWidth(150);
+  mlePaneLocal->setEnabled(false);
+  llay->addWidget(lblLocal, 0, 0);
+  llay->addWidget(mlePaneLocal, 1, 0);
+  llay->setRowStretch(1, 1);
+
+  // IRC mode setup
+  boxIRC = new QGroupBox(widCentral);
+  QGridLayout *lay = new QGridLayout(boxIRC, 2, 2, 4);
+  mleIRCRemote = new CChatWindow(boxIRC);
+  mleIRCRemote->setReadOnly(true);
+  mleIRCRemote->setMinimumHeight(100);
+  mleIRCRemote->setMinimumWidth(150);
+  lay->addWidget(mleIRCRemote, 0, 0);
+  lstUsers = new QListBox(boxIRC);
+  lay->addMultiCellWidget(lstUsers, 0, 1, 1, 1);
+  mleIRCLocal = new CChatWindow(boxIRC);
+  mleIRCLocal->setEnabled(false);
+  mleIRCLocal->setFixedHeight(mleIRCLocal->fontMetrics().lineSpacing() * 4);
+  lay->addWidget(mleIRCLocal, 1, 0);
+  lay->setRowStretch(0, 1);
+  lay->setColStretch(0, 1);
+
+  // Generic setup
+  mnuMain = new QPopupMenu(this);
+  mnuMain->insertItem(tr("&Audio"), this, SLOT(slot_audio()), ALT + Key_A, mnuChatAudio);
+  mnuMain->insertItem(tr("&Save Chat"), this, SLOT(slot_save()), ALT + Key_S, mnuChatSave);
+  mnuMain->insertSeparator();
+  mnuMain->insertItem(tr("&Close Chat"), this, SLOT(close()), ALT + Key_Q);
+  mnuMode = new QPopupMenu(this);
+  mnuMode->insertItem(tr("&Pane Mode"), this, SLOT(SwitchToPaneMode()));
+  mnuMode->insertItem(tr("&IRC Mode"), this, SLOT(SwitchToIRCMode()));
+  menuBar()->insertItem(tr("Chat"), mnuMain);
+  menuBar()->insertItem(tr("Mode"), mnuMode);
+
+  mnuMain->setItemChecked(mnuChatAudio, m_bAudio);
+
+  // Toolbar
+  QToolBar* barChat = new QToolBar("label", this);
+  addToolBar(barChat, "Chat Toolbar");
+  barChat->setHorizontalStretchable(false);
+  barChat->setVerticalStretchable(true);
+  barChat->setFixedHeight(barChat->height()+2);
+
+   // ### FIXME: implement laughing
+   // tbtLaugh = new QToolButton(LeftArrow, barChat);
+
+  QPixmap* pixIgnore = new QPixmap(chatIgnore_xpm);
+  qPixmaps.push_back(pixIgnore);
+  tbtIgnore = new QToolButton(*pixIgnore, tr("Ignore user settings"),
+    tr("Ignores user color settings"), this, SLOT(updateRemoteStyle()), barChat);
+  tbtIgnore->setToggleButton(true);
+
+  QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
+  qPixmaps.push_back(pixBeep);
+  tbtBeep = new QToolButton(*pixBeep, tr("Beep"),
+     tr("Sends a Beep to all recipients"),this, SLOT(chatSendBeep()), barChat);
+
+  barChat->addSeparator();
+
+  QPixmap* pixFg = new QPixmap(chatChangeFg_xpm);
+  qPixmaps.push_back(pixFg);
+  tbtFg = new QToolButton(*pixFg, tr("Foreground color"),
+     tr("Changes the foreground color"), this, SLOT(changeFrontColor()), barChat);
+  mnuFg = new QPopupMenu(this);
+
+  QPixmap* pixBg = new QPixmap(chatChangeBg_xpm);
+  qPixmaps.push_back(pixBg);
+  tbtBg = new QToolButton(*pixBg, tr("Background color"),
+     tr("Changes the background color"), this, SLOT(changeBackColor()), barChat);
+
+  mnuBg = new QPopupMenu(this);
+
+  for(unsigned int i = 0; i < NUM_COLORS; i++)
+  {
+    QPixmap *pix = new QPixmap(48, 14);
+    qPixmaps.push_back(pix);
+    QPainter p(pix);
+    QColor c (col_array[i*3+0], col_array[i*3+1], col_array[i*3+2]);
+
+    pix->fill(c);
+    p.drawRect(0, 0, 48, 14);
+
+    mnuBg->insertItem(*pix, i);
+    QPixmap* pixf = new QPixmap(48, 14);
+    qPixmaps.push_back(pixf);
+    pixf->fill(colorGroup().background());
+    QPainter pf(pixf);
+    pf.setPen(c);
+    pf.drawText(5, 12, QString("Abc"));
+    mnuFg->insertItem(*pixf, i);
+  }
+  barChat->addSeparator();
+
+  QPixmap* pixBold = new QPixmap(chatBold_xpm);
+  qPixmaps.push_back(pixBold);
+  tbtBold = new QToolButton(*pixBold, tr("Bold"),
+    tr("Toggles Bold font") , this, SLOT(fontStyleChanged()), barChat);
+  tbtBold->setToggleButton(true);
+
+  QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
+  qPixmaps.push_back(pixItalic);
+  tbtItalic = new QToolButton(*pixItalic, tr("Italic"),
+    tr("Toggles Italic font"), this, SLOT(fontStyleChanged()), barChat);
+  tbtItalic->setToggleButton(true);
+
+  QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
+  qPixmaps.push_back(pixUnder);
+  tbtUnderline = new QToolButton(*pixUnder, tr("Underline"),
+     tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
+  tbtUnderline->setToggleButton(true);
+
+  QPixmap *pixStrike = new QPixmap(chatStrike_xpm);
+  qPixmaps.push_back(pixStrike);
+  tbtStrikeOut = new QToolButton(*pixStrike, tr("StrikeOut"),
+     tr("Toggles StrikeOut font"), this, SLOT(fontStyleChanged()), barChat);
+  tbtStrikeOut->setToggleButton(true);
+
+  tbtBold->setAutoRaise(false);
+  tbtItalic->setAutoRaise(false);
+  tbtUnderline->setAutoRaise(false);
+  tbtStrikeOut->setAutoRaise(false);
+
+  barChat->addSeparator();
+
+  cmbFontSize = new QComboBox(true, barChat);
+  cmbFontSize->setInsertionPolicy(QComboBox::NoInsertion);
+  //windows font size limit seems to be 1638 (tested 98, 2000)
+  cmbFontSize->setValidator(new QIntValidator(1, 1638, cmbFontSize));
+  connect(cmbFontSize, SIGNAL(activated(const QString&)), SLOT(fontSizeChanged(const QString&)));
+  cmbFontSize->insertItem(QString::number(font().pointSize()));
+
+  QValueList<int> sizes = QFontDatabase::standardSizes();
+  for(unsigned i = 0; i < sizes.count(); i++)
+    if(sizes[i] != font().pointSize())
+      cmbFontSize->insertItem(QString::number(sizes[i]));
+
+  QFontDatabase fb;
+  cmbFontName = new QComboBox(false, barChat);
+#if 0
+  cmbFontName->setSizeLimit(15);
+  QStringList sl = fb.families();
+  while(sl.at(55) != sl.end())  sl.remove(sl.at(55));
+#endif
+//  cmbFontName->setFixedSize(cmbFontName->sizeHint());
+  cmbFontName->insertStringList(fb.families());
+  barChat->setStretchableWidget(cmbFontName);
+  connect(cmbFontName, SIGNAL(activated(const QString&)), SLOT(fontNameChanged(const QString&)));
+
+  barChat->addSeparator();
+
+  codec = QTextCodec::codecForLocale();
+
+  QString codec_name = QString::fromLatin1( codec->name() ).lower(); // TODO: determine best codec
+  QPopupMenu *popupEncoding = new QPopupMenu;
+  popupEncoding->setCheckable(true);
+
+  // populate the popup menu
+  UserCodec::encoding_t *it = &UserCodec::m_encodings[0];
+  while(it->encoding != NULL) {
+
+    if (QString::fromLatin1(it->encoding).lower() == codec_name) {
+      if (mainwin->m_bShowAllEncodings || it->isMinimal) {
+        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
+      } else {
+        // if the current encoding does not appear in the minimal list
+        popupEncoding->insertSeparator(0);
+        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib, 0);
+      }
+      popupEncoding->setItemChecked(it->mib, true);
+    } else {
+      if (mainwin->m_bShowAllEncodings || it->isMinimal) {
+        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
+      }
+    }
+
+    ++it;
+  }
+
+  tbtEncoding = new QToolButton(barChat);
+  tbtEncoding->setTextLabel(tr("Set Encoding"));
+  tbtEncoding->setPopup(popupEncoding);
+  tbtEncoding->setPopupDelay(0);
+  tbtEncoding->setPixmap(mainwin->pmEncoding);
+
+//  QWidget* dummy = new QWidget(barChat);
+//  barChat->setStretchableWidget(dummy);
+
+  QGridLayout *g = new QGridLayout(widCentral, 2, 1, 6, 4);
+  g->addWidget(boxPane, 0, 0);
+  g->addWidget(boxIRC, 0, 0);
+
+  SwitchToPaneMode();
+
+  // Add ourselves to the list
+  chatDlgs.push_back(this);
+
+  // Create the chat manager using our font
+  QFontInfo fi(mlePaneLocal->font());
+  QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
+  unsigned char style = STYLE_DONTCARE;
+#if QT_VERSION >= 230
+  if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
+    style |= STYLE_FIXEDxPITCH;
+  else
+    style |= STYLE_VARIABLExPITCH;
+#endif
+  unsigned char encoding = UserCodec::charsetForName(codec->name());
+  //TODO in daemon
+  chatman = new CChatManager(daemon, strtoul(m_szId, (char **)NULL, 10),
+     fi.family().local8Bit(),
+     encoding, style, fi.pointSize(), fi.bold(), fi.italic(), fi.underline(),
+     fi.strikeOut());
+
+  sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
+  connect(sn, SIGNAL(activated(int)), this, SLOT(slot_chat()));
+
+  // But use the chat manager default colors
+  mlePaneLocal->setForeground(QColor(chatman->ColorFg()[0],
+     chatman->ColorFg()[1], chatman->ColorFg()[2]));
+  mlePaneLocal->setBackground(QColor(chatman->ColorBg()[0],
+     chatman->ColorBg()[1], chatman->ColorBg()[2]));
+  mleIRCLocal->setForeground(QColor(chatman->ColorFg()[0],
+     chatman->ColorFg()[1], chatman->ColorFg()[2]));
+  mleIRCLocal->setBackground(QColor(chatman->ColorBg()[0],
+     chatman->ColorBg()[1], chatman->ColorBg()[2]));
+  mleIRCRemote->setForeground(QColor(chatman->ColorFg()[0],
+     chatman->ColorFg()[1], chatman->ColorFg()[2]));
+  mleIRCRemote->setBackground(QColor(chatman->ColorBg()[0],
+     chatman->ColorBg()[1], chatman->ColorBg()[2]));
+  chatname = QString::fromLocal8Bit(chatman->Name());
+  lstUsers->insertItem(chatname);
+  lblLocal->setText(tr("Local - %1").arg(chatname));
+
+  widCentral->setMinimumSize(400, 300);
+  resize(500, 475);
+  show();
+}
+#endif
+
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
                  CMainWindow *m, QWidget *parent)
   : QMainWindow(parent, "ChatDialog", WDestructiveClose)
@@ -328,7 +613,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
         popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
       }
     }
-    
+
     ++it;
   }
 
@@ -364,7 +649,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   chatman = new CChatManager(daemon, _nUin, fi.family().local8Bit(),
      encoding, style, fi.pointSize(), fi.bold(), fi.italic(), fi.underline(),
      fi.strikeOut());
-  
+
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), this, SLOT(slot_chat()));
 

@@ -135,6 +135,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     WarnUser(this, tr("Random chat search had an error."));
     break;
   default:
+    //TODO when CSearchAck changes
     mainwin->callFunction(mnuUserSendChat, e->SearchAck()->Uin());
     close();
     return;
@@ -189,7 +190,11 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
   lstGroups->insertItem(tr("Seeking Women"));
   lstGroups->insertItem(tr("Seeking Men"));
 
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+#else
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+#endif
   switch(o->RandomChatGroup())
   {
     case ICQ_RANDOMxCHATxGROUP_GENERAL: lstGroups->setCurrentItem(1); break;

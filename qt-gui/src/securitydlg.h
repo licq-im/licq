@@ -14,6 +14,8 @@ class ICQEvent;
 class CICQDaemon;
 class CSignalManager;
 
+//TODO Maybe add support for other protocols.  Probably unnecessary.
+
 class SecurityDlg : public LicqDialog
 {
    Q_OBJECT

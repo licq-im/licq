@@ -35,6 +35,7 @@ signals:
   void signal_logoff();
   void signal_ui_viewevent(unsigned long);
   void signal_ui_message(unsigned long);
+  void signal_protocolPlugin(unsigned long);
 
   // Event signals
   void signal_doneOwnerFcn(ICQEvent *);

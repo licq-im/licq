@@ -31,10 +31,18 @@ class KeyRequestDlg : public LicqDialog
   Q_OBJECT
 public:
   KeyRequestDlg(CSignalManager *_sigman, unsigned long nUin, QWidget *parent = 0);
+#ifdef QT_PROTOCOL_PLUGIN
+  KeyRequestDlg(CSignalManager *_sigman, const char *szId,
+    unsigned long nPPID, QWidget *parent = 0);
+#endif
   virtual ~KeyRequestDlg();
 
 protected:
   unsigned long m_nUin;
+#ifdef QT_PROTOCOL_PLUGIN
+  char *m_szId;
+  unsigned long m_nPPID;
+#endif
   QPushButton *btnSend, *btnCancel;
   QLabel *lblStatus;
   bool m_bOpen;

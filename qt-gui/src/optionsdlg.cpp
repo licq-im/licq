@@ -400,6 +400,7 @@ void OptionsDlg::SetupOptions()
    edtSndSysMsg->setURL(oem->Parameter(ON_EVENT_SYSMSG));
    edtSndMsgSent->setURL(oem->Parameter(ON_EVENT_MSGSENT));
    oem->Unlock();
+   //TODO make general for all plugins
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    chkOEAway->setChecked(o->AcceptInAway());
    chkOENA->setChecked(o->AcceptInNA());
@@ -606,6 +607,7 @@ void OptionsDlg::ApplyOptions()
    txtSndMsgSent.latin1(), 0 };
 
   oem->SetParameters(txtSndPlayer.latin1(), oemparams);
+  //TODO Make general for all plugins
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetEnableSave(false);
   o->SetAcceptInAway(chkOEAway->isChecked());

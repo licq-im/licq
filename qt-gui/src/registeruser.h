@@ -12,6 +12,8 @@
 #include <qwizard.h>
 #endif
 
+//TODO This entire class for protocol plugin support
+
 class QGroupBox;
 class QCheckBox;
 class QWidget;

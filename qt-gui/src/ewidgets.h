@@ -128,12 +128,20 @@ class CMessageViewWidget : public CHistoryWidget
 {
   Q_OBJECT
 private:
+#ifdef QT_PROTOCOL_PLUGIN
+  char *m_szId;
+  unsigned long m_nPPID;
+#endif
   unsigned long m_nUin;
   CMainWindow *mainwin;
 public:
+#ifdef QT_PROTOCOL_PLUGIN
+  CMessageViewWidget(const char *szId, unsigned long nPPID,
+    QWidget *parent = 0, const char *name = 0);
+#endif
   CMessageViewWidget(unsigned long _nUin, CMainWindow *m,
 		     QWidget* parent=0, const char * name =0);
-  virtual ~CMessageViewWidget(){};
+  virtual ~CMessageViewWidget();
 public slots:
   virtual void addMsg(CUserEvent *);
   void addMsg(ICQEvent *);

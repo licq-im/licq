@@ -42,10 +42,17 @@ class CustomAwayMsgDlg : public LicqDialog
   Q_OBJECT
 public:
   CustomAwayMsgDlg(unsigned long, QWidget *parent = 0);
+#ifdef QT_PROTOCOL_PLUGIN
+  CustomAwayMsgDlg(const char *, unsigned long, QWidget *parent = 0);
+#endif
 
 protected:
   MLEditWrap *mleAwayMsg;
   unsigned long m_nUin;
+#ifdef QT_PROTOCOL_PLUGIN
+  char *m_szId;
+  unsigned long m_nPPID;
+#endif
 
 protected slots:
   void slot_clear();
@@ -55,3 +62,4 @@ protected slots:
 
 
 #endif
+

@@ -219,6 +219,67 @@ void AwayMsgDlg::closeEvent(QCloseEvent *e)
 
 // -----------------------------------------------------------------------------
 
+#ifdef QT_PROTOCOL_PLUGIN
+CustomAwayMsgDlg::CustomAwayMsgDlg(const char *szId,
+    unsigned long nPPID, QWidget *parent)
+    : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
+{
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+
+  QBoxLayout* top_lay = new QVBoxLayout(this, 10);
+
+  mleAwayMsg = new MLEditWrap(true, this);
+  connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(slot_ok()));
+  top_lay->addWidget(mleAwayMsg);
+
+  QBoxLayout* l = new QHBoxLayout(top_lay, 10);
+
+  int bw = 75;
+  QPushButton *btnHints = new QPushButton(tr("&Hints"), this);
+  connect(btnHints, SIGNAL(clicked()), SLOT(slot_hints()));
+  QPushButton *btnOk = new QPushButton(tr("&Ok"), this );
+  btnOk->setDefault(true);
+  connect( btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
+  QPushButton *btnClear = new QPushButton(tr("&Clear"), this );
+  connect( btnClear, SIGNAL(clicked()), SLOT(slot_clear()) );
+  QPushButton *btnCancel = new QPushButton(tr("&Cancel"), this );
+  connect( btnCancel, SIGNAL(clicked()), SLOT(close()) );
+  bw = QMAX(bw, btnOk->sizeHint().width());
+  bw = QMAX(bw, btnClear->sizeHint().width());
+  bw = QMAX(bw, btnCancel->sizeHint().width());
+  bw = QMAX(bw, btnHints->sizeHint().width());
+  btnOk->setFixedWidth(bw);
+  btnClear->setFixedWidth(bw);
+  btnCancel->setFixedWidth(bw);
+  btnHints->setFixedWidth(bw);
+
+  l->addStretch(1);
+  l->addSpacing(30);
+  l->addWidget(btnHints);
+  l->addSpacing(20);
+  l->addWidget(btnOk);
+  l->addWidget(btnClear);
+  l->addWidget(btnCancel);
+
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  setCaption(QString(tr("Set Custom Auto Response for %1"))
+             .arg(QString::fromLocal8Bit(u->GetAlias())));
+  if (*u->CustomAutoResponse())
+    mleAwayMsg->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
+  else if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
+    mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
+                        .arg(ICQUser::StatusToStatusStr(u->StatusToUser(), false)));
+
+  gUserManager.DropUser(u);
+
+  mleAwayMsg->setFocus();
+  QTimer::singleShot(0, mleAwayMsg, SLOT(selectAll()));
+
+  show();
+}
+#endif
+
 CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
     : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
 {
@@ -291,12 +352,20 @@ void CustomAwayMsgDlg::slot_ok()
   while(s[s.length()-1].isSpace())
     s.truncate(s.length()-1);
 
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+#endif
   if (u != NULL)
   {
     u->SetCustomAutoResponse(s.local8Bit());
     gUserManager.DropUser(u);
+#ifdef QT_PROTOCOL_PLUGIN
+    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_szId, m_nPPID);
+#else
     CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+#endif
     gMainWindow->slot_updatedUser(&sig);
   }
   close();
@@ -305,12 +374,20 @@ void CustomAwayMsgDlg::slot_ok()
 
 void CustomAwayMsgDlg::slot_clear()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+#endif
   if (u != NULL)
   {
     u->ClearCustomAutoResponse();
     gUserManager.DropUser(u);
+#ifdef QT_PROTOCOL_PLUGIN
+    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_szId, m_nPPID);
+#else
     CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+#endif
     gMainWindow->slot_updatedUser(&sig);
   }
   close();

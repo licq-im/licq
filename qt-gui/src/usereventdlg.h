@@ -93,14 +93,27 @@ public:
 
   UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0, const char* name =0);
+#ifdef QT_PROTOCOL_PLUGIN
+  UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0,
+                  const char *name = 0);
+#endif
   virtual ~UserEventCommon();
 
   unsigned long Uin() { return m_nUin; }
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  char *Id()  { reutrn m_szId; }
+  unsigned long PPID()  { m_nPPID; }
+#endif
 
 protected:
   QTextCodec *codec;
   bool m_bOwner;
   unsigned long m_nUin;
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  char *m_szId;
+  unsigned long m_nPPID;
+#endif
   QBoxLayout* top_lay, *top_hlay;
   CICQDaemon *server;
   CMainWindow *mainwin;
@@ -144,6 +157,10 @@ public:
 
   UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserViewEvent();
 
 protected:
@@ -192,6 +209,11 @@ public:
 
   UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                  unsigned long _nUin, QWidget* parent = 0, const char* name=0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                 const char *_szId, unsigned long _nPPID, QWidget *parent = 0,
+                 const char *name = 0);
+#endif
   virtual ~UserSendCommon();
 
   void setText(const QString& txt);
@@ -251,6 +273,10 @@ public:
 
   UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserSendMsgEvent();
 
 protected:
@@ -272,6 +298,10 @@ public:
 
   UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserSendUrlEvent();
 
   void setUrl(const QString& url, const QString& description);
@@ -296,6 +326,10 @@ public:
 
   UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserSendFileEvent();
 
   void setFile(const QString& file, const QString& description);
@@ -326,6 +360,10 @@ public:
 
   UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                     unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserSendChatEvent();
 
 protected:
@@ -354,8 +392,13 @@ public:
 
   UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                        unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserSendContactEvent();
 
+  //TODO
   void setContact(unsigned long uin, const QString& alias);
 
 protected:
@@ -379,6 +422,10 @@ public:
 
   UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
+#endif
   virtual ~UserSendSmsEvent();
 
 protected:

@@ -45,6 +45,11 @@ CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
   static char sTemp[128];
 
   m_nUin = u->Uin();
+#ifdef QT_PROTOCOL_PLUGIN
+  m_szId = u->IdString() ? strdup(u->IdString()) : 0;
+  m_nPPID = u->PPID();
+#endif
+
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 
   CMMUserView *v = (CMMUserView *)listView();
@@ -87,6 +92,41 @@ enum mnuMM_ids
 };
 
 //-----UserList::constructor-----------------------------------------------------------------------
+#ifdef QT_PROTOCOL_PLUGIN
+CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
+   char *szId, unsigned long nPPID, CMainWindow *pMainwin,
+   QWidget *parent)
+   : QListView(parent, "MMUserView")
+{
+  mnuMM = new QPopupMenu(NULL);
+  mnuMM->insertItem(tr("Remove"), mnuMM_remove);
+  mnuMM->insertItem(tr("Crop"), mnuMM_crop);
+  mnuMM->insertItem(tr("Clear"), mnuMM_clear);
+  mnuMM->insertSeparator();
+  mnuMM->insertItem(tr("Add Group"), mnuMM_addgroup);
+  mnuMM->insertItem(tr("Add All"), mnuMM_addall);
+  connect(mnuMM, SIGNAL(activated(int)), SLOT(slot_menu(int)));
+
+  colInfo = _colInfo;
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  mainwin = pMainwin;
+
+  for (unsigned short i = 0; i < colInfo.size(); i++)
+  {
+    addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);
+    setColumnAlignment(i, 1<<colInfo[i]->m_nAlign);
+  }
+
+  setAllColumnsShowFocus (true);
+  setSelectionMode(Extended);
+  setSorting(0);
+  bHeader ? header()->show() : header()->hide();
+
+  setAcceptDrops(true);
+}
+#endif
+
 CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
    unsigned long nUin, CMainWindow *pMainwin,
    QWidget *parent)
@@ -122,6 +162,9 @@ CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
 
 CMMUserView::~CMMUserView()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId) free(m_szId);
+#endif
 }
 
 
@@ -166,7 +209,11 @@ void CMMUserView::slot_menu(int id)
       CUserViewItem *i = (CUserViewItem *)mainwin->UserView()->firstChild();
       while (i != NULL)
       {
+#ifdef QT_PROTOCOL_PLUGIN
+        Adduser(i->ItemId());
+#else
         AddUser(i->ItemUin());
+#endif
         i = (CUserViewItem *)i->nextSibling();
       }
       break;
@@ -177,7 +224,11 @@ void CMMUserView::slot_menu(int id)
       clear();
       FOR_EACH_USER_START(LOCK_R)
       {
+#ifdef QT_PROTOCOL_PLUGIN
+        if (pUser->m_nPPID() != m_nPPID || strcmp(pUser->Id(), m_szId))
+#else
         if (pUser->Uin() != m_nUin)
+#endif
           (void) new CMMUserViewItem(pUser, this);
       }
       FOR_EACH_USER_END
@@ -207,9 +258,31 @@ void CMMUserView::dropEvent(QDropEvent * de)
     return;
   }
 
+#ifdef QT_PROTOCOL_PLUGIN
+  AddUser(text.latin1());
+#else
   AddUser(text.toULong());
+#endif
 }
 
+
+#ifdef QT_PROTOCOL_PLUGIn
+void CMMUserView::AddUser(const char *szId, unsigned long nPPID)
+{
+  if (szId == 0 || (nPPID == m_nPPID && strcmp(szId, m_szId) == 0))
+    return;
+    
+  CMMUserViewItem *i = (CMMUserViewItem *)firstChild();
+  while (i != NULL && (i->PPID() != nPPID || strcmp(i->Id(), szId )))
+    i = (CMMUserViewItem *)i->nextSibling();
+  if (i != NULL) return;
+
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u == NULL) return;
+  (void) new CMMUserViewItem(u, this);
+  gUserManager.DropUser(u);    
+}
+#endif
 
 void CMMUserView::AddUser(unsigned long nUin)
 {

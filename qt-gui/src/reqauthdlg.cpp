@@ -34,6 +34,60 @@
 #include "licq_icqd.h"
 #include "usercodec.h"
 
+#ifdef QT_PROTOCOL_PLUGIN
+ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
+  QWidget *parent)
+  : LicqDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
+{
+  server = s;
+
+  setCaption(tr("Licq - Request Authorization"));
+
+  QBoxLayout* toplay = new QVBoxLayout(this, 8, 8);
+
+  lblUin = new QLabel(this);
+  lblUin->setAlignment(AlignCenter);
+  lblUin->setText(tr("Request authorization from (UIN):"));
+  edtUin = new QLineEdit(this);
+  edtUin->setMinimumWidth(90);
+  connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
+  QBoxLayout* lay = new QHBoxLayout(toplay);
+  lay->addWidget(lblUin);
+  lay->addWidget(edtUin);
+
+  toplay->addSpacing(6);
+
+  grpRequest = new QVGroupBox(tr("Request"), this);
+  toplay->addWidget(grpRequest);
+  toplay->setStretchFactor(grpRequest, 2);
+
+  mleRequest = new MLEditWrap(true, grpRequest);
+
+  QBoxLayout *lay2 = new QHBoxLayout(toplay);
+
+  lay2->addStretch(1);
+  btnOk = new QPushButton(tr("&Ok"), this);
+  btnOk->setMinimumWidth(75);
+  lay2->addWidget(btnOk);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  btnCancel->setMinimumWidth(75);
+  lay2->addWidget(btnCancel);
+  connect (mleRequest, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
+  connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
+  connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
+
+  if (szId)
+  {
+    edtUin->setText(szId);
+    mleRequest->setFocus();
+  }
+  else
+    edtUin->setFocus();
+
+  show();
+}
+#endif
+
 ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, unsigned long nUin, QWidget *parent)
   : LicqDialog(parent, "RequestAuthDialog", false, WDestructiveClose)
 {
@@ -90,14 +144,25 @@ ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, unsigned long nUin, QWidget *parent)
 
 void ReqAuthDlg::ok()
 {
+#ifdef QT_PROTOCOL_PLUGIN
   unsigned long nUin = edtUin->text().toULong();
-  
+
   if (nUin != 0)
   {
     QTextCodec *codec = UserCodec::codecForUIN(nUin);
     server->icqRequestAuth(nUin, codec->fromUnicode(mleRequest->text()));
     close(true);
   }
+#else
+  unsigned long nUin = edtUin->text().toULong();
+
+  if (nUin != 0)
+  {
+    QTextCodec *codec = UserCodec::codecForUIN(nUin);
+    server->icqRequestAuth(nUin, codec->fromUnicode(mleRequest->text()));
+    close(true);
+  }
+#endif
 }
 
 #include "reqauthdlg.moc"

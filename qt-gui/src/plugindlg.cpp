@@ -135,7 +135,11 @@ void PluginDlg::slot_load()
   if (lstAvailable->currentItem() == -1) return;
 
   char *sz[] = { "licq", NULL };
+#ifdef _PROTOCOL_PLUGIN
+  gLicqDaemon->ProtoPluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1()); //, 1, sz);
+#else
   gLicqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1(), 1, sz);
+#endif
 
   slot_refresh();
 }
@@ -228,12 +232,20 @@ void PluginDlg::slot_refresh()
   }
 
   lstAvailable->clear();
+#ifdef PROTOCOL_PLUGIN
+  QDir d(LIB_DIR, "protocol_*.so" /*"licq_*.so"*/, QDir::Name, QDir::Files | QDir::Readable);
+#else
   QDir d(LIB_DIR, "licq_*.so", QDir::Name, QDir::Files | QDir::Readable);
+#endif
   QStringList s = d.entryList();
   QStringList::Iterator sit;
   for (sit = s.begin(); sit != s.end(); sit++)
   {
+#ifdef PROTOCOL_PLUGIN
+    (*sit).remove(0, 9);
+#else
     (*sit).remove(0, 5);
+#endif
     (*sit).truncate((*sit).length() - 3);
   }
   lstAvailable->insertStringList(s);

@@ -15,6 +15,8 @@ class QComboBox;
 
 class CICQDaemon;
 
+//TODO for other protocols
+
 class UserSelectDlg : public LicqDialog
 {
   Q_OBJECT

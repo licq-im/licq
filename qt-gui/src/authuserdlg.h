@@ -17,6 +17,11 @@ class AuthUserDlg : public LicqDialog
 public:
    AuthUserDlg (CICQDaemon *s, unsigned long nUin, bool bGrant,
       QWidget *parent = 0);
+#ifdef QT_PROTOCOL_PLUGIN
+   AuthuserDlg (CICQDaemon *s, const char *szId, unsigned long nPPID,
+      bool bGrant, QWidget *parent = 0);
+#endif
+
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;
@@ -26,6 +31,11 @@ protected:
    MLEditWrap* mleResponse;
 
    unsigned long m_nUin;
+#ifdef QT_PROTOCOL_PLUGIN
+   char *m_szId;
+   unsigned long m_nPPID;
+#endif
+
    bool m_bGrant;
 protected slots:
    void ok();

@@ -31,11 +31,13 @@
 
 #include "licq_icqd.h"
 
+//TODO Add a drop down list of the avaialable protocols
+//     that a user may be added for
 AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
    : LicqDialog(parent, "AddUserDialog")
 {
 	server = s;
-	
+
 	QBoxLayout *lay = new QBoxLayout(this, QBoxLayout::Down, 8);
 	QFrame *frmUin = new QFrame(this);
 	chkAlert = new QCheckBox(tr("&Alert User"), this);
@@ -45,14 +47,19 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 	lay->addSpacing(5);
 	lay->addStretch();
 	lay->addWidget(frmBtn);
-	
+
 	QBoxLayout *layUin = new QBoxLayout(frmUin, QBoxLayout::LeftToRight);
-	lblUin = new QLabel(tr("New User UIN:"), frmUin);
+#ifdef QT_PROTOCOL_PLUGIN
+	lblUin = new QLabel(tr("New User Id:"), frmUin);
 	edtUin = new QLineEdit(frmUin);
+#else
+  lblUin = new QLabel(tr("New User UIN:"), frmUin);
+  edtUin = new QLineEdit(frmUin);
 	edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
+#endif
 	layUin->addWidget(lblUin);
 	layUin->addWidget(edtUin);
-	
+
 	QBoxLayout *layBtn = new QBoxLayout(frmBtn, QBoxLayout::LeftToRight);
 	btnOk = new QPushButton(tr("&Ok"), frmBtn);
 	btnCancel = new QPushButton(tr("&Cancel"), frmBtn);
@@ -60,7 +67,7 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 	layBtn->addWidget(btnOk);
 	layBtn->addSpacing(20);
 	layBtn->addWidget(btnCancel);
-	
+
 	setCaption(tr("Licq - Add User"));
 	connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
 	connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
@@ -83,6 +90,14 @@ void AddUserDlg::show()
 
 void AddUserDlg::ok()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  QString strUser = edtUin->text().latin1();
+  if (!strUser.isEmpty())
+  {
+    //TODO Get protocol
+    server->AddUserToList(strUser, LICQ_PPID);
+  }
+#else
    unsigned long nUin = edtUin->text().toULong();
    if (nUin != 0)
    {
@@ -90,6 +105,7 @@ void AddUserDlg::ok()
      if (chkAlert->isChecked()) // alert the user they were added
        server->icqAlertUser(nUin);
    }
+#endif
    close(true);
 }
 

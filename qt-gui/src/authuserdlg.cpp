@@ -35,6 +35,85 @@
 #include "licq_icqd.h"
 #include "usercodec.h"
 
+#ifdef QT_PROTOCOL_PLUGIN
+//TODO Add drop down list of avaiable protocols
+AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
+   bool bGrant, QWidget *parent)
+  : LicqDialog(parent, "AuthUserDialog", false, WDestructiveClose)
+{
+  server = s;
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  m_bGrant = bGrant;
+
+  if(bGrant)
+    setCaption(tr("Licq - Grant Authorisation"));
+  else
+    setCaption(tr("Licq - Refuse Authorisation"));
+
+  QBoxLayout* toplay = new QVBoxLayout(this, 8, 8);
+
+  lblUin = new QLabel(this);
+  lblUin->setAlignment(AlignCenter);
+  if (m_szId == 0)
+  {
+    lblUin->setText(tr("Authorize which user (Id):"));
+    edtUin = new QLineEdit(this);
+    edtUin->setMinimumWidth(90);
+    connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
+    QBoxLayout* lay = new QHBoxLayout(toplay);
+    lay->addWidget(lblUin);
+    lay->addWidget(edtUin);
+  }
+  else
+  {
+    edtUin = NULL;
+    toplay->addWidget(lblUin);
+    QString userName;
+    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u != NULL) {
+       QTextCodec *codec = UserCodec::codecForICQUser(u);
+       userName = QString("%1 (%2)").arg(codec->toUnicode(u->GetAlias())).arg(m_szId);
+       gUserManager.DropUser(u);
+    } else {
+       userName = QString("%1").arg(m_szId);
+    }
+
+    if (bGrant)
+      lblUin->setText(tr("Grant authorization to %1").arg(userName));
+    else
+      lblUin->setText(tr("Refuse authorization to %1").arg(userName));
+  }
+
+  toplay->addSpacing(6);
+
+  grpResponse = new QVGroupBox(tr("Response"), this);
+  toplay->addWidget(grpResponse);
+  toplay->setStretchFactor(grpResponse, 2);
+
+  mleResponse = new MLEditWrap(true, grpResponse);
+
+  QBoxLayout* lay = new QHBoxLayout(toplay);
+  lay->addStretch(1);
+  btnOk = new QPushButton(tr("&Ok"), this);
+  btnOk->setMinimumWidth(75);
+  lay->addWidget(btnOk);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  btnCancel->setMinimumWidth(75);
+  lay->addWidget(btnCancel);
+  connect (mleResponse, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
+  connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
+  connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
+
+  if (m_szId)
+    mleResponse->setFocus();
+  else
+    edtUin->setFocus();
+
+  show();
+}
+#endif
+
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
    QWidget *parent)
   : LicqDialog(parent, "AuthUserDialog", false, WDestructiveClose)
@@ -113,18 +192,31 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
 
 void AuthUserDlg::ok()
 {
-  unsigned long nUin = m_nUin;
-  if (nUin == 0) nUin = edtUin->text().toULong();
+  if (edtUin->text().isEmpty()) return;
 
-  if (nUin != 0)
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId == 0) m_szId = strdup(edtUin->text().latin1());
+
+  if (m_szId != 0)
   {
     QTextCodec *codec = UserCodec::codecForUIN(nUin);
     if (m_bGrant)
-      server->icqAuthorizeGrant(nUin, codec->fromUnicode(mleResponse->text()));
+      server->ProtoAuthorizeGrant(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
     else
-      server->icqAuthorizeRefuse(nUin, codec->fromUnicode(mleResponse->text()));
+      server->ProtoAuthorizeRefuse(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
     close(true);
   }
+#else
+  if (m_nUin)
+  {
+    QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
+    if (m_bGrant)
+      server->icqAuthorizeGrant(m_nUin, codec->fromUnicode(mleResponse->text()));
+    else
+      server->icqAuthorizeRefuse(m_nUin, codec->fromUnicode(mleResponse->text()));
+    close(true);
+  }
+#endif
 }
 
 #include "authuserdlg.moc"

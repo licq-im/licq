@@ -517,6 +517,33 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 
 //- Message View Widget ---------------------------------------------------------
 
+#ifdef QT_PROTOCOL_PLUGIN
+CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
+  QWidget* parent, const char * name)
+:CHistoryWidget(parent,name)
+{
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  parentWidget = parent;
+
+  // add all unread messages.
+  vector<CUserEvent*> newEventList;
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  if (u != NULL && u->NewMessages() > 0)
+  {
+    for (unsigned short i = 0; i < u->NewMessages(); i++)
+    {
+      CUserEvent *e = u->EventPeek(i);
+      if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+        newEventList.push_back(e);
+    }
+  }
+  gUserManager.DropUser(u);
+  for (unsigned short i = 0; i < newEventList.size(); i++)
+    addMsg(newEventList[i]);
+}
+#endif
+
 CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget* parent, const char * name)
 :CHistoryWidget(parent,name)
 {
@@ -540,9 +567,21 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
     addMsg(newEventList[i]);
 }
 
+CMessageViewWidget::~CMessageViewWidget()
+{
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId)
+    free(m_szId);
+#endif
+}
+
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  if (strcmp(_e->Id(), m_szId) == 0 && _e->PPID() == m_nPPID)
+#else
   if ( _e->Uin() == m_nUin && _e->UserEvent() )
+#endif
     addMsg( _e->UserEvent() );
 }
 
@@ -556,7 +595,11 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QTextCodec *codec = QTextCodec::codecForLocale();
 
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
     if (u != NULL)
     {
       codec = UserCodec::codecForICQUser(u);
@@ -565,10 +608,14 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
       gUserManager.DropUser(u);
     }
   }
-  
+
   if (e->Direction() != D_RECEIVER)
   {
+#ifdef QT_PROTOCOL_PLUING
+    ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+#else
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+#endif
     if (o != NULL)
     {
       // Don't use this codec to decode our conversation with the contact
@@ -578,14 +625,14 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
       gUserManager.DropOwner();
     }
   }
-     
+
   QString s;
 
 #if QT_VERSION >= 300
   QString messageText;
   if (e->SubCommand() == ICQ_CMDxSUB_SMS)
      messageText = QString::fromUtf8(e->Text());
-  else 
+  else
      messageText = codec->toUnicode(e->Text());
 
   const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
@@ -626,7 +673,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 #endif
 #if QT_VERSION < 300
   repaint(false);
-#endif 
+#endif
   GotoEnd();
 
   QWidget *parent = NULL;
@@ -641,7 +688,11 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
        mainwin->userEventTabDlg->tabIsSelected(parent))) &&
 #endif
       e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
+#ifdef QT_PROTOCOL_PLUGIN
+    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R );
+#endif
     if (u != NULL) {
        u->EventClearId(e->Id());
        gUserManager.DropUser(u);

@@ -44,6 +44,10 @@ CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
 
   m_nEventType = e->SubCommand();
   m_nUin = 0;
+#ifdef QT_PROTOCOL_PLUGIN
+  m_szId = 0;
+  m_nPPID = 0;
+#endif
 
   QString t;
   switch (e->SubCommand())
@@ -94,11 +98,18 @@ CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
 
 CForwardDlg::~CForwardDlg()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId) free(m_szId);
+#endif
 }
 
 
 void CForwardDlg::slot_ok()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId == 0) return;
+#endif
+
   if (m_nUin == 0) return;
 
   switch(m_nEventType)
@@ -106,7 +117,12 @@ void CForwardDlg::slot_ok()
     case ICQ_CMDxSUB_MSG:
     {
       s1.prepend(tr("Forwarded message:\n"));
+#ifdef QT_PROTOCOL_PLUGIN
+      UserSendMsgEvent *e = new UserSendMsgEvent(gLicqDaemon, sigman, gMainWindow, m_szId,
+        m_nPPID);
+#else
       UserSendMsgEvent* e = new UserSendMsgEvent(gLicqDaemon, sigman, gMainWindow, m_nUin);
+#endif
       e->setText(s1);
       e->show();
       break;
@@ -114,7 +130,12 @@ void CForwardDlg::slot_ok()
     case ICQ_CMDxSUB_URL:
     {
       s1.prepend(tr("Forwarded URL:\n"));
+#ifdef QT_PROTOCOL_PLUGIN
+      UserSendUrlEvent *e = new UserSendUrlEvent(gLicqDaemon, sigman, gMainWindow, m_szId,
+        m_nPPID);
+#else
       UserSendUrlEvent* e = new UserSendUrlEvent(gLicqDaemon, sigman, gMainWindow, m_nUin);
+#endif
       e->setUrl(s2, s1);
       e->show();
       break;
@@ -140,10 +161,19 @@ void CForwardDlg::dropEvent(QDropEvent * de)
   if (!QTextDrag::decode(de, text))
     return;
 
+#ifdef QT_PROTOCOL_PLUGIN
+  if (text.length() == 0) return;
+  m_szId = strdup(text.latin1());
+  m_nPPID = LICQ_PPID; //TODO dropevent needs the ppid
+#endif
   m_nUin = text.toULong();
   if (m_nUin == 0) return;
 
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
   edtUser->setText(QString::fromLocal8Bit(u->GetAlias()) + " (" + text + ")");
   gUserManager.DropUser(u);
 }

@@ -57,6 +57,111 @@
 #include "mlview.h"
 
 // -----------------------------------------------------------------------------
+#ifdef QT_PROTOCOL_PLUGIN
+UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                         const char *szId, unsigned long nPPID, QWidget* parent)
+  : QWidget(parent, "UserInfoDialog", WDestructiveClose)
+{
+  server = s;
+  mainwin = m;
+  sigman = theSigMan;
+  icqEventTag = 0;
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  m_bOwner = (gUserManager.FindOwner(szId, nPPID) == true);
+
+  CreateGeneralInfo();
+  CreateMoreInfo();
+  CreateWorkInfo();
+  CreateAbout();
+  CreateHistory();
+  CreateLastCountersInfo();
+
+  QBoxLayout *lay = new QVBoxLayout(this, 8);
+
+  tabs = new QTabWidget(this);
+  lay->addWidget(tabs, 2);
+
+  tabs->addTab(tabList[GeneralInfo].tab, tabList[GeneralInfo].label);
+  tabs->addTab(tabList[MoreInfo].tab, tabList[MoreInfo].label);
+  tabs->addTab(tabList[WorkInfo].tab, tabList[WorkInfo].label);
+  tabs->addTab(tabList[AboutInfo].tab, tabList[AboutInfo].label);
+  tabs->addTab(tabList[HistoryInfo].tab, tabList[HistoryInfo].label);
+  tabs->addTab(tabList[LastCountersInfo].tab, tabList[LastCountersInfo].label);
+
+  connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
+  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
+           this, SLOT(updatedUser(CICQSignal *)));
+
+  btnMain3 = new QPushButton(tr("&Update"), this);
+  btnMain4 = new QPushButton(tr("&Close"), this);
+  connect(btnMain4, SIGNAL(clicked()), this, SLOT(close()));
+
+  if (m_bOwner)
+  {
+    btnMain1 = new QPushButton(tr("&Save"), this);
+    btnMain2 = new QPushButton(tr("Retrieve"), this);
+    connect(btnMain1, SIGNAL(clicked()), this, SLOT(SaveSettings()));
+    connect(btnMain2, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
+    connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotUpdate()));
+  }
+  else
+  {
+    btnMain1 = new QPushButton(tr("&Menu"), this);
+    btnMain2 = new QPushButton(tr("&Save"), this);
+    connect(btnMain1, SIGNAL(pressed()), this, SLOT(ShowUsermenu()));
+    btnMain1->setPopup(gMainWindow->UserMenu());
+    connect(btnMain2, SIGNAL(clicked()), this, SLOT(SaveSettings()));
+    connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
+  }
+
+  int bw = 80;
+  bw = QMAX(bw, btnMain1->sizeHint().width());
+  bw = QMAX(bw, btnMain2->sizeHint().width());
+  bw = QMAX(bw, btnMain3->sizeHint().width());
+  bw = QMAX(bw, btnMain4->sizeHint().width());
+  btnMain1->setFixedWidth(bw);
+  btnMain2->setFixedWidth(bw);
+  btnMain3->setFixedWidth(bw);
+  btnMain4->setFixedWidth(bw);
+
+  QBoxLayout* l = new QHBoxLayout(lay);
+
+  l->addWidget(btnMain1);
+  l->addStretch(2);
+  l->addWidget(btnMain2);
+  l->addWidget(btnMain3);
+  l->addSpacing(35);
+  l->addWidget(btnMain4);
+  btnMain4->setDefault(true);
+
+  // prepare the timer for the history filter
+  timer = new QTimer(this, "history_filterTimer");
+  connect(timer, SIGNAL(timeout()), this, SLOT(ShowHistory()));
+
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  if (u == NULL)
+  {
+    m_sBasic = tr("Licq - Info ") + tr("INVALID USER");
+    resetCaption();
+    setIconText(tr("INVALID USER"));
+  }
+  else
+  {
+    QTextCodec * codec = UserCodec::codecForICQUser(u);
+    m_sBasic = tr("Licq - Info ") + codec->toUnicode(u->GetAlias()) + " (" + codec->toUnicode(u->GetFirstName()) + " " + codec->toUnicode(u->GetLastName()) + ")";
+    resetCaption();
+    setIconText(codec->toUnicode(u->GetAlias()));
+    gUserManager.DropUser(u);
+  }
+
+	// Set Tab Order
+	setTabOrder (tabs, btnMain1);
+	setTabOrder (btnMain1, btnMain2);
+	setTabOrder (btnMain2, btnMain3);
+	setTabOrder (btnMain3, btnMain4);
+}
+#endif
 
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                          unsigned long _nUin, QWidget* parent)
@@ -171,7 +276,12 @@ UserInfoDlg::~UserInfoDlg()
     server->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
+#ifdef QT_PROTOCOL_PLUGIN
+  //TODO
+  emit finished(strtoul(m_szId, (char **)NULL, 10);
+#else
   emit finished(m_nUin);
+#endif
   ICQUser::ClearHistory(m_lHistoryList);
 }
 
@@ -323,7 +433,11 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
 
   if (u == NULL)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -538,7 +652,11 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
 
   if (u == NULL)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -613,7 +731,11 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
 
 void UserInfoDlg::SaveMoreInfo()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+#endif
   if (u == NULL) return;
   u->SetEnableSave(false);
 
@@ -712,7 +834,11 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
 
   if (u == NULL)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -751,7 +877,11 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
 
 void UserInfoDlg::SaveWorkInfo()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+#endif
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -810,7 +940,11 @@ void UserInfoDlg::SetAbout(ICQUser *u)
 
   if (u == NULL)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -826,7 +960,11 @@ void UserInfoDlg::SetAbout(ICQUser *u)
 
 void UserInfoDlg::SaveAbout()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+#endif
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -879,7 +1017,11 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
 
   if (u == NULL)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    u = gUserManager.FetchUser(m_szId, m_nPPID,LOCK_R);
+#else
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -1010,7 +1152,11 @@ void UserInfoDlg::SetupHistory()
 {
   tabList[HistoryInfo].loaded = true;
 
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
   if (u == NULL) return;
 
   if (!u->GetHistory(m_lHistoryList))
@@ -1133,7 +1279,11 @@ void UserInfoDlg::ShowHistory()
   QDateTime date;
   QString contactName = tr("server");
   QTextCodec * codec = QTextCodec::codecForLocale();
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
   if (u != NULL)
   {
       codec = UserCodec::codecForICQUser(u);
@@ -1239,7 +1389,11 @@ void UserInfoDlg::ShowHistory()
 
 void UserInfoDlg::SaveHistory()
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -1337,7 +1491,11 @@ void UserInfoDlg::SaveSettings()
   case GeneralInfo:
   {
     SaveGeneralInfo();
+#ifdef QT_PROTOCOL_PLUGIN
+    CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_szId, m_nPPID);
+#else
     CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_nUin);
+#endif
     gMainWindow->slot_updatedUser(&s);
     break;
   }
@@ -1366,7 +1524,11 @@ void UserInfoDlg::slotRetrieve()
 
   if (currentTab != HistoryInfo)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    ICQOwern *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+#else
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+#endif
     if(o == NULL)  return;
     unsigned short status = o->Status();
     gUserManager.DropOwner();
@@ -1388,6 +1550,7 @@ void UserInfoDlg::slotRetrieve()
 
   switch(currentTab)
   {
+    //TODO change in the daemon
     case GeneralInfo: icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
     case MoreInfo:    icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
     case WorkInfo:    icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
@@ -1412,7 +1575,11 @@ void UserInfoDlg::slotUpdate()
 
   if (currentTab != HistoryInfo)
   {
+#ifdef QT_PROTOCOL_PLUGIN
+    ICQOwern *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+#else
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+#endif
     if(o == NULL)  return;
     unsigned short status = o->Status();
     codec = UserCodec::codecForICQUser(o);
@@ -1426,7 +1593,7 @@ void UserInfoDlg::slotUpdate()
   }
 
   unsigned short i, cc;
-  
+
   switch(currentTab) {
   case GeneralInfo:
   {
@@ -1434,6 +1601,7 @@ void UserInfoDlg::slotUpdate()
     cc = GetCountryByIndex(i)->nCode;
     server->icqSetEmailInfo(codec->fromUnicode(nfoEmailSecondary->text()),
 			    codec->fromUnicode(nfoEmailOld->text()));
+    //TODO in the daemon. along with the rest of the icqSet... family
     icqEventTag = server->icqSetGeneralInfo(codec->fromUnicode(nfoAlias->text()),
                                             codec->fromUnicode(nfoFirstName->text()),
                                             codec->fromUnicode(nfoLastName->text()),
@@ -1527,9 +1695,15 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
 
 void UserInfoDlg::updatedUser(CICQSignal *sig)
 {
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_nPPID != sig->PPID() || strcmp(m_szId, sig->Id())) return;
+  
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
   if (m_nUin != sig->Uin()) return;
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
   if (u == NULL) return;
 
   switch (sig->SubSignal())

@@ -75,6 +75,7 @@ void MLView::append(const QString& s)
 
 QString MLView::toRichText(const QString& s, bool highlightURLs)
 {
+printf("%s\n", s.latin1());
   // We cannot use QStyleSheet::convertFromPlainText
   // since it has a bug in Qt 3 which causes line breaks to mix up.
   QString text = QStyleSheet::escape(s);

@@ -45,6 +45,10 @@ CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   : LicqDialog(p, "MMSendDialog", true, WDestructiveClose)
 {
   m_nUin = 0;
+#ifdef QT_PROTOCOL_PLUGIN
+  m_szId = 0;
+  m_nPPID = 0;
+#endif
   icqEventTag = 0;
   mmv = _mmv;
   server = _server;
@@ -150,13 +154,30 @@ void CMMSendDlg::SendNext()
     return;
   }
 
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId)
+  {
+    free(m_szId)
+    m_szId = 0;
+  }
+
+  m_szId = mmvi->Id() ? strdup(mmvi) : 0;
+  m_nPPID = mmvi->PPID();
+
+  if (m_szId == 0) return;
+#else
   m_nUin = mmvi->Uin();
+#endif
 
   switch (m_nEventType)
   {
     case ICQ_CMDxSUB_MSG:
     {
+#ifdef QT_PROTOCOL_PLUGIN
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(codec->toUnicode(u->GetAlias())));
@@ -216,8 +237,13 @@ void CMMSendDlg::SendNext()
           messageRaw = codec->fromUnicode(message);
         }
 
+#ifdef QT_PROTOCOL_PLUGIN
+        icqEventTag = server->ProtoSendMessage(m_szId, m_nPPID,
+          messageRaw.data(), false, ICQ_TCPxMSG_NORMAL, true);
+#else
         icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
            false, ICQ_TCPxMSG_NORMAL, true);
+#endif
 
         tmp = gTranslator.NToRN(messageRaw);
         wholeMessagePos += strlen(tmp);
@@ -228,24 +254,43 @@ void CMMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_URL:
     {
+#ifdef QT_PROTOCOL_PLUGIN
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
 
+#ifdef QT_PROTOCOL_PLUGIN
+      icqEventTag = server->ProtoSendUrl(m_szId,m_nPPID, s2.latin1(), codec->fromUnicode(s1),
+        false, ICQ_TCPxMSG_NORMAL, true);
+#else
       icqEventTag = server->icqSendUrl(m_nUin, s2.latin1(), codec->fromUnicode(s1), false, ICQ_TCPxMSG_NORMAL, true);
+#endif
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
+#ifdef QT_PROTOCOL_PLUGIN
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass list to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
 
+      //TODO in the daemon
+#ifdef QT_PROTOCOL_PLUGIN
+      icqEventTag = server->icqSendContactList(strtoul(m_szId, (char **)NULL, 0), *uins,
+        false, ICQ_TCPxMSG_NORMAL);
+#else
       icqEventTag = server->icqSendContactList(m_nUin, *uins, false, ICQ_TCPxMSG_NORMAL);
+#endif
       break;
     }
   }
@@ -261,6 +306,9 @@ CMMSendDlg::~CMMSendDlg()
     server->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId) free(m_szId);
+#endif
 }
 
 

@@ -105,6 +105,22 @@ QTextCodec* UserCodec::codecForUIN(uint uin)
   return codec;
 }
 
+#ifdef QT_PROTOCOL_PLUGIN
+QTextCodec *UserCodec::codecForProtoUser(const char *szId, unsigned long nPPID)
+{
+  QTextCodec *codec = QTextCodec::codecForLocal();
+  
+  ICQUser *u = gUserManager.Fetchusr(szId, nPPID, LOCK_R);
+  if (u)
+  {
+    codec = UserCodec::codecForICQUser(u);
+    gUserManager.DropUser(u);
+  }
+  
+  return codec;
+}
+#endif
+
 QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
 {
   if (nameForCharset(u->FontEncoding()) != QString::null)

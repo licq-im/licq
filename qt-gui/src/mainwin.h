@@ -78,13 +78,23 @@ public:
   UserEventCommon *callFunction(int fcn, unsigned long nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
+#ifdef QT_PROTOCOL_PLUGIN
+  UserEventCommon *callFunction(int fcn, const char *, unsigned long);
+#endif
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   void ApplyExtendedIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
   QPopupMenu *UserMenu() { return mnuUser; }
   void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
-
+#ifdef QT_PROTOCOL_PLUGIN
+  void SetUserMenuUser(const char *s, unsigned long n)
+  {
+    if (m_szUserMenuId)  free(m_szUserMenuId);
+    m_szUserMenuId = strdup(s);
+    m_nUserMenuPPID = n;
+  }
+#endif
   static QPixmap &iconForStatus(unsigned long FullStatus);
   static QPixmap &iconForEvent(unsigned short SubCommand);
 
@@ -176,6 +186,9 @@ public:
              *mnuUtilities,
              *mnuMiscModes,
              *mnuSend;
+#ifdef QT_PROTOCOL_PLUGIN
+  QPopupMenu *mnuProtocolStatus[16];
+#endif
   CELabel *lblStatus, *lblMsg;
   CEButton *btnSystem;
   CEComboBox *cmbUserGroups;
@@ -196,6 +209,11 @@ public:
           pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed, pmExpanded;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
+#ifdef QT_PROTOCOL_PLUGIN
+  unsigned long m_nProtoNum;
+  char *m_szUserMenuId;
+  unsigned long m_nUserMenuPPID;
+#endif
 
   // AutoAway
   QTimer autoAwayTimer;
@@ -259,12 +277,19 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
+#ifdef QT_QT_PROTOCOL_PLUGIN
+  //TODO
+  //void callUserFunction(const char *, unsigned long);
+#endif
   void slot_userfinished(unsigned long);
   void slot_sendfinished(unsigned long);
   void slot_usermenu();
   void slot_logon();
   void slot_ui_viewevent(unsigned long);
   void slot_ui_message(unsigned long);
+#ifdef QT_PROTOCOL_PLUGIN
+  //void slot_protocolPlugin(unsigned long);
+#endif
   void slot_register();
   void slot_doneregister();
   void slot_doneOptions();

@@ -57,10 +57,17 @@ public:
 
   UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                unsigned long _nUin, QWidget* parent = 0);
-
+#ifdef QT_PROTOCOL_PLUGIN
+  UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+    const char *szId, unsigned long nPPID, QWidget *parent = 0_;
+#endif
   virtual ~UserInfoDlg();
 
   unsigned long Uin() { return m_nUin; }
+#ifdef QT_PROTOCOL_PLUGIN
+  char *Id()  { return m_szId; }
+  unsigned long PPID()  { return m_nPPID; }
+#endif
   void showTab(int);
   bool isTabShown(int);
 
@@ -74,6 +81,10 @@ protected:
   bool m_bOwner;
   int currentTab;
   unsigned long m_nUin;
+#ifdef QT_PROTOCOL_PLUGIN
+  char *m_szId;
+  unsigned long m_nPPID;
+#endif
   QString m_sProgressMsg;
   QString m_sBasic;
   CICQDaemon *server;
@@ -106,7 +117,7 @@ protected:
              *nfoCompanyAddress, *nfoCompanyZip, *nfoCompanyCountry, *nfoCompanyPhone, *nfoCompanyFax,
              *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
   CEComboBox *cmbCompanyCountry;
-  
+
   // About
   void CreateAbout();
   QLabel *lblAbout;
@@ -157,10 +168,17 @@ protected slots:
   void slotRetrieve();
   void doneFunction(ICQEvent*);
   void resetCaption();
+#ifdef QT_PROTOCOL_PLUGIN
+  void ShowUsermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
+#else
   void ShowUsermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
+#endif
   void slot_showHistoryTimer();
 
 signals:
+#ifdef QT_PROTOCOL_PLUGIN
+  //void finished(const char *, unsigned long);
+#endif
   void finished(unsigned long);
   void signal_updatedUser(CICQSignal *);
 

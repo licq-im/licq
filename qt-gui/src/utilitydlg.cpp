@@ -33,6 +33,94 @@
 #include "licq_utility.h"
 #include "licq_user.h"
 
+#ifdef QT_PROTOCOL_PLUGIN
+CUtilityDlg::CUtilityDlg(CUtility *u, const char *szId, unsigned long nPPID,
+  CICQDaemon *_server)
+  : QWidget(0, "UtilityDialog",  WDestructiveClose)
+{
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  m_xUtility = u;
+  server = _server;
+  m_bIntWin = false;
+  intwin = NULL;
+  snOut = snErr = NULL;
+
+  m_xUtility->SetFields(m_szId, m_nPPID);
+
+  QGridLayout *lay = new QGridLayout(this, 1, 3, 8, 4);
+  lay->setColStretch(2, 2);
+  lay->addColSpacing(1, 8);
+  setCaption(QString(tr("Licq Utility: %1")).arg(m_xUtility->Name()));
+  lblUtility = new QLabel(tr("Command:"), this);
+  lay->addWidget(lblUtility, 0, 0);
+  nfoUtility = new CInfoField(this, true);
+  nfoUtility->setMinimumWidth(nfoUtility->sizeHint().width()*2);
+  lay->addWidget(nfoUtility, 0, 2);
+  nfoUtility->setText(m_xUtility->FullCommand());
+
+  lay->addWidget(new QLabel(tr("Window:"), this), 1, 0);
+  nfoWinType = new CInfoField(this, true);
+  lay->addWidget(nfoWinType, 1, 2);
+  switch (m_xUtility->WinType())
+  {
+    case UtilityWinGui: nfoWinType->setText(tr("GUI")); break;
+    case UtilityWinTerm: nfoWinType->setText(tr("Terminal")); break;
+    case UtilityWinLicq: nfoWinType->setText(tr("Internal")); break;
+  }
+
+  lay->addWidget(new QLabel(tr("Description:"), this), 2, 0);
+  nfoDesc = new CInfoField(this, true);
+  lay->addWidget(nfoDesc, 2, 2);
+  nfoDesc->setText(m_xUtility->Description());
+
+  chkEditFinal = new QCheckBox(tr("Edit final command"), this);
+  lay->addMultiCellWidget(chkEditFinal, 3, 3, 0, 2);
+
+  boxFields = new QGroupBox(1, Horizontal, tr("User Fields"), this);
+  lay->addMultiCellWidget(boxFields, 4, 4, 0, 2);
+  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
+  {
+    QString s;
+    s.sprintf("%s (%%%d): ", m_xUtility->UserField(i)->Title(), i+1);
+    QLabel *lbl = new QLabel(s, boxFields);
+    lblFields.push_back(lbl);
+    QLineEdit *edt = new QLineEdit(boxFields);
+    edt->setText(m_xUtility->UserField(i)->FullDefault());
+    edt->setMinimumSize(edt->sizeHint());
+    edtFields.push_back(edt);
+  }
+
+  splOutput = new QSplitter(Vertical, boxFields);
+  splOutput->setOpaqueResize();
+  mleOut = new MLEditWrap(true, splOutput);
+  mleOut->setReadOnly(true);
+  mleErr = new MLEditWrap(true, splOutput);
+  mleErr->setReadOnly(true);
+
+  splOutput->setResizeMode(mleErr, QSplitter::Stretch);//FollowSizeHint);
+  splOutput->setResizeMode(mleOut, QSplitter::Stretch);
+  splOutput->hide();
+  if (m_xUtility->NumUserFields() == 0) boxFields->hide();
+
+  QHBoxLayout *hlay = new QHBoxLayout();
+  lay->addMultiCell(hlay, 5, 5, 0, 2);
+  hlay->addStretch(1);
+  btnRun = new QPushButton(tr("&Run"), this);
+  btnRun->setDefault(true);
+  btnRun->setMinimumWidth(75);
+  hlay->addWidget(btnRun, 0, AlignRight);
+  hlay->addSpacing(20);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  btnCancel->setMinimumWidth(75);
+  hlay->addWidget(btnCancel, 0, AlignLeft);
+
+  connect(btnRun, SIGNAL(clicked()), SLOT(slot_run()));
+  connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
+
+  show();
+}
+#endif
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   : QWidget(0, "UtilityDialog",  WDestructiveClose)
@@ -125,6 +213,10 @@ CUtilityDlg::~CUtilityDlg()
   delete intwin;
   delete snOut;
   delete snErr;
+  
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szId) free(m_szId);
+#endif
 }
 
 
@@ -231,7 +323,11 @@ void CUtilityDlg::slot_run()
   if (nSystemResult == -1)
   {
     lblUtility->setText(tr("Failed:"));
+#ifdef QT_PROTOCOL_PLUGIN
+    m_xUtility->setFields(m_szId, m_nPPID);
+#else
     m_xUtility->SetFields(m_nUin);
+#endif
   }
   else
   {
