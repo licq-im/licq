@@ -811,7 +811,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 
     // find which user it is, verify we have them on our list
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-    char s[32];
+    char s[128];
     unsigned long nNewStatus;
     packet >> nNewStatus;
     ICQUser::StatusToStatusStr(nNewStatus, false, s);
