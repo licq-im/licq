@@ -513,6 +513,11 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
         }
         gUserManager.DropUser(u);
       }
+
+      if (s->Uin() != gUserManager.OwnerUin() &&
+          s->SubSignal() == USER_GENERAL)
+        licqDaemon->icqRenameUser(s->Uin());
+
       break;
     }
   case SIGNAL_LOGON:
