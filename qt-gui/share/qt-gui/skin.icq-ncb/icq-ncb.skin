@@ -48,10 +48,10 @@ lblMsg.color.bg = default
 lblMsg.frameStyle = 51
 lblMsg.pixmap = none
 
-cmbGroups.rect.x1 = 0
-cmbGroups.rect.y1 = 0
-cmbGroups.rect.x2 = 0
-cmbGroups.rect.y2 = 0
+cmbGroups.rect.x1 = -1
+cmbGroups.rect.y1 = -1
+cmbGroups.rect.x2 = -1
+cmbGroups.rect.y2 = -1
 cmbGroups.color.fg = default
 cmbGroups.color.bg = default
 
