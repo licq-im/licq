@@ -1797,7 +1797,7 @@ void ICQFunctions::specialFcn(int theFcn)
     btnItem->setText(tr("View"));
     edtItem->clear();
     edtItem->SetReadOnly(false);
-    btnItem->setEnabled(true);
+    //btnItem->setEnabled(true);
     grpOpt->show();
     tabs->updateGeometry();
     chkSendServer->setEnabled(true);
@@ -1806,7 +1806,7 @@ void ICQFunctions::specialFcn(int theFcn)
     lblItem->setText(tr("Multiparty:"));
     btnItem->setText(tr("Invite"));
     edtItem->SetReadOnly(true);
-    btnItem->setEnabled(ChatDlg::chatDlgs.size() > 0);
+    //btnItem->setEnabled(ChatDlg::chatDlgs.size() > 0);
     edtItem->clear();
     grpOpt->show();
     tabs->updateGeometry();
@@ -1818,7 +1818,7 @@ void ICQFunctions::specialFcn(int theFcn)
     btnItem->setText(tr("Choose"));
     edtItem->clear();
     edtItem->SetReadOnly(false);
-    btnItem->setEnabled(true);
+    //btnItem->setEnabled(true);
     grpOpt->show();
     tabs->updateGeometry();
     chkSendServer->setChecked(false);
