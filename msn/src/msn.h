@@ -83,8 +83,8 @@ private:
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
   void MSNSendMessage(char *, char *, pthread_t);
+  void MSNChangeStatus(unsigned long);
  
-
   
   // Internal functions
   int HashValue(int n) { return n % 211; }

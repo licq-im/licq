@@ -116,7 +116,7 @@ protected:
 class CPS_MSNChangeStatus : public CMSNPacket
 {
 public:
-  CPS_MSNChangeStatus();
+  CPS_MSNChangeStatus(unsigned long);
 };
 
 class CPS_MSNSync : public CMSNPacket

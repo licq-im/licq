@@ -288,6 +288,12 @@ void CMSN::ProcessSignal(CSignal *s)
     }
     
     case PROTOxCHANGE_STATUS:
+    {
+      CChangeStatusSignal *sig = static_cast<CChangeStatusSignal *>(s);
+      MSNChangeStatus(sig->Status());
+      break;
+    }
+    
     case PROTOxLOGOFF:
     case PROTOxADD_USER:
     case PROTOxREM_USER:
@@ -588,7 +594,18 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       m_pPacketBuf->SkipParameter();
       string strVersion = m_pPacketBuf->GetParameter();
       
-      pReply = new CPS_MSNChangeStatus();
+      pReply = new CPS_MSNChangeStatus(ICQ_STATUS_ONLINE);
+      SendPacket(pReply);
+      
+      // Send our local list now
+      FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
+      {
+        pReply = new CPS_MSNAddUser(pUser->IdString());
+        SendPacket(pReply);
+      }
+      FOR_EACH_PROTO_USER_END
+      
+      pReply = 0;
     }
     else if (strCmd == "LST")
     {
@@ -602,15 +619,21 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "CHG")
     {
-      // Send our local list now
-      FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
-      {
-        pReply = new CPS_MSNAddUser(pUser->IdString());
-        SendPacket(pReply);
-      }
-      FOR_EACH_PROTO_USER_END
+      string strStatus = m_pPacketBuf->GetParameter();
+      ICQUser *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
+      unsigned long nStatus;
       
-      pReply = 0;
+      if (strStatus == "NLN")
+        nStatus = ICQ_STATUS_ONLINE;
+      else if (strStatus == "BSY")
+        nStatus = ICQ_STATUS_DND;
+      else if (strStatus == "HDN")
+        nStatus = ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE;
+      else
+        nStatus = ICQ_STATUS_AWAY;
+        
+      m_pDaemon->ChangeUserStatus(o, nStatus);
+      gUserManager.DropOwner(MSN_PPID);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
     {
@@ -879,6 +902,11 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   }  
 }
 
+void CMSN::MSNChangeStatus(unsigned long _nStatus)
+{
+  CMSNPacket *pSend = new CPS_MSNChangeStatus(_nStatus);
+  SendPacket(pSend);
+}
 
 void CMSN::MSNPing()
 {
