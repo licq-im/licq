@@ -1,0 +1,17 @@
+src/mainwin.cpp
+src/chatacceptdlg.cpp
+src/awaymsgdlg.cpp
+src/authuserdlg.cpp
+src/adduserdlg.cpp
+src/chatdlg.cpp
+src/fileacceptdlg.cpp
+src/filedlg.cpp
+src/icqfunctions.cpp
+src/messagebox.cpp
+src/optionsdlg.cpp
+src/outputwin.cpp
+src/searchuserdlg.cpp
+src/showawaymsgdlg.cpp
+src/userbox.cpp
+src/registeruser.cpp
+src/skinbrowser.cpp

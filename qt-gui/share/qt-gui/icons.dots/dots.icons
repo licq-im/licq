@@ -1,0 +1,9 @@
+[icons]
+Online = online.xpm
+Offline = offline.xpm
+Away = away.xpm
+NA = na.xpm
+Occupied = occupied.xpm
+DND = dnd.xpm
+Private = private.xpm
+Message = message.xpm

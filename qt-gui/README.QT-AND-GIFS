@@ -1,0 +1,21 @@
+
+Getting Qt to work with Skins/Gifs
+
+Note to users of RPM:
+
+The currently available rpm of qt 2.0 has not been build with gif support
+enabled.  This means that skins will not work properly if you use this rpm
+to install qt.  I have created a source rpm which will build an rpm of
+Qt 2.0.1 with gif support enabled.  It can be downloaded from any of the
+Licq ftp sites.  To turn it into a proper binary rpm, simply do (as root)
+"rpm --rebuild qt-2.0.1-1.src.rpm"
+Then install the rpms from /usr/src/redhat/RPMS/{arch}.
+Note that I also uploaded the rpm to the redhat contrib network so it
+should eventually appear there in binary form.
+
+Note to other users:
+
+If you compiled Qt yourself, be sure to add "-gif" to the command line
+when configuring, ie run "./configure -gif" instead of just "./configure".
+
+

@@ -1,0 +1,33 @@
+Licq Qt-Gui Plugin
+Docking Howto
+
+Graham Roff
+
+
+Docking the licq qt-gui status icon is fairly simple to do.  Here is a list
+of window managers and what to do.  First, do the following:
+
+1. Remove any old dock icons for licq.
+2. Start licq and enable the dock icon in Options->Extensions->UseDockIcon
+3. Select "Save Options" from the system menu.
+4. Restart Licq (very important).
+
+
+WindowMaker
+
+5. Drag the status icon to the dock and voila.
+Note that the other icon that appears is from windowmaker and can be set
+to something nice, or disable entirely using the windowmaker menu.
+
+
+AfterStep
+
+5. Add the following to your ~/.steprc file:
+   "*Wharf licq      - Swallow "LicqWharf" echo &"
+6. Next time start Licq, the icon should appear in the wharf.
+
+
+KDE
+
+5. Configure licq with --with-kde and then licq will dock in the kde panel. 
+6. Start Licq and there it goes!

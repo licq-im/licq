@@ -1,0 +1,353 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <qpixmap.h>
+#include <qpainter.h>
+#include <qbitmap.h>
+#include <qimage.h>
+#include <qmessagebox.h>
+#include <qapplication.h>
+
+#include "ewidgets.h"
+#include "outputwin.h"
+
+bool QueryUser(QWidget *q, const char *szQuery, const char *szBtn1, const char *szBtn2)
+{
+  return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2) == 0 );
+}
+
+
+void InformUser(QWidget *q, const char *szInfo)
+{
+  (void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
+}
+
+//-----CELabel------------------------------------------------------------------
+CELabel::CELabel(bool _bTransparent, QPopupMenu *m = NULL, QWidget *parent = 0, char *name = 0) : QLabel(parent, name)
+{
+   mnuPopUp = m;
+   m_bTransparent = _bTransparent;
+}
+
+
+void CELabel::polish()
+{
+  if (!testWState(WState_Polished))
+  {
+    setWState(WState_Polished);
+    if (extraData() != NULL && extraData()->style != NULL)
+      extraData()->style->polish(this);
+    else
+	    qApp->polish(this);
+  }
+}
+
+
+void CELabel::setBold(bool isBold)
+{
+   QFont newFont(font());
+   newFont.setBold(isBold);
+   setFont(newFont);
+}
+
+void CELabel::setItalic(bool isItalic)
+{
+   QFont newFont(font());
+   newFont.setItalic(isItalic);
+   setFont(newFont);
+}
+
+
+void CELabel::setNamedFgColor(char *theColor)
+{
+   if (theColor == NULL) return;
+
+   QPalette pal(palette());
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
+                         normal.mid(), QColor(theColor), normal.base());
+   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+}
+
+
+void CELabel::setNamedBgColor(char *theColor)
+{
+   if (theColor == NULL) return;
+
+   QPalette pal(palette());
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), QColor(theColor), normal.light(), normal.dark(),
+                         normal.mid(), normal.text(), normal.base());
+   setPalette(QPalette(newNormal, newNormal /*pal.disabled()*/, newNormal));
+}
+
+
+void CELabel::resizeEvent (QResizeEvent *)
+{
+   // Resize the background pixmap properly
+   if (backgroundPixmap() == NULL) return;
+   QImage im = (backgroundPixmap()->convertToImage()).smoothScale(width(), height());
+   QPixmap pm;
+   pm.convertFromImage(im);
+   setBackgroundPixmap(pm);
+}
+
+
+
+void CELabel::mouseDoubleClickEvent(QMouseEvent *)
+{
+   emit doubleClicked();
+}
+
+
+void CELabel::mouseReleaseEvent(QMouseEvent *e)
+{
+   QLabel::mouseReleaseEvent(e);
+   if (mnuPopUp == NULL) return;
+   if (e->button() == RightButton)
+   {
+      QPoint clickPoint(e->x(), e->y());
+      mnuPopUp->popup(mapToGlobal(clickPoint));
+   }
+}
+
+
+//-----CEButton-----------------------------------------------------------------
+CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char *name)
+   : QPushButton(parent, name)
+{
+   pmUpFocus = p1;
+   pmUpNoFocus = p2;
+   pmDown = p3;
+   pmCurrent = pmUpNoFocus;
+}
+
+CEButton::CEButton(const char *label, QWidget *parent, char *name) : QPushButton(label, parent, name)
+{
+   pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
+}
+
+CEButton::~CEButton(void)
+{
+  if (pmUpFocus != NULL) delete pmUpFocus;
+  if (pmUpNoFocus != NULL) delete pmUpNoFocus;
+  if (pmDown != NULL) delete pmDown;
+}
+
+
+void CEButton::polish()
+{
+  if (!testWState(WState_Polished))
+  {
+    setWState(WState_Polished);
+    if (extraData() != NULL && extraData()->style != NULL)
+      extraData()->style->polish(this);
+    else
+	    qApp->polish(this);
+  }
+}
+
+void CEButton::enterEvent (QEvent *)
+{
+   pmCurrent = pmUpFocus;
+   if (pmCurrent != NULL) repaint();
+}
+
+void CEButton::leaveEvent (QEvent *)
+{
+   pmCurrent = pmUpNoFocus;
+   if (pmCurrent != NULL) repaint();
+}
+
+void CEButton::mouseReleaseEvent(QMouseEvent *e)
+{
+   pmCurrent = pmUpNoFocus;
+   if (pmCurrent != NULL) repaint();
+   QPushButton::mouseReleaseEvent(e);
+}
+
+void CEButton::mousePressEvent(QMouseEvent *e)
+{
+   pmCurrent = pmDown;
+   if (pmCurrent != NULL) repaint();
+   QPushButton::mousePressEvent(e);
+}
+
+
+void CEButton::drawButton(QPainter *p)
+{
+   if (pmCurrent == NULL)
+   {
+      QPushButton::drawButton(p);
+      return;
+   }
+
+   p->drawPixmap(0, 0, *pmCurrent);
+}
+
+void CEButton::setNamedFgColor(char *theColor)
+{
+   if (theColor == NULL) return;
+
+   QPalette pal(palette());
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
+                         normal.mid(), QColor(theColor), normal.base());
+   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+}
+
+void CEButton::setNamedBgColor(char *theColor)
+{
+   if (theColor == NULL) return;
+
+   QPalette pal(palette());
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), QColor(theColor), normal.light(), normal.dark(),
+                         normal.mid(), normal.text(), normal.base());
+   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+}
+
+
+//-----CEComboBox---------------------------------------------------------------
+CEComboBox::CEComboBox(bool _bAppearEnabledAlways, QWidget *parent = 0, char *name = 0)
+   : QComboBox(parent, name)
+{
+   m_bAppearEnabledAlways = _bAppearEnabledAlways;
+   if (m_bAppearEnabledAlways)
+   {
+      QPalette pal(palette());
+      setPalette(QPalette(pal.normal(), pal.normal(), pal.normal()));
+   }
+}
+
+
+void CEComboBox::setNamedFgColor(char *theColor)
+{
+   if (theColor == NULL) return;
+
+   QPalette pal(palette());
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
+                         normal.mid(), QColor(theColor), normal.base());
+   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+}
+
+
+void CEComboBox::setNamedBgColor(char *theColor)
+{
+   if (theColor == NULL) return;
+
+   QPalette pal(palette());
+   QColorGroup normal(pal.normal());
+   QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
+                         normal.mid(), normal.text(), QColor(theColor));
+   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
+}
+
+
+//-----CInfoField::constructor--------------------------------------------------
+CInfoField::CInfoField(int x, int y, int lenTitle, int lenBlank, int lenInfo,
+                       char *title, bool isReadOnly, QWidget *parent)
+  : QLineEdit(parent)
+{
+  m_bReadOnly = isReadOnly;
+
+  lblTitle = NULL;
+  if (title != NULL)
+  {
+    lblTitle = new QLabel(title, parent);
+    lblTitle->setGeometry(x, y, lenTitle, 20);
+  }
+  QLineEdit::setGeometry(x + lenTitle + lenBlank, y, lenInfo, 20);
+
+  // Set colors
+  if (m_bReadOnly)
+  {
+    QColorGroup newNormal(palette().normal().foreground(),
+                          palette().normal().background(),
+                          palette().normal().light(),
+                          palette().normal().dark(),
+                          palette().normal().mid(),
+                          palette().normal().text(),
+                          palette().disabled().base());
+    setPalette(QPalette(newNormal, palette().disabled(), newNormal));
+  }
+}
+
+
+void CInfoField::keyPressEvent( QKeyEvent *e )
+{
+  if (m_bReadOnly)
+  {
+    if ( e->ascii() >= 32 ||
+         e->key() == Key_Delete || e->key() == Key_Backspace ||
+        ( (e->state() & ControlButton) && (e->key() == Key_D ||
+                                           e->key() == Key_H ||
+                                           e->key() == Key_K ||
+                                           e->key() == Key_V ||
+                                           e->key() == Key_X)
+        )
+       )
+    {
+      e->ignore();
+      return;
+    }
+  }
+  QLineEdit::keyPressEvent(e);
+}
+
+
+void CInfoField::mouseReleaseEvent(QMouseEvent *e)
+{
+  if (m_bReadOnly && e->button() == MidButton)
+    return;
+  QLineEdit::mouseReleaseEvent(e);
+}
+
+
+void CInfoField::setData(const char *data)
+{
+  setText(data);
+}
+
+void CInfoField::setData(const unsigned long data)
+{
+  char t[32];
+  sprintf(t, "%ld", data);
+  setData(t);
+}
+
+void CInfoField::setGeometry(int x, int y, int lenTitle, int lenBlank, int lenInfo)
+{
+  if (lblTitle != NULL)
+    lblTitle->setGeometry(x, y, lenTitle, 20);
+
+  QLineEdit::setGeometry(x + lenTitle + lenBlank, y, lenInfo, 20);
+}
+
+
+void CInfoField::move(int x, int y)
+{
+  int lenTitle = (lblTitle == NULL ? 0 : lblTitle->width());
+  int xTitle = (lblTitle == NULL ? 0 : lblTitle->x());
+
+  if (lblTitle != NULL)
+    lblTitle->setGeometry(x, y, lenTitle, 20);
+
+  int lenBlank = QLineEdit::x() - xTitle - lenTitle;
+  int lenInfo = width();
+  setGeometry(x, y, lenTitle, lenBlank, lenInfo);
+}
+
+
+void CInfoField::setEnabled(bool _b)
+{
+  if (lblTitle != NULL)
+    lblTitle->setEnabled(_b);
+  QLineEdit::setEnabled(_b);
+}
+
+
+#include "moc/moc_ewidgets.h"

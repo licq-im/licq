@@ -1,0 +1,1114 @@
+# Licq Qt GUI plugin translation.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Johan Runge-Goransson <mail.me@helli.nu>, 1999.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 1999-04-17 03:10+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset= CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: src/mainwin.cpp:271
+#, c-format
+msgid "KLicq (%s)"
+msgstr ""
+
+#: src/mainwin.cpp:273
+#, c-format
+msgid "Licq (%s)"
+msgstr ""
+
+#: src/mainwin.cpp:547
+msgid "SysMsg"
+msgstr ""
+
+#: src/mainwin.cpp:553
+#, c-format
+msgid "%d msg%c"
+msgstr ""
+
+#: src/mainwin.cpp:558
+msgid "No msgs"
+msgstr ""
+
+#. if no history, then get it
+#: src/filedlg.cpp:531 src/filedlg.cpp:770 src/icqfunctions.cpp:394
+#: src/icqfunctions.cpp:409 src/icqfunctions.cpp:416 src/icqfunctions.cpp:649
+#: src/icqfunctions.cpp:732 src/mainwin.cpp:934 src/mainwin.cpp:953
+#: src/mainwin.cpp:1269 src/optionsdlg.cpp:30 src/showawaymsgdlg.cpp:16
+msgid "Ok"
+msgstr ""
+
+#: src/filedlg.cpp:150 src/filedlg.cpp:174 src/icqfunctions.cpp:649
+#: src/icqfunctions.cpp:732 src/mainwin.cpp:934 src/mainwin.cpp:953
+#: src/optionsdlg.cpp:32
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: src/mainwin.cpp:949
+#, c-format
+msgid ""
+"Are you sure you want to remove\n"
+"%s (%ld)\n"
+"from the '%s' group?"
+msgstr ""
+"Är det säkert att du vill ta bort\n"
+"%s (%ld)\n"
+"från gruppen '%s'?"
+
+#: src/mainwin.cpp:1266
+#, c-format
+msgid ""
+"Licq version %s.\n"
+"Qt GUI plugin version %s.\n"
+"\n"
+"%s (%ld)\n"
+"%d contacts."
+msgstr ""
+"Licq version %s.\n"
+"Qt GUI plugin version %s.\n"
+"\n"
+"%s (%ld)\n"
+"%d kontakter."
+
+#: src/klicq.cpp:67 src/mainwin.cpp:1510
+msgid "&Online"
+msgstr ""
+
+#: src/klicq.cpp:68 src/mainwin.cpp:1512
+msgid "&Away"
+msgstr "&Borta"
+
+#: src/klicq.cpp:69 src/mainwin.cpp:1514
+msgid "&Not Available"
+msgstr "Inte Anträffbar"
+
+#: src/klicq.cpp:70 src/mainwin.cpp:1516
+msgid "O&ccupied"
+msgstr "Upptagen"
+
+#: src/mainwin.cpp:1518
+msgid "&Do Not Disturb"
+msgstr "Stör Ej"
+
+#: src/mainwin.cpp:1520
+msgid "Free for C&hat"
+msgstr "Ledig för chat"
+
+#: src/klicq.cpp:73 src/mainwin.cpp:1522
+msgid "O&ffline"
+msgstr ""
+
+#: src/mainwin.cpp:1525
+msgid "&Invisible"
+msgstr "Osynlig"
+
+#: src/mainwin.cpp:1530 src/searchuserdlg.cpp:106
+msgid "&Add User"
+msgstr "Lägg till Vän"
+
+#: src/mainwin.cpp:1531
+msgid "S&earch for User"
+msgstr "Sök efter Vän"
+
+#: src/mainwin.cpp:1532
+msgid "A&uthorize User"
+msgstr "Authorisera Vännen"
+
+#: src/mainwin.cpp:1534
+msgid "&Update Contact List"
+msgstr "Uppdatera Kontakt Listan"
+
+#: src/mainwin.cpp:1535
+msgid "Update All Users (broken)"
+msgstr "Uppdatera Alla Vänner (fungerar ej)"
+
+#: src/mainwin.cpp:1536
+msgid "&Redraw User Window"
+msgstr "Rita om Användar Fönstret"
+
+#: src/mainwin.cpp:1537
+msgid "&Save All Users"
+msgstr "Spara Alla Vänner"
+
+#: src/mainwin.cpp:1540
+msgid "Status Info"
+msgstr ""
+
+#: src/mainwin.cpp:1541
+msgid "Unknown Packets"
+msgstr "Okända packet"
+
+#: src/mainwin.cpp:1542
+msgid "Errors"
+msgstr "Fel"
+
+#: src/mainwin.cpp:1543
+msgid "Warnings"
+msgstr "Varningar"
+
+#: src/mainwin.cpp:1544
+msgid "Packets"
+msgstr "Paket"
+
+#: src/mainwin.cpp:1546
+msgid "Set All"
+msgstr "Markera Alla"
+
+#: src/mainwin.cpp:1547
+msgid "Clear All"
+msgstr "Rensa Alla"
+
+#: src/mainwin.cpp:1560
+msgid "User Functions"
+msgstr "Vän Funktioner"
+
+#: src/mainwin.cpp:1561
+msgid "&Status"
+msgstr ""
+
+#: src/mainwin.cpp:1562
+msgid "Set &Auto Response"
+msgstr "Skriv Auto Svar"
+
+#: src/mainwin.cpp:1564
+msgid "Show &Network Window"
+msgstr "Visa Nätverks Fönstret"
+
+#: src/mainwin.cpp:1565
+msgid "Use &Mini Mode"
+msgstr "Kör i Mini Mode"
+
+#: src/mainwin.cpp:1566
+msgid "Show Offline &Users"
+msgstr "Visa Vänner som är Offline"
+
+#: src/mainwin.cpp:1567
+msgid "&Options"
+msgstr "Inställningar"
+
+#: src/mainwin.cpp:1568
+msgid "Sa&ve Options"
+msgstr "Spara Inställningar"
+
+#: src/mainwin.cpp:1569
+msgid "Debug Level"
+msgstr "Debug Nivå"
+
+#: src/mainwin.cpp:1571
+msgid "Next &Server"
+msgstr "Nästa Server"
+
+#: src/mainwin.cpp:1573
+msgid "&About"
+msgstr "Om"
+
+#: src/klicq.cpp:80 src/mainwin.cpp:1574
+msgid "E&xit"
+msgstr "Avsluta"
+
+#: src/chatacceptdlg.cpp:22 src/fileacceptdlg.cpp:22
+msgid "Refusal Reason (if applicable):"
+msgstr ""
+
+#: src/chatacceptdlg.cpp:28 src/fileacceptdlg.cpp:28
+msgid "Accept"
+msgstr "Acceptera"
+
+#: src/chatacceptdlg.cpp:31 src/fileacceptdlg.cpp:31
+msgid "Refuse"
+msgstr "Vägra"
+
+#: src/chatacceptdlg.cpp:34 src/fileacceptdlg.cpp:34
+msgid "Ignore"
+msgstr "Ignorera"
+
+#: src/chatacceptdlg.cpp:40
+#, c-format
+msgid "Accept chat with %s?"
+msgstr "Acceptera chat med %s?"
+
+#: src/authuserdlg.cpp:20 src/awaymsgdlg.cpp:20
+msgid "&Ok"
+msgstr ""
+
+#: src/adduserdlg.cpp:23 src/authuserdlg.cpp:22 src/awaymsgdlg.cpp:23
+#: src/searchuserdlg.cpp:85
+msgid "&Cancel"
+msgstr "A&vbryt"
+
+#: src/awaymsgdlg.cpp:33
+#, c-format
+msgid "Set Auto Response for %s:"
+msgstr "Välj automatisks svar för %s:"
+
+#: src/awaymsgdlg.cpp:41
+#, c-format
+msgid "I am currently %s."
+msgstr "Jag är för tillfället %s."
+
+#: src/authuserdlg.cpp:13 src/messagebox.cpp:49
+msgid "Licq"
+msgstr ""
+
+#: src/authuserdlg.cpp:15
+msgid "Authorize which user (UIN):"
+msgstr "Authorisera vilken vän (UIN):"
+
+#: src/adduserdlg.cpp:14
+msgid "New User UIN:"
+msgstr "Ny Väns UIN:"
+
+#: src/adduserdlg.cpp:19
+msgid "&Alert User"
+msgstr "Informera Vännen"
+
+#: src/chatdlg.cpp:34
+msgid "Remote - Not connected"
+msgstr ""
+
+#: src/chatdlg.cpp:43
+#, c-format
+msgid "Local - %s"
+msgstr "Lokal - %s"
+
+#: src/chatdlg.cpp:48
+msgid "Close Chat"
+msgstr "Stäng Chatten"
+
+#: src/chatdlg.cpp:92
+msgid "Remote - Waiting for joiners..."
+msgstr ""
+
+#: src/chatdlg.cpp:168 src/chatdlg.cpp:324
+#, c-format
+msgid "Remote - %s"
+msgstr ""
+
+#: src/chatdlg.cpp:261
+msgid "Remote - Connected, shaking hands..."
+msgstr ""
+
+#: src/chatdlg.cpp:271
+msgid "Remote - Connected, waiting for response..."
+msgstr ""
+
+#: src/fileacceptdlg.cpp:40
+#, c-format
+msgid "Accept file transfer from %s?"
+msgstr "Acceptera filöverföring från %s?"
+
+#: src/filedlg.cpp:59
+msgid "ICQ file transfer"
+msgstr "ICQ Filöverföring"
+
+#: src/filedlg.cpp:62
+msgid "Current file:"
+msgstr "Nuvarande fil:"
+
+#: src/filedlg.cpp:66
+msgid "Local file name:"
+msgstr "Lokalt filnamn:"
+
+#: src/filedlg.cpp:67
+msgid "Unset"
+msgstr ""
+
+#: src/filedlg.cpp:67
+msgid "N/A"
+msgstr ""
+
+#. Information stuff about the current file
+#: src/filedlg.cpp:71
+msgid "Current File"
+msgstr "Nuvarande Fil"
+
+#: src/filedlg.cpp:73 src/filedlg.cpp:85 src/optionsdlg.cpp:61
+msgid "Size:"
+msgstr "Storlek:"
+
+#: src/filedlg.cpp:76 src/filedlg.cpp:86
+msgid "Trans:"
+msgstr ""
+
+#: src/filedlg.cpp:77 src/filedlg.cpp:87
+msgid "Time:"
+msgstr "Tid:"
+
+#: src/filedlg.cpp:78 src/filedlg.cpp:88
+msgid "BPS:"
+msgstr ""
+
+#: src/filedlg.cpp:79 src/filedlg.cpp:89
+msgid "ETA:"
+msgstr ""
+
+#: src/filedlg.cpp:96
+msgid "&Cancel Transfer"
+msgstr "Avbryt Överföringen"
+
+#: src/filedlg.cpp:105
+msgid "Unknown"
+msgstr "Okänd"
+
+#: src/filedlg.cpp:113 src/filedlg.cpp:411
+#, c-format
+msgid "%ld bytes"
+msgstr ""
+
+#: src/filedlg.cpp:150
+msgid "File already exists and is at least as big as the incoming file."
+msgstr "Filen finns redan och är större än den inkommande filen."
+
+#: src/filedlg.cpp:150 src/filedlg.cpp:157
+msgid "Overwrite"
+msgstr "Skriv över"
+
+#: src/filedlg.cpp:157
+msgid "File already exists and appears incomplete."
+msgstr "Filen finns redan men är mindre."
+
+#: src/filedlg.cpp:157
+msgid "Resume"
+msgstr "Återuppta"
+
+#: src/filedlg.cpp:174
+msgid "Open error - unable to open file for writing."
+msgstr "Fel - kunde inte öppna filen för skrivning."
+
+#: src/filedlg.cpp:174
+msgid "Retry"
+msgstr "Försök igen"
+
+#: src/filedlg.cpp:196
+msgid "File transfer cancelled."
+msgstr "Filöverföringen avbruten."
+
+#: src/filedlg.cpp:197
+msgid "Done"
+msgstr "Klar"
+
+#: src/filedlg.cpp:211 src/filedlg.cpp:246
+#, c-format
+msgid "%0.2f kb"
+msgstr ""
+
+#: src/filedlg.cpp:213 src/filedlg.cpp:248
+#, c-format
+msgid "%ld b"
+msgstr ""
+
+#: src/filedlg.cpp:230 src/filedlg.cpp:266
+#, c-format
+msgid "%.2f k"
+msgstr ""
+
+#: src/filedlg.cpp:299
+msgid "Waiting for connection..."
+msgstr "Väntar på kontakt..."
+
+#: src/filedlg.cpp:378 src/filedlg.cpp:622
+#, c-format
+msgid "ICQ file transfer %s %s"
+msgstr "ICQ filöverföring %s %s"
+
+#: src/filedlg.cpp:378 src/filedlg.cpp:622
+msgid "from"
+msgstr "från"
+
+#: src/filedlg.cpp:378 src/filedlg.cpp:622
+msgid "to"
+msgstr "till"
+
+#: src/filedlg.cpp:385
+msgid "Received init, waiting for batch info..."
+msgstr ""
+
+#. Process batch ack packet, it contains nothing useful so just start the transfer
+#: src/filedlg.cpp:425 src/filedlg.cpp:653
+msgid "Starting transfer..."
+msgstr "Börjar överföringen..."
+
+#: src/filedlg.cpp:471
+msgid "Receiving file..."
+msgstr "Tar emot fil..."
+
+#: src/filedlg.cpp:532
+msgid "File received."
+msgstr "Fil mottagen."
+
+#: src/filedlg.cpp:551
+msgid "Connecting to remote..."
+msgstr ""
+
+#: src/filedlg.cpp:560
+msgid "Connected, shaking hands..."
+msgstr ""
+
+#: src/filedlg.cpp:570
+msgid "Connected, waiting for response..."
+msgstr ""
+
+#: src/filedlg.cpp:637
+msgid "Sent batch info, waiting for ack..."
+msgstr ""
+
+#: src/filedlg.cpp:726
+msgid "Sending file..."
+msgstr "Skickar filen..."
+
+#: src/filedlg.cpp:771
+msgid "File sent."
+msgstr "Filen skickad."
+
+#: src/icqfunctions.cpp:37
+msgid "Close"
+msgstr "Stäng"
+
+#: src/icqfunctions.cpp:45
+msgid "View Event"
+msgstr "Ta Emot"
+
+#: src/icqfunctions.cpp:60
+msgid "Send Event"
+msgstr "Skicka"
+
+#: src/icqfunctions.cpp:62
+msgid "Select Function"
+msgstr "Välj Funktion"
+
+#: src/icqfunctions.cpp:64
+msgid "Message"
+msgstr "Medelande"
+
+#: src/icqfunctions.cpp:66
+msgid "URL"
+msgstr ""
+
+#: src/icqfunctions.cpp:68
+msgid "Check Away Msg"
+msgstr "Läsa Auto Msg"
+
+#: src/icqfunctions.cpp:70
+msgid "Chat Request"
+msgstr "Chat förfrågan"
+
+#: src/icqfunctions.cpp:71
+msgid "File Transfer"
+msgstr "Filöverföring"
+
+#: src/icqfunctions.cpp:79
+msgid "Send through server"
+msgstr "Skicka via servern"
+
+#: src/icqfunctions.cpp:80
+msgid "Spoof UIN:"
+msgstr "Bluffa UIN:"
+
+#: src/icqfunctions.cpp:87
+msgid "User Info"
+msgstr "Vän Info"
+
+#: src/icqfunctions.cpp:89 src/searchuserdlg.cpp:78
+msgid "Alias:"
+msgstr ""
+
+#: src/icqfunctions.cpp:91
+msgid "Status:"
+msgstr ""
+
+#: src/icqfunctions.cpp:92
+msgid "UIN:"
+msgstr ""
+
+#: src/icqfunctions.cpp:93
+msgid "Name:"
+msgstr "Namn:"
+
+#: src/icqfunctions.cpp:97
+msgid "EMail:"
+msgstr ""
+
+#: src/icqfunctions.cpp:99
+msgid "History:"
+msgstr "Historia:"
+
+#: src/icqfunctions.cpp:101
+msgid "IP:"
+msgstr ""
+
+#: src/icqfunctions.cpp:102
+msgid "Authorization Needed"
+msgstr "Authorisering Krävs"
+
+#: src/icqfunctions.cpp:105
+msgid "Details"
+msgstr "Detaljer"
+
+#: src/icqfunctions.cpp:107
+msgid "Age:"
+msgstr "Ålder:"
+
+#: src/icqfunctions.cpp:108
+msgid "State:"
+msgstr "Stat:"
+
+#: src/icqfunctions.cpp:109
+msgid "City:"
+msgstr "Stad:"
+
+#: src/icqfunctions.cpp:110
+msgid "Country:"
+msgstr "Land:"
+
+#: src/icqfunctions.cpp:112 src/icqfunctions.cpp:121
+msgid "Unspecified"
+msgstr "Inget angivet"
+
+#: src/icqfunctions.cpp:113
+msgid "Unknown (unspecified)"
+msgstr "Okänd (Inte i fylld)"
+
+#: src/icqfunctions.cpp:118
+msgid "Homepage:"
+msgstr "Hemsida:"
+
+#: src/icqfunctions.cpp:119
+msgid "Sex:"
+msgstr "Kön:"
+
+#: src/icqfunctions.cpp:122
+msgid "Female"
+msgstr "Kvinna"
+
+#: src/icqfunctions.cpp:123
+msgid "Male"
+msgstr "Man"
+
+#: src/icqfunctions.cpp:126
+msgid "Phone:"
+msgstr "Tel nr:"
+
+#: src/icqfunctions.cpp:130
+msgid "About"
+msgstr "Om"
+
+#: src/icqfunctions.cpp:133
+msgid "History"
+msgstr "Historia"
+
+#: src/icqfunctions.cpp:136
+msgid "History read only"
+msgstr "Läs bara Historian"
+
+#: src/icqfunctions.cpp:145
+msgid "Auto Close"
+msgstr "Stäng Automatiskt"
+
+#: src/icqfunctions.cpp:147 src/icqfunctions.cpp:388 src/icqfunctions.cpp:402
+#: src/icqfunctions.cpp:410
+msgid "Save"
+msgstr "Spara"
+
+#: src/icqfunctions.cpp:357
+#, c-format
+msgid "Unknown (%d)"
+msgstr "Okänd (%d)"
+
+#: src/icqfunctions.cpp:381
+msgid "Send"
+msgstr "Skicka"
+
+#: src/icqfunctions.cpp:387 src/icqfunctions.cpp:401
+msgid "Update"
+msgstr "Uppdatera"
+
+#: src/icqfunctions.cpp:395
+msgid "Reply"
+msgstr "Svara"
+
+#. view a url
+#: src/icqfunctions.cpp:486
+msgid "View URL?"
+msgstr "Visa URL?"
+
+#: src/icqfunctions.cpp:486 src/icqfunctions.cpp:502 src/icqfunctions.cpp:504
+msgid "Yes"
+msgstr "Ja"
+
+#: src/icqfunctions.cpp:486 src/icqfunctions.cpp:502 src/icqfunctions.cpp:504
+msgid "No"
+msgstr "Nej"
+
+#: src/icqfunctions.cpp:502
+msgid "Authorize?"
+msgstr "Authorisera?"
+
+#: src/icqfunctions.cpp:504
+msgid "Add?"
+msgstr "Lägg till?"
+
+#: src/icqfunctions.cpp:648
+msgid ""
+"Spoofing messages is immoral and possibly illegal.\n"
+"In clicking OK you absolve the author from any \n"
+"responsibility for your actions.\n"
+"Do you want to continue?"
+msgstr ""
+"Att bluffa din UIN är omoraliskt och kanske också\n"
+"olagligt. Om du klickar på OK här så från tar du\n"
+"skaparen allt ansvar för dina handlingar.\n"
+"Vill du fortsätta?"
+
+#: src/icqfunctions.cpp:665 src/optionsdlg.cpp:145
+msgid "Message:"
+msgstr "Medelande:"
+
+#: src/icqfunctions.cpp:671 src/optionsdlg.cpp:149
+msgid "URL:"
+msgstr ""
+
+#: src/icqfunctions.cpp:674 src/icqfunctions.cpp:701
+msgid "Description:"
+msgstr "Beskrivning:"
+
+#: src/icqfunctions.cpp:682
+msgid "Check Away Message"
+msgstr "Läs Auto Medelande"
+
+#: src/icqfunctions.cpp:691
+msgid "Reason:"
+msgstr "Anleddning:"
+
+#: src/icqfunctions.cpp:698
+msgid "Filename:"
+msgstr "Filnamn:"
+
+#: src/icqfunctions.cpp:731
+#, c-format
+msgid ""
+"Message is %d characters, over the ICQ limit of %d.  \n"
+"Licq and other clones support longer messages \n"
+"however Mirabilis clients will not.  Continue?"
+msgstr ""
+"Medelandet är %d bokstäver längre än ICQ gräns %d\n"
+"Licq och andra kloner stödjer längre medelande\n"
+"men Mirabilis klient gör det inte. Fortsätta?"
+
+#: src/icqfunctions.cpp:745
+#, c-format
+msgid "Sending msg %s..."
+msgstr "Skickar msg %s..."
+
+#: src/icqfunctions.cpp:745 src/icqfunctions.cpp:768
+msgid "server"
+msgstr ""
+
+#: src/icqfunctions.cpp:745 src/icqfunctions.cpp:768
+msgid "direct"
+msgstr "direkt"
+
+#: src/icqfunctions.cpp:750
+msgid "Fetching..."
+msgstr "Hämtar..."
+
+#: src/icqfunctions.cpp:758
+#, c-format
+msgid "Sending URL %s..."
+msgstr "Skickar URL %s..."
+
+#: src/icqfunctions.cpp:763
+#, c-format
+msgid "Sending chat request %s..."
+msgstr "Skickar Chat förfrågan %s..."
+
+#: src/icqfunctions.cpp:768
+#, c-format
+msgid "Sending file transfer %s..."
+msgstr "Skickar filöverföring %s..."
+
+#: src/icqfunctions.cpp:779 src/icqfunctions.cpp:795
+msgid "Update local or server information?"
+msgstr "Uppdatera på servern eller lokalt?"
+
+#: src/icqfunctions.cpp:779 src/icqfunctions.cpp:795
+msgid "Local"
+msgstr "Lokalt"
+
+#: src/icqfunctions.cpp:779 src/icqfunctions.cpp:795
+msgid "Server"
+msgstr "Servern"
+
+#: src/icqfunctions.cpp:781 src/icqfunctions.cpp:797
+msgid "Updating server..."
+msgstr "Uppdaterar på Servern..."
+
+#: src/icqfunctions.cpp:790 src/icqfunctions.cpp:807
+msgid "Updating..."
+msgstr "Uppdaterar..."
+
+#: src/icqfunctions.cpp:833
+msgid "done"
+msgstr "klar"
+
+#: src/icqfunctions.cpp:836
+msgid "failed"
+msgstr "misslyckades"
+
+#: src/icqfunctions.cpp:839
+msgid "timed out"
+msgstr ""
+
+#: src/icqfunctions.cpp:842
+msgid "error"
+msgstr "fel"
+
+#: src/icqfunctions.cpp:877
+#, c-format
+msgid ""
+"%s%s with %s refused:\n"
+"%s%s"
+msgstr ""
+
+#: src/klicq.cpp:71
+msgid "&Do not Disturb"
+msgstr "Stör Ej"
+
+#: src/klicq.cpp:72
+msgid "Free For &Chat"
+msgstr "Ledig för chat"
+
+#: src/klicq.cpp:76
+msgid "&Dock"
+msgstr "Docka"
+
+#: src/klicq.cpp:78
+msgid "&UnDock"
+msgstr "Fristånde"
+
+#: src/messagebox.cpp:45
+msgid "N"
+msgstr ""
+
+#: src/messagebox.cpp:46
+msgid "Event Type"
+msgstr "Händelse typ"
+
+#: src/messagebox.cpp:47
+msgid "Time Received"
+msgstr "Mottaget klockan"
+
+#: src/messagebox.cpp:48
+msgid "D"
+msgstr ""
+
+#: src/optionsdlg.cpp:31
+msgid "Apply"
+msgstr "Verkställ"
+
+#. fonts
+#: src/optionsdlg.cpp:41
+msgid "Font"
+msgstr ""
+
+#: src/optionsdlg.cpp:43
+msgid "Family:"
+msgstr "Familj:"
+
+#: src/optionsdlg.cpp:47
+msgid "Char Set:"
+msgstr ""
+
+#. colors
+#: src/optionsdlg.cpp:67
+msgid "Colors"
+msgstr "Färger:"
+
+#: src/optionsdlg.cpp:69
+msgid "Online:"
+msgstr ""
+
+#: src/optionsdlg.cpp:73
+msgid "Away:"
+msgstr "Borta:"
+
+#: src/optionsdlg.cpp:77
+msgid "Offline:"
+msgstr ""
+
+#: src/optionsdlg.cpp:81
+msgid "New:"
+msgstr "Ny:"
+
+#: src/optionsdlg.cpp:85
+msgid "Background:"
+msgstr "Bakgrund:"
+
+#: src/optionsdlg.cpp:89
+msgid "Grid Lines:"
+msgstr ""
+
+#: src/optionsdlg.cpp:94
+msgid "Grid Lines"
+msgstr ""
+
+#: src/optionsdlg.cpp:96
+msgid "Show Column Headers"
+msgstr "Visa Kolumn Huvuden"
+
+#: src/optionsdlg.cpp:98
+msgid "Auto Close Function Window"
+msgstr "Stäng Fönster Automatiskt"
+
+#: src/optionsdlg.cpp:102
+msgid "Info"
+msgstr ""
+
+#: src/optionsdlg.cpp:104
+msgid "Width"
+msgstr "Bred"
+
+#: src/optionsdlg.cpp:106
+msgid "Alignment"
+msgstr "Justering"
+
+#: src/optionsdlg.cpp:111
+#, c-format
+msgid "Column %d"
+msgstr "Kolumn %d"
+
+#: src/optionsdlg.cpp:116 src/searchuserdlg.cpp:18 src/userbox.cpp:193
+msgid "Alias"
+msgstr ""
+
+#: src/optionsdlg.cpp:117 src/searchuserdlg.cpp:19 src/userbox.cpp:196
+msgid "UIN"
+msgstr ""
+
+#: src/optionsdlg.cpp:118 src/searchuserdlg.cpp:21 src/userbox.cpp:199
+msgid "Name"
+msgstr "Namn"
+
+#: src/optionsdlg.cpp:119
+msgid "EMail"
+msgstr ""
+
+#: src/optionsdlg.cpp:125
+msgid "Left"
+msgstr "Vänster"
+
+#: src/optionsdlg.cpp:126
+msgid "Right"
+msgstr "Höger"
+
+#: src/optionsdlg.cpp:127
+msgid "Center"
+msgstr "Mitten"
+
+#: src/optionsdlg.cpp:132
+msgid "Sounds:"
+msgstr "Ljud:"
+
+#: src/optionsdlg.cpp:136
+msgid "Disabled"
+msgstr "Avstängt"
+
+#: src/optionsdlg.cpp:137
+msgid "Command"
+msgstr "Kommando"
+
+#: src/optionsdlg.cpp:138
+msgid "Beep"
+msgstr "Pip"
+
+#: src/optionsdlg.cpp:139
+msgid "OnEvent Command:"
+msgstr "Vid Händelse:"
+
+#: src/optionsdlg.cpp:143
+msgid "Events"
+msgstr "Händelser"
+
+#: src/optionsdlg.cpp:153
+msgid "Chat Request:"
+msgstr "Chat förfrågan:"
+
+#: src/optionsdlg.cpp:157
+msgid "File Transfer:"
+msgstr "Filöverföring:"
+
+#: src/optionsdlg.cpp:161
+msgid "Online Notify:"
+msgstr ""
+
+#: src/optionsdlg.cpp:167
+msgid "Servers: "
+msgstr "Servrar: "
+
+#: src/optionsdlg.cpp:173
+msgid "Default Server Port:"
+msgstr ""
+
+#: src/optionsdlg.cpp:178
+msgid "TCP Server Port:"
+msgstr ""
+
+#: src/optionsdlg.cpp:183
+msgid "Max Users per Packet:"
+msgstr "Max vänner per Paket:"
+
+#: src/optionsdlg.cpp:188
+msgid "Auto Logon:"
+msgstr ""
+
+#: src/optionsdlg.cpp:192
+msgid "Offline"
+msgstr ""
+
+#: src/optionsdlg.cpp:193
+msgid "Online"
+msgstr ""
+
+#: src/optionsdlg.cpp:194
+msgid "Away"
+msgstr "Borta"
+
+#: src/optionsdlg.cpp:195
+msgid "Not Available"
+msgstr "Inte Anträffbar"
+
+#: src/optionsdlg.cpp:196
+msgid "Occupied"
+msgstr "Upptagen"
+
+#: src/optionsdlg.cpp:197
+msgid "Do Not Disturb"
+msgstr "Stör Ej"
+
+#: src/optionsdlg.cpp:198
+msgid "Free for Chat"
+msgstr "Ledig för Chat"
+
+#: src/optionsdlg.cpp:199
+msgid "Invisible"
+msgstr "Osynlig"
+
+#: src/optionsdlg.cpp:201
+msgid "Auto Away:"
+msgstr ""
+
+#: src/optionsdlg.cpp:205
+msgid "Auto N/A:"
+msgstr ""
+
+#: src/optionsdlg.cpp:211
+msgid "Error Log:"
+msgstr "Fel logg:"
+
+#: src/optionsdlg.cpp:217
+msgid "Url Viewer:"
+msgstr ""
+
+#: src/optionsdlg.cpp:221
+msgid "Translation:"
+msgstr "Översättning:"
+
+#: src/optionsdlg.cpp:233
+msgid "ERROR"
+msgstr "FEL"
+
+#: src/optionsdlg.cpp:238
+msgid "none"
+msgstr "ingen"
+
+#: src/optionsdlg.cpp:248
+msgid "Appearance"
+msgstr "Utseende"
+
+#: src/optionsdlg.cpp:249
+msgid "Columns"
+msgstr "Kolumner"
+
+#: src/optionsdlg.cpp:250
+msgid "Sound"
+msgstr "Ljud"
+
+#: src/optionsdlg.cpp:251
+msgid "Network"
+msgstr "Nätverk"
+
+#: src/optionsdlg.cpp:252
+msgid "Plug-In"
+msgstr ""
+
+#: src/outputwin.cpp:20
+msgid "Hide Window"
+msgstr "Göm Fönstret"
+
+#: src/outputwin.cpp:23
+msgid "Clear"
+msgstr "Rensa"
+
+#: src/searchuserdlg.cpp:22
+msgid "Email"
+msgstr ""
+
+#. pre-search widgets
+#: src/searchuserdlg.cpp:59
+msgid "Email Address:"
+msgstr ""
+
+#: src/searchuserdlg.cpp:68
+msgid "First Name:"
+msgstr "Förnamn:"
+
+#: src/searchuserdlg.cpp:73
+msgid "Last Name:"
+msgstr "Efternamn:"
+
+#: src/searchuserdlg.cpp:83
+msgid "&Search"
+msgstr "Sök"
+
+#: src/searchuserdlg.cpp:103
+msgid "&Done"
+msgstr "Klar"
+
+#: src/searchuserdlg.cpp:110
+msgid "Search Again"
+msgstr "Sök igen"
+
+#: src/searchuserdlg.cpp:114 src/searchuserdlg.cpp:145
+msgid "Searching (this can take awhile)..."
+msgstr "Söker (detta kan ta en stund)..."
+
+#: src/searchuserdlg.cpp:204
+msgid "More users found. Narrow search."
+msgstr "Fler vänner funna. Förfina din sökning."
+
+#: src/searchuserdlg.cpp:213
+msgid "Search failed."
+msgstr "Sökningen misslyckades"
+
+#: src/showawaymsgdlg.cpp:26
+#, c-format
+msgid "%s Message for %s"
+msgstr "%s Medelande för %s"
+
+#: src/userbox.cpp:187
+msgid "S"
+msgstr ""
+
+#: src/userbox.cpp:202
+msgid "EMail Address"
+msgstr ""
+
+#: src/userbox.cpp:260
+msgid "list view header"
+msgstr ""

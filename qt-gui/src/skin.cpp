@@ -1,0 +1,332 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <qwidget.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "skin.h"
+#include "constants.h"
+
+CSkin::CSkin(const char *skinname)
+{
+   char temp[MAX_FILENAME_LEN];
+   char baseSkinDir[MAX_FILENAME_LEN];
+   szSkinName = strdup(skinname);
+
+   if (skinname[0] == '/')
+   {
+     strcpy(baseSkinDir, skinname);
+     if (baseSkinDir[strlen(baseSkinDir) - 1] != '/') strcat(baseSkinDir, "/");
+   }
+   else
+     sprintf(baseSkinDir, "%s%sskin.%s/", SHARE_DIR, QTGUI_DIR, skinname);
+
+   char filename[MAX_FILENAME_LEN];
+   sprintf(filename, "%s%s.skin", baseSkinDir, skinname);
+   CIniFile skinFile(INI_FxFATAL | INI_FxERROR);
+   skinFile.LoadFile(filename);
+
+   // Frame
+   skinFile.SetSection("skin");
+   skinFile.SetFlags(0);
+   skinFile.ReadStr("frame.pixmap", temp, "none");
+   if (strncmp(temp, "none", 4) == 0 || strlen(temp) == 0)
+      frame.pixmap = NULL;
+   else
+   {
+      frame.pixmap = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(frame.pixmap, "%s%s", baseSkinDir, temp);
+   }
+   skinFile.ReadStr("frame.mask", temp, "none");
+   if (strncmp(temp, "none", 4) == 0 || strlen(temp) == 0)
+      frame.mask = NULL;
+   else
+   {
+      frame.mask = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(frame.mask, "%s%s", baseSkinDir, temp);
+   }
+   skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
+   skinFile.ReadNum("frame.border.top", frame.border.top);
+   skinFile.ReadNum("frame.border.bottom", frame.border.bottom);
+   skinFile.ReadNum("frame.border.left", frame.border.left);
+   skinFile.ReadNum("frame.border.right", frame.border.right);
+   skinFile.ReadBool("frame.hasMenuBar", frame.hasMenuBar);
+
+   // System Button
+   skinFile.SetFlags(0);
+   skinFile.ReadStr("btnSys.caption", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+      btnSys.caption = NULL;
+   else
+      btnSys.caption = strdup(temp);
+
+   skinFile.ReadStr("btnSys.pixmapUpFocus", temp, "none");
+   if (strncmp(temp, "none", 4) == 0)
+      btnSys.pixmapUpFocus = NULL;
+   else
+   {
+      btnSys.pixmapUpFocus = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(btnSys.pixmapUpFocus, "%s%s", baseSkinDir, temp);
+   }
+
+   skinFile.ReadStr("btnSys.pixmapUpNoFocus", temp, "none");
+   if (strncmp(temp, "none", 4) == 0)
+      btnSys.pixmapUpNoFocus = NULL;
+   else
+   {
+      btnSys.pixmapUpNoFocus = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(btnSys.pixmapUpNoFocus, "%s%s", baseSkinDir, temp);
+   }
+
+   skinFile.ReadStr("btnSys.pixmapDown", temp, "none");
+   if (strncmp(temp, "none", 4) == 0)
+      btnSys.pixmapDown = NULL;
+   else
+   {
+      btnSys.pixmapDown = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(btnSys.pixmapDown, "%s%s", baseSkinDir, temp);
+   }
+
+   skinFile.ReadStr("btnSys.color.fg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+      btnSys.color.fg = NULL;
+   else
+      btnSys.color.fg = strdup(temp);
+   skinFile.ReadStr("btnSys.color.bg", temp);
+   if (strncmp(temp, "default", 7) == 0)
+      btnSys.color.bg = NULL;
+   else
+      btnSys.color.bg = strdup(temp);
+
+   skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
+   skinFile.ReadNum("btnSys.rect.x1", btnSys.rect.x1);
+   skinFile.ReadNum("btnSys.rect.y1", btnSys.rect.y1);
+   skinFile.ReadNum("btnSys.rect.x2", btnSys.rect.x2);
+   skinFile.ReadNum("btnSys.rect.y2", btnSys.rect.y2);
+
+   // Status Label
+   skinFile.ReadNum("lblStatus.rect.x1", lblStatus.rect.x1);
+   skinFile.ReadNum("lblStatus.rect.y1", lblStatus.rect.y1);
+   skinFile.ReadNum("lblStatus.rect.x2", lblStatus.rect.x2);
+   skinFile.ReadNum("lblStatus.rect.y2", lblStatus.rect.y2);
+   skinFile.SetFlags(0);
+   skinFile.ReadStr("lblStatus.pixmap", temp, "none");
+   if (strncmp(temp, "none", 4) == 0)
+      lblStatus.pixmap = NULL;
+   else
+   {
+      lblStatus.pixmap = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(lblStatus.pixmap, "%s%s", baseSkinDir, temp);
+   }
+   skinFile.ReadStr("lblStatus.color.fg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+      lblStatus.color.fg = NULL;
+   else
+      lblStatus.color.fg = strdup(temp);
+   skinFile.ReadStr("lblStatus.color.bg", temp, "default");
+   lblStatus.transparent = false;
+   if (strncmp(temp, "default", 7) == 0)
+      lblStatus.color.bg = NULL;
+   else if (strncmp(temp, "transparent", 11) == 0)
+   {
+      lblStatus.color.bg = NULL;
+      lblStatus.transparent = true;
+   }
+   else
+      lblStatus.color.bg = strdup(temp);
+   skinFile.ReadNum("lblStatus.margin", lblStatus.margin, 0);
+   skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
+   skinFile.ReadNum("lblStatus.frameStyle", lblStatus.frameStyle);
+
+
+   // Message Label
+   skinFile.ReadNum("lblMsg.rect.x1", lblMsg.rect.x1);
+   skinFile.ReadNum("lblMsg.rect.y1", lblMsg.rect.y1);
+   skinFile.ReadNum("lblMsg.rect.x2", lblMsg.rect.x2);
+   skinFile.ReadNum("lblMsg.rect.y2", lblMsg.rect.y2);
+   skinFile.SetFlags(0);
+   skinFile.ReadStr("lblMsg.pixmap", temp, "none");
+   if (strncmp(temp, "none", 4) == 0)
+      lblMsg.pixmap = NULL;
+   else
+   {
+      lblMsg.pixmap = new char[strlen(baseSkinDir) + strlen(temp) + 1];
+      sprintf(lblMsg.pixmap, "%s%s", baseSkinDir, temp);
+   }
+   skinFile.ReadStr("lblMsg.color.fg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+      lblMsg.color.fg = NULL;
+   else
+      lblMsg.color.fg = strdup(temp);
+   skinFile.ReadStr("lblMsg.color.bg", temp, "default");
+   lblMsg.transparent = false;
+   if (strncmp(temp, "default", 7) == 0)
+      lblMsg.color.bg = NULL;
+   else if (strncmp(temp, "transparent", 11) == 0)
+   {
+      lblMsg.color.bg = NULL;
+      lblMsg.transparent = true;
+   }
+   else
+      lblMsg.color.bg = strdup(temp);
+   skinFile.ReadNum("lblMsg.margin", lblMsg.margin, 0);
+   skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
+   skinFile.ReadNum("lblMsg.frameStyle", lblMsg.frameStyle);
+
+   // Group Combo Box
+   skinFile.ReadNum("cmbGroups.rect.x1", cmbGroups.rect.x1);
+   skinFile.ReadNum("cmbGroups.rect.y1", cmbGroups.rect.y1);
+   skinFile.ReadNum("cmbGroups.rect.x2", cmbGroups.rect.x2);
+   skinFile.ReadNum("cmbGroups.rect.y2", cmbGroups.rect.y2);
+   skinFile.SetFlags(0);
+   skinFile.ReadStr("cmbGroups.color.fg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+      cmbGroups.color.fg = NULL;
+   else
+      cmbGroups.color.fg = strdup(temp);
+   skinFile.ReadStr("cmbGroups.color.bg", temp, "default");
+   if (strncmp(temp, "default", 7) == 0 || strlen(temp) == 0)
+      cmbGroups.color.bg = NULL;
+   else
+      cmbGroups.color.bg = strdup(temp);
+
+   // Read in the colors
+   skinFile.ReadStr("colors.online", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.online = strdup("blue");//"#0402FC");
+   else
+     colors.online = strdup(temp);
+   skinFile.ReadStr("colors.away", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.away = strdup("dark green");
+   else
+     colors.away = strdup(temp);
+   skinFile.ReadStr("colors.offline", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.offline = strdup("firebrick");//"#FC0204");
+   else
+     colors.offline = strdup(temp);
+   skinFile.ReadStr("colors.background", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.background = strdup("grey76");
+   else
+     colors.background = strdup(temp);
+   skinFile.ReadStr("colors.gridlines", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.gridlines = strdup("black");
+   else
+     colors.gridlines = strdup(temp);
+   skinFile.ReadStr("colors.newuser", temp, "default");
+   if (strncmp(temp, "default", 7) == 0)
+     colors.newuser = strdup("yellow");
+   else
+     colors.newuser = strdup(temp);
+}
+
+
+CSkin::~CSkin(void)
+{
+  free(szSkinName);
+  if (frame.pixmap != NULL) delete [] frame.pixmap;
+  if (frame.mask != NULL) delete [] frame.mask;
+  if (btnSys.caption != NULL) free (btnSys.caption);
+  if (btnSys.pixmapUpNoFocus != NULL) delete [] btnSys.pixmapUpNoFocus;
+  if (btnSys.pixmapUpFocus != NULL) delete [] btnSys.pixmapUpFocus;
+  if (btnSys.pixmapDown != NULL) delete [] btnSys.pixmapDown;
+  if (btnSys.color.fg != NULL) free (btnSys.color.fg);
+  if (btnSys.color.bg != NULL) free (btnSys.color.bg);
+  if (lblStatus.pixmap != NULL) delete [] lblStatus.pixmap;
+  if (lblStatus.color.fg != NULL) free (lblStatus.color.fg);
+  if (lblStatus.color.bg != NULL) free (lblStatus.color.bg);
+  if (lblMsg.pixmap != NULL) delete [] lblMsg.pixmap;
+  if (lblMsg.color.fg != NULL) free (lblMsg.color.fg);
+  if (lblMsg.color.bg != NULL) free (lblMsg.color.bg);
+  if (cmbGroups.color.fg != NULL) free (cmbGroups.color.fg);
+  if (cmbGroups.color.bg != NULL) free (cmbGroups.color.bg);
+  free (colors.online);
+  free (colors.offline);
+  free (colors.away);
+  free (colors.background);
+  free (colors.gridlines);
+  free (colors.newuser);
+}
+
+
+int CSkin::frameWidth(void)
+{
+   return (frame.border.right + frame.border.left);
+}
+
+int CSkin::frameHeight(void)
+{
+   return (frame.border.top + frame.border.bottom);
+}
+
+QRect CSkin::borderToRect(CShapeSkin *s, QWidget *w)
+{
+   struct Rect *r = &s->rect;
+   QRect rect;
+
+   // X1
+   if (r->x1 >= 0)
+      rect.setX(r->x1);
+   else
+      rect.setX(w->width() + r->x1);
+
+   // Y1
+   if (r->y1 >= 0)
+      rect.setY(r->y1);
+   else
+      rect.setY(w->height() + r->y1);
+
+   // X2
+   if (r->x2 > 0)
+      rect.setWidth(r->x2 - rect.x() + 1);
+   else
+      rect.setWidth((w->width() + r->x2) - rect.x() + 1);
+
+   // Y2
+   if (r->y2 > 0)
+      rect.setHeight(r->y2 - rect.y() + 1);
+   else
+      rect.setHeight((w->height() + r->y2) - rect.y() + 1);
+
+   return (rect);
+}
+
+
+QRect CSkin::borderToRect(CShapeSkin *s, QPixmap *w)
+{
+   struct Rect *r = &s->rect;
+   QRect rect;
+
+   // X1
+   if (r->x1 >= 0)
+      rect.setX(r->x1);
+   else
+      rect.setX(w->width() + r->x1);
+
+   // Y1
+   if (r->y1 >= 0)
+      rect.setY(r->y1);
+   else
+      rect.setY(w->height() + r->y1);
+
+   // X2
+   if (r->x2 > 0)
+      rect.setWidth(r->x2 - rect.x() + 1);
+   else
+      rect.setWidth((w->width() + r->x2) - rect.x() + 1);
+
+   // Y2
+   if (r->y2 > 0)
+      rect.setHeight(r->y2 - rect.y() + 1);
+   else
+      rect.setHeight((w->height() + r->y2) - rect.y() + 1);
+
+   return (rect);
+}
+

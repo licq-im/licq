@@ -1,0 +1,1187 @@
+# Licq Qt GUI plugin translation.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Johan Runge-Goransson <mail.me@helli.nu>, 1999.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Licq Qt GUI 0.62\n"
+"POT-Creation-Date: 1999-04-17 13:29+0100\n"
+"PO-Revision-Date: 1999-04-17 01:15+0100\n"
+"Last-Translator: Firebird <firebird@chez.com>\n"
+"Language-Team: French <firebird@chez.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset= CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: src/mainwin.cpp:271
+#, c-format
+msgid "KLicq (%s)"
+msgstr ""
+
+#: src/mainwin.cpp:273
+#, c-format
+msgid "Licq (%s)"
+msgstr ""
+
+#: src/mainwin.cpp:547
+msgid "SysMsg"
+msgstr "MsgSys"
+
+#: src/mainwin.cpp:553
+#, c-format
+msgid "%d msg%c"
+msgstr ""
+
+#: src/mainwin.cpp:558
+msgid "No msgs"
+msgstr "Aucun msg"
+
+#: src/mainwin.cpp:931
+#, c-format
+msgid ""
+"Are you sure you want to remove\n"
+"%s (%ld)\n"
+"from your contact list?"
+msgstr ""
+
+#. if no history, then get it
+#: src/filedlg.cpp:531 src/filedlg.cpp:770 src/icqfunctions.cpp:394
+#: src/icqfunctions.cpp:409 src/icqfunctions.cpp:416 src/icqfunctions.cpp:649
+#: src/icqfunctions.cpp:732 src/mainwin.cpp:934 src/mainwin.cpp:953
+#: src/mainwin.cpp:1269 src/optionsdlg.cpp:30 src/showawaymsgdlg.cpp:16
+msgid "Ok"
+msgstr ""
+
+#: src/filedlg.cpp:150 src/filedlg.cpp:174 src/icqfunctions.cpp:649
+#: src/icqfunctions.cpp:732 src/mainwin.cpp:934 src/mainwin.cpp:953
+#: src/optionsdlg.cpp:32
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/mainwin.cpp:949
+#, c-format
+msgid ""
+"Are you sure you want to remove\n"
+"%s (%ld)\n"
+"from the '%s' group?"
+msgstr ""
+"Êtes-vous sur de vouloir enlever\n"
+"%s (%ld)\n"
+"du groupe '%s'?"
+
+#: src/mainwin.cpp:1266
+#, c-format
+msgid ""
+"Licq version %s.\n"
+"Qt GUI plugin version %s.\n"
+"\n"
+"%s (%ld)\n"
+"%d contacts."
+msgstr ""
+
+#: src/klicq.cpp:67 src/mainwin.cpp:1510
+msgid "&Online"
+msgstr "&En ligne"
+
+#: src/klicq.cpp:68 src/mainwin.cpp:1512
+msgid "&Away"
+msgstr "&Absent"
+
+#: src/klicq.cpp:69 src/mainwin.cpp:1514
+msgid "&Not Available"
+msgstr "&Non Disponible"
+
+#: src/klicq.cpp:70 src/mainwin.cpp:1516
+msgid "O&ccupied"
+msgstr "O&ccupé"
+
+#: src/mainwin.cpp:1518
+msgid "&Do Not Disturb"
+msgstr "Ne Pas &Déranger"
+
+#: src/mainwin.cpp:1520
+msgid "Free for C&hat"
+msgstr "&Libre pour Discuter"
+
+#: src/klicq.cpp:73 src/mainwin.cpp:1522
+msgid "O&ffline"
+msgstr "&Hors Ligne"
+
+#: src/mainwin.cpp:1525
+msgid "&Invisible"
+msgstr ""
+
+#: src/mainwin.cpp:1530 src/searchuserdlg.cpp:106
+msgid "&Add User"
+msgstr "&Ajouter Utilisateur"
+
+#: src/mainwin.cpp:1531
+msgid "S&earch for User"
+msgstr "&Chercher Utilisateur"
+
+#: src/mainwin.cpp:1532
+msgid "A&uthorize User"
+msgstr "A&utoriser Utilisateur"
+
+#: src/mainwin.cpp:1534
+msgid "&Update Contact List"
+msgstr "&MàJ la Liste des Contacts"
+
+#: src/mainwin.cpp:1535
+msgid "Update All Users (broken)"
+msgstr "MàJ Tous les Utilisateurs (non disp.)"
+
+#: src/mainwin.cpp:1536
+msgid "&Redraw User Window"
+msgstr "&Redessiner la Fenêtre des Utilisateurs"
+
+#: src/mainwin.cpp:1537
+msgid "&Save All Users"
+msgstr "&Sauver Tous les Utilisateurs"
+
+#: src/mainwin.cpp:1540
+msgid "Status Info"
+msgstr "Info Situation"
+
+#: src/mainwin.cpp:1541
+msgid "Unknown Packets"
+msgstr "Paquets Inconnus"
+
+#: src/mainwin.cpp:1542
+msgid "Errors"
+msgstr "Erreurs"
+
+#: src/mainwin.cpp:1543
+msgid "Warnings"
+msgstr "Avertissements"
+
+#: src/mainwin.cpp:1544
+msgid "Packets"
+msgstr "Paquets"
+
+#: src/mainwin.cpp:1546
+msgid "Set All"
+msgstr "Tout Définir"
+
+#: src/mainwin.cpp:1547
+msgid "Clear All"
+msgstr "Tout Effacer"
+
+#: src/mainwin.cpp:1560
+msgid "User Functions"
+msgstr "Fonctions Utilisateur"
+
+#: src/mainwin.cpp:1561
+msgid "&Status"
+msgstr "&Statut"
+
+#: src/mainwin.cpp:1562
+msgid "Set &Auto Response"
+msgstr "Définir Réponse &Automatique"
+
+#: src/mainwin.cpp:1564
+msgid "Show &Network Window"
+msgstr "Montrer la Fe&nêtre du Réseau"
+
+#: src/mainwin.cpp:1565
+msgid "Use &Mini Mode"
+msgstr "Utiliser le Mode &Miniature"
+
+#: src/mainwin.cpp:1566
+msgid "Show Offline &Users"
+msgstr "Montrer les &Utilisateurs Hors-Ligne"
+
+#: src/mainwin.cpp:1567
+msgid "&Options"
+msgstr ""
+
+#: src/mainwin.cpp:1568
+msgid "Sa&ve Options"
+msgstr "Sau&vegarder les Options"
+
+#: src/mainwin.cpp:1569
+msgid "Debug Level"
+msgstr "Niveau de la Mise au Point"
+
+#: src/mainwin.cpp:1571
+msgid "Next &Server"
+msgstr "Prochain &Serveur"
+
+#: src/mainwin.cpp:1573
+msgid "&About"
+msgstr "&A propos"
+
+#: src/klicq.cpp:80 src/mainwin.cpp:1574
+msgid "E&xit"
+msgstr "&Quitter"
+
+#: src/mainwin.cpp:1585
+msgid "&System"
+msgstr "&Système"
+
+#: src/mainwin.cpp:1589
+msgid "From Current Group"
+msgstr ""
+
+#: src/mainwin.cpp:1590
+msgid "From Contact List"
+msgstr "&MàJ la Liste des Contacts"
+
+#: src/mainwin.cpp:1611
+msgid "&View Event"
+msgstr "Voir Evénement"
+
+#: src/mainwin.cpp:1612
+msgid "&Send Message"
+msgstr "Message"
+
+#: src/mainwin.cpp:1613
+msgid "Send &Url"
+msgstr "Envoyer"
+
+#: src/mainwin.cpp:1614
+msgid "Request &Chat"
+msgstr ""
+
+#: src/mainwin.cpp:1615
+msgid "Send &File Transfer"
+msgstr "Transfert de Fichier"
+
+#: src/mainwin.cpp:1616
+msgid "Authorize User"
+msgstr "A&utoriser Utilisateur"
+
+#: src/mainwin.cpp:1618
+msgid "Check &Auto Response"
+msgstr "Définir Réponse &Automatique"
+
+#: src/mainwin.cpp:1619
+msgid "User &Info"
+msgstr "Info de l'Utilisateur"
+
+#: src/mainwin.cpp:1620
+msgid "User &Detail"
+msgstr "Détails"
+
+#: src/mainwin.cpp:1621
+msgid "View &History"
+msgstr "Historique"
+
+#: src/mainwin.cpp:1623
+msgid "Online Notify"
+msgstr "Avertissement En ligne"
+
+#: src/mainwin.cpp:1624
+msgid "Invisible List"
+msgstr ""
+
+#: src/mainwin.cpp:1625
+msgid "Visible List"
+msgstr ""
+
+#: src/mainwin.cpp:1627
+msgid "Remove"
+msgstr "Reprendre"
+
+#: src/mainwin.cpp:1628
+msgid "Add To Group"
+msgstr ""
+
+#: src/chatacceptdlg.cpp:22 src/fileacceptdlg.cpp:22
+msgid "Refusal Reason (if applicable):"
+msgstr "Raison du Refus (si applicable):"
+
+#: src/chatacceptdlg.cpp:28 src/fileacceptdlg.cpp:28
+msgid "Accept"
+msgstr "Accepter"
+
+#: src/chatacceptdlg.cpp:31 src/fileacceptdlg.cpp:31
+msgid "Refuse"
+msgstr "Refuser"
+
+#: src/chatacceptdlg.cpp:34 src/fileacceptdlg.cpp:34
+msgid "Ignore"
+msgstr "Ignorer"
+
+#: src/chatacceptdlg.cpp:40
+#, c-format
+msgid "Accept chat with %s?"
+msgstr "Accepter la Discussion avec %s?"
+
+#: src/authuserdlg.cpp:20 src/awaymsgdlg.cpp:20
+msgid "&Ok"
+msgstr ""
+
+#: src/adduserdlg.cpp:23 src/authuserdlg.cpp:22 src/awaymsgdlg.cpp:23
+#: src/searchuserdlg.cpp:85
+msgid "&Cancel"
+msgstr "&Annuler"
+
+#: src/awaymsgdlg.cpp:33
+#, c-format
+msgid "Set Auto Response for %s:"
+msgstr "Définir la Réponse Automatique pour %s:"
+
+#: src/awaymsgdlg.cpp:41
+#, c-format
+msgid "I am currently %s."
+msgstr "Je suis momentanément %s."
+
+#: src/authuserdlg.cpp:13 src/messagebox.cpp:49
+msgid "Licq"
+msgstr ""
+
+#: src/authuserdlg.cpp:15
+msgid "Authorize which user (UIN):"
+msgstr "Autoriser quel utilisateur (UIN):"
+
+#: src/adduserdlg.cpp:14
+msgid "New User UIN:"
+msgstr "Nouveau UIN de l'Utilisateur:"
+
+#: src/adduserdlg.cpp:19
+msgid "&Alert User"
+msgstr "&Alerter Utilisateur"
+
+#: src/chatdlg.cpp:34
+msgid "Remote - Not connected"
+msgstr "Distant - Non connecté"
+
+#: src/chatdlg.cpp:43
+#, c-format
+msgid "Local - %s"
+msgstr ""
+
+#: src/chatdlg.cpp:48
+msgid "Close Chat"
+msgstr "Fermer la Discussion"
+
+#: src/chatdlg.cpp:92
+msgid "Remote - Waiting for joiners..."
+msgstr "Distant - Attente des participants..."
+
+#: src/chatdlg.cpp:168 src/chatdlg.cpp:324
+#, c-format
+msgid "Remote - %s"
+msgstr "Distant - %s"
+
+#: src/chatdlg.cpp:261
+msgid "Remote - Connected, shaking hands..."
+msgstr "Distant - Connecté, Négotiations..."
+
+#: src/chatdlg.cpp:271
+msgid "Remote - Connected, waiting for response..."
+msgstr "Distant - Connecté, attente de la réponse..."
+
+#: src/fileacceptdlg.cpp:40
+#, c-format
+msgid "Accept file transfer from %s?"
+msgstr "Accepter le transfert de fichier de %s?"
+
+#: src/filedlg.cpp:59
+msgid "ICQ file transfer"
+msgstr "Tranfert de fichier par ICQ"
+
+#: src/filedlg.cpp:62
+msgid "Current file:"
+msgstr "Fichier courant:"
+
+#: src/filedlg.cpp:66
+msgid "Local file name:"
+msgstr "Nom du fichier local:"
+
+#: src/filedlg.cpp:67
+msgid "Unset"
+msgstr "Libérer"
+
+#: src/filedlg.cpp:67
+msgid "N/A"
+msgstr ""
+
+#. Information stuff about the current file
+#: src/filedlg.cpp:71
+msgid "Current File"
+msgstr "Fichier Courant"
+
+#: src/filedlg.cpp:73 src/filedlg.cpp:85 src/optionsdlg.cpp:61
+msgid "Size:"
+msgstr "Taille:"
+
+#: src/filedlg.cpp:76 src/filedlg.cpp:86
+msgid "Trans:"
+msgstr ""
+
+#: src/filedlg.cpp:77 src/filedlg.cpp:87
+msgid "Time:"
+msgstr "Temps:"
+
+#: src/filedlg.cpp:78 src/filedlg.cpp:88
+msgid "BPS:"
+msgstr ""
+
+#: src/filedlg.cpp:79 src/filedlg.cpp:89
+msgid "ETA:"
+msgstr ""
+
+#: src/filedlg.cpp:96
+msgid "&Cancel Transfer"
+msgstr "Annuler le Transfert"
+
+#: src/filedlg.cpp:105
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: src/filedlg.cpp:113 src/filedlg.cpp:411
+#, c-format
+msgid "%ld bytes"
+msgstr "%ld octets"
+
+#: src/filedlg.cpp:150
+msgid "File already exists and is at least as big as the incoming file."
+msgstr "Le fichier existe déjà et est au moins aussi grand que le fichier entrant."
+
+#: src/filedlg.cpp:150 src/filedlg.cpp:157
+msgid "Overwrite"
+msgstr "Ecraser"
+
+#: src/filedlg.cpp:157
+msgid "File already exists and appears incomplete."
+msgstr "Le fichier existe déjà et paraît incomplet."
+
+#: src/filedlg.cpp:157
+msgid "Resume"
+msgstr "Reprendre"
+
+#: src/filedlg.cpp:174
+msgid "Open error - unable to open file for writing."
+msgstr "Erreur d'ouverture - Impossible d'ouvrir le fichier pour écriture."
+
+#: src/filedlg.cpp:174
+msgid "Retry"
+msgstr "Réessayer"
+
+#: src/filedlg.cpp:196
+msgid "File transfer cancelled."
+msgstr "Transfert du fichier annulé"
+
+#: src/filedlg.cpp:197
+msgid "Done"
+msgstr "Terminé"
+
+#: src/filedlg.cpp:211 src/filedlg.cpp:246
+#, c-format
+msgid "%0.2f kb"
+msgstr "%0.2f ko"
+
+#: src/filedlg.cpp:213 src/filedlg.cpp:248
+#, c-format
+msgid "%ld b"
+msgstr ""
+
+#: src/filedlg.cpp:230 src/filedlg.cpp:266
+#, c-format
+msgid "%.2f k"
+msgstr ""
+
+#: src/filedlg.cpp:299
+msgid "Waiting for connection..."
+msgstr "Attente de connection..."
+
+#: src/filedlg.cpp:378 src/filedlg.cpp:622
+#, c-format
+msgid "ICQ file transfer %s %s"
+msgstr "Transfert de fichier par ICQ %s %s"
+
+#: src/filedlg.cpp:378 src/filedlg.cpp:622
+msgid "from"
+msgstr "de"
+
+#: src/filedlg.cpp:378 src/filedlg.cpp:622
+msgid "to"
+msgstr "à"
+
+#: src/filedlg.cpp:385
+msgid "Received init, waiting for batch info..."
+msgstr "Init reçue, attente d'infos du lot..."
+
+#. Process batch ack packet, it contains nothing useful so just start the transfer
+#: src/filedlg.cpp:425 src/filedlg.cpp:653
+msgid "Starting transfer..."
+msgstr "Démarrage du tranfert..."
+
+#: src/filedlg.cpp:471
+msgid "Receiving file..."
+msgstr "Réception du fichier..."
+
+#: src/filedlg.cpp:532
+msgid "File received."
+msgstr "Fichier reçu."
+
+#: src/filedlg.cpp:551
+msgid "Connecting to remote..."
+msgstr "Connection à distance..."
+
+#: src/filedlg.cpp:560
+msgid "Connected, shaking hands..."
+msgstr "Connecté, Négotiations..."
+
+#: src/filedlg.cpp:570
+msgid "Connected, waiting for response..."
+msgstr "Connecté, attente de la réponse..."
+
+#: src/filedlg.cpp:637
+msgid "Sent batch info, waiting for ack..."
+msgstr "Infos du lot Envoyées, attente de confirmation..."
+
+#: src/filedlg.cpp:726
+msgid "Sending file..."
+msgstr "Envoi du fichier..."
+
+#: src/filedlg.cpp:771
+msgid "File sent."
+msgstr "Fichier envoyé."
+
+#: src/icqfunctions.cpp:37
+msgid "Close"
+msgstr "Fermer"
+
+#: src/icqfunctions.cpp:45
+msgid "View Event"
+msgstr "Voir Evénement"
+
+#: src/icqfunctions.cpp:60
+msgid "Send Event"
+msgstr "Envoyer"
+
+#: src/icqfunctions.cpp:62
+msgid "Select Function"
+msgstr "Sélectionner Fonction"
+
+#: src/icqfunctions.cpp:64
+msgid "Message"
+msgstr ""
+
+#: src/icqfunctions.cpp:66
+msgid "URL"
+msgstr ""
+
+#: src/icqfunctions.cpp:68
+msgid "Check Away Msg"
+msgstr "Vérifier le Msg d'Absence"
+
+#: src/icqfunctions.cpp:70
+msgid "Chat Request"
+msgstr "Requête de Discussion"
+
+#: src/icqfunctions.cpp:71
+msgid "File Transfer"
+msgstr "Transfert de Fichier"
+
+#: src/icqfunctions.cpp:79
+msgid "Send through server"
+msgstr "Envoyer par le serveur"
+
+#: src/icqfunctions.cpp:80
+msgid "Spoof UIN:"
+msgstr "Spoofer UIN:"
+
+#: src/icqfunctions.cpp:87
+msgid "User Info"
+msgstr "Info de l'Utilisateur"
+
+#: src/icqfunctions.cpp:89 src/searchuserdlg.cpp:78
+msgid "Alias:"
+msgstr ""
+
+#: src/icqfunctions.cpp:91
+msgid "Status:"
+msgstr "Statut:"
+
+#: src/icqfunctions.cpp:92
+msgid "UIN:"
+msgstr ""
+
+#: src/icqfunctions.cpp:93
+msgid "Name:"
+msgstr "Nom:"
+
+#: src/icqfunctions.cpp:97
+msgid "EMail:"
+msgstr ""
+
+#: src/icqfunctions.cpp:99
+msgid "History:"
+msgstr "Historique"
+
+#: src/icqfunctions.cpp:101
+msgid "IP:"
+msgstr ""
+
+#: src/icqfunctions.cpp:102
+msgid "Authorization Needed"
+msgstr "Autorisation Nécessitée"
+
+#: src/icqfunctions.cpp:105
+msgid "Details"
+msgstr "Détails"
+
+#: src/icqfunctions.cpp:107
+msgid "Age:"
+msgstr ""
+
+#: src/icqfunctions.cpp:108
+msgid "State:"
+msgstr "Etat"
+
+#: src/icqfunctions.cpp:109
+msgid "City:"
+msgstr ""
+
+#: src/icqfunctions.cpp:110
+msgid "Country:"
+msgstr "Pays:"
+
+#: src/icqfunctions.cpp:112 src/icqfunctions.cpp:121
+msgid "Unspecified"
+msgstr "Non défini"
+
+#: src/icqfunctions.cpp:113
+msgid "Unknown (unspecified)"
+msgstr "Inconnu (non défini)"
+
+#: src/icqfunctions.cpp:118
+msgid "Homepage:"
+msgstr ""
+
+#: src/icqfunctions.cpp:119
+msgid "Sex:"
+msgstr "Sexe:"
+
+#: src/icqfunctions.cpp:122
+msgid "Female"
+msgstr "Femme"
+
+#: src/icqfunctions.cpp:123
+msgid "Male"
+msgstr "Masculin"
+
+#: src/icqfunctions.cpp:126
+msgid "Phone:"
+msgstr "Téléphone:"
+
+#: src/icqfunctions.cpp:130
+msgid "About"
+msgstr "A propos"
+
+#: src/icqfunctions.cpp:133
+msgid "History"
+msgstr "Historique"
+
+#: src/icqfunctions.cpp:136
+msgid "History read only"
+msgstr "Historique en lecture seule"
+
+#: src/icqfunctions.cpp:145
+msgid "Auto Close"
+msgstr "Fermeture Automatique"
+
+#: src/icqfunctions.cpp:147 src/icqfunctions.cpp:388 src/icqfunctions.cpp:402
+#: src/icqfunctions.cpp:410
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: src/icqfunctions.cpp:357
+#, c-format
+msgid "Unknown (%d)"
+msgstr "Inconnu (%d)"
+
+#: src/icqfunctions.cpp:381
+msgid "Send"
+msgstr "Envoyer"
+
+#: src/icqfunctions.cpp:387 src/icqfunctions.cpp:401
+msgid "Update"
+msgstr "MàJ"
+
+#: src/icqfunctions.cpp:395
+msgid "Reply"
+msgstr "Répondre"
+
+#. view a url
+#: src/icqfunctions.cpp:486
+msgid "View URL?"
+msgstr "Visionner URL?"
+
+#: src/icqfunctions.cpp:486 src/icqfunctions.cpp:502 src/icqfunctions.cpp:504
+msgid "Yes"
+msgstr "Oui"
+
+#: src/icqfunctions.cpp:486 src/icqfunctions.cpp:502 src/icqfunctions.cpp:504
+msgid "No"
+msgstr "Non"
+
+#: src/icqfunctions.cpp:502
+msgid "Authorize?"
+msgstr "Autoriser?"
+
+#: src/icqfunctions.cpp:504
+msgid "Add?"
+msgstr "Ajouter?"
+
+#: src/icqfunctions.cpp:648
+msgid ""
+"Spoofing messages is immoral and possibly illegal.\n"
+"In clicking OK you absolve the author from any \n"
+"responsibility for your actions.\n"
+"Do you want to continue?"
+msgstr ""
+"Spoofer les messages est immoral et peut-être illégal.\n"
+"En cliquant sur OK vous déchargez l'auteur de toute\n"
+"responsabilité pour vos actions.\n"
+"Voulez-vous continuer?"
+
+#: src/icqfunctions.cpp:665 src/optionsdlg.cpp:145
+msgid "Message:"
+msgstr ""
+
+#: src/icqfunctions.cpp:671 src/optionsdlg.cpp:149
+msgid "URL:"
+msgstr ""
+
+#: src/icqfunctions.cpp:674 src/icqfunctions.cpp:701
+msgid "Description:"
+msgstr ""
+
+#: src/icqfunctions.cpp:682
+msgid "Check Away Message"
+msgstr "Vérifier le Message d'Absence"
+
+#: src/icqfunctions.cpp:691
+msgid "Reason:"
+msgstr ""
+
+#: src/icqfunctions.cpp:698
+msgid "Filename:"
+msgstr ""
+
+#: src/icqfunctions.cpp:731
+#, c-format
+msgid ""
+"Message is %d characters, over the ICQ limit of %d.  \n"
+"Licq and other clones support longer messages \n"
+"however Mirabilis clients will not.  Continue?"
+msgstr ""
+"Le message dépasse la limite ICQ (%d caractères) de %d caractères. \n"
+"Licq et d'autres clones supportent les messages plus longs\n"
+"mais pas les clients Mirabilis. Continuer ?"
+
+#: src/icqfunctions.cpp:745
+#, c-format
+msgid "Sending msg %s..."
+msgstr "Envoi du msg %s..."
+
+#: src/icqfunctions.cpp:745 src/icqfunctions.cpp:768
+msgid "server"
+msgstr "serveur"
+
+#: src/icqfunctions.cpp:745 src/icqfunctions.cpp:768
+msgid "direct"
+msgstr ""
+
+#: src/icqfunctions.cpp:750
+msgid "Fetching..."
+msgstr "Recherche..."
+
+#: src/icqfunctions.cpp:758
+#, c-format
+msgid "Sending URL %s..."
+msgstr "Envoi de l'URL %s..."
+
+#: src/icqfunctions.cpp:763
+#, c-format
+msgid "Sending chat request %s..."
+msgstr "Envoi de la requête de discussion %s..."
+
+#: src/icqfunctions.cpp:768
+#, c-format
+msgid "Sending file transfer %s..."
+msgstr "Envoi le transfert de fichier %s..."
+
+#: src/icqfunctions.cpp:779 src/icqfunctions.cpp:795
+msgid "Update local or server information?"
+msgstr "MàJ l'information locale ou du serveur?"
+
+#: src/icqfunctions.cpp:779 src/icqfunctions.cpp:795
+msgid "Local"
+msgstr ""
+
+#: src/icqfunctions.cpp:779 src/icqfunctions.cpp:795
+msgid "Server"
+msgstr "Serveur"
+
+#: src/icqfunctions.cpp:781 src/icqfunctions.cpp:797
+msgid "Updating server..."
+msgstr "Mise à Jour du serveur..."
+
+#: src/icqfunctions.cpp:790 src/icqfunctions.cpp:807
+msgid "Updating..."
+msgstr "Mise à Jour..."
+
+#: src/icqfunctions.cpp:833
+msgid "done"
+msgstr "accompli"
+
+#: src/icqfunctions.cpp:836
+msgid "failed"
+msgstr "raté"
+
+#: src/icqfunctions.cpp:839
+msgid "timed out"
+msgstr "attente dépassée"
+
+#: src/icqfunctions.cpp:842
+msgid "error"
+msgstr "erreur"
+
+#: src/icqfunctions.cpp:877
+#, c-format
+msgid ""
+"%s%s with %s refused:\n"
+"%s%s"
+msgstr ""
+"%s%s avec %s refusé:\n"
+"%s%s"
+
+#: src/klicq.cpp:71
+msgid "&Do not Disturb"
+msgstr "Ne pas &Déranger"
+
+#: src/klicq.cpp:72
+msgid "Free For &Chat"
+msgstr "&Libre pour Discuter"
+
+#: src/klicq.cpp:76
+msgid "&Dock"
+msgstr "&Amarrer"
+
+#: src/klicq.cpp:78
+msgid "&UnDock"
+msgstr "&Désammarer"
+
+#: src/messagebox.cpp:45
+msgid "N"
+msgstr ""
+
+#: src/messagebox.cpp:46
+msgid "Event Type"
+msgstr "Type d'Evénement"
+
+#: src/messagebox.cpp:47
+msgid "Time Received"
+msgstr "Heure de réception"
+
+#: src/messagebox.cpp:48
+msgid "D"
+msgstr ""
+
+#: src/optionsdlg.cpp:31
+msgid "Apply"
+msgstr "Appliquer"
+
+#. fonts
+#: src/optionsdlg.cpp:41
+msgid "Font"
+msgstr "Fonte"
+
+#: src/optionsdlg.cpp:43
+msgid "Family:"
+msgstr "Famille:"
+
+#: src/optionsdlg.cpp:47
+msgid "Char Set:"
+msgstr "Set de Caractères:"
+
+#. colors
+#: src/optionsdlg.cpp:67
+msgid "Colors"
+msgstr "Couleurs"
+
+#: src/optionsdlg.cpp:69
+msgid "Online:"
+msgstr "En ligne:"
+
+#: src/optionsdlg.cpp:73
+msgid "Away:"
+msgstr "Absent:"
+
+#: src/optionsdlg.cpp:77
+msgid "Offline:"
+msgstr "Hors-ligne:"
+
+#: src/optionsdlg.cpp:81
+msgid "New:"
+msgstr "Nouveau:"
+
+#: src/optionsdlg.cpp:85
+msgid "Background:"
+msgstr "Fond d'écran"
+
+#: src/optionsdlg.cpp:89
+msgid "Grid Lines:"
+msgstr "Lignes de Quadrillage:"
+
+#: src/optionsdlg.cpp:94
+msgid "Grid Lines"
+msgstr "Lignes de Quadrillage:"
+
+#: src/optionsdlg.cpp:96
+msgid "Show Column Headers"
+msgstr "Montrer l'En-tête des Colonnes"
+
+#: src/optionsdlg.cpp:98
+msgid "Auto Close Function Window"
+msgstr "Fermeture automatique de la Fenêtre de Fonctions"
+
+#: src/optionsdlg.cpp:102
+msgid "Info"
+msgstr ""
+
+#: src/optionsdlg.cpp:104
+msgid "Width"
+msgstr "Largeur"
+
+#: src/optionsdlg.cpp:106
+msgid "Alignment"
+msgstr "Alignement"
+
+#: src/optionsdlg.cpp:111
+#, c-format
+msgid "Column %d"
+msgstr "Colonne %d"
+
+#: src/optionsdlg.cpp:116 src/searchuserdlg.cpp:18 src/userbox.cpp:193
+msgid "Alias"
+msgstr ""
+
+#: src/optionsdlg.cpp:117 src/searchuserdlg.cpp:19 src/userbox.cpp:196
+msgid "UIN"
+msgstr ""
+
+#: src/optionsdlg.cpp:118 src/searchuserdlg.cpp:21 src/userbox.cpp:199
+msgid "Name"
+msgstr "Nom"
+
+#: src/optionsdlg.cpp:119
+msgid "EMail"
+msgstr ""
+
+#: src/optionsdlg.cpp:125
+msgid "Left"
+msgstr "Gauche"
+
+#: src/optionsdlg.cpp:126
+msgid "Right"
+msgstr "Droite"
+
+#: src/optionsdlg.cpp:127
+msgid "Center"
+msgstr "Centre"
+
+#: src/optionsdlg.cpp:132
+msgid "Sounds:"
+msgstr "Sons:"
+
+#: src/optionsdlg.cpp:136
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: src/optionsdlg.cpp:137
+msgid "Command"
+msgstr "Commande"
+
+#: src/optionsdlg.cpp:138
+msgid "Beep"
+msgstr ""
+
+#: src/optionsdlg.cpp:139
+msgid "OnEvent Command:"
+msgstr "Commande OnEvent:"
+
+#: src/optionsdlg.cpp:143
+msgid "Events"
+msgstr "Evénements"
+
+#: src/optionsdlg.cpp:153
+msgid "Chat Request:"
+msgstr "Requête de discussion:"
+
+#: src/optionsdlg.cpp:157
+msgid "File Transfer:"
+msgstr "Transfert de Fichier:"
+
+#: src/optionsdlg.cpp:161
+msgid "Online Notify:"
+msgstr "Avertissement En ligne:"
+
+#: src/optionsdlg.cpp:167
+msgid "Servers: "
+msgstr "Serveurs: "
+
+#: src/optionsdlg.cpp:173
+msgid "Default Server Port:"
+msgstr "Port du Serveur par Défaut:"
+
+#: src/optionsdlg.cpp:178
+msgid "TCP Server Port:"
+msgstr "Port TCP du Serveur:"
+
+#: src/optionsdlg.cpp:183
+msgid "Max Users per Packet:"
+msgstr "Utilisateurs Maximum par Paquet:"
+
+#: src/optionsdlg.cpp:188
+msgid "Auto Logon:"
+msgstr "Connection Automatique:"
+
+#: src/optionsdlg.cpp:192
+msgid "Offline"
+msgstr "Hors-ligne"
+
+#: src/optionsdlg.cpp:193
+msgid "Online"
+msgstr "En ligne"
+
+#: src/optionsdlg.cpp:194
+msgid "Away"
+msgstr "Absent"
+
+#: src/optionsdlg.cpp:195
+msgid "Not Available"
+msgstr "Non Disponible"
+
+#: src/optionsdlg.cpp:196
+msgid "Occupied"
+msgstr "Occupé"
+
+#: src/optionsdlg.cpp:197
+msgid "Do Not Disturb"
+msgstr "Ne pas Déranger"
+
+#: src/optionsdlg.cpp:198
+msgid "Free for Chat"
+msgstr "Libre pour Discuter"
+
+#: src/optionsdlg.cpp:199
+msgid "Invisible"
+msgstr ""
+
+#: src/optionsdlg.cpp:201
+msgid "Auto Away:"
+msgstr "Absence Automatique:"
+
+#: src/optionsdlg.cpp:205
+msgid "Auto N/A:"
+msgstr "N/A automatique:"
+
+#: src/optionsdlg.cpp:211
+msgid "Error Log:"
+msgstr "Log d'Erreur:"
+
+#: src/optionsdlg.cpp:217
+msgid "Url Viewer:"
+msgstr "Visualiseur d'Url"
+
+#: src/optionsdlg.cpp:221
+msgid "Translation:"
+msgstr "Traduction:"
+
+#: src/optionsdlg.cpp:233
+msgid "ERROR"
+msgstr "ERREUR"
+
+#: src/optionsdlg.cpp:238
+msgid "none"
+msgstr "aucun"
+
+#: src/optionsdlg.cpp:248
+msgid "Appearance"
+msgstr "Apparence"
+
+#: src/optionsdlg.cpp:249
+msgid "Columns"
+msgstr "Colonnes"
+
+#: src/optionsdlg.cpp:250
+msgid "Sound"
+msgstr "Son"
+
+#: src/optionsdlg.cpp:251
+msgid "Network"
+msgstr "Réseau"
+
+#: src/optionsdlg.cpp:252
+msgid "Plug-In"
+msgstr ""
+
+#: src/outputwin.cpp:20
+msgid "Hide Window"
+msgstr "Cacher la Fenêtr"
+
+#: src/outputwin.cpp:23
+msgid "Clear"
+msgstr "Effacer"
+
+#: src/searchuserdlg.cpp:22
+msgid "Email"
+msgstr ""
+
+#. pre-search widgets
+#: src/searchuserdlg.cpp:59
+msgid "Email Address:"
+msgstr "Adresse Email:"
+
+#: src/searchuserdlg.cpp:68
+msgid "First Name:"
+msgstr "Prénom:"
+
+#: src/searchuserdlg.cpp:73
+msgid "Last Name:"
+msgstr "Nom:"
+
+#: src/searchuserdlg.cpp:83
+msgid "&Search"
+msgstr "&Chercher"
+
+#: src/searchuserdlg.cpp:103
+msgid "&Done"
+msgstr "&Terminé"
+
+#: src/searchuserdlg.cpp:110
+msgid "Search Again"
+msgstr "Chercher à Nouveau"
+
+#: src/searchuserdlg.cpp:114 src/searchuserdlg.cpp:145
+msgid "Searching (this can take awhile)..."
+msgstr "Recherche (ceci peut prendre un certain temps)..."
+
+#: src/searchuserdlg.cpp:204
+msgid "More users found. Narrow search."
+msgstr "Trouvé plus d'utilisateurs. Recherche raffinée"
+
+#: src/searchuserdlg.cpp:213
+msgid "Search failed."
+msgstr "Recherche ratée"
+
+#: src/showawaymsgdlg.cpp:26
+#, c-format
+msgid "%s Message for %s"
+msgstr "%s Message pour %s"
+
+#: src/userbox.cpp:187
+msgid "S"
+msgstr ""
+
+#: src/userbox.cpp:202
+msgid "EMail Address"
+msgstr ""

@@ -1,0 +1,186 @@
+Upgrading from 0.62 to 0.64.1
+1.  Nothing special here.
+
+
+Upgrading from 0.62 to 0.64
+1.  Nothing special here.
+
+
+Upgrading from 0.61 to 0.62
+1.  Nothing special beyond reinstalling everything as per the licq daemon
+    UPGRADE file.
+
+
+Upgrading from 0.60 to 0.61
+1.  Nothing special needs to be done.
+
+
+Upgrading from 0.51 to 0.60
+1.  Lots has changed, so bear with me as I might forget stuff.
+2.  Add the following key to licq.conf:
+    [network]
+    UrlViewer = viewurl-netscape.sh
+3.  Grab viewurl-netscape.sh from the contrib/ directory and put it somewhere
+    in your path.
+4.  Take note that the command line option to set the debug level is totally
+    different now.  Licq -h will tell you more.
+5.  A bunch of warnings will be spit out about Authorization for every user
+    file you have.  They can be ignored, except for owner.uin where you will
+    have to add Authorization = 0 (or 1, it's boolean).
+
+
+Upgrading from 0.50 alpha 3 to 0.51
+
+1.  Note that Licq no longer uses Imlib.
+2.  Add to the color section in licq.conf 
+    ColorGridLines = black (or whatever).
+3.  Add to the [user] section in owner.uin
+    Authorization = 0 or 1 depending on whether or not people
+    need your authorization to add you.
+4.  The first time you run it, you will get a bunch of
+    warnings about missing stuff in user files, just
+    ignore them and do "Save All Users".
+
+
+Upgrading from 0.50 alpha 2 to alpha 3
+
+1.  Edit licq.conf and add in the [network] section
+    MaxUsersPerPacket = 125.
+2.  If it really bothers you, change the Sex field
+    in all the .uin files to be 0 for Unknown, 1 for
+    female, or 2 for male.  These will gradually get
+    fixed automatically as you update detail info
+    in any case.
+
+
+Upgrading from 0.50 alpha 1 to alpha 2
+
+1.  Nothing to do...just install the binary.
+
+
+Upgrading from 0.44 to 0.50
+
+1.  Basically you are going to have to scrap
+    everything because a lot has changed.
+2.  Back up your users.conf file in ~/.licq/conf.
+3.  Unpack misc/licq-base.tar.gz into ~/.licq.
+4.  Copy your users.conf file back into ~/.licq/conf.
+5.  Edit ~/.licq/conf/owner.uin and enter your personal
+    info.
+6.  The first time you start up licq it will complain
+    about all your users missing info.  Select Save
+    All Users from the System menu and it should work
+    fine the next time you start it.
+
+
+Upgrading from 0.43 to 0.44
+
+1.  Make sure your sound files in licq.conf point
+    to the full pathname of the file.  This was 
+    changed in 0.43 actually.
+2.  Nothing else to do.
+
+
+Upgrading from 0.42 to 0.43
+
+1.  Edit licq.conf and add "ShowHeader = 1" to the 
+    [appearance] section.
+2.  Change all the ColorOnlineBack = whatever to just
+    ColorBackground = whatever in the [appearance]
+    section.  ie, is now only one background setting,
+    called ColorBackground.
+
+
+Upgrading from 0.41 to 0.42
+
+1.  Nothing fancy to do, just reinstall the binary.
+
+
+Upgrading from 0.40 final to 0.41
+
+1.  cp -r /usr/local/share/Licq/translations/ ~/.licq/
+2.  Edit your licq.conf file and add the following keys
+    [network]:
+    # Translation Tables from ~/.licq/translations/
+    # none = do not use any translation
+    # anything else = use the relevant file for translations
+    Translation = none
+    [sound]
+    OnlineNotify = notify.wav
+    [startup]
+    # number of minutes before automatically going away and NA, or 0 to disable
+    AutoAway = 5
+    AutoNA = 10   
+3.  Backup all your user (*.uin) files just in case.
+4.  Run the following commands (assuming your installation dir is ~/.licq):
+    for i in ~/.licq/conf/*.uin; do echo "NewUser = 0" >> $i; done
+    for i in ~/.licq/conf/*.uin; do echo "OnlineNotify = 0" >> $i; done
+5.  Set OnlineNotify = 1 for all users you want online notification for.
+
+
+Upgrading from 0.40pr4 to 0.40 final
+1.  Build, install.
+2.  Delete licq.inst from /usr/local/bin
+3.  Copy the new licq.conf file from /usr/local/share/Licq/conf
+    over your old one and edit it to add your alias, uin and
+    password.  Then have a look at all the new options and set
+    them up the way you want.
+
+
+Upgrading from 0.40pr3 to pr4
+1.  Build, install.
+2.  Edit your licq.conf file and add the following keys:
+    [appearance]    
+    ColorOnlineBackground = gray76 (or whatever colors you want)
+    ColorOfflineBackground = gray76
+    ColorAwayBackground = gray76
+    GridLines = 1 (or 0 to disable them)
+
+
+Upgrading from 0.40pr2 to pr3
+
+1.  Nothing special, just build and install.
+
+
+Upgrading from 0.40pr1 to pr2
+
+1.  Build, install v0.40pr2
+2.  Backup all your user (*.uin) files just in case.
+3.  Run the following command (assuming your installation dir is ~/.licq):
+    for i in ~/.licq/conf/*.uin; do echo "NewMessages = 0" >> $i; done
+
+
+Upgrading from 0.34 to 0.40pr1
+
+1.  Build 0.40pr1.
+2.  Make install.
+3.  Edit your personal licq.conf file and add the following to the
+    [network] section:
+    TCPServerPort = 0
+    (or set it to a number > 0 to assign that as your tcp server port)
+
+
+Upgrading from 0.33 to 0.34:
+
+1.  Build 0.34.
+2.  Make install
+3.  Edit your personal licq.conf file and add the following lines:
+    [sound]
+    Enable = 1
+    Player = play
+    Message = message.wav
+
+
+Upgrading from 0.32 to 0.33:
+
+1. Remove 0.32
+2. Build 0.33 and install it.
+3. Make sure your user files are in ~/.licq
+4. Edit the ~/.licq/conf/licq.conf file and change the [network]
+   section to look like the one that was installed in 
+   /usr/local/share/licq.
+5. Remove all the 000...ppm files from the ~/.licq/data directory
+   and replace them with the contents of the 
+   /usr/local/share/licq/data directory.
+6. Remove any aliases you may have to licq.  Do a licq -h to
+   see the command line options.

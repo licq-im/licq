@@ -1,0 +1,18 @@
+List of things to do and in progress for Licq:
+
+Priorities:
+o  Full featured option dialog.
+
+
+Other Things:
+o  Word wrap that works properly with all fonts
+o  Flashing new message icon possibly
+o  Multi-user msg/URL-send capability (send to group too)
+o  Break up large messages into smaller ones
+o  Hardcore mode where the function window automatically pops up
+o  Save chat
+o  Message signature
+o  Find option in history
+o  Add more then one user per search
+o  Add file dialog for selecting sounds
+o  Miscellaneous info box for each user

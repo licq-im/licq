@@ -1,0 +1,158 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src/licqgui.h)
+AC_CONFIG_HEADER(config.h)
+
+dnl All versioning is done via these defines
+PACKAGE="Licq-Qt-GUI"
+VERSION=0.66
+
+dnl Chuck #defines for PACKAGE and VERSION into config.h
+AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
+AC_DEFINE_UNQUOTED(INT_VERSION,$INT_VERSION)
+
+dnl Also substitute PACKAGE and VERSION in the AC_OUTPUT files
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_CXX
+dnl AC_PROG_CXX_FNO_RTTI
+AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+AC_PATH_PROG(PROG_STRIP,strip,:)
+AC_PATH_PROG(PROG_SIZE,size,:)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(errno.h dirent.h getopt.h malloc.h pwd.h sys/time.h)
+AC_HEADER_TIME
+AC_SYS_ERRLIST
+
+dnl Check for X and extra X libs needed
+AC_PATH_XTRA
+if test "$no_x" = yes; then
+  AC_MSG_ERROR(You need to have the X11 libraries and headers installed)
+fi
+
+XSS_LIBS="no"
+AC_CHECK_X_LIB(Xext, XScreenSaverRegister,[XSS_LIBS=""],[], [-lX11 -lXext -lm])
+AC_CHECK_X_LIB(Xss, XScreenSaverRegister,[XSS_LIBS="-lXss"],[],[-lX11 -lXext -lm])
+if test \! "$XSS_LIBS" = "no"; then
+  AC_CHECK_X_HEADER(X11/extensions/scrnsaver.h,[AC_DEFINE(USE_SCRNSAVER)])
+else
+  dnl Don't include the screensaver libs if we can't find the header.
+  XSS_LIBS=""
+fi
+AC_SUBST(XSS_LIBS)
+
+dnl Checks for library functions.
+AC_CHECK_LIB(xnet,inet_addr)
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_FUNCS(alphasort inet_addr inet_aton scandir strerror gethostbyname_r)
+
+dnl Check for QT
+AC_PATH_QT_LIB
+
+if test "$have_qt_lib" = no; then
+  AC_MSG_ERROR([
+
+I can't find the QT libraries.
+
+Install the QT libraries, or if you have them installed, override this check
+with the --with-qt-libraries argument, and I'll take your word for it.
+])
+
+fi
+
+AC_PATH_QT_INC
+if test "$have_qt_inc" = no; then
+  AC_MSG_ERROR([
+
+I can't find the QT header files.
+
+Install the QT development package, or if you have them installed, override
+this check with the --with-qt-includes argument, and I'll take your word for
+it.
+])
+
+fi
+
+dnl This QT version check is not used yet (and will probably be enhanced)
+
+dnl AC_MSG_CHECKING(for QT >= 1.41)
+dnl if ! test -r $QT_INCDIR/qlistview.h; then
+dnl   AC_MSG_ERROR([
+dnl
+dnl Sorry, but you need QT version 1.41 or higher to compile $PACKAGE.
+dnl ])
+dnl else
+dnl   AC_MSG_RESULT(yes)
+dnl fi
+
+AC_PATH_QT_MOC
+dnl QTKDE_MOC="./qtmoc.sh $QT_MOC"
+dnl GUINAME="qt-gui"
+
+AC_PATH_KDE
+if test "$have_kde" = yes; then
+   AC_DEFINE(USE_KDE)
+   KDE_LIBS="-lkdeui -lkdecore -lkfile"
+   dnl -lkfm -lkab"
+   dnl QTKDE_MOC="./kdemoc.sh $QT_MOC"
+   dnl GUINAME="kde-gui"
+   AC_SUBST(KDE_LIBS)
+fi
+
+dnl AC_DEFINE(USE_UKEXT)
+
+dnl AC_SUBST(QTKDE_MOC)
+dnl AC_SUBST(GUINAME)
+
+AC_CHECK_SOCKS5
+
+dnl Switch to C++ mode and check for needed C++ headers
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+
+AC_CHECK_LIB(stdc++, getc,,
+  AC_MSG_ERROR(You need to have libstdc++ installed))
+AC_CHECK_HEADER(vector.h,,
+  AC_MSG_ERROR(You need to have the libstdc++ headers installed))
+
+AC_LANG_RESTORE
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_SOCKLEN_T
+
+dnl *** Additions for using gettext
+
+dnl Define which transaltions are availible
+ALL_LINGUAS="sv fr es ru"
+
+AM_GNU_GETTEXT
+
+LOCALEDATADIR='$(prefix)/'"$DATADIRNAME/locale"
+AC_SUBST(LOCALEDATADIR)
+
+AC_OUTPUT(
+  po/Makefile.in
+  intl/Makefile
+  src/Makefile
+  share/Makefile
+	Makefile)
+
+echo ""
+echo "Please remember to use GNU make, often installed as gmake."
+echo "*** Note that this release requires Qt 2.0 ***"
+if test "$have_kde" = yes; then
+  echo "KDE (CVS) support is enabled."
+else
+  echo "KDE (CVS) support is disabled."
+fi
+echo ""
