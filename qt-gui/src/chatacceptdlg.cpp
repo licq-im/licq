@@ -23,11 +23,11 @@ CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
 
    resize(300, 130);
    QLabel *lblRefuse = new QLabel(tr("Refusal Reason (if applicable):"), this);
-   lblRefuse->setGeometry(5, 5, 200, 20);   
+   lblRefuse->setGeometry(5, 5, 200, 20);
    mleRefuseMsg = new MLEditWrap(true, this);
    mleRefuseMsg->setGeometry(5, 30, 290, 50);
    QPushButton *btnAccept, *btnRefuse, *btnIgnore;
-   
+
    btnAccept = new QPushButton(tr("Accept"), this );
    btnAccept->setGeometry(10, 85, 80, 30 );
    connect( btnAccept, SIGNAL(clicked()), SLOT(accept()) );
@@ -36,7 +36,7 @@ CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
    connect( btnRefuse, SIGNAL(clicked()), SLOT(refuse()) );
    btnIgnore = new QPushButton(tr("Ignore"), this );
    btnIgnore->setGeometry(190, 85, 80, 30 );
-   connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );   
+   connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );
 
    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
    setCaption(tr("Accept chat with ") + QString::fromLocal8Bit(u->getAlias()) + " ?");
