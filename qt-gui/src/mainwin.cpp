@@ -2396,8 +2396,8 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
           KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
 	      }
-#endif
 	      else
+#endif
 	      {
           e->show();
           if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
