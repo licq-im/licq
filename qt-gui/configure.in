@@ -122,8 +122,6 @@ dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 
-AC_CHECK_LIB(stdc++, getc,,
-  AC_MSG_ERROR(You need to have libstdc++ installed))
 AC_CHECK_HEADER(vector.h,,
   AC_MSG_ERROR(You need to have the libstdc++ headers installed))
 
