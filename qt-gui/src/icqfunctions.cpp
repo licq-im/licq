@@ -39,7 +39,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    m_nUin = _nUin;
    m_bIsOwner = _bIsOwner;
 
-   strcpy(tabLabel[TAB_READ], _("View Event"));
+   tabLabel[TAB_READ] = _("View Event");
    fcnTab[TAB_READ] = new QWidget(this, tabLabel[TAB_READ]);
    splRead = new QSplitter(QSplitter::Vertical, fcnTab[TAB_READ]);
    msgView = new MsgView(splRead);
@@ -55,7 +55,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    splRead->setResizeMode(mleRead, QSplitter::Stretch);
    connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
 
-   strcpy(tabLabel[TAB_SEND], _("Send Event"));
+   tabLabel[TAB_SEND] = _("Send Event");
    fcnTab[TAB_SEND] = new QWidget(this, tabLabel[TAB_SEND]);
    grpCmd = new QButtonGroup(_("Select Function"), fcnTab[TAB_SEND]);
    grpCmd->setExclusive(true);
@@ -82,7 +82,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    edtSpoof->setValidator(new QIntValidator(0, 2147483647, edtSpoof));
    connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
 
-   strcpy(tabLabel[TAB_BASICINFO], _("User Info"));
+   tabLabel[TAB_BASICINFO] = _("User Info");
    fcnTab[TAB_BASICINFO] = new QWidget(this, tabLabel[TAB_BASICINFO]);
    nfoAlias = new CInfoField(5, 5, 45, 5, 110, _("Alias:"), false, fcnTab[TAB_BASICINFO]);
    nfoStatus = new CInfoField(180, 5, 35, 5, width() - MARGIN_RIGHT - 190,
@@ -100,7 +100,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    chkAuthorization = new QCheckBox(_("Authorization Needed"), fcnTab[TAB_BASICINFO]);
    chkAuthorization->setEnabled(m_bIsOwner);
 
-   strcpy(tabLabel[TAB_DETAILINFO], _("Details"));
+   tabLabel[TAB_DETAILINFO] = _("Details");
    fcnTab[TAB_DETAILINFO] = new QWidget(this, tabLabel[TAB_DETAILINFO]);
    nfoAge = new CInfoField(5, 5, 45, 5, 100, _("Age:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    nfoState = new CInfoField(5, 35, 45, 5, 100, _("State:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
@@ -128,7 +128,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    boxAboutMsg->setTitle(_("About"));
    mleAboutMsg = new MLEditWrap(true, boxAboutMsg);
 
-   strcpy(tabLabel[TAB_HISTORY], _("History"));
+   tabLabel[TAB_HISTORY] = _("History");
    fcnTab[TAB_HISTORY] = new QWidget(this, tabLabel[TAB_HISTORY]);
    mleHistory = new MLEditWrap(true, fcnTab[TAB_HISTORY]);
    chkEditHistory = new QCheckBox(_("History read only"), fcnTab[TAB_HISTORY]);
@@ -142,8 +142,8 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 
    chkAutoClose = new QCheckBox(_("Auto Close"), this);
    chkAutoClose->setChecked(isAutoClose);
-   btnOk = new QPushButton("Ok", this);
-   btnCancel = new QPushButton("Close", this);
+   btnOk = new QPushButton(_("Ok"), this);
+   btnCancel = new QPushButton(_("Close"), this);
    btnSave = new QPushButton(_("Save"), this);
 
    connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnOk, SIGNAL(clicked()));
@@ -228,7 +228,7 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
   chkEditHistory->setGeometry(5, height() - 100, 150, 20);
 
-  chkAutoClose->setGeometry(10, height() - 30, 100, 20);
+  chkAutoClose->setGeometry(10, height() - 30, 180, 20);
   btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
   btnOk->setGeometry(btnCancel->x() - 86, btnCancel->y(), btnCancel->width(), btnCancel->height());
   btnSave->setGeometry(btnOk->x() - 86, btnOk->y(), btnOk->width(), btnOk->height());
@@ -357,7 +357,9 @@ void ICQFunctions::setBasicInfo(ICQUser *u)
   nfoHistory->setData(us.history);
   nfoUin->setData(us.uin);
   nfoIp->setData(us.ip_port);
-  sprintf(m_sBaseTitle, "%s (%s)", us.alias, us.name);
+  m_sBaseTitle = QString::fromLocal8Bit(us.alias) + " (" +
+                 QString::fromLocal8Bit(us.name) + ")";
+  //sprintf(m_sBaseTitle, "%s (%s)", us.alias, us.name);
   setCaption(m_sBaseTitle);
   setIconText(us.alias);
 }
@@ -398,7 +400,7 @@ void ICQFunctions::setExtInfo(ICQUser *u)
   nfoPhone->setData(ud.phone);
   nfoAge->setData(ud.age);
   nfoHomepage->setData(ud.homepage);
-  mleAboutMsg->setText(ud.about);
+  mleAboutMsg->setText(QString::fromLocal8Bit(ud.about));
 }
 
 
@@ -465,10 +467,8 @@ void ICQFunctions::tabSelected(const QString &tab)
   {
      btnOk->setText(_("Ok"));
   }
-  btnSave->hide();
-  
-//  btnSave->setGeometry(width() - (btnOk->width() * 3 + 7 + 7 + 6), btnOk->y(), btnOk->width(), btnOk->height());
-#if 1
+  btnSave->setGeometry(width() - (btnOk->width() * 3 + 7 + 7 + 6), btnOk->y(), btnOk->width(), btnOk->height());
+#ifdef TEST_POS
   printf("just shown new page: %d %d\n", x(), y());
 #endif
 }
@@ -529,7 +529,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
 {
   CUserEvent *m = ((MsgViewItem *)e)->msg;
   mleRead->clear();
-  mleRead->append(m->Text());
+  mleRead->append(QString::fromLocal8Bit(m->Text()));
   if (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE)
   {
     switch (m->SubCommand())
@@ -552,8 +552,14 @@ void ICQFunctions::printMessage(QListViewItem *e)
       if (QueryUser(this, _("Authorize?"), _("Yes"), _("No")))
         server->icqAuthorize( ((CEventAuth *)m)->Uin() );
       //...only ask if they aren't already there...
-      if (QueryUser(this, _("Add?"), _("Yes"), _("No")))
-        server->AddUserToList( ((CEventAuth *)m)->Uin());
+      ICQUser *u = gUserManager.FetchUser(((CEventAuth *)m)->Uin(), LOCK_R);
+      if (u != NULL)
+        gUserManager.DropUser(u);
+      else
+      {
+        if (QueryUser(this, _("Add?"), _("Yes"), _("No")))
+          server->AddUserToList( ((CEventAuth *)m)->Uin());
+      }
       break;
     } // switch
   }  // if
@@ -589,7 +595,7 @@ void ICQFunctions::save()
     break;
   default:
     gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %s.\n",
-              L_WARNxSTR, tabLabel[currentTab]);
+              L_WARNxSTR, currentTab);
     break;
   }
 }
@@ -600,9 +606,9 @@ void ICQFunctions::saveBasicInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   u->setEnableSave(false);
-  u->setAlias(nfoAlias->text());
-  u->setFirstName(nfoFirstName->text());
-  u->setLastName(nfoLastName->text());
+  u->setAlias(nfoAlias->text().local8Bit());
+  u->setFirstName(nfoFirstName->text().local8Bit());
+  u->setLastName(nfoLastName->text().local8Bit());
   u->setEmail(nfoEMail->text());
   u->setHistoryFile(nfoHistory->text());
   u->setAuthorization(chkAuthorization->isChecked());
@@ -617,8 +623,8 @@ void ICQFunctions::saveExtInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   u->setEnableSave(false);
-  u->setCity(nfoCity->text());
-  u->setState(nfoState->text());
+  u->setCity(nfoCity->text().local8Bit());
+  u->setState(nfoState->text().local8Bit());
   unsigned short i = cmbCountry->currentItem();
   if (i == 0)
     u->setCountry(COUNTRY_UNSPECIFIED);
@@ -630,7 +636,7 @@ void ICQFunctions::saveExtInfo()
   u->setSex(cmbSex->currentItem());
   u->setPhoneNumber(nfoPhone->text());
   u->setHomepage(nfoHomepage->text());
-  u->setAbout((const char *)mleAboutMsg->text());
+  u->setAbout(mleAboutMsg->text().local8Bit());
   u->setEnableSave(true);
   u->saveExtInfo();
   gUserManager.DropUser(u);
@@ -646,7 +652,7 @@ void ICQFunctions::showHistory()
   if (buf != NULL)
   {
     gUserManager.DropUser(u);
-    mleHistory->setText(buf);
+    mleHistory->setText(QString::fromLocal8Bit(buf));
     mleHistory->goToEnd();
     delete []buf;
   }
@@ -657,7 +663,7 @@ void ICQFunctions::showHistory()
 void ICQFunctions::saveHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  u->SaveHistory((const char *)mleHistory->text());
+  u->SaveHistory(mleHistory->text().local8Bit());
   gUserManager.DropUser(u);
 }
 
@@ -667,8 +673,8 @@ void ICQFunctions::generateReply()
 {
   char *q = quote();
 	mleSend->clear();
-	mleSend->append(q);
-  delete q;
+	mleSend->append(QString::fromLocal8Bit(q));
+  delete [] q;
   showPage(fcnTab[1]);
 }
 
@@ -676,14 +682,14 @@ void ICQFunctions::generateReply()
 //-----ICQFunctions::quote-------------------------------------------------------------------------
 char *ICQFunctions::quote(void)
 {
-  char *q = new char[strlen((const char *)mleRead->text()) + (mleRead->numLines() * 2) + 4];
+  char *q = new char[mleRead->text().length() + (mleRead->numLines() * 2) + 4];
   char *s = q;
   for (int i = 0; i < mleRead->numLines(); i++)
   {
     *(s++) = '>';
     *(s++) = ' ';
-	  strcpy(s, mleRead->textLine(i));
-    s += strlen(mleRead->textLine(i));
+	  strcpy(s, mleRead->textLine(i).local8Bit());
+    s += mleRead->textLine(i).length();
 	  *(s++) = '\n';
 	}
 	*s = '\0';
@@ -780,7 +786,7 @@ void ICQFunctions::callFcn()
   case TAB_READ: close(); return;
   case TAB_SEND:
   {
-    unsigned short nMsgLen = strlen(mleSend->text());
+    unsigned short nMsgLen = mleSend->text().length();
     if (nMsgLen > MAX_MESSAGE_SIZE)
      {
         char theWarning[1024];
@@ -798,13 +804,17 @@ void ICQFunctions::callFcn()
         ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
         u->setSendServer(chkSendServer->isChecked());
         gUserManager.DropUser(u);
-        sprintf(m_sProgressMsg, _("Sending msg %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
-        icqEvent = server->icqSendMessage(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true),
+        //sprintf(m_sProgressMsg, _("Sending msg %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
+        //icqEvent = server->icqSendMessage(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
+        m_sProgressMsg = _("Sending msg...");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        icqEvent = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
+                                          chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
      }
      else if (rdbAway->isChecked()) // check away message
      {
-        strcpy(m_sProgressMsg, _("Fetching..."));
+        m_sProgressMsg = _("Fetching...");
         ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
         u->setShowAwayMsg(true);
         gUserManager.DropUser(u);
@@ -812,20 +822,32 @@ void ICQFunctions::callFcn()
      }
      else if (rdbUrl->isChecked()) // send URL
      {
-        sprintf(m_sProgressMsg, _("Sending URL %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
-        icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true),
+        //sprintf(m_sProgressMsg, _("Sending URL %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
+        //icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
+        m_sProgressMsg = _("Sending URL...");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+                                      chkSendServer->isChecked() ? false : true,
                                       chkUrgent->isChecked() ? true : false, uin);
      }
      else if (rdbChat->isChecked())   // send chat request
      {
-        sprintf(m_sProgressMsg, _("Sending chat request %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
-        icqEvent = server->icqChatRequest(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true),
+        //sprintf(m_sProgressMsg, _("Sending chat request %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
+        //icqEvent = server->icqChatRequest(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
+        m_sProgressMsg = _("Sending chat request...");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        icqEvent = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
+                                          chkSendServer->isChecked() ? false : true,
                                           chkUrgent->isChecked() ? true : false, uin);
      }
      else if (rdbFile->isChecked())   // send file transfer
      {
-        sprintf(m_sProgressMsg, _("Sending file transfer %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
-        icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true),
+        //sprintf(m_sProgressMsg, _("Sending file transfer %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
+        //icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
+        m_sProgressMsg = _("Sending file transfer...");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
+                                           chkSendServer->isChecked() ? false : true,
                                            chkUrgent->isChecked() ? true : false, uin);
      }
 
@@ -838,41 +860,40 @@ void ICQFunctions::callFcn()
   case TAB_BASICINFO:
      if ( m_bIsOwner && (!QueryUser(this, _("Update local or server information?"), _("Local"), _("Server"))) )
      {
-        strcpy(m_sProgressMsg, _("Updating server..."));
-        icqEvent = server->icqUpdateBasicInfo(nfoAlias->text(),
-                                           nfoFirstName->text(),
-                                           nfoLastName->text(),
+        m_sProgressMsg = _("Updating server...");
+        icqEvent = server->icqUpdateBasicInfo(nfoAlias->text().local8Bit(),
+                                           nfoFirstName->text().local8Bit(),
+                                           nfoLastName->text().local8Bit(),
                                            nfoEMail->text(),
                                            chkAuthorization->isChecked());
      }
      else
      {
-        strcpy(m_sProgressMsg, _("Updating..."));
+        m_sProgressMsg = _("Updating...");
         icqEvent = server->icqUserBasicInfo(m_nUin);
      }
      break;
   case TAB_DETAILINFO:
      if ( m_bIsOwner && (!QueryUser(this, _("Update local or server information?"), _("Local"), _("Server"))) )
      {
-        strcpy(m_sProgressMsg, _("Updating server..."));
+        m_sProgressMsg = _("Updating server...");
         unsigned short i = cmbCountry->currentItem();
         unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : (i == 1 ? m_nUnknownCountryCode : GetCountryCodeByIndex(i - 2)) );
-        icqEvent = server->icqUpdateExtendedInfo(nfoCity->text(), cc,
-                                         nfoState->text(), atol(nfoAge->text()),
+        icqEvent = server->icqUpdateExtendedInfo(nfoCity->text().local8Bit(), cc,
+                                         nfoState->text().local8Bit(), atol(nfoAge->text()),
                                          cmbSex->currentItem(), nfoPhone->text(),
-                                         nfoHomepage->text(), mleAboutMsg->text());
+                                         nfoHomepage->text(), mleAboutMsg->text().local8Bit());
      }
      else
      {
-        strcpy(m_sProgressMsg, _("Updating..."));
+        m_sProgressMsg = _("Updating...");
         icqEvent = server->icqUserExtendedInfo(m_nUin);
      }
      break;
   case TAB_HISTORY: close(); return;
   }
 
-  char title[256];
-  sprintf(title, "%s  [%s]", m_sBaseTitle, m_sProgressMsg);
+  QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
   setCaption(title);
 }
 
@@ -884,30 +905,29 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
   bool bForceOpen = false;
 
-  char title[256];
-  char result[12];
+  QString title, result;
   switch (e->m_eResult)
   {
   case EVENT_ACKED:
   case EVENT_SUCCESS:
-    strcpy(result, _("done"));
+    result = _("done");
     break;
   case EVENT_FAILED:
-    strcpy(result, _("failed"));
+    result = _("failed");
     break;
   case EVENT_TIMEDOUT:
-    strcpy(result, _("timed out"));
+    result = _("timed out");
     break;
   case EVENT_ERROR:
-    strcpy(result, _("error"));
+    result = _("error");
     break;
   default:
     break;
   }
-  sprintf(title, "%s  [%s%s]", m_sBaseTitle, m_sProgressMsg, result);
+  title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
   setCaption(title);
   btnOk->setEnabled(true);
-  btnCancel->setCaption(_("Close"));
+  btnCancel->setText(_("Close"));
   icqEvent = NULL;
 
   if (isOk)
@@ -918,23 +938,27 @@ void ICQFunctions::doneFcn(ICQEvent *e)
     {
       ICQUser *u = NULL;
       CUserEvent *ue = e->m_xUserEvent;
+      char msg[128];
       if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
       {
-        char result[128], status[32];
+        char status[32];
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         u->getStatusStr(status);
-        sprintf(result, "%s is in %s mode.\nSend \"urgent\" to ignore.", u->getAlias(), status);
+        sprintf(msg, _("%s is in %s mode.\nSend \"urgent\" to ignore."),
+                     u->getAlias(),
+                     status);
+        InformUser(this, msg);
         gUserManager.DropUser(u);
-        QueryUser(this, result, "Ok", NULL);
         bForceOpen = true;
       }
       else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)
       {
-        char result[128];
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        sprintf(result, "%s refused %s, send through server.", u->getAlias(), ue->Description());
+        sprintf(msg, _("%s refused %s, send through server."),
+                     u->getAlias(),
+                     ue->Description());
+        InformUser(this, msg);
         gUserManager.DropUser(u);
-        QueryUser(this, result, "Ok", NULL);
         bForceOpen = true;
       }
       else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
@@ -953,7 +977,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
                    ue->Description(), u->getAlias(), L_BLANKxSTR,
                    ea->szResponse);
            gUserManager.DropUser(u);
-           InformUser(this, result);
+           InformUser(this, QString::fromLocal8Bit(result));
         }
         else
         {
