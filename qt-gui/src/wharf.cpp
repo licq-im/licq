@@ -144,7 +144,7 @@ void IconManager::paintEvent( QPaintEvent * )
   painter.end();
 }
 
-
+#if 0
 void IconManager::mousePressEvent(QMouseEvent *m)
 {
 #ifdef DEBUG_WHARF
@@ -165,7 +165,7 @@ void IconManager::mouseMoveEvent(QMouseEvent *m)
   int deltaY = m->y() - mouseY;
   move(x() + deltaX, y() + deltaY);
 }
-
+#endif
 
 
 
@@ -652,7 +652,7 @@ void WharfIcon::paintEvent( QPaintEvent * )
   painter.end();
 }
 
-
+#if 0
 void WharfIcon::mousePressEvent(QMouseEvent *m)
 {
 #ifdef DEBUG_WHARF
@@ -671,5 +671,5 @@ void WharfIcon::mouseMoveEvent(QMouseEvent *m)
   int deltaY = m->y() - mouseY;
   move(x() + deltaX, y() + deltaY);*/
 }
-
+#endif
 
