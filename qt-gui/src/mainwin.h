@@ -44,9 +44,7 @@ class QListViewItem;
 class UserViewEvent;
 class UserEventCommon;
 class UserSendCommon;
-#ifdef USE_DOCK
 class IconManager;
-#endif
 
 class CICQSignal;
 class UserInfoDlg;
