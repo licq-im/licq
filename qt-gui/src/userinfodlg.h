@@ -71,14 +71,13 @@ protected:
   bool m_bOwner;
   int currentTab;
   unsigned long m_nUin;
-  QString m_sProgressMsg;
+  QString m_sBasic;
   CICQDaemon *server;
   CMainWindow *mainwin;
   CSignalManager *sigman;
   CICQEventTag *icqEventTag;
   QTabWidget* tabs;
   QPushButton* btnSave, *btnOk, *btnClose;
-  QLabel* lblStatus;
 
   // User Info tab
   void CreateGeneralInfo();
@@ -143,6 +142,7 @@ protected slots:
   void SaveSettings();
   void slotOk();
   void doneFunction(ICQEvent*);
+  void resetCaption();
 
 signals:
   void finished(unsigned long);

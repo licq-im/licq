@@ -32,6 +32,7 @@
 #include <qlayout.h>
 #include <qspinbox.h>
 #include <qtabwidget.h>
+#include <qtimer.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -67,10 +68,6 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 
   QBoxLayout* lay = new QVBoxLayout(this, 8);
 
-  lblStatus = new QLabel(this);
-  lblStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
-  lay->addWidget(lblStatus);
-
   tabs = new QTabWidget(this);
   lay->addWidget(tabs, 2);
 
@@ -86,22 +83,30 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   l->addStretch(2);
 
   btnSave = new QPushButton(tr("&Save"), this);
+  btnOk = new QPushButton(tr("&OK"), this);
+  btnClose = new QPushButton(tr("&Close"), this);
+  int bw = 80;
+  bw = QMAX(bw, btnSave->sizeHint().width());
+  bw = QMAX(bw, btnOk->sizeHint().width());
+  bw = QMAX(bw, btnClose->sizeHint().width());
+  btnSave->setFixedWidth(bw);
+  btnOk->setFixedWidth(bw);
+  btnClose->setFixedWidth(bw);
   l->addWidget(btnSave);
   connect(btnSave, SIGNAL(clicked()), this, SLOT(SaveSettings()));
-
-  btnOk = new QPushButton(tr("&OK"), this);
   l->addWidget(btnOk);
   connect(btnOk, SIGNAL(clicked()), this, SLOT(slotOk()));
-
-  btnClose = new QPushButton(tr("&Close"), this);
+  l->addSpacing(35);
   l->addWidget(btnClose);
+  btnClose->setDefault(true);
   connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
   ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
 
-  setCaption(tr("Licq - User Info: ") + QString::fromLocal8Bit(u->GetAlias()) + " (" +
-             QString::fromLocal8Bit(u->GetFirstName()) + " " +
-             QString::fromLocal8Bit(u->GetLastName())+ ")");
+  m_sBasic = tr("Licq - Info ") + QString::fromLocal8Bit(u->GetAlias()) + " (" +
+    QString::fromLocal8Bit(u->GetFirstName()) + " " +
+    QString::fromLocal8Bit(u->GetLastName())+ ")";
+  resetCaption();
   setIconText(u->GetAlias());
   gUserManager.DropUser(u);
 }
@@ -120,8 +125,6 @@ UserInfoDlg::~UserInfoDlg()
   emit finished(m_nUin);
   ICQUser::ClearHistory(m_lHistoryList);
 }
-
-
 // -----------------------------------------------------------------------------
 
 void UserInfoDlg::showTab(int tab)
@@ -914,6 +917,7 @@ void UserInfoDlg::SaveSettings()
 
 void UserInfoDlg::slotOk()
 {
+  QString m_sProgressMsg;
   switch(currentTab) {
   case GeneralInfo:
     if ( m_bOwner && (!QueryUser(this, tr("Update local or server information?"), tr("Local"), tr("Server"))) )
@@ -1008,7 +1012,7 @@ void UserInfoDlg::slotOk()
   {
     setCursor(waitCursor);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
-    lblStatus->setText(m_sProgressMsg);
+    setCaption(m_sBasic + " [" + m_sProgressMsg +"]");
   }
 }
 
@@ -1042,13 +1046,18 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
     }
   }
 
-  lblStatus->setText(m_sProgressMsg + " [" + result + "]");
+  setCaption(m_sBasic + " [" + result + "]");
+  QTimer::singleShot(5000, this, SLOT(resetCaption()));
   setCursor(arrowCursor);
   delete icqEventTag;
   icqEventTag = NULL;
   disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
 }
 
+void UserInfoDlg::resetCaption()
+{
+  setCaption(m_sBasic);
+}
 
 
 // -----------------------------------------------------------------------------
