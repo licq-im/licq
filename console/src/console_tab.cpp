@@ -36,7 +36,7 @@ void CLicqConsole::TabCommand(char *_szPartialMatch,
   if (nLen == 0)
     _sTabCompletion.szPartialMatch[0] = '\0';
   else
-    strcpy(_sTabCompletion.szPartialMatch, &szMatch[nLen]);
+    strcpy(_sTabCompletion.szPartialMatch, szMatch);
 }
 
 
@@ -123,7 +123,7 @@ void CLicqConsole::TabStatus(char *_szPartialMatch,
   if (nLen == 0)
     _sTabCompletion.szPartialMatch[0] = '\0';
   else
-    strcpy(_sTabCompletion.szPartialMatch, &szMatch[nLen]);
+    strcpy(_sTabCompletion.szPartialMatch, szMatch);
 }
 
 

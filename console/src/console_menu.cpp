@@ -73,7 +73,7 @@ void CLicqConsole::MenuHelp(char *)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuQuit(char *)
 {
-  m_bExit = true;
+  licqDaemon->Shutdown();
 }
 
 
@@ -85,14 +85,15 @@ void CLicqConsole::MenuPlugins(char *_szArg)
   PluginsList l;
   PluginsListIter it;
   licqDaemon->PluginList(l);
-  PrintBoxTop("Plugins", COLOR_BLUE, 40);
+  PrintBoxTop("Plugins", COLOR_BLUE, 70);
   for (it = l.begin(); it != l.end(); it++)
   {
     PrintBoxLeft();
-    winMain->wprintf("[%3d] %s v%s", (*it)->Id(), (*it)->Name(), (*it)->Version());
-    PrintBoxRight(40);
+    winMain->wprintf("[%3d] %s v%s (%s)", (*it)->Id(), (*it)->Name(),
+                     (*it)->Version(), (*it)->Status());
+    PrintBoxRight(70);
   }
-  PrintBoxBottom(40);
+  PrintBoxBottom(70);
 }
 
 
