@@ -48,8 +48,19 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
 {
   char szMatch[32] = "";
   unsigned short nLen;
+  char *szSubCmd = NULL;
 
-  char *szSubCmd = strchr(_szPartialMatch, ' ');
+  if (_szPartialMatch[0] == '"')
+  {
+    _szPartialMatch++;
+    szSubCmd = strchr(_szPartialMatch, '"');
+    if (szSubCmd != NULL) szSubCmd++;
+  }
+  else
+  {
+    szSubCmd = strchr(_szPartialMatch, ' ');
+  }
+
   if (szSubCmd == NULL)
   {
     nLen = strlen(_szPartialMatch);
@@ -86,7 +97,7 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
   if (nLen == 0)
     _sTabCompletion.szPartialMatch[0] = '\0';
   else
-    strcpy(_sTabCompletion.szPartialMatch, &szMatch[nLen]);
+    strcpy(_sTabCompletion.szPartialMatch, szMatch);
 }
 
 

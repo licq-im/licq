@@ -259,8 +259,25 @@ void CLicqConsole::MenuUser(char *_szArg)
   unsigned long nUin = 0;
   unsigned short nCmd = 0;
 
-  // Find the command
-  szCmd = strchr(_szArg, ' ');
+  // Check if the alias is quoted
+  if (_szArg[0] == '"')
+  {
+    szAlias = &_szArg[1];
+    szCmd = strchr(&_szArg[1], '"');
+    if (szCmd == NULL)
+    {
+      winMain->wprintf("%CUnbalanced quotes.\n", COLOR_RED);
+      return;
+    }
+    *szCmd++ = '\0';
+    szCmd = strchr(szCmd, ' ');
+  }
+  else
+  {
+    szAlias = _szArg;
+    szCmd = strchr(_szArg, ' ');
+  }
+
   if (szCmd == NULL)
   {
     nCmd = 0;
@@ -286,7 +303,6 @@ void CLicqConsole::MenuUser(char *_szArg)
   }
 
   // Find the user
-  szAlias = _szArg;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (strcasecmp(szAlias, pUser->getAlias()) == 0)

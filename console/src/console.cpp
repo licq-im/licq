@@ -5,6 +5,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <vector.h>
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#else
+extern int errno
+#endif
 
 #include "console.h"
 #include "log.h"
@@ -121,7 +126,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     nResult = select(log->Pipe() + 1, &fdSet, NULL, NULL, NULL);
     if (nResult == -1)
     {
-      printf("fucked\n");
+      gLog.Error("Error in select(): %s.\n", strerror(errno));
       m_bExit = true;
     }
     else
@@ -480,7 +485,7 @@ void CLicqConsole::InputCommand(int cIn)
           *winMain << '\n';
           nCol = 0;
         }
-        // Print out the partial match
+        // Print out the partial matches
         winMain->wprintf("[ %A%s %Z] ", A_BOLD, *iter, A_BOLD);
         nCol += strlen(*iter) + 5;
       }
@@ -490,6 +495,7 @@ void CLicqConsole::InputCommand(int cIn)
 
     szIn[nPos] = '\0';
     char *szArg = strchr(szIn, ' ');
+    unsigned short nArgPos = 0;
     if (szIn[0] == '/' && szArg == NULL)
     { // Command completion
       TabCommand(szIn, sTabCompletion);
@@ -497,6 +503,7 @@ void CLicqConsole::InputCommand(int cIn)
     else if (szIn[0] != '/')
     { // User completion
       szArg = NULL;
+      nArgPos = 0;
       TabUser(szIn, sTabCompletion);
     }
     else
@@ -504,6 +511,7 @@ void CLicqConsole::InputCommand(int cIn)
       *szArg = '\0';
       szArg++;
       while (*szArg == ' ') szArg++;
+      nArgPos = szArg - szIn;
       // Figure out which command we have
       bool bTab = false;
       for (unsigned short i = 0; i < NUM_COMMANDS; i++)
@@ -517,6 +525,8 @@ void CLicqConsole::InputCommand(int cIn)
           break;
         }
       }
+      // Restore the space
+      szIn[strlen(szIn)] = ' ';
       if (bTab == false)
       {
         Beep();
@@ -530,40 +540,58 @@ void CLicqConsole::InputCommand(int cIn)
       Beep();
       winMain->wprintf("%CNo matches.\n", COLOR_RED);
       wprintw(winPrompt->Win(), "");
+      break;
     }
-    else if (sTabCompletion.vszPartialMatch.size() == 1)
+
+    // Erase the old argument
+    int yp, xp;
+    while (nPos > nArgPos)
+    {
+      getyx(winPrompt->Win(), yp, xp);
+      mvwdelch(winPrompt->Win(), yp, xp - 1);
+      nPos--;
+    }
+    szIn[nPos] = '\0';
+    char *szMatch = sTabCompletion.szPartialMatch;
+
+    if (sTabCompletion.vszPartialMatch.size() == 1)
     { // Only one match
-      char *szMatch = sTabCompletion.szPartialMatch;//vszPartialMatch[ 0 ];
-      // make szArg point to the first character of the string being completed
-      if (szArg == NULL)
-        szArg = szIn;
-      else  // Restore the space (which was replaced with a NULL)
-        szIn[strlen(szIn)] = ' ';
-      wprintw(winPrompt->Win(), "%s ", szMatch);
-      strcat(szArg, szMatch);
-      strcat(szArg, " ");
-      nPos += strlen(szMatch) + 1;
-      winPrompt->RefreshWin();
+      // Check if there is a space in the match
+      if (strchr(szMatch, ' ') != NULL)
+      {
+        wprintw(winPrompt->Win(), "\"%s\" ", szMatch);
+        sprintf(&szIn[nPos], "\"%s\" ", szMatch);
+        nPos += strlen(szMatch) + 3;
+      }
+      else
+      {
+        wprintw(winPrompt->Win(), "%s ", szMatch);
+        sprintf(&szIn[nPos], "%s ", szMatch);
+        nPos += strlen(szMatch) + 1;
+      }
       // Set nTabs to 1 so the array is cleared
       nTabs = 1;
     }
     else
     { // Multiple matches
       Beep();
-      char *szMatch = sTabCompletion.szPartialMatch;
-      // make szArg point to the first character of the string being completed
-      if (szArg == NULL)
-        szArg = szIn;
-      else  // Restore the space (which was replaced with a NULL)
-        szIn[strlen(szIn)] = ' ';
-      wprintw(winPrompt->Win(), "%s", szMatch);
-      strcat(szArg, szMatch);
-      nPos += strlen(szMatch);
-      szIn[nPos] = '\0';
-      winPrompt->RefreshWin();
+      // Check if there is a space in the match
+      if (strchr(szMatch, ' ') != NULL)
+      {
+        wprintw(winPrompt->Win(), "\"%s", szMatch);
+        sprintf(&szIn[nPos], "\"%s", szMatch);
+        nPos += strlen(szMatch) + 1;
+      }
+      else
+      {
+        wprintw(winPrompt->Win(), "%s", szMatch);
+        sprintf(&szIn[nPos], "%s", szMatch);
+        nPos += strlen(szMatch);
+      }
       // Set nTabs to 2 so the array is saved for the next tab hit
       nTabs = 2;
     }
+    winPrompt->RefreshWin();
     break;
   }
 
