@@ -3307,6 +3307,11 @@ void CMainWindow::saveOptions()
 void CMainWindow::aboutBox()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  
+  // We might have no owner
+  QString m_Alias = (o == NULL) ? tr("(no alias)") : QString::fromLocal8Bit(o->GetAlias());
+  unsigned long m_Uin = (o == NULL) ? 0 : o->Uin();
+  
   QString about(tr("Licq version %1%8.\n"
                    "Qt GUI plugin version %2.\n"
                    "Compiled on: %7\n"
@@ -3318,8 +3323,8 @@ void CMainWindow::aboutBox()
                    "#licq on irc.freenode.net\n\n"
                    "%3 (%4)\n"
                    "%5 contacts.").arg(licqDaemon->Version())
-                   .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))
-                   .arg(o->Uin()).arg(gUserManager.NumUsers())
+                   .arg(VERSION).arg(m_Alias)
+                   .arg(m_Uin).arg(gUserManager.NumUsers())
 #ifdef USE_KDE
                    .arg(tr("(with KDE support)\n"))
 #else
