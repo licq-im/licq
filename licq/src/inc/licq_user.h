@@ -154,6 +154,7 @@ public:
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
   time_t LastOnline()                   { return m_nLastOnline; }
+  bool AutoFileAccept()                 { return m_bAutoFileAccept; }
   bool AcceptInAway()                   { return m_nAutoAccept & ACCEPT_IN_AWAY; }
   bool AcceptInNA()                     { return m_nAutoAccept & ACCEPT_IN_NA; }
   bool AcceptInOccupied()               { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
@@ -218,6 +219,7 @@ public:
   void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
+  void SetAutoFileAccept(bool s)      { m_bAutoFileAccept = s; }
   void SetAcceptInAway(bool s)        { s ? m_nAutoAccept |= ACCEPT_IN_AWAY : m_nAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
   void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
   void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
@@ -328,7 +330,8 @@ protected:
        m_bOnlineNotify,
        m_bSendServer,
        m_bEnableSave,
-       m_bShowAwayMsg;
+       m_bShowAwayMsg,
+       m_bAutoFileAccept;
   unsigned short m_nStatusToUser;
   unsigned short m_nAutoAccept;
 
