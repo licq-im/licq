@@ -411,23 +411,50 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
   sprintf(szAlias, "%s (%ld)", u->GetAlias(), u->Uin());
   unsigned long ip = u->Ip();
   unsigned long realip = u->RealIp();
+  bool bSendRealIp = u->SendRealIp();
 
   gUserManager.DropUser(u);
 
-  return OpenConnectionToUser(szAlias, ip, realip, sock, nPort);
+  return OpenConnectionToUser(szAlias, ip, realip, sock, nPort, bSendRealIp);
 }
 
 
 bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
-   unsigned long nRealIp, TCPSocket *sock, unsigned short nPort)
+   unsigned long nRealIp, TCPSocket *sock, unsigned short nPort, bool bSendRealIp)
 {
   char buf[128];
-  gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-            ip_ntoa(nIp, buf), nPort);
+  bool worked = false;
 
   // If we fail to set the remote address, the ip must be 0
-  bool b = sock->SetRemoteAddr(nIp, nPort);
-  if (!b) return false;
+  // Sending to internet ip
+  if (!bSendRealIp)
+  {
+     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+	       ip_ntoa(nIp, buf), nPort);
+     bool b = sock->SetRemoteAddr(nIp, nPort);
+     if (!b) return false;
+  }
+
+  // Sending to Real IP
+  else
+  {
+     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+               ip_ntoa(nRealIp, buf), nPort);
+     worked = sock->SetRemoteAddr(nRealIp, nPort);
+     if (!worked) return false;
+  }
+
+  // Being sent to Real IP.. skip the other stuff, that's for internet ip..
+  if (worked)
+  {
+  	if (!sock->OpenConnection())
+        {
+             gLog.Warn("%sConnect to %s failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+                       L_BLANKxSTR, sock->ErrorStr(buf, 128));
+	     return false;
+        }
+	return true;
+  }
 
   if (!sock->OpenConnection())
   {

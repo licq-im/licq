@@ -573,8 +573,12 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   u->client.m_nSession = m_nSession;
   u->uin = c.m_nUin;
 
+  ICQUser *temp_user = gUserManager.FetchUser(u->uin, LOCK_R);
+  bool bSendRealIp = temp_user->SendRealIp();
+  gUserManager.DropUser(temp_user);
+
   gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
-  if (!licqDaemon->OpenConnectionToUser("chat", c.m_nIp, c.m_nRealIp, &u->sock, c.m_nPort))
+  if (!licqDaemon->OpenConnectionToUser("chat", c.m_nIp, c.m_nRealIp, &u->sock, c.m_nPort, bSendRealIp))
   {
     delete u;
     return false;
