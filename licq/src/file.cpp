@@ -774,6 +774,8 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
   }
   snprintf(szNewLine, MAX_LINE_LEN, "%s = %s\n", _szKey, szDataNoNL);
   szNewLine[MAX_LINE_LEN - 1] = '\0';
+  // Don't lose the following key if szNewLine was truncated by snprintf
+  szNewLine[MAX_LINE_LEN - 2] = '\n'; 
 
   // Check if we are appending a new key to the section
   if (sz == NULL) m_nSectionEnd += strlen(szNewLine);
