@@ -1542,6 +1542,9 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
       case 'h':
         sz = GetPhoneNumber();
         break;
+      case 'c':
+        sz = GetCellularNumber();
+        break;
       case 'S':
         sz = StatusStrShort();
         break;
