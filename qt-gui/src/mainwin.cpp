@@ -1423,6 +1423,13 @@ void CMainWindow::callUserFunction(int index)
     {
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (!u) return;
+      if(!u->IgnoreList() && !QueryUser(this, 
+          tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
+          .arg(u->GetAlias()).arg(nUin), tr("&Yes"), tr("&No")))
+      {
+        gUserManager.DropUser(u);
+        break;
+      }
       u->SetIgnoreList(!u->IgnoreList());
       gUserManager.DropUser(u);
       updateUserWin();
