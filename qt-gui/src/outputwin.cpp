@@ -106,13 +106,18 @@ void CQtLogWindow::slot_log(int s)
           outputBox->removeLine(0);
   }
 
-  if (NextLogType() == L_ERROR)
+  /* The next call will block, so we need to clear the log so that processing
+     can continue */
+  unsigned short nNextLogType = NextLogType();
+  ClearLog();
+
+  if (nNextLogType == L_ERROR)
       CriticalUser(NULL, str);
 
-  else if (NextLogType() == L_MESSAGE)
+
+  else if (nNextLogType == L_MESSAGE)
     InformUser(NULL, str);
 
-  ClearLog();
 }
 
 void CQtLogWindow::slot_save()

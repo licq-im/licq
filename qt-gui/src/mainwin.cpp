@@ -1228,19 +1228,33 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           gUserManager.DropOwner();
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
           {
-            int fcn = mnuUserView;
+            bool bCallUserView = false, bCallSendMsg = false;
+
             if (m_bMsgChatView)
             {
               for (unsigned short i = 0; i < u->NewMessages(); i++)
-                if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
+              {
+                if (m_bMsgChatView &&
+                    u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
                 {
-                  fcn = mnuUserSendMsg;
-                  break;
+                  bCallSendMsg = true;
+                  if (bCallUserView)
+                    break;
                 }
+                else
+                {
+                  bCallUserView = true;
+                  if (!m_bMsgChatView || bCallSendMsg)
+                    break;
+                }
+              }
             }
-
             gUserManager.DropUser(u);
-            callFunction(fcn, nUin);
+
+            if (bCallUserView)
+              callFunction(mnuUserView, nUin);
+            if (bCallSendMsg)
+              callFunction(mnuUserSendMsg, nUin);
           }
           else
             gUserManager.DropUser(u);
@@ -1701,7 +1715,7 @@ void CMainWindow::updateStatus()
      break;
    }
    if (status != ICQ_STATUS_OFFLINE)
-     mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->StatusInvisible());
+     mnuStatus->setItemChecked(MNUxITEM_STATUSxINVISIBLE, o->StatusInvisible());
 
    lblStatus->setText(o->StatusStr());
    lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
@@ -2357,7 +2371,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
           if ((*it)->Uin() == nUin)
           {
             e = static_cast<UserSendCommon*>(*it);
-            e->changeEventType(fcn - 1);
+//            e->changeEventType(fcn - 1);
             break;
           }
 

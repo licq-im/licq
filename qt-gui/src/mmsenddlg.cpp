@@ -233,8 +233,7 @@ void CMMSendDlg::SendNext()
         }
         else
         {
-          message = s1;
-          messageRaw = codec->fromUnicode(message);
+          messageRaw = codec->fromUnicode(s1);
         }
 
 #ifdef QT_PROTOCOL_PLUGIN

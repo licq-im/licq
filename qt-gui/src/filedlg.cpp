@@ -463,6 +463,7 @@ void CFileDlg::slot_ft()
         ftman->CloseFileTransfer();
         WarnUser(this,
           tr("Unable to reach remote host.\nSee Network Window for details."));
+        break;
       }
 
       case FT_ERRORxBIND:
@@ -472,6 +473,7 @@ void CFileDlg::slot_ft()
         ftman->CloseFileTransfer();
         WarnUser(this,
           tr("Unable to bind to a port.\nSee Network Window for details."));
+        break;
       }
       
       case FT_ERRORxRESOURCES:
@@ -481,7 +483,7 @@ void CFileDlg::slot_ft()
         ftman->CloseFileTransfer();
         WarnUser(this,
           tr("Unable to create a thread.\nSee Network Window for details."));
-
+        break;
       }
     }
 

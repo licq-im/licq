@@ -467,7 +467,7 @@ void CInfoField::setData(QString data)
 void CInfoField::setData(const unsigned long data)
 {
   char t[32];
-  sprintf(t, "%ld", data);
+  sprintf(t, "%lu", data);
   setData(t);
 }
 
@@ -549,7 +549,7 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
 {
   m_nUin= _nUin;
   mainwin = m;
-
+/*
   // add all unread messages.
   vector<CUserEvent*> newEventList;
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
@@ -564,7 +564,7 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
   }
   gUserManager.DropUser(u);
   for (unsigned short i = 0; i < newEventList.size(); i++)
-    addMsg(newEventList[i]);
+    addMsg(newEventList[i]); */
 }
 
 CMessageViewWidget::~CMessageViewWidget()

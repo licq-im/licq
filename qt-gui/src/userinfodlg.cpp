@@ -669,6 +669,8 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
     bDropUser = true;
   }
 
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
   // Gender
   if (m_bOwner)
   {
@@ -709,7 +711,8 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
       nfoBirthday->setData(d.toString());
     }
   }
-  nfoHomepage->setData(u->GetHomepage());
+  nfoHomepage->setData(codec->toUnicode(u->GetHomepage()));
+
   for (unsigned short i = 0; i < 3; i++)
   {
     const SLanguage *l = GetLanguageByCode(u->GetLanguage(i));
@@ -723,7 +726,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
     else
     {
       if (l == NULL)
-        nfoLanguage[i]->setData(tr("Unknown (%1)").arg(u->GetLanguage(i)));
+        nfoLanguage[i]->setData(tr("Unknown (%1)").arg((unsigned short)u->GetLanguage(i)));
       else  // known
         nfoLanguage[i]->setData(l->szName);
     }
@@ -872,7 +875,7 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
   {
     const SCountry *c = GetCountryByCode(u->GetCompanyCountry());
     if (c == NULL)
-      nfoCompanyCountry->setData(tr("Unknown (%1)").arg(u->GetCountryCode()));
+      nfoCompanyCountry->setData(tr("Unknown (%1)").arg(u->GetCompanyCountry()));
     else  // known
       nfoCompanyCountry->setData(c->szName);
   }

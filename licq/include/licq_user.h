@@ -419,7 +419,7 @@ public:
   char *IdString()                      { return m_szId; }
 #endif
 
-  void usprintf(char *sz, const char *szFormat, unsigned long nFlags = 0);
+  char *usprintf(const char *szFormat, unsigned long nFlags = 0);
 
   // General Info
   void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }

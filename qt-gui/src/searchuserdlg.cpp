@@ -179,7 +179,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan)
   cmbLanguage = new QComboBox(false, whitepages_tab);
   cmbLanguage->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_LANGUAGES; i++)
-    cmbLanguage->insertItem(gLanguages[i].szName);
+    cmbLanguage->insertItem(GetLanguageByIndex(i)->szName);
   grid_lay->addWidget(cmbLanguage, CR, 3);
 
   CR = 0;
@@ -195,7 +195,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan)
   cmbCountry = new QComboBox(false, whitepages_tab);
   cmbCountry->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
-    cmbCountry->insertItem(gCountries[i].szName);
+    cmbCountry->insertItem(GetCountryByIndex(i)->szName);
   grid_lay->addWidget(cmbCountry, CR, 7);
 
   grid_lay->addWidget(new QLabel(tr("Company Name:"), whitepages_tab), ++CR, 5);

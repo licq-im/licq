@@ -582,7 +582,7 @@ class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
   CPU_ChatRequest(char *szReason, const char *szChatUsers, unsigned short nPort,
-                  ICQUser *pUser, bool bICBM);
+                  unsigned short nLevel, ICQUser *pUser, bool bICBM);
 };
 
 //-----FileTransfer------------------------------------------------------------
@@ -590,7 +590,7 @@ class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
   CPU_FileTransfer(ICQUser *, ConstFileList &lFileList, const char *_szFile,
-		   const char *_szDesc, bool bICBM);
+		   const char *_szDesc, unsigned short nLevel, bool bICBM);
 };
 
 

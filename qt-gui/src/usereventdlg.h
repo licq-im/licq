@@ -127,6 +127,10 @@ protected:
   bool m_bDeleteUser;
   QString m_sBaseTitle, m_sProgressMsg;
 
+  // ID of the higest event we've processed. Helps determine
+  // which events we already processed in the ctor.
+  int m_highestEventId;
+
   virtual void UserUpdated(CICQSignal *, ICQUser *) = 0;
   void SetGeneralInfo(ICQUser *);
 
@@ -174,9 +178,6 @@ protected:
 
   // The currently displayed message in decoded (Unicode) form.
   QString m_messageText;
-  // ID of the higest event we've processed. Helps determine
-  // which events we already processed in the ctor.
-  int m_highestEventId;
 
   void generateReply();
   void sendMsg(QString txt);
@@ -193,6 +194,7 @@ protected slots:
   void slot_btnRead4();
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
+  void slot_clearEvent();
   void slot_sentevent(ICQEvent *);
   void slot_setEncoding();
 };

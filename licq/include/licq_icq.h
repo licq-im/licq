@@ -328,7 +328,7 @@ const unsigned short ICQ_TCPxACK_AWAY              = 0x0004;
 const unsigned short ICQ_TCPxACK_OCCUPIED          = 0x0009;
 const unsigned short ICQ_TCPxACK_DND               = 0x000A;
 const unsigned short ICQ_TCPxACK_OCCUPIEDxCAR      = 0x000B;
-//const unsigned short ICQ_TCPxACK_OCCUPIEDx...      = 0x000C; // received when sending to contact list when other side is occupied
+const unsigned short ICQ_TCPxACK_OCCUPIEDx2        = 0x000C; // received when sending to contact list when other side is occupied
 const unsigned short ICQ_TCPxACK_NA                = 0x000E;
 const unsigned short ICQ_TCPxACK_DNDxCAR           = 0x000F;
 const unsigned short ICQ_TCPxACK_ACCEPT            = 0x0000;
@@ -339,6 +339,7 @@ const unsigned short ICQ_TCPxACK_RETURN            = 0x0002;
 // TCP message type (composed of (status | ..._Fx...)
 const unsigned short ICQ_TCPxMSG_AUTOxREPLY        = 0x0000;
 const unsigned short ICQ_TCPxMSG_NORMAL            = 0x0010;
+const unsigned short ICQ_TCPxMSG_NORMAL2           = 0x0001;
 const unsigned short ICQ_TCPxMSG_LIST              = 0x0020;
 const unsigned short ICQ_TCPxMSG_LIST2             = 0x0004;
 const unsigned short ICQ_TCPxMSG_URGENT            = 0x0040;

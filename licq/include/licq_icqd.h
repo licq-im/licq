@@ -440,6 +440,7 @@ protected:
   pthread_mutex_t mutex_sendqueue_server;
   std::list <char *> m_lszModifyServerUsers;
   pthread_mutex_t mutex_modifyserverusers;
+  pthread_mutex_t mutex_cancelthread;
   pthread_t thread_monitorsockets,
             thread_ping,
             thread_shutdown;
@@ -481,7 +482,8 @@ protected:
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
-  ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *);
+  ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *,
+                                   bool = false);
   ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);

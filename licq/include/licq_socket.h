@@ -250,6 +250,7 @@ class CSocketManager
 {
 public:
   CSocketManager();
+  virtual ~CSocketManager();
 
   INetSocket *FetchSocket (int _nSd);
   void DropSocket (INetSocket *s);
@@ -262,6 +263,7 @@ public:
 protected:
   CSocketSet m_sSockets;
   CSocketHashTable m_hSockets;
+  pthread_mutex_t mutex;
 };
 
 extern CSocketManager gSocketManager;

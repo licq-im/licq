@@ -210,7 +210,7 @@ CUserViewItem::~CUserViewItem()
 //-----CUserViewItem::setGraphics-----------------------------------------------
 void CUserViewItem::setGraphics(ICQUser *u)
 {
-   static char sTemp[128];
+   char *sTemp;
    CUserView *v = (CUserView *)listView();
 
    if (parent())
@@ -344,8 +344,9 @@ void CUserViewItem::setGraphics(ICQUser *u)
    for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
    {
      QTextCodec * codec = UserCodec::codecForICQUser(u);
-     u->usprintf(sTemp, gMainWindow->colInfo[i]->m_szFormat);
+     sTemp = u->usprintf(gMainWindow->colInfo[i]->m_szFormat);
      setText(i + 1, codec->toUnicode(sTemp));
+     free(sTemp);
    }
 
    // Set the user tag
@@ -1572,9 +1573,10 @@ void CUserView::maybeTip(const QPoint& c)
     {
       if (u->IdleSince())
       {
-        char szTemp[128];
-        u->usprintf(szTemp, "%I");
+        char *szTemp;
+        szTemp = u->usprintf("%I");
         QString temp(szTemp);
+        free(szTemp);
         s += tr("<br><nobr>Idle: ") + temp + tr("</nobr>");
         tip (r, s);
       }

@@ -42,7 +42,7 @@
 CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
    : QListViewItem(parent)
 {
-  static char sTemp[128];
+  char *sTemp;
 
   m_nUin = u->Uin();
 #ifdef QT_PROTOCOL_PLUGIN
@@ -56,8 +56,9 @@ CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
 
   for (unsigned short i = 0; i < v->colInfo.size(); i++)
   {
-    u->usprintf(sTemp, v->colInfo[i]->m_szFormat);
+    sTemp = u->usprintf(v->colInfo[i]->m_szFormat);
     setText(i, codec->toUnicode(sTemp));
+    free(sTemp);
   }
 }
 

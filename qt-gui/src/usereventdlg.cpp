@@ -79,7 +79,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
                                  CMainWindow *m, const char *_szId,
                                  unsigned long _nPPID, QWidget *parent,
                                  const char *name)
-  : QWidget(parent, name, WDestructiveClose)
+  : QWidget(parent, name, WDestructiveClose), m_highestEventId(-1)
 {
   server = s;
   mainwin = m;
@@ -225,6 +225,7 @@ void UserEventTabDlg::removeTab(QWidget *tab)
   {
     tabw->removePage(tab);
     tab->close();
+    tab->setEnabled(false);
     tab->deleteLater();
   }
   else
@@ -359,7 +360,7 @@ void UserEventTabDlg::moveRight()
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
                                  CMainWindow *m, unsigned long _nUin,
                                  QWidget* parent, const char* name)
-  : QWidget(parent, name, WDestructiveClose)
+  : QWidget(parent, name, WDestructiveClose), m_highestEventId(-1)
 {
   server = s;
   mainwin = m;
@@ -653,8 +654,7 @@ void UserEventCommon::slot_security()
 UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
                              CMainWindow *m, const char *_szId,
                              unsigned long _nPPID, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _szId, _nPPID, parent, "UserViewEvent"),
-    m_highestEventId(-1)
+  : UserEventCommon(s, theSigMan, m, _szId, _nPPID, parent, "UserViewEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   splRead = new QSplitter(Vertical, mainWidget);
@@ -759,8 +759,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
 
 UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
                              CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent"),
-    m_highestEventId(-1)
+  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserViewEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   splRead = new QSplitter(Vertical, mainWidget);
@@ -832,24 +831,41 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u != NULL && u->NewMessages() > 0)
   {
+    unsigned short i;
     /*
      Create an item for the message we're currently viewing.
     */
-    MsgViewItem *e = new MsgViewItem(u->EventPeek(0), codec, msgView);
+    if (mainwin->m_bMsgChatView)
+    {
+      for (i = 0; i < u->NewMessages(); i++)
+        if (u->EventPeek(i)->SubCommand() != ICQ_CMDxSUB_MSG)
+          break;
+      if (i == u->NewMessages())
+        i = 0;
+    }
+    else
+      i = 0;
+
+    MsgViewItem *e = new MsgViewItem(u->EventPeek(i), codec, msgView);
+    m_highestEventId = u->EventPeek(i)->Id();
     /*
      Create items for all the messages which already await
      in the queue. We cannot rely on getting CICQSignals for them
      since they might've arrived before the dialog appeared,
      possibly being undisplayed messages from previous licq session.
     */
-    for (unsigned short i = 1; i < u->NewMessages(); i++)
+    for (i++; i < u->NewMessages(); i++)
     {
       CUserEvent* event = u->EventPeek(i);
-      (void) new MsgViewItem(event, codec, msgView);
-      // Make sure we don't add this message again, even if we'll
-      // receive an userUpdated signal for it.
-      if (m_highestEventId < event->Id())
-         m_highestEventId = event->Id();
+      if (!mainwin->m_bMsgChatView ||
+          event->SubCommand() != ICQ_CMDxSUB_MSG)
+      {
+        new MsgViewItem(event, codec, msgView);
+        // Make sure we don't add this message again, even if we'll
+        // receive an userUpdated signal for it.
+        if (m_highestEventId < event->Id())
+           m_highestEventId = event->Id();
+      }
     }
     gUserManager.DropUser(u);
     slot_printMessage(e);
@@ -1079,15 +1095,21 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 
   if (e->m_nEventId != -1 && e->msg->Direction() == D_RECEIVER)
   {
-#ifdef QT_PROTOCOL_PLUGIN
-    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
-#else
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-#endif
-    u->EventClearId(e->m_nEventId);
-    gUserManager.DropUser(u);
+    // clear the event only after all the slots have been invoked
+    QTimer::singleShot(0, this, SLOT(slot_clearEvent()));
     e->MarkRead();
   }
+}
+
+void UserViewEvent::slot_clearEvent()
+{
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+#else
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+#endif
+  u->EventClearId(m_xCurrentReadEvent->Id());
+  gUserManager.DropUser(u);
 }
 
 void UserViewEvent::generateReply()
@@ -1467,25 +1489,17 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 {
   if (sig->SubSignal() == USER_EVENTS)
   {
-    CUserEvent* e = NULL;
-
     if (sig->Argument() > 0)
     {
       int eventId = sig->Argument();
-      // Making sure we didn't handle this message already.
-      if (m_highestEventId < eventId)
+      CUserEvent* e = u->EventPeekId(eventId);
+      // Making sure we need to handle this message
+      if (e != NULL && m_highestEventId < eventId &&
+          (!mainwin->m_bMsgChatView || e->SubCommand() != ICQ_CMDxSUB_MSG))
       {
          m_highestEventId = eventId;
-         e = u->EventPeekId(eventId);
-         if (e != NULL)
-         {
-           MsgViewItem *m = new MsgViewItem(e, codec, msgView);
-           msgView->ensureItemVisible(m);
-         }
-      }
-      else
-      {
-         qDebug("Ignoring double message");
+         MsgViewItem *m = new MsgViewItem(e, codec, msgView);
+         msgView->ensureItemVisible(m);
       }
     }
 
@@ -1696,6 +1710,21 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
     mleHistory = new CMessageViewWidget(_nUin, mainwin, splView);
+    // add all unread messages.
+    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+    if (u != NULL && u->NewMessages() > 0)
+    {
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+      {
+        CUserEvent *e = u->EventPeek(i);
+        if (e->Id() > m_highestEventId)
+          m_highestEventId = e->Id();
+
+        mleHistory->addMsg(e);
+      }
+    }
+    gUserManager.DropUser(u);
+
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
@@ -1803,9 +1832,9 @@ void UserSendCommon::slot_SetBackgroundICQColor()
 void UserSendCommon::slot_ClearNewEvents()
 {
 #ifdef QT_PROTOCOL_PLUGIN
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
 #else
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
 #endif
 
   if (mainwin->m_bMsgChatView 
@@ -1823,7 +1852,8 @@ void UserSendCommon::slot_ClearNewEvents()
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
         CUserEvent *e = u->EventPeek(i);
-        if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+        if (e->Id() <= m_highestEventId && e->Direction() == D_RECEIVER &&
+            e->SubCommand() == ICQ_CMDxSUB_MSG)
           idList.push_back(e->Id());
       }
 
@@ -2148,7 +2178,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   }
 
   ICQUser *u = NULL;
-  CUserEvent *ue = e->UserEvent();
+  //CUserEvent *ue = e->UserEvent();
   QString msg;
   if (e->SubResult() == ICQ_TCPxACK_RETURN)
   {
@@ -2163,32 +2193,35 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
 
     u->SetShowAwayMsg( false );
     gUserManager.DropUser(u);
+    // if the original message was through server, send this one through server
+    bool bServer = e->Channel() == ICQ_CHNxNONE;
     switch (QueryUser(this, msg, tr("Urgent"), tr(" to Contact List"), tr("Cancel")))
     {
       case 0:
-        RetrySend(e, true, ICQ_TCPxMSG_URGENT);
+        RetrySend(e, bServer, ICQ_TCPxMSG_URGENT);
         break;
       case 1:
-        RetrySend(e, true, ICQ_TCPxMSG_LIST);
+        RetrySend(e, bServer, ICQ_TCPxMSG_LIST);
         break;
       case 2:
         break;
     }
     return;
   }
-  else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
+/*  else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
   {
 #ifdef QT_PROTOCOL_PLUGIN
     u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
 #else
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
 #endif
-    msg = tr("%1 refused %2, send through server")
-          .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue));
+    msg = tr("%1 refused %2,\n%3")
+          .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue))
+          .arg(codec->toUnicode(e->ExtendedAck()->Response()));
     InformUser(this, msg);
     gUserManager.DropUser(u);
     return;
-  }
+  }*/
   else
   {
     emit autoCloseNotify();
@@ -2213,13 +2246,13 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
   chkSendServer->setChecked(!bOnline);
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
-  switch(e->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
+  switch(e->UserEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
   {
     case ICQ_CMDxSUB_MSG:
     {
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
       // create initial strings (implicit copying, no allocation impact :)
-      char *tmp = gTranslator.NToRN(codec->fromUnicode(ue->Message()));
+      char *tmp = gTranslator.NToRN(ue->Message());
       QCString wholeMessageRaw(tmp);
       delete [] tmp;
       unsigned int wholeMessagePos = 0;
@@ -2268,8 +2301,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
         }
         else
         {
-          message = ue->Message();
-          messageRaw = codec->fromUnicode(message);
+          messageRaw = ue->Message();
         }
 
 #ifdef QT_PROTOCOL_PLUGIN
@@ -2327,13 +2359,25 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_CHAT:
     {
       CEventChat *ue = (CEventChat *)e->UserEvent();
+      if (ue->Clients() == NULL)
 #ifdef QT_PROTOCOL_PLUGIN
-      //TODO in the daemon
-      icqEventTag = server->icqChatRequest(strtoul(m_szId, (char **)NULL, 10),
-                    ue->Reason(), nLevel, !bOnline);
+        //TODO in the daemon
+        icqEventTag = server->icqChatRequest(strtoul(m_szId, (char **)NULL, 10),
+          ue->Reason(), nLevel, !bOnline);
 #else
-      icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel, !bOnline);
+        icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel, !bOnline);
 #endif
+      else
+#ifdef QT_PROTOCOL_PLUGIN
+        //TODO in the daemon
+        icqEventTag = server->icqMultiPartyChatRequest(
+              strtoul(m_szId, (char **)NULL, 10), ue->Reason(), ue->Clients(),
+              ue->Port(), nLevel, !bOnline);
+#else
+        icqEventTag = server->icqMultiPartyChatRequest(m_nUin, ue->Reason(),
+                                 ue->Clients(), ue->Port(), nLevel, !bOnline);
+#endif
+
       break;
     }
     case ICQ_CMDxSUB_FILE:
@@ -2386,6 +2430,12 @@ void UserSendCommon::cancelSend()
 
   if (!icqEventTag)
   {
+    if (mainwin->m_bMsgChatView)
+    {
+      // the window is at the front, if the timer has not expired and we close
+      // the window, then the new events will stay there
+      slot_ClearNewEvents();
+    }
 #if QT_VERSION >= 300
     if (mainwin->userEventTabDlg &&
         mainwin->userEventTabDlg->tabExists(this))
@@ -2432,9 +2482,11 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
     }
     case USER_EVENTS:
     {
-      CUserEvent *e = 0;
-      if (sig->Argument() > 0 && mleHistory)
+      CUserEvent *e = u->EventPeekId(sig->Argument());
+      if (e != NULL && m_highestEventId < sig->Argument() && mleHistory &&
+          sig->Argument() > 0)
       {
+        m_highestEventId = sig->Argument();
         e = u->EventPeekId(sig->Argument());
         if (e != NULL)
         {
@@ -2972,14 +3024,18 @@ void UserSendFileEvent::resetSettings()
 //-----UserSendFileEvent::sendDone-------------------------------------------
 bool UserSendFileEvent::sendDone(ICQEvent *e)
 {
-  if (!e->ExtendedAck()->Accepted())
+  if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
 #ifdef QT_PROTOCOL_PLUGIN
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
 #else
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
 #endif
-    QString result = tr("File transfer with %2 refused:\n%3").arg(codec->toUnicode(u->GetAlias())).arg(e->ExtendedAck()->Response());
+    QString s(!e->ExtendedAck() ? tr("No reason provided") :
+                               codec->toUnicode(e->ExtendedAck()->Response()));
+    QString result = tr("File transfer with %2 refused:\n%3")
+                       .arg(codec->toUnicode(u->GetAlias()))
+                       .arg(s);
     gUserManager.DropUser(u);
     InformUser(this, result);
   }
@@ -3151,15 +3207,18 @@ void UserSendChatEvent::sendButton()
 //-----UserSendChatEvent::sendDone-------------------------------------------
 bool UserSendChatEvent::sendDone(ICQEvent *e)
 {
-  if (!e->ExtendedAck()->Accepted())
+  if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
 #ifdef QT_PROTOCOL_PLUGIN
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
 #else
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
 #endif
-    QString result = tr("Chat with %2 refused:\n%3").arg(codec->toUnicode(u->GetAlias()))
-                     .arg(e->ExtendedAck()->Response());
+    QString s(!e->ExtendedAck() ? tr("No reason provided") :
+                               codec->toUnicode(e->ExtendedAck()->Response()));
+    QString result = tr("Chat with %2 refused:\n%3")
+                       .arg(codec->toUnicode(u->GetAlias()))
+                       .arg(s);
     gUserManager.DropUser(u);
     InformUser(this, result);
   }
