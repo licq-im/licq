@@ -62,7 +62,8 @@ protected:
       *spnAutoOffline, *spnPortLow, *spnPortHigh, *spnICQServerPort, *spnProxyPort;
    QLineEdit *edtICQServer, *edtProxyHost, *edtProxyLogin, *edtProxyPasswd;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible, *chkFirewall, *chkTCPEnabled, *chkProxyEnabled, *chkProxyAuthEnabled;
+   QCheckBox  *chkAutoLogonInvisible, *chkFirewall, *chkTCPEnabled, *chkProxyEnabled, 
+              *chkProxyAuthEnabled, *chkReconnectAfterUinClash;
 
    // appearance tab
    QWidget* new_appearance_options();

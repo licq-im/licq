@@ -302,6 +302,8 @@ void OptionsDlg::SetupOptions()
   chkProxyAuthEnabled->setChecked(mainwin->licqDaemon->ProxyAuthEnabled());
   edtProxyLogin->setText(QString(mainwin->licqDaemon->ProxyLogin()));
   edtProxyPasswd->setText(QString(mainwin->licqDaemon->ProxyPasswd()));
+  
+  chkReconnectAfterUinClash->setChecked(mainwin->licqDaemon->ReconnectAfterUinClash());
 
   if (!mainwin->licqDaemon->ProxyEnabled())
   {
@@ -541,6 +543,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetProxyAuthEnabled(chkProxyAuthEnabled->isChecked());
   mainwin->licqDaemon->SetProxyLogin(edtProxyLogin->text().local8Bit());
   mainwin->licqDaemon->SetProxyPasswd(edtProxyPasswd->text().local8Bit());
+  
+  mainwin->licqDaemon->setReconnectAfterUinClash(chkReconnectAfterUinClash->isChecked());
 
   mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
   mainwin->licqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
@@ -953,17 +957,18 @@ QWidget *OptionsDlg::new_network_options()
 
   chkFirewall = new QCheckBox(tr("I am behind a firewall"), gbFirewall);
   connect(chkFirewall, SIGNAL(toggled(bool)), SLOT(slot_useFirewall(bool)));
-  new QWidget(gbFirewall);
-  chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
-  connect(chkTCPEnabled, SIGNAL(toggled(bool)), SLOT(slot_usePortRange(bool)));
-  new QWidget(gbFirewall);
-  QLabel *lbl = new QLabel(tr("Port Range:"), gbFirewall);
+  QHBox *boxFw1 = new QHBox(gbFirewall);
+  QLabel *lbl = new QLabel(tr("Port Range:"), boxFw1);
   QWhatsThis::add(lbl, tr("TCP port range for incoming connections."));
-  spnPortLow = new QSpinBox(gbFirewall);
+  spnPortLow = new QSpinBox(boxFw1);
   spnPortLow->setRange(0, 0xFFFF);
   spnPortLow->setSpecialValueText(tr("Auto"));
-  lbl = new QLabel(tr("\tto"), gbFirewall);
-  spnPortHigh = new QSpinBox(gbFirewall);
+  
+  chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
+  connect(chkTCPEnabled, SIGNAL(toggled(bool)), SLOT(slot_usePortRange(bool)));
+  QHBox *boxFw2 = new QHBox(gbFirewall);
+  lbl = new QLabel(tr("\tto"), boxFw2);
+  spnPortHigh = new QSpinBox(boxFw2);
   spnPortHigh->setRange(0, 0xFFFF);
   spnPortHigh->setSpecialValueText(tr("Auto"));
 
@@ -997,6 +1002,16 @@ QWidget *OptionsDlg::new_network_options()
   connect(chkProxyEnabled, SIGNAL(toggled(bool)), SLOT(slot_useProxy(bool)));
   connect(chkProxyAuthEnabled, SIGNAL(toggled(bool)), edtProxyLogin, SLOT(setEnabled(bool)));
   connect(chkProxyAuthEnabled, SIGNAL(toggled(bool)), edtProxyPasswd, SLOT(setEnabled(bool)));
+  
+  QGroupBox *gbConnection = new QGroupBox(2, QGroupBox::Horizontal, w);
+  lay->addWidget(gbConnection);
+  gbConnection->setTitle(tr("Connection"));
+  
+  chkReconnectAfterUinClash = new QCheckBox(tr("Reconnect after Uin clash"), gbConnection);
+  QWhatsThis::add(chkReconnectAfterUinClash, tr("Licq can reconnect you when you got "
+                                                "disconnected because your Uin was used "
+                                                "from another location. Check this if you "
+                                                "want Licq to reconnect automatically."));
 
   lay->addStretch(1);
 
