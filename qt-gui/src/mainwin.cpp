@@ -842,7 +842,8 @@ void CMainWindow::updateEvents()
 
   //auto popup if wanted
   if (m_bAutoPopup && nNumUserEvents > 0 &&
-      (nStatus == ICQ_STATUS_ONLINE || nStatus == ICQ_STATUS_FREEFORCHAT) )
+      ((nStatus && 0xFF) == ICQ_STATUS_ONLINE ||
+       (nStatus && 0xFF) == ICQ_STATUS_FREEFORCHAT) )
     callMsgFunction();
 }
 
