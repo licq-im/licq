@@ -17,6 +17,7 @@
 #include <qwidget.h>
 #include <qtimer.h>
 #include <qbitmap.h>
+#include <qdialog.h>
 
 #include "userbox.h"
 #include "licq_user.h"
@@ -24,6 +25,7 @@
 
 class QStyle;
 
+class QTextView;
 class CSignalManager;
 class CQtLogWindow;
 class CSkin;
@@ -253,6 +255,20 @@ signals:
   void signal_sentevent(ICQEvent *e);
 
 };
+
+// -----------------------------------------------------------------------------
+
+class HintsDlg : public QDialog
+{
+public:
+  HintsDlg();
+
+private:
+  QTextView* txtView;
+  QPushButton* btnClose;
+};
+
+// -----------------------------------------------------------------------------
 
 extern CMainWindow* gMainWindow;
 

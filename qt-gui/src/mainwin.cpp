@@ -51,6 +51,8 @@ extern "C" {
 #include <qwindowsstyle.h>
 #include <qdatetime.h>
 #include <qclipboard.h>
+#include <qlayout.h>
+#include <qtextview.h>
 
 #include "mainwin.h"
 #include "licq_icq.h"
@@ -436,20 +438,21 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       CreateUserFloaty(nUin, xPosF, yPosF, wValF);
   }
 
-  usprintfHelp = tr("%a - user alias\n"
-                    "%e - email\n"
-                    "%f - first name\n"
-                    "%h - phone number\n"
-                    "%i - user ip\n"
-                    "%l - last name\n"
-                    "%m - # pending messages\n"
-                    "%n - full name\n"
-                    "%o - last seen online"
-                    "%p - user port\n"
-                    "%s - full status\n"
-                    "%S - abbrieviated status\n"
-                    "%u - uin\n"
-                    "%w - webpage");
+  usprintfHelp = tr("<ul>"
+                    "<li><tt>%a - </tt>user alias</li>"
+                    "<li><tt>%e - </tt>email</li>"
+                    "<li><tt>%f - </tt>first name</li>"
+                    "<li><tt>%h - </tt>phone number</li>"
+                    "<li><tt>%i - </tt>user ip</li>"
+                    "<li><tt>%l - </tt>last name</li>"
+                    "<li><tt>%m - </tt># pending messages</li>"
+                    "<li><tt>%n - </tt>full name</li>"
+                    "<li><tt>%o - </tt>last seen online</li>"
+                    "<li><tt>%p - </tt>user port</li>"
+                    "<li><tt>%s - </tt>full status</li>"
+                    "<li><tt>%S - </tt>abbrieviated status</li>"
+                    "<li><tt>%u - </tt>uin</li>"
+                    "<li><tt>%w - </tt>webpage</li></ul>");
 #ifdef USE_DOCK
   licqIcon = NULL;
   switch (m_nDockMode)
@@ -2942,53 +2945,71 @@ void CMainWindow::slot_register()
 }
 
 
+// -----------------------------------------------------------------------------
+
 void CMainWindow::slot_hints()
 {
-  QString hints = tr(
-"Hints for Using the Licq Qt-GUI Plugin\n\n"
-"o  Change your status by right clicking on the status label.\n"
-"o  Change your auto response by double-clicking on the status label.\n"
-"o  View system messages by double clicking on the message label.\n"
-"o  Change groups by right clicking on the message label.\n"
-"o  Use the following shortcuts from the contact list:\n"
-"     Ctrl-M : Toggle mini-mode\n"
-"     Ctrl-O : Toggle show offline users\n"
-"     Ctrl-X : Exit\n"
-"     Ctrl-H : Hide\n"
-"     Ctrl-I : View the next message\n"
-"     Ctrl-V : View message\n"
-"     Ctrl-S : Send message\n"
-"     Ctrl-U : Send Url\n"
-"     Ctrl-C : Send chat request\n"
-"     Ctrl-F : Send File\n"
-"     Ctrl-A : Check Auto response\n"
-"     Ctrl-P : Popup all messages\n"
-"     Ctrl-L : Redraw user window\n"
-"     Delete : Delete user from current group\n"
-"     Ctrl-Delete : Delete user from contact list\n"
-"o  Hold control while clicking on close in the function window to remove\n"
-"   the user from your contact list.\n"
-"o  Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\".\n"
-"   For example in the send tab of the user function window.\n"
-"o  Here is the complete list of user % options, which can be used in OnEvent\n"
-"   parameters, auto responses, and utilities:\n"
-"     %a - user alias\n"
-"     %e - email\n"
-"     %f - first name\n"
-"     %h - phone number\n"
-"     %i - user ip\n"
-"     %l - last name\n"
-"     %m - # pending messages\n"
-"     %n - full name\n"
-"     %o - last seen online"
-"     %p - user port\n"
-"     %s - full status\n"
-"     %S - abbrieviated status\n"
-"     %u - uin\n"
-"     %w - webpage\n"
-);
 
-  InformUser(NULL, hints);
+  (void) new HintsDlg;
 }
+
+
+// -----------------------------------------------------------------------------
+HintsDlg::HintsDlg()
+  : QDialog(0, "HintsDlg", false, WDestructiveClose)
+{
+  setCaption(tr("Licq - Hints"));
+
+  QBoxLayout* topLay = new QVBoxLayout(this, 5);
+
+  txtView = new QTextView(this);
+  txtView->setMinimumWidth(370);
+  txtView->setMinimumHeight(450);
+  txtView->setText(tr(
+    "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
+    "<ul>"
+    "<li>Change your status by right clicking on the status label.</li>"
+    "<li>Change your auto response by double-clicking on the status label.</li>"
+    "<li>View system messages by double clicking on the message label.</li>"
+    "<li>Change groups by right clicking on the message label.</li>"
+    "<li>Use the following shortcuts from the contact list:<ul>"
+    "<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
+    "<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
+    "<li><tt>Ctrl-X : </tt>Exit</li>"
+    "<li><tt>Ctrl-H : </tt>Hide</li>"
+    "<li><tt>Ctrl-I : </tt>View the next message</li>"
+    "<li><tt>Ctrl-V : </tt>View message</li>"
+    "<li><tt>Ctrl-S : </tt>Send message</li>"
+    "<li><tt>Ctrl-U : </tt>Send Url</li>"
+    "<li><tt>Ctrl-C : </tt>Send chat request</li>"
+    "<li><tt>Ctrl-F : </tt>Send File</li>"
+    "<li><tt>Ctrl-A : </tt>Check Auto response</li>"
+    "<li><tt>Ctrl-P : </tt>Popup all messages</li>"
+    "<li><tt>Ctrl-L : </tt>Redraw user window</li>"
+    "<li><tt>Delete : </tt>Delete user from current group</li>"
+    "<li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul>"
+    "<li>Hold control while clicking on close in the function window to remove"
+    "   the user from your contact list.</li>"
+    "<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
+    "   For example in the send tab of the user function window.</li>"
+    "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
+    "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n") + gMainWindow->usprintfHelp +
+                   "</li></ul>" + tr(
+    "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"));
+  txtView->setFocus();
+  topLay->addWidget(txtView);
+
+  QBoxLayout* lay = new QHBoxLayout(topLay);
+  lay->addStretch(2);
+  btnClose = new QPushButton(tr("&Close"), this);
+  btnClose->setDefault(true);
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+  lay->addWidget(btnClose);
+
+  show();
+}
+
+
+// -----------------------------------------------------------------------------
 
 #include "mainwin.moc"

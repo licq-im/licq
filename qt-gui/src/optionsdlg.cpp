@@ -31,6 +31,7 @@
 #include <qbuttongroup.h>
 #include <qgroupbox.h>
 #include <qwhatsthis.h>
+#include <qstylesheet.h>
 #include <qtabwidget.h>
 #include <qtoolbutton.h>
 #ifdef USE_KDE
@@ -686,11 +687,11 @@ QWidget* OptionsDlg::new_sounds_options()
   QWhatsThis::add(chkOnEvents, tr("Enable running of \"Command\" when the relevant "
                                  "event occurs."));
   QLabel *lblSndPlayer = new QLabel(tr("Command:"), hor);
-  QWhatsThis::add(lblSndPlayer, tr("Command to execute when an event is received.  "
+  QWhatsThis::add(lblSndPlayer, tr("<p>Command to execute when an event is received.<br>"
                                   "It will be passed the relevant parameters from "
-                                  "below.  Parameters can contain the following "
-                                  "expressions which will be replaced with the relevant "
-                                   "information:\n") + gMainWindow->usprintfHelp);
+                                  "below.<br>Parameters can contain the following "
+                                  "expressions <br> which will be replaced with the relevant "
+                                   "information:</p>") + gMainWindow->usprintfHelp);
 
   edtSndPlayer = new QLineEdit(hor);
 

@@ -115,7 +115,9 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   if (*o->AutoResponse())
     mleAwayMsg->setText(QString::fromLocal8Bit(o->AutoResponse()));
   else
-    mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
+    mleAwayMsg->setText(tr("Dear %a,\nI'm currently %1.\n"
+                           "You can leave me a message.\n"
+                           "(%m messages pending from you).")
                         .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
   gUserManager.DropOwner();
 
@@ -234,6 +236,8 @@ void CustomAwayMsgDlg::slot_ok()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   u->SetCustomAutoResponse(s.local8Bit());
   gUserManager.DropUser(u);
+  CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+  gMainWindow->slot_updatedUser(&sig);
   accept();
   close();
 }
