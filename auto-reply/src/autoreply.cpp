@@ -292,7 +292,7 @@ bool CLicqAutoReply::ForwardEvent(ICQUser *u, CUserEvent *e)
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
   CICQEventTag *tag = licqDaemon->icqSendMessage(u->Uin(), szText, false,
-false);
+     ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == NULL)
   {
