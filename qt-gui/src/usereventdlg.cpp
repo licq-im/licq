@@ -576,8 +576,7 @@ void UserViewEvent::slot_btnRead3()
     case ICQ_CMDxSUB_MSG:  // Forward
     case ICQ_CMDxSUB_URL:
     {
-      CForwardDlg *f = new CForwardDlg(server, sigman, mainwin, m_xCurrentReadEvent);
-      f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
+      CForwardDlg *f = new CForwardDlg(sigman, m_xCurrentReadEvent, this);
       f->show();
       break;
     }

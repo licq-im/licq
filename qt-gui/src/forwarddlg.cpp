@@ -34,14 +34,13 @@
 #include "licq_user.h"
 #include "usereventdlg.h"
 #include "ewidgets.h"
+#include "licq_icqd.h"
 
-CForwardDlg::CForwardDlg(CICQDaemon *s, CSignalManager *sigMan,
-                         CMainWindow *_mainwin, CUserEvent *e, QWidget *p)
-  : QDialog(p, "UserForwardDialog", false, WDestructiveClose)
+
+CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
+  : QDialog(p, "UserForwardDialog", false, WDestructiveClose | WType_TopLevel)
 {
-  mainwin = _mainwin;
   sigman = sigMan;
-  server = s;
 
   m_nEventType = e->SubCommand();
   m_nUin = 0;
@@ -107,7 +106,7 @@ void CForwardDlg::slot_ok()
     case ICQ_CMDxSUB_MSG:
     {
       s1.prepend(tr("Forwarded message:\n"));
-      UserSendMsgEvent* e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
+      UserSendMsgEvent* e = new UserSendMsgEvent(gLicqDaemon, sigman, gMainWindow, m_nUin);
       e->setText(s1);
       e->show();
       break;
@@ -115,7 +114,7 @@ void CForwardDlg::slot_ok()
     case ICQ_CMDxSUB_URL:
     {
       s1.prepend(tr("Forwarded URL:\n"));
-      UserSendUrlEvent* e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
+      UserSendUrlEvent* e = new UserSendUrlEvent(gLicqDaemon, sigman, gMainWindow, m_nUin);
       e->setUrl(s2, s1);
       e->show();
       break;
