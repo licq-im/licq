@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +31,7 @@
 #include "licq_user.h"
 
 RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)
-  : QWizard(parent, "RegisterUserDialog", false)
+  : QWizard(parent, "RegisterUserDialog", false, WDestructiveClose)
 {
   page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
                         "You can register a new user here, or configure "
@@ -77,13 +78,18 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)
   connect (nfoPassword2, SIGNAL(textChanged(const QString&)), this, SLOT(dataChanged()));
   chkExistingUser->setChecked(false);
   nfoUin->setEnabled(false);
+  setNextEnabled(page2, false);
+
+  connect(backButton(), SIGNAL(clicked()), this, SLOT(nextPage()));
+  connect(nextButton(), SIGNAL(clicked()), this, SLOT(nextPage()));
+  connect(cancelButton(), SIGNAL(clicked()), this, SLOT(close()));
 
   page3 = new QVBox(this);
-
-  (void) new QLabel(tr("Now click Finish to start the registration process."), page3);
-
   addPage(page3, tr("UIN Registration - Step 3"));
   setHelpEnabled(page3, false);
+
+  lblInfo = new QLabel(page3);
+  lblInfo2 = new QLabel(page3);
 
   setMinimumSize(300, 200);
   setCaption(tr("Licq User Registration"));
@@ -91,28 +97,56 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)
   show();
 }
 
+RegisterUserDlg::~RegisterUserDlg()
+{
+  emit signal_done();
+}
 
 void RegisterUserDlg::dataChanged()
 {
-  // This is a HACK. It should validate the user Input first and only
-  // set finish button enabled when the data is ok.
-  setFinishEnabled(page3, true);
+  setNextEnabled(page2, true);
 }
+
+void RegisterUserDlg::nextPage()
+{
+  if(currentPage() == page3) {
+    bool errorOccured = false;
+    if(chkExistingUser->isChecked() && nfoUin->text().toULong() < 10000)
+    {
+      lblInfo->setText(tr("You need to enter a valid UIN when you "
+                           "try to register an existing user. "));
+      errorOccured = true;
+    }
+    else if(nfoPassword1->text().length() == 0)
+    {
+      lblInfo->setText(tr("Please enter your password in both input fields."));
+      errorOccured = true;
+    }
+    else if(nfoPassword1->text() != nfoPassword2->text())
+    {
+      lblInfo->setText(tr("The passwords don't seem to match."));
+      errorOccured = true;
+    }
+
+    if(errorOccured)
+    {
+      lblInfo2->setText(tr("Now please press the 'Back' button "
+                          "and try again."));
+    }
+    else
+    {
+      lblInfo->clear();
+      lblInfo2->setText(tr("Now please click 'Finish' to start "
+                          "the registration process."));
+    }
+    setFinishEnabled(page3, !errorOccured);
+  }
+}
+
+
 
 void RegisterUserDlg::accept()
 {
-  // Validate password
-  if(nfoPassword1->text().length() == 0)
-  {
-    InformUser (this, tr("You need to enter a password first."));
-    return;
-  }
-  if (nfoPassword2->text() != nfoPassword1->text())
-  {
-    InformUser (this, tr("Passwords do not match, try again."));
-    return;
-  }
-
   if (chkExistingUser->isChecked())
   {
     unsigned long nUin = nfoUin->text().toULong();
@@ -140,6 +174,7 @@ void RegisterUserDlg::accept()
     nfoPassword2->setEnabled(false);
     chkExistingUser->setEnabled(false);
   }
+  close(true);
 }
 
 #include "registeruser.moc"
