@@ -1268,15 +1268,18 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
 
 //-----ChatRequest--------------------------------------------------------------
 CPT_ChatRequest::CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
-                                 unsigned short nLevel, ICQUser *_cUser)
+   const char *szChatUsers, unsigned short nPort,
+   unsigned short nLevel, ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage,
                true, nLevel, _cUser)
 {
-  char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-  m_nSize += 11;
+  m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
   InitBuffer();
-  buffer->Pack(temp_1, 11);
+
+  buffer->PackString(szChatUsers);
+  buffer->PackUnsignedLong(ReversePort(nPort));
+  buffer->PackUnsignedLong(nPort);
+
   PostBuffer();
 }
 
@@ -1415,7 +1418,7 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort,
   InitBuffer();
 
   buffer->PackString("");
-  buffer->PackUnsignedLong( ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF) );
+  buffer->PackUnsignedLong(ReversePort(m_nPort));
   buffer->PackUnsignedLong(m_nPort);
 
   PostBuffer();
@@ -1639,7 +1642,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
    unsigned long nFontSize,
    bool bFontBold, bool bFontItalic, bool bFontUnderline,
    const char *szFontFamily,
-   ChatClientList &clientList)
+   ChatClientPList &clientList)
 {
   m_szName = NULL;
   m_nPort = nLocalPort;
@@ -1685,18 +1688,18 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   buffer->PackUnsignedShort(0x0002);
   buffer->PackChar(clientList.size());
 
-  ChatClientList::iterator iter;
+  ChatClientPList::iterator iter;
   for (iter = clientList.begin(); iter != clientList.end(); iter++)
   {
-    buffer->PackUnsignedLong(iter->m_nVersion);
-    buffer->PackUnsignedLong(iter->m_nPort);
-    buffer->PackUnsignedLong(iter->m_nUin);
-    buffer->PackUnsignedLong(iter->m_nIp);
-    buffer->PackUnsignedLong(iter->m_nRealIp);
-    buffer->PackUnsignedShort(ReversePort(iter->m_nPort));
-    buffer->PackChar(iter->m_nMode);
-    buffer->PackUnsignedShort(iter->m_nSession);
-    buffer->PackUnsignedLong(iter->m_nHandshake);
+    buffer->PackUnsignedLong((*iter)->m_nVersion);
+    buffer->PackUnsignedLong((*iter)->m_nPort);
+    buffer->PackUnsignedLong((*iter)->m_nUin);
+    buffer->PackUnsignedLong((*iter)->m_nIp);
+    buffer->PackUnsignedLong((*iter)->m_nRealIp);
+    buffer->PackUnsignedShort(ReversePort((*iter)->m_nPort));
+    buffer->PackChar((*iter)->m_nMode);
+    buffer->PackUnsignedShort((*iter)->m_nSession);
+    buffer->PackUnsignedLong((*iter)->m_nHandshake);
   }
 }
 

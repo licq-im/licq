@@ -633,13 +633,15 @@ public:
 
 
 //-----ChatRequest--------------------------------------------------------------
+  /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 02 00 0D 00 63 68 61 74 20 72
+     65 71 75 65 73 74 00 CF 60 AD D3 CF 60 AD D3 28 12 00 00 04 00 00 10 00
+     01 00 00 00 00 00 00 00 00 00 00 06 00 00 00 */
 class CPT_ChatRequest : public CPacketTcp
 {
 public:
-   CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
-   /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 02 00 0D 00 63 68 61 74 20 72
-      65 71 75 65 73 74 00 CF 60 AD D3 CF 60 AD D3 28 12 00 00 04 00 00 10 00
-      01 00 00 00 00 00 00 00 00 00 00 06 00 00 00 */
+  CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
+     const char *szChatUsers, unsigned short nPort,
+     unsigned short nLevel, ICQUser *_cUser);
 };
 
 
@@ -882,6 +884,7 @@ friend class CPChat_ColorFont;
 };
 
 typedef list<CChatClient> ChatClientList;
+typedef list<CChatClient *> ChatClientPList;
 
 
 /* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
@@ -897,7 +900,7 @@ public:
      unsigned long nFontSize,
      bool bFontBold, bool bFontItalic, bool bFontUnderline,
      const char *szFontFamily,
-     ChatClientList &clientList);
+     ChatClientPList &clientList);
 
   CPChat_ColorFont(CBuffer &);
 
