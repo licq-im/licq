@@ -31,6 +31,9 @@ public:
    static char Mode()  { return s_nMode; }
    static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
    static void SetIps(INetSocket *s);
+   static bool Firewall() { return s_nLocalIp != s_nRealIp; }
+   static unsigned long RealIp() { return s_nRealIp; }
+   static unsigned long LocalIp() { return s_nLocalIp; }
 
 protected:
    CBuffer *buffer;

@@ -506,7 +506,7 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
 
       // Now try the real ip if it is different from this one and we are behind a firewall
       if (sock->Error() != EINTR && nRealIp != nIp &&
-          nRealIp != 0 && m_szFirewallHost[0] != '\0')
+          nRealIp != 0 && CPacket::Firewall())
       {
         gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
                   ip_ntoa(nRealIp, buf), nPort);

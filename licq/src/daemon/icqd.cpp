@@ -116,8 +116,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   SetTCPEnabled(bTcpEnabled);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
-  licqConf.ReadStr("FirewallHost", temp, "");
-  SetFirewallHost(temp);
+  //licqConf.ReadStr("FirewallHost", temp, "");
+  //SetFirewallHost(temp);
 
   // Rejects log file
   licqConf.ReadStr("Rejects", temp, "log.rejects");
@@ -555,7 +555,7 @@ void CICQDaemon::SaveConf()
   licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
-  licqConf.WriteStr("FirewallHost", m_szFirewallHost);
+  //licqConf.WriteStr("FirewallHost", m_szFirewallHost);
 
   // Utility tab
   licqConf.WriteStr("UrlViewer", m_szUrlViewer);

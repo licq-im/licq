@@ -62,7 +62,7 @@ int CICQDaemon::ConnectToServer()
     return -1;
   }
 
-  // Now get the local ip from this socket
+  // Now get the real ip from this socket
   CPacket::SetIps(s);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetIp(s->LocalIp());
