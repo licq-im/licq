@@ -166,6 +166,14 @@ public:
   CICQEventTag *icqRandomChatSearch(unsigned long nGroup);
   CICQEventTag *icqSearchByInfo(const char *, const char *, const char *, const char *);
   CICQEventTag *icqSearchByUin(unsigned long);
+  CICQEventTag *icqSearchWhitePages(const char *szFirstName,
+		            const char *szLastName, const char *szAlias,
+		            const char *szEmail, unsigned short nMinAge,
+			    unsigned short nMaxAge, char nGender,
+			    char nLanguage, const char *szCity,
+			    const char *szState, unsigned short nCountryCode,
+			    const char *szCoName, const char *szCoDept,
+			    const char *szCoPos, bool bOnlineOnly);
 
   void icqLogoff();
   void icqRelogon(bool bChangeServer = false);

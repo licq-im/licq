@@ -112,6 +112,11 @@ const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B1; // 1201
 const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO  = 0x04BA; // 1210
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFOx31 = 0x04CF; // 1231
 
+// Meta commands (white page searches) - Jon
+const unsigned short ICQ_CMDxMETA_SEARCHxWP           = 0x0533; // 1331
+const unsigned short ICQ_CMDxMETA_SEARCHxWPxFOUND     = 0x01A4; // 388
+const unsigned short ICQ_CMDxMETA_SEARCHxWPxLAST_USER = 0x01AE; // 430 
+
 const unsigned short META_SUCCESS = 0x0A;
 const unsigned short META_FAILURE = 0x32;
 const unsigned short META_DONE    =

@@ -436,6 +436,31 @@ CICQEventTag *CICQDaemon::icqSearchByUin(unsigned long nUin)
 }
 
 
+//-----icqSearchWhitePages--------------------------------------------------
+CICQEventTag *CICQDaemon::icqSearchWhitePages(const char *szFirstName,
+    const char *szLastName, const char *szAlias, const char *szEmail,
+    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
+    char nLanguage, const char *szCity, const char *szState,
+    unsigned short nCountryCode, const char *szCoName, const char *szCoDept,
+    const char *szCoPos, bool bOnlineOnly)
+{
+  // Yes, there are a lot of extra options that you can search by.. but I
+  // don't see a point for the hundreds of items that I can add..  just
+  // use their web page for that shit - Jon
+  CPU_SearchWhitePages *p = new CPU_SearchWhitePages(szFirstName, szLastName,
+    szAlias, szEmail, nMinAge, nMaxAge, nGender, nLanguage, szCity, szState,
+    nCountryCode, szCoName, szCoDept, szCoPos, bOnlineOnly);
+  gLog.Info("%sStarting white pages search (#%ld/#%d)...\n", L_UDPxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(p);
+
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t = new CICQEventTag(e);
+  return (t);
+}
+
+
 //-----icqSetRandomChatGroup-------------------------------------------------
 CICQEventTag *CICQDaemon::icqSetRandomChatGroup(unsigned long nGroup)
 {
@@ -1262,6 +1287,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       gTranslator.ServerToClient(s->m_szLastName);
 
       packet >> auth;
+
+      // Their status... 0x00 = Offline, 0x01 = Online, 0x02 = Disabled
+      s->m_nStatus = packet.UnpackChar();
+
       gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_SBLANKxSTR, s->m_szAlias, nUin,
                 s->m_szFirstName, s->m_szLastName, s->m_szEmail);
 
@@ -2292,6 +2321,124 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SaveLicqInfo();
       gUserManager.DropOwner();
       e->m_nSubResult = META_DONE;
+      break;
+    }
+    case ICQ_CMDxMETA_SEARCHxWPxFOUND:
+    {
+      gLog.Info("%sWP search found user:\n", L_UDPxSTR);
+
+      unsigned long nUin;
+      char auth;
+      char szTemp[64];
+
+      packet.UnpackUnsignedShort(); // Remove the 2 byte data length
+      packet >> nUin;
+      CSearchAck *s = new CSearchAck(nUin);
+
+      // Get the data out of the packet
+      s->m_szAlias = strdup(packet.UnpackString(szTemp));
+      s->m_szFirstName = strdup(packet.UnpackString(szTemp));
+      s->m_szLastName = strdup(packet.UnpackString(szTemp));
+      s->m_szEmail = strdup(packet.UnpackString(szTemp));
+
+      // Translating string with Translation Table
+      gTranslator.ServerToClient(s->m_szAlias);
+      gTranslator.ServerToClient(s->m_szFirstName);
+      gTranslator.ServerToClient(s->m_szLastName);
+      gTranslator.ServerToClient(s->m_szEmail);
+
+      // Check to see if they want a request sent.. but we don't do that anywas.
+      packet >> auth;
+
+      // This will show their status
+      // 0x00 - Offline
+      // 0x01 - Online
+      // 0x02 - Disabled
+      s->m_nStatus = packet.UnpackChar();
+
+      // Eat it.. always 0x00
+      packet.UnpackChar();
+      
+      gLog.Info("%s%s (%ld) <%s %s %s>\n", L_SBLANKxSTR, s->m_szAlias, nUin,
+                s->m_szFirstName, s->m_szLastName, s->m_szEmail);
+
+      // Make a copy for the plugin
+      if (e == NULL)
+      {
+        gLog.Warn("%sReceived search result when no search in progress.\n",
+	          L_WARNxSTR);
+        break;
+      }
+
+
+
+      ICQEvent *e2 = new ICQEvent(e);
+      e2->m_pSearchAck = s;
+      e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;  // Sub-meta command
+      e2->m_pSearchAck->m_bMore = false;
+      PushPluginEvent(e2);
+
+      break;
+    }
+    case ICQ_CMDxMETA_SEARCHxWPxLAST_USER:
+    {
+      gLog.Info("%sWP search found last user:\n", L_UDPxSTR);
+
+      // We'll only get here if the result was 0x0A - Passed
+      unsigned long nUin;
+      char auth;
+      char szTemp[64];
+
+      packet.UnpackUnsignedShort(); // Remove the 2 byte data length
+      packet >> nUin;
+      CSearchAck *s = new CSearchAck(nUin);
+
+      // Get the data out of the packet
+      s->m_szAlias = strdup(packet.UnpackString(szTemp));
+      s->m_szFirstName = strdup(packet.UnpackString(szTemp));
+      s->m_szLastName = strdup(packet.UnpackString(szTemp));
+      s->m_szEmail = strdup(packet.UnpackString(szTemp));
+
+      // Translating string with Translation Table
+      gTranslator.ServerToClient(s->m_szAlias);
+      gTranslator.ServerToClient(s->m_szFirstName);
+      gTranslator.ServerToClient(s->m_szLastName);
+      gTranslator.ServerToClient(s->m_szEmail);
+
+      // Check to see if they want a request sent.. but we don't do that anywas.
+      packet >> auth;
+
+      // This will show their status
+      // 0x00 - Offline
+      // 0x01 - Online
+      // 0x02 - Disabled
+      s->m_nStatus = packet.UnpackChar();
+
+      // Eat it
+      packet.UnpackChar();
+
+      gLog.Info("%s%s (%ld) <%s %s %s>\n", L_SBLANKxSTR, s->m_szAlias, nUin,
+		s->m_szFirstName, s->m_szLastName, s->m_szEmail);
+
+      // Make a copy for the plugin
+      if (e == NULL)
+      {
+	gLog.Warn("%sReceived search result when no search in progress.\n",
+		  L_WARNxSTR);
+	break;
+      }
+
+      // More users..... It sure looks like this is the number of how many
+      // more users were found.
+      unsigned long nNumMore;
+      packet >> nNumMore;
+
+      ICQEvent *e2 = new ICQEvent(e);
+      e2->m_pSearchAck = s;
+      e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;  // Sub meta-command!
+      e2->m_pSearchAck->m_bMore = !(nNumMore == 0);
+      PushPluginEvent(e2);
+      
       break;
     }
     default:

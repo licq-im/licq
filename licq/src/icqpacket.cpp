@@ -868,6 +868,70 @@ CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
 }
 
 
+//-----SearchWhitePages---------------------------------------------------------
+CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
+    const char *szLastName, const char *szAlias, const char *szEmail,
+    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
+    char nLanguage, const char *szCity, const char *szState, unsigned short nCountryCode,
+    const char *szCoName, const char *szCoDept, const char *szCoPos,
+    bool bOnlineOnly)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nSize += strlen(szFirstName) + strlen(szLastName) + strlen(szAlias) +
+             strlen(szEmail) + strlen(szCity) + strlen(szState) +
+	     strlen(szCoName) + strlen(szCoDept) + strlen(szCoPos) + 60;
+  InitBuffer();
+  
+#if ICQ_VERSION == 2
+  buffer->PackUnsignedShort(m_nSubSequence);
+#endif
+
+  gTranslator.ClientToServer((char *) szFirstName);
+  gTranslator.ClientToServer((char *) szLastName);
+  gTranslator.ClientToServer((char *) szAlias);
+  gTranslator.ClientToServer((char *) szEmail);
+  gTranslator.ClientToServer((char *) szCity);
+  gTranslator.ClientToServer((char *) szState);
+  gTranslator.ClientToServer((char *) szCoName);
+  gTranslator.ClientToServer((char *) szCoDept);
+  gTranslator.ClientToServer((char *) szCoPos);
+
+  buffer->PackUnsignedShort(ICQ_CMDxMETA_SEARCHxWP);
+  buffer->PackString(szFirstName);
+  buffer->PackString(szLastName);
+  buffer->PackString(szAlias);
+  buffer->PackString(szEmail);
+  buffer->PackUnsignedShort(nMinAge);
+  buffer->PackUnsignedShort(nMaxAge);
+  buffer->PackChar(nGender);
+  buffer->PackChar(nLanguage);
+  buffer->PackString(szCity);
+  buffer->PackString(szState, 5);
+  buffer->PackUnsignedShort(nCountryCode);
+  buffer->PackString(szCoName);
+  buffer->PackString(szCoDept);
+  buffer->PackString(szCoPos);
+
+  // Ok, this stuff is Company Field, and all those interest crap
+  // This will just leave them blank.. I don't see them as necessary
+  buffer->PackChar(0x00);
+  buffer->PackUnsignedShort(0x0000);
+  
+  for (unsigned short i = 0; i < 3; i++)
+  {
+    buffer->PackChar(0x01);
+    buffer->PackUnsignedLong(0x00000000);
+  }
+
+  buffer->PackChar(0x01);
+  buffer->PackUnsignedShort(0x0000);
+
+  if (bOnlineOnly)
+    buffer->PackChar(0x01);
+  else
+    buffer->PackChar(0x00);
+}
+
 //-----UpdatePersonalInfo-------------------------------------------------------
 CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const char *szAlias,
                                                         const char *szFirstName,
@@ -1306,7 +1370,6 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedLong(m_nUin);
 }
-
 
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
@@ -2033,5 +2096,3 @@ CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
 
   PostBuffer();
 }
-
-

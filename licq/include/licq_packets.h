@@ -233,6 +233,20 @@ public:
 };
 
 
+//-----SearchWhitePages---------------------------------------------------------
+class CPU_SearchWhitePages : public CPacketUdp
+{
+public:
+   CPU_SearchWhitePages(const char *szFirstName, const char *szLastName,
+		   const char *szAlias, const char *szEmail,
+		   unsigned short nMinAge, unsigned short nMaxAge,
+		   char nGender, char nLanguage, const char *szCity,
+		   const char *szState, unsigned short nCountryCode,
+		   const char *szCoName, const char *szCoDept, 
+		   const char *szCoPos, bool bOnlineOnly);
+};
+
+
 //-----UpdatePersonalBasicInfo--------------------------------------------------
 class CPU_UpdatePersonalBasicInfo : public CPacketUdp
 {

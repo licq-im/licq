@@ -41,6 +41,7 @@ public:
   const char *LastName()   { return m_szLastName; }
   const char *Email()      { return m_szEmail; }
   bool More()              { return m_bMore; }
+  char Status()            { return m_nStatus; }
 
   ~CSearchAck();
 
@@ -53,6 +54,7 @@ protected:
   char *m_szLastName;
   char *m_szEmail;
   bool m_bMore;
+  char m_nStatus;
 
 friend class CICQDaemon;
 };
