@@ -163,3 +163,11 @@ if test $ac_cv_c_socklen_t = no; then
 fi
 
 ])
+
+dnl Check if the type socklen_t is defined anywhere
+AC_DEFUN(AC_C_SOCKLEN_T_AND_SOCKS,
+  [AC_CACHE_CHECK(for SOCKS socklen_t, ac_cv_c_socklen_t,
+
+  ]);
+
+])

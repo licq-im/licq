@@ -10,7 +10,7 @@ AC_DEFUN(AC_CHECK_SOCKS5,
   SOCKS_LIBS=""
   SOCKS_LIBDIR=""
   SOCKS_INCDIR=""
-	
+  
   AC_ARG_ENABLE(
     socks5,
     [  --enable-socks5         enable SOCKS5 firewall support],
@@ -30,33 +30,83 @@ AC_DEFUN(AC_CHECK_SOCKS5,
     AC_MSG_RESULT(no)
   else
     AC_MSG_RESULT(yes)
+    WITH_SOCKS5="no"
 
-    if test "$socks_libdir" = "no"; then
-      SOCKS_LIBS=""
-      AC_CHECK_LIB(socks5, SOCKSinit, SOCKS_LIBS="-lsocks5")
-      if test -z "$SOCKS_LIBS"; then
-        AC_CHECK_LIB(socks, SOCKSinit, SOCKS_LIBS="-lsocks")
+    dnl Init
+    if test "$socks_libdir" != "no"; then
+      BACKUP_LDFLAGS="$LDFLAGS"
+      LDFLAGS="$LDFLAGS -L$socks_libdir"
+    fi  
+    if test "$socks_incdir" != "no"; then
+      BACKUP_CPPFLAGS="$CPPFLAGS"
+      CPPFLAGS="$CPPFLAGS -I$socks_incdir"
+    fi 
+
+    SOCKS_LIBS=""
+    SOCKS_INCDIR=""
+
+    licq_socks_optlen=unknown
+
+    AC_CHECK_LIB(socks5, SOCKSinit, SOCKS_LIBS="-lsocks5")
+    if test -z "$SOCKS_LIBS"; then
+      AC_CHECK_LIB(socks, SOCKSinit, SOCKS_LIBS="-lsocks")
+    fi
+
+    if test -n "$SOCKS_LIBS"; then
+       SOCKS_LIBS="-lsocks5"
+       if test "$socks_libdir" != "no"; then
+          SOCKS_LIBDIR="-L$socks_libdir"
+       fi
+      AC_CHECK_HEADER(socks.h,
+        [if test "$socks_incdir" == "no"; then
+           SOCKS_INCDIR="-Wno-implicit"
+        else
+           SOCKS_INCDIR="-I$socks_incdir -Wno-implicit"
+         fi
+         WITH_SOCKS5="yes"
+         
+        ])
+      if test -n "$SOCKS_INCDIR"; then 
+         AC_DEFINE(USE_SOCKS5, 1, [use socks5 support])
+
+         AC_MSG_CHECKING(SOCKS getsockopt's optlen type)
+         AC_TRY_COMPILE(
+           [ #include <stdlib.h>
+             #include <socks.h>
+           ],
+           [ getsockopt(0,0,0,(void *)0,(socklen_t) 0) ],
+           licq_socks_optlen=socklen_t,
+           [AC_TRY_COMPILE(
+             [ #include <stdlib.h>
+               #include <socks.h>
+             ],
+             [ getsockopt(0,0,0,(void *)0,(int) 0)],
+             licq_socks_optlen=int,
+             licq_socks_optlen=unknown)
+           ]
+         )  
+         AC_MSG_RESULT($licq_socks_optlen)
+         if test $licq_socks_optlen = "int"; then
+           AC_DEFINE(SOCKS5_OPTLEN, int, [getsockopt optlen parameter type])
+         else 
+           if test $licq_socks_optlen = "socklen_t"; then
+             AC_DEFINE(SOCKS5_OPTLEN,socklen_t [getsockopt optlen parameter type])
+           fi
+         fi
       fi
-    else
-    	AC_MSG_CHECKING(where to look for the SOCKS5 library)
-      SOCKS_LIBS="-lsocks5"
-      SOCKS_LIBDIR="-L$socks_libdir"
-      AC_MSG_RESULT($socks_libdir)
-    fi
 
-    if test "$socks_incdir" = "no"; then
-      AC_CHECK_HEADER(socks.h)
-      SOCKS_INCDIR="-Wno-implicit"
-    else
-    	AC_MSG_CHECKING(where to look for the SOCKS5 headers)
-      SOCKS_INCDIR="-I$socks_incdir -Wno-implicit"
-      AC_MSG_RESULT($socks_incdir)
+    fi  
+    
+    dnl restore flags
+    if test "$socks_libdir" != "no"; then
+        LDFLAGS="$BACKUP_LDFLAGS"
     fi
-    AC_DEFINE(USE_SOCKS5, 1, [use socks5 support])
+    if test "$socks_incdir" != "no"; then
+      CPPFLAGS="$BACKUP_CPPFLAGS"
+    fi
   fi
 
   dnl Substitute these even if they're null, so as not to mess up makefiles
-
   AC_SUBST(SOCKS_LIBS)
   AC_SUBST(SOCKS_LIBDIR)
   AC_SUBST(SOCKS_INCDIR)
