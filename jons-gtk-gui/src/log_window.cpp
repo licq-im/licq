@@ -116,10 +116,11 @@ void log_window_show(GtkWidget *widget, gpointer data)
 		new_log_window();
 		log_window_show(0, 0);
 	}
-
 	else if(!nw_shown)
 	{
 		gtk_widget_show_all(nw->window);
+		gtk_adjustment_set_value(GTK_TEXT(nw->text)->vadj,
+                        GTK_ADJUSTMENT(GTK_TEXT(nw->text)->vadj)->upper);
 		nw_shown = TRUE;
 		hidden = FALSE;
 	}
@@ -144,6 +145,11 @@ void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 	gtk_text_freeze(GTK_TEXT(nw->text));
 	gtk_text_insert(GTK_TEXT(nw->text), 0, 0, 0, for_user, -1);
 	gtk_text_thaw(GTK_TEXT(nw->text));
+
+	/* Scroll down to the new bottom if not hidden */
+	if (hidden == FALSE)
+		gtk_adjustment_set_value(GTK_TEXT(nw->text)->vadj,
+			GTK_ADJUSTMENT(GTK_TEXT(nw->text)->vadj)->upper);
 
 	/* Get rid of this message */
 	log->ClearLog();
