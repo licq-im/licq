@@ -144,7 +144,6 @@ public:
 
 protected:
   void* m_p_SSL;
-#define m_pSSL ((SSL *) m_p_SSL)
   pthread_mutex_t mutex_ssl;
 };
 
