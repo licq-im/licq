@@ -88,6 +88,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       string strType = packet->GetValue("Content-Type");
       if (strType == "text/x-msmsgscontrol")
       {
+        packet->SkipRN();
+        packet->SkipRN();
+        packet->SkipRN();
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
         if (u)
         {
