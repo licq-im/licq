@@ -1009,6 +1009,7 @@ int CRMSClient::Process_VIEW()
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
+  gUserManager.DropUser(u);
 
   return 0;
 }
