@@ -2281,11 +2281,15 @@ void CMainWindow::slot_usermenu()
   const char *szStatus = u->StatusStrShort();
   unsigned short status = u->Status();
 
-  if ( status == ICQ_STATUS_OFFLINE ||
-       status == ICQ_STATUS_ONLINE)
+  if (status == ICQ_STATUS_OFFLINE)
   {
     mnuUser->changeItem(mnuUserCheckResponse, tr("Check Auto Response"));
     mnuUser->setItemEnabled(mnuUserCheckResponse, false);
+  }
+  else if (status == ICQ_STATUS_ONLINE)
+  {
+    mnuUser->changeItem(mnuUserCheckResponse, tr("Check Auto Response"));
+    mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
   else
   {
