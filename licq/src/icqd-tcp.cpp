@@ -6,7 +6,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-//#include <iostream.h>
 #include <errno.h>
 
 #include "time-fix.h"

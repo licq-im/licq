@@ -37,6 +37,7 @@ public:
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
+  bool Secure();
   CDHKey *DHKey() { return m_pDHKey; }
   CDHKey *CreateDHKey();
   void ClearDHKey();

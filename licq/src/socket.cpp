@@ -455,6 +455,16 @@ CDHKey *INetSocket::CreateDHKey()
 }
 
 
+bool INetSocket::Secure()
+{
+#ifdef USE_OPENSSL
+  return m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL;
+#else
+  return false;
+#endif
+}
+
+
 //-----INetSocket::SendRaw------------------------------------------------------
 bool INetSocket::SendRaw(CBuffer *b)
 {

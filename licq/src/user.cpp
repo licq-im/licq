@@ -1182,6 +1182,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
   m_nSocketDesc = s->Descriptor();
   m_nLocalPort = s->LocalPort();
   m_nConnectionVersion = s->Version();
+  m_bSecure = s->Secure();
 
   if (m_nIp == 0) m_nIp = s->RemoteIp();
   if (m_nPort == 0) m_nPort = s->RemotePort();
