@@ -56,4 +56,17 @@ public:
 };
 
 
+class DataRegWizard : public CData
+{
+public:
+  DataRegWizard(unsigned long n = 0) : CData(n)
+    {  szOption[0] = '\0'; szPassword1[0] = '\0'; szPassword2[0] = '\0'; szUin[0] = '\0'; nState = 0; }
+  char szOption[80];
+  char szPassword1[80];
+  char szPassword2[80];
+  char szUin[10];
+  int nState;
+};
+
+
 #endif

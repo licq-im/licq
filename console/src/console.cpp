@@ -197,8 +197,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 
   if (gUserManager.OwnerUin() == 0)
   {
-    winMain->wprintf("You have not yet registered a uin.\n"
-                     "Use the Qt-GUI plugin to do so.\n");
+    RegistrationWizard();
   }
 
   fd_set fdSet;
@@ -231,6 +230,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   winMain->wprintf("Exiting\n\n");
   return 0;
 }
+
 
 
 /*---------------------------------------------------------------------------
@@ -395,6 +395,10 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
 
   case ICQ_CMDxSND_REGISTERxUSER:
     // Needs to be better dealt with...
+    // How's this then?
+    winMain->wprintf("Registration complete!\nYour UIN is %ld\n",
+                     gUserManager.OwnerUin());
+    winMain->fProcessInput = &CLicqConsole::InputCommand;
     break;
 
   case ICQ_CMDxSND_SETxSTATUS:
@@ -1021,6 +1025,7 @@ void CLicqConsole::UserCommand_Info(unsigned long nUin, char *)
   gUserManager.DropUser(u);
 }
 
+
 /*---------------------------------------------------------------------------
  * CLicqConsole::InputInfo
  *-------------------------------------------------------------------------*/
@@ -1460,7 +1465,7 @@ void CLicqConsole::InputSendFile(int cIn)
     	return;
 
     // Check to make sure the file exists, if it doesn't then tell the
-    // user it doesn't and quit sending the file.i
+    // user it doesn't and quit sending the file.
     ifstream check_file(data->szFileName);
     
     if(!check_file)
@@ -1797,4 +1802,164 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
 }
 
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::RegistrationWizard
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::RegistrationWizard()
+{
 
+  // Get the input now
+  winMain->fProcessInput = &CLicqConsole::InputRegistrationWizard;
+  winMain->state = STATE_LE;
+  winMain->data = new DataRegWizard();
+
+  winMain->wprintf("%A%CWelcome to the Licq Console Registration Wizard\n\nPress 1 to register a new UIN\nPress 2 if you have a UIN and password\n\n",
+                    A_BOLD, COLOR_GREEN);
+
+  return;
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::InputRegistrationWizard
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::InputRegistrationWizard(int cIn)
+{
+  DataRegWizard *data = (DataRegWizard *)winMain->data;
+  char *sz;
+  
+  switch(winMain->state)
+  {
+    case STATE_PENDING:
+    {
+      if(cIn == CANCEL_KEY)
+      {
+        if(winMain->event != NULL)
+          licqDaemon->CancelEvent(winMain->event);
+      }
+      return;
+    }
+  
+    case STATE_LE:
+    {
+      // Make sure we need to get this
+      if(data->nState == 0)
+      {
+        // If we get NULL back, then we're not done yet
+        if((sz = Input_Line(data->szOption, data->nPos, cIn)) == NULL)
+          return;
+      
+	// Back to 0 for you!
+	data->nPos = 0;
+	
+	if(data->szOption[0] == '1')
+	{
+	  winMain->wprintf("Please enter your password: ");
+	  data->nState = 1;
+	}
+	else if(data->szOption[0] == '2')
+	{
+	  winMain->wprintf("Please enter your UIN: ");
+	  data->nState = 10;
+	}
+
+	return;
+      }
+     
+      // The option to register a new UIN or use an existing is in szOption now
+      switch(data->szOption[0])
+      {
+        case '1':
+          // Register a new UIN
+	  if(data->nState == 1)
+	  {
+	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn)) == NULL)
+              return;
+	   
+	    // Time to go on to the next state
+	    data->nState = 2;
+	    data->nPos = 0;
+
+	    winMain->wprintf("Verify Password: ");
+	    break;
+	  }
+
+	  if(data->nState == 2)
+	  {
+	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn)) == NULL)
+	      return;
+
+	    if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
+	    {
+	      winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
+	      data->nState = 1;
+	      data->nPos = 0;
+	      return;
+	    }
+           
+	    winMain->wprintf("\nRegistering you as a new user...\n");
+	    licqDaemon->icqRegister(data->szPassword1);
+	    winMain->state = STATE_PENDING;
+
+	  }
+	  
+	  break;
+    
+        case '2':
+	{
+          // Use an existing
+	  if(data->nState == 10)
+	  {
+	    if((sz = Input_Line(data->szUin, data->nPos, cIn)) == NULL)
+	      return;
+
+	    data->nState = 11;
+	    data->nPos = 0;
+
+	    winMain->wprintf("Enter your password: ");
+	    return;
+          }
+
+          if(data->nState == 11)
+	  {
+	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn)) == NULL)
+	      return;
+
+	    data->nState = 12;
+	    data->nPos = 0;
+
+	    winMain->wprintf("Verify your password: ");
+	    return;
+	  }
+
+	  if(data->nState == 12)
+	  {
+	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn)) == NULL)
+	      return;
+
+	    // Compare the 2 passwords
+	    if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
+	    {
+	      winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
+	      data->nState = 11;
+              data->nPos = 0;
+	      return;
+	    }
+
+	    // Passwords match if we are this far, now set up the new user
+	    gUserManager.SetOwnerUin(atol(data->szUin));
+	    ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
+	    owner->SetPassword(data->szPassword1);
+	    gUserManager.DropOwner();
+	    winMain->wprintf("Registration complete for user %s\n",
+	                     data->szUin);
+	    winMain->fProcessInput = &CLicqConsole::InputCommand;
+          }	
+          break;
+        }
+        default:
+           winMain->wprintf("Invalid option: %c\n", data->szOption[0]);
+      }
+    }
+  }
+}

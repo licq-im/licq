@@ -132,6 +132,8 @@ public:
   void UserCommand_SetAutoResponse(unsigned long nUin, char *);
 
   void Beep() { printf("\a"); fflush(stdout); }
+  void RegistrationWizard();
+  void InputRegistrationWizard(int cIn);
 };
 
 
