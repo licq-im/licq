@@ -1579,6 +1579,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         sprintf(szTemp, "%d", NewMessages());
         sz = szTemp;
         break;
+      case '%':
+        strcpy(szTemp, "\%");
+        sz = szTemp;
+        break;
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                   L_WARNxSTR, _szFormat[i]);
