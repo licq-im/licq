@@ -150,7 +150,7 @@ protected:
   void SetupHistory();
   void SaveHistory();
   CInfoField *nfoHistory;
-  CHistoryWidget *mlvHistory;
+  CMessageViewWidget *mlvHistory;
   QLabel *lblHistory, *lblFilter;
   QLineEdit* lneFilter;
   QProgressBar* barFiltering;

@@ -68,7 +68,15 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
                            .arg(_cUser->GetAlias()).arg(_cUser->IdString()));
 
   m_nUin = _cUser->Uin();
-  m_szId = _cUser->IdString() ? strdup(_cUser->IdString()) : 0;
+  if (_cUser->IdString())
+  {
+    char *szRealId = 0;
+    ICQUser::MakeRealId(_cUser->IdString(), _cUser->PPID(), szRealId);
+    m_szId = strdup(szRealId);
+    delete [] szRealId;
+  }
+  else
+    m_szId = 0;
   m_szAlias = _cUser->GetAlias();
   m_nPPID = _cUser->PPID();
   m_bUrgent = false;
@@ -89,7 +97,16 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
 {
   m_nGroupId = (unsigned short)(-1);
   m_nUin = _cUser->Uin();
-  m_szId = _cUser->IdString() ? strdup(_cUser->IdString()) : 0;
+  if (_cUser->IdString())
+  {
+    char *szRealId = 0;
+    ICQUser::MakeRealId(_cUser->IdString(), _cUser->PPID(), szRealId);
+    m_szId = strdup(szRealId);
+    delete [] szRealId;
+  }
+  else
+    m_szId = 0;
+
   m_szAlias = _cUser->GetAlias();
   m_nPPID = _cUser->PPID();
   m_bUrgent = false;
@@ -722,15 +739,22 @@ void CUserView::timerEvent(QTimerEvent* e)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        if (item->ItemId() && (strcmp(item->ItemId(), carId) == 0) &&
+        char *szRealId = 0;
+        ICQUser::MakeRealId(item->ItemId(), item->ItemPPID(), szRealId);
+        if (item->ItemId() && (strcmp(szRealId, carId) == 0) &&
             item->ItemPPID() == carPPID)
         {
           if(carCounter == 1)
             item->repaint();
           else
             item->drawCAROverlay(&p);
-          if(!doGroupView)  break;
+          if(!doGroupView)
+          {
+            delete [] szRealId;
+            break;
+          }
         }
+        delete [] szRealId;
       }
     }
 
@@ -758,13 +782,23 @@ void CUserView::timerEvent(QTimerEvent* e)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        if (item->ItemId() && (strcmp(item->ItemId(), onlId) == 0) &&
+        char *szRealId = 0;
+        ICQUser::MakeRealId(item->ItemId(), item->ItemPPID(), szRealId);
+
+        if (szRealId && (strcmp(szRealId, onlId) == 0) &&
             item->ItemPPID() == onlPPID)
         {
           found = true;
           item->repaint();
-          if(!doGroupView)  break;
+          if(!doGroupView)
+          {
+            delete [] szRealId;
+            break;
+          }
         }
+
+        if (szRealId)
+          delete [] szRealId;
       }
     }
 

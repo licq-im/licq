@@ -33,6 +33,19 @@ public:
 };
 #endif
 
+class CColorOption : public QPushButton
+{
+   Q_OBJECT
+public:
+   CColorOption (QWidget* parent=0);
+
+signals:
+   void changed();
+   
+protected slots:
+	 void slot_select_color();
+};
+
 class OptionsDlg : public LicqDialog
 {
    Q_OBJECT
@@ -122,6 +135,18 @@ protected:
    QCheckBox *popEmail, *popPhone, *popFax, *popCellular, *popIP,
 	*popLastOnline, *popOnlineSince, *popIdleTime, *popID;
 
+   QWidget* new_chat_options();
+   CMessageViewWidget *msgViewer;
+   QTabWidget *tabViewer;
+   QComboBox *cmbStyle;
+   QCheckBox *chkLineBreak;
+   CColorOption *btnColorRcv;
+   CColorOption *btnColorSnt;
+   CColorOption *btnColorRcvHistory;
+   CColorOption *btnColorSntHistory;
+   CColorOption *btnColorTabLabel;
+   CColorOption *btnColorTypingLabel;
+   CColorOption *btnColorChatBkg;
    // Phone & celluar tab
    QWidget* new_phone_options();
 
@@ -151,6 +176,7 @@ protected slots:
   void slot_useMsgChatView(bool);
   void slot_ok();
   void slot_chkOnEventsToggled(bool);
+  void slot_refresh_msgViewer();
 };
 
 

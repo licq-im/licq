@@ -13,6 +13,7 @@
 
 #include "mledit.h"
 #include "mlview.h"
+#include "licq_message.h"
 
 #include <list>
 
@@ -177,7 +178,17 @@ public:
   virtual ~CMessageViewWidget();
 
   void setOwner(const char *szId);
+  void addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date, 
+    bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted, 
+    QString contactName, QString messageText);
 
+  unsigned short m_nMsgStyle;
+  bool m_bAppendLineBreak;
+  QColor m_colorRcvHistory;
+  QColor m_colorSntHistory;
+  QColor m_colorRcv;
+  QColor m_colorSnt;
+  
 public slots:
   virtual void addMsg(CUserEvent *, const char * = 0, unsigned long = 0);
   void addMsg(ICQEvent *);

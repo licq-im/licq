@@ -34,6 +34,7 @@
 #include <qstylesheet.h>
 #include <qtabwidget.h>
 #include <qtoolbutton.h>
+#include <qcolordialog.h>
 #include <qtextcodec.h>
 #ifdef USE_KDE
 #include <kapp.h>
@@ -104,6 +105,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
   tab[3] = new_network_options();
   tab[4] = new_status_options();
   tab[5] = new_misc_options();
+  tab[6] = new_chat_options();
   //  tab[6] = new_phone_options();
 
   tabw->addTab(tab[0], tr("General"));
@@ -112,6 +114,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
   tabw->addTab(tab[3], tr("Network"));
   tabw->addTab(tab[4], tr("Status"));
   tabw->addTab(tab[5], tr("Miscellaneous"));
+  tabw->addTab(tab[6], tr("Message Display"));
   //  tabw->addTab(tab[6], tr("Phone"));
 
   SetupOptions();
@@ -207,6 +210,18 @@ void OptionsDlg::SetupOptions()
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
+  
+  chkLineBreak->setChecked(mainwin->m_bAppendLineBreak);
+  cmbStyle->setCurrentItem(mainwin->m_nMsgStyle);
+  btnColorRcv->setPaletteBackgroundColor(mainwin->m_colorRcv);
+  btnColorSnt->setPaletteBackgroundColor(mainwin->m_colorSnt);
+  btnColorRcvHistory->setPaletteBackgroundColor(mainwin->m_colorRcvHistory);
+  btnColorSntHistory->setPaletteBackgroundColor(mainwin->m_colorSntHistory);
+  /*btnColorTabLabel->setPaletteBackgroundColor(mainwin->m_colorTab);*/
+  btnColorTypingLabel->setPaletteBackgroundColor(mainwin->m_colorTabTyping);
+  btnColorChatBkg->setPaletteBackgroundColor(mainwin->m_colorChatBkg);
+  slot_refresh_msgViewer();
+  
   if (mainwin->m_bMsgChatView)
   {
 #if QT_VERSION >= 300
@@ -499,6 +514,16 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
   mainwin->m_bMsgChatView = chkMsgChatView->isChecked();
+  mainwin->m_bAppendLineBreak = chkLineBreak->isChecked();
+  mainwin->m_nMsgStyle = cmbStyle->currentItem();
+  mainwin->m_colorRcv = btnColorRcv->paletteBackgroundColor();
+  mainwin->m_colorSnt = btnColorSnt->paletteBackgroundColor();
+  mainwin->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
+  mainwin->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
+  /*mainwin->m_colorTab = btnColorTabLabel->paletteBackgroundColor();*/
+  mainwin->m_colorTabTyping = btnColorTypingLabel->paletteBackgroundColor();
+  mainwin->m_colorChatBkg = btnColorChatBkg->paletteBackgroundColor();
+
 #if QT_VERSION >= 300
   mainwin->m_bTabbedChatting = chkTabbedChatting->isChecked();
 #endif
@@ -564,7 +589,7 @@ void OptionsDlg::ApplyOptions()
       {
         if (mainwin->licqIcon)
         {
-	  mainwin->licqIcon->close();
+          mainwin->licqIcon->close();
           delete mainwin->licqIcon;
         }
         mainwin->licqIcon = new IconManager_KDEStyle(mainwin, mainwin->mnuSystem);
@@ -1498,6 +1523,121 @@ QWidget* OptionsDlg::new_misc_options()
   return w;
 }
 
+QWidget* OptionsDlg::new_chat_options()
+{
+  QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QHBoxLayout(w, 8, 4);
+
+  QVBox* boxRight = new QVBox(w);
+  lay->addWidget(boxRight);
+  
+  QGroupBox* boxOptions = new QGroupBox(1, Horizontal, tr("Options"), boxRight);
+
+  new QLabel(tr("Style:"), boxOptions);
+  cmbStyle = new QComboBox(false, boxOptions);
+  cmbStyle->insertItem("Default");
+  cmbStyle->insertItem("Compact");
+  cmbStyle->insertItem("Tiny");
+  cmbStyle->insertItem("Table");
+  cmbStyle->insertItem("History");
+  connect(cmbStyle, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+  
+  chkLineBreak = new QCheckBox(tr("Insert Horizontal Line"), boxOptions);
+  connect(chkLineBreak, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
+  
+  QGroupBox *boxColors = new QGroupBox(2, Horizontal, tr("Colors"), boxRight);
+
+  new QLabel(tr("Message Received:"), boxColors);
+  btnColorRcv = new CColorOption(boxColors);
+  
+  new QLabel(tr("Message Sent:"), boxColors);
+  btnColorSnt = new CColorOption(boxColors);
+
+  new QLabel(tr("History Received:"), boxColors);
+  btnColorRcvHistory = new CColorOption(boxColors);
+
+  new QLabel(tr("History Sent:"), boxColors);
+  btnColorSntHistory = new CColorOption(boxColors);
+
+  /*new QLabel(tr("Tab Label Color:"), boxColors);
+  btnColorTabLabel = new CColorOption(boxColors);*/
+
+  new QLabel(tr("Typing Notification Color:"), boxColors);
+  btnColorTypingLabel = new CColorOption(boxColors);
+
+  new QLabel(tr("Background Color:"), boxColors);
+  btnColorChatBkg = new CColorOption(boxColors);
+
+  connect(btnColorSnt, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  connect(btnColorRcv, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  connect(btnColorSntHistory, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  connect(btnColorRcvHistory, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  /*connect(btnColorTabLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));*/
+  connect(btnColorTypingLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  connect(btnColorChatBkg, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  
+  tabViewer = new QTabWidget(w);
+  lay->addWidget(tabViewer);
+  
+  msgViewer = new CMessageViewWidget(0, gMainWindow, tabViewer);
+  tabViewer->insertTab(msgViewer, "Marge");
+  
+  lay->activate();
+
+  return w;
+}
+
+void OptionsDlg::slot_refresh_msgViewer()
+{
+  QDateTime date;
+  char *names[2] = {"Marge", "Homer"};
+  char *msgs[7] = {
+      "This is received message",
+      "This is a sent message",
+      "Have you gone to the Licq IRC Channel?",
+      "No, where is it?",
+      "#Licq on irc.freenode.net",
+      "Cool, I'll see you there :)",
+      "We'll be waiting!"};
+  
+  msgViewer->m_nMsgStyle = cmbStyle->currentItem();
+  msgViewer->m_bAppendLineBreak = chkLineBreak->isChecked();
+  msgViewer->m_colorSnt = btnColorSnt->paletteBackgroundColor();
+  msgViewer->m_colorRcv = btnColorRcv->paletteBackgroundColor();
+  msgViewer->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
+  msgViewer->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
+  tabViewer->setPaletteForegroundColor(btnColorTypingLabel->paletteBackgroundColor());
+  msgViewer->setPaletteBackgroundColor(btnColorChatBkg->paletteBackgroundColor());
+  
+  msgViewer->clear();
+  for (unsigned int i = 0; i<7; i++)
+  {
+    msgViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
+          QString(""),
+          date,
+          true, false, false, false, 
+          names[i % 2],
+          MLView::toRichText(msgs[i], true, true));
+  }
+}
+
+CColorOption::CColorOption (QWidget* parent)
+    : QPushButton(parent) 
+{
+  setFixedSize(40, 20);
+  connect(this, SIGNAL(clicked()), this, SLOT(slot_select_color()));
+}
+
+void CColorOption::slot_select_color()
+{
+  QColor color = QColorDialog::getColor(
+      paletteBackgroundColor(), this);
+  if (color.isValid()) 
+  {
+    setPaletteBackgroundColor(color);
+    emit changed();
+  }
+}
 
 // -----------------------------------------------------------------------------
 QWidget* OptionsDlg::new_phone_options()
@@ -1517,10 +1657,13 @@ void OptionsDlg::buildAutoStatusCombos(bool firstTime)
   int selectedNA, selectedAway;
 
   //Save selection (or get first selection)
-  if (firstTime) {
+  if (firstTime)
+  {
     selectedAway = mainwin->autoAwayMess;
     selectedNA   = mainwin->autoNAMess;
-  } else {
+  }
+  else
+  {
     selectedAway = cmbAutoAwayMess->currentItem();
     selectedNA   = cmbAutoNAMess->currentItem();
   }

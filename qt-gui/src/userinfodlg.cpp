@@ -1624,7 +1624,8 @@ void UserInfoDlg::CreateHistory()
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
-  mlvHistory = new CHistoryWidget(p, "history");
+  mlvHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, p, "history");
+  mlvHistory->m_nMsgStyle = 4; /* STYLE_HISTORY */
 #if QT_VERSION >= 300
   connect(mlvHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
@@ -1925,6 +1926,8 @@ void UserInfoDlg::ShowHistory()
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
   char* ftxt = qstrdup(codec->fromUnicode(lneFilter->text()));
   int flen = strlen(ftxt);
+  
+  mlvHistory->clear();
   while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
   {
     if(UserInfoDlg::chkContains((*tempIter)->Text(), ftxt, flen))
@@ -1937,25 +1940,15 @@ void UserInfoDlg::ShowHistory()
         messageText = codec->toUnicode((*tempIter)->Text());
 
 #if QT_VERSION >= 300
-      const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
-      s = QString("<font color=\"%1\"><b>%2<br>%3 [%4%5%6%7]</b></font><br><br>")
-                  .arg(color)
-                  .arg(((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
-                       .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(contactName)))
-                  .arg(date.toString())
-                  .arg((*tempIter)->IsDirect() ? 'D' : '-')
-                  .arg((*tempIter)->IsMultiRec() ? 'M' : '-')
-                  .arg((*tempIter)->IsUrgent() ? 'U' : '-')
-                  .arg((*tempIter)->IsEncrypted() ? 'E' : '-');
-      tmp.append(s);
-
-      // We break the paragraph here, since the history text
-      // could be in a different BiDi directionality than the
-      // header and timestamp text.
-      s = QString("<font color=\"%1\">%2</font><br><br>")
-                  .arg(color)
-                  .arg(MLView::toRichText(messageText, true, bUseHTML));
-      tmp.append(s);
+      mlvHistory->addMsg((*tempIter)->Direction(), false,
+                  EventDescription(*tempIter),
+                  date,
+                  (*tempIter)->IsDirect(),
+                  (*tempIter)->IsMultiRec(),
+                  (*tempIter)->IsUrgent(),
+                  (*tempIter)->IsEncrypted(),
+                  QStyleSheet::escape(contactName),
+                  MLView::toRichText(messageText, true, bUseHTML));
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only
       // formatting escape codes.
@@ -1996,7 +1989,8 @@ void UserInfoDlg::ShowHistory()
     lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
                            "[<font color=\"%2\">Sent</font>] "
                            "%3 to %4 of %5")
-                        .arg(COLOR_RECEIVED).arg(COLOR_SENT)
+                        .arg(mainwin->m_colorRcv.name())
+                        .arg(mainwin->m_colorSnt.name())
                         .arg(m_nHistoryIndex - m_nHistoryShowing + 1)
                         .arg(m_nHistoryIndex)
                         .arg(m_lHistoryList.size()));
@@ -2004,11 +1998,11 @@ void UserInfoDlg::ShowHistory()
     lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
                            "[<font color=\"%2\">Sent</font>] "
                            "%3 out of %4 matches")
-                        .arg(COLOR_RECEIVED).arg(COLOR_SENT)
+                        .arg(mainwin->m_colorRcv.name())
+                        .arg(mainwin->m_colorSnt.name())
                         .arg(m_nHistoryShowing)
                         .arg(m_lHistoryList.size()));
-  mlvHistory->clear();
-  mlvHistory->append(tmp.left(tmp.length()-4));
+  /*mlvHistory->append(tmp.left(tmp.length()-4));*/
   if(!m_bHistoryReverse)
     mlvHistory->GotoEnd();
   else

@@ -209,9 +209,10 @@ void UserEventCommon::slot_connectsignal()
            this, SLOT(slot_userupdated(CICQSignal *)));
 }
 
-UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
+UserEventTabDlg::UserEventTabDlg(CMainWindow *mainwin, QWidget *parent, const char *name)
   : QWidget(parent, name, WDestructiveClose)
 {
+  this->mainwin = mainwin;
 #if QT_VERSION >= 300
   QBoxLayout *lay = new QVBoxLayout(this);
   tabw = new CETabWidget(this);
@@ -376,7 +377,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
 
         tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
         if (u->GetTyping() == ICQ_TYPING_ACTIVE)
-          tabw->setTabColor(tab, QColor("green"));
+          tabw->setTabColor(tab, mainwin->m_colorTabTyping);
         else
           tabw->setTabColor(tab, QColor("black"));
       }
@@ -1556,24 +1557,16 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
           else
             messageText = codec->toUnicode((*lHistoryIter)->Text());
   
-          // Make the header
-          const char *color = (*lHistoryIter)->Direction() == D_RECEIVER ? "light pink" : "light blue";
-          str = QString("<font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
-              .arg(color)
-              .arg(((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription((*lHistoryIter)) + " ")))
-              .arg(date.toString())
-              .arg((*lHistoryIter)->IsDirect() ? 'D' : '-')
-              .arg((*lHistoryIter)->IsMultiRec() ? 'M' : '-')
-              .arg((*lHistoryIter)->IsUrgent() ? 'U' : '-')
-              .arg((*lHistoryIter)->IsEncrypted() ? 'E' : '-')
-              .arg((*lHistoryIter)->Direction() == D_RECEIVER ? contactName : ownerName);
-          tmp.append(str);
-          
-          // Add the message now
-          str = QString("<font color=\"%1\">%2</font><br><br>")
-              .arg(color)
-              .arg(MLView::toRichText(messageText, true, bUseHTML));
-          tmp.append(str);
+          mleHistory->addMsg((*lHistoryIter)->Direction(), true,
+              ((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? 
+                  QString("") : (EventDescription((*lHistoryIter)) + " ")),
+              date,
+              (*lHistoryIter)->IsDirect(),
+              (*lHistoryIter)->IsMultiRec(),
+              (*lHistoryIter)->IsUrgent(),
+              (*lHistoryIter)->IsEncrypted(),
+              (*lHistoryIter)->Direction() == D_RECEIVER ? contactName : ownerName,
+              MLView::toRichText(messageText, true, bUseHTML));
           lHistoryIter++;
         }
         if (tmp != "")

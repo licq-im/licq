@@ -80,7 +80,7 @@ class UserEventTabDlg : public QWidget
 {
   Q_OBJECT
 public:
-  UserEventTabDlg(QWidget *parent = 0, const char *name = 0);
+  UserEventTabDlg(CMainWindow *mainwin, QWidget *parent = 0, const char *name = 0);
   ~UserEventTabDlg();
 
   void addTab(UserEventCommon *tab, int index = -1);
@@ -95,6 +95,7 @@ public:
 
 private:
   CETabWidget *tabw;
+  CMainWindow *mainwin;
   void updateTitle(QWidget *tab);
   void clearEvents(QWidget *tab);
   void flashTaskbar(bool _bFlash);

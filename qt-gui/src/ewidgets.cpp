@@ -681,6 +681,13 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
 {
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
+  m_nMsgStyle = m->m_nMsgStyle;
+  m_bAppendLineBreak = m->m_bAppendLineBreak;
+  m_colorRcv = m->m_colorRcv;
+  m_colorSnt = m->m_colorSnt;
+  m_colorRcvHistory = m->m_colorRcvHistory;
+  m_colorSntHistory = m->m_colorSntHistory;
+  setPaletteBackgroundColor(m->m_colorChatBkg);
   mainwin = m;
 
 /*
@@ -706,6 +713,14 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
 :CHistoryWidget(parent,name)
 {
   m_nUin= _nUin;
+  m_szId = NULL; // avoid desalocation error at destructor
+  m_nMsgStyle = m->m_nMsgStyle;
+  m_bAppendLineBreak = m->m_bAppendLineBreak;
+  m_colorRcv = m->m_colorRcv;
+  m_colorSnt = m->m_colorSnt;
+  m_colorRcvHistory = m->m_colorRcvHistory;
+  m_colorSntHistory = m->m_colorSntHistory;
+  setPaletteBackgroundColor(m->m_colorChatBkg);
   mainwin = m;
 /*
   // add all unread messages.
@@ -745,6 +760,111 @@ void CMessageViewWidget::addMsg(ICQEvent * _e)
   if (strcmp(_e->Id(), m_szId) == 0 && _e->PPID() == m_nPPID &&
     _e->UserEvent())
     addMsg( _e->UserEvent() );
+}
+
+void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date, 
+  bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted, 
+  QString contactName, QString messageText) 
+{
+  QString s;
+  QString color;
+  
+  if (fromHistory) 
+    if (dir == D_RECEIVER) 
+      color = m_colorRcvHistory.name();
+    else 
+      color = m_colorSntHistory.name();  
+  else
+    if (dir == D_RECEIVER) 
+      color = m_colorRcv.name();
+    else 
+      color = m_colorSnt.name();  
+  
+  /* Remove trailing line breaks. */
+  for (unsigned int i = messageText.length() - 1; i>=0; i--) {
+    if (messageText.at(i) == '\n' || messageText.at(i) == '\r') {
+      messageText.truncate(i);
+    } else {
+      break;
+    }
+  }
+     
+  
+  switch (m_nMsgStyle) {
+    case 0:
+      s = QString("<html><body><font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
+                  .arg(color)
+                  .arg(eventDescription)
+                  .arg(date.time().toString())
+                  .arg(isDirect ? 'D' : '-')
+                  .arg(isMultiRec ? 'M' : '-')
+                  .arg(isUrgent ? 'U' : '-')
+                  .arg(isEncrypted ? 'E' : '-')
+                  .arg(contactName);
+      s.append(QString("<font color=\"%1\">%2</font></body></html>")
+                      .arg(color)
+                      .arg(messageText));
+      break;
+    case 1:
+      s = QString("<font color=\"%1\"><b>(%2%3) [%4%5%6%7] %8: </b></font>")
+                  .arg(color)
+                  .arg(eventDescription)
+                  .arg(date.time().toString())
+                  .arg(isDirect ? 'D' : '-')
+                  .arg(isMultiRec ? 'M' : '-')
+                  .arg(isUrgent ? 'U' : '-')
+                  .arg(isEncrypted ? 'E' : '-')
+                  .arg(contactName);
+      s.append(QString("<font color=\"%1\">%2</font>")
+                      .arg(color)
+                      .arg(messageText));
+      break;
+    case 2:
+      s = QString("<font color=\"%1\"><b>%2%3 - %4: </b></font>")
+                  .arg(color)
+                  .arg(eventDescription)
+                  .arg(date.time().toString())
+                  .arg(contactName);
+      s.append(QString("<font color=\"%1\">%2</font>")
+                      .arg(color)
+                      .arg(messageText));
+      break;  
+    case 3:
+      s = QString("<table border=\"1\"><tr><td><b><font color=\"%1\">%2%3</font><b><td><b><font color=\"%4\">%5</font></b></font></td>")
+                  .arg(color)
+                  .arg(eventDescription)
+                  .arg(date.time().toString())
+                  .arg(color)
+                  .arg(contactName);
+      s.append(QString("<td><font color=\"%1\">%2</font></td></tr></table>")
+                      .arg(color)
+                      .arg(messageText));
+      break; 
+    case 4:
+      s = QString("<font color=\"%1\"><b>%2<br>%3 [%4%5%6%7]</b></font><br><br>")
+                  .arg(color)
+                  .arg((dir == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2")))
+                  .arg(eventDescription)
+                  .arg(contactName)
+                  .arg(date.toString())
+                  .arg(isDirect ? 'D' : '-')
+                  .arg(isMultiRec ? 'M' : '-')
+                  .arg(isUrgent ? 'U' : '-')
+                  .arg(isEncrypted ? 'E' : '-');
+
+      // We break the paragraph here, since the history text
+      // could be in a different BiDi directionality than the
+      // header and timestamp text.
+      s.append(QString("<font color=\"%1\">%2</font><br><br>")
+                  .arg(color)
+                  .arg(messageText));
+    break;     
+  }
+  
+  append(s);
+  if (m_bAppendLineBreak) {
+    append("<hr>");
+  }
 }
 
 void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long _nPPID)
@@ -800,22 +920,15 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
   else
      messageText = codec->toUnicode(e->Text());
 
-  const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
-
-  // QTextEdit::append adds a paragraph break so we don't have to.
-  s = QString("<html><body><font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
-              .arg(color)
-              .arg((e->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(e) + " ")))
-              .arg(sd)
-              .arg(e->IsDirect() ? 'D' : '-')
-              .arg(e->IsMultiRec() ? 'M' : '-')
-              .arg(e->IsUrgent() ? 'U' : '-')
-              .arg(e->IsEncrypted() ? 'E' : '-')
-              .arg(contactName);
-  s.append(QString("<font color=\"%1\">%2</font></body></html>")
-                   .arg(color)
-                   .arg(MLView::toRichText(messageText, true, bUseHTML)));
-  append(s);
+  addMsg(e->Direction(), false,
+         (e->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(e) + " ")),
+         date,
+         e->IsDirect(),
+         e->IsMultiRec(),
+         e->IsUrgent(),
+         e->IsEncrypted(),
+         contactName,
+         MLView::toRichText(messageText, true, bUseHTML));
 #else
   QString messageText = codec->toUnicode(e->Text());
   s.sprintf("%c%s%s [%c%c%c%c] %s:\n%s",

@@ -164,7 +164,8 @@ public:
        m_bTabbedChatting,
        m_bShowHistory,
        m_bDisableDockIcon,
-       m_bSortColumnAscending;
+       m_bSortColumnAscending,
+       m_bAppendLineBreak;
 
   QString m_MsgAutopopupKey;
   QString m_DefaultEncoding;
@@ -176,7 +177,17 @@ public:
 
   unsigned long m_nCurrentGroup, m_nGroupStates;
   unsigned short m_nSortByStatus,
-                 m_nSortColumn;
+                 m_nSortColumn,
+                 m_nMsgStyle;
+                 
+  QColor m_colorRcvHistory,
+         m_colorSntHistory,
+         m_colorRcv,
+         m_colorSnt,
+         m_colorTab,
+         m_colorTabTyping,
+         m_colorChatBkg;
+                   
   GroupType m_nGroupType;
   QString usprintfHelp;
 

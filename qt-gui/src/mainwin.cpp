@@ -429,6 +429,24 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
+  licqConf.ReadNum("ChatMessageStyle", m_nMsgStyle, 0);
+  licqConf.ReadBool("ChatAppendLinebreak", m_bAppendLineBreak, true);
+  
+  licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
+  m_colorRcv = QColor(szTemp);
+  licqConf.ReadStr("ReceiveHistoryColor", szTemp, "light pink");
+  m_colorRcvHistory = QColor(szTemp);
+  licqConf.ReadStr("SentMessageColor", szTemp, "blue");
+  m_colorSnt = QColor(szTemp);
+  licqConf.ReadStr("SentHistoryColor", szTemp, "light blue");
+  m_colorSntHistory = QColor(szTemp);
+  licqConf.ReadStr("TabFontColor", szTemp, 
+      QApplication::palette(this).active().text().name());
+  m_colorTab = QColor(szTemp);
+  licqConf.ReadStr("TabOnTypingColor", szTemp, "yellow");
+  m_colorTabTyping = QColor(szTemp);
+  licqConf.ReadStr("ChatBackground", szTemp, "white");
+  m_colorChatBkg = QColor(szTemp);
 
   licqConf.ReadBool("showPopEmail",m_bPopEmail, false);
   licqConf.ReadBool("showPopPhone",m_bPopPhone, true);
@@ -1473,13 +1491,17 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
 
             while (it)
             {
-              if(strcmp(it->ItemId(), szId) == 0 && it->ItemPPID() == nPPID)
+              char *szRealId = 0;
+              ICQUser::MakeRealId(it->ItemId(), it->ItemPPID(), szRealId);
+              if(strcmp(it->ItemId(), szRealId) == 0 && it->ItemPPID() == nPPID)
               {
                 delete it;
+                delete [] szRealId;
                 if (show_user(u))
                   (void) new CUserViewItem(u, i);
                 break;
               }
+              delete [] szRealId;
               it = it->nextSibling();
             }
             if (it == NULL)
@@ -2697,7 +2719,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
     else
     {
       // create the tab dialog if it does not exist
-      userEventTabDlg = new UserEventTabDlg();
+      userEventTabDlg = new UserEventTabDlg(this);
       connect(userEventTabDlg, SIGNAL(signal_done()), this, SLOT(slot_doneUserEventTabDlg()));
     }
     parent = userEventTabDlg;
@@ -3472,7 +3494,17 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);
-
+  
+  licqConf.WriteNum("ChatMessageStyle", m_nMsgStyle);
+  licqConf.WriteBool("ChatAppendLinebreak", m_bAppendLineBreak);
+  licqConf.WriteStr("ReceiveMessageColor", m_colorRcv.name());
+  licqConf.WriteStr("ReceiveHistoryColor", m_colorRcvHistory.name());
+  licqConf.WriteStr("SentMessageColor", m_colorSnt.name());
+  licqConf.WriteStr("SentHistoryColor", m_colorSntHistory.name());
+  licqConf.WriteStr("TabFontColor", m_colorTab.name());
+  licqConf.WriteStr("TabOnTypingColor", m_colorTabTyping.name());
+  licqConf.WriteStr("ChatBackground", m_colorChatBkg.name());
+  
   licqConf.WriteBool("showPopEmail",m_bPopEmail);
   licqConf.WriteBool("showPopPhone",m_bPopPhone);
   licqConf.WriteBool("showPopFax",m_bPopFax);
