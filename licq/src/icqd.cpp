@@ -194,8 +194,10 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadNum("Enable", nOnEventCmdType, 0);
   licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, false);
   m_xOnEventManager.SetCommandType(nOnEventCmdType);
-  for (int i = 0; i < MAX_ON_EVENT; i++)
+  for (int i = 0; i < MAX_ON_EVENT; i++) {
     szOnParams[i] = new char[MAX_FILENAME_LEN];
+    szOnParams[i][0] = '\0';
+  }
   licqConf.ReadStr("Command", szOnEventCommand, "play");
   licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG], "");
   licqConf.ReadStr("Url", szOnParams[ON_EVENT_URL], "");
