@@ -14,7 +14,7 @@
 frame.pixmap = none
 frame.mask = none
 frame.border.top = 0
-frame.border.bottom = 50
+frame.border.bottom = 80
 frame.border.left = 0
 frame.border.right = 0
 frame.hasMenuBar = 1

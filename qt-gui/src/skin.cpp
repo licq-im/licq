@@ -268,11 +268,11 @@ void CSkin::SetDefaultValues()
   frame.pixmap = NULL;
   frame.mask = NULL;
   frame.border.top = 0;
-  frame.border.bottom = 80;
+  frame.border.bottom = 50;
   frame.border.left = 0;
   frame.border.right = 0;
   frame.hasMenuBar = 1;
-  frame.frameStyle = 51;
+  frame.frameStyle = 33;
   frame.transparent = false;
 
   lblStatus.rect.x1 = 5;
@@ -304,9 +304,9 @@ void CSkin::SetDefaultValues()
   lblMsg.frameStyle = 51;
   lblMsg.pixmap = NULL;
 
-  cmbGroups.rect.x1 = 10;
+  cmbGroups.rect.x1 = 5;
   cmbGroups.rect.y1 = -75;
-  cmbGroups.rect.x2 = -10;
+  cmbGroups.rect.x2 = -5;
   cmbGroups.rect.y2 = -55;
   cmbGroups.color.fg = NULL;
   cmbGroups.color.bg = NULL;
@@ -342,10 +342,7 @@ void Rect::AdjustForMenuBar(unsigned short h_old, unsigned short h_new)
 
 void Border::AdjustForMenuBar(unsigned short h_old, unsigned short h_new)
 {
-  if (top >= 0)
-    top += (h_new - h_old);
-  if (bottom >= 0)
-    bottom += (h_new - h_old);
+  top += (h_new - h_old);
 }
 
 
