@@ -38,13 +38,13 @@ void away_msg_window(gushort);
 
 void licq_tray_set_content(GObject *, GdkPixbuf *, int);
 
-GtkWidget *status_bar_new(gint border_width)
+GtkWidget *status_bar_new()
 {
 	/* Create the status menu */
 	_status_menu = gtk_statusbar_new();
 
 	/* Set the border width */
-	gtk_container_set_border_width(GTK_CONTAINER(_status_menu),	border_width);
+	gtk_container_set_border_width(GTK_CONTAINER(_status_menu),	2);
 
 	/* Add in the event box for the status bar */
 	GtkWidget *event_box = gtk_event_box_new();
