@@ -20,217 +20,254 @@
 
 #include "licq_gtk.h"
 #include "event_description.h"
+#include "utilities.h"
 
 #include <gtk/gtk.h>
 #include <time.h>
 
+#include <string>
+using namespace std;
+
 struct history
 {
 	GtkWidget *text;
-	GtkWidget *check;
-	ICQUser *user;
+	GtkWidget *reverse;
+	GtkWidget *progress;
+	GtkTextTag *red, *blue, *bold;
+  HistoryList hlist;
+  HistoryListIter hlist_iter;
+  unsigned long uin;
+  size_t loaded;
+	guint timeout_id;
 };
 
-const gchar *line = "\n----------------------------\n";
+static const int load_slice = 100;
+static const int time_slice = 200;
 
-void reverse_history(GtkWidget *widget, struct history *hist);
-
-void list_history(GtkWidget *widget, ICQUser *user)
+GtkTextBuffer *
+text_buffer_create(struct history *hist)
 {
-	GtkWidget *window;
-	GtkWidget *v_box;
-	GtkWidget *h_box;
-	GtkWidget *scroll;
-	GtkWidget *button;
-	struct history *hist;
-	const gchar *title = g_strdup_printf("History with %s", user->GetAlias());
-	gchar szHdr[256];
+	GtkTextBuffer *tb = gtk_text_buffer_new(NULL);
+	
+	hist->red = gtk_text_buffer_create_tag(tb, NULL, 
+			"foreground-gdk", red, NULL);
+	hist->blue = gtk_text_buffer_create_tag(tb, NULL, 
+			"foreground-gdk", blue, NULL);
+	hist->bold = gtk_text_buffer_create_tag(tb, NULL, 
+			"weight", PANGO_WEIGHT_BOLD, NULL);
+			
+	return tb;
+}
+ 
+gboolean
+load_history(struct history *hist)
+{
+	bool reverse = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hist->reverse));
+    
+  if (reverse) {
+    if (hist->hlist_iter == hist->hlist.begin())
+      return FALSE;
+  }
+  else {
+    if (hist->hlist_iter == hist->hlist.end())
+      return FALSE;
+  }
+      
 	time_t _time;
-	HistoryList hist_list;
-	HistoryListIter history_iter;
+	tm *tmStupid;
+	char szDesc[36], szDate[30];
+	gchar szHdr[256];
 
-	hist = g_new0(struct history, 1);
-	hist->user = user;
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(hist->text));
+	GtkTextIter iter;
+
+  ICQUser *user = gUserManager.FetchUser(hist->uin, LOCK_R);
+	const char *encoding = user->UserEncoding();
+	string alias(s_convert_to_utf8(user->GetAlias(), encoding));
+	gboolean ret = TRUE;
+  for (int i = 0; i < load_slice; ++i) {
+    if (reverse) {
+      if (hist->hlist_iter == hist->hlist.begin()) {
+        ret = FALSE;
+        break;
+      }
+      --(hist->hlist_iter);
+    }
+
+    HistoryListIter h_iter = hist->hlist_iter;
+    _time = (*h_iter)->Time();
+	  tmStupid = localtime(&_time);
+	  strftime(szDate, 29, "%c", tmStupid);
+	  strcpy(szDesc, event_description(*(hist->hlist_iter)));
+
+    GtkTextTag *tag;
+		if ((*hist->hlist_iter)->Direction() == D_RECEIVER)
+			tag = hist->red;
+		else
+			tag = hist->blue;
+
+	  snprintf(szHdr, 255,
+			  "%s %s %s\n%s [%c%c%c%c]\n\n",
+			  szDesc,
+        (*h_iter)->Direction() == D_RECEIVER ? "from" : "to",
+			  alias.c_str(),
+			  szDate,
+			  (*h_iter)->IsDirect() ? 'D' : '-',
+			  (*h_iter)->IsMultiRec() ? 'M' : '-',
+			  (*h_iter)->IsUrgent() ? 'U' : '-',
+			  (*h_iter)->IsEncrypted() ? 'E' : '-');
+
+	  szHdr[255] = '\0';
+    gtk_text_buffer_get_end_iter(tb, &iter);
+	  gtk_text_buffer_insert_with_tags(tb, &iter,
+        szHdr, -1, tag, hist->bold, NULL);
+	  gtk_text_buffer_get_end_iter(tb, &iter);
+	  gtk_text_buffer_insert_with_tags(tb, &iter, 
+    	  s_convert_to_utf8((*h_iter)->Text(), encoding).c_str(), -1, tag, NULL);
+	  gtk_text_buffer_get_end_iter(tb, &iter);
+    gtk_text_buffer_insert(tb, &iter, "\n\n\n", 3);
+
+    hist->loaded++;
+    
+		if (!reverse) {
+      ++(hist->hlist_iter);
+      if (hist->hlist_iter == hist->hlist.end()) {
+        ret = FALSE;
+        break;
+      }
+    }
+  }
+  
+	gUserManager.DropUser(user);
+
+  char txt[50];
+  snprintf(txt, 30, "%u / %u", hist->loaded, hist->hlist.size());
+  gtk_progress_bar_set_text(GTK_PROGRESS_BAR(hist->progress), txt);
+  gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(hist->progress),
+      (double)hist->loaded / hist->hlist.size());
+  return ret;
+}
+
+void
+reverse_cb(GtkWidget *, struct history *hist)
+{
+	if (hist->timeout_id != 0)
+		g_source_remove(hist->timeout_id);
+	GtkTextBuffer *tb = text_buffer_create(hist);
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(hist->text), tb);
+	g_object_unref(G_OBJECT(tb));
+	hist->loaded = 0;
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hist->reverse)))
+		hist->hlist_iter = hist->hlist.end();
+	else
+		hist->hlist_iter = hist->hlist.begin();
+	if (load_history(hist))
+    hist->timeout_id = 
+    	g_timeout_add(time_slice, GSourceFunc(load_history), hist);
+	else
+    hist->timeout_id = 0;
+}
+
+void
+hist_destroy_cb(GtkWidget *, struct history *hist)
+{
+	if (hist->timeout_id != 0)
+		g_source_remove(hist->timeout_id);
+	delete hist;
+}
+
+void 
+list_history(GtkWidget *widget, ICQUser *user)
+{
+	struct history *hist = new history;
+  if (!user->GetHistory(hist->hlist)) {
+	  GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
+                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    GTK_MESSAGE_ERROR,
+                                    GTK_BUTTONS_CLOSE,
+                                    "History for %s could not be loaded.",
+                                    user->GetAlias());
+    gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_destroy (dialog);
+    delete hist;
+		return;
+  }
+	hist->uin = user->Uin();
 
 	// Make the window
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gchar *title = g_strdup_printf("History with %s", user->GetAlias());
+	GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-
+  g_free(title);
+	g_signal_connect(G_OBJECT(window), "destroy",
+      G_CALLBACK(hist_destroy_cb), hist);
+	
 	// Make the boxes
-	v_box = gtk_vbox_new(FALSE, 5);
-	h_box = gtk_hbox_new(FALSE, 5);
+	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
+	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
 
 	// Make the scrolled window
-	scroll = gtk_scrolled_window_new(0, 0);
+	GtkWidget *scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-				       GTK_POLICY_NEVER,
-				       GTK_POLICY_AUTOMATIC);
+      GTK_POLICY_NEVER,
+			GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scroll, 300, 225);
 
 	// Make the text box
-	hist->text = gtk_text_view_new();
+	GtkTextBuffer *tb = text_buffer_create(hist);
+  if (hist->hlist.size() == 0)
+		gtk_text_buffer_set_text(tb, "No history for this contact.", -1);
+	hist->text = gtk_text_view_new_with_buffer(tb);
+	g_object_unref(G_OBJECT(tb));
+
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(hist->text), GTK_WRAP_WORD);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(hist->text), FALSE);
 	gtk_container_add(GTK_CONTAINER(scroll), hist->text);
 
 	// Pack the scrolled window
-	gtk_box_pack_start(GTK_BOX(v_box), scroll, TRUE, TRUE, 0);
-
+  GtkWidget *frame = gtk_frame_new(NULL);
+  gtk_container_add(GTK_CONTAINER(frame), scroll);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, TRUE, TRUE, 5);
+  
+  // Add the loading progress bar
+  hist->progress = gtk_progress_bar_new();
+	gtk_box_pack_start(GTK_BOX(v_box), hist->progress, FALSE, FALSE, 5);
+  
 	// The close button
-	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	GtkWidget *button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	g_signal_connect(G_OBJECT(button), "clicked",
 			G_CALLBACK(window_close), window);
 
 	// The reverse check button
-	hist->check = gtk_check_button_new_with_label("Reverse");
-	g_signal_connect(G_OBJECT(hist->check), "toggled",
-			   G_CALLBACK(reverse_history), hist);
+	hist->reverse = gtk_check_button_new_with_mnemonic("_Reverse");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hist->reverse), TRUE);
+	g_signal_connect(G_OBJECT(hist->reverse), "toggled",
+      G_CALLBACK(reverse_cb), hist);
 
 	// Pack them
-	gtk_box_pack_start(GTK_BOX(h_box), hist->check, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), hist->reverse, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), button, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 	
-	// Add in the history
-	if(!user->GetHistory(hist_list))
-		return;
-
-	// The three colors, blue, red, and white
-	GdkColor clrBlue, clrRed, clrWhite;
-
-	clrBlue.red   = 0;
-	clrBlue.green = 0;
-	clrBlue.blue  = 0xFFFF;
-	clrBlue.pixel = gulong(255 * 256);
-
-	clrRed.red   = 0xFFFF;
-	clrRed.green = 0;
-	clrRed.blue  = 0;
-	clrRed.pixel = 255;
-
-	clrWhite.red   = 0xFFFF;
-	clrWhite.green = 0xFFFF;
-	clrWhite.blue  = 0xFFFF;
-	clrWhite.pixel = 255;
-
-	history_iter = hist_list.begin();
-	GtkTextBuffer *tb = gtk_text_buffer_new(NULL);
-
-	// Easy way, small memory
-	GdkColor *clrColor;
-	char szDesc[36], szDate[30];
-	tm *tmStupid;
-	
-	while(history_iter != hist_list.end())
-	{
-		_time = (*history_iter)->Time();
-		tmStupid = localtime(&_time);
-		strftime(szDate, 29, "%c", tmStupid);
-		strcpy(szDesc, event_description(*history_iter));
-		
-		if ((*history_iter)->Direction() == D_RECEIVER)
-		{
-			clrColor = &clrRed;
-			snprintf(szHdr, 255,
-			         "%s from %s\n%s [%c%c%c%c]\n\n",
-				 szDesc,
-				 user->GetAlias(),
-				 szDate,
-				 (*history_iter)->IsDirect() ? 'D' : '-',
-				 (*history_iter)->IsMultiRec() ? 'M' : '-',
-				 (*history_iter)->IsUrgent() ? 'U' : '-',
-				 (*history_iter)->IsEncrypted() ? 'E' : '-');
-		}
-		else
-		{
-			clrColor = &clrBlue;
-			snprintf(szHdr, 255,
-			         "%s to %s\n%s [%c%c%c%c]\n\n",
-				 szDesc,
-				 user->GetAlias(),
-				 szDate,
-				 (*history_iter)->IsDirect() ? 'D' : '-',
-				 (*history_iter)->IsMultiRec() ? 'M' : '-',
-				 (*history_iter)->IsUrgent() ? 'U' : '-',
-				 (*history_iter)->IsEncrypted() ? 'E' : '-');
-		}
-
-		szHdr[255] = '\0';
-		GtkTextTag *tag = gtk_text_buffer_create_tag(tb, NULL, 
-				"foreground-gdk", clrColor,
-				"background-gdk", &clrWhite,
-				NULL);
-		GtkTextIter iter;
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		gtk_text_buffer_insert_with_tags(tb, &iter, 
-    		szHdr, -1, tag, NULL);
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		gtk_text_buffer_insert_with_tags(tb, &iter, 
-    		(*history_iter)->Text(), -1, tag, NULL);
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		gtk_text_buffer_insert(tb, &iter, "\n\n", 2);
-		history_iter++;
- 	}
-
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(hist->text), tb);
-	g_object_unref(G_OBJECT(tb));
-
+	HistoryList hist_list;
+	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 	gtk_container_add(GTK_CONTAINER(window), v_box);
 	gtk_widget_show_all(window);
-}
 
-void reverse_history(GtkWidget *widget, struct history *hist)
-{
-	HistoryList hist_list;
-	HistoryListIter history_iter;
-	time_t _time;
-	char sz_date[35];
+  hist->hlist_iter = hist->hlist.end();
+  hist->loaded = 0;
 
-	GtkTextBuffer *tb = gtk_text_buffer_new(NULL);
-
-	if(!hist->user->GetHistory(hist_list))
-		return;
-	
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hist->check)))
-	  history_iter = --(hist_list.end());
- 	else
-		history_iter = hist_list.begin();
-
-  while(1)
-  {
-		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hist->check)))
-		{
-			if(history_iter == --(hist_list.begin()))
-				break;
- 		}
-		else
-		{
-			if(history_iter == hist_list.end())
-				break;
+  if (hist->hlist.size() == 0)
+		gtk_widget_set_sensitive(hist->reverse, FALSE);
+	else {
+		if (load_history(hist))
+    	hist->timeout_id = 
+					g_timeout_add(time_slice, GSourceFunc(load_history), hist);
+		else {
+			hist->timeout_id = 0;
+	  	if (hist->hlist.size() == 1)
+				gtk_widget_set_sensitive(hist->reverse, FALSE);
 		}
-    _time = (*history_iter)->Time();
-    sprintf(sz_date, "%s\n", ctime(&_time));
-
-		GtkTextIter iter;
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		GtkTextTag *tag = gtk_text_buffer_create_tag(tb, NULL, 
-				"foreground-gdk", 
-				(*history_iter)->Direction() == D_RECEIVER ? red : blue,
-				NULL);
-		gtk_text_buffer_insert_with_tags(tb, &iter, sz_date, -1, tag, NULL);
-		gtk_text_buffer_get_end_iter(tb, &iter);
-		gtk_text_buffer_insert_with_tags(tb, &iter, 
-				(*history_iter)->Text(), -1, 
-				tag, NULL);
-		gtk_text_buffer_get_end_iter(tb, &iter);
-    gtk_text_buffer_insert(tb, &iter, line, -1);
-
-		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hist->check)))
-			history_iter--;
-		else
-			history_iter++;
 	}
- 
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(hist->text), tb);
-	g_object_unref(G_OBJECT(tb));
 }
