@@ -4,6 +4,8 @@
 #include "log.h"
 #include "icqevent.h"
 #include "icqd.h"
+#include "user.h"
+#include "icq-defines.h"
 
 //=====CSignalManager===========================================================
 
