@@ -1,5 +1,3 @@
 Currently known bugs and poor feature implementations in Licq:
 
-o  Multi-party chat does not work.
-o  If the other side plays with the speed bar during a file transfer, licq dies.
-o  Autoconf does not detect a lack of socklen_t
+There are currently no known bugs in Licq. 
