@@ -92,7 +92,7 @@ protected:
   unsigned short m_nGroupId;
   int m_nOnlCount, m_nEvents;
   QCString m_sGroupName;
-  bool m_bStatusInvisible, m_bCustomAR;
+  bool m_bStatusInvisible, m_bCustomAR, m_bSecure;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;
   QString m_sPrefix, m_sSortKey;

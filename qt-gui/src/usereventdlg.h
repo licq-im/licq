@@ -68,7 +68,7 @@ protected:
   CSignalManager *sigman;
   CICQEventTag *icqEventTag;
   QWidget *mainWidget;
-  QPushButton *btnHistory, *btnInfo;
+  QPushButton *btnHistory, *btnInfo, *btnSecure;
 
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
@@ -85,6 +85,7 @@ protected slots:
   void showHistory();
   void showUserInfo();
   void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
+  void slot_security();
 
 signals:
   void finished(unsigned long);

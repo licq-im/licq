@@ -43,6 +43,7 @@
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
 
+
 #undef Status
 
 #define FLASH_TIME 800
@@ -64,6 +65,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
+  m_bSecure = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   setGraphics(_cUser);
@@ -77,6 +79,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nGroupId = (unsigned short)(-1);
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
+  m_bSecure = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
@@ -95,6 +98,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_bItalic = m_bStrike = false;
   m_nWeight = QFont::Bold;
   m_bUrgent = false;
+  m_bSecure = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   // Other users group is sorted at the end
@@ -119,6 +123,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_bItalic = m_bStrike = false;
   m_nWeight = QFont::Normal;
   m_bUrgent = false;
+  m_bSecure = false;
   setSelectable(false);
   setHeight(10);
   m_sSortKey = "";
@@ -196,6 +201,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_bStatusInvisible = u->StatusInvisible();
    m_bCustomAR = u->CustomAutoResponse()[0] != '\0';
    m_nEvents = u->NewMessages();
+   m_bSecure = u->Secure();
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -401,7 +407,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     // If this is the first column then add some extra icons after the text
     else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
     {
-      int w = p->fontMetrics().width(text(1)) + 3;
+      int w = p->fontMetrics().width(text(1)) + 6;
 
       if (width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY))
       {
@@ -420,6 +426,11 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
           p->drawPixmap(w, 0, gMainWindow->pmPrivate);
           w += gMainWindow->pmPrivate.width() + 2;
         }
+      }
+      if (width - w > 8 && m_bSecure)
+      {
+        p->drawPixmap(w, 0, gMainWindow->pmSecureOn);
+        w += gMainWindow->pmSecureOn.width() + 2;
       }
       if (width - w > 8 && m_bCustomAR)
       {

@@ -44,7 +44,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
 
     dnl Did the user give --with-qt-libraries?
 
-    if test "$ac_qt_libraries" = no; then
+    if test "$ac_qt_libraries" = "no"; then
 
       dnl No they didn't, so lets look for them...
 
@@ -86,21 +86,20 @@ AC_DEFUN(AC_PATH_QT_LIB,
 
   dnl Define a shell variable for later checks
 
-  if test "$ac_cv_lib_qtlib" = no; then
+  if test "$ac_cv_lib_qtlib" = "no"; then
     have_qt_lib="no"
   else
     have_qt_lib="yes"
-  fi
-
-  dnl Check if we have the right lib
-  output=`eval "strings $ac_cv_lib_qtlib/libqt.so | grep -l QCString"`
-  if test -z "$output"; then
-    AC_MSG_ERROR([The Qt lib directory
-        $ac_cv_lib_qtlib
-        found by configure doesn't contain a Qt 2.xx lib.
-        Please check your installation.
-        Use the --with-qt-libraries option to overwrite the check.
-    ])
+    dnl Check if we have the right lib
+    output=`eval "strings $ac_cv_lib_qtlib/libqt.so | grep -l QCString"`
+    if test -z "$output"; then
+      AC_MSG_ERROR([The Qt lib directory
+          $ac_cv_lib_qtlib
+          found by configure doesn't contain a Qt 2.xx lib.
+          Please check your installation.
+          Use the --with-qt-libraries option to overwrite the check.
+      ])
+    fi
   fi
 
   AC_MSG_RESULT([$ac_cv_lib_qtlib])

@@ -33,8 +33,9 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(
   if (msg->IsDirect())    t[0] = 'D';
   if (msg->IsUrgent())    t[1] = 'U';
   if (msg->IsMultiRec())  t[2] = 'M';
-  if (msg->IsCancelled()) t[3] = 'C';
-  if (msg->IsLicq())      t[4] = 'L';
+  //if (msg->IsCancelled()) t[3] = 'C';
+  if (msg->IsLicq())      t[3] = 'L';
+  if (msg->IsEncrypted()) t[4] = 'E';
 
   setText(2, t);
   setText(3, sd);

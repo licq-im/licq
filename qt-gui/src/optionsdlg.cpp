@@ -192,7 +192,6 @@ void OptionsDlg::SetupOptions()
   chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
   chkBoldOnMsg->setChecked(mainwin->m_bBoldOnMsg);
   chkManualNewUser->setChecked(mainwin->m_bManualNewUser);
-  chkUseThreadView->setChecked(mainwin->m_bThreadView);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   switch(mainwin->m_nDockMode)
   {
@@ -366,7 +365,6 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bAutoRaise = chkAutoRaise->isChecked();
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
   mainwin->m_bManualNewUser = chkManualNewUser->isChecked();
-  mainwin->m_bThreadView = chkUseThreadView->isChecked();
   mainwin->m_bScrollBar = chkScrollBar->isChecked();
   mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
                       chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
@@ -1035,9 +1033,6 @@ QWidget* OptionsDlg::new_column_options()
   QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
   chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);
   QWhatsThis::add(chkFlashUrgent, tr("Only urgent events will flash"));
-  chkUseThreadView = new QCheckBox(tr("Use Group View"), boxUserWin);
-  QWhatsThis::add(chkUseThreadView, tr("Users will be arranged in groups for "
-                                       "contact list"));
   chkScrollBar = new QCheckBox(tr("Allow scroll bar"), boxUserWin);
   QWhatsThis::add(chkScrollBar, tr("Allow the vertical scroll bar in the user list"));
   chkShowExtIcons = new QCheckBox(tr("Show Extended Icons"), boxUserWin);

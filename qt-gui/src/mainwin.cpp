@@ -86,6 +86,11 @@ extern "C" {
 #endif
 #include "keyrequestdlg.h"
 
+#include "xpm/history.xpm"
+#include "xpm/info.xpm"
+#include "xpm/secure_on.xpm"
+#include "xpm/secure_off.xpm"
+
 #include "licq_qt-gui.conf.h"
 
 static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border border)
@@ -396,6 +401,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   menu = NULL;
 
   ApplyIcons(szIcons, true);
+  pmSecureOn = QPixmap(secure_on_xpm);
+  pmSecureOff = QPixmap(secure_off_xpm);
+  pmHistory = QPixmap(history_xpm);
+  pmInfo = QPixmap(info_xpm);
   initMenu();
   ApplySkin(szSkin, true);
   skin->frame.frameStyle = nFrameStyle;
@@ -986,6 +995,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
     case USER_GENERAL:
     case USER_EXT:
     case USER_STATUS:
+    case USER_SECURITY:
     {
       if (nUin == gUserManager.OwnerUin())
       {
@@ -2634,11 +2644,11 @@ void CMainWindow::initMenu()
    mnuOwnerAdm = new QPopupMenu(NULL);
    mnuOwnerAdm->insertItem(tr("&View System Messages"), OwnerMenuView);
    mnuOwnerAdm->insertSeparator();
-   mnuOwnerAdm->insertItem(tr("&General Info"), OwnerMenuGeneral);
+   mnuOwnerAdm->insertItem(pmInfo, tr("&General Info"), OwnerMenuGeneral);
    mnuOwnerAdm->insertItem(tr("&More Info"), OwnerMenuMore);
    mnuOwnerAdm->insertItem(tr("&Work Info"), OwnerMenuWork);
    mnuOwnerAdm->insertItem(tr("&About"), OwnerMenuAbout);
-   mnuOwnerAdm->insertItem(tr("&History"), OwnerMenuHistory);
+   mnuOwnerAdm->insertItem(pmHistory, tr("&History"), OwnerMenuHistory);
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
@@ -2728,7 +2738,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
    mnuSend->insertSeparator();
-   mnuSend->insertItem(tr("Request &Secure Channel"), mnuUserSendKey);
+   mnuSend->insertItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("Send"), mnuSend);
    mnuUser->insertItem(tr("&Away Modes"), mnuAwayModes);
@@ -2742,8 +2752,8 @@ void CMainWindow::initMenu()
    m->insertItem(tr("&Work Info"), mnuUserWork);
    m->insertItem(tr("&About"), mnuUserAbout);
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
-   mnuUser->insertItem(tr("&Info"), m);
-   mnuUser->insertItem(tr("View &History"), mnuUserHistory);
+   mnuUser->insertItem(pmInfo, tr("&Info"), m);
+   mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
    mnuUser->insertItem(tr("Edit User Group"), mnuGroup);
    mnuUser->insertSeparator();
@@ -2798,6 +2808,10 @@ void CMainWindow::slot_usermenu()
   // Send modes
   mnuSend->setItemEnabled(mnuUserSendChat, !u->StatusOffline());
   mnuSend->setItemEnabled(mnuUserSendFile, !u->StatusOffline());
+  if (u->Secure())
+    mnuSend->changeItem(pmSecureOn, tr("Close &Secure Channel"), mnuUserSendKey);
+  else
+    mnuSend->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
 
   gUserManager.DropUser(u);
 }

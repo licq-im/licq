@@ -105,7 +105,7 @@ public:
 public slots:
   void callInfoTab(int, unsigned long, bool toggle=false);
 
-protected:
+public:
   // Command Tools
   CICQDaemon *licqDaemon;
   CSignalManager *licqSigMan;
@@ -153,7 +153,8 @@ protected:
   unsigned short m_nAutoLogon;
   char *m_szIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
-          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmAuthorize;
+          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact,
+          pmAuthorize, pmSecureOn, pmSecureOff, pmHistory, pmInfo;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
 

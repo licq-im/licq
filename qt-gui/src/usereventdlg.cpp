@@ -59,10 +59,7 @@
 #include "refusedlg.h"
 #include "sigman.h"
 #include "showawaymsgdlg.h"
-
-#include "xpm/history.xpm"
-#include "xpm/info.xpm"
-
+#include "keyrequestdlg.h"
 
 // -----------------------------------------------------------------------------
 
@@ -91,13 +88,18 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   nfoTimezone = new CInfoField(this, true);
   nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2);
   layt->addWidget(nfoTimezone);
+
+  btnSecure = new QPushButton(this);
+  QToolTip::add(btnSecure, tr("Secure channel information"));
+  layt->addWidget(btnSecure);
+  connect(btnSecure, SIGNAL(clicked()), this, SLOT(slot_security()));
   btnHistory = new QPushButton(this);
-  btnHistory->setPixmap(QPixmap(history_xpm));
+  btnHistory->setPixmap(gMainWindow->pmHistory);
   QToolTip::add(btnHistory, tr("Show User History"));
   connect(btnHistory, SIGNAL(clicked()), this, SLOT(showHistory()));
   layt->addWidget(btnHistory);
   btnInfo = new QPushButton(this);
-  btnInfo->setPixmap(QPixmap(info_xpm));
+  btnInfo->setPixmap(gMainWindow->pmInfo);
   QToolTip::add(btnInfo, tr("Show User Info"));
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
@@ -143,6 +145,11 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
     }
   }
 
+  if (u->Secure())
+    btnSecure->setPixmap(gMainWindow->pmSecureOn);
+  else
+    btnSecure->setPixmap(gMainWindow->pmSecureOff);
+
   m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
              QString::fromLocal8Bit(u->GetFirstName()) + " " +
              QString::fromLocal8Bit(u->GetLastName())+ ")";
@@ -185,6 +192,8 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
       break;
     }
     case USER_GENERAL:
+    case USER_SECURITY:
+    case USER_BASIC:
     {
       SetGeneralInfo(u);
       break;
@@ -206,6 +215,12 @@ void UserEventCommon::showHistory()
 void UserEventCommon::showUserInfo()
 {
   mainwin->callInfoTab(mnuUserGeneral, m_nUin, true);
+}
+
+
+void UserEventCommon::slot_security()
+{
+  (void) new KeyRequestDlg(sigman, m_nUin);
 }
 
 

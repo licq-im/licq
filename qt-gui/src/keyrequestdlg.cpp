@@ -16,13 +16,11 @@
 */
 
 // written by Graham Roff <graham@licq.org>
-// enhanced by Dirk A. Mueller <dmuell@gmx.net>
 // -----------------------------------------------------------------------------
 
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-
 #include <qapplication.h>
 
 #include "licq_icqd.h"
@@ -38,15 +36,15 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
 {
   m_nUin = nUin;
   sigman = _sigman;
+  icqEventTag = NULL;
 
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  setCaption(tr("Licq - Secure Key Request with %1").arg(u->GetAlias()));
-  gUserManager.DropUser(u);
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  setCaption(tr("Licq - Secure Channel with %1").arg(u->GetAlias()));
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 
   QLabel *lbl = new QLabel(tr(
-  "Secure channel will be established using\n"
+  "Secure channel is established using\n"
   "Diffie-Hellman key exchange, and encrypted\n"
   "using DES XCBC encryption."
   ), this);
@@ -55,36 +53,35 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   lblStatus = new QLabel(this);
   top_lay->addWidget(lblStatus);
 
-  btn = new QPushButton(this);
+  btn = new QPushButton(tr("&Send"), this);
   btn->setMinimumWidth(75);
   btn->setDefault(true);
-  connect(btn, SIGNAL(clicked()), SLOT(cancel()));
+  connect(btn, SIGNAL(clicked()), SLOT(button()));
   top_lay->addWidget(btn);
+
+  QPushButton *btnCancel = new QPushButton(tr("&Close"), this);
+  btnCancel->setMinimumWidth(75);
+  connect(btnCancel, SIGNAL(clicked()), SLOT(cancel()));
+  top_lay->addWidget(btnCancel);
 
   if (gLicqDaemon->CryptoEnabled())
   {
-    lblStatus->setText(tr("Requesting secure channel..."));
-    btn->setText(tr("&Cancel"));
-
-    show();
-    // Call sync to actually show the window before calling the next functions
-    // still doesn't work properly...fucking Qt...
-    QApplication::syncX();
-
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
-    icqEventTag = gLicqDaemon->icqSendKeyRequest(m_nUin);
-    if (icqEventTag == NULL) doneEvent(NULL);
+    m_bOpen = !u->Secure();
+    if (u->Secure())
+      lblStatus->setText("Ready to close channel");
+    else
+      lblStatus->setText("Ready to request channel");
   }
   else
   {
     lblStatus->setText(tr("Client does not support OpenSSL.\n"
                           "Rebuild Licq with OpenSSL support."));
-    btn->setText(tr("&Close"));
-    icqEventTag = NULL;
-
-    show();
+    btn->setEnabled(false);
   }
 
+  gUserManager.DropUser(u);
+
+  show();
 }
 
 
@@ -92,22 +89,39 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
 
 KeyRequestDlg::~KeyRequestDlg()
 {
-  delete icqEventTag;
-}
-
-
-
-// -----------------------------------------------------------------------------
-
-void KeyRequestDlg::cancel()
-{
   if (icqEventTag != NULL)
   {
     gLicqDaemon->CancelEvent(icqEventTag);
     delete icqEventTag;
     icqEventTag = NULL;
   }
+}
 
+
+
+// -----------------------------------------------------------------------------
+
+void KeyRequestDlg::button()
+{
+  connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+
+  if (m_bOpen)
+  {
+    lblStatus->setText(tr("Requesting secure channel..."));
+    QApplication::syncX();
+    icqEventTag = gLicqDaemon->icqOpenSecureChannel(m_nUin);
+  }
+  else
+  {
+    lblStatus->setText(tr("Closing secure channel..."));
+    QApplication::syncX();
+    icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_nUin);
+  }
+}
+
+
+void KeyRequestDlg::cancel()
+{
   QWidget::close(true);
 }
 
@@ -123,7 +137,10 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
   QString result;
   if (e == NULL)
   {
-    result = tr("<font color=\"yellow\">Secure channel already established.</font>\n");
+    if (m_bOpen)
+      result = tr("<font color=\"yellow\">Secure channel already established.</font>\n");
+    else
+      result = tr("<font color=\"yellow\">Secure channel not established.</font>\n");
   }
   else
   {
@@ -132,15 +149,14 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
       case EVENT_FAILED:
         result = tr("<font color=\"red\">Remote client does not support OpenSSL.</font>");
         break;
-      case EVENT_TIMEDOUT: // never happens
-        result = tr("Request timedout.");
-        break;
       case EVENT_ERROR: // could not connect to remote host (or out of memory)
-        result = tr("<font color=\"red\">Error sending request.\n"
-                    "Could not connect to remote client.</font>");
+        result = tr("<font color=\"red\">Could not connect to remote client.</font>");
         break;
       case EVENT_SUCCESS:
-        result = tr("<font color=\"green\">Secure channel established.</font>\n");
+        if (m_bOpen)
+          result = tr("<font color=\"green\">Secure channel established.</font>\n");
+        else
+          result = tr("<font color=\"blue\">Secure channel closed.</font>\n");
         break;
       default:
         break;
@@ -155,7 +171,7 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
     icqEventTag = NULL;
   }
 
-  btn->setText(tr("&Close"));
+  btn->setEnabled(false);
 }
 
 #include "keyrequestdlg.moc"

@@ -20,8 +20,6 @@
 
 #include <qwidget.h>
 
-//#include "user.h"
-
 class CSignalManager;
 class ICQEvent;
 class CICQEventTag;
@@ -41,12 +39,14 @@ protected:
   unsigned long m_nUin;
   QPushButton *btn;
   QLabel *lblStatus;
+  bool m_bOpen;
 
   CSignalManager *sigman;
   CICQEventTag *icqEventTag;
 
 protected slots:
   void cancel();
+  void button();
   void doneEvent(ICQEvent *);
 };
 
