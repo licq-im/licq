@@ -258,6 +258,10 @@ WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight
   resize(vis->width(), vis->height());
   setMask(mask);
 
+  QToolTip::add(this, tr("Left click - Show main window\n"
+                         "Middle click - Show next message\n"
+                         "Right click - System menu\n"));
+
   show();
 }
 
@@ -300,4 +304,3 @@ void IconManager::paintEvent( QPaintEvent * )
   painter.end();
 }
 
-#include "wharf.moc"

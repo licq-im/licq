@@ -10,13 +10,7 @@
 #include <qpopupmenu.h>
 
 #ifndef USE_KDE
-class KApplet : public QWidget
-{
-  Q_OBJECT
-public:
-  KApplet(QWidget* parent=0, const char* name =0)
-    : QWidget(parent, name) { };
-};
+#define KApplet QWidget
 #else
 #include <kapplet.h>
 #endif
@@ -24,7 +18,6 @@ public:
 
 class WharfIcon : public QWidget
 {
-  Q_OBJECT
 public:
   WharfIcon(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
   virtual ~WharfIcon();
@@ -41,7 +34,6 @@ friend class IconManager;
 
 class IconManager : public KApplet
 {
-  Q_OBJECT
 public:
   IconManager(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
   virtual ~IconManager();
