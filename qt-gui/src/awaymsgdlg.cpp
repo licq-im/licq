@@ -97,7 +97,9 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   gUserManager.DropOwner();
 
   mleAwayMsg->setFocus();
+#if QT_VERSION >= 210
   mleAwayMsg->selectAll();
+#endif
 
   if (!isVisible())
   {
