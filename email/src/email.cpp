@@ -80,7 +80,7 @@ int CLicqEmail::Run(CICQDaemon *_licqDaemon)
   {
     unsigned long s = licqDaemon->StringToStatus(m_szStatus);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    bool b = o->getStatusOffline();
+    bool b = o->StatusOffline();
     gUserManager.DropOwner();
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_EMAILxSTR);
@@ -248,7 +248,7 @@ void CLicqEmail::ProcessUserEvent(unsigned long nUin)
   }
 
   CUserEvent *e = NULL;
-  while (u->getNumMessages() > 0)
+  while (u->NewMessages() > 0)
   {
     // Fetch the event
     e = u->GetEvent(0);
@@ -284,7 +284,7 @@ bool CLicqEmail::ForwardEvent(ICQUser *u, CUserEvent *e)
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
     sprintf(szTo, "To: %s <%s>", o->GetAlias(), m_szSMTPTo);
     gUserManager.DropOwner();
-    sprintf (szFrom, "From: \"%s\" <%ld@pager.mirabilis.com>", u->GetAlias(), u->getUin());
+    sprintf (szFrom, "From: \"%s\" <%ld@pager.mirabilis.com>", u->GetAlias(), u->Uin());
     sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmail1());
   }
   sprintf (szDate, "Date: %s", ctime(&t));
