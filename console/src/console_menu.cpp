@@ -72,13 +72,13 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Print out the uins of the users in the current group.\n"
     "Useful if the user has odd characters in their alias." },
   { "set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
-    " %B%cset%b [ %B<variable>%b [ = %B<value>%b ] ]",
+    " %B%cset%b [ %B<variable>%b [ %B<value>%b ] ]",
     "Allows the setting and viewing of options.  With no arguments\n"
     "will print all current set'able values.  With one argument will\n"
     "print the value of the given argument.\n"
     "A boolean value can be yes/true/on or no/false/off.\n"
-    "Color values can be red/blue/green/magenta/white/yellow or\n"
-    "bright_<color> for bright colors." },
+    "Color values can be red/blue/green/cyan/magenta/white/yellow\n"
+    "or bright_<color> for bright colors." },
   { "plugins", &CLicqConsole::MenuPlugins, NULL,
     " %B%cp%blugins",
     "List the currently loaded plugins." },
@@ -829,6 +829,7 @@ void CLicqConsole::MenuSet(char *_szArg)
     *(bool *)aVariables[nVariable].pData =
       ( strcasecmp(szValue, "yes") == 0 ||
         strcasecmp(szValue, "on") == 0 ||
+        strcasecmp(szValue, "1") == 0 ||
         strcasecmp(szValue, "true") == 0 );
     break;
 
