@@ -61,7 +61,7 @@ ChatDlg::ChatDlg(unsigned long _nUin,
 }
 
 
-ChatDlg::~ChatDlg(void)
+ChatDlg::~ChatDlg()
 {
    free(m_sLocalName);
    if (m_sRemoteName != NULL) delete[] m_sRemoteName;
@@ -72,7 +72,7 @@ ChatDlg::~ChatDlg(void)
 //=====Server===================================================================
 
 //-----startAsServer------------------------------------------------------------
-bool ChatDlg::startAsServer(void)
+bool ChatDlg::startAsServer()
 {
    if (!(m_cSocketChatServer.StartServer(getPort())))
    {
@@ -175,8 +175,8 @@ void ChatDlg::StateServer()
                                >> colorBackRed
                                >> colorBackGreen
                                >> colorBackBlue;
-    QColorGroup newColorGroup(QColor((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue), 
-                               QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue), 
+    QColorGroup newColorGroup(QColor((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue),
+                               QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue),
                                mleRemote->palette().normal().light(),
                                mleRemote->palette().normal().dark(),
                                mleRemote->palette().normal().mid(),
@@ -237,7 +237,7 @@ void ChatDlg::StateServer()
 //=====Client===================================================================
 
 //-----startAsClient------------------------------------------------------------
-bool ChatDlg::startAsClient(void)
+bool ChatDlg::startAsClient()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();
@@ -318,7 +318,7 @@ void ChatDlg::StateClient()
     boxRemote->setTitle(tr("Remote - ") + QString::fromLocal8Bit(m_sRemoteName));
 
     // set up the remote colors
-    char colorForeRed, colorForeGreen, colorForeBlue, 
+    char colorForeRed, colorForeGreen, colorForeBlue,
          colorBackRed, colorBackGreen, colorBackBlue, junkChar;
     m_cSocketChat.RecvBuffer() >> colorForeRed
                                >> colorForeGreen
@@ -328,11 +328,11 @@ void ChatDlg::StateClient()
                                >> colorBackGreen
                                >> colorBackBlue
     ;
-    QColorGroup newColorGroup(QColor((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue), 
-                              QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue), 
-                              mleRemote->palette().normal().light(), 
+    QColorGroup newColorGroup(QColor((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue),
+                              QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue),
+                              mleRemote->palette().normal().light(),
                               mleRemote->palette().normal().dark(),
-                              mleRemote->palette().normal().mid(), 
+                              mleRemote->palette().normal().mid(),
                               QColor((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue),
                               QColor((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue));
     mleRemote->setPalette(QPalette(newColorGroup, mleRemote->palette().disabled(), newColorGroup));
@@ -342,7 +342,7 @@ void ChatDlg::StateClient()
     if (!m_cSocketChat.SendPacket(p_font.getBuffer()))
     {
       char buf[128];
-      gLog.Error("%sChat send error (font packet):\n%s%s\n", 
+      gLog.Error("%sChat send error (font packet):\n%s%s\n",
                  L_ERRORxSTR, L_BLANKxSTR, m_cSocketChat.ErrorStr(buf, 128));
       chatClose();
       return;
@@ -374,11 +374,11 @@ void ChatDlg::chatSend(QKeyEvent *e)
 {
    CBuffer buffer(1);
    if (e->key() == Key_Enter)
-      buffer.add((char)0x0D);
+      buffer.PackChar('\x0D');
    else if (e->key() == Key_Return)
-      buffer.add((char)0x0D);
+      buffer.PackChar('\x0D');
    else if (e->key() == Key_Backspace)
-      buffer.add((char)0x08);
+      buffer.PackChar('\x08');
    else if (e->key() == Key_unknown || e->key() == Key_Tab)
    {
       e->ignore();
@@ -388,7 +388,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
    {
       char c = e->ascii();
       gTranslator.ClientToServer(c);
-      buffer.add(c);
+      buffer.PackChar(c);
    }
    else return;
 
@@ -455,25 +455,25 @@ void ChatDlg::chatRecv()
         colorForeRed = chatQueue[1];
         colorForeGreen = chatQueue[2];
         colorForeBlue = chatQueue[3];
-        for (unsigned short i = 0; i < 5; i++) 
+        for (unsigned short i = 0; i < 5; i++)
            chatQueue.pop_front();
-        
+
         QColor newColor(colorForeRed, colorForeGreen, colorForeBlue);
-        QColorGroup newColorGroup(newColor, mleRemote->palette().normal().background(), 
-                                  mleRemote->palette().normal().light(), mleRemote->palette().normal().dark(), 
-                                  mleRemote->palette().normal().mid(), newColor, 
+        QColorGroup newColorGroup(newColor, mleRemote->palette().normal().background(),
+                                  mleRemote->palette().normal().light(), mleRemote->palette().normal().dark(),
+                                  mleRemote->palette().normal().mid(), newColor,
                                   mleRemote->palette().normal().base());
         mleRemote->setPalette(QPalette(newColorGroup, mleRemote->palette().disabled(), newColorGroup));
         break;
      }
-     case 0x01:  // change background color    
+     case 0x01:  // change background color
      {
         if (chatQueue.size() < 5) return;
         unsigned char colorBackRed, colorBackGreen, colorBackBlue;
         colorBackRed = chatQueue[1];
         colorBackGreen = chatQueue[2];
         colorBackBlue = chatQueue[3];
-        for (unsigned short i = 0; i < 5; i++) 
+        for (unsigned short i = 0; i < 5; i++)
            chatQueue.pop_front();
 
         QColor newColor(colorBackRed, colorBackGreen, colorBackBlue);
@@ -484,7 +484,7 @@ void ChatDlg::chatRecv()
         mleRemote->setPalette(QPalette(newColorGroup, mleRemote->palette().disabled(), newColorGroup));
         break;
      }
-     case 0x10: // change font type 
+     case 0x10: // change font type
      {
         if (chatQueue.size() < 3) return;
         unsigned short sizeFontName, encodingFont, i;
@@ -493,11 +493,11 @@ void ChatDlg::chatRecv()
         char nameFont[sizeFontName];
         for (i = 0; i < sizeFontName; i++)
            nameFont[i] = chatQueue[i + 3];
-        encodingFont = chatQueue[sizeFontName + 3] + 
+        encodingFont = chatQueue[sizeFontName + 3] +
                        chatQueue[sizeFontName + 4] << 8;
-        
+
         // Dequeue all characters
-        for (unsigned short i = 0; i < 6 + sizeFontName; i++) 
+        for (unsigned short i = 0; i < 6 + sizeFontName; i++)
            chatQueue.pop_front();
         break;
      }
@@ -508,7 +508,7 @@ void ChatDlg::chatRecv()
         styleFont = chatQueue[1] + chatQueue[2] << 8 + chatQueue[3] << 16 +
                     chatQueue[4] << 24;
         // Dequeue all characters
-        for (unsigned short i = 0; i < 5; i++) 
+        for (unsigned short i = 0; i < 5; i++)
            chatQueue.pop_front();
         break;
      }
@@ -519,7 +519,7 @@ void ChatDlg::chatRecv()
         sizeFont = chatQueue[1] + chatQueue[2] << 8 + chatQueue[3] << 16 +
                     chatQueue[4] << 24;
         // Dequeue all characters
-        for (unsigned short i = 0; i < 5; i++) 
+        for (unsigned short i = 0; i < 5; i++)
            chatQueue.pop_front();
         break;
      }

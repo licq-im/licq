@@ -22,45 +22,45 @@ class ChatDlg : public QWidget
 {
    Q_OBJECT
 public:
-   ChatDlg(unsigned long _nUin, bool _bServer, unsigned short _nPort = 0, 
+   ChatDlg(unsigned long _nUin, bool _bServer, unsigned short _nPort = 0,
            QWidget *parent = NULL, char *name = NULL);
-   virtual ~ChatDlg(void);
+   virtual ~ChatDlg();
 
-   bool startAsClient(void);
-   bool startAsServer(void);
-   
-   unsigned short getPort(void)  { return m_nPort; };
-   unsigned short getLocalPort(void)  { return m_cSocketChat.LocalPort(); };
+   bool startAsClient();
+   bool startAsServer();
+
+   unsigned short getPort()  { return m_nPort; };
+   unsigned short getLocalPort()  { return m_cSocketChat.LocalPort(); };
    void setPort(unsigned short _nPort)  { m_nPort = _nPort; };
-   char *getLocalName(void)  { return m_sLocalName; };
-   char *getRemoteName(void)  { return m_sRemoteName; };
-   unsigned long Uin(void)  { return m_nUin; };
-   bool server(void)  { return m_bServer; };
+   char *getLocalName()  { return m_sLocalName; };
+   char *getRemoteName()  { return m_sRemoteName; };
+   unsigned long Uin()  { return m_nUin; };
+   bool server()  { return m_bServer; };
 
 public slots:
    virtual void hide();
 
 protected:
    void resizeEvent (QResizeEvent *);
-   
-   MLEditWrap *mleLocal, 
+
+   MLEditWrap *mleLocal,
               *mleRemote;
-   QGroupBox *boxLocal, 
+   QGroupBox *boxLocal,
              *boxRemote;
    QPushButton *btnClose;
    QMenuBar *mnuChat;
-   
+
    unsigned long m_nUin;
    CBuffer chatBuffer;
    deque <unsigned char> chatQueue;
-   TCPSocket m_cSocketChat, 
+   TCPSocket m_cSocketChat,
              m_cSocketChatServer;
    QSocketNotifier *snChat, *snChatServer;
    unsigned short m_nPort, m_nState;
    bool m_bServer, m_bAudio;
-   char *m_sRemoteName, 
+   char *m_sRemoteName,
         *m_sLocalName;
-   
+
 protected slots:
    void chatSend(QKeyEvent *);
    void chatRecv();
