@@ -158,6 +158,13 @@ extern void spoof_button_callback(GtkWidget *, struct conversation *);
 extern gboolean convo_close(GtkWidget *, struct conversation *);
 extern gboolean convo_delete_event(GtkWidget *,GdkEventAny *,struct conversation *);
 
+
+/* Functions in extras.cpp */
+extern void do_colors();
+extern void do_pixmaps();
+extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
+
+
 /* Functions in main_window.cpp */
 extern GtkWidget *main_window_new(const gchar *, gint, gint);
 extern void main_window_show();
@@ -174,11 +181,6 @@ extern void menu_system_refresh(GtkWidget *, gpointer);
 extern void pipe_callback(gpointer, gint, GdkInputCondition);
 extern void pipe_signal(CICQSignal *);
 extern void pipe_event(ICQEvent *);
-
-
-/* Functions in pix_colors.cpp */
-extern void do_colors();
-extern void do_pixmaps();
 
 
 /* Functions in status.cpp */
