@@ -4245,8 +4245,10 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
 			// Reconnect now
 			int nSD = m_nTCPSrvSocketDesc;
 			m_nTCPSrvSocketDesc = -1;
+			m_eStatus = STATUS_OFFLINE_MANUAL;
+			m_bLoggingOn = false; 
 			gSocketManager.CloseSocket(nSD);
-
+			postLogoff(nSD, NULL);
 			icqLogon(ICQ_STATUS_ONLINE);
 			break;
 		}
@@ -4322,10 +4324,13 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   else {
     m_nTCPSrvSocketDesc = -1;
     gSocketManager.CloseSocket(nSD);
+    postLogoff(nSD, NULL);
   }
 
   if (packet.getDataSize() == 0) {
     gLog.Info("%sWe're logging off..\n", L_SRVxSTR);
+    m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
     return true;
   }
 
@@ -4339,16 +4344,12 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   case 0x1D:
   case 0x18:
     gLog.Error("%sRate limit exceeded.\n", L_ERRORxSTR);
-    m_eStatus = STATUS_OFFLINE_FORCED;
-    m_bLoggingOn = false;
     PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0));
     break;
 
   case 0x04:
   case 0x05:
     gLog.Error("%sInvalid UIN and password combination.\n", L_ERRORxSTR);
-    m_eStatus = STATUS_OFFLINE_FORCED;
-    m_bLoggingOn = false;
     PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0));
     break;
 
@@ -4362,6 +4363,8 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   if (nError)
   {
     packet.cleanupTLV();
+    m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
     return false;
   }
 
@@ -4370,9 +4373,6 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   {
   case 0x0001:
     gLog.Error("%sYour ICQ number is used from another location.\n", L_ERRORxSTR);
-    m_eStatus = STATUS_OFFLINE_FORCED;
-    m_bLoggingOn = false;
-    icqLogoff();
     break;
 
   case 0:
@@ -4385,6 +4385,8 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   if (nError)
   {
     packet.cleanupTLV();
+    m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
     return false;
   }
 
