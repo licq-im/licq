@@ -22,6 +22,7 @@
 
 #include "plugin.h"
 #include "icqd.h"
+#include "log.h"
 #include "user.h"
 
 #include <gtk/gtk.h>
@@ -29,6 +30,8 @@
 GtkWidget *main_window;
 CICQDaemon *icq_daemon;
 gint _pipe;
+CPluginLog *log;
+gint log_pipe;
 
 const char *LP_Name()
 {
@@ -83,8 +86,17 @@ int LP_Main(CICQDaemon *icqdaemon)
 	/* Attach plugin signals to a callback */
 	gdk_input_add( _Pipe, GDK_INPUT_READ, pipe_callback, (gpointer)NULL);
 
+	/* The log window */
+	log = new CPluginLog();
+	log_pipe = gdk_input_add(log->Pipe(), GDK_INPUT_READ,
+			         log_pipe_callback, (gpointer)NULL);
+	gLog.AddService(new CLogService_Plugin(log,
+					L_INFO | L_WARN | L_ERROR | L_UNKNOWN));
+
 	/* Start the event loop */
 	gtk_main();
+
+	gtk_widget_destroy(main_window);
 
 	icq_daemon->icqLogoff();
 

@@ -18,6 +18,7 @@ licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
 				extras.cpp \
 				file_window.cpp \
 				history_window.cpp \
+				log_window.cpp \
 				main.cpp \
 				main_window.cpp \
 				menu.cpp \

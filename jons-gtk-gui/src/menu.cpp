@@ -80,6 +80,9 @@ void menu_create()
 			     GTK_SIGNAL_FUNC(search_user_window));
 
 	/* The rest of the menu options */
+	item = menu_new_item(menu, "Network Log",
+				GTK_SIGNAL_FUNC(menu_log_window));
+
 	item = menu_new_item(menu, "Refresh",
 				GTK_SIGNAL_FUNC(menu_system_refresh));
 

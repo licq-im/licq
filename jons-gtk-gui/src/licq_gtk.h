@@ -23,6 +23,7 @@
 
 #include "icqd.h"
 #include "icqevent.h"
+#include "log.h"
 #include "user.h"
 
 #include <gtk/gtk.h>
@@ -182,6 +183,13 @@ struct search_user
 	unsigned short sequence;
 };
 
+struct network_window
+{
+	GtkWidget *window;
+	GtkWidget *text;
+	GtkWidget *scroll;
+};
+
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
@@ -207,6 +215,8 @@ extern const gchar *line;
 extern GtkWidget *main_window;
 extern CICQDaemon *icq_daemon;
 extern gint _pipe;
+extern CPluginLog *log;
+extern gint log_pipe;
 
 
 /* Globals in main_window.cpp */
@@ -293,6 +303,13 @@ extern void refuse_ok(GtkWidget *, struct file_accept *);
 /* Functions in history_window.cpp */
 extern void list_history(GtkWidget *, ICQUser *);
 extern void reverse_history(GtkWidget *, struct history *);
+
+
+/* Functions in log_window.cpp */
+extern void menu_log_window(GtkWidget *, gpointer);
+extern void log_pipe_callback(gpointer, gint, GdkInputCondition);
+extern void log_window_close(GtkWidget *, GtkWidget *);
+extern void log_window_clear(GtkWidget *, gpointer);
 
 
 /* Functions in main_window.cpp */
