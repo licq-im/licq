@@ -312,27 +312,25 @@ char *CBuffer::print(char *&p)
      return (p);
    }
 
-   unsigned short nLenBlank = strlen(L_BLANKxSTR);
+   unsigned short nLenBlank = strlen(L_BLANKxSTR) + 6;
    unsigned short nLenBuf = nLenBlank + getDataSize() * 3
      + (int)(getDataSize() / BYTES_PER_LINE) * (1 + nLenBlank)
      + (int)(getDataSize() / 4) * 2
      + 4;
    p = new char[nLenBuf];
    char *pPos = p;
-   sprintf(pPos, "%s", L_BLANKxSTR);
-   pPos += nLenBlank;
-   for(unsigned long i = 0; i < getDataSize(); i++)
+   pPos += sprintf(pPos, "%s0000: ", L_BLANKxSTR);
+   unsigned short i = 0;
+   while(true)
    {
-      sprintf(pPos, "%02X ", (unsigned char)getDataStart()[i]);
-      pPos += 3;
+      pPos += sprintf(pPos, "%02X ", (unsigned char)getDataStart()[i++]);
 
-      if((i + 1) % BYTES_PER_LINE == 0)
-      {
-        sprintf(pPos, "\n%s", L_BLANKxSTR);
-        pPos += 1 + nLenBlank;
-      }
-      /*else if((i + 1) % 4 == 0)
-        pPos += sprintf(pPos, "- ");*/
+      if (i >= getDataSize()) break;
+
+      if(i % BYTES_PER_LINE == 0)
+        pPos += sprintf(pPos, "\n%s%04X: ", L_BLANKxSTR, i);
+      else if(i % 8 == 0)
+        pPos += sprintf(pPos, " ");
    }
    return(p);
 }
