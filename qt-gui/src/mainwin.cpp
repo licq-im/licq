@@ -895,7 +895,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_H:
-      hide();
+      if (licqIcon != NULL) hide();
       break;
 
     case Qt::Key_I:
