@@ -262,8 +262,9 @@ void search_callback(GtkWidget *widget, gpointer data)
 	if(uin >= 10000)
 		su->etag->e_tag = icq_daemon->icqSearchByUin(uin);
 	else
-		su->etag->e_tag = icq_daemon->icqSearchByInfo(nick_name,
-						first_name, last_name,
+                su->etag->e_tag = icq_daemon->icqSerachWhitePages(first_name,
+						last_name,
+						nick_name,
 						email);
 }
 
