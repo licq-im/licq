@@ -466,7 +466,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    updateGroups();
    manualAway = 0;
 
-   setGeometry(xPos, yPos, wVal, hVal);
+   resize(wVal, hVal);
+   move(xPos, yPos);
    if (!bHidden && !bStartHidden) show();
 
    // automatically logon if requested in conf file
@@ -491,8 +492,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    if (gUserManager.OwnerUin() == 0)
      slot_register();
 }
-
-
 
 //-----ApplySkin----------------------------------------------------------------
 void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
@@ -678,47 +677,6 @@ CMainWindow::~CMainWindow()
   if (licqIcon != NULL) delete licqIcon;
 #endif
 
-  // save window position and size
-  char buf[MAX_FILENAME_LEN];
-  sprintf(buf, "%s/licq_qt-gui.conf", BASE_DIR);
-  CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
-  // need some more error checking here...
-  licqConf.LoadFile(buf);
-
-  licqConf.SetSection("appearance");
-  licqConf.WriteBool("Hidden", !isVisible());
-
-  licqConf.SetSection("geometry");
-	unsigned short n;
-	n = x() < 0 ? 0 : x();
-  licqConf.WriteNum("x", n);
-	n = y() < 0 ? 0 : y();
-  licqConf.WriteNum("y", n);
-  n = height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : height());
-  licqConf.WriteNum("h", n);
-  n = width() < 0 ? 0 : width();
-  licqConf.WriteNum("w", n);
-
-  /*licqConf.SetSection("floaties");
-  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
-  unsigned short i = 0;
-  char key[32];
-  for (; i < CUserView::floaties->size(); )
-  {
-    CUserView* iter = CUserView::floaties->at(i);
-    sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteNum(key, iter->firstChild()->ItemUin());
-    sprintf(key, "Floaty%d.X", i);
-    licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
-    sprintf(key, "Floaty%d.Y", i);
-    licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
-    sprintf(key, "Floaty%d.W", i);
-    licqConf.WriteNum(key, (unsigned short)iter->width());
-    i++;
-  }*/
-
-  licqConf.FlushFile();
-  licqConf.CloseFile();
   gMainWindow = NULL;
 }
 
@@ -756,13 +714,58 @@ void CMainWindow::resizeEvent (QResizeEvent *)
 
 void CMainWindow::closeEvent( QCloseEvent *e )
 {
-  if (licqIcon == NULL)
-    QWidget::closeEvent(e);
-  else
-  {
+  if (licqIcon != NULL) {
     e->ignore();
     hide();
+    return;
   }
+
+  // save window position and size
+  char buf[MAX_FILENAME_LEN];
+  sprintf(buf, "%s/licq_qt-gui.conf", BASE_DIR);
+  CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
+  // need some more error checking here...
+  licqConf.LoadFile(buf);
+
+  licqConf.SetSection("appearance");
+  licqConf.WriteBool("Hidden", !isVisible());
+
+  if(isVisible())
+  {
+    licqConf.SetSection("geometry");
+    // I'm not sure if we should really test for negative values...
+    licqConf.WriteNum("x", (unsigned short)(x() < 0 ? 0 : x()));
+    licqConf.WriteNum("y", (unsigned short)(y() < 0 ? 0 : y()));
+    licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
+    licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
+  }
+  else
+    qDebug("MainWindow was hidden, didn't update geometry");
+
+#if 0
+  licqConf.SetSection("floaties");
+  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
+  unsigned short i = 0;
+  char key[32];
+  for (; i < CUserView::floaties->size(); )
+  {
+    CUserView* iter = CUserView::floaties->at(i);
+    sprintf(key, "Floaty%d.Uin", i);
+    licqConf.WriteNum(key, iter->firstChild()->ItemUin());
+    sprintf(key, "Floaty%d.X", i);
+    licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
+    sprintf(key, "Floaty%d.Y", i);
+    licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
+    sprintf(key, "Floaty%d.W", i);
+    licqConf.WriteNum(key, (unsigned short)iter->width());
+    i++;
+  }
+#endif
+
+  licqConf.FlushFile();
+  licqConf.CloseFile();
+
+  QWidget::closeEvent(e);
 }
 
 
