@@ -299,7 +299,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
-  sprintf(szText, "[ %s from %s (%ld) sent %s ]\n\n%s\n", EventDescription(e),
+  sprintf(szText, "[ %s from %s (ICQ#%ld) sent %s ]\n\n%s\n", EventDescription(e),
           u->GetAlias(), u->Uin(), szTime, e->Text());
   CICQEventTag *tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, false);
   delete []szText;
