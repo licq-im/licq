@@ -12,10 +12,12 @@ class QLineEdit;
 class QLabel;
 class QSocketNotifier;
 class QGroupBox;
+class QSplitter;
 
 class CICQDaemon;
 class CUtility;
 class CInfoField;
+class CUtilityInternalWindow;
 
 class MLEditWrap;
 
@@ -28,9 +30,9 @@ public:
 protected:
   CUtility *m_xUtility;
   CICQDaemon *server;
-  FILE *fsCommand;
   unsigned long m_nUin;
   bool m_bIntWin;
+  CUtilityInternalWindow *intwin;
 
   QLabel *lblUtility;
   CInfoField *nfoUtility, *nfoWinType, *nfoDesc;
@@ -39,12 +41,16 @@ protected:
   vector <QLabel *> lblFields;
   vector <QLineEdit *> edtFields;
   QPushButton *btnRun, *btnCancel;
-  MLEditWrap *mleCommand;
-  QSocketNotifier *snCommand;
+  MLEditWrap *mleOut, *mleErr;
+  QSocketNotifier *snOut, *snErr;
+  QSplitter *splOutput;
+
+  void CloseInternalWindow();
 protected slots:
   void slot_run();
   void slot_cancel();
-  void slot_command();
+  void slot_stdout();
+  void slot_stderr();
 };
 
 #endif

@@ -23,6 +23,7 @@
 #include <qpushbutton.h>
 #include <qsocketnotifier.h>
 #include <qlayout.h>
+#include <qsplitter.h>
 
 #include "utilitydlg.h"
 #include "ewidgets.h"
@@ -39,8 +40,9 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   m_nUin = _nUin;
   m_xUtility = u;
   server = _server;
-  fsCommand = NULL;
   m_bIntWin = false;
+  intwin = NULL;
+  snOut = snErr = NULL;
 
   m_xUtility->SetFields(m_nUin);
 
@@ -58,10 +60,11 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   lay->addWidget(new QLabel(tr("Window:"), this), 1, 0);
   nfoWinType = new CInfoField(this, true);
   lay->addWidget(nfoWinType, 1, 2);
-  switch (m_xUtility->WinType()) {
-  case UtilityWinGui: nfoWinType->setText(tr("GUI")); break;
-  case UtilityWinTerm: nfoWinType->setText(tr("Terminal")); break;
-  case UtilityWinLicq: nfoWinType->setText(tr("Internal")); break;
+  switch (m_xUtility->WinType())
+  {
+    case UtilityWinGui: nfoWinType->setText(tr("GUI")); break;
+    case UtilityWinTerm: nfoWinType->setText(tr("Terminal")); break;
+    case UtilityWinLicq: nfoWinType->setText(tr("Internal")); break;
   }
 
   lay->addWidget(new QLabel(tr("Description:"), this), 2, 0);
@@ -85,9 +88,17 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
     edt->setMinimumSize(edt->sizeHint());
     edtFields.push_back(edt);
   }
-  mleCommand = new MLEditWrap(true, boxFields);
-  mleCommand->setReadOnly(true);
-  mleCommand->hide();
+
+  splOutput = new QSplitter(Vertical, boxFields);
+  splOutput->setOpaqueResize();
+  mleOut = new MLEditWrap(true, splOutput);
+  mleOut->setReadOnly(true);
+  mleErr = new MLEditWrap(true, splOutput);
+  mleErr->setReadOnly(true);
+
+  splOutput->setResizeMode(mleErr, QSplitter::Stretch);//FollowSizeHint);
+  splOutput->setResizeMode(mleOut, QSplitter::Stretch);
+  splOutput->hide();
   if (m_xUtility->NumUserFields() == 0) boxFields->hide();
 
   QHBoxLayout *hlay = new QHBoxLayout();
@@ -111,28 +122,16 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 
 CUtilityDlg::~CUtilityDlg()
 {
-
-  if (fsCommand != NULL)
-    pclose(fsCommand);
+  delete intwin;
+  delete snOut;
+  delete snErr;
 }
 
 
 void CUtilityDlg::slot_cancel()
 {
   if (m_bIntWin)
-  {
-    if (fsCommand != NULL)
-    {
-      mleCommand->append("EOF");
-      m_bIntWin = false;
-      disconnect(snCommand, SIGNAL(activated(int)), this, SLOT(slot_command()));
-      pclose(fsCommand);
-      fsCommand = NULL;
-    }
-    lblUtility->setText(tr("Done:"));
-    btnCancel->setText(tr("Close"));
-    m_bIntWin = false;
-  }
+    CloseInternalWindow();
   else
     close();
 }
@@ -198,14 +197,15 @@ void CUtilityDlg::slot_run()
     }
     boxFields->setTitle(tr("Command Window"));
     boxFields->show();
-    mleCommand->show();
+    splOutput->show();
     resize(width(), 300);
-    fsCommand = popen(cmd.local8Bit().data(), "r");
-    if (fsCommand != NULL)
+    intwin = new CUtilityInternalWindow;
+    if (intwin->POpen(cmd.local8Bit().data()))
     {
-      setvbuf(fsCommand, (char*)NULL, _IOLBF, 0);
-      snCommand = new QSocketNotifier(fileno(fsCommand), QSocketNotifier::Read, this);
-      connect(snCommand, SIGNAL(activated(int)), SLOT(slot_command()));
+      snOut = new QSocketNotifier(fileno(intwin->StdOut()), QSocketNotifier::Read, this);
+      connect(snOut, SIGNAL(activated(int)), SLOT(slot_stdout()));
+      snErr = new QSocketNotifier(fileno(intwin->StdErr()), QSocketNotifier::Read, this);
+      connect(snErr, SIGNAL(activated(int)), SLOT(slot_stderr()));
       nSystemResult = 0;
       m_bIntWin = true;
     }
@@ -227,26 +227,51 @@ void CUtilityDlg::slot_run()
   }
 }
 
-void CUtilityDlg::slot_command()
+
+void CUtilityDlg::CloseInternalWindow()
+{
+  mleOut->append("--- EOF ---");
+  mleErr->append("--- EOF ---");
+  m_bIntWin = false;
+  lblUtility->setText(tr("Done:"));
+  btnCancel->setText(tr("C&lose"));
+  disconnect(snOut, SIGNAL(activated(int)), this, SLOT(slot_stdout()));
+  disconnect(snErr, SIGNAL(activated(int)), this, SLOT(slot_stderr()));
+  intwin->PClose();
+}
+
+
+
+void CUtilityDlg::slot_stdout()
 {
   char buf[1024];
-  if (fgets(buf, 1024, fsCommand) == NULL)
+  if (fgets(buf, 1024, intwin->StdOut()) == NULL)
   {
-    mleCommand->append("EOF");
-    if (fsCommand != NULL)
-    {
-      pclose(fsCommand);
-      fsCommand = NULL;
-    }
-    m_bIntWin = false;
-    btnCancel->setText(tr("C&lose"));
-    disconnect(snCommand, SIGNAL(activated(int)), this, SLOT(slot_command()));
+    CloseInternalWindow();
+    return;
   }
-  else
-  {
-    if (buf[strlen(buf) - 1] == '\n') buf[strlen(buf) - 1] = '\0';
-    mleCommand->append(buf);
-  }
+
+  if (buf[strlen(buf) - 1] == '\n') buf[strlen(buf) - 1] = '\0';
+  mleOut->append(buf);
+  mleOut->GotoEnd();
 }
+
+
+
+void CUtilityDlg::slot_stderr()
+{
+  char buf[1024];
+  if (fgets(buf, 1024, intwin->StdErr()) == NULL)
+  {
+    CloseInternalWindow();
+    return;
+  }
+
+  if (buf[strlen(buf) - 1] == '\n') buf[strlen(buf) - 1] = '\0';
+  mleErr->append(buf);
+  mleErr->GotoEnd();
+}
+
+
 
 #include "utilitydlg.moc"
