@@ -499,25 +499,31 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   }
 
   QString s;
-  if (e->Direction() == D_RECEIVER){
-    s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
-              '\001', EventDescription(e).utf8().data(),
-              sd.utf8().data(),
-              e->IsDirect() ? 'D' : '-',
-              e->IsMultiRec() ? 'M' : '-',
-              e->IsUrgent() ? 'U' : '-',
-              e->IsEncrypted() ? 'E' : '-',
-              codec->toUnicode(e->Text()).utf8().data());
-  } else {
-    s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
-              '\002', EventDescription(e).utf8().data(),
-              sd.utf8().data(),
-              e->IsDirect() ? 'D' : '-',
-              e->IsMultiRec() ? 'M' : '-',
-              e->IsUrgent() ? 'U' : '-',
-              e->IsEncrypted() ? 'E' : '-',
-              codec->toUnicode(e->Text()).utf8().data());
-  }
+
+#if QT_VERSION >= 300
+  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s</font>",
+            (e->Direction() == D_RECEIVER) ? "red" : "blue",
+            EventDescription(e).utf8().data(),
+            sd.utf8().data(),
+            e->IsDirect() ? 'D' : '-',
+            e->IsMultiRec() ? 'M' : '-',
+            e->IsUrgent() ? 'U' : '-',
+            e->IsEncrypted() ? 'E' : '-',
+            QStyleSheet::convertFromPlainText(codec->toUnicode(e->Text())).utf8().data()
+           );
+#else
+  s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
+            (e->Direction() == D_RECEIVER) ? '\001' : '\002',
+            EventDescription(e).utf8().data(),
+            sd.utf8().data(),
+            e->IsDirect() ? 'D' : '-',
+            e->IsMultiRec() ? 'M' : '-',
+            e->IsUrgent() ? 'U' : '-',
+            e->IsEncrypted() ? 'E' : '-',
+            codec->toUnicode(e->Text()).utf8().data()
+           );
+#endif
+
   append(s);
   setCursorPosition(numLines(),0);
 
