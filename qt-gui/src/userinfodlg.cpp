@@ -1104,9 +1104,16 @@ void UserInfoDlg::ShowHistory()
     {
       d.setTime_t((*tempIter)->Time());
 #if QT_VERSION >= 300
+
+      QString messageText;
+      if ((*tempIter)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+        messageText = QString::fromUtf8((*tempIter)->Text());
+      else
+        messageText = codec->toUnicode((*tempIter)->Text());
+
       // We cannot use QStyleSheet::convertFromPlainText
-      // since it has a bug in Qt 3 and mixed up line breaks.
-      QString messageText = QStyleSheet::escape(codec->toUnicode((*tempIter)->Text()));
+      // since it has a bug in Qt 3 which causes line breaks to mix up.
+      messageText = QStyleSheet::escape(messageText);
       messageText.replace(QRegExp("\n"), "<br>");
 
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
