@@ -238,7 +238,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
 void CUserViewItem::paintFocus ( QPainter *p, const QColorGroup & cg, const QRect & r )
 {
-  if (m_nUin != 0) QListViewItem::paintFocus(p, cg, r);
+  if (m_nUin != 0 && isSelected()) QListViewItem::paintFocus(p, cg, r);
 }
 
 
