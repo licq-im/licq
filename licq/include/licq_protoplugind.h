@@ -21,6 +21,8 @@ public:
 
   int Pipe() { return pipe_plugin[PIPE_READ]; }
 
+  char *LibName() { return m_szLibName; }
+
 protected:
   CProtoPlugin(const char *);
   CProtoPlugin(); //FIXME ICQ should be its own plugin

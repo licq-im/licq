@@ -44,8 +44,11 @@ friend class CICQDaemon;
 
 //-----CSearchAck------------------------------------------------------------
 // Values for the Status() field of the SearchAck
+//! User is offline.
 const unsigned short  SA_OFFLINE = 0;
+//! User is online.
 const unsigned short  SA_ONLINE = 1;
+//! User has disabled online awareness.
 const unsigned short  SA_DISABLED = 2;
 
 /*! \brief The response to a search request.
@@ -121,11 +124,20 @@ enum ConnectType
 
 enum EventResult
 {
+  //! The event has been acked by the reciepient. Most events will
+  //! return this.
   EVENT_ACKED,
+  //! The event was succcessfully sent.  This is used by extended
+  //! events.  Such as searching for users or updating user info.
   EVENT_SUCCESS,
+  //! The event failed for some reason.  This should rarely happen.
   EVENT_FAILED,
+  //! The event timed out while communicating with the remote socket.
   EVENT_TIMEDOUT,
+  //! The event had some kind of error at some point.
   EVENT_ERROR,
+  //! The event was concelled by the user and was not sent.
+  //! A call to icqCancelEvent was made.
   EVENT_CANCELLED
 };
 
@@ -141,14 +153,7 @@ class ICQEvent
 public:
   // Accessors
 
-  //!This is the result of the event, can be EVENT_ACKED (this is what most
-  //!events will return on success), EVENT_SUCCESS (this is returned when
-  //!the command is extended such as searches or info updates and has been
-  //!completed successfully), EVENT_FAILED (same, but returned when the
-  //!event failed for some reason, should rarely happen), EVENT_TIMEDOUT
-  //!(returned if the event timedout trying to talk to the server),
-  //!EVENT_ERROR (if an error occured at some point), or EVENT_CANCELLED
-  //!(the event was cancelled by a call to icqCancelEvent).
+  //!This is the result of the event.
   EventResult Result()         { return m_eResult; }
 
   //!This will be either ICQ_TCPxACK_ACCEPT if the event was accepted by
@@ -287,15 +292,8 @@ friend void *MonitorSockets_tep(void *p);
 };
 
 //=====CICQSignal============================================================
-/*---------------------------------------------------------------------------
- * CICQSignal
- *
- * This class controls all asynchronous plugin notifications.  When a plugin
- * registers with the Licq daemon it informs the daemon of what signals it
- * is interested in.  From then on, at any time it may receive a signal
- * from the following list.  Each signal contains the signal type, an
- * optional sub-type, uin and signal specific argument.
- *
+
+/*
  * SIGNAL_UPDATExLIST -
  *   Indicates that the user list has changed in some way.  The sub-type
  *   will be one of the following.  In all cases the argument is 0.
@@ -320,52 +318,52 @@ friend void *MonitorSockets_tep(void *p);
  *    USER_SECURITY - The users security status changed.  If the arg is
  *    1 the user is now secure, if it's 0, the user is no longer secure.
  *
- *  SIGNAL_LOGON - Indicates that we have successfully logged on to the
- *  icq network.  UIN and argument are both 0, as is the sub-type.
- *
  *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
- *	LOGOFF_REQUESTED - The user requeted to logoff and the action succeed.
- *	LOGOFF_RATE  - loging off: login failed: rate limit exceeded
- *	LOGOFF_PASSWORD - loging off: login failed: Invalid UIN and password
- *      combination.
+
  *
  *  SIGNAL_ONEVENT - FIXME: MISSING DESCRIPTION
- *
- *  SIGNAL_UI_VIEWEVENT - The UIN is that of the user we want to view the
- *  oldest event of or 0 if we just want to view the oldest pending event.
- *  All other parameters are 0.
- *
- *  SIGNAL_UI_MESSAGE - The UIN is that of the user we want to send a
- *  message. All other parameters are 0.
- *
- *  SIGNAL_ADDxSERVERxLIST - The UIN has been successfully added to the server
- *  list.  The server side alias is just the UIN as a string.  The plugin
- *  may call icqRenameUser after receiving this.  Sub-type is 0.
- *
- *  SIGNAL_NEWxPROTO_PLUGIN - A new protocol plugin has been succesfully loaded.
- *  The sub-type is the id of the plugin.  This is used as a parameter for all
- *  functions dealing with this new protocol.  The UIN and all other parameters
- *  are 0.
- *
- *  SIGNAL_EVENTxID - Returns the event tag of an event from a protocol plugin.
- *  The UI plugin will use this event to keep track of successfully sent events.
- *
  *-------------------------------------------------------------------------*/
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
+//! Indicates that we have successfully logged on to the specified
+//! network.  Argument is the Protocol ID.  All other arguments are
+//! 0.
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
+//! Indicates that we have logged off.  All parameters are 0.
 const unsigned long SIGNAL_LOGOFF                = 0x00000008;
 const unsigned long SIGNAL_ONEVENT               = 0x00000010;
+//! The UIN is that of the user we want to view the oldest event of
+//! or 0 if we just want to view the oldest pending event. All other
+//! parameters are 0.
 const unsigned long SIGNAL_UI_VIEWEVENT          = 0x00000020;
+//! The UIN is that of the user we want to send a message.  All other
+//! parameters are 0.
 const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
+//! The UIN has been successfully added to the server list.  The
+//! server side alias is set to the UIN.  The plugin may call 
+//! icqRenameUser after receiving this.  Sub-type is 0.
 const unsigned long SIGNAL_ADDxSERVERxLIST       = 0x00000080;
+//! Indicates new protocol plugin has been successfully loaded.
+//! The sub-type is the id of the plugin.  This is used as a parameter
+//! for all functions dealing with this new protocol.  The UIN and all
+//! other parameters are 0.
 const unsigned long SIGNAL_NEWxPROTO_PLUGIN      = 0x00000100;
+//! Returns the event tag of an event from a protocol plugin.
+//! The UI plugin will use this event tag to keep track of 
+//! all sent events.
 const unsigned long SIGNAL_EVENTxID              = 0x00000200;
+//! Used by a UI plugin to tell the daemon that all signals should be
+//! sent to the UI plugin.
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
 
 // logoff constants
+//! The user requested to logoff and the action succeeded.
 const unsigned long LOGOFF_REQUESTED             = 0x00000000;
+//! The user requested to logon but failed.  The rate limit of the
+//! server has been exceeded.
 const unsigned long LOGOFF_RATE                  = 0x00000001;
+//! The user requested to logon but failed.  The username and password
+//! combination is invalid.
 const unsigned long LOGOFF_PASSWORD              = 0x00000002;
 
 // User information update constants
@@ -421,23 +419,35 @@ protected:
   char * m_szParameters;
 };
 
+//! Signals that can be sent to protocol plugins.
 enum SIGNAL_TYPE
 {
+  //! The user requested this protocol to logon.
   PROTOxLOGON = 1,
+  //! The user requested this protocol to log off.
   PROTOxLOGOFF,
+  //! The user requested this protocol to change status.
   PROTOxCHANGE_STATUS,
+  //! The user requested this protocol to add a new user.
   PROTOxADD_USER,
+  //! The user requested this protocol to remove a user.
   PROTOxREM_USER,
+  //! The user requested this protocol to send a message.
   PROTOxSENDxMSG
 };
 
+//! The class that gets passed to protocol plugins when a signal
+//! is sent.
 class CSignal
 {
 public:
   CSignal(SIGNAL_TYPE, const char *);
   virtual ~CSignal();
+  //! The signal is being sent to the plugin.
   SIGNAL_TYPE Type()  { return m_eType; }
+  //! The user id that this signal is being used for.
   char *Id()          { return m_szId; }
+  //! The calling thread.
   pthread_t Thread() { return thread_plugin; }
 
 private:
@@ -451,6 +461,7 @@ class CLogonSignal : public CSignal
 public:
   CLogonSignal(unsigned long);
   virtual ~CLogonSignal() { }
+  //! The requested initial status.
   unsigned long LogonStatus() { return m_nLogonStatus; }
 
 private:
@@ -467,6 +478,7 @@ class CChangeStatusSignal : public CSignal
 {
 public:
   CChangeStatusSignal(unsigned long);
+  //! The requested status.
   unsigned long Status()  { return m_nStatus; }
 
 private:
@@ -478,6 +490,7 @@ class CAddUserSignal : public CSignal
 public:
   CAddUserSignal(const char *, bool);
   virtual ~CAddUserSignal() { }
+  //! True if authorization is required to add this user.
   bool AuthRequired() { return m_bAuthRequired; }
 
 private:
@@ -490,11 +503,18 @@ public:
   CRemoveUserSignal(const char *);
 };
 
+/*! \brief Signal to a protocol plugin to send a messasge
+
+    This is sent when ProtoSendMessage has been called. It
+    contains the information necessary for a message to be
+    sent by a protocol plugin
+*/
 class CSendMessageSignal : public CSignal
 {
 public:
   CSendMessageSignal(const char *szId, const char *szMsg);
   virtual ~CSendMessageSignal() { if (m_szMsg) free(m_szMsg); }
+  //! The message to be sent
   char *Message() { return m_szMsg; }
 
 private:

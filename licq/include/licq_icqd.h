@@ -40,12 +40,16 @@ const unsigned short IGNORE_EMAILPAGER = 4;
 const unsigned short IGNORE_WEBPANEL   = 8;
 
 //-----Stats-----------------------------------------------------------------
+//! Keeps information about statistics of the daemon
 class CDaemonStats
 {
 public:
   // Accessors
+  //! Total number of events.
   unsigned long Total() { return m_nTotal; }
+  //! Total number of events for the current day only.
   unsigned long Today() { return m_nTotal - m_nOriginal; }
+  //! Name of the kind of statistic.
   const char *Name()    { return m_szName; }
 
 protected:
@@ -95,20 +99,68 @@ public:
   void SaveConf();
 
   // GUI Plugins call these now
+  //! Add a user to the local contact list.
+  /*!
+      \param szId The user ID to add.
+      \param nPPID The user's protocol plugin ID.
+      \param _bAuthRequired True if we need to get authorization first.
+  */
   void ProtoAddUser(const char *szId, unsigned long nPPID, bool _bAuthRequired = false);
 
+  //! Remove a user from the local contact list.
+  /*!
+      \param szId The user ID to remove.
+      \param nPPID The user's protocol plugin ID.
+  */
   void ProtoRemoveUser(const char *szId, unsigned long nPPID);
 
+  //! Change status for a protocol.
+  /*!
+       \param nPPID The protocol ID.
+       \param nNewStatus The status to change to.
+  */
   unsigned long ProtoSetStatus(unsigned long nPPID, unsigned short nNewStatus);
 
+  //! Logon for a protocol.
+  /*!
+        \param nPPID The protocol ID.
+        \param nLogonStatus The initial status to set after logon is complete.
+  */
   unsigned long ProtoLogon(unsigned long nPPID, unsigned short nLogonStatus);
 
+  //! Logoff from a protocol.
+  /*!
+        \param nPPID The protocol ID.
+  */
   void ProtoLogoff(unsigned long nPPID);
 
+  //! Send a message to a user on this protocol.
+  /*!
+        \param szId The user ID.
+        \param nPPID The protocol ID.
+        \param szMessage The message to be sent.
+        \param bOnline True if the user is online.
+        \param nLevel Any special flags (protocol specific).
+        \param bMultipleRecipients True if sending the same message to
+          more than one user.
+        \param pColor The color of the text and background.
+  */
   unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
      const char *szMessage, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
 
+  //! Send a URL to a user on this protocol
+  /*!
+      This may not be available for all protocols.
+        \param szId The user ID.
+        \param szUrl The URL to be sent.
+        \param szDescription A description of the URL that can be sent.
+        \param bOnline True if the user is online.
+        \param nLevel Any special flags (protocol specific).
+        \param bMultipleRecipients True if sending the same URL to
+          more than one user.
+        \param pColor The color of the text and background.
+  */      
   unsigned long ProtoSendUrl(const char *szId, unsigned long nPPID,
      const char *szUrl, const char *szDescription, bool bOnline,
      unsigned short nLevel, bool bMultipleRecipients = false,
@@ -388,7 +440,8 @@ public:
   // Misc functions
   bool ReconnectAfterUinClash()              { return m_bReconnectAfterUinClash; }
   void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
-  
+  bool AddProtocolPlugins();
+    
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
   DaemonStatsList &AllStats() { return m_sStats; }
