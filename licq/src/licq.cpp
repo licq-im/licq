@@ -278,8 +278,15 @@ bool CLicq::Init(int argc, char **argv)
     fclose(fs);
   }
   fs = fopen(szConf, "w");
-  fprintf(fs, "%d\n", getpid());
-  fclose(fs);
+  if (fs != NULL)
+  {
+    fprintf(fs, "%d\n", getpid());
+    fclose(fs);
+  }
+  else
+    gLog.Warn("%sLicq: %s cannot be opened for writing.\n"
+              "%s      skipping lockfile protection.\n",
+              L_WARNxSTR, szConf, L_BLANKxSTR);
 
   // Open the config file
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
