@@ -710,12 +710,16 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
       {
         //i->setGraphics(u);
         //i->repaint();
+        userView->setUpdatesEnabled(false);
         delete i;
         if (m_bShowOffline || !u->StatusOffline())
           (void) new CUserViewItem(u, userView);
-        //userView->triggerUpdate();
-        //userView->takeItem(i);
-        //userView->insertItem(i);
+        userView->setUpdatesEnabled(true);
+      }
+      else
+      {
+        if (m_bShowOffline || !u->StatusOffline())
+          (void) new CUserViewItem(u, userView);
       }
     }
     gUserManager.DropUser(u);
