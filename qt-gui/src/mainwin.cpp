@@ -269,6 +269,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("w", wVal, 150);
   gLog.Info("%sGeometry configuration (%d, %d) (%d x %d)\n", L_INITxSTR,
             xPos, yPos, wVal, hVal);
+  if (yPos > QApplication::desktop()->height() - 16) yPos = 0;
+  if (xPos > QApplication::desktop()->width() - 16) xPos = 0;
   setGeometry(xPos, yPos, wVal, hVal);
 
   // Load the icons
