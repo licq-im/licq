@@ -83,6 +83,17 @@ AC_DEFUN(AC_PATH_QT_LIB,
     have_qt_lib="yes"
   fi
 
+  dnl Check if we have the right lib
+  output=`eval "nm $ac_cv_lib_qtlib/libqt.so | grep QCString"`
+  if test -z "$output"; then
+    AC_MSG_ERROR([The Qt lib directory
+        $ac_cv_lib_qtlib
+        found by configure doesn't contain a Qt 2.xx lib.
+        Please check your installation.
+        Use the --with-qt-libraries option to overwrite the check.
+    ])
+  fi
+
   AC_MSG_RESULT([$ac_cv_lib_qtlib])
   QT_LDFLAGS="-L$ac_cv_lib_qtlib"
   QT_LIBDIR="$ac_cv_lib_qtlib"
@@ -165,6 +176,14 @@ AC_DEFUN(AC_PATH_QT_MOC,
     moc,
     $QTDIR/bin/moc,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+
+  output=`eval "nm $QT_MOC | grep QCString"`
+  if test -z "$output"; then
+    AC_MSG_ERROR([The Qt meta object compiler found is not for Qt 2!
+        Please check whether $QT_MOC is indeed the Qt moc compiler
+        part of your Qt 2.0 (or higher) lib.
+    ])
+  fi
 ])
 
 AC_DEFUN(AC_PATH_QT_FINDTR,

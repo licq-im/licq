@@ -86,8 +86,10 @@ fi
 
 dnl Check for QT version
 AC_MSG_CHECKING(for QT >= 2.0)
-if ! test -r $QT_INCDIR/qstyle.h; then
+if test ! -r $ac_cv_header_qtinc/qstyle.h; then
   AC_MSG_ERROR([
+
+    $ac_cv_header_qtinc/qstyle.h does not exist.
     Sorry, but you need QT version 2.0 or higher to compile the Qt gui plugin.
   ])
 else
@@ -103,7 +105,7 @@ AC_PATH_KDE
 if test "$have_kde" = yes; then
    AC_DEFINE(USE_KDE)
    KDE_LIBS="-lkdeui -lkdecore -lkfile"
-   dnl -lkfm -lkab"
+   dnl -lkfm -lkab
    dnl QTKDE_MOC="./kdemoc.sh $QT_MOC"
    dnl GUINAME="kde-gui"
    AC_SUBST(KDE_LIBS)
@@ -125,10 +127,10 @@ AC_C_CONST
 AC_C_SOCKLEN_T
 
 AC_OUTPUT(
-  po/Makefile
-  src/Makefile
-  share/Makefile
-	Makefile)
+  po/Makefile \
+  src/Makefile \
+  share/Makefile \
+  Makefile)
 
 echo ""
 echo "Please remember to use GNU make, often installed as gmake."
