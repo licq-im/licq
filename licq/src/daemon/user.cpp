@@ -140,6 +140,7 @@ bool CUserManager::Load(void)
 
   char sUserKey[16];
   unsigned long nUserUin;
+  ICQUser *u;
   usersConf.SetFlags(INI_FxWARN);
   for(unsigned short i = 1; i <= nUsers; i++)
   {
@@ -150,7 +151,13 @@ bool CUserManager::Load(void)
         continue;
      }
      sprintf(filename, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
-     AddUser(new ICQUser(nUserUin, filename));
+
+     //AddUser(new ICQUser(nUserUin, filename));
+     u = new ICQUser(nUserUin, filename);
+     // Store the user in the hash table
+     m_hUsers.Store(u, nUserUin);
+     // Add the user to the list
+     m_vpcUsers.push_back(u);
   }
 
   return true;
@@ -169,6 +176,7 @@ unsigned long CUserManager::AddUser(ICQUser *_pcUser)
 
   // Reorder the user to the correct place
   Reorder(_pcUser, false);
+
   _pcUser->Unlock();
 
   return nUin;
