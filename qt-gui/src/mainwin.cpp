@@ -1001,13 +1001,13 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       updateEvents();
       // If their box is open, kill it
       {
-        QListIterator<ICQFunctions> it(licqUserData);
+        QListIterator<UserViewEvent> it(licqUserView);
         for ( ; it.current(); ++it)
         {
           if ((*it)->Uin() == sig->Uin())
           {
             delete it.current();
-            licqUserData.remove(it.current());
+            licqUserView.remove(it.current());
             break;
           }
         }
@@ -1528,55 +1528,76 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 
 
 //-----CMainWindow::callICQFunction-------------------------------------------
-ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
+void CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
   ICQFunctions *f = NULL;
 
-  if (nUin == 0) return NULL;
+  if (nUin == 0) return;
 
-#if 0
-  ICQUser* u = gUserManager.FetchUser(nUin, LOCK_R);
-  bool pendingMessages = (u->NewMessages() > 0);
-  gUserManager.DropUser(u);
+  UserEventCommon* e = 0;
+  bool doraise = false;
 
-  if(pendingMessages) {
-    UserViewEvent* e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
-    e->show();
-  }
-  else {
-    UserSendMsgEvent* e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
-    e->show();
-  }
-
-#else
-  QListIterator<ICQFunctions> it(licqUserData);
-  for (; it.current(); ++it)
+  switch(fcn) {
+  case mnuUserView:
   {
-    if ((*it)->Uin() == nUin)
+    QListIterator<UserViewEvent> it(licqUserView);
+
+    for (; it.current(); ++it)
     {
-      f = *it;
-      break;
+      if ((*it)->Uin() == nUin)
+      {
+        e = *it;
+        break;
+      }
     }
+
+    if (!e)
+    {
+      e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
+      connect (e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
+      licqUserView.append(static_cast<UserViewEvent*>(e));
+    }
+    else
+      doraise = true;
+
+    break;
+  }
+  case mnuUserSendMsg:
+  {
+    e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
+    break;
+  }
+  case mnuUserSendUrl:
+  {
+    e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, nUin);
+    break;
+  }
+  case mnuUserSendChat:
+  {
+    e = new UserSendChatEvent(licqDaemon, licqSigMan, this, nUin);
+    break;
+  }
+  case mnuUserSendFile:
+  {
+    e = new UserSendFileEvent(licqDaemon, licqSigMan, this, nUin);
+    break;
+  }
+  case mnuUserSendContact:
+  {
+    e = new UserSendContactEvent(licqDaemon, licqSigMan, this, nUin);
+    break;
+  }
+  default:
+    qDebug("unknown callFunction() fcn: %d", fcn);
   }
 
-  if (f == NULL)
-  {
-     f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose, NULL);
-     connect (f, SIGNAL(signal_updatedUser(CICQSignal *)), SLOT(slot_updatedUser(CICQSignal *)));
-     connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
-     f->setupTabs(fcn);
-     licqUserData.append(f);
-  }
-  else
-  {
+  e->show();
+  if(doraise) {
+    e->raise();
 #ifdef USE_KDE
     KWin::setActiveWindow(f->winId());
 #endif
-    f->show();
-    f->raise();
   }
-#endif
-  return f;
 }
 
 
@@ -1584,8 +1605,6 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
 void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 {
-  qDebug("info dlg %ld finished", nUin);
-
   QListIterator<UserInfoDlg> it(licqUserInfo);
 
   for( ; it.current(); ++it){
@@ -1604,13 +1623,13 @@ void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 
 void CMainWindow::slot_userfinished(unsigned long nUin)
 {
-  QListIterator<ICQFunctions> it(licqUserData);
+  QListIterator<UserViewEvent> it(licqUserView);
 
   for ( ; it.current(); ++it)
   {
     if ((*it)->Uin() == nUin)
     {
-      licqUserData.remove(*it);
+      licqUserView.remove(*it);
       return;
     }
   }
@@ -1658,7 +1677,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       break;
     case ICQ_CMDxSND_AUTHORIZE:
        if (e->Result() != EVENT_ACKED)
-         WarnUser(this, tr("Error sending autorization."));
+         WarnUser(this, tr("Error sending authorization."));
        else
          InformUser(this, tr("Authorization granted."));
        break;
@@ -2252,6 +2271,10 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmFile.load(sFilepath);
 
+   fIconsConf.ReadStr("Contact", sFilename, "");
+   sprintf(sFilepath, "%s%s", sIconPath, sFilename);
+   pmContact.load(sFilepath);
+
    fIconsConf.ReadStr("Authorize", sFilename, "");
    sprintf(sFilepath, "%s%s", sIconPath, sFilename);
    pmAuthorize.load(sFilepath);
@@ -2270,6 +2293,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
      mnuUser->changeItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+     mnuUser->changeItem(pmContact, tr("Send &Contact List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
      userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
                           &pmPrivate, &pmFFC, &pmMessage, &pmUrl, &pmChat, &pmFile);
@@ -2416,6 +2440,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmUrl, tr("Send &Url"), mnuUserSendUrl);
    mnuSend->insertItem(pmChat, tr("Send &Chat Request"), mnuUserSendChat);
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
+   mnuSend->insertItem(pmContact, tr("Send Contact List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("Send"), mnuSend);

@@ -14,6 +14,7 @@ enum UserMenu {
   mnuUserSendUrl,
   mnuUserSendChat,
   mnuUserSendFile,
+  mnuUserSendContact,
   mnuUserAuthorize,
   mnuUserCheckResponse,
   mnuUserGeneral,

@@ -32,14 +32,17 @@
 #include "gui-defines.h"
 #include "ewidgets.h"
 #include "licq_user.h"
-#include "icqfunctions.h"
+#include "usereventdlg.h"
 #include "ewidgets.h"
 
-CForwardDlg::CForwardDlg(CMainWindow *_mainwin, CUserEvent *e,
-                         QWidget *p, const char *n)
-  : QWidget(p, n)
+CForwardDlg::CForwardDlg(CICQDaemon *s, CSignalManager *sigMan,
+                         CMainWindow *_mainwin, CUserEvent *e, QWidget *p)
+  : QDialog(p, "UserForwardDialog", false, WDestructiveClose)
 {
   mainwin = _mainwin;
+  sigman = sigMan;
+  server = s;
+
   m_nEventType = e->SubCommand();
   m_nUin = 0;
 
@@ -92,14 +95,9 @@ CForwardDlg::CForwardDlg(CMainWindow *_mainwin, CUserEvent *e,
 
 CForwardDlg::~CForwardDlg()
 {
+  qDebug("forwarddlg destr");
 }
 
-
-void CForwardDlg::hide()
-{
-  QWidget::hide();
-  delete this;
-}
 
 void CForwardDlg::slot_ok()
 {
@@ -109,18 +107,21 @@ void CForwardDlg::slot_ok()
   {
     case ICQ_CMDxSUB_MSG:
     {
-      ICQFunctions *f = mainwin->callFunction(mnuUserSendMsg, m_nUin);
-      if (f != NULL) f->SendMsg(s1);
+      s1.prepend(tr("Forwarded message:\n"));
+      UserSendMsgEvent* e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
+      e->setText(s1);
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
-      ICQFunctions *f = mainwin->callFunction(mnuUserSendMsg, m_nUin);
-      if (f != NULL) f->SendUrl(s1, s2);
+      s1.prepend(tr("Forwarded URL:\n"));
+      UserSendUrlEvent* e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
+      e->setUrl(s1, s2);
       break;
     }
   }
-  hide();
+
+  close();
 }
 
 
@@ -136,11 +137,8 @@ void CForwardDlg::dropEvent(QDropEvent * de)
   QString text;
 
   // extract the text from the event
-  if (QTextDrag::decode(de, text) == FALSE)
-  {
-    WarnUser(this, "Drag'n'Drop didn't work");
+  if (!QTextDrag::decode(de, text))
     return;
-  }
 
   m_nUin = text.toULong();
   if (m_nUin == 0) return;

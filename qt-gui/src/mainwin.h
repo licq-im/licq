@@ -24,7 +24,6 @@
 
 class QStyle;
 
-class ICQFunctions;
 class CSignalManager;
 class CQtLogWindow;
 class CSkin;
@@ -38,6 +37,7 @@ class CELabel;
 class CEButton;
 class CEComboBox;
 class QListViewItem;
+class UserViewEvent;
 #ifdef USE_DOCK
 class IconManager;
 #endif
@@ -45,7 +45,7 @@ class IconManager;
 class CICQSignal;
 class UserInfoDlg;
 
-typedef QList<ICQFunctions> UserViewEventList;
+typedef QList<UserViewEvent> UserViewEventList;
 typedef QList<UserInfoDlg> UserInfoList;
 
 //=====CMainWindow==============================================================
@@ -58,7 +58,7 @@ public:
               const char *skinName, const char *iconsName,
               QWidget *parent = 0);
   virtual ~CMainWindow();
-  ICQFunctions *callFunction(int fcn, unsigned long _nUin);
+  void callFunction(int fcn, unsigned long _nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(unsigned long, QWidget *);
   void ApplySkin(const char *, bool = false);
@@ -74,7 +74,7 @@ protected:
 #ifdef USE_DOCK
   IconManager *licqIcon;
 #endif
-  UserViewEventList licqUserData;
+  UserViewEventList licqUserView;
   UserInfoList licqUserInfo;
 
   // Dialog boxes
@@ -115,7 +115,7 @@ protected:
   unsigned short m_nAutoLogon;
   char *m_szIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
-          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmAuthorize;
+          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmAuthorize;
   ColumnInfos colInfo;
 
   // AutoAway
@@ -161,7 +161,7 @@ protected:
 friend class WharfIcon;
 friend class IconManager_Default;
 friend class OptionsDlg;
-friend class ICQFunctions;
+friend class UserSendCommon;
 
 protected slots:
   void slot_removeUserFromGroup();
