@@ -202,7 +202,8 @@ void CLogService_Plugin::lprintf(unsigned short _nLogType, const char *_szPrefix
   if (m_xLogWindow == NULL) return;
 
   unsigned n = sprintf(szMsgMax, "%s", _szPrefix);
-  vsprintf(&szMsgMax[n], _szFormat, argp);
+  vsnprintf(&szMsgMax[n], (MAX_MSG_SIZE - n), _szFormat, argp);
+  szMsgMax[MAX_MSG_SIZE] = '\0';
   m_xLogWindow->AddLog(strdup(szMsgMax), _nLogType);
 }
 

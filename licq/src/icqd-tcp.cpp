@@ -1802,10 +1802,10 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort)
 
   if ((unsigned char)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
   {
-    //char *buf;
-    //gLog.Unknown("%sUnknown TCP handshake packet (command = 0x%02X):\n%s\n",
-    //             L_UNKNOWNxSTR, cHandshake, b.print(buf));
-    //delete buf;
+    char *buf;
+    gLog.Unknown("%sUnknown TCP handshake packet (command = 0x%02X):\n%s\n",
+                 L_UNKNOWNxSTR, cHandshake, b.print(buf));
+    delete buf;
     return false;
   }
 
