@@ -520,7 +520,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 {
   unsigned short version, nCommand, nSequence, nSubSequence,
                  junkShort;
-  unsigned long nUin, junkLong, nOwnerUin;
+  unsigned long nUin, nOwnerUin;
   char junkChar;
 
   // read in the standard UDP header info
@@ -597,18 +597,28 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     gLog.Info("%s%s (%ld) went online.\n", L_UDPxSTR, u->GetAlias(), nUin);
 
     // read in the relevant user information
-    unsigned short userPort, newStatus;
-    unsigned long userIP;
+    unsigned short userPort;
+    unsigned long userIP, realIP, newStatus, tcpVersion;
+    char mode;
     packet >> userIP
            >> userPort
-           >> junkLong >> junkShort >> junkChar  // 7 bytes of junk
+           >> junkShort
+           >> realIP
+           >> mode
            >> newStatus  // initial status of user
+           >> tcpVersion
     ;
 
     // The packet class will spit out an ip in network order on a little
     // endian machine and in little-endian on a big endian machine
     userIP = PacketIpToNetworkIp(userIP);
+    realIP = PacketIpToNetworkIp(realIP);
     u->SetIpPort(userIP, userPort);
+    u->SetRealIp(realIP);
+    u->SetMode(mode);
+    u->SetVersion(tcpVersion);
+    if (mode != MODE_DIRECT)
+      u->SetSendServer(true);
     ChangeUserStatus(u, newStatus);
     u->SetAutoResponse(NULL);
     if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
