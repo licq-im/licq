@@ -1545,12 +1545,8 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
   m_nDesiredStatus = status;
   m_bLoggingOn = true;
   m_tLogonTime = time(NULL);
-//  ICQEvent *e = SendEvent_Server(p);
-//  SendEvent_Server(p);
-  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, 0, NULL);
-  if (e == NULL)
-    return 0;
-  SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+
+  SendEvent_Server(p);
 
   return 0;
 }
@@ -3487,6 +3483,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       unsigned long nTime;
 
       gLog.Info(tr("%sReceived contact list.\n"), L_SRVxSTR);
+
+      m_bOnlineNotifies = true;
 
       packet.UnpackChar();  // unknown
       nPacketCount = packet.UnpackUnsignedShortBE();
