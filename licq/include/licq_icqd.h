@@ -220,8 +220,8 @@ public:
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
      unsigned short nPort);
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
-     unsigned long nRealIp, TCPSocket *sock, unsigned short nPort,
-     bool bSendRealIp);
+     unsigned long nIntIp, TCPSocket *sock, unsigned short nPort,
+     bool bSendIntIp);
   int StartTCPServer(TCPSocket *);
   void CheckBirthdays(UinList &);
   unsigned short BirthdayRange() { return m_nBirthdayRange; }

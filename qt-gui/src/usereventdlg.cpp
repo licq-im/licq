@@ -923,7 +923,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
                               (u->StatusOffline() && u->SocketDesc() == -1));
   }
   if( (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST)) ||
-      (u->Ip() == 0 && u->SocketDesc() == -1))
+      (u->Port() == 0 && u->SocketDesc() == -1))
   {
     chkSendServer->setChecked(true);
     chkSendServer->setEnabled(false);
@@ -1394,7 +1394,7 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
   {
     case USER_STATUS:
     {
-      if (u->Ip() == 0)
+      if (u->Port() == 0)
       {
         chkSendServer->setChecked(true);
         chkSendServer->setEnabled(false);

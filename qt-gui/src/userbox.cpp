@@ -1298,15 +1298,15 @@ void CUserView::maybeTip(const QPoint& c)
     if ((u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
       s += tr("<br><nobr>F: ") + codec->toUnicode(u->GetFaxNumber()) + tr("</nobr>");
 
-    if ((u->Ip() || u->RealIp()) && gMainWindow->m_bPopIP) {
-      char buf1[32];
-      char buf[32];
-      ip_ntoa(u->Ip(),buf1);
-      ip_ntoa(u->RealIp(),buf);
-      if (u->Ip() != u->RealIp())
-        s += tr("<br><nobr>Ip: ") + buf1 +"/"+buf+ tr("</nobr>");
+    if ((u->Ip() || u->IntIp()) && gMainWindow->m_bPopIP) {
+      char buf_ip[32];
+      char buf_int_ip[32];
+      ip_ntoa(u->Ip(), buf_ip);
+      ip_ntoa(u->IntIp(), buf_int_ip);
+      if (u->Ip() != u->IntIp() && u->IntIp() != 0)
+        s += tr("<br><nobr>Ip: ") + buf_ip + "/" + buf_int_ip + tr("</nobr>");
       else
-        s += tr("<br><nobr>Ip: ") + buf1 + tr("</nobr>");
+        s += tr("<br><nobr>Ip: ") + buf_ip + tr("</nobr>");
     }
 
     if ((u->LastOnline()>0) && gMainWindow->m_bPopLastOnline) {

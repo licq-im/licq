@@ -323,10 +323,14 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoEmailSecondary->setData(codec->toUnicode(u->GetEmailSecondary()));
   nfoEmailOld->setData(codec->toUnicode(u->GetEmailOld()));
   nfoUin->setData(u->Uin());
-  QString ip = QString(u->IpPortStr(buf));
-  if (u->Ip() != u->RealIp() && u->RealIp() != 0)
+  QString ip = QString(u->IpStr(buf));
+  if (u->Ip() != u->IntIp() && u->IntIp() != 0)
   {
-    ip.append(QString(" / %1").arg(ip_ntoa(u->RealIp(), buf)));
+    ip.append(QString(" / %1").arg(u->IntIpStr(buf)));
+  }
+  if (u->Port() != 0)
+  {
+    ip.append(QString(":%1").arg(u->PortStr(buf)));
   }
   nfoIp->setData(ip);
   if (u->GetTimezone() == TIMEZONE_UNKNOWN)

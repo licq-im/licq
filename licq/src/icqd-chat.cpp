@@ -88,7 +88,7 @@ CPChat_Color::CPChat_Color(CBuffer &b)
 //-----ChatColorFont----------------------------------------------------------------
 CChatClient::CChatClient()
 {
-  m_nVersion = m_nUin = m_nIp = m_nRealIp = m_nPort = m_nMode
+  m_nVersion = m_nUin = m_nIp = m_nIntIp = m_nPort = m_nMode
      = m_nSession = m_nHandshake = 0;
 }
 
@@ -98,7 +98,7 @@ CChatClient::CChatClient(ICQUser *u)
   m_nVersion = u->Version();
   m_nUin = u->Uin();
   m_nIp = u->Ip();
-  m_nRealIp = u->RealIp();
+  m_nIntIp = u->IntIp();
   m_nMode = u->Mode();
   m_nSession = 0;
   m_nHandshake = 0x64;
@@ -122,7 +122,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
   b.UnpackUnsignedShort();
   m_nUin = b.UnpackUnsignedLong();
   m_nIp = b.UnpackUnsignedLong();
-  m_nRealIp = b.UnpackUnsignedLong();
+  m_nIntIp = b.UnpackUnsignedLong();
   b.UnpackUnsignedShort();
   m_nMode = b.UnpackChar();
   m_nSession = b.UnpackUnsignedShort();
@@ -142,7 +142,7 @@ bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
   b.UnpackUnsignedLong();
   m_nUin = b.UnpackUnsignedLong();
   m_nIp = b.UnpackUnsignedLong();
-  m_nRealIp = b.UnpackUnsignedLong();
+  m_nIntIp = b.UnpackUnsignedLong();
   m_nMode = b.UnpackChar();
   m_nHandshake = 0x64;
 
@@ -164,7 +164,7 @@ bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
   b.UnpackUnsignedLong();
   m_nUin = b.UnpackUnsignedLong();
   m_nIp = b.UnpackUnsignedLong();  // Will probably be zero...
-  m_nRealIp = b.UnpackUnsignedLong();
+  m_nIntIp = b.UnpackUnsignedLong();
   m_nMode = b.UnpackChar();
   m_nHandshake = 0x64;
 
@@ -183,7 +183,7 @@ bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
   m_nVersion = hand.VersionMajor();
   m_nUin = hand.SourceUin();
   m_nIp = hand.LocalIp();
-  m_nRealIp = hand.RealIp();
+  m_nIntIp = hand.RealIp();
   m_nMode = hand.Mode();
   m_nHandshake = 0x64;
 
@@ -255,7 +255,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
     buffer->PackUnsignedLong((*iter)->m_nPort);
     buffer->PackUnsignedLong((*iter)->m_nUin);
     buffer->PackUnsignedLong((*iter)->m_nIp);
-    buffer->PackUnsignedLong((*iter)->m_nRealIp);
+    buffer->PackUnsignedLong((*iter)->m_nIntIp);
     buffer->PackUnsignedShort(ReversePort((*iter)->m_nPort));
     buffer->PackChar((*iter)->m_nMode);
     buffer->PackUnsignedShort((*iter)->m_nSession);
@@ -623,16 +623,16 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   u->client.m_nSession = m_nSession;
   u->uin = c.m_nUin;
 
-  bool bSendRealIp = false;
+  bool bSendIntIp = false;
   ICQUser *temp_user = gUserManager.FetchUser(u->uin, LOCK_R);
   if (temp_user != NULL)
   {
-    bSendRealIp = temp_user->SendRealIp();
+    bSendIntIp = temp_user->SendIntIp();
     gUserManager.DropUser(temp_user);
   }
 
   gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
-  if (!licqDaemon->OpenConnectionToUser("chat", c.m_nIp, c.m_nRealIp, &u->sock, c.m_nPort, bSendRealIp))
+  if (!licqDaemon->OpenConnectionToUser("chat", c.m_nIp, c.m_nIntIp, &u->sock, c.m_nPort, bSendIntIp))
   {
     delete u;
     return false;
@@ -673,7 +673,7 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   u->client.m_nVersion = s->Version();
   u->client.m_nUin = s->Owner();
   u->client.m_nIp = s->RemoteIp();
-  u->client.m_nRealIp = s->RemoteIp();
+  u->client.m_nIntIp = s->RemoteIp();
   u->client.m_nMode = MODE_DIRECT;
   u->client.m_nHandshake = 0x64;
 

@@ -191,7 +191,7 @@ public:
   unsigned short m_nPort;
   unsigned long m_nUin;
   unsigned long m_nIp;
-  unsigned long m_nRealIp;
+  unsigned long m_nIntIp;
   char m_nMode;
   unsigned short m_nSession;
   unsigned long m_nHandshake;

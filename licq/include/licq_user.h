@@ -217,7 +217,6 @@ public:
   unsigned short GetGSID()              { return m_nGSID; }
   char *AutoResponse()                  { return m_szAutoResponse; }
   char *UserEncoding()                  { return m_szEncoding; }
-  bool SendRealIp()                     { return m_bSendRealIp; }
   bool SendServer()                     { return m_bSendServer; }
   bool SendServerLastSelected()         { return m_bSendServerLastSelected; }
   unsigned short SendLevel()            { return m_nSendLevel; }
@@ -225,7 +224,6 @@ public:
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
   unsigned long Uin()                   { return m_nUin; }
   unsigned long Sequence(bool = false);
-  unsigned long RealIp()                { return m_nRealIp; }
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
   unsigned long ClientTimestamp()       { return m_nClientTimestamp; }
@@ -248,7 +246,6 @@ public:
   char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
 
   void usprintf(char *sz, const char *szFormat, unsigned long nFlags = 0);
-  char *IpPortStr(char *rbuf);
 
   // General Info
   void SetAlias (const char *n);//              {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
@@ -301,7 +298,6 @@ public:
   void SetSID(unsigned short s)       { m_nSID = s; }
   void SetGSID(unsigned short s)      { m_nGSID = s; }
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
-  void SetSendRealIp(bool s)          { m_bSendRealIp = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
   void SetSendServerLastSelected(bool s) { m_bSendServerLastSelected = s; }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
@@ -309,7 +305,6 @@ public:
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void SetUserEncoding(const char* s) { SetString(&m_szEncoding, s); }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
-  void SetRealIp(unsigned long s)     { m_nRealIp = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
   void SetClientTimestamp(unsigned long s) { m_nClientTimestamp = s; }
@@ -387,13 +382,30 @@ public:
   static char SystemTimezone();
 
   // Ip/Port functions
-  unsigned long Ip()        { return m_nIp; }
-  unsigned short Port()     { return m_nPort; }
-  unsigned short LocalPort()     { return m_nLocalPort; }
-  unsigned long Cookie()        { return m_nCookie; }
+  unsigned long Ip()		{ return m_nIp; }
+  unsigned long IntIp()		{ return m_nIntIp; }
+  unsigned short Port()		{ return m_nPort; }
+  unsigned short LocalPort()	{ return m_nLocalPort; }
+  unsigned long Cookie()	{ return m_nCookie; }
   void SetIpPort(unsigned long nIp, unsigned short nPort);
-  void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
+  void SetIp(unsigned long nIp)		{ SetIpPort(nIp, Port()); }
+  void SetPort(unsigned short nPort)	{ SetIpPort(Ip(), nPort); }
+  void SetIntIp(unsigned long s)	{ m_nIntIp = s; }
   void SetCookie(unsigned long nCookie) { m_nCookie = nCookie; }
+
+  bool SendIntIp()		{ return m_bSendIntIp; }
+  void SetSendIntIp(bool s)	{ m_bSendIntIp = s; }
+
+  // for backward compatibility
+  unsigned long RealIp()         	{ return IntIp(); }
+  void SetRealIp(unsigned long s) 	{ SetIntIp(s); }
+  bool SendRealIp()			{ return SendIntIp(); }
+  void SetSendRealIp(bool s)		{ SetSendIntIp(s); }
+  
+  char *IpStr(char *rbuf);
+  char *IntIpStr(char *rbuf);
+  char *PortStr(char *rbuf);
+  
   // Don't call these:
   int SocketDesc()          { return m_nSocketDesc; }
   void ClearSocketDesc();
@@ -446,7 +458,7 @@ protected:
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;
   bool m_bOnContactList;
-  unsigned long m_nIp, m_nRealIp, m_nVersion, m_nClientTimestamp, m_nCookie;
+  unsigned long m_nIp, m_nIntIp, m_nVersion, m_nClientTimestamp, m_nCookie;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned long m_nUin,
                 m_nStatus,
@@ -457,7 +469,7 @@ protected:
   char *m_szEncoding;
   char *m_szCustomAutoResponse;
   bool m_bOnlineNotify,
-       m_bSendRealIp,
+       m_bSendIntIp,  
        m_bSendServer,
        m_bSendServerLastSelected,
        m_bEnableSave,
