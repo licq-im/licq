@@ -157,6 +157,15 @@ void CMSN::Run()
             gSocketMan.DropSocket(sock);
             ProcessServerPacket(packet);
           }
+          else
+          {
+            // Time to reconnect
+            gLog.Info("%sDisconnected from server, reconnecting.\n", L_MSNxSTR);
+            gSocketMan.CloseSocket(m_nServerSocket);
+            gSocketMan.DropSocket(sock);
+            m_nServerSocket = -1;
+            MSNLogon("messenger.hotmail.com", 1863);
+          }
         }
         
         else if (nCurrent == m_nSSLSocket)
@@ -261,6 +270,7 @@ void CMSN::ProcessPipe()
     }
 
   case 'X': // Bye
+    gLog.Info("%sExiting.\n", L_MSNxSTR);
     m_bExit = true;
     break;
   }
@@ -272,7 +282,8 @@ void CMSN::ProcessSignal(CSignal *s)
   {
     case PROTOxLOGON:
     {
-      MSNLogon("messenger.hotmail.com", 1863);
+      if (m_nServerSocket < 0)
+        MSNLogon("messenger.hotmail.com", 1863);
       break;
     }
     
@@ -660,7 +671,7 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, bool bDelete)
   ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_R);
   if (!u) return;
 
-  int nSock = u->SocketDesc();
+  int nSock = u->SocketDesc(ICQ_CHNxNONE);
   gUserManager.DropUser(u);  
   INetSocket *s = gSocketMan.FetchSocket(nSock);
   TCPSocket *sock = static_cast<TCPSocket *>(s);
@@ -826,7 +837,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   
   ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
-  int nSockDesc = u->SocketDesc();
+  int nSockDesc = u->SocketDesc(ICQ_CHNxNONE);
   gUserManager.DropUser(u);
   
   if (nSockDesc > 0)
