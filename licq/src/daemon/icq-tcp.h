@@ -512,6 +512,14 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     return false;
   }
 
+  if (checkUin == gUserManager.OwnerUin())
+  {
+    char *buf;
+    gLog.Warn("%sTCP message from self (probable spoof):\n%s\n", L_WARNxSTR, packet.print(buf));
+    delete buf;
+    return false;
+  }
+
   // read in the message minus any stupid DOS \r's
   char message[messageLen + 1];
   unsigned short j = 0;
