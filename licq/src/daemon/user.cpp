@@ -1663,7 +1663,6 @@ void ICQUser::SaveBasicInfo()
   m_fConf.WriteStr("FirstName", GetFirstName());
   m_fConf.WriteStr("LastName", GetLastName());
   m_fConf.WriteStr("Email1", GetEmail1());
-  m_fConf.WriteBool("Authorization", GetAuthorization());
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -2022,6 +2021,7 @@ void ICQOwner::SaveLicqInfo()
   m_fConf.WriteStr("Password", Password());
   m_fConf.WriteBool("WebPresence", WebAware());
   m_fConf.WriteBool("HideIP", HideIp());
+  m_fConf.WriteBool("Authorization", GetAuthorization());
   m_fConf.WriteNum("RCG", RandomChatGroup());
 
   if (!m_fConf.FlushFile())
