@@ -849,6 +849,8 @@ QWidget* OptionsDlg::new_sounds_options()
   chkOnEvents = new QCheckBox(tr("OnEvents Enabled"), hor);
   QWidget* dummy = new QWidget(hor);
   dummy->setFixedSize(50, 1);
+  
+  connect(chkOnEvents, SIGNAL(toggled(bool)), this, SLOT(slot_chkOnEventsToggled(bool)));
 
   QWhatsThis::add(chkOnEvents, tr("Enable running of \"Command\" when the relevant "
                                  "event occurs."));
@@ -901,13 +903,34 @@ QWidget* OptionsDlg::new_sounds_options()
   QWhatsThis::add(chkAlwaysOnlineNotify, tr("Perform the online notify OnEvent "
      "when logging on (this is different from how the Mirabilis client works)"));
 
-  //lay->addStretch(1);
+  slot_chkOnEventsToggled(chkOnEvents->isChecked());
 
   return w;
 }
 
 // -----------------------------------------------------------------------------
+/*! 
+ * This slot enables/disables the relevant onEvent configuration widgets,
+ * depending on wether chkOnEvent is checked or not.
+ */
+void OptionsDlg::slot_chkOnEventsToggled(bool b_checked)
+{
+  edtSndPlayer->setEnabled(b_checked);
+  edtSndMsg->setEnabled(b_checked);
+  edtSndUrl->setEnabled(b_checked);
+  edtSndChat->setEnabled(b_checked);
+  edtSndFile->setEnabled(b_checked);
+  edtSndNotify->setEnabled(b_checked);
+  edtSndSysMsg->setEnabled(b_checked);
+  edtSndMsgSent->setEnabled(b_checked);
+  chkOEAway->setEnabled(b_checked);
+  chkOENA->setEnabled(b_checked);
+  chkOEOccupied->setEnabled(b_checked);
+  chkOEDND->setEnabled(b_checked);
+  chkAlwaysOnlineNotify->setEnabled(b_checked);
+}
 
+// -----------------------------------------------------------------------------
 QWidget *OptionsDlg::new_network_options()
 {
   QWidget *w = new QWidget(this);

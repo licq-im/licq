@@ -147,6 +147,7 @@ protected slots:
   void slot_usePortRange(bool b);
   void slot_useMsgChatView(bool);
   void slot_ok();
+  void slot_chkOnEventsToggled(bool);
 };
 
 
