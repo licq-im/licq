@@ -48,6 +48,8 @@ frame.border.bottom = 24
 frame.border.left = 5
 frame.border.right = 5
 frame.hasMenuBar = 0
+frame.transparent = 1
+frame.frameStyle = 51
 
 lblStatus.rect.x1 = 52
 lblStatus.rect.y1 = 24
@@ -89,9 +91,11 @@ cmbGroups.color.bg = #dddddd
 
 # --- colors ---
 colors.online = white
-colors.away = grey80
-colors.offline = grey67
+colors.away = grey90
+colors.offline = grey20
+#grey67
 colors.newuser = yellow
 colors.background = grey25
-colors.gridlines = grey76
+colors.gridlines = white
+#grey76
 

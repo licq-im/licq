@@ -1,12 +1,11 @@
 # compact marble skin by Marcus Majewski
 # majewski@apollo.nu
 # UIN 345886
+# Modified by Graham Roff
 #
 # I wanted a compact skin, here's the result.
 # I use icons.mark and the following settings 
 # licq.conf
-#
-# BEFORE EDITING licq.conf, CLOSE LICQ!
 #
 # (in licq.conf)
 # [appearance]
@@ -85,8 +84,8 @@ cmbGroups.color.bg = #000000
 # --- colors ---
 colors.online = white
 colors.away = grey80
-colors.offline = grey67
+colors.offline = grey20
 colors.newuser = yellow
 colors.background = grey25
-colors.gridlines = grey76
+colors.gridlines = white
 
