@@ -366,10 +366,11 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
   }
   else
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned long nPPID = u->PPID();
+    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     sprintf(szTo, "To: %s <%s>", o->GetAlias(), m_szSMTPTo);
-    gUserManager.DropOwner();
-    if (u->PPID() == LICQ_PPID)
+    gUserManager.DropOwner(nPPID);
+    if (nPPID == LICQ_PPID)
       sprintf (szFrom, "From: \"%s\" <%s@pager.icq.com>", u->GetAlias(), u->IdString());
     else
       sprintf (szFrom, "From: \"%s\" <%s>", u->GetEmailPrimary());
