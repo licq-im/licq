@@ -53,7 +53,9 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
     CPT_Message *p = new CPT_Message(_nSourceUin, mDos, nLevel, u);
-    gLog.Info("%sSending %smessage to %s (#%d).\n", L_TCPxSTR, nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "", u->GetAlias(), p->getSequence());
+    gLog.Info("%sSending %smessage to %s (#%d).\n", L_TCPxSTR,
+       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+       u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
     gUserManager.DropUser(u);
   }
@@ -72,7 +74,7 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(0, u);
   gLog.Info("%sRequesting away message from %s (#%d).\n", L_TCPxSTR,
-            u->GetAlias(), p->getSequence());
+            u->GetAlias(), -p->getSequence());
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, NULL);
   gUserManager.DropUser(u);
 
@@ -113,7 +115,9 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
     CPT_Url *p = new CPT_Url(_nSourceUin, m, nLevel, u);
-    gLog.Info("%sSending %sURL to %s (#%d).\n", L_TCPxSTR, nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "", u->GetAlias(), p->getSequence());
+    gLog.Info("%sSending %sURL to %s (#%d).\n", L_TCPxSTR,
+       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+       u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
     gUserManager.DropUser(u);
   }
@@ -154,7 +158,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
                        p->getSequence(), TIME_NOW, f);
     gLog.Info("%sSending %sfile transfer to %s (#%d).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), p->getSequence());
+       u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, e);
   }
   gUserManager.DropUser(u);
@@ -173,7 +177,8 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned long nSequen
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sCancelling file transfer to %s (#%lu).\n", L_TCPxSTR, u->GetAlias(), nSequence);
+  gLog.Info("%sCancelling file transfer to %s (#%d).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
   CPT_CancelFile p(nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
@@ -187,7 +192,8 @@ void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
    // basically a fancy tcp ack packet which is sent late
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sAccepting file transfer from %s (#%lu).\n", L_TCPxSTR, u->GetAlias(), nSequence);
+  gLog.Info("%sAccepting file transfer from %s (#%d).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
   CPT_AckFileAccept p(nPort, nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
@@ -204,7 +210,8 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
   gTranslator.ClientToServer(szReasonDos);
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sRefusing file transfer from %s (#%lu).\n", L_TCPxSTR, u->GetAlias(), nSequence);
+  gLog.Info("%sRefusing file transfer from %s (#%d).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
   CPT_AckFileRefuse p(szReasonDos, nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
@@ -237,7 +244,7 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
      TIME_NOW, f);
   gLog.Info("%sSending %schat request to %s (#%d).\n", L_TCPxSTR,
      nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-     u->GetAlias(), p->getSequence());
+     u->GetAlias(), -p->getSequence());
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, e);
   gUserManager.DropUser(u);
 
@@ -254,7 +261,8 @@ void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned long nSequenc
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sCancelling chat request with %s (#%d).\n", L_TCPxSTR, u->GetAlias(), nSequence);
+  gLog.Info("%sCancelling chat request with %s (#%d).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
   CPT_CancelChat p(nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
@@ -268,7 +276,8 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sRefusing chat request with %s (#%d).\n", L_TCPxSTR, u->GetAlias(), nSequence);
+  gLog.Info("%sRefusing chat request with %s (#%d).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
   char *szReasonDos = gTranslator.NToRN(szReason);
   gTranslator.ClientToServer(szReasonDos);
 
@@ -287,7 +296,8 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-  gLog.Info("%sAccepting chat request with %s (#%d).\n", L_TCPxSTR, u->GetAlias(), nSequence);
+  gLog.Info("%sAccepting chat request with %s (#%d).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
   CPT_AckChatAccept p(nPort, nSequence, u);
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
@@ -564,8 +574,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
          && u->StatusToUser() != ICQ_STATUS_DND) )
     bAccept = true;
 
-  // Process the status words
-  //...
   //printf("status: %04X (%04X)  msgtype: %04X\n", ackFlags, u->Status(), msgFlags);
 
   switch(command)
@@ -573,12 +581,46 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
   //-----START------------------------------------------------------------------
   case ICQ_CMDxTCP_START:
+  {
+    // Process the status bits
+    unsigned short s = msgFlags & 0xFF80, ns = 0;
+    if (s & ICQ_TCPxMSG_FxINVISIBLE)
+    {
+      s &= ~ICQ_TCPxMSG_FxINVISIBLE;
+      ns |= ICQ_STATUS_FxPRIVATE;
+    }
+    switch(s)
+    {
+      case ICQ_TCPxMSG_FxONLINE: ns |= ICQ_STATUS_ONLINE; break;
+      case ICQ_TCPxMSG_FxAWAY: ns |= ICQ_STATUS_AWAY; break;
+      case ICQ_TCPxMSG_FxOCCUPIED: ns |= ICQ_STATUS_OCCUPIED; break;
+      case ICQ_TCPxMSG_FxNA: ns |= ICQ_STATUS_NA; break;
+      case ICQ_TCPxMSG_FxDND: ns |= ICQ_STATUS_DND; break;
+      default:
+        ns = ICQ_STATUS_OFFLINE;
+        gLog.Warn("%sUnknown TCP status: %04X\n", L_WARNxSTR, msgFlags);
+        break;
+    }
+    //printf("%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
+    if (ns != ICQ_STATUS_OFFLINE &&
+        ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
+    {
+      ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
+      gLog.Info("%s%s (%ld) is %s to us.\n", L_TCPxSTR, u->GetAlias(),
+         u->Uin(), u->StatusStr());
+    }
+
+    // Process the command
     switch(newCommand)
     {
     case ICQ_CMDxSUB_MSG:  // straight message from a user
     {
-      gLog.Info("%sMessage from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
       packet >> theSequence >> licqChar >> licqVersion;
+      if (licqChar == 'L')
+        gLog.Info("%sMessage from %s (%d) [Licq v0.%d].\n", L_TCPxSTR, u->GetAlias(),
+           checkUin, licqVersion);
+      else
+        gLog.Info("%sMessage from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
       gTranslator.ServerToClient (message);
       CEventMsg *e = new CEventMsg(message, ICQ_CMDxTCP_START, TIME_NOW,
                                    nMask | licqVersion);
@@ -619,8 +661,12 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     case ICQ_CMDxTCP_READxFFCxMSG:
     case ICQ_CMDxTCP_READxAWAYxMSG:  // read away message
     {
-      gLog.Info("%s%s (%d) requested auto response.\n", L_TCPxSTR, u->GetAlias(), checkUin);
       packet >> theSequence >> licqChar >> licqVersion;
+      if (licqChar == 'L')
+        gLog.Info("%s%s (%d) requested auto response [Licq v0.%d].\n", L_TCPxSTR,
+           u->GetAlias(), checkUin, licqVersion);
+      else
+        gLog.Info("%s%s (%d) requested auto response.\n", L_TCPxSTR, u->GetAlias(), checkUin);
       CPT_AckReadAwayMessage p(newCommand, theSequence, true, u);
       AckTCP(p, u->SocketDesc());
       break;
@@ -628,8 +674,12 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
     case ICQ_CMDxSUB_URL:  // url sent
     {
-      gLog.Info("%sURL from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
       packet >> theSequence >> licqChar >> licqVersion;
+      if (licqChar == 'L')
+        gLog.Info("%sURL from %s (%d) [Licq v0.%d].\n", L_TCPxSTR, u->GetAlias(),
+          checkUin, licqVersion);
+      else
+        gLog.Info("%sURL from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
       // parse the message into url and url description
       char **szUrl = new char*[2]; // desc, url
       if (!ParseFE(message, &szUrl, 2))
@@ -682,12 +732,19 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     // Chat Request
     case ICQ_CMDxSUB_CHAT:
     {
-      gLog.Info("%sChat request from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
       char szChatClients[1024];
       packet.UnpackString(szChatClients);
       packet.UnpackUnsignedLong(); // reversed port
       unsigned short nPort = packet.UnpackUnsignedLong();
       packet >> theSequence >> licqChar >> licqVersion;
+
+      if (licqChar == 'L')
+        gLog.Info("%sChat request from %s (%d) [Licq v0.%d].\n", L_TCPxSTR,
+           u->GetAlias(), checkUin, licqVersion);
+      else
+        gLog.Info("%sChat request from %s (%d).\n", L_TCPxSTR, u->GetAlias(),
+           checkUin);
+
       // translating string with translation table
       gTranslator.ServerToClient (message);
       CEventChat *e = new CEventChat(message, szChatClients, nPort, theSequence,
@@ -713,8 +770,6 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     }
     case ICQ_CMDxSUB_FILE:
     {
-      gLog.Info("%sFile transfer request from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
-
       unsigned short nLenFilename;
       unsigned long nFileLength;
       packet >> junkLong
@@ -725,6 +780,13 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       packet >> nFileLength
              >> junkLong
              >> theSequence >> licqChar >> licqVersion;
+
+      if (licqChar == 'L')
+        gLog.Info("%sFile transfer request from %s (%d) [Licq v0.%d].\n",
+           L_TCPxSTR, u->GetAlias(), checkUin, licqVersion);
+      else
+        gLog.Info("%sFile transfer request from %s (%d).\n", L_TCPxSTR,
+           u->GetAlias(), checkUin);
 
       // translating string with translation table
       gTranslator.ServerToClient (message);
@@ -753,8 +815,13 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     // Contact List
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      gLog.Info("%sContact list from %s (%d).\n", L_BLANKxSTR, u->GetAlias(), checkUin);
       packet >> theSequence >> licqChar >> licqVersion;
+      if (licqChar == 'L')
+        gLog.Info("%sContact list from %s (%d) [Licq v0.%d].\n", L_BLANKxSTR,
+           u->GetAlias(), checkUin, licqVersion);
+      else
+        gLog.Info("%sContact list from %s (%d).\n", L_BLANKxSTR, u->GetAlias(),
+           checkUin);
 
       unsigned short i = 0;
       while ((unsigned char)message[i++] != 0xFE);
@@ -821,6 +888,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
        break;
     }
     break;
+  }
 
   //-----ACK--------------------------------------------------------------------
   case ICQ_CMDxTCP_ACK:  // message received packet
@@ -839,7 +907,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     case ICQ_CMDxTCP_READxAWAYxMSG:
     case ICQ_CMDxSUB_URL:
     case ICQ_CMDxSUB_CONTACTxLIST:
-      packet >> theSequence;
+      packet >> theSequence >> licqChar >> licqVersion;
       break;
 
     case ICQ_CMDxSUB_CHAT:
@@ -847,7 +915,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
              >> junkChar
              >> nPortReversed   // port backwards
              >> nPort    // port to connect to for chat
-             >> theSequence;
+             >> theSequence >> licqChar >> licqVersion;
       if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
       // only if this is the first chat ack packet do we do anything
       if (s_nChatSequence == theSequence && s_nChatUin == checkUin)
@@ -870,7 +938,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
        for (int i = 0; i < junkShort; i++) packet >> junkChar;
        packet >> junkLong
               >> nPort
-              >> theSequence;
+              >> theSequence >> licqChar >> licqVersion;
        // Some clients only send the first port (reversed)
        if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
        // only if this is the first file ack packet do we do anything
@@ -889,18 +957,21 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       break;
     }
 
+    char l[32] = "";
+    if (licqChar == 'L') sprintf(l, " [Licq v0.%d]", licqVersion);
+
     // translating string with translation table
     gTranslator.ServerToClient (message);
     // output the away message if there is one (ie if user status is not online)
     int nSubResult;
     if (ackFlags == ICQ_TCPxACK_ACCEPT)
     {
-      gLog.Info("%sAck from %s (#%d).\n", L_TCPxSTR, u->GetAlias(), theSequence);
+      gLog.Info("%sAck from %s (#%d)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
       nSubResult = ICQ_TCPxACK_ACCEPT;
     }
     else if (ackFlags == ICQ_TCPxACK_REFUSE)
     {
-      gLog.Info("%sRefusal from %s (#%d).\n", L_TCPxSTR, u->GetAlias(), theSequence);
+      gLog.Info("%sRefusal from %s (#%d)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
       nSubResult = (newCommand == ICQ_CMDxSUB_FILE || newCommand == ICQ_CMDxSUB_CHAT) ? ICQ_TCPxACK_ACCEPT : ICQ_TCPxACK_REFUSE;
     }
     else
@@ -913,12 +984,14 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       }
       if (ackFlags == ICQ_TCPxACK_DND || ackFlags == ICQ_TCPxACK_OCCUPIED)
       {
-        gLog.Info("%sReturned from %s (#%d).\n", L_TCPxSTR, u->GetAlias(), theSequence);
+        gLog.Info("%sReturned from %s (#%d)%s.\n", L_TCPxSTR, u->GetAlias(),
+           -theSequence, l);
         nSubResult = ICQ_TCPxACK_RETURN;
       }
       else
       {
-        gLog.Info("%sAuto response from %s (#%d).\n", L_TCPxSTR, u->GetAlias(), theSequence);
+        gLog.Info("%sAuto response from %s (#%d)%s.\n", L_TCPxSTR,
+           u->GetAlias(), -theSequence, l);
         nSubResult = ICQ_TCPxACK_ACCEPT;
       }
     }
