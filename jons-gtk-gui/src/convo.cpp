@@ -25,6 +25,7 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 GSList *cnv;
 
@@ -113,6 +114,9 @@ void convo_show(struct conversation *c)
 	/* The entry box */
 	c->entry = gtk_text_new(NULL, NULL);
 	gtk_text_set_editable(GTK_TEXT(c->entry), TRUE);
+	gtk_signal_connect(GTK_OBJECT(c->entry), "key_press_event",
+			  GTK_SIGNAL_FUNC(key_press_convo), (gpointer)c);
+
 	gtk_widget_set_usize(c->entry, 320, 75); 
 
 	/* The viewing messages box area */
@@ -234,6 +238,30 @@ void convo_show(struct conversation *c)
 	strcpy(c->etag->buf, c->prog_buf);
 
 	gtk_widget_show_all(c->window);
+}
+
+gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
+{
+	struct conversation *c = (struct conversation *)data;
+
+	if(eventkey->keyval == GDK_Return)
+	{
+		if((general_options & ENTER_SENDS) &&
+		   !(eventkey->state & GDK_SHIFT_MASK))
+		{
+			convo_send(NULL, c);
+		}
+		else if(general_options & ENTER_SENDS)
+		{
+			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry),
+						     "key_press_event");
+			int pos = gtk_editable_get_position(GTK_EDITABLE(entry));
+			gtk_editable_insert_text(GTK_EDITABLE(entry), "\n", 1,
+						 &pos);
+		}
+	}
+
+	return TRUE;
 }
 
 void spoof_button_callback(GtkWidget *widget, struct conversation *c)
