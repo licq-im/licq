@@ -330,7 +330,7 @@ void CFileDlg::StateServer()
   {
     fileCancel();
     if (m_xSocketFile.Error() == 0)
-      InformUser(this, tr("Remote end disconnected."));
+      gLog.Info("%sRemote end disconnected.\n", L_TCPxSTR);
     else
       gLog.Error("%sFile transfer receive error - lost remote end:\n%s%s\n", L_ERRORxSTR,
                  L_BLANKxSTR, m_xSocketFile.ErrorStr(buf, 128));
@@ -597,9 +597,7 @@ void CFileDlg::StateClient()
   if (!m_xSocketFile.RecvPacket())
   {
     fileCancel();
-    if (m_xSocketFile.Error() == 0)
-      InformUser(this, tr("Remote end disconnected."));
-    else
+    if (m_xSocketFile.Error() != 0)
       WarnUser(this, tr("File transfer receive error - lost remote end:\n%1\n")
                .arg(m_xSocketFile.ErrorStr(buf, 128)));
     return;
