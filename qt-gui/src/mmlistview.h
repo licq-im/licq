@@ -33,7 +33,7 @@ class CMMUserView : public QListView
   Q_OBJECT
 public:
   CMMUserView (ColumnInfos &_colInfo, bool, unsigned long, CMainWindow *,
-     QWidget *parent = 0, const char *name = 0);
+     QWidget *parent = 0);
   virtual ~CMMUserView();
 
   void AddUser(unsigned long);

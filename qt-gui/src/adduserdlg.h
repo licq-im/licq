@@ -14,7 +14,7 @@ class AddUserDlg : public QDialog
 {
    Q_OBJECT
 public:
-   AddUserDlg (CICQDaemon *s, QWidget *parent = 0, const char *name = 0 );
+   AddUserDlg (CICQDaemon *s, QWidget *parent = 0);
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;

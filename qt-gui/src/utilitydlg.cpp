@@ -33,7 +33,7 @@
 
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
-  : QDialog(0)
+  : QDialog(0, "UtilityDialog", false, WDestructiveClose)
 {
   m_nUin = _nUin;
   m_xUtility = u;
@@ -106,8 +106,10 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 }
 
 
-CUtilityDlg::~CUtilityDlg(void)
+CUtilityDlg::~CUtilityDlg()
 {
+  if (fsCommand != NULL)
+    fclose(fsCommand);
 }
 
 
@@ -128,17 +130,8 @@ void CUtilityDlg::slot_cancel()
     m_bIntWin = false;
   }
   else
-    hide();
+    close();
 }
-
-void CUtilityDlg::hide()
-{
-   QWidget::hide();
-   if (fsCommand != NULL)
-     fclose(fsCommand);
-   delete this;
-}
-
 
 
 void CUtilityDlg::slot_run()

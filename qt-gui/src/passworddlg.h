@@ -16,9 +16,8 @@ class PasswordDlg : public QDialog
 {
   Q_OBJECT
 public:
-  PasswordDlg (CICQDaemon *s, CSignalManager *,
-               QWidget *parent = 0, const char *name = 0 );
-  PasswordDlg::~PasswordDlg();
+  PasswordDlg (CICQDaemon *s, CSignalManager *, QWidget* parent = 0);
+  ~PasswordDlg();
 protected:
   CICQDaemon *server;
   CSignalManager *sigman;

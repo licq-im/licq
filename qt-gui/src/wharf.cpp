@@ -60,7 +60,7 @@
 /*
   Constructs a WharfIcon widget.
 */
-IconManager::IconManager(QWidget *parent, const char *name )
+IconManager::IconManager(QWidget *parent )
   : KApplet(parent, "IconManager")
 {
   setCaption("LicqWharf");
@@ -143,8 +143,8 @@ void IconManager::paintEvent( QPaintEvent * )
 
 //=====IconManager_Default===================================================
 
-IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent, const char *name )
-  : IconManager(parent, name)
+IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent )
+  : IconManager(parent)
 {
   m_bFortyEight = _bFortyEight;
   if (m_bFortyEight)
@@ -153,7 +153,7 @@ IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_men
     QBitmap b;
     b = QPixmap((const char **)iconMask_48_xpm);
     pix->setMask(b);
-    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this, "wharfIcon");
+    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
   }
   else
   {
@@ -161,7 +161,7 @@ IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_men
     QBitmap b;
     b = QPixmap((const char **)iconMask_64_xpm);
     pix->setMask(b);
-    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this, "wharfIcon");
+    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
   }
   X11Init();
 }
@@ -314,15 +314,15 @@ void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short 
 
 //=====IconManager_Themed===================================================
 
-IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu, const char *theme, QWidget *parent, const char *name )
-  : IconManager(parent, name)
+IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu, const char *theme, QWidget *parent)
+  : IconManager(parent)
 {
   pixNoMessages = pixBothMessages = pixRegularMessages = pixSystemMessages = NULL;
   pixOnline = pixOffline = pixAway = pixNA = pixOccupied = pixDND = pixInvisible = pixFFC = NULL;
 
   SetTheme(theme);
 
-  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this, "wharfIcon");
+  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this);
   X11Init();
 }
 
@@ -566,8 +566,8 @@ void IconManager_Themed::SetDockIconMsg(unsigned short nNewMsg, unsigned short n
 //=====WharfIcon=============================================================
 
 WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, QPixmap *p,
-                     QWidget *parent, const char *name)
-  : QWidget(parent, name)
+                     QWidget *parent)
+  : QWidget(parent, "WharfIcon")
 {
   mainwin = _mainwin;
   menu = _menu;

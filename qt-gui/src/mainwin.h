@@ -55,7 +55,7 @@ public:
   CMainWindow(CICQDaemon *theServer, CSignalManager *theSigMan,
               CQtLogWindow *theLogWindow, bool bStartHidden,
               const char *skinName, const char *iconsName,
-              QWidget *parent = 0, const char *name = 0);
+              QWidget *parent = 0);
   virtual ~CMainWindow();
   ICQFunctions *callFunction(int fcn, unsigned long _nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);

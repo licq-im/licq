@@ -25,8 +25,7 @@ class CFileDlg : public QDialog
 {
    Q_OBJECT
 public:
-  CFileDlg(unsigned long _nUin, CICQDaemon *daemon,
-     QWidget *parent = NULL, char *name = NULL);
+  CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent = 0);
   virtual ~CFileDlg();
 
   bool SendFiles(const char *szFile, unsigned short nPort);
@@ -34,9 +33,6 @@ public:
 
   unsigned short LocalPort();
   unsigned long Uin()  { return m_nUin; };
-
-public slots:
-   virtual void hide();
 
 protected:
    QLabel *lblTransferFileName, *lblLocalFileName, *lblFileSize,

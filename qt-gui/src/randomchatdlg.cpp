@@ -17,9 +17,8 @@
 //=====CRandomChatDlg========================================================
 
 CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
-                               CSignalManager *_sigman,
-                               QWidget *p, const char *n)
-  : QWidget(p, n)
+                               CSignalManager *_sigman, QWidget* p)
+  : QWidget(p, "RandomChatDialog", WDestructiveClose)
 {
   mainwin = _mainwin;
   server = s;
@@ -48,7 +47,7 @@ CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
   btnCancel->setFixedWidth(bw);
 
   connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(hide()));
+  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
 
   // Fill in the combo box
   lstGroups->insertItem(tr("General"));
@@ -71,14 +70,6 @@ CRandomChatDlg::~CRandomChatDlg()
   if (tag != NULL)
     server->CancelEvent(tag);
   delete tag;
-}
-
-
-
-void CRandomChatDlg::hide()
-{
-  QWidget::hide();
-  delete this;
 }
 
 
@@ -132,7 +123,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     break;
   default:
     mainwin->callFunction(mnuUserSendChat, e->SearchAck()->Uin());
-    hide();
+    close();
     return;
   }
 
@@ -141,9 +132,8 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
 //=====CSetRandomChatGroupDlg================================================
 
 CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
-                               CSignalManager *_sigman,
-                               QWidget *p, const char *n)
-  : QWidget(p, n)
+                               CSignalManager *_sigman, QWidget* p)
+  : QWidget(p, "SetRandomChatGroupDlg")
 {
   server = s;
   sigman = _sigman;
@@ -171,7 +161,7 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
   btnCancel->setFixedWidth(bw);
 
   connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(hide()));
+  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
 
   // Fill in the combo box
   lstGroups->insertItem(tr("(none)"));
@@ -214,14 +204,6 @@ CSetRandomChatGroupDlg::~CSetRandomChatGroupDlg()
   if (tag != NULL)
     server->CancelEvent(tag);
   delete tag;
-}
-
-
-
-void CSetRandomChatGroupDlg::hide()
-{
-  QWidget::hide();
-  delete this;
 }
 
 

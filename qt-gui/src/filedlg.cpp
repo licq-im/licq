@@ -43,9 +43,8 @@
 
 
 //-----Constructor------------------------------------------------------------
-CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon,
-                   QWidget *parent, char *name)
-  : QDialog(parent, name)
+CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
+  : QDialog(parent, "FileDialog", false, WDestructiveClose)
 {
   // If we are the server, then we are receiving a file
   m_nUin = _nUin;
@@ -112,7 +111,7 @@ CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon,
   btnCancel = new QPushButton(tr("&Cancel Transfer"), this);
   btnCancel->setMinimumWidth(75);
   lay->addMultiCellWidget(btnCancel, CR, CR, 1, 2);
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(hide()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
 
   ftman = new CFileTransferManager(licqDaemon, m_nUin);
   ftman->SetUpdatesEnabled(2);
@@ -320,15 +319,6 @@ bool CFileDlg::SendFiles(const char *szFile, unsigned short nPort)
   return true;
 }
 
-
-
-
-//-----hide--------------------------------------------------------------------
-void CFileDlg::hide()
-{
-   QWidget::hide();
-   delete this;
-}
 
 // -----------------------------------------------------------------------------
 

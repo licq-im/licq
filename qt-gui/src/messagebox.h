@@ -47,7 +47,7 @@ friend class MsgView;
 class MsgView : public QListView
 {
 public:
-  MsgView (QWidget *parent = 0, const char *name = 0);
+  MsgView (QWidget *parent = 0);
   CUserEvent *currentMsg(void);
   QSize sizeHint() const;
 protected:

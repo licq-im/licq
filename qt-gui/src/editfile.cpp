@@ -17,8 +17,8 @@
 
 //---------------------------------------------------------------------------
 
-EditFileDlg::EditFileDlg(QString fname, QWidget *parent, const char *name)
-  : QWidget(parent, name), sFile(fname)
+EditFileDlg::EditFileDlg(QString fname, QWidget *parent)
+  : QWidget(parent, "EditFileDialog", WDestructiveClose), sFile(fname)
 {
   setCaption(tr("Licq File Editor - %1").arg(fname));
 
@@ -36,7 +36,7 @@ EditFileDlg::EditFileDlg(QString fname, QWidget *parent, const char *name)
   connect(btnSave, SIGNAL(clicked()), this, SLOT(slot_save()));
   btnClose = new QPushButton(tr("&Close"), this);
   btnClose->setDefault(true);
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
   int bw = 75;
   bw = QMAX(bw, btnSave->sizeHint().width());
   bw = QMAX(bw, btnClose->sizeHint().width());
@@ -68,13 +68,6 @@ EditFileDlg::EditFileDlg(QString fname, QWidget *parent, const char *name)
 }
 
 // --------------------------------------------------------------------------
-
-void EditFileDlg::hide()
-{
-  QWidget::hide();
-  delete this;
-}
-
 
 void EditFileDlg::slot_save()
 {

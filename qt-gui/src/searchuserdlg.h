@@ -39,7 +39,7 @@ class CSearchAck;
 class SearchUserView : public QListView
 {
 public:
-   SearchUserView(QWidget *parent = 0, char *name = 0);
+   SearchUserView(QWidget *parent = 0);
 };
 
 
@@ -59,7 +59,7 @@ class SearchUserDlg : public QDialog
    Q_OBJECT
 public:
    SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan,
-                  QWidget *parent =0, const char *name = 0);
+                  QWidget *parent =0);
    ~SearchUserDlg();
 
 private:

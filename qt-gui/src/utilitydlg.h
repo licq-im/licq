@@ -24,8 +24,7 @@ class CUtilityDlg : public QDialog
   Q_OBJECT
 public:
   CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server);
-  ~CUtilityDlg(void);
-  virtual void hide();
+  ~CUtilityDlg();
 protected:
   CUtility *m_xUtility;
   CICQDaemon *server;

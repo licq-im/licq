@@ -26,8 +26,7 @@ public:
    enum tabs { ODlgAppearance, ODlgColumns, ODlgOnEvent, ODlgNetwork,
                ODlgStatus, ODlgMiscellaneous };
 
-   OptionsDlg (CMainWindow *, tabs tab = ODlgAppearance,
-               QWidget *parent = NULL, char *name = NULL);
+   OptionsDlg (CMainWindow *, tabs tab = ODlgAppearance, QWidget* parent=0);
    virtual ~OptionsDlg();
 
 protected:

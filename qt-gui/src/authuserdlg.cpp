@@ -34,8 +34,8 @@
 #include "licq_icqd.h"
 
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
-   QWidget *parent, const char *name)
-  : QDialog(parent, name, false, WDestructiveClose)
+   QWidget *parent)
+  : QDialog(parent, "AuthUserDialog", false, WDestructiveClose)
 {
   server = s;
   m_nUin = nUin;

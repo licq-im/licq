@@ -15,8 +15,7 @@ class SecurityDlg : public QDialog
 {
    Q_OBJECT
 public:
-  SecurityDlg (CICQDaemon *s, CSignalManager *,
-               QWidget *parent = 0, const char *name = 0 );
+  SecurityDlg (CICQDaemon *s, CSignalManager *, QWidget* parent = 0);
   SecurityDlg::~SecurityDlg();
 protected:
   CICQDaemon *server;
@@ -27,7 +26,6 @@ protected:
   CICQEventTag *tag;
 
 public slots:
-  virtual void hide();
   void slot_doneUserFcn(ICQEvent *);
 protected slots:
   void ok();

@@ -34,8 +34,8 @@
 #include "licq_user.h"
 
 SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
-                         QWidget *parent, const char *name)
-   : QDialog(parent, name)
+                         QWidget *parent)
+   : QDialog(parent, "SecurityDialog", false, WDestructiveClose)
 {
   server = s;
   sigman = _sigman;
@@ -74,7 +74,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   lay->addLayout(hlay);
 
   connect (btnUpdate, SIGNAL(clicked()), SLOT(ok()) );
-  connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+  connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   chkAuthorization->setChecked(o->GetAuthorization());
@@ -92,14 +92,6 @@ SecurityDlg::~SecurityDlg()
 {
   if (tag != NULL)
     delete tag;
-}
-
-
-
-void SecurityDlg::hide()
-{
-  QDialog::hide();
-  delete this;
 }
 
 
@@ -147,7 +139,7 @@ void SecurityDlg::slot_doneUserFcn(ICQEvent *e)
   else
   {
     setCaption(tr("ICQ Security Options"));
-    QWidget::close();
+    close();
   }
 
 

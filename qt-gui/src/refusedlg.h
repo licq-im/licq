@@ -8,8 +8,7 @@ class MLEditWrap;
 class CRefuseDlg : public QDialog
 {
 public:
-  CRefuseDlg(unsigned long _nUin, QString t, QWidget *parent = 0,
-             const char *name = 0);
+  CRefuseDlg(unsigned long _nUin, QString t, QWidget *parent = 0);
   QString RefuseMessage();
 
 protected:

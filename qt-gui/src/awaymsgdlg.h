@@ -11,7 +11,7 @@ class AwayMsgDlg : public QDialog
 {
   Q_OBJECT
 public:
-  AwayMsgDlg(QWidget *parent = 0, const char *name = 0);
+  AwayMsgDlg(QWidget *parent = 0);
   ~AwayMsgDlg();
   void SelectAutoResponse(unsigned short status);
 
@@ -37,7 +37,7 @@ class CustomAwayMsgDlg : public QDialog
 {
   Q_OBJECT
 public:
-  CustomAwayMsgDlg(unsigned long, QWidget *parent = 0, const char *name = 0);
+  CustomAwayMsgDlg(unsigned long, QWidget *parent = 0);
 
 protected:
   MLEditWrap *mleAwayMsg;

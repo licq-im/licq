@@ -191,7 +191,8 @@ static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                          CQtLogWindow *theLogWindow, bool bStartHidden,
                          const char *skinName, const char *iconsName,
-                         QWidget *parent, const char *name) : QWidget(parent, name)
+                         QWidget *parent) 
+  : QWidget(parent, "MainWindow")
 {
   licqDaemon = theDaemon;
   licqSigMan = theSigMan;
@@ -206,12 +207,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   // set up appicon and docking, code supplied by Mark Deneed
   WId win = winId();     // get the window
-  Display *dsp = x11Display();  // get the display
   XWMHints *hints;  // hints
-  XClassHint classhint;  // class hints
-  classhint.res_name = "licq";  // res_name
-  classhint.res_class = "Licq";  // res_class
-  XSetClassHint(dsp, win, &classhint); // set the class hints
+  Display *dsp = x11Display();  // get the display
   hints = XGetWMHints(dsp, win);  // init hints
   hints->window_group = win;  // set set the window hint
   hints->flags = WindowGroupHint;  // set the window group hint
@@ -1477,7 +1474,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
   if (f == NULL)
   {
-     f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose, NULL, "user");
+     f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose, NULL);
      connect (f, SIGNAL(signal_updatedUser(CICQSignal *)), SLOT(slot_updatedUser(CICQSignal *)));
      connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
      f->setupTabs(fcn);

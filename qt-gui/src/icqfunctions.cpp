@@ -78,10 +78,9 @@ unsigned short ICQFunctions::s_nY = 100;
 
 //-----ICQFunctions::constructor---------------------------------------------
 ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
-                           CMainWindow *m,
-                           unsigned long _nUin,
-                           bool isAutoClose, QWidget *parent, const char *name)
-  : QWidget(parent, name)
+                           CMainWindow *m, unsigned long _nUin,
+                           bool isAutoClose, QWidget *parent)
+  : QWidget(parent, "UserEventDialog")
 {
   server = s;
   mainwin = m;

@@ -13,9 +13,6 @@ class PluginDlg : public QWidget
 public:
   PluginDlg(CICQDaemon *d);
 
-public slots:
-  virtual void hide();
-
 protected:
   QListBox *lstAvailable;
   QListView *lstLoaded;

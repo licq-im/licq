@@ -14,7 +14,7 @@ class EditGrpDlg : public QWidget
 {
   Q_OBJECT
 public:
-  EditGrpDlg (QWidget *parent = 0, const char *name = 0 );
+  EditGrpDlg (QWidget *parent = 0);
 protected:
   QListBox *lstGroups;
   QGroupBox *grpGroups;

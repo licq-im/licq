@@ -44,8 +44,8 @@
 
 // -----------------------------------------------------------------------------
 
-SearchUserView::SearchUserView(QWidget *parent, char *name)
-  : QListView(parent, name)
+SearchUserView::SearchUserView(QWidget *parent)
+  : QListView(parent, "SearchUserDialog")
 {
   addColumn(tr("Alias"), 105);
   addColumn(tr("UIN"), 70);
@@ -81,8 +81,8 @@ unsigned long SearchItem::uin()
 // -----------------------------------------------------------------------------
 
 SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
-                             QWidget *parent, const char *name)
-  : QDialog(parent, name, false, WDestructiveClose)
+                             QWidget *parent)
+  : QDialog(parent, "SearchUserDialog", false, WDestructiveClose)
 {
   server = s;
   sigman = theSigMan;

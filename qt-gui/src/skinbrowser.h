@@ -14,7 +14,7 @@ class SkinBrowserDlg : public QDialog
 {
   Q_OBJECT
 public:
-  SkinBrowserDlg (CMainWindow *_mainwin, QWidget *parent = 0, const char *name = 0 );
+  SkinBrowserDlg (CMainWindow *_mainwin, QWidget *parent = 0);
 protected:
   QListView *lstSkins, *lstIcons;
   QGroupBox *grpSkins, *grpIcons;

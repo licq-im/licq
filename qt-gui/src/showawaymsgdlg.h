@@ -37,7 +37,7 @@ class ShowAwayMsgDlg : public QDialog
   Q_OBJECT
 public:
   ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
-                 unsigned long _nUin, QWidget *parent = 0, const char *name = 0);
+                 unsigned long _nUin, QWidget *parent = 0);
   virtual ~ShowAwayMsgDlg();
 
 protected:

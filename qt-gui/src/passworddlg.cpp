@@ -35,9 +35,9 @@
 #include "licq_events.h"
 #include "licq_user.h"
 
-PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
-                         QWidget *parent, const char *name)
-   : QDialog(parent, name, WDestructiveClose)
+PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman, 
+                         QWidget *parent)
+   : QDialog(parent, "PasswordDialog", WDestructiveClose)
 {
   server = s;
   sigman = _sigman;

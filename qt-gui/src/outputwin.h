@@ -14,12 +14,12 @@
 #include "ewidgets.h"
 #include "licq_log.h"
 
-//=====OutputWin===================================================================================
+//=====OutputWin============================================================
 class CQtLogWindow : public QDialog, public CPluginLog
 {
   Q_OBJECT
 public:
-  CQtLogWindow (QWidget *parent = 0, const char *name = 0);
+  CQtLogWindow (QWidget *parent = 0);
 protected:
   CLogWidget *outputBox;
   QPushButton *btnHide, *btnClear, *btnSave;

@@ -19,7 +19,7 @@
 class WharfIcon : public QWidget
 {
 public:
-  WharfIcon(class CMainWindow *, QPopupMenu *, QPixmap *, QWidget *parent = NULL, const char *name = NULL);
+  WharfIcon(class CMainWindow *, QPopupMenu *, QPixmap *, QWidget *parent= 0);
   virtual ~WharfIcon();
   void Set(QPixmap *);
 protected:
@@ -37,7 +37,7 @@ friend class IconManager_Themed;
 class IconManager : public KApplet
 {
 public:
-  IconManager(QWidget *parent = NULL, const char *name = NULL);
+  IconManager(QWidget *parent = 0);
   virtual ~IconManager();
   virtual void SetDockIconStatus() = 0;
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg) = 0;
@@ -59,7 +59,7 @@ friend class WharfIcon;
 class IconManager_Default : public IconManager
 {
 public:
-  IconManager_Default(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
+  IconManager_Default(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = 0);
   virtual ~IconManager_Default();
   virtual void SetDockIconStatus();
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
@@ -75,7 +75,7 @@ protected:
 class IconManager_Themed : public IconManager
 {
 public:
-  IconManager_Themed(class CMainWindow *, QPopupMenu *, const char *, QWidget *parent = NULL, const char *name = NULL);
+  IconManager_Themed(class CMainWindow *, QPopupMenu *, const char *, QWidget *parent = 0);
   virtual ~IconManager_Themed();
   virtual void SetDockIconStatus();
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);

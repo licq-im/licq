@@ -61,8 +61,7 @@ class ICQFunctions : public QWidget
    Q_OBJECT
 public:
   ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-               unsigned long _nUin, bool isAutoClose,
-               QWidget *parent = 0, const char *name = 0);
+               unsigned long _nUin, bool isAutoClose, QWidget* parent = 0);
   virtual ~ICQFunctions();
   void setupTabs(int);
   unsigned long Uin()  {  return m_nUin;  }

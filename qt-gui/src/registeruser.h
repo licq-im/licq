@@ -15,7 +15,7 @@ class RegisterUserDlg : public QWizard
 {
   Q_OBJECT
 public:
-  RegisterUserDlg (CICQDaemon *s, QWidget *parent = 0, const char *name = 0 );
+  RegisterUserDlg (CICQDaemon *s, QWidget *parent = 0 );
 
 signals:
   void signal_done();

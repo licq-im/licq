@@ -25,7 +25,7 @@ class CMMSendDlg : public QDialog
   Q_OBJECT
 public:
   CMMSendDlg(CICQDaemon *, CSignalManager *, CMMUserView *,
-     QWidget *p = NULL, const char *n = NULL);
+     QWidget *p = 0);
   ~CMMSendDlg();
 
   int go_message(QString);

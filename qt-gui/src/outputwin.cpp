@@ -18,8 +18,8 @@
 
 //---------------------------------------------------------------------------
 
-CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
-  : QDialog(parent, name)
+CQtLogWindow::CQtLogWindow(QWidget *parent)
+  : QDialog(parent, "NetworkLog")
 {
   setCaption(tr("Licq Network Log"));
 

@@ -88,8 +88,8 @@ enum mnuMM_ids
 //-----UserList::constructor-----------------------------------------------------------------------
 CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
    unsigned long nUin, CMainWindow *pMainwin,
-   QWidget *parent, const char *name)
-   : QListView(parent, name)
+   QWidget *parent)
+   : QListView(parent, "MMUserView")
 {
   mnuMM = new QPopupMenu(NULL);
   mnuMM->insertItem(tr("Remove"), mnuMM_remove);

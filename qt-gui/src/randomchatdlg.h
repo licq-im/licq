@@ -20,8 +20,7 @@ class CRandomChatDlg : public QWidget
 Q_OBJECT
 public:
   CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
-                 CSignalManager *_sigman,
-                 QWidget *p = NULL, const char *n = NULL);
+                 CSignalManager *_sigman, QWidget* p = 0);
   ~CRandomChatDlg();
 protected:
   CMainWindow *mainwin;
@@ -31,7 +30,6 @@ protected:
   QListBox *lstGroups;
   QPushButton *btnOk, *btnCancel;
 protected slots:
-  virtual void hide();
   void slot_ok();
   void slot_doneUserFcn(ICQEvent *);
 };
@@ -42,7 +40,7 @@ class CSetRandomChatGroupDlg : public QWidget
 Q_OBJECT
 public:
   CSetRandomChatGroupDlg(CICQDaemon *s, CSignalManager *_sigman,
-                 QWidget *p = NULL, const char *n = NULL);
+                 QWidget *p = 0);
   ~CSetRandomChatGroupDlg();
 protected:
   CMainWindow *mainwin;
@@ -52,7 +50,6 @@ protected:
   QListBox *lstGroups;
   QPushButton *btnOk, *btnCancel;
 protected slots:
-  virtual void hide();
   void slot_ok();
   void slot_doneUserFcn(ICQEvent *);
 };

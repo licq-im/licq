@@ -71,7 +71,7 @@ class ChatDlg : public QMainWindow
    Q_OBJECT
 public:
   ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
-          QWidget *parent = NULL, char *name = NULL);
+          QWidget *parent = 0);
   virtual ~ChatDlg();
 
   bool StartAsClient(unsigned short nPort);

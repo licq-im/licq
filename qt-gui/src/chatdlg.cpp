@@ -109,8 +109,8 @@ enum ChatMenu_Identifiers {
 // ---------------------------------------------------------------------------
 
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
-                 QWidget *parent, char *name)
-  : QMainWindow(parent, name, WDestructiveClose)
+                 QWidget *parent)
+  : QMainWindow(parent, "ChatDialog", WDestructiveClose)
 {
   m_nUin = _nUin;
   m_bAudio = true;

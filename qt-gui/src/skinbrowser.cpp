@@ -29,8 +29,8 @@
 #include "licq_log.h"
 #include "editfile.h"
 
-SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const char *name)
-  : QDialog(parent, name)
+SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
+  : QDialog(parent, "SkinBrowserDialog")
 {
   mainwin = _mainwin;
 

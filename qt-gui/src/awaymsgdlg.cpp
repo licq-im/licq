@@ -38,8 +38,8 @@ QPoint AwayMsgDlg::snPos = QPoint();
 
 // -----------------------------------------------------------------------------
 
-AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
-  : QDialog(parent, name, false, WDestructiveClose)
+AwayMsgDlg::AwayMsgDlg(QWidget *parent)
+  : QDialog(parent, "AwayMessageDialog", false, WDestructiveClose)
 {
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
@@ -176,9 +176,8 @@ void AwayMsgDlg::slot_selectMessage()
 
 // -----------------------------------------------------------------------------
 
-CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent,
-                                   const char *name)
-    : QDialog(parent, name, false, WDestructiveClose)
+CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
+    : QDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
 {
   m_nUin = nUin;
 

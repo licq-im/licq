@@ -19,7 +19,7 @@ class CJoinChatDlg : public QDialog
   Q_OBJECT
 
 public:
-  CJoinChatDlg(bool bRequesting, QWidget *p = NULL, const char *n = NULL);
+  CJoinChatDlg(bool bRequesting, QWidget *p = 0);
   ~CJoinChatDlg() {}
   ChatDlg *JoinedChat();
   QString ChatClients() { return lstChats->text(lstChats->currentItem()); }

@@ -31,8 +31,8 @@
 #include "ewidgets.h"
 #include "licq_user.h"
 
-EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
-  : QWidget(parent, name)
+EditGrpDlg::EditGrpDlg(QWidget *parent)
+  : QWidget(parent, "EditGroupDialog")
 {
   setCaption(tr("Licq - Edit Groups"));
   QGridLayout *lay = new QGridLayout(this, 2, 1, 8, 10);

@@ -20,8 +20,8 @@
 
 
 CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
-  CMMUserView *_mmv, QWidget *p, const char *n)
-  : QDialog(p, n, true)
+  CMMUserView *_mmv, QWidget *p)
+  : QDialog(p, "MMSendDialog", true)
 {
   m_nUin = 0;
   icqEventTag = NULL;

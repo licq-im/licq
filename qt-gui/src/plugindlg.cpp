@@ -16,7 +16,8 @@
 
 #include "licq_icqd.h"
 
-PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
+PluginDlg::PluginDlg(CICQDaemon *d) 
+  : QWidget(0, "PluginDialog", WDestructiveClose)
 {
   licqDaemon = d;
 
@@ -56,7 +57,7 @@ PluginDlg::PluginDlg(CICQDaemon *d) : QWidget(0, 0)
   connect(btnRefresh, SIGNAL(clicked()), this, SLOT(slot_refresh()));
   bw = QMAX(bw, btnRefresh->sizeHint().width());
   QPushButton *btnDone = new QPushButton(tr("Done"), this);
-  connect(btnDone, SIGNAL(clicked()), this, SLOT(hide()));
+  connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
   bw = QMAX(bw, btnDone->sizeHint().width());
 
   btnDetails->setFixedWidth(bw);
@@ -176,13 +177,6 @@ void PluginDlg::slot_refresh()
     (*sit).truncate((*sit).length() - 3);
   }
   lstAvailable->insertStringList(s);
-}
-
-
-void PluginDlg::hide()
-{
-  QWidget::hide();
-  delete this;
 }
 
 

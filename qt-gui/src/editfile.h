@@ -11,8 +11,7 @@ class EditFileDlg: public QWidget
 {
   Q_OBJECT
 public:
-  EditFileDlg (QString fname, QWidget *parent = 0, const char *name = 0);
-  virtual void hide();
+  EditFileDlg (QString fname, QWidget *parent = 0);
 protected:
   QString sFile;
   MLEditWrap *mleFile;

@@ -29,8 +29,8 @@
 
 #include "licq_icqd.h"
 
-AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
-   : QDialog(parent, name)
+AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
+   : QDialog(parent, "AddUserDialog")
 {
    setCaption(tr("Licq - Add User"));
    server = s;

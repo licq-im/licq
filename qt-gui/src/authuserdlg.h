@@ -16,7 +16,7 @@ class AuthUserDlg : public QDialog
    Q_OBJECT
 public:
    AuthUserDlg (CICQDaemon *s, unsigned long nUin, bool bGrant,
-      QWidget *parent = 0, const char *name = 0 );
+      QWidget *parent = 0);
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;
