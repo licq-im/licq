@@ -298,7 +298,7 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
 
     // Now try the real ip if it is different from this one and we are behind a firewall
     u = gUserManager.FetchUser(_nUin, LOCK_R);
-    if (u != NULL && u->RealIp() != u->Ip() &&
+    if (s->Error() != EINTR && u != NULL && u->RealIp() != u->Ip() &&
         u->RealIp() != 0 && m_szFirewallHost[0] != '\0')
     {
       gLog.Info("%sConnecting to %s (%d) real ip on port %d.\n", L_TCPxSTR, szAlias, _nUin, u->Port());
