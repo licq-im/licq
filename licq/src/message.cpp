@@ -38,7 +38,7 @@ int CUserEvent::s_nId = 1;
 //----CUserEvent::constructor---------------------------------------------------
 CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
                        unsigned short nSequence, time_t tTime,
-                       unsigned long nFlags, int nSocket)
+                       unsigned long nFlags, unsigned long nConvoId)
 {
    // Assigned stuff
    m_nSubCommand = nSubCommand;
@@ -46,7 +46,7 @@ CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
    m_nSequence = nSequence;
    m_tTime = (tTime == TIME_NOW ? time(NULL) : tTime);
    m_nFlags = nFlags;
-   m_nSocket = nSocket;
+   m_nConvoId = nConvoId;
    
    // Initialized stuff
    m_eDir = D_RECEIVER;
@@ -153,8 +153,8 @@ void CUserEvent::AddToHistory_Flush(ICQUser *u, char *szOut, unsigned long nPPID
 //=====CEventMsg================================================================
 
 CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
-                     time_t _tTime, unsigned long _nFlags, int _nSocket)
-   : CUserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags, _nSocket)
+                     time_t _tTime, unsigned long _nFlags, unsigned long _nConvoId)
+   : CUserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags, _nConvoId)
 {
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
   
@@ -191,10 +191,10 @@ void CEventMsg::AddToHistory(ICQUser *u, direction _nDir)
 
 
 CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
-  unsigned long nFlags, int nSocket)
+  unsigned long nFlags, unsigned long nConvoId)
 {
   gTranslator.ServerToClient (sz);
-  return new CEventMsg(sz, nCmd, nTime, nFlags, nSocket);
+  return new CEventMsg(sz, nCmd, nTime, nFlags, nConvoId);
 }
 
 
@@ -207,9 +207,9 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
 CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
                        unsigned long _nFileSize, ConstFileList &_lFileList,
                        unsigned short _nSequence, time_t _tTime,
-                       unsigned long _nFlags, int _nSocket,
+                       unsigned long _nFlags, unsigned long _nConvoId,
                        unsigned long _nMsgID1, unsigned long _nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags, _nSocket),
+   : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags, _nConvoId),
      m_lFileList(_lFileList.begin(), _lFileList.end())
 {
   m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
@@ -252,8 +252,8 @@ void CEventFile::AddToHistory(ICQUser *u, direction _nDir)
 
 CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
                      unsigned short _nCommand, time_t _tTime,
-                     unsigned long _nFlags, int _nSocket)
-   : CUserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags, _nSocket)
+                     unsigned long _nFlags, unsigned long _nConvoId)
+   : CUserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags, _nConvoId)
 {
    m_szUrl = strdup(_szUrl == NULL ? "" : _szUrl);
    m_szUrlDescription = strdup(_szUrlDescription == NULL ? "" : _szUrlDescription);
@@ -287,7 +287,7 @@ void CEventUrl::AddToHistory(ICQUser *u, direction _nDir)
 
 
 CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime,
-  unsigned long nFlags, int nSocket)
+  unsigned long nFlags, unsigned long nConvoId)
 {
   // parse the message into url and url description
   char **szUrl = new char*[2]; // desc, url
@@ -300,7 +300,7 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime,
   // translating string with Translation Table
   gTranslator.ServerToClient(szUrl[0]);
   CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], nCmd, nTime,
-    nFlags, nSocket);
+    nFlags, nConvoId);
   delete []szUrl;
 
   return e;
@@ -310,8 +310,8 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime,
 
 CEventChat::CEventChat(const char *szReason, unsigned short nSequence,
                        time_t tTime, unsigned long nFlags,
-                       int nSocket, unsigned long nMsgID1, unsigned long nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nSocket)
+                       unsigned long nConvoId, unsigned long nMsgID1, unsigned long nMsgID2)
+   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
   m_szClients = NULL;
@@ -322,9 +322,9 @@ CEventChat::CEventChat(const char *szReason, unsigned short nSequence,
 
 CEventChat::CEventChat(const char *szReason, const char *szClients,
    unsigned short nPort, unsigned short nSequence,
-   time_t tTime, unsigned long nFlags, int nSocket, unsigned long nMsgID1,
+   time_t tTime, unsigned long nFlags, unsigned long nConvoId, unsigned long nMsgID1,
    unsigned long nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nSocket)
+   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
   if (nPort == 0)

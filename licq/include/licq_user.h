@@ -761,7 +761,7 @@ public:
 
   // Crypto
   bool Secure() { return m_bSecure; }
-
+    
   virtual bool User()  { return true; }
   void Lock(unsigned short);
   void Unlock();

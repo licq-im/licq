@@ -75,6 +75,53 @@ void CDaemonStats::Init()
 }
 
 
+unsigned long CConversation::s_nCID = 0;
+pthread_mutex_t CConversation::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
+
+CConversation::CConversation(int nSocket, unsigned long nPPID)
+{
+  m_nSocket = nSocket;
+  m_nPPID = nPPID;
+  pthread_mutex_lock(&s_xMutex);
+  m_nCID = ++s_nCID;
+  pthread_mutex_unlock(&s_xMutex);
+}
+
+bool CConversation::HasUser(const char *szUser)
+{
+  return (std::find(m_vUsers.begin(), m_vUsers.end(), szUser) != m_vUsers.end()); 
+}
+
+bool CConversation::AddUser(const char *szUser)
+{
+  if (!HasUser(szUser))
+  {
+    m_vUsers.push_back(szUser);
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CConversation::RemoveUser(const char *szUser)
+{
+  if (HasUser(szUser))
+  {
+    string strUser(szUser);
+    vector<string>::iterator i;
+    for (i = m_vUsers.begin(); i != m_vUsers.end(); ++i)
+    {
+      if (*i == strUser)
+      {
+        m_vUsers.erase(i);
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
 CICQDaemon *gLicqDaemon = NULL;
 
 
@@ -307,6 +354,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   pthread_mutex_init(&mutex_cancelthread, NULL);
   pthread_cond_init(&cond_serverack, NULL);
   pthread_mutex_init(&mutex_serverack, NULL);
+  pthread_mutex_init(&mutex_conversations, NULL);
 }
 
 
@@ -2178,6 +2226,135 @@ bool CICQDaemon::AddProtocolPlugins()
   return true;
 }
 
+//-----Conversation functions---------------------------------------------------
+CConversation *CICQDaemon::AddConversation(int _nSocket, unsigned long _nPPID)
+{
+  CConversation *pNew = new CConversation(_nSocket, _nPPID);
+  pthread_mutex_lock(&mutex_conversations);
+  m_lConversations.push_back(pNew);
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return pNew;
+}
+
+bool CICQDaemon::AddUserConversation(unsigned long _nCID, const char *_szId)
+{
+  bool bAdded = false;
+  ConversationList::iterator iter;
+  pthread_mutex_lock(&mutex_conversations);
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  {
+    if ((*iter)->CID() == _nCID)
+    {
+      bAdded = true;
+      (*iter)->AddUser(_szId);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return bAdded;
+}
+
+bool CICQDaemon::AddUserConversation(int _nSocket, const char *_szId)
+{
+  bool bAdded = false;
+  ConversationList::iterator iter;
+  pthread_mutex_lock(&mutex_conversations);
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  {
+    if ((*iter)->Socket() == _nSocket)
+    {
+      bAdded = true;
+      (*iter)->AddUser(_szId);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return bAdded;
+}
+
+bool CICQDaemon::RemoveUserConversation(unsigned long _nCID, const char *_szId)
+{
+  bool bRemoved = false;
+  ConversationList::iterator iter;
+  pthread_mutex_lock(&mutex_conversations);
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  {
+    if ((*iter)->CID() == _nCID)
+    {
+      bRemoved = (*iter)->RemoveUser(_szId);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return bRemoved;
+}
+
+bool CICQDaemon::RemoveUserConversation(int _nSocket, const char *_szId)
+{
+  bool bRemoved = false;
+  ConversationList::iterator iter;
+  pthread_mutex_lock(&mutex_conversations);
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  {
+    if ((*iter)->Socket() == _nSocket)
+    {
+      bRemoved = (*iter)->RemoveUser(_szId);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return bRemoved;
+}
+
+CConversation *CICQDaemon::FindConversation(int _nSocket)
+{
+  pthread_mutex_lock(&mutex_conversations);
+  ConversationList::iterator iter;
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+    if ((*iter)->Socket() == _nSocket)
+      break;
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return (iter == m_lConversations.end()) ? 0 : *iter;
+}
+
+CConversation *CICQDaemon::FindConversation(unsigned long _nCID)
+{
+  pthread_mutex_lock(&mutex_conversations);
+  ConversationList::iterator iter;
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+    if ((*iter)->CID() == _nCID)
+      break;
+  pthread_mutex_unlock(&mutex_conversations);
+  
+  return (iter == m_lConversations.end()) ? 0 : *iter;
+}
+
+bool CICQDaemon::RemoveConversation(unsigned long _nCID)
+{
+  bool bDeleted = false;
+  pthread_mutex_lock(&mutex_conversations);
+  ConversationList::iterator iter;
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  {
+    if ((*iter)->CID() == _nCID)
+    {
+      bDeleted = true;
+      m_lConversations.erase(iter);
+      delete *iter;  
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_conversations);  
+
+  return bDeleted;
+}
+
 //-----ProcessMessage-----------------------------------------------------------
 void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                 unsigned short nMsgType, unsigned long nMask,
@@ -2266,7 +2443,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     if (!bIsAck)
     {
       CEventChat *e = new CEventChat(message, szChatClients, nPort, nSequence,
-                                     TIME_NOW, nFlags, -1, nMsgID[0], nMsgID[1]);
+                                     TIME_NOW, nFlags, 0, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_CHAT;
       pEvent = e;
     }
@@ -2299,7 +2476,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
       CEventFile *e = new CEventFile(szFilename, message, nFileSize,
                                      filelist, nSequence, TIME_NOW, nFlags,
-                                     -1, nMsgID[0], nMsgID[1]);
+                                     0, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_FILE;
       pEvent = e;
     }

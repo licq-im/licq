@@ -9,6 +9,8 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <vector>
 #include <list>
 #include <deque>
+#include <string>
+#include <algorithm>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -19,6 +21,8 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_plugind.h"
 #include "licq_color.h"
 #include "licq_protoplugind.h"
+
+using std::string;
 
 class CProtoPlugin;
 class CPlugin;
@@ -83,6 +87,39 @@ typedef std::vector<CDaemonStats> DaemonStatsList;
 // We will save the statistics to disk
 #define SAVE_STATS
 
+
+//====Conversations=============================================================
+class CConversation
+{
+public:
+  bool HasUser(const char *sz);
+  bool IsEmpty()        { return m_vUsers.size() == 0; }
+  int NumUsers()        { return m_vUsers.size(); }
+    
+  int Socket()          { return m_nSocket; }
+  unsigned long CID()   { return m_nCID; }
+  
+  string GetUser(int n) { return m_vUsers[n]; }
+
+private:  
+  CConversation(int nSocket, unsigned long nPPID);
+  ~CConversation() { }
+    
+  bool AddUser(const char *sz);
+  bool RemoveUser(const char *sz);
+  
+  int m_nSocket;
+  unsigned long m_nPPID;
+  unsigned long m_nCID;
+  vector<string> m_vUsers;
+  
+  static unsigned long s_nCID;
+  static pthread_mutex_t s_xMutex;
+  
+  friend class CICQDaemon;
+};
+
+typedef std::list<CConversation *> ConversationList;
 
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
@@ -162,11 +199,12 @@ public:
         \param bMultipleRecipients True if sending the same message to
           more than one user.
         \param pColor The color of the text and background.
+        \param nCID The conversation ID for group messages (MSN & IRC)
   */
   unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
      const char *szMessage, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL,
-     int nSocket = -1);
+     unsigned long nCID = 0);
 
   //! Send a URL to a user on this protocol
   /*!
@@ -515,6 +553,16 @@ public:
   time_t Uptime() { return time(NULL) - m_nStartTime; }
   void ResetStats();
 
+  // Conversation functions
+  CConversation *AddConversation(int nSocket, unsigned long nPPID);
+  bool AddUserConversation(unsigned long nCID, const char *szId);
+  bool AddUserConversation(int nSocket, const char *szId);
+  bool RemoveUserConversation(unsigned long nCID, const char *szId);
+  bool RemoveUserConversation(int nSocket, const char *szId);
+  CConversation *FindConversation(int nSocket);
+  CConversation *FindConversation(unsigned long nCID);
+  bool RemoveConversation(unsigned long nCID);
+  
   // Common message handler
   void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
      unsigned short nMsgType, unsigned long nMask,
@@ -588,6 +636,9 @@ protected:
   static pthread_mutex_t mutex_reverseconnect;
   static pthread_cond_t  cond_reverseconnect_done;
 
+  ConversationList m_lConversations;
+  pthread_mutex_t mutex_conversations;
+  
   std::list <ICQEvent *> m_lxRunningEvents;
   pthread_mutex_t mutex_runningevents;
   std::list <ICQEvent *> m_lxExtendedEvents;

@@ -31,7 +31,7 @@ class CUserEvent
 public:
    CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
               unsigned short _nSequence, time_t _tTime,
-              unsigned long _nFlags, int _nSocket = -1);
+              unsigned long _nFlags, unsigned long _nConvoId = 0);
    CUserEvent(const CUserEvent *);
    virtual ~CUserEvent();
 
@@ -54,7 +54,7 @@ public:
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
    CICQColor *Color() { return &m_sColor; }
-   int Socket() { return m_nSocket; }
+   int ConvoId() { return m_nConvoId; }
    
    bool Pending() { return m_bPending; }
    void SetPending(bool b)  { m_bPending = b; }
@@ -85,7 +85,7 @@ protected:
    direction      m_eDir;
    bool           m_bPending;
    CICQColor      m_sColor;
-   int            m_nSocket;
+   unsigned long  m_nConvoId;
    
 friend class CICQDaemon;
 friend class CMSN;
@@ -99,7 +99,7 @@ class CEventMsg : public CUserEvent
 {
 public:
    CEventMsg(const char *_szMessage, unsigned short _nCommand,
-             time_t _tTime, unsigned long _nFlags, int _nSocket = -1);
+             time_t _tTime, unsigned long _nFlags, unsigned long _nConvoId = 0);
    virtual ~CEventMsg();
    virtual CEventMsg *Copy()
       {
@@ -111,7 +111,7 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
 
    static CEventMsg *Parse(char *sz, unsigned short nCmd, time_t nTime,
-     unsigned long nFlags, int nSocket = -1);
+     unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
    void CreateDescription();
    char *m_szMessage;
@@ -125,14 +125,14 @@ public:
    CEventFile(const char *_szFilename, const char *_szFileDescription,
               unsigned long _nFileSize, ConstFileList &lFileList,
               unsigned short _nSequence, time_t _tTime,
-              unsigned long _nFlags, int _nSocket = -1,
+              unsigned long _nFlags, unsigned long _nConovId = 0,
               unsigned long _nMsgID1 = 0, unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventFile *Copy()
       {
         CEventFile *e = new CEventFile(m_szFilename, m_szFileDescription,
-         m_nFileSize, m_lFileList, m_nSequence, m_tTime, m_nFlags, m_nSocket, m_nMsgID[0],
+         m_nFileSize, m_lFileList, m_nSequence, m_tTime, m_nFlags, m_nConvoId, m_nMsgID[0],
          m_nMsgID[1]);
         e->CopyBase(this);
         return e;
@@ -159,7 +159,7 @@ class CEventUrl : public CUserEvent
 public:
    CEventUrl(const char *_szUrl, const char *_szUrlDescription,
              unsigned short _nCommand, time_t _tTime,
-             unsigned long _nFlags, int _nSocket = -1);
+             unsigned long _nFlags, unsigned long _nConvoId = 0);
    virtual ~CEventUrl();
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventUrl *Copy()
@@ -173,7 +173,7 @@ public:
    const char *Description()  { return m_szUrlDescription; }
 
    static CEventUrl *Parse(char *sz, unsigned short nCmd, time_t nTime,
-     unsigned long nFlags, int nSocket = -1);
+     unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
    void CreateDescription();
    char *m_szUrl;
@@ -186,17 +186,17 @@ class CEventChat : public CUserEvent
 {
 public:
    CEventChat(const char *szReason, unsigned short nSequence, time_t tTime,
-      unsigned long nFlags, int nSocket = -1, unsigned long nMsgID1 = 0,
+      unsigned long nFlags, unsigned long nConvoId = 0, unsigned long nMsgID1 = 0,
       unsigned long nMsgID2 = 0);
    CEventChat(const char *szReason, const char *szClients, unsigned short nPort,
       unsigned short nSequence, time_t tTime, unsigned long nFlags,
-      int _nSocket = -1, unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
+      unsigned long _nConvoId = 0, unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
   virtual ~CEventChat();
   virtual void AddToHistory(ICQUser *, direction);
   virtual CEventChat *Copy()
      {
        CEventChat *e = new CEventChat(m_szText, m_szClients, m_nPort,
-        m_nSequence, m_tTime, m_nFlags, m_nSocket, m_nMsgID[0], m_nMsgID[1]);
+        m_nSequence, m_tTime, m_nFlags, m_nConvoId, m_nMsgID[0], m_nMsgID[1]);
        e->CopyBase(this);
        return e;
      }

@@ -412,9 +412,9 @@ class CICQSignal
 {
 public:
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin,
-             int nArg1 = 0, int nArg2 = 0);
+             int nArg = 0, unsigned long nCID = 0);
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
-             unsigned long _nPPID, int nArg1 = 0, int nArg2 = 0);
+             unsigned long _nPPID, int nArg = 0, unsigned long nCID = 0);
   CICQSignal(CICQSignal *s);
   ~CICQSignal();
 
@@ -424,20 +424,19 @@ public:
   unsigned long SubSignal() { return m_nSubSignal; }
   //!UIN that the signal is related.  See signals to understand how this
   //!value is set.
-  unsigned long Uin() { return m_nUin; }
+  unsigned long Uin()   { return m_nUin; }
   char *Id()            { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-  int Argument() { return m_nArgument1; }
-  int Argument1() { return m_nArgument1; }
-  int Argument2() { return m_nArgument2; }
+  int Argument()        { return m_nArgument; }
+  unsigned long CID()   { return m_nCID; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
   unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
-  int m_nArgument1,
-      m_nArgument2;
+  int m_nArgument;
+  unsigned long m_nCID;
 };
 
 //! Signals that can be sent to protocol plugins.
@@ -475,7 +474,7 @@ enum SIGNAL_TYPE
 class CSignal
 {
 public:
-  CSignal(SIGNAL_TYPE, const char *, int nSocket = -1);
+  CSignal(SIGNAL_TYPE, const char *, unsigned long nCID = 0);
   CSignal(CSignal *);
   virtual ~CSignal();
 
@@ -483,15 +482,15 @@ public:
   SIGNAL_TYPE Type()  { return m_eType; }
   //! The user id that this signal is being used for.
   char *Id()          { return m_szId; }
-  //! The socket to send the event over
-  int Socket()        { return m_nSocket; }
+  //! The conversation id to use (gets the socket).
+  unsigned long CID() { return m_nCID; }
   //! The calling thread.
   pthread_t Thread() { return thread_plugin; }
 
 private:
   char  *m_szId;
   SIGNAL_TYPE m_eType;
-  int m_nSocket;
+  unsigned long m_nCID;
   pthread_t thread_plugin;
 };
 
@@ -557,7 +556,7 @@ public:
 class CSendMessageSignal : public CSignal
 {
 public:
-  CSendMessageSignal(const char *szId, const char *szMsg, int nSocket = -1);
+  CSendMessageSignal(const char *szId, const char *szMsg, unsigned long nCID = 0);
   virtual ~CSendMessageSignal() { if (m_szMsg) free(m_szMsg); }
   //! The message to be sent
   char *Message() { return m_szMsg; }
@@ -569,7 +568,7 @@ private:
 class CTypingNotificationSignal : public CSignal
 {
 public:
-  CTypingNotificationSignal(const char *szId, bool bActive, int nSocket = -1);
+  CTypingNotificationSignal(const char *szId, bool bActive, unsigned long nCID = 0);
   bool Active() { return m_bActive; }
 private:
   bool m_bActive;

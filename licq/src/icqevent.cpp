@@ -251,25 +251,25 @@ ICQUser *ICQEvent::GrabUnknownUser()
 //=====CICQSignal===============================================================
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
                        const char *szId, unsigned long nPPID,
-                       int nArg1, int nArg2)
+                       int nArg, unsigned long nCID)
 {
   m_nSignal = nSignal;
   m_nSubSignal = nSubSignal;
   m_nUin = 0;
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
-  m_nArgument1 = nArg1;
-  m_nArgument2 = nArg2;
+  m_nArgument = nArg;
+  m_nCID = nCID;
 }
 
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
-                       unsigned long nUin, int nArg1, int nArg2)
+                       unsigned long nUin, int nArg, unsigned long nCID)
 {
   m_nSignal = nSignal;
   m_nSubSignal = nSubSignal;
   m_nUin = nUin;
-  m_nArgument1 = nArg1;
-  m_nArgument2 = nArg2;
+  m_nArgument = nArg;
+  m_nCID = nCID;
 
   char szUin[24];
   sprintf(szUin, "%lu", nUin);
@@ -284,8 +284,8 @@ CICQSignal::CICQSignal(CICQSignal *s)
   m_nUin = s->Uin();
   m_szId = s->Id() ? strdup(s->Id()) : 0;
   m_nPPID = s->PPID();
-  m_nArgument1 = s->Argument1();
-  m_nArgument2 = s->Argument2();
+  m_nArgument = s->Argument();
+  m_nCID = s->CID();
 }
 
 
@@ -295,10 +295,10 @@ CICQSignal::~CICQSignal()
     free(m_szId);
 }
 
-CSignal::CSignal(SIGNAL_TYPE e, const char *szId, int nSocket)
+CSignal::CSignal(SIGNAL_TYPE e, const char *szId, unsigned long nCID)
 {
   m_eType = e;
-  m_nSocket = nSocket;
+  m_nCID = nCID;
   if (szId)
     m_szId = strdup(szId);
   else
@@ -309,7 +309,7 @@ CSignal::CSignal(SIGNAL_TYPE e, const char *szId, int nSocket)
 CSignal::CSignal(CSignal *s)
 {
   m_eType = s->m_eType;
-  m_nSocket = s->m_nSocket;
+  m_nCID = s->m_nCID;
   m_szId = s->m_szId ? strdup(s->m_szId) : 0;
   thread_plugin = s->thread_plugin;
 }
@@ -353,15 +353,15 @@ CRenameUserSignal::CRenameUserSignal(const char *szId)
 {
 }
 
-CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg, int nSocket)
-  : CSignal(PROTOxSENDxMSG, szId, nSocket)
+CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg, unsigned long nCID)
+  : CSignal(PROTOxSENDxMSG, szId, nCID)
 {
   m_szMsg = szMsg ? strdup(szMsg) : 0;
 }
 
 CTypingNotificationSignal::CTypingNotificationSignal(const char *szId,
-  bool bActive, int nSocket)
-    : CSignal(PROTOxSENDxTYPING_NOTIFICATION, szId, nSocket), m_bActive(bActive)
+  bool bActive, unsigned long nCID)
+    : CSignal(PROTOxSENDxTYPING_NOTIFICATION, szId, nCID), m_bActive(bActive)
 {
 }
 
