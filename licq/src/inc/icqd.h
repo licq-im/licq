@@ -129,7 +129,8 @@ public:
   CICQEventTag *icqSetPassword(const char *szPassword);
   CICQEventTag *icqSetStatus(unsigned short newStatus);
 
-  unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
+  unsigned short icqSearchByInfo(const char *, const char *, const char *, const char *);
+  unsigned short icqSearchByUin(unsigned long);
   void icqLogoff(void);
   void icqAuthorize(unsigned long uinToAuthorize);
   void icqAlertUser(unsigned long _nUin);

@@ -286,12 +286,23 @@ void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty = false)
 }
 
 
-//-----icqStartSearch-----------------------------------------------------------
-unsigned short CICQDaemon::icqStartSearch(const char *nick, const char *first,
+//-----icqSearchByInfo-----------------------------------------------------------
+unsigned short CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
 {
-  CPU_StartSearch *p = new CPU_StartSearch(nick, first, last, email);
-  gLog.Info("%sStarting search for user (#%d/#%d)...\n", L_UDPxSTR,
+  CPU_SearchByInfo *p = new CPU_SearchByInfo(nick, first, last, email);
+  gLog.Info("%sStarting search by info for user (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+  return p->SubSequence();
+}
+
+
+//-----icqSearchByUin-----------------------------------------------------------
+unsigned short CICQDaemon::icqSearchByUin(unsigned long nUin)
+{
+  CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
+  gLog.Info("%sStarting search by uin for user (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
   return p->SubSequence();
@@ -949,7 +960,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_BLANKxSTR, s->szAlias, nUin,
               s->szFirstName, s->szLastName, s->szEmail);
 
-    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxSTART, nSubSequence, EVENT_ACKED);
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxINFO, nSubSequence, EVENT_ACKED);
+    if (e == NULL)
+      e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxUIN, nSubSequence, EVENT_ACKED);
     // We make as copy as each plugin will delete the events it gets
     if (e == NULL)
     {
@@ -976,7 +989,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 #endif
     packet >> more;
     gLog.Info("%sSearch finished.\n", L_UDPxSTR);
-    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxSTART, nSubSequence, EVENT_SUCCESS);
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxINFO, nSubSequence, EVENT_SUCCESS);
+    if (e == NULL)
+      e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxUIN, nSubSequence, EVENT_SUCCESS);
     if (e == NULL)
     {
       gLog.Warn("%sReceived end of search when no search in progress.\n", L_WARNxSTR);

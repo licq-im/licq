@@ -854,7 +854,8 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   case ICQ_CMDxSND_USERxGETDETAILS:
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
-  case ICQ_CMDxSND_SEARCHxSTART:
+  case ICQ_CMDxSND_SEARCHxINFO:
+  case ICQ_CMDxSND_SEARCHxUIN:
   case ICQ_CMDxSND_REGISTERxUSER:
   case ICQ_CMDxSND_META:
     switch (e->m_eResult)
