@@ -1742,7 +1742,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       {
         unsigned short nDefault = gUserManager.DefaultGroup();
         if (nDefault < pID->size());
-          m_nGSID = (*pID)[nDefault];
+          m_nGSID = (*pID)[nDefault-1];
 
         if (m_nGSID == 0)
           m_nGSID = 1; // General (unless user renamed group)
