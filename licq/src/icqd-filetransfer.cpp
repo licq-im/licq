@@ -110,7 +110,7 @@ CPFile_Info::~CPFile_Info()
 //-----FileStart----------------------------------------------------------------
 CPFile_Start::CPFile_Start(unsigned long nFilePos, unsigned long nFile)
 {
-  m_nSize = 13;
+  m_nSize = 17;
   InitBuffer();
 
   buffer->PackChar(0x03);
