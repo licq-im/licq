@@ -192,15 +192,23 @@ void CICQDaemon::icqLogoff()
     {
       if (!pthread_equal((*iter)->thread_send, pthread_self()))
         pthread_cancel((*iter)->thread_send);
-      delete (*iter);
+      (*iter)->m_eResult = EVENT_CANCELLED;
+      ProcessDoneEvent(*iter);
+      //delete (*iter);
       iter = m_lxRunningEvents.erase(iter);
     }
     else
       iter++;
   }
   pthread_mutex_unlock(&mutex_runningevents);
-  // wipe out extended events too...
+
+  // wipe out all extended events too...
   pthread_mutex_lock(&mutex_extendedevents);
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  {
+    (*iter)->m_eResult = EVENT_CANCELLED;
+    ProcessDoneEvent(*iter);
+  }
   m_lxExtendedEvents.erase(m_lxExtendedEvents.begin(), m_lxExtendedEvents.end());
   pthread_mutex_unlock(&mutex_extendedevents);
 
@@ -595,9 +603,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
   }
 #endif
 
-  if (nCommand != ICQ_CMDxRCV_ACK)
+  if (nCommand != ICQ_CMDxRCV_ACK && nCommand != ICQ_CMDxRCV_ERROR)
   {
-    if (nSequence > m_nServerSequence || nCommand == ICQ_CMDxRCV_HELLO ||
+    if (nSequence > m_nServerSequence ||
+        (m_nServerSequence == 0 && nSequence == 0) ||
         (bMultiPacket && nSequence == m_nServerSequence) )
     {
       m_nServerSequence = nSequence;
@@ -1129,9 +1138,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
 
   case ICQ_CMDxRCV_ERROR:  // icq says go away
   {
-    gLog.Info("%sServer says you are not logged on (#%d).\n", L_UDPxSTR, nSequence);
-    ICQEvent *e = DoneEvent(m_nUDPSocketDesc, nSequence, EVENT_FAILED);
-    if (e != NULL) ProcessDoneEvent(e);
+    gLog.Info("%sServer says you are not logged on.\n", L_UDPxSTR);
     icqRelogon();
     break;
   }
@@ -1148,7 +1155,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     gUserManager.DropOwner();
 
     m_eStatus = STATUS_ONLINE;
-    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 0, EVENT_SUCCESS);
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
     PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, 0));
 
@@ -1173,7 +1180,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     /* 02 00 64 00 00 00 02 00 8F 76 20 00 */
     gLog.Error("%sIncorrect password.\n", L_ERRORxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
-    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 0, EVENT_FAILED);
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_FAILED);
     if (e != NULL) ProcessDoneEvent(e);
     break;
   }
@@ -1182,7 +1189,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
   {
     gLog.Info("%sServer busy, try again in a few minutes.\n", L_UDPxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
-    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 0, EVENT_FAILED);
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_FAILED);
     if (e != NULL) ProcessDoneEvent(e);
     break;
   }
