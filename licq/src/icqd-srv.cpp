@@ -202,7 +202,7 @@ void CICQDaemon::icqRemoveGroup(const char *_szName)
 //-----icqRenameGroup----------------------------------------------------------
 void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 {
-  if (!UseServerContactList() || !_nGSID) return;
+  if (!UseServerContactList() || !_nGSID || m_nTCPSrvSocketDesc == -1) return;
 
   pthread_mutex_lock(&mutex_modifyserverusers);
   m_lszModifyServerUsers.push_back(strdup(_szNewName));
@@ -218,7 +218,7 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 //-----icqRenameUser------------------------------------------------------------
 void CICQDaemon::icqRenameUser(unsigned long _nUin, const char *_szOldAlias)
 {
-  if (!UseServerContactList() || m_nTCPSocketDesc == -1) return;
+  if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
 
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
   if (u == NULL) return;
@@ -1439,7 +1439,6 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       junk1 = msg.UnpackUnsignedLongBE();
       junk2 = msg.UnpackUnsignedShortBE();
 
-
       char szExtraInfo[28] = { 0 };
       if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
         snprintf(szExtraInfo, 27, " [Licq %s/SSL]",
@@ -1449,6 +1448,14 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
                  CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else if (timestamp == 0xffffffff)
         strcpy(szExtraInfo, " [MIRANDA]");
+      else if (timestamp == 0xFFFFFF8F)
+        strcpy(szExtraInfo, " [StrICQ]");
+      else if (timestamp == 0xFFFFFF42)
+        strcpy(szExtraInfo, " [mICQ]");
+      else if (timestamp == 0xFFFFFF7F)
+        strcpy(szExtraInfo, " [&RQ]");
+      else if (timestamp == 0xFFFFFFAB)
+        strcpy(szExtraInfo, " [YSM]");
       else
         strcpy(szExtraInfo, "");
       szExtraInfo[27] = '\0';
