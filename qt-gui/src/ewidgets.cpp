@@ -252,7 +252,6 @@ CInfoField::CInfoField(int x, int y, int lenTitle, int lenBlank, int lenInfo,
                        QString title, bool isReadOnly, QWidget *parent)
   : QLineEdit(parent)
 {
-  m_bReadOnly = isReadOnly;
 
   lblTitle = NULL;
   if (!title.isNull())
@@ -261,21 +260,26 @@ CInfoField::CInfoField(int x, int y, int lenTitle, int lenBlank, int lenInfo,
     lblTitle->setGeometry(x, y, lenTitle, 20);
   }
   QLineEdit::setGeometry(x + lenTitle + lenBlank, y, lenInfo, 20);
+  baseRO = palette().disabled().base();
+  baseRW = palette().normal().base();
 
   // Set colors
-  if (m_bReadOnly)
-  {
-    QColorGroup newNormal(palette().normal().foreground(),
-                          palette().normal().background(),
-                          palette().normal().light(),
-                          palette().normal().dark(),
-                          palette().normal().mid(),
-                          palette().normal().text(),
-                          palette().disabled().base());
-    setPalette(QPalette(newNormal, palette().disabled(), newNormal));
-  }
+  SetReadOnly(isReadOnly);
 }
 
+void CInfoField::SetReadOnly(bool b)
+{
+  m_bReadOnly = b;
+  QColorGroup cg(palette().normal().foreground(),
+                 palette().normal().background(),
+                 palette().normal().light(),
+                 palette().normal().dark(),
+                 palette().normal().mid(),
+                 palette().normal().text(),
+                 m_bReadOnly ? baseRO : baseRW);
+
+  setPalette(QPalette(cg, palette().disabled(), cg));
+}
 
 void CInfoField::keyPressEvent( QKeyEvent *e )
 {
@@ -318,12 +322,21 @@ void CInfoField::setData(QString data)
   setText(data);
 }
 
+
 void CInfoField::setData(const unsigned long data)
 {
   char t[32];
   sprintf(t, "%ld", data);
   setData(t);
 }
+
+
+void CInfoField::setTitle(QString t)
+{
+  if (lblTitle != NULL)
+    lblTitle->setText(t);
+}
+
 
 void CInfoField::setGeometry(int x, int y, int lenTitle, int lenBlank, int lenInfo)
 {

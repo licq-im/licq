@@ -85,11 +85,15 @@ public:
   void setData(const char *data);
   void setData(QString data);
   void setData(const unsigned long data);
+  void setTitle(QString t);
+  void SetReadOnly(bool);
+  bool ReadOnly(void) { return m_bReadOnly; }
   void setGeometry(int, int, int, int, int);
   void move(int, int);
 public slots:
   void setEnabled(bool);
 protected:
+  QColor baseRO, baseRW;
   bool m_bReadOnly;
   QLabel *lblTitle;
   void keyPressEvent( QKeyEvent *e );
