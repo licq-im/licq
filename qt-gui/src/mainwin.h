@@ -68,6 +68,24 @@ class UserEventTabDlg;
   typedef QPtrList<UserSendCommon> UserSendEventList;
 #endif
 
+enum { /* ID's for the menu items in mnuUserAdm.
+          Needed to reference individual menu items,
+          i.e. when changing icons or status of an item.
+       */
+       MNU_USER_ADM_ADD_USER = 0,
+       MNU_USER_ADM_SEARCH_USER = 1,
+       MNU_USER_ADM_AUTHORIZE_USER = 2,
+       MNU_USER_ADM_REQUEST_AUTH = 3,
+       MNU_USER_ADM_RANDOM_CHAT = 4,
+       MNU_USER_ADM_POPUP_ALL_MSG = 5,
+       MNU_USER_ADM_EDIT_GROUPS = 6,
+       MNU_USER_ADM_UPDATE_ALL_USERS = 7,
+       MNU_USER_ADM_UPDATE_CURRENT_GROUP = 8,
+       MNU_USER_ADM_REDRAW_USER_WIN = 9,
+       MNU_USER_ADM_SAVE_ALL_USERS = 10,
+       MNU_USER_ADM_REGISTER_USER = 11
+};
+
 using std::vector;
 
 //=====CMainWindow==============================================================
@@ -215,10 +233,11 @@ public:
   char *m_szIconSet,
        *m_szExtendedIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
-          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmSms,
-          pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmEncoding,
-          pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed,
-          pmExpanded, pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
+          pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, 
+          pmSms, pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, 
+          pmInfo, pmRemove, pmEncoding, pmBirthday, pmPhone, pmCellular, 
+          pmInvisible, pmCustomAR, pmCollapsed, pmExpanded, pmSearch,
+          pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
           pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
           pmAIMOffline;

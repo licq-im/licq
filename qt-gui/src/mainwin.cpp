@@ -88,6 +88,8 @@
 
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
+#include "xpm/remove.xpm"
+#include "xpm/search.xpm"
 #include "xpm/secure_on.xpm"
 #include "xpm/secure_off.xpm"
 #include "xpm/charset.xpm"
@@ -570,6 +572,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   pmSecureOff = QPixmap(secure_off_xpm);
   pmHistory = QPixmap(history_xpm);
   pmInfo = QPixmap(info_xpm);
+  pmRemove = QPixmap(remove_xpm);
+  pmSearch = QPixmap(search_xpm);
   #ifdef USE_KDE
   pmEncoding = KGlobal::iconLoader()->loadIcon("charset", KIcon::Small, 0, KIcon::DefaultState, 0L, true);
   if (pmEncoding.isNull())
@@ -3743,7 +3747,10 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      pmSharedFiles = QPixmap(pixSharedFiles_xpm);
 
    if (!_bInitial)
+   {
+     mnuUser->changeItem(pmCustomAR, tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
      updateUserWin();
+   }
 }
 
 //-----CMainWindow::loadIcons-------------------------------------------------
@@ -3895,22 +3902,26 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    fIconsConf.ReadStr("SecureOff", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmSecureOff.load(sFilepath);
-   if(pmSecureOff.isNull()) pmSecureOff = pmMessage;
 
    fIconsConf.ReadStr("SecureOn", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmSecureOn.load(sFilepath);
-   if(pmSecureOn.isNull()) pmSecureOn = pmMessage;
 
    fIconsConf.ReadStr("History", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmHistory.load(sFilepath);
-   if(pmHistory.isNull()) pmHistory = pmMessage;
 
    fIconsConf.ReadStr("Info", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmInfo.load(sFilepath);
-   if(pmInfo.isNull()) pmInfo = pmMessage;
+   
+   fIconsConf.ReadStr("Remove", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmRemove.load(sFilepath);
+
+   fIconsConf.ReadStr("Search", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmSearch.load(sFilepath);
 
    if (!_bInitial)
    {
@@ -3931,10 +3942,14 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
      mnuUser->changeItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
      mnuUser->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
+     mnuUser->changeItem(pmRemove, tr("Remove From List"), mnuUserRemoveFromList);
+     mnuUser->changeItem(pmHistory, tr("View &History"), mnuUserHistory);
+     mnuUser->changeItem(pmInfo, tr("&Info"), mnuUserGeneral);
      mnuOwnerAdm->changeItem(pmInfo, tr("&Info"), OwnerMenuGeneral);
      mnuOwnerAdm->changeItem(pmHistory, tr("View &History"), OwnerMenuHistory);
-     mnuUser->changeItem(pmInfo, tr("&Info"), mnuUserGeneral);
-     mnuUser->changeItem(pmHistory, tr("View &History"), mnuUserHistory);
+     mnuUserAdm->changeItem(MNU_USER_ADM_SEARCH_USER, pmSearch, tr("S&earch for User"));
+     mnuUserAdm->changeItem(MNU_USER_ADM_AUTHORIZE_USER, pmAuthorize, tr("A&uthorize User"));
+     mnuUserAdm->changeItem(MNU_USER_ADM_REQUEST_AUTH, pmAuthorize, tr("Re&quest Authorization"));
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
@@ -4022,21 +4037,21 @@ void CMainWindow::initMenu()
    connect (mnuOwnerAdm, SIGNAL(activated(int)), this, SLOT(callOwnerFunction(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
-   mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()));
-   mnuUserAdm->insertItem(tr("S&earch for User"), this, SLOT(showSearchUserDlg()));
-   mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
-   mnuUserAdm->insertItem(tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg(int)));
-   mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()));
+   mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()), 0, MNU_USER_ADM_ADD_USER);
+   mnuUserAdm->insertItem(pmSearch, tr("S&earch for User"), this, SLOT(showSearchUserDlg()), 0, MNU_USER_ADM_SEARCH_USER);
+   mnuUserAdm->insertItem(pmAuthorize, tr("A&uthorize User"), this, SLOT(showAuthUserDlg()), 0, MNU_USER_ADM_AUTHORIZE_USER);
+   mnuUserAdm->insertItem(pmAuthorize, tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg(int)), 0, MNU_USER_ADM_REQUEST_AUTH);
+   mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()), 0, MNU_USER_ADM_RANDOM_CHAT);
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()));
-   mnuUserAdm->insertItem(tr("Edit &Groups"), this, SLOT(showEditGrpDlg()));
+   mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()), 0, MNU_USER_ADM_POPUP_ALL_MSG);
+   mnuUserAdm->insertItem(tr("Edit &Groups"), this, SLOT(showEditGrpDlg()), 0, MNU_USER_ADM_EDIT_GROUPS);
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
-   mnuUserAdm->insertItem(tr("Update Current Group"), this, SLOT(slot_updateAllUsersInGroup()));
-   mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
-   mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()));
+   mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()), 0, MNU_USER_ADM_UPDATE_ALL_USERS);
+   mnuUserAdm->insertItem(tr("Update Current Group"), this, SLOT(slot_updateAllUsersInGroup()), 0, MNU_USER_ADM_UPDATE_CURRENT_GROUP);
+   mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()), 0, MNU_USER_ADM_REDRAW_USER_WIN);
+   mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()), 0, MNU_USER_ADM_SAVE_ALL_USERS);
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(tr("Reg&ister User"), this, SLOT(slot_register()));
+   mnuUserAdm->insertItem(tr("Reg&ister User"), this, SLOT(slot_register()), 0, MNU_USER_ADM_REGISTER_USER);
 
    QPopupMenu *mnuHelp = new QPopupMenu(NULL);
    mnuHelp->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
@@ -4128,11 +4143,11 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Misc Modes"), mnuMiscModes);
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
-   mnuUser->insertItem(tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
+   mnuUser->insertItem(pmCustomAR, tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
    mnuUser->insertItem(tr("Edit User Group"), mnuGroup);
-   mnuUser->insertItem(tr("Remove From List"), mnuUserRemoveFromList);
+   mnuUser->insertItem(pmRemove, tr("Remove From List"), mnuUserRemoveFromList);
    mnuUser->insertSeparator();
    mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(pmInfo, tr("&Info"), mnuUserGeneral);

@@ -38,7 +38,11 @@
 #include "emoticon.h"
 
 enum {
-	MAX_HEIGHT = 170
+  MAX_HEIGHT = 190, /* Height of icon preview widget, this is 
+                       (number-of-Icons) / 3 * 19. 
+                       if the result isn't a multiple of 19, 
+                       round it up to become a multiple of 19 */
+  MAX_HEIGHT_SKIN = 130
 };
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
@@ -59,8 +63,8 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	*lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA"
                    << "Occupied" << "DND" << "Private" << "Message" << "Url"
                    << "Chat" << "File" << "SMS" << "Contact" << "Authorize"
-                   << "SecureOff" << "SecureOn" << "History" << "Info"
-                   << "AIMOnline" << "AIMOffline" << "AIMAway"
+                   << "SecureOff" << "SecureOn" << "Search" << "Remove" << "History" 
+                   << "Info" << "AIMOnline" << "AIMOffline" << "AIMAway"
                    << "MSNOnline" << "MSNOffline" << "MSNAway"
                    << "MSNOccupied" << "MSNPrivate";
 
@@ -111,7 +115,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QLabel *lblPrevSkin = new QLabel(tr("Skin:"), frmPrevSkin);
 	lblPrevSkin->setAlignment(Qt::AlignHCenter);
 	lblPaintSkin = new QLabel(frmPrevSkin);
-	lblPaintSkin->setFixedSize(75, MAX_HEIGHT);
+	lblPaintSkin->setFixedSize(75, MAX_HEIGHT_SKIN);
 	layPrevSkin->addWidget(lblPrevSkin, 0, Qt::AlignHCenter);
 	layPrevSkin->addWidget(lblPaintSkin, 0, Qt::AlignHCenter);
 	layPrevSkin->addStretch();
@@ -738,7 +742,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 
 	QPixmap tmp(QPixmap::grabWidget(&w));
 	QPixmap ret;
-	ret.convertFromImage(QImage(tmp.convertToImage().smoothScale(75, MAX_HEIGHT)));
+	ret.convertFromImage(QImage(tmp.convertToImage().smoothScale(75, MAX_HEIGHT_SKIN)));
 
 	// Reset origin colors
 	userView.setColors(c_online, c_away, c_offline, c_newuser, c_background, c_gridlines);
