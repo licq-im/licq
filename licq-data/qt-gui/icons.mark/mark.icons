@@ -11,3 +11,5 @@ FFC = ffc.ppm
 Url = url.ppm
 Chat = chat.ppm
 File = file.ppm
+Authorize = auth.ppm
+Contact = contact.ppm
