@@ -131,6 +131,7 @@ const unsigned short ACCEPT_IN_OCCUPIED = 0x0004;
 const unsigned short ACCEPT_IN_DND      = 0x0008;
 const unsigned short AUTO_ACCEPT_CHAT   = 0x0100;
 const unsigned short AUTO_ACCEPT_FILE   = 0x0200;
+const unsigned short AUTO_SECURE        = 0x0400;
 
 const unsigned short USPRINTF_NTORN     = 1;
 const unsigned short USPRINTF_NOFW      = 2;
@@ -221,6 +222,7 @@ public:
   time_t LastOnline()                   { return m_nLastOnline; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
   bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
+  bool AutoSecure()                     { return m_nAutoAccept & AUTO_SECURE; }
   bool AcceptInAway()                   { return m_nAutoAccept & ACCEPT_IN_AWAY; }
   bool AcceptInNA()                     { return m_nAutoAccept & ACCEPT_IN_NA; }
   bool AcceptInOccupied()               { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
@@ -291,6 +293,7 @@ public:
   void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
   void SetAutoChatAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_CHAT : m_nAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
   void SetAutoFileAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_FILE : m_nAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
+  void SetAutoSecure(bool s)          { s ? m_nAutoAccept |= AUTO_SECURE : m_nAutoAccept &= ~AUTO_SECURE; SaveLicqInfo(); }
   void SetAcceptInAway(bool s)        { s ? m_nAutoAccept |= ACCEPT_IN_AWAY : m_nAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
   void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
   void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
