@@ -37,7 +37,7 @@ public:
    int AddToHistory_Header(direction, char *);
    void AddToHistory_Flush(ICQUser *, char *);
 
-   const char *Text()  {  return m_szText; }
+   const char *Text();
    time_t Time()  {  return m_tTime; }
    const char *LicqVersionStr();
    unsigned long Sequence()  { return m_nSequence; }
@@ -52,6 +52,8 @@ public:
    void SetDirection(direction d)  { m_eDir = d; }
 
 protected:
+   virtual void CreateDescription() = 0;
+
    char *m_szText;
    direction m_eDir;
    unsigned short m_nCommand,
@@ -74,6 +76,7 @@ public:
    const char *Message()  { return m_szMessage; }
    virtual void AddToHistory(ICQUser *, direction);
 protected:
+   void CreateDescription();
    char *m_szMessage;
 };
 
@@ -94,6 +97,7 @@ public:
    const char *Filename()  { return m_szFilename; };
    unsigned long FileSize()  {  return m_nFileSize; };
 protected:
+   void CreateDescription();
    char *m_szFilename;
    char *m_szFileDescription;
    unsigned long m_nFileSize;
@@ -110,6 +114,8 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventFileCancel *Copy()
       { return (new CEventFileCancel(m_nSequence, m_tTime, m_nFlags)); };
+protected:
+   void CreateDescription();
 };
 
 
@@ -128,6 +134,7 @@ public:
    const char *Url()  { return m_szUrl; }
    const char *Description()  { return m_szUrlDescription; }
 protected:
+   void CreateDescription();
    char *m_szUrl;
    char *m_szUrlDescription;
 };
@@ -143,6 +150,9 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventChat *Copy()
       { return (new CEventChat(m_szText, m_nSequence, m_tTime, m_nFlags)); };
+protected:
+   void CreateDescription();
+   char *m_szReason;
 };
 
 
@@ -156,6 +166,8 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventChatCancel *Copy()
       { return (new CEventChatCancel(m_nSequence, m_tTime, m_nFlags)); };
+protected:
+   void CreateDescription();
 };
 
 
@@ -174,6 +186,7 @@ public:
    unsigned long Uin()  { return m_nUin; };
 
 protected:
+   void CreateDescription();
    unsigned long m_nUin;
    char *m_szAlias;
    char *m_szFirstName;
@@ -198,6 +211,7 @@ public:
                                m_nFlags)); };
    unsigned long Uin()  { return m_nUin; };
 protected:
+   void CreateDescription();
    unsigned long m_nUin;
    char *m_szAlias;
    char *m_szFirstName;
@@ -220,6 +234,7 @@ public:
                                m_nFlags)); };
    unsigned long Uin()  { return m_nUin; };
 protected:
+   void CreateDescription();
    unsigned long m_nUin;
    char *m_szMessage;
 };
@@ -237,6 +252,7 @@ public:
       { return (new CEventWebPanel(m_szName, m_szEmail, m_szMessage, m_nCommand,
                                     m_tTime, m_nFlags)); }
 protected:
+   void CreateDescription();
    char *m_szName;
    char *m_szEmail;
    char *m_szMessage;
@@ -255,6 +271,7 @@ public:
       { return (new CEventEmailPager(m_szName, m_szEmail, m_szMessage, m_nCommand,
                                      m_tTime, m_nFlags)); }
 protected:
+   void CreateDescription();
    char *m_szName;
    char *m_szEmail;
    char *m_szMessage;
@@ -273,21 +290,10 @@ public:
   virtual CEventContactList *Copy()
     { return (new CEventContactList(m_vszFields, m_nCommand, m_tTime, m_nFlags)); }
 protected:
+   void CreateDescription();
   vector <char *> m_vszFields;
 };
 
-//-----CEventSaved--------------------------------------------------------------
-class CEventSaved : public CUserEvent
-{
-public:
-  CEventSaved(unsigned short _nNumEvents);
-  virtual void AddToHistory(ICQUser *, direction) {}
-  virtual CEventSaved *Copy()
-    { return (new CEventSaved(m_nNumEvents)); };
-
-protected:
-   unsigned short m_nNumEvents;
-};
 
 
 class CEventUnknownSysMsg : public CUserEvent
@@ -304,6 +310,7 @@ public:
                                   m_nUin, m_szMsg,
                                   m_tTime, m_nFlags)); }
 protected:
+   void CreateDescription();
    unsigned long m_nUin;
    char *m_szMsg;
 };

@@ -20,6 +20,16 @@ CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
    m_tTime = (_tTime == 0 ? time(NULL) : _tTime);
    m_nFlags = _nFlags;
    m_eDir = D_RECEIVER;
+   m_szText = NULL;
+}
+
+
+const char *CUserEvent::Text()
+{
+  if (m_szText == NULL)
+    CreateDescription();
+
+  return m_szText;
 }
 
 
@@ -36,7 +46,7 @@ const char *CUserEvent::LicqVersionStr()
 //-----CUserEvent::destructor---------------------------------------------------
 CUserEvent::~CUserEvent()
 {
-   delete[] m_szText;
+  delete[] m_szText;
 }
 
 
@@ -88,9 +98,12 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
    : CUserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags)
 {
    m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
+}
 
-   m_szText = new char[strlen(m_szMessage) + 1];
-   sprintf(m_szText, "%s", m_szMessage);
+
+void CEventMsg::CreateDescription()
+{
+   m_szText = strdup(m_szMessage);
 }
 
 
@@ -119,7 +132,11 @@ CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
   m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
   m_szFileDescription = strdup(_szFileDescription == NULL ? "" : _szFileDescription);
   m_nFileSize = _nFileSize;
+}
 
+
+void CEventFile::CreateDescription()
+{
   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
   sprintf(m_szText, "File: %s (%ld bytes)\nDescription: %s\n", m_szFilename,
           m_nFileSize, m_szFileDescription);
@@ -151,9 +168,12 @@ CEventFileCancel::CEventFileCancel(unsigned long _nSequence, time_t _tTime,
                                    unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_CANCEL, _nSequence, _tTime, _nFlags)
 {
-   m_szText = new char[32];
-   sprintf(m_szText, "Transfer cancelled.");
+}
 
+void CEventFileCancel::CreateDescription()
+{
+  m_szText = new char[32];
+  strcpy(m_szText, "Transfer cancelled.");
 }
 
 
@@ -181,9 +201,13 @@ CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
 {
    m_szUrl = strdup(_szUrl == NULL ? "" : _szUrl);
    m_szUrlDescription = strdup(_szUrlDescription == NULL ? "" : _szUrlDescription);
+}
 
-   m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
-   sprintf(m_szText, "URL: %s\nDescription: %s\n", m_szUrl, m_szUrlDescription);
+
+void CEventUrl::CreateDescription()
+{
+  m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
+  sprintf(m_szText, "URL: %s\nDescription: %s\n", m_szUrl, m_szUrlDescription);
 }
 
 
@@ -211,12 +235,18 @@ CEventChat::CEventChat(const char *_szReason, unsigned long _nSequence,
                        time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags)
 {
-  m_szText = strdup(_szReason ==  NULL ? "" : _szReason);
+  m_szReason = strdup(_szReason ==  NULL ? "" : _szReason);
+}
+
+void CEventChat::CreateDescription()
+{
+  m_szText = strdup(m_szReason);
 }
 
 
 CEventChat::~CEventChat()
 {
+  free(m_szReason);
 }
 
 
@@ -237,8 +267,12 @@ CEventChatCancel::CEventChatCancel(unsigned long _nSequence, time_t _tTime,
    : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_CANCEL, _nSequence, _tTime,
                 _nFlags)
 {
-   m_szText = new char[32];
-   sprintf(m_szText, "Request cancelled.\n");
+}
+
+void CEventChatCancel::CreateDescription()
+{
+  m_szText = new char[32];
+  strcpy(m_szText, "Request cancelled.\n");
 }
 
 
@@ -263,25 +297,28 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
                          time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags)
 {
-   m_szAlias = strdup(_szAlias);
-   m_szFirstName = strdup(_szFirstName);
-   m_szLastName = strdup(_szLastName);
-   m_szEmail = strdup(_szEmail);
-   m_nUin = _nUin;
+  m_szAlias = strdup(_szAlias);
+  m_szFirstName = strdup(_szFirstName);
+  m_szLastName = strdup(_szLastName);
+  m_szEmail = strdup(_szEmail);
+  m_nUin = _nUin;
+}
 
-   m_szText = new char[strlen(_szAlias) + strlen(_szFirstName) +
-                       strlen(_szLastName) + strlen(_szEmail) + 128];
-   sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
-           _szAlias, _szFirstName, _szLastName, _szEmail, _nUin);
+void CEventAdded::CreateDescription()
+{
+  m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
+                      strlen(m_szLastName) + strlen(m_szEmail) + 128];
+  sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
+          m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin);
 }
 
 
 CEventAdded::~CEventAdded()
 {
-   free (m_szAlias);
-   free (m_szFirstName);
-   free (m_szLastName);
-   free (m_szEmail);
+  free (m_szAlias);
+  free (m_szFirstName);
+  free (m_szLastName);
+  free (m_szEmail);
 }
 
 void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
@@ -312,22 +349,25 @@ CEventAuthReq::CEventAuthReq(unsigned long _nUin, const char *_szAlias,
    m_szEmail = strdup(_szEmail);
    m_szReason = strdup(_szReason);
    m_nUin = _nUin;
+}
 
-   m_szText = new char[strlen(_szAlias) + strlen(_szFirstName)
-                       + strlen(_szLastName) + strlen(_szEmail)
-                       + strlen(_szReason) + 128];
-   sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
-           _szAlias, _szFirstName, _szLastName, _szEmail, _nUin, _szReason);
+void CEventAuthReq::CreateDescription()
+{
+  m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
+                      + strlen(m_szLastName) + strlen(m_szEmail)
+                      + strlen(m_szReason) + 128];
+  sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
+          m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
 }
 
 
 CEventAuthReq::~CEventAuthReq()
 {
-   free (m_szAlias);
-   free (m_szFirstName);
-   free (m_szLastName);
-   free (m_szEmail);
-   free (m_szReason);
+  free (m_szAlias);
+  free (m_szFirstName);
+  free (m_szLastName);
+  free (m_szEmail);
+  free (m_szReason);
 }
 
 
@@ -353,15 +393,15 @@ CEventAuth::CEventAuth(unsigned long _nUin, const char *_szMessage,
                        unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_AUTHORIZED, _nCommand, 0, _tTime, _nFlags)
 {
-  if (_szMessage == NULL)
-    m_szMessage = strdup("");
-  else
-    m_szMessage = strdup(_szMessage);
+  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_nUin = _nUin;
+}
 
+void CEventAuth::CreateDescription()
+{
   m_szText = new char[strlen(m_szMessage) + 128];
   sprintf(m_szText, "Uin %ld has authorized you:\n%s\n",
-          _nUin, _szMessage);
+          m_nUin, m_szMessage);
 }
 
 
@@ -392,10 +432,13 @@ CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
   m_szName = strdup(_szName);
   m_szEmail = strdup(_szEmail);
   m_szMessage = strdup(_szMessage);
+}
 
-  m_szText = new char[strlen(_szName) + strlen(_szEmail) + strlen(_szMessage) + 64];
+void CEventWebPanel::CreateDescription()
+{
+  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
   sprintf(m_szText, "Message from %s (%s) through web panel:\n%s\n",
-          _szName, _szEmail, _szMessage);
+          m_szName, m_szEmail, m_szMessage);
 }
 
 
@@ -429,10 +472,13 @@ CEventEmailPager::CEventEmailPager(const char *_szName, char *_szEmail,
   m_szName = strdup(_szName);
   m_szEmail = strdup(_szEmail);
   m_szMessage = strdup(_szMessage);
+}
 
-  m_szText = new char[strlen(_szName) + strlen(_szEmail) + strlen(_szMessage) + 64];
+void CEventEmailPager::CreateDescription()
+{
+  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
   sprintf(m_szText, "Message from %s (%s) through email pager:\n%s\n",
-          _szName, _szEmail, _szMessage);
+          m_szName, m_szEmail, m_szMessage);
 }
 
 
@@ -464,7 +510,10 @@ CEventContactList::CEventContactList(vector <char *> &_vszFields,
 {
   for (unsigned short i = 0; i < _vszFields.size(); i++)
     m_vszFields.push_back(strdup(_vszFields[i]));
+}
 
+void CEventContactList::CreateDescription()
+{
   m_szText = new char [m_vszFields.size() * 32 + 128];
   char *szEnd = m_szText;
   szEnd += sprintf(m_szText, "Contact list (%d contacts):\n", m_vszFields.size() / 2);
@@ -494,15 +543,6 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
 }
 
 
-//=====CEventSaved==============================================================
-CEventSaved::CEventSaved(unsigned short _nNumEvents)
-   : CUserEvent(0, 0, 0, 0, 0)
-{
-   m_nNumEvents = _nNumEvents;
-   m_szText = new char[64];
-   sprintf(m_szText, "[%d unviewed messages saved in history]", m_nNumEvents);
-}
-
 
 CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
                              unsigned short _nCommand, unsigned long _nUin,
@@ -510,12 +550,12 @@ CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
                              time_t _tTime, unsigned long _nFlags)
    : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN)
 {
-  if (_szMsg == NULL)
-    m_szMsg = strdup("");
-  else
-    m_szMsg = strdup(_szMsg);
+  m_szMsg = _szMsg == NULL ? strdup("") : strdup(_szMsg);
   m_nUin = _nUin;
+}
 
+void CEventUnknownSysMsg::CreateDescription()
+{
   m_szText = new char [strlen(m_szMsg) + 128];
   sprintf(m_szText, "Unknown system message (0x%04X) from %ld:\n%s\n",
           m_nSubCommand, m_nUin, m_szMsg);
@@ -527,7 +567,7 @@ CEventUnknownSysMsg::~CEventUnknownSysMsg()
   free(m_szMsg);
 }
 
-void CEventUnknownSysMsg::AddToHistory(ICQUser */*u*/, direction /*_nDir*/)
+void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
 {
 /*  char *szOut = new char[strlen(m_szMsg) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %ld ]\n",
