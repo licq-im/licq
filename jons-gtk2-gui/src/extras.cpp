@@ -153,7 +153,8 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos,
 	g_free(result);
 }
 
-void owner_function(ICQEvent *event)
+void
+owner_function(ICQEvent *event)
 {
 	/* For the main window, if it's a new registered users */
 	char *title = g_strdup_printf("%ld", gUserManager.OwnerUin());
@@ -172,10 +173,11 @@ void owner_function(ICQEvent *event)
 	g_free(title);
 }
 
-void finish_event(struct e_tag_data *etd, ICQEvent *event)
+void
+finish_event(struct e_tag_data *etd, ICQEvent *event)
 {
 	/* Make sure we have the right event and event tag */
-	if( (etd->e_tag == 0 && event != 0) ||
+	if ((etd->e_tag == 0 && event != 0) ||
 	    (etd->e_tag != 0 && !event->Equals(etd->e_tag)) )
 	  return;
 
@@ -184,8 +186,7 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	
 	/* Get the id for the status bar, if the statusbar exists */
 	if (etd->statusbar)
-		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(etd->statusbar),
-			"sta");
+		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(etd->statusbar), "sta");
 
 	/* Get the current text */
 	strcpy(temp, etd->buf);
@@ -199,8 +200,8 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 		return;
 	}
 	else {
-	/* Pop and then push the current text by the right event result */
-		switch(event->Result()) {
+  	/* Pop and then push the current text by the right event result */
+		switch (event->Result()) {
 			case EVENT_ACKED:
 			case EVENT_SUCCESS:
 				strcat(temp, "done");
@@ -234,7 +235,7 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	catcher = g_slist_remove(catcher, etd);
 
 	/* Get the sub command and see if do more work if needed */
-	switch(event->SubCommand()) {
+	switch (event->SubCommand()) {
 		case ICQ_CMDxSUB_MSG:
 			finish_message(event);
 			break;
@@ -256,11 +257,12 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	} 
 
 	// No sub command for this..
-	if(event->Command() == ICQ_CMDxSND_RANDOMxSEARCH)
+	if (event->Command() == ICQ_CMDxSND_RANDOMxSEARCH)
 		finish_random(event);
 }
 
-void user_function(ICQEvent *event)
+void
+user_function(ICQEvent *event)
 {
   GSList *temp = catcher;
 	struct e_tag_data *etd;
