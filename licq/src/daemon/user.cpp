@@ -1953,6 +1953,13 @@ unsigned long ICQOwner::AddStatusFlags(unsigned long s)
   if (HideIp())
     s |= ICQ_STATUS_FxHIDExIP;
 
+  // check if today is user's birthday
+  time_t t = LocalTime();
+  struct tm *tzone = localtime(&t);
+  if(tzone->tm_mon+1 == GetBirthMonth() &&
+     tzone->tm_mday == GetBirthDay())
+    s |= ICQ_STATUS_FxBIRTHDAY;
+
   return s;
 }
 
