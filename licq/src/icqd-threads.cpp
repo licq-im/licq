@@ -25,6 +25,10 @@ using namespace std;
  * the given event needs to be connected and calls the relevant connection
  * function.  Then sends the event, retrying after a timeout.  If an ack is
  * received, the thread will be cancelled by the receiving thread.
+ * 
+ * The parameter is only used to get the CICQDaemon, the actual event is
+ * now popped off the send queue to prevent packets being sent out of order
+ * which is a severe error with OSCAR.
  *----------------------------------------------------------------------------*/
 void *ProcessRunningEvent_Server_tep(void *p)
 {
@@ -32,8 +36,13 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
 
-  ICQEvent *e = (ICQEvent *)p;
-  CICQDaemon *d = e->m_pDaemon;
+	ICQEvent *dummy = (ICQEvent *)p;
+	CICQDaemon *d = dummy->m_pDaemon;
+ 
+	pthread_mutex_lock(&d->mutex_sendqueue_server);
+	ICQEvent *e = d->m_lxSendQueue_Server.front();
+	d->m_lxSendQueue_Server.pop_front();
+	pthread_mutex_unlock(&d->mutex_sendqueue_server);
   //struct timeval tv;
 
   // Check if the socket is connected

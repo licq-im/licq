@@ -239,6 +239,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
+	pthread_mutex_init(&mutex_sendqueue_server, NULL);
   pthread_cond_init(&cond_serverack, NULL);
   pthread_mutex_init(&mutex_serverack, NULL);
 }
@@ -958,6 +959,13 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, 0, NULL);
+
+	if (e == NULL)  return;
+
+	pthread_mutex_lock(&mutex_sendqueue_server);
+	m_lxSendQueue_Server.push_back(e);
+	pthread_mutex_unlock(&mutex_sendqueue_server);
+
   e->m_NoAck = true;
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
   if (nResult != 0)
@@ -979,6 +987,13 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, nUin, ue);
+
+	if (e == NULL)  return NULL;
+
+	pthread_mutex_lock(&mutex_sendqueue_server);
+	m_lxSendQueue_Server.push_back(e);
+	pthread_mutex_unlock(&mutex_sendqueue_server);
+
   return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 }
 
@@ -992,6 +1007,9 @@ ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(), packet,
      CONNECT_USER, pUser->Uin(), ue);
+
+	if (e == NULL) return NULL;
+
   return SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
 }
 

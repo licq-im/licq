@@ -357,6 +357,8 @@ protected:
   pthread_mutex_t mutex_runningevents;
   std::list <ICQEvent *> m_lxExtendedEvents;
   pthread_mutex_t mutex_extendedevents;
+	std::list <ICQEvent *> m_lxSendQueue_Server;
+	pthread_mutex_t mutex_sendqueue_server;
   pthread_t thread_monitorsockets,
             thread_ping;
 
