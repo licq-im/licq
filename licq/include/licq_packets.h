@@ -340,10 +340,12 @@ protected:
 
 
 //-----SearchByUin--------------------------------------------------------------
-class CPU_SearchByUin : public CPacketUdp
+class CPU_SearchByUin : public CPU_CommonFamily
 {
 public:
    CPU_SearchByUin(unsigned long nUin);
+protected:
+   unsigned long m_nMetaCommand;
 };
 
 

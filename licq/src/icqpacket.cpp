@@ -1151,15 +1151,21 @@ CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
 
 //-----SearchByUin--------------------------------------------------------------
 CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
-  : CPacketUdp(ICQ_CMDxSND_SEARCHxUIN)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
 {
-
-  m_nSize += 6;
+  m_nMetaCommand = 0x1F05;
+  int nPacketSize = 20; //2+2+2+4+2+2+2+4;
+  m_nSize += nPacketSize;
   InitBuffer();
 
-#if ICQ_VERSION == 2
-  buffer->PackUnsignedShort(m_nSubSequence);
-#endif
+  // TLV 1
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nPacketSize - 4);
+  buffer->PackUnsignedShort(nPacketSize - 6); // bytes remaining
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xD007); // type
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShortBE(m_nMetaCommand); // sub type
   buffer->PackUnsignedLong(nUin);
 }
 

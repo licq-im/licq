@@ -200,6 +200,17 @@ unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
     return e->EventId();
 }
 
+//-----icqSearchByUin------------------------------------------------------------
+unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
+{
+   CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
+   gLog.Info("%sStarting search by UIN for user (#%ld/#%d)...\n", L_SRVxSTR,
+   	p->Sequence(), p->SubSequence());
+   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+   PushExtendedEvent(e);
+   return e->EventId();
+}
+
 //-----icqSearchByInfo-----------------------------------------------------------
 unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
