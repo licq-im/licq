@@ -1,8 +1,0 @@
-Currently known bugs and poor feature implementations in the Licq Qt Gui plugin:
-
-o  Extended characters do not show up in chat (?)
-o  There are a number of bugs with Qt 2.0:
-   Function window appears in random locations
-   Segfault on exit
-   Short lines in edit boxes don't appear
-
