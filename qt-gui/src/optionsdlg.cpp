@@ -207,12 +207,20 @@ void OptionsDlg::SetupOptions()
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
-#if QT_VERSION >= 300
   if (mainwin->m_bMsgChatView)
+  {
+#if QT_VERSION >= 300
     chkTabbedChatting->setChecked(mainwin->m_bTabbedChatting);
+#endif
+    chkShowHistory->setChecked(mainwin->m_bShowHistory);
+  }
   else
+  {
+#if QT_VERSION >= 300
     chkTabbedChatting->setEnabled(false);
 #endif
+    chkShowHistory->setEnabled(false);
+  }
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
@@ -491,6 +499,7 @@ void OptionsDlg::ApplyOptions()
 #if QT_VERSION >= 300
   mainwin->m_bTabbedChatting = chkTabbedChatting->isChecked();
 #endif
+  mainwin->m_bShowHistory = chkShowHistory->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
@@ -775,8 +784,12 @@ QWidget* OptionsDlg::new_appearance_options()
 #if QT_VERSION >= 300
   chkTabbedChatting = new QCheckBox(tr("Tabbed Chatting"), boxMainWin);
   QWhatsThis::add(chkTabbedChatting, tr("Use tabs in Send Window"));
-  connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
+  //connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
 #endif
+
+  chkShowHistory = new QCheckBox(tr("Show recent messages"), boxMainWin);
+  QWhatsThis::add(chkShowHistory, tr("Show the last 5 messages when a Send Window is opened"));
+  connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(1, Horizontal, tr("Localization"), w);
@@ -1085,8 +1098,14 @@ void OptionsDlg::slot_usePortRange(bool b)
 
 void OptionsDlg::slot_useMsgChatView(bool b)
 {
-  if (!b) chkTabbedChatting->setChecked(false);
+  if (!b)
+  {
+    chkTabbedChatting->setChecked(false);
+    chkShowHistory->setChecked(false);
+  }
+
   chkTabbedChatting->setEnabled(b);
+  chkShowHistory->setEnabled(b);
 }
 
 void OptionsDlg::slot_useProxy(bool b)

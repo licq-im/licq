@@ -71,8 +71,11 @@
 #include "showawaymsgdlg.h"
 #include "keyrequestdlg.h"
 #include "editfilelistdlg.h"
+#include "usercodec.h"
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
+
+const int SHOW_RECENT_NUM = 5;
 
 // -----------------------------------------------------------------------------
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
@@ -1350,9 +1353,70 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
   splView = new QSplitter(Vertical, mainWidget);
   //splView->setOpaqueResize();
-  mleHistory=0;
-  if (mainwin->m_bMsgChatView) {
+  
+  mleHistory = 0;
+  if (mainwin->m_bMsgChatView)
+  {
     mleHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, splView);
+    
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u && mainwin->m_bShowHistory)
+    {
+      // Show the last SHOW_RECENT_NUM messages in the history
+      HistoryList lHistoryList;
+      if (u->GetHistory(lHistoryList))
+      {
+        // Rewind to the starting point. This will be the first message shown in the dialog.
+        HistoryListIter lHistoryIter = lHistoryList.end();
+        for (int i = 0; i < SHOW_RECENT_NUM && lHistoryIter != lHistoryList.begin(); i++)
+          lHistoryIter--;
+          
+        bool bUseHTML = !isdigit(m_szId[1]); 
+        QTextCodec *codec = UserCodec::codecForICQUser(u);
+        QString tmp = "";
+        QString contactName = codec->toUnicode(u->GetAlias());
+        ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+        QString ownerName = codec->toUnicode(o->GetAlias());
+        gUserManager.DropOwner(m_nPPID);
+        QDateTime date;
+        
+        // Iterate through each message to add
+        for (int i = 0; i < SHOW_RECENT_NUM && lHistoryIter != lHistoryList.end(); i++)
+        {
+          QString str;
+          date.setTime_t((*lHistoryIter)->Time());
+          QString messageText;
+          if ((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+            messageText = QString::fromUtf8((*lHistoryIter)->Text());
+          else
+            messageText = codec->toUnicode((*lHistoryIter)->Text());
+  
+          // Make the header
+          const char *color = (*lHistoryIter)->Direction() == D_RECEIVER ? "red" : "blue";
+          str = QString("<font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
+              .arg(color)
+              .arg(((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription((*lHistoryIter)) + " ")))
+              .arg(date.toString())
+              .arg((*lHistoryIter)->IsDirect() ? 'D' : '-')
+              .arg((*lHistoryIter)->IsMultiRec() ? 'M' : '-')
+              .arg((*lHistoryIter)->IsUrgent() ? 'U' : '-')
+              .arg((*lHistoryIter)->IsEncrypted() ? 'E' : '-')
+              .arg((*lHistoryIter)->Direction() == D_RECEIVER ? contactName : ownerName);
+          tmp.append(str);
+          
+          // Add the message now
+          str = QString("<font color=\"%1\">%2</font><br><br>")
+              .arg(color)
+              .arg(MLView::toRichText(messageText, true, bUseHTML));
+          tmp.append(str);
+          lHistoryIter++;
+        }
+        if (tmp != "")
+          mleHistory->append(tmp);
+      }
+    }
+    gUserManager.DropUser(u);
+  
     // add all unread messages.
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
     if (u != NULL && u->NewMessages() > 0)

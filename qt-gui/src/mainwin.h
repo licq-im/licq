@@ -160,6 +160,7 @@ public:
        m_bPopIdleTime,
        m_bShowAllEncodings,
        m_bTabbedChatting,
+       m_bShowHistory,
        m_bSortColumnAscending;
 
   QString m_MsgAutopopupKey;
