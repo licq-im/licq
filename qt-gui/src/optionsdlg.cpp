@@ -20,6 +20,7 @@
 #endif
 
 #include <qdir.h>
+#include <qhbox.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #ifdef USE_KDE
@@ -154,7 +155,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   tab[3] = new_network_options();
 
   // Status tab
-//  tab[4] = new_status_options();
+  tab[4] = new_status_options();
 
   tab[5] = new QWidget(this);
   lblUrlViewer = new QLabel(tr("Url Viewer:"), tab[5]);
@@ -228,7 +229,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
   addTab(tab[1], tr("Columns"));
   addTab(tab[2], tr("OnEvent"));
   addTab(tab[3], tr("Network"));
-//  addTab(tab[4], tr("Status"));
+  addTab(tab[4], tr("Status"));
   addTab(tab[5], tr("Extensions"));
   addTab(tab[6], tr("Paranoia"));
 
@@ -352,7 +353,7 @@ void OptionsDlg::SetupOptions()
      while (n < c && strcmp(pc, cmbTrans->text(n)) != 0) n++;
      if (n == c)
      {
-       gLog.Error("%sError: Unable to find current translation map '%s' in translation directory.\n", 
+       gLog.Error("%sError: Unable to find current translation map '%s' in translation directory.\n",
                   L_ERRORxSTR, pc);
        cmbTrans->setEnabled(false);
      }
@@ -549,13 +550,13 @@ void OptionsDlg::slot_selectfont()
 QWidget* OptionsDlg::new_network_options()
 {
   QWidget* w = new QWidget(this);
-  
+
   QGridLayout* lay = new QGridLayout(w, 5, 4, 10);
   lay->setRowStretch(4, 1);
   QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, w);
   gbServer->setTitle(tr("Server settings"));
   lay->addWidget(gbServer, 1, 1);
-  
+
   lblServers = new QLabel (tr("Servers:"), gbServer);
   lblServers->setEnabled(false);
   QWhatsThis::add(lblServers, tr("List of servers to connect to (read-only for now)"));
@@ -613,7 +614,7 @@ QWidget* OptionsDlg::new_network_options()
                                "to disable."));
   spnAutoNa = new QSpinBox(gbAuto);
   spnAutoNa->setSpecialValueText(tr("Disable"));
-  
+
   return w;
 }
 
@@ -627,10 +628,39 @@ void OptionsDlg::slot_SARmsg_act(int n)
   SARList &sar = gSARManager.Fetch(cmbSARgroup->currentItem());
   edtSARtext->setText(sar[n]->AutoResponse());
   gSARManager.Drop();
-  debug("slotactivated!!!!");
+}
+
+
+// -----------------------------------------------------------------------------
+
+void OptionsDlg::slot_SARgroup_act(int n)
+{
+  if (n < 0)
+    return;
+
+  cmbSARmsg->clear();
+  SARList &sar = gSARManager.Fetch(n);
+  for (SARListIter i = sar.begin(); i != sar.end(); i++)
+    cmbSARmsg->insertItem((*i)->Name());
+  gSARManager.Drop();
+
+  slot_SARmsg_act(0);
 }
 
 // -----------------------------------------------------------------------------
+
+void OptionsDlg::slot_SARsave_act()
+{
+  SARList& sar = gSARManager.Fetch(cmbSARgroup->currentItem());
+  delete sar[cmbSARmsg->currentItem()];
+  sar[cmbSARmsg->currentItem()] =
+    new CSavedAutoResponse(cmbSARmsg->currentText().local8Bit().data(),
+                           edtSARtext->text().local8Bit().data());
+
+  gSARManager.Save();
+  gSARManager.Drop();
+}
+
 
 QWidget* OptionsDlg::new_status_options()
 {
@@ -638,23 +668,42 @@ QWidget* OptionsDlg::new_status_options()
   QBoxLayout* lay = new QVBoxLayout(w, 10);
   QGroupBox* gbStatus = new QGroupBox(1, QGroupBox::Horizontal, w);
   lay->addWidget(gbStatus);
-  gbStatus->setTitle(tr("Default Auto Responses"));
+  gbStatus->setTitle(tr("Default Auto Response Messages"));
 
-  cmbSARgroup = new QComboBox(false, gbStatus);
-  cmbSARgroup->insertItem(tr("Away"));
-  cmbSARgroup->insertItem(tr("Not Available"));
-  cmbSARgroup->insertItem(tr("Occupied"));
-  cmbSARgroup->insertItem(tr("Do Not Disturb"));
-  cmbSARgroup->insertItem(tr("Free For Chat"));
+  QHBox* combos = new QHBox(gbStatus);
+  combos->setSpacing(5);
 
-  cmbSARmsg = new QComboBox(true, gbStatus);
+  QLabel* lblcombo1 = new QLabel(tr("Status:"), combos);
+  lblcombo1->setAlignment(AlignRight | AlignVCenter | ExpandTabs);
+
+  cmbSARgroup = new QComboBox(false, combos);
+  cmbSARgroup->insertItem(tr("Away"), SAR_AWAY);
+  cmbSARgroup->insertItem(tr("Not Available"), SAR_NA);
+  cmbSARgroup->insertItem(tr("Occupied"), SAR_OCCUPIED);
+  cmbSARgroup->insertItem(tr("Do Not Disturb"), SAR_DND);
+  cmbSARgroup->insertItem(tr("Free For Chat"), SAR_FFC);
+  connect(cmbSARgroup, SIGNAL(activated(int)), this, SLOT(slot_SARgroup_act(int)));
+
+  QLabel* lblcombo2 = new QLabel(tr("Preset:"), combos);
+  lblcombo2->setAlignment(AlignRight | AlignVCenter | ExpandTabs);
+  cmbSARmsg = new QComboBox(true, combos);
+  cmbSARmsg->setInsertionPolicy(QComboBox::AtCurrent);
+
+  QPushButton* qpbSaveIt = new QPushButton(tr("Save"), combos);
+  connect(qpbSaveIt, SIGNAL(clicked()), this, SLOT(slot_SARsave_act()));
+
+  QGroupBox* gbText = new QGroupBox(1, QGroupBox::Horizontal, gbStatus);
+  QLabel* lblcombo3 = new QLabel(tr("Text:"), gbText);
   connect(cmbSARmsg, SIGNAL(activated(int)), this, SLOT(slot_SARmsg_act(int)));
-  SARList &sar = gSARManager.Fetch(SAR_AWAY);
-  for (SARListIter i = sar.begin(); i != sar.end(); i++)
-    cmbSARmsg->insertItem((*i)->Name());
-  gSARManager.Drop();
 
-  edtSARtext = new MLEditWrap(true, gbStatus);
+  edtSARtext = new MLEditWrap(true, gbText);
+  // ICQ99b allows 37 chars per line, so we do the same
+  edtSARtext->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
+  edtSARtext->setWrapColumnOrWidth(37);
+
+  // set defaults
+  slot_SARgroup_act(SAR_AWAY);
+
   return w;
 }
 

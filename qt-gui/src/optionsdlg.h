@@ -90,6 +90,8 @@ protected slots:
   void slot_selectfont();
   void slot_whatsthis();
   void slot_SARmsg_act(int);
+  void slot_SARgroup_act(int);
+  void slot_SARsave_act();
 };
 
 
