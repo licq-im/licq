@@ -53,6 +53,7 @@ class CUserViewItem : public QListViewItem
 public:
   CUserViewItem (ICQUser *, QListView *);
   CUserViewItem (BarType, QListView *);
+  virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;
   unsigned long ItemUin()  { return m_nUin; }
   void setGraphics(ICQUser *);
@@ -90,7 +91,7 @@ protected:
 
   friend class CUserView;
   friend class CUserViewTips;
-public: 
+public:
   unsigned short Status() const { return m_nStatus; };
 
 };
@@ -132,6 +133,7 @@ protected:
   CUserViewTips* m_tips;
   ColumnInfos colInfo;
   CUserViewItem *barOnline, *barOffline;
+  unsigned short numOnline, numOffline;
   virtual void viewportMousePressEvent(QMouseEvent *e);
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );

@@ -64,6 +64,28 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 }
 
 
+CUserViewItem::~CUserViewItem()
+{
+  CUserView *v = (CUserView *)listView();
+
+  if (m_nStatus == ICQ_STATUS_OFFLINE)
+    v->numOffline--;
+  else
+    v->numOnline--;
+
+  if (v->numOffline == 0 && v->barOffline != NULL)
+  {
+    delete v->barOffline;
+    v->barOffline = NULL;
+  }
+  if (v->numOnline == 0 && v->barOnline != NULL)
+  {
+    delete v->barOnline;
+    v->barOnline = NULL;
+  }
+}
+
+
 CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
    : QListViewItem(parent)
 {
@@ -91,13 +113,17 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_nStatus = u->Status();
 
    // Create any necessary bars
-   if (u->StatusOffline() && v->barOffline == NULL && v->ShowBars() )
+   if (u->StatusOffline())
    {
-      v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
+     v->numOffline++;
+     if (v->barOffline == NULL && v->ShowBars() )
+       v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
    }
-   if (!u->StatusOffline() && v->barOnline == NULL && v->ShowBars() )
+   else
    {
-      v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
+     v->numOnline++;
+     if (v->barOnline == NULL && v->ShowBars() )
+       v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
    }
 
    m_sPrefix = "1";
@@ -370,6 +396,7 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
    m_bTransparent = bTransparent;
    m_bShowBars = bShowBars;
    barOnline = barOffline = NULL;
+   numOnline = numOffline = 0;
 
    addColumn(tr("S"), 20);
    for (unsigned short i = 0; i < colInfo.size(); i++)
@@ -392,13 +419,14 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
 
 CUserView::~CUserView()
 {
+  barOnline = barOffline = NULL;
   delete m_tips;
 }
 
 void CUserView::clear()
 {
-  QListView::clear();
   barOnline = barOffline = NULL;
+  QListView::clear();
 }
 
 
