@@ -671,31 +671,16 @@ void ICQFunctions::saveHistory()
 //-----ICQFunctions::generateReply-----------------------------------------------------------------
 void ICQFunctions::generateReply()
 {
-  char *q = quote();
-	mleSend->clear();
-	mleSend->append(QString::fromLocal8Bit(q));
-  delete [] q;
+  mleSend->clear();
+  for (int i = 0; i < mleRead->numLines(); i++) 
+    // TODO: Make quotechar configurable
+    mleSend->insertLine( QString("> ") + mleRead->textLine(i));
+
+  mleSend->insertLine("\n");
+  mleSend->setCursorPosition(mleRead->numLines(), 1);
+  
   showPage(fcnTab[1]);
 }
-
-
-//-----ICQFunctions::quote-------------------------------------------------------------------------
-char *ICQFunctions::quote(void)
-{
-  char *q = new char[mleRead->text().length() + (mleRead->numLines() * 2) + 4];
-  char *s = q;
-  for (int i = 0; i < mleRead->numLines(); i++)
-  {
-    *(s++) = '>';
-    *(s++) = ' ';
-	  strcpy(s, mleRead->textLine(i).local8Bit());
-    s += mleRead->textLine(i).length();
-	  *(s++) = '\n';
-	}
-	*s = '\0';
-	return (q);
-}
-
 
 //-----ICQFunctions::setSpoofed--------------------------------------------------------------------
 void ICQFunctions::setSpoofed()
