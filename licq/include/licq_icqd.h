@@ -73,6 +73,33 @@ typedef vector<CDaemonStats> DaemonStatsList;
 #define SAVE_STATS
 
 
+//---Color-------------------------------------------------------------------
+class CICQColor
+{
+public:
+
+  int fore_red, fore_green, fore_blue;
+  int back_red, back_green, back_blue;
+
+  // Plugins should not need these functions
+  CICQColor() {}
+  CICQColor(int fore, int back) {}
+
+  int foreground()
+   {
+     return ((fore_red << 0) & 0xFF) + ((fore_green << 8) & 0xFF00) +
+      ((fore_blue << 16) & 0xFF0000);
+   }
+
+  int background()
+   {
+     return ((back_red << 0) & 0xFF) + ((back_green << 8) & 0xFF00) +
+      ((back_blue << 16) & 0xFF0000);
+   }
+
+};
+
+
 
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };

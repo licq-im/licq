@@ -63,7 +63,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, u);
+    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, NULL, u);
     gLog.Info("%sSending %smessage to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());
@@ -137,7 +137,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, u);
+    CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, NULL, u);
     gLog.Info("%sSending %sURL to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());
@@ -250,7 +250,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
-    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, u);
+    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, NULL, u);
     gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->Sequence());

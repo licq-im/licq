@@ -6,6 +6,8 @@
 #include "licq_socket.h"
 #include "licq_icq.h"
 
+class CICQColor;
+
 
 unsigned short ReversePort(unsigned short p);
 
@@ -714,7 +716,7 @@ class CPT_Message : public CPacketTcp
 {
 public:
    CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
-      ICQUser *_cUser);
+    CICQColor *pColor, ICQUser *pUser);
 };
 
 
@@ -725,7 +727,8 @@ public:
 class CPT_Url : public CPacketTcp
 {
 public:
-   CPT_Url(char *_sMessage, unsigned short nLevel, bool bMR, ICQUser *_cUser);
+   CPT_Url(char *_sMessage, unsigned short nLevel, bool bMR,
+    CICQColor *pColor, ICQUser *pUser);
 };
 
 
@@ -733,7 +736,7 @@ class CPT_ContactList : public CPacketTcp
 {
 public:
    CPT_ContactList(char *szMessage, unsigned short nLevel, bool bMR,
-      ICQUser *pUser);
+    CICQColor *pColor, ICQUser *pUser);
 };
 
 
@@ -757,7 +760,7 @@ class CPT_ChatRequest : public CPacketTcp
 {
 public:
   CPT_ChatRequest(char *_sMessage, const char *szChatUsers, unsigned short nPort,
-     unsigned short nLevel, ICQUser *_cUser);
+     unsigned short nLevel, ICQUser *pUser);
 };
 
 
@@ -766,7 +769,7 @@ class CPT_FileTransfer : public CPacketTcp
 {
 public:
    CPT_FileTransfer(const char *_szFilename, const char *_szDescription,
-      unsigned short nLevel, ICQUser *_cUser);
+      unsigned short nLevel, ICQUser *pUser);
    bool IsValid()  { return m_bValid; };
    const char *GetFilename()  { return m_szFilename; };
    const char *GetDescription()  { return m_szMessage; };

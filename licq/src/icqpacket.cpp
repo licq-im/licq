@@ -23,6 +23,7 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_log.h"
 #include "licq_utility.h"
+#include "licq_icqd.h"  // CICQColor
 #include "support.h"
 
 
@@ -1692,32 +1693,48 @@ void CPacketTcp::PostBuffer_v6()
 
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
-   ICQUser *_cUser)
+ CICQColor *pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-       _sMessage, true, nLevel, _cUser)
+       _sMessage, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
   {
-    buffer->PackUnsignedLong(0x00000000);
-    buffer->PackUnsignedLong(0x00FFFFFF);
+    if (pColor == NULL)
+    {
+      buffer->PackUnsignedLong(0x00000000);
+      buffer->PackUnsignedLong(0x00FFFFFF);
+    }
+    else
+    {
+      buffer->PackUnsignedLong(pColor->background());
+      buffer->PackUnsignedLong(pColor->foreground());
+    }
   }
   PostBuffer();
 }
 
 //-----Url----------------------------------------------------------------------
 CPT_Url::CPT_Url(char *szMessage, unsigned short nLevel, bool bMR,
-   ICQUser *_cUser)
+ CICQColor *pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-       szMessage, true, nLevel, _cUser)
+       szMessage, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
   {
-    buffer->PackUnsignedLong(0x00000000);
-    buffer->PackUnsignedLong(0x00FFFFFF);
+    if (pColor == NULL)
+    {
+      buffer->PackUnsignedLong(0x00000000);
+      buffer->PackUnsignedLong(0x00FFFFFF);
+    }
+    else
+    {
+      buffer->PackUnsignedLong(pColor->background());
+      buffer->PackUnsignedLong(pColor->foreground());
+    }
   }
   PostBuffer();
 }
@@ -1725,7 +1742,7 @@ CPT_Url::CPT_Url(char *szMessage, unsigned short nLevel, bool bMR,
 
 //-----ContactList-----------------------------------------------------------
 CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
-   ICQUser *pUser)
+   CICQColor *pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_CONTACTxLIST | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
        sz, true, nLevel, pUser)
@@ -1733,8 +1750,16 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
   InitBuffer();
   if (m_nVersion == 6)
   {
-    buffer->PackUnsignedLong(0x00000000);
-    buffer->PackUnsignedLong(0x00FFFFFF);
+    if (pColor == NULL)
+    {
+      buffer->PackUnsignedLong(0x00000000);
+      buffer->PackUnsignedLong(0x00FFFFFF);
+    }
+    else
+    {
+      buffer->PackUnsignedLong(pColor->background());
+      buffer->PackUnsignedLong(pColor->foreground());
+    }
   }
   PostBuffer();
 }
@@ -1766,8 +1791,9 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
 
 //-----ChatRequest--------------------------------------------------------------
 CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
-   unsigned short nPort, unsigned short nLevel, ICQUser *_cUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage, true, nLevel, _cUser)
+   unsigned short nPort, unsigned short nLevel, ICQUser *pUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage, true,
+    nLevel, pUser)
 {
   m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
   InitBuffer();
