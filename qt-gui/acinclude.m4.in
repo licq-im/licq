@@ -53,21 +53,23 @@ AC_DEFUN(AC_PATH_QT_LIB,
       fi
 
       for qt_dir in $qt_library_dirs; do
-        if test -r "$qt_dir/libqt-mt.so"; then
-          ac_qt_libname=-lqt-mt
-          ac_qt_libdir=$qt_dir
-          break
-        else
-          echo "tried $qt_dir/libqt-mt.so" >&AC_FD_CC 
-        fi
+        if test -z $ac_kde || test $kde_version -ge 3; then
+	      if test -r "$qt_dir/libqt-mt.so"; then
+    	    ac_qt_libname=-lqt-mt
+        	ac_qt_libdir=$qt_dir
+         	break
+	      else
+    	    echo "tried $qt_dir/libqt-mt.so" >&AC_FD_CC 
+          fi
 
-        if test -r "$qt_dir/libqt-mt.so.3"; then
-          ac_qt_libname=-lqt-mt
-          ac_qt_libdir=$qt_dir
-          break
-        else
-          echo "tried $qt_dir/libqt-mt.so.3" >&AC_FD_CC
-        fi
+          if test -r "$qt_dir/libqt-mt.so.3"; then
+            ac_qt_libname=-lqt-mt
+            ac_qt_libdir=$qt_dir
+            break
+          else
+            echo "tried $qt_dir/libqt-mt.so.3" >&AC_FD_CC
+          fi
+		fi
 
         if test -r "$qt_dir/libqt.so"; then
           ac_qt_libname=-lqt
@@ -167,7 +169,7 @@ AC_DEFUN(AC_PATH_QT_INC,
   else
     have_qt_inc="yes"
   fi
-
+  
   AC_MSG_RESULT([$ac_cv_header_qtinc])
   QT_INCLUDES="-I$ac_cv_header_qtinc"
   QT_INCDIR="$ac_cv_header_qtinc"
@@ -324,21 +326,24 @@ AC_DEFUN(AC_PATH_QT_MERGETR,
 ## ------------------------------------------------------------------------
 ## KDE detection. Terribly simple.
 ## ------------------------------------------------------------------------
+
 AC_DEFUN(AC_PATH_KDE,
 [
-  AC_REQUIRE([AC_PATH_QT_LIB])
-  AC_REQUIRE([AC_PATH_QT_INC])
-
-  AC_MSG_CHECKING([for KDE])
-
-  ac_kde_includes=""
-  ac_kde_libraries=""
-  kde_libraries=""
-  kde_includes=""
-
   AC_ARG_WITH(kde,
     [  --with-kde              compile with KDE support. ],
     [  ac_kde="$withval" ])
+
+  kde_version=2
+])
+
+AC_DEFUN(AC_PATH_KDE_INCLUDES,
+[
+  AC_REQUIRE([AC_PATH_QT_INC])
+
+  AC_MSG_CHECKING([for KDE includes])
+
+  ac_kde_includes=""
+  kde_includes=""
 
   dnl check for KDE includes
   kde_incdirs="/opt/kde3/include /opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include /usr/local/include $x_includes $qt_includes"
@@ -348,6 +353,43 @@ AC_DEFUN(AC_PATH_KDE,
 
   LICQ_FIND_FILE(kaction.h, $kde_incdirs, kde_incdir)
   kde_includes=$kde_incdir
+
+  if test "$ac_kde" != "no" && test -n "$kde_includes" && test -n "$ac_kde"; then
+    if test "$kde_includes" != "$x_includes" && test "$kde_includes" != "$qt_includes"; then
+      KDE_INCLUDES="-I$kde_includes"
+    fi
+
+    AC_MSG_RESULT([$kde_includes])
+
+    # KDE 2 or 3?
+    if test -r $kde_includes/kdeversion.h; then
+	  # KDE 3 or later ;-)
+      kde_version=`grep -w '#define KDE_VERSION_MAJOR' < $kde_includes/kdeversion.h | tr -d '#A-Za-z_\t '`
+	else
+	  # KDE 2
+	  kde_version=`grep -w '#define KDE_VERSION_MAJOR' < $kde_includes/kapp.h | tr -d '#A-Za-z_\t '`
+	fi
+
+  else
+    AC_MSG_RESULT([no])
+	kde_includes=""
+    KDE_INCLUDES=""
+  fi
+
+  AC_SUBST(KDE_INCLUDES)
+  AC_SUBST(kde_includes)
+])
+
+AC_DEFUN(AC_PATH_KDE_LIBRARIES,
+[
+  AC_REQUIRE([AC_PATH_QT_LIB])
+  AC_REQUIRE([AC_PATH_QT_INC])
+  AC_REQUIRE([AC_PATH_KDE_INCLUDES])
+
+  AC_MSG_CHECKING([for KDE libraries])
+
+  ac_kde_libraries=""
+  kde_libraries=""
 
   dnl check for KDE libraries
   kde_libdirs="/opt/kde3/lib /opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/local/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
@@ -359,15 +401,11 @@ AC_DEFUN(AC_PATH_KDE,
   kde_libraries=$kde_libdir
 
   if test "$ac_kde" != "no" && test -n "$kde_includes" && test -n "$kde_libraries" && test -n "$ac_kde"; then
-    if test "$kde_includes" != "$x_includes" && test "$kde_includes" != "$qt_includes"; then
-      KDE_INCLUDES="-I$kde_includes"
-    fi
-
     if test "$kde_libraries" != "$x_libraries" && test "$kde_libraries" != "$qt_libraries"; then
       KDE_LDFLAGS="-L$kde_libraries"
     fi
 
-    AC_MSG_RESULT([libraries $kde_libraries, headers $kde_includes])
+    AC_MSG_RESULT([$kde_libraries])
     AC_DEFINE(USE_KDE, 1, [use KDE support])
     LIB_NAME="licq_kde-gui.la"
 
@@ -383,19 +421,15 @@ AC_DEFUN(AC_PATH_KDE,
     AC_SUBST(have_kde)
   else
     LIB_NAME="licq_qt-gui.la"
-    AC_MSG_RESULT(["no"])
+    AC_MSG_RESULT([no])
     KDE_LDFLAGS=""
     KDE_LIBS=""
-    KDE_INCLUDES=""
   fi
 
   AC_SUBST(LIB_NAME)
   AC_SUBST(KDE_LDFLAGS)
-  AC_SUBST(KDE_INCLUDES)
   AC_SUBST(kde_libraries)
-  AC_SUBST(kde_includes)
 ])
-
 
 dnl Like AC_CHECK_HEADER, but it uses the already-computed -I directories.
 AC_DEFUN(AC_CHECK_X_HEADER, [
