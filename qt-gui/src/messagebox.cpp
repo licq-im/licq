@@ -231,6 +231,8 @@ void CMsgViewTips::maybeTip(const QPoint& c)
     s += QString(" / ") + w->tr("Urgent");
   if (item->msg->IsMultiRec())
     s += QString(" / ") + w->tr("Multiple Recipients");
+  if (item->msg->IsCancelled())
+    s += QString(" / ") + w->tr("Cancelled Event");
   if (item->msg->IsLicq())
     s += QString(" / Licq ") + QString::fromLocal8Bit(item->msg->LicqVersionStr());
 
