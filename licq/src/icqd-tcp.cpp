@@ -30,6 +30,7 @@
 #include "licq_log.h"
 #include "licq_chat.h"
 #include "licq_filetransfer.h"
+#include "licq_gpg.h"
 #include "support.h"
 #include "licq_protoplugind.h"
 
@@ -40,11 +41,13 @@ unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPP
 {
   unsigned long nRet = 0;
 
+  
   if (_nPPID == LICQ_PPID)
     nRet = icqSendMessage(_szId, m, online, nLevel, bMultipleRecipients, pColor);
   else
     PushProtoSignal(new CSendMessageSignal(_szId, m), _nPPID);
 
+  
   return nRet;
 }
 
@@ -64,11 +67,13 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   CEventMsg *e = NULL;
 
   unsigned long f = INT_VERSION;
+  char *cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
+  if (cipher) f |= E_ENCRYPTED;
   if (online) f |= E_DIRECT;
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-	ICQUser *u;
+  ICQUser *u;
   if (!online) // send offline
   {
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
@@ -79,7 +84,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
        mDos[MAX_MESSAGE_SIZE] = '\0';
      }
      result = icqSendThroughServer(szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
-                                   mDos, e);
+                                   cipher ? cipher : mDos, e);
      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   }
   else        // send direct
@@ -89,13 +94,15 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, pColor, u);
+    CPT_Message *p = new CPT_Message(cipher ? cipher : mDos, nLevel, bMultipleRecipients, pColor, u);
     gLog.Info(tr("%sSending %smessage to %s (#%ld).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
   }
 
+  
+  
   if (u != NULL)
   {
     u->SetSendServer(!online);
@@ -105,12 +112,15 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
 
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
+  if (cipher)
+    free(cipher);
   if (mDos)
     delete [] mDos;
 
   if (result != NULL)
     return result->EventId();
-  return 0;
+  else
+    return 0;
 }
 
 unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
@@ -133,7 +143,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-	ICQUser *u;
+  ICQUser *u;
   if (!online) // send offline
   {
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);

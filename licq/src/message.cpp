@@ -21,6 +21,7 @@
 #include "licq_user.h"
 #include "licq_translate.h"
 #include "licq_icqd.h"
+#include "licq_gpg.h"
 #include "support.h"
 
 #ifdef USE_HEBREW
@@ -155,6 +156,13 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
    : CUserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags)
 {
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
+  
+  if (strstr(m_szMessage, CGPGHelper::pgpSig) == m_szMessage)
+    if (char *plaintext = gGPGHelper.Decrypt(m_szMessage)) {
+      m_nFlags |= E_ENCRYPTED;
+	  free(m_szMessage);
+	  m_szMessage = plaintext;
+	}
 }
 
 

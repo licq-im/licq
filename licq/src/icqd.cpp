@@ -38,6 +38,7 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_packets.h"
 #include "licq_plugind.h"
+#include "licq_gpg.h"    // ##
 #include "licq.h"
 #include "support.h"
 
@@ -282,6 +283,9 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Initialize the random number generator
   srand(time(NULL));
+
+  // start GPG helper
+  gGPGHelper.Start();
 
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
@@ -1985,7 +1989,7 @@ void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
     {
       bExists = true;
       if ((*iter)->SendSignals())
-        (*iter)->PushSignal(new CSignal(s));
+        (*iter)->PushSignal(s);
       break;
     }
   }
@@ -1994,9 +1998,8 @@ void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
   if (!bExists)
   {
     gLog.Info("%sInvalid protocol plugin requested (%ld).\n", L_ERRORxSTR, _nPPID);
+    delete s;
   }
-  
-  delete s;
 }
 
 CSignal *CICQDaemon::PopProtoSignal()
@@ -2110,7 +2113,7 @@ bool CICQDaemon::AddProtocolPlugins()
     {
       sprintf(szKey, "ProtoPlugin%d", i + 1);
       if (!licqConf.ReadStr(szKey, szData)) continue;
-      if (ProtoPluginLoad(szData) == NULL) return false;
+      if (ProtoPluginLoad(szData) == false) return false;
     }
   }
   
