@@ -319,7 +319,8 @@ void OptionsDlg::ApplyOptions()
   {
     if (rdbDockDefault->isChecked())
     {
-      if (mainwin->m_nDockMode != DockDefault)
+      if (mainwin->m_nDockMode != DockDefault ||
+          ((IconManager_Default *)mainwin->licqIcon)->FortyEight() != chkDockFortyEight->isChecked() )
       {
         delete mainwin->licqIcon;
         mainwin->licqIcon = new IconManager_Default(mainwin, mainwin->mnuSystem, chkDockFortyEight->isChecked());
