@@ -396,8 +396,18 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
   ICQEvent* result;
 
   CPU_ThroughServer *p = new CPU_ThroughServer(nUin, format, _sMessage);
-
-  gLog.Info("%sSending message through server (#%ld).\n", L_SRVxSTR, p->Sequence());
+  
+  switch (format)
+  {
+    case ICQ_CMDxSUB_MSG:
+	gLog.Info("%sSending message through server (#%ld).\n", L_SRVxSTR, p->Sequence());
+	break;	
+    case ICQ_CMDxSUB_URL:
+        gLog.Info("%sSending url through server (#%ld).\n", L_SRVxSTR, p->Sequence());
+	break;
+    default:
+	gLog.Info("%sSending misc through server (#%ld).\n", L_SRVxSTR, p->Sequence());
+  }
 
   // If we are already shutting down, don't start any events
   if (m_bShuttingDown) return NULL;

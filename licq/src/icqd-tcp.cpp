@@ -127,10 +127,7 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   if (!online) // send offline
   {
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
-       ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
-    gLog.Info("%sSending url through server (#%ld).\n", L_SRVxSTR, p->Sequence());
-    result = SendExpectEvent_Server(_nUin, p, e);
+    result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e);
   }
   else
   {
