@@ -6,10 +6,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #ifndef ICQD_H
 #define ICQD_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <vector.h>
 #include <list.h>
 #include <deque.h>
@@ -167,13 +163,13 @@ public:
   CICQEventTag *icqSearchByInfo(const char *, const char *, const char *, const char *);
   CICQEventTag *icqSearchByUin(unsigned long);
   CICQEventTag *icqSearchWhitePages(const char *szFirstName,
-		            const char *szLastName, const char *szAlias,
-		            const char *szEmail, unsigned short nMinAge,
-			    unsigned short nMaxAge, char nGender,
-			    char nLanguage, const char *szCity,
-			    const char *szState, unsigned short nCountryCode,
-			    const char *szCoName, const char *szCoDept,
-			    const char *szCoPos, bool bOnlineOnly);
+                            const char *szLastName, const char *szAlias,
+                            const char *szEmail, unsigned short nMinAge,
+                            unsigned short nMaxAge, char nGender,
+                            char nLanguage, const char *szCity,
+                            const char *szState, unsigned short nCountryCode,
+                            const char *szCoName, const char *szCoDept,
+                            const char *szCoPos, bool bOnlineOnly);
 
   void icqLogoff();
   void icqRelogon(bool bChangeServer = false);

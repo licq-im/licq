@@ -2,10 +2,6 @@
 #ifndef ICQDEFINES_H
 #define ICQDEFINES_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 // Version constants
 #define ICQ_VERSION 5
 #define MODE_DIRECT 0x04
@@ -172,7 +168,9 @@ const unsigned short ICQ_TCPxACK_ONLINE            = 0x0000;
 const unsigned short ICQ_TCPxACK_AWAY              = 0x0004;
 const unsigned short ICQ_TCPxACK_OCCUPIED          = 0x0009;
 const unsigned short ICQ_TCPxACK_DND               = 0x000A;
+const unsigned short ICQ_TCPxACK_OCCUPIEDxCAR      = 0x000B;
 const unsigned short ICQ_TCPxACK_NA                = 0x000E;
+const unsigned short ICQ_TCPxACK_DNDxCAR           = 0x000F;
 const unsigned short ICQ_TCPxACK_ACCEPT            = 0x0000;
 const unsigned short ICQ_TCPxACK_REFUSE            = 0x0001;
 // Not an official status, just something I use internally

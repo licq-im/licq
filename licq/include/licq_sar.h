@@ -1,16 +1,11 @@
 #ifndef SAR_H
 #define SAR_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <stdio.h>
 #include <vector.h>
 #include <pthread.h>
 
 #include "licq_file.h"
-//#include "pthread_rdwr.h"
 
 #define SAR_AWAY      0
 #define SAR_NA        1

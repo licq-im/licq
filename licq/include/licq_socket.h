@@ -17,13 +17,6 @@
 #include "licq_buffer.h"
 #include "licq_constants.h"
 
-#ifdef USE_OPENSSL
-#include <openssl/ssl.h>
-extern SSL_CTX *gSSL_CTX;
-#else
-typedef void SSL;
-#endif
-
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);
 
@@ -106,9 +99,9 @@ class TCPSocket : public INetSocket
 {
 public:
   TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_pSSL = NULL;}
+    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
   TCPSocket() : INetSocket(0)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_pSSL = NULL;}
+    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
   virtual ~TCPSocket();
 
   // Abstract base class overloads
@@ -123,7 +116,7 @@ public:
   void RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 
-  bool Secure() { return m_pSSL != NULL; }
+  bool Secure() { return m_p_SSL != NULL; }
   bool SSL_Pending();
 
   bool SecureConnect();
@@ -131,7 +124,8 @@ public:
   void SecureStop();
 
 protected:
-  SSL *m_pSSL;
+  void* m_p_SSL;
+#define m_pSSL ((SSL *) m_p_SSL)
   pthread_mutex_t mutex_ssl;
 };
 

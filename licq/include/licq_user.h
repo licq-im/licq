@@ -1,10 +1,6 @@
 #ifndef USER_H
 #define USER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <vector.h>
 #include <list.h>
 #include <time.h>
@@ -214,7 +210,7 @@ public:
 
   // Licq Info
   char *AutoResponse()                  { return m_szAutoResponse; }
-  bool SendRealIp()			{ return m_bSendRealIp; }
+  bool SendRealIp()                     { return m_bSendRealIp; }
   bool SendServer()                     { return m_bSendServer; }
   unsigned short SendLevel()            { return m_nSendLevel; }
   bool EnableSave()                     { return m_bEnableSave; }
@@ -292,7 +288,7 @@ public:
 
   // Licq Info
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
-  void SetSendRealIp(bool s)	      { m_bSendRealIp = s; }
+  void SetSendRealIp(bool s)          { m_bSendRealIp = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }

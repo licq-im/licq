@@ -1,10 +1,6 @@
 #ifndef FILET_H
 #define FILET_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 /*---------------------------------------------------------------------------
  * FileTransfer Manager - CFileTransferManager
  *
@@ -187,7 +183,7 @@ public:
   const char *LocalName()  { return m_szLocalName; }
   direction Direction() { return m_nDirection; }
   unsigned long Uin() { return m_nUin; }
-  
+
   // Available after FT_STARTxBATCH
   const char *RemoteName()  { return m_szRemoteName; }
   unsigned short BatchFiles() { return m_nBatchFiles; }

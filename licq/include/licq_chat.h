@@ -1,10 +1,6 @@
 #ifndef CHAT_H
 #define CHAT_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <deque.h>
 
 #include "licq_packets.h"
@@ -68,7 +64,7 @@ class CICQDaemon;
  *
  *  When a user requests to kick another user, the CHAT_KICK event is sent,
  *  and then the CChatUser::ToKick() contains the uin of the person to kick.
- *  The plugin shall then call CChatManager::SendVoteNo() or 
+ *  The plugin shall then call CChatManager::SendVoteNo() or
  *  CChatManager::SendVoteYes().  Both functions take the UIN of the user we
  *  are voting on.
  *
@@ -531,7 +527,7 @@ protected:
   ChatUserList chatUsers;
   ChatUserList chatUsersClosed;
   ChatEventList chatEvents;
-  VoteInfoList voteInfo; 
+  VoteInfoList voteInfo;
   pthread_t thread_chat;
 
   int m_nColorFore[3], m_nColorBack[3];
@@ -556,8 +552,8 @@ protected:
   void FinishKickVote(VoteInfoList::iterator, bool);
 
   void SendBuffer(CBuffer *, unsigned char,
-		  unsigned long _nUin = 0,
-		  bool bNotIter = true);
+                  unsigned long _nUin = 0,
+                  bool bNotIter = true);
   bool SendBufferToClient(CBuffer *, unsigned char, CChatUser *);
   void SendBuffer_Raw(CBuffer *);
   //void SendPacket(CPacket *);

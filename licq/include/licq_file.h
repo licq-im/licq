@@ -1,10 +1,6 @@
 #ifndef INIFILE_H
 #define INIFILE_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #define MAX_SECTIONxNAME_LEN 160
 #define MAX_KEYxNAME_LEN 160
 #define MAX_LINE_LEN 4096

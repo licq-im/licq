@@ -1,10 +1,6 @@
 #ifndef ICQPACKET_H
 #define ICQPACKET_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "licq_user.h"
 #include "licq_buffer.h"
 #include "licq_socket.h"
@@ -238,12 +234,12 @@ class CPU_SearchWhitePages : public CPacketUdp
 {
 public:
    CPU_SearchWhitePages(const char *szFirstName, const char *szLastName,
-		   const char *szAlias, const char *szEmail,
-		   unsigned short nMinAge, unsigned short nMaxAge,
-		   char nGender, char nLanguage, const char *szCity,
-		   const char *szState, unsigned short nCountryCode,
-		   const char *szCoName, const char *szCoDept, 
-		   const char *szCoPos, bool bOnlineOnly);
+                   const char *szAlias, const char *szEmail,
+                   unsigned short nMinAge, unsigned short nMaxAge,
+                   char nGender, char nLanguage, const char *szCity,
+                   const char *szState, unsigned short nCountryCode,
+                   const char *szCoName, const char *szCoDept,
+                   const char *szCoPos, bool bOnlineOnly);
 };
 
 

@@ -1,12 +1,7 @@
 #ifndef REMOTESERVER_H
 #define REMOTESERVER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <vector.h>
-
 
 class RemoteServer
 {

@@ -2,11 +2,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-
 // Directory constants
 const char DEFAULT_HOME_DIR[]                      = ".licq";
 const char BASE_SHARE_DIR[]                        = "share/licq/";
