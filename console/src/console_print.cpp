@@ -462,8 +462,13 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%cse%Z%s [ %A<variable>%Z [ = %A<value>%Z ] ]",
-                   A_BOLD, m_szCommandChar[0], A_BOLD, "t", A_BOLD, A_BOLD,
+  winMain->wprintf(" %A%csea%Zrch",
+                   A_BOLD, m_szCommandChar[0], A_BOLD);
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+
+  winMain->wprintf(" %A%cset%Z [ %A<variable>%Z [ = %A<value>%Z ] ]",
+                   A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD,
                    A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
