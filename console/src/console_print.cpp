@@ -259,12 +259,16 @@ void CLicqConsole::PrintVariable(unsigned short nVar)
 void CLicqConsole::CreateUserList()
 {
   unsigned short i = 0;
+  char *szTmp = 0;
+  char cNewMsg;
   struct SUser *s = NULL;
   list <SUser *>::iterator it;
 
   // Clear the list
   for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
   {
+    if ((*it)->szLine)
+      delete [] (*it)->szLine;
     delete (*it);
   }
 #undef clear
@@ -291,37 +295,43 @@ void CLicqConsole::CreateUserList()
 
     if(iStatus & ICQ_STATUS_FxPRIVATE)
     {
-      pUser->usprintf(&s->szLine[1], m_szOtherOnlineFormat);
+      szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
 
     if((unsigned short)iStatus == ICQ_STATUS_OFFLINE)
     {
-      pUser->usprintf(&s->szLine[1], m_szOfflineFormat);
+      szTmp = pUser->usprintf(m_szOfflineFormat);
       s->color = m_cColorOffline;
     }
     else if( (unsigned short) iStatus != ICQ_STATUS_OFFLINE &&
         ((iStatus & ICQ_STATUS_DND) || (iStatus & ICQ_STATUS_OCCUPIED) ||
         (iStatus & ICQ_STATUS_NA) || (iStatus & ICQ_STATUS_AWAY)))
     {
-      pUser->usprintf(&s->szLine[1], m_szAwayFormat);
+      szTmp = pUser->usprintf(m_szAwayFormat);
       s->color = m_cColorAway;
     }
     else if((unsigned short)iStatus == ICQ_STATUS_FREEFORCHAT)
     {
-      pUser->usprintf(&s->szLine[1], m_szOtherOnlineFormat);
+      szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
     else if((unsigned short)iStatus == ICQ_STATUS_ONLINE)
     {
-      pUser->usprintf(&s->szLine[1], m_szOnlineFormat);
+      szTmp = pUser->usprintf(m_szOnlineFormat);
       s->color = m_cColorOnline;
     }
 
     if (pUser->NewUser() && !(m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_NEW_USERS))
       s->color = m_cColorNew;
-    s->szLine[0] = pUser->NewMessages() > 0 ? '*' : ' ';
+    cNewMsg = (pUser->NewMessages() > 0) ? '*' : ' ';
 
+    // Create the line to printout now
+    s->szLine = new char[strlen(szTmp) + 2];
+    snprintf(s->szLine, strlen(szTmp) + 2, "%c%s", cNewMsg, szTmp ? szTmp : "");
+    s->szLine[strlen(szTmp) + 1] = '\0';
+    free(szTmp);
+    
     // Insert into the list
     bool found = false;
     for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)

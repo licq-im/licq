@@ -25,7 +25,7 @@ extern int errno
 #include "licq_countrycodes.h"
 
 // Undefine what stupid ncurses defines as wclear(WINDOW *)
-#undef clear()
+#undef clear
 
 extern "C" const char *LP_Version();
 
@@ -669,7 +669,7 @@ void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
     {
       (*iter)->CloseFileTransfer();
       delete *iter;
-#undef erase()
+#undef erase
       m_lFileStat.erase(iter);
       delete e;
       return;

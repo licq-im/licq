@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <iostream.h>
+#include <iostream>
 #include <curses.h>
 
 #define COLOR_YELLOW_BLUE COLOR_YELLOW + 8

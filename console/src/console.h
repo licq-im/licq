@@ -30,7 +30,7 @@ struct SUser
 {
   char szKey[32];
   unsigned long nUin;
-  char szLine[128];
+  char *szLine;
   bool bOffline;
   const struct SColorMap *color;
 };
