@@ -1,28 +1,27 @@
 static const char QTGUI_CONF[] =
-"[appearance]
-Skin = basic
-Icons = computer 
-Font = default
-GridLines = 0
-ShowHeader = 1
-ShowOfflineUsers = 1
-ShowDividers = 1
-UseDock = 0
-FontStyles = 1
-NumColumns = 1
-Column1.Title = Alias
-Column1.Format = %a
-Column1.Width = 90
-Column1.Align = 0
-
-[startup]
-Logon = 0
-AutoAway = 5
-AutoNA = 10
-
-[functions]
-AutoClose = 1
-";
+"[appearance]\n"
+"Skin = basic\n"
+"Icons = computer\n"
+"Font = default\n"
+"GridLines = 0\n"
+"ShowHeader = 1\n"
+"ShowOfflineUsers = 1\n"
+"ShowDividers = 1\n"
+"UseDock = 0\n"
+"FontStyles = 1\n"
+"NumColumns = 1\n"
+"Column1.Title = Alias\n"
+"Column1.Format = %a\n"
+"Column1.Width = 90\n"
+"Column1.Align = 0\n"
+"\n"
+"[startup]\n"
+"Logon = 0\n"
+"AutoAway = 5\n"
+"AutoNA = 10\n"
+"\n"
+"[functions]\n"
+"AutoClose = 1\n";
 
 
 

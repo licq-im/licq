@@ -364,7 +364,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
 
 //-----ApplySkin----------------------------------------------------------------
-void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial = false)
+void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 {
   gLog.Info("%sApplying %s skin.\n", L_INITxSTR, _szSkin);
 
@@ -1055,7 +1055,7 @@ void CMainWindow::callUserFunction(int index)
 
 
 //-----CMainWindow::callICQFunction---------------------------------------------
-ICQFunctions *CMainWindow::callFunction(int fcn, bool isUser, unsigned long _nUin = 0)
+ICQFunctions *CMainWindow::callFunction(int fcn, bool isUser, unsigned long _nUin)
 {
   ICQUser *u = NULL;
   ICQFunctions *f = NULL;
@@ -1504,7 +1504,7 @@ void CMainWindow::popupSystemMenu()
 
 
 //-----CMainWindow::loadIcons---------------------------------------------------
-void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial = false)
+void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 // load the pixmaps
 {
    char sFilename[MAX_FILENAME_LEN],

@@ -25,7 +25,7 @@ void InformUser(QWidget *q, QString szInfo)
 }
 
 //-----CELabel------------------------------------------------------------------
-CELabel::CELabel(bool _bTransparent, QPopupMenu *m = NULL, QWidget *parent, char *name)
+CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
   : QLabel(parent, name)
 {
    mnuPopUp = m;
