@@ -254,23 +254,14 @@ void CEComboBox::setNamedBgColor(char *theColor)
 
 
 //-----CInfoField::constructor--------------------------------------------------
-CInfoField::CInfoField(int x, int y, int lenTitle, int lenBlank, int lenInfo,
-                       QString title, bool isReadOnly, QWidget *parent)
+CInfoField::CInfoField(QWidget *parent, bool readonly)
   : QLineEdit(parent)
 {
-
-  lblTitle = NULL;
-  if (!title.isNull())
-  {
-    lblTitle = new QLabel(title, parent);
-    lblTitle->setGeometry(x, y, lenTitle, 20);
-  }
-  QLineEdit::setGeometry(x + lenTitle + lenBlank, y, lenInfo, 20);
   baseRO = palette().disabled().base();
   baseRW = palette().normal().base();
 
   // Set colors
-  SetReadOnly(isReadOnly);
+  SetReadOnly(readonly);
 }
 
 void CInfoField::SetReadOnly(bool b)
@@ -337,40 +328,8 @@ void CInfoField::setData(const unsigned long data)
 }
 
 
-void CInfoField::setTitle(QString t)
-{
-  if (lblTitle != NULL)
-    lblTitle->setText(t);
-}
-
-
-void CInfoField::setGeometry(int x, int y, int lenTitle, int lenBlank, int lenInfo)
-{
-  if (lblTitle != NULL)
-    lblTitle->setGeometry(x, y, lenTitle, 20);
-
-  QLineEdit::setGeometry(x + lenTitle + lenBlank, y, lenInfo, 20);
-}
-
-
-void CInfoField::move(int x, int y)
-{
-  int lenTitle = (lblTitle == NULL ? 0 : lblTitle->width());
-  int xTitle = (lblTitle == NULL ? 0 : lblTitle->x());
-
-  if (lblTitle != NULL)
-    lblTitle->setGeometry(x, y, lenTitle, 20);
-
-  int lenBlank = QLineEdit::x() - xTitle - lenTitle;
-  int lenInfo = width();
-  setGeometry(x, y, lenTitle, lenBlank, lenInfo);
-}
-
-
 void CInfoField::setEnabled(bool _b)
 {
-  if (lblTitle != NULL)
-    lblTitle->setEnabled(_b);
   QLineEdit::setEnabled(_b);
 }
 
