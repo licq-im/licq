@@ -103,3 +103,13 @@ textview_get_chars(GtkWidget *w)
 	}
 	return std::string();
 }
+
+GtkWidget *
+hbutton_box_new(int spacing, GtkButtonBoxStyle layout_style)
+{
+	GtkWidget *h_box = gtk_hbutton_box_new();
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(h_box), layout_style);
+	gtk_box_set_spacing(GTK_BOX(h_box), spacing);
+  
+  return h_box;
+}

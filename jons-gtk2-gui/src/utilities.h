@@ -18,4 +18,7 @@ textview_get_chars(GtkWidget *w);
 void
 status_change(GtkWidget *statusbar, const char *st_name, const char *newstatus);
 
+GtkWidget *
+hbutton_box_new(int spacing = 5, 
+    GtkButtonBoxStyle layout_style = GTK_BUTTONBOX_END);
 #endif
