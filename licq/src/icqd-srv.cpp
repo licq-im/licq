@@ -4462,7 +4462,7 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   case 0x15:
   case 0x1A:
   case 0x1F:
-    gLog.Error("%sThe AOL Instant Messenger service is temporarily unavailable.\n"
+    gLog.Error("%sThe requested network service is temporarily unavailable.\n"
                "Please try again later.\n", L_ERRORxSTR);
     break;  
 
