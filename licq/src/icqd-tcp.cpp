@@ -810,7 +810,7 @@ unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
   return 0;
 
 #else // No OpenSSL
-  gLog.Warn(tr("%sicqOpenSecureChannel() to %ld called when we do not support OpenSSL.\n"),
+  gLog.Warn("%sicqOpenSecureChannel() to %ld called when we do not support OpenSSL.\n",
      L_WARNxSTR, nUin);
   return 0;
 
@@ -854,7 +854,7 @@ unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
   return 0;
 
 #else // No OpenSSL
-  gLog.Warn(tr("%sicqCloseSecureChannel() to %ld called when we do not support OpenSSL.\n"),
+  gLog.Warn("%sicqCloseSecureChannel() to %ld called when we do not support OpenSSL.\n",
      L_WARNxSTR, nUin);
   return 0;
 
