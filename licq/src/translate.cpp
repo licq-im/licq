@@ -1,5 +1,11 @@
 // -*- c-basic-offset: 2 -*-
-//
+/* ----------------------------------------------------------------------------
+ * Licq - A ICQ Client for Unix
+ * Copyright (C) 2003 Licq developers
+ *
+ * This program is licensed under the terms found in the LICENSE file.
+ */
+
 // Many parts of this source code were 'inspired' by the ircII4.4 translat.c source.
 // RIPPED FROM KVirc: http://www.kvirc.org
 // Original by Szymon Stefanek (kvirc@tin.it).

@@ -1,4 +1,11 @@
 // -*- c-basic-offset: 2 -*-
+/* ----------------------------------------------------------------------------
+ * Licq - A ICQ Client for Unix
+ * Copyright (C) 2003 Licq developers
+ *
+ * This program is licensed under the terms found in the LICENSE file.
+ */
+
 /* Socket routine descriptions */
 
 #ifdef HAVE_CONFIG_H
