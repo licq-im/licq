@@ -160,6 +160,9 @@ public:
   virtual ~UserSendCommon();
 
   void setText(const QString& txt);
+#if QT_VERSION >= 300
+  virtual void windowActivationChange(bool oldActive);
+#endif
 
 signals:
   void autoCloseNotify();
