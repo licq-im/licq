@@ -88,8 +88,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
      int pos = 0;
      while ( (pos = text.find(reURL, pos)) != -1 ) {
         QString url = reURL.cap(1);
-        QString urlEscaped = QStyleSheet::escape(url);
-        QString link = QString::fromLatin1("<a href=\"") + urlEscaped + QString::fromLatin1("\">") + urlEscaped + QString::fromLatin1("</a>");
+        QString link = QString::fromLatin1("<a href=\"") + url + QString::fromLatin1("\">") + url + QString::fromLatin1("</a>");
         text.replace(pos, url.length(), link);
         pos += reURL.matchedLength() - url.length() + link.length();
      }
@@ -99,8 +98,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
      pos = 0;
      while ( (pos = text.find(reMail, pos)) != -1 ) {
         QString mail = reMail.cap(2);
-        QString mailEscaped = QStyleSheet::escape(mail);
-        QString link = QString::fromLatin1("<a href=\"mailto:") + mailEscaped + QString::fromLatin1("\">") + mailEscaped + QString::fromLatin1("</a>");
+        QString link = QString::fromLatin1("<a href=\"mailto:") + mail + QString::fromLatin1("\">") + mail + QString::fromLatin1("</a>");
         text.replace(pos, mail.length(), link);
         pos += reMail.matchedLength() - mail.length() + link.length();
      }
@@ -121,6 +119,8 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
      text.replace(pos+1, longSpaces.matchedLength()-1, cap); 
   }
   text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
+  
+  qDebug("%s", text.utf8().data());
   
   return text;
 }
