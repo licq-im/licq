@@ -66,7 +66,7 @@ CLicq::CLicq(int argc, char **argv)
       licqException = true;
       break;
     case 'b':  // base directory
-      sprintf(BASE_DIR, "%s/", optarg);
+      sprintf(BASE_DIR, "%s", optarg);
       bBaseDir = true;
       break;
     case 'd':  // DEBUG_LEVEL
@@ -121,7 +121,7 @@ CLicq::CLicq(int argc, char **argv)
        licqException = true;
        return;
      }
-     sprintf(BASE_DIR, "%s/%s/", home, DEFAULT_HOME_DIR);
+     sprintf(BASE_DIR, "%s/.licq", home);
   }
 
   // check if user has conf files installed, install them if not
@@ -140,7 +140,7 @@ CLicq::CLicq(int argc, char **argv)
   {
     CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
     char szConf[MAX_FILENAME_LEN], szKey[32];
-    sprintf(szConf, "%slicq.conf", BASE_DIR);
+    sprintf(szConf, "%s/licq.conf", BASE_DIR);
     licqConf.LoadFile(szConf);
     licqConf.SetSection("plugins");
     licqConf.WriteNum("NumPlugins", (unsigned short)vszPlugins.size());
@@ -175,7 +175,7 @@ CLicq::CLicq(int argc, char **argv)
     CIniFile licqConf(INI_FxWARN);
     unsigned short nNumPlugins = 0;
     char szConf[MAX_FILENAME_LEN], szKey[32], szData[MAX_FILENAME_LEN];
-    sprintf(szConf, "%slicq.conf", BASE_DIR);
+    sprintf(szConf, "%s/licq.conf", BASE_DIR);
     licqConf.LoadFile(szConf);
     if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumPlugins", nNumPlugins))
     {
@@ -248,54 +248,89 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     return false;
   }
 
+  // LP_Name
   p.Name = (const char * (*)(void))dlsym(handle, "LP_Name");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Name() function in plugin (%s): %s.\n",
-               L_ERRORxSTR, _szName, error);
-    return false;
+    p.Name = (const char * (*)(void))dlsym(handle, "_LP_Name");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Name() function in plugin (%s).\n",
+                 L_ERRORxSTR, _szName, error);
+      return false;
+    }
   }
+  // LP_Version
   p.Version = (const char * (*)(void))dlsym(handle, "LP_Version");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Version() function in plugin (%s): %s.\n",
-               L_ERRORxSTR, (*p.Name)(), error);
-    return false;
+    p.Version = (const char * (*)(void))dlsym(handle, "_LP_Version");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Version() function in plugin (%s).\n",
+                 L_ERRORxSTR, (*p.Name)(), error);
+      return false;
+    }
   }
-   p.Init = (bool (*)(int, char **))dlsym(handle, "LP_Init");
+  // LP_Init
+  p.Init = (bool (*)(int, char **))dlsym(handle, "LP_Init");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Init() function in plugin (%s): %s.\n",
-               L_ERRORxSTR, (*p.Name)(), error);
-    return false;
+    p.Init = (bool (*)(int, char **))dlsym(handle, "_LP_Init");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Init() function in plugin (%s).\n",
+                 L_ERRORxSTR, (*p.Name)(), error);
+      return false;
+    }
   }
+  // LP_Usage
   p.Usage = (void (*)(void))dlsym(handle, "LP_Usage");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Usage() function in plugin (%s): %s.\n",
-               L_ERRORxSTR, (*p.Name)(), error);
-    return false;
+    p.Usage = (void (*)(void))dlsym(handle, "_LP_Usage");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Usage() function in plugin (%s).\n",
+                 L_ERRORxSTR, (*p.Name)(), error);
+      return false;
+    }
   }
+  // LP_Main
   p.Main = (int (*)(CICQDaemon *))dlsym(handle, "LP_Main");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Main() function in plugin (%s): %s.\n",
-               L_ERRORxSTR, (*p.Name)(), error);
-    return false;
+    p.Main = (int (*)(CICQDaemon *))dlsym(handle, "_LP_Main");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Main() function in plugin (%s).\n",
+                 L_ERRORxSTR, (*p.Name)(), error);
+      return false;
+    }
   }
+  // LP_Main_tep
   p.Main_tep = (void * (*)(void *))dlsym(handle, "LP_Main_tep");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s): %s.\n",
-               L_ERRORxSTR, (*p.Name)(), error);
-    return false;
+    p.Main_tep = (void * (*)(void *))dlsym(handle, "_LP_Main_tep");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s).\n",
+                 L_ERRORxSTR, (*p.Name)(), error);
+      return false;
+    }
   }
+  // LP_Id
   p.Id = (unsigned short *)dlsym(handle, "LP_Id");
   if ((error = dlerror()) != NULL)
   {
-    gLog.Error("%sFailed to find LP_Id variable in plugin (%s): %s.\n",
-               L_ERRORxSTR, (*p.Name)(), error);
-    return false;
+    p.Id = (unsigned short *)dlsym(handle, "_LP_Id");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Id variable in plugin (%s).\n",
+                 L_ERRORxSTR, (*p.Name)(), error);
+      return false;
+    }
   }
 
   if (!(*p.Init)(argc, argv))
@@ -427,13 +462,13 @@ bool CLicq::Install(void)
     printf("Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
     return (false);
   }
-  sprintf(cmd, "%s%s", BASE_DIR, HISTORY_DIR);
+  sprintf(cmd, "%s/%s", BASE_DIR, HISTORY_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
     printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
-  sprintf(cmd, "%s%s", BASE_DIR, USER_DIR);
+  sprintf(cmd, "%s/%s", BASE_DIR, USER_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
     printf("Couldn't mkdir %s: %s\n", cmd, strerror(errno));
@@ -441,21 +476,21 @@ bool CLicq::Install(void)
   }
 
   // Create licq.conf
-  sprintf(cmd, "%slicq.conf", BASE_DIR);
+  sprintf(cmd, "%s/licq.conf", BASE_DIR);
   FILE *f = fopen(cmd, "w");
   fprintf(f, "%s", LICQ_CONF);
   fclose(f);
 
 
   // Create users.conf
-  sprintf(cmd, "%susers.conf", BASE_DIR);
+  sprintf(cmd, "%s/users.conf", BASE_DIR);
   CIniFile usersConf(INI_FxALLOWxCREATE);
   usersConf.LoadFile(cmd);
   usersConf.SetSection("users");
   usersConf.WriteNum("NumOfUsers", 0ul);
   usersConf.FlushFile();
 
-  sprintf (cmd, "%sowner.uin", BASE_DIR);
+  sprintf (cmd, "%s/owner.uin", BASE_DIR);
   CIniFile licqConf(INI_FxALLOWxCREATE);
   licqConf.LoadFile(cmd);
   licqConf.SetSection("user");
