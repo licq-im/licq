@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 //
 // Many parts of this source code were 'inspired' by the ircII4.4 translat.c source.
 // RIPPED FROM KVirc: http://www.kvirc.org
@@ -131,7 +132,7 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
     setDefaultTranslationMap();
     return false;
   }
-  
+
   m_bDefault = false;
   if (m_szMapFileName != NULL) free(m_szMapFileName);
   m_szMapFileName = strdup(_szMapFileName);
@@ -197,13 +198,55 @@ char *CTranslator::NToRN(const char *_szOldStr)
   unsigned long j = 0;
   for (unsigned long i = 0; i <= nLen; i++)
   {
-    if (_szOldStr[i] == (char)0x0A && 
-       (!i || _szOldStr[i-1] != (char)0x0D)) 
+    if (_szOldStr[i] == (char)0x0A &&
+       (!i || _szOldStr[i-1] != (char)0x0D))
       szNewStr[j++] = 0x0D;
     szNewStr[j++] = _szOldStr[i];
   }
   return (szNewStr);
 }
 
+//-----RNToN--------------------------------------------------------------------
+char *CTranslator::RNToN(const char *_szOldStr)
+// converts a dos (CRLF) or mac style (CR) style string to
+// a unix style string (LF only)
+{
+  if (_szOldStr == NULL) return NULL;
+  unsigned short nLen = strlen(_szOldStr);
 
+  char *szNewStr = new char[nLen + 1]; // can't be getting longer than the old string
+  unsigned long j = 0;
 
+  bool skipCR = false;
+  bool skipLF = false;
+
+  for (const char* ptr = _szOldStr; *ptr; ++ptr) {
+    if (skipCR && *ptr != '\r')
+      skipCR = false;
+    if (skipLF && *ptr != '\n')
+      skipLF = false;
+
+    if (skipCR || skipLF) {
+      skipCR = skipLF = false;
+      continue; // skip it
+    }
+
+    if (*ptr == '\r') {
+      szNewStr[j++] = '\n';
+      skipLF = true;
+      continue;
+    }
+
+    if (*ptr == '\n') {
+      szNewStr[j++] = '\n';
+      skipCR = true;
+      continue;
+    }
+
+    szNewStr[j++] = *ptr;
+  }
+
+  szNewStr[j] = '\0';
+
+  return szNewStr;
+}

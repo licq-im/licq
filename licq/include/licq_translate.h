@@ -11,24 +11,25 @@
 class CTranslator
 {
 public:
-        CTranslator();
-        ~CTranslator();
-        void setDefaultTranslationMap();
-        bool setTranslationMap(const char *szMapFileName);
-        void ServerToClient(char *szString);
-        void ClientToServer(char *szString);
-        void ServerToClient(char &_cChar);
-        void ClientToServer(char &_cChar);
-        bool usingDefaultMap()  { return m_bDefault; }
-  const char *getMapFileName() { return m_szMapFileName; }
-  const char *getMapName() { return m_szMapName; }
-  char *NToRN(const char *_szOldStr);
+    CTranslator();
+    ~CTranslator();
+    void setDefaultTranslationMap();
+    bool setTranslationMap(const char *szMapFileName);
+    void ServerToClient(char *szString);
+    void ClientToServer(char *szString);
+    void ServerToClient(char &_cChar);
+    void ClientToServer(char &_cChar);
+    bool usingDefaultMap()  { return m_bDefault; }
+    const char *getMapFileName() { return m_szMapFileName; }
+    const char *getMapName() { return m_szMapName; }
+    char *NToRN(const char* _szOldStr);
+    char *RNToN(const char* _szOldStr);
 
 protected:
-        unsigned char serverToClientTab[256];
-        unsigned char clientToServerTab[256];
-        char *m_szMapFileName, *m_szMapName;
-        bool m_bDefault;
+    unsigned char serverToClientTab[256];
+    unsigned char clientToServerTab[256];
+    char *m_szMapFileName, *m_szMapName;
+    bool m_bDefault;
 };
 
 extern CTranslator gTranslator;
