@@ -1029,8 +1029,8 @@ void ICQFunctions::callFcn()
      else
      {
         m_sProgressMsg = tr("Updating...");
-        //icqEvent = server->icqUserExtendedInfo(m_nUin);
-        icqEvent = server->icqRequestMetaInfo(m_nUin);
+        icqEvent = server->icqUserExtendedInfo(m_nUin);
+        //icqEvent = server->icqRequestMetaInfo(m_nUin);
      }
      break;
   case TAB_HISTORY:
