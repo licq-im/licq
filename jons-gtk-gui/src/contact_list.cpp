@@ -42,7 +42,7 @@ GtkWidget *contact_list_new(gint height, gint width)
 {
 	GtkWidget *_contact_l;
 
-#if 1
+#if 0
 // THIS IS HERE BECAUSE I AM CHANGING TO A TREE...
 
 	/* Create the contact list using a 3 column clist */
