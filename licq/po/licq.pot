@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: thomas@licq.org\n"
-"POT-Creation-Date: 2004-01-26 02:13+0100\n"
+"POT-Creation-Date: 2004-01-29 10:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1149,7 +1149,7 @@ msgstr ""
 
 #: src/fifo.cpp:571
 #, c-format
-msgid "%s %s: user %s not on contact list, not retrievinginfo.\n"
+msgid "%s %s: user %s not on contact list, not retrieving info.\n"
 msgstr ""
 
 #: src/fifo.cpp:656
@@ -1182,11 +1182,6 @@ msgstr ""
 #: src/fifo.cpp:791
 #, c-format
 msgid "%s: '%s' Unknown fifo command. Try 'help'\n"
-msgstr ""
-
-#: src/file.cpp:44
-#, c-format
-msgid "%sInternal Error: Trim(): _sz == NULL.\n"
 msgstr ""
 
 #: src/file.cpp:361 src/file.cpp:366
@@ -1613,12 +1608,6 @@ msgstr ""
 #: src/icqd-filetransfer.cpp:707
 #, c-format
 msgid "%sFile Transfer: Received plugin confirmation.\n"
-msgstr ""
-
-#: src/icqd-filetransfer.cpp:711
-#, c-format
-msgid ""
-"%sFile Transfer: StartReceivingFile called without a pending confirmation.\n"
 msgstr ""
 
 #: src/icqd-filetransfer.cpp:776

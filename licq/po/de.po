@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: thomas@licq.org\n"
-"POT-Creation-Date: 2004-01-26 02:13+0100\n"
-"PO-Revision-Date: 2004-01-26 02:14+0100\n"
+"POT-Creation-Date: 2004-01-29 10:44+0100\n"
+"PO-Revision-Date: 2004-01-29 15:29+0100\n"
 "Last-Translator: Thomas Reitelbach <thomas@licq.org>\n"
 "Language-Team: German <licq-devel@licq.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,49 +21,53 @@ msgstr ""
 #, c-format
 msgid "%sPackUnsignedLong(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
-"%sPackUnsignedLong(): Versuch, mehr Daten zu packen als CBuffer aufnehmen "
-"kann!\n"
+"%sPackUnsignedLong(): Es wurde versucht, mehr Daten zu packen als CBuffer "
+"aufnehmen kann!\n"
 
 #: src/buffer.cpp:513
 #, c-format
 msgid ""
 "%sPackUnsignedLongBE(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
-"%sPackUnsignedLongBE(): Versuch, mehr Daten zu packen als CBuffer aufnehmen "
-"kann!\n"
+"%sPackUnsignedLongBE(): Es wurde versucht, mehr Daten zu packen als CBuffer "
+"aufnehmen kann!\n"
 
 #: src/buffer.cpp:526
 #, c-format
 msgid "%sPackChar(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
-"%sPackChar(): Versuch, mehr Daten zu packen als CBuffer aufnehmen kann!\n"
+"%sPackChar(): Es wurde versucht, mehr Daten zu packen als CBuffer aufnehmen "
+"kann!\n"
 
 #: src/buffer.cpp:539 src/buffer.cpp:553
 #, c-format
 msgid "%sPack(): Trying to pack more data than CBuffer can hold!\n"
-msgstr "%sPack(): Versuch, mehr Daten zu packen als CBuffer aufnehmen kann!\n"
+msgstr ""
+"%sPack(): Es wurde versucht, mehr Daten zu packen als CBuffer aufnehmen "
+"kann!\n"
 
 #: src/buffer.cpp:577
 #, c-format
 msgid "%sPackString(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
-"%sPackString(): Versuch, mehr Daten zu packen als CBuffer aufnehmen kann!\n"
+"%sPackString(): Es wurde versucht, mehr Daten zu packen als CBuffer "
+"aufnehmen kann!\n"
 
 #: src/buffer.cpp:597
 #, c-format
 msgid ""
 "%sPackUnsignedShort(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
-"%sPackUnsignedShort(): Versuch, mehr Daten zu packen als CBuffer aufnehmen "
-"kann!\n"
+"%sPackUnsignedShort(): Es wurde versucht, mehr Daten zu packen als CBuffer "
+"aufnehmen kann!\n"
 
 #: src/buffer.cpp:610
 #, c-format
 msgid ""
 "%sPackUnsignedShortBE(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
-"%sPackUnsignedShortBE(): Versuch, mehr Daten zu packen als CBuffer aufnehmen "
-"kann!\n"
+"%sPackUnsignedShortBE(): Es wurde versucht, mehr Daten zu packen als CBuffer "
+"aufnehmen kann!\n"
 
 #: src/buffer.cpp:663
 #, c-format
@@ -73,7 +77,7 @@ msgstr "%sZuviel TLV Daten gelesen!\n"
 #: src/buffer.cpp:671
 #, c-format
 msgid "%sUnable to read requested amount of TLV data!\n"
-msgstr "%sGeforderte Menge TLV Daten kann nicht gelesen werden!\n"
+msgstr "%sGeforderte Menge TLV Daten lässt sich nicht lesen!\n"
 
 #: src/countrycodes.c:22 src/languagecodes.c:23
 msgid "Unspecified"
@@ -93,25 +97,23 @@ msgstr "Algerien"
 
 #: src/countrycodes.c:26
 msgid "American Samoa"
-msgstr ""
+msgstr "Amerikanisch Samoa"
 
 #: src/countrycodes.c:27
 msgid "Andorra"
 msgstr "Andorra"
 
 #: src/countrycodes.c:28
-#, fuzzy
 msgid "Angola"
-msgstr "Andorra"
+msgstr "Angola"
 
 #: src/countrycodes.c:29
 msgid "Anguilla"
-msgstr ""
+msgstr "Anguilla"
 
 #: src/countrycodes.c:30
-#, fuzzy
 msgid "Antigua"
-msgstr "Argentinien"
+msgstr "Antigua"
 
 #: src/countrycodes.c:31
 msgid "Argentina"
@@ -122,9 +124,8 @@ msgid "Armenia"
 msgstr "Armenien"
 
 #: src/countrycodes.c:33
-#, fuzzy
 msgid "Aruba"
-msgstr "Kuba"
+msgstr "Aruba"
 
 #: src/countrycodes.c:34
 msgid "Ascension Island"
@@ -136,7 +137,7 @@ msgstr "Australien"
 
 #: src/countrycodes.c:36
 msgid "Australian Antarctic Territory"
-msgstr ""
+msgstr "Australisch Antarktisches Territorium"
 
 #: src/countrycodes.c:37
 msgid "Austria"
@@ -144,57 +145,55 @@ msgstr "Österreich"
 
 #: src/countrycodes.c:38
 msgid "Azerbaijan"
-msgstr ""
+msgstr "Aserbaidschan"
 
 #: src/countrycodes.c:39
 msgid "Bahamas"
-msgstr ""
+msgstr "Bahamas"
 
 #: src/countrycodes.c:40
-#, fuzzy
 msgid "Bahrain"
-msgstr "Brasilien"
+msgstr "Bahrain"
 
 #: src/countrycodes.c:41
 msgid "Bangladesh"
-msgstr ""
+msgstr "Bangladesch"
 
 #: src/countrycodes.c:42
 msgid "Barbados"
-msgstr ""
+msgstr "Barbados"
 
 #: src/countrycodes.c:43
 msgid "Barbuda"
-msgstr ""
+msgstr "Barbuda"
 
 #: src/countrycodes.c:44
 msgid "Belarus"
-msgstr ""
+msgstr "Belarus"
 
 #: src/countrycodes.c:45
 msgid "Belgium"
 msgstr "Belgien"
 
 #: src/countrycodes.c:46
-#, fuzzy
 msgid "Belize"
-msgstr "Belgien"
+msgstr "Belize"
 
 #: src/countrycodes.c:47
 msgid "Benin"
-msgstr ""
+msgstr "Benin"
 
 #: src/countrycodes.c:48
 msgid "Bermuda"
-msgstr ""
+msgstr "Bermuda"
 
 #: src/countrycodes.c:49
 msgid "Bhutan"
-msgstr ""
+msgstr "Bhutan"
 
 #: src/countrycodes.c:50
 msgid "Bolivia"
-msgstr ""
+msgstr "Bolivien"
 
 #: src/countrycodes.c:51
 msgid "Bosnia and Herzegovina"
@@ -202,7 +201,7 @@ msgstr "Bosnien und Herzegowina"
 
 #: src/countrycodes.c:52
 msgid "Botswana"
-msgstr ""
+msgstr "Botswana"
 
 #: src/countrycodes.c:53
 msgid "Brazil"
@@ -210,11 +209,11 @@ msgstr "Brasilien"
 
 #: src/countrycodes.c:54
 msgid "British Virgin Islands"
-msgstr ""
+msgstr "Britische Jungferninseln"
 
 #: src/countrycodes.c:55
 msgid "Brunei"
-msgstr ""
+msgstr "Brunei"
 
 #: src/countrycodes.c:56
 msgid "Bulgaria"
@@ -222,16 +221,15 @@ msgstr "Bulgarien"
 
 #: src/countrycodes.c:57
 msgid "Burkina Faso"
-msgstr ""
+msgstr "Burkina Faso"
 
 #: src/countrycodes.c:58
 msgid "Burundi"
-msgstr ""
+msgstr "Burundi"
 
 #: src/countrycodes.c:59
-#, fuzzy
 msgid "Cambodia"
-msgstr "Kolumbien"
+msgstr "Kambodscha"
 
 #: src/countrycodes.c:60
 msgid "Cameroon"
@@ -243,34 +241,31 @@ msgstr "Kanada"
 
 #: src/countrycodes.c:62
 msgid "Cape Verde Islands"
-msgstr ""
+msgstr "kapverdische Inseln"
 
 #: src/countrycodes.c:63
-#, fuzzy
 msgid "Cayman Islands"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:64
-#, fuzzy
 msgid "Central African Republic"
-msgstr "Dominikanische Republik"
+msgstr "Zentralafrikanische Republik"
 
 #: src/countrycodes.c:65
-#, fuzzy
 msgid "Chad"
-msgstr "Kanada"
+msgstr "Tschad"
 
 #: src/countrycodes.c:66
 msgid "Chile"
-msgstr ""
+msgstr "Chile"
 
 #: src/countrycodes.c:67
 msgid "China"
-msgstr ""
+msgstr "China"
 
 #: src/countrycodes.c:68
 msgid "Christmas Island"
-msgstr ""
+msgstr "Weihnachtsinsel"
 
 #: src/countrycodes.c:69
 msgid "Cocos-Keeling Islands"
@@ -289,13 +284,12 @@ msgid "Congo"
 msgstr "Kongo"
 
 #: src/countrycodes.c:73
-#, fuzzy
 msgid "Cook Islands"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:74
 msgid "Costa Rica"
-msgstr ""
+msgstr "Costa Rica"
 
 #: src/countrycodes.c:75
 msgid "Croatia"
@@ -307,11 +301,11 @@ msgstr "Kuba"
 
 #: src/countrycodes.c:77
 msgid "Cyprus"
-msgstr ""
+msgstr "Zypern"
 
 #: src/countrycodes.c:78
 msgid "Czech Republic"
-msgstr "Tschechische Republik"
+msgstr "Tscheschien"
 
 #: src/countrycodes.c:79
 msgid "Denmark"
@@ -323,12 +317,11 @@ msgstr ""
 
 #: src/countrycodes.c:81
 msgid "Djibouti"
-msgstr ""
+msgstr "Dschibuti"
 
 #: src/countrycodes.c:82
-#, fuzzy
 msgid "Dominica"
-msgstr "Dominikanische Republik"
+msgstr "Dominica"
 
 #: src/countrycodes.c:83
 msgid "Dominican Republic"
@@ -336,7 +329,7 @@ msgstr "Dominikanische Republik"
 
 #: src/countrycodes.c:84
 msgid "Ecuador"
-msgstr ""
+msgstr "Equador"
 
 #: src/countrycodes.c:85
 msgid "Egypt"
@@ -344,38 +337,35 @@ msgstr "Ägypten"
 
 #: src/countrycodes.c:86
 msgid "El Salvador"
-msgstr ""
+msgstr "El Salvador"
 
 #: src/countrycodes.c:87
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "Äquatorialguinea"
 
 #: src/countrycodes.c:88
 msgid "Eritrea"
-msgstr ""
+msgstr "Eritrea"
 
 #: src/countrycodes.c:89
 msgid "Estonia"
 msgstr "Estland"
 
 #: src/countrycodes.c:90
-#, fuzzy
 msgid "Ethiopia"
-msgstr "Estland"
+msgstr "Äthiopien"
 
 #: src/countrycodes.c:91
-#, fuzzy
 msgid "Faeroe Islands"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:92
 msgid "Falkland Islands"
 msgstr "Falkand Inseln"
 
 #: src/countrycodes.c:93
-#, fuzzy
 msgid "Fiji Islands"
-msgstr "Falkand Inseln"
+msgstr "Fischi Inseln"
 
 #: src/countrycodes.c:94
 msgid "Finland"
@@ -387,27 +377,27 @@ msgstr "Frankreich"
 
 #: src/countrycodes.c:96
 msgid "French Antilles"
-msgstr ""
+msgstr "Französische Antillen"
 
 #: src/countrycodes.c:97
 msgid "French Guiana"
-msgstr ""
+msgstr "Französisch-Guinea"
 
 #: src/countrycodes.c:98
 msgid "French Polynesia"
-msgstr ""
+msgstr "Französisch-Polynesien"
 
 #: src/countrycodes.c:99
 msgid "Gabon"
-msgstr ""
+msgstr "Gabun"
 
 #: src/countrycodes.c:100
 msgid "Gambia"
-msgstr ""
+msgstr "Gambia"
 
 #: src/countrycodes.c:101
 msgid "Georgia"
-msgstr ""
+msgstr "Georgien"
 
 #: src/countrycodes.c:102
 msgid "Germany"
@@ -415,33 +405,31 @@ msgstr "Deutschland"
 
 #: src/countrycodes.c:103
 msgid "Ghana"
-msgstr ""
+msgstr "Ghana"
 
 #: src/countrycodes.c:104
 msgid "Gibraltar"
-msgstr ""
+msgstr "Gibraltar"
 
 #: src/countrycodes.c:105
 msgid "Greece"
-msgstr ""
+msgstr "Griechenland"
 
 #: src/countrycodes.c:106
-#, fuzzy
 msgid "Greenland"
-msgstr "Finnland"
+msgstr "Grönland"
 
 #: src/countrycodes.c:107
-#, fuzzy
 msgid "Grenada"
-msgstr "Kanada"
+msgstr "Grenada"
 
 #: src/countrycodes.c:108
 msgid "Guadeloupe"
-msgstr ""
+msgstr "Guadeloupe"
 
 #: src/countrycodes.c:109
 msgid "Guam"
-msgstr ""
+msgstr "Guam"
 
 #: src/countrycodes.c:110
 msgid "Guantanamo Bay"
@@ -449,23 +437,23 @@ msgstr ""
 
 #: src/countrycodes.c:111
 msgid "Guatemala"
-msgstr ""
+msgstr "Guatemala"
 
 #: src/countrycodes.c:112
 msgid "Guinea"
-msgstr ""
+msgstr "Guinea"
 
 #: src/countrycodes.c:113
 msgid "Guinea-Bissau"
-msgstr ""
+msgstr "Guinea-Bissau"
 
 #: src/countrycodes.c:114
 msgid "Guyana"
-msgstr ""
+msgstr "Guyana"
 
 #: src/countrycodes.c:115
 msgid "Haiti"
-msgstr ""
+msgstr "Haiti"
 
 #: src/countrycodes.c:116
 msgid "Honduras"
@@ -473,11 +461,11 @@ msgstr ""
 
 #: src/countrycodes.c:117
 msgid "Hong Kong"
-msgstr ""
+msgstr "Hong Kong"
 
 #: src/countrycodes.c:118
 msgid "Hungary"
-msgstr ""
+msgstr "Ungarn"
 
 #: src/countrycodes.c:119
 msgid "INMARSAT (Atlantic-East)"
@@ -501,169 +489,163 @@ msgstr ""
 
 #: src/countrycodes.c:124
 msgid "Iceland"
-msgstr ""
+msgstr "Island"
 
 #: src/countrycodes.c:125
 msgid "India"
-msgstr ""
+msgstr "Indien"
 
 #: src/countrycodes.c:126
 msgid "Indonesia"
-msgstr ""
+msgstr "Indonesien"
 
 #: src/countrycodes.c:127
 msgid "International Freephone Service"
 msgstr ""
 
 #: src/countrycodes.c:128
-#, fuzzy
 msgid "Iran"
-msgstr "Frankreich"
+msgstr "Iran"
 
 #: src/countrycodes.c:129
 msgid "Iraq"
-msgstr ""
+msgstr "Irak"
 
 #: src/countrycodes.c:130
 msgid "Ireland"
-msgstr ""
+msgstr "Irland"
 
 #: src/countrycodes.c:131
 msgid "Israel"
-msgstr ""
+msgstr "Israel"
 
 #: src/countrycodes.c:132
 msgid "Italy"
-msgstr ""
+msgstr "Italien"
 
 #: src/countrycodes.c:133
 msgid "Ivory Coast"
-msgstr ""
+msgstr "Elfenbeinküste"
 
 #: src/countrycodes.c:134
 msgid "Jamaica"
-msgstr ""
+msgstr "Jamaika"
 
 #: src/countrycodes.c:135
 msgid "Japan"
-msgstr ""
+msgstr "Japan"
 
 #: src/countrycodes.c:136
 msgid "Jordan"
-msgstr ""
+msgstr "Jordanien"
 
 #: src/countrycodes.c:137
 msgid "Kazakhstan"
-msgstr ""
+msgstr "Kasachstan"
 
 #: src/countrycodes.c:138
 msgid "Kenya"
-msgstr ""
+msgstr "Kenia"
 
 #: src/countrycodes.c:139
-#, fuzzy
 msgid "Kiribati Republic"
-msgstr "Dominikanische Republik"
+msgstr ""
 
 #: src/countrycodes.c:140
 msgid "Korea (North)"
-msgstr ""
+msgstr "Nordkorea"
 
 #: src/countrycodes.c:141
-#, fuzzy
 msgid "Korea (Republic of)"
-msgstr "Tschechische Republik"
+msgstr "Koreanische Republik"
 
 #: src/countrycodes.c:142
 msgid "Kuwait"
-msgstr ""
+msgstr "Kuwait"
 
 #: src/countrycodes.c:143
-#, fuzzy
 msgid "Kyrgyz Republic"
-msgstr "Tschechische Republik"
+msgstr ""
 
 #: src/countrycodes.c:144
 msgid "Laos"
-msgstr ""
+msgstr "Laos"
 
 #: src/countrycodes.c:145
-#, fuzzy
 msgid "Latvia"
-msgstr "Kroatien"
+msgstr "Lettland"
 
 #: src/countrycodes.c:146
 msgid "Lebanon"
-msgstr ""
+msgstr "Libanon"
 
 #: src/countrycodes.c:147
 msgid "Lesotho"
-msgstr ""
+msgstr "Lesotho"
 
 #: src/countrycodes.c:148
 msgid "Liberia"
-msgstr ""
+msgstr "Liberia "
 
 #: src/countrycodes.c:149
 msgid "Libya"
-msgstr ""
+msgstr "Libyen"
 
 #: src/countrycodes.c:150
 msgid "Liechtenstein"
-msgstr ""
+msgstr "Liechtenstein"
 
 #: src/countrycodes.c:151
 msgid "Lithuania"
-msgstr ""
+msgstr "Litauen"
 
 #: src/countrycodes.c:152
 msgid "Luxembourg"
-msgstr ""
+msgstr "Luxemburg"
 
 #: src/countrycodes.c:153
 msgid "Macau"
-msgstr ""
+msgstr "Macao"
 
 #: src/countrycodes.c:154
 msgid "Madagascar"
-msgstr ""
+msgstr "Madagaskar"
 
 #: src/countrycodes.c:155
 msgid "Malawi"
-msgstr ""
+msgstr "Malawi"
 
 #: src/countrycodes.c:156
 msgid "Malaysia"
-msgstr ""
+msgstr "Malaysia"
 
 #: src/countrycodes.c:157
 msgid "Maldives"
-msgstr ""
+msgstr "Malediven"
 
 #: src/countrycodes.c:158
 msgid "Mali"
-msgstr ""
+msgstr "Mali"
 
 #: src/countrycodes.c:159
 msgid "Malta"
-msgstr ""
+msgstr "Malta"
 
 #: src/countrycodes.c:160
-#, fuzzy
 msgid "Marshall Islands"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:161
 msgid "Martinique"
-msgstr ""
+msgstr "Martinique"
 
 #: src/countrycodes.c:162
 msgid "Mauritania"
-msgstr ""
+msgstr "Mauretanien"
 
 #: src/countrycodes.c:163
 msgid "Mauritius"
-msgstr ""
+msgstr "Mauritius"
 
 #: src/countrycodes.c:164
 msgid "Mayotte Island"
@@ -671,60 +653,59 @@ msgstr ""
 
 #: src/countrycodes.c:165
 msgid "Mexico"
-msgstr ""
+msgstr "Mexiko"
 
 #: src/countrycodes.c:166
 msgid "Micronesia, Federated States of"
-msgstr ""
+msgstr "Föderierte Staaten von Mikronesien"
 
 #: src/countrycodes.c:167
 msgid "Moldova"
-msgstr ""
+msgstr "Moldawien"
 
 #: src/countrycodes.c:168
 msgid "Monaco"
-msgstr ""
+msgstr "Monaco"
 
 #: src/countrycodes.c:169
-#, fuzzy
 msgid "Mongolia"
-msgstr "Kongo"
+msgstr "Mongolei"
 
 #: src/countrycodes.c:170
 msgid "Montserrat"
-msgstr ""
+msgstr "Montserrat"
 
 #: src/countrycodes.c:171
 msgid "Morocco"
-msgstr ""
+msgstr "Marokko"
 
 #: src/countrycodes.c:172
 msgid "Mozambique"
-msgstr ""
+msgstr "Mosambik"
 
 #: src/countrycodes.c:173
 msgid "Myanmar"
-msgstr ""
+msgstr "Birma"
 
 #: src/countrycodes.c:174
 msgid "Namibia"
-msgstr ""
+msgstr "Namibia"
 
 #: src/countrycodes.c:175
 msgid "Nauru"
-msgstr ""
+msgstr "Nauru"
 
 #: src/countrycodes.c:176
 msgid "Nepal"
-msgstr ""
+msgstr "Nepal"
 
 #: src/countrycodes.c:177
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "Niederländische Antillen"
 
 #: src/countrycodes.c:178
 msgid "Netherlands"
-msgstr ""
+msgstr "Niederlande"
 
 #: src/countrycodes.c:179
 msgid "Nevis"
@@ -732,92 +713,87 @@ msgstr ""
 
 #: src/countrycodes.c:180
 msgid "New Caledonia"
-msgstr ""
+msgstr "Neukaledonien"
 
 #: src/countrycodes.c:181
 msgid "New Zealand"
-msgstr ""
+msgstr "Neuseeland"
 
 #: src/countrycodes.c:182
 msgid "Nicaragua"
-msgstr ""
+msgstr "Nikaragua "
 
 #: src/countrycodes.c:183
 msgid "Niger"
-msgstr ""
+msgstr "Niger"
 
 #: src/countrycodes.c:184
-#, fuzzy
 msgid "Nigeria"
-msgstr "Algerien"
+msgstr "Nigeria"
 
 #: src/countrycodes.c:185
 msgid "Niue"
-msgstr ""
+msgstr "Niue"
 
 #: src/countrycodes.c:186
-#, fuzzy
 msgid "Norfolk Island"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:187
 msgid "Norway"
-msgstr ""
+msgstr "Norwegen"
 
 #: src/countrycodes.c:188
 msgid "Oman"
-msgstr ""
+msgstr "Oman"
 
 #: src/countrycodes.c:189
-#, fuzzy
 msgid "Pakistan"
-msgstr "Afganistan"
+msgstr "Pakistan"
 
 #: src/countrycodes.c:190
 msgid "Palau"
-msgstr ""
+msgstr "Palau"
 
 #: src/countrycodes.c:191
-#, fuzzy
 msgid "Panama"
-msgstr "Kanada"
+msgstr "Panama"
 
 #: src/countrycodes.c:192
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "Papua-Neuguinea"
 
 #: src/countrycodes.c:193
 msgid "Paraguay"
-msgstr ""
+msgstr "Paraguay"
 
 #: src/countrycodes.c:194
 msgid "Peru"
-msgstr ""
+msgstr "Peru"
 
 #: src/countrycodes.c:195
 msgid "Philippines"
-msgstr ""
+msgstr "Philippinen"
 
 #: src/countrycodes.c:196
-#, fuzzy
 msgid "Poland"
-msgstr "Finnland"
+msgstr "Polen"
 
 #: src/countrycodes.c:197
 msgid "Portugal"
-msgstr ""
+msgstr "Portugal"
 
 #: src/countrycodes.c:198
 msgid "Puerto Rico"
-msgstr ""
+msgstr "Puerto Rico"
 
 #: src/countrycodes.c:199
 msgid "Qatar"
-msgstr ""
+msgstr "Katar"
 
 #: src/countrycodes.c:200
 msgid "Republic of Macedonia"
-msgstr ""
+msgstr "Mazedonien"
 
 #: src/countrycodes.c:201
 msgid "Reunion Island"
@@ -825,102 +801,95 @@ msgstr ""
 
 #: src/countrycodes.c:202
 msgid "Romania"
-msgstr ""
+msgstr "Rumänien"
 
 #: src/countrycodes.c:203
 msgid "Rota Island"
 msgstr ""
 
 #: src/countrycodes.c:204
-#, fuzzy
 msgid "Russia"
-msgstr "Österreich"
+msgstr "Russland"
 
 #: src/countrycodes.c:205
-#, fuzzy
 msgid "Rwanda"
-msgstr "Kanada"
+msgstr "Ruanda"
 
 #: src/countrycodes.c:206
 msgid "Saint Lucia"
 msgstr ""
 
 #: src/countrycodes.c:207
-#, fuzzy
 msgid "Saipan Island"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:208
 msgid "San Marino"
-msgstr ""
+msgstr "San Marino"
 
 #: src/countrycodes.c:209
 msgid "Sao Tome and Principe"
-msgstr ""
+msgstr "São Tomé und Príncipe"
 
 #: src/countrycodes.c:210
 msgid "Saudi Arabia"
-msgstr ""
+msgstr "Saudi Arabien"
 
 #: src/countrycodes.c:211
-#, fuzzy
 msgid "Senegal Republic"
-msgstr "Tschechische Republik"
+msgstr "Senegal"
 
 #: src/countrycodes.c:212
-#, fuzzy
 msgid "Seychelle Islands"
-msgstr "Falkand Inseln"
+msgstr "Seychellen"
 
 #: src/countrycodes.c:213
 msgid "Sierra Leone"
-msgstr ""
+msgstr "Sierra Leone"
 
 #: src/countrycodes.c:214
 msgid "Singapore"
-msgstr ""
+msgstr "Singapur"
 
 #: src/countrycodes.c:215
-#, fuzzy
 msgid "Slovak Republic"
-msgstr "Dominikanische Republik"
+msgstr "Slovakei"
 
 #: src/countrycodes.c:216
 msgid "Slovenia"
-msgstr ""
+msgstr "Slovenien"
 
 #: src/countrycodes.c:217
-#, fuzzy
 msgid "Solomon Islands"
-msgstr "Falkand Inseln"
+msgstr "Solomon Inseln"
 
 #: src/countrycodes.c:218
 msgid "Somalia"
-msgstr ""
+msgstr "Somalia"
 
 #: src/countrycodes.c:219
 msgid "South Africa"
-msgstr ""
+msgstr "Südafrika"
 
 #: src/countrycodes.c:220
 msgid "Spain"
-msgstr ""
+msgstr "Spanien"
 
 #: src/countrycodes.c:221
 msgid "Sri Lanka"
-msgstr ""
+msgstr "Sri Lanka"
 
 #: src/countrycodes.c:222
 msgid "St. Helena"
-msgstr ""
+msgstr "St. Helena"
 
 #: src/countrycodes.c:223
 msgid "St. Kitts"
-msgstr ""
+msgstr "St. Kitts"
 
 #: src/countrycodes.c:224
 msgid "St. Pierre and Miquelon"
-msgstr ""
+msgstr "St. Pierre und Miquelon"
 
 #: src/countrycodes.c:225
 msgid "St. Vincent and the Grenadines"
@@ -928,149 +897,139 @@ msgstr ""
 
 #: src/countrycodes.c:226
 msgid "Sudan"
-msgstr ""
+msgstr "Sudan"
 
 #: src/countrycodes.c:227
 msgid "Suriname"
-msgstr ""
+msgstr "Surinam"
 
 #: src/countrycodes.c:228
-#, fuzzy
 msgid "Swaziland"
-msgstr "Finnland"
+msgstr "Swasiland"
 
 #: src/countrycodes.c:229
 msgid "Sweden"
-msgstr ""
+msgstr "Schweden"
 
 #: src/countrycodes.c:230
 msgid "Switzerland"
-msgstr ""
+msgstr "Schweiz"
 
 #: src/countrycodes.c:231
 msgid "Syria"
-msgstr ""
+msgstr "Syrien"
 
 #: src/countrycodes.c:232
 msgid "Taiwan, Republic of China"
-msgstr ""
+msgstr "Taiwan"
 
 #: src/countrycodes.c:233
 msgid "Tajikistan"
-msgstr ""
+msgstr "Taschikistan"
 
 #: src/countrycodes.c:234
 msgid "Tanzania"
-msgstr ""
+msgstr "Tansania"
 
 #: src/countrycodes.c:235
-#, fuzzy
 msgid "Thailand"
-msgstr "Finnland"
+msgstr "Thailand"
 
 #: src/countrycodes.c:236
-#, fuzzy
 msgid "Tinian Island"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:237
-#, fuzzy
 msgid "Togo"
-msgstr "Kongo"
+msgstr "Togo"
 
 #: src/countrycodes.c:238
 msgid "Tokelau"
-msgstr ""
+msgstr "Tokelau"
 
 #: src/countrycodes.c:239
-#, fuzzy
 msgid "Tonga"
-msgstr "Kongo"
+msgstr "Tonga"
 
 #: src/countrycodes.c:240
 msgid "Trinidad and Tobago"
-msgstr ""
+msgstr "Trinidad und Tobago"
 
 #: src/countrycodes.c:241
 msgid "Tunisia"
-msgstr ""
+msgstr "Tunesien"
 
 #: src/countrycodes.c:242
 msgid "Turkey"
-msgstr ""
+msgstr "Türkei"
 
 #: src/countrycodes.c:243
-#, fuzzy
 msgid "Turkmenistan"
-msgstr "Armenien"
+msgstr "Turkmenistan"
 
 #: src/countrycodes.c:244
-#, fuzzy
 msgid "Turks and Caicos Islands"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:245
 msgid "Tuvalu"
-msgstr ""
+msgstr "Tuvalu"
 
 #: src/countrycodes.c:246
 msgid "USA"
-msgstr ""
+msgstr "USA"
 
 #: src/countrycodes.c:247
-#, fuzzy
 msgid "Uganda"
-msgstr "Kanada"
+msgstr "Uganda"
 
 #: src/countrycodes.c:248
-#, fuzzy
 msgid "Ukraine"
-msgstr "Frankreich"
+msgstr "Ukraine"
 
 #: src/countrycodes.c:249
 msgid "United Arab Emirates"
-msgstr ""
+msgstr "Vereinigte Arabische Emirate"
 
 #: src/countrycodes.c:250
 msgid "United Kingdom"
-msgstr ""
+msgstr "Vereinigtes Königreich"
 
 #: src/countrycodes.c:251
 msgid "United States Virgin Islands"
-msgstr ""
+msgstr "Vereinigte Staaten der Jungerninseln"
 
 #: src/countrycodes.c:252
 msgid "Uruguay"
-msgstr ""
+msgstr "Uruguay"
 
 #: src/countrycodes.c:253
 msgid "Uzbekistan"
-msgstr ""
+msgstr "Uzbekistan"
 
 #: src/countrycodes.c:254
 msgid "Vanuatu"
-msgstr ""
+msgstr "Vanuatu"
 
 #: src/countrycodes.c:255
 msgid "Vatican City"
-msgstr ""
+msgstr "Vatikan (Stadt)"
 
 #: src/countrycodes.c:256
 msgid "Venezuela"
-msgstr ""
+msgstr "Venezuela"
 
 #: src/countrycodes.c:257
 msgid "Vietnam"
-msgstr ""
+msgstr "Vietnam"
 
 #: src/countrycodes.c:258
-#, fuzzy
 msgid "Wallis and Futuna Islands"
-msgstr "Falkand Inseln"
+msgstr ""
 
 #: src/countrycodes.c:259
 msgid "Western Samoa"
-msgstr ""
+msgstr "West-Samoa"
 
 #: src/countrycodes.c:260
 msgid "Yemen"
@@ -1078,7 +1037,7 @@ msgstr ""
 
 #: src/countrycodes.c:261
 msgid "Yugoslavia"
-msgstr ""
+msgstr "Jugoslawien"
 
 #: src/countrycodes.c:262
 msgid "Zaire"
@@ -1086,11 +1045,11 @@ msgstr ""
 
 #: src/countrycodes.c:263
 msgid "Zambia"
-msgstr ""
+msgstr "Sambia "
 
 #: src/countrycodes.c:264
 msgid "Zimbabwe"
-msgstr ""
+msgstr "Simbabwe"
 
 #: src/fifo.cpp:66
 msgid ""
@@ -1101,6 +1060,12 @@ msgid ""
 "\t\tto that given (precede the status by a\n"
 "\t\t\"*\" for invisible mode)\n"
 msgstr ""
+"\tstatus <[*]<Status>> <Auto-Antwort>\n"
+"\t\tStatus: online, offline, na, away, occupied, dnd, ffc\n"
+"\n"
+"\t\tSetzt den Status in der aktuellen Licq Sitzung\n"
+"\t\t(Stellen Sie dem Status ein \"*\" voran um\n"
+"\t\tden Unsichtbar-Modus einzuschalten)\n"
 
 #: src/fifo.cpp:72
 msgid ""
@@ -1108,30 +1073,41 @@ msgid ""
 "\t\tSets the auto response message without\n"
 "\t\tchanging the current status.\n"
 msgstr ""
+"\tauto_response <Auto-Antwort>\n"
+"\t\tStellt die automatische Antwort ein, ohne den\n"
+"\t\taktuellen Status dabei zu ändern.\n"
 
 #: src/fifo.cpp:76
 msgid ""
 "\tmessage <buddy> <message>\n"
 "\t\tSend a message to the given buddy.\n"
 msgstr ""
+"\tmessage <Benutzer> <Nachricht>\n"
+"\t\tSendet eine Nachricht an den Benutzer\n"
 
 #: src/fifo.cpp:79
 msgid ""
 "\turl <buddy> <url> [<description>]\n"
 "\t\tSend a url to the given buddy.\n"
 msgstr ""
+"\turl <Benutzer> <URL> [<Beschreibung>]\n"
+"\t\tSendet eine URL an den Benutzer.\n"
 
 #: src/fifo.cpp:82
 msgid ""
 "\tsms <buddy> <message>\n"
 "\tSend a SMS to the given buddy.\n"
 msgstr ""
+"\tsms <Benutzer> <Nachricht>\n"
+"\tSendet eine SMS an den Benutzer.\n"
 
 #: src/fifo.cpp:85
 msgid ""
 "\tsms <number> <message>\n"
 "\tSend a SMS to the given cellular number.\n"
 msgstr ""
+"\tsms <Nummer> <Nachricht>\n"
+"\tSendet eine SMS an die angegebene Handynummer.\n"
 
 #: src/fifo.cpp:88
 msgid ""
@@ -1139,6 +1115,9 @@ msgid ""
 "\t\tRedirects stderr for\n"
 "\t\tLicq to the given file.\n"
 msgstr ""
+"\tredirect <file>\n"
+"\t\tLeitet die Fehlerausgabe von Licq in\n"
+"\t\tdie angegebene Datei um.\n"
 
 #: src/fifo.cpp:92
 msgid ""
@@ -1146,77 +1125,93 @@ msgid ""
 "\t\tSet what information is logged.\n"
 "\t\tSee <level> in licq -h\n"
 msgstr ""
+"\tdebuglvl <level>\n"
+"\t\tStellt ein, wieviel Informationen protokolliert werden.\n"
+"\t\tSchauen Sie sich <level> in \"Licq -h\" an.\n"
 
 #: src/fifo.cpp:96
 msgid ""
 "\tadduser <uin>\n"
 "\t\tAdd user with <uin> to your contact list.\n"
 msgstr ""
+"\tadduser <uin>\n"
+"\t\tFügt den Benutzer mit der UIN <uin> zu Ihrer Kontaktliste hinzu.\n"
 
 #: src/fifo.cpp:99
 msgid ""
 "\tuserinfo <buddy>\n"
 "\t\tUpdates a buddy's user information.\n"
 msgstr ""
+"\tuserinfo <Benutzer>\n"
+"\t\tAktualisiert die Benutzerinformationen von <Benutzer>.\n"
 
 #: src/fifo.cpp:102
 msgid ""
 "\texit\n"
 "\t\tCauses the Licq session to shutdown.\n"
 msgstr ""
+"\texit\n"
+"\t\tBeendet die Licq Sitzung.\n"
 
 #: src/fifo.cpp:105
 msgid ""
 "\tui_viewevent [<buddy>]\n"
 "\t\tShows the oldest pending event.\n"
 msgstr ""
+"\tui_viewevent [<Benutzer>]\n"
+"\t\tZeigt dass älteste auf Abruf wartende Ereignis an.\n"
 
 #: src/fifo.cpp:108
 msgid ""
 "\tui_message <buddy>\n"
 "\t\tOpen the plugin message composer to <buddy>\n"
 msgstr ""
+"\tui_message <Benutzer>\n"
+"\t\tÖffnen den \"Nachricht senden\" Dialog des GUI Plugins.\n"
 
 #: src/fifo.cpp:111
 msgid ""
 "\thelp <command>\n"
 "\t\tPrint help information for <command>.\n"
 msgstr ""
+"\thelp <Kommando>\n"
+"\t\tZeigt die Hilfe zu <Kommando> an.\n"
 
 #: src/fifo.cpp:342
 #, c-format
 msgid "%s%s %s: command with invalid status \"%s\".\n"
-msgstr ""
+msgstr "%s%s %s: Kommando mit ungültigem Status \"%s\".\n"
 
 #: src/fifo.cpp:469 src/fifo.cpp:566
 #, c-format
 msgid "%s `%s': bad protol. ICQ only alowed\n"
-msgstr ""
+msgstr "%s `%s': Ungültiges Protokoll. Nur ICQ ist erlaubt\n"
 
 #: src/fifo.cpp:507
 #, c-format
 msgid "%s %s: redirection to \"%s\" failed: %s.\n"
-msgstr ""
+msgstr "%s %s: Umleitung nach \"%s\" ist fehlgeschlagen: %s.\n"
 
 #: src/fifo.cpp:511
 #, c-format
 msgid "%s %s: output redirected to \"%s\".\n"
-msgstr ""
+msgstr "%s %s: Ausgabe nach \"%s\" umgeleitet.\n"
 
 #: src/fifo.cpp:571
 #, c-format
-msgid "%s %s: user %s not on contact list, not retrievinginfo.\n"
+msgid "%s %s: user %s not on contact list, not retrieving info.\n"
 msgstr ""
+"%s %s: %s ist nicht auf Ihrer Kontaktliste, hole keine Informationen.\n"
 
 #: src/fifo.cpp:656
 #, c-format
 msgid "%sFifo commands:\n"
-msgstr ""
+msgstr "%sFifo Kommandos:\n"
 
 #: src/fifo.cpp:659
 #, c-format
 msgid "%s: Type `help command'\n"
-msgstr ""
+msgstr "%s: Geben Sie ein: `help Kommando'\n"
 
 #: src/fifo.cpp:667
 #, c-format
@@ -1224,26 +1219,23 @@ msgid ""
 "%s %s: help for `%s'\n"
 "%s\n"
 msgstr ""
+"%s %s: Hilfe zu `%s'\n"
+"%s\n"
 
 #: src/fifo.cpp:670
 #, c-format
 msgid "%s %s: unknown command `%s'\n"
-msgstr ""
+msgstr "%s %s: unbekanntes Kommando `%s'\n"
 
 #: src/fifo.cpp:784
 #, c-format
 msgid "%sReceived string: `%s'\n"
-msgstr ""
+msgstr "%sZeichenkette erhalten: `%s'\n"
 
 #: src/fifo.cpp:791
 #, c-format
 msgid "%s: '%s' Unknown fifo command. Try 'help'\n"
-msgstr ""
-
-#: src/file.cpp:44
-#, c-format
-msgid "%sInternal Error: Trim(): _sz == NULL.\n"
-msgstr ""
+msgstr "%s: '%s' Unbekanntes Fifo Kommando. Versuchen Sie 'help'\n"
 
 #: src/file.cpp:361 src/file.cpp:366
 #, c-format
@@ -1253,6 +1245,10 @@ msgid ""
 "%sSection = [%s]\n"
 "%sKey     = \"%s\"\n"
 msgstr ""
+"%sIniFile: Warnung, Schlüssel wurde nicht gefunden.\n"
+"%sDatei     = %s\n"
+"%sAbschnitt = [%s]\n"
+"%sSchlüssel = \"%s\"\n"
 
 #: src/file.cpp:374
 #, c-format
@@ -1261,6 +1257,9 @@ msgid ""
 "%sFile    = %s\n"
 "%sSection = [%s]\n"
 msgstr ""
+"%sIniFile: Warnung, Abschnitt wurde nicht gefunden.\n"
+"%sDatei     = %s\n"
+"%sAbschnitt = [%s]\n"
 
 #: src/file.cpp:384
 #, c-format
@@ -1269,6 +1268,9 @@ msgid ""
 "%sFile = %s\n"
 "%sLine = %s\n"
 msgstr ""
+"%sIniFile: Warnung, ungültiges Dateiformat.\n"
+"%sDatei = %s\n"
+"%sZeile = %s\n"
 
 #: src/file.cpp:393
 #, c-format
@@ -1277,6 +1279,9 @@ msgid ""
 "%sFile  = %s\n"
 "%sError = %s\n"
 msgstr ""
+"%sIniFile: Warnung, E/A Lesefehler.\n"
+"%sDatei  = %s\n"
+"%sFehler = %s\n"
 
 #: src/file.cpp:404
 #, c-format
@@ -1285,6 +1290,9 @@ msgid ""
 "%sFile  = %s\n"
 "%sError = %s\n"
 msgstr ""
+"%sIniFile: Warnung, E/A Schreibfehler.\n"
+"%sDatei  = %s\n"
+"%sFehler = %s\n"
 
 #: src/history.cpp:162
 #, c-format
@@ -1292,41 +1300,45 @@ msgid ""
 "%sUnable to open history file (%s):\n"
 "%s%s.\n"
 msgstr ""
+"%sVerlauf-Datei lässt sich nicht öffnen (%s):\n"
+"%s%s.\n"
 
 #: src/history.cpp:368
 #, c-format
 msgid "%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"
-msgstr ""
+msgstr "%sBeschädigte Verlauf-Datei (%s): Unbekanntes Unterkommando 0x%04X.\n"
 
 #: src/icqd-chat.cpp:669 src/icqd-filetransfer.cpp:196
 #, c-format
 msgid "%sNo more ports available, add more or close open chat/file sessions.\n"
 msgstr ""
+"%sKeine weiteren Ports verfügbar. Fügen Sie weitere hinzu oder schliessen "
+"sie laufende Chat/Datei Sitzungen.\n"
 
 #: src/icqd-chat.cpp:739
 #, c-format
 msgid "%sChat: Connecting to server.\n"
-msgstr ""
+msgstr "%sChat: Verbinde mit Server.\n"
 
 #: src/icqd-chat.cpp:749
 #, c-format
 msgid "%sChat: Shaking hands [v%d].\n"
-msgstr ""
+msgstr "%sChat: Protokollverhandlung (Handshake) [v%d].\n"
 
 #: src/icqd-chat.cpp:762
 #, c-format
 msgid "%sChat: Waiting for color/font response.\n"
-msgstr ""
+msgstr "%sChat: Warten auf Antwort zu Farbe/Schrift.\n"
 
 #: src/icqd-chat.cpp:803
 #, c-format
 msgid "%sChat: Received reverse connection.\n"
-msgstr ""
+msgstr "%sChat: Rückwärtsverbindung empfangen.\n"
 
 #: src/icqd-chat.cpp:829 src/icqd-chat.cpp:1064
 #, c-format
 msgid "%sChat: Remote end disconnected.\n"
-msgstr ""
+msgstr "%sChat: Gegenstelle beendete die Verbindung.\n"
 
 #: src/icqd-chat.cpp:831 src/icqd-chat.cpp:1066
 #, c-format
@@ -1334,31 +1346,33 @@ msgid ""
 "%sChat: Lost remote end:\n"
 "%s%s\n"
 msgstr ""
+"%sChat: Gegenstelle verloren:\n"
+"%s%s\n"
 
 #: src/icqd-chat.cpp:868
 #, c-format
 msgid "%sChat: Received handshake from %s [v%ld].\n"
-msgstr ""
+msgstr "%sChat: Protokollverhandlung von %s [v%ld] empfangen.\n"
 
 #: src/icqd-chat.cpp:880
 #, c-format
 msgid "%sChat: Received color packet.\n"
-msgstr ""
+msgstr "%sChat: Farb-Paket empfangen.\n"
 
 #: src/icqd-chat.cpp:928
 #, c-format
 msgid "%sChat: Received font packet.\n"
-msgstr ""
+msgstr "%sChat: Schrift-Paket empfangen.\n"
 
 #: src/icqd-chat.cpp:947
 #, c-format
 msgid "%sChat: Received color/font packet.\n"
-msgstr ""
+msgstr "%sChat: Farb/Schrift-Paket empfangen.\n"
 
 #: src/icqd-chat.cpp:979
 #, c-format
 msgid "%sChat: Joined multiparty (%d people).\n"
-msgstr ""
+msgstr "%sChat: Mehrpersonenchat beigetreten (%d Personen).\n"
 
 #: src/icqd-chat.cpp:1801 src/icqd-chat.cpp:1832
 #, c-format
@@ -1366,30 +1380,32 @@ msgid ""
 "%sChat: Send error:\n"
 "%s%s\n"
 msgstr ""
+"%sChat: Sendefehler:\n"
+"%s%s\n"
 
 #: src/icqd-chat.cpp:2251
 #, c-format
 msgid "%sChat: Received connection.\n"
-msgstr ""
+msgstr "%sChat: Verbindung empfangen.\n"
 
 #: src/icqd-chat.cpp:2260
 #, c-format
 msgid "%sChat: No user owns socket %d.\n"
-msgstr ""
+msgstr "%sChat: Dem Socket %d ist kein Benutzer zugeordnet.\n"
 
 #: src/icqd.cpp:306
 #, c-format
 msgid "%sUnable to allocate TCP port for local server (%s)!\n"
-msgstr ""
+msgstr "%sTCP Port für lokalen Server lässt sich nicht zuweisen (%s)!\n"
 
 #: src/icqd.cpp:307
 msgid "No ports available"
-msgstr ""
+msgstr "Keine Ports verfügbar"
 
 #: src/icqd.cpp:326
 #, c-format
 msgid "%sOpening fifo.\n"
-msgstr ""
+msgstr "%sFifo wird geöffnet.\n"
 
 #: src/icqd.cpp:331
 #, c-format
@@ -1397,6 +1413,8 @@ msgid ""
 "%sUnable to create fifo:\n"
 "%s%s.\n"
 msgstr ""
+"%sFifo kann nicht erzeugt werden:\n"
+"%s%s.\n"
 
 #: src/icqd.cpp:336
 #, c-format
@@ -1404,26 +1422,28 @@ msgid ""
 "%sUnable to open fifo:\n"
 "%s%s.\n"
 msgstr ""
+"%sFifo kann nicht geöffnet werden:\n"
+"%s%s.\n"
 
 #: src/icqd.cpp:346
 #, c-format
 msgid "%s%s is not a FIFO, disabling fifo support.\n"
-msgstr ""
+msgstr "%s%s ist kein Fifo, Fifo-Unterstützung wird deaktiviert.\n"
 
 #: src/icqd.cpp:358
 #, c-format
 msgid "%sSpawning daemon threads.\n"
-msgstr ""
+msgstr "%sDaemon Threads werden erzeugt.\n"
 
 #: src/icqd.cpp:803
 #, c-format
 msgid "%sLocal TCP server started on port %d.\n"
-msgstr ""
+msgstr "%sLokaler TCP Server wurde an Port %d gestartet.\n"
 
 #: src/icqd.cpp:807
 #, c-format
 msgid "%sNo ports available for local TCP server.\n"
-msgstr ""
+msgstr "%sKeine Ports für den lokalen TCP Server verfügbar.\n"
 
 #: src/icqd.cpp:811
 #, c-format
@@ -1431,16 +1451,18 @@ msgid ""
 "%sFailed to start local TCP server:\n"
 "%s%s\n"
 msgstr ""
+"%sLokaler TCP Server lies sich nicht starten:\n"
+"%s%s\n"
 
 #: src/icqd.cpp:825
 #, c-format
 msgid "%sTCP high port (%d) is lower then TCP low port (%d).\n"
-msgstr ""
+msgstr "%sMaximaler TCP Port (%d) ist niedriger als minimaler TCP Port (%d).\n"
 
 #: src/icqd.cpp:856
 #, c-format
 msgid "%sResolving proxy: %s:%d...\n"
-msgstr ""
+msgstr "%sLöse Proxyserver auf: %s:%d...\n"
 
 #: src/icqd.cpp:860
 #, c-format
@@ -1448,98 +1470,100 @@ msgid ""
 "%sUnable to resolve proxy server %s:\n"
 "%s%s.\n"
 msgstr ""
+"%sProxyserver lässt sich nicht auflösen %s:\n"
+"%s%s.\n"
 
 #: src/icqd.cpp:891
 #, c-format
 msgid "%sInvalid TCP version %d.  Attempting v%d.\n"
-msgstr ""
+msgstr "%sUngültige TCP Version %d. Benutze v%d.\n"
 
 #: src/icqd.cpp:971
 #, c-format
 msgid "%sUser %s already on contact list.\n"
-msgstr ""
+msgstr "%sBenutzer %s befindet sich bereits auf der Kontaktliste.\n"
 
 #: src/icqd.cpp:1005 src/icqd.cpp:1037
 #, c-format
 msgid "%sUser %lu already on contact list.\n"
-msgstr ""
+msgstr "%sBenutzer %lu befindet sich bereits auf der Kontaktliste.\n"
 
 #: src/icqd.cpp:1143
 #, c-format
 msgid "%sUnable to open \"%s\" for writing.\n"
-msgstr ""
+msgstr "%s\"%s\" lässt sich nicht zum schreiben öffnen.\n"
 
 #: src/icqd.cpp:1997
 #, c-format
 msgid "%sCancelled event not found.\n"
-msgstr ""
+msgstr "%sAbgebrochenes Ereignis nicht gefunden.\n"
 
 #: src/icqd.cpp:2107 src/icqd-srv.cpp:2524 src/icqd-srv.cpp:3432
 #: src/message.cpp:995
 msgid "Message"
-msgstr ""
+msgstr "Nachricht"
 
 #: src/icqd.cpp:2136
 msgid "Chat request"
-msgstr ""
+msgstr "Chatanfrage"
 
 #: src/icqd.cpp:2173
 msgid "File transfer request through server"
-msgstr ""
+msgstr "Dateiübertragung über Server"
 
 #: src/icqd.cpp:2186 src/icqd-srv.cpp:2539 src/icqd-srv.cpp:3448
 #: src/message.cpp:998
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/icqd.cpp:2202
 msgid "Contact list"
-msgstr ""
+msgstr "Kontaktliste"
 
 #: src/icqd.cpp:2220
 #, c-format
 msgid "%sAuto response from %s (#%lu).\n"
-msgstr ""
+msgstr "%sAutomatische Antwort von %s (#%lu).\n"
 
 #: src/icqd.cpp:2231 src/icqd.cpp:2324 src/icqd-srv.cpp:2952
 #: src/icqd-srv.cpp:2972 src/icqd-tcp.cpp:2567
 #, c-format
 msgid "%sAck for unknown event.\n"
-msgstr ""
+msgstr "%sBestätigung für unbekanntes Ereignis.\n"
 
 #: src/icqd.cpp:2235
 #, c-format
 msgid "%s%s (%lu) requested auto response.\n"
-msgstr ""
+msgstr "%s%s (%lu) hat Automatische Antwort angefordert.\n"
 
 #: src/icqd.cpp:2281 src/icqd-tcp.cpp:1921
 #, c-format
 msgid "%sUnknown ICBM plugin type: %s\n"
-msgstr ""
+msgstr "%sUnbekannter ICBM Plugin Typ: %s\n"
 
 #: src/icqd.cpp:2305
 msgid "unknown event"
-msgstr ""
+msgstr "Unbekanntes Ereignis"
 
 #: src/icqd.cpp:2317
 #, c-format
 msgid "%s%s accepted from %s (%lu).\n"
-msgstr ""
+msgstr "%s%s angenommen von %s (%lu).\n"
 
 #: src/icqd.cpp:2348
 #, c-format
 msgid "%s%s from new user (%lu), ignoring.\n"
-msgstr ""
+msgstr "%s%s von neuem Benutzer (%lu); wird ignoriert.\n"
 
 #: src/icqd.cpp:2354
 #, c-format
 msgid "%s%s from new user (%lu).\n"
-msgstr ""
+msgstr "%s%s von neuem Benutzer (%lu).\n"
 
 #: src/icqd.cpp:2359
 #, c-format
 msgid "%s%s from %s (%lu).\n"
-msgstr ""
+msgstr "%s%s von %s (%lu).\n"
 
 #: src/icqd.cpp:2368
 #, c-format
@@ -1547,16 +1571,18 @@ msgid ""
 "%sInvalid %s:\n"
 "%s\n"
 msgstr ""
+"%sUngültige(r) %s:\n"
+"%s\n"
 
 #: src/icqd-filetransfer.cpp:220
 #, c-format
 msgid "%sUnable to create directory %s for file transfer.\n"
-msgstr ""
+msgstr "%sOrdner %s für Dateitransfer lässt sich nicht erstellen.\n"
 
 #: src/icqd-filetransfer.cpp:236
 #, c-format
 msgid "%sPath %s is not a directory.\n"
-msgstr ""
+msgstr "%sDer Pfad %s ist kein Ordner.\n"
 
 #: src/icqd-filetransfer.cpp:271
 #, c-format
@@ -1564,36 +1590,40 @@ msgid ""
 "%sFile Transfer: File access error %s:\n"
 "%s%s.\n"
 msgstr ""
+"%sDateiübertragung: Dateizugriffsfehler %s:\n"
+"%s%s.\n"
 
 #: src/icqd-filetransfer.cpp:295
 #, c-format
 msgid "%sFile Transfer: Connecting to server.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Verbindung zum Server wird hergestellt.\n"
 
 #: src/icqd-filetransfer.cpp:301
 #, c-format
 msgid "%sFile Transfer: Shaking hands.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Protokollverhandlung.\n"
 
 #: src/icqd-filetransfer.cpp:314
 #, c-format
 msgid "%sFile Transfer: Waiting for server to respond.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Warten auf Serverantwort.\n"
 
 #: src/icqd-filetransfer.cpp:330
 #, c-format
 msgid "%sFile Transfer: Attempted reverse connection when already connected.\n"
 msgstr ""
+"%sDateiübertragung: Versuch einer Rückwärtsverbindung obwohl bereits eine "
+"Verbindung besteht.\n"
 
 #: src/icqd-filetransfer.cpp:344
 #, c-format
 msgid "%sFile Transfer: Received reverse connection.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Rückwärtsverbindung empfangen.\n"
 
 #: src/icqd-filetransfer.cpp:355
 #, c-format
 msgid "%sFile Transfer: Remote end disconnected.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Gegenstelle ist nicht verbunden.\n"
 
 #: src/icqd-filetransfer.cpp:357
 #, c-format
@@ -1601,56 +1631,61 @@ msgid ""
 "%sFile Transfer: Lost remote end:\n"
 "%s%s\n"
 msgstr ""
+"%sDateiübertragung: Gegenstelle verloren:\n"
+"%s%s\n"
 
 #: src/icqd-filetransfer.cpp:376
 #, c-format
 msgid "%sFile Transfer: Received handshake.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Protokollverhandlung empfangen.\n"
 
 #: src/icqd-filetransfer.cpp:387 src/icqd-filetransfer.cpp:437
 #: src/icqd-filetransfer.cpp:513 src/icqd-filetransfer.cpp:584
 #: src/icqd-filetransfer.cpp:633 src/icqd-filetransfer.cpp:678
 #, c-format
 msgid "%sFile Transfer: Speed set to %ld%%.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Geschwindigkeit auf %ld%% gesetzt.\n"
 
 #: src/icqd-filetransfer.cpp:426
 #, c-format
 msgid "%sFile Transfer: Waiting for file info.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Warten auf Dateiinformationen.\n"
 
 #: src/icqd-filetransfer.cpp:442
 #, c-format
 msgid "%sFile Transfer: Ignoring a possible erroneous packet.\n"
 msgstr ""
+"%sDateiübertragung: Ein möglicherweise fehlerhaftes Paket wird ignoriert.\n"
 
 #: src/icqd-filetransfer.cpp:480
 msgid "File Transfer: Waiting for plugin to confirm file receive.\n"
-msgstr ""
+msgstr "Dateiübertragung: Warten das das Plugin den Empfang bestätigt hat.\n"
 
 #: src/icqd-filetransfer.cpp:490
 msgid "File Transfer: Still waiting for the plugin to confirm file receive..."
 msgstr ""
+"Dateiübertragung: Es wird immernoch darauf gewartet, das das Plugin dem "
+"Empfang bestätigt..."
 
 #: src/icqd-filetransfer.cpp:501
 #, c-format
 msgid "%sFile Transfer: Receiving %s (%ld bytes).\n"
-msgstr ""
+msgstr "%sDateiübertragung: Empfange %s (%ld Bytes).\n"
 
 #: src/icqd-filetransfer.cpp:519
 #, c-format
 msgid "%sFile Transfer: Invalid data (%c) ignoring packet.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Ungültige Daten (%c), Paket wird ignoriert.\n"
 
 #: src/icqd-filetransfer.cpp:559
 #, c-format
 msgid "%sFile Transfer: %s received.\n"
-msgstr ""
+msgstr "%sDateiübertragung: %s empfangen.\n"
 
 #: src/icqd-filetransfer.cpp:564
 #, c-format
 msgid "%sFile Transfer: %s received %d too many bytes.\n"
-msgstr ""
+msgstr "%sDateiübertragung: %s empfing %d zu viele Bytes.\n"
 
 #: src/icqd-filetransfer.cpp:603 src/icqd-filetransfer.cpp:853
 #, c-format
@@ -1658,6 +1693,8 @@ msgid ""
 "%sFile Transfer: Read error for %s:\n"
 "%s\n"
 msgstr ""
+"%sDateiübertragung: Lesefehler in %s:\n"
+"%s\n"
 
 #: src/icqd-filetransfer.cpp:682
 #, c-format
@@ -1665,32 +1702,29 @@ msgid ""
 "%sFile Transfer: Unknown packet received during file send:\n"
 "%s\n"
 msgstr ""
+"%sDateiübertragung: Beim senden der Datei wurde ein unbekanntes Paket "
+"empfangen:\n"
+"%s\n"
 
 #: src/icqd-filetransfer.cpp:707
 #, c-format
 msgid "%sFile Transfer: Received plugin confirmation.\n"
-msgstr ""
-
-#: src/icqd-filetransfer.cpp:711
-#, c-format
-msgid ""
-"%sFile Transfer: StartReceivingFile called without a pending confirmation.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Plugin-Bestätigung empfangen.\n"
 
 #: src/icqd-filetransfer.cpp:776
 #, c-format
 msgid "%sFile Transfer: Sending %s (%ld bytes).\n"
-msgstr ""
+msgstr "%sDateiübertragung: Sende %s (%ld Bytes).\n"
 
 #: src/icqd-filetransfer.cpp:831
 #, c-format
 msgid "%sFile Transfer: Sent %s.\n"
-msgstr ""
+msgstr "%sDateiübertragung: %s gesendet.\n"
 
 #: src/icqd-filetransfer.cpp:835
 #, c-format
 msgid "%sFile Transfer: Sent %s, %d too many bytes.\n"
-msgstr ""
+msgstr "%sDateiübertagung: %s gesendet, %d zuviele Bytes.\n"
 
 #: src/icqd-filetransfer.cpp:914
 #, c-format
@@ -1698,116 +1732,119 @@ msgid ""
 "%sFile Transfer: Send error:\n"
 "%s%s\n"
 msgstr ""
+"%sDateiübertragung: Sendefehler:\n"
+"%s%s\n"
 
 #: src/icqd-filetransfer.cpp:926
 #, c-format
 msgid "%sInvalid file transfer speed: %d%%.\n"
-msgstr ""
+msgstr "%sUngültige Übertragungsgeschwindigkeit: %d%%.\n"
 
 #: src/icqd-filetransfer.cpp:1053
 #, c-format
 msgid "%sFile Transfer: Receiving repeat incoming connection.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Wiederholt eingehende Verbindung empfangen.\n"
 
 #: src/icqd-filetransfer.cpp:1062
 #, c-format
 msgid "%sFile Transfer: Received connection.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Verbindung empfangen.\n"
 
 #: src/icqd-filetransfer.cpp:1081
 #, c-format
 msgid "%sFile Transfer: No such socket.\n"
-msgstr ""
+msgstr "%sDateiübertragung: Dieser Socket existiert nicht.\n"
 
 #: src/icqd-srv.cpp:53
 #, c-format
 msgid "%sAlerting server to new user (#%ld)...\n"
-msgstr ""
+msgstr "%sNeuer Benutzer wird dem Server bekannt gemacht (#%ld)...\n"
 
 #: src/icqd-srv.cpp:95
 #, c-format
 msgid "%sAdding %s to server list...\n"
-msgstr ""
+msgstr "%sFüge %s zur serverseitigen Kontaktliste hinzu...\n"
 
 #: src/icqd-srv.cpp:222
 #, c-format
 msgid "%sExporting users to server contact list...\n"
-msgstr ""
+msgstr "%sBenutzer werden zur serverseitigen Kontaktliste exportiert...\n"
 
 #: src/icqd-srv.cpp:241
 #, c-format
 msgid "%sAdding group %s (%d) to server list ...\n"
-msgstr ""
+msgstr "%sFüge Gruppe %s (%d) zur serverseitigen Kontaktliste hinzu...\n"
 
 #: src/icqd-srv.cpp:272 src/icqd-srv.cpp:302
 #, c-format
 msgid "%sChanging group on server list for %s ...\n"
-msgstr ""
+msgstr "%sÄndere serverseitige Gruppe von %s...\n"
 
 #: src/icqd-srv.cpp:319
 #, c-format
 msgid "%sExporting groups to server contact list...\n"
-msgstr ""
+msgstr "%sGruppen werden zur serverseitigen Kontaktliste exportiert...\n"
 
 #: src/icqd-srv.cpp:357
 #, c-format
 msgid "%sAlerting server to remove user (#%ld)...\n"
-msgstr ""
+msgstr "%sBenutzer wird von serverseitigen Kontaktliste entfernt (#%ld)...\n"
 
 #: src/icqd-srv.cpp:390
 #, c-format
 msgid "%sAlerting server to remove user (#%lu)...\n"
-msgstr ""
+msgstr "%sBenutzer wird von serverseitigen Kontaktliste entfernt (#%lu)...\n"
 
 #: src/icqd-srv.cpp:410
 #, c-format
 msgid "%sRemoving group from server side list (%s)...\n"
-msgstr ""
+msgstr "%sGruppe wird von serverseitigen Kontaktliste entfernt (%s)...\n"
 
 #: src/icqd-srv.cpp:425
 #, c-format
 msgid "%sRenaming group with id %d to %s...\n"
-msgstr ""
+msgstr "%sBenenne Gruppe mit der ID %d zu %s um...\n"
 
 #: src/icqd-srv.cpp:454
 #, c-format
 msgid "%sRenaming %s to %s...\n"
-msgstr ""
+msgstr "%sBenenne %s zu %s um...\n"
 
 #: src/icqd-srv.cpp:468
 #, c-format
 msgid "%sAlerting user they were added (#%lu)...\n"
 msgstr ""
+"%sBenachrichtige Benutzer über das hinzufügen zur Kontaktliste (#%lu)...\n"
 
 #: src/icqd-srv.cpp:508
 #, c-format
 msgid "%sRequesting auto response from %s (%lu).\n"
-msgstr ""
+msgstr "%sAutomatische Antwort wird von %s (%lu) angefordert.\n"
 
 #: src/icqd-srv.cpp:522
 #, c-format
 msgid "%sSetting random chat group (#%lu)...\n"
-msgstr ""
+msgstr "%sZufällige Chatgruppe wird gesetzt #%lu)...\n"
 
 #: src/icqd-srv.cpp:535
 #, c-format
 msgid "%sSearching for random chat user (#%lu)...\n"
-msgstr ""
+msgstr "%sZufälliger Chatpartner wird gesucht (#%lu)...\n"
 
 #: src/icqd-srv.cpp:567
 #, c-format
 msgid "%sRegistering a new user...\n"
-msgstr ""
+msgstr "%sNeuer Benutzer wird registriert...\n"
 
 #: src/icqd-srv.cpp:599
 #, c-format
 msgid "%sRequesting meta info for %s (#%lu/#%d)...\n"
-msgstr ""
+msgstr "%sMeta-Informationen über %s werden angefordert (#%lu/#%d)...\n"
 
 #: src/icqd-srv.cpp:659
 #, c-format
 msgid "%sChanging status to %s (#%lu)...\n"
-msgstr ""
+msgstr "%sStatus wird zu %s geändert (#%lu)...\n"
 
 #: src/icqd-srv.cpp:675
 #, c-format
@@ -1941,8 +1978,8 @@ msgstr ""
 msgid ""
 "%sNo password set.  Edit ~/.licq/owner.uin and fill in the password field.\n"
 msgstr ""
-"%sDas ÖÖ Passwort ist leer. Bitte ~/.licq/owner.uin bearbeiten und das "
-"Passwort dort eintragen.\n"
+"%sDas Passwort ist leer. Bitte ~/.licq/owner.uin bearbeiten und das Passwort "
+"dort eintragen.\n"
 
 #: src/icqd-srv.cpp:1416
 #, c-format
