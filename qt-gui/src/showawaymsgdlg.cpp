@@ -68,6 +68,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setMinimumWidth(75);
   btnOk->setDefault(true);
+  btnOk->setFocus();
   connect(btnOk, SIGNAL(clicked()), SLOT(accept()));
   lay->addWidget(btnOk);
 
@@ -149,7 +150,9 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
 
   icqEventTag = 0;
 
-  if (isOk && e->Command() == ICQ_CMDxTCP_START)
+  // FIXME server command
+  if (isOk && (e->Command() == ICQ_CMDxTCP_START ||
+               e->Command() == ICQ_CMDxSND_THRUxSERVER))
   {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
     QTextCodec * codec = UserCodec::codecForICQUser(u);
