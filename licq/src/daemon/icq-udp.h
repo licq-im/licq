@@ -560,11 +560,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
   packet >> version;
 
 #if ICQ_VERSION == 2
-  if (version != 0x02)
-#elif ICQ_VERSION == 4
-  if (version != 0x03)
-#elif ICQ_VERSION == 5
-  if (version != 0x05)
+  if (version != 2)
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
+  if (version != 3 && version != 5)
 #endif
   {
     gLog.Warn("%sServer send bad version number: %d.\n", L_WARNxSTR, version);
@@ -574,22 +572,26 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
 #if ICQ_VERSION == 2
   packet >> nCommand
          >> nSequence;
-#elif ICQ_VERSION == 4
-  unsigned long nCheckSum;
-  packet >> nCommand
-         >> nSequence
-         >> nSubSequence
-         >> nOwnerUin
-         >> nCheckSum;
-#elif ICQ_VERSION == 5
-  unsigned long nSessionId, nCheckSum;
-  packet >> junkChar
-         >> nSessionId
-         >> nCommand
-         >> nSequence
-         >> nSubSequence
-         >> nOwnerUin
-         >> nCheckSum;
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
+  unsigned long nSessionId = 0, nCheckSum = 0;
+  if (version == 5)
+  {
+    packet >> junkChar
+           >> nSessionId
+           >> nCommand
+           >> nSequence
+           >> nSubSequence
+           >> nOwnerUin
+           >> nCheckSum;
+  }
+  else if (version == 3)
+  {
+    packet >> nCommand
+           >> nSequence
+           >> nSubSequence
+           >> nOwnerUin
+           >> nCheckSum;
+  }
 #endif
 
   switch (nCommand)
