@@ -350,12 +350,6 @@ else
   kde_includes=$ac_kde_includes
 fi
 
-if test "$have_kde" = yes; then
-   AC_DEFINE(USE_KDE)
-   KDE_LIBS="-lkfile -lkio -lkdeui -lkdecore"
-   AC_SUBST(KDE_LIBS)
-fi
-
 AC_SUBST(kde_libraries)
 AC_SUBST(kde_includes)
 
@@ -382,6 +376,9 @@ test -n "$ac_kde" && have_kde=$ac_kde
 test -n "$ac_kde" || have_kde=no
 if test "$have_kde" = yes; then
   AC_MSG_RESULT([libraries $ac_kde_libraries, headers $ac_kde_includes])
+  AC_DEFINE(USE_KDE)
+  KDE_LIBS="-lkfile -lkio -lkdeui -lkdecore"
+  AC_SUBST(KDE_LIBS)
 else
   AC_MSG_RESULT(["no"])
 fi
