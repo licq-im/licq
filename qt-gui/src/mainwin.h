@@ -5,8 +5,6 @@
 #include "config.h"
 #endif
 
-//#include <vector.h>
-
 #ifdef USE_KDE
 #include <kmenubar.h>
 #else
