@@ -354,7 +354,6 @@ bool ChatDlg::StartAsClient(unsigned short nPort)
   CChatClient c(u);
   c.m_nPort = nPort;
   gUserManager.DropUser(u);
-
   return ConnectToChat(c);
 }
 
@@ -543,6 +542,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
     {
       buffer.PackChar(0x0D);
       mleIRCRemote->append(chatname + "> " + linebuf);
+      mleIRCRemote->GotoEnd();
       linebuf = "";
       mleIRCLocal->clear();
       if (m_nMode == CHAT_IRC) mlePaneLocal->insertLine("");
@@ -663,6 +663,7 @@ void ChatDlg::chatRecv(int sd)
       case 0x0D:   // new line
         // add to irc window
         mleIRCRemote->append(u->chatname + "> " + u->linebuf);
+        mleIRCRemote->GotoEnd();
         u->linebuf = "";
         if (u == chatUser) mlePaneRemote->insertLine("");
         u->chatQueue.pop_front();
