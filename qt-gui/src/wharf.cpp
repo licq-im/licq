@@ -606,9 +606,11 @@ void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
   switch(e->button())
   {
     case LeftButton:
+      /* I don't like this, and it causes Licq to disappear forever with certain
+         (probably buggy) window managers such as enlightenment.
       if(mainwin->isVisible())
         mainwin->hide();
-      else
+      else*/
       {
         mainwin->show();
         mainwin->raise();
