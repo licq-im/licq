@@ -1144,11 +1144,20 @@ void UserInfoDlg::ShowHistory()
   QString contactName = tr("server");
   QTextCodec * codec = QTextCodec::codecForLocale();
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  bool bUseHTML = false;
   if (u != NULL)
   {
       codec = UserCodec::codecForICQUser(u);
       if (!m_bOwner)
          contactName = codec->toUnicode(u->GetAlias());
+      for (unsigned int x = 0; x < strlen(m_szId); x++)
+      {
+        if (!isdigit(m_szId[x]))
+        {
+          bUseHTML = true;
+          break;
+        }
+      }
       gUserManager.DropUser(u);
   }
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
@@ -1183,7 +1192,7 @@ void UserInfoDlg::ShowHistory()
       // header and timestamp text.
       s.sprintf("<font color=\"%s\">%s</font><br><br>",
                 color,
-                MLView::toRichText(messageText, true).utf8().data()
+                MLView::toRichText(messageText, true, bUseHTML).utf8().data()
                );
       tmp.append(s);
 #else
