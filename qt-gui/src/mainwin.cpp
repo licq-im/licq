@@ -72,6 +72,7 @@
 #include "randomchatdlg.h"
 #include "userinfodlg.h"
 #include "usereventdlg.h"
+#include "reqauthdlg.h"
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
@@ -3013,6 +3014,7 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()));
    mnuUserAdm->insertItem(tr("S&earch for User"), this, SLOT(showSearchUserDlg()));
    mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
+   mnuUserAdm->insertItem(tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg()));
    mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()));
@@ -3237,6 +3239,11 @@ void CMainWindow::showAuthUserDlg()
   (void) new AuthUserDlg(licqDaemon, 0, true);
 }
 
+void CMainWindow::showReqAuthDlg()
+{
+  ReqAuthDlg *reqAuthDlg =  new ReqAuthDlg(licqDaemon);
+  reqAuthDlg->show();
+}
 
 void CMainWindow::showEditGrpDlg()
 {
