@@ -171,9 +171,9 @@ void *ProcessRunningEvent_Client_tep(void *p)
      e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
     if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
   }
-//#ifdef USE_OPENSSL
+#ifdef USE_OPENSSL
   // Check if this was a key request
-  if (e->m_pPacket->SubCommand() == ICQ_CMDxSUB_KEYxREQUEST)
+  if (e->m_pPacket->SubCommand() == ICQ_CMDxSUB_SECURExOPEN)
   {
     if (s->DHKey() != NULL)
     {
@@ -181,9 +181,9 @@ void *ProcessRunningEvent_Client_tep(void *p)
        L_WARNxSTR, e->m_nDestinationUin);
       s->ClearDHKey();
     }
-    s->SetDHKey( ((CPT_KeyRequest *)e->m_pPacket)->GrabDHKey() );
+    s->SetDHKey( ((CPT_OpenSecureChannel *)e->m_pPacket)->GrabDHKey() );
   }
-//#endif
+#endif
   gSocketManager.DropSocket(s);
 
   pthread_exit(NULL);

@@ -760,16 +760,23 @@ protected:
 };
 
 
-//-----KeyRequest------------------------------------------------------------
-class CPT_KeyRequest : public CPacketTcp
+//-----OpenSecureChannel------------------------------------------------------------
+class CPT_OpenSecureChannel : public CPacketTcp
 {
 public:
-  CPT_KeyRequest(char *szKey, ICQUser *pUser, CDHKey *);
-  ~CPT_KeyRequest();
+  CPT_OpenSecureChannel(char *szKey, ICQUser *pUser, CDHKey *);
+  ~CPT_OpenSecureChannel();
 
   CDHKey *GrabDHKey() { CDHKey *k = m_pDHKey; m_pDHKey = NULL; return k; }
 protected:
   CDHKey *m_pDHKey;
+};
+
+
+class CPT_CloseSecureChannel : public CPacketTcp
+{
+public:
+  CPT_CloseSecureChannel(ICQUser *pUser);
 };
 
 
@@ -796,10 +803,18 @@ public:
 
 
 //-----AckKey------------------------------------------------------------
-class CPT_AckKey : public CPT_Ack
+class CPT_AckOpenSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckKey(unsigned long nSequence, const char *szKey, ICQUser *pUser);
+  CPT_AckOpenSecureChannel(unsigned long nSequence, const char *szKey, ICQUser *pUser);
+};
+
+
+//-----AckKey------------------------------------------------------------
+class CPT_AckCloseSecureChannel : public CPT_Ack
+{
+public:
+  CPT_AckCloseSecureChannel(unsigned long nSequence, ICQUser *pUser);
 };
 
 

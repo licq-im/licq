@@ -163,8 +163,9 @@ public:
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
      unsigned long nSequence);
-  CICQEventTag *icqSendKeyRequest(unsigned long nUin);
-  void icqKeyRequestCancel(unsigned long nUin, unsigned long nSequence);
+  CICQEventTag *icqOpenSecureChannel(unsigned long nUin);
+  CICQEventTag *icqCloseSecureChannel(unsigned long nUin);
+  void icqOpenSecureChannelCancel(unsigned long nUin, unsigned long nSequence);
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);

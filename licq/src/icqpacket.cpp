@@ -1690,8 +1690,8 @@ CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
 
 
 //-----Key------------------------------------------------------------------
-CPT_KeyRequest::CPT_KeyRequest(char *szKey, ICQUser *_cUser, CDHKey *key)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_KEYxREQUEST,
+CPT_OpenSecureChannel::CPT_OpenSecureChannel(char *szKey, ICQUser *_cUser, CDHKey *key)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExOPEN,
        szKey, true, ICQ_TCPxMSG_NORMAL, _cUser)
 {
   m_pDHKey = key;
@@ -1705,11 +1705,24 @@ CPT_KeyRequest::CPT_KeyRequest(char *szKey, ICQUser *_cUser, CDHKey *key)
   PostBuffer();
 }
 
-CPT_KeyRequest::~CPT_KeyRequest()
+CPT_OpenSecureChannel::~CPT_OpenSecureChannel()
 {
 #ifdef USE_OPENSSL
   delete m_pDHKey;
 #endif
+}
+
+CPT_CloseSecureChannel::CPT_CloseSecureChannel(ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExCLOSE,
+       "", true, ICQ_TCPxMSG_NORMAL, _cUser)
+{
+  InitBuffer();
+  if (m_nVersion == 6)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00FFFFFF);
+  }
+  PostBuffer();
 }
 
 
@@ -1777,13 +1790,32 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
 
 
 //-----AckKey---------------------------------------------------------------
-CPT_AckKey::CPT_AckKey(unsigned long nSequence,
+CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned long nSequence,
    const char *szKey, ICQUser *pUser)
-  : CPT_Ack(ICQ_CMDxSUB_KEYxREQUEST, nSequence, true, true, pUser)
+  : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
   m_nSize -= strlen(m_szMessage);
   free(m_szMessage);
   m_szMessage = strdup(szKey);
+  m_nSize += strlen(m_szMessage);
+
+  InitBuffer();
+  if (m_nVersion == 6)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00000000);
+  }
+  PostBuffer();
+}
+
+
+CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned long nSequence,
+   ICQUser *pUser)
+  : CPT_Ack(ICQ_CMDxSUB_SECURExCLOSE, nSequence, true, true, pUser)
+{
+  m_nSize -= strlen(m_szMessage);
+  free(m_szMessage);
+  m_szMessage = strdup("");
   m_nSize += strlen(m_szMessage);
 
   InitBuffer();

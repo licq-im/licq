@@ -1492,8 +1492,8 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
     icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->m_nDestinationUin, e->m_nSequence);
-  else if (e->m_nSubCommand == ICQ_CMDxSUB_KEYxREQUEST)
-    icqKeyRequestCancel(e->m_nDestinationUin, e->m_nSequence);
+  else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
+    icqOpenSecureChannelCancel(e->m_nDestinationUin, e->m_nSequence);
 
   ProcessDoneEvent(e);
 }

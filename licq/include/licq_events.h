@@ -260,6 +260,8 @@ friend class CICQDaemon;
  *    event (message, url...).  The argument will be the event id of the
  *    added event, or the negative of the event id if an event was deleted.
  *    If the user checked our auto-response then the argument will be 0.
+ *    USER_SECURITY - The users security status changed.  If the arg is
+ *    1 the user is now secure, if it's 0, the user is no longer secure.
  *
  *  SIGNAL_LOGON - Indicates that we have successfully logged on to the
  *  icq network.  UIN and argument are both 0, as is the sub-type.
@@ -287,6 +289,7 @@ const unsigned long USER_GENERAL                = 5;
 const unsigned long USER_MORE                   = 6;
 const unsigned long USER_WORK                   = 7;
 const unsigned long USER_ABOUT                  = 8;
+const unsigned long USER_SECURITY               = 9;
 
 const unsigned long LIST_ADD                     = 1;
 const unsigned long LIST_REMOVE                  = 2;

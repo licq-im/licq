@@ -1182,7 +1182,12 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
   m_nSocketDesc = s->Descriptor();
   m_nLocalPort = s->LocalPort();
   m_nConnectionVersion = s->Version();
-  m_bSecure = s->Secure();
+  if (m_bSecure != s->Secure())
+  {
+    m_bSecure = s->Secure();
+    if (gLicqDaemon != NULL)
+      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, m_bSecure ? 1 : 0));
+  }
 
   if (m_nIp == 0) m_nIp = s->RemoteIp();
   if (m_nPort == 0) m_nPort = s->RemotePort();
@@ -1194,8 +1199,9 @@ void ICQUser::ClearSocketDesc()
   m_nSocketDesc = -1;
   m_nLocalPort = 0;
   m_nConnectionVersion = 0;
-  //ClearDHKey();
   m_bSecure = false;
+  if (gLicqDaemon != NULL)
+    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, 0));
 }
 
 
