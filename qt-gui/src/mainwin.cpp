@@ -161,7 +161,7 @@ static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border b
    return (pmFinal);
 }
 
-
+/*
 static QPixmap *MakeTransparentBg(QPixmap *_pm, const QRect &r)
 {
   QPixmap *pm = new QPixmap(r.size());
@@ -169,7 +169,7 @@ static QPixmap *MakeTransparentBg(QPixmap *_pm, const QRect &r)
   p.drawPixmap(0, 0, *_pm, r.x(), r.y(), r.width(), r.height());
   return(pm);
 }
-
+*/
 
 static XErrorHandler old_handler = 0;
 static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
@@ -537,13 +537,13 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblMsg->setIndent(skin->lblMsg.margin);
   lblMsg->setNamedFgColor(skin->lblMsg.color.fg);
   lblMsg->setNamedBgColor(skin->lblMsg.color.bg);
-  if (skin->lblMsg.transparent)
+  /*if (skin->lblMsg.transparent)
   {
     QPixmap *p = MakeTransparentBg(pmBorder, skin->borderToRect(&skin->lblMsg, pmBorder));
     lblMsg->setBackgroundPixmap(*p);
     delete p;
   }
-  else if (skin->lblMsg.pixmap != NULL)
+  else*/ if (skin->lblMsg.pixmap != NULL)
     lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
   connect(lblMsg, SIGNAL(doubleClicked()), this, SLOT(callMsgFunction()));
   QToolTip::add(lblMsg, tr("Right click - User groups\n"
@@ -558,13 +558,13 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblStatus->setIndent(skin->lblStatus.margin);
   lblStatus->setNamedFgColor(skin->lblStatus.color.fg);
   lblStatus->setNamedBgColor(skin->lblStatus.color.bg);
-  if (skin->lblStatus.transparent)
+  /*if (skin->lblStatus.transparent)
   {
     QPixmap *p = MakeTransparentBg(pmBorder, skin->borderToRect(&skin->lblStatus, pmBorder));
     lblStatus->setBackgroundPixmap(*p);
     delete p;
   }
-  else if (skin->lblStatus.pixmap != NULL)
+  else*/ if (skin->lblStatus.pixmap != NULL)
     lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
   connect(lblStatus, SIGNAL(doubleClicked()), this, SLOT(slot_AwayMsgDlg()));
   QToolTip::add(lblStatus, tr("Right click - Status menu\n"
