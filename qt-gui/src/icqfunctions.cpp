@@ -490,7 +490,7 @@ void ICQFunctions::setupTabs(int index)
   case 4: tabs->showPage(fcnTab[1]); rdbFile->setChecked(true); specialFcn(3); break;
   case 8: tabs->showPage(fcnTab[2]); break;
   case 9: tabs->showPage(fcnTab[3]); break;
-  case 10: tabs->showPage(fcnTab[4]); break;
+  case 10: tabs->showPage(fcnTab[6]); break;
   }
 
 }
