@@ -54,7 +54,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(szFilename);
   licqConf.ClearFlag(INI_FxFATAL | INI_FxERROR);
-  licqConf.SetFlag(INI_FxWARN);
+  //licqConf.SetFlag(INI_FxWARN);
 
   // -----Network configuration-----
   gLog.Info("%sNetwork configuration.\n", L_INITxSTR);
