@@ -44,6 +44,10 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
   mleAwayMsg = new MLEditWrap(true, this);
+#if QT_VERSION >= 210
+  mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWidth);
+  mleAwayMsg->setWrapColumnOrWidth(37);
+#endif
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
 
@@ -171,6 +175,10 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
   mleAwayMsg = new MLEditWrap(true, this);
+#if QT_VERSION >= 210
+  mleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWidth);
+  mleAwayMsg->setWrapColumnOrWidth(37);
+#endif
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(slot_ok()));
   top_lay->addWidget(mleAwayMsg);
 
