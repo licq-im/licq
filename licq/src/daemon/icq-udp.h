@@ -895,19 +895,23 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     packet >> nUin;
 
     // find which user it is, verify we have them on our list
-    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-    char s[128];
+    //char s[128];
     unsigned long nNewStatus;
     packet >> nNewStatus;
-    ICQUser::StatusToStatusStr(nNewStatus, false, s);
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u == NULL)
+    {
+      gLog.Warn("%sUnknown user (%ld) changed status.\n", L_WARNxSTR,
+                nUin);
+      break;
+    }
+    gLog.Info("%s%s (%ld) changed status (0x%08X).\n", L_WARNxSTR,
+              u->GetAlias(), nUin, nNewStatus);
+    /*ICQUser::StatusToStatusStr(nNewStatus, false, s);
     gLog.Info("%s%s (%ld) is now \"%s\".\n", L_UDPxSTR,
-              (u ? u->GetAlias() : "Unknown user"), nUin, s);
+              (u ? u->GetAlias() : "Unknown user"), nUin, s);*/
     ChangeUserStatus(u, nNewStatus);
     gUserManager.DropUser(u);
-    //u = gUserManager.FetchUser(nUin, LOCK_R);
-    //gUserManager.Reorder(u);
-    //gUserManager.DropUser(u);
-    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
