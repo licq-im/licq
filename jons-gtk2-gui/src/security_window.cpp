@@ -19,6 +19,7 @@
  */
 
 #include "licq_gtk.h"
+#include "utilities.h"
 
 #include <gtk/gtk.h>
 
@@ -149,19 +150,19 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	/* First option */
 	us->check_auth = gtk_check_button_new_with_label("Authorization Required");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), us->check_auth,
-		"Determines whether regular ICQ clients require your authorization to add you to their contact list.", 0);
+		"Determines whether regular ICQ clients require your authorization to add you to their contact list.", NULL);
 	gtk_box_pack_start(GTK_BOX(v_box), us->check_auth, FALSE, FALSE, 0);
 
 	/* Second option */
 	us->check_web = gtk_check_button_new_with_label("Web Presence");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), us->check_web,
-		"Web Presence allows users to see if you are online through your web indicator.", 0);	
+		"Web Presence allows users to see if you are online through your web indicator.", NULL);	
 	gtk_box_pack_start(GTK_BOX(v_box), us->check_web, FALSE, FALSE, 0);
 
-	/* Third optoin */
+	/* Third option */
 	us->check_hideip = gtk_check_button_new_with_label("Hide IP");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), us->check_hideip,
-		"Hiding IP is a minor prevention for regular ICQ clients to not reveal your IP to users.", 0);
+		"Hiding IP is a minor prevention for regular ICQ clients to not reveal your IP to users.", NULL);
 	gtk_box_pack_start(GTK_BOX(v_box), us->check_hideip, FALSE, FALSE, 0);
 
 	/* Set the check boxes accordingly */
@@ -305,7 +306,7 @@ void refresh_clist(GtkWidget *w, gint page)
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter,
 					0, pUser->Uin(),
-					1, pUser->GetAlias(),
+					1, (s_convert_to_utf8(pUser->GetAlias(), pUser->UserEncoding())).c_str(),
 					2, pUser->GetEmailPrimary(),
 					3, (gpointer)pUser, -1);
 			users++;
@@ -323,7 +324,7 @@ void refresh_clist(GtkWidget *w, gint page)
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter,
 					0, pUser->Uin(),
-					1, pUser->GetAlias(),
+					1, (s_convert_to_utf8(pUser->GetAlias(), pUser->UserEncoding())).c_str(),
 					2, pUser->GetEmailPrimary(),
 					3, (gpointer)pUser, -1);
 			users++;
@@ -341,7 +342,7 @@ void refresh_clist(GtkWidget *w, gint page)
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter,
 					0, pUser->Uin(),
-					1, pUser->GetAlias(),
+					1, (s_convert_to_utf8(pUser->GetAlias(), pUser->UserEncoding())).c_str(),
 					2, pUser->GetEmailPrimary(),
 					3, (gpointer)pUser, -1);
 			users++;
