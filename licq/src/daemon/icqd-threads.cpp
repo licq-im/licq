@@ -29,7 +29,7 @@ void *ProcessRunningEvent_tep(void *p)
   DEBUG_THREADS("[ProcessRunningEvent_tep] Caught event.\n");
 
   ICQEvent *e = (ICQEvent *)p;
-  CICQDaemon *d = e->m_xDaemon;
+  CICQDaemon *d = e->m_pDaemon;
   struct timeval tv;
 
   // Check if the socket is connected
@@ -48,8 +48,8 @@ void *ProcessRunningEvent_tep(void *p)
         // Set the local port in the tcp packet now
         INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
         if (s == NULL) break;
-        ((CPacketTcp *)e->m_xPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
-        ((CPacketTcp *)e->m_xPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+        ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
+        ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
         gSocketManager.DropSocket(s);
       }
       break;
@@ -100,7 +100,7 @@ void *ProcessRunningEvent_tep(void *p)
       if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
       pthread_exit(NULL);
     }
-    CBuffer *buf = e->m_xPacket->Finalize();
+    CBuffer *buf = e->m_pPacket->Finalize();
     if (!s->Send(buf))
     {
       delete buf;

@@ -233,7 +233,8 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 
   unsigned long f = E_DIRECT | INT_VERSION;
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  CEventChat *e = new CEventChat(reason, p->getSequence(), TIME_NOW, f);
+  CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->getSequence(),
+     TIME_NOW, f);
   gLog.Info("%sSending %schat request to %s (#%d).\n", L_TCPxSTR,
      nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
      u->GetAlias(), p->getSequence());
@@ -251,7 +252,6 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 //-----CICQDaemon::chatCancel----------------------------------------------------------
 void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned long nSequence)
 {
-   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
   gLog.Info("%sCancelling chat request with %s (#%d).\n", L_TCPxSTR, u->GetAlias(), nSequence);
@@ -564,6 +564,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
          && u->StatusToUser() != ICQ_STATUS_DND) )
     bAccept = true;
 
+  // Process the status words
+  //...
+  //printf("status: %04X (%04X)  msgtype: %04X\n", ackFlags, u->Status(), msgFlags);
+
   switch(command)
   {
 
@@ -824,7 +828,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     // If this is not from a user on our list then ignore it
     if (bNewUser) break;
 
-    struct SExtendedAck *sExtendedAck = NULL;
+    CExtendedAck *pExtendedAck = NULL;
 
     switch (newCommand)
     {
@@ -854,10 +858,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       s_nChatSequence = theSequence;
       s_nChatUin = checkUin;
 
-      sExtendedAck = new SExtendedAck;
-      sExtendedAck->nPort = nPort;
-      sExtendedAck->bAccepted = (ackFlags != ICQ_TCPxACK_REFUSE);
-      sExtendedAck->szResponse = strdup(message);
+      pExtendedAck = new CExtendedAck (nPort, ackFlags != ICQ_TCPxACK_REFUSE, message);
       break;
 
     case ICQ_CMDxSUB_FILE:
@@ -881,10 +882,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
        s_nFileSequence = theSequence;
        s_nFileUin = checkUin;
 
-       sExtendedAck = new SExtendedAck;
-       sExtendedAck->nPort = nPort;
-       sExtendedAck->bAccepted = (ackFlags != ICQ_TCPxACK_REFUSE);
-       sExtendedAck->szResponse = strdup(message);
+       pExtendedAck = new CExtendedAck(nPort, ackFlags != ICQ_TCPxACK_REFUSE, message);
        break;
 
     default:
@@ -928,7 +926,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     ICQEvent *e = DoneEvent(sockfd, theSequence, EVENT_ACKED);
     if (e != NULL)
     {
-      e->m_sExtendedAck = sExtendedAck;
+      e->m_pExtendedAck = pExtendedAck;
       e->m_nSubResult = nSubResult;
       gUserManager.DropUser(u);
       ProcessDoneEvent(e);
@@ -937,7 +935,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     else
     {
       gLog.Warn("%sAck for unknown event.\n", L_TCPxSTR);
-      if (sExtendedAck != NULL) delete sExtendedAck;
+      delete pExtendedAck;
     }
     break;
   }

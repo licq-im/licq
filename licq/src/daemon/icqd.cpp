@@ -739,12 +739,12 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
  * an event structure and sticks it on the pending events queue.  Then signals
  * that it's there.
  *--------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect)
+ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect)
 {
   return SendExpectEvent(_nSD, packet, _eConnect, 0, NULL);
 }
 
-ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect,
+ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
                                       unsigned long _nDestinationUin, CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
@@ -799,7 +799,7 @@ bool CICQDaemon::SendEvent(int _nSD, CPacket &p)
  * Marks the given event as done and removes it from the running events list.
  * Then calls PushDoneEvent on the event.
  *----------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EEventResult _eResult)
+ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
   list<ICQEvent *>::iterator iter;
@@ -855,7 +855,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EEventResult _eResult)
  *       thread during which the sending thread may continue to do stuff.
  *       The result is extra sends or time out warnings.
  *----------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EEventResult _eResult)
+ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
@@ -884,7 +884,7 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EEventResult
 }
 
 
-ICQEvent *CICQDaemon::DoneEvent(CICQEventTag *tag, EEventResult _eResult)
+ICQEvent *CICQDaemon::DoneEvent(CICQEventTag *tag, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
@@ -926,17 +926,17 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 
   // Determine this now as later we might have deleted the event
   unsigned short nCommand = e->m_nCommand;
-  EEventResult eResult = e->m_eResult;
+  EventResult eResult = e->m_eResult;
 
   // Write the event to the history file if appropriate
-  if (e->m_xUserEvent != NULL &&
+  if (e->m_pUserEvent != NULL &&
       e->m_eResult == EVENT_ACKED &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
     ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
     if (u != NULL)
     {
-      e->m_xUserEvent->AddToHistory(u, D_SENDER);
+      e->m_pUserEvent->AddToHistory(u, D_SENDER);
       gUserManager.DropUser(u);
     }
   }
@@ -977,7 +977,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     if (e->m_eResult == EVENT_ACKED)
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      ChangeUserStatus(o, ((CPU_SetStatus *)e->m_xPacket)->Status() );
+      ChangeUserStatus(o, ((CPU_SetStatus *)e->m_pPacket)->Status() );
       gUserManager.DropOwner();
     }
     PushPluginEvent(e);
@@ -987,7 +987,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     if (e->m_eResult == EVENT_ACKED)
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_xPacket)->Group());
+      o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_pPacket)->Group());
       gUserManager.DropOwner();
     }
     PushPluginEvent(e);
@@ -1052,7 +1052,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
  * Tracks down the relevant extended event, removes it from the list, and
  * returns it, marking the result as appropriate.
  *----------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::DoneExtendedEvent(const unsigned short _nCommand, const unsigned short _nSubSequence, EEventResult _eResult)
+ICQEvent *CICQDaemon::DoneExtendedEvent(const unsigned short _nCommand, const unsigned short _nSubSequence, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   ICQEvent *e = NULL;
@@ -1072,7 +1072,7 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(const unsigned short _nCommand, const un
 }
 
 
-ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EEventResult _eResult)
+ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   list<ICQEvent *>::iterator iter;
@@ -1104,7 +1104,7 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EEventResult _eResult)
 }
 
 
-ICQEvent *CICQDaemon::DoneExtendedEvent(CICQEventTag *tag, EEventResult _eResult)
+ICQEvent *CICQDaemon::DoneExtendedEvent(CICQEventTag *tag, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   ICQEvent *e = NULL;

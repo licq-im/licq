@@ -7,6 +7,7 @@
 
 #include <vector.h>
 #include <list.h>
+#include <time.h>
 
 #include "pthread_rdwr.h"
 

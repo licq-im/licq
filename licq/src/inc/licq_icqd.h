@@ -251,19 +251,19 @@ protected:
   bool AddUserEvent(ICQUser *u, CUserEvent *e);
   void RejectEvent(unsigned long, CUserEvent *);
 
-  ICQEvent *DoneEvent(ICQEvent *e, EEventResult _eResult);
-  ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EEventResult _eResult);
-  ICQEvent *DoneEvent(CICQEventTag *tag, EEventResult _eResult);
-  ICQEvent *DoneExtendedEvent(const unsigned short, const unsigned short, EEventResult);
-  ICQEvent *DoneExtendedEvent(ICQEvent *, EEventResult);
-  ICQEvent *DoneExtendedEvent(CICQEventTag *tag, EEventResult _eResult);
+  ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
+  ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);
+  ICQEvent *DoneEvent(CICQEventTag *tag, EventResult _eResult);
+  ICQEvent *DoneExtendedEvent(const unsigned short, const unsigned short, EventResult);
+  ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
+  ICQEvent *DoneExtendedEvent(CICQEventTag *tag, EventResult _eResult);
   void ProcessDoneEvent(ICQEvent *e);
   void PushExtendedEvent(ICQEvent *e);
   void PushPluginSignal(CICQSignal *s);
   void PushPluginEvent(ICQEvent *e);
   bool SendEvent(int _nSD, CPacket &p);
-  ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect);
-  ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConnect,
+  ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect);
+  ICQEvent *SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eConnect,
                             unsigned long _nDestinationUin, CUserEvent *e);
   void AckUDP(unsigned short, unsigned short);
   void AckTCP(CPacketTcp &, int _nSD);

@@ -900,7 +900,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 #endif
     gLog.Info("%sSuccessfully updated basic info.\n", L_UDPxSTR);
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_UPDATExBASIC, nSubSequence, EVENT_SUCCESS);
-    CPU_UpdatePersonalBasicInfo *p = (CPU_UpdatePersonalBasicInfo *)e->m_xPacket;
+    CPU_UpdatePersonalBasicInfo *p = (CPU_UpdatePersonalBasicInfo *)e->m_pPacket;
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     o->SetAlias(p->Alias());
     o->SetFirstName(p->FirstName());
@@ -940,7 +940,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     packet >> nSubSequence;
 #endif
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_UPDATExDETAIL, nSubSequence, EVENT_SUCCESS);
-    CPU_UpdatePersonalExtInfo *p = (CPU_UpdatePersonalExtInfo *)e->m_xPacket;
+    CPU_UpdatePersonalExtInfo *p = (CPU_UpdatePersonalExtInfo *)e->m_pPacket;
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     o->SetCity(p->City());
     o->SetCountryCode(p->Country());
@@ -1022,19 +1022,19 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     packet >> nUin;
     CSearchAck *s = new CSearchAck(nUin);
 
-    s->szAlias = strdup(packet.UnpackString(szTemp));
-    s->szFirstName = strdup(packet.UnpackString(szTemp));
-    s->szLastName = strdup(packet.UnpackString(szTemp));
-    s->szEmail = strdup(packet.UnpackString(szTemp));
+    s->m_szAlias = strdup(packet.UnpackString(szTemp));
+    s->m_szFirstName = strdup(packet.UnpackString(szTemp));
+    s->m_szLastName = strdup(packet.UnpackString(szTemp));
+    s->m_szEmail = strdup(packet.UnpackString(szTemp));
 
     // translating string with Translation Table
-    gTranslator.ServerToClient(s->szAlias);
-    gTranslator.ServerToClient(s->szFirstName);
-    gTranslator.ServerToClient(s->szLastName);
+    gTranslator.ServerToClient(s->m_szAlias);
+    gTranslator.ServerToClient(s->m_szFirstName);
+    gTranslator.ServerToClient(s->m_szLastName);
 
     packet >> auth;
-    gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_SBLANKxSTR, s->szAlias, nUin,
-              s->szFirstName, s->szLastName, s->szEmail);
+    gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_SBLANKxSTR, s->m_szAlias, nUin,
+              s->m_szFirstName, s->m_szLastName, s->m_szEmail);
 
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxINFO, nSubSequence, EVENT_ACKED);
     if (e == NULL)
@@ -1047,8 +1047,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       break;
     }
     ICQEvent *e2 = new ICQEvent(e);
-    e2->m_sSearchAck = s;
-    e2->m_sSearchAck->cMore = 0;
+    e2->m_pSearchAck = s;
+    e2->m_pSearchAck->m_bMore = false;
     PushPluginEvent(e2);
     PushExtendedEvent(e);
     break;
@@ -1073,8 +1073,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       gLog.Warn("%sReceived end of search when no search in progress.\n", L_WARNxSTR);
       break;
     }
-    e->m_sSearchAck = new CSearchAck(0);
-    e->m_sSearchAck->cMore = more;
+    e->m_pSearchAck = new CSearchAck(0);
+    e->m_pSearchAck->m_bMore = more;
     ProcessDoneEvent(e);
     break;
   }
@@ -1138,7 +1138,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       gLog.Warn("%sReceived random chat user when no search in progress.\n", L_WARNxSTR);
       break;
     }
-    e->m_sSearchAck = new CSearchAck(nUin);
+    e->m_pSearchAck = new CSearchAck(nUin);
     ProcessDoneEvent(e);
 
     break;
@@ -1743,7 +1743,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     case ICQ_CMDxMETA_UNKNOWNx270:
     {
       e->m_nSubResult += nMetaCommand;
-      nUin = ((CPU_Meta_RequestInfo *)e->m_xPacket)->Uin();
+      nUin = ((CPU_Meta_RequestInfo *)e->m_pPacket)->Uin();
       u = gUserManager.FetchUser(nUin, LOCK_W);
       if (u == NULL)
       {
@@ -1866,7 +1866,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     case ICQ_CMDxMETA_GENERALxINFOxRSP:
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)e->m_xPacket;
+      CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)e->m_pPacket;
       o->SetEnableSave(false);
       o->SetAlias(p->m_szAlias);
       o->SetFirstName(p->m_szFirstName);
@@ -1895,7 +1895,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     case ICQ_CMDxMETA_MORExINFOxRSP:
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      CPU_Meta_SetMoreInfo *p = (CPU_Meta_SetMoreInfo *)e->m_xPacket;
+      CPU_Meta_SetMoreInfo *p = (CPU_Meta_SetMoreInfo *)e->m_pPacket;
       o->SetEnableSave(false);
       o->SetAge(p->m_nAge);
       o->SetGender(p->m_nGender);
@@ -1917,7 +1917,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     case ICQ_CMDxMETA_WORKxINFOxRSP:
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)e->m_xPacket;
+      CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)e->m_pPacket;
       o->SetEnableSave(false);
       o->SetCompanyCity(p->m_szCity);
       o->SetCompanyState(p->m_szState);
@@ -1939,7 +1939,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     case ICQ_CMDxMETA_ABOUTxRSP:
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)e->m_xPacket;
+      CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)e->m_pPacket;
       o->SetAbout(p->m_szAbout);
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                       USER_ABOUT, o->Uin()));
@@ -1949,7 +1949,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     }
     case ICQ_CMDxMETA_SECURITYxRSP:
     {
-      CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_xPacket;
+      CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_pPacket;
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       o->SetEnableSave(false);
       o->SetAuthorization(p->Authorization());
@@ -1969,7 +1969,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
       o->SetEnableSave(false);
-      o->SetPassword( ((CPU_Meta_SetPassword *)e->m_xPacket)->m_szPassword);
+      o->SetPassword( ((CPU_Meta_SetPassword *)e->m_pPacket)->m_szPassword);
       o->SetEnableSave(true);
       o->SaveLicqInfo();
       gUserManager.DropOwner();

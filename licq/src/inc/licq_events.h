@@ -12,35 +12,53 @@
 class CPacket;
 class CICQDaemon;
 
-struct SExtendedAck
+//-----CExtendedAck----------------------------------------------------------
+class CExtendedAck
 {
-  bool bAccepted;
-  unsigned short nPort;
-  char *szResponse;
+public:
+  // Accessors
+  bool Accepted()         { return m_bAccepted; }
+  unsigned short Port()   { return m_nPort; }
+  const char *Response()  { return m_szResponse; }
+
+  ~CExtendedAck();
+
+protected:
+  CExtendedAck(bool, unsigned short, char *);
+
+  bool m_bAccepted;
+  unsigned short m_nPort;
+  char *m_szResponse;
+
+friend class CICQDaemon;
 };
 
+
+//-----CSearchAck------------------------------------------------------------
 class CSearchAck
 {
 public:
-  CSearchAck(unsigned long _nUin)
-  {
-    nUin = _nUin;
-    szAlias = szFirstName = szLastName = szEmail = NULL;
-  }
-  ~CSearchAck()
-  {
-    if (szAlias != NULL) free(szAlias);
-    if (szFirstName != NULL) free(szFirstName);
-    if (szLastName != NULL) free(szLastName);
-    if (szEmail != NULL) free(szEmail);
-  }
+  // Accessors
+  unsigned long Uin()      { return m_nUin; }
+  const char *Alias()      { return m_szAlias; }
+  const char *FirstName()  { return m_szFirstName; }
+  const char *LastName()   { return m_szLastName; }
+  const char *Email()      { return m_szEmail; }
+  bool More()              { return m_bMore; }
 
-  unsigned long nUin;
-  char *szAlias;
-  char *szFirstName;
-  char *szLastName;
-  char *szEmail;
-  char cMore;
+  ~CSearchAck();
+
+protected:
+  CSearchAck(unsigned long _nUin);
+
+  unsigned long m_nUin;
+  char *m_szAlias;
+  char *m_szFirstName;
+  char *m_szLastName;
+  char *m_szEmail;
+  bool m_bMore;
+
+friend class CICQDaemon;
 };
 
 
@@ -48,21 +66,50 @@ public:
 //=====ICQEvent====================================================================================
 // wraps a timer event so that the timeout will return the socket and sequence of the packet
 // that timed out
-enum EConnect {CONNECT_SERVER, CONNECT_USER, CONNECT_NONE };
-enum EEventResult { EVENT_ACKED, EVENT_SUCCESS, EVENT_FAILED, EVENT_TIMEDOUT, EVENT_ERROR, EVENT_CANCELLED };
+enum ConnectType
+{
+  CONNECT_SERVER,
+  CONNECT_USER,
+  CONNECT_NONE
+};
+
+enum EventResult
+{
+  EVENT_ACKED,
+  EVENT_SUCCESS,
+  EVENT_FAILED,
+  EVENT_TIMEDOUT,
+  EVENT_ERROR,
+  EVENT_CANCELLED
+};
 
 class ICQEvent
 {
 public:
-  ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, EConnect _eConnect,
-           unsigned long _nUin, CUserEvent *e);
-  ICQEvent(ICQEvent *);
+  // Accessors
+  EventResult Result()         { return m_eResult; }
+  int SubResult()              { return m_nSubResult; }
+  unsigned short Command()     { return m_nCommand; }
+  unsigned short SubCommand()  { return m_nSubCommand; }
+  unsigned long Sequence()     { return m_nSequence; }
+  unsigned short SubSequence() { return m_nSubSequence; }
+  CSearchAck *SearchAck()      { return m_pSearchAck; }
+  CExtendedAck *ExtendedAck()  { return m_pExtendedAck; }
+  CUserEvent *UserEvent()      { return m_pUserEvent; }
+  ICQUser *UnknownUser()       { return m_pUnknownUser; }
+
   ~ICQEvent();
 
+protected:
+  ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
+           unsigned long _nUin, CUserEvent *e);
+  ICQEvent(ICQEvent *);
+
+  // Compare this event to another one
   bool CompareEvent(int, unsigned long) const;
 
-  EConnect       m_eConnect;
-  EEventResult   m_eResult;
+  ConnectType    m_eConnect;
+  EventResult    m_eResult;
   int            m_nSubResult;
   bool           m_bCancelled;
   unsigned short m_nCommand;
@@ -71,15 +118,21 @@ public:
   unsigned long  m_nSequence;
   unsigned short m_nSubSequence;
   int            m_nSocketDesc;
-  CPacket        *m_xPacket;
+  CPacket        *m_pPacket;
   pthread_t      thread_send;
   pthread_t      thread_plugin;
 
-  CUserEvent    *m_xUserEvent;
-  SExtendedAck  *m_sExtendedAck;
-  CSearchAck    *m_sSearchAck;
+  CUserEvent    *m_pUserEvent;
+  CExtendedAck  *m_pExtendedAck;
+  CSearchAck    *m_pSearchAck;
+  ICQUser       *m_pUnknownUser;
 
-  CICQDaemon    *m_xDaemon;
+  CICQDaemon    *m_pDaemon;
+
+friend class CICQDaemon;
+friend void *ProcessRunningEvent_tep(void *p);
+friend void *MonitorSockets_tep(void *p);
+friend class CICQEventTag;
 };
 
 
@@ -87,10 +140,12 @@ public:
 class CICQEventTag
 {
 public:
-  //CICQEventTag(int sd, unsigned long se) : m_nSocketDesc(sd), m_nSequence(se) {}
-  CICQEventTag(const ICQEvent *e);
   bool Equals(const ICQEvent *e);
+
+  unsigned long Uin() { return m_nUin; }
 protected:
+  CICQEventTag(const ICQEvent *e);
+
   int m_nSocketDesc;
   unsigned long m_nSequence;
   unsigned long m_nUin;
