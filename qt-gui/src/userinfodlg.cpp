@@ -1170,7 +1170,6 @@ void UserInfoDlg::ShowHistory()
 #endif
       mleHistory->setWordWrap(QTextEdit::WidgetWidth);
       mleHistory->setWrapPolicy(QTextEdit::AtWordBoundary);
-      qDebug("History string:\n%s", s.utf8().data());
       mleHistory->append(s);
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
