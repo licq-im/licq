@@ -536,7 +536,7 @@ CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
 
   setRootIsDecorated(gMainWindow->m_bThreadView);
   setAllColumnsShowFocus(true);
-  setTreeStepSize(12);
+  setTreeStepSize(10);
   setSorting(0);
 
   if (parent != NULL)
@@ -957,10 +957,11 @@ void CUserViewTips::maybeTip(const QPoint& c)
   if(w->header()->isVisible())
     p.setY(p.y()-w->header()->height());
 
-  CUserViewItem* item = (CUserViewItem*) w->itemAt(p);
-  if(gMainWindow->m_bThreadView && item->parent() == NULL)
+  QListViewItem* i = w->itemAt(p);
+  if(gMainWindow->m_bThreadView && i != NULL && i->parent() == NULL)
     return;
 
+  CUserViewItem* item = static_cast<CUserViewItem*>(i);
   if(item && item->m_nUin)
   {
     QRect r(w->itemRect(item));

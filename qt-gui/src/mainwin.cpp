@@ -1103,11 +1103,8 @@ void CMainWindow::updateUserWin()
       while(gi) {
         if(pUser->GetInGroup(GROUPS_USER, gi->GroupId()))
         {
-          qDebug("adding in group %s", gi->Name());
           (void) new CUserViewItem(pUser, gi);
         }
-        qDebug("finished group %d", gi->GroupId());
-
         gi = static_cast<CUserViewGroupItem*>(gi->nextSibling());
       }
     }
