@@ -661,18 +661,21 @@ void ChatDlg::slot_chat()
         break;
       }
 
+      case CHAT_FOCUSxOUT:
+      case CHAT_FOCUSxIN:
+      case CHAT_SLEEPxON:
+      case CHAT_SLEEPxOFF:
+      {
+        // TODO add some visible indication of these
+        break;
+      }
+
       case CHAT_CHARACTER:
       {
         if (u == chatUser)
           mlePaneRemote->appendNoNewLine(QString::fromLocal8Bit(e->Data()));
         break;
       }
-
-      case CHAT_FOCUSxIN:
-      case CHAT_FOCUSxOUT:
-      case CHAT_SLEEPxOFF:
-      case CHAT_SLEEPxON:
-        break; // ignore for now
 
       default:
       {
