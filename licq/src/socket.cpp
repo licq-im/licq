@@ -449,6 +449,8 @@ bool INetSocket::StartServer(unsigned int _nPort)
   if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
   {
     m_nErrorType = SOCK_ERROR_errno;
+    ::close(m_nDescriptor);
+    m_nDescriptor = -1;
     return(false);
   }
 #endif
@@ -460,6 +462,8 @@ bool INetSocket::StartServer(unsigned int _nPort)
   if (bind(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, sizeof(sockaddr_in)) == -1)
   {
     m_nErrorType = SOCK_ERROR_errno;
+    ::close(m_nDescriptor);
+    m_nDescriptor = -1;
     return (false);
   }
 
