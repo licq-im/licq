@@ -80,9 +80,12 @@ const unsigned short ICQ_SNACxBOS_REMxINVISIBxLIST = 0x0008;
 const unsigned short ICQ_SNACxOFF_SYSMSG           = 0x0002; // client
 const unsigned short ICQ_SNACxOFF_SYSMSGxACK       = 0x0002;
 const unsigned short ICQ_SNACxMETA_INFO            = 0x0002; // client
+const unsigned short ICQ_SNACxSEARCH							 = 0x0002; // client
 
 // messagetypes
 const unsigned short ICQ_MSGxAUTHORIZE             = 0x0008;
+
+//********* OLD COMMANDS ******************************************
 
 // UDP commands
 const unsigned short ICQ_CMDxRCV_ACK               = 0x000A; //  10

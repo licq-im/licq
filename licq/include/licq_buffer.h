@@ -62,6 +62,7 @@ public:
 
    char *Pack(CBuffer *);
    char *Pack(const char *data, int size);
+   char *CBuffer::PackLNTS(const char *);
    char *PackString(const char *data, unsigned short max = 0);
    char *PackUnsignedShort(unsigned short data);
    char *PackUnsignedLong(unsigned long data);

@@ -327,13 +327,15 @@ protected:
 
 
 //-----SearchByInfo--------------------------------------------------------------
-class CPU_SearchByInfo : public CPacketUdp
+class CPU_SearchByInfo : public CPU_CommonFamily
 {
 public:
    CPU_SearchByInfo(const char *_sAlias, const char *_sFirstName,
                     const char *_sLastName, const char *_sEmail);
-   /* 02 00 24 04 04 00 50 A5 82 00 05 00 0B 00 41 70 6F 74 68 65 6F 73 69 73
-      00 07 00 47 72 61 68 61 6D 00 05 00 52 6F 66 66 00 01 00 00 */
+   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+   unsigned long Uin()  { return 0; }
+protected:
+   unsigned long m_nMetaCommand;
 };
 
 
@@ -346,7 +348,7 @@ public:
 
 
 //-----SearchWhitePages---------------------------------------------------------
-class CPU_SearchWhitePages : public CPacketUdp
+class CPU_SearchWhitePages : public CPU_CommonFamily
 {
 public:
    CPU_SearchWhitePages(const char *szFirstName, const char *szLastName,
@@ -356,6 +358,10 @@ public:
                    const char *szState, unsigned short nCountryCode,
                    const char *szCoName, const char *szCoDept,
                    const char *szCoPos, bool bOnlineOnly);
+	  virtual const unsigned short SubCommand()		{ return m_nMetaCommand; }
+	  unsigned long Uin()  { return 0; }
+protected:
+		unsigned long m_nMetaCommand;
 };
 
 
