@@ -144,7 +144,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
 
 
 //-----ICQ::icqRelogon-------------------------------------------------------
-void CICQDaemon::icqRelogon()
+void CICQDaemon::icqRelogon(bool bChangeServer)
 {
   unsigned long status;
 
@@ -158,7 +158,11 @@ void CICQDaemon::icqRelogon()
   {
     status = m_nDesiredStatus;
   }
-  icqLogoff();
+
+  if (bChangeServer)
+    SwitchServer();
+  else
+    icqLogoff();
   m_eStatus = STATUS_OFFLINE_FORCED;
 
   CICQEventTag *t = icqLogon(status);
@@ -1084,12 +1088,22 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     gLog.Info("%sAck (#%d).\n", L_UDPxSTR, nSequence);
 #if ICQ_VERSION == 5
     pthread_mutex_lock(&mutex_serverack);
-    m_nServerAck = nSequence;
-    pthread_cond_broadcast(&cond_serverack);
+    if (nSequence >= m_nServerAck)
+    {
+      m_nServerAck = nSequence;
+      pthread_cond_broadcast(&cond_serverack);
+    }
     pthread_mutex_unlock(&mutex_serverack);
 #endif
     ICQEvent *e = DoneEvent(m_nUDPSocketDesc, nSequence, EVENT_ACKED);
     if (e != NULL) ProcessDoneEvent(e);
+    break;
+  }
+
+  case ICQ_CMDxRCV_SERVERxDOWN: // server down?
+  {
+    gLog.Info("%sServer down.\n", L_UDPxSTR);
+    icqRelogon(true);
     break;
   }
 
