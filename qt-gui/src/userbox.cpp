@@ -331,20 +331,16 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
 // ---------------------------------------------------------------------------
 
-void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int column, int width, int align )
+void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int column, int width, int align )
 {
-  int h = height();
-  QPixmap pp(width, h);
-  QPainter p(&pp);
-
-  QFont newFont(op->font());
+  QFont newFont(p->font());
   newFont.setWeight(m_nWeight);
   if (gMainWindow->m_bFontStyles)
   {
     newFont.setItalic(m_bItalic);
     newFont.setStrikeOut(m_bStrike);
   }
-  p.setFont(newFont);
+  p->setFont(newFont);
 
   bool onlBlink = (listView()->onlTimerId && listView()->onlUin &&
                    listView()->onlUin == m_nUin && listView()->onlCounter & 1);
@@ -373,10 +369,10 @@ void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int 
     QPoint pd(r.topLeft()+QPoint(listView()->header()->sectionPos(column), 0));
     listView()->viewport()->mapToParent(pd);
     QPoint pp(listView()->mapToParent(pd));
-    p.drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
+    p->drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
   }
   else
-    p.fillRect( 0, 0, width, height(), cg.base());
+    p->fillRect( 0, 0, width, height(), cg.base());
 
   if (m_nUin != 0 || isGroupItem())
   {
@@ -390,91 +386,91 @@ void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int 
 
     if (isGroupItem())
     {
-      QFont f(p.font());
+      QFont f(p->font());
       f.setPointSize(f.pointSize() - 2);
-      p.setFont(f);
+      p->setFont(f);
     }
 
-    QListViewItem::paintCell(&p, cg, column, width, align);
+    QListViewItem::paintCell(p, cg, column, width, align);
 
     if (isGroupItem())
     {
       if (column == 1)
       {
-        int w = p.fontMetrics().width(text(1)) + 4;
+        int w = p->fontMetrics().width(text(1)) + 4;
 
         if (m_nEvents > 0 && !isOpen())
         {
-          p.drawPixmap(w, 0, gMainWindow->pmMessage);
+          p->drawPixmap(w, 0, gMainWindow->pmMessage);
           w += gMainWindow->pmMessage.width() + 4;
         }
 
-        listView()->style().drawSeparator(&p,
+        listView()->style().drawSeparator(p,
            w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1),
            height() >> 1, cg);
       }
       else if (column == listView()->header()->count() - 1)
       {
-        listView()->style().drawSeparator(&p, 0, height() >> 1, width - 5,
+        listView()->style().drawSeparator(p, 0, height() >> 1, width - 5,
            height() >> 1, cg);
       }
       else if (column > 1)
       {
-        listView()->style().drawSeparator(&p, 0, height() >> 1, width - 1,
+        listView()->style().drawSeparator(p, 0, height() >> 1, width - 1,
            height() >> 1, cg);
       }
     }
     // If this is the first column then add some extra icons after the text
     else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
     {
-      int w = p.fontMetrics().width(text(1)) + 6;
+      int w = p->fontMetrics().width(text(1)) + 6;
 
       if (width - w > 8 && (m_bBirthday))
       {
-        p.drawPixmap(w, 0, *listView()->pixBirthday);
+        p->drawPixmap(w, 0, *listView()->pixBirthday);
         w += listView()->pixBirthday->width() + 2;
       }
       if (width - w > 8 && m_bStatusInvisible)
       {
         if (gMainWindow->pmPrivate.isNull())
         {
-          p.drawPixmap(w, 0, *listView()->pixInvisible);
+          p->drawPixmap(w, 0, *listView()->pixInvisible);
           w += listView()->pixInvisible->width() + 2;
         }
         else
         {
-          p.drawPixmap(w, 0, gMainWindow->pmPrivate);
+          p->drawPixmap(w, 0, gMainWindow->pmPrivate);
           w += gMainWindow->pmPrivate.width() + 2;
         }
       }
       if (width - w > 8 && m_bSecure)
       {
-        p.drawPixmap(w, 0, gMainWindow->pmSecureOn);
+        p->drawPixmap(w, 0, gMainWindow->pmSecureOn);
         w += gMainWindow->pmSecureOn.width() + 2;
       }
       if (width - w > 8 && m_bCustomAR)
       {
-        p.drawPixmap(w, 0, *listView()->pixCustomAR);
+        p->drawPixmap(w, 0, *listView()->pixCustomAR);
         w += listView()->pixCustomAR->width() + 2;
       }
     }
   }
   else
   {
-    QFont newFont(p.font());
+    QFont newFont(p->font());
     newFont.setBold(false);
     newFont.setItalic(false);
     newFont.setStrikeOut(false);
-    p.setFont(newFont);
+    p->setFont(newFont);
     int x1 = 0, x2 = width;
     if (column == 0)
       x1 = 5;
     if (column == listView()->header()->count() - 1)
       x2 = width - 5;
-    p.setPen(QPen(QColor(128, 128, 128), 1));
-    p.drawLine(x1, height() >> 1, x2, height() >> 1);
-    p.setPen(QPen(QColor(255, 255, 255), 1));
-    p.drawLine(x1, (height() >> 1) + 1, x2, (height() >> 1) + 1);
+    p->setPen(QPen(QColor(128, 128, 128), 1));
+    p->drawLine(x1, height() >> 1, x2, height() >> 1);
+    p->setPen(QPen(QColor(255, 255, 255), 1));
+    p->drawLine(x1, (height() >> 1) + 1, x2, (height() >> 1) + 1);
     if (column == 1)
     {
       QString sz = CUserView::tr("Offline");
@@ -483,35 +479,35 @@ void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int 
 
       if (pix)
       {
-        QPoint pd(op->xForm(QPoint(5,0)).x(), op->xForm(QPoint(5,0)).y());
+        QRect r(listView()->itemRect(this));
+        QPoint pd(r.topLeft()+QPoint(listView()->header()->sectionPos(column)+5, 0));
+        listView()->viewport()->mapToParent(pd);
         QPoint pp(listView()->mapToParent(pd));
-        p.drawPixmap(5, 0, *pix, pp.x(), pp.y(), p.fontMetrics().width(sz) + 6, height());
+        p->drawPixmap(5, 0, *pix, pp.x(), pp.y(), p->fontMetrics().width(sz) + 6, height());
       }
       else
       {
-        p.fillRect(5, 0, p.fontMetrics().width(sz) + 6, height(), *m_cBack);
+        p->fillRect(5, 0, p->fontMetrics().width(sz) + 6, height(), *m_cBack);
       }
-      QFont f(p.font());
+      QFont f(p->font());
       if (f.pointSize() > 2)
         f.setPointSize(f.pointSize() - 2);
-      p.setFont(f);
-      p.setPen(QPen(*s_cGridLines));
-      p.drawText(8, 0, width - 8, height(), AlignVCenter, sz);
+      p->setFont(f);
+      p->setPen(QPen(*s_cGridLines));
+      p->drawText(8, 0, width - 8, height(), AlignVCenter, sz);
     }
   }
 
   // add line to bottom and right side
   if (listView()->parent() && gMainWindow->m_bGridLines && m_nUin != 0)
   {
-    p.setPen(*s_cGridLines);
-    p.drawLine(0, height() - 1, width - 1, height() - 1);
-    p.drawLine(width - 1, 0, width - 1, height() - 1);
+    p->setPen(*s_cGridLines);
+    p->drawLine(0, height() - 1, width - 1, height() - 1);
+    p->drawLine(width - 1, 0, width - 1, height() - 1);
   }
 
   if(listView()->carTimerId > 0 && listView()->carUin == m_nUin)
-    drawCAROverlay(&p);
-
-  op->drawPixmap(0, 0, pp);
+    drawCAROverlay(p);
 }
 
 
