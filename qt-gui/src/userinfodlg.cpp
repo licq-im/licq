@@ -1272,6 +1272,7 @@ void UserInfoDlg::updateTab(const QString& txt)
     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
     currentTab = WorkInfo;
     if (!tabList[WorkInfo].loaded)
       SetWorkInfo(NULL);
@@ -1292,10 +1293,13 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("Nex&t"));
     btnMain2->setText(tr("P&rev"));
-    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
-    btnMain3->setEnabled(false);
-    btnMain2->setEnabled(false);
-    btnMain1->setEnabled(true);
+    btnMain1->setText(m_bOwner ? tr("") : tr("&Menu"));
+    if (tabList[HistoryInfo].loaded)
+    {
+      btnMain3->setEnabled(m_iHistoryEIter != m_lHistoryList.end());
+      btnMain2->setEnabled((m_nHistoryIndex - m_nHistoryShowing) != 0);
+    }
+    btnMain1->setEnabled(!m_bOwner);
     currentTab = HistoryInfo;
     if (!tabList[HistoryInfo].loaded)
       SetupHistory();
