@@ -638,7 +638,7 @@ CICQEventTag *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
 
 
 //-----icqSetAbout-----------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSetAbout(const char *szAbout)
+CICQEventTag *CICQDaemon::icqSetAbout(const char *_szAbout)
 {
   unsigned long nLen = strlen(_szAbout);
   unsigned long nNewLen = 0;
