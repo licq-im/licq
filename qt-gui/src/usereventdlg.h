@@ -74,8 +74,8 @@ protected:
   CSignalManager *sigman;
   unsigned long icqEventTag;
   QWidget *mainWidget;
-  QPushButton *btnHistory, *btnInfo, *btnCharset, *btnSecure, *btnForeColor, *btnBackColor;
-  QPopupMenu * popupCharset;
+  QPushButton *btnHistory, *btnInfo, *btnEncoding, *btnSecure, *btnForeColor, *btnBackColor;
+  QPopupMenu * popupEncoding;
 
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
@@ -93,11 +93,11 @@ protected slots:
   void showUserInfo();
   void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
   void slot_security();
-  void slot_setCharset(int charset_index);
+  void slot_setEncoding(int encoding_index);
 
 signals:
   void finished(unsigned long);
-  void charsetChanged();
+  void encodingChanged();
 };
 
 
@@ -137,7 +137,7 @@ protected slots:
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
   void slot_sentevent(ICQEvent *);
-  void slot_setCharset();
+  void slot_setEncoding();
 };
 
 

@@ -22,8 +22,10 @@
 
 #ifdef USE_KDE
 #include <kapp.h>
+#include <kglobal.h>
 #include <kglobalsettings.h>
 #include <kwin.h>
+#include <kiconloader.h>
 #else
 #include <qapplication.h>
 #endif
@@ -433,7 +435,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   pmSecureOff = QPixmap(secure_off_xpm);
   pmHistory = QPixmap(history_xpm);
   pmInfo = QPixmap(info_xpm);
-  pmCharset = QPixmap(charset_xpm);
+  #ifdef USE_KDE
+  pmEncoding = KGlobal::iconLoader()->loadIcon("charset", KIcon::Small, 0, KIcon::DefaultState, 0L, true);
+  if (pmEncoding.isNull())
+    pmEncoding = QPixmap(charset_xpm);
+  #else
+  pmEncoding = QPixmap(charset_xpm);
+  #endif
   initMenu();
   ApplySkin(szSkin, true);
   skin->frame.frameStyle = nFrameStyle;

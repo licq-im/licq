@@ -87,11 +87,8 @@ void CQtLogWindow::slot_log(int s)
   while (outputBox->numLines() > 500)
     outputBox->removeLine(0);
 
-  if (NextLogType() == L_ERROR) {
-      qDebug("calling CriticalUser");
-
+  if (NextLogType() == L_ERROR)
       CriticalUser(NULL, str);
-  }
 
   else if (NextLogType() == L_MESSAGE)
     InformUser(NULL, str);

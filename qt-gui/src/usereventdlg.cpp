@@ -36,6 +36,7 @@
 #include <qapplication.h>
 #include <qpopupmenu.h>
 #include <qtextcodec.h>
+#include <qwhatsthis.h>
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
@@ -100,7 +101,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2+10);
   layt->addWidget(nfoTimezone);
 
-  popupCharset = new QPopupMenu(this);
+  popupEncoding = new QPopupMenu(this);
   btnSecure = new QPushButton(this);
   QToolTip::add(btnSecure, tr("Secure channel information"));
   layt->addWidget(btnSecure);
@@ -115,12 +116,13 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QToolTip::add(btnInfo, tr("Show User Info"));
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
-  btnCharset = new QPushButton(this);
-  btnCharset->setPixmap(mainwin->pmCharset);
-  QToolTip::add(btnCharset, tr("Change User Character Set"));
-  btnCharset->setPopup(popupCharset);
+  btnEncoding = new QPushButton(this);
+  btnEncoding->setPixmap(mainwin->pmEncoding);
+  QToolTip::add(btnEncoding, tr("Change user text encoding"));
+  QWhatsThis::add(btnEncoding, tr("This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language."));
+  btnEncoding->setPopup(popupEncoding);
 
-  layt->addWidget(btnCharset);
+  layt->addWidget(btnEncoding);
 
   tmrTime = NULL;
 
@@ -134,19 +136,19 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
       setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
     SetGeneralInfo(u);
 
-    // restore prefered charset
+    // restore prefered encoding
     codec = UserCodec::codecForICQUser(u);
 
     gUserManager.DropUser(u);
   }
 
   QString codec_name = QString( codec->name() ).lower();
-  popupCharset->setCheckable(true);
+  popupEncoding->setCheckable(true);
   QStringList enc = UserCodec::encodings();
   for (uint i=0; i < enc.count(); i++) {
-    popupCharset->insertItem(enc[i], this, SLOT(slot_setCharset(int)), 0, i);
+    popupEncoding->insertItem(enc[i], this, SLOT(slot_setEncoding(int)), 0, i);
     if (UserCodec::encodingForName(enc[i]).lower() == codec_name)
-      popupCharset->setItemChecked(i, true);
+      popupEncoding->setItemChecked(i, true);
   }
 
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
@@ -156,27 +158,27 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   top_lay->addWidget(mainWidget);
 }
 
-void UserEventCommon::slot_setCharset(int charset_index) {
+void UserEventCommon::slot_setEncoding(int encoding_index) {
   /* uncheck all encodings */
-  for (unsigned int i=0; i<popupCharset->count(); i++) {
-    popupCharset->setItemChecked(popupCharset->idAt(i), false);
+  for (unsigned int i=0; i<popupEncoding->count(); i++) {
+    popupEncoding->setItemChecked(popupEncoding->idAt(i), false);
   }
 
-  /* initialize a codec according to the charset menu's value */
-  if ((charset_index >= 0) && ((uint)charset_index < UserCodec::encodings().count())) {
-    codec = QTextCodec::codecForName(UserCodec::encodingForIndex((uint) charset_index).latin1());
+  /* initialize a codec according to the encoding menu's value */
+  if ((encoding_index >= 0) && ((uint)encoding_index < UserCodec::encodings().count())) {
+    codec = QTextCodec::codecForName(UserCodec::encodingForIndex((uint) encoding_index).latin1());
 
-    /* make the chosen charset checked */
-    popupCharset->setItemChecked(charset_index, true);
+    /* make the chosen encoding checked */
+    popupEncoding->setItemChecked(encoding_index, true);
 
     /* save prefered character set */
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
     if (u != NULL) {
-      u->SetUserCharset( codec->name() );
+      u->SetUserEncoding( codec->name() );
       gUserManager.DropUser(u);
     }
 
-    emit charsetChanged();
+    emit encodingChanged();
   }
 }
 
@@ -378,11 +380,11 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   else
     gUserManager.DropUser(u);
 
-  connect(this, SIGNAL(charsetChanged()), this, SLOT(slot_setCharset()));
+  connect(this, SIGNAL(encodingChanged()), this, SLOT(slot_setEncoding()));
 }
 
 
-void UserViewEvent::slot_setCharset() {
+void UserViewEvent::slot_setEncoding() {
   /* if we have an open view, refresh it */
   if (this->msgView) {
     slot_printMessage(this->msgView->selectedItem());

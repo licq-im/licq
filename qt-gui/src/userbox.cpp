@@ -425,7 +425,8 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
     if (isGroupItem())
     {
       QFont f(p->font());
-      f.setPointSize(f.pointSize() - 2);
+      if(f.pointSize() > 2)
+        f.setPointSize(f.pointSize() - 2);
       p->setFont(f);
     }
 

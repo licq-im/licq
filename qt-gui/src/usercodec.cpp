@@ -54,14 +54,14 @@ const char * UserCodec::encodings_array[][2] = {
 
 QTextCodec* UserCodec::codecForICQUser(ICQUser *u) {
 
-  char* preferred_charset = u->UserCharset();
+  char *preferred_encoding = u->UserEncoding();
 
-  if ( preferred_charset && *preferred_charset ) {
-      if (QTextCodec * codec = QTextCodec::codecForName(preferred_charset))
+  if ( preferred_encoding && *preferred_encoding ) {
+      if (QTextCodec * codec = QTextCodec::codecForName(preferred_encoding))
         return codec;
   }
 
-  // resturn default charset
+  // resturn default encoding
   return QTextCodec::codecForLocale();
 }
 

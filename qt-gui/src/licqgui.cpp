@@ -228,7 +228,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
   }
 
 #ifndef USE_KDE
-  char buf[64];
+  char buf[500];
   snprintf(buf, sizeof(buf), "%s/licq_qt-gui.style", BASE_DIR);
 
   QStyle *style = SetStyle(styleName);
