@@ -1,5 +1,105 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name></name>
+    <message>
+        <source>KDE default</source>
+        <translation>KDE-oletus</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation>ei mitään</translation>
+    </message>
+</context>
+<context>
+    <name>@default</name>
+    <message>
+        <source>File(s): </source>
+        <translation>Tiedosto(t): </translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Selaa</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Muokkaa</translation>
+    </message>
+    <message>
+        <source> - File Transfer</source>
+        <translation>- tiedostonsiirto</translation>
+    </message>
+    <message>
+        <source>Select files to send</source>
+        <translation>Valitse lähetettävät tiedostot</translation>
+    </message>
+    <message>
+        <source>You must specify a file to transfer!</source>
+        <translation>Sinun tulee valita tiedosto joka siirretään!</translation>
+    </message>
+    <message>
+        <source>File transfer with %2 refused:
+%3</source>
+        <translation>%2 kieltäytyi vastaanottamasta tiedostoa:
+%3</translation>
+    </message>
+    <message>
+        <source>Multiparty: </source>
+        <translation>Ryhmä: </translation>
+    </message>
+    <message>
+        <source>Invite</source>
+        <translation>Kutsu</translation>
+    </message>
+    <message>
+        <source> - Chat Request</source>
+        <translation>- chat-pyyntö</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Tyhjennä</translation>
+    </message>
+    <message>
+        <source>Chat with %2 refused:
+%3</source>
+        <translation>%2 kieltäytyi chatistä:
+%3</translation>
+    </message>
+    <message>
+        <source>Drag Users Here - Right Click for Options</source>
+        <translation>Raahaa käyttäjät tähän - valikko oikeasta napista</translation>
+    </message>
+    <message>
+        <source> - Contact List</source>
+        <translation>- kontaktilista</translation>
+    </message>
+    <message>
+        <source>Phone : </source>
+        <translation>Puhelin : </translation>
+    </message>
+    <message>
+        <source>Chars left : </source>
+        <translation>Kirjaimia jäljellä : </translation>
+    </message>
+    <message>
+        <source> - SMS</source>
+        <translation>- SMS</translation>
+    </message>
+    <message>
+        <source>You didn&apos;t edit the SMS.
+Do you really want to send it?</source>
+        <translation>Et muokannut SMS:ää.
+Haluatko varmasti lähettää sen?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Kyllä</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;En</translation>
+    </message>
+</context>
+<context>
     <name>AddUserDlg</name>
     <message>
         <source>&amp;Alert User</source>
@@ -20,6 +120,10 @@
     <message>
         <source>Licq - Add User</source>
         <translation>Licq - Lisää käyttäjä</translation>
+    </message>
+    <message>
+        <source>New User Id:</source>
+        <translation>Uuden käyttäjän id:</translation>
     </message>
 </context>
 <context>
@@ -55,6 +159,10 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Peruuta</translation>
+    </message>
+    <message>
+        <source>Authorize which user (Id):</source>
+        <translation>Valtuuta käyttäjä (id):</translation>
     </message>
 </context>
 <context>
@@ -97,6 +205,29 @@ Voit jättää minulle viestin.
     </message>
 </context>
 <context>
+    <name>CEditFileListDlg</name>
+    <message>
+        <source>Licq - Files to send</source>
+        <translation>Licq - lähetettävät tiedostot</translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation>&amp;Valmis</translation>
+    </message>
+    <message>
+        <source>&amp;Up</source>
+        <translation>&amp;Ylös</translation>
+    </message>
+    <message>
+        <source>&amp;Down</source>
+        <translation>&amp;Alas</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation>&amp;Poista</translation>
+    </message>
+</context>
+<context>
     <name>CFileDlg</name>
     <message>
         <source>Licq - File Transfer (%1)</source>
@@ -120,7 +251,7 @@ Voit jättää minulle viestin.
     </message>
     <message>
         <source>Time:</source>
-        <translation>Kello:</translation>
+        <translation>Aika:</translation>
     </message>
     <message>
         <source>ETA:</source>
@@ -284,6 +415,14 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
         <source>Retry</source>
         <translation>Yritä uudelleen</translation>
     </message>
+    <message>
+        <source>&amp;Open</source>
+        <translation>&amp;Avaa</translation>
+    </message>
+    <message>
+        <source>O&amp;pen Dir</source>
+        <translation>Avaa &amp;hakemisto</translation>
+    </message>
 </context>
 <context>
     <name>CForwardDlg</name>
@@ -371,7 +510,7 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
     </message>
     <message>
         <source>Multiple Recipient URL</source>
-        <translation>URL:n massalähetys</translation>
+        <translation>URLin massalähetys</translation>
     </message>
     <message>
         <source>Multiple Recipient Contact List</source>
@@ -391,7 +530,7 @@ Katso tarkempia tietoja Verkkoikkunasta.</translation>
     </message>
     <message>
         <source>Sending mass URL to %1...</source>
-        <translation>Massa-URL:ia lähetetään käyttäjälle %1...</translation>
+        <translation>Massa-URLia lähetetään käyttäjälle %1...</translation>
     </message>
     <message>
         <source>Sending mass list to %1...</source>
@@ -1042,6 +1181,20 @@ rekisteröi uusi käyttäjä.</translation>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation>&lt;hr&gt;&lt;p&gt; Lisää tietoa saat Licq:n webbisivulta (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation>Licq ei löydä selainohjelmaa sisäisen virheen vuoksi.</translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation>Licq ei voi käynnistää selaintasi ja avata URLia.
+Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1822,6 +1975,10 @@ ryhmän &apos;%1&apos;?</translation>
         <source>(cancelled)</source>
         <translation>(peruutettu)</translation>
     </message>
+    <message>
+        <source>System Server Message</source>
+        <translation>Järjestelmäviesti palvelimelta</translation>
+    </message>
 </context>
 <context>
     <name>HintsDlg</name>
@@ -1967,19 +2124,6 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
 </source>
         <translation>&lt;font color=&quot;blue&quot;&gt;Salattu yhteys suljettu.&lt;/font&gt;
 </translation>
-    </message>
-</context>
-<context>
-    <name>MLView</name>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation>Licq ei löydä selainohjelmaa sisäisen virheen vuoksi.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation>Licq ei voi käynnistää selaintasi ja avata URL:ia.
-Sinun tarvitsee käynnistää selain ja avata URL käsin.</translation>
     </message>
 </context>
 <context>
@@ -2644,14 +2788,6 @@ Voit käyttää seuraavia parametrejä:
         <translation>Näytä &quot;--online--&quot; ja &quot;--offline--&quot; palkit kontaktilistalla</translation>
     </message>
     <message>
-        <source>Sort Online Users by Status</source>
-        <translation>Järjestä Online-käyttäjät tilan mukaan</translation>
-    </message>
-    <message>
-        <source>Sort all online users by their actual status</source>
-        <translation>Järjestä kaikki käyttäjät tilan mukaan</translation>
-    </message>
-    <message>
         <source>Always show online notify users</source>
         <translation>Näytä aina online-huomatut käyttäjät</translation>
     </message>
@@ -2727,7 +2863,7 @@ Voit käyttää seuraavia parametrejä:
     </message>
     <message>
         <source>Hot key: </source>
-        <translation>Pikanäppäin:</translation>
+        <translation>Pikanäppäin: </translation>
     </message>
     <message>
         <source>Hotkey pops up the next pending message
@@ -2780,7 +2916,7 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     </message>
     <message>
         <source>Url Viewer:</source>
-        <translation>Url-näyttäjä:</translation>
+        <translation>URLin näyttäjä:</translation>
     </message>
     <message>
         <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
@@ -2845,6 +2981,40 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     <message>
         <source>Previous Message</source>
         <translation>Edellinen viesti</translation>
+    </message>
+    <message>
+        <source>Tabbed Chatting</source>
+        <translation>Välilehdet viesti-ikkunassa</translation>
+    </message>
+    <message>
+        <source>Use tabs in Send Window</source>
+        <translation>Käytä välilehtiä viesti-ikkunassa</translation>
+    </message>
+    <message>
+        <source>Additional &amp;sorting:</source>
+        <translation>Lisäjärje&amp;stys:</translation>
+    </message>
+    <message>
+        <source>status</source>
+        <translation>tila</translation>
+    </message>
+    <message>
+        <source>status + last event</source>
+        <translation>tila + viimeisin tapahtuma</translation>
+    </message>
+    <message>
+        <source>status + new messages</source>
+        <translation>tila + uudet viestit</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;none:&lt;/b&gt; - Don&apos;t sort online users by Status&lt;br&gt;
+&lt;b&gt;status&lt;/b&gt; - Sort online users by status&lt;br&gt;
+&lt;b&gt;status + last event&lt;/b&gt; - Sort online users by status and by last event&lt;br&gt;
+&lt;b&gt;status + new messages&lt;/b&gt; - Sort online users by status and number of new messages</source>
+        <translation>&lt;b&gt;ei mitään:&lt;/b&gt; - Älä järjestä online-käyttäjiä tilan mukaan&lt;br&gt;
+&lt;b&gt;tila&lt;/b&gt; - Järjestä online-käyttäjät tilan mukaan&lt;br&gt;
+&lt;b&gt;tila + viimeisin tapahtuma&lt;/b&gt; - Järjestä online-käyttäjät tilan ja viimeisen tapahtuman mukaan&lt;br&gt;
+&lt;b&gt;tila + uudet viestit&lt;/b&gt; - Järjestä online-käyttäjät tilan ja tulleiden viestien lukumäärän mukaan</translation>
     </message>
 </context>
 <context>
@@ -3028,6 +3198,10 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     <message>
         <source>User Registration in Progress...</source>
         <translation>Rekisteröinti käynnissä...</translation>
+    </message>
+    <message>
+        <source>Invalid password, must be between 1 and 8 characters.</source>
+        <translation>Kelvoton salasana, pituus täytyy olla 1-8 kirjainta.</translation>
     </message>
 </context>
 <context>
@@ -3675,10 +3849,6 @@ Laajennusikonisarja &apos;%2&apos; on poissa käytöstä.</translation>
         <translation>&amp;Tallenna</translation>
     </message>
     <message>
-        <source>Retrieve</source>
-        <translation>Hae</translation>
-    </message>
-    <message>
         <source>&amp;Menu</source>
         <translation>&amp;Valikko</translation>
     </message>
@@ -3910,7 +4080,7 @@ Kuvaus: %2</translation>
     </message>
     <message>
         <source>Sorry, history is disabled for this person.</source>
-        <translation>Valitettavasti historia on otettu pois päältä tältä henkilöltä.</translation>
+        <translation>Valitettavasti historia ei ole toiminnassa tälle henkilölle.</translation>
     </message>
     <message>
         <source>server</source>
@@ -3958,7 +4128,7 @@ olla yhteys ICQ-verkkoon.</translation>
     </message>
     <message>
         <source>Updating server...</source>
-        <translation>Palvelinta päivitetään...</translation>
+        <translation>Päivitetään palvelinta...</translation>
     </message>
     <message>
         <source>error</source>
@@ -3976,30 +4146,54 @@ olla yhteys ICQ-verkkoon.</translation>
         <source>timed out</source>
         <translation>aikakatkaistu</translation>
     </message>
+    <message>
+        <source>&amp;Retrieve</source>
+        <translation>&amp;Hae</translation>
+    </message>
+    <message>
+        <source>S&amp;end</source>
+        <translation>Läh&amp;etä</translation>
+    </message>
+    <message>
+        <source>Keep Alias on Update</source>
+        <translation>Säilytä käyttäjänimi päivitettäessä</translation>
+    </message>
+    <message>
+        <source>Normally Licq overwrites the Alias when updating user details.
+Check this if you want to keep your changes to the Alias.</source>
+        <translation>Normaalisti Licq ylikirjoittaa käyttäjänimen päivitettäessä käyttäjän tietoja.
+Valitse tämä jos haluat säilyttää tekemäsi muutokset käyttäjänimessä.</translation>
+    </message>
 </context>
 <context>
-    <name>UserSendChatEvent</name>
+    <name>UserSelectDlg</name>
     <message>
-        <source>Multiparty: </source>
-        <translation>Ryhmä:</translation>
+        <source>&amp;User:</source>
+        <translation>&amp;Käyttäjä:</translation>
     </message>
     <message>
-        <source>Invite</source>
-        <translation>Kutsu</translation>
+        <source>&amp;Password:</source>
+        <translation>&amp;Salasana:</translation>
     </message>
     <message>
-        <source> - Chat Request</source>
-        <translation>- chat-pyyntö</translation>
+        <source>&amp;Save Password</source>
+        <translation>&amp;Tallenna salasana</translation>
     </message>
     <message>
-        <source>Clear</source>
-        <translation>Tyhjennä</translation>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation>%2 kieltäytyi chatistä:
-%3</translation>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Peruuta</translation>
+    </message>
+    <message>
+        <source>Licq User Select</source>
+        <translation>Licq-käyttäjän valinta</translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -4144,50 +4338,6 @@ palvelimen kautta!</translation>
     </message>
 </context>
 <context>
-    <name>UserSendContactEvent</name>
-    <message>
-        <source>Drag Users Here - Right Click for Options</source>
-        <translation>Raahaa käyttäjät tähän - valikko oikeasta napista</translation>
-    </message>
-    <message>
-        <source> - Contact List</source>
-        <translation>- kontaktilista</translation>
-    </message>
-</context>
-<context>
-    <name>UserSendFileEvent</name>
-    <message>
-        <source>File(s): </source>
-        <translation>Tiedosto(t):</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation>Selaa</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation>Muokkaa</translation>
-    </message>
-    <message>
-        <source> - File Transfer</source>
-        <translation>- tiedostonsiirto</translation>
-    </message>
-    <message>
-        <source>Select files to send</source>
-        <translation>Valitse lähetettävät tiedostot</translation>
-    </message>
-    <message>
-        <source>You must specify a file to transfer!</source>
-        <translation>Sinun tulee antaa tiedosto joka siirretään!</translation>
-    </message>
-    <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation>%2 kieltäytyi vastaanottamasta tiedostoa:
-%3</translation>
-    </message>
-</context>
-<context>
     <name>UserSendMsgEvent</name>
     <message>
         <source> - Message</source>
@@ -4209,39 +4359,10 @@ Haluatko varmasti lähettää sen?</translation>
     </message>
 </context>
 <context>
-    <name>UserSendSmsEvent</name>
-    <message>
-        <source>Phone : </source>
-        <translation>Puhelin :</translation>
-    </message>
-    <message>
-        <source>Chars left : </source>
-        <translation>Kirjaimia jäljellä :</translation>
-    </message>
-    <message>
-        <source> - SMS</source>
-        <translation>- SMS</translation>
-    </message>
-    <message>
-        <source>You didn&apos;t edit the SMS.
-Do you really want to send it?</source>
-        <translation>Et muokannut SMS:ää.
-Haluatko varmasti lähettää sen?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation>&amp;Kyllä</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation>&amp;En</translation>
-    </message>
-</context>
-<context>
     <name>UserSendUrlEvent</name>
     <message>
         <source>URL : </source>
-        <translation>URL :</translation>
+        <translation>URL : </translation>
     </message>
     <message>
         <source> - URL</source>
@@ -4249,7 +4370,7 @@ Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
         <source>No URL specified</source>
-        <translation>URL:ia ei määritelty</translation>
+        <translation>URLia ei määritelty</translation>
     </message>
 </context>
 <context>
@@ -4339,10 +4460,6 @@ Pyyntö peruutettiin.</translation>
     <message>
         <source>File Transfer</source>
         <translation>Tiedostonsiirto</translation>
-    </message>
-    <message>
-        <source>View URL failed</source>
-        <translation>URL:ia ei voi näyttää</translation>
     </message>
 </context>
 <context>
