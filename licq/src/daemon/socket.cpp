@@ -322,9 +322,10 @@ bool INetSocket::OpenConnection(void)
     return(false);
   }
 
-  // This should always work if this above calls worked
-  if (!SetAddrsFromSocket(ADDR_LOCAL | ADDR_REMOTE)) return (false);
+  if (m_nSockType != SOCK_STREAM) return true;
 
+  if (!SetAddrsFromSocket(ADDR_LOCAL | ADDR_REMOTE))
+    return (false);
   return (true);
 }
 
