@@ -1,8 +1,8 @@
 #ifndef MMBOX_H
 #define MMBOX_H
 
-#include <vector.h>
-#include <list.h>
+#include <vector>
+#include <list>
 
 #include <qlistview.h>
 #include <qtooltip.h>

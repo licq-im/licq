@@ -313,7 +313,7 @@ void UserEventCommon::showHistory()
 
 void UserEventCommon::showUserInfo()
 {
-  mainwin->callInfoTab(mnuUserGeneral, m_nUin, true);
+ mainwin->callInfoTab(mnuUserGeneral, m_nUin, true);
 }
 
 void UserEventCommon::slot_security()
@@ -1037,7 +1037,7 @@ void UserSendCommon::windowActivationChange(bool oldActive)
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     if (u != NULL && u->NewMessages() > 0)
     {
-      vector<int> idList;
+      std::vector<int> idList;
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
         CUserEvent *e = u->EventPeek(i);
