@@ -100,11 +100,12 @@ void IconManager::X11Init()
   setMinimumWidth(wharfIcon->width());
   setMinimumHeight(wharfIcon->height());
 #else
-  iconify();
+  //iconify();
 #endif
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
   show();
+  setWFlags(WState_Withdrawn);
 }
 
 
@@ -143,29 +144,6 @@ void IconManager::paintEvent( QPaintEvent * )
   painter.drawPixmap(0, 0, *wharfIcon->vis);
   painter.end();
 }
-
-#if 0
-void IconManager::mousePressEvent(QMouseEvent *m)
-{
-#ifdef DEBUG_WHARF
-  printf("icon press\n");
-#endif
-
-  if (m->button() != LeftButton) return;
-
-  mouseX = m->x();
-  mouseY = m->y();
-}
-
-void IconManager::mouseMoveEvent(QMouseEvent *m)
-{
-  if (!(m->state() | LeftButton)) return;
-
-  int deltaX = m->x() - mouseX;
-  int deltaY = m->y() - mouseY;
-  move(x() + deltaX, y() + deltaY);
-}
-#endif
 
 
 
@@ -207,13 +185,13 @@ void IconManager_Default::SetDockIconStatus()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   switch (o->Status())
   {
-  case ICQ_STATUS_ONLINE: m = QPixmap((const char **)iconOnline_xpm); break;
-  case ICQ_STATUS_AWAY: m = QPixmap((const char **)iconAway_xpm); break;
-  case ICQ_STATUS_NA: m = QPixmap((const char **)iconNA_xpm); break;
-  case ICQ_STATUS_OCCUPIED: m = QPixmap((const char **)iconOccupied_xpm); break;
-  case ICQ_STATUS_DND: m = QPixmap((const char **)iconDND_xpm); break;
-  case ICQ_STATUS_FREEFORCHAT: m = QPixmap((const char **)iconFFC_xpm); break;
-  case ICQ_STATUS_OFFLINE: m = QPixmap((const char **)iconOffline_xpm); break;
+    case ICQ_STATUS_ONLINE: m = QPixmap((const char **)iconOnline_xpm); break;
+    case ICQ_STATUS_AWAY: m = QPixmap((const char **)iconAway_xpm); break;
+    case ICQ_STATUS_NA: m = QPixmap((const char **)iconNA_xpm); break;
+    case ICQ_STATUS_OCCUPIED: m = QPixmap((const char **)iconOccupied_xpm); break;
+    case ICQ_STATUS_DND: m = QPixmap((const char **)iconDND_xpm); break;
+    case ICQ_STATUS_FREEFORCHAT: m = QPixmap((const char **)iconFFC_xpm); break;
+    case ICQ_STATUS_OFFLINE: m = QPixmap((const char **)iconOffline_xpm); break;
   }
   if (o->StatusInvisible()) m = QPixmap((const char **)iconInvisible_xpm);
   gUserManager.DropOwner();
@@ -253,13 +231,13 @@ QPixmap *IconManager_Default::GetDockIconStatusIcon()
   gUserManager.DropOwner();
   switch (s)
   {
-  case ICQ_STATUS_ONLINE: return &wharfIcon->mainwin->pmOnline;
-  case ICQ_STATUS_AWAY: return &wharfIcon->mainwin->pmAway;
-  case ICQ_STATUS_NA: return &wharfIcon->mainwin->pmNa;
-  case ICQ_STATUS_OCCUPIED: return &wharfIcon->mainwin->pmOccupied;
-  case ICQ_STATUS_DND: return &wharfIcon->mainwin->pmDnd;
-  case ICQ_STATUS_FREEFORCHAT: return &wharfIcon->mainwin->pmChat;
-  case ICQ_STATUS_OFFLINE: return &wharfIcon->mainwin->pmOffline;
+    case ICQ_STATUS_ONLINE: return &wharfIcon->mainwin->pmOnline;
+    case ICQ_STATUS_AWAY: return &wharfIcon->mainwin->pmAway;
+    case ICQ_STATUS_NA: return &wharfIcon->mainwin->pmNa;
+    case ICQ_STATUS_OCCUPIED: return &wharfIcon->mainwin->pmOccupied;
+    case ICQ_STATUS_DND: return &wharfIcon->mainwin->pmDnd;
+    case ICQ_STATUS_FREEFORCHAT: return &wharfIcon->mainwin->pmChat;
+    case ICQ_STATUS_OFFLINE: return &wharfIcon->mainwin->pmOffline;
   }
   return NULL;
 }
@@ -652,24 +630,4 @@ void WharfIcon::paintEvent( QPaintEvent * )
   painter.end();
 }
 
-#if 0
-void WharfIcon::mousePressEvent(QMouseEvent *m)
-{
-#ifdef DEBUG_WHARF
-  printf("wharf press\n");
-#endif
-  ((IconManager *)parentWidget())->mousePressEvent(m);
-  /*mouseX = m->x();
-  mouseY = m->y();*/
-}
-
-
-void WharfIcon::mouseMoveEvent(QMouseEvent *m)
-{
-  ((IconManager *)parentWidget())->mouseMoveEvent(m);
-/*  int deltaX = m->x() - mouseX;
-  int deltaY = m->y() - mouseY;
-  move(x() + deltaX, y() + deltaY);*/
-}
-#endif
 

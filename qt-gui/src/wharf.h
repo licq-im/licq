@@ -25,10 +25,6 @@ public:
 protected:
   virtual void mouseReleaseEvent (QMouseEvent *);
   virtual void paintEvent (QPaintEvent *);
-#if 0
-  virtual void mouseMoveEvent (QMouseEvent *);
-  virtual void mousePressEvent (QMouseEvent *);
-#endif
   QPixmap *vis;
   class CMainWindow *mainwin;
   QPopupMenu *menu;
@@ -48,10 +44,6 @@ public:
 protected:
   void X11Init();
   virtual void mouseReleaseEvent(QMouseEvent *);
-#if 0
-  virtual void mouseMoveEvent (QMouseEvent *);
-  virtual void mousePressEvent (QMouseEvent *);
-#endif
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
 #ifdef USE_KDE
