@@ -30,7 +30,7 @@ TRANSLATIONS = ru_RU.KOI8-R.qm
 SUFFIXES = .po
 
 .PHONY: all clean distclean install
-all: merge qm
+all: merge 
 
 clean:
 	$(RM) template.po *.qm
@@ -43,12 +43,10 @@ merge: template.po
 	  $(MERGETR) $$i template.po; \
 	done
 
-qm: merge $(TRANSLATIONS)
-
-install: 
+install: $(TRANSLATIONS)
 	$(MKINSTALLDIRS) $(sharedir)
 	for i in *.qm; do \
-	  $(INSTALL_DATA) $$i $(sharedir)/$$i; \
+	  $(INSTALL_DATA) $$i $(sharedir)/locale/$$i; \
 	done
 
 template.po:
