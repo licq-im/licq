@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <assert.h>
 #include "time-fix.h"
 
 #ifdef HAVE_ERRNO_H

@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
+#include <assert.h>
 
 #include <algorithm>
 

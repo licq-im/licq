@@ -1531,7 +1531,7 @@ void ICQUser::SetStatusOffline()
    days.  Returns -1 if not, or the number of days until their bday */
 int ICQUser::Birthday(unsigned short nRange)
 {
-  static const char nMonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+  static const unsigned char nMonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
   time_t t = time(NULL);
   struct tm *ts = localtime(&t);

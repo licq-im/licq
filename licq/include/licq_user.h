@@ -234,7 +234,7 @@ public:
   char GetLanguage3()                   {  return m_nLanguage[2];  }
   //!Retrieves the user's language as specified by the parameter.
   //!Useful when retrieving their languages in a loop.
-  char GetLanguage(const char l)        {  return m_nLanguage[l];  }
+  char GetLanguage(unsigned char l)        {  return m_nLanguage[l];  }
 
   // Work Info
   //!Retrieves the city of the company the user is employed by.
@@ -335,7 +335,7 @@ public:
   void SetLanguage1 (const char n)           {  m_nLanguage[0] = n;  SaveMoreInfo();  }
   void SetLanguage2 (const char n)           {  m_nLanguage[1] = n;  SaveMoreInfo();  }
   void SetLanguage3 (const char n)           {  m_nLanguage[2] = n;  SaveMoreInfo();  }
-  void SetLanguage (const char l, const char n) {  m_nLanguage[l] = n;  SaveMoreInfo();  }
+  void SetLanguage (unsigned char l, char n) {  m_nLanguage[l] = n;  SaveMoreInfo();  }
 
   // Work Info
   void SetCompanyCity (const char *n)        {  SetString(&m_szCompanyCity, n);  SaveWorkInfo();  }
