@@ -2,6 +2,10 @@
 <context>
     <name>AddUserDlg</name>
     <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;ОК</translation>
+    </message>
+    <message>
         <source>Licq - Add User</source>
         <translation>Licq - Добавление пользователя</translation>
     </message>
@@ -11,7 +15,7 @@
     </message>
     <message>
         <source>&amp;Alert User</source>
-        <translation>&amp;Оповестить пользователя</translation>
+        <translation>Опо&amp;вестить пользователя</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -413,12 +417,8 @@ See Network Window for details.</source>
 <context>
     <name>CMainWindow</name>
     <message>
-        <source> </source>
-        <translation> </translation>
-    </message>
-    <message>
         <source>s</source>
-        <translation> </translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ok</source>
@@ -1465,57 +1465,6 @@ Double click - Show next message</source>
     <message>
         <source>Window:</source>
         <translation>Окно:</translation>
-    </message>
-</context>
-<context>
-    <name>ChangePassDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation>&amp;ОК</translation>
-    </message>
-    <message>
-        <source>&amp;UIN:</source>
-        <translation>&amp;UIN</translation>
-    </message>
-    <message>
-        <source>Enter your UIN here.</source>
-        <translation>Введите Ваш UIN.</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation>Повторно введите Ваш пароль ICQ.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation>Пароли не совпадают, повторите еще.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation>Неправильный пароль, должен быть не больше 8 символов.</translation>
-    </message>
-    <message>
-        <source>Login Information</source>
-        <translation>Информация входа в систему</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation>Отм&amp;ена</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation>&amp;Пароль:</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation>&amp;Проверка:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation>Введите Ваш пароль ICQ.</translation>
-    </message>
-    <message>
-        <source>Licq - Set UIN/Password</source>
-        <translation>Licq - Установка UIN/пароля</translation>
     </message>
 </context>
 <context>
@@ -2894,73 +2843,6 @@ The following parameters can be used:
     </message>
 </context>
 <context>
-    <name>PasswordDlg</name>
-    <message>
-        <source>error</source>
-        <translation>ошибка</translation>
-    </message>
-    <message>
-        <source>Set Password [Setting...</source>
-        <translation>Пароль ICQ [Устанавливается...</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation>время вышло</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation>Введите здесь свой ICQ пароль для проверки.</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation>неудачно</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation>Пароли не совпадают, попробуйте еще раз.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation>Пароль должен быть не больше 8 символов.</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation>Пароль</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation>&amp;Отменить</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation>&amp;Пароль:</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation>&amp;Обновить</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation>&amp;Еще раз:</translation>
-    </message>
-    <message>
-        <source>Set Password</source>
-        <translation>Установка ICQ пароля</translation>
-    </message>
-    <message>
-        <source>ICQ Password [Setting...]</source>
-        <translation>Пароль ICQ [Устанавливается...]</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation>Введите здесь ваш ICQ пароль.</translation>
-    </message>
-    <message>
-        <source>Licq - Set Password</source>
-        <translation>Licq - Установка пароля</translation>
-    </message>
-</context>
-<context>
     <name>PluginDlg</name>
     <message>
         <source>Id</source>
@@ -3789,10 +3671,6 @@ ICQ Network to change the settings.</source>
         <translation>Требуется авторизация</translation>
     </message>
     <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; ischecked.</source>
-        <translation>Введите UIN, который Вы хотите использовать.  Доступно только если опция &quot;Сохранять только локально&quot; установлена.</translation>
-    </message>
-    <message>
         <source>Internal error while changing password.</source>
         <translation>Произошла внутренняя ошибка при смене пароля.</translation>
     </message>
@@ -3813,12 +3691,16 @@ ICQ Network to change the settings.</source>
         <translation>Не удалось сменить пароль.</translation>
     </message>
     <message>
-        <source>&amp;Verify</source>
-        <translation>&amp;Проверка</translation>
+        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
+        <translation>Введите UIN, который Вы хотите использовать.  Доступно, только если включена опция &quot;Сохранять только локально&quot;.</translation>
     </message>
     <message>
         <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
         <translation>Эта опция позволяет скрыть ваш IP адрес. Но при этом она не гарантирует, что его невозможно будет узнать.</translation>
+    </message>
+    <message>
+        <source>&amp;Verify:</source>
+        <translation>&amp;Проверка пароля:</translation>
     </message>
     <message>
         <source>Setting security options failed.</source>
