@@ -23,6 +23,7 @@
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qlabel.h>
+#include <qlayout.h>
 
 #include "authuserdlg.h"
 
@@ -31,36 +32,38 @@
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
   : QDialog(parent, name)
 {
-   server = s;
-   setCaption(tr("Licq"));
-   resize(340, 100);
-   lblUin = new QLabel(tr("Authorize which user (UIN):"), this);
-   lblUin->setGeometry(10, 15, 160, 20);
-   edtUin = new QLineEdit(this);
-   edtUin->setGeometry(180, 15, 120, 20);
-   edtUin->setValidator(new QIntValidator(0, 2147483647, edtUin));
-   btnOk = new QPushButton(tr("&Ok"), this);
-   btnOk->setGeometry(80, 60, 80, 30);
-   btnCancel = new QPushButton(tr("&Cancel"), this);
-   btnCancel->setGeometry(180, 60, 80, 30);
-   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
-   connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
-   connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
-}
+  server = s;
+  setCaption(tr("Licq - Authorisation"));
+  QBoxLayout* toplay = new QVBoxLayout(this, 8, 8);
+  QBoxLayout* lay = new QHBoxLayout(toplay);
 
+  lblUin = new QLabel(tr("Authorize which user (UIN):"), this);
+  lay->addWidget(lblUin);
+  edtUin = new QLineEdit(this);
+  edtUin->setMinimumWidth(90);
+  lay->addWidget(edtUin);
+  edtUin->setValidator(new QIntValidator(100000, 2147483647, edtUin));
+  toplay->addSpacing(20);
+  toplay->addStretch(2);
+  lay = new QHBoxLayout(toplay);
+  lay->addStretch(1);
+  btnOk = new QPushButton(tr("&Ok"), this);
+  btnOk->setMinimumWidth(75);
+  lay->addWidget(btnOk);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  btnCancel->setMinimumWidth(75);
+  lay->addWidget(btnCancel);
+  connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
+  connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
+  connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
 
-void AuthUserDlg::show()
-{
-  edtUin->setText("");
   edtUin->setFocus();
-  QDialog::show();
 }
 
 
-void AuthUserDlg::hide()
+void AuthUserDlg::hideEvent(QHideEvent*)
 {
-   QDialog::hide();
-   delete this;
+  close(true);
 }
 
 

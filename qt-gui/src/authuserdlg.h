@@ -20,8 +20,7 @@ protected:
    QLabel *lblUin;
    QLineEdit *edtUin;
 public slots:
-   virtual void show();
-   virtual void hide();
+   void hideEvent(QHideEvent*);
 protected slots:
    void ok();
 };
