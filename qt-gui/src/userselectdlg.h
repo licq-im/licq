@@ -5,6 +5,7 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qstring.h>
+#include <qframe.h>
 
 #include "licqdialog.h"
 
@@ -28,6 +29,7 @@ protected:
   QComboBox *cmbUser;
   QLineEdit *edtPassword;
   QLabel *lblUser, *lblPassword;
+  QFrame *frmUser, *frmPassword, *frmButtons;
   
 protected slots:
   void slot_ok();

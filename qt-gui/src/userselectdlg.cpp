@@ -23,10 +23,6 @@
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
-#include <qgroupbox.h>
-#include <qwhatsthis.h>
-#include <qlineedit.h>
-#include <qlabel.h>
 #include <qcombobox.h>
 
 #include "userselectdlg.h"
@@ -34,54 +30,62 @@
 #include "licq_user.h"
 
 UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
-  : LicqDialog(parent, "UserSelectDialog", false, WStyle_ContextHelp | WDestructiveClose)
+  : LicqDialog(parent, "UserSelectDialog", true, WStyle_ContextHelp | WDestructiveClose)
 {
-  server = s;
+	server = s;
 
-  QGridLayout *lay = new QGridLayout(this, 4, 2, 10, 5);
+	QVBoxLayout *lay = new QVBoxLayout(this, 10, 5);
 
-  lblUser = new QLabel(tr("User:"), this);
-  lay->addWidget(lblUser, 0, 0);
-  cmbUser = new QComboBox(this);
-  lay->addWidget(cmbUser, 0, 1);
+	frmUser = new QFrame(this);
+	QHBoxLayout *layUser = new QHBoxLayout(frmUser);
+	lblUser = new QLabel(tr("&User:"), frmUser);
+	cmbUser = new QComboBox(frmUser);
+	lblUser->setBuddy(cmbUser);
+	layUser->addWidget(lblUser);
+	layUser->addWidget(cmbUser);
 
-  lblPassword = new QLabel(tr("Password:"), this);
-  lay->addWidget(lblPassword, 1, 0);
-  edtPassword = new QLineEdit(this);
-  edtPassword->setEchoMode(QLineEdit::Password);
-  lay->addWidget(edtPassword, 1, 1);
+	frmPassword = new QFrame(this);
+	QHBoxLayout *layPassword = new QHBoxLayout(frmPassword);
+	lblPassword = new QLabel(tr("&Password:"), frmPassword);
+	edtPassword = new QLineEdit(frmPassword);
+	edtPassword->setEchoMode(QLineEdit::Password);
+	edtPassword->setFocus();
+	lblPassword->setBuddy(edtPassword);
+	layPassword->addWidget(lblPassword);
+	layPassword->addWidget(edtPassword);
 
-  chkSavePassword = new QCheckBox(tr("&Save Password"), this);
-  lay->addMultiCellWidget(chkSavePassword, 2, 2, 0, 1);
+	chkSavePassword = new QCheckBox(tr("&Save Password"), this);
 
-  QBoxLayout *hbox = new QHBoxLayout(NULL);
-  btnOk = new QPushButton(tr("&Ok"), this);
-  hbox->addWidget(btnOk);
-  btnCancel = new QPushButton(tr("&Cancel"), this);
-  hbox->addWidget(btnCancel);
-  lay->addMultiCellLayout(hbox, 3, 3, 0, 1);
+	frmButtons = new QFrame(this);
+	QHBoxLayout *layButtons = new QHBoxLayout(frmButtons);
+	btnOk = new QPushButton(tr("&Ok"), frmButtons);
+	btnCancel = new QPushButton(tr("&Cancel"), frmButtons);
+	layButtons->addStretch();
+	layButtons->addWidget(btnOk);
+	layButtons->addSpacing(20);
+	layButtons->addWidget(btnCancel);
 
-  int bw = 75;
-  bw = QMAX(bw, btnOk->sizeHint().width());
-  bw = QMAX(bw, btnCancel->sizeHint().width());
-  btnOk->setFixedWidth(bw);
-  btnCancel->setFixedWidth(bw);
+	lay->addWidget(frmUser);
+	lay->addWidget(frmPassword);
+	lay->addWidget(chkSavePassword);
+	lay->addStretch();
+	lay->addWidget(frmButtons);
 
-  connect(cmbUser, SIGNAL(activated(const QString &)), SLOT(slot_cmbSelectUser(const QString &)));
-  connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
+	connect(cmbUser, SIGNAL(activated(const QString &)), SLOT(slot_cmbSelectUser(const QString &)));
+	connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
+	connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
 
-  setCaption(tr("Licq User Select"));
+	setCaption(tr("Licq User Select"));
 
-  // Populate the combo box
- 
-  // For now, just have one owner
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  cmbUser->insertItem(tr("%1 (%2)").arg(o->GetAlias()).arg(o->Uin()));
-  edtPassword->setText(o->Password());
-  gUserManager.DropOwner();
-    
-  show();
+	// Populate the combo box
+
+	// For now, just have one owner
+	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+	cmbUser->insertItem(tr("%1 (%2)").arg(o->GetAlias()).arg(o->Uin()));
+	edtPassword->setText(o->Password());
+	gUserManager.DropOwner();
+
+	show();
 }
 
 UserSelectDlg::~UserSelectDlg()
