@@ -118,89 +118,6 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
   show();
 }
 
-KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidget *parent)
-  : LicqDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
-{
-  m_nUin = nUin;
-  sigman = _sigman;
-  icqEventTag = 0;
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  QTextCodec *codec = UserCodec::codecForICQUser(u);
-  setCaption(tr("Licq - Secure Channel with %1").arg(codec->toUnicode(u->GetAlias())));
-
-  QBoxLayout *top_lay = new QVBoxLayout(this, 10);
-
-  QString t1 = tr("Secure channel is established using SSL\n"
-                  "with Diffie-Hellman key exchange and\n"
-                  "the TLS version 1 protocol.\n\n");
-  QString t2;
-  switch (u->SecureChannelSupport())
-  {
-    case SECURE_CHANNEL_SUPPORTED:
-      t2 = tr("The remote uses Licq %1/SSL.").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
-      if(gLicqDaemon->CryptoEnabled())
-        QTimer::singleShot(0, this, SLOT(startSend()));
-      break;
-
-    case SECURE_CHANNEL_NOTSUPPORTED:
-      t2 = tr("The remote uses Licq %1, however it\n"
-              "has no secure channel support compiled in.\n"
-              "This probably won't work.").arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
-      break;
-
-    default:
-      t2 = tr("This only works with other Licq clients >= v0.85\n"
-              "The remote doesn't seem to use such a client.\n"
-              "This might not work.");
-      break;
-  }
-
-  QLabel *lbl = new QLabel(t1 + t2, this);
-  top_lay->addWidget(lbl);
-
-  lblStatus = new QLabel(this);
-  lblStatus->setFrameStyle(QFrame::Box | QFrame::Sunken);
-  lblStatus->setAlignment(Qt::AlignCenter);
-  top_lay->addWidget(lblStatus);
-
-  QBoxLayout* lay = new QHBoxLayout(top_lay);
-  lay->addStretch(1);
-
-  btnSend = new QPushButton(tr("&Send"), this);
-  btnSend->setMinimumWidth(75);
-  btnSend->setDefault(true);
-  connect(btnSend, SIGNAL(clicked()), SLOT(startSend()));
-  lay->addWidget(btnSend);
-
-  btnCancel = new QPushButton(tr("&Close"), this);
-  btnCancel->setMinimumWidth(75);
-  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
-  lay->addWidget(btnCancel);
-
-  if (gLicqDaemon->CryptoEnabled())
-  {
-    m_bOpen = !u->Secure();
-    if (u->Secure())
-      lblStatus->setText(tr("Ready to close channel"));
-    else
-      lblStatus->setText(tr("Ready to request channel"));
-    btnSend->setFocus();
-  }
-  else
-  {
-    lblStatus->setText(tr("Client does not support OpenSSL.\n"
-                          "Rebuild Licq with OpenSSL support."));
-    btnSend->setEnabled(false);
-    btnCancel->setFocus();
-  }
-
-  gUserManager.DropUser(u);
-
-  show();
-}
-
-
 // -----------------------------------------------------------------------------
 
 KeyRequestDlg::~KeyRequestDlg()
@@ -237,13 +154,19 @@ void KeyRequestDlg::startSend()
 void KeyRequestDlg::openConnection()
 {
   //TODO fix this in daemon
-  icqEventTag = gLicqDaemon->icqOpenSecureChannel(m_nUin);
+  char *p;
+  unsigned long uin = strtoul(m_szId, &p,10);
+  if( (p == 0 || (p && !*p)) && m_nPPID == LICQ_PPID )
+    icqEventTag = gLicqDaemon->icqOpenSecureChannel(uin);
 }
 
 void KeyRequestDlg::closeConnection()
 {
   //TODO fix this in daemon
-  icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_nUin);
+  char *p;
+  unsigned long uin = strtoul(m_szId, &p,10);
+  if( (p == 0 || (p && !*p)) && m_nPPID == LICQ_PPID )
+    icqEventTag = gLicqDaemon->icqCloseSecureChannel(uin);
 }
 
 // -----------------------------------------------------------------------------
