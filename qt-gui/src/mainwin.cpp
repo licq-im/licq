@@ -1676,7 +1676,8 @@ void CMainWindow::callOwnerFunction(int index)
 
   else if (index == OwnerMenuGeneral ||
       index == OwnerMenuMore  || index == OwnerMenuWork ||
-      index == OwnerMenuAbout || index == OwnerMenuHistory)
+      index == OwnerMenuAbout || index == OwnerMenuLast ||
+      index == OwnerMenuHistory)
     callInfoTab(index, gUserManager.OwnerUin());
 
   else if (index == OwnerMenuSecurity)
@@ -1780,6 +1781,7 @@ void CMainWindow::callUserFunction(int index)
     case mnuUserMore:
     case mnuUserWork:
     case mnuUserAbout:
+    case mnuUserLast:
       callInfoTab(index, nUin);
       break;
     case mnuUserRemoveFromList:
@@ -1837,6 +1839,9 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin, bool toggle)
     case mnuUserAbout:
       tab = UserInfoDlg::AboutInfo;
       break;
+    case mnuUserLast:
+      tab = UserInfoDlg::LastCountersInfo;
+      break;
     }
     if(toggle && f->isTabShown(tab))
     {
@@ -1872,6 +1877,9 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin, bool toggle)
       break;
     case mnuUserAbout:
       f->showTab(UserInfoDlg::AboutInfo);
+      break;
+    case mnuUserLast:
+      f->showTab(UserInfoDlg::LastCountersInfo);
       break;
   }
   f->show();
@@ -2989,6 +2997,7 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertItem(tr("&Work Info"), OwnerMenuWork);
    mnuOwnerAdm->insertItem(tr("&About"), OwnerMenuAbout);
    mnuOwnerAdm->insertItem(pmHistory, tr("&History"), OwnerMenuHistory);
+   mnuOwnerAdm->insertItem(tr("&Last"), OwnerMenuLast);
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
@@ -3095,6 +3104,7 @@ void CMainWindow::initMenu()
    m->insertItem(tr("&More Info"), mnuUserMore);
    m->insertItem(tr("&Work Info"), mnuUserWork);
    m->insertItem(tr("&About"), mnuUserAbout);
+   m->insertItem(tr("&Last"), mnuUserLast);
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(pmInfo, tr("&Info"), m);
    mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);

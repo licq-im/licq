@@ -24,6 +24,7 @@ enum UserMenu {
   mnuUserMore,
   mnuUserWork,
   mnuUserAbout,
+  mnuUserLast,
   mnuUserHistory,
   mnuUserFloaty,
   mnuUserRemoveFromList
@@ -35,6 +36,7 @@ enum OwnerMenu_Identifiers {
   OwnerMenuMore = mnuUserMore,
   OwnerMenuWork = mnuUserWork,
   OwnerMenuAbout = mnuUserAbout,
+  OwnerMenuLast = mnuUserLast,
   OwnerMenuHistory = mnuUserHistory,
   OwnerMenuSecurity,
   OwnerMenuPassword,
