@@ -91,7 +91,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
 
   m_bShowOffline = true;
   m_bShowDividers = true;
-  m_nCurrentGroup = 2;
+  m_nCurrentGroup = 0;
   m_nGroupType = GROUPS_USER;
   m_cColorOnline = &aColorMaps[5];
   m_cColorAway = &aColorMaps[0];
@@ -158,6 +158,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
   m_bExit = false;
   licqDaemon = _licqDaemon;
+  m_nCurrentGroup = gUserManager.DefaultGroup();
 
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
