@@ -165,7 +165,6 @@ protected slots:
   void slot_doneregister();
   void slot_doneOwnerFcn(ICQEvent *);
   void saveOptions();
-  void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
   void showOptionsDlg();
