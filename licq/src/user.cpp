@@ -1092,7 +1092,7 @@ bool ICQUser::LoadInfo()
 void ICQUser::LoadGeneralInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_DATA_LEN];
+  char szTemp[MAX_LINE_LEN];
   m_fConf.ReadStr("Alias", szTemp, "Unknown");  SetAlias(szTemp);
   m_fConf.ReadStr("FirstName", szTemp, "");  SetFirstName(szTemp);
   m_fConf.ReadStr("LastName", szTemp, "");  SetLastName(szTemp);
@@ -1117,7 +1117,7 @@ void ICQUser::LoadGeneralInfo()
 void ICQUser::LoadMoreInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_DATA_LEN];
+  char szTemp[MAX_LINE_LEN];
   m_fConf.ReadNum("Age", m_nAge, 0);
   m_fConf.ReadNum("Gender", m_nGender, GENDER_UNSPECIFIED);
   m_fConf.ReadStr("Homepage", szTemp, "<none>");  SetHomepage(szTemp);
@@ -1134,7 +1134,7 @@ void ICQUser::LoadMoreInfo()
 void ICQUser::LoadWorkInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_DATA_LEN];
+  char szTemp[MAX_LINE_LEN];
   m_fConf.ReadStr("CompanyCity", szTemp, "");  SetCompanyCity(szTemp);
   m_fConf.ReadStr("CompanyState", szTemp, "");  SetCompanyState(szTemp);
   m_fConf.ReadStr("CompanyPhoneNumber", szTemp, "");  SetCompanyPhoneNumber(szTemp);
@@ -1153,7 +1153,7 @@ void ICQUser::LoadWorkInfo()
 void ICQUser::LoadAboutInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_DATA_LEN];
+  char szTemp[MAX_LINE_LEN];
   m_fConf.SetSection("user");
   m_fConf.ReadStr("About", szTemp, ""); SetAbout(szTemp);
 }
@@ -1162,7 +1162,7 @@ void ICQUser::LoadAboutInfo()
 void ICQUser::LoadLicqInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_DATA_LEN];
+  char szTemp[MAX_LINE_LEN];
   unsigned short nNewMessages;
   unsigned long nLast;
   m_fConf.SetSection("user");
@@ -2426,7 +2426,7 @@ void ICQUser::decNumUserEvents()
 ICQOwner::ICQOwner()
 {
   gLog.Info("%sOwner configuration.\n", L_INITxSTR);
-  char szTemp[MAX_DATA_LEN];
+  char szTemp[MAX_LINE_LEN];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
   m_szPassword = NULL;
