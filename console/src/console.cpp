@@ -512,8 +512,8 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
        e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
       ProcessDoneSearch(e);
-//    else
-//      ProcessDoneEvent(e);
+    else
+      ProcessDoneEvent(e);
     break;
   }
 
