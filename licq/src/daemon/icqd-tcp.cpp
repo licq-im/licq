@@ -35,6 +35,7 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
   }
   CEventMsg *e = NULL;
 
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   if (!online) // send offline
   {
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
@@ -47,6 +48,7 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
      if (_nSourceUin != 0 && _nSourceUin != gUserManager.OwnerUin())
      {
        gLog.Error("%sSpoofing does not work through the server, send aborted.\n");
+       gUserManager.DropUser(u);
        return NULL;
      }
      CPU_ThroughServer *p = new CPU_ThroughServer(0, _nUin, ICQ_CMDxSUB_MSG, mDos);
@@ -55,17 +57,19 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
   }
   else        // send direct
   {
+    if (u == NULL) return NULL;
     unsigned long f = E_DIRECT | INT_VERSION;
     if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
-    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
     CPT_Message *p = new CPT_Message(_nSourceUin, mDos, nLevel, u);
     gLog.Info("%sSending %smessage to %s (#%d).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
-    gUserManager.DropUser(u);
   }
+
+  if (u != NULL) u->SetSendServer(!online);
+  gUserManager.DropUser(u);
 
   delete mDos;
   CICQEventTag *t = NULL;
@@ -108,12 +112,14 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
 
   ICQEvent *result = NULL;
 
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   if (!online) // send offline
   {
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
     if (_nSourceUin != 0 && _nSourceUin != gUserManager.OwnerUin())
     {
       gLog.Error("%sSpoofing does not work through the server, send aborted.\n");
+      gUserManager.DropUser(u);
       return NULL;
     }
     CPU_ThroughServer *p = new CPU_ThroughServer(0, _nUin, ICQ_CMDxSUB_URL, m);
@@ -122,17 +128,18 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
   }
   else
   {
+    if (u == NULL) return NULL;
     unsigned long f = E_DIRECT | INT_VERSION;
     if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
-    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
     CPT_Url *p = new CPT_Url(_nSourceUin, m, nLevel, u);
     gLog.Info("%sSending %sURL to %s (#%d).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
        u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
-    gUserManager.DropUser(u);
   }
+  if (u != NULL) u->SetSendServer(!online);
+  gUserManager.DropUser(u);
 
   delete szDescDos;
   CICQEventTag *t = NULL;
@@ -156,6 +163,8 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   CEventFile *e = NULL;
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL) return NULL;
+
   CPT_FileTransfer *p = new CPT_FileTransfer(0, szFilename, szDosDesc, nLevel, u);
   if (!p->IsValid())
   {
@@ -173,6 +182,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
        u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, e);
   }
+  u->SetSendServer(false);
   gUserManager.DropUser(u);
 
   delete szDosDesc;
@@ -258,6 +268,7 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
      nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
      u->GetAlias(), -p->getSequence());
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, e);
+  u->SetSendServer(false);
   gUserManager.DropUser(u);
 
   delete szReasonDos;

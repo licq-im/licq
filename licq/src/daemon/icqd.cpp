@@ -789,6 +789,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, ConnectType _eC
   if (m_bShuttingDown) return NULL;
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
+
   ICQEvent *e = new ICQEvent(this, _nSD, packet, _eConnect, _nDestinationUin, ue);
 
   pthread_mutex_lock(&mutex_runningevents);
