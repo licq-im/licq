@@ -1474,8 +1474,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         BN_clear_free (gb);
         BN_clear_free (gab);
 
-        gLog.Info("%sSecure channel established with %s (%ld):\n[%s]\n",
-         L_DESxSTR, u->GetAlias(), nUin, BN_bn2hex(k->GAB()));
+        gLog.Info("%sSecure channel established with %s (%ld).\n",
+         L_DESxSTR, u->GetAlias(), nUin);
 
         break;
 
@@ -1674,8 +1674,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           BN_mod_exp (gab, gb, k->A(), k->P(), temp_ctx);
           BN_copy(k->GAB(), gab);
 
-          gLog.Info("%sSecure channel established with %s (%ld):\n[%s]\n", L_DESxSTR,
-             u->GetAlias(), nUin, BN_bn2hex(gab));
+          gLog.Info("%sSecure channel established with %s (%ld).\n", L_DESxSTR,
+             u->GetAlias(), nUin);
           k->SetCryptoStatus(CRYPTO_FULL);
           u->SetSecure(true);
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
@@ -1704,7 +1704,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
         char l[32] = "";
         if (licqChar == 'L') sprintf(l, " [Licq v0.%d]", licqVersion);
-        gLog.Info("%sSecure channel close response from %s (%ld)%s.\n", L_TCPxSTR,
+        gLog.Info("%sSecure channel with %s (%ld) closed %s.\n", L_TCPxSTR,
          u->GetAlias(), nUin, l);
 
         // Find the event, succeed it
@@ -1713,8 +1713,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Check that a request was in progress...should always be ok
         if (e == NULL)
         {
-          gLog.Warn("%sSecure channel closed response from %s (%ld) when no request in progress.\n",
-             L_WARNxSTR, u->GetAlias(), nUin);
           // Close the connection as we are in trouble
           gUserManager.DropUser(u);
           delete e;
