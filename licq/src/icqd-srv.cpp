@@ -4438,6 +4438,18 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
     gLog.Error("%sInvalid UIN and password combination.\n", L_ERRORxSTR);
     PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0));
     break;
+    
+  case 0x0C:
+  case 0x0D:
+  case 0x12:
+  case 0x13:
+  case 0x14:
+  case 0x15:
+  case 0x1A:
+  case 0x1F:
+    gLog.Error("%sThe AOL Instant Messenger service is temporarily unavailable.\n"
+               "Please try again later.\n", L_ERRORxSTR);
+    break;  
 
   case 0:
     break;
