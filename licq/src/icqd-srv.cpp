@@ -1619,7 +1619,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       	} else {
       		e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;
       		e2->m_pSearchAck->m_nMore = 0;
-     		}
+     	}
      		
       	PushPluginEvent(e2);
       	
@@ -1632,6 +1632,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       	ICQEvent *e = NULL;
       	ICQUser *u = NULL;
       	unsigned long nUin = 0;
+	bool multipart = false;
       	
       	if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e)) {
 				// error: empty result or nonexistent user (1E =  readonly???)
@@ -1640,221 +1641,258 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         	if (e != NULL) ProcessDoneEvent(e);
       	} else {
         	// Find the relevant event
-        	ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+        	e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
         	if (e == NULL) {
-          	gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
-          	break;
+          		gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
+          		break;
         	}
         	nUin = e->Uin();
 
         	u = FindUserForInfoUpdate( nUin, e, "extended");
         	if (u == NULL) {
-        	  gLog.Warn("%scan't find user for updating!\n", L_WARNxSTR);
-        	  break;
+        		gLog.Warn("%scan't find user for updating!\n", L_WARNxSTR);
+        		break;
        		}
        	}
 
       	switch (nSubtype) {
         case ICQ_CMDxMETA_GENERALxINFO:
 
-          gLog.Info("%sGeneral info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
+	    gLog.Info("%sGeneral info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
 
-          // main home info
-          u->SetAlias( msg.UnpackString() );
-          u->SetFirstName( msg.UnpackString() );
-          u->SetLastName( msg.UnpackString() );
-          u->SetEmailPrimary( msg.UnpackString() );
-          u->SetCity( msg.UnpackString() );
-          u->SetState( msg.UnpackString() );
-          u->SetPhoneNumber( msg.UnpackString() );
-          u->SetFaxNumber( msg.UnpackString() );
-          u->SetAddress( msg.UnpackString() );
-          u->SetCellularNumber( msg.UnpackString() );
-          u->SetZipCode( msg.UnpackString() );
-          u->SetCountryCode( msg.UnpackUnsignedShort() );
-          u->SetTimezone( msg.UnpackChar() );
-          u->SetHideEmail( msg.UnpackChar() ); // 0 = no, 1 = yes
+	    // main home info
+	    u->SetAlias( msg.UnpackString() );
+	    u->SetFirstName( msg.UnpackString() );
+	    u->SetLastName( msg.UnpackString() );
+	    u->SetEmailPrimary( msg.UnpackString() );
+	    u->SetCity( msg.UnpackString() );
+	    u->SetState( msg.UnpackString() );
+	    u->SetPhoneNumber( msg.UnpackString() );
+	    u->SetFaxNumber( msg.UnpackString() );
+	    u->SetAddress( msg.UnpackString() );
+	    u->SetCellularNumber( msg.UnpackString() );
+	    u->SetZipCode( msg.UnpackString() );
+	    u->SetCountryCode( msg.UnpackUnsignedShort() );
+	    u->SetTimezone( msg.UnpackChar() );
+	    u->SetHideEmail( msg.UnpackChar() ); // 0 = no, 1 = yes
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(u->GetAlias());
-          gTranslator.ServerToClient(u->GetFirstName());
-          gTranslator.ServerToClient(u->GetLastName());
-          gTranslator.ServerToClient(u->GetEmailPrimary());
-          gTranslator.ServerToClient(u->GetCity());
-          gTranslator.ServerToClient(u->GetState());
-          gTranslator.ServerToClient(u->GetPhoneNumber());
-          gTranslator.ServerToClient(u->GetFaxNumber());
-          gTranslator.ServerToClient(u->GetAddress());
-          gTranslator.ServerToClient(u->GetCellularNumber());
-          gTranslator.ServerToClient(u->GetZipCode());
+	    // translating string with Translation Table
+	    gTranslator.ServerToClient(u->GetAlias());
+	    gTranslator.ServerToClient(u->GetFirstName());
+	    gTranslator.ServerToClient(u->GetLastName());
+	    gTranslator.ServerToClient(u->GetEmailPrimary());
+	    gTranslator.ServerToClient(u->GetCity());
+	    gTranslator.ServerToClient(u->GetState());
+	    gTranslator.ServerToClient(u->GetPhoneNumber());
+	    gTranslator.ServerToClient(u->GetFaxNumber());
+	    gTranslator.ServerToClient(u->GetAddress());
+	    gTranslator.ServerToClient(u->GetCellularNumber());
+	    gTranslator.ServerToClient(u->GetZipCode());
 
-          // save the user infomation
-          u->SetEnableSave(true);
-          u->SaveGeneralInfo();
+	    // save the user infomation
+	    u->SetEnableSave(true);
+	    u->SaveGeneralInfo();
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->Uin()));
+	    PushExtendedEvent(e);
+	    multipart = true;
 
-          break;
-        case ICQ_CMDxMETA_WORKxINFO:
+	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->Uin()));
 
-          gLog.Info("%sWork info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
+	    break;
+	
+	case ICQ_CMDxMETA_MORExINFO:
 
-          u->SetEnableSave(false);
-          u->SetCompanyCity( msg.UnpackString() );
-          u->SetCompanyState( msg.UnpackString() );
-          u->SetCompanyPhoneNumber( msg.UnpackString() );
-          u->SetCompanyFaxNumber( msg.UnpackString() );
-          u->SetCompanyAddress( msg.UnpackString() );  // u->SetCompanyStreet( msg.UnpackString() );
-          msg.UnpackString();        // u->SetCompanyZip( msg.UnpackString() );
-          msg.UnpackUnsignedShort(); // u->SetCompanyCountry( msg.UnpackUnsignedShort() );
-          u->SetCompanyName( msg.UnpackString() );
-          u->SetCompanyDepartment( msg.UnpackString() );
-          u->SetCompanyPosition( msg.UnpackString() );
-          msg.UnpackUnsignedShort(); // unknown
-          u->SetCompanyHomepage( msg.UnpackString() );
+	    gLog.Info("%sMore info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(u->GetCompanyCity());
-          gTranslator.ServerToClient(u->GetCompanyState());
-          gTranslator.ServerToClient(u->GetCompanyPhoneNumber());
-          gTranslator.ServerToClient(u->GetCompanyFaxNumber());
-          gTranslator.ServerToClient(u->GetCompanyAddress());
-          gTranslator.ServerToClient(u->GetCompanyName());
-          gTranslator.ServerToClient(u->GetCompanyDepartment());
-          gTranslator.ServerToClient(u->GetCompanyPosition());
-          gTranslator.ServerToClient(u->GetCompanyHomepage());
+	    u->SetEnableSave(false);
+	    u->SetAge( msg.UnpackUnsignedShort() );
+	    u->SetGender( msg.UnpackChar() );
+	    u->SetHomepage( msg.UnpackString() );
+	    u->SetBirthYear( msg.UnpackUnsignedShort() );
+	    u->SetBirthMonth( msg.UnpackChar() );
+	    u->SetBirthDay (msg.UnpackChar() );
+	    u->SetLanguage1( msg.UnpackChar() );
+	    u->SetLanguage2( msg.UnpackChar() );
+	    u->SetLanguage3( msg.UnpackChar() );
 
-          // save the user infomation
-          u->SetEnableSave(true);
-          u->SaveWorkInfo();
+	    // translating string with Translation Table
+	    gTranslator.ServerToClient(u->GetHomepage());
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_WORK, u->Uin()));
+	    // save the user infomation
+	    u->SetEnableSave(true);
+	    u->SaveMoreInfo();
 
-          break;
-        case ICQ_CMDxMETA_MORExINFO:
+	    PushExtendedEvent(e);
+	    multipart = true;
 
-          gLog.Info("%sMore info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
+	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE, u->Uin()));
 
-          u->SetEnableSave(false);
-          u->SetAge( msg.UnpackUnsignedShort() );
-          u->SetGender( msg.UnpackChar() );
-          u->SetHomepage( msg.UnpackString() );
-          u->SetBirthYear( msg.UnpackUnsignedShort() );
-          u->SetBirthMonth( msg.UnpackChar() );
-          u->SetBirthDay (msg.UnpackChar() );
-          u->SetLanguage1( msg.UnpackChar() );
-          u->SetLanguage2( msg.UnpackChar() );
-          u->SetLanguage3( msg.UnpackChar() );
+	    break;
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(u->GetHomepage());
-
-          // save the user infomation
-          u->SetEnableSave(true);
-          u->SaveMoreInfo();
-
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE, u->Uin()));
-
-          break;
         case ICQ_CMDxMETA_EMAILxINFO:
         {
-          gLog.Info("%sEmail info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
+	    gLog.Info("%sEmail info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
 
-          u->SetEnableSave(false);
-          // let's just grab the first 2 for now
-          int nEmail = (int)msg.UnpackChar();
-          if(nEmail > 2) nEmail = 2;
-          for(int i=0;i<nEmail;i++) {
-            msg.UnpackChar(); // 00? unknown
-            if(i == 0) {
-              u->SetEmailPrimary( msg.UnpackString() );
-              gTranslator.ServerToClient(u->GetEmailPrimary());
-            }
-            if(i == 1) {
-              u->SetEmailSecondary( msg.UnpackString() );
-              gTranslator.ServerToClient(u->GetEmailSecondary());
-            }
-          }
+	    u->SetEnableSave(false);
+	    // let's just grab the first 2 for now
+	    int nEmail = (int)msg.UnpackChar();
+	    if (nEmail > 2) nEmail = 2;
+	    for(int i = 0; i < nEmail; i++) {
+		msg.UnpackChar(); // publish email, not yet implemented
+		if(i == 0) {
+		    u->SetEmailPrimary( msg.UnpackString() );
+		    gTranslator.ServerToClient(u->GetEmailPrimary());
+		}
+		if(i == 1) {
+		    u->SetEmailSecondary( msg.UnpackString() );
+		    gTranslator.ServerToClient(u->GetEmailSecondary());
+		}
+	    }
 
-          // save the user infomation
-          u->SetEnableSave(true);
-          u->SaveGeneralInfo();
+	    // save the user infomation
+	    u->SetEnableSave(true);
+	    u->SaveGeneralInfo();
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
+	    PushExtendedEvent(e);
+	    multipart = true;
 
-          break;
-        }
-        case 0x010e:
+	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
+
+	    break;
+	}
+
+        case 0x010E:
         {
-          // unknown
+	    // unknown
 
-          char* buf;
-          gLog.Unknown("%sunknown info: %04hx\n%s\n", L_UNKNOWNxSTR,
-                       nSubSequence, packet.print(buf));
-          delete [] buf;
+	    char* buf;
 
-          msg.UnpackUnsignedShortBE(); // WORD 0
-          break;
+	    gLog.Unknown("%sunknown info: %04hx\n%s\n", L_UNKNOWNxSTR,
+				    nSubSequence, packet.print(buf));
+	    delete [] buf;
+
+	    msg.UnpackUnsignedShortBE(); // WORD 0
+
+	    PushExtendedEvent(e);
+	    multipart = true;
+
+	    break;
         }
+
+        case ICQ_CMDxMETA_WORKxINFO:
+
+	    gLog.Info("%sWork info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
+
+	    u->SetEnableSave(false);
+	    u->SetCompanyCity( msg.UnpackString() );
+	    u->SetCompanyState( msg.UnpackString() );
+	    u->SetCompanyPhoneNumber( msg.UnpackString() );
+	    u->SetCompanyFaxNumber( msg.UnpackString() );
+	    u->SetCompanyAddress( msg.UnpackString() );  // u->SetCompanyStreet( msg.UnpackString() );
+	    msg.UnpackString();        // u->SetCompanyZip( msg.UnpackString() );
+	    msg.UnpackUnsignedShort(); // u->SetCompanyCountry( msg.UnpackUnsignedShort() );
+	    u->SetCompanyName( msg.UnpackString() );
+	    u->SetCompanyDepartment( msg.UnpackString() );
+	    u->SetCompanyPosition( msg.UnpackString() );
+	    msg.UnpackUnsignedShort(); // unknown
+	    u->SetCompanyHomepage( msg.UnpackString() );
+
+	    // translating string with Translation Table
+	    gTranslator.ServerToClient(u->GetCompanyCity());
+	    gTranslator.ServerToClient(u->GetCompanyState());
+	    gTranslator.ServerToClient(u->GetCompanyPhoneNumber());
+	    gTranslator.ServerToClient(u->GetCompanyFaxNumber());
+	    gTranslator.ServerToClient(u->GetCompanyAddress());
+	    gTranslator.ServerToClient(u->GetCompanyName());
+	    gTranslator.ServerToClient(u->GetCompanyDepartment());
+	    gTranslator.ServerToClient(u->GetCompanyPosition());
+	    gTranslator.ServerToClient(u->GetCompanyHomepage());
+
+	    // save the user infomation
+	    u->SetEnableSave(true);
+	    u->SaveWorkInfo();
+
+	    PushExtendedEvent(e);
+	    multipart = true;
+
+	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_WORK, u->Uin()));
+
+	    break;
+        
         case ICQ_CMDxMETA_ABOUT:
         {
-          gLog.Info("%sAbout info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
+	    gLog.Info("%sAbout info on %s (%ld).\n", L_SRVxSTR, u->GetAlias(), u->Uin());
 
-          char* rawmsg = msg.UnpackString();
-          char* msg = gTranslator.RNToN(rawmsg);
-          delete [] rawmsg;
+	    char* rawmsg = msg.UnpackString();
+	    char* msg = gTranslator.RNToN(rawmsg);
+	    delete [] rawmsg;
 
-          u->SetAbout( msg );
-          delete [] msg;
+	    u->SetAbout( msg );
+	    delete [] msg;
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(u->GetAbout());
+	    // translating string with Translation Table
+	    gTranslator.ServerToClient(u->GetAbout());
 
-          // save the user infomation
-          u->SetEnableSave(true);
-          u->SaveAboutInfo();
+	    // save the user infomation
+	    u->SetEnableSave(true);
+	    u->SaveAboutInfo();
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_ABOUT, u->Uin()));
+	    PushExtendedEvent(e);
+	    multipart = true;
 
-          break;
-        }
-        case 0x000f:
+	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_ABOUT, u->Uin()));
+
+	    break;
+	}
+
+	case 0x00F0:
         {
-          char * buf;
-          gLog.Unknown("%spersonal interests: %04hx\n%s\n", L_UNKNOWNxSTR,
-                       nSubSequence, packet.print(buf));
-          delete [] buf;
+	    // personal interests info
 
-          // personal interests info
-          break;
+	    char * buf;
+
+	    gLog.Unknown("%spersonal interests: %04hx\n%s\n", L_UNKNOWNxSTR,
+				    nSubSequence, packet.print(buf));
+	    delete [] buf;
+
+	    PushExtendedEvent(e);
+	    multipart = true;
+
+	    break;
         }
+
         case ICQ_CMDxMETA_PASTxINFO:
         {
-          char* buf;
-          gLog.Unknown("%spast backgrounds: %04hx\n%s\n", L_UNKNOWNxSTR,
-                       nSubSequence, packet.print(buf));
-          delete [] buf;
+	    // past background info
 
-          // past background info
-          break;
+	    char* buf;
+
+	    gLog.Unknown("%spast backgrounds: %04hx\n%s\n", L_UNKNOWNxSTR,
+				    nSubSequence, packet.print(buf));
+	    delete [] buf;
+
+	    break;
         }
+
         default: {
           char* buf;
+
           gLog.Unknown("%sunknown info: %04hx\n%s\n", L_UNKNOWNxSTR,
                        nSubtype, packet.print(buf));
           delete [] buf;
       	}
         }
 
-        if (e != NULL)
-	        ProcessDoneEvent(e);
-  	    else
-    	  {
-      	  gLog.Warn("%sResponse to unknown extended info request for %s (%ld).\n",
-                   L_WARNxSTR, u->GetAlias(), nUin);
-       	}
+	if (!multipart) {
+	    if (e != NULL)
+		ProcessDoneEvent(e);
+	    else {
+		gLog.Warn("%sResponse to unknown extended info request for %s (%ld).\n",
+		L_WARNxSTR, u->GetAlias(), nUin);
+	    }
+	}
 
-     		PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
+     	PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->Uin()));
        	gUserManager.DropUser(u);
       }
       break;
