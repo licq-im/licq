@@ -88,7 +88,7 @@ CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
   btnCancel->setFixedWidth(bw);
 
   connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(hide()));
+  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
 }
 
 
