@@ -529,7 +529,8 @@ void UserEventCommon::slot_updatetyping()
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
   u->SetTyping(ICQ_TYPING_INACTIVEx0);
   nfoStatus->unsetPalette();
-  mainwin->userEventTabDlg->updateTabLabel(u);
+  if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
+    mainwin->userEventTabDlg->updateTabLabel(u);
   gUserManager.DropUser(u);  
 }
 
