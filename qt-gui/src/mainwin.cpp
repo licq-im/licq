@@ -1442,7 +1442,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       if (e->Result() == EVENT_SUCCESS)
       {
         InformUser(this, tr("Successfully registered, your user identification\n"
-                            "number (UIN) is %ld.\n"
+                            "number (UIN) is %1.\n"
                             "Now set your personal information.").arg(gUserManager.OwnerUin()));
         callFunction(mnuUserGeneral, gUserManager.OwnerUin());
       }
