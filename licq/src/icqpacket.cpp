@@ -677,7 +677,6 @@ CPU_Register::CPU_Register(const char *szPasswd)
 {
   int nPassLen = strlen(szPasswd);
   m_nSize += 55 + nPassLen;
-  m_nSubSequence = 0;
 
   InitBuffer();
 

@@ -102,6 +102,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_bLoggingOn = false;
   m_bOnlineNotifies = true;
   m_szRegisterPasswd = 0;
+  m_nRegisterThreadId = 0;
 
   fifo_fs = NULL;
 

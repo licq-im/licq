@@ -553,6 +553,7 @@ protected:
        m_bFirewall;
   time_t m_tLogonTime;
   char *m_szRegisterPasswd;
+  pthread_t m_nRegisterThreadId;
 
   // ICQ Server
   char *m_szICQServer;

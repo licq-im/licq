@@ -554,6 +554,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 {
   m_szRegisterPasswd = strdup(_szPasswd);
   m_bRegistering = true;
+  m_nRegisterThreadId = pthread_self();
 //  CPU_RegisterFirst *p = new CPU_RegisterFirst();
 //  gLog.Info("%sRegistering a new user (#%lu)...\n", L_SRVxSTR, p->Sequence());
 // SendEvent_Server(p);
@@ -568,7 +569,9 @@ void CICQDaemon::icqRegisterFinish()
 
   CPU_Register *p = new CPU_Register(m_szRegisterPasswd);
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
-  SendExpectEvent_Server(0, p, NULL);
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  e->thread_plugin = m_nRegisterThreadId;
+  m_nRegisterThreadId = 0;
 }
 
 //-----ICQ::icqRelogon-------------------------------------------------------
@@ -1462,6 +1465,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
       case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
       case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST):
+      case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
         PushPluginEvent(e);
         break;
 
@@ -5282,15 +5286,28 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 //--------ProcessNewUINFam-----------------------------------------------------
 void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
 {
+  /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
+  unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
+
   switch (nSubtype)
   {
     case ICQ_SNACxNEW_UIN_ERROR:
     {
       gLog.Warn(tr("%sRegistration error.\n"), L_WARNxSTR);
+
+      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+      if (e)
+        ProcessDoneEvent(e);
+
       break;
     }
     case ICQ_SNACxNEW_UIN:
     {
+
+      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+      if (e)
+        ProcessDoneEvent(e);
+
       packet.UnpackUnsignedShort(); // flags
       packet.UnpackUnsignedLong();  // id
 
