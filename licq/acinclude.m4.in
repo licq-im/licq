@@ -1,5 +1,6 @@
 ## -*- mode: m4 -*-
 dnl Copyright (c) 1998 N. D. Bellamy
+dnl Copyright (c) 1999,2000 Dirk Mueller <dirk@licq.org>
 
 AC_DEFUN(AC_CHECK_SOCKS5,
 [

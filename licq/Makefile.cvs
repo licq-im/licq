@@ -16,4 +16,4 @@ all:
 	@echo "*** Finished"
 	@echo "    Don't forget to run ./configure"
 	@echo "    If you haven't done so in a while, run ./configure --help"
-	@-rm -f config.cache
+	@-rm -f config.cache config.h
