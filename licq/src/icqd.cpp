@@ -990,10 +990,6 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
 
 	if (e == NULL)  return NULL;
 
-	pthread_mutex_lock(&mutex_sendqueue_server);
-	m_lxSendQueue_Server.push_back(e);
-	pthread_mutex_unlock(&mutex_sendqueue_server);
-
   return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 }
 
@@ -1021,6 +1017,13 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
   pthread_mutex_unlock(&mutex_runningevents);
 
   assert(e);
+
+  if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
+  {
+    pthread_mutex_lock(&mutex_sendqueue_server);
+    m_lxSendQueue_Server.push_back(e);
+    pthread_mutex_unlock(&mutex_sendqueue_server); 
+  }
 
   int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
   if (nResult != 0)
