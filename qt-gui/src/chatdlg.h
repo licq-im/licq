@@ -114,6 +114,8 @@ protected slots:
   void chatClose(CChatUser *);
 
   void slot_chat();
+  void slot_save();
+  void slot_audio();
 
   void fontSizeChanged(const QString&);
   void fontNameChanged(const QString&);

@@ -23,6 +23,8 @@
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qclipboard.h>
+#include <qfiledialog.h>
+#include <qtextstream.h>
 #include <qwindowsstyle.h>
 
 #include "chatdlg.h"
@@ -68,6 +70,14 @@ static const int col_array[] =
   0x00, 0xFF, 0xFF,
   0x00, 0x00, 0xFF
 };
+
+
+// ---------------------------------------------------------------------------
+enum ChatMenu_Identifiers {
+  mnuChatAudio,
+  mnuChatSave
+};
+
 
 // ---------------------------------------------------------------------------
 
@@ -131,12 +141,17 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // Generic setup
   mnuMain = new QPopupMenu(menuBar());
-  mnuMain->insertItem(tr("Close chat"), this, SLOT(hide()), ALT + Key_Q);
+  mnuMain->insertItem(tr("&Audio"), this, SLOT(slot_audio()), ALT + Key_A, mnuChatAudio);
+  mnuMain->insertItem(tr("&Save Chat"), this, SLOT(slot_save()), ALT + Key_S, mnuChatSave);
+  mnuMain->insertSeparator();
+  mnuMain->insertItem(tr("&Close Chat"), this, SLOT(hide()), ALT + Key_Q);
   mnuMode = new QPopupMenu(menuBar());
-  mnuMode->insertItem(tr("Pane Mode"), this, SLOT(SwitchToPaneMode()));
-  mnuMode->insertItem(tr("IRC Mode"), this, SLOT(SwitchToIRCMode()));
+  mnuMode->insertItem(tr("&Pane Mode"), this, SLOT(SwitchToPaneMode()));
+  mnuMode->insertItem(tr("&IRC Mode"), this, SLOT(SwitchToIRCMode()));
   menuBar()->insertItem(tr("Chat"), mnuMain);
   menuBar()->insertItem(tr("Mode"), mnuMode);
+
+  mnuMain->setItemChecked(mnuChatAudio, m_bAudio);
 
   // Toolbar
   QToolBar* barChat = new QToolBar("label", this);
@@ -685,6 +700,37 @@ QString ChatDlg::ChatClients()
   QString n = sz;
   delete sz;
   return n;
+}
+
+
+void ChatDlg::slot_save()
+{
+  QString n = tr("/%1.chat").arg(chatUser == NULL ? QString::number(m_nUin) :
+     QString::fromLocal8Bit(chatUser->Name()));
+  QString fn = QFileDialog::getSaveFileName(QDir::homeDirPath() + n,
+     QString::null, this);
+
+  if (!fn.isEmpty())
+  {
+    QFile f(fn);
+    if (!f.open(IO_WriteOnly))
+    {
+      WarnUser(this, tr("Failed to open file:\n%1").arg(fn));
+    }
+    else
+    {
+      QTextStream t(&f);
+      t << mleIRCRemote->text();
+      f.close();
+    }
+  }
+}
+
+
+void ChatDlg::slot_audio()
+{
+  m_bAudio = !m_bAudio;
+  mnuMain->setItemChecked(mnuChatAudio, m_bAudio);
 }
 
 
