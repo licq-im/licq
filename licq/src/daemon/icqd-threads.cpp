@@ -38,27 +38,29 @@ void *ProcessRunningEvent_tep(void *p)
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
     switch (e->m_eConnect)
     {
-    case CONNECT_SERVER:
-      e->m_nSocketDesc = d->ConnectToServer();
-      break;
-    case CONNECT_USER:
-      e->m_nSocketDesc = d->ConnectToUser(e->m_nDestinationUin);
-      if (e->m_nSocketDesc != -1)
-      {
-        // Set the local port in the tcp packet now
-        INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
-        if (s == NULL) break;
-        ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
-        ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
-        gSocketManager.DropSocket(s);
-      }
-      break;
-    case CONNECT_NONE:
-      break;
-    default:
-      gLog.Error("%sInternal error: ProcessRunningEvent_tep(): invalid connect type %d.\n",
-                 L_ERRORxSTR, e->m_eConnect);
-      break;
+      case CONNECT_SERVER:
+        e->m_nSocketDesc = d->ConnectToServer();
+        break;
+
+      case CONNECT_USER:
+        e->m_nSocketDesc = d->ConnectToUser(e->m_nDestinationUin);
+        if (e->m_nSocketDesc != -1)
+        {
+          // Set the local port in the tcp packet now
+          INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
+          if (s == NULL) break;
+          ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[0] = s->LocalPort() & 0xFF;
+          ((CPacketTcp *)e->m_pPacket)->LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+          gSocketManager.DropSocket(s);
+        }
+        break;
+
+      case CONNECT_NONE:
+        break;
+      default:
+        gLog.Error("%sInternal error: ProcessRunningEvent_tep(): invalid connect type %d.\n",
+                   L_ERRORxSTR, e->m_eConnect);
+        break;
     }
     // Check again, if still -1, fail the event
     if (e->m_nSocketDesc == -1)

@@ -266,6 +266,7 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
       h_errno = -1;
       return (false);
     }
+#if 0
     if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
     {
       char szHostName[256];
@@ -284,8 +285,9 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
       }
       m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
     }
+#endif
   }
-/*
+#if 0
   if (_nFlags & ADDR_REMOTE)
   {
     // Set up the remote structure
@@ -297,7 +299,7 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
       return (false);
     }
   }
-*/
+#endif
   return (true);
 }
 

@@ -241,6 +241,18 @@ unsigned long CPacket::s_nRealIp = 0;
 char CPacket::s_nMode = MODE_DIRECT;
 bool CPacketUdp::s_bRegistered = false;
 
+//----SetIps-----------------------------------------------------------------
+void CPacket::SetIps(INetSocket *s)
+{
+  if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
+    s_nLocalIp = NetworkIpToPacketIp(s->LocalIp());
+  s_nRealIp = NetworkIpToPacketIp(s->LocalIp());
+
+  printf("Real Ip: %08lX, LocalIp: %08lX\n", s_nRealIp, s_nLocalIp);
+}
+
+
+
 //=====UDP======================================================================
 unsigned short CPacketUdp::s_nSequence = 0;
 unsigned short CPacketUdp::s_nSubSequence = 0;
@@ -402,7 +414,8 @@ CPU_Register::CPU_Register(const char *szPasswd)
 #endif
 
 //-----Logon--------------------------------------------------------------------
-CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLogonStatus)
+CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
+   unsigned short _nLogonStatus)
   : CPacketUdp(ICQ_CMDxSND_LOGON)
 {
 #if ICQ_VERSION == 2
@@ -440,11 +453,12 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
 #endif
-
+/*
   if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
     s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
-  s_nRealIp = NetworkIpToPacketIp(_s->LocalIp());
-  m_nLocalPort = _s->LocalPort();
+  s_nRealIp = NetworkIpToPacketIp(_s->LocalIp());*/
+  s_nRealIp = 0;
+  m_nLocalPort = nLocalPort;
   m_nLogonStatus = _nLogonStatus;
   m_nTcpVersion = ICQ_VERSION_TCP;
 
@@ -463,6 +477,7 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackString(szPassword);
   buffer->PackUnsignedLong(nUnknown);
+  m_szRealIpOffset = buffer->getDataPosWrite();
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(m_nLogonStatus);
@@ -492,6 +507,18 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   buffer->PackUnsignedLong(0x00000000); // totally unknown
   buffer->PackUnsignedLong(0x00000000); // always zero
 #endif
+}
+
+
+CBuffer *CPU_Logon::Finalize()
+{
+  char *sz = buffer->getDataPosWrite();
+
+  buffer->setDataPosWrite(m_szRealIpOffset);
+  buffer->PackUnsignedLong(s_nRealIp);
+  buffer->setDataPosWrite(sz);
+
+  return CPacketUdp::Finalize();
 }
 
 

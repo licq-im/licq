@@ -26,6 +26,7 @@ public:
    static void SetMode(char c) { s_nMode = c; }
    static char Mode()  { return s_nMode; }
    static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
+   static void SetIps(INetSocket *s);
 
 protected:
    CBuffer *buffer;
@@ -126,7 +127,10 @@ public:
 class CPU_Logon : public CPacketUdp
 {
 public:
-  CPU_Logon(INetSocket *_s, const char *_szPassword, unsigned short _nLogonStatus);
+  CPU_Logon(unsigned short nLocalPort, const char *_szPassword,
+     unsigned short _nLogonStatus);
+
+  virtual CBuffer *Finalize();
 protected:
   /* 02 00 E8 03 08 00 8F 76 20 00 34 4A 00 00 08 00 5B 63 65 50 61 62 43 00
      72 00 04 00 7F 00 00 01 04 00 00 00 00 03 00 00 00 02 00 00 00 00 00 04
@@ -134,6 +138,8 @@ protected:
   unsigned long  m_nLocalPort;
   unsigned long  m_nLogonStatus;
   unsigned long  m_nTcpVersion;
+
+  char *m_szRealIpOffset;
 };
 
 

@@ -62,6 +62,9 @@ int CICQDaemon::ConnectToServer()
     return -1;
   }
 
+  // Now get the local ip from this socket
+  CPacket::SetIps(s);
+
   gSocketManager.AddSocket(s);
   m_nUDPSocketDesc = s->Descriptor();
   gSocketManager.DropSocket(s);
@@ -145,7 +148,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
   gUserManager.DropOwner();
   INetSocket *s = gSocketManager.FetchSocket(m_nTCPSocketDesc);
   if (s == NULL) return NULL;
-  CPU_Logon *p = new CPU_Logon(s, passwd, status);
+  CPU_Logon *p = new CPU_Logon(s->LocalPort(), passwd, status);
   gSocketManager.DropSocket(s);
   free (passwd);
   m_xOnEventManager.Pause(true);
