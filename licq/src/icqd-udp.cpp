@@ -682,7 +682,7 @@ CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 
 
 ///-----icqAuthorize-------------------------------------------------------------
-void CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szMessage)
+CICQEventTag *CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szMessage)
 // authorize a user to add you to their contact list
 {
   char *sz = NULL;
@@ -694,14 +694,19 @@ void CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szM
   CPU_ThroughServer *p = new CPU_ThroughServer(uinToAuthorize, ICQ_CMDxSUB_AUTHxGRANTED, sz);
   gLog.Info("%sAuthorizing user %ld (#%ld)...\n", L_UDPxSTR, uinToAuthorize,
      p->Sequence());
-  SendExpectEvent_Server(p);
-
   delete sz;
+
+  ICQEvent *e = SendExpectEvent_Server(p);
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t = new CICQEventTag(e);
+  return (t);
+
 }
 
 
 //-----icqAuthorize-------------------------------------------------------------
-void CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
+CICQEventTag *CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
 // refuseto authorize a user to add you to their contact list
 {
   char *sz = NULL;
@@ -713,9 +718,14 @@ void CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
   CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxREFUSED, sz);
   gLog.Info("%sRefusing authorization to user %ld (#%ld)...\n", L_UDPxSTR,
      nUin, p->Sequence());
-  SendExpectEvent_Server(p);
-
   delete sz;
+
+  ICQEvent *e = SendExpectEvent_Server(p);
+  CICQEventTag *t = NULL;
+  if (e != NULL)
+    t = new CICQEventTag(e);
+  return (t);
+
 }
 
 

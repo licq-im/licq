@@ -169,8 +169,8 @@ public:
 
   void icqLogoff();
   void icqRelogon(bool bChangeServer = false);
-  void icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
-  void icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
+  CICQEventTag *icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
+  CICQEventTag *icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
   void icqUpdateContactList();
