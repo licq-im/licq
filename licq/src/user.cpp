@@ -1307,7 +1307,7 @@ unsigned short ICQUser::ConnectionVersion()
 }
 
 
-inline int ICQUser::LocalTimeGMTOffset()
+int ICQUser::LocalTimeGMTOffset()
 {
   return GetTimezone() * 1800;
 }
@@ -1342,7 +1342,7 @@ int ICQUser::LocalTimeOffset()
 }
 
 
-inline time_t ICQUser::LocalTime()
+time_t ICQUser::LocalTime()
 {
   return time(NULL) + LocalTimeOffset();
 }
