@@ -99,27 +99,6 @@ void IconManager::X11Init()
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
 
-  char buffer[128];
-  XEvent ev;
-
-  snprintf(buffer, sizeof(buffer), "_NET_SYSTEM_TRAY_S%d", x11Screen());
-  Atom a = XInternAtom(dsp, buffer, False);
-  Window systray = XGetSelectionOwner(dsp, a);
-
-  memset(&ev, 0, sizeof(ev));
-  ev.xclient.type = ClientMessage;
-  ev.xclient.window = systray;
-  ev.xclient.message_type = XInternAtom(dsp, "_NET_SYSTEM_TRAY_OPCODE", False);
-  ev.xclient.format = 32;
-  ev.xclient.data.l[0] = CurrentTime;
-  ev.xclient.data.l[1] = SYSTEM_TRAY_REQUEST_DOCK;
-  ev.xclient.data.l[2] = winId();
-  ev.xclient.data.l[3] = 0;
-  ev.xclient.data.l[4] = 0;
-
-  XSendEvent(dsp, systray, False, NoEventMask, &ev);
-  XSync(dsp, False);
-
 #endif
 
   resize (wharfIcon->width(), wharfIcon->height());
@@ -619,7 +598,10 @@ IconManager_KDEStyle::IconManager_KDEStyle(CMainWindow *_mainwin, QPopupMenu *_m
   m_nSysMsg = 0;
   m_nNewMsg = 0;
   m_bStatusInvisible = false;
-  resize(24,24);
+  resize(22, 22);
+  setMinimumSize(22, 22);
+  setBackgroundMode(X11ParentRelative);
+
 #ifdef USE_KDE
   KWin::setSystemTrayWindowFor( winId(), _mainwin ? _mainwin->topLevelWidget()->winId() : qt_xrootwin() );
   setBackgroundMode(X11ParentRelative);
@@ -703,6 +685,17 @@ void IconManager_KDEStyle::paintEvent( QPaintEvent *e)
     p.drawPixmap((width()-m_eventIcon.width())/2, (height()-m_eventIcon.height())/2, m_eventIcon);
   else
     p.drawPixmap((width()-m_statusIcon.width())/2, (height()-m_statusIcon.height())/2, m_statusIcon);
+}
+
+bool IconManager_KDEStyle::x11Event(XEvent *ev)
+{
+  if ((ev->type == ReparentNotify))
+  {
+    XWindowAttributes a;
+    XGetWindowAttributes(qt_xdisplay(), ev->xreparent.parent, &a);
+    move((a.width - width()) / 2, (a.height - height()) / 2);
+  }
+  return QWidget::x11Event(ev);
 }
 
 void IconManager_KDEStyle::mousePressEvent( QMouseEvent *e )

@@ -117,6 +117,7 @@ protected:
   virtual void mousePressEvent (QMouseEvent *);
   virtual void timerEvent(QTimerEvent*);
   virtual void paintEvent (QPaintEvent *);
+  virtual bool x11Event(XEvent *);
 
   void updateTooltip();
 
