@@ -483,8 +483,6 @@ public:
   bool HideIp()               { return m_bHideIp; }
   unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
-  void SetFilterAutoResponse(bool b) { m_bFilterAutoResponse = b; }
-  bool FilterAutoResponse()  { return m_bFilterAutoResponse; }
 
   // Virtual overloaded functions
   virtual void SaveLicqInfo();
@@ -494,8 +492,7 @@ protected:
   char *m_szPassword;
   bool m_bException,
        m_bWebAware,
-       m_bHideIp,
-       m_bFilterAutoResponse;
+       m_bHideIp;
   unsigned long m_nRandomChatGroup;
 };
 

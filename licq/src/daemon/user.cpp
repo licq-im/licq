@@ -1937,7 +1937,6 @@ ICQOwner::ICQOwner()
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   m_fConf.ReadStr("AutoResponse", szTemp, "");
   SetAutoResponse(szTemp);
-  m_fConf.ReadBool("FilterAR", m_bFilterAutoResponse, false);
 
   m_fConf.CloseFile();
 
@@ -1973,7 +1972,6 @@ ICQOwner::~ICQOwner()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteStr("AutoResponse", AutoResponse());
-  m_fConf.WriteBool("FilterAR", FilterAutoResponse());
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

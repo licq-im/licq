@@ -1700,17 +1700,10 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
 
   if (pUser->CustomAutoResponse()[0] != '\0')
   {
-    char *cus = gTranslator.NToRN(pUser->CustomAutoResponse());
-    char *def;
-    if (o->FilterAutoResponse())
-    {
-      def = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
-    }
-    else
-    {
-      def = gTranslator.NToRN(o->AutoResponse());
-    }
+    char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
+    char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
+    pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
+    pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN);
     m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
     sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
     free(cus);
@@ -1722,15 +1715,8 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
          pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
         pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
     {
-      if (o->FilterAutoResponse())
-      {
-        m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
-        pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
-      }
-      else
-      {
-        m_szMessage = gTranslator.NToRN(o->AutoResponse());
-      }
+      m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
     }
     else
       // don't sent out AutoResponse if we're online
