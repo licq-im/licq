@@ -1293,7 +1293,8 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd)
         break;
       }
 
-      b_out.Clear();
+      b_out.setDataPosWrite(b_out.getDataStart());
+      b_out.setDataPosRead(b_out.getDataStart());
     }
   }
 }
