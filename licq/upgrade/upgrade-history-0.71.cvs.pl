@@ -51,7 +51,7 @@ while (<LIST>)
   $USER_HISTORY = "$ENV{'HOME'}/.licq/history/$uin.history";
   $USER_OUTPUT = "$ENV{'HOME'}/.licq/history/$uin.history.new";
   $USER_INFO = "$ENV{'HOME'}/.licq/users/$uin.uin";
-  process_newheader();
+  #process_newheader();
   process_newbody();
 }
 
@@ -59,7 +59,7 @@ while (<LIST>)
 $USER_HISTORY = "$ENV{'HOME'}/.licq/history/owner.history";
 $USER_OUTPUT = "$ENV{'HOME'}/.licq/history/owner.history.new";
 $USER_INFO = "$ENV{'HOME'}/.licq/owner.uin";
-process_newheader();
+#process_newheader();
 process_newbody();
 
 

@@ -1,0 +1,10 @@
+If you are upgrading from a previous CVS version of licq, be
+aware that the history format has changed again.  Run the
+upgrade/upgrade-0.70.cvs-history.sh script to bring your history
+files fully up to date.  Also note that due to a serious bug in
+the previous history upgrade script many of your messages will
+incorrectly appear to be from you instead of to you.
+It is recommended you take your backed-up history and re-run the
+complete upgrade-history script, however this is no necessary.
+
+Graham, author of Licq.
