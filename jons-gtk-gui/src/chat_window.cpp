@@ -844,7 +844,7 @@ void chat_send(GtkWidget *widget, GdkEventKey *event, struct chat_window *cw)
 						"\n", -1);
 				cw->last_pos = gtk_editable_get_position(
 						 GTK_EDITABLE(cw->text_local));
-				// Eat the new line ?
+				// Eat the new line
 				cw->last_pos++;
 			
 				g_free(new_text);
