@@ -211,14 +211,40 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
     szOnParams[i] = new char[MAX_FILENAME_LEN];
     szOnParams[i][0] = '\0';
   }
+
+	// Prepare default values for onEvent
+	char DEF_MESSAGE[MAX_FILENAME_LEN];
+	char DEF_URL[MAX_FILENAME_LEN];
+	char DEF_CHAT[MAX_FILENAME_LEN];
+	char DEF_FILE[MAX_FILENAME_LEN];
+	char DEF_NOTIFY[MAX_FILENAME_LEN];
+	char DEF_SYSMSG[MAX_FILENAME_LEN];
+	char DEF_MSGSENT[MAX_FILENAME_LEN];
+	strcpy(DEF_MESSAGE, SHARE_DIR);
+	strcpy(DEF_URL, SHARE_DIR);
+	strcpy(DEF_CHAT, SHARE_DIR);
+	strcpy(DEF_FILE, SHARE_DIR);
+	strcpy(DEF_NOTIFY, SHARE_DIR);
+	strcpy(DEF_SYSMSG, SHARE_DIR);
+	strcpy(DEF_MSGSENT, SHARE_DIR);
+	// be paranoid, don't let it overflow
+	unsigned short MAX_APPEND = (MAX_FILENAME_LEN - strlen(SHARE_DIR) - 1);  // max chars to append via strncat()
+	strncat(DEF_MESSAGE, "sounds/icq/Message.wav", MAX_APPEND);
+	strncat(DEF_URL,     "sounds/icq/URL.wav", MAX_APPEND);
+	strncat(DEF_CHAT,    "sounds/icq/Chat.wav", MAX_APPEND);
+	strncat(DEF_FILE,    "sounds/icq/File.wav", MAX_APPEND);
+	strncat(DEF_NOTIFY,  "sounds/icq/Online.wav", MAX_APPEND);
+	strncat(DEF_SYSMSG,  "sounds/icq/System.wav", MAX_APPEND);
+	strncat(DEF_MSGSENT, "sounds/icq/Message.wav", MAX_APPEND);
+
   licqConf.ReadStr("Command", szOnEventCommand, "play");
-  licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG], "");
-  licqConf.ReadStr("Url", szOnParams[ON_EVENT_URL], "");
-  licqConf.ReadStr("Chat", szOnParams[ON_EVENT_CHAT], "");
-  licqConf.ReadStr("File", szOnParams[ON_EVENT_FILE], "");
-  licqConf.ReadStr("OnlineNotify", szOnParams[ON_EVENT_NOTIFY], "");
-  licqConf.ReadStr("SysMsg", szOnParams[ON_EVENT_SYSMSG], "");
-  licqConf.ReadStr("MsgSent", szOnParams[ON_EVENT_MSGSENT], "");
+  licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG], DEF_MESSAGE);
+  licqConf.ReadStr("Url", szOnParams[ON_EVENT_URL], DEF_URL);
+  licqConf.ReadStr("Chat", szOnParams[ON_EVENT_CHAT], DEF_CHAT);
+  licqConf.ReadStr("File", szOnParams[ON_EVENT_FILE], DEF_FILE);
+  licqConf.ReadStr("OnlineNotify", szOnParams[ON_EVENT_NOTIFY], DEF_NOTIFY);
+  licqConf.ReadStr("SysMsg", szOnParams[ON_EVENT_SYSMSG], DEF_SYSMSG);
+  licqConf.ReadStr("MsgSent", szOnParams[ON_EVENT_MSGSENT], DEF_MSGSENT);
   m_xOnEventManager.SetParameters(szOnEventCommand, (const char **)szOnParams);
   for (int i = 0; i < MAX_ON_EVENT; i++)
     delete [] szOnParams[i];
