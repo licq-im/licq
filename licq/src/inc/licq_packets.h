@@ -593,6 +593,7 @@ public:
    virtual const unsigned short getSubCommand() { return m_nSubCommand; }
 
    char *LocalPortOffset()  {  return m_szLocalPortOffset; }
+   unsigned short Level()  { return m_nLevel; }
 protected:
    CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
               unsigned short _nSubCommand, const char *szMessage, bool _bAccept,
@@ -610,6 +611,7 @@ protected:
    unsigned long  m_nSequence;
 
    char *m_szLocalPortOffset;
+   unsigned short m_nLevel;
 };
 
 

@@ -1146,6 +1146,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short s = o->Status();
   if (user->StatusToUser() != ICQ_STATUS_OFFLINE) s = user->StatusToUser();
+  m_nLevel = nLevel;
 
   switch(_nCommand)
   {
