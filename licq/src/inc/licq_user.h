@@ -378,6 +378,8 @@ protected:
 
   void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
   bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
+  bool ConnectionInProgress() { return m_bConnectionInProgress; }
+  void SetConnectionInProgress(bool c)  { m_bConnectionInProgress = c; }
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -398,7 +400,8 @@ protected:
        m_bSendServer,
        m_bEnableSave,
        m_bShowAwayMsg,
-       m_bOfflineOnDisconnect;
+       m_bOfflineOnDisconnect,
+       m_bConnectionInProgress;
   unsigned short m_nStatusToUser, m_nSendLevel;
   unsigned short m_nAutoAccept;
 

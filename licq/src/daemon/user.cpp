@@ -1044,6 +1044,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
+  m_bConnectionInProgress = false;
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
