@@ -8,8 +8,8 @@ Makefile.in
 config.h.in
 aclocal.m4
 acinclude.m4
-stamp-h.in
-stamp-h
+stamp-h*
 ltmain.sh
 ltconfig
 libtool
+autom4te.cache
