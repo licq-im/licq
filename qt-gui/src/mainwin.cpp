@@ -868,9 +868,9 @@ void CMainWindow::updateGroups()
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
   {
-    cmbUserGroups->insertItem((*g)[i]);
-    mnuUserGroups->insertItem((*g)[i]);
-    mnuGroup->insertItem((*g)[i]);
+    cmbUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
+    mnuUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
+    mnuGroup->insertItem(QString::fromLocal8Bit((*g)[i]));
   }
   gUserManager.UnlockGroupList();
   mnuUserGroups->insertSeparator();

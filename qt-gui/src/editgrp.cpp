@@ -79,18 +79,18 @@ void EditGrpDlg::RefreshList()
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
   {
-    lstGroups->insertItem((*g)[i]);
+    lstGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
     if (i + 1 == gUserManager.DefaultGroup())
-      nfoDefault->setData((*g)[i]);
+      nfoDefault->setData(QString::fromLocal8Bit((*g)[i]));
     if (i + 1== gUserManager.NewUserGroup())
-      nfoNewUser->setData((*g)[i]);
+      nfoNewUser->setData(QString::fromLocal8Bit((*g)[i]));
   }
   gUserManager.UnlockGroupList();
 }
 
 void EditGrpDlg::slot_add()
 {
-  gUserManager.AddGroup(strdup(tr("noname")));
+  gUserManager.AddGroup(strdup(tr("noname").local8Bit()));
   RefreshList();
   emit (signal_updateGroups());
 }
@@ -172,7 +172,7 @@ void EditGrpDlg::slot_edit()
   if (n < 0) return;
   edtName->setEnabled(true);
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  edtName->setText((*g)[n]);
+  edtName->setText(QString::fromLocal8Bit((*g)[n]));
   gUserManager.UnlockGroupList();
   m_nEditGrp = n + 1;
   btnEdit->setText(tr("Cancel"));
@@ -184,7 +184,7 @@ void EditGrpDlg::slot_edit()
 
 void EditGrpDlg::slot_editok()
 {
-  gUserManager.RenameGroup(m_nEditGrp, edtName->text());
+  gUserManager.RenameGroup(m_nEditGrp, edtName->text().local8Bit());
   RefreshList();
   emit (signal_updateGroups());
 
