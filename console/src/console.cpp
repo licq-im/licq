@@ -1043,6 +1043,8 @@ void CLicqConsole::InputCommand(int cIn)
     break;
 
   case KEY_BACKSPACE:
+  case KEY_DC:
+  case KEY_LEFT:
   {
     if (nPos == 0) return;
     int yp, xp;
@@ -2144,6 +2146,8 @@ char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn,
     break;
 
   case KEY_BACKSPACE:
+  case KEY_DC:
+  case KEY_LEFT:
   {
     if (n == 0) break;
     int yp, xp;
@@ -2198,6 +2202,8 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
     break;
 
   case KEY_BACKSPACE:
+  case KEY_DC:
+  case KEY_LEFT:
   {
     if (n == 0) break;
     int yp, xp;
