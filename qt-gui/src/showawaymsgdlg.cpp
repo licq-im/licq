@@ -82,11 +82,12 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   }
   else
   {
+    bool bSendServer = (u->SocketDesc() <= 0);
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     mleAwayMsg->setBackgroundMode(PaletteBackground);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
-    icqEventTag = server->icqFetchAutoResponse(m_nUin);
+    icqEventTag = server->icqFetchAutoResponse(m_nUin, bSendServer);
   }
 
   show();
