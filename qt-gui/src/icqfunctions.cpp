@@ -57,6 +57,7 @@
 #include "languagecodes.h"
 #include "log.h"
 #include "sigman.h"
+#include "editfile.h"
 #include "eventdesc.h"
 #include "gui-defines.h"
 
@@ -547,22 +548,28 @@ void ICQFunctions::CreateHistoryTab()
 
 void ICQFunctions::InitHistoryTab()
 {
-  unsigned short CR = 0;
   tabList[TAB_HISTORY].loaded = true;
   QWidget *p = tabList[TAB_HISTORY].tab;
 
-  QGridLayout *lay = new QGridLayout(p, 3, 3, 8, 0);
-
-  mleHistory = new QTextView(p);
-  lay->addMultiCellWidget(mleHistory, CR, CR, 0, 2);
+  QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
 
   lblHistory = new QLabel(p);
-  CR++;
-  lay->addMultiCellWidget(lblHistory, CR, CR, 0, 1);
+  lblHistory->setAutoResize(true);
+  lblHistory->setAlignment(AlignLeft | AlignVCenter);
+  lay->addWidget(lblHistory);
 
-  chkHistoryReverse = new QCheckBox("Reverse",p);
-  connect(chkHistoryReverse,SIGNAL(toggled(bool)),SLOT(ReverseHistory(bool)));
-  lay->addWidget(chkHistoryReverse, CR, 2);
+  mleHistory = new QTextView(p);
+  lay->addWidget(mleHistory);
+
+  QGroupBox *box = new QGroupBox(3, Horizontal, p);
+  lay->addWidget(box);
+
+  btnHistoryReload = new QPushButton(tr("Reload"), box);
+  connect(btnHistoryReload, SIGNAL(clicked()), SLOT(slot_historyReload()));
+  btnHistoryEdit = new QPushButton(tr("Edit"), box);
+  connect(btnHistoryEdit, SIGNAL(clicked()), SLOT(slot_historyEdit()));
+  chkHistoryReverse = new QCheckBox(tr("Reverse"), box);
+  connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
   chkHistoryReverse->setChecked(true);
 }
 
@@ -1406,14 +1413,13 @@ void ICQFunctions::SaveAbout()
 void ICQFunctions::SetupHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  //nfoHistory->setData(u->HistoryName());
   if (!u->GetHistory(m_lHistoryList))
   {
     mleHistory->setText(tr("Error loading history"));
   }
   else
   {
-    m_bHistoryReverse = true;
+    m_bHistoryReverse = chkHistoryReverse->isChecked();
     m_iHistoryEIter = m_lHistoryList.end();
     m_iHistorySIter = m_iHistoryEIter;
     for (unsigned short i = 0;
@@ -1428,7 +1434,7 @@ void ICQFunctions::SetupHistory()
   gUserManager.DropUser(u);
 }
 
-void ICQFunctions::ReverseHistory(bool newVal)
+void ICQFunctions::slot_historyReverse(bool newVal)
 {
   if (chkHistoryReverse->isChecked() != newVal)
     chkHistoryReverse->setChecked(newVal);
@@ -1437,6 +1443,22 @@ void ICQFunctions::ReverseHistory(bool newVal)
     m_bHistoryReverse = newVal;
     ShowHistory();
   }
+}
+
+void ICQFunctions::slot_historyReload()
+{
+  ICQUser::ClearHistory(m_lHistoryList);
+  SetupHistory();
+}
+
+void ICQFunctions::slot_historyEdit()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u == NULL) return;
+
+  (void) new EditFileDlg(u->HistoryFile());
+
+  gUserManager.DropUser(u);
 }
 
 void ICQFunctions::ShowHistoryPrev()
@@ -2044,9 +2066,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 ICQFunctions::~ICQFunctions()
 {
   delete icqEventTag;
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  u->ClearHistory(m_lHistoryList);
-  gUserManager.DropUser(u);
+  ICQUser::ClearHistory(m_lHistoryList);
 }
 
 #include "icqfunctions.moc"
