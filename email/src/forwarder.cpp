@@ -11,22 +11,23 @@
 extern int errno;
 #endif
 
-#include "email.h"
+#include "forwarder.h"
 #include "log.h"
 #include "icqd.h"
 #include "file.h"
 #include "user.h"
 #include "eventdesc.h"
+#include "constants.h"
 
 extern "C" { const char *LP_Version(); }
 
-const char L_EMAILxSTR[]  = "[EMF] ";
+const char L_FORWARDxSTR[]  = "[FOR] ";
 const unsigned short SUBJ_CHARS = 20;
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::Constructor
+ * CLicqForwarder::Constructor
  *-------------------------------------------------------------------------*/
-CLicqEmail::CLicqEmail(bool _bEnable, char *_szStatus)
+CLicqForwarder::CLicqForwarder(bool _bEnable, char *_szStatus)
 {
   tcp = new TCPSocket;
   m_bExit = false;
@@ -36,27 +37,27 @@ CLicqEmail::CLicqEmail(bool _bEnable, char *_szStatus)
 
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::Destructor
+ * CLicqForwarder::Destructor
  *-------------------------------------------------------------------------*/
-CLicqEmail::~CLicqEmail()
+CLicqForwarder::~CLicqForwarder()
 {
   delete tcp;
 }
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::Shutdown
+ * CLicqForwarder::Shutdown
  *-------------------------------------------------------------------------*/
-void CLicqEmail::Shutdown()
+void CLicqForwarder::Shutdown()
 {
-  gLog.Info("%sShutting down email forwarder.\n", L_EMAILxSTR);
+  gLog.Info("%sShutting down forwarder.\n", L_FORWARDxSTR);
   licqDaemon->UnregisterPlugin();
 }
 
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::Run
+ * CLicqForwarder::Run
  *-------------------------------------------------------------------------*/
-int CLicqEmail::Run(CICQDaemon *_licqDaemon)
+int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we only want the update user signal
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
@@ -65,14 +66,35 @@ int CLicqEmail::Run(CICQDaemon *_licqDaemon)
   // Create our snmp information
   m_nSMTPPort = 25; //getservicebyname("snmp");
   char filename[256];
-  sprintf (filename, "%s/licq_email.conf", BASE_DIR);
+  sprintf (filename, "%s/licq_forwarder.conf", BASE_DIR);
   CIniFile conf(INI_FxFATAL | INI_FxERROR);
   conf.LoadFile(filename);
-  conf.SetSection("SMTP");
-  conf.ReadStr("Host", m_szSMTPHost);
-  conf.ReadStr("To", m_szSMTPTo);
-  conf.ReadStr("From", m_szSMTPFrom);
-  conf.ReadStr("Domain", m_szSMTPDomain);
+  conf.SetSection("Forward");
+  conf.ReadNum("Type", m_nForwardType, FORWARD_EMAIL);
+
+  switch (m_nForwardType)
+  {
+    case FORWARD_EMAIL:
+      conf.SetSection("SMTP");
+      conf.ReadStr("Host", m_szSMTPHost);
+      conf.ReadStr("To", m_szSMTPTo);
+      conf.ReadStr("From", m_szSMTPFrom);
+      conf.ReadStr("Domain", m_szSMTPDomain);
+      break;
+    case FORWARD_ICQ:
+      conf.SetSection("ICQ");
+      conf.ReadNum("Uin", m_nUINTo, 0);
+      if (m_nUINTo == 0)
+      {
+        gLog.Error("%sInvalid ICQ forward UIN: %ld\n", L_FORWARDxSTR, m_nUINTo);
+        return 1;
+      }
+      break;
+    default:
+      gLog.Error("%sInvalid forward type: %d\n", L_FORWARDxSTR, m_nForwardType);
+      return 1;
+      break;
+  }
   conf.CloseFile();
 
   // Log on if necessary
@@ -83,13 +105,13 @@ int CLicqEmail::Run(CICQDaemon *_licqDaemon)
     bool b = o->StatusOffline();
     gUserManager.DropOwner();
     if (s == INT_MAX)
-      gLog.Warn("%sInvalid startup status.\n", L_EMAILxSTR);
+      gLog.Warn("%sInvalid startup status.\n", L_FORWARDxSTR);
     else
     {
       if (b)
-        licqDaemon->icqSetStatus(s);
-      else
         licqDaemon->icqLogon(s);
+      else
+        licqDaemon->icqSetStatus(s);
     }
     free(m_szStatus);
     m_szStatus = NULL;
@@ -120,9 +142,9 @@ int CLicqEmail::Run(CICQDaemon *_licqDaemon)
 
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::ProcessPipe
+ * CLicqForwarder::ProcessPipe
  *-------------------------------------------------------------------------*/
-void CLicqEmail::ProcessPipe()
+void CLicqForwarder::ProcessPipe()
 {
   char buf[16];
   read(m_nPipe, buf, 1);
@@ -144,21 +166,21 @@ void CLicqEmail::ProcessPipe()
 
   case 'X':  // Shutdown
   {
-    gLog.Info("%sExiting.\n", L_EMAILxSTR);
+    gLog.Info("%sExiting.\n", L_FORWARDxSTR);
     m_bExit = true;
     break;
   }
 
   case '0':  // disable
   {
-    gLog.Info("%sDisabling.\n", L_EMAILxSTR);
+    gLog.Info("%sDisabling.\n", L_FORWARDxSTR);
     m_bEnabled = false;
     break;
   }
 
   case '1':  // enable
   {
-    gLog.Info("%sEnabling.\n", L_EMAILxSTR);
+    gLog.Info("%sEnabling.\n", L_FORWARDxSTR);
     m_bEnabled = true;
     break;
   }
@@ -170,9 +192,9 @@ void CLicqEmail::ProcessPipe()
 
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::ProcessSignal
+ * CLicqForwarder::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqEmail::ProcessSignal(CICQSignal *s)
+void CLicqForwarder::ProcessSignal(CICQSignal *s)
 {
   switch (s->Signal())
   {
@@ -186,7 +208,7 @@ void CLicqEmail::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGON:
     break;
   default:
-    gLog.Warn("%sInternal error: CLicqEmail::ProcessSignal(): Unknown signal command received from daemon: %d.\n", 
+    gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %d.\n", 
               L_WARNxSTR, s->Signal());
     break;
   }
@@ -195,9 +217,9 @@ void CLicqEmail::ProcessSignal(CICQSignal *s)
 
 
 /*---------------------------------------------------------------------------
- * CLicqEmail::ProcessEvent
+ * CLicqForwarder::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqEmail::ProcessEvent(ICQEvent *e)
+void CLicqForwarder::ProcessEvent(ICQEvent *e)
 {
 /*  switch (e->m_nCommand)
   {
@@ -223,7 +245,7 @@ void CLicqEmail::ProcessEvent(ICQEvent *e)
     break;
 
   default:
-    gLog.Warn("%sInternal error: CLicqEmail::ProcessEvent(): Unknown event command received from daemon: %d.\n",
+    gLog.Warn("%sInternal error: CLicqForwarder::ProcessEvent(): Unknown event command received from daemon: %d.\n",
               L_WARNxSTR, e->m_nCommand);
     break;
   }*/
@@ -231,7 +253,7 @@ void CLicqEmail::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqEmail::ProcessUserEvent(unsigned long nUin)
+void CLicqForwarder::ProcessUserEvent(unsigned long nUin)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
@@ -249,14 +271,48 @@ void CLicqEmail::ProcessUserEvent(unsigned long nUin)
     if (!ForwardEvent(u, e)) break;
     // Erase the event
     u->ClearEvent(0);
-    gLog.Info("%sForwarded message from %s (%ld) to %s.\n", L_EMAILxSTR, u->GetAlias(), nUin, m_szSMTPTo);
   }
 
   gUserManager.DropUser(u);
 }
 
 
-bool CLicqEmail::ForwardEvent(ICQUser *u, CUserEvent *e)
+bool CLicqForwarder::ForwardEvent(ICQUser *u, CUserEvent *e)
+{
+  bool s = false;
+  switch (m_nForwardType)
+  {
+    case FORWARD_EMAIL:
+      s = ForwardEvent_Email(u, e);
+      break;
+    case FORWARD_ICQ:
+      s = ForwardEvent_ICQ(u, e);
+      break;
+  }
+  return s;
+}
+
+
+bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
+{
+  //char szText = new char[strlen(e->Text()) + 128];
+  char szText[500];
+  snprintf(szText, MAX_MESSAGE_SIZE, "---FORWARD---\n[ %s from %s (%ld) ]\n%s\n", EventDescription(e),
+          u->GetAlias(), u->Uin(), e->Text());
+  CICQEventTag *t = licqDaemon->icqSendMessage(m_nUINTo, szText, false, false);
+  //delete []szText;
+  if (t == NULL)
+  {
+    gLog.Warn("%sSending message to %ld failed.\n", L_FORWARDxSTR, m_nUINTo);
+    return false;
+  }
+  gLog.Info("%sForwarded message from %s (%ld) to %ld.\n", L_FORWARDxSTR, u->GetAlias(), u->Uin(), m_nUINTo);
+  delete t;
+  return true;
+}
+
+
+bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
 {
   char szTo[256],
        szFrom[256],
@@ -409,6 +465,7 @@ bool CLicqEmail::ForwardEvent(ICQUser *u, CUserEvent *e)
   // Close our connection
   tcp->CloseConnection();
 
+  gLog.Info("%sForwarded message from %s (%ld) to %s.\n", L_FORWARDxSTR, u->GetAlias(), u->Uin(), m_szSMTPTo);
   return true;
 }
 

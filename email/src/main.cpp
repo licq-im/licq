@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "plugin.h"
-#include "email.h"
+#include "forwarder.h"
 
-CLicqEmail *licqEmail;
+CLicqForwarder *licqForwarder;
 
 const char *LP_Usage()
 {
   static const char usage[] =
-    "Usage:  Licq [options] -p email -- [ -h ] [ -e ] [ -l <staus> ]\n"
+    "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <staus> ]\n"
     "         -h          : help\n"
     "         -e          : start enabled\n"
     "         -l <status> : log on at startup\n";
@@ -21,21 +21,21 @@ const char *LP_Usage()
 
 const char *LP_Name()
 {
-  static const char name[] = "Email Forwarder";
+  static const char name[] = "ICQ Forwarder";
   return name;
 }
 
 
 const char *LP_Description()
 {
-  static const char desc[] = "ICQ to Email forwarder";
+  static const char desc[] = "ICQ message forwarder to email/icq";
   return desc;
 }
 
 
 const char *LP_Version()
 {
-  static const char version[] = "0.01";
+  static const char version[] = "0.50";
   return version;
 }
 
@@ -43,7 +43,7 @@ const char *LP_Status()
 {
   static const char enabled[] = "forwarding enabled";
   static const char disabled[] = "forwarding disabled";
-  return licqEmail->Enabled() ? enabled : disabled;
+  return licqForwarder->Enabled() ? enabled : disabled;
 }
 
 
@@ -73,17 +73,17 @@ bool LP_Init(int argc, char **argv)
       break;
     }
   }
-  licqEmail = new CLicqEmail(bEnable, szStatus);
+  licqForwarder = new CLicqForwarder(bEnable, szStatus);
   if (szStatus != NULL) free(szStatus);
-  return (licqEmail != NULL);
+  return (licqForwarder != NULL);
 }
 
 
 int LP_Main(CICQDaemon *_licqDaemon)
 {
-  int nResult = licqEmail->Run(_licqDaemon);
-  licqEmail->Shutdown();
-  delete licqEmail;
+  int nResult = licqForwarder->Run(_licqDaemon);
+  licqForwarder->Shutdown();
+  delete licqForwarder;
   return nResult;
 }
 

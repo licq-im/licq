@@ -12,11 +12,14 @@ class CUserEvent;
 class CICQSignal;
 class ICQEvent;
 
-class CLicqEmail
+#define FORWARD_EMAIL 0
+#define FORWARD_ICQ 1
+
+class CLicqForwarder
 {
 public:
-  CLicqEmail(bool, char *);
-  ~CLicqEmail();
+  CLicqForwarder(bool, char *);
+  ~CLicqForwarder();
   int Run(CICQDaemon *);
   void Shutdown();
   bool Enabled() { return m_bEnabled; }
@@ -29,6 +32,8 @@ protected:
   unsigned short m_nSMTPPort;
   char m_szSMTPHost[256], m_szSMTPTo[256], m_szSMTPFrom[256],
        m_szSMTPDomain[256];
+  unsigned long m_nUINTo;
+  unsigned short m_nForwardType;
 
   CICQDaemon *licqDaemon;
   TCPSocket *tcp;
@@ -40,6 +45,8 @@ public:
 
   void ProcessUserEvent(unsigned long);
   bool ForwardEvent(ICQUser *, CUserEvent *);
+  bool ForwardEvent_ICQ(ICQUser *, CUserEvent *);
+  bool ForwardEvent_Email(ICQUser *, CUserEvent *);
 
 };
 
