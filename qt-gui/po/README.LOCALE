@@ -1,0 +1,28 @@
+Licq Qt-GUI Translation Support
+
+
+Creating a Translation File
+
+First create the basic template by doing "make template.po".  Then rename
+this file to something a bit more descriptive, such as ru.po.  Edit your
+new file and fill in all the necessary translations.
+
+
+Using a translation File
+
+Once the .po file has been created, it must be converted into a Qt qm file.
+This is done using the msg2qm routine, which can be invoked using 
+"make <file>.qm" assuming <file>.po exists.  Once you have the .qm file,
+simply copy it to <licq prefix>/share/licq/qt-gui/locale.qm, and it will
+be automatically loaded next time the Qt-GUI is started.
+
+
+Updating a Translation File
+
+All the text strings are updated with each new Licq release, it is necessary
+to update the .po files.  This is done simply by placing the old .po file
+in the po directory and running "make merge".  This simply calls the mergetr
+program, which comes with Qt.  The new .po file can now be edited and any
+necessary translations added.
+
+
