@@ -4,7 +4,7 @@ EXTRA_DIST = xpm
 #hack, FIXME this in a clean manner
 libdir=$(prefix)/lib/licq
 
-INCLUDES = -fno-rtti -fno-exceptions -D_REENTRANT -DQT_NO_ASCII_CAST \
+INCLUDES = -D_REENTRANT -DQT_NO_ASCII_CAST \
 	-I$(top_srcdir)/../../src/inc $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
 lib_LTLIBRARIES = licq_qt-gui.la
