@@ -805,16 +805,12 @@ void UserSendCommon::changeEventType(int id)
   if (e != NULL)
   {
     QPoint p = topLevelWidget()->pos();
-    qDebug("here it goes. existing pos: %d, %d", p.x(), p.y());
     if (e->mleSend && mleSend)
       e->mleSend->setText(mleSend->text());
     e->move(p);
-    qDebug("move finished. pos now: %d, %d", e->pos().x(), e->pos().y());
     e->show();
-    qDebug("show finished");
 
     close();
-    qDebug("close finished");
   }
 }
 

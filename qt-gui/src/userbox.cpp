@@ -710,7 +710,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
     {
       setSelected(clickedItem, true);
       setCurrentItem(clickedItem);
-      doubleClicked(clickedItem);
+      emit doubleClicked(clickedItem);
     }
   }
   else if (e->button() == RightButton)
