@@ -13,13 +13,13 @@
 #include "ewidgets.h"
 #include "outputwin.h"
 
-bool QueryUser(QWidget *q, const char *szQuery, const char *szBtn1, const char *szBtn2)
+bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 {
   return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2) == 0 );
 }
 
 
-void InformUser(QWidget *q, const char *szInfo)
+void InformUser(QWidget *q, QString szInfo)
 {
   (void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
 }
@@ -249,13 +249,13 @@ void CEComboBox::setNamedBgColor(char *theColor)
 
 //-----CInfoField::constructor--------------------------------------------------
 CInfoField::CInfoField(int x, int y, int lenTitle, int lenBlank, int lenInfo,
-                       const char *title, bool isReadOnly, QWidget *parent)
+                       QString title, bool isReadOnly, QWidget *parent)
   : QLineEdit(parent)
 {
   m_bReadOnly = isReadOnly;
 
   lblTitle = NULL;
-  if (title != NULL)
+  if (!title.isNull())
   {
     lblTitle = new QLabel(title, parent);
     lblTitle->setGeometry(x, y, lenTitle, 20);
@@ -310,6 +310,12 @@ void CInfoField::mouseReleaseEvent(QMouseEvent *e)
 void CInfoField::setData(const char *data)
 {
   setText(QString::fromLocal8Bit(data));
+}
+
+
+void CInfoField::setData(QString data)
+{
+  setText(data);
 }
 
 void CInfoField::setData(const unsigned long data)

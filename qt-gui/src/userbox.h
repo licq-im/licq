@@ -12,36 +12,37 @@
 #include <qfont.h>
 
 #include "user.h"
-/*
-#ifdef USE_KDE
-#include <drag.h>
-#else
-class KDNDDropZone {};
-#endif
-*/
-#define COL_ALIAS 1
-#define COL_UIN 2
-#define COL_NAME 3
-#define COL_EMAIL 4
 
-class ColInfo
+class CColumnInfo
 {
 public:
-   ColInfo(unsigned theInfo = 0, unsigned short theWidth = 0, unsigned short theAlign = 0)
-      { info = theInfo; width = theWidth; align = (unsigned short)theAlign; };
-   unsigned short info, width, align;
+  CColumnInfo(QString _sTitle, const char *_szFormat,
+              unsigned short _nWidth, unsigned short _nAlign)
+    { m_sTitle = _sTitle;
+      m_szFormat = strdup(_szFormat);
+      m_nWidth = _nWidth;
+      m_nAlign = _nAlign; }
+  ~CColumnInfo(void)
+    { free(m_szFormat); }
+
+  QString m_sTitle;
+  char *m_szFormat;
+  unsigned short m_nWidth, m_nAlign;
 };
+
+typedef vector<CColumnInfo *> ColumnInfos;
 
 
 //=====UserViewItem================================================================================
 class CUserViewItem : public QListViewItem
 {
 public:
-   CUserViewItem (ICQUser *, short, QListView *);
-   virtual QString key(int column, bool ascending) const;
-   unsigned long ItemUin(void)  { return m_nUin; };
-protected:
+  CUserViewItem (ICQUser *, short, QListView *);
+  virtual QString key(int column, bool ascending) const;
+  unsigned long ItemUin(void)  { return m_nUin; }
+  short ItemIndex(void) { return m_nIndex; }
   void setGraphics(ICQUser *);
+protected:
   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
   virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r );
   QColor *m_cFore, *m_cBack;
@@ -81,7 +82,7 @@ class CUserView : public QListView
 {
   Q_OBJECT
 public:
-   CUserView (QPopupMenu *m, QPopupMenu *mg, vector <ColInfo> colInfo,
+   CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
               bool isHeader, bool _bGridLines, bool _bFontStyles,
               QWidget *parent = 0, const char *name = 0);
    void maxLastColumn(void);
@@ -100,10 +101,10 @@ public:
    void setGridLines(bool _b)  { CUserViewItem::s_bGridLines = _b; };
    void setFontStyles(bool _b)  { CUserViewItem::s_bFontStyles = _b; };
 
-   vector <ColInfo> colInfo;
 protected:
    QPopupMenu *mnuUser, *mnuGroup;
-   virtual void viewportMouseReleaseEvent(QMouseEvent *e);
+   ColumnInfos colInfo;
+   virtual void viewportMousePressEvent(QMouseEvent *e);
    virtual void keyPressEvent(QKeyEvent *e);
 /*
 public slots:
@@ -114,6 +115,7 @@ signals:
   void signal_dropedFile(const char *);
   void signal_dropedURL(const char *);
 */
+friend class CUserViewItem;
 };
 
 

@@ -15,21 +15,17 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
   m_nUin= _nUin;
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
-  
-#if QT_VERSION >= 210
-  qleAwayMsg = new QMultiLineEdit(this);
+  mleAwayMsg = new MLEditWrap(true, this);
   // ICQ99b allows 37 chars per line, so we do the same
-  qleAwayMsg->setWordWrap(QMultiLineEdit::FixedColumnWrap);
-  qleAwayMsg->setWrapColumnOrWidth(37);
-  qleAwayMsg->setMinimumSize(280, 90);
-#else  
-  qleAwayMsg = new MLEditWrap(true, this);
-#endif  
-  qleAwayMsg->setReadOnly(true);
-  top_lay->addWidget(qleAwayMsg);
+  mleAwayMsg->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
+  mleAwayMsg->setWrapColumnOrWidth(37);
+  mleAwayMsg->setReadOnly(true);
+  mleAwayMsg->setMinimumSize(280, 90);
+  connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), SLOT(accept()));
+  top_lay->addWidget(mleAwayMsg);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
-  
+
   chkShowAgain = new QCheckBox(_("&Show Again"), this);
   lay->addWidget(chkShowAgain);
 
@@ -42,7 +38,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
   char szStatus[32];
   u->getStatusStr(szStatus);
   setCaption(QString(_("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
-  qleAwayMsg->setText(u->getAwayMessage());
+  mleAwayMsg->setText(u->getAwayMessage());
 
   gUserManager.DropUser(u);
 
@@ -57,7 +53,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
 void ShowAwayMsgDlg::accept()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-  
   u->setShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 

@@ -4,7 +4,7 @@ AC_CONFIG_HEADER(config.h)
 
 dnl All versioning is done via these defines
 PACKAGE="Licq-Qt-GUI"
-VERSION=0.66.2
+VERSION=0.67
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -21,6 +21,7 @@ AC_PROG_CPP
 AC_PROG_CXX
 dnl AC_PROG_CXX_FNO_RTTI
 AC_PROG_CXXCPP
+AC_ISC_POSIX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PATH_PROG(PROG_STRIP,strip,:)
@@ -133,7 +134,7 @@ AC_C_SOCKLEN_T
 dnl *** Additions for using gettext
 
 dnl Define which transaltions are availible
-ALL_LINGUAS="sv fr es ru"
+ALL_LINGUAS="sv fr es ru nl"
 
 AM_GNU_GETTEXT
 
@@ -151,8 +152,8 @@ echo ""
 echo "Please remember to use GNU make, often installed as gmake."
 echo "*** Note that this release requires Qt 2.0 ***"
 if test "$have_kde" = yes; then
-  echo "KDE (CVS) support is enabled."
+  echo "KDE 2.0 (CVS) support is enabled."
 else
-  echo "KDE (CVS) support is disabled."
+  echo "KDE 2.0 (CVS) support is disabled."
 fi
 echo ""

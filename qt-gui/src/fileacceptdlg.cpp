@@ -38,14 +38,12 @@ CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
    connect( btnRefuse, SIGNAL(clicked()), SLOT(refuse()) );
    btnIgnore = new QPushButton(_("Ignore"), this );
    btnIgnore->setGeometry(190, 85, 80, 30 );
-   connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );   
+   connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );
 
-   char title[128];
    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-   sprintf(title, _("Accept file transfer from %s?"), u->getAlias());
+   setCaption(_("Accept file transfer from ") + QString::fromLocal8Bit(u->getAlias())+ " ?");
    gUserManager.DropUser(u);
-   setCaption(title);
-   
+
    show();
 }
 

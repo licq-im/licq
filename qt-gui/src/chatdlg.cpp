@@ -39,9 +39,7 @@ ChatDlg::ChatDlg(unsigned long _nUin,
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
    m_sLocalName = strdup(o->getAlias());
    gUserManager.DropOwner();
-   char sLocalTitle[16 + strlen(getLocalName())];
-   sprintf(sLocalTitle, _("Local - %s"), getLocalName());
-   boxLocal = new QGroupBox(sLocalTitle, this);
+   boxLocal = new QGroupBox(_("Local - ") + QString::fromLocal8Bit(getLocalName()), this);
    mleLocal = new MLEditWrap(true, boxLocal);
    mleLocal->setEnabled(false);
 
@@ -146,7 +144,7 @@ void ChatDlg::StateServer()
   {
     unsigned long testLong_1, testLong_2;
     m_cSocketChat.RecvBuffer() >> testLong_1 >> testLong_2;
-    if (testLong_1 != 0x64)
+    if (testLong_1 != 0x64 && testLong_1 != 0x65)
     {
       char *buf;
       gLog.Error("%sChat receive error - invalid color packet:\n%s\n",
@@ -164,9 +162,7 @@ void ChatDlg::StateServer()
     m_sRemoteName = new char[nameLen + 1];
     for (unsigned short i = 0; i < nameLen; i++)
        m_cSocketChat.RecvBuffer() >> m_sRemoteName[i];
-    char sRemoteTitle[16 + nameLen];
-    sprintf(sRemoteTitle, _("Remote - %s"), getRemoteName());
-    boxRemote->setTitle(sRemoteTitle);
+    boxRemote->setTitle(_("Remote - ") + QString::fromLocal8Bit(getRemoteName()));
 
     // set up the remote colors
     unsigned short junkShort;
@@ -301,10 +297,10 @@ void ChatDlg::StateClient()
   {
     unsigned long testLong_1, testLong_2;
     m_cSocketChat.RecvBuffer() >> testLong_1 >> testLong_2;
-    if (testLong_1 != 0x64 || testLong_2 != m_nUin)
+    if ((testLong_1 != 0x64 && testLong_1 != 0x65) || testLong_2 != m_nUin)
     {
       char *buf;
-      gLog.Error("%sChat receive error - invalid color/font packet:\n%s\n", 
+      gLog.Error("%sChat receive error - invalid color/font packet:\n%s\n",
                  L_ERRORxSTR, m_cSocketChat.RecvBuffer().print(buf));
       delete [] buf;
       chatClose();
@@ -313,16 +309,14 @@ void ChatDlg::StateClient()
 
     // just received the color/font packet
 
-    // take out the interesting info from the font packet (only the name and 
+    // take out the interesting info from the font packet (only the name and
     // colors for now)
     unsigned short nameLen;
     m_cSocketChat.RecvBuffer() >> nameLen;   // length of chat name (including null)
     m_sRemoteName = new char[nameLen + 1];
-    for (unsigned short i = 0; i < nameLen; i++) 
+    for (unsigned short i = 0; i < nameLen; i++)
        m_cSocketChat.RecvBuffer() >> m_sRemoteName[i];
-    char sRemoteTitle[16 + nameLen];
-    sprintf(sRemoteTitle, _("Remote - %s"), m_sRemoteName); 
-    boxRemote->setTitle(sRemoteTitle);
+    boxRemote->setTitle(_("Remote - ") + QString::fromLocal8Bit(m_sRemoteName));
 
     // set up the remote colors
     char colorForeRed, colorForeGreen, colorForeBlue, 
@@ -423,42 +417,40 @@ void ChatDlg::chatRecv()
     chatClose();
     return;
   }
-  
+
   char chatChar;
-  while (!m_cSocketChat.RecvBuffer().End()) 
+  while (!m_cSocketChat.RecvBuffer().End())
   {
      m_cSocketChat.RecvBuffer() >> chatChar;
      chatQueue.push_back(chatChar);
   }
   m_cSocketChat.ClearRecvBuffer();
 
-  while (chatQueue.size() > 0) 
+  while (chatQueue.size() > 0)
   {
      chatChar = *chatQueue.begin(); // first character in queue (not dequeued)
-     switch (chatChar) 
+     switch (chatChar)
      {
      case 0x0D:   // new line
-        mleRemote->newLine();
+        mleRemote->appendChar('\n');
         chatQueue.pop_front();
         break;
-     
+
      case 0x07:  // beep
         if (m_bAudio)
           printf("\a");
         else
         {
-          mleRemote->newLine();
-          mleRemote->append("<--BEEP-->");
-          mleRemote->newLine();
+          mleRemote->append("\n<--BEEP-->");
         }
         chatQueue.pop_front();
         break;
 
      case 0x08:   // backspace
         mleRemote->backspace();
-        chatQueue.pop_front(); 
+        chatQueue.pop_front();
         break;
-     
+
      case 0x00: // change foreground color
      {
         if (chatQueue.size() < 5) return;

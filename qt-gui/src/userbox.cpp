@@ -13,11 +13,7 @@
 #include "userbox.h"
 #include "gui-defines.h"
 #include "licq-locale.h"
-/*
-#ifdef USE_KDE
-#include <kurl.h>
-#endif
-*/
+
 bool    CUserViewItem::s_bGridLines,
         CUserViewItem::s_bFontStyles;
 QPixmap *CUserViewItem::s_pOnline = NULL,
@@ -41,8 +37,7 @@ QColor  *CUserViewItem::s_cOnline = NULL,
 
 
 //-----CUserViewItem::constructor-----------------------------------------------
-CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex,
-                            QListView *parent)
+CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex, QListView *parent)
    : QListViewItem(parent)
 {
   m_nIndex = _nIndex;
@@ -69,6 +64,8 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex,
 //-----CUserViewItem::setGraphics-----------------------------------------------
 void CUserViewItem::setGraphics(ICQUser *u)
 {
+   static char sTemp[128];
+
    switch (u->getStatus())
    {
    case ICQ_STATUS_FREEFORCHAT:
@@ -150,32 +147,17 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_nWeight = QFont::Normal;
    if (s_bFontStyles)
    {
-     if (u->getOnlineNotify()) m_nWeight = QFont::DemiBold;
-     if (u->getInvisibleList()) m_bStrike = true;
-     if (u->getVisibleList()) m_bItalic = true;
+     if (u->OnlineNotify()) m_nWeight = QFont::DemiBold;
+     if (u->InvisibleList()) m_bStrike = true;
+     if (u->VisibleList()) m_bItalic = true;
    }
    if (u->getNumMessages() > 0) m_nWeight = QFont::Bold;
 
    CUserView *v = (CUserView *)listView();
-   char sTemp[128];
    for (unsigned short i = 0; i < v->colInfo.size(); i++)
    {
-      switch (v->colInfo[i].info)
-      {
-      case COL_ALIAS:
-         setText(i + 1, QString::fromLocal8Bit(u->getAlias()));
-         break;
-      case COL_UIN:
-         sprintf (sTemp, "%ld", u->getUin());
-         setText(i + 1, sTemp);
-         break;
-      case COL_NAME:
-         setText(i + 1, QString::fromLocal8Bit(u->getFirstName()) + " " + QString::fromLocal8Bit(u->getLastName()));
-         break;
-      case COL_EMAIL:
-         setText(i + 1, u->getEmail());
-         break;
-      }
+     u->usprintf(sTemp, v->colInfo[i]->m_szFormat);
+     setText(i + 1, QString::fromLocal8Bit(sTemp));
    }
 }
 
@@ -269,34 +251,20 @@ QString CUserViewItem::key (int column, bool ascending) const
 
 
 //-----UserList::constructor-----------------------------------------------------------------------
-CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, vector <ColInfo> theColInfo,
+CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
                     QWidget *parent = 0, const char *name = 0)
    : QListView(parent, name)
 {
    mnuUser = m;
    mnuGroup = mg;
-   colInfo = theColInfo;
+   colInfo = _colInfo;
 
    addColumn(_("S"), 20);
    for (unsigned short i = 0; i < colInfo.size(); i++)
    {
-      switch (theColInfo[i].info)
-      {
-      case COL_ALIAS:
-         addColumn(_("Alias"), colInfo[i].width);
-         break;
-      case COL_UIN:
-         addColumn(_("UIN"), colInfo[i].width);
-         break;
-      case COL_NAME:
-         addColumn(_("Name"), colInfo[i].width);
-         break;
-      case COL_EMAIL:
-         addColumn(_("EMail Address"), colInfo[i].width);
-         break;
-      }
-      setColumnAlignment(i + 1, pow(2, colInfo[i].align));
+     addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);
+     setColumnAlignment(i + 1, pow(2, colInfo[i]->m_nAlign));
    }
 
    setAllColumnsShowFocus (true);
@@ -371,10 +339,10 @@ unsigned long CUserView::SelectedItemUin(void)
 }
 
 
-//-----CUserList::mouseReleaseEvent---------------------------------------------
-void CUserView::viewportMouseReleaseEvent(QMouseEvent *e)
+//-----CUserList::mousePressEvent---------------------------------------------
+void CUserView::viewportMousePressEvent(QMouseEvent *e)
 {
-   QListView::mouseReleaseEvent(e);
+   QListView::viewportMousePressEvent(e);
    if (e->button() == RightButton)
    {
       QPoint clickPoint(e->x(), e->y());
@@ -388,13 +356,15 @@ void CUserView::viewportMouseReleaseEvent(QMouseEvent *e)
            ICQUser *u = gUserManager.FetchUser(SelectedItemUin(), LOCK_R);
            if (u == NULL) return;
            mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_ONLINExNOTIFY),
-                                   u->getOnlineNotify());
+                                   u->OnlineNotify());
            mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_INVISIBLExLIST),
-                                   u->getInvisibleList());
+                                   u->InvisibleList());
            mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_VISIBLExLIST),
-                                   u->getVisibleList());
+                                   u->VisibleList());
+           mnuUser->setItemChecked(mnuUser->idAt(MNUxITEM_IGNORExLIST),
+                                   u->IgnoreList());
            for (unsigned short i = 0; i < mnuGroup->count(); i++)
-              mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->getIsInGroup(i));
+              mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
            gUserManager.DropUser(u);
            mnuUser->popup(mapToGlobal(clickPoint));
          }
@@ -515,10 +485,10 @@ void CUserView::maxLastColumn(void)
 //  QScrollBar *s = verticalScrollBar();
 //  if (s != NULL) totalWidth += s->width();
   int newWidth = width() - totalWidth - 2;
-  if (newWidth < colInfo[nNumCols - 2].width)
+  if (newWidth < colInfo[nNumCols - 2]->m_nWidth)
   {
     setHScrollBarMode(Auto);
-    setColumnWidth(nNumCols - 1, colInfo[nNumCols - 2].width);
+    setColumnWidth(nNumCols - 1, colInfo[nNumCols - 2]->m_nWidth);
   }
   else
   {

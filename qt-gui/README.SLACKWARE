@@ -1,0 +1,80 @@
+From ttsoares@orion.ufrgs.br Fri Oct  1 19:43:23 1999
+Date: Wed, 29 Sep 1999 15:52:21 -0300
+From: Thomas Tschoepke S. <ttsoares@orion.ufrgs.br>
+Reply-To: licq@ctr.videotron.com
+To: licq@ctr.videotron.com
+Subject: [licq] Licq 0.70.x and Slackware: micro-HOWTO
+
+My enviroment:
+                KDE 1.1.1 + qt-1.44
+                Slackware 4.0 with original libc+gcc
+
+If you are a Slack user like me you should know where you must
+  be root or not at this steps... ;-)
+
+1) Install qt-2.0.1:
+
+        /usr/local/qt   (qt-1.44)
+        /usr/local/qt2  (qt-2.01)
+
+   Using the at my root .profile:
+
+QTDIR=/usr/local/qt2
+PATH=$QTDIR/bin:/sbin:$PATH
+MANPATH=$QTDIR/man:$MANPATH
+LD_LIBRARY_PATH=/usr/local/lib:$QTDIR/lib:$LD_LIBRARY_PATH
+LIBRARY_PATH=$LD_LIBRARY_PATH
+#
+CPLUS_INCLUDE_PATH=$QTDIR/include:$CPLUS_INCLUDE_PATH
+export QTDIR PATH MANPATH LD_LIBRARY_PATH LIBRARY_PATH
+export CPLUS_INCLUDE_PATH
+
+   a simple './configure -gifs && make' shoud be enought to
+   build and install qt-2.0.1.
+
+2) Install Licq-0.70.1
+
+  - tar xzvfp licq-0.70.1.tar.gz at your favorite location...
+  - go to /licq-0.70.1/plugins/qt-gui-0.66.2/
+  - ./configure --with-x --with-qt-inclides=/usr/local/qt-2.0.1/include
+\
+      --with-x --with-qt-libraries=/usr/local/qt-2.0.1/lib
+  - make && make install
+  - cd ../..
+  - ./configure && make && make install
+
+3) The Xfree libs
+
+  - backup, using what ever you like, the /lib/X11R6/lib
+    I like, cd /usr/local/src
+            tar cvfp X11-back.tar /usr/X11R6/lib
+  - get the threadsafe libs at, for example:
+    http://www.xmms.org/files/XFree86-3.3-libs.tar.gz
+
+    DO NOT DO THIS NEXT STEP RUNNING X...!
+    exit Xwindow and do it in a text terminal.
+
+  - copy this file tho the /usr/X11R6/libc and extract its
+    contexts, tar xzvfp XFree86-3.3-libs.tar.gz
+
+This is the alpha version of this text, my lack of time has been so
+  bad that I am sleeping 5 hours per day %-{  ZZZZzzz..
+
+=============8<-----------
+
+English is not my native language so if you could understand anything at
+  this text it is my foult... ;-)
+
+-- 
+oares@orion.ufrgs.br|Porto Alegre| Thomas Tschoepke Soares        |    
+//   Mate do
+| RS - Brasil|   ttsoares@cedep.ifch.ufrgs.br |(~~~//'~)   estrivo
+bendito
+|---------UIN:961141--------------------------| \     /  Amargo que 
+| The fact is a secondary aspect of reality   |  `\_/'     a gente
+bebe...
+-------------------------------------------------
+The LICQ list.
+To unsubscribe send a mail with "unsubscribe licq"
+in the body to majordomo@ctr.videotron.com
+-------------------------------------------------

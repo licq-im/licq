@@ -1,11 +1,17 @@
-dnl aclocal.m4 generated automatically by aclocal 1.2
+dnl aclocal.m4 generated automatically by aclocal 1.4a
+
+dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+dnl This file is free software; the Free Software Foundation
+dnl gives unlimited permission to copy and/or distribute it,
+dnl with or without modifications, as long as this notice is preserved.
+
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+dnl PARTICULAR PURPOSE.
 
 dnl Copyright (c) 1998 N. D. Bellamy
 
-## ------------------------------------------------------------------------
-## Find a file (or one of more files in a list of dirs)
-## ------------------------------------------------------------------------
-##
 AC_DEFUN(AC_FIND_FILE,
 [
 $3=NO
@@ -20,6 +26,7 @@ do
   done
 done
 ])
+
 
 AC_DEFUN(AC_PATH_QT_LIB,
 [
@@ -56,13 +63,13 @@ AC_DEFUN(AC_PATH_QT_LIB,
         /usr/X11R6/lib/qt"
   
       if test "x$QTDIR" != x; then
-        qt_library_dirs="$QTDIR/lib $qt_library_dirs"
+        qt_library_dirs="$qt_library_dirs $QTDIR/lib"
       fi
   
       if test "x$QTLIB" != x; then
-        qt_library_dirs="$QTLIB $qt_library_dirs"
+        qt_library_dirs="$qt_library_dirs $QTLIB"
       fi
-    
+
       for qt_dir in $qt_library_dirs; do
         for qt_check_lib in $qt_dir/libqt.so*; do
           if test -r $qt_check_lib; then
@@ -120,16 +127,16 @@ AC_DEFUN(AC_PATH_QT_INC,
         /usr/local/include/qt \
         /usr/X11/include/qt \
         /usr/X11/include/X11/qt \
-      	/usr/X11R6/include \        
+        /usr/X11R6/include \        
         /usr/X11R6/include/qt \
         /usr/X11R6/include/X11/qt"
 
       if test "x$QTDIR" != x; then
-        qt_include_dirs="$QTDIR/include $qt_include_dirs"
+        qt_include_dirs="$qt_include_dirs $QTDIR/include"
       fi
-
+      
       if test "x$QTINC" != x; then
-        qt_include_dirs="$QTINC $qt_include_dirs"
+        qt_include_dirs="$qt_include_dirs $QTINC"
       fi
       
       for qt_dir in $qt_include_dirs; do
@@ -166,12 +173,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
     $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 ])
 
-## ------------------------------------------------------------------------
-## Now, the same with KDE
-## $(KDE_LDFLAGS) will be the kdeliblocation (if needed)
-## and $(kde_includes) will be the kdehdrlocation (if needed)
-## ------------------------------------------------------------------------
-##
+
 AC_DEFUN(AC_PATH_KDE,
 [
 AC_REQUIRE([AC_PATH_QT_LIB])dnl
@@ -184,21 +186,20 @@ AC_ARG_WITH(kde,
 
 AC_MSG_CHECKING([for KDE])
 dnl if test "${prefix}" != NONE; then
-dnl  kde_libraries=${prefix}/lib
-dnl  kde_includes=${prefix}/include
-dnl  AC_MSG_RESULT(["will be installed in" $prefix])
+dnl   kde_libraries=${prefix}/lib
+dnl   kde_includes=${prefix}/include
+dnl   AC_MSG_RESULT(["will be installed in" $prefix])
 dnl else
 ac_kde_includes=NO ac_kde_libraries=NO
 kde_libraries=""
 kde_includes=""
-
 AC_CACHE_VAL(ac_cv_have_kde,
 [#try to guess kde locations
 
 kde_incdirs="/usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
 
 test -n "$KDEDIR" && kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
-AC_FIND_FILE(ksock.h, $kde_incdirs, kde_incdir)
+AC_FIND_FILE(kthemestyle.h, $kde_incdirs, kde_incdir)
 ac_kde_includes=$kde_incdir
 
 kde_libdirs="/usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
@@ -213,7 +214,6 @@ else
     ac_kde_includes=$ac_kde_includes ac_kde_libraries=$ac_kde_libraries"
 fi])
 
-
 eval "$ac_cv_have_kde"
 
 if test "$have_kde" != yes; then
@@ -222,14 +222,13 @@ if test "$have_kde" != yes; then
   else
     ac_kde_prefix=$prefix
   fi
-  dnl AC_MSG_RESULT(["will be installed in" $ac_kde_prefix])
+  dnl  AC_MSG_RESULT(["will be installed in" $ac_kde_prefix])
   kde_libraries=${ac_kde_prefix}/lib
   kde_includes=${ac_kde_prefix}/include
-
 else
   ac_cv_have_kde="have_kde=yes \
     ac_kde_includes=$ac_kde_includes ac_kde_libraries=$ac_kde_libraries"
-  dnl AC_MSG_RESULT([libraries $ac_kde_libraries, headers $ac_kde_includes])
+  dnl   AC_MSG_RESULT([libraries $ac_kde_libraries, headers $ac_kde_includes])
   kde_libraries=$ac_kde_libraries
   kde_includes=$ac_kde_includes
 fi
@@ -238,17 +237,17 @@ AC_SUBST(kde_libraries)
 AC_SUBST(kde_includes)
 
 if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes" ; then
-  KDE_INCLUDES=""
+ KDE_INCLUDES=""
 else
-  KDE_INCLUDES="-I$kde_includes"
-  all_includes="$all_includes $KDE_INCLUDES"
+ KDE_INCLUDES="-I$kde_includes"
+ all_includes="$all_includes $KDE_INCLUDES"
 fi
 
 if test "$kde_libraries" = "$x_libraries" || test "$kde_libraries" = "$qt_libraries" ; then
-  KDE_LDFLAGS=""
+ KDE_LDFLAGS=""
 else
-  KDE_LDFLAGS="-L$kde_libraries"
-  all_libraries="$all_libraries $KDE_LDFLAGS"
+ KDE_LDFLAGS="-L$kde_libraries"
+ all_libraries="$all_libraries $KDE_LDFLAGS"
 fi
 
 AC_SUBST(KDE_LDFLAGS)
@@ -265,6 +264,7 @@ else
 fi
 
 ])
+
 
 AC_DEFUN(AC_CHECK_SOCKS5,
 [
@@ -402,7 +402,6 @@ AC_DEFINE(HAVE_SYS_ERRLIST)
 fi
 ])
 
-
 # Macro to add for using GNU gettext.
 # Ulrich Drepper <drepper@cygnus.com>, 1995.
 #
@@ -427,13 +426,12 @@ AC_DEFUN(AM_WITH_NLS,
     dnl If we use NLS figure out what method
     if test "$USE_NLS" = "yes"; then
       AC_DEFINE(ENABLE_NLS)
-#      AC_MSG_CHECKING([whether included gettext is requested])
-#      AC_ARG_WITH(included-gettext,
-#        [  --with-included-gettext use the GNU gettext library included here],
-#        nls_cv_force_use_gnu_gettext=$withval,
-#        nls_cv_force_use_gnu_gettext=no)
-#      AC_MSG_RESULT($nls_cv_force_use_gnu_gettext)
-      nls_cv_force_use_gnu_gettext="no"
+      AC_MSG_CHECKING([whether included gettext is requested])
+      AC_ARG_WITH(included-gettext,
+        [  --with-included-gettext use the GNU gettext library included here],
+        nls_cv_force_use_gnu_gettext=$withval,
+        nls_cv_force_use_gnu_gettext=no)
+      AC_MSG_RESULT($nls_cv_force_use_gnu_gettext)
 
       nls_cv_use_gnu_gettext="$nls_cv_force_use_gnu_gettext"
       if test "$nls_cv_force_use_gnu_gettext" != "yes"; then
@@ -479,13 +477,6 @@ AC_DEFUN(AM_WITH_NLS,
 		INSTOBJEXT=.mo
 	      fi
 	    fi
-
-	    # Added by Martin Baulig 12/15/98 for libc5 systems
-	    if test "$gt_cv_func_gettext_libc" != "yes" \
-	       && test "$gt_cv_func_gettext_libintl" = "yes"; then
-	       INTLLIBS=-lintl
-	       LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-	    fi
 	])
 
         if test "$CATOBJEXT" = "NONE"; then
@@ -502,25 +493,24 @@ AC_DEFUN(AM_WITH_NLS,
 	      [AC_DEFINE(HAVE_CATGETS)
 	       INTLOBJS="\$(CATOBJS)"
 	       AC_PATH_PROG(GENCAT, gencat, no)dnl
-#	       if test "$GENCAT" != "no"; then
-#		 AC_PATH_PROG(GMSGFMT, gmsgfmt, no)
-#		 if test "$GMSGFMT" = "no"; then
-#		   AM_PATH_PROG_WITH_TEST(GMSGFMT, msgfmt,
-#		    [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)
-#		 fi
-#		 AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-#		   [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-#		 USE_INCLUDED_LIBINTL=yes
-#		 CATOBJEXT=.cat
-#		 INSTOBJEXT=.cat
-#		 DATADIRNAME=lib
-#		 INTLDEPS='$(top_srcdir)/intl/libintl.a'
-#		 INTLLIBS=$INTLDEPS
-#		 LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-#		 nls_cv_header_intl=intl/libintl.h
-#		 nls_cv_header_libgt=intl/libgettext.h
-#              fi
-            ])
+	       if test "$GENCAT" != "no"; then
+		 AC_PATH_PROG(GMSGFMT, gmsgfmt, no)
+		 if test "$GMSGFMT" = "no"; then
+		   AM_PATH_PROG_WITH_TEST(GMSGFMT, msgfmt,
+		    [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)
+		 fi
+		 AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
+		   [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
+		 USE_INCLUDED_LIBINTL=yes
+		 CATOBJEXT=.cat
+		 INSTOBJEXT=.cat
+		 DATADIRNAME=lib
+		 INTLDEPS='$(top_builddir)/intl/libintl.a'
+		 INTLLIBS=$INTLDEPS
+		 LIBS=`echo $LIBS | sed -e 's/-lintl//'`
+		 nls_cv_header_intl=intl/libintl.h
+		 nls_cv_header_libgt=intl/libgettext.h
+	       fi])
 	  fi
         fi
 
@@ -531,26 +521,24 @@ AC_DEFUN(AM_WITH_NLS,
         fi
       fi
 
-      if test "$nls_cv_use_gnu_gettext" != "yes"; then
-        AC_DEFINE(ENABLE_NLS)
-#      else
-#        dnl Mark actions used to generate GNU NLS library.
-#        INTLOBJS="\$(GETTOBJS)"
-#        AM_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
-#	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], msgfmt)
-#        AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-#        AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-#	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-#        AC_SUBST(MSGFMT)
-#	USE_INCLUDED_LIBINTL=yes
-#        CATOBJEXT=.gmo
-#        INSTOBJEXT=.mo
-#        DATADIRNAME=share
-#	INTLDEPS='$(top_srcdir)/intl/libintl.a'
-#	INTLLIBS=$INTLDEPS
-#	LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-#        nls_cv_header_intl=intl/libintl.h
-#        nls_cv_header_libgt=intl/libgettext.h
+      if test "$nls_cv_use_gnu_gettext" = "yes"; then
+        dnl Mark actions used to generate GNU NLS library.
+        INTLOBJS="\$(GETTOBJS)"
+        AM_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
+	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], msgfmt)
+        AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
+        AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
+	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
+        AC_SUBST(MSGFMT)
+	USE_INCLUDED_LIBINTL=yes
+        CATOBJEXT=.gmo
+        INSTOBJEXT=.mo
+        DATADIRNAME=share
+	INTLDEPS='$(top_builddir)/intl/libintl.a'
+	INTLLIBS=$INTLDEPS
+	LIBS=`echo $LIBS | sed -e 's/-lintl//'`
+        nls_cv_header_intl=intl/libintl.h
+        nls_cv_header_libgt=intl/libgettext.h
       fi
 
       dnl Test whether we really found GNU xgettext.
@@ -580,12 +568,12 @@ AC_DEFUN(AM_WITH_NLS,
       esac])
 
 
-#    # If this is used in GNU gettext we have to set USE_NLS to `yes'
-#    # because some of the sources are only built for this goal.
-#    if test "$PACKAGE" = gettext; then
-#      USE_NLS=yes
-#      USE_INCLUDED_LIBINTL=yes
-#    fi
+    # If this is used in GNU gettext we have to set USE_NLS to `yes'
+    # because some of the sources are only built for this goal.
+    if test "$PACKAGE" = gettext; then
+      USE_NLS=yes
+      USE_INCLUDED_LIBINTL=yes
+    fi
 
     dnl These rules are solely for the distribution goal.  While doing this
     dnl we only have to keep exactly one list of the available catalogs
@@ -595,10 +583,6 @@ AC_DEFUN(AM_WITH_NLS,
       POFILES="$POFILES $lang.po"
     done
 
-    if test "$CATOBJEXT" = "NONE"; then
-      CATOBJEXT=""
-    fi
-              
     dnl Make all variables we use known to autoconf.
     AC_SUBST(USE_INCLUDED_LIBINTL)
     AC_SUBST(CATALOGS)
@@ -734,7 +718,6 @@ strdup __argz_count __argz_stringify __argz_next])
 	< $srcdir/po/POTFILES.in > po/POTFILES
   ])
 
-
 # Search path for a program which passes the given test.
 # Ulrich Drepper <drepper@cygnus.com>, 1996.
 #
@@ -802,3 +785,4 @@ AC_DEFUN(AM_LC_MESSAGES,
       AC_DEFINE(HAVE_LC_MESSAGES)
     fi
   fi])
+

@@ -28,6 +28,10 @@
 
 #define MARGIN_LEFT 5
 #define MARGIN_RIGHT 30
+#define RM 6
+#define LM 6
+#define TM 6
+#define BM 42
 
 unsigned short ICQFunctions::s_nX = 100;
 unsigned short ICQFunctions::s_nY = 100;
@@ -161,17 +165,26 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
    connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
 
-  setGeometry(s_nX, s_nY, 400, 360);
+  QWidgetStack *stack = Q_CHILD(this, QWidgetStack, "tab pages");
+  QTabBar *tabs = Q_CHILD(this, QTabBar, "tab control");
+  if (stack == NULL || tabs == NULL)
+  {
+    gLog.Error("%sICQFunctions::resizeEvent(): Unable to find widget stack or tab bar.", L_ERRORxSTR);
+    setGeometry(s_nX, s_nY, 400, 360);
+    setMinimumSize(400, 360);
+  }
+  else
+  {
+    QSize t(tabs->sizeHint());
+    setGeometry(s_nX, s_nY, t.width() + RM + LM, 360);
+    setMinimumSize(t.width() + RM + LM, 360);
+  }
+
 #ifdef TEST_POS
   printf("constructor: %d %d\n", x(), y());
 #endif
-  setMinimumSize(400, 360);
 }
 
-#define RM 6
-#define LM 6
-#define TM 6
-#define BM 42
 
 void ICQFunctions::resizeEvent(QResizeEvent *e)
 {
@@ -180,34 +193,27 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   // Overload the stack and tab bar placement because Qt's sucks
   QWidgetStack *stack = Q_CHILD(this, QWidgetStack, "tab pages");
   QTabBar *tabs = Q_CHILD(this, QTabBar, "tab control");
-  if (stack == NULL || tabs == NULL)
-  {
-    gLog.Error("%sICQFunctions::resizeEvent(): Unable to find widget stack or tab bar.", L_ERRORxSTR);
-  }
-  else
-  {
-    QSize t(tabs->sizeHint());
-    int lw = stack->lineWidth();
-	  tabs->setGeometry(QMAX(0, lw - 2) + LM, TM, t.width(), t.height());
-	  stack->setGeometry(LM, t.height() - lw + TM, width() - (RM + LM), height() - t.height() + lw - (TM + BM));
-  }
+  QSize t(tabs->sizeHint());
+  int lw = stack->lineWidth();
+  tabs->setGeometry(QMAX(0, lw - 2) + LM, TM, t.width(), t.height());
+  stack->setGeometry(LM, t.height() - lw + TM, width() - (RM + LM), height() - t.height() + lw - (TM + BM));
 
   splRead->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 90);
 
   grpCmd->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, 60);
   rdbMsg->setGeometry(10, 15, 90, 20);
-  rdbUrl->setGeometry(115, 15, 90, 20);
+  rdbUrl->setGeometry(125, 15, 90, 20);
   rdbAway->setGeometry(205, 15, 160, 20);
-  rdbChat->setGeometry(10, 35, 100, 20);
-  rdbFile->setGeometry(115, 35, 100, 20);
+  rdbChat->setGeometry(10, 35, 110, 20);
+  rdbFile->setGeometry(125, 35, 100, 20);
   lblDescription->setGeometry(5, 70, 120, 20);
-  lblItem->setGeometry(MARGIN_LEFT, height() - 135, 80, 20);
-  edtItem->setGeometry(70, height() - 135, width()-MARGIN_RIGHT-70+MARGIN_LEFT, 20);
-  chkSendServer->setGeometry(5, height() - 110, 150, 20);
-  chkUrgent->setGeometry(5, height() - 95, 80, 20);
-  chkSpoof->setGeometry(170, height() - 100, 180, 20);
-  edtSpoof->setGeometry(270, height() - 100, width() - MARGIN_RIGHT - 265, 20);
-  mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - (lblItem->isVisible() ? 230 : 205));
+  lblItem->setGeometry(MARGIN_LEFT, height() - 140, 80, 20);
+  edtItem->setGeometry(70, height() - 140, width()-MARGIN_RIGHT-70+MARGIN_LEFT, 20);
+  chkSendServer->setGeometry(5, height() - 115, 150, 20);
+  chkUrgent->setGeometry(5, height() - 100, 80, 20);
+  chkSpoof->setGeometry(170, height() - 115, 180, 20);
+  edtSpoof->setGeometry(270, height() - 115, width() - MARGIN_RIGHT - 265, 20);
+  mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - (lblItem->isVisible() ? 235 : 210));
 
   nfoAlias->setGeometry(5, 5, 45, 5, 110);
   nfoStatus->setGeometry(180, 5, 35, 5, width() - MARGIN_RIGHT - 215);
@@ -234,7 +240,7 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
   chkEditHistory->setGeometry(5, height() - 100, 150, 20);
 
-  chkAutoClose->setGeometry(10, height() - 30, 100, 20);
+  chkAutoClose->setGeometry(10, height() - 30, 180, 20);
   btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
   btnOk->setGeometry(btnCancel->x() - 86, btnCancel->y(), btnCancel->width(), btnCancel->height());
   btnSave->setGeometry(btnOk->x() - 86, btnOk->y(), btnOk->width(), btnOk->height());
@@ -370,7 +376,6 @@ void ICQFunctions::setBasicInfo(ICQUser *u)
   nfoIp->setData(us.ip_port);
   m_sBaseTitle = QString::fromLocal8Bit(us.alias) + " (" +
                  QString::fromLocal8Bit(us.name) + ")";
-  //sprintf(m_sBaseTitle, "%s (%s)", us.alias, us.name);
   setCaption(m_sBaseTitle);
   setIconText(us.alias);
 }
@@ -395,10 +400,8 @@ void ICQFunctions::setExtInfo(ICQUser *u)
     cmbCountry->setCurrentItem(0);
   else if (i == COUNTRY_UNKNOWN)
   {
-    char c[64];
     m_nUnknownCountryCode = u->getCountryCode();
-    sprintf(c, _("Unknown (%d)"), m_nUnknownCountryCode);
-    cmbCountry->changeItem(c, 1);
+    cmbCountry->changeItem(_("Unknown (%1)").arg(m_nUnknownCountryCode), 1);
     cmbCountry->setCurrentItem(1);
   }
   else  // known
@@ -582,9 +585,6 @@ void ICQFunctions::printMessage(QListViewItem *e)
     u->ClearEvent(index);
     gUserManager.DropUser(u);
     msgView->markRead(index);
-    // Use USER_BASIC as it ensures that the main window will update the
-    // view if necessary, use USER_EVENTS as well
-    emit signal_updatedUser(USER_BASIC, m_nUin);
     emit signal_updatedUser(USER_EVENTS, m_nUin);
   }
 }
@@ -609,7 +609,7 @@ void ICQFunctions::save()
     break;
   default:
     gLog.Warn("%sInternal error: ICQFunctions::save(): invalid tab - %d.\n",
-              L_WARNxSTR, tabLabel[currentTab].ascii());
+              L_WARNxSTR, currentTab);
     break;
   }
 }
@@ -688,12 +688,11 @@ void ICQFunctions::generateReply()
   mleSend->clear();
   for (int i = 0; i < mleRead->numLines(); i++)
     mleSend->insertLine( QString("> ") + mleRead->textLine(i));
-
-  mleSend->insertLine("\n");
-  mleSend->setCursorPosition(mleRead->numLines(), 1);
-  
+  mleSend->goToEnd();
   showPage(fcnTab[1]);
 }
+
+
 
 //-----ICQFunctions::setSpoofed--------------------------------------------------------------------
 void ICQFunctions::setSpoofed()
@@ -720,7 +719,7 @@ void ICQFunctions::specialFcn(int theFcn)
       lblDescription->setText(_("Message:"));
       mleSend->setEnabled(true);
       chkSendServer->setEnabled(true);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 205);
+      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 210);
       break;
    case 1:
       lblItem->setText(_("URL:"));
@@ -729,7 +728,7 @@ void ICQFunctions::specialFcn(int theFcn)
       lblDescription->setText(_("Description:"));
       mleSend->setEnabled(true);
       chkSendServer->setEnabled(true);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 230);
+      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
       break;
    case 2:
       lblItem->hide();
@@ -738,7 +737,7 @@ void ICQFunctions::specialFcn(int theFcn)
       chkSendServer->setChecked(false);
       chkSendServer->setEnabled(false);
       mleSend->setEnabled(false);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 230);
+      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
       break;
    case 3:
       lblItem->hide();
@@ -747,7 +746,7 @@ void ICQFunctions::specialFcn(int theFcn)
       mleSend->setEnabled(true);
       chkSendServer->setChecked(false);
       chkSendServer->setEnabled(false);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 205);
+      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 210);
       break;
    case 4:
       lblItem->setText(_("Filename:"));
@@ -757,9 +756,9 @@ void ICQFunctions::specialFcn(int theFcn)
       chkSendServer->setChecked(false);
       chkSendServer->setEnabled(false);
       mleSend->setEnabled(true);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 230);
+      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
 #ifdef USE_KDE
-      QString f = QFileDialog::getOpenFileName(NULL, NULL, this);
+      QString f = KFileDialog::getOpenFileName(NULL, NULL, this);
 #else
       QString f = QFileDialog::getOpenFileName(NULL, NULL, this);
 #endif
@@ -787,9 +786,8 @@ void ICQFunctions::callFcn()
     unsigned short nMsgLen = mleSend->text().length();
     if (nMsgLen > MAX_MESSAGE_SIZE)
      {
-        char theWarning[1024];
-        sprintf (theWarning, _("Message is %d characters, over the ICQ98 limit of %d.  \nLicq, ICQ99, and other clones support longer messages \nhowever ICQ98 will not.  Continue?"), nMsgLen, MAX_MESSAGE_SIZE);
-        if(!QueryUser(this, theWarning, _("Ok"), _("Cancel")))
+        if(!QueryUser(this, _("Message is %1 characters, over the ICQ98 limit of %2.  \nLicq, ICQ99, and other clones support longer messages \nhowever ICQ98 will not. Continue?").arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
+                      _("Ok"), _("Cancel")))
         {
           btnOk->setEnabled(true);
           break;
@@ -805,7 +803,7 @@ void ICQFunctions::callFcn()
         //sprintf(m_sProgressMsg, _("Sending msg %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqSendMessage(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = _("Sending msg ");
-        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("through server") : _("direct");
         m_sProgressMsg += "...";
         icqEvent = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
@@ -824,7 +822,7 @@ void ICQFunctions::callFcn()
         //sprintf(m_sProgressMsg, _("Sending URL %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = _("Sending URL ");
-        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("through server") : _("direct");
         m_sProgressMsg += "...";
         icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                       chkSendServer->isChecked() ? false : true,
@@ -835,7 +833,7 @@ void ICQFunctions::callFcn()
         //sprintf(m_sProgressMsg, _("Sending chat request %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqChatRequest(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = _("Sending chat request ");
-        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("through server") : _("direct");
         m_sProgressMsg += "...";
         icqEvent = server->icqChatRequest(m_nUin, mleSend->text().local8Bit(),
                                           chkSendServer->isChecked() ? false : true,
@@ -846,7 +844,7 @@ void ICQFunctions::callFcn()
         //sprintf(m_sProgressMsg, _("Sending file transfer %s..."), (chkSendServer->isChecked() ? _("server") : _("direct")));
         //icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = _("Sending file transfer ");
-        m_sProgressMsg += chkSendServer->isChecked() ? _("server") : _("direct");
+        m_sProgressMsg += chkSendServer->isChecked() ? _("through server") : _("direct");
         m_sProgressMsg += "...";
         icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text().local8Bit(),
                                            chkSendServer->isChecked() ? false : true,
@@ -1059,8 +1057,11 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     s_nY = y();
     e->accept();
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    u->fcnDlg = NULL;
-    gUserManager.DropUser(u);
+    if (u != NULL)
+    {
+      u->fcnDlg = NULL;
+      gUserManager.DropUser(u);
+    }
     delete this;
   }
 }

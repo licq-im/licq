@@ -16,6 +16,7 @@
 #include "log.h"
 #include "translate.h"
 #include "utility.h"
+#include "adduserdlg.h"
 #include "authuserdlg.h"
 #include "editgrp.h"
 #include "searchuserdlg.h"
@@ -25,7 +26,6 @@
 #include "skinbrowser.h"
 #include "licq-locale.h"
 #include "icqd.h"
-#include "userbox.h"
 #include "awaymsgdlg.h"
 #include "outputwin.h"
 #include "ewidgets.h"
@@ -217,6 +217,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("AutoClose", autoClose, true);
 
   m_nCurrentGroup = gUserManager.DefaultGroup();
+  m_nGroupType = GROUPS_USER;
 
   // load up position and size from file
   gLog.Info("%sGeometry configuration.\n", L_INITxSTR);
@@ -227,11 +228,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("h", hVal, 400);
   licqConf.ReadNum("w", wVal, 150);
   setGeometry(xPos, yPos, wVal, hVal);
-  //setMinimumSize(100, 200);
 
   // Load the icons
   licqConf.SetSection("appearance");
-  licqConf.SetFlags(INI_FxERROR | INI_FxFATAL);
+  licqConf.SetFlags(INI_FxWARN);
   char szIcons[MAX_FILENAME_LEN];
   if (strlen(iconsName) == 0)
     licqConf.ReadStr("Icons", szIcons);
@@ -254,12 +254,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 #ifdef USE_KDE
-  sprintf(m_szCaption, _("KLicq (%s)"), o->getAlias());
+  m_szCaption = _("KLicq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
 #else
-  sprintf(m_szCaption, _("Licq (%s)"), o->getAlias());
+  m_szCaption = _("Licq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
 #endif
   gUserManager.DropOwner();
-  setCaption(QString::fromLocal8Bit(m_szCaption));
+  setCaption(m_szCaption);
 
   // Group Combo Box
   cmbUserGroups = new CEComboBox(false, this);
@@ -297,18 +297,20 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
 
   // User List
-   char colKey[16];
-   unsigned short colTitle, colWidth, colAlign, numColumns;
-   licqConf.ReadNum("NumColumns", numColumns);
+   char colKey[16], colTitle[32], colFormat[32];
+   unsigned short colWidth, colAlign, numColumns;
+   licqConf.ReadNum("NumColumns", numColumns, 1);
    for (unsigned short i = 1; i <= numColumns; i++)
    {
-      sprintf(colKey, "Column%dInfo", i);
-      licqConf.ReadNum(colKey, colTitle);
-      sprintf(colKey, "Column%dWidth", i);
-      licqConf.ReadNum(colKey, colWidth);
-      sprintf(colKey, "Column%dAlign", i);
-      licqConf.ReadNum(colKey, colAlign);
-      colInfo.push_back(ColInfo(colTitle, colWidth, colAlign));
+      sprintf(colKey, "Column%d.Title", i);
+      licqConf.ReadStr(colKey, colTitle, "Alias");
+      sprintf(colKey, "Column%d.Format", i);
+      licqConf.ReadStr(colKey, colFormat, "%a");
+      sprintf(colKey, "Column%d.Width", i);
+      licqConf.ReadNum(colKey, colWidth, 100);
+      sprintf(colKey, "Column%d.Align", i);
+      licqConf.ReadNum(colKey, colAlign, 0);
+      colInfo.push_back(new CColumnInfo(colTitle, colFormat, colWidth, colAlign));
    }
    CreateUserView();
 
@@ -340,9 +342,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       if (m_nAutoLogon >= 10)
         mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), true);
       if (m_nAutoLogon > 10 && m_nAutoLogon < 17)
-        changeStatus(m_nAutoLogon - 11);
+        changeStatusManual(m_nAutoLogon - 11);
       else if (m_nAutoLogon > 0 && m_nAutoLogon < 7)
-        changeStatus(m_nAutoLogon - 1);
+        changeStatusManual(m_nAutoLogon - 1);
    }
 
    // verify we exist
@@ -437,7 +439,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial = false)
 #endif
     menu->setFrameStyle(QFrame::Panel | QFrame::Raised);
     menu->insertItem(skin->btnSys.caption == NULL ?
-                     _("&System") : skin->btnSys.caption,
+                     _("&System") : QString::fromLocal8Bit(skin->btnSys.caption),
                      mnuSystem);
     btnSystem = NULL;
   }
@@ -622,43 +624,6 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
 }
 
 
-// Overload QWidget::close because the default implementation is buggy
-bool CMainWindow::close(bool alsoDelete)
-{
-  WId id = winId();
-  bool isMain = qApp->mainWidget() == this;
-  //bool checkLastWindowClosed = isTopLevel() && !isPopup() && !testWFlags( WStyle_Dialog );
-  QCloseEvent e;
-  bool accept = QApplication::sendEvent( this, &e );
-  if ( !QWidget::find(id) )
-  {			// widget was deleted
-    accept = TRUE;
-  }
-  else
-  {
-	  if ( accept )
-    {
-      hide();
-      if ( alsoDelete || testWFlags(WDestructiveClose) )
-        delete this;
-    }
-  }
-
-  // Now we only quit if we accepted the close event
-  if ( accept && isMain )
-    qApp->quit();
-/*
-  if ( accept && checkLastWindowClosed )
-  {	// last window closed?
-    if ( qApp->receivers(SIGNAL(lastWindowClosed())) && noMoreToplevels() )
-	    emit qApp->lastWindowClosed();
-  }
-*/
-  return accept;
-}
-
-
-
 //-----CMainWindow::mouseEvent----------------------------------------------
 void CMainWindow::mousePressEvent(QMouseEvent *m)
 {
@@ -677,13 +642,28 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 //-----CMainWindow::slot_updatedUser-----------------------------------------------
 void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUin)
 {
-  // Call this using LIST_REORDER so we trigger an update only if necessary
-  // We only need to check for USER_BASIC as USER_STATUS and USER_EVENTS will
-  // both be followed by LIST_REORDER anyway
-  if (_nSubSignal == USER_BASIC)
-    slot_updatedList(LIST_REORDER, _nUin);
-  else if (_nSubSignal == USER_EVENTS)
+  switch(_nSubSignal)
+  {
+  case USER_EVENTS:
     updateEvents();
+    // Fall through
+  case USER_EXT:
+  case USER_BASIC:
+    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+    {
+      CUserViewItem *i = (CUserViewItem *)userView->firstChild();
+      while (i != NULL && i->ItemUin() != _nUin)
+        i = (CUserViewItem *)i->nextSibling();
+      if (i != NULL)
+      {
+        i->setGraphics(u);
+        i->repaint();
+      }
+    }
+    gUserManager.DropUser(u);
+    break;
+  }
 }
 
 
@@ -691,56 +671,69 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
 void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUin)
 {
   bool bUpdateWin = true;
-  if (_nSubSignal == LIST_REORDER || _nSubSignal == LIST_ADD)
+  switch(_nSubSignal)
+  {
+  case LIST_REORDER:
+  case LIST_ADD:
   {
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
     if (u == NULL)
     {
       gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
                  L_ERRORxSTR, _nUin);
-      return;
+      break;
     }
-    if (!u->getIsInGroup(m_nCurrentGroup))
+    if (!u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       bUpdateWin = false;
     gUserManager.DropUser(u);
+    if (bUpdateWin) updateUserWin();
+    break;
   }
-  if (bUpdateWin) updateUserWin();
-  if (_nSubSignal == LIST_REMOVE)
+
+  case LIST_REMOVE:
+  {
+    CUserViewItem *i = (CUserViewItem *)userView->firstChild();
+    while (i != NULL && i->ItemUin() != _nUin) i = (CUserViewItem *)i->nextSibling();
+    if (i != NULL) userView->removeItem(i);
     updateEvents();
+    break;
+  }
+
+  }  // Switch
 }
 
 
 //-----CMainWindow::updateUserWin-----------------------------------------------
 void CMainWindow::updateUserWin(void)
 {
-  unsigned short i;
+  unsigned short i = 0;
 
   // set the pixmap and color for each user and add them to the view
   userView->setUpdatesEnabled(false);
   userView->clear();
   bool bOfflineUsers = false;
-  ICQUser *u;
-  CUserGroup *g = gUserManager.FetchGroup(m_nCurrentGroup, LOCK_R);
-  for (i = 0; i < g->NumUsers(); i++)
+  FOR_EACH_USER_START(LOCK_R)
   {
-    u = g->FetchUser(i, LOCK_R);
-    if (i == 0 && m_bShowDividers && !u->getStatusOffline())
+    // Only show users on the current group and not on the ignore list
+    if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+        (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
+      FOR_EACH_USER_CONTINUE
+
+    if (i == 0 && m_bShowDividers && !pUser->getStatusOffline())
       (void) new CUserViewItem(NULL, -1, userView);
-    if (!bOfflineUsers && u->getStatusOffline())
+    if (!bOfflineUsers && pUser->getStatusOffline())
     {
       if (!m_bShowOffline)
-      {
-        g->DropUser(u);
-        break;
-      }
+        FOR_EACH_USER_BREAK
+
       if (m_bShowDividers)
         (void) new CUserViewItem(NULL, i, userView);
       bOfflineUsers = true;
     }
-    (void) new CUserViewItem(u, i, userView);
-    g->DropUser(u);
+    (void) new CUserViewItem(pUser, i, userView);
+    i++;
   }
-  gUserManager.DropGroup(g);
+  FOR_EACH_USER_END
   userView->setUpdatesEnabled(true);
   userView->repaint();
 }
@@ -748,7 +741,7 @@ void CMainWindow::updateUserWin(void)
 
 void CMainWindow::updateEvents(void)
 {
-  static char szCaption[132];
+  QString szCaption;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short nNumOwnerEvents = o->getNumMessages();
@@ -757,19 +750,19 @@ void CMainWindow::updateEvents(void)
   if (nNumOwnerEvents > 0)
   {
     lblMsg->setText(_("SysMsg"));
-    sprintf(szCaption, "* %s", m_szCaption);
+    szCaption = "* " + m_szCaption;
   }
   else if (nNumUserEvents > 0)
   {
-    char msgsText[16];
-    sprintf (msgsText, _("%d msg%c"), nNumUserEvents, (nNumUserEvents == 1 ? ' ' : 's'));
-    lblMsg->setText(msgsText);
-    sprintf(szCaption, "* %s", m_szCaption);
+    lblMsg->setText(_("%1 msg%2")
+                    .arg(nNumUserEvents)
+                    .arg(nNumUserEvents == 1 ? _(" ") : _("s")));
+    szCaption = "* " + m_szCaption;
   }
   else
   {
     lblMsg->setText(_("No msgs"));
-    strcpy(szCaption, m_szCaption);
+    szCaption = m_szCaption;
   }
   lblMsg->update();
   setCaption(szCaption);
@@ -783,16 +776,38 @@ void CMainWindow::updateEvents(void)
 //-----CMainWindow::setCurrentGroup---------------------------------------------
 void CMainWindow::setCurrentGroupMenu(int id)
 {
-  setCurrentGroup(mnuUserGroups->indexOf(id));
+  int index = mnuUserGroups->indexOf(id);
+  if (index > gUserManager.NumGroups() + 2)
+    index -= 2;
+  else if (index > 1)
+    index -= 1;
+
+  setCurrentGroup(index);
 }
 
 void CMainWindow::setCurrentGroup(int index)
 {
   m_nCurrentGroup = index;
-  cmbUserGroups->setCurrentItem(m_nCurrentGroup);
+  m_nGroupType = GROUPS_USER;
+  unsigned short nNumGroups = gUserManager.NumGroups();
+  if (m_nCurrentGroup > nNumGroups)
+  {
+    m_nCurrentGroup -= nNumGroups;
+    m_nGroupType = GROUPS_SYSTEM;
+  }
+  // Update the combo box
+  cmbUserGroups->setCurrentItem(index);
+
+  // Update the group menu
   for (unsigned short i = 0; i < mnuUserGroups->count(); i++)
     mnuUserGroups->setItemChecked(mnuUserGroups->idAt(i), false);
-  mnuUserGroups->setItemChecked(mnuUserGroups->idAt(m_nCurrentGroup), true);
+  if (index > gUserManager.NumGroups())
+    index += 2;
+  else if (index >= 1)
+    index += 1;
+  mnuUserGroups->setItemChecked(mnuUserGroups->idAt(index), true);
+
+  // Update the user window
   updateUserWin();
 }
 
@@ -803,16 +818,33 @@ void CMainWindow::updateGroups()
   cmbUserGroups->clear();
   mnuUserGroups->clear();
   mnuGroup->clear();
-  CUserGroup *g;
-  for (unsigned short i = 0; i < gUserManager.NumGroups(); i++)
+  cmbUserGroups->insertItem(_("All Users"));
+  mnuUserGroups->insertItem(_("All Users"));
+  mnuUserGroups->insertSeparator();
+
+  GroupList *g = gUserManager.LockGroupList(LOCK_R);
+  for (unsigned short i = 0; i < g->size(); i++)
   {
-    g = gUserManager.FetchGroup(i, LOCK_R);
-    cmbUserGroups->insertItem(g->Name());
-    mnuUserGroups->insertItem(g->Name());
-    mnuGroup->insertItem(g->Name());
-    gUserManager.DropGroup(g);
+    cmbUserGroups->insertItem((*g)[i]);
+    mnuUserGroups->insertItem((*g)[i]);
+    mnuGroup->insertItem((*g)[i]);
   }
-  setCurrentGroup(m_nCurrentGroup);
+  gUserManager.UnlockGroupList();
+  mnuUserGroups->insertSeparator();
+
+  cmbUserGroups->insertItem(_("Online Notify"));
+  mnuUserGroups->insertItem(_("Online Notify"));
+  cmbUserGroups->insertItem(_("Visible List"));
+  mnuUserGroups->insertItem(_("Visible List"));
+  cmbUserGroups->insertItem(_("Invisible List"));
+  mnuUserGroups->insertItem(_("Invisible List"));
+  cmbUserGroups->insertItem(_("Ignore List"));
+  mnuUserGroups->insertItem(_("Ignore List"));
+
+  int index = m_nCurrentGroup;
+  if (m_nGroupType == GROUPS_SYSTEM)
+    index += gUserManager.NumGroups();
+  setCurrentGroup(index);
 }
 
 
@@ -960,21 +992,12 @@ void CMainWindow::callMsgFunction()
 
   // We go through backwards to (almost) get the oldest messages first
   unsigned long nUin = 0;
-  ICQUser *u;
-  CUserGroup *g = gUserManager.FetchGroup(0, LOCK_R);
-  unsigned short i = g->NumUsers();
-  while (i--)
+  FOR_EACH_USER_START(LOCK_R)
   {
-    u = g->FetchUser(i, LOCK_R);
-    if (u->getNumMessages() > 0)
-    {
-      nUin = u->getUin();
-      g->DropUser(u);
-      break;
-    }
-    g->DropUser(u);
+    if (pUser->getNumMessages() > 0)
+      nUin = pUser->getUin();
   }
-  gUserManager.DropGroup(g);
+  FOR_EACH_USER_END
   if (nUin != 0) callFunction(0, true, nUin);
 }
 
@@ -994,7 +1017,7 @@ void CMainWindow::callUserFunction(int index)
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (u == NULL) return;
-    u->setOnlineNotify(!u->getOnlineNotify());
+    u->SetOnlineNotify(!u->OnlineNotify());
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
   }
@@ -1002,7 +1025,7 @@ void CMainWindow::callUserFunction(int index)
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (u == NULL) return;
-    u->setInvisibleList(!u->getInvisibleList());
+    u->SetInvisibleList(!u->InvisibleList());
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
     licqDaemon->icqSendInvisibleList(true);
@@ -1011,10 +1034,18 @@ void CMainWindow::callUserFunction(int index)
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
     if (u == NULL) return;
-    u->setVisibleList(!u->getVisibleList());
+    u->SetVisibleList(!u->VisibleList());
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
     licqDaemon->icqSendVisibleList(true);
+  }
+  else if (fcn == MNUxITEM_IGNORExLIST)
+  {
+    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
+    if (u == NULL) return;
+    u->SetIgnoreList(!u->IgnoreList());
+    gUserManager.DropUser(u);
+    updateUserWin();
   }
 }
 
@@ -1167,11 +1198,11 @@ void CMainWindow::removeUserFromList()
   ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
   if (u == NULL) return;
   unsigned long nUin = u->getUin();
-  char warning[256];
-  sprintf(warning, _("Are you sure you want to remove\n%s (%ld)\nfrom your contact list?"),
-          u->getAlias(), nUin);
+  QString warning(_("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
+                     .arg(QString::fromLocal8Bit(u->getAlias()))
+                     .arg(nUin) );
   gUserManager.DropUser(u);
-  if(QueryUser(this, warning, _("Ok"), _("Cancel")))
+  if (QueryUser(this, warning, _("Ok"), _("Cancel")))
      licqDaemon->RemoveUserFromList(nUin);
 }
 
@@ -1183,12 +1214,12 @@ void CMainWindow::removeUserFromGroup()
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
     if (u == NULL) return;
-    char warning[256];
     unsigned long nUin = u->getUin();
-    CUserGroup *g = gUserManager.FetchGroup(m_nCurrentGroup, LOCK_R);
-    sprintf(warning, _("Are you sure you want to remove\n%s (%ld)\nfrom the '%s' group?"),
-            u->getAlias(), nUin, g->Name());
-    gUserManager.DropGroup(g);
+    GroupList *g = gUserManager.LockGroupList(LOCK_R);
+    QString warning(_("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
+                       .arg(QString::fromLocal8Bit(u->getAlias()))
+                       .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
+    gUserManager.UnlockGroupList();
     gUserManager.DropUser(u);
     if (QueryUser(this, warning, _("Ok"), _("Cancel")))
     {
@@ -1209,7 +1240,7 @@ void CMainWindow::saveAllUsers(void)
 void CMainWindow::addUserToGroup(int _nId)
 {
    gUserManager.AddUserToGroup(userView->SelectedItemUin(),
-                               mnuGroup->indexOf(_nId));
+                               mnuGroup->indexOf(_nId) + 1);
 }
 
 void CMainWindow::slot_updateContactList()
@@ -1271,12 +1302,14 @@ void CMainWindow::saveOptions()
   char colKey[32];
   for (unsigned short i = 1; i <= colInfo.size(); i++)
   {
-     sprintf(colKey, "Column%dInfo", i);
-     licqConf.WriteNum(colKey, colInfo[i - 1].info);
-     sprintf(colKey, "Column%dWidth", i);
-     licqConf.WriteNum(colKey, colInfo[i - 1].width);
-     sprintf(colKey, "Column%dAlign", i);
-     licqConf.WriteNum(colKey, colInfo[i - 1].align);
+     sprintf(colKey, "Column%d.Title", i);
+     licqConf.WriteStr(colKey, colInfo[i - 1]->m_sTitle);
+     sprintf(colKey, "Column%d.Format", i);
+     licqConf.WriteStr(colKey, colInfo[i - 1]->m_szFormat);
+     sprintf(colKey, "Column%d.Width", i);
+     licqConf.WriteNum(colKey, colInfo[i - 1]->m_nWidth);
+     sprintf(colKey, "Column%d.Align", i);
+     licqConf.WriteNum(colKey, colInfo[i - 1]->m_nAlign);
   }
 
   licqConf.FlushFile();
@@ -1286,16 +1319,17 @@ void CMainWindow::saveOptions()
 //-----CMainWindow::aboutBox----------------------------------------------------
 void CMainWindow::aboutBox()
 {
-  char about[1024];
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  sprintf (about, _("Licq version %s.\nQt GUI plugin version %s.\n\n"
-                    "Author: Graham Roff\n"
-                    "http://www.licq.org\n\n%s (%ld)\n%d contacts."),
-                  licqDaemon->Version(),
-                  VERSION, o->getAlias(), o->getUin(),
-                  gUserManager.NumUsers());
+  QString about(_("Licq version %1.\n"
+                  "Qt GUI plugin version %2.\n\n"
+                  "Author: Graham Roff\n"
+                  "http://www.licq.org\n\n"
+                  "%3 (%4)\n"
+                  "%5 contacts.").arg(licqDaemon->Version())
+                   .arg(VERSION).arg(QString::fromLocal8Bit(o->getAlias()))
+                   .arg(o->getUin()).arg(gUserManager.NumUsers())  );
   gUserManager.DropOwner();
-  InformUser(this, QString::fromLocal8Bit(about));
+  InformUser(this, about);
 }
 
 
@@ -1390,25 +1424,36 @@ void CMainWindow::miniMode()
 void CMainWindow::autoAway()
 {
 #ifdef USE_SCRNSAVER
-  Time idleTime = 0;  /* millisecs since last input event */
+  static XScreenSaverInfo *mit_info = NULL;
+  static bool bXScreenSaver = true;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short status = o->getStatus();
   gUserManager.DropOwner();
   // manualAway 1 is Away and 2 is NA (from the popup menu)
-  if ((manualAway == 1 || manualAway == 2) || ( status != ICQ_STATUS_NA && status != ICQ_STATUS_ONLINE && status != ICQ_STATUS_AWAY && status != ICQ_STATUS_FREEFORCHAT))
+  if ((manualAway == 1 || manualAway == 2) ||
+      (status != ICQ_STATUS_NA && status != ICQ_STATUS_ONLINE &&
+       status != ICQ_STATUS_AWAY && status != ICQ_STATUS_FREEFORCHAT) ||
+       !bXScreenSaver)
       return;
 
-  static XScreenSaverInfo *mit_info = 0;
-  if (!mit_info) mit_info = XScreenSaverAllocInfo ();
-  XScreenSaverQueryInfo (x11Display(), DefaultRootWindow (x11Display()), mit_info);
-  idleTime = mit_info->idle;
+  if (mit_info == NULL) mit_info = XScreenSaverAllocInfo ();
+  bXScreenSaver = XScreenSaverQueryInfo (x11Display(), DefaultRootWindow (x11Display()), mit_info);
+  if (!bXScreenSaver)
+  {
+    gLog.Warn("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
+              L_WARNxSTR);
+    return;
+  }
+  Time idleTime = mit_info->idle;
 
-  if (((unsigned long)idleTime > (unsigned long)autoNATime * 60000 && autoNATime != 0) && (status != ICQ_STATUS_NA))
+  if (((unsigned long)idleTime > (unsigned long)autoNATime * 60000 && autoNATime != 0) &&
+      (status != ICQ_STATUS_NA))
      changeStatus(2);   // set na mode
-  else if (((unsigned long)idleTime > (unsigned long)autoAwayTime * 60000 && autoAwayTime != 0) && (status != ICQ_STATUS_AWAY) && (status != ICQ_STATUS_NA))
+  else if (((unsigned long)idleTime > (unsigned long)autoAwayTime * 60000 && autoAwayTime != 0) && (status != ICQ_STATUS_AWAY) &&
+           (status != ICQ_STATUS_NA))
      changeStatus(1);  // go into away mode
-  else if ((status == ICQ_STATUS_AWAY || status == ICQ_STATUS_NA) && ((unsigned long)idleTime < (unsigned long)autoAwayTime * 60000 && autoAwayTime != 0)) 
+  else if ((status == ICQ_STATUS_AWAY || status == ICQ_STATUS_NA) && ((unsigned long)idleTime < (unsigned long)autoAwayTime * 60000 && autoAwayTime != 0))
      changeStatus(0); // wake back up
 #endif // USE_SCRNSAVER
 }
@@ -1592,13 +1637,14 @@ void CMainWindow::initMenu(void)
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
    mnuUserAdm = new QPopupMenu(NULL);
+   mnuUserAdm->insertItem(_("&Add User"), this, SLOT(showAddUserDlg()));
    mnuUserAdm->insertItem(_("S&earch for User"), this, SLOT(showSearchUserDlg()));
    mnuUserAdm->insertItem(_("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(_("Edit Groups"), this, SLOT(showEditGrpDlg()));
-   mnuUserAdm->insertItem(_("&Update Contact List"), this, SLOT(slot_updateContactList()));
-   mnuUserAdm->insertItem(_("Update All Users"), this, SLOT(slot_updateAllUsers()));
-   mnuUserAdm->insertItem(_("&Redraw User Window"), this, SLOT(updateUserWin()));
+   //mnuUserAdm->insertItem(_("&Update Contact List"), this, SLOT(slot_updateContactList()));
+   //mnuUserAdm->insertItem(_("Update All Users"), this, SLOT(slot_updateAllUsers()));
+   //mnuUserAdm->insertItem(_("&Redraw User Window"), this, SLOT(updateUserWin()));
    mnuUserAdm->insertItem(_("&Save All Users"), this, SLOT(saveAllUsers()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(_("Register User"), this, SLOT(slot_register()));
@@ -1674,6 +1720,7 @@ void CMainWindow::initMenu(void)
    mnuUser->insertItem(_("Online Notify"));
    mnuUser->insertItem(_("Invisible List"));
    mnuUser->insertItem(_("Visible List"));
+   mnuUser->insertItem(_("Ignore List"));
    mnuUser->insertSeparator();
    mnuUser->insertItem(_("Remove"), mnuRemove);
    mnuUser->insertItem(_("Add To Group"), mnuGroup);
@@ -1687,6 +1734,13 @@ void CMainWindow::showSearchUserDlg(void)
 {
   SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan);
   searchUserDlg->show();
+}
+
+
+void CMainWindow::showAddUserDlg(void)
+{
+  AddUserDlg *addUserDlg = new AddUserDlg(licqDaemon);
+  addUserDlg->show();
 }
 
 

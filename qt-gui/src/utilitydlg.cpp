@@ -67,6 +67,9 @@ void CUtilityDlg::slot_cancel()
   {
     if (fsCommand != NULL)
     {
+      mleCommand->append("EOF");
+      m_bIntWin = false;
+      disconnect(snCommand, SIGNAL(activated(int)), this, SLOT(slot_command()));
       fclose(fsCommand);
       fsCommand = NULL;
     }

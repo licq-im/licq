@@ -6,11 +6,11 @@
 #endif
 
 #include <qdialog.h>
-#include <qmultilineedit.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 
 #include "user.h"
+#include "mledit.h"
 
 class ShowAwayMsgDlg : public QDialog
 {
@@ -20,13 +20,12 @@ public:
 
 protected:
   unsigned long m_nUin;
-  QMultiLineEdit *qleAwayMsg;
+  MLEditWrap *mleAwayMsg;
   QCheckBox *chkShowAgain;
   QPushButton *btnOk;
-  
+
 protected slots:
   virtual void accept();
-
 };
 
 

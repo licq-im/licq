@@ -25,6 +25,8 @@
 
 #define QTGUI_DIR "qt-gui/"
 
+#include "userbox.h"
+
 class ICQFunctions;
 class CSignalManager;
 class CQtLogWindow;
@@ -35,7 +37,6 @@ class OptionsDlg;
 class AwayMsgDlg;
 class RegisterUserDlg;
 class CUserView;
-class ColInfo;
 class CELabel;
 class CEButton;
 class CEComboBox;
@@ -54,7 +55,6 @@ public:
               const char *skinName, const char *iconsName,
               QWidget *parent = 0, const char *name = 0);
   virtual ~CMainWindow(void);
-  virtual bool close(bool);
 
 protected:
   // Command Tools
@@ -95,14 +95,14 @@ protected:
   QBitmap bmMask;
 
   // GUI Data
-  char m_szCaption[128];
+  QString m_szCaption;
   QFont defaultFont;
   QWindowsStyle *winstyle;
   unsigned short m_nAutoLogon;
   char *m_szIconSet;
   QPixmap *pmOnline, *pmOffline, *pmAway, *pmDnd, *pmOccupied, *pmNa,
           *pmPrivate, *pmFFC, *pmMessage, *pmUrl, *pmChat, *pmFile;
-  vector <class ColInfo> colInfo;
+  ColumnInfos colInfo;
 
   // AutoAway
   QTimer autoAwayTimer;
@@ -120,7 +120,8 @@ protected:
        m_bShowOffline,
        m_bShowDividers,
        m_bDockIcon48;
-  int m_nCurrentGroup;
+  unsigned long m_nCurrentGroup;
+  GroupType m_nGroupType;
 
   int mouseX, mouseY;
 
@@ -166,6 +167,7 @@ protected slots:
   void slot_doneregister();
   void slot_doneOwnerFcn(ICQEvent *);
   void saveOptions();
+  void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
   void showOptionsDlg();

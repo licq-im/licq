@@ -6,11 +6,11 @@
 #endif
 
 #include <qdialog.h>
-#include <qmultilineedit.h>
 #include <qpushbutton.h>
 #include <qsocketnotifier.h>
 #include <qmessagebox.h>
 
+#include "mledit.h"
 #include "licq-locale.h"
 #include "log.h"
 
@@ -21,7 +21,7 @@ class CQtLogWindow : public QDialog, public CPluginLog
 public:
   CQtLogWindow (QWidget *parent = 0, const char *name = 0);
 protected:
-  QMultiLineEdit *outputBox;
+  MLEditWrap *outputBox;
   QPushButton *btnHide, *btnClear;
   QSocketNotifier *sn;
 protected slots:

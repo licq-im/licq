@@ -10,6 +10,7 @@ const unsigned short MNUxITEM_VIEWxHISTORY         = 10;
 const unsigned short MNUxITEM_ONLINExNOTIFY        = 12;
 const unsigned short MNUxITEM_INVISIBLExLIST       = 13;
 const unsigned short MNUxITEM_VISIBLExLIST         = 14;
+const unsigned short MNUxITEM_IGNORExLIST          = 15;
 
 const unsigned short MNUxITEM_MINIxMODE            = 7;
 const unsigned short MNUxITEM_SHOWxOFFLINE         = 8;

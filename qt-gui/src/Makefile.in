@@ -37,13 +37,13 @@ STRIP    = @PROG_STRIP@
 SIZE     = @PROG_SIZE@
  
 
-OBJECTS	= obj/icqfunctions.o obj/outputwin.o obj/awaymsgdlg.o \
+OBJECTS	= obj/icqfunctions.o obj/outputwin.o obj/awaymsgdlg.o obj/adduserdlg.o \
           obj/authuserdlg.o obj/userbox.o obj/licqgui.o obj/mainwin.o \
           obj/mledit.o  obj/searchuserdlg.o obj/messagebox.o obj/chatdlg.o \
           obj/optionsdlg.o obj/ewidgets.o obj/chatacceptdlg.o \
           obj/fileacceptdlg.o obj/filedlg.o obj/showawaymsgdlg.o obj/sigman.o \
           obj/skin.o obj/utilitydlg.o obj/wharf.o obj/editgrp.o \
-          obj/skinbrowser.o obj/registeruser.o
+          obj/skinbrowser.o obj/registeruser.o obj/qmultilineeditnew.o
 
 METAOBJ	= 
 
@@ -65,11 +65,15 @@ all: licq_qt-gui.so
 mocs:
 	for i in `grep -l "Q_OBJECT" *.h`; do $(MOC) -o moc/moc_$$i $$i; done
 
-dep:
+dep: mocs
 	g++ $(CPPFLAGS) -MM *.cpp | sed -e 's/^/obj\//' | sed -e 's/^obj\/ / /' > Makefile.dep
 
+Makefile.dep:
+	touch Makefile.dep
+	make dep
+
 clean:
-	$(RM) core obj/*.o *.core moc/moc_* licq_qt-gui.so
+	$(RM) core obj/*.o *.core moc/* licq_qt-gui.so Makefile.dep
 
 distclean: clean
 	$(RM) *~ Makefile tags

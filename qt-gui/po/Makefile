@@ -8,7 +8,7 @@
 # Please note that the actual code is *not* freely available.
 
 PACKAGE = Licq-Qt-GUI
-VERSION = 0.66.2
+VERSION = 0.67
 
 SHELL = /bin/sh
 
@@ -16,7 +16,7 @@ SHELL = /bin/sh
 srcdir = .
 top_srcdir = ..
 
-prefix = /usr/local
+prefix = /usr/local/licq
 exec_prefix = ${prefix}
 datadir = $(prefix)/share
 localedir = $(datadir)/locale
@@ -25,7 +25,7 @@ gettextsrcdir = $(prefix)/share/gettext/po
 subdir = po
 
 INSTALL = /usr/bin/install -c
-INSTALL_DATA = install -c -p -m 644
+INSTALL_DATA = ${INSTALL} -m 644
 MKINSTALLDIRS = $(top_srcdir)/./mkinstalldirs
 
 CC = gcc
@@ -44,8 +44,8 @@ INCLUDES = -I.. -I$(top_srcdir)/intl
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
 SOURCES = cat-id-tbl.c
-POFILES =  sv.po fr.po es.po ru.po
-GMOFILES =  sv.gmo fr.gmo es.gmo ru.gmo
+POFILES =  sv.po fr.po es.po ru.po nl.po
+GMOFILES =  sv.gmo fr.gmo es.gmo ru.gmo nl.gmo
 DISTFILES = ChangeLog Makefile.in.in POTFILES.in $(PACKAGE).pot \
 stamp-cat-id $(POFILES) $(GMOFILES) $(SOURCES)
 
@@ -68,7 +68,7 @@ POTFILES = \
 	../src/registeruser.cpp \
 	../src/skinbrowser.cpp
 
-CATALOGS =  sv.gmo fr.gmo es.gmo ru.gmo
+CATALOGS =  sv.gmo fr.gmo es.gmo ru.gmo nl.gmo
 CATOBJEXT = .gmo
 INSTOBJEXT = .mo
 

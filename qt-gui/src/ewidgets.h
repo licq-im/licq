@@ -13,8 +13,8 @@
 #include <qvalidator.h>
 
 
-bool QueryUser(QWidget *, const char *, const char *, const char *);
-void InformUser(QWidget *q, const char *);
+bool QueryUser(QWidget *, QString, QString, QString);
+void InformUser(QWidget *q, QString);
 
 
 class CELabel : public QLabel
@@ -81,8 +81,9 @@ class CInfoField : public QLineEdit
 {
   Q_OBJECT
 public:
-  CInfoField(int x, int y, int, int, int, const char *title, bool isReadOnly, QWidget *parent);
+  CInfoField(int x, int y, int, int, int, QString title, bool isReadOnly, QWidget *parent);
   void setData(const char *data);
+  void setData(QString data);
   void setData(const unsigned long data);
   void setGeometry(int, int, int, int, int);
   void move(int, int);

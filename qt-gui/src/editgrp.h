@@ -21,10 +21,11 @@ public:
 protected:
   QListBox *lstGroups;
   QGroupBox *grpGroups;
-  QPushButton *btnAdd, *btnRemove, *btnUp, *btnDown, *btnDone, *btnEdit, *btnDefault;
+  QPushButton *btnAdd, *btnRemove, *btnUp, *btnDown, *btnDone, *btnEdit,
+              *btnDefault, *btnNewUser, *btnWhat;
 
   QLineEdit *edtName;
-  CInfoField *nfoDefault;
+  CInfoField *nfoDefault, *nfoNewUser;
 
   unsigned short m_nEditGrp;
 
@@ -42,6 +43,8 @@ protected slots:
   void slot_editok();
   void slot_editcancel();
   void slot_default();
+  void slot_newuser();
+  void slot_whatsthis();
 signals:
   void signal_updateGroups();
 };

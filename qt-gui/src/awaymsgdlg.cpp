@@ -29,18 +29,17 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent = 0, const char *name = 0) : QDialog(pare
 
 void AwayMsgDlg::show()
 {
-  char title[128];
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  sprintf(title, _("Set Auto Response for %s:"), o->getAlias());
-  setCaption(title);
+  setCaption(_("Set Auto Response for %1:")
+             .arg(QString::fromLocal8Bit(o->getAlias())));
   if (o->getAwayMessage()[0] != '\0')
-    mleAwayMsg->setText(o->getAwayMessage());
+    mleAwayMsg->setText(QString::fromLocal8Bit(o->getAwayMessage()));
   else
   {
     char s[32];
     o->getStatusStr(s);
-    sprintf(title, _("I am currently %s.\nYou can leave me a message."), s);
-    mleAwayMsg->setText(title);
+    mleAwayMsg->setText(_("I am currently %1.\nYou can leave me a message.")
+                        .arg(s));
   }
   gUserManager.DropOwner();
   move(s_nX, s_nY);
@@ -60,7 +59,7 @@ void AwayMsgDlg::hide()
 void AwayMsgDlg::ok()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->setAwayMessage((const char *)mleAwayMsg->text());
+  o->setAwayMessage(mleAwayMsg->text().local8Bit());
   gUserManager.DropOwner();
   accept();
 }

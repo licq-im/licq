@@ -35,7 +35,8 @@ protected:
    QSpinBox *spnDefServerPort, *spnTcpServerPort, *spnAutoAway, *spnAutoNa,
             *spnMaxUsersPerPacket;
    QPushButton *btnAddServer;
-   QCheckBox  *chkAutoLogonInvisible, *chkWebPresence, *chkHideIp;
+   QCheckBox  *chkAutoLogonInvisible, *chkWebPresence, *chkHideIp,
+              *chkAllowNewUsers;
 
    // plugin tab
    QLabel *lblErrorLog, *lblUrlViewer, *lblTrans;
@@ -51,10 +52,11 @@ protected:
              *chkFontStyles, *chkUseDock, *chkDockFortyEight;
 
    // columns tab
-   QLabel *lblColWidth, *lblColAlign, *lblColInfo;
+   QLabel *lblColWidth, *lblColAlign, *lblColTitle, *lblColFormat;
    QCheckBox *chkColEnabled[4];
    QSpinBox *spnColWidth[4];
-   QComboBox *cmbColAlign[4], *cmbColInfo[4];
+   QComboBox *cmbColAlign[4];
+   QLineEdit *edtColTitle[4], *edtColFormat[4];
 
    // sounds tab
    QLabel *lblSndPlayer, *lblSndMsg, *lblSndChat, *lblSndUrl,

@@ -83,29 +83,33 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
                                   "the user function window after a succesful event"));
 
   tab[1] = new QWidget(this);
-  lblColInfo = new QLabel (_("Info"), tab[1]);
-  lblColInfo->setGeometry(100, 10, 80, 20);
+  lblColTitle = new QLabel (_("Title"), tab[1]);
+  lblColTitle->setGeometry(80, 10, 80, 20);
+  QWhatsThis::add(lblColTitle, _("The string which will appear in the list box column header"));
+  lblColFormat = new QLabel (_("Format"), tab[1]);
+  lblColFormat->setGeometry(170, 10, 90, 20);
+  QWhatsThis::add(lblColFormat, _("The format string used to define what will"
+                                  "appear in each column, see OnEvent Command for"
+                                  "more information about valid % values"));
   lblColWidth = new QLabel (_("Width"), tab[1]);
-  lblColWidth->setGeometry(190, 10, 80, 20);
+  lblColWidth->setGeometry(270, 10, 60, 20);
+  QWhatsThis::add(lblColWidth, _("The width of the column"));
   lblColAlign = new QLabel(_("Alignment"), tab[1]);
-  lblColAlign->setGeometry(280, 10, 80, 20);
-  char label[16];
+  lblColAlign->setGeometry(340, 10, 80, 20);
+  QWhatsThis::add(lblColAlign, _("The alignment of the column"));
   for (unsigned short i = 0; i < 4; i++)
   {
-     sprintf(label, _("Column %d"), i + 1);
-     chkColEnabled[i] = new QCheckBox(label, tab[1]);
-     chkColEnabled[i]->setGeometry(10, 40 + i * 25, 80, 20);
-     cmbColInfo[i] = new QComboBox(tab[1]);
-     cmbColInfo[i]->setGeometry(100, 40 + i * 25, 80, 20);
-     cmbColInfo[i]->insertItem(_("Alias"));
-     cmbColInfo[i]->insertItem(_("UIN"));
-     cmbColInfo[i]->insertItem(_("Name"));
-     cmbColInfo[i]->insertItem(_("EMail"));
+     chkColEnabled[i] = new QCheckBox(_("Column %1").arg(i), tab[1]);
+     chkColEnabled[i]->setGeometry(10, 40 + i * 25, 75, 20);
+     edtColTitle[i] = new QLineEdit(tab[1]);
+     edtColTitle[i]->setGeometry(80, 40 + i * 25, 80, 20);
+     edtColFormat[i] = new QLineEdit(tab[1]);
+     edtColFormat[i]->setGeometry(170, 40 + i * 25, 90, 20);
      spnColWidth[i] = new QSpinBox(tab[1]);
-     spnColWidth[i]->setGeometry(190, 40 + i * 25, 80, 20);
+     spnColWidth[i]->setGeometry(270, 40 + i * 25, 60, 20);
      spnColWidth[i]->setRange(0, 2048);
      cmbColAlign[i] = new QComboBox(tab[1]);
-     cmbColAlign[i]->setGeometry(280, 40 + i * 25, 80, 20);
+     cmbColAlign[i]->setGeometry(340, 40 + i * 25, 80, 20);
      cmbColAlign[i]->insertItem(_("Left"));
      cmbColAlign[i]->insertItem(_("Right"));
      cmbColAlign[i]->insertItem(_("Center"));
@@ -178,7 +182,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   cmbServers->setGeometry(80, 10, 150, 20);
   cmbServers->setEnabled(false);
   lblDefServerPort = new QLabel(_("Default Server Port:"), tab[3]);
-  lblDefServerPort->setGeometry(10, 35, 120, 20);
+  lblDefServerPort->setGeometry(10, 35, 125, 20);
   QWhatsThis::add(lblDefServerPort, _("Default port to connect to on the server (should be 4000)"));
   spnDefServerPort = new QSpinBox(tab[3]);
   spnDefServerPort->setGeometry(140, 35, 90, 20);
@@ -200,10 +204,10 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   spnMaxUsersPerPacket->setGeometry(170, 85, 60, 20);
   spnMaxUsersPerPacket->setRange(10, 125);
   lblAutoLogon = new QLabel(_("Auto Logon:"), tab[3]);
-  lblAutoLogon->setGeometry(160, 110, 80, 20);
+  lblAutoLogon->setGeometry(170, 110, 90, 20);
   QWhatsThis::add(lblAutoLogon, _("Automatically log on when first starting up."));
   cmbAutoLogon = new QComboBox(tab[3]);
-  cmbAutoLogon->setGeometry(240, 110, 120, 20);
+  cmbAutoLogon->setGeometry(260, 110, 120, 20);
   cmbAutoLogon->insertItem(_("Offline"));
   cmbAutoLogon->insertItem(_("Online"));
   cmbAutoLogon->insertItem(_("Away"));
@@ -212,21 +216,21 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   cmbAutoLogon->insertItem(_("Do Not Disturb"));
   cmbAutoLogon->insertItem(_("Free for Chat"));
   chkAutoLogonInvisible = new QCheckBox(_("Invisible"), tab[3]);
-  chkAutoLogonInvisible->setGeometry(240, 135, 100, 20);
+  chkAutoLogonInvisible->setGeometry(260, 135, 100, 20);
   lblAutoAway = new QLabel(_("Auto Away:"), tab[3]);
-  lblAutoAway->setGeometry(10, 110, 70, 20);
+  lblAutoAway->setGeometry(10, 110, 80, 20);
   QWhatsThis::add(lblAutoAway, _("Number of minutes of inactivity after which to "
                                  "automatically be marked \"away\".  Set to \"0\" "
                                  "to disable."));
   spnAutoAway = new QSpinBox(tab[3]);
-  spnAutoAway->setGeometry(90, 110, 50, 20);
+  spnAutoAway->setGeometry(100, 110, 50, 20);
   lblAutoNa = new QLabel(_("Auto N/A:"), tab[3]);
-  lblAutoNa->setGeometry(10, 135, 70, 20);
+  lblAutoNa->setGeometry(10, 135, 80, 20);
   QWhatsThis::add(lblAutoNa, _("Number of minutes of inactivity after which to "
                                "automatically be marked \"not available\".  Set to \"0\" "
                                "to disable."));
   spnAutoNa = new QSpinBox(tab[3]);
-  spnAutoNa->setGeometry(90, 135, 50, 20);
+  spnAutoNa->setGeometry(100, 135, 50, 20);
   chkWebPresence = new QCheckBox(_("Web Presence Enabled"), tab[3]);
   chkWebPresence->setGeometry(10, 160, 200, 20);
   QWhatsThis::add(chkWebPresence, _("Web presence allows users to see if you are online "
@@ -234,6 +238,10 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name) : QTa
   chkHideIp = new QCheckBox(_("Hide IP"), tab[3]);
   chkHideIp->setGeometry(10, 185, 200, 20);
   QWhatsThis::add(chkHideIp, _("Hiding ip stops users from seeing your ip."));
+  chkAllowNewUsers = new QCheckBox(_("Allow New Users"), tab[3]);
+  chkAllowNewUsers->setGeometry(170, 185, 200, 20);
+  QWhatsThis::add(chkAllowNewUsers, _("Determines if new users are automatically added"
+                                      "to your list or must first request authorization."));
 
   tab[4] = new QWidget(this);
   lblErrorLog = new QLabel(_("Error Log:"), tab[4]);
@@ -330,7 +338,8 @@ void OptionsDlg::colEnable(bool isOn)
       if (i < 4) chkColEnabled[i]->setEnabled(true);
       if (i > 0)
       {
-         cmbColInfo[i - 1]->setEnabled(true);
+         edtColTitle[i - 1]->setEnabled(true);
+         edtColFormat[i - 1]->setEnabled(true);
          spnColWidth[i - 1]->setEnabled(true);
          cmbColAlign[i - 1]->setEnabled(true);
       }
@@ -342,7 +351,8 @@ void OptionsDlg::colEnable(bool isOn)
       if (i > 0) chkColEnabled[i - 1]->setEnabled(true);
       if (i < 4)
       {
-         cmbColInfo[i]->setEnabled(false);
+         edtColTitle[i]->setEnabled(false);
+         edtColFormat[i]->setEnabled(false);
          spnColWidth[i]->setEnabled(false);
          cmbColAlign[i]->setEnabled(false);
       }
@@ -392,6 +402,7 @@ void OptionsDlg::SetupOptions()
   chkHideIp->setChecked(o->getStatusHideIp());
   chkWebPresence->setChecked(o->getStatusWebPresence());
   gUserManager.DropOwner();
+  chkAllowNewUsers->setChecked(mainwin->licqDaemon->AllowNewUsers());
 
   // plugins tab
   //optionsDlg->edtErrorLog->setText(server->getErrorLogName());
@@ -420,18 +431,21 @@ void OptionsDlg::SetupOptions()
    for (i = 0; i < mainwin->colInfo.size(); i++)
    {
       chkColEnabled[i]->setChecked(true);
-      cmbColInfo[i]->setCurrentItem(mainwin->colInfo[i].info - 1);
+      edtColTitle[i]->setText(mainwin->colInfo[i]->m_sTitle);
+      edtColFormat[i]->setText(mainwin->colInfo[i]->m_szFormat);
       spnColWidth[i]->setValue(mainwin->userView->columnWidth(i + 1));
-      cmbColAlign[i]->setCurrentItem(mainwin->colInfo[i].align);
+      cmbColAlign[i]->setCurrentItem(mainwin->colInfo[i]->m_nAlign);
       chkColEnabled[i]->setEnabled(true);
-      cmbColInfo[i]->setEnabled(true);
+      edtColTitle[i]->setEnabled(true);
+      edtColFormat[i]->setEnabled(true);
       spnColWidth[i]->setEnabled(true);
       cmbColAlign[i]->setEnabled(true);
    }
    if (i < 4)
    {
       chkColEnabled[i]->setChecked(false);
-      cmbColInfo[i]->setEnabled(false);
+      edtColTitle[i]->setEnabled(false);
+      edtColFormat[i]->setEnabled(false);
       spnColWidth[i]->setEnabled(false);
       cmbColAlign[i]->setEnabled(false);
       i++;
@@ -440,7 +454,8 @@ void OptionsDlg::SetupOptions()
    {
       chkColEnabled[i]->setChecked(false);
       chkColEnabled[i]->setEnabled(false);
-      cmbColInfo[i]->setEnabled(false);
+      edtColTitle[i]->setEnabled(false);
+      edtColFormat[i]->setEnabled(false);
       spnColWidth[i]->setEnabled(false);
       cmbColAlign[i]->setEnabled(false);
    }
@@ -514,6 +529,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
   mainwin->licqDaemon->setTcpServerPort(spnTcpServerPort->value());
   mainwin->licqDaemon->setMaxUsersPerPacket(spnMaxUsersPerPacket->value());
+  mainwin->licqDaemon->SetAllowNewUsers(chkAllowNewUsers->isChecked());
 
   // Plugin tab
   //server->setErrorLogName((const char *)optionsDlg->edtErrorLog->text());
@@ -555,13 +571,15 @@ void OptionsDlg::ApplyOptions()
 
   // set up the columns stuff
   unsigned short i, j = mainwin->colInfo.size();
-  for (i = 0; i < j; i++) mainwin->colInfo.pop_back();  // erase the old array
+  for (i = 0; i < j; i++) delete mainwin->colInfo[i];  // erase the old array
+  mainwin->colInfo.clear();
   i = 0;
   while (chkColEnabled[i]->isChecked())
   {
-     mainwin->colInfo.push_back(ColInfo(cmbColInfo[i]->currentItem() + 1,
-                                        spnColWidth[i]->value(),
-                                        cmbColAlign[i]->currentItem()));
+     mainwin->colInfo.push_back(new CColumnInfo(edtColTitle[i]->text(),
+                                                edtColFormat[i]->text(),
+                                                spnColWidth[i]->value(),
+                                                cmbColAlign[i]->currentItem()));
      i++;
   }
   delete mainwin->userView;

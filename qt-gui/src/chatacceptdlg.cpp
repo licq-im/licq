@@ -39,11 +39,9 @@ CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
    btnIgnore->setGeometry(190, 85, 80, 30 );
    connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );   
 
-   char title[128];
    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-   sprintf(title, _("Accept chat with %s?"), u->getAlias());
+   setCaption(_("Accept chat with ") + QString::fromLocal8Bit(u->getAlias()) + " ?");
    gUserManager.DropUser(u);
-   setCaption(title);
 
    show();
 }

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 PACKAGE = Licq-Qt-GUI
-VERSION = 0.66.2
+VERSION = 0.67
 
 SHELL = /bin/sh
 
@@ -25,7 +25,7 @@ srcdir = .
 top_srcdir = ..
 top_builddir = ..
 
-prefix = /usr/local
+prefix = /usr/local/licq
 exec_prefix = ${prefix}
 transform = s,x,x,
 libdir = $(exec_prefix)/lib
@@ -38,7 +38,7 @@ aliaspath = $(localedir):.
 subdir = intl
 
 INSTALL = /usr/bin/install -c
-INSTALL_DATA = install -c -p -m 644
+INSTALL_DATA = ${INSTALL} -m 644
 MKINSTALLDIRS = ./mkinstalldirs
 
 l = 

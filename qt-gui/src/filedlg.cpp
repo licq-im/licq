@@ -9,7 +9,6 @@
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
-#include <qfiledialog.h>
 #else
 #include <qfiledialog.h>
 #endif
@@ -82,7 +81,7 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    barTransfer = new QProgressBar(boxCurrent);
    barTransfer->setGeometry(10, 140, 200, 20);
 
-   QGroupBox *boxBatch = new QGroupBox("Batch", this);
+   QGroupBox *boxBatch = new QGroupBox(_("Batch"), this);
    boxBatch->setGeometry(250, 80, 220, 170);
    nfoBatchSize = new CInfoField(10, 15, 35, 5, 150, _("Size:"), true, boxBatch);
    nfoBatchTrans = new CInfoField(10, 40, 35, 5, 150, _("Trans:"), true, boxBatch);
@@ -391,8 +390,7 @@ void CFileDlg::StateServer()
     m_nBatchBytesTransfered = m_nBatchPos = 0;
     barBatchTransfer->setTotalSteps(m_nBatchSize);
     barBatchTransfer->setProgress(0);
-    sprintf(t, _("ICQ file transfer %s %s"), IsServer() ? _("from") : _("to"), m_szRemoteName);
-    setCaption(t);
+    setCaption(_("ICQ file transfer %1 %2").arg(IsServer() ? _("from") : _("to")).arg(m_szRemoteName));
 
     // Send response
     CPFile_InitServer p(m_szLocalName);
@@ -611,7 +609,7 @@ void CFileDlg::StateClient()
   case STATE_RECVxSERVERxINIT:
   {
     // Process init packet
-    char cJunk, t[64];
+    char cJunk;
     unsigned long nJunkLong;
     unsigned short nRemoteNameLen;
     m_xSocketFile.RecvBuffer() >> cJunk >> nJunkLong >> nRemoteNameLen;
@@ -633,8 +631,7 @@ void CFileDlg::StateClient()
     m_szRemoteName = new char[nRemoteNameLen];
     for (int i = 0; i < nRemoteNameLen; i++)
        m_xSocketFile.RecvBuffer() >> m_szRemoteName[i];
-    sprintf(t, _("ICQ file transfer %s %s"), IsServer() ? _("from") : _("to"), m_szRemoteName);
-    setCaption(t);
+    setCaption(_("ICQ file transfer %1 %2").arg(IsServer() ? _("from") : _("to")).arg(m_szRemoteName));
 
     // Send file info packet
     CPFile_Info p(nfoTransferFileName->text());

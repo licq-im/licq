@@ -10,15 +10,10 @@ ShowDividers = 1
 UseDock = 0
 FontStyles = 1
 NumColumns = 1
-Column1Info = 1
-Column1Width = 90
-Column1Align = 0
-Column2Info = 2
-Column2Width = 70
-Column2Align = 2
-Column3Info = 3
-Column3Align = 1
-Column3Width = 150
+Column1.Title = Alias
+Column1.Format = %a
+Column1.Width = 90
+Column1.Align = 0
 
 [startup]
 Logon = 0
