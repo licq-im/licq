@@ -53,6 +53,13 @@ void signal_handler_chatThread(int s /*, siginfo_t *si, void *context */)
 }
 
 
+void signal_handler_ftThread(int s /*, siginfo_t *si, void *context */)
+{
+  if (s == SIGSEGV)
+    licq_handle_sigsegv("File Transfer Thread" /*, si, context */);
+}
+
+
 
 void signal_handler_eventThread(int s /*, siginfo_t *si, void *context */)
 {

@@ -15,6 +15,7 @@ void licq_segv_handler(void (*f)(int /*, siginfo_t *, void **/));
 
 void signal_handler_eventThread(int /*, siginfo_t *, void * */);
 void signal_handler_chatThread(int /*, siginfo_t *, void * */);
+void signal_handler_ftThread(int /*, siginfo_t *, void * */);
 void signal_handler_pingThread(int /*, siginfo_t *, void * */);
 void signal_handler_managerThread(int /*, siginfo_t *, void * */);
 void signal_handler_monitorThread(int /*, siginfo_t *, void * */);
