@@ -10,7 +10,7 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
-
+#include <string.h>
 #include <dlfcn.h>
 
 #ifdef HAVE_ERRNO_H

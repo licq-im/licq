@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "licq_filetransfer.h"
 #include "licq_log.h"
