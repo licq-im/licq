@@ -543,6 +543,7 @@ protected:
        m_bTCPEnabled,
        m_bFirewall;
   time_t m_tLogonTime;
+  char *m_szRegisterPasswd;
 
   // ICQ Server
   char *m_szICQServer;
@@ -654,7 +655,7 @@ protected:
   static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
   static bool Handshake_SendConfirm_v7(TCPSocket *);
-  static bool Handshake_Recv(TCPSocket *, unsigned short, bool = true);
+  static bool Handshake_Recv(TCPSocket *, unsigned short, bool = true, bool = false);
   static bool Handshake_RecvConfirm_v7(TCPSocket *);
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
