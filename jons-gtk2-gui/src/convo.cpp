@@ -39,10 +39,8 @@ struct conversation
 	GtkWidget *send_server;
 	GtkWidget *send_urgent;
 	GtkWidget *send_list;
-	GtkWidget *progress;
 	GdkColor *clrFore;
 	GdkColor *clrBack;
-	gchar prog_buf[60];
 	gchar *for_user;
 	ICQUser *user;
 	struct e_tag_data *etag;
@@ -55,7 +53,7 @@ list<conversation *> cnv;
 conversation *convo_find(unsigned long);
 void convo_show(conversation *);
 void convo_nick_timestamp(GtkWidget *, const char *, time_t, GdkColor *);
-void convo_send(GtkWidget *, gpointer);
+void convo_send(GtkWidget *, conversation *c);
 gboolean key_press_convo(GtkWidget *, GdkEventKey *, gpointer);
 void verify_convo_send(GtkWidget *, guint, gchar *, conversation *);
 void convo_cancel(GtkWidget *, conversation *);
@@ -205,10 +203,8 @@ void convo_show(conversation *c)
 	// Box with progress bar and the 2 buttons
 	button_box = gtk_hbox_new(FALSE, 0);
 	/* Progress of message */
-	c->progress = gtk_statusbar_new();
-	g_signal_connect(G_OBJECT(c->progress), "text-pushed",
-			   G_CALLBACK(verify_convo_send), c);
-	gtk_widget_set_size_request(c->progress, 300, -1); 
+	c->etag->statusbar = gtk_statusbar_new();
+	gtk_widget_set_size_request(c->etag->statusbar, 300, -1); 
 	
 	/* Make new buttons with labels */
 	c->send = gtk_button_new_with_mnemonic("_Send");
@@ -218,9 +214,9 @@ void convo_show(conversation *c)
 	g_signal_connect(G_OBJECT(c->close_or_cancel), "clicked",
 			   G_CALLBACK(convo_close_or_cancel), c);
 	g_signal_connect(G_OBJECT(c->send), "clicked",
-			   G_CALLBACK(convo_send), (gpointer)c);
+			   G_CALLBACK(convo_send), c);
 	
-	gtk_box_pack_start(GTK_BOX(button_box), c->progress, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(button_box), c->etag->statusbar, TRUE, TRUE, 5);
 	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(bbox), c->close_or_cancel, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(bbox), c->send, TRUE, TRUE, 5);
@@ -250,29 +246,22 @@ void convo_show(conversation *c)
 	g_signal_connect(G_OBJECT(c->window), "delete_event",
 			G_CALLBACK(convo_delete), c);
 	
-	/* More e_tag_data stuff */
-	c->etag->statusbar = c->progress;
-	strcpy(c->etag->buf, c->prog_buf);
-
 	gtk_widget_show_all(c->window);
 	gtk_button_set_label(GTK_BUTTON(c->close_or_cancel), GTK_STOCK_CLOSE);
-	
 }
 
 gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 {
-	if(eventkey->keyval == GDK_Return)
-	{
+	if (eventkey->keyval == GDK_Return) {
 		conversation *c = (conversation *)data;
 		guint state = eventkey->state;
 		
 		// We send when:
 		// - enter_sends is true and plain Enter was presses
 		// - enter_sends is false and Shift/Ctrl+Enter was pressed
-		if((!enter_sends && (state & GDK_SHIFT_MASK)) ||
-				(enter_sends && !(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK))))
-		{
-			convo_send(0, (gpointer)c);
+		if ((!enter_sends && (state & GDK_SHIFT_MASK)) ||
+				(enter_sends && !(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)))) {
+			convo_send(0, c);
 			return TRUE;
 		}
 	}
@@ -317,10 +306,8 @@ void convo_nick_timestamp(GtkWidget *text, const char *nick,
 	gtk_text_buffer_insert_with_tags_by_name(tb, &iter, ": ", 2, color, NULL);
 }
 
-void convo_send(GtkWidget *widget, gpointer _c)
+void convo_send(GtkWidget *widget, conversation *c)
 {
-	conversation *c = (conversation *)_c;
-
 	/* Set the 2 button widgets */
 	if(GTK_WIDGET_IS_SENSITIVE(c->send))
 		gtk_widget_set_sensitive(c->send, false);
@@ -348,12 +335,12 @@ void convo_send(GtkWidget *widget, gpointer _c)
 	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)))
 		urgent = TRUE;
 
-	strcpy(c->prog_buf, "Sending message ");
+	strcpy(c->etag->buf, "Sending message ");
 
 	if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)))
-		strcat(c->prog_buf, "directly ... ");
+		strcat(c->etag->buf, "directly ... ");
 	else
-		strcat(c->prog_buf, "through server ... ");
+		strcat(c->etag->buf, "through server ... ");
 
 	/* Send the message */
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_urgent)) ||
@@ -379,30 +366,9 @@ void convo_send(GtkWidget *widget, gpointer _c)
              ICQ_TCPxMSG_NORMAL);
 	}
 
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress),
-						"prog");
-	gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-	gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
-  
 	/* Take care of the etd buffer and add it to the slist */
-	memcpy(c->etag->buf, c->prog_buf, 60);
+	status_change(c->etag->statusbar, "sta", c->etag->buf);
 	catcher = g_slist_append(catcher, c->etag);
-}
-
-void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
-		       conversation *c)
-{
-	gchar temp[60];
-	strcpy(temp, text);
-	g_strreverse(temp);
-
-	if(strncmp(temp, " ...", 4) == 0)
-		return;
-	else
-	{
-		gtk_widget_set_sensitive(c->send, TRUE);
-		toggle_close_cancel(c, 1);
-	}
 }
 
 void convo_cancel(GtkWidget *widget, conversation *c)
@@ -416,6 +382,9 @@ void convo_cancel(GtkWidget *widget, conversation *c)
 
 	/* Remove the event from the slist */
 	catcher = g_slist_remove(catcher, c->etag);
+
+	c->etag->buf[0] = '\0';
+	status_change(c->etag->statusbar, "sta", c->etag->buf);
 }
 
 #include <iostream>
@@ -600,14 +569,11 @@ void finish_message(ICQEvent *event)
 	conversation *c = convo_find(event->Uin());
 
 	/* If the window isn't open, there isn't anything left to do */
-	if(c == 0)
+	if (c == 0)
 		return;
 
 	/* Check to make sure it sent, and if it did, put the text in */
-	g_strreverse(c->etag->buf);
-
-	if(strncmp(c->etag->buf, "en", 2) == 0)
-	{
+	if (event->Result() == EVENT_ACKED || event->Result() == EVENT_SUCCESS) {
 		ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 		const gchar *name = owner->GetAlias();
 		gUserManager.DropOwner();
@@ -622,6 +588,9 @@ void finish_message(ICQEvent *event)
 		gtk_text_buffer_get_end_iter(tb, &iter);
 		gtk_text_buffer_insert(tb, &iter, c->for_user, -1);
 		scroll_to_the_end(c->text);
+
+		gtk_widget_set_sensitive(c->send, TRUE);
+		toggle_close_cancel(c, 1);
 	}
 }
 
