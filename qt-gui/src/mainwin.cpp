@@ -20,25 +20,6 @@
 #include "config.h"
 #endif
 
-extern "C" {
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
-#ifdef USE_SCRNSAVER
-#include <X11/extensions/scrnsaver.h>
-#endif
-
-}
-
-#undef Bool
-#undef None
-#undef KeyPress
-#undef KeyRelease
-#undef FocusIn
-#undef FocusOut
-#undef Status
-
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kglobalsettings.h>
@@ -95,6 +76,26 @@ extern "C" {
 #include "xpm/secure_off.xpm"
 
 #include "licq_qt-gui.conf.h"
+
+extern "C" {
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#ifdef USE_SCRNSAVER
+#include <X11/extensions/scrnsaver.h>
+#endif
+
+}
+
+#undef Bool
+#undef None
+#undef KeyPress
+#undef KeyRelease
+#undef FocusIn
+#undef FocusOut
+#undef Status
+
 
 static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border border)
 {
@@ -356,7 +357,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadStr("MsgPopupKey", szTemp, "none");
 
   m_MsgAutopopupKey = QString::fromLatin1(szTemp);
-  if(!(!szTemp || !stricmp(szTemp, "none"))) {
+  if(!(!szTemp || !strcmp(szTemp, "none"))) {
     if(!static_cast<CLicqGui*>(qApp)->grabKey(m_MsgAutopopupKey))
        gLog.Error("%sUnknown popup key: %s\n", L_INITxSTR, szTemp);
   }

@@ -26,6 +26,7 @@
 #include <qdragobject.h>
 #include <qstylesheet.h>
 
+#include "userbox.moc"
 #include "skin.h"
 #include "mainwin.h"
 #include "userbox.h"
@@ -1196,5 +1197,3 @@ void CUserView::maybeTip(const QPoint& c)
     tip(r, s);
   }
 }
-
-#include "userbox.moc"

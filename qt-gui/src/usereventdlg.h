@@ -35,6 +35,7 @@ class QLineEdit;
 class QGroupBox;
 class QButtonGroup;
 class QListViewItem;
+class QLabel;
 
 class MLEditWrap;
 class MsgView;

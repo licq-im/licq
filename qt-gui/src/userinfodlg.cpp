@@ -700,9 +700,11 @@ void UserInfoDlg::CreateAbout()
   lblAbout = new QLabel(tr("About:"), p);
   mleAbout = new MLEditWrap(true, p);
   mleAbout->setReadOnly(!m_bOwner);
+#if QT_VERSION < 300
   // Windows ICQ seems to limit the about info to 450 chars
   // so we do the same
   mleAbout->setMaxLength(450);
+#endif
 }
 
 void UserInfoDlg::SetAbout(ICQUser *u)
@@ -963,7 +965,7 @@ bool UserInfoDlg::chkContains(const char* d, const char* filter, int len)
 {
   if ( !d ) return false;
   while ( *d ) {
-    if ( strnicmp(d, filter, len) == 0 )
+    if ( strncasecmp(d, filter, len) == 0 )
       return true;
     d++;
   }
