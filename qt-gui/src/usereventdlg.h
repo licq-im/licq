@@ -171,7 +171,6 @@ protected:
   CICQColor icqColor;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
-  QCString generatePart(const QString& text);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
   virtual bool sendDone(ICQEvent *) = 0;
   bool checkSecure();
