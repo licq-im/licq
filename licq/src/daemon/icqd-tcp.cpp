@@ -938,7 +938,8 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       s_nChatSequence = theSequence;
       s_nChatUin = checkUin;
 
-      pExtendedAck = new CExtendedAck (ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
+      //pExtendedAck = new CExtendedAck (ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
+      pExtendedAck = new CExtendedAck (nPort != 0, nPort, message);
       break;
     }
 
@@ -963,7 +964,8 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
        s_nFileSequence = theSequence;
        s_nFileUin = checkUin;
 
-       pExtendedAck = new CExtendedAck(ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
+       //pExtendedAck = new CExtendedAck(ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
+       pExtendedAck = new CExtendedAck(nPort != 0, nPort, message);
        break;
 
     default:
