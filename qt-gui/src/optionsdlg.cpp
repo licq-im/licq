@@ -1153,8 +1153,8 @@ void OptionsDlg::buildAutoStatusCombos(bool firstTime)
     cmbAutoNAMess->insertItem(sarn[i]->Name(),i+1);
   gSARManager.Drop();
 
-  cmbAutoAwayMess->setCurrentItem(selectedNA);
-  cmbAutoNAMess->setCurrentItem(selectedAway);
+  cmbAutoAwayMess->setCurrentItem(selectedAway);
+  cmbAutoNAMess->setCurrentItem(selectedNA);
 }
 
 
