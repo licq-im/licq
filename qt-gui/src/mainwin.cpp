@@ -2313,34 +2313,34 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
           for (; it.current(); ++it)
             if ((*it)->Uin() == nUin)
             {
-	      e = static_cast<UserSendCommon*>(*it);
+              e = static_cast<UserSendCommon*>(*it);
 #if QT_VERSION >= 300
-	      if (userEventTabDlg && userEventTabDlg->tabExists(e))
-	      {
-		userEventTabDlg->show();
-		userEventTabDlg->selectTab(e);
-		userEventTabDlg->raise();
+              if (userEventTabDlg && userEventTabDlg->tabExists(e))
+              {
+                userEventTabDlg->show();
+                userEventTabDlg->selectTab(e);
+                userEventTabDlg->raise();
 #ifdef USE_KDE
-		KWin::setActiveWindow(userEventTabDlg->winId());
+                KWin::setActiveWindow(userEventTabDlg->winId());
 #endif
-	      }
-	      else
+              }
+              else
 #endif
-	      {
-		e->show();
-		if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
-		{
-		  e->raise();
+              {
+                e->show();
+                if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+                {
+                  e->raise();
 #ifdef USE_KDE
-		  KWin::setActiveWindow(e->winId());
+                  KWin::setActiveWindow(e->winId());
 #endif
-		}
-	      }
-	      return e;
-	    }
-	}
-    }
-  default:
+                }
+              }
+              return e;
+            }
+        }
+      }
+    default:
     break;
   }
 

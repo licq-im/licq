@@ -1841,8 +1841,7 @@ void UserSendCommon::changeEventType(int id)
   UserSendCommon* e = NULL;
   QWidget *parent = NULL;
 #if QT_VERSION >= 300
-  if (mainwin->userEventTabDlg &&
-      mainwin->userEventTabDlg->tabIsSelected(this))
+  if (mainwin->userEventTabDlg && mainwin->userEventTabDlg->tabExists(this))
       parent = mainwin->userEventTabDlg;
 #endif
   switch(id)
