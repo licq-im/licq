@@ -91,9 +91,8 @@ QSize MsgView::sizeHint() const
 void MsgView::resizeEvent(QResizeEvent *e)
 {
   QListView::resizeEvent(e);
-// FIXME: broken for some reason. the cell's don't get repainted
-//  QScrollBar *s = verticalScrollBar();
-//  setColumnWidth(2, width() - 240 - s->width());
+  QScrollBar *s = verticalScrollBar();
+  setColumnWidth(2, width() - 240 - s->width());
 }
 
 
