@@ -1045,23 +1045,22 @@ void UserSendCommon::changeEventType(int id)
 
 
 // -----------------------------------------------------------------------------
-QString UserSendCommon::generatePart(const QString& text)
+QCString UserSendCommon::generatePart(const QString& text)
 {
 #define PARTLEN (MAX_MESSAGE_SIZE - 14)
 
-  QString msgTextCurrent;
+  QCString msgTextCurrent = codec->fromUnicode(text);
 
-  if (chkSendServer->isChecked() && text.length() > PARTLEN)
+  if (chkSendServer->isChecked() && msgTextCurrent.length() > PARTLEN)
   {
-    int msgNextOffset = QMIN(text.length(), PARTLEN);
-    int found_index = text.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
-    if(found_index > 0)
-      msgNextOffset = found_index;
+    QString after_cut = codec->toUnicode(msgTextCurrent.left(PARTLEN));
 
-    msgTextCurrent = text.left( msgNextOffset );
+    // we try to find the optimal place to cut
+    // (according to our narrow-minded Latin1 idea of optimal :)
+    int found_index = after_cut.findRev(QRegExp("[\\s\\.]"));
+    if(found_index > 0)
+      msgTextCurrent = codec->fromUnicode(after_cut.left(found_index));
   }
-  else
-    msgTextCurrent = text;
 
   return msgTextCurrent;
 }
@@ -1256,9 +1255,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
 
-      QString msgTextCurrent = generatePart(QString(ue->Message()));
-
-      icqEventTag = server->icqSendMessage(m_nUin, codec->fromUnicode(msgTextCurrent), bOnline,
+      icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
          nLevel, false, &icqColor);
       break;
     }
@@ -1419,17 +1416,19 @@ void UserSendMsgEvent::sendButton()
 
   if (!UserSendCommon::checkSecure()) return;
 
-  QString msgTextCurrent = generatePart(mleSend->text());
+  // the part is generated according to the raw data's length (number of bytes,
+  // not number of glyphs), so we use a QCString
+  QCString msgTextCurrent = generatePart(codec->fromUnicode(mleSend->text()));
 
   if (chkMass->isChecked())
   {
     CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
-    int r = m->go_message(msgTextCurrent);
+    int r = m->go_message(codec->toUnicode(msgTextCurrent));
     delete m;
     if (r != QDialog::Accepted) return;
   }
 
-  icqEventTag = server->icqSendMessage(m_nUin, codec->fromUnicode(msgTextCurrent),
+  icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.data(),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkMass->isChecked(), &icqColor);
@@ -1442,7 +1441,8 @@ void UserSendMsgEvent::sendButton()
 bool UserSendMsgEvent::sendDone(ICQEvent *e)
 {
   if (e->Command() != ICQ_CMDxTCP_START) {
-    mleSend->setText(mleSend->text().mid( generatePart( mleSend->text() ).length()+1));
+    CEventMsg *ue = (CEventMsg *)e->UserEvent();
+    mleSend->setText(mleSend->text().mid( codec->toUnicode(ue->Message()).length()+1 ));
     return mleSend->text().isEmpty();
   }
 
