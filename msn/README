@@ -5,6 +5,8 @@ Edit the licq.conf file and put this in the [owners] section:
 Owner2.Id = <username>
 Owner2.PPID = MSN_
 
+Requirements: OpenSSL, Licq :)
+
 After that you can successfully logon and receive messages.  Sending messages only works after you have received the initial message and the connection remains opened (there is a 5 minute timeout).  When you send a message, there is no GUI response (hence it not being that useful yet).  Changing status doesn't work, to log on select "Online" from the status menu.  The submenu's for each protocol do not work yet.  And I'm sure you'll find many more things, but it is still being worked on, so please wait.
 
 Jon
