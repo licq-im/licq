@@ -28,8 +28,8 @@
 #include <sys/time.h>
 
 GdkColor *red, *blue, *online_color, *offline_color, *away_color;
-struct status_icon *online, *offline, *away, *na, *dnd, *occ, *message_icon,
-	*file_icon, *chat_icon, *url_icon, *no_icon;
+struct status_icon *online, *offline, *away, *na, *dnd, *occ, *ffc,
+	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -138,91 +138,95 @@ void contact_list_refresh()
 
          	else
 		{
+			struct status_icon *cur_icon = offline;
+
 			/* Get the status of the user */
-			gushort user_status = pUser->Status();
+			gulong user_status = pUser->StatusFull();
 
-			switch(user_status)
+			if((gushort)user_status != ICQ_STATUS_OFFLINE &&
+			   (user_status & ICQ_STATUS_FxPRIVATE))
 			{
-		  	case ICQ_STATUS_FREEFORCHAT:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, online->pm, online->bm);
+				cur_icon = invisible;
 				gtk_clist_set_foreground(GTK_CLIST(contact_list)
 					, num_users, online_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "*");
-				break;
-		  	}
-	
-		  	case ICQ_STATUS_AWAY:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, away->pm, away->bm);
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
-				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "A");
-				break;
-		  	}
- 		 
-	  	  	case ICQ_STATUS_ONLINE:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, online->pm, online->bm);
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, online_color);
-				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "+");
-				break;
-		  	}
+					num_users, 0, ",");
+			}
 
-		  	case ICQ_STATUS_NA:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, na->pm, na->bm);
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
-				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "N");
-				break;
-		  	}
-	
-		  	case ICQ_STATUS_DND:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, dnd->pm, dnd->bm);
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
-				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "X");
-				break;
-		  	}
-		
-		  	case ICQ_STATUS_OCCUPIED:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, occ->pm, occ->bm);
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
-				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "x");
-				break;
-		  	}
-		
-		  	case ICQ_STATUS_OFFLINE:
-		  	{
-				gtk_clist_set_pixmap(GTK_CLIST(contact_list),
-					num_users, 1, offline->pm, offline->bm);
+			else if((gushort)user_status == ICQ_STATUS_OFFLINE)
+			{
+				cur_icon = offline;
 				gtk_clist_set_foreground(GTK_CLIST(contact_list)
 					, num_users, offline_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "~");
-				break;
+			}
+
+		  	else if(user_status & ICQ_STATUS_DND)
+		  	{
+				cur_icon = dnd;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, away_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "X");
+		  	}
+	
+		  	else if(user_status & ICQ_STATUS_OCCUPIED)
+		  	{
+				cur_icon = occ;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, away_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "x");
+		  	}
+ 		 
+	  	  	else if(user_status & ICQ_STATUS_NA)
+		  	{
+				cur_icon = na;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, away_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "N");
+		  	}
+
+		  	else if(user_status & ICQ_STATUS_AWAY)
+		  	{
+				cur_icon = away;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, away_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "A");
+		  	}
+	
+		  	else if(user_status & ICQ_STATUS_FREEFORCHAT)
+		  	{
+				cur_icon = ffc;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, online_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "*");
 		  	}
 		
-		  	default:
-				g_print("Unknown status\n");
-			} //switch
+		  	else if(user_status & ICQ_STATUS_OCCUPIED)
+		  	{
+				cur_icon = occ;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, away_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "x");
+		  	}
+
+			else
+			{
+				cur_icon = online;
+				gtk_clist_set_foreground(GTK_CLIST(contact_list)
+					, num_users, online_color);
+				gtk_clist_set_text(GTK_CLIST(contact_list),
+					num_users, 0, "+");
+			}
+		
+			gtk_clist_set_pixmap(GTK_CLIST(contact_list),
+				num_users, 1, cur_icon->pm, cur_icon->bm);
 		} // else
 
 		gtk_clist_set_text(GTK_CLIST(contact_list), num_users,

@@ -26,6 +26,8 @@
 #include "pixmaps/na.xpm"
 #include "pixmaps/occ.xpm"
 #include "pixmaps/dnd.xpm"
+#include "pixmaps/ffc.xpm"
+#include "pixmaps/invisible.xpm"
 #include "pixmaps/message.xpm"
 #include "pixmaps/file.xpm"
 #include "pixmaps/chat.xpm"
@@ -64,6 +66,8 @@ void do_pixmaps()
 	occ = make_pixmap(occ, (gchar **)occ_xpm);
 	dnd = make_pixmap(dnd, (gchar **)dnd_xpm);
 	offline = make_pixmap(offline, (gchar **)offline_xpm);
+	ffc = make_pixmap(ffc, (gchar **)ffc_xpm);
+	invisible = make_pixmap(invisible, (gchar **)invisible_xpm);
 	message_icon = make_pixmap(message_icon, (gchar **)message_xpm);
 	url_icon = make_pixmap(url_icon, (gchar **)url_xpm);
 	file_icon = make_pixmap(file_icon, (gchar **)file_xpm);
