@@ -26,19 +26,24 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/time.h>
-#include <list>
+#include <map>
 
 using namespace std;
-
-gboolean bFlashOn = false;
-gint nToFlash = -1;
 
 GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 GdkPixbuf *online, *offline, *away, *na, *dnd, *occ, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
 	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
-list<unsigned long> AutoSecureList;
-list<SFlash *> FlashList;
+
+struct SFlash
+{
+	GdkPixbuf *icon;
+	GtkTreePath *path;
+	gboolean bFlashOn;
+};
+
+map<gulong,SFlash *> FlashList;
+typedef map<gulong,SFlash *>::iterator FlashList_iter;
 
 enum {
 	COL_SORT,
@@ -91,46 +96,109 @@ GtkWidget *contact_list_new(gint height, gint width)
 	g_signal_connect(G_OBJECT(_contact_l), "button_press_event",
 			   G_CALLBACK(contact_list_click), 0);
 
-	// gtk_clist_set_button_actions(GTK_CLIST(_contact_l), 0, GTK_BUTTON_IGNORED);
-
 	return _contact_l;
+}
+
+GdkPixbuf *
+status_icon(gulong user_status)
+{
+	if((gushort)user_status != ICQ_STATUS_OFFLINE && 
+			(user_status & ICQ_STATUS_FxPRIVATE))
+		return invisible;
+	else if((gushort)user_status == ICQ_STATUS_OFFLINE)
+		return offline;
+	else if(user_status & ICQ_STATUS_DND)
+		return dnd;
+	else if(user_status & ICQ_STATUS_OCCUPIED)
+		return occ;
+	else if(user_status & ICQ_STATUS_NA)
+		return na;
+	else if(user_status & ICQ_STATUS_AWAY)
+		return away;
+	else if(user_status & ICQ_STATUS_FREEFORCHAT)
+		return ffc;
+	else if(user_status & ICQ_STATUS_OCCUPIED)
+		return occ;
+	else
+		return online;
+}
+
+int
+sort_order(gulong user_status)
+{
+	if((gushort)user_status != ICQ_STATUS_OFFLINE &&
+		 (user_status & ICQ_STATUS_FxPRIVATE))
+		return 25; // ","
+	else if((gushort)user_status == ICQ_STATUS_OFFLINE)
+		return 100; //"~", -1);
+	else if(user_status & ICQ_STATUS_DND)
+		return 50; //"X", -1);
+	else if(user_status & ICQ_STATUS_OCCUPIED)
+		return 60; //"x", -1);
+	else if(user_status & ICQ_STATUS_NA)
+		return 40; //"N", -1);
+	else if(user_status & ICQ_STATUS_AWAY)
+		return 30; //"A", -1);
+	else if(user_status & ICQ_STATUS_FREEFORCHAT)
+		return 10; //"*", -1);
+	else if(user_status & ICQ_STATUS_OCCUPIED)
+		return 60; //"x", -1);
+	else
+		return 20; // "+", -1);
 }
 
 gint flash_icons(gpointer data)
 {
 	// If we aren't supposed to flash or there are no things to flash
-	if(!flash_events || (nToFlash < 0))
+	if (!flash_events || FlashList.empty())
 		return -1;
 		
 	GtkListStore *store = 
 			GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(contact_list)));
 	
-	list<SFlash *>::iterator it;
+	FlashList_iter it;
 	for(it = FlashList.begin(); it != FlashList.end(); it++)
 	{
 		GtkTreeIter iter;
+		SFlash *sf = it->second;
 		
-		if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(store), &iter, (*it)->path))
+		if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(store), &iter, sf->path))
 			continue;
-		if(!(*it)->bFlashOn)
-		{
-			(*it)->bFlashOn = true;
+		if (!sf->bFlashOn) {
+			sf->bFlashOn = true;
 			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, blank_icon, -1);
 		}
-		else
-		{
-			(*it)->bFlashOn = false;
-			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, (*it)->icon, -1);
+		else {
+			sf->bFlashOn = false;
+			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, sf->icon, -1);
 		}
 	}
 	
 	return -1;
 }
 
+void stop_flashing(ICQUser *u)
+{
+	FlashList_iter it = FlashList.find(u->Uin());
+	if (it != FlashList.end()) {
+		GtkListStore *store = 
+				GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(contact_list)));
+		GtkTreeIter iter;
+		SFlash *sf = it->second;
+		
+		if (gtk_tree_model_get_iter(GTK_TREE_MODEL(store), &iter, it->second->path))
+			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, 
+					status_icon(u->StatusFull()), -1);
+		g_free(sf->path);
+		g_free(sf);
+		FlashList.erase(it);
+	}
+}
+
 void contact_list_refresh()
 {
+	list<unsigned long> AutoSecureList;
 	gint num_users = 0;
-	nToFlash = -1;
 
 	GtkListStore *store = 
 			GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(contact_list)));
@@ -141,16 +209,15 @@ void contact_list_refresh()
 	FOR_EACH_USER_START(LOCK_R)
 	{
 		/* If they are on the ignore list and the user has the option
-		 * "Show ignored users" diabled, then don't show them */
+		 * "Show ignored users" disabled, then don't show them */
 		if(pUser->IgnoreList() && !show_ignored_users)
 		{
 		 	FOR_EACH_USER_CONTINUE
 		}
 
 		/* If they are offline and we do not want to see offline users,
-		 * just keep oin going! */
-		 if(pUser->Status() == ICQ_STATUS_OFFLINE &&
-		    !show_offline_users)
+		 * just keep goin going! */
+		if(pUser->Status() == ICQ_STATUS_OFFLINE && !show_offline_users)
 		{
 			FOR_EACH_USER_CONTINUE
 		}
@@ -162,111 +229,51 @@ void contact_list_refresh()
 		gulong user_status = pUser->StatusFull();
 
 		// The icon to set
-		if(pUser->NewMessages() > 0)
+		if (pUser->NewMessages() > 0)
 		{
 			CUserEvent *ue = pUser->EventPeekFirst();
 			GdkPixbuf *icon;
 
 			switch(ue->SubCommand())
 			{
-			case ICQ_CMDxSUB_MSG:
-				icon = message_icon;
-				break;
-			
-			case ICQ_CMDxSUB_URL:
-				icon = url_icon;
-				break;
+				case ICQ_CMDxSUB_MSG:
+					icon = message_icon;
+					break;
 
-			case ICQ_CMDxSUB_FILE:
-				icon = file_icon;
-				break;
+				case ICQ_CMDxSUB_URL:
+					icon = url_icon;
+					break;
 
-			case ICQ_CMDxSUB_CHAT:
-				icon = chat_icon;
-				break;
+				case ICQ_CMDxSUB_FILE:
+					icon = file_icon;
+					break;
 
-			default:
-				icon = message_icon;
-				break;
+				case ICQ_CMDxSUB_CHAT:
+					icon = chat_icon;
+					break;
+
+				default:
+					icon = message_icon;
+					break;
 			}
 
 			gtk_list_store_set(store, &iter, COL_SORT, 1, COL_STATUS_IMAGE, icon, -1);
 
-			if(flash_events)
-			{
-				struct SFlash *flash = g_new0(struct SFlash, 1);
-				
+			if (flash_events && FlashList.find(pUser->Uin()) == FlashList.end()) {
+				SFlash *flash = g_new0(struct SFlash, 1);
+
 				flash->path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iter);
 				flash->icon = icon;
 				flash->bFlashOn = false;
-				flash->nUin = pUser->Uin();
-
-				FlashList.push_back(flash);
-				++nToFlash;
+				FlashList[pUser->Uin()] = flash;
 			}
-
 		} 
-
-         	else
+   	else
 		{
-			GdkPixbuf *cur_icon = offline;
-
-			if((gushort)user_status != ICQ_STATUS_OFFLINE &&
-			   (user_status & ICQ_STATUS_FxPRIVATE))
-			{
-				cur_icon = invisible;
-				gtk_list_store_set(store, &iter, COL_SORT, ",", -1);
-			}
-
-			else if((gushort)user_status == ICQ_STATUS_OFFLINE)
-			{
-				cur_icon = offline;
-				gtk_list_store_set(store, &iter, COL_SORT, 100, -1); //"~", -1);
-			}
-
-		  	else if(user_status & ICQ_STATUS_DND)
-		  	{
-				cur_icon = dnd;
-				gtk_list_store_set(store, &iter, COL_SORT, 50, -1); //"X", -1);
-		  	}
-	
-		  	else if(user_status & ICQ_STATUS_OCCUPIED)
-		  	{
-				cur_icon = occ;
-				gtk_list_store_set(store, &iter, COL_SORT, 60, -1); //"x", -1);
-		  	}
- 		 
-	  	  	else if(user_status & ICQ_STATUS_NA)
-		  	{
-				cur_icon = na;
-				gtk_list_store_set(store, &iter, COL_SORT, 40, -1); //"N", -1);
-		  	}
-
-		  	else if(user_status & ICQ_STATUS_AWAY)
-		  	{
-				cur_icon = away;
-				gtk_list_store_set(store, &iter, COL_SORT, 30, -1); //"A", -1);
-		  	}
-	
-		  	else if(user_status & ICQ_STATUS_FREEFORCHAT)
-		  	{
-				cur_icon = ffc;
-				gtk_list_store_set(store, &iter, COL_SORT, 20, -1); //"*", -1);
-		  	}
-		
-		  	else if(user_status & ICQ_STATUS_OCCUPIED)
-		  	{
-				cur_icon = occ;
-				gtk_list_store_set(store, &iter, COL_SORT, 60, -1); //"x", -1);
-		  	}
-
-			else
-			{
-				cur_icon = online;
-				gtk_list_store_set(store, &iter, COL_SORT, 10, -1); // "+", -1);
-			}
-		
-			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, cur_icon, -1);
+			gtk_list_store_set(store, &iter, COL_STATUS_IMAGE, 
+					status_icon(user_status), -1);
+			gtk_list_store_set(store, &iter, COL_SORT, 
+					sort_order(user_status), -1);
 		} // else
 
 		gtk_list_store_set(store, &iter, COL_ALIAS_COLOR, 
@@ -276,23 +283,18 @@ void contact_list_refresh()
 		if(pUser->Status() != ICQ_STATUS_OFFLINE && pUser->AutoSecure())
 		{
 			// Ok, now *can* they be auto secured?
-			if((pUser->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED) && !pUser->Secure())
+			if((pUser->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED) && 
+					!pUser->Secure())
 				AutoSecureList.push_back(pUser->Uin());
 		}
 
 		gtk_list_store_set(store, &iter, COL_ALIAS, pUser->GetAlias(), -1);
 		if(pUser->Secure() && (pUser->Birthday() == 0))
-		{
 			gtk_list_store_set(store, &iter, COL_SSL_IMAGE, securebday_icon, -1);
-		}
 		else if(pUser->Secure())
-		{
 			gtk_list_store_set(store, &iter, COL_SSL_IMAGE, secure_icon, -1);
-		}
 		else if(pUser->Birthday() == 0)
-		{
 			gtk_list_store_set(store, &iter, COL_SSL_IMAGE, birthday_icon, -1);
-		}
 
 		gtk_list_store_set(store, &iter, COL_PUSER, (gpointer)pUser, -1);
 
@@ -303,12 +305,8 @@ void contact_list_refresh()
 
 	// Now do the auto secure stuff
 	list<unsigned long>::iterator it;
-	for(it = AutoSecureList.begin(); it != AutoSecureList.end(); it++)
-	{
+	for (it = AutoSecureList.begin(); it != AutoSecureList.end(); it++)
 		icq_daemon->icqOpenSecureChannel(*it);
-	}
-
-	AutoSecureList.clear();
 }
 
 GdkColor *get_status_color(unsigned long nStatus)
@@ -329,8 +327,6 @@ gboolean contact_list_click(GtkWidget *contact_list,
 {
 	gchar str_status[30];
 	ICQUser *user = 0;
-	struct conversation *c = 0;
-	struct timeval check_timer;
 
 	GtkTreeIter iter;
 	GtkTreeView *tv = GTK_TREE_VIEW(contact_list);
@@ -346,40 +342,9 @@ gboolean contact_list_click(GtkWidget *contact_list,
 	if(user == 0)
 		return FALSE;
 
-	/* A left mouse click */
-	if(event->button == 1)
-	{
-		/* Fix the stupid contact list double click problem */
-		gettimeofday(&check_timer, 0);
-
-		if(!((check_timer.tv_sec == timer.tv_sec) &&
-		   (check_timer.tv_usec - timer.tv_usec) < 2000))
-		{
-			timer.tv_sec = check_timer.tv_sec;
-			timer.tv_usec = check_timer.tv_usec;
-			return FALSE;
-		}
-
-		timer.tv_sec = 0;
-		timer.tv_usec = 0;
-	
-		c = convo_find(user->Uin());
-		
-		if(c != 0)
-			gdk_window_raise(c->window->window);
-		else
-		{
-			if(user->NewMessages() > 0)
-				c = convo_new(user, TRUE);
-
-			else
-				c = convo_new(user, FALSE);
-
-			contact_list_refresh();
-			system_status_refresh();
-		}
-	}
-
+	/* A left mouse double-click */
+	if (event->button == 1 && event->type == GDK_2BUTTON_PRESS)
+		convo_open(user, true);
 	/* A right click.. make the popup menu */
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
@@ -404,7 +369,7 @@ gboolean contact_list_click(GtkWidget *contact_list,
 		gtk_widget_show_all(item);
 
 		add_to_popup("Start Conversation", _menu,
-			     GTK_SIGNAL_FUNC(list_start_convo), user);
+			     GTK_SIGNAL_FUNC(convo_open_cb), user);
 
 		add_to_popup("Send URL", _menu,
 			     GTK_SIGNAL_FUNC(list_send_url), user);
@@ -415,7 +380,7 @@ gboolean contact_list_click(GtkWidget *contact_list,
 		add_to_popup("Send File Request", _menu,
 		             GTK_SIGNAL_FUNC(list_request_file), user);
 	
-		if(user->Secure())
+		if (user->Secure())
 			add_to_popup("Close Secure Channel", _menu,
 				GTK_SIGNAL_FUNC(create_key_request_window),
 				user);
@@ -432,9 +397,8 @@ gboolean contact_list_click(GtkWidget *contact_list,
     gtk_widget_set_sensitive(item, FALSE);
     gtk_widget_show_all(item); 
 
-		if(user->Status() != ICQ_STATUS_ONLINE && 
-		   user->Status() != ICQ_STATUS_OFFLINE)
-		{
+		if (user->Status() != ICQ_STATUS_ONLINE && 
+				user->Status() != ICQ_STATUS_OFFLINE)	{
 			strcpy(str_status, "Read ");
 			strcat(str_status, user->StatusStrShort());
 			strcat(str_status, " Message");
