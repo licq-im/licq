@@ -76,13 +76,13 @@ void MLEditWrap::append(const QString& s)
   {
      // Workaround --
      // In those versions, QTextEdit::append didn't add a new paragraph.
-     append("<p>");
-     append(s);
-     append("</p>");
+     QTextEdit::append("<p>");
+     QTextEdit::append(s);
+     QTextEdit::append("</p>");
   }
   else
   {
-     append(s);
+     QTextEdit::append(s);
   }
 #endif
 }
