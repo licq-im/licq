@@ -108,8 +108,8 @@ static const char* const HELP_UIMESSAGE = tr(
         "\tui_message <buddy>\n"
         "\t\tOpen the plugin message composer to <buddy>\n");
 static const char* const HELP_HELP = tr(
-        "\thelp <command>\n" 
-        "\t\tPrint help information for <command>.\n");
+        "\thelp <<command> | all>\n" 
+        "\t\tPrint help information for <command> or for all commands.\n");
 
 #define MAX_ARGV 64
 
@@ -659,15 +659,30 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
   }
   else 
   {
-    for( i = 0 ; i < argc ; i++ )
+    for (i = 0 ; i < argc ; i++)
     {
-      j=process_tok(table, argv[i] );
-      if( j >= 0 )
-        gLog.Info(tr("%s %s: help for `%s'\n%s\n"),
-                  L_FIFOxSTR,argv[0],argv[i],table[j].szHelp);
+      if (strcmp(argv[i], "all") == 0)
+      {
+        // show help for all commands 
+        j = 0;
+        while (table[j].szName)
+        {
+          gLog.Info(tr("%s %s: help for `%s'\n%s\n"),
+                    L_FIFOxSTR, argv[0], table[j].szName, table[j].szHelp);
+          j++;
+	}
+      }
       else
-        gLog.Info(tr("%s %s: unknown command `%s'\n"),
-                  L_FIFOxSTR,argv[0],argv[i]);
+      {
+        // show help for a specific command
+        j = process_tok(table, argv[i]);
+        if (j >= 0)
+          gLog.Info(tr("%s %s: help for `%s'\n%s\n"),
+                    L_FIFOxSTR, argv[0], argv[i], table[j].szHelp);
+        else
+          gLog.Info(tr("%s %s: unknown command `%s'\n"),
+                    L_FIFOxSTR, argv[0], argv[i]);
+      }
     }
   }
   return 0;
@@ -780,7 +795,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
   if( szBuf == NULL )
     return ;
 
-  gLog.Info(tr("%sReceived string: `%s'\n"), L_FIFOxSTR, szBuf );
+  gLog.Info(tr("%sReceived string: %s"), L_FIFOxSTR, szBuf);
   line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
   index = process_tok(fifocmd_table,argv[0]);
 
