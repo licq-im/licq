@@ -1,4 +1,4 @@
-LICQ Qt-GUI Plugin v0.81
+LICQ Qt-GUI Plugin v1.0
 
 A plugin for Licq to enable a gui based on Qt.
 
@@ -32,7 +32,7 @@ INSTALLATION:
    /usr/local).
 
 Licq Qt-GUI requires the following:
-Qt >= 2.00 (if you are using rpm then it requires the qt and qt-devel rpm)
+Qt >= 2.1 (if you are using rpm then it requires the qt and qt-devel rpm)
 Some C++ compiler
 KDE >= 2.0 (CVS) for KDE support
 

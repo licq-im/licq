@@ -1,5 +1,10 @@
 Change log for Licq.
 
+New in 1.0
+o  Fix for problems reverse connecting to users
+o  Whitepages searching added
+
+
 New in 0.85
 o  Support for ICQ TCP protocols v4,5,6,7
 o  Chat improvements
