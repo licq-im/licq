@@ -566,7 +566,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
           p->drawPixmap(w, 0, gMainWindow->pmSharedFiles);
           w += gMainWindow->pmSharedFiles.width() + 2;
         }
-        if (width - w > 8 && m_bStatusTyping)
+        if (width - w > 8 && m_bStatusTyping && m_nPPID == LICQ_PPID)
         {
           p->drawPixmap(w, 0, gMainWindow->pmTyping);
           w += gMainWindow->pmTyping.width() + 2;
