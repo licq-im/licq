@@ -10,6 +10,7 @@
 #include "licq_file.h"
 #include "licq_gpg.h"
 #include "licq_log.h"
+#include <licq_user.h>
 
 CGPGHelper gGPGHelper;
 
@@ -82,9 +83,19 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
   if (!szPlain) return 0;
 
   char szUser[MAX_LINE_LEN], buf[MAX_LINE_LEN];
+  buf[0] = '\0';
   sprintf(szUser, "%s.%lu", szId, nPPID);
   mKeysIni.SetSection("keys");
-  if (!mKeysIni.ReadStr(szUser, buf)) return 0;
+
+  ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
+  if ( u )
+  {
+    const char *tmp = u->GPGKey();
+    if ( tmp && tmp[0]!='\0' )
+      strncpy( buf, tmp, MAX_LINE_LEN-1 );
+    gUserManager.DropUser( u );
+  }
+  if ( !buf[0] && !mKeysIni.ReadStr(szUser, buf) ) return 0;
 	
   gLog.Info("[GPG] Encrypting message to %s.\n", szId);
 

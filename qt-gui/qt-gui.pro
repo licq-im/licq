@@ -21,6 +21,7 @@ HEADERS += src/adduserdlg.h \
            src/ewidgets.h \
            src/filedlg.h \
            src/forwarddlg.h \
+	   src/gpgkeyselect.h \
            src/gui-defines.h \
            src/jfcstyle.h \
            src/keyrequestdlg.h \
@@ -72,6 +73,7 @@ SOURCES += src/adduserdlg.cpp \
            src/ewidgets.cpp \
            src/filedlg.cpp \
            src/forwarddlg.cpp \
+	   src/gpgkeyselect.cpp \
            src/jfcstyle.cpp \
            src/keyrequestdlg.cpp \
            src/licqdialog.cpp \

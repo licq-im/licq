@@ -257,7 +257,7 @@ public:
           pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
           pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
-          pmAIMOffline;
+          pmAIMOffline, pmGPGKey, pmGPGKeyDisabled;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   int m_nProtoNum;
@@ -356,6 +356,7 @@ protected slots:
   void showEditGrpDlg();
   void showSkinBrowser();
   void showPluginDlg();
+  void showGPGKeyManager();
   void slot_AwayMsgDlg();
   void showAwayMsgDlg(unsigned short status);
   void showOptionsDlg(int);

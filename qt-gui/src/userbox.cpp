@@ -87,6 +87,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
+  m_bGPGKey = false;
   setGraphics(_cUser);
 }
 
@@ -114,9 +115,11 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_bBirthday = false;
   m_bPhone = false;
   m_bCellular = false;
+  m_bGPGKey = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
+  m_bGPGKey = false;
   setGraphics(_cUser);
 }
 
@@ -260,6 +263,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_bBirthday =  (u->Birthday() == 0);
    m_bPhone  = u->GetPhoneNumber()[0] != '\0';
    m_bCellular = u->GetCellularNumber()[0] !='\0';
+   m_bGPGKey = ( u->GPGKey()!=NULL ) && ( strcmp( u->GPGKey(), "" )!=0 );
+   m_bGPGKeyEnabled = ( u->UseGPG() );
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -562,6 +567,25 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
             w -= gMainWindow->pmInvisible.width();
           p->drawPixmap(w, 0, gMainWindow->pmInvisible);
           w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmInvisible.width() + 2;
+        }
+      }
+      
+      // pmGPGKey
+      if ( width - w > 8 && m_bGPGKey )
+      {
+        if ( m_bGPGKeyEnabled )
+        {
+          if (align == RIGHT)
+            w -= gMainWindow->pmGPGKey.width();
+          p->drawPixmap(w, 0, gMainWindow->pmGPGKey);
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmGPGKey.width() + 2;
+        }
+        else
+        {
+          if (align == RIGHT)
+            w -= gMainWindow->pmGPGKeyDisabled.width();
+          p->drawPixmap(w, 0, gMainWindow->pmGPGKeyDisabled);
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmGPGKeyDisabled.width() + 2;
         }
       }
       if (m_nStatus != ICQ_STATUS_OFFLINE)

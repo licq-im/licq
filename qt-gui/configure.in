@@ -26,6 +26,9 @@ AC_PROG_INSTALL
 dnl AC_PATH_PROG(PROG_STRIP,strip,:)
 dnl AC_PATH_PROG(PROG_SIZE,size,:)
 
+dnl Required for GPGME...
+AC_SYS_LARGEFILE
+
 dnl Set up some operating system specific options
 case "$host" in
 	*-*-openbsd*)
@@ -142,6 +145,8 @@ AC_PATH_QT_MERGETR
 
 AC_PATH_KDE_LIBRARIES
 
+LICQ_CHECK_GPGME
+
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
@@ -176,5 +181,10 @@ fi
 echo "Qt includes    : $ac_cv_header_qtinc"
 echo "Qt libraries   : $ac_qt_libdir, $ac_qt_libname"
 echo "Qt moc         : $MOC"
+if test "$WITH_GPGME" = yes; then
+  echo "GPG            : enabled."
+else
+  echo "GPG            : disabled."
+fi
 echo ""
 

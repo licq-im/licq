@@ -27,6 +27,7 @@ enum UserMenu {
   mnuUserHistory,
   mnuUserFloaty,
   mnuUserRemoveFromList,
+  mnuUserSelectGPGKey,
   mnuUserSendInfoPluginListRequest,
   mnuUserSendStatusPluginListRequest,
   mnuUserSendPhoneFollowMeRequest,

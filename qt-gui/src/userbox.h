@@ -84,7 +84,7 @@ protected:
   unsigned short m_nGroupId;
   int m_nOnlCount, m_nEvents;
   QCString m_sGroupName;
-  bool m_bStatusInvisible, m_bStatusTyping, m_bCustomAR, m_bSecure, m_bFlash, m_bBirthday, m_bPhone, m_bCellular;
+  bool m_bStatusInvisible, m_bStatusTyping, m_bCustomAR, m_bSecure, m_bFlash, m_bBirthday, m_bPhone, m_bCellular, m_bGPGKey, m_bGPGKeyEnabled;
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;

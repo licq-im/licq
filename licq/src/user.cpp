@@ -1999,6 +1999,9 @@ void ICQUser::LoadLicqInfo()
                   ICQ_PLUGIN_STATUSxINACTIVE);
   m_fConf.ReadNum("SharedFilesStatus", m_nSharedFilesStatus,
                   ICQ_PLUGIN_STATUSxINACTIVE);
+  m_fConf.ReadBool("UseGPG", m_bUseGPG, false );
+  m_fConf.ReadStr("GPGKey", szTemp, "" );
+  SetString( &m_szGPGKey, szTemp );
 
   if (nNewMessages > 0)
   {
@@ -2107,6 +2110,8 @@ ICQUser::~ICQUser()
       free( m_szClientInfo );
   if ( m_szId )
       free( m_szId );
+  if ( m_szGPGKey )
+      free( m_szGPGKey );
   
   delete m_Interests;
   delete m_Organizations;
@@ -2231,6 +2236,9 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
 
   // Picture
   m_bPicturePresent = false;
+
+  // GPG key
+  m_szGPGKey = NULL;
 
   if (_szId)
     m_szId = strdup(_szId);
@@ -3359,6 +3367,8 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("PhoneFollowMeStatus", m_nPhoneFollowMeStatus);
    m_fConf.WriteNum("ICQphoneStatus", m_nICQphoneStatus);
    m_fConf.WriteNum("SharedFilesStatus", m_nSharedFilesStatus);
+   m_fConf.WriteBool("UseGPG", m_bUseGPG );
+   m_fConf.WriteStr("GPGKey", m_szGPGKey );
 
    if (!m_fConf.FlushFile())
    {

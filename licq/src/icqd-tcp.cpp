@@ -70,13 +70,19 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   CEventMsg *e = NULL;
 
   unsigned long f = INT_VERSION;
-  char *cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
+
+  ICQUser *u;
+  char *cipher = NULL;
+  u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+  if (u && u->UseGPG())
+    cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
+  gUserManager.DropUser(u);
+
   if (cipher) f |= E_ENCRYPTED;
   if (online) f |= E_DIRECT;
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-  ICQUser *u;
   if (!online) // send offline
   {
      unsigned short nCharset = 0;

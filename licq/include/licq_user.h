@@ -535,6 +535,8 @@ public:
   time_t LastCheckedAutoResponse()      { return m_nLastCounters[LAST_CHECKED_AR]; }
   time_t OnlineSince()      		{ return m_nOnlineSince; }
   time_t IdleSince()                    { return m_nIdleSince; }
+  bool UseGPG()				{ return m_bUseGPG; }
+  char* GPGKey()			{ return m_szGPGKey; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
   bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
   bool AutoSecure()                     { return m_nAutoAccept & AUTO_SECURE; }
@@ -639,6 +641,8 @@ public:
   void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
   void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
   void SetAcceptInDND(bool s)         { s ? m_nAutoAccept |= ACCEPT_IN_DND : m_nAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
+  void SetUseGPG(bool b)		{ m_bUseGPG = b; SaveLicqInfo(); }
+  void SetGPGKey(const char *c)		{ SetString(&m_szGPGKey, c); SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
@@ -836,6 +840,10 @@ protected:
   unsigned short m_nStatusToUser, m_nSendLevel;
   bool m_bKeepAliasOnUpdate;
   unsigned short m_nAutoAccept;
+
+  // GPG data
+  bool m_bUseGPG;
+  char *m_szGPGKey;
 
   // General Info
   char *m_szAlias;

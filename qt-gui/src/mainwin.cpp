@@ -86,6 +86,11 @@
 #include "emoticon.h"
 #include "ownermanagerdlg.h"
 
+#ifdef HAVE_LIBGPGME
+#include "gpgkeyselect.h"
+#include "gpgkeymanager.h"
+#endif
+
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
 #include "xpm/remove.xpm"
@@ -100,6 +105,8 @@
 #include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
+#include "xpm/pixKeyEnabled.xpm"
+#include "xpm/pixKeyDisabled.xpm"
 #include "xpm/pixTyping.xpm"
 #include "xpm/pixICQphoneActive.xpm"
 #include "xpm/pixICQphoneBusy.xpm"
@@ -2494,6 +2501,11 @@ void CMainWindow::callUserFunction(int index)
       }
       break;
     }
+#ifdef HAVE_LIBGPGME
+    case mnuUserSelectGPGKey:
+       new GPGKeySelect( szId, nPPID );
+      break;
+#endif
     case mnuUserHistory:
     case mnuUserGeneral:
       callInfoTab(index, szId, nPPID);
@@ -3677,41 +3689,58 @@ void CMainWindow::slot_miscmodes(int _nId)
     u->SetAutoSecure( !u->AutoSecure() );
     break;
   case 7:
+    if ( strcmp(u->GPGKey(),"")!=0 )
+      u->SetUseGPG( !u->UseGPG() );
+    else
+    {
+      gUserManager.DropUser(u);
+      u = NULL;
+      new GPGKeySelect( m_szUserMenuId, m_nUserMenuPPID );
+    }
+    break;
+  case 8:
     u->SetSendRealIp( !u->SendRealIp() );
     break;
 
-  case 9:
+  case 10:
     if (u->StatusToUser() == ICQ_STATUS_ONLINE)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_ONLINE);
     break;
-  case 10:
+  case 11:
     if (u->StatusToUser() == ICQ_STATUS_AWAY)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_AWAY);
     break;
-  case 11:
+  case 12:
     if (u->StatusToUser() == ICQ_STATUS_NA)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_NA);
     break;
-  case 12:
+  case 13:
     if (u->StatusToUser() == ICQ_STATUS_OCCUPIED)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_OCCUPIED);
     break;
-  case 13:
+  case 14:
     if (u->StatusToUser() == ICQ_STATUS_DND)
       u->SetStatusToUser(ICQ_STATUS_OFFLINE);
     else
       u->SetStatusToUser(ICQ_STATUS_DND);
     break;
   }
-  gUserManager.DropUser(u);
+  if ( u ) gUserManager.DropUser(u);
+
+  // update icon
+  if ( nAwayModes==7 )
+  {
+    CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_szUserMenuId, m_nUserMenuPPID);
+    slot_updatedUser(&s);
+  }
 }
 
 
@@ -4031,6 +4060,9 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    pmSharedFiles.load(sFilepath);
    if (pmSharedFiles.isNull())
      pmSharedFiles = QPixmap(pixSharedFiles_xpm);
+
+   pmGPGKey = QPixmap(pixKeyEnabled_xpm);
+   pmGPGKeyDisabled = QPixmap(pixKeyDisabled_xpm);
 
    if (!_bInitial)
    {
@@ -4357,6 +4389,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
+   mnuSystem->insertItem(pmGPGKey, tr("&GPG Key Manager..."), this, SLOT(showGPGKeyManager()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Settings"), this, SLOT(saveOptions()));
    mnuSystem->insertItem(tr("&Help"), mnuHelp);
@@ -4390,6 +4423,7 @@ void CMainWindow::initMenu()
    mnuMiscModes->insertItem(tr("Auto Accept Files" ) );
    mnuMiscModes->insertItem(tr("Auto Accept Chats" ) );
    mnuMiscModes->insertItem(tr("Auto Request Secure" ) );
+   mnuMiscModes->insertItem(tr("Use GPG Encryption" ) );
    mnuMiscModes->insertItem(tr("Use Real Ip (LAN)" ) );
    mnuMiscModes->insertSeparator();
    mnuMiscModes->insertItem(tr("Online to User"));
@@ -4434,6 +4468,9 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Edit User Group"), mnuGroup);
    mnuUser->insertItem(pmRemove, tr("Remove From List"), mnuUserRemoveFromList);
    mnuUser->insertSeparator();
+#ifdef HAVE_LIBGPGME
+   mnuUser->insertItem(pmGPGKey, tr("Set GPG key"), mnuUserSelectGPGKey );
+#endif
    mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(pmInfo, tr("&Info"), mnuUserGeneral);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
@@ -4479,12 +4516,13 @@ void CMainWindow::slot_usermenu()
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(4), u->AutoFileAccept());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(5), u->AutoChatAccept());
   mnuMiscModes->setItemChecked(mnuMiscModes->idAt(6), u->AutoSecure());
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(7), u->SendRealIp());
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(9), u->StatusToUser() == ICQ_STATUS_ONLINE);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(10), u->StatusToUser() == ICQ_STATUS_AWAY);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(11), u->StatusToUser() == ICQ_STATUS_NA);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(12), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
-  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(13), u->StatusToUser() == ICQ_STATUS_DND);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(7), u->UseGPG() );
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(8), u->SendRealIp());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(10), u->StatusToUser() == ICQ_STATUS_ONLINE);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(11), u->StatusToUser() == ICQ_STATUS_AWAY);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(12), u->StatusToUser() == ICQ_STATUS_NA);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(13), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(14), u->StatusToUser() == ICQ_STATUS_DND);
   mnuMiscModes->setItemEnabled(6, gLicqDaemon->CryptoEnabled());
   mnuUser->setItemChecked(mnuUserCustomAutoResponse, u->CustomAutoResponse()[0] != '\0');
   // Send modes
@@ -4605,6 +4643,11 @@ void CMainWindow::showSkinBrowser()
 {
   SkinBrowserDlg *d = new SkinBrowserDlg(this);
   d->show();
+}
+
+void CMainWindow::showGPGKeyManager()
+{
+  ( new GPGKeyManager() )->show();
 }
 
 void CMainWindow::showPluginDlg()
