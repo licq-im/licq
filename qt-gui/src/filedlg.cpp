@@ -206,6 +206,9 @@ bool CFileDlg::ReceiveFiles()
 #endif
   if (d.isNull()) return false;
 
+  // Cut trailing slash
+  if (d.right(1) == "/") d.truncate(d.length()-1);
+
   if (!ftman->ReceiveFiles(QFile::encodeName(d))) return false;
 
   mleStatus->appendNoNewLine(tr("Waiting for connection...\n"));
@@ -237,12 +240,19 @@ void CFileDlg::slot_ft()
         barBatchTransfer->setProgress(0);
         break;
       }
+      
+      case FT_CONFIRMxFILE:
+      {
+        // Use this opportunity to encode the filename
+        ftman->StartReceivingFile(QFile::encodeName(codec->toUnicode(ftman->FileName())).data());
+        break;
+      }
 
       case FT_STARTxFILE:
       {
         nfoTotalFiles->setText(QString("%1 / %2").arg(ftman->CurrentFile()).arg(ftman->BatchFiles()));
-        nfoTransferFileName->setText(codec->toUnicode(ftman->FileName()));
-        nfoLocalFileName->setText(codec->toUnicode(ftman->PathName()));
+        nfoTransferFileName->setText(QFile::decodeName(ftman->FileName()));
+        nfoLocalFileName->setText(QFile::decodeName(ftman->PathName()));
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
         barTransfer->setTotalSteps(ftman->FileSize() / 1024);
         if (ftman->Direction() == D_RECEIVER)
@@ -260,12 +270,12 @@ void CFileDlg::slot_ft()
 
       case FT_DONExFILE:
       {
-        mleStatus->appendNoNewLine(tr("Done %1\n").arg(codec->toUnicode(e->Data())));
+        mleStatus->appendNoNewLine(tr("Done %1\n").arg(QFile::decodeName(e->Data())));
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
-          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(codec->toUnicode(e->Data())).arg(codec->fromUnicode(ftman->RemoteName())));
+          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(QFile::decodeName(e->Data())).arg(codec->fromUnicode(ftman->RemoteName())));
         else
-          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(codec->toUnicode(e->Data())).arg((ftman->RemoteName())));
+          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(QFile::decodeName(e->Data())).arg((ftman->RemoteName())));
         break;
       }
 
@@ -289,10 +299,10 @@ void CFileDlg::slot_ft()
       case FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
-        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(codec->toUnicode(ftman->PathName())));
+        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(QFile::decodeName(ftman->PathName())));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("File I/O Error:\n%1\nSee Network Window for Details")
-           .arg(codec->toUnicode(ftman->PathName())));
+           .arg(QFile::decodeName(ftman->PathName())));
         break;
       }
 
