@@ -9,20 +9,6 @@
 class CUserEvent;
 class MsgView;
 
-//=====CMsgViewTips===============================================================================
-
-class CMsgViewTips : public QToolTip
-{
-public:
-  CMsgViewTips(MsgView * parent);
-  virtual ~CMsgViewTips() {};
-
-protected:
-  virtual void maybeTip(const QPoint&);
-};
-
-
-
 //=====UserViewItem================================================================================
 class MsgViewItem : public QListViewItem
 {
@@ -46,16 +32,22 @@ friend class MsgView;
 
 
 //=====UserList====================================================================================
-class MsgView : public QListView
+class MsgView : public QListView, public QToolTip
 {
+  Q_OBJECT
 public:
   MsgView (QWidget *parent = 0);
   CUserEvent *currentMsg(void);
   QSize sizeHint() const;
+
+signals:
+  void sizeChange(int, int, int);
+
 protected:
   CMsgViewTips *tips;
 
   virtual void resizeEvent(QResizeEvent *e);
+  virtual void maybeTip(const QPoint&);
   void SetEventLines();
 };
 

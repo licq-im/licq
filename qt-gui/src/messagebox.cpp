@@ -1,3 +1,21 @@
+// -*- c-basic-offset: 2 -*-
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -141,7 +159,7 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup &cgdefault,
 
 //-----MsgView::constructor------------------------------------------------------------------------
 MsgView::MsgView (QWidget *parent)
-  : QListView(parent, "MessageView")
+  : QListView(parent, "MessageView"), QToolTip(viewport())
 {
   addColumn(tr("D"), 20);
   addColumn(tr("Event Type"), 100);
@@ -152,19 +170,17 @@ MsgView::MsgView (QWidget *parent)
   setVScrollBarMode(AlwaysOn);
   setHScrollBarMode(AlwaysOff);
   setSorting(-1);
-
+  connect(this, SIGNAL(sizeChange( int, int, int )), this, SLOT(handleSizeChange( int, int, int )) );
   header()->hide();
 
-  QPalette pal(palette());
+  QPalette pal(QListView::palette());
   QColor c = pal.color(QPalette::Active, QColorGroup::Background);
   pal.setColor(QPalette::Active, QColorGroup::Base, c);
   pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
-  setPalette(pal);
+  QListView::setPalette(pal);
 
   setFrameStyle(QFrame::Panel | QFrame::Sunken);
   setMinimumHeight(40);
-
-  tips = new CMsgViewTips(this);
 }
 
 CUserEvent *MsgView::currentMsg(void)
@@ -186,8 +202,14 @@ QSize MsgView::sizeHint() const
 void MsgView::resizeEvent(QResizeEvent *e)
 {
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(1, width() - 200 - s->width());
+  int ow = header()->sectionSize(1);
+  int nw = width() - 200 - s->width();
   QListView::resizeEvent(e);
+  if (ow != nw)
+  {
+    header()->resizeSection(1, nw);
+    emit sizeChange(1, ow, nw);
+  }
   SetEventLines();
 }
 
@@ -203,37 +225,21 @@ void MsgView::SetEventLines()
   }
 }
 
-
-//=====CMsgItemTips===============================================================================
-
-CMsgViewTips::CMsgViewTips(MsgView* parent)
-  : QToolTip(parent)
+void MsgView::maybeTip(const QPoint& c)
 {
-  // nothing to do
-}
-
-void CMsgViewTips::maybeTip(const QPoint& c)
-{
-  QPoint p(c);
-  QListView *w = (QListView *)parentWidget();
-  if (w->header()->isVisible())
-    p.setY(p.y()-w->header()->height());
-
-  MsgViewItem *item = (MsgViewItem*) w->itemAt(p);
+  MsgViewItem *item = (MsgViewItem*) itemAt(c);
 
   if (item == NULL) return;
 
-  QRect r(w->itemRect(item));
-  if (w->header()->isVisible())
-    r.moveBy(0, w->header()->height());
+  QRect r(itemRect(item));
 
-  QString s(item->msg->IsDirect() ? w->tr("Direct") : w->tr("Server"));
+  QString s(item->msg->IsDirect() ? tr("Direct") : tr("Server"));
   if (item->msg->IsUrgent())
-    s += QString(" / ") + w->tr("Urgent");
+    s += QString(" / ") + tr("Urgent");
   if (item->msg->IsMultiRec())
-    s += QString(" / ") + w->tr("Multiple Recipients");
+    s += QString(" / ") + tr("Multiple Recipients");
   if (item->msg->IsCancelled())
-    s += QString(" / ") + w->tr("Cancelled Event");
+    s += QString(" / ") + tr("Cancelled Event");
   if (item->msg->IsLicq())
     s += QString(" / Licq ") + QString::fromLocal8Bit(item->msg->LicqVersionStr());
 
@@ -241,3 +247,6 @@ void CMsgViewTips::maybeTip(const QPoint& c)
 }
 
 
+// -----------------------------------------------------------------------------
+
+#include "messagebox.moc"
