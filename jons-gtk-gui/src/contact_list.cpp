@@ -82,6 +82,13 @@ void contact_list_refresh()
 	/* Now go through all the users */
 	FOR_EACH_USER_START(LOCK_R)
 	{
+		/* If they are on the ignore list and the user has the option
+		 * "Show ignored users" diabled, then don't show them */
+		if(pUser->IgnoreList() && !(general_options & SHOW_IGN))
+		{
+		 	FOR_EACH_USER_CONTINUE
+		}
+
 		/* Make an empty row first */
 		gtk_clist_insert(GTK_CLIST(contact_list), num_users, blah);
 
@@ -222,13 +229,13 @@ void contact_list_click(GtkWidget *contact_list,
 	/* Now the the user */
 	user = (ICQUser *)gtk_clist_get_row_data(GTK_CLIST(contact_list), row);
 
+	/* No user was clicked on */
+	if(user == NULL)
+		return;
+
 	/* A left mouse click */
 	if(event->button == 1)
 	{
-		/* A blank space is double clicked, user is NULL */
-		if(user == NULL)
-			return;
-
 		/* Fix the stupid contact list double click problem */
 		gettimeofday(&check_timer, NULL);
 
@@ -263,10 +270,6 @@ void contact_list_click(GtkWidget *contact_list,
 	/* A right click.. make the popup menu */
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		/* A blank space was selected */
-		if(user == NULL)
-			return;
-
 		GtkWidget *_menu;
 		GtkWidget *item;
 		GtkWidget *separator;
@@ -295,6 +298,14 @@ void contact_list_click(GtkWidget *contact_list,
 
 		add_to_popup("Send Chat Request", _menu,
 			     GTK_SIGNAL_FUNC(list_request_chat), user);
+
+		/* A separator */
+                separator = gtk_hseparator_new();
+                item = gtk_menu_item_new(); 
+                gtk_menu_append(GTK_MENU(_menu), item);
+                gtk_container_add(GTK_CONTAINER(item), separator);
+                gtk_widget_set_sensitive(item, FALSE);
+                gtk_widget_show_all(item); 
 
 		if(user->Status() != ICQ_STATUS_ONLINE && 
 		   user->Status() != ICQ_STATUS_OFFLINE)

@@ -101,6 +101,9 @@ void menu_create()
 			     GTK_SIGNAL_FUNC(search_user_window));
 
 	/* The rest of the menu options */
+	item = menu_new_item(menu, "Options",
+			     GTK_SIGNAL_FUNC(menu_options_create));
+
 	item = menu_new_item(menu, "Security Options",
 			     GTK_SIGNAL_FUNC(menu_security_users_window));
 

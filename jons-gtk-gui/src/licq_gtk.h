@@ -267,6 +267,20 @@ struct user_security
 	struct e_tag_data *etag;
 };
 
+struct options_window
+{
+	GtkWidget *window;
+	GtkWidget *show_ignored;
+	GtkWidget *enter_sends;
+};
+
+struct remote_chat_request
+{
+	GtkWidget *dialog;
+	gulong uin;
+	CEventChat *c_event;
+};
+
 struct request_chat
 {
 	GtkWidget *window;
@@ -281,10 +295,17 @@ struct request_chat
 struct chat_window
 {
 	CChatManager *chatman;
+	CChatUser *chat_user;
+	CChatUser *hold_cuser;
 	GtkWidget *window;
+	GtkWidget *notebook;
 	GtkWidget *table;
+	GtkWidget *table_irc;
 	GtkWidget *text_local;
 	GtkWidget *text_remote;
+	GtkWidget *text_irc;
+	GtkWidget *entry_irc;
+	GtkWidget *list_users;
 	GtkWidget *frame_local;
 	GtkWidget *frame_remote;
 	GdkColor *back_color;
@@ -294,8 +315,10 @@ struct chat_window
 	gint font_size;
 	gboolean remote_bold;
 	gboolean remote_italic;
+	gboolean pane_mode;
 	ICQUser *user;
 	gboolean audio;
+	gint last_pos;
 	gint input_tag;
 };
 
@@ -348,6 +371,11 @@ extern GtkWidget *status_progress;
 extern GtkWidget *menu;
 extern GtkWidget *user_list_menu;
 
+/* Globals in option_window.cpp */
+extern gushort general_options;
+extern const gushort SHOW_IGN;
+extern const gushort ENTER_SENDS;
+
 /* Globals in register_user.cpp */
 extern GtkWidget *register_window;
 
@@ -388,13 +416,20 @@ extern struct request_chat *rc_find(gulong);
 extern void ok_request_chat(GtkWidget *, struct request_chat *);
 extern void cancel_request_chat(GtkWidget *, struct request_chat *);
 extern void close_request_chat(struct request_chat *);
+extern void chat_accept_window(CEventChat *, gulong);
+extern void chat_accept(GtkWidget *, gpointer);
+extern void chat_refuse(GtkWidget *, gpointer);
+extern void chat_join_multiparty(struct remote_chat_request *);
+extern void chat_start_as_server(gulong, CEventChat *);
 extern void chat_start_as_client(ICQEvent *);
 extern struct chat_window *chat_window_create(gulong);
 extern GtkWidget* chat_create_menu(struct chat_window *);
-extern void chat_menu_audio_callback(GtkWidget *, struct chat_window *);
-extern void chat_close(GtkWidget *, struct chat_window *);
+extern void chat_audio(gpointer, guint, GtkWidget *);
+extern void chat_close(gpointer, guint, GtkWidget *);
 extern void chat_pipe_callback(gpointer, gint, GdkInputCondition);
 extern void chat_send(GtkWidget *, GdkEventKey *, struct chat_window *);
+extern void chat_beep_users(gpointer, guint, GtkWidget *);
+extern void chat_change_font(gpointer, guint, GtkWidget *);
 
 
 /* Functions in contact_list.cpp */
@@ -413,7 +448,7 @@ extern void convo_send(GtkWidget *, struct conversation *);
 extern void verify_convo_send(GtkWidget *, guint, gchar *,
 			      struct conversation *);
 extern void convo_cancel(GtkWidget *, struct conversation *);
-extern void convo_recv(gulong);
+extern void convo_recv(unsigned long);
 extern void spoof_button_callback(GtkWidget *, struct conversation *);
 extern gboolean convo_close(GtkWidget *, struct conversation *);
 
@@ -473,6 +508,11 @@ extern void menu_system_refresh(GtkWidget *, gpointer);
 /* Functions in more_window.cpp */
 extern void list_more_window(GtkWidget *, ICQUser *);
 extern void more_ok_callback(GtkWidget *, struct more_window *);
+
+
+/* Functions in option_window.cpp */
+extern void menu_options_create();
+extern void general_option_toggle(GtkWidget *, gpointer);
 
 
 /* Functions in pipe.cpp */

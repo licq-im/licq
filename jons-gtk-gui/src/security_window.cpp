@@ -198,7 +198,7 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	strcpy(us->etag->buf, "");
 
 	/* The buttons and an h_box for them to go into */
-	ok = gtk_button_new_with_label("OK");
+	ok = gtk_button_new_with_label("Apply");
 	close = gtk_button_new_with_label("Close");
 	h_box = gtk_hbox_new(TRUE, 15);
 

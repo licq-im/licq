@@ -80,17 +80,18 @@ void file_accept_window(ICQUser *user, CUserEvent *e)
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 10);
 
 	/* Connect the signals */
-	gtk_signal_connect(GTK_OBJECT(fa->window), "destroy",
-			   GTK_SIGNAL_FUNC(dialog_close), fa->window);
-	gtk_signal_connect(GTK_OBJECT(refuse), "clicked",
-			   GTK_SIGNAL_FUNC(refuse_file), fa);
-	gtk_signal_connect(GTK_OBJECT(accept), "clicked",
-			   GTK_SIGNAL_FUNC(accept_file), fa);
+//	gtk_signal_connect(GTK_OBJECT(fa->window), "destroy",
+//			   GTK_SIGNAL_FUNC(dialog_close), fa->window);
+//	gtk_signal_connect(GTK_OBJECT(refuse), "clicked",
+//			   GTK_SIGNAL_FUNC(refuse_file), fa);
+//	gtk_signal_connect(GTK_OBJECT(accept), "clicked",
+//			   GTK_SIGNAL_FUNC(accept_file), fa);
 
 	gtk_container_add(GTK_CONTAINER(fa->window), v_box);
 	gtk_widget_show_all(fa->window);
 }
 
+#if 0
 void accept_file(GtkWidget *widget, struct file_accept *fa)
 {
 	/* Close the unnecesarry open window */
@@ -458,3 +459,5 @@ void refuse_ok(GtkWidget *widget, struct file_accept *fa)
 
 	dialog_close(NULL, fa->window2);
 }
+
+#endif
