@@ -27,8 +27,6 @@
 #include <qfiledialog.h>
 #endif
 
-#include <sys/timeb.h>
-
 #include <qhbox.h>
 #include <qvbox.h>
 #include <qbuttongroup.h>
@@ -668,12 +666,11 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   nfoFax->setData(u->GetFaxNumber());
   nfoCellular->setData(u->GetCellularNumber());
   nfoZipCode->setData(u->GetZipCode());
-  struct timeb tb;
-  ftime(&tb);
-  localtime(&tb.time);
+  time_t te = time(NULL);
+  localtime(&te);
   m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
   QDateTime t;
-  t.setTime_t(tb.time + m_nRemoteTimeOffset);
+  t.setTime_t(te + m_nRemoteTimeOffset);
   nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
                        .arg(t.time().toString())
                        .arg(u->GetTimezone() < 0 ? "" : "+")
