@@ -1056,6 +1056,11 @@ void ICQUser::getStatusStr(char *sz)
   StatusStr(getStatus(), getStatusInvisible(), sz);
 }
 
+void ICQUser::getStatusStrShort(char *sz)
+{
+  StatusStrShort(getStatus(), getStatusInvisible(), sz);
+}
+
 
 void ICQUser::StatusStr(unsigned short n, bool b, char *sz)
 {
@@ -1069,6 +1074,27 @@ void ICQUser::StatusStr(unsigned short n, bool b, char *sz)
   case ICQ_STATUS_DND:         strcpy(sz, "Do Not Disturb"); break;
   case ICQ_STATUS_FREEFORCHAT: strcpy(sz, "Free for Chat"); break;
   default:                     sprintf(sz, "0x%04X", n); break;
+  }
+  if (b)
+  {
+    memmove(sz + 1, sz, strlen(sz) + 1);
+    sz[0] = '(';
+    strcat(sz, ")");
+  }
+}
+
+void ICQUser::StatusStrShort(unsigned short n, bool b, char *sz)
+{
+  switch(n)
+  {
+  case ICQ_STATUS_OFFLINE:     strcpy(sz, "Off");  break;
+  case ICQ_STATUS_ONLINE:      strcpy(sz, "On");   break;
+  case ICQ_STATUS_AWAY:        strcpy(sz, "Away"); break;
+  case ICQ_STATUS_NA:          strcpy(sz, "NA"); break;
+  case ICQ_STATUS_OCCUPIED:    strcpy(sz, "Occ"); break;
+  case ICQ_STATUS_DND:         strcpy(sz, "DND"); break;
+  case ICQ_STATUS_FREEFORCHAT: strcpy(sz, "FFC"); break;
+  default:                     sprintf(sz, "0x%02X", n); break;
   }
   if (b)
   {
@@ -1179,6 +1205,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         j = nField = 0;
         while (isdigit(_szFormat[i]))
           szTemp[j++] = _szFormat[i++];
+        szTemp[j] = '\0';
         if (j > 0) nField = atoi(szTemp);
       }
       else
@@ -1227,6 +1254,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
       case 'h':
         sz = getPhoneNumber();
         break;
+      case 'S':
+        getStatusStrShort(szTemp);
+        sz = szTemp;
+        break;
       case 's':
         getStatusStr(szTemp);
         sz = szTemp;
@@ -1254,9 +1285,17 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         else
         {
           int nLen = nField - strlen(sz);
-          for (j = 0; j < nLen; j++) _sz[nPos++] = ' ';
-          j = 0;
-          while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+          if (nLen < 0)
+          {
+            j = 0;
+            while(j < nField) _sz[nPos++] = sz[j++];
+          }
+          else
+          {
+            for (j = 0; j < nLen; j++) _sz[nPos++] = ' ';
+            j = 0;
+            while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+          }
         }
       }
       i++;

@@ -21,7 +21,8 @@ Window = GUI
 # %u uin
 # %w webpage
 # %h phone number
-# %s status
+# %s full status string
+# %S short status string with no spaces
 # %# user will be prompted for input, for each %# a User#.Title field must be
 #    present containing a description of the item, and a User#.Default field
 #    may be present indicating the default value for the item (it may contain

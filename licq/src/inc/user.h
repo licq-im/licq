@@ -153,7 +153,9 @@ public:
   char *getSex(char *);
   char *getCountry(char *);
   void getStatusStr(char *);
+  void getStatusStrShort(char *);
   static void StatusStr(unsigned short, bool, char *);
+  static void StatusStrShort(unsigned short, bool, char *);
 
   int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
