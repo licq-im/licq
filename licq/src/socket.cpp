@@ -14,10 +14,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#ifndef MSG_DONTWAIT
-#define MSG_DONTWAIT 0
-#endif
-
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
 #endif
@@ -772,7 +768,10 @@ bool TCPSocket::RecvPacket()
   else
   {
 #endif
-  nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, MSG_DONTWAIT);
+  int f = fcntl(m_nDescriptor, F_GETFL);
+  fcntl(m_nDescriptor, F_SETFL, f | O_NONBLOCK);
+  nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, 0);
+  fcntl(m_nDescriptor, F_SETFL, f & ~O_NONBLOCK);
   if (nBytesReceived <= 0)
   {
     m_nErrorType = SOCK_ERROR_errno;
