@@ -1227,6 +1227,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
       case 'h':
         sz = getPhoneNumber();
         break;
+      case 's':
+        getStatusStr(szTemp);
+        sz = szTemp;
+        break;
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                   L_WARNxSTR, _szFormat[i]);
