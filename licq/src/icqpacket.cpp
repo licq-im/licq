@@ -1197,7 +1197,7 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedShortBE(0x2711); // tlv - more message info
 	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 36 - nDirectInfo);
 	buffer->PackUnsignedShort(0x001B); // len
-	buffer->PackUnsignedShort(ICQ_VERSION);
+	buffer->PackUnsignedShort(m_pUser->ConnectionVersion());
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
@@ -1213,7 +1213,7 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedShort(m_nSubCommand);
 	buffer->PackUnsignedShort(nStatus);
-	buffer->PackUnsignedShort(m_nMsgFlags ? m_nMsgFlags : 1);
+	buffer->PackUnsignedShort(m_nMsgFlags ? m_nMsgFlags : 0);
 	buffer->PackUnsignedShort(0x0001); // message len
 	buffer->PackChar(0); // message
 
@@ -1463,10 +1463,10 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 																		 unsigned long nMsgID[2],
 																		 unsigned short nSequence,
 																		 unsigned short nPort)
-	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true, nSequence, nMsgID[0],
+	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_FILE, 0, true, nSequence, nMsgID[0],
 												nMsgID[1])
 {
-#if 0
+#if 1
 	// XXX This is not the ICBM way yet!
 	// XXX It doesnt' even work! Perhaps try ICBM and it'll work?
 	m_nSize += 19;
@@ -1533,11 +1533,10 @@ CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, unsigned long nMsgID[2],
                              nMsgID[0], nMsgID[1])
 {
 	// XXX This is not the ICBM way yet!
-	m_nSize += 14;
+	m_nSize += 11;
 	InitBuffer();
 
 	buffer->PackString("");
-  buffer->PackString("");
 	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
 	buffer->PackUnsignedLong(nPort);
 }
@@ -3696,10 +3695,9 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort,
   m_nPort = _nPort;
   m_nStatus = ICQ_TCPxACK_ONLINE;
 
-  m_nSize += 14;
+  m_nSize += 11;
   InitBuffer();
 
-  buffer->PackString("");
   buffer->PackString("");
   buffer->PackUnsignedLong(ReversePort(m_nPort));
   buffer->PackUnsignedLong(m_nPort);
