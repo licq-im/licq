@@ -387,7 +387,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    if (gUserManager.OwnerUin() == 0)
    {
      InformUser(this, tr("You have not yet registered a uin.  Select the\n"
-                        "\"Register\" option from the system menu to\n"
+                         " \"Register\" option from the system menu to\n"
                         "register an existing uin or create a new one."));
    }
 }

@@ -38,7 +38,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
   nfoPassword1->setEchoMode(QLineEdit::Password);
   nfoPassword2->setEchoMode(QLineEdit::Password);
   chkExistingUser = new QCheckBox(tr("&Register Existing User"), grpInfo);
-  btnOk = new QPushButton("&Ok", this);
+  btnOk = new QPushButton(tr("&Ok"), this);
   btnCancel = new QPushButton(tr("&Cancel"), this);
   connect (btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(hide()) );
@@ -49,11 +49,10 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
   resize(300, 200);
   setCaption(tr("Licq User Registration"));
   show();
-  char buf[256];
-  sprintf (buf, tr("If you are registering a new uin, choose a password and click \"OK\".\n"
+  QString buf = tr("If you are registering a new uin, choose a password and click \"OK\".\n"
                   "If you already have a uin, then toggle \"Register Existing User\",\n"
-                  "enter your uin and your password, and click \"OK\""));
-  InformUser(this, QString::fromLocal8Bit(buf));
+                  "enter your uin and your password, and click \"OK\"");
+  InformUser(this, buf);
 }
 
 void RegisterUserDlg::hide()
