@@ -22,6 +22,7 @@ extern const struct SLanguage gLanguages[];
 
 const struct SLanguage *GetLanguageByCode(unsigned short _nCode);
 const struct SLanguage *GetLanguageByIndex(unsigned short _nIndex);
+const struct SLanguage *GetLanguageByName(const char *_szName);
 
 #ifdef __cplusplus
 }

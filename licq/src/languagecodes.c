@@ -85,3 +85,10 @@ const struct SLanguage *GetLanguageByIndex(unsigned short _nIndex)
    return (&gLanguages[_nIndex]);
 }
 
+const struct SLanguage *GetLanguageByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_LANGUAGES && strcmp(gLanguages[i].szName, _szName)) i++;
+   if (i == NUM_LANGUAGES) return NULL;
+   return &gLanguages[i];
+}

@@ -23,6 +23,7 @@ extern const struct SCountry gCountries[];
 
 const struct SCountry *GetCountryByCode(unsigned short _nCountryCode);
 const struct SCountry *GetCountryByIndex(unsigned short _nIndex);
+const struct SCountry *GetCountryByName(const char *_szName);
 
 #ifdef __cplusplus
 }
