@@ -952,7 +952,6 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           if (m_bShowOffline || !u->StatusOffline() ||
               (!m_bShowOffline && u->NewMessages() > 0))
             (void) new CUserViewItem(u, userView);
-          userView->triggerUpdate();
         }
         else
         {
@@ -961,6 +960,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
+        if(sig->Argument() == 1)
+          userView->AnimationOnline(nUin);
       }
       // Update their floaty
       CUserView *v = CUserView::FindFloaty(nUin);

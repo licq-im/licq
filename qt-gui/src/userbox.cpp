@@ -235,9 +235,12 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   }
   p->setFont(newFont);
 
+  bool inverse = (listView()->onlTimerId && listView()->onlUin == m_nUin &&
+                  listView()->onlCounter & 1);
+
   QColorGroup cg(cgdefault.foreground(), cgdefault.background(),
-                 cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
-                 *m_cFore, *m_cBack);
+    cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
+    inverse ? *m_cBack : *m_cFore, inverse ? *m_cFore : *m_cBack);
 
   const QPixmap *pix = NULL;
 
@@ -343,7 +346,9 @@ void CUserViewItem::drawCAROverlay(QPainter* p)
     // is not on screen
     return;
 
-  p->setPen(QPen((((CUserView*)listView())->carCounter & 1) ? white : black, 1, DashLine));
+  p->setBackgroundMode(OpaqueMode);
+  p->setBackgroundColor((listView()->carCounter & 1) ? black : white);
+  p->setPen(QPen((listView()->carCounter & 1) ? white : black, 1, SolidLine));
   p->drawRect(r);
 }
 
