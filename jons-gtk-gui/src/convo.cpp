@@ -26,7 +26,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 
-GList *cnv;
+GSList *cnv;
 
 struct conversation *convo_new(ICQUser *u, gboolean events)
 {
@@ -44,7 +44,7 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 
 	c->user = u;
 
-	cnv = g_list_append(cnv, c);
+	cnv = g_slist_append(cnv, c);
 
 	if(events)
 	{
@@ -63,7 +63,7 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 struct conversation *convo_find(unsigned long uin)
 {
 	struct conversation *c;
-	GList *conversations = cnv;
+	GSList *conversations = cnv;
 
 	while(conversations)
 	{
@@ -369,14 +369,16 @@ void convo_recv(gulong uin)
 gboolean convo_close(GtkWidget *widget, struct conversation *c)
 {
 	gtk_widget_destroy(c->window);
-	cnv = g_list_remove(cnv, c);
+	cnv = g_slist_remove(cnv, c);
 	catcher = g_slist_remove(catcher, c->etag);
 	return TRUE;
 }
 
+/*
 gboolean convo_delete_event(GtkWidget *widget, GdkEventAny *e, struct conversation *c)
 {
 	gtk_widget_destroy(c->window);
-	cnv = g_list_remove(cnv, c);
+	cnv = g_slist_remove(cnv, c);
 	return FALSE;
 }
+*/

@@ -77,7 +77,34 @@ struct send_url
 struct info_user
 {
 	GtkWidget *window;
+	GtkWidget *alias;
+	GtkWidget *name;
+	GtkWidget *email1;
+	GtkWidget *email2;
+	GtkWidget *address;
+	GtkWidget *city;
+	GtkWidget *state;
+	GtkWidget *zip;
+	GtkWidget *country;
+	GtkWidget *phone;
+	GtkWidget *age;
+	GtkWidget *gender;
+	GtkWidget *homepage;
+	GtkWidget *bday;
+	GtkWidget *lang1;
+	GtkWidget *lang2;
+	GtkWidget *lang3;
+	GtkWidget *company;
+	GtkWidget *dept;
+	GtkWidget *pos;
+	GtkWidget *co_homepage;
+	GtkWidget *co_address;
+	GtkWidget *co_phone;
+	GtkWidget *co_city;
+	GtkWidget *co_state;
+	GtkWidget *about;
 	ICQUser *user;
+	struct e_tag_data *etag;
 };
 
 struct system_message
@@ -115,12 +142,6 @@ struct system_window
 {
 	GtkWidget *window;
 	GtkWidget *text;
-};
-
-struct main_progress
-{
-	CICQEventTag *e_tag;
-	gchar buffer[55];
 };
 
 struct more_window
@@ -212,7 +233,7 @@ struct e_tag_data
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
-
+extern GSList *uaw_list;
 
 /* Globals in contact_list.cpp */
 extern GdkColor *red, *green, *blue;
@@ -222,7 +243,7 @@ extern GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
 
 
 /* Globals in convo.cpp */
-extern GList *cnv;
+extern GSList *cnv;
 
 
 /* Globals in history_window.cpp */
@@ -299,7 +320,7 @@ extern void convo_send(GtkWidget *, struct conversation *);
 extern void convo_recv(gulong);
 extern void spoof_button_callback(GtkWidget *, struct conversation *);
 extern gboolean convo_close(GtkWidget *, struct conversation *);
-extern gboolean convo_delete_event(GtkWidget *,GdkEventAny *,struct conversation *);
+//extern gboolean convo_delete_event(GtkWidget *,GdkEventAny *,struct conversation *);
 
 
 /* Functions in extras.cpp */
@@ -309,6 +330,8 @@ extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void user_function(ICQEvent *);
 extern void finish_event(struct e_tag_data *, ICQEvent *);
 extern void finish_message(ICQEvent *);
+extern void finish_away(ICQEvent *);
+extern void finish_info(CICQSignal *);
 
 
 /* Functions in file_window.cpp */
@@ -400,7 +423,10 @@ extern void system_status_click(GtkWidget *, GdkEventButton *, gpointer);
 
 /* Functions in user_info_window.cpp */
 extern void list_info_user(GtkWidget *, ICQUser *);
+extern gboolean user_info_close(GtkWidget *, struct info_user *);
 extern void update_user_info(GtkWidget *, struct info_user *);
+extern struct info_user *iu_new(ICQUser *);
+extern struct info_user *iu_find(unsigned long);
 extern void do_entry(GtkWidget *&, GtkWidget *&, const gchar *, const gchar *);
 extern void pack_hbox(GtkWidget *&, GtkWidget *, GtkWidget *);
 

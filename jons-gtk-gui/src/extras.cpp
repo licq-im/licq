@@ -28,8 +28,10 @@
 #include "pixmaps/dnd.xpm"
 #include "pixmaps/message.xpm"
 
-#include "licq_icqd.h"
+#include "licq_countrycodes.h"
 #include "licq_events.h"
+#include "licq_icqd.h"
+#include "licq_languagecodes.h"
 
 #include <ctype.h>
 #include <gtk/gtk.h>
@@ -118,7 +120,7 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
 }
 
 void user_function(ICQEvent *event)
-{
+{	g_print("user_function()\n");
 	GSList *temp = catcher;
 	struct e_tag_data *etd;
 
@@ -140,7 +142,7 @@ void user_function(ICQEvent *event)
 }
 
 void finish_event(struct e_tag_data *etd, ICQEvent *event)
-{
+{	g_print("finish_event()\n");
 	/* Make sure we have the right event and event tag */
 	if( (etd->e_tag == NULL && event != NULL) ||
 	    (etd->e_tag != NULL && !etd->e_tag->Equals(event)) )
@@ -193,15 +195,24 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 
 	/* Remove this item from the GSList */
 	catcher = g_slist_remove(catcher, etd);
-	
+
 	/* Get the sub command and see if do more work if needed */
 	switch(event->SubCommand())
 	{
 	case ICQ_CMDxSUB_MSG:
 		finish_message(event);
 		break;
+	case ICQ_CMDxTCP_READxAWAYxMSG:
+	case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
+	case ICQ_CMDxTCP_READxNAxMSG:
+	case ICQ_CMDxTCP_READxDNDxMSG:
+	case ICQ_CMDxTCP_READxFFCxMSG:
+		finish_away(event);
+		break;
 	}
 }
+
+/********************** Finishing Events *******************************/
 
 void finish_message(ICQEvent *event)
 {
@@ -234,5 +245,147 @@ void finish_message(ICQEvent *event)
 		gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, c->for_user, -1);
 		gtk_text_thaw(GTK_TEXT(c->entry));
+	}
+}
+
+void finish_away(ICQEvent *event)
+{
+	struct user_away_window *uaw =
+		(struct user_away_window *)g_new0(struct user_away_window, 1);
+
+	uaw = uaw_find(event->Uin());
+
+	/* If the window isn't open, don't bother */
+	if(uaw == NULL)
+		return;
+
+	gtk_text_freeze(GTK_TEXT(uaw->text_box));
+	gtk_text_insert(GTK_TEXT(uaw->text_box), 0, 0, 0,
+			uaw->user->AutoResponse(), -1);
+	gtk_text_thaw(GTK_TEXT(uaw->text_box));
+}
+
+/*************** Finishing Signals *****************************/
+
+void finish_info(CICQSignal *signal)
+{	g_print("finish_info()\n");
+	/* Only do the info.. */
+	unsigned long type = signal->SubSignal();
+	
+	if(!(type == USER_GENERAL || type == USER_BASIC || type == USER_EXT ||
+	   type == USER_MORE || type == USER_ABOUT))
+		return;
+
+	struct info_user *iu = (struct info_user *)g_new0(struct info_user, 1);
+
+	iu = iu_find(signal->Uin());
+
+	if(iu == NULL)
+		return;
+
+	const gchar *name = g_strdup_printf("%s %s", iu->user->GetFirstName(),
+					    iu->user->GetLastName());
+	const SCountry *country = GetCountryByCode(iu->user->GetCountryCode());
+	const SLanguage *l1 = GetLanguageByCode(iu->user->GetLanguage(0));
+	const SLanguage *l2 = GetLanguageByCode(iu->user->GetLanguage(1));
+	const SLanguage *l3 = GetLanguageByCode(iu->user->GetLanguage(2));
+	const gchar *zip = g_strdup_printf("%ld", iu->user->GetZipCode());
+
+	gchar *bday;
+	gchar *age;
+
+	if(iu->user->GetAge() != 65535)
+		age = g_strdup_printf("%hd", iu->user->GetAge());
+	else
+		age = "N/A";
+
+	if(iu->user->GetBirthMonth() == 0 || iu->user->GetBirthDay() == 0)
+		bday = "N/A";
+	else
+		bday = g_strdup_printf("%d/%d/%d", iu->user->GetBirthMonth(),
+			iu->user->GetBirthDay(), iu->user->GetBirthYear());
+
+	switch(type)
+	{
+	case USER_GENERAL:
+	case USER_BASIC:
+	case USER_EXT:
+		gtk_entry_set_text(GTK_ENTRY(iu->alias), iu->user->GetAlias());
+		gtk_entry_set_text(GTK_ENTRY(iu->name), name);
+		gtk_entry_set_text(GTK_ENTRY(iu->email1),
+				   iu->user->GetEmail1());
+		gtk_entry_set_text(GTK_ENTRY(iu->email2),
+				   iu->user->GetEmail2());
+		gtk_entry_set_text(GTK_ENTRY(iu->address),
+				   iu->user->GetAddress());
+		gtk_entry_set_text(GTK_ENTRY(iu->city), iu->user->GetCity());
+		gtk_entry_set_text(GTK_ENTRY(iu->state), iu->user->GetState());
+		gtk_entry_set_text(GTK_ENTRY(iu->zip), zip);
+		
+		if(country == NULL)
+			gtk_entry_set_text(GTK_ENTRY(iu->country),
+					   "Unknown");
+		else
+			gtk_entry_set_text(GTK_ENTRY(iu->country),
+					   country->szName);
+
+
+		gtk_entry_set_text(GTK_ENTRY(iu->phone),
+				   iu->user->GetPhoneNumber());
+		break;
+	case USER_MORE:
+		if(iu->user->GetGender() == 1)
+			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Female");
+		else if(iu->user->GetGender() == 2)
+			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Male");
+		else 
+			gtk_entry_set_text(GTK_ENTRY(iu->gender), "Unspecified");
+
+		gtk_entry_set_text(GTK_ENTRY(iu->age), age);
+
+		gtk_entry_set_text(GTK_ENTRY(iu->bday), bday);
+
+		gtk_entry_set_text(GTK_ENTRY(iu->homepage),
+				   iu->user->GetHomepage());
+		if(l1 == NULL)
+			gtk_entry_set_text(GTK_ENTRY(iu->lang1), "Unknown");
+		else
+			gtk_entry_set_text(GTK_ENTRY(iu->lang1), l1->szName);
+
+		if(l2 == NULL)
+                        gtk_entry_set_text(GTK_ENTRY(iu->lang2), "Unknown");
+                else
+                        gtk_entry_set_text(GTK_ENTRY(iu->lang2), l2->szName);
+
+		if(l3 == NULL)
+                        gtk_entry_set_text(GTK_ENTRY(iu->lang3), "Unknown");
+                else
+                        gtk_entry_set_text(GTK_ENTRY(iu->lang3), l3->szName);
+		break;
+	case USER_WORK:
+		gtk_entry_set_text(GTK_ENTRY(iu->company),
+				   iu->user->GetCompanyName());
+		gtk_entry_set_text(GTK_ENTRY(iu->dept),
+				   iu->user->GetCompanyDepartment());
+		gtk_entry_set_text(GTK_ENTRY(iu->pos),
+				   iu->user->GetCompanyPosition());
+		gtk_entry_set_text(GTK_ENTRY(iu->co_homepage),
+				   iu->user->GetCompanyHomepage());
+		gtk_entry_set_text(GTK_ENTRY(iu->co_address),
+				   iu->user->GetCompanyAddress());
+		gtk_entry_set_text(GTK_ENTRY(iu->co_phone),
+				   iu->user->GetCompanyPhoneNumber());
+		gtk_entry_set_text(GTK_ENTRY(iu->co_city),
+				   iu->user->GetCompanyCity());
+		gtk_entry_set_text(GTK_ENTRY(iu->co_state),
+				   iu->user->GetCompanyState());
+		break;
+	case USER_ABOUT:
+		gtk_text_freeze(GTK_TEXT(iu->about));
+		gtk_editable_delete_text(GTK_EDITABLE(iu->about), 0, -1);
+		gtk_text_insert(GTK_TEXT(iu->about), 0, 0, 0,
+				iu->user->GetAbout(), -1);
+		gtk_text_thaw(GTK_TEXT(iu->about));
+		break;
 	}
 }

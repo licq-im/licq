@@ -47,7 +47,6 @@ void pipe_callback(gpointer data, gint _Pipe, GdkInputCondition condition)
 
 	  case 'X': /* Shutdown */
 	  {
-		g_print("Poop\n");
 		gtk_main_quit();
 		break;
 	  }
@@ -79,6 +78,7 @@ void pipe_signal(CICQSignal *sig)
 		if(sig->SubSignal() == USER_EVENTS)
 			convo_recv(sig->Uin());
 		contact_list_refresh();
+		finish_info(sig);
 		break;
 	  }
 

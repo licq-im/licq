@@ -24,7 +24,6 @@
 
 GtkWidget *vertical_box;
 GtkWidget *contact_list;
-GtkWidget *status_progress;
 
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
@@ -78,13 +77,6 @@ GtkWidget* main_window_new(const gchar* window_title,
 			   TRUE, TRUE, 0); 
 	contact_list_refresh();
 
-	/* Status bar for verification of events */
-	status_progress = gtk_statusbar_new();
-	gtk_widget_set_usize(status_progress, width, 25);
-	gtk_container_set_border_width(GTK_CONTAINER(status_progress), 2);
-	gtk_box_pack_start(GTK_BOX(vertical_box), status_progress, FALSE,
-			   FALSE, 0);
- 
 	/* Add in the event box for the status bar */
 	event_box = gtk_event_box_new();
 
@@ -131,7 +123,6 @@ GtkWidget* main_window_new(const gchar* window_title,
 	gtk_widget_show(event_box);
 	gtk_widget_show(event_box2);
 	gtk_widget_show(status_bar);
-	gtk_widget_show(status_progress);
 	gtk_widget_show(system_status);
 
 	return main_window;

@@ -24,7 +24,7 @@
 
 #include <gtk/gtk.h>
 
-GList *uaw_list;
+GSList *uaw_list;
 
 void away_msg_window(gushort status)
 {
@@ -190,7 +190,7 @@ void close_away_window(GtkWidget *widget, struct user_away_window *uaw)
 {
 	uaw->user->SetShowAwayMsg(gtk_toggle_button_get_active(
 					GTK_TOGGLE_BUTTON(uaw->show_again)));
-	uaw_list = g_list_remove(uaw_list, uaw);
+	uaw_list = g_slist_remove(uaw_list, uaw);
 	catcher = g_slist_remove(catcher, uaw->etag);
 	dialog_close(NULL, uaw->window);
 }
@@ -214,9 +214,9 @@ struct user_away_window *uaw_new(ICQUser *u)
 
 	uaw->user = u;
 
-	uaw_list = g_list_append(uaw_list, uaw);
+	uaw_list = g_slist_append(uaw_list, uaw);
 
-	list_read_message(NULL, uaw->user);
+//	list_read_message(NULL, uaw->user);
 
 	return uaw;
 }
@@ -224,7 +224,7 @@ struct user_away_window *uaw_new(ICQUser *u)
 struct user_away_window *uaw_find(unsigned long uin)
 {
 	struct user_away_window *uaw;
-	GList *temp_uaw_list = uaw_list;
+	GSList *temp_uaw_list = uaw_list;
 
 	while(temp_uaw_list)
 	{
