@@ -107,6 +107,7 @@ TRANSLATIONS = po/cs_CZ.ts \
                po/ja_JP.eucJP.ts \
                po/pl.ts \
                po/pt.ts \
+               po/pt_BR.ts \
                po/ru.ts \
                po/sr.ts \
                po/sv.ts \
