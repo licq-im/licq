@@ -392,8 +392,9 @@ socklen_t foo;
   ac_cv_c_socklen_t=yes
 ],[
   ac_cv_c_socklen_t=no
+])])
   AC_DEFINE(socklen_t,int)
-])])])
+])
 
 dnl check if a given compiler flag works
 AC_DEFUN(KDE_CHECK_COMPILER_FLAG,
@@ -424,16 +425,18 @@ fi
 dnl Check if we can include the X11 headers without -fpermissive
 AC_DEFUN(LICQ_CHECK_X11HEADERS,
 [
-AC_LANG_CPLUSPLUS
-save_CXXFLAGS="$CXXFLAGS"
-if test "$GCC" = "yes"; then
-CXXFLAGS="$CXXFLAGS -pedantic-errors"
-fi
-CXXFLAGS="$CXXFLAGS $X_CFLAGS"
 AC_MSG_CHECKING(for good X11 headers)
 AC_CACHE_VAL(ac_cv_good_x11headers,
 [
-AC_TRY_COMPILE([
+  AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+  save_CXXFLAGS="$CXXFLAGS"
+  if test "$GCC" = "yes"; then
+    CXXFLAGS="$CXXFLAGS -pedantic-errors"
+  fi
+  CXXFLAGS="$CXXFLAGS $X_CFLAGS"
+
+  AC_TRY_COMPILE([
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -441,13 +444,14 @@ AC_TRY_COMPILE([
 [
 /* elvis is alive */
 ],
-ac_cv_good_x11headers=yes,
-ac_cv_good_x11headers=no)
+  ac_cv_good_x11headers=yes,
+  ac_cv_good_x11headers=no)
+
+  CXXFLAGS="$save_CXXFLAGS"
+  AC_LANG_RESTORE
 ])
 AC_MSG_RESULT($ac_cv_good_x11headers)
-rm -f conftest*
-AC_LANG_RESTORE
-CXXFLAGS="$save_CXXFLAGS"
+
 if eval "test \"`echo $ac_cv_good_x11headers`\" = no"; then
    KDE_CHECK_COMPILER_FLAG(fpermissive,
         [
