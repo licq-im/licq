@@ -25,6 +25,7 @@ public:
 
    static void SetMode(char c) { s_nMode = c; }
    static char Mode()  { return s_nMode; }
+   static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
 
 protected:
    CBuffer *buffer;
