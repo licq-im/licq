@@ -273,6 +273,12 @@ void OptionsDlg::SetupOptions()
    edtSndNotify->setText(oem->Parameter(ON_EVENT_NOTIFY));
    edtSndSysMsg->setText(oem->Parameter(ON_EVENT_SYSMSG));
    oem->Unlock();
+   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+   chkOEAway->setChecked(o->AcceptInAway());
+   chkOENA->setChecked(o->AcceptInNA());
+   chkOEOccupied->setChecked(o->AcceptInOccupied());
+   chkOEDND->setChecked(o->AcceptInDND());
+   gUserManager.DropOwner();
 }
 
 
@@ -403,6 +409,15 @@ void OptionsDlg::ApplyOptions()
                                edtSndChat->text(), edtSndFile->text(),
                                edtSndNotify->text(), edtSndSysMsg->text() };
   oem->SetParameters(edtSndPlayer->text(), oemparams);
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  o->SetEnableSave(false);
+  o->SetAcceptInAway(chkOEAway->isChecked());
+  o->SetAcceptInNA(chkOENA->isChecked());
+  o->SetAcceptInOccupied(chkOEOccupied->isChecked());
+  o->SetAcceptInDND(chkOEDND->isChecked());
+  o->SetEnableSave(true);
+  o->SaveLicqInfo();
+  gUserManager.DropOwner();
 
 }
 
@@ -633,7 +648,7 @@ QWidget* OptionsDlg::new_sounds_options()
 
   QWhatsThis::add(chkOnEvents, tr("Enable running of \"Command\" when the relevant "
                                  "event occurs."));
-  lblSndPlayer = new QLabel(tr("Command:"), hor);
+  QLabel *lblSndPlayer = new QLabel(tr("Command:"), hor);
   QWhatsThis::add(lblSndPlayer, tr("Command to execute when an event is received.  "
                                   "It will be passed the relevant parameters from "
                                   "below.  Parameters can contain the following "
@@ -654,29 +669,41 @@ QWidget* OptionsDlg::new_sounds_options()
                                   "%o - last seen online"));
   edtSndPlayer = new QLineEdit(hor);
 
-  boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
+  QGroupBox *boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
   lay->addWidget(boxSndEvents);
 
-  lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
+  QLabel *lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
   QWhatsThis::add(lblSndMsg, tr("Parameter for received messages"));
   edtSndMsg = new QLineEdit(boxSndEvents);
-  lblSndUrl = new QLabel(tr("URL:"), boxSndEvents);
+  QLabel *lblSndUrl = new QLabel(tr("URL:"), boxSndEvents);
   QWhatsThis::add(lblSndUrl, tr("Parameter for received URLs"));
   edtSndUrl = new QLineEdit(boxSndEvents);
-  lblSndChat = new QLabel(tr("Chat Request:"), boxSndEvents);
+  QLabel *lblSndChat = new QLabel(tr("Chat Request:"), boxSndEvents);
   QWhatsThis::add(lblSndChat, tr("Parameter for received chat requests"));
   edtSndChat = new QLineEdit(boxSndEvents);
-  lblSndFile = new QLabel(tr("File Transfer:"), boxSndEvents);
+  QLabel *lblSndFile = new QLabel(tr("File Transfer:"), boxSndEvents);
   QWhatsThis::add(lblSndFile, tr("Parameter for received file transfers"));
   edtSndFile = new QLineEdit(boxSndEvents);
-  lblSndNotify = new QLabel(tr("Online Notify:"), boxSndEvents);
+  QLabel *lblSndNotify = new QLabel(tr("Online Notify:"), boxSndEvents);
   QWhatsThis::add(lblSndNotify, tr("Parameter for online notification"));
   edtSndNotify = new QLineEdit(boxSndEvents);
-  lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
+  QLabel *lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
   QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
   edtSndSysMsg = new QLineEdit(boxSndEvents);
 
-  lay->addStretch(1);
+  QGroupBox *boxAcceptEvents = new QGroupBox(4, Vertical, tr("Accept Modes"), w);
+  lay->addWidget(boxAcceptEvents, 1);
+
+  chkOEAway = new QCheckBox(tr("OnEvent in Away"), boxAcceptEvents);
+  QWhatsThis::add(chkOEAway, tr("Perform OnEvent command in away mode"));
+  chkOENA = new QCheckBox(tr("OnEvent in N/A"), boxAcceptEvents);
+  QWhatsThis::add(chkOENA, tr("Perform OnEvent command in not available mode"));
+  chkOEOccupied = new QCheckBox(tr("OnEvent in Occupied"), boxAcceptEvents);
+  QWhatsThis::add(chkOEOccupied, tr("Perform OnEvent command in occupied mode"));
+  chkOEDND = new QCheckBox(tr("OnEvent in DND"), boxAcceptEvents);
+  QWhatsThis::add(chkOEDND, tr("Perform OnEvent command in do not disturb mode"));
+
+  //lay->addStretch(1);
 
   return w;
 }

@@ -67,12 +67,9 @@ protected:
 
    // sounds tab
    QWidget* new_sounds_options();
-   QLabel *lblSndPlayer, *lblSndMsg, *lblSndChat, *lblSndUrl,
-          *lblSndFile, *lblSndNotify, *lblSndSysMsg;
-   QCheckBox *chkOnEvents;
+   QCheckBox *chkOnEvents, *chkOEAway, *chkOENA, *chkOEOccupied, *chkOEDND;
    QLineEdit *edtSndPlayer, *edtSndMsg, *edtSndChat, *edtSndUrl,
              *edtSndFile, *edtSndNotify, *edtSndSysMsg;
-   QGroupBox *boxSndEvents;
 
    // misc tab
    QWidget* new_misc_options();
