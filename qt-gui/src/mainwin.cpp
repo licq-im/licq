@@ -462,7 +462,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%o - </tt>last seen online</li>"
                     "<li><tt>%p - </tt>user port</li>"
                     "<li><tt>%s - </tt>full status</li>"
-                    "<li><tt>%S - </tt>abbrieviated status</li>"
+                    "<li><tt>%S - </tt>abbreviated status</li>"
                     "<li><tt>%u - </tt>uin</li>"
                     "<li><tt>%w - </tt>webpage</li></ul>");
 #ifdef USE_DOCK

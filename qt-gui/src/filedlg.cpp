@@ -46,7 +46,7 @@
 
 //-----Constructor------------------------------------------------------------
 CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
-  : QDialog(parent, "FileDialog", false, WDestructiveClose)
+  : QWidget(parent, "FileDialog", WDestructiveClose)
 {
   // If we are the server, then we are receiving a file
   m_nUin = _nUin;

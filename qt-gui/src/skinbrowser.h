@@ -1,7 +1,7 @@
 #ifndef SKINBROWSER_H
 #define SKINBROWSER_H
 
-#include <qdialog.h>
+#include <qwidget.h>
 
 class QListView;
 class QGroupBox;
@@ -10,7 +10,7 @@ class QPushButton;
 class CMainWindow;
 class CInfoField;
 
-class SkinBrowserDlg : public QDialog
+class SkinBrowserDlg : public QWidget
 {
   Q_OBJECT
 public:

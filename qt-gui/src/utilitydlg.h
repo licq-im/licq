@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include <qdialog.h>
+#include <qwidget.h>
 
 #include <vector.h>
 
@@ -21,7 +21,7 @@ class CUtilityInternalWindow;
 
 class MLEditWrap;
 
-class CUtilityDlg : public QDialog
+class CUtilityDlg : public QWidget
 {
   Q_OBJECT
 public:

@@ -35,7 +35,7 @@
 
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
-  : QDialog(0, "UtilityDialog", false, WDestructiveClose)
+  : QWidget(0, "UtilityDialog",  WDestructiveClose)
 {
   m_nUin = _nUin;
   m_xUtility = u;

@@ -1,7 +1,7 @@
 #ifndef FILEDLG_H
 #define FILEDLG_H
 
-#include <qdialog.h>
+#include <qwidget.h>
 #include <qtimer.h>
 
 #include "ewidgets.h"
@@ -14,7 +14,7 @@ class CICQDaemon;
 class CFileTransferManager;
 class MLEditWrap;
 
-class CFileDlg : public QDialog
+class CFileDlg : public QWidget
 {
    Q_OBJECT
 public:

@@ -30,7 +30,7 @@
 #include "editfile.h"
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
-  : QDialog(parent, "SkinBrowserDialog")
+  : QWidget(parent, "SkinBrowserDialog")
 {
   mainwin = _mainwin;
 

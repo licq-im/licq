@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-#include <qdialog.h>
+#include <qwidget.h>
 #include <qpushbutton.h>
 #include <qsocketnotifier.h>
 
@@ -14,7 +14,7 @@
 #include "licq_log.h"
 
 //=====OutputWin============================================================
-class CQtLogWindow : public QDialog, public CPluginLog
+class CQtLogWindow : public QWidget, public CPluginLog
 {
   Q_OBJECT
 public:

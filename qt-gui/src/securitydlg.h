@@ -1,7 +1,7 @@
 #ifndef SECURITYDLG_H
 #define SECURITYDLG_H
 
-#include <qdialog.h>
+#include <qwidget.h>
 
 class QPushButton;
 class QCheckBox;
@@ -11,7 +11,7 @@ class CICQEventTag;
 class CICQDaemon;
 class CSignalManager;
 
-class SecurityDlg : public QDialog
+class SecurityDlg : public QWidget
 {
    Q_OBJECT
 public:
