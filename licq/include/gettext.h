@@ -39,11 +39,20 @@
 # include <locale.h>
 #endif
 
+// Licq specific macros for disabled NLS
+#define tr(String) (String)
+#define tr_NOOP(String) (String)
+
 /* Disabled NLS.
    The casts to 'const char *' serve the purpose of producing warnings
    for invalid uses of the value returned from these functions.
    On pre-ANSI systems without 'const', the config.h file is supposed to
    contain "#define const".  */
+/* Predefined macros disabled, these are not used by licq.
+   In addition libintl.h included from locale.h messes up when these 
+   macros are defined :( 
+   Thomas Reitelbach <thomas@licq.org>  */
+/*
 # define gettext(Msgid) ((const char *) (Msgid))
 # define dgettext(Domainname, Msgid) ((const char *) (Msgid))
 # define dcgettext(Domainname, Msgid, Category) ((const char *) (Msgid))
@@ -56,6 +65,7 @@
 # define textdomain(Domainname) ((const char *) (Domainname))
 # define bindtextdomain(Domainname, Dirname) ((const char *) (Dirname))
 # define bind_textdomain_codeset(Domainname, Codeset) ((const char *) (Codeset))
+*/
 
 #endif
 
