@@ -56,7 +56,7 @@ GdkColor *get_status_color(unsigned long);
 gboolean contact_list_click(GtkWidget *, GdkEventButton *, gpointer);
 void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
 
-GtkWidget *contact_list_new(gint height, gint width)
+GtkWidget *contact_list_new()
 {
 	GtkWidget *_contact_l;
 
@@ -90,9 +90,6 @@ GtkWidget *contact_list_new(gint height, gint width)
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(_contact_l), FALSE);
 	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(_contact_l));
 	
-	/* Size the contact list */
-	//gtk_widget_set_size_request(_contact_l, width, height);
-
 	/* A double click on a user name */
 	g_signal_connect(G_OBJECT(_contact_l), "button_press_event",
 			   G_CALLBACK(contact_list_click), 0);
@@ -360,53 +357,48 @@ gboolean contact_list_click(GtkWidget *contact_list,
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
 		GtkWidget *_menu;
-		GtkWidget *item;
-		GtkWidget *separator;
-
+		GtkWidget *_menu_item;
+		GtkWidget *_root_menu;
+		GtkWidget *_menu_bar;
+	
 		_menu = gtk_menu_new();
 
 		/* The non-sensitive user name as a title */
-		item = gtk_menu_item_new_with_label(user->GetAlias());
-		gtk_menu_shell_append(GTK_MENU_SHELL(_menu), item);
-		gtk_widget_set_sensitive(item, FALSE);
-		gtk_widget_show(item);
-
+		_menu_item = menu_new_item(_menu, user->GetAlias(), 0, FALSE);
+					
 		/* A separator */
-		separator = gtk_hseparator_new();
-		item = gtk_menu_item_new();
-		gtk_menu_shell_append(GTK_MENU_SHELL(_menu), item);
-		gtk_container_add(GTK_CONTAINER(item), separator);
-		gtk_widget_set_sensitive(item, FALSE);
-		gtk_widget_show_all(item);
+		menu_separator(_menu);
+		
+		/* add_to_popup("Start Conversation", _menu,
+			     GTK_SIGNAL_FUNC(convo_open_cb), user); */
+			  
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "Start Conversation",
+						GTK_SIGNAL_FUNC(convo_open_cb), message_icon, user);
+		
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "Send URL",
+						GTK_SIGNAL_FUNC(list_send_url), url_icon, user);
 
-		add_to_popup("Start Conversation", _menu,
-			     GTK_SIGNAL_FUNC(convo_open_cb), user);
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "Send Chat Request",
+						GTK_SIGNAL_FUNC(list_request_chat), chat_icon, user);
+						
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "Send File Request",
+						GTK_SIGNAL_FUNC(list_request_file), file_icon, user);
 
-		add_to_popup("Send URL", _menu,
-			     GTK_SIGNAL_FUNC(list_send_url), user);
-
-		add_to_popup("Send Chat Request", _menu,
-		     	     GTK_SIGNAL_FUNC(list_request_chat), user);
-
-		add_to_popup("Send File Request", _menu,
-		             GTK_SIGNAL_FUNC(list_request_file), user);
-	
 		if (user->Secure())
-			add_to_popup("Close Secure Channel", _menu,
-				GTK_SIGNAL_FUNC(create_key_request_window),
-				user);
+			_menu_item = 
+				menu_new_item_with_pixmap(_menu, "Close Secure Channel",
+						GTK_SIGNAL_FUNC(create_key_request_window), blank_icon, user);
 		else	
-			add_to_popup("Request Secure Channel", _menu,
-				GTK_SIGNAL_FUNC(create_key_request_window),
-				user);
+			_menu_item = 
+				menu_new_item_with_pixmap(_menu, "Request Secure Channel",
+						GTK_SIGNAL_FUNC(create_key_request_window), blank_icon, user);
 
 		/* A separator */
-    separator = gtk_hseparator_new();
-    item = gtk_menu_item_new(); 
-    gtk_menu_shell_append(GTK_MENU_SHELL(_menu), item);
-    gtk_container_add(GTK_CONTAINER(item), separator);
-    gtk_widget_set_sensitive(item, FALSE);
-    gtk_widget_show_all(item); 
+		menu_separator(_menu);
 
 		if (user->Status() != ICQ_STATUS_ONLINE && 
 				user->Status() != ICQ_STATUS_OFFLINE)	{
@@ -414,34 +406,41 @@ gboolean contact_list_click(GtkWidget *contact_list,
 			strcat(str_status, user->StatusStrShort());
 			strcat(str_status, " Message");
 
-			add_to_popup(str_status, _menu,
-				     GTK_SIGNAL_FUNC(list_read_message), user);
+			_menu_item = 
+				menu_new_item_with_pixmap(_menu, str_status,
+						GTK_SIGNAL_FUNC(list_read_message), blank_icon, user);
 		}
 
-		add_to_popup("Info", _menu,
-			GTK_SIGNAL_FUNC(list_info_user), user);
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "Info",
+					GTK_SIGNAL_FUNC(list_info_user), blank_icon, user);
 
-		add_to_popup("History", _menu,
-			     GTK_SIGNAL_FUNC(list_history), user);
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "History",
+					GTK_SIGNAL_FUNC(list_history), blank_icon, user);
 
-		add_to_popup("More...", _menu,
-			     GTK_SIGNAL_FUNC(list_more_window), user);
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "More...",
+					GTK_SIGNAL_FUNC(list_more_window), blank_icon, user);
 
-		add_to_popup("Delete User", _menu,
-			     GTK_SIGNAL_FUNC(list_delete_user), user);
-	
-		gtk_menu_popup(GTK_MENU(_menu), 0, 0, 0, 0, 
-			       event->button, event->time);
+		_menu_item = 
+			menu_new_item_with_pixmap(_menu, "Delete User",
+					GTK_SIGNAL_FUNC(list_delete_user), blank_icon, user);
+
+		_root_menu =
+			menu_new_item(0, "", 0, 0);
+
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(_root_menu), _menu);
+
+		_menu_bar = gtk_menu_bar_new();
+		gtk_widget_show(_menu_bar);
+
+		gtk_menu_shell_append(GTK_MENU_SHELL(_menu_bar), _root_menu);
+
+		gtk_menu_popup(GTK_MENU(_menu), 0, 0, 0, 0,
+			event->button, event->time); 	
+
 	}
 	return FALSE;
 }
 
-void add_to_popup(const gchar *label, GtkWidget *menu,
-		  GtkSignalFunc func, ICQUser *user)
-{
-	GtkWidget *item = gtk_menu_item_new_with_label(label);
-	g_signal_connect(G_OBJECT(item), "activate",
-			   G_CALLBACK(func), user);
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-	gtk_widget_show(item);
-}
