@@ -66,6 +66,20 @@ class CICQDaemon;
  *  CChatEvent::Data() field contains the character typed.  For all other
  *  events the Data() field will be NULL.
  *
+ *  When a user requests to kick another user, the CHAT_KICK event is sent,
+ *  and then the CChatUser::ToKick() contains the uin of the person to kick.
+ *  The plugin shall then call CChatManager::SendVoteNo() or 
+ *  CChatManager::SendVoteYes().  Both functions take the UIN of the user we
+ *  are voting on.
+ *
+ *  If you want to kick someone, just simply call CChatManager::SendKick().
+ *  The single parameter is the UIN of the user to collect a vote on.  After
+ *  a majority is collected, or a tie, the daemon will send out everything that
+ *  is necessary.
+ *
+ *  When a user is kicked out of a room, the CHAT_DISCONNECTIONxKICKED
+ *  event is sent.
+ *
  *  Call CChatManager::CloseChat() when finished with the chat.  Note that
  *  this will generate a number of CHAT_DISCONNECTION events as each client
  *  is disconnected from the chat.
@@ -73,32 +87,45 @@ class CICQDaemon;
  *--------------------------------------------------------------------------*/
 
 // Chat event types
-const unsigned char CHAT_COLORxFG      = 0x00;
-const unsigned char CHAT_COLORxBG      = 0x01;
-const unsigned char CHAT_KICKxUSER     = 0x02;
-const unsigned char CHAT_FOCUSxIN      = 0x03;
-const unsigned char CHAT_FOCUSxOUT     = 0x04;
-const unsigned char CHAT_KICKxYES      = 0x05;
-const unsigned char CHAT_KICKxNO       = 0x06;
-const unsigned char CHAT_BEEP          = 0x07;
-const unsigned char CHAT_BACKSPACE     = 0x08;
-const unsigned char CHAT_DISCONNECTION = 0x0B;
-const unsigned char CHAT_NEWLINE       = 0x0D;
-const unsigned char CHAT_FONTxFAMILY   = 0x10;
-const unsigned char CHAT_FONTxFACE     = 0x11;
-const unsigned char CHAT_FONTxSIZE     = 0x12;
-const unsigned char CHAT_SLEEPxOFF     = 0x16;
-const unsigned char CHAT_SLEEPxON      = 0x17;
-const unsigned char CHAT_LAUGH         = 0x1A;
+const unsigned char CHAT_COLORxFG             = 0x00;
+const unsigned char CHAT_COLORxBG             = 0x01;
+const unsigned char CHAT_KICK                 = 0x02;
+const unsigned char CHAT_FOCUSxIN             = 0x03;
+const unsigned char CHAT_FOCUSxOUT            = 0x04;
+const unsigned char CHAT_KICKxYES             = 0x05;
+const unsigned char CHAT_KICKxNO              = 0x06;
+const unsigned char CHAT_BEEP                 = 0x07;
+const unsigned char CHAT_BACKSPACE            = 0x08;
+const unsigned char CHAT_KICKxPASS            = 0x09;
+const unsigned char CHAT_DISCONNECTION        = 0x0B;
+const unsigned char CHAT_DISCONNECTIONxKICKED = 0x0C;
+const unsigned char CHAT_NEWLINE              = 0x0D;
+const unsigned char CHAT_KICKxYOU             = 0x0E;
+const unsigned char CHAT_KICKxFAIL            = 0x0F;
+const unsigned char CHAT_FONTxFAMILY          = 0x10;
+const unsigned char CHAT_FONTxFACE            = 0x11;
+const unsigned char CHAT_FONTxSIZE            = 0x12;
+const unsigned char CHAT_SLEEPxOFF            = 0x16;
+const unsigned char CHAT_SLEEPxON             = 0x17;
+const unsigned char CHAT_LAUGH                = 0x1A;
 
-const unsigned char CHAT_CHARACTER     = 0x7E;
-const unsigned char CHAT_CONNECTION    = 0x7F;
+const unsigned char CHAT_CHARACTER            = 0x7E;
+const unsigned char CHAT_CONNECTION           = 0x7F;
 
 // Font contants (should not need to be used by the plugin)
 const unsigned long FONT_PLAIN     = 0x00000000;
 const unsigned long FONT_BOLD      = 0x00000001;
 const unsigned long FONT_ITALIC    = 0x00000002;
 const unsigned long FONT_UNDERLINE = 0x00000004;
+
+struct SVoteInfo
+{
+  unsigned long nUin;
+  unsigned short nNumUsers;
+  unsigned short nYes;
+  unsigned short nNo;
+};
+typedef list<SVoteInfo *> VoteInfoList;
 
 //=====Chat=====================================================================
 class CPacketChat : public CPacket
@@ -371,6 +398,7 @@ class CChatUser
 {
 public:
   unsigned long Uin()       { return uin; }
+  unsigned long ToKick()    { return nToKick; }
   const char *Name()        { return chatname; }
   int *ColorFg()            { return colorFore; }
   int *ColorBg()            { return colorBack; }
@@ -388,6 +416,7 @@ protected:
   CChatUser();
 
   unsigned long uin;
+  unsigned long nToKick;
   char chatname[32];
   int colorFore[3], colorBack[3];
   char fontFamily[64];
@@ -478,6 +507,9 @@ public:
   void SendBackspace();
   void SendCharacter(char);
   void SendKick(unsigned long);
+  void SendKickNoVote(unsigned long);
+  void SendVoteYes(unsigned long);
+  void SendVoteNo(unsigned long);
 
   void FocusOut();
   void FocusIn();
@@ -499,6 +531,7 @@ protected:
   ChatUserList chatUsers;
   ChatUserList chatUsersClosed;
   ChatEventList chatEvents;
+  VoteInfoList voteInfo; 
   pthread_t thread_chat;
 
   int m_nColorFore[3], m_nColorBack[3];
@@ -520,8 +553,12 @@ protected:
   bool ProcessRaw_v2(CChatUser *);
   bool ProcessRaw_v6(CChatUser *);
   void PushChatEvent(CChatEvent *);
+  void FinishKickVote(VoteInfoList::iterator, bool);
 
-  void SendBuffer(CBuffer *, unsigned char);
+  void SendBuffer(CBuffer *, unsigned char,
+		  unsigned long _nUin = 0,
+		  bool bNotIter = true);
+  bool SendBufferToClient(CBuffer *, unsigned char, CChatUser *);
   void SendBuffer_Raw(CBuffer *);
   //void SendPacket(CPacket *);
 

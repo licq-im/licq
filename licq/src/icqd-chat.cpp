@@ -23,7 +23,6 @@ const unsigned short CHAT_STATE_WAITxFORxFONT = 4;
 const unsigned short CHAT_STATE_CONNECTED = 5;
 
 
-
 //=====Chat=====================================================================
 void CPacketChat::InitBuffer()
 {
@@ -494,6 +493,7 @@ CPChat_Beep::CPChat_Beep()
 CChatUser::CChatUser()
 {
   uin = 0;
+  nToKick = 0;
   state = CHAT_STATE_DISCONNECTED;
   colorFore[0] = colorFore[1] = colorFore[2] = 0x00;
   colorBack[0] = colorBack[1] = colorBack[2] = 0xFF;
@@ -1091,6 +1091,146 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
         break;
       }
 
+      case CHAT_KICK:
+      {
+        if (u->chatQueue.size() < 4)  return true;
+	u->nToKick = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	             (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+	// Dequeue all the characters
+	for (unsigned short i = 0; i < 4; i++)
+	  u->chatQueue.pop_front();
+
+        PushChatEvent(new CChatEvent(CHAT_KICK, u));
+	break;
+      }
+
+      case CHAT_KICKxYES:
+      {
+        if (u->chatQueue.size() < 4)  return true;
+	unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	       (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+	// Deque all the characters
+	for (unsigned short i = 0; i < 4; i++)
+	  u->chatQueue.pop_front();
+
+	// Find the person that we receive the yes vote
+	VoteInfoList::iterator iter;
+	for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+	{
+	  if ((*iter)->nUin == nUin)
+	    break;
+	}
+
+	if (iter == voteInfo.end())  return true;
+
+	(*iter)->nYes++;
+
+	// Is there a majority?
+	unsigned short nMajority = (*iter)->nNumUsers / 2;
+	nMajority++;
+	if ((*iter)->nYes == nMajority)
+	  FinishKickVote(iter, true);
+	else if ((*iter)->nYes + (*iter)->nNo == (*iter)->nNumUsers)
+	  FinishKickVote(iter, false);
+	  
+        
+	PushChatEvent(new CChatEvent(CHAT_KICKxYES, u));
+	break;	
+      }
+
+      case CHAT_KICKxNO:
+      {
+        if (u->chatQueue.size() < 4)  return true;
+	unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	       (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+	// Deque all the characters
+	for (unsigned short i = 0; i < 4; i++)
+	  u->chatQueue.pop_front();
+
+	// Find the person that we receive the yes vote
+	VoteInfoList::iterator iter;
+	for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+	{
+	  if ((*iter)->nUin == nUin)
+	    break;
+	}
+
+	if (iter == voteInfo.end())  return true;
+
+	(*iter)->nNo++;
+
+	// Is there a majority?
+	unsigned short nMajority = (*iter)->nNumUsers / 2;
+	nMajority++;
+	if ((*iter)->nNo == nMajority)
+	  FinishKickVote(iter, false);
+	else if ((*iter)->nYes + (*iter)->nNo == (*iter)->nNumUsers)
+	  FinishKickVote(iter, false);
+
+        PushChatEvent(new CChatEvent(CHAT_KICKxNO, u));
+        break;
+      }
+
+      case CHAT_KICKxPASS:
+      {
+        // The user here was kicked, close our connection to the user
+	if (u->chatQueue.size() < 6)  return true;
+	unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	  (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+	// Deque all the characters
+	for (unsigned short i = 0; i < 6; i++)
+	  u->chatQueue.pop_front();
+
+	// Find the user and say bye-bye to him
+	ChatUserList::iterator iter;
+	for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+	{
+	  if((*iter)->Uin() == nUin)
+	    break;
+	}
+
+	if (iter == chatUsers.end())   return true;
+
+	CBuffer bye(4);
+	SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, nUin, true);
+	
+	CloseClient(*iter);
+	break;
+      }
+
+      case CHAT_KICKxFAIL:
+      {
+        if (u->chatQueue.size() < 6)  return true;
+
+	for (unsigned short i = 0; i < 6; i++)
+	  u->chatQueue.pop_front();
+
+        PushChatEvent(new CChatEvent(CHAT_KICKxFAIL, u));
+	break;
+      }
+
+      case CHAT_KICKxYOU:
+      {
+        if (u->chatQueue.size() < 2)  return true;
+
+	for (unsigned short i = 0; i < 2; i++)
+	  u->chatQueue.pop_front();
+
+        PushChatEvent(new CChatEvent(CHAT_KICKxYOU, u));
+	break;
+      }
+
+      case CHAT_DISCONNECTIONxKICKED:
+      {
+        PushChatEvent(new CChatEvent(CHAT_DISCONNECTIONxKICKED, u));
+        u->chatQueue.pop_front();
+	break;
+      }
+
       case CHAT_DISCONNECTION: // they will disconnect anyway
       {
         u->chatQueue.pop_front();
@@ -1237,9 +1377,124 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
           PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
           break;
         }
-
-        case CHAT_DISCONNECTION: // they will disconnect anyway
+	
+	case CHAT_KICK:
         {
+	  if (u->chatQueue.size() < 4)  return true;
+	  unsigned long nUinToKick;
+	  nUinToKick = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+		       (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+          u->nToKick = nUinToKick;
+
+	  PushChatEvent(new CChatEvent(CHAT_KICK, u));
+	  break;
+	}
+
+	case CHAT_KICKxYES:
+	{
+	  if (u->chatQueue.size() < 4)  return true;
+	  unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	    (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+	  // Find the person that we received the yes vote for
+	  VoteInfoList::iterator iter;
+	  for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+	  {
+	    if ((*iter)->nUin == nUin)
+	      break;
+	  }
+
+	  if (iter == voteInfo.end())  return true;
+
+	  (*iter)->nYes++;
+
+	  // Is there a majority?
+	  unsigned short nMajority = (*iter)->nNumUsers / 2;
+	  nMajority++;
+	  if ((*iter)->nYes == nMajority)
+	    FinishKickVote(iter, true);
+          else if (((*iter)->nYes + (*iter)->nNo) == (*iter)->nNumUsers)
+	    FinishKickVote(iter, false);
+
+          PushChatEvent(new CChatEvent(CHAT_KICKxYES, u));
+	  break;
+	}
+
+	case CHAT_KICKxNO:
+	{
+	  if (u->chatQueue.size() < 4)  return true;
+	  unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	    (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+	  // Find the person that we received the no vote for
+	  VoteInfoList::iterator iter;
+	  for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+	  {
+	    if ((*iter)->nUin == nUin)
+	      break;
+	  }
+
+	  if (iter == voteInfo.end())  return true;
+
+	  (*iter)->nNo++;
+
+	  // Is there a majority?
+	  unsigned short nMajority = (*iter)->nNumUsers / 2;
+	  nMajority++;
+	  if ((*iter)->nNo == nMajority)
+	    FinishKickVote(iter, false);
+	  else if (((*iter)->nYes + (*iter)->nNo) == (*iter)->nNumUsers)
+	    FinishKickVote(iter, false);
+
+          PushChatEvent(new CChatEvent(CHAT_KICKxNO, u));
+	  break;
+	}
+
+        case CHAT_KICKxPASS:
+        {
+          // The user here was kicked, close our connection to the user
+	  if (u->chatQueue.size() < 6)  return true;
+	  unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+	    (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+	
+	  // Find the user and say bye-bye to him
+	  ChatUserList::iterator iter;
+	  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+	  {
+	    if((*iter)->Uin() == nUin)
+	     break;
+	  }
+
+	  if (iter == chatUsers.end())   return true;
+
+	  CBuffer bye(4);
+	  SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, nUin, true);
+	
+	  CloseClient(*iter);
+	  break;
+        }
+
+	case CHAT_KICKxFAIL:
+	{
+	  // The user was not kicked, a majority wasn't received
+	  PushChatEvent(new CChatEvent(CHAT_KICKxFAIL, u));
+	  break;
+	}
+
+	case CHAT_KICKxYOU:   // we were kicked
+	{
+	  PushChatEvent(new CChatEvent(CHAT_KICKxYOU, u));
+	  break;
+	}
+
+	case CHAT_DISCONNECTIONxKICKED:  // they disconnected cuz we were kicked
+	{
+	  PushChatEvent(new CChatEvent(CHAT_DISCONNECTIONxKICKED, u));
+	  break;
+	}
+      
+        case CHAT_DISCONNECTION:        // they will disconnect anyway
+	{
           break;
         }
 
@@ -1309,49 +1564,93 @@ void CChatManager::SendPacket(CPacket *p)
 */
 
 //-----CChatManager::SendBuffer----------------------------------------------
-void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd)
+void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
+                              unsigned long _nUin = 0,
+			      bool bNotIter = true)
 {
   ChatUserList::iterator iter;
-  CChatUser *u = NULL;
+  ChatUserList::iterator u_iter;
   bool ok = false;
-  CBuffer b_out(128);
+
+  if (_nUin != 0)
+  {
+    for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); u_iter++)
+    {
+      if ((*u_iter)->Uin() == _nUin)
+        break;
+    }
+
+     if (u_iter == chatUsers.end())
+       return;
+  }
+
   while (!ok)
   {
     ok = true;
-    for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+
+    // Send it to every user
+    if (_nUin == 0)
     {
-      u = *iter;
-
-      // If the socket was closed, ignore the key event
-      if (u->state != CHAT_STATE_CONNECTED || u->sock.Descriptor() == -1) continue;
-
-      if (u->sock.Version() >= 6)
+      for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+	ok = SendBufferToClient(b, cmd, *iter);
+    }  
+    else
+    {
+      // Send it to every user except _iter
+      if (bNotIter)
       {
-        b_out.PackChar(0);
-        b_out.PackChar(cmd);
-        b_out.PackUnsignedLong(b->getDataSize());
-        b_out.Pack(b->getDataStart(), b->getDataSize());
+        for (iter = chatUsers.begin(); iter != u_iter; iter++)
+	  ok = SendBufferToClient(b, cmd, *iter);
+
+	// Check to see if we are already at the end
+	// And at the same time skip the user we don't want to send this to
+        if (++iter == chatUsers.end())  return;
+
+	for (; iter != chatUsers.end(); iter++)
+	  ok = SendBufferToClient(b, cmd, *iter);
       }
+      // Send it only to _iter
       else
-      {
-        b_out.PackChar(cmd);
-        b_out.Pack(b->getDataStart(), b->getDataSize());
-      }
-
-      if (!u->sock.SendRaw(&b_out))
-      {
-        char buf[128];
-        gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
-                   u->sock.ErrorStr(buf, 128));
-        CloseClient(u);
-        ok = false;
-        break;
-      }
-
-      b_out.setDataPosWrite(b_out.getDataStart());
-      b_out.setDataPosRead(b_out.getDataStart());
+        ok = SendBufferToClient(b, cmd, *u_iter);
     }
+  } 
+}
+
+
+bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *u)
+{
+  CBuffer b_out(128);
+
+  // If the socket was closed, ignore the key event
+  if (u->state != CHAT_STATE_CONNECTED || u->sock.Descriptor() == -1)
+    return true;
+
+  if (u->sock.Version() >= 6)
+  {
+    b_out.PackChar(0);
+    b_out.PackChar(cmd);
+    b_out.PackUnsignedLong(b->getDataSize());
+    b_out.Pack(b->getDataStart(), b->getDataSize());
   }
+  else
+  {
+    b_out.PackChar(cmd);
+    b_out.Pack(b->getDataStart(), b->getDataSize());
+  }
+
+  if (!u->sock.SendRaw(&b_out))
+  {
+    char buf[128];
+    gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
+               u->sock.ErrorStr(buf, 128));
+    CloseClient(u);
+    return false;
+  }
+
+  b_out.setDataPosWrite(b_out.getDataStart());
+  b_out.setDataPosRead(b_out.getDataStart());
+  
+  return true;
 }
 
 
@@ -1425,9 +1724,73 @@ void CChatManager::SendCharacter(char c)
 
 void CChatManager::SendKick(unsigned long _nUin)
 {
+  // Take care of the vote stuff now
+  // The user we are kicking automatically is a no vote
+  // And we are an automatic yes vote
+  SVoteInfo *vote = new SVoteInfo;
+  vote->nUin = _nUin;
+  vote->nNumUsers = ConnectedUsers();
+  vote->nYes = 1;
+  vote->nNo = 1;
+  voteInfo.push_back(vote);
+ 
+  // Send the packet to all connected clients except the one we are
+  // requesting to kick
   CBuffer buf(4);
   buf.PackUnsignedLong(_nUin);
-  SendBuffer(&buf, CHAT_KICKxUSER);
+  SendBuffer(&buf, CHAT_KICK, _nUin, true);
+}
+
+
+void CChatManager::SendKickNoVote(unsigned long _nUin)
+{
+  // Tell everyone that this user has been kicked
+  CBuffer buf_TellAll(6);
+  buf_TellAll.PackUnsignedLong(_nUin);
+  buf_TellAll.PackChar(0x02);
+  buf_TellAll.PackChar(0x01);
+  SendBuffer(&buf_TellAll, CHAT_KICKxPASS, _nUin, true);
+
+  // They don't know if there was a vote or not, they just see they've been kicked
+  CBuffer buf(2);
+  buf.PackChar(0x02);
+  buf.PackChar(0x01);
+  SendBuffer(&buf, CHAT_KICKxYOU, _nUin, false);
+
+  // And close the connection to the kicked user
+  ChatUserList::iterator iter;
+  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  {
+    if((*iter)->Uin() == _nUin)
+      break;
+  }
+
+  if (iter == chatUsers.end())   return;
+
+  CBuffer bye(4);
+  SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, _nUin, false);
+
+  CloseClient(*iter);
+}
+
+
+// Only the person requesting the kick should receive it..
+// but what if more than one person has been asked to be kicked by
+// different people?  It shouldn't send a reply to everyone..
+// Mirabilis ICQ just ignores it if it's not expecting it, i believe
+void CChatManager::SendVoteYes(unsigned long _nUin)
+{
+  CBuffer buf(4);
+  buf.PackUnsignedLong(_nUin);
+  SendBuffer(&buf, CHAT_KICKxYES);
+}
+
+
+void CChatManager::SendVoteNo(unsigned long _nUin)
+{
+  CBuffer buf(4);
+  buf.PackUnsignedLong(_nUin);
+  SendBuffer(&buf, CHAT_KICKxNO);
 }
 
 
@@ -1572,6 +1935,49 @@ void CChatManager::CloseChat()
 
     pipe_thread[PIPE_READ] = pipe_thread[PIPE_WRITE] = -1;
   }
+}
+
+
+//----CChatManager::FinishKickVote-------------------------------------------
+void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
+{
+  // Find the person we are kicking in the ChatUserList
+  ChatUserList::iterator userIter;
+  for (userIter = chatUsers.begin(); userIter != chatUsers.end(); userIter++)
+  {
+    if ((*userIter)->Uin() == (*iter)->nUin)
+      break;
+  }
+
+  // User no longer in the chat
+  if (userIter == chatUsers.end())
+  {
+    delete *iter;
+    voteInfo.erase(iter);
+    return;
+  }
+
+  // Send a CHAT_KICKxPASS or CHAT_KICKxFAIL to everyone but the person
+  // that is attempting to be kicked.
+  CBuffer buf(6);
+  buf.PackUnsignedLong((*iter)->nUin);
+  buf.PackChar((*iter)->nYes);
+  buf.PackChar((*iter)->nNo);
+
+  if (bPassed)
+    SendBuffer(&buf, CHAT_KICKxPASS, (*iter)->nUin, true);
+  else
+    SendBuffer(&buf, CHAT_KICKxFAIL, (*iter)->nUin, true);
+  
+  // Send the person a notice if they were kicked
+  if (bPassed)
+  {
+    SendBuffer(&buf, CHAT_KICKxYOU, (*iter)->nUin, false);
+    CloseClient(*userIter);
+  }
+
+  delete *iter;
+  voteInfo.erase(iter);
 }
 
 
