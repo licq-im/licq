@@ -85,8 +85,6 @@ protected:
    QComboBox* cmbSARgroup, *cmbSARmsg;
    MLEditWrap* edtSARtext;
 
-   QString fontName(const QFont& f);
-
 signals:
   void signal_done();
 
