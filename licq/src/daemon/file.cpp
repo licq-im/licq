@@ -738,7 +738,7 @@ bool CIniFile::WriteNum(const char *_szKey, const signed short _nData)
 bool CIniFile::WriteNum(const char *_szKey, const char _nData)
 {
   char szN[32];
-  sprintf(szN, "%c", _nData);
+  sprintf(szN, "%d", _nData);
   return(WriteStr(_szKey, szN));
 }
 
