@@ -1,23 +1,20 @@
-CXXFLAGS += -fno-rtti -fno-exceptions
-LDFLAGS += -shared -nostdlib
-INCLUDES += -I$(top_srcdir) -I$(includedir) -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" -I../../../src/inc `gtk-config --cflags`
 
-bin_PROGRAMS = licq_jons-gtk-gui.so
+#hack, fix this in a clean manner
+libdir = $(prefix)/lib/licq
 
-licq_jons_gtk_gui_so_SOURCES = \
-	add_user_window.cpp \
-	auth_user_window.cpp \
-	away_window.cpp \
-	contact_list.cpp \
-	convo.cpp \
-	main.cpp \
-	main_window.cpp \
-	menu.cpp \
-	pipe.cpp \
-	status.cpp \
-	system_message.cpp \
-	system_status.cpp \
-	user_menu.cpp 
+INCLUDES = -Wall -pedantic -fno-rtti -fno-exceptions -D_REENTRANT \
+	-I$(top_srcdir)/../../src/inc -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
+	`gtk-config --cflags`
 
-licq_jons_gtk_gui_so_LDFLAGS += `gtk-config --libs`
-licq_jons_gtk_gui_so_LDADD = 
+lib_LTLIBRARIES = licq_jons-gtk-gui.la
+
+noinst_HEADERS = licq_gtk.h
+
+licq_jons_gtk_gui_la_SOURCES = add_user_window.cpp auth_user_window.cpp \
+	away_window.cpp contact_list.cpp convo.cpp main.cpp main_window.cpp \
+	menu.cpp pipe.cpp status.cpp system_message.cpp system_status.cpp \
+	user_menu.cpp
+
+licq_jons_gtk_gui_la_LDFLAGS = -s -module -avoid-version -rpath $(libdir) \
+	 `gtk-config --libs`
+

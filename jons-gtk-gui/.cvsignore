@@ -1,5 +1,6 @@
 Makefile.in
+Makefile
 config.h
 libtool
+stamp-h.in
 stamp-h
-Makefile
