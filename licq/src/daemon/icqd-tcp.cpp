@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -1037,6 +1038,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     case ICQ_CMDxTCP_READxDNDxMSG:
     case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
     case ICQ_CMDxTCP_READxAWAYxMSG:
+    case ICQ_CMDxTCP_READxFFCxMSG:
     case ICQ_CMDxSUB_URL:
     case ICQ_CMDxSUB_CONTACTxLIST:
       packet >> theSequence >> licqChar >> licqVersion;
@@ -1100,34 +1102,36 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     gTranslator.ServerToClient (message);
     // output the away message if there is one (ie if user status is not online)
     int nSubResult;
-    if (ackFlags == ICQ_TCPxACK_ACCEPT)
-    {
-      gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
-      nSubResult = ICQ_TCPxACK_ACCEPT;
-    }
-    else if (ackFlags == ICQ_TCPxACK_REFUSE)
+    if (ackFlags == ICQ_TCPxACK_REFUSE)
     {
       gLog.Info("%sRefusal from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
       nSubResult = (newCommand == ICQ_CMDxSUB_FILE || newCommand == ICQ_CMDxSUB_CHAT) ? ICQ_TCPxACK_ACCEPT : ICQ_TCPxACK_REFUSE;
     }
     else
     {
-      // Update the away message if it's changed
-      if (strcmp(u->AutoResponse(), message) != 0)
-      {
-        u->SetAutoResponse(message);
-        u->SetShowAwayMsg(true);
+      if(*message || ackFlags != ICQ_TCPxACK_ACCEPT) {
+        // Update the away message if it's changed
+        if (strcmp(u->AutoResponse(), message) != 0)
+        {
+          u->SetAutoResponse(message);
+          u->SetShowAwayMsg(true);
+        }
+        if (ackFlags == ICQ_TCPxACK_DND || ackFlags == ICQ_TCPxACK_OCCUPIED)
+        {
+          gLog.Info("%sReturned from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
+                    -theSequence, l);
+          nSubResult = ICQ_TCPxACK_RETURN;
+        }
+        else
+        {
+          gLog.Info("%sAuto response from %s (#%ld)%s.\n", L_TCPxSTR,
+                    u->GetAlias(), -theSequence, l);
+          nSubResult = ICQ_TCPxACK_ACCEPT;
+        }
       }
-      if (ackFlags == ICQ_TCPxACK_DND || ackFlags == ICQ_TCPxACK_OCCUPIED)
+      else if (ackFlags == ICQ_TCPxACK_ACCEPT)
       {
-        gLog.Info("%sReturned from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
-           -theSequence, l);
-        nSubResult = ICQ_TCPxACK_RETURN;
-      }
-      else
-      {
-        gLog.Info("%sAuto response from %s (#%ld)%s.\n", L_TCPxSTR,
-           u->GetAlias(), -theSequence, l);
+        gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
         nSubResult = ICQ_TCPxACK_ACCEPT;
       }
     }
