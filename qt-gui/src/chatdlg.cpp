@@ -3,6 +3,7 @@
 #endif
 
 #include <iostream.h>
+#include <qapplication.h>
 #include <ctype.h>
 
 #include "chatdlg.h"
@@ -43,7 +44,7 @@ ChatDlg::ChatDlg(unsigned long _nUin,
    mleLocal = new MLEditWrap(true, boxLocal);
    mleLocal->setEnabled(false);
 
-   btnClose = new QPushButton(_("Close Chat"), this);
+   btnClose = new QPushButton(_("&Close Chat"), this);
    btnClose->setGeometry(200, 440, 100, 20);
    //connect(btnClose, SIGNAL(clicked()), this, SLOT(chatClose()));
    connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
@@ -385,7 +386,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
       e->ignore();
       return;
    }
-   else if ((unsigned char)e->ascii() >= 32)
+   else if ((unsigned char)e->ascii() >= 32 || (unsigned char) e->ascii() == 7)
    {
       char c = e->ascii();
       gTranslator.ClientToServer(c);
@@ -438,11 +439,9 @@ void ChatDlg::chatRecv()
 
      case 0x07:  // beep
         if (m_bAudio)
-          printf("\a");
+          QApplication::beep();
         else
-        {
           mleRemote->append("\n<--BEEP-->");
-        }
         chatQueue.pop_front();
         break;
 
