@@ -23,13 +23,6 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView 
   setText(0, "*");
   setText(1, EventDescription(msg));
   setText(2, sd);
-  /*char szFlags[4];
-  szFlags[0] = msg->IsDirect() ? 'D' : ' ';
-  szFlags[1] = msg->IsUrgent() ? 'U' : ' ';
-  szFlags[2] = msg->IsMultiRec() ? 'M' : ' ';
-  szFlags[3] = '\0';
-  setText(3, szFlags);
-  setText(4, msg->IsLicq() ? msg->LicqVersionStr() : "");*/
 }
 
 MsgViewItem::~MsgViewItem(void)
@@ -66,14 +59,9 @@ MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
 {
   addColumn(tr("N"), 20);
-  //addColumn(tr("Event Type"), 115);
   addColumn(tr("Event Type"), 215);
   addColumn(tr("Time Received"), 115);
-  //addColumn(tr("Flags"), 50);
-  //addColumn(tr("Licq"), 50);
   setColumnAlignment(0, AlignCenter);
-  //setColumnAlignment(3, AlignCenter);
-  //setColumnAlignment(4, AlignRight);
   setAllColumnsShowFocus (true);
   setVScrollBarMode(AlwaysOn);
 

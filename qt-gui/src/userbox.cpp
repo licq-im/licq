@@ -24,6 +24,7 @@
 #include <qheader.h>
 #include <qkeycode.h>
 #include <qscrollbar.h>
+#include <qdragobject.h>
 
 #include <stdio.h>
 #include <ctype.h>
@@ -679,71 +680,20 @@ void CUserView::maxLastColumn()
   }
 }
 
-#if 0
-void CUserView::dragEnterEvent(QDragEnterEvent*)
-{
-  debug("received dragEnterEvent");
-}
 
-void CUserView::dragMoveEvent(QDragMoveEvent*)
+void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
-  debug("received dragMoveEvent");
-}
+  QListView::viewportMouseMoveEvent(me);
 
-void CUserView::dropEvent(QDropEvent*)
-{
-  debug("received dropEvent");
-}
-#endif
-
-/*
-#ifdef USE_KDE
-void CUserView::slot_dropAction(KDNDDropZone *zone)
-{
-  QListViewItem *item;
-  QPoint pos;
-  QStrList urls;
-  KURL url;
-
-  pos = viewport()->mapFromGlobal(QPoint(zone->getMouseX(), zone->getMouseY()));
-  if ((item=itemAt(pos))!=NULL)
+  if (me->state() == LeftButton)
   {
-    setSelected(item, true);
-    setCurrentItem(item);
-    doubleClicked(item);
-    urls = zone->getURLList();
-    url = urls.getFirst();
-    if (url.isLocalFile())
-      emit signal_dropedFile(url.path());
-    else
-      emit signal_dropedURL(url.url());
+    CUserViewItem *i = (CUserViewItem *)currentItem();
+    QTextDrag *d = new QTextDrag(QString::number(i->ItemUin()), this);
+    d->dragCopy();
   }
 }
 
 
-void CUserView::slot_dropEnter(KDNDDropZone *zone)
-{
-  QListViewItem *item = itemAt(viewport()->mapFromGlobal(QPoint(zone->getMouseX(), zone->getMouseY())));
-  if (item != NULL)
-    setCurrentItem(item);
-  else
-    setCurrentItem(NULL);
-}
-
-
-void CUserView::slot_dropLeave(KDNDDropZone *)
-{
-  setCurrentItem(NULL);
-}
-
-#else
-
-void CUserView::slot_dropAction(KDNDDropZone *) {}
-void CUserView::slot_dropEnter(KDNDDropZone *) {}
-void CUserView::slot_dropLeave(KDNDDropZone *) {}
-
-#endif
-*/
 
 //=====CUserViewTips===============================================================================
 

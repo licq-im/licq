@@ -58,6 +58,7 @@
 #include "eventdesc.h"
 #include "gui-defines.h"
 #include "refusedlg.h"
+#include "forwarddlg.h"
 
 #include "user.h"
 #include "mledit.h"
@@ -75,11 +76,13 @@ unsigned short ICQFunctions::s_nY = 100;
 
 //-----ICQFunctions::constructor---------------------------------------------
 ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
+                           CMainWindow *m,
                            unsigned long _nUin,
                            bool isAutoClose, QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
   server = s;
+  mainwin = m;
   sigman = theSigMan;
   icqEventTag = NULL;
   m_nUin = _nUin;
@@ -947,8 +950,17 @@ void ICQFunctions::SetAbout(ICQUser *u)
 
 
 
+//-----ICQFunctions::SendMsg---------------------------------------------------
+void ICQFunctions::SendMsg(QString msg)
+{
+  tabs->showPage(tabList[TAB_SEND].tab);
+  rdbMsg->setChecked(true);
+  specialFcn(0);
+  mleSend->setText(msg);
+}
+
 //-----ICQFunctions::SendUrl---------------------------------------------------
-void ICQFunctions::SendUrl(const char *url, const char *desc)
+void ICQFunctions::SendUrl(QString url, QString desc)
 {
   tabs->showPage(tabList[TAB_SEND].tab);
   rdbUrl->setChecked(true);
@@ -958,7 +970,7 @@ void ICQFunctions::SendUrl(const char *url, const char *desc)
 }
 
 //-----ICQFunctions::SendFile--------------------------------------------------
-void ICQFunctions::SendFile(const char *file, const char *desc)
+void ICQFunctions::SendFile(QString file, QString desc)
 {
   tabs->showPage(tabList[TAB_SEND].tab);
   rdbFile->setChecked(true);
@@ -1069,11 +1081,6 @@ void ICQFunctions::tabSelected(const QString &tab)
   {
      btnOk->setText(tr("Ok"));
   }
-#ifdef TEST_POS
-  printf("just shown new page: %d %d\n", x(), y());
-  move(s_nX, s_nY);
-  printf("just shown new page 2: %d %d\n", x(), y());
-#endif
 }
 
 
@@ -1159,13 +1166,11 @@ void ICQFunctions::printMessage(QListViewItem *e)
     switch (m->SubCommand())
     {
       case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-        //(void) new CChatAcceptDlg(server, m_nUin, m->Sequence());
         btnRead1->setText(tr("Accept"));
         btnRead2->setText(tr("Refuse"));
         break;
 
       case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-        //(void) new CFileAcceptDlg(server, m_nUin, (CEventFile *)m);
         btnRead1->setText(tr("Accept"));
         btnRead2->setText(tr("Refuse"));
         break;
@@ -1338,13 +1343,17 @@ void ICQFunctions::slot_readbtn2()
       break;
     }
 
-    case ICQ_CMDxSUB_MSG:
-      //btnRead2->setText(tr("Forward"));
+    case ICQ_CMDxSUB_MSG:  // Forward
+    case ICQ_CMDxSUB_URL:
+    {
+      CForwardDlg *f = new CForwardDlg(mainwin, m_xCurrentReadEvent);
+      // Move should go here to avoid flicker, but qt is stupid and
+      // will ignore any move()s until after a show().
+      //f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
+      f->show();
+      f->move(x() + width() / 2 - f->width() / 2, y() + height() / 2 - f->height() / 2);
       break;
-
-    case ICQ_CMDxSUB_URL:   // view a url
-      //btnRead2->setText(tr("Forward"));
-      break;
+    }
 
     case ICQ_CMDxSUB_REQxAUTH:
       server->AddUserToList( ((CEventAuthReq *)m_xCurrentReadEvent)->Uin());
@@ -2014,9 +2023,8 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         if (!ea->bAccepted)
         {
            u = gUserManager.FetchUser(m_nUin, LOCK_R);
-           QString result;
-           result.sprintf(tr("%s%1 with %2 refused:\n%s%3"), L_TCPxSTR, L_BLANKxSTR);
-           result.arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->szResponse);
+           QString result = tr("%1 with %2 refused:\n%3")
+              .arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->szResponse);
            gUserManager.DropUser(u);
            InformUser(this, result);
         }
@@ -2087,9 +2095,6 @@ void ICQFunctions::doneFcn(ICQEvent *e)
 
 void ICQFunctions::closeEvent(QCloseEvent *e)
 {
-#ifdef TEST_POS
-  printf("close event: %d %d\n", x(), y());
-#endif
   if (icqEventTag != NULL)
   {
     setCaption(m_sBaseTitle);
@@ -2106,12 +2111,6 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     s_nY = y();
     e->accept();
     emit signal_finished(m_nUin);
-    /*ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    if (u != NULL)
-    {
-      u->fcnDlg = NULL;
-      gUserManager.DropUser(u);
-    }*/
     delete this;
   }
 }

@@ -31,6 +31,7 @@ class MLEditWrap;
 class MsgView;
 class MLEditWrap;
 class CUserEvent;
+class CMainWindow;
 
 //=====ICQFunctions=============================================================
 
@@ -54,7 +55,7 @@ class ICQFunctions : public QWidget
 {
    Q_OBJECT
 public:
-  ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
+  ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                unsigned long _nUin, bool isAutoClose,
                QWidget *parent = 0, const char *name = 0);
   virtual ~ICQFunctions();
@@ -66,6 +67,7 @@ protected:
   struct STab tabList[8];
   int currentTab;
   CICQDaemon *server;
+  CMainWindow *mainwin;
   CSignalManager *sigman;
   QString m_sBaseTitle, m_sProgressMsg;
   CICQEventTag *icqEventTag;
@@ -159,8 +161,9 @@ protected:
   void ShowHistory();
 
 public slots:
-  void SendUrl(const char *url, const char *desc);
-  void SendFile(const char *file, const char *desc);
+  void SendMsg(QString msg);
+  void SendUrl(QString url, QString desc);
+  void SendFile(QString file, QString desc);
 
 protected slots:
    void callFcn();

@@ -136,6 +136,7 @@ protected:
   CUserViewItem *barOnline, *barOffline;
   int numOnline, numOffline;
   virtual void viewportMousePressEvent(QMouseEvent *e);
+  virtual void viewportMouseMoveEvent(QMouseEvent * me);
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );
 
