@@ -563,8 +563,7 @@ bool CFileDlg::StartAsClient(unsigned short nPort)
   if (!licqDaemon->OpenConnectionToUser(m_nUin, &m_xSocketFile, m_nPort))
   {
     WarnUser(this, tr("Unable to connect to remote file server.\n"
-                      "See the network log for details.")
-             .arg(m_xSocketFile.ErrorStr(buf, 128)));
+                      "See the network log for details."));
     return false;
   }
 
