@@ -4,6 +4,7 @@ config.h.in
 config.cache
 config.status
 Makefile
+Makefile.in
 configure
 aclocal.m4
 stamp-h.in
