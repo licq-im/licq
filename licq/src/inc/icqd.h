@@ -216,7 +216,8 @@ protected:
                  m_nTCPBaseRange,
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket,
-                 m_nServerSequence;
+                 m_nServerSequence,
+                 m_nErrorTypes;
   char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;

@@ -55,8 +55,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(szFilename);
-  licqConf.ClearFlag(INI_FxFATAL | INI_FxERROR);
-  //licqConf.SetFlag(INI_FxWARN);
+  licqConf.SetFlags(0);
 
   // -----Network configuration-----
   gLog.Info("%sNetwork configuration.\n", L_INITxSTR);
@@ -76,9 +75,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
      sprintf(remoteServerID, "Server%d", i + 1);
      sprintf(remotePortID, "ServerPort%d", i + 1);
      if (!licqConf.ReadStr(remoteServerID, remoteServerName)) continue;
-     licqConf.ClearFlag(INI_FxWARN);
      licqConf.ReadNum(remotePortID, remoteServerPort, getDefaultRemotePort());
-     licqConf.SetFlag(INI_FxWARN);
      icqServers.addServer(remoteServerName, remoteServerPort);
   }
 
@@ -105,11 +102,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
     m_szRejectFile = NULL;
 
   // Error log file
-  licqConf.ReadStr("Errors", m_szErrorFile, "log.errors");
+  licqConf.ReadStr("Errors", m_szErrorFile, "licq.log");
+  licqConf.ReadNum("ErrorTypes", m_nErrorTypes, L_ERROR | L_UNKNOWN);
   if (strcmp(m_szErrorFile, "none") != 0)
   {
     sprintf(szFilename, "%s/%s", BASE_DIR, m_szErrorFile);
-    CLogService_File *l = new CLogService_File(L_ERROR | L_UNKNOWN);
+    CLogService_File *l = new CLogService_File(m_nErrorTypes);
     if (!l->SetLogFile(szFilename, "a"))
     {
       gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
@@ -482,6 +480,7 @@ void CICQDaemon::SaveConf()
   licqConf.WriteStr("Translation", pc);
   licqConf.WriteStr("Terminal", m_szTerminal);
   licqConf.WriteStr("Errors", m_szErrorFile);
+  licqConf.WriteNum("ErrorTypes", m_nErrorTypes);
   if (m_szRejectFile == NULL)
     licqConf.WriteStr("Rejects", "none");
   else
@@ -705,7 +704,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
     delete e;
     return false;
   }
-  u->AddEvent(e);
+  u->EventPush(e);
   u->Touch();
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->Uin()));
