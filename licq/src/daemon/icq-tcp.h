@@ -550,7 +550,9 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   if ( ((nOwnerStatus == ICQ_STATUS_OCCUPIED || u->StatusToUser() == ICQ_STATUS_OCCUPIED)
          && u->AcceptInOccupied() ) ||
        ((nOwnerStatus == ICQ_STATUS_DND || u->StatusToUser() == ICQ_STATUS_DND)
-         && u->AcceptInDND() ) )
+         && u->AcceptInDND() ) ||
+       (u->StatusToUser() != ICQ_STATUS_OFFLINE && u->StatusToUser() != ICQ_STATUS_OCCUPIED
+         && u->StatusToUser() != ICQ_STATUS_DND) )
     bAccept = true;
 
   switch(command)
@@ -668,11 +670,15 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     case ICQ_CMDxSUB_CHAT:
     {
       gLog.Info("%sChat request from %s (%d).\n", L_TCPxSTR, u->GetAlias(), checkUin);
-      packet >> junkLong >> junkLong >> junkShort >> junkChar >> theSequence
-             >> licqChar >> licqVersion;
+      char szChatClients[1024];
+      packet.UnpackString(szChatClients);
+      packet.UnpackUnsignedLong(); // reversed port
+      unsigned short nPort = packet.UnpackUnsignedLong();
+      packet >> theSequence >> licqChar >> licqVersion;
       // translating string with translation table
       gTranslator.ServerToClient (message);
-      CEventChat *e = new CEventChat(message, theSequence, TIME_NOW, nMask | licqVersion);
+      CEventChat *e = new CEventChat(message, szChatClients, nPort, theSequence,
+         TIME_NOW, nMask | licqVersion);
 
       // Add the user to our list if they are new
       if (bNewUser)
