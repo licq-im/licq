@@ -336,7 +336,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   ;
 
   // Some simple validation of the packet
-  if (checkUin * command * newCommand == 0)
+  if (checkUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
     gLog.Unknown("%sInvalid TCP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));

@@ -995,12 +995,17 @@ void CPacketTcp::Create(void)
   INetSocket *s = gSocketManager.FetchSocket(m_cUser->SocketDesc());
   if (s == NULL)
   {
-   gLog.Error("%sInternal error: CPacketTcp::Create(): NULL socket.\n", L_ERRORxSTR);
-   return;
+    gLog.Error("%sNo socket found for %s (%ld) while creating packet.\n", L_ERRORxSTR,
+              m_cUser->getAlias(), m_cUser->getUin());
+    m_nLocalIP = LOCALHOST;
+    m_nLocalPort = 0;
   }
-  m_nLocalIP = NetworkIpToPacketIp(s->LocalIp());
-  m_nLocalPort = s->LocalPort();
-  gSocketManager.DropSocket(s);
+  else
+  {
+    m_nLocalIP = NetworkIpToPacketIp(s->LocalIp());
+    m_nLocalPort = s->LocalPort();
+    gSocketManager.DropSocket(s);
+  }
 }
 
 
