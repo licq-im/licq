@@ -383,7 +383,7 @@ unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMe
   }
   CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxGRANTED, sz);
   gLog.Info("%sAuthorizing user %ld (#%ld)...\n", L_SRVxSTR, nUin, p->Sequence());
-  delete sz;
+  delete [] sz;
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
   return e->EventId();

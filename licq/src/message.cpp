@@ -147,7 +147,9 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
 
 void CEventMsg::CreateDescription()
 {
-  m_szText = strdup(m_szMessage);
+  if (m_szText) delete [] m_szText;
+  m_szText = new char[strlen(m_szMessage) + 1];
+  strcpy(m_szText, m_szMessage);
 }
 
 
@@ -299,11 +301,13 @@ CEventChat::CEventChat(const char *szReason, const char *szClients,
 
 void CEventChat::CreateDescription()
 {
-  if (m_szClients == NULL)
-    m_szText = strdup(m_szReason);
+  if (m_szClients == NULL) {
+    m_szText = new char [strlen(m_szReason) + 1];
+    strcpy(m_szText, m_szReason);
+  }
   else
   {
-    m_szText = (char *)malloc(strlen(m_szReason) + strlen(m_szClients) + 128);
+    m_szText = new char[strlen(m_szReason) + strlen(m_szClients) + 128];
     sprintf(m_szText, "%s\n--------------------\nMultiparty:\n%s", m_szReason, m_szClients);
   }
 }
@@ -667,7 +671,8 @@ CEventSms::CEventSms(const char *_szMessage, unsigned short _nCommand,
 
 void CEventSms::CreateDescription()
 {
-  m_szText = strdup(m_szMessage);
+  m_szText = new char[strlen(m_szMessage) + 1];
+  strcpy(m_szText, m_szMessage);
 }
 
 CEventSms::~CEventSms()
@@ -701,7 +706,8 @@ CEventPlugin::CEventPlugin(const char *sz, unsigned short nSubCommand,
 
 void CEventPlugin::CreateDescription()
 {
-  m_szText = strdup(m_sz);
+  m_szText = new char[strlen(m_sz) + 1];
+  strcpy(m_szText, m_sz);
 }
 
 
