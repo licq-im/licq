@@ -37,6 +37,7 @@
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kfontdialog.h>
+#include <kurlrequester.h>
 #else
 #include <qapplication.h>
 #include <qfontdialog.h>
@@ -805,32 +806,32 @@ QWidget* OptionsDlg::new_sounds_options()
                                   "expressions <br> which will be replaced with the relevant "
                                    "information:</p>") + gMainWindow->usprintfHelp);
 
-  edtSndPlayer = new QLineEdit(hor);
+  edtSndPlayer = new KURLRequester(hor);
 
   QGroupBox *boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
   lay->addWidget(boxSndEvents);
 
   QLabel *lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
   QWhatsThis::add(lblSndMsg, tr("Parameter for received messages"));
-  edtSndMsg = new QLineEdit(boxSndEvents);
+  edtSndMsg = new KURLRequester(boxSndEvents);
   QLabel *lblSndUrl = new QLabel(tr("URL:"), boxSndEvents);
   QWhatsThis::add(lblSndUrl, tr("Parameter for received URLs"));
-  edtSndUrl = new QLineEdit(boxSndEvents);
+  edtSndUrl = new KURLRequester(boxSndEvents);
   QLabel *lblSndChat = new QLabel(tr("Chat Request:"), boxSndEvents);
   QWhatsThis::add(lblSndChat, tr("Parameter for received chat requests"));
-  edtSndChat = new QLineEdit(boxSndEvents);
+  edtSndChat = new KURLRequester(boxSndEvents);
   QLabel *lblSndFile = new QLabel(tr("File Transfer:"), boxSndEvents);
   QWhatsThis::add(lblSndFile, tr("Parameter for received file transfers"));
-  edtSndFile = new QLineEdit(boxSndEvents);
+  edtSndFile = new KURLRequester(boxSndEvents);
   QLabel *lblSndNotify = new QLabel(tr("Online Notify:"), boxSndEvents);
   QWhatsThis::add(lblSndNotify, tr("Parameter for online notification"));
-  edtSndNotify = new QLineEdit(boxSndEvents);
+  edtSndNotify = new KURLRequester(boxSndEvents);
   QLabel *lblSndSysMsg = new QLabel(tr("System Msg:"), boxSndEvents);
   QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
-  edtSndSysMsg = new QLineEdit(boxSndEvents);
+  edtSndSysMsg = new KURLRequester(boxSndEvents);
   QLabel *lblSndMsgSent = new QLabel(tr("Message Sent:"), boxSndEvents);
   QWhatsThis::add(lblSndMsgSent, tr("Parameter for sent messages"));
-  edtSndMsgSent = new QLineEdit(boxSndEvents);
+  edtSndMsgSent = new KURLRequester(boxSndEvents);
 
   QGroupBox *boxAcceptEvents = new QGroupBox(4, Vertical, tr("Accept Modes"), w);
   lay->addWidget(boxAcceptEvents, 1);

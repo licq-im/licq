@@ -5,6 +5,8 @@
 
 #include "ewidgets.h"
 
+#include <config.h>
+
 class CMainWindow;
 class MLEditWrap;
 
@@ -17,6 +19,19 @@ class QGroupBox;
 class QFont;
 class QRadioButton;
 class QTabWidget;
+
+#ifdef USE_KDE
+class KURLRequester;
+#else
+class KURLRequester : public QLineEdit
+{
+public:
+    KURLRequester( QWidget *parent=0, const char *name=0 )
+        : QLineEdit(parent, name) {};
+    void setURL(const QString& url) { setText(url); }
+    QString url() const { return text(); }
+};
+#endif
 
 class OptionsDlg : public QDialog
 {
@@ -77,7 +92,7 @@ protected:
    QWidget* new_sounds_options();
    QCheckBox *chkOnEvents, *chkOEAway, *chkOENA, *chkOEOccupied, *chkOEDND,
       *chkAlwaysOnlineNotify;
-   QLineEdit *edtSndPlayer, *edtSndMsg, *edtSndChat, *edtSndUrl,
+   KURLRequester *edtSndPlayer, *edtSndMsg, *edtSndChat, *edtSndUrl,
       *edtSndFile, *edtSndNotify, *edtSndSysMsg, *edtSndMsgSent;
 
    // misc tab
