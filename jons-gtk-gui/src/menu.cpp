@@ -149,7 +149,7 @@ void menu_create()
 
 void menu_system_quit(GtkWidget *blah, gpointer data)
 {
-	gtk_main_quit();
+	icq_daemon->Shutdown();
 } 
 
 void menu_system_refresh(GtkWidget *window, gpointer data)

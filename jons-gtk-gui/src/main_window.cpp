@@ -28,7 +28,7 @@ GtkWidget *contact_list;
 
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
-	gtk_main_quit();
+	icq_daemon->Shutdown();
 }
 
 GtkWidget* main_window_new(const gchar* window_title,

@@ -231,12 +231,11 @@ void contact_list_refresh()
 		} // else
 
 		// See if they are not offline and want to be auto secured
-		if(pUser->AutoSecure())
+		if(pUser->Status() != ICQ_STATUS_OFFLINE && pUser->AutoSecure())
 		{
 			// Ok, now *can* they be auto secured?
 			if((pUser->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED) && !pUser->Secure())
 				AutoSecureList.push_back(pUser->Uin());
-				//icq_daemon->icqOpenSecureChannel(_uin);
 		}
 
 		if(pUser->Secure() && (pUser->Birthday() == 0))
