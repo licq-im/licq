@@ -36,12 +36,13 @@ void set_random_chat_window();
 void search_user_window();
 void menu_security_users_window(GtkWidget *, gpointer);
 void menu_daemon_stats();
+void gtk_not_implemented(GtkWidget *, gpointer);
 
 GtkWidget *menu;
 GtkWidget *user_list_menu;
 
 GtkWidget *menu_new_item(GtkWidget *_menu, const char *str,
-	GtkSignalFunc s_func)
+	GtkSignalFunc s_func, bool sensitive)
 {
 	GtkWidget *menu_item;
 	menu_item = gtk_menu_item_new_with_label(str);
@@ -50,6 +51,9 @@ GtkWidget *menu_new_item(GtkWidget *_menu, const char *str,
 	if(_menu)
 		gtk_menu_shell_append(GTK_MENU_SHELL(_menu), menu_item);
 
+	if (!sensitive)
+		gtk_widget_set_sensitive(menu_item, false);
+		
 	gtk_widget_show(menu_item);
 
 	/* If s_func is passed into this function, connect it to the object */
@@ -60,8 +64,9 @@ GtkWidget *menu_new_item(GtkWidget *_menu, const char *str,
 	return menu_item;
 }
 
-GtkWidget * menu_new_item_with_pixmap(GtkWidget *_menu, const char *text,
-	GtkSignalFunc s_func, GdkPixbuf *icon)
+GtkWidget *
+menu_new_item_with_pixmap(GtkWidget *_menu, const char *text,
+		GtkSignalFunc s_func, GdkPixbuf *icon, gpointer data)
 {
 	GtkWidget *h_box = gtk_hbox_new(false, 0);
 
@@ -79,7 +84,7 @@ GtkWidget * menu_new_item_with_pixmap(GtkWidget *_menu, const char *text,
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(_menu), menu_item);
 	
-	if(s_func)
+	if (s_func)
 		g_signal_connect(G_OBJECT(menu_item), "activate",
 			G_CALLBACK(s_func), 0);
 	
@@ -147,6 +152,41 @@ void menu_create()
 	item = menu_new_item(sub_menu, "Random Chat",
 			     GTK_SIGNAL_FUNC(random_chat_search_window));
 
+	/* Groups Menu */
+
+	// User functions sub menu here
+	sub_menu = gtk_menu_new();
+	gtk_widget_show(sub_menu);
+
+	item = menu_new_item(menu, "Groups", 0, 0);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
+	gtk_widget_show(item);
+
+	item = menu_new_item(sub_menu, "All User",
+		    	 GTK_SIGNAL_FUNC(gtk_not_implemented));
+
+	menu_separator(sub_menu);
+
+			// Groups Here
+
+	menu_separator(sub_menu);
+
+	item = menu_new_item(sub_menu, "Online Notify",
+		    	 GTK_SIGNAL_FUNC(gtk_not_implemented));
+
+	item = menu_new_item(sub_menu, "Visible List",
+		    	 GTK_SIGNAL_FUNC(gtk_not_implemented));
+
+	item = menu_new_item(sub_menu, "Invisible List",
+		    	 GTK_SIGNAL_FUNC(gtk_not_implemented));
+
+	item = menu_new_item(sub_menu, "Ignore List",
+		    	 GTK_SIGNAL_FUNC(gtk_not_implemented));	
+
+	item = menu_new_item(sub_menu, "New Users",
+		    	 GTK_SIGNAL_FUNC(gtk_not_implemented));	
+		     
+
 	/* The rest of the menu options */
 	item = menu_new_item(menu, "Options",
 			     GTK_SIGNAL_FUNC(menu_options_create));
@@ -188,13 +228,28 @@ void menu_create()
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), system_item);
 }
 
-void menu_system_quit(GtkWidget *blah, gpointer data)
+void
+menu_system_quit(GtkWidget *blah, gpointer data)
 {
 	save_window_pos();
 	gtk_main_quit();
 } 
 
-void menu_system_refresh(GtkWidget *window, gpointer data)
+void
+menu_system_refresh(GtkWidget *window, gpointer data)
 {
 	contact_list_refresh();
+}
+
+void
+gtk_not_implemented(GtkWidget *blah, gpointer data)
+{ 
+ GtkWidget *dialog;
+
+  dialog = gtk_message_dialog_new(NULL, 
+			GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, 
+     	GTK_BUTTONS_OK, "%s", "Not Implemented");
+  g_signal_connect(G_OBJECT (dialog), "response", 
+     G_CALLBACK(gtk_widget_destroy), 0);
+  gtk_widget_show(dialog);
 }
