@@ -71,7 +71,7 @@ std::string
 entry_get_chars(GtkWidget *w)
 {
 	char *et = gtk_editable_get_chars(GTK_EDITABLE(w), 0, -1);
-	if (et != NULL) {
+	if (et != NULL && *et != 0) {
 		std::string s(et);
 		g_free(et);
 		return s;
@@ -87,3 +87,19 @@ status_change(GtkWidget *statusbar, const char *st_name, const char *newstatus)
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), id, newstatus);
 }
 
+std::string
+textview_get_chars(GtkWidget *w)
+{
+	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(w));
+  GtkTextIter b, e;
+  gtk_text_buffer_get_start_iter(tb, &b);
+  gtk_text_buffer_get_end_iter(tb, &e);
+	
+	gchar *txt = gtk_text_buffer_get_text(tb, &b, &e, FALSE);
+	if (txt != NULL && *txt != 0) {
+		std::string s(txt);
+		g_free(txt);
+		return s;
+	}
+	return std::string();
+}
