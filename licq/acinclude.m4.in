@@ -52,7 +52,7 @@ AC_DEFUN(AC_CHECK_SOCKS5,
       SOCKS_INCDIR="-I$socks_incdir -Wno-implicit"
       AC_MSG_RESULT($socks_incdir)
     fi
-    AC_DEFINE(USE_SOCKS5)
+    AC_DEFINE(USE_SOCKS5, 1, [use socks5 support])
   fi
 
   dnl Substitute these even if they're null, so as not to mess up makefiles
@@ -79,7 +79,7 @@ AC_DEFUN(AC_C_SOCKLEN_T,
 ])
 
 if test $ac_cv_c_socklen_t = no; then
-  AC_DEFINE(socklen_t, int)
+  AC_DEFINE(socklen_t, int, [define to int if socklen_t not available])
 fi
 
 ])
@@ -100,7 +100,7 @@ foo = bar.tm_gmtoff;
 ])
 ])
 if test $licq_tm_gmtoff = yes; then
-  AC_DEFINE(USE_GMTOFF)
+  AC_DEFINE(USE_GMTOFF, 1, [Define if struct tm has gmtoff])
 fi
 ])
 
@@ -119,7 +119,7 @@ AC_DEFUN(LICQ_CHECK_TIMEZONE,
 ])
 ])
 if test $licq_extern_timezone = yes; then
-  AC_DEFINE(USE_TIMEZONE)
+  AC_DEFINE(USE_TIMEZONE, 1, [Define if global variable timezone exists])
 fi
 ])
 
@@ -179,7 +179,7 @@ AC_DEFUN(LICQ_CHECK_OPENSSL,
 
     AC_MSG_CHECKING(if OpenSSL support can be enabled)
     if test "$WITH_OPENSSL" = "yes"; then
-      AC_DEFINE(USE_OPENSSL)
+      AC_DEFINE_UNQUOTED(USE_OPENSSL, 1, [Define if OpenSSL is available])
       AC_MSG_RESULT(yes)
     else
       AC_MSG_RESULT(no)

@@ -13,7 +13,16 @@ AM_CONFIG_HEADER(config.h)
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
-AC_DEFINE_UNQUOTED(INT_VERSION,$INT_VERSION)
+AC_DEFINE_UNQUOTED(INT_VERSION,$INT_VERSION, [Licq version number as int])
+AC_DEFINE_UNQUOTED(USE_FIFO, 1, [Undefine if it causes problems]) 
+
+AC_ARG_ENABLE(
+  hebrew,
+  [  --enable-hebrew  include support for hebrew reverse string],
+  USE_HEBREW=yes, USE_HEBREW=no)
+if test "$USE_HEBREW" = "yes"; then 
+  AC_DEFINE_UNQUOTED(USE_HEBREW, 1, [reverse string support])
+fi
 
 dnl Also substitute PACKAGE and VERSION in the AC_OUTPUT files
 AC_SUBST(PACKAGE)
@@ -114,7 +123,7 @@ AC_TRY_COMPILE([
 dlopen(NULL, RTLD_LAZY)
 ],[
   AC_MSG_RESULT([RTLD_LAZY])
-  AC_DEFINE_UNQUOTED(DLOPEN_POLICY, RTLD_LAZY)
+  AC_DEFINE_UNQUOTED(DLOPEN_POLICY, RTLD_LAZY, [2nd dlopen parameter])
 ],[
   AC_TRY_COMPILE([
   #include <stdio.h>
@@ -123,7 +132,7 @@ dlopen(NULL, RTLD_LAZY)
   dlopen(NULL, DL_LAZY)
   ],[
     AC_MSG_RESULT([DL_LAZY])
-    AC_DEFINE_UNQUOTED(DLOPEN_POLICY, DL_LAZY)
+    AC_DEFINE_UNQUOTED(DLOPEN_POLICY, DL_LAZY, [2nd dlopen parameter])
   ],[
     AC_MSG_RESULT([cannot determine, bailing])
     exit 1;
