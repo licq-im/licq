@@ -3,6 +3,11 @@
 
 #define QTGUI_DIR "qt-gui/"
 
+#define NUM_MSG_PER_HISTORY 20
+#define COLOR_SENT "blue"
+#define COLOR_RECEIVED "red"
+
+
 enum UserMenu {
   mnuUserView,
   mnuUserSendMsg,
