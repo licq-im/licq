@@ -1441,6 +1441,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           bNewUser = false;
         }
 
+        u->SetSendServer(false);
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
 
         gLog.Info("%sSecure channel established with %s (%ld).\n",
