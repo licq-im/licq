@@ -683,11 +683,10 @@ void CUserView::maxLastColumn()
 
 void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
+  CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
 
-  if (me->state() == LeftButton)
-  {
-    CUserViewItem *i = (CUserViewItem *)currentItem();
+  if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem())) {
     QTextDrag *d = new QTextDrag(QString::number(i->ItemUin()), this);
     d->dragCopy();
   }
