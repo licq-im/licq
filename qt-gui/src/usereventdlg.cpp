@@ -774,7 +774,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
-  if (u->Ip() == 0 && u->SocketDesc() == -1)
+  if( (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST)) ||
+      (u->Ip() == 0 && u->SocketDesc() == -1))
   {
     chkSendServer->setChecked(true);
     chkSendServer->setEnabled(false);
