@@ -47,6 +47,8 @@ protected:
 class CPacket
 {
 public:
+   virtual ~CPacket() { }
+
    CBuffer *getBuffer()  { return buffer; };
    virtual CBuffer *Finalize(INetSocket *) { return NULL; }
 
@@ -193,9 +195,6 @@ class CPU_SendCookie : public CSrvPacketTcp
 {
 public:
   CPU_SendCookie(const char *, int len);
-
-protected:
-  char *m_szCookie;
 };
 
 //-----CommonFamily----------------------------------------------------------
