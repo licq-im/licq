@@ -26,7 +26,7 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
     : LicqDialog(parent, "OwnerEdit", false, WDestructiveClose)
 {
   server = s;
-  setCaption("Edit Owner");
+  setCaption(tr("Edit Owner"));
   
   QGridLayout *lay = new QGridLayout(this, 1, 3, 8, 4);
   lay->setColStretch(2, 2);
@@ -93,7 +93,7 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
   {
     if (cmbProtocol->count() == 0)
     {
-      InformUser(this, "Currently one one owner per protocol is supported.");
+      InformUser(this, tr("Currently only one owner per protocol is supported."));
       close();
       return;
     }
