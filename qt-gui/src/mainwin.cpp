@@ -746,7 +746,7 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 // Ctrl-A : Check Auto response
 // Ctrl-P : Popup all messages
 // Ctrl-O : Toggle offline users
-// Ctrl-R : Redraw user window
+// Ctrl-L : Redraw user window
 // Delete : Remove the user from the group
 // Ctrl-Delete : Remove the user from the list
 
@@ -821,7 +821,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       ToggleShowOffline();
       break;
 
-    case Qt::Key_R:
+    case Qt::Key_L:
       updateUserWin();
       break;
 
@@ -2297,7 +2297,6 @@ void CMainWindow::slot_usermenu()
   mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
   mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
   mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
-  mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? tr("Disable") : tr("Enable")));
   // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
   mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
   mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
@@ -2462,7 +2461,7 @@ void CMainWindow::slot_hints()
 "   Ctrl-F : Send File\n"
 "   Ctrl-A : Check Auto response\n"
 "   Ctrl-P : Popup all messages\n"
-"   Ctrl-R : Redraw user window\n"
+"   Ctrl-L : Redraw user window\n"
 "   Delete : Delete user from current group\n"
 "   Ctrl-Delete : Delete user from contact list\n"
 "o  Hold control while clicking on close in the function window to remove\n"
