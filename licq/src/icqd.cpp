@@ -743,8 +743,8 @@ unsigned short VersionToUse(unsigned short v_in)
   unsigned short v_out = v_in < ICQ_VERSION_TCP ? v_in : ICQ_VERSION_TCP;
   if (v_out < 2)
   {
-    gLog.Warn("%sInvalid TCP version %d.  Attempting v2.\n", L_WARNxSTR, v_out);
-    v_out = 2;
+    gLog.Warn("%sInvalid TCP version %d.  Attempting v6.\n", L_WARNxSTR, v_out);
+    v_out = 6;
   }
   return v_out;
 }
