@@ -5,22 +5,24 @@
 
 class QPushButton;
 class QLabel;
+class QGroupBox;
 class QLineEdit;
 
 class CICQDaemon;
+class MLEditWrap;
 
 class AuthUserDlg : public QDialog
 {
    Q_OBJECT
 public:
-   AuthUserDlg (CICQDaemon *s, QWidget *parent = 0, const char *name = 0 );
+   AuthUserDlg (CICQDaemon *s, unsigned long UIN, QWidget *parent = 0, const char *name = 0 );
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;
    QLabel *lblUin;
+   QGroupBox *grpResponse;
    QLineEdit *edtUin;
-public slots:
-   void hideEvent(QHideEvent*);
+   MLEditWrap* mleResponse;
 protected slots:
    void ok();
 };

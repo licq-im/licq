@@ -1382,7 +1382,9 @@ void CMainWindow::callUserFunction(int index)
   switch(index)
   {
     case mnuUserAuthorize:
-      licqDaemon->icqAuthorizeGrant(nUin, "Authorisation granted");
+      {
+        (void) new AuthUserDlg(licqDaemon, nUin);
+      }
       break;
     case mnuUserCheckResponse:
       {
@@ -2308,7 +2310,7 @@ void CMainWindow::showAddUserDlg()
 
 void CMainWindow::showAuthUserDlg()
 {
-  (void) new AuthUserDlg(licqDaemon);
+  (void) new AuthUserDlg(licqDaemon, 0);
 }
 
 
