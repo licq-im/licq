@@ -98,7 +98,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   if (strncmp(szFilename, "none", 4) != 0)
   {
      char TranslationTableFileNameFull[MAX_FILENAME_LEN];
-     sprintf(TranslationTableFileNameFull, "%s%s%s", SHARE_DIR, TRANSLATION_DIR, szFilename);
+     sprintf(TranslationTableFileNameFull, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, szFilename);
      gTranslator.setTranslationMap (TranslationTableFileNameFull);
   }
 
@@ -784,7 +784,7 @@ void CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr)
    // Clear the character pointers
    memset(*szSubStr, 0, nMaxSubStr * sizeof(char *));
 
-   while (!bDone && i <= nMaxSubStr)
+   while (!bDone && i < nMaxSubStr)
    {
       pcStart = pcEnd;
       while (*pcEnd != '\0' && (unsigned char)*pcEnd != (unsigned char)0xFE)
