@@ -127,6 +127,7 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 void status_ffc(GtkWidget *popup, gpointer data)
 {
 	status_change(ICQ_STATUS_FREEFORCHAT);
+	away_msg_window(ICQ_STATUS_FREEFORCHAT);
 }
 
 void status_online(GtkWidget *popup, gpointer data)
