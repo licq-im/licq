@@ -1,5 +1,13 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.85
+o  Customized auto responses
+o  Totally new user window design
+o  Support for sending contact lists
+o  Multiple recipient option for messages and urls
+o  Improved chat dialog
+
+
 New in 0.81
 o  Popup all messages option
 o  Ctrl-Delete and Delete used in contact list to remove users
