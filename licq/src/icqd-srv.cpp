@@ -2403,7 +2403,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           sprintf(szClient, ".\n");
 
         ChangeUserStatus(u, nNewStatus);
-        gLog.Info(tr("%s%s (%s) changed status: %s (v%01x)%s"),
+        gLog.Info(tr("%s%s (%s) changed status: %s (v%d)%s"),
                    L_SRVxSTR, u->GetAlias(), u->IdString(), u->StatusStr(),
                    tcpVersion & 0x0F, szClient);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
