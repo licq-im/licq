@@ -41,6 +41,7 @@
 #include "log.h"
 #include "translate.h"
 #include "ewidgets.h"
+#include "icqd.h"
 
 extern int errno;
 
@@ -56,14 +57,15 @@ extern int errno;
 
 //-----Constructor------------------------------------------------------------
 CFileDlg::CFileDlg(unsigned long _nUin, const char *_szTransferFileName,
-                   unsigned long _nFileSize, bool _bServer, unsigned short _nPort,
+                   unsigned long _nFileSize, CICQDaemon *daemon, bool _bServer,
+                   unsigned short _nPort,
                    QWidget *parent, char *name)
   : QDialog(parent, name)
 {
   // If we are the server, then we are receiving a file
   char t[64];
   m_nUin = _nUin;
-  m_nPort = _nPort;
+  m_nPort = m_nGivenPort = _nPort;
   m_bServer = _bServer;
   m_nFileSize = _nFileSize;
   m_nCurrentFile = 0;
@@ -74,6 +76,7 @@ CFileDlg::CFileDlg(unsigned long _nUin, const char *_szTransferFileName,
   m_szLocalName = strdup(o->GetAlias());
   gUserManager.DropOwner();
   m_szRemoteName = NULL;
+  licqDaemon = daemon;
   m_snSend = snFile = snFileServer = NULL;
 
   setCaption(tr("ICQ file transfer"));
@@ -250,6 +253,7 @@ void CFileDlg::fileCancel()
   if (snFile != NULL) snFile->setEnabled(false);
   if (snFileServer != NULL) snFileServer->setEnabled(false);
   m_xSocketFileServer.CloseConnection();
+  if (m_bServer && m_nGivenPort != 0) licqDaemon->FreeTCPPort(m_nGivenPort);
   m_xSocketFile.CloseConnection();
   lblStatus->setText(tr("File transfer cancelled."));
   btnCancel->setText(tr("Done"));

@@ -55,17 +55,14 @@ CFileAcceptDlg::~CFileAcceptDlg(void)
 
 void CFileAcceptDlg::accept()
 {
-   unsigned short port;
-   if (m_xServer->getTcpServerPort() != 0)   // assign the file port
+   int port = m_xServer->GetTCPPort();
+   if (port != 0)   // assign the file port
    {
-      unsigned short i = 0;
-      while (i < 10 && m_xServer->getTcpPort(i)) i++;
-      port = m_xServer->getTcpServerPort() + i + 1;
-      m_xServer->setTcpPort(i, true);
+     WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
+     delete this;
    }
-   else port = 0;
-   CFileDlg *fileDlg = new CFileDlg(m_nUin, m_xEventFile->Filename(), 
-                                    m_xEventFile->FileSize(), 
+   CFileDlg *fileDlg = new CFileDlg(m_nUin, m_xEventFile->Filename(),
+                                    m_xEventFile->FileSize(), m_xServer,
                                     true, port);
    if (fileDlg->getPort() != 0)
    {
@@ -81,7 +78,7 @@ void CFileAcceptDlg::accept()
 
 void CFileAcceptDlg::refuse()
 {
-   m_xServer->icqFileTransferRefuse(m_nUin, (const char *)mleRefuseMsg->text(), 
+   m_xServer->icqFileTransferRefuse(m_nUin, (const char *)mleRefuseMsg->text(),
                          m_xEventFile->Sequence());
    hide();
    delete this;

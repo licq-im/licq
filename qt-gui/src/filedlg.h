@@ -17,7 +17,7 @@ class QPushButton;
 class QProgressBar;
 class QLabel;
 class QSocketNotifier;
-
+class CICQDaemon;
 
 struct SFileInfo
 {
@@ -32,7 +32,7 @@ class CFileDlg : public QDialog
 public:
    CFileDlg(unsigned long _nUin,
             const char *_szRemoteFileName, unsigned long _nFileSize,
-            bool _bServer, unsigned short _nPort,
+            CICQDaemon *daemon, bool _bServer, unsigned short _nPort,
             QWidget *parent = NULL, char *name = NULL);
    virtual ~CFileDlg();
 
@@ -64,12 +64,13 @@ protected:
    QProgressBar *barTransfer, *barBatchTransfer;
 
    unsigned long m_nUin;
+   CICQDaemon *licqDaemon;
    char *m_szLocalName, *m_szRemoteName, buf[128];
    struct SFileInfo m_sFileInfo;
    QSocketNotifier *snFile, *snFileServer;
    TCPSocket m_xSocketFile,
              m_xSocketFileServer;
-   unsigned short m_nPort, m_nCurrentFile, m_nState;
+   unsigned short m_nPort, m_nCurrentFile, m_nState, m_nGivenPort;
    unsigned long m_nFileSize, m_nBatchSize, m_nTotalFiles, m_nFilePos, m_nBatchPos;
    time_t m_nStartTime, m_nBatchStartTime;
    bool m_bServer;

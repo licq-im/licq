@@ -17,12 +17,14 @@
 #include "icq-defines.h"
 #include "buffer.h"
 
+class CICQDaemon;
 
 class ChatDlg : public QWidget
 {
    Q_OBJECT
 public:
-   ChatDlg(unsigned long _nUin, bool _bServer, unsigned short _nPort = 0,
+   ChatDlg(unsigned long _nUin, bool _bServer, CICQDaemon *daemon,
+           unsigned short _nPort = 0,
            QWidget *parent = NULL, char *name = NULL);
    virtual ~ChatDlg();
 
@@ -49,6 +51,7 @@ protected:
              *boxRemote;
    QPushButton *btnClose;
    QMenuBar *mnuChat;
+   CICQDaemon *licqDaemon;
 
    unsigned long m_nUin;
    CBuffer chatBuffer;
@@ -56,7 +59,7 @@ protected:
    TCPSocket m_cSocketChat,
              m_cSocketChatServer;
    QSocketNotifier *snChat, *snChatServer;
-   unsigned short m_nPort, m_nState;
+   unsigned short m_nPort, m_nState, m_nGivenPort;
    bool m_bServer, m_bAudio;
    char *m_sRemoteName,
         *m_sLocalName;

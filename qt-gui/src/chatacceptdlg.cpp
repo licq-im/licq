@@ -8,13 +8,14 @@
 #include "chatacceptdlg.h"
 #include "chatdlg.h"
 #include "mledit.h"
+#include "ewidgets.h"
 
 #include "icqd.h"
 #include "user.h"
 
-CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin, 
+CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
                          unsigned long _nSequence,
-                         QWidget *parent, const char *name) 
+                         QWidget *parent, const char *name)
    : QWidget(parent, name)
 {
    m_xServer = _xServer;
@@ -48,22 +49,19 @@ CChatAcceptDlg::CChatAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
 
 void CChatAcceptDlg::accept()
 {
-   unsigned short port;
-   if (m_xServer->getTcpServerPort() != 0)   // assign the chat port
+   int port = m_xServer->GetTCPPort();
+   if (port == -1)   // assign the chat port
    {
-      unsigned short i = 0;
-      while (i < 10 && m_xServer->getTcpPort(i)) i++;
-      port = m_xServer->getTcpServerPort() + i + 1;
-      m_xServer->setTcpPort(i, true);
+     WarnUser(this, tr("No more ports available, add more\nor close open chat/file sessions."));
+     delete this;
    }
-   else port = 0;
-   ChatDlg *chatDlg = new ChatDlg(m_nUin, true, port);
+   ChatDlg *chatDlg = new ChatDlg(m_nUin, true, m_xServer, port);
    if (chatDlg->getPort() != 0)
    {
       m_xServer->icqChatRequestAccept(m_nUin, chatDlg->getPort(), m_nSequence);
       chatDlg->show();
-   } 
-   else 
+   }
+   else
       chatDlg->hide();
 
    hide();

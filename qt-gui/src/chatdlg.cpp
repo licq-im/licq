@@ -11,6 +11,7 @@
 #include "log.h"
 #include "translate.h"
 #include "user.h"
+#include "icqd.h"
 
 #define STATE_RECVxHANDSHAKE 1
 #define STATE_RECVxCOLOR 2
@@ -20,14 +21,15 @@
 
 
 ChatDlg::ChatDlg(unsigned long _nUin,
-                 bool _bServer, unsigned short _nPort,
+                 bool _bServer, CICQDaemon *daemon, unsigned short _nPort,
                  QWidget *parent, char *name)
    : QWidget(parent, name)
 {
    m_nUin = _nUin;
-   m_nPort = _nPort;
+   m_nPort = m_nGivenPort = _nPort;
    m_bServer = _bServer;
    m_bAudio = true;
+   licqDaemon = daemon;
    snChat = snChatServer = NULL;
 
    boxRemote = new QGroupBox(tr("Remote - Not connected"), this);
@@ -44,7 +46,6 @@ ChatDlg::ChatDlg(unsigned long _nUin,
 
    btnClose = new QPushButton(tr("&Close Chat"), this);
    btnClose->setGeometry(200, 440, 100, 20);
-   //connect(btnClose, SIGNAL(clicked()), this, SLOT(chatClose()));
    connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
 
    resize(500, 475);
@@ -546,6 +547,7 @@ void ChatDlg::chatRecv()
 void ChatDlg::chatClose()
 {
   m_cSocketChat.CloseConnection();
+  if (m_bServer && m_nGivenPort != 0) licqDaemon->FreeTCPPort(m_nGivenPort);
   mleLocal->setReadOnly(true);
   disconnect(mleLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
 }
