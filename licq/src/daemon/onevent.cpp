@@ -61,7 +61,10 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   {
     char *szParam = m_aszParameters[_nEvent];
     char szFullParam[MAX_CMD_LEN] = {'\0'};
-    if (u != NULL) u->usprintf(szFullParam, szParam);
+    if (u != NULL)
+      u->usprintf(szFullParam, szParam);
+    else
+      strcpy(szFullParam, szParam);
     char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
     sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
     system(szCmd);
