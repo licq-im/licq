@@ -1782,14 +1782,15 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
     packet.UnpackString(szChatClients, sizeof(szChatClients));
     nPortReversed = packet.UnpackUnsignedShortBE();
-    packet >> nPort;
+    packet.incDataPosRead(2);
+    nPort = packet.UnpackUnsignedShort();
 
     if (nPort == 0)
       nPort = nPortReversed;
 
     if (!bIsAck)
     {
-      CEventChat *e = new CEventChat(message, szChatClients, 0, nSequence,
+      CEventChat *e = new CEventChat(message, szChatClients, nPort, nSequence,
                                      TIME_NOW, nFlags, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_CHAT;
       pEvent = e;
@@ -1939,7 +1940,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   if (bIsAck)
   {
     ICQEvent *pAckEvent = DoneServerEvent(nMsgID[1], EVENT_ACKED);
-    CExtendedAck *pExtendedAck = new CExtendedAck(nPort != 0, nPort,
+    CExtendedAck *pExtendedAck = new CExtendedAck(true, nPort,
                                                   message);
 
     if (pAckEvent)

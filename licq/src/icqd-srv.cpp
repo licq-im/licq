@@ -1942,6 +1942,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         u = new ICQUser(nUin);
         bNewUser = true;
       }
+      if (msgTxt.getTLVLen(0x0004) == 4)
+      {
+        unsigned long Ip = msgTxt.UnpackUnsignedLongTLV(0x0004);
+        rev_e_long(Ip);
+        u->SetIp(PacketIpToNetworkIp(Ip));
+      }
 
       // Special status to us?
       if (!bNewUser && nStatus != ICQ_STATUS_OFFLINE &&
@@ -2045,9 +2051,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       {
         // new unpack the message
         nMsgLen = msgTxt.UnpackUnsignedShort();
-        char* szMsg = new char[nMsgLen];
+        char* szMsg = new char[nMsgLen+1];
         for (int i = 0; i < nMsgLen; ++i)
           szMsg[i] = msgTxt.UnpackChar();
+        szMsg[nMsgLen] = '\0';
 
         szMessage = gTranslator.RNToN(szMsg);
         delete [] szMsg;
@@ -2423,9 +2430,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 		packet.incDataPosRead(nLen-2);
 		packet >> nMsgType >> nAckFlags >> nMsgFlags >> nLen;
 
-		char szMessage[nLen];
+		char szMessage[nLen+1];
 		for (unsigned short i = 0; i < nLen; i++)
 			packet >> szMessage[i];
+		szMessage[nLen] = '\0';
 		gTranslator.ServerToClient(szMessage);
 
 		CExtendedAck *pExtendedAck;

@@ -113,7 +113,7 @@ public:
   void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
      unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-     unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
+     const char *szClients, unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
   // File Transfer
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,

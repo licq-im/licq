@@ -359,6 +359,13 @@ public:
                            unsigned short _nSID, unsigned short _nType);
 };
 
+//-----ClearServerList----------------------------------------------------------
+class CPU_ClearServerList : public CPU_CommonFamily
+{
+ public:
+  CPU_ClearServerList(UinList &, unsigned short);
+};
+
 //-----UpdateToServerList-------------------------------------------------------
 class CPU_UpdateToServerList : public CPU_CommonFamily
 {
@@ -574,7 +581,7 @@ protected:
 class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
-  CPU_ChatRequest(char *szReason, const char *szChatUsers,
+  CPU_ChatRequest(char *szReason, const char *szChatUsers, unsigned short nPort,
                   ICQUser *pUser, bool bICBM);
 };
 
@@ -633,7 +640,7 @@ public:
 class CPU_AckChatAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckChatAccept(ICQUser *u, unsigned long nMsgID[],
+  CPU_AckChatAccept(ICQUser *u, const char *szClients, unsigned long nMsgID[],
                     unsigned short nSequence, unsigned short nPort);
 };
 
@@ -1021,7 +1028,7 @@ public:
 class CPacketTcp_Handshake_Confirm : public CPacketTcp_Handshake
 {
 public:
-  CPacketTcp_Handshake_Confirm();
+  CPacketTcp_Handshake_Confirm(bool bIncoming);
 };
 
 
@@ -1118,7 +1125,7 @@ class CPT_ChatRequest : public CPacketTcp
 {
 public:
   CPT_ChatRequest(char *_sMessage, const char *szChatUsers, unsigned short nPort,
-     unsigned short nLevel, ICQUser *pUser);
+     unsigned short nLevel, ICQUser *pUser, bool bICBM);
 };
 
 
@@ -1248,8 +1255,8 @@ public:
 class CPT_AckChatAccept : public CPT_Ack
 {
 public:
-  CPT_AckChatAccept(unsigned short _nPort, unsigned long _nSequence,
-                    ICQUser *_cUser);
+  CPT_AckChatAccept(unsigned short _nPort, const char *szClients,
+                    unsigned long _nSequence, ICQUser *_cUser, bool bICBM);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD 95 CF
       60 AD 95 1E 3C 00 00 04 00 00 00 00 01 00 00 40 78 00 00 78 40 00 00 02
       00 00 00 */

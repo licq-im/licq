@@ -47,7 +47,7 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
   m_nSize = 10 + strlen(_sLocalName) + 16;
   InitBuffer();
 
-  buffer->PackUnsignedLong(0x64);
+  buffer->PackUnsignedLong(0x65);
   buffer->PackUnsignedLong(-ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackString(_sLocalName);
@@ -101,7 +101,7 @@ CChatClient::CChatClient(ICQUser *u)
   m_nIntIp = u->IntIp();
   m_nMode = u->Mode();
   m_nSession = 0;
-  m_nHandshake = 0x64;
+  m_nHandshake = 0x65;
 
   // These will still need to be set
   m_nPort = 0;
@@ -122,8 +122,8 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
   m_nUin = b.UnpackUnsignedLong();
   m_nIp = b.UnpackUnsignedLong();
   m_nIntIp = b.UnpackUnsignedLong();
-  b.UnpackUnsignedShort();
   m_nMode = b.UnpackChar();
+  b.UnpackUnsignedShort();
   m_nSession = b.UnpackUnsignedShort();
   m_nHandshake = b.UnpackUnsignedLong();
 
@@ -181,10 +181,29 @@ bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
 
   m_nVersion = hand.VersionMajor();
   m_nUin = hand.SourceUin();
-  m_nIp = hand.LocalIp();
-  m_nIntIp = hand.RealIp();
+  m_nIntIp = hand.LocalIp();
+  m_nIp = hand.RealIp();
   m_nMode = hand.Mode();
   m_nHandshake = 0x64;
+
+  // These will still need to be set
+  m_nPort = 0;
+  m_nSession = 0;
+
+  return true;
+}
+
+
+bool CChatClient::LoadFromHandshake_v7(CBuffer &b)
+{
+  CPacketTcp_Handshake_v7 hand(&b);
+
+  m_nVersion = hand.VersionMajor();
+  m_nUin = hand.SourceUin();
+  m_nIntIp = hand.LocalIp();
+  m_nIp = hand.RealIp();
+  m_nMode = hand.Mode();
+  m_nHandshake = 0x65;
 
   // These will still need to be set
   m_nPort = 0;
@@ -224,7 +243,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
             + clientList.size() * (sizeof(CChatClient) + 2);
   InitBuffer();
 
-  buffer->PackUnsignedLong(0x64);
+  buffer->PackUnsignedLong(0x65);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackString(szLocalName);
   buffer->PackChar(nColorForeRed);
@@ -244,7 +263,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);
   buffer->PackString(szFontFamily);
-  buffer->PackUnsignedShort(0x0002);
+  buffer->PackUnsignedShort(0x2200);
   buffer->PackChar(clientList.size());
 
   ChatClientPList::iterator iter;
@@ -255,8 +274,8 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
     buffer->PackUnsignedLong((*iter)->m_nUin);
     buffer->PackUnsignedLong((*iter)->m_nIp);
     buffer->PackUnsignedLong((*iter)->m_nIntIp);
-    buffer->PackUnsignedShort(ReversePort((*iter)->m_nPort));
     buffer->PackChar((*iter)->m_nMode);
+    buffer->PackUnsignedShort((*iter)->m_nPort);
     buffer->PackUnsignedShort((*iter)->m_nSession);
     buffer->PackUnsignedLong((*iter)->m_nHandshake);
   }
@@ -316,7 +335,7 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
   if (bFontUnderline) m_nFontFace |= FONT_UNDERLINE;
   m_szFontFamily = NULL;
 
-  m_nSize = 29 + strlen(szFontFamily) + 4;
+  m_nSize = 29 + strlen(szFontFamily) + 3;
   InitBuffer();
 
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
@@ -328,8 +347,8 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);
   buffer->PackString(szFontFamily);
-  buffer->PackUnsignedShort(0x0002);
-  buffer->PackChar(0);
+  buffer->PackUnsignedShort(0x2200);
+//  buffer->PackChar(0);
 }
 
 CPChat_Font::CPChat_Font(CBuffer &b)
@@ -539,12 +558,13 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   pipe(pipe_events);
 
   m_nUin = nUin;
-  m_nSession = rand();
+//  m_nSession = rand();
   licqDaemon = d;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   strncpy(m_szName, o->GetAlias(), 32);
   m_szName[31] = '\0';
+  m_nSession = o->Port();
   gUserManager.DropOwner();
 
   m_nFontFace = FONT_PLAIN;
@@ -588,6 +608,12 @@ bool CChatManager::StartChatServer()
 
 bool CChatManager::StartAsServer()
 {
+  if (!StartChatServer())
+  {
+    PushChatEvent(new CChatEvent(CHAT_ERRORxBIND, NULL));
+    return false;
+  }
+
   // Create the socket manager thread
   if (pthread_create(&thread_chat, NULL, &ChatManager_tep, this) == -1)
   {
@@ -680,7 +706,7 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   u->m_pClient->m_nIp = s->RemoteIp();
   u->m_pClient->m_nIntIp = s->RemoteIp();
   u->m_pClient->m_nMode = MODE_DIRECT;
-  u->m_pClient->m_nHandshake = 0x64;
+  u->m_pClient->m_nHandshake = 0x65;
 
   // These will still need to be set
   u->m_pClient->m_nPort = 0;
@@ -734,6 +760,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
   {
     case CHAT_STATE_HANDSHAKE:
     {
+      CBuffer handshake = u->sock.RecvBuffer();
       // get the handshake packet
       if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort(), false))
       {
@@ -742,17 +769,21 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       }
       switch (u->sock.Version())
       {
+        case 1:
         case 2:
         case 3:
-          u->m_pClient->LoadFromHandshake_v2(u->sock.RecvBuffer());
+          u->m_pClient->LoadFromHandshake_v2(handshake);
           break;
         case 4:
-          u->m_pClient->LoadFromHandshake_v4(u->sock.RecvBuffer());
+        case 5:
+          u->m_pClient->LoadFromHandshake_v4(handshake);
           break;
         case 6:
+          u->m_pClient->LoadFromHandshake_v6(handshake);
+          break;
         case 7:
         case 8:
-          u->m_pClient->LoadFromHandshake_v6(u->sock.RecvBuffer());
+          u->m_pClient->LoadFromHandshake_v7(handshake);
           break;
       }
       gLog.Info("%sChat: Received handshake from %ld [v%ld].\n", L_TCPxSTR,
@@ -831,7 +862,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
       CPChat_ColorFont pin(u->sock.RecvBuffer());
       u->uin = pin.Uin();
-      m_nSession = pin.Session();
+//      m_nSession = pin.Session();
 
       // just received the color/font packet
       strncpy(u->chatname, pin.Name(), 32);
@@ -846,7 +877,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       u->colorBack[2] = pin.ColorBackBlue();
 
       // set up the remote font
-      m_nSession = pin.Session();
+//      m_nSession = pin.Session();
       u->fontSize = pin.FontSize();
       u->fontFace = pin.FontFace();
       strncpy(u->fontFamily, pin.FontFamily(), 64);
@@ -1294,6 +1325,10 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
                  (u->chatQueue[3] << 8) |
                  (u->chatQueue[4] << 16) |
                  (u->chatQueue[5] << 24);
+
+      // FIXME did old clients used to do that too???
+      if (chatChar == CHAT_FONTxFAMILY) chatSize--;
+
       if (u->chatQueue.size() < 6 + chatSize) return true;
       for (unsigned short i = 0; i < 6; i++)
         u->chatQueue.pop_front();
@@ -1657,7 +1692,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
   {
     b_out.PackChar(0);
     b_out.PackChar(cmd);
-    b_out.PackUnsignedLong(b->getDataSize());
+    b_out.PackUnsignedLong(b->getDataSize() + ((cmd == CHAT_FONTxFAMILY)?1:0));
     b_out.Pack(b->getDataStart(), b->getDataSize());
   }
   else
@@ -1854,7 +1889,7 @@ void CChatManager::ChangeFontFamily(const char *f)
   //CPChat_ChangeFontFamily p(f);
   //SendPacket(&p);
 
-  CBuffer buf(strlen_safe(f) + 6);
+  CBuffer buf(strlen_safe(f) + 5);
   buf.PackString(f);
   buf.PackUnsignedShort(0x2200);
   // 0x2200 west
@@ -2073,14 +2108,6 @@ void *ChatManager_tep(void *arg)
       return NULL;
     }
     chatman->m_pChatClient = 0;
-  }
-  else
-  {
-    if (!chatman->StartChatServer())
-    {
-      chatman->PushChatEvent(new CChatEvent(CHAT_ERRORxBIND, NULL));
-      return NULL;
-    }
   }
 
   while (true)

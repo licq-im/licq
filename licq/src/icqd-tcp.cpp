@@ -410,8 +410,8 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 	ICQEvent *result = NULL;
 	if (bServer)
 	{
-		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos, szChatUsers, u,
-                               (u->Version() > 7));
+		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos,
+                               szChatUsers, nPort, u, (u->Version() > 7));
 		f = INT_VERSION;
 		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
 																	 TIME_NOW, f);
@@ -423,7 +423,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 	else
 	{
 		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, szChatUsers, nPort,
-																						 nLevel, u);
+						 nLevel, u, (u->Version() > 7));
 		f = E_DIRECT | INT_VERSION;
 		if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
 		if (u->Secure()) f |= E_ENCRYPTED;
@@ -491,7 +491,8 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
 
 //-----CICQDaemon::chatAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-   unsigned long nSequence, unsigned long nMsgID[2], bool bDirect)
+   const char *szClients, unsigned long nSequence, unsigned long nMsgID[2],
+   bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
@@ -502,12 +503,12 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
 
 	if (bDirect)
 	{
-		CPT_AckChatAccept p(nPort, nSequence, u);
+		CPT_AckChatAccept p(nPort, szClients, nSequence, u, u->Version() > 7);
 		AckTCP(p, u->SocketDesc());
 	}
 	else
 	{
-		CPU_AckChatAccept *p = new CPU_AckChatAccept(u, nMsgID, nSequence,
+		CPU_AckChatAccept *p = new CPU_AckChatAccept(u, szClients, nMsgID, nSequence,
 																								 nPort);
 		SendEvent_Server(p);
 	}
@@ -732,7 +733,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
 			if (bConfirm)
 			{
 				// Send handshake accepted
-				CPacketTcp_Handshake_Confirm p_confirm;
+				CPacketTcp_Handshake_Confirm p_confirm(false);
 				if (!s->SendPacket(p_confirm.getBuffer())) goto sock_error;
 
 				// Wait for reverse handshake accepted
@@ -1537,9 +1538,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         unsigned long nFileLength;
         packet >> junkLong
                >> nLenFilename;
-        char szFilename[nLenFilename];
+        char szFilename[nLenFilename+1];
         for (unsigned short i = 0; i < nLenFilename; i++)
            packet >> szFilename[i];
+        szFilename[nLenFilename] = '\0';
         packet >> nFileLength
                >> junkLong;
         if (nInVersion <= 4) packet >> theSequence;
@@ -1622,9 +1624,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					packet.incDataPosRead(2); // port (BE)
 					packet.incDataPosRead(2); // unknown
 					packet >> nLen; // filename len, including NULL
-					char szFilename[nLen];
+					char szFilename[nLen+1];
 					for (unsigned short i = 0; i < nLen; i++)
 						packet >> szFilename[i];
+					szFilename[nLen] = '\0';
 					packet >> nFileSize;
 					packet.incDataPosRead(2); // reversed port (BE)
 
@@ -1654,8 +1657,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 				{
 					char szChatClients[1024];
  					packet.UnpackString(szChatClients, sizeof(szChatClients));
-					nPortReversed = packet.UnpackUnsignedShortBE();
-					packet >> nPort;
+					nPort = packet.UnpackUnsignedShortBE();
+					packet >> nPortReversed;
 
 					if (nPort == 0)
 						nPort = nPortReversed;
@@ -2002,7 +2005,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					if (nPort == 0)
 						nPort = nPortReversed;
 
-					pExtendedAck = new CExtendedAck(nPort != 0, nPort, szMessage);
+					pExtendedAck = new CExtendedAck(true, nPort, szMessage);
 					break;
 				}
 				} // switch nICBMCommand
@@ -2335,7 +2338,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
 			if (bConfirm)
 			{
 				// Get handshake confirmation
-				CPacketTcp_Handshake_Confirm p_confirm;
+				CPacketTcp_Handshake_Confirm p_confirm(true);
 				int nGot = s->RecvBuffer().getDataSize();
 				s->ClearRecvBuffer();
       

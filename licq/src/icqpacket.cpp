@@ -1225,7 +1225,7 @@ void CPU_AdvancedMessage::InitBuffer()
 
 //-----ChatRequest-------------------------------------------------------------
 CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
-																 ICQUser *_pUser, bool bICBM)
+                                 unsigned short nPort, ICQUser *_pUser, bool bICBM)
 	: CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
 												0, false, 0)
 {
@@ -1263,8 +1263,10 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 		buffer->PackString(_szMessage);
 
 	buffer->PackString(_szChatUsers);
-	buffer->PackUnsignedLong(0);
-	buffer->PackUnsignedLong(0);
+	buffer->PackUnsignedShortBE(nPort);
+	buffer->PackUnsignedShort(0);
+	buffer->PackUnsignedShort(nPort);
+	buffer->PackUnsignedShort(0);
 	buffer->PackUnsignedLongBE(0x00030000); // ack request
 }
 
@@ -1525,17 +1527,18 @@ CPU_AckFileRefuse::CPU_AckFileRefuse(ICQUser *u, unsigned long nMsgID[2],
 }
 
 //-----AckChatAccept-----------------------------------------------------------
-CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, unsigned long nMsgID[2],
-																		 unsigned short nSequence,
-																		 unsigned short nPort)
+CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, const char *szClients,
+                                          unsigned long nMsgID[2],
+                                          unsigned short nSequence,
+                                          unsigned short nPort)
 	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_CHAT, 0, true, nSequence,
                              nMsgID[0], nMsgID[1])
 {
 	// XXX This is not the ICBM way yet!
-	m_nSize += 11;
+	m_nSize += 11 + strlen_safe(szClients);
 	InitBuffer();
 
-	buffer->PackString("");
+	buffer->PackString(szClients);
 	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
 	buffer->PackUnsignedLong(nPort);
 }
@@ -1571,7 +1574,7 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   tmTime = gmtime(&tTime);
   strftime(szTime, 30, "%a, %d %b %Y %T %Z", tmTime);
   
-  char szParsedNumber[16] = "+";
+  char szParsedNumber[17] = "+";
   ParseDigits(&szParsedNumber[1], szNumber, 15);
   
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -2024,6 +2027,68 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
 
   if (szUnicodeName)
     delete [] szUnicodeName;
+}
+
+//-----ClearServerList------------------------------------------------------
+CPU_ClearServerList::CPU_ClearServerList(UinList &uins,
+                                         unsigned short _nType)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
+{
+  int nSize = 0;
+  
+  UinList::iterator i;
+  for (i = uins.begin(); i != uins.end(); i++)
+  {
+    ICQUser *pUser = gUserManager.FetchUser(*i, LOCK_R);
+    if (pUser)
+    {
+      nSize += strlen(pUser->UinString()) + 2;
+      nSize += 8;
+      if (pUser->GetAwaitingAuth())
+        nSize += 4;
+      gUserManager.DropUser(pUser);
+    }
+  }
+  
+  m_nSize += nSize;
+  InitBuffer();
+  
+  for (i = uins.begin(); i != uins.end(); i++)
+  {
+    ICQUser *pUser = gUserManager.FetchUser(*i, LOCK_W);
+    if (pUser)
+    {
+      bool bAuthReq = pUser->GetAwaitingAuth();
+      unsigned short nGSID = 0;
+      
+      if (_nType == ICQ_ROSTxNORMAL)
+        nGSID = pUser->GetGSID();
+        
+      buffer->PackUnsignedShortBE(strlen(pUser->UinString()));
+      buffer->Pack(pUser->UinString(), strlen(pUser->UinString()));
+      buffer->PackUnsignedShortBE(nGSID);
+      buffer->PackUnsignedShortBE(pUser->GetSID());
+      buffer->PackUnsignedShortBE(_nType);
+      buffer->PackUnsignedShortBE(bAuthReq ? 4 : 0);
+      if (bAuthReq)
+        buffer->PackUnsignedShortBE(0x00660000);
+        
+      // Clear their info now
+      if (_nType == ICQ_ROSTxNORMAL)
+      {
+        pUser->SetSID(0);
+        pUser->SetGSID(0);
+      }
+      else if (_nType == ICQ_ROSTxVISIBLE)
+        pUser->SetVisibleSID(0);
+      else if (_nType == ICQ_ROSTxINVISIBLE)
+        pUser->SetInvisibleSID(0);
+        
+      if (pUser->GetSID() == 0 && pUser->GetVisibleSID() == 0 &&
+          pUser->GetInvisibleSID() == 0)
+        pUser->SetAwaitingAuth(false);
+    }
+  }
 }
 
 //-----UpdateToServerList---------------------------------------------------
@@ -2955,7 +3020,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer->PackUnsignedShort(0x002b); // size
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
-  buffer->PackUnsignedLong(nLocalPort);
+  buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackUnsignedLong(s_nLocalIp);
@@ -2998,22 +3063,20 @@ CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
   buffer->PackUnsignedLong(1);
 }
 
-CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm()
+CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(bool bIncoming)
 {
   m_nSize = 33;
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(0x03);
-  buffer->PackChar(0x0A);
-  buffer->PackUnsignedLongBE(0x00000001);
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x00000001);
-  buffer->PackUnsignedShortBE(0x0004);
-  buffer->PackChar(0x00);
+  buffer->PackUnsignedLong(0x0000000A);
+  buffer->PackUnsignedLong(0x00000001);
+  buffer->PackUnsignedLong(bIncoming ? 0x00000001 : 0x00000000);
+  buffer->PackUnsignedLong(0x00000000);
+  buffer->PackUnsignedLong(0x00000000);
+  buffer->PackUnsignedLong(bIncoming ? 0x00040001 : 0x00000000);
+  buffer->PackUnsignedLong(0x00000000);
+  buffer->PackUnsignedLong(bIncoming ? 0x00000000 : 0x00040001);
 }
 
 //=====PacketTcp================================================================
@@ -3396,16 +3459,57 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
 
 //-----ChatRequest--------------------------------------------------------------
 CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
-   unsigned short nPort, unsigned short nLevel, ICQUser *pUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage, true,
-    nLevel, pUser)
+   unsigned short nPort, unsigned short nLevel, ICQUser *pUser, bool bICBM)
+  : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, bICBM ? "" : _sMessage, true, nLevel, pUser)
 {
-  m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
+  int nUsersLen = strlen_safe(szChatUsers);
+  int nMessageLen = strlen_safe(_sMessage);
+
+  if (bICBM)
+    m_nSize += 58 + strlen_safe(szChatUsers) + strlen_safe(_sMessage) + 21;
+  else
+    m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
+
   InitBuffer();
 
-  buffer->PackString(szChatUsers);
-  buffer->PackUnsignedLong(ReversePort(nPort));
-  buffer->PackUnsignedLong(nPort);
+  if (bICBM)
+  {
+    buffer->PackUnsignedShort(0x3A);
+    buffer->PackUnsignedLongBE(0xBFF720B2);
+    buffer->PackUnsignedLongBE(0x378ED411);
+    buffer->PackUnsignedLongBE(0xBD280004);
+    buffer->PackUnsignedLongBE(0xAC96D905);
+    buffer->PackUnsignedShort(0);
+
+    buffer->PackUnsignedLong(21);
+    buffer->Pack("Send / Start ICQ Chat", 21);
+ 
+    buffer->PackUnsignedLongBE(0x00000100);
+    buffer->PackUnsignedLongBE(0x00010000);
+    buffer->PackUnsignedLongBE(0);
+    buffer->PackUnsignedShortBE(0);
+    buffer->PackChar(0);
+
+    buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
+
+    buffer->PackUnsignedLong(nMessageLen);
+
+    if (nMessageLen)
+      buffer->Pack(_sMessage, nMessageLen);
+
+    buffer->PackString(szChatUsers);
+
+    buffer->PackUnsignedShortBE(nPort);
+    buffer->PackUnsignedShort(0);
+    buffer->PackUnsignedShort(nPort);
+    buffer->PackUnsignedShort(0);
+  }
+  else
+  {
+    buffer->PackString(szChatUsers);
+    buffer->PackUnsignedLong(ReversePort(nPort));
+    buffer->PackUnsignedLong(nPort);
+  }
 
   PostBuffer();
 }
@@ -3721,19 +3825,56 @@ CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
 
 
 //-----AckChatAccept------------------------------------------------------------
-CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort,
-                                    unsigned long _nSequence, ICQUser *_cUser)
-  : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
+CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClients,
+                                    unsigned long _nSequence, ICQUser *_cUser,
+                                    bool bICBM)
+  : CPT_Ack(bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
 {
   m_nPort = _nPort;
   m_nStatus = ICQ_TCPxACK_ONLINE;
 
-  m_nSize += 11;
+  if (bICBM)
+    m_nSize += 79 + strlen_safe(szClients);
+  else
+    m_nSize += 11 + strlen_safe(szClients);
+
   InitBuffer();
 
-  buffer->PackString("");
-  buffer->PackUnsignedLong(ReversePort(m_nPort));
-  buffer->PackUnsignedLong(m_nPort);
+  if (bICBM)
+  {
+    buffer->PackUnsignedShort(0x3A);
+    buffer->PackUnsignedLongBE(0xBFF720B2);
+    buffer->PackUnsignedLongBE(0x378ED411);
+    buffer->PackUnsignedLongBE(0xBD280004);
+    buffer->PackUnsignedLongBE(0xAC96D905);
+    buffer->PackUnsignedShort(0);
+
+    buffer->PackUnsignedLong(21);
+    buffer->Pack("Send / Start ICQ Chat", 21);
+ 
+    buffer->PackUnsignedLongBE(0x00000100);
+    buffer->PackUnsignedLongBE(0x00010000);
+    buffer->PackUnsignedLongBE(0);
+    buffer->PackUnsignedShortBE(0);
+    buffer->PackChar(0);
+
+    buffer->PackUnsignedLong(15 + strlen_safe(szClients));
+
+    buffer->PackUnsignedLong(0);
+
+    buffer->PackString(szClients);
+
+    buffer->PackUnsignedShortBE(m_nPort);
+    buffer->PackUnsignedShort(0);
+    buffer->PackUnsignedShort(m_nPort);
+    buffer->PackUnsignedShort(0);
+  }
+  else
+  {
+    buffer->PackString("");
+    buffer->PackUnsignedLong(ReversePort(m_nPort));
+    buffer->PackUnsignedLong(m_nPort);
+  }
 
   PostBuffer();
 }
