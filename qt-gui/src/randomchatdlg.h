@@ -5,6 +5,7 @@
 #include "config.h"
 #endif
 
+#include "licqdialog.h"
 
 class CMainWindow;
 class CICQDaemon;
@@ -14,7 +15,7 @@ class QPushButton;
 class ICQEvent;
 
 
-class CRandomChatDlg : public QWidget
+class CRandomChatDlg : public LicqDialog
 {
 Q_OBJECT
 public:
@@ -34,7 +35,7 @@ protected slots:
 };
 
 
-class CSetRandomChatGroupDlg : public QWidget
+class CSetRandomChatGroupDlg : public LicqDialog
 {
 Q_OBJECT
 public:

@@ -2,6 +2,7 @@
 #define EDITGRP_H
 
 #include <qwidget.h>
+#include "licqdialog.h"
 
 class QListBox;
 class QLineEdit;

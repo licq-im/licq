@@ -41,7 +41,7 @@
 //---------------------------------------------------------------------------
 
 CQtLogWindow::CQtLogWindow(QWidget *parent)
-  : QWidget(parent, "NetworkLog")
+  : LicqDialog(parent, "NetworkLog")
 {
   setCaption(tr("Licq Network Log"));
 

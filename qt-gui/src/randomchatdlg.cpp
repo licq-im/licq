@@ -36,7 +36,7 @@
 
 CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
                                CSignalManager *_sigman, QWidget* p)
-  : QWidget(p, "RandomChatDialog", WDestructiveClose)
+  : LicqDialog(p, "RandomChatDialog", false, WDestructiveClose)
 {
   mainwin = _mainwin;
   server = s;
@@ -146,7 +146,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
 
 CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
                                CSignalManager *_sigman, QWidget* p)
-  : QWidget(p, "SetRandomChatGroupDlg")
+  : LicqDialog(p, "SetRandomChatGroupDlg")
 {
   server = s;
   sigman = _sigman;
