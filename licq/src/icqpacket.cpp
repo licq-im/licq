@@ -666,12 +666,13 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
   // we use that to tell other users that we're Licq
   // ICQ99b:  0x385BFAAC;
 #ifdef USE_OPENSSL
-  buffer->PackUnsignedLong(LICQ_WITHSSL | INT_VERSION);
+   buffer->PackUnsignedLong(LICQ_WITHSSL | INT_VERSION);
 #else
-  buffer->PackUnsignedLong(LICQ_WITHOUTSSL | INT_VERSION);
+   buffer->PackUnsignedLong(LICQ_WITHOUTSSL | INT_VERSION);
 #endif
-// timestamp of something? (varies)
-  buffer->PackUnsignedLong(0x00000000); // totally unknown (non-zero in other clients)
+
+// timestamp installation date
+  buffer->PackUnsignedLong(0x00000000);
   buffer->PackUnsignedLong(0x00000000); // always zero
 #endif
 }
@@ -1480,8 +1481,8 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  //buffer->PackUnsignedLong(0x00270006);
-  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(0x00270006);
+  //buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort);
@@ -1745,8 +1746,9 @@ void CPacketTcp::InitBuffer_v6()
 
 void CPacketTcp::PostBuffer_v6()
 {
-  buffer->PackChar('L');
-  buffer->PackUnsignedShort(INT_VERSION);
+  // breaks ICQ2001
+//   buffer->PackChar('L');
+//   buffer->PackUnsignedShort(INT_VERSION);
 }
 
 
