@@ -21,6 +21,7 @@
 
 #include <qcheckbox.h>
 #include <qgroupbox.h>
+#include <qlayout.h>
 
 #include "registeruser.h"
 #include "ewidgets.h"
@@ -32,12 +33,25 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
 {
   server = s;
   grpInfo = new QGroupBox(this);
-  nfoUin = new CInfoField(10, 15, 40, 5, 100, tr("Uin:"), false, grpInfo);
-  nfoPassword1 = new CInfoField(10, 40, 40, 5, 100, tr("Password:"), false, grpInfo);
-  nfoPassword2 = new CInfoField(10, 65, 40, 5, 100, tr("Verify:"), false, grpInfo);
+  QGridLayout *lay = new QGridLayout(grpInfo, 4, 2, 5, 5);
+
+  lay->addWidget(new QLabel(tr("Uin:"), grpInfo), 0, 0);
+  nfoUin = new CInfoField(grpInfo, false);
+  lay->addWidget(nfoUin, 0, 1);
+
+  lay->addWidget(new QLabel(tr("Password:"), grpInfo), 1, 0);
+  nfoPassword1 = new CInfoField(grpInfo, false);
   nfoPassword1->setEchoMode(QLineEdit::Password);
+  lay->addWidget(nfoPassword1, 1, 1);
+
+  lay->addWidget(new QLabel(tr("Verify:"), grpInfo), 2, 0);
+  nfoPassword2 = new CInfoField(grpInfo, false);
   nfoPassword2->setEchoMode(QLineEdit::Password);
+  lay->addWidget(nfoPassword2, 2, 1);
+
   chkExistingUser = new QCheckBox(tr("&Register Existing User"), grpInfo);
+  lay->addMultiCellWidget(chkExistingUser, 3, 3, 0, 1);
+
   btnOk = new QPushButton(tr("&Ok"), this);
   btnCancel = new QPushButton(tr("&Cancel"), this);
   connect (btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
@@ -113,10 +127,6 @@ void RegisterUserDlg::slot_ok()
 void RegisterUserDlg::resizeEvent(QResizeEvent *)
 {
   grpInfo->setGeometry(10, 15, width() - 20, height() - 70);
-  nfoUin->setGeometry(10, 15, 60, 5, width() - 105);
-  nfoPassword1->setGeometry(10, 40, 60, 5, width() - 105);
-  nfoPassword2->setGeometry(10, 65, 60, 5, width() - 105);
-  chkExistingUser->setGeometry(10, 95, width() - 40, 20);
   btnOk->setGeometry(width() / 2 - 95, height() - 40, 80, 30);
   btnCancel->setGeometry(width() / 2 + 15, height() - 40, 80, 30);
 }
