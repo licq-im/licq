@@ -670,7 +670,7 @@ int CICQDaemon::StartTCPServer(TCPSocket *s)
   char sz[64];
   if (s->Descriptor() != -1)
   {
-    gLog.Info("%sLocal TCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(sz), s->LocalPort());
+    gLog.Info("%sLocal TCP server started on port %d.\n", L_TCPxSTR, s->LocalPort());
   }
   else if (s->Error() == EADDRINUSE)
   {
@@ -1139,6 +1139,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   case ICQ_CMDxSND_REGISTERxUSER:
   case ICQ_CMDxSND_META:
   case ICQ_CMDxSND_RANDOMxSEARCH:
+  {
     switch (e->m_eResult)
     {
       case EVENT_ERROR:
@@ -1158,6 +1159,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
         return;
     }
     break;
+  }
 
   default:
     gLog.Error("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
@@ -1169,10 +1171,13 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   // Some special commands to deal with
 #if ICQ_VERSION == 5
   if (nCommand != ICQ_CMDxTCP_START &&
-           (eResult == EVENT_TIMEDOUT || eResult == EVENT_ERROR) )
+      (eResult == EVENT_TIMEDOUT || eResult == EVENT_ERROR) )
   {
     if (nCommand == ICQ_CMDxSND_LOGON)
+    {
+      m_bLoggingOn = false;
       m_eStatus = STATUS_OFFLINE_FORCED;
+    }
     else
       icqRelogon();
   }
