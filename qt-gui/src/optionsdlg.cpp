@@ -121,8 +121,10 @@ OptionsDlg::~OptionsDlg()
 
 void OptionsDlg::accept()
 {
+  // ugly hack to make it work with Qt 2.1 && Qt 2.2
+  clearWFlags(WDestructiveClose);
   close();
-  QDialog::accept();
+  delete this;
 }
 
 void OptionsDlg::reject()
