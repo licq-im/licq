@@ -119,7 +119,7 @@ void verify_numbers(GtkEditable *e, gchar *text, gint len, gint *pos, gpointer d
    	for (i = 0; i < len; i++)
 	{
 		if(!isdigit(text[i]))
-			result[i] = NULL;
+			result[i] = '\0';
 		else
 			result[i] = text[i];
 	}
@@ -293,9 +293,6 @@ void finish_message(ICQEvent *event)
 		gUserManager.DropOwner();
 
 		gtk_editable_delete_text(GTK_EDITABLE(c->entry), 0, -1);
-		gtk_editable_delete_text(GTK_EDITABLE(c->spoof_uin), 0, -1);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->spoof_button),
-					     FALSE);
 		gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 		
 		gtk_text_freeze(GTK_TEXT(c->entry));

@@ -55,8 +55,6 @@ struct conversation
 	GtkWidget *send_normal;
 	GtkWidget *send_urgent;
 	GtkWidget *send_list;
-	GtkWidget *spoof_button;
-	GtkWidget *spoof_uin;
 	GtkWidget *progress;
 	gchar prog_buf[60];
 	gchar *for_user;
@@ -75,8 +73,6 @@ struct send_url
 	GtkWidget *send_normal;
 	GtkWidget *send_urgent;
 	GtkWidget *send_list;
-	GtkWidget *spoof_button;
-	GtkWidget *spoof_uin;
 	ICQUser *user;
 	struct e_tag_data *etag;
 };
@@ -473,7 +469,6 @@ extern void verify_convo_send(GtkWidget *, guint, gchar *,
 			      struct conversation *);
 extern void convo_cancel(GtkWidget *, struct conversation *);
 extern void convo_recv(unsigned long);
-extern void spoof_button_callback(GtkWidget *, struct conversation *);
 extern gboolean convo_close(GtkWidget *, struct conversation *);
 
 
@@ -640,7 +635,6 @@ extern void url_send(GtkWidget *, struct send_url *);
 extern void url_cancel(GtkWidget *, struct send_url *);
 extern void url_close(GtkWidget *, struct send_url *);
 extern void url_verified_close(GtkWidget *, guint, gchar*, struct send_url *);
-extern void url_spoof_button_callback(GtkWidget *, struct send_url *);
 extern void list_delete_user(GtkWidget *, ICQUser *);
 extern void delete_user_callback(GtkWidget *, struct delete_user *);
 extern void destroy_dialog(GtkWidget *, gpointer);

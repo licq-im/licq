@@ -109,7 +109,7 @@ void convo_show(struct conversation *c)
 	/* Make the boxes */
 	button_box = gtk_hbox_new(TRUE, 0);
 	vertical_box = gtk_vbox_new(FALSE, 0);
-	options_box = gtk_hbox_new(FALSE, 0);
+	options_box = gtk_hbox_new(FALSE, 5);
 
 	/* The entry box */
 	c->entry = gtk_text_new(NULL, NULL);
@@ -152,31 +152,8 @@ void convo_show(struct conversation *c)
 	gtk_box_pack_start(GTK_BOX(vertical_box), c->entry, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(vertical_box), button_box, FALSE, FALSE, 5);
 
-	/* Add the send through server button and spoofing options */
+	/* Add the send through server button */
 	c->send_server = gtk_check_button_new_with_label("Send through server");
-	c->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
-	c->spoof_uin = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
-
-	/* Verify that the c->spoof_uin is digits only */
-	gtk_signal_connect(GTK_OBJECT(c->spoof_uin), "insert-text",
-			   GTK_SIGNAL_FUNC(verify_numbers), NULL);
-
-	/* No UIN can be entered unless c->spoof_button is checked */
-	gtk_widget_set_sensitive(c->spoof_uin, FALSE);
-
-	/* Let's pack them now! */
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_server,
-			   FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(options_box), c->spoof_button,
-			   FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(options_box), c->spoof_uin,
-			   FALSE, FALSE, 5);
-	
-	/* Now pack the options_box */
-	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
-
-	/* More options, sending normal, urgent or to contact list */
-	options_box = gtk_hbox_new(FALSE, 5);
 
 	/* Send the message normal */
 	c->send_normal = gtk_radio_button_new_with_label(NULL, "Send Normal");
@@ -191,23 +168,24 @@ void convo_show(struct conversation *c)
 				GTK_RADIO_BUTTON(c->send_normal),
 				"Send to Contact List");
 
+	/* Let's pack them now! */
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_server,
+			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_normal,
+			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent,
+			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_list,
+			   FALSE, FALSE, 0);
+
+	/* Now pack the options_box */
+	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
+
 	/* If the user is in occupied or dnd mode, set the urgent button */
 	if(c->user->Status() == ICQ_STATUS_DND ||
            c->user->Status() == ICQ_STATUS_OCCUPIED)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_urgent),
 				TRUE);
-
-	/* Pack it now */
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_normal, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(options_box), c->send_list, FALSE, FALSE, 5);
-	
-	/* Pack the options box */
-	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
-
-	/* Connect signals for the newly added widgets */
-	gtk_signal_connect(GTK_OBJECT(c->spoof_button), "toggled",
-			   GTK_SIGNAL_FUNC(spoof_button_callback), c);
 
 	/* Progress of message */
 	c->progress = gtk_statusbar_new();
@@ -264,12 +242,6 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 	return TRUE;
 }
 
-void spoof_button_callback(GtkWidget *widget, struct conversation *c)
-{
-	gtk_widget_set_sensitive(c->spoof_uin,
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->spoof_button)));
-}
-
 void convo_send(GtkWidget *widget, struct conversation *c)
 {
 	/* Set the 2 button widgets */
@@ -287,13 +259,6 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	c->for_user = buf2;
 
 	c->user->SetSendServer(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)));
-
-	gulong uin = 0;
-
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->spoof_button)))
-	{
-		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(c->spoof_uin), 0, -1));
-	}
 
 	/* I don't like those popups to send urgent... so just send it **
  	** urgently unless the user says to send it to the contact list*/	

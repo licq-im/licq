@@ -100,29 +100,15 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
 
-	/* Make send through server and spoof box */
-	url->send_server = gtk_check_button_new_with_label("Server");
+	/* Make send through server */
+	url->send_server = gtk_check_button_new_with_label("Send Through "
+				"Server");
 	gtk_table_attach(GTK_TABLE(table), url->send_server, 0, 1, 2, 3,
 			 GTK_FILL, GTK_FILL, 3, 3);
-
-	url->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
-	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_button, FALSE, FALSE, 0);
-
-	url->spoof_uin = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
-	gtk_widget_set_sensitive(url->spoof_uin, FALSE);
-	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_uin, FALSE, FALSE, 0);
 
 	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 2, 3,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
-
-	/* Verify that the url->spoof_uin is digits only */
-	gtk_signal_connect(GTK_OBJECT(url->spoof_uin), "insert-text", 
-			   GTK_SIGNAL_FUNC(verify_numbers), url);
-
-	/* Connect spoof_button's toggled signal */
-	gtk_signal_connect(GTK_OBJECT(url->spoof_button), "toggled",
-			   GTK_SIGNAL_FUNC(url_spoof_button_callback), url);
 
 	/* New hbox */
 	h_box = gtk_hbox_new(FALSE, 3);
@@ -208,15 +194,9 @@ void url_send(GtkWidget *widget, struct send_url *url)
 
 	const char *url_to_send = gtk_entry_get_text(GTK_ENTRY(url->entry_u));
 	const char *desc = gtk_entry_get_text(GTK_ENTRY(url->entry_d));
-	gulong uin = 0;
 	gboolean urgent = FALSE;
 
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->spoof_button)))
-	{
-		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(url->spoof_uin), 0, -1));
-	}
-
-	/* yay! no pop ups */
+	/* No pop ups */
 	if((url->user->Status() == ICQ_STATUS_DND ||
 	    url->user->Status() == ICQ_STATUS_OCCUPIED) &&
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_normal)))
@@ -282,12 +262,6 @@ void url_cancel(GtkWidget *cancel, struct send_url *url)
 	catcher = g_slist_remove(catcher, url->etag);
 
 	gtk_widget_destroy(url->window);
-}
-
-void url_spoof_button_callback(GtkWidget *widget, struct send_url *url)
-{
-	gtk_widget_set_sensitive(url->spoof_uin,
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->spoof_button)));
 }
 
 void url_close(GtkWidget *widget, struct send_url *url)
