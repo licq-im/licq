@@ -200,7 +200,7 @@ void CLicqForwarder::ProcessSignal(CICQSignal *s)
   {
   case SIGNAL_UPDATExUSER:
     if (s->SubSignal() == USER_EVENTS)
-      ProcessUserEvent(s->Uin());
+      ProcessUserEvent(s->Uin(), s->Argument());
     break;
   // We should never get any other signal
   case SIGNAL_UPDATExLIST:
@@ -253,38 +253,26 @@ void CLicqForwarder::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqForwarder::ProcessUserEvent(unsigned long nUin)
+void CLicqForwarder::ProcessUserEvent(unsigned long nUin, unsigned long nId)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("Invalid uin received from daemon (%ld).\n", nUin);
+    gLog.Warn("%sInvalid uin received from daemon (%ld).\n", L_FORWARDxSTR, nUin);
     return;
   }
 
-  CUserEvent *e = NULL;
+  CUserEvent *e = u->EventPeekId(nId);
 
-  if (m_bDelete)
+  if (e == NULL)
   {
-    while (u->NewMessages() > 0)
-    {
-      // Fetch the event
-      e = u->EventPop();
-      // Forward it
-      if (!ForwardEvent(u, e))
-      {
-        delete e;
-        break;
-      }
-      // Erase the event
-      delete e;
-    }
+    gLog.Warn("%sInvalid message id (%d).\n", L_FORWARDxSTR, nId);
   }
   else
   {
-    e = u->EventPeekLast();
-    // Forward it
-    ForwardEvent(u, e);
+    bool r = ForwardEvent(u, e);
+    if (m_bDelete && r)
+      u->EventClearId(nId);
   }
 
   gUserManager.DropUser(u);
