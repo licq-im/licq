@@ -126,6 +126,7 @@ protected slots:
   void slot_btnRead4();
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
+  void slot_sentevent(ICQEvent *);
 };
 
 

@@ -226,7 +226,8 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead->setResizeMode(msgView, QSplitter::FollowSizeHint);
   splRead->setResizeMode(mleRead, QSplitter::Stretch);
 
-  connect (msgView, SIGNAL(clicked(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
+  connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
+  connect (gMainWindow, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
   lay->addSpacing(10);
@@ -675,11 +676,13 @@ void UserViewEvent::slot_btnRead4()
 
 void UserViewEvent::slot_btnReadNext()
 {
-  MsgViewItem* it = static_cast<MsgViewItem*>(msgView->firstChild());
-  MsgViewItem* e = NULL;
+  MsgViewItem *it = static_cast<MsgViewItem*>(msgView->firstChild());
+  MsgViewItem *e = NULL;
 
-  while(it) {
-    if(it->m_nEventId != -1) {
+  while (it)
+  {
+    if (it->m_nEventId != -1 && it->msg->Direction() == D_RECEIVER)
+    {
       e = it;
     }
     it = static_cast<MsgViewItem*>(it->nextSibling());
@@ -687,7 +690,8 @@ void UserViewEvent::slot_btnReadNext()
 
   updateNextButton();
 
-  if(e != NULL) {
+  if (e != NULL)
+  {
     msgView->setSelected(e, true);
     msgView->ensureItemVisible(e);
     slot_printMessage(e);
@@ -713,6 +717,13 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 
     if (sig->Argument() != 0) updateNextButton();
   }
+}
+
+
+void UserViewEvent::slot_sentevent(ICQEvent *e)
+{
+  if (e->Uin() != m_nUin) return;
+  (void) new MsgViewItem(e->GrabUserEvent(), msgView);
 }
 
 
@@ -984,7 +995,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   else
   {
     emit autoCloseNotify();
-    if (sendDone(e)) close();
+    if (sendDone(e))
+    {
+      emit(gMainWindow->signal_sentevent(e));
+      close();
+    }
   }
 }
 
