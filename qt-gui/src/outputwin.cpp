@@ -82,13 +82,11 @@ void CQtLogWindow::slot_log(int s)
   outputBox->GotoEnd();
 
   // hardcoded limit, maybe should be user configurable?
-#if QT_VERSION < 300
-  if (outputBox->numLines() > 564)
-#else
-  if (outputBox->numLines() > 128)
-#endif
-      while (outputBox->numLines() > 500)
+  if (outputBox->numLines() > 564) {
+      int todo = outputBox->numLines() - 500;
+      for (int i = 0; i < todo; ++i)
           outputBox->removeLine(0);
+  }
 
   if (NextLogType() == L_ERROR)
       CriticalUser(NULL, str);
@@ -134,6 +132,7 @@ CLogWidget::CLogWidget(QWidget* parent, const char* name)
   : MLEditWrap(false, parent, true, name)
 {
   setReadOnly(true);
+//  setTextFormat(LogText);
 }
 
 
