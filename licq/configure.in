@@ -5,8 +5,8 @@ AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
 dnl All versioning is done via these defines
-INT_VERSION=1025
-AM_INIT_AUTOMAKE(licq, 1.2.5)
+INT_VERSION=1026
+AM_INIT_AUTOMAKE(licq, 1.2.6)
 
 AM_CONFIG_HEADER(config.h)
 
