@@ -1355,6 +1355,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         CPT_AckOpenSecureChannel p(theSequence, true, u);
         AckTCP(p, pSock);
 
+        pSock->SecureListen();
         u->SetSecure(true);
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
 
