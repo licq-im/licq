@@ -855,7 +855,7 @@ void CUserView::UpdateFloaties()
     CUserViewItem *i = (*iter)->firstChild();
     ICQUser *u = gUserManager.FetchUser(i->ItemUin(), LOCK_R);
     i->setGraphics(u);
-    //i->repaint();
+    gUserManager.DropUser(u);
     (*iter)->triggerUpdate();
   }
 }
