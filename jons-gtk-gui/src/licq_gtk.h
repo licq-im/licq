@@ -59,6 +59,9 @@ struct send_url
 	GtkWidget *entry_u;
 	GtkWidget *entry_d;
 	GtkWidget *send_server;
+	GtkWidget *send_normal;
+	GtkWidget *send_urgent;
+	GtkWidget *send_list;
 	GtkWidget *spoof_button;
 	GtkWidget *spoof_uin;
 	ICQUser *user;
