@@ -147,7 +147,7 @@ public:
              *mnuStatus,
              *mnuDebug,
              *mnuUtilities,
-             *mnuAwayModes,
+             *mnuMiscModes,
              *mnuSend;
   CELabel *lblStatus, *lblMsg;
   CEButton *btnSystem;
@@ -250,7 +250,7 @@ protected slots:
   void popupSystemMenu();
   void changeDebug(int);
   void slot_utility(int);
-  void slot_awaymodes(int);
+  void slot_miscmodes(int);
   void slot_randomchatsearch();
   void ToggleMiniMode();
   void ToggleShowOffline();

@@ -857,7 +857,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
   int w = QMAX(btnSend->sizeHint().width(), 75);
-  connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
+  // add a wrapper around the send button that
+  // tries to establish a secure connection first.
+  connect( btnSend, SIGNAL( clicked() ), this, SLOT( trySecure() ) );
+
   btnCancel = new QPushButton(tr("&Close"), this);
   w = QMAX(btnCancel->sizeHint().width(), w);
   btnSend->setFixedWidth(w);
@@ -904,6 +907,22 @@ void UserSendCommon::slot_SetForegroundICQColor()
   mleSend->setForeground(c);
 }
 
+void UserSendCommon::trySecure()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  bool autoSecure = ( u->AutoSecure() && gLicqDaemon->CryptoEnabled() &&
+                      (u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED ) &&
+                      !chkSendServer->isChecked() && !u->Secure());
+  gUserManager.DropUser( u );
+  disconnect( btnSend, SIGNAL( clicked() ), this, SLOT( trySecure() ) );
+  connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
+  if ( autoSecure ) {
+    QWidget* w = new KeyRequestDlg(sigman, m_nUin);
+    connect(w, SIGNAL( destroyed() ), this, SLOT( sendButton() ) );
+  }
+  else
+    sendButton();
+}
 
 //-----UserSendCommon::slot_SetBackgroundColor-------------------------------
 void UserSendCommon::slot_SetBackgroundICQColor()

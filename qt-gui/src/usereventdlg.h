@@ -181,7 +181,7 @@ protected slots:
   void slot_resettitle() { setCaption(m_sBaseTitle); }
   void slot_SetForegroundICQColor();
   void slot_SetBackgroundICQColor();
-
+  void trySecure();
 };
 
 

@@ -1934,6 +1934,10 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
   }
   if(e) {
     e->show();
+
+    // there might be more than one send window open
+    // make sure we only remember one, or it will get compliated
+    slot_sendfinished( nUin );
     connect( e, SIGNAL( finished( unsigned long ) ), this, SLOT( slot_sendfinished( unsigned long ) ) );
     licqUserSend.append(static_cast<UserSendCommon*>(e));
   }
@@ -1982,6 +1986,8 @@ void CMainWindow::slot_sendfinished(unsigned long nUin)
 {
   QListIterator<UserSendCommon> it(licqUserSend);
 
+  // go through the whole list, there might be more than
+  // one hit
   for ( ; it.current(); ++it)
     if ((*it)->Uin() == nUin)
       licqUserSend.remove(*it);
@@ -2389,63 +2395,70 @@ void CMainWindow::slot_utility(int _nId)
 }
 
 
-//-----CMainWindow::slot_awaymodes--------------------------------------------
-void CMainWindow::slot_awaymodes(int _nId)
+//-----CMainWindow::slot_miscmodes--------------------------------------------
+void CMainWindow::slot_miscmodes(int _nId)
 {
-  int nAwayModes = mnuAwayModes->indexOf(_nId);
+  int nAwayModes = mnuMiscModes->indexOf(_nId);
   //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
   ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_W);
   if (u == NULL) return;
 
   switch(nAwayModes)
   {
-    case 0:
-      u->SetAcceptInAway(!u->AcceptInAway());
-      break;
-    case 1:
-      u->SetAcceptInNA(!u->AcceptInNA());
-      break;
-    case 2:
-      u->SetAcceptInOccupied(!u->AcceptInOccupied());
-      break;
-    case 3:
-      u->SetAcceptInDND(!u->AcceptInDND());
-      break;
+  case 0:
+    u->SetAcceptInAway(!u->AcceptInAway());
+    break;
+  case 1:
+    u->SetAcceptInNA(!u->AcceptInNA());
+    break;
+  case 2:
+    u->SetAcceptInOccupied(!u->AcceptInOccupied());
+    break;
+  case 3:
+    u->SetAcceptInDND(!u->AcceptInDND());
+    break;
+  case 4:
+    u->SetAutoFileAccept(!u->AutoFileAccept() );
+    break;
+  case 5:
+    u->SetAutoChatAccept( !u->AutoChatAccept() );
+    break;
+  case 6:
+    u->SetAutoSecure( !u->AutoSecure() );
+    break;
 
-    case 5:
-      if (u->StatusToUser() == ICQ_STATUS_ONLINE)
-        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
-      else
-        u->SetStatusToUser(ICQ_STATUS_ONLINE);
+  case 8:
+    if (u->StatusToUser() == ICQ_STATUS_ONLINE)
+      u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+    else
+      u->SetStatusToUser(ICQ_STATUS_ONLINE);
       break;
-    case 6:
-      if (u->StatusToUser() == ICQ_STATUS_AWAY)
-        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
-      else
-        u->SetStatusToUser(ICQ_STATUS_AWAY);
-      break;
-    case 7:
-      if (u->StatusToUser() == ICQ_STATUS_NA)
-        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
-      else
-        u->SetStatusToUser(ICQ_STATUS_NA);
-      break;
-    case 8:
-      if (u->StatusToUser() == ICQ_STATUS_OCCUPIED)
-        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
-      else
-        u->SetStatusToUser(ICQ_STATUS_OCCUPIED);
-      break;
-    case 9:
-      if (u->StatusToUser() == ICQ_STATUS_DND)
-        u->SetStatusToUser(ICQ_STATUS_OFFLINE);
-      else
-        u->SetStatusToUser(ICQ_STATUS_DND);
-      break;
-
+  case 9:
+    if (u->StatusToUser() == ICQ_STATUS_AWAY)
+      u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+    else
+      u->SetStatusToUser(ICQ_STATUS_AWAY);
+    break;
+  case 10:
+    if (u->StatusToUser() == ICQ_STATUS_NA)
+      u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+    else
+      u->SetStatusToUser(ICQ_STATUS_NA);
+    break;
+  case 11:
+    if (u->StatusToUser() == ICQ_STATUS_OCCUPIED)
+      u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+    else
+      u->SetStatusToUser(ICQ_STATUS_OCCUPIED);
+    break;
+  case 12:
+    if (u->StatusToUser() == ICQ_STATUS_DND)
+      u->SetStatusToUser(ICQ_STATUS_OFFLINE);
+    else
+      u->SetStatusToUser(ICQ_STATUS_DND);
+    break;
   }
-  if (u != NULL)
-    gUserManager.DropUser(u);
+  gUserManager.DropUser(u);
 }
 
 
@@ -2874,19 +2887,22 @@ void CMainWindow::initMenu()
    }
    connect(mnuUtilities, SIGNAL(activated(int)), this, SLOT(slot_utility(int)));
 
-   mnuAwayModes = new QPopupMenu(NULL);
-   mnuAwayModes->setCheckable(true);
-   mnuAwayModes->insertItem(tr("Accept in Away"));
-   mnuAwayModes->insertItem(tr("Accept in Not Available"));
-   mnuAwayModes->insertItem(tr("Accept in Occupied"));
-   mnuAwayModes->insertItem(tr("Accept in Do Not Disturb"));
-   mnuAwayModes->insertSeparator();
-   mnuAwayModes->insertItem(tr("Online to User"));
-   mnuAwayModes->insertItem(tr("Away to User"));
-   mnuAwayModes->insertItem(tr("Not Available to User"));
-   mnuAwayModes->insertItem(tr("Occupied to User"));
-   mnuAwayModes->insertItem(tr("Do Not Disturb to User"));
-   connect(mnuAwayModes, SIGNAL(activated(int)), this, SLOT(slot_awaymodes(int)));
+   mnuMiscModes = new QPopupMenu(NULL);
+   mnuMiscModes->setCheckable(true);
+   mnuMiscModes->insertItem(tr("Accept in Away"));
+   mnuMiscModes->insertItem(tr("Accept in Not Available"));
+   mnuMiscModes->insertItem(tr("Accept in Occupied"));
+   mnuMiscModes->insertItem(tr("Accept in Do Not Disturb"));
+   mnuMiscModes->insertItem(tr("Auto Accept Files" ) );
+   mnuMiscModes->insertItem(tr("Auto Accept Chats" ) );
+   mnuMiscModes->insertItem(tr("Auto Request Secure" ) );
+   mnuMiscModes->insertSeparator();
+   mnuMiscModes->insertItem(tr("Online to User"));
+   mnuMiscModes->insertItem(tr("Away to User"));
+   mnuMiscModes->insertItem(tr("Not Available to User"));
+   mnuMiscModes->insertItem(tr("Occupied to User"));
+   mnuMiscModes->insertItem(tr("Do Not Disturb to User"));
+   connect(mnuMiscModes, SIGNAL(activated(int)), this, SLOT(slot_miscmodes(int)));
 
    mnuUser = new QPopupMenu(NULL);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
@@ -2901,7 +2917,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
    connect (mnuSend, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("Send"), mnuSend);
-   mnuUser->insertItem(tr("&Away Modes"), mnuAwayModes);
+   mnuUser->insertItem(tr("Misc Modes"), mnuMiscModes);
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
    mnuUser->insertItem(tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
@@ -2954,20 +2970,24 @@ void CMainWindow::slot_usermenu()
     mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
 
-  // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(2), u->AcceptInOccupied());
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(3), u->AcceptInDND());
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(5), u->StatusToUser() == ICQ_STATUS_ONLINE);
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(6), u->StatusToUser() == ICQ_STATUS_AWAY);
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(7), u->StatusToUser() == ICQ_STATUS_NA);
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(8), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
-  mnuAwayModes->setItemChecked(mnuAwayModes->idAt(9), u->StatusToUser() == ICQ_STATUS_DND);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(0), u->AcceptInAway());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(1), u->AcceptInNA());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(2), u->AcceptInOccupied());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(3), u->AcceptInDND());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(4), u->AutoChatAccept());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(5), u->AutoFileAccept());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(6), u->AutoSecure());
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(8), u->StatusToUser() == ICQ_STATUS_ONLINE);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(9), u->StatusToUser() == ICQ_STATUS_AWAY);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(10), u->StatusToUser() == ICQ_STATUS_NA);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(11), u->StatusToUser() == ICQ_STATUS_OCCUPIED);
+  mnuMiscModes->setItemChecked(mnuMiscModes->idAt(12), u->StatusToUser() == ICQ_STATUS_DND);
+  mnuMiscModes->setItemEnabled(6, gLicqDaemon->CryptoEnabled());
   mnuUser->setItemChecked(mnuUserCustomAutoResponse, u->CustomAutoResponse()[0] != '\0');
   // Send modes
   mnuSend->setItemEnabled(mnuUserSendChat, !u->StatusOffline());
   mnuSend->setItemEnabled(mnuUserSendFile, !u->StatusOffline());
+
   if (u->Secure())
     mnuSend->changeItem(pmSecureOn, tr("Close &Secure Channel"), mnuUserSendKey);
   else
