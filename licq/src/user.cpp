@@ -1716,7 +1716,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   else
     m_szId = 0;
   m_nPPID = _nPPID;
-
+  
   // gui plugin compat
   if (m_nPPID == LICQ_PPID && m_szId)
     m_nUin = strtoul(m_szId, (char **)NULL, 10);
@@ -2940,7 +2940,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   m_fConf.ReadStr("Uin", szTemp, "", true);
 
   // Now we can init
-  Init(szTemp, _nPPID);
+  Init(_szId, _nPPID);
   m_bOnContactList = true;
 
   // And finally our favorite function
@@ -2961,7 +2961,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
 
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.%s.%s.history", BASE_DIR, HISTORY_DIR,
            m_szId, p);
-  SetHistoryFile(filename);
+    SetHistoryFile(filename);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
   {
@@ -2969,7 +2969,6 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
               "%sUpdate general info on server to fix.\n",
        L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
   }
-
   SetEnableSave(true);
 
   delete [] p;
@@ -3021,9 +3020,9 @@ unsigned long ICQOwner::AddStatusFlags(unsigned long s)
 void ICQOwner::SaveLicqInfo()
 {
   if (!EnableSave()) return;
-
+  
   ICQUser::SaveLicqInfo();
-
+  
   if (!m_fConf.ReloadFile())
   {
      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
@@ -3038,7 +3037,7 @@ void ICQOwner::SaveLicqInfo()
   m_fConf.WriteNum("RCG", RandomChatGroup());
   m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
   m_fConf.WriteNum("SSCount", m_nSSCount);
-
+  
   if (m_bSavePassword)
     m_fConf.WriteStr("Password", Password());
   else

@@ -1002,7 +1002,7 @@ bool CLicq::Install()
   usersConf.WriteNum("NumOfUsers", 0ul);
   usersConf.FlushFile();
 
-  snprintf (cmd, sizeof(cmd) - 1, "%s/owner.uin", BASE_DIR);
+  snprintf (cmd, sizeof(cmd) - 1, "%s/owner.Licq", BASE_DIR);
   CIniFile licqConf(INI_FxALLOWxCREATE);
   licqConf.LoadFile(cmd);
   licqConf.SetSection("user");

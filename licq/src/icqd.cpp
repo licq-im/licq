@@ -278,9 +278,12 @@ bool CICQDaemon::Start()
   }
   gSocketManager.AddSocket(s);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetIntIp(s->LocalIp());
-  o->SetPort(s->LocalPort());
-  gUserManager.DropOwner();
+  if (o != NULL)
+  {
+    o->SetIntIp(s->LocalIp());
+    o->SetPort(s->LocalPort());
+    gUserManager.DropOwner();
+  }
   CPacket::SetLocalPort(s->LocalPort());
   gSocketManager.DropSocket(s);
 
@@ -669,8 +672,22 @@ void CICQDaemon::SaveConf()
   licqConf.FlushFile();
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  o->SaveLicqInfo();
-  gUserManager.DropOwner();
+  if (o != NULL)
+  {
+    o->SaveLicqInfo();
+    // TODO: Make this work with multiple owners
+    if (strcmp(o->IdString(), "0") != 0)
+    {
+      licqConf.SetSection("owners");
+      OwnerList *ol = gUserManager.LockOwnerList(LOCK_R);
+      licqConf.WriteNum("NumOfOwners", (unsigned long)ol->size());
+      gUserManager.UnlockOwnerList();
+      licqConf.WriteStr("Owner1.Id", o->IdString());
+      licqConf.FlushFile();
+    }
+    
+    gUserManager.DropOwner();
+  }
 }
 
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

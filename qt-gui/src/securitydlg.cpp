@@ -93,8 +93,11 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
 
   // Owner password
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  edtFirst->setText(o->Password());
-  edtSecond->setText(o->Password());
+  if (o != NULL)
+  {
+    edtFirst->setText(o->Password());
+    edtSecond->setText(o->Password());
+  }
 
   QVBoxLayout *blay = new QVBoxLayout;
   chkAuthorization = new QCheckBox(tr("Authorization Required"), box);
@@ -131,13 +134,23 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   // do some magic ;)
   // if we are offline, we enable the checkbox "Only local changes"
   // this saves one click :)
-  unsigned short status = o->Status();
-  slot_chkOnlyLocalToggled( (status == ICQ_STATUS_OFFLINE) );
+  if (o != NULL)  // Make sure we exist
+  {
+    slot_chkOnlyLocalToggled( (o->Status() == ICQ_STATUS_OFFLINE) );
+    chkAuthorization->setChecked(o->GetAuthorization());
+    chkWebAware->setChecked(o->WebAware());
+    chkHideIp->setChecked(o->HideIp());
+    gUserManager.DropOwner();
+  }
+  else
+  {
+    slot_chkOnlyLocalToggled(true);
+    chkOnlyLocal->setEnabled(false);
+    chkAuthorization->setChecked(false);
+    chkWebAware->setChecked(false);
+    chkHideIp->setChecked(false);
+  }
 
-  chkAuthorization->setChecked(o->GetAuthorization());
-  chkWebAware->setChecked(o->WebAware());
-  chkHideIp->setChecked(o->HideIp());
-  gUserManager.DropOwner();
 
   setCaption(tr("ICQ Security Options"));
 

@@ -185,6 +185,7 @@ void RegisterUserDlg::accept()
     nfoPassword2->setEnabled(false);
     chkExistingUser->setEnabled(false);
   }
+  server->SaveConf();
   close(true);
 }
 

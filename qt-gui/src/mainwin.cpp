@@ -469,8 +469,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   m_nRealHeight = 0;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
-  gUserManager.DropOwner();
+  if (o != NULL)
+  {
+    m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
+    gUserManager.DropOwner();
+  }
+  else
+    m_szCaption = QString("Licq");
   setCaption(m_szCaption);
 
   // Group Combo Box
@@ -637,8 +642,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
    // verify we exist
    ICQOwner *owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-   bool bRegister = (owner->IdString() == NULL);
-   gUserManager.DropOwner(LICQ_PPID);
+   bool bRegister = false;
+   if (o != NULL)
+   {
+    bRegister = ( strcmp(owner->IdString(), "0") == 0);
+    gUserManager.DropOwner(LICQ_PPID);
+   }
+   else
+     bRegister = true;
 
    if (bRegister)
      slot_register();
@@ -1745,46 +1756,49 @@ void CMainWindow::updateStatus()
    char *theColor = skin->colors.offline;
    //TODO show status of what protocol?
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   unsigned long status = o->Status();
-   switch (status)
+   if (o != NULL)
    {
-   case ICQ_STATUS_OFFLINE:
-     theColor = skin->colors.offline;
-     break;
-   case ICQ_STATUS_ONLINE:
-   case ICQ_STATUS_FREEFORCHAT:
-     theColor = skin->colors.online;
-     break;
-   case ICQ_STATUS_AWAY:
-   case ICQ_STATUS_NA:
-   case ICQ_STATUS_OCCUPIED:
-   case ICQ_STATUS_DND:
-   default:
-     theColor = skin->colors.away;
-     break;
-   }
-   if (status != ICQ_STATUS_OFFLINE)
-     mnuStatus->setItemChecked(MNUxITEM_STATUSxINVISIBLE, o->StatusInvisible());
-
-   lblStatus->setText(o->StatusStr());
-   lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
-   lblStatus->update();
-
-   // set icon of the licq main widget for window manager
+    unsigned long status = o->Status();
+    switch (status)
+    {
+    case ICQ_STATUS_OFFLINE:
+      theColor = skin->colors.offline;
+      break;
+    case ICQ_STATUS_ONLINE:
+    case ICQ_STATUS_FREEFORCHAT:
+      theColor = skin->colors.online;
+      break;
+    case ICQ_STATUS_AWAY:
+    case ICQ_STATUS_NA:
+    case ICQ_STATUS_OCCUPIED:
+    case ICQ_STATUS_DND:
+    default:
+      theColor = skin->colors.away;
+      break;
+    }
+    if (status != ICQ_STATUS_OFFLINE)
+      mnuStatus->setItemChecked(MNUxITEM_STATUSxINVISIBLE, o->StatusInvisible());
+  
+    lblStatus->setText(o->StatusStr());
+    lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
+    lblStatus->update();
+  
+    // set icon of the licq main widget for window manager
 #ifdef USE_KDE
 #if KDE_VERSION >= 320
-   /* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
-      does no longer update the icon in kicker anymore :(
-      So we do it the "kde-way" here */
-   KWin::setIcons(winId(), CMainWindow::iconForStatus(o->StatusFull()), CMainWindow::iconForStatus(o->StatusFull()));
+    /* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
+        does no longer update the icon in kicker anymore :(
+        So we do it the "kde-way" here */
+    KWin::setIcons(winId(), CMainWindow::iconForStatus(o->StatusFull()), CMainWindow::iconForStatus(o->StatusFull()));
 #else    // KDE_VERSION
-   setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+    setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // KDE_VERSION
 #else   // USE_KDE
-   setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+    setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // USE_KDE
-
-   gUserManager.DropOwner();
+  
+    gUserManager.DropOwner();
+   }
 
    // set the color if it isn't set by the skin
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);
@@ -3198,9 +3212,14 @@ void CMainWindow::autoAway()
   static bool bAutoNA = false;
   static bool bAutoOffline = false;
 
+  // Fetch current status
+  unsigned short status = ICQ_STATUS_OFFLINE;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short status = o->Status();
-  gUserManager.DropOwner();
+  if (o != NULL)
+  {
+    status = o->Status();
+    gUserManager.DropOwner();
+  }
 
   if (mit_info == NULL) {
     int event_base, error_base;

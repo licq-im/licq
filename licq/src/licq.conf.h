@@ -1,7 +1,7 @@
 static const char LICQ_CONF[] =
 "\n"
 "[licq]\n"
-"Version = 1027\n"
+"Version = 1028\n"
 "\n"
 "[plugins]\n"
 "NumPlugins = 0\n"
@@ -53,4 +53,8 @@ static const char LICQ_CONF[] =
 "Group1.id = 0\n"
 "Group2.id = 0\n"
 "Group3.id = 0\n"
-"\n";
+"\n"
+"[owners]\n"
+"NumOfOwners = 0\n"
+"Owner1.Id = 0\n"
+"Owner1.PPID = Licq\n";
