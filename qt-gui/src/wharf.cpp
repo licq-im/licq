@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "xpm/iconOnline.xpm"
 #include "xpm/iconOffline.xpm"
 #include "xpm/iconAway.xpm"
@@ -6,9 +10,11 @@
 #include "xpm/iconDND.xpm"
 #include "xpm/iconInvisible.xpm"
 #include "xpm/iconOccupied.xpm"
-#include "xpm/iconBack.xpm"
+#include "xpm/iconBack-64.xpm"
+#include "xpm/iconMask-64.xpm"
+#include "xpm/iconBack-48.xpm"
+#include "xpm/iconMask-48.xpm"
 #include "xpm/iconDigits.h"
-#include "xpm/iconMask.xpm"
 
 #include "wharf.h"
 #include "mainwin.h"
@@ -27,8 +33,8 @@
 */
 
 
-IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent, const char *name )
-  : QWidget(parent, name), wharfIcon(_mainwin, _menu, this)
+IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent, const char *name )
+  : QWidget(parent, name), wharfIcon(_mainwin, _menu, _bFortyEight, this)
 {
   // set the hints
   Display *dsp = x11Display();  // get the display
@@ -48,6 +54,7 @@ IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *pare
 
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
+  m_bFortyEight = _bFortyEight;
   resize (wharfIcon.width(), wharfIcon.height());
   setMask(wharfIcon.mask);
   DrawIcon();
@@ -72,32 +79,37 @@ void IconManager::setDockIconStatus(void)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   switch (o->getStatus())
   {
-  case ICQ_STATUS_ONLINE: m = QPixmap(iconOnline_xpm); break;
-  case ICQ_STATUS_AWAY: m = QPixmap(iconAway_xpm); break;
-  case ICQ_STATUS_NA: m = QPixmap(iconNA_xpm); break;
-  case ICQ_STATUS_OCCUPIED: m = QPixmap(iconOccupied_xpm); break;
-  case ICQ_STATUS_DND: m = QPixmap(iconDND_xpm); break;
-  case ICQ_STATUS_FREEFORCHAT: m = QPixmap(iconFFC_xpm); break;
-  case ICQ_STATUS_OFFLINE: m = QPixmap(iconOffline_xpm); break;
+  case ICQ_STATUS_ONLINE: m = QPixmap((const char **)iconOnline_xpm); break;
+  case ICQ_STATUS_AWAY: m = QPixmap((const char **)iconAway_xpm); break;
+  case ICQ_STATUS_NA: m = QPixmap((const char **)iconNA_xpm); break;
+  case ICQ_STATUS_OCCUPIED: m = QPixmap((const char **)iconOccupied_xpm); break;
+  case ICQ_STATUS_DND: m = QPixmap((const char **)iconDND_xpm); break;
+  case ICQ_STATUS_FREEFORCHAT: m = QPixmap((const char **)iconFFC_xpm); break;
+  case ICQ_STATUS_OFFLINE: m = QPixmap((const char **)iconOffline_xpm); break;
   }
-  if (o->getStatusInvisible()) m = QPixmap(iconInvisible_xpm);
+  if (o->getStatusInvisible()) m = QPixmap((const char **)iconInvisible_xpm);
   gUserManager.DropOwner();
-  QPainter painter(&wharfIcon.vis);
-  painter.drawPixmap(QPoint(0, 0), m);
-  // Draw the little icon if no new messages
-  if (m_nNewMsg == 0 && m_nSysMsg == 0)
+  QPainter painter(wharfIcon.vis);
+  if (!m_bFortyEight)
   {
-    QPixmap *p = GetDockIconStatusIcon();
-    painter.fillRect(31, 6, 27, 16, QColor(0,0,0));
-    if (p != NULL)
+    painter.drawPixmap(0, 44, m);
+    // Draw the little icon if no new messages
+    if (m_nNewMsg == 0 && m_nSysMsg == 0)
     {
-      int w = p->width() > 27 ? 27 : p->width();
-      int h = p->height() > 16 ? 16 : p->height();
-      int x = 45 - (w / 2);
-      int y = 14 - (h / 2);
-      painter.drawPixmap(x, y, *p, 0, 0, w, h);
+      QPixmap *p = GetDockIconStatusIcon();
+      painter.fillRect(31, 6, 27, 16, QColor(0,0,0));
+      if (p != NULL)
+      {
+        int w = p->width() > 27 ? 27 : p->width();
+        int h = p->height() > 16 ? 16 : p->height();
+        int x = 45 - (w / 2);
+        int y = 14 - (h / 2);
+        painter.drawPixmap(x, y, *p, 0, 0, w, h);
+      }
     }
   }
+  else
+    painter.drawPixmap(0, 27, m);
   painter.end();
 
   wharfIcon.DrawIcon();
@@ -127,7 +139,7 @@ QPixmap *IconManager::GetDockIconStatusIcon(void)
 //-----CMainWindow::setDockIconMsg----------------------------------------------
 void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
 {
-  QPainter p(&wharfIcon.vis);
+  QPainter p(wharfIcon.vis);
   unsigned short d1, d10;
   m_nNewMsg = nNewMsg;
   m_nSysMsg = nSysMsg;
@@ -143,8 +155,16 @@ void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
     d1 = nNewMsg % 10;
     d10 = (nNewMsg - d1) / 10;
   }
-  p.drawPixmap(QPoint(44, 26), iconDigits[d10]);
-  p.drawPixmap(QPoint(50, 26), iconDigits[d1]);
+  if (!m_bFortyEight)
+  {
+    p.drawPixmap(44, 26, iconDigits[d10]);
+    p.drawPixmap(50, 26, iconDigits[d1]);
+  }
+  else
+  {
+    p.drawPixmap(44, 9, iconDigits[d10]);
+    p.drawPixmap(50, 9, iconDigits[d1]);
+  }
 
   // set the system msg digits
   if (nSysMsg > 99)
@@ -157,23 +177,34 @@ void IconManager::setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg)
     d1 = nSysMsg % 10;
     d10 = (nSysMsg - d1) / 10;
   }
-  p.drawPixmap(QPoint(44, 38), iconDigits[d10]);
-  p.drawPixmap(QPoint(50, 38), iconDigits[d1]);
-
-  // Draw the little icon now
-  QPixmap *m = NULL;
-  if (nSysMsg > 0 || nNewMsg > 0)
-    m = wharfIcon.mainwin->pmMessage;
-  else
-    m = GetDockIconStatusIcon();
-  p.fillRect(31, 6, 27, 16, QColor(0,0,0));
-  if (m != NULL)
+  if (!m_bFortyEight)
   {
-    int w = m->width() > 27 ? 27 : m->width();
-    int h = m->height() > 16 ? 16 : m->height();
-    int x = 45 - (w / 2);
-    int y = 14 - (h / 2);
-    p.drawPixmap(x, y, *m, 0, 0, w, h);
+    p.drawPixmap(44, 38, iconDigits[d10]);
+    p.drawPixmap(50, 38, iconDigits[d1]);
+  }
+  else
+  {
+    p.drawPixmap(44, 21, iconDigits[d10]);
+    p.drawPixmap(50, 21, iconDigits[d1]);
+  }
+
+  if (!m_bFortyEight)
+  {
+    // Draw the little icon now
+    QPixmap *m = NULL;
+    if (nSysMsg > 0 || nNewMsg > 0)
+      m = wharfIcon.mainwin->pmMessage;
+    else
+      m = GetDockIconStatusIcon();
+    p.fillRect(31, 6, 27, 16, QColor(0,0,0));
+    if (m != NULL)
+    {
+      int w = m->width() > 27 ? 27 : m->width();
+      int h = m->height() > 16 ? 16 : m->height();
+      int x = 45 - (w / 2);
+      int y = 14 - (h / 2);
+      p.drawPixmap(x, y, *m, 0, 0, w, h);
+    }
   }
   p.end();
 
@@ -186,15 +217,26 @@ void IconManager::mouseReleaseEvent( QMouseEvent *e )
   wharfIcon.mouseReleaseEvent(e);
 }
 
-WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent, const char *name)
-  : QWidget(parent, name), vis((const char **)iconBack_xpm)
+WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight,
+                     QWidget *parent, const char *name)
+  : QWidget(parent, name)
 {
   mainwin = _mainwin;
   menu = _menu;
-  resize(vis.width(), vis.height());
+  if (_bFortyEight)
+  {
+    vis = new QPixmap((const char **)iconBack_48_xpm);
+    QPixmap p((const char **)iconMask_48_xpm);
+    mask = p;
+  }
+  else
+  {
+    vis = new QPixmap((const char **)iconBack_64_xpm);
+    QPixmap p((const char **)iconMask_64_xpm);
+    mask = p;
+  }
+  resize(vis->width(), vis->height());
 
-  QPixmap p((const char **)iconMask_xpm);
-  mask = p;
   setMask(mask);
 
   DrawIcon();
@@ -203,12 +245,13 @@ WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent, 
 
 WharfIcon::~WharfIcon()
 {
+  delete vis;
 }
 
 void WharfIcon::DrawIcon(void)
 {
   QPainter painter(this);
-  painter.drawPixmap(QPoint(0,0), vis);
+  painter.drawPixmap(0, 0, *vis);
   painter.end();
 }
 
@@ -216,7 +259,7 @@ void WharfIcon::DrawIcon(void)
 void IconManager::DrawIcon(void)
 {
   QPainter painter(this);
-  painter.drawPixmap(QPoint(0,0), wharfIcon.vis);
+  painter.drawPixmap(0, 0, *wharfIcon.vis);
   painter.end();
 }
 

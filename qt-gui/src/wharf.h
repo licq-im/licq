@@ -13,13 +13,13 @@ class WharfIcon : public QWidget
 {
   Q_OBJECT
 public:
-  WharfIcon(class CMainWindow *, QPopupMenu *, QWidget *parent = NULL, const char *name = NULL);
+  WharfIcon(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
   virtual ~WharfIcon(void);
   void DrawIcon(void);
 protected:
   virtual void mouseReleaseEvent (QMouseEvent *);
   virtual void paintEvent (QPaintEvent *);
-  QPixmap vis;
+  QPixmap *vis;
   QBitmap mask;
   class CMainWindow *mainwin;
   QPopupMenu *menu;
@@ -31,7 +31,7 @@ class IconManager : public QWidget
 {
   Q_OBJECT
 public:
-  IconManager(class CMainWindow *, QPopupMenu *, QWidget *parent = NULL, const char *name = NULL);
+  IconManager(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = NULL, const char *name = NULL);
   virtual ~IconManager(void);
   void setDockIconStatus(void);
   void setDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
@@ -43,6 +43,7 @@ protected:
   virtual void paintEvent (QPaintEvent *);
   WharfIcon wharfIcon;
   int m_nNewMsg, m_nSysMsg;
+  bool m_bFortyEight;
 };
 
 
