@@ -771,7 +771,7 @@ bool ICQUser::LoadData(void)
   // read in the fields, checking for errors each time
   char sTemp[MAX_DATA_LEN];
   bool bTemp;
-  unsigned short nTemp, nNewMessages;
+  unsigned long nTemp, nNewMessages;
   m_fConf.SetFlags(0);
   m_fConf.SetSection("user");
   m_fConf.ReadStr("Alias", sTemp, "Unknown");
@@ -787,8 +787,6 @@ bool ICQUser::LoadData(void)
   m_fConf.ReadStr("History", sTemp, "default");
   if (sTemp[0] == '\0') strcpy(sTemp, "default");
   setHistoryFile(sTemp);
-  //m_fConf.ReadBool("OnlineNotify", bTemp, false);
-  //SetOnlineNotify(bTemp);
   m_fConf.ReadNum("NewMessages", nTemp, 0);
   nNewMessages = nTemp;
   m_fConf.ReadBool("NewUser", bTemp, false);
@@ -802,10 +800,6 @@ bool ICQUser::LoadData(void)
   unsigned short nPort;
   m_fConf.ReadNum("Port", nPort, 0);
   SetIpPort(nTemp, nPort);
-  //m_fConf.ReadBool("VisibleList", bTemp, false);
-  //setVisibleList(bTemp);
-  //m_fConf.ReadBool("InvisibleList", bTemp, false);
-  //setInvisibleList(bTemp);
   m_fConf.ReadStr("City", sTemp, "Unknown");
   setCity(sTemp);
   m_fConf.ReadStr("State", sTemp, "Unknown");
@@ -1280,9 +1274,9 @@ void ICQUser::saveBasicInfo(void)
 
   if (!m_fConf.ReloadFile())
   {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n", 
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
                 L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
-     return; 
+     return;
   }
   m_fConf.SetSection("user");
   m_fConf.WriteStr("Alias", getAlias());
