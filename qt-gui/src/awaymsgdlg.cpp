@@ -3,16 +3,16 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- 
+
 */
 
 // written by Graham Roff <graham@licq.org>
@@ -48,23 +48,27 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
 
+  int bw = 75;
   btnSelect = new QPushButton(tr("&Select"), this);
 //  btnSelect->setIsMenuButton(true);
   connect(btnSelect, SIGNAL(clicked()), SLOT(slot_selectMessage()));
-  l->addWidget(btnSelect);
-
-  l->addStretch(1);
-  l->addSpacing(30);
-
-  QPushButton *btnOk, *cancel;
   btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(ok()) );
-  l->addWidget(btnOk);
+  btnCancel = new QPushButton(tr("&Cancel"), this );
+  connect( btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+  bw = QMAX(bw, btnSelect->sizeHint().width());
+  bw = QMAX(bw, btnOk->sizeHint().width());
+  bw = QMAX(bw, btnCancel->sizeHint().width());
+  btnSelect->setFixedWidth(bw);
+  btnOk->setFixedWidth(bw);
+  btnCancel->setFixedWidth(bw);
 
-  cancel = new QPushButton(tr("&Cancel"), this );
-  connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
-  l->addWidget(cancel);
+  l->addWidget(btnSelect);
+  l->addStretch(1);
+  l->addSpacing(30);
+  l->addWidget(btnOk);
+  l->addWidget(btnCancel);
 }
 
 // -----------------------------------------------------------------------------
@@ -142,7 +146,7 @@ void AwayMsgDlg::slot_selectMessage()
   default:
     m_nSAR = SAR_AWAY;
   }
-  
+
   if (m_nSAR >= 0) {
     SARList &sar = gSARManager.Fetch(m_nSAR);
     for (unsigned i = 0; i < sar.size(); i++)
@@ -153,7 +157,7 @@ void AwayMsgDlg::slot_selectMessage()
   menu->insertSeparator();
   // as this is not yet implemented, give user feedback
   menu->setItemEnabled(menu->insertItem(tr("&Edit Items"), -2), false);
-  
+
   result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
 
   if(result == -2) {
@@ -161,9 +165,9 @@ void AwayMsgDlg::slot_selectMessage()
   }
   else {
     SARList &sar = gSARManager.Fetch(m_nSAR);
-    if ((unsigned) result < sar.size()) 
+    if ((unsigned) result < sar.size())
       mleAwayMsg->setText(sar[result]->AutoResponse());
-    
+
     gSARManager.Drop();
   }
 

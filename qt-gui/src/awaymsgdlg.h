@@ -20,6 +20,7 @@ protected:
   MLEditWrap *mleAwayMsg;
   static int s_nX, s_nY;
   QPushButton* btnSelect;
+  QPushButton *btnOk, *btnCancel;
   unsigned short m_nStatus;
   short m_nSAR;
 
