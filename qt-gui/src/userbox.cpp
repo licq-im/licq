@@ -179,7 +179,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
      m_pIcon = NULL;
      for (unsigned short i = 0; i < u->NewMessages(); i++)
      {
-       switch(u->GetEvent(i)->SubCommand())
+       switch(u->EventPeek(i)->SubCommand())
        {
        case ICQ_CMDxSUB_MSG:
          if (m_pIcon == NULL)
