@@ -1,24 +1,18 @@
 #ifndef CHATDLG_H
 #define CHATDLG_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <qcolor.h>
-#include <qfont.h>
+#include <list.h>
 #include <qmainwindow.h>
 #include <qmultilineedit.h>
-#include <qsocketnotifier.h>
 
 #include <deque.h>
 
 #include "mledit.h"
-#include "licq_socket.h"
-#include "licq_icq.h"
-#include "licq_buffer.h"
-#include "licq_chat.h"
 
+class CChatManager;
+class CChatUser;
+
+class QColor;
 class QLabel;
 class QListBox;
 class QPopupMenu;
@@ -28,7 +22,7 @@ class QToolButton;
 class QComboBox;
 class QCloseEvent;
 class QMouseEvent;
-
+class QSocketNotifier;
 
 class CICQDaemon;
 
@@ -82,7 +76,7 @@ public:
   bool StartAsClient(unsigned short nPort);
   bool StartAsServer();
 
-  unsigned short LocalPort() { return chatman->LocalPort(); }
+  unsigned short LocalPort();
   unsigned long Uin()  { return m_nUin; };
 
   QString ChatClients();

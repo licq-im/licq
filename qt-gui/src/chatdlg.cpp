@@ -765,7 +765,10 @@ void ChatDlg::slot_audio()
 }
 
 
-
+unsigned short ChatDlg::LocalPort()
+{
+  return chatman->LocalPort();
+}
 
 
 // -----------------------------------------------------------------------------

@@ -1,16 +1,9 @@
 #ifndef FILEDLG_H
 #define FILEDLG_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <qdialog.h>
 #include <qtimer.h>
 
-#include "licq_user.h"
-#include "licq_socket.h"
-#include "licq_buffer.h"
 #include "ewidgets.h"
 
 class QPushButton;
