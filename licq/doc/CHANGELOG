@@ -5,6 +5,7 @@ o  Lots and lots of bug fixes
 o  Memory management fixes
 o  Per user encoding in QT plugin
 o  Initial server side list support
+o  Sending SMS
 o  Improved buffer overflow prevention
 o  ICQ CLB file converter
 o  So many other things

@@ -7,7 +7,7 @@ Graham Roff
    o  Primary developer and maintainer for Licq < 1.0.4
 Juan Codagnone
    o  Several patches
-Tim van Ervan
+Tim van Erven
    o  Patches, including reliability patches to prevent buffer overflows.
 libicq2000 Project
    o  Served as reference for ICQ's SMS protocol.
