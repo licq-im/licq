@@ -78,7 +78,8 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   tabs->addTab(tabList[HistoryInfo].tab, tabList[HistoryInfo].label);
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
-
+  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
+           this, SLOT(updatedUser(CICQSignal *)));
 
   btnSave = new QPushButton(tr("&Save"), this);
   btnOk = new QPushButton(tr("&OK"), this);
@@ -650,7 +651,9 @@ void UserInfoDlg::SetAbout(ICQUser *u)
     bDropUser = true;
   }
 
-  mleAbout->setText(QString::fromLocal8Bit(u->GetAbout()));
+  QString aboutstr = QString::fromLocal8Bit(u->GetAbout());
+  aboutstr.replace(QRegExp("\r"), "");
+<  mleAbout->setText(aboutstr);
 
   if (bDropUser) gUserManager.DropUser(u);
 }
@@ -1078,6 +1081,33 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
   delete icqEventTag;
   icqEventTag = NULL;
   disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
+}
+
+
+void UserInfoDlg::updatedUser(CICQSignal *sig)
+{
+  if (m_nUin != sig->Uin()) return;
+
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if(u == NULL) return;
+  switch (sig->SubSignal())
+  {
+  case USER_GENERAL:
+  case USER_BASIC:
+  case USER_EXT:
+    SetGeneralInfo(u);
+    break;
+  case USER_MORE:
+    SetMoreInfo(u);
+    break;
+  case USER_WORK:
+    SetWorkInfo(u);
+    break;
+  case USER_ABOUT:
+    SetAbout(u);
+    break;
+  }
+  gUserManager.DropUser(u);
 }
 
 void UserInfoDlg::resetCaption()

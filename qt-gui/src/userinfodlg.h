@@ -140,6 +140,7 @@ protected slots:
   void HistoryReload();
   void HistoryEdit();
   void updateTab(const QString&);
+  void updatedUser(CICQSignal*);
   void SaveSettings();
   void slotOk();
   void doneFunction(ICQEvent*);
