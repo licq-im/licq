@@ -971,9 +971,9 @@ QWidget* OptionsDlg::new_column_options()
   lblColTitle = new QLabel (tr("Title"), grp);
   QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
   lblColFormat = new QLabel (tr("Format"), grp);
-  QWhatsThis::add(lblColFormat, tr("The format string used to define what will "
+  QWhatsThis::add(lblColFormat, QStyleSheet::convertFromPlainText(tr("The format string used to define what will "
                                    "appear in each column.\n"
-                                   "The following parameters can be used:\n") + gMainWindow->usprintfHelp);
+                                   "The following parameters can be used:\n")) + gMainWindow->usprintfHelp);
   lblColWidth = new QLabel (tr("Width"), grp);
   QWhatsThis::add(lblColWidth, tr("The width of the column"));
   lblColAlign = new QLabel(tr("Alignment"), grp);
