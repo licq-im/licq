@@ -48,8 +48,8 @@ QString EventDescription(CUserEvent *e)
   else
   {
     desc = qApp->translate("Event", szEventTypes[e->SubCommand()]);
-    if (e->Command() == ICQ_CMDxTCP_CANCEL)
-      desc += qApp->translate("Event", " Cancelled");
+    if (e->IsCancelled())
+      desc += qApp->translate("Event", " (cancelled)");
   }
   return desc;
 }
