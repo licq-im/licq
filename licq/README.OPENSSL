@@ -6,7 +6,7 @@ chat requests...
 OpenSSL support will be built automatically if you have openssl
 installed.  To disable openssl support, run configure with
 --without-openssl.  To specify paths to OpenSSL libraries or headers
-use --with-openssl-libs="" and --with-openssl-includes="".
+use --with-openssl-lib="" and --with-openssl-inc="".
 
 The current code requires your system to have a built-in randomness
 source at /dev/urandom (or another location, if you configured
