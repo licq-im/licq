@@ -56,6 +56,12 @@ void MLEditWrap::keyPressEvent (QKeyEvent *e)
 }
 
 
+void MLEditWrap::clear()
+{
+  setText("");
+}
+
+
 // -----------------------------------------------------------------------------
 
 void MLEditWrap::paintCell(QPainter* p, int row, int col)

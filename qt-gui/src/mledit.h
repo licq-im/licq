@@ -12,6 +12,9 @@ public:
   void GotoEnd(void);
 
   static QFont* editFont;
+public slots:
+  void clear();
+
 protected:
   bool m_bDoQuotes;
   virtual void keyPressEvent (QKeyEvent *);
