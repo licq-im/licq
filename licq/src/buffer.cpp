@@ -170,15 +170,25 @@ CBuffer::CBuffer(unsigned long _nDataSize)
 {
   m_pTLV = NULL;
   m_nDataSize = _nDataSize;
-  m_pDataStart = new char[m_nDataSize];
+  if (_nDataSize)
+    m_pDataStart = new char[m_nDataSize];
+  else
+    m_pDataStart = NULL;
   m_pDataPosRead = m_pDataPosWrite = m_pDataStart;
 }
 
 CBuffer::CBuffer(const CBuffer &b)
 {
   m_nDataSize = b.getDataMaxSize();
-  m_pDataStart = new char[m_nDataSize];
-  memcpy(m_pDataStart, b.getDataStart(), m_nDataSize);
+  if (m_nDataSize)
+  {
+    m_pDataStart = new char[m_nDataSize];
+    memcpy(m_pDataStart, b.getDataStart(), m_nDataSize);
+  }
+  else
+  {
+    m_pDataStart = NULL;
+  }
   m_pDataPosRead = m_pDataStart + (b.getDataPosRead() - b.getDataStart());
   m_pDataPosWrite = m_pDataStart + (b.getDataPosWrite() - b.getDataStart());
   // DAW FIXME
@@ -210,8 +220,13 @@ CBuffer& CBuffer::operator=(CBuffer &b)
 {
    if (m_pDataStart != NULL) delete [] m_pDataStart;
    m_nDataSize = b.getDataSize();
-   m_pDataStart = new char[m_nDataSize];
-   memcpy(m_pDataStart, b.getDataStart(), m_nDataSize);
+   if (m_nDataSize)
+   {
+     m_pDataStart = new char[m_nDataSize];
+     memcpy(m_pDataStart, b.getDataStart(), m_nDataSize);
+   }
+   else
+     m_pDataStart = NULL;
    m_pDataPosRead = m_pDataStart + (b.getDataPosRead() - b.getDataStart());
    m_pDataPosWrite = m_pDataStart + (b.getDataPosWrite() - b.getDataStart());
    m_pTLV = NULL;
