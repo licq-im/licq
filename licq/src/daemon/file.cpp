@@ -102,7 +102,7 @@ void RemoveNewLines(char *_szDest, const char *_szSource)
 
 
 //-----Constructor-------------------------------------------------------------
-CIniFile::CIniFile(unsigned short _nFlags = 0)
+CIniFile::CIniFile(unsigned short _nFlags)
 {
   m_nBufPos = 0;
   m_nBufSize = 0;
@@ -231,17 +231,17 @@ bool CIniFile::FlushFile()
 
 
 void CIniFile::ResetFile()
-{ 
-   m_nBufPos = m_nSectionStart = 0; 
-   m_nSectionEnd = m_nBufSize; 
-   //m_bEos = m_bEof = false; 
+{
+   m_nBufPos = m_nSectionStart = 0;
+   m_nSectionEnd = m_nBufSize;
+   //m_bEos = m_bEof = false;
 }
-  
+
 
 void CIniFile::ResetSection()
-{ 
-   m_nBufPos = m_nSectionStart; 
-   //m_bEos = m_bEof = false; 
+{
+   m_nBufPos = m_nSectionStart;
+   //m_bEos = m_bEof = false;
 }
 
 
@@ -256,63 +256,63 @@ void CIniFile::SetFileName(const char *_szFilename)
  * Print out an error message using the standard log.  Can output warnings
  * and/or errors.  If the fatal flag is set, the program will terminate.
  *---------------------------------------------------------------------------*/
-void CIniFile::Warn(int nError, const char *_sz = NULL)
+void CIniFile::Warn(int nError, const char *_sz)
 {
   switch(nError)
   {
   case INI_ExNOKEY:
-    if (GetFlag(INI_FxWARN))    
+    if (GetFlag(INI_FxWARN))
       gLog.Warn("%sIniFile: Warning, failed to find key.\n%sFile    = %s\n%sSection = [%s]\n%sKey     = \"%s\"\n",
-                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, 
+                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                 m_szSectionName, L_BLANKxSTR, _sz);
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, failed to find key.\n%sFile    = %s\n%sSection = [%s]\n%sKey     = \"%s\"\n",
-                L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, 
+                L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                  m_szSectionName, L_BLANKxSTR, _sz);
     break;
-  
+
   case INI_ExNOSECTION:
-    if (GetFlag(INI_FxWARN))    
+    if (GetFlag(INI_FxWARN))
       gLog.Warn("%sIniFile: Warning, failed to find section.\n%sFile    = %s\n%sSection = [%s]\n",
                 L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, failed to find section.\n%sFile    = %s\n%sSection = [%s]\n",
                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
     break;
-  
+
   case INI_ExFORMAT:
-    if (GetFlag(INI_FxWARN))    
+    if (GetFlag(INI_FxWARN))
       gLog.Warn("%sIniFile: Warning, invalid file format.\n%sFile = %s\n%sLine = %s\n",
                 L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, invalid file format.\n%sFile = %s\n%sLine = %s\n",
                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, _sz);
     break;
-  
+
   case INI_ExIOREAD:
-    if (GetFlag(INI_FxWARN))    
+    if (GetFlag(INI_FxWARN))
       gLog.Warn("%sIniFile: Warning, I/O read error.\n%sFile  = %s\n%sError = %s\n",
-                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, 
+                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                 strerror(Error()));
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, I/O read error.\n%sFile  = %s\n%sError = %s\n",
-                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, 
+                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                  strerror(Error()));
-    break;    
+    break;
 
   case INI_ExIOWRITE:
-    if (GetFlag(INI_FxWARN))    
+    if (GetFlag(INI_FxWARN))
       gLog.Warn("%sIniFile: Warning, I/O write error.\n%sFile  = %s\n%sError = %s\n",
-                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, 
+                L_WARNxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                 strerror(Error()));
     if(GetFlag(INI_FxERROR))
       gLog.Error("%sIniFile: Warning, I/O write error.\n%sFile  = %s\n%sError = %s\n",
-                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR, 
+                 L_ERRORxSTR, L_BLANKxSTR, m_szFilename, L_BLANKxSTR,
                  strerror(Error()));
-    break;    
+    break;
   }
-     
-  if (GetFlag(INI_FxFATAL)) 
+
+  if (GetFlag(INI_FxFATAL))
   {
     gLog.Error("%sIniFile: Fatal error, terminating program.\n", L_ERRORxSTR);
     exit(1);
@@ -322,7 +322,7 @@ void CIniFile::Warn(int nError, const char *_sz = NULL)
 
 /*-----ReadLine----------------------------------------------------------------
  * Reads in characters from the file starting with the current position and
- * ending at the first new line.  Returns NULL if we are already at the EOF 
+ * ending at the first new line.  Returns NULL if we are already at the EOF
  * or EOS.  Will not return lines beginning with a # (comments)
  *---------------------------------------------------------------------------*/
 char *CIniFile::ReadLine(char *_szBuffer)
@@ -360,9 +360,9 @@ char *CIniFile::ReadLine(char *_szBuffer)
 char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
 {
   //static char s_szSectionName[MAX_SECTIONxNAME_LEN];
-  
+
   if (_szLine == NULL) return NULL;
-  if (_szLine[0] != '[') 
+  if (_szLine[0] != '[')
   {
     _szBuffer[0] = '\0';
   }
@@ -372,12 +372,12 @@ char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
     int j = 0;
     while (_szLine[i] != ']' && _szLine[i] != '\0')
       _szBuffer[j++] = _szLine[i++];
-    if (_szLine[i] == '\0') 
+    if (_szLine[i] == '\0')
     {
        Warn(INI_ExFORMAT, _szLine);
        return NULL;
     }
-  
+
     _szBuffer[j] = '\0';
     Trim(_szBuffer);
   }
@@ -392,13 +392,13 @@ char *CIniFile::GetSectionFromLine(char *_szLine, char *_szBuffer)
 char *CIniFile::GetKeyFromLine(char *_szLine, char *_szBuffer)
 {
   //static char s_szKeyName[MAX_KEYxNAME_LEN];
-  
+
   if (_szLine == NULL) return NULL;
 
   // Skip the line if it is blank or a comment
   if (_szLine[0] == '\n' || _szLine[0] == '#')
   {
-    _szBuffer[0] = '\0';    
+    _szBuffer[0] = '\0';
   }
   else
   {
@@ -407,8 +407,8 @@ char *CIniFile::GetKeyFromLine(char *_szLine, char *_szBuffer)
     while (_szLine[i] != '=' && _szLine[i] != '\0')
       _szBuffer[j++] = _szLine[i++];
     _szBuffer[j] = '\0';
-    Trim(_szBuffer);  
-    
+    Trim(_szBuffer);
+
     // If we didn't find an '=' but we found non-space characters, bad format
     if (_szLine[i] == '\0' && _szBuffer[0] != '\0')
     {
@@ -429,46 +429,46 @@ char *CIniFile::GetDataFromLine(char *_szLine, char *_szBuffer)
   //static char s_szData[MAX_LINE_LEN];
   char *szPostEquals;
   char szData[MAX_LINE_LEN];
-  
+
   // Skip the line if it is blank or a comment
   if (_szLine[0] == '\n'|| _szLine[0] == '#')
   {
-    _szBuffer[0] = '\0';    
+    _szBuffer[0] = '\0';
   }
   else
   {
-    /* Check for a NULL string, and if not, then get the position of the 
+    /* Check for a NULL string, and if not, then get the position of the
      * first '=' */
     if (_szLine == NULL || (szPostEquals = strchr(_szLine, '=')) == NULL)
     {
        Warn(INI_ExFORMAT, _szLine);
        return NULL;
     }
-    
+
     strcpy(szData, szPostEquals + 1);
     Trim(szData);
     AddNewLines(_szBuffer, szData);
   }
   return (_szBuffer);
-}   
+}
 
 
 /*-----SetSection--------------------------------------------------------------
  * Sets the section pointers to the relevant positions in the buffer.
- * Returns false if the section name is NULL or the section cannot be found 
+ * Returns false if the section name is NULL or the section cannot be found
  * and ALLOWxCREATE is not set.
  *---------------------------------------------------------------------------*/
 bool CIniFile::SetSection(const char *_szSection)
-{ 
+{
   if (_szSection == NULL) return (false);
-  
+
   ResetFile();
-  if (m_szSectionName != NULL) 
-  { 
+  if (m_szSectionName != NULL)
+  {
     free (m_szSectionName);
     m_szSectionName = NULL;
   }
-  
+
   // Loop until we hit the end of the file or the start of the section
   char *sz, szLineBuffer[MAX_LINE_LEN], szSectionBuffer[MAX_SECTIONxNAME_LEN];
   do
@@ -491,7 +491,7 @@ bool CIniFile::SetSection(const char *_szSection)
   while (strcmp(sz, _szSection) != 0);
 
   // If we get here it means we found the section
-  
+
   // This positions the section start at the beginning of the first line
   // in the section
   m_nSectionStart = m_nBufPos;
@@ -505,12 +505,12 @@ bool CIniFile::SetSection(const char *_szSection)
     sz = ReadLine(szLineBuffer);
   }
   while(sz != NULL && sz[0] != '[');
-    
-  // Backtrack until we find a non-space character, then move forward to the 
+
+  // Backtrack until we find a non-space character, then move forward to the
   // next time, thus putting the end of section where it belongs
   while (isspace(m_szBuffer[--nTempPos]));
   while (m_szBuffer[++nTempPos] != '\n');
-    
+
   m_nSectionEnd = nTempPos + 1;
   m_szSectionName = strdup(_szSection);
   ResetSection();
@@ -521,7 +521,7 @@ bool CIniFile::SetSection(const char *_szSection)
 /*-----ReadStr-----------------------------------------------------------------
  * Finds a key and sets the data.  Returns false if the key does not exist.
  *---------------------------------------------------------------------------*/
-bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault = NULL)
+bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
 
@@ -553,7 +553,7 @@ bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault
  * Finds a key and sets the numeric data.  Returns false if the key does not
  * exist.
  *---------------------------------------------------------------------------*/
-bool CIniFile::ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault = 0)
+bool CIniFile::ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -566,7 +566,7 @@ bool CIniFile::ReadNum(const char *_szKey, unsigned long &data, const unsigned l
   return(true);
 }
 
-bool CIniFile::ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault = 0)
+bool CIniFile::ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -580,7 +580,7 @@ bool CIniFile::ReadNum(const char *_szKey, unsigned short &data, const unsigned 
 }
 
 
-bool CIniFile::ReadNum(const char *_szKey, char &data, const char _nDefault = 0)
+bool CIniFile::ReadNum(const char *_szKey, char &data, const char _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -593,7 +593,7 @@ bool CIniFile::ReadNum(const char *_szKey, char &data, const char _nDefault = 0)
   return(true);
 }
 
-bool CIniFile::ReadNum(const char *_szKey, signed short &data, const signed short _nDefault = 0)
+bool CIniFile::ReadNum(const char *_szKey, signed short &data, const signed short _nDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))
@@ -607,7 +607,7 @@ bool CIniFile::ReadNum(const char *_szKey, signed short &data, const signed shor
 }
 
 
-bool CIniFile::ReadBool(const char *_szKey, bool &data, const bool _bDefault = false)
+bool CIniFile::ReadBool(const char *_szKey, bool &data, const bool _bDefault)
 {
   char szData[MAX_LINE_LEN];
   if (!ReadStr(_szKey, szData, NULL))

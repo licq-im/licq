@@ -528,7 +528,7 @@ CEventUnknownSysMsg::~CEventUnknownSysMsg()
   free(m_szMsg);
 }
 
-void CEventUnknownSysMsg::AddToHistory(ICQUser *u, direction _nDir)
+void CEventUnknownSysMsg::AddToHistory(ICQUser */*u*/, direction /*_nDir*/)
 {
 /*  char *szOut = new char[strlen(m_szMsg) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %ld ]\n",

@@ -222,7 +222,7 @@ void Encrypt_Server(CBuffer *buffer)
 
 
 // No client encryption yet
-void Encrypt_Client(CBuffer *buffer)
+void Encrypt_Client(CBuffer */*buffer*/)
 {
 }
 
@@ -333,7 +333,7 @@ void CPacketUdp::InitBuffer()
   buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedShort(m_nSubSequence);
   buffer->PackUnsignedLong(m_nCheckSum);
-#endif;
+#endif
 }
 
 //-----Register--------------------------------------------------------------

@@ -13,7 +13,7 @@
 #include "icqd.h"
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long _nSourceUin)
 {
   ICQEvent *result = NULL;
   char *mDos = NULL;
@@ -50,7 +50,7 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
 
 
 //-----CICQDaemon::sendReadAwayMsg------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned long _nSourceUin)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(_nSourceUin, u);
@@ -67,7 +67,7 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned lon
 
 
 //-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long _nSourceUin)
 {
    // make the URL info string
   char *szDescDos = NULL;
@@ -111,7 +111,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
 //-----CICQDaemon::sendFile------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFilename,
                         const char *_szDescription, bool online, bool _bUrgent,
-                        unsigned long _nSourceUin = 0)
+                        unsigned long _nSourceUin)
 {
   ICQEvent *result = NULL;
   char *szDosDesc = NULL;
@@ -195,7 +195,7 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long _nUin, const char *_sReason
 
 
 //-----CICQDaemon::sendChat------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long _nSourceUin = 0)
+CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long _nSourceUin)
 {
   online = true;
 
@@ -304,7 +304,7 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
   if (!s->SendPacket(p.getBuffer()))
   {
     char buf[128];
-    gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128)); 
+    gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
     delete s; free (szAlias);
     return -1;
   }

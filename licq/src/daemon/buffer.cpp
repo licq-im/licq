@@ -109,7 +109,7 @@ CBuffer::CBuffer(CBuffer *b)
 
 
 //-----create-------------------------------------------------------------------
-void CBuffer::Create(unsigned long _nDataSize = 0)
+void CBuffer::Create(unsigned long _nDataSize)
 {
    if (m_pDataStart != NULL) delete[] m_pDataStart;
    if (_nDataSize != 0) m_nDataSize = _nDataSize;

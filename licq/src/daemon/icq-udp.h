@@ -245,7 +245,7 @@ void CICQDaemon::icqUpdateContactList()
 
 
 //-----icqSendVisibleList-------------------------------------------------------
-void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
+void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty)
 {
   // send user info packet
   // Go through the entire list of users, checking if each one is on
@@ -266,7 +266,7 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
 
 
 //-----icqSendInvisibleList-----------------------------------------------------
-void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty = false)
+void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty)
 {
   UinList uins;
   FOR_EACH_USER_START(LOCK_R)
@@ -545,7 +545,7 @@ void CICQDaemon::icqRequestSystemMsg()
 
 
 //-----ProcessUdpPacket---------------------------------------------------------
-unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket = false)
+unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
 {
   unsigned short version, nCommand, nSequence, nSubSequence,
                  junkShort;

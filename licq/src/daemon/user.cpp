@@ -1030,7 +1030,7 @@ void ICQUser::SetStatusOffline()
 }
 
 
-unsigned long ICQUser::Sequence(bool increment = false)
+unsigned long ICQUser::Sequence(bool increment)
 {
    if (increment)
       return (m_nSequence++);
