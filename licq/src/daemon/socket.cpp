@@ -71,6 +71,7 @@ CSocketSet::CSocketSet ()
 {
   FD_ZERO(&sFd);
   // Initialise the mutex
+  pthread_mutex_init(&mutex, NULL);
 }
 
 void CSocketSet::Set(int _nSD)
