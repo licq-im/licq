@@ -1,0 +1,25 @@
+/* XPM */
+static const char *itemCollapsed_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"14 15 4 1",
+"  c #3a3a3a",
+". c #a0a0a0",
+"X c None",
+"o c Gray86",
+/* pixels */
+"XXXXXXXXXXXXXX",
+"XXXXX.....XXXX",
+"XXXXX.ooooXXXX",
+"XXXXX.ooooXXXX",
+"XXXXX.ooooXXXX",
+"X.....oooo...X",
+"X.....oooo...X",
+"X.oooooooooooX",
+"X.oooooooooooX",
+"X.oooooooooooX",
+"X.    oooo   X",
+"XXXXX.ooooXXXX",
+"XXXXX.ooooXXXX",
+"XXXXX.ooooXXXX",
+"XXXXXXXXXXXXXX"
+};

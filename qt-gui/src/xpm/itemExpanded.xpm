@@ -1,0 +1,25 @@
+/* XPM */
+static const char *itemExpanded_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"14 14 5 1",
+"  c None",
+". c #2c2c2c",
+"X c #5d5d5d",
+"o c #939393",
+"O c #d5d5d5",
+/* pixels */
+"              ",
+"              ",
+"              ",
+"              ",
+"              ",
+" oooooooooooo ",
+" ooOOOOOOOOXX ",
+" ooOOOOOOOOXX ",
+" ooOOOOOOOOXX ",
+" XX.......... ",
+"              ",
+"              ",
+"              ",
+"              "
+};
