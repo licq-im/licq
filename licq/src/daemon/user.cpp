@@ -176,7 +176,8 @@ unsigned long CUserManager::AddUser(ICQUser *_pcUser)
   m_hUsers.Store(_pcUser, nUin);
 
   // Reorder the user to the correct place
-  Reorder(_pcUser, false);
+  //Reorder(_pcUser, false);
+  m_vpcUsers.push_back(_pcUser);
 
   _pcUser->Unlock();
 
@@ -961,6 +962,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nIp = m_nPort = m_nRealIp = 0;
   m_nMode = MODE_DIRECT;
   m_nVersion = 0x03;
+  Touch();
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -1666,7 +1668,6 @@ void ICQUser::decNumUserEvents(void)
 ICQOwner::ICQOwner(void)
 {
   gLog.Info("%sOwner configuration.\n", L_INITxSTR);
-  bool bTemp;
   char szTemp[32];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
@@ -1691,10 +1692,8 @@ ICQOwner::ICQOwner(void)
   m_fConf.ReadNum("Uin", m_nUin);
   m_fConf.ReadStr("Password", szTemp);
   SetPassword(szTemp);
-  m_fConf.ReadBool("WebPresence", bTemp, true);
-  if (bTemp) SetStatus(m_nStatus | ICQ_STATUS_FxWEBxPRESENCE);
-  m_fConf.ReadBool("HideIP", bTemp, false);
-  if (bTemp) SetStatus(m_nStatus | ICQ_STATUS_FxHIDExIP);
+  m_fConf.ReadBool("WebPresence", m_bWebAware, true);
+  m_fConf.ReadBool("HideIP", m_bHideIp, false);
 
   m_fConf.CloseFile();
 
@@ -1711,6 +1710,18 @@ ICQOwner::ICQOwner(void)
   SetEnableSave(true);
 }
 
+
+unsigned long ICQOwner::AddStatusFlags(unsigned long s)
+{
+  s &= 0x0000FFFF;
+
+  if (WebAware())
+    s |= ICQ_STATUS_FxWEBxPRESENCE;
+  if (HideIp())
+    s |= ICQ_STATUS_FxHIDExIP;
+
+  return s;
+}
 
 
 //-----ICQOwner::saveInfo--------------------------------------------------------
@@ -1729,8 +1740,8 @@ void ICQOwner::SaveLicqInfo(void)
   m_fConf.SetSection("user");
   m_fConf.WriteNum("Uin", Uin());
   m_fConf.WriteStr("Password", Password());
-  m_fConf.WriteBool("WebPresence", StatusWebPresence());
-  m_fConf.WriteBool("HideIP", StatusHideIp());
+  m_fConf.WriteBool("WebPresence", WebAware());
+  m_fConf.WriteBool("HideIP", HideIp());
 
   if (!m_fConf.FlushFile())
   {

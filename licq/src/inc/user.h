@@ -212,16 +212,16 @@ public:
   // Status
   unsigned short Status(void);
   unsigned long StatusFull(void)   {  return m_nStatus; }
-  unsigned long StatusFlags(void)  {  return m_nStatus & ICQ_STATUS_FxFLAGS; }
   bool StatusInvisible(void)       {  return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
   bool StatusWebPresence(void)     {  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;  }
   bool StatusHideIp(void)          {  return m_nStatus & ICQ_STATUS_FxHIDExIP; }
   bool StatusBirthday(void)        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
   bool StatusOffline(void)         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
-  void SetStatusOffline(void)           { SetStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
-  void SetStatusFlag(unsigned long s)   { SetStatus(m_nStatus | s); }
-  void ClearStatusFlag(unsigned long s) { SetStatus(m_nStatus & ~s); }
+  void SetStatusOffline(void)      {  SetStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
+  //unsigned long StatusFlags(void)  {  return m_nStatus & ICQ_STATUS_FxFLAGS; }
+  //void SetStatusFlag(unsigned long s)   { SetStatus(m_nStatus | s); }
+  //void ClearStatusFlag(unsigned long s) { SetStatus(m_nStatus & ~s); }
   char *StatusStr(char *);
   char *StatusStrShort(char *);
   bool Away(void);
@@ -269,6 +269,10 @@ public:
   static void incNumUserEvents(void);
   static void decNumUserEvents(void);
 
+  // Last event functions
+  time_t Touched(void)       {  return m_nTouched; }
+  void Touch(void)           {  m_nTouched = time(NULL); }
+
   virtual bool User(void)  { return true; }
   void Lock(unsigned short);
   void Unlock(void);
@@ -288,6 +292,7 @@ protected:
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nSocketDesc;
+  time_t m_nTouched;
   unsigned long m_nIp, m_nRealIp, m_nVersion;
   unsigned short m_nPort;
   unsigned long m_nUin,
@@ -371,7 +376,12 @@ public:
   // Owner specific functions
   char *Password(void) { return(m_szPassword); }
   void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
+  void SetWebAware(bool b)  {  m_bWebAware = b; SaveLicqInfo(); }
+  void SetHideIp(bool b)    {  m_bHideIp = b; SaveLicqInfo(); }
   void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
+  bool WebAware(void)             { return m_bWebAware; }
+  bool HideIp(void)               { return m_bHideIp; }
+  unsigned long AddStatusFlags(unsigned long nStatus);
 
   // Virtual overloaded functions
   virtual void SaveLicqInfo(void);
@@ -380,6 +390,8 @@ public:
 protected:
   char *m_szPassword;
   bool m_bException;
+  bool m_bWebAware;
+  bool m_bHideIp;
 };
 
 
