@@ -41,7 +41,7 @@ unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPP
   unsigned long nRet = 0;
 
   if (_nPPID == LICQ_PPID)
-    nRet = icqSendMessage(strtoul(_szId, (char **)NULL, 10), m, online, nLevel, bMultipleRecipients, pColor);
+    nRet = icqSendMessage(_szId, m, online, nLevel, bMultipleRecipients, pColor);
   else
     PushProtoSignal(new CSendMessageSignal(_szId, m), _nPPID);
 
