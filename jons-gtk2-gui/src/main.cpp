@@ -28,12 +28,10 @@
 #include <sys/time.h>
 #include <gtk/gtk.h>
 
-GtkWidget *main_window;
 CICQDaemon *icq_daemon;
 gint _pipe;
 CPluginLog *logg;
 gint log_pipe;
-struct timeval timer;
 GSList *catcher;
 
 const char *LP_Name()
@@ -62,13 +60,13 @@ const char *LP_Usage()
 
 const char *LP_Description()
 {
-	static const char desc[] = "GTK2 plugin for licq";
+	static const char desc[] = "Jon's GTK2 plugin for licq";
 	return desc;
 }
 
 const char *LP_ConfigFile()
 {
-	return "licq_gtk2-gui.conf";
+	return "licq_jons-gtk2-gui.conf";
 }
 
 bool LP_Init(int argc, char **argv)
@@ -88,30 +86,17 @@ int LP_Main(CICQDaemon *icqdaemon)
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
 
 	/* Get the title for the main window */
-	gchar *title = 
-	   g_strdup_printf("%ld", owner->Uin());
+	gchar *title = g_strdup_printf("Licq (%ld)", owner->Uin());
 
 	/* Do we need to register a new user? */
 	if(owner->Uin() == 0)
-	{
 		registration_wizard();
-	}
 
-	else
-	{
-		main_window = main_window_new(title);	
-		main_window_show();
-		contact_list_refresh();
-		system_status_refresh();
-		status_bar_refresh();
-	}
+	main_window = main_window_new(title);	
+	main_window_show();
 
 	gUserManager.DropOwner();
 	
-	/* Start the timer for fixing that stupid problem w/ contact list */
-	timer.tv_sec = 0;
-	timer.tv_usec = 0;
-
 	/* Attach plugin signals to a callback */
 	gtk_input_add_full(_Pipe, GDK_INPUT_READ, pipe_callback, 
 			NULL, (gpointer)0, NULL);
@@ -130,7 +115,10 @@ int LP_Main(CICQDaemon *icqdaemon)
 	icq_daemon->UnregisterPlugin();
 	gLog.ModifyService(S_PLUGIN, 0);
 
-	gtk_widget_destroy(main_window);
-
 	return 0;
+}
+
+const char *config_file()
+{
+	return LP_ConfigFile();
 }
