@@ -1405,7 +1405,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s)
   }
 
   // Test if v2
-  else if (n == s->RemotePort())
+  else if (n == 0 || n == s->RemotePort())
   {
     nUin = b.UnpackUnsignedLong();
     nVersion = 2;
