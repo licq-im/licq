@@ -140,11 +140,12 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
     gUserManager.DropUser(u);
   }
 
+  QString codec_name = QString(codec->name()).lower();
   popupCharset->setCheckable(true);
   UserCodec::initializeEncodingNames();
   for (uint i=0; i < UserCodec::encodings.count(); i++) {
     popupCharset->insertItem(UserCodec::encodings[i], this, SLOT(slot_setCharset(int)), 0, i);
-    if (UserCodec::encodings[i].compare(codec->name()) == 0)
+    if (UserCodec::encodingForName(UserCodec::encodings[i]).lower() == codec_name)
       popupCharset->setItemChecked(i, true);
   }
 

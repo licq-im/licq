@@ -78,9 +78,20 @@ void UserCodec::initializeEncodingNames() {
 #ifdef USE_KDE
     encodings = KGlobal::charsets()->descriptiveEncodingNames();
 #else
-    for (uint i=0; i<(sizeof(encodings_array)/sizeof(encodings_array)); i++) {
+    for (uint i=0; i<(sizeof(encodings_array)/sizeof(encodings_array[0])); i++) {
       encodings.append(qApp->translate("UserCodec", encodings_array[i][0]) + " (" + encodings_array[i][1] + ")");
     }
 #endif
   }
 }
+
+QString UserCodec::encodingForName(QString descriptiveName) {
+#ifdef USE_KDE
+  return KGlobal::charsets()->encodingForName(descriptiveName);
+#else
+  int left = descriptiveName.find( "( " );
+  return descriptiveName.mid( left + 2, descriptiveName.find( " )" ) - left - 2 );
+#endif
+}
+
+

@@ -29,6 +29,7 @@ class UserCodec {
 public:
   static QTextCodec * codecForICQUser(ICQUser *u);
   static QString encodingForIndex(uint index);
+  static QString encodingForName(QString descriptiveName);
   static QStringList encodings;
 #ifndef USE_KDE
   static const char * encodings_array[][2];
