@@ -407,7 +407,7 @@ CICQEventTag *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szSta
   CPU_Meta_SetWorkInfo *p =
     new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szAddress,
                              _szName, _szDepartment, _szPosition, _szHomepage);
-  gLog.Info("%sUpdating personal work info (#%d/#%d)...\n", L_UDPxSTR,
+  gLog.Info("%sUpdating work info (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
   CICQEventTag *t = NULL;
@@ -655,11 +655,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     u->SetAutoResponse(NULL);
     if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
-    //u = gUserManager.FetchUser(nUin, LOCK_R);
-    //gUserManager.Reorder(u);  // put the user at the top of the list
-    //gUserManager.DropUser(u);
-    //if (m_nAllowUpdateUsers <= 0)
-    //  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -680,10 +675,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
               nUin);
     ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
     gUserManager.DropUser(u);
-    //u = gUserManager.FetchUser(nUin, LOCK_R);
-    //gUserManager.Reorder(u);
-    //gUserManager.DropUser(u);
-    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
     break;
   }
 
@@ -722,10 +713,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     gTranslator.ServerToClient(u->GetAlias());
     gTranslator.ServerToClient(u->GetFirstName());
     gTranslator.ServerToClient(u->GetLastName());
-
-    // print out the user information
-    /*gLog.Info("%s%s (%s %s), %s.\n", L_SBLANKxSTR , u->GetAlias(),
-             u->getFirstName(), u->getLastName(), u->getEmail());*/
 
     // save the user infomation
     u->SetEnableSave(true);
@@ -784,11 +771,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     gTranslator.ServerToClient(u->GetPhoneNumber());
     gTranslator.ServerToClient(u->GetHomepage());
     gTranslator.ServerToClient(u->GetAbout());
-
-    // print out the user information
-    /*gLog.Info("%s%s, %s, %s. %d years old, %s. %s, %s, %s.\n", L_SBLANKxSTR,
-              u->getCity(), u->getState(), u->getCountry(sTemp), u->getAge(),
-              u->getSex(buf), u->getPhoneNumber(), u->getHomepage(), u->getAbout());*/
 
     // save the user infomation
     u->SetEnableSave(true);
@@ -886,7 +868,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     packet >> nUin;
     gLog.Info("%sInvalid UIN: %d.\n", L_UDPxSTR, nUin);
     // we need to do something here, but I bet the command is included in the packet
-    //emit signal_doneUserBasicInfo(false, nUin);
     break;
 
   case ICQ_CMDxRCV_USERxSTATUS:  // user changed status packet
@@ -895,7 +876,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     packet >> nUin;
 
     // find which user it is, verify we have them on our list
-    //char s[128];
+    char s[128];
     unsigned long nNewStatus;
     packet >> nNewStatus;
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -905,12 +886,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
                 nUin);
       break;
     }
-    gLog.Info("%s%s (%ld) changed status (0x%08X).\n", L_WARNxSTR,
-              u->GetAlias(), nUin, nNewStatus);
-    /*ICQUser::StatusToStatusStr(nNewStatus, false, s);
-    gLog.Info("%s%s (%ld) is now \"%s\".\n", L_UDPxSTR,
-              (u ? u->GetAlias() : "Unknown user"), nUin, s);*/
     ChangeUserStatus(u, nNewStatus);
+    gLog.Info("%s%s (%ld) changed status: %s.\n", L_WARNxSTR,
+              u->GetAlias(), nUin, u->StatusStr(s));
     gUserManager.DropUser(u);
     break;
   }
@@ -919,7 +897,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     /* 02 00 1C 02 05 00 8F 76 20 00 */
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
     gLog.Info("%sLogon complete.\n", L_UDPxSTR);
-    //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
     break;
 
   case ICQ_CMDxRCV_SEARCHxFOUND:  // user found in search
@@ -1134,7 +1111,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     /* 02 00 5A 00 00 00 8F 76 20 00 CD CD 76 10 02 00 01 00 05 00 00 00 00 00
        8C 00 00 00 F0 00 0A 00 0A 00 05 00 0A 00 01 */
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
-    gLog.Info("%sMirabilis says hello.\n", L_UDPxSTR);
+    gLog.Info("%sServer says hello.\n", L_UDPxSTR);
 
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     ChangeUserStatus(o, m_nDesiredStatus);
@@ -1199,7 +1176,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
   default:  // what the heck is this packet?  print it out
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
     char *buf;
-    gLog.Unknown("%sUnknown UDP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
+    gLog.Unknown("%sUnknown server command %d:\n%s\n", L_UNKNOWNxSTR,
+                 nCommand, packet.print(buf));
     delete buf;
     break;
   }
@@ -1219,7 +1197,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   if (nUin == 0)
   {
     char *buf;
-    gLog.Unknown("%sInvalid system message (UIN = 0?):\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
+    gLog.Unknown("%sInvalid system message (UIN = 0):\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
     delete buf;
   }
 
@@ -1279,16 +1257,8 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
                 u->GetAlias(), nUin);
 
     if (AddUserEvent(u, e))
-    {
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      //u->Unlock();
-      //u->Lock(LOCK_R);
-      //gUserManager.Reorder(u);
-      gUserManager.DropUser(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
-    }
-    else
-      gUserManager.DropUser(u);
+    gUserManager.DropUser(u);
     break;
   }
   case ICQ_CMDxSUB_URL:  // system message: url through the server
@@ -1330,16 +1300,8 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
                 u->GetAlias(), nUin);
 
     if (AddUserEvent(u, e))
-    {
       m_xOnEventManager.Do(ON_EVENT_URL, u);
-      //u->Unlock();
-      //u->Lock(LOCK_R);
-      //gUserManager.Reorder(u);
-      gUserManager.DropUser(u);
-      //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
-    }
-    else
-      gUserManager.DropUser(u);
+    gUserManager.DropUser(u);
     delete[] szUrl;
     break;
   }
