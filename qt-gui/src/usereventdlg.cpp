@@ -331,22 +331,8 @@ void UserEventTabDlg::clearEvents(QWidget *tab)
 {
 #if QT_VERSION >= 300
   if (!isActiveWindow()) return;
-  UserEventCommon *e = static_cast<UserEventCommon*>(tab);
-  ICQUser *u = gUserManager.FetchUser(e->Uin(), LOCK_R);
-  if (u != NULL && u->NewMessages() > 0)
-  {
-    std::vector<int> idList;
-    for (unsigned short i = 0; i < u->NewMessages(); i++)
-    {
-      CUserEvent *e = u->EventPeek(i);
-      if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
-        idList.push_back(e->Id());
-    }
-
-    for (unsigned short i = 0; i < idList.size(); i++)
-      u->EventClearId(idList[i]);
-  }
-  gUserManager.DropUser(u);
+  UserSendCommon *e = static_cast<UserSendCommon*>(tab);
+  QTimer::singleShot(e->clearDelay, e, SLOT(slot_ClearNewEvents()));
 #endif
 }
 
@@ -1619,6 +1605,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
+
+  clearDelay = 1000;
 }
 #endif
 
@@ -1725,6 +1713,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
+
+  clearDelay = 1000;
 }
 
 
@@ -1736,33 +1726,8 @@ UserSendCommon::~UserSendCommon()
 //-----UserSendCommon::windowActivationChange--------------------------------
 void UserSendCommon::windowActivationChange(bool oldActive)
 {
-#ifdef QT_PROTOCOL_PLUGIN
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-#else
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-#endif
-
-  if (isActiveWindow() && mainwin->m_bMsgChatView &&
-     (!mainwin->userEventTabDlg ||
-       (mainwin->userEventTabDlg && 
-         (!mainwin->userEventTabDlg->tabExists(this) ||
-         mainwin->userEventTabDlg->tabIsSelected(this)))))
-    {
-    if (u != NULL && u->NewMessages() > 0)
-    {
-      std::vector<int> idList;
-      for (unsigned short i = 0; i < u->NewMessages(); i++)
-      {
-        CUserEvent *e = u->EventPeek(i);
-        if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
-          idList.push_back(e->Id());
-      }
-
-      for (unsigned short i = 0; i < idList.size(); i++)
-        u->EventClearId(idList[i]);
-    }
-  }
-  gUserManager.DropUser(u);
+  if (isActiveWindow())
+    QTimer::singleShot(clearDelay, this, SLOT(slot_ClearNewEvents()));
   QWidget::windowActivationChange(oldActive);
 }
 #endif
@@ -1834,9 +1799,46 @@ void UserSendCommon::slot_SetBackgroundICQColor()
 }
 
 
+//-----UserSendCommon::slot_ClearNewEvents-----------------------------------
+void UserSendCommon::slot_ClearNewEvents()
+{
+#ifdef QT_PROTOCOL_PLUGIN
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+#else
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+#endif
+
+  if (isActiveWindow() && mainwin->m_bMsgChatView 
+#if QT_VERSION >= 300
+      && (!mainwin->userEventTabDlg ||
+       (mainwin->userEventTabDlg &&
+         (!mainwin->userEventTabDlg->tabExists(this) ||
+          mainwin->userEventTabDlg->tabIsSelected(this))))
+#endif
+      )
+  {
+    if (u != NULL && u->NewMessages() > 0)
+    {
+      std::vector<int> idList;
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+      {
+        CUserEvent *e = u->EventPeek(i);
+        if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+          idList.push_back(e->Id());
+      }
+
+      for (unsigned short i = 0; i < idList.size(); i++)
+        u->EventClearId(idList[i]);
+    }
+  }
+  gUserManager.DropUser(u);
+}
+
+
 //-----UserSendCommon::changeEventType---------------------------------------
 void UserSendCommon::changeEventType(int id)
 {
+  if (isType(id)) return;
   UserSendCommon* e = NULL;
   QWidget *parent = NULL;
 #if QT_VERSION >= 300

@@ -218,6 +218,7 @@ public:
 #if QT_VERSION >= 300
   virtual void windowActivationChange(bool oldActive);
 #endif
+  int clearDelay;
 
 signals:
   void autoCloseNotify();
@@ -242,6 +243,7 @@ protected:
   bool checkSecure();
 
   virtual void resetSettings() = 0;
+  virtual bool isType(int) = 0;
 
 protected slots:
   virtual void sendButton();
@@ -253,6 +255,7 @@ protected slots:
   void slot_SetForegroundICQColor();
   void slot_SetBackgroundICQColor();
   void trySecure();
+  void slot_ClearNewEvents();
 
 public slots:
   void changeEventType(int);
@@ -279,8 +282,8 @@ public:
 
 protected:
   virtual bool sendDone(ICQEvent *);
-
   virtual void resetSettings();
+  virtual bool isType(int id) { return (id == 0); }
 
 protected slots:
   virtual void sendButton();
@@ -303,12 +306,13 @@ public:
   virtual ~UserSendUrlEvent();
 
   void setUrl(const QString& url, const QString& description);
+
 protected:
   QLabel *lblItem;
   CInfoField *edtItem;
   virtual bool sendDone(ICQEvent *);
-
   virtual void resetSettings();
+  virtual bool isType(int id) { return (id == 1); }
 
 protected slots:
   virtual void sendButton();
@@ -338,8 +342,8 @@ protected:
   QPushButton *btnBrowse, *btnEdit;
   ConstFileList m_lFileList;
   virtual bool sendDone(ICQEvent*);
-
   virtual void resetSettings();
+  virtual bool isType(int id) { return (id == 2); }
 
 protected slots:
   void browseFile();
@@ -371,8 +375,8 @@ protected:
   QString m_szMPChatClients;
   unsigned short m_nMPChatPort;
   virtual bool sendDone(ICQEvent *);
-
   virtual void resetSettings();
+  virtual bool isType(int id) { return (id == 3); }
 
 protected slots:
   virtual void sendButton();
@@ -403,8 +407,8 @@ protected:
   CMMUserView *lstContacts;
 
   virtual bool sendDone(ICQEvent *);
-
   virtual void resetSettings();
+  virtual bool isType(int id) { return (id == 4); }
 
 protected slots:
   virtual void sendButton();
@@ -433,8 +437,8 @@ protected:
   CInfoField *nfoCount;
 
   virtual bool sendDone(ICQEvent *);
-
   virtual void resetSettings();
+  virtual bool isType(int id) { return (id == 5); }
 
 protected slots:
   virtual void sendButton();

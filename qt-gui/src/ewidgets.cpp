@@ -688,15 +688,8 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
        mainwin->userEventTabDlg->tabIsSelected(parent))) &&
 #endif
       e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
-#ifdef QT_PROTOCOL_PLUGIN
-    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-#else
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R );
-#endif
-    if (u != NULL) {
-       u->EventClearId(e->Id());
-       gUserManager.DropUser(u);
-    }
+    UserSendCommon *s = static_cast<UserSendCommon*>(parent);
+    QTimer::singleShot(s->clearDelay, s, SLOT(slot_ClearNewEvents()));
   }
 }
 
