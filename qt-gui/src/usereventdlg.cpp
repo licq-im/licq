@@ -327,6 +327,8 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
     {        
       if (u->NewMessages() > 0)
       {        
+        setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
+
         // to clear it..
         tab->gotTyping(u->GetTyping());
 
@@ -363,6 +365,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       // use status icon
       else
       {
+        setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
         tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
         if (u->GetTyping() == ICQ_TYPING_ACTIVE)
           tabw->setTabColor(tab, QColor("green"));
