@@ -889,6 +889,25 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
         while (i && i->ItemUin() != nUin)
           i = (CUserViewItem *)i->nextSibling();
+#if QT_VERSION >= 210
+        if (i != NULL)
+        {
+            if(u->StatusOffline() && !m_bShowOffline) {
+                delete i; i=0;
+                userView->triggerUpdate();
+            }
+            else {
+                i->setGraphics(u);
+                userView->sort();
+            }
+        }
+        else
+        {
+          if ( (m_bShowOffline || !u->StatusOffline()) &&
+               (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
+            (void) new CUserViewItem(u, userView);
+        }
+#else
         if (i != NULL)
         {
           delete i;
@@ -902,6 +921,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
                (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
             (void) new CUserViewItem(u, userView);
         }
+#endif
       }
       // Update their floaty
       CUserView *v = CUserView::FindFloaty(nUin);
