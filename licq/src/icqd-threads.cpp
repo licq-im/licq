@@ -162,6 +162,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
         gLog.Info("%sConnecting to login server.\n", L_SRVxSTR);
 
+/***** Not yet, perhaps a problem with certain versions of pthreads? *****
         pthread_t *t = new pthread_t;
         int *s = new int;
         pthread_create(t, NULL, ConnectToServer_tep, s);
@@ -177,6 +178,10 @@ void *ProcessRunningEvent_Server_tep(void *p)
 
         pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
         pthread_testcancel();
+*********************/
+
+        int socket = d->ConnectToLoginServer();
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
         e->m_nSocketDesc = socket;
 
