@@ -1,5 +1,639 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>@default</name>
+    <message>
+        <source>Right click - Status menu
+Double click - Set auto response</source>
+        <translation>Högerklicka - Statusmeny
+Dubbelklicka - Sätt autosvar</translation>
+    </message>
+    <message>
+        <source>Licq (%1)</source>
+        <translation>Licq (%1)</translation>
+    </message>
+    <message>
+        <source>Other Users</source>
+        <translation>Andra användare</translation>
+    </message>
+    <message>
+        <source>SysMsg</source>
+        <translation>SysMed</translation>
+    </message>
+    <message>
+        <source>System Message</source>
+        <translation>Systemmeddelande</translation>
+    </message>
+    <message>
+        <source>%1 msg%2</source>
+        <translation type="unfinished">%1 med.%2</translation>
+    </message>
+    <message>
+        <source>s</source>
+        <translation type="unfinished">s</translation>
+    </message>
+    <message>
+        <source>%1 message%2</source>
+        <translation>%1 meddelande%2</translation>
+    </message>
+    <message>
+        <source>No msgs</source>
+        <translation>Inga med.</translation>
+    </message>
+    <message>
+        <source>No messages</source>
+        <translation>Inga meddelanden</translation>
+    </message>
+    <message>
+        <source>All Users</source>
+        <translation>Alla användare</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation>Anslutningsavisering</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation>Synlighetslista</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation>Osynlighetslista</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation>Ignoreringslista</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation>Nya användare</translation>
+    </message>
+    <message>
+        <source>Logon failed.
+See network window for details.</source>
+        <translation>Anslutning misslyckades.
+Se nätverksfönstret för mer information.</translation>
+    </message>
+    <message>
+        <source>Successfully registered, your user identification
+number (UIN) is %1.
+Now set your personal information.</source>
+        <translation>Lyckad registrering, ditt användaridentifikationnummer
+(UIN) är %1.
+Fyll i din personliga information nu.</translation>
+    </message>
+    <message>
+        <source>Registration failed.  See network window for details.</source>
+        <translation>Registrering misslyckades. Se nätverksfönstret för mer information.</translation>
+    </message>
+    <message>
+        <source>Error sending authorization.</source>
+        <translation>Fel vid sändning av godkännande.</translation>
+    </message>
+    <message>
+        <source>Authorization granted.</source>
+        <translation>Godkänd.</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove
+%1 (%2)
+from your contact list?</source>
+        <translation>Är du säker på att du vill ta bort
+%1 (%2)
+från din kontaktlista?</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>Do you really want to add
+%1 (%2)
+to your ignore list?</source>
+        <translation>Vill du verkligen lägga till
+%1 (%2)
+till din ignoreringslista?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Ja</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;Nej</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove
+%1 (%2)
+from the &apos;%3&apos; group?</source>
+        <translation>Är du säker på att du vill ta bort
+%1 (%2)
+från &apos;%3&apos; gruppen?</translation>
+    </message>
+    <message>
+        <source>Licq version %1%8.
+Qt GUI plugin version %2.
+Compiled on: %7
+%6
+Maintainer: Jon Keating
+Contributions by Dirk A. Mueller
+Original Author: Graham Roff
+
+http://www.licq.org
+#licq on irc.openprojects.net
+
+%3 (%4)
+%5 contacts.</source>
+        <translation type="unfinished">Licq version %1%8.
+Qt GUI plugin version %2.
+Kompilerad: %7
+%6
+Maintainer: Jon Keating
+Bidrag från Dirk A. Mueller
+Ursprunglig skapare : Graham Roff
+Svensk översättning : Samuel Blomqvist
+
+http://www.licq.org
+#licq on irc.freenode.net
+
+%3 (%4)
+%5 contacts.</translation>
+    </message>
+    <message>
+        <source>(with KDE support)
+</source>
+        <translation>(med KDE-stöd)
+</translation>
+    </message>
+    <message>
+        <source>Unable to open extended icons file
+%1.</source>
+        <translation type="unfinished">Kunde inte öppna fil %1 med utökade ikoner.</translation>
+    </message>
+    <message>
+        <source>Unable to open icons file
+%1.</source>
+        <translation type="unfinished">Kunde inte öppna ikonfil
+%1.</translation>
+    </message>
+    <message>
+        <source>&amp;Online</source>
+        <translation>&amp;Ansluten</translation>
+    </message>
+    <message>
+        <source>&amp;Away</source>
+        <translation>&amp;Borta</translation>
+    </message>
+    <message>
+        <source>&amp;Not Available</source>
+        <translation>&amp;Ej tillgänglig</translation>
+    </message>
+    <message>
+        <source>O&amp;ccupied</source>
+        <translation>&amp;Upptagen</translation>
+    </message>
+    <message>
+        <source>&amp;Do Not Disturb</source>
+        <translation>&amp;Stör ej</translation>
+    </message>
+    <message>
+        <source>Free for C&amp;hat</source>
+        <translation>Chatt&amp;ledig</translation>
+    </message>
+    <message>
+        <source>O&amp;ffline</source>
+        <translation>&amp;Frånkopplad</translation>
+    </message>
+    <message>
+        <source>&amp;Invisible</source>
+        <translation>&amp;Osynlig</translation>
+    </message>
+    <message>
+        <source>Send &amp;Message</source>
+        <translation>Skicka &amp;meddelande</translation>
+    </message>
+    <message>
+        <source>Send &amp;URL</source>
+        <translation>Skicka &amp;länk</translation>
+    </message>
+    <message>
+        <source>Send &amp;Chat Request</source>
+        <translation>Skicka &amp;chattbegäran</translation>
+    </message>
+    <message>
+        <source>Send &amp;File Transfer</source>
+        <translation>Skicka &amp;fil</translation>
+    </message>
+    <message>
+        <source>Send Contact &amp;List</source>
+        <translation>Skicka kontakt&amp;lista</translation>
+    </message>
+    <message>
+        <source>Send &amp;Authorization</source>
+        <translation>Skicka &amp;godkännande</translation>
+    </message>
+    <message>
+        <source>Send Authorization Re&amp;quest</source>
+        <translation>Skicka begäran om &amp;auktorisering</translation>
+    </message>
+    <message>
+        <source>Send &amp;SMS</source>
+        <translation>Skicka &amp;SMS</translation>
+    </message>
+    <message>
+        <source>Request &amp;Secure Channel</source>
+        <translation>Begär &amp;säker kanal</translation>
+    </message>
+    <message>
+        <source>&amp;Info</source>
+        <translation>&amp;Info</translation>
+    </message>
+    <message>
+        <source>View &amp;History</source>
+        <translation>Visa &amp;Historik</translation>
+    </message>
+    <message>
+        <source>Status Info</source>
+        <translation>Statusinfo</translation>
+    </message>
+    <message>
+        <source>Unknown Packets</source>
+        <translation>Okända paket</translation>
+    </message>
+    <message>
+        <source>Errors</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Warnings</source>
+        <translation>Varningar</translation>
+    </message>
+    <message>
+        <source>Packets</source>
+        <translation>Paket</translation>
+    </message>
+    <message>
+        <source>Set All</source>
+        <translation>Ange alla</translation>
+    </message>
+    <message>
+        <source>Clear All</source>
+        <translation>Rensa alla</translation>
+    </message>
+    <message>
+        <source>&amp;View System Messages</source>
+        <translation>&amp;Visa systemmeddelanden</translation>
+    </message>
+    <message>
+        <source>&amp;Security/Password Options</source>
+        <translation>&amp;Säkerhet/Lösenords inställningar</translation>
+    </message>
+    <message>
+        <source>&amp;Random Chat Group</source>
+        <translation>&amp;Slumpmässig chattgrupp</translation>
+    </message>
+    <message>
+        <source>Debug Level</source>
+        <translation>Felsökningsnivå</translation>
+    </message>
+    <message>
+        <source>&amp;Add User</source>
+        <translation>&amp;Lägg till Användare</translation>
+    </message>
+    <message>
+        <source>S&amp;earch for User</source>
+        <translation>S&amp;ök efter användare</translation>
+    </message>
+    <message>
+        <source>A&amp;uthorize User</source>
+        <translation>&amp;Godkänn användare</translation>
+    </message>
+    <message>
+        <source>Re&amp;quest Authorization</source>
+        <translation>&amp;Begär auktorisering</translation>
+    </message>
+    <message>
+        <source>R&amp;andom Chat</source>
+        <translation>Slump&amp;chatt</translation>
+    </message>
+    <message>
+        <source>&amp;Popup All Messages</source>
+        <translation>&amp;Visa automatiskt alla meddelanden</translation>
+    </message>
+    <message>
+        <source>Edit &amp;Groups</source>
+        <translation>Redigera &amp;grupper</translation>
+    </message>
+    <message>
+        <source>Update All Users</source>
+        <translation>Uppdatera alla användare</translation>
+    </message>
+    <message>
+        <source>Update Current Group</source>
+        <translation>Uppdatera aktuell grupp</translation>
+    </message>
+    <message>
+        <source>&amp;Redraw User Window</source>
+        <translation>&amp;Rita om användarfönstret</translation>
+    </message>
+    <message>
+        <source>&amp;Save All Users</source>
+        <translation>&amp;Spara alla användare</translation>
+    </message>
+    <message>
+        <source>Reg&amp;ister User</source>
+        <translation>Reg&amp;istrera användare</translation>
+    </message>
+    <message>
+        <source>&amp;Hints</source>
+        <translation>&amp;Tips</translation>
+    </message>
+    <message>
+        <source>&amp;About</source>
+        <translation>&amp;Om</translation>
+    </message>
+    <message>
+        <source>&amp;Statistics</source>
+        <translation>&amp;Statistik</translation>
+    </message>
+    <message>
+        <source>System Functions</source>
+        <translation>Systemfunktioner</translation>
+    </message>
+    <message>
+        <source>User Functions</source>
+        <translation>Användarfunktioner</translation>
+    </message>
+    <message>
+        <source>&amp;Status</source>
+        <translation>&amp;Status</translation>
+    </message>
+    <message>
+        <source>&amp;Group</source>
+        <translation>&amp;Grupp</translation>
+    </message>
+    <message>
+        <source>Set &amp;Auto Response...</source>
+        <translation>Ange &amp;autosvar...</translation>
+    </message>
+    <message>
+        <source>&amp;Network Window</source>
+        <translation>&amp;Nätverksfönstret</translation>
+    </message>
+    <message>
+        <source>&amp;Mini Mode</source>
+        <translation>&amp;Mini-läge</translation>
+    </message>
+    <message>
+        <source>Show Offline &amp;Users</source>
+        <translation>Visa frånkopplade &amp;användare</translation>
+    </message>
+    <message>
+        <source>&amp;Thread Group View</source>
+        <translation>&amp;Trådad gruppvy</translation>
+    </message>
+    <message>
+        <source>&amp;Options...</source>
+        <translation>&amp;Alternativ...</translation>
+    </message>
+    <message>
+        <source>S&amp;kin Browser...</source>
+        <translation>T&amp;emaväljare...</translation>
+    </message>
+    <message>
+        <source>&amp;Plugin Manager...</source>
+        <translation>&amp;Instickshanterare...</translation>
+    </message>
+    <message>
+        <source>Sa&amp;ve Settings</source>
+        <translation>S&amp;para inställningar</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Hjälp</translation>
+    </message>
+    <message>
+        <source>E&amp;xit</source>
+        <translation>A&amp;vsluta</translation>
+    </message>
+    <message>
+        <source>Accept in Away</source>
+        <translation>Tillåt i borta</translation>
+    </message>
+    <message>
+        <source>Accept in Not Available</source>
+        <translation>Tillåt i ej tillgänglig</translation>
+    </message>
+    <message>
+        <source>Accept in Occupied</source>
+        <translation>Tillåt i upptagen</translation>
+    </message>
+    <message>
+        <source>Accept in Do Not Disturb</source>
+        <translation>Tillåt i stör ej</translation>
+    </message>
+    <message>
+        <source>Auto Accept Files</source>
+        <translation>Auto acceptera filer</translation>
+    </message>
+    <message>
+        <source>Auto Accept Chats</source>
+        <translation>Auto acceptera chat</translation>
+    </message>
+    <message>
+        <source>Auto Request Secure</source>
+        <translation>Begär säker kanal automatiskt</translation>
+    </message>
+    <message>
+        <source>Use Real Ip (LAN)</source>
+        <translation>Använd sant IP (LAN)</translation>
+    </message>
+    <message>
+        <source>Online to User</source>
+        <translation>Ansluten för användare</translation>
+    </message>
+    <message>
+        <source>Away to User</source>
+        <translation>Borta för användare</translation>
+    </message>
+    <message>
+        <source>Not Available to User</source>
+        <translation>Ej tillgänglig för användare</translation>
+    </message>
+    <message>
+        <source>Occupied to User</source>
+        <translation>Upptagen för användare</translation>
+    </message>
+    <message>
+        <source>Do Not Disturb to User</source>
+        <translation>Stör ej för användare</translation>
+    </message>
+    <message>
+        <source>&amp;View Event</source>
+        <translation>&amp;Visa Händelse</translation>
+    </message>
+    <message>
+        <source>Send</source>
+        <translation>Skicka</translation>
+    </message>
+    <message>
+        <source>Misc Modes</source>
+        <translation>Diverse inställningar</translation>
+    </message>
+    <message>
+        <source>U&amp;tilities</source>
+        <translation>&amp;Verktyg</translation>
+    </message>
+    <message>
+        <source>Check Auto Response</source>
+        <translation>Kontrollera autosvar</translation>
+    </message>
+    <message>
+        <source>Custom Auto Response...</source>
+        <translation>Anpassat autosvar...</translation>
+    </message>
+    <message>
+        <source>Toggle &amp;Floaty</source>
+        <translation>Växla &amp;flytande</translation>
+    </message>
+    <message>
+        <source>Edit User Group</source>
+        <translation>Redigera användargrupper</translation>
+    </message>
+    <message>
+        <source>Remove From List</source>
+        <translation>Ta bort från listan</translation>
+    </message>
+    <message>
+        <source>Check %1 Response</source>
+        <translation>Kontrollera %1 svar</translation>
+    </message>
+    <message>
+        <source>Close &amp;Secure Channel</source>
+        <translation>Stäng &amp;säker kanal</translation>
+    </message>
+    <message>
+        <source>Daemon Statistics
+(Today/Total)
+</source>
+        <translation>Statistik för bakgrundsprocess
+(Idag/Totalt)
+</translation>
+    </message>
+    <message>
+        <source>Up since %1
+</source>
+        <translation>Igång sedan %1
+</translation>
+    </message>
+    <message>
+        <source>Last reset %1
+
+</source>
+        <translation>Senaste nollställning %1
+
+</translation>
+    </message>
+    <message>
+        <source>%1: %2 / %3
+</source>
+        <translation>%1: %2 / %3
+</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation>&amp;Nollställ</translation>
+    </message>
+    <message>
+        <source>Daemon Statistics
+
+</source>
+        <translation type="unfinished">Statistik för bakgrundsprocess
+
+</translation>
+    </message>
+    <message>
+        <source>Up since %1
+
+</source>
+        <translation>Igång sedan %1
+
+</translation>
+    </message>
+    <message>
+        <source>%1: %2
+</source>
+        <translation>%1: %2
+</translation>
+    </message>
+    <message>
+        <source>You are currently registered as
+UIN: %1
+Base Directory: %2
+Rerun licq with the -b option to select a new
+base directory and then register a new user.</source>
+        <translation>Du är förnärvarande registrerad som
+UIN: %1
+Baskatalog: %2
+Kör licq med -b flaggan för att välja en ny
+baskatalog och registrera sedan en ny användare.</translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
+</source>
+        <translation>&lt;h2&gt;Tips för Användning&lt;br&gt;av Licq Qt-GUI tillägget&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;
+&lt;ul&gt;
+&lt;li&gt;Ändra din status genom att klicka på status-etiketten.&lt;/li&gt;
+&lt;li&gt;Ändra ditt autosvar genom att dubbel-klicka på status-etiketten.&lt;/li&gt;
+&lt;li&gt;Visa systemmeddelanden genom att dubbel-klicka på meddelande-etiketten.&lt;/li&gt;
+&lt;li&gt;Ändra grupper genom att klicka på meddelande-etiketten.&lt;/li&gt;
+&lt;li&gt;Använd följande kort-kommandon från kontaktlistan:&lt;ul&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Växla mini-läge&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Växla visa frånkopplade användare&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Avsluta&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Göm&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Visa nästa meddelande&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Visa meddelande&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Skicka meddelande&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Skicka URL&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Skicka snackbegäran&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Skicka fil&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Kontrollera autosvar&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Poppa upp alla meddelanden&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Rita om användarfönstret&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Ta bort användare från aktuell grupp&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Ta bort användare från kontaktlistan&lt;/li&gt;
+&lt;li&gt;Håll ned Ctrl medan du klickar på Stäng i funktionsfönstret för att ta bort användaren från din kontaktlista.&lt;/li&gt;
+&lt;li&gt;Tryck Ctrl-Retur från nästan alla textinmatningsrutor för att välja \&quot;OK\&quot; eller \&quot;Acceptera\&quot;. T.ex. i skicka-fliken i användarfunktionsfönstret.&lt;/li&gt;
+&lt;li&gt;Här är den fullständiga listan över användaralternativ %, som kan användas i &lt;b&gt;OnEvent&lt;/b&gt; parametrar, &lt;b&gt;autosvar&lt;/b&gt;, och &lt;b&gt;verktyg&lt;/b&gt;:
+
+</translation>
+    </message>
+    <message>
+        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
+        <translation>&lt;hr&gt;&lt;p&gt;För mer information, se Licq:s webbplats (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Licq - Hints</source>
+        <translation>Licq - tips</translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation>&amp;Stäng</translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AddUserDlg</name>
     <message>
         <source>Licq - Add User</source>
@@ -16,6 +650,10 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Avbryt</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;OK</translation>
     </message>
 </context>
 <context>
@@ -282,43 +920,43 @@ Se nätverksfönstret för mer information</translation>
     </message>
     <message>
         <source>File transfer cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filöverföring avbruten.</translation>
     </message>
     <message>
         <source>Waiting for connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Väntar på anslutning...</translation>
     </message>
     <message>
         <source>Receiving file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tar emot fil...</translation>
     </message>
     <message>
         <source>Sending file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Skickar fil...</translation>
     </message>
     <message>
         <source>Received %1 from %2 successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Emottog %1 från %2 utan problem.</translation>
     </message>
     <message>
         <source>Sent %1 to %2 successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 skickad till %2 utan problem.</translation>
     </message>
     <message>
         <source>File transfer complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filöverföring färdig.</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Remote side disconnected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mottagaren kopplade ifrån.</translation>
     </message>
     <message>
         <source>File I/O error: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">I/O fel på fil: %1.</translation>
     </message>
     <message>
         <source>File I/O Error:
@@ -340,12 +978,13 @@ See Network Window for details.</source>
     <message>
         <source>Connection error.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutningsfel.</translation>
     </message>
     <message>
         <source>Unable to reach remote host.
 See Network Window for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ej nå mottagar datorn.
+Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Bind error.
@@ -355,12 +994,13 @@ See Network Window for details.</source>
     <message>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunde inte binda till port.
+Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Not enough resources.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ej tillräckligt med resurser.</translation>
     </message>
     <message>
         <source>Unable to create a thread.
@@ -369,7 +1009,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Connecting to remote...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ansluter till mottagare...</translation>
     </message>
 </context>
 <context>
@@ -444,6 +1084,14 @@ See Network Window for details.</source>
         <source>Join Multiparty Chat</source>
         <translation>Delta i gruppchatt</translation>
     </message>
+    <message>
+        <source>&amp;Invite</source>
+        <translation>&amp;Bjud in</translation>
+    </message>
+    <message>
+        <source>&amp;Join</source>
+        <translation>&amp;Gå med</translation>
+    </message>
 </context>
 <context>
     <name>CMMSendDlg</name>
@@ -506,82 +1154,86 @@ See Network Window for details.</source>
         <source>Add All</source>
         <translation>Lägg till alla</translation>
     </message>
+    <message>
+        <source>Drag&apos;n&apos;Drop didn&apos;t work</source>
+        <translation>Dra och släpp fungerade inte</translation>
+    </message>
 </context>
 <context>
     <name>CMainWindow</name>
     <message>
         <source>s</source>
-        <translation>s</translation>
+        <translation type="obsolete">s</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation>&amp;Nej</translation>
+        <translation type="obsolete">&amp;Nej</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation>&amp;OK</translation>
+        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation>&amp;Ja</translation>
+        <translation type="obsolete">&amp;Ja</translation>
     </message>
     <message>
         <source>Send</source>
-        <translation>Skicka</translation>
+        <translation type="obsolete">Skicka</translation>
     </message>
     <message>
         <source>Online to User</source>
-        <translation>Ansluten för användare</translation>
+        <translation type="obsolete">Ansluten för användare</translation>
     </message>
     <message>
         <source>&amp;Away</source>
-        <translation>&amp;Borta</translation>
+        <translation type="obsolete">&amp;Borta</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Hjälp</translation>
+        <translation type="obsolete">&amp;Hjälp</translation>
     </message>
     <message>
         <source>&amp;Info</source>
-        <translation>&amp;Info</translation>
+        <translation type="obsolete">&amp;Info</translation>
     </message>
     <message>
         <source>U&amp;tilities</source>
-        <translation>&amp;Verktyg</translation>
+        <translation type="obsolete">&amp;Verktyg</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>A&amp;vsluta</translation>
+        <translation type="obsolete">A&amp;vsluta</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation>&amp;Alternativ...</translation>
+        <translation type="obsolete">&amp;Alternativ...</translation>
     </message>
     <message>
         <source>R&amp;andom Chat</source>
-        <translation>Slump&amp;chatt</translation>
+        <translation type="obsolete">Slump&amp;chatt</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
-        <translation>Fel vid sändning av godkännande.</translation>
+        <translation type="obsolete">Fel vid sändning av godkännande.</translation>
     </message>
     <message>
         <source>&amp;Random Chat Group</source>
-        <translation>&amp;Slumpmässig chattgrupp</translation>
+        <translation type="obsolete">&amp;Slumpmässig chattgrupp</translation>
     </message>
     <message>
         <source>Up since %1
 </source>
-        <translation>Igång sedan %1
+        <translation type="obsolete">Igång sedan %1
 </translation>
     </message>
     <message>
         <source>Check %1 Response</source>
-        <translation>Kontrollera %1 svar</translation>
+        <translation type="obsolete">Kontrollera %1 svar</translation>
     </message>
     <message>
         <source>You are currently registered as
@@ -589,7 +1241,7 @@ UIN: %1
 Base Directory: %2
 Rerun licq with the -b option to select a new
 base directory and then register a new user.</source>
-        <translation>Du är förnärvarande registrerad som
+        <translation type="obsolete">Du är förnärvarande registrerad som
 UIN: %1
 Baskatalog: %2
 Kör licq med -b flaggan för att välja en ny
@@ -598,88 +1250,88 @@ baskatalog och registrera sedan en ny användare.</translation>
     <message>
         <source>Unable to open icons file
 %1.</source>
-        <translation>Kunde inte öppna ikonfil
+        <translation type="obsolete">Kunde inte öppna ikonfil
 %1.</translation>
     </message>
     <message>
         <source>Send &amp;Authorization</source>
-        <translation>Skicka &amp;godkännande</translation>
+        <translation type="obsolete">Skicka &amp;godkännande</translation>
     </message>
     <message>
         <source>&amp;Not Available</source>
-        <translation>&amp;Ej tillgänglig</translation>
+        <translation type="obsolete">&amp;Ej tillgänglig</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation>&amp;Om</translation>
+        <translation type="obsolete">&amp;Om</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>&amp;Grupp</translation>
+        <translation type="obsolete">&amp;Grupp</translation>
     </message>
     <message>
         <source>&amp;Hints</source>
-        <translation>&amp;Tips</translation>
+        <translation type="obsolete">&amp;Tips</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation>&amp;Återställ</translation>
+        <translation type="obsolete">&amp;Återställ</translation>
     </message>
     <message>
         <source>Custom Auto Response...</source>
-        <translation>Anpassat autosvar...</translation>
+        <translation type="obsolete">Anpassat autosvar...</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Anslutningsavisering</translation>
+        <translation type="obsolete">Anslutningsavisering</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
-        <translation>Ange &amp;autosvar</translation>
+        <translation type="obsolete">Ange &amp;autosvar</translation>
     </message>
     <message>
         <source>Remove From List</source>
-        <translation>Ta bort från listan</translation>
+        <translation type="obsolete">Ta bort från listan</translation>
     </message>
     <message>
         <source>System Message</source>
-        <translation>Systemmeddelande</translation>
+        <translation type="obsolete">Systemmeddelande</translation>
     </message>
     <message>
         <source>%1 msg%2</source>
-        <translation>%1 msg%2</translation>
+        <translation type="obsolete">%1 msg%2</translation>
     </message>
     <message>
         <source>&amp;Popup All Messages</source>
-        <translation>&amp;Visa automatiskt alla meddelanden</translation>
+        <translation type="obsolete">&amp;Visa automatiskt alla meddelanden</translation>
     </message>
     <message>
         <source>Accept in Not Available</source>
-        <translation>Tillåt i ej tillgänglig</translation>
+        <translation type="obsolete">Tillåt i ej tillgänglig</translation>
     </message>
     <message>
         <source>View &amp;History</source>
-        <translation>Visa &amp;Historik</translation>
+        <translation type="obsolete">Visa &amp;Historik</translation>
     </message>
     <message>
         <source>Other Users</source>
-        <translation>Andra användare</translation>
+        <translation type="obsolete">Andra användare</translation>
     </message>
     <message>
         <source>Edit User Group</source>
-        <translation>Redigera användargrupper</translation>
+        <translation type="obsolete">Redigera användargrupper</translation>
     </message>
     <message>
         <source>Successfully registered, your user identification
 number (UIN) is %1.
 Now set your personal information.</source>
-        <translation>Lyckad registrering, ditt användaridentifikationnummer
+        <translation type="obsolete">Lyckad registrering, ditt användaridentifikationnummer
 (UIN) är %1.
 Fyll i din personliga information nu.</translation>
     </message>
     <message>
         <source>Unknown Packets</source>
-        <translation>Okända paket</translation>
+        <translation type="obsolete">Okända paket</translation>
     </message>
     <message>
         <source>Send &amp;Url</source>
@@ -687,23 +1339,23 @@ Fyll i din personliga information nu.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Avbryt</translation>
+        <translation type="obsolete">Avbryt</translation>
     </message>
     <message>
         <source>&amp;Mini Mode</source>
-        <translation>&amp;Mini-läge</translation>
+        <translation type="obsolete">&amp;Mini-läge</translation>
     </message>
     <message>
         <source>Errors</source>
-        <translation>Fel</translation>
+        <translation type="obsolete">Fel</translation>
     </message>
     <message>
         <source>Close &amp;Secure Channel</source>
-        <translation>Stäng &amp;säker kanal</translation>
+        <translation type="obsolete">Stäng &amp;säker kanal</translation>
     </message>
     <message>
         <source>No msgs</source>
-        <translation>Inga med.</translation>
+        <translation type="obsolete">Inga med.</translation>
     </message>
     <message>
         <source>Licq version %1%8.
@@ -731,7 +1383,7 @@ http://www.licq.org
         <source>Up since %1
 
 </source>
-        <translation>Igång sedan %1
+        <translation type="obsolete">Igång sedan %1
 
 </translation>
     </message>
@@ -739,7 +1391,7 @@ http://www.licq.org
         <source>Daemon Statistics
 
 </source>
-        <translation>Statistik för bakgrundsprocess
+        <translation type="obsolete">Statistik för bakgrundsprocess
 
 </translation>
     </message>
@@ -747,13 +1399,13 @@ http://www.licq.org
         <source>Daemon Statistics
 (Today/Total)
 </source>
-        <translation>Statistik för bakgrundsprocess
+        <translation type="obsolete">Statistik för bakgrundsprocess
 (Idag/Totalt)
 </translation>
     </message>
     <message>
         <source>SysMsg</source>
-        <translation>SysMed</translation>
+        <translation type="obsolete">SysMed</translation>
     </message>
     <message>
         <source>System</source>
@@ -763,7 +1415,7 @@ http://www.licq.org
         <source>Last reset %1
 
 </source>
-        <translation>Senaste återställning %1
+        <translation type="obsolete">Senaste återställning %1
 
 </translation>
     </message>
@@ -771,7 +1423,7 @@ http://www.licq.org
         <source>Are you sure you want to remove
 %1 (%2)
 from the &apos;%3&apos; group?</source>
-        <translation>Är du säker på att du vill ta bort
+        <translation type="obsolete">Är du säker på att du vill ta bort
 %1 (%2)
 från &apos;%3&apos; gruppen?</translation>
     </message>
@@ -779,101 +1431,101 @@ från &apos;%3&apos; gruppen?</translation>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
-        <translation>Vill du verkligen lägga till
+        <translation type="obsolete">Vill du verkligen lägga till
 %1 (%2)
 till din ignoreringslista?</translation>
     </message>
     <message>
         <source>Packets</source>
-        <translation>Paket</translation>
+        <translation type="obsolete">Paket</translation>
     </message>
     <message>
         <source>&amp;Save All Users</source>
-        <translation>&amp;Spara alla användare</translation>
+        <translation type="obsolete">&amp;Spara alla användare</translation>
     </message>
     <message>
         <source>%1: %2 / %3
 </source>
-        <translation>%1: %2 / %3
+        <translation type="obsolete">%1: %2 / %3
 </translation>
     </message>
     <message>
         <source>Do Not Disturb to User</source>
-        <translation>Stör ej för användare</translation>
+        <translation type="obsolete">Stör ej för användare</translation>
     </message>
     <message>
         <source>Update All Users</source>
-        <translation>Uppdatera alla användare</translation>
+        <translation type="obsolete">Uppdatera alla användare</translation>
     </message>
     <message>
         <source>&amp;Redraw User Window</source>
-        <translation>&amp;Rita om användarfönstret</translation>
+        <translation type="obsolete">&amp;Rita om användarfönstret</translation>
     </message>
     <message>
         <source>(with KDE support)
 </source>
-        <translation>(med KDE-stöd)
+        <translation type="obsolete">(med KDE-stöd)
 </translation>
     </message>
     <message>
         <source>Occupied to User</source>
-        <translation>Upptagen för användare</translation>
+        <translation type="obsolete">Upptagen för användare</translation>
     </message>
     <message>
         <source>Logon failed.
 See network window for details.</source>
-        <translation>Anslutning misslyckades.
+        <translation type="obsolete">Anslutning misslyckades.
 Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Accept in Away</source>
-        <translation>Tillåt i borta</translation>
+        <translation type="obsolete">Tillåt i borta</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Osynlighetslista</translation>
+        <translation type="obsolete">Osynlighetslista</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Synlighetslista</translation>
+        <translation type="obsolete">Synlighetslista</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation>Registrering misslyckades. Se nätverksfönstret för mer information.</translation>
+        <translation type="obsolete">Registrering misslyckades. Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Send &amp;Chat Request</source>
-        <translation>Skicka &amp;chattbegäran</translation>
+        <translation type="obsolete">Skicka &amp;chattbegäran</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
-        <translation>Reg&amp;istrera användare</translation>
+        <translation type="obsolete">Reg&amp;istrera användare</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
-        <translation>Visa frånkopplade &amp;användare</translation>
+        <translation type="obsolete">Visa frånkopplade &amp;användare</translation>
     </message>
     <message>
         <source>%1 message%2</source>
-        <translation>%1 meddelande%2</translation>
+        <translation type="obsolete">%1 meddelande%2</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Ignoreringslista</translation>
+        <translation type="obsolete">Ignoreringslista</translation>
     </message>
     <message>
         <source>%1: %2
 </source>
-        <translation>%1: %2
+        <translation type="obsolete">%1: %2
 </translation>
     </message>
     <message>
         <source>&amp;More Info</source>
-        <translation>&amp;Mer information</translation>
+        <translation type="obsolete">&amp;Mer information</translation>
     </message>
     <message>
         <source>Warnings</source>
-        <translation>Varningar</translation>
+        <translation type="obsolete">Varningar</translation>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbrieviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
@@ -896,51 +1548,51 @@ Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>&amp;Work Info</source>
-        <translation>&amp;Arbetsinformation</translation>
+        <translation type="obsolete">&amp;Arbetsinformation</translation>
     </message>
     <message>
         <source>Debug Level</source>
-        <translation>Felsökningsnivå</translation>
+        <translation type="obsolete">Felsökningsnivå</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Nya användare</translation>
+        <translation type="obsolete">Nya användare</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
-        <translation>&amp;Nätverksfönstret</translation>
+        <translation type="obsolete">&amp;Nätverksfönstret</translation>
     </message>
     <message>
         <source>&amp;View Event</source>
-        <translation>&amp;Se Händelse</translation>
+        <translation type="obsolete">&amp;Se Händelse</translation>
     </message>
     <message>
         <source>&amp;Plugin Manager...</source>
-        <translation>&amp;Instickshanterare...</translation>
+        <translation type="obsolete">&amp;Instickshanterare...</translation>
     </message>
     <message>
         <source>O&amp;ccupied</source>
-        <translation>&amp;Upptagen</translation>
+        <translation type="obsolete">&amp;Upptagen</translation>
     </message>
     <message>
         <source>Set All</source>
-        <translation>Ange alla</translation>
+        <translation type="obsolete">Ange alla</translation>
     </message>
     <message>
         <source>&amp;View System Messages</source>
-        <translation>&amp;Se systemmeddelanden</translation>
+        <translation type="obsolete">&amp;Se systemmeddelanden</translation>
     </message>
     <message>
         <source>&amp;Thread Group View</source>
-        <translation>&amp;Trådad gruppvy</translation>
+        <translation type="obsolete">&amp;Trådad gruppvy</translation>
     </message>
     <message>
         <source>Send &amp;Message</source>
-        <translation>Skicka &amp;meddelande</translation>
+        <translation type="obsolete">Skicka &amp;meddelande</translation>
     </message>
     <message>
         <source>Update Current Group</source>
-        <translation>Uppdatera aktuell grupp</translation>
+        <translation type="obsolete">Uppdatera aktuell grupp</translation>
     </message>
     <message>
         <source>Licq (%1)</source>
@@ -949,16 +1601,16 @@ Se nätverksfönstret för mer information.</translation>
     <message>
         <source>Right click - Status menu
 Double click - Set auto response</source>
-        <translation>Högerklicka - Statusmeny
+        <translation type="obsolete">Högerklicka - Statusmeny
 Dubbelklicka - Sätt autosvar</translation>
     </message>
     <message>
         <source>&amp;Add User</source>
-        <translation>&amp;Lägg till användare</translation>
+        <translation type="obsolete">&amp;Lägg till användare</translation>
     </message>
     <message>
         <source>Accept in Do Not Disturb</source>
-        <translation>Tillåt i stör ej</translation>
+        <translation type="obsolete">Tillåt i stör ej</translation>
     </message>
     <message>
         <source>&amp;Security Options</source>
@@ -966,11 +1618,11 @@ Dubbelklicka - Sätt autosvar</translation>
     </message>
     <message>
         <source>&amp;Statistics</source>
-        <translation>&amp;Statistik</translation>
+        <translation type="obsolete">&amp;Statistik</translation>
     </message>
     <message>
         <source>&amp;Online</source>
-        <translation>&amp;Ansluten</translation>
+        <translation type="obsolete">&amp;Ansluten</translation>
     </message>
     <message>
         <source>&amp;Away Modes</source>
@@ -978,11 +1630,11 @@ Dubbelklicka - Sätt autosvar</translation>
     </message>
     <message>
         <source>Clear All</source>
-        <translation>Rensa alla</translation>
+        <translation type="obsolete">Rensa alla</translation>
     </message>
     <message>
         <source>&amp;Status</source>
-        <translation>&amp;Status</translation>
+        <translation type="obsolete">&amp;Status</translation>
     </message>
     <message>
         <source>&amp;System</source>
@@ -990,19 +1642,19 @@ Dubbelklicka - Sätt autosvar</translation>
     </message>
     <message>
         <source>Accept in Occupied</source>
-        <translation>Tillåt i upptagen</translation>
+        <translation type="obsolete">Tillåt i upptagen</translation>
     </message>
     <message>
         <source>Send Contact &amp;List</source>
-        <translation>Skicka kontakt&amp;lista</translation>
+        <translation type="obsolete">Skicka kontakt&amp;lista</translation>
     </message>
     <message>
         <source>Status Info</source>
-        <translation>Statusinfo</translation>
+        <translation type="obsolete">Statusinfo</translation>
     </message>
     <message>
         <source>&amp;Do Not Disturb</source>
-        <translation>&amp;Stör ej</translation>
+        <translation type="obsolete">&amp;Stör ej</translation>
     </message>
     <message>
         <source>Change &amp;Password</source>
@@ -1012,111 +1664,107 @@ Dubbelklicka - Sätt autosvar</translation>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
-        <translation>Är du säker på att du vill ta bort
+        <translation type="obsolete">Är du säker på att du vill ta bort
 %1 (%2)
 från din kontaktlista?</translation>
     </message>
     <message>
         <source>O&amp;ffline</source>
-        <translation>&amp;Frånkopplad</translation>
+        <translation type="obsolete">&amp;Frånkopplad</translation>
     </message>
     <message>
         <source>A&amp;uthorize User</source>
-        <translation>Godkänn användare</translation>
+        <translation type="obsolete">Godkänn användare</translation>
     </message>
     <message>
         <source>Free for C&amp;hat</source>
-        <translation>Chatt&amp;ledig</translation>
+        <translation type="obsolete">Chatt&amp;ledig</translation>
     </message>
     <message>
         <source>Right click - User groups
 Double click - Show next message</source>
-        <translation>Högerklicka - Användargrupper
+        <translation type="obsolete">Högerklicka - Användargrupper
 Dubbelklicka - Visa nästa meddelande</translation>
     </message>
     <message>
         <source>No messages</source>
-        <translation>Inga meddelanden</translation>
+        <translation type="obsolete">Inga meddelanden</translation>
     </message>
     <message>
         <source>&amp;Invisible</source>
-        <translation>&amp;Osynlig</translation>
+        <translation type="obsolete">&amp;Osynlig</translation>
     </message>
     <message>
         <source>&amp;General Info</source>
-        <translation>Allmän information</translation>
+        <translation type="obsolete">Allmän information</translation>
     </message>
     <message>
         <source>Send &amp;File Transfer</source>
-        <translation>Skicka &amp;fil</translation>
+        <translation type="obsolete">Skicka &amp;fil</translation>
     </message>
     <message>
         <source>User Functions</source>
-        <translation>Användarfunktioner</translation>
+        <translation type="obsolete">Användarfunktioner</translation>
     </message>
     <message>
         <source>Check Auto Response</source>
-        <translation>Kontrollera autosvar</translation>
+        <translation type="obsolete">Kontrollera autosvar</translation>
     </message>
     <message>
         <source>Authorization granted.</source>
-        <translation>Godkänd.</translation>
+        <translation type="obsolete">Godkänd.</translation>
     </message>
     <message>
         <source>System Functions</source>
-        <translation>Systemfunktioner</translation>
+        <translation type="obsolete">Systemfunktioner</translation>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
-        <translation>Redigera &amp;grupper</translation>
+        <translation type="obsolete">Redigera &amp;grupper</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Alla användare</translation>
+        <translation type="obsolete">Alla användare</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
-        <translation>S&amp;kinnväljare...</translation>
+        <translation type="obsolete">S&amp;kinnväljare...</translation>
     </message>
     <message>
         <source>Request &amp;Secure Channel</source>
-        <translation>Begär &amp;säker kanal</translation>
+        <translation type="obsolete">Begär &amp;säker kanal</translation>
     </message>
     <message>
         <source>S&amp;earch for User</source>
-        <translation>S&amp;ök efter användare</translation>
+        <translation type="obsolete">S&amp;ök efter användare</translation>
     </message>
     <message>
         <source>Next &amp;Server</source>
-        <translation>Nästa &amp;server</translation>
+        <translation type="obsolete">Nästa &amp;server</translation>
     </message>
     <message>
         <source>&amp;History</source>
-        <translation>&amp;Historik</translation>
+        <translation type="obsolete">&amp;Historik</translation>
     </message>
     <message>
         <source>Not Available to User</source>
-        <translation>Ej tillgänglig för användare</translation>
+        <translation type="obsolete">Ej tillgänglig för användare</translation>
     </message>
     <message>
         <source>Toggle &amp;Floaty</source>
-        <translation>Växla &amp;flytande</translation>
+        <translation type="obsolete">Växla &amp;flytande</translation>
     </message>
     <message>
         <source>Sa&amp;ve Settings</source>
-        <translation>S&amp;para inställningar</translation>
+        <translation type="obsolete">S&amp;para inställningar</translation>
     </message>
     <message>
         <source>Away to User</source>
-        <translation>Borta för användare</translation>
+        <translation type="obsolete">Borta för användare</translation>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;användar alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;e-post&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;förnamn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;användarens ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;efternamn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# väntande meddelanden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;hela namnet&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;sågs senast ansluten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;ansluten sedan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;användarens port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;all information&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;förkortad information&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;hemsida&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Licq version %1%8.
@@ -1132,56 +1780,56 @@ http://www.licq.org
 
 %3 (%4)
 %5 contacts.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Send &amp;URL</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Send Authorization Re&amp;quest</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Send &amp;SMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>&amp;Last</source>
-        <translation type="unfinished">&amp;Sista</translation>
+        <translation type="obsolete">&amp;Sista</translation>
     </message>
     <message>
         <source>&amp;Security/Password Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Re&amp;quest Authorization</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Auto Accept Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Auto Accept Chats</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Auto Request Secure</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Use Real Ip (LAN)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Misc Modes</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
 </source>
-        <translation type="unfinished">&lt;h2&gt;Tips för Användning&lt;br&gt;av Licq Qt-GUI tillägget&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;
+        <translation type="obsolete">&lt;h2&gt;Tips för Användning&lt;br&gt;av Licq Qt-GUI tillägget&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;
 &lt;ul&gt;
 &lt;li&gt;Ändra din status genom att klicka på status-etiketten.&lt;/li&gt;
 &lt;li&gt;Ändra ditt autosvar genom att dubbel-klicka på status-etiketten.&lt;/li&gt;
@@ -1211,7 +1859,7 @@ http://www.licq.org
     </message>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;hr&gt;&lt;p&gt;För mer information, se Licq:s webbplats (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;hr&gt;&lt;p&gt;För mer information, se Licq:s webbplats (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -1311,11 +1959,11 @@ http://www.licq.org
     </message>
     <message>
         <source>Seeking Women</source>
-        <translation type="unfinished"></translation>
+        <translation>Söker kvinnor</translation>
     </message>
     <message>
         <source>Seeking Men</source>
-        <translation type="unfinished"></translation>
+        <translation>Söker män</translation>
     </message>
 </context>
 <context>
@@ -1421,11 +2069,11 @@ http://www.licq.org
     </message>
     <message>
         <source>Seeking Women</source>
-        <translation type="unfinished"></translation>
+        <translation>Söker kvinnor</translation>
     </message>
     <message>
         <source>Seeking Men</source>
-        <translation type="unfinished"></translation>
+        <translation>Söker män</translation>
     </message>
 </context>
 <context>
@@ -1472,47 +2120,47 @@ http://www.licq.org
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Licq&amp;nbsp;%1</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;E: </translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;T: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;M: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;F: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Ip: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;A: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Ansluten: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Inaktiv: </translation>
     </message>
 </context>
 <context>
@@ -1594,51 +2242,51 @@ http://www.licq.org
     <name>ChangePassDlg</name>
     <message>
         <source>Licq - Set UIN/Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Login Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>&amp;UIN:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation type="unfinished">&amp;Lösenord:</translation>
+        <translation type="obsolete">&amp;Lösenord:</translation>
     </message>
     <message>
         <source>&amp;Verify:</source>
-        <translation type="unfinished">&amp;Bekräfta:</translation>
+        <translation type="obsolete">&amp;Bekräfta:</translation>
     </message>
     <message>
         <source>Enter your UIN here.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
-        <translation type="unfinished">Skriv ditt ICQ-lösenord här.</translation>
+        <translation type="obsolete">Skriv ditt ICQ-lösenord här.</translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
-        <translation type="unfinished">Bekräfta ditt ICQ-lösenord här.</translation>
+        <translation type="obsolete">Bekräfta ditt ICQ-lösenord här.</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="unfinished">Felaktigt lösenord, får vara högst 8 tecken.</translation>
+        <translation type="obsolete">Felaktigt lösenord, får vara högst 8 tecken.</translation>
     </message>
     <message>
         <source>Passwords do not match, try again.</source>
-        <translation type="unfinished">Lösenorden är olika, försök igen.</translation>
+        <translation type="obsolete">Lösenorden är olika, försök igen.</translation>
     </message>
 </context>
 <context>
@@ -1729,7 +2377,7 @@ http://www.licq.org
     </message>
     <message>
         <source>/%1.%2.chat</source>
-        <translation>/%1.%2.chat</translation>
+        <translation type="obsolete">/%1.%2.chat</translation>
     </message>
     <message>
         <source>Remote - Not connected</source>
@@ -1741,7 +2389,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Remote - %1</source>
-        <translation>Ej lokal - %1</translation>
+        <translation type="obsolete">Ej lokal - %1</translation>
     </message>
     <message>
         <source>Underline</source>
@@ -1773,17 +2421,19 @@ http://www.licq.org
     </message>
     <message>
         <source>Ignores user color settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorera användarens färginställningar</translation>
     </message>
     <message>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte binda till port.
+Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Unable to connect to the remote chat.
 See Network Window for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ansluta till chatsessionen.
+Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
         <source>Unable to create new thread.
@@ -1793,12 +2443,42 @@ See Network Window for details.</source>
     <message>
         <source>Failed to open file:
 %1</source>
-        <translation type="unfinished">Kunde inte öppna fil:
+        <translation>Kunde inte öppna fil:
 %1</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StrikeOut</source>
+        <translation>Överstruken</translation>
+    </message>
+    <message>
+        <source>Toggles StrikeOut font</source>
+        <translation>Slår av/på överstruket teckensnitt</translation>
+    </message>
+    <message>
+        <source>Set Encoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;--BEEP--&gt;
+</source>
+        <translation type="unfinished">
+&lt;--PIIP--&gt;
+</translation>
+    </message>
+    <message>
+        <source>&gt; &lt;--BEEP--&gt;
+</source>
+        <translation type="unfinished">&gt; &lt;--PIIP--&gt;
+</translation>
+    </message>
+    <message>
+        <source>/%1.chat</source>
+        <translation type="unfinished">/%1.chat</translation>
     </message>
 </context>
 <context>
@@ -1827,7 +2507,7 @@ Du kan lämna ett meddelande.</translation>
     </message>
     <message>
         <source>&amp;Hints</source>
-        <translation type="unfinished">&amp;Tips</translation>
+        <translation>&amp;Tips</translation>
     </message>
 </context>
 <context>
@@ -1933,23 +2613,23 @@ gruppen &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ange för nya användare</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Den grupp till vilken nya användare automatiskt kommer att läggas till. Alla nya användare kommer att hamna i den lokala gruppen &quot;Nya användare&quot; men när de sparas på servern kommer de också att sparas i den specificerade gruppen.</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nya användare:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Spara</translation>
+        <translation>&amp;Spara</translation>
     </message>
     <message>
         <source>Save the name of a group being modified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara namnet på den grupp som ändras.</translation>
     </message>
 </context>
 <context>
@@ -2016,18 +2696,18 @@ gruppen &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>SMS</source>
-        <translation type="unfinished"></translation>
+        <translation>SMS</translation>
     </message>
     <message>
         <source>(cancelled)</source>
-        <translation type="unfinished"></translation>
+        <translation>(avbruten)</translation>
     </message>
 </context>
 <context>
     <name>HintsDlg</name>
     <message>
         <source>&amp;Close</source>
-        <translation>S&amp;täng</translation>
+        <translation type="obsolete">S&amp;täng</translation>
     </message>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
@@ -2066,7 +2746,7 @@ gruppen &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Licq - Hints</source>
-        <translation>Licq - tips</translation>
+        <translation type="obsolete">Licq - tips</translation>
     </message>
 </context>
 <context>
@@ -2082,19 +2762,19 @@ inaktivera det i alternativdialogen</translation>
     <name>IconManager_KDEStyle</name>
     <message>
         <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;b&gt;%1 systemmeddelande&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;%1 msgs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;br&gt;%1 med.</translation>
     </message>
     <message>
         <source>&lt;br&gt;1 msg</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;br&gt;1 med.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Vänsterklicka - Visa huvudfönstret&lt;br&gt;Mittenklicka - Visa nästa meddelande&lt;br&gt;Högerklicka - System meny</translation>
     </message>
 </context>
 <context>
@@ -2207,25 +2887,36 @@ Detta kommer kanske inte att fungera.</translation>
     </message>
     <message>
         <source>The remote uses Licq %1/SSL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mottagaren använder Licq %1/SSL.</translation>
     </message>
     <message>
         <source>The remote uses Licq %1, however it
 has no secure channel support compiled in.
 This probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mottagaren använder Licq %1, men klienten har inte
+stöd för &quot;säker kanal&quot; inkompilerat.
+Det här kommer troligen inte att fungera.</translation>
+    </message>
+    <message>
+        <source>Ready to close channel</source>
+        <translation>Klar att stänga kanal</translation>
+    </message>
+    <message>
+        <source>Ready to request channel</source>
+        <translation>Klar att begära kanal</translation>
     </message>
 </context>
 <context>
     <name>MLView</name>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq kan inte hitta en webläsare pga. ett internt fel.</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq kan inte starta din webbläsare och öppna länken.
+Du måste starta din webbläsare och öppna länken manuellt.</translation>
     </message>
 </context>
 <context>
@@ -2937,11 +3628,11 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>Auto close the user function window after a succesful event</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stäng automatiskt fönstrer för användarfunktioner efter en lyckad händelse</translation>
     </message>
     <message>
         <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Öppna alla inkommande meddelanden automatiskt, när de kommer, om jag är online (eller chatledig)</translation>
     </message>
     <message>
         <source>Raise the main window on incoming messages</source>
@@ -2949,63 +3640,63 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>Start Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Starta gömd</translation>
     </message>
     <message>
         <source>Start main window hidden. Only the dock icon will be visible.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Starta med huvudfönstret gömt. Endast docken kommer synas.</translation>
     </message>
     <message>
         <source>Show the message info label in bold font if there are incoming messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa medelande ettiketten i fetstil när det finns inkommande meddelanden</translation>
     </message>
     <message>
         <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you first send an event to them</source>
-        <translation type="unfinished"></translation>
+        <translation>Om ej ikryssad kommer användare att automatiskt tas bort ur gruppen &quot;Nya användare&quot; när du skickar något till dem.</translation>
     </message>
     <message>
         <source>Check Clipboard For Urls/Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrollera urklippshanteraren om där finns länkar/filer</translation>
     </message>
     <message>
         <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Vid dubbelklickning på en användare för att skicka ett meddelande, kontrollera om urklippshanteraren innehåller länkare/filer.</translation>
     </message>
     <message>
         <source>Auto Position the Reply Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Positionera svarsfönstret automatiskt</translation>
     </message>
     <message>
         <source>Position a new reply window just underneath the message view window</source>
-        <translation type="unfinished"></translation>
+        <translation>Positionera ett nytt svarsfönster strax under meddelandefönstret</translation>
     </message>
     <message>
         <source>Auto send through server</source>
-        <translation type="unfinished"></translation>
+        <translation>Skicka alltid via server</translation>
     </message>
     <message>
         <source>Automatically send messages through the server if direct connection fails</source>
-        <translation type="unfinished"></translation>
+        <translation>Skicka meddelanden via servern om en direktanslutning ej kan upprättas</translation>
     </message>
     <message>
         <source>Allow dragging main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillåt flytt av huvudfönstret</translation>
     </message>
     <message>
         <source>Lets you drag around the main window with your mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Låter dig flytta huvudfönstret med muspekaren</translation>
     </message>
     <message>
         <source>Chatmode Messageview</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Meddelandevisning i chatläge</translation>
     </message>
     <message>
         <source>Show the current chat history in Send Window</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Visa den aktuella chathistoriken i skickafönstret</translation>
     </message>
     <message>
         <source>Localization</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lokalisering</translation>
     </message>
     <message>
         <source>Default Encoding:</source>
@@ -3029,11 +3720,11 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>Message Sent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Meddelande skickat:</translation>
     </message>
     <message>
         <source>Parameter for sent messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametrar för skickade meddelanden</translation>
     </message>
     <message>
         <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
@@ -3041,205 +3732,211 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>ICQ Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>ICQ server:</translation>
     </message>
     <message>
         <source>ICQ Server Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>ICQ serverns port:</translation>
     </message>
     <message>
         <source>Proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy</translation>
     </message>
     <message>
         <source>Use proxy server</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd proxy server</translation>
     </message>
     <message>
         <source>Proxy Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ av proxy:</translation>
     </message>
     <message>
         <source>HTTPS</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTPS</translation>
     </message>
     <message>
         <source>Proxy Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxyserver:</translation>
     </message>
     <message>
         <source>Proxy Server Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxyserverns port:</translation>
     </message>
     <message>
         <source>Use authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd autentsiering</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Användarnamn:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished">Lösenord:</translation>
+        <translation>Lösenord:</translation>
     </message>
     <message>
         <source>Use server side contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd kontaktlista på servern</translation>
     </message>
     <message>
         <source>Store your contacts on the server so they are accessible from different locations and/or programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Sparar dina kontakter på servern så att de är tillgängliga från flera platser och/eller program</translation>
     </message>
     <message>
         <source>Blink All Events</source>
-        <translation type="unfinished"></translation>
+        <translation>Låt alla händelser blinka</translation>
     </message>
     <message>
         <source>All incoming events will blink</source>
-        <translation type="unfinished"></translation>
+        <translation>Låt alla inkommande händelser blinka</translation>
     </message>
     <message>
         <source>Blink Urgent Events</source>
-        <translation type="unfinished"></translation>
+        <translation>Låt alla brådskande händelser blinka</translation>
     </message>
     <message>
         <source>Only urgent events will blink</source>
-        <translation type="unfinished"></translation>
+        <translation>Låt bara brådskande händelser blinka</translation>
     </message>
     <message>
         <source>Use System Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd systemets bakgrundsfärg</translation>
     </message>
     <message>
         <source>Hot key: </source>
-        <translation type="unfinished"></translation>
+        <translation>Snabbtangent:</translation>
     </message>
     <message>
         <source>Hotkey pops up the next pending message
 Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
 changes here require a Restart to take effect!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Snabbtangenten öppnar nästa väntande meddelande
+Skriv snabbtangenten bokstavligt, ex &quot;shift+f10&quot; eller &quot;none&quot; för att stänga av
+förändringar här kräver en omstart av programmet innan de får effekt!</translation>
     </message>
     <message>
         <source>Popup info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Popup info</translation>
     </message>
     <message>
         <source>Email</source>
-        <translation type="unfinished">E-post</translation>
+        <translation>E-post</translation>
     </message>
     <message>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <source>Fax</source>
-        <translation type="unfinished"></translation>
+        <translation>Fax</translation>
     </message>
     <message>
         <source>Cellular</source>
-        <translation type="unfinished"></translation>
+        <translation>Mobiltelefon</translation>
     </message>
     <message>
         <source>IP</source>
-        <translation type="unfinished"></translation>
+        <translation>IP</translation>
     </message>
     <message>
         <source>Last online</source>
-        <translation type="unfinished"></translation>
+        <translation>Senast ansluten</translation>
     </message>
     <message>
         <source>Online Time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anslöt</translation>
     </message>
     <message>
         <source>Idle Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid inaktiv</translation>
     </message>
     <message>
         <source>Auto Away Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatiskt bortameddelande</translation>
     </message>
     <message>
         <source>Away:</source>
-        <translation type="unfinished"></translation>
+        <translation>Borta:</translation>
     </message>
     <message>
         <source>N/A:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ej tillgänglig:</translation>
     </message>
     <message>
         <source>Previous Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidigare meddelande</translation>
+    </message>
+    <message>
+        <source>I am behind a firewall</source>
+        <translation>Jag är bakom en brandvägg</translation>
     </message>
 </context>
 <context>
     <name>PasswordDlg</name>
     <message>
         <source>error</source>
-        <translation>fel</translation>
+        <translation type="obsolete">fel</translation>
     </message>
     <message>
         <source>Set Password [Setting...</source>
-        <translation>Ange lösenord [Alternativ...</translation>
+        <translation type="obsolete">Ange lösenord [Alternativ...</translation>
     </message>
     <message>
         <source>timed out</source>
-        <translation>dog ut</translation>
+        <translation type="obsolete">dog ut</translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
-        <translation>Bekräfta ditt ICQ-lösenord här.</translation>
+        <translation type="obsolete">Bekräfta ditt ICQ-lösenord här.</translation>
     </message>
     <message>
         <source>failed</source>
-        <translation>misslyckades</translation>
+        <translation type="obsolete">misslyckades</translation>
     </message>
     <message>
         <source>Passwords do not match, try again.</source>
-        <translation>Lösenorden är olika, försök igen.</translation>
+        <translation type="obsolete">Lösenorden är olika, försök igen.</translation>
     </message>
     <message>
         <source>Invalid password, must be 8 characters or less.</source>
-        <translation>Felaktigt lösenord, får vara högst 8 tecken.</translation>
+        <translation type="obsolete">Felaktigt lösenord, får vara högst 8 tecken.</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Lösenord</translation>
+        <translation type="obsolete">Lösenord</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Avbryt</translation>
+        <translation type="obsolete">&amp;Avbryt</translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation>&amp;Lösenord:</translation>
+        <translation type="obsolete">&amp;Lösenord:</translation>
     </message>
     <message>
         <source>&amp;Verify:</source>
-        <translation>&amp;Bekräfta:</translation>
+        <translation type="obsolete">&amp;Bekräfta:</translation>
     </message>
     <message>
         <source>Set Password</source>
-        <translation>Ange lösenord</translation>
+        <translation type="obsolete">Ange lösenord</translation>
     </message>
     <message>
         <source>ICQ Password [Setting...]</source>
-        <translation>ICQ-Lösenord [Alternativ...]</translation>
+        <translation type="obsolete">ICQ-Lösenord [Alternativ...]</translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
-        <translation>Skriv ditt ICQ-lösenord här.</translation>
+        <translation type="obsolete">Skriv ditt ICQ-lösenord här.</translation>
     </message>
     <message>
         <source>Licq - Set Password</source>
-        <translation>Licq - ange lösenord</translation>
+        <translation type="obsolete">Licq - ange lösenord</translation>
     </message>
     <message>
         <source>&amp;Update</source>
-        <translation type="unfinished">&amp;Uppdatera</translation>
+        <translation type="obsolete">&amp;Uppdatera</translation>
     </message>
 </context>
 <context>
@@ -3403,6 +4100,15 @@ changes here require a Restart to take effect!
     </message>
 </context>
 <context>
+    <name>QToolTip</name>
+    <message>
+        <source>Right click - User groups
+Double click - Show next message</source>
+        <translation>Högerklicka - Användargrupper
+Dubbelklicka - Visa nästa meddelande</translation>
+    </message>
+</context>
+<context>
     <name>RegisterUserDlg</name>
     <message>
         <source>Uin:</source>
@@ -3488,28 +4194,32 @@ Klicka på &quot;Nästa&quot; för att fortsätta.</translation>
         <source>UIN Registration</source>
         <translation>UIN Registrering</translation>
     </message>
+    <message>
+        <source>&amp;Save Password</source>
+        <translation>&amp;Spara lösenord</translation>
+    </message>
 </context>
 <context>
     <name>ReqAuthDlg</name>
     <message>
         <source>Licq - Request Authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Begär auktorisering</translation>
     </message>
     <message>
         <source>Request authorization from (UIN):</source>
-        <translation type="unfinished"></translation>
+        <translation>Begär auktorisering från (UIN):</translation>
     </message>
     <message>
         <source>Request</source>
-        <translation type="unfinished"></translation>
+        <translation>Begär</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Avbryt</translation>
     </message>
 </context>
 <context>
@@ -3596,91 +4306,95 @@ Klicka på &quot;Nästa&quot; för att fortsätta.</translation>
     </message>
     <message>
         <source>Age Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Åldersintervall:</translation>
     </message>
     <message>
         <source>Unspecified</source>
-        <translation type="unfinished">Ospecificerat</translation>
+        <translation>Ospecificerat</translation>
     </message>
     <message>
         <source>18 - 22</source>
-        <translation type="unfinished"></translation>
+        <translation>18 - 22</translation>
     </message>
     <message>
         <source>23 - 29</source>
-        <translation type="unfinished"></translation>
+        <translation>23 - 29</translation>
     </message>
     <message>
         <source>30 - 39</source>
-        <translation type="unfinished"></translation>
+        <translation>30 - 39</translation>
     </message>
     <message>
         <source>40 - 49</source>
-        <translation type="unfinished"></translation>
+        <translation>40 - 49</translation>
     </message>
     <message>
         <source>50 - 59</source>
-        <translation type="unfinished"></translation>
+        <translation>50 - 59</translation>
     </message>
     <message>
         <source>60+</source>
-        <translation type="unfinished"></translation>
+        <translation>60+</translation>
     </message>
     <message>
         <source>Gender:</source>
-        <translation type="unfinished">Kön:</translation>
+        <translation>Kön:</translation>
     </message>
     <message>
         <source>Female</source>
-        <translation type="unfinished">Kvinnlig</translation>
+        <translation>Kvinnlig</translation>
     </message>
     <message>
         <source>Male</source>
-        <translation type="unfinished">Manlig</translation>
+        <translation>Manlig</translation>
     </message>
     <message>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Språk:</translation>
     </message>
     <message>
         <source>City:</source>
-        <translation type="unfinished">Stad:</translation>
+        <translation>Stad:</translation>
     </message>
     <message>
         <source>State:</source>
-        <translation type="unfinished">Stat:</translation>
+        <translation>Stat:</translation>
     </message>
     <message>
         <source>Country:</source>
-        <translation type="unfinished">Land:</translation>
+        <translation>Land:</translation>
     </message>
     <message>
         <source>Company Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Företagsnamn:</translation>
     </message>
     <message>
         <source>Company Department:</source>
-        <translation type="unfinished"></translation>
+        <translation>Avdelning:</translation>
     </message>
     <message>
         <source>Company Position:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Position i företaget:</translation>
     </message>
     <message>
         <source>Keyword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyckelord:</translation>
     </message>
     <message>
         <source>Return Online Users Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa endast anslutna användare</translation>
     </message>
     <message>
         <source>&amp;Whitepages</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vitasidorna</translation>
     </message>
     <message>
         <source>%1 more users found. Narrow search.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ytterligare användare funna. Begränsa din sökning.</translation>
+    </message>
+    <message>
+        <source>Search complete.</source>
+        <translation>Sökning färdig.</translation>
     </message>
 </context>
 <context>
@@ -3703,47 +4417,47 @@ Klicka på &quot;Nästa&quot; för att fortsätta.</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished">Status</translation>
+        <translation>Status</translation>
     </message>
     <message>
         <source>Sex &amp; Age</source>
-        <translation type="unfinished"></translation>
+        <translation>Kön &amp; Ålder</translation>
     </message>
     <message>
         <source>Authorize</source>
-        <translation type="unfinished"></translation>
+        <translation>Godkänn</translation>
     </message>
     <message>
         <source>Offline</source>
-        <translation type="unfinished"></translation>
+        <translation>Frånkopplad</translation>
     </message>
     <message>
         <source>Online</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansluten</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Okänd</translation>
+        <translation>Okänd</translation>
     </message>
     <message>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>K</translation>
     </message>
     <message>
         <source>M</source>
-        <translation type="unfinished"></translation>
+        <translation>M</translation>
     </message>
     <message>
         <source>?</source>
-        <translation type="unfinished"></translation>
+        <translation>?</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
 </context>
 <context>
@@ -3791,7 +4505,7 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Avrbyt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
     <message>
         <source>&amp;Update</source>
@@ -3815,79 +4529,87 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Password/UIN settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Lösenord/UIN inställningar</translation>
     </message>
     <message>
         <source>&amp;Uin:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uin:</translation>
     </message>
     <message>
         <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; ischecked.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation type="unfinished">&amp;Lösenord:</translation>
+        <translation>&amp;Lösenord:</translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
-        <translation type="unfinished">Skriv ditt ICQ-lösenord här.</translation>
+        <translation>Skriv ditt ICQ-lösenord här.</translation>
     </message>
     <message>
         <source>&amp;Verify</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
-        <translation type="unfinished">Bekräfta ditt ICQ-lösenord här.</translation>
+        <translation>Bekräfta ditt ICQ-lösenord här.</translation>
     </message>
     <message>
         <source>&amp;Local changes only</source>
-        <translation type="unfinished"></translation>
+        <translation>Endast &amp;Lokala ändringar</translation>
     </message>
     <message>
         <source>If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq.</source>
-        <translation type="unfinished"></translation>
+        <translation>Om ikryssad kommer lösenord/UIN ändringar endast att ske på din lokala dator. Användbart om ett felaktigt lösenord sparats av Licq.</translation>
     </message>
     <message>
         <source>Web Presence allows users to see if you are online through your web indicator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Webbnärvaro tillåter användare att genom din webbindikator se om du är ansluten.</translation>
     </message>
     <message>
         <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dölj IP förhindrar att användare ser din IP adress. Det garanterar dock inte att den är osynlig.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt lösenord, måste vara mellan 1 och 8 tecken.</translation>
     </message>
     <message>
         <source>Passwords do not match, try again.</source>
-        <translation type="unfinished">Lösenorden är olika, försök igen.</translation>
+        <translation>Lösenorden är olika, försök igen.</translation>
     </message>
     <message>
         <source>Setting security options failed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Misslyckades att spara säkerhetsinställningar.</translation>
     </message>
     <message>
         <source>Changing password failed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Byte av lösenord misslyckades.</translation>
     </message>
     <message>
         <source>Timeout while setting security options.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anslutningen dog ut när säkerhetsinställningarna skulle sparas.</translation>
     </message>
     <message>
         <source>Timeout while changing password.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anslutnignen dog ut när lösenordet skulle bytas.</translation>
     </message>
     <message>
         <source>Internal error while setting security options.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Internt fel vid försök att spara säkerhetsinställningar.</translation>
     </message>
     <message>
         <source>Internal error while changing password.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Internt fel vid försök att ändra lösenord.</translation>
+    </message>
+    <message>
+        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
+        <translation>Skriv det UIN som du vill använda. Endast tillgänglig om &quot;Endast lokala ändringar&quot; är ikryssad.</translation>
+    </message>
+    <message>
+        <source>&amp;Verify:</source>
+        <translation>&amp;Bekräfta:</translation>
     </message>
 </context>
 <context>
@@ -3916,20 +4638,24 @@ ICQ Network to change the settings.</source>
         <source>%1 Response for %2</source>
         <translation>%1 svar till %2</translation>
     </message>
+    <message>
+        <source>refused</source>
+        <translation>vägrad</translation>
+    </message>
 </context>
 <context>
     <name>SkinBrowserDlg</name>
     <message>
         <source>Name</source>
-        <translation>Namn</translation>
+        <translation type="obsolete">Namn</translation>
     </message>
     <message>
         <source>&amp;Done</source>
-        <translation>&amp;Klar</translation>
+        <translation type="obsolete">&amp;Klar</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Redigera</translation>
+        <translation type="obsolete">&amp;Redigera</translation>
     </message>
     <message>
         <source>Error</source>
@@ -3937,11 +4663,11 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Icons</source>
-        <translation>Ikoner</translation>
+        <translation type="obsolete">Ikoner</translation>
     </message>
     <message>
         <source>Skins</source>
-        <translation>Skinn</translation>
+        <translation type="obsolete">Skinn</translation>
     </message>
     <message>
         <source>&amp;Apply</source>
@@ -3949,82 +4675,152 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>A&amp;pply</source>
-        <translation>&amp;Använd</translation>
+        <translation type="obsolete">&amp;Använd</translation>
     </message>
     <message>
         <source>Licq Skin Browser</source>
         <translation>Licq Skinnbläddrare</translation>
+    </message>
+    <message>
+        <source>Skin selection</source>
+        <translation type="unfinished">Temaväljare</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;kins:</source>
+        <translation type="unfinished">&amp;Teman</translation>
+    </message>
+    <message>
+        <source>&amp;Icons:</source>
+        <translation type="unfinished">&amp;Ikoner:</translation>
+    </message>
+    <message>
+        <source>E&amp;xtended Icons:</source>
+        <translation type="unfinished">&amp;Utökade ikoner:</translation>
+    </message>
+    <message>
+        <source>Skin:</source>
+        <translation type="unfinished">Tema:</translation>
+    </message>
+    <message>
+        <source>Icons:</source>
+        <translation type="unfinished">Ikoner:</translation>
+    </message>
+    <message>
+        <source>Extended Icons:</source>
+        <translation type="unfinished">Utökade ikoner:</translation>
+    </message>
+    <message>
+        <source>&amp;Edit Skin</source>
+        <translation type="unfinished">&amp;Redigera tema</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">Av&amp;bryt</translation>
+    </message>
+    <message>
+        <source>Unable to open icons file
+%1
+Iconset &apos;%2&apos; has been disabled.</source>
+        <translation type="unfinished">Kan inte öppna ikon fil
+%1
+Ikongrupp &apos;%2&apos; är ej tillgänglig.</translation>
+    </message>
+    <message>
+        <source>Unable to open extended icons file
+%1
+Extended Iconset &apos;%2&apos; has been disabled.</source>
+        <translation type="unfinished">Kan inte öppna fil %1 med utökade ikoner.
+Gruppen utökadeikoner &apos;%2&apos; är ej tillgänglig.</translation>
+    </message>
+    <message>
+        <source>Unable to open icons file
+%1</source>
+        <translation type="unfinished">Kan inte öppna ikonfilen
+%1</translation>
+    </message>
+    <message>
+        <source>Unable to open extended icons file
+%1</source>
+        <translation type="unfinished">Kan inte öppna fil %1 med utökade ikoner.</translation>
     </message>
 </context>
 <context>
     <name>UserCodec</name>
     <message>
         <source>Unicode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unicode</translation>
     </message>
     <message>
         <source>Arabic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arabiska</translation>
     </message>
     <message>
         <source>Baltic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Baltiska</translation>
     </message>
     <message>
         <source>Central European</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Centraleuropeiska</translation>
     </message>
     <message>
         <source>Chinese</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kinesiska</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Traditionell Kinesiska</translation>
     </message>
     <message>
         <source>Cyrillic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kyrilliska</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esperanto</translation>
     </message>
     <message>
         <source>Greek</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grekiska</translation>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hebreiska</translation>
     </message>
     <message>
         <source>Japanese</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Japanska</translation>
     </message>
     <message>
         <source>Korean</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koreanska</translation>
     </message>
     <message>
         <source>Western European</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Västeuropeiska</translation>
     </message>
     <message>
         <source>Tamil</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tamilska</translation>
     </message>
     <message>
         <source>Thai</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Thailändska</translation>
     </message>
     <message>
         <source>Turkish</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Turkiska</translation>
     </message>
     <message>
         <source>Ukrainian</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ukrainska</translation>
     </message>
 </context>
 <context>
@@ -4055,7 +4851,7 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Open / Close secure channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna / Stäng säker kanal</translation>
     </message>
     <message>
         <source>Change user text encoding</source>
@@ -4376,23 +5172,23 @@ Beskrivning: %2</translation>
     </message>
     <message>
         <source>INVALID USER</source>
-        <translation type="unfinished"></translation>
+        <translation>OGILTIG ANVÄNDARE</translation>
     </message>
     <message>
         <source>Online Since:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansluten sedan:</translation>
     </message>
     <message>
         <source>Offline</source>
-        <translation type="unfinished"></translation>
+        <translation>Frånkopplad</translation>
     </message>
     <message>
         <source>%1 from %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 från %2</translation>
     </message>
     <message>
         <source>%1 to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 till %2</translation>
     </message>
 </context>
 <context>
@@ -4472,7 +5268,7 @@ Beskrivning: %2</translation>
     </message>
     <message>
         <source>%1 refused %2, send through server.</source>
-        <translation>%1 vägrade %2, skicka genom server.</translation>
+        <translation type="obsolete">%1 vägrade %2, skicka genom server.</translation>
     </message>
     <message>
         <source>Drag Users Here
@@ -4551,30 +5347,37 @@ Urgent</source>
     </message>
     <message>
         <source>SMS</source>
-        <translation type="unfinished"></translation>
+        <translation>SMS</translation>
     </message>
     <message>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 är i %2 läge:
+%3
+Skicka...</translation>
     </message>
     <message>
         <source>Urgent</source>
-        <translation type="unfinished">Brådskande</translation>
+        <translation>Brådskande</translation>
     </message>
     <message>
         <source> to Contact List</source>
-        <translation type="unfinished"></translation>
+        <translation>till kontaktlistan</translation>
     </message>
     <message>
         <source>Warning: Message can&apos;t be sent securely
 through the server!</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning: Meddelanden kan inte skickas säkert
+genom servern!</translation>
     </message>
     <message>
         <source>Send anyway</source>
-        <translation type="unfinished"></translation>
+        <translation>Skicka i alla fall</translation>
+    </message>
+    <message>
+        <source>%1 refused %2, send through server</source>
+        <translation>%1 vägrade %2, skicka genom servern</translation>
     </message>
 </context>
 <context>
@@ -4614,7 +5417,7 @@ through the server!</source>
     </message>
     <message>
         <source>Select files to send</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj filer att skicka</translation>
     </message>
 </context>
 <context>
@@ -4642,28 +5445,29 @@ Skicka det i alla fall?</translation>
     <name>UserSendSmsEvent</name>
     <message>
         <source>Phone : </source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon:</translation>
     </message>
     <message>
         <source>Chars left : </source>
-        <translation type="unfinished"></translation>
+        <translation>Tecken kvar:</translation>
     </message>
     <message>
         <source> - SMS</source>
-        <translation type="unfinished"></translation>
+        <translation>- SMS</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har inte redigerat SMS:et.
+Vill du skicka det i alla fall?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nej</translation>
+        <translation>&amp;Nej</translation>
     </message>
 </context>
 <context>
