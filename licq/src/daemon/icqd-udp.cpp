@@ -1908,48 +1908,37 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
       /* 02 00 DC 00 1A 00 23 64 84 00 CF 07 06 15 13 2B 13 00 1E 00 32 FE 37 33
          39 37 38 35 33 FE 46 6C 75 6E 6B 69 FE 37 33 35 37 32 31 39 FE 55 68 75
          FE 00 */
-      gLog.Info("%sContact list.\n", L_SBLANKxSTR);
-
       CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, nMask);
       if (e == NULL)
       {
         char *buf;
-        gLog.Warn("%sInvalid Contact List  message:\n%s\n", L_WARNxSTR, packet.print(buf));
+        gLog.Warn("%sInvalid Contact List message:\n%s\n", L_WARNxSTR, packet.print(buf));
         delete []buf;
         break;
       }
 
-      /*i = 0;
-      while ((unsigned char)szMessage[i++] != 0xFE);
-      szMessage[--i] = '\0';
-      int nNumContacts = atoi(szMessage);
-      char **szFields = new char*[nNumContacts * 2 + 1];
-      if (!ParseFE(&szMessage[++i], &szFields, nNumContacts * 2 + 1))
+      u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (u == NULL)
       {
-        char *buf;
-        gLog.Warn("%sInvalid contact list system message:\n%s\n", L_WARNxSTR,
-                  packet.print(buf));
-        delete []buf;
-        delete []szFields;
-        break;
+        if (Ignore(IGNORE_NEWUSERS))
+        {
+          gLog.Info("%s%d Contacts from new user (%ld), ignoring.\n",
+                    L_SBLANKxSTR, e->Contacts().size(), nUin);
+          RejectEvent(nUin, e);
+          break;
+        }
+        gLog.Info("%s%d Contacts from new user (%ld).\n",
+                  L_SBLANKxSTR, e->Contacts().size(), nUin);
+        AddUserToList(nUin);
+        u = gUserManager.FetchUser(nUin, LOCK_W);
       }
+      else
+        gLog.Info("%s%d Contacts through server from %s (%ld).\n",
+                  L_SBLANKxSTR,e->Contacts().size(), u->GetAlias(), nUin);
 
-      // Translate the aliases
-      ContactList vc;
-      for (i = 0; i < nNumContacts * 2; i += 2)
-      {
-        gTranslator.ServerToClient(szFields[i + 1]);
-        vc.push_back(new CContact(atoi(szFields[i]), szFields[i + 1]));
-      }
-      delete[] szFields;
-      CEventContactList *e = new CEventContactList(vc, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);*/
-
-      gLog.Info("%s%d contacts.\n", L_SBLANKxSTR, e->Contacts().size());
-      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      AddUserEvent(o, e);
-      gUserManager.DropOwner();
-      e->AddToHistory(NULL, D_RECEIVER);
-      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+      if (AddUserEvent(u, e))
+          m_xOnEventManager.Do(ON_EVENT_MSG, u);
+      gUserManager.DropUser(u);
       break;
     }
     default:
