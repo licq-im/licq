@@ -100,7 +100,7 @@ void CPacketUdp::Encrypt(void)
 // No encryption in V2
 #elif ICQ_VERSION == 4
   char *b;
-  gLog.Packet("%sUnencrypted:\n%s\n", L_PACKETxSTR, buffer->print(b));
+  gLog.Packet("%sUnencrypted Packet:\n%s\n", L_PACKETxSTR, buffer->print(b));
   delete [] b;
 
   unsigned long l = buffer->getDataSize();
@@ -121,11 +121,18 @@ void CPacketUdp::Encrypt(void)
   unsigned long key = l * 0x66756b65 + m_nCheckSum;
   //printf("key: 0x%08x\n", key);
 
+  unsigned long k = 0;
   unsigned short n = (l + 3) >> 2;
   for (unsigned short i = 0; i < n; i += 4)
   {
     // Skip check code field
-    *((unsigned long *)(buf + i)) ^= (key + icq_check_data[i & 0xff]);
+    //*((unsigned long *)(buf + i)) ^= (key + icq_check_data[i & 0xff]);
+    k = (key + icq_check_data[i & 0xff]);
+    // Make it work on any endianness
+    buf[i]   ^= (k      ) & 0xFF;
+    buf[i+1] ^= (k >>  8) & 0xFF;
+    buf[i+2] ^= (k >> 16) & 0xFF;
+    buf[i+3] ^= (k >> 24) & 0xFF;
   }
   // Restore the version number
   buf[0] = 0x04;
