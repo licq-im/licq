@@ -714,7 +714,12 @@ char *CBuffer::print(char *&p)
      pPos += sprintf(pPos, "%02X ", c);
      i++;
 
-     if (i >= nBytesToPrint) break;
+     if ((i % 16 == 0) && i >= nBytesToPrint)
+     {
+     	 pPos += sprintf(pPos, "  %s", szAscii);
+     	 break;
+     }
+     else if (i >= nBytesToPrint)  break;
 
      if (i % 16 == 0)
        pPos += sprintf(pPos, "  %s\n%s%04X: ", szAscii, BUFFER_BLANKS, i);
