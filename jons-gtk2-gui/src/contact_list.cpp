@@ -19,6 +19,7 @@
  */
 
 #include "licq_gtk.h"
+#include "utilities.h"
 
 #include <string.h>
 #include <gtk/gtk.h>
@@ -286,7 +287,8 @@ void contact_list_refresh()
 				AutoSecureList.push_back(pUser->Uin());
 		}
 
-		gtk_list_store_set(store, &iter, COL_ALIAS, pUser->GetAlias(), -1);
+		string alias(s_convert_to_utf8(pUser->GetAlias(), pUser->UserEncoding()));
+		gtk_list_store_set(store, &iter, COL_ALIAS, alias.c_str(), -1);
 		if(pUser->Secure() && (pUser->Birthday() == 0))
 			gtk_list_store_set(store, &iter, COL_SSL_IMAGE, securebday_icon, -1);
 		else if(pUser->Secure())
@@ -357,45 +359,36 @@ gboolean contact_list_click(GtkWidget *contact_list,
 	else if(event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
 		GtkWidget *_menu;
-		GtkWidget *_menu_item;
 		GtkWidget *_root_menu;
 		GtkWidget *_menu_bar;
 	
 		_menu = gtk_menu_new();
 
 		/* The non-sensitive user name as a title */
-		_menu_item = menu_new_item(_menu, user->GetAlias(), 0, FALSE);
+		string alias(s_convert_to_utf8(user->GetAlias(), user->UserEncoding()));
+		menu_new_item(_menu, alias.c_str(), 0, FALSE);
 					
 		/* A separator */
 		menu_separator(_menu);
 		
-		/* add_to_popup("Start Conversation", _menu,
-			     GTK_SIGNAL_FUNC(convo_open_cb), user); */
-			  
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "Start Conversation",
-						GTK_SIGNAL_FUNC(convo_open_cb), message_icon, user);
-		
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "Send URL",
-						GTK_SIGNAL_FUNC(list_send_url), url_icon, user);
+		menu_new_item_with_pixmap(_menu, "Start Conversation",
+					GTK_SIGNAL_FUNC(convo_open_cb), message_icon, user);
 
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "Send Chat Request",
-						GTK_SIGNAL_FUNC(list_request_chat), chat_icon, user);
-						
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "Send File Request",
-						GTK_SIGNAL_FUNC(list_request_file), file_icon, user);
+		menu_new_item_with_pixmap(_menu, "Send URL",
+					GTK_SIGNAL_FUNC(list_send_url), url_icon, user);
+
+		menu_new_item_with_pixmap(_menu, "Send Chat Request",
+					GTK_SIGNAL_FUNC(list_request_chat), chat_icon, user);
+
+		menu_new_item_with_pixmap(_menu, "Send File Request",
+					GTK_SIGNAL_FUNC(list_request_file), file_icon, user);
 
 		if (user->Secure())
-			_menu_item = 
-				menu_new_item_with_pixmap(_menu, "Close Secure Channel",
-						GTK_SIGNAL_FUNC(create_key_request_window), blank_icon, user);
+			menu_new_item_with_pixmap(_menu, "Close Secure Channel",
+					GTK_SIGNAL_FUNC(create_key_request_window), blank_icon, user);
 		else	
-			_menu_item = 
-				menu_new_item_with_pixmap(_menu, "Request Secure Channel",
-						GTK_SIGNAL_FUNC(create_key_request_window), blank_icon, user);
+			menu_new_item_with_pixmap(_menu, "Request Secure Channel",
+					GTK_SIGNAL_FUNC(create_key_request_window), blank_icon, user);
 
 		/* A separator */
 		menu_separator(_menu);
@@ -406,26 +399,21 @@ gboolean contact_list_click(GtkWidget *contact_list,
 			strcat(str_status, user->StatusStrShort());
 			strcat(str_status, " Message");
 
-			_menu_item = 
-				menu_new_item_with_pixmap(_menu, str_status,
-						GTK_SIGNAL_FUNC(list_read_message), blank_icon, user);
+			menu_new_item_with_pixmap(_menu, str_status,
+					GTK_SIGNAL_FUNC(list_read_message), blank_icon, user);
 		}
 
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "Info",
-					GTK_SIGNAL_FUNC(list_info_user), blank_icon, user);
+		menu_new_item_with_pixmap(_menu, "Info",
+				GTK_SIGNAL_FUNC(list_info_user), blank_icon, user);
 
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "History",
-					GTK_SIGNAL_FUNC(list_history), blank_icon, user);
+		menu_new_item_with_pixmap(_menu, "History",
+				GTK_SIGNAL_FUNC(list_history), blank_icon, user);
 
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "More...",
-					GTK_SIGNAL_FUNC(list_more_window), blank_icon, user);
+		menu_new_item_with_pixmap(_menu, "More...",
+				GTK_SIGNAL_FUNC(list_more_window), blank_icon, user);
 
-		_menu_item = 
-			menu_new_item_with_pixmap(_menu, "Delete User",
-					GTK_SIGNAL_FUNC(list_delete_user), blank_icon, user);
+		menu_new_item_with_pixmap(_menu, "Delete User",
+				GTK_SIGNAL_FUNC(list_delete_user), blank_icon, user);
 
 		_root_menu =
 			menu_new_item(0, "", 0, 0);
