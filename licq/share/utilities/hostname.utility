@@ -1,5 +1,5 @@
 [utility]
 Window = LICQ
-Command = nslookup %i
+Command = host %i
 Description = Perform a hostname lookup on the user's ip.
 
