@@ -2,8 +2,8 @@
 #define SIGNAL_MANAGER_H
 
 #include <qobject.h>
-#include <qsocketnotifier.h>
 
+class QSocketNotifier;
 class CICQDaemon;
 class CICQSignal;
 class ICQEvent;

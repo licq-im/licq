@@ -31,6 +31,7 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
+#include <getopt.h>
 
 #include "mainwin.h"
 #include "licqgui.h"
