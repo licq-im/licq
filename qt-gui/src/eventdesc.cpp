@@ -10,7 +10,7 @@
 static const int MAX_EVENT = 26;
 
 static const char *szEventTypes[27] =
-{ QT_TR_NOOP("Saved Event"),
+{ QT_TR_NOOP("Plugin Event"),
   QT_TR_NOOP("Message"),
   QT_TR_NOOP("Chat Request"),
   QT_TR_NOOP("File Transfer"),
