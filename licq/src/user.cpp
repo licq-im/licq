@@ -1548,6 +1548,23 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
       case 's':
         sz = StatusStr();
         break;
+
+      case 't':
+      {
+        time_t t = time(NULL);
+        strftime(szTemp, 128, "%b %d %r", localtime(&t));
+        sz = szTemp;
+        break;
+      }
+
+      case 'T':
+      {
+        time_t t = time(NULL);
+        strftime(szTemp, 128, "%b %d %R %Z", localtime(&t));
+        sz = szTemp;
+        break;
+      }
+
       case 'o':
         if(m_nLastCounters[LAST_ONLINE] == 0)
         {
