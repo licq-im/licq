@@ -46,5 +46,3 @@ install-data-local:
 	    $(INSTALL_DATA) $$i $(sharedir)/sounds/icq; \
 	  fi \
 	done
-#       $(mkinstalldirs) $(mandir)
-#       $(INSTALL_DATA) licq.1 $(mandir)

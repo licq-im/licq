@@ -50,16 +50,16 @@ install-data-local:
 	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
 			fi \
 	  done; \
-        done
+	done
 	@for j in $(srcdir)/qt-gui/extended.icons.*; do \
 	  jj="qt-gui/`basename $$j`" ; \
-          echo "Installing extended icons $$jj"; \
-          $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
-          for i in $$j/*; do \
-            if test -f $$i; then \
-              $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
-            fi \
-          done; \
+	  echo "Installing extended icons $$jj"; \
+	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
+	  for i in $$j/*; do \
+	    if test -f $$i; then \
+	      $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
+	    fi \
+	  done; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/emoticons
 	@for j in `echo $(srcdir)/qt-gui/emoticons/*|sed s/"$(srcdir)\/qt-gui\/emoticons\/CVS"//g`; do \
