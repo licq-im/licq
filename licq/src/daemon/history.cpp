@@ -21,6 +21,8 @@ extern int errno;
 #include "message.h"
 #include "icq-defines.h"
 
+#define MAX_HISTORY_MSG_SIZE 8192
+
 CUserHistory::CUserHistory()
 {
   m_szFileName = m_szDescription = NULL;
@@ -67,8 +69,9 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
 
 #define GET_VALID_LINES \
   { \
+    unsigned short nPos = 0; \
     while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') \
-      strcat(szMsg, &sz[1]); \
+      nPos += snprintf(&szMsg[nPos], MAX_HISTORY_MSG_SIZE - nPos, "%s", &sz[1]); \
   }
 
 bool CUserHistory::Load(HistoryList &lHistory)
@@ -94,7 +97,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
   }
 
   // Now read in a line at a time
-  char sz[MAX_LINE_LEN], *szResult, szMsg[8192];
+  char sz[MAX_LINE_LEN], *szResult, szMsg[MAX_HISTORY_MSG_SIZE + 1];
   unsigned long nFlags;
   unsigned short nCommand, nSubCommand;
   time_t tTime;
