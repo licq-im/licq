@@ -38,6 +38,7 @@ public:
 protected:
   char *m_szSkin, *m_szIcons, *m_szExtendedIcons;
   bool m_bStartHidden;
+  bool m_bDisableDockIcon;
   CMainWindow *licqMainWindow;
   CSignalManager *licqSignalManager;
   CQtLogWindow *licqLogWindow;

@@ -99,7 +99,8 @@ public:
   CMainWindow(CICQDaemon *theServer, CSignalManager *theSigMan,
               CQtLogWindow *theLogWindow, bool bStartHidden,
               const char *skinName, const char *iconsName,
-              const char *extendedIconsName, QWidget *parent = 0);
+              const char *extendedIconsName, bool bDisableDockIcon,
+              QWidget *parent = 0);
   virtual ~CMainWindow();
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
@@ -162,6 +163,7 @@ public:
        m_bShowAllEncodings,
        m_bTabbedChatting,
        m_bShowHistory,
+       m_bDisableDockIcon,
        m_bSortColumnAscending;
 
   QString m_MsgAutopopupKey;

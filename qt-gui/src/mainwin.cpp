@@ -318,7 +318,8 @@ CMainWindow* gMainWindow = NULL;
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                          CQtLogWindow *theLogWindow, bool bStartHidden,
                          const char *skinName, const char *iconsName,
-                         const char *extendedIconsName, QWidget *parent)
+                         const char *extendedIconsName, bool bDisableDockIcon,
+                         QWidget *parent)
   : QWidget(parent, "MainWindow")
 {
   gMainWindow = this;
@@ -335,15 +336,20 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   if(CUserView::floaties == NULL)
       CUserView::floaties = new UserFloatyList;
 
+  m_bDisableDockIcon = bDisableDockIcon;
+
   // set up appicon and docking, code supplied by Mark Deneed
-  WId win = winId();     // get the window
-  XWMHints *hints;  // hints
-  Display *dsp = x11Display();  // get the display
-  hints = XGetWMHints(dsp, win);  // init hints
-  hints->window_group = win;  // set set the window hint
-  hints->flags = WindowGroupHint;  // set the window group hint
-  XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
-  XFree( hints );
+  if (!m_bDisableDockIcon)
+  {
+    WId win = winId();     // get the window
+    XWMHints *hints;  // hints
+    Display *dsp = x11Display();  // get the display
+    hints = XGetWMHints(dsp, win);  // init hints
+    hints->window_group = win;  // set set the window hint
+    hints->flags = WindowGroupHint;  // set the window group hint
+    XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
+    XFree( hints );
+  }
 
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(slot_aboutToQuit()));
 
@@ -649,24 +655,27 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%u - </tt>uin</li>"
                     "<li><tt>%w - </tt>webpage</li></ul>");
   licqIcon = NULL;
-#ifdef USE_KDE
-  if (m_nDockMode != DockNone)
-    licqIcon = new IconManager_KDEStyle(this, mnuSystem);
-#else
-  switch (m_nDockMode)
+  if (!m_bDisableDockIcon)
   {
-    case DockDefault:
-      licqIcon = new IconManager_Default(this, mnuSystem, bDockIcon48);
-      break;
-    case DockThemed:
-      licqIcon = new IconManager_Themed(this, mnuSystem, szDockTheme);
-      break;
-    case DockSmall:
+#ifdef USE_KDE
+	if (m_nDockMode != DockNone)
       licqIcon = new IconManager_KDEStyle(this, mnuSystem);
-    case DockNone:
-      break;
-  }
+#else
+	switch (m_nDockMode)
+	{
+      case DockDefault:
+    	licqIcon = new IconManager_Default(this, mnuSystem, bDockIcon48);
+    	break;
+      case DockThemed:
+    	licqIcon = new IconManager_Themed(this, mnuSystem, szDockTheme);
+    	break;
+      case DockSmall:
+    	licqIcon = new IconManager_KDEStyle(this, mnuSystem);
+      case DockNone:
+    	break;
+	}
 #endif
+  }
 
    // all settings relating to localization
    licqConf.SetSection("locale");

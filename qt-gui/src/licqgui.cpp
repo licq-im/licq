@@ -85,7 +85,8 @@ const char *LP_Usage(void)
     " JFC /"
 #endif
     " GTK / SGI / LCD), ignored by KDE support\n"
-    " -d : start hidden (dock icon only)\n";
+    " -d : start hidden (dock icon only)\n"
+    " -D : disable dock icon for this session (does not affect dock icon settings)";
 #else
   static const char usage[] =
     "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-e extendediconpack] [-g gui style]\n"
@@ -98,7 +99,8 @@ const char *LP_Usage(void)
     " JFC /"
 #endif
     " GTK / SGI / LCD), ignored by KDE support\n"
-    " -d : start hidden (dock icon only)\n";
+    " -d : start hidden (dock icon only)\n"
+    " -D : disable dock icon for this session (does not affect dock icon settings)";
 #endif
 
   return usage;
@@ -262,6 +264,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 
   // initialize Members
   grabKeysym = 0;
+  m_bDisableDockIcon = false;
 
   // store command line arguments for session management
   cmdLineParams += QString(argv[0]);
@@ -277,7 +280,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 
   // parse command line for arguments
   int i = 0;
-  while( (i = getopt(argc, argv, "hs:i:e:g:d")) > 0)
+  while( (i = getopt(argc, argv, "hs:i:e:g:dD")) > 0)
   {
     switch (i)
     {
@@ -301,7 +304,12 @@ CLicqGui::CLicqGui(int argc, char **argv)
       styleName[sizeof(styleName) - 1] = '\0';
       break;
     case 'd': // dock icon
-      bStartHidden = true;
+      if (!m_bDisableDockIcon)
+        bStartHidden = true;
+      break;
+    case 'D': // disable dock icon
+      bStartHidden = false; // discard any -d
+      m_bDisableDockIcon = true;
     }
   }
 
@@ -381,7 +389,7 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
   licqLogWindow = new CQtLogWindow;
   gLog.AddService(new CLogService_Plugin(licqLogWindow, L_MOST));
   licqMainWindow = new CMainWindow(_licqDaemon, licqSignalManager, licqLogWindow,
-     m_bStartHidden, m_szSkin, m_szIcons, m_szExtendedIcons);
+     m_bStartHidden, m_szSkin, m_szIcons, m_szExtendedIcons, m_bDisableDockIcon);
 
   setMainWidget(licqMainWindow);
   _licqDaemon->AddProtocolPlugins();
