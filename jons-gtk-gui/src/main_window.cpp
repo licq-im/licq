@@ -30,6 +30,7 @@ gint flash_icons(gpointer);
 
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
+	icq_daemon->UnregisterPlugin();
 	gtk_main_quit();
 }
 

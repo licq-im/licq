@@ -148,6 +148,9 @@ void menu_create()
 	item = menu_new_item(menu, "Security Options",
 			     GTK_SIGNAL_FUNC(menu_security_users_window));
 
+	item = menu_new_item(menu, "Plugin Manager",
+			     GTK_SIGNAL_FUNC(create_plugin_window));
+
 	item = menu_new_item(menu, "Network Log",
 				GTK_SIGNAL_FUNC(log_window_show));
 

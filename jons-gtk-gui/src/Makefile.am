@@ -28,6 +28,7 @@ licq_jons_gtk_gui_la_SOURCES =  about_window.cpp \
 				more_window.cpp \
 				option_window.cpp \
 				pipe.cpp \
+				plugin_window.cpp \
 				random_chat.cpp \
 				register_user.cpp \
 				search_user_window.cpp \

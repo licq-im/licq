@@ -38,27 +38,37 @@ GSList *catcher;
 
 const char *LP_Name()
 {
-	return NAME;
+	static const char name[] = "Jon's GTK+ GUI";
+	return name;
 }
 
 const char *LP_Version()
 {
-	return PLUGIN_VERSION;
+	static const char version[] = "0.10";
+	return version;
 } 
 
 const char *LP_Status()
 {
-	return STATUS;
+	static const char status[] = "Running";
+	return status;
 }
 
 const char *LP_Usage()
 {
-	return USAGE;
+	static const char usage[] = "Usage: licq [ options ] -p jons-gtk-gui";
+	return usage;
 }
 
 const char *LP_Description()
 {
-	return DESCRIPTION;
+	static const char desc[] = "GTK+ plugin for licq";
+	return desc;
+}
+
+const char *LP_ConfigFile()
+{
+	return "licq_jons-gtk-gui.conf";
 }
 
 bool LP_Init(int argc, char **argv)

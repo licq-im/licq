@@ -32,13 +32,6 @@
 #include <gtk/gtk.h>
 #include <fstream.h>
 
-/* Definitions to be passed to the licq daemon */
-#define NAME		"Jon's GTK+ GUI"
-#define PLUGIN_VERSION	"0.10"
-#define STATUS		"Running"
-#define USAGE		"Usage: None yet"
-#define DESCRIPTION	"GTK+ plugin for licq"
-
 /* Program used definitions */
 #define MAX_LENGTH_UIN	8
 
@@ -376,6 +369,13 @@ struct key_request
 	struct e_tag_data *etag;
 };
 
+struct plugin_window
+{
+	GtkWidget *window;
+	GtkWidget *l_clist;
+	GtkWidget *a_clist;
+};
+
 struct e_tag_data
 {
 	GtkWidget *statusbar;
@@ -632,6 +632,18 @@ extern void color_dlg_cancel(GtkWidget *, gpointer);
 extern void pipe_callback(gpointer, gint, GdkInputCondition);
 extern void pipe_signal(CICQSignal *);
 extern void pipe_event(ICQEvent *);
+
+
+/* Functions in plugin_window.cpp */
+extern void create_plugin_window();
+extern void plugin_close_callback(GtkWidget *, gpointer);
+extern void plugin_enable_callback(GtkWidget *, gpointer);
+extern void plugin_disable_callback(GtkWidget *, gpointer);
+extern void plugin_unload_callback(GtkWidget *, gpointer);
+extern void plugin_details_callback(GtkWidget *, gpointer);
+extern void plugin_configure_callback(GtkWidget *, gpointer);
+extern void plugin_load_callback(GtkWidget *, gpointer);
+extern void plugin_refresh_callback(GtkWidget *, gpointer);
 
 
 /* Functions in random_chat.cpp */
