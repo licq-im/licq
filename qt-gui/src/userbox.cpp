@@ -257,7 +257,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    }
 
    m_sPrefix = "1";
-   m_pIcon = &CMainWindow::iconForStatus(u->StatusFull());
+   m_pIcon = &CMainWindow::iconForStatus(u->StatusFull(), u->PPID());
 
    switch (m_nStatus)
    {

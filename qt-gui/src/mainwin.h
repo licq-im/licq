@@ -27,6 +27,8 @@
 #include "licqdialog.h"
 #include "gui-defines.h"
 
+#define MSN_PPID 0x4D534E5F
+
 class QStyle;
 
 class QTextView;
@@ -100,7 +102,7 @@ public:
     m_nUserMenuPPID = _nPPID;
     m_nUserMenuUin = strtoul(_szId, (char **)NULL, 10); // deprecated, use m_nUserMenuId instead!
   }
-  static QPixmap &iconForStatus(unsigned long FullStatus);
+  static QPixmap &iconForStatus(unsigned long FullStatus, unsigned long nPPID = LICQ_PPID);
   static QPixmap &iconForEvent(unsigned short SubCommand);
 
   // global configuration data
@@ -216,7 +218,8 @@ public:
           pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmEncoding,
           pmBirthday, pmPhone, pmCellular, pmInvisible, pmCustomAR, pmCollapsed,
           pmExpanded, pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
-          pmPhoneFollowMeBusy, pmSharedFiles;
+          pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
+          pmMSNOccupied, pmMSNPrivate, pmMSNAway;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   int m_nProtoNum;
