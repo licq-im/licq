@@ -239,6 +239,9 @@ const unsigned short ICQ_CMDxSUB_SECURExCLOSE      = 0x00EE;  // Licq extension
 const unsigned short ICQ_CMDxSUB_SECURExOPEN       = 0x00EF;  // Licq extension
 
 
+// Special UINs
+const unsigned short ICQ_UINxPAGER		   = 0x000A;
+
 // Status constants
 // Statuses must be checked in the following order:
 //  DND, Occupied, NA, Away, Online
