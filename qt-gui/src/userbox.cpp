@@ -826,7 +826,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
   for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
   {
-    addColumn(gMainWindow->colInfo[i]->m_sTitle, gMainWindow->colInfo[i]->m_nWidth);
+    addColumn(gMainWindow->colInfo[i]->m_sTitle, -1);//gMainWindow->colInfo[i]->m_nWidth);
     setColumnAlignment(i + 1, 1 << gMainWindow->colInfo[i]->m_nAlign);
   }
 
@@ -1248,20 +1248,19 @@ void CUserView::resizeEvent(QResizeEvent *e)
 
   unsigned short totalWidth = 0;
   unsigned short nNumCols = header()->count();
-  for (unsigned short i = 0; i < nNumCols - 1; i++)
+  for (unsigned short i = 0; i < nNumCols; i++)
     totalWidth += columnWidth(i);
+
   //QScrollBar *s = verticalScrollBar();
   //if (s != NULL) totalWidth += s->width();
   int newWidth = width() - totalWidth - 2;
   if (newWidth <= 0)
   {
     setHScrollBarMode(Auto);
-    setColumnWidth(nNumCols - 1, gMainWindow->colInfo[nNumCols - 2]->m_nWidth);
   }
   else
   {
     setHScrollBarMode(AlwaysOff);
-    setColumnWidth(nNumCols - 1, newWidth);
   }
 }
 
