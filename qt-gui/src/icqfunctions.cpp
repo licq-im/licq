@@ -488,9 +488,6 @@ void ICQFunctions::CreateHistoryTab()
   connect(chkHistoryReverse,SIGNAL(toggled(bool)),SLOT(ReverseHistory(bool)));
   lay->addWidget(chkHistoryReverse, CR, 2);
   chkHistoryReverse->setChecked(true);
-  //lay->addWidget(new QLabel(tr("History File:"), p), ++CR, 0);
-  //nfoHistory = new CInfoField(p, true);
-  //lay->addMultiCellWidget(nfoHistory, CR, CR, 1, 2);
 }
 
 //-----ICQFunctions::keyPressEvent----------------------------------------------
@@ -680,8 +677,8 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   t.setTime_t(te + m_nRemoteTimeOffset);
   nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
                        .arg(t.time().toString())
-                       .arg(u->GetTimezone() < 0 ? "" : "+")
-                       .arg(u->GetTimezone() / 2)
+                       .arg(u->GetTimezone() > 0 ? "-" : "+")
+                       .arg(abs(u->GetTimezone() / 2))
                        .arg(u->GetTimezone() % 2 ? "30" : "00") );
   tmrTime = new QTimer(this);
   connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
