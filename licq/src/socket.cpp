@@ -185,6 +185,7 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
       strncpy(buf, hstrerror(h_errno), buflen);
 #endif
       break;
+
     case SOCK_ERROR_desx:
       strncpy(buf, "DesX encryption/decryption failure", buflen);
       break;
@@ -265,7 +266,11 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
  *---------------------------------------------------------------------------*/
 bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort)
 {
-  if (_nRemoteIp == 0) return(false);  // if the rIp is invalid, exit
+  if (_nRemoteIp == 0)
+  {
+    m_nErrorType = SOCK_ERROR_h_errno;
+    return(false);  // if the rIp is invalid, exit
+  }
 
   m_sRemoteAddr.sin_port = htons(_nRemotePort);
   m_sRemoteAddr.sin_addr.s_addr = _nRemoteIp;
