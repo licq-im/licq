@@ -741,20 +741,13 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
-  m_szCookie = new char[nLen];
-  memcpy(m_szCookie, szCookie, nLen);
   m_nSize = nLen + 8;
   s_nSequence = (rand() & 0x7fff);
   m_nSequence = s_nSequence++;
   InitBuffer();
 
   buffer->PackUnsignedLongBE(0x00000001);
-  buffer->PackTLV(0x0006, nLen, m_szCookie);
-}
-
-CPU_SendCookie::~CPU_SendCookie()
-{
-  if (m_szCookie) delete [] m_szCookie;
+  buffer->PackTLV(0x0006, nLen, szCookie);
 }
 
 //-----ImICQ-----------------------------------------------------------------

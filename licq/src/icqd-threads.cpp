@@ -63,7 +63,10 @@ void *ProcessRunningEvent_Server_tep(void *p)
       gLog.Info("%sConnecting to login server failed, failing event\n", L_SRVxSTR);
       d->m_eStatus = STATUS_OFFLINE_FORCED;
       d->m_bLoggingOn = false;
-      if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+        d->ProcessDoneEvent(e);
+      else
+        delete e;
       pthread_exit(NULL);
     }
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -77,7 +80,10 @@ void *ProcessRunningEvent_Server_tep(void *p)
   if (s == NULL)
   {
     gLog.Warn("%sSocket not connected or invalid (#%ld).\n", L_WARNxSTR, e->m_nSequence);
-    if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+      d->ProcessDoneEvent(e);
+    else
+      delete e;
     pthread_exit(NULL);
   }
 
@@ -94,12 +100,18 @@ void *ProcessRunningEvent_Server_tep(void *p)
               e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
     // We don't close the socket as it should be closed by the server thread
     gSocketManager.DropSocket(s);
-    if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+      d->ProcessDoneEvent(e);
+    else
+      delete e;
     pthread_exit(NULL);
   }
   else if (e->m_NoAck) {
     // send successfully and we don't get an answer from the server
-    if (d->DoneEvent(e, EVENT_ACKED) != NULL) d->ProcessDoneEvent(e);
+    if (d->DoneEvent(e, EVENT_ACKED) != NULL)
+      d->ProcessDoneEvent(e);
+    else
+      delete e;
   }
   delete buf;
   gSocketManager.DropSocket(s);

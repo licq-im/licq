@@ -193,7 +193,6 @@ class CPU_SendCookie : public CSrvPacketTcp
 {
 public:
   CPU_SendCookie(const char *, int len);
-  virtual ~CPU_SendCookie();
 
 protected:
   char *m_szCookie;
