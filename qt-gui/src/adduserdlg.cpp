@@ -59,13 +59,6 @@ void AddUserDlg::show()
    QDialog::show();
 }
 
-void AddUserDlg::hide()
-{
-   QDialog::hide();
-   delete this;
-}
-
-
 void AddUserDlg::ok()
 {
    unsigned long nUin = edtUin->text().toULong();
@@ -76,6 +69,7 @@ void AddUserDlg::ok()
        server->icqAlertUser(nUin);
    }
    accept();
+   close(true);
 }
 
 #include "adduserdlg.moc"

@@ -23,7 +23,6 @@ protected:
    QCheckBox *chkAlert;
 public slots:
    virtual void show();
-   virtual void hide();
 protected slots:
    void ok();
 };
