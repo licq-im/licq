@@ -121,6 +121,19 @@ CPFile_Start::CPFile_Start(unsigned long _nFilePos)
 
 
 //=====FileTransferManager===========================================================
+CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d = NULL)
+{
+  m_nCommand = t;
+  if (d != NULL)
+    m_szData = strdup(d);
+  else
+    m_szData = NULL;
+}
+
+
+
+
+
 CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
 {
   // Create the plugin notification pipe
@@ -135,16 +148,14 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   strcpy(m_szLocalName, o->GetAlias());
   gUserManager.DropOwner();
 
-  m_nCurrentFile = m_nTotalFiles = 0;
+  m_nCurrentFile = m_nBatchFiles = 0;
   m_nFileSize = m_nBatchSize = m_nFilePos = m_nBatchPos = 0;
   m_nBytesTransfered = m_nBatchBytesTransfered = 0;
   m_nStartTime = m_nBatchStartTime = 0;
   m_nFileDesc = -1;
 
-  m_szPathName[0] = '\0';
-  m_szFileName[0] = '\0';
-  m_szLocalName[0] = '\0';
-  m_szRemoteName[0] = '\0';
+  m_szFileName[0] = m_szPathName[0] = '\0';
+  sprintf(m_szRemoteName, "%ld", m_nUin);
 }
 
 
@@ -166,9 +177,25 @@ bool CFileTransferManager::StartFileTransferServer()
 
 
 
-bool CFileTransferManager::StartAsServer()
+bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 {
+  m_nDirection = D_RECEIVER;
+
   if (!StartFileTransferServer()) return false;
+
+  if (szDirectory == NULL)
+  {
+    sprintf(m_szDirectory, "%s/%ld", BASE_DIR, m_nUin);
+    if (access(BASE_DIR, F_OK) < 0 && mkdir(m_szDirectory, 0700) == -1 &&
+        errno != EEXIST)
+    {
+      gLog.Warn("%sUnable to create directory %s for file transfer.\n",
+         L_WARNxSTR, m_szDirectory);
+      strcpy(m_szDirectory, BASE_DIR);
+    }
+  }
+  else
+    strcpy(m_szDirectory, szDirectory);
 
   // Create the socket manager thread
   if (pthread_create(&thread_ft, NULL, &FileTransferManager_tep, this) == -1)
@@ -179,9 +206,29 @@ bool CFileTransferManager::StartAsServer()
 
 
 //-----CFileTransferManager::StartAsClient-------------------------------------------
-bool CFileTransferManager::StartAsClient(unsigned short nPort)
+bool CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nPort)
 {
-  //if (!StartFileTransferServer()) return false;
+  m_nDirection = D_SENDER;
+
+  // Validate the pathnames
+  if (lPathNames.size() == 0) return false;
+
+  struct stat buf;
+  ConstFileList::iterator iter;
+  for (iter = lPathNames.begin(); iter != lPathNames.end(); iter++)
+  {
+    if (stat(*iter, &buf) < 0)
+    {
+      gLog.Warn("%sFile Transfer: File access error %s:\n%s%s.\n", L_WARNxSTR,
+         *iter, L_BLANKxSTR, strerror(errno));
+      return false;
+    }
+    m_lPathNames.push_back(strdup(*iter));
+    m_nBatchFiles++;
+    m_nBatchSize += buf.st_size;
+  }
+  m_iPathName = m_lPathNames.begin();
+  strcpy(m_szPathName, *m_iPathName);
 
   if (!ConnectToFileServer(nPort)) return false;
 
@@ -209,7 +256,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   if (!SendPacket(&p_handshake)) return false;
 
   // Send init packet:
-  CPFile_InitClient p(m_szLocalName, 1, m_nFileSize);
+  CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
   if (!SendPacket(&p)) return false;
 
   gLog.Info("%sFile Transfer: Waiting for server to respond.\n", L_TCPxSTR);
@@ -234,6 +281,10 @@ bool CFileTransferManager::ProcessPacket()
     else
       gLog.Warn("%sFile Transfer: Lost remote end:\n%s%s\n", L_WARNxSTR,
                 L_BLANKxSTR, ftSock.ErrorStr(buf, 128));
+    if (m_nState == FT_STATE_WAITxFORxFILExINFO)
+      m_nResult = FT_DONExBATCH;
+    else
+      m_nResult = FT_CLOSED;
     return false;
   }
 
@@ -267,20 +318,27 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid client init packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
+        m_nResult = FT_ERROR;
         return false;
       }
       b.UnpackUnsignedLong();
-      m_nTotalFiles = b.UnpackUnsignedLong();
+      m_nBatchFiles = b.UnpackUnsignedLong();
       m_nBatchSize = b.UnpackUnsignedLong();
-      b.UnpackUnsignedLong();
+      m_nSpeed = b.UnpackUnsignedLong();
       b.UnpackString(m_szRemoteName);
 
       m_nBatchStartTime = time(TIME_NOW);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
 
+      PushFileTransferEvent(FT_STARTxBATCH);
+
       // Send response
       CPFile_InitServer p(m_szLocalName);
-      if (!SendPacket(&p)) return false;
+      if (!SendPacket(&p))
+      {
+        m_nResult = FT_ERROR;
+        return false;
+      }
 
       gLog.Info("%sFile Transfer: Waiting for file info.\n", L_TCPxSTR);
       m_nState = FT_STATE_WAITxFORxFILExINFO;
@@ -301,34 +359,57 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid file info packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
+        m_nResult = FT_ERROR;
         return false;
       }
       b.UnpackChar();
       b.UnpackString(m_szFileName);
       b.UnpackUnsignedShort(); // 0 length string...?
       b.UnpackChar();
-      b.UnpackUnsignedLong();
       m_nFileSize = b.UnpackUnsignedLong();
+      b.UnpackUnsignedLong();
+      m_nSpeed = b.UnpackUnsignedLong();
 
       m_nBytesTransfered = 0;
       m_nCurrentFile++;
 
-      // FIXME send plugin an event???
-
       // Get the local filename and set the file offset (for resume)
-      // set m_szPathName, m_nFilePos, m_nFileDesc given m_szFileName
-      /*if (!GetLocalFileName())
+      struct stat buf;
+      m_nFileDesc = -1;
+      sprintf(m_szPathName, "%s/%s", m_szDirectory, m_szFileName);
+      while (m_nFileDesc == -1)
       {
-        fileCancel();
-        return;
-      }*/
-      m_szPathName[0] = '\0';
-      m_nFilePos = 0;
-      m_nFileDesc = -1;//FIXME!!!!!!!!!
+        if (stat(m_szPathName, &buf) != -1)
+        {
+          if ((unsigned long)buf.st_size >= m_nFileSize)
+          {
+            sprintf(m_szPathName, "%s/%s.%ld", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
+            continue;
+          }
+          m_nFileDesc = open(m_szPathName, O_WRONLY | O_APPEND, 00664);
+          m_nFilePos = buf.st_size;
+        }
+        else
+        {
+          m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT, 00664);
+          m_nFilePos = 0;
+        }
+        if (m_nFileDesc == -1)
+        {
+          gLog.Error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
+             L_ERRORxSTR, m_szPathName, L_BLANKxSTR, strerror(errno));
+          m_nResult = FT_ERROR;
+          return false;
+        }
+      }
 
       // Send response
       CPFile_Start p(m_nFilePos);
-      if (!SendPacket(&p)) return false;
+      if (!SendPacket(&p))
+      {
+        m_nResult = FT_ERROR;
+        return false;
+      }
 
       m_nState = FT_STATE_RECEIVINGxFILE;
       break;
@@ -343,6 +424,7 @@ bool CFileTransferManager::ProcessPacket()
         m_nBatchPos += m_nFilePos;
         gLog.Info("%sFile Transfer: Receiving %s (%ld bytes).\n", L_TCPxSTR,
            m_szFileName, m_nFileSize);
+        PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, m_szPathName));
       }
 
       // Write the new data to the file and empty the buffer
@@ -367,6 +449,7 @@ bool CFileTransferManager::ProcessPacket()
       {
         gLog.Error("%sFile Transfer: Write error:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR,
            errno == 0 ? "Disk full (?)" : strerror(errno));
+        m_nResult = FT_ERROR;
         return false;
       }
 
@@ -392,7 +475,7 @@ bool CFileTransferManager::ProcessPacket()
            m_szFileName, -nBytesLeft);
       }
       // Notify Plugin
-      //...FIXME
+      PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, m_szPathName));
 
       // Now wait for a disconnect or another file
       m_nState = FT_STATE_WAITxFORxFILExINFO;
@@ -417,26 +500,34 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid server init packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
+        m_nResult = FT_ERROR;
         return false;
       }
-      b.UnpackUnsignedLong();
+      m_nSpeed = b.UnpackUnsignedLong();
       b.UnpackString(m_szRemoteName);
 
       // Send file info packet
-      CPFile_Info p(m_szPathName);
+      CPFile_Info p(*m_iPathName);
       if (!p.IsValid())
       {
         gLog.Warn("%sFile Transfer: Read error for %s:\n%s\n", L_WARNxSTR,
-           m_szPathName, p.ErrorStr());
+           *m_iPathName, p.ErrorStr());
+        m_nResult = FT_ERROR;
         return false;
       }
-      if (!SendPacket(&p)) return false;
+      if (!SendPacket(&p))
+      {
+        m_nResult = FT_ERROR;
+        return false;
+      }
 
       m_nFileSize = p.GetFileSize();
       strcpy(m_szFileName, p.GetFileName());
 
       m_nBatchStartTime = time(TIME_NOW);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
+
+      PushFileTransferEvent(FT_STARTxBATCH);
 
       m_nState = FT_STATE_WAITxFORxSTART;
       break;
@@ -457,6 +548,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid start packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
+        m_nResult = FT_ERROR;
         return false;
       }
 
@@ -465,18 +557,20 @@ bool CFileTransferManager::ProcessPacket()
 
       m_nFilePos = b.UnpackUnsignedLong();
 
-      m_nFileDesc = open(m_szPathName, O_RDONLY);
-      if (m_nFileDesc < 0)
+      m_nFileDesc = open(*m_iPathName, O_RDONLY);
+      if (m_nFileDesc == -1)
       {
         gLog.Error("%sFile Transfer: Read error '%s':\n%s%s\n.", L_ERRORxSTR,
-           m_szPathName, L_BLANKxSTR, strerror(errno));
+           *m_iPathName, L_BLANKxSTR, strerror(errno));
+        m_nResult = FT_ERROR;
         return false;
       }
 
-      if (lseek(m_nFileDesc, m_nFilePos, SEEK_SET) < 0)
+      if (lseek(m_nFileDesc, m_nFilePos, SEEK_SET) == -1)
       {
         gLog.Error("%sFile Transfer: Seek error '%s':\n%s%s\n.", L_ERRORxSTR,
                    m_szFileName, L_BLANKxSTR, strerror(errno));
+        m_nResult = FT_ERROR;
         return false;
       }
 
@@ -524,7 +618,8 @@ bool CFileTransferManager::SendFilePacket()
     m_nStartTime = time(TIME_NOW);
     m_nBatchPos += m_nFilePos;
     gLog.Info("%sFile Transfer: Sending %s (%ld bytes).\n", L_TCPxSTR,
-       m_szFileName, m_nFileSize);
+       m_szPathName, m_nFileSize);
+    PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, m_szPathName));
   }
 
   int nBytesToSend = m_nFileSize - m_nFilePos;
@@ -532,13 +627,18 @@ bool CFileTransferManager::SendFilePacket()
   if (read(m_nFileDesc, pSendBuf, nBytesToSend) != nBytesToSend)
   {
     gLog.Error("%sFile Transfer: Error reading from %s:\n%s%s.\n", L_ERRORxSTR,
-       m_szFileName, L_BLANKxSTR, strerror(errno));
+       m_szPathName, L_BLANKxSTR, strerror(errno));
+    m_nResult = FT_ERROR;
     return false;
   }
   CBuffer xSendBuf(nBytesToSend + 1);
   xSendBuf.PackChar(0x06);
   xSendBuf.Pack(pSendBuf, nBytesToSend);
-  if (!SendBuffer(&xSendBuf)) return false;
+  if (!SendBuffer(&xSendBuf))
+  {
+    m_nResult = FT_ERROR;
+    return false;
+  }
 
   m_nFilePos += nBytesToSend;
   m_nBytesTransfered += nBytesToSend;
@@ -566,11 +666,38 @@ bool CFileTransferManager::SendFilePacket()
     gLog.Info("%sFile Transfer: Sent %s, %d too many bytes.\n", L_TCPxSTR,
        m_szFileName, -nBytesLeft);
   }
+  PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, m_szPathName));
 
-  // FIXME go to the next file, if no more then close connections
-  // send plugin notification in either case?
-  CloseConnection();
-  //m_nState = FT_STATE_WAITxFORxSTART;
+  // Go to the next file, if no more then close connections
+  m_iPathName++;
+  if (m_iPathName == m_lPathNames.end())
+  {
+    m_nResult = FT_DONExBATCH;
+    return false;
+  }
+  else
+  {
+    // Send file info packet
+    CPFile_Info p(*m_iPathName);
+    if (!p.IsValid())
+    {
+      gLog.Warn("%sFile Transfer: Read error for %s:\n%s\n", L_WARNxSTR,
+         *m_iPathName, p.ErrorStr());
+      m_nResult = FT_ERROR;
+      return false;
+    }
+    if (!SendPacket(&p))
+    {
+      m_nResult = FT_ERROR;
+      return false;
+    }
+
+    m_nFileSize = p.GetFileSize();
+    strcpy(m_szFileName, p.GetFileName());
+    strcpy(m_szPathName, *m_iPathName);
+
+    m_nState = FT_STATE_WAITxFORxSTART;
+  }
 
   return true;
 }
@@ -590,6 +717,11 @@ CFileTransferEvent *CFileTransferManager::PopFileTransferEvent()
 
 
 //-----CFileTransferManager::PushChatEvent-------------------------------------------
+void CFileTransferManager::PushFileTransferEvent(unsigned char t)
+{
+  PushFileTransferEvent(new CFileTransferEvent(t));
+}
+
 void CFileTransferManager::PushFileTransferEvent(CFileTransferEvent *e)
 {
   ftEvents.push_back(e);
@@ -739,7 +871,7 @@ void *FileTransferManager_tep(void *arg)
           if (!ok)
           {
             ftman->CloseConnection();
-            //FIXME notify plugin
+            ftman->PushFileTransferEvent(ftman->m_nResult);
           }
         }
 
@@ -760,7 +892,7 @@ void *FileTransferManager_tep(void *arg)
           if (!ok)
           {
             ftman->CloseConnection();
-            // FIXME notify plugin
+            ftman->PushFileTransferEvent(ftman->m_nResult);
           }
         }
         nSocketsAvailable--;
@@ -785,6 +917,12 @@ CFileTransferManager::~CFileTransferManager()
     e = ftEvents.front();
     delete e;
     ftEvents.pop_front();
+  }
+
+  FileList::iterator iter;
+  for (iter = m_lPathNames.begin(); iter != m_lPathNames.end(); iter++)
+  {
+    free(*iter);
   }
 }
 
