@@ -1,9 +1,40 @@
 #include "console.h"
 #include "licq_countrycodes.h"
 #include "licq_languagecodes.h"
+#include "licq_filetransfer.h"
 
+#include <string.h>
 
+//======Utilities============================================================
+char *EncodeFileSize(unsigned long nSize)
+{
+  char szUnit[6];
 
+  if(nSize >= (1024 * 1024))
+  {
+    nSize /= (1024 * 1024) / 10;
+    strcpy(szUnit, "MB");
+  }
+  else if(nSize >= 1024)
+  {
+    nSize /= (1024 / 10);
+    strcpy(szUnit, "KB");
+  }
+  else if(nSize != 1)
+  {
+    nSize *= 10;
+    strcpy(szUnit, "Bytes");
+  }
+  else
+  {
+    nSize *= 10;
+    strcpy(szUnit, "Byte");
+  }
+
+  char buf[16];
+  sprintf(buf, "%ld.%ld %s", (nSize / 10), (nSize % 10), szUnit);
+  return strdup(buf);
+}
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintBadInput
  *-------------------------------------------------------------------------*/
@@ -374,6 +405,10 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A/f%Zilestat", A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+
+  waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A/st%Zatus [*]<online | away | na | dnd |", A_BOLD, A_BOLD);
   PrintBoxRight(48);
   waddch(winMain->Win(), ACS_VLINE);
@@ -582,4 +617,63 @@ void CLicqConsole::PrintInfo_Work(unsigned long nUin)
   wattroff(winMain->Win(), A_BOLD);
 }
 
+/*---------------------------------------------------------------------------- 
+ * CLicqConsole::PrintFileStat
+ *--------------------------------------------------------------------------*/
+void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
+{
+  // Get the user's name
+  ICQUser *u = gUserManager.FetchUser(ftman->Uin(), LOCK_R);
+  const char *szAlias = u->GetAlias();
+  gUserManager.DropUser(u);
+  
+  // Make the title
+  char szTitle[30];
+  ftman->Direction() == D_RECEIVER ? strcpy(szTitle, "File from ") :
+    strcpy(szTitle, "File to ");
+  strcat(szTitle, szAlias);
 
+  // Current file name and Current File # slash Total Batch Files
+  PrintBoxTop(szTitle, COLOR_WHITE, 48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("%ACurrent File: %Z", A_BOLD, A_BOLD);
+  winMain->wprintf(const_cast<char *>(ftman->FileName()));
+  PrintBoxRight(48);
+ 
+  // Current progress, current file xferred slash total current file size
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("%ACurrent Progress: %Z", A_BOLD, A_BOLD);
+  float fCurPercent = (float)ftman->FilePos() / ftman->FileSize();
+  fCurPercent *= 100.0;
+  char szCurPercent[3];
+  snprintf(szCurPercent, 3, "%03f", fCurPercent); 
+  winMain->wprintf("%s Percent", szCurPercent);
+  PrintBoxRight(48);
+
+  // Batch progress, current batch xferred slash total batch size
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("%ABatch Progress: %Z", A_BOLD, A_BOLD);
+  float fBatchPercent = (float)ftman->BatchPos() / ftman->BatchSize();
+  fBatchPercent *= 100.0;
+  char szBatchPercent[3];
+  snprintf(szBatchPercent, 3, "%03f", fBatchPercent);
+  winMain->wprintf("%s Percent", szBatchPercent);
+  PrintBoxRight(48);
+
+  // Time, ETA, BPS
+  waddch(winMain->Win(), ACS_VLINE);
+  time_t Time = time(NULL) - ftman->StartTime();
+  winMain->wprintf("%ATime: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
+    Time / 3600, (Time % 3600)/ 60, (Time % 60));
+  int nBytesLeft = ftman->FileSize() - ftman->FilePos();
+  time_t nETA = (time_t)nBytesLeft / (ftman->BytesTransfered() / Time);
+  winMain->wprintf("%AETA: %Z%02ld:%02ld:%02ld   ", A_BOLD, A_BOLD,
+    nETA / 3600, (nETA % 3600)/60, (nETA % 60));
+  winMain->wprintf("%ABPS: %Z%s", A_BOLD, A_BOLD, EncodeFileSize(
+    ftman->BytesTransfered() / Time));
+  PrintBoxRight(48);
+
+  // Close this box
+  PrintBoxBottom(48);
+  winMain->RefreshWin();
+}

@@ -33,7 +33,6 @@ struct SUser
   const struct SColorMap *color;
 };
 
-
 class CLicqConsole
 {
 public:
@@ -44,6 +43,7 @@ public:
 protected:
   int m_nPipe;
   bool m_bExit;
+  fd_set fdSet;
   list <SUser *> m_lUsers;
 
   // Set'able variables
@@ -59,6 +59,7 @@ protected:
   GroupType m_nGroupType;
   list<char *> m_lCmdHistory;
   list<char *>::iterator m_lCmdHistoryIter;
+  list<CFileTransferManager *> m_lFileStat;
 
   CICQDaemon *licqDaemon;
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
@@ -72,6 +73,7 @@ public:
   void ProcessDoneEvent(CWindow *win, ICQEvent *e);
   void ProcessStdin();
   void ProcessLog();
+  void ProcessFile(list<CFileTransferManager *>::iterator iter);
   char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
   void CreateUserList();
@@ -102,6 +104,7 @@ public:
   void PrintInfo_General(unsigned long);
   void PrintInfo_More(unsigned long);
   void PrintInfo_Work(unsigned long);
+  void PrintFileStat(CFileTransferManager *);
 
   void MenuHelp(char *);
   void MenuContactList(char *);
@@ -113,6 +116,7 @@ public:
   void MenuPlugins(char *);
   void MenuSet(char *);
   void MenuLast(char *);
+  void MenuFileStat(char *);
 
   void TabUser(char *, struct STabCompletion &);
   void TabOwner(char *, struct STabCompletion &);

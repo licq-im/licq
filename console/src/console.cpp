@@ -82,8 +82,6 @@ const struct SColorMap aColorMaps[NUM_COLORMAPS] =
 const char MLE_HELP[] =
   "[ '.' send | '.s' send server | '.u' send urgent | ',' abort ]";
 
-
-
 /*---------------------------------------------------------------------------
  * CLicqConsole::Constructor
  *-------------------------------------------------------------------------*/
@@ -202,7 +200,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     RegistrationWizard();
   }
 
-  fd_set fdSet;
+  //fd_set fdSet;
   int nResult;
 
   while (!m_bExit)
@@ -212,7 +210,17 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     FD_SET(m_nPipe, &fdSet);
     FD_SET(log->Pipe(), &fdSet);
 
-    nResult = select(log->Pipe() + 1, &fdSet, NULL, NULL, NULL);
+    int nNumDesc = log->Pipe() + 1;
+
+    // Check to see if we want to add in the file xfer manager..
+    list<CFileTransferManager *>::iterator iter;
+    for (iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
+    {
+      FD_SET((*iter)->Pipe(), &fdSet);
+      nNumDesc += (*iter)->Pipe();
+    }
+
+    nResult = select(nNumDesc, &fdSet, NULL, NULL, NULL);
     if (nResult == -1)
     {
       gLog.Error("Error in select(): %s.\n", strerror(errno));
@@ -221,11 +229,30 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     else
     {
       if (FD_ISSET(STDIN_FILENO, &fdSet))
-        ProcessStdin();
+      {
+	ProcessStdin();
+        continue;
+      }
       else if (FD_ISSET(m_nPipe, &fdSet))
-        ProcessPipe();
+      {
+	ProcessPipe();
+        continue;
+      }
       else if (FD_ISSET(log->Pipe(), &fdSet))
-        ProcessLog();
+      {
+	ProcessLog();
+        continue;
+      }
+
+      list<CFileTransferManager *>::iterator iter;
+      for (iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
+      {
+        if (FD_ISSET((*iter)->Pipe(), &fdSet))
+	{
+	  ProcessFile(iter);
+	  break;
+	}
+      }
     }
   }
 
@@ -426,6 +453,64 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   delete e;
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqConsole::ProcessFile
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
+{
+  char buf[32];
+  read((*iter)->Pipe(), buf, 32);
+
+  CFileTransferEvent *e = NULL;
+
+  while ((e = (*iter)->PopFileTransferEvent()) != NULL)
+  {
+    switch(e->Command())
+    {
+    case FT_DONExFILE:
+      break;
+
+    case FT_DONExBATCH:
+      winMain->wprintf("%C%AFile transfer successfuly finished.%C%Z\n",
+      	COLOR_GREEN, A_BOLD, COLOR_WHITE, A_BOLD);
+      (*iter)->CloseFileTransfer();
+      delete *iter;
+#undef erase()
+      m_lFileStat.erase(iter);
+      delete e;
+      return;
+
+    case FT_ERRORxCLOSED:
+      winMain->wprintf("%C%AFile transfer closed.%C%Z\n",
+        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      (*iter)->CloseFileTransfer();
+      delete *iter;
+      m_lFileStat.erase(iter);
+      delete e;
+      return;
+
+    case FT_ERRORxFILE:
+      winMain->wprintf("%C%AFile transfer I/O error.%C%Z\n",
+        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      (*iter)->CloseFileTransfer();
+      delete *iter;
+      m_lFileStat.erase(iter);
+      delete e;
+      return;
+
+    case FT_ERRORxHANDSHAKE:
+      winMain->wprintf("%C%AFile transfer handshake error.%C%Z\n",
+        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
+      (*iter)->CloseFileTransfer();
+      delete *iter;
+      m_lFileStat.erase(iter);
+      delete e;
+      return;
+    }
+    delete e;
+  }
+}
+
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessDoneEvent
@@ -525,6 +610,12 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
 	  CEventFile *f = (CEventFile *)ue;
 	  CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
 	  							 e->Uin());
+	  m_lFileStat.push_back(ftman);
+	
+	  // Now watch the file pipe
+	  ftman->SetUpdatesEnabled(1);
+	  FD_SET(ftman->Pipe(), &fdSet);
+	  
 	  ConstFileList fl;
 	  fl.push_back(f->Filename());
 	  if(!ftman->SendFiles(fl, ea->Port()))

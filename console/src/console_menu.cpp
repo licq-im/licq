@@ -2,13 +2,15 @@
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 10;
+const unsigned short NUM_COMMANDS = 11;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "/contacts", &CLicqConsole::MenuContactList, NULL,
     "Force a refresh of the contact list." },
   { "/group", &CLicqConsole::MenuGroup, NULL,
     "Prints the group list or changes to the given group number." },
+  { "/filestat", &CLicqConsole::MenuFileStat, NULL,
+    "Print out statistics on all current file transfers." },
   { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
     "User commands deal with indiviual users:\n"
     "info - print user information\n\n"
@@ -502,4 +504,24 @@ void CLicqConsole::MenuSet(char *_szArg)
   }
 
 
+}
+
+/*--------------------------------------------------------------------------
+ * CLicqConsole::MenuFileStat
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuFileStat(char *sz)
+{
+  bool bNum = false;
+  
+  // Go through the list and print out the info on each file
+  list<CFileTransferManager *>::iterator iter;
+  for(iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
+  {
+    bNum = true; 
+    PrintFileStat(*iter);
+  }
+
+  if(!bNum)
+    winMain->wprintf("%C%ANo current file transfers.\n%C%Z",
+      COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
 }
