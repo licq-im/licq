@@ -22,8 +22,6 @@
 #include "licq_filetransfer.h"
 #include "support.h"
 
-#include <iostream.h>
-
 //-----ICQ::sendMessage----------------------------------------------------------------------------
 unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients,

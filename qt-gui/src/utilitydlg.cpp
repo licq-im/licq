@@ -156,15 +156,15 @@ void CUtilityDlg::slot_run()
   if (nfoUtility->isReadOnly())
   {
     // Set the user fields
-    vector<const char *> vszFields(m_xUtility->NumUserFields());
-    vector<QLineEdit *>::iterator iter;
+    std::vector<const char *> vszFields(m_xUtility->NumUserFields());
+    std::vector<QLineEdit *>::iterator iter;
     unsigned short i = 0;
     for (iter = edtFields.begin(); iter != edtFields.end(); iter++)
     {
       vszFields[i++] = strdup((*iter)->text().local8Bit().data());
     }
     m_xUtility->SetUserFields(vszFields);
-    vector<const char*>::iterator siter;
+    std::vector<const char*>::iterator siter;
     for(siter = vszFields.begin(); siter != vszFields.end(); siter++)
       free(const_cast<char*>(*siter));
 

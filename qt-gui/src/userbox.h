@@ -1,7 +1,7 @@
 #ifndef USERBOX_H
 #define USERBOX_H
 
-#include <vector.h>
+#include <vector>
 
 #include <qlistview.h>
 #include <qtooltip.h>
@@ -39,7 +39,7 @@ public:
   unsigned short m_nWidth, m_nAlign;
 };
 
-typedef vector<CColumnInfo *> ColumnInfos;
+typedef std::vector<CColumnInfo *> ColumnInfos;
 
 
 //=====UserViewItem================================================================================

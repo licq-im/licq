@@ -22,8 +22,6 @@
 #include "licq_filetransfer.h"
 #include "support.h"
 
-#include <iostream.h>
-
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(unsigned long _nUin)
 {

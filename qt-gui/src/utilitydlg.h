@@ -5,7 +5,7 @@
 
 #include <qwidget.h>
 
-#include <vector.h>
+#include <vector>
 
 class QCheckBox;
 class QLineEdit;
@@ -38,8 +38,8 @@ protected:
   CInfoField *nfoUtility, *nfoWinType, *nfoDesc;
   QCheckBox *chkEditFinal;
   QGroupBox *boxFields;
-  vector <QLabel *> lblFields;
-  vector <QLineEdit *> edtFields;
+  std::vector <QLabel *> lblFields;
+  std::vector <QLineEdit *> edtFields;
   QPushButton *btnRun, *btnCancel;
   MLEditWrap *mleOut, *mleErr;
   QSocketNotifier *snOut, *snErr;

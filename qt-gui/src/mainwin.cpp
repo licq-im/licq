@@ -669,7 +669,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   }
 
   // Message Label
-  if (lblMsg != NULL) delete lblMsg;
+  delete lblMsg;
   lblMsg = new CELabel(skin->lblMsg.transparent, mnuUserGroups, this);
   if (skin->lblMsg.pixmap != NULL || skin->lblMsg.transparent)
     lblMsg->setStyle(style);
@@ -686,7 +686,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
                            "Double click - Show next message"));
 
   // Status Label
-  if (lblStatus != NULL) delete lblStatus;
+  delete lblStatus;
   lblStatus = new CELabel(skin->lblStatus.transparent, mnuStatus, this);
   if (skin->lblStatus.pixmap != NULL || skin->lblStatus.transparent)
     lblStatus->setStyle(style);
@@ -2687,7 +2687,6 @@ void CMainWindow::autoAway()
     if (status == ICQ_STATUS_ONLINE)
     {
       if (autoAwayMess) {
-       cerr << "Setting auto away message." << endl;
        SARList &sar = gSARManager.Fetch(SAR_AWAY);
        ICQUser *u = gUserManager.FetchOwner(LOCK_W);
        u->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());

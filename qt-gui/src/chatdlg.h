@@ -1,7 +1,6 @@
 #ifndef CHATDLG_H
 #define CHATDLG_H
 
-#include <list.h>
 #include <qmultilineedit.h>
 
 #include <qmainwindow.h>
@@ -9,7 +8,8 @@
 #include <kmainwindow.h>
 #endif
 
-#include <deque.h>
+#include <list>
+#include <deque>
 
 #include "mledit.h"
 
@@ -64,7 +64,7 @@ signals:
 
 
 class ChatDlg;
-typedef list<ChatDlg *> ChatDlgList;
+typedef std::list<ChatDlg *> ChatDlgList;
 
 enum ChatMode { CHAT_PANE, CHAT_IRC };
 
