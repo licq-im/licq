@@ -1,7 +1,7 @@
 #ifndef OPTIONSDLG_H
 #define OPTIONSDLG_H
 
-#include <qtabdialog.h>
+#include <qdialog.h>
 
 #include "ewidgets.h"
 
@@ -16,8 +16,9 @@ class QSpinBox;
 class QGroupBox;
 class QFont;
 class QRadioButton;
+class QTabWidget;
 
-class OptionsDlg : public QTabDialog
+class OptionsDlg : public QDialog
 {
    Q_OBJECT
 friend class CMainWindow;
@@ -31,6 +32,8 @@ public:
 
 protected:
    QWidget *tab[6];
+   QTabWidget* tabw;
+   QPushButton *btnOk, *btnApply, *btnCancel;
    CMainWindow *mainwin;
 
    // network tab
@@ -105,12 +108,12 @@ protected slots:
   void ApplyOptions();
   void slot_selectfont();
   void slot_selecteditfont();
-  void slot_whatsthis();
   void slot_SARmsg_act(int);
   void slot_SARgroup_act(int);
   void slot_SARsave_act();
   void slot_socks();
   void slot_useDockToggled(bool);
+  void slot_ok();
 };
 
 

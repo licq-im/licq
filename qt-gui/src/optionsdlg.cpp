@@ -31,6 +31,8 @@
 #include <qbuttongroup.h>
 #include <qgroupbox.h>
 #include <qwhatsthis.h>
+#include <qtabwidget.h>
+#include <qtoolbutton.h>
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kfontdialog.h>
@@ -54,18 +56,43 @@
 
 
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
-  : QTabDialog(parent, "OptionsDialog", false, WStyle_ContextHelp | WDestructiveClose)
+  : QDialog(parent, "OptionsDialog", false, WStyle_ContextHelp | WDestructiveClose)
 {
   setCaption(tr("Licq Options"));
 
   mainwin = _mainwin;
-  setOkButton(tr("&OK"));
-  setApplyButton(tr("&Apply"));
-  setCancelButton(tr("&Cancel"));
-  setHelpButton(tr("&Help"));
-  connect (this, SIGNAL(applyButtonPressed()), this, SLOT(ApplyOptions()));
-  connect (this, SIGNAL(cancelButtonPressed()), this, SLOT(close()));
-  connect(this, SIGNAL(helpButtonPressed()), this, SLOT(slot_whatsthis()));
+
+  QBoxLayout* top_lay = new QVBoxLayout(this, 4);
+
+  tabw = new QTabWidget(this);
+  top_lay->addWidget(tabw);
+
+  QBoxLayout* lay = new QHBoxLayout(top_lay);
+  int bw = 0;
+
+  btnOk = new QPushButton(tr("&OK"), this);
+  connect (btnOk, SIGNAL(clicked()), this, SLOT(slot_ok()));
+  bw = QMAX(bw, btnOk->sizeHint().width());
+
+  btnApply = new QPushButton(tr("&Apply"), this);
+  connect(btnApply, SIGNAL(clicked()), this, SLOT(ApplyOptions()));
+  bw = QMAX(bw, btnApply->sizeHint().width());
+
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
+  bw = QMAX(bw, btnCancel->sizeHint().width());
+
+  lay->addSpacing(15);
+  lay->addWidget(QWhatsThis::whatsThisButton(this));
+  lay->addStretch(2);
+  btnOk->setFixedWidth(bw);
+  lay->addWidget(btnOk);
+  lay->addSpacing(6);
+  btnApply->setFixedWidth(bw);
+  lay->addWidget(btnApply);
+  lay->addSpacing(15);
+  btnCancel->setFixedWidth(bw);
+  lay->addWidget(btnCancel);
 
   tab[0] = new_appearance_options();
   tab[1] = new_column_options();
@@ -74,15 +101,15 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
   tab[4] = new_status_options();
   tab[5] = new_misc_options();
 
-  addTab(tab[0], tr("General"));
-  addTab(tab[1], tr("Contact List"));
-  addTab(tab[2], tr("OnEvent"));
-  addTab(tab[3], tr("Network"));
-  addTab(tab[4], tr("Status"));
-  addTab(tab[5], tr("Miscellaneous"));
+  tabw->addTab(tab[0], tr("General"));
+  tabw->addTab(tab[1], tr("Contact List"));
+  tabw->addTab(tab[2], tr("OnEvent"));
+  tabw->addTab(tab[3], tr("Network"));
+  tabw->addTab(tab[4], tr("Status"));
+  tabw->addTab(tab[5], tr("Miscellaneous"));
 
   SetupOptions();
-  showPage(tab[settab]);
+  tabw->showPage(tab[settab]);
   show();
 }
 
@@ -102,12 +129,6 @@ void OptionsDlg::reject()
   QDialog::reject();
   QTimer::singleShot(0, this, SLOT(close()));
 }
-
-void OptionsDlg::slot_whatsthis()
-{
-  QWhatsThis::enterWhatsThisMode();
-}
-
 
 void OptionsDlg::colEnable(bool isOn)
 {
@@ -304,6 +325,15 @@ void OptionsDlg::SetupOptions()
    chkOEDND->setChecked(o->AcceptInDND());
    gUserManager.DropOwner();
    chkAlwaysOnlineNotify->setChecked(mainwin->licqDaemon->AlwaysOnlineNotify());
+}
+
+
+void OptionsDlg::slot_ok()
+{
+  ApplyOptions();
+  gMainWindow->saveOptions();
+
+  accept();
 }
 
 
@@ -660,20 +690,8 @@ QWidget* OptionsDlg::new_sounds_options()
                                   "It will be passed the relevant parameters from "
                                   "below.  Parameters can contain the following "
                                   "expressions which will be replaced with the relevant "
-                                  "information:\n"
-                                  "%a - user alias\n"
-                                  "%i - user ip\n"
-                                  "%p - user port\n"
-                                  "%e - email\n"
-                                  "%n - full name\n"
-                                  "%f - first name\n"
-                                  "%l - last name\n"
-                                  "%u - uin\n"
-                                  "%w - webpage\n"
-                                  "%h - phone number\n"
-                                  "%s - full status\n"
-                                  "%S - abbrieviated status\n"
-                                  "%o - last seen online"));
+                                   "information:\n") + gMainWindow->usprintfHelp);
+
   edtSndPlayer = new QLineEdit(hor);
 
   QGroupBox *boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
@@ -953,8 +971,8 @@ QWidget* OptionsDlg::new_column_options()
   QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
   lblColFormat = new QLabel (tr("Format"), grp);
   QWhatsThis::add(lblColFormat, tr("The format string used to define what will "
-                                   "appear in each column, see OnEvent Command for "
-                                   "more information about valid % values"));
+                                   "appear in each column.\n"
+                                   "The following parameters can be used:\n") + gMainWindow->usprintfHelp);
   lblColWidth = new QLabel (tr("Width"), grp);
   QWhatsThis::add(lblColWidth, tr("The width of the column"));
   lblColAlign = new QLabel(tr("Alignment"), grp);
