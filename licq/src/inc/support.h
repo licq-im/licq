@@ -40,16 +40,6 @@ int inet_aton(const char *cp, struct in_addr *addr);
 #ifndef HAVE_STRERROR
 char *strerror(int errnum);
 #endif
-/*
-#ifndef HAVE_GETHOSTBYNAME_R
-int gethostbyname_r (const char *name,
-                     struct hostent *result_buf,
-                     char *__buf,
-                     size_t buflen,
-                     struct hostent **result,
-                     int *h_errnop);
-#endif
-*/
 
 int gethostbyname_r_portable(const char *, struct hostent *);
 
