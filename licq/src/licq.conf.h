@@ -21,6 +21,7 @@ Rejects = log.rejects
 Translation = none
 UrlViewer = viewurl-netscape.sh
 Terminal = xterm -T Licq -e 
+IgnoreTypes = 0
 
 [onevent]
 Enable = 1
