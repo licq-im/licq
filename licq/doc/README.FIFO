@@ -46,6 +46,10 @@ FIFO COMMANDS
 	redirect <file>
 		Redirects the stdout and stderr for licq to the given file
 
+	debuglvl <level>
+		Set what information is logged.
+		See <level> in licq -h.
+
 	adduser <buddy>
 		Add a user to your contact list. note that buddy must be an uin
 
@@ -53,13 +57,13 @@ FIFO COMMANDS
 		Updates a buddy's user information
 
 	exit
-		 causes the licq session to shutdown.
+		Causes the licq session to shutdown.
 
-	ui_event [<buddy>]
-		Shows the oldest pending event
+	ui_viewevent [<buddy>]
+		Shows the oldest pending event.
 
 	ui_message <buddy>
-		Open the plug-in message composer to <buddy>
+		Open the plugin's message composer to <buddy>.
 
 	help <command>
 		print commands help information.
@@ -73,7 +77,7 @@ EXAMPLES
 	# send a message to 1234567
 	$ echo 'message 1234567 "you are a lucky man"' > $LICQ_FIFO
 	# send an URL to message to Bob
-	$ echo 'url http://www.licq.org "do you use it?" '
+	$ echo 'url Bob http://www.licq.org "do you use it?" '
 	# close licq
 	$ echo 'exit' > $LICQ_FIFO
 	

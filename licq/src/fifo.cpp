@@ -85,8 +85,8 @@ static const char* const HELP_USERINFO =
 static const char* const HELP_EXIT =
 	"\texit\n"
 	"\t\t causes the licq session to shutdown.\n";
-static const char* const HELP_UIEVENT = 
-	"\tui_event [<buddy>]\n"
+static const char* const HELP_UIVIEWEVENT = 
+	"\tui_viewevent [<buddy>]\n"
 	"\t\tShows the oldest pending event\n";
 static const char* const HELP_UIMESSAGE =
 	"\tui_message <buddy>\n"
@@ -459,7 +459,7 @@ static struct command_t fifocmd_table[]=
 	{"adduser",	fifo_adduser,	HELP_ADDUSER,	0},
 	{"userinfo",	fifo_userinfo,	HELP_USERINFO,	0},
 	{"exit",	fifo_exit,	HELP_EXIT,	0},
-	{"ui_viewevent",fifo_ui_viewevent, HELP_UIEVENT,0},
+	{"ui_viewevent",fifo_ui_viewevent, HELP_UIVIEWEVENT,0},
 	{"ui_message",	fifo_ui_message,HELP_UIMESSAGE,	0},
 	{"help",	fifo_help,	HELP_HELP,	1},
 	{NULL,	NULL,	NULL,	0	}
