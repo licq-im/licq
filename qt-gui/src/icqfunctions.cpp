@@ -819,8 +819,6 @@ void ICQFunctions::callFcn()
         ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
         u->setSendServer(chkSendServer->isChecked());
         gUserManager.DropUser(u);
-        //sprintf(m_sProgressMsg, tr("Sending msg %s..."), (chkSendServer->isChecked() ? tr("server") : tr("direct")));
-        //icqEvent = server->icqSendMessage(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = tr("Sending msg ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
@@ -831,15 +829,10 @@ void ICQFunctions::callFcn()
      else if (rdbAway->isChecked()) // check away message
      {
         m_sProgressMsg = tr("Fetching...");
-        ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-        u->setShowAwayMsg(true);
-        gUserManager.DropUser(u);
         icqEvent = server->icqFetchAutoResponse(m_nUin, uin);
      }
      else if (rdbUrl->isChecked()) // send URL
      {
-        //sprintf(m_sProgressMsg, tr("Sending URL %s..."), (chkSendServer->isChecked() ? tr("server") : tr("direct")));
-        //icqEvent = server->icqSendUrl(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = tr("Sending URL ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
@@ -849,8 +842,6 @@ void ICQFunctions::callFcn()
      }
      else if (rdbChat->isChecked())   // send chat request
      {
-        //sprintf(m_sProgressMsg, tr("Sending chat request %s..."), (chkSendServer->isChecked() ? tr("server") : tr("direct")));
-        //icqEvent = server->icqChatRequest(m_nUin, mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = tr("Sending chat request ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
@@ -860,8 +851,6 @@ void ICQFunctions::callFcn()
      }
      else if (rdbFile->isChecked())   // send file transfer
      {
-        //sprintf(m_sProgressMsg, tr("Sending file transfer %s..."), (chkSendServer->isChecked() ? tr("server") : tr("direct")));
-        //icqEvent = server->icqFileTransfer(m_nUin, edtItem->text(), mleSend->text(), (chkSendServer->isChecked() ? false : true), chkUrgent->isChecked() ? true : false, uin);
         m_sProgressMsg = tr("Sending file transfer ");
         m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
         m_sProgressMsg += "...";
@@ -1022,9 +1011,13 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       else
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        if (u->isAway() && u->ShowAwayMsg())
-          (void) new ShowAwayMsgDlg(m_nUin);
-        gUserManager.DropUser(u);
+        if (u->isAway() && u->ShowAwayMsg()) {
+          gUserManager.DropUser(u);
+          (void) new ShowAwayMsgDlg(server, sigman, m_nUin);
+        }
+        else
+          gUserManager.DropUser(u);
+        
         mleSend->clear();
       }
 

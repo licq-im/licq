@@ -1,11 +1,8 @@
 #ifndef GUIDEFINES_H
 #define GUIDEFINES_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 const unsigned short MNUxITEM_AUTHxUSER            = 5;
+const unsigned short MNUxITEM_CHECKxRESPONSE       = 6;
 const unsigned short MNUxITEM_VIEWxHISTORY         = 10;
 const unsigned short MNUxITEM_ONLINExNOTIFY        = 12;
 const unsigned short MNUxITEM_INVISIBLExLIST       = 13;

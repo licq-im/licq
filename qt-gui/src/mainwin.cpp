@@ -43,6 +43,7 @@
 #include "outputwin.h"
 #include "ewidgets.h"
 #include "sigman.h"
+#include "showawaymsgdlg.h"
 #include "optionsdlg.h"
 #include "skin.h"
 #ifdef USE_DOCK
@@ -1023,48 +1024,66 @@ void CMainWindow::callMsgFunction()
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  int fcn = mnuUser->indexOf(index);
-
-  if (fcn == MNUxITEM_AUTHxUSER)
+  if(!userView->SelectedItemUin())
+    return;
+  
+  switch(mnuUser->indexOf(index)) {
+  case MNUxITEM_AUTHxUSER:
+    licqDaemon->icqAuthorize(userView->SelectedItemUin());
+    break;
+    
+  case MNUxITEM_CHECKxRESPONSE:
   {
-    if (userView->SelectedItemUin() != 0)
-      licqDaemon->icqAuthorize(userView->SelectedItemUin());
+    ShowAwayMsgDlg* dummy = new ShowAwayMsgDlg(licqDaemon, licqSigMan, userView->SelectedItemUin());
+    break;
   }
-  else if (fcn <= MNUxITEM_VIEWxHISTORY)
-    callFunction(fcn, true);
-  else if (fcn == MNUxITEM_ONLINExNOTIFY)
+  case MNUxITEM_ONLINExNOTIFY:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (u == NULL) return;
+    if (!u) break;
     u->SetOnlineNotify(!u->OnlineNotify());
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
+    break;
   }
-  else if (fcn == MNUxITEM_INVISIBLExLIST)
+  case MNUxITEM_INVISIBLExLIST:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (u == NULL) return;
+    if (!u) break;
     u->SetInvisibleList(!u->InvisibleList());
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
     licqDaemon->icqSendInvisibleList(true);
+    
+    break;
   }
-  else if (fcn == MNUxITEM_VISIBLExLIST)
+  case MNUxITEM_VISIBLExLIST:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (u == NULL) return;
+    if (!u)
+      break;
     u->SetVisibleList(!u->VisibleList());
     gUserManager.DropUser(u);
-    if (m_bFontStyles) updateUserWin();
+    if (m_bFontStyles)
+      updateUserWin();
     licqDaemon->icqSendVisibleList(true);
+
+    break;
   }
-  else if (fcn == MNUxITEM_IGNORExLIST)
+  case MNUxITEM_IGNORExLIST:
   {
     ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (u == NULL) return;
+    if (!u)
+      break;
     u->SetIgnoreList(!u->IgnoreList());
     gUserManager.DropUser(u);
     updateUserWin();
+
+    break;
+  }
+  default:  
+    if (mnuUser->indexOf(index) <= MNUxITEM_VIEWxHISTORY)
+      callFunction(mnuUser->indexOf(index), true);
   }
 }
 

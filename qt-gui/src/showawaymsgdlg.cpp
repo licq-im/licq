@@ -1,17 +1,43 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+*/
 
+// written by Graham Roff <graham@licq.org>
+// enhanced by Dirk A. Mueller <dmuell@gmx.net>
+// -----------------------------------------------------------------------------
+
+#include <qcheckbox.h>
 #include <qlayout.h>
+#include <qpushbutton.h>
 
-#include <stdio.h>
+#include "icqd.h"
+#include "mledit.h"
 #include "showawaymsgdlg.h"
+#include "sigman.h"
 #include "user.h"
 
-ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent, const char *name)
+
+// -----------------------------------------------------------------------------
+
+ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, unsigned long _nUin, QWidget *parent, const char *name)
   : QDialog(parent, name)
 {
   m_nUin= _nUin;
+  sigman = _sigman;
+  server = _server;
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
   mleAwayMsg = new MLEditWrap(true, this);
@@ -37,7 +63,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent, const char 
   char szStatus[32];
   u->getStatusStr(szStatus);
   setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
-  mleAwayMsg->setText(u->AutoResponse());
+  mleAwayMsg->setEnabled(false);
 
   gUserManager.DropUser(u);
 
@@ -46,8 +72,26 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent, const char 
   connect(btnOk, SIGNAL(clicked()), SLOT(accept()));
   lay->addWidget(btnOk);
 
+  connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+  
+  u = gUserManager.FetchUser(m_nUin, LOCK_W);
+  u->setShowAwayMsg(true);
+  gUserManager.DropUser(u);
+  icqEvent = server->icqFetchAutoResponse(m_nUin);
+  
   show();
 }
+
+
+// -----------------------------------------------------------------------------
+
+ShowAwayMsgDlg::~ShowAwayMsgDlg()
+{
+    // nothing to do yet
+}
+
+
+// -----------------------------------------------------------------------------
 
 void ShowAwayMsgDlg::accept()
 {
@@ -57,5 +101,46 @@ void ShowAwayMsgDlg::accept()
 
   QDialog::accept();
 }
+
+
+// -----------------------------------------------------------------------------
+
+void ShowAwayMsgDlg::doneEvent(ICQEvent *e) 
+{
+  if (e != icqEvent) return;
+  
+  bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
+
+  QString title, result;
+  switch (e->m_eResult)
+  {
+  case EVENT_FAILED:
+    result = tr("failed");
+    break;
+  case EVENT_TIMEDOUT:
+    result = tr("timed out");
+    break;
+  case EVENT_ERROR:
+    result = tr("error");
+    break;
+  default:
+    break;
+  }
+  
+  if(!result.isEmpty()) {
+    title = " [" + result + "]";
+    setCaption(caption() + title);
+  }
+  
+  icqEvent = 0;
+
+  if (isOk && e->m_nCommand == ICQ_CMDxTCP_START) {
+    ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    mleAwayMsg->setText(u->AutoResponse());
+    gUserManager.DropUser(u);
+    mleAwayMsg->setEnabled(true);
+  }
+}
+
 
 #include "moc/moc_showawaymsgdlg.h"
