@@ -100,6 +100,26 @@ msgid "AwayMsgDlg::"
 "text can be mixed line by line.</li>"
 "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr ""
+"<h2>Подсказка по настройке<br>Сообщения автоответа</h2><br><br><br>"
+"<ul>"
+"<li>Вы можете использовать любую из %-переменных (описание на странице \"Советы\").</li>"
+"<li>Любая строка начинающаяся с символа \"|\" обрабатывается как команда "
+"и заменяется на текст полученный с ее стандартного потока вывода (stdout). "
+"В качестве интерпретатора команд используется <b>/bin/sh</b>, допускается использование "
+"любых команд и метасимволов. Из соображений безопасности %-переменные автоматически "
+"обрабатываются и заключаются в одинарные кавычки при передаче интерпретатору команд "
+"во избежание обработки им метасимволов.<br>"
+"Примеры:"
+"<ul>"
+"<li><tt>|date</tt>: Заменяется на текущую дату;</li>"
+"<li><tt>|fortune</tt>: Отображает цитату использую программу fortune;</li>"
+"<li><tt>|myscript.sh %u %a</tt>: Запускает скрипт, и передает ему в качестве аргументов ICQ# и ник;</li>"
+"<li><tt>|myscript.sh %u %a > /dev/null</tt>: Запускает скрипт без вывода чего-либо (для каких-нибудь своих целей);</li>"
+"<li><tt>|if [ %u -lt 100000 ]; then echo \"You are special\"; fi</tt>: Простой пример использования данной возможности.</li>"
+"</ul>"
+"Допускается так же и многократное использование префиксированных \"|\" команд, "
+"при этом они будут обрабатываться \"строчка за строчкой\".</li>"
+"<hr><p> Более полную информацию можно найти на сайте Licq (<tt>http://www.licq.org</tt>).</p>"
 
 #: awaymsgdlg.cpp:134
 msgid "AwayMsgDlg::"
@@ -1857,7 +1877,7 @@ msgstr ""
 
 #: optionsdlg.cpp:581
 msgid "OptionsDlg::Allow dragging main window"
-msgstr "Рарешить DND для основного окна"
+msgstr "Разрешить DND для основного окна"
 
 #: optionsdlg.cpp:1046
 msgid "OptionsDlg::Allow scroll bar"
@@ -1898,7 +1918,7 @@ msgstr "Авто-выход из сети:"
 
 #: optionsdlg.cpp:575
 msgid "OptionsDlg::Auto Position the Reply Window"
-msgstr "Автоматический выбор места для ока ответа"
+msgstr "Автоматический выбор места для окна ответа"
 
 #: optionsdlg.cpp:578
 msgid "OptionsDlg::Auto send through server"
@@ -1925,7 +1945,7 @@ msgid "OptionsDlg::"
 "Automatically send messages through server "
 "if direct connection fails"
 msgstr "Сообщение автоматически будет отправлено "
-"через сервер, если не удастся утсановить прямое соединеие"
+"через сервер, если не удастся установить прямое соединение"
 
 #: optionsdlg.cpp:932
 msgid "OptionsDlg::Away"

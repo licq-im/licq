@@ -1,0 +1,4685 @@
+# This is a Qt message file in .po format.  Each msgid starts with
+# a scope.  This scope should *NOT* be translated - eg. "Foo::Bar"
+# would be translated to "Pub", not "Foo::Pub".
+msgid ""
+msgstr ""
+"Project-Id-Version: licq-qt-pulugin\n"
+"PO-Revision-Date: 2002-01-08 14:07 EEST\n"
+"Last-Translator: Eugene Onischenko <oneugene@alphadiz.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Ukrainian <linux@linux.org.ua>\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#: adduserdlg.cpp:28
+msgid "AddUserDlg::&Alert User"
+msgstr "&Попередити користувача"
+
+#: adduserdlg.cpp:32
+msgid "AddUserDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: adduserdlg.cpp:20
+msgid "AddUserDlg::Licq - Add User"
+msgstr "Licq - Додання користувача"
+
+#: adduserdlg.cpp:23
+msgid "AddUserDlg::New User UIN:"
+msgstr "Ід. номер нового користувача"
+
+#: authuserdlg.cpp:76
+msgid "AuthUserDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: authuserdlg.cpp:73
+msgid "AuthUserDlg::&Ok"
+msgstr "&Гаразд"
+
+#: authuserdlg.cpp:40
+msgid "AuthUserDlg::Authorize which user (UIN):"
+msgstr "Авторизувати користувача з номером:"
+
+#: authuserdlg.cpp:58
+msgid "AuthUserDlg::Grant authorization to %1"
+msgstr "Авторизувати %1"
+
+#: authuserdlg.cpp:30
+msgid "AuthUserDlg::Licq - Grant Authorisation"
+msgstr "Licq - Авторизація"
+
+#: authuserdlg.cpp:32
+msgid "AuthUserDlg::Licq - Refuse Authorisation"
+msgstr "Licq - Відмова в авторизації"
+
+#: authuserdlg.cpp:60
+msgid "AuthUserDlg::Refuse authorization to %1"
+msgstr "Відмовити в авторизації %1"
+
+#: authuserdlg.cpp:65
+msgid "AuthUserDlg::Response"
+msgstr "Відповідь"
+
+#: awaymsgdlg.cpp:75
+msgid "AwayMsgDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: awaymsgdlg.cpp:126
+msgid "AwayMsgDlg::&Edit Items"
+msgstr "&Редагування"
+
+#: awaymsgdlg.cpp:70
+msgid "AwayMsgDlg::&Hints"
+msgstr "&Поради"
+
+#: awaymsgdlg.cpp:72
+msgid "AwayMsgDlg::&Ok"
+msgstr "&Гаразд"
+
+#: awaymsgdlg.cpp:68
+msgid "AwayMsgDlg::&Select"
+msgstr "&Вибрати"
+
+#: awaymsgdlg.cpp:23
+msgid ""
+"AwayMsgDlg::"
+"<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
+"<ul>"
+"<li>You can include any of the % expansions (described in the main hints page).</li>"
+"<li>Any line beginning with a pipe (|) will be treated as a command "
+"to be run.  The line will be replaced by the output of the command. "
+"The command is parsed by /bin/sh so any shell commands or meta-characters "
+"are allowed.  For security reasons, any % expansions are automatically "
+"passed to the command surrounded by single quotes to prevent shell parsing "
+"of any meta-characters included in an alias.<br>"
+"Examples of popular uses include:"
+"<ul>"
+"<li><tt>|date</tt>: Will replace that line by the current date</li>"
+"<li><tt>|fortune</tt>: Show a fortune, as a tagline for example</li>"
+"<li><tt>|myscript.sh %u %a</tt>: Run a script, passing the uin and alias</li>"
+"<li><tt>|myscript.sh %u %a > /dev/null</tt>: Run the same script but ignore the output (for tracking auto response checks or something)</li>"
+"<li><tt>|if [ %u -lt 100000 ]; then echo \"You are special\"; fi</tt>: Useless, but shows how you can use shell script.</li>"
+"</ul>"
+"Of course, multiple \"|\" can appear in the auto response, and commands and regular "
+"text can be mixed line by line.</li>"
+"<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+msgstr ""
+"<h2>Поради, що до встановлення<br> автовідповідей</h2><br><hr><br>"
+"<ul><li>Ви можете користуватись %-комбінаціями в автовідповіді "
+"(ці комбінації описані на головній сторінці порад).</li><li>"
+"Будь який рядок, що починається з (|), буде оброблений як команда. "
+"Замість рядка буде вставлено вивід команди. Команда викокується за "
+"допомогою /bin/sh, тому можна використовувати будь-які команди "
+"або зарезервовані символи оболонки. З причин безпеки, "
+"будь-які вирази, що буди отримані за допомогою %-комбінацій, "
+"автоматично обгортаються одинарними лапками, щоб уникнути "
+"аналіз будь-яких спеціальних символів оболонкою, які можуть "
+"бути присутні у іменах.<br>Серед найбільш часто використовуються "
+"наступні команди:<ul><li><tt>|date</tt>: "
+"рядок буде замінено поточною датою</li><li><tt>|fortune</tt>: "
+"буде відображено пораду від fortune, як примір власної команди</li> "
+"<li><tt>|myscript.sh %u %a</tt>: виконає myscript.sh, "
+"передав ідентифікаційний номер та прізвисько у параметрах</li> "
+"<li><tt>|myscript.sh %u %a > /dev/null</tt>: виконає ту "
+"саму програму, але її вивід буде проігнорований "
+"(це може використовуватись для стеження за автовідповідями "
+"або чогось іншого)</li><li><tt>|if [ %u -lt 100000 ]; then echo "
+"\"Да ти особливий\"; fi</tt>: Малокорисний приклад, але "
+"він показує, як Ви можете користуватись командами оболонки.</li> "
+"</ul>В автовідповіді може бути декілька \"|\", "
+"також команди та звичайний текст можна змішувати по рядкам.</li><hr><p> "
+"Додаткову інформацію Ви можете отримати на домашній сторінці Licq "
+"(<tt>http://www.licq.org</tt>).</p>"
+
+#: awaymsgdlg.cpp:134
+msgid ""
+"AwayMsgDlg::"
+"I'm currently %1, %a.\n"
+"You can leave me a message.\n"
+"(%m messages pending from you)."
+msgstr ""
+"Я зараз \"%1\", %a.\n"
+"Ви можете залиши мені повідомлення.\n"
+"(%m не прочитаних повідомлень від Вас)."
+
+#: awaymsgdlg.cpp:129
+msgid "AwayMsgDlg::Set %1 Response for %2"
+msgstr "Встановити відповідь %1 для %2"
+
+#: filedlg.cpp:170
+msgid "CFileDlg::%1/%2"
+msgstr "%1/%2"
+
+#: filedlg.cpp:98
+msgid "CFileDlg::&Cancel Transfer"
+msgstr "&Скасувати передачу"
+
+#: filedlg.cpp:71
+msgid "CFileDlg::Batch:"
+msgstr "Всього:"
+
+#: filedlg.cpp:329
+msgid "CFileDlg::Byte"
+msgstr "Байт"
+
+#: filedlg.cpp:325
+msgid "CFileDlg::Bytes"
+msgstr "Байт"
+
+#: filedlg.cpp:391
+msgid "CFileDlg::Cancel"
+msgstr "Скасувати"
+
+#: filedlg.cpp:283
+msgid "CFileDlg::Close"
+msgstr "Закрити"
+
+#: filedlg.cpp:304
+msgid "CFileDlg::Connecting to remote...\n"
+msgstr "Встановлення з'єднання...\n"
+
+#: filedlg.cpp:46
+msgid "CFileDlg::Current:"
+msgstr "Поточний:"
+
+#: filedlg.cpp:245
+msgid "CFileDlg::Done %1\n"
+msgstr "Завершено (%1)\n"
+
+#: filedlg.cpp:86
+msgid "CFileDlg::ETA:"
+msgstr "ОВЗ:"
+
+#: filedlg.cpp:276
+msgid "CFileDlg::File I/O Error:\n%1\nSee Network Window for Details"
+msgstr ""
+"Помилка в/в:\n"
+"%1\n"
+"Подробиці у Вікні мережі"
+
+#: filedlg.cpp:274
+msgid "CFileDlg::File I/O error: %1\n"
+msgstr "Помилка в/в файлу: %1\n"
+
+#: filedlg.cpp:374
+msgid "CFileDlg::File already exists and appears incomplete."
+msgstr "Файл вже існує і схоже він неповний."
+
+#: filedlg.cpp:367
+msgid "CFileDlg::File already exists and is at least as big as the incoming file."
+msgstr ""
+"Файл вже існує і, він не менше файлу, що "
+"отримується."
+
+#: filedlg.cpp:55
+msgid "CFileDlg::File name:"
+msgstr "Ім'я файлу:"
+
+#: filedlg.cpp:129
+msgid "CFileDlg::File transfer cancelled\n"
+msgstr "Передача файлу(ів) скасована\n"
+
+#: filedlg.cpp:256
+msgid "CFileDlg::File transfer complete\n"
+msgstr "Передача файлу(ів) завершена\n"
+
+#: filedlg.cpp:63
+msgid "CFileDlg::File:"
+msgstr "Файл:"
+
+#: filedlg.cpp:286
+msgid "CFileDlg::Handshake Error\nSee Network Window for Details"
+msgstr ""
+"Помилка протоколу\n"
+"Подробиці в Вікні мережі"
+
+#: filedlg.cpp:284
+msgid "CFileDlg::Handshaking error\n"
+msgstr "Помилка протоколу\n"
+
+#: filedlg.cpp:321
+msgid "CFileDlg::KB"
+msgstr "Кб"
+
+#: filedlg.cpp:215
+msgid "CFileDlg::Licq - File Transfer (%1)"
+msgstr "Licq - Передача файлу(ів) (%1)"
+
+#: filedlg.cpp:317
+msgid "CFileDlg::MB"
+msgstr "Мб"
+
+#: filedlg.cpp:257
+msgid "CFileDlg::Ok"
+msgstr "Гаразд"
+
+#: filedlg.cpp:391
+msgid "CFileDlg::Open error - unable to open file for writing."
+msgstr "Помилка відкриття файлу для запису."
+
+#: filedlg.cpp:374
+msgid "CFileDlg::Overwrite"
+msgstr "Перезаписати"
+
+#: filedlg.cpp:248
+msgid "CFileDlg::Received\n%1\nfrom %2 successfully\n"
+msgstr ""
+"%1\n"
+"прийнято від %2 успішно\n"
+
+#: filedlg.cpp:231
+msgid "CFileDlg::Receiving file...\n"
+msgstr "Отримую файл...\n"
+
+#: filedlg.cpp:267
+msgid "CFileDlg::Remote side disconnected"
+msgstr "Віддалена сторона від'єдналася"
+
+#: filedlg.cpp:265
+msgid "CFileDlg::Remote side disconnected\n"
+msgstr "Віддалена сторона від'єдналася\n"
+
+#: filedlg.cpp:374
+msgid "CFileDlg::Resume"
+msgstr "Повернути"
+
+#: filedlg.cpp:391
+msgid "CFileDlg::Retry"
+msgstr "Повторити"
+
+#: filedlg.cpp:233
+msgid "CFileDlg::Sending file...\n"
+msgstr "Відсилаю файл...\n"
+
+#: filedlg.cpp:250
+msgid "CFileDlg::Sent\n%1\nto %2 successfully\n"
+msgstr ""
+"%1\n"
+"відіслано к %2 успішно\n"
+
+#: filedlg.cpp:78
+msgid "CFileDlg::Time:"
+msgstr "Час:"
+
+#: filedlg.cpp:195
+msgid "CFileDlg::Waiting for connection...\n"
+msgstr "Чекаю з'єднання...\n"
+
+# #: ewidgets.cpp:463
+# msgid "CFontDialog::Select Font"
+# msgstr "Виберіть шрифт"
+#: forwarddlg.cpp:65
+msgid "CForwardDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: forwarddlg.cpp:61
+msgid "CForwardDlg::&Forward"
+msgstr "&Переслати"
+
+#: forwarddlg.cpp:54
+msgid "CForwardDlg::Drag the user to forward to here:"
+msgstr ""
+"Пересуньте користувача, якому\n"
+"бажаєте переслати повідомлення сюди:"
+
+#: forwarddlg.cpp:50
+msgid "CForwardDlg::Forward %1 To User"
+msgstr "Переслати %1 користувачу"
+
+#: forwarddlg.cpp:101
+msgid "CForwardDlg::Forwarded URL:\n"
+msgstr "Адреса, що пересилаєте:\n"
+
+#: forwarddlg.cpp:93
+msgid "CForwardDlg::Forwarded message:\n"
+msgstr "Перенаправлене повідомлення:\n"
+
+#: forwarddlg.cpp:37
+msgid "CForwardDlg::Message"
+msgstr "Повідомлення"
+
+#: forwarddlg.cpp:41
+msgid "CForwardDlg::URL"
+msgstr "URL"
+
+#: forwarddlg.cpp:46
+msgid "CForwardDlg::Unable to forward this message type (%d)."
+msgstr ""
+"Неможливо переслати повідомлення цього "
+"типу (%d)."
+
+#: chatjoin.cpp:46
+msgid "CJoinChatDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: chatjoin.cpp:37
+msgid "CJoinChatDlg::Invite to Join Chat"
+msgstr "Запросити до розмови"
+
+#: chatjoin.cpp:44
+msgid "CJoinChatDlg::Join Multiparty Chat"
+msgstr "Приєднатися до багатосторонньої розмови"
+
+#: chatjoin.cpp:36
+msgid "CJoinChatDlg::Select chat to invite:"
+msgstr "Виберіть розмову:"
+
+#: chatjoin.cpp:43
+msgid "CJoinChatDlg::Select chat to join:"
+msgstr "Виберіть розмову:"
+
+#: mmsenddlg.cpp:37
+msgid "CMMSendDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: mmsenddlg.cpp:111
+msgid "CMMSendDlg::&Close"
+msgstr "&Закрити"
+
+#: mmsenddlg.cpp:88
+msgid "CMMSendDlg::Multiple Recipient Contact List"
+msgstr "Список контактів з декількими адресатами"
+
+#: mmsenddlg.cpp:59
+msgid "CMMSendDlg::Multiple Recipient Message"
+msgstr "Повідомлення декільким адресатам"
+
+#: mmsenddlg.cpp:74
+msgid "CMMSendDlg::Multiple Recipient URL"
+msgstr "URL декільким адресатам"
+
+#: mmsenddlg.cpp:151
+msgid "CMMSendDlg::Sending mass URL to %1..."
+msgstr "Відсилаю URL до %1..."
+
+#: mmsenddlg.cpp:161
+msgid "CMMSendDlg::Sending mass list to %1..."
+msgstr "Відсилаю список контактів до %1..."
+
+#: mmsenddlg.cpp:141
+msgid "CMMSendDlg::Sending mass message to %1..."
+msgstr "Відсилання повідомлення для багатьох людей до %1..."
+
+#: mmsenddlg.cpp:110
+msgid "CMMSendDlg::failed"
+msgstr "Помилка"
+
+#: mmlistview.cpp:77
+msgid "CMMUserView::Add All"
+msgstr "Додати всіх"
+
+#: mmlistview.cpp:76
+msgid "CMMUserView::Add Group"
+msgstr "Додати групу"
+
+#: mmlistview.cpp:74
+msgid "CMMUserView::Clear"
+msgstr "Очистити"
+
+#: mmlistview.cpp:73
+msgid "CMMUserView::Crop"
+msgstr "Частина"
+
+#: mmlistview.cpp:72
+msgid "CMMUserView::Remove"
+msgstr "Видалити"
+
+#: mainwin.cpp:1319
+msgid "CMainWindow:: "
+msgstr " "
+
+#: mainwin.cpp:1319
+msgid "CMainWindow::%1 message%2"
+msgstr "%1 повідомлення%2"
+
+#: mainwin.cpp:1318
+msgid "CMainWindow::%1 msg%2"
+msgstr "%1 повідомлення%2"
+
+#: mainwin.cpp:3086
+msgid "CMainWindow::%1: %2 / %3\n"
+msgstr "%1: %2 / %3\n"
+
+#: mainwin.cpp:3100
+msgid "CMainWindow::%1: %2\n"
+msgstr "%1: %2\n"
+
+#: mainwin.cpp:3003
+msgid "CMainWindow::&About"
+msgstr "Пр&о"
+
+#: mainwin.cpp:2908
+msgid "CMainWindow::&Add User"
+msgstr "&Додати користувача"
+
+#: mainwin.cpp:2856
+msgid "CMainWindow::&Away"
+msgstr "&Відійшов"
+
+# #: mainwin.cpp:2799
+# msgid "CMainWindow::&Away Modes"
+# msgstr "&Стан у якому приймати повідомлення"
+# #: mainwin.cpp:2664
+# msgid "CMainWindow::&Away"
+# msgstr "&Відійшов"
+#: mainwin.cpp:2859
+msgid "CMainWindow::&Do Not Disturb"
+msgstr "&Не тривожити (зайнятий)"
+
+#: mainwin.cpp:3000
+msgid "CMainWindow::&General Info"
+msgstr "&Загальна інформація"
+
+#: mainwin.cpp:2933
+msgid "CMainWindow::&Group"
+msgstr "&Група"
+
+#: mainwin.cpp:2947
+msgid "CMainWindow::&Help"
+msgstr "&Довідка"
+
+#: mainwin.cpp:2924
+msgid "CMainWindow::&Hints"
+msgstr "&Поради"
+
+#: mainwin.cpp:2898
+msgid "CMainWindow::&History"
+msgstr "&Історія"
+
+#: mainwin.cpp:3005
+msgid "CMainWindow::&Info"
+msgstr "&Інформація"
+
+#: mainwin.cpp:2863
+msgid "CMainWindow::&Invisible"
+msgstr "&Невидимий"
+
+#: mainwin.cpp:2937
+msgid "CMainWindow::&Mini Mode"
+msgstr "&Міні-режим"
+
+#: mainwin.cpp:3001
+msgid "CMainWindow::&More Info"
+msgstr "&Додаткова інформація"
+
+#: mainwin.cpp:2936
+msgid "CMainWindow::&Network Window"
+msgstr "&Журнал мережі"
+
+#: mainwin.cpp:2197
+msgid "CMainWindow::&No"
+msgstr "&Ні"
+
+#: mainwin.cpp:2857
+msgid "CMainWindow::&Not Available"
+msgstr "Не на&явний"
+
+#: mainwin.cpp:3088
+msgid "CMainWindow::&Ok"
+msgstr "&Гаразд"
+
+#: mainwin.cpp:2855
+msgid "CMainWindow::&Online"
+msgstr "&В мережі"
+
+#: mainwin.cpp:2940
+msgid "CMainWindow::&Options..."
+msgstr "&Параметри..."
+
+#: mainwin.cpp:2942
+msgid "CMainWindow::&Plugin Manager..."
+msgstr "М&енеджер модулів..."
+
+#: mainwin.cpp:2913
+msgid "CMainWindow::&Popup All Messages"
+msgstr "П&оказати всі повідомлення"
+
+#: mainwin.cpp:2902
+msgid "CMainWindow::&Random Chat Group"
+msgstr "В&ипадкова розмова"
+
+#: mainwin.cpp:2918
+msgid "CMainWindow::&Redraw User Window"
+msgstr "&Поновити вікно користувачів"
+
+#: mainwin.cpp:3088
+msgid "CMainWindow::&Reset"
+msgstr "&Скинути"
+
+#: mainwin.cpp:2919
+msgid "CMainWindow::&Save All Users"
+msgstr "&Зберегти всіх користувачів"
+
+#: mainwin.cpp:2900
+msgid "CMainWindow::&Security Options"
+msgstr "&Параметри безпеки"
+
+#: mainwin.cpp:2926
+msgid "CMainWindow::&Statistics"
+msgstr "&Статистика"
+
+#: mainwin.cpp:2932
+msgid "CMainWindow::&Status"
+msgstr "&Стан"
+
+#: mainwin.cpp:650
+msgid "CMainWindow::&System"
+msgstr "&Система"
+
+#: mainwin.cpp:2939
+msgid "CMainWindow::&Thread Group View"
+msgstr "По &групам"
+
+#: mainwin.cpp:2982
+msgid "CMainWindow::&View Event"
+msgstr "&Перегляд подій"
+
+#: mainwin.cpp:2892
+msgid "CMainWindow::&View System Messages"
+msgstr "Пере&гляд системних повідомлень"
+
+#: mainwin.cpp:3002
+msgid "CMainWindow::&Work Info"
+msgstr "&Інформація про роботу"
+
+#: mainwin.cpp:2197
+msgid "CMainWindow::&Yes"
+msgstr "&Так"
+
+#: mainwin.cpp:2417
+msgid "CMainWindow::(with KDE support)\n"
+msgstr "(з підтримкою KDE)\n"
+
+#: mainwin.cpp:3234
+msgid ""
+"CMainWindow::"
+"<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
+"<ul>"
+"<li>Change your status by right clicking on the status label.</li>"
+"<li>Change your auto response by double-clicking on the status label.</li>"
+"<li>View system messages by double clicking on the message label.</li>"
+"<li>Change groups by right clicking on the message label.</li>"
+"<li>Use the following shortcuts from the contact list:<ul>"
+"<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
+"<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
+"<li><tt>Ctrl-X : </tt>Exit</li>"
+"<li><tt>Ctrl-H : </tt>Hide</li>"
+"<li><tt>Ctrl-I : </tt>View the next message</li>"
+"<li><tt>Ctrl-V : </tt>View message</li>"
+"<li><tt>Ctrl-S : </tt>Send message</li>"
+"<li><tt>Ctrl-U : </tt>Send Url</li>"
+"<li><tt>Ctrl-C : </tt>Send chat request</li>"
+"<li><tt>Ctrl-F : </tt>Send File</li>"
+"<li><tt>Ctrl-A : </tt>Check Auto response</li>"
+"<li><tt>Ctrl-P : </tt>Popup all messages</li>"
+"<li><tt>Ctrl-L : </tt>Redraw user window</li>"
+"<li><tt>Delete : </tt>Delete user from current group</li>"
+"<li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul>"
+"<li>Hold control while clicking on close in the function window to remove"
+"   the user from your contact list.</li>"
+"<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
+"   For example in the send tab of the user function window.</li>"
+"<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
+"   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
+msgstr ""
+"<h2>Поради, що до використовування<br> QT-модуля "
+"для Licq</h2><br><hr><br><ul><li>Стан можна змінити "
+"натисканням правої кнопки на полі "
+"стану.</li><li>Автовідповідь можна "
+"змінити подвійним клацанням на полі "
+"стану.</li><li>Для перегляду системних "
+"повідомлень можна використовувати "
+"подвійний клацання на полі "
+"повідомлень.</li><li>Змінити групи можна "
+"натисканням правої кнопки миша на полі "
+"повідомлень.</li><li>Ви можете у списку "
+"контактів використовувати наступні "
+"прив'язки клавіш:<ul><li><tt>Ctrl-M : "
+"</tt>Перемикання міні-режиму</li><li><tt>Ctrl-O : "
+"</tt>Показувати/не показувати користувачів "
+"не в мережі</li><li><tt>Ctrl-X : </tt>Вихід</li><li><tt>Ctrl-H "
+": </tt>Cховати</li><li><tt>Ctrl-I : </tt>Перегляд "
+"наступного повідомлення</li><li><tt>Ctrl-V : "
+"</tt>Перегляд повідомлення</li><li><tt>Ctrl-S : "
+"</tt>Відіслати повідомлення</li><li><tt>Ctrl-U : "
+"</tt>Відіслати URL</li><li><tt>Ctrl-C : </tt>Відіслати "
+"виклик на розмову</li><li><tt>Ctrl-F : </tt>Відіслати "
+"файл(и)</li><li><tt>Ctrl-A : </tt>Перевірити авто "
+"відповідь</li><li><tt>Ctrl-P : </tt>Відкрити всі "
+"повідомлення</li><li><tt>Ctrl-L : </tt>Перерисувати вікно "
+"користувачів</li><li><tt>Delete : </tt>Видалити "
+"користувача з поточної "
+"групи</li><li><tt>Ctrl-Delete : </tt>Видалити "
+"користувача зі списку "
+"контактів</li></ul><li>Якщо натиснути кнопку "
+"\"закрити\" утримуючі клавішу Ctrl натиснутою,  "
+" то можна видалити користувача з списку "
+"контактів.</li><li>Можна використовувати "
+"Ctrl-Enter в багатьох полях вводу щоб вибрати   "
+"\"Гаразд\" або \"Прийняти\". Наприклад у "
+"вікні відсилання повідомлення.</li><li>Тут "
+"повний список всіх %-параметрів, які можна "
+"використовувати    у <b>дії на "
+"повідомлення</b>, <b>автоматичні "
+"відповіді</b>    і <b>утиліти</b>:\n"
+
+#: mainwin.cpp:3263
+msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+msgstr ""
+"<hr><p> Додаткову інформацію можна отримати "
+"на домашній сторінці Licq "
+"(<tt>http://www.licq.org</tt>).</p>"
+
+#: mainwin.cpp:484
+msgid ""
+"CMainWindow::"
+"<ul>"
+"<li><tt>%a - </tt>user alias</li>"
+"<li><tt>%e - </tt>email</li>"
+"<li><tt>%f - </tt>first name</li>"
+"<li><tt>%h - </tt>phone number</li>"
+"<li><tt>%i - </tt>user ip</li>"
+"<li><tt>%l - </tt>last name</li>"
+"<li><tt>%m - </tt># pending messages</li>"
+"<li><tt>%n - </tt>full name</li>"
+"<li><tt>%o - </tt>last seen online</li>"
+"<li><tt>%p - </tt>user port</li>"
+"<li><tt>%s - </tt>full status</li>"
+"<li><tt>%S - </tt>abbreviated status</li>"
+"<li><tt>%u - </tt>uin</li>"
+"<li><tt>%w - </tt>webpage</li></ul>"
+msgstr ""
+"<ul><li><tt>%a - </tt>псевдонім "
+"користувача</li><li><tt>%e - </tt>електронна "
+"пошта</li><li><tt>%f - </tt>ім'я</li><li><tt>%h - "
+"</tt>телефон</li><li><tt>%i - </tt>ip адреса</li><li><tt>%l - "
+"</tt>прізвище</li><li><tt>%m - </tt>кількість "
+"непрочитаних повідомлень</li><li><tt>%n - "
+"</tt>повне ім'я</li><li><tt>%o - </tt>коли останній "
+"раз був у мережі</li><li><tt>%p - </tt>номер "
+"порту</li><li><tt>%s - </tt>full status</li><li><tt>%S - "
+"</tt>скорочений стан</li><li><tt>%u - "
+"</tt>ідентифікаційний номер(uin)</li><li><tt>%w - "
+"</tt>web-сторінка</li></ul>"
+
+#: mainwin.cpp:2910
+msgid "CMainWindow::A&uthorize User"
+msgstr "&Авторизувати користувача"
+
+#: mainwin.cpp:2966
+msgid "CMainWindow::Accept in Away"
+msgstr "Приймати, у стані \"Відійшов\""
+
+#: mainwin.cpp:2969
+msgid "CMainWindow::Accept in Do Not Disturb"
+msgstr "Приймати, у стані \"Не тривожити\""
+
+#: mainwin.cpp:2967
+msgid "CMainWindow::Accept in Not Available"
+msgstr "Приймати, у стані \"Не наявний\""
+
+#: mainwin.cpp:2968
+msgid "CMainWindow::Accept in Occupied"
+msgstr "Приймати, у стані \"Зайнято\""
+
+#: mainwin.cpp:1404
+msgid "CMainWindow::All Users"
+msgstr "Всі користувачі"
+
+#: mainwin.cpp:2224
+msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
+msgstr ""
+"Ви впевнені, що бажаєте видалити\n"
+"%1 (%2)\n"
+"з групи '%3'?"
+
+#: mainwin.cpp:2113
+msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
+msgstr ""
+"Ви впевнені, що бажаєте видалити\n"
+"%1 (%2)\n"
+"з списку контактів?"
+
+#: mainwin.cpp:2101
+msgid "CMainWindow::Authorization granted."
+msgstr "Авторизацію підтверджено."
+
+#: mainwin.cpp:2971
+msgid "CMainWindow::Auto Accept Chats"
+msgstr "Автоматично дозволяти розмови"
+
+#: mainwin.cpp:2970
+msgid "CMainWindow::Auto Accept Files"
+msgstr "Автоматично дозволяти передачу файлів"
+
+#: mainwin.cpp:2972
+msgid "CMainWindow::Auto Request Secure"
+msgstr "Автоматично встановлювати безпечне з'єднання"
+
+#: mainwin.cpp:2975
+msgid "CMainWindow::Away to User"
+msgstr "Видимий у стані \"Відійшов\""
+
+#: mainwin.cpp:2229
+msgid "CMainWindow::Cancel"
+msgstr "Скасувати"
+
+#: mainwin.cpp:2901
+msgid "CMainWindow::Change &Password"
+msgstr "Змінити &пароль"
+
+#: mainwin.cpp:3043
+msgid "CMainWindow::Check %1 Response"
+msgstr "Переглянути %1 відповідь"
+
+#: mainwin.cpp:3038
+msgid "CMainWindow::Check Auto Response"
+msgstr "Переглянути авто відповідь"
+
+#: mainwin.cpp:2885
+msgid "CMainWindow::Clear All"
+msgstr "Очистити все"
+
+#: mainwin.cpp:3066
+msgid "CMainWindow::Close &Secure Channel"
+msgstr "Закрити &безпечний канал"
+
+#: mainwin.cpp:2997
+msgid "CMainWindow::Custom Auto Response..."
+msgstr "Нетипова авто відповідь"
+
+#: mainwin.cpp:3077
+msgid "CMainWindow::Daemon Statistics\n(Today/Total)\n"
+msgstr ""
+"Статистика Licq демона\n"
+"(Сьогодні/Всього)\n"
+
+#: mainwin.cpp:3093
+msgid "CMainWindow::Daemon Statistics\n\n"
+msgstr ""
+"Статистика Licq демона\n"
+"\n"
+
+#: mainwin.cpp:2904
+msgid "CMainWindow::Debug Level"
+msgstr "Рівень відладки"
+
+#: mainwin.cpp:2978
+msgid "CMainWindow::Do Not Disturb to User"
+msgstr "Видимий у стані \"Не турбувати\""
+
+#: mainwin.cpp:2196
+msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
+msgstr ""
+"Ви впевнені, що хочете додати\n"
+"%1 (%2)\n"
+"до списку тих, що ігноруються?"
+
+#: mainwin.cpp:2948
+msgid "CMainWindow::E&xit"
+msgstr "В&ихід"
+
+#: mainwin.cpp:2914
+msgid "CMainWindow::Edit &Groups"
+msgstr "Редагувати &групи"
+
+#: mainwin.cpp:3008
+msgid "CMainWindow::Edit User Group"
+msgstr "Редагувати групи"
+
+#: mainwin.cpp:2099
+msgid "CMainWindow::Error sending authorization."
+msgstr "Помилка під час відправлення авторизації."
+
+#: mainwin.cpp:2880
+msgid "CMainWindow::Errors"
+msgstr "Помилки"
+
+#: mainwin.cpp:2860
+msgid "CMainWindow::Free for C&hat"
+msgstr "Вільний для &спілкування"
+
+#: mainwin.cpp:1429
+msgid "CMainWindow::Ignore List"
+msgstr "Ті, що ігноруються"
+
+#: mainwin.cpp:1426
+msgid "CMainWindow::Invisible List"
+msgstr ""
+
+#: mainwin.cpp:3082
+msgid "CMainWindow::Last reset %1\n\n"
+msgstr ""
+"Час останнього скидання %1\n"
+"\n"
+
+#: mainwin.cpp:1054
+msgid "CMainWindow::Licq (%1)"
+msgstr "Licq (%1)"
+
+#: mainwin.cpp:2405
+msgid ""
+"CMainWindow::"
+"Licq version %1%8.\n"
+"Qt GUI plugin version %2.\n"
+"Compiled on: %7\n"
+"%6\n"
+"Author: Graham Roff\n"
+"Contributions by Dirk A. Mueller\n"
+"http://www.licq.org\n\n"
+"%3 (%4)\n"
+"%5 contacts."
+msgstr ""
+"Версія Licq: %1%8.\n"
+"Версія модуля Qt GUI: %2.\n"
+"Дата компіляції: %7\n"
+"%6\n"
+"Автор: Graham Roff\n"
+"Участь Dirk Mueller\n"
+"http://www.licq.org\n"
+"\n"
+"%3 (%4)\n"
+"%5 у списоку контактів."
+
+#: mainwin.cpp:2080
+msgid "CMainWindow::Logon failed.\nSee network window for details."
+msgstr ""
+"Вхід до мережі зазнав невдачу.\n"
+"Подробиці у Вікні мережі."
+
+#: mainwin.cpp:2994
+msgid "CMainWindow::Misc Modes"
+msgstr "Режими"
+
+#: mainwin.cpp:1432
+msgid "CMainWindow::New Users"
+msgstr "Нові користувачі"
+
+#: mainwin.cpp:2944
+msgid "CMainWindow::Next &Server"
+msgstr "&Наступний сервер"
+
+#: mainwin.cpp:1337
+msgid "CMainWindow::No messages"
+msgstr "Нема повідомлень"
+
+#: mainwin.cpp:1336
+msgid "CMainWindow::No msgs"
+msgstr "Нема повідомлень"
+
+#: mainwin.cpp:2976
+msgid "CMainWindow::Not Available to User"
+msgstr "Видимий у стані \"Не наявний\""
+
+#: mainwin.cpp:2858
+msgid "CMainWindow::O&ccupied"
+msgstr "&Зайнято"
+
+#: mainwin.cpp:2861
+msgid "CMainWindow::O&ffline"
+msgstr "Не в &мережі"
+
+#: mainwin.cpp:2977
+msgid "CMainWindow::Occupied to User"
+msgstr "Видимий у стані \"Зайнято\""
+
+#: mainwin.cpp:2229
+msgid "CMainWindow::Ok"
+msgstr "Гаразд"
+
+#: mainwin.cpp:1420
+msgid "CMainWindow::Online Notify"
+msgstr "Повідомляти про з'явлення в мережі"
+
+#: mainwin.cpp:2974
+msgid "CMainWindow::Online to User"
+msgstr "Видимий у стані \"В мережі\""
+
+#: mainwin.cpp:1256
+msgid "CMainWindow::Other Users"
+msgstr "Інші користувачі"
+
+#: mainwin.cpp:2882
+msgid "CMainWindow::Packets"
+msgstr "Пакети"
+
+#: mainwin.cpp:2911
+msgid "CMainWindow::R&andom Chat"
+msgstr "&Випадкова розмова"
+
+#: mainwin.cpp:2921
+msgid "CMainWindow::Reg&ister User"
+msgstr "&Зареєструвати користувача"
+
+#: mainwin.cpp:2094
+msgid "CMainWindow::Registration failed.  See network window for details."
+msgstr ""
+"Невдача під час реєстрації. Подробиці "
+"у вікні мережі."
+
+#: mainwin.cpp:3010
+msgid "CMainWindow::Remove From List"
+msgstr "Видалити зі списку"
+
+#: mainwin.cpp:3068
+msgid "CMainWindow::Request &Secure Channel"
+msgstr "Безпечний &канал"
+
+#: mainwin.cpp:687
+msgid ""
+"CMainWindow::"
+"Right click - Status menu\n"
+"Double click - Set auto response"
+msgstr ""
+"Права кнопка - Меню стану\n"
+"Подвійне клацання - Встановити автовідповідь"
+
+#: mainwin.cpp:670
+msgid ""
+"CMainWindow::"
+"Right click - User groups\n"
+"Double click - Show next message"
+msgstr ""
+"Права кнопка - Групи користувачів\n"
+"Подвійне клацання - Показати наступне "
+"повідомлення"
+
+#: mainwin.cpp:2909
+msgid "CMainWindow::S&earch for User"
+msgstr "По&шук користувача"
+
+#: mainwin.cpp:2941
+msgid "CMainWindow::S&kin Browser..."
+msgstr "&Вибір зовнішнього вигляду"
+
+#: mainwin.cpp:2946
+msgid "CMainWindow::Sa&ve Settings"
+msgstr "З&берегти параметри"
+
+#: mainwin.cpp:2989
+msgid "CMainWindow::Send &Authorization"
+msgstr "&Відіслати авторизацію"
+
+#: mainwin.cpp:2986
+msgid "CMainWindow::Send &Chat Request"
+msgstr "&Відіслати запрошення на розмову"
+
+#: mainwin.cpp:2987
+msgid "CMainWindow::Send &File Transfer"
+msgstr "&Відіслати файл"
+
+#: mainwin.cpp:2984
+msgid "CMainWindow::Send &Message"
+msgstr "Відіслати п&овідомлення"
+
+#: mainwin.cpp:2985
+msgid "CMainWindow::Send &URL"
+msgstr "Надіслати &URL"
+
+# #: mainwin.cpp:2790
+# msgid "CMainWindow::Send &Url"
+# msgstr "Відіслати &URL"
+#: mainwin.cpp:2988
+msgid "CMainWindow::Send Contact &List"
+msgstr "Відіслати список &контактів"
+
+#: mainwin.cpp:2993
+msgid "CMainWindow::Send"
+msgstr "Відіслати"
+
+#: mainwin.cpp:2934
+msgid "CMainWindow::Set &Auto Response..."
+msgstr "Встановити &автовідповідь"
+
+#: mainwin.cpp:2884
+msgid "CMainWindow::Set All"
+msgstr "Встановити всі"
+
+#: mainwin.cpp:2938
+msgid "CMainWindow::Show Offline &Users"
+msgstr "Показувати користувачів, що не в м&ережі"
+
+#: mainwin.cpp:2878
+msgid "CMainWindow::Status Info"
+msgstr "Інформація про стан"
+
+#: mainwin.cpp:2087
+msgid ""
+"CMainWindow::"
+"Successfully registered, your user identification\n"
+"number (UIN) is %1.\n"
+"Now set your personal information."
+msgstr ""
+"Реєстрацію пройдено успішно. Ваш "
+"ідентифікаційний номер - %1.\n"
+"Зараз введіть інформацію про себе."
+
+#: mainwin.cpp:1310
+msgid "CMainWindow::SysMsg"
+msgstr "Сист. повід."
+
+#: mainwin.cpp:2930
+msgid "CMainWindow::System Functions"
+msgstr "Системні операції"
+
+#: mainwin.cpp:1311
+msgid "CMainWindow::System Message"
+msgstr "Системне повідомлення"
+
+#: mainwin.cpp:627
+msgid "CMainWindow::System"
+msgstr "Система"
+
+#: mainwin.cpp:3007
+msgid "CMainWindow::Toggle &Floaty"
+msgstr "&Ввімкнути/Вимкнути спливаюче вікно"
+
+#: mainwin.cpp:2995
+msgid "CMainWindow::U&tilities"
+msgstr "&Утиліти"
+
+#: mainwin.cpp:2763
+msgid "CMainWindow::Unable to open icons file\n%1."
+msgstr ""
+"Помилка під час відкриття файлу з піктограмами\n"
+"%1."
+
+#: mainwin.cpp:2879
+msgid "CMainWindow::Unknown Packets"
+msgstr "Невідомі пакети"
+
+#: mainwin.cpp:3081
+msgid "CMainWindow::Up since %1\n"
+msgstr "В мережі з %1\n"
+
+#: mainwin.cpp:3096
+msgid "CMainWindow::Up since %1\n\n"
+msgstr ""
+"В мережі з %1\n"
+"\n"
+
+#: mainwin.cpp:2916
+msgid "CMainWindow::Update All Users"
+msgstr "Поновити всіх користувачів"
+
+#: mainwin.cpp:2917
+msgid "CMainWindow::Update Current Group"
+msgstr "Поновити поточну групу"
+
+#: mainwin.cpp:2931
+msgid "CMainWindow::User Functions"
+msgstr "Функції користувача"
+
+#: mainwin.cpp:3006
+msgid "CMainWindow::View &History"
+msgstr "Переглянути &історію"
+
+#: mainwin.cpp:1423
+msgid "CMainWindow::Visible List"
+msgstr ""
+
+#: mainwin.cpp:2881
+msgid "CMainWindow::Warnings"
+msgstr "Попередження"
+
+#: mainwin.cpp:3210
+msgid ""
+"CMainWindow::"
+"You are currently registered as\n"
+"UIN: %1\n"
+"Base Directory: %2\n"
+"Rerun licq with the -b option to select a new\n"
+"base directory and then register a new user."
+msgstr ""
+"Ви зараз зареєстровані\n"
+"Ваш ідентифікаційний номер: %1\n"
+"Основний каталог: %2\n"
+"Вкажіть новий основний каталог, "
+"стартуйте licq с опцією -b\n"
+"Після цього Ви зможете зареєструвати "
+"новий ідентифікаційний номер."
+
+#: mainwin.cpp:1319
+msgid "CMainWindow::s"
+msgstr "с"
+
+#: outputwin.cpp:43
+msgid "CQtLogWindow::&Close"
+msgstr "&Закрити"
+
+#: outputwin.cpp:39
+msgid "CQtLogWindow::&Save"
+msgstr "&Зберегти"
+
+#: outputwin.cpp:41
+msgid "CQtLogWindow::C&lear"
+msgstr "О&чистити"
+
+#: outputwin.cpp:115
+msgid "CQtLogWindow::Failed to open file:\n%1"
+msgstr ""
+"Не вдалося відкрити файл:\n"
+"%1"
+
+#: outputwin.cpp:27
+msgid "CQtLogWindow::Licq Network Log"
+msgstr "Licq: Журнал мережі"
+
+#: randomchatdlg.cpp:39
+msgid "CRandomChatDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: randomchatdlg.cpp:35
+msgid "CRandomChatDlg::&Search"
+msgstr "&Шукати"
+
+#: randomchatdlg.cpp:57
+msgid "CRandomChatDlg::20 Something"
+msgstr "20+"
+
+#: randomchatdlg.cpp:58
+msgid "CRandomChatDlg::30 Something"
+msgstr "30+"
+
+#: randomchatdlg.cpp:59
+msgid "CRandomChatDlg::40 Something"
+msgstr "40+"
+
+#: randomchatdlg.cpp:60
+msgid "CRandomChatDlg::50 Plus"
+msgstr "50+"
+
+#: randomchatdlg.cpp:55
+msgid "CRandomChatDlg::Games"
+msgstr "Ігри"
+
+#: randomchatdlg.cpp:53
+msgid "CRandomChatDlg::General"
+msgstr "Загальне"
+
+#: randomchatdlg.cpp:61
+msgid "CRandomChatDlg::Men Seeking Women"
+msgstr "Чоловіки, що шукають жінок"
+
+#: randomchatdlg.cpp:111
+msgid "CRandomChatDlg::No random chat user found in that group."
+msgstr ""
+"Не можу знайти жодного користувача в цій "
+"групі,\n"
+"який бажає прийняти участь в випадковому "
+"спілкуванні."
+
+#: randomchatdlg.cpp:28
+msgid "CRandomChatDlg::Random Chat Search"
+msgstr "Пошук випадкового співрозмовника"
+
+#: randomchatdlg.cpp:117
+msgid "CRandomChatDlg::Random chat search had an error."
+msgstr "Пошук випадкового співрозмовника зазнав невдачі."
+
+#: randomchatdlg.cpp:114
+msgid "CRandomChatDlg::Random chat search timed out."
+msgstr ""
+"Пошук випадкового співрозмовника зазнав невдачі - "
+"таймаут."
+
+#: randomchatdlg.cpp:54
+msgid "CRandomChatDlg::Romance"
+msgstr "Романтики"
+
+#: randomchatdlg.cpp:97
+msgid "CRandomChatDlg::Searching for Random Chat Partner..."
+msgstr "Пошук випадкового співрозмовника..."
+
+#: randomchatdlg.cpp:56
+msgid "CRandomChatDlg::Students"
+msgstr "Студенти"
+
+#: randomchatdlg.cpp:62
+msgid "CRandomChatDlg::Women Seeking Men"
+msgstr "Жінки, що шукають чоловіків"
+
+#: refusedlg.cpp:24
+msgid "CRefuseDlg::Cancel"
+msgstr "Скасувати"
+
+#: refusedlg.cpp:41
+msgid "CRefuseDlg::Licq %1 Refusal"
+msgstr "Відмова Licq %1"
+
+#: refusedlg.cpp:17
+msgid "CRefuseDlg::Refusal message for %1 with "
+msgstr "Причина відмови в %1 з "
+
+#: refusedlg.cpp:22
+msgid "CRefuseDlg::Refuse"
+msgstr "Відмовити"
+
+#: randomchatdlg.cpp:209
+msgid "CSetRandomChatGroupDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: randomchatdlg.cpp:237
+msgid "CSetRandomChatGroupDlg::&Close"
+msgstr "&Закрити"
+
+#: randomchatdlg.cpp:144
+msgid "CSetRandomChatGroupDlg::&Set"
+msgstr "&Встановити"
+
+#: randomchatdlg.cpp:162
+msgid "CSetRandomChatGroupDlg::(none)"
+msgstr "(нема)"
+
+#: randomchatdlg.cpp:167
+msgid "CSetRandomChatGroupDlg::20 Something"
+msgstr "20+"
+
+#: randomchatdlg.cpp:168
+msgid "CSetRandomChatGroupDlg::30 Something"
+msgstr "30+"
+
+#: randomchatdlg.cpp:169
+msgid "CSetRandomChatGroupDlg::40 Something"
+msgstr "40+"
+
+#: randomchatdlg.cpp:170
+msgid "CSetRandomChatGroupDlg::50 Plus"
+msgstr "50+"
+
+#: randomchatdlg.cpp:165
+msgid "CSetRandomChatGroupDlg::Games"
+msgstr "Ігри"
+
+#: randomchatdlg.cpp:163
+msgid "CSetRandomChatGroupDlg::General"
+msgstr "Загальні розмови"
+
+#: randomchatdlg.cpp:171
+msgid "CSetRandomChatGroupDlg::Men Seeking Women"
+msgstr "Чоловіки, що шукають жінок"
+
+#: randomchatdlg.cpp:164
+msgid "CSetRandomChatGroupDlg::Romance"
+msgstr "Романтики"
+
+#: randomchatdlg.cpp:137
+msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
+msgstr "Встановити групу для випадкових розмов"
+
+#: randomchatdlg.cpp:228
+msgid "CSetRandomChatGroupDlg::Setting Random Chat Group..."
+msgstr ""
+"Встановлюється група для випадкових "
+"розмов..."
+
+#: randomchatdlg.cpp:166
+msgid "CSetRandomChatGroupDlg::Students"
+msgstr "Студенти"
+
+#: randomchatdlg.cpp:172
+msgid "CSetRandomChatGroupDlg::Women Seeking Men"
+msgstr "Жінки, що шукають чоловіків"
+
+#: randomchatdlg.cpp:252
+msgid "CSetRandomChatGroupDlg::done"
+msgstr "завершено"
+
+#: randomchatdlg.cpp:249
+msgid "CSetRandomChatGroupDlg::error"
+msgstr "помилка"
+
+#: randomchatdlg.cpp:243
+msgid "CSetRandomChatGroupDlg::failed"
+msgstr "невдача"
+
+#: randomchatdlg.cpp:246
+msgid "CSetRandomChatGroupDlg::timed out"
+msgstr "таймаут"
+
+#: userbox.cpp:58
+msgid "CUserView::%1 Floaty (%2)"
+msgstr "%1 (%2)"
+
+#: userbox.cpp:1297
+msgid "CUserView::</nobr>"
+msgstr "</nobr>"
+
+#: userbox.cpp:1245
+msgid "CUserView::<br><b>Birthday&nbsp;Today!</b>"
+msgstr "<br><b>Сьогодні&nbsp;День&nbsp;народження!</b>"
+
+#: userbox.cpp:1277
+msgid "CUserView::<br><nobr>C: "
+msgstr "<br><nobr>Моб.: "
+
+#: userbox.cpp:1271
+msgid "CUserView::<br><nobr>E: "
+msgstr "<br><nobr>Ел. адр.: "
+
+#: userbox.cpp:1280
+msgid "CUserView::<br><nobr>F: "
+msgstr "<br><nobr>Факс: "
+
+#: userbox.cpp:1290
+msgid "CUserView::<br><nobr>Ip: "
+msgstr "<br><nobr>Ip: "
+
+# Last online
+#: userbox.cpp:1297
+msgid "CUserView::<br><nobr>O: "
+msgstr "<br><nobr>В мережі: "
+
+#: userbox.cpp:1274
+msgid "CUserView::<br><nobr>P: "
+msgstr "<br><nobr>Тел.: "
+
+#: userbox.cpp:1265
+msgid "CUserView::<br><u>Auto Response:</u>"
+msgstr "<br><u>Автовідповідь:</u>"
+
+#: userbox.cpp:1251
+msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
+msgstr "<br>Нетипова&nbsp;автовідповідь"
+
+#: userbox.cpp:1260
+msgid "CUserView::<br>Licq&nbsp;%1"
+msgstr "<br>Licq&nbsp;%1"
+
+#: userbox.cpp:1258
+msgid "CUserView::<br>Licq&nbsp;%1/SSL"
+msgstr "<br>Licq&nbsp;%1/SSL"
+
+#: userbox.cpp:1248
+msgid "CUserView::<br>Secure&nbsp;connection"
+msgstr "<br>Безпечне&nbsp;з'єднання"
+
+#: usercodec.cpp:39
+msgid "CUserView::Arabic"
+msgstr "Арабське"
+
+#: usercodec.cpp:34
+msgid "CUserView::Baltic"
+msgstr "Балтійське"
+
+#: usercodec.cpp:31
+msgid "CUserView::Central European"
+msgstr "Центральноєвропейське"
+
+#: usercodec.cpp:44
+msgid "CUserView::Chinese Simplified"
+msgstr "Спрощене китайське"
+
+#: usercodec.cpp:42
+msgid "CUserView::Chinese Traditional"
+msgstr "Традиційне китайське"
+
+#: usercodec.cpp:37
+msgid "CUserView::Cyrillic"
+msgstr "Кирилиця"
+
+#: usercodec.cpp:32
+msgid "CUserView::Esperanto"
+msgstr "Есперанто"
+
+#: usercodec.cpp:40
+msgid "CUserView::Greek"
+msgstr "Грецьке"
+
+#: usercodec.cpp:41
+msgid "CUserView::Hebrew"
+msgstr "Єврейське"
+
+#: userbox.cpp:524
+msgid "CUserView::Offline"
+msgstr "Не в мережі"
+
+#: userbox.cpp:526
+msgid "CUserView::Online"
+msgstr "В мережі"
+
+# #: usercodec.cpp:37
+# msgid "CUserView::Russian"
+# msgstr "Кирилиця"
+#: userbox.cpp:723
+msgid "CUserView::S"
+msgstr "С"
+
+#: usercodec.cpp:46
+msgid "CUserView::Turkish"
+msgstr "Турецьке"
+
+#: usercodec.cpp:38
+msgid "CUserView::Ukrainan"
+msgstr "Українське"
+
+#: usercodec.cpp:26
+msgid "CUserView::Unicode"
+msgstr "Юнікод"
+
+#: usercodec.cpp:29
+msgid "CUserView::Western European"
+msgstr "Західноєвропейське"
+
+#: utilitydlg.cpp:97
+msgid "CUtilityDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: utilitydlg.cpp:92
+msgid "CUtilityDlg::&Run"
+msgstr "&Виконати"
+
+#: utilitydlg.cpp:233
+msgid "CUtilityDlg::C&lose"
+msgstr "&Закрити"
+
+#: utilitydlg.cpp:195
+msgid "CUtilityDlg::Command Window"
+msgstr "Вікно команд"
+
+#: utilitydlg.cpp:38
+msgid "CUtilityDlg::Command:"
+msgstr "Команда:"
+
+#: utilitydlg.cpp:55
+msgid "CUtilityDlg::Description:"
+msgstr "Опис:"
+
+#: utilitydlg.cpp:224
+msgid "CUtilityDlg::Done"
+msgstr "Завершено"
+
+#: utilitydlg.cpp:232
+msgid "CUtilityDlg::Done:"
+msgstr "Завершено:"
+
+#: utilitydlg.cpp:60
+msgid "CUtilityDlg::Edit final command"
+msgstr "Редагування команди"
+
+#: utilitydlg.cpp:159
+msgid "CUtilityDlg::Edit:"
+msgstr "Редагування:"
+
+#: utilitydlg.cpp:218
+msgid "CUtilityDlg::Failed:"
+msgstr "Невдача:"
+
+#: utilitydlg.cpp:50
+msgid "CUtilityDlg::GUI"
+msgstr "Графічний інтерфейс"
+
+#: utilitydlg.cpp:52
+msgid "CUtilityDlg::Internal"
+msgstr "Внутрішнє"
+
+#: utilitydlg.cpp:37
+msgid "CUtilityDlg::Licq Utility: %1"
+msgstr "Утиліта Licq: %1"
+
+#: utilitydlg.cpp:167
+msgid "CUtilityDlg::Running:"
+msgstr "Виконується:"
+
+#: utilitydlg.cpp:51
+msgid "CUtilityDlg::Terminal"
+msgstr "Термінал"
+
+#: utilitydlg.cpp:63
+msgid "CUtilityDlg::User Fields"
+msgstr "Поля користувача"
+
+#: utilitydlg.cpp:45
+msgid "CUtilityDlg::Window:"
+msgstr "Вікно:"
+
+#: chatdlg.cpp:585
+msgid "ChatDlg::%1 closed connection."
+msgstr "%1 закрив з'єднання."
+
+#: chatdlg.cpp:162
+msgid "ChatDlg::&Audio"
+msgstr "&Звук"
+
+#: chatdlg.cpp:165
+msgid "ChatDlg::&Close Chat"
+msgstr "&Завершити розмову"
+
+#: chatdlg.cpp:168
+msgid "ChatDlg::&IRC Mode"
+msgstr "&Режим IRC"
+
+#: chatdlg.cpp:167
+msgid "ChatDlg::&Pane Mode"
+msgstr "&Віконний режим"
+
+#: chatdlg.cpp:163
+msgid "ChatDlg::&Save Chat"
+msgstr "&Зберегти розмову"
+
+#: chatdlg.cpp:841
+msgid "ChatDlg::/%1.%2.chat"
+msgstr "ChatDlg::/%1.%2.розмова"
+
+#: chatdlg.cpp:201
+msgid "ChatDlg::Background color"
+msgstr "Колір тла"
+
+#: chatdlg.cpp:190
+msgid "ChatDlg::Beep"
+msgstr "Гудок"
+
+#: chatdlg.cpp:226
+msgid "ChatDlg::Bold"
+msgstr "Жирний"
+
+#: chatdlg.cpp:202
+msgid "ChatDlg::Changes the background color"
+msgstr "Змінює колір тла"
+
+#: chatdlg.cpp:197
+msgid "ChatDlg::Changes the foreground color"
+msgstr "Змінює колір тексту"
+
+#: chatdlg.cpp:169
+msgid "ChatDlg::Chat"
+msgstr "Розмова"
+
+#: chatdlg.cpp:810
+msgid "ChatDlg::Do you want to save the chat session?"
+msgstr "Бажаєте зберегти розмову?"
+
+#: chatdlg.cpp:196
+msgid "ChatDlg::Foreground color"
+msgstr "Колір тексту"
+
+#: chatdlg.cpp:185
+msgid "ChatDlg::Ignore user settings"
+msgstr "Ігнорувати установки користувача"
+
+#: chatdlg.cpp:186
+msgid "ChatDlg::Ignores user color settings"
+msgstr "ігнорує кольори, що встановлені користувачем"
+
+#: chatdlg.cpp:231
+msgid "ChatDlg::Italic"
+msgstr "Курсив"
+
+#: chatdlg.cpp:601
+msgid "ChatDlg::Licq - Chat %1"
+msgstr "Licq: Розмова з %1"
+
+#: chatdlg.cpp:109
+msgid "ChatDlg::Licq - Chat"
+msgstr "Licq: Розмова"
+
+#: chatdlg.cpp:330
+msgid "ChatDlg::Local - %1"
+msgstr "Локальний - %1"
+
+#: chatdlg.cpp:170
+msgid "ChatDlg::Mode"
+msgstr "Режим"
+
+#: chatdlg.cpp:811
+msgid "ChatDlg::No"
+msgstr "Ні"
+
+#: chatdlg.cpp:600
+msgid "ChatDlg::Remote - %1"
+msgstr "Віддалений - %1"
+
+#: chatdlg.cpp:483
+msgid "ChatDlg::Remote - Connecting..."
+msgstr "Віддалений - З'єднуюсь..."
+
+#: chatdlg.cpp:124
+msgid "ChatDlg::Remote - Not connected"
+msgstr "Віддалений - Нема з'єднання"
+
+#: chatdlg.cpp:473
+msgid "ChatDlg::Remote - Waiting for joiners..."
+msgstr "Віддалений - Чекаю на з'єднання..."
+
+#: chatdlg.cpp:191
+msgid "ChatDlg::Sends a Beep to all recipients"
+msgstr "Відіслати \"Гудок\" всім"
+
+#: chatdlg.cpp:237
+msgid "ChatDlg::Toggles Bold font"
+msgstr "Перемикає використання жирного шрифту"
+
+#: chatdlg.cpp:232
+msgid "ChatDlg::Toggles Italic font"
+msgstr "Перемикає використання курсиву"
+
+#: chatdlg.cpp:236
+msgid "ChatDlg::Underline"
+msgstr "Підкреслений"
+
+#: chatdlg.cpp:811
+msgid "ChatDlg::Yes"
+msgstr "Так"
+
+# #: chatdlg.cpp:188
+# msgid "ChatDlg::ignores user color settings"
+# msgstr ""
+# "ігнорує кольори, що встановлені "
+# "користувачем"
+#: awaymsgdlg.cpp:223
+msgid "CustomAwayMsgDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: awaymsgdlg.cpp:221
+msgid "CustomAwayMsgDlg::&Clear"
+msgstr "&Очистити"
+
+#: awaymsgdlg.cpp:216
+msgid "CustomAwayMsgDlg::&Hints"
+msgstr "&Підказка"
+
+#: awaymsgdlg.cpp:218
+msgid "CustomAwayMsgDlg::&Ok"
+msgstr "&Гаразд"
+
+#: awaymsgdlg.cpp:248
+msgid "CustomAwayMsgDlg::I am currently %1.\nYou can leave me a message."
+msgstr ""
+"Я зараз у стані \"%1\".\n"
+"Ви можете залишити мені повідомлення."
+
+#: awaymsgdlg.cpp:243
+msgid "CustomAwayMsgDlg::Set Custom Auto Response for %1"
+msgstr "Встановити персональну автовідповідь для %1"
+
+#: editfile.cpp:37
+msgid "EditFileDlg::&Close"
+msgstr "&Закрити"
+
+#: editfile.cpp:35
+msgid "EditFileDlg::&Save"
+msgstr "&Зберегти"
+
+#: editfile.cpp:77
+msgid "EditFileDlg::Failed to open file:\n%1"
+msgstr ""
+"Не вдалося відкрити файл:\n"
+"%1"
+
+#: editfile.cpp:23
+msgid "EditFileDlg::Licq File Editor - %1"
+msgstr "Licq: Редактор файлів - %1"
+
+#: editfile.cpp:66
+msgid "EditFileDlg::[ Read-Only ]"
+msgstr "[ тільки для читання ]"
+
+#: editgrp.cpp:64
+msgid "EditGrpDlg::&Done"
+msgstr "&Закрити"
+
+#: editgrp.cpp:32
+msgid "EditGrpDlg::Add"
+msgstr "Додати"
+
+#: editgrp.cpp:88
+msgid "EditGrpDlg::All Users"
+msgstr "Всі користувачі"
+
+#: editgrp.cpp:120
+msgid ""
+"EditGrpDlg::"
+"Are you sure you want to remove\n"
+"the group '%1'?"
+msgstr ""
+"Ви впевнені, що бажаєте видалити\n"
+"групу '%1'?"
+
+#: editgrp.cpp:169
+msgid "EditGrpDlg::Cancel"
+msgstr "Скасувати"
+
+#: editgrp.cpp:50
+msgid "EditGrpDlg::Default:"
+msgstr "По замовчуванню:"
+
+#: editgrp.cpp:36
+msgid "EditGrpDlg::Edit Name"
+msgstr "Змінити ім'я"
+
+#: editgrp.cpp:37
+msgid "EditGrpDlg::Edit group name (hit enter to save)."
+msgstr "Змінити ім'я групи (Натисніть Enter, щоб зберегти)."
+
+#: editgrp.cpp:193
+msgid "EditGrpDlg::Edit"
+msgstr "Редагування"
+
+#: editgrp.cpp:24
+msgid "EditGrpDlg::Groups"
+msgstr "Групи"
+
+#: editgrp.cpp:22
+msgid "EditGrpDlg::Licq - Edit Groups"
+msgstr "Licq - Редагування груп"
+
+#: editgrp.cpp:124
+msgid "EditGrpDlg::Ok"
+msgstr "Гаразд"
+
+#: editgrp.cpp:33
+msgid "EditGrpDlg::Remove"
+msgstr "Видалити"
+
+#: editgrp.cpp:38
+msgid "EditGrpDlg::Set Default"
+msgstr "Типова група"
+
+#: editgrp.cpp:35
+msgid "EditGrpDlg::Shift Down"
+msgstr "Вниз"
+
+#: editgrp.cpp:34
+msgid "EditGrpDlg::Shift Up"
+msgstr "Вгору"
+
+#: editgrp.cpp:39
+msgid "EditGrpDlg::The default group to start up in."
+msgstr "Типова група при запуску"
+
+#: editgrp.cpp:105
+msgid "EditGrpDlg::noname"
+msgstr "без імені"
+
+#: eventdesc.cpp:38
+msgid "Event::"
+msgstr ""
+
+# #: eventdesc.cpp:53
+# msgid "Event:: (cancelled)"
+# msgstr "(скасовано)"
+# #: eventdesc.cpp:38
+# msgid "Event::"
+# msgstr ""
+#: eventdesc.cpp:52
+msgid "Event::(cancelled)"
+msgstr "(скасовано)"
+
+#: eventdesc.cpp:25
+msgid "Event::Added to Contact List"
+msgstr "Доданий до списку контактів"
+
+#: eventdesc.cpp:21
+msgid "Event::Authorization Granted"
+msgstr "Авторизацію підтверджено"
+
+#: eventdesc.cpp:20
+msgid "Event::Authorization Refused"
+msgstr "Відмова в авторизації"
+
+#: eventdesc.cpp:19
+msgid "Event::Authorization Request"
+msgstr "Запит на авторизацію"
+
+#: eventdesc.cpp:15
+msgid "Event::Chat Request"
+msgstr "Запит на розмову"
+
+#: eventdesc.cpp:32
+msgid "Event::Contact List"
+msgstr "Список контактів"
+
+#: eventdesc.cpp:27
+msgid "Event::Email Pager"
+msgstr "Email-пейджер"
+
+#: eventdesc.cpp:16
+msgid "Event::File Transfer"
+msgstr "Передача файла(ів)"
+
+#: eventdesc.cpp:14
+msgid "Event::Message"
+msgstr "Повідомлення"
+
+#: eventdesc.cpp:13
+msgid "Event::Plugin Event"
+msgstr "Подія додатку"
+
+#: eventdesc.cpp:17
+msgid "Event::URL"
+msgstr "URL"
+
+#: eventdesc.cpp:47
+msgid "Event::Unknown Event"
+msgstr "Невідома подія"
+
+#: eventdesc.cpp:39
+msgid "Event::User Info"
+msgstr "Інформація про користувача"
+
+#: eventdesc.cpp:26
+msgid "Event::Web Panel"
+msgstr "Панель Web"
+
+#: mainwin.cpp:3287
+msgid "HintsDlg::&Close"
+msgstr "&Закрити"
+
+#: mainwin.cpp:3274
+msgid "HintsDlg::Licq - Hints"
+msgstr "Підказки Licq"
+
+# #: wharf.cpp:114
+# msgid "IconManager::The applet can be removed by\ndisabling it in the options dialog"
+# msgstr "Апплет можно удалить,\nзапретив его в настройках licq"
+#: wharf.cpp:665
+msgid "IconManager_KDEStyle::<br>%1 msgs"
+msgstr "<br>%1 повід."
+
+#: wharf.cpp:667
+msgid "IconManager_KDEStyle::<br>1 msg"
+msgstr "<br>1 повід."
+
+#: wharf.cpp:662
+msgid "IconManager_KDEStyle::<br><b>%1 system messages</b>"
+msgstr "<br><b>%1 системних повідомлень.</b>"
+
+#: wharf.cpp:669
+msgid ""
+"IconManager_KDEStyle::"
+"<br>Left click - Show main window"
+"<br>Middle click - Show next message"
+"<br>Right click - System menu"
+msgstr ""
+"<br>Ліва кнопка - Головне вікно<br>Середня "
+"кнопка - наступне повідомлення<br>Права "
+"кнопка - Системне меню"
+
+#: wharf.cpp:358
+msgid "IconManager_Themed::Unable to load dock theme file\n(%1)\n:%2"
+msgstr ""
+"Неможливо завантажити файл с темою для "
+"дока\n"
+"(%1)\n"
+":%2"
+
+#: wharf.cpp:394
+msgid "IconManager_Themed::Unable to load dock theme image\n%1"
+msgstr ""
+"Неможливо завантажити файл с образом "
+"для дока\n"
+"%1"
+
+#: keyrequestdlg.cpp:76
+msgid "KeyRequestDlg::&Close"
+msgstr "&Закрити"
+
+#: keyrequestdlg.cpp:70
+msgid "KeyRequestDlg::&Send"
+msgstr "&Відіслати"
+
+#: keyrequestdlg.cpp:175
+msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
+msgstr ""
+"<font color=\"ForestGreen\">Встановлено безпечне "
+"з'єднання.</font>\n"
+
+#: keyrequestdlg.cpp:177
+msgid "KeyRequestDlg::<font color=\"blue\">Secure channel closed.</font>\n"
+msgstr ""
+"<font color=\"blue\">Безпечне "
+"з'єднання закрите.</font>\n"
+
+#: keyrequestdlg.cpp:171
+msgid "KeyRequestDlg::<font color=\"red\">Could not connect to remote client.</font>"
+msgstr ""
+"<font color=\"red\">Не можу з'єднатися з "
+"віддаленим клієнтом.</font>"
+
+#: keyrequestdlg.cpp:168
+msgid "KeyRequestDlg::<font color=\"red\">Remote client does not support OpenSSL.</font>"
+msgstr ""
+"<font color=\"red\">Віддалений клієнт не "
+"підтримує OpenSSL.</font>"
+
+#: keyrequestdlg.cpp:158
+msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel already established.</font>\n"
+msgstr ""
+"<font color=\"yellow\">Безпечне з'єднання вже "
+"встановлено.</font>\n"
+
+#: keyrequestdlg.cpp:160
+msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel not established.</font>\n"
+msgstr ""
+"<font color=\"yellow\">Безпечне з'єднання не "
+"встановлено.</font>\n"
+
+#: keyrequestdlg.cpp:92
+msgid ""
+"KeyRequestDlg::"
+"Client does not support OpenSSL.\n"
+"Rebuild Licq with OpenSSL support."
+msgstr ""
+"Клієнт не підтримує OpenSSL.\n"
+"Зберіть Licq з підтримкою OpenSSL."
+
+#: keyrequestdlg.cpp:131
+msgid "KeyRequestDlg::Closing secure channel..."
+msgstr "Закриваю безпечне з'єднання..."
+
+#: keyrequestdlg.cpp:30
+msgid "KeyRequestDlg::Licq - Secure Channel with %1"
+msgstr "Licq - Безпечне з'єднання з %1"
+
+#: keyrequestdlg.cpp:126
+msgid "KeyRequestDlg::Requesting secure channel..."
+msgstr "Запитую на безпечне з'єднання..."
+
+#: keyrequestdlg.cpp:34
+msgid ""
+"KeyRequestDlg::"
+"Secure channel is established using SSL\n"
+"with Diffie-Hellman key exchange and\n"
+"the TLS version 1 protocol.\n\n"
+msgstr ""
+"Безпечне з'єднання буде встановлюватись\n"
+"за допомогою SSL з використанням алгоритму\n"
+"Diffie-Hellman для обміну ключами\n"
+"та протоколу TLS версії 1.\n"
+"\n"
+
+#: keyrequestdlg.cpp:47
+msgid ""
+"KeyRequestDlg::"
+"The remote uses Licq %1, however it\n"
+"has no secure channel support compiled in.\n"
+"This probably won't work."
+msgstr ""
+"Віддалена сторона використовує Licq %1, однак цей клієнт\n"
+"було зібрано без підтримки безпечних з'єднань.\n"
+"Можливо, безпечне з'єднання не вдасця встановити."
+
+#: keyrequestdlg.cpp:41
+msgid "KeyRequestDlg::The remote uses Licq %1/SSL."
+msgstr "Віддалена сторона використовує Licq %1/SSL."
+
+#: keyrequestdlg.cpp:53
+msgid ""
+"KeyRequestDlg::"
+"This only works with other Licq clients >= v0.85\n"
+"The remote doesn't seem to use such a client.\n"
+"This might not work."
+msgstr ""
+"Це повинно працює з іншими клієнтами Licq >= 0.85.\n"
+"Але віддалена сторона не \n"
+"використовує такого клієнта.\n"
+"Можливо безпечне з'єднання не вдасця встановити."
+
+#: messagebox.cpp:235
+msgid "MsgView::Cancelled Event"
+msgstr "Скасована подія"
+
+#: messagebox.cpp:157
+msgid "MsgView::D"
+msgstr "П"
+
+#: messagebox.cpp:229
+msgid "MsgView::Direct"
+msgstr "Пряме"
+
+#: messagebox.cpp:158
+msgid "MsgView::Event Type"
+msgstr "Тип події"
+
+#: messagebox.cpp:233
+msgid "MsgView::Multiple Recipients"
+msgstr "Декілька адресатів"
+
+#: messagebox.cpp:159
+msgid "MsgView::Options"
+msgstr "Параметри"
+
+#: messagebox.cpp:229
+msgid "MsgView::Server"
+msgstr "Через сервер"
+
+#: messagebox.cpp:160
+msgid "MsgView::Time"
+msgstr "Час"
+
+#: messagebox.cpp:231
+msgid "MsgView::Urgent"
+msgstr "Термінове"
+
+#: optionsdlg.cpp:63
+msgid "OptionsDlg::&Apply"
+msgstr "&Застосувати"
+
+#: optionsdlg.cpp:67
+msgid "OptionsDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: optionsdlg.cpp:59
+msgid "OptionsDlg::&OK"
+msgstr "&Гаразд"
+
+#: optionsdlg.cpp:677
+msgid "OptionsDlg::64 x 48 Dock Icon"
+msgstr "64 x 48 піктограма для дока"
+
+#: optionsdlg.cpp:769
+msgid ""
+"OptionsDlg::"
+"<p>Command to execute when an event is received.<br>"
+"It will be passed the relevant parameters from "
+"below.<br>Parameters can contain the following "
+"expressions <br> which will be replaced with the relevant "
+"information:</p>"
+msgstr ""
+"<p>Команда, яку буде виконано, коли "
+"одержано повідомлення.<br>Їй буде передано "
+"параметри, які описано нижче.<br>Також будуть "
+"зроблені наступні заміни:</p>"
+
+#: optionsdlg.cpp:802
+msgid "OptionsDlg::Accept Modes"
+msgstr "У яких станах виконувати команди"
+
+#: optionsdlg.cpp:1048
+msgid "OptionsDlg::Alignment"
+msgstr "Вирівнювання"
+
+#: optionsdlg.cpp:1101
+msgid "OptionsDlg::All incoming events will blink"
+msgstr ""
+"Піктограми всіх подій, що надійшли, будуть "
+"блимати"
+
+# #: optionsdlg.cpp:1056
+# msgid "OptionsDlg::All incoming events will flash"
+# msgstr ""
+# "Піктограми всіх повідомлень, що надійшли, будуть "
+# "блимати"
+#: optionsdlg.cpp:621
+msgid ""
+"OptionsDlg::"
+"All incoming messages automatically "
+"open when received, if we are "
+"online (or free for chat)"
+msgstr ""
+"Всі повідомлення, що надійшли, автоматично "
+"відкриваються, як тільки надійшли, якщо ваш "
+"стан \"В мережі\" (або \"Вільний для "
+"розмови\")"
+
+#: optionsdlg.cpp:643
+msgid "OptionsDlg::Allow dragging main window"
+msgstr "Дозволити перетягування головного вікна"
+
+#: optionsdlg.cpp:1104
+msgid "OptionsDlg::Allow scroll bar"
+msgstr "Дозволити панель прокрутки"
+
+#: optionsdlg.cpp:1105
+msgid "OptionsDlg::Allow the vertical scroll bar in the user list"
+msgstr ""
+"Дозволити вертикальну панель прокрутки "
+"у списку користувачів"
+
+#: optionsdlg.cpp:1091
+msgid "OptionsDlg::Always show online notify users"
+msgstr ""
+"Завжди показувати користувачів, для яких\n"
+"ввімкнено сповіщення по з'явлення в мережі"
+
+#: optionsdlg.cpp:1191
+msgid "OptionsDlg::Auto Away Messages"
+msgstr "Повідомлення при авто-режимах"
+
+#: optionsdlg.cpp:1003
+msgid "OptionsDlg::Auto Away:"
+msgstr "Авто-відійшов:"
+
+#: optionsdlg.cpp:617
+msgid "OptionsDlg::Auto Close Function Window"
+msgstr "Авто-закриття вікон"
+
+#: optionsdlg.cpp:986
+msgid "OptionsDlg::Auto Logon:"
+msgstr "Початковий стан:"
+
+#: optionsdlg.cpp:1009
+msgid "OptionsDlg::Auto N/A:"
+msgstr "Авто не наявний:"
+
+#: optionsdlg.cpp:1015
+msgid "OptionsDlg::Auto Offline:"
+msgstr "Автоматичний вихід з мережі:"
+
+#: optionsdlg.cpp:637
+msgid "OptionsDlg::Auto Position the Reply Window"
+msgstr "Автоматичний вибір місця для вікна відповіді"
+
+#: optionsdlg.cpp:640
+msgid "OptionsDlg::Auto send through server"
+msgstr "Автоматично відсилати через сервер"
+
+#: optionsdlg.cpp:857
+msgid "OptionsDlg::Auto"
+msgstr "Автоматично"
+
+#: optionsdlg.cpp:620
+msgid "OptionsDlg::Auto-Popup Incoming Msg"
+msgstr "Автоматично показувати нові повідомлення"
+
+#: optionsdlg.cpp:624
+msgid "OptionsDlg::Auto-Raise on Incoming Msg"
+msgstr "Автоматичне виринання, коли прийшло повідомлення"
+
+#: optionsdlg.cpp:987
+msgid "OptionsDlg::Automatically log on when first starting up."
+msgstr "Автоматично входити до мережі."
+
+#: optionsdlg.cpp:641
+msgid ""
+"OptionsDlg::"
+"Automatically send messages through server "
+"if direct connection fails"
+msgstr ""
+"Повідомлення автоматично буде відіслано "
+"через сервер, якщо не можна "
+"встановити пряме з'єднання"
+
+#: optionsdlg.cpp:992
+msgid "OptionsDlg::Away"
+msgstr "Відійшов"
+
+#: optionsdlg.cpp:1193
+msgid "OptionsDlg::Away:"
+msgstr "Авто-відійшов:"
+
+#: optionsdlg.cpp:1100
+msgid "OptionsDlg::Blink All Events"
+msgstr "Блимання подій"
+
+#: optionsdlg.cpp:1102
+msgid "OptionsDlg::Blink Urgent Events"
+msgstr "Блимання термінових подій"
+
+#: optionsdlg.cpp:628
+msgid "OptionsDlg::Bold Message Label on Incoming Msg"
+msgstr "Виділяти жирним шрифтом повідомлення, що надійшли"
+
+#: optionsdlg.cpp:1135
+msgid "OptionsDlg::Cellular"
+msgstr "Мобільний"
+
+#: optionsdlg.cpp:1070
+msgid "OptionsDlg::Center"
+msgstr "По центру"
+
+#: optionsdlg.cpp:786
+msgid "OptionsDlg::Chat Request:"
+msgstr "Запит на розмову:"
+
+#: optionsdlg.cpp:647
+msgid "OptionsDlg::Chatmode Messageview"
+msgstr "Перегляд повідомлень у вікні розмови"
+
+#: optionsdlg.cpp:634
+msgid "OptionsDlg::Check Clipboard For Urls/Files"
+msgstr "Перевіряти буфер обміну на наявність файлів/URL"
+
+#: optionsdlg.cpp:1058
+msgid "OptionsDlg::Column %1"
+msgstr "Стовпчик %1"
+
+#: optionsdlg.cpp:1037
+msgid "OptionsDlg::Column Configuration"
+msgstr "Конфігурація стовпчиків"
+
+#: optionsdlg.cpp:768
+msgid "OptionsDlg::Command:"
+msgstr "Команда:"
+
+#: optionsdlg.cpp:92
+msgid "OptionsDlg::Contact List"
+msgstr "Список контактів"
+
+#: optionsdlg.cpp:675
+msgid "OptionsDlg::Controls whether or not the dockable icon should be displayed."
+msgstr "Контролює наявність піктограми у доку"
+
+#: optionsdlg.cpp:939
+msgid "OptionsDlg::Default Auto Response Messages"
+msgstr "Типові автовідповіді"
+
+#: optionsdlg.cpp:676
+msgid "OptionsDlg::Default Icon"
+msgstr "Типова піктограма"
+
+# #: optionsdlg.cpp:781
+# msgid "OptionsDlg::Default Server Port:"
+# msgstr "Типовий порт сервера:"
+# #: optionsdlg.cpp:782
+# msgid "OptionsDlg::Default port to connect to on the server (should be 4000)"
+# msgstr "Порт сервера, з якім з'єднуємося (повинен бути 4000)"
+# #: optionsdlg.cpp:785
+# msgid "OptionsDlg::Default"
+# msgstr "Типовий"
+#: optionsdlg.cpp:1184
+msgid "OptionsDlg::Determines if email pager messages are ignored or not."
+msgstr ""
+"Визначає ігнорувати чи ні повідомлення "
+"email-пейджера."
+
+#: optionsdlg.cpp:1178
+msgid "OptionsDlg::Determines if mass messages are ignored or not."
+msgstr ""
+"Визначає ігнорувати чи ні повідомлення до "
+"багатьох адресатів."
+
+#: optionsdlg.cpp:1175
+msgid ""
+"OptionsDlg::"
+"Determines if new users are automatically added "
+"to your list or must first request authorization."
+msgstr ""
+"Визначає повинні чи ні нові користувачі "
+"запитувати Вашої авторизації, або вони "
+"можуть бути додані до списку "
+"користувачів автоматично."
+
+#: optionsdlg.cpp:1181
+msgid "OptionsDlg::Determines if web panel messages are ignored or not."
+msgstr ""
+"Визначає ігнорувати чи ні повідомлення, "
+"відіслані через панель Тенет."
+
+#: optionsdlg.cpp:995
+msgid "OptionsDlg::Do Not Disturb"
+msgstr "Не турбувати"
+
+#: optionsdlg.cpp:670
+msgid "OptionsDlg::Docking"
+msgstr "Використовувати док"
+
+#: optionsdlg.cpp:1082
+msgid "OptionsDlg::Draw boxes around each square in the user list"
+msgstr ""
+"Визначає малювати чи ні рамку навколо "
+"кожного користувача у списку"
+
+#: optionsdlg.cpp:709
+msgid "OptionsDlg::Edit Font:"
+msgstr "Шрифт редактора:"
+
+#: optionsdlg.cpp:1132
+msgid "OptionsDlg::Email"
+msgstr "Адреса ел. пошти"
+
+#: optionsdlg.cpp:766
+msgid ""
+"OptionsDlg::"
+"Enable running of \"Command\" when the relevant "
+"event occurs."
+msgstr ""
+"Ввімкнути виконання команди, "
+"коли відбувається відповідна подія."
+
+#: optionsdlg.cpp:1160
+msgid "OptionsDlg::Extensions"
+msgstr "Розширення"
+
+#: optionsdlg.cpp:1134
+msgid "OptionsDlg::Fax"
+msgstr "Факс"
+
+#: optionsdlg.cpp:789
+msgid "OptionsDlg::File Transfer:"
+msgstr "Передача файлу:"
+
+#: optionsdlg.cpp:836
+msgid "OptionsDlg::Firewall"
+msgstr "Фаєрвол"
+
+# #: optionsdlg.cpp:1055
+# msgid "OptionsDlg::Flash Events"
+# msgstr "Блимання подій"
+# #: optionsdlg.cpp:1057
+# msgid "OptionsDlg::Flash Urgent Events"
+# msgstr "Блимання термінових подій"
+#: optionsdlg.cpp:712
+msgid "OptionsDlg::Font used in message editor etc."
+msgstr ""
+"Шрифт, що використовується у редакторі "
+"повідомлень та ін."
+
+#: optionsdlg.cpp:701
+msgid "OptionsDlg::Font"
+msgstr "Шрифт"
+
+#: optionsdlg.cpp:703
+msgid "OptionsDlg::Font:"
+msgstr "Шрифт:"
+
+#: optionsdlg.cpp:1042
+msgid "OptionsDlg::Format"
+msgstr "Формат"
+
+#: optionsdlg.cpp:1111
+msgid "OptionsDlg::Frame Style: "
+msgstr "Стиль рамки: "
+
+#: optionsdlg.cpp:954
+msgid "OptionsDlg::Free For Chat"
+msgstr "Вільний для розмови"
+
+#: optionsdlg.cpp:996
+msgid "OptionsDlg::Free for Chat"
+msgstr "Вільний для розмови"
+
+#: optionsdlg.cpp:91
+msgid "OptionsDlg::General"
+msgstr "Загальні"
+
+#: optionsdlg.cpp:1123
+msgid "OptionsDlg::Hot key: "
+msgstr "Наступне повідомлення: "
+
+#: optionsdlg.cpp:844
+msgid "OptionsDlg::I can receive direct connections"
+msgstr "Дозволити отримання прямих з'єднань"
+
+#: optionsdlg.cpp:1136
+msgid "OptionsDlg::IP"
+msgstr "IP"
+
+#: optionsdlg.cpp:631
+msgid ""
+"OptionsDlg::"
+"If not checked, a user will be automatically "
+"removed from \"New User\" group when you first"
+"send an event to them"
+msgstr ""
+"Якщо вимкнено, то користувача буде "
+"автоматично витерто з групи \"Нові "
+"користувачі\" після першого відсилання йому "
+"повідомлення будь-якого типу."
+
+#: optionsdlg.cpp:1183
+msgid "OptionsDlg::Ignore Email Pager"
+msgstr "Ігнорувати Email-пейджер"
+
+#: optionsdlg.cpp:1177
+msgid "OptionsDlg::Ignore Mass Messages"
+msgstr "Ігнорувати повідомлення до всіх користувачів"
+
+#: optionsdlg.cpp:1174
+msgid "OptionsDlg::Ignore New Users"
+msgstr "Ігнорувати нових користувачів"
+
+#: optionsdlg.cpp:1180
+msgid "OptionsDlg::Ignore Web Panel"
+msgstr "Ігнорувати панель Тенет"
+
+#: optionsdlg.cpp:1000
+msgid "OptionsDlg::Invisible"
+msgstr "Невидимий"
+
+#: optionsdlg.cpp:1137
+msgid "OptionsDlg::Last online"
+msgstr "Коли останній раз був в мережі"
+
+#: optionsdlg.cpp:1068
+msgid "OptionsDlg::Left"
+msgstr "Ліворуч"
+
+#: optionsdlg.cpp:644
+msgid ""
+"OptionsDlg::"
+"Lets you drag around the main window "
+"with your mouse"
+msgstr "Дозволяє пересування вікна за допомогою миша"
+
+#: optionsdlg.cpp:47
+msgid "OptionsDlg::Licq Options"
+msgstr "Licq - Параметри"
+
+# #: optionsdlg.cpp:778
+# msgid "OptionsDlg::List of servers to connect to (read-only for now)"
+# msgstr ""
+# "Список серверів для встановлення "
+# "з'єднання (поки що тільки для читання)"
+#: optionsdlg.cpp:651
+msgid "OptionsDlg::Locale"
+msgstr "Локаль"
+
+#: optionsdlg.cpp:611
+msgid "OptionsDlg::Main Window"
+msgstr "Головне вікно"
+
+#: optionsdlg.cpp:1095
+msgid ""
+"OptionsDlg::"
+"Make the user window transparent when there "
+"is no scroll bar"
+msgstr ""
+"Вікно користувачів стає прозорим, "
+"якщо немає стовпчика прокрутки"
+
+#: optionsdlg.cpp:630
+msgid "OptionsDlg::Manual \"New User\" group handling"
+msgstr ""
+"Ручна обробка групи \"Нові "
+"користувачі\""
+
+#: optionsdlg.cpp:798
+msgid "OptionsDlg::Message Sent:"
+msgstr "Повідомлення відіслано:"
+
+#: optionsdlg.cpp:780
+msgid "OptionsDlg::Message:"
+msgstr "Повідомлення:"
+
+#: optionsdlg.cpp:96
+msgid "OptionsDlg::Miscellaneous"
+msgstr "Різне"
+
+#: optionsdlg.cpp:1195
+msgid "OptionsDlg::N/A:"
+msgstr "Не наявний:"
+
+#: optionsdlg.cpp:94
+msgid "OptionsDlg::Network"
+msgstr "Мережа"
+
+#: optionsdlg.cpp:1020
+msgid "OptionsDlg::Never"
+msgstr "Ніколи"
+
+#: optionsdlg.cpp:993
+msgid "OptionsDlg::Not Available"
+msgstr "Не наявний"
+
+#: optionsdlg.cpp:1004
+msgid ""
+"OptionsDlg::"
+"Number of minutes of inactivity after which to "
+"automatically be marked \"away\".  Set to \"0\" "
+"to disable."
+msgstr ""
+"Тривалість часу не активності (у хвилинах), після "
+"якого Ваш стан автоматично "
+"змінюється на \"Відійшов\". Встановіть \"0\", щоб "
+"вимкнути цю можливість."
+
+#: optionsdlg.cpp:1010
+msgid ""
+"OptionsDlg::"
+"Number of minutes of inactivity after which to "
+"automatically be marked \"not available\".  Set to \"0\" "
+"to disable."
+msgstr ""
+"Тривалість часу не активності (у хвилинах), після "
+"якого Ваш стан автоматично "
+"змінюється на \"Не наявний\". Встановіть \"0\", щоб "
+"вимкнути цю можливість."
+
+#: optionsdlg.cpp:1016
+msgid ""
+"OptionsDlg::"
+"Number of minutes of inactivity after which to "
+"automatically go offline.  Set to \"0\" "
+"to disable."
+msgstr ""
+"Тривалість часу не активності (у хвилинах), після "
+"якого Ваш стан автоматично "
+"змінюється на \"Не в мережі\". Встановіть \"0\", щоб "
+"вимкнути цю можливість."
+
+#: optionsdlg.cpp:994
+msgid "OptionsDlg::Occupied"
+msgstr "Зайнято"
+
+#: optionsdlg.cpp:990
+msgid "OptionsDlg::Offline"
+msgstr "Не в мережі"
+
+#: optionsdlg.cpp:805
+msgid "OptionsDlg::OnEvent in Away"
+msgstr "у стані \"Відійшов\""
+
+#: optionsdlg.cpp:811
+msgid "OptionsDlg::OnEvent in DND"
+msgstr "у стані \"Не турбувати\""
+
+#: optionsdlg.cpp:807
+msgid "OptionsDlg::OnEvent in N/A"
+msgstr "у стані \"Не наявний\""
+
+#: optionsdlg.cpp:809
+msgid "OptionsDlg::OnEvent in Occupied"
+msgstr "у стані \"Зайнято\""
+
+#: optionsdlg.cpp:93
+msgid "OptionsDlg::OnEvent"
+msgstr "Команди на події"
+
+#: optionsdlg.cpp:762
+msgid "OptionsDlg::OnEvents Enabled"
+msgstr "Команди на події ввімкнено"
+
+#: optionsdlg.cpp:813
+msgid "OptionsDlg::Online Notify when Logging On"
+msgstr "Сповіщати при з'явленні в мережі"
+
+#: optionsdlg.cpp:792
+msgid "OptionsDlg::Online Notify:"
+msgstr "Сповістити:"
+
+#: optionsdlg.cpp:991
+msgid "OptionsDlg::Online"
+msgstr "У мережі"
+
+#: optionsdlg.cpp:1103
+msgid "OptionsDlg::Only urgent events will blink"
+msgstr "Тільки термінові події будуть блимати"
+
+# #: optionsdlg.cpp:1058
+# msgid "OptionsDlg::Only urgent events will flash"
+# msgstr ""
+# "Тільки піктограми \"Термінових\" "
+# "повідомлень будуть блимати"
+#: optionsdlg.cpp:1079
+msgid "OptionsDlg::Options"
+msgstr "Параметри"
+
+#: optionsdlg.cpp:1113
+msgid ""
+"OptionsDlg::"
+"Override the skin setting for the frame "
+"style of the user window:\n"
+"   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
+" + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
+" + 240 (Shadow)"
+msgstr ""
+"Користуватись вказаним стилем рамки\n"
+"   0 (рамки немає), 1 (коробка), 2 (панель), 3 "
+"(панель, як у Windows)\n"
+" + 16 (проста), 32 (піднята), 48 (занурена)\n"
+" + 240 (з тінню)"
+
+#: optionsdlg.cpp:793
+msgid "OptionsDlg::Parameter for online notification"
+msgstr ""
+"Параметри для сповіщення о з'явленні в "
+"мережі"
+
+#: optionsdlg.cpp:784
+msgid "OptionsDlg::Parameter for received URLs"
+msgstr "Параметри для URL, було отримано"
+
+#: optionsdlg.cpp:787
+msgid "OptionsDlg::Parameter for received chat requests"
+msgstr ""
+"Параметри для отриманих запитів на "
+"розмову"
+
+#: optionsdlg.cpp:790
+msgid "OptionsDlg::Parameter for received file transfers"
+msgstr ""
+"Параметри для отриманих запитів на передачу "
+"файлів"
+
+#: optionsdlg.cpp:781
+msgid "OptionsDlg::Parameter for received messages"
+msgstr "Параметри для отриманих повідомлень"
+
+#: optionsdlg.cpp:796
+msgid "OptionsDlg::Parameter for received system messages"
+msgstr ""
+"Параметри для отриманих системних "
+"повідомлень"
+
+#: optionsdlg.cpp:799
+msgid "OptionsDlg::Parameter for sent messages"
+msgstr "Параметри для відісланих повідомлень"
+
+#: optionsdlg.cpp:777
+msgid "OptionsDlg::Parameters"
+msgstr "Параметри"
+
+#: optionsdlg.cpp:1171
+msgid "OptionsDlg::Paranoia"
+msgstr "Параноя"
+
+#: optionsdlg.cpp:806
+msgid "OptionsDlg::Perform OnEvent command in away mode"
+msgstr ""
+"Виконувати команди на події у стані "
+"\"Відійшов\""
+
+#: optionsdlg.cpp:812
+msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
+msgstr ""
+"Виконувати команди на події у стані "
+"\"Не турбувати\""
+
+#: optionsdlg.cpp:808
+msgid "OptionsDlg::Perform OnEvent command in not available mode"
+msgstr ""
+"Виконувати команди на події у стані "
+"\"Не наявний\""
+
+#: optionsdlg.cpp:810
+msgid "OptionsDlg::Perform OnEvent command in occupied mode"
+msgstr ""
+"Виконувати команди на події у стані "
+"\"Зайнято\""
+
+#: optionsdlg.cpp:814
+msgid ""
+"OptionsDlg::"
+"Perform the online notify OnEvent "
+"when logging on (this is different from how the Mirabilis client works)"
+msgstr ""
+"Сповіщає про з'явлення користувача "
+"в мережі (Поведінка відрізняється від "
+"поведінки клієнту від Mirabilis)."
+
+#: optionsdlg.cpp:1133
+msgid "OptionsDlg::Phone"
+msgstr "Телефон"
+
+#: optionsdlg.cpp:1130
+msgid "OptionsDlg::Popup info"
+msgstr "Спливаюча інформація"
+
+#: optionsdlg.cpp:847
+msgid "OptionsDlg::Port Range:"
+msgstr "Діапазон портів"
+
+#: optionsdlg.cpp:638
+msgid ""
+"OptionsDlg::"
+"Position a new reply window just underneath "
+"the message view window"
+msgstr ""
+"Вікно відповіді буде знаходитись під "
+"вікном з повідомленням"
+
+#: optionsdlg.cpp:959
+msgid "OptionsDlg::Preset slot:"
+msgstr "Заготовки:"
+
+#: optionsdlg.cpp:1241
+msgid "OptionsDlg::Previous Message"
+msgstr "Попереднє повідомлення"
+
+#: optionsdlg.cpp:1069
+msgid "OptionsDlg::Right"
+msgstr "Праворуч"
+
+#: optionsdlg.cpp:872
+msgid ""
+"OptionsDlg::"
+"SOCKS5 support is built in but disabled.\n"
+"To enable it, set the SOCKS5_SERVER\n"
+"environment variable to <server>:<port>."
+msgstr ""
+"Підтримка SOCKS5 вбудована, але вимкнена.\n"
+"Щоб ввімкнути підтримку "
+"встановіть змінній оточення\n"
+"SOCKS5_SERVER значення <адреса сервера>:<номер "
+"порту>."
+
+#: optionsdlg.cpp:974
+msgid "OptionsDlg::Save"
+msgstr "Зберегти"
+
+#: optionsdlg.cpp:711
+msgid "OptionsDlg::Select Font"
+msgstr "Виберіть шрифт"
+
+#: optionsdlg.cpp:706
+msgid "OptionsDlg::Select a font from the system list"
+msgstr "Виберіть шрифт з списку"
+
+#: optionsdlg.cpp:678
+msgid ""
+"OptionsDlg::"
+"Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
+"and a shorter 64x48 icon for use in the Gnome/KDE panel."
+msgstr ""
+"Вибір між піктограмою розміром 64x64, "
+"що використовується в доку WindowMaker/Afterstep та "
+"зменшеною піктограмою розміром 64x48, "
+"що використовується у панелі Gnome/KDE."
+
+#: optionsdlg.cpp:832
+msgid "OptionsDlg::Server settings"
+msgstr "Установки сервера"
+
+# #: optionsdlg.cpp:776
+# msgid "OptionsDlg::Servers:"
+# msgstr "Сервери:"
+#: optionsdlg.cpp:618
+msgid ""
+"OptionsDlg::"
+"Sets the default behavior for auto closing "
+"the user function window after a succesful event"
+msgstr ""
+"Встановлює типову поведінку для автоматичного "
+"закриття вікон, якщо не виникло ніяких помилок."
+
+#: optionsdlg.cpp:653
+msgid ""
+"OptionsDlg::"
+"Sets which translation table should be used for "
+"translating characters."
+msgstr ""
+"Встановлює таблицю перекодування, "
+"що буде використовуватись."
+
+#: optionsdlg.cpp:1083
+msgid "OptionsDlg::Show Column Headers"
+msgstr "Показувати заголовки стовпчиків"
+
+#: optionsdlg.cpp:1106
+msgid "OptionsDlg::Show Extended Icons"
+msgstr "Показувати додаткові піктограми"
+
+#: optionsdlg.cpp:1081
+msgid "OptionsDlg::Show Grid Lines"
+msgstr "Показувати ґратку"
+
+#: optionsdlg.cpp:1086
+msgid "OptionsDlg::Show User Dividers"
+msgstr "Показувати подільники користувачів"
+
+#: optionsdlg.cpp:1107
+msgid ""
+"OptionsDlg::"
+"Show birthday, invisible, and custom auto response "
+"icons to the right of users in the list"
+msgstr ""
+"Показувати додаткові піктограми (день "
+"народження, не видимий, нетипова "
+"автовідповідь) праворуч від ім'я користувача."
+
+#: optionsdlg.cpp:614
+msgid "OptionsDlg::Show group name if no messages"
+msgstr ""
+"Показувати назву групи\n"
+"коли нема повідомлень"
+
+#: optionsdlg.cpp:1092
+msgid ""
+"OptionsDlg::"
+"Show online notify users who are offline even "
+"when offline users are hidden."
+msgstr ""
+"Показувати користувачів, для "
+"яких ввімкнено сповіщення про з'явлення в мережі"
+" та які зараз не в мережі, "
+"навіть якщо ввімкнено заборону "
+"на відображення користувачів, які не в мережі."
+
+#: optionsdlg.cpp:1087
+msgid ""
+"OptionsDlg::"
+"Show the \"--online--\" and \"--offline--\" bars "
+"in the contact list"
+msgstr ""
+"Показувати роздільники \"-- Не в мережі --\" та \"-- "
+"В мережі --\" у списку контактів"
+
+#: optionsdlg.cpp:648
+msgid "OptionsDlg::Show the current chat history in Send Window"
+msgstr "Показує попередні повідомлення у вікні для надсилання повідомлень"
+
+#: optionsdlg.cpp:615
+msgid ""
+"OptionsDlg::"
+"Show the name of the current group in the "
+"messages label when there are no new messages"
+msgstr ""
+"Показувати назву поточної групи, якщо "
+"немає нових повідомлень"
+
+#: optionsdlg.cpp:1089
+msgid "OptionsDlg::Sort Online Users by Status"
+msgstr ""
+"Упорядковувати користувачів,\n"
+"що в мережі, за станом"
+
+#: optionsdlg.cpp:1090
+msgid "OptionsDlg::Sort all online users by their actual status"
+msgstr ""
+"Упорядковує всіх користувачів, що в "
+"мережі, за їх фактичним станом"
+
+#: optionsdlg.cpp:626
+msgid "OptionsDlg::Start Hidden"
+msgstr "Запускатись у доку"
+
+#: optionsdlg.cpp:984
+msgid "OptionsDlg::Startup"
+msgstr "При старті"
+
+#: optionsdlg.cpp:95
+msgid "OptionsDlg::Status"
+msgstr "Стан"
+
+#: optionsdlg.cpp:945
+msgid "OptionsDlg::Status:"
+msgstr "Стан:"
+
+#: optionsdlg.cpp:795
+msgid "OptionsDlg::System Msg:"
+msgstr "Сист. повідомлення:"
+
+#: optionsdlg.cpp:849
+msgid "OptionsDlg::TCP port range for incoming connections."
+msgstr ""
+"Діапазон TCP портів для вхідних "
+"повідомлень."
+
+#: optionsdlg.cpp:1168
+msgid "OptionsDlg::Terminal:"
+msgstr "Термінал:"
+
+#: optionsdlg.cpp:966
+msgid "OptionsDlg::Text:"
+msgstr "Текст:"
+
+#: optionsdlg.cpp:1049
+msgid "OptionsDlg::The alignment of the column"
+msgstr "Вирівнювання стовпчиків"
+
+#: optionsdlg.cpp:1169
+msgid "OptionsDlg::The command to run to start your terminal program."
+msgstr "Команда, що стартує вашу програму термінала."
+
+#: optionsdlg.cpp:1164
+msgid ""
+"OptionsDlg::"
+"The command to run to view a URL.  Will be passed the URL "
+"as a parameter."
+msgstr ""
+"Команда для перегляду URL. URL буде передано "
+"як параметр."
+
+#: optionsdlg.cpp:702
+msgid "OptionsDlg::The fonts used"
+msgstr "Шрифти, що використовуються"
+
+#: optionsdlg.cpp:1043
+msgid ""
+"OptionsDlg::"
+"The format string used to define what will "
+"appear in each column.\n"
+"The following parameters can be used:\n"
+msgstr ""
+"Рядок, який визначає, що буде "
+"відображатись в кожному стовпчику.\n"
+"Можуть бути використані наступні "
+"значення:\n"
+
+#: optionsdlg.cpp:625
+msgid "OptionsDlg::The main window will raise on incoming messages"
+msgstr ""
+"Головне вікно буде \"виринати\", коли "
+"прийшло повідомлення"
+
+#: optionsdlg.cpp:627
+msgid "OptionsDlg::The main window will start hidden. Only the dock icon will be visible."
+msgstr "Під час запуску головне вікно буде сховано. Буде відображено тільки піктограму у доці."
+
+#: optionsdlg.cpp:629
+msgid "OptionsDlg::The message info label will be bold if there are incoming messages"
+msgstr ""
+"Користувача буде виділено жирним "
+"шрифтом, якщо є повідомлення від нього"
+
+#: optionsdlg.cpp:1041
+msgid "OptionsDlg::The string which will appear in the list box column header"
+msgstr ""
+"Текст, який буде надруковано у "
+"заголовку стовпчиків"
+
+#: optionsdlg.cpp:1047
+msgid "OptionsDlg::The width of the column"
+msgstr "Ширина стовпчика"
+
+#: optionsdlg.cpp:683
+msgid "OptionsDlg::Theme:"
+msgstr "Тема:"
+
+#: optionsdlg.cpp:680
+msgid "OptionsDlg::Themed Icon"
+msgstr "Піктограма з темою"
+
+#: optionsdlg.cpp:1040
+msgid "OptionsDlg::Title"
+msgstr "Заголовок"
+
+#: optionsdlg.cpp:881
+msgid ""
+"OptionsDlg::"
+"To enable socks proxy support, install NEC Socks or Dante\n"
+"then configure the Licq daemon with \"--enable-socks5\"."
+msgstr ""
+"Щоб дозволити підтримку проксі сервера SOCKS, "
+"встановіть NEC SOCKS або Dante\n"
+"та налаштуйте licq демона з ключем "
+"\"--enable-socks5\"."
+
+#: optionsdlg.cpp:652
+msgid "OptionsDlg::Translation:"
+msgstr "Перекодування:"
+
+#: optionsdlg.cpp:1094
+msgid "OptionsDlg::Transparent when possible"
+msgstr "Прозоре, якщо можливо"
+
+#: optionsdlg.cpp:1084
+msgid ""
+"OptionsDlg::"
+"Turns on or off the display of headers above "
+"each column in the user list"
+msgstr ""
+"Вмикає та вимикає відображення назв "
+"стовпчиків у списку користувачів"
+
+#: optionsdlg.cpp:783
+msgid "OptionsDlg::URL:"
+msgstr "URL:"
+
+#: optionsdlg.cpp:1163
+msgid "OptionsDlg::Url Viewer:"
+msgstr "Переглядач URL-ів:"
+
+#: optionsdlg.cpp:674
+msgid "OptionsDlg::Use Dock Icon"
+msgstr "Використовувати піктограмою у доку"
+
+#: optionsdlg.cpp:1097
+msgid "OptionsDlg::Use Font Styles"
+msgstr "Використовувати стилі шрифтів"
+
+#: optionsdlg.cpp:1120
+msgid "OptionsDlg::Use System Background Color"
+msgstr "Використовувати типове тло"
+
+#: optionsdlg.cpp:1098
+msgid ""
+"OptionsDlg::"
+"Use italics and bold in the user list to "
+"indicate special characteristics such as online notify and visible list"
+msgstr ""
+"Використовувати жирний шрифт або курсив "
+"у списку користувачів, щоб "
+"вказувати спеціальні характеристики, "
+"такі як сповіщення про з'явлення в "
+"мережі та "
+"знаходження в списку видимості"
+
+#: optionsdlg.cpp:635
+msgid ""
+"OptionsDlg::"
+"When double-clicking on a user to send a message "
+"check for urls/files in the clipboard"
+msgstr ""
+"Перевіряти буфер обміну на наявність URL або "
+"файлів, коли користувач намагається відіслати "
+"повідомлення."
+
+#: optionsdlg.cpp:1046
+msgid "OptionsDlg::Width"
+msgstr "Ширина"
+
+#: optionsdlg.cpp:853
+msgid "OptionsDlg::\tto"
+msgstr "\tдо"
+
+#: optionsdlg.cpp:561
+msgid "OptionsDlg::default (%1)"
+msgstr "типовий (%1)"
+
+#: optionsdlg.cpp:373
+msgid "OptionsDlg::default"
+msgstr "типовий"
+
+#: optionsdlg.cpp:660
+msgid "OptionsDlg::none"
+msgstr "без перекодування"
+
+#: passworddlg.cpp:53
+msgid "PasswordDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: passworddlg.cpp:37
+msgid "PasswordDlg::&Password:"
+msgstr "&Пароль:"
+
+#: passworddlg.cpp:38
+msgid "PasswordDlg::&Verify:"
+msgstr "&Ще раз:"
+
+#: passworddlg.cpp:41
+msgid "PasswordDlg::Enter your ICQ password here."
+msgstr "Введіть тут ваш пароль ICQ."
+
+#: passworddlg.cpp:94
+msgid "PasswordDlg::ICQ Password [Setting...]"
+msgstr "Пароль ICQ [Встановлюється...]"
+
+#: passworddlg.cpp:81
+msgid "PasswordDlg::Invalid password, must be 8 characters or less."
+msgstr "Пароль повинен бути не більше 8 символів."
+
+#: passworddlg.cpp:31
+msgid "PasswordDlg::Licq - Set Password"
+msgstr "Licq - Встановлення пароля"
+
+#: passworddlg.cpp:34
+msgid "PasswordDlg::Password"
+msgstr "Пароль"
+
+#: passworddlg.cpp:86
+msgid "PasswordDlg::Passwords do not match, try again."
+msgstr "Паролі не збігаються, спробуйте ще раз."
+
+#: passworddlg.cpp:122
+msgid "PasswordDlg::Set Password [Setting..."
+msgstr "Пароль ICQ [Встановлюється..."
+
+#: passworddlg.cpp:125
+msgid "PasswordDlg::Set Password"
+msgstr "Встановити пароль ICQ"
+
+#: passworddlg.cpp:44
+msgid "PasswordDlg::Verify your ICQ password here."
+msgstr "Введіть тут свій пароль ICQ для перевірки."
+
+#: passworddlg.cpp:115
+msgid "PasswordDlg::error"
+msgstr "помилка"
+
+#: passworddlg.cpp:109
+msgid "PasswordDlg::failed"
+msgstr "невдача"
+
+#: passworddlg.cpp:112
+msgid "PasswordDlg::timed out"
+msgstr "час очікування було перевищено"
+
+#: plugindlg.cpp:50
+msgid "PluginDlg::Available"
+msgstr "Наявні"
+
+#: plugindlg.cpp:41
+msgid "PluginDlg::Configure"
+msgstr "Налаштування"
+
+#: plugindlg.cpp:30
+msgid "PluginDlg::Description"
+msgstr "Опис"
+
+#: plugindlg.cpp:39
+msgid "PluginDlg::Details"
+msgstr "Подробиці"
+
+#: plugindlg.cpp:35
+msgid "PluginDlg::Disable"
+msgstr "Вимкнути"
+
+#: plugindlg.cpp:61
+msgid "PluginDlg::Done"
+msgstr "Завершено"
+
+#: plugindlg.cpp:33
+msgid "PluginDlg::Enable"
+msgstr "Ввімкнути"
+
+#: plugindlg.cpp:26
+msgid "PluginDlg::Id"
+msgstr "Id"
+
+#: plugindlg.cpp:137
+msgid "PluginDlg::Licq Plugin %1 %2\n"
+msgstr "Додаток Licq %1 %2\n"
+
+#: plugindlg.cpp:54
+msgid "PluginDlg::Load"
+msgstr "Завантажити"
+
+#: plugindlg.cpp:23
+msgid "PluginDlg::Loaded"
+msgstr "Завантажені"
+
+#: plugindlg.cpp:27
+msgid "PluginDlg::Name"
+msgstr "Ім'я"
+
+#: plugindlg.cpp:178
+msgid "PluginDlg::Plugin %1 has no configuration file"
+msgstr "Додаток %1 не використовує конфігураційний файл"
+
+#: plugindlg.cpp:58
+msgid "PluginDlg::Refresh"
+msgstr "Поновити"
+
+#: plugindlg.cpp:29
+msgid "PluginDlg::Status"
+msgstr "Стан"
+
+#: plugindlg.cpp:37
+msgid "PluginDlg::Unload"
+msgstr "Вивантажити"
+
+#: plugindlg.cpp:28
+msgid "PluginDlg::Version"
+msgstr "Версія"
+
+#: ewidgets.cpp:75
+msgid "QMessageBox::Licq Error"
+msgstr "Помилка Licq"
+
+#: ewidgets.cpp:55
+msgid "QMessageBox::Licq Information"
+msgstr "Інформація Licq"
+
+#: ewidgets.cpp:45
+msgid "QMessageBox::Licq Question"
+msgstr "Запитання Licq"
+
+#: ewidgets.cpp:65
+msgid "QMessageBox::Licq Warning"
+msgstr "Попередження Licq"
+
+#: chatdlg.cpp:862
+msgid "QString::Failed to open file:\n%1"
+msgstr ""
+"Не можу відкрити файл:\n"
+"%1"
+
+#: registeruser.cpp:42
+msgid "RegisterUserDlg::&Register Existing User"
+msgstr ""
+"&Зареєструвати вже існуючого "
+"користувача"
+
+#: registeruser.cpp:143
+msgid "RegisterUserDlg::Invalid UIN.  Try again."
+msgstr "Невірний ідентифікаційний номер. Спробуйте ще раз."
+
+#: registeruser.cpp:82
+msgid "RegisterUserDlg::Licq User Registration"
+msgstr "Licq :: Реєстрація користувача"
+
+#: registeruser.cpp:126
+msgid ""
+"RegisterUserDlg::"
+"Now please click 'Finish' to start "
+"the registration process."
+msgstr ""
+"Зараз натисніть 'Завершити', щоб "
+"почати процес реєстрації."
+
+#: registeruser.cpp:120
+msgid ""
+"RegisterUserDlg::"
+"Now please press the 'Back' button "
+"and try again."
+msgstr ""
+"Зараз натисніть 'Назад' та спробуйте ще "
+"раз."
+
+#: registeruser.cpp:51
+msgid "RegisterUserDlg::Password:"
+msgstr "Пароль:"
+
+#: registeruser.cpp:109
+msgid "RegisterUserDlg::Please enter your password in both input fields."
+msgstr ""
+"Введіть, будь ласка, пароль в обидва поля "
+"вводу."
+
+#: registeruser.cpp:150
+msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
+msgstr ""
+"Реєстрація вдалась. Зараз "
+"зайдіть до мережі та поновити інформацію про "
+"себе."
+
+#: registeruser.cpp:114
+msgid "RegisterUserDlg::The passwords don't seem to match."
+msgstr "Паролі не співпадають."
+
+#: registeruser.cpp:60
+msgid "RegisterUserDlg::UIN Registration - Step 2"
+msgstr "Реєстрація ідентифікаційного номера - Крок 2"
+
+#: registeruser.cpp:75
+msgid "RegisterUserDlg::UIN Registration - Step 3"
+msgstr "Реєстрація ідентифікаційного номера - Крок 3"
+
+#: registeruser.cpp:34
+msgid "RegisterUserDlg::UIN Registration"
+msgstr "Реєстрація ідентифікаційного номера"
+
+#: registeruser.cpp:46
+msgid "RegisterUserDlg::Uin:"
+msgstr "Ідентифікаційний номер:"
+
+#: registeruser.cpp:155
+msgid "RegisterUserDlg::User Registration in Progress..."
+msgstr "Реєстрація користувача..."
+
+#: registeruser.cpp:56
+msgid "RegisterUserDlg::Verify:"
+msgstr "Ще раз:"
+
+#: registeruser.cpp:25
+msgid ""
+"RegisterUserDlg::"
+"Welcome to the Registration Wizard.\n\n"
+"You can register a new user here, or configure "
+"Licq to use an existing UIN.\n\n"
+"If you are registering a new uin, choose "
+"a password and click \"Finish\".\n"
+"If you already have a uin, then toggle \"Register Existing User\",\n"
+"enter your uin and your password, and click \"OK\"\n\n"
+"Press \"Next\" to proceed."
+msgstr ""
+"Ласкаво просимо до майстра реєстрації.\n"
+"\n"
+"Тут ви можете зареєструвати нового "
+"користувача або\n"
+"налаштувати Licq для використання "
+"вже зареєстрованого користувача.\n"
+"\n"
+"Виберіть та введіть пароль та натисніть \"Закінчити\", "
+"якщо Ви реєструєте нового "
+"користувача.\n"
+"А якщо Ви вже маєте ідентифікаційний номер, то ввімкніть "
+"\"Зареєструвати вже існуючого "
+"користувача\",\n"
+"введіть ваш номер, пароль та натисніть \"Гаразд\"\n"
+"\n"
+"Натисніть \"Наступний\", щоб продовжити."
+
+#: registeruser.cpp:103
+msgid ""
+"RegisterUserDlg::"
+"You need to enter a valid UIN when you "
+"try to register an existing user. "
+msgstr ""
+"Ви маєте ввести вірний ідентифікаційний номер, якщо Ви "
+"бажаєте зареєструвати вже існуючого "
+"користувача. "
+
+#: searchuserdlg.cpp:354
+msgid "SearchUserDlg::%1 more users found. Narrow search."
+msgstr ""
+"Знайдено %1 користувачів. Обмежте "
+"пошук."
+
+#: searchuserdlg.cpp:388
+msgid "SearchUserDlg::&Add %1 Users"
+msgstr "&Додати (%1)"
+
+#: searchuserdlg.cpp:385
+msgid "SearchUserDlg::&Add User"
+msgstr "&Додати користувача"
+
+#: searchuserdlg.cpp:195
+msgid "SearchUserDlg::&Done"
+msgstr "&Закрити"
+
+#: searchuserdlg.cpp:171
+msgid "SearchUserDlg::&Email"
+msgstr "За &ел. поштою"
+
+#: searchuserdlg.cpp:186
+msgid "SearchUserDlg::&Search"
+msgstr "&Шукати"
+
+#: searchuserdlg.cpp:181
+msgid "SearchUserDlg::&Uin#"
+msgstr "За &ідентифікаційним номером"
+
+#: searchuserdlg.cpp:161
+msgid "SearchUserDlg::&Whitepages"
+msgstr "За &параметрами"
+
+#: searchuserdlg.cpp:108
+msgid "SearchUserDlg::18 - 22"
+msgstr "18 - 22"
+
+#: searchuserdlg.cpp:109
+msgid "SearchUserDlg::23 - 29"
+msgstr "23 - 29"
+
+#: searchuserdlg.cpp:110
+msgid "SearchUserDlg::30 - 39"
+msgstr "30 - 39"
+
+#: searchuserdlg.cpp:111
+msgid "SearchUserDlg::40 - 49"
+msgstr "40 - 49"
+
+#: searchuserdlg.cpp:112
+msgid "SearchUserDlg::50 - 59"
+msgstr "50 - 59"
+
+#: searchuserdlg.cpp:113
+msgid "SearchUserDlg::69+"
+msgstr "69+"
+
+#: searchuserdlg.cpp:215
+msgid "SearchUserDlg::A&lert User"
+msgstr "&Повідомити користувача"
+
+#: searchuserdlg.cpp:105
+msgid "SearchUserDlg::Age Range:"
+msgstr "Вік:"
+
+#: searchuserdlg.cpp:96
+msgid "SearchUserDlg::Alias:"
+msgstr "Прізвисько:"
+
+#: searchuserdlg.cpp:251
+msgid "SearchUserDlg::Cancel"
+msgstr "Скасувати"
+
+#: searchuserdlg.cpp:133
+msgid "SearchUserDlg::City:"
+msgstr "Місто:"
+
+#: searchuserdlg.cpp:150
+msgid "SearchUserDlg::Company Department:"
+msgstr "Відділ компанії:"
+
+#: searchuserdlg.cpp:147
+msgid "SearchUserDlg::Company Name:"
+msgstr "Назва компанії:"
+
+#: searchuserdlg.cpp:153
+msgid "SearchUserDlg::Company Position:"
+msgstr "Посада:"
+
+#: searchuserdlg.cpp:140
+msgid "SearchUserDlg::Country:"
+msgstr "Країна:"
+
+#: searchuserdlg.cpp:167
+msgid "SearchUserDlg::Email Address:"
+msgstr "Адреса електронної пошти:"
+
+#: searchuserdlg.cpp:316
+msgid "SearchUserDlg::Enter search parameters and select 'Search'"
+msgstr ""
+"Введіть параметри пошуку та натисніть "
+"'Пошук'"
+
+#: searchuserdlg.cpp:119
+msgid "SearchUserDlg::Female"
+msgstr "Жіноча"
+
+#: searchuserdlg.cpp:99
+msgid "SearchUserDlg::First Name:"
+msgstr "Ім'я:"
+
+#: searchuserdlg.cpp:116
+msgid "SearchUserDlg::Gender:"
+msgstr "Стать:"
+
+#: searchuserdlg.cpp:124
+msgid "SearchUserDlg::Language:"
+msgstr "Мова:"
+
+#: searchuserdlg.cpp:102
+msgid "SearchUserDlg::Last Name:"
+msgstr "Призвище:"
+
+#: searchuserdlg.cpp:78
+msgid "SearchUserDlg::Licq - User Search"
+msgstr "Licq - Пошук користувачів"
+
+#: searchuserdlg.cpp:120
+msgid "SearchUserDlg::Male"
+msgstr "Чоловіча"
+
+# #: searchuserdlg.cpp:110
+# msgid "SearchUserDlg::Maximum Age:"
+# msgstr "Максимальний вік:"
+# #: searchuserdlg.cpp:106
+# msgid "SearchUserDlg::Minimum Age:"
+# msgstr "Мінімальний вік:"
+#: searchuserdlg.cpp:352
+msgid "SearchUserDlg::More users found. Narrow search."
+msgstr ""
+"Знайдено занадто багато користувачів. Обмежить "
+"пошук."
+
+#: searchuserdlg.cpp:365
+msgid "SearchUserDlg::Reset Search"
+msgstr "Очистити все"
+
+#: searchuserdlg.cpp:158
+msgid "SearchUserDlg::Return Online Users Only"
+msgstr ""
+"Шукати тільки серед користувачів, "
+"які зараз в мережі"
+
+#: searchuserdlg.cpp:363
+msgid "SearchUserDlg::Search failed."
+msgstr "Пошук невдалий."
+
+#: searchuserdlg.cpp:287
+msgid "SearchUserDlg::Searching (this can take awhile)..."
+msgstr "Шукаю (це може зайняти деякий час)..."
+
+#: searchuserdlg.cpp:136
+msgid "SearchUserDlg::State:"
+msgstr "Штат:"
+
+#: searchuserdlg.cpp:176
+msgid "SearchUserDlg::UIN#:"
+msgstr "Ідентифікаційний номер:"
+
+#: searchuserdlg.cpp:118
+msgid "SearchUserDlg::Unspecified"
+msgstr "Не вказано"
+
+#: searchuserdlg.cpp:39
+msgid "SearchUserView::Alias"
+msgstr "Прізвисько"
+
+#: searchuserdlg.cpp:43
+msgid "SearchUserView::Email"
+msgstr "Електронна пошта"
+
+#: searchuserdlg.cpp:42
+msgid "SearchUserView::Name"
+msgstr "Ім'я"
+
+#: searchuserdlg.cpp:40
+msgid "SearchUserView::UIN"
+msgstr "Ідентифікаційний номер"
+
+#: securitydlg.cpp:52
+msgid "SecurityDlg::&Cancel"
+msgstr "&Скасувати"
+
+#: securitydlg.cpp:49
+msgid "SecurityDlg::&Update"
+msgstr "&Поновити"
+
+#: securitydlg.cpp:36
+msgid "SecurityDlg::Authorization Required"
+msgstr "Вимагати авторизацію"
+
+#: securitydlg.cpp:37
+msgid ""
+"SecurityDlg::"
+"Determines whether regular ICQ clients "
+"require your authorization to add you to "
+"their contact list."
+msgstr ""
+"Визначає, чи будуть звичайні ICQ-клієнти "
+"питати про Вашу згоду, щоб додати Вас до "
+"своїх списків контактів."
+
+# #: securitydlg.cpp:43
+# msgid "SecurityDlg::Hide IP"
+# msgstr "Приховувати IP"
+#: securitydlg.cpp:44
+msgid "SecurityDlg::Hide IP stops users from seeing your IP address. It doesn't guarantee it will be hidden though."
+msgstr ""
+"Приховування IP не дає користувачам бачити вашу IP адресу. "
+"Але немає ніякої, що вашу IP адресу не визначать якимось іншим "
+"чином."
+
+#: securitydlg.cpp:43
+msgid "SecurityDlg::Hide IP"
+msgstr "Приховувати IP адресу"
+
+# #: securitydlg.cpp:44
+# msgid "SecurityDlg::Hiding ip stops users from seeing your ip."
+# msgstr ""
+# "Приховування IP не дає іншим "
+# "користувачам бачити Вашу IP адресу."
+#: securitydlg.cpp:130
+msgid "SecurityDlg::ICQ Security Options [Setting..."
+msgstr ""
+"Параметри безпеки ICQ "
+"[Встановлюються..."
+
+#: securitydlg.cpp:102
+msgid "SecurityDlg::ICQ Security Options [Setting...]"
+msgstr ""
+"Параметри безпеки ICQ "
+"[Встановлюються...]"
+
+#: securitydlg.cpp:133
+msgid "SecurityDlg::ICQ Security Options"
+msgstr "Параметри безпеки ICQ"
+
+#: securitydlg.cpp:32
+msgid "SecurityDlg::Options"
+msgstr "Параметри"
+
+# #: securitydlg.cpp:40
+# msgid "SecurityDlg::Web Presence"
+# msgstr "Наявність через Тенет"
+#: securitydlg.cpp:41
+msgid ""
+"SecurityDlg::"
+"Web Presence allows users to see if you are online "
+"through your web indicator."
+msgstr ""
+"Наявність через Тенет дозволяє користувачам "
+"бачити, що Ви в мережі, через індикатор Тенет."
+
+#: securitydlg.cpp:40
+msgid "SecurityDlg::Web Presence"
+msgstr "Наявність через Тенет"
+
+# #: securitydlg.cpp:41
+# msgid ""
+# "SecurityDlg::Web presence allows users to see if you are online through your "
+# "web indicator."
+# msgstr ""
+# "Наявність через Тенет дозволяє користувачам "
+# "бачити, що Ви в мережі, через індикатор Тенет."
+#: securitydlg.cpp:91
+msgid ""
+"SecurityDlg::"
+"You need to be connected to the\n"
+"ICQ Network to change the settings."
+msgstr ""
+"Ви повинні ввійти до мережі ICQ,\n"
+"щоб мати можливість змінити установки."
+
+#: securitydlg.cpp:123
+msgid "SecurityDlg::error"
+msgstr "помилка"
+
+#: securitydlg.cpp:117
+msgid "SecurityDlg::failed"
+msgstr "невдача"
+
+#: securitydlg.cpp:120
+msgid "SecurityDlg::timed out"
+msgstr "таймаут"
+
+#: showawaymsgdlg.cpp:51
+msgid "ShowAwayMsgDlg::%1 Response for %2"
+msgstr "'%1' відповідь для '%2'"
+
+#: showawaymsgdlg.cpp:53
+msgid "ShowAwayMsgDlg::&Ok"
+msgstr "&Гаразд"
+
+#: showawaymsgdlg.cpp:41
+msgid "ShowAwayMsgDlg::&Show Again"
+msgstr "&Показати знову"
+
+#: showawaymsgdlg.cpp:123
+msgid "ShowAwayMsgDlg::error"
+msgstr "помилка"
+
+#: showawaymsgdlg.cpp:117
+msgid "ShowAwayMsgDlg::failed"
+msgstr "невдача"
+
+#: showawaymsgdlg.cpp:120
+msgid "ShowAwayMsgDlg::timed out"
+msgstr "таймаут"
+
+#: skinbrowser.cpp:38
+msgid "SkinBrowserDlg::&Apply"
+msgstr "&Застосувати"
+
+#: skinbrowser.cpp:57
+msgid "SkinBrowserDlg::&Done"
+msgstr "&Закрити"
+
+#: skinbrowser.cpp:39
+msgid "SkinBrowserDlg::&Edit"
+msgstr "&Редагувати"
+
+#: skinbrowser.cpp:53
+msgid "SkinBrowserDlg::A&pply"
+msgstr "З&астосувати"
+
+#: skinbrowser.cpp:85
+msgid "SkinBrowserDlg::Error"
+msgstr "Помилка"
+
+#: skinbrowser.cpp:41
+msgid "SkinBrowserDlg::Icons"
+msgstr "Піктограми"
+
+#: skinbrowser.cpp:62
+msgid "SkinBrowserDlg::Licq Skin Browser"
+msgstr "Вибір зовнішнього вигляду Licq"
+
+#: skinbrowser.cpp:44
+msgid "SkinBrowserDlg::Name"
+msgstr "Ім'я"
+
+#: skinbrowser.cpp:25
+msgid "SkinBrowserDlg::Skins"
+msgstr "Вигляд"
+
+#: usereventdlg.cpp:106
+msgid "UserEventCommon::Change user text encoding"
+msgstr "Змінити кодування користувача"
+
+#: usereventdlg.cpp:91
+msgid "UserEventCommon::Secure channel information"
+msgstr "Інформація про параметри безпеки"
+
+#: usereventdlg.cpp:96
+msgid "UserEventCommon::Show User History"
+msgstr "Показати архів повідомлень"
+
+#: usereventdlg.cpp:101
+msgid "UserEventCommon::Show User Info"
+msgstr "Показати інформацію про користувача"
+
+#: usereventdlg.cpp:80
+msgid "UserEventCommon::Status:"
+msgstr "Стан:"
+
+#: usereventdlg.cpp:107
+msgid "UserEventCommon::This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language."
+msgstr ""
+"За допомогою цієї кнопки встановлюється кодування, яке "
+"буде використовуватись при спілкуванні з цим користувачем. "
+"Моливо вам потрібно буде змінити кодування, щоб спілкуватись "
+"на інший мові."
+
+#: usereventdlg.cpp:84
+msgid "UserEventCommon::Time:"
+msgstr "Час:"
+
+#: usereventdlg.cpp:179
+msgid "UserEventCommon::Unknown"
+msgstr "Невідомо"
+
+#: userinfodlg.cpp:440
+msgid "UserInfoDlg:: Day:"
+msgstr " День:"
+
+#: userinfodlg.cpp:443
+msgid "UserInfoDlg:: Month:"
+msgstr " Місяць:"
+
+#: userinfodlg.cpp:446
+msgid "UserInfoDlg:: Year:"
+msgstr " Рік:"
+
+#: userinfodlg.cpp:1024
+msgid "UserInfoDlg::%1 from %2"
+msgstr "%1 від %2"
+
+#: userinfodlg.cpp:1024
+msgid "UserInfoDlg::%1 to %1"
+msgstr "%1 до %1"
+
+#: userinfodlg.cpp:683
+msgid "UserInfoDlg::&About"
+msgstr "&Про себе"
+
+#: userinfodlg.cpp:77
+msgid "UserInfoDlg::&Close"
+msgstr "&Закрити"
+
+#: userinfodlg.cpp:856
+msgid "UserInfoDlg::&Filter: "
+msgstr "&Фільтр: "
+
+#: userinfodlg.cpp:189
+msgid "UserInfoDlg::&General"
+msgstr "&Загальна"
+
+#: userinfodlg.cpp:830
+msgid "UserInfoDlg::&History"
+msgstr "&Архів"
+
+#: userinfodlg.cpp:737
+msgid "UserInfoDlg::&Last"
+msgstr "&Останні події"
+
+#: userinfodlg.cpp:90
+msgid "UserInfoDlg::&Menu"
+msgstr "&Меню"
+
+#: userinfodlg.cpp:402
+msgid "UserInfoDlg::&More"
+msgstr "&Додаткова"
+
+#: userinfodlg.cpp:1127
+msgid "UserInfoDlg::&Save"
+msgstr "&Зберегти"
+
+#: userinfodlg.cpp:1126
+msgid "UserInfoDlg::&Update"
+msgstr "&Поновити"
+
+#: userinfodlg.cpp:605
+msgid "UserInfoDlg::&Work"
+msgstr "Про робо&ту"
+
+#: userinfodlg.cpp:692
+msgid "UserInfoDlg::About:"
+msgstr "Про себе:"
+
+#: userinfodlg.cpp:636
+msgid "UserInfoDlg::Address:"
+msgstr "Адреса:"
+
+#: userinfodlg.cpp:413
+msgid "UserInfoDlg::Age:"
+msgstr "Вік:"
+
+#: userinfodlg.cpp:200
+msgid "UserInfoDlg::Alias:"
+msgstr "Прізвисько:"
+
+#: userinfodlg.cpp:571
+msgid "UserInfoDlg::Authorization Not Required"
+msgstr "Авторизація не вимагається"
+
+#: userinfodlg.cpp:569
+msgid "UserInfoDlg::Authorization Required"
+msgstr "Необхідна авторизація"
+
+#: userinfodlg.cpp:435
+msgid "UserInfoDlg::Birthday:"
+msgstr "День народження:"
+
+#: userinfodlg.cpp:259
+msgid "UserInfoDlg::Cellular:"
+msgstr "Мобільний:"
+
+#: userinfodlg.cpp:628
+msgid "UserInfoDlg::City:"
+msgstr "Місто:"
+
+#: userinfodlg.cpp:268
+msgid "UserInfoDlg::Country:"
+msgstr "Країна:"
+
+#: userinfodlg.cpp:620
+msgid "UserInfoDlg::Department:"
+msgstr "Відділ:"
+
+#: userinfodlg.cpp:226
+msgid "UserInfoDlg::EMail 1:"
+msgstr "Основна адреса ел. пошти:"
+
+#: userinfodlg.cpp:230
+msgid "UserInfoDlg::EMail 2:"
+msgstr "Додаткова адреса ел. пошти:"
+
+#: userinfodlg.cpp:875
+msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
+msgstr ""
+"Помилка під час завантаження файлу архіву: %1\n"
+"Опис: %2"
+
+#: userinfodlg.cpp:643
+msgid "UserInfoDlg::Fax:"
+msgstr "Факс:"
+
+#: userinfodlg.cpp:516
+msgid "UserInfoDlg::Female"
+msgstr "Жіноча"
+
+#: userinfodlg.cpp:319
+msgid "UserInfoDlg::GMT%1%1%1"
+msgstr "GMT%1%1%1"
+
+#: userinfodlg.cpp:416
+msgid "UserInfoDlg::Gender:"
+msgstr "Стать:"
+
+#: userinfodlg.cpp:647
+msgid "UserInfoDlg::Homepage:"
+msgstr "Домашня сторінка:"
+
+#: userinfodlg.cpp:123
+msgid "UserInfoDlg::INVALID USER"
+msgstr "НЕВІРНИЙ КОРИСТУВАЧ"
+
+#: userinfodlg.cpp:209
+msgid "UserInfoDlg::IP:"
+msgstr "IP:"
+
+#: userinfodlg.cpp:479
+msgid "UserInfoDlg::Language 1:"
+msgstr "Рідна мова:"
+
+#: userinfodlg.cpp:482
+msgid "UserInfoDlg::Language 2:"
+msgstr "Мова, яку знаєте без словника:"
+
+#: userinfodlg.cpp:486
+msgid "UserInfoDlg::Language 3:"
+msgstr "Мова, яку знаєте зі словником:"
+
+#: userinfodlg.cpp:759
+msgid "UserInfoDlg::Last Checked Auto Response:"
+msgstr "Остання перевірена автовідповідь:"
+
+#: userinfodlg.cpp:747
+msgid "UserInfoDlg::Last Online:"
+msgstr "В мережі:"
+
+#: userinfodlg.cpp:755
+msgid "UserInfoDlg::Last Received Event:"
+msgstr "Що-небудь прийнято:"
+
+#: userinfodlg.cpp:751
+msgid "UserInfoDlg::Last Sent Event:"
+msgstr "Що-небудь відправлено:"
+
+#: userinfodlg.cpp:128
+msgid "UserInfoDlg::Licq - Info "
+msgstr "Licq - Інформація "
+
+#: userinfodlg.cpp:518
+msgid "UserInfoDlg::Male"
+msgstr "Чоловіча"
+
+#: userinfodlg.cpp:616
+msgid "UserInfoDlg::Name:"
+msgstr "Назва:"
+
+#: userinfodlg.cpp:1136
+msgid "UserInfoDlg::Nex&t"
+msgstr "&Наступний"
+
+#: userinfodlg.cpp:782
+msgid "UserInfoDlg::Now"
+msgstr "Зараз"
+
+#: userinfodlg.cpp:234
+msgid "UserInfoDlg::Old Email:"
+msgstr "Стара адреса ел. пошти:"
+
+#: userinfodlg.cpp:1137
+msgid "UserInfoDlg::P&rev"
+msgstr "&Попередній"
+
+#: userinfodlg.cpp:640
+msgid "UserInfoDlg::Phone:"
+msgstr "Телефон:"
+
+#: userinfodlg.cpp:624
+msgid "UserInfoDlg::Position:"
+msgstr "Посада:"
+
+#: userinfodlg.cpp:1127
+msgid "UserInfoDlg::Retrieve"
+msgstr "Отримати"
+
+#: userinfodlg.cpp:844
+msgid "UserInfoDlg::Rever&se"
+msgstr "&У зворотньому порядку"
+
+#: userinfodlg.cpp:878
+msgid "UserInfoDlg::Sorry, history is disabled for this person."
+msgstr ""
+"Перепрошую, але для цього користувача "
+"архів вимкнено."
+
+#: userinfodlg.cpp:631
+msgid "UserInfoDlg::State:"
+msgstr "Штат:"
+
+#: userinfodlg.cpp:213
+msgid "UserInfoDlg::Status:"
+msgstr "Стан:"
+
+#: userinfodlg.cpp:216
+msgid "UserInfoDlg::Timezone:"
+msgstr "Часовий пояс:"
+
+#: userinfodlg.cpp:206
+msgid "UserInfoDlg::UIN:"
+msgstr "Ідентифікаційний номер:"
+
+#: userinfodlg.cpp:562
+msgid "UserInfoDlg::Unknown (%1)"
+msgstr "Невідомий (%1)"
+
+#: userinfodlg.cpp:814
+msgid "UserInfoDlg::Unknown"
+msgstr "Невідомий"
+
+#: userinfodlg.cpp:540
+msgid "UserInfoDlg::Unspecified"
+msgstr "Не вказана"
+
+#: userinfodlg.cpp:1297
+msgid "UserInfoDlg::Updating server..."
+msgstr "Поновлення інформації на сервері..."
+
+#: userinfodlg.cpp:1219
+msgid "UserInfoDlg::Updating..."
+msgstr "Поновлення інформації..."
+
+#: userinfodlg.cpp:1241
+msgid ""
+"UserInfoDlg::"
+"You need to be connected to the\n"
+"ICQ Network to change your settings."
+msgstr ""
+"Ви повинні буди в мережі ICQ,\n"
+"щоб змінити Ваші параметри."
+
+#: userinfodlg.cpp:1197
+msgid ""
+"UserInfoDlg::"
+"You need to be connected to the\n"
+"ICQ Network to retrieve your settings."
+msgstr ""
+"Ви повинні буди в мережі ICQ,\n"
+"щоб отримати Ваші параметри."
+
+#: userinfodlg.cpp:264
+msgid "UserInfoDlg::Zip:"
+msgstr "Індекс:"
+
+#: userinfodlg.cpp:1063
+msgid ""
+"UserInfoDlg::"
+"[<font color=\"%1\">Received</font>] "
+"[<font color=\"%2\">Sent</font>] "
+"%3 out of %4 matches"
+msgstr ""
+"[<font color=\"%1\">Прийняті</font>] [<font "
+"color=\"%2\">Відіслані</font>] %3 з %4 співпавших"
+
+#: userinfodlg.cpp:1055
+msgid ""
+"UserInfoDlg::"
+"[<font color=\"%1\">Received</font>] "
+"[<font color=\"%2\">Sent</font>] "
+"%3 to %4 of %5"
+msgstr ""
+"[<font color=\"%1\">Прийняті</font>] [<font "
+"color=\"%2\">Відіслані</font>] %3 - %4 з %5"
+
+#: userinfodlg.cpp:1318
+msgid "UserInfoDlg::done"
+msgstr "виконано"
+
+#: userinfodlg.cpp:1327
+msgid "UserInfoDlg::error"
+msgstr "помилка"
+
+#: userinfodlg.cpp:1321
+msgid "UserInfoDlg::failed"
+msgstr "невдача"
+
+# #: userinfodlg.cpp:996
+# msgid "UserInfoDlg::from"
+# msgstr "від"
+#: userinfodlg.cpp:991
+msgid "UserInfoDlg::server"
+msgstr "через сервер"
+
+#: userinfodlg.cpp:1324
+msgid "UserInfoDlg::timed out"
+msgstr "таймаут"
+
+# #: userinfodlg.cpp:1007
+# msgid "UserInfoDlg::to"
+# msgstr "до"
+#: usereventdlg.cpp:1672
+msgid "UserSendChatEvent:: - Chat Request"
+msgstr " - Запит на розмову"
+
+#: usereventdlg.cpp:1739
+msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
+msgstr ""
+"В розмові з %2 відмовлено:\n"
+"%3"
+
+#: usereventdlg.cpp:1697
+msgid "UserSendChatEvent::Clear"
+msgstr "Очистити"
+
+#: usereventdlg.cpp:1705
+msgid "UserSendChatEvent::Invite"
+msgstr "Запросити"
+
+#: usereventdlg.cpp:1662
+msgid "UserSendChatEvent::Multiparty: "
+msgstr "Для багатьох користувачів:"
+
+#: usereventdlg.cpp:1190
+msgid "UserSendCommon:: to Contact List"
+msgstr " до списку контактів"
+
+#: usereventdlg.cpp:1184
+msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
+msgstr ""
+"%1 у стані %2:\n"
+"%3\n"
+"Відсилається..."
+
+#: usereventdlg.cpp:1206
+msgid "UserSendCommon::%1 refused %2, send through server."
+msgstr "%1 відмовлено %2, відіслати через сервер."
+
+#: usereventdlg.cpp:1107
+msgid "UserSendCommon::&Cancel"
+msgstr "&Скасувати"
+
+#: usereventdlg.cpp:1305
+msgid "UserSendCommon::&Close"
+msgstr "&Закрити"
+
+#: usereventdlg.cpp:889
+msgid "UserSendCommon::&Menu"
+msgstr "&Меню"
+
+#: usereventdlg.cpp:903
+msgid "UserSendCommon::&Send"
+msgstr "&Відіслати"
+
+#: usereventdlg.cpp:1355
+msgid "UserSendCommon::Cancel"
+msgstr "Скасувати"
+
+#: usereventdlg.cpp:897
+msgid "UserSendCommon::Chat Request"
+msgstr "Запит на розмову"
+
+#: usereventdlg.cpp:899
+msgid "UserSendCommon::Contact List"
+msgstr "Список контактів"
+
+#: usereventdlg.cpp:1171
+msgid "UserSendCommon::Direct send failed,\nsend through server?"
+msgstr ""
+"Не можливо відіслати повідомлення напряму,\n"
+"відіслати через сервер?"
+
+#: usereventdlg.cpp:1060
+msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
+msgstr ""
+"Перетягніть сюди користувачей\n"
+"Скористуйтесь правою кнопкою для опцій"
+
+#: usereventdlg.cpp:898
+msgid "UserSendCommon::File Transfer"
+msgstr "Передача файлу"
+
+#: usereventdlg.cpp:874
+msgid "UserSendCommon::M&ultiple recipients"
+msgstr "&Багатьом адресатам"
+
+#: usereventdlg.cpp:895
+msgid "UserSendCommon::Message"
+msgstr "Повідомлення"
+
+#: usereventdlg.cpp:1171
+msgid "UserSendCommon::No"
+msgstr "Ні"
+
+#: usereventdlg.cpp:861
+msgid "UserSendCommon::Se&nd through server"
+msgstr "&Відіслати через сервер"
+
+#: usereventdlg.cpp:1355
+msgid "UserSendCommon::Send anyway"
+msgstr "Відіслати будь-яким чином"
+
+#: usereventdlg.cpp:1099
+msgid "UserSendCommon::Sending "
+msgstr "Відсилається "
+
+#: usereventdlg.cpp:872
+msgid "UserSendCommon::U&rgent"
+msgstr "&Термінове"
+
+#: usereventdlg.cpp:896
+msgid "UserSendCommon::URL"
+msgstr "Адреса"
+
+#: usereventdlg.cpp:1190
+msgid "UserSendCommon::Urgent"
+msgstr "Термінове"
+
+#: usereventdlg.cpp:1353
+msgid ""
+"UserSendCommon::"
+"Warning: Message can't be sent securely\n"
+"through the server!"
+msgstr ""
+"Попередження: Через сервер не можливо\n"
+"безпечно відіслати повідомлення!"
+
+# #: usereventdlg.cpp:1260
+# msgid "UserSendCommon::Warning: Message will not be sent securely!"
+# msgstr ""
+# "Попередження: Не можна відіслати повідомлення "
+# "по безпечному каналу (SSL)!"
+#: usereventdlg.cpp:1171
+msgid "UserSendCommon::Yes"
+msgstr "Так"
+
+#: usereventdlg.cpp:1101
+msgid "UserSendCommon::direct"
+msgstr "напряму"
+
+#: usereventdlg.cpp:1140
+msgid "UserSendCommon::done"
+msgstr "завершено"
+
+#: usereventdlg.cpp:1150
+msgid "UserSendCommon::error"
+msgstr "помилка"
+
+#: usereventdlg.cpp:1144
+msgid "UserSendCommon::failed"
+msgstr "невдача"
+
+# #: usereventdlg.cpp:1023
+# msgid "UserSendCommon::partial "
+# msgstr "частково "
+#: usereventdlg.cpp:1147
+msgid "UserSendCommon::timed out"
+msgstr "таймаут"
+
+#: usereventdlg.cpp:1101
+msgid "UserSendCommon::via server"
+msgstr "через сервер"
+
+#: usereventdlg.cpp:1775
+msgid "UserSendContactEvent:: - Contact List"
+msgstr " - Список контактів"
+
+#: usereventdlg.cpp:1768
+msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
+msgstr ""
+"Перетягніть сюди користувачей\n"
+"Скористуйтесь правою кнопкою для опцій"
+
+#: usereventdlg.cpp:1561
+msgid "UserSendFileEvent:: - File Transfer"
+msgstr " - Передача файлу"
+
+#: usereventdlg.cpp:1557
+msgid "UserSendFileEvent::Browse"
+msgstr "Перегляд"
+
+#: usereventdlg.cpp:1628
+msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
+msgstr ""
+"У передачі файлу до %2 відмовлено::\n"
+"%3"
+
+#: usereventdlg.cpp:1551
+msgid "UserSendFileEvent::File(s): "
+msgstr "Файл(и): "
+
+#: usereventdlg.cpp:1573
+msgid "UserSendFileEvent::Select files to send"
+msgstr "Виберіть файли, які потрібно відіслати"
+
+#: usereventdlg.cpp:1597
+msgid "UserSendFileEvent::You must specify a file to transfer!"
+msgstr "Ви повинні вказати файл, який хочете відіслати!"
+
+#: usereventdlg.cpp:1375
+msgid "UserSendMsgEvent:: - Message"
+msgstr " - Повідомлення"
+
+#: usereventdlg.cpp:1394
+msgid "UserSendMsgEvent::&No"
+msgstr "&Ні"
+
+#: usereventdlg.cpp:1394
+msgid "UserSendMsgEvent::&Yes"
+msgstr "&Так"
+
+#: usereventdlg.cpp:1393
+msgid ""
+"UserSendMsgEvent::"
+"You didn't edit the message.\n"
+"Do you really want to send it?"
+msgstr ""
+"Ви не відредагували повідомлення.\n"
+"Ви впевнені, що бажаєте відіслати його?"
+
+#: usereventdlg.cpp:1467
+msgid "UserSendUrlEvent:: - URL"
+msgstr " - Адреса"
+
+#: usereventdlg.cpp:1462
+msgid "UserSendUrlEvent::URL : "
+msgstr "Адреса : "
+
+#: usereventdlg.cpp:338
+msgid "UserViewEvent::&Close"
+msgstr "&Закрити"
+
+#: usereventdlg.cpp:495
+msgid "UserViewEvent::&Forward"
+msgstr "&Перенаправити"
+
+#: usereventdlg.cpp:481
+msgid "UserViewEvent::&Join"
+msgstr "&Приєднатися"
+
+#: usereventdlg.cpp:326
+msgid "UserViewEvent::&Menu"
+msgstr "&Меню"
+
+#: usereventdlg.cpp:494
+msgid "UserViewEvent::&Quote"
+msgstr "&Цитувати"
+
+#: usereventdlg.cpp:503
+msgid "UserViewEvent::&Refuse"
+msgstr "&Відмовити"
+
+#: usereventdlg.cpp:493
+msgid "UserViewEvent::&Reply"
+msgstr "&Відповісти"
+
+#: usereventdlg.cpp:497
+msgid "UserViewEvent::&View"
+msgstr "&Переглянути"
+
+#: usereventdlg.cpp:473
+msgid "UserViewEvent::A&ccept"
+msgstr "&Прийняти"
+
+#: usereventdlg.cpp:533
+msgid "UserViewEvent::A&dd %1 Users"
+msgstr "&Додати %1 користувачів"
+
+#: usereventdlg.cpp:535
+msgid "UserViewEvent::A&dd User"
+msgstr "Д&одати користувача"
+
+#: usereventdlg.cpp:502
+msgid "UserViewEvent::A&uthorize"
+msgstr "&Авторизувати"
+
+#: usereventdlg.cpp:330
+msgid "UserViewEvent::Aut&o Close"
+msgstr "&Авто-закриття"
+
+#: usereventdlg.cpp:722
+msgid "UserViewEvent::Chat"
+msgstr "Розмова"
+
+#: usereventdlg.cpp:737
+msgid "UserViewEvent::File Transfer"
+msgstr "Передача файла"
+
+#: usereventdlg.cpp:424
+msgid "UserViewEvent::Nex&t (%1)"
+msgstr "Дал&і (%1)"
+
+#: usereventdlg.cpp:426
+msgid "UserViewEvent::Nex&t"
+msgstr "Дал&і"
+
+#: usereventdlg.cpp:339
+msgid "UserViewEvent::Normal Click - Close Window\n<CTRL>+Click - also delete User"
+msgstr ""
+"Просте клацання - закриває вікно\n"
+"<CTRL>+Клацання - також видалить користувача"
+
+#: usereventdlg.cpp:489
+msgid "UserViewEvent::Start Chat"
+msgstr "Почати розмову"
+
+#: usereventdlg.cpp:788
+msgid "UserViewEvent::View URL failed"
+msgstr "Перегляд адреси не вдався"
+
+#: usereventdlg.cpp:467
+msgid "UserViewEvent::\n--------------------\nRequest was cancelled."
+msgstr ""
+" \n"
+"--------------------\n"
+"Запит було скасовано."
+
+#: wharf.cpp:683
+msgid ""
+"WharfIcon::"
+"Left click - Show main window\n"
+"Middle click - Show next message\n"
+"Right click - System menu"
+msgstr ""
+"Ліва кнопка - показати головне вікно\n"
+"Середня кнопка - показати наступне "
+"повідомлення\n"
+"Права кнопка - меню"
+
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
+msgstr ""
+"%1\n"
+"Файл не знайдено.\n"
+"Перевірте, будь ласка, шлях та ім'я файлу."
+
+#: dialogs/qfiledialog.cpp:3252
+msgid "QFileDialog::&Delete"
+msgstr "В&идалити"
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&No"
+msgstr "&Hi"
+
+#: dialogs/qfiledialog.cpp:3247
+msgid "QFileDialog::&Open"
+msgstr "&Відкрити"
+
+#: dialogs/qfiledialog.cpp:3251
+msgid "QFileDialog::&Rename"
+msgstr "&Перейменувати"
+
+#: dialogs/qfiledialog.cpp:3246
+msgid "QFileDialog::&Save"
+msgstr "&Зберегти"
+
+#: dialogs/qfiledialog.cpp:3285
+msgid "QFileDialog::&Unsorted"
+msgstr "&Не впорядковувати"
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&Yes"
+msgstr "&Так"
+
+#: dialogs/qfiledialog.cpp:3342
+msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
+msgstr ""
+"<qt>Ви дійсно хочете видалити %1 "
+"\"%2\"?</qt>"
+
+#: dialogs/qfiledialog.cpp:1904
+msgid "QFileDialog::All files (*)"
+msgstr "Всі файли (*)"
+
+#: dialogs/qfiledialog.cpp:1967
+msgid "QFileDialog::Attributes"
+msgstr "Атрибути"
+
+#: dialogs/qfiledialog.cpp:2053
+msgid "QFileDialog::Back"
+msgstr "Назад"
+
+#: dialogs/qfiledialog.cpp:2007
+msgid "QFileDialog::Cancel"
+msgstr "Скасувати"
+
+#: dialogs/qfiledialog.cpp:2079
+msgid "QFileDialog::Create New Folder"
+msgstr "Створити нову папку"
+
+#: dialogs/qfiledialog.cpp:1966
+msgid "QFileDialog::Date"
+msgstr "Дата"
+
+#: dialogs/qfiledialog.cpp:3341
+msgid "QFileDialog::Delete %1"
+msgstr "Видалити %1"
+
+#: dialogs/qfiledialog.cpp:2109
+msgid "QFileDialog::Detail View"
+msgstr "Детальний вигляд"
+
+#: dialogs/qfiledialog.cpp:2235
+msgid "QFileDialog::Dir"
+msgstr "Каталог"
+
+#: dialogs/qfiledialog.cpp:3442
+msgid "QFileDialog::Directories"
+msgstr "Каталоги"
+
+#: dialogs/qfiledialog.cpp:4388
+msgid "QFileDialog::ERROR"
+msgstr "ПОМИЛКА"
+
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::Error"
+msgstr "Помилка"
+
+#: dialogs/qfiledialog.cpp:2042
+msgid "QFileDialog::File &name:"
+msgstr "&Ім'я файлу:"
+
+#: dialogs/qfiledialog.cpp:2043
+msgid "QFileDialog::File &type:"
+msgstr "&Тип файлу:"
+
+#: dialogs/qfiledialog.cpp:2234
+msgid "QFileDialog::File"
+msgstr "Файл"
+
+#: dialogs/qfiledialog.cpp:3437
+msgid "QFileDialog::Find Directory"
+msgstr "Знайти каталог"
+
+#: dialogs/qfiledialog.cpp:2229
+msgid "QFileDialog::Inaccessible"
+msgstr "Недоступний"
+
+#: dialogs/qfiledialog.cpp:2099
+msgid "QFileDialog::List View"
+msgstr "Листовий вигляд"
+
+#: dialogs/qfiledialog.cpp:2041
+msgid "QFileDialog::Look &in:"
+msgstr "Д&ивитися в:"
+
+#: dialogs/qfiledialog.cpp:1962
+msgid "QFileDialog::Name"
+msgstr "Ім'я"
+
+#: dialogs/qfiledialog.cpp:3390
+msgid "QFileDialog::New Folder %1"
+msgstr "Новий каталог %1"
+
+#: dialogs/qfiledialog.cpp:3380
+msgid "QFileDialog::New Folder 1"
+msgstr "Новий каталог 1"
+
+#: dialogs/qfiledialog.cpp:3385
+msgid "QFileDialog::New Folder"
+msgstr "Новий каталог"
+
+#: dialogs/qfiledialog.cpp:2003
+msgid "QFileDialog::OK"
+msgstr "Так"
+
+#: dialogs/qfiledialog.cpp:2068
+msgid "QFileDialog::One directory up"
+msgstr "Одним каталогом вище"
+
+#: dialogs/qfiledialog.cpp:4249
+msgid "QFileDialog::Open"
+msgstr "Відкрити"
+
+#: dialogs/qfiledialog.cpp:2131
+msgid "QFileDialog::Preview File Contents"
+msgstr "Переглянути зміст файлу"
+
+#: dialogs/qfiledialog.cpp:2120
+msgid "QFileDialog::Preview File Info"
+msgstr "Переглянути інформацію про файл"
+
+#: dialogs/qfiledialog.cpp:3276
+msgid "QFileDialog::R&eload"
+msgstr "П&еревантажити"
+
+#: dialogs/qfiledialog.cpp:2227
+msgid "QFileDialog::Read-only"
+msgstr "Тільки для читання"
+
+#: dialogs/qfiledialog.cpp:2226
+msgid "QFileDialog::Read-write"
+msgstr "Для читання та запису"
+
+#: dialogs/qfiledialog.cpp:2699
+msgid "QFileDialog::Save as"
+msgstr "Зберегти як"
+
+#: dialogs/qfiledialog.cpp:3536
+msgid "QFileDialog::Save"
+msgstr "Зберегти"
+
+#: dialogs/qfiledialog.cpp:3304
+msgid "QFileDialog::Show &hidden files"
+msgstr "Показувати &сховані файли"
+
+#: dialogs/qfiledialog.cpp:1963
+msgid "QFileDialog::Size"
+msgstr "Розмір"
+
+#: dialogs/qfiledialog.cpp:3283
+msgid "QFileDialog::Sort by &Date"
+msgstr "Упорядкувати за &датою"
+
+#: dialogs/qfiledialog.cpp:3280
+msgid "QFileDialog::Sort by &Name"
+msgstr "Упорядкувати за &ім'ям"
+
+#: dialogs/qfiledialog.cpp:3282
+msgid "QFileDialog::Sort by &Size"
+msgstr "Упорядкувати за &розміром"
+
+#: dialogs/qfiledialog.cpp:3300
+msgid "QFileDialog::Sort"
+msgstr "Упорядкувати"
+
+#: dialogs/qfiledialog.cpp:2236
+msgid "QFileDialog::Special"
+msgstr "Спеціальний файл"
+
+#: dialogs/qfiledialog.cpp:2232
+msgid "QFileDialog::Symlink to Directory"
+msgstr "Посилання до каталогу"
+
+#: dialogs/qfiledialog.cpp:2231
+msgid "QFileDialog::Symlink to File"
+msgstr "Посилання до файлу"
+
+#: dialogs/qfiledialog.cpp:2233
+msgid "QFileDialog::Symlink to Special"
+msgstr "Посилання до спеціального файлу"
+
+#: dialogs/qfiledialog.cpp:1965
+msgid "QFileDialog::Type"
+msgstr "Тип"
+
+#: dialogs/qfiledialog.cpp:2228
+msgid "QFileDialog::Write-only"
+msgstr "Тільки для запису"
+
+#: dialogs/qfiledialog.cpp:3336
+msgid "QFileDialog::the directory"
+msgstr "каталог"
+
+#: dialogs/qfiledialog.cpp:3334
+msgid "QFileDialog::the file"
+msgstr "файл"
+
+#: dialogs/qfiledialog.cpp:3338
+msgid "QFileDialog::the symlink"
+msgstr "символічне посилання"
+
+#: dialogs/qfontdialog.cpp:121
+msgid "QFontDialog::&Color"
+msgstr "&Колір"
+
+#: dialogs/qfontdialog.cpp:91
+msgid "QFontDialog::&Font"
+msgstr "&Шрифт"
+
+#: dialogs/qfontdialog.cpp:107
+msgid "QFontDialog::&Size"
+msgstr "&Розмір"
+
+#: dialogs/qfontdialog.cpp:115
+msgid "QFontDialog::&Underline"
+msgstr "П&ідкреслити"
+
+#: dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::Apply"
+msgstr "Застосувати"
+
+#: dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Cancel"
+msgstr "Скасувати"
+
+#: dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Close"
+msgstr "Закрити"
+
+#: dialogs/qfontdialog.cpp:111
+msgid "QFontDialog::Effects"
+msgstr "Ефекти"
+
+#: dialogs/qfontdialog.cpp:99
+msgid "QFontDialog::Font st&yle"
+msgstr "&Стиль шрифту"
+
+#: dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::OK"
+msgstr "Гаразд"
+
+#: dialogs/qfontdialog.cpp:125
+msgid "QFontDialog::Sample"
+msgstr "Приклад"
+
+#: dialogs/qfontdialog.cpp:139
+msgid "QFontDialog::Scr&ipt"
+msgstr "&Скрипт"
+
+#: dialogs/qfontdialog.cpp:274
+msgid "QFontDialog::Select Font"
+msgstr "Виберіть шрифт"
+
+#: dialogs/qfontdialog.cpp:113
+msgid "QFontDialog::Stri&keout"
+msgstr "Пере&креслити"
+
+#: dialogs/qwizard.cpp:94
+msgid "QWizard::< Back"
+msgstr "< Назад"
+
+#: dialogs/qwizard.cpp:93
+msgid "QWizard::Cancel"
+msgstr "Скасувати"
+
+#: dialogs/qwizard.cpp:96
+msgid "QWizard::Finish"
+msgstr "Завершити"
+
+#: dialogs/qwizard.cpp:97
+msgid "QWizard::Help"
+msgstr "Довідка"
+
+#: dialogs/qwizard.cpp:95
+msgid "QWizard::Next >"
+msgstr "Уперед >"
+
