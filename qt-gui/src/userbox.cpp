@@ -353,10 +353,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
        sort = 5;
        break;
      }
-     m_sSortKey.sprintf("%1x%016lx",sort,ULONG_MAX - u->Touched());
+     m_sSortKey.sprintf("%1x",sort);
    }
-   else
-     m_sSortKey.sprintf("%016lx", ULONG_MAX - u->Touched());
 }
 
 
@@ -709,9 +707,12 @@ void CUserView::timerEvent(QTimerEvent* e)
 QString CUserViewItem::key (int column, bool ascending) const
 {
   if (column == 0)
-    return (m_sPrefix + m_sSortKey);
+    return (m_sPrefix + m_sSortKey + text(1).lower());
   else
-    return(m_sPrefix + QListViewItem::key(column, ascending));
+    if(gMainWindow->m_bSortByStatus)
+      return(m_sPrefix + m_sSortKey + QListViewItem::key(column, ascending).lower());
+    else
+      return(QListViewItem::key(column, ascending).lower());
 }
 
 UserFloatyList* CUserView::floaties = 0;
