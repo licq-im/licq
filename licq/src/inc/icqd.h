@@ -141,7 +141,7 @@ public:
   void icqUpdateContactList();
 
   void icqPing();
-  void icqRelogon();
+  void icqRelogon(bool bChangeServer = false);
   void icqSendVisibleList(bool _bSendIfEmpty = false);
   void icqSendInvisibleList(bool _bSendIfEmpty = false);
   void icqRequestSystemMsg();
