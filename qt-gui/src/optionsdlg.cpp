@@ -491,7 +491,7 @@ QWidget* OptionsDlg::new_appearance_options()
                                    "indicate special characteristics such as "
                                    "online notify and visible list"));
   QHBox *hlay = new QHBox(boxUserWin);
-  lblFrameStyle = new QLabel(tr("Frame Style:"), hlay);
+  lblFrameStyle = new QLabel(tr("Frame Style: "), hlay);
   edtFrameStyle = new QLineEdit(hlay);
   QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
                                     "style of the user window:\n"
