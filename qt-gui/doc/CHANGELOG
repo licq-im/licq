@@ -3,7 +3,12 @@ Change log for Licq Qt-GUI Plugin.
 New in 1.0.4
 o  Bug fixes
 o  KDE gui is now called licq_kde-gui.so
-
+o  Better multi-language support providing an user-specific
+   encoding setting
+o  Compatible to Qt 3.x and KDE 3.x. 
+o  NOTE: backward compatibilty with font settings has
+   been broken by this release. please reconfigure your 
+   font settings upon updating!
 
 New in 1.0.3
 o  Bug fixes

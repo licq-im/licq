@@ -2,11 +2,11 @@ Requirements:
 
 - X11 header files (xfree-devel)
 - Qt 2.1 header files, Qt 2.1 lib, Qt 2.1 moc compiler
-  (Qt 2.1.1 will work, Qt 2.2.1 or newer is recommended)
+  (Qt 2.1.1 will work, Qt 2.3.1 or newer is recommended)
+- Qt 3.x sort of works, but is currently not recommended  
+  (a few incompatibilities have still to be resolved)
 
-
-Qt 2.1.1 can be downloaded from ftp.trolltech.com/pub/qt/source
-Redhat RPMs can be found at ftp://people.redhat.com/bero/qt
+Qt can be downloaded from ftp.trolltech.com/pub/qt/source
 
 NOTE:
 
