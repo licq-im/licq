@@ -9,6 +9,7 @@
 #include <qlayout.h>
 #include <qtextstream.h>
 #include <qfile.h>
+#include <qfileinfo.h>
 
 #include "editskin.h"
 #include "ewidgets.h"
@@ -64,6 +65,9 @@ EditSkinDlg::EditSkinDlg(QString skin, QWidget *parent, const char *name)
     QTextStream t(&f);
     mleSkin->setText(t.read());
     f.close();
+    QFileInfo fi(f);
+    if (!fi.isWritable())
+      setCaption(caption() + QString(tr("[ Read-Only ]")));
   }
 }
 
