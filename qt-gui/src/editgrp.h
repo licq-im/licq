@@ -27,7 +27,6 @@ protected:
   unsigned short m_nEditGrp;
 
   void RefreshList();
-  void hideEvent(QHideEvent*);
 
 protected slots:
   void slot_add();

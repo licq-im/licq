@@ -224,12 +224,6 @@ void EditGrpDlg::slot_editcancel()
 void EditGrpDlg::slot_done()
 {
   emit(signal_updateGroups());
-  hide();
-}
-
-
-void EditGrpDlg::hideEvent(QHideEvent*)
-{
   close(true);
 }
 
