@@ -1576,8 +1576,8 @@ void CChatManager::SendPacket(CPacket *p)
 
 //-----CChatManager::SendBuffer----------------------------------------------
 void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
-                              unsigned long _nUin = 0,
-                              bool bNotIter = true)
+                              unsigned long _nUin,
+                              bool bNotIter)
 {
   ChatUserList::iterator iter;
   ChatUserList::iterator u_iter;

@@ -132,7 +132,7 @@ CPFile_SetSpeed::CPFile_SetSpeed(unsigned long nSpeed)
 
 
 //=====FileTransferManager===========================================================
-CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d = NULL)
+CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d)
 {
   m_nCommand = t;
   if (d != NULL)
