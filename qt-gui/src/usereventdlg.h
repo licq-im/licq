@@ -97,6 +97,7 @@ private:
   CETabWidget *tabw;
   void updateTitle(QWidget *tab);
   void clearEvents(QWidget *tab);
+  void flashTaskbar(bool _bFlash);
 
 public slots:
   void slot_currentChanged(QWidget *tab);
@@ -163,6 +164,7 @@ protected:
 
   virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0) = 0;
   void SetGeneralInfo(ICQUser *);
+  void FlashTaskbar(bool _bFlash);
 
 protected slots:
   void slot_connectsignal();

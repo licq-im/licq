@@ -80,6 +80,9 @@
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
 using std::pair;
 using std::make_pair;
 
@@ -154,6 +157,8 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
       setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
     else
       setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
+    FlashTaskbar(u->NewMessages() != 0);
+
     SetGeneralInfo(u);
 
     // restore prefered encoding
@@ -328,6 +333,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       if (u->NewMessages() > 0)
       {        
         setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
+        flashTaskbar(true);
 
         // to clear it..
         tab->gotTyping(u->GetTyping());
@@ -366,6 +372,8 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       else
       {
         setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
+        flashTaskbar(false);
+
         tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
         if (u->GetTyping() == ICQ_TYPING_ACTIVE)
           tabw->setTabColor(tab, QColor("green"));
@@ -419,6 +427,20 @@ void UserEventTabDlg::clearEvents(QWidget *tab)
   UserSendCommon *e = static_cast<UserSendCommon*>(tab);
   QTimer::singleShot(e->clearDelay, e, SLOT(slot_ClearNewEvents()));
 #endif
+}
+
+void UserEventTabDlg::flashTaskbar(bool _bFlash)
+{
+  Display *dsp = x11Display();  // get the display
+  WId win = winId(); // get the window
+  XWMHints *hints; // hints
+  hints = XGetWMHints(dsp, win); // init hints
+  if (_bFlash)
+    hints->flags |= XUrgencyHint;
+  else
+    hints->flags &= ~XUrgencyHint;
+  XSetWMHints(dsp, win, hints); // set hints
+  XFree(hints);
 }
 
 void UserEventTabDlg::moveLeft()
@@ -534,6 +556,19 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   setIconText(codec->toUnicode(u->GetAlias()));
 }
 
+void UserEventCommon::FlashTaskbar(bool _bFlash)
+{
+  Display *dsp = x11Display();  // get the display
+  WId win = winId(); // get the window
+  XWMHints *hints; // hints
+  hints = XGetWMHints(dsp, win); // init hints
+  if (_bFlash)
+    hints->flags |= XUrgencyHint;
+  else
+    hints->flags &= ~XUrgencyHint;
+  XSetWMHints(dsp, win, hints); // set hints
+  XFree(hints);
+}
 
 void UserEventCommon::slot_updatetime()
 {
@@ -616,7 +651,10 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
     {
       nfoStatus->setData(u->StatusStr());
       if (u->NewMessages() == 0)
+      {
         setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
+        FlashTaskbar(false);
+      }
       break;
     }
     case USER_GENERAL:
@@ -632,6 +670,7 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
         setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
       else
         setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
+      FlashTaskbar(u->NewMessages() != 0);
       break;
     }
   }
