@@ -156,6 +156,7 @@ struct more_window
 	GtkWidget *notify;
 	GtkWidget *autochat;
 	GtkWidget *autofile;
+	GtkWidget *autosecure;
 	GtkWidget *realip;
 	GtkWidget *visible;
 	GtkWidget *invisible;

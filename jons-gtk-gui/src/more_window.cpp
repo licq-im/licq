@@ -70,15 +70,18 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mw->notify),
 				     mw->user->OnlineNotify());
 
-	// Auto accept chat and file
+	// Auto accept chat and file and auto secure
 	mw->autochat = gtk_check_button_new_with_label("Auto Accept Chat");
 	mw->autofile = gtk_check_button_new_with_label("Auto Accept File");
+	mw->autosecure = gtk_check_button_new_with_label("Auto Request Secure");
 
 	// Set the state of the auto accept buttons
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mw->autochat),
 		mw->user->AutoChatAccept());
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mw->autofile),
 		mw->user->AutoFileAccept());
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mw->autosecure),
+		mw->user->AutoSecure());
 
 	mw->realip = gtk_check_button_new_with_label("Use Real IP (LAN)");
 
@@ -97,6 +100,7 @@ void list_more_window(GtkWidget *widget, ICQUser *u)
 	gtk_box_pack_start(GTK_BOX(general_box), mw->notify, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(general_box), mw->autochat, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(general_box), mw->autofile, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(general_box), mw->autosecure, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(general_box), mw->realip, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(general_box), mw->ignore, FALSE, FALSE, 5);
 
@@ -280,6 +284,8 @@ void more_ok_callback(GtkWidget *widget, struct more_window *mw)
 	mw->user->SetAutoFileAccept(
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mw->autofile)));
 
+	mw->user->SetAutoSecure(
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mw->autosecure)));
 	mw->user->SetSendRealIp(
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mw->realip)));
 

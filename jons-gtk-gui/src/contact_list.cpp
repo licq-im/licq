@@ -26,11 +26,14 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/time.h>
+#include <list.h>
 
 GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 struct status_icon *online, *offline, *away, *na, *dnd, *occ, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
 	*secure_icon, *birthday_icon, *securebday_icon;
+
+list<unsigned long> AutoSecureList;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -227,6 +230,15 @@ void contact_list_refresh()
 				num_users, 1, cur_icon->pm, cur_icon->bm);
 		} // else
 
+		// See if they are not offline and want to be auto secured
+		if(pUser->AutoSecure())
+		{
+			// Ok, now *can* they be auto secured?
+			if((pUser->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED) && !pUser->Secure())
+				AutoSecureList.push_back(pUser->Uin());
+				//icq_daemon->icqOpenSecureChannel(_uin);
+		}
+
 		if(pUser->Secure() && (pUser->Birthday() == 0))
 		{
 			gtk_clist_set_pixtext(GTK_CLIST(contact_list),
@@ -258,6 +270,15 @@ void contact_list_refresh()
 		FOR_EACH_USER_CONTINUE
 	}
 	FOR_EACH_USER_END
+
+	// Now do the auto secure stuff
+	list<unsigned long>::iterator it;
+	for(it = AutoSecureList.begin(); it != AutoSecureList.end(); it++)
+	{
+		icq_daemon->icqOpenSecureChannel(*it);
+	}
+
+	AutoSecureList.clear();
 
 	gtk_clist_set_compare_func(GTK_CLIST(contact_list), NULL);
 	gtk_clist_set_sort_column(GTK_CLIST(contact_list), 0);
