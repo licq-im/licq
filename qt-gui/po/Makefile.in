@@ -8,7 +8,7 @@
 # Please note that the actual code is *not* freely available.
 
 PACKAGE = Licq-Qt-GUI
-VERSION = 0.66
+VERSION = 0.66.2
 
 SHELL = /bin/sh
 
