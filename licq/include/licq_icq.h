@@ -13,12 +13,17 @@ const unsigned short ICQ_VERSION_TCP               = 0x0006;
 #define LICQ_WITHSSL     0x7D800000
 #define LICQ_WITHOUTSSL  0x7D000000
 
+// Easy to compare snacs
+#define MAKESNAC(fam, subtype)  ((fam << 16) | (subtype))
+
 // Server channels
 const unsigned char ICQ_CHNxNEW                    = 0x01;
 const unsigned char ICQ_CHNxDATA                   = 0x02;
 const unsigned char ICQ_CHNxERROR                  = 0x03;
 const unsigned char ICQ_CHNxCLOSE                  = 0x04;
 const unsigned char ICQ_CHNxPING                   = 0x05;
+// Licq internal
+const unsigned char ICQ_CHNxNONE                   = 0xFF;
 
 // Server SNAC families
 const unsigned short ICQ_SNACxFAM_SERVICE          = 0x0001;
@@ -80,10 +85,10 @@ const unsigned short ICQ_SNACxBOS_ADDxINVISIBxLIST = 0x0007;
 const unsigned short ICQ_SNACxBOS_REMxINVISIBxLIST = 0x0008;
 
 // Subtypes for various family
-const unsigned short ICQ_SNACxOFF_SYSMSG           = 0x0002; // client
-const unsigned short ICQ_SNACxOFF_SYSMSGxACK       = 0x0002;
-const unsigned short ICQ_SNACxMETA_INFO            = 0x0002; // client
-const unsigned short ICQ_SNACxSEARCH  		   = 0x0002; // client
+//const unsigned short ICQ_SNACxOFF_SYSMSG         = 0x0002; // client
+//const unsigned short ICQ_SNACxOFF_SYSMSGxACK     = 0x0002;
+const unsigned short ICQ_SNACxMETA                 = 0x0002; // client
+//const unsigned short ICQ_SNACxSEARCH             = 0x0002; // client
 
 // Subtypes for new uin family
 const unsigned short ICQ_SNACxREGISTER_USER	   = 0x0004; // client
@@ -167,8 +172,8 @@ const unsigned short ICQ_CMDxSND_SEARCHxUIN        = 0x041A; // 1050
 const unsigned short ICQ_CMDxSND_SEARCHxINFO       = 0x0424; // 1060
 const unsigned short ICQ_CMDxSND_PING              = 0x042E; // 1070
 const unsigned short ICQ_CMDxSND_LOGOFF            = 0x0438; // 1080
-const unsigned short ICQ_CMDxSND_SYSxMSGxDONExACK  = 0x0442; // 1090
-const unsigned short ICQ_CMDxSND_SYSxMSGxREQ       = 0x044C; // 1100
+const unsigned short ICQ_CMDxSND_SYSxMSGxDONExACK  = 0x003E; // was 1090
+const unsigned short ICQ_CMDxSND_SYSxMSGxREQ       = 0x003C; // was 1100
 const unsigned short ICQ_CMDxSND_AUTHORIZE         = 0x0456; // 1110
 const unsigned short ICQ_CMDxSND_USERxGETINFO      = 0x0460; // 1120
 const unsigned short ICQ_CMDxSND_USERxGETDETAILS   = 0x046A; // 1130
@@ -212,22 +217,24 @@ const unsigned short ICQ_CMDxMETA_PASTxINFO        = 0x00FA; // 250
 const unsigned short ICQ_CMDxMETA_BASICxINFO       = 0x0104; // 260
 const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
 // Meta commands (sent)
-const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E9; // 1001
-const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F2; // 1010
+const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03EA; // 1004
+const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F3; // 1011
 const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FD; // 1020
 const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
 const unsigned short ICQ_CMDxMETA_EMAILxINFOxSET   = 0x040B; // 1040
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
-const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B1; // 1201
+const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B2; // 1201
 const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO  = 0x04BA; // 1210
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFOx31 = 0x04CF; // 1231
+const unsigned short ICQ_CMDxMETA_SEARCHxWP        = 0x055F;
+const unsigned short ICQ_CMDxMETA_SEARCHxUIN       = 0x0569;
 const unsigned short ICQ_CMDxMETA_RANDOMxSEARCH    = 0x074E; // 1870
 const unsigned short ICQ_CMDxMETA_SETxRANDOMxCHAT  = 0x0758; // 1880
-const unsigned short ICQ_CMDxMETA_SENDxSMS	   = 0x1482;
+const unsigned short ICQ_CMDxMETA_SENDxSMS         = 0x1482;
 
 // Meta commands (white page searches) - Jon
-const unsigned short ICQ_CMDxMETA_SEARCHxWP           = 0x0533; // 1331
+//const unsigned short ICQ_CMDxMETA_SEARCHxWP           = 0x0533; // 1331
 const unsigned short ICQ_CMDxMETA_SEARCHxWPxFOUND     = 0x01A4; // 388
 const unsigned short ICQ_CMDxMETA_SEARCHxWPxLAST_USER = 0x01AE; // 430
 

@@ -53,11 +53,13 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_bCancelled = false;
   m_Deleted = false;
   m_NoAck = false;
+  m_nChannel = p->Channel();
   m_nCommand = p->Command();
+  m_nSNAC = p->SNAC();
   m_nSubCommand = p->SubCommand();
   m_nSequence = p->Sequence();
   m_nSubSequence = p->SubSequence();
-  m_nSubType = p->SubType();
+  m_nSubType = (p->SNAC() & 0xFFFF);
   m_nExtraInfo = p->ExtraInfo();
   m_nDestinationUin = _nUin;
   m_eConnect = _eConnect;
@@ -87,6 +89,8 @@ ICQEvent::ICQEvent(ICQEvent *e)
   m_Deleted = false;
   m_NoAck = false;
   m_bCancelled = e->m_bCancelled;
+  m_nChannel = e->m_nChannel;
+  m_nSNAC = e->m_nSNAC;
   m_nCommand = e->m_nCommand;
   m_nSubCommand = e->m_nSubCommand;
   m_nSequence = e->m_nSequence;

@@ -61,7 +61,9 @@ public:
    virtual const unsigned short SubSequence() = 0;
    virtual const unsigned short Command() = 0;
    virtual const unsigned short SubCommand() = 0;
-   virtual const unsigned short SubType() { return 0; }
+
+   virtual const unsigned char  Channel()   { return ICQ_CHNxNONE; }
+   virtual const unsigned long  SNAC()      { return 0; }
    virtual const unsigned short ExtraInfo() { return 0; }
 
 
@@ -94,20 +96,19 @@ class CSrvPacketTcp : public CPacket
 public:
   virtual ~CSrvPacketTcp();
 
-  virtual const unsigned long  Sequence() { return m_nSequence; }
+  // Packet details
+  virtual const unsigned char  Channel()     { return m_nChannel; }
+  virtual const unsigned long  Sequence()    { return m_nSequence; }
   virtual const unsigned short SubSequence() { return m_nSubSequence; }
+  virtual const unsigned long  SNAC() { return ((m_nFamily << 16) | (m_nSubType)); }
+  virtual const unsigned short SubCommand()  { return m_nSubCommand; }
 
-    // do we need this ?
-  virtual const unsigned short Command()  { return m_nChannel; }
-  virtual const unsigned short SubCommand()  { return 0; }
+  // Not used anymore here, use SNAC instead.
+  virtual const unsigned short Command()     { return 0; }
 
-  // should be command and subcommand.... FIXME
-  virtual const unsigned short SubType() { return m_nSubType; }
+  // Misc.
   virtual const unsigned short ExtraInfo() { return m_nExtraInfo; }
-
   virtual CBuffer *Finalize(INetSocket *);
-
-  void SetSubType(unsigned short s)    { m_nSubType = s; }
   void SetExtraInfo(unsigned short e)  { m_nExtraInfo = e; }
 
 protected:
@@ -119,10 +120,12 @@ protected:
   static unsigned short s_nSubSequence;
   static pthread_mutex_t s_xMutex;
 
-  unsigned char m_nChannel;
+  unsigned char  m_nChannel;
   unsigned short m_nSequence;
   unsigned short m_nSubSequence;
+  unsigned short m_nFamily;
   unsigned short m_nSubType;
+  unsigned short m_nSubCommand;
   unsigned short m_nExtraInfo;
 
   char *m_szSequenceOffset;
@@ -207,10 +210,6 @@ public:
 
 protected:
   void InitBuffer();
-
-private:
-    unsigned short m_nFamily;
-    unsigned short m_nSubType;
 };
 
 class CPU_GenericFamily : public CPU_CommonFamily
@@ -407,6 +406,10 @@ class CPU_RequestSysMsg : public CPU_CommonFamily
 {
 public:
    CPU_RequestSysMsg();
+   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+
+protected:
+   unsigned short m_nMetaCommand;
 };
 
 //-----SysMsgDoneAck------------------------------------------------------------
@@ -414,6 +417,10 @@ class CPU_SysMsgDoneAck : public CPU_CommonFamily
 {
 public:
   CPU_SysMsgDoneAck(unsigned short nId);
+  virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+
+protected:
+  unsigned short m_nMetaCommand;
 };
 
 

@@ -120,6 +120,11 @@ friend class CICQDaemon;
  *   field is only relevant if the command was ICQ_CMDxTCP_START (ie the
  *   message was sent direct).
  *
+ * unsigned long SNAC()
+ *   The SNAC returned as an unsigned long.  The upper 2 bytes is the family
+ *   and the lower 2 bytes is the subtype.  To compare SNAC's use the SNAC
+ *   macro to convert it to an unsigned long: SNAC(family, subtype).
+ *
  * unsigned short Command()
  *   The command, for example ICQ_CMDxTCP_START, or ICQ_CMDxSND_THRUxSERVER,
  *   or ICQ_CMDxSND_META.
@@ -182,11 +187,13 @@ public:
   // Accessors
   EventResult Result()         { return m_eResult; }
   int SubResult()              { return m_nSubResult; }
+  unsigned char Channel()      { return m_nChannel; }
+  unsigned long SNAC()         { return m_nSNAC; }
   unsigned short Command()     { return m_nCommand; }
   unsigned short SubCommand()  { return m_nSubCommand; }
   unsigned long Sequence()     { return m_nSequence; }
   unsigned short SubSequence() { return m_nSubSequence; }
-  unsigned short SubType()     { return m_nSubType; }
+  unsigned short SubType() { return m_nSubType; }
   unsigned short ExtraInfo()   { return m_nExtraInfo; }
   unsigned long Uin()          { return m_nDestinationUin; }
   CSearchAck *SearchAck()      { return m_pSearchAck; }
@@ -221,6 +228,8 @@ protected:
   bool           m_bCancelled : 1;
   bool           m_Deleted : 1;
   bool           m_NoAck : 1;
+  unsigned char  m_nChannel;
+  unsigned long  m_nSNAC;
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;
   unsigned long  m_nDestinationUin;

@@ -120,51 +120,44 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
 
 void CSignalManager::ProcessEvent(ICQEvent *e)
 {
-  switch (e->Command())
+  if (e->Command() == ICQ_CMDxTCP_START) // direct connection check
+  {
+    emit signal_doneUserFcn(e);
+    delete e;
+    return;
+  }
+
+  switch (e->SNAC())
   {
   // Event commands for a user
-  case ICQ_CMDxTCP_START:
-  case ICQ_CMDxSND_THRUxSERVER:
-  case ICQ_CMDxSND_USERxGETINFO:
-  case ICQ_CMDxSND_USERxGETDETAILS:
-  case ICQ_CMDxSND_UPDATExDETAIL:
-  case ICQ_CMDxSND_UPDATExBASIC:
-  case ICQ_CMDxSND_RANDOMxSEARCH:
-  case ICQ_CMDxSND_SETxRANDOMxCHAT:
+  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
+  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
+  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
     emit signal_doneUserFcn(e);
     break;
 
-  case ICQ_CMDxSND_META:
+  // The all being meta snac
+  case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
     if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
         e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
       emit signal_searchResult(e);
+    else if (e->SubCommand() == ICQ_CMDxSND_SYSxMSGxREQ ||
+             e->SubCommand() == ICQ_CMDxSND_SYSxMSGxDONExACK)
+      emit signal_doneOwnerFcn(e);
     else
       emit signal_doneUserFcn(e);
+    break;
 
   // Commands related to the basic operation
-  case ICQ_CMDxSND_LOGON:
-  case ICQ_CMDxSND_SETxSTATUS:
-  case ICQ_CMDxSND_AUTHORIZE:
-  case ICQ_CMDxSND_USERxLIST:
-  case ICQ_CMDxSND_VISIBLExLIST:
-  case ICQ_CMDxSND_INVISIBLExLIST:
-  case ICQ_CMDxSND_PING:
-  case ICQ_CMDxSND_USERxADD:
-  case ICQ_CMDxSND_SYSxMSGxREQ:
-  case ICQ_CMDxSND_SYSxMSGxDONExACK:
+  case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
+  case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
   case ICQ_CMDxSND_REGISTERxUSER:
-  case ICQ_CMDxSND_MODIFYxVIEWxLIST:
     emit signal_doneOwnerFcn(e);
     break;
 
-  case ICQ_CMDxSND_SEARCHxINFO:
-  case ICQ_CMDxSND_SEARCHxUIN:
-    emit signal_searchResult(e);
-    break;
-
   default:
-    gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event command received from daemon: %d.\n",
-              L_WARNxSTR, e->Command());
+    gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event SNAC received from daemon: %d.\n",
+              L_WARNxSTR, e->SNAC());
     break;
   }
 

@@ -257,7 +257,7 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
   pthread_mutex_unlock(&s_xMutex);
-  m_nSubType = m_nExtraInfo = 0;
+  m_nFamily = m_nSubType = m_nSubCommand = m_nExtraInfo = 0;
 
   buffer = NULL;
   m_nSize = 0;
@@ -331,7 +331,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
        pkt->print(b));
     delete [] b;
   }
-  
+
   // Fuck AOL
   if (version > 6)
   {
@@ -758,7 +758,6 @@ CPU_ImICQ::CPU_ImICQ()
   : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_IMxICQ)
 {
   m_nSize += 36;
-
   InitBuffer();
 
   // setting communication parameters (key / value pair) ?
@@ -938,8 +937,6 @@ CPU_CommonFamily::CPU_CommonFamily(unsigned short Family, unsigned short SubType
 
   m_nFamily = Family;
   m_nSubType = SubType;
-
-  SetSubType(SubType);
 }
 
 void CPU_CommonFamily::InitBuffer()
@@ -1023,7 +1020,7 @@ CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
 																		 unsigned char msgType, char *szMessage)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
-	m_nMsgType = msgType;
+	m_nSubCommand = msgType;
 
   int msgLen = szMessage ? strlen(szMessage) : 0;
   char uin[13];
@@ -1112,14 +1109,14 @@ CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
 
 	m_bAck = _bAck;
 	m_nMsgFlags = _nMsgFlags;
-	m_nMsgType = _nMsgType;
+	m_nSubCommand = _nMsgType;
 	m_pUser = u;
 	m_nSequence = _nSequence;
 	m_nMsgID[0] = nMsgID1;
 	m_nMsgID[1] = nMsgID2;
 
   // nobody inheirited us
-  if (m_nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
+  if (m_nSubCommand == ICQ_CMDxTCP_READxAWAYxMSG)
   {
     m_nSize -= 14; // no direct connection info
     InitBuffer();
@@ -1153,19 +1150,19 @@ void CPU_AdvancedMessage::InitBuffer()
 		nSequence = m_pUser->Sequence(true);
 		nID1 = 0;
 		nID2 = m_nSubSequence;
-    if (m_nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
+    if (m_nSubCommand == ICQ_CMDxTCP_READxAWAYxMSG)
     {
       nDirectInfo = 0; // no direct info needed
 
       // Get the correct message
       switch(m_pUser->Status())
       {
-        case ICQ_STATUS_AWAY: m_nMsgType = ICQ_CMDxTCP_READxAWAYxMSG; break;
-        case ICQ_STATUS_NA: m_nMsgType = ICQ_CMDxTCP_READxNAxMSG; break;
-        case ICQ_STATUS_DND: m_nMsgType = ICQ_CMDxTCP_READxDNDxMSG; break;
-        case ICQ_STATUS_OCCUPIED: m_nMsgType = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-        case ICQ_STATUS_FREEFORCHAT: m_nMsgType = ICQ_CMDxTCP_READxFFCxMSG; break;
-        default: m_nMsgType = ICQ_CMDxTCP_READxAWAYxMSG; break;
+        case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
+        case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
+        case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
+        case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
+        case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
+        default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
       }
     }
 	}
@@ -1214,7 +1211,7 @@ void CPU_AdvancedMessage::InitBuffer()
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedLongBE(0);
-	buffer->PackUnsignedShort(m_nMsgType);
+	buffer->PackUnsignedShort(m_nSubCommand);
 	buffer->PackUnsignedShort(nStatus);
 	buffer->PackUnsignedShort(m_nMsgFlags ? m_nMsgFlags : 1);
 	buffer->PackUnsignedShort(0x0001); // message len
@@ -1341,7 +1338,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
   m_nMsgID[0] = nMsgID1;
   m_nMsgID[1] = nMsgID2;
   m_nSequence = nSequence;
-  m_nMsgType = nMsgType;
+  m_nSubCommand = nMsgType;
   m_nSequence = nSequence;
   m_nLevel = nLevel;
 
@@ -1359,11 +1356,11 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
       case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
       case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
       case ICQ_STATUS_DND:
-        m_nStatus = (*u->CustomAutoResponse() && m_nMsgType == ICQ_CMDxTCP_READxDNDxMSG)
+        m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
           ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
         break;
       case ICQ_STATUS_OCCUPIED:
-        m_nStatus = (*u->CustomAutoResponse() && m_nMsgType == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
+        m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
           ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
         break;
       case ICQ_STATUS_ONLINE:
@@ -1437,7 +1434,7 @@ void CPU_AckThroughServer::InitBuffer()
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedShort(m_nMsgType);
+  buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nLevel);
   buffer->PackString(m_szMessage);
@@ -1563,9 +1560,9 @@ CPU_AckChatRefuse::CPU_AckChatRefuse(ICQUser *u, unsigned long nMsgID[2],
 
 //-----SendSms-----------------------------------------------------------------
 CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0x8214;
+  m_nMetaCommand = ICQ_CMDxMETA_SENDxSMS;
 
   char szXmlStr[460];
 
@@ -1601,7 +1598,7 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(m_nMetaCommand); 		// subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); 		// subtype
   
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(0x0016);
@@ -2122,7 +2119,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
     char nLanguage, const char *szCity, const char *szState, unsigned short nCountryCode,
     const char *szCoName, const char *szCoDept, const char *szCoPos,
     const char *szKeyword, bool bOnlineOnly)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   unsigned short nDataLen;	// length of data info to add packet size
   
@@ -2135,7 +2132,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
   nDataLen += 5*!(!nGender) + 6*!(!nLanguage) + 4*(!(!nMaxAge) + !(!nMinAge))
 	      + 6*(!(!nCountryCode)) + 5*(bOnlineOnly);
   m_nSize += 16 + nDataLen;
-  m_nMetaCommand = 0x5F05;
+  m_nMetaCommand = ICQ_CMDxMETA_SEARCHxWP;
   InitBuffer();
 
   // Fix invalid ages. Ensure that the plugin doesn't make an invalid request
@@ -2176,7 +2173,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xd007);
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(m_nMetaCommand);
+  buffer->PackUnsignedShort(m_nMetaCommand);
   
   PackSearch(ICQ_CMDxWPxFNAME, szFirstName);
   PackSearch(ICQ_CMDxWPxLNAME, szLastName);
@@ -2239,9 +2236,9 @@ void CPU_SearchWhitePages::PackSearch(unsigned short nCmd, const char *szField)
 
 //-----SearchByUin--------------------------------------------------------------
 CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0x6905;
+  m_nMetaCommand = ICQ_CMDxMETA_SEARCHxUIN;
   int nPacketSize = 24; //2+2+2+4+2+2+2+4+4;
   m_nSize += nPacketSize;
   InitBuffer();
@@ -2253,7 +2250,7 @@ CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(m_nMetaCommand); // sub type
+  buffer->PackUnsignedShort(m_nMetaCommand); // sub type
 
   buffer->PackUnsignedLongBE(0x36010400);
   buffer->PackUnsignedLong(nUin);
@@ -2391,9 +2388,9 @@ CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxR
 
 //------SetPassword---------------------------------------------------------
 CPU_SetPassword::CPU_SetPassword(const char *szPassword)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, 0x0002)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_PASSWORDxSET;
+  m_nSubCommand = ICQ_CMDxMETA_PASSWORDxSET;
 
   unsigned short nDataLen = strlen(szPassword) + 19;
   m_nSize += nDataLen;
@@ -2415,8 +2412,9 @@ CPU_SetPassword::CPU_SetPassword(const char *szPassword)
 
 //-----RequestSysMsg------------------------------------------------------------
 CPU_RequestSysMsg::CPU_RequestSysMsg()
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxOFF_SYSMSG)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
+  m_nMetaCommand = ICQ_CMDxSND_SYSxMSGxREQ;
   m_nSize += 14;
 
   InitBuffer();
@@ -2424,13 +2422,15 @@ CPU_RequestSysMsg::CPU_RequestSysMsg()
   buffer->PackUnsignedLongBE(0x0001000a); // TLV
   buffer->PackUnsignedShort(8);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
-  buffer->PackUnsignedLongBE(0x3c000200);
+  buffer->PackUnsignedShort(ICQ_CMDxSND_SYSxMSGxREQ);
+  buffer->PackUnsignedShortBE(0x0200);
 }
 
 //-----SysMsgDoneAck------------------------------------------------------------
 CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short nId)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxOFF_SYSMSGxACK)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
+  m_nMetaCommand = ICQ_CMDxSND_SYSxMSGxDONExACK;
   m_nSize += 14;
 
   InitBuffer();
@@ -2438,13 +2438,13 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short nId)
   buffer->PackUnsignedLongBE(0x0001000a); // TLV
   buffer->PackUnsignedShort(0x0008); // len again
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
-  buffer->PackUnsignedShortBE(0x3e00);
+  buffer->PackUnsignedShort(ICQ_CMDxSND_SYSxMSGxDONExACK);
   buffer->PackUnsignedShortBE(nId);
 }
 
 //-----CPU_SetRandomChatGroup------------------------------------------------
 CPU_SetRandomChatGroup::CPU_SetRandomChatGroup(unsigned long nGroup)
- : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, 0x0002)
+ : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nGroup = nGroup;
   m_nMetaCommand = ICQ_CMDxMETA_SETxRANDOMxCHAT;
@@ -2482,7 +2482,7 @@ CPU_SetRandomChatGroup::CPU_SetRandomChatGroup(unsigned long nGroup)
 
 //-----CPU_RandomChatSearch--------------------------------------------------
 CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
- : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxSEARCH)
+ : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_RANDOMxSEARCH;
   unsigned short nPacketSize = 18;
@@ -2512,9 +2512,9 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0xEA03;
+  m_nMetaCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
 
   m_nCountryCode = nCountryCode;
   m_nTimezone = ICQUser::SystemTimezone();
@@ -2535,7 +2535,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0xEA03); 			// subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); // subtype
 
   gTranslator.ClientToServer((char *) szAlias);
   gTranslator.ClientToServer((char *) szFirstName);
@@ -2577,11 +2577,11 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
 //-----Meta_SetEmailInfo------------------------------------------------------
 CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo( const char *szEmailSecondary,
                        const char *szEmailOld)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0x0B04;
+  m_nMetaCommand = ICQ_CMDxMETA_EMAILxINFOxSET;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szEmailSecondary) + 3 
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szEmailSecondary) + 3
 				 + strlen_safe(szEmailOld) + 3 + 3;
   m_nSize += packetSize;
   InitBuffer();
@@ -2593,7 +2593,7 @@ CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo( const char *szEmailSecondary,
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0x0B04); 			// subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); // subtype
 
   gTranslator.ClientToServer((char *) szEmailSecondary);
   gTranslator.ClientToServer((char *) szEmailOld);
@@ -2615,9 +2615,9 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
                        char nLanguage1,
                        char nLanguage2,
                        char nLanguage3)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0xFD03;
+  m_nMetaCommand = ICQ_CMDxMETA_MORExINFOxSET;
 
   m_nAge = nAge;
   m_nGender = nGender;
@@ -2639,7 +2639,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0xFD03); 			// subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
   gTranslator.ClientToServer((char *) szHomepage);
 
@@ -2667,9 +2667,9 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szDepartment,
     const char *szPosition,
     const char *szHomepage)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0xF303;
+  m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
   
   m_nCompanyCountry = nCompanyCountry;  
   
@@ -2692,7 +2692,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0xF303); 			// subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
   gTranslator.ClientToServer((char *) szCity);
   gTranslator.ClientToServer((char *) szState);
@@ -2721,9 +2721,9 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
 
 //-----Meta_SetAbout---------------------------------------------------------
 CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0x0604;
+  m_nMetaCommand = ICQ_CMDxMETA_ABOUTxSET;
 
   int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAbout) + 3;
   m_nSize += packetSize;
@@ -2736,7 +2736,7 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0x0604); 			// subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
   m_szAbout = szAbout == NULL ? strdup("") : strdup(szAbout);
   char *sz = gTranslator.NToRN(szAbout);
@@ -2757,9 +2757,9 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
     bool bAuthorization,
     bool bHideIp,
     bool bWebAware)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0x2404;
+  m_nMetaCommand = ICQ_CMDxMETA_SECURITYxSET;
   m_nAuthorization = bAuthorization ? 0 : 1;
   m_nHideIp =  bHideIp ? 1 : 0;
   m_nWebAware = bWebAware ? 1 : 0;
@@ -2776,7 +2776,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0x2404); // subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); // subtype
   buffer->PackChar(m_nAuthorization);
   buffer->PackChar(m_nWebAware);
   buffer->PackChar(1);
@@ -2786,9 +2786,9 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 
 //-----Meta_RequestInfo------------------------------------------------------
 CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = 0xb204;
+  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
   m_nUin = nUin;
 
   int packetSize = 2+2+2+4+2+2+2+4;
@@ -2802,14 +2802,14 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
-  buffer->PackUnsignedShortBE(0xb204); // subtype
+  buffer->PackUnsignedShort(m_nMetaCommand); // subtype
   buffer->PackUnsignedLong(m_nUin);
 }
 
 
 //-----Meta_RequestInfo------------------------------------------------------
 CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA_INFO)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_REQUESTxBASICxINFO;
   m_nUin = nUin;
@@ -2822,7 +2822,7 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
 
   buffer->PackUnsignedShort(0x000c); // Bytes remaining
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
-  buffer->PackUnsignedShort(ICQ_CMDxMETA_REQUESTxBASICxINFO);
+  buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nSubSequence);
   buffer->PackUnsignedLong(nUin);
 }

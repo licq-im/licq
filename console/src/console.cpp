@@ -533,22 +533,26 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::ProcessEvent(ICQEvent *e)
 {
-  switch (e->Command())
+  if (e->Command() == ICQ_CMDxTCP_START) // direct connection check
+  {
+    ProcessDoneEvent(e);
+    delete e;
+    return;
+  }
+
+  switch (e->SNAC())
   {
     // Event commands for a user
-  case ICQ_CMDxTCP_START:
-  case ICQ_CMDxSND_THRUxSERVER:
-  case ICQ_CMDxSND_USERxGETINFO:
-  case ICQ_CMDxSND_USERxGETDETAILS:
-  case ICQ_CMDxSND_UPDATExDETAIL:
-  case ICQ_CMDxSND_UPDATExBASIC:
-  case ICQ_CMDxSND_AUTHORIZE:
+  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
+  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
+  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
     {
       ProcessDoneEvent(e);
       break;
     }
 
-  case ICQ_CMDxSND_META:
+    // The all being meta snac
+  case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
     {
       if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
           e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
@@ -559,6 +563,8 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     }
 
     // Commands related to the basic operation
+  case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
+  case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
   case ICQ_CMDxSND_LOGON:
     if (e->Result() != EVENT_SUCCESS)
       winMain->wprintf("%CLogon failed.  See the log console for details.\n", COLOR_RED);
@@ -572,26 +578,9 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     winMain->fProcessInput = &CLicqConsole::InputCommand;
     break;
 
-  case ICQ_CMDxSND_SETxSTATUS:
-  case ICQ_CMDxSND_USERxLIST:
-  case ICQ_CMDxSND_VISIBLExLIST:
-  case ICQ_CMDxSND_INVISIBLExLIST:
-  case ICQ_CMDxSND_PING:
-  case ICQ_CMDxSND_USERxADD:
-  case ICQ_CMDxSND_SYSxMSGxREQ:
-  case ICQ_CMDxSND_SYSxMSGxDONExACK:
-    break;
-
-  case ICQ_CMDxSND_SEARCHxINFO:
-  case ICQ_CMDxSND_SEARCHxUIN:
-    {
-      ProcessDoneSearch(e);
-      break;
-    }
-
   default:
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event command received from daemon: %d.\n",
-              L_WARNxSTR, e->Command());
+    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event SNAC received from daemon: 0x%08lX.\n",
+              L_WARNxSTR, e->SNAC());
     break;
   }
   delete e;
@@ -2692,7 +2681,7 @@ void CLicqConsole::InputSearch(int cIn)
                            data->szLastName, data->szAlias, data->szEmail,
                            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
                            data->szCity, data->szState, data->nCountryCode,
-                           data->szCoName, data->szCoDept, data->szCoPos,  0, data->bOnlineOnly);
+                           data->szCoName, data->szCoDept, data->szCoPos, "", data->bOnlineOnly);
           winMain->state = STATE_PENDING;
 
           return;

@@ -114,8 +114,13 @@ void pipe_signal(CICQSignal *sig)
 			convo_recv(sig->Uin());
 		}
 		else
+                {
 			finish_info(sig);
-		
+
+			if (sig->Uin() == gUserManager.OwnerUin())
+				status_bar_refresh();
+		}
+
 		contact_list_refresh();
 		break;
 	  }
@@ -131,21 +136,32 @@ void pipe_signal(CICQSignal *sig)
 
 void pipe_event(ICQEvent *event)
 {
-	switch(event->Command())
+	if (event->Command() == ICQ_CMDxTCP_START) // direct connection check
+        {
+		user_function(event);
+		delete event;
+		return;
+	}
+
+	switch(event->SNAC())
 	{
 	/* Event commands for a user */
-	case ICQ_CMDxTCP_START:
-	case ICQ_CMDxSND_THRUxSERVER:
-	case ICQ_CMDxSND_USERxGETINFO:
-	case ICQ_CMDxSND_USERxGETDETAILS:
-	case ICQ_CMDxSND_UPDATExDETAIL:
-	case ICQ_CMDxSND_UPDATExBASIC:
-	case ICQ_CMDxSND_META:
-	case ICQ_CMDxSND_RANDOMxSEARCH:
-	case ICQ_CMDxSND_SETxRANDOMxCHAT:
+	case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
+	case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
+	case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
 		user_function(event);
 		break;
 
+	case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
+		if (event->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
+		    event->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
+			;
+		else if (event->SubCommand() == ICQ_CMDxSND_SYSxMSGxREQ ||
+			 event->SubCommand() == ICQ_CMDxSND_SYSxMSGxDONExACK)
+			owner_function(event);
+		else
+			user_function(event);
+	
 	case ICQ_CMDxSND_LOGON:
 	case ICQ_CMDxSND_USERxLIST:
 	case ICQ_CMDxSND_REGISTERxUSER:
@@ -154,18 +170,13 @@ void pipe_event(ICQEvent *event)
 		owner_function(event);
 		break;
 
-	case ICQ_CMDxSND_SETxSTATUS:
-	case ICQ_CMDxSND_USERxADD:
+	case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
+	case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
 		status_bar_refresh();
 		break;
 
-	case ICQ_CMDxSND_SEARCHxINFO:
-	case ICQ_CMDxSND_SEARCHxUIN:
-		search_result(event);
-		break;
-
 	default:
-		gLog.Warn("%sInternal Error: pipe_event(): Unknown event from daemon: %d.\n", L_WARNxSTR, event->Command());
+		gLog.Warn("%sInternal Error: pipe_event(): Unknown event from daemon: 0x%08lX.\n", L_WARNxSTR, event->SNAC());
 	}
 
 	delete event;
