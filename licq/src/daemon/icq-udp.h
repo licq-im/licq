@@ -758,15 +758,12 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 
     // find which user it is, verify we have them on our list
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
-    if (u == NULL)
-    {
-       gLog.Warn("%sUnknown user (%d) changed status.\n", L_WARNxSTR, nUin);
-       break;
-    }
-    gLog.Info("%s%s (%ld) changed status.\n", L_UDPxSTR, u->GetAlias(), nUin);
-
+    char s[32];
     unsigned long nNewStatus;
     packet >> nNewStatus;
+    ICQUser::StatusToStatusStr(nNewStatus, false, s);
+    gLog.Info("%s%s (%ld) is now %s.\n", L_UDPxSTR,
+              (u ? u->GetAlias() : "Unknown user"), nUin, s);
     ChangeUserStatus(u, nNewStatus);
     gUserManager.DropUser(u);
     u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -1433,7 +1430,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
 
 
          // translating string with Translation Table
-         gTranslator.ServerToClient(u->GetAlias()); 
+         gTranslator.ServerToClient(u->GetAlias());
          gTranslator.ServerToClient(u->GetFirstName());
          gTranslator.ServerToClient(u->GetLastName());
          gTranslator.ServerToClient(u->GetCity());
@@ -1475,7 +1472,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetCompanyName());
           gTranslator.ServerToClient(u->GetCompanyDepartment());
           gTranslator.ServerToClient(u->GetCompanyPosition());
-          
+
 
           u->SetEnableSave(true);
           u->SaveWorkInfo();
