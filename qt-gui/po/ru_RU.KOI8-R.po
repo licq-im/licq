@@ -9,463 +9,463 @@ msgstr ""
 "Last-Translator: "Max Kosmach" <murk@chat.ru>\n"
 "Content-Type: text/plain; charset=koi8-r\n"
 
-#: ../src/adduserdlg.cpp:27
+#: adduserdlg.cpp:27
 msgid "AddUserDlg::&Alert User"
 msgstr "Оповестить пользователя"
 
-#: ../src/adduserdlg.cpp:31
+#: adduserdlg.cpp:31
 msgid "AddUserDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/adduserdlg.cpp:22
+#: adduserdlg.cpp:22
 msgid "AddUserDlg::New User UIN:"
 msgstr "UIN нового пользователя"
 
-#: ../src/authuserdlg.cpp:29
+#: authuserdlg.cpp:29
 msgid "AuthUserDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/authuserdlg.cpp:27
+#: authuserdlg.cpp:27
 msgid "AuthUserDlg::&Ok"
 msgstr "Да"
 
-#: ../src/authuserdlg.cpp:22
+#: authuserdlg.cpp:22
 msgid "AuthUserDlg::Authorize which user (UIN):"
 msgstr "Авторизовать пользователя с UIN:"
 
-#: ../src/authuserdlg.cpp:20
+#: authuserdlg.cpp:20
 msgid "AuthUserDlg::Licq"
 msgstr ""
 
-#: ../src/awaymsgdlg.cpp:43
+#: awaymsgdlg.cpp:41
 msgid "AwayMsgDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/awaymsgdlg.cpp:142
+#: awaymsgdlg.cpp:141
 msgid "AwayMsgDlg::&Edit Items"
 msgstr "Редактировать"
 
-#: ../src/awaymsgdlg.cpp:40
+#: awaymsgdlg.cpp:38
 msgid "AwayMsgDlg::&Ok"
 msgstr "Да"
 
-#: ../src/awaymsgdlg.cpp:37
+#: awaymsgdlg.cpp:35
 msgid "AwayMsgDlg::&Select"
 msgstr "Выбрать"
 
-#: ../src/awaymsgdlg.cpp:71
+#: awaymsgdlg.cpp:69
 msgid "AwayMsgDlg::I am currently %1.\nYou can leave me a message."
 msgstr "Я сейчас %1.\nВы можете оставить мне сообщение."
 
-#: ../src/awaymsgdlg.cpp:66
+#: awaymsgdlg.cpp:64
 msgid "AwayMsgDlg::Set %1 Response for %2"
 msgstr "Установить ответ %1 для %2"
 
-#: ../src/chatacceptdlg.cpp:42
+#: chatacceptdlg.cpp:42
 msgid "CChatAcceptDlg::Accept chat with "
 msgstr "Подтвердить разговор с "
 
-#: ../src/chatacceptdlg.cpp:31
+#: chatacceptdlg.cpp:31
 msgid "CChatAcceptDlg::Accept"
 msgstr "Подтвердить"
 
-#: ../src/chatacceptdlg.cpp:37
+#: chatacceptdlg.cpp:37
 msgid "CChatAcceptDlg::Ignore"
 msgstr "Игнорировать"
 
-#: ../src/chatacceptdlg.cpp:25
+#: chatacceptdlg.cpp:25
 msgid "CChatAcceptDlg::Refusal Reason (if applicable):"
 msgstr "Причина отказа (если есть):"
 
-#: ../src/chatacceptdlg.cpp:34
+#: chatacceptdlg.cpp:34
 msgid "CChatAcceptDlg::Refuse"
 msgstr "Отказать"
 
-#: ../src/fileacceptdlg.cpp:43
+#: fileacceptdlg.cpp:43
 msgid "CFileAcceptDlg::Accept file transfer from "
 msgstr "Прием файла от "
 
-#: ../src/fileacceptdlg.cpp:32
+#: fileacceptdlg.cpp:32
 msgid "CFileAcceptDlg::Accept"
 msgstr "Подтвердить"
 
-#: ../src/fileacceptdlg.cpp:38
+#: fileacceptdlg.cpp:38
 msgid "CFileAcceptDlg::Ignore"
 msgstr "Игнорировать"
 
-#: ../src/fileacceptdlg.cpp:26
+#: fileacceptdlg.cpp:26
 msgid "CFileAcceptDlg::Refusal Reason (if applicable):"
 msgstr "Причина отказа (если есть):"
 
-#: ../src/fileacceptdlg.cpp:35
+#: fileacceptdlg.cpp:35
 msgid "CFileAcceptDlg::Refuse"
 msgstr "Отказать"
 
-#: ../src/filedlg.cpp:280
+#: filedlg.cpp:280
 msgid "CFileDlg::%1/%2"
 msgstr ""
 
-#: ../src/filedlg.cpp:128
+#: filedlg.cpp:128
 msgid "CFileDlg::&Cancel Transfer"
 msgstr "Отменить передачу"
 
-#: ../src/filedlg.cpp:99
+#: filedlg.cpp:99
 msgid "CFileDlg::Batch:"
 msgstr ""
 
-#: ../src/filedlg.cpp:814
+#: filedlg.cpp:814
 msgid "CFileDlg::Byte"
 msgstr "Байт"
 
-#: ../src/filedlg.cpp:812
+#: filedlg.cpp:812
 msgid "CFileDlg::Bytes"
 msgstr "Байт"
 
-#: ../src/filedlg.cpp:215
+#: filedlg.cpp:215
 msgid "CFileDlg::Cancel"
 msgstr "Отмена"
 
-#: ../src/filedlg.cpp:561
+#: filedlg.cpp:561
 msgid "CFileDlg::Connected, shaking hands..."
 msgstr "Соединились, договариваемся..."
 
-#: ../src/filedlg.cpp:571
+#: filedlg.cpp:571
 msgid "CFileDlg::Connected, waiting for response..."
 msgstr "Соединились, ожидаем ответ..."
 
-#: ../src/filedlg.cpp:552
+#: filedlg.cpp:552
 msgid "CFileDlg::Connecting to remote..."
 msgstr "Соудиняемся с удаленной стороной..."
 
-#: ../src/filedlg.cpp:70
+#: filedlg.cpp:70
 msgid "CFileDlg::Current:"
 msgstr "Текущий:"
 
-#: ../src/filedlg.cpp:784
+#: filedlg.cpp:784
 msgid "CFileDlg::Done"
 msgstr "Все"
 
-#: ../src/filedlg.cpp:116
+#: filedlg.cpp:116
 msgid "CFileDlg::ETA:"
 msgstr ""
 
-#: ../src/filedlg.cpp:515
+#: filedlg.cpp:515
 msgid "CFileDlg::File '%1' from %2 received successfully."
 msgstr "Файл '%1' от '%2' принят успешно."
 
-#: ../src/filedlg.cpp:198
+#: filedlg.cpp:198
 msgid "CFileDlg::File already exists and appears incomplete."
 msgstr "Файл уже есть и похоже неполный."
 
-#: ../src/filedlg.cpp:191
+#: filedlg.cpp:191
 msgid "CFileDlg::File already exists and is at least as big as the incoming file."
 msgstr "Файл уже есть и по крайней мере не меньше передаваемого."
 
-#: ../src/filedlg.cpp:80
+#: filedlg.cpp:80
 msgid "CFileDlg::File name:"
 msgstr "Имя файла:"
 
-#: ../src/filedlg.cpp:532
+#: filedlg.cpp:532
 msgid "CFileDlg::File received."
 msgstr "Файл принят."
 
-#: ../src/filedlg.cpp:761
+#: filedlg.cpp:761
 msgid "CFileDlg::File sent."
 msgstr "Файл отправлен."
 
-#: ../src/filedlg.cpp:239
+#: filedlg.cpp:239
 msgid "CFileDlg::File transfer cancelled."
 msgstr "Передача файла прекращена."
 
-#: ../src/filedlg.cpp:783
+#: filedlg.cpp:783
 msgid "CFileDlg::File transfer complete."
 msgstr "Передача файла завершена."
 
-#: ../src/filedlg.cpp:90
+#: filedlg.cpp:90
 msgid "CFileDlg::File:"
 msgstr "Файл:"
 
-#: ../src/filedlg.cpp:621
+#: filedlg.cpp:621
 msgid "CFileDlg::ICQ file transfer %1 %2"
 msgstr "ICQ передача файла %1 %2"
 
-#: ../src/filedlg.cpp:64
+#: filedlg.cpp:64
 msgid "CFileDlg::ICQ file transfer"
 msgstr "ICQ передача файла"
 
-#: ../src/filedlg.cpp:809
+#: filedlg.cpp:809
 msgid "CFileDlg::KB"
 msgstr "Кб"
 
-#: ../src/filedlg.cpp:805
+#: filedlg.cpp:805
 msgid "CFileDlg::MB"
 msgstr "Мб"
 
-#: ../src/filedlg.cpp:84
+#: filedlg.cpp:84
 msgid "CFileDlg::N/A"
 msgstr "недоступно"
 
-#: ../src/filedlg.cpp:760
+#: filedlg.cpp:760
 msgid "CFileDlg::Ok"
 msgstr "Да"
 
-#: ../src/filedlg.cpp:215
+#: filedlg.cpp:215
 msgid "CFileDlg::Open error - unable to open file for writing."
 msgstr "Ошибка открытия файла для записи."
 
-#: ../src/filedlg.cpp:198
+#: filedlg.cpp:198
 msgid "CFileDlg::Overwrite"
 msgstr "Перезаписать"
 
-#: ../src/filedlg.cpp:390
+#: filedlg.cpp:390
 msgid "CFileDlg::Received init, waiting for batch info..."
 msgstr ""
 
-#: ../src/filedlg.cpp:469
+#: filedlg.cpp:469
 msgid "CFileDlg::Receiving file..."
 msgstr "Принимается файл..."
 
-#: ../src/filedlg.cpp:586
+#: filedlg.cpp:586
 msgid "CFileDlg::Remote end disconnected."
 msgstr "Удаленная сторона отсоединилась."
 
-#: ../src/filedlg.cpp:198
+#: filedlg.cpp:198
 msgid "CFileDlg::Resume"
 msgstr "Возобновить"
 
-#: ../src/filedlg.cpp:215
+#: filedlg.cpp:215
 msgid "CFileDlg::Retry"
 msgstr "Повторить"
 
-#: ../src/filedlg.cpp:717
+#: filedlg.cpp:717
 msgid "CFileDlg::Sending file..."
 msgstr "Отправляется файл..."
 
-#: ../src/filedlg.cpp:767
+#: filedlg.cpp:767
 msgid "CFileDlg::Sending of file '%1' to %2 completed successfully."
 msgstr "Отправка файла '%1' к %2 завершена успешно."
 
-#: ../src/filedlg.cpp:633
+#: filedlg.cpp:633
 msgid "CFileDlg::Sent batch info, waiting for ack..."
 msgstr ""
 
-#: ../src/filedlg.cpp:652
+#: filedlg.cpp:652
 msgid "CFileDlg::Starting transfer..."
 msgstr "Начинается передача..."
 
-#: ../src/filedlg.cpp:108
+#: filedlg.cpp:108
 msgid "CFileDlg::Time:"
 msgstr "Время:"
 
-#: ../src/filedlg.cpp:138
+#: filedlg.cpp:138
 msgid "CFileDlg::Unknown"
 msgstr "Неизвестно"
 
-#: ../src/filedlg.cpp:84
+#: filedlg.cpp:84
 msgid "CFileDlg::Unset"
 msgstr "Не задано"
 
-#: ../src/filedlg.cpp:304
+#: filedlg.cpp:304
 msgid "CFileDlg::Waiting for connection..."
 msgstr "Ожидается соединение..."
 
-#: ../src/filedlg.cpp:621
+#: filedlg.cpp:621
 msgid "CFileDlg::from"
 msgstr "от"
 
-#: ../src/filedlg.cpp:621
+#: filedlg.cpp:621
 msgid "CFileDlg::to"
 msgstr "к"
 
-#: ../src/mainwin.cpp:797
+#: mainwin.cpp:797
 msgid "CMainWindow:: "
 msgstr ""
 
-#: ../src/mainwin.cpp:795
+#: mainwin.cpp:795
 msgid "CMainWindow::%1 msg%2"
 msgstr "%1 сообщ%2"
 
-#: ../src/mainwin.cpp:1798
+#: mainwin.cpp:1797
 msgid "CMainWindow::&About"
 msgstr ""
 
-#: ../src/mainwin.cpp:1720
+#: mainwin.cpp:1736
 msgid "CMainWindow::&Add User"
 msgstr "Добавить пользователя"
 
-#: ../src/mainwin.cpp:1686
+#: mainwin.cpp:1686
 msgid "CMainWindow::&Away"
 msgstr "Отошел"
 
-#: ../src/mainwin.cpp:1692
+#: mainwin.cpp:1692
 msgid "CMainWindow::&Do Not Disturb"
 msgstr "Не беспокоить"
 
-#: ../src/mainwin.cpp:1795
+#: mainwin.cpp:1794
 msgid "CMainWindow::&General Info"
 msgstr "Общая информация"
 
-#: ../src/mainwin.cpp:1753
+#: mainwin.cpp:1753
 msgid "CMainWindow::&Group"
 msgstr "Группа"
 
-#: ../src/mainwin.cpp:1713
+#: mainwin.cpp:1727
 msgid "CMainWindow::&History"
 msgstr "История"
 
-#: ../src/mainwin.cpp:1699
+#: mainwin.cpp:1699
 msgid "CMainWindow::&Invisible"
 msgstr "Невидимый"
 
-#: ../src/mainwin.cpp:1796
+#: mainwin.cpp:1795
 msgid "CMainWindow::&More Info"
 msgstr "Подробнее"
 
-#: ../src/mainwin.cpp:1688
+#: mainwin.cpp:1688
 msgid "CMainWindow::&Not Available"
 msgstr "Недоступен"
 
-#: ../src/mainwin.cpp:1684
+#: mainwin.cpp:1684
 msgid "CMainWindow::&Online"
 msgstr "В сети"
 
-#: ../src/mainwin.cpp:1759
-msgid "CMainWindow::&Options"
-msgstr "Настройки"
+#: mainwin.cpp:1759
+msgid "CMainWindow::&Options..."
+msgstr "Настройки..."
 
-#: ../src/mainwin.cpp:1761
-msgid "CMainWindow::&Plugin Manager"
-msgstr "Менеджер модулей"
+#: mainwin.cpp:1761
+msgid "CMainWindow::&Plugin Manager..."
+msgstr "Менеджер модулей..."
 
-#: ../src/mainwin.cpp:1727
+#: mainwin.cpp:1743
 msgid "CMainWindow::&Redraw User Window"
 msgstr "Обновить окно пользователей"
 
-#: ../src/mainwin.cpp:1728
+#: mainwin.cpp:1744
 msgid "CMainWindow::&Save All Users"
 msgstr "Сохранить всех пользователей"
 
-#: ../src/mainwin.cpp:1715
+#: mainwin.cpp:1729
 msgid "CMainWindow::&Security Options"
 msgstr "Настройки безопасности"
 
-#: ../src/mainwin.cpp:1788
+#: mainwin.cpp:1787
 msgid "CMainWindow::&Send Message"
 msgstr "Отправить сообщение"
 
-#: ../src/mainwin.cpp:1752
+#: mainwin.cpp:1752
 msgid "CMainWindow::&Status"
 msgstr "Статус"
 
-#: ../src/mainwin.cpp:469
+#: mainwin.cpp:469
 msgid "CMainWindow::&System"
 msgstr "Система"
 
-#: ../src/mainwin.cpp:1725
+#: mainwin.cpp:1741
 msgid "CMainWindow::&Update Contact List"
 msgstr "Обновить контакт-лист"
 
-#: ../src/mainwin.cpp:1787
+#: mainwin.cpp:1786
 msgid "CMainWindow::&View Event"
 msgstr "Просмотр событий"
 
-#: ../src/mainwin.cpp:1707
+#: mainwin.cpp:1721
 msgid "CMainWindow::&View System Messages"
 msgstr "Просмотр системных сообщений"
 
-#: ../src/mainwin.cpp:1797
+#: mainwin.cpp:1796
 msgid "CMainWindow::&Work Info"
 msgstr "Информация о работе"
 
-#: ../src/mainwin.cpp:1722
+#: mainwin.cpp:1738
 msgid "CMainWindow::A&uthorize User"
 msgstr "Авторизовать пользователя"
 
-#: ../src/mainwin.cpp:1807
+#: mainwin.cpp:1806
 msgid "CMainWindow::Add To Group"
 msgstr "Добавить в группу"
 
-#: ../src/mainwin.cpp:860
+#: mainwin.cpp:860
 msgid "CMainWindow::All Users"
 msgstr "Все пользователи"
 
-#: ../src/mainwin.cpp:1250
+#: mainwin.cpp:1250
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
 msgstr "Вы уверены, что хотите удалить\n%1 (%2)\nиз группы '%3'?"
 
-#: ../src/mainwin.cpp:1232
+#: mainwin.cpp:1232
 msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
 msgstr "Вы уверены, что хотите удалить\n%1 (%2)\nиз контакт-листа?"
 
-#: ../src/mainwin.cpp:1217
+#: mainwin.cpp:1217
 msgid "CMainWindow::Authorization granted."
 msgstr "Авторизация подтверждена."
 
-#: ../src/mainwin.cpp:1255
+#: mainwin.cpp:1255
 msgid "CMainWindow::Cancel"
 msgstr "Отменить"
 
-#: ../src/mainwin.cpp:1716
+#: mainwin.cpp:1730
 msgid "CMainWindow::Change &Password"
 msgstr "Изменить пароль"
 
-#: ../src/mainwin.cpp:1793
+#: mainwin.cpp:1792
 msgid "CMainWindow::Check &Auto Response"
 msgstr "Проверить Авто-ответ"
 
-#: ../src/mainwin.cpp:1740
+#: mainwin.cpp:1714
 msgid "CMainWindow::Clear All"
 msgstr "Очистить все"
 
-#: ../src/mainwin.cpp:1762
+#: mainwin.cpp:1732
 msgid "CMainWindow::Debug Level"
 msgstr "Уровень отладки"
 
-#: ../src/mainwin.cpp:1768
+#: mainwin.cpp:1767
 msgid "CMainWindow::E&xit"
 msgstr "Выход"
 
-#: ../src/mainwin.cpp:1724
+#: mainwin.cpp:1740
 msgid "CMainWindow::Edit Groups"
 msgstr "Редактировать группы"
 
-#: ../src/mainwin.cpp:1215
+#: mainwin.cpp:1215
 msgid "CMainWindow::Error sending autorization."
 msgstr "Ошибка при отправке авторизации."
 
-#: ../src/mainwin.cpp:1735
+#: mainwin.cpp:1709
 msgid "CMainWindow::Errors"
 msgstr "Ошибки"
 
-#: ../src/mainwin.cpp:1694
+#: mainwin.cpp:1694
 msgid "CMainWindow::Free for C&hat"
 msgstr "Свободен для разговора"
 
-#: ../src/mainwin.cpp:1773
+#: mainwin.cpp:1772
 msgid "CMainWindow::From Contact List"
 msgstr "Из контакт-листа"
 
-#: ../src/mainwin.cpp:1772
+#: mainwin.cpp:1771
 msgid "CMainWindow::From Current Group"
 msgstr "Из текущей группы"
 
-#: ../src/mainwin.cpp:1804
+#: mainwin.cpp:1803
 msgid "CMainWindow::Ignore List"
 msgstr "В списке игнорируемых"
 
-#: ../src/mainwin.cpp:1802
+#: mainwin.cpp:1801
 msgid "CMainWindow::Invisible List"
 msgstr "В списке невидимости"
 
-#: ../src/mainwin.cpp:279
+#: mainwin.cpp:279
 msgid "CMainWindow::KLicq (%1)"
 msgstr ""
 
-#: ../src/mainwin.cpp:281
+#: mainwin.cpp:281
 msgid "CMainWindow::Licq (%1)"
 msgstr ""
 
-#: ../src/mainwin.cpp:1356
+#: mainwin.cpp:1356
 msgid "CMainWindow::"
 "Licq version %1.\n"
 "Qt GUI plugin version %2.\n\n"
@@ -480,99 +480,99 @@ msgstr "Версия Licq:   %1.\n"
 "%3 (%4)\n"
 "%5 в контакт-листе."
 
-#: ../src/mainwin.cpp:1189
+#: mainwin.cpp:1189
 msgid "CMainWindow::Logon failed.\nSee network window for details."
 msgstr "Вход в сеть не удался. Подробности в окне протокола сети."
 
-#: ../src/mainwin.cpp:1764
+#: mainwin.cpp:1763
 msgid "CMainWindow::Next &Server"
 msgstr "Следующий сервер"
 
-#: ../src/mainwin.cpp:802
+#: mainwin.cpp:802
 msgid "CMainWindow::No msgs"
 msgstr "Нет сообщений"
 
-#: ../src/mainwin.cpp:1690
+#: mainwin.cpp:1690
 msgid "CMainWindow::O&ccupied"
 msgstr "Занят"
 
-#: ../src/mainwin.cpp:1696
+#: mainwin.cpp:1696
 msgid "CMainWindow::O&ffline"
 msgstr "Отключен"
 
-#: ../src/mainwin.cpp:1255
+#: mainwin.cpp:1255
 msgid "CMainWindow::Ok"
 msgstr "Да"
 
-#: ../src/mainwin.cpp:1801
+#: mainwin.cpp:1800
 msgid "CMainWindow::Online Notify"
 msgstr "Оповещать о появлении"
 
-#: ../src/mainwin.cpp:1737
+#: mainwin.cpp:1711
 msgid "CMainWindow::Packets"
 msgstr "Пакеты"
 
-#: ../src/mainwin.cpp:1730
+#: mainwin.cpp:1746
 msgid "CMainWindow::Register User"
 msgstr "Зарегистрировать пользователя"
 
-#: ../src/mainwin.cpp:1210
+#: mainwin.cpp:1210
 msgid "CMainWindow::Registration failed.  See network window for details."
 msgstr "Регистрация не удалась. Подробности в окне протокола сети."
 
-#: ../src/mainwin.cpp:1806
+#: mainwin.cpp:1805
 msgid "CMainWindow::Remove"
 msgstr "Удалить"
 
-#: ../src/mainwin.cpp:1721
+#: mainwin.cpp:1737
 msgid "CMainWindow::S&earch for User"
 msgstr "Искать пользователя"
 
-#: ../src/mainwin.cpp:1760
-msgid "CMainWindow::S&kin Browser"
-msgstr "Внешний вид"
+#: mainwin.cpp:1760
+msgid "CMainWindow::S&kin Browser..."
+msgstr "Выбор внешнего вида"
 
-#: ../src/mainwin.cpp:1766
+#: mainwin.cpp:1765
 msgid "CMainWindow::Sa&ve Options"
 msgstr "Сохранить настройки"
 
-#: ../src/mainwin.cpp:1790
+#: mainwin.cpp:1789
 msgid "CMainWindow::Send &Chat Request"
 msgstr "Запросить разговор"
 
-#: ../src/mainwin.cpp:1791
+#: mainwin.cpp:1790
 msgid "CMainWindow::Send &File Transfer"
 msgstr "Отправить файл"
 
-#: ../src/mainwin.cpp:1789
+#: mainwin.cpp:1788
 msgid "CMainWindow::Send &Url"
 msgstr "Отправить URL"
 
-#: ../src/mainwin.cpp:1792
+#: mainwin.cpp:1791
 msgid "CMainWindow::Send Authorization"
 msgstr "Отправить авторизацию"
 
-#: ../src/mainwin.cpp:1754
-msgid "CMainWindow::Set &Auto Response"
+#: mainwin.cpp:1754
+msgid "CMainWindow::Set &Auto Response..."
 msgstr "Установить Авто-ответ"
 
-#: ../src/mainwin.cpp:1739
+#: mainwin.cpp:1713
 msgid "CMainWindow::Set All"
 msgstr "Установить все"
 
-#: ../src/mainwin.cpp:1756
+#: mainwin.cpp:1756
 msgid "CMainWindow::Show &Network Window"
 msgstr "Показать окно сети"
 
-#: ../src/mainwin.cpp:1758
+#: mainwin.cpp:1758
 msgid "CMainWindow::Show Offline &Users"
 msgstr "Показывать пользователей не в сети"
 
-#: ../src/mainwin.cpp:1733
+#: mainwin.cpp:1707
 msgid "CMainWindow::Status Info"
 msgstr "Статус"
 
-#: ../src/mainwin.cpp:1200
+#: mainwin.cpp:1200
 msgid "CMainWindow::"
 "Successfully registered, your user identification\n"
 "number (UIN) is %ld.  Now log on and update your\n"
@@ -582,51 +582,51 @@ msgstr ""
 "номер (UIN) - %ld. Теперь Вам нужно войти в сеть\n"
 "и обновить данные о себе"
 
-#: ../src/mainwin.cpp:790
+#: mainwin.cpp:790
 msgid "CMainWindow::SysMsg"
 msgstr "Сист. сообщ"
 
-#: ../src/mainwin.cpp:1750
+#: mainwin.cpp:1750
 msgid "CMainWindow::System Functions"
 msgstr "Системные операции"
 
-#: ../src/mainwin.cpp:445
+#: mainwin.cpp:445
 msgid "CMainWindow::System"
 msgstr "Система"
 
-#: ../src/mainwin.cpp:1809
+#: mainwin.cpp:1808
 msgid "CMainWindow::U&tilities"
 msgstr "Утилиты"
 
-#: ../src/mainwin.cpp:1734
+#: mainwin.cpp:1708
 msgid "CMainWindow::Unknown Packets"
 msgstr "Неизвестные пакеты"
 
-#: ../src/mainwin.cpp:1726
+#: mainwin.cpp:1742
 msgid "CMainWindow::Update All Users"
 msgstr "Обновить всех пользователей"
 
-#: ../src/mainwin.cpp:1757
+#: mainwin.cpp:1757
 msgid "CMainWindow::Use &Mini Mode"
 msgstr "Использовать мини-режим"
 
-#: ../src/mainwin.cpp:1751
+#: mainwin.cpp:1751
 msgid "CMainWindow::User Functions"
 msgstr "Пользовательские функции"
 
-#: ../src/mainwin.cpp:1799
+#: mainwin.cpp:1798
 msgid "CMainWindow::View &History"
 msgstr "Просмотр истории"
 
-#: ../src/mainwin.cpp:1803
+#: mainwin.cpp:1802
 msgid "CMainWindow::Visible List"
 msgstr "В списке видимости"
 
-#: ../src/mainwin.cpp:1736
+#: mainwin.cpp:1710
 msgid "CMainWindow::Warnings"
 msgstr "Предупреждения"
 
-#: ../src/mainwin.cpp:1876
+#: mainwin.cpp:1875
 msgid "CMainWindow::"
 "You are currently registered as\n"
 "UIN: %1\n"
@@ -651,500 +651,503 @@ msgstr ""
 # "\"Система\" \\ \"Пользовательские функции\"\n"
 # "для регистрации существующего UIN или создания нового."
 
-#: ../src/mainwin.cpp:797
+#: mainwin.cpp:797
 msgid "CMainWindow::s"
 msgstr " "
 
-#: ../src/outputwin.cpp:32
+#: outputwin.cpp:32
 msgid "CQtLogWindow::&Close"
 msgstr "Закрыть"
 
-#: ../src/outputwin.cpp:30
+#: outputwin.cpp:30
 msgid "CQtLogWindow::C&lear"
 msgstr "Очистить"
 
-#: ../src/outputwin.cpp:17
+#: outputwin.cpp:17
 msgid "CQtLogWindow::Licq Network Log"
 msgstr "Licq: Протокол сети"
 
-#: ../src/userbox.cpp:312
+#: userbox.cpp:312
 msgid "CUserView::Offline"
 msgstr "Отключены"
 
-#: ../src/userbox.cpp:314
+#: userbox.cpp:314
 msgid "CUserView::Online"
 msgstr "В сети"
 
-#: ../src/userbox.cpp:387
+#: userbox.cpp:387
 msgid "CUserView::S"
 msgstr ""
 
-#: ../src/utilitydlg.cpp:81
+#: utilitydlg.cpp:82
 msgid "CUtilityDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/utilitydlg.cpp:76
+#: utilitydlg.cpp:77
 msgid "CUtilityDlg::&Run"
 msgstr "Запустить"
 
-#: ../src/utilitydlg.cpp:224
+#: utilitydlg.cpp:225
 msgid "CUtilityDlg::C&lose"
 msgstr "Закрыть"
 
-#: ../src/utilitydlg.cpp:111
+#: utilitydlg.cpp:112
 msgid "CUtilityDlg::Close"
 msgstr "Закрыть"
 
-#: ../src/utilitydlg.cpp:182
+#: utilitydlg.cpp:183
 msgid "CUtilityDlg::Command Window"
 msgstr "Окно команды"
 
-#: ../src/utilitydlg.cpp:34
+#: utilitydlg.cpp:34
 msgid "CUtilityDlg::Command:"
 msgstr "Команда:"
 
-#: ../src/utilitydlg.cpp:50
+#: utilitydlg.cpp:50
 msgid "CUtilityDlg::Description:"
 msgstr "Описание:"
 
-#: ../src/utilitydlg.cpp:208
+#: utilitydlg.cpp:209
 msgid "CUtilityDlg::Done"
 msgstr "Завершить"
 
-#: ../src/utilitydlg.cpp:110
+#: utilitydlg.cpp:111
 msgid "CUtilityDlg::Done:"
 msgstr "Завершено:"
 
-#: ../src/utilitydlg.cpp:55
+#: utilitydlg.cpp:55
 msgid "CUtilityDlg::Edit final command"
 msgstr "Редактировать команду"
 
-#: ../src/utilitydlg.cpp:146
+#: utilitydlg.cpp:147
 msgid "CUtilityDlg::Edit:"
 msgstr "Редактировать:"
 
-#: ../src/utilitydlg.cpp:202
+#: utilitydlg.cpp:203
 msgid "CUtilityDlg::Failed:"
 msgstr "Неудача:"
 
-#: ../src/utilitydlg.cpp:45
+#: utilitydlg.cpp:45
 msgid "CUtilityDlg::GUI"
 msgstr "Графический интерфейс"
 
-#: ../src/utilitydlg.cpp:47
+#: utilitydlg.cpp:47
 msgid "CUtilityDlg::Internal"
 msgstr "Встроенное"
 
-#: ../src/utilitydlg.cpp:33
+#: utilitydlg.cpp:33
 msgid "CUtilityDlg::Licq Utility: %1"
 msgstr "Licq утилита: %1"
 
-#: ../src/utilitydlg.cpp:154
+#: utilitydlg.cpp:155
 msgid "CUtilityDlg::Running:"
 msgstr "Выполняется:"
 
-#: ../src/utilitydlg.cpp:46
+#: utilitydlg.cpp:46
 msgid "CUtilityDlg::Terminal"
 msgstr "Терминал"
 
-#: ../src/utilitydlg.cpp:58
+#: utilitydlg.cpp:58
 msgid "CUtilityDlg::User Fields"
 msgstr "Пользовательские поля"
 
-#: ../src/utilitydlg.cpp:41
+#: utilitydlg.cpp:41
 msgid "CUtilityDlg::Window:"
 msgstr "Окно:"
 
-#: ../src/chatdlg.cpp:45
+#: chatdlg.cpp:45
 msgid "ChatDlg::&Close Chat"
 msgstr "Завершить разговор"
 
-#: ../src/chatdlg.cpp:41
+#: chatdlg.cpp:41
 msgid "ChatDlg::Local - "
 msgstr "Локальный - "
 
-#: ../src/chatdlg.cpp:310
+#: chatdlg.cpp:310
 msgid "ChatDlg::Remote - "
 msgstr "Удаленный - "
 
-#: ../src/chatdlg.cpp:248
+#: chatdlg.cpp:248
 msgid "ChatDlg::Remote - Connected, shaking hands..."
 msgstr "Удаленный - Соединились, договариваемся..."
 
-#: ../src/chatdlg.cpp:258
+#: chatdlg.cpp:258
 msgid "ChatDlg::Remote - Connected, waiting for response..."
 msgstr "Удаленный - Соединились, ожидается ответ..."
 
-#: ../src/chatdlg.cpp:33
+#: chatdlg.cpp:33
 msgid "ChatDlg::Remote - Not connected"
 msgstr "Удаленный - Нет соединения"
 
-#: ../src/chatdlg.cpp:103
+#: chatdlg.cpp:103
 msgid "ChatDlg::Remote - Received connection, shaking hands..."
 msgstr "Удаленный - Принят запрос соединения, договариваемся..."
 
-#: ../src/chatdlg.cpp:88
+#: chatdlg.cpp:88
 msgid "ChatDlg::Remote - Waiting for joiners..."
 msgstr "Удаленный - ожидаем участников..."
 
-
-#: ../src/editgrp.cpp:31
+#: editgrp.cpp:31
 msgid "EditGrpDlg::Add"
 msgstr "Добавить"
 
-#: ../src/editgrp.cpp:89
+#: editgrp.cpp:89
 msgid "EditGrpDlg::All Users"
 msgstr "Все пользователи"
 
-#: ../src/editgrp.cpp:115
+#: editgrp.cpp:115
 msgid "EditGrpDlg::Are you sure you want to remove\nthe group '"
 msgstr "Вы уверены, что хотите удалить\nгруппу '"
 
-#: ../src/editgrp.cpp:189
+#: editgrp.cpp:189
 msgid "EditGrpDlg::Cancel"
 msgstr "Отменить"
 
-#: ../src/editgrp.cpp:165
+#: editgrp.cpp:165
 msgid "EditGrpDlg::Clear or Set?"
 msgstr "Очистить или установить?"
 
-#: ../src/editgrp.cpp:165
+#: editgrp.cpp:165
 msgid "EditGrpDlg::Clear"
 msgstr "Очистить"
 
-#: ../src/editgrp.cpp:37
+#: editgrp.cpp:37
 msgid "EditGrpDlg::Default"
 msgstr "По умолчанию"
 
-#: ../src/editgrp.cpp:50
+#: editgrp.cpp:50
 msgid "EditGrpDlg::Default:"
 msgstr "По умолчанию:"
 
-#: ../src/editgrp.cpp:64
+#: editgrp.cpp:64
 msgid "EditGrpDlg::Done"
 msgstr "Завершить"
 
-#: ../src/editgrp.cpp:35
+#: editgrp.cpp:35
 msgid "EditGrpDlg::Edit Name"
 msgstr "Изменить имя"
 
-#: ../src/editgrp.cpp:36
+#: editgrp.cpp:36
 msgid "EditGrpDlg::Edit group name (hit enter to save)."
 msgstr "Изменение имени группы (Нажмите Enter для сохранения)."
 
-#: ../src/editgrp.cpp:214
+#: editgrp.cpp:214
 msgid "EditGrpDlg::Edit"
 msgstr "Изменить имя"
 
-#: ../src/editgrp.cpp:23
+#: editgrp.cpp:23
 msgid "EditGrpDlg::Groups"
 msgstr "Группы"
 
-#: ../src/editgrp.cpp:53
+#: editgrp.cpp:53
 msgid "EditGrpDlg::New User:"
 msgstr "Новый пользователь:"
 
-#: ../src/editgrp.cpp:39
+#: editgrp.cpp:39
 msgid "EditGrpDlg::New Users"
 msgstr "Новые пользователи"
 
-#: ../src/editgrp.cpp:118
+#: editgrp.cpp:118
 msgid "EditGrpDlg::Ok"
 msgstr "Да"
 
-#: ../src/editgrp.cpp:32
+#: editgrp.cpp:32
 msgid "EditGrpDlg::Remove"
 msgstr "Удалить"
 
-#: ../src/editgrp.cpp:165
+#: editgrp.cpp:165
 msgid "EditGrpDlg::Set"
 msgstr "Установить"
 
-#: ../src/editgrp.cpp:34
+#: editgrp.cpp:34
 msgid "EditGrpDlg::Shift Down"
 msgstr "Сдвинуть вниз"
 
-#: ../src/editgrp.cpp:33
+#: editgrp.cpp:33
 msgid "EditGrpDlg::Shift Up"
 msgstr "Сдвинуть вверх"
 
-#: ../src/editgrp.cpp:38
+#: editgrp.cpp:38
 msgid "EditGrpDlg::The default group to start up in."
 msgstr "Группа по умолчанию при старте"
 
-#: ../src/editgrp.cpp:40
+#: editgrp.cpp:40
 msgid "EditGrpDlg::The group to which new users will be automatically added."
 msgstr "Группа, куда будут по умолчанию добавляться новые пользователи."
 
-#: ../src/editgrp.cpp:104
+#: editgrp.cpp:104
 msgid "EditGrpDlg::noname"
 msgstr "новая"
 
-#: ../src/eventdesc.cpp:37
+#: eventdesc.cpp:37
 msgid "EditSkinDlg::"
 msgstr ""
 
-#: ../src/editskin.cpp:38
+#: editskin.cpp:39
 msgid "EditSkinDlg::&Close"
 msgstr "Закрыть"
 
-#: ../src/editskin.cpp:36
+#: editskin.cpp:37
 msgid "EditSkinDlg::&Save"
 msgstr "Сохранить"
 
-#: ../src/eventdesc.cpp:24
+#: eventdesc.cpp:24
 msgid "EditSkinDlg::Added to Contact List"
 msgstr "Добавлен в контакт-лист"
 
-#: ../src/eventdesc.cpp:18
+#: eventdesc.cpp:18
 msgid "EditSkinDlg::Authorization Request"
 msgstr "Запрос авторизации"
 
-#: ../src/eventdesc.cpp:14
+#: eventdesc.cpp:14
 msgid "EditSkinDlg::Chat Request"
 msgstr "Запрос разговора"
 
-#: ../src/eventdesc.cpp:31
+#: eventdesc.cpp:31
 msgid "EditSkinDlg::Contact List"
 msgstr "Контакт-лист"
 
-#: ../src/eventdesc.cpp:26
+#: eventdesc.cpp:26
 msgid "EditSkinDlg::Email Pager"
 msgstr "Email пейджер"
 
-#: ../src/editskin.cpp:84
+#: editskin.cpp:88
 msgid "EditSkinDlg::Failed to open skin configuration file:\n%1"
 msgstr "Неудалось открыть файл конфигурации внешнего вида:\n%1"
 
-#: ../src/eventdesc.cpp:15
+#: eventdesc.cpp:15
 msgid "EditSkinDlg::File Transfer"
 msgstr "Передача файла"
 
-#: ../src/editskin.cpp:22
+#: editskin.cpp:23
 msgid "EditSkinDlg::Licq Skin Editor - %1"
 msgstr "Licq: Редактор внешнего вида - %1"
 
-#: ../src/eventdesc.cpp:13
+#: eventdesc.cpp:13
 msgid "EditSkinDlg::Message"
 msgstr "Сообщение"
 
-#: ../src/eventdesc.cpp:12
+#: eventdesc.cpp:12
 msgid "EditSkinDlg::Saved Event"
 msgstr "Сохраненное событие"
 
-#: ../src/eventdesc.cpp:16
+#: eventdesc.cpp:16
 msgid "EditSkinDlg::URL"
 msgstr ""
 
-#: ../src/eventdesc.cpp:38
+#: eventdesc.cpp:38
 msgid "EditSkinDlg::User Info"
 msgstr "Информация о пользователе"
 
-#: ../src/eventdesc.cpp:25
+#: eventdesc.cpp:25
 msgid "EditSkinDlg::Web Panel"
 msgstr "Web панель"
 
-#: ../src/eventdesc.cpp:52
+#: editskin.cpp:70
+msgid "EditSkinDlg::[ Read-Only ]"
+msgstr "[ Только для чтения ]"
+
+#: eventdesc.cpp:52
 msgid "Event:: Cancelled"
 msgstr " Отменено"
 
-#: ../src/eventdesc.cpp:47
+#: eventdesc.cpp:47
 msgid "Event::Unknown Event"
 msgstr "Неизвестное событие"
 
-#: ../src/icqfunctions.cpp:327
+#: icqfunctions.cpp:341
 msgid "ICQFunctions:: Day:"
 msgstr "День:"
 
-#: ../src/icqfunctions.cpp:330
+#: icqfunctions.cpp:344
 msgid "ICQFunctions:: Month:"
 msgstr "Месяц:"
 
-#: ../src/icqfunctions.cpp:333
+#: icqfunctions.cpp:347
 msgid "ICQFunctions:: Year:"
 msgstr "Год:"
 
-#: ../src/icqfunctions.cpp:639
+#: icqfunctions.cpp:660
 msgid "ICQFunctions::%1 (GMT%1%1%1)"
 msgstr ""
 
-#: ../src/icqfunctions.cpp:1555
+#: icqfunctions.cpp:1639
 msgid "ICQFunctions::%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]"
 msgstr "%1 в режиме '%2'\n%3\n[Используйте \"Срочно\" для отправки]"
 
-#: ../src/icqfunctions.cpp:1564
+#: icqfunctions.cpp:1648
 msgid "ICQFunctions::%1 refused %2, send through server."
 msgstr "%1 не принял %2, отправьте через сервер."
 
-#: ../src/icqfunctions.cpp:1582
+#: icqfunctions.cpp:1666
 msgid "ICQFunctions::%s%1 with %2 refused:\n%s%3"
 msgstr ""
 
-#: ../src/icqfunctions.cpp:1664
+#: icqfunctions.cpp:1748
 msgid "ICQFunctions::&Close"
 msgstr "Закрыть"
 
-#: ../src/icqfunctions.cpp:111
+#: icqfunctions.cpp:111
 msgid "ICQFunctions::&Ok"
 msgstr "Да"
 
-#: ../src/icqfunctions.cpp:836
+#: icqfunctions.cpp:857
 msgid "ICQFunctions::&Quote"
 msgstr "Цитировать"
 
-#: ../src/icqfunctions.cpp:110
+#: icqfunctions.cpp:110
 msgid "ICQFunctions::&Save"
 msgstr "Сохранить"
 
-#: ../src/icqfunctions.cpp:822
+#: icqfunctions.cpp:843
 msgid "ICQFunctions::&Send"
 msgstr "Отправить"
 
-#: ../src/icqfunctions.cpp:144
+#: icqfunctions.cpp:147
 msgid "ICQFunctions::&View"
 msgstr "Просмотр"
 
-#: ../src/icqfunctions.cpp:866
+#: icqfunctions.cpp:887
 msgid "ICQFunctions::<- Prev"
 msgstr "<- Пред"
 
-#: ../src/icqfunctions.cpp:103
+#: icqfunctions.cpp:103
 msgid "ICQFunctions::A&uto Close"
 msgstr "Автозакрытие"
 
-#: ../src/icqfunctions.cpp:428
+#: icqfunctions.cpp:442
 msgid "ICQFunctions::About"
 msgstr "О себе"
 
-#: ../src/icqfunctions.cpp:434
+#: icqfunctions.cpp:448
 msgid "ICQFunctions::About:"
 msgstr "Пользователь о себе:"
 
-#: ../src/icqfunctions.cpp:989
+#: icqfunctions.cpp:1010
 msgid "ICQFunctions::Add?"
 msgstr "Довавить?"
 
-#: ../src/icqfunctions.cpp:409
+#: icqfunctions.cpp:423
 msgid "ICQFunctions::Address:"
 msgstr "Адрес:"
 
-#: ../src/icqfunctions.cpp:300
+#: icqfunctions.cpp:314
 msgid "ICQFunctions::Age:"
 msgstr "Возраст:"
 
-#: ../src/icqfunctions.cpp:218
+#: icqfunctions.cpp:231
 msgid "ICQFunctions::Alias:"
 msgstr "Ник:"
 
-#: ../src/icqfunctions.cpp:968
+#: icqfunctions.cpp:989
 msgid "ICQFunctions::Authorize?"
 msgstr "Авторизовать?"
 
-#: ../src/icqfunctions.cpp:322
+#: icqfunctions.cpp:336
 msgid "ICQFunctions::Birthday:"
 msgstr "День рождения:"
 
-#: ../src/icqfunctions.cpp:1520
+#: icqfunctions.cpp:1604
 msgid "ICQFunctions::Cancel"
 msgstr "Отмена"
 
-#: ../src/icqfunctions.cpp:279
+#: icqfunctions.cpp:293
 msgid "ICQFunctions::Cellular:"
 msgstr "Сотовый:"
 
-#: ../src/icqfunctions.cpp:168
+#: icqfunctions.cpp:171
 msgid "ICQFunctions::Chat Request"
 msgstr "Запрос разговора"
 
-#: ../src/icqfunctions.cpp:402
+#: icqfunctions.cpp:416
 msgid "ICQFunctions::City:"
 msgstr "Город:"
 
-#: ../src/icqfunctions.cpp:260
+#: icqfunctions.cpp:274
 msgid "ICQFunctions::Country:"
 msgstr "Страна:"
 
-#: ../src/icqfunctions.cpp:394
+#: icqfunctions.cpp:408
 msgid "ICQFunctions::Department:"
 msgstr "Отдел:"
 
-#: ../src/icqfunctions.cpp:1517
+#: icqfunctions.cpp:1601
 msgid "ICQFunctions::Direct send failed,\nsend through server?"
 msgstr "Отправить напрямую не удалось,\nотправить через сервер?"
 
-#: ../src/icqfunctions.cpp:238
+#: icqfunctions.cpp:251
 msgid "ICQFunctions::EMail 1:"
 msgstr "Основной EMail:"
 
-#: ../src/icqfunctions.cpp:242
+#: icqfunctions.cpp:255
 msgid "ICQFunctions::EMail 2:"
 msgstr "Второй EMail:"
 
-#: ../src/icqfunctions.cpp:1115
+#: icqfunctions.cpp:1136
 msgid "ICQFunctions::Error loading history"
 msgstr "Ошибка чтения истории"
 
-#: ../src/icqfunctions.cpp:416
+#: icqfunctions.cpp:430
 msgid "ICQFunctions::Fax:"
 msgstr "Факс:"
 
-#: ../src/icqfunctions.cpp:697
+#: icqfunctions.cpp:718
 msgid "ICQFunctions::Female"
 msgstr "Женский"
 
-#: ../src/icqfunctions.cpp:169
+#: icqfunctions.cpp:172
 msgid "ICQFunctions::File Transfer"
 msgstr "Передача файла"
 
-#: ../src/icqfunctions.cpp:1267
+#: icqfunctions.cpp:1342
 msgid "ICQFunctions::Filename:"
 msgstr "Имя файла:"
 
-#: ../src/icqfunctions.cpp:303
+#: icqfunctions.cpp:317
 msgid "ICQFunctions::Gender:"
 msgstr "Пол:"
 
-#: ../src/icqfunctions.cpp:210
+#: icqfunctions.cpp:223
 msgid "ICQFunctions::General"
 msgstr "Общая информация"
 
-#: ../src/icqfunctions.cpp:456
+#: icqfunctions.cpp:474
 msgid "ICQFunctions::History File:"
 msgstr "Файл истории:"
 
-#: ../src/icqfunctions.cpp:443
+#: icqfunctions.cpp:457
 msgid "ICQFunctions::History"
 msgstr "История"
 
-#: ../src/icqfunctions.cpp:420
+#: icqfunctions.cpp:434
 msgid "ICQFunctions::Homepage:"
 msgstr "Домашняя страница:"
 
-#: ../src/icqfunctions.cpp:228
+#: icqfunctions.cpp:241
 msgid "ICQFunctions::IP:"
 msgstr ""
 
-#: ../src/icqfunctions.cpp:365
+#: icqfunctions.cpp:379
 msgid "ICQFunctions::Language 1:"
 msgstr "Основной язык:"
 
-#: ../src/icqfunctions.cpp:368
+#: icqfunctions.cpp:382
 msgid "ICQFunctions::Language 2:"
 msgstr "Второй язык:"
 
-#: ../src/icqfunctions.cpp:372
+#: icqfunctions.cpp:386
 msgid "ICQFunctions::Language 3:"
 msgstr "Третий язык:"
 
-#: ../src/icqfunctions.cpp:1439
+#: icqfunctions.cpp:1523
 msgid "ICQFunctions::Local"
 msgstr "Локальную"
 
-#: ../src/icqfunctions.cpp:699
+#: icqfunctions.cpp:720
 msgid "ICQFunctions::Male"
 msgstr "Мужской"
 
-#: ../src/icqfunctions.cpp:1306
+#: icqfunctions.cpp:1382
 msgid "ICQFunctions::"
 "Message is %1 characters, over the ICQ98 limit of %2.\n"
 "Licq, ICQ99, and other clones support longer messages \n"
@@ -1155,167 +1158,179 @@ msgstr ""
 "в отличие от ICQ98, поддерживают более длинные сообщения."
 "Продолжить?"
 
-#: ../src/icqfunctions.cpp:166
+#: icqfunctions.cpp:169
 msgid "ICQFunctions::Message"
 msgstr "Сообщение"
 
-#: ../src/icqfunctions.cpp:292
+#: icqfunctions.cpp:306
 msgid "ICQFunctions::More"
 msgstr "Подробнее"
 
-#: ../src/icqfunctions.cpp:390
+#: icqfunctions.cpp:404
 msgid "ICQFunctions::Name:"
 msgstr "Имя:"
 
-#: ../src/icqfunctions.cpp:865
+#: icqfunctions.cpp:886
 msgid "ICQFunctions::Next ->"
 msgstr "След. ->"
 
-#: ../src/icqfunctions.cpp:1517
+#: icqfunctions.cpp:1601
 msgid "ICQFunctions::No"
 msgstr "Нет"
 
-#: ../src/icqfunctions.cpp:649
+#: icqfunctions.cpp:670
 msgid "ICQFunctions::Now"
 msgstr "Сейчас"
 
-#: ../src/icqfunctions.cpp:1309
+#: icqfunctions.cpp:1385
 msgid "ICQFunctions::Ok"
 msgstr "Да"
 
-#: ../src/icqfunctions.cpp:221
+#: icqfunctions.cpp:234
 msgid "ICQFunctions::Online:"
 msgstr "В сети:"
 
-#: ../src/icqfunctions.cpp:413
+#: icqfunctions.cpp:427
 msgid "ICQFunctions::Phone:"
 msgstr "Телефон:"
 
-#: ../src/icqfunctions.cpp:398
+#: icqfunctions.cpp:412
 msgid "ICQFunctions::Position:"
 msgstr "Должность:"
 
-#: ../src/icqfunctions.cpp:161
+#: icqfunctions.cpp:164
 msgid "ICQFunctions::S&end"
 msgstr "Отправка"
 
-#: ../src/icqfunctions.cpp:858
+#: icqfunctions.cpp:879
 msgid "ICQFunctions::Save"
 msgstr "Сохранить"
 
-#: ../src/icqfunctions.cpp:165
+#: icqfunctions.cpp:168
 msgid "ICQFunctions::Select Function"
 msgstr "Выбрать функцию"
 
-#: ../src/icqfunctions.cpp:195
+#: icqfunctions.cpp:197
 msgid "ICQFunctions::Send through server"
 msgstr "Отправить через сервер"
 
-#: ../src/icqfunctions.cpp:1329
+#: icqfunctions.cpp:1409
 msgid "ICQFunctions::Sending URL "
 msgstr "Отправляется URL "
 
-#: ../src/icqfunctions.cpp:1535
+#: icqfunctions.cpp:1619
 msgid "ICQFunctions::Sending URL through server..."
 msgstr "Отправляется URL через сервер..."
 
-#: ../src/icqfunctions.cpp:1338
+#: icqfunctions.cpp:1419
 msgid "ICQFunctions::Sending chat request "
 msgstr "Отправляется запрос разговора "
 
-#: ../src/icqfunctions.cpp:1352
+#: icqfunctions.cpp:1434
 msgid "ICQFunctions::Sending file transfer "
 msgstr "Отправляется передача файла "
 
-#: ../src/icqfunctions.cpp:1320
+#: icqfunctions.cpp:1399
 msgid "ICQFunctions::Sending msg "
 msgstr "Отправляется сообщение "
 
-#: ../src/icqfunctions.cpp:1528
+#: icqfunctions.cpp:1612
 msgid "ICQFunctions::Sending msg through server..."
 msgstr "Отправляется сообщение через сервер..."
 
-#: ../src/icqfunctions.cpp:1439
+#: icqfunctions.cpp:1523
 msgid "ICQFunctions::Server"
 msgstr "На сервере"
 
-#: ../src/icqfunctions.cpp:405
+#: icqfunctions.cpp:204
+msgid "ICQFunctions::Spoof UIN:"
+msgstr ""
+
+#: icqfunctions.cpp:1304
+msgid "ICQFunctions::"
+"Spoofing messages is immoral and possibly illegal\n"
+"In clicking OK you absolve the author from any \n"
+"responsibility for your actions.\n"
+"Do you want to continue?"
+msgstr ""
+
+#: icqfunctions.cpp:419
 msgid "ICQFunctions::State:"
 msgstr "Штат:"
 
-#: ../src/icqfunctions.cpp:83
+#: icqfunctions.cpp:83
 msgid "ICQFunctions::Status:"
 msgstr "Статус:"
 
-#: ../src/icqfunctions.cpp:86
+#: icqfunctions.cpp:86
 msgid "ICQFunctions::Time:"
 msgstr "Время:"
 
-#: ../src/icqfunctions.cpp:225
+#: icqfunctions.cpp:238
 msgid "ICQFunctions::UIN:"
 msgstr ""
 
-#: ../src/icqfunctions.cpp:167
+#: icqfunctions.cpp:170
 msgid "ICQFunctions::URL"
 msgstr ""
 
-#: ../src/icqfunctions.cpp:1253
+#: icqfunctions.cpp:1328
 msgid "ICQFunctions::URL:"
 msgstr ""
 
-#: ../src/icqfunctions.cpp:743
+#: icqfunctions.cpp:764
 msgid "ICQFunctions::Unknown (%1)"
 msgstr "Неизвестно (%1)"
 
-#: ../src/icqfunctions.cpp:651
+#: icqfunctions.cpp:672
 msgid "ICQFunctions::Unknown"
 msgstr "Неизвестно"
 
-#: ../src/icqfunctions.cpp:721
+#: icqfunctions.cpp:742
 msgid "ICQFunctions::Unspecified"
 msgstr "Не указано"
 
-#: ../src/icqfunctions.cpp:1439
+#: icqfunctions.cpp:1523
 msgid "ICQFunctions::Update local or server information?"
 msgstr "Обновить локальную информацию или на сервере?"
 
-#: ../src/icqfunctions.cpp:857
+#: icqfunctions.cpp:878
 msgid "ICQFunctions::Update"
 msgstr "Обновить"
 
-#: ../src/icqfunctions.cpp:1441
+#: icqfunctions.cpp:1525
 msgid "ICQFunctions::Updating server..."
 msgstr "Обновляется на сервере..."
 
-#: ../src/icqfunctions.cpp:1446
+#: icqfunctions.cpp:1530
 msgid "ICQFunctions::Updating..."
 msgstr "Обновляется..."
 
-#: ../src/icqfunctions.cpp:196
+#: icqfunctions.cpp:199
 msgid "ICQFunctions::Urgent"
 msgstr "Срочно"
 
-#: ../src/icqfunctions.cpp:958
+#: icqfunctions.cpp:979
 msgid "ICQFunctions::View URL?"
 msgstr "Посмотреть URL?"
 
-#: ../src/icqfunctions.cpp:382
+#: icqfunctions.cpp:396
 msgid "ICQFunctions::Work"
 msgstr "Работа"
 
-#: ../src/icqfunctions.cpp:1517
+#: icqfunctions.cpp:1601
 msgid "ICQFunctions::Yes"
 msgstr "Да"
 
-#: ../src/icqfunctions.cpp:1349
+#: icqfunctions.cpp:1431
 msgid "ICQFunctions::You must specify a file to transfer!"
 msgstr "Вы должны указать файл для передачи!"
 
-#: ../src/icqfunctions.cpp:275
+#: icqfunctions.cpp:289
 msgid "ICQFunctions::Zip:"
 msgstr "Индекс:"
 
-#: ../src/icqfunctions.cpp:1208
+#: icqfunctions.cpp:1267
 msgid "ICQFunctions::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -1325,123 +1340,123 @@ msgstr ""
 "[<font color=\"%2\">Отправленные</font>] "
 "с %3 по %4 из %5"
 
-#: ../src/icqfunctions.cpp:1353
+#: icqfunctions.cpp:1435
 msgid "ICQFunctions::direct"
 msgstr "напрямую"
 
-#: ../src/icqfunctions.cpp:1487
+#: icqfunctions.cpp:1571
 msgid "ICQFunctions::done"
 msgstr "готово"
 
-#: ../src/icqfunctions.cpp:1496
+#: icqfunctions.cpp:1580
 msgid "ICQFunctions::error"
 msgstr "ошибка"
 
-#: ../src/icqfunctions.cpp:1490
+#: icqfunctions.cpp:1574
 msgid "ICQFunctions::failed"
 msgstr "неудачно"
 
-#: ../src/icqfunctions.cpp:1353
+#: icqfunctions.cpp:1435
 msgid "ICQFunctions::through server"
 msgstr "через сервер"
 
-#: ../src/icqfunctions.cpp:1493
+#: icqfunctions.cpp:1577
 msgid "ICQFunctions::timed out"
 msgstr "время вышло"
 
-#: ../src/messagebox.cpp:59
+#: messagebox.cpp:59
 msgid "MsgView::Event Type"
 msgstr "Тип события"
 
-#: ../src/messagebox.cpp:61
+#: messagebox.cpp:61
 msgid "MsgView::Flags"
 msgstr "Атрибуты"
 
-#: ../src/messagebox.cpp:62
+#: messagebox.cpp:62
 msgid "MsgView::Licq"
 msgstr ""
 
-#: ../src/messagebox.cpp:58
+#: messagebox.cpp:58
 msgid "MsgView::N"
 msgstr ""
 
-#: ../src/messagebox.cpp:60
+#: messagebox.cpp:60
 msgid "MsgView::Time Received"
 msgstr "Время прихода"
 
-#: ../src/optionsdlg.cpp:40
+#: optionsdlg.cpp:40
 msgid "OptionsDlg::&Apply"
 msgstr "&Применить"
 
-#: ../src/optionsdlg.cpp:41
+#: optionsdlg.cpp:41
 msgid "OptionsDlg::&Cancel"
 msgstr "&Отменить"
 
-#: ../src/optionsdlg.cpp:42
+#: optionsdlg.cpp:42
 msgid "OptionsDlg::&Help"
 msgstr "Помощь"
 
-#: ../src/optionsdlg.cpp:39
+#: optionsdlg.cpp:39
 msgid "OptionsDlg::&OK"
 msgstr "&Да"
 
-#: ../src/optionsdlg.cpp:399
+#: optionsdlg.cpp:400
 msgid "OptionsDlg::64 x 48 Dock Icon"
 msgstr ""
 
-#: ../src/optionsdlg.cpp:733
+#: optionsdlg.cpp:734
 msgid "OptionsDlg::Alignment"
 msgstr "Выравнивание"
 
-#: ../src/optionsdlg.cpp:53
+#: optionsdlg.cpp:53
 msgid "OptionsDlg::Appearance"
 msgstr "Внешний вид"
 
-#: ../src/optionsdlg.cpp:591
+#: optionsdlg.cpp:592
 msgid "OptionsDlg::Auto Away:"
 msgstr "Авто-отошел:"
 
-#: ../src/optionsdlg.cpp:381
+#: optionsdlg.cpp:382
 msgid "OptionsDlg::Auto Close Function Window"
 msgstr "Автозакрытие функциональных окон"
 
-#: ../src/optionsdlg.cpp:574
+#: optionsdlg.cpp:575
 msgid "OptionsDlg::Auto Logon:"
 msgstr "Авто-логин:"
 
-#: ../src/optionsdlg.cpp:597
+#: optionsdlg.cpp:598
 msgid "OptionsDlg::Auto N/A:"
 msgstr "Авто-недоступен:"
 
-#: ../src/optionsdlg.cpp:563
+#: optionsdlg.cpp:564
 msgid "OptionsDlg::Auto"
 msgstr "Автоматически"
 
-#: ../src/optionsdlg.cpp:575
+#: optionsdlg.cpp:576
 msgid "OptionsDlg::Automatically log on when first starting up."
 msgstr "Автоматичестки входить в сеть при старте."
 
-#: ../src/optionsdlg.cpp:676
+#: optionsdlg.cpp:677
 msgid "OptionsDlg::Away"
 msgstr "Отошел"
 
-#: ../src/optionsdlg.cpp:755
+#: optionsdlg.cpp:756
 msgid "OptionsDlg::Center"
 msgstr "По центру"
 
-#: ../src/optionsdlg.cpp:517
+#: optionsdlg.cpp:518
 msgid "OptionsDlg::Chat Request:"
 msgstr "Запрос разговора"
 
-#: ../src/optionsdlg.cpp:743
+#: optionsdlg.cpp:744
 msgid "OptionsDlg::Column %1"
 msgstr "Столбец %1"
 
-#: ../src/optionsdlg.cpp:54
+#: optionsdlg.cpp:54
 msgid "OptionsDlg::Columns"
 msgstr "Столбцы"
 
-#: ../src/optionsdlg.cpp:491
+#: optionsdlg.cpp:492
 msgid "OptionsDlg::"
 "Command to execute when an event is received.  "
 "It will be passed the relevant parameters from "
@@ -1473,39 +1488,39 @@ msgstr ""
 "%w - домашняя www-страница\n"
 "%h - номер телефона"
 
-#: ../src/optionsdlg.cpp:490
+#: optionsdlg.cpp:491
 msgid "OptionsDlg::Command:"
 msgstr "Команда:"
 
-#: ../src/optionsdlg.cpp:398
+#: optionsdlg.cpp:399
 msgid "OptionsDlg::Controls whether or not the dockable icon should be displayed."
 msgstr ""
 
-#: ../src/optionsdlg.cpp:665
+#: optionsdlg.cpp:666
 msgid "OptionsDlg::Default Auto Response Messages"
 msgstr "Автоответы по умолчанию"
 
-#: ../src/optionsdlg.cpp:552
+#: optionsdlg.cpp:553
 msgid "OptionsDlg::Default Server Port:"
 msgstr "Порт на сервере по умолчанию:"
 
-#: ../src/optionsdlg.cpp:553
+#: optionsdlg.cpp:554
 msgid "OptionsDlg::Default port to connect to on the server (should be 4000)"
 msgstr "Порт сервера, с которым будет производиться соединение (обычно - 4000)"
 
-#: ../src/optionsdlg.cpp:556
+#: optionsdlg.cpp:557
 msgid "OptionsDlg::Default"
 msgstr "По умолчанию"
 
-#: ../src/optionsdlg.cpp:801
+#: optionsdlg.cpp:802
 msgid "OptionsDlg::Determines if email pager messages are ignored or not."
 msgstr "Определяет игнорировать ли сообщения с email-пейджера."
 
-#: ../src/optionsdlg.cpp:795
+#: optionsdlg.cpp:796
 msgid "OptionsDlg::Determines if mass messages are ignored or not."
 msgstr "Определяет игнорировать ли сообщения со многими адресатами."
 
-#: ../src/optionsdlg.cpp:792
+#: optionsdlg.cpp:793
 msgid "OptionsDlg::"
 "Determines if new users are automatically added "
 "to your list or must first request authorization."
@@ -1513,116 +1528,116 @@ msgstr ""
 "Определяет, должны ли новые пользователи запрашивать Вашу авторизацию,"
 "или они могут быть добавлены в список пользователей автоматически."
 
-#: ../src/optionsdlg.cpp:798
+#: optionsdlg.cpp:799
 msgid "OptionsDlg::Determines if web panel messages are ignored or not."
 msgstr "Определяет игнорировать ли сообщения, отправленные через web-панель."
 
-#: ../src/optionsdlg.cpp:602
+#: optionsdlg.cpp:603
 msgid "OptionsDlg::Disable"
 msgstr "Запретить"
 
-#: ../src/optionsdlg.cpp:679
+#: optionsdlg.cpp:680
 msgid "OptionsDlg::Do Not Disturb"
 msgstr "Не беспокоить"
 
-#: ../src/optionsdlg.cpp:396
+#: optionsdlg.cpp:397
 msgid "OptionsDlg::Docking"
 msgstr ""
 
-#: ../src/optionsdlg.cpp:374
+#: optionsdlg.cpp:375
 msgid "OptionsDlg::Draw boxes around each square in the user list"
 msgstr "Определяет, рисовать ли рамку вокруг каждого пользователя в списке"
 
-#: ../src/optionsdlg.cpp:444
+#: optionsdlg.cpp:445
 msgid "OptionsDlg::ERROR"
 msgstr "ОШИБКА"
 
-#: ../src/optionsdlg.cpp:488
+#: optionsdlg.cpp:489
 msgid "OptionsDlg::"
 "Enable running of \"Command\" when the relevant "
 "event occurs."
 msgstr "Разрешает запуск команды при приходе соответствующего события"
 
-#: ../src/optionsdlg.cpp:776
+#: optionsdlg.cpp:777
 msgid "OptionsDlg::Extensions"
 msgstr "Расширения"
 
-#: ../src/optionsdlg.cpp:520
+#: optionsdlg.cpp:521
 msgid "OptionsDlg::File Transfer:"
 msgstr "Передача файла:"
 
-#: ../src/optionsdlg.cpp:406
+#: optionsdlg.cpp:407
 msgid "OptionsDlg::Font"
 msgstr "Шрифт"
 
-#: ../src/optionsdlg.cpp:408
+#: optionsdlg.cpp:409
 msgid "OptionsDlg::Font:"
 msgstr "Шрифт:"
 
-#: ../src/optionsdlg.cpp:727
+#: optionsdlg.cpp:728
 msgid "OptionsDlg::Format"
 msgstr "Формат"
 
-#: ../src/optionsdlg.cpp:387
+#: optionsdlg.cpp:388
 msgid "OptionsDlg::Frame Style:"
 msgstr "Стиль фреймов:"
 
-#: ../src/optionsdlg.cpp:680
+#: optionsdlg.cpp:681
 msgid "OptionsDlg::Free For Chat"
 msgstr "Свободен для разговора"
 
-#: ../src/optionsdlg.cpp:584
+#: optionsdlg.cpp:585
 msgid "OptionsDlg::Free for Chat"
 msgstr "Свободен для разговора"
 
-#: ../src/optionsdlg.cpp:800
+#: optionsdlg.cpp:801
 msgid "OptionsDlg::Ignore Email Pager"
 msgstr "Игнорировать Email-пейджер"
 
-#: ../src/optionsdlg.cpp:794
+#: optionsdlg.cpp:795
 msgid "OptionsDlg::Ignore Mass Messages"
 msgstr "Игнорировать массовую рассылку"
 
-#: ../src/optionsdlg.cpp:791
+#: optionsdlg.cpp:792
 msgid "OptionsDlg::Ignore New Users"
 msgstr "Игнорировать новых пользователей"
 
-#: ../src/optionsdlg.cpp:797
+#: optionsdlg.cpp:798
 msgid "OptionsDlg::Ignore Web Panel"
 msgstr "Игнорировать Web панель"
 
-#: ../src/optionsdlg.cpp:588
+#: optionsdlg.cpp:589
 msgid "OptionsDlg::Invisible"
 msgstr "Невидимый"
 
-#: ../src/optionsdlg.cpp:565
+#: optionsdlg.cpp:566
 msgid "OptionsDlg::"
 "Leave at 125 unless all your users appear "
 "offline when they should not be.  Then lower "
 "it until they appear again (try ~100)."
 msgstr ""
 
-#: ../src/optionsdlg.cpp:753
+#: optionsdlg.cpp:754
 msgid "OptionsDlg::Left"
 msgstr "Слева"
 
-#: ../src/optionsdlg.cpp:36
+#: optionsdlg.cpp:36
 msgid "OptionsDlg::Licq Options"
 msgstr "Licq: Настройки"
 
-#: ../src/optionsdlg.cpp:549
+#: optionsdlg.cpp:550
 msgid "OptionsDlg::List of servers to connect to (read-only for now)"
 msgstr "Список серверов для установления соединения (пока только для чтения)"
 
-#: ../src/optionsdlg.cpp:420
+#: optionsdlg.cpp:421
 msgid "OptionsDlg::Locale"
 msgstr "Локализация"
 
-#: ../src/optionsdlg.cpp:425
+#: optionsdlg.cpp:426
 msgid "OptionsDlg::Locale:"
 msgstr "Локализация:"
 
-#: ../src/optionsdlg.cpp:385
+#: optionsdlg.cpp:386
 msgid "OptionsDlg::"
 "Make the user window transparent when there "
 "is no scroll bar"
@@ -1630,73 +1645,73 @@ msgstr ""
 "Делает окно пользователей прозрачным, "
 "когда нет полосы прокрутки"
 
-#: ../src/optionsdlg.cpp:564
+#: optionsdlg.cpp:565
 msgid "OptionsDlg::Max Users per Packet:"
 msgstr "Max кол-во ников в пакете:"
 
-#: ../src/optionsdlg.cpp:511
+#: optionsdlg.cpp:512
 msgid "OptionsDlg::Message:"
 msgstr "Сообщение:"
 
-#: ../src/optionsdlg.cpp:58
+#: optionsdlg.cpp:58
 msgid "OptionsDlg::Miscellaneous"
 msgstr "Разное"
 
-#: ../src/optionsdlg.cpp:459
+#: optionsdlg.cpp:460
 msgid "OptionsDlg::NONE"
 msgstr "Нет файлов"
 
-#: ../src/optionsdlg.cpp:572
+#: optionsdlg.cpp:573
 msgid "OptionsDlg::Network startup"
 msgstr "При старте"
 
-#: ../src/optionsdlg.cpp:56
+#: optionsdlg.cpp:56
 msgid "OptionsDlg::Network"
 msgstr "Сеть"
 
-#: ../src/optionsdlg.cpp:677
+#: optionsdlg.cpp:678
 msgid "OptionsDlg::Not Available"
 msgstr "Недоступен"
 
-#: ../src/optionsdlg.cpp:592
+#: optionsdlg.cpp:593
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"away\".  Set to \"0\" "
 "to disable."
 msgstr ""
 
-#: ../src/optionsdlg.cpp:598
+#: optionsdlg.cpp:599
 msgid "OptionsDlg::"
 "Number of minutes of inactivity after which to "
 "automatically be marked \"not available\".  Set to \"0\" "
 "to disable."
 msgstr ""
 
-#: ../src/optionsdlg.cpp:678
+#: optionsdlg.cpp:679
 msgid "OptionsDlg::Occupied"
 msgstr "Занят"
 
-#: ../src/optionsdlg.cpp:578
+#: optionsdlg.cpp:579
 msgid "OptionsDlg::Offline"
 msgstr "Отключен"
 
-#: ../src/optionsdlg.cpp:55
+#: optionsdlg.cpp:55
 msgid "OptionsDlg::OnEvent"
 msgstr "На событие"
 
-#: ../src/optionsdlg.cpp:484
+#: optionsdlg.cpp:485
 msgid "OptionsDlg::OnEvents Enabled"
 msgstr "Команды на событие разрешены"
 
-#: ../src/optionsdlg.cpp:523
+#: optionsdlg.cpp:524
 msgid "OptionsDlg::Online Notify:"
 msgstr "При появлении:"
 
-#: ../src/optionsdlg.cpp:579
+#: optionsdlg.cpp:580
 msgid "OptionsDlg::Online"
 msgstr "В сети"
 
-#: ../src/optionsdlg.cpp:389
+#: optionsdlg.cpp:390
 msgid "OptionsDlg::"
 "Override the skin setting for the frame "
 "style of the user window:\n"
@@ -1705,73 +1720,73 @@ msgid "OptionsDlg::"
 " + 240 (Shadow"
 msgstr ""
 
-#: ../src/optionsdlg.cpp:524
+#: optionsdlg.cpp:525
 msgid "OptionsDlg::Parameter for online notification"
 msgstr "Параметры для оповещения о появлениив сети"
 
-#: ../src/optionsdlg.cpp:515
+#: optionsdlg.cpp:516
 msgid "OptionsDlg::Parameter for received URLs"
 msgstr "Параметры для принятых URL"
 
-#: ../src/optionsdlg.cpp:518
+#: optionsdlg.cpp:519
 msgid "OptionsDlg::Parameter for received chat requests"
 msgstr "Параметры для принятых запросов на разговор"
 
-#: ../src/optionsdlg.cpp:521
+#: optionsdlg.cpp:522
 msgid "OptionsDlg::Parameter for received file transfers"
 msgstr "Параметры для принятых запросов передачи файлов"
 
-#: ../src/optionsdlg.cpp:512
+#: optionsdlg.cpp:513
 msgid "OptionsDlg::Parameter for received messages"
 msgstr "Параметры для принятых сообщений"
 
-#: ../src/optionsdlg.cpp:527
+#: optionsdlg.cpp:528
 msgid "OptionsDlg::Parameter for received system messages"
 msgstr "Параметры для принятых системных сообщений"
 
-#: ../src/optionsdlg.cpp:508
+#: optionsdlg.cpp:509
 msgid "OptionsDlg::Parameters"
 msgstr "Параметры"
 
-#: ../src/optionsdlg.cpp:787
+#: optionsdlg.cpp:788
 msgid "OptionsDlg::Paranoia"
 msgstr "Паранойя"
 
-#: ../src/optionsdlg.cpp:685
+#: optionsdlg.cpp:686
 msgid "OptionsDlg::Preset slot:"
 msgstr "Заготовки:"
 
-#: ../src/optionsdlg.cpp:754
+#: optionsdlg.cpp:755
 msgid "OptionsDlg::Right"
 msgstr "Справа"
 
-#: ../src/optionsdlg.cpp:703
+#: optionsdlg.cpp:704
 msgid "OptionsDlg::Save"
 msgstr "Сохранить"
 
-#: ../src/optionsdlg.cpp:410
+#: optionsdlg.cpp:411
 msgid "OptionsDlg::Select Font"
 msgstr "Выбор шрифта"
 
-#: ../src/optionsdlg.cpp:411
+#: optionsdlg.cpp:412
 msgid "OptionsDlg::Select a font from the system list"
 msgstr "Выбрать шрифт из имеющихся в системе"
 
-#: ../src/optionsdlg.cpp:400
+#: optionsdlg.cpp:401
 msgid "OptionsDlg::"
 "Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
 "and a shorter 64x48 icon for use in the Gnome/KDE panel."
 msgstr ""
 
-#: ../src/optionsdlg.cpp:545
+#: optionsdlg.cpp:546
 msgid "OptionsDlg::Server settings"
 msgstr "Установки сервера"
 
-#: ../src/optionsdlg.cpp:547
+#: optionsdlg.cpp:548
 msgid "OptionsDlg::Servers:"
 msgstr "Серверы:"
 
-#: ../src/optionsdlg.cpp:382
+#: optionsdlg.cpp:383
 msgid "OptionsDlg::"
 "Sets the default behavior for auto closing "
 "the user function window after a succesful event"
@@ -1779,31 +1794,31 @@ msgstr ""
 "Устанавливает поведение по умолчанию для пользовательских окон. "
 "Закрывать ли их автоматически при успешном завершении передачи"
 
-#: ../src/optionsdlg.cpp:426
+#: optionsdlg.cpp:427
 msgid "OptionsDlg::"
 "Sets which locale should be used for "
 "all messages."
 msgstr "Устанавливает язык для всех сообщений."
 
-#: ../src/optionsdlg.cpp:423
+#: optionsdlg.cpp:424
 msgid "OptionsDlg::"
 "Sets which translation table should be used for "
 "translating characters."
 msgstr "Устанавливает таблицу перекодировки, которая будет использована"
 
-#: ../src/optionsdlg.cpp:375
+#: optionsdlg.cpp:376
 msgid "OptionsDlg::Show Column Headers"
 msgstr "Показывать заголовки столбцов"
 
-#: ../src/optionsdlg.cpp:373
+#: optionsdlg.cpp:374
 msgid "OptionsDlg::Show Grid Lines"
 msgstr "Показывать разделительные линии"
 
-#: ../src/optionsdlg.cpp:378
+#: optionsdlg.cpp:379
 msgid "OptionsDlg::Show User Dividers"
 msgstr "Показывать разделители пользователей"
 
-#: ../src/optionsdlg.cpp:379
+#: optionsdlg.cpp:380
 msgid "OptionsDlg::"
 "Show the \"--online--\" and \"--offline--\" bars "
 "in the contact list"
@@ -1811,46 +1826,46 @@ msgstr ""
 "Показывать разделители \"-- Отключены --\"\"-- В сети --\" "
 "в контакт-листе"
 
-#: ../src/optionsdlg.cpp:57
+#: optionsdlg.cpp:57
 msgid "OptionsDlg::Status"
 msgstr "Статус"
 
-#: ../src/optionsdlg.cpp:671
+#: optionsdlg.cpp:672
 msgid "OptionsDlg::Status:"
 msgstr "Статус:"
 
-#: ../src/optionsdlg.cpp:526
+#: optionsdlg.cpp:527
 msgid "OptionsDlg::System Msg:"
 msgstr "Сист. сообщ:"
 
-#: ../src/optionsdlg.cpp:557
+#: optionsdlg.cpp:558
 msgid "OptionsDlg::TCP Server Port:"
 msgstr "TCP порт:"
 
-#: ../src/optionsdlg.cpp:558
+#: optionsdlg.cpp:559
 msgid "OptionsDlg::"
 "TCP port for local server.  Set to \"0\" for "
 "system assigned port.  Use if you are behind"
 "a firewall or using ip masquerading."
 msgstr ""
 
-#: ../src/optionsdlg.cpp:784
+#: optionsdlg.cpp:785
 msgid "OptionsDlg::Terminal:"
 msgstr "Терминал:"
 
-#: ../src/optionsdlg.cpp:692
+#: optionsdlg.cpp:693
 msgid "OptionsDlg::Text:"
 msgstr "Текст:"
 
-#: ../src/optionsdlg.cpp:734
+#: optionsdlg.cpp:735
 msgid "OptionsDlg::The alignment of the column"
 msgstr "Выравнивание столбцов"
 
-#: ../src/optionsdlg.cpp:785
+#: optionsdlg.cpp:786
 msgid "OptionsDlg::The command to run to start your terminal program."
 msgstr "Команда для запуска вашей терминальной программы."
 
-#: ../src/optionsdlg.cpp:780
+#: optionsdlg.cpp:781
 msgid "OptionsDlg::"
 "The command to run to view a URL.  Will be passed the URL "
 "as a parameter."
@@ -1858,11 +1873,11 @@ msgstr ""
 "Команда для просмотра URL. "
 "URL будет передан как параметр"
 
-#: ../src/optionsdlg.cpp:407
+#: optionsdlg.cpp:408
 msgid "OptionsDlg::The font used for all widgets"
 msgstr "Шрифт, используемый во всех диалогах"
 
-#: ../src/optionsdlg.cpp:728
+#: optionsdlg.cpp:729
 msgid "OptionsDlg::"
 "The format string used to define what will"
 "appear in each column, see OnEvent Command for"
@@ -1872,27 +1887,27 @@ msgstr ""
 "Описание достуных %-переменных можно посмотреть в разделе "
 "\"На событие\""
 
-#: ../src/optionsdlg.cpp:726
+#: optionsdlg.cpp:727
 msgid "OptionsDlg::The string which will appear in the list box column header"
 msgstr "Строка, которая будет появляться в заголовке столбцов"
 
-#: ../src/optionsdlg.cpp:732
+#: optionsdlg.cpp:733
 msgid "OptionsDlg::The width of the column"
 msgstr "Ширина столбца"
 
-#: ../src/optionsdlg.cpp:725
+#: optionsdlg.cpp:726
 msgid "OptionsDlg::Title"
 msgstr "Заголовок"
 
-#: ../src/optionsdlg.cpp:422
+#: optionsdlg.cpp:423
 msgid "OptionsDlg::Translation:"
 msgstr "Перекодировка:"
 
-#: ../src/optionsdlg.cpp:384
+#: optionsdlg.cpp:385
 msgid "OptionsDlg::Transparent when possible"
 msgstr "Прозрачное, если возможно"
 
-#: ../src/optionsdlg.cpp:376
+#: optionsdlg.cpp:377
 msgid "OptionsDlg::"
 "Turns on or off the display of headers above "
 "each column in the user list"
@@ -1900,23 +1915,23 @@ msgstr ""
 "Включает и выключает показ названий столбцов "
 "в списке пользователей"
 
-#: ../src/optionsdlg.cpp:514
+#: optionsdlg.cpp:515
 msgid "OptionsDlg::URL:"
 msgstr ""
 
-#: ../src/optionsdlg.cpp:779
+#: optionsdlg.cpp:780
 msgid "OptionsDlg::Url Viewer:"
 msgstr "Программа просмотра URL:"
 
-#: ../src/optionsdlg.cpp:397
+#: optionsdlg.cpp:398
 msgid "OptionsDlg::Use Dock Icon"
 msgstr ""
 
-#: ../src/optionsdlg.cpp:414
+#: optionsdlg.cpp:415
 msgid "OptionsDlg::Use Font Styles"
 msgstr "Использовать стили"
 
-#: ../src/optionsdlg.cpp:415
+#: optionsdlg.cpp:416
 msgid "OptionsDlg::"
 "Use italics and bold in the user list to "
 "indicate special characteristics such as "
@@ -1926,167 +1941,167 @@ msgstr ""
 "для обозначения специальных характеристик, таких как оповещение о наличии "
 "в сети и присутствие в списке видимости"
 
-#: ../src/optionsdlg.cpp:370
+#: optionsdlg.cpp:371
 msgid "OptionsDlg::User Window"
 msgstr "Пользовательское окно"
 
-#: ../src/optionsdlg.cpp:731
+#: optionsdlg.cpp:732
 msgid "OptionsDlg::Width"
 msgstr "Ширина"
 
-#: ../src/optionsdlg.cpp:449
+#: optionsdlg.cpp:450
 msgid "OptionsDlg::none"
 msgstr "Не перекодировать"
 
-#: ../src/passworddlg.cpp:53
+#: passworddlg.cpp:53
 msgid "PasswordDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/passworddlg.cpp:37
+#: passworddlg.cpp:37
 msgid "PasswordDlg::&Password:"
 msgstr "Пароль:"
 
-#: ../src/passworddlg.cpp:38
+#: passworddlg.cpp:38
 msgid "PasswordDlg::&Verify:"
 msgstr "Еще раз:"
 
-#: ../src/passworddlg.cpp:41
+#: passworddlg.cpp:41
 msgid "PasswordDlg::Enter your ICQ password here."
 msgstr "Введите здесь ваш ICQ пароль."
 
-#: ../src/passworddlg.cpp:95
+#: passworddlg.cpp:95
 msgid "PasswordDlg::ICQ Password [Setting...]"
 msgstr "Пароль ICQ [Устанавливается...]"
 
-#: ../src/passworddlg.cpp:82
+#: passworddlg.cpp:82
 msgid "PasswordDlg::Invalid password, must be 8 characters or less."
 msgstr "Неправильный пароль. Должен быть не больше 8 символов."
 
-#: ../src/passworddlg.cpp:31
+#: passworddlg.cpp:31
 msgid "PasswordDlg::Licq - Set Password"
 msgstr "Licq - Установка пароля"
 
-#: ../src/passworddlg.cpp:34
+#: passworddlg.cpp:34
 msgid "PasswordDlg::Password"
 msgstr "Пароль"
 
-#: ../src/passworddlg.cpp:87
+#: passworddlg.cpp:87
 msgid "PasswordDlg::Passwords do not match, try again."
 msgstr "Пароли не совпадают, попробуйте еще раз."
 
-#: ../src/passworddlg.cpp:127
+#: passworddlg.cpp:127
 msgid "PasswordDlg::Set Password [Setting..."
 msgstr "Пароль ICQ [Устанавливается..."
 
-#: ../src/passworddlg.cpp:130
+#: passworddlg.cpp:130
 msgid "PasswordDlg::Set Password"
 msgstr "Установка ICQ пароля"
 
-#: ../src/passworddlg.cpp:44
+#: passworddlg.cpp:44
 msgid "PasswordDlg::Verify your ICQ password here."
 msgstr "Введите здесь свой ICQ пароль для проверки."
 
-#: ../src/passworddlg.cpp:120
+#: passworddlg.cpp:120
 msgid "PasswordDlg::error"
 msgstr "ошибка"
 
-#: ../src/passworddlg.cpp:114
+#: passworddlg.cpp:114
 msgid "PasswordDlg::failed"
 msgstr "неудачно"
 
-#: ../src/passworddlg.cpp:117
+#: passworddlg.cpp:117
 msgid "PasswordDlg::timed out"
 msgstr "время вышло"
 
-#: ../src/plugindlg.cpp:47
+#: plugindlg.cpp:47
 msgid "PluginDlg::Available"
 msgstr "Доступные"
 
-#: ../src/plugindlg.cpp:30
+#: plugindlg.cpp:30
 msgid "PluginDlg::Description"
 msgstr "Описание"
 
-#: ../src/plugindlg.cpp:39
+#: plugindlg.cpp:39
 msgid "PluginDlg::Details"
 msgstr "Подробности"
 
-#: ../src/plugindlg.cpp:35
+#: plugindlg.cpp:35
 msgid "PluginDlg::Disable"
 msgstr "Запретить"
 
-#: ../src/plugindlg.cpp:58
+#: plugindlg.cpp:58
 msgid "PluginDlg::Done"
 msgstr "Завершить"
 
-#: ../src/plugindlg.cpp:33
+#: plugindlg.cpp:33
 msgid "PluginDlg::Enable"
 msgstr "Разрешить"
 
-#: ../src/plugindlg.cpp:26
+#: plugindlg.cpp:26
 msgid "PluginDlg::Id"
 msgstr ""
 
-#: ../src/plugindlg.cpp:128
+#: plugindlg.cpp:128
 msgid "PluginDlg::Licq Plugin %1 %2\n"
 msgstr "Licq модуль %1 %2\n"
 
-#: ../src/plugindlg.cpp:51
+#: plugindlg.cpp:51
 msgid "PluginDlg::Load"
 msgstr "Загрузить"
 
-#: ../src/plugindlg.cpp:23
+#: plugindlg.cpp:23
 msgid "PluginDlg::Loaded"
 msgstr "Загруженные"
 
-#: ../src/plugindlg.cpp:27
+#: plugindlg.cpp:27
 msgid "PluginDlg::Name"
 msgstr "Имя"
 
-#: ../src/plugindlg.cpp:55
+#: plugindlg.cpp:55
 msgid "PluginDlg::Refresh"
 msgstr "Обновить"
 
-#: ../src/plugindlg.cpp:29
+#: plugindlg.cpp:29
 msgid "PluginDlg::Status"
 msgstr "Статус"
 
-#: ../src/plugindlg.cpp:37
+#: plugindlg.cpp:37
 msgid "PluginDlg::Unload"
 msgstr "Выгрузить"
 
-#: ../src/plugindlg.cpp:28
+#: plugindlg.cpp:28
 msgid "PluginDlg::Version"
 msgstr "Версия"
 
-#: ../src/qmultilineeditnew.cpp:328
+#: qmultilineeditnew.cpp:332
 msgid "QMultiLineEditNew::Clear"
 msgstr "Очистить"
 
-#: ../src/qmultilineeditnew.cpp:326
+#: qmultilineeditnew.cpp:330
 msgid "QMultiLineEditNew::Copy"
 msgstr "Копировать"
 
-#: ../src/qmultilineeditnew.cpp:325
+#: qmultilineeditnew.cpp:329
 msgid "QMultiLineEditNew::Cut"
 msgstr "Вырезать"
 
-#: ../src/qmultilineeditnew.cpp:327
+#: qmultilineeditnew.cpp:331
 msgid "QMultiLineEditNew::Paste"
 msgstr "Вставить"
 
-#: ../src/qmultilineeditnew.cpp:323
+#: qmultilineeditnew.cpp:327
 msgid "QMultiLineEditNew::Redo"
 msgstr ""
 
-#: ../src/qmultilineeditnew.cpp:330
+#: qmultilineeditnew.cpp:334
 msgid "QMultiLineEditNew::Select All"
 msgstr "Выделить все"
 
-#: ../src/qmultilineeditnew.cpp:322
+#: qmultilineeditnew.cpp:326
 msgid "QMultiLineEditNew::Undo"
 msgstr ""
 
-#: ../src/registeruser.cpp:37
+#: registeruser.cpp:37
 msgid "RegisterUserDlg::&Register Existing User"
 msgstr "Зарегистрировать существующего пользователя"
 
@@ -2101,132 +2116,132 @@ msgstr "Зарегистрировать существующего пользователя"
 # "\"Зарегистрировать существующего пользователя\",\n"
 # "Введите свой UIN и пароль и нажмите \"Да\"."
 
-#: ../src/registeruser.cpp:103
+#: registeruser.cpp:105
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
 msgstr "Неверный UIN. Попробуйте еще раз."
 
-#: ../src/registeruser.cpp:88
+#: registeruser.cpp:90
 msgid "RegisterUserDlg::Invalid password, must be 8 characters or less."
 msgstr "Неверный пароль. Должен быть не более 8 символов."
 
-#: ../src/registeruser.cpp:69
+#: registeruser.cpp:71
 msgid "RegisterUserDlg::Licq User Registration"
 msgstr "Licq: Регистрация пользователя"
 
-#: ../src/registeruser.cpp:64
+#: registeruser.cpp:66
 msgid "RegisterUserDlg::Now click Finish to start the registration process."
 msgstr "Теперь нажмите \"Закончить\" для начала процесса регистрации."
 
-#: ../src/registeruser.cpp:45
+#: registeruser.cpp:45
 msgid "RegisterUserDlg::Password:"
 msgstr "Пароль:"
 
-#: ../src/registeruser.cpp:93
+#: registeruser.cpp:95
 msgid "RegisterUserDlg::Passwords do not match, try again."
 msgstr "Пароли не совпадают, попробуйте еще раз."
 
-#: ../src/registeruser.cpp:110
+#: registeruser.cpp:112
 msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
 msgstr "Регистрация прошла успешно. "
 "Теперь войдите в сеть и обновите информацию о себе."
 
-#: ../src/registeruser.cpp:54
+#: registeruser.cpp:56
 msgid "RegisterUserDlg::UIN Registration - Step 2"
 msgstr "Регистрация UIN - Шаг 2"
 
-#: ../src/registeruser.cpp:66
+#: registeruser.cpp:68
 msgid "RegisterUserDlg::UIN Registration - Step 3"
 msgstr "Регистрация UIN - Шаг 3"
 
-#: ../src/registeruser.cpp:29
+#: registeruser.cpp:29
 msgid "RegisterUserDlg::UIN Registration"
 msgstr "Регистрация UIN"
 
-#: ../src/registeruser.cpp:41
+#: registeruser.cpp:41
 msgid "RegisterUserDlg::Uin:"
 msgstr ""
 
-#: ../src/registeruser.cpp:115
+#: registeruser.cpp:117
 msgid "RegisterUserDlg::User Registration in Progress..."
 msgstr "Производится регистрация пользователя..."
 
-#: ../src/registeruser.cpp:50
+#: registeruser.cpp:51
 msgid "RegisterUserDlg::Verify:"
 msgstr "Проверить:"
 
-#: ../src/searchuserdlg.cpp:178
+#: searchuserdlg.cpp:178
 msgid "SearchUserDlg::&Add User"
 msgstr "Добавить"
 
-#: ../src/searchuserdlg.cpp:150
+#: searchuserdlg.cpp:150
 msgid "SearchUserDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/searchuserdlg.cpp:182
+#: searchuserdlg.cpp:182
 msgid "SearchUserDlg::&Done"
 msgstr "Завершить"
 
-#: ../src/searchuserdlg.cpp:121
+#: searchuserdlg.cpp:121
 msgid "SearchUserDlg::&Email"
 msgstr ""
 
-#: ../src/searchuserdlg.cpp:108
+#: searchuserdlg.cpp:108
 msgid "SearchUserDlg::&Name"
 msgstr "Имя"
 
-#: ../src/searchuserdlg.cpp:309
+#: searchuserdlg.cpp:309
 msgid "SearchUserDlg::&OK"
 msgstr "Да"
 
-#: ../src/searchuserdlg.cpp:143
+#: searchuserdlg.cpp:143
 msgid "SearchUserDlg::&Search"
 msgstr "Поиск"
 
-#: ../src/searchuserdlg.cpp:135
+#: searchuserdlg.cpp:135
 msgid "SearchUserDlg::&Uin#"
 msgstr ""
 
-#: ../src/searchuserdlg.cpp:171
+#: searchuserdlg.cpp:171
 msgid "SearchUserDlg::A&lert User"
 msgstr "Оповестить пользователя"
 
-#: ../src/searchuserdlg.cpp:90
+#: searchuserdlg.cpp:90
 msgid "SearchUserDlg::Alias:"
 msgstr "Ник:"
 
-#: ../src/searchuserdlg.cpp:115
+#: searchuserdlg.cpp:115
 msgid "SearchUserDlg::Email Address:"
 msgstr "EMail адрес:"
 
-#: ../src/searchuserdlg.cpp:257
+#: searchuserdlg.cpp:257
 msgid "SearchUserDlg::Enter search parameters and select 'Search'"
 msgstr "Введите параметры поиска и нажмите 'Поиск'"
 
-#: ../src/searchuserdlg.cpp:96
+#: searchuserdlg.cpp:96
 msgid "SearchUserDlg::First Name:"
 msgstr "Имя:"
 
-#: ../src/searchuserdlg.cpp:102
+#: searchuserdlg.cpp:102
 msgid "SearchUserDlg::Last Name:"
 msgstr "Фамилия:"
 
-#: ../src/searchuserdlg.cpp:283
+#: searchuserdlg.cpp:283
 msgid "SearchUserDlg::More users found. Narrow search."
 msgstr "Слишком много найдено. Уточните критерии поиска."
 
-#: ../src/searchuserdlg.cpp:146
+#: searchuserdlg.cpp:146
 msgid "SearchUserDlg::Search Again"
 msgstr "Искать снова"
 
-#: ../src/searchuserdlg.cpp:292
+#: searchuserdlg.cpp:292
 msgid "SearchUserDlg::Search failed."
 msgstr "Поиск не удался."
 
-#: ../src/searchuserdlg.cpp:223
+#: searchuserdlg.cpp:223
 msgid "SearchUserDlg::Searching (this can take awhile)..."
 msgstr "Идет поиск (это может занять некоторое время)..."
 
-#: ../src/searchuserdlg.cpp:306
+#: searchuserdlg.cpp:306
 msgid "SearchUserDlg::"
 "Sorry, but this user is already\non your "
 "contact list as\n'%1'\n\nYou can't add a user twice."
@@ -2235,70 +2250,70 @@ msgstr ""
 "в Вашем контакт-листе как '%1'.\n"
 "Вы не можете добавить его второй раз"
 
-#: ../src/searchuserdlg.cpp:128
+#: searchuserdlg.cpp:128
 msgid "SearchUserDlg::UIN#:"
 msgstr ""
 
-#: ../src/searchuserdlg.cpp:32
+#: searchuserdlg.cpp:32
 msgid "SearchUserView::Alias"
 msgstr "Ник"
 
-#: ../src/searchuserdlg.cpp:36
+#: searchuserdlg.cpp:36
 msgid "SearchUserView::Email"
 msgstr ""
 
-#: ../src/searchuserdlg.cpp:35
+#: searchuserdlg.cpp:35
 msgid "SearchUserView::Name"
 msgstr "Имя"
 
-#: ../src/searchuserdlg.cpp:33
+#: searchuserdlg.cpp:33
 msgid "SearchUserView::UIN"
 msgstr ""
 
-#: ../src/securitydlg.cpp:50
+#: securitydlg.cpp:50
 msgid "SecurityDlg::&Cancel"
 msgstr "Отменить"
 
-#: ../src/securitydlg.cpp:34
+#: securitydlg.cpp:34
 msgid "SecurityDlg::Authorization Required"
 msgstr "Требуется авторизация"
 
-#: ../src/securitydlg.cpp:35
+#: securitydlg.cpp:35
 msgid "SecurityDlg::"
 "Determines whether regular ICQ clients "
 "require your authorization to add you to "
 "their contact list."
 msgstr ""
 
-#: ../src/securitydlg.cpp:41
+#: securitydlg.cpp:41
 msgid "SecurityDlg::Hide IP"
 msgstr "Спрятать IP"
 
-#: ../src/securitydlg.cpp:42
+#: securitydlg.cpp:42
 msgid "SecurityDlg::Hiding ip stops users from seeing your ip."
 msgstr "Эта установка не дает другим пользователям видеть ваш IP адрес."
 
-#: ../src/securitydlg.cpp:131
+#: securitydlg.cpp:131
 msgid "SecurityDlg::ICQ Security Options [Setting..."
 msgstr "Настройки безопасности ICQ [Устанавливаются..."
 
-#: ../src/securitydlg.cpp:99
+#: securitydlg.cpp:99
 msgid "SecurityDlg::ICQ Security Options [Setting...]"
 msgstr "Настройки безопасности ICQ [Устанавливаются...]"
 
-#: ../src/securitydlg.cpp:134
+#: securitydlg.cpp:134
 msgid "SecurityDlg::ICQ Security Options"
 msgstr "Настройки безопасности ICQ"
 
-#: ../src/securitydlg.cpp:30
+#: securitydlg.cpp:30
 msgid "SecurityDlg::Options"
 msgstr "Настройки"
 
-#: ../src/securitydlg.cpp:38
+#: securitydlg.cpp:38
 msgid "SecurityDlg::Web Presence"
 msgstr "Веб-присутствие"
 
-#: ../src/securitydlg.cpp:39
+#: securitydlg.cpp:39
 msgid "SecurityDlg::"
 "Web presence allows users to see if you are online "
 "through your web indicator."
@@ -2306,75 +2321,75 @@ msgstr ""
 "Веб присутствие позволяет видеть в сети вы или нет "
 "через ваш веб-индикатор."
 
-#: ../src/securitydlg.cpp:124
+#: securitydlg.cpp:124
 msgid "SecurityDlg::error"
 msgstr "ошибка"
 
-#: ../src/securitydlg.cpp:118
+#: securitydlg.cpp:118
 msgid "SecurityDlg::failed"
 msgstr "неудачно"
 
-#: ../src/securitydlg.cpp:121
+#: securitydlg.cpp:121
 msgid "SecurityDlg::timed out"
 msgstr "время вышло"
 
-#: ../src/showawaymsgdlg.cpp:48
+#: showawaymsgdlg.cpp:48
 msgid "ShowAwayMsgDlg::%1 Response for %2"
 msgstr "'%1' ответ для '%2'"
 
-#: ../src/showawaymsgdlg.cpp:50
+#: showawaymsgdlg.cpp:50
 msgid "ShowAwayMsgDlg::&Ok"
 msgstr "Да"
 
-#: ../src/showawaymsgdlg.cpp:39
+#: showawaymsgdlg.cpp:39
 msgid "ShowAwayMsgDlg::&Show Again"
 msgstr "Показывать снова"
 
-#: ../src/showawaymsgdlg.cpp:115
+#: showawaymsgdlg.cpp:114
 msgid "ShowAwayMsgDlg::error"
 msgstr "ошибка"
 
-#: ../src/showawaymsgdlg.cpp:109
+#: showawaymsgdlg.cpp:108
 msgid "ShowAwayMsgDlg::failed"
 msgstr "неудачно"
 
-#: ../src/showawaymsgdlg.cpp:112
+#: showawaymsgdlg.cpp:111
 msgid "ShowAwayMsgDlg::timed out"
 msgstr "вышло время"
 
-#: ../src/skinbrowser.cpp:35
+#: skinbrowser.cpp:35
 msgid "SkinBrowserDlg::&Apply"
 msgstr "Применить"
 
-#: ../src/skinbrowser.cpp:52
+#: skinbrowser.cpp:52
 msgid "SkinBrowserDlg::&Done"
 msgstr "Завершить"
 
-#: ../src/skinbrowser.cpp:36
+#: skinbrowser.cpp:36
 msgid "SkinBrowserDlg::&Edit"
 msgstr "Редактировать"
 
-#: ../src/skinbrowser.cpp:48
+#: skinbrowser.cpp:48
 msgid "SkinBrowserDlg::A&pply"
 msgstr "Применить"
 
-#: ../src/skinbrowser.cpp:80
+#: skinbrowser.cpp:80
 msgid "SkinBrowserDlg::Error"
 msgstr "Ошибка"
 
-#: ../src/skinbrowser.cpp:38
+#: skinbrowser.cpp:38
 msgid "SkinBrowserDlg::Icons"
 msgstr "значки"
 
-#: ../src/skinbrowser.cpp:57
+#: skinbrowser.cpp:57
 msgid "SkinBrowserDlg::Licq Skin Browser"
 msgstr "Licq: Выбор внешнего вида"
 
-#: ../src/skinbrowser.cpp:41
+#: skinbrowser.cpp:41
 msgid "SkinBrowserDlg::Name"
 msgstr "Имя"
 
-#: ../src/skinbrowser.cpp:24
+#: skinbrowser.cpp:24
 msgid "SkinBrowserDlg::Skins"
 msgstr "Вид"
 
