@@ -238,6 +238,7 @@ protected slots:
   void slot_updatedUser(CICQSignal *);
   void slot_updateContactList();
   void slot_updateAllUsers();
+  void slot_updateAllUsersInGroup();
   void slot_popupall();
   void slot_shutdown();
   void UserInfoDlg_finished(unsigned long);

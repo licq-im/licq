@@ -2017,6 +2017,12 @@ void CMainWindow::slot_updateAllUsers()
 }
 
 
+void CMainWindow::slot_updateAllUsersInGroup()
+{
+  licqDaemon->UpdateAllUsersInGroup(m_nGroupType, m_nCurrentGroup);
+}
+
+
 
 //-----CMainWindow::saveOptions-----------------------------------------------
 void CMainWindow::saveOptions()
@@ -2604,8 +2610,9 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()));
    mnuUserAdm->insertItem(tr("Edit &Groups"), this, SLOT(showEditGrpDlg()));
-   //mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
-   //mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
+   mnuUserAdm->insertSeparator();
+   mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
+   mnuUserAdm->insertItem(tr("Update Current Group"), this, SLOT(slot_updateAllUsersInGroup()));
    mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
    mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()));
    mnuUserAdm->insertSeparator();
