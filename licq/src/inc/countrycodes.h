@@ -1,12 +1,12 @@
 #ifndef COUNTRY_H
 #define COUNTRY_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #define COUNTRY_UNSPECIFIED  0xFFFF
