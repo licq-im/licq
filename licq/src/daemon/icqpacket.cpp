@@ -247,8 +247,6 @@ void CPacket::SetIps(INetSocket *s)
   if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
     s_nLocalIp = NetworkIpToPacketIp(s->LocalIp());
   s_nRealIp = NetworkIpToPacketIp(s->LocalIp());
-
-  printf("Real Ip: %08lX, LocalIp: %08lX\n", s_nRealIp, s_nLocalIp);
 }
 
 
@@ -1797,7 +1795,7 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);
   buffer->PackString(szFontFamily);
-  buffer->PackUnsignedShort(0);
+  buffer->PackUnsignedShort(0x0002);
   buffer->PackChar(0);
 }
 
