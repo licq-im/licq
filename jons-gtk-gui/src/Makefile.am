@@ -2,7 +2,7 @@
 #hack, fix this in a clean manner
 libdir = $(prefix)/lib/licq
 
-INCLUDES = -Wall -pedantic -fno-rtti -fno-exceptions -D_REENTRANT \
+INCLUDES = -Wall -fno-rtti -fno-exceptions -D_REENTRANT \
 	-I$(top_srcdir)/../../src/inc -DG_LOG_DOMAIN=\"licq_jons-gtk-gui\" \
 	`gtk-config --cflags`
 
@@ -24,6 +24,7 @@ licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
 				main_window.cpp \
 				menu.cpp \
 				more_window.cpp \
+				option_window.cpp \
 				pipe.cpp \
 				register_user.cpp \
 				search_user_window.cpp \
