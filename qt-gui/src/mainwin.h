@@ -372,7 +372,7 @@ protected slots:
 
 signals:
   void changeDockStatus(unsigned short);
-  void signal_sentevent(CUserEvent *e, const char *, unsigned long);
+  void signal_sentevent(ICQEvent *e);
   void signal_doneRegisterUser(ICQEvent *e);
 
 };

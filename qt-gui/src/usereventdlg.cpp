@@ -681,7 +681,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead->setResizeMode(mlvRead, QSplitter::Stretch);
 
   connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
-  connect (mainwin, SIGNAL(signal_sentevent(CUserEvent *, const char *, unsigned logn)), this, SLOT(slot_sentevent(CUserEvent *, const char *, unsigned long)));
+  connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
   lay->addSpacing(10);
@@ -1370,12 +1370,12 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, char *szId, unsigned long nPPID
 }
 
 
-void UserViewEvent::slot_sentevent(CUserEvent *ue, const char *szId, unsigned long nPPID)
+void UserViewEvent::slot_sentevent(ICQEvent *e)
 {
-  if (nPPID != m_nPPID || strcmp(m_lUsers.front().c_str(), szId) != 0) return;
+  if (e->PPID() != m_nPPID || strcmp(m_lUsers.front().c_str(), e->Id()) != 0) return;
 
   if (!mainwin->m_bMsgChatView)
-    (void) new MsgViewItem(ue/*GrabUserEvent()*/, codec, msgView);
+    (void) new MsgViewItem(e->GrabUserEvent(), codec, msgView);
 }
 
 
@@ -1630,7 +1630,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
-    connect (mainwin, SIGNAL(signal_sentevent(CUserEvent *, const char *, unsigned long)), mleHistory, SLOT(addMsg(CUserEvent *, const char *, unsigned long)));
+    connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
 
@@ -1708,7 +1708,10 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
   }
   
   if (m_lUsers.size() > 1)
+  {
     m_lUsers.remove(szId);
+    mleHistory->setOwner(m_lUsers.front().c_str());
+  }
   else
     m_nConvoId = 0;
 
@@ -2187,7 +2190,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     emit autoCloseNotify();
     if (sendDone(e))
     {
-      emit mainwin->signal_sentevent(e->UserEvent(), m_lUsers.front().c_str(), m_nPPID);
+      emit mainwin->signal_sentevent(e);
       if (mainwin->m_bMsgChatView && mleHistory != NULL)
       {
         mleHistory->GotoEnd();

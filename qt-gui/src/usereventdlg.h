@@ -223,7 +223,7 @@ protected slots:
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
   void slot_clearEvent();
-  void slot_sentevent(CUserEvent *, const char *, unsigned long);
+  void slot_sentevent(ICQEvent *);
   void slot_setEncoding();
 };
 

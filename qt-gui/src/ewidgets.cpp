@@ -704,6 +704,15 @@ CMessageViewWidget::~CMessageViewWidget()
     free(m_szId);
 }
 
+void CMessageViewWidget::setOwner(const char *_szId)
+{
+  if (!_szId) return;
+
+  if (m_szId)
+    free(m_szId);
+  m_szId = strdup(_szId);
+}
+
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
   if (strcmp(_e->Id(), m_szId) == 0 && _e->PPID() == m_nPPID &&

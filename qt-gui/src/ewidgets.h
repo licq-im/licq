@@ -167,6 +167,9 @@ public:
   CMessageViewWidget(unsigned long _nUin, CMainWindow *m,
 		     QWidget* parent=0, const char * name =0);
   virtual ~CMessageViewWidget();
+
+  void setOwner(const char *szId);
+
 public slots:
   virtual void addMsg(CUserEvent *, const char * = 0, unsigned long = 0);
   void addMsg(ICQEvent *);
