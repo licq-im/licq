@@ -423,6 +423,11 @@ extern GtkWidget *system_status;
 
 /********************* Functions ******************/
 
+/* Functions in about_window.cpp */
+extern void create_about_window();
+extern void close_about_window(GtkWidget *, gpointer);
+
+
 /* Functions in add_user_window.cpp */
 extern void menu_system_add_user(GtkWidget *, gpointer);
 extern void add_user_callback(GtkWidget *, struct add_user *);

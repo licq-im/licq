@@ -127,6 +127,9 @@ void menu_create()
 
 	menu_separator(menu);
 
+	item = menu_new_item(menu, "About",
+				GTK_SIGNAL_FUNC(create_about_window));
+
 	item = menu_new_item(menu, "Exit",
 				  GTK_SIGNAL_FUNC(menu_system_quit));
 

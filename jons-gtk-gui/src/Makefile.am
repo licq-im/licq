@@ -10,7 +10,8 @@ lib_LTLIBRARIES = licq_jons-gtk-gui.la
 
 noinst_HEADERS = licq_gtk.h
 
-licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
+licq_jons_gtk_gui_la_SOURCES =  about_window.cpp \
+				add_user_window.cpp \
 				auth_user_window.cpp \
 				away_window.cpp \
 				chat_window.cpp \
