@@ -1120,6 +1120,7 @@ int CRMSClient::Process_VIEW()
     // Message
     fprintf(fs, "%d Message Start\n", CODE_VIEWxTEXTxSTART);
     fprintf(fs, e->Text());
+    fprintf(fs, "\n");
     fprintf(fs, "%d Message Complete\n", CODE_VIEWxTEXTxEND);
   }
   else
