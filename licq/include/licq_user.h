@@ -108,7 +108,7 @@ typedef enum EGender
   GENDER_MALE = 2
 } Gender;
 const unsigned short AGE_UNSPECIFIED = 0xFFFF;
-const char TIMEZONE_UNKNOWN = -100;
+const char TIMEZONE_UNKNOWN = (char)-100;
 const unsigned short LICQ_VERSION_UNKNOWN = 0;
 
 typedef enum SecureChannelSupport_et_ {
