@@ -1,8 +1,10 @@
 Credits list for Licq
 
-I would like to thank the following people for their valuable contributions
+The following people and projects have made valuable contributions
 to the development of Licq:
 
+libicq2000 Project
+   o  Served as reference for ICQ's SMS protocol.
 David W. Murphy
    o  Contributed the code for auto back when auto away was enabled.    
 Rob Dale:  
@@ -48,5 +50,5 @@ Peter <peter@nadasi.net> UIN:2890694
 Graham Roff
    o  Primary developer and maintainer for Licq < 1.0.4
 
-There are many many other people who sent me bug reports and suggestions
-which I have found invaluable.  Thanks to everyone for your support and contributions.
+There are many many other people who sent invaluable bug reports
+and suggestions. Thanks to everyone for your support and contributions.
