@@ -706,6 +706,10 @@ void ChatDlg::chatClose(CChatUser *u)
     mleIRCLocal->setReadOnly(true);
     disconnect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
   }
+  else if (chatman->ConnectedUsers() == 1 && chatUser != NULL)
+  {
+    mnuMode->setItemEnabled(mnuMode->idAt(0), true);
+  }
 }
 
 
@@ -731,8 +735,10 @@ QString ChatDlg::ChatClients()
 
 void ChatDlg::slot_save()
 {
-  QString n = tr("/%1.chat").arg(chatUser == NULL ? QString::number(m_nUin) :
-     QString::fromLocal8Bit(chatUser->Name()));
+  QString t = QDateTime::currentDateTime().toString();
+  t.replace(QString(" "), QString("-"));
+  QString n = tr("/%1.%2.chat").arg(chatUser == NULL ? QString::number(m_nUin) :
+     QString::fromLocal8Bit(chatUser->Name())).arg(t);
 #ifdef USE_KDE
   QString fn = KFileDialog::getSaveFileName(QDir::homeDirPath() + n,
      QString::null, this);
