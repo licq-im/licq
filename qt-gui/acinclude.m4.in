@@ -59,13 +59,15 @@ AC_DEFUN(AC_PATH_QT_LIB,
         fi
       done
 
-      for qt_dir in $qt_library_dirs; do
-        if test -r $qt_dir/libqt.so.2 || test -r $qt_dir/libqt.so.3; then
-          ac_qt_libname=-lqt
-          ac_qt_libdir=$qt_dir
-          break
-        fi
-      done
+      if test -z "$qt_dir"; then 
+        for qt_dir in $qt_library_dirs; do
+          if test -r $qt_dir/libqt.so.2 || test -r $qt_dir/libqt.so.3; then
+            ac_qt_libname=-lqt
+            ac_qt_libdir=$qt_dir
+            break
+          fi
+        done
+      fi
     fi
 
     ac_cv_lib_qtlib="ac_qt_libname=$ac_qt_libname ac_qt_libdir=$ac_qt_libdir"
