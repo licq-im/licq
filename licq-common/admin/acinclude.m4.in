@@ -13,7 +13,7 @@ AC_CACHE_VAL(ac_cv_sys_errlist,
     ac_cv_sys_errlist=yes, ac_cv_sys_errlist=no)])dnl
 AC_MSG_RESULT($ac_cv_sys_errlist)
 if test $ac_cv_sys_errlist = yes; then
-AC_DEFINE(HAVE_SYS_ERRLIST)
+  AC_DEFINE_UNQUOTED(HAVE_SYS_ERRLIST, 1, [Define if sys_errlist available])
 fi
 ])
 
