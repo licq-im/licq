@@ -630,7 +630,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
       codec = UserCodec::codecForICQUser(u);
       if (e->Direction() == D_RECEIVER)
         contactName = codec->toUnicode(u->GetAlias());
-      for (int x = 0; x < strlen(m_szId); x++)
+      for (unsigned int x = 0; x < strlen(m_szId); x++)
       {
         if (!isdigit(m_szId[x]))
         {
@@ -670,7 +670,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   // QTextEdit::append adds a paragraph break so we don't have to.
   s = QString("<html><body><font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
               .arg(color)
-              .arg((e->SubCommand() == ICQ_CMDxSUB_MSG ? "" : (EventDescription(e) + " ")))
+              .arg((e->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(e) + " ")))
               .arg(sd)
               .arg(e->IsDirect() ? 'D' : '-')
               .arg(e->IsMultiRec() ? 'M' : '-')
@@ -685,7 +685,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QString messageText = codec->toUnicode(e->Text());
   s.sprintf("%c%s%s [%c%c%c%c] %s:\n%s",
             (e->Direction() == D_RECEIVER) ? '\001' : '\002',
-            e->SubCommand() == ICQ_CMDxSUB_MSG ? "" :
+            e->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") :
               (EventDescription(e) + " ").utf8().data(),
             sd.utf8().data(),
             e->IsDirect() ? 'D' : '-',
