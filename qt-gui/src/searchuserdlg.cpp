@@ -81,6 +81,8 @@ SearchItem::SearchItem(CSearchAck *s, const QString &encoding, QListView *parent
   
   uinVal = s->Uin();
   QTextCodec *codec = QTextCodec::codecForName(encoding);
+  if (codec == 0)
+    codec = QTextCodec::codecForLocale();
   setText(0, codec->toUnicode(s->Alias()));
   setText(1, QString::number(s->Uin()));
   setText(2, codec->toUnicode(s->FirstName()) + QString(" ") + codec->toUnicode(s->LastName()));
@@ -330,6 +332,8 @@ void SearchUserDlg::startSearch()
   else
   {
      QTextCodec *codec = QTextCodec::codecForName(m_Encoding);
+     if (codec == 0)
+      codec = QTextCodec::codecForLocale();
      searchTag = server->icqSearchWhitePages(
      codec->fromUnicode(edtFirst->text()),
      codec->fromUnicode(edtLast->text()),
