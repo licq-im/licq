@@ -36,6 +36,8 @@ class CChatWindow : public QMultiLineEdit
 Q_OBJECT
 public:
   CChatWindow(QWidget *p);
+  virtual ~CChatWindow() {}
+
   void appendNoNewLine(QString);
   void GotoEnd();
 

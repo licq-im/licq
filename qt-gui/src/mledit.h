@@ -8,6 +8,8 @@ class MLEditWrap : public QMultiLineEdit
   Q_OBJECT
 public:
   MLEditWrap (bool wordWrap, QWidget* parent=0, bool handlequotes = false, const char *name=0);
+  virtual ~MLEditWrap() {}
+
   void appendNoNewLine(QString s);
   void GotoEnd(void);
 
