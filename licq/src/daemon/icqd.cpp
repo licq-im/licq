@@ -581,10 +581,19 @@ int CICQDaemon::StartTCPServer(TCPSocket *s)
     }
   }
 
+  char sz[64];
   if (s->Descriptor() != -1)
   {
-    char sz[64];
     gLog.Info("%sLocal TCP server started on %s:%d.\n", L_TCPxSTR, s->LocalIpStr(sz), s->LocalPort());
+  }
+  else if (s->Error() == EADDRINUSE)
+  {
+    gLog.Warn("%sNo ports available for local TCP server.\n", L_WARNxSTR);
+  }
+  else
+  {
+    gLog.Warn("%sFailed to start local TCP server:\n%s%s\n", L_WARNxSTR,
+       L_BLANKxSTR, s->ErrorStr(sz, 64));
   }
 
   return s->Descriptor();
