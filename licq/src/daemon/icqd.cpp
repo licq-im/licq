@@ -829,20 +829,12 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
     return false;
   }
   u->EventPush(e);
-  u->Touch();
+  //u->Touch();
   m_sStats[STATS_EventsReceived].Inc();
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-                                  u->Uin(), e->Id()));
+  //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
+  //   u->Uin(), e->Id()));
   return true;
-}
-
-
-//-----RemoveUserEvent-----------------------------------------------------------
-void CICQDaemon::RemoveUserEvent(ICQUser *u, int nId)
-{
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-                                  u->Uin(), -nId));
 }
 
 

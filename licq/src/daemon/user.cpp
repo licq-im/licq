@@ -1705,6 +1705,10 @@ void ICQUser::EventPush(CUserEvent *e)
   m_vcMessages.push_back(e);
   incNumUserEvents();
   SaveNewMessagesInfo();
+  Touch();
+
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+     USER_EVENTS, m_nUin, e->Id()));
 }
 
 
@@ -1763,7 +1767,8 @@ CUserEvent *ICQUser::EventPop()
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gLicqDaemon->RemoveUserEvent(this, e->Id());
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+     USER_EVENTS, m_nUin, e->Id()));
 
   return e;
 }
@@ -1782,7 +1787,8 @@ void ICQUser::EventClear(unsigned short index)
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gLicqDaemon->RemoveUserEvent(this, id);
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+     USER_EVENTS, m_nUin, id));
 }
 
 
@@ -1797,7 +1803,8 @@ void ICQUser::EventClearId(int id)
       m_vcMessages.erase(iter);
       decNumUserEvents();
       SaveNewMessagesInfo();
-      gLicqDaemon->RemoveUserEvent(this, id);
+      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+         USER_EVENTS, m_nUin, id));
       break;
     }
   }
