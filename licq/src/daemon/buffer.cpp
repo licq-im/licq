@@ -32,7 +32,12 @@ unsigned int get_le_int(char *p)
 unsigned long get_le_long(char *p)
 {
    unsigned char *q = (unsigned char *)p;
-   return q[0] + (q[1] << 8) + (q[2] << 16) + (q[3] << 24);
+   // $C6.1 Promotions: unsigned char gets converted to int by default
+   return ((unsigned long)q[0]) +
+       (((unsigned long)q[1]) << 8) +
+       (((unsigned long)q[2]) << 16) +
+       (((unsigned long)q[3]) << 24);
+
 }
 
 // store 16-bit short in little-endian format, possibly unaligned
