@@ -1606,7 +1606,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
 
-  clearDelay = 1000;
+  clearDelay = 250;
 }
 #endif
 
@@ -1714,7 +1714,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
 
-  clearDelay = 1000;
+  clearDelay = 250;
 }
 
 
