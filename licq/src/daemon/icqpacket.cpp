@@ -14,6 +14,8 @@
 extern int errno;
 #endif
 
+#include "time-fix.h"
+
 #include "icqpacket.h"
 #include "icq-defines.h"
 #include "translate.h"
@@ -654,8 +656,8 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
 
   m_nCountry = nCountry;
   time_t t = time(NULL);
-  localtime(&t);
 #ifndef __FreeBSD__
+  localtime(&t);
   m_cTimezone = timezone / 1800; // seconds _west_ of UTC
 #else
   struct tm *tzone = localtime(&t);
@@ -788,8 +790,8 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_nZipCode = nZipCode;
   m_nCountryCode = nCountryCode;
   time_t t = time(NULL);
-  localtime(&t);
 #ifndef __FreeBSD__
+  localtime(&t);
   m_nTimezone = timezone / 1800; // seconds _west_ of UTC
 #else
   struct tm *tzone = localtime(&t);
