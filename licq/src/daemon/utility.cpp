@@ -48,7 +48,7 @@ unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
   for (unsigned short i = 0; i < n; i++)
   {
     char szFile[MAX_FILENAME_LEN];
-    sprintf(szFile, "%s%s", _szDir, namelist[i]->d_name);
+    sprintf(szFile, "%s/%s", _szDir, namelist[i]->d_name);
     free (namelist[i]);
     p = new CUtility(szFile);
     if (p->Exception())

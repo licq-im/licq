@@ -104,7 +104,7 @@ bool CUserManager::Load(void)
 
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s", BASE_DIR, "licq.conf");
+  sprintf(filename, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(filename);
 
@@ -127,7 +127,7 @@ bool CUserManager::Load(void)
   licqConf.CloseFile();
 
   // Load users from users.conf
-  sprintf(filename, "%s%s", BASE_DIR, "users.conf");
+  sprintf(filename, "%s/users.conf", BASE_DIR);
   CIniFile usersConf(INI_FxFATAL | INI_FxERROR);
   usersConf.LoadFile(filename);
 
@@ -147,7 +147,7 @@ bool CUserManager::Load(void)
         gLog.Warn("%sSkipping user %i, UIN not found.\n", L_WARNxSTR, i);
         continue;
      }
-     sprintf(filename, "%s%s%li%s", BASE_DIR, USER_DIR, nUserUin, ".uin");
+     sprintf(filename, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
      AddUser(new ICQUser(nUserUin, filename));
   }
 
@@ -304,7 +304,7 @@ void CUserManager::SaveGroups(void)
 
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s", BASE_DIR, "licq.conf");
+  sprintf(filename, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(filename);
 
@@ -761,7 +761,7 @@ ICQUser::ICQUser(unsigned long _nUin)
   Init(_nUin);
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
-  sprintf(szFilename, "%s%s%ld.uin", BASE_DIR, USER_DIR, _nUin);
+  sprintf(szFilename, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, _nUin);
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
   setEnableSave(true);
@@ -1481,7 +1481,7 @@ ICQOwner::ICQOwner(void)
   Init(0);
 
   // Get data from the config file
-  sprintf(filename, "%s%s", BASE_DIR, "owner.uin");
+  sprintf(filename, "%s/owner.uin", BASE_DIR);
 
   // Make sure owner.uin is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
@@ -1515,7 +1515,7 @@ ICQOwner::ICQOwner(void)
     return;
   }
 
-  sprintf(filename, "%s%s%s", BASE_DIR, HISTORY_DIR, "owner.history");
+  sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   setHistoryFile(filename);
 
   setEnableSave(true);

@@ -11,10 +11,10 @@
 const char DEFAULT_HOME_DIR[]                      = ".licq";
 const char BASE_SHARE_DIR[]                        = "share/licq/";
 const char BASE_LIB_DIR[]                          = "lib/licq/";
-const char USER_DIR[]                              = "users/";
-const char HISTORY_DIR[]                           = "history/";
-const char TRANSLATION_DIR[]                       = "translations/";
-const char UTILITY_DIR[]                           = "utilities/";
+const char USER_DIR[]                              = "users";
+const char HISTORY_DIR[]                           = "history";
+const char TRANSLATION_DIR[]                       = "translations";
+const char UTILITY_DIR[]                           = "utilities";
 extern char BASE_DIR[];
 extern char SHARE_DIR[];
 extern char LIB_DIR[];

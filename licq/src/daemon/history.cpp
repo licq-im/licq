@@ -40,7 +40,7 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
   if (strncmp(_sz, "default", 7) == 0)
   {
     char temp[MAX_FILENAME_LEN];
-    sprintf(temp, "%s%s%ld.history", BASE_DIR, HISTORY_DIR, _nUin);
+    sprintf(temp, "%s/%s/%ld.history", BASE_DIR, HISTORY_DIR, _nUin);
     m_szFileName = strdup(temp);
     m_szDescription = strdup("default");
   }

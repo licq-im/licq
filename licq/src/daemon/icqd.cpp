@@ -42,7 +42,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
   // Begin parsing the config file
-  sprintf(szFilename, "%s%s", BASE_DIR, "licq.conf");
+  sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(szFilename);
   licqConf.ClearFlag(INI_FxFATAL | INI_FxERROR);
@@ -81,7 +81,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   if (strcmp(szFilename, "none") != 0)
   {
     char errorFileNameFull[256];
-    sprintf(errorFileNameFull, "%s%s", BASE_DIR, szFilename);
+    sprintf(errorFileNameFull, "%s/%s", BASE_DIR, szFilename);
     CLogService_File *l = new CLogService_File(L_ERROR | L_UNKNOWN);
     if (!l->SetLogFile(errorFileNameFull, "a"))
     {
@@ -177,7 +177,7 @@ int CICQDaemon::Start(void)
 
 #ifdef USE_FIFO
   // Open the fifo
-  sprintf(buf, "%slicq_fifo", BASE_DIR);
+  sprintf(buf, "%s/licq_fifo", BASE_DIR);
   gLog.Info("%sOpening fifo.\n", L_INITxSTR);
   fifo_fd = open(buf, O_RDWR);
   if (fifo_fd == -1)
@@ -294,7 +294,7 @@ pthread_t *CICQDaemon::Shutdown(void)
 void CICQDaemon::SaveConf(void)
 {
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s", BASE_DIR, "licq.conf");
+  sprintf(filename, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
   if (!licqConf.LoadFile(filename)) return;
 
@@ -369,7 +369,7 @@ void CICQDaemon::setUrlViewer(const char *s)
 void CICQDaemon::SaveUserList(void)
 {
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s", BASE_DIR, "users.conf");
+  sprintf(filename, "%s/users.conf", BASE_DIR);
   FILE *usersConf = fopen(filename, "w");
 
   fprintf(usersConf, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());
