@@ -90,8 +90,9 @@ void IconManager::X11Init()
   XFree( hints );
 
 #ifdef USE_KDE
-  int argc = 0;
-  init(argc, 0);
+  //int argc = 0;
+  //init(argc, 0);
+  dock("LicqWharf");
   setMinimumWidth(wharfIcon->width());
   setMinimumHeight(wharfIcon->height());
 #endif

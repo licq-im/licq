@@ -41,7 +41,7 @@ extern "C" {
 
 #ifdef USE_KDE
 #include <kapp.h>
-#include <kglobal.h>
+#include <kglobalsettings.h>
 #include <kwin.h>
 #else
 #include <qapplication.h>
@@ -283,7 +283,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   QFont f;
   licqConf.ReadStr("Font", szTemp, "default");
 #ifdef USE_KDE
-  defaultFont = KGlobal::generalFont();
+  defaultFont = KGlobalSettings::generalFont();
 #else
   defaultFont = qApp->font();
 #endif
