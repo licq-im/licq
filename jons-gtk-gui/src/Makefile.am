@@ -10,10 +10,21 @@ lib_LTLIBRARIES = licq_jons-gtk-gui.la
 
 noinst_HEADERS = licq_gtk.h
 
-licq_jons_gtk_gui_la_SOURCES = add_user_window.cpp auth_user_window.cpp \
-	away_window.cpp contact_list.cpp convo.cpp main.cpp main_window.cpp \
-	menu.cpp pipe.cpp status.cpp system_message.cpp system_status.cpp \
-	user_menu.cpp user_info_window.cpp pix_colors.cpp
+licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
+				auth_user_window.cpp \
+				away_window.cpp \
+				contact_list.cpp \
+				convo.cpp \
+				main.cpp \
+				extras.cpp \
+				main_window.cpp \
+				menu.cpp \
+				pipe.cpp \
+				status.cpp \
+				system_message.cpp \
+				system_status.cpp \
+				user_menu.cpp \
+				user_info_window.cpp 
 
 licq_jons_gtk_gui_la_LDFLAGS = -s -module -avoid-version -rpath $(libdir) \
 	 `gtk-config --libs`
