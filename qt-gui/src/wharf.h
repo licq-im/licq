@@ -9,6 +9,13 @@
 #include <qbitmap.h>
 #include <qpopupmenu.h>
 
+#ifdef USE_KDE
+#include <kapplet.h>
+#else
+#define KApplet QWidget
+#endif
+
+
 class WharfIcon : public QWidget
 {
   Q_OBJECT
@@ -27,7 +34,7 @@ friend class IconManager;
 };
 
 
-class IconManager : public QWidget
+class IconManager : public KApplet
 {
   Q_OBJECT
 public:
@@ -45,6 +52,5 @@ protected:
   int m_nNewMsg, m_nSysMsg;
   bool m_bFortyEight;
 };
-
 
 #endif

@@ -38,7 +38,7 @@
 #include "user.h"
 #include <qpainter.h>
 #ifdef USE_KDE
-#include <kwm.h>
+#include <kwin.h>
 #endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -51,7 +51,7 @@
 
 
 IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent, const char *name )
-  : QWidget(parent, name), wharfIcon(_mainwin, _menu, _bFortyEight, this)
+  : KApplet(parent, name), wharfIcon(_mainwin, _menu, _bFortyEight, this)
 {
   // set the hints
   Display *dsp = x11Display();  // get the display
@@ -72,13 +72,17 @@ IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyE
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
   m_bFortyEight = _bFortyEight;
+#ifdef USE_KDE
+  int argc = 0;
+  init(argc, 0);
+  setMinimumWidth(wharfIcon.width());
+  setMinimumHeight(wharfIcon.height());
+#else
   resize (wharfIcon.width(), wharfIcon.height());
+  iconify();
+#endif
   setMask(wharfIcon.mask);
   DrawIcon();
-  iconify();
-#ifdef USE_KDE
-  KWM::setDockWindow(winId());
-#endif
   show();
 }
 
@@ -253,7 +257,6 @@ WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight
     mask = p;
   }
   resize(vis->width(), vis->height());
-
   setMask(mask);
 
   DrawIcon();
