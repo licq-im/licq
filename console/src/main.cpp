@@ -8,10 +8,11 @@
 
 CLicqConsole *licqConsole;
 
-void LP_Usage(void)
+const char *LP_Usage(void)
 {
-  fprintf(stderr, "Licq Plugin: %s %s\n", LP_Name(), LP_Version());
-  fprintf(stderr, "Usage:  Licq [options] -p console\n\n");
+  static const char usage[] =
+      "Usage:  Licq [ options ] -p console\n";
+  return usage;
 }
 
 const char *LP_Name(void)

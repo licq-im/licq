@@ -9,13 +9,14 @@
 
 CLicqEmail *licqEmail;
 
-void LP_Usage(void)
+const char *LP_Usage(void)
 {
-  fprintf(stderr, "Licq Plugin: %s %s\n", LP_Name(), LP_Version());
-  fprintf(stderr, "Usage:  Licq [options] -p email -- [ -h ] [ -e ] [ -l <staus> ]\n"
-                  "         -h          : help\n"
-                  "         -e          : start enabled\n"
-                  "         -l <status> : log on at startup\n\n");
+  static const char usage[] =
+    "Usage:  Licq [options] -p email -- [ -h ] [ -e ] [ -l <staus> ]\n"
+    "         -h          : help\n"
+    "         -e          : start enabled\n"
+    "         -l <status> : log on at startup\n";
+  return usage;
 }
 
 const char *LP_Name(void)
