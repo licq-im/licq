@@ -1426,6 +1426,9 @@ void CMainWindow::updateStatus()
    lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
    lblStatus->update();
 
+   // set icon of the licq main widget for window manager
+   setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+
    gUserManager.DropOwner();
 
    // set the color if it isn't set by the skin
