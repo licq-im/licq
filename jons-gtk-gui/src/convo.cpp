@@ -485,6 +485,8 @@ void convo_recv(gulong uin)
 		                u_event->Text(), -1);
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, "\n", -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
+		gtk_adjustment_set_value(GTK_TEXT(c->text)->vadj,
+			 GTK_ADJUSTMENT(GTK_TEXT(c->text)->vadj)->upper);
 		break;
  	  }
 
