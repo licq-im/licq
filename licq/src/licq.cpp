@@ -1,3 +1,5 @@
+// -*- c-basic-offset: 2 -*-
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -5,6 +7,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -168,10 +171,16 @@ bool CLicq::Init(int argc, char **argv)
     pid_t pid = atol(szKey);
     if (pid != 0)
     {
-      gLog.Error("%sLicq: Already running at pid %d.\n"
-                 "%s      Kill process or remove %s.\n",
-       L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
-      return false;
+      if (kill(pid, 0) == -1) {
+        gLog.Warn("%sLicq: Ignoring stale lockfile (pid %d)\n", L_WARNxSTR, pid);
+      }
+      else
+      {
+        gLog.Error("%sLicq: Already running at pid %d.\n"
+                   "%s      Kill process or remove %s.\n",
+                   L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+        return false;
+      }
     }
     fclose(fs);
   }
