@@ -71,7 +71,6 @@ inline
 void CLogService_StdOut::lprintf(unsigned short _nLogType, const char *_szPrefix,
                                  const char *_szFormat, va_list argp)
 {
-  printf("%s", _szPrefix);
   vprintf(_szFormat, argp);
   fflush(stdout);
 }
@@ -98,7 +97,6 @@ void CLogService_File::lprintf(unsigned short _nLogType, const char *_szPrefix,
                                const char *_szFormat, va_list argp)
 {
   if (m_fLog == NULL) return;
-  fprintf(m_fLog, "%s", _szPrefix);
   vfprintf(m_fLog, _szFormat, argp);
   fflush(m_fLog);
 }
@@ -326,7 +324,7 @@ void CLogServer::Log(const unsigned short _nLogType, const char *_szFormat, va_l
   // Create a time string for the log
   time_t t = time(NULL);
   localtime_r(&t, &stm);
-  strftime(szTime, 32, "%b %d %T: ", &stm);
+  strftime(szTime, 32, "%T: ", &stm);
 
   // Log the event to each server
   vector<CLogService *>::iterator iter;
@@ -348,7 +346,7 @@ void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _
   // Create a time string for the log
   time_t t = time(NULL);
   localtime_r(&t, &stm);
-  strftime(szTime, 32, "%b %d %T: ", &stm);
+  strftime(szTime, 32, "%T: ", &stm);
 
   // Log the event to each server
   vector<CLogService *>::iterator iter;
