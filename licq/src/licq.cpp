@@ -331,6 +331,7 @@ bool CLicq::Init(int argc, char **argv)
           (*(list_plugins.back())->fUsage)() );
       list_plugins.pop_back();
     }
+    free(*iter);
   }
   if (bHelp) return false;
 
