@@ -125,7 +125,7 @@ void *ProcessRunningEvent_tep(void *p)
  *----------------------------------------------------------------------------*/
 void *ProcessPendingEvents_tep(void *p)
 {
-  pthread_detach(pthread_self());
+  //pthread_detach(pthread_self());
 
   CICQDaemon *d = (CICQDaemon *)p;
 
@@ -175,7 +175,7 @@ void *ProcessPendingEvents_tep(void *p)
  *----------------------------------------------------------------------------*/
 void *ProcessDoneEvents_tep(void *p)
 {
-  pthread_detach(pthread_self());
+  //pthread_detach(pthread_self());
 
   CICQDaemon *d = (CICQDaemon *)p;
   //bool bLogoff;
@@ -331,7 +331,7 @@ void *Ping_tep(void *p)
  *----------------------------------------------------------------------------*/
 void *MonitorSockets_tep(void *p)
 {
-  pthread_detach(pthread_self());
+  //pthread_detach(pthread_self());
 
   CICQDaemon *d = (CICQDaemon *)p;
 
@@ -343,8 +343,8 @@ void *MonitorSockets_tep(void *p)
 
   while (true)
   {
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_testcancel();
+    /*pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();*/
 
     f = gSocketManager.SocketSet();
     l = gSocketManager.LargestSocket() + 1;
@@ -362,8 +362,8 @@ void *MonitorSockets_tep(void *p)
 
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
 
-    pthread_testcancel();
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    /*pthread_testcancel();
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);*/
     nCurrentSocket = 0;
     while (nSocketsAvailable > 0 && nCurrentSocket < l)
     {
@@ -372,8 +372,16 @@ void *MonitorSockets_tep(void *p)
         // New socket event ----------------------------------------------------
         if (nCurrentSocket == d->pipe_newsocket[PIPE_READ])
         {
-          DEBUG_THREADS("[MonitorSockets_tep] Reloading socket info.\n");
-          read(d->pipe_newsocket[PIPE_READ], buf, 16);
+          read(d->pipe_newsocket[PIPE_READ], buf, 1);
+          if (buf[0] == 'S')
+          {
+            DEBUG_THREADS("[MonitorSockets_tep] Reloading socket info.\n");
+          }
+          else if (buf[0] == 'X')
+          {
+            DEBUG_THREADS("[MonitorSockets_tep] Exiting.\n");
+            pthread_exit(NULL);
+          }
         }
 
         // Fifo event ----------------------------------------------------------
@@ -532,33 +540,39 @@ void *Shutdown_tep(void *p)
   // Shutdown
   gLog.Warn("%sShutting down daemon.\n", L_ENDxSTR);
 
-  // Cancel the monitor sockets thread (deferred until ready)
-  pthread_cancel(d->thread_monitorsockets);
-
-  // Send a NULL event to the pending events thread to cancel it
-  pthread_mutex_lock(&d->mutex_pendingevents);
-  d->m_lxPendingEvents.push_back(NULL);
-  pthread_mutex_unlock(&d->mutex_pendingevents);
-  DEBUG_THREADS("[SendExpectEvent] Throwing NULL pending event.\n");
-  pthread_cond_signal(&d->cond_pendingevents);
-  //pthread_cancel(d->thread_pendingevents);
-
-  // Cancel the ping thread
-  pthread_cancel(d->thread_ping);
-
-  // Push a NULL event onto the done queue to cancel that thread
-  d->PushDoneEvent(NULL);
-  //pthread_cancel(d->thread_doneevents);
-
-  gSocketManager.CloseSocket(d->m_nTCPSocketDesc);
-  if (d->m_nUDPSocketDesc != -1) d->icqLogoff(false);
-
   // Send shutdown signal to all the plugins
   vector<CPlugin *>::iterator iter;
   for (iter = d->m_vPlugins.begin(); iter != d->m_vPlugins.end(); iter++)
   {
     (*iter)->Shutdown();
   }
+
+  // Cancel the monitor sockets thread (deferred until ready)
+  //pthread_cancel(d->thread_monitorsockets);
+  write(d->pipe_newsocket[PIPE_WRITE], "X", 1);
+
+  // Send a NULL event to the pending events thread to cancel it
+  pthread_mutex_lock(&d->mutex_pendingevents);
+  d->m_lxPendingEvents.push_back(NULL);
+  pthread_mutex_unlock(&d->mutex_pendingevents);
+  DEBUG_THREADS("[Shutdown_tep] Throwing NULL pending event.\n");
+  pthread_cond_signal(&d->cond_pendingevents);
+
+  // Cancel the ping thread
+  pthread_cancel(d->thread_ping);
+
+  // Push a NULL event onto the done queue to cancel that thread
+  DEBUG_THREADS("[Shutdown_tep] Throwing NULL done event.\n");
+  d->PushDoneEvent(NULL);
+
+  // Join our threads
+  pthread_join(d->thread_monitorsockets, NULL);
+  //pthread_join(d->thread_ping, NULL);
+  pthread_join(d->thread_pendingevents, NULL);
+  pthread_join(d->thread_doneevents, NULL);
+
+  gSocketManager.CloseSocket(d->m_nTCPSocketDesc);
+  if (d->m_nUDPSocketDesc != -1) d->icqLogoff(false);
 
   // Signal that we are shutdown
   pthread_mutex_lock(&LP_IdMutex);

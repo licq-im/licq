@@ -54,7 +54,7 @@ CLicq::CLicq(int argc, char **argv)
   bool bFork = false;
   bool bBaseDir = false;
   bool bForceInit = false;
-  bool bSavePlugins = false;
+  bool bCmdLinePlugins = false;
   // Check the no one is trying session management on us
   if (argc > 1 && strcmp(argv[1], "-session") == 0)
   {
@@ -84,7 +84,7 @@ CLicq::CLicq(int argc, char **argv)
         break;
       case 'p':  // new plugin
         vszPlugins.push_back(strdup(optarg));
-        bSavePlugins = true;
+        bCmdLinePlugins = true;
         break;
       case 'o':  // redirect stdout and stderr
         szRedirect = strdup(optarg);
@@ -142,7 +142,7 @@ CLicq::CLicq(int argc, char **argv)
   sprintf(LIB_DIR, "%s/%s", INSTALL_DIR, BASE_LIB_DIR);
 
   // Save the plugins if necessary
-  if (bSavePlugins)
+  if (bCmdLinePlugins)
   {
     CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
     char szConf[MAX_FILENAME_LEN], szKey[32];
@@ -174,7 +174,7 @@ CLicq::CLicq(int argc, char **argv)
   }
 
   // Find and load the plugins from the conf file
-  if (!bHelp)
+  if (!bHelp && !bCmdLinePlugins)
   {
     CIniFile licqConf(INI_FxWARN);
     unsigned short nNumPlugins = 0;
