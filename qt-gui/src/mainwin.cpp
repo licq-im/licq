@@ -1635,7 +1635,7 @@ void CMainWindow::updateEvents()
 
   FOR_EACH_OWNER_START(LOCK_R)
   {
-    nNumOwnerEvents = pOwner->NewMessages();
+    nNumOwnerEvents += pOwner->NewMessages();
   }
   FOR_EACH_OWNER_END
 
