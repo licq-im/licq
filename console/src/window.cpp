@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
+
 // this is a big hack to avoid undefined function link
 // to __va_arg_type_violation(void)
 // va_list sucks!
