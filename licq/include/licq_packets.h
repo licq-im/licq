@@ -1074,6 +1074,13 @@ public:
   CPU_RequestInfo(const char *szId);
 };
 
+//-----AIMFetchAwayMessage--------------------------------------------------
+class CPU_AIMFetchAwayMessage : public CPU_CommonFamily
+{
+public:
+  CPU_AIMFetchAwayMessage(const char *szId);
+};
+
 //-----SetPassword---------------------------------------------------------
 class CPU_SetPassword : public CPU_CommonFamily
 {

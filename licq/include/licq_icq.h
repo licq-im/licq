@@ -61,6 +61,7 @@ const unsigned short ICQ_SNACxSRV_SETxSTATUS       = 0x001e; // client
 const unsigned short ICQ_SNACxLOC_REQUESTxRIGHTS   = 0x0002; // client
 const unsigned short ICQ_SNAXxLOC_RIGHTSxGRANTED   = 0x0003; // server
 const unsigned short ICQ_SNACxLOC_SETxUSERxINFO    = 0x0004;
+const unsigned short ICQ_SNACxLOC_INFOxREQ         = 0x0005; // client
 const unsigned short ICQ_SNACxREPLYxUSERxINFO      = 0x0006; // client
 const unsigned short ICQ_SNACxREQUESTxUSERxINFO    = 0x0015; // client
 

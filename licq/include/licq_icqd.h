@@ -275,6 +275,7 @@ public:
 
   // Server functions
   void icqRegister(const char *_szPasswd);
+  unsigned long icqFetchAutoResponseServer(const char *);
   unsigned long icqFetchAutoResponseServer(unsigned long);
   unsigned long icqLogon(unsigned short logonStatus);
   unsigned long icqUserBasicInfo(const char *);

@@ -485,44 +485,63 @@ unsigned long CICQDaemon::ProtoFetchAutoResponseServer(const char *_szId, unsign
   unsigned long nRet = 0;
 
   if (_nPPID == LICQ_PPID)
-    nRet = icqFetchAutoResponseServer(strtoul(_szId, (char **)NULL, 10));
+    nRet = icqFetchAutoResponseServer(_szId);
   else
     ;
 
   return nRet;
 }
 
-unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
+unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
 {
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  if (!u) return 0;
+  CPU_CommonFamily *p = 0;
 
-  int nCmd;
-  switch (u->Status())
+  if (isalpha(_szId[0]))
+    p = new CPU_AIMFetchAwayMessage(_szId);
+  else
   {
-  case ICQ_STATUS_AWAY:
-    nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
-  case ICQ_STATUS_NA:
-    nCmd = ICQ_CMDxTCP_READxNAxMSG; break;
-  case ICQ_STATUS_DND:
-    nCmd = ICQ_CMDxTCP_READxDNDxMSG; break;
-  case ICQ_STATUS_OCCUPIED:
-    nCmd = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-  case ICQ_STATUS_FREEFORCHAT:
-    nCmd = ICQ_CMDxTCP_READxFFCxMSG; break;
-  default:
-    nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
+    ICQUser *u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
+    if (!u) return 0;
+
+    int nCmd;
+    switch (u->Status())
+    {
+    case ICQ_STATUS_AWAY:
+      nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
+    case ICQ_STATUS_NA:
+      nCmd = ICQ_CMDxTCP_READxNAxMSG; break;
+    case ICQ_STATUS_DND:
+      nCmd = ICQ_CMDxTCP_READxDNDxMSG; break;
+    case ICQ_STATUS_OCCUPIED:
+      nCmd = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
+    case ICQ_STATUS_FREEFORCHAT:
+      nCmd = ICQ_CMDxTCP_READxFFCxMSG; break;
+    default:
+      nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
+    }
+    gUserManager.DropUser(u);
+
+    p = new CPU_ThroughServer(_szId, nCmd, 0);
   }
 
-  CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, nCmd, 0);
-  gLog.Info(tr("%sRequesting auto response from %s (%hu).\n"), L_SRVxSTR,
-  	u->GetAlias(), p->Sequence());
-  gUserManager.DropUser(u);
+  if (!p) return 0;
 
-  ICQEvent *result = SendExpectEvent_Server(_nUin, p, NULL);
+  gLog.Info(tr("%sRequesting auto response from %s (%hu).\n"), L_SRVxSTR,
+        _szId, p->Sequence());
+
+  ICQEvent *result = SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
   if (result != NULL)
     return result->EventId();
   return 0;
+}
+
+unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = '\0';
+
+  return icqFetchAutoResponseServer(szUin);
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
@@ -1485,6 +1504,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST):
       case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO):
+      case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ):
         PushPluginEvent(e);
         break;
 
@@ -2148,20 +2168,33 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
     if (!szId) break;
     packet.UnpackUnsignedLongBE(); // Unknown
     
-    gLog.Info(tr("%sReceived user information for %s.\n"), L_SRVxSTR, szId);
     if (!packet.readTLV())
     {
-      gLog.Error("%sError during parsing packet!\n", L_ERRORxSTR);
+      gLog.Error("%sError during parsing user information packet!\n", L_ERRORxSTR);
       break;
     }
    
-    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
-    if (e)
-      ProcessDoneEvent(e);
+    char *szAwayMsg = packet.UnpackStringTLV(0x0004);
+    if (szAwayMsg)
+    {
+      gLog.Info(tr("%sReceived away message for %s.\n"), L_SRVxSTR, szId);
+      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+      if (strcmp(szAwayMsg, u->AutoResponse()))
+      {
+        u->SetAutoResponse(szAwayMsg);
+        u->SetShowAwayMsg(*szAwayMsg);
+      }
+      gUserManager.DropUser(u);
+
+      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+      if (e)
+        ProcessDoneEvent(e);
+    }
 
     char *szInfo = packet.UnpackStringTLV(0x0002);
     if (szInfo)
     {
+      gLog.Info(tr("%sReceived user information for %s.\n"), L_SRVxSTR, szId);
       ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
       u->SetEnableSave(false);
       u->SetAbout(szInfo);
@@ -2174,6 +2207,10 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       u->SetEnableSave(true);
       u->SaveAboutInfo();
       gUserManager.DropUser(u);
+
+      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+      if (e)
+        ProcessDoneEvent(e);
       
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_ABOUT, szId, LICQ_PPID));
     }

@@ -170,7 +170,8 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   icqEventTag = 0;
 
   if (isOk && (e->Command() == ICQ_CMDxTCP_START ||
-               e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)))
+               e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) ||
+                e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)))
   {
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
     QTextCodec * codec = UserCodec::codecForICQUser(u);

@@ -3808,6 +3808,20 @@ CPU_RequestInfo::CPU_RequestInfo(const char *_szId)
   buffer->Pack(_szId, nSize);
 }
 
+//-----AIMFetchAwayMessage-----------------------------------------------------
+CPU_AIMFetchAwayMessage::CPU_AIMFetchAwayMessage(const char *_szId)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)
+{
+  int nSize = strlen(_szId);
+  m_nSize += 3 + nSize;
+
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(0x0003); // away message type
+  buffer->PackChar(nSize);
+  buffer->Pack(_szId, nSize);
+}
+
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
   m_nLocalPort = nLocalPort;

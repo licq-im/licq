@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 // Localization
 #include "gettext.h"
@@ -215,6 +216,9 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
   szUin[12] = 0;
   if (_szId == szUin) return 0;
   
+  if (isalpha(_szId[0]))
+    return icqFetchAutoResponseServer(_szId);
+
   ICQEvent *result;
   ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
 
