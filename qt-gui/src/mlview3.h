@@ -5,25 +5,28 @@
 
 class CICQDaemon;
 
-class MLViewQt3 : public QTextBrowser
+class MLView : public QTextBrowser
 {
   Q_OBJECT
 public:
-  MLViewQt3 (QWidget* parent=0, const char *name=0);
-  virtual ~MLViewQt3() {}
+  MLView (QWidget* parent=0, const char *name=0);
+  virtual ~MLView() {}
 
   void appendNoNewLine(const QString& s);
   void append(const QString& s);
   void GotoEnd();
 
-  bool hasMarkedText();
-  QString markedText();
+  bool hasMarkedText() const;
+  QString markedText() const;
 
   void setBackground(const QColor&);
   void setForeground(const QColor&);
   void setHandleLinks(bool enable);
   void setICQDaemon(CICQDaemon* licqDaemon);
-  
+
+  int linesCount() const;
+  QString line(int lineNumber) const;
+
   static QString toRichText(const QString& s, bool highlightURLs = false);
 public slots:
   virtual void setSource(const QString& name);

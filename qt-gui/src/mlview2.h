@@ -3,12 +3,12 @@
 
 #include <qmultilineedit.h>
 
-class MLViewQt2 : public QMultiLineEdit
+class MLView : public QMultiLineEdit
 {
   Q_OBJECT
 public:
-  MLViewQt2 (QWidget* parent=0, const char *name=0);
-  virtual ~MLViewQt2() {}
+  MLView (QWidget* parent=0, const char *name=0);
+  virtual ~MLView() {}
 
   void appendNoNewLine(const QString& s);
   void append(const QString& s);
@@ -23,6 +23,9 @@ public:
   // Determines whether "quoted" (begining with ">") lines should be
   // specially formatted.
   void setFormatQuoted(bool enable);
+  
+  int linesCount() const;
+  QString line(int lineNumber) const;
 
 protected:
   virtual void setCellWidth ( int );

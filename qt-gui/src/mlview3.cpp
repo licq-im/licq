@@ -24,7 +24,7 @@
 #endif
 
 #include <qglobal.h>
-#if QT_VERSION < 300
+#if QT_VERSION >= 300
 
 #include <qfont.h>
 #include <qpainter.h>
@@ -40,7 +40,7 @@
 
 #include "mlview3.h"
 
-MLViewQt3::MLViewQt3 (QWidget* parent, const char *name)
+MLView::MLView (QWidget* parent, const char *name)
   : QTextBrowser(parent, name), m_handleLinks(true), m_licqDaemon(NULL)
 {
   setWordWrap(WidgetWidth);
@@ -48,13 +48,13 @@ MLViewQt3::MLViewQt3 (QWidget* parent, const char *name)
   setReadOnly(true);
 }
 
-void MLViewQt3::appendNoNewLine(const QString& s)
+void MLView::appendNoNewLine(const QString& s)
 {
   int p = paragraphs() - 1;
   insertAt(s, p, paragraphLength(p));
 }
 
-void MLViewQt3::append(const QString& s)
+void MLView::append(const QString& s)
 {
   if (strcmp(qVersion(), "3.0.0") == 0 ||
       strcmp(qVersion(), "3.0.1") == 0 ||
@@ -72,7 +72,7 @@ void MLViewQt3::append(const QString& s)
   }
 }
 
-QString MLViewQt3::toRichText(const QString& s, bool highlightURLs)
+QString MLView::toRichText(const QString& s, bool highlightURLs)
 {
   // We cannot use QStyleSheet::convertFromPlainText
   // since it has a bug in Qt 3 which causes line breaks to mix up.
@@ -121,12 +121,12 @@ QString MLViewQt3::toRichText(const QString& s, bool highlightURLs)
   return text;
 }
 
-void MLViewQt3::GotoEnd()
+void MLView::GotoEnd()
 {
   moveCursor(QTextBrowser::MoveEnd, false);
 }
 
-void MLViewQt3::setBackground(const QColor& c)
+void MLView::setBackground(const QColor& c)
 {
   QPalette pal = palette();
 
@@ -140,7 +140,7 @@ void MLViewQt3::setBackground(const QColor& c)
 // -----------------------------------------------------------------------------
 
 
-void MLViewQt3::setForeground(const QColor& c)
+void MLView::setForeground(const QColor& c)
 {
   QPalette pal = palette();
 
@@ -150,17 +150,17 @@ void MLViewQt3::setForeground(const QColor& c)
   setPalette(pal);
 }
 
-void MLViewQt3::setHandleLinks(bool enable)
+void MLView::setHandleLinks(bool enable)
 {
   m_handleLinks = enable;
 }
 
-void MLViewQt3::setICQDaemon(CICQDaemon* licqDaemon)
+void MLView::setICQDaemon(CICQDaemon* licqDaemon)
 {
   m_licqDaemon = licqDaemon;
 }
 
-void MLViewQt3::setSource(const QString& name)
+void MLView::setSource(const QString& name)
 {
   if (m_handleLinks)
   {
@@ -180,6 +180,28 @@ void MLViewQt3::setSource(const QString& name)
     }
 #endif
   }
+}
+
+int MLView::linesCount() const
+{
+  return lines();
+}
+
+QString MLView::line(int lineNumber) const
+{
+  QString entireText = text();
+  int lineCounter = 0;
+  int prevPos = 0;
+  int pos;
+  while (pos = entireText.find('\n', prevPos))
+  {
+     if (lineCounter == lineNumber)
+        return entireText.mid(prevPos, pos-prevPos-1);
+     ++lineCounter;
+  }
+  
+  if (pos == -1)
+     return entireText;
 }
 
 #include "mlview3.moc"

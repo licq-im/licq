@@ -32,7 +32,7 @@
 
 #include "mlview2.h"
 
-MLViewQt2::MLViewQt2 (QWidget* parent, const char *name)
+MLView::MLView (QWidget* parent, const char *name)
   : QMultiLineEdit(parent, name)
 {
   setWordWrap(WidgetWidth);
@@ -41,20 +41,20 @@ MLViewQt2::MLViewQt2 (QWidget* parent, const char *name)
 }
 
 
-void MLViewQt2::appendNoNewLine(const QString& s)
+void MLView::appendNoNewLine(const QString& s)
 {
   if (!atEnd()) GotoEnd();
   QMultiLineEdit::insert(s);
 }
 
-void MLViewQt2::append(const QString& s)
+void MLView::append(const QString& s)
 {
 #if QT_VERSION < 300
   appendNoNewLine(s + "\n");
 #endif
 }
 
-void MLViewQt2::GotoEnd()
+void MLView::GotoEnd()
 {
 #if QT_VERSION < 300
   setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
@@ -62,7 +62,7 @@ void MLViewQt2::GotoEnd()
 }
 
 
-void MLViewQt2::setBackground(const QColor& c)
+void MLView::setBackground(const QColor& c)
 {
   QPalette pal = palette();
 
@@ -76,7 +76,7 @@ void MLViewQt2::setBackground(const QColor& c)
 // -----------------------------------------------------------------------------
 
 
-void MLViewQt2::setForeground(const QColor& c)
+void MLView::setForeground(const QColor& c)
 {
   QPalette pal = palette();
 
@@ -88,14 +88,14 @@ void MLViewQt2::setForeground(const QColor& c)
 
 // -----------------------------------------------------------------------------
 
-void MLViewQt2::setFormatQuoted(bool enable)
+void MLView::setFormatQuoted(bool enable)
 {
   m_bFormatQuoted = enable;
 }
 
 // -----------------------------------------------------------------------------
 
-void MLViewQt2::paintCell(QPainter* p, int row, int col)
+void MLView::paintCell(QPainter* p, int row, int col)
 {
 
 #if QT_VERSION >= 210
@@ -117,7 +117,7 @@ void MLViewQt2::paintCell(QPainter* p, int row, int col)
   QMultiLineEdit::paintCell(p, row, col);
 }
 
-void MLViewQt2::setCellWidth ( int cellW )
+void MLView::setCellWidth ( int cellW )
 {
 #if QT_VERSION == 210
     if ( cellWidth() == cellW )
@@ -130,6 +130,16 @@ void MLViewQt2::setCellWidth ( int cellW )
 #else
     QMultiLineEdit::setCellWidth( cellW );
 #endif
+}
+
+int MLView::linesCount() const
+{
+  return numLines();
+}
+
+QString MLView::line(int lineNumber) const
+{
+  return textLine(lineNumber);
 }
 
 #include "mlview2.moc"
