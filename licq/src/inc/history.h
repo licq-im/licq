@@ -3,10 +3,10 @@
 
 #include <list.h>
 
-class CEventHistory;
+class CUserEvent;
 
-typedef list<CEventHistory *> HistoryList;
-typedef list<CEventHistory *>::iterator HistoryListIter;
+typedef list<CUserEvent *> HistoryList;
+typedef list<CUserEvent *>::iterator HistoryListIter;
 
 class CUserHistory
 {

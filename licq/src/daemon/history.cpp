@@ -19,6 +19,7 @@ extern int errno;
 #include "constants.h"
 #include "file.h"
 #include "message.h"
+#include "icq-defines.h"
 
 CUserHistory::CUserHistory(void)
 {
@@ -58,6 +59,17 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
   }
 }
 
+#define GET_VALID_LINE_OR_BREAK \
+  { \
+    if ( (szResult = fgets(sz, MAX_LINE_LEN, f)) == NULL || szResult[0] != ':') break; \
+    szResult[strlen(szResult) - 1] = '\0'; \
+  }
+
+#define GET_VALID_LINES \
+  { \
+    while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') \
+        strcat(szMsg, &sz[1]); \
+  }
 
 bool CUserHistory::Load(HistoryList &lHistory)
 {
@@ -87,6 +99,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
   unsigned short nCommand, nSubCommand;
   time_t tTime;
   char cDir;
+  CUserEvent *e;
   while(true)
   {
     while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] != '[');
@@ -102,12 +115,157 @@ bool CUserHistory::Load(HistoryList &lHistory)
     tTime = (time_t)atoi(&sz[27]);
     // Now read in the message
     szMsg[0] = '\0';
-    while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':')
+    e = NULL;
+    switch(nSubCommand)
     {
-      strcat(szMsg, &sz[1]);
+    case ICQ_CMDxSUB_MSG:
+    {
+      GET_VALID_LINES;
+      e = new CEventMsg(szMsg, nCommand, tTime, nFlags);
+      break;
     }
-    lHistory.push_back(new CEventHistory(szMsg, cDir, nSubCommand, nCommand,
-                                          tTime, nFlags));
+    case ICQ_CMDxSUB_CHAT:
+    {
+      if (nCommand == ICQ_CMDxTCP_CANCEL)
+      {
+        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
+        e = new CEventChatCancel(0, tTime, nFlags);
+      }
+      else
+      {
+        GET_VALID_LINES;
+        e = new CEventChat(szMsg, 0, tTime, nFlags);
+      }
+      break;
+    }
+    case ICQ_CMDxSUB_FILE:
+    {
+      if (nCommand == ICQ_CMDxTCP_CANCEL)
+      {
+        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
+        e = new CEventFileCancel(0, tTime, nFlags);
+      }
+      else
+      {
+        GET_VALID_LINE_OR_BREAK;
+        char *szFile = strdup(&szResult[1]);
+        GET_VALID_LINE_OR_BREAK;
+        unsigned long nSize = atoi(&szResult[1]);
+        GET_VALID_LINES;
+        e = new CEventFile(szFile, szMsg, nSize, 0, tTime, nFlags);
+        free(szFile);
+      }
+      break;
+    }
+    case ICQ_CMDxSUB_URL:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      char *szUrl = strdup(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventUrl(szUrl, szMsg, nCommand, tTime, nFlags);
+      free(szUrl);
+      break;
+    }
+    case ICQ_CMDxSUB_REQxAUTH:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      unsigned long nUin = atoi(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szAlias = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szFName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szLName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szEmail = strdup(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventAuthReq(nUin, szAlias, szFName, szLName, szEmail, szMsg,
+                            nCommand, tTime, nFlags);
+      free(szAlias);
+      free(szFName);
+      free(szLName);
+      free(szEmail);
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHORIZED:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      unsigned long nUin = atoi(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventAuth(nUin, szMsg, nCommand, tTime, nFlags);
+      break;
+    }
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      unsigned long nUin = atoi(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szAlias = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szFName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szLName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szEmail = strdup(&szResult[1]);
+      e = new CEventAdded(nUin, szAlias, szFName, szLName, szEmail,
+                            nCommand, tTime, nFlags);
+      free(szAlias);
+      free(szFName);
+      free(szLName);
+      free(szEmail);
+      break;
+    }
+    case ICQ_CMDxSUB_WEBxPANEL:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      char *szName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szEmail = strdup(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventWebPanel(szName, szEmail, szMsg,
+                             nCommand, tTime, nFlags);
+      free(szName);
+      free(szEmail);
+      break;
+    }
+    case ICQ_CMDxSUB_EMAILxPAGER:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      char *szName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szEmail = strdup(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventWebPanel(szName, szEmail, szMsg,
+                             nCommand, tTime, nFlags);
+      free(szName);
+      free(szEmail);
+      break;
+    }
+    case ICQ_CMDxSUB_CONTACTxLIST:
+    {
+      vector<char *> vsz;
+      while (true)
+      {
+        GET_VALID_LINE_OR_BREAK;
+        vsz.push_back(strdup(&szResult[1]));
+      }
+      e = new CEventContactList(vsz, nCommand, tTime, nFlags);
+      for (unsigned short i = 0; i < vsz.size(); i++)
+        free(vsz[i]);
+      break;
+    }
+    case ICQ_CMDxSUB_USERxINFO:
+      break;
+    default:
+      gLog.Warn("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n",
+                m_szFileName, nSubCommand);
+      break;
+    }
+    if (e != NULL)
+    {
+      e->SetDirection(cDir == 'R' ? D_RECEIVER : D_SENDER);
+      lHistory.push_back(e);
+    }
     if (szResult == NULL) break;
   }
 
@@ -178,6 +336,7 @@ void CUserHistory::Append(const char *_sz)
     return;
   }
   write(fd, _sz, strlen(_sz));
+  write(fd, "\n", 1);
   close(fd);
 }
 
