@@ -447,7 +447,7 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/o%Zwner [ view | info | history ]",
+  winMain->wprintf(" %A/o%Zwner [ view | info | history <n[,n]> ]",
                    A_BOLD, A_BOLD);
   PrintBoxRight(48);
 

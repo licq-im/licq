@@ -1176,6 +1176,17 @@ void CLicqConsole::UserCommand_History(unsigned long nUin, char *szArg)
 
   // Process the argument
   char *szStart = szArg;
+  if (szStart == NULL) {
+    if (nLast > 0 ) {
+      winMain->wprintf("%CYou must specify an event number. (1-%d)\n",
+                       COLOR_RED, nLast);
+    }
+    else {
+      winMain->wprintf("%CNo System Events.\n", COLOR_WHITE);
+    }
+    return;
+  }
+
   char *szEnd = strchr(szStart, ',');
   int nStart, nEnd;
 

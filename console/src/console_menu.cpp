@@ -313,6 +313,12 @@ void CLicqConsole::MenuUser(char *_szArg)
   unsigned long nUin = 0;
   unsigned short nCmd = 0;
 
+  if(_szArg == NULL) {
+    winMain->wprintf("%CNo command given. See </help user> for details.\n",
+                     COLOR_RED);
+    return;
+  }
+
   // Check if the alias is quoted
   if (_szArg[0] == '"')
   {
@@ -445,6 +451,11 @@ void CLicqConsole::MenuOwner(char *_szArg)
 {
   unsigned short nCmd = 0;
   char *szUserArg;
+
+  if(_szArg == NULL) {
+    winMain->wprintf("%COwner command required. See </help owner>.\n");
+    return;
+  }
 
   // Find any command args
   szUserArg = strchr(_szArg, ' ');
