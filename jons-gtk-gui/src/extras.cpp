@@ -168,7 +168,12 @@ void user_function(ICQEvent *event)
 			const gchar *name = g_strdup_printf("%s",
 							owner->GetAlias());
 			gUserManager.DropOwner();
-
+		
+			gtk_editable_delete_text(GTK_EDITABLE(c->entry), 0, -1);
+			gtk_editable_delete_text(GTK_EDITABLE(c->spoof_uin),
+						 0, -1);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->spoof_button), FALSE);
+			gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 			gtk_text_freeze(GTK_TEXT(c->entry));
 			gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, c->for_user,

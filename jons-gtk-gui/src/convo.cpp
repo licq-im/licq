@@ -235,12 +235,6 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 						"prog");
 	gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
 	gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
-
-	gtk_editable_delete_text(GTK_EDITABLE(c->entry), 0, -1);
-	gtk_editable_delete_text(GTK_EDITABLE(c->spoof_uin), 0, -1);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->spoof_button), FALSE);
-
-	gtk_window_set_focus(GTK_WINDOW(c->window), c->entry);
 }
 
 void convo_recv(gulong uin)
