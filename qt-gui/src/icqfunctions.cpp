@@ -375,9 +375,10 @@ void ICQFunctions::InitMoreInfoTab()
 
   unsigned short CR = 0;
   QWidget *p = tabList[TAB_MOREINFO].tab;
-  QGridLayout *lay = new QGridLayout(p, 6, 5, 10, 5);
+  QGridLayout *lay = new QGridLayout(p, 8, 5, 10, 5);
   lay->addColSpacing(2, 10);
-  lay->setRowStretch(5, 1);
+  lay->addRowSpacing(5, 5);
+  lay->setRowStretch(7, 1);
 
   lay->addWidget(new QLabel(tr("Age:"), p), CR, 0);
   nfoAge = new CInfoField(p, !m_bOwner);
@@ -455,6 +456,10 @@ void ICQFunctions::InitMoreInfoTab()
     nfoLanguage[2] = new CInfoField(p, !m_bOwner);
     lay->addWidget(nfoLanguage[2], CR, 1);
   }
+
+  lblAuth = new QLabel(p);
+  CR += 2;
+  lay->addMultiCellWidget(lblAuth, CR, CR, 0, 4);
 }
 
 
@@ -616,7 +621,7 @@ void ICQFunctions::setupTabs(int index)
 
   // print the first event if it's a message
   MsgViewItem *e = (MsgViewItem *)msgView->firstChild();
-  if (e != NULL && (e->msg->SubCommand() == ICQ_CMDxSUB_MSG || e->msg->Command() == 0))
+  if (e != NULL /*&& (e->msg->SubCommand() == ICQ_CMDxSUB_MSG || e->msg->Command() == 0)*/)
   {
      msgView->setSelected(e, true);
      gUserManager.DropUser(u);
@@ -897,6 +902,11 @@ void ICQFunctions::SetMoreInfo(ICQUser *u)
         nfoLanguage[i]->setData(l->szName);
     }
   }
+
+  if (u->GetAuthorization())
+    lblAuth->setText(tr("Authorization Required"));
+  else
+    lblAuth->setText(tr("Authorization Not Required"));
 
   if (bDropUser) gUserManager.DropUser(u);
 }
@@ -1559,21 +1569,41 @@ void ICQFunctions::ShowHistory()
   {
     tempIter = m_iHistorySIter;
   }
-  QString s, st;
+  QString s, st, n;
   QDateTime d;
   m_nHistoryShowing = 0;
+  if (m_bOwner)
+    n = tr("server");
+  else
+  {
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u != NULL)
+    {
+      n = QString::fromLocal8Bit(u->GetAlias());
+      gUserManager.DropUser(u);
+    }
+  }
   while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
   {
-
     d.setTime_t((*tempIter)->Time());
-    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n\n",
-              (*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002',
-              (const char *)EventDescription(*tempIter),
-              (const char *)d.toString(),
-              (*tempIter)->IsDirect() ? 'D' : '-',
-              (*tempIter)->IsMultiRec() ? 'M' : '-',
-              (*tempIter)->IsUrgent() ? 'U' : '-',
-              (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
+    if ((*tempIter)->Direction() == D_RECEIVER)
+      s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
+                '\001', (const char *)EventDescription(*tempIter),
+                (const char *)tr("from"), (const char *)n, '\001',
+                (const char *)d.toString(),
+                (*tempIter)->IsDirect() ? 'D' : '-',
+                (*tempIter)->IsMultiRec() ? 'M' : '-',
+                (*tempIter)->IsUrgent() ? 'U' : '-',
+                (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
+    else
+      s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
+                '\002', (const char *)EventDescription(*tempIter),
+                (const char *)tr("to"), (const char *)n, '\002',
+                (const char *)d.toString(),
+                (*tempIter)->IsDirect() ? 'D' : '-',
+                (*tempIter)->IsMultiRec() ? 'M' : '-',
+                (*tempIter)->IsUrgent() ? 'U' : '-',
+                (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
     st.append(s);
     m_nHistoryShowing++;
     if(m_bHistoryReverse)

@@ -102,7 +102,7 @@ protected:
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
              *nfoPhone, *nfoTimezone, *nfoLastOnline;
   CEComboBox *cmbCountry;
-  QCheckBox *chkAuthorization;
+  QLabel *lblAuth;
   time_t m_nRemoteTimeOffset;
   QTimer *tmrTime;
 
