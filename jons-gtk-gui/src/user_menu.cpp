@@ -162,7 +162,7 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	url->cancel = gtk_button_new_with_label("Cancel");
 	gtk_signal_connect(GTK_OBJECT(url->cancel), "clicked",
 			   GTK_SIGNAL_FUNC(url_cancel), url);
-	gtk_widget_set_sensitive(url->cancel, FALSE);
+//	gtk_widget_set_sensitive(url->cancel, FALSE);
 
 	gtk_box_pack_start(GTK_BOX(h_box), url->send, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), url->cancel, TRUE, TRUE, 5);
@@ -197,8 +197,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 void url_send(GtkWidget *widget, struct send_url *url)
 {
 	/* Enable cancel, disable send */
-	gtk_widget_set_sensitive(url->send, FALSE);
-	gtk_widget_set_sensitive(url->cancel, TRUE);
+//	gtk_widget_set_sensitive(url->send, FALSE);
+//	gtk_widget_set_sensitive(url->cancel, TRUE);
 	
 	gchar temp[60];
 
@@ -266,8 +266,8 @@ void url_send(GtkWidget *widget, struct send_url *url)
 
 void url_cancel(GtkWidget *cancel, struct send_url *url)
 {
-	gtk_widget_set_sensitive(cancel, FALSE);
-	gtk_widget_set_sensitive(url->send, TRUE);
+//	gtk_widget_set_sensitive(cancel, FALSE);
+//	gtk_widget_set_sensitive(url->send, TRUE);
 
 	/* Cancel the url */
 	if(url->etag->e_tag == NULL)
@@ -303,8 +303,8 @@ void url_verified_close(GtkWidget *statusbar, guint id,
 	
 	else
 	{
-		gtk_widget_set_sensitive(url->send, TRUE);
-		gtk_widget_set_sensitive(url->cancel, FALSE);
+//		gtk_widget_set_sensitive(url->send, TRUE);
+//		gtk_widget_set_sensitive(url->cancel, FALSE);
 	}
 }
 

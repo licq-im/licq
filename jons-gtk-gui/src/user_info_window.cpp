@@ -390,7 +390,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	iu->cancel = gtk_button_new_with_label("Cancel");
 	close = gtk_button_new_with_label("Close");
 
-	gtk_widget_set_sensitive(iu->cancel, FALSE);
+//	gtk_widget_set_sensitive(iu->cancel, FALSE);
 
 	/* Add them a h_box */
 	h_box = gtk_hbox_new(FALSE, 5);
@@ -437,8 +437,8 @@ gboolean user_info_close(GtkWidget *widget, struct info_user *iu)
 void update_user_info(GtkWidget *widget, struct info_user *iu)
 {
 	/* Set the buttons accordingly */
-	gtk_widget_set_sensitive(iu->update, FALSE);
-	gtk_widget_set_sensitive(iu->cancel, TRUE);
+//	gtk_widget_set_sensitive(iu->update, FALSE);
+//	gtk_widget_set_sensitive(iu->cancel, TRUE);
 
 	guint id =
 	    gtk_statusbar_get_context_id(GTK_STATUSBAR(iu->etag->statusbar), "sta");
@@ -455,8 +455,8 @@ void update_user_info(GtkWidget *widget, struct info_user *iu)
 void cancel_user_info(GtkWidget *widget, struct info_user *iu)
 {
 	/* Take care of the buttons */
-	gtk_widget_set_sensitive(iu->update, TRUE);
-	gtk_widget_set_sensitive(iu->cancel, FALSE);
+//	gtk_widget_set_sensitive(iu->update, TRUE);
+//	gtk_widget_set_sensitive(iu->cancel, FALSE);
 
 	/* Actually cancel the event */
 	icq_daemon->CancelEvent(iu->etag->e_tag);
@@ -477,8 +477,8 @@ void verify_user_info(GtkWidget *widget, guint id, gchar *text,
 
 	else
 	{
-		gtk_widget_set_sensitive(iu->update, TRUE);
-		gtk_widget_set_sensitive(iu->cancel, FALSE);
+//		gtk_widget_set_sensitive(iu->update, TRUE);
+//		gtk_widget_set_sensitive(iu->cancel, FALSE);
 	}
 }
 

@@ -70,14 +70,12 @@ struct conversation *convo_find(unsigned long uin)
 		c = (struct conversation *)conversations->data;
 		if(c->user->Uin() == uin)
 		{
-			g_free(conversations);
 			return c;
 		}
 	
 		conversations = conversations->next;
 	}
 
-	g_free(conversations);
 	return NULL;
 }
 
@@ -105,7 +103,7 @@ void convo_show(struct conversation *c)
 	close = gtk_button_new_with_label("Close");
 
 	/* Set cancel to grayed out at first */
-	gtk_widget_set_sensitive(c->cancel, FALSE);
+//	gtk_widget_set_sensitive(c->cancel, FALSE);
 
 	/* Make the boxes */
 	button_box = gtk_hbox_new(TRUE, 0);
@@ -247,8 +245,8 @@ void spoof_button_callback(GtkWidget *widget, struct conversation *c)
 void convo_send(GtkWidget *widget, struct conversation *c)
 {
 	/* Set the 2 button widgets */
-	gtk_widget_set_sensitive(c->send, FALSE);
-	gtk_widget_set_sensitive(c->cancel, TRUE);
+//	gtk_widget_set_sensitive(c->send, FALSE);
+//	gtk_widget_set_sensitive(c->cancel, TRUE);
 
 	gchar *buf;
 	gchar *buf2;
@@ -320,7 +318,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
 		       struct conversation *c)
 {
-	gchar temp[50];
+	gchar temp[60];
 	strcpy(temp, text);
 	g_strreverse(temp);
 
@@ -329,16 +327,16 @@ void verify_convo_send(GtkWidget *widget, guint id, gchar *text,
 
 	else
 	{
-		gtk_widget_set_sensitive(c->send, TRUE);
-		gtk_widget_set_sensitive(c->cancel, FALSE);
+//		gtk_widget_set_sensitive(c->send, TRUE);
+//		gtk_widget_set_sensitive(c->cancel, FALSE);
 	}
 }
 
 void convo_cancel(GtkWidget *widget, struct conversation *c)
 {
 	/* Set the buttons sensitivity accordingly */
-	gtk_widget_set_sensitive(c->send, TRUE);
-	gtk_widget_set_sensitive(c->cancel, FALSE);
+//	gtk_widget_set_sensitive(c->send, TRUE);
+//	gtk_widget_set_sensitive(c->cancel, FALSE);
 
 	/* Actually cancel this event */
 	icq_daemon->CancelEvent(c->etag->e_tag);
