@@ -73,17 +73,22 @@ class CICQDaemon;
  *--------------------------------------------------------------------------*/
 
 // Chat event types
-const unsigned char CHAT_COLORxFG    = 0x00;
-const unsigned char CHAT_COLORxBG    = 0x01;
-const unsigned char CHAT_BEEP        = 0x07;
-const unsigned char CHAT_BACKSPACE   = 0x08;
-const unsigned char CHAT_NEWLINE     = 0x0D;
-const unsigned char CHAT_FONTxFAMILY = 0x10;
-const unsigned char CHAT_FONTxFACE   = 0x11;
-const unsigned char CHAT_FONTxSIZE   = 0x12;
-const unsigned char CHAT_CHARACTER     = 0x7D;
-const unsigned char CHAT_CONNECTION    = 0x7E;
-const unsigned char CHAT_DISCONNECTION = 0x7F;
+const unsigned char CHAT_COLORxFG      = 0x00;
+const unsigned char CHAT_COLORxBG      = 0x01;
+const unsigned char CHAT_FOCUSxIN      = 0x03;
+const unsigned char CHAT_FOCUSxOUT     = 0x04;
+const unsigned char CHAT_BEEP          = 0x07;
+const unsigned char CHAT_BACKSPACE     = 0x08;
+const unsigned char CHAT_DISCONNECTION = 0x0B;
+const unsigned char CHAT_NEWLINE       = 0x0D;
+const unsigned char CHAT_FONTxFAMILY   = 0x10;
+const unsigned char CHAT_FONTxFACE     = 0x11;
+const unsigned char CHAT_FONTxSIZE     = 0x12;
+const unsigned char CHAT_SLEEPxOFF     = 0x16;
+const unsigned char CHAT_SLEEPxON      = 0x17;
+
+const unsigned char CHAT_CHARACTER     = 0x7E;
+const unsigned char CHAT_CONNECTION    = 0x7F;
 
 // Font contants (should not need to be used by the plugin)
 const unsigned long FONT_PLAIN     = 0x00000000;
@@ -266,7 +271,7 @@ protected:
 
 
 
-
+/*
 class CPChat_ChangeFontFamily : public CPacketChat
 {
 public:
@@ -351,7 +356,7 @@ class CPChat_Beep : public CPacketChat
 public:
   CPChat_Beep();
 };
-
+*/
 
 
 //=====CChatUser=============================================================
@@ -370,6 +375,8 @@ public:
   bool FontBold()           { return fontFace & FONT_BOLD; }
   bool FontItalic()         { return fontFace & FONT_ITALIC; }
   bool FontUnderline()      { return fontFace & FONT_UNDERLINE; }
+  bool Focus()              { return focus; }
+  bool Sleep()              { return sleep; }
 
   ~CChatUser() {}
 
@@ -382,6 +389,7 @@ protected:
   char fontFamily[64];
   unsigned short fontSize;
   unsigned long fontFace;
+  bool focus, sleep;
 
   CChatClient client;
   TCPSocket sock;
@@ -451,6 +459,9 @@ public:
   int *ColorFg()  { return m_nColorFore; }
   int *ColorBg()  { return m_nColorBack; }
 
+  bool Sleep()  { return m_bSleep; }
+  bool Focus()  { return m_bFocus; }
+
   void ChangeFontFamily(const char *);
   void ChangeFontSize(unsigned short);
   void ChangeFontFace(bool, bool, bool);
@@ -460,6 +471,10 @@ public:
   void SendNewline();
   void SendBackspace();
   void SendCharacter(char);
+
+  void FocusOut();
+  void FocusIn();
+  void Sleep(bool);
 
   int Pipe() { return pipe_events[PIPE_READ]; }
   CChatEvent *PopChatEvent();
@@ -478,6 +493,7 @@ protected:
   char m_szFontFamily[64], m_szName[64];
   unsigned short m_nFontSize;
   unsigned long m_nFontFace;
+  bool m_bSleep, m_bFocus;
 
   TCPSocket chatServer;
 
@@ -489,10 +505,13 @@ protected:
   void CloseClient(CChatUser *);
   bool ProcessPacket(CChatUser *);
   bool ProcessRaw(CChatUser *);
+  bool ProcessRaw_v2(CChatUser *);
+  bool ProcessRaw_v6(CChatUser *);
   void PushChatEvent(CChatEvent *);
 
-  void SendBuffer(CBuffer *);
-  void SendPacket(CPacket *);
+  void SendBuffer(CBuffer *, unsigned char);
+  void SendBuffer_Raw(CBuffer *);
+  //void SendPacket(CPacket *);
 
 friend void *ChatManager_tep(void *);
 

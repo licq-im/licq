@@ -349,7 +349,7 @@ CPChat_Font::CPChat_Font(CBuffer &b)
   m_szFontFamily = strdup(b.UnpackString(buf));
 }
 
-
+/*
 //-----CPChat_ChangeFontFamily-----------------------------------------------
 CPChat_ChangeFontFamily::CPChat_ChangeFontFamily(const char *szFamily)
 {
@@ -487,7 +487,7 @@ CPChat_Beep::CPChat_Beep()
 
   buffer->PackChar(CHAT_BEEP);
 }
-
+*/
 
 
 //=====ChatUser==============================================================
@@ -502,6 +502,8 @@ CChatUser::CChatUser()
   strcpy(fontFamily, "courier");
   fontSize = 12;
   fontFace = FONT_PLAIN;
+  focus = true;
+  sleep = false;
 
   pthread_mutex_init(&mutex, NULL);
 }
@@ -553,6 +555,8 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   m_nColorBack[0] = br;
   m_nColorBack[1] = bg;
   m_nColorBack[2] = bb;
+  m_bFocus = true;
+  m_bSleep = false;
 }
 
 
@@ -634,8 +638,6 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   gLog.Info("%sChat: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
-  //CPacketTcp_Handshake_v2 p_handshake(u->sock.LocalPort());
-  //u->sock.SendPacket(p_handshake.getBuffer());
   if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nIp, VersionToUse(c.m_nVersion)))
     return false;
 
@@ -693,7 +695,6 @@ bool CChatManager::ProcessPacket(CChatUser *u)
     {
       // get the handshake packet
       CBuffer hbuf(u->sock.RecvBuffer());
-      //if (!u->client.LoadFromHandshake(u->sock.RecvBuffer()))
       if (!CICQDaemon::Handshake_Recv(&u->sock))
       {
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
@@ -893,14 +894,20 @@ bool CChatManager::ProcessRaw(CChatUser *u)
     return false;
   }
 
-  char chatChar;
   while (!u->sock.RecvBuffer().End())
-  {
-     u->sock.RecvBuffer() >> chatChar;
-     u->chatQueue.push_back(chatChar);
-  }
+    u->chatQueue.push_back(u->sock.RecvBuffer().UnpackChar());
   u->sock.ClearRecvBuffer();
 
+  if (u->sock.Version() >= 6)
+    return ProcessRaw_v6(u);
+  else
+    return ProcessRaw_v2(u);
+}
+
+
+bool CChatManager::ProcessRaw_v2(CChatUser *u)
+{
+  char chatChar;
   while (u->chatQueue.size() > 0)
   {
     chatChar = *u->chatQueue.begin(); // first character in queue (not dequeued)
@@ -1008,6 +1015,39 @@ bool CChatManager::ProcessRaw(CChatUser *u)
         break;
       }
 
+      case CHAT_FOCUSxIN:
+      {
+        u->focus = true;
+        PushChatEvent(new CChatEvent(CHAT_FOCUSxIN, u));
+        break;
+      }
+
+      case CHAT_FOCUSxOUT:
+      {
+        u->focus = false;
+        PushChatEvent(new CChatEvent(CHAT_FOCUSxOUT, u));
+        break;
+      }
+
+      case CHAT_SLEEPxOFF:
+      {
+        u->sleep = false;
+        PushChatEvent(new CChatEvent(CHAT_SLEEPxOFF, u));
+        break;
+      }
+
+      case CHAT_SLEEPxON:
+      {
+        u->sleep = true;
+        PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
+        break;
+      }
+
+      case CHAT_DISCONNECTION: // they will disconnect anyway
+      {
+        break;
+      }
+
       default:
       {
         if (!iscntrl((int)(unsigned char)chatChar))
@@ -1028,15 +1068,238 @@ bool CChatManager::ProcessRaw(CChatUser *u)
 }
 
 
+bool CChatManager::ProcessRaw_v6(CChatUser *u)
+{
+  char chatChar;
+  unsigned long chatSize = 0;
+  while (u->chatQueue.size() > 0)
+  {
+    chatChar = *u->chatQueue.begin(); // first character in queue (not dequeued)
+    if (chatChar == 0)
+    {
+      // We need at least 6 chars
+      if (u->chatQueue.size() < 6) return true;
+      chatChar = *u->chatQueue.begin();
+      chatSize = u->chatQueue[1] |
+                 (u->chatQueue[2] << 8) |
+                 (u->chatQueue[3] << 16) |
+                 (u->chatQueue[4] << 24);
+      if (u->chatQueue.size() < 6 + chatSize) return true;
+      for (unsigned short i = 0; i < 6; i++)
+        u->chatQueue.pop_front();
+
+      switch (chatChar)
+      {
+        case CHAT_BEEP:  // beep
+        {
+          PushChatEvent(new CChatEvent(CHAT_BEEP, u));
+          break;
+        }
+
+        case CHAT_COLORxFG: // change foreground color
+        {
+          u->colorFore[0] = u->chatQueue[0];
+          u->colorFore[1] = u->chatQueue[1];
+          u->colorFore[2] = u->chatQueue[2];
+
+          PushChatEvent(new CChatEvent(CHAT_COLORxFG, u));
+          break;
+        }
+
+        case CHAT_COLORxBG:  // change background color
+        {
+          u->colorBack[0] = u->chatQueue[0];
+          u->colorBack[1] = u->chatQueue[1];
+          u->colorBack[2] = u->chatQueue[2];
+
+          PushChatEvent(new CChatEvent(CHAT_COLORxBG, u));
+          break;
+        }
+
+        case CHAT_FONTxFAMILY: // change font type
+        {
+           unsigned short sizeFontName, encodingFont, i;
+           sizeFontName = u->chatQueue[0] | (u->chatQueue[1] << 8);
+           char nameFont[sizeFontName];
+           for (i = 0; i < sizeFontName; i++)
+              nameFont[i] = u->chatQueue[i + 2];
+           encodingFont = u->chatQueue[sizeFontName + 2] |
+                          (u->chatQueue[sizeFontName + 3] << 8);
+           strncpy(u->fontFamily, nameFont, 64);
+
+           PushChatEvent(new CChatEvent(CHAT_FONTxFAMILY, u));
+           break;
+        }
+
+        case CHAT_FONTxFACE: // change font style
+        {
+          unsigned long styleFont;
+          styleFont = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+                      (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+
+          u->fontFace = styleFont;
+
+          PushChatEvent(new CChatEvent(CHAT_FONTxFACE, u));
+          break;
+        }
+
+        case CHAT_FONTxSIZE: // change font size
+        {
+          if (u->chatQueue.size() < 4) return true;
+          unsigned long sizeFont;
+          sizeFont = u->chatQueue[0] | (u->chatQueue[1] << 8) |
+                     (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+          u->fontSize = sizeFont;
+
+          PushChatEvent(new CChatEvent(CHAT_FONTxSIZE, u));
+          break;
+        }
+
+        case CHAT_FOCUSxIN:
+        {
+          u->focus = true;
+          PushChatEvent(new CChatEvent(CHAT_FOCUSxIN, u));
+          break;
+        }
+
+        case CHAT_FOCUSxOUT:
+        {
+          u->focus = false;
+          PushChatEvent(new CChatEvent(CHAT_FOCUSxOUT, u));
+          break;
+        }
+
+        case CHAT_SLEEPxOFF:
+        {
+          u->sleep = false;
+          PushChatEvent(new CChatEvent(CHAT_SLEEPxOFF, u));
+          break;
+        }
+
+        case CHAT_SLEEPxON:
+        {
+          u->sleep = true;
+          PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
+          break;
+        }
+
+        case CHAT_DISCONNECTION: // they will disconnect anyway
+        {
+          break;
+        }
+
+        default:
+        {
+          gLog.Unknown("%sChat: Unknown chat command (%02X).\n", L_UNKNOWNxSTR,
+             chatChar);
+          break;
+        }
+
+      } // switch
+
+      // dequeue all characters
+      for (unsigned short i = 0; i < chatSize; i++)
+        u->chatQueue.pop_front();
+
+    } // if
+
+    else // not a command
+    {
+      switch (chatChar)
+      {
+        case CHAT_NEWLINE:   // new line
+          // add to irc window
+          PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, u->linebuf));
+          u->linebuf[0] = '\0';
+          break;
+
+        case CHAT_BACKSPACE:   // backspace
+        {
+          if (strlen(u->linebuf) > 0)
+            u->linebuf[strlen(u->linebuf) - 1] = '\0';
+          PushChatEvent(new CChatEvent(CHAT_BACKSPACE, u));
+          break;
+        }
+
+        default:
+        {
+          if (!iscntrl((int)(unsigned char)chatChar))
+          {
+            gTranslator.ServerToClient(chatChar);
+            char tempStr[2] = { chatChar, '\0' };
+            // Add to the users irc line buffer
+            strcat(u->linebuf, tempStr);
+            PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, tempStr));
+          }
+          break;
+        }
+      }
+      // Remove the character
+      u->chatQueue.pop_front();
+    }
+
+  }
+
+
+  return true;
+}
+
+
 //-----CChatManager::SendPacket----------------------------------------------
+/*
 void CChatManager::SendPacket(CPacket *p)
 {
   SendBuffer(p->getBuffer());
 }
-
+*/
 
 //-----CChatManager::SendBuffer----------------------------------------------
-void CChatManager::SendBuffer(CBuffer *b)
+void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd)
+{
+  ChatUserList::iterator iter;
+  CChatUser *u = NULL;
+  bool ok = false;
+  CBuffer b_out(128);
+  while (!ok)
+  {
+    ok = true;
+    for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+    {
+      u = *iter;
+
+      // If the socket was closed, ignore the key event
+      if (u->state != CHAT_STATE_CONNECTED || u->sock.Descriptor() == -1) continue;
+
+      if (u->sock.Version() >= 6)
+      {
+        b_out.PackChar(0);
+        b_out.PackChar(cmd);
+        b_out.PackUnsignedLong(b->getDataSize());
+        b_out.Pack(b->getDataStart(), b->getDataSize());
+      }
+      else
+      {
+        b_out.PackChar(cmd);
+        b_out.Pack(b->getDataStart(), b->getDataSize());
+      }
+
+      if (!u->sock.SendRaw(&b_out))
+      {
+        char buf[128];
+        gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
+                   u->sock.ErrorStr(buf, 128));
+        CloseClient(u);
+        ok = false;
+        break;
+      }
+
+      b_out.Clear();
+    }
+  }
+}
+
+
+void CChatManager::SendBuffer_Raw(CBuffer *b)
 {
   ChatUserList::iterator iter;
   CChatUser *u = NULL;
@@ -1051,7 +1314,7 @@ void CChatManager::SendBuffer(CBuffer *b)
       // If the socket was closed, ignore the key event
       if (u->state != CHAT_STATE_CONNECTED || u->sock.Descriptor() == -1) continue;
 
-      if (!u->sock.SendRaw(const_cast<CBuffer*>(b)))
+      if (!u->sock.SendRaw(b))
       {
         char buf[128];
         gLog.Warn("%sChat: Send error:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR,
@@ -1069,7 +1332,7 @@ void CChatManager::SendNewline()
 {
   CBuffer buf(1);
   buf.PackChar(CHAT_NEWLINE);
-  SendBuffer(&buf);
+  SendBuffer_Raw(&buf);
 }
 
 
@@ -1077,15 +1340,14 @@ void CChatManager::SendBackspace()
 {
   CBuffer buf(1);
   buf.PackChar(CHAT_BACKSPACE);
-  SendBuffer(&buf);
+  SendBuffer_Raw(&buf);
 }
 
 
 void CChatManager::SendBeep()
 {
-  CBuffer buf(1);
-  buf.PackChar(CHAT_BEEP);
-  SendBuffer(&buf);
+  CBuffer buf;
+  SendBuffer(&buf, CHAT_BEEP);
 }
 
 
@@ -1094,38 +1356,97 @@ void CChatManager::SendCharacter(char c)
   CBuffer buf(1);
   gTranslator.ClientToServer(c);
   buf.PackChar(c);
-  SendBuffer(&buf);
+  SendBuffer_Raw(&buf);
+}
+
+
+void CChatManager::FocusIn()
+{
+  CBuffer buf;
+  SendBuffer(&buf, CHAT_FOCUSxIN);
+
+  m_bFocus = true;
+}
+
+
+void CChatManager::FocusOut()
+{
+  CBuffer buf;
+  SendBuffer(&buf, CHAT_FOCUSxOUT);
+
+  m_bFocus = false;
+}
+
+
+void CChatManager::Sleep(bool s)
+{
+  CBuffer buf;
+  SendBuffer(&buf, s ? CHAT_SLEEPxON : CHAT_SLEEPxOFF);
+
+  m_bSleep = s;
 }
 
 
 void CChatManager::ChangeFontFamily(const char *f)
 {
-  CPChat_ChangeFontFamily p(f);
-  SendPacket(&p);
+  //CPChat_ChangeFontFamily p(f);
+  //SendPacket(&p);
+
+  CBuffer buf(strlen_safe(f) + 6);
+  buf.PackString(f);
+  buf.PackUnsignedShort(0x2200);
+  // 0x2200 west
+  // 0x22a2 turkey
+  // 0x22cc cyrillic
+  // 0x22a1 greek
+  // 0x22ba baltic
+  SendBuffer(&buf, CHAT_FONTxFAMILY);
+
   strncpy(m_szFontFamily, f, 64);
 }
 
 
 void CChatManager::ChangeFontSize(unsigned short s)
 {
-  CPChat_ChangeFontSize p(s);
-  SendPacket(&p);
+  //CPChat_ChangeFontSize p(s);
+  //SendPacket(&p);
+
+  CBuffer buf(4);
+  buf.PackUnsignedLong(s);
+  SendBuffer(&buf, CHAT_FONTxSIZE);
+
   m_nFontSize = s;
 }
 
 
 void CChatManager::ChangeFontFace(bool b, bool i, bool u)
 {
-  CPChat_ChangeFontFace p(b, i, u);
-  SendPacket(&p);
-  m_nFontFace = p.FontFace();
+  //CPChat_ChangeFontFace p(b, i, u);
+  //SendPacket(&p);
+
+  m_nFontFace = FONT_PLAIN;
+  if (b) m_nFontFace |= FONT_BOLD;
+  if (i) m_nFontFace |= FONT_ITALIC;
+  if (u) m_nFontFace |= FONT_UNDERLINE;
+
+  CBuffer buf(4);
+  buf.PackUnsignedLong(m_nFontFace);
+  SendBuffer(&buf, CHAT_FONTxFACE);
 }
 
 
 void CChatManager::ChangeColorFg(int r, int g, int b)
 {
-  CPChat_ChangeColorFg p(r, g, b);
-  SendPacket(&p);
+  //CPChat_ChangeColorFg p(r, g, b);
+  //SendPacket(&p);
+
+  CBuffer buf(4);
+  buf.PackChar(r);
+  buf.PackChar(g);
+  buf.PackChar(b);
+  buf.PackChar(0);
+  SendBuffer(&buf, CHAT_COLORxFG);
+
   m_nColorFore[0] = r;
   m_nColorFore[1] = g;
   m_nColorFore[2] = b;
@@ -1134,8 +1455,16 @@ void CChatManager::ChangeColorFg(int r, int g, int b)
 
 void CChatManager::ChangeColorBg(int r, int g, int b)
 {
-  CPChat_ChangeColorBg p(r, g, b);
-  SendPacket(&p);
+  //CPChat_ChangeColorBg p(r, g, b);
+  //SendPacket(&p);
+
+  CBuffer buf(4);
+  buf.PackChar(r);
+  buf.PackChar(g);
+  buf.PackChar(b);
+  buf.PackChar(0);
+  SendBuffer(&buf, CHAT_COLORxBG);
+
   m_nColorBack[0] = r;
   m_nColorBack[1] = g;
   m_nColorBack[2] = b;
@@ -1146,6 +1475,8 @@ void CChatManager::ChangeColorBg(int r, int g, int b)
 void CChatManager::CloseChat()
 {
   CChatUser *u = NULL;
+  CBuffer buf;
+  SendBuffer(&buf, CHAT_DISCONNECTION);
   while (chatUsers.size() > 0)
   {
     u = chatUsers.front();
