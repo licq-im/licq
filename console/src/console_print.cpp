@@ -506,6 +506,12 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
 
+  // Some IP and Real IP stuff
+  char buf[32];
+  char szRealIp[32];
+  const unsigned long nRealIp = u->RealIp();
+  strcpy(szRealIp, inet_ntoa_r(*(struct in_addr *)&nRealIp, buf));
+
   wattron(winMain->Win(), A_BOLD);
   for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
     waddch(winMain->Win(), ACS_HLINE);
@@ -517,6 +523,10 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
 
   winMain->wprintf("%C%AName: %Z%s %s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->GetFirstName(), u->GetLastName());
+  winMain->wprintf("%C%AIp: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
+                   u->IpPortStr(buf));
+  winMain->wprintf("%C%AReal Ip: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
+                   szRealIp);
   winMain->wprintf("%C%AEmail 1: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetEmailPrimary());
   winMain->wprintf("%C%AEmail 2: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetEmailSecondary());
   winMain->wprintf("%C%ACity: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCity());
@@ -525,7 +535,7 @@ void CLicqConsole::PrintInfo_General(unsigned long nUin)
   winMain->wprintf("%C%APhone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetPhoneNumber());
   winMain->wprintf("%C%AFax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetFaxNumber());
   winMain->wprintf("%C%ACellular Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCellularNumber());
-  winMain->wprintf("%C%AZipcode: %Z%05d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetZipCode());
+  winMain->wprintf("%C%AZipcode: %Z%sd\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetZipCode());
   winMain->wprintf("%C%ACountry: ", COLOR_WHITE, A_BOLD);
   if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
     winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
