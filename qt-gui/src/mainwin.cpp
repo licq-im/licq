@@ -29,6 +29,7 @@
 #else
 #include <qapplication.h>
 #endif
+#include <qtextcodec.h>
 
 #include <qaccel.h>
 #include <qimage.h>
@@ -75,6 +76,7 @@
 #include "wharf.h"
 #endif
 #include "keyrequestdlg.h"
+#include "usercodec.h"
 
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
@@ -2134,8 +2136,9 @@ bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return true;
+  QTextCodec *codec = UserCodec::codecForICQUser(u);
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-                     .arg(QString::fromLocal8Bit(u->GetAlias()))
+                     .arg(codec->toUnicode(u->GetAlias()))
                      .arg(nUin) );
   gUserManager.DropUser(u);
   if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))

@@ -75,6 +75,20 @@ QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
   return QTextCodec::codecForLocale();
 }
 
+QTextCodec* UserCodec::codecForUIN(uint uin)
+{
+  QTextCodec *codec = QTextCodec::codecForLocale();
+  
+  ICQUser *u = gUserManager.FetchUser(uin, LOCK_R);
+  if (u != NULL)
+  {
+     codec = UserCodec::codecForICQUser(u);
+     gUserManager.DropUser(u);
+  }
+  
+  return codec;
+}
+
 QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
 {
   if (ICQUser *user = gUserManager.FetchUser(u->Uin(), LOCK_R)) {

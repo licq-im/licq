@@ -27,8 +27,12 @@ class CChatUser;
 
 class UserCodec {
 public:
+  // Retrieves the codec for an ICQUser object
   static QTextCodec * codecForICQUser(ICQUser *u);
+  // Retrieves the codec for an CChatUser object
   static QTextCodec * codecForCChatUser(CChatUser *u);
+  // Helper function to retrieve the codec for an UIN
+  static QTextCodec * codecForUIN(uint uin);
   static QString encodingForIndex(uint index);
   static QString encodingForName(QString descriptiveName);
 #ifndef USE_KDE

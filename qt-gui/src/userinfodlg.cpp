@@ -1082,21 +1082,18 @@ void UserInfoDlg::ShowHistory()
   {
     tempIter = m_iHistorySIter;
   }
-  QString s, st, n;
+  QString s, st;
   QDateTime d;
   m_nHistoryShowing = 0;
+  QString n = tr("server");
   QTextCodec * codec = QTextCodec::codecForLocale();
-  if (m_bOwner)
-    n = tr("server");
-  else
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  if (u != NULL)
   {
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    if (u != NULL)
-    {
       codec = UserCodec::codecForICQUser(u);
-      n = codec->toUnicode(u->GetAlias());
+      if (!m_bOwner)
+         n = codec->toUnicode(u->GetAlias());
       gUserManager.DropUser(u);
-    }
   }
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
   char* ftxt = qstrdup(codec->fromUnicode(lneFilter->text()));
@@ -1107,21 +1104,32 @@ void UserInfoDlg::ShowHistory()
     {
       d.setTime_t((*tempIter)->Time());
 #if QT_VERSION >= 300
-      s.sprintf("<font color=\"%s\">%s<br>%s [%c%c%c%c]<br><br>%s</font><br><br>",
-                ((*tempIter)->Direction() == D_RECEIVER ? "red" : "blue"),
-                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
+      // We cannot use QStyleSheet::convertFromPlainText
+      // since it has a bug in Qt 3 and mixed up line breaks.
+      QString messageText = QStyleSheet::escape(codec->toUnicode((*tempIter)->Text()));
+      messageText.replace(QRegExp("\n"), "<br>");
+
+      const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
+
+      // We don't use paragraphs (<p>) for now since their line break semantics
+      // seem to be buggy in Qt 3 at the time of writing.
+      // This can potentially make BiDi support worser, so this string needs to be
+      // rewritten to use a separate paragraph for each message when Qt gets fixed.
+      s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b><br><br>%s</font><br><br>",
+      		color,
+                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
                   .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(n)).utf8().data(),
                 d.toString().utf8().data(),
                 (*tempIter)->IsDirect() ? 'D' : '-',
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
-                QStyleSheet::convertFromPlainText(codec->toUnicode((*tempIter)->Text()), QStyleSheetItem::WhiteSpaceNormal).utf8().data()
-      );                
+                messageText.utf8().data()
+      );
 #else
       s.sprintf("%c%s\n%c%s [%c%c%c%c]\n\n%s\n\n",
                 ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
-                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
+                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
                   .arg(EventDescription(*tempIter)).arg(n).utf8().data(),
                 ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
                 d.toString().utf8().data(),

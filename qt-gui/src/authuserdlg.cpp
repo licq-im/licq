@@ -26,12 +26,14 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qvgroupbox.h>
+#include <qtextcodec.h>
 
 #include "authuserdlg.h"
 #include "mledit.h"
 
 #include "licq_user.h"
 #include "licq_icqd.h"
+#include "usercodec.h"
 
 AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
    QWidget *parent)
@@ -65,14 +67,20 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   {
     edtUin = NULL;
     toplay->addWidget(lblUin);
+    QString userName;
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    QString s = (u != NULL) ? QString("%1 (%2)").arg(u->GetAlias()).arg(m_nUin) : QString::number(m_nUin);
-    gUserManager.DropUser(u);
+    if (u != NULL) {
+       QTextCodec *codec = UserCodec::codecForICQUser(u);
+       userName = QString("%1 (%2)").arg(codec->toUnicode(u->GetAlias())).arg(m_nUin);
+       gUserManager.DropUser(u);
+    } else {
+       userName = QString::number(m_nUin);
+    }
 
     if (bGrant)
-      lblUin->setText(tr("Grant authorization to %1").arg(s));
+      lblUin->setText(tr("Grant authorization to %1").arg(userName));
     else
-      lblUin->setText(tr("Refuse authorization to %1").arg(s));
+      lblUin->setText(tr("Refuse authorization to %1").arg(userName));
   }
 
   toplay->addSpacing(6);
@@ -110,10 +118,11 @@ void AuthUserDlg::ok()
 
   if (nUin != 0)
   {
+    QTextCodec *codec = UserCodec::codecForUIN(nUin);
     if (m_bGrant)
-      server->icqAuthorizeGrant(nUin, mleResponse->text().local8Bit().data());
+      server->icqAuthorizeGrant(nUin, codec->fromUnicode(mleResponse->text()));
     else
-      server->icqAuthorizeRefuse(nUin, mleResponse->text().local8Bit().data());
+      server->icqAuthorizeRefuse(nUin, codec->fromUnicode(mleResponse->text()));
     close(true);
   }
 }

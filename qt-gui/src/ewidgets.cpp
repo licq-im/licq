@@ -495,10 +495,11 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QString sd = date.time().toString();
 
   QString n;
+  QTextCodec *codec = QTextCodec::codecForLocale();
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  QTextCodec * codec = UserCodec::codecForICQUser(u);
   if (u != NULL)
   {
+    codec = UserCodec::codecForICQUser(u);
     n = codec->toUnicode(u->GetAlias());
     gUserManager.DropUser(u);
   }
@@ -506,18 +507,29 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QString s;
 
 #if QT_VERSION >= 300
-  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s<br></font>",
-            (e->Direction() == D_RECEIVER) ? "red" : "blue",
+  // We cannot use QStyleSheet::convertFromPlainText
+  // since it has a bug in Qt 3 and mixed up line breaks.
+  QString messageText = QStyleSheet::escape(codec->toUnicode(e->Text()));
+  messageText.replace(QRegExp("\n"), "<br>");
+  
+  const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
+
+  // We don't use paragraphs (<p>) for now since their line break semantics
+  // seem to be buggy in Qt 3 at the time of writing.
+  // This can potentially make BiDi support worser, so this string needs to be
+  // rewritten to use a separate paragraph for each message when Qt gets fixed.
+  s.sprintf("<font color=\"%s\"><b>%s %s [%c%c%c%c]</b><br>%s</font>",
+            color,
             EventDescription(e).utf8().data(),
             sd.utf8().data(),
             e->IsDirect() ? 'D' : '-',
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
-            QStyleSheet::convertFromPlainText(codec->toUnicode(e->Text()),  QStyleSheetItem::WhiteSpaceNormal).utf8().data()
+            messageText.utf8().data()
            );
 #else
-  s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
+  s.sprintf("%c%s %s [%c%c%c%c]\n%s",
             (e->Direction() == D_RECEIVER) ? '\001' : '\002',
             EventDescription(e).utf8().data(),
             sd.utf8().data(),
@@ -535,10 +547,12 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 #endif 
   GotoEnd();
 
-  if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG){
+  if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
     u = gUserManager.FetchUser(m_nUin, LOCK_R );
-    if (u)  u->EventClearId(e->Id());
-    gUserManager.DropUser(u);
+    if (u != NULL) {
+       u->EventClearId(e->Id());
+       gUserManager.DropUser(u);
+    }
   }
 }
 

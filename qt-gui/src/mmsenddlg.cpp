@@ -137,6 +137,7 @@ void CMMSendDlg::SendNext()
     case ICQ_CMDxSUB_MSG:
     {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+      if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
@@ -147,6 +148,7 @@ void CMMSendDlg::SendNext()
     case ICQ_CMDxSUB_URL:
     {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+      if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
@@ -157,6 +159,7 @@ void CMMSendDlg::SendNext()
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+      if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass list to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
