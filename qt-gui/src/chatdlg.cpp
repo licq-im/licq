@@ -129,7 +129,11 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   setOpaqueMoving(true);
   setToolBarsMovable(true);
+#if QT_VERSION < 300
   setDockEnabled(Bottom, true);
+#else
+  setDockEnabled(DockBottom, true);
+#endif
   setUsesBigPixmaps(false);
 
   // Pane mode setup

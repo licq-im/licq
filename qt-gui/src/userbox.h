@@ -5,7 +5,11 @@
 
 #include <qlistview.h>
 #include <qtooltip.h>
-#include <qvector.h>
+#if QT_VERSION < 300
+  #include <qvector.h>
+#else
+  #include <qptrvector.h>
+#endif
 
 class ICQUser;
 class CUserView;
@@ -95,7 +99,11 @@ protected:
 };
 
 class CUserView;
-typedef QVector<CUserView> UserFloatyList;
+#if QT_VERSION < 300
+  typedef QVector<CUserView> UserFloatyList;
+#else
+  typedef QPtrVector<CUserView> UserFloatyList;
+#endif
 
 
 //=====UserView===============================================================

@@ -1234,7 +1234,11 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       updateEvents();
       // If their box is open, kill it
       {
+#if QT_VERSION < 300
         QListIterator<UserViewEvent> it(licqUserView);
+#else
+        QPtrListIterator<UserViewEvent> it(licqUserView);
+#endif
         for (; it.current() != NULL; ++it)
         {
           if ((*it)->Uin() == sig->Uin())
@@ -1247,7 +1251,11 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       }
       {
         // if their info box is open, kill it
+#if QT_VERSION < 300
         QListIterator<UserInfoDlg> it(licqUserInfo);
+#else
+        QPtrListIterator<UserInfoDlg> it(licqUserInfo);
+#endif
         for(; it.current() != NULL; ++it)
         {
           if((*it)->Uin() == sig->Uin())
@@ -1260,7 +1268,11 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       }
       {
         // if their send box is open, kill it
+#if QT_VERSION < 300
         QListIterator<UserSendCommon> it(licqUserSend);
+#else
+        QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
         for(; it.current() != NULL; ++it)
         {
           if((*it)->Uin() == sig->Uin())
@@ -1791,7 +1803,11 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin, bool toggle)
   if(nUin == 0) return;
 
   UserInfoDlg *f = NULL;
+#if QT_VERSION < 300
   QListIterator<UserInfoDlg> it(licqUserInfo);
+#else
+  QPtrListIterator<UserInfoDlg> it(licqUserInfo);
+#endif
 
   for(; it.current(); ++it)
   {
@@ -1876,7 +1892,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
   {
     case mnuUserView:
     {
+#if QT_VERSION < 300
       QListIterator<UserViewEvent> it(licqUserView);
+#else
+      QPtrListIterator<UserViewEvent> it(licqUserView);
+#endif
 
       for (; it.current(); ++it)
         if ((*it)->Uin() == nUin) {
@@ -1900,7 +1920,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     case mnuUserSendContact:
     case mnuUserSendSms:
     {
+#if QT_VERSION < 300
         QListIterator<UserSendCommon> it(licqUserSend );
+#else
+        QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
 
         if ( !m_bMsgChatView ) break;
 
@@ -1927,7 +1951,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
   {
     case mnuUserView:
     {
+#if QT_VERSION < 300
       QListIterator<UserViewEvent> it(licqUserView);
+#else
+      QPtrListIterator<UserViewEvent> it(licqUserView);
+#endif
 
       for (; it.current(); ++it)
       {
@@ -2007,7 +2035,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
 void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 {
+#if QT_VERSION < 300
   QListIterator<UserInfoDlg> it(licqUserInfo);
+#else
+  QPtrListIterator<UserInfoDlg> it(licqUserInfo);
+#endif
 
   for( ; it.current(); ++it){
     if((*it)->Uin() == nUin) {
@@ -2025,7 +2057,11 @@ void CMainWindow::UserInfoDlg_finished(unsigned long nUin)
 
 void CMainWindow::slot_userfinished(unsigned long nUin)
 {
+#if QT_VERSION < 300
   QListIterator<UserViewEvent> it(licqUserView);
+#else
+  QPtrListIterator<UserViewEvent> it(licqUserView);
+#endif
 
   for ( ; it.current(); ++it)
   {
@@ -2041,7 +2077,11 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
 
 void CMainWindow::slot_sendfinished(unsigned long nUin)
 {
+#if QT_VERSION < 300
   QListIterator<UserSendCommon> it(licqUserSend);
+#else
+  QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
 
   // go through the whole list, there might be more than
   // one hit

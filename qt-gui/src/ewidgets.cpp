@@ -161,7 +161,11 @@ void CELabel::setNamedBgColor(char *theColor)
    QPalette pal(palette());
 // Since Qt sucks we have to use this cheap hack instead of the documented
 // and correct way to set the color
+#if QT_VERSION < 300
    QColorGroup normal(pal.normal());
+#else
+   QColorGroup normal(pal.active()); 
+#endif
    QColorGroup newNormal(normal.foreground(), c, normal.light(), normal.dark(),
                          normal.mid(), normal.text(), normal.base());
    pal = QPalette(newNormal, newNormal, newNormal);
@@ -317,7 +321,11 @@ void CEButton::setNamedFgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
+#if QT_VERSION < 300
    QColorGroup normal(pal.normal());
+#else
+   QColorGroup normal(pal.active());
+#endif
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), QColor(theColor), normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -328,7 +336,11 @@ void CEButton::setNamedBgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
+#if QT_VERSION < 300
    QColorGroup normal(pal.normal());
+#else
+   QColorGroup normal(pal.active());
+#endif
    QColorGroup newNormal(normal.foreground(), QColor(theColor), normal.light(), normal.dark(),
                          normal.mid(), normal.text(), normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -343,7 +355,11 @@ CEComboBox::CEComboBox(bool _bAppearEnabledAlways, QWidget *parent, char *name)
    if (m_bAppearEnabledAlways)
    {
       QPalette pal(palette());
+#if QT_VERSION < 300
       setPalette(QPalette(pal.normal(), pal.normal(), pal.normal()));
+#else
+      setPalette(QPalette(pal.active(), pal.active(), pal.active()));
+#endif
    }
 }
 
@@ -353,7 +369,11 @@ void CEComboBox::setNamedFgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
+#if QT_VERSION < 300
    QColorGroup normal(pal.normal());
+#else
+   QColorGroup normal(pal.active());
+#endif
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), QColor(theColor), normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -365,7 +385,11 @@ void CEComboBox::setNamedBgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
+#if QT_VERSION < 300
    QColorGroup normal(pal.normal());
+#else
+   QColorGroup normal(pal.active());
+#endif
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), normal.text(), QColor(theColor));
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -377,7 +401,11 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
   : QLineEdit(parent)
 {
   baseRO = palette().disabled().base();
+#if QT_VERSION < 300
   baseRW = palette().normal().base();
+#else
+  baseRW = palette().active().base();
+#endif
 
   // Set colors
   SetReadOnly(readonly);
@@ -385,6 +413,7 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
 
 void CInfoField::SetReadOnly(bool b)
 {
+#if QT_VERSION < 300
   QColorGroup cg(palette().normal().foreground(),
                  palette().normal().background(),
                  palette().normal().light(),
@@ -392,6 +421,15 @@ void CInfoField::SetReadOnly(bool b)
                  palette().normal().mid(),
                  palette().normal().text(),
                  b ? baseRO : baseRW);
+#else
+  QColorGroup cg(palette().active().foreground(),
+                 palette().active().background(),
+                 palette().active().light(),
+                 palette().active().dark(),
+                 palette().active().mid(),
+                 palette().active().text(),
+                 b ? baseRO : baseRW);
+#endif
 
   setPalette(QPalette(cg, palette().disabled(), cg));
   setReadOnly(b);

@@ -11,7 +11,11 @@
 #include <qmenubar.h>
 #endif
 
-#include <qlist.h>
+#if QT_VERSION < 300
+  #include <qlist.h>
+#else
+  #include <qptrlist.h>
+#endif
 #include <qwidget.h>
 #include <qtimer.h>
 #include <qbitmap.h>
@@ -47,9 +51,15 @@ class IconManager;
 class CICQSignal;
 class UserInfoDlg;
 
-typedef QList<UserViewEvent> UserViewEventList;
-typedef QList<UserInfoDlg> UserInfoList;
-typedef QList<UserSendCommon> UserSendEventList;
+#if QT_VERSION < 300
+  typedef QList<UserViewEvent> UserViewEventList;
+  typedef QList<UserInfoDlg> UserInfoList;
+  typedef QList<UserSendCommon> UserSendEventList;
+#else
+  typedef QPtrList<UserViewEvent> UserViewEventList;
+  typedef QPtrList<UserInfoDlg> UserInfoList;
+  typedef QPtrList<UserSendCommon> UserSendEventList;
+#endif
 
 //=====CMainWindow==============================================================
 class CMainWindow : public QWidget
