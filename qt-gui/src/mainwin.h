@@ -20,7 +20,6 @@
 #define QTGUI_DIR "qt-gui/"
 
 #include "userbox.h"
-
 #include "user.h"
 
 class QStyle;
@@ -161,6 +160,7 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
+  void changeAutoResponse();
   void slot_logon();
   void slot_register();
   void slot_doneregister();

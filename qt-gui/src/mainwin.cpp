@@ -36,8 +36,7 @@
 
 #ifdef USE_KDE
 #include <kapp.h>
-#include <kwm.h>
-#include <kthemestyle.h>
+#include <kwin.h>
 #else
 #include <qapplication.h>
 #endif
@@ -1162,16 +1161,12 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
     }
     else
     {
-      Window win = ((ICQFunctions *)u->fcnDlg)->winId();
       f = (ICQFunctions *)u->fcnDlg;
 #ifdef USE_KDE
-      KWM::setIconify(win, false);
-      KWM::raise(win);
-      if (KWM::desktop(win) != KWM::currentDesktop())
-        KWM::switchToDesktop(KWM::desktop(win));
-#else
-      XRaiseWindow(x11Display(), win);
+      Window win = ((ICQFunctions *)u->fcnDlg)->winId();
+      KWin::setActiveWindow(win);
 #endif
+      f->raise();
     }
     // DropUser works for the owner too
     gUserManager.DropUser(u);
@@ -1207,11 +1202,8 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
         WarnUser(this, tr("Logon failed.\nSee network window for details."));
       break;
     case ICQ_CMDxSND_REGISTERxUSER:
-      if (registerUserDlg != NULL)
-      {
-        delete registerUserDlg;
-        registerUserDlg = NULL;
-      }
+      delete registerUserDlg;
+      registerUserDlg = 0;
       if (e->m_eResult == EVENT_SUCCESS)
       {
         char buf[256];
@@ -1372,13 +1364,19 @@ void CMainWindow::aboutBox()
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   QString about(tr("Licq version %1.\n"
-                  "Qt GUI plugin version %2.\n\n"
-                  "Author: Graham Roff\n"
+                  "Qt GUI plugin version %2.\n"
+                  "%6\n"
+                  "Authors: Graham Roff,\nDirk A. Mueller\n"
                   "http://www.licq.org\n\n"
                   "%3 (%4)\n"
                   "%5 contacts.").arg(licqDaemon->Version())
                    .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))
-                   .arg(o->Uin()).arg(gUserManager.NumUsers())  );
+                   .arg(o->Uin()).arg(gUserManager.NumUsers())
+#ifdef USE_KDE
+                   .arg(tr("(with KDE support)\n")));
+#else
+                   .arg("\n"));
+#endif
   gUserManager.DropOwner();
   InformUser(this, about);
 }
@@ -1807,7 +1805,7 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(*pmChat, tr("Send &Chat Request"), mnuUserSendChat);
    mnuUser->insertItem(*pmFile, tr("Send &File Transfer"), mnuUserSendFile);
    mnuUser->insertItem(tr("Send Authorization"), mnuUserAuthorize);
-   mnuUser->insertItem(tr("Check &Auto Response"), mnuUserCheckResponse);
+   mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("&General Info"), mnuUserGeneral);
    mnuUser->insertItem(tr("&More Info"), mnuUserMore);
@@ -1825,8 +1823,34 @@ void CMainWindow::initMenu()
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
+   connect (mnuUser, SIGNAL(aboutToShow()), this, SLOT(changeAutoResponse()));
 }
 
+
+void CMainWindow::changeAutoResponse()
+{
+  ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
+  const char *szStatus = 0;
+  unsigned short status = ICQ_STATUS_OFFLINE;
+
+  if(u) {
+    szStatus = u->StatusStrShort();
+    status = u->Status() & 0xffff;
+    gUserManager.DropUser(u);
+  }
+
+  if ( status == ICQ_STATUS_OFFLINE ||
+       status == ICQ_STATUS_ONLINE)
+  {
+    mnuUser->changeItem(mnuUserCheckResponse, tr("Check Auto Response"));
+    mnuUser->setItemEnabled(mnuUserCheckResponse, false);
+  }
+  else
+  {
+    mnuUser->changeItem(mnuUserCheckResponse, QString(tr("Check %1 Response")).arg(szStatus));
+    mnuUser->setItemEnabled(mnuUserCheckResponse, true);
+  }
+}
 
 void CMainWindow::showSearchUserDlg()
 {
@@ -1859,13 +1883,9 @@ void CMainWindow::showEditGrpDlg()
 void CMainWindow::showOptionsDlg()
 {
   if (optionsDlg != NULL)
-  {
-    XRaiseWindow(x11Display(), optionsDlg->winId());
-  }
+    optionsDlg->raise();
   else
-  {
     optionsDlg = new OptionsDlg(this);
-  }
 }
 
 void CMainWindow::showSkinBrowser()
@@ -1901,13 +1921,11 @@ void CMainWindow::slot_register()
   }
 
   if (registerUserDlg != NULL)
-  {
-    XRaiseWindow(x11Display(), registerUserDlg->winId());
-    return;
+    registerUserDlg->raise();
+  else {
+    registerUserDlg = new RegisterUserDlg(licqDaemon);
+    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
   }
-
-  registerUserDlg = new RegisterUserDlg(licqDaemon);
-  connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
 }
 
 #include "mainwin.moc"
