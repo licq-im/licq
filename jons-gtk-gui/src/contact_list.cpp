@@ -225,6 +225,10 @@ void contact_list_click(GtkWidget *contact_list,
 	/* A left mouse click */
 	if(event->button == 1)
 	{
+		/* A blank space is double clicked, user is NULL */
+		if(user == NULL)
+			return;
+
 		/* Fix the stupid contact list double click problem */
 		gettimeofday(&check_timer, NULL);
 
