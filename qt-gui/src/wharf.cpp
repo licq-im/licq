@@ -127,6 +127,24 @@ void IconManager::paintEvent( QPaintEvent * )
 }
 
 
+void IconManager::mousePressEvent(QMouseEvent *m)
+{
+  if (m->button() != LeftButton) return;
+
+  mouseX = m->x();
+  mouseY = m->y();
+}
+
+void IconManager::mouseMoveEvent(QMouseEvent *m)
+{
+  if (!(m->state() | LeftButton)) return;
+
+  int deltaX = m->x() - mouseX;
+  int deltaY = m->y() - mouseY;
+  move(x() + deltaX, y() + deltaY);
+}
+
+
 
 
 //=====IconManager_Default===================================================
@@ -360,8 +378,10 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
 
   // Status icons
   pixOnline = pixOffline = pixAway = pixNA = pixOccupied = pixDND = pixInvisible = pixFFC = NULL;
+  dockFile.SetFlags(0);
   if (dockFile.SetSection("status"))
   {
+    dockFile.SetFlags(INI_FxWARN);
     // Online
     dockFile.ReadStr("Online", temp, "none");
     if (strcmp(temp, "none") != 0)
@@ -409,6 +429,7 @@ IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu,
       if (pixFFC != NULL) pixFFC->setMask(mask);
     }
   }
+  dockFile.CloseFile();
 
   wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this);
   X11Init();
@@ -513,7 +534,7 @@ WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, QPixmap *p,
   Set(p);
   QToolTip::add(this, tr("Left click - Show main window\n"
                          "Middle click - Show next message\n"
-                         "Right click - System menu\n"));
+                         "Right click - System menu"));
   show();
 }
 
@@ -551,11 +572,29 @@ void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
 }
 
 
+
 void WharfIcon::paintEvent( QPaintEvent * )
 {
   QPainter painter(this);
   painter.drawPixmap(0, 0, *vis);
   painter.end();
+}
+
+
+void WharfIcon::mousePressEvent(QMouseEvent *m)
+{
+  ((IconManager *)parentWidget())->mousePressEvent(m);
+  /*mouseX = m->x();
+  mouseY = m->y();*/
+}
+
+
+void WharfIcon::mouseMoveEvent(QMouseEvent *m)
+{
+  ((IconManager *)parentWidget())->mouseMoveEvent(m);
+/*  int deltaX = m->x() - mouseX;
+  int deltaY = m->y() - mouseY;
+  move(x() + deltaX, y() + deltaY);*/
 }
 
 

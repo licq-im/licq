@@ -24,6 +24,8 @@ public:
   void Set(QPixmap *);
 protected:
   virtual void mouseReleaseEvent (QMouseEvent *);
+  virtual void mouseMoveEvent (QMouseEvent *);
+  virtual void mousePressEvent (QMouseEvent *);
   virtual void paintEvent (QPaintEvent *);
   QPixmap *vis;
   class CMainWindow *mainwin;
@@ -43,7 +45,9 @@ public:
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg) = 0;
 protected:
   void X11Init();
-  virtual void mouseReleaseEvent( QMouseEvent *e );
+  virtual void mouseReleaseEvent(QMouseEvent *);
+  virtual void mouseMoveEvent (QMouseEvent *);
+  virtual void mousePressEvent (QMouseEvent *);
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
 #ifdef USE_KDE
@@ -51,6 +55,8 @@ protected:
 #endif
   WharfIcon *wharfIcon;
   int m_nNewMsg, m_nSysMsg;
+  int mouseX, mouseY;
+friend class WharfIcon;
 };
 
 
