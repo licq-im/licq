@@ -117,6 +117,11 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 //-----ICQ::Logon---------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
 {
+  if (m_eStatus != STATUS_OFFLINE_MANUAL)
+  {
+    gLog.Warn("%sAttempt to log on while already logged or logging on.\n", L_WARNxSTR);
+    return NULL;
+  }
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o->Uin() == 0)
   {
@@ -1447,7 +1452,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     delete[] szUrl;
     break;
   }
-  case ICQ_CMDxSUB_REQxAUTH:  // system message: authorisation request
+  case ICQ_CMDxSUB_AUTHxREQUEST:  // system message: authorisation request
   {
     /* 02 00 04 01 08 00 8F 76 20 00 06 00 41 00 41 70 6F 74 68 65 6F 73 69 73
        FE 47 72 61 68 61 6D FE 52 6F 66 66 FE 67 72 6F 66 66 40 75 77 61 74 65
@@ -1473,7 +1478,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gTranslator.ServerToClient (szFields[2]);
      gTranslator.ServerToClient (szFields[5]);
 
-     CEventAuthReq *e = new CEventAuthReq(nUin, szFields[0], szFields[1],
+     CEventAuthRequest *e = new CEventAuthRequest(nUin, szFields[0], szFields[1],
                                           szFields[2], szFields[3], szFields[5],
                                           ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
@@ -1484,14 +1489,14 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      delete[] szFields;
      break;
   }
-  case ICQ_CMDxSUB_AUTHORIZED:  // system message: authorized
+  case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
   {
-     gLog.Info("%sAuthorization from %ld.\n", L_SBLANKxSTR, nUin);
+     gLog.Info("%sAuthorization granted by %ld.\n", L_SBLANKxSTR, nUin);
 
      // translating string with Translation Table
      gTranslator.ServerToClient (szMessage);
 
-     CEventAuth *e = new CEventAuth(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
+     CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
                                     timeSent, 0);
      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
      AddUserEvent(o, e);

@@ -161,7 +161,7 @@ void CEventFile::AddToHistory(ICQUser *u, direction _nDir)
   delete [] szOut;
 }
 
-
+#if 0
 //=====CEventFileCancel=========================================================
 
 CEventFileCancel::CEventFileCancel(unsigned long _nSequence, time_t _tTime,
@@ -189,7 +189,7 @@ void CEventFileCancel::AddToHistory(ICQUser *u, direction _nDir)
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
-
+#endif
 
 
 //=====CEventUrl================================================================
@@ -259,7 +259,7 @@ void CEventChat::AddToHistory(ICQUser *u, direction _nDir)
   delete [] szOut;
 }
 
-
+#if 0
 //=====CEventChatCancel=========================================================
 
 CEventChatCancel::CEventChatCancel(unsigned long _nSequence, time_t _tTime,
@@ -288,7 +288,7 @@ void CEventChatCancel::AddToHistory(ICQUser *u, direction _nDir)
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
-
+#endif
 
 //=====CEventAdded==============================================================
 CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
@@ -336,12 +336,12 @@ void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //=====CEventAuthReq===============================================================
-CEventAuthReq::CEventAuthReq(unsigned long _nUin, const char *_szAlias,
+CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
                        const char *_szFirstName,const char *_szLastName,
                        const char *_szEmail, const char *_szReason,
                        unsigned short _nCommand, time_t _tTime,
                        unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_REQxAUTH, _nCommand, 0, _tTime, _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags)
 {
    m_szAlias = strdup(_szAlias);
    m_szFirstName = strdup(_szFirstName);
@@ -351,7 +351,7 @@ CEventAuthReq::CEventAuthReq(unsigned long _nUin, const char *_szAlias,
    m_nUin = _nUin;
 }
 
-void CEventAuthReq::CreateDescription()
+void CEventAuthRequest::CreateDescription()
 {
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
@@ -361,7 +361,7 @@ void CEventAuthReq::CreateDescription()
 }
 
 
-CEventAuthReq::~CEventAuthReq()
+CEventAuthRequest::~CEventAuthRequest()
 {
   free (m_szAlias);
   free (m_szFirstName);
@@ -371,7 +371,7 @@ CEventAuthReq::~CEventAuthReq()
 }
 
 
-void CEventAuthReq::AddToHistory(ICQUser *u, direction _nDir)
+void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
                     strlen(m_szLastName) + strlen(m_szEmail) +
@@ -387,17 +387,17 @@ void CEventAuthReq::AddToHistory(ICQUser *u, direction _nDir)
 
 
 
-//=====CEventAuth===============================================================
-CEventAuth::CEventAuth(unsigned long _nUin, const char *_szMessage,
+//=====CEventAuthGranted========================================================
+CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
                        unsigned short _nCommand, time_t _tTime,
                        unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHORIZED, _nCommand, 0, _tTime, _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_nUin = _nUin;
 }
 
-void CEventAuth::CreateDescription()
+void CEventAuthGranted::CreateDescription()
 {
   m_szText = new char[strlen(m_szMessage) + 128];
   sprintf(m_szText, "Uin %ld has authorized you:\n%s\n",
@@ -405,12 +405,48 @@ void CEventAuth::CreateDescription()
 }
 
 
-CEventAuth::~CEventAuth()
+CEventAuthGranted::~CEventAuthGranted()
 {
   free (m_szMessage);
 }
 
-void CEventAuth::AddToHistory(ICQUser *u, direction _nDir)
+void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
+{
+  char *szOut = new char[strlen(m_szMessage) * 2 + 16 +
+                   EVENT_HEADER_SIZE];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%ld\n", m_nUin);
+  AddStrWithColons(&szOut[nPos], m_szMessage);
+  AddToHistory_Flush(u, szOut);
+  delete [] szOut;
+}
+
+
+
+//=====CEventAuthRefused==========================================================
+CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
+                       unsigned short _nCommand, time_t _tTime,
+                       unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags)
+{
+  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
+  m_nUin = _nUin;
+}
+
+void CEventAuthRefused::CreateDescription()
+{
+  m_szText = new char[strlen(m_szMessage) + 128];
+  sprintf(m_szText, "Uin %ld has refused to authorized you:\n%s\n",
+          m_nUin, m_szMessage);
+}
+
+
+CEventAuthRefused::~CEventAuthRefused()
+{
+  free (m_szMessage);
+}
+
+void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
 {
   char *szOut = new char[strlen(m_szMessage) * 2 + 16 +
                    EVENT_HEADER_SIZE];
@@ -578,3 +614,57 @@ void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
   AddToHistory_Flush(u, szOut);
   delete [] szOut;*/
 }
+
+
+//=====EventDescriptions=====================================================
+
+static const int MAX_EVENT = 26;
+
+static const char *szEventTypes[27] =
+{ "Saved Event",
+  "Message",
+  "Chat Request",
+  "File Transfer",
+  "URL",
+  "",
+  "Authorization Request",
+  "AUthorization Refused",
+  "Authorization Granted",
+  "",
+  "",
+  "",
+  "Added to Contact List",
+  "Web Panel",
+  "Email Pager",
+  "",
+  "",
+  "",
+  "",
+  "Contact List",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "User Info"
+};
+
+
+const char *CUserEvent::Description()
+{
+  // not thread-safe, but I'm lazy
+  static char desc[128];
+
+  if (SubCommand() > MAX_EVENT ||
+      szEventTypes[SubCommand()][0] == '\0')
+    strcpy(desc, "Unknown Event");
+  else
+  {
+    strcpy(desc, szEventTypes[SubCommand()]);
+    if (IsCancelled())
+      strcat(desc, " (cancelled)");
+  }
+  return desc;
+}
+

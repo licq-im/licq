@@ -887,6 +887,35 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EEventResult
 }
 
 
+ICQEvent *CICQDaemon::DoneEvent(CICQEventTag *tag, EEventResult _eResult)
+{
+  pthread_mutex_lock(&mutex_runningevents);
+  ICQEvent *e = NULL;
+  list<ICQEvent *>::iterator iter;
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  {
+    if (tag->Equals(*iter))
+    {
+      e = *iter;
+      m_lxRunningEvents.erase(iter);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_runningevents);
+
+  // If we didn't find the event, it must have already been removed, we are too late
+  if (e == NULL) return (NULL);
+
+  e->m_eResult = _eResult;
+
+  // Check if we should cancel a processing thread
+  if (!pthread_equal(e->thread_send, pthread_self()))
+    pthread_cancel(e->thread_send);
+
+  return(e);
+}
+
+
 /*------------------------------------------------------------------------------
  * ProcessDoneEvent
  *
@@ -1078,6 +1107,26 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EEventResult _eResult)
 }
 
 
+ICQEvent *CICQDaemon::DoneExtendedEvent(CICQEventTag *tag, EEventResult _eResult)
+{
+  pthread_mutex_lock(&mutex_extendedevents);
+  ICQEvent *e = NULL;
+  list<ICQEvent *>::iterator iter;
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  {
+    if (tag->Equals(*iter))
+    {
+      e = *iter;
+      m_lxExtendedEvents.erase(iter);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_extendedevents);
+  if (e != NULL) e->m_eResult = _eResult;
+  return(e);
+}
+
+
 /*------------------------------------------------------------------------------
  * PushExtendedEvent
  *
@@ -1184,14 +1233,19 @@ ICQEvent *CICQDaemon::PopPluginEvent()
 void CICQDaemon::CancelEvent(CICQEventTag *t)
 {
   ICQEvent *e = NULL;
-  if ( (e = DoneEvent(t->m_nSocketDesc, t->m_nSequence, EVENT_CANCELLED)) == NULL &&
-       (e = DoneExtendedEvent(t->m_nSocketDesc, t->m_nSequence, EVENT_CANCELLED)) == NULL) return;
-  ProcessDoneEvent(e);
+  if ( (e = DoneEvent(t, EVENT_CANCELLED)) == NULL &&
+       (e = DoneExtendedEvent(t, EVENT_CANCELLED)) == NULL)
+  {
+    gLog.Warn("%sCancelled event not found.\n", L_WARNxSTR);
+    return;
+  }
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
     icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->m_nDestinationUin, e->m_nSequence);
+
+  ProcessDoneEvent(e);
 }
 
 

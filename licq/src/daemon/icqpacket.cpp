@@ -1067,7 +1067,7 @@ CBuffer *CPacketTcp::Finalize()
 
 CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
                       unsigned short _nSubCommand, const char *szMessage,
-                      bool _bAccept, bool _bUrgent, ICQUser *user)
+                      bool _bAccept, unsigned short nLevel, ICQUser *user)
 {
   // Setup the message type and status fields using our online status
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -1080,7 +1080,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
     case ICQ_CMDxTCP_START:
     {
       m_nStatus = 0;
-      m_nMsgType = (_bUrgent ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+      m_nMsgType = nLevel;
       switch (s)
       {
         case ICQ_STATUS_AWAY: m_nMsgType |= ICQ_TCPxMSG_FxAWAY; break;
@@ -1102,7 +1102,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
       if (!_bAccept)
         m_nStatus = ICQ_TCPxACK_REFUSE;
       // If we are accepting a chat or file request then always say we are online
-      else if (_bUrgent ||
+      else if (nLevel == ICQ_TCPxMSG_URGENT ||
                _nSubCommand == ICQ_CMDxSUB_CHAT ||
                _nSubCommand == ICQ_CMDxSUB_FILE)
         m_nStatus = ICQ_TCPxACK_ONLINE;
@@ -1180,20 +1180,20 @@ void CPacketTcp::PostBuffer()
 }
 
 //-----Message------------------------------------------------------------------
-CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent,
+CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel,
                         ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, _sMessage,
-               true, _bUrgent, _cUser)
+               true, nLevel, _cUser)
 {
   InitBuffer();
   PostBuffer();
 }
 
 //-----Url----------------------------------------------------------------------
-CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent,
+CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel,
                 ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_URL, _sMessage,
-               true, _bUrgent, _cUser)
+               true, nLevel, _cUser)
 {
   InitBuffer();
   PostBuffer();
@@ -1208,11 +1208,12 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
   // Properly set the subcommand to get the correct away message
   switch(_cUser->Status())
   {
-  case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-  case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
-  case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
-  case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-  default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
+    case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
+    case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
+    case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
+    case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
+    case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
+    default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
   }
 
   InitBuffer();
@@ -1221,9 +1222,9 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
 
 //-----ChatRequest--------------------------------------------------------------
 CPT_ChatRequest::CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
-                                bool _bUrgent, ICQUser *_cUser)
+                                 unsigned short nLevel, ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage,
-               true, _bUrgent, _cUser)
+               true, nLevel, _cUser)
 {
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -1236,10 +1237,10 @@ CPT_ChatRequest::CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
 
 //-----FileTransfer--------------------------------------------------------------
 CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
-                                  const char *_szDescription, bool _bUrgent,
+                                  const char *_szDescription, unsigned short nLevel,
                                   ICQUser *_cUser)
   : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
-               true, _bUrgent, _cUser)
+               true, nLevel, _cUser)
 {
   m_bValid = true;
 
@@ -1273,9 +1274,9 @@ CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFil
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
-                bool _bAccept, bool _bUrgent, ICQUser *pUser)
-  : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept, _bUrgent,
-               pUser)
+                bool _bAccept, bool l, ICQUser *pUser)
+  : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept,
+               l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
   m_nSequence = _nSequence;
   free(m_szMessage);
@@ -1300,8 +1301,8 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
 
 //-----AckMessage---------------------------------------------------------------
 CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
-                              bool _bUrgent, ICQUser *_cUser)
-  : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, _bUrgent, _cUser)
+                               bool nLevel, ICQUser *_cUser)
+  : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, nLevel, _cUser)
 {
   InitBuffer();
   PostBuffer();
@@ -1311,8 +1312,8 @@ CPT_AckMessage::CPT_AckMessage(unsigned long _nSequence, bool _bAccept,
 
 //-----AckReadAwayMessage-------------------------------------------------------
 CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
-                                              unsigned long _nSequence,
-                                              bool _bAccept, ICQUser *_cUser)
+                                               unsigned long _nSequence,
+                                               bool _bAccept, ICQUser *_cUser)
   : CPT_Ack(_nSubCommand, _nSequence, _bAccept, false, _cUser)
 {
   InitBuffer();
@@ -1321,9 +1322,9 @@ CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
 
 
 //-----AckUrl-------------------------------------------------------------------
-CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
+CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool nLevel,
                       ICQUser *_cUser)
-  : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, _bUrgent, _cUser)
+  : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, nLevel, _cUser)
 {
   InitBuffer();
   PostBuffer();
@@ -1332,8 +1333,8 @@ CPT_AckUrl::CPT_AckUrl(unsigned long _nSequence, bool _bAccept, bool _bUrgent,
 
 //-----AckUrl-------------------------------------------------------------------
 CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
-                                      bool _bUrgent, ICQUser *_cUser)
-  : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, _bUrgent, _cUser)
+                                       bool nLevel, ICQUser *_cUser)
+  : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, nLevel, _cUser)
 {
   InitBuffer();
   PostBuffer();
@@ -1462,9 +1463,9 @@ void CPacketChat::InitBuffer()
 }
 
 //-----ChatColor----------------------------------------------------------------
-CPChat_Color::CPChat_Color(char *_sLocalName, unsigned short _nLocalPort,
-                          unsigned long _nColorForeground,
-                          unsigned long _nColorBackground)
+CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
+                           unsigned long _nColorForeground,
+                           unsigned long _nColorBackground)
 {
   m_nSize = 10 + strlen(_sLocalName) + 16;
   InitBuffer();
@@ -1482,11 +1483,11 @@ CPChat_Color::CPChat_Color(char *_sLocalName, unsigned short _nLocalPort,
 
 
 //-----ChatColorFont----------------------------------------------------------------
-CPChat_ColorFont::CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort,
+CPChat_ColorFont::CPChat_ColorFont(const char *_sLocalName, unsigned short _nLocalPort,
                                   unsigned long _nColorForeground,
                                   unsigned long _nColorBackground,
                                   unsigned long _nFontSize,
-                                  unsigned long _nFontFace, char *_sFontName)
+                                  unsigned long _nFontFace, const char *_sFontName)
 {
   m_nSize = 10 + strlen(_sLocalName) + 35 + strlen(_sFontName) + 4;
   InitBuffer();
@@ -1501,11 +1502,11 @@ CPChat_ColorFont::CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
-  buffer->PackUnsignedShort(0x5A75);
+  buffer->PackUnsignedShort(0x5A89);
   buffer->PackUnsignedLong(_nFontSize);
   buffer->PackUnsignedLong(_nFontFace);
   buffer->PackString(_sFontName);
-  buffer->PackUnsignedShort(0x00);
+  buffer->PackUnsignedShort(0x0002);
   buffer->PackChar(0);
 }
 
@@ -1513,7 +1514,7 @@ CPChat_ColorFont::CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort
 
 //-----ChatFont---------------------------------------------------------------------
 CPChat_Font::CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
-                        unsigned long _nFontFace, char *_sFontName)
+                        unsigned long _nFontFace, const char *_sFontName)
 {
   char temp_3[3] = { 0, 0, 0 };
 
@@ -1525,7 +1526,7 @@ CPChat_Font::CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
-  buffer->PackUnsignedShort(0x5A75);
+  buffer->PackUnsignedShort(0x5A89);
   buffer->PackUnsignedLong(_nFontSize);
   buffer->PackUnsignedLong(_nFontFace);
   buffer->PackString(_sFontName);

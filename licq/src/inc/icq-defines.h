@@ -121,6 +121,7 @@ const unsigned short ICQ_CMDxTCP_READxAWAYxMSG     = 0x03E8;
 const unsigned short ICQ_CMDxTCP_READxOCCUPIEDxMSG = 0x03E9;
 const unsigned short ICQ_CMDxTCP_READxNAxMSG       = 0x03EA;
 const unsigned short ICQ_CMDxTCP_READxDNDxMSG      = 0x03EB;
+const unsigned short ICQ_CMDxTCP_READxFFCxMSG      = 0x03EC;
 const unsigned char  ICQ_CMDxTCP_HANDSHAKE         =   0xFF;
 
 // Sub Commands
@@ -128,8 +129,9 @@ const unsigned short ICQ_CMDxSUB_MSG               = 0x0001;
 const unsigned short ICQ_CMDxSUB_CHAT              = 0x0002;
 const unsigned short ICQ_CMDxSUB_FILE              = 0x0003;
 const unsigned short ICQ_CMDxSUB_URL               = 0x0004;
-const unsigned short ICQ_CMDxSUB_REQxAUTH          = 0x0006;
-const unsigned short ICQ_CMDxSUB_AUTHORIZED        = 0x0008;
+const unsigned short ICQ_CMDxSUB_AUTHxREQUEST      = 0x0006;
+const unsigned short ICQ_CMDxSUB_AUTHxREFUSED      = 0x0007;
+const unsigned short ICQ_CMDxSUB_AUTHxGRANTED      = 0x0008;
 const unsigned short ICQ_CMDxSUB_ADDEDxTOxLIST     = 0x000C;
 const unsigned short ICQ_CMDxSUB_WEBxPANEL         = 0x000D;
 const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;

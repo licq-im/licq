@@ -586,7 +586,7 @@ public:
 protected:
    CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
               unsigned short _nSubCommand, const char *szMessage, bool _bAccept,
-              bool _bUrgent, ICQUser *_cUser);
+              unsigned short nLevel, ICQUser *_cUser);
    void InitBuffer();
    void PostBuffer();
 
@@ -607,7 +607,7 @@ protected:
 class CPT_Message : public CPacketTcp
 {
 public:
-   CPT_Message(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent, ICQUser *_cUser);
+   CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
 };
 
 
@@ -615,7 +615,7 @@ public:
 class CPT_Url : public CPacketTcp
 {
 public:
-   CPT_Url(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent, ICQUser *_cUser);
+   CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
    /* BA 95 47 00 03 00 EE 07 00 00 BA 95 47 00 04 00 24 00 67 6F 6F 64 20 70 6F
       72 6E 20 73 69 74 65 FE 68 74 74 70 3A 2F 2F 63 6F 6F 6C 70 6F 72 74 6E 2E
       63 6F 6D 00 81 61 1D 9E 7F 00 00 01 3F 07 00 00 04 00 00 10 00 03 00 00 00 */
@@ -636,7 +636,7 @@ public:
 class CPT_ChatRequest : public CPacketTcp
 {
 public:
-   CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage, bool _bUrgent, ICQUser *_cUser);
+   CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 02 00 0D 00 63 68 61 74 20 72
       65 71 75 65 73 74 00 CF 60 AD D3 CF 60 AD D3 28 12 00 00 04 00 00 10 00
       01 00 00 00 00 00 00 00 00 00 00 06 00 00 00 */
@@ -648,7 +648,8 @@ class CPT_FileTransfer : public CPacketTcp
 {
 public:
    CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
-                    const char *_szDescription, bool _bUrgent, ICQUser *_cUser);
+                    const char *_szDescription, unsigned short nLevel,
+                    ICQUser *_cUser);
    bool IsValid()  { return m_bValid; };
    const char *GetFilename()  { return m_szFilename; };
    const char *GetDescription()  { return m_szMessage; };
@@ -814,7 +815,7 @@ protected:
 class CPChat_Color : public CPacketChat  // First info packet after handshake
 {
 public:
-   CPChat_Color(char *_sLocalName, unsigned short _nLocalPort,
+   CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
                 unsigned long _nColorForeground, unsigned long _nColorBackground);
    /* 64 00 00 00 FD FF FF FF 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 62 3D
       FF FF FF 00 00 00 00 00 00 */
@@ -825,11 +826,11 @@ public:
 class CPChat_ColorFont : public CPacketChat  // Second info packet after handshake
 {
 public:
-   CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort,
+   CPChat_ColorFont(const char *_sLocalName, unsigned short _nLocalPort,
                     unsigned long _nColorForeground,
                     unsigned long _nColorBackground,
                     unsigned long _nFontSize, unsigned long _nFontFace,
-                    char *_sFontName);
+                    const char *_sFontName);
    /* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
       00 00 03 00 00 00 DB 64 00 00 CF 60 AD 95 CF 60 AD 95 04 75 5A 0C 00 00
       00 00 00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 00 */
@@ -841,7 +842,7 @@ class CPChat_Font : public CPacketChat  // First info packet after handshake
 {
 public:
    CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
-               unsigned long _nFontFace, char *_sFontName);
+               unsigned long _nFontFace, const char *_sFontName);
    /* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00
       00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 */
 };

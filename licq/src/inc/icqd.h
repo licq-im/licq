@@ -86,11 +86,11 @@ public:
   void SaveConf();
 
   // TCP (user) functions
-  CICQEventTag *icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long id = 0);
-  CICQEventTag *icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long id = 0);
+  CICQEventTag *icqSendMessage(unsigned long _nUin, const char *m, bool online, unsigned short nLevel, unsigned long id = 0);
+  CICQEventTag *icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, unsigned short nLevel, unsigned long id = 0);
   CICQEventTag *icqFetchAutoResponse(unsigned long _nUin, unsigned long id = 0);
-  CICQEventTag *icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long id = 0);
-  CICQEventTag *icqFileTransfer(unsigned long _nUin, const char *_szFilename, const char *_szDescription, bool online, bool _bUrgent, unsigned long id = 0);
+  CICQEventTag *icqChatRequest(unsigned long _nUin, const char *reason, bool online, unsigned short nLevel, unsigned long id = 0);
+  CICQEventTag *icqFileTransfer(unsigned long _nUin, const char *_szFilename, const char *_szDescription, bool online, unsigned short nLevel, unsigned long id = 0);
   void icqFileTransferRefuse(unsigned long _nUin, const char *reason, unsigned long theSequence);
   void icqFileTransferCancel(unsigned long _nUin, unsigned long seq);
   void icqFileTransferAccept(unsigned long _nUin, unsigned short thePort, unsigned long theSequence);
@@ -158,7 +158,9 @@ public:
   void SwitchServer();
   void CancelEvent(CICQEventTag *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
-                            unsigned short nPort);
+     unsigned short nPort);
+  bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
+     unsigned long nRealIp, TCPSocket *sock, unsigned short nPort);
   int StartTCPServer(TCPSocket *);
 
   void AddUserToList(unsigned long _nUin);
@@ -239,8 +241,10 @@ protected:
 
   ICQEvent *DoneEvent(ICQEvent *e, EEventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EEventResult _eResult);
+  ICQEvent *DoneEvent(CICQEventTag *tag, EEventResult _eResult);
   ICQEvent *DoneExtendedEvent(const unsigned short, const unsigned short, EEventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EEventResult);
+  ICQEvent *DoneExtendedEvent(CICQEventTag *tag, EEventResult _eResult);
   void ProcessDoneEvent(ICQEvent *e);
   void PushExtendedEvent(ICQEvent *e);
   void PushPluginSignal(CICQSignal *s);

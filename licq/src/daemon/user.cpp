@@ -853,7 +853,9 @@ void ICQUser::LoadLicqInfo()
 //-----ICQUser::destructor------------------------------------------------------
 ICQUser::~ICQUser()
 {
-  while (NewMessages() > 0) ClearEvent(0);
+  //while (NewMessages() > 0) ClearEvent(0);
+  for (unsigned short i = 0; i < m_vcMessages.size(); i++)
+    delete m_vcMessages[i];
 /*
   // Destroy the mutex
   int nResult = 0;
@@ -1549,22 +1551,45 @@ void ICQUser::WriteToHistory(const char *_szText)
 
 
 //-----ICQUser::GetEvent--------------------------------------------------------
-CUserEvent *ICQUser::GetEvent(unsigned short index)
+CUserEvent *ICQUser::EventPeek(unsigned short index)
 {
-   if (index >= NewMessages() || NewMessages() == 0) return (NULL);
-   return (m_vcMessages[index]);
+  if (index >= NewMessages()) return (NULL);
+  return (m_vcMessages[index]);
 }
 
+//-----ICQUser::EventPeekLast----------------------------------------------------
+CUserEvent *ICQUser::EventPeekLast()
+{
+  if (m_vcMessages.size() == 0) return (NULL);
+  return (m_vcMessages[m_vcMessages.size() - 1]);
+}
+
+//-----ICQUser::EventPeekFirst----------------------------------------------------
+CUserEvent *ICQUser::EventPeekFirst()
+{
+  if (m_vcMessages.size() == 0) return (NULL);
+  return (m_vcMessages[0]);
+}
 
 //-----ICQUser::ClearEvent------------------------------------------------------
-void ICQUser::ClearEvent(unsigned short index)
+CUserEvent *ICQUser::EventPop()
 {
+  if (m_vcMessages.size() == 0) return NULL;
+  CUserEvent *e = m_vcMessages[0];
+  for (unsigned short i = 0; i < m_vcMessages.size() - 1; i++)
+    m_vcMessages[i] = m_vcMessages[i + 1];
+  m_vcMessages.pop_back();
+  decNumUserEvents();
+  SaveLicqInfo();
+  return e;
+#if 0
    delete m_vcMessages[index];
    for (unsigned short i = index; i < m_vcMessages.size() - 1; i++)
       m_vcMessages[i] = m_vcMessages[i + 1];
    m_vcMessages.pop_back();
    decNumUserEvents();
    SaveLicqInfo();
+#endif
 }
 
 
@@ -1645,7 +1670,6 @@ ICQOwner::ICQOwner()
 
   m_fConf.SetFileName(filename);
   LoadInfo();
-  m_fConf.SetFlags(INI_FxWARN);
   m_fConf.ReadNum("Uin", m_nUin);
   m_fConf.ReadStr("Password", szTemp);
   SetPassword(szTemp);

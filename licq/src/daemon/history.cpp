@@ -131,26 +131,21 @@ bool CUserHistory::Load(HistoryList &lHistory)
     }
     case ICQ_CMDxSUB_CHAT:
     {
-      if (nCommand == ICQ_CMDxTCP_CANCEL)
-      {
-        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
-        e = new CEventChatCancel(0, tTime, nFlags);
-      }
-      else
+      if (nCommand != ICQ_CMDxTCP_CANCEL)
       {
         GET_VALID_LINES;
         e = new CEventChat(szMsg, 0, tTime, nFlags);
       }
+      /*else
+      {
+        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
+        e = new CEventChatCancel(0, tTime, nFlags);
+      }*/
       break;
     }
     case ICQ_CMDxSUB_FILE:
     {
-      if (nCommand == ICQ_CMDxTCP_CANCEL)
-      {
-        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
-        e = new CEventFileCancel(0, tTime, nFlags);
-      }
-      else
+      if (nCommand != ICQ_CMDxTCP_CANCEL)
       {
         GET_VALID_LINE_OR_BREAK;
         char *szFile = strdup(&szResult[1]);
@@ -160,6 +155,11 @@ bool CUserHistory::Load(HistoryList &lHistory)
         e = new CEventFile(szFile, szMsg, nSize, 0, tTime, nFlags);
         free(szFile);
       }
+      /*else
+      {
+        while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':');
+        e = new CEventFileCancel(0, tTime, nFlags);
+      }*/
       break;
     }
     case ICQ_CMDxSUB_URL:
@@ -171,7 +171,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       free(szUrl);
       break;
     }
-    case ICQ_CMDxSUB_REQxAUTH:
+    case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       GET_VALID_LINE_OR_BREAK;
       unsigned long nUin = atoi(&szResult[1]);
@@ -184,7 +184,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
       GET_VALID_LINE_OR_BREAK;
       char *szEmail = strdup(&szResult[1]);
       GET_VALID_LINES;
-      e = new CEventAuthReq(nUin, szAlias, szFName, szLName, szEmail, szMsg,
+      e = new CEventAuthRequest(nUin, szAlias, szFName, szLName, szEmail, szMsg,
                             nCommand, tTime, nFlags);
       free(szAlias);
       free(szFName);
@@ -192,12 +192,20 @@ bool CUserHistory::Load(HistoryList &lHistory)
       free(szEmail);
       break;
     }
-    case ICQ_CMDxSUB_AUTHORIZED:
+    case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       GET_VALID_LINE_OR_BREAK;
       unsigned long nUin = atoi(&szResult[1]);
       GET_VALID_LINES;
-      e = new CEventAuth(nUin, szMsg, nCommand, tTime, nFlags);
+      e = new CEventAuthGranted(nUin, szMsg, nCommand, tTime, nFlags);
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHxREFUSED:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      unsigned long nUin = atoi(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventAuthRefused(nUin, szMsg, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_ADDEDxTOxLIST:

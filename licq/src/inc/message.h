@@ -18,9 +18,11 @@ const unsigned long E_LICQxVER      = 0x0000FFFF;
 const unsigned long E_DIRECT        = 0x00010000;
 const unsigned long E_MULTIxREC     = 0x00020000;
 const unsigned long E_URGENT        = 0x00040000;
+const unsigned long E_CANCELLED     = 0x00080000;
 const unsigned long E_UNKNOWN       = 0x80000000;
 
 class ICQUser;
+
 
 //=====CUserEvent===============================================================
 class CUserEvent
@@ -38,6 +40,7 @@ public:
    void AddToHistory_Flush(ICQUser *, char *);
 
    const char *Text();
+   const char *Description();
    time_t Time()  {  return m_tTime; }
    const char *LicqVersionStr();
    unsigned long Sequence()  { return m_nSequence; }
@@ -46,10 +49,12 @@ public:
    bool IsDirect()  { return m_nFlags & E_DIRECT; }
    bool IsMultiRec()  { return m_nFlags & E_MULTIxREC; }
    bool IsUrgent()    { return m_nFlags & E_URGENT; }
+   bool IsCancelled() { return m_nFlags & E_CANCELLED; }
    bool IsLicq()  { return LicqVersion() != 0; };
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
    void SetDirection(direction d)  { m_eDir = d; }
+   void Cancel() { m_nFlags |= E_CANCELLED; }
 
 protected:
    virtual void CreateDescription() = 0;
@@ -64,7 +69,8 @@ protected:
 };
 
 
-//-----CEventMsg----------------------------------------------------------------
+
+//-----CEventMsg-------------------------------------------------------------
 class CEventMsg : public CUserEvent
 {
 public:
@@ -94,8 +100,9 @@ public:
       { return (new CEventFile(m_szFilename, m_szFileDescription, m_nFileSize,
                                m_nSequence, m_tTime, m_nFlags)); };
 
-   const char *Filename()  { return m_szFilename; };
-   unsigned long FileSize()  {  return m_nFileSize; };
+   const char *Filename()  { return m_szFilename; }
+   unsigned long FileSize()  {  return m_nFileSize; }
+   const char *FileDescription() { return m_szFileDescription; }
 protected:
    void CreateDescription();
    char *m_szFilename;
@@ -103,7 +110,7 @@ protected:
    unsigned long m_nFileSize;
 };
 
-
+#if 0
 //-----CEventFileCancel---------------------------------------------------------
 class CEventFileCancel : public CUserEvent
 {
@@ -117,7 +124,7 @@ public:
 protected:
    void CreateDescription();
 };
-
+#endif
 
 //-----CEventUrl----------------------------------------------------------------
 class CEventUrl : public CUserEvent
@@ -150,12 +157,13 @@ public:
    virtual void AddToHistory(ICQUser *, direction);
    virtual CEventChat *Copy()
       { return (new CEventChat(m_szText, m_nSequence, m_tTime, m_nFlags)); };
+   const char *Reason()  { return m_szReason; }
 protected:
    void CreateDescription();
    char *m_szReason;
 };
 
-
+#if 0
 //-----CEventChatCancel---------------------------------------------------------
 class CEventChatCancel : public CUserEvent
 {
@@ -169,7 +177,7 @@ public:
 protected:
    void CreateDescription();
 };
-
+#endif
 
 //-----CEventAdded--------------------------------------------------------------
 class CEventAdded : public CUserEvent
@@ -197,16 +205,16 @@ protected:
 
 
 //-----CEventAuthReq---------------------------------------------------------
-class CEventAuthReq : public CUserEvent
+class CEventAuthRequest : public CUserEvent
 {
 public:
-   CEventAuthReq(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
+   CEventAuthRequest(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
                  const char *_szLastName, const char *_szEmail, const char *_szReason,
                  unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-   virtual ~CEventAuthReq();
+   virtual ~CEventAuthRequest();
    virtual void AddToHistory(ICQUser *, direction);
-   virtual CEventAuthReq *Copy()
-      { return (new CEventAuthReq(m_nUin, m_szAlias, m_szFirstName, m_szLastName,
+   virtual CEventAuthRequest *Copy()
+      { return (new CEventAuthRequest(m_nUin, m_szAlias, m_szFirstName, m_szLastName,
                                m_szEmail, m_szReason, m_nCommand, m_tTime,
                                m_nFlags)); };
    unsigned long Uin()  { return m_nUin; };
@@ -221,16 +229,35 @@ protected:
 };
 
 
-//-----CEventAuth------------------------------------------------------------
-class CEventAuth : public CUserEvent
+//-----CEventAuthGranted-------------------------------------------------------
+class CEventAuthGranted : public CUserEvent
 {
 public:
-   CEventAuth(unsigned long _nUin, const char *_szMessage,
+   CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-   virtual ~CEventAuth();
+   virtual ~CEventAuthGranted();
    virtual void AddToHistory(ICQUser *, direction);
-   virtual CEventAuth *Copy()
-      { return (new CEventAuth(m_nUin, m_szMessage, m_nCommand, m_tTime,
+   virtual CEventAuthGranted *Copy()
+      { return (new CEventAuthGranted(m_nUin, m_szMessage, m_nCommand, m_tTime,
+                               m_nFlags)); };
+   unsigned long Uin()  { return m_nUin; };
+protected:
+   void CreateDescription();
+   unsigned long m_nUin;
+   char *m_szMessage;
+};
+
+
+//-----CEventAuthRefused------------------------------------------------------
+class CEventAuthRefused : public CUserEvent
+{
+public:
+   CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
+              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+   virtual ~CEventAuthRefused();
+   virtual void AddToHistory(ICQUser *, direction);
+   virtual CEventAuthRefused *Copy()
+      { return (new CEventAuthRefused(m_nUin, m_szMessage, m_nCommand, m_tTime,
                                m_nFlags)); };
    unsigned long Uin()  { return m_nUin; };
 protected:

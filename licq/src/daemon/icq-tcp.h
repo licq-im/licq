@@ -13,7 +13,7 @@
 #include "icqd.h"
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long _nSourceUin)
+CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, bool online, unsigned short nLevel, unsigned long _nSourceUin)
 {
   ICQEvent *result = NULL;
   char *mDos = NULL;
@@ -39,10 +39,12 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
   }
   else        // send direct
   {
-    e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, E_DIRECT | INT_VERSION);
+    unsigned long f = E_DIRECT | INT_VERSION;
+    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+    e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-    CPT_Message *p = new CPT_Message(_nSourceUin, mDos, _bUrgent, u);
-    gLog.Info("%sSending %smessage to %s (#%d).\n", L_TCPxSTR, _bUrgent ? "urgent " : "", u->GetAlias(), p->getSequence());
+    CPT_Message *p = new CPT_Message(_nSourceUin, mDos, nLevel, u);
+    gLog.Info("%sSending %smessage to %s (#%d).\n", L_TCPxSTR, nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "", u->GetAlias(), p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
     gUserManager.DropUser(u);
   }
@@ -73,7 +75,7 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long _nUin, unsigned lon
 
 
 //-----CICQDaemon::sendUrl--------------------------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, bool _bUrgent, unsigned long _nSourceUin)
+CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const char *description, bool online, unsigned short nLevel, unsigned long _nSourceUin)
 {
    // make the URL info string
   char *szDescDos = NULL;
@@ -97,10 +99,12 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
   }
   else
   {
-    e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, E_DIRECT | INT_VERSION);
+    unsigned long f = E_DIRECT | INT_VERSION;
+    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+    e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-    CPT_Url *p = new CPT_Url(_nSourceUin, m, _bUrgent, u);
-    gLog.Info("%sSending %sURL to %s (#%d).\n", L_TCPxSTR, _bUrgent ? "urgent " : "", u->GetAlias(), p->getSequence());
+    CPT_Url *p = new CPT_Url(_nSourceUin, m, nLevel, u);
+    gLog.Info("%sSending %sURL to %s (#%d).\n", L_TCPxSTR, nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "", u->GetAlias(), p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
     gUserManager.DropUser(u);
   }
@@ -115,7 +119,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
 
 //-----CICQDaemon::sendFile------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFilename,
-                        const char *_szDescription, bool online, bool _bUrgent,
+                        const char *_szDescription, bool online, unsigned short nLevel,
                         unsigned long _nSourceUin)
 {
   ICQEvent *result = NULL;
@@ -130,7 +134,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFi
 
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
   CPT_FileTransfer *p = new CPT_FileTransfer(_nSourceUin, _szFilename, szDosDesc,
-                                             _bUrgent, u);
+                                             nLevel, u);
   if (!p->IsValid())
   {
     delete p;
@@ -138,14 +142,16 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFi
   }
   else
   {
+    unsigned long f = E_DIRECT | INT_VERSION;
+    if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventFile(_szFilename, p->GetDescription(), p->GetFileSize(),
-                       p->getSequence(), TIME_NOW, E_DIRECT | INT_VERSION);
-    gLog.Info("%sSending %sfile transfer to %s (#%d).\n", L_TCPxSTR, _bUrgent ? "urgent " : "",
-             u->GetAlias(), p->getSequence());
+                       p->getSequence(), TIME_NOW, f);
+    gLog.Info("%sSending %sfile transfer to %s (#%d).\n", L_TCPxSTR,
+       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+       u->GetAlias(), p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
   }
   gUserManager.DropUser(u);
-
 
   delete szDosDesc;
   CICQEventTag *t = NULL;
@@ -200,7 +206,7 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long _nUin, const char *_sReason
 
 
 //-----CICQDaemon::sendChat------------------------------------------------------------
-CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bool online, bool _bUrgent, unsigned long _nSourceUin)
+CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason, bool online, unsigned short nLevel, unsigned long _nSourceUin)
 {
   online = true;
 
@@ -208,10 +214,14 @@ CICQEventTag *CICQDaemon::icqChatRequest(unsigned long _nUin, const char *reason
   if (u == NULL) return NULL;
   char *szReasonDos = gTranslator.NToRN(reason);
   gTranslator.ClientToServer(szReasonDos);
-  CPT_ChatRequest *p = new CPT_ChatRequest(_nSourceUin, szReasonDos, _bUrgent, u);
-  CEventChat *e = new CEventChat(reason, p->getSequence(), TIME_NOW, E_DIRECT | INT_VERSION);
-  gLog.Info("%sSending %schat request to %s (#%d).\n", L_TCPxSTR, _bUrgent ? "urgent " : "",
-            u->GetAlias(), p->getSequence());
+  CPT_ChatRequest *p = new CPT_ChatRequest(_nSourceUin, szReasonDos, nLevel, u);
+
+  unsigned long f = E_DIRECT | INT_VERSION;
+  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+  CEventChat *e = new CEventChat(reason, p->getSequence(), TIME_NOW, f);
+  gLog.Info("%sSending %schat request to %s (#%d).\n", L_TCPxSTR,
+     nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+     u->GetAlias(), p->getSequence());
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
   gUserManager.DropUser(u);
 
@@ -290,54 +300,6 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
     return -1;
   }
 
-/*
-  char buf[32];
-
-  gLog.Info("%sConnecting to %s (%d) at %s:%d.\n", L_TCPxSTR, szAlias,
-            _nUin, ip_ntoa(u->Ip(), buf), u->Port());
-
-  // If we fail to set the remote address, the ip must be 0
-  bool b = s->SetRemoteAddr(u->Ip(), u->Port());
-  gUserManager.DropUser(u);
-  if (!b)
-  {
-    delete s; free(szAlias);
-    return -1;
-  }
-
-  if (!s->OpenConnection())
-  {
-    char buf[128];
-    gLog.Warn("%sConnect to %s (%d) failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-              _nUin, L_BLANKxSTR, s->ErrorStr(buf, 128));
-
-    // Now try the real ip if it is different from this one and we are behind a firewall
-    u = gUserManager.FetchUser(_nUin, LOCK_R);
-    if (s->Error() != EINTR && u != NULL && u->RealIp() != u->Ip() &&
-        u->RealIp() != 0 && m_szFirewallHost[0] != '\0')
-    {
-      gLog.Info("%sConnecting to %s (%d) at %s:%d.\n", L_TCPxSTR, szAlias,
-                _nUin, ip_ntoa(u->RealIp(), buf), u->Port());
-      s->SetRemoteAddr(u->RealIp(), u->Port());
-      gUserManager.DropUser(u);
-
-      if (!s->OpenConnection())
-      {
-        char buf[128];
-        gLog.Warn("%sConnect to %s (%d) real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-                _nUin, L_BLANKxSTR, s->ErrorStr(buf, 128));
-        delete s; free(szAlias);
-        return -1;
-      }
-    }
-    else
-    {
-      if (u != NULL) gUserManager.DropUser(u);
-      delete s; free(szAlias);
-      return -1;
-    }
-  }
-*/
   gLog.Info("%sShaking hands with %s (%d).\n", L_TCPxSTR, szAlias, nUin);
   CPacketTcp_Handshake p(s->LocalPort());
   if (!s->SendPacket(p.getBuffer()))
@@ -378,43 +340,50 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
   if (u == NULL) return false;
 
   char szAlias[64];
-  strcpy(szAlias, u->GetAlias());
-  char buf[128];
+  sprintf(szAlias, "%s (%ld)", u->GetAlias(), u->Uin());
+  unsigned long ip = u->Ip();
+  unsigned long realip = u->RealIp();
 
-  gLog.Info("%sConnecting to %s (%ld) at %s:%d.\n", L_TCPxSTR, szAlias,
-            nUin, ip_ntoa(u->Ip(), buf), nPort);
+  gUserManager.DropUser(u);
+
+  return OpenConnectionToUser(szAlias, ip, realip, sock, nPort);
+}
+
+
+bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
+   unsigned long nRealIp, TCPSocket *sock, unsigned short nPort)
+{
+  char buf[128];
+  gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+            ip_ntoa(nIp, buf), nPort);
 
   // If we fail to set the remote address, the ip must be 0
-  bool b = sock->SetRemoteAddr(u->Ip(), nPort);
-  gUserManager.DropUser(u);
+  bool b = sock->SetRemoteAddr(nIp, nPort);
   if (!b) return false;
 
   if (!sock->OpenConnection())
   {
-    gLog.Warn("%sConnect to %s (%ld) failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-              nUin, L_BLANKxSTR, sock->ErrorStr(buf, 128));
+    gLog.Warn("%sConnect to %s failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+              L_BLANKxSTR, sock->ErrorStr(buf, 128));
 
     // Now try the real ip if it is different from this one and we are behind a firewall
-    u = gUserManager.FetchUser(nUin, LOCK_R);
-    if (sock->Error() != EINTR && u != NULL && u->RealIp() != u->Ip() &&
-        u->RealIp() != 0 && m_szFirewallHost[0] != '\0')
+    if (sock->Error() != EINTR && nRealIp != nIp &&
+        nRealIp != 0 && m_szFirewallHost[0] != '\0')
     {
-      gLog.Info("%sConnecting to %s (%ld) at %s:%d.\n", L_TCPxSTR, szAlias,
-                nUin, ip_ntoa(u->RealIp(), buf), nPort);
-      sock->SetRemoteAddr(u->RealIp(), nPort);
-      gUserManager.DropUser(u);
+      gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
+                ip_ntoa(nRealIp, buf), nPort);
+      sock->SetRemoteAddr(nRealIp, nPort);
 
       if (!sock->OpenConnection())
       {
         char buf[128];
-        gLog.Warn("%sConnect to %s (%ld) real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
-                  nUin, L_BLANKxSTR, sock->ErrorStr(buf, 128));
+        gLog.Warn("%sConnect to %s real ip failed:\n%s%s.\n", L_WARNxSTR, szAlias,
+                  L_BLANKxSTR, sock->ErrorStr(buf, 128));
         return false;
       }
     }
     else
     {
-      if (u != NULL) gUserManager.DropUser(u);
       return false;
     }
   }
@@ -568,13 +537,13 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
                         | ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                         | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
-  bool bUrgent = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
+  bool bAccept = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
   // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
   if ( ((nOwnerStatus == ICQ_STATUS_OCCUPIED || u->StatusToUser() == ICQ_STATUS_OCCUPIED)
          && u->AcceptInOccupied() ) ||
        ((nOwnerStatus == ICQ_STATUS_DND || u->StatusToUser() == ICQ_STATUS_DND)
          && u->AcceptInDND() ) )
-    bUrgent = true;
+    bAccept = true;
 
   switch(command)
   {
@@ -605,11 +574,11 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
-      CPT_AckMessage p(theSequence, true, bUrgent, u);
+      CPT_AckMessage p(theSequence, true, bAccept, u);
       AckTCP(p, u->SocketDesc());
 
       // If we are in DND or Occupied and message isn't urgent then we ignore it
-      if (!bUrgent)
+      if (!bAccept)
       {
         if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
         {
@@ -624,6 +593,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     case ICQ_CMDxTCP_READxNAxMSG:
     case ICQ_CMDxTCP_READxDNDxMSG:
     case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
+    case ICQ_CMDxTCP_READxFFCxMSG:
     case ICQ_CMDxTCP_READxAWAYxMSG:  // read away message
     {
       gLog.Info("%s%s (%d) requested auto response.\n", L_TCPxSTR, u->GetAlias(), checkUin);
@@ -668,10 +638,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
-      CPT_AckUrl p(theSequence, true, bUrgent, u);
+      CPT_AckUrl p(theSequence, true, bAccept, u);
       AckTCP(p, u->SocketDesc());
       // If we are in DND or Occupied and message isn't urgent then we ignore it
-      if (!bUrgent)
+      if (!bAccept)
       {
         if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
         {
@@ -800,10 +770,10 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
         bNewUser = false;
       }
 
-      CPT_AckContactList p(theSequence, true, bUrgent, u);
+      CPT_AckContactList p(theSequence, true, bAccept, u);
       AckTCP(p, u->SocketDesc());
       // If we are in DND or Occupied and message isn't urgent then we ignore it
-      if (!bUrgent)
+      if (!bAccept)
       {
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
         unsigned long s = o->Status();
@@ -953,25 +923,43 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 
     switch (newCommand)
     {
-    case ICQ_CMDxSUB_CHAT:
-    {
-      gLog.Info("%sChat request from %s (%ld) cancelled.\n", L_TCPxSTR,
-               u->GetAlias(), checkUin);
-      CEventChatCancel *e = new CEventChatCancel(0, TIME_NOW, E_DIRECT);
-      AddUserEvent(u, e);
-      break;
-    }
-    case ICQ_CMDxSUB_FILE:
-    {
-      gLog.Info("%sFile transfer request from %s (%ld) cancelled.\n",
-               L_TCPxSTR, u->GetAlias(), checkUin);
-      CEventFileCancel *e = new CEventFileCancel(0, TIME_NOW, E_DIRECT);
-      AddUserEvent(u, e);
-      break;
-    }
+      case ICQ_CMDxSUB_CHAT:
+      {
+        gLog.Info("%sChat request from %s (%ld) cancelled.\n", L_TCPxSTR,
+                 u->GetAlias(), checkUin);
+        //CEventChatCancel *e = new CEventChatCancel(0, TIME_NOW, E_DIRECT);
+        //AddUserEvent(u, e);
+        packet >> junkLong >> junkLong >> junkShort >> junkChar >> theSequence;
+        for (unsigned short i = 0; i < u->NewMessages(); i++)
+        {
+          if (u->EventPeek(i)->Sequence() == theSequence)
+          {
+            u->EventPeek(i)->Cancel();
+            break;
+          }
+        }
+        break;
+      }
+      case ICQ_CMDxSUB_FILE:
+      {
+        gLog.Info("%sFile transfer request from %s (%ld) cancelled.\n",
+                 L_TCPxSTR, u->GetAlias(), checkUin);
+        //CEventFileCancel *e = new CEventFileCancel(0, TIME_NOW, E_DIRECT);
+        //AddUserEvent(u, e);
+        packet >> junkLong >> junkShort >> junkChar >> junkLong >> junkLong >> theSequence;
+        for (unsigned short i = 0; i < u->NewMessages(); i++)
+        {
+          if (u->EventPeek(i)->Sequence() == theSequence)
+          {
+            u->EventPeek(i)->Cancel();
+            break;
+          }
+        }
+        break;
+      }
 
-    default:
-       break;
+      default:
+         break;
     }
 
     break;
