@@ -782,7 +782,7 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
  * Adds the given uin to the contact list.  Note that when this call returns
  * the user is not locked.
  *-------------------------------------------------------------------------*/
-bool CICQDaemon::AddUserToList(unsigned long nUin)
+bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
 {
   // Don't add invalid uins
   if (nUin == 0) return false;
@@ -799,7 +799,7 @@ bool CICQDaemon::AddUserToList(unsigned long nUin)
   gUserManager.DropUser(u);
   SaveUserList();
 
-  if (m_nTCPSrvSocketDesc != -1) icqAddUser(nUin);
+  if (m_nTCPSrvSocketDesc != -1 && bNotify) icqAddUser(nUin);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nUin));
 

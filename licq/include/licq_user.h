@@ -89,6 +89,7 @@ class TCPSocket;
 
 typedef std::list<ICQUser *> UserList;
 typedef std::vector<char *> GroupList;
+typedef std::vector<unsigned short> GroupIDList;
 typedef std::list<unsigned long> UinList;
 typedef std::vector <class CUserEvent *> UserEventList;
 
@@ -212,6 +213,7 @@ public:
   char *GetAbout()                      { return m_szAbout; }
 
   // Licq Info
+  unsigned short GetSID()               { return m_nSID; }
   char *AutoResponse()                  { return m_szAutoResponse; }
   char *UserEncoding()                  { return m_szEncoding; }
   bool SendRealIp()                     { return m_bSendRealIp; }
@@ -294,6 +296,7 @@ public:
   void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
 
   // Licq Info
+  void SetSID(unsigned short s)       { m_nSID = s; }
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendRealIp(bool s)          { m_bSendRealIp = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
@@ -504,6 +507,9 @@ protected:
   // About Info
   char *m_szAbout;
 
+  // Server Side ID
+  unsigned short m_nSID;
+
   UserEventList m_vcMessages;
 
   static unsigned short s_nNumUserEvents;
@@ -539,6 +545,12 @@ public:
   unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
 
+  // Server Side List functions
+  time_t GetSSCheck()                 { return m_nSSTime; }
+  void SetSSCheck(time_t t)           { m_nSSTime = t; }
+  unsigned short GetSSCount()         { return m_nSSCount; }
+  void SetSSCount(unsigned short n)   { m_nSSCount = n; }
+
   // Virtual overloaded functions
   virtual void SaveLicqInfo();
   virtual void SetStatusOffline();
@@ -549,29 +561,10 @@ protected:
   bool m_bException,
        m_bWebAware,
        m_bHideIp;
-  unsigned long m_nRandomChatGroup;
+  unsigned long  m_nRandomChatGroup;
+  unsigned short m_nSSCount;
+  time_t         m_nSSTime;
 };
-
-
-//=====ICQActiveList============================================================
-
-class ICQActiveList : public ICQUser
-{
-public:
-  ICQActiveList();
-  virtual ~ICQActiveList();
-
-protected:
-  unsigned long m_nOwnerUin;
-  char *m_szTitle;
-  char *m_szSubject;
-  char *m_szHomepage;
-  char *m_szShortDesc;
-  char *m_szLongDesc;
-  char *m_szRequirements;
-};
-
-
 
 //=====CUsers===================================================================
 
@@ -615,13 +608,21 @@ public:
   void UnlockUserList();
   GroupList *LockGroupList(unsigned short);
   void UnlockGroupList();
+  GroupIDList *LockGroupIDList(unsigned short);
+  void UnlockGroupIDList();
 
-  void AddGroup(char *);
+  bool AddGroup(char *, unsigned short = 0);
   void RemoveGroup(unsigned short);
   void RenameGroup(unsigned short, const char *);
   unsigned short NumGroups();
   void SaveGroups();
   void SwapGroups(unsigned short g1, unsigned short g2);
+
+  void AddGroupID(unsigned short);
+  void RemoveGroupID(unsigned short);
+  void ModifyGroupID(char *, unsigned short);
+  void SaveGroupIDs();
+  unsigned short GetGroupFromID(unsigned short);
 
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
@@ -634,14 +635,15 @@ public:
   //void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
-  pthread_rdwr_t mutex_grouplist, mutex_userlist;
+  pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_groupidlist;
   GroupList m_vszGroups;
   UserList m_vpcUsers;
+  GroupIDList m_vnGroupsID;
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
   unsigned short m_nDefaultGroup, //m_nNewUserGroup,
-                 m_nUserListLockType, m_nGroupListLockType;
+                 m_nUserListLockType, m_nGroupListLockType, m_nGroupIDListLockType;
   bool m_bAllowSave;
 
   friend class CICQDaemon;

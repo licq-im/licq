@@ -50,4 +50,7 @@ static const char LICQ_CONF[] =
 "Group1.name = New Users\n"
 "Group2.name = Friends\n"
 "Group3.name = Family\n"
+"Group1.id = 0\n"
+"Group2.id = 0\n"
+"Group3.id = 0\n"
 "\n";

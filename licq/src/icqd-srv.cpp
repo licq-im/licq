@@ -1012,6 +1012,12 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       p = new CPU_GenericFamily(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REQUESTxRIGHTS);
       SendEvent_Server(p);
 
+      // Jon XXX Use the server side list if wanted
+      // This request does contain parameters
+      gLog.Info("%sRequesting Server Contact List rights.\n", L_SRVxSTR);
+      p = new CPU_RequestList();
+      SendEvent_Server(p);
+      
       gLog.Info("%sRequesting Instant Messaging rights.\n", L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_REQUESTxRIGHTS);
       SendEvent_Server(p);
@@ -1681,6 +1687,106 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     gLog.Warn("%sUnknown Message Family Subtype: %04hx\n", L_SRVxSTR, nSubtype);
     break;
   }
+}
+
+//--------ProcessListFam--------------------------------------------
+void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
+{
+  /*unsigned short nFlags = */packet.UnpackUnsignedShortBE();
+  /*unsigned long nSubSequence = */packet.UnpackUnsignedLongBE();
+
+  switch (nSubtype)
+  {
+    case ICQ_SNACxLIST_RIGHTSxGRANTED:
+    {
+      gLog.Info("%sServer granted Server Contact List.\n", L_SRVxSTR);
+      gLog.Info("%sRequesting Server Contact List.\n", L_SRVxSTR);
+
+      CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+        ICQ_SNACxLIST_REQUESTxROST);
+      SendEvent_Server(p);
+      break;
+    }
+
+    case ICQ_SNACxLIST_ROSTxREPLY:
+    {
+      unsigned short nCount;
+      unsigned long nTime;
+
+      gLog.Info("%sReceived contact list.\n", L_SRVxSTR);
+
+      packet.UnpackChar();  // unknown
+      nCount = packet.UnpackUnsignedShortBE();
+
+      for (unsigned short i = 0; i < nCount; i++)
+      {
+        char *szName;
+        unsigned short nTag, nID, nType, nByteLen;
+
+        // Can't use UnpackUinString because this may be a group name
+        szName = packet.UnpackStringBE();
+        nTag = packet.UnpackUnsignedShortBE();
+        nID = packet.UnpackUnsignedShortBE();
+        nType = packet.UnpackUnsignedShortBE();
+        nByteLen = packet.UnpackUnsignedShortBE();
+
+        if (nByteLen)
+        {
+          if (!packet.readTLV(-1, nByteLen))
+          {
+            gLog.Error("%sUnable to parse contact list TLV, aborting!\n", L_ERRORxSTR);
+            return;
+          }
+        }
+
+        switch (nType)
+        {
+          case ICQ_ROSTxNORMAL:
+          case ICQ_ROSTxVISIBLE:
+          case ICQ_ROSTxINVISIBLE:
+          {
+            unsigned long nUin = atoi(szName);
+            unsigned short nInGroup = gUserManager.GetGroupFromID(nTag);
+            AddUserToList(nUin, false); // Don't notify server
+            ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+            if (u)
+            {
+              u->SetSID(nID);
+
+              if (nType == ICQ_ROSTxINVISIBLE)  u->SetInvisibleList(true);
+              else if (nType == ICQ_ROSTxVISIBLE) u->SetVisibleList(true);
+
+              // Drop before lock. I'm a poet and didn't know it.
+              gUserManager.DropUser(u);
+              gUserManager.AddUserToGroup(nUin, nInGroup);
+            }
+
+            char *szNewName = packet.UnpackStringTLV(0x0131);
+            gLog.Info("%sAdded %s (%ld) to list from server.\n", L_SRVxSTR,
+              (szNewName ? szNewName : ""), nUin);
+            if (szNewName)
+              delete [] szNewName;
+
+            break;
+          }
+
+          case ICQ_ROSTxGROUP:
+          {
+            if (szName[0] != '\0')
+            {
+              // Add the group, if it already exists change the tag on this grp
+              if (!gUserManager.AddGroup(szName, nTag))
+                gUserManager.ModifyGroupID(szName, nTag);
+            }
+            break;
+          }
+        }  // switch (nType)
+
+        packet.cleanupTLV();
+      } // for count
+      break;
+    } // case rost reply
+  } // switch subtype
 }
 
 //--------ProcessBosFam---------------------------------------------
@@ -2705,6 +2811,10 @@ void CICQDaemon::ProcessDataChannel(CBuffer &packet)
 
   case ICQ_SNACxFAM_MESSAGE:
     ProcessMessageFam(packet, nSubtype);
+    break;
+
+  case ICQ_SNACxFAM_LIST:
+    ProcessListFam(packet, nSubtype);
     break;
 
   case ICQ_SNACxFAM_BOS:

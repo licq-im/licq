@@ -214,7 +214,7 @@ public:
   unsigned short BirthdayRange() { return m_nBirthdayRange; }
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
-  bool AddUserToList(unsigned long _nUin);
+  bool AddUserToList(unsigned long _nUin, bool bNotify = true);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
 
@@ -380,6 +380,7 @@ protected:
   void ProcessMessageFam(CBuffer&, unsigned short);
   void ProcessVariousFam(CBuffer&, unsigned short);
   void ProcessBOSFam(CBuffer&, unsigned short);
+  void ProcessListFam(CBuffer &, unsigned short);
   void ProcessNewUINFam(CBuffer &, unsigned short);
 
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);

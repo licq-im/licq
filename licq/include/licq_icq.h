@@ -26,7 +26,7 @@ const unsigned short ICQ_SNACxFAM_LOCATION         = 0x0002;
 const unsigned short ICQ_SNACxFAM_BUDDY            = 0x0003;
 const unsigned short ICQ_SNACxFAM_MESSAGE          = 0x0004;
 const unsigned short ICQ_SNACxFAM_BOS              = 0x0009;
-const unsigned short ICQ_SNACxFAM_LISTS            = 0x0013;
+const unsigned short ICQ_SNACxFAM_LIST             = 0x0013;
 const unsigned short ICQ_SNACxFAM_VARIOUS          = 0x0015;
 const unsigned short ICQ_SNACxFAM_NEWUIN	   = 0x0017;
 
@@ -90,8 +90,31 @@ const unsigned short ICQ_SNACxSEARCH  		   = 0x0002; // client
 const unsigned short ICQ_SNACxREGISTER_USER	   = 0x0004; // client
 const unsigned short ICQ_SNACxNEW_UIN		   = 0x0005; // server
 
+// Subtypes for list family
+const unsigned short ICQ_SNACxLIST_REQUESTxRIGHTS  = 0x0002; // client
+const unsigned short ICQ_SNACxLIST_RIGHTSxGRANTED  = 0x0003; // server
+const unsigned short ICQ_SNACxLIST_REQUESTxROST2   = 0x0004; // server
+const unsigned short ICQ_SNACxLIST_REQUESTxROST    = 0x0005; // client
+const unsigned short ICQ_SNACxLIST_ROSTxREPLY      = 0x0006; // server
+const unsigned short ICQ_SNACxLIST_ROSTxACK        = 0x0007; // client
+const unsigned short ICQ_SNACxLIST_ADDxVISIBLExLIST= 0x0008; // client
+const unsigned short ICQ_SNACxLIST_UPDxGROUP       = 0x0009; // client
+const unsigned short ICQ_SNACxLIST_REMxVISIBLExLIST= 0x000A; // client
+const unsigned short ICQ_SNACxLIST_REMxACK         = 0x000E; // server
+const unsigned short ICQ_SNACxLIST_AUTHxREQ2       = 0x0014; // client
+const unsigned short ICQ_SNACxLIST_AUTHxREQ        = 0x0018; // client
+
 // messagetypes
 const unsigned short ICQ_MSGxAUTHORIZE             = 0x0008;
+
+// Roster Types
+const unsigned short ICQ_ROSTxNORMAL               = 0x0000;
+const unsigned short ICQ_ROSTxGROUP                = 0x0001;
+const unsigned short ICQ_ROSTxINVISIBLE            = 0x0003;
+const unsigned short ICQ_ROSTxVISIBLE              = 0x0004;
+const unsigned short ICQ_ROSTxICQTIC               = 0x0009;
+const unsigned short ICQ_ROSTxIGNORE               = 0x000E;
+const unsigned short ICQ_ROSTxIMPORT               = 0x0013;
 
 //********* OLD COMMANDS ******************************************
 

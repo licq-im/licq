@@ -87,6 +87,7 @@ public:
    char *UnpackString(char *);
    char *UnpackString();
    char *UnpackStringBE(char *);
+   char *UnpackStringBE();
    unsigned long UnpackUnsignedLong();
    unsigned long UnpackUinString();
    unsigned short UnpackUnsignedShort();
@@ -106,7 +107,7 @@ public:
 
    //--- OSCAR Related Functions ------
 
-   bool readTLV(int count = -1); // This should be called automatically if m_pTLV == 0
+   bool readTLV(int count = -1, int bytes = -1); // This should be called automatically if m_pTLV == 0
    void cleanupTLV();
 
    void PackTLV(unsigned short, unsigned short, const char *);

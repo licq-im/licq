@@ -304,6 +304,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
       break;
     case 6:
     case 7:
+    case 8:
     default:
       offset = 0;
   }
@@ -375,6 +376,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
     break;
   case 6:
   case 7:
+  case 8:
   default:
     offset = 0;
   }
@@ -1196,6 +1198,19 @@ CPU_Logoff::CPU_Logoff()
   InitBuffer();
 }
 
+//-----RequestList--------------------------------------------------------------
+CPU_RequestList::CPU_RequestList()
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxROST)
+{
+  m_nSize += 6;
+  InitBuffer();
+
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  buffer->PackUnsignedLongBE(o->GetSSCheck());
+  buffer->PackUnsignedShortBE(o->GetSSCount());
+  gUserManager.DropOwner();
+}
+
 //-----SearchByInfo--------------------------------------------------------------
 CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
                                  const char *szLastName, const char *szEmail)
@@ -1989,8 +2004,6 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
    unsigned long nSessionId, unsigned short nLocalPort)
 {
   m_nDestinationUin = nDestinationUin;
-  m_nSessionId = nSessionId;
-  if (m_nSessionId == 0) m_nSessionId = rand();
 
   m_nSize = 48;
   buffer = new CBuffer(m_nSize);
@@ -2006,7 +2019,12 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
-  buffer->PackUnsignedLong(m_nSessionId);
+
+  ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+  buffer->PackUnsignedLong(u->Cookie());
+  m_nSessionId = u->Cookie();
+  gUserManager.DropUser(u);
+
   buffer->PackUnsignedLong(0x00000050); // constant
   buffer->PackUnsignedLong(0x00000003); // constant
   buffer->PackUnsignedLong(0x00000000); // ???
@@ -2018,7 +2036,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(CBuffer *inbuf)
 {
   m_nHandshake = inbuf->UnpackChar();
   m_nVersionMajor = inbuf->UnpackUnsignedShort();
-  m_nVersionMinor = inbuf->UnpackUnsignedShort();
+  inbuf->UnpackUnsignedShort();  // Length
   m_nDestinationUin = inbuf->UnpackUnsignedLong();
   inbuf->UnpackUnsignedShort();
   inbuf->UnpackUnsignedLong();
@@ -2026,10 +2044,8 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(CBuffer *inbuf)
   m_nRealIp = inbuf->UnpackUnsignedLong();
   m_nLocalIp = inbuf->UnpackUnsignedLong();
   m_nMode = inbuf->UnpackChar();
-  inbuf->UnpackUnsignedLong(); // port of some kind...?
-  m_nSessionId = inbuf->UnpackUnsignedLong();
-  //inbuf->UnpackUnsignedLong(); // constant
-  //inbuf->UnpackUnsignedLong(); // constant
+  inbuf->UnpackUnsignedLong();
+  m_nSessionId = inbuf->UnpackUnsignedLong(); // Mmmm cookie
 }
 
 
@@ -2149,6 +2165,7 @@ void CPacketTcp::InitBuffer()
   {
     case 6:
     case 7:
+    case 8:
       InitBuffer_v6();
       break;
     case 4:
@@ -2168,6 +2185,7 @@ void CPacketTcp::PostBuffer()
   {
     case 6:
     case 7:
+    case 8:
       PostBuffer_v6();
       break;
     case 4:

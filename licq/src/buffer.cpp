@@ -301,9 +301,22 @@ CBuffer& CBuffer::operator>>(unsigned long &in)
 
 char *CBuffer::UnpackStringBE(char* sz)
 {
-  unsigned char nLen;
+  unsigned short nLen;
   sz[0] = '\0';
   *this >> nLen;
+  rev_e_short(nLen);
+  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
+  sz[nLen] = '\0';
+  return sz;
+}
+
+char *CBuffer::UnpackStringBE()
+{
+  unsigned short nLen;
+  *this >> nLen;
+  rev_e_short(nLen);
+  char *sz = new char[nLen+1];
+  sz[0] = '\0';
   for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
   sz[nLen] = '\0';
   return sz;
@@ -513,11 +526,13 @@ char *CBuffer::PackUnsignedShortBE(unsigned short data)
 
 //-----TLV----------------------------------------------------------------------
 
-bool CBuffer::readTLV(int count)
+bool CBuffer::readTLV(int nCount, int nBytes)
 {
-  if (m_pTLV || !count) return false; // already have one
+  if (m_pTLV || !nCount) return false; // already have one
 
   int num = 0;
+  int nCurBytes = 0;
+
   while(getDataPosRead() + 4 < (getDataStart() + getDataSize())) {
     SOscarTLV_Chain *now = new SOscarTLV_Chain;
     now->pTLV = new SOscarTLV;
@@ -525,11 +540,10 @@ bool CBuffer::readTLV(int count)
     *this >> now->pTLV->nType;
     *this >> now->pTLV->nLen;
 
-
     rev_e_short(now->pTLV->nType);
     rev_e_short(now->pTLV->nLen);
 
-    //gLog.Info("got type %d, len: %d\n", now->pTLV->nType, now->pTLV->nLen);
+    nCurBytes += 4 + now->pTLV->nLen;
 
     if(getDataPosRead() + now->pTLV->nLen > (getDataStart() + getDataSize()) ||
        now->pTLV->nLen < 1) {
@@ -546,8 +560,25 @@ bool CBuffer::readTLV(int count)
     m_pTLV = now;
 
     ++num;
-    if (count > 0 && num == count)
+    if (nCount > 0 && num == nCount)
       return true;
+
+    if (nBytes > 0 && nCurBytes == nBytes)
+      return true;
+
+    if (nBytes > 0 && nCurBytes > nBytes)
+    {
+      gLog.Warn("%sRead too much TLV data!\n", L_WARNxSTR);
+      return true;
+    }
+  }
+
+  // Finish off the number of bytes we wanted
+  if (nCurBytes < nBytes)
+  { 
+    gLog.Warn("%sUnable to read requested amount of TLV data!\n", L_WARNxSTR);
+    for (; nCurBytes < nBytes; nCurBytes++)
+      UnpackChar();
   }
 
   return true;

@@ -262,6 +262,17 @@ public:
    CPU_GenericUinList(unsigned long _nUin, unsigned short Family, unsigned short Subtype);
 };
 
+//-----RequestList--------------------------------------------------------------
+class CPU_RequestList : public CPU_CommonFamily
+{
+public:
+  CPU_RequestList();
+
+protected:
+  time_t         m_nSavedTime;
+  unsigned short m_nRecords;
+};
+
 //-----SetStatus----------------------------------------------------------------
 class CPU_SetStatus : public CPU_CommonFamily
 {

@@ -575,6 +575,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
     }
 
     case 7:
+    case 8:
     {
       // Send the hanshake
       CPacketTcp_Handshake_v7 p(nUin, 0, nPort);
@@ -602,7 +603,7 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
       s->ClearRecvBuffer();
       if (p.SessionId() != p_in.SessionId())
       {
-        gLog.Warn("%sBad handshake session id: received %ld, expecting %ld.\n",
+        gLog.Warn("%sBad handshake cookie: received %ld, expecting %ld.\n",
            L_WARNxSTR, p_in.SessionId(), p.SessionId());
         return false;
       }

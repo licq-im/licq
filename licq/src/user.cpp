@@ -87,7 +87,8 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
   // Set up the basic all users and new users group
   pthread_rdwr_init_np(&mutex_grouplist, NULL);
   pthread_rdwr_init_np(&mutex_userlist, NULL);
-  m_nUserListLockType = m_nGroupListLockType = LOCK_N;
+  pthread_rdwr_init_np(&mutex_groupidlist, NULL);
+  m_nUserListLockType = m_nGroupListLockType = m_nGroupIDListLockType = LOCK_N;
 
   m_xOwner = NULL;
   m_nOwnerUin = 0;
@@ -147,12 +148,16 @@ bool CUserManager::Load()
   licqConf.ReadNum("NumOfGroups", nGroups);
 
   m_bAllowSave = false;
-  char sGroupKey[MAX_KEYxNAME_LEN], sGroupName[MAX_LINE_LEN];
+  char sGroupKey[MAX_KEYxNAME_LEN], sGroupIDKey[MAX_KEYxNAME_LEN],
+       sGroupName[MAX_LINE_LEN];
+  unsigned short nID;
   for (unsigned short i = 1; i <= nGroups; i++)
   {
      sprintf(sGroupKey, "Group%d.name", i);
      licqConf.ReadStr(sGroupKey, sGroupName);
-     AddGroup(strdup(sGroupName));
+     sprintf(sGroupIDKey, "Group%d.id", i);
+     licqConf.ReadNum(sGroupIDKey, nID, 0);
+     AddGroup(strdup(sGroupName), nID);
   }
   m_bAllowSave = true;
 
@@ -260,14 +265,46 @@ void CUserManager::RemoveUser(unsigned long _nUin)
 /*---------------------------------------------------------------------------
  * CUserManager::AddGroup
  *-------------------------------------------------------------------------*/
-void CUserManager::AddGroup(char *_szName)
+bool CUserManager::AddGroup(char *_szName, unsigned short nID)
 {
-  if(_szName) {
+  bool bRet = false;
+
+  if(_szName)
+  {
+    // Check to make sure it isn't a group name already
+    int j = 0;
     LockGroupList(LOCK_W);
-    m_vszGroups.push_back(strdup(_szName));
-    SaveGroups();
+    for (GroupList::iterator i = m_vszGroups.begin(); i != m_vszGroups.end();
+      ++i)
+    {
+      if (strlen(_szName) == strlen(*i))
+      {
+        for (; j < strlen(_szName); j++)
+        {
+          if (toupper(_szName[j]) != toupper((*i)[j]))
+            break;
+        }
+      }
+    }
+
+    // Don't allow a duplicate name
+    if (j == strlen(_szName))
+    {
+      gLog.Warn("%sGroup %s already on list.\n", L_WARNxSTR, _szName);
+    }
+    else
+    {
+      AddGroupID(nID);
+
+      m_vszGroups.push_back(strdup(_szName));
+      SaveGroups();
+      bRet = true;
+    }
+
     UnlockGroupList();
   }
+  
+  return bRet;
 }
 
 
@@ -275,7 +312,7 @@ void CUserManager::AddGroup(char *_szName)
 /*---------------------------------------------------------------------------
  * CUserManager::RemoveGroup
  *
- * Removes a group (note groups are numbered 1 to NumGroups() )
+ * Removes a group and it's id (note groups are numbered 1 to NumGroups() )
  *-------------------------------------------------------------------------*/
 void CUserManager::RemoveGroup(unsigned short n)
 {
@@ -298,6 +335,9 @@ void CUserManager::RemoveGroup(unsigned short n)
   FOR_EACH_USER_END;
   if (m_nDefaultGroup >= n) m_nDefaultGroup--;
   //if (m_nNewUserGroup >= n) m_nNewUserGroup--;
+
+  RemoveGroupID(n);
+
   SaveGroups();
   UnlockGroupList();
 }
@@ -357,7 +397,7 @@ void CUserManager::RenameGroup(unsigned short n, const char *_sz)
 /*---------------------------------------------------------------------------
  * CUserManager::SaveGroups
  *
- * Assumes a lock on the group list.
+ * Assumes a lock on the group list
  *-------------------------------------------------------------------------*/
 void CUserManager::SaveGroups()
 {
@@ -372,13 +412,18 @@ void CUserManager::SaveGroups()
   licqConf.SetSection("groups");
   licqConf.WriteNum("NumOfGroups", NumGroups());
 
-  char sGroupKey[MAX_KEYxNAME_LEN];
+  char sGroupKey[MAX_KEYxNAME_LEN], sGroupIDKey[MAX_KEYxNAME_LEN];
   //LockGroupList(LOCK_R);
+  LockGroupIDList(LOCK_R);
   for (unsigned short i = 0; i < m_vszGroups.size(); i++)
   {
      sprintf(sGroupKey, "Group%d.name", i + 1);
      licqConf.WriteStr(sGroupKey, m_vszGroups[i]);
+
+     sprintf(sGroupIDKey, "Group%d.id", i + 1);
+     licqConf.WriteNum(sGroupIDKey, m_vnGroupsID[i]);
   }
+  UnlockGroupIDList();
   //UnlockGroupList();
 
   licqConf.WriteNum("DefaultGroup", m_nDefaultGroup);
@@ -387,7 +432,99 @@ void CUserManager::SaveGroups()
   licqConf.CloseFile();
 }
 
+/*---------------------------------------------------------------------------
+ * CUserManager::AddGroupID
+ *-------------------------------------------------------------------------*/
+void CUserManager::AddGroupID(unsigned short nID)
+{
+  LockGroupIDList(LOCK_W);
+  m_vnGroupsID.push_back(nID);
+  //SaveGroupIDs();
+  UnlockGroupIDList();
+}
 
+/*---------------------------------------------------------------------------
+ * CUserManager::RemoveGroupID
+ *-------------------------------------------------------------------------*/
+void CUserManager::RemoveGroupID(unsigned short n)
+{
+  LockGroupIDList(LOCK_W);
+  m_vnGroupsID.erase(m_vnGroupsID.begin()+n-1);
+  SaveGroupIDs();
+  UnlockGroupIDList();
+}
+
+/*---------------------------------------------------------------------------
+ * CUserManager::GetGroupFromID
+ *-------------------------------------------------------------------------*/
+unsigned short CUserManager::GetGroupFromID(unsigned short nID)
+{
+  unsigned short nGroup = 1;
+
+  LockGroupIDList(LOCK_R);
+  for (GroupIDList::iterator i = m_vnGroupsID.begin(); i != m_vnGroupsID.end();
+      ++i)
+  {
+    if (*i == nID)  break;
+    nGroup++;
+  }
+  UnlockGroupIDList();
+
+  return nGroup;
+}
+
+/*---------------------------------------------------------------------------
+ * CUserManager::ModifyGroupID
+ *-------------------------------------------------------------------------*/
+void CUserManager::ModifyGroupID(char *szGroup, unsigned short nNewID)
+{
+  unsigned short nGroup = 0;
+  LockGroupList(LOCK_R);
+  LockGroupIDList(LOCK_W);
+  for (GroupList::iterator i = m_vszGroups.begin(); i != m_vszGroups.end();
+      ++i)
+  {
+    if (strcmp(*i, szGroup) == 0)
+    {
+      m_vnGroupsID[nGroup] = nNewID;
+      break;
+    }
+    else
+      nGroup++;
+  }
+  UnlockGroupIDList();
+
+  SaveGroups();
+  UnlockGroupList();
+}
+
+/*---------------------------------------------------------------------------
+ * CUserManager::SaveGroupIDs
+ *
+ * Assumes a lock on the group id list
+ *-------------------------------------------------------------------------*/
+void CUserManager::SaveGroupIDs()
+{
+  if (!m_bAllowSave) return;
+
+  // Load the group info from licq.conf
+  char filename[MAX_FILENAME_LEN];
+  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  CIniFile licqConf(INI_FxWARN);
+  licqConf.LoadFile(filename);
+
+  licqConf.SetSection("groups");
+
+  char sGroupKey[MAX_KEYxNAME_LEN];
+  for (unsigned short i = 0; i < m_vnGroupsID.size(); i++)
+  {
+     sprintf(sGroupKey, "Group%d.id", i + 1);
+     licqConf.WriteNum(sGroupKey, m_vnGroupsID[i]);
+  }
+
+  licqConf.FlushFile();
+  licqConf.CloseFile();
+}
 
 /*---------------------------------------------------------------------------
  * CUserManager::FetchUser
@@ -572,6 +709,51 @@ void CUserManager::UnlockGroupList()
     break;
   case LOCK_W:
     pthread_rdwr_wunlock_np(&mutex_grouplist);
+    break;
+  default:
+    break;
+  }
+}
+
+
+/*---------------------------------------------------------------------------
+ * LockGroupIDList
+ *
+ * Locks the entire group id list for iterating through...
+ *-------------------------------------------------------------------------*/
+GroupIDList *CUserManager::LockGroupIDList(unsigned short _nLockType)
+{
+  switch (_nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_rlock_np (&mutex_groupidlist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wlock_np(&mutex_groupidlist);
+    break;
+  default:
+    break;
+  }
+  m_nGroupIDListLockType = _nLockType;
+  return &m_vnGroupsID;
+}
+
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::UnlockGroupIDList
+ *-------------------------------------------------------------------------*/
+void CUserManager::UnlockGroupIDList()
+{
+  unsigned short nLockType = m_nGroupIDListLockType;
+  m_nGroupIDListLockType = LOCK_R;
+  switch (nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_runlock_np(&mutex_groupidlist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wunlock_np(&mutex_groupidlist);
     break;
   default:
     break;
@@ -904,6 +1086,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
+  m_fConf.ReadNum("SID", m_nSID, 0);
 
   if (nNewMessages > 0)
   {
@@ -1110,6 +1293,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
   m_bConnectionInProgress = false;
+  m_nSID = 0;
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -1874,6 +2058,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
+   m_fConf.WriteNum("SID", m_nSID);
 
    if (!m_fConf.FlushFile())
    {
@@ -2147,6 +2332,8 @@ ICQOwner::ICQOwner()
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   m_fConf.ReadStr("AutoResponse", szTemp, "");
+  m_fConf.ReadNum("SSTime", (unsigned long)m_nSSTime, 0L);
+  m_fConf.ReadNum("SSCount", m_nSSCount, 0);
   SetAutoResponse(szTemp);
 
   m_fConf.CloseFile();
@@ -2223,6 +2410,8 @@ void ICQOwner::SaveLicqInfo()
   m_fConf.WriteBool("HideIP", HideIp());
   m_fConf.WriteBool("Authorization", GetAuthorization());
   m_fConf.WriteNum("RCG", RandomChatGroup());
+  m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
+  m_fConf.WriteNum("SSCount", m_nSSCount);
 
   if (!m_fConf.FlushFile())
   {
