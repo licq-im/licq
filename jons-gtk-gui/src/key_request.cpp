@@ -67,16 +67,16 @@ void create_key_request_window(GtkWidget *widget, ICQUser *user)
 	{
 		case SECURE_CHANNEL_SUPPORTED:
 			strncpy(secure_info, g_strdup_printf(
-				"The remote uses Licq v0.%d/SSL.",
-					user->LicqVersion()), 128);
+				"The remote uses Licq %s/SSL.",
+				CUserEvent::LicqVersionToString(user->LicqVersion())), 128);
 			break;
 
 		case SECURE_CHANNEL_NOTSUPPORTED:
 			strncpy(secure_info, g_strdup_printf(
-				"The remote uses Licq v0.%d, however it\n"
+				"The remote uses Licq %s, however it\n"
 				"has no secure channel support compiled in.\n"
 				"This probably won't work.",
-					user->LicqVersion()), 128);
+					CUserEvent::LicqVersionToString(user->LicqVersion())), 128);
 			break;
 
 		default:
