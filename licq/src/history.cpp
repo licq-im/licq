@@ -99,6 +99,11 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
     while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':'); \
   }
 
+#define SKIP_LINE \
+  { \
+	  szResult = fgets(sz, MAX_LINE_LEN, f); \
+  }
+
 bool CUserHistory::Load(HistoryList &lHistory)
 {
   if (m_szFileName == NULL)
@@ -136,7 +141,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     if (szResult == NULL) break;
     // Zero unused part of sz to avoid interpreting garbage if sz is too
     // short
-    memset(sz + strlen(sz) + 1, '\0', MAX_LINE_LEN - strlen(sz) - 1); 
+    memset(sz + strlen(sz) + 1, '\0', MAX_LINE_LEN - strlen(sz) - 1);
     //"[ C | 0000 | 0000 | 0000 | 000... ]"
     cDir = sz[2];
     // Stick some \0's in to terminate strings
@@ -308,6 +313,16 @@ bool CUserHistory::Load(HistoryList &lHistory)
       GET_VALID_LINES;
       e = new CEventSms(szNum, szMsg, nCommand, tTime, nFlags);
       free(szNum);
+      break;
+    }
+    case ICQ_CMDxSUB_MSGxSERVER:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      const char *szName = strdup(&szResult[1]);
+      SKIP_LINE;
+      const char *szEmail = "";
+      GET_VALID_LINES;
+      e = new CEventServerMessage(szName, szEmail, szMsg, tTime);
       break;
     }
     default:

@@ -19,7 +19,7 @@ static const char *szEventTypes[27] =
   QT_TRANSLATE_NOOP("Event","Authorization Request"),
   QT_TRANSLATE_NOOP("Event","Authorization Refused"),
   QT_TRANSLATE_NOOP("Event","Authorization Granted"),
-  QT_TRANSLATE_NOOP("Event",""),
+  QT_TRANSLATE_NOOP("Event","System Server Message"),
   QT_TRANSLATE_NOOP("Event",""),
   QT_TRANSLATE_NOOP("Event",""),
   QT_TRANSLATE_NOOP("Event","Added to Contact List"),
