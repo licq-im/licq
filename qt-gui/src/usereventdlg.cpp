@@ -1172,9 +1172,8 @@ void UserSendCommon::massMessageToggled(bool b)
   }
   else
   {
-    // doesn't work right TODO investigate why
-    //int w = grpMR->width();
     grpMR->hide();
+    adjustSize();
   }
 }
 
