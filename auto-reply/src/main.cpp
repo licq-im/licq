@@ -26,6 +26,11 @@ const char *LP_Name()
   return name;
 }
 
+const char *LP_ConfigFile()
+{
+  return "licq_autoreply.conf";
+}
+
 
 const char *LP_Description()
 {

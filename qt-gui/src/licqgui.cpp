@@ -69,6 +69,12 @@ const char *LP_Name(void)
 }
 
 
+const char *LP_ConfigFile(void)
+{
+  return "licq_qt-gui.conf";
+}
+
+
 const char *LP_Version(void)
 {
   static const char version[] = VERSION;

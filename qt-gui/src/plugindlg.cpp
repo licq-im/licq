@@ -13,14 +13,13 @@
 
 #include "plugindlg.h"
 #include "ewidgets.h"
+#include "editfile.h"
 
 #include "licq_icqd.h"
 
-PluginDlg::PluginDlg(CICQDaemon *d) 
+PluginDlg::PluginDlg()
   : QWidget(0, "PluginDialog", WDestructiveClose)
 {
-  licqDaemon = d;
-
   QGroupBox *lbox = new QGroupBox(tr("Loaded"), this);
 
   lstLoaded = new QListView(lbox);
@@ -39,11 +38,14 @@ PluginDlg::PluginDlg(CICQDaemon *d)
   connect(btnUnload, SIGNAL(clicked()), this, SLOT(slot_unload()));
   QPushButton *btnDetails = new QPushButton(tr("Details"), lbox);
   connect(btnDetails, SIGNAL(clicked()), this, SLOT(slot_details()));
+  QPushButton *btnConfig = new QPushButton(tr("Configure"), lbox);
+  connect(btnConfig, SIGNAL(clicked()), this, SLOT(slot_config()));
   int bw = 75;
   bw = QMAX(bw, btnEnable->sizeHint().width());
   bw = QMAX(bw, btnDisable->sizeHint().width());
   bw = QMAX(bw, btnUnload->sizeHint().width());
   bw = QMAX(bw, btnDetails->sizeHint().width());
+  bw = QMAX(bw, btnConfig->sizeHint().width());
 
   QGroupBox *abox = new QGroupBox(tr("Available"), this);
 
@@ -64,6 +66,7 @@ PluginDlg::PluginDlg(CICQDaemon *d)
   btnEnable->setFixedWidth(bw);
   btnDisable->setFixedWidth(bw);
   btnUnload->setFixedWidth(bw);
+  btnConfig->setFixedWidth(bw);
   btnLoad->setFixedWidth(bw);
   btnDone->setFixedWidth(bw);
 
@@ -79,7 +82,12 @@ PluginDlg::PluginDlg(CICQDaemon *d)
   blay->addStretch(1);
   blay->addWidget(btnUnload);
   blay->addStretch(1);
+  llay->addLayout(blay);
+  blay = new QHBoxLayout;
+  blay->addStretch(1);
   blay->addWidget(btnDetails);
+  blay->addStretch(1);
+  blay->addWidget(btnConfig);
   blay->addStretch(1);
   llay->addLayout(blay);
   lay->addWidget(lbox);
@@ -109,7 +117,7 @@ void PluginDlg::slot_load()
   if (lstAvailable->currentItem() == -1) return;
 
   char *sz[] = { "licq", NULL };
-  licqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1(), 1, sz);
+  gLicqDaemon->PluginLoad(lstAvailable->text(lstAvailable->currentItem()).latin1(), 1, sz);
 }
 
 
@@ -118,7 +126,7 @@ void PluginDlg::slot_details()
   if (lstLoaded->currentItem() == NULL) return;
   PluginsList l;
   PluginsListIter it;
-  licqDaemon->PluginList(l);
+  gLicqDaemon->PluginList(l);
   for (it = l.begin(); it != l.end(); it++)
   {
     if ((*it)->Id() == lstLoaded->currentItem()->text(0).toUShort())
@@ -134,20 +142,46 @@ void PluginDlg::slot_details()
 void PluginDlg::slot_enable()
 {
   if (lstLoaded->currentItem() == NULL) return;
-  licqDaemon->PluginEnable(lstLoaded->currentItem()->text(0).toUShort());
+  gLicqDaemon->PluginEnable(lstLoaded->currentItem()->text(0).toUShort());
 }
 
 
 void PluginDlg::slot_disable()
 {
   if (lstLoaded->currentItem() == NULL) return;
-  licqDaemon->PluginDisable(lstLoaded->currentItem()->text(0).toUShort());
+  gLicqDaemon->PluginDisable(lstLoaded->currentItem()->text(0).toUShort());
 }
 
 void PluginDlg::slot_unload()
 {
   if (lstLoaded->currentItem() == NULL) return;
-  licqDaemon->PluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
+  gLicqDaemon->PluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
+}
+
+
+void PluginDlg::slot_config()
+{
+  if (lstLoaded->currentItem() == NULL) return;
+
+  PluginsList l;
+  PluginsListIter it;
+  gLicqDaemon->PluginList(l);
+  for (it = l.begin(); it != l.end(); it++)
+  {
+    if ((*it)->Id() == lstLoaded->currentItem()->text(0).toUShort())
+      break;
+  }
+  if (it == l.end()) return;
+
+  if ((*it)->ConfigFile() == NULL)
+  {
+    InformUser(this, tr("Plugin %1 has no configuration file").arg((*it)->Name()));
+    return;
+  }
+
+  QString f;
+  f.sprintf("%s/%s", BASE_DIR, (*it)->ConfigFile());
+  (void) new EditFileDlg(f);
 }
 
 
@@ -156,7 +190,7 @@ void PluginDlg::slot_refresh()
   // Load up the plugin info
   PluginsList l;
   PluginsListIter it;
-  licqDaemon->PluginList(l);
+  gLicqDaemon->PluginList(l);
   lstLoaded->clear();
   for (it = l.begin(); it != l.end(); it++)
   {

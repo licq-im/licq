@@ -2916,7 +2916,7 @@ void CMainWindow::showSkinBrowser()
 
 void CMainWindow::showPluginDlg()
 {
-  (void) new PluginDlg(licqDaemon);
+  (void) new PluginDlg();
 }
 
 void CMainWindow::slot_randomchatsearch()

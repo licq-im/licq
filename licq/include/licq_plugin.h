@@ -92,6 +92,16 @@ int LP_Main(CICQDaemon *);
 void LP_Exit(int);
 
 
+/*------------------------------------------------------------------------------
+ * ConfigFile
+ *
+ * This function returns the name of the configuration file referenced
+ * from the BASE_DIR.  It can be left undefined if no config file is
+ * used.
+ *----------------------------------------------------------------------------*/
+const char *LP_ConfigFile();
+
+
 /*==============================================================================
  * INTERNAL USE ONLY
  *============================================================================*/

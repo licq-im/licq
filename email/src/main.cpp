@@ -47,6 +47,11 @@ const char *LP_Status()
   return licqForwarder->Enabled() ? enabled : disabled;
 }
 
+const char *LP_ConfigFile()
+{
+  return "licq_forwarder.conf";
+}
+
 
 bool LP_Init(int argc, char **argv)
 {

@@ -543,6 +543,14 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       return NULL;
     }
   }
+  // LP_ConfigFile
+  p->fConfigFile = (const char * (*)())dlsym(handle, "LP_ConfigFile");
+  if ((error = dlerror()) != NULL)
+  {
+    p->fConfigFile = (const char * (*)())dlsym(handle, "_LP_ConfigFile");
+    if ((error = dlerror()) != NULL)
+      p->fConfigFile = NULL;
+  }
   // LP_Id
   p->nId = (unsigned short *)dlsym(handle, "LP_Id");
   if ((error = dlerror()) != NULL)

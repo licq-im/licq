@@ -44,6 +44,11 @@ const char *LP_Description()
   return desc;
 }
 
+const char *LP_ConfigFile()
+{
+  return "licq_console.conf";
+}
+
 bool LP_Init(int argc, char **argv)
 {
   //char *LocaleVal = new char;

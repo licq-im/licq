@@ -11,18 +11,18 @@ class PluginDlg : public QWidget
 {
   Q_OBJECT
 public:
-  PluginDlg(CICQDaemon *d);
+  PluginDlg();
 
 protected:
   QListBox *lstAvailable;
   QListView *lstLoaded;
-  CICQDaemon *licqDaemon;
 
 protected slots:
   void slot_details();
   void slot_load();
   void slot_enable();
   void slot_disable();
+  void slot_config();
   void slot_unload();
   void slot_refresh();
 };

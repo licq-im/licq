@@ -22,6 +22,7 @@ public:
   const char *Usage() { return (*fUsage)(); }
   const char *BuildDate() { return (*fBuildDate)(); }
   const char *BuildTime() { return (*fBuildTime)(); }
+  const char *ConfigFile() { return fConfigFile == NULL ? NULL : (*fConfigFile)(); }
   unsigned short Id()   { return *nId; }
 
   int Pipe() { return pipe_plugin[PIPE_READ]; }
@@ -68,6 +69,7 @@ protected:
   const char *(*fBuildDate)();
   const char *(*fBuildTime)();
   const char *(*fUsage)();
+  const char *(*fConfigFile)();
   bool (*fInit)(int, char **);
   int (*fMain)(CICQDaemon *);
   void *(*fMain_tep)(void *);

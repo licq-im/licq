@@ -37,6 +37,13 @@ const char *LP_Version()
   return version;
 }
 
+
+const char *LP_ConfigFile()
+{
+  return "licq_rms.conf";
+}
+
+
 const char *LP_Status()
 {
   static const char enabled[] = "RMS  enabled";
