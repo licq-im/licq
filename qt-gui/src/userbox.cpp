@@ -206,7 +206,8 @@ void CUserViewItem::paintFocus ( QPainter *p, const QColorGroup & cg, const QRec
 }
 
 
-//-----CUserViewItem::paintCell-------------------------------------------------
+// ---------------------------------------------------------------------------
+
 void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int column, int width, int align )
 {
   QFont newFont(p->font());
@@ -296,11 +297,11 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     p->drawLine(x1, (height() >> 1) + 1, x2, (height() >> 1) + 1);
     if (column == 1)
     {
-      char sz[12] = "Offline";
+      QString sz = CUserView::tr("Offline");
       if (m_sPrefix == "0")
-        strcpy(sz, "Online");
-      if (pix != NULL)
-      {
+        sz = CUserView::tr("Online");
+
+      if (pix) {
         QPoint pd(p->xForm(QPoint(5,0)).x(), p->xForm(QPoint(5,0)).y());
         QPoint pp(listView()->mapToParent(pd));
         p->drawPixmap(5, 0, *pix, pp.x(), pp.y(), p->fontMetrics().width(sz) + 6, height());
@@ -496,14 +497,10 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
          {
            ICQUser *u = gUserManager.FetchUser(SelectedItemUin(), LOCK_R);
            if (u == NULL) return;
-           mnuUser->setItemChecked(MENU_USER_ONLINExNOTIFY,
-                                   u->OnlineNotify());
-           mnuUser->setItemChecked(MENU_USER_INVISIBLExLIST,
-                                   u->InvisibleList());
-           mnuUser->setItemChecked(MENU_USER_VISIBLExLIST,
-                                   u->VisibleList());
-           mnuUser->setItemChecked(MENU_USER_IGNORExLIST,
-                                   u->IgnoreList());
+           mnuUser->setItemChecked(mnuUserOnlineNotify, u->OnlineNotify());
+           mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
+           mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
+           mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
            for (unsigned short i = 0; i < mnuGroup->count(); i++)
               mnuGroup->setItemEnabled(mnuGroup->idAt(i), !u->GetInGroup(GROUPS_USER, i+1));
            gUserManager.DropUser(u);
