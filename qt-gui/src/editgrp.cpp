@@ -25,6 +25,7 @@
 #include <qgroupbox.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
+#include <qtoolbutton.h>
 
 #include "editgrp.h"
 #include "ewidgets.h"
@@ -73,12 +74,10 @@ EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
   glay->addMultiCellWidget(edtName, 3, 3, 0, 2);
 
   QHBoxLayout *hlay = new QHBoxLayout;
-  btnWhat = new QPushButton(tr("Help"), this);
-  connect(btnWhat, SIGNAL(clicked()), this, SLOT(slot_whatsthis()));
-  hlay->addWidget(btnWhat, 0, AlignRight);
+  hlay->addWidget(QWhatsThis::whatsThisButton(this), 0, AlignLeft);
   hlay->addSpacing(20);
   btnDone = new QPushButton(tr("Done"), this);
-  hlay->addWidget(btnDone, 0, AlignLeft);
+  hlay->addWidget(btnDone, 0, AlignRight);
   lay->addLayout(hlay, 1, 0);
 
   RefreshList();
@@ -239,13 +238,6 @@ void EditGrpDlg::hide()
    QWidget::hide();
    delete this;
 }
-
-
-void EditGrpDlg::slot_whatsthis()
-{
-  QWhatsThis::enterWhatsThisMode();
-}
-
 
 
 #include "moc/moc_editgrp.h"
