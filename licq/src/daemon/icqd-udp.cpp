@@ -99,8 +99,7 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
   sprintf(sz, "%s%c%s%c%s%c%s%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
       0xFE, o->GetLastName(), 0xFE, o->GetEmail1(), 0xFE, o->GetAuthorization() ? '0' : '1');
   gUserManager.DropOwner();
-  CPU_ThroughServer *p = new CPU_ThroughServer(gUserManager.OwnerUin(),
-      _nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
+  CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info("%sAlerting user they were added (#%ld)...\n", L_UDPxSTR, p->getSequence());
   SendExpectEvent_Server(p);
 }
@@ -688,8 +687,7 @@ void CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szM
     sz = gTranslator.NToRN(szMessage);
     gTranslator.ClientToServer(sz);
   }
-  CPU_ThroughServer *p = new CPU_ThroughServer(0, uinToAuthorize,
-     ICQ_CMDxSUB_AUTHxGRANTED, sz);
+  CPU_ThroughServer *p = new CPU_ThroughServer(uinToAuthorize, ICQ_CMDxSUB_AUTHxGRANTED, sz);
   gLog.Info("%sAuthorizing user %ld (#%ld)...\n", L_UDPxSTR, uinToAuthorize,
      p->getSequence());
   SendExpectEvent_Server(p);
@@ -708,8 +706,7 @@ void CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
     sz = gTranslator.NToRN(szMessage);
     gTranslator.ClientToServer(sz);
   }
-  CPU_ThroughServer *p = new CPU_ThroughServer(0, nUin,
-     ICQ_CMDxSUB_AUTHxREFUSED, sz);
+  CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxREFUSED, sz);
   gLog.Info("%sRefusing authorization to user %ld (#%ld)...\n", L_UDPxSTR,
      nUin, p->getSequence());
   SendExpectEvent_Server(p);

@@ -46,7 +46,7 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
                  L_WARNxSTR, MAX_MESSAGE_SIZE);
        mDos[MAX_MESSAGE_SIZE] = '\0';
      }
-     CPU_ThroughServer *p = new CPU_ThroughServer(0, _nUin, ICQ_CMDxSUB_MSG, mDos);
+     CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_MSG, mDos);
      gLog.Info("%sSending message through server (#%ld).\n", L_UDPxSTR, p->getSequence());
      result = SendExpectEvent_Server(_nUin, p, e);
   }
@@ -116,7 +116,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   if (!online) // send offline
   {
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-    CPU_ThroughServer *p = new CPU_ThroughServer(0, _nUin, ICQ_CMDxSUB_URL, m);
+    CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_URL, m);
     gLog.Info("%sSending url through server (#%ld).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent_Server(_nUin, p, e);
   }
@@ -225,7 +225,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
   if (!online) // send offline
   {
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-    CPU_ThroughServer *p = new CPU_ThroughServer(0, nUin, ICQ_CMDxSUB_CONTACTxLIST, m);
+    CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_CONTACTxLIST, m);
     gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->getSequence());
     result = SendExpectEvent_Server(nUin, p, e);
   }

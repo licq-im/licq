@@ -67,7 +67,6 @@ protected:
    unsigned short m_nVersion;
    unsigned short m_nCommand;
    unsigned short m_nSequence;
-   unsigned long  m_nSourceUin;
    unsigned short m_nSubSequence;
 #elif ICQ_VERSION == 4
    unsigned short m_nVersion;
@@ -76,12 +75,10 @@ protected:
    unsigned short m_nCommand;
    unsigned short m_nSequence;
    unsigned short m_nSubSequence;
-   unsigned long  m_nSourceUin;
    unsigned long  m_nCheckSum;
 #elif ICQ_VERSION == 5
    unsigned short m_nVersion;
    unsigned long  m_nZero;
-   unsigned long  m_nSourceUin;
    unsigned long  m_nSessionId;
    unsigned short m_nCommand;
    unsigned short m_nSequence;
@@ -301,8 +298,8 @@ public:
 class CPU_ThroughServer : public CPacketUdp
 {
 public:
-   CPU_ThroughServer(unsigned long _nSourceUin, unsigned long _nDestinationUin,
-                     unsigned short _nSubCommand, char *_sMessage);
+   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned short _nSubCommand,
+                     char *_sMessage);
    virtual const unsigned short getSubCommand()  { return m_nSubCommand; }
 protected:
    unsigned long  m_nDestinationUin;

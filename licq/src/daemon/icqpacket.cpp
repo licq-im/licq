@@ -479,8 +479,6 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
     }
   }
 
-  m_nSourceUin = gUserManager.OwnerUin();
-
   buffer = NULL;
 #if ICQ_VERSION == 2
   m_nSize = 10;
@@ -505,7 +503,7 @@ void CPacketUdp::InitBuffer()
   buffer->PackUnsignedShort(m_nVersion);
   buffer->PackUnsignedShort(m_nCommand);
   buffer->PackUnsignedShort(m_nSequence);
-  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
 #elif ICQ_VERSION == 4
   buffer->add(m_nVersion);
   buffer->add(m_nRandom);
@@ -513,12 +511,12 @@ void CPacketUdp::InitBuffer()
   buffer->add(m_nCommand);
   buffer->add(m_nSequence);
   buffer->add(m_nSubSequence);
-  buffer->add(m_nSourceUin);
+  buffer->add(gUserManager.OwnerUin());
   buffer->add(m_nCheckSum);
 #elif ICQ_VERSION == 5
   buffer->PackUnsignedShort(m_nVersion);
   buffer->PackUnsignedLong(m_nZero);
-  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(m_nSessionId);
   buffer->PackUnsignedShort(m_nCommand);
   buffer->PackUnsignedShort(m_nSequence);
@@ -936,13 +934,11 @@ CPU_Ping::CPU_Ping() : CPacketUdp(ICQ_CMDxSND_PING)
 
 
 //-----ThroughServer------------------------------------------------------------
-CPU_ThroughServer::CPU_ThroughServer(unsigned long nSourceUin,
-                                    unsigned long nDestinationUin,
+CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
                                     unsigned short nSubCommand,
                                     char *szMessage)
   : CPacketUdp(ICQ_CMDxSND_THRUxSERVER)
 {
-  m_nSourceUin = (nSourceUin == 0 ? gUserManager.OwnerUin() : nSourceUin);
   m_nSubCommand = nSubCommand;
   m_nDestinationUin = nDestinationUin;
 
