@@ -1,4 +1,6 @@
 Makefile
 Makefile.in
 .libs
-
+.la
+.lo
+.deps
