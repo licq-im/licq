@@ -162,6 +162,7 @@ void CLicqConsole::MenuGroup(char *_szArg)
                      m_nCurrentGroup == 0 ? "All Users" : (*g)[m_nCurrentGroup - 1]);
     gUserManager.UnlockGroupList();
     PrintStatus();
+    CreateUserList();
     PrintUsers();
   }
 }
@@ -228,6 +229,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuContactList(char *)
 {
+  CreateUserList();
   PrintUsers();
 /*
   static char szStatusStr[32];

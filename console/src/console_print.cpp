@@ -259,15 +259,17 @@ void CLicqConsole::CreateUserList(void)
     s->szLine[0] = pUser->NewMessages() > 0 ? '*' : ' ';
 
     // Insert into the list
+    bool found = false;
     for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
     {
       if ( strcmp(s->szKey, (*it)->szKey) <= 0)
       {
         m_lUsers.insert(it, s);
+        found = true;
         break;
       }
     }
-    if (it == m_lUsers.end());
+    if (!found)
       m_lUsers.push_back(s);
 
     i++;
