@@ -51,6 +51,7 @@ void system_message_window()
 	case ICQ_CMDxSUB_REQxAUTH:
 		gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0,
 			        "Authorization Request\n", -1);
+		menu_system_auth_user(NULL, ((CEventAuthReq *)event)->Uin());
 		break;
 	
 	case ICQ_CMDxSUB_AUTHORIZED:
@@ -106,4 +107,7 @@ void system_message_window()
 	/* Add the v_box to the window and show the widgets */
 	gtk_container_add(GTK_CONTAINER(sm->window), v_box);
 	gtk_widget_show_all(sm->window);
+
+	contact_list_refresh();
+	system_status_refresh();
 }
