@@ -29,6 +29,9 @@
 /* Whether or not to include OpenSSL encryption support */
 #undef USE_OPENSSL
 
+/* Define this if hebrew reverse string support is desired */
+#undef USE_HEBREW
+
 /* Define this if the system headers don't */
 #undef socklen_t
 

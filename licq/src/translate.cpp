@@ -19,6 +19,12 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_log.h"
 
+#ifdef USE_HEBREW
+extern "C" {
+extern char *hebrev (char* pszStr);
+}
+#endif
+
 CTranslator gTranslator;
 
 //============ CTranslator ============//
@@ -42,14 +48,14 @@ CTranslator::~CTranslator()
 
 void CTranslator::setDefaultTranslationMap()
 {
-	for(int i = 0; i < 256; i++)
+  for(int i = 0; i < 256; i++)
   {
-		serverToClientTab[i]=i;
-		clientToServerTab[i]=i;
-	}
-	
+    serverToClientTab[i]=i;
+    clientToServerTab[i]=i;
+  }
+
   m_bDefault = true;
-	if (m_szMapFileName != NULL) free(m_szMapFileName);
+  if (m_szMapFileName != NULL) free(m_szMapFileName);
   if (m_szMapName != NULL) free(m_szMapName);
   m_szMapFileName = strdup("none");
   m_szMapName = strdup("none");
@@ -69,86 +75,86 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
 
   if(strcmp(m_szMapName, "LATIN_1") == 0)
   {
-		setDefaultTranslationMap();
-		return true;
-	}
+    setDefaultTranslationMap();
+    return true;
+  }
 
   FILE *mapFile = fopen(_szMapFileName, "r");
   if (mapFile == NULL)
   {
     gLog.Error("%sCould not open the translation file (%s) for reading:\n%s%s.\n",
                L_ERRORxSTR, _szMapFileName, L_BLANKxSTR, strerror(errno));
-		setDefaultTranslationMap();
-		return false;
-	}
+    setDefaultTranslationMap();
+    return false;
+  }
 
-	// translat.c :
-	// Any problems in the translation tables between hosts are
-	// almost certain to be caused here.
-	// many scanf implementations do not work as defined. In particular,
-	// scanf should ignore white space including new lines (many stop
-	// at the new line character, hence the fgets and sscanf workaround),
-	// many fail to read 0xab as a hexadecimal number (failing on the
-	// x) despite the 0x being defined as optionally existing on input,
-	// and others zero out all the output variables if there is trailing
-	// non white space in the format string which doesn't appear on the
-	// input. Overall, the standard I/O libraries have a tendancy not
-	// to be very standard.
+  // translat.c :
+  // Any problems in the translation tables between hosts are
+  // almost certain to be caused here.
+  // many scanf implementations do not work as defined. In particular,
+  // scanf should ignore white space including new lines (many stop
+  // at the new line character, hence the fgets and sscanf workaround),
+  // many fail to read 0xab as a hexadecimal number (failing on the
+  // x) despite the 0x being defined as optionally existing on input,
+  // and others zero out all the output variables if there is trailing
+  // non white space in the format string which doesn't appear on the
+  // input. Overall, the standard I/O libraries have a tendancy not
+  // to be very standard.
 
-	char buffer[80];
-	int inputs[8];
-	unsigned char temp_table[512];
-	int c = 0;
+  char buffer[80];
+  int inputs[8];
+  unsigned char temp_table[512];
+  int c = 0;
 
   while(fgets(buffer, 80, mapFile) != NULL && c < 512)
   {
-		if(sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x",
+    if(sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x",
               inputs+0, inputs+1, inputs+2, inputs+3,
               inputs+4, inputs+5, inputs+6, inputs+7) < 8)
     {
       gLog.Error("%sSyntax error in translation file '%s'.\n", L_ERRORxSTR, _szMapFileName);
       setDefaultTranslationMap();
-			fclose(mapFile);
-			return false;
-		}
-		for (int j = 0; j < 8; j++)
+      fclose(mapFile);
+      return false;
+    }
+    for (int j = 0; j < 8; j++)
       temp_table[c++] = (unsigned char)inputs[j];
-	}
+  }
 
-	fclose(mapFile);
+  fclose(mapFile);
 
-	if (c == 512)
+  if (c == 512)
   {
-		for (c = 0; c < 256; c++)
-		{
-			serverToClientTab[c] = temp_table[c];
-			clientToServerTab[c] = temp_table[c | 256];
-		}
-	}
+    for (c = 0; c < 256; c++)
+    {
+      serverToClientTab[c] = temp_table[c];
+      clientToServerTab[c] = temp_table[c | 256];
+    }
+  }
   else
   {
-		gLog.Error("%sTranslation file '%s' corrupted.\n", L_ERRORxSTR, _szMapFileName);
-		setDefaultTranslationMap();
-		return false;
-	}
-	
+    gLog.Error("%sTranslation file '%s' corrupted.\n", L_ERRORxSTR, _szMapFileName);
+    setDefaultTranslationMap();
+    return false;
+  }
+  
   m_bDefault = false;
   if (m_szMapFileName != NULL) free(m_szMapFileName);
-	m_szMapFileName = strdup(_szMapFileName);
-	return true;
+  m_szMapFileName = strdup(_szMapFileName);
+  return true;
 }
 
 //============ translateToClient ============//
 
 void CTranslator::ServerToClient(char *szString)
 {
-	if (m_bDefault || szString == NULL) return;
-	char *pC = szString;
-	while (*pC != '\0')
+  if (m_bDefault || szString == NULL) return;
+  char *pC = szString;
+  while (*pC != '\0')
   {
-		*pC = serverToClientTab[(unsigned char)(*pC)];
-		pC++;
-	}
+    *pC = serverToClientTab[(unsigned char)(*pC)];
+    pC++;
+  }
 }
 
 
@@ -156,29 +162,45 @@ void CTranslator::ServerToClient(char *szString)
 
 void CTranslator::ClientToServer(char *szString)
 {
-	if (m_bDefault || szString == NULL) return;
-	char *pC = szString;
+#ifdef USE_HEBREW
+  if (szString == NULL) return;
+  if (!m_bDefault)
+  {
+    char *pC = szString;
+    while(*pC)
+    {
+      *pC = clientToServerTab[(unsigned char)(*pC)];
+      pC++;
+    }
+  }
+  char *p = hebrev(szString);
+  strcpy(szString, p);
+  free(p);
+#else
+  if (m_bDefault || szString == NULL) return;
+  char *pC = szString;
   while(*pC)
   {
-		*pC = clientToServerTab[(unsigned char)(*pC)];
-		pC++;
-	}
+    *pC = clientToServerTab[(unsigned char)(*pC)];
+    pC++;
+  }
+#endif
 }
 
 
 //-----translateToClient (char)-------------------------------------------------
 void CTranslator::ServerToClient(char &_cChar)
 {
-	if(m_bDefault)return;
-   _cChar = serverToClientTab[(unsigned char)(_cChar)];
+  if (m_bDefault) return;
+  _cChar = serverToClientTab[(unsigned char)(_cChar)];
 }
 
 
 //-----translateToServer (char)-------------------------------------------------
 void CTranslator::ClientToServer(char &_cChar)
 {
-	if(m_bDefault)return;
-   _cChar = clientToServerTab[(unsigned char)(_cChar)];
+  if (m_bDefault) return;
+  _cChar = clientToServerTab[(unsigned char)(_cChar)];
 }
 
 
