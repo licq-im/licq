@@ -9,6 +9,7 @@
 #include "licq_constants.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
+#include "licq_sighandler.h"
 #include "support.h"
 
 #define DEBUG_THREADS(x)
@@ -1152,6 +1153,8 @@ char *CChatManager::ClientsStr()
 void *ChatManager_tep(void *arg)
 {
   CChatManager *chatman = (CChatManager *)arg;
+
+  licq_segv_handler(&signal_handler_chatThread);
 
   fd_set f;
   int l, nSocketsAvailable, nCurrentSocket;
