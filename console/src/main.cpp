@@ -6,7 +6,7 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
-#include <getopt.h>
+#include <unistd.h>
 #include "console.h"
 #include "licq_plugin.h"
 
