@@ -162,6 +162,14 @@ void OptionsDlg::SetupOptions()
       rdbDockThemed->setChecked(true);
       cmbDockTheme->setEnabled(true);
       chkDockFortyEight->setEnabled(false);
+      for (unsigned short i = 0; i < cmbDockTheme->count(); i++)
+      {
+        if (cmbDockTheme->text(i) == ((IconManager_Themed *)mainwin->licqIcon)->Theme())
+        {
+          cmbDockTheme->setCurrentItem(i);
+          break;
+        }
+      }
       break;
   }
 
