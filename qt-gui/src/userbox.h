@@ -81,6 +81,7 @@ protected:
   virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r ) { };
 
   void drawCAROverlay(QPainter*);
+  void SetThreadViewGroupTitle();
 
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon, *m_pIconStatus;
@@ -89,7 +90,7 @@ protected:
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;
   unsigned short m_nGroupId;
-  int m_nOnlCount;
+  int m_nOnlCount, m_nEvents;
   QCString m_sGroupName;
   bool m_bStatusInvisible, m_bCustomAR;
   QFont::Weight m_nWeight;

@@ -65,6 +65,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
   m_nOnlCount = 0;
+  m_nEvents = 0;
   setGraphics(_cUser);
 }
 
@@ -77,6 +78,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nUin = _cUser->Uin();
   m_bUrgent = false;
   m_nOnlCount = 0;
+  m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
   setGraphics(_cUser);
 }
@@ -94,6 +96,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_nWeight = QFont::Bold;
   m_bUrgent = false;
   m_nOnlCount = 0;
+  m_nEvents = 0;
   // Other users group is sorted at the end
   m_sSortKey = m_nGroupId ? QString::number((int)m_nGroupId) : QString("9999999999");
   m_sPrefix = "1";
@@ -109,6 +112,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_nGroupId = (unsigned short)(-1);
   m_nUin = 0;
   m_nOnlCount = 0;
+  m_nEvents = 0;
   m_pIcon = NULL;
   m_cBack = s_cBack;
   m_cFore = s_cOnline;
@@ -124,6 +128,18 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
     m_sPrefix = "2";
 }
 
+void CUserViewItem::SetThreadViewGroupTitle()
+{
+    QString t;
+    /*if (m_nEvents > 0)
+      t = QString("* ");*/
+    t += QString::fromLocal8Bit(m_sGroupName);
+    if (m_nOnlCount > 0)
+      t += QString(" (") + QString::number(m_nOnlCount) + QString(")");
+    setText(1, t);
+}
+
+
 CUserViewItem::~CUserViewItem()
 {
   CUserView *v = (CUserView *)listView();
@@ -133,18 +149,14 @@ CUserViewItem::~CUserViewItem()
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
   else
-  {
-    if (parent())
-    {
-      CUserViewItem *i = static_cast<CUserViewItem*>(parent());
-      i->m_nOnlCount--;
-      if (i->m_nOnlCount)
-        i->setText(1, QString::fromLocal8Bit(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
-                   + QString(")"));
-      else
-        i->setText(1,  QString::fromLocal8Bit(i->m_sGroupName));
-    }
     v->numOnline--;
+
+  if (parent())
+  {
+    CUserViewItem *i = static_cast<CUserViewItem*>(parent());
+    if (m_nStatus != ICQ_STATUS_OFFLINE) i->m_nOnlCount--;
+    i->m_nEvents -= m_nEvents;
+    i->SetThreadViewGroupTitle();
   }
 
   if (v->numOffline == 0 && v->barOffline != NULL)
@@ -167,23 +179,23 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    if (parent())
    {
-     CUserViewItem* i = static_cast<CUserViewItem*>(parent());
-     if(u->StatusOffline() && m_nStatus != ICQ_STATUS_OFFLINE)
+     CUserViewItem *i = static_cast<CUserViewItem*>(parent());
+     if (u->StatusOffline() && m_nStatus != ICQ_STATUS_OFFLINE)
        i->m_nOnlCount--;
-     if(m_nStatus == ICQ_STATUS_OFFLINE && !u->StatusOffline())
+     if (m_nStatus == ICQ_STATUS_OFFLINE && !u->StatusOffline())
        i->m_nOnlCount++;
 
-     if(i->m_nOnlCount)
-       i->setText(1, QString::fromLocal8Bit(i->m_sGroupName) + QString(" (") + QString::number(i->m_nOnlCount)
-                  + QString(")"));
-     else
-       i->setText(1,  QString::fromLocal8Bit(i->m_sGroupName));
+     i->m_nEvents -= m_nEvents;
+     i->m_nEvents += u->NewMessages();
+
+     i->SetThreadViewGroupTitle();
    }
 
    m_nStatus = u->Status();
    m_nStatusFull = u->StatusFull();
    m_bStatusInvisible = u->StatusInvisible();
    m_bCustomAR = u->CustomAutoResponse()[0] != '\0';
+   m_nEvents = u->NewMessages();
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -363,9 +375,17 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     {
       if (column == 1)
       {
+        int w = p->fontMetrics().width(text(1)) + 4;
+
+        if (m_nEvents > 0)
+        {
+          p->drawPixmap(w, 0, gMainWindow->pmMessage);
+          w += gMainWindow->pmMessage.width() + 4;
+        }
+
         listView()->style().drawSeparator(p,
-           p->fontMetrics().width(text(column)) + 4, height() >> 1,
-           width - 1, height() >> 1, cg);
+           w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1),
+           height() >> 1, cg);
       }
       else if (column == listView()->header()->count() - 1)
       {
@@ -386,17 +406,17 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
       if (width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY))
       {
         p->drawPixmap(w, 0, *listView()->pixBirthday);
-        w += 18;
+        w += listView()->pixBirthday->width() + 2; //18;
       }
       if (width - w > 8 && m_bStatusInvisible)
       {
         p->drawPixmap(w, 0, *listView()->pixInvisible);
-        w += 18;
+        w += listView()->pixInvisible->width() + 2; //18;
       }
       if (width - w > 8 && m_bCustomAR)
       {
         p->drawPixmap(w, 0, *listView()->pixCustomAR);
-        w += 18;
+        w += listView()->pixCustomAR->width() + 2; //18;
       }
     }
   }
