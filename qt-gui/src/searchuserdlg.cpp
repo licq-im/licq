@@ -65,7 +65,7 @@ unsigned long SearchUserView::currentUin(void)
 SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
 {
   uinVal = s->nUin;
-  setText(0, s->szAlias);
+  setText(0, QString::fromLocal8Bit(s->szAlias));
   setText(1, QString::number(s->nUin));
   setText(2, QString::fromLocal8Bit(s->szFirstName) + QString(" ") + QString::fromLocal8Bit(s->szLastName));
   setText(3, s->szEmail);
@@ -244,8 +244,8 @@ void SearchUserDlg::startSearch()
   }
   else
   {
-    searchSequence = server->icqSearchByInfo(edtNick->text(), edtFirst->text(),
-                                            edtLast->text(), edtEmail->text());
+    searchSequence = server->icqSearchByInfo(edtNick->text().local8Bit(),edtFirst->text().local8Bit(),
+                                            edtLast->text().local8Bit(), edtEmail->text().local8Bit());
   }
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
@@ -331,7 +331,8 @@ void SearchUserDlg::addUser()
   // user already there
   if((user = gUserManager.FetchUser(uin, LOCK_N))) {
     QString msg = QString(tr("Sorry, but this user is already\non your "
-                            "contact list as\n'%1'\n\nYou can't add a user twice.")).arg(user->GetAlias());
+                            "contact list as\n'%1'\n\nYou can't add a user twice."))
+                            .arg(QString::fromLocal8Bit(user->GetAlias()));
 
     QMessageBox::warning(this, "Licq - Warning", msg, tr("&OK"));
     return;

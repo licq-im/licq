@@ -598,11 +598,15 @@ CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
+  gTranslator.ClientToServer((char *)szAlias);
+  gTranslator.ClientToServer((char *)szFirstName);
+  gTranslator.ClientToServer((char *)szLastName);
+  gTranslator.ClientToServer((char *)szEmail);
+
   buffer->PackString(szAlias);
   buffer->PackString(szFirstName);
   buffer->PackString(szLastName);
   buffer->PackString(szEmail);
-
 }
 
 
