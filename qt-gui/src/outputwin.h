@@ -26,6 +26,8 @@ protected:
   QSocketNotifier *sn;
 protected slots:
   void slot_log(int);
+
+  virtual void showEvent(QShowEvent*);
 };
 
 class CLicqMessageBox : public QMessageBox

@@ -45,6 +45,14 @@ CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
 
 // --------------------------------------------------------------------------
 
+void CQtLogWindow::showEvent(QShowEvent*)
+{
+  // move Cursor to the end of the QMultiLineEdit 
+  outputBox->setCursorPosition(outputBox->numLines(), 0);
+}
+
+// --------------------------------------------------------------------------
+
 void CQtLogWindow::slot_log(int s)
 {
   char buf[4];
