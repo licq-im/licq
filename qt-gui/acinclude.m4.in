@@ -63,7 +63,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
       fi
 
       for qt_dir in $qt_library_dirs; do
-        for qt_check_lib in $qt_dir/libqt.so*; do
+        for qt_check_lib in $qt_dir/libqt.so.2; do
           if test -r $qt_check_lib; then
             ac_qt_libraries=$qt_dir
             break 2
@@ -135,16 +135,16 @@ AC_DEFUN(AC_PATH_QT_INC,
         /usr/X11R6/include/X11/qt \
         /usr/X11/lib/qt/include"
 
-      if test "x$QTDIR" != x; then
-        qt_include_dirs="$qt_include_dirs $QTDIR/include"
+      if test -n "$QTDIR"; then
+        qt_include_dirs="$QTDIR/include $qt_include_dirs"
       fi
 
-      if test "x$QTINC" != x; then
-        qt_include_dirs="$qt_include_dirs $QTINC"
+      if test -n "$QTINC"; then
+        qt_include_dirs="$QTINC $qt_include_dirs"
       fi
 
       for qt_dir in $qt_include_dirs; do
-        if test -r "$qt_dir/qtabwidget.h"; then
+        if test -r "$qt_dir/qcstring.h"; then
           ac_qt_includes=$qt_dir
           break
         fi
