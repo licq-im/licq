@@ -339,3 +339,9 @@ CRemoveUserSignal::CRemoveUserSignal(const char *szId)
   : CSignal(PROTOxREM_USER, szId)
 {
 }
+
+CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg)
+  : CSignal(PROTOxSENDxMSG, szId)
+{
+  m_szMsg = szMsg ? strdup(szMsg) : 0;
+}

@@ -3,6 +3,8 @@
 
 #include "pthread_rdwr.h"
 
+#include <stdlib.h>
+
 class CPacket;
 class CICQDaemon;
 class CUserEvent;
@@ -419,7 +421,8 @@ enum SIGNAL_TYPE
   PROTOxLOGOFF,
   PROTOxCHANGE_STATUS,
   PROTOxADD_USER,
-  PROTOxREM_USER
+  PROTOxREM_USER,
+  PROTOxSENDxMSG
 };
 
 class CSignal
@@ -479,4 +482,16 @@ public:
   CRemoveUserSignal(const char *);
 };
 
+class CSendMessageSignal : public CSignal
+{
+public:
+  CSendMessageSignal(const char *szId, const char *szMsg);
+  virtual ~CSendMessageSignal() { if (m_szMsg) free(m_szMsg); }
+  char *Message() { return m_szMsg; }
+
+private:
+  char *m_szMsg;
+};
+
 #endif
+
