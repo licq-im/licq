@@ -36,13 +36,14 @@ class CMSNBuffer : public CBuffer
 public:
   CMSNBuffer() : CBuffer() { }
   CMSNBuffer(unsigned long n) : CBuffer(n) { }
-  virtual ~CMSNBuffer() { }
+  virtual ~CMSNBuffer() { ClearHeaders(); }
   CMSNBuffer(CMSNBuffer &);
   CMSNBuffer(CBuffer &);
   
   bool ParseHeaders();
   std::string GetValue(std::string);
   bool HasHeader(std::string);
+  void ClearHeaders();
   
   void SkipParameter();
   std::string GetParameter();

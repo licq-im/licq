@@ -39,8 +39,10 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
   m_pDaemon = _pDaemon;
   m_bExit = false;
   m_nPipe = _nPipe;
-  m_nSSLSocket = m_nServerSocket = -1;
+  m_nSSLSocket = m_nServerSocket = m_nNexusSocket = -1;
   m_pPacketBuf = 0;
+  m_pNexusBuff = 0;
+  m_pSSLPacket = 0;
   m_szUserName = 0;
   m_szPassword = 0;
   
@@ -200,6 +202,19 @@ void CMSN::Run()
           }
         }
         
+        else if (nCurrent == m_nNexusSocket)
+        {
+          INetSocket *s = gSocketMan.FetchSocket(m_nNexusSocket);
+          TCPSocket *sock = static_cast<TCPSocket *>(s);
+          if (sock->SSLRecv())
+          {
+            CMSNBuffer packet(sock->RecvBuffer());
+            sock->ClearRecvBuffer();
+            gSocketMan.DropSocket(sock);
+            ProcessNexusPacket(packet);
+          }
+        }
+
         else if (nCurrent == m_nSSLSocket)
         {
           INetSocket *s = gSocketMan.FetchSocket(m_nSSLSocket);
@@ -253,7 +268,9 @@ void CMSN::Run()
                 string strSize = pBuf->m_pBuf->GetParameter();
                 int nSize = atoi(strSize.c_str());
                   
-                if (nSize == (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
+                // FIXME: Cut the packet instead of passing it all along
+                // we might receive 1 full packet and part of another.
+                if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
                 {
                   bProcess = true;
                 }
@@ -371,6 +388,38 @@ void CMSN::ProcessSignal(CSignal *s)
   }
 }
 
+void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
+{
+  bool bNew = false;
+  if (m_pNexusBuff == 0)
+  {
+    m_pNexusBuff = new CMSNBuffer(packet);
+    bNew = true;
+  }
+
+  char *ptr = packet.getDataStart() + packet.getDataSize() - 4;
+  int x = memcmp(ptr, "\x0D\x0A\x0D\x0A", 4);
+  if (x) return;
+  else if (!bNew) *m_pNexusBuff += packet;
+
+  char cTmp = 0;
+
+  while (cTmp != '\r')
+    *m_pNexusBuff >> cTmp;
+  *m_pNexusBuff >> cTmp; // skip the \n as well
+
+  m_pNexusBuff->ParseHeaders();
+  
+  char *szLogin = strstr(m_pNexusBuff->GetValue("PassportURLs").c_str(), "DALogin=");
+  szLogin += 8; // skip to the tag
+  char *szEndURL = strchr(szLogin, '/');
+  char *szServer = strndup(szLogin, szEndURL - szLogin); // this is all we need
+  char *szEnd = strchr(szLogin, ',');
+  char *szURL = strndup(szEndURL, szEnd - szEndURL);
+
+  MSNAuthenticate(m_szCookie);
+}
+
 void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
 {
   // Did we receive the entire packet?
@@ -378,12 +427,13 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   // if we get the entire packet at the socket level?
   // I couldn't find anything in the HTTP RFC about this packet
   // being broken up without any special HTTP headers
-  static CMSNBuffer sSSLPacket = packet;
-  
+  if (m_pSSLPacket == 0)
+    m_pSSLPacket = new CMSNBuffer(packet);
+
   char *ptr = packet.getDataStart() + packet.getDataSize() - 4;
   int x = memcmp(ptr, "\x0D\x0A\x0D\x0A", 4);
-  if (sSSLPacket.getDataSize() != packet.getDataSize())
-    sSSLPacket += packet;
+  if (m_pSSLPacket->getDataSize() != packet.getDataSize())
+    *m_pSSLPacket += packet;
   
   if (x)  return;
   
@@ -391,27 +441,59 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   char cTmp = 0;
   string strFirstLine = "";
   
-  sSSLPacket >> cTmp;
+  *m_pSSLPacket >> cTmp;
   while (cTmp != '\r')
   {
     strFirstLine += cTmp;
-    sSSLPacket >> cTmp;
+    *m_pSSLPacket >> cTmp;
   }
   
-  sSSLPacket >> cTmp; // skip \n as well
+  *m_pSSLPacket >> cTmp; // skip \n as well
   
   // Authenticated
   if (strFirstLine == "HTTP/1.1 200 OK")
   {
-    sSSLPacket.ParseHeaders();
-    char *fromPP = strstr(sSSLPacket.GetValue("Authentication-Info").c_str(), "from-PP=");
-    fromPP+= 9; // skip to the tag
-    char *endTag = strchr(fromPP, '\'');
-    char *tag = strndup(fromPP, endTag - fromPP); // Thanks, this is all we need
-    
+    m_pSSLPacket->ParseHeaders();
+    char *fromPP = strstr(m_pSSLPacket->GetValue("Authentication-Info").c_str(), "from-PP=");
+    char *tag;
+
+    if (fromPP == 0)
+      tag = m_szCookie;
+    else
+    {
+      fromPP+= 9; // skip to the tag
+      char *endTag = strchr(fromPP, '\'');
+      tag = strndup(fromPP, endTag - fromPP); // Thanks, this is all we need
+    }
+
     CMSNPacket *pReply = new CPS_MSNSendTicket(tag);
     SendPacket(pReply);
     free(tag);
+    m_szCookie = 0;
+  }
+  else if (strFirstLine == "HTTP/1.1 302 Object moved")
+  {
+    m_pSSLPacket->ParseHeaders();
+    string strAuthHeader = m_pSSLPacket->GetValue("WWW-Authenticate");
+    string strToSend = strAuthHeader.substr(strAuthHeader.find(" ") + 1, strAuthHeader.size() - strAuthHeader.find(" "));
+
+    string strLocation = m_pSSLPacket->GetValue("Location");
+    string::size_type pos = strLocation.find("/", 8);
+    if (pos != string::npos)
+    {
+      string strHost = strLocation.substr(7, pos - 7);
+      string strParam = strLocation.substr(pos, strLocation.size() - pos);
+      gSocketMan.CloseSocket(m_nSSLSocket, false, true);
+      m_nSSLSocket = -1;
+      delete m_pSSLPacket;
+      m_pSSLPacket = 0;
+
+      gLog.Info("%sRedirecting to %s:443\n", L_MSNxSTR, strHost.c_str());
+      MSNAuthenticateRedirect(strHost, strToSend);
+      return;
+    }
+    else
+      gLog.Error("%sMalformed location header.\n", L_MSNxSTR);
   }
   else if (strFirstLine == "HTTP/1.1 401 Unauthorized")
   {
@@ -424,20 +506,23 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   
   gSocketMan.CloseSocket(m_nSSLSocket, false, true);
   m_nSSLSocket = -1;
-  sSSLPacket.Clear();
+  delete m_pSSLPacket;
+  m_pSSLPacket = 0;
 }
 
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
 {
   char szCommand[4];
   CMSNPacket *pReply;
+  bool bSkipPacket;
   
   while (!packet->End())
   {
     pReply = 0;
+    bSkipPacket = true;
     packet->UnpackRaw(szCommand, 3);
     string strCmd(szCommand);
-    
+ 
     if (strCmd == "IRO")
     {
       packet->SkipParameter(); // Seq
@@ -456,10 +541,15 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
     {
       string strUser = packet->GetParameter();
       packet->SkipParameter(); // Nick
-      packet->SkipParameter(); // Size
+      string strSize = packet->GetParameter(); // Size
+      int nSize = atoi(strSize.c_str());
+      unsigned long nBeforeParse = packet->getDataPosRead() - packet->getDataStart();
       packet->SkipPacket(); // Skip \r\n
       packet->ParseHeaders();
-      
+      unsigned long nAfterParse = packet->getDataPosRead() - packet->getDataStart();
+      int nRead = nAfterParse - nBeforeParse;
+      nSize -= nRead;
+
       string strType = packet->GetValue("Content-Type");
       if (strType == "text/x-msmsgscontrol")
       {
@@ -474,10 +564,12 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
       {
-        int nCurrent = packet->getDataPosWrite() - packet->getDataPosRead();
-        char szMsg[nCurrent + 1];
+        gLog.Info("%sMessage from %s.\n", L_MSNxSTR, strUser.c_str());
+
+        bSkipPacket = false;  
+        char szMsg[nSize + 1];
         int i;
-        for (i = 0; i < nCurrent; i++)
+        for (i = 0; i < nSize; i++)
           (*packet) >> szMsg[i];
         szMsg[i] = '\0';
         
@@ -568,7 +660,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
     }
   
     // Get the next packet
-    packet->SkipPacket();
+    if (bSkipPacket)
+      packet->SkipPacket();
     
     if (pReply)
     {
@@ -660,8 +753,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_pPacketBuf->SkipParameter(); // "S"
         string strParam = m_pPacketBuf->GetParameter();
       
+        m_szCookie = strdup(strParam.c_str());
+
+        //MSNGetServer();
         // Make an SSL connection to authenticate
-        MSNAuthenticate(strdup(strParam.c_str()));
+        MSNAuthenticate(m_szCookie);
       }
     }
     else if (strCmd == "CHL")
@@ -765,6 +861,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         nStatus = ICQ_STATUS_AWAY;
         
       m_pDaemon->ChangeUserStatus(o, nStatus);
+      gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), false));
       gUserManager.DropOwner(MSN_PPID);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
@@ -881,6 +978,59 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort)
   SendPacket(pHello);
 }
 
+void CMSN::MSNGetServer()
+{
+  TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
+  sock->SetRemoteAddr("nexus.passport.com", 443);
+//  char ipbuf[32];
+  if (!sock->OpenConnection())
+  {
+    delete sock;
+    return;
+  }
+  
+  if (!sock->SecureConnect())
+  {
+    delete sock;
+    return;
+  }
+
+  gSocketMan.AddSocket(sock);
+  m_nNexusSocket = sock->Descriptor();
+  CMSNPacket *pHello = new CPS_MSNGetServer();
+  sock->SSLSend(pHello->getBuffer());
+  gSocketMan.DropSocket(sock);
+}
+
+void CMSN::MSNAuthenticateRedirect(string &strHost, string &strParam)
+{
+  TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
+  sock->SetRemoteAddr(strHost.c_str(), 443);
+  char ipbuf[32];
+  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
+sock->RemotePort());
+
+  if (!sock->OpenConnection())
+  {
+    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    delete sock;
+    return;
+  }
+
+  if (!sock->SecureConnect())
+  {
+    gLog.Error("%sSSL connection failed.\n", L_MSNxSTR);
+    delete sock;
+    return;
+  }
+
+  gSocketMan.AddSocket(sock);
+  m_nSSLSocket = sock->Descriptor();
+  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, m_szPassword, strParam.c_str());
+  sock->SSLSend(pHello->getBuffer());
+  gSocketMan.DropSocket(sock);
+}
+
 void CMSN::MSNAuthenticate(char *szCookie)
 {
   TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
@@ -893,12 +1043,15 @@ void CMSN::MSNAuthenticate(char *szCookie)
     gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
     delete sock;
     free(szCookie);
+    szCookie = 0;
     return;
   }
   
   if (!sock->SecureConnect())
   {
     gLog.Error("%sSSL connection failed.\n", L_MSNxSTR);   
+    free(szCookie);
+    szCookie = 0;
     delete sock;
     return;
   }
@@ -910,6 +1063,7 @@ void CMSN::MSNAuthenticate(char *szCookie)
   gSocketMan.DropSocket(sock);
 
   free(szCookie);
+  szCookie = 0;
 }
 
 bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)

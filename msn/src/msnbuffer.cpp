@@ -54,16 +54,17 @@ bool CMSNBuffer::ParseHeaders()
 {
   char ctmp = 0;
   int counter = 0;
-  
+
   std::string stmp = "", strHeader, strData;
-  if (m_lHeader.size() > 0) return false;
+  if (m_lHeader.size() > 0)
+    ClearHeaders();
   
   struct SHeader *pHeader = 0;
   
   while (!End())
   {
     *this >> ctmp;
-    
+   
     // Get header
     while (ctmp != ':' && ctmp != '\r' && ctmp != 0)
     {
@@ -149,6 +150,16 @@ bool CMSNBuffer::HasHeader(std::string strKey)
   }
   
   return false;
+}
+
+void CMSNBuffer::ClearHeaders()
+{
+  std::list<SHeader *>::iterator it;
+  for (it = m_lHeader.begin(); it != m_lHeader.end(); ++it)
+  {
+    delete *it;
+  }
+  m_lHeader.clear();
 }
 
 void CMSNBuffer::SkipParameter()

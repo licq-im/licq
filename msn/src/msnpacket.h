@@ -94,6 +94,12 @@ protected:
   char *m_szUserName;
 };
 
+class CPS_MSNGetServer : public CMSNPacket
+{
+public:
+  CPS_MSNGetServer();
+};
+
 class CPS_MSNAuthenticate : public CMSNPacket
 {
 public:

@@ -81,6 +81,7 @@ private:
   void ProcessSignal(CSignal *);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer &);
+  void ProcessNexusPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
   void ProcessSBPacket(char *, CMSNBuffer *);
   
@@ -88,6 +89,8 @@ private:
   void SendPacket(CMSNPacket *);
   void Send_SB_Packet(string &, CMSNPacket *, bool = true);
   void MSNLogon(const char *, int);
+  void MSNGetServer();
+  void MSNAuthenticateRedirect(string &, string &);
   void MSNAuthenticate(char *);
   bool MSNSBConnectStart(string &, string &);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
@@ -115,8 +118,11 @@ private:
   bool m_bExit;
   int m_nPipe;
   int m_nServerSocket;
+  int m_nNexusSocket;
   int m_nSSLSocket;
-  CMSNBuffer *m_pPacketBuf;
+  CMSNBuffer *m_pPacketBuf,
+             *m_pNexusBuff,
+             *m_pSSLPacket;
   vector<BufferList> m_vlPacketBucket;
   list<ICQEvent *> m_pEvents;
   StartList m_lStart;
@@ -124,7 +130,8 @@ private:
   pthread_t m_tMSNPing;
   
   char *m_szUserName,
-       *m_szPassword;
+       *m_szPassword,
+       *m_szCookie;
 };
 
 #endif // __MSN_H
