@@ -313,15 +313,15 @@ kde_includes=""
 AC_CACHE_VAL(ac_cv_have_kde,
 [#try to guess kde locations
 
-kde_incdirs="/usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
+kde_incdirs="/opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include $x_includes $qt_includes"
 
 test -n "$KDEDIR" && kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
-AC_FIND_FILE(kthemestyle.h, $kde_incdirs, kde_incdir)
+AC_FIND_FILE(kaction.h, $kde_incdirs, kde_incdir)
 ac_kde_includes=$kde_incdir
 
-kde_libdirs="/usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
+kde_libdirs="/opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
 test -n "$KDEDIR" && kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
-AC_FIND_FILE(libkdecore.la, $kde_libdirs, kde_libdir)
+AC_FIND_FILE(libksycoca.la, $kde_libdirs, kde_libdir)
 ac_kde_libraries=$kde_libdir
 
 if test "$ac_kde_includes" = NO || test "$ac_kde_libraries" = NO; then
@@ -349,7 +349,13 @@ else
   kde_libraries=$ac_kde_libraries
   kde_includes=$ac_kde_includes
 fi
-dnl fi
+
+if test "$have_kde" = yes; then
+   AC_DEFINE(USE_KDE)
+   KDE_LIBS="-lkfile -lkio -lkdeui -lkdecore"
+   AC_SUBST(KDE_LIBS)
+fi
+
 AC_SUBST(kde_libraries)
 AC_SUBST(kde_includes)
 

@@ -116,11 +116,6 @@ AC_PATH_QT_MSGTOQM
 AC_PATH_QT_MERGETR
 
 AC_PATH_KDE
-if test "$have_kde" = yes; then
-   AC_DEFINE(USE_KDE)
-   KDE_LIBS="-lkfile -lkio -lkdeui -lkdecore"
-   AC_SUBST(KDE_LIBS)
-fi
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
