@@ -1708,8 +1708,8 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->Background());
       buffer->PackUnsignedLong(pColor->Foreground());
+      buffer->PackUnsignedLong(pColor->Background());
     }
   }
   PostBuffer();
@@ -1732,8 +1732,8 @@ CPT_Url::CPT_Url(char *szMessage, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->Background());
       buffer->PackUnsignedLong(pColor->Foreground());
+      buffer->PackUnsignedLong(pColor->Background());
     }
   }
   PostBuffer();
@@ -1757,8 +1757,8 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->Background());
       buffer->PackUnsignedLong(pColor->Foreground());
+      buffer->PackUnsignedLong(pColor->Background());
     }
   }
   PostBuffer();

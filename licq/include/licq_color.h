@@ -19,14 +19,20 @@ public:
 
   CICQColor()
    {
-     foreground = 0x00FFFFFF;
-     background = 0x00000000;
+     background = 0x00FFFFFF;
+     foreground = 0x00000000;
    }
 
   void Set(unsigned long fore, unsigned long back)
    {
      foreground = fore;
      background = back;
+   }
+
+  void Set(CICQColor *c)
+   {
+     foreground = c->Foreground();
+     background = c->Background();
    }
 
   void SetBackground(unsigned long r, unsigned long g, unsigned long b)

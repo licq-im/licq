@@ -1065,11 +1065,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     {
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
-        unsigned long fore = 0xFFFFFF, back = 0x000000;
+        unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4)
           packet >> theSequence;
         else
-          packet >> back >> fore;
+          packet >> fore >> back;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1139,9 +1139,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
       case ICQ_CMDxSUB_URL:  // url sent
       {
-        unsigned long fore = 0xFFFFFF, back = 0x000000;
+        unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> back >> fore;
+        else packet >> fore >> back;
         packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
@@ -1193,10 +1193,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       // Contact List
       case ICQ_CMDxSUB_CONTACTxLIST:
       {
-        unsigned long fore = 0xFFFFFF, back = 0x000000;
+        unsigned long back = 0xFFFFFF, fore = 0x000000;
         if (nInVersion <= 4) packet >> theSequence;
-        else packet >> junkLong >> junkLong;
-        packet >> fore >> back;
+        else packet >> fore >> back;
+        packet >> licqChar >> licqVersion;
         nMask |= licqVersion;
         if (licqChar == 'L')
           gLog.Info("%sContact list from %s (%ld) [Licq %s].\n", L_TCPxSTR,

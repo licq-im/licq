@@ -27,16 +27,27 @@ CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
                        unsigned long nSequence, time_t tTime,
                        unsigned long nFlags)
 {
+   // Assigned stuff
    m_nSubCommand = nSubCommand;
    m_nCommand = nCommand;
    m_nSequence = nSequence;
    m_tTime = (tTime == TIME_NOW ? time(NULL) : tTime);
    m_nFlags = nFlags;
+
+   // Initialized stuff
    m_eDir = D_RECEIVER;
    m_szText = NULL;
    m_bPending = true;
-   // race condition here, but so unlikely that I don't care
    m_nId = s_nId++;
+}
+
+
+void CUserEvent::CopyBase(CUserEvent *e)
+{
+  m_eDir = e->Direction();
+  m_bPending = e->Pending();
+  m_nId = e->Id(); // this is new and possibly will cause problems...
+  m_sColor.Set(e->Color());
 }
 
 
