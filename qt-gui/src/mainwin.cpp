@@ -3260,7 +3260,7 @@ void CMainWindow::initMenu()
    a->insertItem(ALT + Key_F, ICQ_STATUS_OFFLINE);
    a->insertItem(ALT + Key_I, ICQ_STATUS_FxPRIVATE);
    connect(a, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
-#if QT_VERSION > 0x030006
+#if QT_VERSION >= 0x030100
    connect(a, SIGNAL(activatedAmbiguously(int)), this, SLOT(changeStatusManual(int)));
 #endif
 
