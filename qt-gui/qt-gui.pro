@@ -103,6 +103,7 @@ TRANSLATIONS = po/cs_CZ.ts \
                po/es.ts \
                po/fi.ts \
                po/fr.ts \
+               po/hu_HU.ts \
                po/it.ts \
                po/ja_JP.eucJP.ts \
                po/pl.ts \

@@ -5,20 +5,21 @@ THIS README TRIES TO KEEP TRACK ON TRANSLATION MAINTAINERS
 
 Who is doing which translation?
 
-Language:					Maintainer:																				Used Filetype: (ts/po)
----------					-----------																				--------------
-bg_BG, Bulgarian	Ivan Dimitrov <dobber@bastun.net>									po
-cs_CZ, czech			Martin Hnatek <m.hnatek@sh.cvut.cz>								ts
-de, german				Thomas Reitelbach <thomas@licq.org>								ts
-es, espania				-unknown/none-
-fi, finnish				Tuomas Jaakola <tuomas.jaakola@iki.fi>						ts
-fr								Yves Dessertine <yves.d@hrnet.fr>									?
-it, italian				Salvatore Caligiore <caligiore@bigfoot.com>				?
-ja_JP							Nobuaki Takahashi <nobu@icnet.ne.jp>							?
-pl, poland				Grzegorz Nosek <blackfire@virtual.net.pl>					?
-pt_BR					Gustavo Pichorim Boiko <gustavoboiko@brturbo.com>			po
-ru								Leonid Kabanov <lkabanov@krasu.ru>								?
-sv, swedish				Samuel Blomqvist <salblt97@student.umu.se>				ts
-tr, turkish				-unknown/none-
-uk								-unknown/none-
-sr, serbian		Aleksandar Spasojevic <prethorian@microsky.net>				ts
+Language:         Maintainer:                                       Used Filetype: (ts/po)
+---------         -----------                                       --------------
+bg_BG, Bulgarian  Ivan Dimitrov <dobber@bastun.net>                 po
+cs_CZ, czech      Martin Hnatek <m.hnatek@sh.cvut.cz>               ts
+de, german        Thomas Reitelbach <thomas@licq.org>               ts
+es, espania       -unknown/none-
+fi, finnish       Tuomas Jaakola <tuomas.jaakola@iki.fi>            ts
+fr                Yves Dessertine <yves.d@hrnet.fr>                 
+hu_HU, hungarian  Daniel Levai <leva@fbi.hu>                        po
+it, italian       Salvatore Caligiore <caligiore@bigfoot.com>       
+ja_JP             Nobuaki Takahashi <nobu@icnet.ne.jp>              
+pl, poland        Grzegorz Nosek <blackfire@virtual.net.pl>         
+pt_BR             Gustavo Pichorim Boiko <gustavoboiko@brturbo.com> po
+ru                Leonid Kabanov <lkabanov@krasu.ru>                
+sv, swedish       Samuel Blomqvist <salblt97@student.umu.se>        ts
+tr, turkish       -unknown/none-
+uk                -unknown/none-
+sr, serbian       Aleksandar Spasojevic <prethorian@microsky.net>   ts
