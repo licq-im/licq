@@ -7,6 +7,8 @@ Makefile
 Makefile.in
 configure
 aclocal.m4
+acinclude.m4
 libtool
 stamp-h.in
 stamp-h
+plugins
