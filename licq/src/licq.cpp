@@ -58,7 +58,7 @@ bool CLicq::Init(int argc, char **argv)
   bool bBaseDir = false;
   bool bForceInit = false;
   bool bCmdLinePlugins = false;
-  bool bUseColor = true;
+  bool bUseColor = isatty(STDOUT_FILENO);
   // Check the no one is trying session management on us
   if (argc > 1 && strcmp(argv[1], "-session") == 0)
   {
