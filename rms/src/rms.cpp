@@ -597,12 +597,12 @@ int CRMSClient::Process_INFO()
     return fflush(fs);
   }
 
-  fprintf(fs, "%d Alias: %s\n", CODE_USERxINFO, u->GetAlias());
-  fprintf(fs, "%d Status: %s\n", CODE_USERxINFO, u->StatusStr());
-  fprintf(fs, "%d First Name: %s\n", CODE_USERxINFO, u->GetFirstName());
-  fprintf(fs, "%d Last Name: %s\n", CODE_USERxINFO, u->GetLastName());
-  fprintf(fs, "%d Email 1: %s\n", CODE_USERxINFO, u->GetEmailPrimary());
-  fprintf(fs, "%d Email 2: %s\n", CODE_USERxINFO, u->GetEmailSecondary());
+  fprintf(fs, "%d %ld Alias: %s\n", CODE_USERxINFO, u->Uin(), u->GetAlias());
+  fprintf(fs, "%d %ld Status: %s\n", CODE_USERxINFO, u->Uin(), u->StatusStr());
+  fprintf(fs, "%d %ld First Name: %s\n", CODE_USERxINFO, u->Uin(), u->GetFirstName());
+  fprintf(fs, "%d %ld Last Name: %s\n", CODE_USERxINFO, u->Uin(), u->GetLastName());
+  fprintf(fs, "%d %ld Email 1: %s\n", CODE_USERxINFO, u->Uin(), u->GetEmailPrimary());
+  fprintf(fs, "%d %ld Email 2: %s\n", CODE_USERxINFO, u->Uin(), u->GetEmailSecondary());
 
   gUserManager.DropUser(u);
 
