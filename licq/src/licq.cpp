@@ -690,7 +690,7 @@ int CLicq::Main()
       if (bDaemonShutdown)
       {
         struct timespec abstime;
-        abstime.tv_sec = (long int)(time(TIME_NOW) + (time_t)MAX_WAIT_PLUGIN);
+        abstime.tv_sec = time(TIME_NOW) + MAX_WAIT_PLUGIN;
         abstime.tv_nsec = 0;
         if (pthread_cond_timedwait(&LP_IdSignal, &LP_IdMutex, &abstime) == ETIMEDOUT)
           break;

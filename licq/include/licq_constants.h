@@ -30,7 +30,6 @@ const unsigned short MAX_HOSTNAME_LEN              = 255;
 const unsigned short MAX_CMD_LEN                   = 1024;
 const unsigned short MAX_DATA_LEN                  = 1024;
 const unsigned short MAX_MESSAGE_SIZE              = 450;
-const unsigned short TIME_NOW                      = 0;
 const unsigned short PING_FREQUENCY                = 60;
 const unsigned short DEFAULT_SERVER_PORT           = 5190;
 const unsigned short DEFAULT_SSL_PORT              = 443;
@@ -51,6 +50,7 @@ const unsigned short LOCK_W                        = 2;
 
 #define PIPE_READ  0
 #define PIPE_WRITE 1
+#define TIME_NOW   0
 
 
 #endif
