@@ -85,7 +85,7 @@ protected:
   CInfoField *nfoFirstName, *nfoLastName, *nfoEmail1, *nfoEmail2,
              *nfoAlias, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
-             *nfoPhone, *nfoLastOnline;
+             *nfoPhone, *nfoLastOnline, *nfoTime, *nfoStatus;
   CEComboBox *cmbCountry;
   QLabel *lblAuth;
 

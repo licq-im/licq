@@ -66,7 +66,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   CreateAbout();
   CreateHistory();
 
-  QBoxLayout* lay = new QVBoxLayout(this, 8);
+  QBoxLayout *lay = new QVBoxLayout(this, 8);
 
   tabs = new QTabWidget(this);
   lay->addWidget(tabs, 2);
@@ -144,7 +144,7 @@ void UserInfoDlg::CreateGeneralInfo()
   unsigned short CR = 0;
   QWidget *p = tabList[GeneralInfo].tab;
 
-  QGridLayout *lay = new QGridLayout(p, 10, 5, 10, 5);
+  QGridLayout *lay = new QGridLayout(p, 11, 5, 10, 5);
   lay->addColSpacing(2, 10);
   lay->setRowStretch(9, 1);
 
@@ -161,6 +161,13 @@ void UserInfoDlg::CreateGeneralInfo()
   lay->addWidget(new QLabel(tr("IP:"), p), CR, 3);
   nfoIp = new CInfoField(p, true);
   lay->addWidget(nfoIp, CR, 4);
+
+  lay->addWidget(new QLabel(tr("Status:"), p), ++CR, 0);
+  nfoStatus = new CInfoField(p, true);
+  lay->addWidget(nfoStatus, CR, 1);
+  lay->addWidget(new QLabel(tr("Timezone:"), p), CR, 3);
+  nfoTime = new CInfoField(p, true);
+  lay->addWidget(nfoTime, CR, 4);
 
   lay->addWidget(new QLabel(tr("Name:"), p), ++CR, 0);
   nfoFirstName = new CInfoField(p, false);
@@ -238,6 +245,15 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoEmail2->setData(u->GetEmail2());
   nfoUin->setData(u->Uin());
   nfoIp->setData(u->IpPortStr(buf));
+  if (u->GetTimezone() == TIMEZONE_UNKNOWN)
+    nfoTime->setText(tr("Unknown"));
+  else
+  {
+    nfoTime->setText(tr("GMT%1%1%1")
+       .arg(u->GetTimezone() > 0 ? "-" : "+")
+       .arg(abs(u->GetTimezone() / 2)).arg(u->GetTimezone() % 2 ? "30" : "00") );
+  }
+  nfoStatus->setData(u->StatusStr());
   if (m_bOwner)
   {
     if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
@@ -269,7 +285,9 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoPhone->setData(u->GetPhoneNumber());
   nfoFax->setData(u->GetFaxNumber());
   nfoCellular->setData(u->GetCellularNumber());
-  nfoZipCode->setData(u->GetZipCode());
+  QString z = QString::number(u->GetZipCode());
+  while (z.length() < 5) z.prepend("0");
+  nfoZipCode->setText(z);
 
   if (!u->StatusOffline())
     nfoLastOnline->setData(tr("Now"));

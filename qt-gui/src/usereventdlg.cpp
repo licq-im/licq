@@ -31,6 +31,7 @@
 
 #include "licq_message.h"
 #include "licq_icqd.h"
+#include "licq_log.h"
 
 #include "authuserdlg.h"
 #include "ewidgets.h"
@@ -54,7 +55,7 @@
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
                                  CMainWindow *m, unsigned long _nUin,
                                  QWidget* parent, const char* name)
-  : QDialog(parent, name, false, WDestructiveClose)
+  : QWidget(parent, name, WDestructiveClose)
 {
   server = s;
   mainwin = m;
@@ -82,14 +83,12 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
 
+  tmrTime = NULL;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u != NULL)
   {
     nfoStatus->setData(u->StatusStr());
     SetGeneralInfo(u);
-    tmrTime = new QTimer(this);
-    connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
-    tmrTime->start(3000);
     gUserManager.DropUser(u);
   }
 
@@ -111,16 +110,24 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
     m_nRemoteTimeOffset = u->LocalTimeOffset();
     QDateTime t;
     t.setTime_t(u->LocalTime());
-    nfoTimezone->setText(tr("%1 (GMT%1%1%1)")
+    nfoTimezone->setText(t.time().toString());
+    /*nfoTimezone->setText(tr("%1 (GMT%1%1%1)")
                          .arg(t.time().toString())
                          .arg(u->GetTimezone() > 0 ? "-" : "+")
                          .arg(abs(u->GetTimezone() / 2))
-                         .arg(u->GetTimezone() % 2 ? "30" : "00") );
+                         .arg(u->GetTimezone() % 2 ? "30" : "00") );*/
+    if (tmrTime == NULL)
+    {
+      tmrTime = new QTimer(this);
+      connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
+      tmrTime->start(3000);
+    }
   }
 
-  setCaption(QString::fromLocal8Bit(u->GetAlias()) + " (" +
+  m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
              QString::fromLocal8Bit(u->GetFirstName()) + " " +
-             QString::fromLocal8Bit(u->GetLastName())+ ")");
+             QString::fromLocal8Bit(u->GetLastName())+ ")";
+  setCaption(m_sBaseTitle);
   setIconText(u->GetAlias());
 }
 
@@ -129,7 +136,8 @@ void UserEventCommon::slot_updatetime()
 {
   QDateTime t;
   t.setTime_t(time(NULL) + m_nRemoteTimeOffset);
-  nfoTimezone->setText(nfoTimezone->text().replace(0, t.time().toString().length(), t.time().toString()));
+  nfoTimezone->setText(t.time().toString());
+  //nfoTimezone->setText(nfoTimezone->text().replace(0, t.time().toString().length(), t.time().toString()));
 }
 
 
@@ -233,7 +241,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnClose);
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u && u->NewMessages() > 0)
+  if (u != NULL && u->NewMessages() > 0)
   {
     MsgViewItem *e = new MsgViewItem(u->EventPeek(0), msgView);
     for (unsigned short i = 1; i < u->NewMessages(); i++)
@@ -242,11 +250,11 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
     }
     gUserManager.DropUser(u);
     slot_printMessage(e);
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
     msgView->setSelected(e, true);
     msgView->ensureItemVisible(e);
-    gUserManager.DropUser(u);
   }
+  else
+    gUserManager.DropUser(u);
 }
 
 
@@ -621,7 +629,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
   QBoxLayout *hlay = new QHBoxLayout(vlay);
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
-  ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (chkSendServer->isEnabled())
   {
     chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc() == -1));
@@ -691,6 +699,7 @@ void UserSendCommon::massMessageToggled(bool b)
 //-----UserSendCommon::sendButton--------------------------------------------
 void UserSendCommon::sendButton()
 {
+  qDebug("UserSendCommon::sendButton()");
   if (icqEventTag != NULL)
   {
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
@@ -842,6 +851,12 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
          ue->FileDescription(), nLevel);
       break;
     }
+    default:
+    {
+      gLog.Warn("%sInternal error: UserSendCommon::RetrySend()\n"
+         "%sUnknown sub-command %d.\n", L_WARNxSTR, L_BLANKxSTR, e->SubCommand());
+      break;
+    }
   }
 
   sendButton();
@@ -902,6 +917,7 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setMinimumHeight(150);
   mleSend->setFocus();
   setTabOrder(mleSend, btnSend);
+  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 }
 
 
@@ -991,6 +1007,7 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
   setTabOrder(mleSend, btnSend);
+  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 
   QGroupBox* grpOpt = new QGroupBox(1, Vertical, mainWidget);
   lay->addWidget(grpOpt);
@@ -1072,6 +1089,7 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
   setTabOrder(mleSend, btnSend);
+  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 
   QGroupBox* grpOpt = new QGroupBox(1, Vertical, mainWidget);
   lblItem = new QLabel(tr("File(s)"), grpOpt);
@@ -1132,11 +1150,12 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
 
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
+  QBoxLayout *lay = new QVBoxLayout(mainWidget);
   mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
   setTabOrder(mleSend, btnSend);
+  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 }
 
 

@@ -19,7 +19,7 @@
 #ifndef USEREVENTDLG_H
 #define USEREVENTDLG_H
 
-#include <qdialog.h>
+#include <qwidget.h>
 
 class QBoxLayout;
 class QVGroupBox;
@@ -43,7 +43,7 @@ class CEButton;
 
 /* ----------------------------------------------------------------------------- */
 
-class UserEventCommon : public QDialog
+class UserEventCommon : public QWidget
 {
   Q_OBJECT
 public:
@@ -69,6 +69,7 @@ protected:
   time_t m_nRemoteTimeOffset;
   QTimer *tmrTime;
   bool m_bDeleteUser;
+  QString m_sBaseTitle, m_sProgressMsg;
 
   virtual void UserUpdated(CICQSignal *, ICQUser *) = 0;
   void SetGeneralInfo(ICQUser *);
@@ -140,7 +141,6 @@ protected:
   QVGroupBox *grpMR;
   QButtonGroup *grpCmd;
   CMMUserView *lstMultipleRecipients;
-  QString m_sBaseTitle, m_sProgressMsg;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
