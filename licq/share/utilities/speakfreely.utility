@@ -1,0 +1,4 @@
+[utility]
+Window = TERM
+Command = sh -c "sfspeaker& sfmike %i"
+Description = Voice over ip session with speakfreely
