@@ -201,7 +201,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    // Disconnect any old flash slot
    if (m_bUrgent)
-     disconnect(s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
+     disconnect(s_tFlash, SIGNAL(timeout()), this, SLOT(slot_flash()));
 
    if (u->NewMessages() > 0)
    {
