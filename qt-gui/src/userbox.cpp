@@ -89,7 +89,8 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
 #ifdef QT_PROTOCOL_PLUGIN
   m_szId = _cUser->IdString() ? strdup(_cUser->IdString()) : 0;
   m_nPPID = _cUser->PPID();
-#endif  m_bUrgent = false;
+#endif
+  m_bUrgent = false;
   m_bSecure = false;
   m_bBirthday = false;
   m_bPhone = false;
@@ -109,7 +110,8 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
 #ifdef QT_PROTOCOL_PLUGIN
   m_szId = 0;
   m_nPPID =0;
-#endif  m_pIcon = NULL;
+#endif
+  m_pIcon = NULL;
   m_cBack = s_cBack;
   m_cFore = s_cGridLines;
   m_bItalic = m_bStrike = false;
