@@ -77,8 +77,7 @@ AC_CHECK_HEADERS(errno.h fcntl.h getopt.h limits.h malloc.h pwd.h unistd.h paths
 dnl Checks for library functions.
 AC_CHECK_LIB(xnet,inet_addr)
 AC_CHECK_LIB(socket, socket)
-AC_CHECK_LIB(nsl, gethostbyname)
-
+LICQ_CHECK_GETHOSTBYNAME
 AC_CHECK_LIB(c_r,pthread_cancel, [], [
   AC_CHECK_LIB(pthread, pthread_cancel, [], [
     AC_CHECK_LIB(thread, pthread_cancel, [], [
