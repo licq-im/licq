@@ -1242,18 +1242,6 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
         e->thread_running = false;
       }
       std::list<ICQEvent *>::iterator i;
-      for (i = m_lxSendQueue_Server.begin(); i != m_lxSendQueue_Server.end();
-           i++)
-      {
-        if (*i == e)
-        {
-          m_lxSendQueue_Server.erase(i);
-          ICQEvent *cancelled = new ICQEvent(e);
-          cancelled->m_bCancelled = true;
-          m_lxSendQueue_Server.push_back(cancelled);
-          break;
-        }
-      }
       for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
       {
         if (*i == e)
@@ -1268,10 +1256,26 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
       iter++;
   }
   assert(m_lxExtendedEvents.empty());
+
+  // Cancel all events
+  std::list<ICQEvent *>::iterator i;
+  i = m_lxSendQueue_Server.end(); // Necessary since the end is always being modified
+  for (iter = m_lxSendQueue_Server.begin(); iter != i; iter++)
+  {
+    ICQEvent *e = *iter;
+    m_lxSendQueue_Server.erase(i);
+    ICQEvent *cancelled = new ICQEvent(e);
+    cancelled->m_bCancelled = true;
+    m_lxSendQueue_Server.push_back(cancelled);
+  }
+
+  // Queue should be empty
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
     gLog.Info("Event #%lu is still on queue!\n", (*iter)->Sequence());
+
   if (cancelledEvent != NULL)
     m_lxSendQueue_Server.push_back(cancelledEvent);
+
   pthread_mutex_unlock(&mutex_extendedevents);
   pthread_mutex_unlock(&mutex_sendqueue_server);
   pthread_mutex_unlock(&mutex_runningevents);
