@@ -81,15 +81,15 @@ protected:
   FILE *fs;
   TagList tags;
   unsigned short m_nState;
-  char data_line[MAX_LINE_LENGTH];
+  char data_line[MAX_LINE_LENGTH + 1];
   char *data_arg;
   unsigned short data_line_pos;
   unsigned long m_nCheckUin;
   unsigned long m_nLogTypes;
 
   unsigned long m_nUin;
-  char m_szText[MAX_TEXT_LENGTH];
-  char m_szLine[MAX_LINE_LENGTH];
+  char m_szText[MAX_TEXT_LENGTH + 1];
+  char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;
 
   int StateMachine();

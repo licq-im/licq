@@ -450,7 +450,7 @@ int CRMSClient::Activity()
   {
     while (in != last && *in != '\n')
     {
-      if (!iscntrl(*in))
+      if (!iscntrl(*in) && data_line_pos < MAX_LINE_LENGTH)
         data_line[data_line_pos++] = *in;
       in++;
     }
