@@ -74,7 +74,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     emit signal_logon();
     break;
   default:
-    gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %d.\n", 
+    gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());
     break;
   }
@@ -121,7 +121,7 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
     break;
 
   default:
-    gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event command received from daemon: %d.\n", 
+    gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event command received from daemon: %d.\n",
               L_WARNxSTR, e->Command());
     break;
   }
