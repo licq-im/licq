@@ -167,7 +167,8 @@ void SecurityDlg::ok()
   gUserManager.DropOwner();
 
   // validate password
-  if (edtFirst->text().isEmpty() || edtFirst->text().length() > 8)
+  if ((edtFirst->text().isEmpty() && !chkOnlyLocal->isChecked()) ||
+       edtFirst->text().length() > 8)
   {
     InformUser(this, tr("Invalid password, must be between 1 and 8 characters."));
     return;
