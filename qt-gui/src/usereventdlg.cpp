@@ -1593,7 +1593,7 @@ void UserSendCommon::sendButton()
   if (m_lnEventTag.size())
     icqEventTag = m_lnEventTag.front();
 
-  if (icqEventTag != 0)
+  if (icqEventTag != 0 || m_nPPID != LICQ_PPID)
   {
     m_sProgressMsg = tr("Sending ");
     bool via_server = chkSendServer->isChecked();
@@ -2129,7 +2129,8 @@ void UserSendMsgEvent::sendButton()
       chkSendServer->isChecked() ? false : true,
       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       chkMass->isChecked(), &icqColor);
-     m_lnEventTag.push_back(icqEventTag);
+     if (m_nPPID == LICQ_PPID)
+       m_lnEventTag.push_back(icqEventTag);
 
      tmp = gTranslator.NToRN(messageRaw);
      wholeMessagePos += strlen(tmp);

@@ -97,6 +97,8 @@ public:
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
 
+  void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
+  
   enum type {
   	UC_MESSAGE,
   	UC_URL,

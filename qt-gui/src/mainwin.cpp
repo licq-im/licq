@@ -619,6 +619,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_ui_viewevent(const char *)));
    connect (licqSigMan, SIGNAL(signal_protocolPlugin(unsigned long)),
             this, SLOT(slot_protocolPlugin(unsigned long)));
+   connect (licqSigMan, SIGNAL(signal_eventTag(const char *, unsigned long, unsigned long)),
+            this, SLOT(slot_eventTag(const char *, unsigned long, unsigned long)));
 
    m_bInMiniMode = false;
    updateStatus();
@@ -2570,6 +2572,28 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   mnuStatus->insertSeparator(m_nProtoNum + 1);
 
   m_nProtoNum++;
+}
+
+//-----slot_eventTag------------------------------------------------------------
+void CMainWindow::slot_eventTag(const char *_szId, unsigned long _nPPID,
+                                unsigned long _nEventTag)
+{
+  if (!_szId || !_nPPID || !_nEventTag)
+    return;
+    
+#if QT_VERSION < 300
+  QListIterator<UserSendCommon> it(licqUserSend);
+#else
+  QPtrListIterator<UserSendCommon> it(licqUserSend);
+#endif
+  for(; it.current() != NULL; ++it)
+  {
+    if (strcmp((*it)->Id(), _szId) == 0 && (*it)->PPID() == _nPPID)
+    {
+      (*it)->AddEventTag(_nEventTag);
+      break;
+    }
+  }
 }
 
 //-----slot_doneOwnerFcn--------------------------------------------------------

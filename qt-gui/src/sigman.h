@@ -37,6 +37,7 @@ signals:
   void signal_ui_viewevent(const char *);
   void signal_ui_message(const char *, unsigned long);
   void signal_protocolPlugin(unsigned long);
+  void signal_eventTag(const char *, unsigned long, unsigned long);
 
   // Event signals
   void signal_doneOwnerFcn(ICQEvent *);

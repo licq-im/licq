@@ -117,6 +117,10 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
   case SIGNAL_NEWxPROTO_PLUGIN:
     emit signal_protocolPlugin(s->SubSignal());
     break;
+  case SIGNAL_EVENTxID:
+    emit signal_eventTag(s->Id(), s->PPID(), s->Argument());
+printf("Got it: %s %d\n", s->Id(), s->Argument());
+    break;
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());
@@ -132,6 +136,13 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
   {
     emit signal_doneUserFcn(e);
     delete e;
+    return;
+  }
+
+  if (e->SNAC() == 0)
+  {
+    // Not from ICQ
+    emit signal_doneUserFcn(e); //FIXME
     return;
   }
 

@@ -291,6 +291,7 @@ protected slots:
   //void slot_ui_viewevent(unsigned long);
   void slot_ui_viewevent(const char *);
   void slot_protocolPlugin(unsigned long);
+  void slot_eventTag(const char *, unsigned long, unsigned long);
   void slot_register();
   void slot_doneregister();
   void slot_doneOptions();
