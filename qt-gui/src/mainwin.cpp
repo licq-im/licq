@@ -926,7 +926,8 @@ void CMainWindow::updateStatus()
      theColor = skin->colors.away;
      break;
    }
-   mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->StatusInvisible());
+   if (status != ICQ_STATUS_OFFLINE)
+     mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), o->StatusInvisible());
 
    lblStatus->setText(o->StatusStr());
    lblStatus->update();
@@ -1205,36 +1206,36 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       if (e->m_eResult != EVENT_SUCCESS)
         WarnUser(this, tr("Logon failed.\nSee network window for details."));
       break;
-  case ICQ_CMDxSND_REGISTERxUSER:
-    if (registerUserDlg != NULL)
-    {
-      delete registerUserDlg;
-      registerUserDlg = NULL;
-    }
-    if (e->m_eResult == EVENT_SUCCESS)
-    {
-      char buf[256];
-      sprintf(buf, tr("Successfully registered, your user identification\n"
-                     "number (UIN) is %ld.  Now log on and update your\n"
-                     "personal info."),
-                   gUserManager.OwnerUin());
-      InformUser(this, QString::fromLocal8Bit(buf));
-      changeStatus(ICQ_STATUS_ONLINE);
-      callFunction(8, false);
-    }
-    else
-    {
-      InformUser(this, tr("Registration failed.  See network window for details."));
-    }
-    break;
-  case ICQ_CMDxSND_AUTHORIZE:
-     if (e->m_eResult != EVENT_ACKED)
-       WarnUser(this, tr("Error sending autorization."));
-     else
-       InformUser(this, tr("Authorization granted."));
-     break;
-  default:
-     break;
+    case ICQ_CMDxSND_REGISTERxUSER:
+      if (registerUserDlg != NULL)
+      {
+        delete registerUserDlg;
+        registerUserDlg = NULL;
+      }
+      if (e->m_eResult == EVENT_SUCCESS)
+      {
+        char buf[256];
+        sprintf(buf, tr("Successfully registered, your user identification\n"
+                       "number (UIN) is %ld.  Now log on and update your\n"
+                       "personal info."),
+                     gUserManager.OwnerUin());
+        InformUser(this, QString::fromLocal8Bit(buf));
+        changeStatus(ICQ_STATUS_ONLINE);
+        callFunction(8, false);
+      }
+      else
+      {
+        InformUser(this, tr("Registration failed.  See network window for details."));
+      }
+      break;
+    case ICQ_CMDxSND_AUTHORIZE:
+       if (e->m_eResult != EVENT_ACKED)
+         WarnUser(this, tr("Error sending autorization."));
+       else
+         InformUser(this, tr("Authorization granted."));
+       break;
+    default:
+       break;
   }
 }
 
