@@ -80,6 +80,9 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   }
 
   licqConf.ReadNum("TCPServerPort", m_nTcpServerPort, 0);
+  bool bTcpEnabled;
+  licqConf.ReadBool("TCPEnabled", bTcpEnabled, true);
+  CPacket::SetMode(bTcpEnabled ? MODE_DIRECT : MODE_INDIRECT);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
 
@@ -449,6 +452,7 @@ void CICQDaemon::SaveConf()
   licqConf.SetSection("network");
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
   licqConf.WriteNum("TCPServerPort", getTcpServerPort());
+  licqConf.WriteBool("TCPEnabled", CPacket::Mode() == MODE_DIRECT);
   licqConf.WriteNum("MaxUsersPerPacket", getMaxUsersPerPacket());
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
 
