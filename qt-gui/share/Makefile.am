@@ -61,4 +61,18 @@ install-data-local:
             fi \
           done; \
 	done
-
+	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/emoticons
+	@for j in $(srcdir)/qt-gui/emoticons/*; do \
+	  jj="qt-gui/emoticons/`basename $$j`" ; \
+	  if test -d $$j; then \
+	    echo "Installing emoticon $$jj"; \
+	    $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$jj; \
+	    for i in $$j/*; do \
+	      if test -f $$i; then \
+	        $(INSTALL_DATA) $$i $(DESTDIR)$(sharedir)/$$jj; \
+	      fi \
+	    done; \
+	  else \
+	    $(INSTALL_DATA) $$j $(DESTDIR)$(sharedir)/qt-gui/emoticons/`basename $$j`; \
+	  fi; \  
+	done
